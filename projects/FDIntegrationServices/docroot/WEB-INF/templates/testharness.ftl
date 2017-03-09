@@ -630,9 +630,9 @@ function loadStuff() {
   } else if(loaddata == "SetMobileGoGreenPreferences") {  	
   	$("#url").val("/saptest12@freshdirect.com/account/setmobilegogreenpreferences/");
     $("#header").val('');
-  	$("#payload").val('{"go_green" : "true" }');
+  	$("#payload").val("");
  
-   }  else if (loaddata == "GetModifiableOrders") {
+ }  else if (loaddata == "GetModifiableOrders") {
   	$("#url").val("/saptest12@freshdirect.com/order/modifiable");
   	$("#header").val('');
   	$("#payload").val('');

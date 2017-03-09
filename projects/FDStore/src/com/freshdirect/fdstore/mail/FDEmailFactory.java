@@ -75,6 +75,7 @@ public class FDEmailFactory {
 	public static final String FDX_ORDER_EMAIL = FDStoreProperties.getOrderEmailFDX();
 	public static final String FDX_ACTSERVICE_EMAIL = FDStoreProperties.getActServiceEmailFDX();
 	public static final String FDX_SIDEKICKS_EMAIL = FDStoreProperties.getSidekicksEmailFDX();
+	public static final String FDX_PRODUCT_REQUEST_EMAIL = FDStoreProperties.getProductRequestEmailFDX();
 
 
 	// default instance getter
@@ -121,7 +122,7 @@ public class FDEmailFactory {
 				email.setSubject("Your order ETA is between " + serverTimeFormat.format(order.getDeliveryReservation().getDeliveryETA().getStartTime()) +"  to "
 						+ serverTimeFormat.format(order.getDeliveryReservation().getDeliveryETA().getEndTime()));
 			} else {
-				email.setSubject("Your receipt from FreshDirect-Your order for " + df.format(order.getRequestedDate()) + " is on its way");
+				email.setSubject("Your FreshDirect order is on its way! Receipt inside");
 			}
 		}
 
@@ -429,7 +430,12 @@ public class FDEmailFactory {
 
 	public XMLEmailI createContactServiceEmail(FDCustomerInfo customerInfo, String subject, String body) {
 		FDContactServiceEmail email = new FDContactServiceEmail(body);
-
+		
+		if(ContentFactory.getInstance() != null && ContentFactory.getInstance().getStore() !=  null && 
+				ContentFactory.getInstance().getStore().getContentName() != null && ContentFactory.getInstance().getStore().getContentName().equals("FDX") && 
+					subject.equals("[contact_us] Product Request")) 
+			email.setRecipient(FDX_PRODUCT_REQUEST_EMAIL);
+			
 		if (customerInfo == null) {
 			email.setFromAddress(new EmailAddress("Unidentified Customer", GENERAL_CS_EMAIL));
 		} else {

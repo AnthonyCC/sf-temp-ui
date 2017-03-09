@@ -48,17 +48,17 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel, Cloneabl
     //
 
     protected ContentNodeI getCMSNode() {
-    	ContentNodeI node = null;
-    	final String cacheKey = EhCacheUtil.getRequestIdCacheKey(key.getId());
-    	if (!cacheKey.isEmpty()){
-    		node = EhCacheUtil.getObjectFromCache(EhCacheUtil.CMS_CONTENT_NODE_CACHE_NAME, cacheKey);
-    	}
-    	if (node == null){
-    		node = ContentFactory.getInstance().getContentNode(key);
-    		if (!cacheKey.isEmpty()){
-    			EhCacheUtil.putObjectToCache(EhCacheUtil.CMS_CONTENT_NODE_CACHE_NAME, cacheKey, node);
-    		}
-    	}
+        ContentNodeI node = null;
+        final String cacheKey = ContentNodeModelUtil.getRequestIdCacheKey(key.getId());
+        if (!cacheKey.isEmpty()) {
+            node = EhCacheUtil.getObjectFromCache(ContentNodeModelUtil.CMS_CONTENT_NODE_CACHE_NAME, cacheKey);
+        }
+        if (node == null) {
+            node = ContentFactory.getInstance().getContentNode(key);
+            if (!cacheKey.isEmpty()) {
+                EhCacheUtil.putObjectToCache(ContentNodeModelUtil.CMS_CONTENT_NODE_CACHE_NAME, cacheKey, node);
+            }
+        }
         return node;
     }
 
@@ -191,17 +191,17 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel, Cloneabl
 
     @Override
     public Collection<ContentKey> getParentKeys() {
-    	Set<ContentKey> parentKeys = null;
-    	final String cacheKey = EhCacheUtil.getRequestIdCacheKey(key.getId());
-    	if (!cacheKey.isEmpty()){
-    		parentKeys = EhCacheUtil.getObjectFromCache(EhCacheUtil.CMS_PARENT_KEY_CACHE_NAME, cacheKey);
-    	}
-    	if (parentKeys == null){
-    		parentKeys = ContentFactory.getInstance().getParentKeys(key);
-    		if (!cacheKey.isEmpty()){
-    			EhCacheUtil.putObjectToCache(EhCacheUtil.CMS_PARENT_KEY_CACHE_NAME, cacheKey, parentKeys);
-    		}
-    	}
+        Set<ContentKey> parentKeys = null;
+        final String cacheKey = ContentNodeModelUtil.getRequestIdCacheKey(key.getId());
+        if (!cacheKey.isEmpty()) {
+            parentKeys = EhCacheUtil.getObjectFromCache(ContentNodeModelUtil.CMS_PARENT_KEY_CACHE_NAME, cacheKey);
+        }
+        if (parentKeys == null) {
+            parentKeys = ContentFactory.getInstance().getParentKeys(key);
+            if (!cacheKey.isEmpty()) {
+                EhCacheUtil.putObjectToCache(ContentNodeModelUtil.CMS_PARENT_KEY_CACHE_NAME, cacheKey, parentKeys);
+            }
+        }
         return parentKeys;
     }
 

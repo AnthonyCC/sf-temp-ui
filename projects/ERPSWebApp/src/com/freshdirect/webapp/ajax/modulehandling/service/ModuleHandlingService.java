@@ -13,32 +13,40 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.DraftContext;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleConfig;
+import com.freshdirect.webapp.ajax.modulehandling.data.ModuleContainerData;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleData;
-import com.freshdirect.webapp.ajax.modulehandling.data.WelcomePageData;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 
-public class ModuleHandlingService {
+/**
+ * Used to load a moduleContainer for a User.
+ * 
+ * @author dviktor
+ *
+ */
+public final class ModuleHandlingService {
 
     private static ModuleHandlingService INSTANCE = new ModuleHandlingService();
     private static final Logger LOGGER = LoggerFactory.getInstance(ModuleHandlingService.class);
+
+    private ModuleHandlingService() {
+    }
 
     public static ModuleHandlingService getDefaultService() {
         return INSTANCE;
     }
 
-    private ModuleHandlingService() {
-    }
-
     @SuppressWarnings("unchecked")
-    public WelcomePageData loadModuleContainer(String moduleContainerId, FDUserI user, HttpSession session) throws FDResourceException, InvalidFilteringArgumentException {
+    public ModuleContainerData loadModuleContainer(String moduleContainerId, FDUserI user, HttpSession session) throws FDResourceException, InvalidFilteringArgumentException {
 
-        WelcomePageData result = new WelcomePageData();
-
+        ModuleContainerData result = new ModuleContainerData();
         List<ModuleConfig> configs = new ArrayList<ModuleConfig>();
         Map<String, ModuleData> datas = new HashMap<String, ModuleData>();
 
@@ -47,56 +55,97 @@ public class ModuleHandlingService {
         ContentNodeI moduleContainer = CmsManager.getInstance().getContentNode(ContentKey.getContentKey(moduleContainerId), currentDraftContext);
 
         if (moduleContainer != null) {
-            List<ContentKey> moduleInstances = (List<ContentKey>) moduleContainer.getAttributeValue("moduleInstances");
+            List<ContentKey> modulesAndGroups = (List<ContentKey>) moduleContainer.getAttributeValue("modulesAndGroups");
 
-            if (moduleInstances != null) {
-                for (ContentKey moduleInstanceContentKey : moduleInstances) {
-                    ModuleData moduleData = loadModuleInstanceData(moduleInstanceContentKey, user, session);
-                    if (moduleData != null) {
-                        ModuleConfig moduleConfig = loadModuleInstanceConfig(moduleInstanceContentKey, user);
+            if (modulesAndGroups != null) {
+                for (ContentKey moduleContainerChildContentKey : modulesAndGroups) {
+                    if (FDContentTypes.MODULE_GROUP.equals(moduleContainerChildContentKey.getType())) {
+
+                        ModuleConfig moduleGroupConfig = new ModuleConfig();
+                        moduleGroupConfig = loadModuleGroupConfig(moduleContainerChildContentKey, user);
+                        configs.add(moduleGroupConfig);
+
+                        ContentNodeI moduleGroup = CmsManager.getInstance().getContentNode(moduleContainerChildContentKey, currentDraftContext);
+                        List<ContentKey> modules = (List<ContentKey>) moduleGroup.getAttributeValue("modules");
+
+                        if (modules != null) {
+                            for (ContentKey moduleContentKey : modules) {
+                                ModuleData moduleData = new ModuleData();
+                                ModuleConfig moduleConfig = new ModuleConfig();
+                                moduleData = loadModuleData(moduleContentKey, user, session, false);
+
+                                if (moduleData != null) {
+                                    moduleConfig = loadModuleConfig(moduleContentKey, user);
+                                }
+
+                                datas.put(moduleConfig.getModuleId(), moduleData);
+                                configs.add(moduleConfig);
+                            }
+                        }
+                    } else if (FDContentTypes.MODULE.equals(moduleContainerChildContentKey.getType())) {
+                        ModuleData moduleData = new ModuleData();
+                        ModuleConfig moduleConfig = new ModuleConfig();
+                        moduleData = loadModuleData(moduleContainerChildContentKey, user, session, false);
+
+                        if (moduleData != null) {
+                            moduleConfig = loadModuleConfig(moduleContainerChildContentKey, user);
+                        }
+
+                        datas.put(moduleConfig.getModuleId(), moduleData);
                         configs.add(moduleConfig);
-                        datas.put(moduleConfig.getModuleInstanceId(), moduleData);
                     }
-
                 }
             }
         }
+
         result.setData(datas);
         result.setConfig(configs);
 
         return result;
     }
 
-    public WelcomePageData loadModuleInstance(ContentKey moduleInstanceContentKey, FDUserI user, HttpSession session) throws FDResourceException, InvalidFilteringArgumentException {
-
-        WelcomePageData result = new WelcomePageData();
-
+    public ModuleContainerData loadModuleforViewAll(String moduleId, FDUserI user, HttpSession session) throws FDResourceException, InvalidFilteringArgumentException {
+        ModuleContainerData result = new ModuleContainerData();
         List<ModuleConfig> configs = new ArrayList<ModuleConfig>();
         Map<String, ModuleData> datas = new HashMap<String, ModuleData>();
 
-        ModuleData moduleData = loadModuleInstanceData(moduleInstanceContentKey, user, session);
+        // Checklogin status is not applicable for AJAX calls so we need this.
+        ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || ((FDSessionUser) user).isEligibleForDDPP());
+
+        ModuleData moduleData = new ModuleData();
+        ModuleConfig moduleConfig = new ModuleConfig();
+        moduleData = loadModuleData(ContentKey.getContentKey(moduleId), user, session, true);
+
         if (moduleData != null) {
-            ModuleConfig moduleConfig = loadModuleInstanceConfig(moduleInstanceContentKey, user);
-            configs.add(moduleConfig);
-            datas.put(moduleConfig.getModuleInstanceId(), moduleData);
+            moduleConfig = loadModuleConfig(ContentKey.getContentKey(moduleId), user);
         }
 
-        result.setData(datas);
+        datas.put(moduleConfig.getModuleId(), moduleData);
+        configs.add(moduleConfig);
+
         result.setConfig(configs);
+        result.setData(datas);
 
         return result;
     }
 
-    private ModuleConfig loadModuleInstanceConfig(ContentKey moduleInstanceContentKey, FDUserI user) {
+    private ModuleConfig loadModuleConfig(ContentKey moduleContentKey, FDUserI user) {
         DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
-        ContentNodeI moduleInstance = CmsManager.getInstance().getContentNode(moduleInstanceContentKey, currentDraftContext);
-        return DatasourceService.getDefaultService().loadModuleConfiguration(moduleInstance, user);
+        ContentNodeI module = CmsManager.getInstance().getContentNode(moduleContentKey, currentDraftContext);
+        return DatasourceService.getDefaultService().loadModuleConfiguration(module, user);
     }
 
-    private ModuleData loadModuleInstanceData(ContentKey moduleInstanceContentKey, FDUserI user, HttpSession session) throws FDResourceException, InvalidFilteringArgumentException {
+    private ModuleConfig loadModuleGroupConfig(ContentKey moduleGroupContentKey, FDUserI user) {
         DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
-        ContentNodeI moduleInstance = CmsManager.getInstance().getContentNode(moduleInstanceContentKey, currentDraftContext);
-        return DatasourceService.getDefaultService().loadModuleData(moduleInstance, user, session);
+        ContentNodeI moduleGroup = CmsManager.getInstance().getContentNode(moduleGroupContentKey, currentDraftContext);
+        return DatasourceService.getDefaultService().loadModuleGroupConfiguration(moduleGroup, user);
+    }
+
+    private ModuleData loadModuleData(ContentKey moduleContentKey, FDUserI user, HttpSession session, boolean showAllProducts) throws FDResourceException,
+            InvalidFilteringArgumentException {
+        DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
+        ContentNodeI module = CmsManager.getInstance().getContentNode(moduleContentKey, currentDraftContext);
+        return DatasourceService.getDefaultService().loadModuleData(module, user, session, showAllProducts);
     }
 
 }

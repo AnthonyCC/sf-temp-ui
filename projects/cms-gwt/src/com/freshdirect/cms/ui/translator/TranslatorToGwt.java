@@ -39,7 +39,6 @@ import com.freshdirect.cms.changecontrol.ContentNodeChange;
 import com.freshdirect.cms.context.Context;
 import com.freshdirect.cms.context.ContextService;
 import com.freshdirect.cms.context.ContextualContentNodeI;
-import com.freshdirect.cms.fdstore.ConfiguredProductValidator;
 import com.freshdirect.cms.fdstore.PreviewLinkProvider;
 import com.freshdirect.cms.meta.EnumDef;
 import com.freshdirect.cms.node.ContentNodeUtil;
@@ -74,6 +73,7 @@ import com.freshdirect.cms.ui.model.draft.GwtDraftChange;
 import com.freshdirect.cms.ui.model.publish.GwtPublishData;
 import com.freshdirect.cms.ui.model.publish.GwtPublishMessage;
 import com.freshdirect.cms.ui.service.ServerException;
+import com.freshdirect.cms.util.ProductConfigurationUtil;
 import com.freshdirect.cmsadmin.domain.DraftChange;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -147,6 +147,7 @@ public class TranslatorToGwt {
         return def;
     }
 
+    @SuppressWarnings("unchecked")
     public static TabDefinition gwtTabDefinition(ContentTypeDefI typeDef, ContentServiceI contentService, DraftContext draftContext) throws ServerException {
         TabDefinition tabDef = new TabDefinition();
 
@@ -199,7 +200,6 @@ public class TranslatorToGwt {
                             // we have to figure out, what type .. it must be a Relationship ...
                             CustomFieldDefinition cfd = new CustomFieldDefinition(CustomFieldDefinition.Type.CmsMultiColumnField);
                             List<ContentKey> values = (List<ContentKey>) attr.getAttributeValue("columns");
-                            int position = 0;
                             for (ContentKey k : values) {
                                 cfd.addColumn((String) contentService.getContentNode(k, draftContext).getAttributeValue("attribute"));
                             }
@@ -231,7 +231,6 @@ public class TranslatorToGwt {
      * 
      * @throws ServerException
      */
-    @SuppressWarnings("unchecked")
     public static GwtNodeContext gwtNodeContext(ContentKey key, TabDefinition tabs, ContentServiceI contentService, DraftContext draftContext) throws ServerException {
 
         GwtNodeContext nodeContext = new GwtNodeContext();
@@ -662,13 +661,16 @@ public class TranslatorToGwt {
     }
 
     public static GwtPublishMessage getPublishMessage(PublishMessage publishMessage) {
-    	if (publishMessage == null || publishMessage.getContentKey() == null){
-    		return null;
+    	GwtPublishMessage gwtPublishMessage = new GwtPublishMessage();
+    	ContentKey contentKey = publishMessage.getContentKey();
+    	if (contentKey != null){
+    		gwtPublishMessage.setKey(contentKey.getEncoded());
     	}
-        GwtPublishMessage gwtPublishMessage = new GwtPublishMessage(publishMessage.getContentType(), publishMessage.getContentKey().getEncoded());
         gwtPublishMessage.setMessage(publishMessage.getMessage());
         gwtPublishMessage.setTimestamp(publishMessage.getTimestamp());
-        gwtPublishMessage.setSeverity(publishMessage.getSeverity());
+        gwtPublishMessage.setSeverity(publishMessage.getSeverityString());
+        gwtPublishMessage.setStoreId(publishMessage.getStoreId());
+        gwtPublishMessage.setTask(publishMessage.getTask());
         return gwtPublishMessage;
     }
 
@@ -685,17 +687,19 @@ public class TranslatorToGwt {
         return result;
     }
 
-    public static List<GwtPublishMessage> getPublishMessages(Publish publish, ChangeSetQuery query) {
-        if (query.getMessageSeverity() == -1) {
-            return getPublishMessages(publish.getMessages(), query.getPublishMessageStart(), query.getPublishMessageEnd());
-        }
-        List<PublishMessage> filteredList = new ArrayList<PublishMessage>();
-        for (PublishMessage message : publish.getMessages()) {
-            if (message.getSeverity() == query.getMessageSeverity()) {
-                filteredList.add(message);
+    public static List<PublishMessage> getSeverityFilteredPublishMessages(List<PublishMessage> messages, int severity) {
+        List<PublishMessage> filteredMessages = null;
+        if (severity == -1) {
+            filteredMessages = messages;
+        } else {
+            filteredMessages = new ArrayList<PublishMessage>();
+            for (PublishMessage message : messages) {
+                if (message.getSeverity() == severity) {
+                    filteredMessages.add(message);
+                }
             }
         }
-        return getPublishMessages(filteredList, query.getPublishMessageStart(), query.getPublishMessageEnd());
+        return filteredMessages;
     }
 
     // =========================== CHANGE SETS ===========================
@@ -772,7 +776,8 @@ public class TranslatorToGwt {
         ContentNodeI sku = contentService.getContentNode(skuKey, draftContext);
         Map<String, String> salesUnitsMap = new TreeMap<String, String>();
         List<EnumModel> salesUnits = new ArrayList<EnumModel>();
-        for (ContentNodeI su : ConfiguredProductValidator.getSalesUnits(sku, contentService, draftContext).values()) {
+        
+        for (ContentNodeI su : ProductConfigurationUtil.getSalesUnits(sku, contentService, draftContext).values()) {
             String id = su.getKey().getId();
             String label = ContentNodeUtil.getLabel(su, draftContext);
             salesUnitsMap.put(id, label);
@@ -782,7 +787,7 @@ public class TranslatorToGwt {
         }
         Collections.sort(salesUnits);
 
-        Map<String, EnumDef> enumDefMap = ConfiguredProductValidator.getDefinitionMap(sku, contentService, draftContext);
+        Map<String, EnumDef> enumDefMap = ProductConfigurationUtil.getDefinitionMap(sku, contentService, draftContext);
         List<EnumAttribute> enumAttrs = new ArrayList<EnumAttribute>(enumDefMap.size());
 
         for (Map.Entry<String, EnumDef> def : enumDefMap.entrySet()) {

@@ -15,6 +15,7 @@ import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.SimpleContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
+import com.freshdirect.cms.validation.RecipeChildNodeValidator;
 import com.freshdirect.cms.validation.ValidatingContentService;
 
 import junit.framework.TestCase;

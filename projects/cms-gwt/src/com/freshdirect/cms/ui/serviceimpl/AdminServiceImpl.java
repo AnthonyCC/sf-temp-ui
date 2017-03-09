@@ -17,6 +17,8 @@ import com.freshdirect.cms.application.CmsRequestI;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.node.ContentNodeUtil;
+import com.freshdirect.cms.publish.service.PublishFlowControlService;
+import com.freshdirect.cms.publish.service.impl.BasicPublishFlowControlService;
 import com.freshdirect.cms.search.BackgroundStatus;
 import com.freshdirect.cms.search.IBackgroundProcessor;
 import com.freshdirect.cms.ui.model.AdminProcStatus;
@@ -33,6 +35,8 @@ public class AdminServiceImpl extends GwtServiceBase implements AdminService {
     private static final Logger LOG = LoggerFactory.getInstance(AdminServiceImpl.class);
 
     private ExecutorService executor = Executors.newSingleThreadExecutor();
+
+    private PublishFlowControlService publishFlowControlService = BasicPublishFlowControlService.defaultInstance();
 
     public AdminServiceImpl() {
         super();
@@ -59,7 +63,7 @@ public class AdminServiceImpl extends GwtServiceBase implements AdminService {
             BackgroundStatus status = tool.getStatus();
 
             LOG.info("rebuild index called (" + status.isRunning() + ")");
-            if (!status.isRunning()) {
+            if (!status.isRunning() && isNodeModificationEnabled(getDraftContext())) {
                 tool.backgroundReindex();
 
             }
@@ -75,7 +79,7 @@ public class AdminServiceImpl extends GwtServiceBase implements AdminService {
             IBackgroundProcessor tool = getAdminSearch();
             BackgroundStatus status = tool.getStatus();
             LOG.info("rebuild index called (" + status.isRunning() + ")");
-            if (!status.isRunning()) {
+            if (!status.isRunning() && isNodeModificationEnabled(getDraftContext())) {
                 tool.rebuildWineIndex();
             }
 
@@ -168,6 +172,13 @@ public class AdminServiceImpl extends GwtServiceBase implements AdminService {
             return names;
         }
 
+    }
+
+    @Override
+    public AdminProcStatus abortStuckPublishFlows() {
+        publishFlowControlService.abortStuckPublishFlows();
+
+        return getBuildIndexStatus();
     }
 
 }

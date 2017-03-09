@@ -24,20 +24,27 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.crm.CrmCaseSubject;
+import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.EnumNotificationType;
+import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAbstractOrderModel;
+import com.freshdirect.customer.ErpAbstractSettlementModel;
 import com.freshdirect.customer.ErpAuthorizationModel;
 import com.freshdirect.customer.ErpCaptureModel;
 import com.freshdirect.customer.ErpDeliveryConfirmModel;
+import com.freshdirect.customer.ErpFailedChargeSettlementModel;
+import com.freshdirect.customer.ErpFailedSettlementModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSettlementModel;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ErpTransactionModel;
 import com.freshdirect.customer.ErpVoidCaptureModel;
+import com.freshdirect.customer.ejb.ErpCreateCaseCommand;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.erp.model.NotificationModel;
@@ -207,8 +214,8 @@ public class PaymentSessionBean extends SessionBeanSupport{
 							} if(EnumPaymentMethodType.PAYPAL.equals(auth.getPaymentMethodType()) && (PayPalCaptureResponse.Processor.RISK_REJECTED.getResponseCode().
 									equalsIgnoreCase(capture.getSettlementResponseCode()) || isRejected)){
 								LOGGER.info("Paypal capture is rejected after retry. Mark settlement failure  sale id ."+ saleId );
-
-								forceSettlementFailure(saleId);
+								
+								forceSettlementFailure(saleId, capture);
 								utx.commit();
 								continue;
 							}
@@ -293,15 +300,33 @@ public class PaymentSessionBean extends SessionBeanSupport{
 
 	/**
 	 * @param saleId
+	 * @param capture 
 	 * @throws FinderException
 	 * @throws RemoteException
 	 * @throws ErpTransactionException
 	 */
-	private void forceSettlementFailure(String saleId) throws FinderException, RemoteException,
+	private void forceSettlementFailure(String saleId, ErpCaptureModel capture) throws FinderException, RemoteException,
 			ErpTransactionException {
-		ErpSaleEB saleEB = getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
-		
+		ErpSaleEB saleEB = getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));	
+		ErpFailedSettlementModel failedTransaction = new ErpFailedSettlementModel();		
+		failedTransaction.setCardType(EnumCardType.PAYPAL);
+		failedTransaction.setPaymentMethodType(EnumPaymentMethodType.PAYPAL);
+		failedTransaction.setAmount(capture.getAmount());
+		failedTransaction.setResponseCode(EnumPaymentResponse.getEnum(capture.getResponseCode()));
+		failedTransaction.setCcNumLast4(capture.getCcNumLast4());
+		failedTransaction.setAbaRouteNumber(capture.getAbaRouteNumber());
+		failedTransaction.setBankAccountType(capture.getBankAccountType());
+		failedTransaction.setDescription(capture.getDescription());
+		failedTransaction.setTransactionSource(EnumTransactionSource.SYSTEM);
+		failedTransaction.setAffiliate(capture.getAffiliate());
+		((ErpSaleModel)saleEB.getModel()).addFailedSettlement(failedTransaction);
 		saleEB.markAsPaypalSettlementFailed();
+		createCase(saleId, capture.getCustomerId(), CrmCaseSubject.getEnum(CrmCaseSubject.CODE_PAYMENT_ERROR), "Sale failed to settle");
+	}
+	
+	private void createCase(String saleId, String customerId, CrmCaseSubject subject, String summary) {
+		CrmSystemCaseInfo info = new CrmSystemCaseInfo(new PrimaryKey(customerId), new PrimaryKey(saleId), subject, summary);
+		new ErpCreateCaseCommand(LOCATOR, info).execute();
 	}
 
 	/**

@@ -88,6 +88,12 @@ public class FDZoneInfoSessionBean extends SessionBeanSupport{
  			 			 			
  			if(zipCode!=null && zipCode.trim().length()>0)
  			    zoneId=remote.findZoneId(zoneServType, zipCode);
+ 			
+ 			//[APPDEV-6003]-Change the default pricing zip code.
+ 			if(zoneId==null || zoneId.trim().length()==0){
+ 				zipCode = FDStoreProperties.getDefaultPickupZoneId();
+ 				zoneId=remote.findZoneId(zoneServType, zipCode);
+ 			}
  		
  			if(zoneId==null || zoneId.trim().length()==0)
  				 zoneId=remote.findZoneId(zoneServType);

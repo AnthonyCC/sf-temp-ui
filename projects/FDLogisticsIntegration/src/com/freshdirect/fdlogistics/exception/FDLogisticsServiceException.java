@@ -2,6 +2,7 @@ package com.freshdirect.fdlogistics.exception;
 
 import com.freshdirect.fdstore.FDException;
 
+
 public class FDLogisticsServiceException extends FDException {
 
 	/**

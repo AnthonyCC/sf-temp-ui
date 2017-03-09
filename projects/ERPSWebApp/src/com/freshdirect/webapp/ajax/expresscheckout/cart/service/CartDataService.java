@@ -341,7 +341,7 @@ public class CartDataService {
         CartData.Item item = populateCartDataItemByCartLine(user, cartLine, cart, recentIds);
         populateCartDataItemWithUnitPriceAndQuantity(item, fdProduct, productNode.getPriceCalculator());
         item.setMealBundle(isMealBundle(productNode));
-        item.setImage(productNode.getProdImage().getPathWithPublishId());
+    	item.setImage((productNode.getProdImage() == null) ? "" : productNode.getProdImage().getPathWithPublishId()); //APPDEV-6014
         item.setProductId(productNode.getContentKey().getId());
         item.setCategoryId(productNode.getCategory().getContentKey().getId());
 
@@ -558,7 +558,7 @@ public class CartDataService {
                     cartData.setUserCorporate(true);
 
                 }
-                cartData.setGoGreen(GoGreenService.defaultService().loadGoGreenOption(user));
+                cartData.setGoGreen(("Y".equalsIgnoreCase(GoGreenService.defaultService().loadGoGreenOption(user)))?true:false);
             }
             cartData.setBillingReferenceInfo(populateBillingReferenceInfo(session, user));
             checkCartCleanUpAction(request, cartData);

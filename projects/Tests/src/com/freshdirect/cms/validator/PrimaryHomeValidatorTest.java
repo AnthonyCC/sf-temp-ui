@@ -2,6 +2,7 @@ package com.freshdirect.cms.validator;
 
 import java.io.ObjectStreamException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -21,8 +22,10 @@ import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.context.ContextService;
 import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.cms.fdstore.PrimaryHomeValidator;
+import com.freshdirect.cms.search.ContentIndex;
+import com.freshdirect.cms.search.SearchTestUtils;
 import com.freshdirect.cms.validation.ContentValidationDelegate;
+import com.freshdirect.cms.validation.PrimaryHomeValidator;
 
 import junit.framework.TestCase;
 
@@ -39,7 +42,8 @@ public class PrimaryHomeValidatorTest extends TestCase {
 	CmsManager mgr;
 
 	
-	protected void setUp() throws Exception {
+	@Override
+    protected void setUp() throws Exception {
 		/****
 		FDRegistry.setDefaultRegistry("classpath:/com/freshdirect/PrimaryHomeValidatorTestConfig.registry");
 		// The addConfiguration() call has the side-effect that FDRegistry.getInstance()
@@ -65,7 +69,7 @@ public class PrimaryHomeValidatorTest extends TestCase {
 		this.contextService = new ContextService(this.contentService);
 
 
-		CmsManager.setInstance(new CmsManager(contentService, null));
+		CmsManager.setInstance(new CmsManager(contentService, SearchTestUtils.createSearchService(new ArrayList<ContentIndex>(), SearchTestUtils.createTempDir(this.getClass().getCanonicalName(), (new Date()).toString()))));
 		this.mgr = CmsManager.getInstance();
 		
     	delegate = null /* new ContentValidationDelegate() */;

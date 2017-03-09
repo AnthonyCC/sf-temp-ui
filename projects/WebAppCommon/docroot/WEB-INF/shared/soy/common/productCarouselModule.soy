@@ -5,18 +5,20 @@
  * @param data
  */
 {template .productCarouselModule}
-<div class="content-module product-carousel" id="{$moduleData.moduleInstanceId}">
-	{call common.moduleHeader}
-		{param content: $moduleData /}
-	{/call}
-	<div class="content {if $moduleData.hideProductBadge} hide-burst {/if}">
-		{call common.contentHeader}
-			{param content: $moduleData /}
-		{/call}
-    {if $data.products and length($data.products) > 3}
+{if $data.products and length($data.products) > 3}
+  <div class="content-module product-carousel" id="{$moduleData.moduleId}">
+  	{call common.moduleHeader}
+  		{param content: $moduleData /}
+  	{/call}
+  	<div class="content {if $moduleData.hideProductBadge} hide-burst {/if}">
+  		{call common.contentHeader}
+  			{param content: $moduleData /}
+  		{/call}
   		{call common.simpleCarousel}
   			{param items: $data.products /}
   			{param showViewAllButton: $moduleData.showViewAllButton /}
+  			{param useViewAllPopup: $moduleData.useViewAllPopup /}
+  			{param moduleId: $moduleData.moduleId /}
   			{param viewAllLink: $moduleData.viewAllButtonLink /}
         {param cmEventSource: $moduleData.cmEventSource /}
   			{param accessibilityText}
@@ -28,7 +30,7 @@
   			{/param}
   			{param itemType:'grid' /}
   		{/call}
-    {/if}
-	</div>
-</div>
+  	</div>
+  </div>
+{/if}
 {/template}

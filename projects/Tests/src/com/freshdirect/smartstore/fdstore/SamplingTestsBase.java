@@ -2,6 +2,7 @@ package com.freshdirect.smartstore.fdstore;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,8 @@ import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.search.ContentIndex;
+import com.freshdirect.cms.search.SearchTestUtils;
 import com.freshdirect.smartstore.ConfigurationStatus;
 import com.freshdirect.smartstore.RecommendationServiceConfig;
 import com.freshdirect.smartstore.RecommendationServiceType;
@@ -107,7 +110,9 @@ public class SamplingTestsBase extends TestCase {
 
         XmlContentService service = new XmlContentService(typeService, new FlexContentHandler(), "classpath:/com/freshdirect/smartstore/SamplingTest.xml");
 
-        CmsManager.setInstance(new CmsManager(service, null));
+        CmsManager.setInstance(new CmsManager(service,
+                SearchTestUtils.createSearchService(new ArrayList<ContentIndex>(), SearchTestUtils.createTempDir(this.getClass().getCanonicalName(), (new Date()).toString()))));
+
 
 		candidates.clear();
 		for (ContentKey key : scoreMap.keySet()) {

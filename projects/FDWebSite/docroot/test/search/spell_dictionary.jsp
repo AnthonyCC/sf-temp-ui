@@ -1,10 +1,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@page import="com.freshdirect.cms.search.LuceneSearchService"%>
 <%@ page language="java" contentType="text/html; charset=iso-8859-1" pageEncoding="iso-8859-1"%>
 
 <%@page import="org.apache.hivemind.Registry"%>
 <%@page import="com.freshdirect.framework.conf.FDRegistry"%>
 <%@page import="com.freshdirect.cms.search.ContentSearchServiceI"%>
+<%@page import="com.freshdirect.cms.search.configuration.SearchServiceConfiguration"%>
+<%@page import="com.freshdirect.cms.index.FullIndexerService"%>
 <%@page import="org.apache.lucene.index.IndexReader"%>
+<%@page import="org.apache.lucene.store.FSDirectory"%>
+<%@page import="org.apache.lucene.search.IndexSearcher"%>
+<%@page import="java.io.File"%>
+<%@page import="com.freshdirect.cms.search.configuration.SearchServiceConfiguration"%>
 <%@page import="org.apache.lucene.index.Term"%>
 <%@page import="org.apache.lucene.index.TermPositions"%>
 <%@page import="org.apache.lucene.document.Document"%>
@@ -31,8 +38,10 @@
 			<tbody>
 				<%
 					Registry registry = FDRegistry.getInstance();
-					ContentSearchServiceI search = (ContentSearchServiceI) registry.getService(ContentSearchServiceI.class);
-					IndexReader reader = search.getReader();
+			        FullIndexerService indexer = FullIndexerService.getInstance();
+					String indexDirectoryPath = SearchServiceConfiguration.getInstance().getCmsIndexLocation();
+                    FSDirectory indexDirectory = FSDirectory.open(new File(indexDirectoryPath));
+                    IndexReader reader = IndexReader.open(indexDirectory, false);
 					TermEnum terms = reader.terms(new Term("spelling_term"));
 					while (terms.next()) {
 						Term term = terms.term();
@@ -53,6 +62,8 @@
 						pos.close();
 					}
 					terms.close();
+					reader.close();
+                    indexDirectory.close();
 				%>
 			</tbody>
 		</table>

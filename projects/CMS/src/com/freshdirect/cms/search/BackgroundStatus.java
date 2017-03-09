@@ -69,13 +69,13 @@ public class BackgroundStatus implements Cloneable {
         this.current = message;
     }
 
-    public void notifiyFinished() {
+    public void notifyFinished() {
         setElapsedTime(System.currentTimeMillis() - getStarted());
         LOG.info("finished in :"+(getElapsedTime()/1000)+" sec");
         setRunning(false);
     }
 
-    public void notifiyError(Throwable e) {
+    public void notifyError(Throwable e) {
         setRunning(false);
         setElapsedTime(System.currentTimeMillis() - getStarted());
         this.current = "failure: " + e.getMessage();

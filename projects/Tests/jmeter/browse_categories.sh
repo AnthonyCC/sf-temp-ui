@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 #
 # @author istvan
@@ -30,7 +30,7 @@ checkvars "s n r d w j x X";
 CSVFILE="$WORKDIR"/"browse_categories_""$SEED"".csv";
 
 # -- retrieve products
-sh -e "$LOCALDIR"/fd_browsecats.sh -s "$SERVER" -n "$MAXKEYS" -o "$CSVFILE" -r "$SEED" -x "$DISTRO" -X "$DISTRO_SAMPLES";
+bash -e "$LOCALDIR"/fd_browsecats.sh -s "$SERVER" -n "$MAXKEYS" -o "$CSVFILE" -r "$SEED" -x "$DISTRO" -X "$DISTRO_SAMPLES";
 
 HOST=`echo "$SERVER" | cut -f1 -d:`;
 PORT=`echo "$SERVER" | cut -f2 -d:`;
@@ -43,7 +43,7 @@ RESULTFILE="$WORKDIR"/browsecategories.out;
 rm -f "$RESULTFILE";
 
 # -- run test
-sh -e "$LOCALDIR"/jmeter.sh -jar "$JMETERJAR" \
+bash -e "$LOCALDIR"/jmeter.sh -jar "$JMETERJAR" \
       -Jhostname="$HOST" -Jport="$PORT" \
       -Jbrowser_threads="$BROWSER_THREADS" -Jn="$LOOP_COUNTER" \
       -Jtest_user="$TESTUSER" -Juser_pass="$USERPASS" \

@@ -22,6 +22,8 @@ import com.freshdirect.dataloader.sap.ejb.SAPZoneInfoLoaderSB;
 import com.freshdirect.dataloader.sap.jco.server.FDSapFunctionHandler;
 import com.freshdirect.dataloader.sap.jco.server.FdSapServer;
 import com.freshdirect.dataloader.util.FDSapHelperUtils;
+import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
 import com.sap.conn.jco.JCoFunction;
@@ -151,7 +153,11 @@ public class FDPricingZoneJcoServer extends FdSapServer
 
 					if(zoneInfos.size() > 0) 
 					{
-						storeZoneInfo(zoneInfos);
+						if(FDStoreProperties.isStorefront2_0Enabled()){
+							LogisticsServiceLocator.getInstance().getCommerceService().savePricingZoneData(zoneInfos);
+						}else{
+							storeZoneInfo(zoneInfos);
+						}
 					}
 									
 					exportParamList.setValue("RETURN", "S");

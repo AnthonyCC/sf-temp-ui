@@ -501,7 +501,7 @@ public class OrderController extends BaseController {
 	        for (FilteringSortingItem<QuickShopLineItemWrapper> wrapper : items) {
 	        	QuickShopLineItem line = wrapper.getNode().getItem();
 	        	final ProductModel productModel = ContentFactory.getInstance().getProductByName(line.getCatId(), line.getProductId());
-	        	if(productModel != null && !productModel.isUnavailable()) {
+	        	if(productModel != null) {
 	                ProductConfiguration configuration = new ProductConfiguration();
 	                configuration.populateProductWithModel(Product.wrap(productModel, fdUser), line.getSkuCode());
 	                productsWithSkus.add(configuration);

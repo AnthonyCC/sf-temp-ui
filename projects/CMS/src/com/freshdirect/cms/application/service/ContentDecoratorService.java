@@ -3,10 +3,13 @@
  */
 package com.freshdirect.cms.application.service;
 
+import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
@@ -17,6 +20,7 @@ import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.node.ChangedContentNode;
 import com.freshdirect.cms.node.NodeWrapperI;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
  * Proxy content service that invokes a series of content decorators on retrieved nodes.
@@ -27,6 +31,8 @@ import com.freshdirect.cms.node.NodeWrapperI;
  * @see com.freshdirect.cms.application.service.ContentDecoratorI
  */
 public class ContentDecoratorService extends ProxyContentService {
+
+    private static final Logger LOGGER = LoggerFactory.getInstance(ContentDecoratorService.class);
 
     private final ContentDecoratorI[] decorators;
 
@@ -63,6 +69,8 @@ public class ContentDecoratorService extends ProxyContentService {
 
     @Override
     public CmsResponseI handle(CmsRequestI request) {
+        LOGGER.debug(MessageFormat.format("Starting service handles {0} request", request));
+
         // FIXME node wrapping is a bit of a hack
         // it's to fulfill the contract "you handle what you produced"
         CmsRequest r = new CmsRequest(request.getUser(), request.getSource(), request.getDraftContext(), request.getRunMode());
@@ -83,6 +91,9 @@ public class ContentDecoratorService extends ProxyContentService {
                 r.addNode(node);
             }
         }
+        CmsResponseI response = super.handle(r);
+
+        LOGGER.debug(MessageFormat.format("Ending service return {0} response", response));
         return super.handle(r);
     }
 

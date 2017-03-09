@@ -20,17 +20,13 @@ package com.freshdirect.cms.search.spell;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
-import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
@@ -38,6 +34,8 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.store.AlreadyClosedException;
 import org.apache.lucene.store.Directory;
+
+import com.freshdirect.cms.index.IndexingConstants;
 
 /**
  * <p>
@@ -61,15 +59,6 @@ import org.apache.lucene.store.Directory;
  * @version 1.0
  */
 public class SpellChecker implements java.io.Closeable {
-
-	/**
-	 * Field name for each word in the ngram index.
-	 */
-	public static final String F_SEARCH_TERM = "search_term";
-	public static final String F_SPELLING_TERM = "spelling_term";
-	public static final String F_IS_SYNONYM = "is_synonym";
-
-	private static final Term F_WORD_TERM = new Term(F_SPELLING_TERM);
 
 	/**
 	 * the spell index
@@ -141,6 +130,7 @@ public class SpellChecker implements java.io.Closeable {
 	 *             if spellchecker can not open the directory
 	 */
 	// TODO: we should make this final as it is called in the constructor
+	// TODO: is it really necessary to create an empty index?
 	public void setSpellIndex(Directory spellIndexDir) throws IOException {
 		// this could be the same directory as the current spellIndex
 		// modifications to the directory should be synchronized
@@ -274,12 +264,12 @@ public class SpellChecker implements java.io.Closeable {
 			for (int i = 0; i < stop; i++) {
 
 				Document doc = indexSearcher.doc(hits[i].doc);
-				sugWord.searchTerm = doc.get(F_SEARCH_TERM);
-				sugWord.spellingTerm = doc.get(F_SPELLING_TERM);
+				sugWord.searchTerm = doc.get(IndexingConstants.F_SEARCH_TERM);
+				sugWord.spellingTerm = doc.get(IndexingConstants.F_SPELLING_TERM);
 				
 				// edit distance
 				sugWord.distance = sd.getDistance(phrase, sugWord.searchTerm);
-				if (doc.get(F_IS_SYNONYM) != null)
+				if (doc.get(IndexingConstants.F_IS_SYNONYM) != null)
 					sugWord.distance++; // we say that this is a good candidate but we add a penalty point
 
 				sugQueue.insertWithOverflow(sugWord);
@@ -339,23 +329,6 @@ public class SpellChecker implements java.io.Closeable {
 	}
 
 	/**
-	 * Removes all terms from the spell check index.
-	 * 
-	 * @throws IOException
-	 * @throws AlreadyClosedException
-	 *             if the Spellchecker is already closed
-	 */
-	public void clearIndex() throws IOException {
-		synchronized (modifyCurrentIndexLock) {
-			ensureOpen();
-			final Directory dir = this.spellIndex;
-			final IndexWriter writer = new IndexWriter(dir, null, true, IndexWriter.MaxFieldLength.UNLIMITED);
-			writer.close();
-			swapSearcher(dir);
-		}
-	}
-
-	/**
 	 * Check whether the word exists in the index.
 	 * 
 	 * @param word
@@ -368,122 +341,9 @@ public class SpellChecker implements java.io.Closeable {
 		// obtainSearcher calls ensureOpen
 		final IndexSearcher indexSearcher = obtainSearcher();
 		try {
-			return indexSearcher.docFreq(F_WORD_TERM.createTerm(word)) > 0;
+			return indexSearcher.docFreq(IndexingConstants.F_WORD_TERM.createTerm(word)) > 0;
 		} finally {
 			releaseSearcher(indexSearcher);
-		}
-	}
-
-	/**
-	 * Indexes the data from the given {@link Dictionary}.
-	 * 
-	 * @param dict
-	 *            Dictionary to index
-	 * @param mergeFactor
-	 *            mergeFactor to use when indexing
-	 * @param ramMB
-	 *            the max amount or memory in MB to use
-	 * @throws AlreadyClosedException
-	 *             if the Spellchecker is already closed
-	 * @throws IOException
-	 */
-	public void indexDictionary(Dictionary dict, int mergeFactor, int ramMB) throws IOException {
-		synchronized (modifyCurrentIndexLock) {
-			ensureOpen();
-			final Directory dir = this.spellIndex;
-			final IndexWriter writer = new IndexWriter(dir, new WhitespaceAnalyzer(), IndexWriter.MaxFieldLength.UNLIMITED);
-			writer.setMergeFactor(mergeFactor);
-			writer.setRAMBufferSizeMB(ramMB);
-
-			Iterator<DictionaryItem> iter = dict.getWordsIterator();
-			while (iter.hasNext()) {
-				DictionaryItem item = iter.next();
-				String searchTerm = item.getSearchTerm();
-				String spellingTerm = item.getSpellingTerm();
-				boolean synonym = item.isSynonym();
-
-				int len = searchTerm.length();
-
-				BooleanQuery deleteQuery = new BooleanQuery();
-				deleteQuery.add(new TermQuery(F_WORD_TERM.createTerm(spellingTerm)), Occur.MUST);
-				deleteQuery.add(new TermQuery(new Term(F_SEARCH_TERM, searchTerm)), Occur.MUST);
-				writer.deleteDocuments(deleteQuery);
-
-				// ok index the word
-				Document doc = createDocument(searchTerm, spellingTerm, synonym, getMin(len), getMax(len));
-				writer.addDocument(doc);
-			}
-			// close writer
-			writer.optimize();
-			writer.close();
-			// also re-open the spell index to see our own changes when the next suggestion
-			// is fetched:
-			swapSearcher(dir);
-		}
-	}
-
-	/**
-	 * Indexes the data from the given {@link Dictionary}.
-	 * 
-	 * @param dict
-	 *            the dictionary to index
-	 * @throws IOException
-	 */
-	public void indexDictionary(Dictionary dict) throws IOException {
-		indexDictionary(dict, 300, 10);
-	}
-
-	protected int getMin(int l) {
-		if (l > 7) {
-			return 3;
-		}
-		if (l > 5) {
-			return 2;
-		}
-		if (l == 5) {
-			return 1;
-		}
-		return 1;
-	}
-
-	protected int getMax(int l) {
-		if (l > 5) {
-			return 4;
-		}
-		if (l == 5) {
-			return 3;
-		}
-		return Math.min(2, l);
-	}
-
-	private static Document createDocument(String searchTerm, String spellingTerm, boolean synonym, int ng1, int ng2) {
-		Document doc = new Document();
-		doc.add(new Field(F_SEARCH_TERM, searchTerm, Field.Store.YES, Field.Index.NOT_ANALYZED)); // term which is searched
-		doc.add(new Field(F_SPELLING_TERM, spellingTerm, Field.Store.YES, Field.Index.NOT_ANALYZED)); // term which is correctly spelled
-		if (synonym)
-			doc.add(new Field(F_IS_SYNONYM, "true", Field.Store.YES, Field.Index.NOT_ANALYZED)); // if the current term is a synonym
-		addGram(searchTerm, doc, ng1, ng2);
-		if (searchTerm.length() == 1)
-			doc.add(new Field("single", searchTerm, Field.Store.NO, Field.Index.NOT_ANALYZED));
-		return doc;
-	}
-
-	private static void addGram(String text, Document doc, int ng1, int ng2) {
-		int len = text.length();
-		for (int ng = ng1; ng <= ng2; ng++) {
-			String key = "gram" + ng;
-			String end = null;
-			for (int i = 0; i < len - ng + 1; i++) {
-				String gram = text.substring(i, i + ng);
-				doc.add(new Field(key, gram, Field.Store.NO, Field.Index.NOT_ANALYZED));
-				if (i == 0) {
-					doc.add(new Field("start" + ng, gram, Field.Store.NO, Field.Index.NOT_ANALYZED));
-				}
-				end = gram;
-			}
-			if (end != null) { // may not be present if len==ng1
-				doc.add(new Field("end" + ng, end, Field.Store.NO, Field.Index.NOT_ANALYZED));
-			}
 		}
 	}
 
@@ -565,8 +425,30 @@ public class SpellChecker implements java.io.Closeable {
 	 * 
 	 * @return <code>true</code> if and only if the {@link SpellChecker} is closed, otherwise <code>false</code>.
 	 */
-	boolean isClosed() {
+	public boolean isClosed() {
 		return closed;
 	}
+	
+	protected int getMin(int l) {
+		if (l > 7) {
+			return 3;
+		}
+		if (l > 5) {
+			return 2;
+		}
+		if (l == 5) {
+			return 1;
+		}
+		return 1;
+	}
 
+	protected int getMax(int l) {
+		if (l > 5) {
+			return 4;
+		}
+		if (l == 5) {
+			return 3;
+		}
+		return Math.min(2, l);
+	}
 }

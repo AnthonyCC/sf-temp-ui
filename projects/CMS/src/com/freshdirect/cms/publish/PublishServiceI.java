@@ -23,22 +23,22 @@ public interface PublishServiceI {
 
 	/**
 	 * Get all publishes.
-	 * 
+	 *
 	 * @return List of {@link Publish}
 	 */
 	public List<Publish> getPublishHistory();
-	
-	
+
+
 	/**
 	 * Get all publishes.
-	 * 
+	 *
 	 * @return List of {@link Publish}
 	 */
 	public List<Publish> getPublishHistoryByType(String type);
 
 	/**
 	 * Get information about a specific publish.
-	 * 
+	 *
 	 * @param id the id of the publish.
 	 * @return Publish, or null if not found
 	 */
@@ -46,38 +46,55 @@ public interface PublishServiceI {
 
 	/**
 	 * Get information about the last publish, which is finished.
-	 * 
+	 *
 	 * @return Publish, or null if there was no publish yet
 	 */
 	public Publish getMostRecentPublish();
-	
-	
+
+
     /**
      *  Return the most recent Publish object, probably this is work in progress.
-     * 
+     *
      *  @return the most recent Publish object.
      */
     public Publish getMostRecentNotCompletedPublish();
-	
+
 
 	/**
 	 * Get a publish made before a specified publish.
-	 * 
+	 *
 	 * @param publish get the publish that was made before this one.
 	 * @return the publish made before the supplied publish object,
 	 *         or null if there is no previous publish.
 	 */
 	public Publish getPreviousPublish(Publish publish);
 	
+   /**
+     * Get a feed publish made before a specified publish.
+     *
+     * @param publish get the feed publish that was made before this one.
+     * @return the feed publish made before the supplied publish object,
+     *         or null if there is no previous publish.
+     */
+    public Publish getPreviousFeedPublish(Publish publish);
+
 	/**
 	 * Initiate the publish process (asynchronous).
-	 * 
+	 *
 	 * @param publish contextual info about the publish
 	 * @return ID assigned to the current publish
 	 * @throws ConcurrentPublishException if there's a publish already in progress
 	 */
 	public String doPublish(Publish publish) throws ConcurrentPublishException;
 
+	/**
+	 * Execute feed publish
+	 *
+	 * @param publish contextual info about the publish
+     * @return ID assigned to the current publish
+     * @throws ConcurrentPublishException if there's a publish already in progress
+	 */
+    public String doFeedPublish(Publish publish) throws ConcurrentPublishException;
 
 	public PublishX getMostRecentNotCompletedPublishX();
 

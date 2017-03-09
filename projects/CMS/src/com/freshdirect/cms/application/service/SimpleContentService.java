@@ -1,5 +1,6 @@
 package com.freshdirect.cms.application.service;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,7 +40,16 @@ public class SimpleContentService extends AbstractContentService implements Cont
 		this.typeService = typeService;
 	}
 
-	@Override
+    public SimpleContentService(ContentTypeServiceI typeService, Collection<ContentNodeI> nodes) {
+        this.typeService = typeService;
+        
+        for (ContentNodeI node : nodes) {
+            nodesByKey.put(node.getKey(), node);
+        }
+        buildNodeIndex();
+    }
+
+    @Override
 	public ContentTypeServiceI getTypeService() {
 		return typeService;
 	}
@@ -88,7 +98,7 @@ public class SimpleContentService extends AbstractContentService implements Cont
 		if (!getTypeService().getContentTypes().contains(key.getType())) {
 			return null;
 		}
-		return new ContentNode(this, key);
+		return new ContentNode(this, draftContext, key);
 	}
 
 	@Override

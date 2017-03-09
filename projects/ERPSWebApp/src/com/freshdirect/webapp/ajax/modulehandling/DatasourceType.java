@@ -12,7 +12,8 @@ public enum DatasourceType {
     TOP_ITEMS("TOP_ITEMS"),
     PRES_PICKS("PRES_PICKS"),
     FEATURED_RECOMMENDER("FEATURED_RECOMMENDER"),
-    MOST_POPULAR_PRODUCTS("MOST_POPULAR_PRODUCTS");
+    MOST_POPULAR_PRODUCTS("MOST_POPULAR_PRODUCTS"),
+    BRAND_FEATURED_PRODUCTS("BRAND_FEATURED_PRODUCTS");
 
     private static final Logger LOGGER = LoggerFactory.getInstance(DatasourceType.class);
 
@@ -38,5 +39,9 @@ public enum DatasourceType {
         }
         LOGGER.warn(MessageFormat.format("No datasource exists with value[{0}] in the DatasourceType Enum", datasourceValue));
         return null;
+    }
+
+    public static DatasourceType convertAttributeValueToDatasourceType(String datasourceTypeAttributeValue) {
+        return DatasourceType.forValue(datasourceTypeAttributeValue);
     }
 }

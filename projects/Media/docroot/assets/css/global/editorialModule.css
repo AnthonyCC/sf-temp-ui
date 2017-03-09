@@ -1,90 +1,121 @@
-.contentModules .content-module.editorial-module.product-carousel .editorial-content,
-.contentModules .content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header {
+.content-module.editorial-module.product-carousel .editorial-content {
+  position: relative;
+  text-align: left;
+}
+
+.content-module.editorial-module.product-carousel .editorial-content .left-side,
+.content-module.editorial-module.product-carousel .editorial-content .right-side {
+  width: 480px;
+}
+.content-module.editorial-module.product-carousel .editorial-content .right-side {
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  left: 50%;
+  margin-left: 5px;
+}
+
+.content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header {
   display: flex;
   max-width: 100%;
-  max-height: 480px;
 }
 
-.contentModules .content-module.editorial-module.product-carousel .editorial-content .left-side {
-  min-height: 480px;
-  min-width: 480px;
-  max-height: 480px;
-  max-width: 480px;
-}
 
-.contentModules .content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-body {
+.content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-body {
   overflow-y: auto;
 }
 
-.contentModules .content-module.editorial-module.product-carousel .editorial-content .right-side,
-.contentModules .content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header .header-title {
+.content-module.editorial-module.product-carousel .editorial-content .right-side,
+.content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header .header-title {
   display: flex;
   flex-direction: column;
 }
 
-.contentModules .content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header .header-title {
+.content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header {
+  min-height: 82px;
+}
+
+.content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header .header-title {
   justify-content: center;
 }
 
-.contentModules .content-module.editorial-module.product-carousel .editorial-content .left-side,
-.contentModules .content-module.editorial-module.product-carousel .editorial-content .right-side .header-graphic,
-.contentModules .content-module.editorial-module.product-carousel .editorial-content .right-side .header-title h1,
-.contentModules .content-module.editorial-module.product-carousel .editorial-content .right-side .header-title h2,
-.contentModules .content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-body {
+.content-module.editorial-module.product-carousel .editorial-content .left-side,
+.content-module.editorial-module.product-carousel .editorial-content .right-side .header-graphic,
+.content-module.editorial-module.product-carousel .editorial-content .right-side .header-title h1,
+.content-module.editorial-module.product-carousel .editorial-content .right-side .header-title h2,
+.content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-body {
   word-wrap: break-word;
 }
 
-.contentModules .content-module.editorial-module.product-carousel .editorial-content .left-side,
-.contentModules .content-module.editorial-module.product-carousel .editorial-content .right-side .header-graphic {
+.content-module.editorial-module.product-carousel .editorial-content .left-side,
+.content-module.editorial-module.product-carousel .editorial-content .right-side .header-graphic {
   margin-right: 10px;
 }
 
-.contentModules .content-module.editorial-module.product-carousel .editorial-content .right-side .header-graphic {
+.content-module.editorial-module.product-carousel .editorial-content .right-side .header-graphic {
   height: 82px;
   width: 82px;
+  display: flex;
+  align-items: center;
 }
 
-.contentModules .content-module.editorial-module.product-carousel .editorial-content .right-side .header-title {
+.content-module.editorial-module.product-carousel .editorial-content .right-side .header-graphic img {
+  max-height: 82px;
+  max-width: 82px;
+}
+
+.content-module.editorial-module.product-carousel .editorial-content .right-side .header-title {
   text-align: left;
 }
 
-.contentModules .content-module.editorial-module.product-carousel .editorial-content .right-side .header-title h2 {
+.content-module.editorial-module.product-carousel .editorial-content .right-side .header-title h2 {
   font-size: 11px;
   margin: 0;
 }
 
-.contentModules .content-module.editorial-module.product-carousel .editorial-content .left-side > img {
+.content-module.editorial-module.product-carousel .editorial-content .left-side > img {
   height: 100%;
-  object-fit: cover;
+  object-fit: scale-down;
   overflow: hidden;
   width: 100%;
 }
 
-.contentModules .content-module.editorial-module.product-carousel .editorial-content .left-side > div {
+.content-module.editorial-module.product-carousel .editorial-content .hero-image-description {
   background-color: rgba(0,0,0,.7);
-  bottom: 80px;
+  bottom: 0;
   box-sizing: border-box;
   padding: 15px;
-  position: relative;
+  position: absolute;;
   text-align: left;
   max-height: 80px;
   min-height: 80px;
+  width: 480px;
 }
 
-.contentModules .content-module.editorial-module.product-carousel .editorial-content .left-side > div > h1,
-.contentModules .content-module.editorial-module.product-carousel .editorial-content .left-side > div > h2 {
+.content-module.editorial-module.product-carousel .editorial-content .hero-image-description > h1,
+.content-module.editorial-module.product-carousel .editorial-content .hero-image-description > h2 {
   color: white;
 }
 
-.contentModules .content-module.editorial-module.product-carousel .editorial-content .left-side > div > h2 {
+.content-module.editorial-module.product-carousel .editorial-content .hero-image-description > h2 {
   font-size: 17px;
+  font-family: 'Brandon Text';
+  font-weight: 500;
   margin: 0;
 }
 
-.contentModules .content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header {
+.content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header {
   margin-bottom: 10px;
 }
 
-.contentModules .content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header .header-title h1 {
+.content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header .header-title h1 {
   font-size: 25px;
+  font-family: 'Brandon Text';
+  font-weight: 500;
+}
+
+#viewallPopup .content-module.editorial-module.product-carousel .editorial-content .left-side,
+#viewallPopup .content-module.editorial-module.product-carousel .editorial-content .right-side,
+#viewallPopup .content-module.editorial-module.product-carousel .editorial-content .hero-image-description {
+  width: 50%;
 }

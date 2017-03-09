@@ -220,7 +220,6 @@ public class FDStandingOrdersManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	};
-
 	
 	public FDOrderInfoI getLastOrder(FDUserI user, FDStandingOrder so) throws FDResourceException {
 		FDOrderHistory h = (FDOrderHistory) user.getOrderHistory();
@@ -470,7 +469,7 @@ public class FDStandingOrdersManager {
 			throw e;
 		}
 	}
-
+	
 	private void logActivity(ErpActivityRecord record) throws FDResourceException {
 		lookupManagerHome();
 		try {

@@ -138,10 +138,10 @@
 						<td colspan="2"><input class="radio" type="checkbox" name="partner_nessages" value="Y" <%=customerInfo.getPartnerMessages().equals(EnumSMSAlertStatus.NONE.value()) ? "" : "checked"%>/>&nbsp;Partner Messages</td>
 					</tr> --%>
 					<tr>
-                        <td colspan="2"><br><b>Go Green:</b><hr class="black1px"></td>
+                        <td colspan="2" hidden="true"><br><b>Go Green:</b><hr class="black1px"></td>
                     </tr>
 					<tr valign="top">
-						<td colspan="2"><input class="radio" type="checkbox" name="go_green" value="Y" <%=customerInfo.isGoGreen() ? "checked":""%>>I want to turn off paper statement delivery and receive my statements online.
+						<td colspan="2" hidden="true"><input class="radio" type="checkbox" name="go_green" value="Y" <%=customerInfo.isGoGreen() ? "checked":""%>>I want to turn off paper statement delivery and receive my statements online.
 						</td>
 					</tr>
                 </table><br>

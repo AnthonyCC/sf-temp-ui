@@ -358,7 +358,8 @@ public class SinglePageCheckoutFacade {
         result.setSuccessPageData(loadSuccessPageData(order, requestURI, user));
         result.setTextMessageAlertData(loadTextMessageAlertData(user));
         result.setSemPixelData(SemPixelService.defaultService().populateSemPixelMediaInfo(user, session, order));
-        result.setGoGreenShow(GoGreenService.defaultService().overLayGoGreenPreferences(user));
+       
+        result.setGoGreenShow("I".equalsIgnoreCase(GoGreenService.defaultService().loadGoGreenOption(user))?true:false);
         return result;
     }
 

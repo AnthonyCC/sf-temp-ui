@@ -11,7 +11,8 @@ public class ContentIndex implements Serializable {
 
 	private String contentType;
 
-	public ContentIndex() {
+	public ContentIndex(String contentType) {
+		this.contentType = contentType;
 	}
 
 	public String getContentType() {

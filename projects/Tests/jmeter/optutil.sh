@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 #  Options utility for FD performance test scripts.
 #  
@@ -164,7 +164,7 @@ function runprogs() {
    PROGS="$1";
    checkvars "s d w j";
    for program in $PROGS; do
-      sh -e $program -d "$OUTDIR" -s "$SERVER" -w "$WORKDIR" -j "$JMETERJAR";
+      bash -e $program -d "$OUTDIR" -s "$SERVER" -w "$WORKDIR" -j "$JMETERJAR";
    done
 }
 

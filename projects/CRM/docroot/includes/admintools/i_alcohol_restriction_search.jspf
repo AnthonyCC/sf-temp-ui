@@ -81,6 +81,45 @@
 		}
 	}
 %>
+<%
+	List dcCounties = stateCounties.get("DC");
+	if(dcCounties != null && dcCounties.size() > 0) {
+	%>
+		dcCounties = new Array(<%= dcCounties.size() %>);
+	<%
+		for(int i = 0; i< dcCounties.size();i++) {
+	%>
+		dcCounties[<%=i %>] = '<%= dcCounties.get(i) %>';
+	<%
+		}
+	}
+%>
+<%
+	List mdCounties = stateCounties.get("MD");
+	if(mdCounties != null && mdCounties.size() > 0) {
+	%>
+		mdCounties = new Array(<%= mdCounties.size() %>);
+	<%
+		for(int i = 0; i< mdCounties.size();i++) {
+	%>
+		mdCounties[<%=i %>] = '<%= mdCounties.get(i) %>';
+	<%
+		}
+	}
+%>
+	<%
+	List vaCounties = stateCounties.get("VA");
+	if(vaCounties != null && vaCounties.size() > 0) {
+	%>
+		vaCounties = new Array(<%= vaCounties.size() %>);
+	<%
+		for(int i = 0; i< vaCounties.size();i++) {
+	%>
+		vaCounties[<%=i %>] = '<%= vaCounties.get(i) %>';
+	<%
+		}
+	}
+%>
 function getCounties(state) {
 	if(document.forms[0].county.options == undefined)
 		return;
@@ -135,6 +174,36 @@ function getCounties(state) {
 				document.forms[0].county.options[document.forms[0].county.options.length]= new Option(deCounties[i],deCounties[i],false,false);
 		}
 	}
+	if(state == 'DC') {
+		document.forms[0].county.options.length=1;
+		for(var i=0;i<dcCounties.length;i++)
+		{
+			if(dcCounties[i] == '<%= county %>')
+				document.forms[0].county.options[document.forms[0].county.options.length]= new Option(dcCounties[i],dcCounties[i],true,true);
+			else
+				document.forms[0].county.options[document.forms[0].county.options.length]= new Option(dcCounties[i],dcCounties[i],false,false);
+		}
+	}
+	if(state == 'MD') {
+		document.forms[0].county.options.length=1;
+		for(var i=0;i<mdCounties.length;i++)
+		{
+			if(mdCounties[i] == '<%= county %>')
+				document.forms[0].county.options[document.forms[0].county.options.length]= new Option(mdCounties[i],dcCounties[i],true,true);
+			else
+				document.forms[0].county.options[document.forms[0].county.options.length]= new Option(mdCounties[i],dcCounties[i],false,false);
+		}
+	}
+	if(state == 'VA') {
+		document.forms[0].county.options.length=1;
+		for(var i=0;i<vaCounties.length;i++)
+		{
+			if(mdCounties[i] == '<%= county %>')
+				document.forms[0].county.options[document.forms[0].county.options.length]= new Option(vaCounties[i],dcCounties[i],true,true);
+			else
+				document.forms[0].county.options[document.forms[0].county.options.length]= new Option(vaCounties[i],dcCounties[i],false,false);
+		}
+	}
 }
 
 </script>
@@ -156,6 +225,9 @@ function getCounties(state) {
 					<option value="CT" <%= state.equals("CT") ? "SELECTED" : "" %>>CT</option>
 					<option value="PA" <%= state.equals("PA") ? "SELECTED" : "" %>>PA</option>
 					<option value="DE" <%= state.equals("DE") ? "SELECTED" : "" %>>DE</option>
+					<option value="DC" <%= state.equals("DC") ? "SELECTED" : "" %>>DC</option>
+					<option value="MD" <%= state.equals("MD") ? "SELECTED" : "" %>>MD</option>
+					<option value="VA" <%= state.equals("VA") ? "SELECTED" : "" %>>VA</option>
 				</select>
 		 	</td>
 		 <% } %>

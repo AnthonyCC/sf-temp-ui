@@ -57,4 +57,6 @@ public interface ContentServiceAsync {
     void getGoogleMapsApiKey(AsyncCallback<String> callback);
     
     void getPreviewUrl(String nodeKey, String storeId, AsyncCallback<String> callback);
+
+    void getLastPublishStatus(AsyncCallback<String> callback);
 }

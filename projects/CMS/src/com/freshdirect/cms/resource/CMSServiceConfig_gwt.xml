@@ -11,7 +11,6 @@ Symbols:
 -->
 <module id="com.freshdirect.cms" version="1.0.0">
 
-	<sub-module descriptor="hivemodule_search.xml"/>
 	<sub-module descriptor="hivemodule_publish.xml"/>
 
 	<!--
@@ -321,25 +320,10 @@ because otherwise the external modifications of the slide database won't get pic
 		VALIDATION
 	-->
 	
-	<configuration-point id="contentValidators" schema-id="objectList"/>
-	<contribution configuration-id="contentValidators">
-		<Object value="instance:com.freshdirect.cms.validation.BasicValidator"/>
-		<Object value="instance:com.freshdirect.cms.fdstore.PrimaryHomeValidator"/>
-		<Object value="instance:com.freshdirect.cms.fdstore.StructureValidator"/>
-		<Object value="instance:com.freshdirect.cms.fdstore.UniqueContentKeyValidator"/>
-		<Object value="instance:com.freshdirect.cms.fdstore.RecipeChildNodeValidator"/>
-		<Object value="instance:com.freshdirect.cms.fdstore.ConfiguredProductValidator"/>
-		<Object value="instance:com.freshdirect.cms.fdstore.DateIntervalValidator"/>
-		<Object value="instance:com.freshdirect.cms.fdstore.SearchRelevancyScoreValidator"/>
-		<Object value="instance:com.freshdirect.cms.fdstore.SynonymValidator"/>
-		<Object value="instance:com.freshdirect.cms.fdstore.ConditionalFieldValidator"/>
-	</contribution>
-
 	<service-point id="Validator" interface="com.freshdirect.cms.application.ContentServiceI">
 		<invoke-factory>
 			<construct class="com.freshdirect.cms.validation.ValidatingContentService">
 				<service>ChangeTracker</service>
-				<configuration>contentValidators</configuration>
 			</construct>
 		</invoke-factory>
 	</service-point>
@@ -352,7 +336,6 @@ because otherwise the external modifications of the slide database won't get pic
 		<invoke-factory>
 			<construct class="com.freshdirect.cms.search.ContentIndexerService">
 				<service>Validator</service>
-				<service>com.freshdirect.cms.search.SearchService</service>
 			</construct>
 		</invoke-factory>
 	</service-point>

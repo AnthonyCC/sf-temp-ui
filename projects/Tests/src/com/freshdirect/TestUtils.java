@@ -1,8 +1,10 @@
 package com.freshdirect;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -31,6 +33,8 @@ import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
+import com.freshdirect.cms.search.ContentIndex;
+import com.freshdirect.cms.search.SearchTestUtils;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpCustomerEntityBean;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
@@ -52,6 +56,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.customer.FDCustomerManagerTestSupport.MockErpCustomerHome;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDPromotionEligibility;
@@ -59,7 +64,6 @@ import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.NullEventLogger;
 import com.freshdirect.fdstore.customer.ProfileModel;
-import com.freshdirect.fdstore.customer.FDCustomerManagerTestSupport.MockErpCustomerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerEB;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerEntityBean;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerHome;
@@ -316,7 +320,11 @@ public class TestUtils {
 
         XmlContentService service = new XmlContentService(typeService, new FlexContentHandler(), xmlPath);
 
-        CmsManager.setInstance(new CmsManager(service, null));
+        try {
+            CmsManager.setInstance(new CmsManager(service, SearchTestUtils.createSearchService(new ArrayList<ContentIndex>(), SearchTestUtils.createTempDir(TestUtils.class.getCanonicalName(), (new Date()).toString()))));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return service;
     }

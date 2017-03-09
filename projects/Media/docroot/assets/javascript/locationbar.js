@@ -53,6 +53,7 @@
 			});
 		}
 	};
+	window['sendZip']=sendZip;
 
 	function updateMessagesCount() {
 		var $messages_count = $('.messages-count');
@@ -102,7 +103,13 @@
 
 	$document.on('click', '#newzipgo', sendZip);
 
-	$document.on('keyup', '#newziptext', function (e) {
+	$document.on('keydown', '#newziptext', function (e) {
+		// send form on enter
+		if (e.keyCode === 13) {
+			sendZip();
+		}
+	});
+	$('#newzipgo').on('keydown', function (e) {
 		// send form on enter
 		if (e.keyCode === 13) {
 			sendZip();
@@ -116,7 +123,48 @@
 			e.preventDefault();
 		}
 	});
+	$document.on('keydown', '#location-email', function (e) {
+		if (e.keyCode === 13) {
+			$('#location-submit').click();
+		}
+	}); 
+	$document.on('keydown', '#location-submit', function (e) {
+		if (e.keyCode === 13) {
+			$(this).click();
+		}
+	}); 
+	//enter key press to add delivery address button
 
+	$document.on('keydown', '.locabar_addresses-anon-deliverable-add-address-btn', function (e) {
+		if (e.keyCode === 13) {
+			$(this).click();
+		}
+	});
+
+	$document.on('keydown', '.locabar-modify-order-dropdown-container-delails a,.locabar_triggers_menu a', function (e) {
+		if (e.keyCode === 13) {
+			//$(this).click();
+			srcpath=$(this).attr("href");
+			//window.open(location.protocol+"//"+location.host+srcpath);
+			window.location.href= srcpath;
+		}
+	});
+	$document.on('keydown', '.locabar-modify-order-dropdown-container-modify button', function (e) {
+		if (e.keyCode === 13) {
+			$(this).trigger("onclick");
+			//e.preventDefault();
+			//srcPath=$(this).attr("onclick");
+			//window.location.href="";
+			//$(this).trigger("onclick");
+			
+			// url_path=srcPath.split(".href='/");
+			//window.location.href="";
+			//window.location.href= url_path[1];
+			//console.log(url_path[1])
+			//location.replace("");
+			//window.location=url_path[1];
+		}
+	});
 
 	$document.on('click','.delivery-popuplink',function(e){
 		popup('/help/delivery_zones.jsp','large');
@@ -331,15 +379,112 @@
 	       	$("#locabar_loginButton").toggleClass("loginButtonTab");
 	       	$('#login_cont_formContent').toggle();
 		});
+		
+		//code for SHIFT+TAB from dropdown ,enter zip code to delivery information(dropdown with worng zipcode)
+		$(".locabar_addresses-anon-nondeliverable .locabar_addresses-change-zip-cont .newziptext").keydown(function(e){
+			var TABKEY = 9;
+			if (e.which == TABKEY) {
+				if (e.shiftKey) {
+					$jq('#locabar_addresses_trigger').focus();
+					
+				} else {
+					$jq("#newzipgo").focus();
+				}
+				e.preventDefault();
+			}
+		});
+		//code for SHIFT+TAB from enter zip code to available time slots(dropdown with correct zip code)
+		$(".locabar_addresses-anon-deliverable-change-zip-cont .locabar_addresses-change-zip-cont .newziptext").keydown(function(e){
+			var TABKEY = 9;
+			if (e.which == TABKEY) {
+				if (e.shiftKey) {
+					$jq('.locabar_addresses-anon-deliverable-item-icon-clock .avlTimeFocus').focus();
+					
+				} else {
+					$jq(".locabar_addresses-anon-deliverable-change-zip-cont #newzipgo").focus();
+				}
+				e.preventDefault();
+			}
+		});
+		//code to exit dropdown using ESC key ,for sing in button dropdown after sign in
+		$("#locabar_user_trigger .locabar_triggers_menu.posAbs a").keyup(function(e){
+			if(e.keyCode == 27){
+				$jq("#locabar_user_trigger").removeClass("hover");
+				$jq("#locabar_user_trigger").focus();
+				e.preventDefault();
+			}
+		});
+		//code to exit dropdown  using ESC key ,for delivery information dropwown before signin 
+		$("#locabar_addresses_trigger #locabar_addresses").keyup(function(e){
+			if(e.keyCode == 27){
+				$jq("#locabar_addresses_trigger").removeClass("hover");
+				$jq("#locabar_addresses_trigger").focus();
+				e.preventDefault();
+			}
+		});
+		//code to exit dropdown using ESC key ,for delivery information dropdown after signin
+		$(".ui-selectmenu-menu ul li.ui-selectmenu-optgroup.ui-menu-divider").keyup(function(e){
+			if(e.keyCode == 27){
+				$jq("#locabar_addresses_trigger").removeClass("hover");
+				$jq("#locabar_addresses_trigger").focus();
+				e.preventDefault();
+			}
+		});
+		
+
+		
+		
+		/*		$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("visibility","hidden");
+			$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("opacity","0");
+
+				$jq("#locabar_addresses_trigger").focus();
+				event.preventDefault();
+			}
+		});*/
+		
 	});
 	
 }(jQuery));
-
-function goButtonFocus(e){
+//code for SHIFT+TAB from -enter zip code to cart(alert box)
+function goButtonFocusAlert(e) {
 	var TABKEY = 9;
-	if(e.keyCode == TABKEY) {
-		$jq("#newzipgo").focus();
+	if (e.which == TABKEY) {
+		if (e.shiftKey) {
+			$jq('#locabar_popupcart_trigger').focus();
+		} 
+		else{
+			$jq(".newzipgoAlert").focus();
+		}
+		e.preventDefault();
+	} 
+	//enter key on zip code textbox
+	var keycode = (e.keyCode ? e.keyCode : e.which);
+	
+	if(keycode == '13'){
+		if($jq(".newziptext ").val()!="" && $jq(".newziptext").val().length == 5){
+			$jq('#messages').removeClass("open");
+		}
+		else if($jq(".newziptext").val()!="" && $jq(".newziptext").val().length < 5){
+			$jq(".newziptext ").focus();
+			$jq("#messages").addClass("open");
+		}		
+		e.preventDefault();
+	}
+	
 }
-
+//enter key event for zip code textbox
+function goButtonFocus(e) {
+	var keycode = (e.keyCode ? e.keyCode : e.which);
+	
+	if(keycode == '13'){
+		if($jq("#newziptext").val()!="" && $jq("#newziptext").val().length == 5){
+			$jq('#messages').removeClass("open");
+			sendZip();
+		}
+		else{
+			$jq("#newziptext").focus();
+			$jq("#messages").addClass("open");
+		}		
+		e.preventDefault();
+	}
 }
-

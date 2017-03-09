@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.content;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -20,6 +21,8 @@ import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.search.ContentIndex;
+import com.freshdirect.cms.search.SearchTestUtils;
 import com.freshdirect.fdstore.content.ContentNodeTree.NodeIterator;
 import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
 import com.freshdirect.fdstore.util.SearchNavigator;
@@ -46,7 +49,7 @@ public class ContentTreeTest extends TestCase {
 		service = new XmlContentService(typeService, new FlexContentHandler(),
 				"classpath:/com/freshdirect/cms/fdstore/content/FilteredStore.xml");
 
-		CmsManager.setInstance(new CmsManager(service, null));
+		CmsManager.setInstance(new CmsManager(service, SearchTestUtils.createSearchService(new ArrayList<ContentIndex>(), SearchTestUtils.createTempDir(this.getClass().getCanonicalName(), (new Date()).toString()))));
 
 	}
 

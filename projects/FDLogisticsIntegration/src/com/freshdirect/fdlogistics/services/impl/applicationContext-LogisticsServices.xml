@@ -8,4 +8,6 @@
 	<bean id="airclicService" class="com.freshdirect.fdlogistics.services.impl.AirclicService" />
 	
 	<bean id="logisticsService" class="com.freshdirect.fdlogistics.services.impl.FDLogisticsService" />
+	
+	<bean id="commerceService" class="com.freshdirect.fdlogistics.services.impl.FDCommerceService" />
 </beans>

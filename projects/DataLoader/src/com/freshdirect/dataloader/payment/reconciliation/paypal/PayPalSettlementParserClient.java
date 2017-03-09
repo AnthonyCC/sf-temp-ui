@@ -1,5 +1,6 @@
 package com.freshdirect.dataloader.payment.reconciliation.paypal;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -291,7 +292,18 @@ public class PayPalSettlementParserClient extends SettlementParserClient {
 				
 			// END APPDEV-5531 
 		} else if (record.getRowCount() == 0) {
-			
+			try {
+				List<String> stlmtIds = new ArrayList<String>();
+				if(settlementSummarys.length >0){
+					for(ErpSettlementSummaryModel model:settlementSummarys){
+						stlmtIds.add(model.getId());
+					}
+					if(stlmtIds.size()>0)
+					ppReconSB.releasePPLock(stlmtIds);
+				}
+			} catch (RemoteException e) {
+				LOGGER.error(e.getMessage(), e);
+			}
 			StringBuilder msg= new StringBuilder(300);
 			msg.append("PayPal Reconciliation file does not have any data at this time.\n");
 			msg.append("Please verify that the settlement batch was submitted for the previous day.");

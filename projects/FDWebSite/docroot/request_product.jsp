@@ -351,7 +351,7 @@
 
 <%@ include file="/includes/product/i_request_product_dept_cat_map.jspf" %>
 
-<fd:RequestAProductNewTag actionName="requestProducts" result="result" successPage="request_product_conf.jsp">
+<fd:RequestAProductNewTag actionName="requestProducts" result="result" successPage="/request_product_conf.jsp">
 
 	<form name="request_product" method="post">
 	<table width="520" cellpadding="0" cellspacing="0" border="0">

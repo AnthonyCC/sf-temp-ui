@@ -96,30 +96,6 @@
                                   properties="name=myCacheRefresher,timeToRefreshSeconds=200,batchSize=10,numberOfThreads=4,maximumBacklogItems=100,evictOnLoadMiss=true" />
     </cache>
 
-    <cache name="cmsContentNodeCache"
-           maxEntriesLocalHeap="1000"
-           timeToLiveSeconds="60"
-           memoryStoreEvictionPolicy="LFU">
-    </cache>
-
-    <cache name="cmsParentKeyCache"
-           maxEntriesLocalHeap="5000"
-           timeToLiveSeconds="60"
-           memoryStoreEvictionPolicy="LFU">
-    </cache>
-
-    <cache name="cmsContentNodeAttributeCache"
-           maxEntriesLocalHeap="10000"
-           timeToLiveSeconds="60"
-           memoryStoreEvictionPolicy="LFU">
-    </cache>
-
-    <cache name="cmsStoreKeyCache"
-           maxEntriesLocalHeap="5000"
-           timeToLiveSeconds="60"
-           memoryStoreEvictionPolicy="LFU">
-    </cache>
-    
     <cache name="categoryTopItemCache"
                     maxEntriesLocalHeap="10000"
                     eternal="true"
@@ -133,5 +109,14 @@
 	    timeToLiveSeconds="3600"
 	    memoryStoreEvictionPolicy="LFU"
 	    transactionalMode="off">
+     </cache>
+     
+     <cache name="topItemsCache"
+                maxEntriesLocalHeap="100"
+                eternal="false"
+                timeToIdleSeconds="300"
+                timeToLiveSeconds="3600"
+                memoryStoreEvictionPolicy="LFU"
+                transactionalMode="off">
      </cache>
 </ehcache>

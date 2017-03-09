@@ -90,6 +90,7 @@
 					<option <%= ("1000".equals(globalContextFacility))?"selected":"" %> value="1000"> 1000 </option>
 					<option <%= ("1300".equals(globalContextFacility))?"selected":"" %> value="1300"> 1300 </option>
 					<option <%= ("1310".equals(globalContextFacility))?"selected":"" %> value="1310"> 1310 </option>
+					<option <%= ("2000".equals(globalContextFacility))?"selected":"" %> value="2000"> 2000 </option>
 				</select>
 			</div>
 			

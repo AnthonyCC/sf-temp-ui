@@ -2,6 +2,7 @@ package com.freshdirect.cms.application.draft.applicator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
@@ -17,6 +18,8 @@ import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
+import com.freshdirect.cms.search.ContentIndex;
+import com.freshdirect.cms.search.SearchTestUtils;
 import com.freshdirect.cmsadmin.domain.DraftChange;
 
 public class DraftApplicatorServiceTest {
@@ -30,8 +33,8 @@ public class DraftApplicatorServiceTest {
         list.add(new XmlTypeService("classpath:/com/freshdirect/cms/resource/CMSStoreDef.xml"));
         CompositeTypeService typeService = new CompositeTypeService(list);
         service = new XmlContentService(typeService, new FlexContentHandler(), "classpath:/com/freshdirect/cms/fdstore/content/simple.xml");
-
-        CmsManager.setInstance(new CmsManager(service, null));
+        
+        CmsManager.setInstance(new CmsManager(service, SearchTestUtils.createSearchService(new ArrayList<ContentIndex>(), SearchTestUtils.createTempDir(this.getClass().getCanonicalName(), (new Date()).toString()))));
 
         nodes.add(service.getContentNode(ContentKey.getContentKey("Product:prod1"), DraftContext.MAIN));
         nodes.add(service.getContentNode(ContentKey.getContentKey("Product:r1_prod1_1"), DraftContext.MAIN));

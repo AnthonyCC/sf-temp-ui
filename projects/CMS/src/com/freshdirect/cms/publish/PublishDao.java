@@ -1,7 +1,3 @@
-/**
- * @author ekracoff
- * Created on Apr 22, 2005*/
-
 package com.freshdirect.cms.publish;
 
 import java.sql.Connection;
@@ -12,15 +8,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
 
 import com.freshdirect.framework.conf.ResourceUtil;
 import com.freshdirect.framework.hibernate.HibernateDaoFactory;
 import com.freshdirect.framework.hibernate.HibernateDaoSupport;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 
 public class PublishDao extends HibernateDaoSupport {
+	
+	private static final Logger LOGGER = LoggerFactory.getInstance(PublishDao.class);
 	
 	/**
 	 *  The hibernate dao factory used to create this DAO object.
@@ -86,8 +86,10 @@ public class PublishDao extends HibernateDaoSupport {
 			cmd.append(" ORDER BY " + orderBy);
 		}
 		
+		String query = cmd.toString();
+		
 		try {
-			PreparedStatement stmt = conn.prepareStatement(cmd.toString());
+			PreparedStatement stmt = conn.prepareStatement(query);
 			
 			ResultSet records = stmt.executeQuery();
 			
@@ -109,7 +111,7 @@ public class PublishDao extends HibernateDaoSupport {
 			}
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			LOGGER.error("SQL error during fetching publishes, query = " + query, e);
 		}
 
 		return results;
@@ -137,8 +139,10 @@ public class PublishDao extends HibernateDaoSupport {
 			cmd.append(" ORDER BY " + orderBy);
 		}
 		
+		String query = cmd.toString();
+		
 		try {
-			PreparedStatement stmt = conn.prepareStatement(cmd.toString());
+			PreparedStatement stmt = conn.prepareStatement(query);
 			
 			ResultSet records = stmt.executeQuery();
 			
@@ -154,14 +158,14 @@ public class PublishDao extends HibernateDaoSupport {
 				results.add(p);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			LOGGER.error("SQL error during fetching feed publishes, query = " + query, e);
 		}
 
 		return results;
 	}
 	
 	/**
-	 *  Return all Publish objects, orderred by the specified column.
+	 *  Return all Publish objects, ordered by the specified column.
 	 * 
 	 * @param orderBy the order by clause
 	 * @return all Publish objects, ordered by the specified column
@@ -180,26 +184,27 @@ public class PublishDao extends HibernateDaoSupport {
 	 *  @return the most recent Publish object.
 	 */
 	public Publish getMostRecentPublish() {
+		String query = "from Publish where timestamp = (select max(publish.timestamp) from Publish publish "
+				+ " where status = '" + EnumPublishStatus.COMPLETE.getName() + "')";
 		try {
-			List<Publish> list = query("from Publish "
-			               + " where timestamp = (select max(publish.timestamp) from Publish publish "
-	                       + " where status = '" + EnumPublishStatus.COMPLETE.getName() + "')");
-	
+			List<Publish> list = query(query);
 			return list.size() > 0 ? list.get(0) : null;
 		} catch (ConstraintViolationException e) {
 			// this happens if there are no complete publishes in the database
 			// this the above nested query fails
+			LOGGER.error("Constraint violation error during fetching most recent publishes, query = " + query, e);
 			return null;
 		}
 	}
 	
 	public PublishX getMostRecentPublishX() {
+		String query = "from PublishX where timestamp = (select max(publishX.timestamp) from PublishX publishX "
+				+ " where status = '" + EnumPublishStatus.COMPLETE.getName() + "')";
 		try {
-			List<PublishX> list = query("from PublishX "
-			               + " where timestamp = (select max(publishX.timestamp) from PublishX publishX "
-	                       + " where status = '" + EnumPublishStatus.COMPLETE.getName() + "')");
+			List<PublishX> list = query(query);
 			return list.size() > 0 ? list.get(0) : null;
 		} catch (ConstraintViolationException e) {
+			LOGGER.error("Constraint violation error during fetching most recent feed publishes, query = " + query, e);
 			return null;
 		}
 	}
@@ -211,15 +216,15 @@ public class PublishDao extends HibernateDaoSupport {
          *  @return the most recent Publish object.
          */
    public Publish getMostRecentNotCompletedPublish() {
-	   try {
-		   List<Publish> list = query("from Publish "
-                                   + " where timestamp = (select max(publish.timestamp) from Publish publish) ");
-    
-                    return list.size() > 0 ? list.get(0) : null;
+		   String query = "from Publish where timestamp = (select max(publish.timestamp) from Publish publish) ";
+		   try {
+			   List<Publish> list = query(query);
+               return list.size() > 0 ? list.get(0) : null;
             } catch (ConstraintViolationException e) {
                     // this happens if there are no complete publishes in the database
                     // this the above nested query fails
-                    return null;
+            	LOGGER.error("Constraint violation error during fetching most recent not completed publishes, query = " + query, e);
+                return null;
             }
     }
 	
@@ -237,21 +242,27 @@ public class PublishDao extends HibernateDaoSupport {
 	 */
 	public Publish getPreviousPublish(Publish publish) {
 		List<Publish> list = fetchPublishes("timestamp < (select p.timestamp from CMS.PUBLISH p where p.id = " + publish.getId() + ") ", "timestamp desc");
-		
 		return list.size() > 0 ? list.get(0) : null;
 	}
+
+    public Publish getPreviousFeedPublish(Publish publish) {
+        List<Publish> list = fetchPublishesX("cro_mod_date < (select p.cro_mod_date from CMS.PUBLISHX p where p.id = " + publish.getId() + ") ", "cro_mod_date desc");
+        return list.size() > 0 ? list.get(0) : null;
+    }
 	
 	public void savePublish(Publish publish) {
 		saveOrUpdate(publish);
 	}
 
 	public PublishX getMostRecentNotCompletedPublishX() {
-		try {
-            List<PublishX> list = query("from PublishX "
-                           + " where timestamp = (select max(publishX.timestamp) from PublishX publishX) ");
+		String query = "from PublishX where timestamp = (select max(publishX.timestamp) from PublishX publishX) ";
+        try {
+			List<PublishX> list = query(query);
             return list.size() > 0 ? list.get(0) : null;
 		} catch (ConstraintViolationException e) {
+			LOGGER.error("Constraint violation error during fetching most recent not completed feed publishes, query = " + query, e);
             return null;
 		}	
 	}
+
 }

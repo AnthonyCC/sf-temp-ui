@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Retrieve perishable product data from server.
 # Command line options:

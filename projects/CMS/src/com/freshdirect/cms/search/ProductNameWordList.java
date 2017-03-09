@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.search.AutocompleteService.HitCounter;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -130,7 +131,7 @@ public class ProductNameWordList implements WordListI{
     
 	private void generateWords() {
         LOGGER.info("createAutocompleteService");
-        Set<ContentKey> contentKeysByType = CmsManager.getInstance().getContentKeysByType(FDContentTypes.PRODUCT);
+        Set<ContentKey> contentKeysByType = CmsManager.getInstance().getContentKeysByType(FDContentTypes.PRODUCT, DraftContext.MAIN);
         LOGGER.info("contentKeysByType loaded :"+contentKeysByType.size());
         
         words = new ArrayList<String>(contentKeysByType.size());

@@ -53,6 +53,7 @@ import com.freshdirect.logistics.controller.data.response.ListOfObjects;
 import com.freshdirect.logistics.controller.data.response.Timeslot;
 import com.freshdirect.logistics.delivery.dto.Address;
 import com.freshdirect.logistics.delivery.model.GeoLocation;
+import com.freshdirect.logistics.delivery.model.RouteStopInfo;
 import com.freshdirect.logistics.delivery.model.ShippingDetail;
 import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.logistics.fdx.controller.data.request.CreateOrderRequest;
@@ -166,5 +167,5 @@ public interface ILogisticsService {
 	
 	Result reconfirmReservation(ReconfirmReservationRequest reservationRequest) throws FDLogisticsServiceException;
 
-	
+	RouteStopInfo getRouteStopInfo(String orderId) throws FDLogisticsServiceException;
 }

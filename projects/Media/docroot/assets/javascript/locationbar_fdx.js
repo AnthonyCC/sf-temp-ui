@@ -28,6 +28,8 @@ $jq(document).on('ready', function() {
 			//});
 			//if ($jq( '#locabar_popupcart' ).css('top') === '10px' 
 			//}, 1000);
+		
+		
 	}
 });
 
@@ -241,8 +243,11 @@ function showLoginDialog(successPage, useSocial) {
 
 $jq('#locabar_messages_trigger').on('click', function() {
 	$jq('#messages').messages('openMessages');
+	$jq(this).hide();
+	$jq("#messages").addClass("open");
 	if($jq('#activatesoalert .so-activate-alert').length && $jq('#activatesoalert .so-activate-alert').length > 0){
 		$jq('#activatesoalert').messages('openAlerts', ['activatesoalert']);
+		
 	}
 	
 });
@@ -325,32 +330,82 @@ $jq('#modifyorderalert').on('alertClose', ['modifyorderalert'], function(event) 
 	$jq('#locabar_orders').parent('.locabar_triggers').removeClass('alertOpen');
 	$jq('#locabar_orders').closest('.locabar-section').removeClass('alertOpen');
 	$jq('#locabar_orders').show();
+	$jq('.locabar-modify-order-section').show();
+	$jq("#locabar_modify_order_trigger").focus();
+	if($jq('.locabar-modify-order-section').css("display")==="none" && $jq("#locabar_user_trigger .changeBGClr").length ==0){
+		$jq('.locabar-modify-order-section').show();
+		$jq("#locabar_modify_order_trigger").focus();
+	}
 });
 $jq(document).ready(function() {
 	function messagesOpened() {
 		$jq('#locabar-messages-open').parent('.locabar_triggers').addClass('alertOpen');
 		$jq('#locabar-messages-open').closest('.locabar-section').addClass('alertOpen');
-	}
+		if($jq("#newziptext").length && ($jq("#newziptext").val()=="" || $jq("#newziptext").val().length >=5)){
+			$jq('#messages').removeClass("open");
+		}
+		
+		
+	} 
 	if ($jq('#messages').hasClass('open')) { /* doc ready will miss the initial messagesOpen trigger */
 		messagesOpened();
+
 	}
 	$jq('#messages').on('messagesOpen', function(event) {
 		messagesOpened()
 	});
-	$jq('#messages').on('messagesClose', function(event) {
-		$jq('#locabar-messages-open').parent('.locabar_triggers').removeClass('alertOpen');
-		$jq('#locabar-messages-open').closest('.locabar-section').removeClass('alertOpen');
-	});
+//alert the user while entering wrong zip code or less then  digits
+		$jq('#messages').on('messagesClose', function(event) {
+				$jq('#locabar-messages-open').parent('.locabar_triggers').removeClass('alertOpen');
+				$jq('#locabar-messages-open').closest('.locabar-section').removeClass('alertOpen');
+				if ($jq('.messages-count').data('count') > 0) {
+					$jq('#locabar_messages_trigger').show();
+					$jq('#locabar_messages_trigger').focus();
+				}
+				
+
+				
+				if($jq('#locabar_messages_trigger').css("display")==="block"){
+					$jq('#locabar_messages_trigger').show();
+					$jq("#locabar_messages_trigger").focus();
+				}
+			}); 
+
 	if ($jq('#locabar_addresses .locabar_addresses-anon-deliverable').length) {
 		$jq('#locabar_addresses').addClass('anon-deliverable');
 		$jq('#locabar_addresses .ui-arrow.ui-top').addClass('anon-deliverable');
 	}
+	if ($jq.fn.messages('isClosed')) {
+		$jq('#locabar_messages_trigger').show();
+		
+		//$jq('.locabar-modify-order-section').css("display","block");
+		//$jq("#locabar_modify_order_trigger").focus();
+	} 
 });
 
-$jq('.locabar_addresses-anon-deliverable-change-zip-toggle-btn').on('click', function() {
+//delivery information change zip code button click event
+$jq('.locabar_addresses-anon-deliverable-change-zip-toggle-btn').on('click', function(e) {
+	e.preventDefault();
 	$jq('.locabar_addresses-anon-deliverable-change-zip-toggle-target').show();
+	$jq('.locabar_addresses-anon-deliverable-change-zip-toggle-target').css("display","block");
+	$jq(".locabar_addresses-anon-deliverable-change-zip-toggle-target #newzip #newziptext").focus();
 	$jq(this).hide();
+	
+		$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("visibility","visible");	
+		$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("opacity","1");
+	
+	$jq('.locabar_addresses-anon-deliverable-change-zip-toggle-target').css("display","block");
+	
+	$jq("#newziptext").focus();
+	if($jq("#newziptext").val()===""){
+		$jq('#messages').removeClass("open");
+		$jq("#locabar_messages_trigger").show();
+		
+	}
+	
+	//return false;
 });
+
 
 
 $jq('.locabar_addresses-anon-deliverable-add-address-btn').on('click', function() {
@@ -386,7 +441,7 @@ $jq('#locabar_modify_order_trigger').on('focus mouseover', function(event) {
 });
 
 $jq('#locabar_modify_order_trigger').on('blur mouseleave', function(event) {
-	console.log('blur on locabar_triggers ');
+	//console.log('blur on locabar_triggers ');
 	$jq('.locabar-modify-order-section').css('background-color', '#6AAA6D');
 });
 
@@ -406,13 +461,337 @@ $jq('.changeBGClr').on('focus mouseover', function(event) {
 $jq('.changeBGClr').on('blur mouseleave', function(event) {
 	$jq('.locabar-user-section').css('background-color', '#6AAA6D');
 });
+
+
 //press enter key to display message
-$jq('#locabar_messages_trigger').keypress(function(event){
+$jq('#locabar_messages_trigger').keydown(function(event){
 	var keycode = (event.keyCode ? event.keyCode : event.which);
 	if(keycode == '13'){
 		$jq('#messages').messages('openMessages');
+		$jq('#messages').addClass('open');
+		$jq(this).hide();
+		$jq("#messages.hashandler.open a").focus();
 		if($jq('#activatesoalert .so-activate-alert').length && $jq('#activatesoalert .so-activate-alert').length > 0){
-			$jq('#activatesoalert').messages('openAlerts', ['activatesoalert']);
+			$jq('#activatesoalert').messages('openAlerts', ['activatesoalert']);			
 		}
 	}
 });
+
+
+//enter key to modify button order
+$jq('#locabar_modify_order_trigger').keydown(function(event){
+	var keycode = (event.keyCode ? event.keyCode : event.which);
+	if(keycode == '13'){
+		$jq("#locabar_modify_order_trigger #locabar_orders").css("opacity","1");
+		$jq("#locabar_modify_order_trigger #locabar_orders").css("visibility","visible");
+		
+		$jq(".locabar-modify-order-dropdown-container-delails a").focus();
+		event.preventDefault();
+	}
+});
+
+//enter key for orders
+
+$jq('#locabar_addresses_trigger').keydown(function(event){
+	var keycode = (event.keyCode ? event.keyCode : event.which);
+	if(keycode == '13'){
+		$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("opacity","");
+		$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("visibility","");
+		$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").focus();
+		$jq("#locabar_addresses").css("display","");
+		
+		//event.preventDefault();
+	}
+});
+//reset the values of modify order section when we focus using mouse
+$jq(".locabar-modify-order-section").hover(function(){
+	$jq("#locabar_orders").css("opacity","");
+	$jq("#locabar_orders").css("visibility","");
+});
+
+$jq("#locabar_addresses_trigger").hover(function(){
+		if (!$jq('#nodeliver-form:visible').length) {
+			$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("opacity","");
+			$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("visibility","");
+			$jq(this).removeClass("hover");
+			$jq("#locabar_addresses").css("display","");
+		}
+	}); 
+
+
+//check if the alert box is present or not during tab press...
+
+$jq(".locabar-modify-order-dropdown-container-modify").keydown(function(e){
+	var TABKEY = 9;
+	if (e.which == TABKEY) {
+		if (e.shiftKey) {
+			return true;
+			
+		} else {
+			$jq("#locabar_modify_order_trigger #locabar_orders").css("opacity","0");
+			$jq("#locabar_modify_order_trigger #locabar_orders").css("visibility","hidden");
+			if($jq("#locabar_messages_trigger").css("display")=="none" || $jq(".locabar-messages-section").css("display")=="none" ){
+				$jq("#locabar_addresses_trigger").focus();
+			}else{
+				$jq("#locabar_messages_trigger").focus();
+			}
+			
+			
+		}
+		e.preventDefault();
+	}
+});
+//text-box-focs
+//$jq("#newziptext").focus();
+
+$jq(".locabar-modify-order-dropdown-container-delails ").keydown(function(e){
+	var TABKEY = 9;
+	if (e.which == TABKEY) {
+		if (e.shiftKey) {
+			$jq("#locabar_modify_order_trigger #locabar_orders").css("opacity","0");
+			$jq("#locabar_modify_order_trigger #locabar_orders").css("visibility","hidden");
+			$jq("#locabar_modify_order_trigger").focus();
+			
+		} else {
+			return true;
+		}
+		e.preventDefault();
+	}
+});
+//escape key
+
+$jq(".locabar-modify-order-dropdown-container-delails,.locabar-modify-order-dropdown-container-modify").keyup(function(event){
+	if(event.keyCode == 27){
+		$jq("#locabar_modify_order_trigger #locabar_orders").css("opacity","0");
+		$jq("#locabar_modify_order_trigger #locabar_orders").css("visibility","hidden");
+		$jq("#locabar_modify_order_trigger").focus();
+		event.preventDefault();
+	}
+});
+
+//green add delivery button
+$jq(".locabar_addresses-anon-deliverable-add-address-btn").keydown(function(e){
+	var TABKEY = 9;
+	if (e.which == TABKEY) {
+		if (e.shiftKey) {
+			return true;
+			
+		} else {
+			$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("opacity","0");
+			$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("visibilty","hidden");
+			$jq(".changeBGClr").focus();
+			$jq(".locabar-user-section mouse").css('background-color', '#4fa157');
+			$jq("#locabar_addresses_trigger").removeClass("hover");
+			$jq("#locabar_addresses").hide();
+		}
+		e.preventDefault();
+	}
+});
+
+
+
+//loginbutton
+$jq(".changeBGClr").keydown(function(e){
+	var TABKEY = 9;
+	if (e.which == TABKEY) {
+		if (e.shiftKey) {
+			$jq("#locabar_addresses_trigger").focus();
+			
+		} else {
+			return true;
+		}
+		e.preventDefault();
+	}
+});
+
+//hide the about fresh popup shift+tab
+
+
+$jq(".locabar_addresses-change-zip-cont input").keydown(function(e){
+	var TABKEY = 9;
+	if (e.which == TABKEY) {
+		if (e.shiftKey) {
+			$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("opacity","1");
+			$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("visibilty","auto");
+		
+			
+		} else {
+			return true;
+		}
+		e.preventDefault();
+	}
+});
+
+
+
+//mpdify order alert
+
+$jq(window).load(function(){
+	
+	//var IsModifyOrder=$jq("#modifyorderalert").length;
+	if($jq("#modifyorderalert").hasClass("open")){
+		$jq(".locabar-modify-order-section").hide();
+	}
+	
+	if($jq("#locabar_user_trigger .changeBGClr").length >0){
+		//$jq('.locabar-modify-order-section').hide();
+	}
+	
+	if($jq("#messages").hasClass("open")){
+		$jq('#locabar_messages_trigger').hide();
+	}
+	
+	$jq('#locabar_messages_trigger').blur();
+	//cart lin - background change
+
+  	$jq(document).on('focusin',"#popupcart .cartline .qty",function(e){
+		var TABKEY = 9;			
+		$jq(".cartline").css("background","#fff");
+		$jq(this).parent().parent().parent().parent().css("background","#f1f1f1");
+		e.preventDefault();
+		//return true;*/
+	});
+  	
+  	$jq(document).on('focusin',"#popupcart .cartline select",function(e){
+		var TABKEY = 9;			
+		$jq(".cartline").css("background","#fff");
+		//$jq(this).children().addClass("ss");
+		$jq(this).parent().parent().parent().css("background","#f1f1f1");
+		e.preventDefault();
+		//return true;*/
+	});
+  	
+  	$jq(document).on("focusout","#locabar_addresses",function(){
+  		//$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("opacity","0");
+  		//$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("visibilty","hidden");
+  	});
+  	
+  	$jq(".locabar_addresses-anon-deliverable-item-icon-truck").keydown(function(e){
+  		var TABKEY = 9;
+  		if (e.which == TABKEY) {
+  			if (e.shiftKey) {
+  				$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("visibilty","hidden");  
+  				$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("opacity","0");
+  				$jq("#locabar_addresses_trigger").removeClass("hover");
+  				$jq(this).blur();
+  				//$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable input").blur();
+  				$jq("#locabar_addresses_trigger").focus();
+  				$jq("#locabar_addresses").hide();
+  				
+  			} else {
+  				return true;
+  			}
+  			e.preventDefault();
+  		}
+  	});
+	$jq("#locabar_addresses_trigger #locabar_addresses input").keyup(function(e){
+		if(e.keyCode == 27){
+  				$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("visibilty","hidden");  
+  				$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("opacity","0");
+  				
+  				$jq(this).blur();
+  				//$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable input").blur();
+  				$jq("#locabar_addresses_trigger").focus();
+  				$jq("#locabar_addresses").hide();
+  				
+  			} 
+  			e.preventDefault();
+  		
+  	});
+  	
+  	
+  	$jq(".locabar-addresses-section").hover(function(){
+  		if($jq("#location-alerts #sitemessage").css("display")=="block"){
+  			$jq("#locabar_addresses").hide();
+  		}
+  		else{
+  			$jq("#locabar_addresses").show();
+  		}
+  	});
+  	
+  	$jq(document).on('focusin',".locabar-addresses-section",function(e){
+  		if($jq("#location-alerts #sitemessage").css("display")=="block"){
+  			$jq("#locabar_addresses").hide();
+  		}
+		e.preventDefault();
+		//return true;*/
+	});
+  	
+
+
+
+  	$jq(".locabar-addresses-section").keydown(function(event){
+  		var keycode = (event.keyCode ? event.keyCode : event.which);
+  		if(keycode == '13'){
+  			if($jq("#location-alerts #sitemessage").css("display")=="block"){
+  	  			$jq("#locabar_addresses").hide();
+  	  		}
+  			event.preventDefault();
+  		}
+  	});
+  	
+  	
+  	//enter press event for see details button
+  	$jq(".locabar-modify-order-dropdown-container-delails  a.locabar-modify-order-dropdown-container-modify").keydown(function(event){
+  		var keycode = (event.keyCode ? event.keyCode : event.which);
+  		if(keycode == '13'){
+  		//	$jq(this).click();
+  		}
+  	});
+  	
+});
+
+
+/*enter key to close the alert
+$jq("#locabar-messages-close").keypress(function(event){
+	var keycode = (event.keyCode ? event.keyCode : event.which);
+	if(keycode == '13'){
+		$jq('#locabar-messages-open').parent('.locabar_triggers').removeClass('alertOpen');
+		$jq('#locabar-messages-open').closest('.locabar-section').removeClass('alertOpen');
+		if($jq("#locabar_messages_trigger").css("display")=="none"){
+				$jq("#locabar_messages_trigger").show();
+				$jq("#locabar_messages_trigger").focus();
+			}	
+	}
+});
+
+*/
+
+// alert box close
+
+//locabar_messages_trigger
+//escape to hide for 
+//change button
+//enter key for change zip code in delivery information
+$jq(".locabar_addresses-anon-deliverable-change-zip-toggle-btn").keydown(function(event){
+	var keycode = (event.keyCode ? event.keyCode : event.which);
+	FreshDirect.locabar.lastFocusElemId = '';
+	if(keycode == '13'){
+		$jq(this).hide();
+		$jq(".locabar_addresses locabar_triggers_menu").css("visibility","visible");
+		$jq(".locabar_addresses locabar_triggers_menu").css("opacity","1");
+		
+		$jq(".locabar_addresses-anon-deliverable-change-zip-toggle-target").css("display","");
+		setTimeout(function(){
+			$jq(".locabar_addresses-change-zip-cont input#newziptext").focus();
+		},100);
+		event.preventDefault();
+	}
+});
+/*
+//message alert
+$jq(".locabar-messages-section").click(function(){
+	//$jq(this).hide();
+});
+
+//close the message replace the id with system message
+$jq("#messages .content").click(function(e){
+	e.preventDefault();
+	//jq("#messages").removeClass("open");
+	//$jq(".locabar-messages-section").show();
+});
+
+//modify oder
+$jq("#modifyorderalert .alert-closeHandler").click(function(){alert("ss")
+	$("#locabar_modify_order_trigger").hide();
+});*/

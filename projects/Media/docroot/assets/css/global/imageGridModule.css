@@ -1,40 +1,42 @@
-.contentModules .content-module.image-grid-module .content .image-grid .first-line,
-.contentModules .content-module.image-grid-module .content .image-grid .second-line,
-.contentModules .content-module.image-grid-module .content .small-block {
+.content-module.image-grid-module .content .image-grid .first-line,
+.content-module.image-grid-module .content .image-grid .second-line,
+.content-module.image-grid-module .content .small-block {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
-.contentModules .content-module.image-grid-module .content .small,
-.contentModules .content-module.image-grid-module .content .medium {
+.content-module.image-grid-module .content .small,
+.content-module.image-grid-module .content .medium {
   box-sizing: border-box;
   height: 241px;
   text-align: center;
   margin: .9px;
 }
 
-.contentModules .content-module.image-grid-module .content .small {
+.content-module.image-grid-module .content .small {
   width: 241px;
 }
 
-.contentModules .content-module.image-grid-module .content .medium {
+.content-module.image-grid-module .content .medium {
   width: 484px;
 }
 
-.contentModules .content-module.image-grid-module .content img {
+.content-module.image-grid-module .content img {
   height: 100%;
   object-fit: cover;
   overflow: hidden;
   width: 100%;
 }
 
-.contentModules .content-module.image-grid-module .content .image-grid div div .small a > div,
-.contentModules .content-module.image-grid-module .content .image-grid div .medium a > div {
-  background-color: rgba(255,255,255,.9);
+.content-module.image-grid-module .content .image-grid div div .small a > div,
+.content-module.image-grid-module .content .image-grid div .medium a > div {
+  background-color: rgba(255,255,255,.75);
   bottom: 50px;
   color: black;
+  font-family: 'Brandon Text';
   font-size: 18px;
+  font-weight: 500;
   height: 22px;
   line-height: 22px;
   margin: 0;
@@ -46,8 +48,8 @@
   top: -30px;
 }
 
-.contentModules .content-module.image-grid-module .content .image-grid div div .small a > div:after,
-.contentModules .content-module.image-grid-module .content .image-grid div .medium a > div:after {
+.content-module.image-grid-module .content .image-grid div div .small a > div:after,
+.content-module.image-grid-module .content .image-grid div .medium a > div:after {
   content: '\276F';
   position: relative;
   right: -5px;

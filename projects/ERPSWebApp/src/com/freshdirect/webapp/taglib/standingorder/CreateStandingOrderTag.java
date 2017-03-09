@@ -94,9 +94,9 @@ public class CreateStandingOrderTag extends BodyTagSupport {
 					try {
 						so.setNewSo(true);
 						so.setActivate(EnumStandingOrderActiveType.getEnum(1).getName());
-						StandingOrderUtil.createStandingOrder(pageContext.getSession(), u.getSoTemplateCart(), so, null);
+						//StandingOrderUtil.createStandingOrder(pageContext.getSession(), u.getSoTemplateCart(), so, null);
 
-					} catch (FDResourceException e) {
+					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				} else {

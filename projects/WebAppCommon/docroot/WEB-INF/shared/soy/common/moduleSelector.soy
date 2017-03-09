@@ -39,10 +39,18 @@
 {deltemplate common.moduleSelector variant="'PRODUCT_LIST_MODULE'"}
 	{call common.productListModule data="all" /}
 {/deltemplate}
+
 /**
  * @param moduleData
  * @param data
  */
 {deltemplate common.moduleSelector variant="'EDITORIAL_MODULE'"}
 	{call common.editorialModule data="all" /}
+{/deltemplate}
+
+/**
+ * @param moduleData
+ */
+{deltemplate common.moduleSelector variant="'MODULE_GROUP'"}
+	{call common.moduleGroup data="all" /}
 {/deltemplate}

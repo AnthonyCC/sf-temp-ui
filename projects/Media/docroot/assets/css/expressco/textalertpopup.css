@@ -21,7 +21,7 @@
   vertical-align: middle;
   text-align: left;
   overflow: auto;
-  width:600px;
+  width:auto;
   max-width:450px;
   box-sizing:border-box;
   padding:20px;
