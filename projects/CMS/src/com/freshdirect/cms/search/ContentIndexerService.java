@@ -3,6 +3,10 @@
  */
 package com.freshdirect.cms.search;
 
+import java.text.MessageFormat;
+
+import org.apache.log4j.Logger;
+
 import com.freshdirect.cms.application.CmsRequestI;
 import com.freshdirect.cms.application.CmsResponseI;
 import com.freshdirect.cms.application.ContentServiceI;
@@ -10,6 +14,7 @@ import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.ProxyContentService;
 import com.freshdirect.cms.index.IndexerService;
 import com.freshdirect.cms.index.PartialIndexerService;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
  * Proxy content service that automatically updates a search index
@@ -17,6 +22,8 @@ import com.freshdirect.cms.index.PartialIndexerService;
  * when the {@link #handle(CmsRequestI)} method is invoked.
  */
 public class ContentIndexerService extends ProxyContentService {
+
+    private static final Logger LOGGER = LoggerFactory.getInstance(ContentIndexerService.class);
 
 	private final IndexerService indexerService = PartialIndexerService.getInstance();
 
@@ -32,11 +39,15 @@ public class ContentIndexerService extends ProxyContentService {
 	 * @see com.freshdirect.cms.application.ContentServiceI#handle(com.freshdirect.cms.application.CmsRequestI)
 	 */
     public CmsResponseI handle(CmsRequestI request) {
+        LOGGER.debug(MessageFormat.format("Starting service handles {0} request", request));
+
         CmsResponseI response = super.handle(request);
 
         if (DraftContext.MAIN == request.getDraftContext()) {
             indexerService.index(request.getNodes());
         }
+
+        LOGGER.debug(MessageFormat.format("Ending service return {0} response", response));
         return response;
     }
 

@@ -5,9 +5,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.AttributeI;
@@ -23,6 +26,7 @@ import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.reverse.BackReference;
 import com.freshdirect.cms.reverse.BidirectionalReference;
 import com.freshdirect.cms.reverse.BidirectionalReferenceHandler;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
  * Simple implementation of {@link com.freshdirect.cms.ContentNodeI}.
@@ -33,6 +37,8 @@ import com.freshdirect.cms.reverse.BidirectionalReferenceHandler;
 public class ContentNode implements ContentNodeI {
 
 	private static final long	serialVersionUID	= -2807267115367900617L;
+
+	private static final Logger LOGGER = LoggerFactory.getInstance(ContentNode.class);
 
 	private final ContentTypeServiceI typeService;
 	
@@ -170,6 +176,7 @@ public class ContentNode implements ContentNodeI {
             oas.writeObject(this);
             oas.close();
         } catch (IOException e) {
+            LOGGER.error(MessageFormat.format("Error during node copy - node key={0} typeService={1} attributes={2}", key, typeService, attributes), e);
             return null;
         }
 
@@ -180,8 +187,10 @@ public class ContentNode implements ContentNodeI {
             oin = new ObjectInputStream(bais);
             return (ContentNodeI) oin.readObject();
         } catch (ClassNotFoundException e) {
+            LOGGER.error(MessageFormat.format("Error during node copy - node key={0} typeService={1} attributes={2}", key, typeService, attributes), e);
             return null;
         } catch (IOException e) {
+            LOGGER.error(MessageFormat.format("Error during node copy - node key={0} typeService={1} attributes={2}", key, typeService, attributes), e);
             return null;
         }
 	}

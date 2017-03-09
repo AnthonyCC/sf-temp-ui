@@ -170,4 +170,10 @@ public class GwtContentNode implements Serializable {
     	return new ContentNodeModel( type, label, nodeKey );
     }
 
+    @Override
+    public String toString() {
+        return "GwtContentNode [nodeKey=" + nodeKey + ", label=" + label + ", type=" + type + ", originalAttributes=" + originalAttributes + ", changedValues=" + changedValues
+                + "]";
+    }
+
 }

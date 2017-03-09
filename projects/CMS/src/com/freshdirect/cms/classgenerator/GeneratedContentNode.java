@@ -96,4 +96,9 @@ public abstract class GeneratedContentNode implements ContentNodeI {
 
     }
 
+    @Override
+    public String toString() {
+        return "GeneratedContentNode [key=" + key + ", draftContext=" + draftContext + ", delete=" + delete + "]";
+    }
+
 }
