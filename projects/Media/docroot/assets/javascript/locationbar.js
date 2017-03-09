@@ -33,14 +33,15 @@
 	var sendZip = function (e) {
 		var text, innerHTML;
 
-		text = $('#newziptext,.newziptext').map(function() {
+		/*text = $('#newziptext,.newziptext').map(function() {
 			return $(this).val() || null;
-		}).toArray().join(',');
+		}).toArray().join(','); */
+		text = $jq(e.target).parent().find('.newziptext').val();
 		
 		if(!/(^\d{5}$)/.test(text) || parseInt(text,10)===0 ) {
-			$('#unrecognized').clone().html(function(index,oldHTML){
+			/*$('#unrecognized').clone().html(function(index,oldHTML){
 				return oldHTML.replace('{{zip}}',text);
-			}).messages('add');
+			}).messages('add');*/
 		} else {
 			$.ajax({
 				url:locationHandlerAPI,
@@ -101,18 +102,39 @@
 		};
 	});
 
-	$document.on('click', '#newzipgo', sendZip);
+	//$document.on('click', '#newzipgo', sendZip);
+	$document.on('click', '#newzipgo',function(e){
+		var text_length=$(this).parent().find("input").val().length;		
+		console.log(text_length);
+		if(text_length<5 && text_length>=1){					
+			$(this).parent().next().css("visibility","visible");
+			$jq(this).next().css("visibility","visible");
+			$(this).parent().find("input").addClass("input-error");	
+			setTimeout(function(){
+				$(this).parent().find("input").focus();
+			},500);
+		}
+		else if(text_length!= "" && text_length == 5){
+			$('#messages').removeClass("open");
+			sendZip(e);
+		}
+	});
 
 	$document.on('keydown', '#newziptext', function (e) {
 		// send form on enter
 		if (e.keyCode === 13) {
-			sendZip();
+			//sendZip();
 		}
 	});
 	$('#newzipgo').on('keydown', function (e) {
 		// send form on enter
 		if (e.keyCode === 13) {
-			sendZip();
+			//sendZip();
+			setTimeout(function(){
+				//$('.locabar_addresses-anon-deliverable-item-icon-clock .avlTimeFocus').blur();
+				$(this).focus();
+			},500);
+			$(this).focus();
 		}
 	});
 
@@ -197,13 +219,17 @@
 					} else {
 						playScripts($(data));
 					}
+					$(this).parent().find(".error-msg").css("visibility","");
+					$(this).parent().find("input").removeClass("input-error");	
 				},
 				error:function(){
 					$form.attr('class','e');
 				}
 			});			
 		} else {
-			$('label.n',$form).html('<b>Please make sure your email address is in the format "you@isp.com"</b>');
+			//$('label.n',$form).html('<b>Please make sure your email address is in the format "you@isp.com"</b>');
+			$(this).parent().find(".error-msg").css("visibility","visible");
+			$(this).parent().find("input").addClass("input-error");	
 		}
 				
 		
@@ -442,6 +468,42 @@
 			}
 		});*/
 		
+		$(".newzipgo").keydown(function(e){
+			
+			var text_length=$(this).parent().find("input").val().length;	
+			$(this).parent().next().css("visibility","");
+			console.log(text_length);
+			var keycode = (e.keyCode ? e.keyCode : e.which);
+			if(keycode == '13'){
+				if(text_length<5 && text_length>=1){					
+						
+						$(this).parent().find("input").addClass("input-error");	
+						/*$('.locabar_addresses-anon-deliverable-item-icon-clock .avlTimeFocus').blur();
+						$(".locabar_addresses-anon-deliverable-item-icon-truck a").blur();
+						$(this).parent().find("input").focus();*/
+						setTimeout(function(){
+							
+							$(this).focus();
+							$(this).parent().next().css("visibility","visible");
+							
+						},500);
+						$(this).focus();
+				}
+				else if(text_length== "" && text_length == 5){
+					$('#messages').removeClass("open");
+					sendZip(e);
+				}
+					
+				e.preventDefault();
+			}
+		});
+		
+	/*	$("#location-submit.cssbutton").on("focusin",function(){
+			$(this).css(" background-color"," #5fb067"); 
+			$(this).css(" border-color"," #306238");
+			$(this).css(" box-shadow","  0 0 1px #aaa, 0 0 8px #aaa");
+		});
+		*/
 	});
 	
 }(jQuery));
@@ -458,18 +520,6 @@ function goButtonFocusAlert(e) {
 		e.preventDefault();
 	} 
 	//enter key on zip code textbox
-	var keycode = (e.keyCode ? e.keyCode : e.which);
-	
-	if(keycode == '13'){
-		if($jq(".newziptext ").val()!="" && $jq(".newziptext").val().length == 5){
-			$jq('#messages').removeClass("open");
-		}
-		else if($jq(".newziptext").val()!="" && $jq(".newziptext").val().length < 5){
-			$jq(".newziptext ").focus();
-			$jq("#messages").addClass("open");
-		}		
-		e.preventDefault();
-	}
 	
 }
 //enter key event for zip code textbox
@@ -478,12 +528,15 @@ function goButtonFocus(e) {
 	
 	if(keycode == '13'){
 		if($jq("#newziptext").val()!="" && $jq("#newziptext").val().length == 5){
-			$jq('#messages').removeClass("open");
-			sendZip();
+			//$jq('#messages').removeClass("open");
+			//sendZip();
 		}
 		else{
-			$jq("#newziptext").focus();
-			$jq("#messages").addClass("open");
+			setTimeout(function(){
+				$jq("#newziptext").focus();
+			},500);
+			
+			//$jq("#messages").addClass("open");
 		}		
 		e.preventDefault();
 	}

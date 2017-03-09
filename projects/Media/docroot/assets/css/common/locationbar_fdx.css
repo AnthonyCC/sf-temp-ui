@@ -1638,3 +1638,134 @@ option.address-icon {
 	color: #5fb069 !important;
 	text-decoration: underline !important;
 }
+/******css changes**********/
+{noformat}
+#nodeliver-form > div {
+	width: auto;
+    //vertical-align: top;
+}
+
+#nodeliver-form label{
+    display: block;
+	font-weight: normal;
+    font-size: 14px;
+}
+
+#nodeliver-form button{
+	width: 94px;
+} 
+
+#nodeliver-form button:disabled,#locabar_addresses button:disabled{
+	color: #858585;  
+    background-color: #e8e8ea;
+    cursor: not-allowed;
+    box-shadow: none; 
+}
+
+#nodeliver-form > div.section-warning {
+	width: 165px;
+    margin-bottom: 18px;
+}
+
+#locabar_addresses input#location-email{
+	margin-top:7px;
+}
+
+
+#locabar_addresses.anon-deliverable input{
+	width:160px;
+}
+#nodeliver-form input,#locabar_addresses input{
+    margin: 0;
+    height: 40px !important;
+    width: auto;
+    padding: 1px 13px;
+    font-size: 16px !important;
+    background-color: #fff !important;
+    margin-right: 6px;
+    border: 2px solid #d4d4d4 !important;
+    font-weight: normal !important;
+}
+
+#nodeliver-form #location-email{
+	/*width: 182px;*/
+}
+
+#nodeliver-form #location-submit,
+#nodeliver-form #location-email{
+	margin-top: 5px;
+}
+
+#nodeliver-form input::-webkit-input-placeholder{
+	color: #777777;
+}
+
+#nodeliver-form input:focus,#locabar_addresses input:focus{
+	border: 2px solid #68aa6d !important;
+}
+
+#nodeliver-form input.input-error,#locabar_addresses input.input-error{
+	border-color: #b93d3f !important;
+    background-color: #faf5f5 !important;
+}
+
+#nodeliver-form #newzip{
+	margin-top: 5px;
+}
+
+#nodeliver-form #newzip #newziptext{
+	width: auto;
+}
+
+.cssbutton.fdxgreen{
+	background-color: #4fa157; 
+}
+
+#nodeliver-form .error-msg,#locabar_addresses .error-msg{
+	color: #b93d3f;
+    font-size: 12px;
+    visibility:hidden;
+  
+}
+
+#nodeliver-form .conf-msg,#locabar_addresses .conf-msg{
+	font-size: 12px;
+    line-height: normal;
+    width: 270px;
+    margin-top: 5px;
+}
+#nodeliver-form .conf-msg span{
+	font-weight: bold;
+}
+
+.text13 div:nth-child(1),.section-warning div{
+	font-weight: normal;
+    font-size: 14px;
+    line-height: normal;
+}
+
+.text13 div:nth-child(2),.text13.bold{
+	font-weight: bold;
+    font-size: 20px;
+    margin-top: 10px;
+}
+
+#nodeliver-form > div{
+	width:340px;
+}
+#nodeliver-form > div{
+	width:340px;
+}
+.locabar_addresses-anon-nondeliverable .locabar_addresses-change-zip-cont{
+	padding-bottom:0px;
+}
+#location-submit.cssbutton.fdxgreen:focus,#location-submit.cssbutton.fdxgreen:visited {
+    background-color: #5fb067;
+    border-color: #306238;
+    box-shadow: 0 0 1px #aaa, 0 0 8px #aaa;
+}
+
+#location-submit.cssbutton.fdxgreen:hover {
+    background-color: #458d4e;
+    border: 1px solid #458d4e;
+}

@@ -134,9 +134,9 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 			
 		 <%-- test messages 
 			
-				<div class="messages invisible" id="test1" data-type="test1">this is a test message</div>
-				<div class="messages invisible" id="test2" data-type="test2">this is a test message</div>
-				<div class="messages invisible" id="test3" data-type="test3">this is a test message</div>
+				<div class="messages invisible" id="test1" data-type="test1"><a href="xyz">this is a test message</a></div>
+				<div class="messages invisible" id="test2" data-type="test2"><a href="xyz">this is a test message</a></div>
+				<div class="messages invisible" id="test3" data-type="test3"><a href="xyz">this is a test message</a></div>
 				<script>
 			
 					$jq(document).ready(function() {
@@ -341,8 +341,9 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 					<div class="text">Change zip code.</div>
 					<span id="newzip">
 						<label for="newziptext"></label>
-						<input type="text" id="newziptext" class="newziptext placeholder" placeholder="Enter zip code" maxlength="5" onkeydown="goButtonFocus(event);" autocomplete="off" />
-						<button id="newzipgo" class="newzipgo cssbutton orange orange-imp cssbutton-flat">Go</button>
+						<input type="text" id="newziptext" class="newziptext placeholder" placeholder="Enter zip code" maxlength="5" onkeydown="goButtonFocus(event);" autocomplete="off"  aria-describedby="zip_error" />						
+						<button id="newzipgo"  class="newzipgo cssbutton orange orange-imp cssbutton-flat">Change</button>
+						<span class="error-msg" id="zip_error" aria-live="assertive">Incomplete zip code</span>
 					</span>
 				</div>
 			</tmpl:put><%
@@ -382,8 +383,9 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 				%><tmpl:put name="address"><div class="locabar_addresses-anon-nondeliverable">
 					<div style="display: inline-block;" class="section-warning">
 						<div style="margin: 0 0 1em 10px;">
+							<div>FreshDirect does not<br />deliver to zip code:</div>
 							<div class="text13 bold"><%="".equals(shortAddress) ? "" : shortAddress + "," %> <%= ((selectedAddress!=null) ? selectedAddress.getZipCode() : "") %></div>
-							<div>FreshDirect is not available in<br /> this zip code.</div>
+							
 						</div>
 					</div>
 					<tmpl:get name="address_change_zip"/>
@@ -393,7 +395,8 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 							<form class="n">
 								<div class=""><label class="n">Notify me when service comes to my area.</label></div>
 								<div>
-									<input type="text" id="location-email" class="placeholder" placeholder="Enter your e-mail" /><button id="location-submit" class="cssbutton fdxgreen cssbutton-flat">Submit</button>
+									<input type="text" id="location-email" class="placeholder" placeholder="Enter your e-mail" aria-describedby="email_error" /><button id="location-submit"  class="cssbutton fdxgreen cssbutton-flat">Send</button>
+									<span class="error-msg" id="email_error" aria-live="assertive">E-mail address is invalid</span>
 								</div>
 							</form>
 						<% } %>
@@ -404,21 +407,23 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 						<div id="nodeliver-form">
 							<div style="display: inline-block; margin-right: 30px;" class="section-warning">
 								<div style="margin: 0 0 1em 10px; line-height: 14px;" class="text13 bold">
-									<div>FreshDirect is not available in</div>
+									<div>FreshDirect does not deliver to zip code:</div>
 									<div><%="".equals(shortAddress) ? "" : shortAddress + "," %> <%= ((selectedAddress!=null) ? selectedAddress.getZipCode() : "") %></div>
 								</div>
 							</div>
 							<div style="display: inline-block; margin-right: 30px;" >
 								<div class="text13">Change your Zip Code.</div>
 								<label for="newzip"></label>
-								<span id="newzip"><input type="text" id="newziptext" class="newziptext placeholder" placeholder="Enter zip code" maxlength="5" onkeydown="goButtonFocusAlert(event);"><button id="newzipgo" class="newzipgo cssbutton orange orange-imp cssbutton-flat newzipgoAlert">Go</button></span>
+								<span id="newzip"><input type="text" id="newziptext" class="newziptext placeholder" placeholder="Enter zip code" maxlength="5" onkeydown="goButtonFocusAlert(event);" aria-describedby="zip_error"><button id="newzipgo"  class="newzipgo cssbutton orange orange-imp cssbutton-flat newzipgoAlert">Change</button></span>
+								<span class="error-msg" id="zip_error" aria-live="assertive">Incomplete zip code</span>
 							</div>
 							<div class="nodeliver-form" style="display: inline-block;" >
 								<% if (user_locationbar_fdx != null && !user_locationbar_fdx.isFutureZoneNotificationEmailSentForCurrentAddress()) { %>
 									<form class="n">
 										<div style="display: inline-block; max-width: 350px;" class="text13"><label class="n">Notify me when service comes to my area.</label></div>
 										<div>
-											<input type="text" id="location-email" class="location-email-text placeholder" placeholder="Enter your e-mail" /><button id="location-submit" class="cssbutton fdxgreen cssbutton-flat">Submit</button>
+											<input type="text" id="location-email" class="location-email-text placeholder" placeholder="Enter your e-mail" aria-describedby="email_error" /><button id="location-submit"  class="cssbutton fdxgreen cssbutton-flat">Send</button>
+											<span class="error-msg" id="email_error" aria-live="assertive">E-mail address is invalid</span>
 										</div>
 									</form>
 								<% } %>
