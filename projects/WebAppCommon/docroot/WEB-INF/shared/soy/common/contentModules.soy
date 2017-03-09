@@ -10,7 +10,7 @@
   	{foreach $module in $config}
   		{call common.contentModuleSelector}
   			{param moduleConfig: $module /}
-  			{param data: $data[$module.moduleInstanceId] /}
+  			{param data: $data[$module.moduleId] /}
   		{/call}
   	{/foreach}
   </div>

@@ -445,12 +445,12 @@ public class AvailabilityService {
 		return lowPriceList;
 	}
 
-	private static final String REASON_NOT_ELIGIBLE = "Not currently eligible for DeliveryPass. Please contact Customer Service.";
-	private static final String REASON_TOO_MANY_PASSES = "Too many DeliveryPasses added";
-	private static final String REASON_PASS_EXISTS = "Account contains an active or pending DeliveryPass.<br>Please see the Your Account section for more information";
-	private static final String REASON_MAX_PASSES = "Account already has the maximum number of allowable DeliveryPasses.";
-	private static final String REASON_PROMOTIONAL_PASS = "Not currently eligible for DeliveryPasses. Please contact Customer Service at {0}. ";
-	private static final String REASON_MULTIPLE_AUTORENEW_PASSES = "You already have a DeliveryPass scheduled to automatically renew.";
+	public  static final String REASON_NOT_ELIGIBLE = "Not currently eligible for DeliveryPass. Please contact Customer Service.";
+	public  static final String REASON_TOO_MANY_PASSES = "Too many DeliveryPasses added";
+	public  static final String REASON_PASS_EXISTS = "Account contains an active or pending DeliveryPass.<br>Please see the Your Account section for more information";
+	public  static final String REASON_MAX_PASSES = "Account already has the maximum number of allowable DeliveryPasses.";
+	public  static final String REASON_PROMOTIONAL_PASS = "Not currently eligible for DeliveryPasses. Please contact Customer Service at {0}. ";
+	public  static final String REASON_MULTIPLE_AUTORENEW_PASSES = "You already have a DeliveryPass scheduled to automatically renew.";
 
 	private final static Comparator<FDCartLineI> PRICE_COMPARATOR = new Comparator<FDCartLineI>() {
 		public int compare(FDCartLineI o1, FDCartLineI o2) {

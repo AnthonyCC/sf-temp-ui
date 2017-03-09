@@ -13,9 +13,10 @@ import com.freshdirect.cms.search.ContentIndex;
 
 /**
  * 
- * Class to hold the index creation rules. These rules decide which node attributes should be indexed and how.
+ * Class to hold the index creation rules. These rules decide which node attributes should be indexed and how. 
  * 
- * ! IMPORTANT ! The IndexerService builds upon the fact that these rules are not changed runtime! Keep in mind!
+ * ! IMPORTANT ! The IndexerService builds upon the fact that these
+ * rules are not changed runtime! Keep in mind!
  *
  */
 public class IndexConfiguration {
@@ -26,72 +27,69 @@ public class IndexConfiguration {
         return INSTANCE;
     }
 
-    private static final List<ContentIndex> CONFIGURATIONS = new ArrayList<ContentIndex>();
+    private static final List<ContentIndex> configuration = new ArrayList<ContentIndex>();
     static {
-        CONFIGURATIONS.add(new AttributeIndexBuilder("Category", "FULL_NAME").withSpelled(true).build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("Category", "KEYWORDS").withSpelled(true).withRecurseParent(true).build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("Product", "FULL_NAME").withSpelled(true).build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("Product", "AKA").withSpelled(true).build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("Product", "KEYWORDS").withSpelled(true).build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("Product", "brands").withRelationshipAttributeName("FULL_NAME").withSpelled(true).build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("Product", "PRIMARY_HOME").withRelationshipAttributeName("KEYWORDS").withRecurseParent(true).withSpelled(true).build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("Brand", "FULL_NAME").build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("Recipe", "name").withSpelled(true).build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("Recipe", "keywords").withSpelled(true).build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("YmalSet", "title").build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("ConfiguredProductGroup", "name").build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("FavoriteList", "full_name").build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("Recommender", "FULL_NAME").build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("RecommenderStategy", "FULL_NAME").build());
+        configuration.add(new AttributeIndexBuilder("Category", "FULL_NAME").withSpelled(true).build());
+        configuration.add(new AttributeIndexBuilder("Category", "KEYWORDS").withSpelled(true).withRecurseParent(true).build());
+        configuration.add(new AttributeIndexBuilder("Product", "FULL_NAME").withSpelled(true).build());
+        configuration.add(new AttributeIndexBuilder("Product", "AKA").withSpelled(true).build());
+        configuration.add(new AttributeIndexBuilder("Product", "KEYWORDS").withSpelled(true).build());
+        configuration.add(new AttributeIndexBuilder("Product", "brands").withRelationshipAttributeName("FULL_NAME").withSpelled(true).build());
+        configuration.add(new AttributeIndexBuilder("Product", "PRIMARY_HOME").withRelationshipAttributeName("KEYWORDS").withRecurseParent(true).withSpelled(true).build());
+        configuration.add(new AttributeIndexBuilder("Brand", "FULL_NAME").build());
+        configuration.add(new AttributeIndexBuilder("Recipe", "name").withSpelled(true).build());
+        configuration.add(new AttributeIndexBuilder("Recipe", "keywords").withSpelled(true).build());
+        configuration.add(new AttributeIndexBuilder("YmalSet", "title").build());
+        configuration.add(new AttributeIndexBuilder("ConfiguredProductGroup", "name").build());
+        configuration.add(new AttributeIndexBuilder("FavoriteList", "full_name").build());
+        configuration.add(new AttributeIndexBuilder("Recommender", "FULL_NAME").build());
+        configuration.add(new AttributeIndexBuilder("RecommenderStategy", "FULL_NAME").build());
 
-        CONFIGURATIONS.add(new ContentIndex("Sku"));
-        CONFIGURATIONS.add(new ContentIndex("ConfiguredProduct"));
+        configuration.add(new ContentIndex("Sku"));
+        configuration.add(new ContentIndex("ConfiguredProduct"));
 
-        CONFIGURATIONS.add(new AttributeIndexBuilder("FAQ", "QUESTION").withText(true).build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("FAQ", "ANSWER").withText(true).build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("FAQ", "FULL_NAME").build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("FAQ", "KEYWORDS").withText(true).build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("FAQ", "PRIORITY_LIST").withText(true).build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("ImageBanner", "Name").withText(true).build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("ImageBanner", "Description").withText(true).build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("Section", "name").withText(true).build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("WebPage", "PAGE_TITLE").withText(true).build());
+        configuration.add(new AttributeIndexBuilder("FAQ", "QUESTION").withText(true).build());
+        configuration.add(new AttributeIndexBuilder("FAQ", "ANSWER").withText(true).build());
+        configuration.add(new AttributeIndexBuilder("FAQ", "FULL_NAME").build());
+        configuration.add(new AttributeIndexBuilder("FAQ", "KEYWORDS").withText(true).build());
+        configuration.add(new AttributeIndexBuilder("FAQ", "PRIORITY_LIST").withText(true).build());
+        configuration.add(new AttributeIndexBuilder("ImageBanner", "Name").withText(true).build());
+        configuration.add(new AttributeIndexBuilder("ImageBanner", "Description").withText(true).build());
+        configuration.add(new AttributeIndexBuilder("Section", "name").withText(true).build());
+        configuration.add(new AttributeIndexBuilder("WebPage", "PAGE_TITLE").withText(true).build());
 
-        CONFIGURATIONS.add(new ContentIndex("Banner"));
+        configuration.add(new ContentIndex("Banner"));
 
-        CONFIGURATIONS.add(new AttributeIndexBuilder("DarkStore", "name").withText(true).build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("Domain", "NAME").withText(true).build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("Domain", "Label").withText(true).build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("ProductFilter", "name").withText(true).build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("ProductFilterGroup", "name").withText(true).build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("ProductFilterMultiGroup", "level1Name").withText(true).build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("ProductFilterMultiGroup", "level2Name").withText(true).build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("Tag", "name").withText(true).build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("Section", "headlineText").withText(true).build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("DomainValue", "Label").withText(true).build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("DomainValue", "VALUE").withText(true).build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("Module", "name").withText(true).build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("ModuleGroup", "name").withText(true).build());
-        CONFIGURATIONS.add(new AttributeIndexBuilder("ModuleContainer", "name").withText(true).build());
+        configuration.add(new AttributeIndexBuilder("DarkStore", "name").withText(true).build());
+        configuration.add(new AttributeIndexBuilder("Domain", "NAME").withText(true).build());
+        configuration.add(new AttributeIndexBuilder("Domain", "Label").withText(true).build());
+        configuration.add(new AttributeIndexBuilder("ProductFilter", "name").withText(true).build());
+        configuration.add(new AttributeIndexBuilder("ProductFilterGroup", "name").withText(true).build());
+        configuration.add(new AttributeIndexBuilder("ProductFilterMultiGroup", "level1Name").withText(true).build());
+        configuration.add(new AttributeIndexBuilder("ProductFilterMultiGroup", "level2Name").withText(true).build());
+        configuration.add(new AttributeIndexBuilder("Tag", "name").withText(true).build());
+        configuration.add(new AttributeIndexBuilder("Section", "headlineText").withText(true).build());
+        configuration.add(new AttributeIndexBuilder("DomainValue", "Label").withText(true).build());
+        configuration.add(new AttributeIndexBuilder("DomainValue", "VALUE").withText(true).build());
     }
 
     public List<ContentIndex> getIndexConfiguration() {
-        return Collections.unmodifiableList(CONFIGURATIONS);
+        return Collections.unmodifiableList(configuration);
     }
 
     public Map<ContentType, List<AttributeIndex>> getAllIndexConfigurationsByContentType() {
-        Map<ContentType, List<AttributeIndex>> attributeIndexByContentType = new HashMap<ContentType, List<AttributeIndex>>();
-        for (ContentIndex index : CONFIGURATIONS) {
+        Map<ContentType, List<AttributeIndex>> attributeIndexByCotentType = new HashMap<ContentType, List<AttributeIndex>>();
+        for (ContentIndex index : configuration) {
             ContentType contentType = ContentType.get(index.getContentType());
-            List<AttributeIndex> indexes = attributeIndexByContentType.get(contentType);
+            List<AttributeIndex> indexes = attributeIndexByCotentType.get(contentType);
             if (indexes == null) {
                 indexes = new ArrayList<AttributeIndex>();
-                attributeIndexByContentType.put(contentType, indexes);
+                attributeIndexByCotentType.put(contentType, indexes);
             }
             if (index instanceof AttributeIndex) {
                 indexes.add((AttributeIndex) index);
             }
         }
-        return Collections.unmodifiableMap(attributeIndexByContentType);
+        return Collections.unmodifiableMap(attributeIndexByCotentType);
     }
 }

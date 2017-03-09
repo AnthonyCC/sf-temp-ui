@@ -90,7 +90,7 @@ if (searchTerm != null && !searchTerm.trim().isEmpty()) {
 		SpellingTermNormalizer filter = new SpellingTermNormalizer(new Term(searchTerm));
 		List<String> original = filter.getTerms().get(0).getTokens();
 		Registry registry = FDRegistry.getInstance();
-		ContentSearchServiceI search = (ContentSearchServiceI) registry.getService(ContentSearchServiceI.class);
+		ContentSearchServiceI search = new LuceneSearchService();
 		
 		Collection<String> suggestions = res.getSpellingSuggestions();
 	%>

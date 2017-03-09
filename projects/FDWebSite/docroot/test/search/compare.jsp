@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.cms.search.LuceneSearchService"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Collection"%>
@@ -31,7 +32,7 @@
 	}
 
 	Registry registry = FDRegistry.getInstance();
-	ContentSearchServiceI search = (ContentSearchServiceI) registry.getService(ContentSearchServiceI.class);
+	ContentSearchServiceI search = new LuceneSearchService();
 
 	Collection<SearchHit> res1 = s1.trim().length() > 0 ? search.searchProducts(s1, !approximate, !approximate, 2000) : null;
 	Collection<SearchHit> res2 = s2.trim().length() > 0 ? search.searchProducts(s2, !approximate, !approximate, 2000) : null;

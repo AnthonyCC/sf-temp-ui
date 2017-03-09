@@ -22,7 +22,7 @@ import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
 import com.freshdirect.cms.application.service.ResourceInfoServiceI;
 import com.freshdirect.cms.application.service.SimpleContentService;
-import com.freshdirect.framework.conf.ResourceUtil;
+import com.freshdirect.cms.util.XmlResourceUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -87,7 +87,7 @@ public class XmlContentService extends SimpleContentService implements ContentSe
 		try {
 			LOGGER.info("Loading: " + location);
 
-			storeDataStream = ResourceUtil.openResource(location);
+			storeDataStream = XmlResourceUtil.openXmlResource(location);
 
 			if (location.endsWith(".zip")) {
 				storeDataStream = new ZipInputStream(storeDataStream);
@@ -104,7 +104,6 @@ public class XmlContentService extends SimpleContentService implements ContentSe
 			nodeHandler.setContentService(this);
 
 			InputSource dataInputSource = new InputSource(storeDataStream);
-			//dataInputSource.setEncoding("ISO-8859-1");
 			dataInputSource.setEncoding("UTF-8");
 			parser.parse(dataInputSource, nodeHandler);
 
@@ -121,7 +120,7 @@ public class XmlContentService extends SimpleContentService implements ContentSe
 				if (storeDataStream != null)
 					storeDataStream.close();
 			} catch (IOException ex) {
-				ex.printStackTrace();
+			    LOGGER.error("IO exception raised while closing stream", ex);
 				throw new CmsRuntimeException(ex);
 			}
 		}

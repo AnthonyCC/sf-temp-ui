@@ -168,7 +168,7 @@ request.setAttribute("noyui", true);
 				if(null != segmentMessage && segmentMessage.isLocation2()) {
 			        	location2Media = true;
 			    }
-			   	request.setAttribute("listPos", "SystemMessage,HPFeatureTop,HPFeature,HPTab1,HPTab2,HPTab3,HPTab4,HPFeatureBottom,HPWideBottom,HPLeftBottom,HPMiddleBottom,HPRightBottom");
+			   	request.setAttribute("listPos", "SystemMessage,HPFull,HPMain,HPLeft01,HPLeft02,HPLeft03,HPRight01,HPRight02,HPRight03,HPFullTopBar,HPMainTopBar");
 			%>
 
 			<%
@@ -235,8 +235,7 @@ request.setAttribute("noyui", true);
 						<potato:modulehandling name="welcomepagePotato" moduleContainerId="<%=newUserModuleContainerContentKey%>" />
 					<%}%>
 						<soy:render template="common.contentModules" data="${welcomepagePotato}" />
-   			
-						<div class="oas_home_bottom"><script type="text/javascript">OAS_AD('HPWideBottom');</script></div>
+   									
 					</div>
 					<%-- Removed the learn more for marketing change. --%>
 					<%-- <div id="bottom_link"><a href="/welcome.jsp"><img src="/media_stat/images/home/fd_logo_learn_more_back.jpg" alt="Learn More About Our Services"></a></div> --%>

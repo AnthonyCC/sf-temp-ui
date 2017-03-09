@@ -132,20 +132,47 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 				</div>
 			</div>
 			
-			<%-- test messages
+		 <%-- test messages 
 			
 				<div class="messages invisible" id="test1" data-type="test1">this is a test message</div>
 				<div class="messages invisible" id="test2" data-type="test2">this is a test message</div>
 				<div class="messages invisible" id="test3" data-type="test3">this is a test message</div>
 				<script>
+			
 					$jq(document).ready(function() {
 						$jq('#test1').messages('add','test1');
 						$jq('#test2').messages('add','test2');
 						$jq('#test3').messages('add','test3');
-					});
+						
+						/*	//alert notification message close
+						if($jq("#messages.open").length>0){
+							$jq(".locabar-messages-section").hide();
+						}
+						$jq("#locabar-messages-close").click(function(){
+							$jq(".locabar-messages-section").show();
+							$jq(".locabar_messages_trigger").focus();
+						});
+						
+						$jq(".locabar-messages-section").click(function(){
+							if($jq("#messages.open").length>0){
+								$jq(this).hide();
+							}
+						});
+						
+						
+						if($jq("#modifyorderalert").css("display")=="none"){
+							$jq("#locabar_modify_order_trigger").show();
+						}else{
+							$jq("#locabar_modify_order_trigger").hide();
+						}
+						$jq("#modifyorderalert .alert-closeHandler").click(function(){
+							$jq("#locabar_modify_order_trigger").removeClass("alertOpen");
+							$jq("#locabar_modify_order_trigger").show();
+						});*/  
+					}); 
 				</script>
-				
-			--%>
+		--%>
+			 
 	</div></tmpl:put>
 
 <%-- FOODKICK tab --%>
@@ -335,7 +362,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 								<div><a href="/help/delivery_info.jsp">About Delivery</a></div>
 							</div>
 							<div class="locabar_addresses-anon-deliverable-item-icon-clock">
-								<div><a href="/help/delivery_info_check_slots.jsp">Available Timeslots</a></div>
+								<div><a href="/help/delivery_info_check_slots.jsp"  class="avlTimeFocus">Available Timeslots</a></div>
 							</div>
 						</div>
 					<% } %>
@@ -384,7 +411,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 							<div style="display: inline-block; margin-right: 30px;" >
 								<div class="text13">Change your Zip Code.</div>
 								<label for="newzip"></label>
-								<span id="newzip"><input type="text" id="newziptext" class="newziptext placeholder" placeholder="Enter zip code" maxlength="5" onkeydown="goButtonFocus(event);"><button id="newzipgo" class="newzipgo cssbutton orange orange-imp cssbutton-flat">Go</button></span>
+								<span id="newzip"><input type="text" id="newziptext" class="newziptext placeholder" placeholder="Enter zip code" maxlength="5" onkeydown="goButtonFocusAlert(event);"><button id="newzipgo" class="newzipgo cssbutton orange orange-imp cssbutton-flat newzipgoAlert">Go</button></span>
 							</div>
 							<div class="nodeliver-form" style="display: inline-block;" >
 								<% if (user_locationbar_fdx != null && !user_locationbar_fdx.isFutureZoneNotificationEmailSentForCurrentAddress()) { %>

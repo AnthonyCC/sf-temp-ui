@@ -119,12 +119,14 @@ public class PreviewLinkProvider {
                     uri += ("?");
                 }
             }
+        } else if (FDContentTypes.MODULECONTAINER.equals(type)) {
+            uri = "/test/module_content/modulecontainer.jsp?moduleContainerId=" + key.getId();
         }
 
         if (uri != null && isAbsoluteUrl) {
-			return uri;
-		}
-		if (uri != null) {
+            return uri;
+        }
+        if (uri != null) {
             if (storeKey != null) {
                 ContentNodeI theStoreNode = contentService.getContentNode(storeKey, draftContext);
                 if (theStoreNode != null) {

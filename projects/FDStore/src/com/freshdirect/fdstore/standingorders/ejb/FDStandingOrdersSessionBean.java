@@ -361,7 +361,6 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
-	
 	private static final String SHIP_TO_ADDRESS_QUERY = "SELECT * FROM CUST.ADDRESS WHERE ID = ?";
 
 	private ErpAddressModel getShipToAddress(String addressId) throws SQLException {

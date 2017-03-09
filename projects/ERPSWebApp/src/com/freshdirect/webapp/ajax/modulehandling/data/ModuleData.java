@@ -12,7 +12,7 @@ public class ModuleData implements Serializable {
     private String openHTMLEditorial;
     private List<ProductData> products;
     private List<IconData> icons;
-    private ImageGridData imageGridData;
+    private List<IconData> imageGridData;
 
     public String getOpenHTMLEditorial() {
         return openHTMLEditorial;
@@ -38,11 +38,11 @@ public class ModuleData implements Serializable {
         this.icons = icons;
     }
 
-    public ImageGridData getImageGridData() {
+    public List<IconData> getImageGridData() {
         return imageGridData;
     }
 
-    public void setImageGridData(ImageGridData imageGridData) {
+    public void setImageGridData(List<IconData> imageGridData) {
         this.imageGridData = imageGridData;
     }
 

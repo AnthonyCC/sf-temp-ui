@@ -37,7 +37,7 @@ public class ProductItemFilterUtil {
 		for (FilteringProductItem productItem : items){
 			
 			// don't count unavailable items
-			if(isProductListing && !showUnavProducts && (productItem.getProductModel() == null || !(productItem.getProductModel()!=null && productItem.getProductModel().isFullyAvailable())) || (productItem.getProductModel()!=null && productItem.getProductModel().isOutOfSeason())){
+			if(isProductListing && !showUnavProducts && (productItem.getProductModel() == null || !productItem.getProductModel().isFullyAvailable() || productItem.getProductModel().isOutOfSeason())){
 				continue;
 			}
 			

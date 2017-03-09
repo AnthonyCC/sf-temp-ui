@@ -1,17 +1,16 @@
 #viewallPopup.fixedpopup {
+  z-index: 500;
   min-height: 450px;
   min-width: 450px;
 }
 
 #viewallPopup.fixedpopup .fixedPopupContent {
-  min-height: 300px;
-  min-width: 300px;
-  max-height: 80%;
+  min-height: 514px;
+  min-width: 860px;
 }
 
 #viewallPopup .fixedPopupContent .qs-popup-content {
   min-height: 250px;
-  -ms-flex: 1;
 }
 
 #viewallPopup .spinner {
@@ -30,8 +29,8 @@
   margin-right: auto;
 }
 
-.popupcontentoverlay.white-popup-overlay {
-  opacity: 0.8;
+.white-popup-overlay {
+  z-index: 499;
 }
 
 #viewallPopup .fixedPopupContent .qs-popup-content .content-module {
@@ -56,11 +55,4 @@
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
-}
-
-.oas-container button[data-view-all-popup] {
-  border: 0;
-  cursor: pointer;
-  margin: 0;
-  padding: 0;
 }

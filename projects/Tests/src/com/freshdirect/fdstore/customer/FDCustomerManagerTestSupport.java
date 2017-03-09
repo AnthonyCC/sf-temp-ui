@@ -30,8 +30,7 @@ import com.freshdirect.framework.util.DayOfWeekSet;
 import com.mockrunner.mock.ejb.MockUserTransaction;
 
 /**
- * Supporting base class for more advanced EJB testcases using a mock EJB
- * container.
+ * Supporting base class for more advanced EJB testcases using a mock EJB container.
  */
 public abstract class FDCustomerManagerTestSupport extends DbTestCaseSupport {
 
@@ -39,12 +38,12 @@ public abstract class FDCustomerManagerTestSupport extends DbTestCaseSupport {
         super(name);
     }
 
-    protected ContentServiceI       service;
-    protected Context               context;
-    protected MockContainer         container;
-    protected AspectSystem          aspectSystem;
+    ContentServiceI service;
+    protected Context context;
+    protected MockContainer container;
+    protected AspectSystem aspectSystem;
 
-    protected MockUserTransaction   mockTransaction;
+    MockUserTransaction mockTransaction;
     private ErpCustomerFinderAspect customerInfoAspect;
 
     public void setUp() throws Exception {
@@ -61,8 +60,6 @@ public abstract class FDCustomerManagerTestSupport extends DbTestCaseSupport {
 
         aspectSystem.add(customerInfoAspect = new ErpCustomerFinderAspect(null));
     }
-    
-    
 
     public void tearDown() throws Exception {
         dbUnitTearDown(null);
@@ -73,35 +70,41 @@ public abstract class FDCustomerManagerTestSupport extends DbTestCaseSupport {
         this.customerInfoAspect.setCustomerInfo(customerInfo);
     }
 
+    /**
+     * @param sku
+     * @param now
+     * @param materials
+     * @param inventoryCache
+     * @return
+     */
     public static FDProductInfo createProductInfo(String sku, Date now, String[] materials, TestFDInventoryCache inventoryCache) {
         return createProductInfo(sku, now, materials, inventoryCache, EnumAvailabilityStatus.AVAILABLE);
     }
-    
+
     public static FDProductInfo createProductInfo(String sku, Date now, String[] materials, TestFDInventoryCache inventoryCache, final EnumAvailabilityStatus status) {
         ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
         ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.DEFAULT_ZONE_INFO);
         dummyList.addZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO, dummy);
-        Map<String,FDPlantMaterial> plantInfo=new HashMap<String,FDPlantMaterial>() {
-			private static final long serialVersionUID = -326897998315455469L;
+        Map<String, FDPlantMaterial> plantInfo = new HashMap<String, FDPlantMaterial>() {
 
-			{
-				put("1000",new FDPlantMaterial(EnumATPRule.MATERIAL,false,false,DayOfWeekSet.EMPTY,1,"1000",false));
-			}
-		};
-		
-		Map<String, FDMaterialSalesArea> mAvail=new HashMap<String, FDMaterialSalesArea>(){
-			private static final long serialVersionUID = 8055205712500109976L;
+            {
+                put("1000", new FDPlantMaterial(EnumATPRule.MATERIAL, false, false, DayOfWeekSet.EMPTY, 1, "1000", false));
+            }
+        };
 
-			{put("1000"+"1000",new FDMaterialSalesArea(new SalesAreaInfo("1000","1000"),status.getStatusCode(),new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),"XYZ",null, "1000"));
-			};
-		};
-		;
-		
-		return new FDProductInfo(sku,0,null,null,ZonePriceInfoListing.getDummy(),plantInfo,mAvail, false);
-        
+        Map<String, FDMaterialSalesArea> mAvail = new HashMap<String, FDMaterialSalesArea>() {
+
+            {
+                put("1000" + "1000", new FDMaterialSalesArea(new SalesAreaInfo("1000", "1000"), status.getStatusCode(),
+                        new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(), "XYZ", null, "1000"));
+            };
+        };
+        ;
+
+        return new FDProductInfo(sku, 0, null, null, ZonePriceInfoListing.getDummy(), plantInfo, mAvail, false);
+
     }
-    
-    
+
     public static interface MockErpCustomerHome extends ErpCustomerHome, EJBLocalHome {
     }
 }

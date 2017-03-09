@@ -1004,6 +1004,12 @@
 		<div class="pageDesc">Generate SQL needed for mass credits</div>
 	</div>
 	
+	<div class="tag productRequest HTTPS">
+		<div class="pageName"><span>Mass Credit Helper</span></div>
+		<div class="link"><a href="/test/content/product_request_https.jsp">/test/content/product_request_https.jsp</a></div>
+		<div class="pageDesc">Test pop-up vs overlay in HTTP/S<br /><br />Content is in: /media/testing/product_request_https.ftl</div>
+	</div>
+	
 	<hr />
 </div>
 

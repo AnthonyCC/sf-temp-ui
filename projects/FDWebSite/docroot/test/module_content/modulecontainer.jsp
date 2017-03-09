@@ -1,4 +1,3 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
@@ -11,9 +10,9 @@ String moduleContainerId = "ModuleContainer:"+request.getParameter("moduleContai
 <fd:CheckDraftContextTag/>
 
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 	<head>
-		<%@ include file="/shared/template/includes/i_stylesheets_optimized.jspf" %>
+		<%@ include file="/shared/template/includes/i_stylesheets_optimized.jspf" %>		
 </head>
 
 <body>
@@ -22,7 +21,7 @@ String moduleContainerId = "ModuleContainer:"+request.getParameter("moduleContai
 	<%}
 	else{%>
 		<potato:modulehandling name="moduleContainerPotato" moduleContainerId="<%=moduleContainerId%>" />
-
+		
 		<c:if test="${empty moduleContainerPotato.config}">
 			Module container was not found with the following Id:  <%=request.getParameter("moduleContainerId") %>
 		</c:if>
@@ -31,17 +30,14 @@ String moduleContainerId = "ModuleContainer:"+request.getParameter("moduleContai
 				<soy:render template="common.contentModules" data="${moduleContainerPotato}" />
 			</div>
 		</c:if>
-
-
-
+	
+	
+	
 	<%} %>
-
+	
 <script>
     window.FreshDirect = window.FreshDirect || {};
     window.FreshDirect.moduleContainer = window.FreshDirect.moduleContainer || {};
-
-    window.FreshDirect.user = window.FreshDirect.user || {};
-    window.FreshDirect.user.isZipPopupUsed = true;
 
     window.FreshDirect.moduleContainer.data = <fd:ToJSON object="${moduleContainerPotato}" noHeaders="true"/>
     console.log(window.FreshDirect.moduleContainer.data);
@@ -51,15 +47,14 @@ String moduleContainerId = "ModuleContainer:"+request.getParameter("moduleContai
       var $jq = FreshDirect.libs.$;
     </script>
     <soy:import packageName="common"/>
-    <jwr:script src="/commonjavascript.js" useRandomParam="false" />
-    <jwr:script src="/fdmodules.js"  useRandomParam="false" />
+     <jwr:script src="/fdmodules.js"  useRandomParam="false" />
     <jwr:script src="/fdcomponents.js"  useRandomParam="false" />
     <jwr:script src="/fdmisc.js" useRandomParam="false" />
 
+   
 
-
-
-
-
+   
+    
+    
   </body>
 </html>

@@ -2,6 +2,7 @@ package com.freshdirect.fdstore;
 
 import java.rmi.RemoteException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,10 +37,17 @@ public class FDCOOLInfoCache extends FDAbstractCache {
 	}
 	
 	protected Map<ErpCOOLKey, ErpCOOLInfo> loadData(Date since) {
+		Map<ErpCOOLKey, ErpCOOLInfo> data = new HashMap<ErpCOOLKey, ErpCOOLInfo>();
 		try {
 			LOGGER.info("REFRESHING");
-			ErpCOOLManagerSB sb = this.lookupCOOLInfoHome().create();
-			Map<ErpCOOLKey, ErpCOOLInfo> data = sb.load(since);
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				// cannot invoke fdcommerce service gateway directly from this project.
+				//data = LogisticsServiceLocator.getInstance().getCommerceService().getCountryOfOriginData(); 
+			}else{
+				ErpCOOLManagerSB sb = this.lookupCOOLInfoHome().create();
+				data = sb.load(since);
+			}
+			
 			LOGGER.info("REFRESHED: " + data.size());
 			return data;
 		} catch (RemoteException e) {

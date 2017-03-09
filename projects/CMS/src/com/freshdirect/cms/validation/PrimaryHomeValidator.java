@@ -48,7 +48,7 @@ public class PrimaryHomeValidator implements ContentValidatorI {
             // make the change
             ContentNodeI clone;
             if (draftContext != DraftContext.MAIN) {
-                clone = new ChangedContentNode(node.copy());
+                clone = new ChangedContentNode(node);
 
             } else {
                 clone = node.copy();

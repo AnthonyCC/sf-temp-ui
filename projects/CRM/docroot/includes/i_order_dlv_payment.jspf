@@ -13,13 +13,13 @@
 <script type="text/javascript" language="javascript">
 //<!--
 
-function loadSignature(order)
+function loadSignature(order,estoreId)
 {
 	
 	
 	var ajaxRequest = new Ajax.Request('/api/signature.jsp', {
 	    method:       'get', 
-	    parameters:   {orderId: order}, 
+	    parameters:   {orderId: order,estoreId:estoreId}, 
 	    asynchronous: true,
 	    onComplete:   showResponse
 	});
@@ -206,7 +206,7 @@ function loadSignature(order)
 					<td>Name on account&nbsp;&nbsp;</td>
 					<td><%= paymentMethod.getName() %>
 				 	<%if(showSignature  && FDStoreProperties.isAirclicEnabled() && order instanceof FDOrderI && ((FDOrderI)order).hasSignature()){%>
-					&nbsp;<a href="javascript:pop('/api/signature.jsp?orderId=<%=((FDOrderI)order).getErpSalesId()%>','300','400')">View Signature</a> 
+					&nbsp;<a href="javascript:pop('/api/signature.jsp?orderId=<%=((FDOrderI)order).getErpSalesId()%>&estoreId=<%=((FDOrderI)order).getEStoreId()%>','300','400')">View Signature</a> 
 					
 					</td>
 					<%}%> 

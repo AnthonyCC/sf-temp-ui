@@ -130,15 +130,16 @@ public class FeedPublishOverview extends DetailPanel implements PublishListener 
 		allChanges = new Anchor("Show all changes");
 		allChanges.addListener(Events.OnClick, new Listener<BaseEvent>() {		
 			public void handleEvent(BaseEvent be) {
-				ChangeSetQuery q = new ChangeSetQuery();
-				q.setPublishId(publishId);
+				ChangeSetQuery query = new ChangeSetQuery();
+				query.setPublishId(publishId);
+				query.setPublishType("X");
 				overview.show();
 				allChanges.hide();
 				startPublish.hide();
 				if (!publishId.equals("latest")) {
 					allMessages.show();
 				}
-				loadChanges(q);
+				loadChanges(query);
 			};
 		});
 		actionBar.addLink(allChanges, new Margins(0, 10, 0, 0));
@@ -146,13 +147,14 @@ public class FeedPublishOverview extends DetailPanel implements PublishListener 
 		allMessages = new Anchor("Show all messages");
 		allMessages.addListener(Events.OnClick, new Listener<BaseEvent>() {		
 			public void handleEvent(BaseEvent be) {
-				ChangeSetQuery q = new ChangeSetQuery();
-				q.setPublishId(publishId);
+				ChangeSetQuery query = new ChangeSetQuery();
+				query.setPublishId(publishId);
+				query.setPublishType("X");
 				overview.show();
 				allMessages.hide();
 				allChanges.show();
 				startPublish.hide();
-				loadMessages(q);
+				loadMessages(query);
 			};
 		});
 		actionBar.addLink(allMessages, new Margins(0, 10, 0, 0));
@@ -257,13 +259,14 @@ public class FeedPublishOverview extends DetailPanel implements PublishListener 
 				}
 				
 				query = new ChangeSetQuery();
-				query.setMessageSeverity(Integer.valueOf(message.getKey()));				
-				PublishOverviewField f = new PublishOverviewField(value, 150);		
-				f.setChangeSetQuery(query);
-				f.addStyleName(key);
-				f.setValue((float) value / (float) messageCount);
-				f.setFieldLabel(key);
-				messages.getFieldSet().add(f);
+				query.setMessageSeverity(Integer.valueOf(message.getKey()));		
+				query.setPublishType("X");
+				PublishOverviewField field = new PublishOverviewField(value, 150);		
+				field.setChangeSetQuery(query);
+				field.addStyleName(key);
+				field.setValue((float) value / (float) messageCount);
+				field.setFieldLabel(key);
+				messages.getFieldSet().add(field);
 			}
 			statisticPanel.add(messages, new ColumnData(300));
 		}
@@ -275,11 +278,12 @@ public class FeedPublishOverview extends DetailPanel implements PublishListener 
 			int value = contributor.getValue();
 			query = new ChangeSetQuery();
 			query.setContributor(contributor.getKey());
-			PublishOverviewField f = new PublishOverviewField(value, 150);
-			f.setChangeSetQuery(query);
-			f.setValue((float) value / (float) data.getChangeCount());
-			f.setFieldLabel(contributor.getKey());
-			contributors.getFieldSet().add(f);
+			query.setPublishType("X");
+			PublishOverviewField field = new PublishOverviewField(value, 150);
+			field.setChangeSetQuery(query);
+			field.setValue((float) value / (float) data.getChangeCount());
+			field.setFieldLabel(contributor.getKey());
+			contributors.getFieldSet().add(field);
 		}
 
 		OverviewForm types = new OverviewForm("Content Types", this);
@@ -289,11 +293,12 @@ public class FeedPublishOverview extends DetailPanel implements PublishListener 
 			int value = type.getValue();
 			query = new ChangeSetQuery();
 			query.setContentType(type.getKey());
-			PublishOverviewField f = new PublishOverviewField(value, 150);
-			f.setChangeSetQuery(query);
-			f.setValue((float) value / (float) data.getChangeCount());
-			f.setFieldLabel(type.getKey());
-			types.getFieldSet().add(f);
+			query.setPublishType("X");
+			PublishOverviewField field = new PublishOverviewField(value, 150);
+			field.setChangeSetQuery(query);
+			field.setValue((float) value / (float) data.getChangeCount());
+			field.setFieldLabel(type.getKey());
+			types.getFieldSet().add(field);
 		}
 
 		statisticPanel.add(contributors, new ColumnData(300));

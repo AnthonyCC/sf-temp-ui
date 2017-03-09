@@ -85,6 +85,7 @@ import com.freshdirect.mobileapi.util.BrowseUtil;
 import com.freshdirect.mobileapi.util.DeliveryAddressValidatorUtil;
 import com.freshdirect.mobileapi.util.ProductPotatoUtil;
 import com.freshdirect.webapp.ajax.cart.CartOperations;
+import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -1490,7 +1491,36 @@ public class CheckoutController extends BaseController {
                 if (isSuccess(message.getStatus())) {
                     ActionResult availabliltyResult = this.performAvailabilityCheck(user, request.getSession());
                     if (!availabliltyResult.isSuccess()) {
-                        message = checkout.fillAtpErrorDetail(message, request);
+                    	if(availabliltyResult.getFirstError().getDescription().equals(AvailabilityService.REASON_MAX_PASSES) ||
+                    	   availabliltyResult.getFirstError().getDescription().equals(AvailabilityService.REASON_PASS_EXISTS))
+                    	{
+                    		message.addErrorMessage("Your account already has Delivery Pass enabled, please remove to continue");
+                            message.setStatus(Message.STATUS_FAILED);
+                    	}
+                    	else if(availabliltyResult.getFirstError().getDescription().equals(AvailabilityService.REASON_TOO_MANY_PASSES))
+                    	{
+                    		message.addErrorMessage("Too many Delivery Passes added, please choose one and continue");
+                            message.setStatus(Message.STATUS_FAILED);
+                    	}
+                    	else if(availabliltyResult.getFirstError().getDescription().equals(AvailabilityService.REASON_NOT_ELIGIBLE))
+                    	{
+                    		message.addErrorMessage("You are not currently eligible for Delivery Passes. Please contact Customer Service");
+                            message.setStatus(Message.STATUS_FAILED);
+                    	}
+                    	else if(availabliltyResult.getFirstError().getDescription().equals(AvailabilityService.REASON_PROMOTIONAL_PASS))
+                    	{
+                    		message.addErrorMessage("You are not currently eligible for Delivery Passes. Please contact Customer Service");
+                            message.setStatus(Message.STATUS_FAILED);
+                    	}
+                    	else if(availabliltyResult.getFirstError().getDescription().equals(AvailabilityService.REASON_MULTIPLE_AUTORENEW_PASSES))
+                    	{
+                    		message.addErrorMessage("You already have a Delivery Pass scheduled to automatically renew. Please remove and continue");
+                            message.setStatus(Message.STATUS_FAILED);
+                    	}
+                    	else
+                    	{
+                    		message = checkout.fillAtpErrorDetail(message, request);
+                    	}
                     } else {
                         // message = checkout.submitEx((SubmitOrderExResult)message, user, request);
                         FDCartModel cartModel = fdUser.getShoppingCart();

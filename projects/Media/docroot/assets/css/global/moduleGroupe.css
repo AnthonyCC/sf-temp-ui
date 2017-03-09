@@ -1,13 +1,14 @@
 .module-group {
   align-items: center;
   background-image: none;
+  background: #F2F3F4;
   display: flex;
   font-family: 'Brandon Text';
   justify-content: space-between;
   margin: 0;
-  margin-top: 10px;
-  min-height: 52px;
-  padding: 20px 0;
+  margin-top: 35px;
+  margin-bottom: 2px;
+  min-height: 40px;
   padding: 0 10px;
 }
 
@@ -18,14 +19,14 @@
 .module-group .module-text h1 {
   font-family: 'Brandon Text';
   font-size: 25px;
-  font-weight: 700;
+  font-weight: 500;
   line-height: 25px;
   margin: 0;
   margin-right: 15px;
   text-transform: uppercase;
 }
 
-.module-group .module-text h2 {
+.module-group .module-text h3 {
   font-family: 'Brandon Text';
   font-weight: 500;
   font-size: 16px;
@@ -35,24 +36,24 @@
 }
 
 .module-group .module-text .module-group-text-banner {
-  background-color: #f68139;
+  background-color: #eb202a;
   color: white;
   padding-left: 10px;
-  padding-right: 20px;
+  padding-right: 15px;
   position: relative;
   text-transform: none;
 }
 
 .module-group .module-text .module-group-text-banner::after {
-  background-color: white;
-  min-width: 20px;
-  min-height: 20px;
+  border-bottom: 13px solid #eb202a;
+  border-top: 13px solid #eb202a;
+  border-left: none;
+  border-right: 10px solid transparent;
   content: '';
   display: block;
   position: absolute;
-  right: -9px;
-  top: 3px;
-  transform: rotate(45deg);
+  right: -10px;
+  top: 0;
 }
 
 .module-group .view-all {

@@ -12,6 +12,10 @@ import com.freshdirect.cms.application.permission.domain.CmsUserBuilder;
 import com.freshdirect.cms.application.permission.domain.Persona;
 import com.freshdirect.cms.application.permission.domain.PersonaWrapper;
 import com.freshdirect.cms.application.permission.service.PersonaService;
+import com.freshdirect.cms.publish.EnumPublishStatus;
+import com.freshdirect.cms.publish.service.PublishStatusService;
+import com.freshdirect.cms.publish.service.impl.BasicPublishStatusService;
+import com.freshdirect.cms.ui.service.ServerException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 public abstract class GwtServiceBase extends RemoteServiceServlet {
@@ -21,12 +25,11 @@ public abstract class GwtServiceBase extends RemoteServiceServlet {
     protected static final String CMS_USER_SESSION_NAME = "CMS_USER";
 
     protected ContentServiceI contentService;
-    
-    
+
     public GwtServiceBase() {
         this.contentService = CmsManager.getInstance();
     }
-    
+
     public CmsUser getCmsUser() {
         HttpServletRequest request = getThreadLocalRequest();
         return getCmsUserFromRequest(request);
@@ -41,6 +44,34 @@ public abstract class GwtServiceBase extends RemoteServiceServlet {
     public static CmsUser getCmsUserFromRequest(HttpServletRequest request) {
         String userName = request.getUserPrincipal().getName();
         return populateCmsUser(request, userName);
+    }
+
+    /**
+     * If there is a publish in progress then nobody should be able to save changes on the MAIN draft.
+     * 
+     * @param draftContext
+     *            the draftContext on which the save request come
+     * @return true if node modification is okay, false otherwise
+     */
+    public static boolean isNodeModificationEnabled(DraftContext draftContext) {
+        boolean canSave = true;
+        try {
+            EnumPublishStatus lastPublishStatus = EnumPublishStatus.getEnum(getLastPublishStatusName());
+            if (draftContext == DraftContext.MAIN && lastPublishStatus == EnumPublishStatus.PROGRESS) {
+                canSave = false;
+            }
+        } catch (ServerException e) {
+            canSave = false;
+        }
+        return canSave;
+    }
+
+    protected static PublishStatusService getPublishStatusService() {
+        return BasicPublishStatusService.defaultService();
+    }
+
+    protected static String getLastPublishStatusName() throws ServerException {
+        return getPublishStatusService().getLastPublish().getStatus().getName();
     }
 
     private static CmsUser populateCmsUser(HttpServletRequest request, String userName) {

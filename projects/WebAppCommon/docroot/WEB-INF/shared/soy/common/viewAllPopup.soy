@@ -12,12 +12,12 @@
  */
 {template .viewAllPopup autoescape="false"}
     <div id="{$popupId}" class="fixedpopup {if not $helpTemplate}qs-hidehelp{/if} {if $hasClose}qs-hasclose{/if} {$customClass}{if $mobWeb} mm-page{/if}">
-        <div class="fixedPopupHelper"></div>
-        <div class="fixedPopupContent">
-              <div class="qs-popup-header"><span>{$headerContent}</span> <button nofocus class="qs-popup-help-icon" data-bodytemplate="{$helpTemplate}" data-header="{$helpHeader}">help</button> <button nofocus class="qs-popup-close-icon" onclick="close_window_new_account();">close</button></div>
-              <div class="qs-popup-content">
-                {$bodyContent}
-               </div>
+    	<div class="fixedPopupHelper"></div>
+    	<div class="fixedPopupContent">
+	      <h2 class="qs-popup-header"><span>{$headerContent}</span> <button nofocus class="qs-popup-help-icon" data-bodytemplate="{$helpTemplate}" data-header="{$helpHeader}">help</button> <button nofocus class="qs-popup-close-icon" onclick="close_window_new_account();">close</button></h2>
+	      <div class="qs-popup-content">
+	        {$bodyContent}
+	       </div>
          <div class="qs-popup-close">
           <button class="cssbutton cssbutton-flat green transparent" data-close-viewall-popup>close</button>
          </div>

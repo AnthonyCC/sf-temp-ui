@@ -1,3 +1,4 @@
+<%@ page import="com.freshdirect.common.context.MasqueradeContext"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDCartModel"%>
 <%@ page import="com.freshdirect.fdstore.EnumCheckoutMode"%>
 <%@ page import="com.freshdirect.webapp.ajax.quickshop.QuickShopRedirector"%>
@@ -27,6 +28,7 @@
 	recognizedAllowed='false' />
 <fd:QuickShopRedirector user="<%=user%>" from="<%=QuickShopRedirector.FROM.NEW_SO3_DETAIL %>"/>
 <%
+MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 FDStandingOrder currentStandingOrder=null;
 String isNewSo= request.getParameter("newso");
 if("false".equals(isNewSo)){
@@ -48,7 +50,32 @@ user.setSoTemplateCart(new FDCartModel());
 <potato:singlePageCheckout standingOrder="true"/>
 <potato:cartData standingOrder="true"/>
 
-<tmpl:insert template='/quickshop/includes/standing_order.jsp'>
+<%
+String pageTemplate = "/expressco/includes/standing_order.jsp";
+if (true) {
+	pageTemplate = "/expressco/includes/ec_template.jsp";
+}
+%>
+
+<tmpl:insert template='<%= pageTemplate %>'>
+
+	<tmpl:put name="globalnav">
+  	<%-- MASQUERADE HEADER STARTS HERE --%>
+  	<% if (masqueradeContext != null) {
+  		String makeGoodFromOrderId = masqueradeContext.getMakeGoodFromOrderId();
+  	%>
+	<div id="topwarningbar">
+		You (<%=masqueradeContext.getAgentId()%>) are masquerading as <%=user.getUserId()%> (Store: <%= user.getUserContext().getStoreContext().getEStoreId() %> | Facility: <%= user.getUserContext().getFulfillmentContext().getPlantId() %>)
+		<%if (makeGoodFromOrderId!=null) {%>
+			<br>You are creating a MakeGood Order from <a href="/quickshop/shop_from_order.jsp?orderId=<%=makeGoodFromOrderId%>">#<%=makeGoodFromOrderId%></a>
+			(<a href="javascript:if(FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/overlays/carton_contents_view.jsp?showForm=true&orderId=<%= makeGoodFromOrderId %>&scroll=yes', width: 600, height: 800, opacity: .5}) } else {pop('/overlays/carton_contents_view.jsp?showForm=true&orderId=<%= makeGoodFromOrderId %>&scroll=yes','600','800')};">Carton Contents</a>)
+			<a class="imgButtonRed" href="/cancelmakegood.jsp">Cancel MakeGood</a>
+		<%}%>
+	</div>
+  	<% } %>
+  	<%-- MASQUERADE HEADER ENDS HERE --%>
+    <soy:render template="expressco.checkoutheader" data="${singlePageCheckoutPotato}" />
+  </tmpl:put>
 	<tmpl:put name="soytemplates">
 		<soy:import packageName="expressco" />
 	</tmpl:put>
@@ -59,45 +86,33 @@ user.setSoTemplateCart(new FDCartModel());
 		<%@ include file="/common/template/includes/i_jsmodules.jspf"%>
 		<jwr:script src="/expressco.js" useRandomParam="false" />
 	</tmpl:put>
+	
+	<tmpl:put name="bottomnav">
+	    <div class="container checkout__footer">
+	        <p class="checkout__footer-rights"><%@ include file="/shared/template/includes/copyright.jspf" %></p>
+	        <p class="checkout__footer-links"><a href='/help/privacy_policy.jsp' data-ifrpopup="/help/privacy_policy.jsp?type=popup" data-ifrpopup-width="600">Privacy Policy</a> | <a href="/help/terms_of_service.jsp" data-ifrpopup="/help/terms_of_service.jsp?type=popup" data-ifrpopup-width="600">Customer Agreement</a></p>
+	    </div>
+  	</tmpl:put>
+  
 	<tmpl:put name='content' direct='true'>
+	
+		<div class="standing-orders-3-cont">
 
 		<% if (user.isEligibleForStandingOrders()) {%>
-
+		
 		<div class="standing-orders-3 w970p">
 
 			<div class="standing-orders-3-create-header">
-				Your Standing Orders
-				<div class="standing-orders-3-create-text">
-					We do the rest and orders arrives as scheduled.
-					<div class="standing-orders-3-learn-more">
-						Learn More
-						<div style="position: relative;">
-							<div class="standing-orders-3-popup">
-								<p>Why Use a Standing Order?</p>
-								<ul>
-									<li>Standing orders are like shopping lists that shop for
-										you. Add items you need on a regular basis and we'll send them
-										on the schedule you choose.</li>
-									<li>Select weekly, biweekly or monthly delivery at times
-										that are convenient for you.</li>
-									<li>You can make changes or cancel deliveries just like
-										all Fresh Direct orders.</li>
-									<li>Never run out of bananas again!</li>
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="standing-orders-3-h-settings">
-				Standing Order Settings
+				Create a New Standing Order
+				<button class="standing-orders-3-new-start-shop cssbutton cssbutton-flat orange" disabled onclick="submitFormNewSO('create');">Start Shopping</a>
+				<button class="standing-orders-3-new-cancel-button cssbutton cssbutton-flat green transparent" type="button" onclick="standingOrderNewCancel()">Cancel</button>
 				<hr>
-				<div class="standing-orders-3-saved-container">
-					<div class="standing-orders-3-so-new-saved">Saved!</div>
-				</div>
+				<!-- 
+					<div class="standing-orders-3-saved-container">
+						<div class="standing-orders-3-so-new-saved">Saved!</div>
+					</div>
+				-->
 			</div>
-
 			<div class="standing-orders-3-set-form">
 					<input type="hidden" name="action" value="create">
 					<% if(null!=user.getCurrentStandingOrder() && null!=user.getCurrentStandingOrder().getCustomerListName()) {
@@ -108,9 +123,10 @@ user.setSoTemplateCart(new FDCartModel());
 					<%} %>
 					<div class="standing-orders-3-name-input-change">
 						<div class="standing-orders-3-char-count"></div>
-						<button class="standing-orders-3-name-input-ok-button" type="button" onmousedown="newStandingOrderNameInputChangeOK()">OK</button>
-					</div>
-					<button class="standing-orders-3-new-cancel-button cssbutton cssbutton-flat black" type="button" onclick="standingOrderNewCancel()">Cancel</button>										
+						<!-- 
+							<button class="standing-orders-3-name-input-ok-button" type="button" onmousedown="newStandingOrderNameInputChangeOK()">OK</button>
+						 -->
+					</div>						
 			</div>
 			<div style="position: relative;">
 				<div id="newsoErroMessage"></div>
@@ -118,25 +134,28 @@ user.setSoTemplateCart(new FDCartModel());
 
 			<div class="standing-orders-3-newso-drawer-container">
 				<div id="ec-drawer"></div>
-				<div class="standing-orders-3-newso-shop-buttons-container">
-					<hr>
-					<div class="standing-orders-3-newso-shop-buttons">
-						<button class="standing-orders-3-newso-shop-buttons-past cssbutton cssbutton-flat purple" onclick="window.open('/quickshop/qs_past_orders.jsp', '_self');">Shop from Past Order</button>
-						<button class="standing-orders-3-newso-shop-buttons-now cssbutton cssbutton-flat green" onclick="window.open('/index.jsp', '_self');">Shop Now &gt;</button>
+				<!--  
+					<div class="standing-orders-3-newso-shop-buttons-container">
+						<hr>
+						<div class="standing-orders-3-newso-shop-buttons">
+							<button class="standing-orders-3-newso-shop-buttons-past cssbutton cssbutton-flat purple" onclick="window.open('/quickshop/qs_past_orders.jsp', '_self');">Shop from Past Order</button>
+							<button class="standing-orders-3-newso-shop-buttons-now cssbutton cssbutton-flat green" onclick="window.open('/index.jsp', '_self');">Shop Now &gt;</button>
+						</div>
+						<div class="clear"></div>
 					</div>
-					<div class="clear"></div>
-				</div>
+				-->
 			</div>
 		</div>
 
 		<% } %>
+		</div>
 
 		<script>
       // potato loading
       window.FreshDirect.expressco = {};
-      window.FreshDirect.expressco.data = <fd:ToJSON object="${singlePageCheckoutPotato}" noHeaders="true"/>
+      window.FreshDirect.expressco.data = <fd:ToJSON object="${singlePageCheckoutPotato}" noHeaders="true"/>;
       window.FreshDirect.metaData = window.FreshDirect.expressco.data.formMetaData;
-      window.FreshDirect.pendingCustomizations = <fd:ToJSON object="${pendingExternalAtcItemPotato}" noHeaders="true"/>
+      window.FreshDirect.pendingCustomizations = <fd:ToJSON object="${pendingExternalAtcItemPotato}" noHeaders="true"/>;
     </script>
 
 	</tmpl:put>
@@ -144,9 +163,11 @@ user.setSoTemplateCart(new FDCartModel());
 	<tmpl:put name="extraCss">
 		<fd:css href="/assets/css/timeslots.css" media="all" />
 		<jwr:style src="/expressco.css" media="all" />
+		<jwr:style src="/quickshop.css" media="all" />
 	</tmpl:put>
 
 	<tmpl:put name="extraJs">
 		<fd:javascript src="/assets/javascript/timeslots.js" />
+		<jwr:script src="/qsstandingorder.js" />
 	</tmpl:put>
 </tmpl:insert>

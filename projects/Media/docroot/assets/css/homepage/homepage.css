@@ -162,7 +162,13 @@ html,body {
   width: 50%;
 }
 
-.oas-homepageredesign .oas-container {
+.oas-homepageredesign .oas-container,
+.oas-homepageredesign .oas-container .right-side,
+.oas-homepageredesign .oas-container .right-side .line {
   display: flex;
   justify-content: space-between;
+}
+
+.oas-homepageredesign .oas-container .right-side {
+  flex-direction: column;
 }

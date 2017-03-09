@@ -15,8 +15,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.util.DYFUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.SearchResult;
 import com.freshdirect.mobileapi.controller.data.request.SearchQuery;
@@ -258,6 +262,20 @@ public class SearchController extends BaseController {
 
         List<String> products = productService.searchProductIds(searchTerm, upc, page, resultMax, sortType, brandToFilter, categoryToFilter, departmentToFilter,
                 getUserFromSession(request, response), request);
+        
+        List<String> favProducts = new ArrayList<String>();
+        favProducts.clear();
+        if(!products.isEmpty()){
+        	for(String product : products){
+        		ProductModel productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey("Product:" + product)); 
+        		if(productModel!=null && productModel.getContentKey()!=null){
+        			boolean isYourFave = DYFUtil.isFavorite( productModel, user.getFDSessionUser() );
+        			if(isYourFave){
+        				favProducts.add(product);
+        			}
+        		}
+        	}
+        }
 
         // Data required for filtering: Brands
         Set<Brand> brands = productService.getBrands();
@@ -305,6 +323,7 @@ public class SearchController extends BaseController {
         data.setQuery(searchTerm);
         // data.setProductsFromModel(products);
         data.setProductIds(products);
+        data.setFavProductIds(favProducts);
         data.setBrands(brandList);
         data.setCategories(categoryList);
         data.setDepartments(departmentList);
@@ -317,6 +336,7 @@ public class SearchController extends BaseController {
             data.setTotalResultCount(0);
             data.setQuery(searchTerm);
             data.setProductIds(Collections.<String>emptyList());
+            data.setFavProductIds(Collections.<String>emptyList());
             data.setBrands(Collections.<FilterOption> emptyList());
             data.setCategories(Collections.<FilterOption> emptyList());
             data.setDepartments(Collections.<FilterOption> emptyList());

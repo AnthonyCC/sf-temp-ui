@@ -97,6 +97,7 @@ import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.ExceptionAddress;
 import com.freshdirect.logistics.delivery.model.GeoLocation;
 import com.freshdirect.logistics.delivery.model.OrderContext;
+import com.freshdirect.logistics.delivery.model.RouteStopInfo;
 import com.freshdirect.logistics.delivery.model.ShippingDetail;
 import com.freshdirect.logistics.delivery.model.TimeslotContext;
 import com.freshdirect.logistics.fdstore.StateCounty;
@@ -1422,6 +1423,16 @@ public void recommitReservation(String rsvId, String customerId, OrderContext co
 		throw new FDResourceException(ce);
 	}	
 }	
+
+	public RouteStopInfo getRouteStopInfo(String orderId) throws FDResourceException {
+	try {
+		ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
+		RouteStopInfo response = logisticsService.getRouteStopInfo(orderId);
+		return response;
+		} catch (FDLogisticsServiceException ex) {
+		throw new FDResourceException(ex);
+		}
+	}
 	
 	
 }

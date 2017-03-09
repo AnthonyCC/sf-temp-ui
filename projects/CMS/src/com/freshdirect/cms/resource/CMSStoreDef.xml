@@ -57,11 +57,8 @@
 				<DestinationDef contentType="PickList"/>
 				<DestinationDef contentType="PickListItem"/>
 				<DestinationDef contentType="DarkStore"/>
-				<DestinationDef contentType="Icon"/>
-				<DestinationDef contentType="ImageGrid"/>
 				<DestinationDef contentType="ModuleContainer"/>
-				<DestinationDef contentType="ModuleInstance"/>
-				<DestinationDef contentType="Datasource"/>
+				<DestinationDef contentType="ModuleGroup"/>
 				<DestinationDef contentType="Module"/>
 			</RelationshipDef>
 		</RelationshipDefs>
@@ -2646,7 +2643,8 @@
 			<AttributeDef name="linkOneType" type="S" label="Link 1 Type" required="false"/>
 			<AttributeDef name="linkTwoText" type="S" label="Link 2 Text" required="false"/>
 			<AttributeDef name="linkTwoURL" type="S" label="Link 2 URL" required="false"/>
-			<AttributeDef name="linkTwoType" type="S" label="Link 2 Type" required="false"/>		
+			<AttributeDef name="linkTwoType" type="S" label="Link 2 Type" required="false"/>
+			<AttributeDef name="bannerURL" type="S" label="Banner URL" required="false"/>		
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef cardinality="One" name="ImageBannerImage" label="Image">
@@ -2732,93 +2730,31 @@
 		</AttributeDefs>
 	</ContentTypeDef>
 	
-	<ContentTypeDef name="Icon" generateId="false">
-		<AttributeDefs>
-		    <AttributeDef name="link" type="S" label="Link" required="false"/>
-		    <AttributeDef name="linkText" type="S" label="Link Text" required="false"/>    		
-		</AttributeDefs>
-		<RelationshipDefs>
-			<RelationshipDef name="image" label="Image" cardinality="One">
-				<DestinationDef contentType="Image" />
-			</RelationshipDef>
-		</RelationshipDefs>
-	</ContentTypeDef>
-	
-	<ContentTypeDef name="ImageGrid" generateId="false">
-		<AttributeDefs>
-		    <AttributeDef name="imageContainer1Target" type="S" label="ImageContainer1 Target" required="false"/>
-		    <AttributeDef name="imageContainer1Text" type="S" label="ImageContainer1 Text" required="false"/>
-		    <AttributeDef name="imageContainer2Target" type="S" label="ImageContainer2 Target" required="false"/>
-		    <AttributeDef name="imageContainer2Text" type="S" label="ImageContainer2 Text" required="false"/>   
-		    <AttributeDef name="imageContainer3Target" type="S" label="ImageContainer3 Target" required="false"/>
-		    <AttributeDef name="imageContainer3Text" type="S" label="ImageContainer3 Text" required="false"/>   
-		    <AttributeDef name="imageContainer4Target" type="S" label="ImageContainer4 Target" required="false"/>
-		    <AttributeDef name="imageContainer4Text" type="S" label="ImageContainer4 Text" required="false"/>   
-		    <AttributeDef name="imageContainer5Target" type="S" label="ImageContainer5 Target" required="false"/>
-		    <AttributeDef name="imageContainer5Text" type="S" label="ImageContainer5 Text" required="false"/>   
-		    <AttributeDef name="imageContainer6Target" type="S" label="ImageContainer6 Target" required="false"/>
-		    <AttributeDef name="imageContainer6Text" type="S" label="ImageContainer6 Text" required="false"/>       		
-		</AttributeDefs>
-		<RelationshipDefs>
-			<RelationshipDef name="imageContainer1Image" label="ImageContainer1 Image" cardinality="One">
-				<DestinationDef contentType="Image" />
-			</RelationshipDef>
-			<RelationshipDef name="imageContainer2Image" label="ImageContainer2 Image" cardinality="One">
-				<DestinationDef contentType="Image" />
-			</RelationshipDef>
-			<RelationshipDef name="imageContainer3Image" label="ImageContainer3 Image" cardinality="One">
-				<DestinationDef contentType="Image" />
-			</RelationshipDef>
-			<RelationshipDef name="imageContainer4Image" label="ImageContainer4 Image" cardinality="One">
-				<DestinationDef contentType="Image" />
-			</RelationshipDef>
-			<RelationshipDef name="imageContainer5Image" label="ImageContainer5 Image" cardinality="One">
-				<DestinationDef contentType="Image" />
-			</RelationshipDef>
-			<RelationshipDef name="imageContainer6Image" label="ImageContainer6 Image" cardinality="One">
-				<DestinationDef contentType="Image" />
-			</RelationshipDef>
-		</RelationshipDefs>
-	</ContentTypeDef>
-	
 	<ContentTypeDef name="ModuleContainer" generateId="false">
 		<AttributeDefs>
 			<AttributeDef type="S" name="name" label="Name" required="true"/>
 		</AttributeDefs>
 		<RelationshipDefs>
-			<RelationshipDef name="moduleInstances" label="Modules" cardinality="Many">
-				<DestinationDef contentType="ModuleInstance" />
+			<RelationshipDef name="modulesAndGroups" label="Modules and Groups" cardinality="Many">
+				<DestinationDef contentType="Module" />
+				<DestinationDef contentType="ModuleGroup" />
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
 	
-	<ContentTypeDef name="ModuleInstance" generateId="false">
+	<ContentTypeDef name="ModuleGroup" generateId="false">
 		<AttributeDefs>
-			<AttributeDef type="S" name="name" label="Name" required="true"/>
+			<AttributeDef type="S" name="name" label="Name" required="true"/>	
+			<AttributeDef type="S" name="moduleGroupTitle" label="Module Group Title" required="false"/>
+			<AttributeDef type="S" name="moduleGroupTitleTextBanner" label="Module Group Title Text Banner" required="false"/>	
+			<AttributeDef type="S" name="viewAllButtonURL" label="View All Button URL" required="false"/>
+			<AttributeDef type="B" name="hideViewAllButton"  label="Hide View All Button" required="false"/>		
 		</AttributeDefs>
 		<RelationshipDefs>
-			<RelationshipDef name="module" label="Module" cardinality="One">
+			<RelationshipDef name="modules" label="Modules" cardinality="Many">
 				<DestinationDef contentType="Module" />
 			</RelationshipDef>
-			<RelationshipDef name="datasource" label="Datasource" cardinality="One">
-				<DestinationDef contentType="Datasource" />
-			</RelationshipDef>
-		</RelationshipDefs>
-	</ContentTypeDef>
-	
-	<ContentTypeDef name="Datasource" generateId="false">
-		<AttributeDefs>
-			<AttributeDef type="S" name="name" label="Name" required="true"/>
-			<EnumDef type="S" name="datasourceType"  label="Datasource Type">
-				<EnumValue value="GENERIC" label="GENERIC"/>
-				<EnumValue value="BROWSE" label="BROWSE"/>
-				<EnumValue value="TOP_ITEMS" label="TOP_ITEMS"/>
-				<EnumValue value="PRES_PICKS" label="PRES_PICKS"/>
-				<EnumValue value="FEATURED_RECOMMENDER" label="FEATURED_RECOMMENDER"/>
-			</EnumDef>
-		</AttributeDefs>
-		<RelationshipDefs>
-			<RelationshipDef name="sourceNode" label="Source Node" cardinality="One">
+			<RelationshipDef name="viewAllSourceNode" label="View All Source Node" cardinality="One">
 				<DestinationDef contentType="Category" />
 				<DestinationDef contentType="Department" />
 			</RelationshipDef>
@@ -2829,26 +2765,28 @@
 		<AttributeDefs>
 			<AttributeDef type="S" name="name" label="Name" required="true"/>
 			<AttributeDef type="S" name="moduleTitle" label="Module Title" required="false"/>
-			<AttributeDef type="B" name="showModuleTitle"  label="Show Module Title" required="false"/>
 			<AttributeDef type="S" name="moduleTitleTextBanner" label="Module Title Text Banner" required="false"/>
-			<AttributeDef type="B" name="showModuleTitleTextBanner"  label="Show Module Title Text Banner" required="false"/>
 			<AttributeDef type="S" name="viewAllButtonLink" label="View All Button Link" required="false"/>
-			<AttributeDef type="B" name="showViewAllButton"  label="Show View All Button" required="false"/>
 			<AttributeDef type="S" name="contentTitle" label="Content Title" required="false"/>
-			<AttributeDef type="B" name="showContentTitle"  label="Show Content Title" required="false"/>
 			<AttributeDef type="S" name="heroTitle" label="Hero Title" required="false"/>
-			<AttributeDef type="B" name="showHeroTitle"  label="Show Hero Title" required="false"/>
 			<AttributeDef type="S" name="heroSubtitle" label="Hero Subtitle" required="false"/>
-			<AttributeDef type="B" name="showHeroSubtitle"  label="Show Hero Subtitle" required="false"/>
 			<AttributeDef type="S" name="headerTitle" label="Header Title" required="false"/>
-			<AttributeDef type="B" name="showHeaderTitle"  label="Show Header Title" required="false"/>
 			<AttributeDef type="S" name="headerSubtitle" label="Header Subtitle" required="false"/>
-			<AttributeDef type="B" name="showHeaderSubtitle"  label="Show Header Subtitle" required="false"/>
+			<AttributeDef type="B" name="hideViewAllButton"  label="Hide View All Button" required="false"/>	
 			<AttributeDef type="B" name="hideProductName"  label="Hide Product Name" required="false"/>	
 			<AttributeDef type="B" name="hideProductPrice"  label="Hide Product Price" required="false"/>
 			<AttributeDef type="B" name="hideProductBadge"  label="Hide Product Badge" required="false"/>
-						
-			<EnumDef type="S" name="sourceType"  label="Source Type">
+			<AttributeDef type="B" name="useViewAllPopup"  label="Show View all Overlay" required="false"/>
+			<EnumDef type="S" name="productSourceType"  label="Product Source Type" required="true">
+				<EnumValue value="GENERIC" label="GENERIC"/>
+				<EnumValue value="BROWSE" label="BROWSE"/>
+				<EnumValue value="TOP_ITEMS" label="TOP_ITEMS"/>
+				<EnumValue value="PRES_PICKS" label="PRES_PICKS"/>
+				<EnumValue value="FEATURED_RECOMMENDER" label="FEATURED_RECOMMENDER"/>
+				<EnumValue value="MOST_POPULAR_PRODUCTS" label="MOST_POPULAR_PRODUCTS"/>
+				<EnumValue value="BRAND_FEATURED_PRODUCTS" label="BRAND_FEATURED_PRODUCTS"/>
+			</EnumDef>			
+			<EnumDef type="S" name="displayType"  label="Display Type" required="true">
 				<EnumValue value="PRODUCT_CAROUSEL_MODULE" label="PRODUCT_CAROUSEL_MODULE"/>
 				<EnumValue value="PRODUCT_LIST_MODULE" label="PRODUCT_LIST_MODULE"/>
 				<EnumValue value="IMAGEGRID_MODULE" label="IMAGEGRID_MODULE"/>
@@ -2863,14 +2801,14 @@
 			</EnumDef>
 		</AttributeDefs>
 		<RelationshipDefs>
-			<RelationshipDef name="imageGrid" label="Image Grid" cardinality="One">
-				<DestinationDef contentType="ImageGrid" />
+			<RelationshipDef name="imageGrid" label="Image Grid" cardinality="Many">
+				<DestinationDef contentType="ImageBanner" />
 			</RelationshipDef>
 			<RelationshipDef name="openHTML" label="Open HTML media" cardinality="One">
 				<DestinationDef contentType="Html" />
 			</RelationshipDef>
 			<RelationshipDef name="iconList" label="Icon List" cardinality="Many">
-				<DestinationDef contentType="Icon" />
+				<DestinationDef contentType="ImageBanner" />
 			</RelationshipDef>
 			<RelationshipDef name="heroGraphic" label="Hero Graphic" cardinality="One">
 				<DestinationDef contentType="Image" />
@@ -2880,6 +2818,11 @@
 			</RelationshipDef>
 			<RelationshipDef name="editorialContent" label="Editorial Content" cardinality="One">
 				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="sourceNode" label="Source Node" cardinality="One">
+				<DestinationDef contentType="Category" />
+				<DestinationDef contentType="Department" />
+				<DestinationDef contentType="Brand" />
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>	

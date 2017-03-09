@@ -39,6 +39,7 @@ import com.freshdirect.cms.application.ContentTypeServiceI;
 import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.AbstractContentService;
 import com.freshdirect.cms.classgenerator.ContentNodeGenerator;
+import com.freshdirect.cms.classgenerator.GeneratedNodeGeneratorFactory;
 import com.freshdirect.cms.meta.ContentTypeUtil;
 import com.freshdirect.cms.reverse.BidirectionalReferenceHandler;
 import com.freshdirect.cms.util.DaoUtil;
@@ -146,7 +147,7 @@ public class DbContentService extends AbstractContentService implements ContentS
 
     public void setContentTypeService(ContentTypeServiceI typeService) {
         this.typeService = typeService;
-        this.generator = new ContentNodeGenerator(typeService);
+        this.generator = GeneratedNodeGeneratorFactory.getInstance().getNodeGenerator(typeService, com.freshdirect.cms.classgenerator.ContentNodeGenerator.DEFAULT_PREFIX);
     }
 
     @Override

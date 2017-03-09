@@ -16,6 +16,7 @@ public class SearchResult extends Message {
     private List<ProductSearchResult> products = new ArrayList<ProductSearchResult>();
 
     private List<String> productIds;    
+    private List<String> favProductIds;
 
     private List<FilterOption> brands = new ArrayList<FilterOption>();
 
@@ -82,6 +83,14 @@ public class SearchResult extends Message {
     
     public List<String> getProductIds(){
     	return this.productIds;
+    }
+    
+    public void setFavProductIds(List<String> favpProductIds){
+    	this.favProductIds = favpProductIds;
+    }
+    
+    public List<String> getFavProductIds(){
+    	return this.favProductIds;
     }
 
     public Integer getTotalResultCount() {

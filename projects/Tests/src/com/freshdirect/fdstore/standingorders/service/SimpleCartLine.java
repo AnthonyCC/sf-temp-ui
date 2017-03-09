@@ -870,10 +870,10 @@ public class SimpleCartLine implements FDCartLineI {
         return null;
     }
 
-	@Override
-	public String getMaterialGroup() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public String getMaterialGroup() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

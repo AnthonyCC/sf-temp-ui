@@ -3,6 +3,8 @@ package com.freshdirect.fdstore.content.productfeed;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.sql.Connection;
@@ -19,6 +21,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.ejb.EJBException;
+import javax.mail.MessagingException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -27,6 +30,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Category;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.DraftContext;
@@ -75,6 +79,7 @@ import com.freshdirect.fdstore.content.productfeed.taxonomy.StoreTaxonomyFeedEle
 import com.freshdirect.fdstore.content.productfeed.taxonomy.TaxonomyFeedPopulator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.mail.ErpMailSender;
 
 public class FDProductFeedSessionBean extends SessionBeanSupport {
 
@@ -206,7 +211,18 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
     private void uploadFeedFileToSubscribers(final EnumEStoreId actualStoreId, String zipFileName) throws FDResourceException {
         List<ProductFeedSubscriber> productFeedSubscribers = collectProductFeedSubscribers();
         for (ProductFeedSubscriber subscriber : productFeedSubscribers) {
-            uploadBySubscriber(actualStoreId, zipFileName, subscriber);
+            try {
+				uploadBySubscriber(actualStoreId, zipFileName, subscriber);
+			} catch (Exception e) {
+				StringWriter sw = new StringWriter();
+				e.printStackTrace(new PrintWriter(sw));
+				String _msg=sw.getBuffer().toString();
+				LOGGER.info(new StringBuilder("uploadBySubscriber failed with Exception...").append(_msg).toString());
+				LOGGER.error(_msg);
+				if(_msg!=null && _msg.indexOf("timed out while waiting to get an instance from the free pool")==-1) {
+					email(Calendar.getInstance().getTime(), _msg, subscriber);		
+				}
+			} 			
         }
     }
 
@@ -595,4 +611,26 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
             }
         }
     }
+    
+    private static void email(Date processDate, String exceptionMsg, ProductFeedSubscriber subscriber) {
+		try {
+			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
+			String subject="FDProductFeed upload for subscriber: "+(null !=subscriber?subscriber.getDescription():"")+": "+ (processDate != null ? dateFormatter.format(processDate) : " ");
+			StringBuffer buff = new StringBuffer();
+			buff.append("<html>").append("<body>");			
+			if(exceptionMsg != null) {
+				buff.append("<b>").append(exceptionMsg).append("</b>");
+			}
+			buff.append("</body>").append("</html>");
+
+			ErpMailSender mailer = new ErpMailSender();
+			mailer.sendMail(ErpServicesProperties.getCronFailureMailFrom(),
+					ErpServicesProperties.getCronFailureMailTo(),ErpServicesProperties.getCronFailureMailCC(),
+					subject, buff.toString(), true, "");
+			
+		}catch (MessagingException e) {
+			LOGGER.warn("Error notification(email) failed for FDProductFeed upload to subscriber: "+(null !=subscriber?subscriber.getDescription():""), e);
+		}
+		
+	}
 }

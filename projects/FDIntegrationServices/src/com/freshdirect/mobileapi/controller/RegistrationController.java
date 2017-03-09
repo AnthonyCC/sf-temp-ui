@@ -151,8 +151,7 @@ public class RegistrationController extends BaseController implements SystemMess
 			 model = setMobilePreferencesFirstOrder(model, user, requestMessage, request );
 		}
 		else if(ACTION_SET_MOBILE_GO_GREEN_PREFERENCE.equals(action)){
-			GoGreenPreferencesResult reqestMessage = parseRequestObject(request, response, GoGreenPreferencesResult.class);
-			 model = setMobileGoGreenPreference(model, user, reqestMessage, request );
+			 model = setMobileGoGreenPreference(model, user, request );
 		}
 		else if(ACTION_GET_MOBILE_GO_GREEN_PREFERENCE.equals(action)){
 			 model = getMobileGoGreenPreference(model, user, request );
@@ -793,12 +792,11 @@ public class RegistrationController extends BaseController implements SystemMess
     
     }
     
-    private ModelAndView setMobileGoGreenPreference(ModelAndView model, SessionUser user, GoGreenPreferencesResult reqestMessage,
-            HttpServletRequest request) throws FDException, JsonException {
+    private ModelAndView setMobileGoGreenPreference(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
     	Message responseMessage = null; 
     	RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());        
         FDSessionUser fduser = (FDSessionUser) user.getFDSessionUser();
-        ResultBundle resultBundle = tagWrapper.setMobileGoGreenPreference(reqestMessage, fduser.getUserContext().getStoreContext().getEStoreId().getContentId());
+        ResultBundle resultBundle = tagWrapper.setMobileGoGreenPreference(fduser.getUserContext().getStoreContext().getEStoreId().getContentId());
        
         ActionResult result = resultBundle.getActionResult();
         propogateSetSessionValues(request.getSession(), resultBundle);
@@ -815,14 +813,20 @@ public class RegistrationController extends BaseController implements SystemMess
     
     private ModelAndView getMobileGoGreenPreference(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
 	        FDSessionUser fduser = (FDSessionUser) user.getFDSessionUser();
-    		
+    		String goGreen=null;
     		GoGreenPreferencesResult goGreenPreferencesResult = new GoGreenPreferencesResult();
     		
     		if(EnumEStoreId.FD.getContentId().equals(fduser.getUserContext().getStoreContext().getEStoreId().getContentId()))
-    			goGreenPreferencesResult.setGo_green(GoGreenService.defaultService().overLayGoGreenPreferences(fduser));
-    		
-    			setResponseMessage(model, goGreenPreferencesResult, user);
     			
-        	return model;
+    			  goGreen=GoGreenService.defaultService().loadGoGreenOption(fduser);
+    		
+				if ("".equalsIgnoreCase(goGreen) || goGreen == null)
+					goGreenPreferencesResult.setGo_green("N");
+				else
+					goGreenPreferencesResult.setGo_green(goGreen);
+		
+				setResponseMessage(model, goGreenPreferencesResult, user);
+		    			
+		        	return model;
         }
 }

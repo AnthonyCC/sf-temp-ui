@@ -26,6 +26,12 @@
 	float: left;
 }
 
+.appHeader #publishInfo {
+	margin-left: 10px;
+	font-weight: bold;
+	color: red;
+}
+
 .appHeader .userLabel {
 	float: left;
 	padding: 0px 10px;
@@ -37,6 +43,9 @@
 	background-color: red;
 }
 
+.appHeaderDraft #publishInfo {
+    color: black;
+}
 
 /* command links in the header  */
 .commandLink,.logoutLink {

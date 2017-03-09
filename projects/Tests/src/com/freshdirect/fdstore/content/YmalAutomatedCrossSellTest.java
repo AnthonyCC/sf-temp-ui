@@ -32,6 +32,8 @@ import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.query.AttributeEqualsPredicate;
 import com.freshdirect.cms.query.RelationshipAnyPredicate;
+import com.freshdirect.cms.search.ContentIndex;
+import com.freshdirect.cms.search.SearchTestUtils;
 import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.content.attributes.AttributeCollection;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
@@ -79,7 +81,9 @@ public class YmalAutomatedCrossSellTest extends FDCustomerManagerTestSupport {
 		service = new XmlContentService(typeService, new FlexContentHandler(),
 				"classpath:/com/freshdirect/cms/fdstore/ConfiguredProducts.xml");
 
-		CmsManager.setInstance(new CmsManager(service, null));
+		CmsManager.setInstance(new CmsManager(service,
+                SearchTestUtils.createSearchService(new ArrayList<ContentIndex>(), SearchTestUtils.createTempDir(this.getClass().getCanonicalName(), (new Date()).toString()))));
+
 		
 		Context            context            = null;
 		Hashtable          env                = new Hashtable();

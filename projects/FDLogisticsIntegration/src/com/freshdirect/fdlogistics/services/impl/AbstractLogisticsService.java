@@ -6,6 +6,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MapperFactory;
+import ma.glasnost.orika.impl.DefaultMapperFactory;
+
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -28,6 +32,7 @@ import com.fasterxml.jackson.core.JsonGenerator.Feature;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.freshdirect.fdlogistics.converter.EnumZoneServiceTypeToString;
 import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -36,6 +41,7 @@ public abstract class AbstractLogisticsService {
 	
 	private static final String API_CONTEXT = "/logisticsapi/v/1/";
 	private static final String OMS_API_CONTEXT = "/fdlogistics/v/1/";
+	private static final String FDCOMMERCE_API_CONTEXT = "/fdcommerceapi/fd/v1/";
 	
 	private static final RestTemplate restTemplate;
 	private static final Category LOGGER = LoggerFactory.getInstance(AbstractLogisticsService.class);
@@ -69,7 +75,13 @@ public abstract class AbstractLogisticsService {
 	    restTemplate.setRequestFactory(requestFactory);
 
 	}
-			
+
+	
+	public static MapperFacade getOrikaMapper(){
+	    	MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
+	    	mapperFactory.getConverterFactory().registerConverter(new EnumZoneServiceTypeToString());
+	    	return mapperFactory.getMapperFacade();
+	}
 	protected <T> T getData(String inputJson, String url, Class<T> clazz) throws FDLogisticsServiceException {
 		
 		try {
@@ -165,5 +177,10 @@ public abstract class AbstractLogisticsService {
 				+ companyCode
 					+ path;
 		
+	}
+	
+	public String getFdCommerceEndPoint(String path){
+		return FDStoreProperties.getFdCommerceApiUrl()	+ FDCOMMERCE_API_CONTEXT + 
+												 path;
 	}
 }

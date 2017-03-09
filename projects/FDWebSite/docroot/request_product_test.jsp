@@ -1,7 +1,7 @@
 <%@ page import='java.util.*' %>
 <%@ page import="com.freshdirect.fdstore.mail.*"%>
-<%@ page import='com.freshdirect.storeapi.content.*'  %>
-<%@ page import='com.freshdirect.storeapi.attributes.*'  %>
+<%@ page import='com.freshdirect.fdstore.content.*'  %>
+<%@ page import='com.freshdirect.fdstore.attributes.*'  %>
 <%@ page import='com.freshdirect.fdstore.customer.*'  %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*"%>
@@ -43,16 +43,16 @@
 %>
 
 <tmpl:insert template='/shared/template/large_pop.jsp'>
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="FreshDirect -  Request a Product"/>
-    </tmpl:put>
-<%-- 	<tmpl:put name='title' direct='true'>FreshDirect - Request a Product</tmpl:put> --%>
+
+
+	<tmpl:put name='title' direct='true'>FreshDirect - Request a Product</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 
 
 <%@ include file="/includes/search/brandautocomplete.jspf" %>
 
-<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+<%@ include file="/common/template/includes/i_javascripts.jspf" %>  
+<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 
 	 <%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
@@ -376,7 +376,7 @@
 						<br />To continue shopping, <a href="javascript:window.reallyClose();"><b>click here</b></a> to close this window.<br /><br /></div>
 					<% } else { %>
 						<div class="text12">We will do our best to add to our selection based on your requests.<br />To continue shopping <a href="javascript:window.reallyClose();">close this window</a> or <a href="#" onClick="javascript:backtoWin('/newproducts.jsp'); javascript:window.reallyClose();">click here to see our New Products!</a></div>
-						<div style="margin: 36px;"><img src="/media_stat/images/template/newproduct/confirm_berry.jpg" alt="" width="70" height="70"></div>
+						<div style="margin: 36px;"><img src="/media_stat/images/template/newproduct/confirm_berry.jpg" width="70" height="70"></div>
 					<% }%>
 				</td>
 			</tr>

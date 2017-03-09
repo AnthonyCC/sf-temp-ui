@@ -373,8 +373,9 @@ public class PublishXList extends LayoutContainer {
 			public void handleEvent(BaseEvent be) {
 				PublishItemWrapper selectedItem = publishHistory.getSelectionModel().getSelectedItem();
 				if (selectedItem.isShowNext()) {
-					CmsGwt.getContentService().getPublishHistory(
+					CmsGwt.getContentService().getPublishHistoryByType(
 							new BasePagingLoadConfig(loadedItemsCount, GwtPublishData.FETCH_SIZE),
+							"FEED",
 							new BaseCallback<List<GwtPublishData>>() {
 								@Override
 								public void onSuccess(List<GwtPublishData> result) {

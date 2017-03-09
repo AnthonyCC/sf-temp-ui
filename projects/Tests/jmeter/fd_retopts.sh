@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Parse command-line options for retrieving product data from server.
 #

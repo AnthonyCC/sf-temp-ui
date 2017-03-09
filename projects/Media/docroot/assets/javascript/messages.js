@@ -143,6 +143,7 @@ SESSIONSTORAGE:
 		if (hasSessionStorage()) {
 			msgS = $.extend(messageStorage, JSON.parse(sessionStorage.getItem(messageData.jsessionId)));
 		}
+		return msgS;
 	};
 
 	function setMessageStorage() {
@@ -227,6 +228,9 @@ SESSIONSTORAGE:
 	}
 
 	var methods = {
+		isClosed: function() {
+			return getMessageStorage().messages.isClosed;
+		},
 		init: function( _options ) {
 			this.messages('setOptions', _options);
 			

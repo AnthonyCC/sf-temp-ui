@@ -28,12 +28,7 @@
 	params.put("baseUrl", baseUrl);
 %>
 <tmpl:insert template="<%=pageTemplate %>">
-<%-- 	<tmpl:put name='title' direct='true'>Product Request HTTP/S Tests</tmpl:put> --%>
-	
-	<tmpl:put name="seoMetaTag" direct="true">
-    <fd:SEOMetaTag title="Product Request HTTP/S Tests" ></fd:SEOMetaTag>
-    </tmpl:put>
-	
+	<tmpl:put name='title' direct='true'>Product Request HTTP/S Tests</tmpl:put>
 	
 	<tmpl:put name='extraJs' direct='true'>
 	</tmpl:put>

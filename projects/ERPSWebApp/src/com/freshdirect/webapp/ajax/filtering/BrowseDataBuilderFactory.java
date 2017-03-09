@@ -877,7 +877,7 @@ public class BrowseDataBuilderFactory {
 			data.getSortOptions().setSortOptions(options); // create sort bar objects
 			
 			ProductItemComparatorUtil.sortSectionDatas(data, comparator); // sort items/section
-			ProductItemComparatorUtil.postProcess(data, usedSortStrategy, user);
+			ProductItemComparatorUtil.postProcess(data, nav, usedSortStrategy, user);
 			//logSortResult(data, user);
 		}
 	}

@@ -1,10 +1,13 @@
 package com.freshdirect.cms.validation;
 
+import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
@@ -16,7 +19,9 @@ import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.MaskContentService;
 import com.freshdirect.cms.application.service.ProxyContentService;
 import com.freshdirect.cms.application.service.SimpleContentService;
+import com.freshdirect.cms.config.ContentValidatorConfiguration;
 import com.freshdirect.cms.node.ContentNodeUtil;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
  * {@link com.freshdirect.cms.application.service.ProxyContentService}that
@@ -30,18 +35,29 @@ import com.freshdirect.cms.node.ContentNodeUtil;
  */
 public class ValidatingContentService extends ProxyContentService {
 
+    private static final Logger LOGGER = LoggerFactory.getInstance(ValidatingContentService.class);
+
 	private final List<ContentValidatorI> validators;
 
-	public ValidatingContentService(ContentServiceI service, List<ContentValidatorI> validators) {
+	public ValidatingContentService(ContentServiceI service) {
 		super(service);
-		this.validators = validators;
+
+		this.validators = ContentValidatorConfiguration.getValidatorList();
 	}
+
+    public ValidatingContentService(ContentServiceI service, List<ContentValidatorI> validators) {
+        super(service);
+        
+        this.validators = validators;
+    }
 
 	/**
 	 * @throws ContentValidationException
 	 */
 	@Override
 	public CmsResponseI handle(CmsRequestI request) {
+	    LOGGER.debug(MessageFormat.format("Starting service handles {0} request", request));
+
 	    DraftContext draftContext = request.getDraftContext();
 		MaskContentService masked = new MaskContentService(getProxiedService(),
 				new SimpleContentService(getTypeService()));
@@ -65,7 +81,10 @@ public class ValidatingContentService extends ProxyContentService {
 			throw new ContentValidationException(delegate);
 		}
 
-		return request.isDryMode() ? new CmsResponse() : super.handle(request);
+		CmsResponseI response = request.isDryMode() ? new CmsResponse() : super.handle(request);
+		
+		LOGGER.debug(MessageFormat.format("Ending service return {0} response", response));
+		return response;
 	}
 
 	private Set<ContentKey> getKeys(Collection<ContentNodeI> nodes) {

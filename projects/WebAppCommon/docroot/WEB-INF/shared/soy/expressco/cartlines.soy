@@ -650,7 +650,7 @@
 	<div class='cartsection__cartline' data-component='cartline' data-cartlineid='{$id}'>
 		<div class='cartline-imageholder cartline-box'>
 			<a class='cartline-link' href='{if $mealBundle or not $displayCheckout}/pdp.jsp?productId={$productId}&catId={$categoryId}&modify=true{else}/product_modify.jsp?cartLine={$id}&trk=cart{/if}'>
-				<img class='cartline-image' src='{if $image}{$image}{else}/media/images/fd_defs/meat/bstk_prtrhs_c.jpg{/if}' alt="Image of {$descr}" />
+				<img class='cartline-image' src='{if $image}{$image}{else}/media/images/temp/soon_80x80.gif{/if}' alt="Image of {$descr}" />
 			</a>
 		</div>
 		<div class='cartline-title cartline-box'>
@@ -778,10 +778,10 @@
 	<div class='cartsection__cartline' data-component='cartline' data-cartlineid='{$id}'>
 		<div class='cartline-imageholder cartline-box'>
 			{if $noModifyLinks}
-				<img class='cartline-image' src='{if $image}{$image}{else}/media/images/fd_defs/meat/bstk_prtrhs_c.jpg{/if}' alt="Image of {$descr}" />
+				<img class='cartline-image' src='{if $image}{$image}{else}/media/images/temp/soon_80x80.gif{/if}' alt="Image of {$descr}" />
 			{else}
 				<a class='cartline-link' href='/product_modify.jsp?cartLine={$id}&trk=cart'>
-					<img class='cartline-image' src='{if $image}{$image}{else}/media/images/fd_defs/meat/bstk_prtrhs_c.jpg{/if}' alt="Image of {$descr}" />
+					<img class='cartline-image' src='{if $image}{$image}{else}/media/images/temp/soon_80x80.gif{/if}' alt="Image of {$descr}" />
 				</a>
 			{/if}
 		</div>

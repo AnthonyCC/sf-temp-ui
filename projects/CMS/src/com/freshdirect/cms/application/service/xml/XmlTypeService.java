@@ -2,8 +2,10 @@ package com.freshdirect.cms.application.service.xml;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -15,7 +17,7 @@ import org.xml.sax.SAXException;
 import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.application.ContentTypeServiceI;
 import com.freshdirect.cms.application.service.AbstractTypeService;
-import com.freshdirect.framework.conf.ResourceUtil;
+import com.freshdirect.cms.util.XmlResourceUtil;
 
 /**
  * XML-based implementation of {@link com.freshdirect.cms.application.ContentTypeServiceI}.
@@ -30,13 +32,17 @@ public class XmlTypeService extends AbstractTypeService implements ContentTypeSe
 	public XmlTypeService(String location) {
 		InputStream stream = null;
 		try {
-			stream = ResourceUtil.openResource(location);
+		    stream = XmlResourceUtil.openXmlResource(location);
 
 			initFromStream(stream);
-			
-		} catch (IOException ioe) {
-			throw new CmsRuntimeException(ioe);
-		} finally {
+
+		} catch (MalformedURLException e) {
+		    throw new CmsRuntimeException(e);
+        } catch (FileNotFoundException e) {
+            throw new CmsRuntimeException(e);
+        } catch (IOException e) {
+            throw new CmsRuntimeException(e);
+        } finally {
 			try {
 				if (stream != null)
 					stream.close();
@@ -46,8 +52,8 @@ public class XmlTypeService extends AbstractTypeService implements ContentTypeSe
 			}
 		}
 	}
-	
-	
+    
+    
 	/**
 	 * Convenience method to open XML definiton files directly from file
 	 * Also this method avoids using Hivemind.

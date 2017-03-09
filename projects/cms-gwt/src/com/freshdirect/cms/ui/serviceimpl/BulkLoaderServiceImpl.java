@@ -85,108 +85,112 @@ public class BulkLoaderServiceImpl extends GwtServiceBase implements BulkLoaderS
 
     @Override
     public GwtSaveResponse save() throws ServerException {
+
         HttpServletRequest request = getThreadLocalRequest();
-        List<GwtBulkLoadRow> rows = getBulkLoadRows();
-
-        try {
-            Map<ContentKey, ContentNodeI> nodes = new HashMap<ContentKey, ContentNodeI>();
-            Map<String, ContentNodeI> rrNodes = new HashMap<String, ContentNodeI>();
-            Map<String, String> rrAttributes = new HashMap<String, String>();
-            for (GwtBulkLoadRow row : rows) {
-                GwtBulkLoadCell cell = row.getCells().get(0);
-                if ("_K".equals(cell.getAttributeType())) {
-                    ContentNodeI node = null;
-                    if (cell.getStatus().getState() == BulkLoadPreviewState.CREATE) {
+        if (isNodeModificationEnabled(getDraftContext())) {
+            List<GwtBulkLoadRow> rows = getBulkLoadRows();
+            try {
+                Map<ContentKey, ContentNodeI> nodes = new HashMap<ContentKey, ContentNodeI>();
+                Map<String, ContentNodeI> rrNodes = new HashMap<String, ContentNodeI>();
+                Map<String, String> rrAttributes = new HashMap<String, String>();
+                for (GwtBulkLoadRow row : rows) {
+                    GwtBulkLoadCell cell = row.getCells().get(0);
+                    if ("_K".equals(cell.getAttributeType())) {
+                        ContentNodeI node = null;
+                        if (cell.getStatus().getState() == BulkLoadPreviewState.CREATE) {
                         ContentKey key = ContentKey.getContentKey(cell.getParsedValue().toString());
-                        ContentNodeI prototype = contentService.createPrototypeContentNode(key, getDraftContext());
-                        node = new ChangedContentNode(prototype);
-                        nodes.put(node.getKey(), node);
-                    } else if (cell.getStatus().getState() == BulkLoadPreviewState.UPDATE) {
+                            ContentNodeI prototype = contentService.createPrototypeContentNode(key, getDraftContext());
+                            node = new ChangedContentNode(prototype);
+                            nodes.put(node.getKey(), node);
+                        } else if (cell.getStatus().getState() == BulkLoadPreviewState.UPDATE) {
                         ContentKey key = ContentKey.getContentKey(cell.getParsedValue().toString());
-                        ContentNodeI clone = contentService.getContentNode(key, getDraftContext()).copy();
-                        node = new ChangedContentNode(clone);
-                        nodes.put(node.getKey(), node);
+                            ContentNodeI clone = contentService.getContentNode(key, getDraftContext()).copy();
+                            node = new ChangedContentNode(clone);
+                            nodes.put(node.getKey(), node);
+                        }
+                        row.getRowStatus().setNode(node);
                     }
-                    row.getRowStatus().setNode(node);
                 }
-            }
-            for (GwtBulkLoadRow row : rows) {
-                ContentNodeI node = (ContentNodeI) row.getRowStatus().getNode();
-                if (node != null) {
-                    for (int i = 1; i < row.getCells().size(); i++) {
-                        GwtBulkLoadCell cell = row.getCells().get(i);
-                        if (cell.getStatus().getState().isOperation()) {
-                            if ("R".equals(cell.getAttributeType())) {
-                                if (node.getDefinition().getAttributeDef(cell.getAttributeName()).getCardinality() == EnumCardinality.ONE) {
-                                    @SuppressWarnings("unchecked")
+                for (GwtBulkLoadRow row : rows) {
+                    ContentNodeI node = (ContentNodeI) row.getRowStatus().getNode();
+                    if (node != null) {
+                        for (int i = 1; i < row.getCells().size(); i++) {
+                            GwtBulkLoadCell cell = row.getCells().get(i);
+                            if (cell.getStatus().getState().isOperation()) {
+                                if ("R".equals(cell.getAttributeType())) {
+                                    if (node.getDefinition().getAttributeDef(cell.getAttributeName()).getCardinality() == EnumCardinality.ONE) {
+                                        @SuppressWarnings("unchecked")
                                     ContentKey key = cell.getParsedValue() != null ? ContentKey.getContentKey(((Collection<String>) cell.getParsedValue()).iterator().next()) : null;
-                                    node.setAttributeValue(cell.getAttributeName(), key);
-                                } else /* EnumCardinality.MANY */ {
-                                    @SuppressWarnings("unchecked")
-                                    Collection<String> keys = (Collection<String>) cell.getParsedValue();
-                                    if (keys == null) {
-                                        node.setAttributeValue(cell.getAttributeName(), null);
-                                    } else {
-                                        ArrayList<ContentKey> nodeKeys = new ArrayList<ContentKey>(keys.size());
-                                        for (String key : keys) {
+                                        node.setAttributeValue(cell.getAttributeName(), key);
+                                    } else /* EnumCardinality.MANY */ {
+                                        @SuppressWarnings("unchecked")
+                                        Collection<String> keys = (Collection<String>) cell.getParsedValue();
+                                        if (keys == null) {
+                                            node.setAttributeValue(cell.getAttributeName(), null);
+                                        } else {
+                                            ArrayList<ContentKey> nodeKeys = new ArrayList<ContentKey>(keys.size());
+                                            for (String key : keys) {
                                             ContentKey nodeKey = ContentKey.getContentKey(key);
-                                            nodeKeys.add(nodeKey);
+                                                nodeKeys.add(nodeKey);
+                                            }
+                                            node.setAttributeValue(cell.getAttributeName(), nodeKeys);
                                         }
-                                        node.setAttributeValue(cell.getAttributeName(), nodeKeys);
                                     }
-                                }
-                            } else if ("_RR".equals(cell.getAttributeType())) {
-                                String attributeName = cell.getAttributeName();
-                                ContentNodeI rrNode = rrNodes.get(attributeName);
-                                String rrAttribute = rrAttributes.get(attributeName);
-                                if (rrNode == null) {
-                                    int dotIndex = attributeName.indexOf('.');
-                                    String keyPart = attributeName.substring(0, dotIndex);
-                                    ContentKey key = ContentKey.getContentKey(keyPart);
-                                    rrNode = nodes.get(key);
+                                } else if ("_RR".equals(cell.getAttributeType())) {
+                                    String attributeName = cell.getAttributeName();
+                                    ContentNodeI rrNode = rrNodes.get(attributeName);
+                                    String rrAttribute = rrAttributes.get(attributeName);
                                     if (rrNode == null) {
-                                        ContentNodeI clone = contentService.getContentNode(key, getDraftContext()).copy();
-                                        rrNode = new ChangedContentNode(clone);
+                                        int dotIndex = attributeName.indexOf('.');
+                                        String keyPart = attributeName.substring(0, dotIndex);
+                                    ContentKey key = ContentKey.getContentKey(keyPart);
+                                        rrNode = nodes.get(key);
+                                        if (rrNode == null) {
+                                            ContentNodeI clone = contentService.getContentNode(key, getDraftContext()).copy();
+                                            rrNode = new ChangedContentNode(clone);
+                                        }
+                                        rrNodes.put(attributeName, rrNode);
+                                        nodes.put(rrNode.getKey(), rrNode);
+
+                                        rrAttribute = attributeName.substring(dotIndex + 1);
+                                        rrAttributes.put(attributeName, rrAttribute);
                                     }
-                                    rrNodes.put(attributeName, rrNode);
-                                    nodes.put(rrNode.getKey(), rrNode);
-
-                                    rrAttribute = attributeName.substring(dotIndex + 1);
-                                    rrAttributes.put(attributeName, rrAttribute);
-                                }
-                                @SuppressWarnings("unchecked")
-                                Collection<ContentKey> value = (Collection<ContentKey>) rrNode.getAttributeValue(rrAttribute);
-                                if (value == null) {
-                                    value = new ArrayList<ContentKey>();
-                                }
-
-                                BulkLoadReverseRelationship change = (BulkLoadReverseRelationship) cell.getParsedValue();
-                                if (change == BulkLoadReverseRelationship.ADD) {
-                                    if (!value.contains(node.getKey())) {
-                                        value.add(node.getKey());
+                                    @SuppressWarnings("unchecked")
+                                    Collection<ContentKey> value = (Collection<ContentKey>) rrNode.getAttributeValue(rrAttribute);
+                                    if (value == null) {
+                                        value = new ArrayList<ContentKey>();
                                     }
-                                } else /* BulkLoadReverseRelationship.REMOVE */ {
-                                    value.remove(node.getKey());
-                                }
 
-                                if (!value.isEmpty()) {
-                                    rrNode.setAttributeValue(rrAttribute, value);
+                                    BulkLoadReverseRelationship change = (BulkLoadReverseRelationship) cell.getParsedValue();
+                                    if (change == BulkLoadReverseRelationship.ADD) {
+                                        if (!value.contains(node.getKey())) {
+                                            value.add(node.getKey());
+                                        }
+                                    } else /* BulkLoadReverseRelationship.REMOVE */ {
+                                        value.remove(node.getKey());
+                                    }
+
+                                    if (!value.isEmpty()) {
+                                        rrNode.setAttributeValue(rrAttribute, value);
+                                    } else {
+                                        rrNode.setAttributeValue(rrAttribute, null);
+                                    }
+                                    Object o = rrNode.getAttributeValue(rrAttribute);
+                                    System.out.println(o);
                                 } else {
-                                    rrNode.setAttributeValue(rrAttribute, null);
+                                    node.setAttributeValue(cell.getAttributeName(), cell.getParsedValue());
                                 }
-                                Object o = rrNode.getAttributeValue(rrAttribute);
-                                System.out.println(o);
-                            } else {
-                                node.setAttributeValue(cell.getAttributeName(), cell.getParsedValue());
                             }
                         }
                     }
                 }
-            }
 
-            return ContentServiceImpl.saveNodes(request, nodes.values(), Source.BULKLOADER);
-        } catch (RuntimeException e) {
-            throw new ServerException("error saving changes", e);
+                return ContentServiceImpl.saveNodes(request, nodes.values(), Source.BULKLOADER);
+            } catch (RuntimeException e) {
+                throw new ServerException("error saving changes", e);
+            }
+        } else {
+            throw new ServerException("Can't save nodes as a publish is in progress");
         }
     }
 }

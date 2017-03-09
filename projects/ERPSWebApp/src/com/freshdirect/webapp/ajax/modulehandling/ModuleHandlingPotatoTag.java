@@ -11,7 +11,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
-import com.freshdirect.webapp.ajax.modulehandling.data.WelcomePageData;
+import com.freshdirect.webapp.ajax.modulehandling.data.ModuleContainerData;
 import com.freshdirect.webapp.ajax.modulehandling.service.ModuleHandlingService;
 import com.freshdirect.webapp.soy.SoyTemplateEngine;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -48,7 +48,7 @@ public class ModuleHandlingPotatoTag extends SimpleTagSupport {
         HttpSession session = ctx.getSession();
         FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 
-        WelcomePageData result = new WelcomePageData();
+        ModuleContainerData result = new ModuleContainerData();
         try {
             result = ModuleHandlingService.getDefaultService().loadModuleContainer(moduleContainerId, user, session);
         } catch (FDResourceException e) {

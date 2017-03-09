@@ -9,6 +9,7 @@
 %><%@page import="com.freshdirect.cms.fdstore.FDContentTypes"
 %><%@page import="com.freshdirect.cms.search.AttributeIndex"
 %><%@page import="com.freshdirect.cms.search.ContentSearchServiceI"
+%><%@page import="com.freshdirect.cms.index.FullIndexerService"
 %><%@page import="com.freshdirect.cms.search.SearchUtils"
 %><%@page import="com.freshdirect.cms.search.term.Term"
 %><%@page import="com.freshdirect.framework.conf.FDRegistry"
@@ -27,8 +28,8 @@
 	CmsManager instance = CmsManager.getInstance();
 	Set<ContentKey> keys = instance.getContentKeysByType(FDContentTypes.CATEGORY);
 	Registry registry = FDRegistry.getInstance();
-	ContentSearchServiceI search = (ContentSearchServiceI) registry.getService(ContentSearchServiceI.class);
-	List<AttributeIndex> attributes = search.getIndexesForType(FDContentTypes.CATEGORY);
+	FullIndexerService indexer = FullIndexerService.getInstance();
+	List<AttributeIndex> attributes = indexer.getIndexesForType(FDContentTypes.CATEGORY);
 	out.print(escape("contentKey"));
 	for (AttributeIndex index : attributes) {
 		out.print(",");
@@ -45,7 +46,7 @@
 		ContentNodeI node = instance.getContentNode(key);
 		for (AttributeIndex index : attributes) {
 			out.print(",");
-			List<Term> values = SearchUtils.collectValues(node, index, true, phEnabled, recEnabled);
+			List<Term> values = SearchUtils.collectValues(node, index, true, phEnabled, recEnabled, instance);
 			out.print(escape(Term.joinTerms(values, "; ")));
 		}
 		out.println();

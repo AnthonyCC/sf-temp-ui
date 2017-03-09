@@ -5,12 +5,9 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.index.IndexWriter.MaxFieldLength;
 
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.StoreContentSource;
-import com.freshdirect.cms.index.IndexingConstants;
 import com.freshdirect.cms.search.SynonymDictionary;
 import com.freshdirect.cms.search.configuration.SearchServiceConfiguration;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -42,27 +39,12 @@ public class IndexerConfiguration {
 
     private int dictionaryWriteoutBatchSize;
 
-    private Analyzer analyzer;
-
-    private MaxFieldLength maxFieldLength;
-
-    private boolean partialIndex;
-
-    private int indexWriterRamBufferSize;
-
-    private int indexWriterMergeFactor;
-
     public static IndexerConfiguration getDefaultConfiguration() {
         IndexerConfiguration defaultConfiguration = new IndexerConfiguration();
         defaultConfiguration.setKeywordsDisabled(false);
         defaultConfiguration.setSynonymsDisabled(false);
         defaultConfiguration.setIndexDirectoryPath(SearchServiceConfiguration.getInstance().getCmsIndexLocation());
         defaultConfiguration.setStoreContentSource(CmsManager.getInstance());
-        defaultConfiguration.setAnalyzer(IndexingConstants.ANALYZER);
-        defaultConfiguration.setPartialIndex(false);
-        defaultConfiguration.setMaxFieldLength(IndexingConstants.MAX_FIELD_LENGTH_1024);
-        defaultConfiguration.setIndexWriterRamBufferSize(IndexingConstants.DICTIONARY_WRITER_RAM_BUFFER_SIZE);
-        defaultConfiguration.setIndexWriterMergeFactor(IndexingConstants.DICTIONARY_WRITER_MERGE_FACTOR);
         return defaultConfiguration;
     }
 
@@ -139,47 +121,6 @@ public class IndexerConfiguration {
 
     public int getDictionaryWriteoutBatchSize() {
         return dictionaryWriteoutBatchSize;
-    }
-
-    public Analyzer getAnalyzer() {
-        return analyzer;
-    }
-
-    public void setAnalyzer(Analyzer analyzer) {
-        this.analyzer = analyzer;
-    }
-
-    public MaxFieldLength getMaxFieldLength() {
-        return maxFieldLength;
-    }
-
-    public void setMaxFieldLength(MaxFieldLength maxFieldLength) {
-        this.maxFieldLength = maxFieldLength;
-    }
-
-    // if not partial index >> full index
-    public boolean isPartialIndex() {
-        return partialIndex;
-    }
-
-    public void setPartialIndex(boolean partialIndex) {
-        this.partialIndex = partialIndex;
-    }
-
-    public int getIndexWriterRamBufferSize() {
-        return indexWriterRamBufferSize;
-    }
-
-    public void setIndexWriterRamBufferSize(int indexWriterRamBufferSize) {
-        this.indexWriterRamBufferSize = indexWriterRamBufferSize;
-    }
-
-    public int getIndexWriterMergeFactor() {
-        return indexWriterMergeFactor;
-    }
-
-    public void setIndexWriterMergeFactor(int indexWriterMergeFactor) {
-        this.indexWriterMergeFactor = indexWriterMergeFactor;
     }
 
 }

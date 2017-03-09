@@ -86,6 +86,7 @@ public class FDStoreProperties {
     private final static String PROP_EMAIL_FDX_ORDER = "fdstore.email.fdx.order";
     private final static String PROP_EMAIL_FDX_ACTSERVICE = "fdstore.email.fdx.actservice";
     private final static String PROP_EMAIL_FDX_SIDEKICKS = "fdstore.email.fdx.sidekicks";
+    private final static String PROP_EMAIL_FDX_PRODUCT_REQUEST = "fdstore.email.fdx.productrequest";
 
     private final static String PROP_HOLIDAY_LOOKAHEAD_DAYS = "fdstore.holidayLookaheadDays";
     private final static String PROP_DLV_PROMO_EXP_DATE = "fdstore.dlvPromo.expDate";
@@ -622,6 +623,8 @@ public class FDStoreProperties {
     private final static String PROP_SHOW_AUTO_LATE_CREDIT_BUTTON = "fdstore.crm.show.autolatedelivery.button";
     private final static String NUMBER_OF_TOP_FAVOURITES = "fdstore.search.favourites.top.number";
     private final static String FAVOURITES_NUMBER_SWITCH = "fdstore.search.favourites.switch";
+    private final static String NUMBER_OF_PRESPICKS_TOP_FAVOURITES = "fdstore.prespicks.favourites.top.number";
+    private final static String NUMBER_OF_BROWSE_TOP_FAVOURITES = "fdstore.browse.favourites.top.number";
 
     /* APPDEV-2723 */
     private final static String PROP_COHORT_MATCHER = "fdstore.cohortmatcher";
@@ -753,6 +756,8 @@ public class FDStoreProperties {
 
     private static final String PROP_TIP_RANGE_CONFIG = "fdstore.tip.range.config";
     private static final String PROP_LOGISTICS_API_URL = "fdstore.logisticsapi.url";
+    private static final String PROP_FDCOMMERCE_API_URL = "fdstore.fdcommerceapi.url";
+    
     private static final String PROP_PAYPAL_API_URL = "fdstore.paypalapi.url";
     private static final String PROP_OMS_API_URL = "fdstore.omsapi.url";
     private static final String PROP_LOGISTICS_COMPANY_CODE = "fdstore.logistics.companycode";
@@ -898,14 +903,19 @@ public class FDStoreProperties {
 
     // APPDEV-5893
     private static final String PROP_USER_CART_SAVE_INTERVAL = "fdstore.user.cart.save.interval";
+
     private static final String PROP_HOMEPAGE_REDESIGN_CURRENT_USER_CONTAINER_CONTENT_KEY = "fdstore.homepageredesign.currentUserModuleContainerContentKey";
     private static final String PROP_HOMEPAGE_REDESIGN_NEW_USER_CONTAINER_CONTENT_KEY = "fdstore.homepageredesign.newUserModuleContainerContentKey";
+    private static final String PROP_HOMEPAGE_REDESIGN_MODULE_PRODUCT_LIMIT_MAX = "fdstore.homepageredesign.moduleProductLimitMax";
 
     // APPDEV-5927
     private static final String PROP_PLANT1300_PRICE_INDICATOR = "fdstore.plant1300.price.indicator";
     private static final String PROP_PLANT1310_PRICE_INDICATOR = "fdstore.plant1310.price.indicator";
     private static final String PROP_PLANTWDC_PRICE_INDICATOR = "fdstore.plantwdc.price.indicator";
 
+    
+    private static final String PROP_SF_2_0_ENABLED = "fdstore.storefront_2_0.enabled";
+    
     static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_INIT_CTX_FACTORY, "weblogic.jndi.WLInitialContextFactory");
@@ -961,6 +971,7 @@ public class FDStoreProperties {
         defaults.put(PROP_EMAIL_FDX_ORDER, "order@foodkick.com");
         defaults.put(PROP_EMAIL_FDX_ACTSERVICE, "accountservices@foodkick.com");
         defaults.put(PROP_EMAIL_FDX_SIDEKICKS, "sidekicks@foodkick.com");
+        defaults.put(PROP_EMAIL_FDX_PRODUCT_REQUEST, "FK_Merchants@freshdirect.onmicrosoft.com");
 
         defaults.put(PROP_CONTENTMANAGER_HOME, "freshdirect.content.ContentManager");
         defaults.put(PROP_HOLIDAY_LOOKAHEAD_DAYS, "21");
@@ -1456,6 +1467,8 @@ public class FDStoreProperties {
 
         defaults.put(NUMBER_OF_TOP_FAVOURITES, "3");
         defaults.put(FAVOURITES_NUMBER_SWITCH, "true");
+        defaults.put(NUMBER_OF_PRESPICKS_TOP_FAVOURITES, "5");
+        defaults.put(NUMBER_OF_BROWSE_TOP_FAVOURITES, "3");
         defaults.put(PROP_COHORT_MATCHER, "");
         defaults.put(PROP_USQ_LEGAL_WARNING, "true");
         defaults.put(PRODUCT_RATING_REFRESH_PERIOD, "12");
@@ -1507,6 +1520,7 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.quickshop2_2", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.homepageredesign", "GLOBAL:ENABLED,false;");
         // defaults.put("feature.rollout.sociallogin", "GLOBAL:ENABLED,true;");
+        defaults.put("feature.rollout.printinvoice", "GLOBAL:ENABLED,true;");
 
         defaults.put("feature.rollout.standingorder3_0", "GLOBAL:ENABLED,false;");
         defaults.put("feature.rollout.browseaggregatedcategories1_0", "GLOBAL:ENABLED,false;");
@@ -1589,6 +1603,7 @@ public class FDStoreProperties {
         // Product Family
         defaults.put(PROP_PRODUCTFAMILY, "true");
         defaults.put(PROP_LOGISTICS_API_URL, "http://logisticsdev1.nj01/");
+        defaults.put(PROP_FDCOMMERCE_API_URL, "http://localhost:8080/");
         defaults.put(PROP_PAYPAL_API_URL, "http://logisticsdev1.nj01/paypal");
         defaults.put(PROP_OMS_API_URL, "http://crmdev1.nj01/");
 
@@ -1711,11 +1726,15 @@ public class FDStoreProperties {
 
         defaults.put(PROP_HOMEPAGE_REDESIGN_CURRENT_USER_CONTAINER_CONTENT_KEY, "ModuleContainer:currentUserModuleContainer");
         defaults.put(PROP_HOMEPAGE_REDESIGN_NEW_USER_CONTAINER_CONTENT_KEY, "ModuleContainer:newUserModuleContainer");
+        defaults.put(PROP_HOMEPAGE_REDESIGN_MODULE_PRODUCT_LIMIT_MAX, "12");
 
         defaults.put(PROP_PLANT1300_PRICE_INDICATOR, "BASE");
         defaults.put(PROP_PLANT1310_PRICE_INDICATOR, "BASE");
         defaults.put(PROP_PLANTWDC_PRICE_INDICATOR, "BASE");
-
+        
+        defaults.put(PROP_SF_2_0_ENABLED, "false");
+        
+        
         refresh();
     }
 
@@ -3591,6 +3610,14 @@ public class FDStoreProperties {
     public static int getSearchPageTopFavouritesNumber() {
         return Integer.parseInt(get(NUMBER_OF_TOP_FAVOURITES));
     }
+    
+    public static int getPresPicksPageTopFavouritesNumber() {
+        return Integer.parseInt(get(NUMBER_OF_PRESPICKS_TOP_FAVOURITES));
+    }
+    
+    public static int getBrowsePageTopFavouritesNumber() {
+        return Integer.parseInt(get(NUMBER_OF_BROWSE_TOP_FAVOURITES));
+    }
 
     public static boolean isFavouritesTopNumberFilterSwitchedOn() {
         return (Boolean.valueOf(get(FAVOURITES_NUMBER_SWITCH))).booleanValue();
@@ -3883,7 +3910,11 @@ public class FDStoreProperties {
     public static String getLogisticsAPIUrl() {
         return get(PROP_LOGISTICS_API_URL);
     }
-
+    
+    public static String getFdCommerceApiUrl() {
+        return get(PROP_FDCOMMERCE_API_URL);
+    }
+    
     public static String getPayPalAPIUrl() {
         return get(PROP_PAYPAL_API_URL);
     }
@@ -4061,6 +4092,10 @@ public class FDStoreProperties {
 
     public static String getSidekicksEmailFDX() {
         return get(PROP_EMAIL_FDX_SIDEKICKS);
+    }
+    
+    public static String getProductRequestEmailFDX() {
+        return get(PROP_EMAIL_FDX_PRODUCT_REQUEST);
     }
 
     public static String getMiddleTierProviderURL() {
@@ -4377,6 +4412,10 @@ public class FDStoreProperties {
     public static boolean isPropDonationProductSamplesEnabled() {
         return (Boolean.valueOf(get(PROP_DONATION_PRODUCT_SAMPLES_ENABLED))).booleanValue();
     }
+    
+    public static boolean isStorefront2_0Enabled() {
+        return (Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue();
+    }
 
     public static String getPropDonationProductSamplesId() {
         return get(PROP_DONATION_PRODUCT_SAMPLES_ID);
@@ -4392,6 +4431,10 @@ public class FDStoreProperties {
 
     public static String getHomepageRedesignNewUserContainerContentKey() {
         return get(PROP_HOMEPAGE_REDESIGN_NEW_USER_CONTAINER_CONTENT_KEY);
+    }
+
+    public static int getHomepageRedesignProductLimitMax() {
+        return Integer.parseInt(get(PROP_HOMEPAGE_REDESIGN_MODULE_PRODUCT_LIMIT_MAX));
     }
 
     public static String getPropPlant1300PlantIndicator() {

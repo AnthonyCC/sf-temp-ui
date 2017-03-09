@@ -802,7 +802,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public void storeMobilePreferences(String fdcustomerId, String mobileNumber, String textOffers, String textDelivery, String orderNotices, String orderExceptions, String offers, String partnerMessages, EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
 	
 	public void storeGoGreenPreferences(String customerId, String goGreen) throws FDResourceException, RemoteException;
-	public boolean loadGoGreenPreference(String customerId) throws FDResourceException, RemoteException;
+	public String loadGoGreenPreference(String customerId) throws FDResourceException, RemoteException;
 	
 	public void storeMobilePreferencesNoThanks(String customerId) throws FDResourceException, RemoteException;
 	public void storeSmsPreferencesNoThanks(String fdCustomerId, EnumEStoreId eStoreId) throws FDResourceException, RemoteException;
@@ -886,8 +886,6 @@ public interface FDCustomerManagerSB extends EJBObject {
 	
 	public List<ShippingDetail> getTruckDetails() throws FDResourceException,RemoteException ;
 	
-	public boolean overLayGoGreenPreferences(String customerId) throws FDResourceException, RemoteException;
-
 	public List<FDCartLineI> getModifiedCartlines(String orderId, UserContext userContext) throws FDResourceException, RemoteException;
 
 	public void saveModifiedCartline(PrimaryKey  userpk, StoreContext storeContext, FDCartLineI newLine, String orderId) throws FDResourceException, RemoteException;

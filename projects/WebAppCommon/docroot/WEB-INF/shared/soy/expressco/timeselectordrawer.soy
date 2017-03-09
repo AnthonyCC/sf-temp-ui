@@ -13,14 +13,11 @@
   		</div>
   		<div class="standing-orders-3-select-freq">
   			<select name="soFreq" id="soFreq2" onchange="selectFrequency(this)">
-    			<option value="-1" style="display:none" disabled="disabled">Frequency</option>
+  				<option value="-1" style="display:none" disabled="disabled">Frequency</option>
     			<option value="1" {if $soFreq == 1 or $soFreq == null}selected{/if}>Weekly</option>
 				<option value="2" {if $soFreq == 2}selected{/if}>Every 2 Weeks</option>
 				<option value="4" {if $soFreq == 4}selected{/if}>Every 4 Weeks</option>
 			</select>
-			{if $soFreq == null}
-				<script>selectWeeklyFrequency()</script>
-			{/if}
   		</div>
   	{/if}
     <p class="timeslot_pattern_notification">
@@ -73,19 +70,7 @@
 {else}
 	<div class='drawer__previewitem'>
 	  <div class="drawer__previewitem__button__section">
-	  	{if $newSO3}
-	    	<div class="standing-orders-3-pick-freq">
-	    		<p>Select Order Frequency</p>
-	    		<select name="soFreq" id="soFreq" onchange="selectFrequency(this)">
-	    			<option value="-1" style="display:none" disabled="disabled" selected>Frequency</option>
-	    			<option value="1" {if $soFreq == 1}selected{/if}>Weekly</option>
-					<option value="2" {if $soFreq == 2}selected{/if}>Every 2 Weeks</option>
-					<option value="4" {if $soFreq == 4}selected{/if}>Every 4 Weeks</option>
-				</select>
-	    	</div>
-	    {else}
-	    	<button class="cssbutton green" data-drawer-activate="timeslot" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Select a <span class="offscreen">Delivery</span>Time</button>
-	    {/if}
+	  	<button class="cssbutton green" data-drawer-activate="timeslot" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Select a <span class="offscreen">Delivery</span>Time</button>
 	  </div>
 	  {if $showForceOrder}<label class='timeslot-force-order'>Force Order: <input data-component="forceorder" type="checkbox" {if $forceOrderEnabled}checked{/if}></label>{/if}
 	</div>

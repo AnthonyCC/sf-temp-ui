@@ -19,6 +19,8 @@ import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
+import com.freshdirect.cms.search.ContentIndex;
+import com.freshdirect.cms.search.SearchTestUtils;
 import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
@@ -64,7 +66,7 @@ public class ConfiguredProductGroupAvailabilityTest extends FDCustomerManagerTes
 		service = new XmlContentService(typeService, new FlexContentHandler(),
 				"classpath:/com/freshdirect/cms/fdstore/ConfiguredProducts.xml");
 
-		CmsManager.setInstance(new CmsManager(service, null));
+		CmsManager.setInstance(new CmsManager(service, SearchTestUtils.createSearchService(new ArrayList<ContentIndex>(), SearchTestUtils.createTempDir(this.getClass().getCanonicalName(), (new Date()).toString()))));
 		
 		Context            context            = null;
 		Hashtable          env                = new Hashtable();

@@ -1,5 +1,6 @@
 package com.freshdirect.cms.application.service;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -196,6 +197,7 @@ public class CompositeContentService extends AbstractContentService implements C
 
 	@Override
 	public CmsResponseI handle(CmsRequestI request) {
+        LOGGER.debug(MessageFormat.format("Starting {0} service handles {1} request", getName(), request));
 
 		Map<String, CmsRequest> reqByService = decomposeRequest(request);
 
@@ -208,8 +210,11 @@ public class CompositeContentService extends AbstractContentService implements C
 			service.handle(serviceReq);
 			// TODO process service response 
 		}
+		
+		CmsResponseI response = new CmsResponse();
 
-		return new CmsResponse();
+        LOGGER.debug(MessageFormat.format("Ending {0} service handles {1} response", getName(), response));
+		return response;
 	}
 
 	/**

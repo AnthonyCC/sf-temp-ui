@@ -65,6 +65,7 @@ import com.freshdirect.logistics.controller.data.response.ListOfStateCounty;
 import com.freshdirect.logistics.controller.data.response.Timeslot;
 import com.freshdirect.logistics.delivery.dto.Address;
 import com.freshdirect.logistics.delivery.model.GeoLocation;
+import com.freshdirect.logistics.delivery.model.RouteStopInfo;
 import com.freshdirect.logistics.delivery.model.ShippingDetail;
 import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.logistics.fdx.controller.data.request.CreateOrderRequest;
@@ -163,6 +164,7 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	
 	private static final String GET_TRUCK_DETAILS_API ="/delivery/trucks/";
 	private static final String RESERVATION_RECONFIRM_API ="/reservation/reconfirm";
+	private static final String ROUTE_STOP_INFO ="/order/routestopInfo/";
 
 
 	@Override
@@ -690,4 +692,12 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 		Result response =  getData(inputJson, getEndPoint(RESERVATION_RECONFIRM_API), Result.class);
 		return response;	
 	}
+	
+	@Override
+	public RouteStopInfo getRouteStopInfo(String orderId) throws FDLogisticsServiceException {
+		RouteStopInfo response =  getData(null, getEndPoint(ROUTE_STOP_INFO+orderId), RouteStopInfo.class);
+		return response;
+	}
+	
+	
 }

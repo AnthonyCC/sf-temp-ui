@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 min=0
 max=0

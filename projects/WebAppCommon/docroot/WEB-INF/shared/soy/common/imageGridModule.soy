@@ -5,72 +5,74 @@
  * @param data
  */
 {template .imageGridModule}
-<div class="content-module image-grid-module" id="{$moduleData.moduleInstanceId}">
-	{call common.moduleHeader}
-		{param content: $moduleData /}
-	{/call}
-	<div class="content">
-		{call common.contentHeader}
-			{param content: $moduleData /}
-		{/call}
-		<div class="image-grid">
-		  <div class="first-line">
-				<div class="small-block">
-					<div class="small" >
-						<a href="{$data.imageGridData.imageContainer1Target}">
-							<img src="{$data.imageGridData.imageContainer1Image}" alt="{$data.imageGridData.imageContainer1Text}">
-							{if $data.imageGridData.imageContainer1Text}
-                <div>{$data.imageGridData.imageContainer1Text}</div>
+{if $data.imageGridData}
+  <div class="content-module image-grid-module" id="{$moduleData.moduleId}">
+  	{call common.moduleHeader}
+  		{param content: $moduleData /}
+  	{/call}
+  	<div class="content">
+  		{call common.contentHeader}
+  			{param content: $moduleData /}
+  		{/call}
+  		<div class="image-grid">
+  		  <div class="first-line">
+  				<div class="small-block">
+  					<div class="small" >
+  						<a href="{$data.imageGridData[0].iconLink}">
+  							<img src="{$data.imageGridData[0].iconImage}" alt="{$data.imageGridData[0].iconLinkText}">
+  							{if $data.imageGridData[0].iconLinkText}
+                  <div>{$data.imageGridData[0].iconLinkText}</div>
+                {/if}
+              </a>
+  					</div>
+  					<div class="small" >
+  						<a href="{$data.imageGridData[1].iconLink}">
+  							<img src="{$data.imageGridData[1].iconImage}" alt="{$data.imageGridData[1].iconLinkText}">
+  							{if $data.imageGridData[1].iconLinkText}
+                  <div>{$data.imageGridData[1].iconLinkText}</div>
+                {/if}
+  						</a>
+  					</div>
+  				</div>
+  				<div class="medium">
+  					<a href="{$data.imageGridData[2].iconLink}">
+  						<img src="{$data.imageGridData[2].iconImage}" alt="{$data.imageGridData[2].iconLinkText}">
+  						{if $data.imageGridData[2].iconLinkText}
+                <div>{$data.imageGridData[2].iconLinkText}</div>
               {/if}
-            </a>
-					</div>
-					<div class="small" >
-						<a href="{$data.imageGridData.imageContainer2Target}">
-							<img src="{$data.imageGridData.imageContainer2Image}" alt="{$data.imageGridData.imageContainer2Text}">
-							{if $data.imageGridData.imageContainer2Text}
-                <div>{$data.imageGridData.imageContainer2Text}</div>
+  					</a>
+  				</div>
+  			</div>
+  			<div class="second-line">
+  				<div class="medium">
+  					<a href="{$data.imageGridData[3].iconLink}">
+  						<img src="{$data.imageGridData[3].iconImage}" alt="{$data.imageGridData[3].iconLinkText}">
+  						{if $data.imageGridData[3].iconLinkText}
+                <div>{$data.imageGridData[3].iconLinkText}</div>
               {/if}
-						</a>
-					</div>
-				</div>
-				<div class="medium">
-					<a href="{$data.imageGridData.imageContainer3Target}">
-						<img src="{$data.imageGridData.imageContainer3Image}" alt="{$data.imageGridData.imageContainer3Text}">
-						{if $data.imageGridData.imageContainer3Text}
-              <div>{$data.imageGridData.imageContainer3Text}</div>
-            {/if}
-					</a>
-				</div>
-			</div>
-			<div class="second-line">
-				<div class="medium">
-					<a href="{$data.imageGridData.imageContainer4Target}">
-						<img src="{$data.imageGridData.imageContainer4Image}" alt="{$data.imageGridData.imageContainer4Text}">
-						{if $data.imageGridData.imageContainer4Text}
-              <div>{$data.imageGridData.imageContainer4Text}</div>
-            {/if}
-					</a>
-				</div>
-				<div class="small-block">
-					<div class="small">
-						<a href="{$data.imageGridData.imageContainer5Target}">
-							<img src="{$data.imageGridData.imageContainer5Image}" alt="{$data.imageGridData.imageContainer5Text}">
-							{if $data.imageGridData.imageContainer5Text}
-                <div>{$data.imageGridData.imageContainer5Text}</div>
-              {/if}
-						</a>
-					</div>
-					<div class="small">
-						<a href="{$data.imageGridData.imageContainer6Target}">
-							<img src="{$data.imageGridData.imageContainer6Image}" alt="{$data.imageGridData.imageContainer6Text}">
-							{if $data.imageGridData.imageContainer6Text}
-                <div>{$data.imageGridData.imageContainer6Text}</div>
-              {/if}
-						</a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
+  					</a>
+  				</div>
+  				<div class="small-block">
+  					<div class="small">
+  						<a href="{$data.imageGridData[4].iconLink}">
+  							<img src="{$data.imageGridData[4].iconImage}" alt="{$data.imageGridData[4].iconLinkText}">
+  							{if $data.imageGridData[4].iconLinkText}
+                  <div>{$data.imageGridData[4].iconLinkText}</div>
+                {/if}
+  						</a>
+  					</div>
+  					<div class="small">
+  						<a href="{$data.imageGridData[5].iconLink}">
+  							<img src="{$data.imageGridData[5].iconImage}" alt="{$data.imageGridData[5].iconLinkText}">
+  							{if $data.imageGridData[5].iconLinkText}
+                  <div>{$data.imageGridData[5].iconLinkText}</div>
+                {/if}
+  						</a>
+  					</div>
+  				</div>
+  			</div>
+  		</div>
+  	</div>
+  </div>
+{/if}
 {/template}

@@ -11,14 +11,11 @@ Symbols:
 -->
 <module id="com.freshdirect.cms" version="1.0.0">
 
-	<sub-module descriptor="hivemodule_search.xml"/>
 	<sub-module descriptor="hivemodule_publish.xml"/>
 
 	<service-point id="backgroundProcessor" interface="com.freshdirect.cms.search.IBackgroundProcessor">
 		<invoke-factory>
 			<construct class="com.freshdirect.cms.search.BackgroundProcessorImpl">
-				<set-service property="searchService" service-id="com.freshdirect.cms.search.SearchService" />
-				<set-object property="publishTasks" value="configuration:com.freshdirect.cms.publish.publishTasks"/>
 				<set-service property="mergeTask" service-id="DraftMergeTask"/>
 			</construct>		
 		</invoke-factory>
@@ -351,23 +348,10 @@ because otherwise the external modifications of the slide database won't get pic
 		VALIDATION
 	-->
 	
-	<configuration-point id="contentValidators" schema-id="objectList"/>
-	<contribution configuration-id="contentValidators">
-		<Object value="instance:com.freshdirect.cms.validation.BasicValidator"/>
-		<Object value="instance:com.freshdirect.cms.fdstore.PrimaryHomeValidator"/>
-		<Object value="instance:com.freshdirect.cms.fdstore.StructureValidator"/>
-		<Object value="instance:com.freshdirect.cms.fdstore.UniqueContentKeyValidator"/>
-		<Object value="instance:com.freshdirect.cms.fdstore.RecipeChildNodeValidator"/>
-		<Object value="instance:com.freshdirect.cms.fdstore.ConfiguredProductValidator"/>
-		<Object value="instance:com.freshdirect.cms.fdstore.DateIntervalValidator"/>
-		<Object value="instance:com.freshdirect.cms.fdstore.ConditionalFieldValidator"/>
-	</contribution>
-
 	<service-point id="Validator" interface="com.freshdirect.cms.application.ContentServiceI">
 		<invoke-factory>
 			<construct class="com.freshdirect.cms.validation.ValidatingContentService">
 				<service>ChangeTracker</service>
-				<configuration>contentValidators</configuration>
 			</construct>
 		</invoke-factory>
 	</service-point>
@@ -380,7 +364,6 @@ because otherwise the external modifications of the slide database won't get pic
 		<invoke-factory>
 			<construct class="com.freshdirect.cms.search.ContentIndexerService">
 				<service>Validator</service>
-				<service>com.freshdirect.cms.search.SearchService</service>
 			</construct>
 		</invoke-factory>
 	</service-point>
@@ -399,14 +382,6 @@ because otherwise the external modifications of the slide database won't get pic
 		</invoke-factory>
 	</service-point>
 
-	<service-point id="WebDavService" interface="com.freshdirect.cms.application.service.WebDavServiceI">
-		<invoke-factory>
-			<construct class="com.freshdirect.cms.application.service.WebDavService">
-				<set property="repositoryUrl" value="${cms.publish.repositoryUrl}" />
-			</construct>
-		</invoke-factory>
-	</service-point>
-	
 	<service-point id="DraftMergeTask" interface="com.freshdirect.cms.merge.MergeTask">
 		<invoke-factory>
 			<construct class="com.freshdirect.cms.merge.DraftMergeTask"/>

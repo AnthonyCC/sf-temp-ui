@@ -5,6 +5,8 @@
 <%@page import="java.util.Collection"%>
 <%@page import="java.util.List"%>
 <%@page import="com.freshdirect.cms.search.SearchHit"%>
+<%@page import="com.freshdirect.cms.index.FullIndexerService"%>
+<%@page import="com.freshdirect.cms.index.IndexingConstants"%>
 <%@page import="com.freshdirect.cms.application.CmsManager"%>
 <%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
 <%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
@@ -97,8 +99,8 @@ if (searchTerm != null && !searchTerm.trim().isEmpty()) {
 		String normalizedTerm = filter.getTerms().get(0).toString();
 		List<String> tokens = new ArrayList<String>();
 		Registry registry = FDRegistry.getInstance();
-		ContentSearchServiceI search = (ContentSearchServiceI) registry.getService(ContentSearchServiceI.class);
-		TokenStream tokenStream = search.getAnalyzer().tokenStream("_name_FULL_NAME", new StringReader(normalizedTerm));
+		ContentSearchServiceI search = new LuceneSearchService();
+		TokenStream tokenStream = IndexingConstants.ANALYZER.tokenStream("_name_FULL_NAME", new StringReader(normalizedTerm));
 		TermAttribute termAttr = tokenStream.getAttribute(TermAttribute.class);
 		while (tokenStream.incrementToken())
 			tokens.add(termAttr.term());

@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import javassist.CannotCompileException;
-
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.AttributeI;
@@ -25,6 +23,8 @@ import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.classgenerator.ClassGeneratorContentService;
 import com.freshdirect.cms.classgenerator.ContentNodeGenerator;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+
+import javassist.CannotCompileException;
 
 public class ClassGeneratorTool {
     private static final Logger LOG = Logger.getLogger(ClassGeneratorTool.class);
@@ -97,7 +97,7 @@ public class ClassGeneratorTool {
     private static void baseTest() {
         ContentTypeServiceI contentService = ContentFilterTool.createTypeService();
         LOG.info("content service inited.");
-        ContentNodeGenerator c = new ContentNodeGenerator(contentService);
+        ContentNodeGenerator c = new ContentNodeGenerator(contentService, ContentNodeGenerator.DEFAULT_PREFIX);
 
         {
             ContentNodeI node = c.createNode(ContentKey.getContentKey(FDContentTypes.PRODUCT, "prod"), DraftContext.MAIN);

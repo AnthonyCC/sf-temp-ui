@@ -11,10 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.TestCase;
-
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
 import com.freshdirect.cms.application.DraftContext;
@@ -27,6 +26,8 @@ import com.freshdirect.cms.search.spell.DictionaryItem;
 import com.freshdirect.cms.search.spell.FreshDirectDictionary;
 import com.freshdirect.cms.search.term.SynonymSearchTermNormalizerFactory;
 import com.freshdirect.cms.search.term.TermCoderFactory;
+
+import junit.framework.TestCase;
 
 public class FreshDirectDictionaryTest extends TestCase {
 	private ContentServiceI initContent(String string) {
@@ -187,14 +188,10 @@ public class FreshDirectDictionaryTest extends TestCase {
 		Map<ContentType, List<AttributeIndex>> indexes = new HashMap<ContentType, List<AttributeIndex>>();
 		ContentType type = ContentType.get("Foo");
 		indexes.put(type, new ArrayList<AttributeIndex>());
-		AttributeIndex index = new AttributeIndex();
-		index.setContentType("Foo");
-		index.setAttributeName("name");
+		AttributeIndex index = new AttributeIndex("Foo", "name");
 		index.setSpelled(true);
 		indexes.get(type).add(index);
-		index = new AttributeIndex();
-		index.setContentType("Foo");
-		index.setAttributeName("value");
+		index = new AttributeIndex("Foo", "value");
 		index.setSpelled(true);
 		indexes.get(type).add(index);
 
@@ -215,7 +212,7 @@ public class FreshDirectDictionaryTest extends TestCase {
 			}
 		});
 		Dictionary dictionary = new FreshDirectDictionary(nodes, indexes, Collections.singletonList(synonyms),
-				Collections.<SynonymDictionary>emptyList(), false);
+				Collections.<SynonymDictionary>emptyList(), false, CmsManager.getInstance());
 		Iterator<DictionaryItem> it = dictionary.getWordsIterator();
 		return it;
 	}

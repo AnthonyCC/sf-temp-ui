@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<%@page import="com.freshdirect.cms.search.LuceneSearchService"%>
+<%@page import="com.freshdirect.cms.index.FullIndexerService"%>
 <%@ page language="java" contentType="text/html; charset=iso-8859-1" pageEncoding="iso-8859-1"%>
 <%@page import="java.util.Set"%>
 <%@page import="com.freshdirect.fdstore.content.ContentSearch"%>
@@ -101,8 +103,9 @@ td {
 </head>
 <%
 	Registry registry = FDRegistry.getInstance();
-	ContentSearchServiceI search = (ContentSearchServiceI) registry.getService(ContentSearchServiceI.class);
+	ContentSearchServiceI search = new LuceneSearchService();
 	CmsManager instance = CmsManager.getInstance();
+	FullIndexerService indexer = FullIndexerService.getInstance();
 	Set<ContentKey> keys = instance.getContentKeys();
 	List<Item> products = new ArrayList<Item>(keys.size());
 	List<Item> recipes = new ArrayList<Item>(keys.size());
@@ -123,7 +126,7 @@ td {
 		i++;
 		if (i % 10000 == 0)
 			LOG.info("processed " + i + " nodes so far");
-		List<AttributeIndex> indexes = search.getIndexesForType(key.getType());
+		List<AttributeIndex> indexes = indexer.getIndexesForType(key.getType());
 		if (indexes == null || indexes.isEmpty())
 			continue;
 		
@@ -145,7 +148,7 @@ td {
 			if (index.getRelationshipAttributeName() != null)
 				attributeName += "." + index.getRelationshipAttributeName();
 
-			List<Term> values = SearchUtils.collectValues(node, index, true, phEnabled, recuEnabled);
+			List<Term> values = SearchUtils.collectValues(node, index, true, phEnabled, recuEnabled, instance);
 			for (Term value : values) {
 				if (index.isText()) {
 					if (attributeName.toLowerCase().startsWith("keyword")) {

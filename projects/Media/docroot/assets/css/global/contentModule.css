@@ -1,18 +1,18 @@
-.contentModules .content-module:nth-child(n + 2) {
-  margin-top: 35px;
+.content-module {
+  font-family: 'Brandon Text';
 }
 
-.contentModules .content-module [data-component="carousel"] [data-component="carousel-mask"] {
+.content-module [data-component="carousel"] [data-component="carousel-mask"] {
   background-color: white;
   margin: 0 2px 36px;
 }
 
-.contentModules .content-module .module-header,
-.contentModules .content-module .content .content-header {
+.content-module .module-header,
+.content-module .content .content-header {
   display: flex;
 }
 
-.contentModules .content-module .content .content-header {
+.content-module .content .content-header {
   align-items: center;
   background-image: none;
   justify-content: space-between;
@@ -23,30 +23,34 @@
   padding: 0 10px;
 }
 
-.contentModules .content-module h1 {
-  font-family: sans-serif;
+.content-module h1 {
+  font-family: 'Brandon Text';
   font-size: 25px;
-  font-weight: 400;
+  font-weight: 500;
   line-height: 25px;
   margin: 0;
 }
 
-.contentModules .content-module h3 {
+.content-module h3 {
+  font-family: 'Brandon Text';
+  font-weight: 500;
   font-size: 16px;
   height: 26px;
   line-height: 26px;
   margin: 0;
 }
 
-.contentModules .content-module .module-header {
+.content-module .module-header {
   align-items: center;
+  background: #F2F3F4;
   font-size: 25px;
-  font-family: Verdana, Arial, sans-serif;
+  font-family: 'Brandon Text';
   text-transform: uppercase;
   padding: 10px;
+  margin-bottom: 2px;
 }
 
-.contentModules .content-module .module-header .module-text-banner {
+.content-module .module-header .module-text-banner {
   background-color: #eb202a;
   color: white;
   padding-left: 10px;
@@ -55,7 +59,7 @@
   text-transform: none;
 }
 
-.contentModules .content-module .module-header .module-text-banner::after {
+.content-module .module-header .module-text-banner::after {
   border-bottom: 13px solid #eb202a;
   border-top: 13px solid #eb202a;
   border-left: none;
@@ -67,29 +71,28 @@
   top: 0;
 }
 
-.contentModules .content-module .content .content-header h2 {
+.content-module .content .content-header h2 {
   margin: 0;
-  font-family: Verdana, Arial, sans-serif;
-  font-weight: 400;
-  font-size: 22px;
+  font-family: 'Brandon Text';
+  font-weight: 500;
+  font-size: 25px;
   text-transform: uppercase;
 }
 
-.contentModules .content-module .content-header .view-all {
+.content-module .content-header .view-all {
   margin-left: 15px;
   align-items: center;
 }
 
-.contentModules .content-module .content-header .view-all a {
-  padding: 5px 20px;
+.content-module .content-header .view-all a {
   text-decoration: none;
   text-transform: uppercase;
 }
 
-.contentModules .content-module .module-header .module-title {
+.content-module .module-header .module-title {
   margin-right: 15px;
 }
 
-.contentModules .content-module .content.hide-burst [data-component="carousel"] .burst {
+.content-module .content.hide-burst [data-component="carousel"] .burst {
   display: none;
 }

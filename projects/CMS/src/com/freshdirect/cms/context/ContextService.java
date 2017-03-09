@@ -8,12 +8,12 @@ import java.util.StringTokenizer;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
-import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.ContentNodeSource;
 import com.freshdirect.cms.application.DraftContext;
 
 /**
  * Provides services to contextualize content nodes of an
- * underlying {@link com.freshdirect.cms.application.ContentServiceI}.
+ * underlying content node source {@link com.freshdirect.cms.application.ContentNodeSource}.
  * 
  * @see com.freshdirect.cms.context.ContextualContentNodeI
  */
@@ -21,10 +21,10 @@ public class ContextService {
 
 	private static ContextService instance;
 
-	private final ContentServiceI contentService;
+	private final ContentNodeSource source;
 
-	public ContextService(ContentServiceI contentService) {
-		this.contentService = contentService;
+	public ContextService(ContentNodeSource contentService) {
+		this.source = contentService;
 	}
 
 	public static ContextService getInstance() {
@@ -43,7 +43,7 @@ public class ContextService {
 	 */
 	public Collection<Context> getAllContextsOf( ContentKey key, DraftContext draftContext ) {
 		List<Context> contexts = new ArrayList<Context>();
-		Set<ContentKey> parentKeys = contentService.getParentKeys( key, draftContext );
+		Set<ContentKey> parentKeys = source.getParentKeys( key, draftContext );
 		if ( parentKeys.isEmpty() ) {
 			contexts.add( new Context( null, key ) );
 		} else {
@@ -85,7 +85,7 @@ public class ContextService {
 			//
 			// end validation chunk
 			//
-			ContentNodeI node = contentService.getContentNode(key, draftContext);
+			ContentNodeI node = source.getContentNode(key, draftContext);
 			if (node == null) {
 				return null;
 			}

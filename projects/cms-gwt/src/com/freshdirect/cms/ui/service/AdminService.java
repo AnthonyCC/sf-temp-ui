@@ -10,8 +10,10 @@ public interface AdminService extends RemoteService {
     public AdminProcStatus rebuildIndexes();
 
 	public AdminProcStatus rebuildWineIndexes();
-	
+
     public AdminProcStatus validateEditors();
-    
-    public AdminProcStatus getBuildIndexStatus();    
+
+    public AdminProcStatus getBuildIndexStatus();
+
+    public AdminProcStatus abortStuckPublishFlows();
 }

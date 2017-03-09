@@ -9,12 +9,12 @@
     <div class="module-text">
       <h1 tabindex="0">{if $moduleData.moduleGroupTitle}{$moduleData.moduleGroupTitle}{/if}</h1>
       {if $moduleData.moduleGroupTitleTextBanner}
-      <h2 class="module-group-text-banner">{$moduleData.moduleGroupTitleTextBanner}</h2>
+      <h3 class="module-group-text-banner">{$moduleData.moduleGroupTitleTextBanner}</h3>
       {/if}
     </div>
     {if not $moduleData.hideModuleGroupViewAllButton}
       <div class="view-all" tabindex="-1">
-        <a href="{if $moduleData.moduleGroupViewAllButtonLink}{$moduleData.moduleGroupViewAllButtonLink}{/if}" class="cssbutton small green arrowbutton" data-viewallinfo="Home Page Module Group,{if $moduleData.moduleGroupViewAllButtonLink}{$moduleData.moduleGroupViewAllButtonLink}{/if}">view all
+        <a href="{$moduleData.moduleGroupViewAllButtonLink}" tabindex="-1" class="cssbutton cssbutton-flat green transparent arrowbutton">view all
           <div class="offscreen">{if $moduleData.moduleGroupTitle}{$moduleData.moduleGroupTitle}{/if}</div>
         </a>
       </div>

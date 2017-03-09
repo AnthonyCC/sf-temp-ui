@@ -40,7 +40,6 @@ import com.freshdirect.cms.changecontrol.ChangeSet;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.fdstore.FDRootKey;
 import com.freshdirect.cms.fdstore.PreviewLinkProvider;
-import com.freshdirect.cms.fdstore.UniqueContentKeyValidator;
 import com.freshdirect.cms.merge.MergeException;
 import com.freshdirect.cms.meta.ContentTypeUtil;
 import com.freshdirect.cms.node.ChangedContentNode;
@@ -81,6 +80,7 @@ import com.freshdirect.cms.validation.ContentValidationDelegate;
 import com.freshdirect.cms.validation.ContentValidationException;
 import com.freshdirect.cms.validation.ContentValidationMessage;
 import com.freshdirect.cms.validation.ContentValidatorI;
+import com.freshdirect.cms.validation.UniqueContentKeyValidator;
 import com.freshdirect.cmsadmin.domain.DraftChange;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.conf.FDRegistry;
@@ -143,7 +143,7 @@ public class ContentServiceImpl extends GwtServiceBase implements ContentService
 
     /**
      * Return a GWT User instance from a request
-     * 
+     *
      * @param request
      * @return
      */
@@ -303,13 +303,13 @@ public class ContentServiceImpl extends GwtServiceBase implements ContentService
 
     /**
      * Method called from client-side requesting a new node
-     * 
+     *
      * @param type
      *            Content type
      * @param id
      *            ID to allocate
      * @return properly prepared content node prototype
-     * 
+     *
      * @throws ServerException
      */
     @Override
@@ -360,7 +360,7 @@ public class ContentServiceImpl extends GwtServiceBase implements ContentService
         final ContentValidatorI v = new UniqueContentKeyValidator();
         final ContentValidationDelegate delegate = new ContentValidationDelegate();
 
-        // fake node
+        // fake nodeSimpleContentService
         ContentNodeI node = new ContentNode(contentService, cKey);
 
         v.validate(delegate, contentService, draftContext, node, null, null);
@@ -374,79 +374,87 @@ public class ContentServiceImpl extends GwtServiceBase implements ContentService
         HttpServletRequest request = getThreadLocalRequest();
 
         final DraftContext draftContext = getDraftContext();
-        // assemble set of changed content nodes
-        List<ContentNodeI> changedNodes = new ArrayList<ContentNodeI>(nodes.size());
-        for (GwtContentNode gwtNode : nodes) {
-            // fetch original content node
-            ContentNodeI node = TranslatorFromGwt.getContentNode(gwtNode, draftContext);
+        if (isNodeModificationEnabled(draftContext)) {
+            // assemble set of changed content nodes
+            List<ContentNodeI> changedNodes = new ArrayList<ContentNodeI>(nodes.size());
+            for (GwtContentNode gwtNode : nodes) {
+                // fetch original content node
+                ContentNodeI node = TranslatorFromGwt.getContentNode(gwtNode, draftContext);
 
-            ChangedContentNode cNode = new ChangedContentNode(node.copy());
+                ChangedContentNode cNode = new ChangedContentNode(node.copy());
 
-            // apply changes made in CMS Editor
-            for (String attrName : gwtNode.getChangedValueKeys()) {
-                final Object originalValue = TranslatorFromGwt.getServerValue(gwtNode.getOriginalAttributeValue(attrName));
-                final Object changedValue = TranslatorFromGwt.getServerValue(gwtNode.getAttributeValue(attrName));
-                if (!NVL.nullEquals(originalValue, changedValue)) {
-                    LOG.debug("Record attribute change of " + attrName);
-                    cNode.setAttributeValue(attrName, changedValue);
-                } else {
-                    LOG.debug("Skip fake attribute change of " + attrName);
+                // apply changes made in CMS Editor
+                for (String attrName : gwtNode.getChangedValueKeys()) {
+                    final Object originalValue = TranslatorFromGwt.getServerValue(gwtNode.getOriginalAttributeValue(attrName));
+                    final Object changedValue = TranslatorFromGwt.getServerValue(gwtNode.getAttributeValue(attrName));
+                    if (!NVL.nullEquals(originalValue, changedValue)) {
+                        LOG.debug("Record attribute change of " + attrName);
+                        cNode.setAttributeValue(attrName, changedValue);
+                    } else {
+                        LOG.debug("Skip fake attribute change of " + attrName);
+                    }
                 }
+
+                changedNodes.add(cNode);
             }
 
-            changedNodes.add(cNode);
+            // update CMS with changes
+            return saveNodes(request, changedNodes, Source.NODE_EDITOR);
+        } else {
+            throw new ServerException("Can't save nodes as a publish is in progress");
         }
-
-        // update CMS with changes
-        return saveNodes(request, changedNodes, Source.NODE_EDITOR);
     }
 
     public static GwtSaveResponse saveNodes(HttpServletRequest request, Collection<ContentNodeI> changedNodes, CmsRequestI.Source source) throws ServerException {
         CmsUser user = getCmsUserFromRequest(request);
         CmsManager cmsManager = CmsManager.getInstance();
         DraftContext draftContext = user.getDraftContext();
+        if (isNodeModificationEnabled(draftContext)) {
 
-        try {
-            // setup change request
-            CmsRequest cmsRequest = new CmsRequest(user, source, draftContext);
-            for (ContentNodeI node : changedNodes) {
-                cmsRequest.addNode(node);
+            try {
+                // setup change request
+                CmsRequest cmsRequest = new CmsRequest(user, source, draftContext);
+                for (ContentNodeI node : changedNodes) {
+                    cmsRequest.addNode(node);
+                }
+
+                long now = System.currentTimeMillis();
+
+                // make changes
+                CmsResponseI responseI = cmsManager.handle(cmsRequest);
+
+                String id = null;
+                GwtChangeSet gwtChangeSet = null;
+                if (responseI != null && responseI.getChangeSetId() != null) {
+                    id = responseI.getChangeSetId().getId();
+                    ChangeSet changeSet = getChangeLogService().getChangeSet(responseI.getChangeSetId());
+                    gwtChangeSet = TranslatorToGwt.getGwtChangeSet(changeSet, new ChangeSetQuery(), cmsManager, draftContext);
+                } else if (!draftContext.isMainDraft()) {
+                    id = "draft: " + draftContext.getDraftId();
+                    List<DraftChange> latestChanges = DraftService.defaultService().getFilteredDraftChanges(draftContext.getDraftId(), now, cmsRequest.getUser().getName());
+                    gwtChangeSet = TranslatorToGwt.getGwtChangeSet(id, latestChanges, cmsManager, draftContext);
+                }
+                return new GwtSaveResponse(id, gwtChangeSet);
+            } catch (MergeException e) {
+                String errorMessage = e.getMessage();
+                LOG.error(errorMessage);
+                return new GwtSaveResponse(errorMessage);
+            } catch (ContentValidationException v) {
+                List<ContentValidationMessage> messages = v.getDelegate().getValidationMessages();
+                List<GwtValidationError> errors = new ArrayList<GwtValidationError>();
+                for (ContentValidationMessage msg : messages) {
+                    errors.add(new GwtValidationError(msg.getContentKey().getEncoded(), msg.getAttribute(), msg.getMessage()));
+                }
+                return new GwtSaveResponse(errors);
+            } catch (SecurityException exc) {
+                LOG.error("Action denied " + changedNodes, exc);
+                throw TranslatorToGwt.wrap(exc);
+            } catch (Throwable e) {
+                LOG.error("RuntimeException saving  " + changedNodes, e);
+                throw TranslatorToGwt.wrap(e);
             }
-
-            long now = System.currentTimeMillis();
-
-            // make changes
-            CmsResponseI responseI = cmsManager.handle(cmsRequest);
-
-            String id = null;
-            GwtChangeSet gwtChangeSet = null;
-            if (responseI != null && responseI.getChangeSetId() != null) {
-                id = responseI.getChangeSetId().getId();
-                ChangeSet changeSet = getChangeLogService().getChangeSet(responseI.getChangeSetId());
-                gwtChangeSet = TranslatorToGwt.getGwtChangeSet(changeSet, new ChangeSetQuery(), cmsManager, draftContext);
-            } else if (!draftContext.isMainDraft()) {
-                id = "draft: " + draftContext.getDraftId();
-                List<DraftChange> latestChanges = DraftService.defaultService().getFilteredDraftChanges(draftContext.getDraftId(), now, cmsRequest.getUser().getName());
-                gwtChangeSet = TranslatorToGwt.getGwtChangeSet(id, latestChanges, cmsManager, draftContext);
-            }
-            return new GwtSaveResponse(id, gwtChangeSet);
-        } catch (MergeException e) {
-            String errorMessage = e.getMessage();
-            LOG.error(errorMessage);
-            return new GwtSaveResponse(errorMessage);
-        } catch (ContentValidationException v) {
-            List<ContentValidationMessage> messages = v.getDelegate().getValidationMessages();
-            List<GwtValidationError> errors = new ArrayList<GwtValidationError>();
-            for (ContentValidationMessage msg : messages) {
-                errors.add(new GwtValidationError(msg.getContentKey().getEncoded(), msg.getAttribute(), msg.getMessage()));
-            }
-            return new GwtSaveResponse(errors);
-        } catch (SecurityException exc) {
-            LOG.error("Action denied " + changedNodes, exc);
-            throw TranslatorToGwt.wrap(exc);
-        } catch (Throwable e) {
-            LOG.error("RuntimeException saving  " + changedNodes, e);
-            throw TranslatorToGwt.wrap(e);
+        } else {
+            throw new ServerException("Can't save nodes as a publish is in progress");
         }
     }
 
@@ -522,18 +530,21 @@ public class ContentServiceImpl extends GwtServiceBase implements ContentService
         } else {
             if (query.getPublishType() == null) {
                 publish = service.getPublish(query.getPublishId(), Publish.class);
+                Publish prevPublish = service.getPreviousPublish(publish);
+                prevTimestamp = prevPublish != null ? prevPublish.getTimestamp() : TIME_ZERO;
             } else {
                 publish = service.getPublish(query.getPublishId(), PublishX.class);
+                Publish prevPublish = service.getPreviousFeedPublish(publish);
+                prevTimestamp = prevPublish != null ? prevPublish.getTimestamp() : TIME_ZERO;
             }
 
-            Publish prevPublish = service.getPreviousPublish(publish);
-            prevTimestamp = prevPublish != null ? prevPublish.getTimestamp() : TIME_ZERO;
             timestamp = publish.getTimestamp();
         }
         if (query.isPublishInfoQuery()) {
             LOG.info("publish info:" + query.getPublishId() + " -> " + publish.getId() + ':' + publish.getStatus().getName() + " (" + publish.getDescription() + ')');
+            List<PublishMessage> filteredMessages = TranslatorToGwt.getSeverityFilteredPublishMessages(publish.getMessages(), query.getMessageSeverity());
             return new ChangeSetQueryResponse(publish.getStatus().getName(), publish.getTimestamp(), System.currentTimeMillis() - publish.getTimestamp().getTime(),
-                    TranslatorToGwt.getPublishMessages(publish, query), getLastInfo(publish));
+                    TranslatorToGwt.getPublishMessages(filteredMessages, query.getPublishMessageStart(), query.getPublishMessageEnd()), getLastInfo(publish));
         } else {
 
             LOG.info("collecting changes from " + prevTimestamp + " to " + timestamp + ", query:" + query);
@@ -584,8 +595,9 @@ public class ContentServiceImpl extends GwtServiceBase implements ContentService
         int publishMessageCount = 0;
 
         if (publish != null) {
-            publishMessageCount = publish.getMessages().size();
-            publishMessages = TranslatorToGwt.getPublishMessages(publish, query);
+            List<PublishMessage> filteredMessages = TranslatorToGwt.getSeverityFilteredPublishMessages(publish.getMessages(), query.getMessageSeverity());
+            publishMessages = TranslatorToGwt.getPublishMessages(filteredMessages, query.getPublishMessageStart(), query.getPublishMessageEnd());
+            publishMessageCount = filteredMessages.size();
         }
 
         return new ChangeSetQueryResponse(clientChanges, changeHistory.size(), changeCount, query, publishMessages, publishMessageCount);
@@ -666,8 +678,8 @@ public class ContentServiceImpl extends GwtServiceBase implements ContentService
             publish.setStatus(EnumPublishStatus.PROGRESS);
             publish.setDescription(comment);
             publish.setLastModified(date);
-            LOG.info("starting new publish by " + user.getName() + ", with comment : '" + comment + "'");
-            return getFeedPublishService().doPublish(publish);
+            LOG.info("starting new feed publish by " + user.getName() + ", with comment : '" + comment + "'");
+            return getFeedPublishService().doFeedPublish(publish);
         } catch (Throwable e) {
             LOG.error("RuntimeException for startPublish ", e);
             throw TranslatorToGwt.wrap(e);
@@ -832,6 +844,11 @@ public class ContentServiceImpl extends GwtServiceBase implements ContentService
         }
     }
 
+    @Override
+    public String getLastPublishStatus() throws ServerException {
+        return getLastPublishStatusName();
+    }
+
     // ====================== Other stuff ======================
     @Override
     public String generateUniqueId(String type) {
@@ -890,9 +907,9 @@ public class ContentServiceImpl extends GwtServiceBase implements ContentService
     /**
      * This utility method collects parent keys per store IDs in a {@see Map} where keys are store IDs and values are a {@see Set} of {@see ContentKey} entries All serialized to
      * Strings
-     * 
+     *
      * FIXME move this method to TranslatorToGwt
-     * 
+     *
      * @param key
      *            Product Content Key
      * @return

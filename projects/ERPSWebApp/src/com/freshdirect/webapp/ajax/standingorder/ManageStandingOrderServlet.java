@@ -132,6 +132,8 @@ public class ManageStandingOrderServlet extends HttpServlet {
 			String soId = request.getParameter("soId");
 			String soName = request.getParameter("soName");
 			String freq=request.getParameter("frequency");
+			if (("".equalsIgnoreCase(soId) || soId==null) && (freq == null || "".equalsIgnoreCase(freq)))
+				freq = "1";
 			JspFactory factory = JspFactory.getDefaultFactory();
 			PageContext pageContext = factory.getPageContext(this, request, response, null, true, JspWriter.DEFAULT_BUFFER, true);
 			FDSessionUser u = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
@@ -195,10 +197,22 @@ public class ManageStandingOrderServlet extends HttpServlet {
 	
 					}
 	
+				}else if("onloadNewStandingOrder".equalsIgnoreCase(action)){
+					u.setRefreshValidSO3(true);
+					errorMessage= onloadNewStandingOrder(soName,u,pageContext);
+					writeResponseData( response, errorMessage );
+	
 				} else if("create".equalsIgnoreCase(action)){
 					u.setRefreshValidSO3(true);
 					errorMessage=createStandingOrder(soName,u,pageContext);
-					writeResponseData( response, errorMessage );
+					if(null == errorMessage){
+						SuccessPageData successData=new SuccessPageData();
+						successData.setSoId(u.getCurrentStandingOrder().getId());
+						writeResponseData( response, successData );
+					}
+					else{
+						writeResponseData( response, errorMessage );
+					}
 	
 				} else if("selectFreq".equalsIgnoreCase(action) || "selectFreq2".equalsIgnoreCase(action)){
 					 if(freq!=null){
@@ -206,7 +220,6 @@ public class ManageStandingOrderServlet extends HttpServlet {
 						 u.getCurrentStandingOrder();
 						    u.getCurrentStandingOrder().setNewSo(true);
 						    u.getCurrentStandingOrder().setFrequency(Integer.parseInt(freq));
-							StandingOrderUtil.createStandingOrder(pageContext.getSession(), u.getSoTemplateCart(), u.getCurrentStandingOrder(), null);
 					 }
 					 if("selectFreq2".equalsIgnoreCase(action)){
 						SinglePageCheckoutData result = SinglePageCheckoutFacade.defaultFacade().load(u, request);
@@ -324,6 +337,36 @@ public class ManageStandingOrderServlet extends HttpServlet {
 		return returnMessage;
 	}
 
+	protected String onloadNewStandingOrder(String soName, FDSessionUser u, PageContext pageContext) throws JspException {
+		soName = soName != null ? soName.trim() : "";
+		String returnMessage = null;
+		try {
+			returnMessage = validateStandingOrderName(soName, u);
+				FDStandingOrder so = null!=u.getCurrentStandingOrder()? u.getCurrentStandingOrder():new FDStandingOrder();
+				so.setActivate(EnumStandingOrderActiveType.getEnum(1).getName());
+				so.setCustomerListName(soName);
+				so.setCustomerId(u.getIdentity().getErpCustomerPK());
+				so.setNewSo(true);
+				try {
+					so.setPaymentMethodId(FDCustomerManager.getDefaultPaymentMethodPK(u.getIdentity()));
+				} catch (FDResourceException e1) {
+					LOG.error("SO:Unable to set PaymentMethodId:"+ e1);
+				}
+
+				try {
+					so.setAddressId(FDCustomerManager.getDefaultShipToAddressPK(u.getIdentity()));
+				} catch (FDResourceException e) {
+					LOG.error("SO:Unable to set AddressId:"+ e);
+				}
+				u.setCurrentStandingOrder(so);
+				u.setCheckoutMode( EnumCheckoutMode.CREATE_SO );
+				returnMessage = so.getId();
+		} catch (FDResourceException e2) {
+			throw new JspException(e2);
+		}
+		return returnMessage;
+	}
+	
 	/**
 	 * @param soName
 	 * @param u

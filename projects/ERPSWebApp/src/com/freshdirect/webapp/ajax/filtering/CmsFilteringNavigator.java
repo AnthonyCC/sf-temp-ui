@@ -175,7 +175,7 @@ public class CmsFilteringNavigator {
         int pageSpecificPageSize;
         if (cmsFilteringNavigator.getPageSize() != 0) {
             pageSpecificPageSize = cmsFilteringNavigator.getPageSize();
-        } else {
+        } else if (cmsFilteringNavigator.pageType != null) {
             switch (cmsFilteringNavigator.pageType) {
                 case NEWPRODUCTS:
                     pageSpecificPageSize = FDStoreProperties.getNewProductsPageSize();
@@ -196,7 +196,10 @@ public class CmsFilteringNavigator {
                     pageSpecificPageSize = FDStoreProperties.getBrowsePageSize();
                     break;
             }
+        } else {
+        	pageSpecificPageSize = FDStoreProperties.getBrowsePageSize();
         }
+        
         pageSpecificPageSize = increasePageSizeToFillLayoutFully(request, fdUser, pageSpecificPageSize);
         cmsFilteringNavigator.setPageSize(pageSpecificPageSize);
 

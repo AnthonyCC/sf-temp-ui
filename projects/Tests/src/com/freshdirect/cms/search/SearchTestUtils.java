@@ -9,18 +9,19 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.SingleStoreNodeCollectionSource;
 import com.freshdirect.cms.application.StoreContentSource;
+import com.freshdirect.cms.index.FullIndexerService;
 import com.freshdirect.cms.index.IndexerService;
 import com.freshdirect.cms.index.configuration.IndexerConfiguration;
 
 public class SearchTestUtils {
 
     public static IndexerService createIndexerService(List<ContentIndex> indexes) {
-    	IndexerService indexer = IndexerService.getInstance();
+    	IndexerService indexer = FullIndexerService.getInstance();
         return indexer;
     }
 
     public static ContentSearchServiceI createSearchService(List<ContentIndex> indexes, String indexLocation) {
-    	LuceneSearchService indexer = LuceneSearchService.getInstance();
+    	LuceneSearchService indexer = new LuceneSearchService();
     	indexer.setIndexes(indexes);
     	indexer.setIndexLocation(indexLocation);
         return indexer;

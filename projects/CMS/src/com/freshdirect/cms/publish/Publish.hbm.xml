@@ -30,6 +30,8 @@
 				           type mapping to ContentType -->
 				<property name="contentId"   column="CONTENT_ID"/>
 				<property name="contentType" column="CONTENT_TYPE"/>
+				<property name="storeId" column="STORE_ID" />
+				<property name="task" column="TASK" />
 			</composite-element>
 		</list>
 				
@@ -46,7 +48,7 @@
 		<property name="description"/>
 		<property name="lastModified" column="last_modified"/>
 		<property name="status" type="EnumPublishStatus"	/>
-		<list name="messages" table="PublishMessages">
+		<list name="messages" table="PublishXMessages">
 			<key column="publish_id"/>
 			<list-index column="sort_order"/>
 			<composite-element class="PublishMessage">
@@ -57,6 +59,8 @@
 				           type mapping to ContentType -->
 				<property name="contentId"   column="CONTENT_ID"/>
 				<property name="contentType" column="CONTENT_TYPE"/>
+				<property name="storeId" column="STORE_ID" />
+                <property name="task" column="TASK" />
 			</composite-element>
 		</list>
 	</class>

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,8 @@ import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.search.ContentIndex;
+import com.freshdirect.cms.search.SearchTestUtils;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -63,7 +66,7 @@ public class ContentFilterTool {
 
             LOG.info("content service inited.");
 
-            CmsManager.setInstance(new CmsManager(service, null));
+            CmsManager.setInstance(new CmsManager(service, SearchTestUtils.createSearchService(new ArrayList<ContentIndex>(), SearchTestUtils.createTempDir(ContentFilterTool.class.getCanonicalName(), (new Date()).toString()))));
 
         }
         return service;

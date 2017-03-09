@@ -7,6 +7,7 @@ import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.content.BannerModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.SortOptionModel;
 import com.freshdirect.mobileapi.controller.data.Image;
 import com.freshdirect.mobileapi.controller.data.Image.ImageSizeType;
 import com.freshdirect.mobileapi.controller.data.ImageBanner;
@@ -30,6 +31,8 @@ public class Department extends ProductContainer {
     private String pageTitle;
 
     private String seoMetaDescription;
+    
+    private List<String> sortLabels;
 
     public static Department wrap(DepartmentModel model) {
     	return wrapDepartment(model, 0);
@@ -138,6 +141,12 @@ public class Department extends ProductContainer {
             result.setSeoMetaDescription(model.getSEOMetaDescription());
         }
 
+        List<String> sortLabels = new ArrayList<String>();
+        for (SortOptionModel sortOption : model.getSortOptions()) {
+            sortLabels.add(sortOption.getSelectedLabel());
+        }
+        result.setSortLabels(sortLabels);
+
         return result;
     }
 
@@ -211,6 +220,14 @@ public class Department extends ProductContainer {
 
     public void setSeoMetaDescription(String seoMetaDescription) {
         this.seoMetaDescription = seoMetaDescription;
+    }
+
+    public List<String> getSortLabels() {
+        return sortLabels;
+    }
+
+    public void setSortLabels(List<String> sortLabels) {
+        this.sortLabels = sortLabels;
     }
 
 }

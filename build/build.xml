@@ -28,7 +28,7 @@
 	<property name="emma.enabled"           value="true"/>
     <property name="jmeter.hostname"        value="localhost" />
     <property name="jmeter.port"            value="7001" />
-	
+
 	<property name="log4j.jar"				value="log4j.jar"/>
 
         <property name="lucene.version" value="3.0.3" />
@@ -54,7 +54,7 @@
 		<pathelement location="${thirdparty.home}/commons-httpclient-2.0.2.jar"/>
 		<pathelement location="${thirdparty.home}/commons-net-1.0.jar"/>
 		<pathelement location="${thirdparty.home}/commons-fileupload-1.2.jar"/>
-		<pathelement location="${thirdparty.home}/commons-beanutils-1.7.0.jar"/>		
+		<pathelement location="${thirdparty.home}/commons-beanutils-1.7.0.jar"/>
 		<pathelement location="${thirdparty.home}/commons-codec-1.9.jar"/>
 		<pathelement location="${thirdparty.home}/dom4j-1.6.1.jar"/>
 		<pathelement location="${thirdparty.home}/jaxen-1.1-beta-4.jar"/>
@@ -112,6 +112,9 @@
 		<pathelement location="${thirdparty.home}/logistics-data-0.0.1-SNAPSHOT.jar"/>
 		<pathelement location="${thirdparty.home}/masterpassExpressSdk.jar"/>
 		<pathelement location="${thirdparty.home}/braintree-java-2.53.0.jar"/>
+		<pathelement location="${thirdparty.home}/orika-core-1.5.0.jar"/>
+		<pathelement location="${thirdparty.home}/fdcommerce-data.jar"/>
+		<pathelement location="${thirdparty.home}/fdcommerce-domain.jar"/>
 	</path>
 
 	<path id="testing.classpath">
@@ -139,6 +142,8 @@
 		<pathelement location="${testing.home}/jmock-2.5.1/hamcrest-library-1.1.jar"/>
 		<pathelement location="${testing.home}/selenium-server-2.0a7.jar"/>
 		<pathelement location="${thirdparty.home}/logistics-data-0.0.1-SNAPSHOT.jar"/>
+		<pathelement location="${thirdparty.home}/fdcommerce-data.jar"/>
+		<pathelement location="${thirdparty.home}/orika-core-1.5.0.jar"/>
 		<pathelement location="${testing.home}/jmock-2.5.1/cglib-nodep-2.1_3.jar"/>
 		<pathelement location="${testing.home}/jmock-2.5.1/jmock-legacy-2.5.1.jar"/>
 		<pathelement location="${testing.home}/jmock-2.5.1/objenesis-1.0.jar"/>
@@ -321,7 +326,7 @@
 		<checkoutLatest dir="projects/Tests"/>
         <checkoutLatest dir="projects/MarketingAdmin"/>
         <checkoutLatest dir="projects/FDLogisticsIntegration"/>
-		<checkoutLatest dir="projects/FDIntegrationServices"/> <!-- Added: Schematic rsung -->        	
+		<checkoutLatest dir="projects/FDIntegrationServices"/> <!-- Added: Schematic rsung -->
 		<checkoutLatest dir="projects/StandingOrdersService"/>
 		<checkoutLatest dir="projects/CoremetricsService"/>
 		<checkoutLatest dir="projects/Athena"/>
@@ -437,7 +442,7 @@
         <copy todir="${basedir}/projects/FDWebSite/docroot/WEB-INF/shared">
             <fileset dir="${basedir}/projects/WebAppCommon/docroot/WEB-INF/shared"/>
         </copy>
-      
+
         <copy todir="${basedir}/projects/CRM/docroot/WEB-INF/shared">
             <fileset dir="${basedir}/projects/WebAppCommon/docroot/WEB-INF/shared"/>
         </copy>
@@ -508,7 +513,7 @@
 		<if>
 			<equals arg1="${emma.enabled}" arg2="true"/>
 			<then>
-				
+
 				<!-- RUN TESTS WITH EMMA -->
 		        <property name="lib_coverage" value="${work.dir}/lib_coverage"/>
 		        <mkdir dir="${lib_coverage}" />
@@ -538,13 +543,13 @@
 		            <classpath>
 		                <pathelement location="${work.dir}/Tests"/>
 		                <pathelement location="${properties.home}"/>
-												
-						<pathelement location="${thirdparty.home}/commons-httpclient-3.1.jar"/>						
+
+						<pathelement location="${thirdparty.home}/commons-httpclient-3.1.jar"/>
 		                <path refid="j2ee.classpath"/>
 		                <path refid="oracle.classpath"/>
-				<path refid="testing.classpath" />		
+				<path refid="testing.classpath" />
 		                <path refid="common.classpath"/>
-				
+
 
 		                <pathelement location="${thirdparty.home}/lcc.jar"/>
 				<pathelement location="${thirdparty.home}/lucene-core-${lucene.version}.jar"/>
@@ -605,11 +610,11 @@
 						<pathelement location="${work.dir}/CoremetricsService.jar"/>
 		   			</classpath>
 				</junit>
-				
+
 			</else>
 		</if>
 
-		
+
 
 		<junitreport todir="${work.dir}/logs">
 			<fileset dir="${work.dir}/logs">
@@ -617,7 +622,7 @@
 			</fileset>
 			<report format="noframes" todir="${work.dir}/logs"/>
 		</junitreport>
-		
+
 		<!-- generate emma reports -->
         <if>
             <equals arg1="${emma.enabled}" arg2="true"/>
@@ -625,7 +630,7 @@
 
 				<property name="coverage.dir" value="${work.dir}/coverage/" />
 		        <mkdir dir="${coverage.dir}" />
-	
+
                 <emma>
                     <report>
                         <sourcepath>
@@ -761,12 +766,12 @@
 		<mkdir dir="${work.dir}/jmeter-logs"/>
 		<mkdir dir="${work.dir}/jmeter-logs/results"/>
 		<java classname="com.freshdirect.tools.jmeter.ScriptRunner" dir="${projects.dir}" fork="true" maxmemory="512m">
-			<classpath> 
+			<classpath>
 				<pathelement location="${work.dir}/jmeter_tools/jmeter-runner.jar"/>
 				<pathelement location="${lib.dir}/thirdparty/commons-lang-2.3.jar"/>
-			</classpath> 
+			</classpath>
 			<arg value="Store.xml"/>
-			<arg value="SmartStore.xml"/> 
+			<arg value="SmartStore.xml"/>
 			<arg value="Search.xml"/>
 			<arg value="Checkout.xml"/>
 			<sysproperty key="server" value="${jmeter.hostname}"/>
@@ -810,7 +815,7 @@
 				<fileset dir="${work.dir}/PerformanceTests">
 					<include name="**/ShoppingLoadTest.class" />
 				</fileset>
-			</batchtest> 
+			</batchtest>
 
 			<classpath>
 				<pathelement location="${work.dir}/FunctionalTests"/>
@@ -912,7 +917,7 @@
 	<macrodef name="makeProject">
 		<attribute name="project" />
 		<attribute name="classpathref" default=""/>
-        <attribute name="source" default="${javac.source}"/>	
+        <attribute name="source" default="${javac.source}"/>
 		<sequential>
 			<trycatch>
 				<try>
@@ -970,7 +975,7 @@
 	                merge="true">
 	            </instr>
 	        </emma>
-			<!-- copy non-instrumened resources to instrout --> 
+			<!-- copy non-instrumened resources to instrout -->
 			<copy todir="${work.dir}/@{project}.instrout" overwrite="false">
 				<fileset dir="${work.dir}/@{project}"/>
 			</copy>
@@ -980,7 +985,7 @@
                     <attribute name="Specification-Vendor" value="FreshDirect LLC"/>
                     <attribute name="Implementation-Title" value="@{project}"/>
                     <attribute name="Implementation-Version" value="${build.counter}"/>
-                    <attribute name="Implementation-Vendor" value="FreshDirect LLC"/>                    
+                    <attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
                     <attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
                 </manifest>
                 <fileset dir="${work.dir}/@{project}.instrout" />
@@ -990,8 +995,8 @@
             </jar>
 		</sequential>
 	</macrodef>
-	
-	
+
+
 	<macrodef name="makeEjbProject">
 		<attribute name="project" />
 		<attribute name="classpathref" />
@@ -1233,26 +1238,26 @@
                     <include name="core-renderer.jar"/>
                     <include name="iText-2.0.8.jar"/>
 					<!-- additional -->
-					
-					
+
+
                     <include name="lucene-core-${lucene.version}.jar"/>
-                    <include name="XmlSchema-1.4.3.jar"/>  
-                    <include name="axis2-transport-http-1.5.jar"/>  
+                    <include name="XmlSchema-1.4.3.jar"/>
+                    <include name="axis2-transport-http-1.5.jar"/>
                     <include name="axiom-dom-1.2.8.jar"/>
-                    <include name="axiom-api-1.2.8.jar"/> 
-                    <include name="axiom-impl-1.2.8.jar"/>                
-                    <include name="axis2-kernel-1.5.jar"/>  
-                    <include name="axis2-transport-local-1.5.jar"/>  
-                    <include name="activation-1.1.jar"/>  
-                    <include name="axis2-adb-1.5.jar"/>  
-                    <include name="neethi-2.0.4.jar"/>  
+                    <include name="axiom-api-1.2.8.jar"/>
+                    <include name="axiom-impl-1.2.8.jar"/>
+                    <include name="axis2-kernel-1.5.jar"/>
+                    <include name="axis2-transport-local-1.5.jar"/>
+                    <include name="activation-1.1.jar"/>
+                    <include name="axis2-adb-1.5.jar"/>
+                    <include name="neethi-2.0.4.jar"/>
                     <include name="wstx-asl-3.2.4.jar"/>
                     <include name="wsdl4j-1.5.1.jar"/>
                     <include name="xml-apis.jar"/>
-					<include name="commons-discovery-0.2.jar"/>					
+					<include name="commons-discovery-0.2.jar"/>
 					<include name="jaxrpc.jar"/>
-					
-					<include name="spring-aop-4.0.1.RELEASE.jar"/>	
+
+					<include name="spring-aop-4.0.1.RELEASE.jar"/>
 					<include name="spring-beans-4.0.1.RELEASE.jar"/>
 					<include name="spring-context-4.0.1.RELEASE.jar"/>
 					<include name="spring-core-4.0.1.RELEASE.jar"/>
@@ -1262,7 +1267,7 @@
 					<include name="spring-web-4.0.1.RELEASE.jar"/>
 					<include name="spring-webmvc-4.0.1.RELEASE.jar"/>
 					<include name="gson-1.7.1.jar"/>
-								
+
 					<include name="JFEP-0.1.0.jar"/>
 					<include name="roadnetservices.jar"/>
 					<include name="httpcore-4.0.1.jar"/>
@@ -1278,7 +1283,7 @@
 					<include name="mvel2.jar"/>
 					<include name="org.eclipse.jdt.core_3.6.1.v_A68_R36x.jar"/>
 					<include name="stringtemplate.jar"/>
-						
+
 					<include name="jcert.jar"/>
 					<include name="jnet.jar"/>
 					<include name="jsse.jar"/>
@@ -1286,8 +1291,10 @@
 					<include name="regexp.jar"/>
 					<include name="sunrsasign.jar"/>
 					<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
+					<include name="orika-core-1.5.0.jar"/>
+					<include name="fdcommerce-data.jar"/>
 					<include name="opencsv-1.8.jar"/>
-						
+
 					<lib/>
 				</zipfileset>
 				<extra/>
@@ -1366,7 +1373,7 @@
 					<include name="avalon-framework-4.0.jar"/>
 					<include name="fop-0.20.5.jar"/>
 					<include name="iText-2.0.8.jar"/>
-					<include name="antlr-2.7.5H3.jar"/>                    
+					<include name="antlr-2.7.5H3.jar"/>
 					<include name="antlr-2.7.5H3.jar"/>
 					<include name="antlr-2.7.5H3.jar"/>
 					<include name="asm.jar"/>
@@ -1377,24 +1384,24 @@
 					<include name="jawr-core-3.8.jar"/>
 					<include name="soy-latest.jar"/>
 					<!-- additional -->
-                    
+
                     <include name="lucene-core-${lucene.version}.jar"/>
-                    <include name="XmlSchema-1.4.3.jar"/>  
-                    <include name="axis2-transport-http-1.5.jar"/>  
+                    <include name="XmlSchema-1.4.3.jar"/>
+                    <include name="axis2-transport-http-1.5.jar"/>
                     <include name="axiom-dom-1.2.8.jar"/>
-                    <include name="axiom-api-1.2.8.jar"/> 
-                    <include name="axiom-impl-1.2.8.jar"/>                
-                    <include name="axis2-kernel-1.5.jar"/>  
-                    <include name="axis2-transport-local-1.5.jar"/>  
-                    <include name="activation-1.1.jar"/>  
-                    <include name="axis2-adb-1.5.jar"/>  
-                    <include name="neethi-2.0.4.jar"/>  
+                    <include name="axiom-api-1.2.8.jar"/>
+                    <include name="axiom-impl-1.2.8.jar"/>
+                    <include name="axis2-kernel-1.5.jar"/>
+                    <include name="axis2-transport-local-1.5.jar"/>
+                    <include name="activation-1.1.jar"/>
+                    <include name="axis2-adb-1.5.jar"/>
+                    <include name="neethi-2.0.4.jar"/>
                     <include name="wstx-asl-3.2.4.jar"/>
                     <include name="wsdl4j-1.5.1.jar"/>
                     <include name="xml-apis.jar"/>
-                    <include name="commons-discovery-0.2.jar"/>					
+                    <include name="commons-discovery-0.2.jar"/>
 					<include name="jaxrpc.jar"/>
-					<include name="httpcore-4.0.1.jar"/>					
+					<include name="httpcore-4.0.1.jar"/>
 					<include name="jsch-0.1.44.jar"/>
 					<include name="antlr.jar"/>
 					<include name="antlr-runtime.jar"/>
@@ -1405,7 +1412,7 @@
 					<include name="jsr94.jar"/>
 					<include name="mvel2.jar"/>
 					<include name="org.eclipse.jdt.core_3.6.1.v_A68_R36x.jar"/>
-					<include name="stringtemplate.jar"/>					
+					<include name="stringtemplate.jar"/>
 
 					<include name="jcert.jar"/>
 					<include name="jnet.jar"/>
@@ -1414,6 +1421,8 @@
 					<include name="regexp.jar"/>
 					<include name="sunrsasign.jar"/>
 					<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
+					<include name="fdcommerce-data.jar"/>
+					<include name="orika-core-1.5.0.jar"/>
 					<lib/>
 				</zipfileset>
 				<extra/>
@@ -1427,8 +1436,8 @@
 		<attribute name="project" />
 		<attribute name="application" />
 		<attribute name="classpathref" default=""/>
-        <attribute name="source" default="${javac.source}"/>	
-		<attribute name="service-name" default=""/>	
+        <attribute name="source" default="${javac.source}"/>
+		<attribute name="service-name" default=""/>
 		<sequential>
 			<mkdir dir="${release.dir}/applications"/>
 			<mkdir dir="${work.dir}/@{project}/target" />
@@ -1440,11 +1449,11 @@
 						<format property="compileStart" pattern="MM/dd/yyyy HH:mm" />
 					</tstamp>
 					<echo message="Started Compiling @{project} at:${compileStart}"/>
-					
+
 					<javac
 				srcdir="${projects.dir}/@{project}/src/"
 				destdir="${work.dir}/@{project}/target/"
-						includeantruntime="false" 
+						includeantruntime="false"
 				deprecation="${javac.deprecation}"
 				optimize="${javac.optimize}"
 				debug="${javac.debug}"
@@ -1457,12 +1466,12 @@
 				</try>
 				<catch>
 					<record name="${work.dir}/logs/log.txt" action="stop"/>
-					
-					<emailCompilationError projectName="@{project}"/> 
+
+					<emailCompilationError projectName="@{project}"/>
 					<fail/>
 				</catch>
 			</trycatch>
-			
+
 			<copy file="${projects.dir}/@{project}/src/META-INF/services.xml" tofile="${work.dir}/@{project}/target/META-INF/services.xml" overwrite="true" />
 			<copy file="${projects.dir}/@{project}/src/applicationContext.xml" tofile="${work.dir}/@{project}/target/applicationContext.xml" overwrite="true" />
 			<copy todir="${work.dir}/@{project}/axis2">
@@ -1473,9 +1482,9 @@
 			    	 <include name="*.jar"/>
 				</fileset>
 			</copy>
-			
+
 			<jar basedir="${work.dir}/@{project}/target" destfile="${work.dir}/@{project}/axis2/WEB-INF/services/@{service-name}.aar" />
-			
+
 			<jar destfile="${release.dir}/applications/@{application}.war">
 				<manifest>
                     <attribute name="Specification-Version" value="${build.counter}"/>
@@ -1489,7 +1498,7 @@
 			</jar>
 		</sequential>
 	</macrodef>
-	
+
 
 	<target name="framework" description="Build Framework">
 		<path id="framework.classpath">
@@ -1519,7 +1528,7 @@
 			<pathelement location="${thirdparty.home}/jackson-core-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-databind-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
-			
+
 			<pathelement location="${thirdparty.home}/jcert.jar"/>
 			<pathelement location="${thirdparty.home}/jnet.jar"/>
 			<pathelement location="${thirdparty.home}/jsse.jar"/>
@@ -1534,7 +1543,7 @@
 			<pathelement location="${thirdparty.home}/gson-1.7.1.jar"/>
 			<pathelement location="${thirdparty.home}/spring-web-4.0.1.RELEASE.jar"/>
 			<pathelement location="${thirdparty.home}/spring-core-4.0.1.RELEASE.jar"/>
-			
+
 		</path>
 
 		<makeEjbProject
@@ -1553,7 +1562,7 @@
 			project="Delivery"
 			classpathref="delivery.classpath"/>
 	</target>
-	
+
 	<target name="FDLogisticsIntegration" description="Build FDLogisticsIntegration">
 			<path id="FDLogisticsIntegration.classpath">
 				<pathelement location="${work.dir}/Framework.jar"/>
@@ -1561,9 +1570,9 @@
 				<pathelement location="${thirdparty.home}/lucene-core-${lucene.version}.jar"/>
 				<pathelement location="${thirdparty.home}/commons-discovery-0.2.jar"/>
 				<pathelement location="${thirdparty.home}/commons-logging-1.1.1.jar"/>
-				<pathelement location="${thirdparty.home}/${log4j.jar}"/>				
+				<pathelement location="${thirdparty.home}/${log4j.jar}"/>
 				<pathelement location="${thirdparty.home}/commons-lang-2.3.jar"/>
-				<pathelement location="${thirdparty.home}/spring-aop-4.0.1.RELEASE.jar"/>	
+				<pathelement location="${thirdparty.home}/spring-aop-4.0.1.RELEASE.jar"/>
 				<pathelement location="${thirdparty.home}/spring-beans-4.0.1.RELEASE.jar"/>
 				<pathelement location="${thirdparty.home}/spring-context-4.0.1.RELEASE.jar"/>
 				<pathelement location="${thirdparty.home}/spring-core-4.0.1.RELEASE.jar"/>
@@ -1573,17 +1582,19 @@
 				<pathelement location="${thirdparty.home}/spring-web-4.0.1.RELEASE.jar"/>
 				<pathelement location="${thirdparty.home}/spring-webmvc-4.0.1.RELEASE.jar"/>
 				<pathelement location="${thirdparty.home}/logistics-data-0.0.1-SNAPSHOT.jar"/>
+				<pathelement location="${thirdparty.home}/fdcommerce-data.jar"/>
+				<pathelement location="${thirdparty.home}/orika-core-1.5.0.jar"/>
 				<pathelement location="${thirdparty.home}/gson-1.7.1.jar"/>
 				<pathelement location="${thirdparty.home}/httpclient-4.5.jar"/>
 				<pathelement location="${thirdparty.home}/httpcore-4.4.1.jar"/>
 				<pathelement location="${thirdparty.home}/httpmime-4.5.jar"/>
 			</path>
-	
+
 			<makeProject
 				project="FDLogisticsIntegration"
 	            	classpathref="FDLogisticsIntegration.classpath"/>
 	</target>
-	
+
 	<target name="cms" description="Build CMS">
 		<path id="cms.classpath">
 			<pathelement location="${work.dir}/Framework.jar"/>
@@ -1621,7 +1632,7 @@
 			project="FDStore"
 			classpathref="fdstore.classpath"/>
 	</target>
-	
+
 	<target name="buildver-compile-time">
 		<delete file="${basedir}/${projects.dir}/FDStore/src/com/freshdirect/fdstore/util/BuildverCompileTime.java" verbose="true" />
 		<echo message="Generating Java source '${basedir}/${projects.dir}/FDStore/src/com/freshdirect/fdstore/util/BuildverCompileTime.java'"/>
@@ -1648,9 +1659,9 @@
 			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
 			<pathelement location="${work.dir}/FDStore.jar"/>
 			<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
-			
+
 			<pathelement location="${thirdparty.home}/commons-lang-2.3.jar"/>
-			<pathelement location="${thirdparty.home}/spring-aop-4.0.1.RELEASE.jar"/>	
+			<pathelement location="${thirdparty.home}/spring-aop-4.0.1.RELEASE.jar"/>
 			<pathelement location="${thirdparty.home}/spring-beans-4.0.1.RELEASE.jar"/>
 			<pathelement location="${thirdparty.home}/spring-context-4.0.1.RELEASE.jar"/>
 			<pathelement location="${thirdparty.home}/spring-core-4.0.1.RELEASE.jar"/>
@@ -1660,8 +1671,8 @@
 			<pathelement location="${thirdparty.home}/spring-web-4.0.1.RELEASE.jar"/>
 			<pathelement location="${thirdparty.home}/spring-webmvc-4.0.1.RELEASE.jar"/>
 			<pathelement location="${thirdparty.home}/gson-1.7.1.jar"/>
-						
-      		<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/> 
+
+      		<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
        		<pathelement location="${thirdparty.home}/opencsv-1.8.jar"/>
        		<pathelement location="${thirdparty.home}/extremecomponents-1.0.1.jar"/>
 			<pathelement location="${thirdparty.home}/jsch-0.1.44.jar"/>
@@ -1693,12 +1704,12 @@
 				<fail/>
 			</catch>
 		</trycatch>
-		
+
 		<!-- copy non-java resources -->
 		<copy todir="${work.dir}/MarketingAdmin/WEB-INF/classes">
 			<fileset dir="${projects.dir}/MarketingAdmin/src" excludes="**/*.java"/>
 		</copy>
-		
+
 		<!-- copy JSPs, html, etc... -->
 		<copy todir="${work.dir}/MarketingAdmin/">
 			<fileset dir="${projects.dir}/MarketingAdmin/docroot">
@@ -1709,7 +1720,7 @@
 		<copy todir="${work.dir}/MarketingAdmin/WEB-INF/lib">
 			<fileset dir="${thirdparty.home}" includes="extremecomponents-1.0.1.jar" />
 		</copy>
-		
+
 		<!-- create .war file -->
 		<jar destfile="${work.dir}/MarketingAdmin.war">
             <manifest>
@@ -1734,7 +1745,7 @@
 			<pathelement location="${work.dir}/CMS.jar"/>
 			<pathelement location="${work.dir}/FDStoreEJB-WL.jar"/>
 			<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
-			<pathelement location="${work.dir}/MarketingAdmin.war"/>			
+			<pathelement location="${work.dir}/MarketingAdmin.war"/>
             		<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
             		<pathelement location="${thirdparty.home}/opencsv-1.8.jar"/>
 			<pathelement location="${thirdparty.home}/sapjco3.jar"/>
@@ -1766,7 +1777,7 @@
 			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/masterpassExpressSdk.jar"/>
 			<pathelement location="${thirdparty.home}/braintree-java-2.53.0.jar"/>
-			
+
 		</path>
 
 		<makeProject
@@ -1818,7 +1829,7 @@
 			<pathelement location="${thirdparty.home}/jackson-core-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-databind-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
-			<pathelement location="${thirdparty.home}/spring-aop-4.0.1.RELEASE.jar"/>	
+			<pathelement location="${thirdparty.home}/spring-aop-4.0.1.RELEASE.jar"/>
 			<pathelement location="${thirdparty.home}/spring-beans-4.0.1.RELEASE.jar"/>
 			<pathelement location="${thirdparty.home}/spring-context-4.0.1.RELEASE.jar"/>
 			<pathelement location="${thirdparty.home}/spring-core-4.0.1.RELEASE.jar"/>
@@ -1828,7 +1839,7 @@
 			<pathelement location="${thirdparty.home}/spring-web-4.0.1.RELEASE.jar"/>
 			<pathelement location="${thirdparty.home}/spring-webmvc-4.0.1.RELEASE.jar"/>
 			<path refid="j2ee.classpath"/>
-			
+
 		</path>
 		<makeWebProject
 			project="CRM"
@@ -1875,12 +1886,12 @@
 			<pathelement location="${thirdparty.home}/gwt/gwt-user.jar"/>
             <pathelement location="${thirdparty.home}/gwt/gwt-maps.jar"/>
 			<pathelement location="${thirdparty.home}/gwt/ColorPicker-GWT-1.6.jar"/>
-            <pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/> 
+            <pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
 		</path>
             <property name="cms-gwt.path" value="projects/cms-gwt" />
             <makeProject
                     project="cms-gwt"
-                    classpathref="cms-gwt.classpath" 
+                    classpathref="cms-gwt.classpath"
                     source="1.5"/>
             <gwt-compile project="cms-gwt" classpathref="cms-gwt.classpath" module-name="com.freshdirect.cms.ui.cmsgwt" />
             <war destfile="${work.dir}/cms-gwt.war" webxml="${cms-gwt.path}/war/WEB-INF/web.xml">
@@ -1907,7 +1918,7 @@
                 	<include name="**/*.js"/>
                     <include name="**/*.css"/>
                 </fileset>
-            </war>	
+            </war>
     </target>
 
 	<target name="rulesadmin" description="Build RulesAdmin .war file">
@@ -1973,17 +1984,17 @@
 			project="CoremetricsService"
 			classpathref="CoremetricsService.classpath"/>
 	</target>
-	
-	
+
+
 	<target name="Athena" description="Build Athena">
 			<!-- directory for compiled stuff -->
 			<mkdir dir="${work.dir}/Athena/WEB-INF/classes" />
-	
+
 			<path id="athena.classpath">
 				<path refid="j2ee.classpath"/>
 				<path refid="common.classpath"/>
 				<path refid="oracle.classpath"/>
-				
+
 				<pathelement location="${thirdparty.home}/log4j.jar"/>
 				<pathelement location="${thirdparty.home}/servlet-api.jar"/>
 				<pathelement location="${thirdparty.home}/simple-xml-2.6.6.jar"/>
@@ -1993,7 +2004,7 @@
 				<pathelement location="${thirdparty.home}/mchange-commons-java-0.2.2.jar"/>
 				<pathelement location="${thirdparty.home}/sapjco3.jar"/>
 				<pathelement location="${thirdparty.home}/ojdbc6.jar"/>
-				<pathelement location="${thirdparty.home}/vaadin-6.8.2.jar"/>					
+				<pathelement location="${thirdparty.home}/vaadin-6.8.2.jar"/>
 			</path>
 			<trycatch>
 				<try>
@@ -2022,18 +2033,18 @@
 					<fail/>
 				</catch>
 			</trycatch>
-			
+
 			<!-- copy non-java resources -->
 			<copy todir="${work.dir}/Athena/WEB-INF/classes">
 				<fileset dir="${projects.dir}/Athena/src" excludes="**/*.java"/>
 			</copy>
-	
+
 			<!-- copy JSPs, html, etc... -->
 			<copy todir="${work.dir}/Athena/">
 				<fileset dir="${projects.dir}/Athena/docroot">
 				</fileset>
 			</copy>
-	
+
 			<!-- copy dependent jar files -->
 	  		<copy todir="${work.dir}/Athena/WEB-INF/lib">
 	  			<fileset dir="${thirdparty.home}" includes="log4j.jar"/>
@@ -2045,9 +2056,9 @@
 				<fileset dir="${thirdparty.home}" includes="mchange-commons-java-0.2.2.jar"/>
 				<fileset dir="${thirdparty.home}" includes="sapjco3.jar"/>
 				<!-- <fileset dir="${thirdparty.home}" includes="ojdbc6.jar"/> -->
-				<fileset dir="${thirdparty.home}" includes="vaadin-6.8.2.jar"/>				
+				<fileset dir="${thirdparty.home}" includes="vaadin-6.8.2.jar"/>
 			</copy>
-	
+
 			<!-- create .war file -->
 			<jar destfile="${work.dir}/athena.war">
 	            <manifest>
@@ -2061,15 +2072,15 @@
 				<fileset dir="${work.dir}/Athena">
 				</fileset>
 			</jar>
-	
+
 	</target>
-	
-	<target name="tools" description="Build Tools" depends="framework,cms,fdstore">
+
+	<target name="tools" description="Build Tools" depends="framework,cms,fdstore,erpservices">
 		<path id="tools.classpath">
             <pathelement location="${work.dir}/Framework.jar"/>
 			<pathelement location="${work.dir}/CMS.jar"/>
 			<pathelement location="${work.dir}/FDStore.jar"/>
-
+			<pathelement location="${work.dir}/ERPServices.jar" />
 			<pathelement location="${thirdparty.home}/lucene-core-${lucene.version}.jar"/>
 			<pathelement location="${thirdparty.home}/lucene-queries-${lucene.version}.jar"/>
 			<pathelement location="${thirdparty.home}/lucene-snowball-${lucene.version}.jar"/>
@@ -2167,6 +2178,8 @@
 				<include name="jackson-databind-2.2.0.jar"/>
 				<include name="jackson-annotations-2.2.0.jar"/>
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
+				<include name="orika-core-1.5.0.jar"/>
+				<include name="fdcommerce-data.jar"/>
 				<!-- masterpass integration -->
 				<include name="masterpassExpressSdk.jar"/>
 				<include name="braintree-java-2.53.0.jar"/>
@@ -2193,7 +2206,7 @@
 				<include name="lcc.jar"/>
 				<include name="sapjco3.jar"/>
 				<include name="lucene-core-${lucene.version}.jar"/>
-                		<include name="givexclient.jar"/> 
+                		<include name="givexclient.jar"/>
                 		<include name="${scarab.jar}"/>
 				<!-- scarab runtime dependencies -->
 				<include name="lucene-queries-${lucene.version}.jar"/>
@@ -2206,7 +2219,8 @@
 				<include name="jackson-databind-2.2.0.jar"/>
 				<include name="jackson-annotations-2.2.0.jar"/>
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
-				
+				<include name="orika-core-1.5.0.jar"/>
+				<include name="fdcommerce-data.jar"/>
 				<!-- masterpass integration -->
 				<include name="masterpassExpressSdk.jar"/>
 				<include name="braintree-java-2.53.0.jar"/>
@@ -2252,12 +2266,14 @@
 				<include name="jackson-databind-2.2.0.jar"/>
 				<include name="jackson-annotations-2.2.0.jar"/>
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
+				<include name="orika-core-1.5.0.jar"/>
+				<include name="fdcommerce-data.jar"/>
 				<!-- masterpass integration -->
 				<include name="masterpassExpressSdk.jar"/>
 				<include name="braintree-java-2.53.0.jar"/>
-				
+
 				<include name="commons-lang-2.3.jar"/>
-								<include name="spring-aop-4.0.1.RELEASE.jar"/>	
+								<include name="spring-aop-4.0.1.RELEASE.jar"/>
 												<include name="spring-beans-4.0.1.RELEASE.jar"/>
 												<include name="spring-context-4.0.1.RELEASE.jar"/>
 												<include name="spring-core-4.0.1.RELEASE.jar"/>
@@ -2267,7 +2283,7 @@
 												<include name="spring-web-4.0.1.RELEASE.jar"/>
 												<include name="spring-webmvc-4.0.1.RELEASE.jar"/>
 												<include name="gson-1.7.1.jar"/>
-				
+
 			</lib>
 		</makeEar>
 	</target>
@@ -2285,7 +2301,7 @@
 			<libraries>
 				<include name="Framework.jar"/>
 				<include name="ERPSWebApp.jar"/>
-				<include name="CMS.jar"/>				
+				<include name="CMS.jar"/>
 				<include name="FDLogisticsIntegration.jar"/>
 			</libraries>
 			<lib>
@@ -2306,17 +2322,19 @@
 				<include name="lucene-core-${lucene.version}.jar"/>
 				<include name="lucene-queries-${lucene.version}.jar"/>
 				<include name="lucene-snowball-${lucene.version}.jar"/>
-				<include name="antlr-2.7.5H3.jar"/>				
+				<include name="antlr-2.7.5H3.jar"/>
 				<include name="jackson-core-2.2.0.jar"/>
 				<include name="jackson-databind-2.2.0.jar"/>
 				<include name="jackson-annotations-2.2.0.jar"/>
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
+				<include name="orika-core-1.5.0.jar"/>
+				<include name="fdcommerce-data.jar"/>
 				<!-- masterpass integration -->
 				<include name="masterpassExpressSdk.jar"/>
 				<include name="braintree-java-2.53.0.jar"/>
-				
+
 				<include name="commons-lang-2.3.jar"/>
-				<include name="spring-aop-4.0.1.RELEASE.jar"/>	
+				<include name="spring-aop-4.0.1.RELEASE.jar"/>
 								<include name="spring-beans-4.0.1.RELEASE.jar"/>
 								<include name="spring-context-4.0.1.RELEASE.jar"/>
 								<include name="spring-core-4.0.1.RELEASE.jar"/>
@@ -2326,7 +2344,7 @@
 								<include name="spring-web-4.0.1.RELEASE.jar"/>
 								<include name="spring-webmvc-4.0.1.RELEASE.jar"/>
 								<include name="gson-1.7.1.jar"/>
-				
+
 			</lib>
 		</makeEar>
 	</target>
@@ -2343,16 +2361,16 @@
 				<include name="DeliveryEJB-WL.jar"/>
 				<include name="FDStoreEJB-WL.jar"/>
 				<include name="FDStore.jar"/>
-				
+
 			</libraries>
 			<lib>
 				<include name="lcc.jar"/>
 				<include name="sapjco3.jar"/>
 				<include name="oscache-2.4.1.jar"/>
 				<include name="struts.jar"/>
-				
 
-				<include name="spring-aop-4.0.1.RELEASE.jar"/>	
+
+				<include name="spring-aop-4.0.1.RELEASE.jar"/>
 				<include name="spring-beans-4.0.1.RELEASE.jar"/>
 				<include name="spring-context-4.0.1.RELEASE.jar"/>
 				<include name="spring-core-4.0.1.RELEASE.jar"/>
@@ -2362,7 +2380,7 @@
 				<include name="spring-web-4.0.1.RELEASE.jar"/>
 				<include name="spring-webmvc-4.0.1.RELEASE.jar"/>
 				<include name="gson-1.7.1.jar"/>
-				
+
 				<include name="jstl-api-1.2.jar"/>
 				<include name="jstl-impl-1.2.jar"/>
 				<include name="poi-3.5-FINAL-20090928.jar"/>
@@ -2372,10 +2390,10 @@
 				<include name="lucene-snowball-${lucene.version}.jar"/>
 
 				<include name="opencsv-1.8.jar"/>
-				
+
 				<include name="commons-discovery-0.2.jar"/>
 				<include name="commons-logging-1.1.1.jar"/>
-								
+
 				<include name="JFEP-0.1.0.jar"/>
 				<include name="antlr-2.7.5H3.jar"/>
 				<include name="lpsolve55j.jar"/>
@@ -2387,17 +2405,19 @@
 				<include name="freemarker-2.3.15.jar"/>
 				<include name="urlrewrite-2.6.0.jar"/>
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
+				<include name="orika-core-1.5.0.jar"/>
+				<include name="fdcommerce-data.jar"/>
 				<!-- masterpass integration -->
 				<include name="masterpassExpressSdk.jar"/>
 				<include name="braintree-java-2.53.0.jar"/>
 				<include name="httpclient-4.5.jar"/>
 				<include name="httpcore-4.4.1.jar"/>
 				<include name="httpmime-4.5.jar"/>
-				
+
 			</lib>
 		</makeFDAdminEar>
 	</target>
-	
+
 	<target name="erps-app" description="EAR that contains the all the code and resources for the ERPSAdmin application">
 		<makeEar application="ERPSAdmin">
 			<ejbs>
@@ -2424,6 +2444,8 @@
 				<include name="jackson-databind-2.2.0.jar"/>
 				<include name="jackson-annotations-2.2.0.jar"/>
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
+				<include name="orika-core-1.5.0.jar"/>
+				<include name="fdcommerce-data.jar"/>
 				<!-- masterpass integration -->
 				<include name="masterpassExpressSdk.jar"/>
 				<include name="braintree-java-2.53.0.jar"/>
@@ -2462,7 +2484,7 @@
 				<include name="struts.jar"/>
 				<include name="lcc.jar"/>
 				<include name="sapjco3.jar"/>
-				<include name="givexclient.jar"/>                
+				<include name="givexclient.jar"/>
 				<include name="poi-3.5-FINAL-20090928.jar"/>
 
 				<include name="lucene-core-${lucene.version}.jar"/>
@@ -2483,7 +2505,7 @@
 				<include name="jackson-annotations-2.2.0.jar"/>
 
 
-				<include name="spring-aop-4.0.1.RELEASE.jar"/>	
+				<include name="spring-aop-4.0.1.RELEASE.jar"/>
 				<include name="spring-beans-4.0.1.RELEASE.jar"/>
 				<include name="spring-context-4.0.1.RELEASE.jar"/>
 				<include name="spring-core-4.0.1.RELEASE.jar"/>
@@ -2492,10 +2514,10 @@
 				<include name="spring-tx-4.0.0.RELEASE.jar"/>
 				<include name="spring-web-4.0.1.RELEASE.jar"/>
 				<include name="spring-webmvc-4.0.1.RELEASE.jar"/>
-				<include name="spring-context-support-4.0.1.RELEASE.jar"/>				
-				
+				<include name="spring-context-support-4.0.1.RELEASE.jar"/>
+
 				<include name="gson-1.7.1.jar"/>
-				
+
 				<include name="opencsv-1.8.jar"/>
 				<include name="commons-discovery-0.2.jar"/>
 				<include name="commons-logging-1.1.1.jar"/>
@@ -2504,13 +2526,13 @@
 				<include name="antlr-2.7.5H3.jar"/>
 				<include name="urlrewrite-2.6.0.jar"/>
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
+				<include name="orika-core-1.5.0.jar"/>
+				<include name="fdcommerce-data.jar"/>
+				<include name="orika-core-1.5.0.jar"/>
 				<!-- masterpass integration -->
 				<include name="masterpassExpressSdk.jar"/>
 				<include name="braintree-java-2.53.0.jar"/>
 			</lib>
-			<extra>	 
-				<zipfileset dir="${thirdparty.home}/slide" prefix="APP-INF/lib" includes="*.jar"/>	 
-			</extra>
 		</makeEar>
 	</target>
 
@@ -2577,7 +2599,9 @@
 			<zipfileset src="${thirdparty.home}/commons-httpclient-2.0.2.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/commons-net-1.0.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/logistics-data-0.0.1-SNAPSHOT.jar" excludes="META-INF/*"/>
-						
+			<zipfileset src="${thirdparty.home}/orika-core-1.5.0.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/fdcommerce-data.jar" excludes="META-INF/*"/>
+
 			<zipfileset src="${thirdparty.home}/lucene-core-${lucene.version}.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/lucene-queries-${lucene.version}.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/lucene-snowball-${lucene.version}.jar" excludes="META-INF/*"/>
@@ -2603,12 +2627,12 @@
 			<zipfileset src="${thirdparty.home}/jsch-0.1.44.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/commons-vfs2-2.0.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/zip4j_1.3.2.jar" excludes="META-INF/*"/>
-			
+
 			<zipfileset src="${thirdparty.home}/jackson-core-2.2.0.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/jackson-databind-2.2.0.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/jackson-annotations-2.2.0.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/commons-codec-1.9.jar"  excludes="META-INF/*"/>
-			
+
 			<!-- FD classes -->
 			<zipfileset src="${work.dir}/Framework.jar"/>
 			<zipfileset src="${work.dir}/ERPServicesEJB-WL.jar" excludes="META-INF/*"/>
@@ -2649,7 +2673,7 @@
 			<zipfileset src="${thirdparty.home}/commons-collections-3.1.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/commons-httpclient-2.0.2.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/commons-net-1.0.jar" excludes="META-INF/*"/>
-			<zipfileset src="${thirdparty.home}/ctah-api-client.jar" excludes="META-INF/*"/>			
+			<zipfileset src="${thirdparty.home}/ctah-api-client.jar" excludes="META-INF/*"/>
 			<!-- zipfileset src="${thirdparty.home}/commons-fileupload-1.0.jar" excludes="META-INF/*"/ -->
 			<zipfileset src="${thirdparty.home}/commons-fileupload-1.1.1.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/dom4j-1.6.1.jar" excludes="META-INF/*"/>
@@ -2658,6 +2682,9 @@
 			<zipfileset src="${thirdparty.home}/${log4j.jar}" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/sapjco3.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/logistics-data-0.0.1-SNAPSHOT.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/orika-core-1.5.0.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/fdcommerce-data.jar" excludes="META-INF/*"/>
+
 			<zipfileset src="${weblogic.home}/server/ext/jdbc/oracle/920/ojdbc14.jar" excludes="META-INF/*"/>
 			<!-- FD classes -->
 			<zipfileset src="${work.dir}/Framework.jar"/>
@@ -2666,7 +2693,7 @@
 			<zipfileset src="${work.dir}/DataLoaderEJB-WL.jar" excludes="META-INF/*"/>
 			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/*"/>
 			<zipfileset src="${work.dir}/FDLogisticsIntegration.jar" excludes="META-INF/*"/>
-			
+
 		</jar>
 	</target>
 
@@ -2693,7 +2720,7 @@
 			<zipfileset src="${thirdparty.home}/commons-logging-1.1.1.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/commons-collections-3.1.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/commons-httpclient-2.0.2.jar" excludes="META-INF/*"/>
-			<zipfileset src="${thirdparty.home}/ctah-api-client.jar" excludes="META-INF/*"/>			
+			<zipfileset src="${thirdparty.home}/ctah-api-client.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/commons-net-1.0.jar" excludes="META-INF/*"/>
 			<!-- zipfileset src="${thirdparty.home}/commons-fileupload-1.0.jar" excludes="META-INF/*"/ -->
 			<zipfileset src="${thirdparty.home}/commons-fileupload-1.1.1.jar" excludes="META-INF/*"/>
@@ -2704,14 +2731,17 @@
 			<zipfileset src="${thirdparty.home}/sapjco3.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/opencsv-1.8.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/logistics-data-0.0.1-SNAPSHOT.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/orika-core-1.5.0.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/fdcommerce-data.jar" excludes="META-INF/*"/>
+
 			<zipfileset src="${weblogic.home}/server/ext/jdbc/oracle/10g/ojdbc14_g.jar" excludes="META-INF/*"/>
-			<zipfileset src="${weblogic.home}/server/lib/weblogic.jar" excludes="META-INF/*"/>			
+			<zipfileset src="${weblogic.home}/server/lib/weblogic.jar" excludes="META-INF/*"/>
 			<!-- FD classes -->
 			<zipfileset src="${work.dir}/Framework.jar"/>
 			<zipfileset src="${work.dir}/ERPServicesEJB-WL.jar" excludes="META-INF/*"/>
 			<zipfileset src="${work.dir}/DeliveryEJB-WL.jar" excludes="META-INF/*"/>
 			<zipfileset src="${work.dir}/DataLoaderEJB-WL.jar" excludes="META-INF/*"/>
-			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/*"/>	
+			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/*"/>
 			<zipfileset src="${work.dir}/FDLogisticsIntegration.jar" excludes="META-INF/*"/>
 		</jar>
 	</target>
@@ -2737,18 +2767,18 @@
 
 			<tag name="TODO" description="To do:"/>
 			<tag name="FIXME" description="Fix me:"/>
-	
+
 			<tag dir="${basedir}/build">
 				<filename name="togetherj-tags.txt"/>
 			</tag>
-	
+
 			<classpath>
 				<path refid="j2ee.classpath"/>
 				<path refid="common.classpath"/>
 				<pathelement path="${classpath.erps.lib}"/>
 				<pathelement path="${classpath.cms.lib}"/>
 			</classpath>
-	
+
 			<sourcepath>
 				<pathelement location="${projects.dir}/Framework/src"/>
 				<pathelement location="${projects.dir}/ERPServices/src"/>
@@ -2756,12 +2786,12 @@
 				<pathelement location="${projects.dir}/FDStore/src"/>
 				<pathelement location="${projects.dir}/CMS/src"/>
 			</sourcepath>
-	
+
 			<group title="CMS">
 				<package name="com.freshdirect.cms"/>
 				<package name="com.freshdirect.cms.*" />
 			</group>
-	
+
 			<group title="CMS: FDStore Integration">
 				<package name="com.freshdirect.fdstore.attributes"/>
 				<package name="com.freshdirect.fdstore.attributes.*"/>
@@ -2769,45 +2799,45 @@
 				<package name="com.freshdirect.fdstore.content.*"/>
 				<package name="com.freshdirect.fdstore.merchandising"/>
 			</group>
-	
+
 			<group title="FDStore">
 				<package name="com.freshdirect.fdstore"/>
 				<package name="com.freshdirect.fdstore.*"/>
 			</group>
-	
+
 			<group title="ERPS: Product Models">
 				<package name="com.freshdirect.erp"/>
 				<package name="com.freshdirect.erp.*"/>
 				<package name="com.freshdirect.content.*"/>
 			</group>
-	
+
 			<group title="ERPS: SAP Interface">
 				<package name="com.freshdirect.sap"/>
 				<package name="com.freshdirect.sap.*"/>
 			</group>
-	
+
 			<group title="ERPS: Payment">
 				<package name="com.freshdirect.payment"/>
 				<package name="com.freshdirect.payment.*"/>
 			</group>
-	
+
 			<group title="ERPS: Customer, Order">
 				<package name="com.freshdirect.customer"/>
 				<package name="com.freshdirect.customer.*"/>
 				<package name="com.freshdirect.affiliate"/>
 				<package name="com.freshdirect.affiliate.*"/>
 			</group>
-	
+
 			<group title="ERPS: CRM">
 				<package name="com.freshdirect.crm"/>
 				<package name="com.freshdirect.crm.*"/>
 			</group>
-	
+
 			<group title="Delivery">
 				<package name="com.freshdirect.delivery"/>
 				<package name="com.freshdirect.delivery.*"/>
 			</group>
-	
+
 			<group title="Framework">
 				<package name="com.freshdirect.framework.*"/>
 			</group>
@@ -2833,7 +2863,7 @@
 			 <include name="**/*.class"/>
 			 </fileset>
 		</jar>
-			
+
 	</target>
 
 
@@ -2860,8 +2890,8 @@
 			<pathelement location="${thirdparty.home}/jackson-databind-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/javawebparts-filter-1.2.jar"/>
-			
-							<pathelement location="${thirdparty.home}/spring-aop-4.0.1.RELEASE.jar"/>	
+
+							<pathelement location="${thirdparty.home}/spring-aop-4.0.1.RELEASE.jar"/>
 							<pathelement location="${thirdparty.home}/spring-beans-4.0.1.RELEASE.jar"/>
 							<pathelement location="${thirdparty.home}/spring-context-4.0.1.RELEASE.jar"/>
 							<pathelement location="${thirdparty.home}/spring-core-4.0.1.RELEASE.jar"/>
@@ -2872,11 +2902,11 @@
 							<pathelement location="${thirdparty.home}/spring-webmvc-4.0.1.RELEASE.jar"/>
 							<pathelement location="${thirdparty.home}/spring-context-support-4.0.1.RELEASE.jar"/>
 							<pathelement location="${thirdparty.home}/gson-1.7.1.jar"/>
-						
-			
+
+
 			<pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
       		<pathelement location="${thirdparty.home}/commons-lang-2.3.jar"/>
-      		<pathelement location="${thirdparty.home}/junit-4.10.jar"/>			
+      		<pathelement location="${thirdparty.home}/junit-4.10.jar"/>
 		</path>
 		<trycatch>
 			<try>
@@ -2903,7 +2933,7 @@
 				<fail/>
 			</catch>
 		</trycatch>
-		
+
 		<!-- copy non-java resources -->
 		<copy todir="${work.dir}/FDIntegrationServices/WEB-INF/classes">
 			<fileset dir="${projects.dir}/FDIntegrationServices/src" excludes="**/*.java"/>
@@ -2918,7 +2948,7 @@
 
 		<!-- copy dependent jar files -->
   	<copy todir="${work.dir}/FDIntegrationServices/WEB-INF/lib">
-			
+
 			<fileset dir="${thirdparty.home}" includes="freemarker-2.3.15.jar"/>
 			<fileset dir="${thirdparty.home}" includes="jackson-core-2.2.0.jar"/>
 			<fileset dir="${thirdparty.home}" includes="jackson-databind-2.2.0.jar"/>
@@ -2948,7 +2978,7 @@
 			<ejbs>
 				<include name="FDIntegrationServices.war"/>
 			</ejbs>
-			
+
 			<libraries>
 				<include name="Framework.jar"/>
 				<include name="ERPSWebApp.jar"/>
@@ -2964,7 +2994,7 @@
 				<include name="sapjco3.jar"/>
 				<include name="oscache-2.4.1.jar"/>
 				<include name="struts.jar"/>
-				<include name="spring-aop-4.0.1.RELEASE.jar"/>	
+				<include name="spring-aop-4.0.1.RELEASE.jar"/>
 				<include name="spring-beans-4.0.1.RELEASE.jar"/>
 				<include name="spring-context-4.0.1.RELEASE.jar"/>
 				<include name="spring-core-4.0.1.RELEASE.jar"/>
@@ -2990,30 +3020,32 @@
 				<include name="httpcore-4.4.1.jar"/>
 				<include name="httpmime-4.5.jar"/>
 				<include name="aws-java-sdk-1.7.12.jar"/>
-						
+
 				<include name="opencsv-1.8.jar"/>
-				
+
 				<include name="commons-discovery-0.2.jar"/>
 				<include name="commons-logging-1.1.1.jar"/>
 				<include name="ctah-api-client.jar"/>
-								
+
 				<include name="JFEP-0.1.0.jar"/>
 				<include name="antlr-2.7.5H3.jar"/>
 
 				<include name="urlrewrite-2.6.0.jar"/>
-				
+
 				<include name="jackson-core-2.2.0.jar"/>
 				<include name="jackson-databind-2.2.0.jar"/>
 				<include name="jackson-annotations-2.2.0.jar"/>
-				
+
 				<include name="freemarker-2.3.15.jar"/>
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
+				<include name="orika-core-1.5.0.jar"/>
+				<include name="fdcommerce-data.jar"/>
 
 				<!-- masterpass integration -->
 				<include name="masterpassExpressSdk.jar"/>
 				<include name="braintree-java-2.53.0.jar"/>
 			</lib>
-		
+
 		</makeFDAdminEar>
 	</target>
 </project>

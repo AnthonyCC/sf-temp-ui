@@ -9,7 +9,6 @@ import javax.management.MBeanServer;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.RequestIdCache;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 import net.sf.ehcache.Cache;
@@ -39,14 +38,8 @@ public class EhCacheUtil {
     public static final String BR_USER_REFINEMENT_CACHE_NAME = "userRefinementCache";
     public static final String BR_CATEGORY_TOP_ITEM_CACHE_NAME = "categoryTopItemCache";
 
-    // Product Family Cache
+    // Product Family cache
     public static final String FD_FAMILY_PRODUCT_CACHE_NAME = "familyProductCache";
-    
-    // Model Request Cache
-    public static final String CMS_CONTENT_NODE_ATTRIBUTE_CACHE_NAME = "cmsContentNodeAttributeCache";
-    public static final String CMS_CONTENT_NODE_CACHE_NAME = "cmsContentNodeCache";
-    public static final String CMS_PARENT_KEY_CACHE_NAME = "cmsParentKeyCache";
-    public static final String CMS_STORE_KEY_CACHE_NAME = "cmsStoreKeyCache";
 
     private static final Logger LOG = LoggerFactory.getInstance(EhCacheUtil.class);
 
@@ -58,15 +51,20 @@ public class EhCacheUtil {
             URL ehcacheConfig = ClassLoader.getSystemResource(EHCACHE_CONFIG_LOCATION);
             if (ehcacheConfig == null) {
                 LOG.error("EHCache config file (" + EHCACHE_CONFIG_LOCATION + ") not found !");
-
             } else {
                 manager = CacheManager.create(ehcacheConfig);
-				if (FDStoreProperties.isEhCacheManagementEnabled()) {
-					MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-					ManagementService.registerMBeans(manager, mBeanServer, false, false, false, true);
-				}
+                if (FDStoreProperties.isEhCacheManagementEnabled()) {
+                    MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+                    ManagementService.registerMBeans(manager, mBeanServer, false, false, false, true);
+                }
             }
         }
+    }
+
+    public static CacheConfiguration createCacheConfiguration(String cacheName, int maxEntries, long ttl) {
+        CacheConfiguration cacheConfiguration = new CacheConfiguration(cacheName, maxEntries);
+        cacheConfiguration.setTimeToLiveSeconds(ttl);
+        return cacheConfiguration;
     }
 
     public static void createCache(CacheConfiguration cacheConfiguration) {
@@ -166,17 +164,5 @@ public class EhCacheUtil {
     public static void clearCache(String cacheName) {
         getCache(cacheName).removeAll();
     }
-    
-	public static String getRequestIdCacheKey(String... ids) {
-		StringBuffer cacheKey = new StringBuffer();
-		String requestId = RequestIdCache.getRequestId();
-		if (requestId != null) {
-			for (String id : ids) {
-				cacheKey.append(id).append('_');
-			}
-			cacheKey.append(requestId);
-		}
-		return cacheKey.toString();
-	}
-    
+
 }

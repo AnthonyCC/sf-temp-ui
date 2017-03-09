@@ -4,12 +4,12 @@
  * @param content
  */
 {template .contentHeader autoescape="false"}
-{if $content.contentTitle or $content.showViewAllButton}
-  <div href="" class="content-header" data-component="content-header">
-    <h2 class="{if not $content.showContentTitle}offscreen{/if}" tabindex="0">{if $content.contentTitle}{$content.contentTitle}{/if}</h2>
-    {if $content.showViewAllButton}
+{if $content.contentTitle or not $content.hideViewAllButton}
+  <div class="content-header" data-component="content-header">
+    <h2 tabindex="0">{if $content.contentTitle}{$content.contentTitle}{/if}</h2>
+    {if not $content.hideViewAllButton}
       <div class="view-all" tabindex="-1">
-      <a href="{$content.viewAllButtonLink}" tabindex="-1" class="cssbutton cssbutton-flat green transparent arrowbutton">view all
+      <a {if $content.useViewAllPopup}data-view-all-popup data-moduleId={$content.moduleId}{else}href="{$content.viewAllButtonLink}"{/if} tabindex="-1" class="cssbutton cssbutton-flat green transparent arrowbutton">view all
         <div class="offscreen">{if $content.contentTitle}{$content.contentTitle}{elseif $content.moduleTitle}{$content.moduleTitle}{/if}</div>
       </a>
       </div>

@@ -1,36 +1,15 @@
 package com.freshdirect.fdstore.content;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
-import javax.naming.Context;
-
-import org.mockejb.interceptor.AspectSystem;
-
-import com.freshdirect.TestUtils;
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.ContentNodeI;
-import com.freshdirect.cms.ContentType;
-import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.application.CmsManager;
-import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
-import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.cms.node.ContentNode;
-import com.freshdirect.event.RecommendationEventLogger;
-import com.freshdirect.fdstore.util.EnumSiteFeature;
-import com.freshdirect.smartstore.RecommendationService;
-import com.freshdirect.smartstore.RecommendationServiceConfig;
-import com.freshdirect.smartstore.RecommendationServiceType;
-import com.freshdirect.smartstore.SessionInput;
-import com.freshdirect.smartstore.Variant;
-import com.freshdirect.smartstore.fdstore.RecommendationEventLoggerMockup;
-import com.freshdirect.smartstore.impl.AbstractRecommendationService;
-import com.freshdirect.smartstore.impl.FavoritesRecommendationService;
+import com.freshdirect.cms.search.ContentIndex;
+import com.freshdirect.cms.search.SearchTestUtils;
 
 import junit.framework.TestCase;
 
@@ -44,7 +23,7 @@ public class RecommenderStrategyTest extends TestCase {
 		XmlContentService service = new XmlContentService( typeService, new FlexContentHandler(), 
         		"classpath:/com/freshdirect/fdstore/content/RecommenderStrategyTest.xml" );
 
-        CmsManager.setInstance(new CmsManager(service, null));
+		CmsManager.setInstance(new CmsManager(service, SearchTestUtils.createSearchService(new ArrayList<ContentIndex>(), SearchTestUtils.createTempDir(this.getClass().getCanonicalName(), (new Date()).toString()))));
 
 	}
 	

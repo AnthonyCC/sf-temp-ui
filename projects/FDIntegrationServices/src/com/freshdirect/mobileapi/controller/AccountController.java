@@ -173,6 +173,9 @@ public class AccountController extends BaseController implements Comparator <Ord
         Message responseMessage = null;
         if (result.isSuccess()) {
             responseMessage = Message.createSuccessMessage("Timeslot has been reserved successfully.");
+        	if(user!=null && user.getReservation()!=null && user.getReservation().getExpirationDateTime()!=null ){
+        		responseMessage.addNoticeMessage("ReservationEndTime", user.getReservation().getExpirationDateTime().toString());
+        	}
         } else {
             responseMessage = getErrorMessage(result, request);
         }

@@ -103,7 +103,7 @@ public class IndexerServiceTest extends TestCase {
 
 	private void indexContent(IndexerService indexer, IndexerConfiguration configuration) {
 		Map<ContentKey, ContentNodeI> contentNodes = content.getContentNodes(content.getContentKeys(DraftContext.MAIN), DraftContext.MAIN);
-		indexer.fullIndex(contentNodes.values(), configuration);
+		indexer.index(contentNodes.values(), configuration);
 	}
 
 	private void assertResults(ContentSearchServiceI search, int resultCount, String query) {
