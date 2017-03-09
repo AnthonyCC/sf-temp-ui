@@ -132,8 +132,6 @@ public class ManageStandingOrderServlet extends HttpServlet {
 			String soId = request.getParameter("soId");
 			String soName = request.getParameter("soName");
 			String freq=request.getParameter("frequency");
-			if (("".equalsIgnoreCase(soId) || soId==null) && (freq == null || "".equalsIgnoreCase(freq)))
-				freq = "1";
 			JspFactory factory = JspFactory.getDefaultFactory();
 			PageContext pageContext = factory.getPageContext(this, request, response, null, true, JspWriter.DEFAULT_BUFFER, true);
 			FDSessionUser u = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
@@ -199,6 +197,9 @@ public class ManageStandingOrderServlet extends HttpServlet {
 	
 				}else if("onloadNewStandingOrder".equalsIgnoreCase(action)){
 					u.setRefreshValidSO3(true);
+					if (("".equalsIgnoreCase(soId) || soId==null) && (freq == null || "".equalsIgnoreCase(freq)))
+				      u.getCurrentStandingOrder().setFrequency(Integer.parseInt("1"));
+					
 					errorMessage= onloadNewStandingOrder(soName,u,pageContext);
 					writeResponseData( response, errorMessage );
 	
