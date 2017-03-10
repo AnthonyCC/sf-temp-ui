@@ -1,10 +1,12 @@
 .content-module.editorial-module.product-carousel .editorial-content {
   position: relative;
   text-align: left;
+  margin: 10px 0;
 }
 
 .content-module.editorial-module.product-carousel .editorial-content .left-side,
 .content-module.editorial-module.product-carousel .editorial-content .right-side {
+  min-height: 80px;
   width: 480px;
 }
 .content-module.editorial-module.product-carousel .editorial-content .right-side {
