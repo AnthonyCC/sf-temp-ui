@@ -222,7 +222,8 @@ if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
 %>                
     <logic:iterate id='product' collection="<%=htciProdList%>" type="com.freshdirect.fdstore.content.ProductModel">
 <% 
-        if (product.isDiscontinued() || product.isUnavailable()) continue;
+
+        if (!(product.isDiscontinued() || product.isUnavailable())) {
         CategoryModel prodCategory = (CategoryModel)product.getParentNode(); 
 
             //favAllImage = null;
@@ -269,6 +270,7 @@ if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
 
             productLinks.add(appendColumn.toString());
             productPrices.add(appendColumnPrices.toString());
+        }
 	%></logic:iterate>
 <%
                 String outputProducts= JspMethods.displayFAProducts(productLinks, productPrices,showPrices,false);
