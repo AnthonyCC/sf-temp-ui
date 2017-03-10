@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Category;
+import org.joda.time.DateTime;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.FDCouponProperties;
@@ -19,6 +20,8 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpInvalidPasswordException;
 import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
+import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
@@ -33,10 +36,13 @@ import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.PasswordNotExpiredException;
 import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
+import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
+import com.freshdirect.mobileapi.controller.data.SubmitOrderExResult;
 import com.freshdirect.mobileapi.controller.data.request.AckRequest;
 import com.freshdirect.mobileapi.controller.data.request.Login;
 import com.freshdirect.mobileapi.controller.data.request.PasswordMessageRequest;
@@ -452,6 +458,32 @@ public class LoginController extends BaseController  implements SystemMessageLis
 				if(user.getAddress() != null && user.getAddress().getAddress1() != null && user.getAddress().getAddress1().length() > 0 && user.getAddress().isCustomerAnonymousAddress()) {
 					user.getShoppingCart().setDeliveryAddress(null);
 				} 
+			}
+			
+			EnumEStoreId eStore = (user.getUserContext() != null && user.getUserContext().getStoreContext() != null) ? user.getUserContext().getStoreContext().getEStoreId()
+                    : EnumEStoreId.FD;
+            if (EnumEStoreId.FDX.equals(eStore)) {
+				if(user!=null && user.getFDSessionUser()!=null && user.getFDSessionUser().getShoppingCart()!=null && user.getFDSessionUser().getShoppingCart().getItemCount()>0){
+					if(user.getFDSessionUser().getShoppingCart().getDeliveryReservation()==null){
+						FDTimeslot fdt = new FDTimeslot();
+						Date date = new Date();
+						fdt.setDlvStartTime(new TimeOfDay(date));
+						fdt.setDlvEndTime(new TimeOfDay(date));
+						fdt.setDeliveryDate(date);
+						fdt.setCutoffDateTime(date);
+						fdt.setMinOrderAmt(0);
+						PrimaryKey pk = new PrimaryKey();
+						user.getFDSessionUser().getShoppingCart().setDeliveryReservation(new FDReservation(pk, fdt, null, null, null, null, false, null, 0, null, false, null, null));
+					}
+					CheckoutController cc = new CheckoutController();
+					ActionResult availabliltyResult = cc.performAvailabilityCheck(user, request.getSession());
+		            if (!availabliltyResult.isSuccess()) {
+		            	Checkout chk = new Checkout(user);
+		            	SubmitOrderExResult message = new SubmitOrderExResult();
+		            	message = chk.fillAtpErrorDetail(message, request);
+		            	responseMessage.setUnavaialabilityData(message.getUnavaialabilityData());
+		            }
+				}
 			}
 			
 		} catch (FDAuthenticationException ex) {
