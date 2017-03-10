@@ -1,13 +1,10 @@
 package com.freshdirect.cms.search;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
 
 import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.index.IndexingNotifier;
@@ -29,11 +26,11 @@ public class LuceneSpellingSuggestionService implements SpellingSuggestionsServi
     private SpellChecker checker;
 
     // directory of indexes, created at construction
-    private Directory directory;
+    private String indexLocation;
 
     @Override
     public void receiveIndexingFinishedNotification() {
-        initializeSpellChecker(directory);
+        initializeSpellChecker(indexLocation);
     }
 
     /**
@@ -48,19 +45,20 @@ public class LuceneSpellingSuggestionService implements SpellingSuggestionsServi
      * @throws IOException
      */
     public LuceneSpellingSuggestionService(String indexLocation) {
-        try {
-            directory = FSDirectory.open(new File(indexLocation));
-            initializeSpellChecker(directory);
-        } catch (IOException e) {
-            throw new CmsRuntimeException(e);
-        }
+        this.indexLocation = indexLocation;
+        initializeSpellChecker(indexLocation);
+
         IndexingNotifier.getInstance().subscribe(this);
     }
 
-    private void initializeSpellChecker(Directory indexLocation) {
+    private void initializeSpellChecker(String indexLocation2) {
         try {
-            this.checker = new SpellChecker(directory);
+            if(this.checker != null){
+                this.checker.close();
+            }
+            this.checker = new SpellChecker(indexLocation2);
         } catch (IOException e) {
+            LOGGER.error("Exception while initializing spellChecker ", e);
             throw new CmsRuntimeException(e);
         }
     }

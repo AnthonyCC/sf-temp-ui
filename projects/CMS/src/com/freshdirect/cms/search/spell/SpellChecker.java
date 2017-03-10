@@ -1,5 +1,7 @@
 package com.freshdirect.cms.search.spell;
 
+import java.io.File;
+
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -34,6 +36,7 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.store.AlreadyClosedException;
 import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
 
 import com.freshdirect.cms.index.IndexingConstants;
 
@@ -100,8 +103,8 @@ public class SpellChecker implements java.io.Closeable {
 	 * @throws IOException
 	 *             if Spellchecker can not open the directory
 	 */
-	public SpellChecker(Directory spellIndex, StringDistance sd) throws IOException {
-		setSpellIndex(spellIndex);
+	public SpellChecker(String spellIndexLocation, StringDistance sd) throws IOException {
+		setSpellIndex(spellIndexLocation);
 		setStringDistance(sd);
 	}
 
@@ -109,13 +112,13 @@ public class SpellChecker implements java.io.Closeable {
 	 * Use the given directory as a spell checker index with a {@link LevensteinDistance} as the default {@link StringDistance}. The
 	 * directory is created if it doesn't exist yet.
 	 * 
-	 * @param spellIndex
+	 * @param spellIndexLocation
 	 *            the spell index directory
 	 * @throws IOException
 	 *             if spellchecker can not open the directory
 	 */
-	public SpellChecker(Directory spellIndex) throws IOException {
-		this(spellIndex, new CsongorDistance());
+	public SpellChecker(String spellIndexLocation) throws IOException {
+		this(spellIndexLocation, new CsongorDistance());
 	}
 
 	/**
@@ -131,16 +134,21 @@ public class SpellChecker implements java.io.Closeable {
 	 */
 	// TODO: we should make this final as it is called in the constructor
 	// TODO: is it really necessary to create an empty index?
-	public void setSpellIndex(Directory spellIndexDir) throws IOException {
+	public void setSpellIndex(String spellIndexDir) throws IOException {
 		// this could be the same directory as the current spellIndex
 		// modifications to the directory should be synchronized
 		synchronized (modifyCurrentIndexLock) {
 			ensureOpen();
-			if (!IndexReader.indexExists(spellIndexDir)) {
-				IndexWriter writer = new IndexWriter(spellIndexDir, null, true, IndexWriter.MaxFieldLength.UNLIMITED);
+			if(spellIndex != null){
+			    spellIndex.close();
+			}
+			Directory indexDirectory = FSDirectory.open(new File(spellIndexDir));
+			this.spellIndex = indexDirectory;
+			if (!IndexReader.indexExists(indexDirectory)) {
+				IndexWriter writer = new IndexWriter(indexDirectory, null, true, IndexWriter.MaxFieldLength.UNLIMITED);
 				writer.close();
 			}
-			swapSearcher(spellIndexDir);
+			swapSearcher();
 		}
 	}
 
@@ -382,16 +390,19 @@ public class SpellChecker implements java.io.Closeable {
 			if (searcher != null) {
 				searcher.close();
 			}
+			if(spellIndex != null){
+			    this.spellIndex.close();
+			}
 			searcher = null;
 		}
 	}
 
-	private void swapSearcher(final Directory dir) throws IOException {
+	private void swapSearcher() throws IOException {
 		/*
 		 * opening a searcher is possibly very expensive. We rather close it again if the Spellchecker was closed during this
 		 * operation than block access to the current searcher while opening.
 		 */
-		final IndexSearcher indexSearcher = createSearcher(dir);
+		final IndexSearcher indexSearcher = createSearcher(spellIndex);
 		synchronized (searcherLock) {
 			if (closed) {
 				indexSearcher.close();
@@ -402,7 +413,6 @@ public class SpellChecker implements java.io.Closeable {
 			}
 			// set the spellindex in the sync block - ensure consistency.
 			searcher = indexSearcher;
-			this.spellIndex = dir;
 		}
 	}
 

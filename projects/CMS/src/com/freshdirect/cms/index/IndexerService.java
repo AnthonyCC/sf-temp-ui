@@ -94,7 +94,7 @@ public abstract class IndexerService {
     public void optimize(String indexDirectoryPath) {
         IndexWriter writer = null;
         Directory indexDirectory = null;
-        
+
         try {
             LOGGER.debug("Starting optimization process");
 
@@ -204,6 +204,7 @@ public abstract class IndexerService {
         for (BooleanQuery deleteQuery : deleteQueries) {
             indexWriter.deleteDocuments(deleteQuery);
         }
+        indexWriter.commit();
     }
 
     private void indexNodes(Collection<ContentNodeI> contentNodes, IndexerConfiguration indexerConfiguration) {
@@ -219,13 +220,14 @@ public abstract class IndexerService {
     }
 
     private void writeOutDocuments(List<Document> documents, IndexWriter writer) {
-        for (Document document : documents) {
-            try {
+        try {
+            for (Document document : documents) {
                 writer.addDocument(document);
-            } catch (IOException e) {
-                LOGGER.error("Exception while writing index documents", e);
-                throw new CmsRuntimeException(e);
             }
+            writer.commit();
+        } catch (IOException e) {
+            LOGGER.error("Exception while writing index documents", e);
+            throw new CmsRuntimeException(e);
         }
     }
 
