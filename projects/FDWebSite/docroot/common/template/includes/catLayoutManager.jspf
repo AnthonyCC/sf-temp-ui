@@ -45,8 +45,16 @@
 	        returnSecondaryFolders='<%=layoutSettings.isReturnSecondaryFolders()%>' 
 	        returnSkus='<%=layoutSettings.isReturnSkus()%>'>
 		<%
+		
     	    sortedColl = rtnColl;
+    	 if(sortedColl!=null) {
+    	 Set<ContentNodeModel> hs = new HashSet<>();
+    	 hs.addAll(sortedColl);
+    	 sortedColl.clear();
+    	 sortedColl.addAll(hs);
+    	   }
 	        request.setAttribute("itemGrabberResult",sortedColl); //** expose result of item grabber to the layout **
+	        
 		%>
     </display:ItemGrabber>
 	<%
