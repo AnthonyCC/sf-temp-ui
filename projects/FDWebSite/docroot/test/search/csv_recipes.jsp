@@ -1,4 +1,3 @@
-<%@page import="com.freshdirect.cms.search.LuceneSearchService"%>
 <%@page language="java" contentType="application/csv"
 %><%@page import="java.io.PrintWriter"
 %><%@page import="java.util.List"

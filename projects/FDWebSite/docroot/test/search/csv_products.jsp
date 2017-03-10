@@ -1,4 +1,3 @@
-<%@page import="com.freshdirect.cms.search.LuceneSearchService"%>
 <%@page import="java.io.PrintWriter"
 %><%@page import="java.util.List"
 %><%@page import="java.util.Set"

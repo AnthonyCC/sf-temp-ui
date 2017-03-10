@@ -99,7 +99,7 @@ if (searchTerm != null && !searchTerm.trim().isEmpty()) {
 		String normalizedTerm = filter.getTerms().get(0).toString();
 		List<String> tokens = new ArrayList<String>();
 		Registry registry = FDRegistry.getInstance();
-		ContentSearchServiceI search = new LuceneSearchService();
+		ContentSearchServiceI search = LuceneSearchService.getInstance();
 		TokenStream tokenStream = IndexingConstants.ANALYZER.tokenStream("_name_FULL_NAME", new StringReader(normalizedTerm));
 		TermAttribute termAttr = tokenStream.getAttribute(TermAttribute.class);
 		while (tokenStream.incrementToken())

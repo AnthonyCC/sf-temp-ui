@@ -103,7 +103,7 @@ td {
 </head>
 <%
 	Registry registry = FDRegistry.getInstance();
-	ContentSearchServiceI search = new LuceneSearchService();
+	ContentSearchServiceI search = LuceneSearchService.getInstance();
 	CmsManager instance = CmsManager.getInstance();
 	FullIndexerService indexer = FullIndexerService.getInstance();
 	Set<ContentKey> keys = instance.getContentKeys();
