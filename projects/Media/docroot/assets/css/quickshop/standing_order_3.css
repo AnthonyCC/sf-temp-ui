@@ -1245,12 +1245,18 @@
 .standing-orders-3-so-settings-buttons .standing-orders-3-so-settings-delete{
 	float: left;
 }
+.standing-orders-3-so-settings-item-details .standing-orders-3-so-settings-item-details-modify-next-delivery{
+	line-height: 15px;
+	padding: 8px 10px;
+	margin-left: 20px;
+}
 .standing-orders-3-so-settings-buttons-container .standing-orders-3-so-settings-view-details{
 	float: right;
 	font-size: 14px;
 	font-weight: bold;
-	line-height: 30px;
-	margin-right: 30px;
+	line-height: 15px;
+	padding: 8px 10px;
+	margin-right: 20px;
 }
 .standing-orders-3-so-settings-container.open .standing-orders-3-so-settings-view-details,
 .standing-orders-3-so-settings-container.open .standing-orders-3-so-settings-activate-message{

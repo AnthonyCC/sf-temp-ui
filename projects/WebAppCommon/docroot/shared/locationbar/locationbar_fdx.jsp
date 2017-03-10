@@ -726,7 +726,9 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 <%-- SO ALERTS --%>
 
 	<%
-	  if(user_locationbar_fdx.isNewSO3Enabled()) {
+	  String standingOrder_uri = request.getRequestURI();
+	  boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") != -1) ? true : false;
+	  if(user_locationbar_fdx.isNewSO3Enabled() && !isStandingOrders) {
 		Map<String,Object> errorSOAlert = new HashMap<String,Object>();
 		errorSOAlert.put("soData", StandingOrderHelper.getAllSoData(user_locationbar_fdx, false));
 	%>
@@ -747,12 +749,13 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 	</tmpl:put>
   <% } %>
 <%-- MODIFY ORDER ALERTS --%>
-
+	<% if(!isStandingOrders){ %>
 	<tmpl:put name="modify_order_alerts">
 		<div id="modifyorderalert" class="alerts invisible" data-type="modifyorderalert">
 			<comp:modifyOrderBar user="<%= user_locationbar_fdx %>" modifyOrderAlert="true" htmlId="test_modifyorderalert" />
 		</div>
 	</tmpl:put>
+	<% } %>
 </tmpl:insert>
 
 
