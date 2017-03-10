@@ -546,7 +546,9 @@ public class ProductDetailPopulator {
 		data.setProductDetailImage( domains + product.getDetailImage().getPathWithPublishId() );
 		if(product.getZoomImage()!=null)
 		data.setProductZoomImage( domains + product.getZoomImage().getPathWithPublishId() );
-		
+		if(product.getJumboImage()!=null)
+		data.setProductJumboImage( domains + product.getJumboImage().getPathWithPublishId() );
+			
 		data.setProductPageUrl( FDURLUtil.getNewProductURI( product ) );
 		
 		data.setQuantityText( product.getQuantityText() );
