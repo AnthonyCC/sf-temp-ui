@@ -102,6 +102,7 @@ public class ItemGrabberTag extends com.freshdirect.framework.webapp.BodyTagSupp
 			grabber.setReturnInvisibleProducts( returnInvisibleProducts );
 			grabber.setDepth( depth );
 			grabber.setPricingCtx( user != null ? user.getPricingContext() : PricingContext.DEFAULT );
+			workSet.clear();
 			grabber.setWorkSet( workSet );
 
 			workSet = grabber.grabTheItems();
