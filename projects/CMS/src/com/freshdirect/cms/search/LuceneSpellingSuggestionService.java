@@ -7,8 +7,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.CmsRuntimeException;
-import com.freshdirect.cms.index.IndexingNotifier;
-import com.freshdirect.cms.index.IndexingSubscriber;
 import com.freshdirect.cms.search.spell.SpellChecker;
 import com.freshdirect.cms.search.spell.SpellingHit;
 import com.freshdirect.cms.search.spell.StringDistance;
@@ -18,45 +16,22 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  * Give spelling suggestions for query terms.
  * 
  */
-public class LuceneSpellingSuggestionService implements SpellingSuggestionsServiceI, IndexingSubscriber {
+public class LuceneSpellingSuggestionService implements SpellingSuggestionsServiceI {
 
     private final static Logger LOGGER = LoggerFactory.getInstance(LuceneSpellingSuggestionService.class);
 
     // spell checker instance, created at construction
     private SpellChecker checker;
 
-    // directory of indexes, created at construction
-    private String indexLocation;
-
-    @Override
-    public void receiveIndexingFinishedNotification() {
-        initializeSpellChecker(indexLocation);
-    }
-
     /**
      * Constructor.
      * 
      * @param indexLocation
      *            directory location of indices
-     * @param contentIndexes
-     *            index fields to use
-     * @param reader
-     *            index reader
-     * @throws IOException
      */
     public LuceneSpellingSuggestionService(String indexLocation) {
-        this.indexLocation = indexLocation;
-        initializeSpellChecker(indexLocation);
-
-        IndexingNotifier.getInstance().subscribe(this);
-    }
-
-    private void initializeSpellChecker(String indexLocation2) {
         try {
-            if(this.checker != null){
-                this.checker.close();
-            }
-            this.checker = new SpellChecker(indexLocation2);
+            this.checker = new SpellChecker(indexLocation);
         } catch (IOException e) {
             LOGGER.error("Exception while initializing spellChecker ", e);
             throw new CmsRuntimeException(e);
@@ -89,8 +64,11 @@ public class LuceneSpellingSuggestionService implements SpellingSuggestionsServi
      */
     public void close() {
         try {
-            checker.close();
+            if (this.checker != null) {
+                checker.close();
+            }
         } catch (IOException e) {
+            LOGGER.error("failed to close spell checker", e);
             throw new CmsRuntimeException(e);
         }
     }
@@ -104,6 +82,7 @@ public class LuceneSpellingSuggestionService implements SpellingSuggestionsServi
         try {
             return checker.exist(phrase);
         } catch (IOException e) {
+            LOGGER.error("failed to exists spell checker", e);
             throw new CmsRuntimeException(e);
         }
     }

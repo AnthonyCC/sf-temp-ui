@@ -84,7 +84,7 @@ public class BackgroundProcessorImpl implements IBackgroundProcessor {
     private final static Logger LOG = LoggerFactory.getInstance(BackgroundProcessorImpl.class);
 
     private ExecutorService reindexer;
-    private ContentSearchServiceI searchService = new LuceneSearchService();
+    private ContentSearchServiceI searchService = LuceneSearchService.getInstance();
     private BackgroundStatus procStatus = new BackgroundStatus();
     private List<PublishTask> publishTasks;
     private MergeTask mergeTask;

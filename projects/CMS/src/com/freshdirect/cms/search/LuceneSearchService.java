@@ -2,6 +2,7 @@ package com.freshdirect.cms.search;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -68,6 +69,8 @@ public class LuceneSearchService implements ContentSearchServiceI, IndexingSubsc
 
     private static final FreshdirectAnalyzer ANALYZER = new FreshdirectAnalyzer();
 
+    private static final LuceneSearchService INSTANCE = new LuceneSearchService();
+    
     private IndexConfiguration indexConfiguration = IndexConfiguration.getInstance();
 
     private SearchServiceConfiguration searchServiceConfiguration = SearchServiceConfiguration.getInstance();
@@ -82,7 +85,11 @@ public class LuceneSearchService implements ContentSearchServiceI, IndexingSubsc
 
     private SpellingSuggestionsServiceI spellService;
 
-    public LuceneSearchService() {
+    public static LuceneSearchService getInstance() {
+        return INSTANCE;
+    }
+    
+    private LuceneSearchService() {
         setIndexes(indexConfiguration.getIndexConfiguration());
 
         this.indexLocation = searchServiceConfiguration.getCmsIndexLocation();
@@ -98,6 +105,7 @@ public class LuceneSearchService implements ContentSearchServiceI, IndexingSubsc
                 LOGGER.info("Created index at " + getIndexLocation());
             }
         } catch (IOException ioe) {
+            LOGGER.error(MessageFormat.format("Exception while creating indexis under {0}", indexLocation), ioe);
             throw new CmsRuntimeException(ioe);
         } finally {
             closeIndexWriter(writer);
@@ -182,16 +190,16 @@ public class LuceneSearchService implements ContentSearchServiceI, IndexingSubsc
                 this.reader.close();
                 this.reader = null;
                 LOGGER.info("reader is closed and set to " + this.reader);
-                if (indexDirectory != null) {
-                    indexDirectory.close();
-                    indexDirectory = null;
-                    LOGGER.info("indexDirectory is closed and set to " + this.reader);
-                }
             } catch (IOException e) {
-                LOGGER.error("failed to close reader", e);
+                LOGGER.error(MessageFormat.format("Exception while closing index reader under {0}", indexLocation), e);
             }
         } else {
             LOGGER.info("reader is already closed");
+        }
+        if (indexDirectory != null) {
+            indexDirectory.close();
+            indexDirectory = null;
+            LOGGER.info("indexDirectory is closed and set to " + this.reader);
         }
     }
 
@@ -201,6 +209,13 @@ public class LuceneSearchService implements ContentSearchServiceI, IndexingSubsc
             this.spellService = new LuceneSpellingSuggestionService(indexLocation);
         }
         return this.spellService;
+    }
+
+    public synchronized void closeSpellService() {
+        if (spellService != null) {
+            spellService.close();
+        }
+        spellService = null;
     }
 
     @Override
@@ -225,6 +240,7 @@ public class LuceneSearchService implements ContentSearchServiceI, IndexingSubsc
 
             return searchInternal(searchTerm, fields, maxHits, phrase, false);
         } catch (IOException e) {
+            LOGGER.error(MessageFormat.format("Exception while searching under {0} searchTerm {1} phrase {2} maxHits {3}", indexLocation, searchTerm, phrase, maxHits), e);
             throw new CmsRuntimeException(e);
         }
     }
@@ -245,6 +261,7 @@ public class LuceneSearchService implements ContentSearchServiceI, IndexingSubsc
 
             return searchInternal(searchTerm, fields, maxHits, phrase, false);
         } catch (IOException e) {
+            LOGGER.error(MessageFormat.format("Exception while searching faqs under {0} searchTerm {1} phrase {2} maxHits {3}", indexLocation, searchTerm, phrase, maxHits), e);
             throw new CmsRuntimeException(e);
         }
     }
@@ -268,6 +285,7 @@ public class LuceneSearchService implements ContentSearchServiceI, IndexingSubsc
 
             return searchInternal(searchTerm, fields, maxHits, phrase, false);
         } catch (IOException e) {
+            LOGGER.error(MessageFormat.format("Exception while searching recipes under {0} searchTerm {1} phrase {2} maxHits {3}", indexLocation, searchTerm, phrase, maxHits), e);
             throw new CmsRuntimeException(e);
         }
     }
@@ -295,6 +313,7 @@ public class LuceneSearchService implements ContentSearchServiceI, IndexingSubsc
 
             return searchInternal(searchTerm, fields, maxHits, phrase, approximate);
         } catch (IOException e) {
+            LOGGER.error(MessageFormat.format("Exception while searching products under {0} searchTerm {1} phrase {2} maxHits {3} approximate {4}", indexLocation, searchTerm, phrase, maxHits, approximate), e);
             throw new CmsRuntimeException(e);
         }
     }
@@ -362,6 +381,7 @@ public class LuceneSearchService implements ContentSearchServiceI, IndexingSubsc
             try {
                 q = parser.parse(field + ":\"" + queryString + "\"~" + slop);
             } catch (ParseException e) {
+                LOGGER.error(MessageFormat.format("Exception while creating query searchTerm {0} fields {1} slop {2}", searchTerm, fields, slop), e);
                 throw new CmsRuntimeException(e);
             }
             query.add(q, BooleanClause.Occur.SHOULD);
@@ -491,8 +511,10 @@ public class LuceneSearchService implements ContentSearchServiceI, IndexingSubsc
         try {
             closeReader();
             getReader();
+            closeSpellService();
             getSpellService();
         } catch (IOException e) {
+            LOGGER.error("Exception while receiving index finish notification", e);
             throw new CmsRuntimeException(e);
         }
     }

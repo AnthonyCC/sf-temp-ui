@@ -21,7 +21,7 @@ public class SearchTestUtils {
     }
 
     public static ContentSearchServiceI createSearchService(List<ContentIndex> indexes, String indexLocation) {
-    	LuceneSearchService indexer = new LuceneSearchService();
+    	LuceneSearchService indexer = LuceneSearchService.getInstance();
     	indexer.setIndexes(indexes);
     	indexer.setIndexLocation(indexLocation);
         return indexer;

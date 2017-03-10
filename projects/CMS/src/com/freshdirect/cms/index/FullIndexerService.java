@@ -1,6 +1,7 @@
 package com.freshdirect.cms.index;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
@@ -43,7 +44,7 @@ public class FullIndexerService extends IndexerService {
                 writer.commit();
             }
         } catch (IOException e) {
-            LOGGER.error("Exception while deleting old indexes", e);
+            LOGGER.error(MessageFormat.format("Exception while deleting old indexes under {0} for contentNodes {1}", indexDirectoryPath, contentNodes), e);
             throw new CmsRuntimeException(e);
         } finally {
             closeIndexWriter(writer);

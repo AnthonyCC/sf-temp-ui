@@ -394,6 +394,7 @@ public class SpellChecker implements java.io.Closeable {
 			    this.spellIndex.close();
 			}
 			searcher = null;
+			spellIndex = null;
 		}
 	}
 
