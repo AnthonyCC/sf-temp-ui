@@ -14,4 +14,6 @@ public interface ICommerceService {
 	public void saveCountryOfOriginData(List<ErpCOOLInfo> cooList) throws RemoteException, LoaderException;
 	
 	public void getCountryOfOriginData() throws RemoteException, LoaderException;
+
+	public void healthCheck()throws RemoteException;
 } 

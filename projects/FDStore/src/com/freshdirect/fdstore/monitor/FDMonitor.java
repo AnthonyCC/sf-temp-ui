@@ -14,6 +14,8 @@ import javax.ejb.CreateException;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
+import com.freshdirect.fdlogistics.services.ICommerceService;
+import com.freshdirect.fdlogistics.services.impl.FDCommerceService;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.monitor.ejb.FDMonitorHome;
@@ -34,9 +36,13 @@ public class FDMonitor {
         lookupMonitorHome();
         
         try {
+        	if(FDStoreProperties.isFdCommerceApiEnabled()){
+        		ICommerceService service = FDCommerceService.getInstance();
+                service.healthCheck();
+        	}else{
             FDMonitorSB sb = monitorHome.create();
-            sb.healthCheck();
-        } catch (CreateException ce) {
+        	}
+        }catch (CreateException ce) {
             invalidateMonitorHome();
             throw new FDResourceException(ce, "Error creating session bean");
         } catch (RemoteException re) {

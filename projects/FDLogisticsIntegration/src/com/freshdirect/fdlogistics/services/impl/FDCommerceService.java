@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 import org.apache.log4j.Category;
+import org.springframework.http.HttpStatus;
 
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.dataloader.LoaderException;
@@ -23,7 +24,14 @@ public class FDCommerceService extends AbstractLogisticsService implements IComm
 
 	private static final String SAVE_PRICING_ZONES_API ="/pricing/zone";
 	private static final String COO_API ="/coo";
+	private static final String DB_MONITOR ="/monitor/dbcheck";
+	private static ICommerceService INSTANCE;
 	
+	public static ICommerceService getInstance() {
+		if (INSTANCE == null)
+			INSTANCE = new FDCommerceService();
+		return INSTANCE;
+	}
 	public void savePricingZoneData(List<ErpZoneMasterInfo> zoneInfoList) throws RemoteException, LoaderException{
 		try {
 			List<PricingZoneData> data = getOrikaMapper().mapAsList(zoneInfoList, PricingZoneData.class);
@@ -59,6 +67,20 @@ public class FDCommerceService extends AbstractLogisticsService implements IComm
 	public void getCountryOfOriginData() throws RemoteException, LoaderException{
 		try {
 			httpGetData(getFdCommerceEndPoint(COO_API), Response.class);
+		} catch (FDLogisticsServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new RemoteException(e.getMessage(), e);
+		}
+		
+		
+	}
+	
+	public void healthCheck() throws RemoteException{
+		try {
+			Response<String> response = httpGetData(getFdCommerceEndPoint(DB_MONITOR), Response.class);
+			if(!response.getData().equals(HttpStatus.OK.toString()))
+			throw new FDLogisticsServiceException(response.getMessage());
 		} catch (FDLogisticsServiceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

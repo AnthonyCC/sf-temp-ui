@@ -757,6 +757,8 @@ public class FDStoreProperties {
     private static final String PROP_TIP_RANGE_CONFIG = "fdstore.tip.range.config";
     private static final String PROP_LOGISTICS_API_URL = "fdstore.logisticsapi.url";
     private static final String PROP_FDCOMMERCE_API_URL = "fdstore.fdcommerceapi.url";
+    private static final String PROP_FDCOMMERCE_API_ENABLED = "fdstore.fdcommerceapi.enabled";
+    
     
     private static final String PROP_PAYPAL_API_URL = "fdstore.paypalapi.url";
     private static final String PROP_OMS_API_URL = "fdstore.omsapi.url";
@@ -1604,6 +1606,7 @@ public class FDStoreProperties {
         defaults.put(PROP_PRODUCTFAMILY, "true");
         defaults.put(PROP_LOGISTICS_API_URL, "http://logisticsdev1.nj01/");
         defaults.put(PROP_FDCOMMERCE_API_URL, "http://localhost:8080/");
+        defaults.put(PROP_FDCOMMERCE_API_ENABLED, "false");
         defaults.put(PROP_PAYPAL_API_URL, "http://logisticsdev1.nj01/paypal");
         defaults.put(PROP_OMS_API_URL, "http://crmdev1.nj01/");
 
@@ -3913,6 +3916,9 @@ public class FDStoreProperties {
     
     public static String getFdCommerceApiUrl() {
         return get(PROP_FDCOMMERCE_API_URL);
+    }
+    public static boolean isFdCommerceApiEnabled() {
+        return (Boolean.valueOf(get(PROP_FDCOMMERCE_API_ENABLED))).booleanValue();
     }
     
     public static String getPayPalAPIUrl() {
