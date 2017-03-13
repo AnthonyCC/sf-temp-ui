@@ -6,10 +6,10 @@
 {template .iconCarouselItem}
 <li class="portrait-item">
   <div class="icon-image">
-    <a href="{$item.iconLink}">
+    <a {if $item.iconLink}href="{$item.iconLink}"{/if}>
       <img src="{$item.iconImage}" alt="icon">
     </a>
   </div>
-  <a href="{$item.iconLink}">{if $item.iconLinkText}{$item.iconLinkText}{/if}</a>
+  <a {if $item.iconLink}href="{$item.iconLink}"{/if}>{if $item.iconLinkText}{$item.iconLinkText}{/if}</a>
 </li>
 {/template}
