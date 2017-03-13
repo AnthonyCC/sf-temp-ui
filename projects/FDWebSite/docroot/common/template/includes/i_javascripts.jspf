@@ -32,10 +32,14 @@
 		FDUserI jsUser = (FDUserI)session.getAttribute(SessionName.USER);
     if (jsUser != null) {
       int sessionUserLevel = jsUser.getLevel();
+      boolean isZipCheckPopupUsed = jsUser.isZipCheckPopupUsed();
+      String zipCode = jsUser.getZipCode();
       %>
     fd.user = {};
     fd.user.recognized = <%= sessionUserLevel == FDUserI.RECOGNIZED %>;
     fd.user.guest = <%= sessionUserLevel == FDUserI.GUEST %>;
+    fd.user.isZipPopupUsed = <%= isZipCheckPopupUsed %>;
+    fd.user.zipCode = <%= zipCode %>;
     <% } %>
   }());
   </script>

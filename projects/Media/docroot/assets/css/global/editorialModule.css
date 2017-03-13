@@ -1,27 +1,15 @@
-.content-module.editorial-module.product-carousel .editorial-content {
-  position: relative;
-  text-align: left;
+.content-module.editorial-module.product-carousel .editorial-content,
+.content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header {
+  display: flex;
+  max-width: 100%;
+  max-height: 480px;
   margin: 10px 0;
 }
 
-.content-module.editorial-module.product-carousel .editorial-content .left-side,
 .content-module.editorial-module.product-carousel .editorial-content .right-side {
   min-height: 80px;
   width: 480px;
 }
-.content-module.editorial-module.product-carousel .editorial-content .right-side {
-  position: absolute;
-  bottom: 0;
-  top: 0;
-  left: 50%;
-  margin-left: 5px;
-}
-
-.content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header {
-  display: flex;
-  max-width: 100%;
-}
-
 
 .content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-body {
   overflow-y: auto;
@@ -31,10 +19,6 @@
 .content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header .header-title {
   display: flex;
   flex-direction: column;
-}
-
-.content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header {
-  min-height: 82px;
 }
 
 .content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header .header-title {
@@ -77,29 +61,28 @@
 
 .content-module.editorial-module.product-carousel .editorial-content .left-side > img {
   height: 100%;
-  object-fit: scale-down;
+  object-fit: cover;
   overflow: hidden;
   width: 100%;
 }
 
-.content-module.editorial-module.product-carousel .editorial-content .hero-image-description {
+.content-module.editorial-module.product-carousel .editorial-content .left-side > div {
   background-color: rgba(0,0,0,.7);
-  bottom: 0;
+  bottom: 80px;
   box-sizing: border-box;
   padding: 15px;
-  position: absolute;;
+  position: relative;
   text-align: left;
   max-height: 80px;
   min-height: 80px;
-  width: 480px;
 }
 
-.content-module.editorial-module.product-carousel .editorial-content .hero-image-description > h1,
-.content-module.editorial-module.product-carousel .editorial-content .hero-image-description > h2 {
+.content-module.editorial-module.product-carousel .editorial-content .left-side > div > h1,
+.content-module.editorial-module.product-carousel .editorial-content .left-side > div > h2 {
   color: white;
 }
 
-.content-module.editorial-module.product-carousel .editorial-content .hero-image-description > h2 {
+.content-module.editorial-module.product-carousel .editorial-content .left-side > div > h2 {
   font-size: 17px;
   font-family: 'Brandon Text';
   font-weight: 500;

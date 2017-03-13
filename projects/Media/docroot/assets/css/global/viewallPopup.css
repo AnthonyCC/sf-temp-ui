@@ -5,8 +5,8 @@
 }
 
 #viewallPopup.fixedpopup .fixedPopupContent {
-  min-height: 514px;
-  min-width: 860px;
+  min-height: 300px;
+  min-width: 300px;
 }
 
 #viewallPopup .fixedPopupContent .qs-popup-content {

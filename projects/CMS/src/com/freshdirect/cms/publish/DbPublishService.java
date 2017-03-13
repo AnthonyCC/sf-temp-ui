@@ -103,11 +103,6 @@ public class DbPublishService extends DbService implements PublishServiceI {
     public Publish getPreviousPublish(Publish publish) {
 		return publishDao.getPreviousPublish(publish);
 	}
-	
-    @Override
-    public Publish getPreviousFeedPublish(Publish publish) {
-        return publishDao.getPreviousFeedPublish(publish);
-    }
 
 	@Override
     public String doPublish(Publish publish) throws ConcurrentPublishException {
