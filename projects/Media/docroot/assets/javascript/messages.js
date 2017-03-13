@@ -111,10 +111,9 @@ SESSIONSTORAGE:
 			}
 		},
 		jsessionId: getJsessionId(),
-		messages: {
-			isClosed: false
-		}, /* MSG1 : HTML */
-		alerts: {} /* ALERT1: { html: HTML, addTo: SELECTORS || '', closeHandlerAddTo: SELECTORS || '' } */
+		messages: {}, /* MSG1 : HTML */
+		alerts: {}, /* ALERT1: { html: HTML, addTo: SELECTORS || '', closeHandlerAddTo: SELECTORS || '' } */
+		messagesIsClosed: false
 	};
 	messageData.options.messagesOrder = [messageData.options.SystemMessage, 'cutoff', 'platterwarning', 'reservationwarning', 'deliveryetawarning'];
 
@@ -237,7 +236,7 @@ SESSIONSTORAGE:
 	var methods = {
 		isClosed: function() { //for messages ONLY
 			try {
-				return (hasSessionStorage()) ? getMessageStorage().messages.isClosed : messageData.messages.isClosed;
+				return (hasSessionStorage()) ? getMessageStorage().messages.isClosed : messageData.messagesIsClosed;
 			} catch(e) {
 				return true; //no other choice, return as closed
 			}
@@ -268,7 +267,7 @@ SESSIONSTORAGE:
 			setMessageStorage();
 		},
 		openMessages: function() {
-			messageData.messages.isClosed = false;
+			messageData.messagesIsClosed = false;
 			messageStorage.messages.isClosed = false;
 			messageData.options.$messages.addClass(messageData.options.messagesOpenClass);
 			messageData.options.$messages.removeClass(messageData.options.messagesOpenVisHiddenClass); 
@@ -326,7 +325,7 @@ SESSIONSTORAGE:
 			this.messages('closeAlerts', opts.closeAlerts);
 		},
 		closeMessages: function() {
-			messageData.messages.isClosed = true;
+			messageData.messagesIsClosed = true;
 			messageStorage.messages.isClosed = true;
 			messageData.options.$messages.removeClass(messageData.options.messagesOpenClass);
 			messageData.options.$messages.addClass(messageData.options.messagesOpenVisHiddenClass); 
