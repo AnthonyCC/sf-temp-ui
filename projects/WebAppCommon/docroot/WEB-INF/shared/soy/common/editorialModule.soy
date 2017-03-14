@@ -53,22 +53,24 @@
       {call common.contentHeader}
         {param content: $moduleData /}
       {/call}
-  		{call common.simpleCarousel}
-  			{param items: $data.products /}
-  			{param showViewAllButton: $moduleData.showViewAllButton /}
+      <div class="carousel">
+        {call common.simpleCarousel}
+        {param items: $data.products /}
+        {param showViewAllButton: $moduleData.showViewAllButton /}
         {param useViewAllPopup: $moduleData.useViewAllPopup /}
         {param moduleId: $moduleData.moduleId /}
-  			{param viewAllLink: $moduleData.viewAllButtonLink /}
+        {param viewAllLink: $moduleData.viewAllButtonLink /}
         {param cmEventSource: $moduleData.cmEventSource /}
-  			{param accessibilityText}
-  				{if $moduleData.contentTitle}
-  					{$moduleData.contentTitle}
-  				{elseif $moduleData.moduleTitle}
-  					{$moduleData.moduleTitle}
-  				{/if}
-  			{/param}
-  			{param itemType:'grid' /}
-  		{/call}
+        {param accessibilityText}
+        {if $moduleData.contentTitle}
+        {$moduleData.contentTitle}
+        {elseif $moduleData.moduleTitle}
+        {$moduleData.moduleTitle}
+        {/if}
+        {/param}
+        {param itemType:'grid' /}
+        {/call}
+      </div>
   	</div>
   </div>
 {/if}
