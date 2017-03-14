@@ -69,14 +69,12 @@ public class LocationHandlerService {
         }
     }
 
-    public void doFutureZoneNotificationAction(FDSessionUser user, String email, EnumServiceType dlvType, String zipCode, ActionResult result, boolean isZipPopup)
+    public void doFutureZoneNotificationAction(FDSessionUser user, String email, EnumServiceType deliveryType, String zipCode, ActionResult result, boolean isZipPopup)
             throws FDResourceException {
-        if (dlvType == null) {
-            // fall back to auto
-            dlvType = user.getSelectedServiceType();
+        if (deliveryType == null) {
+            deliveryType = user.getSelectedServiceType();
         }
         if (zipCode == null) {
-            // fall back to auto
             zipCode = user.getZipCode();
         }
 
@@ -85,7 +83,7 @@ public class LocationHandlerService {
         }
 
         if (!result.isFailure() && EmailUtil.isValidEmailAddress(email)) {
-            FDDeliveryManager.getInstance().saveFutureZoneNotification(email, zipCode, dlvType);
+            FDDeliveryManager.getInstance().saveFutureZoneNotification(email, zipCode, deliveryType);
             user.setFutureZoneNotificationEmailSentForCurrentAddress(true);
             if (isZipPopup) {
                 user.setZipCheckPopupUsed(true);

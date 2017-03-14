@@ -57,9 +57,9 @@ public class LocationHandlerServlet extends BaseJsonServlet {
             Map<String, Object> redirectMap = new HashMap<String, Object>();
 
             FDDeliveryServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode, EnumEStoreId.FD);
-            Set<EnumServiceType> availServices = serviceResult.getAvailableServices();
+            Set<EnumServiceType> availableServices = serviceResult.getAvailableServices();
 
-            if (availServices.contains(dlvType)) {
+            if (availableServices.contains(dlvType)) {
                 LocationHandlerService.getDefaultService().doSetZipCodeAction((FDSessionUser) user, result, EnumUserInfoName.DLV_ZIPCODE.getCode(), zipCode, true);
                 if (EnumServiceType.CORPORATE.equals(dlvType)) {
                     redirectMap.put("redirectUrl", "/cos.jsp");
