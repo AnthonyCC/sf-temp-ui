@@ -2,10 +2,6 @@
   margin-bottom: 0;
 }
 
-.content-module.editorial-module.product-carousel .carousel {
-  padding: 0 10px;
-}
-
 .content-module.editorial-module.product-carousel .editorial-content {
   background: #F2F3F4;
   position: relative;
@@ -13,6 +9,7 @@
   padding: 10px 0;
 }
 
+.content-module.editorial-module.product-carousel .editorial-content .left-side,
 .content-module.editorial-module.product-carousel .editorial-content .right-side {
   min-height: 80px;
   width: 480px;
@@ -23,18 +20,27 @@
   top: 0;
   left: 50%;
   margin-left: 5px;
-  padding: 10px 0;
 }
 
+.content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header {
+  display: flex;
+  max-width: 100%;
+}
+
+
 .content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-body {
-  overflow-y: auto;
   font-size: 16px;
+  overflow-y: auto;
 }
 
 .content-module.editorial-module.product-carousel .editorial-content .right-side,
 .content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header .header-title {
   display: flex;
   flex-direction: column;
+}
+
+.content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header {
+  min-height: 82px;
 }
 
 .content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header .header-title {
@@ -77,28 +83,29 @@
 
 .content-module.editorial-module.product-carousel .editorial-content .left-side > img {
   height: 100%;
-  object-fit: cover;
+  object-fit: scale-down;
   overflow: hidden;
   width: 100%;
 }
 
-.content-module.editorial-module.product-carousel .editorial-content .left-side > div {
+.content-module.editorial-module.product-carousel .editorial-content .hero-image-description {
   background-color: rgba(0,0,0,.7);
   bottom: 10px;
   box-sizing: border-box;
   padding: 15px;
-  position: relative;
+  position: absolute;;
   text-align: left;
   max-height: 80px;
   min-height: 80px;
+  width: 480px;
 }
 
-.content-module.editorial-module.product-carousel .editorial-content .left-side > div > h1,
-.content-module.editorial-module.product-carousel .editorial-content .left-side > div > h2 {
+.content-module.editorial-module.product-carousel .editorial-content .hero-image-description > h1,
+.content-module.editorial-module.product-carousel .editorial-content .hero-image-description > h2 {
   color: white;
 }
 
-.content-module.editorial-module.product-carousel .editorial-content .left-side > div > h2 {
+.content-module.editorial-module.product-carousel .editorial-content .hero-image-description > h2 {
   font-size: 17px;
   font-family: 'Brandon Text';
   font-weight: 500;
