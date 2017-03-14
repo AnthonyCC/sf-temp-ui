@@ -9,6 +9,7 @@
 	final Set _is_orderLines			= (Set) request.getAttribute("__issue_credits_orderlines");
 	final String _is_groupName			= (String) request.getAttribute("__issue_credits_groupName");
 	final FDCartonInfo _is_cartonInfo	= (FDCartonInfo) request.getAttribute("__issue_credits_cartonInfo");
+	
 
   	Set __is_deptNames = OrderLineUtil.collectDepartmentNames(_is_orderLines);
   	Set cartonComplNames = ComplaintUtil.getReasonsForDepartments(__is_deptNames, (_is_cartonInfo == null) );
@@ -23,12 +24,14 @@
 		</td>
         <td COLSPAN="4" style="padding-top: 1em; background-color: #CCCCee;">&nbsp;</td>
         <td style="padding-top: 1em; background-color: #CCCCee;">
+        <% if(_is_cartonInfo!=null && !_is_cartonInfo.hasComponents()){ %>
             <SELECT id="<%= _is_groupName %>_setQtys" name="n_<%= _is_groupName %>_setQtys" class="pulldown_detail" style="background-color: #eed">
 	            <OPTION value="">set quantities</OPTION>
                 <OPTION value="Reasoned">Reasoned only</OPTION>
                 <OPTION value="All">All</OPTION>
                 <OPTION value="Reset">Reset</OPTION>
             </SELECT>
+           <% } %>
 <script type="text/javascript">
 	$E.on('<%= _is_groupName %>_setQtys', 'change', function(e) {
 		var mainObj = $('tbl_order_detail');

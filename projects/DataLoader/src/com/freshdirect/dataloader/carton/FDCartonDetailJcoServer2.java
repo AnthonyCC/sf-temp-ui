@@ -47,9 +47,9 @@ import com.sap.conn.jco.server.JCoServerFunctionHandler;
  * @author kkanuganti
  *
  */
-public class FDCartonDetailJcoServer extends FdSapServer
+public class FDCartonDetailJcoServer2 extends FdSapServer
 {
-	private static final Logger LOG = Logger.getLogger(FDCartonDetailJcoServer.class.getName());
+	private static final Logger LOG = Logger.getLogger(FDCartonDetailJcoServer2.class.getName());
 
 	private String serverName;
 
@@ -60,7 +60,7 @@ public class FDCartonDetailJcoServer extends FdSapServer
 	 * @param functionName
 	 * @param programId
 	 */
-	public FDCartonDetailJcoServer(String serverName, String functionName, String programId) {
+	public FDCartonDetailJcoServer2(String serverName, String functionName, String programId) {
 		super();
 		this.serverName = serverName;
 		this.functionName = functionName;
@@ -75,18 +75,22 @@ public class FDCartonDetailJcoServer extends FdSapServer
 
 		tableMetaDataList.add(new TableMetaData("BSTNK", JCoMetaData.TYPE_CHAR, 20, 0, "Web Order No"));
 		tableMetaDataList.add(new TableMetaData("VBELN", JCoMetaData.TYPE_CHAR, 10, 0, "Sap Order No"));
-		tableMetaDataList.add(new TableMetaData("POSNR", JCoMetaData.TYPE_NUM, 6, 0, "Order ItemNo"));
-		tableMetaDataList.add(new TableMetaData("ZZCARTON", JCoMetaData.TYPE_CHAR, 20, 0, "Carton Number"));
+		tableMetaDataList.add(new TableMetaData("CARTON", JCoMetaData.TYPE_CHAR, 20, 0, "Carton Number"));
+		tableMetaDataList.add(new TableMetaData("CRT_TYP", JCoMetaData.TYPE_CHAR, 2, 0, "Carton Type"));
+		tableMetaDataList.add(new TableMetaData("PARENT_LN", JCoMetaData.TYPE_NUM, 6, 0, "Parent Line Number"));
+		tableMetaDataList.add(new TableMetaData("CHILD_LN", JCoMetaData.TYPE_NUM, 6, 0, "Child Line Number"));
 		tableMetaDataList.add(new TableMetaData("MATNR", JCoMetaData.TYPE_CHAR, 18, 0, "Material Number"));
-		tableMetaDataList.add(new TableMetaData("ZZBARCODE", JCoMetaData.TYPE_CHAR, 20, 0, "Barcode"));
-		tableMetaDataList.add(new TableMetaData("ZZPCKQTY", JCoMetaData.TYPE_CHAR, 13, 0, "Packaged Quantity"));
-		tableMetaDataList.add(new TableMetaData("NTGEW", JCoMetaData.TYPE_CHAR, 15, 0, "Net Weight"));
+		tableMetaDataList.add(new TableMetaData("MAKTX", JCoMetaData.TYPE_CHAR, 40, 0, "Material Description"));
+		tableMetaDataList.add(new TableMetaData("BARCODE", JCoMetaData.TYPE_CHAR, 20, 0, "Packet Barcode"));
+		tableMetaDataList.add(new TableMetaData("ACT_QTY", JCoMetaData.TYPE_CHAR, 18, 0, "Actual Quantity"));
+		tableMetaDataList.add(new TableMetaData("PACK_QTY", JCoMetaData.TYPE_CHAR, 18, 0, "Packaged Quantity"));
+		tableMetaDataList.add(new TableMetaData("PACK_UOM", JCoMetaData.TYPE_CHAR, 3, 0, "Packed UOM"));
+		tableMetaDataList.add(new TableMetaData("NTGEW", JCoMetaData.TYPE_CHAR, 16, 0, "Net Weight"));
 		tableMetaDataList.add(new TableMetaData("GEWEI", JCoMetaData.TYPE_CHAR, 3, 0, "Weight Height"));
-		tableMetaDataList.add(new TableMetaData("ZZFREEZER", JCoMetaData.TYPE_CHAR, 1, 0, "Freezer Indicator"));
-		tableMetaDataList.add(new TableMetaData("ZZBEER", JCoMetaData.TYPE_CHAR, 1, 0, "Beer Indicator"));
-		tableMetaDataList.add(new TableMetaData("ZZPLATTER", JCoMetaData.TYPE_CHAR, 1, 0, "Platter Indicator"));
-		tableMetaDataList.add(new TableMetaData("CASEPICK", JCoMetaData.TYPE_CHAR, 1, 0, "Case Indicator"));
-
+		tableMetaDataList.add(new TableMetaData("SHIP_STAT", JCoMetaData.TYPE_CHAR, 2, 0, "Shipping Status"));
+		tableMetaDataList.add(new TableMetaData("SUB_MATNR", JCoMetaData.TYPE_CHAR, 18, 0, "Sub Material Number"));
+		tableMetaDataList.add(new TableMetaData("WEBID", JCoMetaData.TYPE_CHAR, 18, 0, "Sku Code"));
+		
 		createTableRecord(metaCartonDetailList, tableMetaDataList);
 		metaCartonDetailList.lock();
 		repository.addRecordMetaDataToCache(metaCartonDetailList);
@@ -162,11 +166,19 @@ public class FDCartonDetailJcoServer extends FdSapServer
 						
 						cartonDetailModel.setCartonInfo(cartonModel);
 						cartonDetailModel.setOrderLineNumber(param.getOrderLineNo());
+						cartonDetailModel.setChildOrderLineNo(param.getChildOrderLineNo());
+						cartonDetailModel.setMaterialDesc(param.getMaterial_description());
+						cartonDetailModel.setActualQuantity(param.getActual_quantity());
+						cartonDetailModel.setPacked_uom(param.getPacked_uom());
+						cartonDetailModel.setShipping_status(param.getShipping_status());
+						cartonDetailModel.setSub_material_number(param.getSub_material_number());
+						
 						cartonDetailModel.setMaterialNumber(param.getMaterialNumber());
 						cartonDetailModel.setBarcode(param.getBarcode());
-						cartonDetailModel.setActualQuantity(param.getActual_quantity());
+						cartonDetailModel.setOrdered_quantity(param.getOrdered_quantity());
 						cartonDetailModel.setNetWeight(param.getNetWeight());
 						cartonDetailModel.setWeightUnit(param.getSalesUnitCode());
+						cartonDetailModel.setSkuCode(param.getSkuCode());
 						
 						cartonModel.getDetails().add(cartonDetailModel);
 
@@ -256,38 +268,40 @@ public class FDCartonDetailJcoServer extends FdSapServer
 			final CartonDetailParameter param = new CartonDetailParameter();
 			param.setOrderNo(FDSapHelperUtils.getString(cartonTable.getString("BSTNK")));
 			param.setSapOrderNo(FDSapHelperUtils.getString(cartonTable.getString("VBELN")));
-			param.setOrderLineNo(FDSapHelperUtils.getString(cartonTable.getString("POSNR")));
-			param.setCartonNumber(FDSapHelperUtils.getString(cartonTable.getString("ZZCARTON")));
+			param.setOrderLineNo(FDSapHelperUtils.getString(cartonTable.getString("PARENT_LN")));
+			param.setChildOrderLineNo(FDSapHelperUtils.getString(cartonTable.getString("CHILD_LN")));
+			param.setCartonNumber(FDSapHelperUtils.getString(cartonTable.getString("CARTON")));
 			param.setMaterialNumber(FDSapHelperUtils.getString(cartonTable.getString("MATNR")));
-			param.setBarcode(FDSapHelperUtils.getString(cartonTable.getString("ZZBARCODE")));
-			double packedQty = Double.parseDouble(cartonTable.getString("ZZPCKQTY"));
-			double netWeight = Double.parseDouble(cartonTable.getString("NTGEW") != null ? cartonTable.getString("NTGEW") : "0.0");
-			param.setActual_quantity(packedQty);
-			param.setNetWeight(netWeight);
+			param.setMaterial_description(FDSapHelperUtils.getString(cartonTable.getString("MAKTX")));
+			param.setBarcode(FDSapHelperUtils.getString(cartonTable.getString("BARCODE")));
+			param.setOrdered_quantity(Double.parseDouble(cartonTable.getString("ACT_QTY")));
+			param.setActual_quantity(Double.parseDouble(cartonTable.getString("PACK_QTY")));
+			param.setPacked_uom(FDSapHelperUtils.getString(cartonTable.getString("PACK_UOM")));
+			
+			param.setNetWeight(Double.parseDouble(StringUtils.isNotBlank(cartonTable.getString("NTGEW")) ? cartonTable.getString("NTGEW") : "0.0"));
 			param.setSalesUnitCode(FDSapHelperUtils.getString(cartonTable.getString("GEWEI")));
+			param.setShipping_status(FDSapHelperUtils.getString(cartonTable.getString("SHIP_STAT")));
+			param.setSub_material_number(FDSapHelperUtils.getString(cartonTable.getString("SUB_MATNR")));
+			param.setSkuCode(FDSapHelperUtils.getString(cartonTable.getString("WEBID")));
 
-			final String freezer = cartonTable.getString("ZZFREEZER").trim();
-			final String beer = cartonTable.getString("ZZBEER").trim();
-			final String platter = cartonTable.getString("ZZPLATTER").trim();
-			final String casepick = cartonTable.getString("CASEPICK").trim();
+			final String cType = cartonTable.getString("CRT_TYP").trim();
 
 			String cartonType = ErpCartonInfo.CARTON_TYPE_REGULAR;
 
-			if (freezer.equals("X"))
-			{
+			if (cType.equals("FZ")){
 				cartonType = ErpCartonInfo.CARTON_TYPE_FREEZER;
 			}
-			if (beer.equals("X"))
-			{
+			if (cType.equals("BR")){
 				cartonType = ErpCartonInfo.CARTON_TYPE_BEER;
 			}
-			if (platter.equals("X"))
-			{
+			if (cType.equals("PL")){
 				cartonType = ErpCartonInfo.CARTON_TYPE_PLATTER;
 			}
-			if (casepick.equals("X"))
-			{
+			if (cType.equals("CS")){
 				cartonType = ErpCartonInfo.CARTON_TYPE_CASEPICK;
+			}
+			if(cType.equals("RG")){
+				cartonType = ErpCartonInfo.CARTON_TYPE_REGULAR;
 			}
 			param.setCartonType(cartonType);
 
