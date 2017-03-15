@@ -41,7 +41,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 					<th width="130" align="right">State:</th>
 					<td><input type="radio" name="state" id="stateNY" value="NY" checked /> New York <input type="radio" name="state" id="stateNJ" value="NJ"/> New Jersey <br />
 					<input type="radio" name="state" id="stateCT" value="CT" /> Connecticut <input type="radio" name="state" id="statePA" value="PA" /> Pennsylvania <br/>
-					<input type="radio" name="state" id="stateDE" value="DE" /> Delaware </td>
+					<input type="radio" name="state" id="stateDE" value="DE" /> Delaware <input type="radio" name="state" id="stateDC" value="DC" /> Washington, D.C. </td>
 				</tr>
 				<tr>
 					<th width="130" align="right">ZIP Code:</th>
