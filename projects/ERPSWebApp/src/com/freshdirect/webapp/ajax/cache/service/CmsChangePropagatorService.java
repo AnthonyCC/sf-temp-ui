@@ -12,7 +12,7 @@ import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.cache.ContentCacheService;
 import com.freshdirect.cms.index.IndexerService;
 import com.freshdirect.cms.index.PartialIndexerService;
-import com.freshdirect.fdstore.content.ContentNodeModelUtil;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class CmsChangePropagatorService {
@@ -44,7 +44,7 @@ public class CmsChangePropagatorService {
             ContentCacheService.defaultService().invalidateContentNode(contentNodes);
 
             for (ContentNodeI contentNode : contentNodes) {
-                ContentNodeModelUtil.constructModel(contentNode.getKey(), true);
+                ContentFactory.getInstance().removeContentNodeCaches(contentNode.getKey());
             }
 
             // reindex search service

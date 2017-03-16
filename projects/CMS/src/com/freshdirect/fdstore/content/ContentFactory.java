@@ -1032,6 +1032,13 @@ public class ContentFactory {
         }
     }
 
+    public void removeContentNodeCaches(ContentKey key) {
+        if (isAllowToUseContentCache()) {
+            nodesByIdCache.remove(key.getId());
+            nodesByKeyCache.remove(key);
+        }
+    }
+
     public void updateContentKeyCache(String skuCode, ContentKey key) {
         if (isAllowToUseContentCache()) {
             keyBySkuCodeCache.put(skuCode, key);
