@@ -666,6 +666,10 @@ public class StandingOrderHelper {
 		map.put("currentDeliveryDate", map.get("deliveryDate"));
 		map.put("currentDeliveryTime", map.get("deliveryTime"));
 		map.put("currentDayOfWeek", map.get("dayOfWeek"));
+		map.put("isEligibleToModify", isEligibleToModify(so));
+		map.put("AddressInfo", soDeliveryAddress(so));
+		map.put("paymentInfo", so.getPaymentMethod()!=null?so.getPaymentMethod().getAccountNumber():null);
+		
 		return map;
 	}
 	
@@ -1082,5 +1086,26 @@ private static String convert(Date time) {
 		}
 
 		return flg;
+	}
+	
+	private static String soDeliveryAddress(FDStandingOrder so) {
+		try {
+			return so.getDeliveryAddress()!=null?(so.getDeliveryAddress().getScrubbedStreet()+","+so.getDeliveryAddress().getZipCode()):null;
+		} catch (FDResourceException e) {
+			// TODO Auto-generated catch block
+			LOGGER.info("while prepare the SoDeliveryAddress " +e);
+		}
+		return null;
+	}
+
+	private static boolean isEligibleToModify(FDStandingOrder so) {
+		try {
+			return so.getUpcomingDelivery().getErpSalesId()!=null?true:false;
+			//return so.getAllUpcomingOrders().isEmpty()?false:true;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			LOGGER.info("while check an Instance of So " +e);
+		}
+		return false;
 	}
 }
