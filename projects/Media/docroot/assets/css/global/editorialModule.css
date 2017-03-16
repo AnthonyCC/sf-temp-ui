@@ -7,6 +7,7 @@
   position: relative;
   text-align: left;
   padding: 10px 0;
+  padding-bottom: 25px;
 }
 
 .content-module.editorial-module.product-carousel .editorial-content .left-side,
@@ -16,8 +17,8 @@
 }
 .content-module.editorial-module.product-carousel .editorial-content .right-side {
   position: absolute;
-  bottom: 0;
-  top: 0;
+  bottom: 25px;
+  top: 9px;
   left: 50%;
   margin-left: 5px;
 }
@@ -90,7 +91,7 @@
 
 .content-module.editorial-module.product-carousel .editorial-content .hero-image-description {
   background-color: rgba(0,0,0,.7);
-  bottom: 10px;
+  bottom: 25px;
   box-sizing: border-box;
   padding: 15px;
   position: absolute;;

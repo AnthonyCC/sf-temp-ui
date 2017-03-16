@@ -1,8 +1,7 @@
 .module-group {
   align-items: center;
   background-image: none;
-  border: 2px solid #F2F3F4;
-  border-top: 15px solid #F2F3F4;
+  border-top: 15px solid #FFF;
   display: flex;
   font-family: 'Brandon Text';
   justify-content: space-between;

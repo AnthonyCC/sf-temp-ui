@@ -1,5 +1,6 @@
 .content-module {
   border: 2px solid #F2F3F4;
+  border-top: 0;
   font-family: 'Brandon Text';
 }
 
