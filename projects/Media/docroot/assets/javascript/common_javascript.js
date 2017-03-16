@@ -466,6 +466,10 @@ function updateYourCartPanel() {}
 		var asInt = asIntVar || false;
 		var caseSensitive = caseSensitiveVar || false;
 		var resetSelIndex = resetSelIndexVar = typeof resetSelIndexVar !== 'undefined' ?  resetSelIndexVar : 0;
+		
+		if (!document.getElementById(specId) || document.getElementById(specId).tagName !== 'SELECT') {
+			return;
+		}
 			
 		//alphabetize
 		var selectArr = [];

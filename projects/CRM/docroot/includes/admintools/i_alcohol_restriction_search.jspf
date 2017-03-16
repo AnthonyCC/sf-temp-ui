@@ -131,8 +131,9 @@
         }
    		
 		document.getElementById("actionName").value = actionName;
-		document.getElementById("aclRestrictions").submit();
 		
+		if (document.getElementById("aclRestrictions")) { document.getElementById("aclRestrictions").submit(); }
+		if (document.getElementById("frmAddAclRestriction")) { document.getElementById("frmAddAclRestriction").submit(); }
 	}
     
     function openURL(inLocationURL) {
