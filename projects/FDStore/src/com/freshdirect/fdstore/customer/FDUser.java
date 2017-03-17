@@ -2359,11 +2359,14 @@ public class FDUser extends ModelSupport implements FDUserI {
     }
 
 	private boolean isPickupOnlyORNotServicebleZip(UserContext userContext, String zipCode) throws FDResourceException {
-		Set availableServices= FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode, userContext !=null && userContext.getStoreContext()!=null?userContext.getStoreContext().getEStoreId():EnumEStoreId.FD).getAvailableServices();
-//		setAvailableServices(availableServices);
-//		boolean isPickupOnlyORNotServicebleZip = isPickupOnly() || isNotServiceable();
-        boolean isPickupOnlyORNotServicebleZip = (null ==availableServices || availableServices.isEmpty())
-        		||(!availableServices.contains(EnumServiceType.DEPOT) && !availableServices.contains(EnumServiceType.CORPORATE) && !availableServices.contains(EnumServiceType.HOME) && availableServices.contains(EnumServiceType.PICKUP));
+		boolean isPickupOnlyORNotServicebleZip = true;
+		if(null != zipCode){
+			Set availableServices= FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode, userContext !=null && userContext.getStoreContext()!=null?userContext.getStoreContext().getEStoreId():EnumEStoreId.FD).getAvailableServices();
+	//		setAvailableServices(availableServices);
+	//		boolean isPickupOnlyORNotServicebleZip = isPickupOnly() || isNotServiceable();
+	        isPickupOnlyORNotServicebleZip = (null ==availableServices || availableServices.isEmpty())
+	        		||(!availableServices.contains(EnumServiceType.DEPOT) && !availableServices.contains(EnumServiceType.CORPORATE) && !availableServices.contains(EnumServiceType.HOME) && availableServices.contains(EnumServiceType.PICKUP));
+		}
 		return isPickupOnlyORNotServicebleZip;
 	}
 	
