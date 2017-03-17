@@ -42,6 +42,9 @@
 
 	/* this is saved reqs. this is populated if a save failed (and cleared on a success) */
 	List<FDProductRequest> pendingProductRequests = (List<FDProductRequest>)session.getAttribute(ProductRequestServlet.STOREDPRODUCTREQUESTS);
+
+	Map mediaParams = new HashMap(); //params to send to media
+	mediaParams.put("baseUrl", request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort());
 %>
 
 <tmpl:insert template='/shared/template/large_pop.jsp'>
@@ -425,13 +428,18 @@
 			
 			<table width="520" cellpadding="0" cellspacing="0" border="0">
 				<tr>
-					<td colspan="4" class="text12">
-						<span class="title18or">REQUEST A PRODUCT</span><br />
-						<br />
-						We try to offer our customers the best selection of fresh foods as well as the most popular packaged brands. Your product requests will help us make 
-						FreshDirect a better place to shop and we read every request submitted by our customers.<br />
-						<br />
-						<strong>Please describe the products you'd like in as much detail as possible including specific brands, sizes, and flavors. </strong>
+					<td colspan="4">
+					
+						<fd:IncludeMedia name="/media/editorial/site_pages/product_requests/top.ftl" parameters="<%= mediaParams %>" withErrorReport="false">
+							<div class="text12">
+								<span class="title18or">REQUEST A PRODUCT</span><br />
+								<br />
+								We try to offer our customers the best selection of fresh foods as well as the most popular packaged brands. Your product requests will help us make 
+								FreshDirect a better place to shop and we read every request submitted by our customers.<br />
+								<br />
+								<strong>Please describe the products you'd like in as much detail as possible including specific brands, sizes, and flavors. </strong>
+							</div>
+						</fd:IncludeMedia>
 					</td>
 				</tr>
 				<tr>
@@ -486,27 +494,35 @@
 						<button class="cssbutton small green transparent" id="prodReq_clear">CLEAR</button>
 						<button class="cssbutton small orange" id="prodReq_send">SEND</button>
 					</div>
-					<div id="prodReqError" class="text12 error" style="margin-top: 20px;"></div>
+					<div id="prodReqError" class="text12 error" style="height: 40px; margin-top: 20px;"></div>
 				</td></tr>
 			</table>
 		</form>
 	</div>
 	
 	<div id="prodReq_cont_submit_success" style="display: none;">
-		<table width="520" cellpadding="0" cellspacing="0" border="0">
-			<tr>
-				<td align="center" class="text12">
-					<div style="font-size: 48px; font-face:Arial,Verdana,Helvetica; font-weight: bold; padding: 12px 0">THANK YOU.</div>
-					<% if ("wine".equalsIgnoreCase(request.getParameter("department"))) { %>
-						<div class="text12"><img src="/media_stat/images/template/newproduct/wine_request_img.jpg"><br /><br /><strong>Your feedback is important to helping us improve.</strong>
-						<br />To continue shopping, <a href="javascript:window.reallyClose();"><b>click here</b></a> to close this window.<br /><br /></div>
-					<% } else { %>
-						<div class="text12">We will do our best to add to our selection based on your requests.<br />To continue shopping <a href="javascript:window.reallyClose();">close this window</a> or <a href="#" onClick="javascript:backtoWin('/newproducts.jsp'); javascript:window.reallyClose();">click here to see our New Products!</a></div>
-						<div style="margin: 36px;"><img src="/media_stat/images/template/newproduct/confirm_berry.jpg" width="70" height="70"></div>
-					<% }%>
-				</td>
-			</tr>
-		</table>
+		<fd:IncludeMedia name="/media/editorial/site_pages/product_requests/success.ftl" parameters="<%= mediaParams %>" withErrorReport="false">
+			<script>
+				$jq(document).ready(function() {
+					$jq('.closeLink').on('click', function(e) { window.top['FreshDirect'].components.ifrPopup.close(); });
+					return false;
+				});
+			</script>
+			<table width="520" cellpadding="0" cellspacing="0" border="0">
+				<tr>
+					<td align="center" class="text12">
+						<div style="font-size: 48px; font-face:Arial,Verdana,Helvetica; font-weight: bold; padding: 12px 0">THANK YOU.</div>
+						<% if ("wine".equalsIgnoreCase(request.getParameter("department"))) { %>
+							<div class="text12"><img src="/media_stat/images/template/newproduct/wine_request_img.jpg"><br /><br /><strong>Your feedback is important to helping us improve.</strong>
+							<br />To continue shopping, <a href="#" class="closeLink"><b>click here</b></a> to close this window.<br /><br /></div>
+						<% } else { %>
+							<div class="text12">We will do our best to add to our selection based on your requests.<br />To continue shopping <a href="#" class="closeLink">close this window</a> or <a href="#" onClick="javascript:backtoWin('/newproducts.jsp'); window.top['FreshDirect'].components.ifrPopup.close();">click here to see our New Products!</a></div>
+							<div style="margin: 36px;"><img src="/media_stat/images/template/newproduct/confirm_berry.jpg" width="70" height="70"></div>
+						<% }%>
+					</td>
+				</tr>
+			</table>
+		</fd:IncludeMedia>
 	</div>
 
 	</tmpl:put>

@@ -133,9 +133,7 @@ public class ProductRequestServlet extends HttpServlet {
 		}
 	}
 	
-	private List<FDProductRequest> getProductRequests(HttpServletRequest request, String customerId) {
-		LOGGER.debug("getProductRequests " + request + " and " + customerId);
-		
+	private List<FDProductRequest> getProductRequests(HttpServletRequest request, String customerId) {		
  		String[][] productReq=new String[3][4];
  		List<FDProductRequest> productRequests=new ArrayList<FDProductRequest>(3);
  		
