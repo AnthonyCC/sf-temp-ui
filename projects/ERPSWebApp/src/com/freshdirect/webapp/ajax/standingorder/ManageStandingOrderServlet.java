@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.text.DateFormatSymbols;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -31,6 +33,7 @@ import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -80,8 +83,13 @@ public class ManageStandingOrderServlet extends HttpServlet {
 			try {
 				FDStandingOrder so = FDStandingOrdersManager.getInstance().load(
 						new PrimaryKey(soId));
-				Map<String, Object> returnSO = StandingOrderHelper.convertStandingOrderToSoy(false,so);
 				FDSessionUser u = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
+				if ("Y".equalsIgnoreCase(so.getActivate())) {
+					List<FDStandingOrder> checkingUpcomingOrder = new ArrayList<FDStandingOrder>();
+					checkingUpcomingOrder.add(so);
+					StandingOrderHelper.convertStandingOrderToSoy(FDStandingOrdersManager.getInstance().getAllSOUpcomingOrders(u, checkingUpcomingOrder), false);
+				}
+				Map<String, Object> returnSO = StandingOrderHelper.convertStandingOrderToSoy(false,so);
 
 				if (u != null) {
 					StandingOrderHelper.populateCurrentDeliveryDate(u, returnSO);
@@ -100,6 +108,9 @@ public class ManageStandingOrderServlet extends HttpServlet {
 			} catch (HttpErrorResponse e) {
 				LOG.error("Unable to fetch SO with Id:"+ soId, e);
 				throw new ServletException(e);
+			} catch (FDAuthenticationException e) {
+				// TODO Auto-generated catch block
+				LOG.error("while fetch an upcoming order of SOId"+ soId, e);
 			}
 		}
 		/*
