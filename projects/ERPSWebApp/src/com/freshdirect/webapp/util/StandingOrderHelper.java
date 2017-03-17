@@ -668,8 +668,8 @@ public class StandingOrderHelper {
 		map.put("currentDeliveryDate", map.get("deliveryDate"));
 		map.put("currentDeliveryTime", map.get("deliveryTime"));
 		map.put("currentDayOfWeek", map.get("dayOfWeek"));
-		map.put("isEligibleToModify", isEligibleToModify(so));
-		if(isEligibleToModify(so)){
+		map.put("isEligibleToModify", isUpComingDeliveryOfSO3(so));
+		if(isUpComingDeliveryOfSO3(so)){
 			map.put("AddressInfo", soDeliveryAddress(so));
 			map.put("paymentInfo", so.getPaymentMethod()!=null?so.getPaymentMethod().getAccountNumber():null);
 		}
@@ -1107,7 +1107,7 @@ private static String convert(Date time) {
 		return null;
 	}
 
-	private static boolean isEligibleToModify(FDStandingOrder so) {
+	private static boolean isUpComingDeliveryOfSO3(FDStandingOrder so) {
 		try {
 			return so.getUpcomingDelivery().getErpSalesId()!=null?true:false;
 			//return so.getAllUpcomingOrders().isEmpty()?false:true;
