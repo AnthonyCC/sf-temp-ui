@@ -21,6 +21,7 @@ import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.customer.OrderHistoryI;
+import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -28,6 +29,7 @@ import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
@@ -667,9 +669,10 @@ public class StandingOrderHelper {
 		map.put("currentDeliveryTime", map.get("deliveryTime"));
 		map.put("currentDayOfWeek", map.get("dayOfWeek"));
 		map.put("isEligibleToModify", isEligibleToModify(so));
-		map.put("AddressInfo", soDeliveryAddress(so));
-		map.put("paymentInfo", so.getPaymentMethod()!=null?so.getPaymentMethod().getAccountNumber():null);
-		
+		if(isEligibleToModify(so)){
+			map.put("AddressInfo", soDeliveryAddress(so));
+			map.put("paymentInfo", so.getPaymentMethod()!=null?so.getPaymentMethod().getAccountNumber():null);
+		}
 		return map;
 	}
 	
@@ -788,10 +791,9 @@ public class StandingOrderHelper {
 
 		try {
 			if(null != user.getIdentity()){
-
 				standingOrders = isAddtoProduct?getValidSO3(user): FDStandingOrdersManager.getInstance().loadCustomerNewStandingOrders(user.getIdentity());
-			    soData = StandingOrderHelper.convertStandingOrderToSoy(standingOrders, false);
-				
+			    soData = StandingOrderHelper.convertStandingOrderToSoy(FDStandingOrdersManager.getInstance().getAllSOUpcomingOrders(user, standingOrders), false);
+			    
 			    if(null!=standingOrders && !standingOrders.isEmpty()){
 					for(FDStandingOrder fdStandingOrder:standingOrders){
 						if(fdStandingOrder.isDefault()){
@@ -813,6 +815,10 @@ public class StandingOrderHelper {
 		} catch (PricingException e) {
 			// TODO Auto-generated catch block
 			LOGGER.error("Error While Getting the valid standing Order" + e);
+		}
+		catch (FDAuthenticationException e) {
+					// TODO Auto-generated catch block
+				LOGGER.error("Error While Gettig the upcoming Order" + e);
 		}
         
 
@@ -1090,7 +1096,10 @@ private static String convert(Date time) {
 	
 	private static String soDeliveryAddress(FDStandingOrder so) {
 		try {
-			return so.getDeliveryAddress()!=null?(so.getDeliveryAddress().getScrubbedStreet()+","+so.getDeliveryAddress().getZipCode()):null;
+			FDOrderInfoI fdOrderInfoI=so.getUpcomingDelivery();
+	        FDReservation fDReservation=FDCustomerManager.getOrder(fdOrderInfoI.getErpSalesId()).getDeliveryReservation();
+	        if(!so.getAddressId().equalsIgnoreCase(fDReservation!=null?fDReservation.getAddressId():""))
+	        	return so.getDeliveryAddress()!=null?(so.getDeliveryAddress().getScrubbedStreet()+","+so.getDeliveryAddress().getZipCode()):null;	
 		} catch (FDResourceException e) {
 			// TODO Auto-generated catch block
 			LOGGER.info("while prepare the SoDeliveryAddress " +e);
@@ -1104,7 +1113,7 @@ private static String convert(Date time) {
 			//return so.getAllUpcomingOrders().isEmpty()?false:true;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			LOGGER.info("while check an Instance of So " +e);
+			LOGGER.info("while check an Upcoming Delivery " +e);
 		}
 		return false;
 	}
