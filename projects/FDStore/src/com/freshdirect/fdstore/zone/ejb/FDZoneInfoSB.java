@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ejb.EJBObject;
 import javax.ejb.ObjectNotFoundException;
@@ -28,5 +29,7 @@ public interface FDZoneInfoSB extends EJBObject {
     public Collection loadAllZoneInfoMaster() throws RemoteException;       
     
     public  String findZoneId(String serviceType,String zipCode) throws RemoteException;
+    
+    public  String findZoneId(String serviceType,String zipCode,boolean isPickupOnlyORNotServicebleZip) throws RemoteException;
           
 }

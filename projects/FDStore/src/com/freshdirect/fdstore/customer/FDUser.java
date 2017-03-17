@@ -2319,7 +2319,10 @@ public class FDUser extends ModelSupport implements FDUserI {
             fulfillmentContext.setAlcoholRestricted(alcoholRestrictedByContext);
         }
 
-        String pricingZoneId = FDZoneInfoManager.findZoneId(getZPServiceType().getName(), address != null ? address.getZipCode() : getZipCode());
+//        String pricingZoneId = FDZoneInfoManager.findZoneId(getZPServiceType().getName(), address != null ? address.getZipCode() : getZipCode());
+        String zipCode = address != null ? address.getZipCode() : getZipCode();
+        boolean isPickupOnlyORNotServicebleZip = isPickupOnlyORNotServicebleZip(userContext, zipCode);
+        String pricingZoneId = FDZoneInfoManager.findZoneId(getZPServiceType().getName(), zipCode ,isPickupOnlyORNotServicebleZip);
 
         FulfillmentInfo fulfillmentInfo = null;
         ZoneInfo zoneInfo = null;
@@ -2355,6 +2358,15 @@ public class FDUser extends ModelSupport implements FDUserI {
         return userContext;
     }
 
+	private boolean isPickupOnlyORNotServicebleZip(UserContext userContext, String zipCode) throws FDResourceException {
+		Set availableServices= FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode, userContext !=null && userContext.getStoreContext()!=null?userContext.getStoreContext().getEStoreId():EnumEStoreId.FD).getAvailableServices();
+//		setAvailableServices(availableServices);
+//		boolean isPickupOnlyORNotServicebleZip = isPickupOnly() || isNotServiceable();
+        boolean isPickupOnlyORNotServicebleZip = (null ==availableServices || availableServices.isEmpty())
+        		||(!availableServices.contains(EnumServiceType.DEPOT) && !availableServices.contains(EnumServiceType.CORPORATE) && !availableServices.contains(EnumServiceType.HOME) && availableServices.contains(EnumServiceType.PICKUP));
+		return isPickupOnlyORNotServicebleZip;
+	}
+	
     /** use getUserContext().setPricingContext() instead */
     @Deprecated
     protected void setPricingContext(PricingContext pricingContext) {
@@ -2380,7 +2392,8 @@ public class FDUser extends ModelSupport implements FDUserI {
     public String constructZoneIdForQueryString() {
         String zoneIdParam = "";
         try {
-            String zoneId = FDZoneInfoManager.findZoneId(getZPServiceType().getName(), getZipCode());
+        	boolean isPickupOnlyORNotServicebleZip = isPickupOnly() || isNotServiceable();
+            String zoneId = FDZoneInfoManager.findZoneId(getZPServiceType().getName(), getZipCode(), isPickupOnlyORNotServicebleZip);
             if (zoneId.equalsIgnoreCase(ZonePriceListing.MASTER_DEFAULT_ZONE)) {
                 zoneIdParam = "zonelevel=true && mzid=" + zoneId;
             } else if (zoneId.equalsIgnoreCase(ZonePriceListing.RESIDENTIAL_DEFAULT_ZONE) || zoneId.equalsIgnoreCase(ZonePriceListing.CORPORATE_DEFAULT_ZONE)) {
