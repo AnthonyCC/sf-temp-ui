@@ -133,6 +133,15 @@
 	</servlet-mapping>
 
 	<servlet>
+		<servlet-name>ProductRequestServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.ajax.product.ProductRequestServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ProductRequestServlet</servlet-name>
+		<url-pattern>/api/productrequest/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
 		<servlet-name>ProductConfigServlet</servlet-name>
 		<servlet-class>com.freshdirect.webapp.ajax.product.ProductConfigServlet</servlet-class>
 	</servlet>
