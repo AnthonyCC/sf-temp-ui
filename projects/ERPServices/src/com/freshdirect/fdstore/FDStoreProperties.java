@@ -914,6 +914,8 @@ public class FDStoreProperties {
     private static final String PROP_PLANT1300_PRICE_INDICATOR = "fdstore.plant1300.price.indicator";
     private static final String PROP_PLANT1310_PRICE_INDICATOR = "fdstore.plant1310.price.indicator";
     private static final String PROP_PLANTWDC_PRICE_INDICATOR = "fdstore.plantwdc.price.indicator";
+    
+    private static final String PROP_MAT_SALESORG__EXPORT_PICKPLANT_VALIDATION_ENABLED ="fdstore.salesarea.exp.pickplant.val.enabled";
 
     
     private static final String PROP_SF_2_0_ENABLED = "fdstore.storefront_2_0.enabled";
@@ -1736,6 +1738,7 @@ public class FDStoreProperties {
         defaults.put(PROP_PLANTWDC_PRICE_INDICATOR, "BASE");
         
         defaults.put(PROP_SF_2_0_ENABLED, "false");
+        defaults.put(PROP_MAT_SALESORG__EXPORT_PICKPLANT_VALIDATION_ENABLED, "true");
         
         
         refresh();
@@ -4475,4 +4478,7 @@ public class FDStoreProperties {
         return excludedDeptOrCatIdsList;
     }
 
+    public static boolean isPickPlantIdReqForMatSalesOrgExport() {
+        return (Boolean.valueOf(get(PROP_MAT_SALESORG__EXPORT_PICKPLANT_VALIDATION_ENABLED))).booleanValue();
+    }
 }
