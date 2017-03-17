@@ -12,7 +12,7 @@
       <label><input type="radio" class="customradio" name="addressType" value="CORPORATE" fdform-v-onerequired="addressType">Business or School</label>
     </div>
       <label>ZIP Code</label>
-      <input type="number" name="zipCode" placeholder="Enter ZIP Code" onClick="this.select();" {if $data.zipCode}value="{$data.zipCode}"{/if}>
+      <input type="text" name="zipCode" placeholder="Enter ZIP Code" onClick="this.select();" {if $data.zipCode}value="{$data.zipCode}"{/if}>
       <span fdform-error-for="zipCode"></span>
     <div>
     </div>
