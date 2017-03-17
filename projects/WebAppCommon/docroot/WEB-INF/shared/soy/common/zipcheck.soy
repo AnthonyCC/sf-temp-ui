@@ -13,7 +13,8 @@
     </div>
       <label>ZIP Code</label>
       <input type="text" name="zipCode" placeholder="Enter ZIP Code" onClick="this.select();" {if $data.zipCode}value="{$data.zipCode}"{/if}>
-      <span fdform-error-for="zipCode"></span>
+      <button type="button" clear-zip-code></button>
+      <div fdform-error-for="zipCode"></div>
     <div>
     </div>
     <div class='zipcode-submit'>
@@ -44,7 +45,7 @@
         <input type="radio" class="offscreen" name="addressType" value="{$data.addressType}" checked>
         <input type="text" class="offscreen" name="zipCode" value="{$data.zipCode}">
       </div>
-      <span fdform-error-for="email"></span>
+      <div fdform-error-for="email"></div>
       <div>
         <button class='cssbutton cssbutton-flat green transparent full' type="submit" value="Notify Me">Notify Me</button>
       </div>

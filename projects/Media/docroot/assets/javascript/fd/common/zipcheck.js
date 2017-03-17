@@ -32,6 +32,11 @@ var FreshDirect = FreshDirect || {};
     }
   });
 
+  $(document).on('click', '[clear-zip-code]', function() {
+    var inputField = $('input[name="zipCode"]')[0];
+    inputField.value = '';
+  });
+
   fd.modules.common.utils.register("common", "zipCheck", zipCheck, fd);
 
   FreshDirect.modules.common.forms.registerValidator('[name="zipCode"]', function (field) {

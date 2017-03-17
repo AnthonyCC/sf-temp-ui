@@ -20,6 +20,23 @@
   margin-bottom: 0;
 }
 
+#zipCheckPopup .zipcheck form[fdform="zipcheck"] input[name="zipCode"] {
+  max-width: 155px;
+  padding-right: 20px;
+}
+
+#zipCheckPopup .zipcheck button[clear-zip-code] {
+  background: url(/media_stat/images/quickshop/button-close.png) no-repeat;
+  border: 0;
+  bottom: 25px;
+  cursor: pointer;
+  height: 18px;
+  left: 135px;
+  margin: 0;
+  position: absolute;
+  width: 18px;
+}
+
 #zipCheckPopup .zipcheck h1 {
   font-size: 18px;
   font-weight: bold;
@@ -52,8 +69,12 @@
   font-size: 16px;
 }
 
-#zipCheckPopup .zipcheck form[fdform="zipcheckNotify"] {
+#zipCheckPopup .zipcheck form[fdform] {
   position: relative;
+}
+
+#zipCheckPopup .zipcheck form div[fdform-error-for] {
+  min-height: 18px;
 }
 
 #zipCheckPopup .zipcheck form span[fdform-error] {

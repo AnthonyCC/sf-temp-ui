@@ -37,7 +37,7 @@ var FreshDirect = FreshDirect || {};
 
   fd.modules.common.utils.register("common", "zipcheckNotify", zipcheckNotify, fd);
 
-  FreshDirect.modules.common.forms.registerValidator('[name="email"]', function (field) {
+  zipcheckNotify.registerValidator('[name="email"]', function (field) {
     var errors = [],
         val = $(field).val();
 
