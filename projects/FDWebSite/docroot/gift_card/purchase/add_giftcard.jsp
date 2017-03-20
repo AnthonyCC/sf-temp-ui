@@ -35,7 +35,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 				</tr>
 				<tr>
 					<th width="130" align="right">City/Town:</th>
-					<td><input name="city" id="city" value="" /></td>
+					<td><input name="city" id="city" class="gcCheckAddress-city" value="" /></td>
 				</tr>
 				<tr>
 					<th width="130" align="right">State:</th>
