@@ -668,7 +668,7 @@ public class StandingOrderHelper {
 		map.put("currentDeliveryDate", map.get("deliveryDate"));
 		map.put("currentDeliveryTime", map.get("deliveryTime"));
 		map.put("currentDayOfWeek", map.get("dayOfWeek"));
-		map.put("isEligibleToModify", isUpComingDeliveryOfSO3(so));
+		map.put("upComingOrderId", so.getUpcomingDelivery()!=null?so.getUpcomingDelivery().getErpSalesId():null);
 		if(isUpComingDeliveryOfSO3(so)){
 			map.put("AddressInfo", soDeliveryAddress(so));
 			map.put("paymentInfo", so.getPaymentMethod()!=null?so.getPaymentMethod().getAccountNumber():null);
