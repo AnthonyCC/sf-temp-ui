@@ -179,8 +179,8 @@ var FreshDirect = FreshDirect || {};
     setTimeout(function () {
       var hashName = utils.createHash(name + error);
       if ($el.attr('invalid')) {
-        if ((!errorid || $('['+pfx+'-errorid="'+errorid+'"]').length === 0) && $('['+pfx+'-errorHash="'+hashName+'"]').length === 0) {
-          $parent.prepend('<span '+pfx+'-error="'+name+'" '+(errorid ? pfx+'-errorid="'+errorid+'"': '') +pfx+'-errorHash="'+hashName+'" '+'>'+error+'</span>');
+        if ((!errorid || $('['+pfx+'-errorid="'+errorid+'"]').length === 0) && $('['+pfx+'-errorhash="'+hashName+'"]').length === 0) {
+          $parent.prepend('<span '+pfx+'-error="'+name+'" '+(errorid ? pfx+'-errorid="'+errorid+'"': '') +pfx+'-errorhash="'+hashName+'" '+'>'+error+'</span>');
         }
       }
     }, 100);
