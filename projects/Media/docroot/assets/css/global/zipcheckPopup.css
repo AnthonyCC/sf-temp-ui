@@ -156,3 +156,16 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+@media (max-width: 568px) {
+  #zipCheckPopup .fixedPopupContent {
+    height: 100%;
+    max-height: 100%;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  #zipCheckPopup .qs-popup-content {
+    padding: 10px;
+  }
+}
