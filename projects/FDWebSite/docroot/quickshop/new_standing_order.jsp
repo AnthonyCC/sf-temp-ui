@@ -31,15 +31,9 @@
 MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 FDStandingOrder currentStandingOrder=null;
 String isNewSo= request.getParameter("newso");
-if("false".equals(isNewSo)){
-	currentStandingOrder=user.getCurrentStandingOrder(); 
-%><script>var newsoID = <%= currentStandingOrder.getId() %>;</script>
-<%	
-} else {//if(!StandingOrderHelper.isStandingOrder(user))
-	currentStandingOrder=new FDStandingOrder();
-	currentStandingOrder.setCustomerId(user.getIdentity().getErpCustomerPK());
-	currentStandingOrder.setId("");
-}
+currentStandingOrder=new FDStandingOrder();
+currentStandingOrder.setCustomerId(user.getIdentity().getErpCustomerPK());
+currentStandingOrder.setId("");
 currentStandingOrder.setNewSo(true);
 user.setCurrentStandingOrder(currentStandingOrder);
 user.setCheckoutMode(EnumCheckoutMode.CREATE_SO);
