@@ -1,6 +1,6 @@
 #zipCheckPopup .fixedPopupContent {
   max-width: 460px;
-  min-width: 460px;
+  width: 100%;
   min-height: 232px;
 }
 
@@ -14,6 +14,10 @@
 
 #zipCheckPopup .zipcheck div {
   margin-bottom: 20px;
+}
+
+#zipCheckPopup .zipcheck .email-address {
+  margin: 0;
 }
 
 #zipCheckPopup .zipcheck .zipcode-submit{
@@ -73,7 +77,9 @@
   position: relative;
 }
 
-#zipCheckPopup .zipcheck form div[fdform-error-for] {
+#zipCheckPopup .zipcheck form div[fdform-error-for],
+#zipCheckPopup .zipcheck form div[fdform-error-for][fdform][invalid] {
+  background-color: transparent;
   min-height: 18px;
 }
 

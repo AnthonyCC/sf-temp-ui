@@ -30,8 +30,7 @@ var FreshDirect = FreshDirect || {};
       }
     },
     failure : function (id, result) {
-      console.log(result);
-      console.log('Email notify error!');
+      $('.spinner-overlay').removeClass('active');
     }
   });
 
