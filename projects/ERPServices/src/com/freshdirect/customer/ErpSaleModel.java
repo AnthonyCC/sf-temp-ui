@@ -836,6 +836,13 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		transactions.add(failedSettlementModel);
 		status = EnumSaleStatus.SETTLEMENT_FAILED;
 	}
+	
+	public void addFailedSettlementPYPL(ErpFailedSettlementModel failedSettlementModel) throws ErpTransactionException {
+		assertStatus(new EnumSaleStatus[] { EnumSaleStatus.PAYMENT_PENDING, EnumSaleStatus.CAPTURE_PENDING, EnumSaleStatus.SETTLED, EnumSaleStatus.SETTLEMENT_FAILED });
+		copyLastCapturePaymentMethodInfo(failedSettlementModel);
+		transactions.add(failedSettlementModel);
+		status = EnumSaleStatus.SETTLEMENT_FAILED;
+	}
 
 	public void addChargeSettlement(ErpChargeSettlementModel chargeSettlementModel) throws ErpTransactionException {
 		assertStatus(new EnumSaleStatus[] { EnumSaleStatus.PAYMENT_PENDING, EnumSaleStatus.SETTLED, EnumSaleStatus.SETTLEMENT_FAILED });

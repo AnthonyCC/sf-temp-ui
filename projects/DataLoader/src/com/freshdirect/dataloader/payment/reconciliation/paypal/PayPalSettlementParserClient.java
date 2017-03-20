@@ -1,6 +1,8 @@
 package com.freshdirect.dataloader.payment.reconciliation.paypal;
 
 import java.rmi.RemoteException;
+import java.sql.PreparedStatement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,6 +14,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.dataloader.DataLoaderProperties;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementBuilderI;
+import com.freshdirect.dataloader.payment.reconciliation.SettlementLoaderUtil;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementParserClient;
 import com.freshdirect.dataloader.payment.reconciliation.paymentech.PaymentechFINParserClient;
 import com.freshdirect.fdstore.FDRuntimeException;
@@ -49,6 +52,7 @@ public class PayPalSettlementParserClient extends SettlementParserClient {
 	private long currSectionTotalFeeCredits = 0;
 	private long currSectionTotalFeeDebits = 0;
 	private List<String> settlementIds = null;
+	private static final SimpleDateFormat SF = new SimpleDateFormat("yyyyMMdd");
 	
 	private boolean ignoreLock = false;
 		
@@ -280,6 +284,11 @@ public class PayPalSettlementParserClient extends SettlementParserClient {
 			}
 			
 			try {
+				if(PayPalSFTPSettlementLoader.isNEwRecordRequired){
+					PayPalReconciliationSB  ppReconSB = SettlementLoaderUtil.lookupPPReconciliationHome().create();
+					ppReconSB.insertNewSettlementRecord(SF.parse(PayPalSFTPSettlementLoader.timestamp),
+							new ArrayList<String>(), null);
+				}
 				settlementIds = this.ppReconSB.addPPSettlementSummary(settlementSummarys);
 			} catch (Exception e) {
 				LOGGER.error(e.getMessage(), e);

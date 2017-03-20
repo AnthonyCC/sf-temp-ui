@@ -65,8 +65,8 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 	private static final String ACQUIRE_PP_LOCK_UDPATE = "update cust.settlement " +
 			" set IS_LOCKED = 'Y' where id = ? and settlement_source = 'PP'";
 	
-	public List<String>  acquirePPLock(Date date) {
-
+	public Map<String, Object>  acquirePPLock(Date date) {
+		boolean isNEwRecordRequired = false;
 		List<String> settlementIds = new ArrayList<String>();
 		String settlementId = null;
 		
@@ -109,25 +109,9 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 
 				//new process
 				if (settlementIds.isEmpty()) {
-					byte i = 1;
-					ps_insert_new = conn.prepareStatement(ACQUIRE_PP_LOCK_INSERT);
-					settlementId = SequenceGenerator.getNextId(conn, "CUST");
-					ps_insert_new.setString(i++, settlementId);
-					ps_insert_new.setDate(i++, new java.sql.Date(date.getTime()));
-					ps_insert_new.setDate(i++, new java.sql.Date(date.getTime()));
-					ps_insert_new.setDate(i++, new java.sql.Date(date.getTime()));
-					ps_insert_new.setLong(i++, date.getTime());
-					ps_insert_new.setDate(i++, new java.sql.Date(date.getTime()));
-					ps_insert_new.setDate(i++, new java.sql.Date(date.getTime()));
-					ps_insert_new.setLong(i++, 0);
-					ps_insert_new.setLong(i++, 0);
-					ps_insert_new.setLong(i++, 0);
-					ps_insert_new.setDate(i++, new java.sql.Date(date.getTime()));
-					ps_insert_new.setString(i++, PAYPAL_SETTLEMENT_IS_LOCKED);
-					ps_insert_new.setString(i++, EnumPaymentMethodType.PAYPAL.getName());
-					ps_insert_new.setString(i++, PAYPAL_NO_RECORDS_PROCESSED);
-					ps_insert_new.executeUpdate();
-					settlementIds.add(settlementId);
+					isNEwRecordRequired = true;
+					/*ps_insert_new = insertNewSettlementRecord(date,
+							settlementIds, conn);*/
 				}
 			} else {
 				ps_query_pending = conn.prepareStatement(ACQUIRE_PENDING_PP_LOCK_QUERY);
@@ -151,13 +135,53 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 			LOGGER.debug("SQLException: ", e);
 			throw new EJBException("SQLException: ", e);
 		} finally {
-			resetConnection(ps_query_by_date, rs, null);
-			resetConnection(ps_insert_new, null, null);
+			resetConnection(ps_query_by_date, rs, null);			
 			resetConnection(ps_update_by_settlement_id, null, null);
 			resetConnection(ps_query_pending, null, null);
 			resetConnection(null, null, conn);
 		}
-		return settlementIds;
+		Map<String, Object> lockInfo = new HashMap<String, Object>();
+		lockInfo.put("isNewRecord", isNEwRecordRequired);
+		lockInfo.put("settlementIds", settlementIds);
+		return lockInfo;
+	}
+
+	public void insertNewSettlementRecord(Date date,
+			List<String> settlementIds, Connection conn) {
+		PreparedStatement ps_insert_new = null;
+		if(null == conn){
+	try {
+		conn = this.getConnection();
+				
+		String settlementId;
+		
+		byte i = 1;
+		ps_insert_new = conn.prepareStatement(ACQUIRE_PP_LOCK_INSERT);
+		settlementId = SequenceGenerator.getNextId(conn, "CUST");
+		ps_insert_new.setString(i++, settlementId);
+		ps_insert_new.setDate(i++, new java.sql.Date(date.getTime()));
+		ps_insert_new.setDate(i++, new java.sql.Date(date.getTime()));
+		ps_insert_new.setDate(i++, new java.sql.Date(date.getTime()));
+		ps_insert_new.setLong(i++, date.getTime());
+		ps_insert_new.setDate(i++, new java.sql.Date(date.getTime()));
+		ps_insert_new.setDate(i++, new java.sql.Date(date.getTime()));
+		ps_insert_new.setLong(i++, 0);
+		ps_insert_new.setLong(i++, 0);
+		ps_insert_new.setLong(i++, 0);
+		ps_insert_new.setDate(i++, new java.sql.Date(date.getTime()));
+		ps_insert_new.setString(i++, PAYPAL_SETTLEMENT_IS_LOCKED);
+		ps_insert_new.setString(i++, EnumPaymentMethodType.PAYPAL.getName());
+		ps_insert_new.setString(i++, PAYPAL_NO_RECORDS_PROCESSED);
+		ps_insert_new.executeUpdate();
+		settlementIds.add(settlementId);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	 finally {
+		 resetConnection(ps_insert_new, null, conn);
+	 }
+		}
 	}
 	
 	public List<String> addPPSettlementSummary(ErpSettlementSummaryModel[] models) {
