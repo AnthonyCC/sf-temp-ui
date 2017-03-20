@@ -43,7 +43,7 @@ import com.freshdirect.webapp.util.ProductRecommenderUtil;
 
 public class ModuleContentService {
 
-    private static ModuleContentService INSTANCE = new ModuleContentService();
+    private static final ModuleContentService INSTANCE = new ModuleContentService();
     private static final Logger LOGGER = LoggerFactory.getInstance(ModuleContentService.class);
 
     private int MAX_ITEMS = FDStoreProperties.getHomepageRedesignProductLimitMax();
