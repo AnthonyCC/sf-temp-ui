@@ -64,7 +64,7 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 			" values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, systimestamp, ?, ?, ?)";
 	private static final String ACQUIRE_PP_LOCK_UDPATE = "update cust.settlement " +
 			" set IS_LOCKED = 'Y' where id = ? and settlement_source = 'PP'";	
-	private static final String DELETE_EXISING_RECORDS = "delete cust.settlement where PROCESS_PERIOD_START = ? and AFFILIATE_ACCOUNT_ID is null";
+	private static final String DELETE_EXISING_RECORDS = "delete from cust.settlement where SETTLEMENT_SOURCE='PP' and PROCESS_PERIOD_START = ? and AFFILIATE_ACCOUNT_ID is null";
 	
 	public Map<String, Object>  acquirePPLock(Date date) {
 		boolean isNEwRecordRequired = false;
@@ -84,10 +84,10 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 			conn = this.getConnection();
 			
 			if (date != null) {
-				ps_delete_existing_record = conn.prepareStatement(DELETE_EXISING_RECORDS);
+				/*ps_delete_existing_record = conn.prepareStatement(DELETE_EXISING_RECORDS);
 				ps_delete_existing_record.setDate(1, new java.sql.Date(date.getTime()));
 				ps_delete_existing_record.executeQuery();
-				
+				*/
 				ps_query_by_date = conn.prepareStatement(ACQUIRE_PP_LOCK_QUERY);
 				ps_query_by_date.setDate(1, new java.sql.Date(date.getTime()));
 
