@@ -14,28 +14,21 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
  * Give spelling suggestions for query terms.
- * 
  */
 public class LuceneSpellingSuggestionService implements SpellingSuggestionsServiceI {
 
     private final static Logger LOGGER = LoggerFactory.getInstance(LuceneSpellingSuggestionService.class);
 
-    // spell checker instance, created at construction
+    private static final LuceneSpellingSuggestionService INSTANCE = new LuceneSpellingSuggestionService();
+
     private SpellChecker checker;
 
-    /**
-     * Constructor.
-     * 
-     * @param indexLocation
-     *            directory location of indices
-     */
-    public LuceneSpellingSuggestionService(String indexLocation) {
-        try {
-            this.checker = new SpellChecker(indexLocation);
-        } catch (IOException e) {
-            LOGGER.error("Exception while initializing spellChecker ", e);
-            throw new CmsRuntimeException(e);
-        }
+    public static LuceneSpellingSuggestionService getInstance() {
+        return INSTANCE;
+    }
+
+    private LuceneSpellingSuggestionService() {
+        checker = SpellChecker.getInstance();
     }
 
     /*
@@ -43,9 +36,9 @@ public class LuceneSpellingSuggestionService implements SpellingSuggestionsServi
      * 
      * @see com.freshdirect.cms.search.SpellingSuggestionsServiceI#getSpellingHits(java.lang.String, int)
      */
-    public List<SpellingHit> getSpellingHits(String phrase, int maxHits) {
+    public List<SpellingHit> getSpellingHits(String indexPath, String phrase, int maxHits) {
         try {
-            return checker.suggestSimilar(phrase, maxHits);
+            return checker.suggestSimilar(indexPath, phrase, maxHits);
         } catch (IOException e) {
             LOGGER.error("failed to retrieve spelling hits for '" + phrase + "'", e);
             return Collections.emptyList();
@@ -62,10 +55,10 @@ public class LuceneSpellingSuggestionService implements SpellingSuggestionsServi
      * 
      * @see com.freshdirect.cms.search.SpellingSuggestionsServiceI#close()
      */
-    public void close() {
+    public void close(String indexPath) {
         try {
             if (this.checker != null) {
-                checker.close();
+                checker.close(indexPath);
             }
         } catch (IOException e) {
             LOGGER.error("failed to close spell checker", e);
@@ -78,9 +71,9 @@ public class LuceneSpellingSuggestionService implements SpellingSuggestionsServi
      * 
      * @see com.freshdirect.cms.search.SpellingSuggestionsServiceI#exists(java.lang.String)
      */
-    public boolean exists(String phrase) {
+    public boolean exists(String indexPath, String phrase) {
         try {
-            return checker.exist(phrase);
+            return checker.exist(indexPath, phrase);
         } catch (IOException e) {
             LOGGER.error("failed to exists spell checker", e);
             throw new CmsRuntimeException(e);

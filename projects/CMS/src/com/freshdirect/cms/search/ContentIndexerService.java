@@ -9,7 +9,7 @@ import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.application.service.ProxyContentService;
 import com.freshdirect.cms.index.IndexerService;
-import com.freshdirect.cms.index.PartialIndexerService;
+import com.freshdirect.cms.index.configuration.IndexerConfiguration;
 
 /**
  * Proxy content service that automatically updates a search index
@@ -18,7 +18,7 @@ import com.freshdirect.cms.index.PartialIndexerService;
  */
 public class ContentIndexerService extends ProxyContentService {
 
-	private final IndexerService indexerService = PartialIndexerService.getInstance();
+	private final IndexerService indexerService = IndexerService.getInstance();
 
 	/**
 	 * ContentIndexerService
@@ -37,7 +37,7 @@ public class ContentIndexerService extends ProxyContentService {
         CmsResponseI response = super.handle(request);
 
         if (DraftContext.MAIN == request.getDraftContext()) {
-            indexerService.index(request.getNodes());
+            indexerService.partialIndex(request.getNodes(), IndexerConfiguration.getDefaultConfiguration());
         }
 
         return response;

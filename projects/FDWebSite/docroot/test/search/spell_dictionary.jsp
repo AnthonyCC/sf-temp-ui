@@ -5,7 +5,7 @@
 <%@page import="com.freshdirect.framework.conf.FDRegistry"%>
 <%@page import="com.freshdirect.cms.search.ContentSearchServiceI"%>
 <%@page import="com.freshdirect.cms.search.configuration.SearchServiceConfiguration"%>
-<%@page import="com.freshdirect.cms.index.FullIndexerService"%>
+<%@page import="com.freshdirect.cms.index.IndexerService"%>
 <%@page import="org.apache.lucene.index.IndexReader"%>
 <%@page import="org.apache.lucene.store.FSDirectory"%>
 <%@page import="org.apache.lucene.search.IndexSearcher"%>
@@ -37,7 +37,7 @@
 			<tbody>
 				<%
 					Registry registry = FDRegistry.getInstance();
-			        FullIndexerService indexer = FullIndexerService.getInstance();
+			        IndexerService indexer = IndexerService.getInstance();
 					String indexDirectoryPath = SearchServiceConfiguration.getInstance().getCmsIndexLocation();
                     FSDirectory indexDirectory = FSDirectory.open(new File(indexDirectoryPath));
                     IndexReader reader = IndexReader.open(indexDirectory, false);

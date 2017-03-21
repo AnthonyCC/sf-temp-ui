@@ -9,7 +9,7 @@
 %><%@page import="com.freshdirect.cms.fdstore.FDContentTypes"
 %><%@page import="com.freshdirect.cms.search.AttributeIndex"
 %><%@page import="com.freshdirect.cms.search.ContentSearchServiceI"
-%><%@page import="com.freshdirect.cms.index.FullIndexerService"
+%><%@page import="com.freshdirect.cms.index.IndexerService"
 %><%@page import="com.freshdirect.cms.search.SearchUtils"
 %><%@page import="com.freshdirect.cms.search.term.Term"
 %><%@page import="com.freshdirect.framework.conf.FDRegistry"
@@ -28,7 +28,7 @@
 	CmsManager instance = CmsManager.getInstance();
 	Set<ContentKey> keys = instance.getContentKeysByType(FDContentTypes.CATEGORY);
 	Registry registry = FDRegistry.getInstance();
-	FullIndexerService indexer = FullIndexerService.getInstance();
+	IndexerService indexer = IndexerService.getInstance();
 	List<AttributeIndex> attributes = indexer.getIndexesForType(FDContentTypes.CATEGORY);
 	out.print(escape("contentKey"));
 	for (AttributeIndex index : attributes) {

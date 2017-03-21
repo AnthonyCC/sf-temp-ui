@@ -49,7 +49,7 @@ public final class RunScriptTask extends PublishTask implements Runnable {
             }
 
             int exitCode = child.waitFor();
-            if (exitCode == 0) {
+            if (exitCode != 0) {
                 publishMessageLogger.log(publishId, new PublishMessage(PublishMessage.WARNING, "Exit code: " + exitCode, RunScriptTask.class.getSimpleName()));
             } else {
                 publishMessageLogger.log(publishId, new PublishMessage(PublishMessage.INFO, "Finished successfully", RunScriptTask.class.getSimpleName()));

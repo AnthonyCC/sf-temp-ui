@@ -5,7 +5,6 @@
 <%@page import="java.util.Collection"%>
 <%@page import="java.util.List"%>
 <%@page import="com.freshdirect.cms.search.SearchHit"%>
-<%@page import="com.freshdirect.cms.index.FullIndexerService"%>
 <%@page import="com.freshdirect.cms.index.IndexingConstants"%>
 <%@page import="com.freshdirect.cms.application.CmsManager"%>
 <%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>

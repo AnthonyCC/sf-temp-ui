@@ -1,6 +1,5 @@
 package com.freshdirect.cms.search;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -17,16 +16,12 @@ import java.util.Set;
 import org.apache.log4j.Category;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 
 import com.freshdirect.cms.CmsRuntimeException;
@@ -35,8 +30,7 @@ import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.index.FreshdirectAnalyzer;
 import com.freshdirect.cms.index.IndexingConstants;
-import com.freshdirect.cms.index.IndexingNotifier;
-import com.freshdirect.cms.index.IndexingSubscriber;
+import com.freshdirect.cms.index.LuceneManager;
 import com.freshdirect.cms.index.configuration.IndexConfiguration;
 import com.freshdirect.cms.search.configuration.SearchServiceConfiguration;
 import com.freshdirect.cms.search.spell.SpellingHit;
@@ -63,7 +57,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  * 
  * @FIXME Searches are always performed on the these fields only: <code>FULL_NAME, AKA, GLANCE_NAME, KEYWORDS</code>
  */
-public class LuceneSearchService implements ContentSearchServiceI, IndexingSubscriber {
+public class LuceneSearchService implements ContentSearchServiceI {
 
     private static final Category LOGGER = LoggerFactory.getInstance(LuceneSearchService.class);
 
@@ -79,65 +73,19 @@ public class LuceneSearchService implements ContentSearchServiceI, IndexingSubsc
 
     private String indexLocation;
 
-    private FSDirectory indexDirectory;
-
-    private IndexReader reader;
-
-    private SpellingSuggestionsServiceI spellService;
-
+    private LuceneManager luceneManager = LuceneManager.getInstance();
+    
     public static LuceneSearchService getInstance() {
         return INSTANCE;
     }
-    
+
     private LuceneSearchService() {
         setIndexes(indexConfiguration.getIndexConfiguration());
-
-        this.indexLocation = searchServiceConfiguration.getCmsIndexLocation();
-
-        IndexWriter writer = null;
-        try {
-            boolean exists = IndexReader.indexExists(getIndexDirectory());
-            
-            if (!exists) {
-                LOGGER.info("Creating index at " + getIndexLocation());
-                writer = new IndexWriter(getIndexDirectory(), IndexingConstants.ANALYZER, true, IndexingConstants.MAX_FIELD_LENGTH_1024);
-                writer.optimize();
-                LOGGER.info("Created index at " + getIndexLocation());
-            }
-        } catch (IOException ioe) {
-            LOGGER.error(MessageFormat.format("Exception while creating indexis under {0}", indexLocation), ioe);
-            throw new CmsRuntimeException(ioe);
-        } finally {
-            closeIndexWriter(writer);
-        }
-        IndexingNotifier.getInstance().subscribe(this);
+        setIndexLocation(searchServiceConfiguration.getCmsIndexLocation());
+        luceneManager.createDefaultIndex(indexLocation);
     }
 
-    /**
-     * @return path to index directory
-     */
-    public String getIndexLocation() {
-        return indexLocation;
-    }
-
-    public synchronized FSDirectory getIndexDirectory() throws IOException {
-        if (indexDirectory == null) {
-            indexDirectory = FSDirectory.open(new File(indexLocation));
-        }
-        return indexDirectory;
-    }
-
-    /**
-     * @param indexLocation
-     *            path to index directory
-     */
     public void setIndexLocation(String indexLocation) {
-        synchronized (this) {
-            if (indexDirectory != null) {
-                indexDirectory.close();
-                indexDirectory = null;
-            }
-        }
         this.indexLocation = indexLocation;
     }
 
@@ -173,49 +121,9 @@ public class LuceneSearchService implements ContentSearchServiceI, IndexingSubsc
         return contentIndexes.keySet();
     }
 
-    private IndexReader createReader(boolean readOnly) throws IOException {
-        return IndexReader.open(getIndexDirectory(), readOnly);
-    }
-
-    private synchronized IndexReader getReader() throws IOException {
-        if (this.reader == null) {
-            this.reader = createReader(true);
-        }
-        return this.reader;
-    }
-
-    private synchronized void closeReader() {
-        if (this.reader != null) {
-            try {
-                this.reader.close();
-                this.reader = null;
-                LOGGER.info("reader is closed and set to " + this.reader);
-            } catch (IOException e) {
-                LOGGER.error(MessageFormat.format("Exception while closing index reader under {0}", indexLocation), e);
-            }
-        } else {
-            LOGGER.info("reader is already closed");
-        }
-        if (indexDirectory != null) {
-            indexDirectory.close();
-            indexDirectory = null;
-            LOGGER.info("indexDirectory is closed and set to " + this.reader);
-        }
-    }
-
     @Override
-    public synchronized SpellingSuggestionsServiceI getSpellService() {
-        if (this.spellService == null) {
-            this.spellService = new LuceneSpellingSuggestionService(indexLocation);
-        }
-        return this.spellService;
-    }
-
-    public synchronized void closeSpellService() {
-        if (spellService != null) {
-            spellService.close();
-        }
-        spellService = null;
+    public SpellingSuggestionsServiceI getSpellService() {
+        return LuceneSpellingSuggestionService.getInstance();
     }
 
     @Override
@@ -337,8 +245,6 @@ public class LuceneSearchService implements ContentSearchServiceI, IndexingSubsc
         searchString = searchString.trim();
         Term searchTerm = new Term(searchString);
 
-        IndexSearcher searcher = new IndexSearcher(getReader());
-        try {
             if (approximate) {
                 if (searchTerm.getTokens().size() > 1) {
                     // start approximations
@@ -348,11 +254,11 @@ public class LuceneSearchService implements ContentSearchServiceI, IndexingSubsc
                         BooleanQuery q = new BooleanQuery();
                         for (Term queryTerm : permutation)
                             q.add(createQuery(queryTerm, fields, slop), BooleanClause.Occur.SHOULD);
-
-                        TopDocs hits = searcher.search(q, maxHits);
-
+                        
+                        TopDocs hits = luceneManager.search(indexLocation, q, maxHits);
+                        
                         if (hits.totalHits != 0) {
-                            return extractSearchHits(maxHits, searcher, hits, i);
+                            return extractSearchHits(maxHits, hits, i);
                         }
                         i++;
                     }
@@ -360,14 +266,9 @@ public class LuceneSearchService implements ContentSearchServiceI, IndexingSubsc
                 return Collections.emptyList();
             } else {
                 Query query = createQuery(searchTerm, fields, slop);
-
-                TopDocs hits = searcher.search(query, maxHits);
-
-                return extractSearchHits(maxHits, searcher, hits, 0);
+                TopDocs hits = luceneManager.search(indexLocation, query, maxHits);
+                return extractSearchHits(maxHits, hits, 0);
             }
-        } finally {
-            searcher.close();
-        }
     }
 
     private BooleanQuery createQuery(Term searchTerm, Set<String> fields, int slop) {
@@ -389,17 +290,14 @@ public class LuceneSearchService implements ContentSearchServiceI, IndexingSubsc
         return query;
     }
 
-    private Collection<SearchHit> extractSearchHits(int maxHits, IndexSearcher searcher, TopDocs hits, int approximationLevel) throws CorruptIndexException, IOException {
-        Set<SearchHit> h = new LinkedHashSet<SearchHit>(hits.totalHits);
-        int max = Math.min(maxHits, hits.totalHits);
-        for (int i = 0; i < max; i++) {
-            Document doc = searcher.doc(hits.scoreDocs[i].doc);
-
-            ContentKey key = ContentKey.getContentKey(doc.get(IndexingConstants.FIELD_CONTENT_KEY));
-
-            h.add(new SearchHit(key, hits.scoreDocs[i].score, approximationLevel));
+    private Collection<SearchHit> extractSearchHits(int maxHits, TopDocs hits, int approximationLevel) {
+        List<Document> hitDocuments = luceneManager.convertSearchHits(indexLocation, hits, maxHits);
+        Set<SearchHit> searchHits = new LinkedHashSet<SearchHit>(hitDocuments.size());
+        for (int i = 0; i < hitDocuments.size(); i++) {
+            ContentKey key = ContentKey.getContentKey(hitDocuments.get(i).get(IndexingConstants.FIELD_CONTENT_KEY));
+            searchHits.add(new SearchHit(key, hits.scoreDocs[i].score, approximationLevel));
         }
-        return h;
+        return searchHits;
     }
 
     @Override
@@ -495,38 +393,14 @@ public class LuceneSearchService implements ContentSearchServiceI, IndexingSubsc
 
     @Override
     public List<SpellingHit> suggestSpellingInternal(String searchTerm, double threshold, int maxHits) {
-        List<SpellingHit> spellingHits = getSpellService().getSpellingHits(searchTerm, maxHits);
+        List<SpellingHit> spellingHits = getSpellService().getSpellingHits(indexLocation, searchTerm, maxHits);
         List<SpellingHit> results = SpellingUtils.filterBestSpellingHits(spellingHits, threshold);
         Iterator<SpellingHit> it = results.iterator();
         List<String> original = Term.tokenize(searchTerm, Term.DEFAULT_TOKENIZERS);
         while (it.hasNext()) {
-            if (!SpellingUtils.checkPartialThreshold(original, Term.tokenize(it.next().getSpellingMatch(), Term.DEFAULT_TOKENIZERS), threshold, getSpellService()))
+            if (!SpellingUtils.checkPartialThreshold(original, Term.tokenize(it.next().getSpellingMatch(), Term.DEFAULT_TOKENIZERS), threshold, getSpellService().getStringDistance()))
                 it.remove();
         }
         return results;
     }
-
-    @Override
-    public void receiveIndexingFinishedNotification() {
-        try {
-            closeReader();
-            getReader();
-            closeSpellService();
-            getSpellService();
-        } catch (IOException e) {
-            LOGGER.error("Exception while receiving index finish notification", e);
-            throw new CmsRuntimeException(e);
-        }
-    }
-    
-    private void closeIndexWriter(IndexWriter writer) {
-        try {
-            if (writer != null) {
-                writer.close();
-            }
-        } catch (IOException e) {
-            LOGGER.error("Exception while closing index writer", e);
-        }
-    }
-
 }

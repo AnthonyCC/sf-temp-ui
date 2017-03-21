@@ -5,7 +5,7 @@
 <%@page import="org.apache.hivemind.Registry"%>
 <%@page import="com.freshdirect.framework.conf.FDRegistry"%>
 <%@page import="com.freshdirect.cms.search.ContentSearchServiceI"%>
-<%@page import="com.freshdirect.cms.index.FullIndexerService"%>
+<%@page import="com.freshdirect.cms.index.IndexerService"%>
 <%@page import="com.freshdirect.cms.index.configuration.IndexerConfiguration"%>
 <html>
 <head>
@@ -138,7 +138,7 @@
 				and spelling after you change either attributes.</span>
 			<%
 			    Registry registry = FDRegistry.getInstance();
-			    FullIndexerService indexer = FullIndexerService.getInstance();
+			    IndexerService indexer = IndexerService.getInstance();
 			    IndexerConfiguration indexerConfiguration = IndexerConfiguration.getDefaultConfiguration();
 			    String keywords = request.getParameter("keywords");
 			    if (keywords != null) {
