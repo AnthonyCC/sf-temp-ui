@@ -1098,19 +1098,21 @@ private static String convert(Date time) {
 	}
 	
 	private static String so3MatchDeliveryAddress(FDStandingOrder so, boolean isEligileToShowModifyInfo) {
+
+		  String soDeliveryAddress=null;
 		try {
 			FDOrderInfoI fdOrderInfoI=so.getUpcomingDelivery();
 	        FDReservation fDReservation=FDCustomerManager.getOrder(fdOrderInfoI.getErpSalesId()).getDeliveryReservation();
+	        soDeliveryAddress =so.getDeliveryAddress()!=null?(so.getDeliveryAddress().getScrubbedStreet() +","+so.getDeliveryAddress().getZipCode()):null;
 	        if(!so.getAddressId().equalsIgnoreCase(fDReservation!=null?fDReservation.getAddressId():""))
 	        	{ isEligileToShowModifyInfo=true;
-	        	   return so.getDeliveryAddress()!=null?(so.getDeliveryAddress().getScrubbedStreet()
-	        			   +","+so.getDeliveryAddress().getZipCode()):null;	
+	        	   return soDeliveryAddress;	
 	        	}
 		} catch (FDResourceException e) {
 			// TODO Auto-generated catch block
 			LOGGER.info("while prepare the SoDeliveryAddress " +e);
 		}
-		return null;
+		return soDeliveryAddress;
 	}
 
 	private static boolean isUpComingDelivery(FDStandingOrder so) {
