@@ -619,8 +619,18 @@
 	padding: 30px 30px 0;
     clear: both;
 }
+.standing-orders-3-so-settings-item-details-header{
+	font-weight: bold;
+	padding: 25px 0 10px;
+}
+.standing-orders-3-so-settings-item-details-header:first-of-type{
+	padding: 5px 0 10px;
+}
 .standing-orders-3-so-settings-item-details-container{
 	
+}
+.standing-orders-3-so-settings-item-details-container-red{
+	color: #FF0000;
 }
 .standing-orders-3-so-settings-item-details-left{
 	float: left;
