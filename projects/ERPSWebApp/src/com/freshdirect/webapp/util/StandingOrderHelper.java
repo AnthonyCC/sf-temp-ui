@@ -672,7 +672,7 @@ public class StandingOrderHelper {
 		map.put("upComingOrderId", so.getUpcomingDelivery()!=null?so.getUpcomingDelivery().getErpSalesId():null);
 		map.put("isEligileToShowModifyInfo", isEligibleToShowModifyInfo);
 		if(isUpComingDelivery(so)){
-			map.put("AddressInfo", so3MatchDeliveryAddress(so,isEligibleToShowModifyInfo));
+			map.put("addressInfo", so3MatchDeliveryAddress(so,isEligibleToShowModifyInfo));
 			map.put("paymentInfo", isEligibleToShowModifyInfo?so.getPaymentMethod().getAccountNumber():so3MatchPaymentAccount(so,isEligibleToShowModifyInfo)); 
 			map.put("isEligileToShowModifyInfo", isEligibleToShowModifyInfo?true:SO3MatchTimeslot(so));
 		}
@@ -1153,7 +1153,7 @@ private static String convert(Date time) {
 			
 			if(fdOrderI!=null && fdOrderI.getDeliveryReservation()!=null){
 				FDTimeslot fdTimeslot=fdOrderI.getDeliveryReservation().getTimeslot();
-				return findSO3MatchTimeslot(fdTimeslot, so);
+				return compareSO3MatchTimeslot(fdTimeslot, so);
 			}
 		} catch (FDResourceException e) {
 			// TODO Auto-generated catch block
@@ -1161,4 +1161,21 @@ private static String convert(Date time) {
 		}
 		return false; 
 	}
+	
+	 public static boolean compareSO3MatchTimeslot(FDTimeslot slot, FDStandingOrder so){
+		 boolean isMatch=false;
+	     if(null!=so.getNextDeliveryDate() && null!=so.getStartTime()){
+	    	 
+		 	Calendar calendar1 = Calendar.getInstance();
+		 	Calendar calendar2 = Calendar.getInstance();
+	    
+		 	calendar1.setTime(slot.getDeliveryDate());
+		 	calendar2.setTime(so.getNextDeliveryDate());
+
+		 	boolean sameDay = calendar1.get(Calendar.DAY_OF_WEEK) != calendar2.get(Calendar.DAY_OF_WEEK);
+		 	isMatch=sameDay || !convert(slot.getDlvStartTime().getAsDate()).equals(convert(so.getStartTime())) || !convert(slot.getDlvEndTime().getAsDate()).equals(convert(so.getEndTime()))? true:false;
+	     }
+		 return isMatch;
+		 
+	 }
 }
