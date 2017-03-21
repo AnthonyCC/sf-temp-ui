@@ -614,6 +614,7 @@ public class StandingOrderHelper {
 	 */
 	public static Map<String, Object> convertStandingOrderToSoy(boolean isUpcomingDelivery, FDStandingOrder so)
 			throws FDResourceException, FDInvalidConfigurationException, PricingException {
+		boolean isEligibleToShowModifyInfo=false;
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("id", so.getId());
 		map.put("url", so.getLandingPage());
@@ -669,9 +670,11 @@ public class StandingOrderHelper {
 		map.put("currentDeliveryTime", map.get("deliveryTime"));
 		map.put("currentDayOfWeek", map.get("dayOfWeek"));
 		map.put("upComingOrderId", so.getUpcomingDelivery()!=null?so.getUpcomingDelivery().getErpSalesId():null);
-		if(isUpComingDeliveryOfSO3(so)){
-			map.put("AddressInfo", soDeliveryAddress(so));
-			map.put("paymentInfo", so.getPaymentMethod()!=null?so.getPaymentMethod().getAccountNumber():null);
+		map.put("isEligileToShowModifyInfo", isEligibleToShowModifyInfo);
+		if(isUpComingDelivery(so)){
+			map.put("AddressInfo", so3MatchDeliveryAddress(so,isEligibleToShowModifyInfo));
+			map.put("paymentInfo", isEligibleToShowModifyInfo?so.getPaymentMethod().getAccountNumber():so3MatchPaymentAccount(so,isEligibleToShowModifyInfo)); 
+			map.put("isEligileToShowModifyInfo", isEligibleToShowModifyInfo?true:SO3MatchTimeslot(so));
 		}
 		return map;
 	}
@@ -1094,12 +1097,15 @@ private static String convert(Date time) {
 		return flg;
 	}
 	
-	private static String soDeliveryAddress(FDStandingOrder so) {
+	private static String so3MatchDeliveryAddress(FDStandingOrder so, boolean isEligileToShowModifyInfo) {
 		try {
 			FDOrderInfoI fdOrderInfoI=so.getUpcomingDelivery();
 	        FDReservation fDReservation=FDCustomerManager.getOrder(fdOrderInfoI.getErpSalesId()).getDeliveryReservation();
 	        if(!so.getAddressId().equalsIgnoreCase(fDReservation!=null?fDReservation.getAddressId():""))
-	        	return so.getDeliveryAddress()!=null?(so.getDeliveryAddress().getScrubbedStreet()+","+so.getDeliveryAddress().getZipCode()):null;	
+	        	{ isEligileToShowModifyInfo=true;
+	        	   return so.getDeliveryAddress()!=null?(so.getDeliveryAddress().getScrubbedStreet()
+	        			   +","+so.getDeliveryAddress().getZipCode()):null;	
+	        	}
 		} catch (FDResourceException e) {
 			// TODO Auto-generated catch block
 			LOGGER.info("while prepare the SoDeliveryAddress " +e);
@@ -1107,7 +1113,7 @@ private static String convert(Date time) {
 		return null;
 	}
 
-	private static boolean isUpComingDeliveryOfSO3(FDStandingOrder so) {
+	private static boolean isUpComingDelivery(FDStandingOrder so) {
 		try {
 			return so.getUpcomingDelivery().getErpSalesId()!=null?true:false;
 			//return so.getAllUpcomingOrders().isEmpty()?false:true;
@@ -1116,5 +1122,41 @@ private static String convert(Date time) {
 			LOGGER.info("while check an Upcoming Delivery " +e);
 		}
 		return false;
+	}
+	
+	
+	private static String so3MatchPaymentAccount(FDStandingOrder so, boolean isEligileToShowModifyInfo) {
+		
+		String soPaymentInfo=null;
+		try {
+			FDOrderInfoI fdOrderInfoI=so.getUpcomingDelivery();
+			FDOrderI fDOrderI=FDCustomerManager.getOrder(fdOrderInfoI.getErpSalesId());
+			String upComingOrderPaymentInfo=fDOrderI.getPaymentMethod()!=null?fDOrderI.getPaymentMethod().getAccountNumber():null;
+			soPaymentInfo=so.getPaymentMethod()!=null?so.getPaymentMethod().getAccountNumber():"";
+			if(!soPaymentInfo.equalsIgnoreCase(upComingOrderPaymentInfo)){
+	        		isEligileToShowModifyInfo=true;
+	        		return soPaymentInfo;
+			 }
+		} catch (FDResourceException e) {
+			// TODO Auto-generated catch block
+			LOGGER.info("while prepare the SoPayment information " +e);
+		}
+		return soPaymentInfo;
+	}
+	
+	private static boolean SO3MatchTimeslot(FDStandingOrder so) {
+		try {
+			FDOrderInfoI fdOrderInfoI=so.getUpcomingDelivery();
+			FDOrderI fdOrderI=FDCustomerManager.getOrder(fdOrderInfoI.getErpSalesId());
+			
+			if(fdOrderI!=null && fdOrderI.getDeliveryReservation()!=null){
+				FDTimeslot fdTimeslot=fdOrderI.getDeliveryReservation().getTimeslot();
+				return findSO3MatchTimeslot(fdTimeslot, so);
+			}
+		} catch (FDResourceException e) {
+			// TODO Auto-generated catch block
+			LOGGER.info("while the checking SO3MatchTimeslot" +e);
+		}
+		return false; 
 	}
 }
