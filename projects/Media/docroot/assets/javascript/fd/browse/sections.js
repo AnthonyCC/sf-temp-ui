@@ -104,8 +104,10 @@ var FreshDirect = FreshDirect || {};
 			
 			/* add page beacon (if it doesn't already exist) and we're on the first page only */
 			if(activePage == 1){
-				if ($(".browse-sections-top .browseContent .HLpageBeaconImg.page_SEARCH").length === 0) { /* only one instance at a time */
+				if (hlSkusStr !== '' && $(".browse-sections-top .browseContent .HLpageBeaconImg.page_SEARCH").length === 0) { /* only one instance at a time */
 					$(".browse-sections-top .browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_SEARCH" src="' + window.FreshDirect.browse.data.adProducts.pageBeacon + hlSkusStr + '&random=' + new Date().getTime() + '" />');
+				} else if (hlSkusStr === '' && $(".browse-sections-top .browseContent .HLpageBeaconImg.page_SEARCH").length === 0) { /* only one instance at a time */
+					$(".browse-sections-top .browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_SEARCH" src="' + window.FreshDirect.browse.data.adProducts.pageBeacon + 'none&random=' + new Date().getTime() + '" />');
 				}
 			}
 		} else {
@@ -130,6 +132,8 @@ var FreshDirect = FreshDirect || {};
 				hlSkusStr = hlSkus.join(',');
 				if (hlSkusStr !== '' && $('.browseContent .HLpageBeaconImg.page_'+activePage+'_id_'+cur).length === 0) {
 					$(".browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_'+activePage+'_id_'+cur+'" src="' + window.FreshDirect.browse.data.adProducts.hlSelectionsPageBeacons[cur] + hlSkusStr + '&random=' + new Date().getTime() + '" />');
+				} else if (hlSkusStr === '' && $('.browseContent .HLpageBeaconImg.page_'+activePage+'_id_'+cur).length === 0) {
+					$(".browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_'+activePage+'_id_'+cur+'" src="' + window.FreshDirect.browse.data.adProducts.hlSelectionsPageBeacons[cur] + 'none&random=' + new Date().getTime() + '" />');
 				}
 			}
 		}
