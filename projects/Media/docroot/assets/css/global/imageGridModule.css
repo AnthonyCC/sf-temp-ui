@@ -19,7 +19,8 @@
 }
 
 .content-module.image-grid-module .content .medium {
-  width: 484px;
+  min-width: 484px;
+  max-width: 484px;
 }
 
 .content-module.image-grid-module .content img {
@@ -31,21 +32,20 @@
 
 .content-module.image-grid-module .content .image-grid div div .small a > div,
 .content-module.image-grid-module .content .image-grid div .medium a > div {
-  background-color: rgba(255,255,255,.75);
-  bottom: 50px;
+  background-color: rgba(255,255,255,.90);
+  bottom: 38px;
   color: black;
   font-family: 'Brandon Text';
   font-size: 18px;
   font-weight: 500;
-  height: 22px;
-  line-height: 22px;
+  height: 38px;
+  line-height: 38px;
   margin: 0;
   padding: 0;
   padding-left: 5px;
   position: relative;
   text-align: left;
   text-transform: uppercase;
-  top: -30px;
 }
 
 .content-module.image-grid-module .content .image-grid div div .small a > div:after,

@@ -10,10 +10,10 @@
   	{call common.moduleHeader}
   		{param content: $moduleData /}
   	{/call}
+    {call common.contentHeader}
+      {param content: $moduleData /}
+    {/call}
   	<div class="content">
-  		{call common.contentHeader}
-  			{param content: $moduleData /}
-  		{/call}
   		{call common.simpleCarousel}
   			{param isIconCarousel: true /}
   			{param items: $data.icons /}
