@@ -78,7 +78,6 @@ public class LoginController extends BaseController  implements SystemMessageLis
     private static Category LOGGER = LoggerFactory.getInstance(LoginController.class);
 
     private static final String ACTION_LOGIN = "login";
-    private static final String ACTION_LOGIN_EX = "loginXE";
     private static final String ACTION_LOGOUT = "logout";
     private static final String ACTION_FORGOT_PASSWORD = "forgotpassword";
     private static final String ACTION_CHANGE_PASSWORD = "changepassword";
@@ -129,20 +128,6 @@ public class LoginController extends BaseController  implements SystemMessageLis
 				// Do nothing
 			}
 			responseMessage = login(requestMessage, request, response, false);
-		}if (ACTION_LOGIN_EX.equals(action)) {
-			Login requestMessage = parseRequestObject(request, response,
-					Login.class);
-			try {
-				// Check to see if user session exists
-				SessionUser sessionUser = getUserFromSession(request, response);
-				if(sessionUser.isLoggedIn()){
-					logout(user, request, response);
-				}
-				
-			} catch (NoSessionException e) {
-				// Do nothing
-			}
-			responseMessage = login(requestMessage, request, response, true);
 		} else if (ACTION_PING.equals(action)) {
 		    responseMessage = ping(request, response);
 		} else if (ACTION_LOGOUT.equals(action)) {
