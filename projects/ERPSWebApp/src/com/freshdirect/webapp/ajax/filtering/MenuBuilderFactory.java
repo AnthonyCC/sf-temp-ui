@@ -1167,12 +1167,12 @@ public class MenuBuilderFactory {
 				
 				MenuBoxData box = it.next();
 				
-				if (!beforeFilterBoxFound) {
-					box.setPosition(position++);
+				if (box.getBoxType() == brandFilterPosition) {
+				    beforeFilterBoxFound = true;
 				}
 				
-				if (box.getBoxType() == brandFilterPosition) {
-					beforeFilterBoxFound = true;
+				if (!beforeFilterBoxFound) {
+					box.setPosition(position++);
 				}
 				
 				if (box.isBrandFilter()) {
