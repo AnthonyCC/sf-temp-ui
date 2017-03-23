@@ -46,6 +46,12 @@
   width: 430px;
 }
 
+.content-module.editorial-module.product-carousel .editorial-content .learn-more button {
+  font-weight: bold;
+  padding: 0;
+  text-decoration: underline;
+}
+
 .content-module.editorial-module.product-carousel .editorial-content .learn-more.visible,
 .content-module.editorial-module.product-carousel .editorial-content .learn-more button.visible[learn-more],
 .content-module.editorial-module.product-carousel .editorial-content .learn-more button.visible[show-less] {
