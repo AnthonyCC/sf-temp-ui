@@ -216,6 +216,7 @@ public interface MessageCodes {
     public static final String ERR_BILL_STATE_REQUIRED_MSG = "Billing State is required.";
     
     public final static String MSG_DONT_DELIVER_TO_ADDRESS_MOB				= "We're sorry; FreshDirect does not deliver to this address.";
+    public final static String MSG_DONT_DELIVER_TO_ADDRESS_MOB_FDX			= "We're sorry; Foodkick does not deliver to this address.";
     public final static String MSG_RESTRICTED_ADDRESS_MOB 					= "We're sorry; FreshDirect does not deliver to this address because it is a commercial building. Unfortunately we are only able to make deliveries to residential buildings. You may enter another address or choose the Pickup option below.";
     
     public static final String MSG_AUTHENTICATION_FAILED = "We're unable to find an account that matches this information. Please double-check your email address and password. If you have forgotten your password, click on the \"Forgot your password?\" link.";

@@ -1379,6 +1379,10 @@ public class CheckoutController extends BaseController {
         }
         responseMessage.addWarningMessages(result.getWarnings());
 
+        if(responseMessage.getErrors().containsKey(MessageCodes.ERR_NO_DELIVERY_ADDRESS) && isWebRequest){
+        	responseMessage.getErrors().put(MessageCodes.ERR_NO_DELIVERY_ADDRESS, MessageCodes.MSG_DONT_DELIVER_TO_ADDRESS_MOB_FDX);
+        }
+        
         setResponseMessage(model, responseMessage, user);
         return model;
     }
