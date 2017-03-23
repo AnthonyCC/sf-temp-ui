@@ -916,6 +916,7 @@ public class FDStoreProperties {
     private static final String PROP_PLANTWDC_PRICE_INDICATOR = "fdstore.plantwdc.price.indicator";
     
     private static final String PROP_MAT_SALESORG__EXPORT_PICKPLANT_VALIDATION_ENABLED ="fdstore.salesarea.exp.pickplant.val.enabled";
+    private static final String PROP_EXTRA_LOG_FOR_LOGIN_FAILS_ENABLED = "fdstore.extralog.login.fail.enabled";
 
     
     private static final String PROP_SF_2_0_ENABLED = "fdstore.storefront_2_0.enabled";
@@ -1739,6 +1740,7 @@ public class FDStoreProperties {
         
         defaults.put(PROP_SF_2_0_ENABLED, "false");
         defaults.put(PROP_MAT_SALESORG__EXPORT_PICKPLANT_VALIDATION_ENABLED, "true");
+        defaults.put(PROP_EXTRA_LOG_FOR_LOGIN_FAILS_ENABLED, "true");
         
         
         refresh();
@@ -4480,5 +4482,9 @@ public class FDStoreProperties {
 
     public static boolean isPickPlantIdReqForMatSalesOrgExport() {
         return (Boolean.valueOf(get(PROP_MAT_SALESORG__EXPORT_PICKPLANT_VALIDATION_ENABLED))).booleanValue();
+    }
+    
+    public static boolean isExtraLogForLoginFailsEnabled() {
+        return (Boolean.valueOf(get(PROP_EXTRA_LOG_FOR_LOGIN_FAILS_ENABLED))).booleanValue();
     }
 }
