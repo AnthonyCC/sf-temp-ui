@@ -27,7 +27,7 @@ import com.freshdirect.webapp.taglib.location.LocationHandlerTag;
 
 public class LocationHandlerService {
 
-    private static LocationHandlerService INSTANCE = new LocationHandlerService();
+    private static final LocationHandlerService INSTANCE = new LocationHandlerService();
     private static final Logger LOGGER = LoggerFactory.getInstance(ModuleHandlingService.class);
 
     public static LocationHandlerService getDefaultService() {
