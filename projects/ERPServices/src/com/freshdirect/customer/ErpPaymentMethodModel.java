@@ -37,6 +37,7 @@ public abstract class ErpPaymentMethodModel extends ModelSupport implements ErpP
 	private String eWalletTrxnId="";
 	private String emailID="";
 	private String deviceId;
+	private boolean isDebitCard;
 	
 	/**
 	 * @return the trxnId
@@ -399,6 +400,14 @@ public abstract class ErpPaymentMethodModel extends ModelSupport implements ErpP
 	@Override
 	public String getDeviceId() {
 		return this.deviceId;
+	}
+
+	public boolean isDebitCard() {
+		return isDebitCard;
+	}
+
+	public void setDebitCard(boolean isDebitCard) {
+		this.isDebitCard = isDebitCard;
 	}
 	
 }
