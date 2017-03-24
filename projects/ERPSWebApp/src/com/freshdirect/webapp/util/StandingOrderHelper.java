@@ -671,7 +671,7 @@ public class StandingOrderHelper {
 		map.put("currentDayOfWeek", map.get("dayOfWeek"));
 		map.put("upComingOrderId", so.getUpcomingDelivery()!=null?so.getUpcomingDelivery().getErpSalesId():null);
 		map.put("isEligileToShowModifyInfo", isEligibleToShowModifyInfo);
-		if(isUpComingDelivery(so)){
+		if(map.get("upComingOrderId")!=null){
 			map.put("addressInfo", so3MatchDeliveryAddress(so,isEligibleToShowModifyInfo));
 			map.put("paymentInfo", isEligibleToShowModifyInfo?so.getPaymentMethod().getAccountNumber():so3MatchPaymentAccount(so,isEligibleToShowModifyInfo)); 
 			map.put("isEligileToShowModifyInfo", isEligibleToShowModifyInfo?true:SO3MatchTimeslot(so));
@@ -795,8 +795,10 @@ public class StandingOrderHelper {
 		try {
 			if(null != user.getIdentity()){
 				standingOrders = isAddtoProduct?getValidSO3(user): FDStandingOrdersManager.getInstance().loadCustomerNewStandingOrders(user.getIdentity());
-			    soData = StandingOrderHelper.convertStandingOrderToSoy(FDStandingOrdersManager.getInstance().getAllSOUpcomingOrders(user, standingOrders), false);
-			    
+				if(!isAddtoProduct)
+					soData = StandingOrderHelper.convertStandingOrderToSoy(FDStandingOrdersManager.getInstance().getAllSOUpcomingOrders(user, standingOrders), false);
+				else
+					soData = StandingOrderHelper.convertStandingOrderToSoy(standingOrders, false);
 			    if(null!=standingOrders && !standingOrders.isEmpty()){
 					for(FDStandingOrder fdStandingOrder:standingOrders){
 						if(fdStandingOrder.isDefault()){
@@ -808,7 +810,7 @@ public class StandingOrderHelper {
 			    
 			    // TO Display current delivery date
 			    populateCurrentDeliveryDate(user,soData);
-			}
+		  }	    
 		} catch (FDResourceException e) {
 			// TODO Auto-generated catch block
 			LOGGER.error("Error While Getting the valid standing Order" + e);
@@ -1114,18 +1116,6 @@ private static String convert(Date time) {
 		}
 		return soDeliveryAddress;
 	}
-
-	private static boolean isUpComingDelivery(FDStandingOrder so) {
-		try {
-			return so.getUpcomingDelivery().getErpSalesId()!=null?true:false;
-			//return so.getAllUpcomingOrders().isEmpty()?false:true;
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			LOGGER.info("while check an Upcoming Delivery " +e);
-		}
-		return false;
-	}
-	
 	
 	private static String so3MatchPaymentAccount(FDStandingOrder so, boolean isEligileToShowModifyInfo) {
 		
@@ -1153,7 +1143,7 @@ private static String convert(Date time) {
 			
 			if(fdOrderI!=null && fdOrderI.getDeliveryReservation()!=null){
 				FDTimeslot fdTimeslot=fdOrderI.getDeliveryReservation().getTimeslot();
-				return compareSO3MatchTimeslot(fdTimeslot, so);
+				return compareSO3Timeslot(fdTimeslot, so);
 			}
 		} catch (FDResourceException e) {
 			// TODO Auto-generated catch block
@@ -1162,7 +1152,7 @@ private static String convert(Date time) {
 		return false; 
 	}
 	
-	 public static boolean compareSO3MatchTimeslot(FDTimeslot slot, FDStandingOrder so){
+	 public static boolean compareSO3Timeslot(FDTimeslot slot, FDStandingOrder so){
 		 boolean isMatch=false;
 	     if(null!=so.getNextDeliveryDate() && null!=so.getStartTime()){
 	    	 
