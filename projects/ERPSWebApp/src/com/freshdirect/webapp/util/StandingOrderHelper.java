@@ -669,6 +669,8 @@ public class StandingOrderHelper {
 		map.put("currentDeliveryDate", map.get("deliveryDate"));
 		map.put("currentDeliveryTime", map.get("deliveryTime"));
 		map.put("currentDayOfWeek", map.get("dayOfWeek"));
+		if(so.isNewSo()&&"Y".equalsIgnoreCase(so.getActivate()))
+			setUpcomingStandingOrder(so);
 		map.put("upComingOrderId", so.getUpcomingDelivery()!=null?so.getUpcomingDelivery().getErpSalesId():null);
 		map.put("isEligileToShowModifyInfo", isEligibleToShowModifyInfo);
 		if(map.get("upComingOrderId")!=null){
@@ -795,9 +797,6 @@ public class StandingOrderHelper {
 		try {
 			if(null != user.getIdentity()){
 				standingOrders = isAddtoProduct?getValidSO3(user): FDStandingOrdersManager.getInstance().loadCustomerNewStandingOrders(user.getIdentity());
-				if(!isAddtoProduct)
-					soData = StandingOrderHelper.convertStandingOrderToSoy(FDStandingOrdersManager.getInstance().getAllSOUpcomingOrders(user, standingOrders), false);
-				else
 					soData = StandingOrderHelper.convertStandingOrderToSoy(standingOrders, false);
 			    if(null!=standingOrders && !standingOrders.isEmpty()){
 					for(FDStandingOrder fdStandingOrder:standingOrders){
@@ -821,10 +820,7 @@ public class StandingOrderHelper {
 			// TODO Auto-generated catch block
 			LOGGER.error("Error While Getting the valid standing Order" + e);
 		}
-		catch (FDAuthenticationException e) {
-					// TODO Auto-generated catch block
-				LOGGER.error("Error While Gettig the upcoming Order" + e);
-		}
+	
         
 
 		soSettings.put("selectedSoId", selectedSoId); 
@@ -1168,4 +1164,19 @@ private static String convert(Date time) {
 		 return isMatch;
 		 
 	 }
+	 
+	 public static void setUpcomingStandingOrder(FDStandingOrder so){
+			List<FDStandingOrder> fdStandingOrder = new ArrayList<FDStandingOrder>();
+			fdStandingOrder.add(so);
+		 try {
+			FDStandingOrdersManager.getInstance().getAllSOUpcomingOrders(so.getUser(), fdStandingOrder);
+		} catch (FDResourceException e) {
+			// TODO Auto-generated catch block
+			LOGGER.info("while the checking setupcomingStandingOrder" +e);
+		} catch (FDAuthenticationException e) {
+			// TODO Auto-generated catch block
+			LOGGER.info("while the checking setupcomingStanidnOrder" +e);
+		}
+	 }
+	 
 }

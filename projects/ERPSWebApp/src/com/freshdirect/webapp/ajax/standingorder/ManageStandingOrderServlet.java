@@ -84,11 +84,6 @@ public class ManageStandingOrderServlet extends HttpServlet {
 				FDStandingOrder so = FDStandingOrdersManager.getInstance().load(
 						new PrimaryKey(soId));
 				FDSessionUser u = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
-				if ("Y".equalsIgnoreCase(so.getActivate())) {
-					List<FDStandingOrder> checkingUpcomingOrder = new ArrayList<FDStandingOrder>();
-					checkingUpcomingOrder.add(so);
-					StandingOrderHelper.convertStandingOrderToSoy(FDStandingOrdersManager.getInstance().getAllSOUpcomingOrders(u, checkingUpcomingOrder), false);
-				}
 				Map<String, Object> returnSO = StandingOrderHelper.convertStandingOrderToSoy(false,so);
 
 				if (u != null) {
