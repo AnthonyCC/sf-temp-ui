@@ -580,7 +580,15 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 		%><div class="locabar-section locabar-user-section" data-signedin="<%= signedIn %>">
       <div id="locabar_user_trigger" class="locabar_triggers" <% if (signedIn || recog) { %>tabindex="0"<% } %> role="menuitem" aria-haspopup="true" data-signedin="<%= signedIn %>" data-recog="<%= recog %>" data-social="<%= FDStoreProperties.isSocialLoginEnabled() %>">
 		        <% if (!signedIn) {%>
-					<a class = "changeBGClr" href="/login/login.jsp" <%if(recog) { %> tabindex="-1" <%}%> fd-login-required fd-login-nosignup fd-login-successpage="/index.jsp">
+					<a id="locabar_user_login_link" class = "changeBGClr" href="/login/login.jsp" <%if(recog) { %> tabindex="-1" <%}%> fd-login-required fd-login-nosignup fd-login-successpage="/index.jsp">
+					<script>
+						$jq('#locabar_user_login_link').on('click', function(e) {
+							var curHref = $jq(this).attr('href'); 
+if (curHref.indexOf('successPage') === -1 && $jq.QueryString['successPage']) {
+								$jq(this).attr('href', curHref+((curHref.indexOf('?')=== -1)?'?':'&')+'successPage='+$jq.QueryString['successPage']);
+							}
+						});
+					</script> 
 		        <% } %>
 					<div class="bold cursor-pointer">
 						<%-- <div class="locabar-user" style="display: inline-block;"></div> --%>

@@ -430,55 +430,61 @@ $jq('.locabar_addresses-anon-deliverable-add-address-btn').on('click', function(
 });
 
 $jq('#locabar_addresses_trigger').on('focus mouseover', function(event) {
-	$jq('.locabar-addresses-section').css('background-color', '#4fa157');
+	$jq('.locabar-addresses-section').css('background-color', '#458d4e');
 	//	$jq("#location-email").removeClass("input-error");
 		//$jq(".error-msg").css("visibility","hidden");
+	if($jq(".locabar-section.locabar-user-section").attr("data-signedin")=="true"){
+			$jq("#locabar_addresses").css("background-color","#fff");
+		}
+		else{
+			$jq("#locabar_addresses").css("background-color","");
+		}
 });
 
 $jq('#locabar_addresses_trigger').on('blur mouseleave', function(event) {
-	$jq('.locabar-addresses-section').css('background-color', '#6AAA6D');
+	$jq('.locabar-addresses-section').css('background-color', '#4fa157');
 });
 
 $jq('#locabar_user_trigger').on('focus mouseover', function(event) {
-	$jq('.locabar-user-section').css('background-color', '#4fa157');
+	$jq('.locabar-user-section').css('background-color', '#458d4e');
 });
 
 $jq('#locabar_user_trigger').on('blur mouseleave', function(event) {
-	$jq('.locabar-user-section').css('background-color', '#6AAA6D');
+	$jq('.locabar-user-section').css('background-color', '#4fa157');
 });
 
 $jq('#locabar_popupcart_trigger').on('focus mouseover', function(event) {
-	$jq('.locabar-popupcart-section').css('background-color', '#4fa157');
+	$jq('.locabar-popupcart-section').css('background-color', '#458d4e');
 });
 
 $jq('#locabar_popupcart_trigger').on('blur mouseleave', function(event) {
-	$jq('.locabar-popupcart-section').css('background-color', '#6AAA6D');
+	$jq('.locabar-popupcart-section').css('background-color', '#4fa157');
 });
 
 $jq('#locabar_modify_order_trigger').on('focus mouseover', function(event) {
-	$jq('.locabar-modify-order-section').css('background-color', '#4fa157');
+	$jq('.locabar-modify-order-section').css('background-color', '#458d4e');
 });
 
 $jq('#locabar_modify_order_trigger').on('blur mouseleave', function(event) {
 	//console.log('blur on locabar_triggers ');
-	$jq('.locabar-modify-order-section').css('background-color', '#6AAA6D');
+	$jq('.locabar-modify-order-section').css('background-color', '#4fa157');
 });
 
 
 $jq('#locabar_messages_trigger').on('focus mouseover', function(event) {
-	$jq('.locabar-messages-section').css('background-color', '#4fa157');
+	$jq('.locabar-messages-section').css('background-color', '#458d4e');
 });
 
 $jq('#locabar_messages_trigger').on('blur mouseleave', function(event) {
-	$jq('.locabar-messages-section').css('background-color', '#6AAA6D');
+	$jq('.locabar-messages-section').css('background-color', '#4fa157');
 });
 
 $jq('.changeBGClr').on('focus mouseover', function(event) {
-	$jq('.locabar-user-section').css('background-color', '#4fa157');
+	$jq('.locabar-user-section').css('background-color', '#458d4e');
 });
 
 $jq('.changeBGClr').on('blur mouseleave', function(event) {
-	$jq('.locabar-user-section').css('background-color', '#6AAA6D');
+	$jq('.locabar-user-section').css('background-color', '#4fa157');
 });
 
 
@@ -562,29 +568,47 @@ $jq(".locabar-modify-order-dropdown-container-modify").keydown(function(e){
 	}
 });
 
-$jq("#locabar_messages_trigger,#locabar_addresses_trigger").on("focusin",function(){
+$jq("#locabar_messages_trigger,#locabar_addresses_trigger,.locabar-tab-fdx-cont").on("focusin",function(){
 	$jq("#locabar_modify_order_trigger #locabar_orders").css("opacity","0");
 	$jq("#locabar_modify_order_trigger #locabar_orders").css("visibility","hidden");
 	//$jq(".error-msg").css("visibility","hidden");
 	//$jq("input").removeClass("input-error");
 });
-$jq("#locabar_messages_trigger,#locabar_user_trigger[data-signedin='false']").on("focusin",function(){
+$jq("#locabar_messages_trigger,#locabar_user_trigger[data-signedin='false']").on("mouseleave",function(){
+//	$jq(".locabar_triggers:not("+this+")").removeClass("hover");
 	$jq(".locabar_triggers").removeClass("hover");
 	$jq("#locabar_addresses").css("visibility","");
 	$jq("#locabar_addresses").css("opacity","");
 	//$jq(".error-msg").css("visibility","hidden");
 	//$jq("input").removeClass("input-error");
-});
+}); 
 
+$jq("#locabar_messages_trigger,#locabar_user_trigger[data-signedin='false']").on("keydown",function(e){
+	var keycode = (event.keyCode ? event.keyCode : event.which);
+	if(keycode == '13'){
+		setTimeout(function(){
+			$jq("#locabar_user_trigger .locabar_triggers_menu.posAbs .section-line:first a").focus();
+		},100);
+		
+		//e.preventDefault();
+		}
+	
+	});
+/*$jq("#locabar_messages_trigger,#locabar_user_trigger,#locabar_user_trigger .changeBGClr").on("focusin",function(){
+	$jq("#locabar_addresses").css("visibility","");
+	$jq("#locabar_addresses").css("opacity","");
+});*/
 //text-box-focs
 //$jq("#newziptext").focus();
+
+
 
 $jq(".locabar-modify-order-dropdown-container-delails:eq(0) ").keydown(function(e){
 	var TABKEY = 9;
 	if (e.which == TABKEY) {
 		if (e.shiftKey) {
-			$jq("#locabar_modify_order_trigger #locabar_orders").css("opacity","0");
-			$jq("#locabar_modify_order_trigger #locabar_orders").css("visibility","hidden");
+			//$jq("#locabar_modify_order_trigger #locabar_orders").css("opacity","0");
+			//$jq("#locabar_modify_order_trigger #locabar_orders").css("visibility","hidden");
 			$jq("#locabar_modify_order_trigger").focus();
 			
 		} else {
@@ -705,13 +729,13 @@ $jq(window).load(function(){
   		var TABKEY = 9;
   		if (e.which == TABKEY) {
   			if (e.shiftKey) {
-  				$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("visibilty","hidden");  
-  				$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("opacity","0");
-  				$jq("#locabar_addresses_trigger").removeClass("hover");
+  				//$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("visibilty","hidden");  
+  				//$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("opacity","0");
+  				//$jq("#locabar_addresses_trigger").removeClass("hover");
   				$jq(this).blur();
   				//$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable input").blur();
   				$jq("#locabar_addresses_trigger").focus();
-  				$jq("#locabar_addresses").hide();
+  				//$jq("#locabar_addresses").hide();
   				
   			} else {
   				return true;
@@ -762,6 +786,12 @@ $jq(window).load(function(){
   			if($jq("#location-alerts #sitemessage").css("display")=="block"){
   	  			$jq("#locabar_addresses").hide();
   	  		}
+  			if($jq(".locabar-section.locabar-user-section").attr("data-signedin")=="true"){
+  				$jq("#locabar_addresses").css("background-color","#fff");
+  			}
+  			else{
+  				$jq("#locabar_addresses").css("background-color","");
+  			}
   			event.preventDefault();
   		}
   	});
