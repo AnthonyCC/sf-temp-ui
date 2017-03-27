@@ -669,7 +669,7 @@ public class StandingOrderHelper {
 		map.put("currentDeliveryDate", map.get("deliveryDate"));
 		map.put("currentDeliveryTime", map.get("deliveryTime"));
 		map.put("currentDayOfWeek", map.get("dayOfWeek"));
-		if(so.isNewSo()&&"Y".equalsIgnoreCase(so.getActivate()))
+		if("Y".equalsIgnoreCase(so.getActivate()))
 			setUpcomingStandingOrder(so);
 		map.put("upComingOrderId", so.getUpcomingDelivery()!=null?so.getUpcomingDelivery().getErpSalesId():null);
 		map.put("isEligileToShowModifyInfo", isEligibleToShowModifyInfo);
@@ -1166,10 +1166,13 @@ private static String convert(Date time) {
 	 }
 	 
 	 public static void setUpcomingStandingOrder(FDStandingOrder so){
-			List<FDStandingOrder> fdStandingOrder = new ArrayList<FDStandingOrder>();
-			fdStandingOrder.add(so);
+			
 		 try {
-			FDStandingOrdersManager.getInstance().getAllSOUpcomingOrders(so.getUser(), fdStandingOrder);
+			 if(isEligibleForSo3_0(so.getUser())){
+				 List<FDStandingOrder> fdStandingOrder = new ArrayList<FDStandingOrder>();
+					fdStandingOrder.add(so);
+				FDStandingOrdersManager.getInstance().getAllSOUpcomingOrders(so.getUser(), fdStandingOrder);
+			 }
 		} catch (FDResourceException e) {
 			// TODO Auto-generated catch block
 			LOGGER.info("while the checking setupcomingStandingOrder" +e);
