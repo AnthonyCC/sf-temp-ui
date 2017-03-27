@@ -103,10 +103,7 @@ public class ManageStandingOrderServlet extends HttpServlet {
 			} catch (HttpErrorResponse e) {
 				LOG.error("Unable to fetch SO with Id:"+ soId, e);
 				throw new ServletException(e);
-			} catch (FDAuthenticationException e) {
-				// TODO Auto-generated catch block
-				LOG.error("while fetch an upcoming order of SOId"+ soId, e);
-			}
+			} 
 		}
 		/*
 		 * try { Map<String, Object> responseData; String actionName =
