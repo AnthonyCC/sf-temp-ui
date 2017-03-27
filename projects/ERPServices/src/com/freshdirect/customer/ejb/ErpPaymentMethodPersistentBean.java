@@ -221,7 +221,7 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 			} else {
 				ps.setNull(index++, Types.VARCHAR);
 			}
-			ps.setString(index++, (model.isDebitCard()==false)?"N":"Y");
+			ps.setString(index++, (model.isDebitCard()==false)?"O":"D");
 			//ps.setString(index++, model.isDebitCard()?"Y":"N");
 
 		//}
