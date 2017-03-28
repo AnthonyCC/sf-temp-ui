@@ -17,14 +17,22 @@ public class FeatureIsActiveTag extends SimpleTagSupport {
 
 	private String name;
 	private String featureName;
+	
+	private static String ENABLEFEATURE_CODE = "999";
 
 	@Override
 	public void doTag() throws JspException, IOException {
 		PageContext context = (PageContext) getJspContext();
-		Cookie[] cookies = ((HttpServletRequest) context.getRequest()).getCookies();
+		HttpServletRequest request = ((HttpServletRequest) context.getRequest());
+		Cookie[] cookies = request.getCookies();
 		FDUserI user = QuickShopHelper.getUserFromSession(context.getSession());
 		EnumRolloutFeature feature = FeaturesService.defaultService().parseFeatureName(featureName);
 		boolean result = FeaturesService.defaultService().isFeatureActive(feature, cookies, user);
+		
+		//This is to allow performance monitoring and other forced feature testing (Added for Keynote HomePageRedesign monitoring but can be used for any)
+		if(request.getParameter(featureName) != null && request.getParameter(featureName).equalsIgnoreCase(ENABLEFEATURE_CODE)) {
+			result = true;
+		}
 		context.setAttribute(name, result);
 	}
 	
