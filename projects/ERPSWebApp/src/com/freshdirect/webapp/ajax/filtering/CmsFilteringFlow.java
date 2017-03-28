@@ -650,11 +650,12 @@ public class CmsFilteringFlow {
                         }
                     }
 
-                } 
+                } else {
+                    updatedPageBeacon.append("none");
+                }
                 if (null != searchResults.getPageBeacon()) {
                     StringBuffer PageBeacon = new StringBuffer(searchResults.getPageBeacon());
                     browseDataContext.getAdProducts().setPageBeacon(PageBeacon.append(updatedPageBeacon).toString());
-                    browseDataContext.getAdProducts().setHlProductsCount(searchResults.getHlProductsCount());
                 }
             } catch (Exception e) {
                 LOG.warn("Exception while populating HookLogic products: ", e);
@@ -871,13 +872,10 @@ public class CmsFilteringFlow {
                 String catId = nav.getId();
                 Map<String, List<ProductData>> hlSelectionsofProductsList=new HashMap<String, List<ProductData>>();
                 Map<String, String> hlSelectionsofPageBeacons=new HashMap<String, String>();
-                Map<String, Integer> hlCatProductsCount=new HashMap<String, Integer>();
                 List<SectionContext> sectionContexts = browseDataContext.getSectionContexts();
-                getAdProductsByCategory(user, navigationModel, catId, hlSelectionsofProductsList, hlSelectionsofPageBeacons, sectionContexts, browseDataContext, hlCatProductsCount);
+                getAdProductsByCategory(user, navigationModel, catId, hlSelectionsofProductsList, hlSelectionsofPageBeacons, sectionContexts, browseDataContext);
                 browseDataContext.getAdProducts().setHlSelectionOfProductList(hlSelectionsofProductsList);
                 browseDataContext.getAdProducts().setHlSelectionsPageBeacons(hlSelectionsofPageBeacons);
-                browseDataContext.getAdProducts().setHlCatProductsCount(hlCatProductsCount);
-                
             }           
         }
 
@@ -958,19 +956,19 @@ public class CmsFilteringFlow {
 		return isExcluded;
 	}
     private void getAdProductsByCategory(FDSessionUser user, NavigationModel navigationModel, String catId, Map<String, List<ProductData>> hlSelectionsofProductsList,
-            Map<String, String> hlSelectionsofPageBeacons, List<SectionContext> sectionContexts, BrowseDataContext browseDataContext, Map<String, Integer> hlCatProductsCount) throws FDResourceException {
+            Map<String, String> hlSelectionsofPageBeacons, List<SectionContext> sectionContexts, BrowseDataContext browseDataContext) throws FDResourceException {
         if (null != sectionContexts) {
             for (Iterator<SectionContext> iterator = sectionContexts.iterator(); iterator.hasNext();) {
                 SectionContext categorySectionsContext = iterator.next();
                 getAdProductsByCategory(user, navigationModel, categorySectionsContext.getCatId(), hlSelectionsofProductsList, hlSelectionsofPageBeacons,
-                        categorySectionsContext.getSectionContexts(), browseDataContext, hlCatProductsCount);
+                        categorySectionsContext.getSectionContexts(), browseDataContext);
             }
-            getAdProductsByCategory(user, navigationModel, catId, hlSelectionsofProductsList, hlSelectionsofPageBeacons, browseDataContext, hlCatProductsCount);
+            getAdProductsByCategory(user, navigationModel, catId, hlSelectionsofProductsList, hlSelectionsofPageBeacons, browseDataContext);
         }
     }
 
     private void getAdProductsByCategory(FDSessionUser user, NavigationModel navigationModel, String catId, Map<String, List<ProductData>> hlSelectionsofProductsList,
-            Map<String, String> hlSelectionsofPageBeacons, BrowseDataContext browseDataContext, Map<String, Integer> hlCatProductsCount) throws FDResourceException {
+            Map<String, String> hlSelectionsofPageBeacons, BrowseDataContext browseDataContext) throws FDResourceException {
 
         HLBrandProductAdRequest hLBrandProductAdRequest = new HLBrandProductAdRequest();
         hLBrandProductAdRequest.setUserId(user.getUser().getPK().getId());
@@ -988,8 +986,6 @@ public class CmsFilteringFlow {
             List<ProductModel> adPrducts = new ArrayList<ProductModel>();
 
             if (hlBrandAdProductsMeta != null) {
-            	hlCatProductsCount.put(catId, hlBrandAdProductsMeta.size());
-            	
                 for (Iterator<HLBrandProductAdInfo> iterator = hlBrandAdProductsMeta.iterator(); iterator.hasNext();) {
                     HLBrandProductAdInfo hlBrandProductAdMetaInfo = iterator.next();
                     hlBrandProductAdMetaInfo.setPageBeacon(hlBrandProductAdResponse.getPageBeacon());
