@@ -77,6 +77,9 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     	FDSessionUser sessionuser = null;
         try {
         	sessionuser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
+        	BINCache binCache = BINCache.getInstance();
+	        boolean isDebitCard = binCache.isDebitCard(paymentMethod.getAccountNumber(), EnumCardType.VISA)||binCache.isDebitCard(paymentMethod.getAccountNumber(), EnumCardType.MC);
+	        paymentMethod.setDebitCard(isDebitCard);
             FDCustomerManager.addPaymentMethod(info, paymentMethod, sessionuser.isPaymentechEnabled());
         } catch (ErpPaymentMethodException ex) {
             /*LOGGER.debug(ex);
