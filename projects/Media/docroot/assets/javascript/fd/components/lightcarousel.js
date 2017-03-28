@@ -37,6 +37,10 @@ var FreshDirect = FreshDirect || {};
 
     carousel.removeClass('first').removeClass('last');
 
+    elements.each(function(index, element) {
+      $(element).attr('carousel-page-number', Math.floor(index / itemPerPage) + 1);
+    });
+
     if (direction === "next") {
       newPage = nrPages - 1 > currentPage ? currentPage + 1 : nrPages - 1;
     } else if (direction === "prev") {

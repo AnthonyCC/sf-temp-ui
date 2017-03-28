@@ -17,17 +17,7 @@
   		{call common.simpleCarousel}
   			{param isIconCarousel: true /}
   			{param items: $data.icons /}
-  			{param showViewAllButton: $moduleData.showViewAllButton /}
-        {param useViewAllPopup: $moduleData.useViewAllPopup /}
-        {param moduleId: $moduleData.moduleId /}
-  			{param viewAllLink: $moduleData.viewAllButtonLink /}
-  			{param accessibilityText}
-  				{if $moduleData.contentTitle}
-  					{$moduleData.contentTitle}
-  				{else}
-  					{$moduleData.moduleTitle}
-  				{/if}
-  			{/param}
+        {param moduleData: $moduleData /}
   			{param itemType:'grid' /}
   		{/call}
   	</div>
