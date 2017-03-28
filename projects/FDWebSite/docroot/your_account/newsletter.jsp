@@ -22,15 +22,15 @@ ErpCustomerInfoModel custInfo = FDCustomerFactory.getErpCustomerInfo(identity);%
 		<form name="reminder_signup" method="POST">
 			<tr>
 				<td colspan="2" class="text12" valign="top">
-					<font class="title18">President's Picks: Great deals, direct to your inbox</font><br>
+					<font class="title18">Fresh Deals: Great deals, direct to your inbox</font><br>
 					Each week, we choose a few of our favorite products and decree savings up to 50% off. 
 					Some might call it an abuse of pricing power. You'll call it a great way to shop and save. 
 					Sign up here, and we'll email you our picks &mdash; and special prices &mdash; each week.
 					<br><img src="/media_stat/images/layout/clear.gif" width="1" height="20" border="0"><br>
-					<span class="title14"><strong>SUBSCRIBE TO PRESIDENT'S PICKS</strong></span>
+					<span class="title14"><strong>SUBSCRIBE TO FRESH DEALS</strong></span>
 					<br><img src="/media_stat/images/layout/clear.gif" width="1" height="15" border="0">
 				</td>
-				<td rowspan="4" align="center" style="padding-left:20px;"><a href="/newsletter.jsp?catId=picks_love"><img src="/media/editorial/picks/pres_picks/img/pres_picks_preview.jpg" border="0" alt="President's Picks Newsletter"><br><br><strong>Click here for this week's picks.</strong></a></td>
+				<td rowspan="4" align="center" style="padding-left:20px;"><a href="/newsletter.jsp?catId=picks_love"><img src="/media/editorial/picks/pres_picks/img/pres_picks_preview.jpg" border="0" alt="Fresh Deals Newsletter"><br><br><strong>Click here for this week's picks.</strong></a></td>
 			</tr>
 			<tr valign="top">
 				<td class="text12" align="right" style="padding-right:5px;"><input type="radio" name="sendOptinNewsletter" value="yes" <%= custInfo.isReceiveOptinNewsletter() ? "checked=\"true\"" : "" %>/></td>

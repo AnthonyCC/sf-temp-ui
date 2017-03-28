@@ -89,8 +89,7 @@ Helvetica, sans-serif; font-size:11px; color:#76973E; font-weight:bold;
 letter-spacing:0px" align="left">|</td>
                                 <td style="font-family:Verdana, Arial, Helvetica,
 sans-serif; font-size:12px; color:#76973E; font-weight:bold;
-letter-spacing:0px;" align="center"><a style="color:#76973E; text-decoration:none;" href="https://www.freshdirect.com/srch.jsp?pageType=pres_picks&amp;id=picks_love">PRESIDENT'S
-PICKS</a>
+letter-spacing:0px;" align="center"><a style="color:#76973E; text-decoration:none;" href="https://www.freshdirect.com/srch.jsp?pageType=pres_picks&amp;id=picks_love">FRESH DEALS</a>
                                 </td>
                                 <td style="font-family:Verdana, Arial,
 Helvetica, sans-serif; font-size:11px; color:#76973E; font-weight:bold;

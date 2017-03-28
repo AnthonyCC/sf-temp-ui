@@ -19,11 +19,18 @@
 	</div>
 	<script type="text/javascript">
 		if (!window['initAddThis']) {
+			window['initAddThisCounter'] = 60;
 			window['initAddThis'] = function() {
-				if (addthis) {
-					addthis.init();	
+				if (window['addthis']) {
+					//addthis.init();	
 				} else {
-					setTimeout(initAddThis, 500);
+					/* limit to 30 secs before giving up */
+					if (window['initAddThisCounter'] && window['initAddThisCounter']-- > 0) {
+						setTimeout(initAddThis, 500);
+					} else {
+						window['initAddThis'] = null;
+						window['initAddThisCounter'] = null;
+					}
 				}
 			}
 			$jq(document).ready(function () { initAddThis(); });

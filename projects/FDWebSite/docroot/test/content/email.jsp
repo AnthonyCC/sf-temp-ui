@@ -19,7 +19,7 @@
 <%@ include file="/includes/i_dynamicRows_required.jspf" %>
 <html>
 <head>
-<title>FreshDirect - President's Picks</title>
+<title>FreshDirect - Fresh Deals</title>
 <fd:css href="/assets/css/pc_ie.css"/>
 </head>
 <%

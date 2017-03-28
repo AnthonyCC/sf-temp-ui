@@ -487,7 +487,7 @@ public class CmsFilteringFlow {
                 }
                 break;
             case PRES_PICKS:
-                descriptiveContent.setPageTitle("FreshDirect - President's Picks");
+                descriptiveContent.setPageTitle("FreshDirect - Fresh Deals");
                 ContentNodeModel node = ContentFactory.getInstance().getContentNode(nav.getId());
                 if (node != null)
                     descriptiveContent.setOasSitePage(node.getPath());

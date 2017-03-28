@@ -110,7 +110,7 @@
                         <td colspan="2"><input type="checkbox" name="textOnlyEmail" <%=customerInfo.isTextOnlyEmail() ? "checked" : "" %>> Please send me text-only email</td>
                     </tr>
                     <tr>
-                        <td colspan="2"><input type="checkbox" name="receiveOptinNewsletter" <%=customerInfo.isReceiveOptinNewsletter() ? "checked" : "" %>> Please include me on the President's Picks newsletter</td>
+                        <td colspan="2"><input type="checkbox" name="receiveOptinNewsletter" <%=customerInfo.isReceiveOptinNewsletter() ? "checked" : "" %>> Please include me on the Fresh Deals newsletter</td>
                     </tr>
 					<tr>
                         <td colspan="2" align="center"><br><b>Mobile Options:</b><hr class="black1px"></td>
