@@ -1101,7 +1101,7 @@ private static String convert(Date time) {
 		try {
 			FDOrderInfoI fdOrderInfoI=so.getUpcomingDelivery();
 	        FDReservation fDReservation=FDCustomerManager.getOrder(fdOrderInfoI.getErpSalesId()).getDeliveryReservation();
-	        soDeliveryAddress =so.getDeliveryAddress()!=null?(so.getDeliveryAddress().getScrubbedStreet() +","+so.getDeliveryAddress().getZipCode()):null;
+	        soDeliveryAddress =so.getDeliveryAddress()!=null?(so.getDeliveryAddress().getScrubbedStreet() +", "+so.getDeliveryAddress().getCity()+" "+so.getDeliveryAddress().getState() +so.getDeliveryAddress().getZipCode()):null;
 	        if(!so.getAddressId().equalsIgnoreCase(fDReservation!=null?fDReservation.getAddressId():""))
 	        	{ isEligileToShowModifyInfo=true;
 	        	   return soDeliveryAddress;	
@@ -1175,10 +1175,10 @@ private static String convert(Date time) {
 			 }
 		} catch (FDResourceException e) {
 			// TODO Auto-generated catch block
-			LOGGER.info("while the checking setupcomingStandingOrder" +e);
+			LOGGER.info("while the setupcomingStandingOrder" +e);
 		} catch (FDAuthenticationException e) {
 			// TODO Auto-generated catch block
-			LOGGER.info("while the checking setupcomingStanidnOrder" +e);
+			LOGGER.info("while the setupcomingStanidnOrder" +e);
 		}
 	 }
 	 
