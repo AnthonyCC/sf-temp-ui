@@ -995,7 +995,42 @@
 	font-size: 27px;
 	vertical-align: inherit;
 }
-
+.standing-orders-3 #cartcontent .cartetip .cartsection__tax form{
+	float: none;
+}
+.standing-orders-3 #cartcontent .cartetip .subtotal__rowcell-left{
+	display: block;
+	width: auto;
+	text-align: initial;	
+}
+.standing-orders-3 #cartcontent .cartetip .subtotal__rowcell-left .strl_text{
+	float: none;
+	font-size: 22px;
+}
+.standing-orders-3 #cartcontent .cartetip .subtotal__rowcell-left .strl_text:after{
+	content: "";
+}
+.standing-orders-3 #cartcontent .cartetip .subtotal__rowcell-left #optionalToolTip{
+	vertical-align: super;
+}
+.standing-orders-3 #cartcontent .cartetip .cartetip-container{
+	width: 200px;
+	padding: 20px 0 20px 45px;
+	border-top: 1px solid #e0e3d0;
+	border-bottom: 1px solid #e0e3d0;
+	text-align: left;
+	background: #FFFFFF;
+}
+.standing-orders-3 #cartcontent .cartetip .cartetip-container label{
+	display: inline-block;
+}
+.standing-orders-3 #cartcontent .cartetip .cartetip-container button{
+	width: 153px;
+	margin: 5px 0 0;
+}
+.standing-orders-3 #cartcontent .cartetip .cartetip-container #tipAppliedTick{
+	padding: 0 0 0 5px;
+}
 .standing-orders-3 .standing-orders-3-so-settings-activate{
 	display: none;
 	padding: 0 0 25px;
