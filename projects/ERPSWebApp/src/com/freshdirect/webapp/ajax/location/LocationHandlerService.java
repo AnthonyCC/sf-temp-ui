@@ -46,7 +46,7 @@ public class LocationHandlerService {
 
             StateCounty stateCounty = FDDeliveryManager.getInstance().lookupStateCountyByZip(zipCode);
             if (stateCounty == null) {
-                LOGGER.info("stateCountry is null for zip: " + zipCode);
+                LOGGER.info("stateCounty is null for zip: " + zipCode);
             } else {
                 address.setState(WordUtils.capitalizeFully(stateCounty.getState()));
                 address.setCity(WordUtils.capitalizeFully(stateCounty.getCity()));

@@ -35,8 +35,7 @@
       FDSessionUser sessionUser = (FDSessionUser) jsUser;
       boolean hideZipCheckPopup = (jsUser.getLevel() != FDSessionUser.GUEST || jsUser.isZipCheckPopupUsed() || sessionUser.isZipPopupSeenInSession());
       
-      if (!hideZipCheckPopup)
-      {
+      if (!hideZipCheckPopup){
           sessionUser.setZipPopupSeenInSession(true);
       }
       

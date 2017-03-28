@@ -163,7 +163,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
     private boolean isSoContainerOpen = false;
 
-    private boolean isZipPopupSeenInSession = false;
+    private boolean zipPopupSeenInSession = false;
 
     @Override
     public boolean isSoContainerOpen() {
@@ -2237,11 +2237,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     }
 
     public boolean isZipPopupSeenInSession() {
-        return isZipPopupSeenInSession;
+        return zipPopupSeenInSession;
     }
 
-    public void setZipPopupSeenInSession(boolean isZipPopupSeenInSession) {
-        this.isZipPopupSeenInSession = isZipPopupSeenInSession;
+    public void setZipPopupSeenInSession(boolean ZipPopupSeenInSession) {
+        this.zipPopupSeenInSession = ZipPopupSeenInSession;
     }
 
 }
