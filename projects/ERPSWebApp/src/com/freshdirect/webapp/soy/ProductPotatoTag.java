@@ -143,12 +143,12 @@ public class ProductPotatoTag extends SimpleTagSupport {
 
 	        return new VariableInfo[] {
 	            new VariableInfo(
-	            		data.getAttributeString( "name" ),
+	            		data.getAttributeString( "name" )!=null?data.getAttributeString( "name" ):"dummy_name",
 	            		"java.util.Map<String,?>",
 	            		true, 
 	            		VariableInfo.AT_BEGIN ),
 	            new VariableInfo(
-	            		data.getAttributeString( "extraName" ),
+	            		data.getAttributeString( "extraName" )!=null?data.getAttributeString( "extraName" ):"dummy_extra_name",
 	            		"java.util.Map<String,?>",
 	            		true, 
 	            		VariableInfo.AT_BEGIN )
