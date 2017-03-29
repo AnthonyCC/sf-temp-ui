@@ -69,7 +69,7 @@ final int W_CHECKOUT_STEP_2_UNAVAIL_TOTAL = 970;
 </div>
 
 <form id="atpfailureform" name="atpfailure" method="POST" data-component="atpform" action="/checkout/step_2_adjust.jsp">
-	<input type="checkbox" checked="checked" name="successPage" value='/checkout/step_2_check.jsp?successPage=<c:url value="${param.successPage}")/>' />
+	<input type="checkbox" checked="checked" name="successPage" value='/checkout/step_2_check.jsp?successPage=<c:url value='${param.successPage}'/>' />
 </form>
 
 <script>
