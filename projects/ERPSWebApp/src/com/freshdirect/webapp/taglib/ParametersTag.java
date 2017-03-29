@@ -93,9 +93,9 @@ public class ParametersTag extends BodyTagSupportEx {
 	}
 
 	public static class TagEI extends TagExtraInfo {
-		@Override
+		/*@Override
 		public VariableInfo[] getVariableInfo(TagData data) {
 			return new VariableInfo[] { declareVariableInfo(data.getAttributeString("id"), ParametersTag.class, VariableInfo.AT_BEGIN) };
-		}
+		}*/
 	}
 }
