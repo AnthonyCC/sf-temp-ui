@@ -1,5 +1,5 @@
 <%@ taglib uri='template' prefix='tmpl' %>
-<%@ taglib uri='template' prefix='tmpl' %>
+
 <%@ page import='com.freshdirect.fdstore.content.*'  %>
 
 <%
