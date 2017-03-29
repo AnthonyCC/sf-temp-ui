@@ -15,7 +15,7 @@
 <%@ page import='com.freshdirect.framework.util.*' %>
 <%@ page import='com.freshdirect.fdstore.util.*' %>
 <%@ page import='com.freshdirect.content.nutrition.*' %>
-<%@ page import='com.freshdirect.fdstore.atp.*';%>
+<%@ page import='com.freshdirect.fdstore.atp.*'%>
 <%@ page import="com.freshdirect.fdstore.ecoupon.EnumCouponContext"%>
 
 <%@ taglib uri='template' prefix='tmpl' %>
