@@ -793,6 +793,11 @@
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>filterCoupons</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
 	</tag>
 
 	<tag>
@@ -1011,6 +1016,11 @@
 		</attribute>
 		<attribute>
 			<name>altDeliveryCorporatePage</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>serviceType</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -4845,7 +4855,7 @@
 	<tag>
 		<name>ProductLayoutCollector</name>
 		<tagclass>com.freshdirect.webapp.taglib.test.ProductLayoutCollectorTag</tagclass>
-		<bodycontent>JSP</bodycontent>
+		<bodycontent>tagdependent</bodycontent>
 		<info></info>
 	</tag>
 
@@ -5006,6 +5016,11 @@
 		</attribute>
 		<attribute>
 			<name>returnAsJson</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>wineFilterValue</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -5360,6 +5375,7 @@
 	<tag>
 		<name>YoutubeVideoTag</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.YoutubeVideoTag</tagclass>
+		<bodycontent>EMPTY</bodycontent>
 		<info></info>
 		<attribute>
 			<name>attrName</name>
@@ -5375,6 +5391,7 @@
 	<tag>
 		<name>AnalyticsInit</name>
 		<tagclass>com.freshdirect.webapp.taglib.AnalyticsInitTag</tagclass>
+		<bodycontent>EMPTY</bodycontent>
 		<info></info>
 	</tag>
 	<tag>
@@ -5680,6 +5697,7 @@
 	<tag>
 		<name>Sitemap</name>
 		<tagclass>com.freshdirect.webapp.taglib.sitemap.SitemapTag</tagclass>
+		<bodycontent>EMPTY</bodycontent>
 	</tag>
 	<tag>
 		<name>ExternalAccountController</name>
@@ -5711,6 +5729,11 @@
         </attribute>
         <attribute>
             <name>result</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>actionName</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
