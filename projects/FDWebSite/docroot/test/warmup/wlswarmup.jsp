@@ -18,7 +18,7 @@
 		
 String q = request.getParameter("q");
 if ("WLS".equals(q)) {
-	new WLSWarmup().postStart(null);
+	//new WLSWarmup().postStart(null);
 	%>WLSWarmup started...<%
 } else if ("StoreVisitor".equals(q)) {
 	boolean excerciseGetters = Boolean.valueOf(request.getParameter("excerciseGetters")).booleanValue();
