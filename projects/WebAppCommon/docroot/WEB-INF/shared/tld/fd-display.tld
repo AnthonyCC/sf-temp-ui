@@ -107,7 +107,12 @@
 		<name>coupon</name>
 		<required>false</required>
 		<rtexprvalue>true</rtexprvalue>
-	</attribute>	
+	</attribute>
+	<attribute>
+		<name>burstOptions</name>
+		<required>false</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
  </tag>
  <tag>
   <name>SimpleProductImage</name>
@@ -530,6 +535,11 @@
   </attribute>
   <attribute>
    <name>showOnly</name>
+   <rtexprvalue>true</rtexprvalue>
+   <required>false</required>
+  </attribute>
+  <attribute>
+   <name>skuCode</name>
    <rtexprvalue>true</rtexprvalue>
    <required>false</required>
   </attribute>
@@ -1343,7 +1353,7 @@
  <tag>
   <name>ProductContainerLink</name>
   <tagclass>com.freshdirect.webapp.taglib.menu.ProductContainerLinkTag</tagclass>
-  <bodycontent>JSP</bodycontent>
+  <bodycontent>tagdependent</bodycontent>
   <attribute>
    <name>productContainer</name>
    <required>true</required>
