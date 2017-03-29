@@ -1,5 +1,4 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
-<%@page import="com.certicom.tls.record.alert.Alert"%>
 <%@page
 	import="com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag"%>
 <%@ page import="java.net.*,java.util.HashMap"%>
