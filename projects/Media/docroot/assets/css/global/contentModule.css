@@ -5,6 +5,10 @@
   margin-top: 27px;
 }
 
+.content-module.single-module {
+  margin-top: 0px;
+}
+
 .content-module .content {
   border: 2px solid #F2F3F4;
   border-top: 0;

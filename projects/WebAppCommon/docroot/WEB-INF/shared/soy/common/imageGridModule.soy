@@ -6,7 +6,7 @@
  */
 {template .imageGridModule}
 {if $data.imageGridData}
-  <div class="content-module image-grid-module" id="{$moduleData.moduleId}">
+  <div class="content-module image-grid-module {if $moduleData.moduleTitle}single-module{/if}" id="{$moduleData.moduleId}">
   	{call common.moduleHeader}
   		{param content: $moduleData /}
   	{/call}
