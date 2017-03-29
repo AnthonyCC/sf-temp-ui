@@ -3,7 +3,7 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import="com.freshdirect.webapp.util.ProductImpression"%>
 <%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
-<%@ taglib uri='/WEB-INF/shared/tld/freshdirect.tld' prefix='fd' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <fd:CheckLoginStatus id="user"/>
 <html>
