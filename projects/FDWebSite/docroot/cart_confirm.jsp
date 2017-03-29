@@ -6,7 +6,7 @@
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import="com.freshdirect.common.pricing.*" %>
 <%@ page import="com.freshdirect.fdstore.ecoupon.*" %>
-<%@ page import='com.freshdirect.fdstore.atp.FDLimitedAvailabilityInfo';%>
+<%@ page import='com.freshdirect.fdstore.atp.FDLimitedAvailabilityInfo'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='java.util.*' %>
 <%@ taglib uri='template' prefix='tmpl' %>
