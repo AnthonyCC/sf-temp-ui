@@ -18,7 +18,7 @@ This include expects the following:
 <%@ page import='com.freshdirect.framework.util.DayOfWeekSet' %>
 <%@ page import="com.freshdirect.common.pricing.ZoneInfo"%>
 <%@ taglib uri="logic" prefix="logic" %>
-<%@ taglib uri='/WEB-INF/shared/tld/freshdirect.tld' prefix='fd' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
 <%!
