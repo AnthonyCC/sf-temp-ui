@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import javax.ejb.EJBException;
+
 import org.junit.Test;
 
 import com.freshdirect.common.address.AddressModel;
@@ -65,8 +67,8 @@ public class DeliveryAddressValidatorTest {
 		assertNotNull(validator.getScrubbedAddress().getScrubbedStreet());
 		assertNotNull(validator.getServiceResult().getAvailableServices());
 		assertEquals("281 N HIGHLAND AVE", validator.getScrubbedAddress().getScrubbedStreet());
-		assertEquals(-75.274421, validator.getScrubbedAddress().getLongitude(),validator.getScrubbedAddress().getLongitude());
-		assertEquals(39.948805, validator.getScrubbedAddress().getLatitude(),validator.getScrubbedAddress().getLongitude());
+		assertEquals(-75.274421, validator.getScrubbedAddress().getLongitude(),new Double(0.1));
+		assertEquals(39.948805, validator.getScrubbedAddress().getLatitude(),new Double(0.1));
 	}
 	
 	@Test
@@ -112,8 +114,8 @@ public class DeliveryAddressValidatorTest {
 		assertNotNull(validator.getScrubbedAddress().getScrubbedStreet());
 		assertNotNull(validator.getServiceResult().getAvailableServices());
 		assertEquals("281 N HIGHLAND AVE", validator.getScrubbedAddress().getScrubbedStreet());
-		assertEquals(-75.274421, validator.getScrubbedAddress().getLongitude(),validator.getScrubbedAddress().getLongitude());
-		assertEquals(39.948805, validator.getScrubbedAddress().getLatitude(),validator.getScrubbedAddress().getLongitude());
+		assertEquals(-75.274421, validator.getScrubbedAddress().getLongitude(),new Double(0.1));
+		assertEquals(39.948805, validator.getScrubbedAddress().getLatitude(),new Double(0.1));
 	}
 
 
