@@ -1,6 +1,9 @@
 .content-module {
   font-family: 'Brandon Text';
 }
+.content-module+.content-module {
+  margin-top: 27px;
+}
 
 .content-module .content {
   border: 2px solid #F2F3F4;
