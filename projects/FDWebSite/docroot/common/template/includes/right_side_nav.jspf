@@ -22,6 +22,8 @@
 <% try{ %>
 <div align="right"><tmpl:get name='banner'/></div>
 <%@ include file="/includes/i_promotion_counter.jspf" %>
+<%
+com.freshdirect.webapp.taglib.ParametersTag params = null;%>
 <fd:Parameters id="params">
 <%
 if (FDStoreProperties.isAdvertisingTileEnabled() &&
