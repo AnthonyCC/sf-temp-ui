@@ -35,25 +35,31 @@
 String id = request.getParameter("id");
 if (id==null || id.equals("")){
 	String[] depts = new String[]{"fru","veg","mea","sea","del","che","dai","gro","fro","fdi","rtc","hmr","bak","cat","flo","pet","pas","cof","hba","big"};
-
+	java.lang.Integer productImageWidth = null;
+    java.lang.Integer productImageHeight = null;
 	for (String dept : depts){
 		DepartmentModel deptModel = (DepartmentModel) ContentFactory.getInstance().getContentNode(FDContentTypes.DEPARTMENT, dept);
 		%><%@ include file="i_dept_recommender.jspf" %><%
 	}	
 } else {
-	ContentNodeModel node = ContentFactory.getInstance().getContentNode(id);
 	
+	ContentNodeModel node = ContentFactory.getInstance().getContentNode(id);
 	if (node instanceof DepartmentModel){
+		java.lang.Integer productImageWidth = null;
+	    java.lang.Integer productImageHeight = null;
 		DepartmentModel deptModel= (DepartmentModel) node;
 		%><%@ include file="i_dept_recommender.jspf" %><%
 	
 	} else if (node instanceof CategoryModel){
+		java.lang.Integer productImageWidth = null;
+	    java.lang.Integer productImageHeight = null;
 		CategoryModel catModel= (CategoryModel) node;
-		
 		%><h2><%=catModel.getFullName()%></h2>
 		<div style="border: 1px orange solid; margin:15px">
 		<h3>Merchant Recommender: <%=catModel.getCatMerchantRecommenderTitle()%></h3>
-		<%for (ProductModel p : ProductRecommenderUtil.getMerchantRecommenderProducts(catModel)) {%>
+		<%
+		for (ProductModel p : ProductRecommenderUtil.getMerchantRecommenderProducts(catModel)) {%>
+			
 			<div style="display: inline-block;width: 120px"">
 				<display:ProductImage product='<%=p%>' />
 				<display:ProductName product='<%=p%>' />
