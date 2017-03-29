@@ -42,13 +42,13 @@
 				</ul>
 
 				<ul class="column span-5 stand last">
-					<c:forEach var="category" items="${subCats}" begin="${(subCatCnt + 3) / 2}">
+					<c:forEach var="category1" items="${subCats}" begin="${(subCatCnt + 3) / 2}">
 						<li>
-							<jsp:useBean id="category" type="CategoryModel" /> 
-							<display:ProductContainerLink productContainer="<%=category%>" trackingCode="home" >
-								<jsp:useBean id="category" type="CategoryModel" />
-								<display:GlobalMenuIcon productContainer="<%=category%>" /> 
-								<c:out value="${category.fullName}" />
+							<jsp:useBean id="category1" type="CategoryModel" /> 
+							<display:ProductContainerLink productContainer="<%=category1%>" trackingCode="home" >
+								<jsp:useBean id="category1" type="CategoryModel" />
+								<display:GlobalMenuIcon productContainer="<%=category1%>" /> 
+								<c:out value="${category1.fullName}" />
 							</display:ProductContainerLink>
 						</li>
 					</c:forEach>
