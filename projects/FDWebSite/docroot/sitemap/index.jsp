@@ -18,7 +18,7 @@
 
 	<fd:Sitemap />
 	<c:choose>
-		<c:when test="<%=!FDStoreProperties.isSiteMapEnabled()%>}">
+		<c:when test="<%=!FDStoreProperties.isSiteMapEnabled()%>">
 			Sitemap is disabled
 		</c:when>		
 		<c:when test="${empty siteMapData}">
