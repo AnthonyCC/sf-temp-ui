@@ -261,6 +261,7 @@
 	<tag>
 		<name>unavailability</name>
 		<tagclass>com.freshdirect.webapp.ajax.checkout.UnavailabilityPotatoTag</tagclass>
+		<body-content>EMPTY</body-content>
 		<attribute>
 			<name>name</name>
 			<required>false</required>
