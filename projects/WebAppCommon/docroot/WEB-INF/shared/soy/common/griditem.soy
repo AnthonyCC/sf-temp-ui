@@ -335,12 +335,12 @@
 	<div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
 	  <a href="{$productPageUrl}" class="portrait-item-image-link" data-cmcarouselinfo="
     {if $productName}{$productName}{/if}
-    {if $moduleData.moduleId},{$moduleData.moduleId}{/if}
-    {if $moduleData.moduleTitle}-_-{$moduleData.moduleTitle}{/if}
-    {if $moduleData.moduleTitleTextBanner}-_-{$moduleData.moduleTitleTextBanner}{/if}
-    {if $moduleData.contentTitle}-_-{$moduleData.contentTitle}{/if}
-    {if $moduleData.moduleGroupTitle}-_-{$moduleData.moduleGroupTitle}{/if}
-    {if $moduleData.moduleGroupTitleTextBanner}-_-{$moduleData.moduleGroupTitleTextBanner}{/if}">
+    {if $moduleData and $moduleData.moduleId},{$moduleData.moduleId}{else},{/if}
+    {if $moduleData and $moduleData.moduleTitle}-_-{$moduleData.moduleTitle}{/if}
+    {if $moduleData and $moduleData.moduleTitleTextBanner}-_-{$moduleData.moduleTitleTextBanner}{/if}
+    {if $moduleData and $moduleData.contentTitle}-_-{$moduleData.contentTitle}{/if}
+    {if $moduleData and $moduleData.moduleGroupTitle}-_-{$moduleData.moduleGroupTitle}{/if}
+    {if $moduleData and $moduleData.moduleGroupTitleTextBanner}-_-{$moduleData.moduleGroupTitleTextBanner}{/if}">
 		<div class="portrait-item-burst_wrapper">
 			<img src="{$productImage}" alt="Product Image - {$productName}" class="portrait-item-productimage" {if not $discontinued}data-product-url="{$productPageUrl}"{/if}>
 			{call common.bursts}{param badge:$badge /}{param deal:$deal /}{param usq:$usq /}{/call}
@@ -359,12 +359,12 @@
 		{else}
 			<a href="{$productPageUrl}" class="portrait-item-header-name" data-cmcarouselinfo="
       {if $productName}{$productName}{/if}
-      {if $moduleData.moduleId},{$moduleData.moduleId}{/if}
-      {if $moduleData.moduleTitle}-_-{$moduleData.moduleTitle}{/if}
-      {if $moduleData.moduleTitleTextBanner}-_-{$moduleData.moduleTitleTextBanner}{/if}
-      {if $moduleData.contentTitle}-_-{$moduleData.contentTitle}{/if}
-      {if $moduleData.moduleGroupTitle}-_-{$moduleData.moduleGroupTitle}{/if}
-      {if $moduleData.moduleGroupTitleTextBanner}-_-{$moduleData.moduleGroupTitleTextBanner}{/if}"><b>{$brandName}</b> <div class="product-name-no-brand">{$productNameNoBrand}</div></a>
+      {if $moduleData and $moduleData.moduleId},{$moduleData.moduleId}{else},{/if}
+      {if $moduleData and $moduleData.moduleTitle}-_-{$moduleData.moduleTitle}{/if}
+      {if $moduleData and $moduleData.moduleTitleTextBanner}-_-{$moduleData.moduleTitleTextBanner}{/if}
+      {if $moduleData and $moduleData.contentTitle}-_-{$moduleData.contentTitle}{/if}
+      {if $moduleData and $moduleData.moduleGroupTitle}-_-{$moduleData.moduleGroupTitle}{/if}
+      {if $moduleData and $moduleData.moduleGroupTitleTextBanner}-_-{$moduleData.moduleGroupTitleTextBanner}{/if}"><b>{$brandName}</b> <div class="product-name-no-brand">{$productNameNoBrand}</div></a>
 		{/if}
 	{else}
 		{if $discontinued}
@@ -372,12 +372,12 @@
 		{else}
 			<a href="{$productPageUrl}" class="portrait-item-header-name" data-cmcarouselinfo="
       {if $productName}{$productName}{/if}
-      {if $moduleData.moduleId},{$moduleData.moduleId}{/if}
-      {if $moduleData.moduleTitle}-_-{$moduleData.moduleTitle}{/if}
-      {if $moduleData.moduleTitleTextBanner}-_-{$moduleData.moduleTitleTextBanner}{/if}
-      {if $moduleData.contentTitle}-_-{$moduleData.contentTitle}{/if}
-      {if $moduleData.moduleGroupTitle}-_-{$moduleData.moduleGroupTitle}{/if}
-      {if $moduleData.moduleGroupTitleTextBanner}-_-{$moduleData.moduleGroupTitleTextBanner}{/if}">{$productName}</a>
+      {if $moduleData and $moduleData.moduleId},{$moduleData.moduleId}{else},{/if}
+      {if $moduleData and $moduleData.moduleTitle}-_-{$moduleData.moduleTitle}{/if}
+      {if $moduleData and $moduleData.moduleTitleTextBanner}-_-{$moduleData.moduleTitleTextBanner}{/if}
+      {if $moduleData and $moduleData.contentTitle}-_-{$moduleData.contentTitle}{/if}
+      {if $moduleData and $moduleData.moduleGroupTitle}-_-{$moduleData.moduleGroupTitle}{/if}
+      {if $moduleData and $moduleData.moduleGroupTitleTextBanner}-_-{$moduleData.moduleGroupTitleTextBanner}{/if}">{$productName}</a>
 		{/if}
 	{/if}
 	<div class="rating">
