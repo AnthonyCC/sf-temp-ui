@@ -918,7 +918,7 @@ public class ProductImageTag extends BodyTagSupport {
         }
     }
 
-    public static class TagEI extends TagExtraInfo {
+    public static class TagEI extends TagExtraInfo {/*
         public VariableInfo[] getVariableInfo(TagData data) {
             return new VariableInfo[] {
                 new VariableInfo(imageWidthVariableName, "java.lang.Integer",
@@ -927,7 +927,7 @@ public class ProductImageTag extends BodyTagSupport {
                     true, VariableInfo.AT_END)
             };
         }
-    }
+    */}
 }
 
 
