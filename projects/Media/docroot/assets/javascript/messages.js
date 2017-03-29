@@ -534,9 +534,12 @@ SESSIONSTORAGE:
 
 			if (opened) {
 				update.messages('openMessages');
-			}else {
+			}
+			/* don't close here, it'll close on timing, instead of the msgs status
+			 else {
 				update.messages('closeMessages');
 			} 
+			*/
 
 			return result;
 		},
