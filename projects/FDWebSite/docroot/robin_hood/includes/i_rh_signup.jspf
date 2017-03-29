@@ -255,7 +255,7 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
     <%@ include file="/includes/i_error_messages.jspf" %>	
 </fd:ErrorHandler>
     <%@ include file="/robin_hood/includes/i_rh_creditcard_fields.jspf" %>
-</fd:CheckoutController />    
+</fd:CheckoutController>
 
 <%
 	if (sessionuser.getFailedAuthorizations() > 0) { 
