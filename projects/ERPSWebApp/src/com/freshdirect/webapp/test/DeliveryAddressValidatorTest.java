@@ -56,12 +56,7 @@ public class DeliveryAddressValidatorTest {
 		ActionResult actionResult = new ActionResult();
 		
 		
-		boolean isAddressValid = validator.validateAddressWithoutScrub(actionResult);
-		
-		if (addressModel.getAddress1().equals("EXCEPTION")) {
-			actionResult.setError("Error");
-			throw new FDResourceException("Not a valid address");
-		}
+		boolean isAddressValid = validator.validateAddressWithoutScrub(actionResult);	
 		
 		assertTrue(isAddressValid);
 		assertTrue(actionResult.isSuccess());
