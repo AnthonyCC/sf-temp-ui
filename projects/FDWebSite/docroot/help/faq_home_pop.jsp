@@ -2,7 +2,7 @@
 <%@ page import="com.freshdirect.webapp.util.MediaHelper" %>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
-<%@ page import='com.freshdirect.fdstore.FDStoreProperties %>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import="com.freshdirect.webapp.util.FDFaqUtil" %>
 <%
