@@ -36,7 +36,7 @@
 		
 		<div class="navigationLine">
 			<h1 class="title">Alcohol is not currently delivered to your address</h1>
-			<a class="cssbutton green" href='<c:url value="/checkout/view_cart.jsp?trk=chkplc")/>'>return to cart</a>
+			<a class="cssbutton green" href='<c:url value='/checkout/view_cart.jsp?trk=chkplc'/>'>return to cart</a>
 			<c:if test="${!belowMinimum}">
 				<a class="cssbutton orange icon-arrow-right-after" href="#" onclick="jQuery('#noAlcoholForm').submit()">continue checkout</a>
 			</c:if>
