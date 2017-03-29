@@ -10,7 +10,7 @@
 <%@page import="com.freshdirect.fdstore.content.Image"%>
 <%@ page import="com.freshdirect.fdstore.ecoupon.*" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.display.FDCouponTag" %>
-<%@ taglib uri='/WEB-INF/shared/tld/freshdirect.tld' prefix='fd' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
 <fd:CheckLoginStatus id="user"/>
