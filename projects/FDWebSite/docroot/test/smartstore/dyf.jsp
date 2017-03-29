@@ -14,8 +14,6 @@
 %><%@ page import='org.apache.commons.fileupload.FileItemFactory'
 %><%@ page import='org.apache.commons.fileupload.FileItem'
 %><%@ page import='org.apache.commons.fileupload.disk.DiskFileItemFactory'
-%><%@ page import="weblogic.xml.util.StringInputStream"
-%><%@ page import="weblogic.utils.FileUtils"
 %><%
 
 //
