@@ -143,7 +143,7 @@ public class ProductsGroupingAndPagingTag extends BodyTagSupportEx {
 							true,
 							VariableInfo.NESTED),
 					new VariableInfo(
-							data.getAttributeString("groupingsId"),
+							data.getAttributeString("groupingsId")!=null?data.getAttributeString("groupingsId"):"dummyMap",
 							SortedMap.class.getName(),
 							true,
 							VariableInfo.NESTED)};
