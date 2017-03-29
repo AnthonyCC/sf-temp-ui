@@ -70,7 +70,10 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 
 <div class="prodLayout-mainTable-cont">
 		<% if (!mobWeb) { /* skip tables in mobWeb */ %><table border="0" cellspacing="0" cellpadding="0"><% } %>
-			<% if (mobWeb) { /* at the top if mobWeb */ %>
+			<% if (mobWeb) { /* at the top if mobWeb */ 
+				java.lang.Integer productImageWidth = null;
+		  		java.lang.Integer productImageHeight = null;
+			%>
 				<div class="prodDetail-images"><%@ include file="/shared/includes/product/i_product_image.jspf" %></div>
 			<% } %>
 			<% if (!mobWeb) { /* skip tables in mobWeb */ %><tr valign="top"><% } %>
