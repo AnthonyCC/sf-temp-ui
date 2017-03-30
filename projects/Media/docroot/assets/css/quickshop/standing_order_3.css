@@ -1028,6 +1028,9 @@
 	width: 153px;
 	margin: 5px 0 0;
 }
+.standing-orders-3 #cartcontent .cartetip-container #tipTextBox{
+	width: 153px;
+}
 .standing-orders-3 #cartcontent .cartetip .cartetip-container #tipAppliedTick{
 	padding: 0 0 0 5px;
 }

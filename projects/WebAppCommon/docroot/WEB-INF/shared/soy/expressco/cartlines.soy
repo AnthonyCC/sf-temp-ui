@@ -71,6 +71,7 @@
 		{param customerServiceRepresentative: $customerServiceRepresentative /}
 		{param displayCheckout: $displayCheckout /}
 		{param totalWithoutTax: $totalWithoutTax /}
+		{param etipTotal: $etipTotal /}
 	{/call}
 	{call .footer}
 		{param buttonText: 'Checkout' /}
@@ -82,7 +83,7 @@
 	{/call}
        {else}
 			<div class='cartetip'>
-       		  		{if not $displayCheckout}
+       		  		{if not $displayCheckout and $eTippingEnabled and $cartSections[0]}
 						{call .etip}
 							{param subTotal: $subTotal /}
 							{param customTip: $customTip /}
@@ -161,6 +162,7 @@
 	                     {param customerServiceRepresentative: $customerServiceRepresentative /}
 	                     {param displayCheckout: $displayCheckout /}
 	                     {param totalWithoutTax: $totalWithoutTax /} 
+	                     {param etipTotal: $etipTotal /}
                      {/call}
 					 {call .footer}
                            {param buttonText: 'Checkout' /}
@@ -304,6 +306,7 @@
 		{param displayCheckout: $displayCheckout /}
 		{param customerServiceRepresentative: $customerServiceRepresentative /}
 		{param totalWithoutTax: $totalWithoutTax /}
+		{param etipTotal: $etipTotal /}
 	{/call}
 	{call .footer}
 		{param buttonText: 'Place Order' /}
@@ -533,6 +536,7 @@
 									{param avalaraEnabled: $avalaraEnabled /}
 									{param totalWithoutTax: $totalWithoutTax /}
 									{param displayCheckout: $displayCheckout /}
+									{param etipTotal: $etipTotal /}
 								{/call}
 							{/if}
 						</div>
@@ -546,6 +550,7 @@
 								{param tipApplied: $tipApplied /}
 								{param tipAppliedTick: $tipAppliedTick /}
 								{param displayCheckout: $displayCheckout /}
+								{param etipTotal: $etipTotal /}
 							{/call}
 						{/if}
 					 {/if}  /*end {if $isLastSection or $numOfSections == 1}  */
@@ -859,6 +864,7 @@
  * @param? customerServiceRepresentative Customer service representative data
  * @param? totalWithoutTax TotalWithoutTax 
  * @param? displayCheckout to display checkout
+ * @param etipTotal
  */
 {template .total autoescape="false"}
 {let $cartlineType: (not $displayCheckout)? 'CHECKOUT' : $cartlineType /}
@@ -965,6 +971,7 @@
 							{param avalaraEnabled: $avalaraEnabled /}
 							{param totalWithoutTax: $totalWithoutTax /}
 							{param displayCheckout: $displayCheckout /}
+							{param etipTotal: $etipTotal /}
 						{/call}
 					{/if}
 				{else}
@@ -978,6 +985,7 @@
 							{param avalaraEnabled: $avalaraEnabled /}
 							{param totalWithoutTax: $totalWithoutTax /}
 							{param displayCheckout: $displayCheckout /}
+							{param etipTotal: $etipTotal /}
 						{/call}
 					{/if}
 				{/if}
@@ -1025,6 +1033,7 @@
 * @param? eTippingEnabled eTippingEnabled
 * @param? totalWithoutTax totalWithoutTax 
 * @param? displayCheckout
+* @param? etipTotal
 */
 {template .subTotalBox}
 	{let $subtotalUsed: 0 /}
@@ -1033,12 +1042,12 @@
 	{let $cartlineTypeRevised: ($cartlineType!= 'CHECKOUT' and $cartlineType != 'YOUR_CART')? 'CHECKOUT' : $cartlineType /}
 	{let $avalaraEnabledRevised: ($avalaraEnabled!= 'true' and $avalaraEnabled != 'false')? 'true' : $avalaraEnabled /}
 
-	{if $subTotalBox}				
+	{if $subTotalBox}
 		{foreach $box in $subTotalBox}
 		<div class='subtotal__row {if $box.id == 'youSaved'}row-style-saving{/if} {if $box.id == 'ssOrderTotal'}row-size-big{/if}' data-boxid='{$box.id}'>
 		{if ($avalaraEnabledRevised and $box.id=='totaltax' and $cartlineTypeRevised == 'YOUR_CART') or ($avalaraEnabledRevised and $box.id=='subtotal' and $cartlineTypeRevised == 'YOUR_CART') or ($avalaraEnabledRevised and $box.id == 'totalAvalaratax' and $cartlineTypeRevised == 'CHECKOUT')}/* IF NOT AVLARA TOTAL TAX   */
 		
-		{else}	
+		{else}
 				<div class='subtotal__rowcell-left rowcell-colon-right st_label st_label_{$box.id}' id='st_label_{$box.id}'>
 					{if $box.id == 'freefood'}
 						<a href='/shared/promotion_popup.jsp?promoCode=signup'
@@ -1068,7 +1077,7 @@
 									{if $box.id == 'ssOrderTotal' and ($avalaraEnabledRevised and $cartlineTypeRevised == 'YOUR_CART')}
 										<span class="strl_text ssOrderTotal"><!--{$box.text}--> Order Subtotal</span>
 									{else}
-										<span class="strl_text">{$box.text}</span>								
+										<span class="strl_text">{$box.text}</span>
 										{if $box.id == 'deliveryfee' and $eTippingEnabled}
 											{call .dfToolTip /}
 										{/if}
@@ -1096,7 +1105,7 @@
 						   
 							    {$box.value}
 						{/if}
-					{/if}				
+					{/if}
 				</div>
 				{/if}/* IF NOT AVLARA TOTAL TAX   */
 			
@@ -1173,6 +1182,16 @@
 					</div> <!-- end subtotal__rowcell-right -->
 				{/if} /*end if $box.other */
 			</div>
+			{if isLast($box) and $eTippingEnabled and not $displayCheckout and $box.id != 'ssOrderTotal'}
+				<div class='subtotal__row' data-boxid='etip'>
+					<div class='subtotal__rowcell-left rowcell-colon-right st_label st_label_etip' id='st_label_etip'>
+						<span class="strl_text">Tip</span>
+					</div>
+					<div class='subtotal__rowcell-mid rowcell-text-right st_val st_val_etip'>
+						{call common.formatDecimalPrice}{param price:$etipTotal /}{/call}
+					</div>
+				</div>
+			{/if}
 		{/foreach} /* end foreach $box in $subTotalBox */
 	{/if} /*end if $subTotalBox */
 {/template}
