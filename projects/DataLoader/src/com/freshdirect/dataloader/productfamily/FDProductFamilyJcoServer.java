@@ -211,6 +211,8 @@ public class FDProductFamilyJcoServer extends FdSapServer
 							List<String> skuCodes = familySkucodeMap.get(familyId);
 		                    EhCacheUtil.putListToCache(EhCacheUtil.FD_FAMILY_PRODUCT_CACHE_NAME,familyId, skuCodes);
 		                   }
+					}else{
+						msg="Failed";
 					}
 				}else{
 					ctx = ErpServicesProperties.getInitialContext();
@@ -338,6 +340,9 @@ public class FDProductFamilyJcoServer extends FdSapServer
 				if(FDStoreProperties.isFdCommerceApiEnabled()){
 					IECommrceService service = FDECommrceService.getInstance();
 					String message = service.loadData(prodFamily);
+					if(message == null){
+						msg ="Update Failed";
+					}
 					
 				}else{
 					ctx = ErpServicesProperties.getInitialContext();
