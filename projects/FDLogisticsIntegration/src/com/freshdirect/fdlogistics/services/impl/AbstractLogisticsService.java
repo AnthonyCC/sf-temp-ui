@@ -1,5 +1,6 @@
 package com.freshdirect.fdlogistics.services.impl;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
@@ -29,9 +30,13 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonGenerator.Feature;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.fdlogistics.converter.EnumZoneServiceTypeToString;
 import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -124,6 +129,32 @@ public abstract class AbstractLogisticsService {
 			LOGGER.info("api url:"+url);
 			throw new FDLogisticsServiceException("API syntax error");
 		}
+	}
+protected <T,E> Response<T> httpGetDataTypeMap( String url, TypeReference<E> type) throws FDLogisticsServiceException {
+			Response<T> responseOfTypestring = null;
+			RestTemplate restTemplate = getRestTemplate();	
+			ResponseEntity<String> response;
+			try {
+				response = restTemplate.getForEntity(new URI(url),String.class);
+				responseOfTypestring = getMapper().readValue(response.getBody(), type);
+			} catch (JsonParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JsonMappingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (RestClientException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+					
+		return responseOfTypestring;
 	}
 	
 	protected RestTemplate getRestTemplate(){

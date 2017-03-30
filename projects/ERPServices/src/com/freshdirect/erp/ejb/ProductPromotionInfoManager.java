@@ -22,6 +22,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.service.FDECommerceService;
 
 public class ProductPromotionInfoManager {
 
@@ -31,10 +32,15 @@ public class ProductPromotionInfoManager {
 	
 	public static Map<ZoneInfo,List<FDProductPromotionInfo>> getAllProductsByType(String ppType) throws FDResourceException{
 		lookupManagerHome();
-
+		Map<ZoneInfo,List<FDProductPromotionInfo>> productPromoInfoMap=null;
 		try {
-			ErpProductPromotionInfoSB sb = managerHome.create();
-			Map<ZoneInfo,List<FDProductPromotionInfo>> productPromoInfoMap =sb.getAllProductsByType(ppType);
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+			productPromoInfoMap=FDECommerceService.getInstance().getAllProductsByType(ppType);
+			}else{
+				ErpProductPromotionInfoSB sb = managerHome.create();
+				productPromoInfoMap =sb.getAllProductsByType(ppType);
+			}
+
 			return productPromoInfoMap;
 		} catch (CreateException ce) {
 			invalidateManagerHome();

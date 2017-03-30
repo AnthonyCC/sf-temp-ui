@@ -26,8 +26,8 @@ import com.freshdirect.dataloader.sap.jco.server.param.ProductFamilyParameter;
 import com.freshdirect.dataloader.util.FDSapHelperUtils;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.cache.EhCacheUtil;
-import com.freshdirect.payment.service.FDECommrceService;
-import com.freshdirect.payment.service.IECommrceService;
+import com.freshdirect.payment.service.FDECommerceService;
+import com.freshdirect.payment.service.IECommerceService;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
 import com.sap.conn.jco.JCoFunction;
@@ -203,8 +203,8 @@ public class FDProductFamilyJcoServer extends FdSapServer
 			try
 			{
 				LOG.info(String.format("Storing  product family [%s], [%s] ", familyIds.size(), new Date()));
-				if(FDStoreProperties.isFdCommerceApiEnabled()){
-					IECommrceService service = FDECommrceService.getInstance();
+				if(FDStoreProperties.isStorefront2_0Enabled()){
+					IECommerceService service = FDECommerceService.getInstance();
 					Map<String,List<String>> familySkucodeMap = service.updateCacheWithProdFly(familyIds);
 					if(familySkucodeMap != null && familySkucodeMap.size() > 0 ){
 						for(String familyId: familySkucodeMap.keySet()){
@@ -337,8 +337,8 @@ public class FDProductFamilyJcoServer extends FdSapServer
 			LOG.info(String.format("Storing  product family [%s], [%s] ", prodFamily.size(), new Date()));
 			try
 			{
-				if(FDStoreProperties.isFdCommerceApiEnabled()){
-					IECommrceService service = FDECommrceService.getInstance();
+				if(FDStoreProperties.isStorefront2_0Enabled()){
+					IECommerceService service = FDECommerceService.getInstance();
 					String message = service.loadData(prodFamily);
 					if(message == null){
 						msg ="Update Failed";
