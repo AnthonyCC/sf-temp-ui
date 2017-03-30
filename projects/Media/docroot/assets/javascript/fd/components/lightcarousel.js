@@ -129,6 +129,11 @@ var FreshDirect = FreshDirect || {};
     changePage(el.closest('[data-component="carousel"]'), null, page);
   });
 
+  $(document).on('click','.last [data-carousel-view-all]',function (e) {
+    var button = $(e.currentTarget);
+    button.attr('data-carousel-show-view-all', 'true');
+  });
+
   // initialize pager
   $('[data-component="carousel"]').each(function (i, el) {
     changePage($(el), null);

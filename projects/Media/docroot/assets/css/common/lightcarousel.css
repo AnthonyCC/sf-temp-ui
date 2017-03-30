@@ -126,7 +126,17 @@
 	opacity: .5;
 }
 
-[data-component="carousel"].last [data-component="carousel-next"][data-carousel-view-all="true"] {
+[data-component="carousel"].last [data-component="carousel-next"][data-carousel-view-all] {
+	cursor: pointer;
+	opacity: 1;
+}
+
+[data-component="carousel"].last [data-component="carousel-next"][data-carousel-view-all]:hover {
+	cursor: pointer;
+	opacity: .75;
+}
+
+[data-component="carousel"].last [data-component="carousel-next"][data-carousel-show-view-all] {
 	visibility: hidden;
 }
 
@@ -134,7 +144,7 @@
 	visibility: hidden;
 }
 
-[data-component="carousel"].last [data-component="carousel-view-all"] {
+[data-component="carousel"].last [data-carousel-show-view-all]+[data-component="carousel-view-all"] {
 	visibility: visible;
 }
 

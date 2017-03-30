@@ -33,7 +33,7 @@
 	</div>
 	<button data-component="carousel-prev" data-carousel-nav="prev">previous</button>
 	<button data-component="carousel-next" data-carousel-nav="next"
-	{if $moduleData and not $moduleData.hideViewAllButton}data-carousel-view-all="{not $moduleData.hideViewAllButton}"{/if}>next</button>
+	{if $moduleData and not $moduleData.hideViewAllButton}data-carousel-view-all{/if}>next</button>
 	{if $moduleData and not $moduleData.hideViewAllButton and ($moduleData.contentTitle or $moduleData.moduleTitle)}
 		<div data-component="carousel-view-all">
 			<a {if $moduleData and $moduleData.useViewAllPopup}data-view-all-popup data-moduleId={if $moduleData and $moduleData.moduleId}{$moduleData.moduleId}{/if}{else}href="{if $moduleData and $moduleData.viewAllButtonLink}{$moduleData.viewAllButtonLink}{/if}"{/if} cm-click="cmCreateElementTag,View All,Home Page-_-Carousel{if $moduleData and $moduleData.moduleId}-_-{$moduleData.moduleId}{/if}{if $moduleData and $moduleData.viewAllButtonLink}-_-{$moduleData.viewAllButtonLink}{/if}">view all
