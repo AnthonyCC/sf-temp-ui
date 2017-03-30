@@ -2,6 +2,8 @@ package com.freshdirect.payment.service;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Category;
 import org.springframework.http.HttpEntity;
@@ -9,28 +11,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import com.braintreegateway.Result;
-import com.braintreegateway.Transaction;
-import com.braintreegateway.exceptions.AuthenticationException;
-import com.freshdirect.customer.ErpAuthorizationModel;
-import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.customer.ErpProductFamilyModel;
+import com.freshdirect.ecommerce.data.common.Request;
+import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.fdstore.FDPayPalServiceException;
 import com.freshdirect.fdstore.FDResourceException;
-//import com.freshdirect.fdstore.ewallet.impl.EWalletRuntimeException;
 import com.freshdirect.framework.util.log.LoggerFactory;
-
-
-import com.freshdirect.payment.PayPalRequest;
-import com.freshdirect.payment.PayPalResponse;
-import com.freshdirect.payment.gateway.GatewayType;
-import com.freshdirect.payment.gateway.Request;
-import com.freshdirect.payment.gateway.Response;
+//import com.freshdirect.fdstore.ewallet.impl.EWalletRuntimeException;
 
 public class FDECommrceService extends AbstractService implements IECommrceService {
 
 	private final static Category LOGGER = LoggerFactory
 			.getInstance(FDECommrceService.class);
 
+	private static final String SAP_PRODUCT_FAMILY_LOADER_GET_SKUCODE_BYPRODFLY_API ="dataloader/sap/skucodesbyproductfamily";
+	private static final String SAP_PRODUCT_FAMILY_LOADER_LOAD_API ="dataloader/sap/productfamily";
 	
 	private static FDECommrceService INSTANCE;
 
@@ -86,9 +81,43 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		}
 	}
 	
+	@Override
+	public Map<String,List<String>> updateCacheWithProdFly(
+			List<String> familyIds) throws FDPayPalServiceException {
+		try {
+			Request<List<String>> request = new Request<List<String>>();
+			request.setData(familyIds);
+			String inputJson = buildRequest(request);
+			@SuppressWarnings("unchecked")
+			Response<Map<String,List<String>>> response = getData(inputJson, getFdCommerceEndPoint(SAP_PRODUCT_FAMILY_LOADER_GET_SKUCODE_BYPRODFLY_API), Response.class);
+			if(response != null && response.getData() != null){
+				return response.getData();
+			}
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDPayPalServiceException(e, "Unable to process the request.");
+		}
+		return null;
+	}
 
-
-
+	@Override
+	public String loadData(List<ErpProductFamilyModel> productFamilyList)
+			throws FDPayPalServiceException {
+		try {
+			Request<List<ErpProductFamilyModel>> request = new Request<List<ErpProductFamilyModel>>();
+			request.setData(productFamilyList);
+			String inputJson = buildRequest(request);
+			@SuppressWarnings("unchecked")
+			Response<String> response = getData(inputJson, getFdCommerceEndPoint(SAP_PRODUCT_FAMILY_LOADER_LOAD_API), Response.class);
+			if(response != null && response.getData() != null){
+				return response.getData();
+			}
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDPayPalServiceException(e, "Unable to process the request.");
+		}
+		return null;
+	}
 
 	
 }
