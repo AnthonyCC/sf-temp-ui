@@ -920,6 +920,7 @@ public class FDStoreProperties {
 
     
     private static final String PROP_SF_2_0_ENABLED = "fdstore.storefront_2_0.enabled";
+    private static final String PROP_MEALBUNDLE_CARTONVIEW_ENABLED = "fdstore.mealbundle_cartonview.enabled";
     
     static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1741,7 +1742,7 @@ public class FDStoreProperties {
         defaults.put(PROP_SF_2_0_ENABLED, "false");
         defaults.put(PROP_MAT_SALESORG__EXPORT_PICKPLANT_VALIDATION_ENABLED, "true");
         defaults.put(PROP_EXTRA_LOG_FOR_LOGIN_FAILS_ENABLED, "true");
-        
+        defaults.put(PROP_MEALBUNDLE_CARTONVIEW_ENABLED, "true");
         
         refresh();
     }
@@ -4427,6 +4428,10 @@ public class FDStoreProperties {
     public static boolean isStorefront2_0Enabled() {
         return (Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue();
     }
+    public static boolean isMealBundleCartonLinkEnabled() {
+        return (Boolean.valueOf(get(PROP_MEALBUNDLE_CARTONVIEW_ENABLED))).booleanValue();
+    }
+    
 
     public static String getPropDonationProductSamplesId() {
         return get(PROP_DONATION_PRODUCT_SAMPLES_ID);
