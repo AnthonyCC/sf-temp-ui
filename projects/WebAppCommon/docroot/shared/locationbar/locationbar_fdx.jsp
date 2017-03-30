@@ -738,7 +738,7 @@ if (curHref.indexOf('successPage') === -1 && $jq.QueryString['successPage']) {
 	  boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") != -1) ? true : false;
 	  if(user_locationbar_fdx.isNewSO3Enabled() && !isStandingOrders) {
 		Map<String,Object> errorSOAlert = new HashMap<String,Object>();
-		errorSOAlert.put("soData", StandingOrderHelper.getAllSoData(user_locationbar_fdx, false));
+		errorSOAlert.put("soData", StandingOrderHelper.getAllSoData(user_locationbar_fdx, false, false));
 	%>
 	<tmpl:put name="error_so_alerts">
 		<div id="errorsoalerts" class="alerts invisible" data-type="errorsoalerts">
@@ -748,7 +748,7 @@ if (curHref.indexOf('successPage') === -1 && $jq.QueryString['successPage']) {
 
 	<%
 		Map<String,Object> activateSOAlert = new HashMap<String,Object>();
-		activateSOAlert.put("soData", StandingOrderHelper.getAllSoData(user_locationbar_fdx, false));
+		activateSOAlert.put("soData", StandingOrderHelper.getAllSoData(user_locationbar_fdx, false,false));
 	%>
 	<tmpl:put name="activate_so_alerts">
 		<div id="activatesoalert" class="alerts invisible" data-type="activatesoalert">

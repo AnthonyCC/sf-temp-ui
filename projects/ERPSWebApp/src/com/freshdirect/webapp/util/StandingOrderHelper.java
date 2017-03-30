@@ -590,12 +590,12 @@ public class StandingOrderHelper {
 		}
 		return result;
 	}
-	public static Collection<Map<String, Object>> convertStandingOrderToSoy(Collection<FDStandingOrder> soList,boolean isUpcomingDelivery) throws FDResourceException, PricingException, FDInvalidConfigurationException {
+	public static Collection<Map<String, Object>> convertStandingOrderToSoy(Collection<FDStandingOrder> soList, boolean isUpcomignOrders, boolean isUpcomingDelivery) throws FDResourceException, PricingException, FDInvalidConfigurationException {
 		Collection<Map<String, Object>> result = new ArrayList<Map<String, Object>>(); 
 		for (FDStandingOrder so : soList) {
 			
 			
-			Map<String, Object> map = convertStandingOrderToSoy(isUpcomingDelivery, so);
+			Map<String, Object> map = convertStandingOrderToSoy(isUpcomignOrders, so, isUpcomingDelivery);
 			
 			result.add(map);
 
@@ -612,7 +612,7 @@ public class StandingOrderHelper {
 	 * @throws FDInvalidConfigurationException
 	 * @throws PricingException
 	 */
-	public static Map<String, Object> convertStandingOrderToSoy(boolean isUpcomingDelivery, FDStandingOrder so)
+	public static Map<String, Object> convertStandingOrderToSoy(boolean isUpcomingorders, FDStandingOrder so, boolean isUpcomingDelivery)
 			throws FDResourceException, FDInvalidConfigurationException, PricingException {
 		boolean isEligibleToShowModifyInfo=false;
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -669,7 +669,7 @@ public class StandingOrderHelper {
 		map.put("currentDeliveryDate", map.get("deliveryDate"));
 		map.put("currentDeliveryTime", map.get("deliveryTime"));
 		map.put("currentDayOfWeek", map.get("dayOfWeek"));
-		if("Y".equalsIgnoreCase(so.getActivate()))
+		if("Y".equalsIgnoreCase(so.getActivate())&& isUpcomingorders)
 			setUpcomingStandingOrder(so);
 		map.put("upComingOrderId", so.getUpcomingDelivery()!=null?so.getUpcomingDelivery().getErpSalesId():null);
 		map.put("isEligileToShowModifyInfo", isEligibleToShowModifyInfo);
@@ -778,7 +778,7 @@ public class StandingOrderHelper {
 
 	/* get a single Hashmap has all data that soy files need
 	 * can be used directly, returns "settingsData":{DATA} */
-	public static HashMap<String,Object> getAllSoData(FDUserI user, boolean isAddtoProduct) {
+	public static HashMap<String,Object> getAllSoData(FDUserI user, boolean isAddtoProduct, boolean isUpcomignOrders) {
 		HashMap<String,Object> allSoData = new HashMap<String,Object>();
 		HashMap<String,Object> soSettingsData = new HashMap<String,Object>();
 		String selectedSoId=null;
@@ -797,7 +797,7 @@ public class StandingOrderHelper {
 		try {
 			if(null != user.getIdentity()){
 				standingOrders = isAddtoProduct?getValidSO3(user): FDStandingOrdersManager.getInstance().loadCustomerNewStandingOrders(user.getIdentity());
-					soData = StandingOrderHelper.convertStandingOrderToSoy(standingOrders, false);
+					soData = StandingOrderHelper.convertStandingOrderToSoy(standingOrders, isUpcomignOrders, false);
 			    if(null!=standingOrders && !standingOrders.isEmpty()){
 					for(FDStandingOrder fdStandingOrder:standingOrders){
 						if(fdStandingOrder.isDefault()){

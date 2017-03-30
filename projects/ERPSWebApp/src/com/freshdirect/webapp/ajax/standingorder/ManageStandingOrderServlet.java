@@ -84,7 +84,7 @@ public class ManageStandingOrderServlet extends HttpServlet {
 				FDStandingOrder so = FDStandingOrdersManager.getInstance().load(
 						new PrimaryKey(soId));
 				FDSessionUser u = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
-				Map<String, Object> returnSO = StandingOrderHelper.convertStandingOrderToSoy(false,so);
+				Map<String, Object> returnSO = StandingOrderHelper.convertStandingOrderToSoy(true,so,false);
 
 				if (u != null) {
 					StandingOrderHelper.populateCurrentDeliveryDate(u, returnSO);

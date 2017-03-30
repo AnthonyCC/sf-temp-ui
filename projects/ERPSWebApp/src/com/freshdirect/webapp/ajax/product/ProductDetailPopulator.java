@@ -556,7 +556,7 @@ public class ProductDetailPopulator {
 		data.setSoldBySalesUnit( product.isSoldBySalesUnits() );
 		data.setHasTerms( product.hasTerms() );
 		if(StandingOrderHelper.isEligibleForSo3_0(user)){
-			data.setSoData(StandingOrderHelper.getAllSoData(user,true));
+			data.setSoData(StandingOrderHelper.getAllSoData(user,true,false));
 		}
 		// alcoholic & usq flags
 		try {
@@ -637,7 +637,7 @@ public class ProductDetailPopulator {
 		item.setDiscontinued(productModel.isDiscontinued());
 		item.setOutOfSeason(productModel.isOutOfSeason());
 		if(StandingOrderHelper.isEligibleForSo3_0(user)){
-			item.setSoData(StandingOrderHelper.getAllSoData(user,true));
+			item.setSoData(StandingOrderHelper.getAllSoData(user,true,false));
 		}
 
 		populateAvailable(item, user, productModel);
