@@ -57,8 +57,10 @@ if (mobWeb) {
   </tmpl:put>
 
   <tmpl:put name='containerExtraClass' direct='true'>browse</tmpl:put>
-
+  
+  <c:if test="${not empty browsePotato.descriptiveContent.pageTitle}">
   <tmpl:put name='title'>${browsePotato.descriptiveContent.pageTitle}</tmpl:put>
+  </c:if>
   
   <tmpl:put name="seoMetaTag" direct="true">
 		<fd:SEOMetaTag title="${browsePotato.descriptiveContent.pageTitle}" metaDescription="${browsePotato.descriptiveContent.metaDescription}"></fd:SEOMetaTag>
@@ -80,6 +82,7 @@ if (mobWeb) {
     </div>
   </tmpl:put>
 
+	<c:if test="${not empty browsePotato.pager.activePage}">
   <tmpl:put name='content' direct='true'>
     <div class="browse-breadcrumbs">
       <soy:render template="browse.breadCrumb" data="${browsePotato.breadCrumbs}" />
@@ -100,9 +103,11 @@ if (mobWeb) {
       <soy:render template="browse.topCarousels" data="${browsePotato.carousels}" />
     </div>
 
+	
     <div class="pager-holder top">
       <soy:render template="browse.pager" data="${browsePotato.pager}" />
     </div>
+    
 
     <div id="sorter">
       <soy:render template="browse.sortBar" data="${browsePotato.sortOptions}" />
@@ -164,6 +169,7 @@ if (mobWeb) {
     </script>
     
   </tmpl:put>
+  </c:if>
 
 <% if (mobWeb) { %>
   <tmpl:put name="jsmodules">
