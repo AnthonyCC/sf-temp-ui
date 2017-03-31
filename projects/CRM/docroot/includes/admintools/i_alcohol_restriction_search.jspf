@@ -1,213 +1,10 @@
 <%@page import="com.freshdirect.delivery.DlvRestrictionManager"%>
 <%@page import="com.freshdirect.delivery.restriction.EnumDlvRestrictionReason"%>
 <%@page import="com.freshdirect.framework.util.GenericSearchCriteria"%>
-
-<script type="text/javascript">
-	var nyCounties = new Array();
-	var njCounties = new Array();
-	var ctCounties = new Array();
-	var paCounties = new Array();
-</script>		
-<table class="home_search_module_field" border="0" cellpadding="2" cellspacing="2" width="100%">
-
-    
-	<tr>
-		<% 
-		Map<String, List<String>> stateCounties = DlvRestrictionManager.getMunicipalityStateCounties();
-		%>
-<script type="text/javascript">
 <%
-	List nyCounties = stateCounties.get("NY");
-	if(nyCounties != null && nyCounties.size() > 0) {
-%>
-		nyCounties = new Array(<%= nyCounties.size() %>);
-<%
-		for(int i = 0; i< nyCounties.size();i++) {
-%>
-		nyCounties[<%=i %>] = '<%= nyCounties.get(i) %>';
-<%
-		}
-	}
-%>
-<%
-	List njCounties = stateCounties.get("NJ");
-	if(njCounties != null && njCounties.size() > 0) {
-	%>
-		njCounties = new Array(<%= njCounties.size() %>);
-	<%
-		for(int i = 0; i< njCounties.size();i++) {
-	%>
-		njCounties[<%=i %>] = /<%= njCounties.get(i) %>';
-	<%
-		}
-	}
-%>
-<%
-	List ctCounties = stateCounties.get("CT");
-	if(ctCounties != null && ctCounties.size() > 0) {
-	%>
-		ctCounties = new Array(<%= ctCounties.size() %>);
-	<%
-		for(int i = 0; i< ctCounties.size();i++) {
-	%>
-		ctCounties[<%=i %>] = '<%= ctCounties.get(i) %>';
-	<%
-		}
-	}
-%>
-<%
-	List paCounties = stateCounties.get("PA");
-	if(paCounties != null && paCounties.size() > 0) {
-	%>
-		paCounties = new Array(<%= paCounties.size() %>);
-	<%
-		for(int i = 0; i< paCounties.size();i++) {
-	%>
-		paCounties[<%=i %>] = '<%= paCounties.get(i) %>';
-	<%
-		}
-	}
-%>
-<%
-	List deCounties = stateCounties.get("DE");
-	if(deCounties != null && deCounties.size() > 0) {
-	%>
-		deCounties = new Array(<%= deCounties.size() %>);
-	<%
-		for(int i = 0; i< deCounties.size();i++) {
-	%>
-		deCounties[<%=i %>] = '<%= deCounties.get(i) %>';
-	<%
-		}
-	}
-%>
-<%
-	List dcCounties = stateCounties.get("DC");
-	if(dcCounties != null && dcCounties.size() > 0) {
-	%>
-		dcCounties = new Array(<%= dcCounties.size() %>);
-	<%
-		for(int i = 0; i< dcCounties.size();i++) {
-	%>
-		dcCounties[<%=i %>] = '<%= dcCounties.get(i) %>';
-	<%
-		}
-	}
-%>
-<%
-	List mdCounties = stateCounties.get("MD");
-	if(mdCounties != null && mdCounties.size() > 0) {
-	%>
-		mdCounties = new Array(<%= mdCounties.size() %>);
-	<%
-		for(int i = 0; i< mdCounties.size();i++) {
-	%>
-		mdCounties[<%=i %>] = '<%= mdCounties.get(i) %>';
-	<%
-		}
-	}
-%>
-	<%
-	List vaCounties = stateCounties.get("VA");
-	if(vaCounties != null && vaCounties.size() > 0) {
-	%>
-		vaCounties = new Array(<%= vaCounties.size() %>);
-	<%
-		for(int i = 0; i< vaCounties.size();i++) {
-	%>
-		vaCounties[<%=i %>] = '<%= vaCounties.get(i) %>';
-	<%
-		}
-	}
-%>
-function getCounties(state) {
-	if(document.forms[0].county.options == undefined)
-		return;
-
-	if(state == 'NY') {
-		document.forms[0].county.options.length=1;
-		for(var i=0;i<nyCounties.length;i++)
-		{
-			if(nyCounties[i] == '<%= county %>')
-				document.forms[0].county.options[document.forms[0].county.options.length]= new Option(nyCounties[i],nyCounties[i],true,true);
-			else
-				document.forms[0].county.options[document.forms[0].county.options.length]= new Option(nyCounties[i],nyCounties[i],false,false);
-		}
-	}
-	if(state == 'NJ') {
-		document.forms[0].county.options.length=1;
-		for(var i=0;i<njCounties.length;i++)
-		{
-			if(njCounties[i] == '<%= county %>')
-				document.forms[0].county.options[document.forms[0].county.options.length]= new Option(njCounties[i],njCounties[i],true,true);
-			else
-				document.forms[0].county.options[document.forms[0].county.options.length]= new Option(njCounties[i],njCounties[i],false,false);
-		}
-	}
-	if(state == 'CT') {
-		document.forms[0].county.options.length=1;
-		for(var i=0;i<ctCounties.length;i++)
-		{
-			if(ctCounties[i] == '<%= county %>')
-				document.forms[0].county.options[document.forms[0].county.options.length]= new Option(ctCounties[i],ctCounties[i],true,true);
-			else
-				document.forms[0].county.options[document.forms[0].county.options.length]= new Option(ctCounties[i],ctCounties[i],false,false);
-		}
-	}
-	if(state == 'PA') {
-		document.forms[0].county.options.length=1;
-		for(var i=0;i<paCounties.length;i++)
-		{
-			if(paCounties[i] == '<%= county %>')
-				document.forms[0].county.options[document.forms[0].county.options.length]= new Option(paCounties[i],paCounties[i],true,true);
-			else
-				document.forms[0].county.options[document.forms[0].county.options.length]= new Option(paCounties[i],paCounties[i],false,false);
-		}
-	}
-	if(state == 'DE') {
-		document.forms[0].county.options.length=1;
-		for(var i=0;i<deCounties.length;i++)
-		{
-			if(deCounties[i] == '<%= county %>')
-				document.forms[0].county.options[document.forms[0].county.options.length]= new Option(deCounties[i],deCounties[i],true,true);
-			else
-				document.forms[0].county.options[document.forms[0].county.options.length]= new Option(deCounties[i],deCounties[i],false,false);
-		}
-	}
-	if(state == 'DC') {
-		document.forms[0].county.options.length=1;
-		for(var i=0;i<dcCounties.length;i++)
-		{
-			if(dcCounties[i] == '<%= county %>')
-				document.forms[0].county.options[document.forms[0].county.options.length]= new Option(dcCounties[i],dcCounties[i],true,true);
-			else
-				document.forms[0].county.options[document.forms[0].county.options.length]= new Option(dcCounties[i],dcCounties[i],false,false);
-		}
-	}
-	if(state == 'MD') {
-		document.forms[0].county.options.length=1;
-		for(var i=0;i<mdCounties.length;i++)
-		{
-			if(mdCounties[i] == '<%= county %>')
-				document.forms[0].county.options[document.forms[0].county.options.length]= new Option(mdCounties[i],dcCounties[i],true,true);
-			else
-				document.forms[0].county.options[document.forms[0].county.options.length]= new Option(mdCounties[i],dcCounties[i],false,false);
-		}
-	}
-	if(state == 'VA') {
-		document.forms[0].county.options.length=1;
-		for(var i=0;i<vaCounties.length;i++)
-		{
-			if(mdCounties[i] == '<%= county %>')
-				document.forms[0].county.options[document.forms[0].county.options.length]= new Option(vaCounties[i],dcCounties[i],true,true);
-			else
-				document.forms[0].county.options[document.forms[0].county.options.length]= new Option(vaCounties[i],dcCounties[i],false,false);
-		}
-	}
-}
-
-</script>
-<%
+	Map<String, List<String>> stateCounties = DlvRestrictionManager.getMunicipalityStateCounties();
+	/* add new state to this list to add it to front-end */
+	List<String> states = Arrays.asList("NY", "NJ", "CT", "PA", "DE", "DC", "MD", "VA");
 	AlcoholRestriction rest = (AlcoholRestriction)request.getAttribute("restriction");
 	String restId = null;
 	if(rest != null) {
@@ -215,33 +12,32 @@ function getCounties(state) {
 	}
 
 %>
+<table class="home_search_module_field" border="0" cellpadding="2" cellspacing="2" width="100%">
+	<tr>
 		<td class="case_content_field">State : </td>
 		<% if(restId != null && restId.length() > 0) { %>
-			<td><input type="text" name="state" value="<%= state %>" readonly="readonly"></td>
+			<td><input type="text" name="state" id="state" value="<%= state %>" readonly="readonly"></td>
 		<% } else { %>			
-	        <td><select name="state" style="width: 120px;" onchange="javascript:getCounties(this.value);">
-					<option value="NY" <%= state.equals("NY") ? "SELECTED" : "" %>>NY</option>
-					<option value="NJ" <%= state.equals("NJ") ? "SELECTED" : "" %>>NJ</option>
-					<option value="CT" <%= state.equals("CT") ? "SELECTED" : "" %>>CT</option>
-					<option value="PA" <%= state.equals("PA") ? "SELECTED" : "" %>>PA</option>
-					<option value="DE" <%= state.equals("DE") ? "SELECTED" : "" %>>DE</option>
-					<option value="DC" <%= state.equals("DC") ? "SELECTED" : "" %>>DC</option>
-					<option value="MD" <%= state.equals("MD") ? "SELECTED" : "" %>>MD</option>
-					<option value="VA" <%= state.equals("VA") ? "SELECTED" : "" %>>VA</option>
+	        <td><select name="state" id="state" style="width: 120px;" onchange="javascript:getCounties(this.value);">
+				<% 
+					for (String curState : states) {
+						%><option value="<%= curState %>" <%= state.equals(curState) ? "SELECTED" : "" %>><%= curState %></option><%
+					}
+				%>
 				</select>
 		 	</td>
 		 <% } %>
 		<td class="case_content_field">County : </td>
 		<% if(restId != null && restId.length() > 0) { %>
-			<td><input type="text" name="county" value="<%= county  %>" readonly="readonly"></td>
+			<td><input type="text" name="county" id="county" value="<%= county  %>" readonly="readonly"></td>
 		<% } else { %>			
-	        <td><select name="county" style="width: 120px;" onchange="javascript:getCounties(this.value);">
+	        <td><select name="county" id="county" style="width: 120px;">
 					<option value="">Select</option>
 				</select>
 		 	</td>
 		 <% } %>
 		<td class="case_content_field">Reason : </td>
-        <td><select name="reason" style="width: 120px;">
+        <td><select name="reason" id="reason" style="width: 120px;">
             <%
 			List enumReasons=EnumDlvRestrictionReason.getAlcoholEnumList();
 			%>
@@ -256,7 +52,7 @@ function getCounties(state) {
 			 </td>
 		<td class="case_content_field">Type : </td>
 		<td>					
-			<select name="restrictedType" style="width: 60px;" onchange="javascript:toggleDate(this.value);">
+			<select name="restrictedType" id="restrictedType" style="width: 60px;" onchange="javascript:toggleDate(this.value);">
             <%
 			    List enumTypes=EnumDlvRestrictionType.getEnumList();
 			%>
@@ -271,49 +67,76 @@ function getCounties(state) {
 	</tr>		
 </table>
 <input type="hidden" name="actionName" id="actionName" value="">
-<input type="hidden" name="searchFlag" value="">
- <script language="javascript">
-	 getCounties('NY');
-	    function clearAll(){
-	    	document.getElementById("state").value = "NY";
-	               	document.getElementById("county").value = "";
-	    	document.getElementById("reason").value = "WIN";
-	    	document.getElementById("type").value = "RRN";
-	    	//document.getElementById("restrictedType").value = "";
-	    }
-	   
-	    function doFilter(){
-	    	var filterType = document.getElementById("filterType").value;
-	    	document.getElementById("searchcriteria").submit();
-	    }
-	    function doSearch() {
-	    	document.getElementById("searchFlag").value = "true";
-	    }
-	             
-	    function doAction(actionName) {
-	
-	
-	    	if(actionName == 'deleteAlcoholRestriction'){
-			var doCancel = confirm ("Are you sure you want to delete the Restriction?");
-	                     if(doCancel == false){
-	                         return;
-	                     }            
-	               }
-	
-	   	if(actionName == 'updateAlcoholRestrictionFlag'){
-	   		var doCancel = confirm ("Are you sure you want to update the Alcohol Restriction Flag?");
-	                  if(doCancel == false){
-	                      return;
-	                  }            
-	        }
-	
-			document.getElementById("actionName").value = actionName;
-			document.forms[0].submit();	
+<input type="hidden" name="searchFlag" id="searchFlag" value="">
+<script language="javascript">
+	var stateCounties = {};
+	<% 
+		for (String curState : states) {
+			%>stateCounties['<%= curState %>'] = [];<%
+			List<String> curCounties = stateCounties.get(curState);
 			
+			for (String curCounty : curCounties) {
+				%>stateCounties['<%= curState %>'].push('<%= curCounty %>');<%
+			}
+			%>stateCounties['<%= curState %>'].sort();<%
+		}
+	%>
+	var selectedState = document.getElementById("state").value; //store prev selected
+	sortByText('state', false, false, -1); //sort states
+	sortByText('county', false, false, -1); //sort counties
+   	document.getElementById("state").value = selectedState; //set back to selected
+	getCounties(selectedState); //update counties to selected state
+
+	function getCounties(state) {
+		if(document.forms[0].county.options == undefined)
+			return;
+
+		document.forms[0].county.options.length=1;
+		
+		if (!stateCounties.hasOwnProperty(state)) { return; }
+		
+		for(var i=0; i < stateCounties[state].length; i++) {
+			document.forms[0].county.options[document.forms[0].county.options.length] = new Option(stateCounties[state][i], stateCounties[state][i], (stateCounties[state][i] === '<%= county %>'), (stateCounties[state][i] === '<%= county %>'));
+		}
 	}
-	    function openURL(inLocationURL) {
 	
-	    	popResize(inLocationURL, 400,400,'');
-	
-	    }
+    function clearAll(){
+    	document.getElementById("state").value = "NY";
+        document.getElementById("county").value = "";
+    	document.getElementById("reason").value = "WIN";
+    	document.getElementById("restrictedType").value = "RRN";
+    }
+   
+    function doFilter(){
+    	var filterType = document.getElementById("filterType").value;
+    	document.getElementById("searchcriteria").submit();
+    }
+    function doSearch() {
+    	document.getElementById("searchFlag").value = "true";
+    }
+             
+    function doAction(actionName) {
+    	if (actionName === 'deleteAlcoholRestriction') {
+			var doCancel = confirm ("Are you sure you want to delete the Restriction?");
+			if (doCancel === false){
+				return;
+			}
+        }
+    	
+   		if (actionName === 'updateAlcoholRestrictionFlag') {
+   			var doCancel = confirm ("Are you sure you want to update the Alcohol Restriction Flag?");
+			if(doCancel === false){
+				return;
+			}
+        }
+   		
+		document.getElementById("actionName").value = actionName;
+		
+		if (document.getElementById("aclRestrictions")) { document.getElementById("aclRestrictions").submit(); }
+		if (document.getElementById("frmAddAclRestriction")) { document.getElementById("frmAddAclRestriction").submit(); }
+	}
+    
+    function openURL(inLocationURL) {
+    	popResize(inLocationURL, 400,400,'');
+    }
 </script>

@@ -440,10 +440,6 @@ public class ContentFactory {
         return model;
     }
 
-    public ContentNodeModel getCachedContentNodeByKey(ContentKey key) {
-        return getContentNodeFromCache(key);
-    }
-
     public Set<ContentKey> getParentKeys(ContentKey key) {
         Set<ContentKey> parentContentKeys = parentKeysByKeyCache.get(key);
         if (parentContentKeys == null){
@@ -1036,6 +1032,13 @@ public class ContentFactory {
         }
     }
 
+    public void removeContentNodeCaches(ContentKey key) {
+        if (isAllowToUseContentCache()) {
+            nodesByIdCache.remove(key.getId());
+            nodesByKeyCache.remove(key);
+        }
+    }
+
     public void updateContentKeyCache(String skuCode, ContentKey key) {
         if (isAllowToUseContentCache()) {
             keyBySkuCodeCache.put(skuCode, key);
@@ -1055,7 +1058,7 @@ public class ContentFactory {
     }
 
     public boolean isAllowToUseContentCache(String nodeId) {
-        boolean isAllowToUseContentCache = getCurrentDraftContext().isMainDraft();
+        boolean isAllowToUseContentCache = isAllowToUseContentCache();
         if (!isAllowToUseContentCache){
             isAllowToUseContentCache = !DraftService.defaultService().isContentKeyChanged(getCurrentDraftContext().getDraftId(), nodeId);
         }

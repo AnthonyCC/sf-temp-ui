@@ -178,7 +178,8 @@ public class SettlementFileProcessor {
 					.create();
 			List<String> ppSettlementIds = null;
 			if (DataLoaderProperties.isPayPalSettlementEnabled()) {
-				ppSettlementIds = ppReconSB.acquirePPLock(null);
+				Map<String, Object> lockInfo = ppReconSB.acquirePPLock(null);
+				ppSettlementIds = (List<String>) lockInfo.get("settlementIds");
 				finParser.setClient(new PaymentechFINParserClient(builder, reconSB, ppReconSB,
 						ppSettlementIds));
 			} else {

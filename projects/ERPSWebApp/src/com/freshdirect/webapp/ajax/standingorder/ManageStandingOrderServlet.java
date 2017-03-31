@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.text.DateFormatSymbols;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -31,6 +33,7 @@ import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -80,8 +83,8 @@ public class ManageStandingOrderServlet extends HttpServlet {
 			try {
 				FDStandingOrder so = FDStandingOrdersManager.getInstance().load(
 						new PrimaryKey(soId));
-				Map<String, Object> returnSO = StandingOrderHelper.convertStandingOrderToSoy(false,so);
 				FDSessionUser u = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
+				Map<String, Object> returnSO = StandingOrderHelper.convertStandingOrderToSoy(true,so,false);
 
 				if (u != null) {
 					StandingOrderHelper.populateCurrentDeliveryDate(u, returnSO);
@@ -100,7 +103,7 @@ public class ManageStandingOrderServlet extends HttpServlet {
 			} catch (HttpErrorResponse e) {
 				LOG.error("Unable to fetch SO with Id:"+ soId, e);
 				throw new ServletException(e);
-			}
+			} 
 		}
 		/*
 		 * try { Map<String, Object> responseData; String actionName =
@@ -132,8 +135,6 @@ public class ManageStandingOrderServlet extends HttpServlet {
 			String soId = request.getParameter("soId");
 			String soName = request.getParameter("soName");
 			String freq=request.getParameter("frequency");
-			if (("".equalsIgnoreCase(soId) || soId==null) && (freq == null || "".equalsIgnoreCase(freq)))
-				freq = "1";
 			JspFactory factory = JspFactory.getDefaultFactory();
 			PageContext pageContext = factory.getPageContext(this, request, response, null, true, JspWriter.DEFAULT_BUFFER, true);
 			FDSessionUser u = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
@@ -199,6 +200,9 @@ public class ManageStandingOrderServlet extends HttpServlet {
 	
 				}else if("onloadNewStandingOrder".equalsIgnoreCase(action)){
 					u.setRefreshValidSO3(true);
+					if (("".equalsIgnoreCase(soId) || soId==null) && (freq == null || "".equalsIgnoreCase(freq)))
+				      u.getCurrentStandingOrder().setFrequency(Integer.parseInt("1"));
+					
 					errorMessage= onloadNewStandingOrder(soName,u,pageContext);
 					writeResponseData( response, errorMessage );
 	

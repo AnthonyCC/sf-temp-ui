@@ -1,0 +1,169 @@
+#zipCheckPopup .fixedPopupContent {
+  max-width: 460px;
+  width: 100%;
+  min-height: 232px;
+}
+
+#zipCheckPopup .qs-popup-content {
+  padding: 30px 40px;
+}
+
+#zipCheckPopup .qs-popup-header {
+  padding: 0;
+}
+
+#zipCheckPopup .zipcheck div {
+  margin-bottom: 20px;
+}
+
+#zipCheckPopup .zipcheck .email-address {
+  margin: 0;
+}
+
+#zipCheckPopup .zipcheck .zipcode-submit{
+  margin-bottom: 0;
+}
+
+#zipCheckPopup .zipcheck form[fdform="zipcheck"] input[name="zipCode"] {
+  max-width: 155px;
+  padding-right: 20px;
+}
+
+#zipCheckPopup .zipcheck button[clear-zip-code] {
+  background: url(/media_stat/images/quickshop/button-close.png) no-repeat;
+  border: 0;
+  bottom: 25px;
+  cursor: pointer;
+  height: 18px;
+  left: 135px;
+  margin: 0;
+  position: absolute;
+  width: 18px;
+}
+
+#zipCheckPopup .zipcheck h1 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+#zipCheckPopup .zipcheck label {
+  display: block;
+  font-size: 14px;
+}
+
+#zipCheckPopup .zipcheck .address-type label {
+  display: inline;
+  margin-right: 30px;
+}
+
+#zipCheckPopup .zipcheck .zipcode-submit {
+  float: right;
+}
+
+#zipCheckPopup .zipcheck button.full {
+  width: 100%;
+}
+
+#zipCheckPopup .zipcheck .bottom {
+  border-bottom: 2px solid;
+}
+
+#zipCheckPopup .zipcheck .bottom form label {
+  font-size: 16px;
+}
+
+#zipCheckPopup .zipcheck form[fdform] {
+  position: relative;
+}
+
+#zipCheckPopup .zipcheck form div[fdform-error-for],
+#zipCheckPopup .zipcheck form div[fdform-error-for][fdform][invalid] {
+  background-color: transparent;
+  min-height: 18px;
+}
+
+#zipCheckPopup .zipcheck form span[fdform-error] {
+  text-align: left;
+}
+
+#zipCheckPopup .zipcheck form span[fdform-error="email"] {
+  bottom: 36px;
+  position: absolute;
+}
+
+#zipCheckPopup .zipcheck .bottom form label input {
+  width: 100%;
+  padding-left: 0;
+}
+
+#zipCheckPopup .zipcheck-done {
+  text-align: center;
+}
+
+#zipCheckPopup .zipcheck-done h1 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 0;
+}
+
+#zipCheckPopup .zipcheck-done button {
+  margin-top: 25px;
+  margin-bottom: 15px;
+}
+
+#zipCheckPopup .zipcheck-done [data-zipcheck-again] {
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 0;
+  text-decoration: none;
+}
+
+#zipCheckPopup .spinner-overlay {
+  display: none;
+}
+
+#zipCheckPopup .spinner-overlay.active {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255,255,255,.7);
+  overflow: hidden;
+}
+
+#zipCheckPopup .spinner {
+  border: 16px solid #f3f3f3;
+  border-top: 16px solid #458b4c;
+  border-radius: 50%;
+  box-sizing: border-box;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 568px) {
+  #zipCheckPopup .fixedPopupContent {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  #zipCheckPopup .qs-popup-content {
+    padding: 10px;
+  }
+}

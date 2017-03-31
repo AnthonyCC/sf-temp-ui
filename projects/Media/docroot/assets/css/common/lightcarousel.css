@@ -69,7 +69,8 @@
 }
 
 [data-component="carousel-prev"],
-[data-component="carousel-next"] {
+[data-component="carousel-next"],
+[data-component="carousel-view-all"] {
 	height:38px;
 	width:36px;
 	text-indent:40px;
@@ -102,29 +103,40 @@
 
 [data-component="carousel-next"],
 [data-component="carousel"].last [data-component="carousel-next"]:hover {
-	background: url('/media_stat/carousel/carousel-sprite.png') no-repeat -40px -97px;
+	background: url('/media_stat/carousel/arrow.png') no-repeat;
 }
 
 [data-component="carousel-next"]:hover {
-	background-position: -40px -137px;
+	opacity: .75;
 }
 
 [data-component="carousel-prev"],
 [data-component="carousel"].first [data-component="carousel-prev"]:hover {
 	left:0;
-	background: url('/media_stat/carousel/carousel-sprite.png') no-repeat 0 -97px;
+	background: url('/media_stat/carousel/arrow.png') no-repeat;
+  transform: rotate(180deg);
 }
 
 [data-component="carousel-prev"]:hover {
-	background-position: 0 -137px;
+	opacity: .75;
 }
 
 [data-component="carousel"].last [data-component="carousel-next"]{
 	cursor: default;
-	background-position: -40px -177px;
+	opacity: .5;
 }
 
-[data-component="carousel"].last [data-component="carousel-next"][data-carousel-view-all="true"] {
+[data-component="carousel"].last [data-component="carousel-next"][data-carousel-view-all] {
+	cursor: pointer;
+	opacity: 1;
+}
+
+[data-component="carousel"].last [data-component="carousel-next"][data-carousel-view-all]:hover {
+	cursor: pointer;
+	opacity: .75;
+}
+
+[data-component="carousel"].last [data-component="carousel-next"][data-carousel-show-view-all] {
 	visibility: hidden;
 }
 
@@ -132,27 +144,41 @@
 	visibility: hidden;
 }
 
-[data-component="carousel"].last [data-component="carousel-view-all"] {
-	height: 50px;
-	margin: auto 0;
-	width: auto;
-	text-transform: uppercase;
+[data-component="carousel"].last [data-carousel-show-view-all]+[data-component="carousel-view-all"] {
 	visibility: visible;
 }
 
 [data-component="carousel"].first [data-component="carousel-prev"]{
 	cursor: default;
-	background-position: 0px -177px;
+	opacity: .5;
 }
 
 [data-component="carousel"].last [data-component="carousel-next"]:hover{
 	cursor: default;
-	background-position: -40px -177px;
+	opacity: .5;
 }
 
 [data-component="carousel"].first [data-component="carousel-prev"]:hover{
 	cursor: default;
-	background-position: 0px -177px;
+	opacity: .5;
+}
+
+[data-component="carousel"] [data-component="carousel-view-all"]{
+	background: url('/media_stat/carousel/view-all-arrow.png') no-repeat;
+  background-size: 36px;
+}
+
+[data-component="carousel"] [data-component="carousel-view-all"]:hover{
+	opacity: .75;
+}
+
+
+[data-component="carousel"] [data-component="carousel-view-all"] a{
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
 }
 
 .hide-carousel-incartinfo [data-component="carousel"] ul li .atc-info {

@@ -68,10 +68,10 @@ public interface PublishServiceI {
 	 *         or null if there is no previous publish.
 	 */
 	public Publish getPreviousPublish(Publish publish);
-	
-   /**
+
+    /**
      * Get a feed publish made before a specified publish.
-     *
+     *  
      * @param publish get the feed publish that was made before this one.
      * @return the feed publish made before the supplied publish object,
      *         or null if there is no previous publish.

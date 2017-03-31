@@ -1,17 +1,12 @@
 package com.freshdirect.cms.search;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
 
 import com.freshdirect.cms.CmsRuntimeException;
-import com.freshdirect.cms.index.IndexingNotifier;
-import com.freshdirect.cms.index.IndexingSubscriber;
 import com.freshdirect.cms.search.spell.SpellChecker;
 import com.freshdirect.cms.search.spell.SpellingHit;
 import com.freshdirect.cms.search.spell.StringDistance;
@@ -19,50 +14,21 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
  * Give spelling suggestions for query terms.
- * 
  */
-public class LuceneSpellingSuggestionService implements SpellingSuggestionsServiceI, IndexingSubscriber {
+public class LuceneSpellingSuggestionService implements SpellingSuggestionsServiceI {
 
     private final static Logger LOGGER = LoggerFactory.getInstance(LuceneSpellingSuggestionService.class);
 
-    // spell checker instance, created at construction
+    private static final LuceneSpellingSuggestionService INSTANCE = new LuceneSpellingSuggestionService();
+
     private SpellChecker checker;
 
-    // directory of indexes, created at construction
-    private Directory directory;
-
-    @Override
-    public void receiveIndexingFinishedNotification() {
-        initializeSpellChecker(directory);
+    public static LuceneSpellingSuggestionService getInstance() {
+        return INSTANCE;
     }
 
-    /**
-     * Constructor.
-     * 
-     * @param indexLocation
-     *            directory location of indices
-     * @param contentIndexes
-     *            index fields to use
-     * @param reader
-     *            index reader
-     * @throws IOException
-     */
-    public LuceneSpellingSuggestionService(String indexLocation) {
-        try {
-            directory = FSDirectory.open(new File(indexLocation));
-            initializeSpellChecker(directory);
-        } catch (IOException e) {
-            throw new CmsRuntimeException(e);
-        }
-        IndexingNotifier.getInstance().subscribe(this);
-    }
-
-    private void initializeSpellChecker(Directory indexLocation) {
-        try {
-            this.checker = new SpellChecker(directory);
-        } catch (IOException e) {
-            throw new CmsRuntimeException(e);
-        }
+    private LuceneSpellingSuggestionService() {
+        checker = SpellChecker.getInstance();
     }
 
     /*
@@ -70,9 +36,9 @@ public class LuceneSpellingSuggestionService implements SpellingSuggestionsServi
      * 
      * @see com.freshdirect.cms.search.SpellingSuggestionsServiceI#getSpellingHits(java.lang.String, int)
      */
-    public List<SpellingHit> getSpellingHits(String phrase, int maxHits) {
+    public List<SpellingHit> getSpellingHits(String indexPath, String phrase, int maxHits) {
         try {
-            return checker.suggestSimilar(phrase, maxHits);
+            return checker.suggestSimilar(indexPath, phrase, maxHits);
         } catch (IOException e) {
             LOGGER.error("failed to retrieve spelling hits for '" + phrase + "'", e);
             return Collections.emptyList();
@@ -89,10 +55,13 @@ public class LuceneSpellingSuggestionService implements SpellingSuggestionsServi
      * 
      * @see com.freshdirect.cms.search.SpellingSuggestionsServiceI#close()
      */
-    public void close() {
+    public void close(String indexPath) {
         try {
-            checker.close();
+            if (this.checker != null) {
+                checker.close(indexPath);
+            }
         } catch (IOException e) {
+            LOGGER.error("failed to close spell checker", e);
             throw new CmsRuntimeException(e);
         }
     }
@@ -102,10 +71,11 @@ public class LuceneSpellingSuggestionService implements SpellingSuggestionsServi
      * 
      * @see com.freshdirect.cms.search.SpellingSuggestionsServiceI#exists(java.lang.String)
      */
-    public boolean exists(String phrase) {
+    public boolean exists(String indexPath, String phrase) {
         try {
-            return checker.exist(phrase);
+            return checker.exist(indexPath, phrase);
         } catch (IOException e) {
+            LOGGER.error("failed to exists spell checker", e);
             throw new CmsRuntimeException(e);
         }
     }

@@ -25,7 +25,9 @@
 <%@page import="com.freshdirect.fdstore.content.ContentSearchUtil"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Collections"%>
-<%@page import="java.util.Comparator"%><html>
+<%@page import="java.util.Comparator"%>
+<%@page import="com.freshdirect.cms.index.configuration.IndexerConfiguration"%>
+<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" lang="en-US">
 <title>Spell (aka Did you mean?) Test</title>
@@ -90,7 +92,8 @@ if (searchTerm != null && !searchTerm.trim().isEmpty()) {
 		SpellingTermNormalizer filter = new SpellingTermNormalizer(new Term(searchTerm));
 		List<String> original = filter.getTerms().get(0).getTokens();
 		Registry registry = FDRegistry.getInstance();
-		ContentSearchServiceI search = new LuceneSearchService();
+		ContentSearchServiceI search = LuceneSearchService.getInstance();
+		IndexerConfiguration indexConfig = IndexerConfiguration.getDefaultConfiguration();
 		
 		Collection<String> suggestions = res.getSpellingSuggestions();
 	%>
@@ -100,7 +103,7 @@ if (searchTerm != null && !searchTerm.trim().isEmpty()) {
 				Direct search results
 			</p>
 			<%
-				List<SpellingHit> spellingHits = search.getSpellService().getSpellingHits(searchTerm, contentSearch.getDidYouMeanMaxHits());
+				List<SpellingHit> spellingHits = search.getSpellService().getSpellingHits(indexConfig.getIndexDirectoryPath(), searchTerm, contentSearch.getDidYouMeanMaxHits());
 				Set<SpellingHit> filteredHits = new HashSet<SpellingHit>(SpellingUtils.filterBestSpellingHits(spellingHits, contentSearch.getDidYouMeanThreshold()));
 			%>
 			<table class="table">
@@ -113,7 +116,7 @@ if (searchTerm != null && !searchTerm.trim().isEmpty()) {
 					<% for (SpellingHit hit : spellingHits) {
 						String style = filteredHits.contains(hit) ? "" : "text-decoration: line-through;";
 						if (!SpellingUtils.checkPartialThreshold(original, Term.tokenize(hit.getSpellingMatch(), Term.DEFAULT_TOKENIZERS),
-								contentSearch.getDidYouMeanThreshold(), search.getSpellService()))
+								contentSearch.getDidYouMeanThreshold(), search.getSpellService().getStringDistance()))
 							style = "color: gray; text-decoration: line-through;";
 					%>
 					<tr>

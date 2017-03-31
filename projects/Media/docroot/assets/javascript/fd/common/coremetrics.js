@@ -63,16 +63,16 @@ var FreshDirect = FreshDirect || {};
   if (fd.coremetricsData) {
     fd.coremetricsData.each(coremetrics.playOneItem, coremetrics);
   }
-	
+
 	function addCmData(propertyName,value,event){
 		event.cmData[propertyName] = value;
 	}
-	
+
 	function populateCmData(propertyName,event){
 		var $ct = $(event.currentTarget);
 		addCmData(propertyName,$ct.attr('data-cm'+propertyName.toLowerCase()), event);
 	}
-	
+
 	$(document.body).on('addToCart','[data-cmsitefeature]',function(event){
 		populateCmData('siteFeature',event);
 	});
@@ -86,6 +86,26 @@ var FreshDirect = FreshDirect || {};
 
 	$(document.body).on('addToCart','[data-cmvariantid]',function(event){
 		populateCmData('variantId',event);
+	});
+
+	$(document.body).on('click','[data-cmcarouselinfo]',function(event){
+    if($(event.currentTarget).closest('[carousel-page-number]').length > 0) {
+  		var coremetricsItem = [],
+          dataString,
+          pageNumber = $(event.currentTarget).closest('[carousel-page-number]')[0].attributes['carousel-page-number'].value,
+          carouselInfo = $(event.currentTarget).closest('[data-cmcarouselinfo]')[0].attributes['data-cmcarouselinfo'].value.split(',');
+
+      if(carouselInfo.length > 1) {
+        dataString = carouselInfo[1] + '-_-Pane' + pageNumber + '-_-' + carouselInfo[0];
+      } else {
+        dataString = 'Pane' + pageNumber + '-_-' + carouselInfo[0];
+      }
+
+      coremetricsItem.push('cmCreateManualLinkClickTag');
+      coremetricsItem.push(event.currentTarget.baseURI);
+      coremetricsItem.push(dataString);
+      coremetrics.playOneItem(coremetricsItem);
+    }
 	});
 
 	$(document.body).on('addToCart',function(event){

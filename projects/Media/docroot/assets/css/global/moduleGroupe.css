@@ -1,14 +1,13 @@
 .module-group {
   align-items: center;
   background-image: none;
-  background: #F2F3F4;
+  border-top: 15px solid #FFF;
   display: flex;
   font-family: 'Brandon Text';
   justify-content: space-between;
   margin: 0;
-  margin-top: 35px;
-  margin-bottom: 2px;
-  min-height: 40px;
+  padding: 20px 0;
+  min-height: 80px;
   padding: 0 10px;
 }
 
@@ -19,7 +18,7 @@
 .module-group .module-text h1 {
   font-family: 'Brandon Text';
   font-size: 25px;
-  font-weight: 500;
+  font-weight: 700;
   line-height: 25px;
   margin: 0;
   margin-right: 15px;

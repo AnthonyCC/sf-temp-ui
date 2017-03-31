@@ -6,7 +6,7 @@
  */
 {template .imageGridModule}
 {if $data.imageGridData}
-  <div class="content-module image-grid-module" id="{$moduleData.moduleId}">
+  <div class="content-module image-grid-module {if $moduleData.moduleTitle}single-module{/if}" id="{$moduleData.moduleId}">
   	{call common.moduleHeader}
   		{param content: $moduleData /}
   	{/call}
@@ -21,7 +21,7 @@
   						<a href="{$data.imageGridData[0].iconLink}">
   							<img src="{$data.imageGridData[0].iconImage}" alt="{$data.imageGridData[0].iconLinkText}">
   							{if $data.imageGridData[0].iconLinkText}
-                  <div>{$data.imageGridData[0].iconLinkText}</div>
+                  <div><div class='text'>{$data.imageGridData[0].iconLinkText}</div></div>
                 {/if}
               </a>
   					</div>
@@ -29,7 +29,7 @@
   						<a href="{$data.imageGridData[1].iconLink}">
   							<img src="{$data.imageGridData[1].iconImage}" alt="{$data.imageGridData[1].iconLinkText}">
   							{if $data.imageGridData[1].iconLinkText}
-                  <div>{$data.imageGridData[1].iconLinkText}</div>
+                  <div><div class='text'>{$data.imageGridData[1].iconLinkText}</div></div>
                 {/if}
   						</a>
   					</div>
@@ -38,7 +38,7 @@
   					<a href="{$data.imageGridData[2].iconLink}">
   						<img src="{$data.imageGridData[2].iconImage}" alt="{$data.imageGridData[2].iconLinkText}">
   						{if $data.imageGridData[2].iconLinkText}
-                <div>{$data.imageGridData[2].iconLinkText}</div>
+                <div><div class='text'>{$data.imageGridData[2].iconLinkText}</div></div>
               {/if}
   					</a>
   				</div>
@@ -48,7 +48,7 @@
   					<a href="{$data.imageGridData[3].iconLink}">
   						<img src="{$data.imageGridData[3].iconImage}" alt="{$data.imageGridData[3].iconLinkText}">
   						{if $data.imageGridData[3].iconLinkText}
-                <div>{$data.imageGridData[3].iconLinkText}</div>
+                <div><div class='text'>{$data.imageGridData[3].iconLinkText}</div></div>
               {/if}
   					</a>
   				</div>
@@ -57,7 +57,7 @@
   						<a href="{$data.imageGridData[4].iconLink}">
   							<img src="{$data.imageGridData[4].iconImage}" alt="{$data.imageGridData[4].iconLinkText}">
   							{if $data.imageGridData[4].iconLinkText}
-                  <div>{$data.imageGridData[4].iconLinkText}</div>
+                  <div><div class='text'>{$data.imageGridData[4].iconLinkText}</div></div>
                 {/if}
   						</a>
   					</div>
@@ -65,7 +65,7 @@
   						<a href="{$data.imageGridData[5].iconLink}">
   							<img src="{$data.imageGridData[5].iconImage}" alt="{$data.imageGridData[5].iconLinkText}">
   							{if $data.imageGridData[5].iconLinkText}
-                  <div>{$data.imageGridData[5].iconLinkText}</div>
+                  <div><div class='text'>{$data.imageGridData[5].iconLinkText}</div></div>
                 {/if}
   						</a>
   					</div>

@@ -8,7 +8,7 @@
 	//expanded page dimensions
 	final int W_GLOBAL_NAV_TOP_TOTAL = 970;
 %>
-<div id="messages">
+<div id="messages" class="visHidden">
 	<ul class="content"></ul>
 	<hr class="shadow">
 	<div class="handler close-handler" id="locabar-messages-close"></div>

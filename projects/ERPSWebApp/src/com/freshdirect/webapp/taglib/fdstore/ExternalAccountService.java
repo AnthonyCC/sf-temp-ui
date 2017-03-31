@@ -59,7 +59,7 @@ public class ExternalAccountService implements AccountService {
 			// The social login token exist in db. Take user to home page.
 			 //Login the user in the fd system with fd user and fd password	
 				
-		if (userIdInDb != null && userIdInDb.length() > 0) {
+		if (userIdInDb != null && userIdInDb.length() > 0 && userId !=null && userId.equalsIgnoreCase(userIdInDb)) {
 					
 				    
 				    String updatedSuccessPage = UserUtil.loginUser(session, request, response, new ActionResult(), userId, null, "", this.updatedSuccessPage, true);

@@ -1,6 +1,7 @@
 <%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
 <%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
 <%@ page import="com.freshdirect.webapp.util.JspMethods" %>
+<%@ page import="com.freshdirect.fdlogistics.model.FDTimeslot" %>
 <% //expanded page dimensions
 final int W_TIMESLOT_HEADER_TOTAL = 970;
 boolean mobWeb_i_timeslot_header = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));

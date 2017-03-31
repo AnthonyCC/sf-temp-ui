@@ -97,6 +97,7 @@ SESSIONSTORAGE:
 			$messages: $('#messages'),
 			handlerSelector: '.handler',
 			messagesOpenClass: 'open',
+			messagesOpenVisHiddenClass: 'visHidden',
 			alertsOpenClass: 'open', //class to show alert is open
 			alertsContainerClass: 'alert-cont', //class to find parent container for alert
 			alertsCloseHandlerClass: 'alert-closeHandler', //class to add to default close handler
@@ -111,7 +112,8 @@ SESSIONSTORAGE:
 		},
 		jsessionId: getJsessionId(),
 		messages: {}, /* MSG1 : HTML */
-		alerts: {} /* ALERT1: { html: HTML, addTo: SELECTORS || '', closeHandlerAddTo: SELECTORS || '' } */
+		alerts: {}, /* ALERT1: { html: HTML, addTo: SELECTORS || '', closeHandlerAddTo: SELECTORS || '' } */
+		messagesIsClosed: false
 	};
 	messageData.options.messagesOrder = [messageData.options.SystemMessage, 'cutoff', 'platterwarning', 'reservationwarning', 'deliveryetawarning'];
 
@@ -226,19 +228,26 @@ SESSIONSTORAGE:
 			return false;
 		}
 	}
+	
+	function setOptions(_options) {
+		$.extend(messageData.options, _options);
+	}
 
 	var methods = {
-		isClosed: function() {
-			return getMessageStorage().messages.isClosed;
+		isClosed: function() { //for messages ONLY
+			try {
+				return (hasSessionStorage()) ? getMessageStorage().messages.isClosed : messageData.messagesIsClosed;
+			} catch(e) {
+				return true; //no other choice, return as closed
+			}
 		},
 		init: function( _options ) {
-			this.messages('setOptions', _options);
+			setOptions(_options);
 			
 			getMessageStorage();
 			cleanMessageStorage();
 		},
 		setOptions: function(_options) {
-			$.extend(messageData.options, _options);
 		},
 		destroy: function() {
 			return this.each(function(){});
@@ -258,8 +267,10 @@ SESSIONSTORAGE:
 			setMessageStorage();
 		},
 		openMessages: function() {
+			messageData.messagesIsClosed = false;
 			messageStorage.messages.isClosed = false;
 			messageData.options.$messages.addClass(messageData.options.messagesOpenClass);
+			messageData.options.$messages.removeClass(messageData.options.messagesOpenVisHiddenClass); 
 			$(messageData.options.$messages).trigger({
 				type: 'messagesOpen'
 			});
@@ -314,9 +325,10 @@ SESSIONSTORAGE:
 			this.messages('closeAlerts', opts.closeAlerts);
 		},
 		closeMessages: function() {
+			messageData.messagesIsClosed = true;
 			messageStorage.messages.isClosed = true;
 			messageData.options.$messages.removeClass(messageData.options.messagesOpenClass);
-			
+			messageData.options.$messages.addClass(messageData.options.messagesOpenVisHiddenClass); 
 			$(messageData.options.$messages).trigger({
 				type: 'messagesClose'
 			});
@@ -523,6 +535,11 @@ SESSIONSTORAGE:
 			if (opened) {
 				update.messages('openMessages');
 			}
+			/* don't close here, it'll close on timing, instead of the msgs status
+			 else {
+				update.messages('closeMessages');
+			} 
+			*/
 
 			return result;
 		},
@@ -616,6 +633,8 @@ SESSIONSTORAGE:
 		var $messages = $(document.getElementById('messages'));
 		if ($messages.hasClass('open')) {
 			$messages.messages('closeMessages');
+			
+			
 		} else {
 			$messages.messages('openMessages');
 		}
@@ -625,5 +644,118 @@ SESSIONSTORAGE:
 	$(document).on('ready', function() {
 		$('.message.invisible').messages('add');
 		$('.alerts.invisible').messages('add', $.unique($('.alerts.invisible[id]').map(function() { return this.id; }).get()), true);
+		
+		$(".newziptext").keydown(function(e){
+			
+			var text_length=$(this).val().length;			
+			var keycode = (e.keyCode ? e.keyCode : e.which);
+			$(this).removeClass("input-error");
+			$(this).parent().next().css("visibility","");
+			if(keycode == '13'){
+				if(text_length<5 && text_length>=1){					
+						$(this).parent().next().css("visibility","visible");
+						$(this).focus();
+						setTimeout(function(){
+							$(this).parent().find("input").focus();
+							$(".newziptext")[0].setSelectionRange(text_length,text_length);
+						},500);						
+						$(this).addClass("input-error");	
+				}
+				else if(text_length!="" && text_length == 5){
+					$('#messages').removeClass("open");
+					sendZip(e);
+				}
+				else{
+					$("#newziptext").focus();
+				}		
+				e.preventDefault();
+			}
+		});
+		
+		$(".newzipgo").keydown(function(e){
+			
+			var text_length=$(this).parent().find("input").val().length;		
+			console.log(text_length);
+			var keycode = (e.keyCode ? e.keyCode : e.which);
+			if(keycode == '13'){
+				if(text_length<5 && text_length>=1){					
+						$(this).parent().next().css("visibility","visible");
+						$(this).parent().find("input").addClass("input-error");
+					/*	$('.locabar_addresses-anon-deliverable-item-icon-clock .avlTimeFocus').blur();
+						$(".locabar_addresses-anon-deliverable-item-icon-truck a").blur();
+						$(this).parent().find("input").focus();*/
+						$(this).focus();
+						//console.log($(this));
+						setTimeout(function(){
+							$(this).focus();
+						},500);
+				}
+				else if(text_length!= "" && text_length == 5){
+					$('#messages').removeClass("open");
+					sendZip(e);
+				}
+					
+				e.preventDefault();
+			}
+		});
+		
+		$(".location-email-text").keydown(function(e){
+			
+			var email_text=$(this).val();
+			$(this).parent().find(".error-msg").css("visibility","");
+			$(this).parent().find("input").removeClass("input-error");	
+			var email_regex=/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+			
+		  	 if(e.which == '13'){
+		  		var IsValidEmail=email_regex.test(email_text);
+		  		if(IsValidEmail==false && email_text!=""){		  			
+					$(this).parent().find(".error-msg").css("visibility","visible");
+					$(this).parent().find("input").addClass("input-error");	
+					setTimeout(function(){
+						$(this).parent().find("input").focus();
+					},500)
+		  		}
+		  		else if(IsValidEmail==true){
+		  			
+		  			//submt email method
+		  			$("#location-submit.fdxgreen").trigger("click");
+		  			//$("#location-submit").click();
+		  			$(this).parent().find(".error-msg").css("visibility","hidden");
+					$(this).parent().find("input").removeClass("input-error");	
+		  		}		 
+		  		e.preventDefault();
+		  	}
+		  	//e.preventDefault();
+
+		});
+		
+		$("#location-submit.fdxgreen").keydown(function(e){
+			
+			var email_text=$(this).parent().find('input').val();
+			var email_regex=/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+			var IsValidEmail=email_regex.test(email_text);
+		  	 if(e.which == '13'){
+		  		if(IsValidEmail==false && email_text!=""){		  			
+		  			$(this).parent().find("input").removeClass("input-error");			  		
+		  			$(this).parent().find(".error-msg").css("visibility","visible");
+					$(this).parent().find("input").addClass("input-error");			  						
+					setTimeout(function(){
+						$(this).focus();
+					},500);
+					//$(this).parent().find("input").focus();
+		  		}
+		  		else if(IsValidEmail==true && email_text!=""){
+		  			//submt email method
+		  			$(this).trigger("click");
+		  			//$("#location-submit").click();
+		  			
+		  		}		 
+		  		e.preventDefault();
+		  	}
+		  	//e.preventDefault();
+
+		});
+		
+		
 	});
 })(FreshDirect);

@@ -93,7 +93,7 @@ public class ErpSaleInfoDAO {
 
 	public static Collection<ErpSaleInfo> getOrderHistoryInfo(Connection conn, String erpCustomerId) throws SQLException {
 		long startTime=System.currentTimeMillis();
-		PreparedStatement ps =conn.prepareStatement(QUERY_ORDER_HISTORY);;
+		PreparedStatement ps =conn.prepareStatement(QUERY_ORDER_HISTORY);
 			ps.setString(1, erpCustomerId);
 			ps.setString(2, erpCustomerId);
 			//Added As part of PERF-27 task.

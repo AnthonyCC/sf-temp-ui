@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<%@page import="com.freshdirect.cms.index.FullIndexerService"%>
+<%@page import="com.freshdirect.cms.index.IndexerService"%>
 <%@ page language="java" contentType="text/html; charset=iso-8859-1" pageEncoding="iso-8859-1"%>
 
 <%@page import="com.freshdirect.fdstore.content.ContentSearch"%>
@@ -45,7 +45,7 @@ String contentKey = request.getParameter("contentKey");
 
 		Registry registry = FDRegistry.getInstance();
 		//ContentSearchServiceI search = (ContentSearchServiceI) registry.getService(ContentSearchServiceI.class);
-		FullIndexerService indexer = FullIndexerService.getInstance();
+		IndexerService indexer = IndexerService.getInstance();
 		Analyzer analyzer = IndexingConstants.ANALYZER;
 		String indexDirectoryPath = SearchServiceConfiguration.getInstance().getCmsIndexLocation();
 		FSDirectory indexDirectory = FSDirectory.open(new File(indexDirectoryPath));

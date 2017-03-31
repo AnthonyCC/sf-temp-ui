@@ -1,15 +1,14 @@
 package com.freshdirect.dataloader.productfamily;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
 import javax.ejb.EJBException;
 import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
@@ -18,13 +17,17 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.dataloader.LoaderException;
 import com.freshdirect.dataloader.response.FDJcoServerResult;
-import com.freshdirect.dataloader.sap.ejb.SAPGrpInfoLoaderHome;
+import com.freshdirect.dataloader.sap.ejb.SAPProductFamilyLoaderDAO;
 import com.freshdirect.dataloader.sap.ejb.SAPProductFamilyLoaderHome;
 import com.freshdirect.dataloader.sap.ejb.SAPProductFamilyLoaderSB;
 import com.freshdirect.dataloader.sap.jco.server.FDSapFunctionHandler;
 import com.freshdirect.dataloader.sap.jco.server.FdSapServer;
 import com.freshdirect.dataloader.sap.jco.server.param.ProductFamilyParameter;
 import com.freshdirect.dataloader.util.FDSapHelperUtils;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.cache.EhCacheUtil;
+import com.freshdirect.payment.service.FDECommerceService;
+import com.freshdirect.payment.service.IECommerceService;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
 import com.sap.conn.jco.JCoFunction;
@@ -170,7 +173,7 @@ public class FDProductFamilyJcoServer extends FdSapServer
 					LOG.error("Error in validateMaterials ", ex);
 				}
 			
-			if(sapMsg.equals("Success"))
+			if(sapMsg.equals("Successfully Updated"))
 				udateCacheProdFly(productFamilyRecordMap);
 			
 			return sapMsg;
@@ -199,14 +202,24 @@ public class FDProductFamilyJcoServer extends FdSapServer
 			String msg = null;
 			try
 			{
-				ctx = ErpServicesProperties.getInitialContext();
-				
-				
 				LOG.info(String.format("Storing  product family [%s], [%s] ", familyIds.size(), new Date()));
-				
-				SAPProductFamilyLoaderHome mgr = (SAPProductFamilyLoaderHome) ctx.lookup("freshdirect.dataloader.SAPProductFamilyInfoLoader");
-				SAPProductFamilyLoaderSB sb = mgr.create();
-		        sb.updateCacheWithProdFly(familyIds);
+				if(FDStoreProperties.isStorefront2_0Enabled()){
+					IECommerceService service = FDECommerceService.getInstance();
+					Map<String,List<String>> familySkucodeMap = service.updateCacheWithProdFly(familyIds);
+					if(familySkucodeMap != null && familySkucodeMap.size() > 0 ){
+						for(String familyId: familySkucodeMap.keySet()){
+							List<String> skuCodes = familySkucodeMap.get(familyId);
+		                    EhCacheUtil.putListToCache(EhCacheUtil.FD_FAMILY_PRODUCT_CACHE_NAME,familyId, skuCodes);
+		                   }
+					}else{
+						msg="Failed";
+					}
+				}else{
+					ctx = ErpServicesProperties.getInitialContext();
+					SAPProductFamilyLoaderHome mgr = (SAPProductFamilyLoaderHome) ctx.lookup("freshdirect.dataloader.SAPProductFamilyInfoLoader");
+					SAPProductFamilyLoaderSB sb = mgr.create();
+			        sb.updateCacheWithProdFly(familyIds);
+				}
 		        msg = "Success";
 		       
 			} catch(Exception ex) {
@@ -321,16 +334,22 @@ public class FDProductFamilyJcoServer extends FdSapServer
 			Context ctx = null;
 			String saleId = null;
 			String msg = null;
+			LOG.info(String.format("Storing  product family [%s], [%s] ", prodFamily.size(), new Date()));
 			try
 			{
-				ctx = ErpServicesProperties.getInitialContext();
-
-				
-				LOG.info(String.format("Storing  product family [%s], [%s] ", prodFamily.size(), new Date()));
-				
-				SAPProductFamilyLoaderHome mgr = (SAPProductFamilyLoaderHome) ctx.lookup("freshdirect.dataloader.SAPProductFamilyInfoLoader");
-				SAPProductFamilyLoaderSB sb = mgr.create();
-		        sb.loadData(prodFamily);
+				if(FDStoreProperties.isStorefront2_0Enabled()){
+					IECommerceService service = FDECommerceService.getInstance();
+					String message = service.loadData(prodFamily);
+					if(message == null){
+						msg ="Update Failed";
+					}
+					
+				}else{
+					ctx = ErpServicesProperties.getInitialContext();
+					SAPProductFamilyLoaderHome mgr = (SAPProductFamilyLoaderHome) ctx.lookup("freshdirect.dataloader.SAPProductFamilyInfoLoader");
+					SAPProductFamilyLoaderSB sb = mgr.create();
+			        sb.loadData(prodFamily);
+				}
 		        msg = "Successfully Updated";
 		       
 			} catch(Exception ex) {

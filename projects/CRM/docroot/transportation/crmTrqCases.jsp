@@ -258,7 +258,7 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 			for (Iterator j=ci.getCartonDetails().iterator(); j.hasNext(); ) {
 				FDCartonDetail cartonDetail = (FDCartonDetail) j.next();
 %>			<tr>
-				<td><%= cartonDetail.getCartonDetail().getPackedQuantity() %><% if(cartonDetail.getCartonDetail().getWeightUnit() != null) {	%>&nbsp;<%= cartonDetail.getCartonDetail().getWeightUnit().toLowerCase() %><% } %>
+				<td><%= cartonDetail.getCartonDetail().getActualQuantity() %><% if(cartonDetail.getCartonDetail().getWeightUnit() != null) {	%>&nbsp;<%= cartonDetail.getCartonDetail().getWeightUnit().toLowerCase() %><% } %>
 				</td>
 				<td><%= cartonDetail.getCartLine().getDescription() %> (<%= cartonDetail.getCartLine().getSkuCode() %>)</td>
 				<td><%= cartonDetail.getCartonDetail().getNetWeight() %></td>

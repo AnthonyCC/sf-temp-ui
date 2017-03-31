@@ -546,7 +546,9 @@ public class ProductDetailPopulator {
 		data.setProductDetailImage( domains + product.getDetailImage().getPathWithPublishId() );
 		if(product.getZoomImage()!=null)
 		data.setProductZoomImage( domains + product.getZoomImage().getPathWithPublishId() );
-		
+		if(product.getJumboImage()!=null)
+		data.setProductJumboImage( domains + product.getJumboImage().getPathWithPublishId() );
+			
 		data.setProductPageUrl( FDURLUtil.getNewProductURI( product ) );
 		
 		data.setQuantityText( product.getQuantityText() );
@@ -554,7 +556,7 @@ public class ProductDetailPopulator {
 		data.setSoldBySalesUnit( product.isSoldBySalesUnits() );
 		data.setHasTerms( product.hasTerms() );
 		if(StandingOrderHelper.isEligibleForSo3_0(user)){
-			data.setSoData(StandingOrderHelper.getAllSoData(user,true));
+			data.setSoData(StandingOrderHelper.getAllSoData(user,true,false));
 		}
 		// alcoholic & usq flags
 		try {
@@ -635,7 +637,7 @@ public class ProductDetailPopulator {
 		item.setDiscontinued(productModel.isDiscontinued());
 		item.setOutOfSeason(productModel.isOutOfSeason());
 		if(StandingOrderHelper.isEligibleForSo3_0(user)){
-			item.setSoData(StandingOrderHelper.getAllSoData(user,true));
+			item.setSoData(StandingOrderHelper.getAllSoData(user,true,false));
 		}
 
 		populateAvailable(item, user, productModel);

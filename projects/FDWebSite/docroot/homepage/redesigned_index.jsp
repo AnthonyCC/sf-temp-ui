@@ -198,7 +198,7 @@ request.setAttribute("noyui", true);
 			 	<div class="holder">
 					<%-- MAIN CONTENT--%>
 						<div class="content">
-						
+
 			<% if (showAltHome && !location2Media) {
 				%><comp:homePageLetter user="<%= user %>" />
 			<%} else if (!showAltHome && location2Media) {
@@ -210,7 +210,7 @@ request.setAttribute("noyui", true);
 			<%
 			}
 			%>
-						
+
 			<%
 			if (location2Media) { %><comp:location2Media user="<%= user %>" /><% }
 			%>
@@ -226,7 +226,7 @@ request.setAttribute("noyui", true);
             			fullTopBar="HPFullTopBar"
             			mainTopBar="HPMainTopBar"
 					/>
-       
+
     				<%if (isHomepageReturningUser){ %>
 						<potato:modulehandling name="welcomepagePotato" moduleContainerId="<%=currentUserModuleContainerContentKey%>" />
 						<% }
@@ -235,7 +235,7 @@ request.setAttribute("noyui", true);
 						<potato:modulehandling name="welcomepagePotato" moduleContainerId="<%=newUserModuleContainerContentKey%>" />
 					<%}%>
 						<soy:render template="common.contentModules" data="${welcomepagePotato}" />
-   									
+
 					</div>
 					<%-- Removed the learn more for marketing change. --%>
 					<%-- <div id="bottom_link"><a href="/welcome.jsp"><img src="/media_stat/images/home/fd_logo_learn_more_back.jpg" alt="Learn More About Our Services"></a></div> --%>
@@ -244,6 +244,11 @@ request.setAttribute("noyui", true);
 			</div>
 			</fd:GetSegmentMessage>
 		<% } %>
+
+    <script type="text/javascript">
+      var FreshDirect = window.FreshDirect || {};
+      FreshDirect.homepage = true;
+    </script>
 
 </tmpl:put>
 </tmpl:insert>

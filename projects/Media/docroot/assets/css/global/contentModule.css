@@ -1,6 +1,18 @@
 .content-module {
   font-family: 'Brandon Text';
 }
+.content-module+.content-module {
+  margin-top: 27px;
+}
+
+.content-module.single-module {
+  margin-top: 0px;
+}
+
+.content-module .content {
+  border: 2px solid #F2F3F4;
+  border-top: 0;
+}
 
 .content-module [data-component="carousel"] [data-component="carousel-mask"] {
   background-color: white;
@@ -8,25 +20,24 @@
 }
 
 .content-module .module-header,
-.content-module .content .content-header {
+.content-module .content-header {
   display: flex;
 }
 
-.content-module .content .content-header {
+.content-module .content-header {
   align-items: center;
   background-image: none;
   justify-content: space-between;
   background: #F2F3F4;
   margin: 0;
-  margin-bottom: 10px;
   min-height: 40px;
-  padding: 0 10px;
+  padding: 17px;
 }
 
 .content-module h1 {
   font-family: 'Brandon Text';
   font-size: 25px;
-  font-weight: 500;
+  font-weight: 700;
   line-height: 25px;
   margin: 0;
 }
@@ -42,12 +53,13 @@
 
 .content-module .module-header {
   align-items: center;
-  background: #F2F3F4;
+  border-top: 15px solid #FFF;
   font-size: 25px;
   font-family: 'Brandon Text';
   text-transform: uppercase;
-  padding: 10px;
-  margin-bottom: 2px;
+  margin: 0x;
+  min-height: 80px;
+  padding: 0 10px;
 }
 
 .content-module .module-header .module-text-banner {
@@ -71,12 +83,13 @@
   top: 0;
 }
 
-.content-module .content .content-header h2 {
+.content-module .content-header h2 {
   margin: 0;
   font-family: 'Brandon Text';
   font-weight: 500;
-  font-size: 25px;
-  text-transform: uppercase;
+  font-size: 22px;
+  height: 22px;
+  line-height: 22px;
 }
 
 .content-module .content-header .view-all {

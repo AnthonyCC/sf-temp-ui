@@ -22,7 +22,7 @@
 	}
 %>
 <tmpl:insert template='/common/template/no_border_nonav.jsp'>
-<tmpl:put name='title' direct='true'> Presidents Picks - Email Products</tmpl:put>
+<tmpl:put name='title' direct='true'> Fresh Deals - Email Products</tmpl:put>
 
 <tmpl:put name='content' direct='true'>
 	<%

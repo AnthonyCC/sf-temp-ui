@@ -21,6 +21,7 @@ import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.customer.OrderHistoryI;
+import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -28,6 +29,7 @@ import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
@@ -588,12 +590,12 @@ public class StandingOrderHelper {
 		}
 		return result;
 	}
-	public static Collection<Map<String, Object>> convertStandingOrderToSoy(Collection<FDStandingOrder> soList,boolean isUpcomingDelivery) throws FDResourceException, PricingException, FDInvalidConfigurationException {
+	public static Collection<Map<String, Object>> convertStandingOrderToSoy(Collection<FDStandingOrder> soList, boolean isUpcomignOrders, boolean isUpcomingDelivery) throws FDResourceException, PricingException, FDInvalidConfigurationException {
 		Collection<Map<String, Object>> result = new ArrayList<Map<String, Object>>(); 
 		for (FDStandingOrder so : soList) {
 			
 			
-			Map<String, Object> map = convertStandingOrderToSoy(isUpcomingDelivery, so);
+			Map<String, Object> map = convertStandingOrderToSoy(isUpcomignOrders, so, isUpcomingDelivery);
 			
 			result.add(map);
 
@@ -610,8 +612,9 @@ public class StandingOrderHelper {
 	 * @throws FDInvalidConfigurationException
 	 * @throws PricingException
 	 */
-	public static Map<String, Object> convertStandingOrderToSoy(boolean isUpcomingDelivery, FDStandingOrder so)
+	public static Map<String, Object> convertStandingOrderToSoy(boolean isUpcomingorders, FDStandingOrder so, boolean isUpcomingDelivery)
 			throws FDResourceException, FDInvalidConfigurationException, PricingException {
+		boolean isEligibleToShowModifyInfo=false;
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("id", so.getId());
 		map.put("url", so.getLandingPage());
@@ -666,6 +669,15 @@ public class StandingOrderHelper {
 		map.put("currentDeliveryDate", map.get("deliveryDate"));
 		map.put("currentDeliveryTime", map.get("deliveryTime"));
 		map.put("currentDayOfWeek", map.get("dayOfWeek"));
+		if("Y".equalsIgnoreCase(so.getActivate())&& isUpcomingorders)
+			setUpcomingStandingOrder(so);
+		map.put("upComingOrderId", so.getUpcomingDelivery()!=null?so.getUpcomingDelivery().getErpSalesId():null);
+		map.put("isEligileToShowModifyInfo", isEligibleToShowModifyInfo);
+		if(map.get("upComingOrderId")!=null){
+			map.put("addressInfo", so3MatchDeliveryAddress(so,isEligibleToShowModifyInfo));
+			map.put("paymentInfo", isEligibleToShowModifyInfo?so.getPaymentMethod().getAccountNumber():so3MatchPaymentAccount(so,isEligibleToShowModifyInfo)); 
+			map.put("isEligileToShowModifyInfo", isEligibleToShowModifyInfo?true:SO3MatchTimeslot(so));
+		}
 		return map;
 	}
 	
@@ -766,7 +778,7 @@ public class StandingOrderHelper {
 
 	/* get a single Hashmap has all data that soy files need
 	 * can be used directly, returns "settingsData":{DATA} */
-	public static HashMap<String,Object> getAllSoData(FDUserI user, boolean isAddtoProduct) {
+	public static HashMap<String,Object> getAllSoData(FDUserI user, boolean isAddtoProduct, boolean isUpcomignOrders) {
 		HashMap<String,Object> allSoData = new HashMap<String,Object>();
 		HashMap<String,Object> soSettingsData = new HashMap<String,Object>();
 		String selectedSoId=null;
@@ -784,10 +796,8 @@ public class StandingOrderHelper {
 
 		try {
 			if(null != user.getIdentity()){
-
 				standingOrders = isAddtoProduct?getValidSO3(user): FDStandingOrdersManager.getInstance().loadCustomerNewStandingOrders(user.getIdentity());
-			    soData = StandingOrderHelper.convertStandingOrderToSoy(standingOrders, false);
-				
+					soData = StandingOrderHelper.convertStandingOrderToSoy(standingOrders, isUpcomignOrders, false);
 			    if(null!=standingOrders && !standingOrders.isEmpty()){
 					for(FDStandingOrder fdStandingOrder:standingOrders){
 						if(fdStandingOrder.isDefault()){
@@ -799,7 +809,7 @@ public class StandingOrderHelper {
 			    
 			    // TO Display current delivery date
 			    populateCurrentDeliveryDate(user,soData);
-			}
+		  }	    
 		} catch (FDResourceException e) {
 			// TODO Auto-generated catch block
 			LOGGER.error("Error While Getting the valid standing Order" + e);
@@ -810,6 +820,7 @@ public class StandingOrderHelper {
 			// TODO Auto-generated catch block
 			LOGGER.error("Error While Getting the valid standing Order" + e);
 		}
+	
         
 
 		soSettings.put("selectedSoId", selectedSoId); 
@@ -1083,4 +1094,92 @@ private static String convert(Date time) {
 
 		return flg;
 	}
+	
+	private static String so3MatchDeliveryAddress(FDStandingOrder so, boolean isEligileToShowModifyInfo) {
+
+		  String soDeliveryAddress=null;
+		try {
+			FDOrderInfoI fdOrderInfoI=so.getUpcomingDelivery();
+	        FDReservation fDReservation=FDCustomerManager.getOrder(fdOrderInfoI.getErpSalesId()).getDeliveryReservation();
+	        soDeliveryAddress =so.getDeliveryAddress()!=null?(so.getDeliveryAddress().getScrubbedStreet() +", "+so.getDeliveryAddress().getCity()+" "+so.getDeliveryAddress().getState() +" "+so.getDeliveryAddress().getZipCode()):null;
+	        if(!so.getAddressId().equalsIgnoreCase(fDReservation!=null?fDReservation.getAddressId():""))
+	        	{ isEligileToShowModifyInfo=true;
+	        	   return soDeliveryAddress;	
+	        	}
+		} catch (FDResourceException e) {
+			// TODO Auto-generated catch block
+			LOGGER.info("while prepare the SoDeliveryAddress " +e);
+		}
+		return soDeliveryAddress;
+	}
+	
+	private static String so3MatchPaymentAccount(FDStandingOrder so, boolean isEligileToShowModifyInfo) {
+		
+		String soPaymentInfo=null;
+		try {
+			FDOrderInfoI fdOrderInfoI=so.getUpcomingDelivery();
+			FDOrderI fDOrderI=FDCustomerManager.getOrder(fdOrderInfoI.getErpSalesId());
+			String upComingOrderPaymentInfo=fDOrderI.getPaymentMethod()!=null?fDOrderI.getPaymentMethod().getAccountNumber():null;
+			soPaymentInfo=so.getPaymentMethod()!=null?so.getPaymentMethod().getAccountNumber():"";
+			if(!soPaymentInfo.equalsIgnoreCase(upComingOrderPaymentInfo)){
+	        		isEligileToShowModifyInfo=true;
+	        		return soPaymentInfo;
+			 }
+		} catch (FDResourceException e) {
+			// TODO Auto-generated catch block
+			LOGGER.info("while prepare the SoPayment information " +e);
+		}
+		return soPaymentInfo;
+	}
+	
+	private static boolean SO3MatchTimeslot(FDStandingOrder so) {
+		try {
+			FDOrderInfoI fdOrderInfoI=so.getUpcomingDelivery();
+			FDOrderI fdOrderI=FDCustomerManager.getOrder(fdOrderInfoI.getErpSalesId());
+			
+			if(fdOrderI!=null && fdOrderI.getDeliveryReservation()!=null){
+				FDTimeslot fdTimeslot=fdOrderI.getDeliveryReservation().getTimeslot();
+				return compareSO3Timeslot(fdTimeslot, so);
+			}
+		} catch (FDResourceException e) {
+			// TODO Auto-generated catch block
+			LOGGER.info("while the checking SO3MatchTimeslot" +e);
+		}
+		return false; 
+	}
+	
+	 public static boolean compareSO3Timeslot(FDTimeslot slot, FDStandingOrder so){
+		 boolean isMatch=false;
+	     if(null!=so.getNextDeliveryDate() && null!=so.getStartTime()){
+	    	 
+		 	Calendar calendar1 = Calendar.getInstance();
+		 	Calendar calendar2 = Calendar.getInstance();
+	    
+		 	calendar1.setTime(slot.getDeliveryDate());
+		 	calendar2.setTime(so.getNextDeliveryDate());
+
+		 	boolean sameDay = calendar1.get(Calendar.DAY_OF_WEEK) != calendar2.get(Calendar.DAY_OF_WEEK);
+		 	isMatch=sameDay || !convert(slot.getDlvStartTime().getAsDate()).equals(convert(so.getStartTime())) || !convert(slot.getDlvEndTime().getAsDate()).equals(convert(so.getEndTime()))? true:false;
+	     }
+		 return isMatch;
+		 
+	 }
+	 
+	 public static void setUpcomingStandingOrder(FDStandingOrder so){
+			
+		 try {
+			 if(isEligibleForSo3_0(so.getUser())){
+				 List<FDStandingOrder> fdStandingOrder = new ArrayList<FDStandingOrder>();
+					fdStandingOrder.add(so);
+				FDStandingOrdersManager.getInstance().getAllSOUpcomingOrders(so.getUser(), fdStandingOrder);
+			 }
+		} catch (FDResourceException e) {
+			// TODO Auto-generated catch block
+			LOGGER.info("while the setupcomingStandingOrder" +e);
+		} catch (FDAuthenticationException e) {
+			// TODO Auto-generated catch block
+			LOGGER.info("while the setupcomingStanidnOrder" +e);
+		}
+	 }
+	 
 }

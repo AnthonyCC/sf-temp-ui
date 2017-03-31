@@ -167,7 +167,7 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 
 		var thisyear=2005;
 
-        for (var y=0; y<11; y++){			
+        for (var y=0; y<15; y++){			
 			var cyear = <%= year %>;
 			if(cyear == thisyear)
 				yearfield.options[y]=new Option(thisyear, thisyear, true, true);			

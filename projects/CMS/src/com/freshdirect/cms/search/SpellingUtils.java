@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.freshdirect.cms.search.spell.SpellingHit;
+import com.freshdirect.cms.search.spell.StringDistance;
 import com.freshdirect.cms.search.term.Term;
 import com.freshdirect.framework.util.PermutationGenerator;
 
@@ -31,7 +32,7 @@ public class SpellingUtils {
 	}
 
 	public static boolean checkPartialThreshold(List<String> original, List<String> suggested, double threshold,
-			SpellingSuggestionsServiceI spellingService) {
+	        StringDistance distance) {
 		List<String> remOrig = new ArrayList<String>(original);
 		List<String> remSug = new ArrayList<String>(suggested);
 
@@ -49,7 +50,7 @@ public class SpellingUtils {
 					continue;
 				String s1 = Term.join(remOrig.subList(0, x + 1), Term.DEFAULT_SEPARATOR);
 				String s2 = Term.join(remSug.subList(0, y + 1), Term.DEFAULT_SEPARATOR);
-				int d = spellingService.getStringDistance().getDistance(s1, s2);
+				int d = distance.getDistance(s1, s2);
 				double score = Math.max(0., ((double) (s2.length() - d)) / s2.length());
 				if (score >= bestScore) {
 					bestScore = score;

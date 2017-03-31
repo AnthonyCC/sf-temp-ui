@@ -6,12 +6,8 @@
  * @param? title optional title string
  * @param? cmEventSource optional coremetrics event source
  * @param? mobWeb
- * @param? hideViewAllButton
- * @param? useViewAllPopup
- * @param? moduleId
- * @param? viewAllLink
- * @param? accessibilityText
  * @param? isIconCarousel
+ * @param? moduleData
  */
 {template .simpleCarousel autoescape="false"}
 <div data-component="carousel" class="first">
@@ -22,12 +18,14 @@
 			{if $isIconCarousel}
 				{call common.iconCarouselItem}
 					{param item:$item /}
+          {param moduleData:$moduleData /}
 				{/call}
 			{else}
 				{delcall common.carouselItem variant="$itemType"}
 					{param item:$item /}
 					{param cmEventSource:$cmEventSource /}
 					{param mobWeb:$mobWeb /}
+          {param moduleData:$moduleData /}
 				{/delcall}
 			{/if}
 			{/foreach}
@@ -35,11 +33,11 @@
 	</div>
 	<button data-component="carousel-prev" data-carousel-nav="prev">previous</button>
 	<button data-component="carousel-next" data-carousel-nav="next"
-	{if not $hideViewAllButton}data-carousel-view-all="{not $hideViewAllButton}"{/if}>next</button>
-	{if not $hideViewAllButton and $accessibilityText}
+	{if $moduleData and not $moduleData.hideViewAllButton}data-carousel-view-all{/if}>next</button>
+	{if $moduleData and not $moduleData.hideViewAllButton and ($moduleData.contentTitle or $moduleData.moduleTitle)}
 		<div data-component="carousel-view-all">
-			<a {if $useViewAllPopup}data-view-all-popup data-moduleId={if $moduleId}{$moduleId}{/if}{else}href="{$viewAllLink}"{/if} class="cssbutton cssbutton-flat green transparent arrowbutton">view all
-				<div class="offscreen">{$accessibilityText}</div>
+			<a {if $moduleData and $moduleData.useViewAllPopup}data-view-all-popup data-moduleId={if $moduleData and $moduleData.moduleId}{$moduleData.moduleId}{/if}{else}href="{if $moduleData and $moduleData.viewAllButtonLink}{$moduleData.viewAllButtonLink}{/if}"{/if} cm-click="cmCreateElementTag,View All,Home Page-_-Carousel{if $moduleData and $moduleData.moduleId}-_-{$moduleData.moduleId}{/if}{if $moduleData and $moduleData.viewAllButtonLink}-_-{$moduleData.viewAllButtonLink}{/if}">view all
+				<div class="offscreen">{if $moduleData and $moduleData.contentTitle}{$moduleData.contentTitle}{else}{$moduleData.moduleTitle}{/if}</div>
 			</a>
 		</div>
 	{/if}

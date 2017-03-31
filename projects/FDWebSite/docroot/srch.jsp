@@ -246,6 +246,10 @@
 	      window.FreshDirect.browse.data = <fd:ToJSON object="${browsePotato}" noHeaders="true"/>
 	      window.FreshDirect.globalnav.data = <fd:ToJSON object="${globalnav}" noHeaders="true"/>
 	      window.FreshDirect.coremetricsData = window.FreshDirect.browse.data.coremetrics;
+	      
+
+	      window.FreshDirect.browse.data.searchParams = window.FreshDirect.browse.data.searchParams || {};
+	      
 	    </script>
   </tmpl:put>
 
@@ -323,7 +327,7 @@
             </table>
             <hr class="ddpp-hr bottom" />
             <center class="legaltext">
-            New President's Picks items are available weekly. Prices and the selection of items are subject to change without notice. Sorry, no rain checks. Offers expire each Wednesday at 11:59 p.m. and promotional pricing will be removed from orders after that time. Offer is nontransferable.<br><br>
+            New Fresh Deals items are available weekly. Prices and the selection of items are subject to change without notice. Sorry, no rain checks. Offers expire each Wednesday at 11:59 p.m. and promotional pricing will be removed from orders after that time. Offer is nontransferable.<br><br>
             Wines and spirits sold by FreshDirect Wines &amp; Spirits. Alcohol cannot be delivered outside of New York state. Beer, wine and spirits will be removed from your cart during checkout if an out of state address is selected for delivery. The person receiving your delivery must have identification proving they are over the age of 21 and will be asked for their signature.
             </center>
     </div>

@@ -6,9 +6,11 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -33,6 +35,7 @@ import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.EnumApprovalStatus;
 import com.freshdirect.erp.model.ErpMaterialSalesAreaModel;
 import com.freshdirect.erp.model.ErpPlantMaterialModel;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.DayOfWeekSet;
 import com.freshdirect.sap.SapProperties;
 import com.sap.conn.jco.JCo;
@@ -222,6 +225,7 @@ public class FDPlantProductJcoServer extends FdSapServer {
 					materialPlantTable.nextRow();
 				}
 
+				Set<String> errMaterials = new HashSet<String>();
 				// populate salesarea info
 				for (int i = 0; i < materialSalesAreaTable.getNumRows(); i++) {
 					materialSalesAreaTable.setRow(i);
@@ -232,9 +236,25 @@ public class FDPlantProductJcoServer extends FdSapServer {
 						materialSalesAreasMap.put(materialNo, salesAreas);
 					}
 					ErpMaterialSalesAreaModel param = populateMaterialSalesAreaModel(materialSalesAreaTable);
+					if(FDStoreProperties.isPickPlantIdReqForMatSalesOrgExport() && (null == param.getPickingPlantId() || param.getPickingPlantId().isEmpty())){
+						populateErrorResponse(result, materialErrorTable, materialNo, "Picking plant id is missing for sales org:"+param.getSalesOrg());
+						LOG.info("Picking plant id is missing for sales org:"+param.getSalesOrg()+" and material:"+materialNo);
+						errMaterials.add(materialNo);
+					}
+					
 					salesAreas.add(param);
+					
 
 					materialSalesAreaTable.nextRow();
+				}
+				
+				//Don't persist any info of the material with errors.
+				if(FDStoreProperties.isPickPlantIdReqForMatSalesOrgExport() && !errMaterials.isEmpty()){
+					for (Iterator iterator = errMaterials.iterator(); iterator.hasNext();) {
+						String materialNo = (String) iterator.next();
+						materialSalesAreasMap.remove(materialNo);
+						materialPlantsMap.remove(materialNo);
+					}
 				}
 
 				// save plant and salesarea info

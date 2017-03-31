@@ -6,28 +6,18 @@
  */
 {template .iconCarouselModule}
 {if $data.icons and length($data.icons) > 0}
-  <div class="content-module icon-carousel" id="{$moduleData.moduleId}">
+  <div class="content-module icon-carousel {if $moduleData.moduleTitle}single-module{/if}" id="{$moduleData.moduleId}">
   	{call common.moduleHeader}
   		{param content: $moduleData /}
   	{/call}
+    {call common.contentHeader}
+      {param content: $moduleData /}
+    {/call}
   	<div class="content">
-  		{call common.contentHeader}
-  			{param content: $moduleData /}
-  		{/call}
   		{call common.simpleCarousel}
   			{param isIconCarousel: true /}
   			{param items: $data.icons /}
-  			{param showViewAllButton: $moduleData.showViewAllButton /}
-        {param useViewAllPopup: $moduleData.useViewAllPopup /}
-        {param moduleId: $moduleData.moduleId /}
-  			{param viewAllLink: $moduleData.viewAllButtonLink /}
-  			{param accessibilityText}
-  				{if $moduleData.contentTitle}
-  					{$moduleData.contentTitle}
-  				{else}
-  					{$moduleData.moduleTitle}
-  				{/if}
-  			{/param}
+        {param moduleData: $moduleData /}
   			{param itemType:'grid' /}
   		{/call}
   	</div>

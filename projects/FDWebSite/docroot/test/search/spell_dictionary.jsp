@@ -1,12 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<%@page import="com.freshdirect.cms.search.LuceneSearchService"%>
 <%@ page language="java" contentType="text/html; charset=iso-8859-1" pageEncoding="iso-8859-1"%>
 
 <%@page import="org.apache.hivemind.Registry"%>
 <%@page import="com.freshdirect.framework.conf.FDRegistry"%>
 <%@page import="com.freshdirect.cms.search.ContentSearchServiceI"%>
 <%@page import="com.freshdirect.cms.search.configuration.SearchServiceConfiguration"%>
-<%@page import="com.freshdirect.cms.index.FullIndexerService"%>
+<%@page import="com.freshdirect.cms.index.IndexerService"%>
 <%@page import="org.apache.lucene.index.IndexReader"%>
 <%@page import="org.apache.lucene.store.FSDirectory"%>
 <%@page import="org.apache.lucene.search.IndexSearcher"%>
@@ -38,7 +37,7 @@
 			<tbody>
 				<%
 					Registry registry = FDRegistry.getInstance();
-			        FullIndexerService indexer = FullIndexerService.getInstance();
+			        IndexerService indexer = IndexerService.getInstance();
 					String indexDirectoryPath = SearchServiceConfiguration.getInstance().getCmsIndexLocation();
                     FSDirectory indexDirectory = FSDirectory.open(new File(indexDirectoryPath));
                     IndexReader reader = IndexReader.open(indexDirectory, false);

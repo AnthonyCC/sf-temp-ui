@@ -758,6 +758,7 @@ public class FDStoreProperties {
     private static final String PROP_LOGISTICS_API_URL = "fdstore.logisticsapi.url";
     private static final String PROP_FDCOMMERCE_API_URL = "fdstore.fdcommerceapi.url";
     
+    
     private static final String PROP_PAYPAL_API_URL = "fdstore.paypalapi.url";
     private static final String PROP_OMS_API_URL = "fdstore.omsapi.url";
     private static final String PROP_LOGISTICS_COMPANY_CODE = "fdstore.logistics.companycode";
@@ -912,9 +913,13 @@ public class FDStoreProperties {
     private static final String PROP_PLANT1300_PRICE_INDICATOR = "fdstore.plant1300.price.indicator";
     private static final String PROP_PLANT1310_PRICE_INDICATOR = "fdstore.plant1310.price.indicator";
     private static final String PROP_PLANTWDC_PRICE_INDICATOR = "fdstore.plantwdc.price.indicator";
+    
+    private static final String PROP_MAT_SALESORG__EXPORT_PICKPLANT_VALIDATION_ENABLED ="fdstore.salesarea.exp.pickplant.val.enabled";
+    private static final String PROP_EXTRA_LOG_FOR_LOGIN_FAILS_ENABLED = "fdstore.extralog.login.fail.enabled";
 
     
     private static final String PROP_SF_2_0_ENABLED = "fdstore.storefront_2_0.enabled";
+    private static final String PROP_MEALBUNDLE_CARTONVIEW_ENABLED = "fdstore.mealbundle_cartonview.enabled";
     
     static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1376,10 +1381,10 @@ public class FDStoreProperties {
         defaults.put(PROP_COUNTRY_INFO_REFRESH_INTERVAL, "5");
 
         // APPDEV-2072 google analytics key
-        defaults.put(PROP_GOOGLE_ANALYTICS_KEY, ""); // default to an empty string
+        defaults.put(PROP_GOOGLE_ANALYTICS_KEY, "UA-20535945-18"); // default to an empty string
         defaults.put(PROP_GOOGLE_ANALYTICS_DOMAIN, ".freshdirect.com");
         // APPDEV-3522 Google Analytics: Upgrade to Universal Analytics: Updates for Page Load Times
-        defaults.put(PROP_GOOGLE_ANALYTICS_UNIVERSAL, "false");
+        defaults.put(PROP_GOOGLE_ANALYTICS_UNIVERSAL, "true");
 
         defaults.put(PROP_AVAILABILITY_DAYS_IN_PAST_TO_LOOKUP, "7");
         defaults.put(CUST_SERV_HOURS_DAYS, "Monday through Sunday");
@@ -1603,7 +1608,7 @@ public class FDStoreProperties {
         // Product Family
         defaults.put(PROP_PRODUCTFAMILY, "true");
         defaults.put(PROP_LOGISTICS_API_URL, "http://logisticsdev1.nj01/");
-        defaults.put(PROP_FDCOMMERCE_API_URL, "http://localhost:8080/");
+        defaults.put(PROP_FDCOMMERCE_API_URL, "http://localhost:8080");
         defaults.put(PROP_PAYPAL_API_URL, "http://logisticsdev1.nj01/paypal");
         defaults.put(PROP_OMS_API_URL, "http://crmdev1.nj01/");
 
@@ -1724,8 +1729,8 @@ public class FDStoreProperties {
 
         defaults.put(PROP_USER_CART_SAVE_INTERVAL, "0");
 
-        defaults.put(PROP_HOMEPAGE_REDESIGN_CURRENT_USER_CONTAINER_CONTENT_KEY, "ModuleContainer:currentUserModuleContainer");
-        defaults.put(PROP_HOMEPAGE_REDESIGN_NEW_USER_CONTAINER_CONTENT_KEY, "ModuleContainer:newUserModuleContainer");
+        defaults.put(PROP_HOMEPAGE_REDESIGN_CURRENT_USER_CONTAINER_CONTENT_KEY, "ModuleContainer:mc_hp_exist_cust");
+        defaults.put(PROP_HOMEPAGE_REDESIGN_NEW_USER_CONTAINER_CONTENT_KEY, "ModuleContainer:mc_hp_new_cust");
         defaults.put(PROP_HOMEPAGE_REDESIGN_MODULE_PRODUCT_LIMIT_MAX, "12");
 
         defaults.put(PROP_PLANT1300_PRICE_INDICATOR, "BASE");
@@ -1733,7 +1738,9 @@ public class FDStoreProperties {
         defaults.put(PROP_PLANTWDC_PRICE_INDICATOR, "BASE");
         
         defaults.put(PROP_SF_2_0_ENABLED, "false");
-        
+        defaults.put(PROP_MAT_SALESORG__EXPORT_PICKPLANT_VALIDATION_ENABLED, "true");
+        defaults.put(PROP_EXTRA_LOG_FOR_LOGIN_FAILS_ENABLED, "true");
+        defaults.put(PROP_MEALBUNDLE_CARTONVIEW_ENABLED, "true");
         
         refresh();
     }
@@ -4416,6 +4423,10 @@ public class FDStoreProperties {
     public static boolean isStorefront2_0Enabled() {
         return (Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue();
     }
+    public static boolean isMealBundleCartonLinkEnabled() {
+        return (Boolean.valueOf(get(PROP_MEALBUNDLE_CARTONVIEW_ENABLED))).booleanValue();
+    }
+    
 
     public static String getPropDonationProductSamplesId() {
         return get(PROP_DONATION_PRODUCT_SAMPLES_ID);
@@ -4469,4 +4480,11 @@ public class FDStoreProperties {
         return excludedDeptOrCatIdsList;
     }
 
+    public static boolean isPickPlantIdReqForMatSalesOrgExport() {
+        return (Boolean.valueOf(get(PROP_MAT_SALESORG__EXPORT_PICKPLANT_VALIDATION_ENABLED))).booleanValue();
+    }
+    
+    public static boolean isExtraLogForLoginFailsEnabled() {
+        return (Boolean.valueOf(get(PROP_EXTRA_LOG_FOR_LOGIN_FAILS_ENABLED))).booleanValue();
+    }
 }

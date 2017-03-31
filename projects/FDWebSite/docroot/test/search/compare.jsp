@@ -32,7 +32,7 @@
 	}
 
 	Registry registry = FDRegistry.getInstance();
-	ContentSearchServiceI search = new LuceneSearchService();
+	ContentSearchServiceI search = LuceneSearchService.getInstance();
 
 	Collection<SearchHit> res1 = s1.trim().length() > 0 ? search.searchProducts(s1, !approximate, !approximate, 2000) : null;
 	Collection<SearchHit> res2 = s2.trim().length() > 0 ? search.searchProducts(s2, !approximate, !approximate, 2000) : null;

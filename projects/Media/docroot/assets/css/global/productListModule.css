@@ -1,7 +1,8 @@
 .content-module.product-list .content .transactional ul {
   margin: 0;
   padding: 0;
-  width: 100%
+  width: 100%;
+  text-align:left;
 }
 
 .content-module.product-list .content .transactional li {

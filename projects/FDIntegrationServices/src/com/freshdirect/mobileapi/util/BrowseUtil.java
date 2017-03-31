@@ -1537,6 +1537,10 @@ public class BrowseUtil {
 					skuInfo.setSkuCode(sku.getSkuCode());
 					skuInfo.setProductId(prodModel.getContentName());
 					skuInfo.setBasePrice(pc.getWasPrice());
+					if(sku.getProductInfo()!=null&&sku.getProductInfo().getInventory(plantID)!=null
+							&&sku.getProductInfo().getInventory(plantID).getEntries()!=null&&sku.getProductInfo().getInventory(plantID).getEntries().get(0)!=null)
+					skuInfo.setInventory(sku.getProductInfo().getInventory(plantID).getEntries().get(0).getQuantity());
+					
 					if(productInfo.getGroup(pc.getPricingContext().getZoneInfo().getSalesOrg(),pc.getPricingContext().getZoneInfo().getDistributionChanel())!=null) {
 						skuInfo.setGroupInfo(getGroupInfo(productInfo.getGroup(pc.getPricingContext().getZoneInfo().getSalesOrg(),pc.getPricingContext().getZoneInfo().getDistributionChanel()),pc));
 					}

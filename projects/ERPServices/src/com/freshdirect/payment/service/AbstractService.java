@@ -36,6 +36,8 @@ public abstract class AbstractService {
 	
 	private static final String PAYPAL_API_CONTEXT = "/payPal/v/1";
 	private static final String OMS_API_CONTEXT = "/fdlogistics/v/1/";
+	private static final String FDCOMMERCE_API_CONTEXT = "/fdcommerceapi/fd/v1/";
+
 	
 	private static final RestTemplate restTemplate;
 	private static final Category LOGGER = LoggerFactory.getInstance(AbstractService.class);
@@ -151,6 +153,10 @@ public abstract class AbstractService {
 	public String getEndPoint(String path){
 		return FDStoreProperties.getPayPalAPIUrl()	+ PAYPAL_API_CONTEXT 
 														+ path;
+	}
+	public String getFdCommerceEndPoint(String path){
+		return FDStoreProperties.getFdCommerceApiUrl()	+ FDCOMMERCE_API_CONTEXT + 
+												 path;
 	}
 
 }

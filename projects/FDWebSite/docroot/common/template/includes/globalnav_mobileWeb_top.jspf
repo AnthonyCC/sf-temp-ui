@@ -185,7 +185,7 @@
 				</span>
 				<ul class="navMenuItems-shopmore rem-navbar">
 					<li>
-						<span class="glBreadcrumblink"><a href="/browse.jsp?id=picks_love">President's Picks</a></span>
+						<span class="glBreadcrumblink"><a href="/browse.jsp?id=picks_love">Fresh Deals</a></span>
 					</li>
 					<li>
 						<span class="glBreadcrumblink"><a href="/srch.jsp?pageType=ecoupon">Coupons</a></span>

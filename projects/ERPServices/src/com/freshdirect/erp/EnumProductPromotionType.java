@@ -11,7 +11,7 @@ public class EnumProductPromotionType extends Enum {
 	private static final long serialVersionUID = 3857209226074690728L;
 
 	public static final EnumProductPromotionType PRESIDENTS_PICKS = new EnumProductPromotionType(
-			"PRESIDENTS_PICKS", 101,"President's Picks"); // President's Picks
+			"PRESIDENTS_PICKS", 101,"Fresh Deals"); // President's Picks
 	public static final EnumProductPromotionType NUTRITIONISTS_CHOICE = new EnumProductPromotionType(
 			"NUTRITIONISTS_CHOICE",102, "Nutritionist's Choice"); // Nutritionist's Choice
 	public static final EnumProductPromotionType PRODUCTS_ASSORTMENTS = new EnumProductPromotionType(

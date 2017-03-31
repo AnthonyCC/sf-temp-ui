@@ -25,8 +25,7 @@ import com.freshdirect.cms.application.StoreContentSource;
 import com.freshdirect.cms.application.draft.service.DraftService;
 import com.freshdirect.cms.core.CmsDaoFactory;
 import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.cms.index.FullIndexerService;
-import com.freshdirect.cms.index.PartialIndexerService;
+import com.freshdirect.cms.index.IndexerService;
 import com.freshdirect.cms.index.configuration.IndexerConfiguration;
 import com.freshdirect.cms.merge.MergeResult;
 import com.freshdirect.cms.merge.MergeTask;
@@ -84,12 +83,11 @@ public class BackgroundProcessorImpl implements IBackgroundProcessor {
     private final static Logger LOG = LoggerFactory.getInstance(BackgroundProcessorImpl.class);
 
     private ExecutorService reindexer;
-    private ContentSearchServiceI searchService = new LuceneSearchService();
+    private ContentSearchServiceI searchService = LuceneSearchService.getInstance();
     private BackgroundStatus procStatus = new BackgroundStatus();
     private List<PublishTask> publishTasks;
     private MergeTask mergeTask;
-    private PartialIndexerService partialIndexerService = PartialIndexerService.getInstance();
-    private FullIndexerService fullIndexerService = FullIndexerService.getInstance();
+    private IndexerService indexerService = IndexerService.getInstance();
 
     public BackgroundProcessorImpl () {
     }
@@ -123,12 +121,8 @@ public class BackgroundProcessorImpl implements IBackgroundProcessor {
         return CmsDaoFactory.getInstance().getPublishDao();
     }
 
-    public PartialIndexerService getPartialIndexerService() {
-        return partialIndexerService;
-    }
-
-    public FullIndexerService getFullIndexerService(){
-        return fullIndexerService;
+    public IndexerService getIndexerService(){
+        return indexerService;
     }
 
     @Override
@@ -156,7 +150,7 @@ public class BackgroundProcessorImpl implements IBackgroundProcessor {
                 Map<ContentKey, ContentNodeI> nodes = CmsManager.getInstance().getContentNodes(keys, DraftContext.MAIN);
                 final Collection<ContentNodeI> values = nodes.values();
                 status.setStatus("Reindexing " + values.size() + " nodes");
-                getPartialIndexerService().index(values);
+                getIndexerService().partialIndex(values, IndexerConfiguration.getDefaultConfiguration());
                 status.setStatus("Finished.");
                 return values.size();
             }
@@ -180,14 +174,15 @@ public class BackgroundProcessorImpl implements IBackgroundProcessor {
                 CmsManager instance = CmsManager.getInstance();
                 for (Iterator<ContentType> i = getSearchService().getSearchableContentTypes().iterator(); i.hasNext();) {
                     ContentType type = i.next();
-                    keys.addAll(instance.getContentKeysByType(type, DraftContext.MAIN));
-                    status.setStatus("loading " + keys.size() + " keys");
+                    Set<ContentKey> contentKeys = instance.getContentKeysByType(type, DraftContext.MAIN);
+                    status.setStatus("loading " + contentKeys.size() + " keys for type " + type);
+                    keys.addAll(contentKeys);
                 }
 
-                status.setStatus("loading " + keys.size() + " nodes");
+                status.setStatus("loading " + keys.size() + " nodes for reindexing");
                 Map<ContentKey, ContentNodeI> nodes = instance.getContentNodes(keys, DraftContext.MAIN);
-                status.setStatus("decoding store key");
                 ContentKey storeKey = ContentKey.getContentKey("Store:" + instance.getEStoreEnum().getContentId());
+                status.setStatus("decoding store key: " + storeKey.getId());
                 status.setStatus("setting up storeContentSource");
                 StoreContentSource storeContentSource = new SingleStoreNodeCollectionSource(nodes.values(), storeKey);
                 status.setStatus("setting up synonym dictionary");
@@ -196,7 +191,7 @@ public class BackgroundProcessorImpl implements IBackgroundProcessor {
                 IndexerConfiguration indexerConfiguration = IndexerConfiguration.getDefaultConfiguration();
                 indexerConfiguration.setStoreContentSource(storeContentSource);
 
-                getFullIndexerService().index(nodes.values(), indexerConfiguration);
+                getIndexerService().fullIndex(nodes.values(), indexerConfiguration);
 
                 ContentSearch.getInstance().refreshRelevancyScores();
                 status.setStatus("refresh complete.");
@@ -292,7 +287,7 @@ public class BackgroundProcessorImpl implements IBackgroundProcessor {
                     if (publishTasks != null) {
                         publish.getMessages().add(new PublishMessage(PublishMessage.INFO, FEED_PUBLISH_START_MESSAGE));
                         // Go through each Stores
-                        Collection<ContentKey> storeKeys = CmsManager.getInstance().getContentKeysByType(FDContentTypes.STORE);
+                        Collection<ContentKey> storeKeys = CmsManager.getInstance().getContentKeysByType(FDContentTypes.STORE, DraftContext.MAIN);
                         final int n = storeKeys.size();
                         int k=0;
                         for (final ContentKey storeKey : storeKeys) {

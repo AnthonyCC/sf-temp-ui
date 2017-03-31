@@ -130,6 +130,20 @@ public class SearchController extends BaseController {
                 FilterOptionLabelComparator filterComparator = new FilterOptionLabelComparator();
                 List<Product> products = productService.search(searchTerm, upc, page, resultMax, sortType, brandToFilter, categoryToFilter, departmentToFilter,
                         getUserFromSession(request, response), request);
+                
+                List<Product> favProducts = new ArrayList<Product>();
+                favProducts.clear();
+                if(!products.isEmpty()){
+                	for(Product product : products){
+                		ProductModel productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey("Product:" + product.getProductId())); 
+                		if(productModel!=null && productModel.getContentKey()!=null){
+                			boolean isYourFave = DYFUtil.isFavorite( productModel, user.getFDSessionUser() );
+                			if(isYourFave){
+                				favProducts.add(product);
+                			}
+                		}
+                	}
+                }
 
                 if (request.getSession().getAttribute(SessionName.APPLICATION) != null
                         && EnumTransactionSource.FRIDGE.getCode().equalsIgnoreCase((String) request.getSession().getAttribute(SessionName.APPLICATION))) {
@@ -182,6 +196,7 @@ public class SearchController extends BaseController {
                 data.setTotalResultCount(productService.getRecentSearchTotalCount());
                 data.setQuery(searchTerm);
                 data.setProductsFromModel(products);
+                data.setFavProductsFromModel(favProducts);
                 data.setBrands(brandList);
                 data.setCategories(categoryList);
                 data.setDepartments(departmentList);
@@ -197,6 +212,7 @@ public class SearchController extends BaseController {
                 data.setTotalResultCount(0);
                 data.setQuery(searchTerm);
                 data.setProductsFromModel(Collections.<Product> emptyList());
+                data.setFavProductsFromModel(Collections.<Product> emptyList());
                 data.setBrands(Collections.<FilterOption> emptyList());
                 data.setCategories(Collections.<FilterOption> emptyList());
                 data.setDepartments(Collections.<FilterOption> emptyList());

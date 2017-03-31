@@ -4,7 +4,7 @@
 		/*height:42px;*/
 	}
 	#locationbar {
-		background-color: #6AAA6D;
+		background-color: #4fa157;
 		height: auto;
 		font-size: 12px;
 		overflow: visible;
@@ -37,6 +37,7 @@
 	.newzipgo, .newzipgo:active, .newzipgo:hover, .newzipgo, .newzipgo:active, .newzipgo:focus
 	{
 		background-image: none;
+		
 	}
 	#newzipgo, #newzipgo:active,
 	.newzipgo, .newzipgo:active {
@@ -62,7 +63,7 @@
 	}
 	#location-submit, #location-submit:active, #location-submit:hover, #location-submit:focus {
 		background-image: none;
-		border: none;
+		/*border: none;*/
 	}
 	#locabar_addresses #location-submit{
 		margin-left:4px;
@@ -722,7 +723,7 @@
 }
 #locabar_addresses .locabar_addresses-dlvadd-edit:hover, #locabar_addresses .locabar_addresses-ts-info:hover,
 #locabar_addresses .locabar_addresses-dlvadd-edit:focus, #locabar_addresses .locabar_addresses-ts-info:focus {
-	background-color: #4fa157;
+	background-color: #458d4e;
 }
 #locabar_addresses .locabar_addresses-dlvadd-edit, #locabar_addresses .locabar_addresses-ts-info {
 	color: #fff;
@@ -777,7 +778,8 @@
 	line-height: 22px;
 	font-size: 12px;
     padding: 6px 16px!important;
-    margin: 0px!important;
+  /*  margin: 0px!important;*/
+  	margin: 20px 16px 0px 16px; 
     position: relative;
 }
 
@@ -785,7 +787,7 @@
 .alerts .section-warning {
 	display: inline-block;
 	background-image: url('/media/layout/nav/globalnav/fdx/locabar-warning.png');
-	min-height: 37px;
+	min-height: 84px;
 	min-width: 40px;
 	background-repeat: no-repeat;
 }
@@ -824,7 +826,8 @@
 
 #locabar_addresses .section-warning {
 	padding-left: 38px;
-	background-position: left 1em;
+	background-position: left 0em;
+	margin-top:10px;
 }
 
 #locabar_addresses .text{
@@ -881,7 +884,7 @@
 }
 
 .locabar-right-sections .locabar-section:hover, .locabar-right-sections .locabar-section:focus {
-	background-color: #4fa157;
+	background-color: #458d4e;
 }
 
 .side-spacer{
@@ -1089,7 +1092,7 @@
 	.disableCart .locabar-addresses-section,
 	.disableCart .locabar-user-section[data-signedin="true"],
 	.disableCart .locabar-popupcart-section {
-		background-color: #4fa157;
+		background-color: #458d4e;
 		border-left: 1px solid #6AAA6D;
 	}
 	.disableCart .locabar-popupcart-section {
@@ -1145,7 +1148,8 @@
 	background-color: #fff;
 }
 #locabar_addresses_choices {
-	margin: 0px;
+	/*margin: 0px;*/
+	margin: 0px 16px;
 }
 #selectAddressList-menu {
 	border: none;
@@ -1190,7 +1194,7 @@
 	background-color: #6AAA6D;
 }
 .cssbutton.fdxgreen:hover, .cssbutton.fdxgreen:focus {
-	background-color: #4fa157;
+	background-color: #458d4e;
 }
 .locabar_addresses-reservation-none {
 	text-align: center;
@@ -1495,9 +1499,12 @@ option.address-icon {
 
 .locabar-section:hover, .locabar-section:focus {
 	border-left: 1px solid #6AAA6D;	
+	background-color:#458d4e;
 }
+
 .locabar-section.alertOpen {
-	background-color: #4fa157;
+	/*background-color: #4fa157;*/
+	background-color: #458d4e;	
 	border-left: 1px solid #6AAA6D;
 }
 
@@ -1573,7 +1580,7 @@ option.address-icon {
 	padding: 0 0 15px 0;
 }
 .locabar_addresses-anon-nondeliverable {
-	padding: 20px 20px 5px 20px;
+	padding: 20px 0px 0px 27px;
 }
 .locabar_addresses-anon-deliverable-header {
 	font-weight: bold;
@@ -1583,10 +1590,44 @@ option.address-icon {
 }
 #locabar_addresses {
 	padding: 30px 15px 5px 15px;
+	width: 335px;
+    
+    background-color: #f7f7f7;
+    
+}
+#locabar_addresses.posAbs{
+	/*height: 314px;*/
+	padding:0px;
+	box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.3);
+	/*background-color:#fff;*/
+}
+#locabar_addresses.posAbs .locabar_addresses-anon-nondeliverable{
+	padding-left:0px;
+	padding-right:0px;
+}
+#locabar_addresses.posAbs .locabar_addresses-anon-nondeliverable .section-warning{
+	margin-left:26px;
+	min-height:65px;
+	padding-top: 15px;
+	background-position: left 1em;
+}
+#locabar_addresses.posAbs .locabar_addresses-anon-nondeliverable .locabar_addresses-change-zip-cont{
+	padding-left:26px;
+	background: #fff;
+	padding-top:20px;
+}
+#locabar_addresses.posAbs .locabar_addresses-anon-nondeliverable .nodeliver-form{
+	   
+    margin-top: 0px;
+    padding-left: 26px;
+    padding-top: 20px;
+    padding-bottom: 10px;
+    background: #fff;
 }
 #locabar_addresses.anon-deliverable {
 	min-width: 331px;
 	padding: 0;
+	background-color:#fff;
 }
 #locabar_orders .section-header {
 	max-height: 540px;
@@ -1637,4 +1678,160 @@ option.address-icon {
 .skipnav:hover{
 	color: #5fb069 !important;
 	text-decoration: underline !important;
+}
+/******css changes**********/
+{noformat}
+#nodeliver-form > div {
+	width: auto;
+    //vertical-align: top;
+}
+
+#nodeliver-form label{
+    display: block;
+	font-weight: normal;
+    font-size: 14px;
+}
+
+#nodeliver-form button{
+	width: 94px;
+} 
+
+#nodeliver-form button:disabled,#locabar_addresses button:disabled{
+	color: #858585;  
+    background-color: #e8e8ea;
+    cursor: not-allowed;
+    box-shadow: none; 
+}
+
+#nodeliver-form > div.section-warning {
+	width: 165px;
+    margin-bottom: 18px;
+}
+
+#locabar_addresses input#location-email{
+	margin-top:7px;
+}
+
+
+#locabar_addresses.anon-deliverable input{
+	width:160px;
+}
+#nodeliver-form input,#locabar_addresses input{
+    margin: 0;
+    height: 40px !important;
+    width: 197px;
+    padding: 1px 13px;
+    font-size: 16px !important;
+    background-color: #fff !important;
+    margin-right: 6px;
+    border: 2px solid #d4d4d4 !important;
+    font-weight: normal !important;
+}
+
+#nodeliver-form #location-email{
+	/*width: 182px;*/
+}
+
+#nodeliver-form #location-submit,
+#nodeliver-form #location-email{
+	margin-top: 5px;
+}
+
+#nodeliver-form input::-webkit-input-placeholder{
+	color: #777777;
+}
+
+#nodeliver-form input:focus,#locabar_addresses input:focus{
+	border: 2px solid #68aa6d !important;
+}
+
+#nodeliver-form input.input-error,#locabar_addresses input.input-error{
+	border-color: #b93d3f !important;
+    background-color: #faf5f5 !important;
+}
+
+#nodeliver-form #newzip{
+	margin-top: 5px;
+}
+
+#nodeliver-form #newzip #newziptext{
+	width: auto;
+}
+
+.cssbutton.fdxgreen{
+	background-color: #4fa157; 
+}
+
+#nodeliver-form .error-msg,#locabar_addresses .error-msg{
+	color: #b93d3f;
+    font-size: 12px;
+    visibility:hidden;
+  
+}
+
+#nodeliver-form .conf-msg,#locabar_addresses .conf-msg{
+	font-size: 12px;
+    line-height: normal;
+    width: 270px;
+    margin-top: 5px;
+}
+#nodeliver-form .conf-msg span{
+	font-weight: bold;
+}
+
+.text13 div:nth-child(1),.section-warning div{
+	font-weight: normal;
+    font-size: 14px;
+    line-height: normal;
+    float:left;
+    display:inline-block;
+}
+
+.text13 div:nth-child(2),.text13.bold{
+	font-weight: bold;
+    font-size: 14px;
+    color: #333;
+    position: relative;
+    top: 7px;
+    left: -5px;
+    margin-top: 10px;
+}
+
+#nodeliver-form > div{
+	width:340px;
+}
+#nodeliver-form > div{
+	width:340px;
+}
+.locabar_addresses-anon-nondeliverable .locabar_addresses-change-zip-cont{
+	padding-bottom:0px;
+}
+#location-submit.cssbutton.fdxgreen:focus,#location-submit.cssbutton.fdxgreen:visited {
+    background-color: #5fb067;
+    border-color: #306238;
+    box-shadow: 0 0 1px #aaa, 0 0 8px #aaa;
+}
+
+#location-submit.cssbutton.fdxgreen:hover {
+    background-color: #458d4e;
+    border: 1px solid #458d4e;
+}
+
+#newzipgo.newzipgo.cssbutton.orange:focus,#newzipgo.newzipgo.cssbutton.orange:visited{
+	background-color: #fc8e46;
+	border:1px solid;
+	border-color: #a84c14;
+	box-shadow: 0 0 1px #aaaaaa, 0 0 8px #aaaaaa;	
+}
+#nodeliver-form .text13 div:nth-child(2){
+	font-size: 20px;
+    top: 0px;
+    left: 0px;
+}
+#nodeliver-form .text13.bold{
+	top:0px;
+	left:0px;
+}
+#sitemessage.alerts.open #nodeliver-form > div{
+	margin-right:15px !important;
 }
