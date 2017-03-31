@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="FreshDirect" default="all" basedir="..">
+<project name="FreshDirect" default="all_ui" basedir="..">
 
 	<property environment="env"/>
 	<property name="properties.home"	value="${basedir}/build/properties" />
@@ -14,11 +14,11 @@
 	<property name="applications.dir"		value="applications" />
 	<property name="release.dir"			value="release" />
 
-    <property name="jdk.home"				value="/opt/fdbin/bea/jdk160_05" />
+    <property name="jdk.home"				value="/opt/fdbin/jdk1.8.0_66" />
     <property name="javac.debug"			value="on" />
 	<property name="javac.optimize"			value="off" />
 	<property name="javac.deprecation"		value="off" />
-	<property name="javac.source"			value="1.6" />
+	<property name="javac.source"			value="1.8" />
     <property name="weblogic.home"			value="/opt/fdbin/bea/wlserver_10.3" />
     <property name="thirdparty.home"		value="${basedir}/lib/thirdparty" />
 	<property name="testing.home"			value="${basedir}/lib/testing" />
@@ -34,7 +34,19 @@
         <property name="lucene.version" value="3.0.3" />
         <property name="gwt.compiler.style"             value="PRETTY"/>
         <property name="scarab.jar" value="scarab-java-client-2.6.jar"/>
-
+		
+	<!-- UI configurations starts -->
+	<property name="tomcat.home"			value="${basedir}/lib/thirdparty/tomcat" />
+	<path id="tomcat.classpath">
+		<fileset dir="${tomcat.home}/lib">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="${tomcat.home}/bin">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+	<!-- UI configurations ends -->
+	
 	<path id="j2ee.classpath">
 		<pathelement location="${weblogic.home}/server/lib/weblogic_sp.jar"/>
 		<pathelement location="${weblogic.home}/server/lib/weblogic.jar"/>
@@ -115,6 +127,8 @@
 		<pathelement location="${thirdparty.home}/orika-core-1.5.0.jar"/>
 		<pathelement location="${thirdparty.home}/fdcommerce-data.jar"/>
 		<pathelement location="${thirdparty.home}/fdcommerce-domain.jar"/>
+		<pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
+		<pathelement location="${thirdparty.home}/struts.jar"/>
 	</path>
 
 	<path id="testing.classpath">
@@ -412,8 +426,7 @@
 		<mkdir dir="${work.dir}/StandingOrdersService"/>
 		<mkdir dir="${work.dir}/CoremetricsService"/>
     		<mkdir dir="${work.dir}/Athena"/>
-	</target>
-
+	</target>	
     <target name= "copy_shared_dirs"
             description = "copy directories that are shared among projects">
 
@@ -3048,4 +3061,275 @@
 
 		</makeFDAdminEar>
 	</target>
+	
+	<target name="all_ui" depends="clean_ui,prereq_ui,build_ui" description="Build UI, no checkout, no tests">
+	</target>
+	
+	<target name="clean_ui" description="Clean UI output directories">
+		<delete dir="${work.dir}" />
+	</target>
+		
+	<target name="make_dirs_ui"
+            description="create necessary working directories">
+		<mkdir dir="${work.dir}" />
+		<mkdir dir="${work.dir}/ERPSWebApp" />
+		<mkdir dir="${work.dir}/FDWebSite" />
+		<mkdir dir="${work.dir}/logs" />
+	</target>
+	
+	<target name="prereq_ui" depends="clean_ui,make_dirs_ui" description="Prerequisites">
+	</target>
+	
+	<target name="build_ui" depends="erpswebapp_ui,fdwebsite_ui" description="Build everything">
+	</target>
+	
+	<target name="erpswebapp_ui" description="Build ERPSWebApp UI" depends="prereq_ui">
+		<path id="erpswebapp_ui.classpath">
+			<pathelement location="${tomcat.home}/lib/servlet-api.jar"/>
+			<pathelement location="${tomcat.home}/lib/jsp-api.jar"/>
+			<pathelement location="${tomcat.home}/lib/jasper-el.jar"/>
+			<pathelement location="${tomcat.home}/lib/jasper.jar"/>			
+			<pathelement location="${thirdparty.home}/FDClient.jar"/>
+			<pathelement location="${thirdparty.home}/wlthint3client.jar"/>
+			<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
+			<pathelement location="${thirdparty.home}/httpclient-4.5.jar"/>
+			<pathelement location="${thirdparty.home}/httpcore-4.4.1.jar"/>
+			<pathelement location="${thirdparty.home}/httpmime-4.5.jar"/>
+		</path>
+
+		<makeUIProject
+			project="ERPSWebApp"
+			classpathref="erpswebapp_ui.classpath"/>
+	</target>
+	
+	<macrodef name="makeUIProject">
+		<attribute name="project" />
+		<attribute name="classpathref" default=""/>
+        <attribute name="source" default="${javac.source}"/>
+		<sequential>
+			<trycatch>
+				<try>
+					<record name="${work.dir}/logs/log.txt" action="start" append="yes" loglevel="info"/>
+					<tstamp>
+						<format property="compileStart" pattern="MM/dd/yyyy HH:mm" />
+					</tstamp>
+					<echo message="Started Compiling @{project} at:${compileStart}"/>
+					<javac
+				srcdir="${projects.dir}/@{project}/src/"
+				destdir="${work.dir}/@{project}"
+				deprecation="${javac.deprecation}"
+				optimize="${javac.optimize}"
+				debug="${javac.debug}"
+				source="@{source}">
+						<classpath>
+							<path refid="common.classpath"/>
+							<path refid="@{classpathref}"/>
+						</classpath>
+					</javac>
+					<record name="${work.dir}/logs/log.txt" action="stop"/>
+				</try>
+				<catch>
+					<record name="${work.dir}/logs/log.txt" action="stop"/>
+					<!-- send email...compilation failed -->
+					<!--<emailCompilationError projectName="@{project}"/>-->
+					<fail/>
+				</catch>
+			</trycatch>
+			<jar destfile="${work.dir}/@{project}.jar">
+				<manifest>
+                    <attribute name="Specification-Version" value="${build.counter}"/>
+                    <attribute name="Specification-Vendor" value="FreshDirect LLC"/>
+					<attribute name="Implementation-Title" value="@{project}"/>
+					<attribute name="Implementation-Version" value="${build.counter}"/>
+					<attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
+					<attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
+				</manifest>
+				<fileset dir="${work.dir}/@{project}" />
+				<fileset dir="${projects.dir}/@{project}/src">
+					<exclude name="**/*.java"/>
+				</fileset>
+			</jar>
+			<path id="@{project}.instrsrc">
+				<pathelement location="${work.dir}/@{project}"/>
+			</path>
+			<mkdir dir="${work.dir}/@{project}.instrout"/>
+	        <!-- instrument emma -->
+	        <emma enabled="${emma.enabled}">
+	            <instr instrpathref="@{project}.instrsrc"
+	                destdir="${work.dir}/@{project}.instrout"
+	                metadatafile="${work.dir}/logs/metadata-@{project}.emma"
+	                merge="true">
+	            </instr>
+	        </emma>
+			<!-- copy non-instrumened resources to instrout -->
+			<copy todir="${work.dir}/@{project}.instrout" overwrite="false">
+				<fileset dir="${work.dir}/@{project}"/>
+			</copy>
+	        <jar destfile="${work.dir}/@{project}-emma.jar">
+                <manifest>
+                    <attribute name="Specification-Version" value="${build.counter}"/>
+                    <attribute name="Specification-Vendor" value="FreshDirect LLC"/>
+                    <attribute name="Implementation-Title" value="@{project}"/>
+                    <attribute name="Implementation-Version" value="${build.counter}"/>
+                    <attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
+                    <attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
+                </manifest>
+                <fileset dir="${work.dir}/@{project}.instrout" />
+                <fileset dir="${projects.dir}/@{project}/src">
+                    <exclude name="**/*.java"/>
+                </fileset>
+            </jar>
+		</sequential>
+	</macrodef>
+	
+	<target name="fdwebsite_ui" description="FDWebSite .war file" depends="erpswebapp_ui">
+		<path id="fdwebsite_ui.classpath">
+			<pathelement location="${jdk.home}/lib/tools.jar"/>			
+			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
+			<pathelement location="${tomcat.home}/lib/servlet-api.jar"/>
+			<pathelement location="${tomcat.home}/lib/jsp-api.jar"/>
+			<pathelement location="${tomcat.home}/lib/jasper-el.jar"/>
+			<pathelement location="${tomcat.home}/lib/jasper.jar"/>
+			<pathelement location="${thirdparty.home}/FDClient.jar"/>
+			<pathelement location="${thirdparty.home}/wlthint3client.jar"/>
+			<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
+			<pathelement location="${thirdparty.home}/httpclient-4.5.jar"/>
+			<pathelement location="${thirdparty.home}/httpcore-4.4.1.jar"/>
+			<pathelement location="${thirdparty.home}/httpmime-4.5.jar"/>
+		</path>
+		<makeUIWebProject
+			project="FDWebSite"
+			classpathref="fdwebsite_ui.classpath"/>
+	</target>
+	
+	<macrodef name="makeUIWebProject">
+		<attribute name="project" />
+		<attribute name="classpathref" />
+		<sequential>
+			<copy todir="${work.dir}/@{project}">
+				<fileset dir="${projects.dir}/@{project}/docroot">
+					<exclude name="**/media/**"/>
+					<exclude name="**/media_stat/**"/>
+					<exclude name="**/_tmp*/**"/>
+					<exclude name="**/META-INF/**"/>
+					<exclude name="**/*.jar"/>
+					<exclude name="**/*.class"/>
+					<exclude name="**/*.java"/>
+				</fileset>
+			</copy>
+
+			<mkdir dir="${work.dir}/@{project}/WEB-INF/classes" />
+
+			<if>
+				<available file="${projects.dir}/@{project}/src" type="dir"/>
+				<then>
+					<echo message="Compiling @{project} classes"/>
+					<trycatch>
+						<try>
+							<record name="${work.dir}/logs/log.txt" action="start" append="yes" loglevel="info"/>
+							<tstamp>
+								<format property="compileStart" pattern="MM/dd/yyyy HH:mm" />
+							</tstamp>
+							<echo message="Started Compiling (jsp) @{project} at:${compileStart}"/>
+							<javac
+								fork="true"
+								memoryMaximumSize="1536m"
+								srcdir="${projects.dir}/@{project}/src"
+								destdir="${work.dir}/@{project}/WEB-INF/classes"
+								deprecation="${javac.deprecation}"
+								optimize="${javac.optimize}"
+								debug="${javac.debug}"
+								source="${javac.source}">
+								<classpath>
+									<path refid="common.classpath"/>
+									<path refid="@{classpathref}"/>
+								</classpath>
+							</javac>
+							<record name="${work.dir}/logs/log.txt" action="stop"/>
+						</try>
+						<catch>
+							<record name="${work.dir}/logs/log.txt" action="stop"/>
+							<!-- send email...compilation failed -->
+							<!--<emailCompilationError projectName="(jsp) @{project}"/>-->
+							<fail>Compiling web project: @{project}</fail>
+						</catch>
+					</trycatch>
+
+					<!-- copy non-java resources -->
+					<copy todir="${work.dir}/@{project}/WEB-INF/classes">
+						<fileset dir="${projects.dir}/@{project}/src" excludes="**/*.java"/>
+					</copy>
+
+				</then>
+			</if>
+
+            <!-- trickery to avoid daylight savings and JAR timestamp precision issues... "A touch of class" :) -->
+            <if>
+                <available file="${work.dir}/@{project}/**/*.jsp" type="file"/>
+                <then>
+                    <touch datetime="01/01/2004 00:00 am">
+                        <fileset dir="${work.dir}/@{project}" includes="**/*.jsp*" />
+                    </touch>
+                </then>
+            </if>
+			<trycatch>
+				<try>
+					<record name="${work.dir}/logs/log.txt" action="start" append="yes" loglevel="debug"/>					
+					<taskdef classname="org.apache.jasper.JspC" name="jasper">
+						<classpath>
+							<path refid="@{classpathref}"/>
+							<path refid="tomcat.classpath"/>
+							<path refid="common.classpath"/>
+						</classpath>
+					</taskdef>
+	
+		<jasper validatexml="false" uriroot="${work.dir}/@{project}" outputDir="${work.dir}/@{project}/WEB-INF/src" verbose="1" /> 
+	
+		<javac 	destdir="${work.dir}/@{project}/WEB-INF/classes"
+			fork="true" 
+		    memoryMaximumSize="1024m"  
+			srcdir="${work.dir}/@{project}/WEB-INF/src"
+			excludes="**/*.smap" verbose="true"
+			deprecation="${javac.deprecation}"
+			optimize="${javac.optimize}"
+			debug="${javac.debug}"
+			source="${javac.source}"
+			encoding="utf-8">  
+			<classpath>
+				<fileset dir="${tomcat.home}/lib">
+					<include name="*.jar"/>
+				</fileset>
+				<path refid="common.classpath"/>
+				<path refid="@{classpathref}"/>
+				<path refid="tomcat.classpath"/>
+			</classpath>
+			<include name="**" />
+			<exclude name="**/tags/**" />
+		</javac>
+	
+				<record name="${work.dir}/logs/log.txt" action="stop"/>
+				</try>
+				<catch>
+					<record name="${work.dir}/logs/log.txt" action="stop"/>
+					<!-- send email...compilation failed -->
+					<!--<emailCompilationError projectName="(jsp) @{project}"/>-->
+					<fail>Compiling web project: @{project}</fail>
+				</catch>
+			</trycatch>
+
+			<jar destfile="${work.dir}/@{project}_2.war">
+				<manifest>
+					<attribute name="Specification-Version" value="${build.counter}"/>
+					<attribute name="Specification-Vendor" value="FreshDirect LLC"/>
+					<attribute name="Implementation-Title" value="@{application}"/>
+					<attribute name="Implementation-Version" value="${build.counter}"/>
+					<attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
+					<attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
+				</manifest>
+				<fileset dir="${work.dir}/@{project}">
+				</fileset>
+			</jar>
+
+		</sequential>
+	</macrodef>
 </project>
