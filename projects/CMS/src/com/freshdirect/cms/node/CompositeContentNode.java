@@ -1,25 +1,19 @@
 package com.freshdirect.cms.node;
 
-import java.text.MessageFormat;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
-
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.AttributeI;
-import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentTypeDefI;
 import com.freshdirect.cms.RelationshipI;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.DraftContext;
-import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
  * Composite content node that merges the attributes of multiple nodes.
@@ -37,8 +31,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class CompositeContentNode implements ContentNodeI {
 	private static final long serialVersionUID = 8136738845448653594L;
 	
-    private static final Logger LOGGER = LoggerFactory.getInstance(CompositeContentNode.class);
-
 	private final ContentServiceI contentService;
 
 	private final ContentKey key;
@@ -50,6 +42,7 @@ public class CompositeContentNode implements ContentNodeI {
 	private final Map<String, AttributeI> attributes = new HashMap<String, AttributeI>();
 
 	/**
+	 * CompositeContentNode
 	 * 
 	 * @param contentService
 	 * @param key content key of the composited node
@@ -67,33 +60,11 @@ public class CompositeContentNode implements ContentNodeI {
 	//
 
     private void initializeAttributes() {
-        try {
-            for (Map.Entry<String, ContentNodeI> entry : nodes.entrySet()){
-                ContentNodeI node = entry.getValue();
-                AttributeI a = null;
-                Collection<AttributeI> nodeAttributes = null;
-                try {
-                    nodeAttributes = node.getAttributes().values();
-                    for (Iterator<AttributeI> j = nodeAttributes.iterator(); j.hasNext();) {
-                        a = j.next();
-                        AttributeI ca = a instanceof RelationshipI ? new CompositeRelationship(a) : new CompositeAttribute(a);
-                        attributes.put(ca.getName(), ca);
-                    }
-                } catch (Exception e) {
-                    LOGGER.error(MessageFormat.format("Error happend during initialize attributes of composite node key={0} node={1}, service={2} attribute={3}", key, node, entry.getKey(), a));
-                    if (nodeAttributes != null) {
-                        for (AttributeI attributeI : nodeAttributes) {
-                            if (attributeI != null) {
-                                LOGGER.debug(MessageFormat.format("node attribute name={0} values={1}", attributeI.getName(), attributeI.getValue()));
-                            }
-                        }
-                    }
-                    throw new CmsRuntimeException(e);
-                }
+        for (ContentNodeI node : nodes.values()) {
+            for (AttributeI attribute : node.getAttributes().values()) {
+                AttributeI ca = attribute instanceof RelationshipI ? new CompositeRelationship(attribute) : new CompositeAttribute(attribute);
+                attributes.put(ca.getName(), ca);
             }
-        } catch (Exception e) {
-            LOGGER.error(MessageFormat.format("Error happend during initialize attributes of composite node key={0} nodes={1}", key, nodes));
-            throw new CmsRuntimeException(e);
         }
     }
 
@@ -221,7 +192,6 @@ public class CompositeContentNode implements ContentNodeI {
 	        String key = keyIter.next();
 	        ContentNodeI node = (ContentNodeI) nodes.get(key);
 	        ContentNodeI copiedNode = node.copy();
-	        LOGGER.debug(MessageFormat.format("copy old node={0} new node={1} for service={2}", node, copiedNode, key));
 	        newNodes.put(key, copiedNode);
 	    }
 	    return new CompositeContentNode(contentService,key, newNodes);

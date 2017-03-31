@@ -15,11 +15,11 @@ public interface SpellingSuggestionsServiceI {
 	 * @return suggested spellings (List<"{@link SpellingHit}>)
 	 * @throws IOException 
 	 */
-	public abstract List<SpellingHit> getSpellingHits(String phrase, int maxHits);
+	List<SpellingHit> getSpellingHits(String indexPath, String phrase, int maxHits);
 	
-	public abstract StringDistance getStringDistance();
+	StringDistance getStringDistance();
 
-	public abstract void close();
+	void close(String indexPath);
 
-	public abstract boolean exists(String phrase);
+	boolean exists(String indexPath, String phrase);
 }

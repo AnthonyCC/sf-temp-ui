@@ -95,7 +95,7 @@ public class SmartSearchTest extends TestCase {
 //        indexer.setSpellingSynonyms(Collections.<SynonymDictionary> emptyList());
 
         Map<ContentKey, ContentNodeI> contentNodes = service.getContentNodes(service.getContentKeys(DraftContext.MAIN), DraftContext.MAIN);
-        indexer.index(contentNodes.values(), IndexerConfiguration.getDefaultConfiguration());
+        indexer.fullIndex(contentNodes.values(), IndexerConfiguration.getDefaultConfiguration());
 
         CmsManager.setInstance(new CmsManager(service,
                 SearchTestUtils.createSearchService(new ArrayList<ContentIndex>(), SearchTestUtils.createTempDir(this.getClass().getCanonicalName(), (new Date()).toString()))));

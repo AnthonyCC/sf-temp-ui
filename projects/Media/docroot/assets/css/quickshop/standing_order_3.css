@@ -619,8 +619,18 @@
 	padding: 30px 30px 0;
     clear: both;
 }
+.standing-orders-3-so-settings-item-details-header{
+	font-weight: bold;
+	padding: 25px 0 10px;
+}
+.standing-orders-3-so-settings-item-details-header:first-of-type{
+	padding: 5px 0 10px;
+}
 .standing-orders-3-so-settings-item-details-container{
 	
+}
+.standing-orders-3-so-settings-item-details-container-red{
+	color: #FF0000;
 }
 .standing-orders-3-so-settings-item-details-left{
 	float: left;
@@ -961,6 +971,7 @@
 
 .standing-orders-3 #cartcontent .total{
 	margin: 0 28px 20px 28px;
+	padding: 20px 0 20px 20px;
 }
 
 .standing-orders-3 #cartcontent .total .total-left{
@@ -970,7 +981,59 @@
 .standing-orders-3 #cartcontent .total .total-right{
 	width: 400px;
 }
-
+.standing-orders-3 #cartcontent .total .total__subtotal #subtotalbox2{
+	float: none;
+}
+.standing-orders-3 #cartcontent .total .total__subtotal #subtotalbox2 .subtotal__row{
+	text-align: right;
+}
+.standing-orders-3 #cartcontent .total .total__subtotal #subtotalbox2 .subtotal__rowcell-left{
+	display: inline;
+	margin: 0 20px 0 0;
+}
+.standing-orders-3 #cartcontent .total .total__subtotal #subtotalbox2 .subtotal__rowcell-left .ssOrderTotal{
+	font-size: 27px;
+	vertical-align: inherit;
+}
+.standing-orders-3 #cartcontent .cartetip .cartsection__tax form{
+	float: none;
+}
+.standing-orders-3 #cartcontent .cartetip .subtotal__rowcell-left{
+	display: block;
+	width: auto;
+	text-align: initial;	
+}
+.standing-orders-3 #cartcontent .cartetip .subtotal__rowcell-left .strl_text{
+	float: none;
+	font-size: 22px;
+}
+.standing-orders-3 #cartcontent .cartetip .subtotal__rowcell-left .strl_text:after{
+	content: "";
+}
+.standing-orders-3 #cartcontent .cartetip .subtotal__rowcell-left #optionalToolTip{
+	vertical-align: super;
+}
+.standing-orders-3 #cartcontent .cartetip .cartetip-container{
+	width: 200px;
+	padding: 20px 0 20px 45px;
+	border-top: 1px solid #e0e3d0;
+	border-bottom: 1px solid #e0e3d0;
+	text-align: left;
+	background: #FFFFFF;
+}
+.standing-orders-3 #cartcontent .cartetip .cartetip-container label{
+	display: inline-block;
+}
+.standing-orders-3 #cartcontent .cartetip .cartetip-container button{
+	width: 153px;
+	margin: 5px 0 0;
+}
+.standing-orders-3 #cartcontent .cartetip-container #tipTextBox{
+	width: 153px;
+}
+.standing-orders-3 #cartcontent .cartetip .cartetip-container #tipAppliedTick{
+	padding: 0 0 0 5px;
+}
 .standing-orders-3 .standing-orders-3-so-settings-activate{
 	display: none;
 	padding: 0 0 25px;
@@ -1245,12 +1308,18 @@
 .standing-orders-3-so-settings-buttons .standing-orders-3-so-settings-delete{
 	float: left;
 }
+.standing-orders-3-so-settings-item-details .standing-orders-3-so-settings-item-details-modify-next-delivery{
+	line-height: 15px;
+	padding: 8px 10px;
+	margin-left: 20px;
+}
 .standing-orders-3-so-settings-buttons-container .standing-orders-3-so-settings-view-details{
 	float: right;
 	font-size: 14px;
 	font-weight: bold;
-	line-height: 30px;
-	margin-right: 30px;
+	line-height: 15px;
+	padding: 8px 10px;
+	margin-right: 20px;
 }
 .standing-orders-3-so-settings-container.open .standing-orders-3-so-settings-view-details,
 .standing-orders-3-so-settings-container.open .standing-orders-3-so-settings-activate-message{

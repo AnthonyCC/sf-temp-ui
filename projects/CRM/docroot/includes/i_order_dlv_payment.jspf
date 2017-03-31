@@ -364,7 +364,9 @@ function loadSignature(order,estoreId)
 					<% } else { %>
 						<br>
 						<a href="javascript:pop('/main/carton_contents_view.jsp?orderId=<%= orderId %>&scroll=yes','600','800');">Carton Contents</a><br/>
-						<a href="javascript:pop('/main/carton_detail_view.jsp?orderId=<%= orderId %>&scroll=yes','600','800');">Carton Details (For Meal Bundle)</a>
+						<% if(FDStoreProperties.isMealBundleCartonLinkEnabled()) { %>
+						<a href="javascript:pop('/main/carton_detail_view.jsp?orderId=<%= orderId %>&scroll=yes','600','800');">Carton Details (For Meal Bundle)</a>  
+						<% } %>
 						</br>
 					<% } %>
 				<% } %>

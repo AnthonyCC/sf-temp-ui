@@ -61,6 +61,7 @@ import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.EnumZipCheckResponses;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag;
+import com.freshdirect.webapp.util.RequestUtil;
 
 public class UserUtil {
 	
@@ -559,10 +560,14 @@ public class UserUtil {
           CmRegistrationTag.setPendingLoginEvent(session);
           
         } catch (FDResourceException fdre) {
+        	logExtraDetailsLoginFails(request, userId, password, mergePage, successPage, externalLogin);
             LOGGER.warn("Resource error during authentication", fdre);
             actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
             
-        } catch (FDAuthenticationException fdae) {
+        } catch (FDAuthenticationException fdae) {       	
+        	
+        	logExtraDetailsLoginFails(request, userId, password, mergePage, successPage, externalLogin);
+        	
         	if("Account disabled".equals(fdae.getMessage())) {
         		actionResult.addError(new ActionError("authentication", 
 	            		MessageFormat.format(SystemMessageList.MSG_DEACTIVATED, 
@@ -581,6 +586,14 @@ public class UserUtil {
 
         }
         return updatedSuccessPage;		
+	}
+
+	private static void logExtraDetailsLoginFails(HttpServletRequest request, String userId, String password,
+			String mergePage, String successPage, boolean externalLogin) {
+		if(FDStoreProperties.isExtraLogForLoginFailsEnabled()){
+			LOGGER.info("FDSECU01: "+RequestUtil.getClientIp(request)+" : "+userId+" : "+password+" : "+mergePage+" : "+successPage+" : "+externalLogin
+				+" : "+CookieMonster.getCookie(request)+" : "+request.getRequestURL());
+		}
 	}
 	
 	

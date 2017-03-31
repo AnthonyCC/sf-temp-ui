@@ -130,7 +130,7 @@ public class CmsManager implements ContentServiceI, StoreContentSource {
         // get values from the hivemind configuration
         // see CMSServiceConfig.xml or CMSServiceConfig_prd.xml
         ContentServiceI mgr = (ContentServiceI) registry.getService("com.freshdirect.cms.CmsManager", ContentServiceI.class);
-        ContentSearchServiceI search = new LuceneSearchService();
+        ContentSearchServiceI search = LuceneSearchService.getInstance();
         final boolean readOnlyMode = !MultiStoreContextUtil.isCMSPoweredByDatabase();
 
         this.initializeInternal(mgr, search, readOnlyMode);

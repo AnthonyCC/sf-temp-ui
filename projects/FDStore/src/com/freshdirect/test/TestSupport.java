@@ -18,7 +18,9 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -76,8 +78,12 @@ public class TestSupport {
 	 */
 	public void ping() {
 		try {
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+			LogisticsServiceLocator.getInstance().getCommerceService().ping();
+			}else {
 			TestSupportSB bean = this.getTestSupportHome().create();
 			bean.ping();
+			}
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -91,10 +97,16 @@ public class TestSupport {
 
 
 	public List<Long> getDYFEligibleCustomerIDs() {
+		List<Long> customersIds = null;
 		try {
-			TestSupportSB bean = this.getTestSupportHome().create();
 			
-			return bean.getDYFEligibleCustomerIDs();
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				customersIds= LogisticsServiceLocator.getInstance().getCommerceService().getDYFEligibleCustomerIDs();
+			
+			}else {
+			TestSupportSB bean = this.getTestSupportHome().create();
+			customersIds= bean.getDYFEligibleCustomerIDs();
+			}
 		} catch (RemoteException e) {
 			e.printStackTrace();
 			throw new FDRuntimeException(e);
@@ -102,14 +114,20 @@ public class TestSupport {
 			e.printStackTrace();
 			throw new FDRuntimeException(e);
 		}
+		return customersIds;
 	}
 
 
 	public List<Long> getErpCustomerIDs() {
 		try {
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+			return LogisticsServiceLocator.getInstance().getCommerceService().getErpCustomerIds();
+			
+			}else {
 			TestSupportSB bean = this.getTestSupportHome().create();
 			
 			return bean.getErpCustomerIds();
+			}
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -123,9 +141,13 @@ public class TestSupport {
 
 	public String getFDCustomerIDForErpId(String erp_id) {
 		try {
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				return LogisticsServiceLocator.getInstance().getCommerceService().getFDCustomerIDForErpId(erp_id);
+				
+				}else {
 			TestSupportSB bean = this.getTestSupportHome().create();
-			
 			return bean.getFDCustomerIDForErpId(erp_id);
+			}
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -138,9 +160,12 @@ public class TestSupport {
 
 	public String getErpIDForUserID(String user_id) {
 		try {
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				return LogisticsServiceLocator.getInstance().getCommerceService().getErpIDForUserID(user_id);
+				}else {
 			TestSupportSB bean = this.getTestSupportHome().create();
-			
 			return bean.getErpIDForUserID(user_id);
+			}
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -288,9 +313,12 @@ public class TestSupport {
 	
 	public Collection<String> getSkuCodes() {
 		try {
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				return LogisticsServiceLocator.getInstance().getCommerceService().getSkuCodes();
+			}else{
 			TestSupportSB ejb = this.getTestSupportHome().create();
-			
 			return ejb.getSkuCodes();
+			}
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

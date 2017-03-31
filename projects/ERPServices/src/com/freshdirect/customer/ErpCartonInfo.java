@@ -103,4 +103,14 @@ public class ErpCartonInfo implements Serializable {
 	private String cartonNumber;
 	private String cartonType;
 	private List<ErpCartonDetails> details = new ArrayList<ErpCartonDetails>();
+	
+	public String getComponentOrderLine(){
+		for(ErpCartonDetails d : details){
+			if(d.getComponents()!=null && 
+					d.getComponents().size()>0)
+				return d.getOrderLineNumber();
+		}
+		return null;
+		
+	}
 }

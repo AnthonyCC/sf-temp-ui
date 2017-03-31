@@ -336,11 +336,15 @@ public class BrowseData implements Serializable {
 		
 		private List<ProductData> products = new ArrayList<ProductData>();
 		private String pageBeacon = null;
+		private int hlProductsCount;
+		
 		
 		
 		private Map<String, List<ProductData>> hlSelectionOfProductList = new HashMap<String, List<ProductData>>();
 		
 		private Map<String, String> hlSelectionsPageBeacons = new HashMap<String, String>();
+		
+		private Map<String, Integer> hlCatProductsCount = new HashMap<String, Integer>();
 		
 		public Map<String, List<ProductData>> getHlSelectionOfProductList() {
 			return hlSelectionOfProductList;
@@ -374,6 +378,22 @@ public class BrowseData implements Serializable {
 		public void setHlSelectionsPageBeacons(
 				Map<String, String> hlSelectionsPageBeacons) {
 			this.hlSelectionsPageBeacons = hlSelectionsPageBeacons;
+		}
+
+		public int getHlProductsCount() {
+			return hlProductsCount;
+		}
+
+		public void setHlProductsCount(int hlProductsCount) {
+			this.hlProductsCount = hlProductsCount;
+		}
+
+		public Map<String, Integer> getHlCatProductsCount() {
+			return hlCatProductsCount;
+		}
+
+		public void setHlCatProductsCount(Map<String, Integer> hlCatProductsCount) {
+			this.hlCatProductsCount = hlCatProductsCount;
 		}
 	}
 		

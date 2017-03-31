@@ -625,6 +625,11 @@
 		<div class="link"><a href="/test/session/index.jsp">/test/session/index.jsp</a></div>
 		<div class="pageDesc">Display a Session info dump.</div>
 	</div>
+	<div class="tag session kill">
+		<div class="pageName"><span>/test/session/killme.jsp</span></div>
+		<div class="link"><a href="/test/session/killme.jsp">/test/session/killme.jsp</a></div>
+		<div class="pageDesc">Immediately invalidate the current session.</div>
+	</div>
 
 	<div class="tag session">
 		<div class="pageName"><span>/test/session/serialize.jsp</span></div>

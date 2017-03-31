@@ -141,7 +141,7 @@ response.setHeader("Cache-Control", "no-cache");
 					<% } %>
 				</tr>
 				</table>
-                <%} else {%>
+             <% } else { %>
                 <table class="col100per noBorder">
 				<tr>
 					<% if(CrmSecurityManager.hasAccessToPage(agentLdapRole,"customer_profile.jsp")) {%>   
@@ -171,7 +171,7 @@ response.setHeader("Cache-Control", "no-cache");
 						<span class="bolded">Last Ordered: </span><%=dateFormatter.format(user.getOrderHistory().getLastOrderDlvDate())%>
 					</td>
 				</tr>
-                <%}%>
+                <% } %>
                 <% if(birthDay!=null && birthDay.length==2){%>
 				<tr>
 					<td>
@@ -180,7 +180,8 @@ response.setHeader("Cache-Control", "no-cache");
 					</td>
 				</tr>
                 
-               <%}%>
+               <% } %>
+             </table>
 			<!-- CHEF'S TABLE member -->
             <% if(user.isChefsTable()) { %>
 	        <table class="col100per noBorder tLeft">

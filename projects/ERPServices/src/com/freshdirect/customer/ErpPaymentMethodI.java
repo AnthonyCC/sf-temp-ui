@@ -175,5 +175,7 @@ public interface ErpPaymentMethodI extends AddressI {
 	
 	public void setDeviceId(String deviceId);
 	public String getDeviceId();
+	public boolean isDebitCard();
+	public void setDebitCard(boolean isDebitCard);
 }
 

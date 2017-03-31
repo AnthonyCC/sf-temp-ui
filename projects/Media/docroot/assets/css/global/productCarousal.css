@@ -1,3 +1,7 @@
+.content-module.product-carousel .carousel {
+  padding: 0 10px;
+}
+
 .content-module.product-carousel [data-component="carousel-view-all"] a {
   text-decoration: none;
   text-transform: uppercase;

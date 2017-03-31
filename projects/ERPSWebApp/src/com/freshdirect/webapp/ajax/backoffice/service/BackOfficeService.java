@@ -182,7 +182,7 @@ public class BackOfficeService {
 	final SkuModel skuModel = (SkuModel) ContentFactory.getInstance().getContentNode(FDContentTypes.SKU, skuCodeDetails);
 	final ProductModel prodModel = (ProductModel) ContentFactory.getInstance().getContentNode(FDContentTypes.PRODUCT, skuModel.getProductModel().getContentName());
 	Collection<ContentKey> parentKeys = prodModel.getParentKeys();
-	resultJsonString.append("{ \"productModels\":{");
+	resultJsonString.append("{\"productModels\":{");
 	for (ContentKey parentElement : parentKeys) {
 		String  catID = parentElement.getId();
 		final CategoryModel catModel = (CategoryModel) 	ContentFactory.getInstance().getContentNode(FDContentTypes.CATEGORY, catID);
@@ -195,21 +195,26 @@ public class BackOfficeService {
 		resultJsonString.append("\"isOrphan \":\""+pro.isOrphan()+"\",");
 		
 	
+		resultJsonString.append("\"skuCodes\":[");
+		StringBuffer tempSkuCodes = new StringBuffer(" ");
 		for (String skucodes : pro.getSkuCodes()){
 			final SkuModel skuMo = (SkuModel) ContentFactory.getInstance().getContentNode(FDContentTypes.SKU, skucodes);
-			resultJsonString.append("\"skuCodes\":[");
-			resultJsonString.append("\""+skucodes+"\",");
+			
+			tempSkuCodes.append("\""+skucodes+"\",");
 			if(skuMo.isTempUnavailable()){
-				resultJsonString.append("\"TEMP UNAV\"");}
+				tempSkuCodes.append("\"TEMP UNAV\"");}
 			else if(skuMo.isUnavailable()){
-				resultJsonString.append("\"UNAV\"");}
+				tempSkuCodes.append("\"UNAV\"");}
 			else if(skuMo.isOutOfSeason()){
-				resultJsonString.append("\"SEAS\"");}
+				tempSkuCodes.append("\"SEAS\"");}
 			else if(skuMo.isDiscontinued()){
-				resultJsonString.append("\"DISC\"");}
-			else {resultJsonString.append("\"AVAIL\"");}
-			resultJsonString.append("]");
+				tempSkuCodes.append("\"DISC\"");}
+			else {tempSkuCodes.append("\"AVAIL\"");}
+			tempSkuCodes.append(",");
 		}
+		tempSkuCodes.deleteCharAt(tempSkuCodes.length()-1);
+		resultJsonString.append(tempSkuCodes);
+		resultJsonString.append("]");
 		resultJsonString.append("},");
 		
 	}
@@ -223,22 +228,25 @@ public class BackOfficeService {
 		for (String key : groupModel.getVariationOptions().keySet()) {
 			resultJsonString.append("\""+key+"\"{");
 			FDVariationOption[] variation = groupModel.getVariationOptions().get(key);
+			resultJsonString.append("\"skuCodes\":[");
+			StringBuffer tempSkuCodes = new StringBuffer(" ");
 			for (FDVariationOption varOpt : variation) {
 				System.out.println("-----------"+varOpt.getSkuCode());
 				final SkuModel getSkugroupCode = (SkuModel) ContentFactory.getInstance().getContentNode(FDContentTypes.SKU, varOpt.getSkuCode());
-				resultJsonString.append("\"skuCodes\":[");
 				resultJsonString.append("\""+varOpt.getSkuCode()+"\",");
 				if(getSkugroupCode.isTempUnavailable()){
-					resultJsonString.append("\"TEMP UNAV\"");}
+					tempSkuCodes.append("\"TEMP UNAV\"");}
 				else if(getSkugroupCode.isUnavailable()){
-					resultJsonString.append("\"UNAV\"");}
+					tempSkuCodes.append("\"UNAV\"");}
 				else if(getSkugroupCode.isOutOfSeason()){
-					resultJsonString.append("\"SEAS\"");}
+					tempSkuCodes.append("\"SEAS\"");}
 				else if(getSkugroupCode.isDiscontinued()){
-					resultJsonString.append("\"DISC\"");}
-				else {resultJsonString.append("\"AVAIL\"");}
-				resultJsonString.append("]");
+					tempSkuCodes.append("\"DISC\"");}
+				else {tempSkuCodes.append("\"AVAIL\"");}
+				tempSkuCodes.append(",");
 			}
+			tempSkuCodes.deleteCharAt(tempSkuCodes.length()-1);
+			resultJsonString.append(tempSkuCodes);
 			resultJsonString.append("}");
 			}
 		resultJsonString.append("}");

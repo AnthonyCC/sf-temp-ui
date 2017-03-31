@@ -60,6 +60,24 @@ public class CookieMonster {
 		}
 
 	}
+	
+	public static String getCookie(HttpServletRequest request){
+		Cookie[] cookies = request.getCookies();
+		if (cookies == null) {
+			return null;
+		}
+		Cookie cookie = null;
+		for (int i = 0; i < cookies.length; i++) {
+			if (COOKIE_NAME.equals(cookies[i].getName())) {
+				cookie = cookies[i];
+				break;
+			}
+		}
+		if (cookie == null) {
+			return null;
+		}
+		return cookie.getValue();
+	}
 
 	public static void storeCookie(FDSessionUser user, HttpServletResponse response) {
 		String cookieId = user.getCookie();

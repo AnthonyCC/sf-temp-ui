@@ -319,7 +319,7 @@ public class PaymentSessionBean extends SessionBeanSupport{
 		failedTransaction.setDescription(capture.getDescription());
 		failedTransaction.setTransactionSource(EnumTransactionSource.SYSTEM);
 		failedTransaction.setAffiliate(capture.getAffiliate());
-		((ErpSaleModel)saleEB.getModel()).addFailedSettlement(failedTransaction);
+		((ErpSaleModel)saleEB.getModel()).addFailedSettlementPYPL(failedTransaction);
 		saleEB.markAsPaypalSettlementFailed();
 		createCase(saleId, capture.getCustomerId(), CrmCaseSubject.getEnum(CrmCaseSubject.CODE_PAYMENT_ERROR), "Sale failed to settle");
 	}

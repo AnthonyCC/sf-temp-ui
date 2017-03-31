@@ -30,4 +30,10 @@ public class IndexingConstants {
 
     public static final MaxFieldLength MAX_FIELD_LENGTH_1024 = new MaxFieldLength(1024);
 
+    public static final int DICTIONARY_WRITER_RAM_BUFFER_SIZE = 50;
+
+    public static final int DICTIONARY_WRITER_MERGE_FACTOR = 20;
+
+    public static final String KEYWORD = "keyword";
+
 }

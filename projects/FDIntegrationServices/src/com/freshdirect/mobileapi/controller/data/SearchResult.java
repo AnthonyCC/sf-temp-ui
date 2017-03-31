@@ -14,6 +14,7 @@ public class SearchResult extends Message {
     private Integer totalResultCount = 0;
 
     private List<ProductSearchResult> products = new ArrayList<ProductSearchResult>();
+    private List<ProductSearchResult> favproducts = new ArrayList<ProductSearchResult>();
 
     private List<String> productIds;    
     private List<String> favProductIds;
@@ -45,6 +46,14 @@ public class SearchResult extends Message {
     public void setProducts(List<ProductSearchResult> products) {
         this.products = products;
     }
+    
+    public List<ProductSearchResult> getFavProducts() {
+        return favproducts;
+    }
+
+    public void setFavProducts(List<ProductSearchResult> favproducts) {
+        this.favproducts = favproducts;
+    }
 
     public List<FilterOption> getBrands() {
         return brands;
@@ -74,6 +83,13 @@ public class SearchResult extends Message {
         this.products.clear();
         for (com.freshdirect.mobileapi.model.Product product : products) {
             this.products.add(ProductSearchResult.wrap(product));
+        }
+    }
+    
+    public void setFavProductsFromModel(List<com.freshdirect.mobileapi.model.Product> products) {
+        this.favproducts.clear();
+        for (com.freshdirect.mobileapi.model.Product product : products) {
+            this.favproducts.add(ProductSearchResult.wrap(product));
         }
     }
     

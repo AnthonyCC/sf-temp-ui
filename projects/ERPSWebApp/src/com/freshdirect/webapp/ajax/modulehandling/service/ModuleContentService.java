@@ -33,6 +33,7 @@ import com.freshdirect.webapp.ajax.browse.data.SectionData;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringFlow;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
+import com.freshdirect.webapp.ajax.filtering.NavigationUtil;
 import com.freshdirect.webapp.ajax.modulehandling.data.IconData;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
@@ -43,7 +44,7 @@ import com.freshdirect.webapp.util.ProductRecommenderUtil;
 
 public class ModuleContentService {
 
-    private static ModuleContentService INSTANCE = new ModuleContentService();
+    private static final ModuleContentService INSTANCE = new ModuleContentService();
     private static final Logger LOGGER = LoggerFactory.getInstance(ModuleContentService.class);
 
     private int MAX_ITEMS = FDStoreProperties.getHomepageRedesignProductLimitMax();
@@ -123,23 +124,29 @@ public class ModuleContentService {
     }
 
     public List<ProductData> loadBrowseProducts(String categoryId, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException {
-        CmsFilteringNavigator nav = new CmsFilteringNavigator();
 
-        // Set special layout false to skip content loading from HMB and RecipeKits.
-        nav.setSpecialPage(false);
-        nav.setPageTypeType(FilteringFlowType.BROWSE);
-        nav.setPageSize(FDStoreProperties.getBrowsePageSize());
-        nav.setId(categoryId);
-
-        List<ProductData> products = generateBrowseProductData(nav, user);
         List<ProductData> availableProducts = new ArrayList<ProductData>();
 
-        for (ProductData productData : products) {
-            if (productData.isAvailable() && !productData.isDiscontinued()) {
-                availableProducts.add(productData);
+        CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNode(categoryId);
+        boolean isForbidden = NavigationUtil.isCategoryForbiddenInContext(user, category);
+
+        if (!isForbidden) {
+            CmsFilteringNavigator nav = new CmsFilteringNavigator();
+
+            // Set special layout false to skip content loading from HMB and RecipeKits.
+            nav.setSpecialPage(false);
+            nav.setPageTypeType(FilteringFlowType.BROWSE);
+            nav.setPageSize(FDStoreProperties.getBrowsePageSize());
+            nav.setId(categoryId);
+
+            List<ProductData> products = generateBrowseProductData(nav, user);
+
+            for (ProductData productData : products) {
+                if (productData.isAvailable() && !productData.isDiscontinued()) {
+                    availableProducts.add(productData);
+                }
             }
         }
-
         return availableProducts;
     }
 

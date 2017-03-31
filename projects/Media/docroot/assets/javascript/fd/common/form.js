@@ -177,9 +177,10 @@ var FreshDirect = FreshDirect || {};
     }
 
     setTimeout(function () {
+      var hashName = utils.createHash(name + error);
       if ($el.attr('invalid')) {
-        if (!errorid || $('['+pfx+'-errorid="'+errorid+'"]').length === 0) {
-          $parent.prepend('<span '+pfx+'-error="'+name+'" '+(errorid ? pfx+'-errorid="'+errorid+'"': '')+'>'+error+'</span>');
+        if ((!errorid || $('['+pfx+'-errorid="'+errorid+'"]').length === 0) && $('['+pfx+'-errorhash="'+hashName+'"]').length === 0) {
+          $parent.prepend('<span '+pfx+'-error="'+name+'" '+(errorid ? pfx+'-errorid="'+errorid+'"': '') +pfx+'-errorhash="'+hashName+'" '+'>'+error+'</span>');
         }
       }
     }, 100);
@@ -652,7 +653,7 @@ var FreshDirect = FreshDirect || {};
 
     return errors;
   });
-  
+
 //floor validator
   forms.registerValidator('[fdform-v-floor]', function (field) {
     var errors = [],
@@ -665,7 +666,7 @@ var FreshDirect = FreshDirect || {};
 
     return errors;
   });
-  
+
 //street addess 1 validator
   forms.registerValidator('[fdform-v-address1]', function (field) {
     var errors = [],

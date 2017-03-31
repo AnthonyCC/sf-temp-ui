@@ -133,6 +133,15 @@
 	</servlet-mapping>
 
 	<servlet>
+		<servlet-name>ProductRequestServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.ajax.product.ProductRequestServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ProductRequestServlet</servlet-name>
+		<url-pattern>/api/productrequest/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
 		<servlet-name>ProductConfigServlet</servlet-name>
 		<servlet-class>com.freshdirect.webapp.ajax.product.ProductConfigServlet</servlet-class>
 	</servlet>
@@ -463,6 +472,24 @@
 	<servlet-mapping>
 		<servlet-name>ModuleHandlingServlet</servlet-name>
 		<url-pattern>/api/modulehandling/load</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>LocationHandlerServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.ajax.location.LocationHandlerServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LocationHandlerServlet</servlet-name>
+		<url-pattern>/api/locationhandling/user/ziphandling</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>LocationAvailabilityNotificationServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.ajax.location.LocationAvailabilityNotificationServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LocationAvailabilityNotificationServlet</servlet-name>
+		<url-pattern>/api/locationhandling/user/zipnotification</url-pattern>
 	</servlet-mapping>
   
   

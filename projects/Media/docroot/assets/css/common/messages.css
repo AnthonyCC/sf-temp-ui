@@ -180,4 +180,6 @@
 #messages .maint-message {
 	background: url(/media_stat/images/locationbar/alert_icon_maint.png) 10px center no-repeat;
 }
-
+#messages.visHidden{
+	visibility:hidden;
+}

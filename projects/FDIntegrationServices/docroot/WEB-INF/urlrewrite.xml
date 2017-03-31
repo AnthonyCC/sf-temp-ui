@@ -152,11 +152,6 @@
 		<to last="true">/login.do?action=login&amp;ver=$1</to>
 	</rule>
 	
-	<rule>
-		<from>^/v/([0-9]+)/(.*)/loginXE/$</from>
-		<to last="true">/login.do?action=loginXE&amp;ver=$1</to>
-	</rule>
-	
 	<!-- Session -->
     <rule>
         <from>^/v/([0-9]+)/(.*)/session/check/</from>

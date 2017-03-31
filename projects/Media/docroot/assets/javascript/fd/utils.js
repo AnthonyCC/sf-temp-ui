@@ -258,11 +258,24 @@ var FreshDirect = FreshDirect || {};
     return o;
   };
 
-  
+  //hash generate
+  utils.createHash = function (string) {
+    var hash = 0,
+    i = 0,
+    char = 0;
+    if (string.length === 0) return hash;
+    for (i = 0; i < string.length; i++) {
+      char = string.charCodeAt(i);
+      hash = ((hash<<5)-hash)+char;
+      hash = hash & hash; // Convert to 32bit integer
+    }
+    return hash;
+  };
+
   utils.reloadOnSuccess = function (id) {
-		 window.location=window.location;   
-	  }; 
-  
+		 window.location=window.location;
+	  };
+
   // register utils under FreshDirect.modules.common.utils
   utils.register("modules.common", "utils", utils, fd);
 

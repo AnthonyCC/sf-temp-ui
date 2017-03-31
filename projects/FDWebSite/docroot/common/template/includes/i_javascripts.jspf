@@ -29,13 +29,23 @@
     fd.properties.isSocialLoginEnabled = <%= FDStoreProperties.isSocialLoginEnabled() ? "true" : "false" %>;
 
     <% 
-		FDUserI jsUser = (FDUserI)session.getAttribute(SessionName.USER);
+    FDSessionUser jsUser = (FDSessionUser)session.getAttribute(SessionName.USER);
     if (jsUser != null) {
       int sessionUserLevel = jsUser.getLevel();
+      FDSessionUser sessionUser = (FDSessionUser) jsUser;
+      boolean hideZipCheckPopup = (jsUser.getLevel() != FDSessionUser.GUEST || jsUser.isZipCheckPopupUsed() || sessionUser.isZipPopupSeenInSession());
+      
+      if (!hideZipCheckPopup){
+          sessionUser.setZipPopupSeenInSession(true);
+      }
+      
+      String zipCode = jsUser.getZipCode();
       %>
     fd.user = {};
     fd.user.recognized = <%= sessionUserLevel == FDUserI.RECOGNIZED %>;
     fd.user.guest = <%= sessionUserLevel == FDUserI.GUEST %>;
+    fd.user.isZipPopupUsed = <%= hideZipCheckPopup %>;
+    fd.user.zipCode = '<%= zipCode %>';
     <% } %>
   }());
   </script>

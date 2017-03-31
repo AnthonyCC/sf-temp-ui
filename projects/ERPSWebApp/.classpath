@@ -12,5 +12,6 @@
 	<classpathentry kind="var" path="FD_LIBS/httpclient-4.5.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/httpcore-4.4.1.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/httpmime-4.5.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/gson-1.7.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

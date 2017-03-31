@@ -303,7 +303,7 @@ public class ContentNodeModelUtil {
             cache = refModel.getContentKey().equals(otherKey);
         }
         if (cache) {
-            ContentNodeModelImpl cachedContentNodeByKey = (ContentNodeModelImpl) ContentFactory.getInstance().getCachedContentNodeByKey(key);
+            ContentNodeModelImpl cachedContentNodeByKey = (ContentNodeModelImpl) ContentFactory.getInstance().getContentNodeByKey(key);
             if (cachedContentNodeByKey != null) {
                 ContentNodeModel parentNode = cachedContentNodeByKey.getParentNode();
                 if (parentNode == null) {

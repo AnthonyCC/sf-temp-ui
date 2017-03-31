@@ -173,9 +173,9 @@ public class DatasourceService {
             }
 
             editorialContainer.setHeaderTitle(ContentNodeUtil.getStringAttribute(module, "headerTitle"));
-            editorialContainer.setHeaderSubtitle(ContentNodeUtil.getStringAttribute(module, "heroSubtitle"));
+            editorialContainer.setHeaderSubtitle(ContentNodeUtil.getStringAttribute(module, "headerSubtitle"));
             editorialContainer.setHeroTitle(ContentNodeUtil.getStringAttribute(module, "heroTitle"));
-            editorialContainer.setHeroSubtitle(ContentNodeUtil.getStringAttribute(module, "headerSubtitle"));
+            editorialContainer.setHeroSubtitle(ContentNodeUtil.getStringAttribute(module, "heroSubtitle"));
             editorialContainer.setHeaderGraphic(headerGraphic.getPath());
             editorialContainer.setHeroGraphic(heroGraphic.getPath());
 

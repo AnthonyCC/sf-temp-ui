@@ -2,39 +2,19 @@
 
 /**
 * @param data
-* @param? isCorporateUser
  */
 {template .zipcheck autoescape="false"}
-{if $data.zipcheckNotify or $data.zipcheckNotifyDone or $data.zipcheckFound}
-  {if $data.zipcheckNotify}
-    {call common.zipcheckNotify}
-      {param data:$data.data /}
-    {/call}
-  {/if}
-  {if $data.zipcheckNotifyDone}
-    {call common.zipcheckNotifyDone}
-      {param data:$data.data /}
-    {/call}
-  {/if}
-  {if $data.zipcheckFound}
-    {call common.zipcheckFound}
-      {param data:$data.data /}
-    {/call}
-  {/if}
-{else}
 <div class="zipcheck">
   <h1 tabindex="0">Where should we deliver?</h1>
   <form fdform="zipcheck">
     <div class='address-type'>
-      <label><input type="radio" class="customradio" name="addressType" value="HOME" fdform-v-onerequired="addressType" {if not $isCorporateUser}checked{/if}>Home</label>
-      <label><input type="radio" class="customradio" name="addressType" value="CORPORATE" fdform-v-onerequired="addressType" {if $isCorporateUser}checked{/if}>Business or School</label>
+      <label><input type="radio" class="customradio" name="addressType" value="HOME" fdform-v-onerequired="addressType" checked>Home</label>
+      <label><input type="radio" class="customradio" name="addressType" value="CORPORATE" fdform-v-onerequired="addressType">Business or School</label>
     </div>
-      <label for="zipCode">ZIP Code</label>
-        <input id="zipCode" type="text" name="zipCode" placeholder="Enter ZIP Code" onClick="this.select();" {if $data.zipCode}value="{$data.zipCode}"{/if}>
-        <button type="button" clear-zip-code>
-          <span class="offscreen">Clear Zip Code</span>
-        </button>
-        <div fdform-error-for="zipCode"></div>
+      <label>ZIP Code</label>
+      <input type="text" name="zipCode" placeholder="Enter ZIP Code" onClick="this.select();" {if $data.zipCode}value="{$data.zipCode}"{/if}>
+      <button type="button" clear-zip-code></button>
+      <div fdform-error-for="zipCode"></div>
     <div>
     </div>
     <div class='zipcode-submit'>
@@ -45,7 +25,6 @@
 <div class="spinner-overlay">
   <div class="spinner"></div>
 </div>
-{/if}
 {/template}
 
 /**
@@ -61,10 +40,10 @@
     <h1 tabindex="0">Want to know when we're in your area?</h1>
     <form fdform="zipcheckNotify" data-zip="{$data}">
       <div class="email-address">
-        <label for="zipcheckNotifyEmail">Email</label>
-        <input id="zipcheckNotifyEmail" type="email" name="email" placeholder="Enter email address">
-        <input type="radio" class="offscreen" name="addressType" value="{$data.addressType}" checked tabindex="-1">
-        <input type="text" class="offscreen" name="zipCode" value="{$data.zipCode}" tabindex="-1">
+        <label>Email</label>
+        <input type="email" name="email" placeholder="Enter email address">
+        <input type="radio" class="offscreen" name="addressType" value="{$data.addressType}" checked>
+        <input type="text" class="offscreen" name="zipCode" value="{$data.zipCode}">
       </div>
       <div fdform-error-container fdform-error-for="email"></div>
       <div>
@@ -83,36 +62,7 @@
 <div class="zipcheck zipcheck-done">
   <h1 tabindex="0">Thanks!</h1>
   <h1 tabindex="0">Hope to see you soon.</h1>
-  <button class='cssbutton cssbutton-flat green full' data-close-overlay>Browse Store</button>
+  <button class='cssbutton cssbutton-flat green full' data-close-zipcheck>Browse Store</button>
   <button class="full" data-zipcheck-again tabindex="0">Try Another ZIP Code</button>
-</div>
-{/template}
-
-/**
- * @param data
- */
-{template .zipcheckFound}
-<div class="zipcheck zipcheck-found">
-   <h1 tabindex="0">Yes! We deliver to your area.</h1>
-   <button class='cssbutton cssbutton-flat green full' zip-check-shop>Shop this Zip Code</button>
-   <button class='cssbutton cssbutton-flat green full transparent' onclick='fd.components.zipCheckPopup.close()'>Close</button>
-</div>
-<form fdform="zipcheck" class="hidden">
-	<div class='address-type'>
-      <label><input type="radio" class="customradio" name="addressType" value="HOME" fdform-v-onerequired="addressType" {if $data.addressType == 'HOME'}checked{/if}>Home</label>
-      <label><input type="radio" class="customradio" name="addressType" value="CORPORATE" fdform-v-onerequired="addressType" {if $data.addressType == 'CORPORATE'}checked{/if}>Business or School</label>
-    </div>
-    <label for="zipCode">ZIP Code</label>
-	<input id="zipCode" type="text" name="zipCode" placeholder="Enter ZIP Code" onClick="this.select();" {if $data.zipCode}value="{$data.zipCode}"{/if}>
-		<button type="button" clear-zip-code>
-			<span class="offscreen">Clear Zip Code</span>
-		</button>
-	<div fdform-error-for="zipCode"></div>
-	<div class='zipcode-submit'>
-      <button class='cssbutton cssbutton-flat green' type="submit" value="Submit">Submit</button>
-    </div>
-</form>
-<div class="spinner-overlay">
-  <div class="spinner"></div>
 </div>
 {/template}

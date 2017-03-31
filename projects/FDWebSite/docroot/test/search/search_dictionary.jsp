@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <%@page import="com.freshdirect.cms.search.LuceneSearchService"%>
-<%@page import="com.freshdirect.cms.index.FullIndexerService"%>
+<%@page import="com.freshdirect.cms.index.IndexerService"%>
 <%@ page language="java" contentType="text/html; charset=iso-8859-1" pageEncoding="iso-8859-1"%>
 <%@page import="java.util.Set"%>
 <%@page import="com.freshdirect.fdstore.content.ContentSearch"%>
@@ -103,9 +103,9 @@ td {
 </head>
 <%
 	Registry registry = FDRegistry.getInstance();
-	ContentSearchServiceI search = new LuceneSearchService();
+	ContentSearchServiceI search = LuceneSearchService.getInstance();
 	CmsManager instance = CmsManager.getInstance();
-	FullIndexerService indexer = FullIndexerService.getInstance();
+	IndexerService indexer = IndexerService.getInstance();
 	Set<ContentKey> keys = instance.getContentKeys();
 	List<Item> products = new ArrayList<Item>(keys.size());
 	List<Item> recipes = new ArrayList<Item>(keys.size());

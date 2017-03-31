@@ -225,13 +225,19 @@ var FreshDirect = FreshDirect || {};
           this.savedScrolls = {}; 
         }
         
+        this.updateIdFromMenu();
+      }
+    },
+    updateIdFromMenu: {
+      value: function () {
+        var idboxes = $('.menuBox[data-filter="id"]', $(this.placeholder));
+
+        this.id = [].slice.apply(idboxes.find('[data-component="menuitem"].selected').map(function (i, el) { return $(el).data('urlparameter');}).filter(function (i, el) { return !!el && el !== 'all'; })).pop();
       }
     },
     initMenu:{
       value:function(){
-        var idboxes = $('.menuBox[data-filter="id"]', $(this.placeholder));
-
-        this.id = [].slice.apply(idboxes.find('[data-component="menuitem"].selected').map(function (i, el) { return $(el).data('urlparameter');}).filter(function (i, el) { return !!el && el !== 'all'; })).pop();
+        this.updateIdFromMenu();
         this.listen();
       }
     }

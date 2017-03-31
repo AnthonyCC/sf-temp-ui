@@ -157,7 +157,7 @@
 			<RelationshipDef name="newProductsPageSortOptions" cardinality="Many" label="New Products Page Sort Options">
 				<DestinationDef contentType="SortOption" />
 			</RelationshipDef>
-			<RelationshipDef name="presidentsPicksPageSortOptions" cardinality="Many" label="President's Picks Page Sort Options">
+			<RelationshipDef name="presidentsPicksPageSortOptions" cardinality="Many" label="Fresh Deals Page Sort Options">
 				<DestinationDef contentType="SortOption" />
 			</RelationshipDef>
 			<RelationshipDef name="staffPicksPageSortOptions" cardinality="Many" label="Staff's Picks Page Sort Options">
@@ -175,7 +175,7 @@
             <RelationshipDef name="newProductsPageTopMediaBanner" cardinality="One" label="New Products Page Top Media Banner">
                 <DestinationDef contentType="Html"/>
             </RelationshipDef>
-            <RelationshipDef name="presPicksPageTopMediaBanner" cardinality="One" label="President Picks Page Top Media Banner">
+            <RelationshipDef name="presPicksPageTopMediaBanner" cardinality="One" label="Fresh Deals Page Top Media Banner">
                 <DestinationDef contentType="Html"/>
             </RelationshipDef>
             <RelationshipDef name="staffPicksPageTopMediaBanner" cardinality="One" label="Staff Picks Page Top Media Banner">
@@ -631,7 +631,7 @@
             <AttributeDef type="S" name="GLOBAL_MENU_LINK_LABEL" label="Global Menu Link Label"/>
             <AttributeDef type="B" name="HIDE_FEATURED_ITEMS"  label="Hide featured items" inheritable="true"/>
 			<EnumDef type="S" name="PRODUCT_PROMOTION_TYPE" label="Product Promotion Type">
-				<EnumValue value="PRESIDENTS_PICKS" label="President's Picks"/>
+				<EnumValue value="PRESIDENTS_PICKS" label="Fresh Deals"/>
 				<EnumValue value="E_COUPONS" label="E-Coupons"/>
 				<EnumValue value="PRODUCTS_ASSORTMENTS" label="Products Assortments"/>
 			</EnumDef>
@@ -953,7 +953,7 @@
 
                 <EnumValue value="111" label="Multi Category Layout (with Quickbuy)"/><!-- Multi + QB layout [APPDEV-2386] -->
 
-                <EnumValue value="200" label="President's Picks"/><!-- promo page -->
+                <EnumValue value="200" label="Fresh Deals"/><!-- promo page -->
                 <EnumValue value="201" label="E-Coupons"/><!-- E-Coupons -->
                 <EnumValue value="301" label="Recipe Mealkit Category"/> <!-- Handpicked MealKit Category -->
 			</EnumDef>

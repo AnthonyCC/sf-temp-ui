@@ -1,12 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<%@page import="com.freshdirect.cms.search.LuceneSearchService"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="freshdirect" prefix="fd"%>
 <%@page import="org.apache.hivemind.Registry"%>
 <%@page import="com.freshdirect.framework.conf.FDRegistry"%>
 <%@page import="com.freshdirect.cms.search.ContentSearchServiceI"%>
-<%@page import="com.freshdirect.cms.index.FullIndexerService"%>
+<%@page import="com.freshdirect.cms.index.IndexerService"%>
 <%@page import="com.freshdirect.cms.index.configuration.IndexerConfiguration"%>
 <html>
 <head>
@@ -139,7 +138,7 @@
 				and spelling after you change either attributes.</span>
 			<%
 			    Registry registry = FDRegistry.getInstance();
-			    FullIndexerService indexer = FullIndexerService.getInstance();
+			    IndexerService indexer = IndexerService.getInstance();
 			    IndexerConfiguration indexerConfiguration = IndexerConfiguration.getDefaultConfiguration();
 			    String keywords = request.getParameter("keywords");
 			    if (keywords != null) {

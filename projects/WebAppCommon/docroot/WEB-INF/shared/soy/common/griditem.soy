@@ -54,6 +54,7 @@
  * @param? cmEventSource optional coremetrics event source
  * @param? showConfig show configuration and similar things for e.g. quickshop
  * @param? mobWeb
+ * @param? moduleData
  */
 {template .transactionalGridItem autoescape="false"}
 {call .potatoTransactionalGridItem}
@@ -64,7 +65,7 @@
   {param pageType:$item.pageType /}
   {param available:$item.available /}
   {param discontinued:$item.discontinued /}
-  {param productImage:($item.productZoomImage ? $item.productZoomImage : $item.productImage) /}
+  {param productImage:($item.productDetailImage ? $item.productDetailImage : $item.productImage) /}
   {param badge:$item.badge /}
   {param deal:$item.deal /}
   {param customizePopup:$item.customizePopup /}
@@ -134,6 +135,7 @@
   {param dispDefaultSalesUnit:$item.dispDefaultSalesUnit /}
   {param mobWeb:$mobWeb /}
   {param timeToComplete:$item.timeToComplete /}
+  {param moduleData:$moduleData /}
 {/call}
 {/template}
 
@@ -316,6 +318,7 @@
  * @param? dispDefaultSalesUnit
  * @param? mobWeb
  * @param? timeToComplete
+ * @param? moduleData
  */
 {template .potatoTransactionalGridItem autoescape="false"}
 /* this line return must be here, or there will be tabs in output html, which cause whitespace */
@@ -330,7 +333,14 @@
 	{if $hookLogicBeaconImpression} data-hooklogic-beacon-impress="{$hookLogicBeaconImpression}"{/if}
 >
 	<div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
-	  <a href="{$productPageUrl}" class="portrait-item-image-link">
+	  <a href="{$productPageUrl}" class="portrait-item-image-link" data-cmcarouselinfo="
+    {if $productName}{$productName}{/if}
+    {if $moduleData and $moduleData.moduleId},{$moduleData.moduleId}{else},{/if}
+    {if $moduleData and $moduleData.moduleTitle}-_-{$moduleData.moduleTitle}{/if}
+    {if $moduleData and $moduleData.moduleTitleTextBanner}-_-{$moduleData.moduleTitleTextBanner}{/if}
+    {if $moduleData and $moduleData.contentTitle}-_-{$moduleData.contentTitle}{/if}
+    {if $moduleData and $moduleData.moduleGroupTitle}-_-{$moduleData.moduleGroupTitle}{/if}
+    {if $moduleData and $moduleData.moduleGroupTitleTextBanner}-_-{$moduleData.moduleGroupTitleTextBanner}{/if}">
 		<div class="portrait-item-burst_wrapper">
 			<img src="{$productImage}" alt="Product Image - {$productName}" class="portrait-item-productimage" {if not $discontinued}data-product-url="{$productPageUrl}"{/if}>
 			{call common.bursts}{param badge:$badge /}{param deal:$deal /}{param usq:$usq /}{/call}
@@ -347,13 +357,27 @@
 		{if $discontinued}
 			<b>{$brandName}</b> <div class="product-name-no-brand">{$productNameNoBrand}</div>
 		{else}
-			<a href="{$productPageUrl}" class="portrait-item-header-name"><b>{$brandName}</b> <div class="product-name-no-brand">{$productNameNoBrand}</div></a>
+			<a href="{$productPageUrl}" class="portrait-item-header-name" data-cmcarouselinfo="
+      {if $productName}{$productName}{/if}
+      {if $moduleData and $moduleData.moduleId},{$moduleData.moduleId}{else},{/if}
+      {if $moduleData and $moduleData.moduleTitle}-_-{$moduleData.moduleTitle}{/if}
+      {if $moduleData and $moduleData.moduleTitleTextBanner}-_-{$moduleData.moduleTitleTextBanner}{/if}
+      {if $moduleData and $moduleData.contentTitle}-_-{$moduleData.contentTitle}{/if}
+      {if $moduleData and $moduleData.moduleGroupTitle}-_-{$moduleData.moduleGroupTitle}{/if}
+      {if $moduleData and $moduleData.moduleGroupTitleTextBanner}-_-{$moduleData.moduleGroupTitleTextBanner}{/if}"><b>{$brandName}</b> <div class="product-name-no-brand">{$productNameNoBrand}</div></a>
 		{/if}
 	{else}
 		{if $discontinued}
 			{$productName}
 		{else}
-			<a href="{$productPageUrl}" class="portrait-item-header-name">{$productName}</a>
+			<a href="{$productPageUrl}" class="portrait-item-header-name" data-cmcarouselinfo="
+      {if $productName}{$productName}{/if}
+      {if $moduleData and $moduleData.moduleId},{$moduleData.moduleId}{else},{/if}
+      {if $moduleData and $moduleData.moduleTitle}-_-{$moduleData.moduleTitle}{/if}
+      {if $moduleData and $moduleData.moduleTitleTextBanner}-_-{$moduleData.moduleTitleTextBanner}{/if}
+      {if $moduleData and $moduleData.contentTitle}-_-{$moduleData.contentTitle}{/if}
+      {if $moduleData and $moduleData.moduleGroupTitle}-_-{$moduleData.moduleGroupTitle}{/if}
+      {if $moduleData and $moduleData.moduleGroupTitleTextBanner}-_-{$moduleData.moduleGroupTitleTextBanner}{/if}">{$productName}</a>
 		{/if}
 	{/if}
 	<div class="rating">

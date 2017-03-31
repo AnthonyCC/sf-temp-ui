@@ -27,9 +27,6 @@ import com.freshdirect.dataloader.sap.jco.server.FdSapServer;
 import com.freshdirect.dataloader.sap.jco.server.param.CartonDetailParameter;
 import com.freshdirect.dataloader.util.FDSapHelperUtils;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.ecomm.gateway.OrderResourceApiClient;
-import com.freshdirect.fdstore.ecomm.gateway.OrderResourceApiClientI;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
 import com.sap.conn.jco.JCoFunction;
@@ -241,16 +238,11 @@ public class FDCartonDetailJcoServer2 extends FdSapServer
 				ctx = ErpServicesProperties.getInitialContext();
 				ErpCustomerManagerHome mgr = (ErpCustomerManagerHome) ctx.lookup("freshdirect.erp.CustomerManager");
 				ErpCustomerManagerSB sb = mgr.create();
-				OrderResourceApiClientI service = OrderResourceApiClient.getInstance();
-				
+		
 				for(Iterator<String> i = orderTocartonMapping.keySet().iterator(); i.hasNext(); )
 				{ 
-					saleId = i.next();	
-					if(FDStoreProperties.isSF2_0_AndServiceEnabled("updateCartonInfo_Api")){
-			    		service.updateCartonInfo(saleId, orderTocartonMapping.get(saleId));
-			    	}else{
+					saleId = i.next();			
 					sb.updateCartonInfo(saleId, orderTocartonMapping.get(saleId));
-			    	}
 				}
 			} 
 			catch(Exception ex) {

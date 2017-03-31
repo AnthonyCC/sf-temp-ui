@@ -51,6 +51,11 @@ public abstract class BasicProductData implements Serializable {
 	 * Product zoom image url (CMS: PROD_IMAGE_ZOOM)
 	 */
 	protected String productZoomImage;
+	
+	/** 
+	 * Product jumbo image url (CMS: PROD_IMAGE_JUMBO)
+	 */
+	protected String productJumboImage;
 
 	/**
 	 * Link to product page (FDURLUtil.getProductURI)
@@ -216,6 +221,12 @@ public abstract class BasicProductData implements Serializable {
 	}
 	public void setProductZoomImage( String productZoomImage ) {
 		this.productZoomImage = productZoomImage;
+	}
+	public String getProductJumboImage() {
+		return productJumboImage;
+	}
+	public void setProductJumboImage( String productJumboImage ) {
+		this.productJumboImage = productJumboImage;
 	}
 	public String getProductId() {
 		return productId;

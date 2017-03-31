@@ -12,11 +12,15 @@
   </listener>
   <listener>
     <listener-class>com.freshdirect.dataloader.wave.WLSSapWaveServer</listener-class>
-  </listener>
+  </listener>-->
   <listener>
     <listener-class>com.freshdirect.dataloader.carton.WLSSapCartonServer</listener-class>
   </listener>
+  
   <listener>
+    <listener-class>com.freshdirect.dataloader.carton.WLSSapCartonServer2</listener-class>
+  </listener>
+  <!-- <listener>
     <listener-class>com.freshdirect.dataloader.zoneinfo.WLSSapZoneServer</listener-class>
   </listener>
   <listener>
@@ -30,9 +34,9 @@
   <listener>
     <listener-class>com.freshdirect.dataloader.disablemod.WLSSapDisableOrderModification</listener-class>
   </listener>
-   --> 
+    
    <listener>
     <listener-class>com.freshdirect.dataloader.material.WLSSapGlobalMaterialServer</listener-class>
-  </listener>
+  </listener>-->
 </weblogic-application>
 

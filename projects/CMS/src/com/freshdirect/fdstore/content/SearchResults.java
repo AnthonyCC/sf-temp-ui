@@ -56,6 +56,7 @@ public class SearchResults implements Serializable, Cloneable {
 
 	private List<FilteringSortingItem<ProductModel>> adProducts = new ArrayList<FilteringSortingItem<ProductModel>>();
 	private String pageBeacon;
+	private int hlProductsCount;
 
 	private final List<FilteringSortingItem<Recipe>> recipes;
 	private final List<FilteringSortingItem<CategoryModel>> categories;
@@ -211,6 +212,12 @@ public class SearchResults implements Serializable, Cloneable {
 	public void setPageBeacon(String pageBeacon) {
 		this.pageBeacon = pageBeacon;
 	}
+	public int getHlProductsCount() {
+		return hlProductsCount;
+	}
 
+	public void setHlProductsCount(int hlProductsCount) {
+		this.hlProductsCount = hlProductsCount;
+	}
 	
 }

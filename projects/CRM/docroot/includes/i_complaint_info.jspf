@@ -186,7 +186,7 @@ ErpPaymentMethodI __paymentMethod	= (ErpPaymentMethodI) paymentMethod;
     <%-- ~~~~~~~~~  Order Line row  ~~~~~~~~~ --%>
     <tr valign="TOP">
 <% if (olit.isCartonized()) { %>
-        <td width="2%" align="center"><%= olit.getLastCartonDetail().getCartonDetail().getPackedQuantity() %></td>
+        <td width="2%" align="center"><%= olit.getLastCartonDetail().getCartonDetail().getActualQuantity() %></td>
 <% } else { %>
         <td width="2%" align="center"><%= invoiceLine != null ? invoiceLine.getQuantity() : orderLine.getQuantity() %></td>
 <% } %>
@@ -206,6 +206,36 @@ ErpPaymentMethodI __paymentMethod	= (ErpPaymentMethodI) paymentMethod;
         <td width="8%" bgcolor="<%= bgcolor %>"><%= pendingMethod %></td>
         <td width="5%" bgcolor="<%= bgcolor %>" align="center"><%= JspMethods.formatPrice( pendingAmount ) %></td>
     </tr>
+    
+	<% 
+			FDCartonDetail _is_detail = olit.getLastCartonDetail();
+			if(_is_detail!=null && _is_detail.getCartonDetail()!=null && _is_detail.getCartonDetail().getComponents()!=null
+			&& _is_detail.getCartonDetail().getComponents().size() > 0 ) { 
+				for (int j = 0; j < _is_detail.getCartonDetail().getComponents().size(); j++) {
+				ErpCartonDetails component = _is_detail.getCartonDetail().getComponents().get(j);
+							
+	%>
+									<tr valign="top" class="list_component_row">
+									<td>&nbsp;</td>
+									<td width="15px">										
+										<%= component.getActualQuantity() %>
+									</td>
+									<td width="350px" colspan="2">
+										<span><%= component.getMaterialDesc() %>
+										(<%= component.getSkuCode() %>)</span>
+									</td>
+									<td width="80px"> 
+										<%= component.getNetWeight() %>
+										<% if(component.getWeightUnit() != null) { %>
+											<%= component.getWeightUnit().toLowerCase() %>
+										<% } %>
+									</td>
+								</tr>							
+							
+							<% 		}
+								} 
+							%>
+							
 
 <%
 } // orderlines

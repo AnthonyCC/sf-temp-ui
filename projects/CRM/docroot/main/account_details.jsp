@@ -328,7 +328,7 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
 							<%= fdCustomerEStoreModel.getEmailOptIn() ? "<br>&nbsp;&nbsp;&nbsp;Included on FD emails/newsletters" : ""%>
 							<%= fdCustomerEStoreModel.getFdxEmailOptIn() ? "<br>&nbsp;&nbsp;&nbsp;Included on FDX emails/newsletters" : ""%>
 							<%= custInfo.isEmailPlaintext() ? "<br>&nbsp;&nbsp;&nbsp;Send TEXT-only email" : ""%>
-							<%= hasNewsletterSubscription ? "<br>&nbsp;&nbsp;&nbsp;Subscribed to President\'s Picks newsletters" : "" %>
+							<%= hasNewsletterSubscription ? "<br>&nbsp;&nbsp;&nbsp;Subscribed to Fresh Deals newsletters" : "" %>
 							</td>
                         </tr>
 						<tr>

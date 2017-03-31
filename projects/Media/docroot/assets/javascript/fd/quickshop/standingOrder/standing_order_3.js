@@ -1,6 +1,5 @@
 FreshDirect.standingorder = FreshDirect.standingorder || {};
 FreshDirect.standingorder.isSelectFrequencyChanged = false;
-var newsoID;
 var soName = "";
 var isNewSOCreated = false;
 var isActiveDrawerOpen = false;
@@ -12,9 +11,6 @@ $jq( document ).ready(function() {
 		FreshDirect.standingorder.currentPage = "new";
 		/*
 		 soName = $jq(".standing-orders-3-name-input[name='soName']").val();
-		 if (typeof newsoID === 'undefined') {
-			newsoID = 0;
-		}
 		$jq("input.standing-orders-3-name-input").focus(function() {
 			$jq(".standing-orders-3-name-input-change").addClass("show");
 		});
@@ -31,7 +27,6 @@ $jq( document ).ready(function() {
 		/*
 		if($jq(".standing-orders-3-name-input[name='soName']").val() != ""){
 			isNewSOCreated = true;
-			populateDrawer(newsoID);
     		$jq("#soFreq").select2({
 				minimumResultsForSearch: Infinity
 			});

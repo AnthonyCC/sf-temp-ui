@@ -68,7 +68,7 @@ public class ContentSearchTest extends FDCustomerManagerTestSupport {
 //		indexerService.setSpellingSynonyms(Collections.<SynonymDictionary>emptyList());
 
 		Map<ContentKey, ContentNodeI> contentNodes = service.getContentNodes(service.getContentKeys(DraftContext.MAIN), DraftContext.MAIN);
-		indexerService.index(contentNodes.values(), IndexerConfiguration.getDefaultConfiguration());
+		indexerService.fullIndex(contentNodes.values(), IndexerConfiguration.getDefaultConfiguration());
 
 		CmsManager.setInstance(new CmsManager(service, searchService));
 

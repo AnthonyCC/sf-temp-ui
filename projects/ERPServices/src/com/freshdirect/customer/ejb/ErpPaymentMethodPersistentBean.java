@@ -102,7 +102,7 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 
 		String id = this.getNextId(conn, "CUST");
 
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENTMETHOD (ID, CUSTOMER_ID, NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_NAME, BANK_ACCOUNT_TYPE, ADDRESS2, APARTMENT,  ADDRESS1, CITY, STATE, ZIP_CODE, COUNTRY, AVS_FAILED,BYPASS_AVS_CHECK, PROFILE_ID,ACCOUNT_NUM_MASKED, BEST_NUM_BILLING_INQ,EWALLET_ID,VENDOR_EWALLET_ID,PAYPAL_ACCOUNT_ID,DEVICE_ID) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENTMETHOD (ID, CUSTOMER_ID, NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_NAME, BANK_ACCOUNT_TYPE, ADDRESS2, APARTMENT,  ADDRESS1, CITY, STATE, ZIP_CODE, COUNTRY, AVS_FAILED,BYPASS_AVS_CHECK, PROFILE_ID,ACCOUNT_NUM_MASKED, BEST_NUM_BILLING_INQ,EWALLET_ID,VENDOR_EWALLET_ID,PAYPAL_ACCOUNT_ID,DEVICE_ID,IS_DEBIT_CARD) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		int index = 1;
 			ps.setString(index++, id);
@@ -118,7 +118,7 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 			if (model.getExpirationDate() != null) {
 				ps.setDate(index++, new java.sql.Date(model.getExpirationDate().getTime()));
 			} else {
-				ps.setNull(index++, Types.DATE);
+				ps.setNull(index++, Types.DATE); 
 			}
 			if (model.getCardType() != null) {
 				ps.setString(index++, model.getCardType().getFdName());
@@ -221,6 +221,7 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 			} else {
 				ps.setNull(index++, Types.VARCHAR);
 			}
+			ps.setString(index++, (model.isDebitCard()==false)?"O":"D");
 			//ps.setString(index++, model.isDebitCard()?"Y":"N");
 
 		//}

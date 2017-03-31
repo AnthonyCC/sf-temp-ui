@@ -394,8 +394,10 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 	if (order != null && order.getCartonContents().size() > 0) {
 		for (Iterator it=order.getCartonContents().iterator(); it.hasNext(); ) {
 			FDCartonInfo ci = (FDCartonInfo) it.next();
+			if(!"0000000000".equalsIgnoreCase(ci.getCartonInfo().getCartonNumber())){
 %>	cartonNumbers.push('<%= ci.getCartonInfo().getCartonNumber() %>');
 <%
+		}
 		}
 	}
 %>
@@ -600,7 +602,7 @@ if (order != null) {
 
 	// List<FDCartonInfo>
 	List cartons = order.getCartonContents();
-
+	
 
 	if (isNewCase) {
 		// process selected cartons
@@ -641,6 +643,7 @@ if (order != null) {
 <%
 		for (Iterator it=cartons.iterator(); it.hasNext(); ) {
 			FDCartonInfo ci = (FDCartonInfo) it.next();
+			if(!"0000000000".equalsIgnoreCase(ci.getCartonInfo().getCartonNumber())){
 %>
 							<tr>
 								<td><input type="checkbox" id="cb<%= ci.getCartonInfo().getCartonNumber() %>" name="cid_<%= ci.getCartonInfo().getCartonNumber() %>" <%= cartonIDs.contains(ci.getCartonInfo().getCartonNumber()) ? "checked=\"checked\"" : "" %> <%= autoCaseComplaintId != null ? "disabled=\"1\"" : "" %>></td>
@@ -650,6 +653,7 @@ if (order != null) {
 								<% } %>
 							</tr>
 <%
+			}
 		}
 %>
 						</table>
@@ -689,6 +693,7 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 
 		for (Iterator it=order.getCartonContents().iterator(); it.hasNext(); ) {
 			FDCartonInfo ci = (FDCartonInfo) it.next();
+		 if(!"0000000000".equalsIgnoreCase(ci.getCartonInfo().getCartonNumber())){
 %>		<div id="t_cn_<%= ci.getCartonInfo().getCartonNumber() %>">
 		<div style="padding-bottom: 1em">
 			Carton: <%= ci.getCartonInfo().getCartonNumber() %> / Type: <%= ci.getCartonInfo().getCartonType() %>
@@ -704,7 +709,7 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 			for (Iterator j=ci.getCartonDetails().iterator(); j.hasNext(); ) {
 				FDCartonDetail cartonDetail = (FDCartonDetail) j.next();
 %>			<tr>
-				<td><%= cartonDetail.getCartonDetail().getPackedQuantity() %><% if(cartonDetail.getCartonDetail().getWeightUnit() != null) {	%>&nbsp;<%= cartonDetail.getCartonDetail().getWeightUnit().toLowerCase() %><% } %>
+				<td><%= cartonDetail.getCartonDetail().getActualQuantity() %><% if(cartonDetail.getCartonDetail().getWeightUnit() != null) {	%>&nbsp;<%= cartonDetail.getCartonDetail().getWeightUnit().toLowerCase() %><% } %>
 				</td>
 				<td><%= cartonDetail.getCartLine().getDescription() %> (<%= cartonDetail.getCartLine().getSkuCode() %>)</td>
 				<td><%= cartonDetail.getCartonDetail().getNetWeight() %></td>
@@ -715,6 +720,7 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 %>		</table>
 	</div>
 <%
+		}
 		}	
 %>
 </div>	

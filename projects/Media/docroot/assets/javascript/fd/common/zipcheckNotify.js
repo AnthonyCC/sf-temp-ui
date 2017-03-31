@@ -12,9 +12,8 @@ var FreshDirect = FreshDirect || {};
     id: 'zipcheckNotify',
     submit : function (e) {
       var data = zipcheckNotify.serialize(e.form.id);
-      data.action = 'futureZoneNotification';
       DISPATCHER.signal('server', {
-        url: '/api/locationhandler',
+        url: '/api/locationhandling/user/zipnotification',
         method: 'POST',
         data: {
           data: JSON.stringify({
@@ -27,7 +26,7 @@ var FreshDirect = FreshDirect || {};
     },
     success: function () {
       if (FreshDirect.components.zipCheckPopup) {
-        FreshDirect.components.zipCheckPopup.refresh({data: null, zipcheckNotifyDone: true});
+        FreshDirect.components.zipCheckPopup.refreshBody(null,common.zipcheckNotifyDone);
       }
     },
     failure : function (id, result) {

@@ -58,7 +58,7 @@ var FreshDirect = FreshDirect || {};
           target = ct.hasAttribute('fd-login-successpage-current') && currentPage || ct.getAttribute('fd-login-successpage') || ct.pathname || ct.href || currentPage;
       //APPDEV-3971
           $("body").append("<a id=target-link-holder href="+ target +" style=display:none;>");
-      if (isMouseEvent && fd.user && (fd.user.guest || fd.user.recognized)) {
+          if (window.location.pathname.indexOf('login.jsp') === -1 && isMouseEvent && fd.user && (fd.user.guest || fd.user.recognized)) {
         if (fd.properties.isSocialLoginEnabled) {
           e.preventDefault();
           if (fd.user.guest && !ct.hasAttribute('fd-login-nosignup')) {

@@ -535,22 +535,33 @@ public class Product {
             }
         }
 
-        if (ProductLayout.COMPONENTGROUPMEAL.name().equalsIgnoreCase(getLayout())) {
-            List<ComponentGroupModel> componentGroups = product.getProductModel().getComponentGroups();
-            for (ComponentGroupModel componentGroup : componentGroups) {
-                ComponentGroup cgp;
-                try {
-                    cgp = new ComponentGroup(componentGroup, this, user, cartLine, ctx);
-                    this.componentGroups.add(cgp);
-                } catch (FDException e) {
-                    throw new ModelException("Unable to get ComponentGroup", e);
-                }
-            }
+        try
+        {
+        	if (ProductLayout.COMPONENTGROUPMEAL.name().equalsIgnoreCase(getLayout())) {
+        		List<ComponentGroupModel> componentGroups = product.getProductModel().getComponentGroups();
+        		for (ComponentGroupModel componentGroup : componentGroups) {
+        			ComponentGroup cgp;
+        			try {
+        				cgp = new ComponentGroup(componentGroup, this, user, cartLine, ctx);
+        				this.componentGroups.add(cgp);
+        			} catch (FDException e) {
+        				throw new ModelException("Unable to get ComponentGroup", e);
+        			}
+        		}
+            
+        		if (isAvailable()) {
 
-            for (Variation variation : this.variations) {
-                variation.removeUnavailableOptions();
-            }
+        			for (Variation variation : this.variations) {
+        				variation.removeUnavailableOptions();
+        			}
+        		}
+        	}
         }
+        catch(Exception e)
+        {
+        	throw new ModelException("Error to get ComponentGroup Data", e);
+        }
+        
 
         this.hideForMobile = productModel.isHideIphone();
 

@@ -13,8 +13,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
-
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.BidirectionalRelationshipDefI;
@@ -32,15 +30,12 @@ import com.freshdirect.cms.application.service.ProxyContentService;
 import com.freshdirect.cms.reverse.BidirectionalReferenceHandler;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
-import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
  * Proxy content service that automatically logs changes (via a specified {@link com.freshdirect.cms.changecontrol.ChangeLogServiceI}) when the {@link #handle(CmsRequestI)} method
  * is invoked.
  */
 public class ContentChangeTrackerService extends ProxyContentService {
-
-    private static final Logger LOGGER = LoggerFactory.getInstance(ContentChangeTrackerService.class);
 
     private final ChangeLogServiceI changeLogservice;
 
@@ -62,7 +57,6 @@ public class ContentChangeTrackerService extends ProxyContentService {
      */
     @Override
     public CmsResponseI handle(CmsRequestI request) {
-        LOGGER.debug(MessageFormat.format("Starting service handles {0} request", request));
 
         if (DraftContext.MAIN != request.getDraftContext()) {
             // do not track changes in draft mode
@@ -112,7 +106,6 @@ public class ContentChangeTrackerService extends ProxyContentService {
             response.setChangeSetId(changeSetId);
         }
 
-        LOGGER.debug(MessageFormat.format("Ending service return {0} response", response));
         return response;
     }
 

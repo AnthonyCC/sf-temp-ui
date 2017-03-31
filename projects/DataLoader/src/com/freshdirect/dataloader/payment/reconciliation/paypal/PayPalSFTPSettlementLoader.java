@@ -16,6 +16,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -42,7 +43,7 @@ public class PayPalSFTPSettlementLoader {
 	private static final Category LOGGER = LoggerFactory.getInstance(PayPalSFTPSettlementLoader.class);
 	private static final SimpleDateFormat SF = new SimpleDateFormat("yyyyMMdd");
 	
-	private static String timestamp = SF.format(new Date());
+	static String timestamp = SF.format(new Date());
 	private static boolean downloadFlag = true;
 	
 	private static final String INFIX = ".A";
@@ -50,6 +51,7 @@ public class PayPalSFTPSettlementLoader {
 	static PayPalReconciliationSB ppReconSB = null;
 	static ReconciliationSB reconSB = null;
 	static List<String> settlementIds = null;
+	static boolean isNEwRecordRequired = false;
 	
 	/**
 	 * @param args
@@ -96,7 +98,12 @@ public class PayPalSFTPSettlementLoader {
 			PayPalSFTPSettlementLoader loader = new PayPalSFTPSettlementLoader();
 			
 			ppReconSB = SettlementLoaderUtil.lookupPPReconciliationHome().create();
-			settlementIds = ppReconSB.acquirePPLock(SF.parse(timestamp));
+		
+			Map<String, Object> lockInfo = ppReconSB.acquirePPLock(SF.parse(timestamp));
+			settlementIds = (List<String>) lockInfo.get("settlementIds");
+			
+			PayPalSFTPSettlementLoader.isNEwRecordRequired = (Boolean) lockInfo.get("isNewRecord");
+			
 			loader.loadSettlements();
 			if (settlementIds != null && !settlementIds.isEmpty())
 				ppReconSB.releasePPLock(settlementIds);

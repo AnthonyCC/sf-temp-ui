@@ -59,9 +59,9 @@ public class DateUtil {
 	public static final DateFormat MONTH_DATE_FORMATTER = new SimpleDateFormat("MM/dd");
 	public static final DateFormat DAY_MONTH_DATE_FORMATTER = new SimpleDateFormat("EEE, MMMM dd");
 	public static final DateFormat FULL_DAY_OF_WK_FORMATTER = new SimpleDateFormat("EEEE");
-	public static final DateFormat MON_DATE_FORMATTER = new SimpleDateFormat("MMM dd");
-	public static final DateFormat HOUR_AMPM_FORMATTER = new SimpleDateFormat("hha");
-	public static final DateFormat HOUR_MMAMPM_FORMATTER = new SimpleDateFormat("hh:mma");
+	public static final DateFormat MON_DATE_FORMATTER = new SimpleDateFormat("MMM d");
+	public static final DateFormat HOUR_AMPM_FORMATTER = new SimpleDateFormat("ha");
+	public static final DateFormat HOUR_MMAMPM_FORMATTER = new SimpleDateFormat("h:mma");
 	
 	private DateUtil() {
 	}

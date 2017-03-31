@@ -299,12 +299,22 @@ $jq('.locabar_triggers').on('mouseleave', function(event) {
 $jq('.locabar_triggers').on('keyup', function(event) {
 	var $this = $jq(this);
 	var curId = $this.attr('id');
+	//console.log("cur"+curId);
+	//console.log($jq(event.target).attr('id'));
 	if (event.keyCode == 13) {
 		if (curId == 'locabar_popupcart_trigger') { // send to cart instead...
 			document.location = '/view_cart.jsp';
 		} else if (curId == 'locabar_user_trigger' && !$this.data('signedin') && !$this.data('recog')) { //allow login
 			$this.trigger('click');
-		} else {
+		}
+		
+	else if (curId == 'locabar_addresses_trigger' && ($jq(event.target).attr('id') === 'newziptext' || $jq(event.target).attr('id') === 'newzipgo' || $jq(event.target).attr('id') === 'locabar_addresses' || $jq(event.target).attr('id') === 'location-email'|| $jq(event.target).attr('id') === 'location-submit')) {
+		//do nothing
+		$this.addClass('hover')
+	}
+	
+		
+		else {
 			if ($this.hasClass('hover')) { //allow manual closing
 				$this.trigger('retClose');
 			} else {
@@ -337,6 +347,13 @@ $jq('#modifyorderalert').on('alertClose', ['modifyorderalert'], function(event) 
 		$jq("#locabar_modify_order_trigger").focus();
 	}
 });
+
+$jq('#sitemessage').on('alertClose', ['sitemessage'], function(event) {
+	$jq("#location-email").removeClass("input-error");
+	$jq(".error-msg").css("visibility","hidden");
+});
+
+
 $jq(document).ready(function() {
 	function messagesOpened() {
 		$jq('#locabar-messages-open').parent('.locabar_triggers').addClass('alertOpen');
@@ -360,14 +377,14 @@ $jq(document).ready(function() {
 				$jq('#locabar-messages-open').closest('.locabar-section').removeClass('alertOpen');
 				if ($jq('.messages-count').data('count') > 0) {
 					$jq('#locabar_messages_trigger').show();
-					$jq('#locabar_messages_trigger').focus();
+					//$jq('#locabar_messages_trigger').focus();
 				}
 				
 
 				
 				if($jq('#locabar_messages_trigger').css("display")==="block"){
 					$jq('#locabar_messages_trigger').show();
-					$jq("#locabar_messages_trigger").focus();
+					//$jq("#locabar_messages_trigger").focus();
 				}
 			}); 
 
@@ -413,53 +430,61 @@ $jq('.locabar_addresses-anon-deliverable-add-address-btn').on('click', function(
 });
 
 $jq('#locabar_addresses_trigger').on('focus mouseover', function(event) {
-	$jq('.locabar-addresses-section').css('background-color', '#4fa157');
+	$jq('.locabar-addresses-section').css('background-color', '#458d4e');
+	//	$jq("#location-email").removeClass("input-error");
+		//$jq(".error-msg").css("visibility","hidden");
+	if($jq(".locabar-section.locabar-user-section").attr("data-signedin")=="true"){
+			$jq("#locabar_addresses").css("background-color","#fff");
+		}
+		else{
+			$jq("#locabar_addresses").css("background-color","");
+		}
 });
 
 $jq('#locabar_addresses_trigger').on('blur mouseleave', function(event) {
-	$jq('.locabar-addresses-section').css('background-color', '#6AAA6D');
+	$jq('.locabar-addresses-section').css('background-color', '#4fa157');
 });
 
 $jq('#locabar_user_trigger').on('focus mouseover', function(event) {
-	$jq('.locabar-user-section').css('background-color', '#4fa157');
+	$jq('.locabar-user-section').css('background-color', '#458d4e');
 });
 
 $jq('#locabar_user_trigger').on('blur mouseleave', function(event) {
-	$jq('.locabar-user-section').css('background-color', '#6AAA6D');
+	$jq('.locabar-user-section').css('background-color', '#4fa157');
 });
 
 $jq('#locabar_popupcart_trigger').on('focus mouseover', function(event) {
-	$jq('.locabar-popupcart-section').css('background-color', '#4fa157');
+	$jq('.locabar-popupcart-section').css('background-color', '#458d4e');
 });
 
 $jq('#locabar_popupcart_trigger').on('blur mouseleave', function(event) {
-	$jq('.locabar-popupcart-section').css('background-color', '#6AAA6D');
+	$jq('.locabar-popupcart-section').css('background-color', '#4fa157');
 });
 
 $jq('#locabar_modify_order_trigger').on('focus mouseover', function(event) {
-	$jq('.locabar-modify-order-section').css('background-color', '#4fa157');
+	$jq('.locabar-modify-order-section').css('background-color', '#458d4e');
 });
 
 $jq('#locabar_modify_order_trigger').on('blur mouseleave', function(event) {
 	//console.log('blur on locabar_triggers ');
-	$jq('.locabar-modify-order-section').css('background-color', '#6AAA6D');
+	$jq('.locabar-modify-order-section').css('background-color', '#4fa157');
 });
 
 
 $jq('#locabar_messages_trigger').on('focus mouseover', function(event) {
-	$jq('.locabar-messages-section').css('background-color', '#4fa157');
+	$jq('.locabar-messages-section').css('background-color', '#458d4e');
 });
 
 $jq('#locabar_messages_trigger').on('blur mouseleave', function(event) {
-	$jq('.locabar-messages-section').css('background-color', '#6AAA6D');
+	$jq('.locabar-messages-section').css('background-color', '#4fa157');
 });
 
 $jq('.changeBGClr').on('focus mouseover', function(event) {
-	$jq('.locabar-user-section').css('background-color', '#4fa157');
+	$jq('.locabar-user-section').css('background-color', '#458d4e');
 });
 
 $jq('.changeBGClr').on('blur mouseleave', function(event) {
-	$jq('.locabar-user-section').css('background-color', '#6AAA6D');
+	$jq('.locabar-user-section').css('background-color', '#4fa157');
 });
 
 
@@ -470,10 +495,11 @@ $jq('#locabar_messages_trigger').keydown(function(event){
 		$jq('#messages').messages('openMessages');
 		$jq('#messages').addClass('open');
 		$jq(this).hide();
-		$jq("#messages.hashandler.open a").focus();
+		
 		if($jq('#activatesoalert .so-activate-alert').length && $jq('#activatesoalert .so-activate-alert').length > 0){
 			$jq('#activatesoalert').messages('openAlerts', ['activatesoalert']);			
 		}
+		setTimeout(function(){$jq("#messages.hashandler.open a:first").focus()},100);
 	}
 });
 
@@ -485,7 +511,7 @@ $jq('#locabar_modify_order_trigger').keydown(function(event){
 		$jq("#locabar_modify_order_trigger #locabar_orders").css("opacity","1");
 		$jq("#locabar_modify_order_trigger #locabar_orders").css("visibility","visible");
 		
-		$jq(".locabar-modify-order-dropdown-container-delails a").focus();
+		$jq(".locabar-modify-order-dropdown-container-delails a:first").focus();
 		event.preventDefault();
 	}
 });
@@ -528,28 +554,61 @@ $jq(".locabar-modify-order-dropdown-container-modify").keydown(function(e){
 			return true;
 			
 		} else {
-			$jq("#locabar_modify_order_trigger #locabar_orders").css("opacity","0");
+			/*$jq("#locabar_modify_order_trigger #locabar_orders").css("opacity","0");
 			$jq("#locabar_modify_order_trigger #locabar_orders").css("visibility","hidden");
 			if($jq("#locabar_messages_trigger").css("display")=="none" || $jq(".locabar-messages-section").css("display")=="none" ){
-				$jq("#locabar_addresses_trigger").focus();
+				//$jq("#locabar_addresses_trigger").focus();
 			}else{
-				$jq("#locabar_messages_trigger").focus();
+				//$jq("#locabar_messages_trigger").focus();
 			}
-			
+			*/
 			
 		}
-		e.preventDefault();
+		//e.preventDefault();
 	}
 });
+
+$jq("#locabar_messages_trigger,#locabar_addresses_trigger,.locabar-tab-fdx-cont").on("focusin",function(){
+	$jq("#locabar_modify_order_trigger #locabar_orders").css("opacity","0");
+	$jq("#locabar_modify_order_trigger #locabar_orders").css("visibility","hidden");
+	//$jq(".error-msg").css("visibility","hidden");
+	//$jq("input").removeClass("input-error");
+});
+$jq("#locabar_messages_trigger,#locabar_user_trigger[data-signedin='false']").on("mouseleave",function(){
+//	$jq(".locabar_triggers:not("+this+")").removeClass("hover");
+	$jq(".locabar_triggers").removeClass("hover");
+	$jq("#locabar_addresses").css("visibility","");
+	$jq("#locabar_addresses").css("opacity","");
+	//$jq(".error-msg").css("visibility","hidden");
+	//$jq("input").removeClass("input-error");
+}); 
+
+$jq("#locabar_messages_trigger,#locabar_user_trigger[data-signedin='false']").on("keydown",function(e){
+	var keycode = (event.keyCode ? event.keyCode : event.which);
+	if(keycode == '13'){
+		setTimeout(function(){
+			$jq("#locabar_user_trigger .locabar_triggers_menu.posAbs .section-line:first a").focus();
+		},100);
+		
+		//e.preventDefault();
+		}
+	
+	});
+/*$jq("#locabar_messages_trigger,#locabar_user_trigger,#locabar_user_trigger .changeBGClr").on("focusin",function(){
+	$jq("#locabar_addresses").css("visibility","");
+	$jq("#locabar_addresses").css("opacity","");
+});*/
 //text-box-focs
 //$jq("#newziptext").focus();
 
-$jq(".locabar-modify-order-dropdown-container-delails ").keydown(function(e){
+
+
+$jq(".locabar-modify-order-dropdown-container-delails:eq(0) ").keydown(function(e){
 	var TABKEY = 9;
 	if (e.which == TABKEY) {
 		if (e.shiftKey) {
-			$jq("#locabar_modify_order_trigger #locabar_orders").css("opacity","0");
-			$jq("#locabar_modify_order_trigger #locabar_orders").css("visibility","hidden");
+			//$jq("#locabar_modify_order_trigger #locabar_orders").css("opacity","0");
+			//$jq("#locabar_modify_order_trigger #locabar_orders").css("visibility","hidden");
 			$jq("#locabar_modify_order_trigger").focus();
 			
 		} else {
@@ -641,7 +700,7 @@ $jq(window).load(function(){
 		$jq('#locabar_messages_trigger').hide();
 	}
 	
-	$jq('#locabar_messages_trigger').blur();
+	$jq('.locabar-section #locabar_messages_trigger').blur();
 	//cart lin - background change
 
   	$jq(document).on('focusin',"#popupcart .cartline .qty",function(e){
@@ -670,13 +729,13 @@ $jq(window).load(function(){
   		var TABKEY = 9;
   		if (e.which == TABKEY) {
   			if (e.shiftKey) {
-  				$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("visibilty","hidden");  
-  				$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("opacity","0");
-  				$jq("#locabar_addresses_trigger").removeClass("hover");
+  				//$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("visibilty","hidden");  
+  				//$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("opacity","0");
+  				//$jq("#locabar_addresses_trigger").removeClass("hover");
   				$jq(this).blur();
   				//$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable input").blur();
   				$jq("#locabar_addresses_trigger").focus();
-  				$jq("#locabar_addresses").hide();
+  				//$jq("#locabar_addresses").hide();
   				
   			} else {
   				return true;
@@ -723,9 +782,16 @@ $jq(window).load(function(){
   	$jq(".locabar-addresses-section").keydown(function(event){
   		var keycode = (event.keyCode ? event.keyCode : event.which);
   		if(keycode == '13'){
+  			
   			if($jq("#location-alerts #sitemessage").css("display")=="block"){
   	  			$jq("#locabar_addresses").hide();
   	  		}
+  			if($jq(".locabar-section.locabar-user-section").attr("data-signedin")=="true"){
+  				$jq("#locabar_addresses").css("background-color","#fff");
+  			}
+  			else{
+  				$jq("#locabar_addresses").css("background-color","");
+  			}
   			event.preventDefault();
   		}
   	});
@@ -768,8 +834,8 @@ $jq(".locabar_addresses-anon-deliverable-change-zip-toggle-btn").keydown(functio
 	FreshDirect.locabar.lastFocusElemId = '';
 	if(keycode == '13'){
 		$jq(this).hide();
-		$jq(".locabar_addresses locabar_triggers_menu").css("visibility","visible");
-		$jq(".locabar_addresses locabar_triggers_menu").css("opacity","1");
+		$jq(".locabar_addresses.locabar_triggers_menu").css("visibility","visible");
+		$jq(".locabar_addresses.locabar_triggers_menu").css("opacity","1");
 		
 		$jq(".locabar_addresses-anon-deliverable-change-zip-toggle-target").css("display","");
 		setTimeout(function(){
@@ -778,20 +844,120 @@ $jq(".locabar_addresses-anon-deliverable-change-zip-toggle-btn").keydown(functio
 		event.preventDefault();
 	}
 });
-/*
-//message alert
-$jq(".locabar-messages-section").click(function(){
-	//$jq(this).hide();
+
+
+$jq("#newziptext").keydown(function(e){
+	var keycode = (e.keyCode ? e.keyCode : e.which);
+	$jq("#newziptext").next().next().css("visibility","hidden");
+	$jq("#newziptext").removeClass("input-error");
+	if(keycode == '13'){
+		console.log($jq(".newziptext ").val());
+		if($jq(".newziptext ").val()!="" && $jq(".newziptext").val().length == 5){
+			$jq('#messages').removeClass("open");
+			//sendZip();
+		}
+		else if($jq(".newziptext").val()!="" && $jq(".newziptext").val().length < 5){
+			$jq(".newziptext ").focus();
+			$jq("#newziptext").next().next().css("visibility","visible");
+			$jq("#newziptext").focus();
+			$jq("#newziptext")[0].setSelectionRange($jq(".newziptext").val().length,$jq(".newziptext").val().length);
+					
+			$jq("#newziptext").addClass("input-error");
+			$jq("#locabar_addresses").css("visibility","visible");
+			$jq("#locabar_addresses").css("opacity","1");
+		}		
+		e.preventDefault();
+	}
+	
 });
 
-//close the message replace the id with system message
-$jq("#messages .content").click(function(e){
-	e.preventDefault();
-	//jq("#messages").removeClass("open");
-	//$jq(".locabar-messages-section").show();
+$jq(".newzipgo").keydown(function(e){
+	
+	var text_length=$jq(this).parent().find("input").val().length;	
+	$jq(this).parent().next().css("visibility","");
+	//console.log(text_length);
+	var keycode = (e.keyCode ? e.keyCode : e.which);
+	if(keycode == '13'){
+		if(text_length<5 && text_length>=1){					
+				
+				$jq(this).parent().find("input").addClass("input-error");
+				$jq(this).next().css("visibility","visible");
+				/*$jq('.locabar_addresses-anon-deliverable-item-icon-clock .avlTimeFocus').blur();
+				$jq(".locabar_addresses-anon-deliverable-item-icon-truck a").blur();
+				$jq(this).parent().find("input").focus();*/
+				$jq(this).focus();
+				console.log($jq(this));
+				setTimeout(function(){
+				//	$jq(this).parent().find("input").focus();
+					$jq(this).focus();
+					
+					
+				},500);
+		}
+		else if(text_length!== "" && text_length == 5){
+			$jq('#messages').removeClass("open");
+			sendZip(e);
+		}
+			
+		//e.preventDefault();
+	}
 });
 
-//modify oder
-$jq("#modifyorderalert .alert-closeHandler").click(function(){alert("ss")
-	$("#locabar_modify_order_trigger").hide();
-});*/
+$jq("#location-email").keydown(function(e){
+	
+	var email_text=$jq(this).val();
+	console.log(email_text);
+	$jq(this).parent().find(".error-msg").css("visibility","hidden");
+	$jq(this).parent().find("input").removeClass("input-error");	
+	var email_regex=/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	
+  	 if(e.which == '13'){
+  		var IsValidEmail=email_regex.test(email_text);
+  		if(IsValidEmail==false && email_text!=""){		  			
+			$jq(this).parent().find(".error-msg").css("visibility","visible");
+			$jq(this).parent().find("input").addClass("input-error");	
+			setTimeout(function(){
+				$jq(this).parent().find("input").focus();
+			},500)
+  		}
+  		else if(IsValidEmail==true){
+  			//submt email method
+  			$jq("#location-submit.fdxgreen").trigger("click");
+  			$jq(this).parent().find(".error-msg").css("visibility","hidden");
+			$jq(this).parent().find("input").removeClass("input-error");	
+  			
+  			//$("#location-submit").click();
+  			
+  		}		 
+  		//e.preventDefault();
+  	}
+  	//e.preventDefault();
+
+});
+
+$jq("#location-submit.fdxgreen").keydown(function(e){
+	
+	var email_text=$jq(this).parent().find('input').val();
+	var email_regex=/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	var IsValidEmail=email_regex.test(email_text);
+  	 if(e.which == '13'){
+  		if(IsValidEmail==false && email_text!=""){		  			
+  			$jq(this).parent().find("input").removeClass("input-error");			  		
+  			$jq(this).parent().find(".error-msg").css("visibility","visible");
+			$jq(this).parent().find("input").addClass("input-error");			  						
+			setTimeout(function(){
+				$jq(this).parent().find("input").focus();
+			},500);
+			//$jq(this).parent().find("input").focus();
+  		}
+  		else if(IsValidEmail==true && email_text!=""){
+  			//submt email method
+  			$jq(this).trigger("click");
+  			//$("#location-submit").click();
+  			
+  		}		 
+  		e.preventDefault();
+  	}
+  	//e.preventDefault();
+
+});

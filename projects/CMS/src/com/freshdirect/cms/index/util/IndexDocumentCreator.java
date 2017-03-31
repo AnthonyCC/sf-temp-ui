@@ -11,7 +11,6 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 
 import com.freshdirect.cms.ContentNodeI;
-import com.freshdirect.cms.application.StoreContentSource;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.index.IndexingConstants;
 import com.freshdirect.cms.index.configuration.IndexConfiguration;
@@ -29,32 +28,28 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class IndexDocumentCreator {
 
-    private static final String KEYWORD = "keyword";
+    private static final Logger LOGGER = LoggerFactory.getInstance(IndexDocumentCreator.class);
 
     private static final IndexDocumentCreator INSTANCE = new IndexDocumentCreator();
 
-    private static final Logger LOGGER = LoggerFactory.getInstance(IndexDocumentCreator.class);
+    private final IndexerUtil indexerUtil = IndexerUtil.getInstance();
+    private final IndexConfiguration indexConfiguration = IndexConfiguration.getInstance();
 
     public static IndexDocumentCreator getInstance() {
         return INSTANCE;
     }
 
-    private final IndexerUtil indexerUtil = IndexerUtil.getInstance();
-    private final IndexConfiguration indexConfiguration = IndexConfiguration.getInstance();
-
     /**
      * Converts a ContentNode to a Lucene document. Creates the document and builds it up field by field.
      * 
-     * @param node
-     *            the content node to convert to a Lucene document
+     * @param node - the content node to convert to a Lucene document
      * @param primaryHomeKeywordsEnabled
      * @param parentRecursionEnabled
      * @return a Lucene document that can be added to an index and searched or null if this node should not be indexed
      */
-    public Document createDocument(List<SynonymDictionary> synonyms, ContentNodeI node, boolean primaryHomeKeywordsEnabled, boolean parentRecursionEnabled,
-            boolean keywordsDisabled, StoreContentSource storeContentSource) {
-        List<AttributeIndex> indexes = indexConfiguration.getAllIndexConfigurationsByContentType().get(node.getKey().getType());
+    public Document createDocument(List<SynonymDictionary> synonyms, ContentNodeI node, IndexerConfiguration indexerConfiguration){
         Document document = null;
+        List<AttributeIndex> indexes = indexConfiguration.getAllIndexConfigurationsByContentType().get(node.getKey().getType());
 
         if (indexes != null) {
             document = new Document();
@@ -68,11 +63,13 @@ public class IndexDocumentCreator {
             for (AttributeIndex attributeIndex : indexes) {
                 String attributeName = attributeIndex.getAttributeName();
                 String relationshipAttributeName = attributeIndex.getRelationshipAttributeName();
-                boolean isKeyword = relationshipAttributeName != null && relationshipAttributeName.toLowerCase().startsWith(KEYWORD)
-                        || attributeName.toLowerCase().startsWith(KEYWORD);
+                boolean isKeyword = relationshipAttributeName != null && relationshipAttributeName.toLowerCase().startsWith(IndexingConstants.KEYWORD)
+                        || attributeName.toLowerCase().startsWith(IndexingConstants.KEYWORD);
                 if (relationshipAttributeName != null)
                     attributeName += "_" + relationshipAttributeName;
-                List<Term> values = SearchUtils.collectValues(node, attributeIndex, !keywordsDisabled, primaryHomeKeywordsEnabled, parentRecursionEnabled, storeContentSource);
+                List<Term> values = SearchUtils.collectValues(node, attributeIndex, !indexerConfiguration.isKeywordsDisabled(), 
+                        indexerConfiguration.isPrimaryHomeKeywordsEnabled(), indexerConfiguration.isRecurseParentAttributesEnabled(), 
+                        indexerConfiguration.getStoreContentSource());
 
                 for (Term value : values) {
                     if (attributeIndex.isText()) {
@@ -153,8 +150,7 @@ public class IndexDocumentCreator {
         List<Document> documents = new ArrayList<Document>();
 
         for (ContentNodeI node : contentNodes) {
-            Document document = createDocument(synonyms, node, indexerConfiguration.isPrimaryHomeKeywordsEnabled(), indexerConfiguration.isRecurseParentAttributesEnabled(),
-                    indexerConfiguration.isKeywordsDisabled(), indexerConfiguration.getStoreContentSource());
+            Document document = createDocument(synonyms, node, indexerConfiguration);
             if (document != null) {
                 documents.add(document);
             }

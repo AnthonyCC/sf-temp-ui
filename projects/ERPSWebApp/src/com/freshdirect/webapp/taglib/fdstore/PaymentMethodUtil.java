@@ -44,6 +44,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.delivery.model.EnumAddressVerificationResult;
+import com.freshdirect.payment.BINCache;
 import com.freshdirect.payment.BillingCountryInfo;
 import com.freshdirect.payment.EnumBankAccountType;
 import com.freshdirect.payment.EnumPaymentMethodType;
@@ -76,6 +77,9 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     	FDSessionUser sessionuser = null;
         try {
         	sessionuser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
+        	BINCache binCache = BINCache.getInstance();
+	        boolean isDebitCard = binCache.isDebitCard(paymentMethod.getAccountNumber(), EnumCardType.VISA)||binCache.isDebitCard(paymentMethod.getAccountNumber(), EnumCardType.MC);
+	        paymentMethod.setDebitCard(isDebitCard);
             FDCustomerManager.addPaymentMethod(info, paymentMethod, sessionuser.isPaymentechEnabled());
         } catch (ErpPaymentMethodException ex) {
             /*LOGGER.debug(ex);
@@ -266,7 +270,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	
 			        // Check account number has at least 5 digits
 			        String scrubbedAccountNumber = scrubAccountNumber(accountNumber);
-	
+			        			       
 			        result.addError(scrubbedAccountNumber.length() < 5,
 					PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_ACCOUNT_NUMBER_LENGTH
 					);
@@ -311,6 +315,10 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
             }
            
             paymentMethod.setCVV(csv);
+            BINCache binCache = BINCache.getInstance();
+	        boolean isDebitCard = binCache.isDebitCard(accountNumber, EnumCardType.VISA)||binCache.isDebitCard(accountNumber, EnumCardType.MC);
+	        paymentMethod.setDebitCard(isDebitCard);
+	       
             if(StringUtil.isEmpty(paymentMethod.getCustomerId()) && identity!=null) {
             	paymentMethod.setCustomerId(identity.getErpCustomerPK());
             }

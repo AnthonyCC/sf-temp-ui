@@ -401,9 +401,10 @@ public class FDProductPriceJcoServer extends FdSapServer {
 				throw new LoaderException("No master default sales area price row exported for the material.");
 			}
 			
-			 if(!StringUtils.isEmpty(bufferStr.toString())) {
+			//Commenting the below validation as master default zone price is not needed for all sales areas.
+			 /*if(!StringUtils.isEmpty(bufferStr.toString())) {
 				 throw new LoaderException ("No master default price row exported for salesarea: " + bufferStr.toString());
-			 }
+			 }*/
 			 
 		}
 

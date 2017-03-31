@@ -6,6 +6,7 @@ import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Set;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -63,6 +64,10 @@ public class FDZoneInfoSessionBean extends SessionBeanSupport{
     }
     
     public  String findZoneId(String serviceType,String zipCode) throws RemoteException{
+    	return findZoneId( serviceType,zipCode, false);
+    }
+    
+    public  String findZoneId(String serviceType,String zipCode, boolean isPickupOnlyORNotServicebleZip) throws RemoteException{
     	String zoneServType=null;
     	String zoneId=null;
     	if(serviceType!=null || serviceType.trim().length()>0)
@@ -90,7 +95,7 @@ public class FDZoneInfoSessionBean extends SessionBeanSupport{
  			    zoneId=remote.findZoneId(zoneServType, zipCode);
  			
  			//[APPDEV-6003]-Change the default pricing zip code.
- 			if(zoneId==null || zoneId.trim().length()==0){
+ 			if((zoneId==null || zoneId.trim().length()==0) && isPickupOnlyORNotServicebleZip){
  				zipCode = FDStoreProperties.getDefaultPickupZoneId();
  				zoneId=remote.findZoneId(zoneServType, zipCode);
  			}

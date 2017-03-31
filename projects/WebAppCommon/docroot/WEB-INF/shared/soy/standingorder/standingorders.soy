@@ -156,7 +156,7 @@
 			{else}
 				<button class="standing-orders-3-so-button-settings cssbutton cssbutton-flat green" onclick="openSOSettings({$item.id})">Edit Settings</button>
 			{/if}
-			<a href="javascript:openSOSettings({$item.id})" class="standing-orders-3-so-settings-view-details">View Details</a>
+			<button class="standing-orders-3-so-settings-view-details cssbutton cssbutton-flat green transparent" onclick="openSOSettings({$item.id})">View Product List</button>
 			<a href="javascript:openSettingsDelete({$item.id})" class="standing-orders-3-so-settings-delete">Delete Standing Order</a>
 			<div style="position:relative;">
 		    	<div class="so-delete-popup">
@@ -235,15 +235,39 @@
  * @param? item
  */
 {template .soSettingsDetails}
-	<div class="standing-orders-3-so-settings-item-details-container">
-		<div class="standing-orders-3-so-settings-item-details-left">Next Delivery:</div><div class="standing-orders-3-so-settings-item-details-right">{if $item.currentDeliveryDate and $item.currentDeliveryTime}{$item.currentDayOfWeek}, {$item.currentDeliveryDate}, {$item.currentDeliveryTime}{else}None{/if}</div>
-	</div>
-	<div class="standing-orders-3-so-settings-item-details-container">
-		<div class="standing-orders-3-so-settings-item-details-left">Frequency:</div><div class="standing-orders-3-so-settings-item-details-right">{if $item.frequencyDesc and $item.dayOfWeek}{$item.frequencyDesc}{$item.dayOfWeek}{else}None{/if}</div>
-	</div>
-	<div class="standing-orders-3-so-settings-item-details-container">
-		<div class="standing-orders-3-so-settings-item-details-left">Estimated Total:</div><div class="standing-orders-3-so-settings-item-details-right">${$item.amount}</div>
-	</div>
+	{if $item.isEligileToShowModifyInfo}
+		<div class="standing-orders-3-so-settings-item-details-header">Next Delivery:</div>
+		<div class="standing-orders-3-so-settings-item-details-container standing-orders-3-so-settings-item-details-container-red">
+			<div class="standing-orders-3-so-settings-item-details-left">Date & Time:</div><div class="standing-orders-3-so-settings-item-details-right">{if $item.currentDeliveryDate and $item.currentDeliveryTime}{$item.currentDayOfWeek}, {$item.currentDeliveryDate}, {$item.currentDeliveryTime}{else}None{/if}</div>{if $item.upComingOrderId}<button class="standing-orders-3-so-settings-item-details-modify-next-delivery cssbutton cssbutton-flat orange" onclick="window.location.href='/your_account/modify_order.jsp?orderId={$item.upComingOrderId}&action=modify'">Modify Next Delivery</button>{/if}
+		</div>		
+		<div class="standing-orders-3-so-settings-item-details-container">
+			<div class="standing-orders-3-so-settings-item-details-left">Estimated Total:</div><div class="standing-orders-3-so-settings-item-details-right">${$item.amount}</div>
+		</div>		
+		<div class="standing-orders-3-so-settings-item-details-header">Deliveries Will Change:</div>
+		<div class="standing-orders-3-so-settings-item-details-container standing-orders-3-so-settings-item-details-container-red">
+			<div class="standing-orders-3-so-settings-item-details-left">Date & Time:</div><div class="standing-orders-3-so-settings-item-details-right">{if $item.deliveryDate and $item.deliveryTime}{$item.dayOfWeek}, {$item.deliveryDate}, {$item.deliveryTime}{else}None{/if}</div>
+		</div>
+		<div class="standing-orders-3-so-settings-item-details-container">
+			<div class="standing-orders-3-so-settings-item-details-left">Frequency:</div><div class="standing-orders-3-so-settings-item-details-right">{if $item.frequencyDesc and $item.dayOfWeek}{$item.frequencyDesc}{$item.dayOfWeek}{else}None{/if}</div>
+		</div>
+		<div class="standing-orders-3-so-settings-item-details-container">
+			<div class="standing-orders-3-so-settings-item-details-left">Delivery to:</div><div class="standing-orders-3-so-settings-item-details-right">{if $item.addressInfo}{$item.addressInfo}{/if}</div>
+		</div>
+		<div class="standing-orders-3-so-settings-item-details-container">
+			<div class="standing-orders-3-so-settings-item-details-left">Pay with:</div><div class="standing-orders-3-so-settings-item-details-right">{if $item.paymentInfo}{$item.paymentInfo}{/if}</div>
+		</div>
+	{else}
+		<div class="standing-orders-3-so-settings-item-details-header">Next Delivery:</div>
+		<div class="standing-orders-3-so-settings-item-details-container">
+			<div class="standing-orders-3-so-settings-item-details-left">Date & Time:</div><div class="standing-orders-3-so-settings-item-details-right">{if $item.currentDeliveryDate and $item.currentDeliveryTime}{$item.currentDayOfWeek}, {$item.currentDeliveryDate}, {$item.currentDeliveryTime}{else}None{/if}</div>{if $item.upComingOrderId}<button class="standing-orders-3-so-settings-item-details-modify-next-delivery cssbutton cssbutton-flat orange" onclick="window.location.href='/your_account/modify_order.jsp?orderId={$item.upComingOrderId}&action=modify'">Modify Next Delivery</button>{/if}
+		</div>
+		<div class="standing-orders-3-so-settings-item-details-container">
+			<div class="standing-orders-3-so-settings-item-details-left">Frequency:</div><div class="standing-orders-3-so-settings-item-details-right">{if $item.frequencyDesc and $item.dayOfWeek}{$item.frequencyDesc}{$item.dayOfWeek}{else}None{/if}</div>
+		</div>
+		<div class="standing-orders-3-so-settings-item-details-container">
+			<div class="standing-orders-3-so-settings-item-details-left">Estimated Total:</div><div class="standing-orders-3-so-settings-item-details-right">${$item.amount}</div>
+		</div>
+	{/if}
 {/template}
 
 /**

@@ -58,7 +58,7 @@ user.setSoTemplateCart(new FDCartModel());
 	Map<String,Object> upComingDataMap = new HashMap<String,Object>();
 	Map<String,Object> standingOrderSettingDataMap = new HashMap<String,Object>();
 	upComingDataMap.put( "upComingData", soList );
-	standingOrderSettingDataMap.put("soData", StandingOrderHelper.getAllSoData(user, false));
+	standingOrderSettingDataMap.put("soData", StandingOrderHelper.getAllSoData(user, false,true));
 %>
 <script>
 	FreshDirect.standingorder.softLimitDisplay = <%= StandingOrderHelper.formatDecimalPrice(ErpServicesProperties.getStandingOrderSoftLimit()) %>

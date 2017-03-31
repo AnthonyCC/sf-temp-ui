@@ -33,7 +33,7 @@ import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
  */
 public final class ModuleHandlingService {
 
-    private static ModuleHandlingService INSTANCE = new ModuleHandlingService();
+    private static final ModuleHandlingService INSTANCE = new ModuleHandlingService();
     private static final Logger LOGGER = LoggerFactory.getInstance(ModuleHandlingService.class);
 
     private ModuleHandlingService() {

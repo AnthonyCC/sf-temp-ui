@@ -5,17 +5,17 @@
 <%@ page import='com.freshdirect.fdstore.customer.*'  %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*"%>
-<%@ page import="com.freshdirect.webapp.taglib.fdstore.*"%>
 <%@ page import="com.freshdirect.customer.*"%>
 <%@ page import="java.net.URLEncoder" %>
-
+<%@ page import="com.freshdirect.webapp.ajax.product.ProductRequestServlet" %>
+<%@ page import="com.freshdirect.fdstore.request.FDProductRequest" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ page buffer="16kb" autoFlush="false" %>
 <%
-	String successPage = "/request_product.jsp?"+request.getQueryString();
+	String successPage = "/request_product.jsp" + ((request.getQueryString() != null) ? "?"+request.getQueryString() : "" );
 	String department = request.getParameter("department");
 
 	if("wine".equalsIgnoreCase(department)) {
@@ -38,8 +38,13 @@
 		customerInfo = FDCustomerFactory.getErpCustomerInfo(customerIdentity);
 	}
 
-	int prodRequests = 3;
+	int prodRequests = 3; //this number is also in ProductRequestServlet
 
+	/* this is saved reqs. this is populated if a save failed (and cleared on a success) */
+	List<FDProductRequest> pendingProductRequests = (List<FDProductRequest>)session.getAttribute(ProductRequestServlet.STOREDPRODUCTREQUESTS);
+
+	Map mediaParams = new HashMap(); //params to send to media
+	mediaParams.put("baseUrl", request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort());
 %>
 
 <tmpl:insert template='/shared/template/large_pop.jsp'>
@@ -55,17 +60,15 @@
 <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 
-	 <%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
-				<script type="text/javascript">
-				tcAgreewindow=doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'320px\' height=\'400px\' frameborder=\'0\' ></iframe>');
-				</script>
-	<%}%>
+<%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
+	<script type="text/javascript">
+	tcAgreewindow=doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'320px\' height=\'400px\' frameborder=\'0\' ></iframe>');
+	</script>
+<%}%>
 
-<fd:javascript src="/assets/javascript/prototype.js"/>
 <script type="text/javascript">
 
 	function deptsObj() {
-		
 		this.debug = false;	// debug mode
 
 		this.log = function () {
@@ -287,17 +290,88 @@
 			YAHOO.util.Dom.get('cat_prod'+n).disabled = true;
 		}
 	}
-
-</script>
-<script language="JavaScript">
-<!--
-	function linkTo(url){
-		redirectUrl = "http://" + location.host + url;
-		parent.opener.location = redirectUrl;
-	}
 	
-		while(!initProdReq());
-//-->
+	var pendingRequests = [];
+	function setPendingRequest(index, dept, cat, brand, descrip) {
+		$jq('#dept_prod'+index).val(dept).change();
+		$jq('#cat_prod'+index).val(cat).change();
+		$jq('#brandParams_prod'+index).val(brand);
+		$jq('#descrip_prod'+index).val(descrip);
+	}
+
+	while(!initProdReq());
+	
+	$jq(document).ready(function() {
+		
+		$jq.getJSON( "/api/productrequest/", function( data ) {
+			window['prodReqData'] = data; //we need this for setPendingRequest 
+			
+			for (var cur in data) {
+				if (data[cur].type === 'MAP') {
+					var ids = cur.split('|'); //dept,cat
+					depts.addDept(data[ids[0]].id, data[ids[0]].name);
+					depts.addCatToDept(data[ids[0]].id, data[ids[1]].id, data[ids[1]].name);
+				}
+			}
+			
+			<% for (int n=1; n<=prodRequests; n++) { %>
+				<%--
+					Remove all these java comments to re-enable brand autocomplete
+				--%>
+				depts.populateDeptsList("dept_prod<%= n %>");
+				YAHOO.util.Event.onDOMReady(autoCompleteFunctionFactory("/api/brandautocompleteresults.jsp","brands_prod<%= n %>","brandParams_prod<%= n %>",false));
+			<% } %>
+			
+			
+			document.request_product.dept_prod1.focus();
+			fillBrandVal();
+			
+			//alphabetize
+			depts.alphaLists();
+			
+			for (var i = 0; i < pendingRequests.length; i++) {
+				setPendingRequest.apply(null, pendingRequests[i]);				
+			}
+		});
+
+		$jq('#prodReq_clear').on('click', function(e) {
+			document.request_product.reset();
+			fillBrandVal();
+			disCats();
+			
+			return false;
+		});
+		
+		$jq('#prodReq_send').on('click', function(e) {
+			$jq('#prodReqError').html('');
+			
+			$jq.post("/api/productrequest/", $jq('#request_product').serialize(), function(data) {
+				if (data.SUCCESS) {
+					$jq('#prodReq_cont_submit').hide(); //main content
+					$jq('#prodReq_cont_submit_success').show(); //success msg
+					
+					if (parent.opener && !(parent.opener['shouldClearProdReqSelection'] == null || parent.opener['shouldClearProdReqSelection'] == 'undefined')) {
+						parent.opener['shouldClearProdReqSelection'] = true;
+					}
+				} else if (data.hasOwnProperty('ERRORS')) {
+					//needs loop
+					for (var i = 0; i < data.ERRORS.length; i++) {
+						switch (data.ERRORS[i].type) {
+							case '<%= ProductRequestServlet.ERR_NOCUSTOMERID %>':
+								<%-- user needs to log in, redirect them there --%>
+								window.location = '<%= redirectPage %>';
+								break;
+							case '<%= ProductRequestServlet.ERR_NOREQUEST %>':
+							case '<%= ProductRequestServlet.ERR_NOSAVE %>':
+								$jq('#prodReqError').append('<div>'+data.ERRORS[i].description+'</div>');
+								break;
+						}
+					}
+				}
+			});
+			return false;
+		});
+	});
 </script>
 <style>
 	.brandsAC ul {
@@ -348,87 +422,108 @@
 	}
 
 </style>
-
-<%@ include file="/includes/product/i_request_product_dept_cat_map.jspf" %>
-
-<fd:RequestAProductNewTag actionName="requestProducts" result="result" successPage="/request_product_conf.jsp">
-
-	<form name="request_product" method="post">
-	<table width="520" cellpadding="0" cellspacing="0" border="0">
-	<tr>
-		<td colspan="4" class="text12"><img src="/media_stat/images/template/newproduct/request_product.gif" width="202" height="17" alt="Request A Product" /><br /><img src="/media_stat/images/layout/clear.gif" width="1" height="14" alt="" />We try to offer our customers the best selection of fresh foods as well as the most popular packaged brands. Your product requests will help us make FreshDirect a better place to shop and we read every request submitted by our customers.<br />
-		<br /><strong>Please describe the products you'd like in as much detail as possible including specific brands, sizes, and flavors. </strong>
-		</td>
-	</tr>
-	<tr>
-		<td colspan="4"><img src="/media_stat/images/layout/clear.gif" width="20" height="20" alt="" /></td>
-	</tr>
-	<tr>
-		<td><img src="/media_stat/images/layout/clear.gif" width="60" height="1" alt="" /></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" /></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="200" height="1" alt="" /></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="200" height="1" alt="" /></td>
-	</tr>
-	<tr><td colspan="4"><img src="/media_stat/images/layout/clear.gif" width="1" height="12" alt="" /></td></tr>
-<% for (int n=1; n<=prodRequests; n++) { %>
-	<% int z = (prodRequests-n)*1000+5; %>
-	<tr>
-		<td align="right" rowspan="2"><strong>Request<br /> #<%= n %><strong></td>
-		<td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" /></td>
-		<td>
-			<select id="dept_prod<%= n %>" name="dept_prod<%= n %>" class="text11" onchange="depts.populateCatsList('cat_prod<%= n %>', this.id);" style="width: 206px;">
-			</select>
-		</td>
-		<td>
-			<select id="cat_prod<%= n %>" name="cat_prod<%= n %>" class="text11" style="width: 206px;" disabled="true">
-			</select>
-		</td>
-	</tr>
-	<tr>
-		<td style="padding-top: 12px;">
-			<script type="text/javascript">
-			<%--
-				Remove all these java comments to re-enable brand autocomplete
-			--%>
-			<!--
-				depts.populateDeptsList("dept_prod<%= n %>");
-				YAHOO.util.Event.onDOMReady(autoCompleteFunctionFactory("/api/brandautocompleteresults.jsp","brands_prod<%= n %>","brandParams_prod<%= n %>",false));
-			//-->
-			</script>
-			<div id="brandSearchContainer_prod<%= n %>" style="position: relative; z-index: <%= z %>;">
-				<input type="text" id="brandParams_prod<%= n %>" name="brandParams_prod<%= n %>" value="" style="width: 200px;" maxlength="50" class="text11" onfocus="fillVal(this.id);" onblur="fillVal(this.id, 'B');" value="Brand" />
-				<div id="brands_prod<%= n %>" name="brands_prod<%= n %>" style="position: absolute;background-color: white" class="brandsAC selectFree"><!--[if lte IE 6.5]><iframe></iframe><![endif]--></div>
-			</div>
-
-		</td>
-		<td style="padding-top: 12px;">
-			<input id="descrip_prod<%= n %>" name="descrip_prod<%= n %>" style="width: 200px;" maxlength="255" class="text11" onfocus="fillVal(this.id);" onblur="fillVal(this.id, 'D');" value="Description" />
-		</td>
-	</tr>
-	<% if (n<prodRequests) {%>
-		<tr><td colspan="4"><img src="/media_stat/images/layout/clear.gif" width="1" height="12" alt="" /></td></tr>
-		<tr><td colspan="4" bgcolor="#ccc" height="1"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td></tr>
-		<tr><td colspan="4"><img src="/media_stat/images/layout/clear.gif" width="1" height="12" alt="" /></td></tr>
-	<% } %>
-<% } %>
-	<tr><td colspan="4"><img src="/media_stat/images/layout/clear.gif" width="1" height="24" alt="" /></td></tr>
-	<tr>
-		<td colspan="4" align="center"><a href="javascript:document.request_product.reset(); fillBrandVal(); disCats();"><img src="/media_stat/images/template/newproduct/b_clear.gif" width="47" height="17" border="0" alt="Clear" /></a>&nbsp;&nbsp;<input type="image" name="send_email" src="/media_stat/images/template/newproduct/b_send.gif" width="45" height="15" vspace="1" border="0" alt="Send Request"><br /><img src="/media_stat/images/layout/clear.gif" width="1" height="12" alt="" /><br>
-		</td>
-	</tr>
-	<tr><td colspan="4" bgcolor="#999966" height="1"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td></tr>
-	</table>
+	<div id="prodReq_cont_submit">
+		<form name="request_product" id="request_product" method="post">
+			<input type="hidden" id="action" name="action" value="requestProducts" />
+			
+			<table width="520" cellpadding="0" cellspacing="0" border="0">
+				<tr>
+					<td colspan="4">
+					
+						<fd:IncludeMedia name="/media/editorial/site_pages/product_requests/top.ftl" parameters="<%= mediaParams %>" withErrorReport="false">
+							<div class="text12">
+								<span class="title18or">REQUEST A PRODUCT</span><br />
+								<br />
+								We try to offer our customers the best selection of fresh foods as well as the most popular packaged brands. Your product requests will help us make 
+								FreshDirect a better place to shop and we read every request submitted by our customers.<br />
+								<br />
+								<strong>Please describe the products you'd like in as much detail as possible including specific brands, sizes, and flavors. </strong>
+							</div>
+						</fd:IncludeMedia>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="4"><img src="/media_stat/images/layout/clear.gif" width="20" height="20" alt="" /></td>
+				</tr>
+				<tr>
+					<td width="60"></td>
+					<td width="20"></td>
+					<td width="200"></td>
+					<td width="200"></td>
+				</tr>
+			<% for (int n=1; n<=prodRequests; n++) { %>
+				<%
+					if (pendingProductRequests != null && pendingProductRequests.size() > n-1) {
+						FDProductRequest curPendingRequest = pendingProductRequests.get(n-1);
+						if (curPendingRequest != null) {
+							%><script>pendingRequests.push([<%= n %>, '<%= curPendingRequest.getDept() %>', '<%= curPendingRequest.getCategory() %>', '<%= curPendingRequest.getSubCategory() %>', '<%= curPendingRequest.getProductName() %>']);</script><%
+						}
+					}
+				%>
+				<% int z = (prodRequests-n)*1000+5; %>
+				<tr>
+					<td align="right" rowspan="2"><strong>Request<br /> #<%= n %><strong></td>
+					<td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" /></td>
+					<td>
+						<select id="dept_prod<%= n %>" name="dept_prod<%= n %>" class="text11" onchange="depts.populateCatsList('cat_prod<%= n %>', this.id);" style="width: 206px;">
+						</select>
+					</td>
+					<td>
+						<select id="cat_prod<%= n %>" name="cat_prod<%= n %>" class="text11" style="width: 206px;" disabled="true">
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td style="padding-top: 12px;">
+						<div id="brandSearchContainer_prod<%= n %>" style="position: relative; z-index: <%= z %>;">
+							<input type="text" id="brandParams_prod<%= n %>" name="brandParams_prod<%= n %>" value="" style="width: 200px;" maxlength="50" class="text11" onfocus="fillVal(this.id);" onblur="fillVal(this.id, 'B');" value="Brand" />
+							<div id="brands_prod<%= n %>" name="brands_prod<%= n %>" style="position: absolute;background-color: white" class="brandsAC selectFree"><!--[if lte IE 6.5]><iframe></iframe><![endif]--></div>
+						</div>
+			
+					</td>
+					<td style="padding-top: 12px;">
+						<input id="descrip_prod<%= n %>" name="descrip_prod<%= n %>" style="width: 200px;" maxlength="255" class="text11" onfocus="fillVal(this.id);" onblur="fillVal(this.id, 'D');" value="Description" />
+					</td>
+				</tr>
+				<% if (n<prodRequests) {%>
+					<tr><td colspan="4"><hr style="margin: 12px 0; background-color: #ccc;" /></td></tr>
+				<% } %>
+			<% } %>
+				<tr><td colspan="4">
+					<div style="text-align: center; margin: 20px 0;">
+						<button class="cssbutton small green transparent" id="prodReq_clear">CLEAR</button>
+						<button class="cssbutton small orange" id="prodReq_send">SEND</button>
+					</div>
+					<div id="prodReqError" class="text12 error" style="height: 40px; margin-top: 20px;"></div>
+				</td></tr>
+			</table>
+		</form>
+	</div>
 	
-	<script language="JavaScript"><!--
-		document.request_product.dept_prod1.focus();
-		fillBrandVal();
-		
-		//alphabetize
-		depts.alphaLists();
-	//-->
-	</script>
-	</form>
+	<div id="prodReq_cont_submit_success" style="display: none;">
+		<fd:IncludeMedia name="/media/editorial/site_pages/product_requests/success.ftl" parameters="<%= mediaParams %>" withErrorReport="false">
+			<script>
+				$jq(document).ready(function() {
+					$jq('.closeLink').on('click', function(e) { window.top['FreshDirect'].components.ifrPopup.close(); });
+					return false;
+				});
+			</script>
+			<table width="520" cellpadding="0" cellspacing="0" border="0">
+				<tr>
+					<td align="center" class="text12">
+						<div style="font-size: 48px; font-face:Arial,Verdana,Helvetica; font-weight: bold; padding: 12px 0">THANK YOU.</div>
+						<% if ("wine".equalsIgnoreCase(request.getParameter("department"))) { %>
+							<div class="text12"><img src="/media_stat/images/template/newproduct/wine_request_img.jpg"><br /><br /><strong>Your feedback is important to helping us improve.</strong>
+							<br />To continue shopping, <a href="#" class="closeLink"><b>click here</b></a> to close this window.<br /><br /></div>
+						<% } else { %>
+							<div class="text12">We will do our best to add to our selection based on your requests.<br />To continue shopping <a href="#" class="closeLink">close this window</a> or <a href="#" onClick="javascript:backtoWin('/newproducts.jsp'); window.top['FreshDirect'].components.ifrPopup.close();">click here to see our New Products!</a></div>
+							<div style="margin: 36px;"><img src="/media_stat/images/template/newproduct/confirm_berry.jpg" width="70" height="70"></div>
+						<% }%>
+					</td>
+				</tr>
+			</table>
+		</fd:IncludeMedia>
+	</div>
 
-</fd:RequestAProductNewTag>
 	</tmpl:put>
 </tmpl:insert>

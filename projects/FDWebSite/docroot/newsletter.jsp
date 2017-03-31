@@ -47,7 +47,7 @@ if(ContentFactory.getInstance().isEligibleForDDPP()){
 }
 %>
 <tmpl:insert template='/common/template/dnav.jsp'>
-	<tmpl:put name='title' direct='true'>FreshDirect - President's Picks</tmpl:put>
+	<tmpl:put name='title' direct='true'>FreshDirect - Fresh Deals</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 	
 	<% mediaPathTemp=mediaPathTempBase+"pres_picks.ftl"; %>

@@ -129,7 +129,7 @@ public class CreateStandingOrderTag extends BodyTagSupport {
 				try {
 					// redirect to main page
 					if(u.isNewSO3Enabled()){
-						response.sendRedirect(response.encodeRedirectURL("/quickshop/new_standing_order.jsp?newso=false")) ;
+						response.sendRedirect(response.encodeRedirectURL("/quickshop/new_standing_order.jsp")) ;
 					}else{
 						response.sendRedirect(response.encodeRedirectURL("/department.jsp?deptId=COS")) ;
 					}

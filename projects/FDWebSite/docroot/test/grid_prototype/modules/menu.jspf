@@ -6,7 +6,7 @@
       <li><a class="quicklist" href="#"><span>Quicklist</span></a></li>
       <li><a class="recipes" href="#"><span>Recipes</span></a></li>
       <li><a class="whatsgood" href="#"><span>What's good</span></a></li>
-      <li><a class="presidentspick" href="#"><span>President's picks</span></a></li>
+      <li><a class="presidentspick" href="#"><span>Fresh Deals</span></a></li>
 
       <%--<img src="img/delivery.png">--%>
       <%--<img src="img/quicklist.png">--%>

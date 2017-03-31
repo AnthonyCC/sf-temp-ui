@@ -596,7 +596,13 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 
 		PrimaryKey oldPk = model.getPK();
 
-		List<ErpCartonInfo> cartonInfo = ErpCartonsDAO.getCartonInfo(conn, getPK());		
+		List<ErpCartonInfo> cartonInfo = null;
+		if(model.getCartonInfo()!=null && model.getCartonInfo().size()>0){
+			cartonInfo = model.getCartonInfo();
+		}else{
+			cartonInfo = ErpCartonsDAO.getCartonInfo(conn, getPK(), eStoreId);	
+		}
+		 		
 		model = new ErpSaleModel(customerPk, status, txList.getModelList(), compList.getModelList(), sapOrderNumber, shippingInfo, usedPromotionCodes, 
 				cartonInfo, dlvPassId, saleType, standingOrderId, hasSignature, eStoreId, soName, in_modify, lock_timestamp);
 		model.setPK(oldPk);
@@ -1366,7 +1372,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		try {
 			conn = getConnection();
 
-			returnList = ErpCartonsDAO.getCartonInfo(conn, getPK());
+			returnList = ErpCartonsDAO.getCartonInfo(conn, getPK(), model.geteStoreId());
 
 		} catch (SQLException sqle) {
 			throw new ErpTransactionException(sqle.getMessage());

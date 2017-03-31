@@ -85,7 +85,7 @@
 		%>		<tr valign="top">
 	                <td>&nbsp;</td>               
 					<td>
-						<%= cartonDetail.getCartonDetail().getPackedQuantity() %>&nbsp;
+						<%= cartonDetail.getCartonDetail().getActualQuantity() %>&nbsp;
 						<% if(cartonDetail.getCartonDetail().getWeightUnit() != null) { %>
 	 						<%= cartonDetail.getCartonDetail().getWeightUnit().toLowerCase() %>
 	 					<% } %>

@@ -15,10 +15,10 @@
 			{if $data.packageDescription}<p class="productDisplay-packageDescription">{$data.packageDescription}</p>{/if}</h1>
 			{if isNonnull($data.atcItemId)}
 				<input type="hidden" data-component="productData" data-productdata-name="atcItemId" name="atcItemId" value="{$data.atcItemId}">
-			{/if}	
+			{/if}
 			{if $data.variantId}
 				<input type="hidden" data-component="productData" data-productdata-name="variantId" name="variantId" value="{$data.variantId}">
-			{/if}	
+			{/if}
 			{if $data.pageType}
 				<input type="hidden" data-component="productData" data-productdata-name="pageType" name="pageType" value="{$data.pageType}">
 			{/if}
@@ -78,7 +78,7 @@
 			{/if}
 		</div>
 	</form>
-	
+
 {/template}
 
 /**
@@ -96,7 +96,7 @@
 {call .skuControlVariations}{param variations:$sku.variations /}{/call}
 <hr>
 <div class="skucontrol-quantity">/*{$sku.quantityText}*/{sp}
-{call .skuControlQuantity}	
+{call .skuControlQuantity}
 	{param salesUnit:$sku.salesUnit /}
 	{param availMatPrices:$sku.availMatPrices /}
 	{param soldBySalesUnit:$sku.soldBySalesUnit /}
@@ -190,4 +190,3 @@
 	{param optional:false /}
 {/call}
 {/template}
-

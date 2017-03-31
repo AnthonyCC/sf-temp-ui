@@ -1,4 +1,4 @@
-/*global jQuery, common*/
+/*global jQuery*/
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {
@@ -11,15 +11,10 @@ var FreshDirect = FreshDirect || {};
 
   zipCheck.register({
     id: 'zipcheck',
-    submit: function (e) {
-      data = zipCheck.serialize(e.form.id);
-      if(typeof FreshDirect.zipCheck !== 'undefined' && FreshDirect.zipCheck == true){
-    	  data.action = 'checkZipCode';
-      } else{
-    	  data.action = 'setZipCode';
-      }
+    submit : function (e) {
+      data = zipCheck.serialize(e.form.id)
       DISPATCHER.signal('server', {
-        url: '/api/locationhandler',
+        url: '/api/locationhandling/user/ziphandling',
         method: 'POST',
         data: {
           data: JSON.stringify({
@@ -30,22 +25,9 @@ var FreshDirect = FreshDirect || {};
       });
       $('.spinner-overlay').addClass('active');
     },
-    success: function () {
-      if(typeof FreshDirect.zipCheck !== 'undefined' && FreshDirect.zipCheck == true){
-    	  FreshDirect.components.zipCheckPopup.refresh({data: data, zipcheckFound: true});
-    	  FreshDirect.zipCheck = false;
-    	  $('.zipcheck').off();
-    	  $('.zipcheck').on('click', '[zip-check-shop]', function() {
-    		  $('.zipcode-submit button').click();
-    		  DISPATCHER.signal('zipCheckSuccess', data);
-    	  });
-      } else {
-    	  DISPATCHER.signal('zipCheckSuccess', data);
-      }
-    },
-    failure: function () {
+    failure : function () {
       if (FreshDirect.components.zipCheckPopup) {
-        FreshDirect.components.zipCheckPopup.refresh({data: data, zipcheckNotify: true});
+        FreshDirect.components.zipCheckPopup.refreshBody(data,common.zipcheckNotify);
       }
     }
   });
