@@ -1381,10 +1381,10 @@ public class FDStoreProperties {
         defaults.put(PROP_COUNTRY_INFO_REFRESH_INTERVAL, "5");
 
         // APPDEV-2072 google analytics key
-        defaults.put(PROP_GOOGLE_ANALYTICS_KEY, ""); // default to an empty string
+        defaults.put(PROP_GOOGLE_ANALYTICS_KEY, "UA-20535945-18"); // default to an empty string
         defaults.put(PROP_GOOGLE_ANALYTICS_DOMAIN, ".freshdirect.com");
         // APPDEV-3522 Google Analytics: Upgrade to Universal Analytics: Updates for Page Load Times
-        defaults.put(PROP_GOOGLE_ANALYTICS_UNIVERSAL, "false");
+        defaults.put(PROP_GOOGLE_ANALYTICS_UNIVERSAL, "true");
 
         defaults.put(PROP_AVAILABILITY_DAYS_IN_PAST_TO_LOOKUP, "7");
         defaults.put(CUST_SERV_HOURS_DAYS, "Monday through Sunday");
@@ -1729,8 +1729,8 @@ public class FDStoreProperties {
 
         defaults.put(PROP_USER_CART_SAVE_INTERVAL, "0");
 
-        defaults.put(PROP_HOMEPAGE_REDESIGN_CURRENT_USER_CONTAINER_CONTENT_KEY, "ModuleContainer:currentUserModuleContainer");
-        defaults.put(PROP_HOMEPAGE_REDESIGN_NEW_USER_CONTAINER_CONTENT_KEY, "ModuleContainer:newUserModuleContainer");
+        defaults.put(PROP_HOMEPAGE_REDESIGN_CURRENT_USER_CONTAINER_CONTENT_KEY, "ModuleContainer:mc_hp_exist_cust");
+        defaults.put(PROP_HOMEPAGE_REDESIGN_NEW_USER_CONTAINER_CONTENT_KEY, "ModuleContainer:mc_hp_new_cust");
         defaults.put(PROP_HOMEPAGE_REDESIGN_MODULE_PRODUCT_LIMIT_MAX, "12");
 
         defaults.put(PROP_PLANT1300_PRICE_INDICATOR, "BASE");
