@@ -3062,11 +3062,7 @@
 		</makeFDAdminEar>
 	</target>
 	
-	<target name="all_ui" depends="clean_ui,prereq_ui,build_ui" description="Build UI, no checkout, no tests">
-	</target>
-	
-	<target name="clean_ui" description="Clean UI output directories">
-		<delete dir="${work.dir}" />
+	<target name="all_ui" depends="clean,prereq_ui,copy_shared_dirs_ui,build_ui,media-stat" description="Build UI, no checkout, no tests">
 	</target>
 		
 	<target name="make_dirs_ui"
@@ -3077,7 +3073,7 @@
 		<mkdir dir="${work.dir}/logs" />
 	</target>
 	
-	<target name="prereq_ui" depends="clean_ui,make_dirs_ui" description="Prerequisites">
+	<target name="prereq_ui" depends="clean,make_dirs_ui" description="Prerequisites">
 	</target>
 	
 	<target name="build_ui" depends="erpswebapp_ui,fdwebsite_ui" description="Build everything">
@@ -3272,7 +3268,7 @@
                     </touch>
                 </then>
             </if>
-			<trycatch>
+		<trycatch>
 				<try>
 					<record name="${work.dir}/logs/log.txt" action="start" append="yes" loglevel="debug"/>					
 					<taskdef classname="org.apache.jasper.JspC" name="jasper">
@@ -3316,8 +3312,7 @@
 					<fail>Compiling web project: @{project}</fail>
 				</catch>
 			</trycatch>
-
-			<jar destfile="${work.dir}/@{project}_2.war">
+			<jar destfile="${release.dir}/applications/@{project}_2.war">
 				<manifest>
 					<attribute name="Specification-Version" value="${build.counter}"/>
 					<attribute name="Specification-Vendor" value="FreshDirect LLC"/>
@@ -3332,4 +3327,31 @@
 
 		</sequential>
 	</macrodef>
+	
+	<target name= "copy_shared_dirs_ui"
+            description = "copy directories that are shared among projects">
+
+        <delete dir="${basedir}/projects/FDWebSite/docroot/WEB-INF/shared"/> 
+        <delete dir="${basedir}/projects/FDWebSite/docroot/shared"/>
+        <delete dir="${basedir}/projects/FDWebSite/docroot/assets"/>
+        <delete dir="${basedir}/projects/FDWebSite/docroot/ccassets"/>
+        <delete dir="${basedir}/projects/FDWebSite/docroot/media_stat"/>
+		
+        <copy todir="${basedir}/projects/FDWebSite/docroot/WEB-INF/shared">
+            <fileset dir="${basedir}/projects/WebAppCommon/docroot/WEB-INF/shared"/>
+        </copy>
+        <copy todir="${basedir}/projects/FDWebSite/docroot/shared">
+            <fileset dir="${basedir}/projects/WebAppCommon/docroot/shared"/>
+        </copy>
+
+        <copy todir="${basedir}/projects/FDWebSite/docroot/assets">
+            <fileset dir="${basedir}/projects/Media/docroot/assets"/>
+        </copy>
+        <copy todir="${basedir}/projects/FDWebSite/docroot/ccassets">
+            <fileset dir="${basedir}/projects/Media/docroot/ccassets"/>
+        </copy>
+        <copy todir="${basedir}/projects/FDWebSite/docroot/media_stat">
+            <fileset dir="${basedir}/projects/Media/docroot/media_stat"/>
+        </copy>
+    </target>
 </project>
