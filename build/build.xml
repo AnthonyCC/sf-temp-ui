@@ -3304,7 +3304,7 @@
 	
 				<record name="${work.dir}/logs/log.txt" action="stop"/>
 				
-			<jar destfile="${release.dir}/applications/@{project}_2.war">
+			<jar destfile="${release.dir}/applications/FDEcomWebsite.war">
 				<manifest>
 					<attribute name="Specification-Version" value="${build.counter}"/>
 					<attribute name="Specification-Vendor" value="FreshDirect LLC"/>
