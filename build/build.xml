@@ -3268,8 +3268,7 @@
                     </touch>
                 </then>
             </if>
-		<trycatch>
-				<try>
+	
 					<record name="${work.dir}/logs/log.txt" action="start" append="yes" loglevel="debug"/>					
 					<taskdef classname="org.apache.jasper.JspC" name="jasper">
 						<classpath>
@@ -3304,14 +3303,12 @@
 		</javac>
 	
 				<record name="${work.dir}/logs/log.txt" action="stop"/>
-				</try>
-				<catch>
+				
 					<record name="${work.dir}/logs/log.txt" action="stop"/>
 					<!-- send email...compilation failed -->
 					<!--<emailCompilationError projectName="(jsp) @{project}"/>-->
 					<fail>Compiling web project: @{project}</fail>
-				</catch>
-			</trycatch>
+			
 			<jar destfile="${release.dir}/applications/@{project}_2.war">
 				<manifest>
 					<attribute name="Specification-Version" value="${build.counter}"/>
