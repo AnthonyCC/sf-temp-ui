@@ -3329,6 +3329,7 @@
             description = "copy directories that are shared among projects">
 
         <delete dir="${basedir}/projects/FDWebSite/docroot/WEB-INF/shared"/> 
+		<delete dir="${basedir}/projects/FDWebSite/docroot/WEB-INF/tags"/> 
         <delete dir="${basedir}/projects/FDWebSite/docroot/shared"/>
         <delete dir="${basedir}/projects/FDWebSite/docroot/assets"/>
         <delete dir="${basedir}/projects/FDWebSite/docroot/ccassets"/>
@@ -3349,6 +3350,9 @@
         </copy>
         <copy todir="${basedir}/projects/FDWebSite/docroot/media_stat">
             <fileset dir="${basedir}/projects/Media/docroot/media_stat"/>
+        </copy>
+		  <copy todir="${basedir}/projects/FDWebSite/docroot/WEB-INF/tags">
+            <fileset dir="${basedir}/projects/WebAppCommon/docroot/WEB-INF/shared/tags"/>
         </copy>
     </target>
 </project>
