@@ -532,6 +532,9 @@ public class FDStoreProperties {
 
     private static final String PROP_GOOGLE_ANALYTICS_DOMAIN = "fdstore.google.analytics.domain";
 
+    // APPDEV-6030 Google Tag Manager
+    private static final String PROP_GOOGLE_TAG_MANAGER_KEY = "fdstore.google.tagmanager.key";
+
     // APPDEV-2062 CS Hours.
     private static final String CUST_SERV_HOURS_DAYS = "fdstore.cust_serv_days";
     private static final String CUST_SERV_HOURS_HOURS = "fdstore.cust_serv_hours";
@@ -1379,6 +1382,9 @@ public class FDStoreProperties {
         defaults.put(RULES_REPOSITORY, "Events.drl");
         defaults.put(DEBUG_EVENT_ANALYSIS, "false");
         defaults.put(PROP_COUNTRY_INFO_REFRESH_INTERVAL, "5");
+
+        // APPDEV-6030 Google Tag Manager
+        defaults.put(PROP_GOOGLE_TAG_MANAGER_KEY, "GTM-KFMTML");
 
         // APPDEV-2072 google analytics key
         defaults.put(PROP_GOOGLE_ANALYTICS_KEY, "UA-20535945-18"); // default to an empty string
@@ -3287,6 +3293,11 @@ public class FDStoreProperties {
 
     public static int getCountryInfoRefreshInterval() {
         return Integer.parseInt(get(PROP_COUNTRY_INFO_REFRESH_INTERVAL));
+    }
+
+    // APPDEV-6030 Google Tag Manager
+    public static String getGoogleTagManagerKey() {
+        return get(PROP_GOOGLE_TAG_MANAGER_KEY);
     }
 
     // APPDEV-2072 google analytics key
