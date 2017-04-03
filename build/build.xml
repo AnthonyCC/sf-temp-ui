@@ -2586,6 +2586,7 @@
 	<target name="media-stat">
 		<mkdir dir="${release.dir}/media" />
 		<delete file="${release.dir}/media/media-stat.tar.gz"/>
+		<delete file="${release.dir}/applications/FDWebSite_2.war"/>
 		<tar destfile="${release.dir}/media/media-stat.tar.gz" compression="gzip">
 			<tarfileset dir="${projects.dir}/Media" id="media-stat-files">
 				<include name="**/*"/>
