@@ -3268,7 +3268,7 @@
                     </touch>
                 </then>
             </if>
-	
+			
 					<record name="${work.dir}/logs/log.txt" action="start" append="yes" loglevel="debug"/>					
 					<taskdef classname="org.apache.jasper.JspC" name="jasper">
 						<classpath>
@@ -3304,11 +3304,6 @@
 	
 				<record name="${work.dir}/logs/log.txt" action="stop"/>
 				
-					<record name="${work.dir}/logs/log.txt" action="stop"/>
-					<!-- send email...compilation failed -->
-					<!--<emailCompilationError projectName="(jsp) @{project}"/>-->
-					<fail>Compiling web project: @{project}</fail>
-			
 			<jar destfile="${release.dir}/applications/@{project}_2.war">
 				<manifest>
 					<attribute name="Specification-Version" value="${build.counter}"/>
@@ -3328,8 +3323,8 @@
 	<target name= "copy_shared_dirs_ui"
             description = "copy directories that are shared among projects">
 
-        <delete dir="${basedir}/projects/FDWebSite/docroot/WEB-INF/shared"/> 
-		<delete dir="${basedir}/projects/FDWebSite/docroot/WEB-INF/tags"/> 
+        <delete dir="${basedir}/projects/FDWebSite/docroot/WEB-INF/shared"/>
+		<delete dir="${basedir}/projects/FDWebSite/docroot/WEB-INF/tags"/>		
         <delete dir="${basedir}/projects/FDWebSite/docroot/shared"/>
         <delete dir="${basedir}/projects/FDWebSite/docroot/assets"/>
         <delete dir="${basedir}/projects/FDWebSite/docroot/ccassets"/>
@@ -3351,7 +3346,7 @@
         <copy todir="${basedir}/projects/FDWebSite/docroot/media_stat">
             <fileset dir="${basedir}/projects/Media/docroot/media_stat"/>
         </copy>
-		  <copy todir="${basedir}/projects/FDWebSite/docroot/WEB-INF/tags">
+		<copy todir="${basedir}/projects/FDWebSite/docroot/WEB-INF/tags">
             <fileset dir="${basedir}/projects/WebAppCommon/docroot/WEB-INF/shared/tags"/>
         </copy>
     </target>
