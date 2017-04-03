@@ -16,6 +16,10 @@
   <%-- Feature version switcher --%>
   <features:potato />
   <%-- TODO !!! --%>
+  <%
+  FDUserI gtm_user = (FDUserI)session.getAttribute(SessionName.USER);
+  if (gtm_user != null) {
+  %>
   <script type="text/javascript">
   (function () {
     window.FreshDirect = window.FreshDirect || {};
@@ -59,10 +63,6 @@
   </script>
 
   <%-- Google Tag Manager login/signup events --%>
-  <%
-  FDUserI gtm_user = (FDUserI)session.getAttribute(SessionName.USER);
-  if (gtm_user != null) {
-  %>
   <script>
 
     var dataLayer = window.dataLayer || [];
