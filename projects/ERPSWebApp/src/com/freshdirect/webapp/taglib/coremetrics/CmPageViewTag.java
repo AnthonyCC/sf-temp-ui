@@ -15,126 +15,130 @@ import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
 import com.freshdirect.fdstore.coremetrics.tagmodel.AbstractTagModel;
 import com.freshdirect.fdstore.coremetrics.tagmodel.PageViewTagModel;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class CmPageViewTag extends AbstractCmTag {
-	@SuppressWarnings("unused")
-	private static final Logger LOGGER = LoggerFactory.getInstance(CmPageViewTag.class);
-	private static final String INIT_TRACKING_JS_PBJECT = "FreshDirect.Coremetrics.populateTrackingObject";
-	
-	private boolean forceTagEffect = false;
 
-	private PageViewTagModelBuilder tagModelBuilder = new PageViewTagModelBuilder();
+    @SuppressWarnings("unused")
+    private static final Logger LOGGER = LoggerFactory.getInstance(CmPageViewTag.class);
+    private static final String INIT_TRACKING_JS_PBJECT = "FreshDirect.Coremetrics.populateTrackingObject";
 
-	@Override
-	protected String getFunctionName() {
-		return "cmCreatePageviewTag";
-	}
-	
-	@Override
-	public String getTagJs() throws SkipTagException {
-		tagModelBuilder.setInput(PageViewTagInput.populateFromRequest(getRequest()));
-		PageViewTagModel tagModel = tagModelBuilder.buildTagModel();
+    private boolean forceTagEffect = false;
 
-		String CM_VC = this.getRequest().getParameter("cm_vc");
-		if (CM_VC == null || "".equals(CM_VC)) {
-			// pick value of cm_vc param from referer URL
-			CM_VC = extractParameterFromHeader(getRequest());
-		}
+    private PageViewTagModelBuilder tagModelBuilder = new PageViewTagModelBuilder();
 
-		StringBuilder sb = new StringBuilder();
-		sb.append(getFormattedTag( 
-				toJsVar(tagModel.getPageId()), 
-				toJsVar(tagModel.getCategoryId()), 
-				toJsVar(tagModel.getSearchTerm()), 
-				toJsVar(tagModel.getSearchResults()), 
-				toJsVar(mapToAttrString(tagModel.getAttributesMaps()))));
-		
-		sb.append(getTagDelimiter());				
-		sb.append(getFormattedTag(INIT_TRACKING_JS_PBJECT, new String[]{toJsVar(tagModel.getPageId()), toJsVar(getPackedPageLocationSubset(tagModel)), toJsVar(CM_VC == null ? "" : CM_VC)}));
-		
-		//LOGGER.debug(sb.toString());
-		return sb.toString();
-	}
+    @Override
+    protected String getFunctionName() {
+        return "cmCreatePageviewTag";
+    }
 
+    @Override
+    public String getTagJs() throws SkipTagException {
+        FDUserI user = (FDUserI) getSession().getAttribute(SessionName.USER);
+        tagModelBuilder.setUserCohort(user.getCohortName());
+        tagModelBuilder.setInput(PageViewTagInput.populateFromRequest(getRequest()));
+        PageViewTagModel tagModel = tagModelBuilder.buildTagModel();
 
-	/**
-	 * Basic utility method that extracts 'cm_vc' parameter from the query part of referer URL
-	 * @param request
-	 * @return
-	 */
-	private static String extractParameterFromHeader(final HttpServletRequest request) {
-		if (request == null) {
-			return null;
-		}
+        String CM_VC = this.getRequest().getParameter("cm_vc");
+        if (CM_VC == null || "".equals(CM_VC)) {
+            // pick value of cm_vc param from referer URL
+            CM_VC = extractParameterFromHeader(getRequest());
+        }
 
-		try {
-			URL refUrl = new URL(request.getHeader("referer"));
+        StringBuilder sb = new StringBuilder();
+        sb.append(getFormattedTag(toJsVar(tagModel.getPageId()), toJsVar(tagModel.getCategoryId()), toJsVar(tagModel.getSearchTerm()), toJsVar(tagModel.getSearchResults()),
+                toJsVar(mapToAttrString(tagModel.getAttributesMaps()))));
 
-			final String query = refUrl.getQuery();
-			if (query != null && query.contains("cm_vc=")) {
-				String[] params = query.split("&");
-				for (String p : params) {
-					if (p.startsWith("cm_vc=")) {
-						return p.split("=")[1];
-					}
-				}
-			}
-		} catch (MalformedURLException exc) {
-			LOGGER.debug("Failed to process referer URL " + request.getHeader("referer"));
-		}
-		return null;
-	}
+        sb.append(getTagDelimiter());
+        sb.append(getFormattedTag(INIT_TRACKING_JS_PBJECT, new String[] { toJsVar(tagModel.getPageId()), toJsVar(getPackedPageLocationSubset(tagModel)),
+                toJsVar(CM_VC == null ? "" : CM_VC) }));
 
-	private String getPackedPageLocationSubset(PageViewTagModel tagModel) {
-		
-		StringBuilder sb = new StringBuilder();
-		sb.append(tagModel.getAttributesMaps().get(3));
-		for (int i = 4; i < 7; i++) {
-			sb.append(AbstractTagModel.ATTR_DELIMITER);
-			sb.append(tagModel.getAttributesMaps().get(i) == null ? "" : tagModel.getAttributesMaps().get(i));
-		}
-		return sb.toString();
-		
-	}
-	
-	public void setSearchResultsSize(Integer searchResultsSize) {
-		tagModelBuilder.setSearchResultsSize(searchResultsSize);
-	}
+        // LOGGER.debug(sb.toString());
+        return sb.toString();
+    }
 
-	public void setSearchTerm(String searchTerm) {
-		tagModelBuilder.setSearchTerm(searchTerm);
-	}
+    /**
+     * Basic utility method that extracts 'cm_vc' parameter from the query part of referer URL
+     * 
+     * @param request
+     * @return
+     */
+    private static String extractParameterFromHeader(final HttpServletRequest request) {
+        if (request == null) {
+            return null;
+        }
 
-	public void setSuggestedTerm(String suggestedTerm) {
-		tagModelBuilder.setSuggestedTerm(suggestedTerm);
-	}
+        try {
+            URL refUrl = new URL(request.getHeader("referer"));
 
-	public void setRecipeSearchResultsSize(Integer recipeSearchResultsSize) {
-		tagModelBuilder.setRecipeSearchResultsSize(recipeSearchResultsSize);
-	}
+            final String query = refUrl.getQuery();
+            if (query != null && query.contains("cm_vc=")) {
+                String[] params = query.split("&");
+                for (String p : params) {
+                    if (p.startsWith("cm_vc=")) {
+                        return p.split("=")[1];
+                    }
+                }
+            }
+        } catch (MalformedURLException exc) {
+            LOGGER.debug("Failed to process referer URL " + request.getHeader("referer"));
+        }
+        return null;
+    }
 
-	public void setProductModel(ProductModel productModel) {
-		tagModelBuilder.setProductModel(productModel);
-	}
+    private String getPackedPageLocationSubset(PageViewTagModel tagModel) {
 
-	public void setCurrentFolder(ContentNodeModel currentFolder) {
-		tagModelBuilder.setCurrentFolder(currentFolder);
-	}
+        StringBuilder sb = new StringBuilder();
+        sb.append(tagModel.getAttributesMaps().get(3));
+        for (int i = 4; i < 7; i++) {
+            sb.append(AbstractTagModel.ATTR_DELIMITER);
+            sb.append(tagModel.getAttributesMaps().get(i) == null ? "" : tagModel.getAttributesMaps().get(i));
+        }
+        return sb.toString();
 
-	public void setForceTagEffect(boolean forceTagEffect) {
-		this.forceTagEffect = forceTagEffect;
-	}
-	
-	protected boolean insertTagInCaseOfCrmContext(){
-		return forceTagEffect;
-	}
-	
-	public void setRecipeSource(String recipeSource) {
-		tagModelBuilder.setRecipeSource(recipeSource);
-	}
-	public void setWineFilterValue(WineFilterValue wineFilterValue) {
-		tagModelBuilder.setWineFilterValue(wineFilterValue);
-	}
+    }
+
+    public void setSearchResultsSize(Integer searchResultsSize) {
+        tagModelBuilder.setSearchResultsSize(searchResultsSize);
+    }
+
+    public void setSearchTerm(String searchTerm) {
+        tagModelBuilder.setSearchTerm(searchTerm);
+    }
+
+    public void setSuggestedTerm(String suggestedTerm) {
+        tagModelBuilder.setSuggestedTerm(suggestedTerm);
+    }
+
+    public void setRecipeSearchResultsSize(Integer recipeSearchResultsSize) {
+        tagModelBuilder.setRecipeSearchResultsSize(recipeSearchResultsSize);
+    }
+
+    public void setProductModel(ProductModel productModel) {
+        tagModelBuilder.setProductModel(productModel);
+    }
+
+    public void setCurrentFolder(ContentNodeModel currentFolder) {
+        tagModelBuilder.setCurrentFolder(currentFolder);
+    }
+
+    public void setForceTagEffect(boolean forceTagEffect) {
+        this.forceTagEffect = forceTagEffect;
+    }
+
+    @Override
+    protected boolean insertTagInCaseOfCrmContext() {
+        return forceTagEffect;
+    }
+
+    public void setRecipeSource(String recipeSource) {
+        tagModelBuilder.setRecipeSource(recipeSource);
+    }
+
+    public void setWineFilterValue(WineFilterValue wineFilterValue) {
+        tagModelBuilder.setWineFilterValue(wineFilterValue);
+    }
 
 }
