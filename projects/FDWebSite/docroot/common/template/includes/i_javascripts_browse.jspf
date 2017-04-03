@@ -47,7 +47,7 @@
       }
      
       String zipCode = jsUser.getZipCode();
-      MasqueradeContext jsMasqueradeContext = gtm_user.getMasqueradeContext();
+      MasqueradeContext jsMasqueradeContext = jsUser.getMasqueradeContext();
       %>
     fd.user = {};
     fd.user.recognized = <%= sessionUserLevel == FDUserI.RECOGNIZED %>;
