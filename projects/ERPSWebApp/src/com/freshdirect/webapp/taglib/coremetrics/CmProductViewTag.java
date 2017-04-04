@@ -52,9 +52,17 @@ public class CmProductViewTag extends AbstractCmTag {
 	}
 	
 	private String extractVirtualCategoryId(){
+		String virtualCategoryId;
+		
 		QueryParameterCollection qv = QueryParameterCollection.decode(getRequest().getHeader("referer")); 
 		
-		return qv.getParameterValue("cm_vc");
+		if(getRequest().getHeader("referer").endsWith("index.jsp") || getRequest().getHeader("referer").endsWith("/")) {
+			virtualCategoryId = "HOME_PAGE_CAROUSEL";
+		} else {
+			virtualCategoryId = qv.getParameterValue("cm_vc");
+		}
+		
+		return virtualCategoryId;
 	}
 	
 	public void setProductModel(ProductModel productModel) {
