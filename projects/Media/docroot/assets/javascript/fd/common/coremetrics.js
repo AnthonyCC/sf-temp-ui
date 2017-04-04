@@ -117,6 +117,7 @@ var FreshDirect = FreshDirect || {};
 
     coremetricsItem.push('cmCreateElementTag');
     coremetricsItem.push('View All');
+    coremetricsItem.push('View All');
     coremetricsItem.push(dataString);
     coremetrics.playOneItem(coremetricsItem);
 

@@ -15,7 +15,7 @@ var FreshDirect = FreshDirect || {};
 
       function cmTrigger() {
         if (triggerPositioning[0] < window.scrollY){
-          FreshDirect.components.coremetrics.playOneItem(['cmCreateElementTag',triggerIndex[0] + '. elements', 'Home Page Scrolling']);
+          FreshDirect.components.coremetrics.playOneItem(['cmCreateElementTag',triggerIndex[0] + '. elements', 'Home Page Scrolling','-_--_--_--_--_-' + FreshDirect.user.cohortName]);
           triggerPositioning.shift();
           triggerIndex.shift();
         }
