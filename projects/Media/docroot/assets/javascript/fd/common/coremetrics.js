@@ -96,9 +96,9 @@ var FreshDirect = FreshDirect || {};
           carouselInfo = $(event.currentTarget).closest('[data-cmcarouselinfo]')[0].attributes['data-cmcarouselinfo'].value.split(',');
 
       if(carouselInfo.length > 1) {
-        dataString = carouselInfo[1] + '-_-Pane' + pageNumber + '-_-' + carouselInfo[0];
+        dataString = carouselInfo[1] + '-_-' + pageNumber + '-_-' + carouselInfo[0];
       } else {
-        dataString = 'Pane' + pageNumber + '-_-' + carouselInfo[0];
+        dataString = '-_-' + pageNumber + '-_-' + carouselInfo[0];
       }
 
       coremetricsItem.push('cmCreateManualLinkClickTag');
@@ -106,6 +106,20 @@ var FreshDirect = FreshDirect || {};
       coremetricsItem.push(dataString);
       coremetrics.playOneItem(coremetricsItem);
     }
+	});
+
+	$(document.body).on('click','[data-viewallinfo]',function(event){
+		var coremetricsItem = [],
+        dataString,
+        viewAllInfo = $(event.currentTarget).closest('[data-viewallinfo]')[0].attributes['data-viewallinfo'].value.split(',');
+
+      dataString = viewAllInfo[0] + '-_-' + viewAllInfo[1] + '-_--_--_--_-' + FreshDirect.user.cohortName;
+
+    coremetricsItem.push('cmCreateElementTag');
+    coremetricsItem.push('View All');
+    coremetricsItem.push(dataString);
+    coremetrics.playOneItem(coremetricsItem);
+
 	});
 
 	$(document.body).on('addToCart',function(event){
