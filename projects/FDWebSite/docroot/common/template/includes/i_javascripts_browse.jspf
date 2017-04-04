@@ -47,6 +47,7 @@
       }
      
       String zipCode = jsUser.getZipCode();
+      String cohortName = jsUser.getCohortName();
       MasqueradeContext jsMasqueradeContext = jsUser.getMasqueradeContext();
       %>
     fd.user = {};
@@ -55,6 +56,7 @@
     fd.mobWeb = <%= FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, jsUser) && JspMethods.isMobile(request.getHeader("User-Agent")) %>;
     fd.user.isZipPopupUsed = <%= hideZipCheckPopup %>;
     fd.user.zipCode = '<%= zipCode %>';
+    fd.user.cohortName = '<%= cohortName %>';
       <% if (jsMasqueradeContext != null) {%>
         fd.user.masquerade = true;
       <% } %>

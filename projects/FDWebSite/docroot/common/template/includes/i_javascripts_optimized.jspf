@@ -104,6 +104,7 @@
       }
       
       String zipCode = jsUser.getZipCode();
+      String cohortName = jsUser.getCohortName();
       MasqueradeContext jsMasqueradeContext = jsUser.getMasqueradeContext();
       %>
     fd.user = {};
@@ -111,6 +112,7 @@
     fd.user.guest = <%= sessionUserLevel == FDUserI.GUEST %>;
     fd.user.isZipPopupUsed = <%= hideZipCheckPopup %>;
     fd.user.zipCode = '<%= zipCode %>';
+    fd.user.cohortName = '<%= cohortName %>';
       <% if (jsMasqueradeContext != null) {%>
         fd.user.masquerade = true;
       <% } %>
