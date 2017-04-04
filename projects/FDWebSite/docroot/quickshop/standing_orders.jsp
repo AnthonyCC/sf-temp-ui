@@ -25,7 +25,7 @@
 <fd:QuickShopRedirector user="<%=user%>" from="<%=QuickShopRedirector.FROM.NEW_SO3_DETAIL %>"/>
 
 <tmpl:insert template='/quickshop/includes/standing_order.jsp'>
-  <tmpl:put name="soytemplates"><soy:import packageName="standingorder"/></tmpl:put>
+  <tmpl:put name="soytemplates"><soy:import packageName="standingorder"/><soy:import packageName="expressco"/></tmpl:put>
 
   <tmpl:put name='soSelected'>selected</tmpl:put>
 
