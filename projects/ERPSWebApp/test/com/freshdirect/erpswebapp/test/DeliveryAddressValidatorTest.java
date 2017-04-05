@@ -1,19 +1,13 @@
 package com.freshdirect.erpswebapp.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.List;
-import java.util.Map;
 
-import javax.ejb.EJBException;
+import mockit.Mock;
+import mockit.MockUp;
 
 import org.junit.Test;
 
 import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.dataloader.CSVFileParser;
 import com.freshdirect.fdlogistics.services.ILogisticsService;
 import com.freshdirect.fdlogistics.services.impl.FDLogisticsService;
 import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
@@ -21,8 +15,6 @@ import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.taglib.fdstore.DeliveryAddressValidator;
-import mockit.Mock;
-import mockit.MockUp;
 
 public class DeliveryAddressValidatorTest {
 	
@@ -144,7 +136,7 @@ public class DeliveryAddressValidatorTest {
 		}
 	}
 	
-	@Test
+/*	@Test
 	public void testValidateAddressWithScrub() throws FDResourceException {		
 		
 		new MockUp<FDDeliveryManager>() {
@@ -190,6 +182,6 @@ public class DeliveryAddressValidatorTest {
 		assertEquals(-75.274421, validator.getScrubbedAddress().getLongitude(),new Double(0.1));
 		assertEquals(39.948805, validator.getScrubbedAddress().getLatitude(),new Double(0.1));
 	}
-
+*/
 
 }
