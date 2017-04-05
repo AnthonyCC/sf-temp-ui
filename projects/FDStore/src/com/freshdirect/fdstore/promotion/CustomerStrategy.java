@@ -12,7 +12,6 @@ import java.util.StringTokenizer;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.ErpPaymentMethodI;
-import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.delivery.EnumComparisionType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.FDResourceException;
@@ -20,20 +19,6 @@ import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.framework.util.StringUtil;
-import com.freshdirect.payment.BINCache;
-import com.freshdirect.payment.gateway.BillingInfo;
-import com.freshdirect.payment.gateway.CreditCard;
-import com.freshdirect.payment.gateway.Gateway;
-import com.freshdirect.payment.gateway.GatewayType;
-import com.freshdirect.payment.gateway.Merchant;
-import com.freshdirect.payment.gateway.PaymentMethod;
-import com.freshdirect.payment.gateway.Request;
-import com.freshdirect.payment.gateway.Response;
-import com.freshdirect.payment.gateway.TransactionType;
-import com.freshdirect.payment.gateway.impl.BillingInfoFactory;
-import com.freshdirect.payment.gateway.impl.GatewayFactory;
-import com.freshdirect.payment.gateway.impl.PaymentMethodFactory;
-import com.freshdirect.payment.gateway.impl.RequestFactory;
 
 public class CustomerStrategy implements PromotionStrategyI {
 	private Set<String> cohorts;
@@ -117,12 +102,9 @@ public class CustomerStrategy implements PromotionStrategyI {
 				if(paymentTypes.contains(EnumCardType.DEBIT)) {
 					
 					if(currentCardType.equals(EnumCardType.VISA)||currentCardType.equals(EnumCardType.MC)) {
-						BINCache binCache=BINCache.getInstance();
 						String profileId=cart.getPaymentMethod().getProfileID();
-						String accNum="";
 						if(!StringUtil.isEmpty(profileId) /*&& StringUtil.isEmpty(cart.getPaymentMethod().getAccountNumber())*/) {
-							accNum=getAccountNumber(profileId);
-							if(!binCache.isDebitCard(accNum, currentCardType)) {
+							if(!cart.getPaymentMethod().isDebitCard()) {
 								context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_PAYMENT_SELECTED.getErrorCode());
 								return DENY;
 							}
@@ -214,25 +196,7 @@ public class CustomerStrategy implements PromotionStrategyI {
 		return ALLOW;
 	}
 
-	private String getAccountNumber(String profileId) {
-		String accNum="";
-		Request _request=RequestFactory.getRequest(TransactionType.GET_PROFILE);
-		CreditCard cc=PaymentMethodFactory.getCreditCard();
-		cc.setBillingProfileID(profileId);
-		BillingInfo billinginfo=BillingInfoFactory.getBillingInfo(Merchant.FRESHDIRECT,cc);
-		_request.setBillingInfo(billinginfo);
-		Gateway gateway=GatewayFactory.getGateway(GatewayType.PAYMENTECH);
-		try {
-			Response _response=gateway.getProfile(_request);
-			PaymentMethod pm=_response.getBillingInfo()!=null?_response.getBillingInfo().getPaymentMethod():null;
-			if(pm!=null) {
-				accNum=pm.getAccountNumber();
-			}
-		} catch (ErpTransactionException e) {
-				
-		}
-		return accNum;
-	}
+	
 	public boolean evaluateOrderType(EnumOrderType orderType){
 		if(allowedOrderTypes != null && allowedOrderTypes.size() > 0){
 			for(Iterator<EnumOrderType> it = allowedOrderTypes.iterator();it.hasNext();){
@@ -412,12 +376,9 @@ public class CustomerStrategy implements PromotionStrategyI {
 					if(cardType.equals(EnumCardType.VISA)||cardType.equals(EnumCardType.MC)) {
 						
 						String profileId=paymentMethod.getProfileID();
-						String accNum="";
 								
-						if(!StringUtil.isEmpty(profileId)) {
-							accNum=getAccountNumber(profileId);
-							BINCache binCache=BINCache.getInstance();
-							if(!binCache.isDebitCard(accNum, cardType)) {
+						if(!StringUtil.isEmpty(profileId)) {							
+							if(!paymentMethod.isDebitCard()) {
 								isEligible = false;
 						    }
 						} else {
