@@ -357,7 +357,8 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 	 */
 	public PayloadI loadRowPayload(Connection conn, PrimaryKey pk) throws SQLException {
 		VersionedPrimaryKey vpk = (VersionedPrimaryKey) pk;
-		PreparedStatement ps = conn.prepareStatement("SELECT SAP_ID, skucode, BASE_UNIT, DESCRIPTION, CHAR_QUANTITY, CHAR_SALESUNIT, UPC, ALCOHOLIC_CONTENT, TAXABLE, daysfresh, MATERIAL_TYPE, APPROVAL_STATUS, TAX_CODE, MATERIAL_GROUP FROM ERPS.MATERIAL WHERE ID = ? AND VERSION = ?");
+		PreparedStatement ps = conn.prepareStatement("SELECT M.SAP_ID, M.skucode, M.BASE_UNIT, M.DESCRIPTION, M.CHAR_QUANTITY, M.CHAR_SALESUNIT, M.UPC, M.ALCOHOLIC_CONTENT, M.TAXABLE," +
+				" P.DAYSFRESH, M.MATERIAL_TYPE, M.APPROVAL_STATUS, M.TAX_CODE, M.MATERIAL_GROUP FROM ERPS.MATERIAL M, ERPS.PLANT_MATERIAL P WHERE M.id=P.MAT_ID AND M.ID = ? AND M.VERSION = ?");
 		ps.setString(1, vpk.getId());
 		ps.setInt(2, vpk.getVersion());
 		
