@@ -88,22 +88,23 @@ var FreshDirect = FreshDirect || {};
 		populateCmData('variantId',event);
 	});
 
-	$(document.body).on('click','[data-cmcarouselinfo]',function(event){
+	$(document.body).on('click','[manual_cm_sp]',function(event){
     if($(event.currentTarget).closest('[carousel-page-number]').length > 0) {
   		var coremetricsItem = [],
           dataString,
           pageNumber = $(event.currentTarget).closest('[carousel-page-number]')[0].attributes['carousel-page-number'].value,
-          carouselInfo = $(event.currentTarget).closest('[data-cmcarouselinfo]')[0].attributes['data-cmcarouselinfo'].value.split(',');
+          carouselInfo = $(event.currentTarget).closest('[manual_cm_sp]')[0].attributes['manual_cm_sp'].value.split(',');
 
-      if(carouselInfo.length > 1) {
-        dataString = carouselInfo[1] + '-_-' + pageNumber + '-_-' + carouselInfo[0];
+      if(carouselInfo.length > 2) {
+        dataString = carouselInfo[2] + '-_-' + 'Pane' + pageNumber + '-_-' + carouselInfo[1];
       } else {
-        dataString = '-_-' + pageNumber + '-_-' + carouselInfo[0];
+        dataString = '-_-' + 'Pane' + pageNumber + '-_-' + carouselInfo[1];
       }
 
       coremetricsItem.push('cmCreateManualLinkClickTag');
-      coremetricsItem.push(event.currentTarget.baseURI);
-      coremetricsItem.push(dataString);
+      coremetricsItem.push(event.currentTarget.baseURI + '?cm_sp=' + encodeURI(dataString));
+      coremetricsItem.push('');
+      coremetricsItem.push('PRODUCT: ' + carouselInfo[1] + '(' + carouselInfo[0] + ')');
       coremetrics.playOneItem(coremetricsItem);
     }
 	});

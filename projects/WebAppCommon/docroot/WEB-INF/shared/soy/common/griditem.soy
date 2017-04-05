@@ -333,8 +333,8 @@
 	{if $hookLogicBeaconImpression} data-hooklogic-beacon-impress="{$hookLogicBeaconImpression}"{/if}
 >
 	<div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
-	  <a href="{$productPageUrl}" class="portrait-item-image-link" data-cmcarouselinfo="
-    {if $productName}{$productName}{/if}
+	  <a href="{$productPageUrl}" class="portrait-item-image-link" manual_cm_sp="
+    {$productId},{if $productName}{$productName}{/if}
     {if $moduleData and $moduleData.moduleId},{$moduleData.moduleId}{else},{/if}
     {if $moduleData and $moduleData.moduleTitle}-_-{$moduleData.moduleTitle}{/if}
     {if $moduleData and $moduleData.moduleTitleTextBanner}-_-{$moduleData.moduleTitleTextBanner}{/if}
@@ -357,8 +357,8 @@
 		{if $discontinued}
 			<b>{$brandName}</b> <div class="product-name-no-brand">{$productNameNoBrand}</div>
 		{else}
-			<a href="{$productPageUrl}" class="portrait-item-header-name" data-cmcarouselinfo="
-      {if $productName}{$productName}{/if}
+			<a href="{$productPageUrl}" class="portrait-item-header-name" manual_cm_sp="
+      {$productId},{if $productName}{$productName}{/if}
       {if $moduleData and $moduleData.moduleId},{$moduleData.moduleId}{else},{/if}
       {if $moduleData and $moduleData.moduleTitle}-_-{$moduleData.moduleTitle}{/if}
       {if $moduleData and $moduleData.moduleTitleTextBanner}-_-{$moduleData.moduleTitleTextBanner}{/if}
@@ -370,8 +370,8 @@
 		{if $discontinued}
 			{$productName}
 		{else}
-			<a href="{$productPageUrl}" class="portrait-item-header-name" data-cmcarouselinfo="
-      {if $productName}{$productName}{/if}
+			<a href="{$productPageUrl}" class="portrait-item-header-name" manual_cm_sp="
+      {$productId},{if $productName}{$productName}{/if}
       {if $moduleData and $moduleData.moduleId},{$moduleData.moduleId}{else},{/if}
       {if $moduleData and $moduleData.moduleTitle}-_-{$moduleData.moduleTitle}{/if}
       {if $moduleData and $moduleData.moduleTitleTextBanner}-_-{$moduleData.moduleTitleTextBanner}{/if}
