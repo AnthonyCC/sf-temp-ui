@@ -2,6 +2,7 @@ package com.freshdirect.webapp.taglib.coremetrics;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.content.ProductModel;
@@ -55,10 +56,10 @@ public class CmProductViewTag extends AbstractCmTag {
         HttpServletRequest request = getRequest();
 
         String referer = request.getHeader("referer");
-        String baseURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+        int refererUriSeparatorLocation = StringUtils.ordinalIndexOf(referer, "/", 3);
 
         try {
-            String refererURI = referer.replace(baseURL, "");
+            String refererURI = referer.substring(refererUriSeparatorLocation);
 
             QueryParameterCollection qv = QueryParameterCollection.decode(getRequest().getHeader("referer"));
 
