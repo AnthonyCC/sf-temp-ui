@@ -40,7 +40,7 @@ var FreshDirect = FreshDirect || {};
       value: function (e) {
         var moduleId = e.currentTarget.getAttribute('data-moduleId');
         fd.common.dispatcher.signal('server',{
-    			url:'/api/modulehandling/load?moduleId=' + moduleId
+    			url:'/api/modulehandling/load?moduleId=' + moduleId + '&viewAll=true'
     		});
         var $t = e && $(e.currentTarget) || $(document.body);
 
