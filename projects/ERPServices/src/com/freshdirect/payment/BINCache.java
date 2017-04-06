@@ -21,10 +21,12 @@ import org.apache.log4j.Logger;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.ejb.BINInfoManagerHome;
 import com.freshdirect.payment.ejb.BINInfoManagerSB;
+import com.freshdirect.payment.service.FDECommerceService;
 
 
 public class BINCache {
@@ -58,9 +60,13 @@ public class BINCache {
 			synchronized (reloadSync) {
 				LOGGER_LOADER.info("reloading BIN cache");
 				try {
+					if(FDStoreProperties.isStorefront2_0Enabled()){
+						binInfoMap=FDECommerceService.getInstance().getActiveBINs();
+					}else{
 					@SuppressWarnings("unchecked")
 					BINInfoManagerSB binInfoManagerSB = lookupBINInfoManagerHome().create();
 					binInfoMap=(NavigableMap<Long, BINInfo>) binInfoManagerSB.getActiveBINs();
+					}
 				} catch (FDResourceException e) {
 					LOGGER_LOADER.error("failed to reload / initialize all BIN cache", e);
 				} catch (RemoteException e) {
