@@ -28,8 +28,6 @@ public class DeliveryAddressValidatorTest {
 			}
 		};
 		
-		
-		
 		new MockUp<LogisticsServiceLocator>() {
 			
 			@Mock
@@ -58,7 +56,7 @@ public class DeliveryAddressValidatorTest {
 			ActionResult actionResult = new ActionResult();
 			
 			
-			boolean isAddressValid = validator.validateAddress(actionResult);	
+			boolean isAddressValid = validator.validateAddressWithoutScrub(actionResult);	
 			
 
 			System.out.println("isAddressValid:"+isAddressValid);
@@ -109,7 +107,7 @@ public class DeliveryAddressValidatorTest {
 			ActionResult actionResult = new ActionResult();
 			
 			
-			boolean isAddressValid = validator.validateAddress(actionResult);
+			boolean isAddressValid = validator.validateAddressWithoutScrub(actionResult);
 			
 			System.out.println("isAddressValid:"+isAddressValid);
 			

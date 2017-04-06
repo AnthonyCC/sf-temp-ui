@@ -55,14 +55,22 @@
 /**
  * @param cats - cats we're treating as "sections"
  * @param? limit
+ * @param? filterLabels
  * @param? mobWeb
  */
 {template .staffPicksContent autoescape="false"}
 	{let $l: $limit or $limit == 0 ? $limit : 25 /}
-	
-	<div class="browseContent">
+	<div class="browseContent srch">
+	<div class="browse-filtertags">
+					{if $filterLabels}
+						{call browse.filterTags}
+							{param filterLabels:$filterLabels.filterLabels /}
+						{/call}
+					{/if}
+				</div>			
 		{foreach $cat in keys($cats)}
-			<section class="staffpicks-cat noSubSections" data-erpcat-order="{index($cat)}">	
+			<section class="staffpicks-cat noSubSections" data-erpcat-order="{index($cat)}">
+			
 	 {if $cat == ''}         
         {else}
     <h2 class="staffpicks-cat-header last">{$cat}</h2>
@@ -77,5 +85,4 @@
 			</section>
 		{/foreach}
 	</div>
-	
 {/template}

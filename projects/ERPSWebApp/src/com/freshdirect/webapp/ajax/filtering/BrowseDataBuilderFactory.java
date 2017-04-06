@@ -1080,6 +1080,8 @@ public class BrowseDataBuilderFactory {
 		}
 		List<ParentData> orderedFilterLabels = reorderFilterLabels(browseData, filterLabels);
 		browseData.getSections().getFilterLabels().setFilterLabels(orderedFilterLabels);
+		//Added this as part of APPDEV-5920 staff picks sort bar implementation. We are setting the filter labels into the assortproducts map
+		browseData.getAssortProducts().getFilterLabels().setFilterLabels(orderedFilterLabels);
 	}
 	
 	private List<ParentData> reorderFilterLabels(BrowseDataContext browseDataContext, List<ParentData> filterLabels) {

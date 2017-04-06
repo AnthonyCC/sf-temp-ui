@@ -112,7 +112,9 @@ public class ContentCacheMethodInterceptor implements ContentCache {
 	private Object handle(MethodInvocation invocation) throws Throwable {
 		CmsRequestI request = (CmsRequestI) invocation.getArguments()[0];
 		Object response = invocation.proceed();
-		ContentCacheService.defaultService().invalidateContentNode(request.getNodes());
+		for (ContentNodeI node : request.getNodes()) {
+            ContentCacheService.defaultService().invalidateContentNodeWithRelatedNodes(node);
+        }
 		return response;
 	}
 

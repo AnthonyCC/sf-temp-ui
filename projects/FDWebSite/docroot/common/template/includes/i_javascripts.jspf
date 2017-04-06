@@ -3,6 +3,7 @@
 <%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
+<%@ page import='com.freshdirect.common.context.MasqueradeContext' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri="fd-features" prefix="features" %>
@@ -15,6 +16,10 @@
   <%-- Feature version switcher --%>
   <features:potato />
   <%-- TODO !!! --%>
+  <%
+  FDUserI gtm_user = (FDUserI)session.getAttribute(SessionName.USER);
+  if (gtm_user != null) {
+  %>
   <script type="text/javascript">
   (function () {
     window.FreshDirect = window.FreshDirect || {};
@@ -28,6 +33,9 @@
     fd.properties.isLightSignupEnabled = <%= FDStoreProperties.isLightSignupEnabled() ? "true" : "false" %>;
     fd.properties.isSocialLoginEnabled = <%= FDStoreProperties.isSocialLoginEnabled() ? "true" : "false" %>;
 
+    fd.gtm = fd.gtm || {};
+    fd.gtm.key = '<%= FDStoreProperties.getGoogleTagManagerKey() %>';
+
     <% 
     FDSessionUser jsUser = (FDSessionUser)session.getAttribute(SessionName.USER);
     if (jsUser != null) {
@@ -40,15 +48,73 @@
       }
       
       String zipCode = jsUser.getZipCode();
-      %>
+      String cohortName = jsUser.getCohortName();
+      MasqueradeContext jsMasqueradeContext = jsUser.getMasqueradeContext();
+    %>
     fd.user = {};
     fd.user.recognized = <%= sessionUserLevel == FDUserI.RECOGNIZED %>;
     fd.user.guest = <%= sessionUserLevel == FDUserI.GUEST %>;
     fd.user.isZipPopupUsed = <%= hideZipCheckPopup %>;
     fd.user.zipCode = '<%= zipCode %>';
+    fd.user.cohortName = '<%= cohortName %>';
+      <% if (jsMasqueradeContext != null) {%>
+        fd.user.masquerade = true;
+      <% } %>
     <% } %>
   }());
   </script>
+
+  <%-- Google Tag Manager login/signup events --%>
+  <script>
+
+    var dataLayer = window.dataLayer || [];
+
+    dataLayer.push({
+      'config-ga-key': '<%= FDStoreProperties.getGoogleAnalyticsKey() %>',
+      'config-ga-domain': '<%= FDStoreProperties.getGoogleAnlayticsDomain() %>'
+    });
+
+    var gtm_userdata = {
+      'user-customer-type': '<%= gtm_user.getSelectedAddress().getServiceType() %>',
+      'user-ct-status': '<%= gtm_user.isChefsTable() %>',
+      'user-del-county':'<%= gtm_user.getDefaultCounty() %>',
+      'user-marketing-segment': '<%= gtm_user.getMarketingPromo() %>',
+      'user-order-count': '<%= gtm_user.getAdjustedValidOrderCount() %>'
+    };
+
+    <%
+    if (gtm_user.getDlvPassInfo() != null && gtm_user.getDlvPassInfo().getStatus() != null) {
+    %>
+    gtm_userdata['user-dp-status'] = '<%= gtm_user.getDlvPassInfo().getStatus().getDisplayName() %>';
+    <%
+    }
+    %>
+
+    <%
+    if (gtm_user.getIdentity() != null && gtm_user.getIdentity().getErpCustomerPK() != null) {
+    %>
+    gtm_userdata['user-customer-id'] = '<%= gtm_user.getIdentity().getErpCustomerPK() %>';
+    <%
+    }
+    %>
+
+    dataLayer.push(gtm_userdata);
+
+    <% if (gtm_user.hasJustLoggedIn()) { %>
+    // user logged in
+    dataLayer.push({
+      'event': 'user-login'
+    });
+    <% } %>
+
+    <% if (gtm_user.hasJustSignedUp()) { %>
+    // user logged in
+    dataLayer.push({
+      'event': 'user-signup'
+    });
+    <% } %>
+  </script>
+  <% } %>
 
 	<jwr:script src="/fdlibs.js" useRandomParam="false" />
 	<script src="/assets/javascript/jquery/corner/jquery.corner.js" type="text/javascript" language="javascript"></script>
@@ -112,22 +178,6 @@
 	<fd:javascript src="/assets/javascript/rounded_corners.inc.js"/>
 	<fd:javascript src="/assets/javascript/FD_PromoEligibility.js"/>
 
-	<%
-		/* Google Analytics Pixel */
-		SemPixelModel semPixel_GA = FDSemPixelCache.getInstance().getSemPixel("GoogleAnalytics");
-		semPixel_GA.setParam("GAKey", FDStoreProperties.getGoogleAnalyticsKey());
-		semPixel_GA.setParam("GADomain", FDStoreProperties.getGoogleAnlayticsDomain());
-		if (FDStoreProperties.isGoogleAnalyticsUniversal()) { semPixel_GA.setParam("universal", "true"); }
-	%>
-	<%
-		if(request.getRequestURI().endsWith("referee_signup.jsp") || request.getRequestURI().indexOf("invite") != -1) {
-			//add param so ftl can do different logic
-			semPixel_GA.setParam("onRaf", "true");
-		}
-	%>
-		<fd:SemPixelIncludeMedia pixelNames="GoogleAnalytics" />
-	<% /* Google Analytics Pixel */ %>
-
 	<fd:IncludeMedia name="/media/editorial/site_pages/javascript.html"/>
 	
 	<%
@@ -147,12 +197,5 @@
 		}
 	%>
 	
-	  <%-- Bazaarvoice --%>
-  
-  <% 
-  if(FDStoreProperties.isBazaarvoiceEnabled()){
-  	String bvapiUrl = FDStoreProperties.getBazaarvoiceBvapiUrl(); %>
-  	<script type="text/javascript" src="<%= bvapiUrl %>"></script>
-  <% } %>
 <script src="/assets/javascript/jquery/jquery_validate/jquery.validate.js"></script>
   

@@ -14,7 +14,7 @@
     </div>
     {if not $moduleData.hideModuleGroupViewAllButton}
       <div class="view-all" tabindex="-1">
-        <a href="{if $moduleData.moduleGroupViewAllButtonLink}{$moduleData.moduleGroupViewAllButtonLink}{/if}" tabindex="-1" class="cssbutton grey full-transparent flat arrowbutton" cm-click="cmCreateElementTag,View All,Home Page-_-Module Group{if $moduleData.moduleGroupViewAllButtonLink}-_-{$moduleData.moduleGroupViewAllButtonLink}{/if}{if $moduleData.moduleGroupTitle}-_-{$moduleData.moduleGroupTitle}{/if}{if $moduleData.moduleGroupTitleTextBanner}-_-{$moduleData.moduleGroupTitleTextBanner}{/if}">view all
+        <a href="{if $moduleData.moduleGroupViewAllButtonLink}{$moduleData.moduleGroupViewAllButtonLink}{/if}" tabindex="-1" class="cssbutton small green arrowbutton" data-viewallinfo="Home Page Module Group,{if $moduleData.moduleGroupViewAllButtonLink}{$moduleData.moduleGroupViewAllButtonLink}{/if}">view all
           <div class="offscreen">{if $moduleData.moduleGroupTitle}{$moduleData.moduleGroupTitle}{/if}</div>
         </a>
       </div>

@@ -565,6 +565,7 @@ public class CartDataService {
             cartData.setModifyCartData(isModifyOrderMode(session));
             cartData.setModifyOrder(cartData.getModifyCartData().isModifyOrderEnabled());
             cartData.setErrorMessage(null);
+            if(user.getCurrentStandingOrder()!=null)
             if (!StandingOrderHelper.isSO3StandingOrder(user)) {
                 cartData.setWarningMessage(AvailabilityService.defaultService().translateWarningMessage(request.getParameter("warning_message"), user));
             }
@@ -573,6 +574,7 @@ public class CartDataService {
             cartData.setHardLimit(StandingOrderHelper.formatDecimalPrice(ErpServicesProperties.getStandingOrderHardLimit()));
 
             cartData.setCouponMessage(populateCouponMessage(user, cartLines));
+			cartData.setDeliveryBegins(StandingOrderHelper.isSO3StandingOrder(user)?StandingOrderHelper.getDeliveryBeginsInfo(user):null);
             
             //APPDEV-5516 If the property is true, set the Donation Carousel to Cart Data, else fall back to Product Sample Carousel
             if(FDStoreProperties.isPropDonationProductSamplesEnabled()){

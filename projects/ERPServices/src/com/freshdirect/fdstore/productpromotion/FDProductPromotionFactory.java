@@ -28,8 +28,8 @@ public class FDProductPromotionFactory {
 	
 	private Map<String, Map<ZoneInfo,List<FDProductPromotionInfo>>> promotionMap = new LinkedHashMap<String, Map<ZoneInfo,List<FDProductPromotionInfo>>>();
 	private Date presPickLastPublished;
-//	private Date productsAssortmentLastPublished;
-//	private Date currentTime;
+	private Date productsAssortmentLastPublished;
+	private Date currentTime;
 	
 	private ExpiringReference< Map<ZoneInfo,List<FDProductPromotionInfo>>> presPickPromotion = new ExpiringReference<Map<ZoneInfo,List<FDProductPromotionInfo>>>(5 * 60 * 1000) {
 		protected Map<ZoneInfo,List<FDProductPromotionInfo>> load() {
@@ -43,7 +43,8 @@ public class FDProductPromotionFactory {
 				Map<ZoneInfo,List<FDProductPromotionInfo>> productPromoInfoMap = null;
 				if(null !=presPickLastPublished){
 					productPromoInfoMap = ProductPromotionInfoManager.getAllProductsByType(EnumProductPromotionType.PRESIDENTS_PICKS.getName(),presPickLastPublished);					
-				}else{
+				}
+				 else{
 					loadPromotions();
 				}
 				presPickLastPublished = currentTime;
@@ -55,12 +56,13 @@ public class FDProductPromotionFactory {
 		}
 	};
 	
-	/*private ExpiringReference< Map<String,List<FDProductPromotionInfo>>> productsAssortmentPromotion = new ExpiringReference<Map<String,List<FDProductPromotionInfo>>>(1 * 60 * 1000) {
-		protected Map<String,List<FDProductPromotionInfo>> load() {
+	//Uncommented the code as part of APPDEV-5988 Staff Picks Dynamic Id
+	private ExpiringReference< Map<ZoneInfo,List<FDProductPromotionInfo>>>  productsAssortmentPromotion = new ExpiringReference< Map<ZoneInfo,List<FDProductPromotionInfo>>> (1 * 60 * 1000) {
+		protected Map<ZoneInfo, List<FDProductPromotionInfo>> load() {
 			try {
 				LOGGER.info("REFRESHING PRODUCTS ASSORTMENT PROMOTION FOR ANY NEW PROMOTIONS FROM LAST MODIFIED TIME "+productsAssortmentLastPublished);				
 				Date currentTime = new Date();
-				Map<String,List<FDProductPromotionInfo>> productPromoInfoMap = null;
+				Map<ZoneInfo, List<FDProductPromotionInfo>> productPromoInfoMap = null;
 				if(null !=productsAssortmentLastPublished){
 					productPromoInfoMap = ProductPromotionInfoManager.getAllProductsByType(EnumProductPromotionType.PRODUCTS_ASSORTMENTS.getName(),productsAssortmentLastPublished);					
 				}else{
@@ -73,7 +75,7 @@ public class FDProductPromotionFactory {
 				throw new FDRuntimeException(ex);
 			}
 		}
-	};*/
+	};
 	
 	private FDProductPromotionFactory() {
 		
@@ -88,10 +90,11 @@ public class FDProductPromotionFactory {
 			if(null !=promoInfos && !promoInfos.isEmpty()){
 				this.promotionMap.put(EnumProductPromotionType.PRESIDENTS_PICKS.getName(),promoInfos);
 			}
-			/*promoInfos = ProductPromotionInfoManager.getAllProductsByType(EnumProductPromotionType.PRODUCTS_ASSORTMENTS.getName());
+			//Uncommented the code as part of APPDEV-5988 Staff Picks Dynamic Id
+			promoInfos = ProductPromotionInfoManager.getAllProductsByType(EnumProductPromotionType.PRODUCTS_ASSORTMENTS.getName());
 			if(null !=promoInfos && !promoInfos.isEmpty()){
 				this.promotionMap.put(EnumProductPromotionType.PRODUCTS_ASSORTMENTS.getName(),promoInfos);
-			}*/
+			}
 		} catch (FDResourceException ex) {
 			LOGGER.error("Failed to load product promotions", ex);
 		}
@@ -113,10 +116,10 @@ public class FDProductPromotionFactory {
 		if(null !=promoInfos && !promoInfos.isEmpty()){
 			this.promotionMap.put(EnumProductPromotionType.PRESIDENTS_PICKS.getName(),promoInfos);
 		}
-		/*promoInfos = this.productsAssortmentPromotion.get();
+		promoInfos = this.productsAssortmentPromotion.get();
 		if(null !=promoInfos && !promoInfos.isEmpty()){
 			this.promotionMap.put(EnumProductPromotionType.PRODUCTS_ASSORTMENTS.getName(),promoInfos);
-		}*/
+		}
 		return this.promotionMap;
 	}
 	
@@ -139,9 +142,10 @@ public class FDProductPromotionFactory {
 		if(EnumProductPromotionType.PRESIDENTS_PICKS.equals(type)){
 			presPickPromotion.forceRefresh();
 		}
-		/*if(EnumProductPromotionType.PRODUCTS_ASSORTMENTS.equals(type)){
+		//Uncommented the code as part of APPDEV-5988 Staff Picks Dynamic Id
+		if(EnumProductPromotionType.PRODUCTS_ASSORTMENTS.equals(type)){
 			productsAssortmentPromotion.forceRefresh();
-		}*/
+		}
 	}	
 	
 	/*public void populateSkus(FDProductPromotion fdProductPromotion){

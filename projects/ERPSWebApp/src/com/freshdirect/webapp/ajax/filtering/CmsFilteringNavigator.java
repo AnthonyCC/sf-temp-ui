@@ -259,8 +259,9 @@ public class CmsFilteringNavigator {
             case STAFF_PICKS:
                 queryString.append("id=").append(id);
                 queryString.append("&");
-                queryString.append("picksId=").append(picksId);
-                queryString.append("&");
+                //Commented as part of APPDEV 5988 Staff Picks Dynamic Picks ID
+                /*queryString.append("picksId=").append(picksId); 
+                queryString.append("&");*/
                 break;
             case SEARCH:
                 queryString.append("searchParams=").append(searchParams);
@@ -272,7 +273,7 @@ public class CmsFilteringNavigator {
             default:
                 break;
         }
-        if (!FilteringFlowType.PRES_PICKS.equals(pageType) || (FilteringFlowType.PRES_PICKS.equals(pageType) && FDStoreProperties.isPresidentPicksPagingEnabled())) {
+        if (!FilteringFlowType.PRES_PICKS.equals(pageType) || (FilteringFlowType.STAFF_PICKS.equals(pageType)) || (FilteringFlowType.PRES_PICKS.equals(pageType) && FDStoreProperties.isPresidentPicksPagingEnabled())) {      	
             queryString.append("pageSize=").append(pageSize);
             queryString.append("&");
             queryString.append("all=").append(all);

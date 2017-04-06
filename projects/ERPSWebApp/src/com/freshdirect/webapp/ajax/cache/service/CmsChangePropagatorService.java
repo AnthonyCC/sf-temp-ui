@@ -36,16 +36,22 @@ public class CmsChangePropagatorService {
         if (contentKeys != null) {
             LOGGER.info("Receive CMS content keys: " + contentKeys);
 
-            Set<ContentNodeI> contentNodes = decodeToContentNodes(contentKeys, draftContext);
+            Set<ContentNodeI> contentNodes = new HashSet<ContentNodeI>();
+            for (String contentKey : contentKeys) {
+                ContentKey key = ContentKey.getContentKey(contentKey);
+                ContentCacheService.defaultService().invalidateContentNode(key);
+                ContentFactory.getInstance().removeContentNodeCaches(key);
+
+                ContentNodeI node = cmsManager.getContentNode(key, draftContext);
+                if (node != null) {
+                    ContentCacheService.defaultService().invalidateContentNodeWithRelatedNodes(node);
+                    contentNodes.add(node);
+                } else {
+                    LOGGER.warn("Content node not found " + contentKey);
+                }
+            }
 
             LOGGER.debug(".. transformed to " + contentNodes.size() + " nodes");
-
-            // invalidate content node cache
-            ContentCacheService.defaultService().invalidateContentNode(contentNodes);
-
-            for (ContentNodeI contentNode : contentNodes) {
-                ContentFactory.getInstance().removeContentNodeCaches(contentNode.getKey());
-            }
 
             // reindex search service
             // @see ContentIndexerService
@@ -59,20 +65,6 @@ public class CmsChangePropagatorService {
         } else {
             LOGGER.warn("No keys captured");
         }
-    }
-
-    private Set<ContentNodeI> decodeToContentNodes(Set<String> contentKeys, DraftContext draftContext) {
-        Set<ContentNodeI> contentNodes = new HashSet<ContentNodeI>();
-        for (String contentKeyText : contentKeys) {
-            ContentKey contentKey = ContentKey.getContentKey(contentKeyText);
-            ContentNodeI node = cmsManager.getContentNode(contentKey, draftContext);
-            if (node != null) {
-                contentNodes.add(node);
-            } else {
-                LOGGER.warn("Content node not found " + contentKeyText);
-            }
-        }
-        return contentNodes;
     }
 
 }

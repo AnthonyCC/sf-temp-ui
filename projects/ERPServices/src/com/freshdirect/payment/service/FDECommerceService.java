@@ -169,9 +169,10 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			String inputJson = buildRequest(request);
 			@SuppressWarnings("unchecked")
 			Response<Map<String,List<String>>> response = this.postData(inputJson, getFdCommerceEndPoint(SAP_PRODUCT_FAMILY_LOADER_GET_SKUCODE_BYPRODFLY_API), Response.class);
-			if(response != null && response.getData() != null){
-				return response.getData();
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
 			}
+			return response.getData();
 		} catch (FDPayPalServiceException e) {
 			LOGGER.error(e.getMessage());
 			throw new FDResourceException(e, "Unable to process the request.");
@@ -179,11 +180,10 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			LOGGER.error(e.getMessage());
 			throw new FDResourceException(e, "Unable to process the request.");
 		}
-		return null;
 	}
 
 	@Override
-	public String loadData(List<ErpProductFamilyModel> productFamilyList)
+	public void loadData(List<ErpProductFamilyModel> productFamilyList)
 			throws FDResourceException {
 		try {
 			Request<List<ErpProductFamilyModel>> request = new Request<List<ErpProductFamilyModel>>();
@@ -191,8 +191,8 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			String inputJson = buildRequest(request);
 			@SuppressWarnings("unchecked")
 			Response<String> response = this.postData(inputJson, getFdCommerceEndPoint(SAP_PRODUCT_FAMILY_LOADER_LOAD_API), Response.class);
-			if(response != null && response.getData() != null){
-				return response.getData();
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDPayPalServiceException e) {
 			LOGGER.error(e.getMessage());
@@ -201,7 +201,6 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			LOGGER.error(e.getMessage());
 			throw new FDResourceException(e, "Unable to process the request.");
 		}
-		return null;
 	}
 
 	public Map<ZoneInfo, List<FDProductPromotionInfo>> getAllProductsByType(

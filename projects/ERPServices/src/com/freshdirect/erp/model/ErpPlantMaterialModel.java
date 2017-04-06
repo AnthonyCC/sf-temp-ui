@@ -44,6 +44,9 @@ public class ErpPlantMaterialModel extends ErpModelSupport implements DurableMod
 	/** hide if its out of stock **/
 	private boolean hideOutOfStock;
 	
+
+	private String numberOfDaysFresh;
+	
 	
 	@Override
 	public void visitChildren(ErpVisitorI visitor) {
@@ -193,6 +196,14 @@ public class ErpPlantMaterialModel extends ErpModelSupport implements DurableMod
 		this.hideOutOfStock = hideOutOfStock;
 	}
 
+	
+	public String getNumberOfDaysFresh() {
+		return numberOfDaysFresh;
+	}
+
+	public void setNumberOfDaysFresh(String numberOfDaysFresh) {
+		this.numberOfDaysFresh = numberOfDaysFresh;
+	}
 	/**
 	 * @param plantId
 	 * @param kosherProduction
@@ -210,7 +221,7 @@ public class ErpPlantMaterialModel extends ErpModelSupport implements DurableMod
 	public ErpPlantMaterialModel(String plantId, boolean kosherProduction,
 			boolean platter, DayOfWeekSet blockedDays, EnumATPRule atpRule,
 			String rating, String days_in_house,
-			String sustainabilityRating,int leadTime, boolean hideOutOfStock) {
+			String sustainabilityRating,int leadTime, boolean hideOutOfStock, String numberOfDaysFresh) {
 		super();
 		this.plantId = plantId;
 		this.kosherProduction = kosherProduction;
@@ -222,6 +233,7 @@ public class ErpPlantMaterialModel extends ErpModelSupport implements DurableMod
 		this.sustainabilityRating = sustainabilityRating;
 		this.leadTime = leadTime;
 		this.hideOutOfStock = hideOutOfStock;
+		this.numberOfDaysFresh=numberOfDaysFresh;
 	}
 
 	/**
@@ -240,7 +252,7 @@ public class ErpPlantMaterialModel extends ErpModelSupport implements DurableMod
 				+ atpRule + ", rating=" + rating + ", days_in_house="
 				+ days_in_house + ", sustainabilityRating="
 				+ sustainabilityRating + ", leadTime=" + leadTime
-				+ ", hideOutOfStock=" + hideOutOfStock + "]";
+				+ ", hideOutOfStock=" + hideOutOfStock + ", numberOfDaysFresh=" + numberOfDaysFresh + "]";
 	}
 
 }

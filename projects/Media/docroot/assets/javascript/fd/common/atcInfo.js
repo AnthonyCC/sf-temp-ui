@@ -81,36 +81,6 @@ var FreshDirect = FreshDirect || {};
             product.removeClass("hasErrors");
           }
           
-          if (item.status === "SUCCESS"){
-              
-        	  /* Facebook Conversion Code for Add_to_Cart */
-        	!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-			n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-			n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-			t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
-			document,'script','//connect.facebook.net/en_US/fbevents.js');
-			// Insert Your Facebook Pixel ID below.
-			fbq('init', '1634670833479183');
-
-			fbq('track', 'AddToCart', {'value':'0.00','currency':'USD',
-				'content_name': $.QueryString["productId"] !== undefined ? "pdp": $.QueryString["pageType"]||"DEFAULT" ,
-				'content_ids':[item.itemId],
-				'content_type':'product'});
-          
-          
-    	  /* Pinterest Code for Add_to_Cart */
-          !function(e){if(!window.pintrk){window.pintrk=function(){window.pintrk.queue.push(Array.prototype.slice.call(arguments))};var
-  		n=window.pintrk;n.queue=[],n.version="3.0";var
-  		t=document.createElement("script");t.async=!0,t.src=e;var
-  		r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(t,r)}}("https://s.pinimg.com/ct/core.js");
-			// Insert Your Pinterest Pixel ID below.		
-			pintrk('load','2618512501957');
-			pintrk('track', 'addtocart', {'value':'0.00','currency':'USD',
-				'search_query': $.QueryString["productId"] !== undefined ? "pdp": $.QueryString["pageType"]||"DEFAULT" ,
-				'line_items':[item.itemId],
-				});
-        }
-          
           if (item.status === "SUCCESS" && product.attr('data-atcRemoveOnSuccess')) {
             product.remove();
             return;

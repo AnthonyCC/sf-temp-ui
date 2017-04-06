@@ -671,7 +671,8 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		}
 		if(address.getLongitude() == 0.0 
 				|| address.getLatitude() == 0.0)
-		getAddressGeoCode(address);
+			
+		getAddressGeoCode(address); 
 		
 		int validCount = user.getOrderHistory().getValidOrderCount();
 		if ( validCount < 1 ) {
@@ -1080,30 +1081,6 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		this.locationHandlerMode = locationHandlerMode;
 	}
 	
-	//Method used to check update delivery address
-	public boolean checkEditDeliveryAddress(TimeslotEvent event) throws FDResourceException {
-		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
-
-		// call common delivery address check
-		ErpAddressModel erpAddress = checkDeliveryAddressInForm(request, result, session);
-		if (erpAddress == null) {
-			LOGGER.debug("DeliveryAddressManipulator :: checkEditDeliveryAddress ==>> Error Address");
-			return false;
-		}
-		
-		String shipToAddressId = request.getParameter("updateShipToAddressId");
-//		boolean foundFraud = AddressUtil.updateShipToAddress(request.getSession(), result, user, shipToAddressId, erpAddress);
-		boolean foundFraud = updateShipToAddress(request.getSession(), result, user, shipToAddressId, erpAddress);
-		LOGGER.debug("DeliveryAddressManipulator :: checkEditDeliveryAddress ==>> foundFraud"+foundFraud);
-		return foundFraud;
-		
-	}
-	
-	private static boolean isFulfillmentContextChanged(ErpAddressModel address,	FDDeliveryZoneInfo zoneInfo) {
-		boolean isChanged=false;
-		return isChanged;
-		
-	}
 	
 	public static boolean updateShipToAddress(HttpSession session, ActionResult result, FDUserI user, String shipToAddressId, ErpAddressModel address) throws FDResourceException {
 		boolean foundFraud = AddressUtil.updateShipToAddress(session, result, user, shipToAddressId, address);

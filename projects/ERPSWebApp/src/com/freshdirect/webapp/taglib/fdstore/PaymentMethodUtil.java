@@ -589,72 +589,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
         
     }
     
-    
-    private static AddressModel scrubAddress(AddressModel address, ActionResult result,boolean isFiftyStateValidationReqd) throws FDResourceException {
-
-		try {
-			result.addError(address.getCity() == null || "".equals(address.getCity()),
-					EnumUserInfoName.BIL_CITY.getCode(), SystemMessageList.MSG_REQUIRED);
-
-			result.addError(address.getState() == null || "".equals(address.getState()) || !AddressUtil.validateState(address.getState()),
-			EnumUserInfoName.BIL_STATE.getCode(), SystemMessageList.MSG_UNRECOGNIZE_STATE);
-			
-			result.addError(address.getZipCode() == null || "".equals(address.getZipCode()),
-					 EnumUserInfoName.BIL_ZIPCODE.getCode(), SystemMessageList.MSG_ZIP_CODE);
-			
-			if(!AddressUtil.validateTriState(address.getState())){
-				//If its a non-tri state address there is no way validate it currently. Accept the address as is.
-				return address;
-			}
-			
-			// this work is temp stalled since qa got problem
-			//if(!isFiftyStateValidationReqd) return address;
-			
-			FDDeliveryAddressVerificationResponse response = FDDeliveryManager.getInstance().scrubAddress(address);
-			String apartment = address.getApartment();
-			
-			LOGGER.debug("Scrubbing response: " + response.getVerifyResult());
-			if (!EnumAddressVerificationResult.ADDRESS_OK.equals(response.getVerifyResult())) {
-			    
-			    result.addError(EnumAddressVerificationResult.NOT_VERIFIED.equals(response.getVerifyResult()),
-			    EnumUserInfoName.BIL_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
-			    
-			    result.addError(EnumAddressVerificationResult.ADDRESS_BAD.equals(response.getVerifyResult()),
-				EnumUserInfoName.BIL_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
-			    
-			    result.addError(EnumAddressVerificationResult.STREET_WRONG .equals(response.getVerifyResult()),
-				EnumUserInfoName.BIL_ADDRESS_1.getCode(), SystemMessageList.MSG_UNRECOGNIZE_ADDRESS);
-			    
-			    result.addError(EnumAddressVerificationResult.BUILDING_WRONG.equals(response.getVerifyResult()),
-				EnumUserInfoName.BIL_ADDRESS_1.getCode(), SystemMessageList.MSG_UNRECOGNIZE_STREET_NUMBER);
-			    
-			    result.addError(EnumAddressVerificationResult.APT_WRONG.equals(response.getVerifyResult()),
-				EnumUserInfoName.BIL_APARTMENT.getCode(),
-			    ((apartment == null) || (apartment.length() < 1)) ? SystemMessageList.MSG_APARTMENT_REQUIRED : SystemMessageList.MSG_UNRECOGNIZE_APARTMENT_NUMBER
-			    );
-			    
-			    result.addError(EnumAddressVerificationResult.ADDRESS_NOT_UNIQUE.equals(response.getVerifyResult()),
-				EnumUserInfoName.BIL_ADDRESS_1.getCode(), SystemMessageList.MSG_UNRECOGNIZE_ADDRESS);
-			    
-			    //
-			    // return original broken address is there was an error
-			    //
-			    return address;
-			}
-			//
-			// all's well, return fixed/cleaned corrected address
-			//
-			address.setAddress1(response.getAddress().getAddress1());
-			address.setAddress2(response.getAddress().getAddress2());
-			
-		} catch (FDInvalidAddressException e) {
-			//throw new FDResourceException(e);
-			//ignore the invalid address exception
-			LOGGER.warn(e.getMessage());
-		}
-		return address;
-    }
-    
+   
         
     /**
      * this method takes a credit card number and removes dashes or spaces and all non numeric numbers from it

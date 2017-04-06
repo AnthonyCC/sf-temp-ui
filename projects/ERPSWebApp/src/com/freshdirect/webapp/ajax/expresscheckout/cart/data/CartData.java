@@ -137,6 +137,9 @@ public class CartData extends AbstractCoremetricsResponse {
     
     private String hardLimit;
     
+    private String deliveryBegins;
+    
+    
     public String getErrorMessage() {
         return errorMessage;
     }
@@ -1151,6 +1154,14 @@ public class CartData extends AbstractCoremetricsResponse {
 	
 	public void setHardLimit(String hardLimit) {
 		this.hardLimit = hardLimit;
+	}
+
+	public String getDeliveryBegins() {
+		return deliveryBegins;
+	}
+
+	public void setDeliveryBegins(String deliveryBegins) {
+		this.deliveryBegins = deliveryBegins;
 	}
 
     

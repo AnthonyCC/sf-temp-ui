@@ -158,7 +158,7 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
         try {
             conn = getConnection();
 //            ps = conn.prepareStatement("select id, p.version, sku_code, unavailability_status, unavailability_date, unavailability_reason, date_created as pricing_date, rating, days_fresh, days_in_house,sustainability_rating from erps.product p, erps.history h where sku_code = ? and p.version=(select max(version) from erps.product where sku_code = ?) and h.version=p.version");
-            ps = conn.prepareStatement("select m.id, m.version, skucode, ms.unavailability_status, ms.unavailability_date, ms.unavailability_reason, h.date_created as pricing_date, mp.rating, m.daysfresh, mp.days_in_house, mp.sustainability_rating from erps.material m,erps.material_sales_area ms,erps.plant_material mp, erps.history h where skucode = ? and mp.mat_id=m.id and ms.mat_id=m.id and m.version=(select max(version) from erps.material where skucode = ?) and h.version=m.version");
+            ps = conn.prepareStatement("select m.id, m.version, skucode, ms.unavailability_status, ms.unavailability_date, ms.unavailability_reason, h.date_created as pricing_date, mp.rating, mp.daysfresh, mp.days_in_house, mp.sustainability_rating from erps.material m,erps.material_sales_area ms,erps.plant_material mp, erps.history h where skucode = ? and mp.mat_id=m.id and ms.mat_id=m.id and m.version=(select max(version) from erps.material where skucode = ?) and h.version=m.version");
             ps.setString(1, sku);
             ps.setString(2, sku);
             rs= ps.executeQuery();
@@ -235,7 +235,7 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
         try {
             conn = getConnection();
 //            PreparedStatement ps = conn.prepareStatement("select id, p.version, sku_code,  unavailability_status, unavailability_date, unavailability_reason, date_created as pricing_date, rating, days_fresh, days_in_house,sustainability_rating  from erps.product p, erps.history h where sku_code = ? and p.version = ? and h.version=p.version");
-            PreparedStatement ps = conn.prepareStatement("select m.id, m.version, skucode, ms.unavailability_status, ms.unavailability_date, ms.unavailability_reason, h.date_created as pricing_date, mp.rating, m.daysfresh, mp.days_in_house, mp.sustainability_rating from erps.material m,erps.material_sales_area ms,erps.plant_material mp, erps.history h where skucode = ? and mp.mat_id=m.id and ms.mat_id=m.id and m.version=(select max(version) from erps.material where skucode = ? and m.version=?) and h.version=m.version");
+            PreparedStatement ps = conn.prepareStatement("select m.id, m.version, skucode, ms.unavailability_status, ms.unavailability_date, ms.unavailability_reason, h.date_created as pricing_date, mp.rating, mp.daysfresh, mp.days_in_house, mp.sustainability_rating from erps.material m,erps.material_sales_area ms,erps.plant_material mp, erps.history h where skucode = ? and mp.mat_id=m.id and ms.mat_id=m.id and m.version=(select max(version) from erps.material where skucode = ? and m.version=?) and h.version=m.version");
 
             ps.setString(1, sku);
             ps.setInt(2, version);
@@ -358,7 +358,7 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
      */
     public PayloadI loadRowPayload(Connection conn, PrimaryKey pk) throws SQLException {
         //PreparedStatement ps = conn.prepareStatement("select sku_code, default_price, default_unit, unavailability_status, unavailability_date, unavailability_reason, date_created as pricing_date, rating,base_price, base_pricing_unit from erps.product p, erps.history h where id = ? and h.version=p.version");
-    	PreparedStatement ps = conn.prepareStatement("select skucode, ms.unavailability_status, ms.unavailability_date, ms.unavailability_reason, h.date_created as pricing_date, mp.rating,m.daysfresh, mp.days_in_house,mp.sustainability_rating from erps.material m,erps.material_sales_area ms,erps.plant_material mp, erps.history h where m.id = ? and h.version=m.version and mp.mat_id=m.id and ms.mat_id=m.id");
+    	PreparedStatement ps = conn.prepareStatement("select skucode, ms.unavailability_status, ms.unavailability_date, ms.unavailability_reason, h.date_created as pricing_date, mp.rating, mp.daysfresh, mp.days_in_house,mp.sustainability_rating from erps.material m,erps.material_sales_area ms,erps.plant_material mp, erps.history h where m.id = ? and h.version=m.version and mp.mat_id=m.id and ms.mat_id=m.id");
 
         ps.setString(1, pk.getId());
         ResultSet rs = ps.executeQuery();

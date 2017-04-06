@@ -37,6 +37,7 @@ public class ModuleHandlingServlet extends BaseJsonServlet {
             HttpSession session = request.getSession();
             String moduleContentKey = null;
             String moduleId = request.getParameter("moduleId");
+            boolean isViewAll = Boolean.parseBoolean(request.getParameter("viewAll"));
 
             if (moduleId != null) {
                 moduleContentKey = "Module:" + moduleId;
@@ -45,6 +46,10 @@ public class ModuleHandlingServlet extends BaseJsonServlet {
             ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || ((FDSessionUser) user).isEligibleForDDPP());
 
             ModuleContainerData result = ModuleHandlingService.getDefaultService().loadModuleforViewAll(moduleContentKey, user, session);
+
+            if (isViewAll) {
+                result.getConfig().get(0).setSourceType(ModuleSourceType.PRODUCT_LIST_MODULE.toString());
+            }
 
             Map<String, ModuleContainerData> moduleContent = new HashMap<String, ModuleContainerData>();
 

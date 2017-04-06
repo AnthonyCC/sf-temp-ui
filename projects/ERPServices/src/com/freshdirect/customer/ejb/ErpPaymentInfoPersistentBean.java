@@ -102,7 +102,7 @@ public class ErpPaymentInfoPersistentBean extends ErpReadOnlyPersistentBean {
 
 	public PrimaryKey create(Connection conn) throws SQLException {
 		//String id = this.getNextId(conn);
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENTINFO (SALESACTION_ID, NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP_CODE, COUNTRY, BILLING_REF, ON_FD_ACCOUNT, REFERENCED_ORDER, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, BANK_NAME, PROFILE_ID,ACCOUNT_NUM_MASKED, BEST_NUM_BILLING_INQ,EWALLET_ID,VENDOR_EWALLET_ID,EWALLET_TX_ID,PAYPAL_ACCOUNT_ID,DEVICE_ID) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENTINFO (SALESACTION_ID, NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP_CODE, COUNTRY, BILLING_REF, ON_FD_ACCOUNT, REFERENCED_ORDER, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, BANK_NAME, PROFILE_ID,ACCOUNT_NUM_MASKED, BEST_NUM_BILLING_INQ,EWALLET_ID,VENDOR_EWALLET_ID,EWALLET_TX_ID,PAYPAL_ACCOUNT_ID,DEVICE_ID,IS_DEBIT_CARD) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		int index = 1;
 		ps.setString(index++, this.getParentPK().getId());
 		ps.setString(index++, this.model.getName());
@@ -198,6 +198,7 @@ public class ErpPaymentInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		} else {
 			ps.setNull(index++, Types.VARCHAR);
 		}
+		ps.setString(index++, model.isDebitCard()?"D":"O");
 
 		try {
 			if (ps.executeUpdate() != 1) {
@@ -217,7 +218,7 @@ public class ErpPaymentInfoPersistentBean extends ErpReadOnlyPersistentBean {
 
 	public void load(Connection conn) throws SQLException {
 
-		PreparedStatement ps = conn.prepareStatement("SELECT NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP_CODE, COUNTRY, BILLING_REF, ON_FD_ACCOUNT, REFERENCED_ORDER, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, BANK_NAME, PROFILE_ID,ACCOUNT_NUM_MASKED,BEST_NUM_BILLING_INQ,EWALLET_ID,VENDOR_EWALLET_ID, EWALLET_TX_ID, PAYPAL_ACCOUNT_ID,DEVICE_ID FROM CUST.PAYMENTINFO WHERE SALESACTION_ID=?");
+		PreparedStatement ps = conn.prepareStatement("SELECT NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP_CODE, COUNTRY, BILLING_REF, ON_FD_ACCOUNT, REFERENCED_ORDER, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, BANK_NAME, PROFILE_ID,ACCOUNT_NUM_MASKED,BEST_NUM_BILLING_INQ,EWALLET_ID,VENDOR_EWALLET_ID, EWALLET_TX_ID, PAYPAL_ACCOUNT_ID,DEVICE_ID,IS_DEBIT_CARD FROM CUST.PAYMENTINFO WHERE SALESACTION_ID=?");
 
 		ResultSet rs = null;
 		try {
@@ -271,7 +272,8 @@ public class ErpPaymentInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		this.model.seteWalletTrxnId(rs.getString("EWALLET_TX_ID"));
 		this.model.setEmailID(rs.getString("PAYPAL_ACCOUNT_ID"));
 		this.model.setDeviceId(rs.getString("DEVICE_ID"));
-
+		String isDebitCard = rs.getString("IS_DEBIT_CARD");
+		this.model.setDebitCard((null!=isDebitCard && "D".equals(isDebitCard))?Boolean.TRUE:Boolean.FALSE);
 		this.unsetModified();
 	}
 

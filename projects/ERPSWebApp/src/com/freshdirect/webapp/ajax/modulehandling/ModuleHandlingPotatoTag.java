@@ -48,6 +48,8 @@ public class ModuleHandlingPotatoTag extends SimpleTagSupport {
         HttpSession session = ctx.getSession();
         FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 
+        LOGGER.info("Loading module container: " + moduleContainerId + " for user: " + user.getUserId() + " with cookie: " + user.getCookie());
+
         ModuleContainerData result = new ModuleContainerData();
         try {
             result = ModuleHandlingService.getDefaultService().loadModuleContainer(moduleContainerId, user, session);

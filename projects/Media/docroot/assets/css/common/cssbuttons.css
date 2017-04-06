@@ -404,7 +404,7 @@ span.cssbutton.notext[class*=" icon-"] {
 .cssbutton.arrowbutton:after {
   content: '\276F';
   position: relative;;
-  right: -15px;
+  right: -5px;
 }
 
 .cssbutton.disabled,

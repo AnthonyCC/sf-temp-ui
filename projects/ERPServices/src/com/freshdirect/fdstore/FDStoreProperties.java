@@ -532,6 +532,9 @@ public class FDStoreProperties {
 
     private static final String PROP_GOOGLE_ANALYTICS_DOMAIN = "fdstore.google.analytics.domain";
 
+    // APPDEV-6030 Google Tag Manager
+    private static final String PROP_GOOGLE_TAG_MANAGER_KEY = "fdstore.google.tagmanager.key";
+
     // APPDEV-2062 CS Hours.
     private static final String CUST_SERV_HOURS_DAYS = "fdstore.cust_serv_days";
     private static final String CUST_SERV_HOURS_HOURS = "fdstore.cust_serv_hours";
@@ -690,7 +693,7 @@ public class FDStoreProperties {
     private static final String PROP_BROWSE_PAGESIZE = "fdstore.browse.pagesize";
     private static final String PROP_PRES_PICKS_PAGESIZE = "fdstore.prespicks.pagesize";
     private static final String PROP_STAFF_PICKS_PAGESIZE = "fdstore.staffpicks.pagesize";
-    private static final String PROP_STAFF_PICKS_PICKID = "fdstore.staffpicks.picksid";
+  //  private static final String PROP_STAFF_PICKS_PICKID = "fdstore.staffpicks.picksid"; Commenting as part of APPDEV 5988
     private static final String PROP_STAFF_PICKS_FEATLIMIT = "fdstore.staffpicks.featlimit";
     private static final String PROP_NEWPRODUCTS_PAGESIZE = "fdstore.newproducts.pagesize";
     private static final String PROP_ECOUPON_PAGESIZE = "fdstore.ecoupon.pagesize";
@@ -1380,6 +1383,9 @@ public class FDStoreProperties {
         defaults.put(DEBUG_EVENT_ANALYSIS, "false");
         defaults.put(PROP_COUNTRY_INFO_REFRESH_INTERVAL, "5");
 
+        // APPDEV-6030 Google Tag Manager
+        defaults.put(PROP_GOOGLE_TAG_MANAGER_KEY, "GTM-KFMTML");
+
         // APPDEV-2072 google analytics key
         defaults.put(PROP_GOOGLE_ANALYTICS_KEY, "UA-20535945-18"); // default to an empty string
         defaults.put(PROP_GOOGLE_ANALYTICS_DOMAIN, ".freshdirect.com");
@@ -1542,8 +1548,8 @@ public class FDStoreProperties {
         defaults.put(PROP_MAX_XSELL_PRODS, "3");
         defaults.put(PROP_BROWSE_PAGESIZE, "30");
         defaults.put(PROP_PRES_PICKS_PAGESIZE, "30");
-        defaults.put(PROP_STAFF_PICKS_PAGESIZE, "30");
-        defaults.put(PROP_STAFF_PICKS_PICKID, "3000000060");
+        defaults.put(PROP_STAFF_PICKS_PAGESIZE, "99");
+      //  defaults.put(PROP_STAFF_PICKS_PICKID, "3000000060");
         defaults.put(PROP_STAFF_PICKS_FEATLIMIT, "4");
         defaults.put(PROP_NEWPRODUCTS_PAGESIZE, "30");
         defaults.put(PROP_ECOUPON_PAGESIZE, "30");
@@ -3289,6 +3295,11 @@ public class FDStoreProperties {
         return Integer.parseInt(get(PROP_COUNTRY_INFO_REFRESH_INTERVAL));
     }
 
+    // APPDEV-6030 Google Tag Manager
+    public static String getGoogleTagManagerKey() {
+        return get(PROP_GOOGLE_TAG_MANAGER_KEY);
+    }
+
     // APPDEV-2072 google analytics key
     public static String getGoogleAnalyticsKey() {
         return get(PROP_GOOGLE_ANALYTICS_KEY);
@@ -3770,9 +3781,9 @@ public class FDStoreProperties {
         return Integer.parseInt(get(PROP_STAFF_PICKS_PAGESIZE));
     }
 
-    public static String getStaffPicksPickId() {
+   /* public static String getStaffPicksPickId() {
         return get(PROP_STAFF_PICKS_PICKID);
-    }
+    }*/
 
     public static int getStaffPicksPageFeatLimit() {
         return Integer.parseInt(get(PROP_STAFF_PICKS_FEATLIMIT));

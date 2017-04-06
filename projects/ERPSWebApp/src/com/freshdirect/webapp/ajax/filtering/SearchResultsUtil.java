@@ -90,17 +90,18 @@ public class SearchResultsUtil {
 		List<ProductModel> promotionProducts = new ArrayList<ProductModel>();
 		CategoryModel category = (CategoryModel)ContentFactory.getInstance().getContentNode(nav.getId());
 		
-		String picksId = nav.getPicksId();
+	//	String picksId = nav.getPicksId();
 		boolean isPpPreview = (category==null ||null == category.getProductPromotionType() || null == nav.getPpPreviewId()) ? false : true;
 	    if(category!=null) {
 			if(!isPpPreview){
 				/* this needs to come from URL */
-				//promotionProducts = category.getAssortmentPromotionPageProducts(nav.getPicksId());  //category.getProducts();
-				//We are setting the picksId (The staff picks file upload id from SAP) here instead of passing the request parameter picksId along with its value
-				if(picksId==null || picksId.equals("")){
+				
+				//Commenting this code as part of APPDEV-5988 to allow for a dynamic picks id rather than fetching based of FDStoreProperties
+			/*	if(picksId==null || picksId.equals("")){
 			     	   nav.setPicksId(FDStoreProperties.getStaffPicksPickId());
 			        }
-				promotionProducts = category.getAssortmentPromotionPageProducts(nav.getPicksId());
+				promotionProducts = category.getAssortmentPromotionPageProducts(nav.getPicksId());*/
+				promotionProducts = category.getProducts();
 			}else{
 				promotionProducts = category.getPromotionPageProductsForPreview(nav.getPpPreviewId());
 			}
@@ -123,7 +124,6 @@ public class SearchResultsUtil {
 		
 		SearchResults searchResults = new SearchResults(searchProductResults, Collections.<FilteringSortingItem<Recipe>> emptyList(), Collections.<FilteringSortingItem<CategoryModel>> emptyList(), "", true);
 		searchResults.setDDPPProducts(featProds);
-	//	searchResults.setDDPPProducts(nonfeatProds);
 		Map<String,List<ProductModel>> assortProductMap=new HashMap<String, List<ProductModel>>();
 		assortProductMap.put("ASSORT_PRODUCTS", nonfeatProds);
 		searchResults.setAssortProducts(assortProductMap);

@@ -158,9 +158,9 @@ public class CategoryModel extends ProductContainer {
 					if("PRESIDENTS_PICKS_PREVIEW".equals(ppType)||"PRESIDENTS_PICKS".equals(ppType)){
 						ppType = "PRESIDENTS_PICKS";
 					}
-					/*if("PRODUCTS_ASSORTMENTS_PREVIEW".equals(ppType)||"PRODUCTS_ASSORTMENTS".equals(ppType)){
+					if("PRODUCTS_ASSORTMENTS_PREVIEW".equals(ppType)||"PRODUCTS_ASSORTMENTS".equals(ppType)){
 						ppType = "PRODUCTS_ASSORTMENTS";
-					}*/
+					}
 				}
 				if(!"E_COUPONS".equals(ppType)){
 					synchronized (FDProductPromotionManager.getInstance()) {					
@@ -339,7 +339,8 @@ public class CategoryModel extends ProductContainer {
 	
 	private final Map<ZoneInfo, ProductPromotionDataRef> productPromotionDataRefMap = new HashMap<ZoneInfo, ProductPromotionDataRef>();
 	
-	private final Map<String, ProductAssortmentPromotionDataRef> productAssortmentPromotionDataRefMap = new HashMap<String, ProductAssortmentPromotionDataRef>();
+	//private final Map<String, ProductAssortmentPromotionDataRef> productAssortmentPromotionDataRefMap = new HashMap<String, ProductAssortmentPromotionDataRef>();
+	private final Map<ZoneInfo, ProductPromotionDataRef> productAssortmentPromotionDataRefMap = new HashMap<ZoneInfo, ProductPromotionDataRef>();
 	
 	private String promotionPageType;
 	
@@ -1251,13 +1252,27 @@ public class CategoryModel extends ProductContainer {
 		return prodList;
 	}
 	
-	private synchronized boolean loadProductAssortmentPromotion(ZoneInfo zoneInfo, String promotionId){		
+	/*private synchronized boolean loadProductAssortmentPromotion(ZoneInfo zoneInfo, String promotionId){		
 		String currentProductPromotionType = getProductPromotionType();		
 		if (currentProductPromotionType == null ){
 			return false;			
 		} else {			
 			if (productAssortmentPromotionDataRefMap.get(promotionId) == null && isValidAssortmentPromotion(currentProductPromotionType,promotionId)){
 				productAssortmentPromotionDataRefMap.put(promotionId, new ProductAssortmentPromotionDataRef(threadPool,  zoneInfo, promotionId, currentProductPromotionType));
+			}
+			return true;
+        }
+	}
+	*/
+	private synchronized boolean loadProductAssortmentPromotion(ZoneInfo pricingZone, String promotionPageType){		
+		String currentProductPromotionType = getProductPromotionType();		
+		if (currentProductPromotionType == null ){
+		promotionPageType = currentProductPromotionType;
+			return false;			
+		} else {			
+			if (productAssortmentPromotionDataRefMap.get(pricingZone) == null || !currentProductPromotionType.equals(promotionPageType)){
+				promotionPageType = currentProductPromotionType;
+				productAssortmentPromotionDataRefMap.put(pricingZone, new ProductPromotionDataRef(threadPool,  pricingZone,promotionPageType));
 			}
 			return true;
         }

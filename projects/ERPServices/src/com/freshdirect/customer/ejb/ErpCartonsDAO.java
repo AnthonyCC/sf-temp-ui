@@ -69,7 +69,7 @@ public class ErpCartonsDAO {
 				//psDetails.setDouble(7, details.getNetWeight());
 				psDetails.setBigDecimal(7, new java.math.BigDecimal(details.getNetWeight()));
 				psDetails.setString(8, details.getWeightUnit());
-				psDetails.setBigDecimal(9, new java.math.BigDecimal(details.getOrdered_quantity()));
+				psDetails.setBigDecimal(9, (details.getOrdered_quantity()!=null)?new java.math.BigDecimal(details.getOrdered_quantity()):new java.math.BigDecimal(0));
 				psDetails.setString(10, details.getChildOrderLineNo());
 				psDetails.setString(11, details.getMaterialDesc());
 				psDetails.setString(12, details.getPacked_uom());

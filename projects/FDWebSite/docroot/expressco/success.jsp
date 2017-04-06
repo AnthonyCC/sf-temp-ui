@@ -111,85 +111,36 @@
       // potato loading
       window.FreshDirect.expressco = {};
       window.FreshDirect.expressco.data = <fd:ToJSON object="${singlePageCheckoutSuccessPotato}" noHeaders="true"/>
+
+      // Google Tag Manager - checkout related variables + 'checkout-success' event
+      var dataLayer = window.dataLayer || [];
+
+      dataLayer.push({
+        'co-subtotal': FreshDirect.expressco.data.semPixelData && FreshDirect.expressco.data.semPixelData.subtotal,
+        'co-subtotal-nd': FreshDirect.expressco.data.semPixelData && FreshDirect.expressco.data.semPixelData.subtotalND,
+        'co-neworder': FreshDirect.expressco.data.semPixelData && FreshDirect.expressco.data.semPixelData.newOrder,
+        'co-modifyorder': FreshDirect.expressco.data.semPixelData && FreshDirect.expressco.data.semPixelData.modifyOrder,
+        'co-orderid': FreshDirect.expressco.data.semPixelData && FreshDirect.expressco.data.semPixelData.orderId,
+        'co-totalcartitems': FreshDirect.expressco.data.semPixelData && FreshDirect.expressco.data.semPixelData.totalCartItems,
+        'co-usercounty': FreshDirect.expressco.data.semPixelData && FreshDirect.expressco.data.semPixelData.userCounty,
+        'co-discountamount': FreshDirect.expressco.data.semPixelData && FreshDirect.expressco.data.semPixelData.discountAmount,
+        'co-discountamount-nd': FreshDirect.expressco.data.semPixelData && FreshDirect.expressco.data.semPixelData.discountAmountND,
+        'co-productid': FreshDirect.expressco.data.semPixelData && FreshDirect.expressco.data.semPixelData.productId,
+        'co-validorders': FreshDirect.expressco.data.semPixelData && FreshDirect.expressco.data.semPixelData.validOrders
+      });
+
+      if (FreshDirect.expressco.data.semPixelData && (FreshDirect.expressco.data.semPixelData.newOrder || FreshDirect.expressco.data.semPixelData.modifyOrder)) {
+        dataLayer.push({
+          'event': FreshDirect.expressco.data.semPixelData.newOrder ? 'checkout-success' : 'modify-order-success'
+        });
+
+        if (FreshDirect.expressco.data.semPixelData.newOrder && FreshDirect.expressco.data.semPixelData.validOrders === 1) {
+          dataLayer.push({
+            'event': 'checkout-success-newcustomer'
+          });
+        }
+      }
     </script>
-
-    <!-- semPixels -->
-    
-    <%-- TODO: refactor? --%>
-    <%
-      Map<String, Object> potato = (Map<String, Object>)pageContext.getAttribute("singlePageCheckoutSuccessPotato");
-      Map<String, Object> semPixelData = (Map<String, Object>)potato.get("semPixelData");
-    %>
-    <%-- do not render semPixels for old orders --%>
-    <c:if test="${singlePageCheckoutSuccessPotato.semPixelData.newOrder or singlePageCheckoutSuccessPotato.semPixelData.modifyOrder}">
-
-      <%-- Google AdWords Pixel --%>
-      <fd:SemPixelIncludeMedia pixelNames="GoogleAdWords" />
-      
-      <%
-			/* CheetahMail Pixel */
-			SemPixelModel semPixel_CM = FDSemPixelCache.getInstance().getSemPixel("CheetahMail");
-	
-			//add a param to the params sent to the FTL
-			semPixel_CM.setParam("subtotal", semPixelData.get("subtotal")); // sem_cartSubtotal
-			semPixel_CM.setParam("orderId", semPixelData.get("orderId")); // sem_orderNumber
-			semPixel_CM.setParam("isOrderModify", String.valueOf((Boolean)semPixelData.get("isOrderModify"))); // String.valueOf(isOrderModify)
-			semPixel_CM.setParam("userCounty", semPixelData.get("userCounty")); // sem_defaultCounty
-			semPixel_CM.setParam("totalCartItems", ((Integer)semPixelData.get("totalCartItems")).toString()); // sem_totalCartItems
-			%><fd:SemPixelIncludeMedia pixelNames="CheetahMail" />
-		
-      <c:if test="${not singlePageCheckoutSuccessPotato.semPixelData.modifyOrder}">
-        <%
-        /* TheSearchAgency Pixel */
-				SemPixelModel semPixel_TSA = FDSemPixelCache.getInstance().getSemPixel("TheSearchAgency");
-				
-				//add a param to the params sent to the FTL
-				semPixel_TSA.setParam("subtotal", semPixelData.get("subtotalND")); // sem_cartSubtotal
-				semPixel_TSA.setParam("orderId", semPixelData.get("orderId")); // sem_orderNumber
-				semPixel_TSA.setParam("validOrders", ((Integer)semPixelData.get("validOrders")).toString()); // sem_validOrderCount
-				semPixel_TSA.setParam("discountAmount", semPixelData.get("discountAmountND")); // sem_totalDiscountAmount
-				%><fd:SemPixelIncludeMedia pixelNames="TheSearchAgency" />
-
-        <%
-        /* Digo2 Pixel */
-				SemPixelModel semPixel_DIGO2 = FDSemPixelCache.getInstance().getSemPixel("DiGo2");
-				semPixel_DIGO2.clearParams();
-	
-				semPixel_DIGO2.setParam("checkout_receipt", "true");
-				semPixel_DIGO2.setParam("subtotal", semPixelData.get("subtotal")); // sem_cartSubtotal
-				semPixel_DIGO2.setParam("orderId", semPixelData.get("orderId")); // sem_orderNumber
-				semPixel_DIGO2.setParam("totalCartItems", ((Integer)semPixelData.get("totalCartItems")).toString()); // sem_totalCartItems
-				semPixel_DIGO2.setParam("productId", semPixelData.get("productId")); // sem_productId
-				%><fd:SemPixelIncludeMedia pixelNames="DiGo2" />
-				
-		 <%
-        /* Pinterest Pixel */
-				SemPixelModel pinterestPixel = FDSemPixelCache.getInstance().getSemPixel("Pinterest");
-		        pinterestPixel.clearParams();
-	
-		        pinterestPixel.setParam("checkout_receipt", "true");
-		        pinterestPixel.setParam("subtotal", semPixelData.get("subtotal")); // sem_cartSubtotal
-		        pinterestPixel.setParam("orderId", semPixelData.get("orderId")); // sem_orderNumber
-		        pinterestPixel.setParam("totalCartItems", ((Integer)semPixelData.get("totalCartItems")).toString()); // sem_totalCartItems
-		        pinterestPixel.setParam("productId", semPixelData.get("productId")); // sem_productId
-				%><fd:SemPixelIncludeMedia pixelNames="Pinterest" />
-				
-	
-		 <%
-        /* Kenshoo Pixel */
-				SemPixelModel kenshooPixel = FDSemPixelCache.getInstance().getSemPixel("Kenshoo");
-		 		kenshooPixel.clearParams();
-	
-		 		kenshooPixel.setParam("checkout_receipt", "true");
-		 		kenshooPixel.setParam("subtotal", semPixelData.get("subtotal")); // sem_cartSubtotal
-		 		kenshooPixel.setParam("orderId", semPixelData.get("orderId")); // sem_orderNumber
-		 		kenshooPixel.setParam("totalCartItems", ((Integer)semPixelData.get("totalCartItems")).toString()); // sem_totalCartItems
-		 		kenshooPixel.setParam("productId", semPixelData.get("productId")); // sem_productId
-				%><fd:SemPixelIncludeMedia pixelNames="Kenshoo" />			
-				
-						
-      </c:if>
-    </c:if>
 
   </div>
   </tmpl:put>

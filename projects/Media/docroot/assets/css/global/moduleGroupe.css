@@ -1,13 +1,13 @@
 .module-group {
   align-items: center;
   background-image: none;
-  border-top: 15px solid #FFF;
   display: flex;
   font-family: 'Brandon Text';
   justify-content: space-between;
   margin: 0;
+  margin-top: 10px;
+  min-height: 52px;
   padding: 20px 0;
-  min-height: 80px;
   padding: 0 10px;
 }
 

@@ -26,7 +26,7 @@ public class FDCommerceService extends AbstractLogisticsService implements IComm
 	private final static Category LOGGER = LoggerFactory
 			.getInstance(FDCommerceService.class);
 
-	private static final String SAVE_PRICING_ZONES_API ="/pricing/zone";
+	private static final String SAVE_PRICING_ZONES_API ="pricing/zone";
 	private static final String COO_API ="/coo";
 	private static final String DB_MONITOR ="monitor/dbcheck";
 	private static final String TEST_DATA_CUSTOMERID ="test/dyfeligiblecustomerid";

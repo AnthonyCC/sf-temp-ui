@@ -48,18 +48,7 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel, Cloneabl
     //
 
     protected ContentNodeI getCMSNode() {
-        ContentNodeI node = null;
-        final String cacheKey = ContentNodeModelUtil.getRequestIdCacheKey(key.getId());
-        if (!cacheKey.isEmpty()) {
-            node = EhCacheUtil.getObjectFromCache(ContentNodeModelUtil.CMS_CONTENT_NODE_CACHE_NAME, cacheKey);
-        }
-        if (node == null) {
-            node = ContentFactory.getInstance().getContentNode(key);
-            if (!cacheKey.isEmpty()) {
-                EhCacheUtil.putObjectToCache(ContentNodeModelUtil.CMS_CONTENT_NODE_CACHE_NAME, cacheKey, node);
-            }
-        }
-        return node;
+        return ContentFactory.getInstance().getContentNode(key);
     }
 
     @Override

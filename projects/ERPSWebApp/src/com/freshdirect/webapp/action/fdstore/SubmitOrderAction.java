@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.customer.EnumWebServiceType;
 import com.freshdirect.customer.EnumFraudReason;
 import com.freshdirect.customer.EnumNotificationType;
@@ -68,6 +69,7 @@ import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.giftcard.ErpRecipentModel;
 import com.freshdirect.giftcard.RecipientModel;
 import com.freshdirect.giftcard.ServiceUnavailableException;
+import com.freshdirect.payment.BINCache;
 import com.freshdirect.webapp.action.WebActionSupport;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.coremetrics.CmShop9Tag;
@@ -495,6 +497,11 @@ public class SubmitOrderAction extends WebActionSupport {
 				}
 			}
 		}
+		
+		BINCache binCache = BINCache.getInstance();
+        boolean isDebitCard = binCache.isDebitCard(cart.getPaymentMethod().getAccountNumber(), EnumCardType.VISA)||binCache.isDebitCard(cart.getPaymentMethod().getAccountNumber(), EnumCardType.MC);
+        cart.getPaymentMethod().setDebitCard(isDebitCard);
+		
         if (!(user.getMasqueradeContext() != null && user.getMasqueradeContext().isAddOnOrderEnabled())) {
             ErpAddressModel address = cart.getDeliveryAddress();
             if (address instanceof ErpDepotAddressModel) {

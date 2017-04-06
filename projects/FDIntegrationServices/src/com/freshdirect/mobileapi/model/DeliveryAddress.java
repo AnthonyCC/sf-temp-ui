@@ -55,10 +55,8 @@ public class DeliveryAddress {
      * @return
      * @throws FDResourceException
      */
-    public static AddressModel scrubAddress(AddressModel address, ActionResult result) throws FDResourceException {
-        return DeliveryAddress.scrubAddress(address, true, result);
-    }
-
+    
+ 
     /**
      * @see com.freshdirect.webapp.taglib.fdstore.AddressUtil
      * 
@@ -68,9 +66,7 @@ public class DeliveryAddress {
      * @return
      * @throws FDResourceException
      */
-    public static AddressModel scrubAddress(AddressModel address, boolean useApartment, ActionResult result) throws FDResourceException {
-        return AddressUtil.scrubAddress(address, result);
-    }
+  
 
     protected static String getCounty(AddressModel address) throws FDResourceException {
         return FDDeliveryManager.getInstance().getCounty(address);

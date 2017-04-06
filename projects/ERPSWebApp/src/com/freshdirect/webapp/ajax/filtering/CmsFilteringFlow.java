@@ -3,6 +3,7 @@ package com.freshdirect.webapp.ajax.filtering;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -59,6 +60,7 @@ import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.ajax.browse.SearchPageType;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData.CarouselDataCointainer;
+import com.freshdirect.webapp.ajax.browse.data.BrowseData.CategoryKey;
 import com.freshdirect.webapp.ajax.browse.data.BrowseDataContext;
 import com.freshdirect.webapp.ajax.browse.data.BrowseDataContextService;
 import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
@@ -236,6 +238,22 @@ public class CmsFilteringFlow {
 
             BrowseDataBuilderFactory.getInstance().processSorting(browseDataContext, nav, user);
 
+            /* Added this condition as part of APPDEV-5920 staff picks sort bar implementation
+             * At this point we now have the the sorted section data object which preserves the sort strategy and order of the products
+             * Here we are iterating through this sorted section data and adding them to the assort products map based upon the product id
+             * Thus the assort product map and section data sorted products are always in sync 
+             * */
+            if(!browseDataContext.getSectionContexts().isEmpty()){
+            	
+            	for(FilteringProductItem filteredProduct: browseDataContext.getSectionContexts().get(0).getProductItems()){
+            		for(ProductData productData:browseDataContext.getAssortProducts().getUnfilteredAssortedProducts()){
+            			if(productData.getProductId().equalsIgnoreCase(filteredProduct.getProductModel().getContentKey().getId())){
+                			browseDataContext.getAssortProducts().addProdDataToCat(productData.getErpCategory(), productData);		
+                		}
+            		}
+            		
+            	}
+            }
             browseData = browseDataContext.extractBrowseDataPrototype(user, nav);
 
             /* insert HL products into the correct spot(s) in the results */
@@ -564,13 +582,17 @@ public class CmsFilteringFlow {
                 LOG.warn("Getting DDPP products failed!", e);
             }
         }
-
+        
+     
+        List<FilteringProductItem> filteredSectionProducts=browseDataContext.getSectionContexts().get(0).getProductItems();
+        
+        
        // for staff picks: group the products based on the erp_category column value in product_promotion_group table
         for (Map.Entry<String, List<ProductModel>> entry : searchResults.getAssortProducts().entrySet()) {
             for(ProductModel product:entry.getValue()){
                         
         	try {
-            	
+            	CategoryKey catKey= new CategoryKey();
                 ProductData productData = ProductDetailPopulator.createProductData(user, product);
                 productData.setFeatured(((ProductModelPromotionAdapter) product).isFeatured());
                 productData.setFeaturedHeader(((ProductModelPromotionAdapter) product).getFeaturedHeader());
@@ -578,7 +600,7 @@ public class CmsFilteringFlow {
                 String curCat = ((ProductModelPromotionAdapter) product).getErpCategory();
                 if (curCat == null || curCat.trim() == "") {
                     //curCat = "ERROR"; // lump all the bad products together
-                    curCat = "";
+                    curCat = "STAFF PICKS"; // We cannot leave this variable blank. UI also needs a change
                 }
                 productData.setErpCategory(curCat);
                 productData.setErpCatPosition(((ProductModelPromotionAdapter) product).getErpCatPosition());
@@ -587,17 +609,20 @@ public class CmsFilteringFlow {
                 if (nav.getPageType() != null) {
                     productData.setPageType(nav.getPageType().toString());
                 }
-                /*if(assortMap.containsKey(curCat)){
-                	List<ProductData> productDataList=assortMap.get(curCat);
-                	productDataList.add(productData);
-                	assortMap.put(curCat, productDataList);
-                } else {
-                	List<ProductData> productDataList=new ArrayList<ProductData>();
-                	productDataList.add(productData);
-                	assortMap.put(curCat, productDataList);
+                catKey.setCategoryName(productData.getErpCategory());
+                catKey.setCategoryPosition(productData.getErpCatPosition());
+                browseDataContext.getAssortProducts().getUnfilteredAssortedProducts().add(productData);
+                browseDataContext.getAssortProducts().addCategoryKeys(catKey);
+               /* if(!browseDataContext.getSectionContexts().isEmpty()){
+                	
+                	for(FilteringProductItem filteredProduct: browseDataContext.getSectionContexts().get(0).getProductItems()){
+                		if(productData.getProductId().equalsIgnoreCase(filteredProduct.getProductModel().getContentKey().getId())){
+                			browseDataContext.getAssortProducts().addProdDataToCat(catKey.getCategoryName(), productData);		
+                		}
+                	}
                 }*/
+             //   browseDataContext.getAssortProducts().addProdDataToCat(catKey.getCategoryName(), productData);
                 
-                browseDataContext.getAssortProducts().addProdDataToCat(curCat, productData);
             } catch (FDResourceException e) {
                 LOG.warn("Getting DDPP products failed!", e);
             } catch (FDSkuNotFoundException e) {
