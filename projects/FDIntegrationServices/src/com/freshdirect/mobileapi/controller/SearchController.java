@@ -19,8 +19,12 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductModelBrandAdsAdapter;
+import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.util.DYFUtil;
+import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.SearchResult;
 import com.freshdirect.mobileapi.controller.data.request.SearchQuery;
@@ -29,6 +33,7 @@ import com.freshdirect.mobileapi.controller.data.response.FilterOption;
 import com.freshdirect.mobileapi.controller.data.response.BrowsePageResponse;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
+import com.freshdirect.mobileapi.model.AdProducts;
 import com.freshdirect.mobileapi.model.Brand;
 import com.freshdirect.mobileapi.model.Category;
 import com.freshdirect.mobileapi.model.Department;
@@ -40,6 +45,11 @@ import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.BrowseUtil;
 import com.freshdirect.mobileapi.util.ListPaginator;
 import com.freshdirect.mobileapi.util.SortType;
+import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
+import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
+import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
+import com.freshdirect.webapp.ajax.filtering.SearchResultsUtil;
+import com.freshdirect.webapp.search.SearchService;
 import com.freshdirect.webapp.search.unbxd.UnbxdServiceUnavailableException;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
@@ -94,6 +104,8 @@ public class SearchController extends BaseController {
             String brandToFilter = null;
             String categoryToFilter = null;
             String departmentToFilter = null;
+            String pageType = request.getParameter("pageType");
+            String searchParams = request.getParameter("searchParams");
 
             // Retrieving any possible payload
             String postData = getPostData(request, response);
@@ -109,7 +121,11 @@ public class SearchController extends BaseController {
                 brandToFilter = requestMessage.getBrand();
                 categoryToFilter = requestMessage.getCategory();
                 departmentToFilter = requestMessage.getDepartment();
+                pageType = requestMessage.getPageType();
+                searchParams = requestMessage.getSearchParams();
             }
+            
+            SearchResult data = new SearchResult();
 
             try {
                 // If there is no searchTerm, default is blank string (will retrieve everything)
@@ -143,6 +159,25 @@ public class SearchController extends BaseController {
                 			}
                 		}
                 	}
+                }
+                
+                // search results
+                if(pageType!=null && searchParams!=null){
+                    final CmsFilteringNavigator nav = CmsFilteringNavigator.createInstance(request, user.getFDSessionUser());
+                    SearchResults sr = SearchService.getInstance().searchProducts(searchTerm, nav.getRequestCookies(), user.getFDSessionUser(), nav.getRequestUrl(), nav.getReferer());
+                    SearchResultsUtil.getHLBrandProductAdProducts(sr, nav, user.getFDSessionUser());
+                    if(!sr.getAdProducts().isEmpty()){
+                    	List<AdProducts> adProductList = new ArrayList<AdProducts>();
+                    	for(FilteringSortingItem<ProductModel> adproduct : sr.getAdProducts()){
+                    		ProductModelBrandAdsAdapter pdma =  (ProductModelBrandAdsAdapter)adproduct.getNode();
+                    		if(pdma!=null && pdma.getProductModel()!=null){
+        	            		AdProducts adproductsl = new AdProducts(pdma.getProductModel().getContentName(),pdma.getClickBeacon(),pdma.getImpBeacon());
+        	            		adProductList.add(adproductsl);
+                    		}
+                    	}
+                    	data.setAdProducts(adProductList);
+                    	data.setPageBeacon(sr.getPageBeacon());
+                    }
                 }
 
                 if (request.getSession().getAttribute(SessionName.APPLICATION) != null
@@ -192,7 +227,6 @@ public class SearchController extends BaseController {
                 }
 
                 Collections.sort(departmentList, filterComparator);
-                SearchResult data = new SearchResult();
                 data.setTotalResultCount(productService.getRecentSearchTotalCount());
                 data.setQuery(searchTerm);
                 data.setProductsFromModel(products);
@@ -207,7 +241,6 @@ public class SearchController extends BaseController {
                 setResponseMessage(model, data, user);
             } catch (UnbxdServiceUnavailableException exception) {
                 LOG.error(exception);
-                SearchResult data = new SearchResult();
 
                 data.setTotalResultCount(0);
                 data.setQuery(searchTerm);
@@ -220,7 +253,10 @@ public class SearchController extends BaseController {
                 data.setDefaultSortOptions();
 
                 setResponseMessage(model, data, user);
-            }
+            } catch (InvalidFilteringArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
 
         return model;
@@ -238,6 +274,8 @@ public class SearchController extends BaseController {
         String categoryToFilter = null;
         String departmentToFilter = null;
         SearchQuery requestMessage = null;
+        String pageType = request.getParameter("pageType");
+        String searchParams = request.getParameter("searchParams");
 
         // Retrieving any possible payload
         String postData = getPostData(request, response);
@@ -253,6 +291,8 @@ public class SearchController extends BaseController {
             brandToFilter = requestMessage.getBrand();
             categoryToFilter = requestMessage.getCategory();
             departmentToFilter = requestMessage.getDepartment();
+            pageType = requestMessage.getPageType();
+            searchParams = requestMessage.getSearchParams();
         }
 
 
@@ -292,6 +332,26 @@ public class SearchController extends BaseController {
         		}
         	}
         }
+        
+        // search results
+        if(pageType!=null && searchParams!=null){
+            final CmsFilteringNavigator nav = CmsFilteringNavigator.createInstance(request, user.getFDSessionUser());
+            SearchResults sr = SearchService.getInstance().searchProducts(searchTerm, nav.getRequestCookies(), user.getFDSessionUser(), nav.getRequestUrl(), nav.getReferer());
+            SearchResultsUtil.getHLBrandProductAdProducts(sr, nav, user.getFDSessionUser());
+            if(!sr.getAdProducts().isEmpty()){
+            	List<AdProducts> adProductList = new ArrayList<AdProducts>();
+            	for(FilteringSortingItem<ProductModel> adproduct : sr.getAdProducts()){
+            		ProductModelBrandAdsAdapter pdma =  (ProductModelBrandAdsAdapter)adproduct.getNode();
+            		if(pdma!=null && pdma.getProductModel()!=null){
+	            		AdProducts adproductsl = new AdProducts(pdma.getProductModel().getContentName(),pdma.getClickBeacon(),pdma.getImpBeacon());
+	            		adProductList.add(adproductsl);
+            		}
+            	}
+            	data.setAdProducts(adProductList);
+            	data.setPageBeacon(sr.getPageBeacon());
+            }
+        }
+        
 
         // Data required for filtering: Brands
         Set<Brand> brands = productService.getBrands();
@@ -358,7 +418,10 @@ public class SearchController extends BaseController {
             data.setDepartments(Collections.<FilterOption> emptyList());
             data.setDidYouMean("");
             data.setDefaultSortOptions();
-        }
+        } catch (InvalidFilteringArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         
         setResponseMessage(model, data, user);
         // Use below at later time.
