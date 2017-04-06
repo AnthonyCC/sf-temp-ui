@@ -36,7 +36,7 @@
 	{if $moduleData and not $moduleData.hideViewAllButton}data-carousel-view-all{/if}>next</button>
 	{if $moduleData and not $moduleData.hideViewAllButton and ($moduleData.contentTitle or $moduleData.moduleTitle)}
 		<div data-component="carousel-view-all">
-			<a {if $moduleData and $moduleData.useViewAllPopup}data-view-all-popup data-moduleId={if $moduleData and $moduleData.moduleId}{$moduleData.moduleId}{/if}{else}href="{if $moduleData and $moduleData.viewAllButtonLink}{$moduleData.viewAllButtonLink}{/if}"{/if} cm-click="cmCreateElementTag,View All,Home Page-_-Carousel{if $moduleData and $moduleData.moduleId}-_-{$moduleData.moduleId}{/if}{if $moduleData and $moduleData.viewAllButtonLink}-_-{$moduleData.viewAllButtonLink}{/if}">view all
+			<a {if $moduleData and $moduleData.useViewAllPopup}data-view-all-popup data-moduleId={if $moduleData and $moduleData.moduleId}{$moduleData.moduleId}{/if}{else}href="{if $moduleData and $moduleData.viewAllButtonLink}{$moduleData.viewAllButtonLink}{/if}"{/if} data-viewallinfo="Home Page Carousel,{if $moduleData and $moduleData.viewAllButtonLink}{$moduleData.viewAllButtonLink}{/if}">view all
 				<div class="offscreen">{if $moduleData and $moduleData.contentTitle}{$moduleData.contentTitle}{else}{$moduleData.moduleTitle}{/if}</div>
 			</a>
 		</div>

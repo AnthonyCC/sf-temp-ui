@@ -3,7 +3,11 @@ package com.freshdirect.mobileapi.controller.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.freshdirect.fdstore.content.FilteringSortingItem;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.mobileapi.controller.data.response.FilterOption;
+import com.freshdirect.mobileapi.model.AdProducts;
 import com.freshdirect.mobileapi.util.SortType;
 
 public class SearchResult extends Message {
@@ -93,6 +97,23 @@ public class SearchResult extends Message {
         }
     }
     
+    private List<AdProducts> adProducts = new ArrayList<AdProducts>();
+	private String pageBeacon;
+    
+    public List<AdProducts> getAdProducts() {
+		return adProducts;
+	}
+
+	public void setAdProducts(List<AdProducts> adProducts) {
+		this.adProducts = adProducts;
+	}
+	public String getPageBeacon() {
+		return pageBeacon;
+	}
+
+	public void setPageBeacon(String pageBeacon) {
+		this.pageBeacon = pageBeacon;
+	}
     public void setProductIds(List<String> productIds){
     	this.productIds = productIds;
     }

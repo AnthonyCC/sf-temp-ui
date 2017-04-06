@@ -70,106 +70,108 @@ public class CmsFilteringServlet extends BaseJsonServlet {
     }
 
     /**
-	 * Processing query from direct http call
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
-		
-		try {
-			CmsFilteringNavigator navigator = CmsFilteringNavigator.createInstance(request, user);
-			ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || ((FDSessionUser)user).isEligibleForDDPP());
-			final CmsFilteringFlowResult flow = CmsFilteringFlow.getInstance().doFlow(navigator, (FDSessionUser)user);
-			final Map<String, ?> payload = DataPotatoField.digBrowse(flow);
+     * Processing query from direct http call
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
 
-			if ( request.getParameterMap().keySet().contains("data") ) {
-				final Map<String, Object> clientInput;
-				try {
+        try {
+            CmsFilteringNavigator navigator = CmsFilteringNavigator.createInstance(request, user);
+            ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || ((FDSessionUser) user).isEligibleForDDPP());
+            final CmsFilteringFlowResult flow = CmsFilteringFlow.getInstance().doFlow(navigator, (FDSessionUser) user);
+            final Map<String, ?> payload = DataPotatoField.digBrowse(flow);
 
-					//
-					// CoreMetrics reporting section
-					//
-					
-					clientInput = JsonHelper.parseRequestData(request, Map.class);
-					
-					final BrowseEvent cmEvent = clientInput.get("browseEvent") != null ? BrowseEvent
-							.valueOf( ((String) clientInput.get("browseEvent")).toUpperCase())
-							: BrowseEvent.NOEVENT;
+            if (request.getParameterMap().keySet().contains("data")) {
+                final Map<String, Object> clientInput;
+                try {
 
-					// handle event
-					switch(cmEvent) {
-					case PAGEVIEW:
-						SearchParams searchParams = flow.getBrowseDataPrototype().getSearchParams();
-						if (searchParams.getPageType()==FilteringFlowType.SEARCH) {
-							List<Tab> tabs = searchParams.getTabs();
-							
-							String searchTerm = searchParams.getSearchParams();
-							String suggestedTerm = searchParams.getSearchTerm();
-							Integer searchResultsSize = tabs.size() > 0 ? tabs.get(0).getHits() : 0;
-							Integer recipeSearchResultsSize = tabs.size() > 1 ? tabs.get(1).getHits() : 0;
+                    //
+                    // CoreMetrics reporting section
+                    //
 
-							new CoremetricsPopulator().appendPageViewTag( (Map<String, Object>) payload , PageViewTagInput.populateFromJSONInput(request.getRequestURI(), clientInput), searchTerm, suggestedTerm, searchResultsSize, recipeSearchResultsSize );
-						} else {
-							new CoremetricsPopulator().appendPageViewTag( (Map<String, Object>) payload , PageViewTagInput.populateFromJSONInput(request.getRequestURI(), clientInput) );
-						}
-						break;
-					case ELEMENT:
-						new CoremetricsPopulator().appendFilterElementTag((Map<String, Object>) payload , (Map<String, Object>) clientInput.get("requestFilterParams"));
-						break;
-					case SORT:
-						new CoremetricsPopulator().appendSortElementTag((Map<String, Object>) payload, navigator.getSortBy());
-						break;
-					case PAGE:
-					case NOEVENT:
-					default:
-						// do nothing
-						break;
-					}
+                    clientInput = JsonHelper.parseRequestData(request, Map.class);
 
-				} catch (JsonParseException e) {
-					returnHttpError( 400, "Cannot read client input", e );	// 400 Bad Request
-				} catch (JsonMappingException e) {
-					returnHttpError( 400, "Cannot read client input", e );	// 400 Bad Request
-				} catch (IOException e) {
-					returnHttpError( 400, "Cannot read client input", e );	// 400 Bad Request
-				} catch (SkipTagException e) {
-					returnHttpError( 400, "Cannot read client input", e );	// 400 Bad Request
-				}				
-			}
-			
-			// UNBXD analytics reporting
-			if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, request.getCookies(), user)) {
+                    final BrowseEvent cmEvent = clientInput.get("browseEvent") != null ? BrowseEvent.valueOf(((String) clientInput.get("browseEvent")).toUpperCase())
+                            : BrowseEvent.NOEVENT;
 
-			    if (!navigator.getPageType().isSearchLike() && !navigator.isPdp()) {
-			        BrowseEventTag.doSendEvent(navigator.getId(), user, request);
-			    }
-			}
-			
-			writeResponseData(response, payload);
-			
-		} catch (FDResourceException e) {
-			returnHttpError( 400, "Cannot read JSON", e );	// 400 Bad Request
-		} catch (InvalidFilteringArgumentException e) {
-			
-			switch (e.getType()){
-			case NODE_IS_RECIPE_DEPARTMENT:
-			case SPECIAL_LAYOUT:
-			case NODE_HAS_REDIRECT_URL:{
-				Map<String, String> resp = new HashMap<String, String>();
-				resp.put("redirectUrl", e.getRedirectUrl());
-				writeResponseData(response, resp);
-				break;
-			}
-			case TERMINATE:
-				LOGGER.error(e.getMessage());
-				break;
-				
-			default:
-				returnHttpError( 400, "JSON contains invalid arguments", e );	// 400 Bad Request	
-				break;
-			}				
-		}
-	}
+                    // handle event
+                    switch (cmEvent) {
+                        case PAGEVIEW:
+                            SearchParams searchParams = flow.getBrowseDataPrototype().getSearchParams();
+                            if (searchParams.getPageType() == FilteringFlowType.SEARCH) {
+                                List<Tab> tabs = searchParams.getTabs();
+
+                                String searchTerm = searchParams.getSearchParams();
+                                String suggestedTerm = searchParams.getSearchTerm();
+                                Integer searchResultsSize = tabs.size() > 0 ? tabs.get(0).getHits() : 0;
+                                Integer recipeSearchResultsSize = tabs.size() > 1 ? tabs.get(1).getHits() : 0;
+
+                                new CoremetricsPopulator().appendPageViewTag((Map<String, Object>) payload,
+                                        PageViewTagInput.populateFromJSONInput(request.getRequestURI(), clientInput), searchTerm, suggestedTerm, searchResultsSize,
+                                        recipeSearchResultsSize, user.getCohortName());
+                            } else {
+                                new CoremetricsPopulator().appendPageViewTag((Map<String, Object>) payload,
+                                        PageViewTagInput.populateFromJSONInput(request.getRequestURI(), clientInput), user.getCohortName());
+                            }
+                            break;
+                        case ELEMENT:
+                            new CoremetricsPopulator().appendFilterElementTag((Map<String, Object>) payload, (Map<String, Object>) clientInput.get("requestFilterParams"), user);
+                            break;
+                        case SORT:
+                            new CoremetricsPopulator().appendSortElementTag((Map<String, Object>) payload, navigator.getSortBy(), user);
+                            break;
+                        case PAGE:
+                        case NOEVENT:
+                        default:
+                            // do nothing
+                            break;
+                    }
+
+                } catch (JsonParseException e) {
+                    returnHttpError(400, "Cannot read client input", e); // 400 Bad Request
+                } catch (JsonMappingException e) {
+                    returnHttpError(400, "Cannot read client input", e); // 400 Bad Request
+                } catch (IOException e) {
+                    returnHttpError(400, "Cannot read client input", e); // 400 Bad Request
+                } catch (SkipTagException e) {
+                    returnHttpError(400, "Cannot read client input", e); // 400 Bad Request
+                }
+            }
+
+            // UNBXD analytics reporting
+            if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, request.getCookies(), user)) {
+
+                if (!navigator.getPageType().isSearchLike() && !navigator.isPdp()) {
+                    BrowseEventTag.doSendEvent(navigator.getId(), user, request);
+                }
+            }
+
+            writeResponseData(response, payload);
+
+        } catch (FDResourceException e) {
+            returnHttpError(400, "Cannot read JSON", e); // 400 Bad Request
+        } catch (InvalidFilteringArgumentException e) {
+
+            switch (e.getType()) {
+                case NODE_IS_RECIPE_DEPARTMENT:
+                case SPECIAL_LAYOUT:
+                case NODE_HAS_REDIRECT_URL: {
+                    Map<String, String> resp = new HashMap<String, String>();
+                    resp.put("redirectUrl", e.getRedirectUrl());
+                    writeResponseData(response, resp);
+                    break;
+                }
+                case TERMINATE:
+                    LOGGER.error(e.getMessage());
+                    break;
+
+                default:
+                    returnHttpError(400, "JSON contains invalid arguments", e); // 400 Bad Request
+                    break;
+            }
+        }
+    }
 
     @Override
     protected int getRequiredUserLevel() {

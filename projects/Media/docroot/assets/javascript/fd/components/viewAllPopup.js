@@ -40,17 +40,27 @@ var FreshDirect = FreshDirect || {};
       value: function (e) {
         var moduleId = e.currentTarget.getAttribute('data-moduleId');
         fd.common.dispatcher.signal('server',{
-    			url:'/api/modulehandling/load?moduleId=' + moduleId
+    			url:'/api/modulehandling/load?moduleId=' + moduleId + '&viewAll=true'
     		});
         var $t = e && $(e.currentTarget) || $(document.body);
 
         this.refreshBody();
         this.popup.show($t);
         this.popup.clicked = true;
+
+        $(window).scroll(closeTransactionalPopup);
       }
     },
     signal:{
       value: 'moduleContent'
+    },
+    close: {
+        value: function (e) {
+          if (this.popup) {
+            this.popup.hide(e);
+            $(window).off('scroll', closeTransactionalPopup);
+          }
+        }
     },
     callback:{
       value:function( data ) {
@@ -58,6 +68,11 @@ var FreshDirect = FreshDirect || {};
       }
     }
   });
+
+  function closeTransactionalPopup () {
+    var transactionalPopup = $(document).find('.transactional-popup.shown')[0];
+    $(transactionalPopup).removeClass('shown');
+  }
 
   viewallPopup.listen();
 

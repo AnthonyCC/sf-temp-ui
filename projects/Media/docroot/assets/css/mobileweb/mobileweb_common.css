@@ -1581,12 +1581,29 @@ li.cleanli .gen-arrow {
 /* VIEW CART */
 	
 	@media screen and (max-width: 560px) { /* default li width is 282px */
+		#cartCarousels .tabbed-carousel.fullsize,
 		.product-sample-carousel,
-		#donationProductSampleCarousel .product-sample-carousel [data-component="carousel"] [data-component="carousel-mask"] ul li {
-			width: 100%;
+		.mm-page .product-sample-carousel [data-component="carousel"] [data-component="carousel-mask"] ul li,
+		#cartCarousels .tabbed-carousel .tab-container[data-cmsitefeature="PRODUCT_SAMPLES"] [data-component="carousel"] [data-component="carousel-mask"] ul li
+		{
+			width: 100% !important;
 		}
 		.product-sample-carousel h2.product-sample-header {
 			padding-right: 50px;
+		}
+		.mm-page #cartCarousels [data-cmsitefeature="PRODUCT_SAMPLES"] [data-component="carousel"],
+		.product-sample-carousel [data-component="carousel"] {
+			padding: 0 36px !important;
+		}
+		[data-component="carousel-prev"], 
+		[data-component="carousel-next"]
+		{
+			background: url('/media_stat/carousel/arrow.png') no-repeat !important;
+    		display: block !important;
+		}
+		.product-sample-carousel .unavailable .portrait-item-controls,
+		#cartCarousels .unavailable .portrait-item-controls {
+			display: none !important;
 		}
 	}
 

@@ -98,6 +98,17 @@ public class AddressUtil {
         FDDeliveryAddressVerificationResponse response = null;
 		try {
 		
+		/**
+		 * This calls verifyAddress service
+		 * This verifyAddress does all the below things: 
+			 1) Scrub Address
+			 2) Check Address
+			 3) Geocode result
+			 4) Delivery services
+		 * But here we want only scrub address
+		 * In addition if the address is alread scrubbed we don not need to do anything here.
+		 *
+		 */
 		response = FDDeliveryManager.getInstance().scrubAddress(address, useApartment);
 				
 		String apartment = address.getApartment();
@@ -196,22 +207,7 @@ public class AddressUtil {
 		return stateAbbrevs.contains(state.toUpperCase());
 	}
 
-	public static boolean validateTriState(String state) {
-		return triStateAbbrevs.contains(state.toUpperCase());
-	}
-
-	private final static Set<String> triStateAbbrevs = new HashSet<String>();
-	static {
-		triStateAbbrevs.add("NJ");
-		triStateAbbrevs.add("CT");
-		triStateAbbrevs.add("NY");
-		triStateAbbrevs.add("PA");
-		
-		triStateAbbrevs.add("DC");
-		triStateAbbrevs.add("DE");
-		triStateAbbrevs.add("MD");
-		triStateAbbrevs.add("VA");
-	}
+	
 	private final static Set<String> stateAbbrevs = new HashSet<String>();
 	static {
 		stateAbbrevs.add("AL");

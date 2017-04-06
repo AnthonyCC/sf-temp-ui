@@ -33,7 +33,6 @@ public class ContentNodeModelUtil {
     
     // Model Request caches
     public static final String CMS_PARENT_KEY_CACHE_NAME = "cmsParentKeyCache";
-    public static final String CMS_CONTENT_NODE_CACHE_NAME = "cmsContentNodeCache";
     public static final String CMS_CONTENT_NODE_ATTRIBUTE_CACHE_NAME = "cmsContentNodeAttributeCache";
 
     private static final Map<String, String> CONTENT_TO_TYPE_MAP = new HashMap<String, String>();
@@ -137,7 +136,6 @@ public class ContentNodeModelUtil {
     static {
         if (ContentNodeModelUtil.isRequestCacheEnabled()) {
             EhCacheUtil.createCache(EhCacheUtil.createCacheConfiguration(CMS_PARENT_KEY_CACHE_NAME, 5000, 30l));
-            EhCacheUtil.createCache(EhCacheUtil.createCacheConfiguration(CMS_CONTENT_NODE_CACHE_NAME, 10000, 30l));
             EhCacheUtil.createCache(EhCacheUtil.createCacheConfiguration(CMS_CONTENT_NODE_ATTRIBUTE_CACHE_NAME, 20000, 30l));
         }
     }

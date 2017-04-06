@@ -188,7 +188,7 @@
 	    </div>
 	
 		<c:choose>
-			<c:when test="${browsePotato.searchParams.pageType != 'STAFF_PICKS'}">
+			<c:when test="${browsePotato.searchParams.pageType != ''}">
 				<div id="sorter">
 		     		 <soy:render template="browse.sortBar" data="${browsePotato.sortOptions}" />
 		    	</div>
@@ -246,10 +246,11 @@
 	      window.FreshDirect.browse.data = <fd:ToJSON object="${browsePotato}" noHeaders="true"/>
 	      window.FreshDirect.globalnav.data = <fd:ToJSON object="${globalnav}" noHeaders="true"/>
 	      window.FreshDirect.coremetricsData = window.FreshDirect.browse.data.coremetrics;
-	      
-
 	      window.FreshDirect.browse.data.searchParams = window.FreshDirect.browse.data.searchParams || {};
-	      
+
+	      /* APPDEV-5920 Staff picks sort bar implementation */
+		  window.FreshDirect.browse.data.pageType = window.FreshDirect.browse.data.pageType || <c:choose><c:when test="${browsePotato.searchParams.pageType == 'STAFF_PICKS'}">'STAFF_PICKS'</c:when><c:otherwise> {} </c:otherwise> </c:choose>;
+	      window.FreshDirect.browse.data.sortOptions = window.FreshDirect.browse.data.sortOptions || {};
 	    </script>
   </tmpl:put>
 

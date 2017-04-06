@@ -115,6 +115,7 @@ public class FDPlantProductJcoServer extends FdSapServer {
 		tableMetaDataList.add(new TableMetaData("NORMT", JCoMetaData.TYPE_CHAR, 3, "Industry Standard Description"));
 		tableMetaDataList.add(new TableMetaData("SEARK", JCoMetaData.TYPE_CHAR, 2, "FD RankNumber for Seafood Material"));
 		tableMetaDataList.add(new TableMetaData("ZZHOO", JCoMetaData.TYPE_CHAR, 1, "Hide out of stock"));
+		tableMetaDataList.add(new TableMetaData("WESCH", JCoMetaData.TYPE_CHAR, 3, "Number of Days Fresh"));
 
 		createTableRecord(metaPlantMaterialList, tableMetaDataList);
 		metaPlantMaterialList.lock();
@@ -309,13 +310,14 @@ public class FDPlantProductJcoServer extends FdSapServer {
 		param.setRating(FDSapHelperUtils.getString(materialPlantTable.getString("RATING")));
 		param.setSustainabilityRating(FDSapHelperUtils.getString(materialPlantTable.getString("SEARK")));
 		param.setHideOutOfStock("X".equalsIgnoreCase(materialPlantTable.getString("ZZHOO")));
-
+		param.setNumberOfDaysFresh(materialPlantTable.getString("WESCH"));
+		
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Got material plant record for Plant:" + param.getPlantId() + "\t Material No:" + materialNum
 					+ "\t MaterialGroup:" + param.getAtpRule() + "\t LeadTime:" + param.getLeadTime() + "\t Blocked:"
 					+ param.getBlockedDays() + "\t DaysInhouse:" + param.getDays_in_house() + "\t ExpertRating:"
 					+ param.getRating() + "\t SustainabilityRating:" + param.getSustainabilityRating()
-					+ "\t Hide Out of Stock:" + param.isHideOutOfStock());
+					+ "\t Hide Out of Stock:" + param.isHideOutOfStock()+"\t Number of Days Fresh:"+param.getNumberOfDaysFresh());
 		}
 		return param;
 	}

@@ -3,26 +3,75 @@
 <%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
+<%@ page import='com.freshdirect.common.context.MasqueradeContext' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri="fd-features" prefix="features" %>
 <%-- this file will be included in the <head> tag --%>
-	<%
-		/* Google Analytics Pixel */
-		SemPixelModel semPixel_GA = FDSemPixelCache.getInstance().getSemPixel("GoogleAnalytics");
-		semPixel_GA.setParam("GAKey", FDStoreProperties.getGoogleAnalyticsKey());
-		semPixel_GA.setParam("GADomain", FDStoreProperties.getGoogleAnlayticsDomain());
-		if (FDStoreProperties.isGoogleAnalyticsUniversal()) { semPixel_GA.setParam("universal", "true"); }
-	%>
-	<%
-		if(request.getRequestURI().endsWith("referee_signup.jsp") || request.getRequestURI().indexOf("invite") != -1) {
-			//add param so ftl can do different logic
-			semPixel_GA.setParam("onRaf", "true");
-		}
-	%>
-		<fd:SemPixelIncludeMedia pixelNames="GoogleAnalytics" />
-	<% /* Google Analytics Pixel */ %>
-	
+
+  <script>
+    window.FreshDirect = window.FreshDirect || {};
+    var fd = window.FreshDirect;
+
+    fd.gtm = fd.gtm || {};
+    fd.gtm.key = '<%= FDStoreProperties.getGoogleTagManagerKey() %>';
+  </script>
+    
+  <%-- Google Tag Manager login/signup events --%>
+  <%
+  FDUserI gtm_user = (FDUserI)session.getAttribute(SessionName.USER);
+  if (gtm_user != null) {
+  %>
+  <script>
+    var dataLayer = window.dataLayer || [];
+
+    dataLayer.push({
+      'config-ga-key': '<%= FDStoreProperties.getGoogleAnalyticsKey() %>',
+      'config-ga-domain': '<%= FDStoreProperties.getGoogleAnlayticsDomain() %>'
+    });
+
+    var gtm_userdata = {
+      'user-customer-type': '<%= gtm_user.getSelectedAddress().getServiceType() %>',
+      'user-ct-status': '<%= gtm_user.isChefsTable() %>',
+      'user-del-county':'<%= gtm_user.getDefaultCounty() %>',
+      'user-marketing-segment': '<%= gtm_user.getMarketingPromo() %>',
+      'user-order-count': '<%= gtm_user.getAdjustedValidOrderCount() %>'
+    };
+
+    <%
+    if (gtm_user.getDlvPassInfo() != null && gtm_user.getDlvPassInfo().getStatus() != null) {
+    %>
+    gtm_userdata['user-dp-status'] = '<%= gtm_user.getDlvPassInfo().getStatus().getDisplayName() %>';
+    <%
+    }
+    %>
+
+    <%
+    if (gtm_user.getIdentity() != null && gtm_user.getIdentity().getErpCustomerPK() != null) {
+    %>
+    gtm_userdata['user-customer-id'] = '<%= gtm_user.getIdentity().getErpCustomerPK() %>';
+    <%
+    }
+    %>
+
+    dataLayer.push(gtm_userdata);
+
+    <% if (gtm_user.hasJustLoggedIn()) { %>
+    // user logged in
+    dataLayer.push({
+      'event': 'user-login'
+    });
+    <% } %>
+
+    <% if (gtm_user.hasJustSignedUp()) { %>
+    // user logged in
+    dataLayer.push({
+      'event': 'user-signup'
+    });
+    <% } %>
+  </script>
+  <% } %>
+
 <%@ include file="/common/template/includes/extol_tags.jspf" %>
 	
   <%-- Feature version switcher --%>
@@ -55,12 +104,18 @@
       }
       
       String zipCode = jsUser.getZipCode();
+      String cohortName = jsUser.getCohortName();
+      MasqueradeContext jsMasqueradeContext = jsUser.getMasqueradeContext();
       %>
     fd.user = {};
     fd.user.recognized = <%= sessionUserLevel == FDUserI.RECOGNIZED %>;
     fd.user.guest = <%= sessionUserLevel == FDUserI.GUEST %>;
     fd.user.isZipPopupUsed = <%= hideZipCheckPopup %>;
     fd.user.zipCode = '<%= zipCode %>';
+    fd.user.cohortName = '<%= cohortName %>';
+      <% if (jsMasqueradeContext != null) {%>
+        fd.user.masquerade = true;
+      <% } %>
     <% } %>
   }());
   </script>

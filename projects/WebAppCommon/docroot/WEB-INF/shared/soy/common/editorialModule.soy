@@ -11,7 +11,7 @@
   		{param content: $moduleData /}
   	{/call}
   	<div class="content {if $moduleData.hideProductBadge} hide-burst {/if}">
-      <div class="editorial-content" tabindex="0">
+      <div class="editorial-content {if $moduleData.moduleTitle} no-padding-top{/if}" tabindex="0">
         <div class="left-side">
         {if $moduleData.editorialContainer.heroGraphic}
           <img src="{$moduleData.editorialContainer.heroGraphic}" alt="{$moduleData.editorialContainer.heroTitle}">

@@ -2,9 +2,12 @@ package com.freshdirect.webapp.ajax.browse.data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
@@ -295,16 +298,20 @@ public class BrowseData implements Serializable {
 	
 	public static class AssortProducts implements Serializable {
 		private static final long serialVersionUID = 2252485502495019016L;
-		private Map<String, List<ProductData>> cats = new HashMap<String, List<ProductData>>();
-		private List<ProductData> products = new ArrayList<ProductData>();
+		//private Map<String, List<ProductData>> cats = new HashMap<String, List<ProductData>>();
+		private List<ProductData> unfilteredAssortedProducts = new ArrayList<ProductData>(); // added this list as part of APPDEV-5920 - sort bar for staff picks
+		private List<CategoryKey> catKeys= new ArrayList<CategoryKey>();
+		private FilterLabelDataCointainer filterLabels = new FilterLabelDataCointainer(); // added this for passing filter labels to (search) content.soy 
+		private Map<String, List<ProductData>> cats = new TreeMap<String, List<ProductData>>(new Comparator<String>() {
 
-		public List<ProductData> getProducts(String cat) {
-			if (cats.containsKey(cat)) {
-				return cats.get(cat);
-			} else {
-				return new ArrayList<ProductData>();
+			@Override
+			public int compare(String category1, String category2) {
+				CategoryKey categoryKey1=getCategoryKeyForCategory(category1, catKeys);
+				CategoryKey categoryKey2=getCategoryKeyForCategory(category2, catKeys);
+				return categoryKey1.getCategoryPosition().compareTo(categoryKey2.getCategoryPosition());
+				
 			}
-		}
+		});
 
 		public Map<String, List<ProductData>> getCats() {
 			return cats;
@@ -314,21 +321,119 @@ public class BrowseData implements Serializable {
 			this.cats = cats;
 		}
 
+		public List<CategoryKey> getCatKeys() {
+			return catKeys;
+		}
+
+		public void setCatKeys(List<CategoryKey> catKeys) {
+			this.catKeys = catKeys;
+		}
+		
+		public void addCategoryKeys(CategoryKey categoryKey){
+			getCatKeys().add(categoryKey);
+		}
+		public FilterLabelDataCointainer getFilterLabels() {
+			return filterLabels;
+		}
+
+		public void setFilterLabels(FilterLabelDataCointainer filterLabels) {
+			this.filterLabels = filterLabels;
+		}
+
+		public List<ProductData> getUnfilteredAssortedProducts() {
+			return unfilteredAssortedProducts;
+		}
+
+		public void setUnfilteredAssortedProducts(
+				List<ProductData> unfilteredAssortedProducts) {
+			this.unfilteredAssortedProducts = unfilteredAssortedProducts;
+		}
+
 		public void addProdDataToCat(String curCat, ProductData productData) {
-			/*List<ProductData> temp = this.getProducts(curCat);
-			temp.add(productData);
-			this.getCats().put(curCat, temp);*/
+			
 			if(this.cats.containsKey(curCat)){
             	List<ProductData> productDataList=this.cats.get(curCat);
             	productDataList.add(productData);
-            	this.cats.put(curCat, productDataList);
+            	/*Commented the below code as it is overriding the sort behavior in staff picks sort bar*/
+            /*	Collections.sort(productDataList, new Comparator<ProductData>() {
+
+					@Override
+					public int compare(ProductData o1, ProductData o2) {
+						Integer p1=o1.getPriority();
+						Integer p2=o2.getPriority();
+						return p1.compareTo(p2);
+					}
+				});
+*/            	this.cats.put(curCat, productDataList);
             } else {
-            	List<ProductData> productDataList=new ArrayList<ProductData>();
+            	List<ProductData> productDataList=new ArrayList<ProductData>();   	
             	productDataList.add(productData);
             	this.cats.put(curCat, productDataList);
             }
 		}
 	}
+	
+	/* Created this class as part of APPDEV -5920 Staff picks sort bar implementation */
+	public static class CategoryKey implements Serializable{
+	
+		private static final long serialVersionUID = 1L;
+		private String categoryName;
+		private Integer categoryPosition;
+		public String getCategoryName() {
+			return categoryName;
+		}
+		public void setCategoryName(String categoryName) {
+			this.categoryName = categoryName;
+		}
+		public Integer getCategoryPosition() {
+			return categoryPosition;
+		}
+		public void setCategoryPosition(Integer categoryPosition) {
+			this.categoryPosition = categoryPosition;
+		}
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result
+					+ ((categoryName == null) ? 0 : categoryName.hashCode());
+			result = prime * result + categoryPosition;
+			return result;
+		}
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			CategoryKey other = (CategoryKey) obj;
+			if (categoryName == null) {
+				if (other.categoryName != null)
+					return false;
+			} else if (!categoryName.equals(other.categoryName))
+				return false;
+			if (categoryPosition != other.categoryPosition)
+				return false;
+			return true;
+		}
+		
+		
+	} 
+	
+	private static CategoryKey getCategoryKeyForCategory(String category, List<CategoryKey> categoryKeys){
+		CategoryKey categoryKey=null;
+		for (CategoryKey key:categoryKeys){
+			if(key.getCategoryName().equalsIgnoreCase(category)){
+				categoryKey=key;
+				break;
+			}
+			
+		}
+		return categoryKey;
+	}
+	
 	public static class HLBrandAdProducts implements Serializable {
 	
 		private static final long serialVersionUID = -4153578565069486053L;

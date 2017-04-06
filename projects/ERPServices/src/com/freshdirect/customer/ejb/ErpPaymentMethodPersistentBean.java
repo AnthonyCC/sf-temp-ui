@@ -245,7 +245,7 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 		PreparedStatement ps = conn.prepareStatement("SELECT NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_NAME, BANK_ACCOUNT_TYPE, ADDRESS1, " +
 				"ADDRESS2, APARTMENT, CITY, STATE, ZIP_CODE, COUNTRY, CUSTOMER_ID, AVS_FAILED,BYPASS_AVS_CHECK, PROFILE_ID,ACCOUNT_NUM_MASKED," +
 
-				"BEST_NUM_BILLING_INQ,EWALLET_ID,VENDOR_EWALLET_ID,PAYPAL_ACCOUNT_ID,DEVICE_ID FROM CUST.PAYMENTMETHOD WHERE ID = ?");
+				"BEST_NUM_BILLING_INQ,EWALLET_ID,VENDOR_EWALLET_ID,PAYPAL_ACCOUNT_ID,DEVICE_ID,IS_DEBIT_CARD FROM CUST.PAYMENTMETHOD WHERE ID = ?");
 		ResultSet rs = null;
 		try {
 			ps.setString(1, this.getPK().getId());
@@ -274,7 +274,7 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 				model.setVendorEWalletID(rs.getString("VENDOR_EWALLET_ID"));
 				model.setEmailID(rs.getString("PAYPAL_ACCOUNT_ID"));
 				model.setDeviceId(rs.getString("DEVICE_ID"));
-				//model.setDebitCard((null!=rs.getString("IS_DEBIT_CARD") && rs.getString("IS_DEBIT_CARD").equals("Y"))?true:false);
+				model.setDebitCard((null!=rs.getString("IS_DEBIT_CARD") && rs.getString("IS_DEBIT_CARD").equals("D"))?true:false);
 				
 				setParentPK(new PrimaryKey(model.getCustomerId()));
 				model.setPK(getPK());

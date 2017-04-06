@@ -52,6 +52,8 @@ public class ErpPlantMaterialPersistentBean extends ErpPersistentBeanSupport
 	/** hide if its out of stock **/
 	private boolean hideOutOfStock;
 	
+	private String numberOfDaysFresh;
+	
 	/**
 	 * @param model
 	 */
@@ -76,7 +78,7 @@ public class ErpPlantMaterialPersistentBean extends ErpPersistentBeanSupport
 	public ErpPlantMaterialPersistentBean(VersionedPrimaryKey pk,String plantId,
 			boolean kosherProduction, boolean platter,
 			DayOfWeekSet blockedDays, EnumATPRule atpRule, String rating, String days_in_house,
-			String sustainabilityRating, int leadTime, boolean hideOutStock) {
+			String sustainabilityRating, int leadTime, boolean hideOutStock, String numberOfDaysFresh) {
 		super(pk);
 		this.plantId = plantId;
 		this.kosherProduction = kosherProduction;
@@ -88,6 +90,7 @@ public class ErpPlantMaterialPersistentBean extends ErpPersistentBeanSupport
 		this.sustainabilityRating = sustainabilityRating;
 		this.leadTime = leadTime;
 		this.hideOutOfStock = hideOutStock;
+		this.numberOfDaysFresh=numberOfDaysFresh;
 	}
 
 
@@ -97,7 +100,7 @@ public class ErpPlantMaterialPersistentBean extends ErpPersistentBeanSupport
 				new  ErpPlantMaterialModel(this.plantId, this.kosherProduction,
 						this.platter, this.blockedDays, this.atpRule,
 						this.rating, this.days_in_house,
-						this.sustainabilityRating, this.leadTime, this.hideOutOfStock);
+						this.sustainabilityRating, this.leadTime, this.hideOutOfStock, this.numberOfDaysFresh);
 			super.decorateModel(model);
 			return model;
 	}
@@ -109,7 +112,7 @@ public class ErpPlantMaterialPersistentBean extends ErpPersistentBeanSupport
 			String id = this.getNextId(conn, "ERPS");
 			int version = ((VersionedPrimaryKey) this.getParentPK()).getVersion();
 			PreparedStatement ps = conn
-					.prepareStatement("insert into erps.PLANT_MATERIAL (ID,VERSION,MAT_ID,RATING,DAYS_IN_HOUSE,SUSTAINABILITY_RATING,PLANT_ID,KOSHER_PRODUCTION, BLOCKED_DAYS, ATP_RULE, LEAD_TIME,PLATTER,HIDE_OOS) values (?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?)");
+					.prepareStatement("insert into erps.PLANT_MATERIAL (ID,VERSION,MAT_ID,RATING,DAYS_IN_HOUSE,SUSTAINABILITY_RATING,PLANT_ID,KOSHER_PRODUCTION, BLOCKED_DAYS, ATP_RULE, LEAD_TIME,PLATTER,HIDE_OOS, DAYSFRESH) values (?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?,?)");
 			ps.setString(1, id);
 			ps.setInt(2, version);
 			ps.setString(3, this.getParentPK().getId());/*		
@@ -126,6 +129,8 @@ public class ErpPlantMaterialPersistentBean extends ErpPersistentBeanSupport
 			ps.setInt(11, this.leadTime);
 			ps.setString(12, this.platter ? "X" : "");
 			ps.setString(13, this.hideOutOfStock ? "X" : "");
+			ps.setString(14, this.numberOfDaysFresh);
+			
 			
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("No database rows created!");
@@ -155,6 +160,7 @@ public class ErpPlantMaterialPersistentBean extends ErpPersistentBeanSupport
 			this.sustainabilityRating = plantMaterialModel.getSustainabilityRating();
 			this.leadTime = plantMaterialModel.getLeadTime();
 			this.hideOutOfStock = plantMaterialModel.isHideOutOfStock();
+			this.numberOfDaysFresh=plantMaterialModel.getNumberOfDaysFresh();
 		}
 	}
 
@@ -167,7 +173,7 @@ public class ErpPlantMaterialPersistentBean extends ErpPersistentBeanSupport
 	public static List findByParent(Connection conn, VersionedPrimaryKey parentPK) throws SQLException {
 		java.util.List lst = new java.util.LinkedList();
 		PreparedStatement ps = conn
-				.prepareStatement("SELECT ID, PLANT_ID, ATP_RULE, RATING, DAYS_IN_HOUSE, SUSTAINABILITY_RATING, KOSHER_PRODUCTION, BLOCKED_DAYS, LEAD_TIME, PLATTER, HIDE_OOS from ERPS.PLANT_MATERIAL where mat_id = ?");
+				.prepareStatement("SELECT ID, PLANT_ID, ATP_RULE, RATING, DAYS_IN_HOUSE, SUSTAINABILITY_RATING, KOSHER_PRODUCTION, BLOCKED_DAYS, LEAD_TIME, PLATTER, HIDE_OOS,DAYSFRESH from ERPS.PLANT_MATERIAL where mat_id = ?");
 		ps.setString(1, parentPK.getId());
 		ResultSet rs = ps.executeQuery();
 
@@ -176,7 +182,7 @@ public class ErpPlantMaterialPersistentBean extends ErpPersistentBeanSupport
 					, rs.getString("PLANT_ID"), "X".equalsIgnoreCase(rs.getString("KOSHER_PRODUCTION"))
 					, "X".equalsIgnoreCase(rs.getString("PLATTER")), DayOfWeekSet.decode(rs.getString("BLOCKED_DAYS"))
 					, EnumATPRule.getEnum(rs.getInt("ATP_RULE")), rs.getString("RATING"), rs.getString("DAYS_IN_HOUSE")
-					, rs.getString("SUSTAINABILITY_RATING"),  rs.getInt("LEAD_TIME"),"X".equalsIgnoreCase(rs.getString("HIDE_OOS")));
+					, rs.getString("SUSTAINABILITY_RATING"),  rs.getInt("LEAD_TIME"),"X".equalsIgnoreCase(rs.getString("HIDE_OOS")),rs.getString("DAYSFRESH"));
 			
 			bean.setParentPK(parentPK);
 			lst.add(bean);

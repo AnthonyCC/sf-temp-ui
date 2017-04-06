@@ -31,7 +31,7 @@
   background: #F2F3F4;
   margin: 0;
   min-height: 40px;
-  padding: 17px;
+  padding: 0 18px;
 }
 
 .content-module h1 {
@@ -53,12 +53,12 @@
 
 .content-module .module-header {
   align-items: center;
-  border-top: 15px solid #FFF;
   font-size: 25px;
   font-family: 'Brandon Text';
   text-transform: uppercase;
-  margin: 0x;
-  min-height: 80px;
+  min-height: 52px;
+  margin: 0;
+  margin-top: 10px;
   padding: 0 10px;
 }
 

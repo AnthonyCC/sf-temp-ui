@@ -21,6 +21,10 @@ public class SearchQuery extends Message {
 	private String brand;
 
 	private String upc;
+	
+	private String searchParams;
+	
+	private String pageType;
 
 	public String getQuery() {
 		return query;
@@ -84,5 +88,21 @@ public class SearchQuery extends Message {
 
 	public void setUpc(String upc) {
 		this.upc = upc;
+	}
+	
+	public String getSearchParams() {
+		return searchParams;
+	}
+
+	public void setSearchParamsc(String searchParams) {
+		this.searchParams = searchParams;
+	}
+	
+	public String getPageType() {
+		return pageType;
+	}
+
+	public void setPageType(String pageType) {
+		this.pageType = pageType;
 	}
 }
