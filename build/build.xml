@@ -45,6 +45,8 @@
 			<include name="*.jar"/>
 		</fileset>
 	</path>
+	<property name="uilib"			value="${basedir}/uilib" />
+
 	<!-- UI configurations ends -->
 	
 	<path id="j2ee.classpath">
@@ -3213,7 +3215,13 @@
 					<exclude name="**/*.java"/>
 				</fileset>
 			</copy>
-
+			<mkdir dir="${work.dir}/@{project}/WEB-INF/lib" />
+			<copy file="${work.dir}/ERPSWebApp.jar" todir="${work.dir}/@{project}/WEB-INF/lib"/>
+			<copy todir="${work.dir}/@{project}/WEB-INF/lib">
+					<fileset dir="${uilib}">
+						<include name="*.jar"/>
+					</fileset>
+			</copy>
 			<mkdir dir="${work.dir}/@{project}/WEB-INF/classes" />
 
 			<if>
@@ -3303,7 +3311,7 @@
 		</javac>
 	
 				<record name="${work.dir}/logs/log.txt" action="stop"/>
-				
+		
 			<jar destfile="${release.dir}/applications/FDEcomWebsite.war">
 				<manifest>
 					<attribute name="Specification-Version" value="${build.counter}"/>
