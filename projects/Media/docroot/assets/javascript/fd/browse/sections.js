@@ -9,10 +9,10 @@ var FreshDirect = FreshDirect || {};
 
   var sections = Object.create(WIDGET,{
     signal:{
-    	value: (window.srch && fd.browse && fd.browse.data.pageType &&  fd.browse.data.pageType === 'STAFF_PICKS') ? 'assortProducts' : 'sections'
+    	value: (window.srch && fd.browse && fd.browse.data &&  fd.browse.data.pageType === 'STAFF_PICKS') ? 'assortProducts' : 'sections'
     	},
-    template:{    
-    	value: (window.srch && fd.browse && fd.browse.data.pageType &&  fd.browse.data.pageType === 'STAFF_PICKS') ? srch.staffPicksContent : browse.content 	
+    template:{     	
+    	value: (window.srch && fd.browse && fd.browse.data &&  fd.browse.data.pageType === 'STAFF_PICKS') ? srch.staffPicksContent : browse.content
 
     },
     placeholder:{

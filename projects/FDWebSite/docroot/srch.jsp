@@ -249,7 +249,7 @@
 	      window.FreshDirect.browse.data.searchParams = window.FreshDirect.browse.data.searchParams || {};
 
 	      /* APPDEV-5920 Staff picks sort bar implementation */
-	      window.FreshDirect.browse.data.pageType = window.FreshDirect.browse.data.pageType || <c:choose><c:when test="${browsePotato.searchParams.pageType == 'STAFF_PICKS'}">'STAFF_PICKS'</c:when></c:choose>; 
+		  window.FreshDirect.browse.data.pageType = window.FreshDirect.browse.data.pageType || <c:choose><c:when test="${browsePotato.searchParams.pageType == 'STAFF_PICKS'}">'STAFF_PICKS'</c:when><c:otherwise> {} </c:otherwise> </c:choose>;
 	      window.FreshDirect.browse.data.sortOptions = window.FreshDirect.browse.data.sortOptions || {};
 	    </script>
   </tmpl:put>
