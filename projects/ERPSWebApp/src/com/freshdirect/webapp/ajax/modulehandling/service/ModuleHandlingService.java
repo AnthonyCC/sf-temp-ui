@@ -96,6 +96,8 @@ public final class ModuleHandlingService {
                     }
                 }
             }
+        } else {
+            LOGGER.warn("ModuleContainer was not found in Content Management System with id: " + moduleContainerId);
         }
 
         result.setData(datas);
