@@ -11,3 +11,11 @@
   box-sizing: border-box;
   width: 25%;
 }
+
+.content-module.product-carousel [data-component="carousel"] [data-component="carousel-mask"] {
+  margin-bottom: 20px;
+}
+
+.content-module.product-carousel [data-component="carousel"] .pager {
+  bottom: 10px;
+}

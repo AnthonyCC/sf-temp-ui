@@ -11,3 +11,11 @@
 .content-module.icon-carousel [data-component="carousel"] [data-component="carousel-list"] li a{
   display: inline-block;
 }
+
+.content-module.icon-carousel [data-component="carousel"] [data-component="carousel-mask"] {
+  margin-bottom: 20px;
+}
+
+.content-module.icon-carousel [data-component="carousel"] .pager {
+  bottom: 10px;
+}
