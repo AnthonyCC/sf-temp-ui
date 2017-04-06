@@ -58,20 +58,12 @@ public class DeliveryAddressValidatorTest {
 			
 			boolean isAddressValid = validator.validateAddressWithoutScrub(actionResult);	
 			
+
 			System.out.println("isAddressValid:"+isAddressValid);
-			System.out.println("Address1:"+validator.getScrubbedAddress().getAddress1());
-			System.out.println("Address2:"+validator.getScrubbedAddress().getAddress2());
-			System.out.println("ScrubbedStreet:"+validator.getScrubbedAddress().getScrubbedStreet());
-			System.out.println("Apartment:"+validator.getScrubbedAddress().getApartment());
-			System.out.println("City:"+validator.getScrubbedAddress().getCity());
-			System.out.println("CompanyName:"+validator.getScrubbedAddress().getCompanyName());
-			System.out.println("Country:"+validator.getScrubbedAddress().getCountry());
-			System.out.println("Latitude:"+validator.getScrubbedAddress().getLatitude());
-			System.out.println("Longitude:"+validator.getScrubbedAddress().getLongitude());
-			System.out.println("State:"+validator.getScrubbedAddress().getState());
-			System.out.println("ZipCode:"+validator.getScrubbedAddress().getZipCode());
-			System.out.println("ServiceType:"+validator.getScrubbedAddress().getServiceType());
-		    System.out.println("SsScrubbedAddress:"+validator.getScrubbedAddress().getAddressInfo().getSsScrubbedAddress());
+			
+			System.out.println("ActionResult : " + actionResult.toString());						
+			
+			System.out.println("Scrubbed Address : " + validator.getScrubbedAddress().toString());
 		   
 			
 		}
@@ -115,22 +107,13 @@ public class DeliveryAddressValidatorTest {
 			ActionResult actionResult = new ActionResult();
 			
 			
-			boolean isAddressValid = validator.validateAddressWithoutScrub(actionResult);	
+			boolean isAddressValid = validator.validateAddressWithoutScrub(actionResult);
 			
 			System.out.println("isAddressValid:"+isAddressValid);
-			System.out.println("Address1:"+validator.getScrubbedAddress().getAddress1());
-			System.out.println("Address2:"+validator.getScrubbedAddress().getAddress2());
-			System.out.println("ScrubbedStreet:"+validator.getScrubbedAddress().getScrubbedStreet());
-			System.out.println("Apartment:"+validator.getScrubbedAddress().getApartment());
-			System.out.println("City:"+validator.getScrubbedAddress().getCity());
-			System.out.println("CompanyName:"+validator.getScrubbedAddress().getCompanyName());
-			System.out.println("Country:"+validator.getScrubbedAddress().getCountry());
-			System.out.println("Latitude:"+validator.getScrubbedAddress().getLatitude());
-			System.out.println("Longitude:"+validator.getScrubbedAddress().getLongitude());
-			System.out.println("State:"+validator.getScrubbedAddress().getState());
-			System.out.println("ZipCode:"+validator.getScrubbedAddress().getZipCode());
-			System.out.println("ServiceType:"+validator.getScrubbedAddress().getServiceType());
-		    System.out.println("SsScrubbedAddress"+validator.getScrubbedAddress().getAddressInfo().getSsScrubbedAddress());
+			
+			System.out.println("ActionResult : " + actionResult.toString());						
+			
+			System.out.println("Scrubbed Address : " + validator.getScrubbedAddress().toString());
 		   
 			
 		}
