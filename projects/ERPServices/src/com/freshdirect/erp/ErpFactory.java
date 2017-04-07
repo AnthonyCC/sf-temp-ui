@@ -411,8 +411,13 @@ public class ErpFactory {
 			lookupBatchHome();
 		}
 		try {
-			BatchManagerSB batchSB = batchHome.create();
-			BatchModel bm = (BatchModel) batchSB.getBatch(batchId);
+			BatchModel bm = null;
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				bm =FDECommerceService.getInstance().getBatch(batchId);
+			}else{
+				BatchManagerSB batchSB = batchHome.create();
+				bm = (BatchModel) batchSB.getBatch(batchId);
+			}
 			return bm;
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
@@ -426,8 +431,14 @@ public class ErpFactory {
 			lookupBatchHome();
 		}
 		try {
-			BatchManagerSB batchSB = batchHome.create();
-			return batchSB.getRecentBatches();
+			Collection batches = null;
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				batches =FDECommerceService.getInstance().getRecentBatches();
+			}else{
+				BatchManagerSB batchSB = batchHome.create();
+				batches = batchSB.getRecentBatches();
+			}
+			return batches;
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {

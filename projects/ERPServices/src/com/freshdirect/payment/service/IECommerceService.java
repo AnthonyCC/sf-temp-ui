@@ -1,5 +1,6 @@
 package com.freshdirect.payment.service;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.content.attributes.AttributeException;
 import com.freshdirect.content.attributes.FlatAttributeCollection;
 import com.freshdirect.customer.ErpProductFamilyModel;
+import com.freshdirect.erp.model.BatchModel;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.payment.BINInfo;
@@ -30,4 +32,8 @@ public interface IECommerceService {
 	public void storeAttributes(FlatAttributeCollection attrs, String user,	String sapId) throws FDResourceException;
 
 	public Map loadAttributes(Date since) throws AttributeException;
+
+	public BatchModel getBatch(int batchId)throws FDResourceException;
+
+	public Collection getRecentBatches()throws FDResourceException;
 }

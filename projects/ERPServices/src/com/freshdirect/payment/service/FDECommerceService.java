@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +34,7 @@ import com.freshdirect.ecommerce.data.attributes.FlatAttributeCollection;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.payment.BINData;
+import com.freshdirect.erp.model.BatchModel;
 import com.freshdirect.fdstore.FDPayPalServiceException;
 //import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
@@ -54,6 +56,8 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String SAVE_ACTIVE_BINS = "bin/storebins";
 	private static final String SAVE_ATTRIBUTES = "attributes/attributecollection";
 	private static final String LOAD_ATTRIBUTES_DATE = "attributes/timestamp/since/";
+	private static final String ERP_BATCH_PROCESS_API = "erp/batch/";
+	private static final String ERP_RECENT_BATCHES_API = "erp/recentBatches";
 	
 	private static FDECommerceService INSTANCE;
 
@@ -385,6 +389,26 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 				results.put(entry.getKey(), valueList);
 			}
 			return results;
+	}
+	@Override
+	public BatchModel getBatch(int batchId) throws FDResourceException {
+		Response<BatchModel> response;
+		
+		response = httpGetDataTypeMap(getFdCommerceEndPoint(ERP_BATCH_PROCESS_API+batchId), new TypeReference<Response<BatchModel>>() {});
+		if(!response.getResponseCode().equals("OK"))
+			throw new FDResourceException(response.getMessage());
+			return response.getData();
+
+	}
+	@Override
+	public Collection getRecentBatches() throws FDResourceException {
+		Response<Collection<BatchModel>> response;
+		
+		response = httpGetDataTypeMap(getFdCommerceEndPoint(ERP_RECENT_BATCHES_API), new TypeReference<Response<Collection<BatchModel>>>() {});
+		if(!response.getResponseCode().equals("OK"))
+			throw new FDResourceException(response.getMessage());
+			return response.getData();
+
 	}
 	
 }
