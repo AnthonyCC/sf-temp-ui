@@ -2,6 +2,11 @@
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5" id="FDWebSite">
 	<description>Guess what</description>
 	<display-name>FDWebSite Application</display-name>
+	<listener>  
+	    <listener-class>
+	        com.freshdirect.webapp.util.TomcatBootStartupListener
+	    </listener-class>
+	</listener>  
 	<filter>
 		<description>Monitors the execution time FDWebSite Requests</description>
 		<display-name>FDWebSite Request Monitor</display-name>
