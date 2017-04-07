@@ -10,8 +10,6 @@ import com.freshdirect.erp.ErpCOOLInfo;
 
 public interface ICommerceService {
 
-	public void savePricingZoneData(List<ErpZoneMasterInfo> zoneInfoList) throws RemoteException, LoaderException;
-	
 	public void saveCountryOfOriginData(List<ErpCOOLInfo> cooList) throws RemoteException, LoaderException;
 	
 	public void getCountryOfOriginData() throws RemoteException, LoaderException;
@@ -23,4 +21,5 @@ public interface ICommerceService {
 	public String getFDCustomerIDForErpId(String erpCustomerPK) throws RemoteException;
 	public String getErpIDForUserID(String userID) throws RemoteException;
 	public Collection<String> getSkuCodes() throws RemoteException;
+	public void loadData(List<ErpZoneMasterInfo> zoneInfos)throws RemoteException, LoaderException;
 } 
