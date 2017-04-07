@@ -58,6 +58,7 @@ public class LocationHandlerService {
                             (user.getUserContext() != null && user.getUserContext().getStoreContext() != null) ? user.getUserContext().getStoreContext().getEStoreId()
                                     : EnumEStoreId.FD), user);
             user.setAddress(address);
+            user.setZPServiceType(address.getServiceType());
             handleNewAddressSet(user);
 
             if (isZipPopup) {
@@ -134,7 +135,7 @@ public class LocationHandlerService {
         boolean needToUpdate = (serviceType != user.getSelectedServiceType());
         if (needToUpdate) {
             user.setSelectedServiceType(serviceType);
-            user.setZPServiceType(serviceType); // added for zone pricing to keep user service type up-to-date
+            user.setZPServiceType(serviceType); // added as part of APPDEV-6036. We are updating the zone pricing service type to be in sync with user selected service type
         }
         return needToUpdate;
     }

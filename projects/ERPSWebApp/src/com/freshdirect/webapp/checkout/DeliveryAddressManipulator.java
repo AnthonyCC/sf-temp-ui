@@ -992,6 +992,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			cart.setZoneInfo( zoneInfo );
 			cart.setDeliveryAddress( address );
 			user.setAddress(address);
+			user.setZPServiceType(address.getServiceType());// added as part of APPDEV-6036. We are updating the zone pricing service type to be in sync with ErpAddressModel address object
 			user.resetUserContext();
 			cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
 			if (!cart.isEmpty()) {
@@ -1087,6 +1088,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		FDCartModel cart =user.getShoppingCart();
 		if(null !=cart){
 			//[APPDEV-5568]- Reset the usercontext, as the address is updated.
+			user.setZPServiceType(address.getServiceType());// added as part of APPDEV-6036. We are updating the zone pricing service type to be in sync with ErpAddressModel address object
 			user.resetUserContext();
 			cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
 			if (!cart.isEmpty()) {

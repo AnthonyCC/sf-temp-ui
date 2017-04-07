@@ -2322,7 +2322,10 @@ public class FDUser extends ModelSupport implements FDUserI {
 //        String pricingZoneId = FDZoneInfoManager.findZoneId(getZPServiceType().getName(), address != null ? address.getZipCode() : getZipCode());
         String zipCode = address != null ? address.getZipCode() : getZipCode();
         boolean isPickupOnlyORNotServicebleZip = isPickupOnlyORNotServicebleZip(userContext, zipCode);
-        String pricingZoneId = FDZoneInfoManager.findZoneId(getZPServiceType().getName(), zipCode ,isPickupOnlyORNotServicebleZip);
+        /*Adding this condition as part of APPDEV 6036
+         * We are passing the zone pricing service type to be in sync with user selected service type*/
+        EnumServiceType zpServiceType = address != null ? address.getServiceType() : getZPServiceType();
+        String pricingZoneId = FDZoneInfoManager.findZoneId(zpServiceType.getName(), zipCode ,isPickupOnlyORNotServicebleZip);
 
         FulfillmentInfo fulfillmentInfo = null;
         ZoneInfo zoneInfo = null;
