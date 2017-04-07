@@ -3,7 +3,6 @@ package com.freshdirect.webapp.ajax.filtering;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -87,13 +86,13 @@ public class CmsFilteringFlow {
 
     private static final Logger LOG = LoggerFactory.getInstance(CmsFilteringFlow.class);
 
-    private static String FALLBACK_URL = "/";
-    private static String RECIPE_DEPARTMENT_URL_FS = "/recipe_dept.jsp?deptId=%s";
-    private static String SPECIAL_LAYOUT_URL_FS = "/browse_special.jsp?id=%s";
-    private static String HOLIDAY_MEAL_BUNDLE_LAYOUT_URL_FS = "/hmb/category.jsp?id=%s";
-    private static String RECIPE_MEALKIT_LAYOUT_URL_FS = "/handpick/category.jsp?id=%s";
-    private static String ONE_CATEGORY_REDIRECT_URL = "/browse.jsp?id=%s";
-    private static String SUPER_DEPARTMENT_WITHOUT_GLOBALNAV_URL = "/index.jsp";
+    private static final String FALLBACK_URL = "/";
+    private static final String RECIPE_DEPARTMENT_URL_FS = "/recipe_dept.jsp?deptId=%s";
+    private static final String SPECIAL_LAYOUT_URL_FS = "/browse_special.jsp?id=%s";
+    private static final String HOLIDAY_MEAL_BUNDLE_LAYOUT_URL_FS = "/hmb/category.jsp?id=%s";
+    private static final String RECIPE_MEALKIT_LAYOUT_URL_FS = "/handpick/category.jsp?id=%s";
+    private static final String ONE_CATEGORY_REDIRECT_URL = "/browse.jsp?id=%s";
+    private static final String SUPER_DEPARTMENT_WITHOUT_GLOBALNAV_URL = "/index.jsp";
 
     private static final CmsFilteringFlow INSTANCE = new CmsFilteringFlow();
 
@@ -582,11 +581,7 @@ public class CmsFilteringFlow {
                 LOG.warn("Getting DDPP products failed!", e);
             }
         }
-        
-     
-        List<FilteringProductItem> filteredSectionProducts=browseDataContext.getSectionContexts().get(0).getProductItems();
-        
-        
+
        // for staff picks: group the products based on the erp_category column value in product_promotion_group table
         for (Map.Entry<String, List<ProductModel>> entry : searchResults.getAssortProducts().entrySet()) {
             for(ProductModel product:entry.getValue()){

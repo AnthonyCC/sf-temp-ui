@@ -968,9 +968,10 @@ public class MenuBuilderFactory {
 						itemCount = 0;
 
 						// apply filter if menu item is a filter and the box type is multi select
-						itemCount = ProductItemFilterUtil.countItemsForFilter(items, allFilters.get(ProductItemFilterUtil.createCompositeId(boxId, item.getId())));
-
-						if (!item.isSelected() && (itemCount == 0 || itemCount == items.size())) {
+						List<FilteringProductItem>  availableItems = new ArrayList<FilteringProductItem>(items);
+						checkDefaultSkuAvailability(availableItems);
+						itemCount = ProductItemFilterUtil.countItemsForFilter(availableItems, allFilters.get(ProductItemFilterUtil.createCompositeId(boxId, item.getId())));
+						if (!item.isSelected() && (itemCount == 0 || itemCount == availableItems.size())) {
 								it.remove();
 						}else{
 							emptyBox=false;
@@ -1186,12 +1187,7 @@ public class MenuBuilderFactory {
 		Collections.sort(menu, DataUtil.MENUBOX_POSITION_COMPARATOR);
 	}
 	
-	/**
-	 * @param products
-	 * TODO verify if this is needed in production
-	 */
 	private void checkDefaultSkuAvailability(List<FilteringProductItem> products){
-		
 		Iterator<FilteringProductItem> it = products.iterator();
 		
 		while(it.hasNext()){
