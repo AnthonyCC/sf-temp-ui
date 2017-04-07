@@ -679,7 +679,7 @@ public class CmsFilteringFlow {
                 if (null != searchResults.getPageBeacon()) {
                     StringBuffer PageBeacon = new StringBuffer(searchResults.getPageBeacon());
                     browseDataContext.getAdProducts().setPageBeacon(PageBeacon.append(updatedPageBeacon).toString());
-                    //browseDataContext.getAdProducts().setHlProductsCount(searchResults.getHlProductsCount());
+                    browseDataContext.getAdProducts().setHlProductsCount(searchResults.getHlProductsCount());
                 }
             } catch (Exception e) {
                 LOG.warn("Exception while populating HookLogic products: ", e);
