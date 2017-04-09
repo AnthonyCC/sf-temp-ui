@@ -9,6 +9,7 @@ import org.apache.log4j.Category;
 import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.dataloader.LoaderException;
 import com.freshdirect.ecommerce.data.common.Request;
@@ -18,6 +19,8 @@ import com.freshdirect.ecommerce.data.erp.pricing.PricingZoneData;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdlogistics.services.ICommerceService;
+import com.freshdirect.fdstore.FDPayPalServiceException;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 
@@ -26,7 +29,7 @@ public class FDCommerceService extends AbstractLogisticsService implements IComm
 	private final static Category LOGGER = LoggerFactory
 			.getInstance(FDCommerceService.class);
 
-	private static final String SAVE_PRICING_ZONES_API ="pricing/zone";
+	private static final String SAVE_PRICING_ZONES_API ="pricing/zone/loadData";
 	private static final String COO_API ="/coo";
 	private static final String DB_MONITOR ="monitor/dbcheck";
 	private static final String TEST_DATA_CUSTOMERID ="test/dyfeligiblecustomerid";
@@ -36,17 +39,19 @@ public class FDCommerceService extends AbstractLogisticsService implements IComm
 	private static final String TEST_DATA_SKU_CODES ="test/skucodes";
 	private static final String TEST_DATA_ERP_CUSTIDS ="test/erpcustomerids";
 	
-	public void savePricingZoneData(List<ErpZoneMasterInfo> zoneInfoList) throws RemoteException, LoaderException{
+	public void loadData(List<ErpZoneMasterInfo> zoneInfoList) throws RemoteException, LoaderException{
 		try {
-			List<PricingZoneData> data = getOrikaMapper().mapAsList(zoneInfoList, PricingZoneData.class);
-			Request<List<PricingZoneData>> request = new Request<List<PricingZoneData>>();
-			request.setData(data);
+			//List<PricingZoneData> data = getOrikaMapper().mapAsList(zoneInfoList, PricingZoneData.class);
+			Request<List<ErpZoneMasterInfo>> request = new Request<List<ErpZoneMasterInfo>>();
+			request.setData(zoneInfoList);
 			String inputJson = buildRequest(request);
-			getData(inputJson, getFdCommerceEndPoint(SAVE_PRICING_ZONES_API), Response.class);
+			Response<String> response = getData(inputJson, getFdCommerceEndPoint(SAVE_PRICING_ZONES_API), Response.class);
+			if(!response.getResponseCode().equalsIgnoreCase("OK"))
+				throw new RemoteException(response.getMessage());
 		} catch (FDLogisticsServiceException e) {
 			
 			e.printStackTrace();
-			LOGGER.error(e.getMessage());
+			LOGGER.error(e.getMessage() );
 			throw new RemoteException(e.getMessage(), e);
 		}
 		
@@ -183,5 +188,7 @@ public class FDCommerceService extends AbstractLogisticsService implements IComm
 			throw new RemoteException(e.getMessage(), e);
 		}
 	}
+
+
 	
 }
