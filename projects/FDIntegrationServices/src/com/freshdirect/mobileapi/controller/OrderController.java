@@ -479,6 +479,7 @@ public class OrderController extends BaseController {
             return QuickShopFilterService.defaultService().collectQuickShopLineItemForTopItems(request, user, request.getSession(),
                     nav, QuickShopFilterServlet.TOP_ITEMS_FILTERS);
         } catch (FDResourceException e) {
+        	LOGGER.error("Error in collectQuickShopLineItemForTopItems(): " +e);
             throw new ModelException(e);
         }
     }
@@ -499,21 +500,27 @@ public class OrderController extends BaseController {
     }
 
     private List<ProductConfiguration> convertToSkuList(FilteringFlowResult<QuickShopLineItemWrapper> result, FDUserI fdUser) throws ModelException {
-        List<ProductConfiguration> productsWithSkus = new ArrayList<ProductConfiguration>();
-        if(result != null) {
-        	List<FilteringSortingItem<QuickShopLineItemWrapper>> items =  result.getItems();
-        	
-	        for (FilteringSortingItem<QuickShopLineItemWrapper> wrapper : items) {
-	        	QuickShopLineItem line = wrapper.getNode().getItem();
-	        	final ProductModel productModel = ContentFactory.getInstance().getProductByName(line.getCatId(), line.getProductId());
-	        	if(productModel != null) {
-	                ProductConfiguration configuration = new ProductConfiguration();
-	                configuration.populateProductWithModel(Product.wrap(productModel, fdUser), line.getSkuCode());
-	                productsWithSkus.add(configuration);
-	        	}
+        try{
+	    	List<ProductConfiguration> productsWithSkus = new ArrayList<ProductConfiguration>();
+	        if(result != null) {
+	        	List<FilteringSortingItem<QuickShopLineItemWrapper>> items =  result.getItems();
+	        	
+		        for (FilteringSortingItem<QuickShopLineItemWrapper> wrapper : items) {
+		        	QuickShopLineItem line = wrapper.getNode().getItem();
+		        	final ProductModel productModel = ContentFactory.getInstance().getProductByName(line.getCatId(), line.getProductId());
+		        	if(productModel != null) {
+		                ProductConfiguration configuration = new ProductConfiguration();
+		                configuration.populateProductWithModel(Product.wrap(productModel, fdUser), line.getSkuCode());
+		                productsWithSkus.add(configuration);
+		        	}
+		        }
 	        }
+	        return productsWithSkus;
+        } catch (ModelException e) {
+        	LOGGER.error("Error in convertToSkuList(): " +e);
+        	throw e;
         }
-        return productsWithSkus;
+        
     }
     
     private Message getDeptForQuickshopEveryItem(SessionUser user, String orderId, Integer filterOrderDays) throws FDException, JsonException {
