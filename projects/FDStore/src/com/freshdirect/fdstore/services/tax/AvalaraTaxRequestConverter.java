@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -121,7 +120,7 @@ public class AvalaraTaxRequestConverter {
 	private void createChargeTaxEntry(FDCartI cart,
 			List<Line> taxLines) {
 		Collection<ErpChargeLineModel> charges = cart.getCharges();
-		if (CollectionUtils.isNotEmpty(charges)) {
+		if (charges != null && charges.size() > 0) {
 			for (ErpChargeLineModel charge : charges) {
 				if (charge.getAmount() > 0.0d && null == charge.getDiscount()) {
 					Line taxLine = new Line();
@@ -179,7 +178,7 @@ public class AvalaraTaxRequestConverter {
 
 	private void createCartLinesTaxEntry(FDCartI cart, List<Line> taxLines) {
 
-		if (CollectionUtils.isNotEmpty(cart.getOrderLines())) {
+		if (cart != null && cart.getOrderLines() != null && cart.getOrderLines().size() > 0) {
 			for (FDCartLineI line : cart.getOrderLines()) {
 
 				ErpInvoiceLineI invoice = line.getInvoiceLine();
