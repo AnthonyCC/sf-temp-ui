@@ -348,6 +348,11 @@ public class ProductController extends BaseController {
             return model;
         }
 
+		// Temp fix for FKWeb-973
+        if(data.getProductData()!=null && data.getProductData().getProductJumboImage()!=null && 
+        		data.getProductData().getProductJumboImage().contains("/media_stat/images/layout/clear.gif")){
+            	data.getProductData().setProductJumboImage(null);
+        }
 
         // setup response
         
@@ -452,6 +457,11 @@ public class ProductController extends BaseController {
             
             final ProductPotatoData data = ProductPotatoUtil.getProductPotato(productId, null, uzer, false);
             if (data != null) {
+				// Temp fix for FKWeb-973
+            	if(data.getProductData()!=null && data.getProductData().getProductJumboImage()!=null && 
+            		data.getProductData().getProductJumboImage().contains("/media_stat/images/layout/clear.gif")){
+                	data.getProductData().setProductJumboImage(null);
+                }
                 potatoes.add(data);
             }
         }
