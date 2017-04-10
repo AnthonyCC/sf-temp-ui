@@ -1,9 +1,9 @@
 package com.freshdirect.framework.util;
 
 import java.beans.Introspector;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collection;
 
 public class BeanUtil {
 
@@ -86,6 +86,16 @@ public class BeanUtil {
 	
 	public static String decapitalize(String name) {
 		return Introspector.decapitalize(name);
+	}
+	
+	
+	public static boolean isEmpty(final Collection<?> coll) {
+		return coll == null || coll.isEmpty();
+	}
+
+
+	public static boolean isNotEmpty(final Collection<?> coll) {
+		return !isEmpty(coll);
 	}
 	
 }
