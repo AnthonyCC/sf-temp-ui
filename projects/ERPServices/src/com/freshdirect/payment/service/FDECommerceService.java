@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
-import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.log4j.Category;
@@ -28,19 +27,20 @@ import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.content.attributes.AttributeException;
 import com.freshdirect.content.attributes.FlatAttribute;
-//import com.freshdirect.content.attributes.FlatAttributeCollection;
 import com.freshdirect.customer.ErpProductFamilyModel;
+import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.ecommerce.data.attributes.FlatAttributeCollection;
-import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.common.Request;
+import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.payment.BINData;
 import com.freshdirect.erp.model.BatchModel;
 import com.freshdirect.fdstore.FDPayPalServiceException;
-//import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.BINInfo;
+//import com.freshdirect.content.attributes.FlatAttributeCollection;
+//import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 
 
 public class FDECommerceService extends AbstractService implements IECommerceService {
@@ -58,6 +58,10 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String LOAD_ATTRIBUTES_DATE = "attributes/timestamp/since/";
 	private static final String ERP_BATCH_PROCESS_API = "erp/batch/";
 	private static final String ERP_RECENT_BATCHES_API = "erp/recentBatches";
+	
+	private static final String ZONE_INFO_MASTER = "zoneInfo";
+	private static final String LOAD_ALL_ZONE_INFO = "zoneInfo/loadallzoneinfo";
+	private static final String LOAD_ZONE_ID = "zoneInfo/findzoneid/";
 	
 	private static FDECommerceService INSTANCE;
 
@@ -409,6 +413,33 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			throw new FDResourceException(response.getMessage());
 			return response.getData();
 
+	}
+	
+	@Override
+	public ErpZoneMasterInfo findZoneInfoMaster(String zoneId) throws RemoteException, FDResourceException {
+		Response<ErpZoneMasterInfo> response = new Response<ErpZoneMasterInfo>();
+		response = httpGetDataTypeMap(getFdCommerceEndPoint(ZONE_INFO_MASTER+"?zoneId="+ zoneId), new TypeReference<Response<ErpZoneMasterInfo>>() {});
+		if(!response.getResponseCode().equals("OK"))
+			throw new FDResourceException(response.getMessage());
+			return response.getData();
+	}
+
+	@Override
+	public Collection<Object> loadAllZoneInfoMaster() throws RemoteException, FDResourceException {
+		Response<Collection<Object>> response;
+		response = httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_ALL_ZONE_INFO), new TypeReference<Response<Collection<Object>>>() {});
+		if(!response.getResponseCode().equals("OK"))
+			throw new FDResourceException(response.getMessage());
+		return response.getData();
+		
+	}
+	@Override
+	public String findZoneId(String zoneServiceType, String zipCode) throws RemoteException, FDResourceException{
+		Response<String> response; 
+		response = httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_ZONE_ID)+"?zoneServiceType="+zoneServiceType+"&zipCode="+zipCode, new TypeReference<String>() {});
+		if(response.getResponseCode().equals("OK"))
+			throw new FDResourceException(response.getMessage());
+		return response.getData();
 	}
 	
 }

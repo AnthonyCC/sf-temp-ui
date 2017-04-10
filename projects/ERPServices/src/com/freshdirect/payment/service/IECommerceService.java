@@ -1,5 +1,6 @@
 package com.freshdirect.payment.service;
 
+import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -10,6 +11,7 @@ import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.content.attributes.AttributeException;
 import com.freshdirect.content.attributes.FlatAttributeCollection;
 import com.freshdirect.customer.ErpProductFamilyModel;
+import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.model.BatchModel;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -36,4 +38,10 @@ public interface IECommerceService {
 	public BatchModel getBatch(int batchId)throws FDResourceException;
 
 	public Collection getRecentBatches()throws FDResourceException;
+	
+	public ErpZoneMasterInfo findZoneInfoMaster(String zoneId) throws RemoteException, FDResourceException;
+
+	public Collection<Object> loadAllZoneInfoMaster() throws RemoteException, FDResourceException;
+
+	public String findZoneId(String zoneServiceType, String zoneId) throws RemoteException, FDResourceException;
 }
