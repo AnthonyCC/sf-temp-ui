@@ -34,6 +34,7 @@ import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.EnumBrandFilterLocation;
 import com.freshdirect.fdstore.content.EnumLayoutType;
 import com.freshdirect.fdstore.content.EnumSortingValue;
 import com.freshdirect.fdstore.content.FilteringProductItem;
@@ -681,15 +682,18 @@ public class CmsFilteringFlow {
             }
         }
 
-        // -- RELOCATE BRAND FILTER BASED ON CMS SETTING
-        if (browseDataContext.getNavigationModel().getBrandFilterLocation() != null) {
-            MenuBuilderFactory.getInstance().relocateBrandFilter(browseDataContext.getMenuBoxes().getMenuBoxes(), browseDataContext.getNavigationModel().getBrandFilterLocation());
-        }
+        relocateBrandFilterBasedOnCmsSetting(browseDataContext);
 
         // populate browseData with filterLabels
         BrowseDataBuilderFactory.getInstance().populateWithFilterLabels(browseDataContext, navigationModel);
 
         return browseDataContext;
+    }
+
+    private void relocateBrandFilterBasedOnCmsSetting(BrowseDataContext browseDataContext) {
+        if (EnumBrandFilterLocation.ORIGINAL != browseDataContext.getNavigationModel().getBrandFilterLocation()) {
+            MenuBuilderFactory.getInstance().relocateBrandFilter(browseDataContext.getMenuBoxes().getMenuBoxes(), browseDataContext.getNavigationModel().getBrandFilterLocation());
+        }
     }
 
     /** based on com.freshdirect.webapp.taglib.fdstore.FDParseSearchTermsTag.getSearchList(String) **/
@@ -927,10 +931,7 @@ public class CmsFilteringFlow {
         // populate browseData with breadcrumbs
         BrowseDataBuilderFactory.getInstance().populateWithBreadCrumbAndDesciptiveContent(browseDataContext, navigationModel);
 
-        // -- RELOCATE BRAND FILTER BASED ON CMS SETTING
-        if (browseDataContext.getNavigationModel().getBrandFilterLocation() != null) {
-            MenuBuilderFactory.getInstance().relocateBrandFilter(browseDataContext.getMenuBoxes().getMenuBoxes(), browseDataContext.getNavigationModel().getBrandFilterLocation());
-        }
+        relocateBrandFilterBasedOnCmsSetting(browseDataContext);
 
         // populate browseData with filterLabels
         BrowseDataBuilderFactory.getInstance().populateWithFilterLabels(browseDataContext, navigationModel);

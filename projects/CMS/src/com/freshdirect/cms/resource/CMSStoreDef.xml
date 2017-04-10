@@ -675,6 +675,7 @@
 				<EnumValue value="BELOW_DEPARTMENT" label="On/Appearing below depratment"/>
 				<EnumValue value="BELOW_LOWEST_LEVEL_CATEGROY" label="On/Appearing below lowest level category"/>
 				<EnumValue value="OFF" label="Turned off"/>
+				<EnumValue value="ORIGINAL" label="On/Appearing in original order"/>
 			</EnumDef>
 			<AttributeDef type="B" name="disableCategoryYmalRecommender" label="Disable Category YMAL Recommender" inheritable="true"/>
 			<AttributeDef name="SEO_META_DESC" type="S" label="SEO Meta Description" inheritable="false"/>
