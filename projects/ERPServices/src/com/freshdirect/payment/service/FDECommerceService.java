@@ -59,7 +59,7 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String ERP_BATCH_PROCESS_API = "erp/batch/";
 	private static final String ERP_RECENT_BATCHES_API = "erp/recentBatches";
 	
-	private static final String ZONE_INFO_MASTER = "zoneInfo";
+	private static final String ZONE_INFO_MASTER = "zoneInfo/master";
 	private static final String LOAD_ALL_ZONE_INFO = "zoneInfo/loadallzoneinfo";
 	private static final String LOAD_ZONE_ID = "zoneInfo/findzoneid/";
 	
