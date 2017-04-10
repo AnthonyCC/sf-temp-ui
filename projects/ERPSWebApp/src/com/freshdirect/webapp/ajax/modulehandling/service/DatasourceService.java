@@ -122,6 +122,7 @@ public class DatasourceService {
         config.setModuleTitle(ContentNodeUtil.getStringAttribute(module, "moduleTitle"));
         config.setModuleTitleTextBanner(ContentNodeUtil.getStringAttribute(module, "moduleTitleTextBanner"));
         config.setContentTitle(ContentNodeUtil.getStringAttribute(module, "contentTitle"));
+        config.setContentTitleTextBanner(ContentNodeUtil.getStringAttribute(module, "contentTitleTextBanner"));
 
         config.setHideViewAllButton(ContentNodeUtil.getBooleanAttribute(module, "hideViewAllButton"));
         config.setHideProductBadge(ContentNodeUtil.getBooleanAttribute(module, "hideProductBadge"));

@@ -2768,6 +2768,7 @@
 			<AttributeDef type="S" name="moduleTitleTextBanner" label="Module Title Text Banner" required="false"/>
 			<AttributeDef type="S" name="viewAllButtonLink" label="View All Button Link" required="false"/>
 			<AttributeDef type="S" name="contentTitle" label="Content Title" required="false"/>
+			<AttributeDef type="S" name="contentTitleTextBanner" label="Content Title Text Banner" required="false"/>
 			<AttributeDef type="S" name="heroTitle" label="Hero Title" required="false"/>
 			<AttributeDef type="S" name="heroSubtitle" label="Hero Subtitle" required="false"/>
 			<AttributeDef type="S" name="headerTitle" label="Header Title" required="false"/>
