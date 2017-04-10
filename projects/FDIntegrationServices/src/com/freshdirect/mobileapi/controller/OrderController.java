@@ -391,8 +391,12 @@ public class OrderController extends BaseController {
             		productPage = deptProducts.subList(start, Math.min(start + query.getMax(), deptProducts.size()));
             	}
             }
+        } catch (ArrayIndexOutOfBoundsException ae) {
+        	ae.printStackTrace();
+			LOGGER.error("Error ArrayIndexOutOfBoundsException in getProductsFromOrderDept(): " + ae);
+			throw new FDException(ae);
         } catch (ModelException e) {
-        	LOGGER.error("Error in getProductsFromOrderDept(): " +e);
+        	LOGGER.error("Model Error in getProductsFromOrderDept(): " +e);
             throw new FDException(e);
         }
         QuickShop quickShop = new QuickShop();
@@ -423,9 +427,13 @@ public class OrderController extends BaseController {
 					productPage = products.subList(0, Math.min(FDStoreProperties.getQuickShopResultMaxLimit(), products.size()));
 				}
 			}
-		} catch (ModelException e) {
-			LOGGER.error("Error in getEveryItemEverOrdered(): " +e);
-			throw new FDException(e);
+		} catch (ArrayIndexOutOfBoundsException ae) {
+	        ae.printStackTrace();
+			LOGGER.error("Error ArrayIndexOutOfBoundsException in getEveryItemEverOrdered(): " + ae);
+			throw new FDException(ae);
+        } catch (ModelException e) {
+        	LOGGER.error("Model Error in getEveryItemEverOrdered(): " +e);
+            throw new FDException(e);
 		}
 		QuickShop quickShop = new QuickShop();
 		quickShop.setProducts(productPage);
@@ -455,8 +463,12 @@ public class OrderController extends BaseController {
 					productPage = products.subList(0, Math.min(FDStoreProperties.getQuickShopResultMaxLimit(), products.size()));
 				}
 			}
+		} catch (ArrayIndexOutOfBoundsException ae) {
+        	ae.printStackTrace();
+			LOGGER.error("Error ArrayIndexOutOfBoundsException in getEveryItemEverOrderedEx(): " + ae);
+			throw new FDException(ae);
 		} catch (ModelException e) {
-			LOGGER.error("Error in getEveryItemEverOrderedEx(): " +e);
+			LOGGER.error("Model Error in getEveryItemEverOrderedEx(): " +e);
 			throw new FDException(e);
 		}
 		QuickShop quickShop = new QuickShop();
@@ -500,27 +512,21 @@ public class OrderController extends BaseController {
     }
 
     private List<ProductConfiguration> convertToSkuList(FilteringFlowResult<QuickShopLineItemWrapper> result, FDUserI fdUser) throws ModelException {
-        try{
-	    	List<ProductConfiguration> productsWithSkus = new ArrayList<ProductConfiguration>();
-	        if(result != null) {
-	        	List<FilteringSortingItem<QuickShopLineItemWrapper>> items =  result.getItems();
-	        	
-		        for (FilteringSortingItem<QuickShopLineItemWrapper> wrapper : items) {
-		        	QuickShopLineItem line = wrapper.getNode().getItem();
-		        	final ProductModel productModel = ContentFactory.getInstance().getProductByName(line.getCatId(), line.getProductId());
-		        	if(productModel != null) {
-		                ProductConfiguration configuration = new ProductConfiguration();
-		                configuration.populateProductWithModel(Product.wrap(productModel, fdUser), line.getSkuCode());
-		                productsWithSkus.add(configuration);
-		        	}
-		        }
+        List<ProductConfiguration> productsWithSkus = new ArrayList<ProductConfiguration>();
+        if(result != null) {
+        	List<FilteringSortingItem<QuickShopLineItemWrapper>> items =  result.getItems();
+        	
+	        for (FilteringSortingItem<QuickShopLineItemWrapper> wrapper : items) {
+	        	QuickShopLineItem line = wrapper.getNode().getItem();
+	        	final ProductModel productModel = ContentFactory.getInstance().getProductByName(line.getCatId(), line.getProductId());
+	        	if(productModel != null) {
+	                ProductConfiguration configuration = new ProductConfiguration();
+	                configuration.populateProductWithModel(Product.wrap(productModel, fdUser), line.getSkuCode());
+	                productsWithSkus.add(configuration);
+	        	}
 	        }
-	        return productsWithSkus;
-        } catch (ModelException e) {
-        	LOGGER.error("Error in convertToSkuList(): " +e);
-        	throw e;
         }
-        
+        return productsWithSkus;
     }
     
     private Message getDeptForQuickshopEveryItem(SessionUser user, String orderId, Integer filterOrderDays) throws FDException, JsonException {
@@ -557,6 +563,10 @@ public class OrderController extends BaseController {
 	    		Collections.sort(departmentList, filterComparator); 
 	    		qCartDepartments.addAll(departmentList);
     		}
+    	} catch (ArrayIndexOutOfBoundsException ae) {
+        	ae.printStackTrace();
+			LOGGER.error("Error ArrayIndexOutOfBoundsException in getDeptForQuickshopEveryItem(): " + ae);
+			throw new FDException(ae);
     	} catch (ModelException e) {
     		LOGGER.error("Error in getDeptForQuickshopEveryItem(): " +e);
     		throw new FDException(e);
