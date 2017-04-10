@@ -44,4 +44,12 @@ public interface IECommerceService {
 	public Collection<Object> loadAllZoneInfoMaster() throws RemoteException, FDResourceException;
 
 	public String findZoneId(String zoneServiceType, String zoneId) throws RemoteException, FDResourceException;
+	
+	public String getFamilyIdForMaterial(String matId) throws RemoteException, FDResourceException;
+	
+	public ErpProductFamilyModel findFamilyInfo(String familyId) throws RemoteException, FDResourceException;
+
+	public ErpProductFamilyModel findSkuFamilyInfo(String materialId)throws RemoteException, FDResourceException;
+	
+	
 }

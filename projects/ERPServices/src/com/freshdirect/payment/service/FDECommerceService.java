@@ -62,6 +62,9 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String ZONE_INFO_MASTER = "zoneInfo/master";
 	private static final String LOAD_ALL_ZONE_INFO = "zoneInfo/loadallzoneinfo";
 	private static final String LOAD_ZONE_ID = "zoneInfo/findzoneid";
+	private static final String FAMILYID_FOR_MATERIAL = "productfamily/familyid";
+	private static final String FAMILY_INFO = "productfamily/familyinfo";
+	private static final String SKU_FAMILY_INFO = "productfamily/skufamilyinfo";
 	
 	private static FDECommerceService INSTANCE;
 
@@ -450,6 +453,28 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		}
 		if(!response.getResponseCode().equals("OK"))
 			throw new FDResourceException(response.getMessage());
+		return response.getData();
+	}
+	@Override
+	public String getFamilyIdForMaterial(String matId) throws RemoteException, FDResourceException {
+		Response<String> response = new Response<String>();
+		try{
+			response = httpGetData(getFdCommerceEndPoint(FAMILYID_FOR_MATERIAL)+"?matId=", Response.class);
+		} catch(FDPayPalServiceException e){
+			throw new FDResourceException(e, e.getMessage());
+		} 
+		return response.getData();
+	}
+	@Override
+	public ErpProductFamilyModel findFamilyInfo(String familyId) throws RemoteException, FDResourceException {
+		Response<ErpProductFamilyModel> response = new Response<ErpProductFamilyModel>();
+		response = httpGetDataTypeMap(getFdCommerceEndPoint(FAMILY_INFO+"?familyId="+ familyId), new TypeReference<Response<ErpProductFamilyModel>>() {});
+		return response.getData();
+	}
+	@Override
+	public ErpProductFamilyModel findSkuFamilyInfo(String materialId) throws RemoteException, FDResourceException {
+		Response<ErpProductFamilyModel> response = new Response<ErpProductFamilyModel>();
+		response = httpGetDataTypeMap(getFdCommerceEndPoint(SKU_FAMILY_INFO+"?materialId="+materialId), new TypeReference<Response<ErpProductFamilyModel>>() {});
 		return response.getData();
 	}
 	
