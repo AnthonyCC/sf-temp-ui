@@ -310,7 +310,9 @@ public class FDUser extends ModelSupport implements FDUserI {
     private boolean refreshValidSO3 = true;
 
     private boolean isZipCheckPopupUsed = false;
-
+    
+    private boolean sOCartLineMessages;
+    
     public Date getTcAcknowledgeDate() {
         return tcAcknowledgeDate;
     }
@@ -3569,4 +3571,12 @@ public class FDUser extends ModelSupport implements FDUserI {
     public void setZipCheckPopupUsed(boolean isZipCheckPopupUsed) {
         this.isZipCheckPopupUsed = isZipCheckPopupUsed;
     }
+
+	public boolean issOCartLineMessages() {
+		return sOCartLineMessages;
+	}
+
+	public void setsOCartLineMessages(boolean sOCartLineMessages) {
+		this.sOCartLineMessages = sOCartLineMessages;
+	}
 }

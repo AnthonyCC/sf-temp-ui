@@ -164,6 +164,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     private boolean isSoContainerOpen = false;
 
     private boolean zipPopupSeenInSession = false;
+    
+    private boolean sOCartLineMessages;
 
     @Override
     public boolean isSoContainerOpen() {
@@ -2244,4 +2246,13 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         this.zipPopupSeenInSession = ZipPopupSeenInSession;
     }
 
+	public boolean issOCartLineMessages() {
+		return sOCartLineMessages;
+	}
+
+	public void setsOCartLineMessages(boolean sOCartLineMessages) {
+		this.sOCartLineMessages = sOCartLineMessages;
+	}
+    
+  
 }

@@ -139,6 +139,8 @@ public class CartData extends AbstractCoremetricsResponse {
     
     private String deliveryBegins;
     
+    private boolean sOCartLineMessages;
+    
     
     public String getErrorMessage() {
         return errorMessage;
@@ -1164,5 +1166,12 @@ public class CartData extends AbstractCoremetricsResponse {
 		this.deliveryBegins = deliveryBegins;
 	}
 
-    
+	public boolean issOCartLineMessages() {
+		return sOCartLineMessages;
+	}
+
+	public void setsOCartLineMessages(boolean sOCartLineMessages) {
+		this.sOCartLineMessages = sOCartLineMessages;
+	}
+
 }

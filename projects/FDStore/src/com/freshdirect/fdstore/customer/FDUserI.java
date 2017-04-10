@@ -705,4 +705,8 @@ public interface FDUserI extends java.io.Serializable {
     public void setRefreshValidSO3(boolean isRefreshValidSO3);
 
     public boolean isZipCheckPopupUsed();
+    
+    public boolean issOCartLineMessages();
+    
+    public void setsOCartLineMessages(boolean sOCartLineMessages);
 }
