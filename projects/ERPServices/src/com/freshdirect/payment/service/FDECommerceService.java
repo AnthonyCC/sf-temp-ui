@@ -61,7 +61,7 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	
 	private static final String ZONE_INFO_MASTER = "zoneInfo/master";
 	private static final String LOAD_ALL_ZONE_INFO = "zoneInfo/loadallzoneinfo";
-	private static final String LOAD_ZONE_ID = "zoneInfo/findzoneid/";
+	private static final String LOAD_ZONE_ID = "zoneInfo/findzoneid";
 	
 	private static FDECommerceService INSTANCE;
 
@@ -426,18 +426,29 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 
 	@Override
 	public Collection<Object> loadAllZoneInfoMaster() throws RemoteException, FDResourceException {
-		Response<Collection<Object>> response;
+		/*Response<Collection<Object>> response;
 		response = httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_ALL_ZONE_INFO), new TypeReference<Response<Collection<Object>>>() {});
 		if(!response.getResponseCode().equals("OK"))
 			throw new FDResourceException(response.getMessage());
-		return response.getData();
+		return response.getData();*/
+		
+		try {
+			Response<Collection<Object>> response = httpGetData(getFdCommerceEndPoint(LOAD_ALL_ZONE_INFO), Response.class);
+			return response.getData();
+		} catch (FDPayPalServiceException e) {
+			throw new FDResourceException(e, e.getMessage());
+		}
 		
 	}
 	@Override
 	public String findZoneId(String zoneServiceType, String zipCode) throws RemoteException, FDResourceException{
-		Response<String> response; 
-		response = httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_ZONE_ID)+"?zoneServiceType="+zoneServiceType+"&zipCode="+zipCode, new TypeReference<String>() {});
-		if(response.getResponseCode().equals("OK"))
+		Response<String> response = new Response<String>(); 
+		try {
+			response = httpGetData(getFdCommerceEndPoint(LOAD_ZONE_ID)+"?zoneServiceType="+zoneServiceType+"&zipCode="+zipCode, Response.class);
+		} catch (FDPayPalServiceException e) {
+			throw new FDResourceException(e, e.getMessage());
+		}
+		if(!response.getResponseCode().equals("OK"))
 			throw new FDResourceException(response.getMessage());
 		return response.getData();
 	}
