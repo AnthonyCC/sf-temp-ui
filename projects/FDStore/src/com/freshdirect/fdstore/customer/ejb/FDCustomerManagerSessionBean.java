@@ -932,20 +932,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			// if default address has been deleted, use address of last order
 			if (address == null) {
 				if (lastOrderId != null) {
-					address = this.getLastOrderAddress(lastOrderId);
+ 					address = this.getLastOrderAddress(lastOrderId);
 				}
 			}
 			if (address != null) {
 				try{
-					AddressModel addressModel = null; 
-					if(isAddressScrubbed(address)){
-						addressModel = mapToAddressModel(address);
-						if(addressModel.getLongitude() == 0.0 
-								|| addressModel.getLatitude() == 0.0)
-							getAddressGeoCode(addressModel);
-					}else{
-						FDDeliveryManager.getInstance().scrubAddress(address);
-					}
+					
+					FDDeliveryManager.getInstance().scrubAddress(address);
+					
 				}catch (FDInvalidAddressException e) {
 					//TODO Ignore the Invalid Address Exception for scrub logic
 					LOGGER.info("Exception while geocoding the address");
@@ -969,6 +963,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 * @param address
 	 * @throws FDResourceException
 	 */
+	@Deprecated
 	private static void getAddressGeoCode(AddressModel address) throws FDResourceException{
 		try {
 			FDDeliveryAddressGeocodeResponse geocodeResponse = FDDeliveryManager.getInstance().geocodeAddress( address );
