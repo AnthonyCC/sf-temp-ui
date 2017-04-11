@@ -36,31 +36,37 @@
 .content-module.editorial-module.product-carousel .editorial-content .right-side {
   box-sizing: border-box;
   position: absolute;
-  bottom: 25px;
-  left: 500px;
+  bottom: 17px;
+  left: 498px;
   margin: 0;
   padding-left: 35px;
   padding-right: 60px;
-  top: 10px;
+  top: 0px;
   width: 470px;
 }
 
 .content-module.editorial-module.product-carousel .editorial-content .learn-more {
-  background-color: #F2F3F4;
-  bottom: 0;
-  left: 500px;
-  min-height: 41px;
+  bottom: 17px;
+  left: 498px;
   margin-left: 35px;
   margin-right: 0;
-  margin-top: 5px;
   position: absolute;
   width: 430px;
+}
+
+.content-module.editorial-module.product-carousel .editorial-content .learn-more .gradient-space {
+  min-height: 10px;
+  background: trasnparent;
+  background: linear-gradient(transparent, #F2F3F4);
+}
+
+.content-module.editorial-module.product-carousel .editorial-content .learn-more.show-less {
+  bottom: 0;
 }
 
 .content-module.editorial-module.product-carousel .editorial-content .learn-more button {
   font-weight: bold;
   padding: 0;
-  text-decoration: underline;
 }
 
 .content-module.editorial-module.product-carousel .editorial-content .learn-more.visible,
@@ -75,11 +81,6 @@
   display: none;
 }
 
-.content-module.editorial-module.product-carousel .editorial-content .learn-more::before {
-  background: linear-gradient(transparent, #F2F3F4);
-  content: ' ';
-}
-
 .content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header {
   display: flex;
   max-width: 100%;
@@ -87,7 +88,9 @@
 
 
 .content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-body {
-  font-size: 16px;
+  font-family: 'Brandon Text';
+  font-size: 14px;
+  letter-spacing: 25;
   overflow-y: hidden;
 }
 
@@ -177,6 +180,7 @@
   font-size: 25px;
   font-family: 'Brandon Text';
   font-weight: 500;
+  text-transform: uppercase;
 }
 
 #viewallPopup .content-module.editorial-module.product-carousel .editorial-content .left-side,
@@ -186,9 +190,15 @@
 }
 
 .content-module.editorial-module.product-carousel .editorial-content .learn-more button {
-  background: transparent;
+  background: #F2F3F4;
+  color: #4fa157;
   border: 0;
-  font-size: 16px;
+  font-family: 'Brandon Text';
+  font-size: 12px;
+  line-height: 12px;
+  text-align: left;
+  text-transform: uppercase;
+  width: 100%;
 }
 
 .content-module.editorial-module.product-carousel.learn-more .editorial-content,
