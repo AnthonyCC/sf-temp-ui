@@ -13,9 +13,13 @@ import com.freshdirect.content.attributes.FlatAttributeCollection;
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
+import com.freshdirect.erp.ErpCOOLInfo;
+import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.model.BatchModel;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
+import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
 import com.freshdirect.payment.BINInfo;
 
 public interface IECommerceService {
@@ -51,6 +55,10 @@ public interface IECommerceService {
 	public ErpProductFamilyModel findFamilyInfo(String familyId) throws RemoteException, FDResourceException;
 
 	public ErpProductFamilyModel findSkuFamilyInfo(String materialId)throws RemoteException, FDResourceException;
+
+	public Map<ErpCOOLKey, ErpCOOLInfo> getCountryOfOriginData(Date since) throws RemoteException;
+
+	public List loadEnum(String daoClassName)throws RemoteException;
 	
 	public String getUserIdForUserToken(String userToken) ;
 	
@@ -71,6 +79,15 @@ public interface IECommerceService {
 	public boolean isSocialLoginOnlyUser(String customer_id); 
 
 	public List<String> getConnectedProvidersByUserId(String userId);
-	
-	public List loadEnum(String daoClassName);
+
+	public HLBrandProductAdResponse getSearchbykeyword(HLBrandProductAdRequest hLRequestData)throws RemoteException;
+
+	public HLBrandProductAdResponse getCategoryProducts(HLBrandProductAdRequest hLRequestData)throws RemoteException;
+
+	public Date getLastSentFeedOrderTime()throws RemoteException;
+
+	public void submittedOrderdDetailsToHL(Date orderFeedDateFrom)throws RemoteException;
+
+	public void submittedOrderdDetailsToHL(List<String> ordersList)throws RemoteException;
+
 }

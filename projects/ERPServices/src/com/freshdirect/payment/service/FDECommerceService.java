@@ -38,10 +38,14 @@ import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.customer.accounts.external.UserTokenData;
 import com.freshdirect.ecommerce.data.payment.BINData;
+import com.freshdirect.erp.ErpCOOLInfo;
+import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.model.BatchModel;
 import com.freshdirect.fdstore.FDPayPalServiceException;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
+import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.BINInfo;
 //import com.freshdirect.content.attributes.FlatAttributeCollection;
@@ -75,6 +79,14 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String LINK_USER_TOKEN = "/account/external/linkusertoken";
 	private static final String CONNECTED_PROVIDERS_BY_USERID = "/account/external/providerbyuserid";
 	private static final String LOAD_ENUMS = "/enums";
+	private static final String BRAND_SEARCH_BY_KEY ="brand/products/search";
+	private static final String BRAND_SEARCH_BY_PRODUCT ="brand/products/products";
+	private static final String BRAND_LAST_SENT_FEED ="brand/products/ordertime";
+	private static final String BRAND_ORDER_SUBMIT_BYDATE ="brand/products/orderdetailsbydate";
+	private static final String BRAND_ORDER_SUBMIT_SALEIDS ="brand/products/orderdetailsbysaleids";
+	
+	
+	private static final String GET_COO_API ="/coo";
 	
 	private static FDECommerceService INSTANCE;
 
@@ -96,7 +108,7 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FDResourceException {
 		
 		try {
-			HttpEntity<String> entity = getEntity(inputJson);
+ 			HttpEntity<String> entity = getEntity(inputJson);
 			RestTemplate restTemplate = getRestTemplate();
 			ResponseEntity<T> response = restTemplate.postForEntity(new URI(url),
 					entity, clazz);
@@ -689,7 +701,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	
 	}
 	@Override
-	public List loadEnum(String daoClassName) {
+	public List loadEnum(String daoClassName) throws RemoteException{
 		Response<List> response = null;
 		try {
 			response = httpGetDataTypeMap(
@@ -703,6 +715,120 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			LOGGER.error(e.getMessage());
 		}
 		return response.getData();
+	}
+	@Override
+	public 	Map<ErpCOOLKey, ErpCOOLInfo> getCountryOfOriginData(Date since)
+			throws RemoteException {
+			Response<Map<ErpCOOLKey, ErpCOOLInfo>> response = new Response<Map<ErpCOOLKey, ErpCOOLInfo>>();
+
+				try {
+					response= getData(getFdCommerceEndPoint(GET_COO_API), Response.class);
+				} catch (FDResourceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			
+			return response.getData();
+		
+	}
+	@Override
+	public HLBrandProductAdResponse getSearchbykeyword(
+			HLBrandProductAdRequest hLRequestData) throws RemoteException {
+		try {
+			Request<HLBrandProductAdRequest> request = new Request<HLBrandProductAdRequest>();
+			request.setData(hLRequestData);
+			String inputJson = buildRequest(request);
+			@SuppressWarnings("unchecked")
+			Response<HLBrandProductAdResponse> response = this.postData(inputJson, getFdCommerceEndPoint(BRAND_SEARCH_BY_KEY), Response.class);
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			return response.getData();
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	@Override
+	public HLBrandProductAdResponse getCategoryProducts(
+			HLBrandProductAdRequest hLRequestData) throws RemoteException {
+		try {
+			Request<HLBrandProductAdRequest> request = new Request<HLBrandProductAdRequest>();
+			request.setData(hLRequestData);
+			String inputJson = buildRequest(request);
+			@SuppressWarnings("unchecked")
+			Response<HLBrandProductAdResponse> response = this.getData(inputJson, getFdCommerceEndPoint(BRAND_SEARCH_BY_PRODUCT), Response.class);
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			return response.getData();
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	@Override
+	public Date getLastSentFeedOrderTime() throws RemoteException {
+		try {
+			Request<HLBrandProductAdRequest> request = new Request<HLBrandProductAdRequest>();
+			@SuppressWarnings("unchecked")
+			Response<Date> response = this.getData(getFdCommerceEndPoint(BRAND_LAST_SENT_FEED), Response.class);
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			return response.getData();
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	@Override
+	public void submittedOrderdDetailsToHL(Date orderFeedDateFrom)
+			throws RemoteException {
+		try {
+			Request<Date> request = new Request<Date>();
+			request.setData(orderFeedDateFrom);
+			String inputJson = buildRequest(request);
+			@SuppressWarnings("unchecked")
+			Response<HLBrandProductAdResponse> response = this.postData(inputJson, getFdCommerceEndPoint(BRAND_ORDER_SUBMIT_BYDATE), Response.class);
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	@Override
+	public void submittedOrderdDetailsToHL(List<String> ordersList)
+			throws RemoteException {
+		try {
+			Request<List<String>> request = new Request<List<String>>();
+			request.setData(ordersList);
+			String inputJson = buildRequest(request);
+			@SuppressWarnings("unchecked")
+			Response<HLBrandProductAdResponse> response = this.postData(inputJson, getFdCommerceEndPoint(BRAND_ORDER_SUBMIT_SALEIDS), Response.class);
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
 	}
 	
 }

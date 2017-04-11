@@ -25,6 +25,7 @@ import com.freshdirect.fdstore.brandads.FDBrandProductsAdManagerHome;
 import com.freshdirect.fdstore.brandads.FDBrandProductsAdManagerSB;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
+import com.freshdirect.payment.service.FDECommerceService;
 
 public class FDOrderFeedGeneratorCron {
 
@@ -49,13 +50,21 @@ public class FDOrderFeedGeneratorCron {
 							if (null != noOfMins
 									&& !noOfMins.trim().equalsIgnoreCase("")) {
 								orderFeedDateFrom = getDate(noOfMins);
+								if(FDStoreProperties.isStorefront2_0Enabled()){
+								FDECommerceService.getInstance().submittedOrderdDetailsToHL(orderFeedDateFrom);
+								}else{
 								sb.submittedOrderdDetailsToHL(orderFeedDateFrom);
+								}
 							}
 						} else if (arg.startsWith("orders=")) {
 							String orders = arg.substring("orders=".length());
 							String[] order = orders.split(",");
 							ordersList = new ArrayList<String>(Arrays.asList(order));
-							sb.submittedOrderdDetailsToHL(ordersList);
+							if(FDStoreProperties.isStorefront2_0Enabled()){
+								FDECommerceService.getInstance().submittedOrderdDetailsToHL(ordersList);
+								}else{
+									sb.submittedOrderdDetailsToHL(ordersList);
+								}
 	
 						}
 						break;
@@ -73,7 +82,11 @@ public class FDOrderFeedGeneratorCron {
 						orderFeedDateFrom = getDate(noOfMins.toString());
 					}
 					LOGGER.info("FDOrderFeedGeneratorCron - sending orders from: "+orderFeedDateFrom);
+					if(FDStoreProperties.isStorefront2_0Enabled()){
+						FDECommerceService.getInstance().submittedOrderdDetailsToHL(orderFeedDateFrom);
+						}else{
 					sb.submittedOrderdDetailsToHL(orderFeedDateFrom);
+						}
 				}
 	
 			} catch (Exception e) {
