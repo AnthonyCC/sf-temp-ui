@@ -558,16 +558,16 @@ public class UserUtil {
           }
 
           CmRegistrationTag.setPendingLoginEvent(session);
-          logExtraLoginDetailsLogin(request, userId, password, mergePage, successPage, externalLogin);
+          logExtraLoginDetailsLogin(request, userId, password, mergePage, successPage, externalLogin, "LOGINSUCCESS");
           
         } catch (FDResourceException fdre) {
-        	logExtraLoginDetailsLogin(request, userId, password, mergePage, successPage, externalLogin);
+        	logExtraLoginDetailsLogin(request, userId, password, mergePage, successPage, externalLogin, "LOGINFAILED");
             LOGGER.warn("Resource error during authentication", fdre);
             actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
             
         } catch (FDAuthenticationException fdae) {       	
         	
-        	logExtraLoginDetailsLogin(request, userId, password, mergePage, successPage, externalLogin);
+        	logExtraLoginDetailsLogin(request, userId, password, mergePage, successPage, externalLogin, "LOGINFAILED");
         	
         	if("Account disabled".equals(fdae.getMessage())) {
         		actionResult.addError(new ActionError("authentication", 
@@ -590,9 +590,9 @@ public class UserUtil {
 	}
 
 	private static void logExtraLoginDetailsLogin(HttpServletRequest request, String userId, String password,
-			String mergePage, String successPage, boolean externalLogin) {
+			String mergePage, String successPage, boolean externalLogin, String result) {
 		
-		LOGGER.info("FDSECU01: "+RequestUtil.getClientIp(request)+" : "+userId+" : "+ (FDStoreProperties.isExtraLogForLoginFailsEnabled() ? password : "[MASKED]") +" : "+mergePage+" : "+successPage+" : "+externalLogin
+		LOGGER.info("FDSECU01:"+ result + ": " +RequestUtil.getClientIp(request)+" : "+userId+" : "+ (FDStoreProperties.isExtraLogForLoginFailsEnabled() ? password : "[MASKED]") +" : "+mergePage+" : "+successPage+" : "+externalLogin
 				+" : "+CookieMonster.getCookie(request)+" : "+request.getRequestURL());
 	}
 	
