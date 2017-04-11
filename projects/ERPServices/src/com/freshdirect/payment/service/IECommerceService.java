@@ -10,6 +10,7 @@ import java.util.NavigableMap;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.content.attributes.AttributeException;
 import com.freshdirect.content.attributes.FlatAttributeCollection;
+import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.model.BatchModel;
@@ -51,5 +52,25 @@ public interface IECommerceService {
 
 	public ErpProductFamilyModel findSkuFamilyInfo(String materialId)throws RemoteException, FDResourceException;
 	
+	public String getUserIdForUserToken(String userToken) ;
 	
+	public boolean isUserEmailAlreadyExist(String email);
+	
+	public int isUserEmailAlreadyExist(String email, String provider) ;
+	
+	public void linkUserTokenToUserId(String customerId, String userId,String userToken, String identityToken, String provider, String displayName, String preferredUserName, String email, String emailVerified) ;
+
+	public List<String> getConnectedProvidersByUserId(String userId, EnumExternalLoginSource source);
+	
+	public boolean isExternalLoginOnlyUser(String userId, EnumExternalLoginSource source) ;
+
+	public void unlinkExternalAccountWithUser(String email, String userToken, String provider) ;
+	
+	public void unlinkExternalAccountWithUser(String customerId, String provider) ;
+	
+	public boolean isSocialLoginOnlyUser(String customer_id); 
+
+	public List<String> getConnectedProvidersByUserId(String userId);
+	
+	public List loadEnum(String daoClassName);
 }

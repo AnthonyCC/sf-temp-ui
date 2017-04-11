@@ -20,6 +20,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import weblogic.auddi.util.Logger;
+import weblogic.servlet.internal.PostTimeoutException;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -27,11 +30,13 @@ import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.content.attributes.AttributeException;
 import com.freshdirect.content.attributes.FlatAttribute;
+import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.ecommerce.data.attributes.FlatAttributeCollection;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
+import com.freshdirect.ecommerce.data.customer.accounts.external.UserTokenData;
 import com.freshdirect.ecommerce.data.payment.BINData;
 import com.freshdirect.erp.model.BatchModel;
 import com.freshdirect.fdstore.FDPayPalServiceException;
@@ -65,6 +70,11 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String FAMILYID_FOR_MATERIAL = "productfamily/familyid";
 	private static final String FAMILY_INFO = "productfamily/familyinfo";
 	private static final String SKU_FAMILY_INFO = "productfamily/skufamilyinfo";
+	private static final String USERID_BY_USERTOKEN = "/account/external/userIdbyusertoken";
+	private static final String USER_EMAIL_EXIST = "account/external/checkemailexist";
+	private static final String LINK_USER_TOKEN = "/account/external/linkusertoken";
+	private static final String CONNECTED_PROVIDERS_BY_USERID = "/account/external/providerbyuserid";
+	private static final String LOAD_ENUMS = "/enums";
 	
 	private static FDECommerceService INSTANCE;
 
@@ -475,6 +485,223 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	public ErpProductFamilyModel findSkuFamilyInfo(String materialId) throws RemoteException, FDResourceException {
 		Response<ErpProductFamilyModel> response = new Response<ErpProductFamilyModel>();
 		response = httpGetDataTypeMap(getFdCommerceEndPoint(SKU_FAMILY_INFO+"?materialId="+materialId), new TypeReference<Response<ErpProductFamilyModel>>() {});
+		return response.getData();
+	}
+	@Override
+	public String getUserIdForUserToken(String userToken) {
+		Response<String> response = null;
+		try {
+			response = httpGetDataTypeMap(
+					getFdCommerceEndPoint(USERID_BY_USERTOKEN+"?userToken="+ userToken),
+					new TypeReference<Response<String>>() {
+					});
+			if (!response.getResponseCode().equals("OK"))
+				throw new FDResourceException(response.getMessage());
+
+		} catch (FDResourceException e) {
+			e.printStackTrace();
+			LOGGER.error(e.getMessage());
+		}
+		return response.getData();
+	}
+	@Override
+	public boolean isUserEmailAlreadyExist(String email) {
+		Response<Boolean> response = null;
+		try {
+			response = httpGetDataTypeMap(
+					getFdCommerceEndPoint(USER_EMAIL_EXIST+"?emailId="+email),new TypeReference<Response<Boolean>>() {
+					});
+			if (!response.getResponseCode().equals("OK"))
+				throw new FDResourceException(response.getMessage());
+
+		} catch (FDResourceException e) {
+			e.printStackTrace();
+			LOGGER.error(e.getMessage());
+		}
+		return response.getData();
+	}
+	@Override
+	public int isUserEmailAlreadyExist(String email, String provider) {
+		Response<Integer> response = null;
+		try {
+			response = httpGetDataTypeMap(
+					getFdCommerceEndPoint(USER_EMAIL_EXIST+"/provider?emailId="+ email +"&provider=" + provider),new TypeReference<Response<Integer>>() {
+					});
+			if (!response.getResponseCode().equals("OK"))
+				throw new FDResourceException(response.getMessage());
+
+		} catch (FDResourceException e) {
+			e.printStackTrace();
+			LOGGER.error(e.getMessage());
+		}
+		return response.getData();
+	}
+	@SuppressWarnings("unchecked")
+	@Override
+	public void linkUserTokenToUserId(String customerId, String userId,
+			String userToken, String identityToken, String provider,
+			String displayName, String preferredUserName, String email,
+			String emailVerified) {
+		Request<UserTokenData> request = new Request<UserTokenData>();
+		UserTokenData userTokenData = buildUserTokenData(customerId, userId,
+				userToken, identityToken, provider, displayName,
+				preferredUserName, email, emailVerified);
+		request.setData(userTokenData);
+		Response<String> response = null;
+		String inputJson = null;
+		try {
+			inputJson = buildRequest(request);
+			response = postData(inputJson,
+					getFdCommerceEndPoint(LINK_USER_TOKEN), Response.class);
+			if (!response.getResponseCode().equals("OK"))
+				throw new FDResourceException(response.getMessage());
+		} catch (FDPayPalServiceException e) {
+			Logger.error(e.getMessage());
+			e.printStackTrace();
+		} catch (FDResourceException e) {
+			Logger.error(e.getMessage());
+			e.printStackTrace();
+		}
+
+	}
+	private UserTokenData buildUserTokenData(String customerId, String userId,
+			String userToken, String identityToken, String provider,
+			String displayName, String preferredUserName, String email,
+			String emailVerified) {
+		UserTokenData userTokenData = new UserTokenData();
+		userTokenData.setCustomerId(customerId);
+		userTokenData.setUserId(userId);
+		userTokenData.setUserToken(userToken);
+		userTokenData.setIdentityToken(identityToken);
+		userTokenData.setProvider(provider);
+		userTokenData.setDisplayName(displayName);
+		userTokenData.setPreferredUserName(preferredUserName);
+		userTokenData.setEmail(email);
+		userTokenData.setEmailVerified(emailVerified);
+		return userTokenData;
+	}
+	@Override
+	public List<String> getConnectedProvidersByUserId(String userId,
+			EnumExternalLoginSource source) {
+		
+		Response<List<String>> response = null;
+		try {
+			response = httpGetDataTypeMap(
+					getFdCommerceEndPoint(CONNECTED_PROVIDERS_BY_USERID+"?userId="+userId+"&source="+source),new TypeReference<Response<List<String>>>() {
+					});
+			if (!response.getResponseCode().equals("OK"))
+				throw new FDResourceException(response.getMessage());
+
+		} catch (FDResourceException e) {
+			e.printStackTrace();
+			LOGGER.error(e.getMessage());
+		}
+		return response.getData();
+	}
+	@Override
+	public boolean isExternalLoginOnlyUser(String userId,
+			EnumExternalLoginSource source) {
+		Response<Boolean> response = null;
+		try {
+			response = httpGetDataTypeMap(
+					getFdCommerceEndPoint("checkexternalloginuser?userId="+userId+"&source="+source),new TypeReference<Response<Boolean>>() {
+					});
+			if (!response.getResponseCode().equals("OK"))
+				throw new FDResourceException(response.getMessage());
+
+		} catch (FDResourceException e) {
+			e.printStackTrace();
+			LOGGER.error(e.getMessage());
+		}
+		return response.getData();
+	
+	}
+	@Override
+	public void unlinkExternalAccountWithUser(String email, String userToken,
+			String provider) {
+		try {
+			String inputJson;
+			inputJson = buildRequest(null);
+			postDataTypeMap(inputJson, getFdCommerceEndPoint("account/external/unlink?email="
+					+ email
+					+ "&provider="
+					+ provider
+					+ "&userToken="
+					+ userToken), new TypeReference<Response<Void>>() {});
+			
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			e.printStackTrace();
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	@Override
+	public void unlinkExternalAccountWithUser(String customerId, String provider) {
+		try {
+			String inputJson;
+			inputJson = buildRequest(null);
+			postDataTypeMap(inputJson,
+					getFdCommerceEndPoint("account/external/unlink/provider?customerId="+customerId+"&provider="+provider),new TypeReference<Response<Void>>() {});
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			e.printStackTrace();
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	@Override
+	public boolean isSocialLoginOnlyUser(String customer_id) {
+		Response<Boolean> response = null;
+		try {
+			response = httpGetDataTypeMap(
+					getFdCommerceEndPoint("account/external/checksocialloginuser?customerId="+customer_id),new TypeReference<Response<Boolean>>() {
+					});
+			if (!response.getResponseCode().equals("OK"))
+				throw new FDResourceException(response.getMessage());
+
+		} catch (FDResourceException e) {
+			e.printStackTrace();
+			LOGGER.error(e.getMessage());
+		}
+		return response.getData();
+	
+	}
+	@Override
+	public List<String> getConnectedProvidersByUserId(String userId) {
+
+		
+		Response<List<String>> response = null;
+		try {
+			response = httpGetDataTypeMap(
+					getFdCommerceEndPoint("/account/external/providers?userId="+userId),new TypeReference<Response<List<String>>>() {
+					});
+			if (!response.getResponseCode().equals("OK"))
+				throw new FDResourceException(response.getMessage());
+
+		} catch (FDResourceException e) {
+			e.printStackTrace();
+			LOGGER.error(e.getMessage());
+		}
+		return response.getData();
+	
+	}
+	@Override
+	public List loadEnum(String daoClassName) {
+		Response<List> response = null;
+		try {
+			response = httpGetDataTypeMap(
+					getFdCommerceEndPoint(LOAD_ENUMS),new TypeReference<Response<List>>() {
+					});
+			if (!response.getResponseCode().equals("OK"))
+				throw new FDResourceException(response.getMessage());
+
+		} catch (FDResourceException e) {
+			e.printStackTrace();
+			LOGGER.error(e.getMessage());
+		}
 		return response.getData();
 	}
 	
