@@ -95,7 +95,11 @@ public class ProductPromotionInfoManager {
 		try{
 			ErpZoneInfoHome home=getErpZoneInfoHome();
 			ErpZoneInfoSB remote= home.create();
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				zoneInfo= FDECommerceService.getInstance().getAllZoneInfoDetails();
+			}else{
 			zoneInfo=remote.getAllZoneInfoDetails();
+			}
 		}catch(CreateException sqle){
 			invalidateManagerHome();
 			LOGGER.error("Unable to load all getAllZoneInfoDetails " , sqle);			

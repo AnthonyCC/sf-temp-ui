@@ -50,6 +50,13 @@ public interface IECommerceService {
 
 	public String findZoneId(String zoneServiceType, String zoneId) throws RemoteException, FDResourceException;
 	
+    public String findZoneId(String servType) throws RemoteException;
+    
+    public List<ErpZoneMasterInfo> getAllZoneInfoDetails() throws RemoteException;
+    
+    public Collection findZoneInfoMaster(String zoneIds[]) throws RemoteException;
+	
+	
 	public String getFamilyIdForMaterial(String matId) throws RemoteException, FDResourceException;
 	
 	public ErpProductFamilyModel findFamilyInfo(String familyId) throws RemoteException, FDResourceException;
@@ -89,5 +96,7 @@ public interface IECommerceService {
 	public void submittedOrderdDetailsToHL(Date orderFeedDateFrom)throws RemoteException;
 
 	public void submittedOrderdDetailsToHL(List<String> ordersList)throws RemoteException;
+
+	String findZoneId(String zoneServiceType, String zipCode,boolean isPickupOnlyORNotServicebleZip) throws RemoteException;
 
 }

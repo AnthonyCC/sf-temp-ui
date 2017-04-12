@@ -69,8 +69,13 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String ERP_RECENT_BATCHES_API = "erp/recentBatches";
 	
 	private static final String ZONE_INFO_MASTER = "zoneInfo/master";
-	private static final String LOAD_ALL_ZONE_INFO = "zoneInfo/loadallzoneinfo";
+	private static final String ALL_ZONE_INFO_MASTER = "zoneInfo/allzoneinfoMaster";
 	private static final String LOAD_ZONE_ID = "zoneInfo/findzoneid";
+	private static final String LOAD_ZONE_BY_SERVICETYPE = "zoneInfo/zoneidByServiceType";
+	private static final String ALL_ZONE_INFO = "zoneInfo/allZoneInfo";
+	private static final String LOAD_ZONE_BY_ZONEIDS = "zoneInfo/zoneInfoByIds";
+	private static final String LOAD_ZONE_ID_ISPICK = "zoneInfo/zoneidPickup";
+
 	private static final String FAMILYID_FOR_MATERIAL = "productfamily/familyid";
 	private static final String FAMILY_INFO = "productfamily/familyinfo";
 	private static final String SKU_FAMILY_INFO = "productfamily/skufamilyinfo";
@@ -459,26 +464,86 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			throw new FDResourceException(response.getMessage());
 		return response.getData();*/
 		
-		try {
-			Response<Collection<Object>> response = httpGetData(getFdCommerceEndPoint(LOAD_ALL_ZONE_INFO), Response.class);
+
+			Response<Collection<Object>> response = getData(getFdCommerceEndPoint(ALL_ZONE_INFO_MASTER), Response.class);
 			return response.getData();
-		} catch (FDPayPalServiceException e) {
-			throw new FDResourceException(e, e.getMessage());
-		}
+
 		
 	}
 	@Override
 	public String findZoneId(String zoneServiceType, String zipCode) throws RemoteException, FDResourceException{
 		Response<String> response = new Response<String>(); 
-		try {
-			response = httpGetData(getFdCommerceEndPoint(LOAD_ZONE_ID)+"?zoneServiceType="+zoneServiceType+"&zipCode="+zipCode, Response.class);
-		} catch (FDPayPalServiceException e) {
-			throw new FDResourceException(e, e.getMessage());
-		}
+	
+			response = getData(getFdCommerceEndPoint(LOAD_ZONE_ID)+"?zoneServiceType="+zoneServiceType+"&zipCode="+zipCode, Response.class);
+	
 		if(!response.getResponseCode().equals("OK"))
 			throw new FDResourceException(response.getMessage());
 		return response.getData();
 	}
+	@Override
+	public String findZoneId(String zoneServiceType, String zipCode, boolean isPickupOnlyORNotServicebleZip) throws RemoteException{
+		Response<String> response = new Response<String>(); 
+	
+			try {
+				response = getData(getFdCommerceEndPoint(LOAD_ZONE_ID_ISPICK)+"?zoneServiceType="+zoneServiceType+"&zipCode="+zipCode+"&isPickup="+isPickupOnlyORNotServicebleZip, Response.class);
+			} catch (FDResourceException e) {
+				throw new RemoteException(e.getMessage());
+			}
+		if(!response.getResponseCode().equals("OK"))
+			throw new RemoteException(response.getMessage());
+		return response.getData();
+	}
+	
+	@Override
+	public String findZoneId(String servType) throws RemoteException {
+		Response<String> response = new Response<String>(); 
+
+			try {
+				response = getData(getFdCommerceEndPoint(LOAD_ZONE_BY_SERVICETYPE)+"?zoneServiceType="+servType, Response.class);
+			} catch (FDResourceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	
+		if(!response.getResponseCode().equals("OK"))
+			throw new RemoteException(response.getMessage());
+		return response.getData();
+	}
+
+	@Override
+	public List<ErpZoneMasterInfo> getAllZoneInfoDetails()
+			throws RemoteException {
+		Response<List<ErpZoneMasterInfo>> response = new Response<List<ErpZoneMasterInfo>>();
+		try {
+			response = httpGetDataTypeMap(getFdCommerceEndPoint(ALL_ZONE_INFO), new TypeReference<Response<List<ErpZoneMasterInfo>>>() {});
+		} catch (FDResourceException e) {
+			
+			throw new RemoteException(response.getMessage());
+		}
+		if(!response.getResponseCode().equals("OK"))
+			throw new RemoteException(response.getMessage());
+		return response.getData();
+	}
+	
+	@Override
+	public Collection<Object> findZoneInfoMaster(String[] zoneIds)
+			throws RemoteException {
+		Response<Collection<Object>> response = new Response<Collection<Object>>();
+		try {
+			response = httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_ZONE_BY_ZONEIDS), new TypeReference<Collection<Object>>() {});
+		} catch (FDResourceException e) {
+			
+			throw new RemoteException(response.getMessage());
+		}
+		if(!response.getResponseCode().equals("OK"))
+			throw new RemoteException(response.getMessage());
+		return response.getData();
+	}
+	
+	
+	
+	
+	
 	@Override
 	public String getFamilyIdForMaterial(String matId) throws RemoteException, FDResourceException {
 		Response<String> response = new Response<String>();
@@ -832,5 +897,6 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			throw new RemoteException(e.getMessage());
 		}
 	}
+	
 	
 }
