@@ -703,11 +703,11 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	
 	}
 	@Override
-	public List loadEnum(String daoClassName) throws RemoteException{
+	public List loadEnum(String daoClassName) {
 		Response<List> response = null;
 		try {
 			response = httpGetDataTypeMap(
-					getFdCommerceEndPoint(LOAD_ENUMS),new TypeReference<Response<List>>() {
+					getFdCommerceEndPoint(LOAD_ENUMS+"?daoClassName="+daoClassName),new TypeReference<Response<List>>() {
 					});
 			if (!response.getResponseCode().equals("OK"))
 				throw new FDResourceException(response.getMessage());
