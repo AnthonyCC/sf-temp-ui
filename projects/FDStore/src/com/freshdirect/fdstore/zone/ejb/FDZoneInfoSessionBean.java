@@ -3,10 +3,7 @@ package com.freshdirect.fdstore.zone.ejb;
 
 
 import java.rmi.RemoteException;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Collection;
-import java.util.Set;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -17,14 +14,15 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumZoneServiceType;
 import com.freshdirect.customer.ErpZoneMasterInfo;
-import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.erp.ejb.ErpZoneInfoHome;
 import com.freshdirect.erp.ejb.ErpZoneInfoSB;
-import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.service.FDECommerceService;
+import com.freshdirect.payment.service.IECommerceService;
 
 public class FDZoneInfoSessionBean extends SessionBeanSupport{
 	
@@ -41,10 +39,16 @@ public class FDZoneInfoSessionBean extends SessionBeanSupport{
 		try{
 			ErpZoneInfoHome home=getErpZoneInfoHome();
 			ErpZoneInfoSB remote= home.create();
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+        		IECommerceService service = FDECommerceService.getInstance();
+        		return service.findZoneInfoMaster(zoneId);
+        	}else
 			zoneInfo=remote.findZoneInfoMaster(zoneId);
 		}catch(CreateException sqle){
 			LOGGER.error("Unable to load all loadAllZoneInfoMaster " , sqle);			
 			throw new EJBException(sqle);
+		} catch (FDResourceException e) {
+			e.printStackTrace();
 		}
 		return zoneInfo;
 				
@@ -55,11 +59,17 @@ public class FDZoneInfoSessionBean extends SessionBeanSupport{
  		try{
  			ErpZoneInfoHome home=getErpZoneInfoHome();
  			ErpZoneInfoSB remote= home.create();
- 			zoneInfo=remote.loadAllZoneInfoMaster();
+ 			if(FDStoreProperties.isStorefront2_0Enabled()){
+        		IECommerceService service = FDECommerceService.getInstance();
+        		zoneInfo = service.loadAllZoneInfoMaster();
+        	}else
+        		zoneInfo=remote.loadAllZoneInfoMaster();
  		}catch(CreateException sqle){
  			LOGGER.error("Unable to load all loadAllZoneInfoMaster " , sqle);			
  			throw new EJBException(sqle);
- 		}
+ 		} catch (FDResourceException e) {
+			e.printStackTrace();
+		}
  		return zoneInfo;
     }
     
@@ -92,12 +102,20 @@ public class FDZoneInfoSessionBean extends SessionBeanSupport{
  			ErpZoneInfoSB remote= home.create();
  			 			 			
  			if(zipCode!=null && zipCode.trim().length()>0)
- 			    zoneId=remote.findZoneId(zoneServType, zipCode);
+ 				if(FDStoreProperties.isStorefront2_0Enabled()){
+ 					IECommerceService service = FDECommerceService.getInstance();
+ 	        		zoneId = service.findZoneId(serviceType, zipCode);
+ 	        	}else
+ 	        		zoneId=remote.findZoneId(zoneServType, zipCode);
  			
  			//[APPDEV-6003]-Change the default pricing zip code.
  			if((zoneId==null || zoneId.trim().length()==0) && isPickupOnlyORNotServicebleZip){
  				zipCode = FDStoreProperties.getDefaultPickupZoneId();
- 				zoneId=remote.findZoneId(zoneServType, zipCode);
+ 				if(FDStoreProperties.isStorefront2_0Enabled()){
+ 					IECommerceService service = FDECommerceService.getInstance();
+ 	        		zoneId = service.findZoneId(serviceType, zipCode);
+ 	        	}else
+ 	        		zoneId=remote.findZoneId(zoneServType, zipCode);
  			}
  		
  			if(zoneId==null || zoneId.trim().length()==0)
@@ -106,7 +124,9 @@ public class FDZoneInfoSessionBean extends SessionBeanSupport{
  		}catch(CreateException sqle){
  			LOGGER.error("Unable to load all loadAllZoneInfoMaster " , sqle);			
  			throw new EJBException(sqle);
- 		}
+ 		} catch (FDResourceException e) {
+			e.printStackTrace();
+		}
     	
     	
     	return zoneId;
