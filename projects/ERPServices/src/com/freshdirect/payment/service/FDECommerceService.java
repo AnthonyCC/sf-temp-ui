@@ -74,10 +74,12 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String FAMILYID_FOR_MATERIAL = "productfamily/familyid";
 	private static final String FAMILY_INFO = "productfamily/familyinfo";
 	private static final String SKU_FAMILY_INFO = "productfamily/skufamilyinfo";
-	private static final String USERID_BY_USERTOKEN = "/account/external/userIdbyusertoken";
+	private static final String USERID_BY_USERTOKEN = "account/external/userIdbyusertoken";
 	private static final String USER_EMAIL_EXIST = "account/external/checkemailexist";
-	private static final String LINK_USER_TOKEN = "/account/external/linkusertoken";
-	private static final String CONNECTED_PROVIDERS_BY_USERID = "/account/external/providerbyuserid";
+	private static final String LINK_USER_TOKEN = "account/external/linkusertoken";
+	private static final String CHECK_EXT_LOGIN_USER = "account/external/checkexternalloginuser";
+	
+	private static final String CONNECTED_PROVIDERS_BY_USERID = "account/external/providerbyuserid";
 	private static final String LOAD_ENUMS = "/enums";
 	private static final String BRAND_SEARCH_BY_KEY ="brand/products/search";
 	private static final String BRAND_SEARCH_BY_PRODUCT ="brand/products/products";
@@ -599,7 +601,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		Response<List<String>> response = null;
 		try {
 			response = httpGetDataTypeMap(
-					getFdCommerceEndPoint(CONNECTED_PROVIDERS_BY_USERID+"?userId="+userId+"&source="+source),new TypeReference<Response<List<String>>>() {
+					getFdCommerceEndPoint(CONNECTED_PROVIDERS_BY_USERID+"?userId="+userId+"&source="+source.name()),new TypeReference<Response<List<String>>>() {
 					});
 			if (!response.getResponseCode().equals("OK"))
 				throw new FDResourceException(response.getMessage());
@@ -616,7 +618,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		Response<Boolean> response = null;
 		try {
 			response = httpGetDataTypeMap(
-					getFdCommerceEndPoint("checkexternalloginuser?userId="+userId+"&source="+source),new TypeReference<Response<Boolean>>() {
+					getFdCommerceEndPoint(CHECK_EXT_LOGIN_USER+"?userId="+userId+"&source="+source),new TypeReference<Response<Boolean>>() {
 					});
 			if (!response.getResponseCode().equals("OK"))
 				throw new FDResourceException(response.getMessage());

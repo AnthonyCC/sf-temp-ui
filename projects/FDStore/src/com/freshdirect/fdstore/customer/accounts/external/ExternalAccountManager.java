@@ -29,7 +29,7 @@ public class ExternalAccountManager{
 		try {
 			if(FDStoreProperties.isStorefront2_0Enabled()){
 				IECommerceService service = FDECommerceService.getInstance();
-				service.getUserIdForUserToken(userToken);
+				userId=service.getUserIdForUserToken(userToken);
 				
 			}else{
 				ExternalAccountManagerSB sb = externalLoginManagerHome.create();
