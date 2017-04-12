@@ -82,6 +82,7 @@
 }
 
 .content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header {
+  display: -webkit-flex;
   display: flex;
   max-width: 100%;
 }
@@ -199,6 +200,10 @@
   text-align: left;
   text-transform: uppercase;
   width: 100%;
+}
+
+.content-module.editorial-module.product-carousel .editorial-content .learn-more button:hover {
+  text-decoration: underline;
 }
 
 .content-module.editorial-module.product-carousel.learn-more .editorial-content,
