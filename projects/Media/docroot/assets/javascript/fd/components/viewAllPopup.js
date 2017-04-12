@@ -30,7 +30,7 @@ var FreshDirect = FreshDirect || {};
         overlay:true,
         overlayExtraClass:'white-popup-overlay',
         hideOnOverlayClick: true,
-        zIndex:450
+        zIndex:460
       }
     },
     hasClose: {
