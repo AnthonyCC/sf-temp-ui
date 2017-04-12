@@ -82,7 +82,6 @@
 }
 
 .content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header {
-  display: -webkit-flex;
   display: flex;
   max-width: 100%;
 }
@@ -107,6 +106,7 @@
 
 .content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header .header-title {
   justify-content: center;
+  max-width: 285px;
 }
 
 .content-module.editorial-module.product-carousel .editorial-content .left-side,
@@ -219,6 +219,6 @@
 
 .content-module.editorial-module.product-carousel.learn-more .editorial-content .right-side {
   max-width: 480px;
-  position: sticky;
+  position: static;
   margin: 0;
 }
