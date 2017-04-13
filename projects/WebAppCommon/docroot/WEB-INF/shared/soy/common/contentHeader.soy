@@ -4,7 +4,7 @@
  * @param content
  */
 {template .contentHeader autoescape="false"}
-{if $content.contentTitle or not $content.hideViewAllButton}
+{if $content.contentTitle or $content.contentTitleTextBanner or not $content.hideViewAllButton}
   <div class="content-header" data-component="content-header">
     <div>
       <h2 class="content-title" tabindex="0">{if $content.contentTitle}{$content.contentTitle}{/if}</h2>

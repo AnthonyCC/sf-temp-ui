@@ -14,6 +14,10 @@
   border-top: 0;
 }
 
+.content-module .content.border-top {
+  border-top: 2px solid #F2F3F4;
+}
+
 .content-module [data-component="carousel"] [data-component="carousel-mask"] {
   background-color: white;
   margin: 0 2px 36px;
