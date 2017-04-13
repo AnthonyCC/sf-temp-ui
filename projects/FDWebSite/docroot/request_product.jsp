@@ -13,7 +13,7 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='template' prefix='tmpl' %>
-<%@ page buffer="16kb" autoFlush="false" %>
+<%@ page buffer="64kb" autoFlush="false" %>
 <%
 	String successPage = "/request_product.jsp" + ((request.getQueryString() != null) ? "?"+request.getQueryString() : "" );
 	String department = request.getParameter("department");
