@@ -121,8 +121,8 @@ public class MergeCartControllerTag extends com.freshdirect.framework.webapp.Bod
             try {
                 LOGGER.debug("redirect after mergeCart ==> " + this.successPage);
                 response.sendRedirect(response.encodeRedirectURL( this.successPage ));
-                JspWriter writer = pageContext.getOut();
-                writer.close();
+                //JspWriter writer = pageContext.getOut();
+                //writer.close();
             } catch (IOException ioe) {
                 throw new JspException(ioe.getMessage());
             }
