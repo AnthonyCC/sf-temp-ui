@@ -35,24 +35,24 @@
 }
 
 .module-group .module-text .module-group-text-banner {
-  background-color: #eb202a;
+  background-color: #f68139;
   color: white;
   padding-left: 10px;
-  padding-right: 15px;
+  padding-right: 20px;
   position: relative;
   text-transform: none;
 }
 
 .module-group .module-text .module-group-text-banner::after {
-  border-bottom: 13px solid #eb202a;
-  border-top: 13px solid #eb202a;
-  border-left: none;
-  border-right: 10px solid transparent;
+  background-color: white;
+  min-width: 20px;
+  min-height: 20px;
   content: '';
   display: block;
   position: absolute;
-  right: -10px;
-  top: 0;
+  right: -9px;
+  top: 3px;
+  transform: rotate(45deg);
 }
 
 .module-group .view-all {

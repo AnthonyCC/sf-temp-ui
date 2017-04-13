@@ -6,6 +6,19 @@
   margin-bottom: 0;
   padding: 0 20px;
 }
+
+.content-module.editorial-module .module-header .module-text-banner::after {
+  background-color: #F2F3F4;
+  min-width: 20px;
+  min-height: 20px;
+  content: '';
+  display: block;
+  position: absolute;
+  right: -9px;
+  top: 3px;
+  transform: rotate(45deg);
+}
+
 .content-module.editorial-module.product-carousel .content-module .content-header {
   padding: 0 20px;
 }
