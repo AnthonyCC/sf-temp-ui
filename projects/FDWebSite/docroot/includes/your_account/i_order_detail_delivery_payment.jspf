@@ -47,7 +47,7 @@ final int W_YA_OD_DELIVERY_PAYMENT_DELIMITER = 150;
             <BR>
             Phone: <%= dlvAddress.getPhone().getPhone() %> <%if( !"".equals(dlvAddress.getPhone().getExtension()) ){%>Ext. <%= dlvAddress.getPhone().getExtension() %> <%}%><br>
 			<% if (dlvAddress.getAltContactPhone()!=null) { %>
-            Alt Contact: <%= dlvAddress.getAltContactPhone().getPhone() %> <%if( !"".equals(dlvAddress.getAltContactPhone().getExtension()) ){%>Ext. <%= dlvAddress.getAltContactPhone().getExtension() %> <%}%><br>
+            Alt Contact: <%= dlvAddress.getAltContactPhone().getPhone() %> <%if( !"".equals(dlvAddress.getAltContactPhone().getExtension()) ){%>Ext. <%= dlvAddress.getAltContactPhone().getExtension()!=null ? dlvAddress.getAltContactPhone().getExtension() : ""%> <%}%><br>
             <% } %>
 			<br>
 
@@ -145,7 +145,7 @@ final int W_YA_OD_DELIVERY_PAYMENT_DELIMITER = 150;
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% if (showModify) {%><A HREF="/checkout/step_3_choose.jsp" class="modifybutton">Modify</A><%}%><BR>
 			<font class="space4pix"><br></font>
             <%= paymentMethod.getName()%><BR>
-            <%= paymentMethod.getEmailID()%>
+            <%= paymentMethod.getEmailID() != null ? paymentMethod.getEmailID() : ""%>
             <%if (paymentMethod.geteWalletID() != null && paymentMethod.geteWalletID().equals(""+EnumEwalletType.PP.getValue())){%>
             <BR><BR>
             <% }%>
@@ -166,7 +166,7 @@ final int W_YA_OD_DELIVERY_PAYMENT_DELIMITER = 150;
             if(EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){%>
                 <b>Billing Reference/Client Code:</b><BR>
                 <font class="space4pix"><br></font>
-                <%= paymentMethod.getBillingRef() %><br>
+                <%= paymentMethod.getBillingRef()!=null ? paymentMethod.getBillingRef(): ""%><br>
             <%
             }%>
 			<%
