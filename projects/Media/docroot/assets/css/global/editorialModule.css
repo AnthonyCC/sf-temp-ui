@@ -59,7 +59,7 @@
 }
 
 .content-module.editorial-module.product-carousel .editorial-content .learn-more {
-  bottom: 17px;
+  bottom: 15px;
   left: 498px;
   margin-left: 35px;
   margin-right: 0;
@@ -68,9 +68,13 @@
 }
 
 .content-module.editorial-module.product-carousel .editorial-content .learn-more .gradient-space {
-  min-height: 10px;
-  background: trasnparent;
-  background: linear-gradient(transparent, #F2F3F4);
+  min-height: 8em;
+  background: none;
+  background: linear-gradient(rgba(255, 255, 255, 0), #F2F3F4);
+}
+
+.content-module.editorial-module.product-carousel .editorial-content .learn-more.show-less .gradient-space {
+  background: none;
 }
 
 .content-module.editorial-module.product-carousel .editorial-content .learn-more.show-less {
