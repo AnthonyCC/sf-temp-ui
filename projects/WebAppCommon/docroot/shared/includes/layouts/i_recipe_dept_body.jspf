@@ -10,7 +10,6 @@ final int W_RECIPE_DEPT_BODY_RIGHT = 330;
 -- Expects the host page to define and set variable recipeDepartment of type RecipeDepartment
 -- Host page will need various Imports...(see recipe_dept.jsp)
 */
-
     Comparator priceComp = new ProductModel.PriceComparator();
     boolean isPreviewMode =ContentFactory.getInstance().getPreviewMode();
 
@@ -34,20 +33,20 @@ if (editorialPath!=null && !"".equals(editorialPath.trim())) {  %>
 	</div>
 <% } %>
 		
-	<table width="<%=W_RECIPE_DEPT_BODY_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
+	 <table width="<%=W_RECIPE_DEPT_BODY_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td colspan="3" width="206" height="25" valign="bottom"><img src="/media_stat/recipe/rechm_tab_choose.gif" width="206" height="25" alt="Choose a Category"></td>
         <td colspan="2" height="25" style="border-bottom: solid 2px #FF9933;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt=""></td>
         <td rowspan="2" width="8" valign="bottom" height="31"><img src="/media_stat/recipe/rechm_corn_tr.gif" width="8" height="8" border="0" alt=""></td>
       </tr>
-      <tr>
+    <tr>
         <td width="8" style="border-left: solid 2px #FF9933;"><img src="/media_stat/images/layout/clear.gif" width="6" height="6" alt=""></td>
         <td width="11"><img src="/media_stat/images/layout/clear.gif" width="11" height="1" alt=""></td>
         <td width="187"><img src="/media_stat/images/layout/clear.gif" width="187" height="1" alt=""></td>
         <td width="<%=W_RECIPE_DEPT_BODY_TOTAL-391%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_RECIPE_DEPT_BODY_TOTAL-391%>" height="1" alt=""></td>
         <td width="177"><img src="/media_stat/images/layout/clear.gif" width="177" height="1" alt=""></td>
       </tr>
-      <tr>
+        <tr>
         <td style="border-left: solid 2px #FF9933;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt=""></td>
         <td><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt=""></td>
         <td valign="top" colspan="2" rowspan="2" style="padding-top: 10px; padding-right: 10px;">
@@ -114,12 +113,12 @@ if (editorialPath!=null && !"".equals(editorialPath.trim())) {  %>
 
         <td width="8" style="border-right: solid 2px #FF9933;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt=""></td>
       </tr>
-      <tr>
+     <tr>
         <td valign="bottom" style="border-left: solid 2px #FF9933;" height="402"><img src="/media_stat/images/layout/clear.gif" width="6" height="402" alt=""></td>
 		<td height="402"><img src="/media_stat/images/layout/clear.gif" width="1" height="402" alt=""></td>
         <td width="185" height="410" colspan="2" rowspan="2" align="right" valign="bottom" style="background-image: url('/media_stat/recipe/bg_bot_image.gif');"><img src="/media/images/navigation/department/recipes/rechome/rechm_bot_image.jpg" width="185" height="410" alt="Recipe books"></td>
       </tr>
-      <tr>
+       <tr>
         <td width="8" height="8" valign="bottom" style="background-image: url('/media_stat/recipe/bg_left_image.gif');"><img src="/media_stat/recipe/rechm_corn_bl.gif" width="8" height="8" alt=""></td>
         <td height="8" colspan="3" style="border-bottom: solid 2px #FF9933;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt=""></td>
       </tr>
@@ -131,12 +130,13 @@ if (editorialPath!=null && !"".equals(editorialPath.trim())) {  %>
 	       <% if (rcpCat!= null &&  featuredRecipes!=null && featuredRecipes.size() > 0) { 	       %>
 	          <img src="/media/images/navigation/department/recipes/rechome/rechm_seasonal_graphic.gif" alt="Seasonal Recipes" border="0" width="267"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt=""><br>
           	  <logic:iterate id="aFeatRecipe" collection="<%=featuredRecipes%>" type="com.freshdirect.fdstore.content.Recipe">
-			  <% if (!isPreviewMode && !aFeatRecipe.isAvailable()) continue; 
+			  <% if (!(!isPreviewMode && !aFeatRecipe.isAvailable())) {
 			  if (rcpCat!=null) { %>
 		          <a href="<%=response.encodeURL("recipe.jsp?catId="+rcpCat+"&recipeId="+aFeatRecipe+"&trk=dfeat")%>"><%=aFeatRecipe.getName()%></a>
 			<% } else { %><%=aFeatRecipe.getName()%><% } %>
 			<br>
 		  	<span class="recipe_author"><%=aFeatRecipe.getDisplayableSource()%></span><br><br>
+		  	<%} %>
            </logic:iterate>
 	  	<a href="<%=response.encodeURL("recipe_subcat.jsp?catId="+rcpCat+"&subCatId="+rcpSubCat+"&trk=feat")%>" class="text12"><strong>More seasonal recipes...</strong></a>
 	       <% } %>
@@ -242,5 +242,5 @@ if (editorialPath!=null && !"".equals(editorialPath.trim())) {  %>
 		   </table>
 <%              }   // end of else-if featured source.. %>
 		</td>
-	  </tr>
+	  </tr> 
 	</table>
