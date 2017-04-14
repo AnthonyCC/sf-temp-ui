@@ -22,7 +22,8 @@ public enum EnumRolloutFeature {
     unbxdanalytics2016("unbxdanalytics", "2016"),
     mobweb("mobweb", "2016"),
     printinvoice("printinvoice", "2016"), // has print invoice button
-    homepageredesign("homepageredesign", "2017");
+    homepageredesign("homepageredesign", "2017"),
+    carttabcars("carttabcars", "2017");
 
     private final EnumRolloutFeature child;
     private final String cookieName;

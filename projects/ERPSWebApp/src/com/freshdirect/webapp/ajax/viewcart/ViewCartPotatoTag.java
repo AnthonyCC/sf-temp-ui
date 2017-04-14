@@ -11,7 +11,10 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.ajax.reorder.service.QuickShopCarouselService;
+import com.freshdirect.webapp.ajax.reorder.service.QuickShopCrazyQuickshopRecommendationService;
 import com.freshdirect.webapp.ajax.viewcart.data.ProductSamplesCarousel;
+import com.freshdirect.webapp.ajax.viewcart.data.RecommendationTab;
 import com.freshdirect.webapp.ajax.viewcart.data.ViewCartCarouselData;
 import com.freshdirect.webapp.ajax.viewcart.service.ViewCartCarouselService;
 import com.freshdirect.webapp.soy.SoyTemplateEngine;
@@ -38,6 +41,8 @@ public class ViewCartPotatoTag extends SimpleTagSupport {
                 productSamplesTab = ViewCartCarouselService.defaultService().populateViewCartPageProductSampleCarousel(request);
             }
             carousels.setProductSamplesTab(productSamplesTab);
+            
+            carousels.getRecommendationTabs().add(0, new RecommendationTab(QuickShopCrazyQuickshopRecommendationService.defaultService().getTheCrazyQuickshopTitle(null), QuickShopCarouselService.QUICKSHOP_VIRTUAL_SITE_FEATURE, null, null, null));
         } catch (Exception e) {
             LOGGER.error("recommendation failed", e);
         }

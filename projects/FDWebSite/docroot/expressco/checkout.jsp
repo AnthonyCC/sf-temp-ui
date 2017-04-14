@@ -125,6 +125,16 @@ if (mobWeb) {
         <div id="ec-drawer">
         </div>
         
+        
+        <% if (!mobWeb) { /* no mobWeb for now */  %>
+			<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user)) { %>
+				<%-- APPDEV-5916 --%>
+				<div id="cartCarousels">
+					<potato:viewCart />
+					<soy:render template="expressco.checkoutTabbedCarousel" data="${viewCartPotato}" />
+				</div>
+			<% } %>
+		<% } %>
        
         <div class="checkout-contentheader">
           <h2>Cart Details</h2>
@@ -143,6 +153,7 @@ if (mobWeb) {
       // potato loading
       window.FreshDirect.expressco = {};
       window.FreshDirect.expressco.data = <fd:ToJSON object="${singlePageCheckoutPotato}" noHeaders="true"/>
+		window.FreshDirect.expressco.viewCartPotato = <fd:ToJSON object="${viewCartPotato}" noHeaders="true"/>
       window.FreshDirect.metaData = window.FreshDirect.expressco.data.formMetaData;
       window.FreshDirect.pendingCustomizations = <fd:ToJSON object="${pendingExternalAtcItemPotato}" noHeaders="true"/>
     </script>
