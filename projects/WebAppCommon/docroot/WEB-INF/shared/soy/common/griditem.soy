@@ -333,6 +333,7 @@
 	{if $hookLogicBeaconImpression} data-hooklogic-beacon-impress="{$hookLogicBeaconImpression}"{/if}
 >
 	<div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
+	{if not $discontinued}
 	  <a href="{$productPageUrl}" class="portrait-item-image-link" manual_cm_sp="
     {$productId},{if $productName}{$productName}{/if}
     {if $moduleData and $moduleData.moduleId},{$moduleData.moduleId}{else},{/if}
@@ -341,11 +342,14 @@
     {if $moduleData and $moduleData.contentTitle}-_-{$moduleData.contentTitle}{/if}
     {if $moduleData and $moduleData.moduleGroupTitle}-_-{$moduleData.moduleGroupTitle}{/if}
     {if $moduleData and $moduleData.moduleGroupTitleTextBanner}-_-{$moduleData.moduleGroupTitleTextBanner}{/if}">
+    {/if}
 		<div class="portrait-item-burst_wrapper">
 			<img src="{$productImage}" alt="Product Image - {$productName}" class="portrait-item-productimage" {if not $discontinued}data-product-url="{$productPageUrl}"{/if}>
 			{call common.bursts}{param badge:$badge /}{param deal:$deal /}{param usq:$usq /}{/call}
 		</div>
+		{if not $discontinued}
 		</a>
+		{/if}
 		{if $timeToComplete and $timeToComplete>0}
 			<div class="portrait-product-list-time">
 				<span class="icon-clock2-before"><span>{$timeToComplete} minutes</span>
