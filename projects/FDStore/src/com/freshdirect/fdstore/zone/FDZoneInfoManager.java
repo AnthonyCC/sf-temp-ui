@@ -35,12 +35,6 @@ public class FDZoneInfoManager {
         	if(FDStoreProperties.isStorefront2_0Enabled()){
         	return FDECommerceService.getInstance().findZoneInfoMaster(zoneId);
         	}else {
-
-        	if(FDStoreProperties.isStorefront2_0Enabled()){
-        		IECommerceService service = FDECommerceService.getInstance();
-        		return service.findZoneInfoMaster(zoneId);
-        	}else
-
             return FDServiceLocator.getInstance().getFDZoneInfoSessionBean().findZoneInfoMaster(zoneId);
         	}
         } catch (RemoteException re) {
@@ -56,12 +50,6 @@ public class FDZoneInfoManager {
         	if(FDStoreProperties.isStorefront2_0Enabled()){
         		 zoneInfo = FDECommerceService.getInstance().loadAllZoneInfoMaster();
             	}else {
-
-        	if(FDStoreProperties.isStorefront2_0Enabled()){
-        		IECommerceService service = FDECommerceService.getInstance();
-        		zoneInfo = service.loadAllZoneInfoMaster();
-        	}else
-
             zoneInfo = FDServiceLocator.getInstance().getFDZoneInfoSessionBean().loadAllZoneInfoMaster();
             	}
         } catch (RemoteException re) {
@@ -87,6 +75,7 @@ public class FDZoneInfoManager {
 
         	if(FDStoreProperties.isStorefront2_0Enabled()){
         		IECommerceService service = FDECommerceService.getInstance();
+        		 LOGGER.debug("Service Type:" + serviceType + " ZipCode is:" + zipCode);
         		zoneId = service.findZoneId(serviceType, zipCode);
         	}else
 	            LOGGER.debug("Service Type:" + serviceType + " ZipCode is:" + zipCode);
