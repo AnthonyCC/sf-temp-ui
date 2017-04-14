@@ -217,6 +217,7 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 				FDCartLineI cartLine = new FDCartLineModel(fdSelection);
 				if (!cartLine.isInvalidConfig()) {
 					// cartLine.refreshConfiguration();
+					cartLine.setCustomerListLineId(fdSelection.getCustomerListLineId());
 					so.getStandingOrderCart().addOrderLine(cartLine);
 				}
 			}

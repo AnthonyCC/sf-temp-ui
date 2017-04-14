@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -166,6 +167,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     private boolean zipPopupSeenInSession = false;
     
     private boolean sOCartLineMessages;
+    
+	private Map<String,String> soCartLineMessagesMap=new HashMap<String,String>();
 
     @Override
     public boolean isSoContainerOpen() {
@@ -2253,6 +2256,12 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setsOCartLineMessages(boolean sOCartLineMessages) {
 		this.sOCartLineMessages = sOCartLineMessages;
 	}
-    
+	public Map<String, String> getSoCartLineMessagesMap() {
+		return soCartLineMessagesMap;
+	}
+
+	public void setSoCartLineMessagesMap(Map<String, String> soCartLineMessagesMap) {
+		this.soCartLineMessagesMap = soCartLineMessagesMap;
+	}    
   
 }

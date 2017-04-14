@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -312,6 +313,8 @@ public class FDUser extends ModelSupport implements FDUserI {
     private boolean isZipCheckPopupUsed = false;
     
     private boolean sOCartLineMessages;
+    
+    private Map<String,String> soCartLineMessagesMap=new HashMap<String,String>();
     
     public Date getTcAcknowledgeDate() {
         return tcAcknowledgeDate;
@@ -3579,4 +3582,12 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public void setsOCartLineMessages(boolean sOCartLineMessages) {
 		this.sOCartLineMessages = sOCartLineMessages;
 	}
+	public Map<String, String> getSoCartLineMessagesMap() {
+		return soCartLineMessagesMap;
+	}
+
+	public void setSoCartLineMessagesMap(Map<String, String> soCartLineMessagesMap) {
+		this.soCartLineMessagesMap = soCartLineMessagesMap;
+	}
+	
 }

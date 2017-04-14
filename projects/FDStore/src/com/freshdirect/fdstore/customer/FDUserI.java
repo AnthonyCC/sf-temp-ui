@@ -709,4 +709,9 @@ public interface FDUserI extends java.io.Serializable {
     public boolean issOCartLineMessages();
     
     public void setsOCartLineMessages(boolean sOCartLineMessages);
+    
+    public Map<String, String> getSoCartLineMessagesMap();
+
+	public void setSoCartLineMessagesMap(Map<String, String> soCartLineMessagesMap);
+
 }
