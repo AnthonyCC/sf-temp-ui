@@ -300,8 +300,8 @@ public class ForgotPasswordControllerTag extends BodyTagSupport {
 		HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 		try {
 			response.sendRedirect(response.encodeRedirectURL(url));
-			JspWriter writer = pageContext.getOut();
-			writer.close();
+			//JspWriter writer = pageContext.getOut();
+			//writer.close();
 		} catch (IOException ioe) {
 			//   throw new JspException(ioe.getMessage());
 		}
