@@ -1,1 +1,1 @@
-<jsp:forward page="/shared/template/large_pop.jsp" />
+<%@ include file="/shared/template/large_pop.jsp" %>
