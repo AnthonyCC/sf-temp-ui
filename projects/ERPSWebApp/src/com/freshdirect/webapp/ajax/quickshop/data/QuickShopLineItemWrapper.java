@@ -65,6 +65,9 @@ public class QuickShopLineItemWrapper implements ContentNodeModel {
 		public int compare(QuickShopLineItemWrapper h1, QuickShopLineItemWrapper h2) {
 			
 			//put unavailable items to the end of the list
+			if(!h1.getItem().isAvailable() && !h2.getItem().isAvailable()){
+				return 0;
+			}
 			if(!h1.getItem().isAvailable()){
 				return 1;
 			}
