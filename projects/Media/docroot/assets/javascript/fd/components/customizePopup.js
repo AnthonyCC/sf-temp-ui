@@ -132,7 +132,6 @@ var FreshDirect = FreshDirect || {};
         var item = config.item,
             cartData = config.cartData,
             request = {};
-
         this.popup.show($(config.element));
         this.popup.clicked = true;
 		
@@ -189,7 +188,8 @@ var FreshDirect = FreshDirect || {};
     if ($(element).data('soshow')) {
     	$('#' + customizePopup.popupId).addClass('soShow');
     }
-
+    customizePopup.popup.$overlay.removeClass('customize-overlay').addClass('customize-overlay');
+    
     if($(element).data('soshow')){
     	if(!FreshDirect.user.recognized && !FreshDirect.user.guest){
     		var item = fd.modules.common.productSerialize(element).pop();
