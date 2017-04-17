@@ -46,6 +46,7 @@ import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
+import com.freshdirect.framework.event.FDWebEvent;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.BINInfo;
 //import com.freshdirect.content.attributes.FlatAttributeCollection;
@@ -91,6 +92,8 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String BRAND_LAST_SENT_FEED ="brand/products/ordertime";
 	private static final String BRAND_ORDER_SUBMIT_BYDATE ="brand/products/orderdetailsbydate";
 	private static final String BRAND_ORDER_SUBMIT_SALEIDS ="brand/products/orderdetailsbysaleids";
+
+	private static final String EVENT_LOGGER ="event/logger/log";
 	
 	
 	private static final String GET_COO_API ="/coo";
@@ -897,6 +900,28 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			throw new RemoteException(e.getMessage());
 		}
 	}
+
+	@Override
+	public void log(FDWebEvent fdWebEvent) throws RemoteException {
+		try {
+			Request<FDWebEvent> request = new Request<FDWebEvent>();
+			request.setData(fdWebEvent);
+			String inputJson = buildRequest(request);
+			@SuppressWarnings("unchecked")
+			Response<Void> response = this.getData(inputJson, getFdCommerceEndPoint(EVENT_LOGGER), Response.class);
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+//			return response.getData();
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	
 	
 	
 }

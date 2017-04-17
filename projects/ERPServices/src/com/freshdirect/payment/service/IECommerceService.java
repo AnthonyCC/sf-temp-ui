@@ -21,6 +21,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
 import com.freshdirect.payment.BINInfo;
+import com.freshdirect.framework.event.FDWebEvent;
 
 public interface IECommerceService {
 
@@ -98,5 +99,7 @@ public interface IECommerceService {
 	public void submittedOrderdDetailsToHL(List<String> ordersList)throws RemoteException;
 
 	String findZoneId(String zoneServiceType, String zipCode,boolean isPickupOnlyORNotServicebleZip) throws RemoteException;
+	
+	public void log(FDWebEvent fdWebEvent) throws RemoteException;
 
 }
