@@ -291,7 +291,9 @@
 	#customizePopup.soShow.so-review .productDisplay-skulist,
 	#customizePopup.soShow .so .so-toggler,
 	#customizePopup.soShow .so-review-selected,
-	#customizePopup.soShow .so-container .so-review-link{
+	#customizePopup.soShow .so-container .so-review-link,
+	#customizePopup.soShow.so-review .so .so-listadd-content .select-wrapper,
+	#customizePopup.soShow.so-review.so-review-success .leftright-bottom .so-container .so-review-selected{
 		display: none;
 	}
 	#customizePopup.soShow .so .cssbutton[data-component="addToSOButton"], #customizePopup.soShow .so .cssbutton[data-component="showOButton"] {
@@ -303,6 +305,9 @@
 	}
 	#customizePopup .so-container{
 		display: none;
+	}
+	#customizePopup.soShow.so-review .so-review-item-total{
+		font-size: 18px;
 	}
 	#customizePopup.soShow .so-container,
 	#customizePopup.soShow.so-review .so .cssbutton[data-component="addToSOButton"],
@@ -699,4 +704,8 @@
 	.successtimeslot .standing-orders-3-successtimeslot_date-reservation,
 	.successtimeslot .standing-orders-3-successtimeslot_date-next-delivery{
 		padding-top: 10px;
+	}
+	form[fdform="pdpatc"] .pdp-atc.soShow button[data-component-extra="showSOButton"]{
+		margin: 10px 10px 0 7px;
+		padding: 10px 18px;
 	}
