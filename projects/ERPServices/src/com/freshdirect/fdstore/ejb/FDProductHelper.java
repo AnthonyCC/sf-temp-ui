@@ -82,6 +82,8 @@ import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.util.UnitPriceUtil;
 import com.freshdirect.framework.core.VersionedPrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.service.FDECommerceService;
+import com.freshdirect.payment.service.IECommerceService;
 
 public class FDProductHelper {
 
@@ -283,7 +285,11 @@ public class FDProductHelper {
 					this.lookupFamilyHome();
 				}
 				remote = this.erpProductFamilyHome.create();
-				familyId = remote.getFamilyIdForMaterial(erpProductInfo.getMaterialSapIds()[0]);
+				if(FDStoreProperties.isStorefront2_0Enabled()){
+	        		IECommerceService service = FDECommerceService.getInstance();
+	        		familyId = service.getFamilyIdForMaterial(erpProductInfo.getMaterialSapIds()[0]);
+        		}else
+					familyId = remote.getFamilyIdForMaterial(erpProductInfo.getMaterialSapIds()[0]);
 			} catch (RemoteException e1) {
 				e1.printStackTrace();
 				throw new FDResourceException( e1 );

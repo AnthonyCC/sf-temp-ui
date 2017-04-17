@@ -36,6 +36,8 @@ import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.fdstore.ejb.FDFactoryHome;
 import com.freshdirect.fdstore.ejb.FDFactorySB;
 import com.freshdirect.framework.util.DayOfWeekSet;
+import com.freshdirect.payment.service.FDECommerceService;
+import com.freshdirect.payment.service.IECommerceService;
 
 /**
  * Singleton class for accessing the FD-layer factory session bean.
@@ -245,8 +247,12 @@ public class FDFactory {
 		}
 		ErpProductFamilyModel pi;
 		try {
-			FDFactorySB sb = factoryHome.create();                                       		
-			pi = sb.getFamilyInfo(familyId);				
+			FDFactorySB sb = factoryHome.create();  
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+        		IECommerceService service = FDECommerceService.getInstance();
+        		pi = service.findFamilyInfo(familyId);
+        	}else
+        		pi = sb.getFamilyInfo(familyId);				
 				
 		}catch (CreateException ce) {
 			factoryHome=null;
@@ -263,8 +269,12 @@ public class FDFactory {
 		}
 		ErpProductFamilyModel pi;
 		try {
-			FDFactorySB sb = factoryHome.create();                                       		
-			pi = sb.getSkuFamilyInfo(materialId);				
+			FDFactorySB sb = factoryHome.create(); 
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+        		IECommerceService service = FDECommerceService.getInstance();
+        		pi = service.findSkuFamilyInfo(materialId);
+        	}else
+        		pi = sb.getSkuFamilyInfo(materialId);				
 				
 		}catch (CreateException ce) {
 			factoryHome=null;
