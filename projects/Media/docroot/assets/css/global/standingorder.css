@@ -290,7 +290,8 @@
 	#customizePopup.soShow.so-review .so .select-wrapper,
 	#customizePopup.soShow.so-review .productDisplay-skulist,
 	#customizePopup.soShow .so .so-toggler,
-	#customizePopup.soShow .so-review-selected{
+	#customizePopup.soShow .so-review-selected,
+	#customizePopup.soShow .so-container .so-review-link{
 		display: none;
 	}
 	#customizePopup.soShow .so .cssbutton[data-component="addToSOButton"], #customizePopup.soShow .so .cssbutton[data-component="showOButton"] {
@@ -319,9 +320,17 @@
 		padding: 0 0 5px;
 		font-size: 14px;
 	}
+	#customizePopup.soShow.so-review .so-container .so-review-link{
+		text-align: center;
+	}
+	#customizePopup.soShow.so-review .so-container .so-review-link a{
+		font-size: 16px;
+		color: #458b4c;
+	}
 	#customizePopup.soShow.so-review .so .cssbutton[data-component="addToSOButton"],
-	#customizePopup.soShow.so-review .so .cssbutton.okReviewSOButton,
+	#customizePopup.soShow.so-review  .cssbutton.okReviewSOButton,
 	#customizePopup.soShow .so .so-listadd-content .select-wrapper{
+		display: block;
 		width: 325px;
 		margin: auto;
 	}

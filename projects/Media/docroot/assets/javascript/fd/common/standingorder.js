@@ -103,9 +103,9 @@ function addToSoSuccessHandler($contextElem, data) {
 	
 	$jq('#customizePopup .so-review-header').text("Added to");
 	$jq('#customizePopup .so-review-date').text(data.name);
-	$jq('#customizePopup .so-review-link').html('Added to: <a href="/quickshop/standing_orders.jsp?soid='+data.id+'#soid_'+data.id+'">See Order Details</a>');
-	$jq('#customizePopup .select-wrapper .cssbutton[data-component="addToSOButton"]').remove();
-	$jq('#customizePopup .select-wrapper .so-review-selected').before('<button type="button" data-popup-control="close" class="okReviewSOButton cssbutton cssbutton-flat green nontransparent">Ok</button>');
+	$jq('#customizePopup .so-review-link').html('<a href="/quickshop/standing_orders.jsp?soid='+data.id+'#soid_'+data.id+'">See Order Details</a>');
+	$jq('#customizePopup .so-listadd-content .cssbutton[data-component="addToSOButton"]').remove();
+	$jq('#customizePopup .so-review-selected').before('<button type="button" data-popup-control="close" class="okReviewSOButton cssbutton cssbutton-flat green nontransparent">Ok</button>');
 	
 
 	$soResultsCont.toggleClass('so-close');
