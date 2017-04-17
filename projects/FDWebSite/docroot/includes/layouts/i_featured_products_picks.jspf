@@ -145,14 +145,14 @@ List _featuredCats= ((DepartmentModel)currentFolder).getFeaturedCategories();
 	<!-- separator  -->
 	<tr>
 		<td colspan="4">
-			<br /><img src="/media_stat/images/layout/cccccc.gif" width="690" height="1" border="0"><br />
+			<br /><img src="/media_stat/images/layout/cccccc.gif" alt="" width="690" height="1" border="0"><br />
 			<font class="space4pix"><br /><br /></font>
 		</td>
 	</tr>
 
 	<tr>
 		<td width="100%" colspan="4">
-		    <img src="/media_stat/images/layout/clear.gif" width="200" height="1"><br />
+		    <img src="/media_stat/images/layout/clear.gif" alt="" width="200" height="1"><br />
 	        <%
 			// display department specific media
 			if (isDepartment) {

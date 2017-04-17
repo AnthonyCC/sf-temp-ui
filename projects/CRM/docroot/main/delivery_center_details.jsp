@@ -80,7 +80,7 @@
 	<tbody>
 		<tr valign="top">
 			<td colspan="2">
-				<img width="100%" height="15" border="0" src="/media_stat/images/layout/clear.gif">
+				<img width="100%" height="15" border="0" alt="" src="/media_stat/images/layout/clear.gif">
 			</td> 
 		</tr>
 		<tr valign="top">
@@ -91,7 +91,7 @@
 								<th style="text-align:center;">COMMUNICATION</th>
 							</tr>
 							<tr>
-								<td width="10"><img width="10" height="5" border="0" src="/media_stat/images/layout/clear.gif"></th>
+								<td width="10"><img width="10" height="5" border="0" alt="" src="/media_stat/images/layout/clear.gif"></th>
 							</tr>
 							<tr>
 								<td class="gc_table_footer">
@@ -129,7 +129,7 @@
 								</td>
 							</tr>
 							<tr>
-								<td><img width="1" height="8" border="0" src="/media_stat/images/layout/clear.gif"></td>
+								<td><img width="1" height="8" border="0" alt="" src="/media_stat/images/layout/clear.gif"></td>
 							</tr>
 							<tr>
 								<td class="gc_table_footer">
@@ -153,7 +153,7 @@
 								</td>
 							</tr>
 							<tr>
-								<td><img width="1" height="8" border="0" src="/media_stat/images/layout/clear.gif"></td>
+								<td><img width="1" height="8" border="0" alt="" src="/media_stat/images/layout/clear.gif"></td>
 							</tr>
 							<tr>
 								<td class="gc_table_footer">
@@ -181,7 +181,7 @@
 								</td>
 							</tr>
 							<tr>
-								<td><img width="1" height="8" border="0" src="/media_stat/images/layout/clear.gif"></td>
+								<td><img width="1" height="8" border="0" alt="" src="/media_stat/images/layout/clear.gif"></td>
 							</tr>
 							<tr>
 								<td class="gc_table_footer">
@@ -215,7 +215,7 @@
 								<th style="text-align:center;">DELIVERY SUMMARY</th>
 							</tr>
 							<tr>
-								<td width="10"><img width="10" height="5" border="0" src="/media_stat/images/layout/clear.gif"></td>
+								<td width="10"><img width="10" height="5" border="0" alt="" src="/media_stat/images/layout/clear.gif"></td>
 							</tr>
 							<tr>
 								<td>
@@ -226,7 +226,7 @@
 								<th style="text-align:center;">MANIFEST DETAILS</th>
 							</tr>
 							<tr>
-								<td width="10"><img width="10" height="5" border="0" src="/media_stat/images/layout/clear.gif"></td>
+								<td width="10"><img width="10" height="5" border="0" alt="" src="/media_stat/images/layout/clear.gif"></td>
 							</tr>
 							<tr>
 								<td class="gc_table_footer">
@@ -250,7 +250,7 @@
 								<th style="text-align:center;"><%=estore%> SMS MESSAGES</th>
 							</tr>
 							<tr>
-								<td width="10"><img width="10" height="5" border="0" src="/media_stat/images/layout/clear.gif"></td>
+								<td width="10"><img width="10" height="5" border="0" alt="" src="/media_stat/images/layout/clear.gif"></td>
 							</tr>
 							<tr>
 								<td class="gc_table_footer " >

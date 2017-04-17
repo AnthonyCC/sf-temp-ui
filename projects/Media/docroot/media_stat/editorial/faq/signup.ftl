@@ -39,7 +39,7 @@ function linkTo(url){
 	<TR VALIGN="TOP">
 		<TD WIDTH="15"><img src="/media/images/layout/clear.gif" width="15" height="1" alt="" border="0"></TD>
 		<TD WIDTH="${tableWidth}" class="bodyCopy">
-			<IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="${tableWidth}" HEIGHT="1"><BR><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border=0><br>
+			<IMG src="/media_stat/images/layout/cccccc.gif" ALT="" WIDTH="${tableWidth}" HEIGHT="1"><BR><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border=0><br>
 
 			<ul>
 				<li><A HREF="#question1">How do I sign up?</A></li>

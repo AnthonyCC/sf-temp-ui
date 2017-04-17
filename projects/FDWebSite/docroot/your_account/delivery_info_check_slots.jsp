@@ -72,11 +72,11 @@ final int W_YA_DELIVERY_INFO_CHKSLOTS = 970;
 		</div>
 		
 <table style="width: <%= (mobWeb) ? "100%" : W_YA_DELIVERY_INFO_CHKSLOTS+"px" %>;" cellpadding="0" cellspacing="0" border="0">
-<tr><td colspan="2" class="title16"><img src="/media_stat/images/layout/clear.gif" width="1" height="18"><br>Check Available Delivery TimeSlots<br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"></td></tr>
+<tr><td colspan="2" class="title16"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="18"><br>Check Available Delivery TimeSlots<br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"></td></tr>
 <tr><td colspan="2" class="text12">Enter your address to see available timeslots for your neighborhood.</td></tr>
-<tr><td colspan="2" class="text12"><img src="/media_stat/images/layout/clear.gif" width="1" height="24"><br><b>Enter Delivery Address</b><img src="/media_stat/images/layout/clear.gif" width="80" height="1"><span class="text11">* Required Information</span><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"></td></tr>
-<tr><td bgcolor="#CCCCCC" colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
-<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="14"></td></tr>
+<tr><td colspan="2" class="text12"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="24"><br><b>Enter Delivery Address</b><img src="/media_stat/images/layout/clear.gif" alt="" width="80" height="1"><span class="text11">* Required Information</span><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"></td></tr>
+<tr><td bgcolor="#CCCCCC" colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td></tr>
+<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="14"></td></tr>
 <fd:CheckAvailableTimeslots result="result" successPage="/your_account/delivery_info_avail_slots.jsp" actionName="makeAddress">
 <form name="address" method="POST">
 	<tr>
@@ -111,8 +111,8 @@ final int W_YA_DELIVERY_INFO_CHKSLOTS = 970;
 <td><input type="text" class="text11" maxlength="10" size="8" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>" value="<%=fldApartment%>"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>" id='errorMsg'><br><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 </td>
 </tr>
-<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
-<tr valign="top"><td class="text12" align="right"><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>* Zip Code&nbsp;&nbsp;</td>
+<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td></tr>
+<tr valign="top"><td class="text12" align="right"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>* Zip Code&nbsp;&nbsp;</td>
 <td><input type="text"  maxlength="5" class="text11" size="6" name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" value="<%=fldZipCode%>">
 &nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td></tr>
 <tr><td>&nbsp;</td><td><input type="image" src="/media_stat/images/buttons/check_my_address.gif" height="16" width="112" name="address_check" vspace="8" value="Check My Address" border="0">
@@ -128,8 +128,8 @@ final int W_YA_DELIVERY_INFO_CHKSLOTS = 970;
 %>
 </fd:CheckAvailableTimeslots>
 	<tr class="NOMOBWEB">
-		<td><img src="/media_stat/images/layout/clear.gif" width="120" height="24"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="573" height="24"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="120" height="24"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="573" height="24"></td>
 	</tr>
 </table>
 </tmpl:put>

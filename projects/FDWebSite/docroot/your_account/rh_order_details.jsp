@@ -64,7 +64,7 @@ int idx = 0;
 <tr>
 	<td colspan="6"class="text11">
 		<span class="title18">Order # <%= orderNumber%></span><br />
-		<img src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_RH_ORDER_DETAILS %>" height="1" border="0" vspace="8"><br /><br />
+		<img src="/media_stat/images/layout/ff9933.gif" alt="" width="<%= W_YA_RH_ORDER_DETAILS %>" height="1" border="0" vspace="8"><br /><br />
 	</td>
 </tr>
 
@@ -101,11 +101,11 @@ int idx = 0;
 		</table>
     </TD>
     <TD valign="top" align="CENTER" width="40">
-    	 	<img src="/media_stat/images/layout/cccccc.gif" width="1" height="280"><br />
+    	 	<img src="/media_stat/images/layout/cccccc.gif" alt="" width="1" height="280"><br />
 	    </td>
     <TD WIDTH="<%= W_YA_RH_ORDER_DETAILS_HALF %>">
         <img src="/media_stat/images/navigation/payment_info.gif" WIDTH="100" HEIGHT="15" border="0" alt="PAYMENT INFO"><br />
-        <IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_RH_ORDER_DETAILS_HALF %>" HEIGHT="1" BORDER="0" VSPACE="3"><br />
+        <IMG src="/media_stat/images/layout/999966.gif" alt="" WIDTH="<%= W_YA_RH_ORDER_DETAILS_HALF %>" HEIGHT="1" BORDER="0" VSPACE="3"><br />
         <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="<%= W_YA_RH_ORDER_DETAILS_HALF %>">
         <TR VALIGN="TOP">
             <TD WIDTH="10"><br /></TD>
@@ -162,8 +162,8 @@ int idx = 0;
         
  </TABLE>  
  <br />
- <IMG src="/media_stat/images/layout/clear.gif" width="1" height="1"><br />
-<IMG src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_RH_ORDER_DETAILS %>" height="1"><br />
+ <IMG src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"><br />
+<IMG src="/media_stat/images/layout/cccccc.gif" alt="" width="<%= W_YA_RH_ORDER_DETAILS %>" height="1"><br />
 <br /><br />
 
 
@@ -178,7 +178,7 @@ int idx = 0;
 			<td class="text11bold" align="center">Final<br/>Price</td>
 	</tr>
 		<tr>
-			<td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+			<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 		</tr>
 		
 	<tr>
@@ -187,7 +187,7 @@ int idx = 0;
 			</td>
 	</tr>
 		<tr>
-			<td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+			<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 		</tr>
 		
 	<tr>
@@ -203,18 +203,18 @@ int idx = 0;
 
 	</tr>
 	<tr>
-			<td align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+			<td align="center"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 	</tr>
 </table> 
 
 <table width="<%= W_YA_RH_ORDER_DETAILS %>" cellspacing="0" cellpadding="0" border="0" valign="middle" >
 		<tr>
-			<td ><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+			<td ><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 			<td></td>			<td></td>			<td></td>			<td></td>			<td></td>
 
 		</tr>
 		 <tr>
-			<td colspan="4"><img src="/media_stat/images/layout/clear.gif" width="170" height="1" /></td>
+			<td colspan="4"><img src="/media_stat/images/layout/clear.gif" alt="" width="170" height="1" /></td>
 			<td class="orderTotal" colspan="2" width="30%" align="right">
 			<b>ORDER TOTAL:  <%= JspMethods.formatPrice(cart.hasInvoice() ? cart.getInvoicedSubTotal() : cart.getSubTotal()) %> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </b></td>
         </tr>

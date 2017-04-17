@@ -26,9 +26,9 @@ ErpCustomerInfoModel custInfo = FDCustomerFactory.getErpCustomerInfo(identity);%
 					Each week, we choose a few of our favorite products and decree savings up to 50% off. 
 					Some might call it an abuse of pricing power. You'll call it a great way to shop and save. 
 					Sign up here, and we'll email you our picks &mdash; and special prices &mdash; each week.
-					<br><img src="/media_stat/images/layout/clear.gif" width="1" height="20" border="0"><br>
+					<br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="20" border="0"><br>
 					<span class="title14"><strong>SUBSCRIBE TO FRESH DEALS</strong></span>
-					<br><img src="/media_stat/images/layout/clear.gif" width="1" height="15" border="0">
+					<br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="15" border="0">
 				</td>
 				<td rowspan="4" align="center" style="padding-left:20px;"><a href="/newsletter.jsp?catId=picks_love"><img src="/media/editorial/picks/pres_picks/img/pres_picks_preview.jpg" border="0" alt="Fresh Deals Newsletter"><br><br><strong>Click here for this week's picks.</strong></a></td>
 			</tr>
@@ -46,21 +46,21 @@ ErpCustomerInfoModel custInfo = FDCustomerFactory.getErpCustomerInfo(identity);%
 			</tr>
 			<tr>
 				<td colspan="2" style="padding-left:10px;">
-					<img src="/media_stat/images/layout/clear.gif" width="1" height="25" border="0"><br>
+					<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="25" border="0"><br>
 					<a class="cssbutton green transparent small" href="<%=response.encodeURL("/your_account/manage_account.jsp")%>">CANCEL</a>
 					<button class="cssbutton green small" name="update_user">SAVE CHANGES</button>
 				</td>
 			</tr>
 			<tr>
-				<td><img src="/media_stat/images/layout/clear.gif" width="35" height="20" border="0"></td>
-        <td><img src="/media_stat/images/layout/clear.gif" width="<%= W_YA_NEWSLETTER_TOTAL - 195 %>" height="20" border="0"></td>
-				<td><img src="/media_stat/images/layout/clear.gif" width="160" height="20" border="0"></td>
+				<td><img src="/media_stat/images/layout/clear.gif" alt="" width="35" height="20" border="0"></td>
+        <td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%= W_YA_NEWSLETTER_TOTAL - 195 %>" height="20" border="0"></td>
+				<td><img src="/media_stat/images/layout/clear.gif" alt="" width="160" height="20" border="0"></td>
 			</tr>
-			<tr><td colspan="3"><img src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_NEWSLETTER_TOTAL %>" height="1" border="0" vspace="8"></td></tr>
+			<tr><td colspan="3"><img src="/media_stat/images/layout/ff9933.gif" alt="" width="<%= W_YA_NEWSLETTER_TOTAL %>" height="1" border="0" vspace="8"></td></tr>
 			<tr valign="top">
 				<td><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="continue shopping" align="left"></a></td>
 				<td colspan="2"><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="continue shopping"></a>
-					<br>from <font class="text11bold"><a href="/index.jsp">home page</a></font><br><img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
+					<br>from <font class="text11bold"><a href="/index.jsp">home page</a></font><br><img src="/media_stat/images/layout/clear.gif" alt="" width="340" height="1" border="0">
 				</td>
 			</tr>
 			</form>

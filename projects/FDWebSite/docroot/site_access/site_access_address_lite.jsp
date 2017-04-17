@@ -187,7 +187,7 @@
 							<% } %>
 						</td>
 						<% if (!isCorporate) { %>
-							<td width="10"><img src="/media_stat/images/layout/clear.gif" width="10" height="1" border="0" /></td>			
+							<td width="10"><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="1" border="0" /></td>			
 							<td width="160"><img src="/media_stat/images/template/homepages/home_grapes.jpg" width="170" height="141" border="0" alt="Grapes" /></td>
 						<% } %>
 					</tr>

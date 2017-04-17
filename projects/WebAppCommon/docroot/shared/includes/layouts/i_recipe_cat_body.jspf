@@ -19,7 +19,7 @@ String editorialPath = _editorial==null? null:_editorial.getPath();
 
 Image catPhoto = ((RecipeCategory)recipeCategory).getPhoto();
 
-String catPhotoPath = "/media_stat/images/layout/clear.gif";
+String catPhotoPath = "/media_stat/images/layout/clear.gif"; 
 int catPhotoWidth = 1;
 int catPhotoHeight = 1;
 
@@ -54,7 +54,7 @@ RecipeSource featuredSource = ((RecipeCategory)recipeCategory).getFeaturedSource
 	  			<td width="50%"> 
 					<logic:iterate id="recipeSubcategory" indexId="idx" collection="<%=((RecipeCategory)recipeCategory).getSubcategories() %>" type="com.freshdirect.fdstore.content.RecipeSubcategory">
 			  			<b><a href="<%=response.encodeURL("recipe_subcat.jsp?catId="+recipeCategory+"&subCatId="+recipeSubcategory+"&trk=cpage")%>" class="recipe_name"><%=recipeSubcategory.getName()%></a></b>
-			  			<br><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"><br>
+			  			<br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"><br>
 						<%			cntr++;
 						if ((idx.intValue()==subCats.size()-1) || (!oneCol && cntr==colLimit)) { %>
 					   </td>
@@ -63,7 +63,7 @@ RecipeSource featuredSource = ((RecipeCategory)recipeCategory).getFeaturedSource
 			   			colLimit = rowSize+(rmdr>1?1:0);
 			   			cntr=0;
 			   			if (idx.intValue()<subCats.size()-1) { %>
-			     		<td width="4"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" border="0"></td>
+			     		<td width="4"><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1" border="0"></td>
 			     		<td valign="top" width="50%" align="left">
 					<%			   } 
                     		    }%>
@@ -77,7 +77,7 @@ RecipeSource featuredSource = ((RecipeCategory)recipeCategory).getFeaturedSource
 	<tr><td colspan="2"><img src="/media_stat/images/layout/cccccc.gif" alt="" width="<%=W_RECIPE_CAT_BODY_TOTAL%>" height="1" vspace="15"></td></tr>
 	<tr valign="top">
 	  <td width="<%=W_RECIPE_CAT_BODY_BOTTOM_LEFT%>" style="padding-right: 10px; border-right: solid 1px #CCCCCC;">
-	  <img src="/media_stat/recipe/hdr_our_faves.gif" alt="Our Favorites" width="127" height="11"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0"><br>
+	  <img src="/media_stat/recipe/hdr_our_faves.gif" alt="Our Favorites" width="127" height="11"><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10" border="0"><br>
 	  <% if (featuredRecipes!=null && featuredRecipes.size() > 0) { %>
           	  <logic:iterate id="aFeatRecipe" collection="<%=featuredRecipes%>" type="com.freshdirect.fdstore.content.Recipe">
 <%		   if (!isPreviewMode && !aFeatRecipe.isAvailable()) continue;  %>
@@ -93,10 +93,10 @@ RecipeSource featuredSource = ((RecipeCategory)recipeCategory).getFeaturedSource
 			List srcAuthors = featuredSource.getAuthors();
 			if (srcImg!=null) {  %>
 		   	  <a href="<%=ckbkURL%>"><img src="<%=srcImg.getPath()%>" alt="" border="0" width="<%=srcImg.getWidth()%>" height="<%=srcImg.getHeight()%>"></a>
-			  <br><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br>
+			  <br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8"><br>
 <% 			} %>
 			Browse recipes from<br>
-			<img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br>
+			<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6"><br>
 			<a href="<%=ckbkURL%>"><%=featuredSource.getName()%></a><br>
 <%			if (srcAuthors!=null && srcAuthors.size()>0) {
 				StringBuffer sbAuthors = new StringBuffer(200);

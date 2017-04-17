@@ -165,7 +165,7 @@
 				<tr>
 					<td width="970" valign="top"><img
 						src="/media_stat/images/layout/clear.gif" width="970" height="5"
-						border="0"></td>
+						alt="" border="0"></td>
 				</tr>
 				<tr>
 					<td width="<%=W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL%>">
@@ -701,7 +701,7 @@
 				<TR VALIGN="TOP">
 					<TD width="970" align="center"><br />
 					<br /> <IMG src="/media_stat/images/layout/ff9933.gif"
-						WIDTH="<%=W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL%>" HEIGHT="1"
+						WIDTH="<%=W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL%>" ALT="" HEIGHT="1"
 						BORDER="0"><br /> <FONT CLASS="space4pix"><br />
 						<br /></FONT>
 						<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0"
@@ -716,7 +716,7 @@
 										border="0" alt="CONTINUE SHOPPING"></a><br />from <FONT
 									CLASS="text11bold"><A HREF="/index.jsp">Home Page</A></FONT><br />
 								<IMG src="/media_stat/images/layout/clear.gif" WIDTH="340"
-									HEIGHT="1" BORDER="0"></td>
+									alt="" HEIGHT="1" BORDER="0"></td>
 							</tr>
 						</TABLE></td>
 				</tr>

@@ -74,7 +74,7 @@ http://www.freshdirect.com/help/faq_home.jsp
 
 <table cellpadding="0" cellspacing="0">
 <tr>
-<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1" border="0" /></td>
+<td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0" /></td>
 <td><xsl:call-template name="h_header_v1" />
 	<table cellpadding="0" cellspacing="0" width="90%">
 		<tr>
@@ -84,23 +84,23 @@ http://www.freshdirect.com/help/faq_home.jsp
 	<table cellpadding="0" cellspacing="0" width="90%">
                 <tr><td colspan="3" class="header"><font size="4"><b>Better Food. Better Prices. Delivered to Brooklyn Heights!</b></font></td></tr>
                 <tr valign="top">
-                <td width="283" class="bodyCopySmall"><img src="/media_stat/images/layout/clear.gif" width="1" height="14" /><br/><img src="/media_stat/images/template/email/dumbo_bheights_2.gif" width="286" height="553" alt="Map"/><br/><img src="/media_stat/images/layout/clear.gif" width="1" height="8" /><br/><img src="/media_stat/images/layout/clear.gif" width="1" height="8" /></td>
-                <td width="18"><img src="/media_stat/images/layout/clear.gif" width="18" height="1" /></td>
-                <td width="100%"><img src="/media_stat/images/layout/clear.gif" width="1" height="18" /><br/><img src="/media_stat/images/template/homepages/truck.gif" width="61" height="43"/>
-                <br/><img src="/media_stat/images/layout/clear.gif" width="1" height="8" /><br/>
+                <td width="283" class="bodyCopySmall"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="14" /><br/><img src="/media_stat/images/template/email/dumbo_bheights_2.gif" width="286" height="553" alt="Map"/><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" /><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" /></td>
+                <td width="18"><img src="/media_stat/images/layout/clear.gif" alt="" width="18" height="1" /></td>
+                <td width="100%"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="18" /><br/><img src="/media_stat/images/template/homepages/truck.gif" width="61" height="43"/>
+                <br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" /><br/>
                 <b>Brooklyn Delivery Details</b>
-                <br/><img src="/media_stat/images/layout/clear.gif" width="1" height="12" /><br/>
+                <br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="12" /><br/>
                 <font color="#CC0000" class="red12px"><b>Deliveries Begin<br/>Thursday Sept. 25th, 2003</b></font>
-                <br/><img src="/media_stat/images/layout/clear.gif" width="1" height="12" /><br/>
+                <br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="12" /><br/>
                 Orders may be placed on the web today!
-				<br/><img src="/media_stat/images/layout/clear.gif" width="1" height="8" />
+				<br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" />
 				<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0" alt="" /></td></tr></table>
-                <img src="/media_stat/images/layout/clear.gif" width="1" height="8" /><br/>
-                <b>A note about our delivery areas:</b><br/><img src="/media_stat/images/layout/clear.gif" width="1" height="4" /><br/>
+                <img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" /><br/>
+                <b>A note about our delivery areas:</b><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4" /><br/>
                 <font color="#CC0000" class="red12px">We look forward to delivering to additional parts of Brooklyn in the very near future. We thank you for your patience and will send you an email as we continue to expand our delivery area.</font>
-                <br/><img src="/media_stat/images/layout/clear.gif" width="1" height="8" />
+                <br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" />
                 <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0" alt="" /></td></tr></table>
-                <img src="/media_stat/images/layout/clear.gif" width="1" height="8" /><br/>
+                <img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" /><br/>
                 Order online at <a href="http://www.freshdirect.com">www.FreshDirect.com</a> and get <b>$50 worth of free fresh food on your first order of $100 or more.</b> Just for trying us. Choose from over 3,000 irresistibly fresh items, plus a full selection of organic foods and popular grocery and household brands. All delivered to your door, exactly the way you want, with <b>100% satisfaction guaranteed.</b>
                 <p>To top it off, your first delivery is free.  You've waited long enough. Log on to <a href="http://www.freshdirect.com">www.FreshDirect.com</a> today.</p>  
         
@@ -120,7 +120,7 @@ http://www.freshdirect.com/help/faq_home.jsp
         	    </tr>
 	</table>
 </td>
-<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1" border="0" /></td>
+<td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0" /></td>
 </tr>
 </table>
 

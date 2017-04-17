@@ -37,7 +37,7 @@
 		</tr>
 		<tr>
 			<td colspan="2" style="padding: 2px;" class="botBordLineBlack">
-				<img style="margin: 2px 0;" width="675" height="1" border="0" src="/media_stat/images/layout/clear.gif" /><br />
+				<img style="margin: 2px 0;" width="675" height="1" border="0" alt="" src="/media_stat/images/layout/clear.gif" /><br />
 			</td>
 		</tr>
 		<tr>
@@ -145,7 +145,7 @@
 						<table width="100%" cellspacing="0" cellpadding="0" border="0" class="gc_tableBody">
 							<tr valign="top">
 								<td width="693"><img src="/media_stat/images/navigation/choose_credit_card.gif" width="135" height="9" border="0" alt="CHOOSE CREDIT CARD">&nbsp;&nbsp;&nbsp;<br />
-										<img src="/media_stat/images/layout/999966.gif" width="675" height="1" border="0" vspace="3"><br />
+										<img src="/media_stat/images/layout/999966.gif" alt="" width="675" height="1" border="0" vspace="3"><br />
 									<font class="space2pix"><br /></font>  
 								</td>   
 							</tr>
@@ -167,11 +167,11 @@
 							</tr>
 							<tr>
 								<td class="botBordLineOrange">
-									<img src="/media_stat/images/layout/clear.gif" width="1" height="17" border="0" /><br />
+									<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="17" border="0" /><br />
 								</td>
 							</tr>
 							<tr>
-								<td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+								<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 							</tr>
 							<tr>
 								<td align="right">

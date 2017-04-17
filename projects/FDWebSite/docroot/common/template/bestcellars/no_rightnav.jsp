@@ -47,23 +47,23 @@ final int W_NO_RIGHTNAV_RIGHT = 806;
 <CENTER CLASS="text10">
 <TABLE WIDTH="<%=W_NO_RIGHTNAV_TOTAL%>" BORDER="0" CELLPADDING="0" CELLSPACING="0">
 <TR>
-	<TD WIDTH="<%=W_NO_RIGHTNAV_LEFT%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_NO_RIGHTNAV_LEFT%>" height="1" border="0"></TD>
-	<TD WIDTH="<%=W_NO_RIGHTNAV_CENTER_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_NO_RIGHTNAV_CENTER_PADDING%>" height="1" border="0"></TD>
-	<TD WIDTH="<%=W_NO_RIGHTNAV_RIGHT%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_NO_RIGHTNAV_RIGHT%>" height="1" border="0"></TD>
+	<TD WIDTH="<%=W_NO_RIGHTNAV_LEFT%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_NO_RIGHTNAV_LEFT%>" height="1" border="0"></TD>
+	<TD WIDTH="<%=W_NO_RIGHTNAV_CENTER_PADDING%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_NO_RIGHTNAV_CENTER_PADDING%>" height="1" border="0"></TD>
+	<TD WIDTH="<%=W_NO_RIGHTNAV_RIGHT%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_NO_RIGHTNAV_RIGHT%>" height="1" border="0"></TD>
 </TR>
 <TR>
-	<td width="<%=W_NO_RIGHTNAV_TOTAL%>" COLSPAN="3" valign="top" BGCOLOR="#999966"><img src="/media_stat/images/layout/999966.gif" width="<%=W_NO_RIGHTNAV_TOTAL%>" height="1" border="0"></td>
+	<td width="<%=W_NO_RIGHTNAV_TOTAL%>" COLSPAN="3" valign="top" BGCOLOR="#999966"><img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_NO_RIGHTNAV_TOTAL%>" height="1" border="0"></td>
 </TR>
 <TR>
-	<td width="<%=W_NO_RIGHTNAV_TOTAL%>" COLSPAN="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
+	<td width="<%=W_NO_RIGHTNAV_TOTAL%>" COLSPAN="3"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
 </TR>
 <TR VALIGN="TOP">
 	<TD WIDTH="<%=W_NO_RIGHTNAV_LEFT%>" BGCOLOR="#FFFFFF">
 		<% try { %><%@ include file="/common/template/includes/left_side_nav_img.jspf" %>
                 <% } catch (Exception ex) {ex.printStackTrace();} %><BR>
-		<img src="/media_stat/images/layout/clear.gif" height="1" width="<%=W_NO_RIGHTNAV_LEFT%>">
+		<img src="/media_stat/images/layout/clear.gif" alt="" height="1" width="<%=W_NO_RIGHTNAV_LEFT%>">
 	</TD>
-	<td align="left" width="<%=W_NO_RIGHTNAV_CENTER_PADDING%>"><img src="/media_stat/images/layout/clear.gif" height="1" width="<%=W_NO_RIGHTNAV_CENTER_PADDING%>"></td>
+	<td align="left" width="<%=W_NO_RIGHTNAV_CENTER_PADDING%>"><img src="/media_stat/images/layout/clear.gif" alt="" height="1" width="<%=W_NO_RIGHTNAV_CENTER_PADDING%>"></td>
         <TD width="<%=W_NO_RIGHTNAV_RIGHT%>" align="center">
                 <TABLE WIDTH="100%" align="center" cellspacing="0" cellpadding="0" border="0">
                     <tr>
@@ -92,7 +92,7 @@ final int W_NO_RIGHTNAV_RIGHT = 806;
     </td>
 </tr>
 <TR>
-<td width="<%=W_NO_RIGHTNAV_TOTAL%>" COLSPAN="3" BGCOLOR="#999966" VALIGN="BOTTOM"><img src="/media_stat/images/layout/999966.gif" width="<%=W_NO_RIGHTNAV_TOTAL%>" height="1" border="0"></td>
+<td width="<%=W_NO_RIGHTNAV_TOTAL%>" COLSPAN="3" BGCOLOR="#999966" VALIGN="BOTTOM"><img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_NO_RIGHTNAV_TOTAL%>" height="1" border="0"></td>
 </TR>
 </TABLE>
 </CENTER>

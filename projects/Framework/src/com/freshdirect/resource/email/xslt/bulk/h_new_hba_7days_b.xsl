@@ -47,7 +47,7 @@
 
 <table cellpadding="0" cellspacing="0">
 <tr>
-<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="20" height="1" border="0" /></td>
+<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0" /></td>
 
 <td><xsl:call-template name="h_header_v1" />
 	<table cellpadding="0" cellspacing="0" width="90%">
@@ -65,10 +65,10 @@
 			We'll be adding many new items over the next few months, so check back often.</span>
 			<br/><br/>
 			<a href="http://www.freshdirect.com/department.jsp?deptId=hba&amp;trk=hba7_b" class="fdLink"><font color="#336600"><b>Click here for Health &amp; Beauty.</b></font></a>
-			<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="20" border="0"/><br/>
+			<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="20" border="0"/><br/>
 			<table cellpadding="0" cellspacing="0" width="100%">
 				<tr>
-					<td width="100%"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="#CCCCCC"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="687" height="1" border="0"/></td></tr></table></td>
+					<td width="100%"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="#CCCCCC"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="687" height="1" border="0"/></td></tr></table></td>
 				</tr>
 			</table>
 			<br/>
@@ -85,7 +85,7 @@
 </table>
 </td>
 
-<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="20" height="1" border="0" /></td>
+<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0" /></td>
 </tr>
 </table>
 

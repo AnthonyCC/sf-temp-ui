@@ -103,7 +103,7 @@ final int W_DNAV_TOTAL = 970;
 	<center class="text10">
 		<table width="<%=W_DNAV_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 			<tr>
-				<td width="<%=W_DNAV_TOTAL%>" valign="top"><img src="/media_stat/images/layout/clear.gif" width="<%=W_DNAV_TOTAL%>" height="5" border="0"></td>
+				<td width="<%=W_DNAV_TOTAL%>" valign="top"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_DNAV_TOTAL%>" height="5" border="0"></td>
 			</tr>
 			<tr>
 				<td width="<%=W_DNAV_TOTAL%>"><%@ include file="/common/template/includes/deptnav.jspf" %></td>
@@ -121,10 +121,10 @@ final int W_DNAV_TOTAL = 970;
 			</tr>
 			<%-- spacers --%>
 			<tr valign="top">
-				<td><img src="/media_stat/images/layout/clear.gif" height="1" width="<%=W_DNAV_TOTAL%>"></td>
+				<td><img src="/media_stat/images/layout/clear.gif" alt="" height="1" width="<%=W_DNAV_TOTAL%>"></td>
 			</tr>
 			<tr valign="bottom">
-				<td width="<%=W_DNAV_TOTAL%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_DNAV_TOTAL%>" height="5" border="0"></td>
+				<td width="<%=W_DNAV_TOTAL%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_DNAV_TOTAL%>" height="5" border="0"></td>
 			</tr>
 		</table>
 	</center>

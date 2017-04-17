@@ -155,7 +155,7 @@ String defaultFtl="/media/editorial/faq/intro.ftl";
 						
 				<table>
 				<tr>
-					<TD bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" height="0"></TD>
+					<TD bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" alt="" height="0"></TD>
 					<td>
 					<% if(!isDefaultFtl){ %>
 			<fd:IncludeMedia name="<%= ftl%>" parameters="<%=params%>" withErrorReport="true"/>

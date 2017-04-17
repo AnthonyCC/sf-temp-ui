@@ -39,13 +39,13 @@ boolean emailSent = request.getParameter("email") != null && "sent".equalsIgnore
 <input type="hidden" name="serviceType" value="<%= serviceType %>">
 <% if (isBestCellars) { %>
 	<img src="/media_stat/images/template/wine/bc_logo_home_original.gif" width="336" height="52">
-	<br><img src="/media_stat/images/layout/clear.gif" width="1" height="16"><br>
+	<br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="16"><br>
 	<img src="/media_stat/images/template/site_access/not_in_area.gif" width="491" height="29" alt="IS NOT AVAILABLE IN YOUR AREA"><br>
 	<br><br>
 	<font class="text12">Thanks for your interest in Best Cellars New York. We currently serve only metro<br>
 	New York, but we invite you to visit our online store.<br><br><br>
 	<input type="image" src="/media_stat/images/template/site_access/visit_store.gif" width="212" height="204" alt="Visit Our Store" border="0" value="submit"><br>
-	<br><img src="/media_stat/images/layout/999966.gif" width="590" height="1" vspace="10"><br>
+	<br><img src="/media_stat/images/layout/999966.gif" alt="" width="590" height="1" vspace="10"><br>
 	<%@ include file="/includes/copyright_wine.jspf" %></font>
 <% } else { %>
 	<img src="/media_stat/images/template/site_access/fd_logo.gif" width="267" height="53" alt="FreshDirect"><br><br>
@@ -64,15 +64,15 @@ boolean emailSent = request.getParameter("email") != null && "sent".equalsIgnore
 	<tr align="center">
 	     <td class="text12">
 		 <% if (!emailSent) { %>
-		 	<b>Enter your zipcode:</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>
+		 	<b>Enter your zipcode:</b><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>
 		     <input class="text11" type="text" size="30" maxlength="5" name="zipcode" value="<%= request.getParameter("zipcode")!=null?request.getParameter("zipcode"):"" %>">
-		 	<b>Enter your e-mail:</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>
+		 	<b>Enter your e-mail:</b><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>
 		     <input class="text11" type="text" size="30" name="email" value="<%= request.getParameter("email")!=null?request.getParameter("email"):"" %>">
 		     <br>
 		     <fd:ErrorHandler result='<%= result %>' name='technicalDifficulty' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 		     <fd:ErrorHandler result='<%= result %>' name='email' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 		     <fd:ErrorHandler result='<%= result %>' name='zipcode' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
-		     <img src="/media_stat/images/layout/clear.gif" width="8" height="1">
+		     <img src="/media_stat/images/layout/clear.gif" alt="" width="8" height="1">
 		     <br>
 			 <table align="center">
 			 <tr>
@@ -91,15 +91,15 @@ boolean emailSent = request.getParameter("email") != null && "sent".equalsIgnore
 	<table cellpadding="0" cellspacing="0" border="0">
 	<tr align="center"><td class="text12">Give us your e-mail address and we'll drop you a note<br>when we begin delivering to your area.</td></tr>
 	<tr align="center">
-		 	<b>Enter your zipcode:</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>
+		 	<b>Enter your zipcode:</b><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>
 		     <input class="text11" type="text" size="30" maxlength="5" name="zipcode" value="<%= request.getParameter("zipcode")!=null?request.getParameter("zipcode"):"" %>">
-	     <td class="text12"><br><b>Enter your e-mail:</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>
+	     <td class="text12"><br><b>Enter your e-mail:</b><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>
 	     <input class="text11" type="text" size="30" name="email" value="<%= request.getParameter("email")!=null?request.getParameter("email"):"" %>">
 	     <br>
 	     <fd:ErrorHandler result='<%= result %>' name='technicalDifficulty' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 	     <fd:ErrorHandler result='<%= result %>' name='email' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 		     <fd:ErrorHandler result='<%= result %>' name='zipcode' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
-	     <img src="/media_stat/images/layout/clear.gif" width="8" height="1">
+	     <img src="/media_stat/images/layout/clear.gif" alt="" width="8" height="1">
 	     <br>
 	     <input type="image" src="/media_stat/images/template/site_access/send_email.gif" width="176" height="41" alt="Send your e-mail and visit our store" border="0" value="submit">
 	     </td>
@@ -119,11 +119,11 @@ boolean emailSent = request.getParameter("email") != null && "sent".equalsIgnore
 	<fd:IncludeMedia name="/media/editorial/site_access/other_service_location.html" />
 	<a href="<%=successPage%>"><img src="/media_stat/images/template/site_access/zipfail_button_shop_pickup.gif" border="0" width="214" height="41" vspace="20"></a>
     <%@ include file="/site_access/includes/i_check_for_includes.jspf" %>
-	<img src="/media_stat/images/layout/clear.gif" width="1" height="15"><br>
-	<img src="/media_stat/images/layout/cccccc.gif" width="541" height="1"><br>								
-	<img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br>			
+	<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="15"><br>
+	<img src="/media_stat/images/layout/cccccc.gif" alt="" width="541" height="1"><br>								
+	<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"><br>			
 	<%@ include file="/shared/template/includes/copyright.jspf" %>
-	<br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>
+	<br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>
 <% } %>
 <br><br>
 </form>

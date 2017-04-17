@@ -42,7 +42,7 @@ final int W_FEATURED_PRODUCTS_BND = 683;
 	
 	<!-- separator  -->
 	<tr><td colspan="5">
-		<br /><img src="/media_stat/images/layout/cccccc.gif" width="<%=W_FEATURED_PRODUCTS_TOTAL%>" height="1" border="0"><br />
+		<br /><img src="/media_stat/images/layout/cccccc.gif" alt="" width="<%=W_FEATURED_PRODUCTS_TOTAL%>" height="1" border="0"><br />
 		<font class="space4pix"><br /><br /></font>
 	</td></tr>
 	

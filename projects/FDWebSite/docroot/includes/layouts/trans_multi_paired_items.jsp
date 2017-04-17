@@ -204,7 +204,7 @@ if (prodsAvailable > 0 && !oneNotAvailable) {
     
 <table width="<%=maxWidth%>" cellspacing="0" cellpadding="0" border="0">
 	<% if (!firstProduct) {%>
-		<tr><td colspan="2" style="border-top:solid 1px #CCCCCC;"><img src="/media_stat/images/layout/clear.gif" width="1" height="15"></td></tr>
+		<tr><td colspan="2" style="border-top:solid 1px #CCCCCC;"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="15"></td></tr>
 	<% } %>
 	<tr valign="top">
 		<td width="95%" style="padding-right:8px;">
@@ -219,7 +219,7 @@ if (prodsAvailable > 0 && !oneNotAvailable) {
 				<img src="<%=catDetailImagePath%>" width="<%=""+catDetailWidth%>" height="<%=""+catDetailHeight%>" alt="<%=currentCat.getFullName()%>" />
         </td>
    	 </tr>
-	 <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td></tr>
+	 <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"></td></tr>
     <input type="hidden" name="enableWineSubmit_<%=catIndex%>" value="false">
     <%
 	firstProduct = false;
@@ -415,7 +415,7 @@ if (prodsAvailable > 0 && !oneNotAvailable) {
 			<td style="padding-bottom:10px;"><input type="image" name="addMultipleToCart<%=catIndex%>" src="media_stat/images/buttons/add_to_cart_small.gif" width="76" height="17" border="0" alt="ADD SELECTED ITEMS TO CART"></td>
 			<fd:CCLCheck>
 				<td style="padding-bottom:10px;">              
-                  <a href="/unsupported.jsp" onclick="return CCL.save_items('wine_perfect_form_<%=catIndex%>',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" border="0" hspace="5"/></a>   		     		         
+                  <a href="/unsupported.jsp" onclick="return CCL.save_items('wine_perfect_form_<%=catIndex%>',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_save_icon_lg.gif" alt="save to lists" width="12" height="14" border="0" hspace="5"/></a>   		     		         
             	</td>
 			</fd:CCLCheck> 
 		</tr>

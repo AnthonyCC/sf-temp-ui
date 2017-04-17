@@ -40,7 +40,7 @@ boolean submitted = "thankYou".equalsIgnoreCase(request.getParameter("info"));
 			<table width="<%=W_CATERING%>" cellpadding="0" cellspacing="0" border="0">
 				<form name="catering" method="post">
 				<tr>
-					<td colspan="7" align="center" class="text12"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br>
+					<td colspan="7" align="center" class="text12"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8"><br>
 					<% if (submitted) { %>
 						<span class="title18"><b>Thank you!</b></span><br>
 						We will contact you within 24 hours.
@@ -75,19 +75,19 @@ boolean submitted = "thankYou".equalsIgnoreCase(request.getParameter("info"));
 			<% if (!submitted) { %>
 				<tr>
 					<td colspan="7" align="center" class="text12">
-					<img src="/media_stat/images/layout/cccccc.gif" width="<%=W_CATERING%>" height="1" vspace="8"><br>
+					<img src="/media_stat/images/layout/cccccc.gif" alt="" width="<%=W_CATERING%>" height="1" vspace="8"><br>
 					<span class="text11"><b>Please contact us for details by submitting the form below at least three days in advance of your event. We will contact you within 24 hours. Fields marked with <font color="#CC0000">*</font> are required.</b></span>
-					<img src="/media_stat/images/layout/cccccc.gif" width="<%=W_CATERING%>" height="1" vspace="8"><br>
+					<img src="/media_stat/images/layout/cccccc.gif" alt="" width="<%=W_CATERING%>" height="1" vspace="8"><br>
 					</td>
 				</tr>
 				<tr>
-					<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_CATERING-100)/3%>" height="8"></td>
-					<td><img src="/media_stat/images/layout/clear.gif" width="5" height="8"></td>
-					<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_CATERING-100)/3+15%>" height="8"></td>
-					<td><img src="/media_stat/images/layout/clear.gif" width="25" height="8"></td>
-					<td><img src="/media_stat/images/layout/clear.gif" width="50" height="8"></td>
-					<td><img src="/media_stat/images/layout/clear.gif" width="5" height="8"></td>
-					<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_CATERING-100)/3%>" height="8"></td>
+					<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=(W_CATERING-100)/3%>" height="8"></td>
+					<td><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="8"></td>
+					<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=(W_CATERING-100)/3+15%>" height="8"></td>
+					<td><img src="/media_stat/images/layout/clear.gif" alt="" width="25" height="8"></td>
+					<td><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height="8"></td>
+					<td><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="8"></td>
+					<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=(W_CATERING-100)/3%>" height="8"></td>
 				</tr>
 				<tr valign="top">
 					<td align="right" class="text12"><span class="space4pix"><br></span><font color="#CC0000">*</font>First Name&nbsp;</td>

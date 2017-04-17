@@ -40,13 +40,13 @@ if (sortedColl==null) sortedColl = new ArrayList();
 
 %>
 
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="4"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="4"><BR>
 <TABLE border=0 cellPadding=0 cellSpacing=0 width=<%=W_THANKSGIVING_CATEGORY_TOTAL%>>
 <%
   if (!allSoldOut && !pastCutOff) {  %>
 <TR><TD colspan="3">
 <IMG src="/media_stat/images/thanksgiving/thanksgiving_hdr.gif" WIDTH="534" HEIGHT="60" BORDER="0" alt="THANKSGIVING Turkey DINNER">
-<BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="1"></td>
+<BR><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="1"></td>
 </TR>
 <tr>
     <td valign="top">
@@ -54,7 +54,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
         from our gorgeous roasted turkey to spiced pumpkin pie, with every glorious morsel in between.
         Our chefs will be preparing every dish using top quality ingredients, family recipes, and professional know-how.
         When we bring it to your door, <b>all you'll have to do is heat and serve</b>
-        <BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10"><BR>
+        <BR><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="10"><BR>
         <% if (midMediaPath!=null) {  %>
  	<fd:IncludeMedia name='<%= midMediaPath %>' />
         <% } %>
@@ -96,7 +96,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
                 <a href="/product.jsp?catId=<%=pm.getParentNode()%>&productId=<%=pm%>"><b><%=pm.getFullName()%></b></a><%= suLabel %> - <b><%=displayObj.getPrice()%></b>
 <%            }
         }   %>
-        <BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10"><BR>
+        <BR><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="10"><BR>
         <b>All dinners include:</b>
         <br>Roasted Turkey
         <br>Gravy
@@ -108,7 +108,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
         <br>Choice of Dessert
 <% //        <br><br><a href="javascript:popup('/departments/hmr/thanksgiving_instructions.jsp','large')">Click here for heating instructions.</a> %>
     </td>
-    <td width="10"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="10" HEIGHT="1"></td>
+    <td width="10"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="10" HEIGHT="1"></td>
     <td valign="top">
        <img src="/media_stat/images/thanksgiving/home_turkey.jpg" width="180" height="130" border="0">
     </td>
@@ -121,14 +121,14 @@ if (sortedColl==null) sortedColl = new ArrayList();
 <% } else if (!pastCutOff) { //********* all items sold out, paint sold-out page *********   %>
 <TR><TD colspan="3" align="center">
 <IMG src="/media_stat/images/thanksgiving/thanksgiving_hdr_soldout.gif" WIDTH="394" HEIGHT="21" BORDER="0" alt="THANKSGIVING TURKEY DINNER">
-<BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10"></td>
+<BR><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="10"></td>
 </TR>
 <tr><td bgcolor="#334455" colspan="3"></td></tr>
  <tr>
     <td valign="top">
        <font class="space4pix"><br></font>
         <b>Due to overwhelming demand we are sold out of our Thanksgiving turkey dinners.</b>
-       <BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="30"><BR>
+       <BR><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="30"><BR>
        <table cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td valign="top"><img src="/media_stat/images/thanksgiving/mea_manager_chicken.jpg" border="0"></td>
@@ -141,7 +141,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
               </tr>
        </table>
      </td>
-    <td width="10"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="10" HEIGHT="1"></td>
+    <td width="10"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="10" HEIGHT="1"></td>
     <td valign="top">
        <font class="space4pix"><br></font>
        <img src="/media_stat/images/thanksgiving/home_turkey_sold_out.jpg" width="180" height="130" border="0">
@@ -153,7 +153,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
   <a href="javascript:popup('/media_stat/pdf/freshdirect_22_24_lb_turkey_dinner.pdf','large')">22-24 lb turkey</a>
 </td></tr>
 <tr><td colspan="3">
-   <BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="100" border="0"><BR>
+   <BR><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="100" border="0"><BR>
 </td></tr>
 <% } else { /********* cut off point reached *************/%>
  <tr><td align="center">

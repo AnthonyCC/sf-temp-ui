@@ -181,7 +181,7 @@ if ("true".equalsIgnoreCase(overlay)) {
 						<table border="0" cellspacing="0" cellpadding="2" width="<%=W_CONTACT_FD_TOTAL%>">
 						    <tr valign="TOP">
 							    <td width="<%=W_CONTACT_FD_TOTAL%>"><img src="/media_stat/images/template/help/enter_message.gif" width="152" height="9" border="0" alt="ENTER YOUR MESSAGE">&nbsp;&nbsp;&nbsp;<font class="text9">* Required information</font><br>
-								<img src="/media_stat/images/layout/999966.gif" width="<%=W_CONTACT_FD_TOTAL%>" height="1" border="0" VSPACE="3"><br>
+								<img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_CONTACT_FD_TOTAL%>" height="1" border="0" VSPACE="3"><br>
 								<font class="space4pix"><br></font></td>
 							</tr>
 						</table>
@@ -243,7 +243,7 @@ if ("true".equalsIgnoreCase(overlay)) {
 				                <table border="0" cellspacing="0" cellpadding="2" width="<%=W_CONTACT_FD_TOTAL%>">
 				                    <tr valign="TOP">
 				                        <td width="<%=W_CONTACT_FD_TOTAL%>"><img src="/media_stat/images/template/help/enter_contact_info.gif"" width="246" height="9" border="0" alt="ENTER YOUR CONTACT INFORMATION">&nbsp;&nbsp;&nbsp;<font class="text9">* Required information</font><br>
-								<img src="/media_stat/images/layout/999966.gif" width="<%=W_CONTACT_FD_TOTAL%>" height="1" border="0" VSPACE="3"><br><font class="space4pix"><br></font>
+								<img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_CONTACT_FD_TOTAL%>" height="1" border="0" VSPACE="3"><br><font class="space4pix"><br></font>
 							</td>
 				                    </tr>
 				                </table>
@@ -281,7 +281,7 @@ if ("true".equalsIgnoreCase(overlay)) {
 						<table border="0" cellspacing="0" cellpadding="2" width="<%=W_CONTACT_FD_TOTAL%>">
 				                    <tr valign="TOP">
 				                        <td width="<%=W_CONTACT_FD_TOTAL%>"><img src="/media_stat/images/template/help/review_contact_info.gif"" width="246" height="9" border="0" alt="REVIEW YOUR CONTACT INFORMATION">&nbsp;&nbsp;&nbsp;<br>
-								<img src="/media_stat/images/layout/999966.gif" width="<%=W_CONTACT_FD_TOTAL%>" height="1" border="0" VSPACE="3"><br><font class="space4pix"><br></font>
+								<img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_CONTACT_FD_TOTAL%>" height="1" border="0" VSPACE="3"><br><font class="space4pix"><br></font>
 							</td>
 				                    </tr>
 						</table>
@@ -301,7 +301,7 @@ if ("true".equalsIgnoreCase(overlay)) {
 				                </table>
 				<%}%>
 						<br>
-						<img src="/media_stat/images/layout/FF9933.gif" width="<%=W_CONTACT_FD_TOTAL%>" height="1" border="0" vspace="4">
+						<img src="/media_stat/images/layout/FF9933.gif" alt="" width="<%=W_CONTACT_FD_TOTAL%>" height="1" border="0" vspace="4">
 						<table border="0" cellspacing="0" cellpadding="2" width="<%=W_CONTACT_FD_TOTAL%>">
 							<tr valign="right">
 								<td width="25%"></td>
@@ -311,7 +311,7 @@ if ("true".equalsIgnoreCase(overlay)) {
 								<td width="25%"></td>
 							</tr>
 						</table>
-						<img src="/media_stat/images/layout/FF9933.gif" width="<%=W_CONTACT_FD_TOTAL%>" height="1" border="0" vspace="4">
+						<img src="/media_stat/images/layout/FF9933.gif" alt="" width="<%=W_CONTACT_FD_TOTAL%>" height="1" border="0" vspace="4">
 					</td>
 				</tr>
 				</table>

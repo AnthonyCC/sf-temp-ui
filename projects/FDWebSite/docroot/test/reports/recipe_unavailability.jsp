@@ -159,6 +159,6 @@
 		</logic:iterate>
 	</table>
 </div>
-<div style="width: 100%; height: 1px; border-top: solid 1px #000000;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></div>
+<div style="width: 100%; height: 1px; border-top: solid 1px #000000;"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></div>
 </body>
 </html>

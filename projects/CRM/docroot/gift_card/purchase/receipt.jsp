@@ -56,7 +56,7 @@
 							<tr>
 								<td colspan="6"class="text11">
 									<span class="title18">Thank you for buying Gift Cards.</span><br /><br />
-									<img src="/media_stat/images/layout/ff9933.gif" width="675" height="1" border="0" vspace="8"><br /><br />
+									<img src="/media_stat/images/layout/ff9933.gif" alt="" width="675" height="1" border="0" vspace="8"><br /><br />
 								</td>
 							</tr>
 							<tr valign="top">
@@ -78,11 +78,11 @@
 									</table>
 								</td>
 								<td valign="top" align="center" width="40">
-									<img src="/media_stat/images/layout/cccccc.gif" width="1" height="280"><br />
+									<img src="/media_stat/images/layout/cccccc.gif" alt="" width="1" height="280"><br />
 								</td>
 								<td width="300">
 									<img src="/media_stat/images/navigation/payment_info.gif" width="100" height="15" border="0" alt="PAYMENT INFO"><br />
-									<img src="/media_stat/images/layout/999966.gif" width="<%=lineWidth%>" height="1" border="0" vspace="3"><br />
+									<img src="/media_stat/images/layout/999966.gif" alt="" width="<%=lineWidth%>" height="1" border="0" vspace="3"><br />
 									<table cellpadding="0" cellspacing="0" border="0" width="300">
 										<tr valign="top">
 											<td width="10"><br /></td>
@@ -118,8 +118,8 @@
 							</tr>
 						</table>  
 						<br />
-						<img src="/media_stat/images/layout/clear.gif" width="1" height="1"><br />
-						<img src="/media_stat/images/layout/cccccc.gif" width="693" height="1"><br />
+						<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"><br />
+						<img src="/media_stat/images/layout/cccccc.gif" alt="" width="693" height="1"><br />
 						<br /><br />
 						<% 
 							//for display of recipient number
@@ -158,11 +158,11 @@
 						</table>
 						<table width="675" cellspacing="0" cellpadding="0" border="0" valign="middle">
 							<tr>
-								<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+								<td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 							</tr>
 							<tr>
 								<td class="recipTotal">Total <%=JspMethods.formatPrice(cart.getTotal())%></td>
-								<td width="20"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0" /></td>
+								<td width="20"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1" border="0" /></td>
 							</tr>
 						</table>
 					</td>

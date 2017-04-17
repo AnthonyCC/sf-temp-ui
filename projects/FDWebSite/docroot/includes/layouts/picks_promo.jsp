@@ -39,7 +39,7 @@ String promoContent = middleMedia == null || middleMedia.size()==0 ? "" : ((Medi
 		<td align="center"><fd:IncludeMedia name='<%= picksContent %>'/>
 		</td>
 		<td>&nbsp;</td>
-		<td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+		<td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
 		<td>&nbsp;</td>
 		<td><% if (FDStoreProperties.isAdServerEnabled()) { %>
                     <SCRIPT LANGUAGE=JavaScript>
@@ -51,10 +51,10 @@ String promoContent = middleMedia == null || middleMedia.size()==0 ? "" : ((Medi
 				</td>
 	</tr>
 	<tr>
-		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_PICKS_PROMO_LEFT%>" height="18"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_PICKS_PROMO_CENTER_PADDING-1)/2%>" height="18"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="1" height="18"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_PICKS_PROMO_CENTER_PADDING-1)/2%>" height="18"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_PICKS_PROMO_RIGHT%>" height="18"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_PICKS_PROMO_LEFT%>" height="18"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=(W_PICKS_PROMO_CENTER_PADDING-1)/2%>" height="18"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="18"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=(W_PICKS_PROMO_CENTER_PADDING-1)/2%>" height="18"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_PICKS_PROMO_RIGHT%>" height="18"></td>
 	</tr>
 </table>

@@ -422,7 +422,7 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
 	}
     }
     if (isWineLayout) {     %>
-    <img src="/media_stat/images/layout/cccccc.gif" width="100%" height="1" border="0" VSPACE="10"><BR>
+    <img src="/media_stat/images/layout/cccccc.gif" alt="" width="100%" height="1" border="0" VSPACE="10"><BR>
 <%  } else  {   %>
     <img src="/media_stat/images/layout/333333.gif" width="180" height="1" border="0" VSPACE="10"><BR>
 <%  }  %>

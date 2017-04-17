@@ -74,7 +74,7 @@ http://www.freshdirect.com/help/faq_home.jsp
 <table cellpadding="0" cellspacing="0">
 <tr>
 <!-- =============== START LEFT SPACER =============== -->
-<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1" border="0" /></td>
+<td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0" /></td>
 <!-- =============== END LEFT SPACER ================= -->
 
 <!-- ~~~~~~~~~~~~~~~ START CONTENT ~~~~~~~~~~~~~~~ -->
@@ -87,21 +87,21 @@ http://www.freshdirect.com/help/faq_home.jsp
 	<table cellpadding="0" cellspacing="0" width="90%">
                 <tr><td colspan="3" class="header"><font size="4"><b>FreshDirect continues to expand delivery to the West Side!</b></font></td></tr>
                 <tr valign="top">
-                <td width="261"><img src="/media_stat/images/layout/clear.gif" width="1" height="14" /><br/><img src="/media_stat/images/template/email/westside_30_14.gif" width="501" height="208" /><br/><img src="/media_stat/images/layout/clear.gif" width="1" height="18" /></td>
-                <td width="18"><img src="/media_stat/images/layout/clear.gif" width="18" height="1" /></td>
-                <td width="100%"><img src="/media_stat/images/layout/clear.gif" width="1" height="18" /><br/><img src="/media_stat/images/template/homepages/truck.gif" width="61" height="43"/>
-                <br/><img src="/media_stat/images/layout/clear.gif" width="1" height="8" /><br/>
+                <td width="261"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="14" /><br/><img src="/media_stat/images/template/email/westside_30_14.gif" width="501" height="208" /><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="18" /></td>
+                <td width="18"><img src="/media_stat/images/layout/clear.gif" alt="" width="18" height="1" /></td>
+                <td width="100%"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="18" /><br/><img src="/media_stat/images/template/homepages/truck.gif" width="61" height="43"/>
+                <br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" /><br/>
                 <b>West Side Delivery Details</b>
-                <br/><img src="/media_stat/images/layout/clear.gif" width="1" height="12" /><br/>
+                <br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="12" /><br/>
                 <font color="#CC0000" class="red12px"><b>Deliveries Begin Monday June 9th, 2003</b></font>
-                <br/><img src="/media_stat/images/layout/clear.gif" width="1" height="12" /><br/>
+                <br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="12" /><br/>
                 Orders may be placed on the web today!
-                <br/><img src="/media_stat/images/layout/clear.gif" width="1" height="18" />
+                <br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="18" />
                 </td>
                 </tr>
         <tr>
 		<td colspan="3">
-			<b>A note about our delivery areas:</b><br/><img src="/media_stat/images/layout/clear.gif" width="1" height="4" /><br/>
+			<b>A note about our delivery areas:</b><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4" /><br/>
                 <font color="#CC0000" class="red12px">We look forward to delivering to all of West Side in the very near future. We thank you for your patience and will send you an email as we continue to expand our delivery area.</font>
                 <p>Order online at <a href="http://www.freshdirect.com">www.FreshDirect.com</a> and get <b>$50 worth of free fresh food*</b> just for trying us. Choose from over 3,000 irresistibly fresh items, plus a full selection of organic foods and popular grocery and household brands. All delivered to your door, exactly the way you want, with <b>100% satisfaction guaranteed</b>.</p>
                 <p>To top it off, delivery is free for the first month of service, and our drivers won't accept tips. You've waited long enough. Log on to <a href="http://www.freshdirect.com">www.FreshDirect.com</a> today.</p>  
@@ -125,7 +125,7 @@ http://www.freshdirect.com/help/faq_home.jsp
 <!-- ~~~~~~~~~~~~~~~ END CONTENT ~~~~~~~~~~~~~~~ -->
 
 <!-- =============== BEGIN RIGHT SPACER =============== -->
-<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1" border="0" /></td>
+<td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0" /></td>
 <!-- =============== END RIGHT SPACER ================= -->
 </tr>
 </table>

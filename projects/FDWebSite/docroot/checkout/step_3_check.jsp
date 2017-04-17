@@ -63,7 +63,7 @@ function clearGrid() {
 	k=0;
 	for (j=0; j<6; j++) {
 		for (k=0; k<10; k++) {
-		document.images["p" + j + "_" + k].src = "/media_stat/images/layout/clear.gif";
+		document.images["p" + j + "_" + k].src = "/media_stat/images/layout/clear.gif"; 
 		}
 	}
 	
@@ -173,7 +173,7 @@ function paintItem() {
 <TD><IMG SRC="/media_stat/images/layout/clear.gif" NAME="p5_8" ALT="" WIDTH="50" HEIGHT="55"></TD>
 <TD><IMG SRC="/media_stat/images/layout/clear.gif" NAME="p5_9" ALT="" WIDTH="50" HEIGHT="55"></TD>
 </TR>
-<tr><td colspan="10"><img src="/media_stat/images/layout/999966.gif" width="599" height="1" border="0"></td></tr>
+<tr><td colspan="10"><img src="/media_stat/images/layout/999966.gif" alt="" width="599" height="1" border="0"></td></tr>
 
 </TABLE>
 <script>

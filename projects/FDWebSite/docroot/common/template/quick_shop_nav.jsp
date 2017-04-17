@@ -66,10 +66,10 @@ request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);
 <CENTER CLASS="text10">
 <TABLE WIDTH="<%= W_QUICK_SHOP_TOTAL %>" CELLPADDING="0" CELLSPACING="0" BORDER="0">
 <TR VALIGN="TOP">
-	<TD WIDTH="<%= W_QUICK_SHOP_CONTENT %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_QUICK_SHOP_CONTENT %>" height="1" border="0"></TD>
+	<TD WIDTH="<%= W_QUICK_SHOP_CONTENT %>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%= W_QUICK_SHOP_CONTENT %>" height="1" border="0"></TD>
 	<% if(isQuickShopCartVisible) { %>
-		<TD WIDTH="<%= W_QUICK_SHOP_DELIMITER %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_QUICK_SHOP_DELIMITER %>" height="1" border="0"></TD>
-		<TD WIDTH="<%= W_QUICK_SHOP_CART %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_QUICK_SHOP_CART %>" height="1" border="0"></TD>
+		<TD WIDTH="<%= W_QUICK_SHOP_DELIMITER %>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%= W_QUICK_SHOP_DELIMITER %>" height="1" border="0"></TD>
+		<TD WIDTH="<%= W_QUICK_SHOP_CART %>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%= W_QUICK_SHOP_CART %>" height="1" border="0"></TD>
 	<% } %>
 </TR>
 <TR VALIGN="TOP">
@@ -77,9 +77,9 @@ request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);
 	<!-- nested quick shell here, content inside -->	
 		<TABLE WIDTH="<%= W_QUICK_SHOP_CONTENT %>" CELLPADDING="0" CELLSPACING="0" BORDER="0">
 			<TR VALIGN="TOP">
-				<TD WIDTH="<%= W_QUICK_SHOP_LEFTNAV %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_QUICK_SHOP_LEFTNAV %>" height="1" border="0"></TD>
-				<TD WIDTH="<%= W_QUICK_SHOP_DELIMITER %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_QUICK_SHOP_DELIMITER %>" height="1" border="0"></TD>
-				<TD WIDTH="<%= W_QUICK_SHOP_CENTER %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_QUICK_SHOP_CENTER %>" height="1" border="0"></TD>
+				<TD WIDTH="<%= W_QUICK_SHOP_LEFTNAV %>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%= W_QUICK_SHOP_LEFTNAV %>" height="1" border="0"></TD>
+				<TD WIDTH="<%= W_QUICK_SHOP_DELIMITER %>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%= W_QUICK_SHOP_DELIMITER %>" height="1" border="0"></TD>
+				<TD WIDTH="<%= W_QUICK_SHOP_CENTER %>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%= W_QUICK_SHOP_CENTER %>" height="1" border="0"></TD>
 			</TR>
 			<TR>
 				<TD colspan="3"><img src="/media_stat/images/layout/dot_clear.gif" width="1" height="4" border="0"></TD>
@@ -94,12 +94,12 @@ else{
 				<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
 				<TR VALIGN="MIDDLE">
 					<TD><A HREF="/quickshop/index.jsp"><img src="/media_stat/images/navigation/department/quickshop/qs_depnav.gif" width="158" height="28" border="0" alt="REORDER"></A></TD>
-					<TD WIDTH="11" ALIGN="CENTER" VALIGN="BOTTOM"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="28" border="0" HSPACE="7"><BR></TD>
+					<TD WIDTH="11" ALIGN="CENTER" VALIGN="BOTTOM"><img src="/media_stat/images/layout/cccccc.gif" alt="" width="1" height="28" border="0" HSPACE="7"><BR></TD>
 					<TD valign="top">
 						<A HREF="/quickshop/previous_orders.jsp">Your Previous Orders</A><BR>
 						<A HREF="/quickshop/every_item.jsp">Every Item Ordered</A><BR>
 					</TD>
-					<TD WIDTH="11" ALIGN="CENTER" VALIGN="BOTTOM"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="28" border="0" HSPACE="7"><BR></TD>
+					<TD WIDTH="11" ALIGN="CENTER" VALIGN="BOTTOM"><img src="/media_stat/images/layout/cccccc.gif" alt="" width="1" height="28" border="0" HSPACE="7"><BR></TD>
 					<TD valign="top">
 						<% int brs = 2; %>
 						<fd:GetCustomerRecipeList id="recipes">
@@ -112,7 +112,7 @@ else{
 						</fd:CCLCheck>
 						<% for (int i=0; i<brs; i++) { %><BR><% } %>
 					</TD>
-					<TD WIDTH="11" ALIGN="CENTER" VALIGN="BOTTOM"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="28" border="0" HSPACE="7"><BR></TD>
+					<TD WIDTH="11" ALIGN="CENTER" VALIGN="BOTTOM"><img src="/media_stat/images/layout/cccccc.gif" alt="" width="1" height="28" border="0" HSPACE="7"><BR></TD>
 
 					<% if ( user.isEligibleForStandingOrders() ) { %>					
 						<TD valign="top">
@@ -124,7 +124,7 @@ else{
 					
 				</TR>
 				<TR>
-					<TD><img src="/media_stat/images/layout/clear.gif" width="1" height="4" border="0"></TD>
+					<TD><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4" border="0"></TD>
 				</TR>
 				</TABLE>
 <%}%>				

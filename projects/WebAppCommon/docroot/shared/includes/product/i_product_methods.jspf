@@ -75,7 +75,7 @@ public String getProdPageRatings(ProductModel _productNode,
 		//add the text ratings
 		if (textRatings.size() > 0) {
 			rtnString
-					.append("<br><img src=\"/media_stat/images/layout/cccccc.gif\" vspace=\"6\" width=\""+W_PRODUCT_METHODS_TOTAL+"\" height=\"1\">");
+					.append("<br><img src=\"/media_stat/images/layout/cccccc.gif\" alt=\"\" vspace=\"6\" width=\""+W_PRODUCT_METHODS_TOTAL+"\" height=\"1\">");
 			for (Iterator<ProductRating> itrRatings = textRatings
 					.iterator(); itrRatings.hasNext();) {
 				ProductRating prodRating = itrRatings.next();
@@ -85,7 +85,7 @@ public String getProdPageRatings(ProductModel _productNode,
 				rtnString.append(prodRating.getRating());
 			}
 			rtnString
-					.append("<br><img src=\"/media_stat/images/layout/cccccc.gif\" vspace=\"6\" width=\""+W_PRODUCT_METHODS_TOTAL+"\" height=\"1\"><br>");
+					.append("<br><img src=\"/media_stat/images/layout/cccccc.gif\" alt=\"\" vspace=\"6\" width=\""+W_PRODUCT_METHODS_TOTAL+"\" height=\"1\"><br>");
 		}
 	}
 	return rtnString.toString();

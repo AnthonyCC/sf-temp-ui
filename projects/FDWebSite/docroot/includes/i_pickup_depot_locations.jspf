@@ -98,9 +98,9 @@ if (theHamptonsIsOn) {
 
 	<%if(allowSelection){%>		
 			<TD width="20" valign="top"><input type="radio" name="selectAddressList" id='xx' class="radio" value="DEPOT_<%=location.getPK().getId()%>" <%=checkedAddress?"checked":"" %>>
-			<BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="20" HEIGHT="1"><BR></TD>
+			<BR><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="20" HEIGHT="1"><BR></TD>
 	<%} else { %>		
-			<TD width="<%=(cnt-1)%2==0?"1":"20"%>" valign="top"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=(cnt-1)%2==0?"1":"20"%>" HEIGHT="1"><BR></TD>	
+			<TD width="<%=(cnt-1)%2==0?"1":"20"%>" valign="top"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="<%=(cnt-1)%2==0?"1":"20"%>" HEIGHT="1"><BR></TD>	
 	<%} %>	
 			<TD valign="top" width="50%" class="text13">
 				<% if (cnt==1) {  %><fd:IncludeMedia name='/media/editorial/hamptons/hamptons_pickup_blurb.html' />	<% }  %>
@@ -150,9 +150,9 @@ if (theHamptonsIsOn) {
 %>
 
 	<%if(allowSelection){%>		
-			<TD width="20" valign="top"><input type="radio" name="selectAddressList" id='xx' class="radio" value="DEPOT_<%=location.getPK().getId()%>" <%=checkedAddress?"checked":"" %>><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="20" HEIGHT="1"><BR></TD>
+			<TD width="20" valign="top"><input type="radio" name="selectAddressList" id='xx' class="radio" value="DEPOT_<%=location.getPK().getId()%>" <%=checkedAddress?"checked":"" %>><BR><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="20" HEIGHT="1"><BR></TD>
 	<%} else { %>		
-			<TD width="<%=(cnt-1)%2==0?"1":"20"%>" valign="top"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=(cnt-1)%2==0?"1":"20"%>" HEIGHT="1"><BR></TD>	
+			<TD width="<%=(cnt-1)%2==0?"1":"20"%>" valign="top"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="<%=(cnt-1)%2==0?"1":"20"%>" HEIGHT="1"><BR></TD>	
 	<%} %>	
 			<TD valign="top" width="50%" class="text13">
 		

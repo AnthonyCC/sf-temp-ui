@@ -63,13 +63,13 @@ http://www.freshdirect.com/help/faq_home.jsp
 <table cellpadding="0" cellspacing="0" align="center">
 <tr>
 <!-- =============== START LEFT SPACER =============== -->
-<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1" border="0" /></td>
+<td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0" /></td>
 <!-- =============== END LEFT SPACER ================= -->
 
 <!-- ~~~~~~~~~~~~~~~ START CONTENT ~~~~~~~~~~~~~~~ -->
 <td>
 	<table cellpadding="0" cellspacing="0" width="612">
-        <tr><td colspan="3" class="header"><img src="/media_stat/images/template/email/pickup/lic_hdr.gif" width="612" height="135" alt="PICK UP YOUR ORDER! Now everyone in the Tri-State area can get FreshDirect."/><br/><img src="/media_stat/images/layout/clear.gif" width="1" height="18" /></td></tr>
+        <tr><td colspan="3" class="header"><img src="/media_stat/images/template/email/pickup/lic_hdr.gif" width="612" height="135" alt="PICK UP YOUR ORDER! Now everyone in the Tri-State area can get FreshDirect."/><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="18" /></td></tr>
         <tr valign="top">
             <td width="397">
             <p>I am pleased to announce that now you don't have to live in an area where FreshDirect offers home delivery to <b>get the best food at the best prices in New York!</b></p>
@@ -81,7 +81,7 @@ http://www.freshdirect.com/help/faq_home.jsp
             <p>Joe Fedele<br/>
             President &amp; CEO</p>
             </td>
-            <td width="18"><img src="/media_stat/images/layout/clear.gif" width="18" height="1" /></td>
+            <td width="18"><img src="/media_stat/images/layout/clear.gif" alt="" width="18" height="1" /></td>
             <td width="197" align="center"><a href="http://www.freshdirect.com/pickup/index.jsp?trk=bqemail"><img src="/media_stat/images/template/email/pickup/lic_img.jpg" width="187" height="200" border="0" alt="Our Facility"/><br/>
             <img src="/media_stat/images/template/email/pickup/lic_button.gif" width="187" height="22" vspace="1" border="0" alt="Click here to get started"/></a>
             </td>
@@ -96,7 +96,7 @@ http://www.freshdirect.com/help/faq_home.jsp
 <!-- ~~~~~~~~~~~~~~~ END CONTENT ~~~~~~~~~~~~~~~ -->
 
 <!-- =============== BEGIN RIGHT SPACER =============== -->
-<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1" border="0" /></td>
+<td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0" /></td>
 <!-- =============== END RIGHT SPACER ================= -->
 </tr>
 </table>

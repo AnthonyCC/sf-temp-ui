@@ -107,7 +107,7 @@ if (mobWeb) {
 			<%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>
 		</div>
 	
-		<img src="/media_stat/images/layout/clear.gif" width="1" height="10">
+		<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10">
 		<%//Reservation stuff%>
 		<table style="width: <%= (mobWeb) ? "100%": W_RESERVE_TIMESLOTS_TOTAL+"px" %>;" cellpadding="0" cellspacing="0" border="0">
 			<tr>
@@ -121,27 +121,27 @@ if (mobWeb) {
 				<td>
 					<input type="radio" name="reservationType" <%=(rsv == null || EnumReservationType.ONETIME_RESERVATION.equals(rsv.getReservationType())) ? "checked" : "" %> value="<%=EnumReservationType.ONETIME_RESERVATION.getName()%>" class="radio">&nbsp;
 				</td>
-				<td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>
+				<td colspan="6"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>
 					<span class="text12"><b>Reserve for this week only.</b>
 					</span>
 				</td>
 			</tr>
 			<tr>
-				<td colspan="7"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
+				<td colspan="7"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td>
 			</tr>
 			<tr valign="top">
 				<td>
 					<input type="radio" name="reservationType" <%=(rsv != null && EnumReservationType.RECURRING_RESERVATION.equals(rsv.getReservationType())) ? "checked" : "" %> value="<%=EnumReservationType.RECURRING_RESERVATION.getName()%>" class="radio">&nbsp;
 				</td>
 				<td colspan="6">
-					<img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>
+					<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>
 					<span class="text12"><b>Reserve this day and time for me every week</b></span><br>
 					Select this option to make this a standing weekly reservation. Please note that reservations not used will be released for good. You will have to return to this page to reset your reservation settings.
 				</td>
 			</tr>
 			<tr>
 				<td colspan="7" align="center">
-					<img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br>
+					<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="14"><br>
 				
 					<%if((rsv == null || rsv.isAnonymous()) && !hasReservation){%>
 						<input type="image" src="/media_stat/images/buttons/reserve_delivery.gif" alt="Reserve Delivery" onclick="reserveTimeslot.actionName.value='reserveTimeslot'">

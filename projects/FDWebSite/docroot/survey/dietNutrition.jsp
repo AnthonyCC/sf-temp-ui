@@ -59,7 +59,7 @@ response.setDateHeader ("Expires", 0);
 	<tr>
 		<td colspan="11" class="text12"><br><span class="title18">Tell Us Your Diet & Nutrition Concerns</span><br><span class="space4pix"><br></span>
 		Diet and nutrition are important considerations for many of our customers. We'd like to know more about what's important to you and your family so that we can provide tools and information that support healthy, nutrition-conscious lifestyles. This brief survey should take about five minutes of your time. Of course, in accordance with the FreshDirect <a href="javascript:popup('/help/faq_index.jsp?show=security','large')">Privacy Policy</a>, all of your answers will be kept confidential. Thank you in advance for your feedback&mdash;it's greatly appreciated.
-<br><img src="/media_stat/images/layout/999966.gif" width="<%=W_SURVEY_DIET_NUTRITION_TOTAL%>" height="1" vspace="8"><br>
+<br><img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_SURVEY_DIET_NUTRITION_TOTAL%>" height="1" vspace="8"><br>
 		<%  if (questions.size() > 0) { %>
 			<fd:ErrorHandler result='<%=result%>' field='<%=checkSurveyForm%>'>
 				<% String errorMsg = SystemMessageList.MSG_MISSING_SURVEY_INFO; %>
@@ -69,17 +69,17 @@ response.setDateHeader ("Expires", 0);
 		</td>
 	</tr>
 	<tr>
-		<td><img src="/media_stat/images/layout/clear.gif" width="25" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="25" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="210" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SURVEY_DIET_NUTRITION_TOTAL-610%>" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="25" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="25" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="210" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_SURVEY_DIET_NUTRITION_TOTAL-610%>" height="1"></td>
 	</tr>
 	<tr>
 		<td colspan="11">
@@ -147,7 +147,7 @@ response.setDateHeader ("Expires", 0);
 				<% } %>
         		</logic:iterate>
 		</logic:iterate>
-	<tr><td colspan="11" align="center"><img src="/media_stat/images/layout/999966.gif" width="<%=W_SURVEY_DIET_NUTRITION_TOTAL%>" height="1" vspace="12"><br><input type="image" src="/media_stat/images/buttons/survey_submit.gif" width="91" height="21" onClick="dietNutritionSurvey.submit()" alt="SUBMIT"><br><br><br></td></tr>
+	<tr><td colspan="11" align="center"><img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_SURVEY_DIET_NUTRITION_TOTAL%>" height="1" vspace="12"><br><input type="image" src="/media_stat/images/buttons/survey_submit.gif" width="91" height="21" onClick="dietNutritionSurvey.submit()" alt="SUBMIT"><br><br><br></td></tr>
 </form>
 </fd:ReceiptSurvey>
 <% } %>

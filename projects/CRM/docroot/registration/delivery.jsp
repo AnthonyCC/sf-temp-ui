@@ -40,16 +40,16 @@ String serviceType = request.getParameter("serviceType");
 <tr align="center">
      <input type="hidden" name="serviceType" value="<%= serviceType %>">
      <td valign="bottom" width="212">
-     <img src="/media_stat/images/template/site_access/truck.jpg" width="90" height="65"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
+     <img src="/media_stat/images/template/site_access/truck.jpg" width="90" height="65"><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"><br>
      Give us your e-mail address and we'll drop you a note when we begin delivering to your area.<br>
-     <img src="/media_stat/images/layout/clear.gif" width="1" height="6">
+     <img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6">
      <br>
-     <font class="text12"><b>Enter your e-mail:</b></font><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>
+     <font class="text12"><b>Enter your e-mail:</b></font><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>
      <input class="text11" type="text" size="30" name="email" value="<%= request.getParameter("email")!=null?request.getParameter("email"):"" %>">
      <br>
      <fd:ErrorHandler result='<%= result %>' name='technicalDifficulty' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
      <fd:ErrorHandler result='<%= result %>' name='email' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
-     <img src="/media_stat/images/layout/clear.gif" width="8" height="1">
+     <img src="/media_stat/images/layout/clear.gif" alt="" width="8" height="1">
      <br>
      <input type="image" src="/media_stat/images/template/site_access/send_your_email.gif" alt="Send Your E-mail and Visit Our Store" border="0" value="submit">
      </td>
@@ -65,12 +65,12 @@ String serviceType = request.getParameter("serviceType");
 <tr align="center"><td class="text12">Give us your e-mail address and we'll drop you a note<br>when we begin delivering to your area.</td></tr>
 <input type="hidden" name="serviceType" value="<%= serviceType %>">
 <tr align="center">
-     <td class="text12"><br><b>Enter your e-mail:</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>
+     <td class="text12"><br><b>Enter your e-mail:</b><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>
      <input class="text11" type="text" size="30" name="email" value="<%= request.getParameter("email")!=null?request.getParameter("email"):"" %>">
      <br>
      <fd:ErrorHandler result='<%= result %>' name='technicalDifficulty' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
      <fd:ErrorHandler result='<%= result %>' name='email' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
-     <img src="/media_stat/images/layout/clear.gif" width="8" height="1">
+     <img src="/media_stat/images/layout/clear.gif" alt="" width="8" height="1">
      <br>
      <input type="image" src="/media_stat/images/template/site_access/send_email.gif" width="176" height="41" alt="Send your e-mail and visit our store" border="0" value="submit">
      </td>
@@ -95,10 +95,10 @@ String serviceType = request.getParameter("serviceType");
 <br>
 <a href="javascript:popup('/help/delivery_zones.jsp','large')">View our current delivery zones</a> or <a href="nw_cst_check_zone.jsp">enter a different zip code.</a>
 <br>
-<img src="/media_stat/images/layout/clear.gif" width="1" height="15"><br>
-<img src="/media_stat/images/layout/cccccc.gif" width="270" height="1"><br>								
-<img src="/media_stat/images/layout/clear.gif" width="1" height="20"><br>
-<br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>
+<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="15"><br>
+<img src="/media_stat/images/layout/cccccc.gif" alt="" width="270" height="1"><br>								
+<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="20"><br>
+<br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>
 <br><br><br>
 
 </div>

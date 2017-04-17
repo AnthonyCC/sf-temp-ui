@@ -14,7 +14,7 @@
 	<tr>
 		<td align="center" class="text12">
 			<fd:IncludeMedia name="/media/editorial/tell_a_friend/confirm_1.html" />
-			<a href="/tell_a_friend_ref/step_1_compose.jsp"><img src="/media_stat/images/template/tell_a_friend/tell_another.gif" width="127" height="15" border="0" alt="Tell another friend"></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br><a href="javascript:window.reallyClose();"><img src="/media_stat/images/template/tell_a_friend/close_window.gif" width="129" height="16" border="0" alt="Close this window"></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br><img src="/media_stat/images/template/tell_a_friend/confirm_berry.jpg" width="70" height="70"></div><br><br><br><br>
+			<a href="/tell_a_friend_ref/step_1_compose.jsp"><img src="/media_stat/images/template/tell_a_friend/tell_another.gif" width="127" height="15" border="0" alt="Tell another friend"></a><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8"><br><a href="javascript:window.reallyClose();"><img src="/media_stat/images/template/tell_a_friend/close_window.gif" width="129" height="16" border="0" alt="Close this window"></a><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="14"><br><img src="/media_stat/images/template/tell_a_friend/confirm_berry.jpg" width="70" height="70"></div><br><br><br><br>
 		</td>
 	</tr>
 	</table>

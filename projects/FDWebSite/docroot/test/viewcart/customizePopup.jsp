@@ -35,7 +35,7 @@
           <div class="itemlist-item-header">    
             <a href="/pdp.jsp?productId=fflt_gsmans_flound&amp;catId=fflt" class="itemlist-item-header-name">Local Wild Flounder Fillet</a> 
             <b class="expertrating smallrating rating-8">8</b>
-            <img src="/media/brands/fd_seafood_popup_all/fish_yellow.gif" class="sustrating">
+            <img src="/media/brands/fd_seafood_popup_all/fish_yellow.gif" alt="sustainability rating good" class="sustrating">
             <br>
             <i class="itemlist-item-header-configuration">7-9 OZ</i>
             
@@ -80,7 +80,7 @@
         <div class="itemlist-item-header">    
           <a href="/pdp.jsp?productId=fflt_gsmans_flound&amp;catId=fflt" class="itemlist-item-header-name">Cheez-It Reduced Fat Crackers</a> 
           <b class="expertrating smallrating rating-8">8</b>
-          <img src="/media/brands/fd_seafood_popup_all/fish_yellow.gif" class="sustrating">
+          <img src="/media/brands/fd_seafood_popup_all/fish_yellow.gif" alt="sustainability rating good" class="sustrating">
           <br>
           <i class="itemlist-item-header-configuration">7-9 OZ</i>
           
@@ -168,7 +168,7 @@
           <div class="itemlist-item-header">    
             <a href="/pdp.jsp?productId=fflt_gsmans_flound&amp;catId=fflt" class="itemlist-item-header-name">Local Wild Flounder Fillet</a> 
             <b class="expertrating smallrating rating-8">8</b>
-            <img src="/media/brands/fd_seafood_popup_all/fish_yellow.gif" class="sustrating">
+            <img src="/media/brands/fd_seafood_popup_all/fish_yellow.gif" alt="sustainability rating good" class="sustrating">
             <br>
             <i class="itemlist-item-header-configuration">7-9 OZ</i>
             
@@ -213,7 +213,7 @@
         <div class="itemlist-item-header">    
           <a href="/pdp.jsp?productId=fflt_gsmans_flound&amp;catId=fflt" class="itemlist-item-header-name">Cheez-It Reduced Fat Crackers</a> 
           <b class="expertrating smallrating rating-8">8</b>
-          <img src="/media/brands/fd_seafood_popup_all/fish_yellow.gif" class="sustrating">
+          <img src="/media/brands/fd_seafood_popup_all/fish_yellow.gif" alt="sustainability rating good" class="sustrating">
           <br>
           <i class="itemlist-item-header-configuration">7-9 OZ</i>
           

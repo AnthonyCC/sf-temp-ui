@@ -15,7 +15,7 @@ try{
             fdprd = defaultSku.getProduct();
         } catch (FDSkuNotFoundException fdsnfe) { }
 %>
-		<img src="/media_stat/images/layout/clear.gif" width="379" height="3"><br>
+		<img src="/media_stat/images/layout/clear.gif" alt="" width="379" height="3"><br>
 		<img src="<%=prodImg.getPath()%>" width="<%=prodImg.getWidth()%>" height="<%=prodImg.getHeight()%>" alt="" border="0">
 		
 		<br>

@@ -139,7 +139,7 @@ if (currentCategory != null) {
     		currentCategory.getCategoryLabel() != null &&
     		!editorialMedia.isBlank()) {
 %>
-            <img src="/media_stat/images/layout/cccccc.gif" height="1" width="100%" vspace="5"><br>
+            <img src="/media_stat/images/layout/cccccc.gif" alt="" height="1" width="100%" vspace="5"><br>
             <fd:IncludeMedia name='<%= editorialMedia.getPath() %>'/><br>
 <%
     }
@@ -208,7 +208,7 @@ boolean hideFi = false;
 					
 			<%if (ord < recommendations.getProducts().size()) {%>		
 				<td width="10">
-					<img src="/media_stat/images/layout/clear.gif" width="8" height="1">
+					<img src="/media_stat/images/layout/clear.gif" alt="" width="8" height="1">
 			   </td>
 			<%} %>
 			<%++ord;%>
@@ -228,11 +228,11 @@ boolean hideFi = false;
 %>
 <BR><BR>
     
-<IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%=W_GROCERY_CATEGORY_LAYOUT_TOTAL%>" HEIGHT="1"><BR>
+<IMG src="/media_stat/images/layout/cccccc.gif" ALT="" WIDTH="<%=W_GROCERY_CATEGORY_LAYOUT_TOTAL%>" HEIGHT="1"><BR>
 <FONT CLASS="space4pix"><BR></FONT>
 <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="<%=W_GROCERY_CATEGORY_LAYOUT_TOTAL%>">
 <tr VALIGN="TOP">
-    <td WIDTH="<%=W_GROCERY_CATEGORY_LAYOUT_TOTAL%>" colspan="4"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="5"></td>
+    <td WIDTH="<%=W_GROCERY_CATEGORY_LAYOUT_TOTAL%>" colspan="4"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="5"></td>
 </tr>
 <TR VALIGN="TOP">
 <!--     <TD WIDTH="27"><BR></TD> -->
@@ -241,7 +241,7 @@ boolean hideFi = false;
             <tr>
                 <td colspan="<%=typeSpan+(typeSpan-1)%>">
                 <IMG SRC="/media/images/navigation/department/grocery/gro_choose_type.gif" WIDTH="107" HEIGHT="10" ALT="CHOOSE A TYPE"><BR>
-                <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="4" >
+                <IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="4" >
                 </td>
             </tr>
             <tr VALIGN="TOP"><%

@@ -138,7 +138,7 @@ String optInInd = request.getParameter("optinInd");
 	  </tr>
 	<tr>
 		<td colspan="3" style="padding: 2px 0px;">
-			<img style="margin: 2px 0;" width="<%=W_RH_SUBMIT_ORDER_TOTAL%>" height="1" border="0" src="/media_stat/images/layout/ff9933.gif" /><br />
+			<img style="margin: 2px 0;" width="<%=W_RH_SUBMIT_ORDER_TOTAL%>" height="1" border="0" alt="" src="/media_stat/images/layout/ff9933.gif" /><br />
 		</td>
 	</tr>
 	<tr>
@@ -187,16 +187,16 @@ boolean isCheckEligible = false;
     </tr>
 </table>
 
-<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br />
+<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br />
 
-<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br /><br />
+<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br /><br />
 
 
 
 	<table width="<%=W_RH_SUBMIT_ORDER_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
 		<tr valign="top">
 			<td width="<%=W_RH_SUBMIT_ORDER_TOTAL%>"><img src="/media_stat/images/navigation/choose_credit_card.gif" width="135" height="9" border="0" alt="CHOOSE CREDIT CARD">&nbsp;&nbsp;&nbsp;<br />
-					<img src="/media_stat/images/layout/999966.gif" width="<%=W_RH_SUBMIT_ORDER_TOTAL%>" height="1" border="0" vspace="3"><br />
+					<img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_RH_SUBMIT_ORDER_TOTAL%>" height="1" border="0" vspace="3"><br />
 				<font class="space2pix"><br /></font>  
 			</td>   
 		</tr>
@@ -222,7 +222,7 @@ boolean isCheckEligible = false;
 		</tr>
 	</table>
 		<br />
-		<img src="/media_stat/images/layout/ff9933.gif" width="<%=W_RH_SUBMIT_ORDER_TOTAL%>" height="1" border="0"><br />
+		<img src="/media_stat/images/layout/ff9933.gif" alt="" width="<%=W_RH_SUBMIT_ORDER_TOTAL%>" height="1" border="0"><br />
 		<font class="space4pix"><br /><br /></font>	
 		<table border="0" cellspacing="0" cellpadding="2" width="<%=W_RH_SUBMIT_ORDER_TOTAL%>">
 		<% String optinout=null;%>
@@ -249,7 +249,7 @@ boolean isCheckEligible = false;
 			  <% } %>
 		</tr>
 		<tr>
-	    	<td><IMG src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0">
+	    	<td><IMG src="/media_stat/images/layout/clear.gif" alt="" width="8" height="11" border="0">
     	</td></tr>
 		<tr>
 			<td align="right">
@@ -264,7 +264,7 @@ boolean isCheckEligible = false;
 			</td>
 		</tr>
 		<tr>
-	    	<td><IMG src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0">
+	    	<td><IMG src="/media_stat/images/layout/clear.gif" alt="" width="8" height="11" border="0">
     	</td>
 		<tr valign="top">
 			<td width="<%=W_RH_SUBMIT_ORDER_TOTAL%>" align="right" colspan="2">

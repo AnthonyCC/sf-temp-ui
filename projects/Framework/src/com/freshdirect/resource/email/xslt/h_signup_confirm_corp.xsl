@@ -22,7 +22,7 @@
  <table style="font-family:Verdana, Arial, Helvetica, sans-serif; font-size:12px; color:#333333; line-height:normal" align="center" bgcolor="#FFFFFF" border="0" cellpadding="0" cellspacing="0" width="640">
         <tbody>
             <tr>
-                <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" height="15" border="0" width="1"/>
+                <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" height="15" border="0" width="1"/>
                 </td>
             </tr>
             <tr>

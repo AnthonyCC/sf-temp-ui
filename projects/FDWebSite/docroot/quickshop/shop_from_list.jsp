@@ -118,14 +118,14 @@
 					</tr>
 					<tr>
 						<td colspan="9" bgcolor="#996699"><img
-							src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+							src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
 						<!-- 					<td bgcolor="#996699" height="1" colspan="2"><img
 						src="/media_stat/images/layout/996699.gif" width="1" height="1"
 						border="0"></td>  -->
 					</tr>
 					<tr>
 						<td colspan="9"><img
-							src="/media_stat/images/layout/clear.gif" width="1" height="5"
+							src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5"
 							border="0"></td>
 					</tr>
 					<tr>
@@ -163,7 +163,7 @@
 					<tbody>
 						<tr>
 							<td colspan="1" bgcolor="#996699"><img width="1" height="1"
-								border="0" src="/media_stat/images/layout/clear.gif" /></td>
+								border="0" alt="" src="/media_stat/images/layout/clear.gif" /></td>
 						</tr>
 						<tr>
 							<td valign="center" align="center" height="120"><font
@@ -172,7 +172,7 @@
 						</tr>
 						<tr>
 							<td colspan="1" bgcolor="#996699"><img width="1" height="1"
-								border="0" src="/media_stat/images/layout/clear.gif" /></td>
+								border="0" alt="" src="/media_stat/images/layout/clear.gif" /></td>
 						</tr>
 						<tr>
 							<td height="60" />

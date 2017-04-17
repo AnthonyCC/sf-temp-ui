@@ -91,7 +91,7 @@ request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);
 		<table width="<%=W_NO_NAV_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 			<tr valign="TOP">
 				<td align="center">
-					<img src="/media_stat/images/layout/clear.gif" height="15" width="<%=W_NO_NAV_TOTAL%>"><br />
+					<img src="/media_stat/images/layout/clear.gif" alt="" height="15" width="<%=W_NO_NAV_TOTAL%>"><br />
 					<!-- content lands here -->
 					<tmpl:get name='content'/>
 					<!-- content ends above here-->

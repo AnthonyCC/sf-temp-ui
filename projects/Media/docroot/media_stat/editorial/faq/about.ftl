@@ -62,7 +62,7 @@ function linkTo(url){
 	<TR VALIGN="TOP">
 		<TD WIDTH="15"><img src="/media/images/layout/clear.gif" width="15" height="1" alt="" border="0"></TD>
 		<TD WIDTH="${tableWidth}" class="bodyCopy">
-			<IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="375" HEIGHT="1"><BR>
+			<IMG src="/media_stat/images/layout/cccccc.gif" ALT="" WIDTH="375" HEIGHT="1"><BR>
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
 			<ul>
 				<li><A HREF="#question1">What is FreshDirect?</A></li>

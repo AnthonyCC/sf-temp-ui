@@ -409,7 +409,7 @@ if (isPaymentRequired) {
 	%>
 		<div style="width: <%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>px; text-align: left;"><strong>PLEASE NOTE: A BACKUP PAYMENT METHOD IS REQUIRED FOR THIS ORDER.</strong> Because your Estimated Total is close to the balance of the Gift Card you entered, we require a second form of payment. This is to cover changes in price that may occur when we weigh your perishable items and fulfill your order. We guarantee that you'll always pay the true price for the actual weight of your products. <a href="javascript:popup('/help/estimated_price.jsp','small')">Learn about Estimated Totals</a>.</div>
 		<br />
-		<img width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" vspace="3" height="1" border="0" src="/media_stat/images/layout/cccccc.gif" /><br /><br />
+		<img width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" vspace="3" height="1" border="0" alt="" src="/media_stat/images/layout/cccccc.gif" /><br /><br />
 
 	<% } %>
 
@@ -462,7 +462,7 @@ if (isPaymentRequired) {
 			<table width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
 				<tr valign="top">
 					<td><img src="/media_stat/images/headers/check_acct_details.gif" width="181" height="9" alt="CHECKING ACCOUNT DETAILS"><br>
-						<img src="/media_stat/images/layout/999966.gif" width="970" height="1" border="0" VSPACE="3"><br></td>
+						<img src="/media_stat/images/layout/999966.gif" alt="" width="970" height="1" border="0" VSPACE="3"><br></td>
 				</tr>
 				<tr valign="middle">
 					<td class="text12">If you need to enter another checking account: <a href="/checkout/step_3_checkacct_add.jsp"><img src="/media_stat/images/buttons/add_new_acct.gif" width="108" height="16" alt="Add New Checking Account" border="0" align="absmiddle" /></a></td>
@@ -530,7 +530,7 @@ if (isPaymentRequired) {
 	<table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>">
 		<tr valign="top">
 		<td width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>"><img src="/media_stat/images/navigation/choose_credit_card.gif" width="135" height="9" border="0" alt="CHOOSE CREDIT CARD" />&nbsp;&nbsp;&nbsp;<br />
-			<img src="/media_stat/images/layout/999966.gif" width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" height="1" border="0" vspace="3"><br />
+			<img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" height="1" border="0" vspace="3"><br />
 			<font class="space2pix"><br /></font>
 			<span class="text12">If you need to enter another credit card: </span><a href="/checkout/step_3_card_add.jsp"><img alt="Add New Card" src="/media_stat/images/buttons/add_new_credit_card.jpg" width="137" height="16" border="0" vspace="3" hspace="5" align="middle" /></a></TD>
 		</tr>

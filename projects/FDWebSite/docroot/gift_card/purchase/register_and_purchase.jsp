@@ -92,7 +92,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
     <table width="<%=W_REGISTER_AND_PURCHASE_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 	<tr>
 		<td colspan="2" style="padding: 2px 0px;">
-			<img style="margin: 2px 0;" width="<%=W_REGISTER_AND_PURCHASE_TOTAL%>" height="1" border="0" src="/media_stat/images/layout/999966.gif" /><br /><br/>
+			<img style="margin: 2px 0;" width="<%=W_REGISTER_AND_PURCHASE_TOTAL%>" height="1" border="0" alt="" src="/media_stat/images/layout/999966.gif" /><br /><br/>
 		</td>
 	</tr>
     </table>

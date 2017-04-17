@@ -59,7 +59,7 @@ response.setDateHeader ("Expires", 0);
 	<tr>
 		<td colspan="11" class="text12"><br><span class="title18">Morning Delivery Survey</span><br><span class="space4pix"><br></span>
 		FreshDirect knows that our customers love our service and the fresh food we deliver. We are currently researching the concept of expanding our delivery windows to weekday mornings. Your responses to this brief survey will help us understand our customers' needs. Of course, in accordance with the FreshDirect Privacy Policy, all of your answers will be kept confidential.
-<br><img src="/media_stat/images/layout/999966.gif" width="<%=W_SURVEY_MORNING_DELIVERY_TOTAL%>" height="1" vspace="8"><br>
+<br><img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_SURVEY_MORNING_DELIVERY_TOTAL%>" height="1" vspace="8"><br>
 		<%  if (questions.size() > 0) { %>
 			<fd:ErrorHandler result='<%=result%>' field='<%=checkSurveyForm%>'>
 				<% String errorMsg = SystemMessageList.MSG_MISSING_SURVEY_INFO; %>
@@ -69,17 +69,17 @@ response.setDateHeader ("Expires", 0);
 		</td>
 	</tr>
 	<tr>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="25" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="25" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="210" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_SURVEY_MORNING_DELIVERY_TOTAL-610%>" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="25" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="25" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="210" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_SURVEY_MORNING_DELIVERY_TOTAL-610%>" height="1"></td>
 	</tr>
 	<tr>
 		<td colspan="11">
@@ -147,7 +147,7 @@ response.setDateHeader ("Expires", 0);
 				<% } %>
         		</logic:iterate>
 		</logic:iterate>
-	<tr><td colspan="11" align="center"><img src="/media_stat/images/layout/999966.gif" width="<%=W_SURVEY_MORNING_DELIVERY_TOTAL%>" height="1" vspace="12"><br><input type="image" src="/media_stat/images/buttons/survey_submit.gif" width="91" height="21" onClick="morningDeliverySurvey.submit()" alt="SUBMIT"><br><br><br></td></tr>
+	<tr><td colspan="11" align="center"><img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_SURVEY_MORNING_DELIVERY_TOTAL%>" height="1" vspace="12"><br><input type="image" src="/media_stat/images/buttons/survey_submit.gif" width="91" height="21" onClick="morningDeliverySurvey.submit()" alt="SUBMIT"><br><br><br></td></tr>
 </form>
 </fd:ReceiptSurvey>
 <% } %>

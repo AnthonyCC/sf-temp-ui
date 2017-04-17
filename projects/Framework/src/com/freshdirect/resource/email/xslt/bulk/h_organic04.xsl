@@ -41,27 +41,27 @@
 	</tr>
 	<tr>
 		<td colspan="2" rowspan="2"><img src="http://www.freshdirect.com/media_stat/images/template/email/layout/cor_top_left_336600.gif" width="8" height="7" border="0"/></td>
-		<td colspan="7" bgcolor="#336600"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="1"/></td>
+		<td colspan="7" bgcolor="#336600"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="1"/></td>
 		<td colspan="2" rowspan="2"><img src="http://www.freshdirect.com/media_stat/images/template/email/layout/cor_top_right_336600.gif" width="8" height="7" border="0"/></td>
 	</tr>
 	<tr>
-		<td colspan="7"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="6"/></td>
+		<td colspan="7"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="6"/></td>
 	</tr>
 	<tr>
-		<td rowspan="4" bgcolor="#336600"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="8"/></td>
-		<td rowspan="2"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="7" height="8"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="12" height="8"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="111" height="8"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="280" height="8"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="20" height="8"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="8"/></td>
-		<td rowspan="4"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="10" height="8"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="190" height="8"/></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="7" height="8"/></td>
-		<td rowspan="4" bgcolor="#336600"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="8"/></td>
+		<td rowspan="4" bgcolor="#336600"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="8"/></td>
+		<td rowspan="2"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="7" height="8"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="12" height="8"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="111" height="8"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="280" height="8"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="20" height="8"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="8"/></td>
+		<td rowspan="4"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="10" height="8"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="190" height="8"/></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="7" height="8"/></td>
+		<td rowspan="4" bgcolor="#336600"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="8"/></td>
 	</tr>
 	<tr>
-		<td colspan="4"><a href="http://www.freshdirect.com/department.jsp?deptId=orgnat&amp;trk=organic04"><img src="http://www.freshdirect.com/media/images/promotions/email/organic04.gif" width="405" height="84" border="0" hspace="4" alt="ORGANIC &amp; ALL-NATURAL! - CHECK OUT OUR NEW DEPARTMENT!"/></a><br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="6"/></td>
+		<td colspan="4"><a href="http://www.freshdirect.com/department.jsp?deptId=orgnat&amp;trk=organic04"><img src="http://www.freshdirect.com/media/images/promotions/email/organic04.gif" width="405" height="84" border="0" hspace="4" alt="ORGANIC &amp; ALL-NATURAL! - CHECK OUT OUR NEW DEPARTMENT!"/></a><br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="6"/></td>
 		<td rowspan="3" bgcolor="#336600"></td>
 		<td rowspan="3" align="center" valign="top">
 		<img src="http://www.freshdirect.com/media_stat/images/template/email/new/org04_just_for_fathers_day.gif" width="160" height="40" border="0" vspace="6" alt="JUST FOR FATHER'S DAY"/><br/>
@@ -81,22 +81,22 @@
 		<td>We're proud to announce the launch of our Organic and All-Natural Department.
 		<br/><br/>
 		We've added a wide selection of Organic fruit and vegetables as well as a hormone- and antibiotic-free meat and deli items. We've also gathered together hundreds of carefully selected All-Natural and Certified Organic grocery items &#151; from shade-grown coffee to phosphate-free laundry detergent.
-		<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="8"/><br/>
+		<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="8"/><br/>
 		<a href="http://www.freshdirect.com/department.jsp?deptId=orgnat&amp;trk=organic04" class="mainLink"><font color="#336600"><b>Click here to visit our new<br/>
 		Organic &amp; All-Natural Department.</b></font></a></td>
 		<td rowspan="2"></td>
 	</tr>
 	<tr>
 		<td colspan="2"></td>
-		<td colspan="2"><img src="http://www.freshdirect.com/media_stat/images/layout/999999.gif" width="391" height="1" vspace="14"/><br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="6"/><div align="center"><a href="http://www.freshdirect.com/category.jsp?catId=menu&amp;trk=organic04"><img src="http://www.freshdirect.com/media_stat/images/template/email/new/org04_summer_grilling_menu.gif" width="368" height="52" border="0" alt="CHECK OUT OUR SUMMER GRILLING MENU!"/><br/><img src="http://www.freshdirect.com/media_stat/images/template/email/new/org04_summer_grill.jpg" width="368" height="104" border="0" vspace="10" alt="SUMMER GRILL ITEMS"/></a></div>It just wouldn't be summer without the hiss and sizzle of the grill. To make your party planning less fuss and more fun, we've gathered a special collection of our summer grill favorites from burgers and brats to steaks and salads. Eat, drink, and grill on!<div align="center"><br/><a href="http://www.freshdirect.com/category.jsp?catId=menu&amp;trk=organic04"><b>Click here to learn more</b></a></div><br/><br/></td>
+		<td colspan="2"><img src="http://www.freshdirect.com/media_stat/images/layout/999999.gif" width="391" height="1" vspace="14"/><br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="6"/><div align="center"><a href="http://www.freshdirect.com/category.jsp?catId=menu&amp;trk=organic04"><img src="http://www.freshdirect.com/media_stat/images/template/email/new/org04_summer_grilling_menu.gif" width="368" height="52" border="0" alt="CHECK OUT OUR SUMMER GRILLING MENU!"/><br/><img src="http://www.freshdirect.com/media_stat/images/template/email/new/org04_summer_grill.jpg" width="368" height="104" border="0" vspace="10" alt="SUMMER GRILL ITEMS"/></a></div>It just wouldn't be summer without the hiss and sizzle of the grill. To make your party planning less fuss and more fun, we've gathered a special collection of our summer grill favorites from burgers and brats to steaks and salads. Eat, drink, and grill on!<div align="center"><br/><a href="http://www.freshdirect.com/category.jsp?catId=menu&amp;trk=organic04"><b>Click here to learn more</b></a></div><br/><br/></td>
 	</tr>
 	<tr>
 		<td colspan="2" rowspan="2"><img src="http://www.freshdirect.com/media_stat/images/template/email/layout/cor_bot_left_336600.gif" width="8" height="7" border="0"/></td>
-		<td colspan="7"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="6"/></td>
+		<td colspan="7"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="6"/></td>
 		<td colspan="2" rowspan="2"><img src="http://www.freshdirect.com/media_stat/images/template/email/layout/cor_bot_right_336600.gif" width="8" height="7" border="0"/></td>
 	</tr>
 	<tr>
-		<td colspan="7" bgcolor="#336600"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="1"/></td>
+		<td colspan="7" bgcolor="#336600"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="1"/></td>
 	</tr>
 	<tr><td colspan="11"><br/><xsl:call-template name="h_optout_footer"/><xsl:call-template name="h_footer_v2"/><br/></td></tr>
 </table>

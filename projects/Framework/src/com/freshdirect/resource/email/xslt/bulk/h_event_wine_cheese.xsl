@@ -36,15 +36,15 @@
 	</tr>
 	
 	<tr>
-		<td colspan="5" align="center"><img src="http://www.freshdirect.com/media_stat/images/layout/cccccc.gif" width="600" height="1" border="0" vspace="10" /><br/><a href="http://www.artisanalcheese.com/artisanal/education/classes_tastings.cfm"><img src="http://www.freshdirect.com/media_stat/images/template/email/event/tasting_hdr.gif" width="487" height="49" border="0" vspace="8"/></a></td>
+		<td colspan="5" align="center"><img src="http://www.freshdirect.com/media_stat/images/layout/cccccc.gif" alt="" width="600" height="1" border="0" vspace="10" /><br/><a href="http://www.artisanalcheese.com/artisanal/education/classes_tastings.cfm"><img src="http://www.freshdirect.com/media_stat/images/template/email/event/tasting_hdr.gif" width="487" height="49" border="0" vspace="8"/></a></td>
 	</tr>
 	
 	<tr>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="180" height="1" border="0" /></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="46" height="1" border="0" /></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="148" height="1" border="0" /></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="46" height="1" border="0" /></td>
-		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="180" height="1" border="0" /></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="180" height="1" border="0" /></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="46" height="1" border="0" /></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="148" height="1" border="0" /></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="46" height="1" border="0" /></td>
+		<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="180" height="1" border="0" /></td>
 	</tr>
 	
 	<tr>
@@ -73,14 +73,14 @@ The seminar instructors will include Josh Wesson, award winning sommelier and co
 	
 	<tr>
 		<td colspan="5" align="center"><img src="http://www.freshdirect.com/media_stat/images/template/email/event/stars_line.gif" width="599" height="10" border="0" vspace="10"/>
-		<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br/>
+		<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br/>
 		<b><span style="font-size: 15px; color: #990000;" >SEATING IS LIMITED!</span><br/>
-		<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="4" border="0" /><br/>
+		<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="4" border="0" /><br/>
 		TO ORDER TICKETS TO THIS SPECIAL EVENT CONTACT THE ARTISANAL CHEESE CENTER<br/>
-		<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="4" border="0" /><br/>
+		<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="4" border="0" /><br/>
 		Phone: 212-239-1200 or online at:</b><br/>
-		<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="4" border="0" /><br/>
-		<a href="http://www.artisanalcheese.com/artisanal/education/classes_tastings.cfm">http://www.artisanalcheese.com/artisanal/education/classes_tastings.cfm</a><br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="28" border="0" />
+		<img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="4" border="0" /><br/>
+		<a href="http://www.artisanalcheese.com/artisanal/education/classes_tastings.cfm">http://www.artisanalcheese.com/artisanal/education/classes_tastings.cfm</a><br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="28" border="0" />
 </td>
 	</tr>
 	

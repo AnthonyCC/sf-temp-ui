@@ -43,9 +43,9 @@ boolean promoEligible = user != null ? user.isEligibleForSignupPromotion() : fal
 		</td>
 	</tr>
 	<tr>
-		<td><img src="/media_stat/images/layout/clear.gif" width="20" height="8" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="20" height="8" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="460" height="8" border="0"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="8" border="0"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="8" border="0"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="460" height="8" border="0"></td>
 	</tr>
 	<tr>
 		<td></td>
@@ -99,7 +99,7 @@ boolean promoEligible = user != null ? user.isEligibleForSignupPromotion() : fal
 				<td><img src="/media_stat/images/<%= promoValue == 0 ? "layout/clear" : "template/promotions/offer_hdr_" + promoValue %>.gif" width="159" height="<%=promoValue > 0 ? "1":""%>6" alt="" border="0"></td>
 				</tr>
 				
-				<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="<%=promoValue > 0 ? "1":""%>5" border="0"></td></tr>
+				<tr><td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="<%=promoValue > 0 ? "1":""%>5" border="0"></td></tr>
 				
 				<tr>
 					<td>
@@ -130,7 +130,7 @@ boolean promoEligible = user != null ? user.isEligibleForSignupPromotion() : fal
 							<td align="center"><b>Free<br>Fresh Food</b></td>
 							<td align="center"><b>Qualifying Order</b></td>
 						</tr>
-						<tr><td colspan="3"><img src="/media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="1"></td></tr>
+						<tr><td colspan="3"><img src="/media_stat/images/layout/cccccc.gif" alt="" width="100%" height="1" vspace="1"></td></tr>
 						<%
 						int count = 0;
 						for (Iterator i= rules.iterator(); i.hasNext();) { 

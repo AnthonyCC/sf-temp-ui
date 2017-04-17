@@ -36,7 +36,7 @@ function linkTo(url){
 	<TR VALIGN="TOP">
 		<TD WIDTH="15"><img src="/media/images/layout/clear.gif" width="15" height="1" alt="" border="0"></TD>
 		<TD WIDTH="<%=tableWidth%>" class="bodyCopy">
-			<IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="375" HEIGHT="1"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border=0><br>
+			<IMG src="/media_stat/images/layout/cccccc.gif" ALT="" WIDTH="375" HEIGHT="1"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border=0><br>
 			<table cellpadding="0" cellspacing="0">
 			<tr><td valign=top><li type="dot"></li></td><td class="bodyCopy"><A HREF="#question1">Is FreshDirect secure?</A></td></tr>
 			<tr><td class="bodyCopy"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"></td></tr>		
