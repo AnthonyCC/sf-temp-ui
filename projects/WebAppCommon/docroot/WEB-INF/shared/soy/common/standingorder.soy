@@ -93,6 +93,13 @@
 {/template}
 
 /**
+ *
+ */
+{template .soNextBtn}
+	<button type="button" onclick="addToSONextHandler()" fd-login-required fd-login-successpage-current data-component="nextStepSOButton" class="cssbutton cssbutton-flat purple transparent">Next</button>
+{/template}
+
+/**
  * @param soData
  * @param isContainerOpen
  * @param? selectedSoId
@@ -113,6 +120,7 @@
 						</select>
 					</div>
 					{call .soAddBtn /}
+					{call .soNextBtn /}
 				</div>
 			</div>
 		{/if}

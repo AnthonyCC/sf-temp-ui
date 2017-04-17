@@ -100,6 +100,13 @@ function addToSoSuccessHandler($contextElem, data) {
 	$soResultsCont.find('.so-results-addedTo').html('Added to: <a href="/quickshop/standing_orders.jsp?soid='+data.id+'#soid_'+data.id+'">'+data.name+'</a>');
 	$soResultsCont.find('.so-results-items-total').html(data.productCount+', '+'<span class="total">$'+data.amount+'</span>');
 	$soResultsCont.find('.so-results-changes-required').html(data.message);
+	
+	$jq('#customizePopup .so-review-header').text("Added to");
+	$jq('#customizePopup .so-review-date').text(data.name);
+	$jq('#customizePopup .so-review-link').html('Added to: <a href="/quickshop/standing_orders.jsp?soid='+data.id+'#soid_'+data.id+'">See Order Details</a>');
+	$jq('#customizePopup .select-wrapper .cssbutton[data-component="addToSOButton"]').remove();
+	$jq('#customizePopup .select-wrapper .so-review-selected').before('<button type="button" data-popup-control="close" class="okReviewSOButton cssbutton cssbutton-flat green nontransparent">Ok</button>');
+	
 
 	$soResultsCont.toggleClass('so-close');
 	
@@ -168,4 +175,9 @@ $jq('.cssbutton[data-component="createSOButton"]').on('click', function(e) {
 	window.location = "/quickshop/standing_orders.jsp";
 	return false;
 });
+
+function addToSONextHandler() {
+	$jq('#customizePopup').addClass('so-review');
+	$jq('#customizePopup .so-review-selected').text($jq('#customizePopup .so-select option:selected').text());
+};
 

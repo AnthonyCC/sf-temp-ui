@@ -189,6 +189,7 @@ var FreshDirect = FreshDirect || {};
     	$('#' + customizePopup.popupId).addClass('soShow');
     }
     customizePopup.popup.$overlay.removeClass('customize-overlay').addClass('customize-overlay');
+    $('#' + customizePopup.popupId).removeClass('so-review');
     
     if($(element).data('soshow')){
     	if(!FreshDirect.user.recognized && !FreshDirect.user.guest){
