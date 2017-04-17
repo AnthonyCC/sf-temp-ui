@@ -60,7 +60,7 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 			}else{
 				String faqKeyword = request.getParameter("searchFAQ");
 				faqKeyword = NVL.apply(faqKeyword, "");
-				this.redirectTo("/help/faq_search.jsp?searchFAQ=" + faqKeyword);				
+				this.setSuccessPage("/help/faq_search.jsp?searchFAQ=" + faqKeyword);				
 			}
 		} catch (FDResourceException e) {
 			LOGGER.warn("FDResourceException occured", e);
