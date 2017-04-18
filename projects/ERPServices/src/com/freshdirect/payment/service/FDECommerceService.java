@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.rmi.RemoteException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -51,6 +52,10 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.BINInfo;
 //import com.freshdirect.content.attributes.FlatAttributeCollection;
 //import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
+import com.freshdirect.referral.extole.ExtoleServiceException;
+import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
+import com.freshdirect.referral.extole.model.ExtoleResponse;
+import com.freshdirect.referral.extole.model.FDRafCreditModel;
 
 
 public class FDECommerceService extends AbstractService implements IECommerceService {
@@ -94,6 +99,15 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String BRAND_ORDER_SUBMIT_SALEIDS ="brand/products/orderdetailsbysaleids";
 
 	private static final String EVENT_LOGGER ="event/logger/log";
+	
+	private static final String EXTOLE_MANAGER_CREATE ="extolemanager/create";
+	private static final String EXTOLE_MANAGER_APPROVE ="extolemanager/approve";
+	private static final String EXTOLE_MANAGER_UPDATE ="extolemanager/update";
+	private static final String EXTOLE_MANAGER_SAVE ="extolemanager/save";
+	private static final String EXTOLE_MANAGER_CREATECONVERSION ="extolemanager/createconversion";
+	private static final String EXTOLE_MANAGER_APPROVECONVERSION ="extolemanager/approveconversion";
+	private static final String EXTOLE_MANAGER_DOWNLOAD ="extolemanager/download";
+	
 	
 	
 	private static final String GET_COO_API ="/coo";
@@ -899,6 +913,92 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
+	}
+
+	@Override
+	public List<ExtoleConversionRequest> getExtoleCreateConversionRequest() throws FDResourceException,
+			RemoteException {
+		Response<List<ExtoleConversionRequest>> response = new Response<List<ExtoleConversionRequest>>();
+		try{
+			response = httpGetData(getFdCommerceEndPoint(EXTOLE_MANAGER_CREATE), Response.class);
+		} catch(FDPayPalServiceException e){
+			throw new FDResourceException(e, e.getMessage());
+		} 
+		return response.getData();
+		
+	}
+	@Override
+	public List<ExtoleConversionRequest> getExtoleApproveConversionRequest() throws FDResourceException,
+			RemoteException {
+		Response<List<ExtoleConversionRequest>> response = new Response<List<ExtoleConversionRequest>>();
+		try{
+			response = httpGetData(getFdCommerceEndPoint(EXTOLE_MANAGER_APPROVE), Response.class);
+		} catch(FDPayPalServiceException e){
+			throw new FDResourceException(e, e.getMessage());
+		} 
+		return response.getData();
+	}
+	@Override
+	public void updateConversionRequest(ExtoleResponse convResponse) throws FDResourceException,
+			RemoteException {
+		Request<ExtoleResponse> request = new Request<ExtoleResponse>();
+		request.setData(convResponse);
+		Response<HLBrandProductAdResponse> response = null;
+		String inputJson;
+		try {
+			inputJson = buildRequest(request.getData());
+			response = this.postData(inputJson, getFdCommerceEndPoint(EXTOLE_MANAGER_UPDATE), Response.class);
+		} catch (FDPayPalServiceException e) {
+			throw new FDResourceException(response.getMessage());
+		}
+		
+		
+	}
+	@Override
+	public void saveExtoleRewardsFile(List<FDRafCreditModel> rewards) throws FDResourceException,
+			RemoteException {
+		Request<List<FDRafCreditModel>> request = new Request<List<FDRafCreditModel>>();
+		request.setData(rewards);
+		Response<HLBrandProductAdResponse> response = null;
+		String inputJson;
+		try {
+			inputJson = buildRequest(request.getData());
+			response = this.postData(inputJson, getFdCommerceEndPoint(EXTOLE_MANAGER_SAVE), Response.class);
+		} catch (FDPayPalServiceException e) {
+			throw new FDResourceException(e.getMessage());
+		}
+		
+	}
+	@Override
+	public void createConversion() throws ExtoleServiceException, IOException, FDResourceException,
+			RemoteException {
+
+		String inputJson=null;
+		Response<String> response = null;
+		response = postData(inputJson, getFdCommerceEndPoint(EXTOLE_MANAGER_CREATECONVERSION), Response.class);
+		if(!response.getResponseCode().equals("OK"))
+			throw new FDResourceException(response.getMessage());
+		
+	}
+	@Override
+	public void approveConversion() throws ExtoleServiceException, IOException, FDResourceException,
+			RemoteException {
+		String inputJson=null;
+		Response<String> response = null;
+		response = postData(inputJson, getFdCommerceEndPoint(EXTOLE_MANAGER_APPROVECONVERSION), Response.class);
+		if(!response.getResponseCode().equals("OK"))
+			throw new FDResourceException(response.getMessage());
+		
+	}
+	@Override
+	public void downloadAndSaveRewards(String fileName) throws ExtoleServiceException, IOException,
+			FDResourceException, RemoteException, ParseException {
+		String inputJson=null;
+		Response<String> response = null;
+		response = postData(inputJson, getFdCommerceEndPoint(EXTOLE_MANAGER_DOWNLOAD+"?fileName="+fileName), Response.class);
+		if(!response.getResponseCode().equals("OK"))
+			throw new FDResourceException(response.getMessage());
+		
 	}
 
 	@Override
