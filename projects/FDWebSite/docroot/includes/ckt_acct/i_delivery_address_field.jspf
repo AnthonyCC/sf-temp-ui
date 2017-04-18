@@ -463,7 +463,7 @@ if(request.getParameter(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode()) != nu
 				</tr>
 				<tr>
 					<td colspan="2"><span style="color: #900; font-weight: bold; font-size: 12px;">IMPORTANT:</span><br />
-						<span style="font-weight: bold; font-size: 12px;">Please designate your preferred Unattended Delivery drop location at your home.</span><br /><textarea onkeyup="return maxLen(this, 80);" style="font-size: 12px;" rows="5" cols="70" name="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>" id="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>" <%= unattendedOptIn ? "" : " disabled" %>><%= unattendedOptIn ? fldUnattendedDeliveryInstructions : "" %></textarea>
+						<span style="font-weight: bold; font-size: 12px;">Please designate your preferred Unattended Delivery drop location at your home.</span><br /><textarea onkeyup="return maxLen(this, 80);" style="font-size: 12px;" rows="5" cols="70" name="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>" id="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>" <%= unattendedOptIn ? "" : " disabled" %>><%= unattendedOptIn ? NVL.apply(fldUnattendedDeliveryInstructions, "") : "" %></textarea>
 					<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span><br/></fd:ErrorHandler><br /><br /></td>
 				</tr>
 				<tr>
