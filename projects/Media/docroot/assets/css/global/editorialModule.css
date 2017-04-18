@@ -123,7 +123,6 @@
 
 .content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header .header-title {
   justify-content: center;
-  max-width: 285px;
 }
 
 .content-module.editorial-module.product-carousel .editorial-content .left-side,
@@ -139,10 +138,11 @@
 }
 
 .content-module.editorial-module.product-carousel .editorial-content .right-side .header-graphic {
+  align-items: flex-start;
+  display: flex;
+  float: left;
   height: 82px;
   width: 82px;
-  display: flex;
-  align-items: center;
 }
 
 .content-module.editorial-module.product-carousel .editorial-content .right-side .header-graphic img {
