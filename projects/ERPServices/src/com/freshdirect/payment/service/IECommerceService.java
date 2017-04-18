@@ -1,6 +1,8 @@
 package com.freshdirect.payment.service;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
+import java.text.ParseException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -20,8 +22,12 @@ import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
-import com.freshdirect.payment.BINInfo;
 import com.freshdirect.framework.event.FDWebEvent;
+import com.freshdirect.payment.BINInfo;
+import com.freshdirect.referral.extole.ExtoleServiceException;
+import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
+import com.freshdirect.referral.extole.model.ExtoleResponse;
+import com.freshdirect.referral.extole.model.FDRafCreditModel;
 
 public interface IECommerceService {
 
@@ -101,5 +107,19 @@ public interface IECommerceService {
 	String findZoneId(String zoneServiceType, String zipCode,boolean isPickupOnlyORNotServicebleZip) throws RemoteException;
 	
 	public void log(FDWebEvent fdWebEvent) throws RemoteException;
+	
+	public List<ExtoleConversionRequest> getExtoleCreateConversionRequest() throws FDResourceException, RemoteException;
+
+	public List<ExtoleConversionRequest> getExtoleApproveConversionRequest() throws FDResourceException, RemoteException;
+
+	public void updateConversionRequest(ExtoleResponse convResponse) throws FDResourceException, RemoteException;
+
+	public void saveExtoleRewardsFile(List<FDRafCreditModel> rewards) throws FDResourceException, RemoteException;
+
+	public void createConversion() throws ExtoleServiceException, IOException, FDResourceException, RemoteException;
+
+	public void approveConversion() throws ExtoleServiceException, IOException, FDResourceException, RemoteException;
+
+	public void downloadAndSaveRewards(String fileName) throws ExtoleServiceException, IOException, FDResourceException, RemoteException, ParseException;
 
 }
