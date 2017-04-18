@@ -13,6 +13,8 @@ import java.text.ParseException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.service.FDECommerceService;
+import com.freshdirect.payment.service.IECommerceService;
 import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
 import com.freshdirect.referral.extole.model.ExtoleResponse;
 import com.freshdirect.referral.extole.model.FDRafCreditModel;
@@ -30,7 +32,11 @@ public class FDExtoleManager {
 
 		try {
 			FDExtoleManagerSB sb = managerHome.create();
-			return sb.getExtoleCreateConversionRequest();
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+        		IECommerceService service = FDECommerceService.getInstance();
+        		return service.getExtoleCreateConversionRequest();
+			}else
+				return sb.getExtoleCreateConversionRequest();
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -47,7 +53,11 @@ public class FDExtoleManager {
 
 		try {
 			FDExtoleManagerSB sb = managerHome.create();
-			return sb.getExtoleApproveConversionRequest();
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+        		IECommerceService service = FDECommerceService.getInstance();
+        		return service.getExtoleApproveConversionRequest();
+			}else
+				return sb.getExtoleApproveConversionRequest();
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -64,7 +74,11 @@ public class FDExtoleManager {
 
 		try {
 			FDExtoleManagerSB sb = managerHome.create();
-			sb.updateConversionRequest(convResponse);
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+        		IECommerceService service = FDECommerceService.getInstance();
+        		service.updateConversionRequest(convResponse);
+			}else
+				sb.updateConversionRequest(convResponse);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -81,7 +95,11 @@ public class FDExtoleManager {
 
 		try {
 			FDExtoleManagerSB sb = managerHome.create();
-			sb.saveExtoleRewardsFile(rewards);
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+        		IECommerceService service = FDECommerceService.getInstance();
+        		service.saveExtoleRewardsFile(rewards);
+			}else
+				sb.saveExtoleRewardsFile(rewards);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -125,7 +143,11 @@ public class FDExtoleManager {
 
 		try {
 			FDExtoleManagerSB sb = managerHome.create();
-			sb.createConversion();
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+        		IECommerceService service = FDECommerceService.getInstance();
+        		service.createConversion();
+			}else
+				sb.createConversion();
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -143,7 +165,11 @@ public class FDExtoleManager {
 
 		try {
 			FDExtoleManagerSB sb = managerHome.create();
-			sb.approveConversion();
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+        		IECommerceService service = FDECommerceService.getInstance();
+        		service.approveConversion();
+			}else
+				sb.approveConversion();
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -161,7 +187,11 @@ public class FDExtoleManager {
 
 		try {
 			FDExtoleManagerSB sb = managerHome.create();
-			sb.downloadAndSaveRewards(fileName);
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+        		IECommerceService service = FDECommerceService.getInstance();
+        		service.downloadAndSaveRewards(fileName);
+			}else
+				sb.downloadAndSaveRewards(fileName);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
