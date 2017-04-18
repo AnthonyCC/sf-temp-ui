@@ -6,7 +6,11 @@
 		import="com.freshdirect.fdlogistics.model.FDReservation"
 		import="com.freshdirect.webapp.util.CCFormatter"
 		import="com.freshdirect.fdlogistics.model.FDTimeslot"
-		import="com.freshdirect.webapp.util.FDURLUtil"%><%@ taglib uri='logic' prefix='logic' %>
+		import="com.freshdirect.webapp.util.FDURLUtil"%>
+<%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
+<%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods" %>
+<%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
@@ -27,10 +31,20 @@ request.setAttribute("noyui", true);
 	DepartmentModel dept = (DepartmentModel) ContentFactory.getInstance().getContentNode("Department", "COS");
     request.setAttribute("sitePage", "www.freshdirect.com/cos.jsp");
     String trkCode = "dpage";
-    int validOrderCount = user.getAdjustedValidOrderCount();
+    int validOrderCount = user.getAdjustedValidOrderCount();  
+	
+    boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+    String pageTemplate = "/common/template/no_shell_optimized.jsp";
+    if (mobWeb) {
+    	pageTemplate = "/common/template/mobileWeb.jsp"; //mobWeb template
+    	String oasSitePage = request.getAttribute("sitePage").toString();
+    	if (oasSitePage.startsWith("www.freshdirect.com/") && !oasSitePage.startsWith("www.freshdirect.com/mobileweb/")) {
+    		request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS	
+    	}
+    }
 %>
 
-<tmpl:insert template='/common/template/no_shell_optimized.jsp'>
+<tmpl:insert template='<%= pageTemplate %>'>
 	<tmpl:put name='title' direct='true'>Welcome to FreshDirect</tmpl:put>
 	<tmpl:put name="seoMetaTag" direct="true">
 		<fd:SEOMetaTag pageId="cos"></fd:SEOMetaTag>
@@ -71,7 +85,6 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 	 <% 
 } else if (!showAltHome && !location2Media) { 
 	%><comp:welcomeMessage user="<%= user %>" segmentMessage="<%= segmentMessage %>"  isCosPage="<%=true%>"/>
-	  <comp:deliverySlotReserved user="<%= user %>" /><%
 }
 	   	
 if (location2Media) { %><comp:location2Media user="<%= user %>" /><% } 
@@ -124,6 +137,7 @@ if (location2Media) { %><comp:location2Media user="<%= user %>" /><% }
 			collection="<%= dept.getDepartmentBottom() %>" 
 			id="media" 
 			type="com.freshdirect.fdstore.content.Html" ><fd:IncludeHtml html="<%= media %>"></fd:IncludeHtml>
+			<%= media %>
 		</logic:iterate></div>
 		<div class="oas_home_bottom"><script type="text/javascript">OAS_AD('HPWideBottom');</script></div>
 	</div>
