@@ -32,8 +32,8 @@ var FreshDirect = FreshDirect || {};
 
   var getPageType = function () {
     var params = fd.utils.getParameters(),
-        pId = params.productId,
-        pType = params.pageType;
+        pId = params.productId || null,
+        pType = params.pageType || null;
 
     return pId ? 'pdp' : pType || 'DEFAULT';
   };
