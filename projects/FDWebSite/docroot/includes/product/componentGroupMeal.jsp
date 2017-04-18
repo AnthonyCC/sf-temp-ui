@@ -16,6 +16,7 @@
 <%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
 <%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
 <%@ page import="com.freshdirect.webapp.util.JspMethods" %>
+<%@ page import="com.freshdirect.framework.util.NVL" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -210,7 +211,7 @@ if (pgErrs.size()>0) {
 	    <span class="title13"><%=productNode.getSubtitle()%></span><br>
   <%      } %>  
 	    <span class="space2pix"><br></span>
-	  <span class="title16"><%= JspMethods.formatPrice(defaultProductInfo.getZonePriceInfo(user.getPricingContext().getZoneInfo()).getDefaultPrice()) %>&nbsp;-&nbsp;<%=productNode.getBlurb()%></span>
+	  <span class="title16"><%= JspMethods.formatPrice(defaultProductInfo.getZonePriceInfo(user.getPricingContext().getZoneInfo()).getDefaultPrice()) %>&nbsp;-&nbsp;<%=NVL.apply(productNode.getBlurb(), "")%></span>
 	  <br><span class="space8pix"><br></span>
 	</td></tr>
 	<tr>
