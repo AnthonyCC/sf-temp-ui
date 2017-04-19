@@ -63,6 +63,10 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
                                     	(
                                     		EnumEventSource.ps_caraousal.equals(orderLine.getErpOrderLineSource()) 
                                     		|| EnumEventSource.ps_caraousal.equals(orderLine.getSource())
+                                    		|| EnumEventSource.ps_carousel_view_cart.equals(orderLine.getErpOrderLineSource())
+                                    		|| EnumEventSource.ps_carousel_view_cart.equals(orderLine.getSource())
+                                    		|| EnumEventSource.ps_carousel_checkout.equals(orderLine.getErpOrderLineSource())
+                                    		|| EnumEventSource.ps_carousel_checkout.equals(orderLine.getSource())
                                     	)
                                     )
                             ) {
