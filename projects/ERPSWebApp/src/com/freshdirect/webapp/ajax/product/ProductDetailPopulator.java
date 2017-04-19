@@ -983,7 +983,10 @@ public class ProductDetailPopulator {
 		ProductReference prodRef = new ProductReferenceImpl(product);
 		boolean isFree = user.isProductSample(prodRef);
 	
-		item.setDeal( deal );
+		/* compare against prop limits */
+		if ((FDStoreProperties.getBurstsLowerLimit()<=deal) && (FDStoreProperties.getBurstUpperLimit()>=deal)) {
+			item.setDeal( deal );
+		}
 		
 		// determine what to display
 		if(isFree){
