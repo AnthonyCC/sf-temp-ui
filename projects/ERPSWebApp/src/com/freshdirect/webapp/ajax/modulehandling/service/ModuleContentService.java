@@ -190,7 +190,7 @@ public class ModuleContentService {
 
     public List<ProductData> loadPresidentPicksProducts(FDUserI user) {
         List<ProductModel> promotionProducts = new ArrayList<ProductModel>();
-        CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNode("picks_love");
+        CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNode(FDStoreProperties.getHomepageRedesignPrespicksCategoryId());
         FDSessionUser sessionUser = (FDSessionUser) user;
         String variantId = null;
 
@@ -224,6 +224,44 @@ public class ModuleContentService {
 
         return productDatas;
 
+    }
+
+    public List<ProductData> loadStaffPicksProducts(FDUserI user) {
+        List<ProductModel> promotionProducts = new ArrayList<ProductModel>();
+        String variantId = null;
+        CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNode(FDStoreProperties.getHomepageRedesignStaffpicksCategoryId());
+        FDSessionUser sessionUser = (FDSessionUser) user;
+
+        if (category != null) {
+            promotionProducts = category.getProducts();
+        }
+
+        List<ProductModel> availableFeaturedProducts = new ArrayList<ProductModel>();
+        for (ProductModel productModel : promotionProducts) {
+            if (productModel.isFullyAvailable() && !productModel.isDiscontinued()) {
+                availableFeaturedProducts.add(productModel);
+            }
+        }
+
+        List<ProductData> productDatas = new ArrayList<ProductData>();
+
+        for (ProductModel product : promotionProducts) {
+            try {
+                ProductData productData = ProductDetailPopulator.createProductData(sessionUser, product);
+                productData = ProductDetailPopulator.populateBrowseRecommendation(sessionUser, productData, product);
+                productData.setVariantId(variantId);
+                productData.setProductPageUrl(FDURLUtil.getNewProductURI(product, variantId));
+                productDatas.add(productData);
+            } catch (FDResourceException e) {
+                LOGGER.error("failed to create ProductData", e);
+            } catch (FDSkuNotFoundException e) {
+                LOGGER.error("failed to create ProductData", e);
+            } catch (HttpErrorResponse e) {
+                LOGGER.error("failed to create ProductData", e);
+            }
+        }
+
+        return productDatas;
     }
 
     public IconData populateIconData(ContentNodeI imageBanner) {

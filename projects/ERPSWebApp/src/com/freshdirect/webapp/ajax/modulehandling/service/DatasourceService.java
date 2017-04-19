@@ -231,6 +231,8 @@ public class DatasourceService {
             case BRAND_FEATURED_PRODUCTS:
                 products = generateBrandFeaturedProducts(module, user);
                 break;
+            case STAFF_PICKS:
+                products = ModuleContentService.getDefaultService().loadStaffPicksProducts(user);
             default:
                 break;
         }

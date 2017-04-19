@@ -693,7 +693,7 @@ public class FDStoreProperties {
     private static final String PROP_BROWSE_PAGESIZE = "fdstore.browse.pagesize";
     private static final String PROP_PRES_PICKS_PAGESIZE = "fdstore.prespicks.pagesize";
     private static final String PROP_STAFF_PICKS_PAGESIZE = "fdstore.staffpicks.pagesize";
-  //  private static final String PROP_STAFF_PICKS_PICKID = "fdstore.staffpicks.picksid"; Commenting as part of APPDEV 5988
+    // private static final String PROP_STAFF_PICKS_PICKID = "fdstore.staffpicks.picksid"; Commenting as part of APPDEV 5988
     private static final String PROP_STAFF_PICKS_FEATLIMIT = "fdstore.staffpicks.featlimit";
     private static final String PROP_NEWPRODUCTS_PAGESIZE = "fdstore.newproducts.pagesize";
     private static final String PROP_ECOUPON_PAGESIZE = "fdstore.ecoupon.pagesize";
@@ -760,8 +760,7 @@ public class FDStoreProperties {
     private static final String PROP_TIP_RANGE_CONFIG = "fdstore.tip.range.config";
     private static final String PROP_LOGISTICS_API_URL = "fdstore.logisticsapi.url";
     private static final String PROP_FDCOMMERCE_API_URL = "fdstore.fdcommerceapi.url";
-    
-    
+
     private static final String PROP_PAYPAL_API_URL = "fdstore.paypalapi.url";
     private static final String PROP_OMS_API_URL = "fdstore.omsapi.url";
     private static final String PROP_LOGISTICS_COMPANY_CODE = "fdstore.logistics.companycode";
@@ -911,23 +910,24 @@ public class FDStoreProperties {
     private static final String PROP_HOMEPAGE_REDESIGN_CURRENT_USER_CONTAINER_CONTENT_KEY = "fdstore.homepageredesign.currentUserModuleContainerContentKey";
     private static final String PROP_HOMEPAGE_REDESIGN_NEW_USER_CONTAINER_CONTENT_KEY = "fdstore.homepageredesign.newUserModuleContainerContentKey";
     private static final String PROP_HOMEPAGE_REDESIGN_MODULE_PRODUCT_LIMIT_MAX = "fdstore.homepageredesign.moduleProductLimitMax";
+    private static final String PROP_HOMEPAGE_REDESIGN_PRESPICKS_CATEGORY_ID = "fdstore.homepageredesign.presPicksCategoryId";
+    private static final String PROP_HOMEPAGE_REDESIGN_STAFFPICKS_CATEGORY_ID = "fdstore.homepageredesign.staffPicksCategoryId";
 
     // APPDEV-5927
     private static final String PROP_PLANT1300_PRICE_INDICATOR = "fdstore.plant1300.price.indicator";
     private static final String PROP_PLANT1310_PRICE_INDICATOR = "fdstore.plant1310.price.indicator";
     private static final String PROP_PLANTWDC_PRICE_INDICATOR = "fdstore.plantwdc.price.indicator";
-    
-    private static final String PROP_MAT_SALESORG__EXPORT_PICKPLANT_VALIDATION_ENABLED ="fdstore.salesarea.exp.pickplant.val.enabled";
+
+    private static final String PROP_MAT_SALESORG__EXPORT_PICKPLANT_VALIDATION_ENABLED = "fdstore.salesarea.exp.pickplant.val.enabled";
     private static final String PROP_EXTRA_LOG_FOR_LOGIN_FAILS_ENABLED = "fdstore.extralog.login.fail.enabled";
 
-    
     private static final String PROP_SF_2_0_ENABLED = "fdstore.storefront_2_0.enabled";
     private static final String PROP_MEALBUNDLE_CARTONVIEW_ENABLED = "fdstore.mealbundle_cartonview.enabled";
 
     /* APPDEV-5916 */
     // previous product donation/sample carousels, for QA
     private static final String PROP_OBSOLETE_CART_CAROUSELS_ENABLED = "fdstore.obsolete.cart.carousels.enabled";
-    
+
     static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_INIT_CTX_FACTORY, "weblogic.jndi.WLInitialContextFactory");
@@ -1556,7 +1556,7 @@ public class FDStoreProperties {
         defaults.put(PROP_BROWSE_PAGESIZE, "30");
         defaults.put(PROP_PRES_PICKS_PAGESIZE, "30");
         defaults.put(PROP_STAFF_PICKS_PAGESIZE, "99");
-      //  defaults.put(PROP_STAFF_PICKS_PICKID, "3000000060");
+        // defaults.put(PROP_STAFF_PICKS_PICKID, "3000000060");
         defaults.put(PROP_STAFF_PICKS_FEATLIMIT, "4");
         defaults.put(PROP_NEWPRODUCTS_PAGESIZE, "30");
         defaults.put(PROP_ECOUPON_PAGESIZE, "30");
@@ -1745,11 +1745,13 @@ public class FDStoreProperties {
         defaults.put(PROP_HOMEPAGE_REDESIGN_CURRENT_USER_CONTAINER_CONTENT_KEY, "ModuleContainer:mc_hp_exist_cust");
         defaults.put(PROP_HOMEPAGE_REDESIGN_NEW_USER_CONTAINER_CONTENT_KEY, "ModuleContainer:mc_hp_new_cust");
         defaults.put(PROP_HOMEPAGE_REDESIGN_MODULE_PRODUCT_LIMIT_MAX, "12");
+        defaults.put(PROP_HOMEPAGE_REDESIGN_PRESPICKS_CATEGORY_ID, "picks_love");
+        defaults.put(PROP_HOMEPAGE_REDESIGN_STAFFPICKS_CATEGORY_ID, "prod_assort");
 
         defaults.put(PROP_PLANT1300_PRICE_INDICATOR, "BASE");
         defaults.put(PROP_PLANT1310_PRICE_INDICATOR, "BASE");
         defaults.put(PROP_PLANTWDC_PRICE_INDICATOR, "BASE");
-        
+
         defaults.put(PROP_SF_2_0_ENABLED, "false");
         defaults.put(PROP_MAT_SALESORG__EXPORT_PICKPLANT_VALIDATION_ENABLED, "true");
         defaults.put(PROP_EXTRA_LOG_FOR_LOGIN_FAILS_ENABLED, "true");
@@ -1757,7 +1759,7 @@ public class FDStoreProperties {
 
         /* APPDEV-5916 */
         defaults.put(PROP_OBSOLETE_CART_CAROUSELS_ENABLED, "false");
-        
+
         refresh();
     }
 
@@ -3638,11 +3640,11 @@ public class FDStoreProperties {
     public static int getSearchPageTopFavouritesNumber() {
         return Integer.parseInt(get(NUMBER_OF_TOP_FAVOURITES));
     }
-    
+
     public static int getPresPicksPageTopFavouritesNumber() {
         return Integer.parseInt(get(NUMBER_OF_PRESPICKS_TOP_FAVOURITES));
     }
-    
+
     public static int getBrowsePageTopFavouritesNumber() {
         return Integer.parseInt(get(NUMBER_OF_BROWSE_TOP_FAVOURITES));
     }
@@ -3791,9 +3793,9 @@ public class FDStoreProperties {
         return Integer.parseInt(get(PROP_STAFF_PICKS_PAGESIZE));
     }
 
-   /* public static String getStaffPicksPickId() {
-        return get(PROP_STAFF_PICKS_PICKID);
-    }*/
+    /*
+     * public static String getStaffPicksPickId() { return get(PROP_STAFF_PICKS_PICKID); }
+     */
 
     public static int getStaffPicksPageFeatLimit() {
         return Integer.parseInt(get(PROP_STAFF_PICKS_FEATLIMIT));
@@ -3938,11 +3940,11 @@ public class FDStoreProperties {
     public static String getLogisticsAPIUrl() {
         return get(PROP_LOGISTICS_API_URL);
     }
-    
+
     public static String getFdCommerceApiUrl() {
         return get(PROP_FDCOMMERCE_API_URL);
     }
-    
+
     public static String getPayPalAPIUrl() {
         return get(PROP_PAYPAL_API_URL);
     }
@@ -4121,7 +4123,7 @@ public class FDStoreProperties {
     public static String getSidekicksEmailFDX() {
         return get(PROP_EMAIL_FDX_SIDEKICKS);
     }
-    
+
     public static String getProductRequestEmailFDX() {
         return get(PROP_EMAIL_FDX_PRODUCT_REQUEST);
     }
@@ -4440,14 +4442,14 @@ public class FDStoreProperties {
     public static boolean isPropDonationProductSamplesEnabled() {
         return (Boolean.valueOf(get(PROP_DONATION_PRODUCT_SAMPLES_ENABLED))).booleanValue();
     }
-    
+
     public static boolean isStorefront2_0Enabled() {
         return (Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue();
     }
+
     public static boolean isMealBundleCartonLinkEnabled() {
         return (Boolean.valueOf(get(PROP_MEALBUNDLE_CARTONVIEW_ENABLED))).booleanValue();
     }
-    
 
     public static String getPropDonationProductSamplesId() {
         return get(PROP_DONATION_PRODUCT_SAMPLES_ID);
@@ -4467,6 +4469,14 @@ public class FDStoreProperties {
 
     public static int getHomepageRedesignProductLimitMax() {
         return Integer.parseInt(get(PROP_HOMEPAGE_REDESIGN_MODULE_PRODUCT_LIMIT_MAX));
+    }
+
+    public static String getHomepageRedesignPrespicksCategoryId() {
+        return get(PROP_HOMEPAGE_REDESIGN_PRESPICKS_CATEGORY_ID);
+    }
+
+    public static String getHomepageRedesignStaffpicksCategoryId() {
+        return get(PROP_HOMEPAGE_REDESIGN_STAFFPICKS_CATEGORY_ID);
     }
 
     public static String getPropPlant1300PlantIndicator() {
@@ -4504,11 +4514,11 @@ public class FDStoreProperties {
     public static boolean isPickPlantIdReqForMatSalesOrgExport() {
         return (Boolean.valueOf(get(PROP_MAT_SALESORG__EXPORT_PICKPLANT_VALIDATION_ENABLED))).booleanValue();
     }
-    
+
     public static boolean isExtraLogForLoginFailsEnabled() {
         return (Boolean.valueOf(get(PROP_EXTRA_LOG_FOR_LOGIN_FAILS_ENABLED))).booleanValue();
     }
-    
+
     /* APPDEV-5916 */
     public static boolean isObsoleteCartCarouselsEnabled() {
         return (Boolean.valueOf(get(PROP_OBSOLETE_CART_CAROUSELS_ENABLED))).booleanValue();
