@@ -34,7 +34,7 @@ SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yy");
 		String minSubtotalPrefix = String.valueOf(minSubtotal);
 		minSubtotalPrefix = minSubtotalPrefix.substring(0, minSubtotalPrefix.indexOf('.'));
                 
-		String offerDuration = "<img src='/media_stat/images/layout/clear.gif' alt="" width='140' height='10'>";
+		String offerDuration = "<img src='/media_stat/images/layout/clear.gif' alt='' width='140' height='10'>";
 		if(expDate != null && DateUtil.getDiffInDays(new Date(), expDate) <= 30) 
 			offerDuration = "Exipres " + DATE_FORMATTER.format(expDate);
 %>
