@@ -148,13 +148,13 @@ if (__shipToAddresses.size() > 0) {
 					<%=shipAddress.getInstructions()%><br><br>
 				<%}%>
 				<!-- unattended delivery -->
-				<fd:UnattendedDelivery id="zone" address="<%= shipAddress %>" checkUserOptions="false">
+				<%-- <fd:UnattendedDelivery id="zone" address="<%= shipAddress %>" checkUserOptions="false">
 				<% if (zone.isUnattended() && !EnumUnattendedDeliveryFlag.OPT_OUT.equals(shipAddress.getUnattendedDeliveryFlag())) { %>
 				<font class="text12bold">Unattended delivery</font>:<br>
 				<%= NVL.apply(shipAddress.getUnattendedDeliveryInstructions(),"OK") %> 
 				<BR><BR>
 				<% } %>
-				</fd:UnattendedDelivery>
+				</fd:UnattendedDelivery> --%>
 				<!-- alternate delivery -->
 				<% if (shipAddress.getAltDelivery() != null && shipAddress.getAltDelivery().getId() > 0 && !__showingCorporateAddress) { %>
 					<font class="text12bold">Alternate delivery</font>:<br>
