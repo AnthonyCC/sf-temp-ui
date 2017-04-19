@@ -31,11 +31,16 @@ var FreshDirect = FreshDirect || {};
   var DISPATCHER = fd.common.dispatcher;
 
   var getPageType = function () {
-    var params = fd.utils.getParameters(),
-        pId = params.productId || null,
-        pType = params.pageType || null;
-
-    return pId ? 'pdp' : pType || 'DEFAULT';
+	  var defaultValue = 'DEFAULT';
+	  try {
+		  var params = fd.utils.getParameters(),
+		    pId = params.productId || null,
+			pType = params.pageType || null;
+		
+		  return pId ? 'pdp' : pType || defaultValue;
+	  } catch (e) {
+		  return defaultValue;
+	  }
   };
 
   var atcSuccess = Object.create(fd.common.signalTarget, {
