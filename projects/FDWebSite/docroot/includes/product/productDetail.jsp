@@ -123,7 +123,7 @@
 								</div>
 								<%-- <button id="pdp-atc-addtolist" class="addtolist cssbutton cssbutton-flat purpleborder medium" type="button" data-component="addToListButton">Add to List</button> --%>
 							</div>
-							<soy:render template="common.soShowBtn" data="${productPotato}" />
+							<soy:render template="common.soShowBtnPdp" data="${productPotato}" />
 						</div>
 					</form>
 				</c:if>
@@ -229,7 +229,7 @@
 									<div class="pdp-atc-button-wrapper"><button class="cssbutton cssbutton-flat orange medium" type="button" data-component="ATCButton">Add to Cart</button><soy:render template="pdp.atcInCart" data="${productPotato}"/></div><button id="pdp-atc-addtolist" class="addtolist cssbutton cssbutton-flat purpleborder medium" type="button" data-component="addToListButton">Add to List</button>
 									
 								</div>
-								<soy:render template="common.soShowBtn" data="${productPotato}" />
+								<soy:render template="common.soShowBtnPdp" data="${productPotato}" />
 							</div>
 						</form>
 						
