@@ -105,7 +105,7 @@ public class ErrorHandlerTag extends com.freshdirect.framework.webapp.BodyTagSup
 				if (this.id!=null) {
 					request.setAttribute(this.id, errorDescription);
 				}
-				return EVAL_BODY_BUFFERED;
+				return EVAL_BODY_INCLUDE;
 			}
 		}
 		if (result.hasWarning(this.name)) {
@@ -120,5 +120,7 @@ public class ErrorHandlerTag extends com.freshdirect.framework.webapp.BodyTagSup
 
 		return SKIP_BODY;
 	}
+	
+	
 	
 }
