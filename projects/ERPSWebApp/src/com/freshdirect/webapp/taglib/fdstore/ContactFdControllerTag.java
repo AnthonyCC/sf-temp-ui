@@ -1,5 +1,6 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
+
 //import java.util.Date;
 //import java.util.Iterator;
 //import java.util.HashMap;
@@ -60,7 +61,8 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 			}else{
 				String faqKeyword = request.getParameter("searchFAQ");
 				faqKeyword = NVL.apply(faqKeyword, "");
-				this.setSuccessPage("/help/faq_search.jsp?searchFAQ=" + faqKeyword);				
+				faqKeyword = faqKeyword.replace(" ", "%20");
+				this.setSuccessPage("/help/faq_search.jsp?searchFAQ=" + faqKeyword);
 			}
 		} catch (FDResourceException e) {
 			LOGGER.warn("FDResourceException occured", e);
