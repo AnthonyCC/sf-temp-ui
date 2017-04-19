@@ -361,11 +361,12 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
 
     @Override
     public int doEndTag() throws JspException {
-        if (this.redirected) {
+    	return EVAL_PAGE;
+       /* if (this.redirected) {
             return SKIP_PAGE;
         } else {
             return EVAL_PAGE;
-        }
+        }*/
     }
 
     private int createBypassedUser() {
