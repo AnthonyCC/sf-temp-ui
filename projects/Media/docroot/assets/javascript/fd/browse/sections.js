@@ -104,7 +104,7 @@ var FreshDirect = FreshDirect || {};
 			hlSkusStr = hlSkus.join(',');
 			
 			/* add page beacon (if it doesn't already exist) and we're on the first page only */
-			if(activePage == 1){
+			if(hlSkusStr !== '' && activePage == 1){
 				if ($(".browse-sections-top .browseContent .HLpageBeaconImg.page_SEARCH").length === 0) { /* only one instance at a time */
 					$(".browse-sections-top .browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_SEARCH" src="' + window.FreshDirect.browse.data.adProducts.pageBeacon + hlSkusStr + '&random=' + new Date().getTime() + '" />');
 				}
