@@ -1194,6 +1194,7 @@ public class ProductExtraDataPopulator {
 	private static ProductExtraData populateClaimsData(ProductExtraData data, FDUserI user,
 			ProductModel productNode, String grpId, String grpVersion) throws FDResourceException, FDSkuNotFoundException {
 		
+		// organic claims
 		{
 			@SuppressWarnings("unchecked")
 			Set<EnumOrganicValue> commonOrgs = productNode.getCommonNutritionInfo(ErpNutritionInfoType.ORGANIC);
