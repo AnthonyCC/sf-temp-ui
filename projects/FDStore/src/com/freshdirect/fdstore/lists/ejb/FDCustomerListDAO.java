@@ -388,7 +388,7 @@ class FDCustomerListDAO {
 	}
 	
 	// CCL
-	public String store(Connection conn, FDCustomerList list) throws SQLException {
+	public FDCustomerList store(Connection conn, FDCustomerList list) throws SQLException {
 		LOGGER.debug( "FDCustomerListDAO:store() - " + list.getId() + ", " + list.getName() );
 
 		String listId = list.getId();
@@ -412,7 +412,7 @@ class FDCustomerListDAO {
 			throw new IllegalArgumentException("Unknown list type");
 		}
 		
-		return listId;
+		return list;
 	}
 	
 	private String persistList(Connection conn, FDCustomerList list) throws SQLException {

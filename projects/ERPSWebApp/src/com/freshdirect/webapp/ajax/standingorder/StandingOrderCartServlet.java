@@ -241,13 +241,12 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 
 		// Save list
 		try {
-			FDListManager.storeCustomerList(list);
+			list = FDListManager.storeCustomerList(list);
 			if(StandingOrderHelper.isEligibleForSo3_0(user) && reqData.getStandingOrderId()!=null){
-				FDStandingOrdersManager.getInstance().load(new PrimaryKey(reqData.getStandingOrderId()));
 				List<FDCustomerListItem> cartLine=list.getLineItems();
 				for (Iterator<FDCustomerListItem> iterator = cartLine.iterator(); iterator.hasNext();) {
 						FDCustomerProductListLineItem fDCustomerProductListLineItem = (FDCustomerProductListLineItem) iterator.next();
-							if(fDCustomerProductListLineItem.isSojustAddedItemToCart())
+							if(fDCustomerProductListLineItem.isSojustAddedItemToCart() && null != fDCustomerProductListLineItem.getPK())
 									user.getSoCartLineMessagesMap().put(fDCustomerProductListLineItem.getPK().getId(), "NewItem");
 				}
 			}
