@@ -1,8 +1,10 @@
 <%@page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 <%@ taglib uri="fd-features" prefix="features" %>
-<features:isActive name="homepageRedesignEnabled" featureName="homepageredesign" />
+<%@ taglib uri='freshdirect' prefix='fd' %>
 
+<fd:CheckLoginStatus guestAllowed='true' pixelNames="TheSearchAgency" />
+<features:isActive name="homepageRedesignEnabled" featureName="homepageredesign" />
 
 <c:if test="${homepageRedesignEnabled}">
 	<%@ include file="/homepage/redesigned_index.jsp" %>
