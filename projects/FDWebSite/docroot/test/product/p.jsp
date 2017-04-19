@@ -9,7 +9,9 @@
 <%@page import="com.freshdirect.erp.model.*"%>
 <%@page import="com.freshdirect.common.pricing.*"%>
 <%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.customer.UnsettledOrdersInfo"%>
 <%@page import="java.util.*"%>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 
 <%
     StringBuilder message = new StringBuilder();
@@ -217,14 +219,55 @@
 <title>Product Information</title>
 </head>
 <body>	
-	<h2 align="center">Product Information</h2>
+
+<h2 align="center">Product Information</h2>
 	<form method="get">
 		<div align="center">
 			<label for="sku">SKU Code:</label> <input id="sku" type="text" name="sku" maxlength="50" value="<%=skuCode != null ? skuCode : ""%>" />&nbsp;&nbsp;&nbsp;
 			<label for="version">Version:</label> <input id="version" type="text" name="version" maxlength="10" value="<%=version != null ? version.toString() : ""%>" />&nbsp;&nbsp;&nbsp; 
 			<input type="submit" value="Check" />
 		</div>	
+		
 	</form>
+	<br><br><br>
+	
+<fd:ProductSalesInfoController actionName='getUnsettledOrders' result='result' successPage='<%request.getRequestURI() %>'>
+	<% List<UnsettledOrdersInfo> orders =  (List<UnsettledOrdersInfo>)request.getAttribute("unsettledOrders"); %>
+	<div align="center">
+	<table align="center" border="1">
+	<tr style="font-weight:bold"> 
+	<td>Delivery Date</td>
+	<td>Settled</td>
+	<td>Charge back</td>
+	<td>Settlement Failed</td>
+	<td>Enroute</td>
+	<td>Payment Pending</td>
+	<td>Capture Pending</td>
+	<td>GC Settlement Pending</td>
+	<td>Pending Refusal</td>
+	<td>GC Payment Pending</td>
+	<td>GC Registration Pending</td>
+	</tr>	
+	<%if(orders!=null){
+		for(int i=0;i<orders.size();i++){ %>
+	<tr> 
+		<td><%=orders.get(i).getDeliveryDate() %></td>
+		<td><%=orders.get(i).getSettled() %></td>
+		<td><%=orders.get(i).getChargeBack() %></td>
+		<td><%=orders.get(i).getSettlementFailed() %></td>
+		<td><%=orders.get(i).getEnroute() %></td>
+		<td><%=orders.get(i).getPaymentPending() %></td>
+		<td><%=orders.get(i).getCapturePending() %></td>
+		<td><%=orders.get(i).getGCSettlementPending() %></td>
+		<td><%=orders.get(i).getPendingRefusal() %></td>
+		<td><%=orders.get(i).getGCPaymentPending() %></td>
+		<td><%=orders.get(i).getGCRegistrationPending() %></td>
+				
+	</tr>
+	<%} }%>
+	</table>
+	</div>
+</fd:ProductSalesInfoController>
 	<br/>
 	<% if(productInfo != null) { %>
 		<% out.println("<div style=\"display: inline-flex;\">"); %>	
