@@ -55,7 +55,9 @@
 						{/switch}
 					{/let}
 					/* mark as selected only if $cmEventSource == 'view_cart' */
-					<li role="tab" tabindex="0" aria-selected="{if $cmEventSource_clean == 'view_cart'}true{else}false{/if}" data-component="tabitem" class="{if $cmEventSource_clean == 'view_cart'}selected{/if}" data-tabname="{$titleText}" data-sitefeature="{$productSamplesTab.siteFeature}" data-impressionid="{$productSamplesTab.impressionId}" data-parentimpressionid="{$productSamplesTab.parentImpressionId}" data-parentvariantid="{$productSamplesTab.parentVariantId}">{$titleText}</li>
+					/* until which tab is selected is decided, ignore view_cart only and make it always selected */
+					/* <li role="tab" tabindex="0" aria-selected="{if $cmEventSource_clean == 'view_cart'}true{else}false{/if}" data-component="tabitem" class="{if $cmEventSource_clean == 'view_cart'}selected{/if}" data-tabname="{$titleText}" data-sitefeature="{$productSamplesTab.siteFeature}" data-impressionid="{$productSamplesTab.impressionId}" data-parentimpressionid="{$productSamplesTab.parentImpressionId}" data-parentvariantid="{$productSamplesTab.parentVariantId}">{$titleText}</li> */
+					<li role="tab" tabindex="0" aria-selected="true" data-component="tabitem" class="selected" data-tabname="{$titleText}" data-sitefeature="{$productSamplesTab.siteFeature}" data-impressionid="{$productSamplesTab.impressionId}" data-parentimpressionid="{$productSamplesTab.parentImpressionId}" data-parentvariantid="{$productSamplesTab.parentVariantId}">{$titleText}</li>
 				{else}
 					<!-- NO SAMPLES --> /* for our own sanity */
 				{/if}
@@ -73,7 +75,9 @@
 			</ul>
 			/* now the selected tab's carousel */
 			<!-- $cmEventSource_clean: {$cmEventSource_clean} -->
-			{if $hasProductSamplesTab and $cmEventSource_clean == 'view_cart'}
+			/* until which tab is selected is decided, ignore view_cart only and make it always selected */
+			/* {if $hasProductSamplesTab and $cmEventSource_clean == 'view_cart'} */
+			{if $hasProductSamplesTab}
 				<!-- SAMPLES -->
 				<div role="tabpanel" class="tab-container light-carousel" data-component="tabpanel" data-cmSiteFeature="{$productSamplesTab.siteFeature}">
 					{call common.simpleCarousel}
