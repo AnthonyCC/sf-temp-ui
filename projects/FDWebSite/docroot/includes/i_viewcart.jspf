@@ -425,8 +425,8 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
     				<span class="text10bold" style="color: #336600;"><%= cartLine.getDescription() %></span>&nbsp;<%=!cartLine.getConfigurationDesc().equals("")?"("+cartLine.getConfigurationDesc()+")":""%>
     			<% } %>
             <% } %>
-			<% if (!isFreeProd) { %>	
-				<%= fdProduct.getKosherInfo(productNode.getDefaultSku().getProduct()).isKosherProduction() ? " <span class=\"kosher\">**</span>":""  %>
+			<% if (!isFreeProd) { %>
+				<%= fdProduct.getKosherInfo(ContentFactory.getPickingPlantId(productNode.getDefaultSku().getProductInfo())).isKosherProduction() ? " <span class=\"kosher\">**</span>":""  %>
 				<%= cartLine.getApplicableRestrictions().contains(EnumDlvRestrictionReason.PLATTER) ? " <font color=\"#FF9933\">**</font>":""  %>
 				<% if ((cart instanceof FDModifyCartModel) && !(cartLine instanceof FDModifyCartLineI)) { %><span class="text10rbold">(new)</span><% } %>
 				<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= discountMsg %></span><% } %>

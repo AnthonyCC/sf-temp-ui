@@ -168,7 +168,7 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
       }
     }
 
-    boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays(ContentFactory.getPickingPlantId(productNode.getProductInfo())).isEmpty();
+    boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays(ContentFactory.getPickingPlantId(productNode.getDefaultSku().getProductInfo())).isEmpty();
     %>
 
     <%@ include file="/shared/includes/product/i_pricing_script.jspf" %>
