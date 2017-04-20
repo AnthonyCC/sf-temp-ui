@@ -545,7 +545,8 @@ public class PriceCalculator {
                 return "";
 
             FDProduct pr = getProduct();
-        	String plantID=getPlantID();
+        	//String plantID=getPlantID();
+            String plantID=ContentFactory.getPickingPlantId(skuModel.getProductInfo());
             FDKosherInfo ki = pr.getKosherInfo(plantID);
             if (ki.hasKosherSymbol() && ki.getKosherSymbol().display()) {
                 return ki.getKosherSymbol().getCode();
