@@ -399,7 +399,7 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 									<%}%>
 									<%if(deliveryModel.getEarlyAMCount() > 0) { %>
 										<td >
-											<img src="/media_stat/images/timeslots/early_delivery_icon_web.png" WIDTH="20" HEIGHT="16" border="0">
+											<img src="/media_stat/images/timeslots/early_delivery_icon_web.png" alt="early unattended" WIDTH="20" HEIGHT="16" border="0">
 										</td>
 										<td>
 										&nbsp;

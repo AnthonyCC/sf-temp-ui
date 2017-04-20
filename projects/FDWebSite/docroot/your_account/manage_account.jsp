@@ -139,7 +139,7 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 		</td>
 	</tr>
 	<tr>
-		<td><img src="/media_stat/images/template/checkout/loy_ctcard_bot.gif"/></td>
+		<td><img src="/media_stat/images/template/checkout/loy_ctcard_bot.gif" alt="" /></td>
 	</tr>
 	</table>
 	<% } %>

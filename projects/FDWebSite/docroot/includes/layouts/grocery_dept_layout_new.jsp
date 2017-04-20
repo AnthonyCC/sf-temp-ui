@@ -102,7 +102,7 @@ final int W_GROCERY_DEPT_LAYOUT_NEW_TEXT = 273;
 				<% } %>
 
 	            <tr>
-	                <td colspan="5"><img src="<%= BrowseHeader %>"><br/><br/></td>
+	                <td colspan="5"><img src="<%= BrowseHeader %>" alt=""><br/><br/></td>
 	            </tr>
 	            
 				<%
