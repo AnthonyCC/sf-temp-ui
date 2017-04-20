@@ -85,7 +85,7 @@ if ( skuSize == 0 ) {
     }
 
     FDProduct defaultProduct = FDCachedFactory.getProduct( FDCachedFactory.getProductInfo( defaultSku.getSkuCode() ) );
-    ProductInfo productinfo=defaultSku.getProductInfo();
+    FDProductInfo productinfo=defaultSku.getProductInfo();
 
     if ( !hasTemplate ) {
 

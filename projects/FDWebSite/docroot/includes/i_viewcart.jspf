@@ -375,7 +375,7 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 		}
 		
 		String earliestAvailability = productNode.getSku(cartLine.getSkuCode()).getEarliestAvailabilityMessage();
-		boolean displayShortTermUnavailability = fdProduct.getMaterial().getBlockedDays(getBlockedDays(ContentFactory.getPickingPlantId(productNode.getDefaultSku().getProductInfo()))).isEmpty();
+		boolean displayShortTermUnavailability = fdProduct.getMaterial().getBlockedDays(ContentFactory.getPickingPlantId(productNode.getDefaultSku().getProductInfo())).isEmpty();
 		boolean platterDlvInfo = false;
 		if (productNode.isPlatter()) {
 			platterDlvInfo = true;

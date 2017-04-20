@@ -37,7 +37,7 @@
 	}
 
 	if ( matchFound ) {
-		if ( productInfo.getRating(ContentFactory.getPickingPlantId(productInfo) != null ) { 
+		if ( productInfo.getRating(ContentFactory.getPickingPlantId(productInfo)) != null ) { 
 				
 			String rating="";
 			EnumOrderLineRating enumRating = productInfo.getRating(ContentFactory.getPickingPlantId(productInfo));
