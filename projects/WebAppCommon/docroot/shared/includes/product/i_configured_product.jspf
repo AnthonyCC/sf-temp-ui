@@ -6,6 +6,7 @@ This include expects the following:
     - String cartMode (constant within com.freshdirect.webapp.taglib.fdstore.CartName)
 
 --%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@ page import='java.net.*'%>
 <%@ page import='java.text.SimpleDateFormat' %>
 <%@ page import='com.freshdirect.ErpServicesProperties' %>
@@ -167,7 +168,7 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
       }
     }
 
-    boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays(plantID).isEmpty();
+    boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays(ContentFactory.getPickingPlantId(productNode.getProductInfo()).isEmpty();
     %>
 
     <%@ include file="/shared/includes/product/i_pricing_script.jspf" %>
@@ -405,7 +406,7 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
 	SkuModel _defaultSku = !productNode.isUnavailable()? productNode.getDefaultSku():(SkuModel)productNode.getSkus().get(0);
     if (_defaultSku!=null) {
 	FDProduct fdprd = productNode.isUnavailable()? null:_defaultSku.getProduct();
-	if (fdprd.getKosherInfo(plantID).isKosherProduction()) { %>
+	if (fdprd.getKosherInfo(ContentFactory.getPickingPlantId(_defaultSku.getProductInfo())).isKosherProduction()) { %>
 	    <br><span class="kosher">*</span> Not available for delivery on Friday, Saturday, or Sunday morning.
 	    <fd:GetDlvRestrictions id="kosherRestrictions" reason="<%=EnumDlvRestrictionReason.KOSHER%>" withinHorizon="true">
 	    <%

@@ -370,7 +370,8 @@ public class Product {
             this.displayEstimatedQuantity = !this.displaySalesUnitsOnly && this.isPricedByLB && !this.isSoldByLBforDisplayEstimate;
             this.salesUnitFirst = (sellBySalesUnit == null) && !this.hasSingleSalesUnit && this.isPricedByLB && !this.isSoldByLB;
             this.hasVariationMatrix = this.defaultSku.hasVariationMatrix();
-            String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+            //String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+            String plantID=ContentFactory.getPickingPlantId(this.getDefaultProductInfo());
             this.displayShortTermUnavailability = this.defaultProduct.getMaterial().getBlockedDays(plantID).isEmpty();
             if (productModel.getVariationMatrix() == null) {
                 this.domains = Collections.EMPTY_LIST;
@@ -1498,7 +1499,8 @@ public class Product {
         kosherRestrictions = new HashMap<String, String>();
         if (isAvailable()) {
             FDProduct defaultSku = this.defaultSku.getOriginalSku().getProduct();
-            String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+            //String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+            String plantID=ContentFactory.getPickingPlantId(this.defaultSku.getOriginalSku().getProductInfo());
             if (defaultSku.getKosherInfo(plantID).isKosherProduction()) {
                 GetDlvRestrictionsTagWrapper tagWrapper = new GetDlvRestrictionsTagWrapper(user);
                 List<RestrictionI> restrictions = tagWrapper.getRestrictions(EnumDlvRestrictionReason.KOSHER);

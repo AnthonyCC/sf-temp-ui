@@ -233,9 +233,10 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 			try {
 				FDProductInfo pi1 = FDCachedFactory.getProductInfo(obj1.getSkuCode());
 				FDProductInfo pi2 = FDCachedFactory.getProductInfo(obj2.getSkuCode());
-				String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
-				EnumOrderLineRating oli1=pi1.getRating(plantID);
-				EnumOrderLineRating oli2=pi2.getRating(plantID);
+				String plantID1=ContentFactory.getPickingPlantId(obj1.getProductInfo());
+				String plantID2=ContentFactory.getPickingPlantId(obj2.getProductInfo());
+				EnumOrderLineRating oli1=pi1.getRating(plantID1);
+				EnumOrderLineRating oli2=pi2.getRating(plantID2);
 				
 				
 				if(oli1==null && oli2==null) return 0;
@@ -282,9 +283,10 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 
 				FDProductInfo pi1 = FDCachedFactory.getProductInfo(obj1.getSkuCode());
 				FDProductInfo pi2 = FDCachedFactory.getProductInfo(obj2.getSkuCode());
-				String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
-				EnumSustainabilityRating oli1=pi1.getSustainabilityRating(plantID);
-				EnumSustainabilityRating oli2=pi2.getSustainabilityRating(plantID);
+				String plantID1=ContentFactory.getPickingPlantId(obj1.getProductInfo());
+				String plantID2=ContentFactory.getPickingPlantId(obj2.getProductInfo());
+				EnumSustainabilityRating oli1=pi1.getSustainabilityRating(plantID1);
+				EnumSustainabilityRating oli2=pi2.getSustainabilityRating(plantID2);
 				
 				
 				if(oli1==null && oli2==null) return 0;

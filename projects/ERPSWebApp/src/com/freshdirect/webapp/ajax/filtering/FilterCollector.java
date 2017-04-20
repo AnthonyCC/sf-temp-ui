@@ -50,7 +50,7 @@ public class FilterCollector {
 
 			FDProduct fdProduct = defSku.getProduct();
 			if (fdProduct != null) {
-				String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+				String plantID=ContentFactory.getPickingPlantId(defSku.getProductInfo());;
 	            
 				collectShowMeOnlyKosherFilter(showMeOnlyOfSearchResults, fdProduct.getKosherInfo(plantID));
 				collectShowMeOnlyOrganicFilter(showMeOnlyOfSearchResults, fdProduct.getNutritionInfoList(ErpNutritionInfoType.ORGANIC));

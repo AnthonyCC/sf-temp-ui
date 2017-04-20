@@ -29,6 +29,7 @@ import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -1064,4 +1065,14 @@ public class ContentFactory {
         }
         return isAllowToUseContentCache;
     }
+    
+    public static String getPickingPlantId(FDProductInfo fdpi){
+		if(fdpi!=null){    	
+				String salesOrg=ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getSalesOrg();
+				String distChannel=ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getDistributionChanel();
+				String pickingPlantId = fdpi.getPickingPlantId(salesOrg, distChannel);			
+				return pickingPlantId;
+		}
+		return null;
+	}
 }

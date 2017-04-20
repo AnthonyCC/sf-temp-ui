@@ -320,11 +320,11 @@
 					<fd:FDProductInfo id="productInfo" skuCode="<%= defaultSku.getSkuCode() %>">
 					<%
 						
-						if ( productInfo.getSustainabilityRating(plantID) != null ) { 
+						if ( productInfo.getSustainabilityRating(ContentFactory.getPickingPlantId(defaultSku.getProductInfo())) != null ) { 
 							
 							String rating="";
 							boolean skipDisplay = true;
-							EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(plantID);
+							EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(ContentFactory.getPickingPlantId(defaultSku.getProductInfo()));
 							
 							if ( enumRating != null && enumRating.isEligibleToDisplay() ) {
 								if (enumRating.getId() == 0) {

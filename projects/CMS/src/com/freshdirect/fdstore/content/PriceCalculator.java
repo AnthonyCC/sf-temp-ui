@@ -567,8 +567,8 @@ public class PriceCalculator {
                 return "";
 
             FDProduct pr = getProduct();
-        	String plantID=getPlantID();
-            FDKosherInfo ki = pr.getKosherInfo(plantID);
+        	//String plantID=getPlantID();
+            FDKosherInfo ki = pr.getKosherInfo(ContentFactory.getPickingPlantId(skuModel.getProductInfo()));
             if (ki.hasKosherType() && ki.getKosherType().display()) {
                 return ki.getKosherType().getName();
             } else {
@@ -585,7 +585,7 @@ public class PriceCalculator {
                 return false;
 
             FDProduct pr = getProduct();
-            String plantID=getPlantID();
+            String plantID=ContentFactory.getPickingPlantId(skuModel.getProductInfo());
             return pr.isKosherProduction(plantID);
         } catch (FDSkuNotFoundException fdsnfe) {
         }
@@ -597,7 +597,7 @@ public class PriceCalculator {
             if (skuModel == null)
                 return 999;
             FDProduct pr = getProduct();
-        	String plantID=getPlantID();
+        	String plantID=ContentFactory.getPickingPlantId(skuModel.getProductInfo());
             FDKosherInfo ki = pr.getKosherInfo(plantID);
             return ki.getPriority();
         } catch (FDSkuNotFoundException fdsnfe) {

@@ -22,7 +22,8 @@ public class FreshnessFilter extends AbstractRangeFilter {
 		if (productItem == null || productItem.getProductModel() == null || productItem.getProductModel().isUnavailable()) {
 			return false;
 		}
-		String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+		//String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+		String plantID=ContentFactory.getPickingPlantId(productItem.getFdProductInfo());
 		// Perishable product - freshness warranty
 		FDProductInfo productInfo = productItem.getFdProductInfo();
 		if (productInfo.getFreshness(plantID) != null) {

@@ -426,7 +426,9 @@ public class FDProductSelection implements FDProductSelectionI {
 	public boolean isKosher() {
 		try {
 			FDProduct pr = lookupFDProduct();
-			return pr.isKosherProduction(getUserContext().getFulfillmentContext().getPlantId());
+			FDProductInfo prodInfo = this.lookupFDProductInfo();
+			//return pr.isKosherProduction(getUserContext().getFulfillmentContext().getPlantId());
+			return pr.isKosherProduction(ContentFactory.getPickingPlantId(prodInfo));
 		} catch (Exception exc) {
 			return false;
 		}
@@ -435,7 +437,9 @@ public class FDProductSelection implements FDProductSelectionI {
 	public boolean isPlatter() {
 		try {
 			FDProduct fdProduct = this.lookupFDProduct();
-			return fdProduct.isPlatter(getUserContext().getFulfillmentContext().getPlantId());
+			FDProductInfo prodInfo = this.lookupFDProductInfo();
+			//return fdProduct.isPlatter(getUserContext().getFulfillmentContext().getPlantId());
+			return fdProduct.isPlatter(ContentFactory.getPickingPlantId(prodInfo));
 		} catch (Exception exc) {
 			return false;
 		}
@@ -815,16 +819,17 @@ public class FDProductSelection implements FDProductSelectionI {
 	}
 	
 	protected String getPickingPlantId(){
-		String pickingPlantId = null;
+		//String pickingPlantId = null;
 		FDProductInfo prodInfo = this.lookupFDProductInfo();
-		if(null != getUserContext()){
+		/*if(null != getUserContext()){
 			if(null != prodInfo && null !=getUserContext().getPricingContext() && null!=getUserContext().getPricingContext().getZoneInfo()){
 				pickingPlantId = prodInfo.getPickingPlantId(getUserContext().getPricingContext().getZoneInfo().getSalesOrg(),getUserContext().getPricingContext().getZoneInfo().getDistributionChanel());
 			}
 			if(null == pickingPlantId && null !=getUserContext().getFulfillmentContext()){
-				pickingPlantId = getUserContext().getFulfillmentContext().getPlantId();
+				//pickingPlantId = getUserContext().getFulfillmentContext().getPlantId();
+				pickingPlantId = ContentFactory.getPickingPlantId(prodInfo);
 			}
-		}
-		return pickingPlantId;		
+		}*/
+		return ContentFactory.getPickingPlantId(prodInfo);		
 	}
 }

@@ -467,7 +467,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 			FDProductInfo productInfo;
 			try {
 				productInfo = sku.getProductInfo();
-				List<String> countries = productInfo.getCountryOfOrigin(getPlantID());
+				List<String> countries = productInfo.getCountryOfOrigin(ContentFactory.getPickingPlantId(productInfo));
 				String text = getCOOLText( countries );
 				if ( !"".equals( text ) )
 					coolInfo.add( text );
@@ -493,7 +493,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 					String domainValue = sku.getVariationMatrix().get( 0 ).getValue();
 					try {
 						productInfo = sku.getProductInfo();
-						countries = productInfo.getCountryOfOrigin(getPlantID());
+						countries = productInfo.getCountryOfOrigin(ContentFactory.getPickingPlantId(productInfo));
 						text = getCOOLText( countries );
 					} catch ( FDSkuNotFoundException ignore ) {
 						text = "";

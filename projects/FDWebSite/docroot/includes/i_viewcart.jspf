@@ -375,7 +375,7 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 		}
 		
 		String earliestAvailability = productNode.getSku(cartLine.getSkuCode()).getEarliestAvailabilityMessage();
-		boolean displayShortTermUnavailability = fdProduct.getMaterial().getBlockedDays(plantID).isEmpty();
+		boolean displayShortTermUnavailability = fdProduct.getMaterial().getBlockedDays(getBlockedDays(ContentFactory.getPickingPlantId(productNode.getDefaultSku().getProductInfo()))).isEmpty();
 		boolean platterDlvInfo = false;
 		if (productNode.isPlatter()) {
 			platterDlvInfo = true;
@@ -426,7 +426,7 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
     			<% } %>
             <% } %>
 			<% if (!isFreeProd) { %>	
-				<%= fdProduct.getKosherInfo(plantID).isKosherProduction() ? " <span class=\"kosher\">**</span>":""  %>
+				<%= fdProduct.getKosherInfo(productNode.getDefaultSku().getProduct()).isKosherProduction() ? " <span class=\"kosher\">**</span>":""  %>
 				<%= cartLine.getApplicableRestrictions().contains(EnumDlvRestrictionReason.PLATTER) ? " <font color=\"#FF9933\">**</font>":""  %>
 				<% if ((cart instanceof FDModifyCartModel) && !(cartLine instanceof FDModifyCartLineI)) { %><span class="text10rbold">(new)</span><% } %>
 				<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= discountMsg %></span><% } %>

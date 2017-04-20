@@ -35,7 +35,7 @@ public class AvailabilityFactory {
 
 	public static Set<EnumDlvRestrictionReason> getApplicableRestrictions(FDProduct product, FDProductInfo fdpi) {
 		Set<EnumDlvRestrictionReason> s = new HashSet<EnumDlvRestrictionReason>();
-		String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+		String plantID=ContentFactory.getPickingPlantId(fdpi);
 		
 		if (product.isAlcohol()) {
 			s.add(EnumDlvRestrictionReason.ALCOHOL);

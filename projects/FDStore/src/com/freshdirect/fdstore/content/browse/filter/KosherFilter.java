@@ -41,7 +41,8 @@ public class KosherFilter extends AbstractProductItemFilter {
 
 		try {
 			FDProduct fdProd = productItem.getFdProduct();
-			String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+			//String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+			String plantID=ContentFactory.getPickingPlantId(productItem.getFdProductInfo());
 			FDKosherInfo kInfo = fdProd.getKosherInfo(plantID);
 			
 			final int kosherPriority = kInfo != null ? kInfo.getPriority() : NON_KOSHER_PRI;

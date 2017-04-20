@@ -318,8 +318,10 @@ public class DCPDReportGenerator {
 	        try {
 	        	
 	            if (skuNode.getProductInfo() != null) {
-	            	rating = skuNode.getProductInfo().getRating(userCtx.getFulfillmentContext().getPlantId());
-	            	sustainabilityRating=skuNode.getProductInfo().getSustainabilityRating(userCtx.getFulfillmentContext().getPlantId());
+	            	//rating = skuNode.getProductInfo().getRating(userCtx.getFulfillmentContext().getPlantId());
+	            	//sustainabilityRating=skuNode.getProductInfo().getSustainabilityRating(userCtx.getFulfillmentContext().getPlantId());
+	            	rating = skuNode.getProductInfo().getRating(ContentFactory.getPickingPlantId(skuNode.getProductInfo()));
+	            	sustainabilityRating=skuNode.getProductInfo().getSustainabilityRating(ContentFactory.getPickingPlantId(skuNode.getProductInfo()));
 	            	price="$"+String.valueOf(skuNode.getProductInfo().getZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO).getDefaultPrice());
 		        	if(skuNode.getProductInfo().getZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO).getSellingPrice()!=0) {
 		        		basePrice="$"+String.valueOf(skuNode.getProductInfo().getZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO).getSellingPrice());

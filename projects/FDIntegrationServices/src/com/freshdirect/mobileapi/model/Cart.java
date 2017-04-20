@@ -770,7 +770,8 @@ public class Cart {
                 productLineItem.setHasKosherRestriction(cartLine.getApplicableRestrictions().contains(EnumDlvRestrictionReason.KOSHER));
 
                 String earliestAvailability = productNode.getSku(cartLine.getSkuCode()).getEarliestAvailabilityMessage();
-                String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+                //String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+                String plantID=ContentFactory.getPickingPlantId(productNode.getSku(cartLine.getSkuCode()).getProductInfo());
                 boolean displayShortTermUnavailability = fdProduct.getMaterial().getBlockedDays(plantID).isEmpty();
                 productLineItem.setPlatter(productNode.isPlatter());
                 productLineItem.setKosherProduction(fdProduct.getKosherInfo(plantID).isKosherProduction());

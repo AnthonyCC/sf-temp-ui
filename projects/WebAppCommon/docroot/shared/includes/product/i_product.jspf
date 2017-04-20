@@ -85,6 +85,7 @@ if ( skuSize == 0 ) {
     }
 
     FDProduct defaultProduct = FDCachedFactory.getProduct( FDCachedFactory.getProductInfo( defaultSku.getSkuCode() ) );
+    ProductInfo productinfo=defaultSku.getProductInfo();
 
     if ( !hasTemplate ) {
 
@@ -221,7 +222,7 @@ if ( skuSize == 0 ) {
 				    boolean displayEstimatedQuantity = !displaySalesUnitsOnly && isPricedByLB && !isSoldByLB;
 				    boolean salesUnitFirst = ( sellBySalesUnit == null ) && !hasSingleSalesUnit && isPricedByLB && !isSoldByLB;
 				    boolean hasVariationMatrix = ( defaultSku.getVariationMatrix().size() > 0);
-					boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays(plantID).isEmpty();    
+					boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays(ContentFactory.getPickingPlantId(productinfo)).isEmpty();    
 				%>
 
 		
@@ -992,7 +993,7 @@ if ( skuSize == 0 ) {
 						SkuModel _defaultSku = !__prd.isUnavailable()? __prd.getDefaultSku():(SkuModel)__prd.getSkus().get(0);
     					if ( _defaultSku != null ) {
         					FDProduct fdprd = __prd.isUnavailable() ? null : _defaultSku.getProduct();
-        					if ( fdprd.getKosherInfo(plantID).isKosherProduction() ) { %>
+        					if ( fdprd.getKosherInfo(ContentFactory.getPickingPlantId(_defaultSku.getProductInfo())).isKosherProduction() ) { %>
             					<br/><span class="kosher">*</span> Not available for delivery on Friday, Saturday, or Sunday morning.
             					<fd:GetDlvRestrictions id="kosherRestrictions" reason="<%= EnumDlvRestrictionReason.KOSHER %>" withinHorizon="true">
 					            	<% if ( kosherRestrictions.size() > 0 ) { %>

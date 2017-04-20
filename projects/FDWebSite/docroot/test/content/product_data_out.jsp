@@ -31,7 +31,7 @@
 					out.print(pRef.getProductRating());
 				}else if (sRef instanceof SkuModel) {
 					//sku
-					out.print(sRef.getProductInfo().getRating(plantID));
+					out.print(sRef.getProductInfo().getRating(ContentFactory.getPickingPlantId(sRef.getProductInfo())));
 				}
 			}
 		}

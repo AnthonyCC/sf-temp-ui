@@ -314,8 +314,8 @@ public class ContentNodeComparator implements Comparator<ContentNodeModel> {
 				return Integer.MAX_VALUE;
 			}
 			
-			String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
-			FDKosherInfo kosherInfo = skuModel.getProduct().getKosherInfo(plantID);
+			//String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+			FDKosherInfo kosherInfo = skuModel.getProduct().getKosherInfo(ContentFactory.getPickingPlantId(skuModel.getProductInfo()));
 			
 			if (kosherInfo == null || !kosherInfo.hasKosherSymbol() || kosherInfo.getKosherSymbol().equals(EnumKosherSymbolValue.NONE)) {
 				return Integer.MAX_VALUE;
