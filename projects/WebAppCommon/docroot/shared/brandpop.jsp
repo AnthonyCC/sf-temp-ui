@@ -57,9 +57,8 @@ if (brandId!=null) {
     %>
         <logic:iterate id='contentRef' collection="<%=favorites%>" type="java.lang.Object">
     <% 
-            if ( !(contentRef instanceof ProductModel) && !(contentRef instanceof SkuModel)) { 
-                continue;
-            }
+            if ( !(!(contentRef instanceof ProductModel) && !(contentRef instanceof SkuModel))) { 
+               
     		ProductModel product = null;
             String skuCode = null;
             if (contentRef instanceof SkuModel) {
@@ -69,16 +68,15 @@ if (brandId!=null) {
                 product = (ProductModel) contentRef;
             }
             
-            if (product.isDiscontinued() || product.isUnavailable()) {
-				favItemCount--;
-				continue;
-			}
+            if (!(product.isDiscontinued() || product.isUnavailable())) {
+				
+				
+			
 
             SkuModel sku = product.getDefaultSku(pc);
-            if (sku==null) {
-			favItemCount--;
-			continue;
-			}
+            if (!(sku==null)) {
+			
+			
 			
             String prodPrice = null;
 %>
@@ -126,6 +124,16 @@ if (brandId!=null) {
             if (itemCount == 5 || itemCount == favItemCount) { //last prod
             break;
             } 
+            
+            } else {
+            	favItemCount--;
+            }
+            
+            } else {
+            	favItemCount--;
+            }
+            
+            }
     %>
      </logic:iterate>
 	 <% if (featProdStringBuffer.length() > 0) {
