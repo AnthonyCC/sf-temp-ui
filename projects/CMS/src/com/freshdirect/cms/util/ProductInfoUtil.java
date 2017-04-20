@@ -29,7 +29,7 @@ public class ProductInfoUtil {
                      
              }
              if(null == pickingPlantId && null !=userContext.getFulfillmentContext()){
-            	 LOGGER.info("PickingPlantId is not found for this product: "+fdpi.getSkuCode());
+//            	 LOGGER.info("PickingPlantId is not found for this product: "+fdpi.getSkuCode());
                  pickingPlantId = userContext.getFulfillmentContext().getPlantId();
              }
         }
