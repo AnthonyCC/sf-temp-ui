@@ -233,6 +233,7 @@ public class DatasourceService {
                 break;
             case STAFF_PICKS:
                 products = ModuleContentService.getDefaultService().loadStaffPicksProducts(user);
+                break;
             default:
                 break;
         }
