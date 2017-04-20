@@ -17,12 +17,12 @@ import java.util.TreeMap;
 
 import org.apache.log4j.Category;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import weblogic.auddi.util.Logger;
-import weblogic.servlet.internal.PostTimeoutException;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -50,8 +50,6 @@ import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
 import com.freshdirect.framework.event.FDWebEvent;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.BINInfo;
-//import com.freshdirect.content.attributes.FlatAttributeCollection;
-//import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.referral.extole.ExtoleServiceException;
 import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
 import com.freshdirect.referral.extole.model.ExtoleResponse;
@@ -921,6 +919,9 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		Response<List<ExtoleConversionRequest>> response = new Response<List<ExtoleConversionRequest>>();
 		try{
 			response = httpGetData(getFdCommerceEndPoint(EXTOLE_MANAGER_CREATE), Response.class);
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
 		} catch(FDPayPalServiceException e){
 			throw new FDResourceException(e, e.getMessage());
 		} 
@@ -933,6 +934,9 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		Response<List<ExtoleConversionRequest>> response = new Response<List<ExtoleConversionRequest>>();
 		try{
 			response = httpGetData(getFdCommerceEndPoint(EXTOLE_MANAGER_APPROVE), Response.class);
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
 		} catch(FDPayPalServiceException e){
 			throw new FDResourceException(e, e.getMessage());
 		} 
@@ -948,10 +952,12 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		try {
 			inputJson = buildRequest(request.getData());
 			response = this.postData(inputJson, getFdCommerceEndPoint(EXTOLE_MANAGER_UPDATE), Response.class);
+			if(!response.getResponseCode().equals("CREATED")){
+				throw new FDResourceException(response.getMessage());
+			}
 		} catch (FDPayPalServiceException e) {
 			throw new FDResourceException(response.getMessage());
 		}
-		
 		
 	}
 	@Override
@@ -964,6 +970,9 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		try {
 			inputJson = buildRequest(request.getData());
 			response = this.postData(inputJson, getFdCommerceEndPoint(EXTOLE_MANAGER_SAVE), Response.class);
+			if(!response.getResponseCode().equals("CREATED")){
+				throw new FDResourceException(response.getMessage());
+			}
 		} catch (FDPayPalServiceException e) {
 			throw new FDResourceException(e.getMessage());
 		}
@@ -976,9 +985,11 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		String inputJson=null;
 		Response<String> response = null;
 		response = postData(inputJson, getFdCommerceEndPoint(EXTOLE_MANAGER_CREATECONVERSION), Response.class);
-		if(!response.getResponseCode().equals("OK"))
+		if(!response.getResponseCode().equals("OK")){
 			throw new FDResourceException(response.getMessage());
-		
+		}else if(response.getResponseCode().equals(HttpStatus.BAD_GATEWAY)){
+			throw new ExtoleServiceException(response.getMessage());
+		}
 	}
 	@Override
 	public void approveConversion() throws ExtoleServiceException, IOException, FDResourceException,
