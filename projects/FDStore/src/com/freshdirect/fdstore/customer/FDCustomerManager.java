@@ -71,6 +71,7 @@ import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
+import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ErpWebOrderHistory;
 import com.freshdirect.customer.OrderHistoryI;
@@ -142,11 +143,10 @@ import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
+import com.freshdirect.logistics.delivery.model.ShippingDetail;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
 import com.freshdirect.payment.EnumPaymentMethodType;
-import com.freshdirect.payment.service.FDECommerceService;
-import com.freshdirect.payment.service.IECommerceService;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
 import com.freshdirect.sms.EnumSMSAlertStatus;
@@ -2213,13 +2213,7 @@ public class FDCustomerManager {
 
 	public static void storeSurvey(FDSurveyResponse survey) throws FDResourceException {
 	    try {
-	    	if(FDStoreProperties.isStorefront2_0Enabled()){
-        		IECommerceService service = FDECommerceService.getInstance();
-        		 service.storeSurvey(survey);
-        	}
-			else{
                 LOCATOR.getSurveySessionBean().storeSurvey(survey);
-			}
             } catch (RemoteException re) {
                 throw new FDResourceException(re, "Error talking to session bean");
             }

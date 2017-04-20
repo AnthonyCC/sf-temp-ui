@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -252,11 +253,10 @@ import com.freshdirect.payment.gateway.GatewayType;
 import com.freshdirect.payment.gateway.Request;
 import com.freshdirect.payment.gateway.Response;
 import com.freshdirect.payment.gateway.impl.GatewayFactory;
-import com.freshdirect.payment.service.FDECommerceService;
-import com.freshdirect.payment.service.IECommerceService;
 import com.freshdirect.referral.extole.RafUtil;
 import com.freshdirect.referral.extole.model.FDRafTransModel;
 import com.freshdirect.sap.command.SapCartonInfoForSale;
+import com.freshdirect.sap.command.SapCreateSalesOrder;
 import com.freshdirect.sap.ejb.SapException;
 import com.freshdirect.sms.SmsPrefereceFlag;
 import com.freshdirect.temails.TEmailRuntimeException;
@@ -431,13 +431,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				FDSurveyResponse s = new FDSurveyResponse(identity, survey
 						.getKey());
 				s.setAnswers(survey.getAnswers());
-				if(FDStoreProperties.isStorefront2_0Enabled()){
-	        		IECommerceService service = FDECommerceService.getInstance();
-	        		 service.storeSurvey(s);
-	        	}
-				else{
-					LOCATOR.getSurveySessionBean().storeSurvey(s);
-				}
+				LOCATOR.getSurveySessionBean().storeSurvey(s);
 			}
 			if (isGiftCardBuyer) {
 				return new RegistrationResult(identity);
@@ -6074,13 +6068,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}
 
 			if (survey != null && !survey.getAnswers().isEmpty()) {
-				if(FDStoreProperties.isStorefront2_0Enabled()){
-	        		IECommerceService service = FDECommerceService.getInstance();
-	        		 service.storeSurvey(survey);
-	        	}
-				else{
 				LOCATOR.getSurveySessionBean().storeSurvey(survey);
-				}
 			}
 
 		} catch (SQLException se) {

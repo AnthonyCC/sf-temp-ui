@@ -6,7 +6,7 @@ public class FDIdentity implements java.io.Serializable {
 	
 	private final String erpCustomerPK;
 	private final String fdCustomerPK;
-	
+    
 	public FDIdentity(String erpCustomerPK, String fdCustomerPK) {
 		this.erpCustomerPK = erpCustomerPK;
 		this.fdCustomerPK = fdCustomerPK;
@@ -22,11 +22,6 @@ public class FDIdentity implements java.io.Serializable {
     
 	public String getFDCustomerPK() {
 		return this.fdCustomerPK;
-	}
-
-
-	public String getFdCustomerPK() {
-		return fdCustomerPK;
 	}
 
 	public String toString() {
