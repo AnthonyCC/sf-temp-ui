@@ -18,6 +18,7 @@
       <img src="{$item.iconImage}" alt="icon">
     </a>
   </div>
+  {if $moduleData and not $moduleData.hideProductName}
   <a {if $item.iconLink}href="{$item.iconLink}"{/if} manual_cm_sp="
   {if $item.productId}{$item.productId}{/if},{if $item.iconLinkText}{$item.iconLinkText}{/if}
   {if $moduleData.moduleId},{$moduleData.moduleId}{/if}
@@ -26,5 +27,6 @@
   {if $moduleData.contentTitle}-_-{$moduleData.contentTitle}{/if}
   {if $moduleData.moduleGroupTitle}-_-{$moduleData.moduleGroupTitle}{/if}
   {if $moduleData.moduleGroupTitleTextBanner}-_-{$moduleData.moduleGroupTitleTextBanner}{/if}">{if $item.iconLinkText}{$item.iconLinkText}{/if}</a>
+  {/if}
 </li>
 {/template}

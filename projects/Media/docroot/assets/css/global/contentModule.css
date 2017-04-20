@@ -135,7 +135,3 @@
 .content-module .module-header .module-title {
   margin-right: 15px;
 }
-
-.content-module .content.hide-burst [data-component="carousel"] .burst {
-  display: none;
-}
