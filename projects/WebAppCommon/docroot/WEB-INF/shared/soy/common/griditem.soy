@@ -344,7 +344,7 @@
     {/if}
 		<div class="portrait-item-burst_wrapper">
 			<img src="{$productImage}" alt="Product Image - {$productName}" class="portrait-item-productimage" {if not $discontinued}data-product-url="{$productPageUrl}"{/if}>
-			{if not $moduleData.hideProductBadge}
+			{if ($moduleData and not $moduleData.hideProductBadge)}
         {call common.bursts}{param badge:$badge /}{param deal:$deal /}{param usq:$usq /}{/call}
       {/if}
     </div>
@@ -357,7 +357,7 @@
 			</div>
 		{/if}
 	</div>
-  {if not $moduleData.hideProductName}
+  {if ($moduleData and not $moduleData.hideProductName)}
   	<div class="portrait-item-header">
   	{if $brandName and $productNameNoBrand}
   		{if $discontinued}
@@ -404,7 +404,7 @@
   		{/if}
   	</div>
   {/if}
-  {if not $moduleData.hideProductPrice}
+  {if ($moduleData and not $moduleData.hideProductPrice)}
   	{if $freeSamplePromoProduct and ($cmEventSource=='ps_caraousal' or $cmEventSource=='ps_carousel_view_cart')}
   		<div class="portrait-item-price product-sample-free">FREE</div>
   	{else}
