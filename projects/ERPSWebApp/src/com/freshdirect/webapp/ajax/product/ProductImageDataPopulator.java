@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.cms.util.ProductInfoUtil;
 import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -117,7 +118,7 @@ public class ProductImageDataPopulator {
        */
       if(productInfo != null && FDStoreProperties.isSeafoodSustainEnabled()) {
         //EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(user.getUserContext().getFulfillmentContext().getPlantId());
-    	  EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(ContentFactory.getPickingPlantId(productInfo));
+    	  EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(ProductInfoUtil.getPickingPlantId(productInfo));
         if ( enumRating != null) {
           if ( enumRating != null && enumRating.isEligibleToDisplay() && (enumRating.getId() == 4 || enumRating.getId() == 5) ) {
             ContentNodeModel ssBrandCheck = ContentFactory.getInstance().getContentNode("bd_ocean_friendly");

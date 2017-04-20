@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.http.HttpHeaders;
 import org.apache.log4j.Category;
 
+import com.freshdirect.cms.util.ProductInfoUtil;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumDeliveryType;
@@ -771,7 +772,7 @@ public class Cart {
 
                 String earliestAvailability = productNode.getSku(cartLine.getSkuCode()).getEarliestAvailabilityMessage();
                 //String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
-                String plantID=ContentFactory.getPickingPlantId(productNode.getSku(cartLine.getSkuCode()).getProductInfo());
+                String plantID=ProductInfoUtil.getPickingPlantId(productNode.getSku(cartLine.getSkuCode()).getProductInfo());
                 boolean displayShortTermUnavailability = fdProduct.getMaterial().getBlockedDays(plantID).isEmpty();
                 productLineItem.setPlatter(productNode.isPlatter());
                 productLineItem.setKosherProduction(fdProduct.getKosherInfo(plantID).isKosherProduction());

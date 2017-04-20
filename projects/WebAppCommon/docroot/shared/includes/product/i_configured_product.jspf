@@ -168,7 +168,7 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
       }
     }
 
-    boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays(ContentFactory.getPickingPlantId(productNode.getDefaultSku().getProductInfo())).isEmpty();
+    boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays(ProductInfoUtil.getPickingPlantId(productNode.getDefaultSku().getProductInfo())).isEmpty();
     %>
 
     <%@ include file="/shared/includes/product/i_pricing_script.jspf" %>
@@ -406,7 +406,7 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
 	SkuModel _defaultSku = !productNode.isUnavailable()? productNode.getDefaultSku():(SkuModel)productNode.getSkus().get(0);
     if (_defaultSku!=null) {
 	FDProduct fdprd = productNode.isUnavailable()? null:_defaultSku.getProduct();
-	if (fdprd.getKosherInfo(ContentFactory.getPickingPlantId(_defaultSku.getProductInfo())).isKosherProduction()) { %>
+	if (fdprd.getKosherInfo(ProductInfoUtil.getPickingPlantId(_defaultSku.getProductInfo())).isKosherProduction()) { %>
 	    <br><span class="kosher">*</span> Not available for delivery on Friday, Saturday, or Sunday morning.
 	    <fd:GetDlvRestrictions id="kosherRestrictions" reason="<%=EnumDlvRestrictionReason.KOSHER%>" withinHorizon="true">
 	    <%

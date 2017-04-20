@@ -125,7 +125,7 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
     String earliestAvailability = prdNode.getSku(orderLine.getSkuCode()).getEarliestAvailabilityMessage();
 
     FDProduct defaultProduct = prdNode.getDefaultSku().getProduct();
-	boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays(ContentFactory.getPickingPlantId(prdNode.getDefaultSku().getProductInfo())).isEmpty();
+	boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays(ProductInfoUtil.getPickingPlantId(prdNode.getDefaultSku().getProductInfo())).isEmpty();
 	
     boolean isPricedByLB = ("LB".equalsIgnoreCase((defaultProduct.getPricing().getZonePrice(userd.getPricingContext().getZoneInfo()).getMaterialPrices()[0]).getPricingUnit()));
     boolean isSoldByLB = isPricedByLB && ("LB".equalsIgnoreCase((defaultProduct.getSalesUnits()[0]).getName()));

@@ -11,6 +11,7 @@ import javax.servlet.jsp.JspWriter;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.util.ProductInfoUtil;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.EnumOrderLineRating;
@@ -320,8 +321,8 @@ public class DCPDReportGenerator {
 	            if (skuNode.getProductInfo() != null) {
 	            	//rating = skuNode.getProductInfo().getRating(userCtx.getFulfillmentContext().getPlantId());
 	            	//sustainabilityRating=skuNode.getProductInfo().getSustainabilityRating(userCtx.getFulfillmentContext().getPlantId());
-	            	rating = skuNode.getProductInfo().getRating(ContentFactory.getPickingPlantId(skuNode.getProductInfo()));
-	            	sustainabilityRating=skuNode.getProductInfo().getSustainabilityRating(ContentFactory.getPickingPlantId(skuNode.getProductInfo()));
+	            	rating = skuNode.getProductInfo().getRating(ProductInfoUtil.getPickingPlantId(skuNode.getProductInfo()));
+	            	sustainabilityRating=skuNode.getProductInfo().getSustainabilityRating(ProductInfoUtil.getPickingPlantId(skuNode.getProductInfo()));
 	            	price="$"+String.valueOf(skuNode.getProductInfo().getZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO).getDefaultPrice());
 		        	if(skuNode.getProductInfo().getZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO).getSellingPrice()!=0) {
 		        		basePrice="$"+String.valueOf(skuNode.getProductInfo().getZonePriceInfo(ZonePriceListing.DEFAULT_ZONE_INFO).getSellingPrice());

@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.util.ProductInfoUtil;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.ZoneInfo;
@@ -233,8 +234,8 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 			try {
 				FDProductInfo pi1 = FDCachedFactory.getProductInfo(obj1.getSkuCode());
 				FDProductInfo pi2 = FDCachedFactory.getProductInfo(obj2.getSkuCode());
-				String plantID1=ContentFactory.getPickingPlantId(obj1.getProductInfo());
-				String plantID2=ContentFactory.getPickingPlantId(obj2.getProductInfo());
+				String plantID1=ProductInfoUtil.getPickingPlantId(obj1.getProductInfo());
+				String plantID2=ProductInfoUtil.getPickingPlantId(obj2.getProductInfo());
 				EnumOrderLineRating oli1=pi1.getRating(plantID1);
 				EnumOrderLineRating oli2=pi2.getRating(plantID2);
 				
@@ -283,8 +284,8 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 
 				FDProductInfo pi1 = FDCachedFactory.getProductInfo(obj1.getSkuCode());
 				FDProductInfo pi2 = FDCachedFactory.getProductInfo(obj2.getSkuCode());
-				String plantID1=ContentFactory.getPickingPlantId(obj1.getProductInfo());
-				String plantID2=ContentFactory.getPickingPlantId(obj2.getProductInfo());
+				String plantID1=ProductInfoUtil.getPickingPlantId(obj1.getProductInfo());
+				String plantID2=ProductInfoUtil.getPickingPlantId(obj2.getProductInfo());
 				EnumSustainabilityRating oli1=pi1.getSustainabilityRating(plantID1);
 				EnumSustainabilityRating oli2=pi2.getSustainabilityRating(plantID2);
 				

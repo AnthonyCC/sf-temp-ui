@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
 import com.freshdirect.WineUtil;
+import com.freshdirect.cms.util.ProductInfoUtil;
 import com.freshdirect.common.pricing.CharacteristicValuePrice;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.PricingContext;
@@ -752,7 +753,7 @@ public class ProductDetailPopulator {
 		//String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 		String plantID=null;
 		try {
-			plantID = ContentFactory.getPickingPlantId(sku.getProductInfo());
+			plantID = ProductInfoUtil.getPickingPlantId(sku.getProductInfo());
 		} catch (FDResourceException ex) {
 			LOG.debug("Exception while getting the plantId "+ex);
 			// TODO Auto-generated catch block

@@ -22,6 +22,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
+import com.freshdirect.cms.util.ProductInfoUtil;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDCachedFactory;
@@ -102,7 +103,7 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 				try {
 					productInfo=FDCachedFactory.getProductInfo(sku);
 					if(productInfo.isAvailable(userCtx.getPricingContext().getZoneInfo().getSalesOrg(),userCtx.getPricingContext().getZoneInfo().getDistributionChanel()) && 
-							isPeakProduce(productInfo.getRating(ContentFactory.getPickingPlantId(productInfo)))) {
+							isPeakProduce(productInfo.getRating(ProductInfoUtil.getPickingPlantId(productInfo)))) {
 						
 						try {
 							   ProductModel sm=ContentFactory.getInstance().getProduct(sku);
@@ -326,7 +327,7 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 					continue;
 				}
 				try {
-					rating=sku.getProductInfo().getRating(ContentFactory.getPickingPlantId(sku.getProductInfo()));
+					rating=sku.getProductInfo().getRating(ProductInfoUtil.getPickingPlantId(sku.getProductInfo()));
 				} catch (FDSkuNotFoundException e) {
 					throw new FDResourceException(e);
 				}

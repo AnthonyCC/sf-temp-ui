@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.content.browse.filter;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.cms.util.ProductInfoUtil;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -23,7 +24,7 @@ public class FreshnessFilter extends AbstractRangeFilter {
 			return false;
 		}
 		//String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
-		String plantID=ContentFactory.getPickingPlantId(productItem.getFdProductInfo());
+		String plantID=ProductInfoUtil.getPickingPlantId(productItem.getFdProductInfo());
 		// Perishable product - freshness warranty
 		FDProductInfo productInfo = productItem.getFdProductInfo();
 		if (productInfo.getFreshness(plantID) != null) {

@@ -1066,13 +1066,4 @@ public class ContentFactory {
         return isAllowToUseContentCache;
     }
     
-    public static String getPickingPlantId(FDProductInfo fdpi){
-		if(fdpi!=null){    	
-				String salesOrg=ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getSalesOrg();
-				String distChannel=ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getDistributionChanel();
-				String pickingPlantId = fdpi.getPickingPlantId(salesOrg, distChannel);			
-				return pickingPlantId;
-		}
-		return null;
-	}
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.cms.util.ProductInfoUtil;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.ZoneInfo;
@@ -110,7 +111,7 @@ public class FDCartLineModel extends AbstractCartLine {
 			
 				//String plantID=(ol.getUserContext().getFulfillmentContext()!=null)?ol.getUserContext().getFulfillmentContext().getPlantId():ol.getPlantID();
 				//String plantID=getPlantId();
-				String plantID=ContentFactory.getPickingPlantId(productInfo);
+				String plantID=ProductInfoUtil.getPickingPlantId(productInfo);
 				EnumOrderLineRating rating=productInfo.getRating(plantID);
 				EnumSustainabilityRating sustainabilityRating=productInfo.getSustainabilityRating(plantID);
 

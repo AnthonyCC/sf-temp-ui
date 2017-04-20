@@ -3,6 +3,7 @@ package com.freshdirect.fdstore.content;
 import java.text.DecimalFormat;
 import java.util.Locale;
 
+import com.freshdirect.cms.util.ProductInfoUtil;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.ZoneInfo;
@@ -546,7 +547,7 @@ public class PriceCalculator {
 
             FDProduct pr = getProduct();
         	//String plantID=getPlantID();
-            String plantID=ContentFactory.getPickingPlantId(skuModel.getProductInfo());
+            String plantID=ProductInfoUtil.getPickingPlantId(getProductInfo());
             FDKosherInfo ki = pr.getKosherInfo(plantID);
             if (ki.hasKosherSymbol() && ki.getKosherSymbol().display()) {
                 return ki.getKosherSymbol().getCode();
@@ -569,7 +570,7 @@ public class PriceCalculator {
 
             FDProduct pr = getProduct();
         	//String plantID=getPlantID();
-            FDKosherInfo ki = pr.getKosherInfo(ContentFactory.getPickingPlantId(skuModel.getProductInfo()));
+            FDKosherInfo ki = pr.getKosherInfo(ProductInfoUtil.getPickingPlantId(getProductInfo()));
             if (ki.hasKosherType() && ki.getKosherType().display()) {
                 return ki.getKosherType().getName();
             } else {
@@ -586,7 +587,7 @@ public class PriceCalculator {
                 return false;
 
             FDProduct pr = getProduct();
-            String plantID=ContentFactory.getPickingPlantId(skuModel.getProductInfo());
+            String plantID=ProductInfoUtil.getPickingPlantId(getProductInfo());
             return pr.isKosherProduction(plantID);
         } catch (FDSkuNotFoundException fdsnfe) {
         }
@@ -598,7 +599,7 @@ public class PriceCalculator {
             if (skuModel == null)
                 return 999;
             FDProduct pr = getProduct();
-        	String plantID=ContentFactory.getPickingPlantId(skuModel.getProductInfo());
+        	String plantID=ProductInfoUtil.getPickingPlantId(getProductInfo());
             FDKosherInfo ki = pr.getKosherInfo(plantID);
             return ki.getPriority();
         } catch (FDSkuNotFoundException fdsnfe) {

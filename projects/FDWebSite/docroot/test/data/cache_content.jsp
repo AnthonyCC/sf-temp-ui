@@ -44,7 +44,7 @@
     }
     FDSku sku = skuCode != null && version != null ? new FDSku(skuCode, version) : null;
     String plantID = ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
-    String pickingPlantId=ContentFactory.getPickingPlantId(productInfo);
+    String pickingPlantId=ProductInfoUtil.getPickingPlantId(productInfo);
     String salesOrg = ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getSalesOrg();
     String distrChannel = ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getDistributionChanel();
     if (sku != null) {
