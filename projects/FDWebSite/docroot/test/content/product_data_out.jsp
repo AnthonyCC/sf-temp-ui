@@ -1,6 +1,7 @@
 <%@ page import='com.freshdirect.framework.util.NVL'%>
 <%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.cms.ContentKey'%>
+<%@ page import='com.freshdirect.cms.util.ProductInfoUtil'%>
 <%
 	//check for a passed pId
 		String pId = NVL.apply(request.getParameter("pId"), "");

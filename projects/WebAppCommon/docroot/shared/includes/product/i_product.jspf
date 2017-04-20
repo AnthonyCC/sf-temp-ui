@@ -31,6 +31,7 @@ This include expects the following:
 <%@ page import="com.freshdirect.common.pricing.Pricing"%>
 <%@ page import='com.freshdirect.framework.util.log.LoggerFactory' %>
 <%@ page import="com.freshdirect.common.pricing.ZoneInfo"%>
+<%@ page import='com.freshdirect.cms.util.ProductInfoUtil'%>
 <%@ page import='org.apache.log4j.Category' %>
 
 <%@ taglib uri="logic" prefix="logic" %>

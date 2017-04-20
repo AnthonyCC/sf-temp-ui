@@ -11,6 +11,7 @@
 <%@ page import='com.freshdirect.framework.webapp.*' %>
 <%@ page import='java.net.URLEncoder' %>
 <%@ page import='java.util.*' %>
+<%@ page import='com.freshdirect.cms.util.ProductInfoUtil'%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>

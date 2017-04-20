@@ -20,6 +20,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
+<%@ page import='com.freshdirect.cms.util.ProductInfoUtil'%>
 
 <% //expanded page dimensions
 final int W_NEW_WINE_PRODUCT_TOTAL = 601;

@@ -14,6 +14,7 @@
 <%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="com.freshdirect.fdstore.FDMaterialSalesArea"%>
 <%@page import="com.freshdirect.fdstore.FDPlantMaterial"%>
+<%@page import='com.freshdirect.cms.util.ProductInfoUtil'%>
 <%@taglib uri="freshdirect" prefix="fd"%>
 <%!String format(Object x) {
         if (x == null) {

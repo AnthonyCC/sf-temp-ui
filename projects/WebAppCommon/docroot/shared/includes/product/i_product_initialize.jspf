@@ -23,6 +23,7 @@
 <%@page import="com.freshdirect.framework.util.QuickDateFormat"%>
 <%@page import="com.freshdirect.fdstore.FDVariation"%>
 <%@ page import="com.freshdirect.fdstore.content.ContentFactory" %>
+<%@ page import='com.freshdirect.cms.util.ProductInfoUtil'%>
 <%--
 	Required variables:
 

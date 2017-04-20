@@ -8,6 +8,7 @@
 <%@ page import="com.freshdirect.fdstore.ecoupon.*" %>
 <%@ page import='com.freshdirect.fdstore.atp.FDLimitedAvailabilityInfo';%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
+<%@ page import='com.freshdirect.cms.util.ProductInfoUtil'%>
 <%@ page import='java.util.*' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='bean' prefix='bean' %>
