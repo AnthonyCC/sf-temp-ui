@@ -15,6 +15,8 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.framework.util.LazyTimedCache;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.service.FDECommerceService;
+import com.freshdirect.payment.service.IECommerceService;
 
 public class FDSurveyFactory {
 
@@ -138,7 +140,13 @@ public class FDSurveyFactory {
      */
     FDSurvey getSurveyFromDatabase(SurveyKey key) throws FDResourceException {
         try {
-            return FDServiceLocator.getInstance().getSurveySessionBean().getSurvey(key);
+        	if(FDStoreProperties.isStorefront2_0Enabled()){
+        		IECommerceService service = FDECommerceService.getInstance();
+        		return service.getSurvey(key);
+        	}
+        	else{
+        		return FDServiceLocator.getInstance().getSurveySessionBean().getSurvey(key);
+        	}
         } catch (RemoteException re) {
             throw new FDResourceException(re, "Error talking to session bean");
         }
@@ -169,15 +177,27 @@ public class FDSurveyFactory {
 
     public static FDSurveyResponse getCustomerProfileSurveyInfo(FDIdentity identity, EnumServiceType serviceType) throws FDResourceException {
         try {
-            return FDServiceLocator.getInstance().getSurveySessionBean().getCustomerProfile(identity, correctServiceType(serviceType));
-        } catch (RemoteException re) {
+        	if(FDStoreProperties.isStorefront2_0Enabled()){
+        		IECommerceService service = FDECommerceService.getInstance();
+        		return service.getCustomerProfile(identity, serviceType);
+        	}
+        	else{
+        		return FDServiceLocator.getInstance().getSurveySessionBean().getCustomerProfile(identity, correctServiceType(serviceType));
+        	}
+        	} catch (RemoteException re) {
             throw new FDResourceException(re, "Error talking to session bean");
         }
     }       
 
     public static FDSurveyResponse getSurveyResponse(FDIdentity identity, SurveyKey survey) throws FDResourceException {
         try {
-            return FDServiceLocator.getInstance().getSurveySessionBean().getSurveyResponse(identity, survey);
+        	if(FDStoreProperties.isStorefront2_0Enabled()){
+        		IECommerceService service = FDECommerceService.getInstance();
+        		return service.getSurveyResponse(identity, survey);
+        	}
+        	else{
+        		return FDServiceLocator.getInstance().getSurveySessionBean().getSurveyResponse(identity, survey);
+        	}
         } catch (RemoteException re) {
             throw new FDResourceException(re, "Error talking to session bean");
         }
