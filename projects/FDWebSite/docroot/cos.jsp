@@ -85,7 +85,7 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 	 <% 
 } else if (!showAltHome && !location2Media) { 
 	%><comp:welcomeMessage user="<%= user %>" segmentMessage="<%= segmentMessage %>"  isCosPage="<%=true%>"/>
-}
+<%}
 	   	
 if (location2Media) { %><comp:location2Media user="<%= user %>" /><% } 
 %>		<img src="/media_stat/images/cos/banner-at-the-office.jpg" alt="At the Office">
