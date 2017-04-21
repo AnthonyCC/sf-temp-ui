@@ -1,6 +1,8 @@
 package com.freshdirect.webapp.ajax.quickshop;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -87,7 +89,8 @@ public class QuickShopRedirector extends BodyTagSupport {
 		// partial rollout check
 		isNewQs = isEligibleForNewQuickShop(user);
 		String redirectUrl = null;
-
+		
+		this.redirected = false;
 		switch (from) {
 
 		// redirects from NEW to OLD
@@ -127,7 +130,11 @@ public class QuickShopRedirector extends BodyTagSupport {
 			break;
 
 		case OLD_QS_ORDER_SHOP_FROM:
-			redirectUrl = getRedirectForOldShopFromOrderPage();
+			try {
+				redirectUrl = getRedirectForOldShopFromOrderPage();
+			} catch (UnsupportedEncodingException e) {
+				throw new JspException(e.getMessage());
+			}
 			break;
 
 		case OLD_QS_LIST_SHOP_FROM:
@@ -146,7 +153,6 @@ public class QuickShopRedirector extends BodyTagSupport {
 		if (redirectUrl == null) {
 			return EVAL_BODY_BUFFERED;
 		}
-
 		// Do the redirect for real, and skip processing this page further
 		redirect(redirectUrl);
 		return SKIP_PAGE;
@@ -177,14 +183,15 @@ public class QuickShopRedirector extends BodyTagSupport {
 		return URL_NEW_QS_SHOPPING_LISTS + "#{\"yourListId\":\"" + listId + "\"}";
 	}
 
-	private String getRedirectForOldShopFromOrderPage() {
+	private String getRedirectForOldShopFromOrderPage() throws UnsupportedEncodingException {
 		if (!isNewQs) {
 			// Not eligible for the new stuff, do no redirect
 			return null;
 		}
 
 		String orderId = pageContext.getRequest().getParameter("orderId");
-		return URL_NEW_QS_PAST_ORDERS + "#{\"orderIdList\":[\"" + orderId + "\"]}";
+		return URL_NEW_QS_PAST_ORDERS + "#"+URLEncoder.encode("{\"orderIdList\":[\"" + orderId + "\"]}", "ISO-8859-1");
+		
 	}
 
 	private String getRedirectForOldStandingPage() {
