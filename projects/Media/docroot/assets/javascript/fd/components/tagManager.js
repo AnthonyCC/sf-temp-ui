@@ -26,6 +26,23 @@ var FreshDirect = FreshDirect || {};
 
 }(FreshDirect));
 
+// check for login or signup statuses
+(function(fd) {
+  if (fd.utils.readCookie('hasJustLoggedIn')) {
+    fd.utils.eraseCookie('hasJustLoggedIn');
+    dataLayer.push({
+      'event': 'user-login'
+    });
+  }
+
+  if (fd.utils.readCookie('hasJustSignedUp')) {
+    fd.utils.eraseCookie('hasJustSignedUp');
+    dataLayer.push({
+      'event': 'user-signup'
+    });
+  }
+}(FreshDirect));
+
 // custom analytics events
 (function(fd) {
   var DISPATCHER = fd.common.dispatcher;

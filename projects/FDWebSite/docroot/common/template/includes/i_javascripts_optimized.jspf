@@ -57,26 +57,14 @@
 
     dataLayer.push(gtm_userdata);
 
-    <% if (gtm_user.hasJustLoggedIn()) {
-      Cookie justLoggedInCookie = new Cookie("hasJustLoggedIn", "true");
-      justLoggedInCookie.setMaxAge(60 * 60 * 24);
-      response.addCookie(justLoggedInCookie);
-    %>
+    <% if (gtm_user.hasJustLoggedIn()) { %>
     // user logged in
-    dataLayer.push({
-      'event': 'user-login'
-    });
+    document.cookie = "hasJustLoggedIn=true";
     <% } %>
 
-    <% if (gtm_user.hasJustSignedUp()) {
-      Cookie justSignedUpCookie = new Cookie("hasJustSignedUp", "true");
-      justSignedUpCookie.setMaxAge(60 * 60 * 24);
-      response.addCookie(justSignedUpCookie);
-    %>
-    // user logged in
-    dataLayer.push({
-      'event': 'user-signup'
-    });
+    <% if (gtm_user.hasJustSignedUp()) { %>
+    // user signed up
+    document.cookie = "hasJustSignedUp=true";
     <% } %>
   </script>
   <% } %>
