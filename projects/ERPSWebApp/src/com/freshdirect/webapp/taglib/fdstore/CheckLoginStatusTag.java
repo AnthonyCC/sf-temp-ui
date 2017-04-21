@@ -119,6 +119,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         HttpSession session = pageContext.getSession();
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
+        this.redirected=false;
 
         /* APPDEV-2024 */
         if (request.getParameter("apc") != null) {
