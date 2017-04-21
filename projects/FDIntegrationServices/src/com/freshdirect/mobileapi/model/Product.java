@@ -752,8 +752,8 @@ public class Product {
                 message.append("To assure the highest quality, our chefs prepare this item to order. You must complete checkout by ")
                         .append(bodyTime).append(" to order this item for delivery tomorrow.");
             }
-        } catch (FDResourceException e) {
-            LOG.warn("FDResourceException while trying to get platter cutoff. no need to throw exception. log and go forward.", e);
+        } catch (Exception e) {
+            LOG.warn("Exception while trying to get platter cutoff. no need to throw exception. log and go forward.", e);
         }
         return new String[] { title.toString(), message.toString() };
     }
