@@ -279,6 +279,7 @@ public class ModuleContentService {
         }
 
         iconData.setIconLink(linkUrl);
+        iconData.setIconId(imageBanner.getKey().getId());
 
         return iconData;
     }
