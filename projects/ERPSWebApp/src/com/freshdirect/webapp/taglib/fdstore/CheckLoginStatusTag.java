@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
 
 import org.apache.commons.lang.CharEncoding;
 import org.apache.log4j.Category;
@@ -362,12 +361,11 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
 
     @Override
     public int doEndTag() throws JspException {
-    	return EVAL_PAGE;
-       /* if (this.redirected) {
+        if (this.redirected) {
             return SKIP_PAGE;
         } else {
             return EVAL_PAGE;
-        }*/
+        }
     }
 
     private int createBypassedUser() {
