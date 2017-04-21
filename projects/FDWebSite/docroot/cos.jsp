@@ -33,7 +33,8 @@ request.setAttribute("noyui", true);
     String trkCode = "dpage";
     int validOrderCount = user.getAdjustedValidOrderCount();  
 	
-    boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+    boolean mobWeb = false; //not ready 20170421 
+    		//FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
     String pageTemplate = "/common/template/no_shell_optimized.jsp";
     if (mobWeb) {
     	pageTemplate = "/common/template/mobileWeb.jsp"; //mobWeb template
@@ -137,7 +138,6 @@ if (location2Media) { %><comp:location2Media user="<%= user %>" /><% }
 			collection="<%= dept.getDepartmentBottom() %>" 
 			id="media" 
 			type="com.freshdirect.fdstore.content.Html" ><fd:IncludeHtml html="<%= media %>"></fd:IncludeHtml>
-			<%= media %>
 		</logic:iterate></div>
 		<div class="oas_home_bottom"><script type="text/javascript">OAS_AD('HPWideBottom');</script></div>
 	</div>
