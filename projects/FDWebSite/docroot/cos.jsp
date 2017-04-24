@@ -6,7 +6,8 @@
 		import="com.freshdirect.fdlogistics.model.FDReservation"
 		import="com.freshdirect.webapp.util.CCFormatter"
 		import="com.freshdirect.fdlogistics.model.FDTimeslot"
-		import="com.freshdirect.webapp.util.FDURLUtil"%>
+		import="com.freshdirect.webapp.util.FDURLUtil"
+		import="java.util.ArrayList"%>
 <%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
 <%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
 <%@ page import="com.freshdirect.webapp.util.JspMethods" %>
