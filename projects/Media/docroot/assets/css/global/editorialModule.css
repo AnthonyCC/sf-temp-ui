@@ -122,7 +122,7 @@
 }
 
 .content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header .header-title {
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .content-module.editorial-module.product-carousel .editorial-content .left-side,
