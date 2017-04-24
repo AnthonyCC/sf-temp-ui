@@ -753,7 +753,7 @@ public class Product {
                         .append(bodyTime).append(" to order this item for delivery tomorrow.");
             }
         } catch (Exception e) {
-            LOG.warn("Exception while trying to get platter cutoff. no need to throw exception. log and go forward.", e);
+            LOG.error("FDPlatterException : Exception while trying to get platter cutoff. no need to throw exception. log and go forward." , e);
         }
         return new String[] { title.toString(), message.toString() };
     }
