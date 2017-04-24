@@ -62,11 +62,12 @@
 					<!-- NO SAMPLES --> /* for our own sanity */
 				{/if}
 				/* now recommendation carousels */
-				{if $recommendationTabs and length($recommendationTabs)}
+				{if $recommendationTabs}
 					{foreach $tab in $recommendationTabs}
-						{if $recommendationTabs[index($tab)].carouselData and $recommendationTabs[index($tab)].carouselData.products}			
 							/* mark as selected if tab is first and there's no sampleCarousel OR $cmEventSource == 'checkout' */
 							<li role="tab" tabindex="0" aria-selected="{if isFirst($tab) and (not $hasProductSamplesTab or $cmEventSource_clean == 'checkout')}true{else}false{/if}" data-component="tabitem" class="{if isFirst($tab) and (not $hasProductSamplesTab or $cmEventSource_clean == 'checkout')}selected{/if}" data-tabname="{$tab.title}" data-sitefeature="{$tab.siteFeature}" data-impressionid="{$tab.impressionId}" data-parentimpressionid="{$tab.parentImpressionId}" data-parentvariantid="{$tab.parentVariantId}">{$tab.title}</li>
+						
+						{if $recommendationTabs[index($tab)].carouselData and $recommendationTabs[index($tab)].carouselData.products}
 						{else}
 							<!-- NO PRODS IN CAR[{index($tab)}] ({if $recommendationTabs[index($tab)].title}{$recommendationTabs[index($tab)].title}{/if}) -->
 						{/if}
@@ -99,7 +100,7 @@
 					{/call}
 				</div>
 			{else}
-				{if $recommendationTabs and length($recommendationTabs)}
+				{if $recommendationTabs}
 					<!-- RECS -->
 					<div role="tabpanel" class="tab-container light-carousel" data-component="tabpanel" data-cmSiteFeature="{$recommendationTabs[0].siteFeature}">
 						{if $recommendationTabs[0].carouselData and $recommendationTabs[0].carouselData.products}
