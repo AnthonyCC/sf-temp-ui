@@ -928,8 +928,8 @@ public class FDStoreProperties {
     // previous product donation/sample carousels, for QA
     private static final String PROP_OBSOLETE_CART_CAROUSELS_ENABLED = "fdstore.obsolete.cart.carousels.enabled";
     
-    private final static String PROP_QS_TOP_ITEMS_PERF_OPT_ENABLED = "quickshop.topitems.perf.optimize.enabled";
-    private final static String PROP_ZIP_CHECK_OVER_LAY_ENABLED = "zipcheck.overlay.enabled";
+    private final static String PROP_QS_TOP_ITEMS_PERF_OPT_ENABLED = "fdstore.quickshop.topitems.perf.optimize.enabled";
+    private final static String PROP_ZIP_CHECK_OVER_LAY_ENABLED = "fdstore.zipcheck.overlay.enabled";
 
     static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
