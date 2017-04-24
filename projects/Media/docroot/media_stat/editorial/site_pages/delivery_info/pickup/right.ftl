@@ -18,7 +18,7 @@
 		<td><a href="/media_stat/pdf/map_bronx.pdf" target="fd_pdf">From<br>The Bronx</a></td>
 	</tr>
 	<tr>
-		<td colspan="2"><img src="/media_stat/images/layout/999966.gif" width="100%" height="1" vspace="10"></td>
+		<td colspan="2"><img src="/media_stat/images/layout/999966.gif" alt="" width="100%" height="1" vspace="10"></td>
 	</tr>
 	<tr>
 		<td colspan="2"><b>All documents in Adobe<br>Acrobat&copy;</b> format <a href="http://www.adobe.com/products/acrobat/readstep2.html" target="_blank">Click here<br>to download</a> the free Acrobat<br>

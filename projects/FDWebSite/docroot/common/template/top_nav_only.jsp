@@ -68,17 +68,17 @@
 	<center class="text10">
 		<table width="<%=W_TOP_NAV_ONLY_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 			<tr>
-				<td class="fivePxTall" width="<%=W_TOP_NAV_ONLY_TOTAL%>" valign="top" colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
+				<td class="fivePxTall" width="<%=W_TOP_NAV_ONLY_TOTAL%>" valign="top" colspan="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
 			</tr>
 			<tr>
 				<td><%@ include file="/common/template/includes/deptnav.jspf" %></td>
 			</tr>
 			<tr>
-				<td class="onePxTall" width="<%=W_TOP_NAV_ONLY_TOTAL%>" bgcolor="#999966" colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+				<td class="onePxTall" width="<%=W_TOP_NAV_ONLY_TOTAL%>" bgcolor="#999966" colspan="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
 			</tr>
 			<tr valign="top">
 				<td align="center">
-					<img src="/media_stat/images/layout/clear.gif" height="15" width="<%=W_TOP_NAV_ONLY_TOTAL%>"><br />
+					<img src="/media_stat/images/layout/clear.gif" alt="" height="15" width="<%=W_TOP_NAV_ONLY_TOTAL%>"><br />
 					<!-- content lands here -->
 					<tmpl:get name='content'/>
 					<!-- content ends above here-->

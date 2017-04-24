@@ -148,7 +148,7 @@ response.setHeader("Cache-Control", "no-cache");
 					</td>
 				<%}%>
 				</tr>
-				<%if("".equals(profileImagePath)){%><tr><td colspan="2" style="padding-bottom:10px;"><img height="1" width="1" src="/media_stat/images/layout/clear.gif"/></td></tr><%}%>
+				<%if("".equals(profileImagePath)){%><tr><td colspan="2" style="padding-bottom:10px;"><img height="1" width="1" alt="" src="/media_stat/images/layout/clear.gif"/></td></tr><%}%>
 			</table>
 			<!-- NAME profile - customer info -->
 				<table class="col100per noBorder tLeft">
@@ -189,10 +189,10 @@ response.setHeader("Cache-Control", "no-cache");
 
 			<!-- OAS ad -->
 						<table cellpadding="0" cellspacing="0" border="0">
-							<tr><td colspan="3" style="padding-top:12px;"><img height="1" width="1" src="/media_stat/images/layout/clear.gif"/></td></tr>
+							<tr><td colspan="3" style="padding-top:12px;"><img height="1" width="1" alt="" src="/media_stat/images/layout/clear.gif"/></td></tr>
 							<tr valign="top"> 
 								<td><img height="6" width="6" src="/media_stat/images/layout/top_left_curve.gif"/></td>
-								<td style="border-top: 1px solid #996;"><img height="1" width="204" src="/media_stat/images/layout/clear.gif"/></td>
+								<td style="border-top: 1px solid #996;"><img height="1" width="204" alt="" src="/media_stat/images/layout/clear.gif"/></td>
 								<td><img height="6" width="6" src="/media_stat/images/layout/top_right_curve.gif"/></td>
 							</tr>
 							<tr>
@@ -210,7 +210,7 @@ response.setHeader("Cache-Control", "no-cache");
 							  </tr>
 							<tr valign="top">
 								<td><img height="6" width="6" vspace="0" src="/media_stat/images/layout/bottom_left_curve.gif"/></td>
-								<td style="border-bottom: 1px solid #996;"><img height="1" width="1" src="/media_stat/images/layout/clear.gif"/></td>
+								<td style="border-bottom: 1px solid #996;"><img height="1" width="1" alt="" src="/media_stat/images/layout/clear.gif"/></td>
 								<td><img height="6" width="6" vspace="0" src="/media_stat/images/layout/bottom_right_curve.gif"/></td>
 							</tr>
 						</table>
@@ -240,7 +240,7 @@ response.setHeader("Cache-Control", "no-cache");
 		    	 
 		    	</tr>
 		    </table>
-		    <img width="120" height="10" src="/media_stat/images/layout/clear.gif"/>
+		    <img width="120" height="10" alt="" src="/media_stat/images/layout/clear.gif"/>
 			<table cellpadding="0" cellspacing="0" border="0" width="100%">
 
 			<!-- header row -->
@@ -258,7 +258,7 @@ response.setHeader("Cache-Control", "no-cache");
                         <a href="<%="/your_account/customer_profile.jsp"+(needServiceType ? "?serviceType="+serviceType.name() : "")+'#'+question.getName()%>" title="">Edit</a></td>
                 </tr>
                <%=SurveyHtmlHelper.getAnswers(question,surveyResponse.getAnswerAsList(question.getName()))%>
-			   <tr><td><img height="8" width="1" src="/media_stat/images/layout/clear.gif"/></td></tr>
+			   <tr><td><img height="8" width="1" alt="" src="/media_stat/images/layout/clear.gif"/></td></tr>
             <%}%>
             </logic:iterate>
             <%}%>
@@ -273,13 +273,13 @@ response.setHeader("Cache-Control", "no-cache");
 
 <!-- * end the actual summary info * -->
 <br><br>
-<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%= W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%= W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
 <FONT CLASS="space4pix"><BR><BR></FONT>
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL %>">
 <tr VALIGN="TOP">
 <td WIDTH="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="CONTINUE SHOPPING" ALIGN="LEFT"></a></td>
 <td WIDTH="<%= W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL - 35 %>"><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="CONTINUE SHOPPING"></a>
-<BR>from <FONT CLASS="text11bold"><A HREF="/index.jsp">Home Page</A></FONT><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="340" HEIGHT="1" BORDER="0"></td>
+<BR>from <FONT CLASS="text11bold"><A HREF="/index.jsp">Home Page</A></FONT><BR><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="340" HEIGHT="1" BORDER="0"></td>
 </tr>
 
 </TABLE>

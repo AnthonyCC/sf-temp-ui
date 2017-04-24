@@ -500,7 +500,7 @@ public class ErpServicesProperties {
 		
 		defaults.put(PROP_SAP_BAPI_UNATTENDED_DELIVERY,"false");
 		defaults.put(PROP_SHIPPING_DETAILS_ROW_COUNT,"600");
-		defaults.put(PROP_WDC_PLANT_ORDERLINES_ENABLED, "false");
+		defaults.put(PROP_WDC_PLANT_ORDERLINES_ENABLED, "true");
 
 		//Added by Smerugu
 		defaults.put(PROP_MINIMUM_ORDER_AMOUNT, "30.0");

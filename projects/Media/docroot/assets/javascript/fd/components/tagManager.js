@@ -26,16 +26,38 @@ var FreshDirect = FreshDirect || {};
 
 }(FreshDirect));
 
+// check for login or signup statuses
+(function(fd) {
+  if (fd.utils.readCookie('hasJustLoggedIn')) {
+    fd.utils.eraseCookie('hasJustLoggedIn');
+    dataLayer.push({
+      'event': 'user-login'
+    });
+  }
+
+  if (fd.utils.readCookie('hasJustSignedUp')) {
+    fd.utils.eraseCookie('hasJustSignedUp');
+    dataLayer.push({
+      'event': 'user-signup'
+    });
+  }
+}(FreshDirect));
+
 // custom analytics events
 (function(fd) {
   var DISPATCHER = fd.common.dispatcher;
 
   var getPageType = function () {
-    var params = fd.utils.getParameters(),
-        pId = params.productId,
-        pType = params.pageType;
-
-    return pId ? 'pdp' : pType || 'DEFAULT';
+	  var defaultValue = 'DEFAULT';
+	  try {
+		  var params = fd.utils.getParameters(),
+		    pId = params.productId || null,
+			pType = params.pageType || null;
+		
+		  return pId ? 'pdp' : pType || defaultValue;
+	  } catch (e) {
+		  return defaultValue;
+	  }
   };
 
   var atcSuccess = Object.create(fd.common.signalTarget, {

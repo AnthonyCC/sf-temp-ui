@@ -7,24 +7,16 @@
 {template .iconCarouselItem}
 <li class="portrait-item">
   <div class="icon-image">
-    <a {if $item.iconLink}href="{$item.iconLink}"{/if} manual_cm_sp="
-    {if $item.productId}{$item.productId}{/if},{if $item.iconLinkText}{$item.iconLinkText}{/if}
-    {if $moduleData.moduleId},{$moduleData.moduleId}{/if}
-    {if $moduleData.moduleTitle}-_-{$moduleData.moduleTitle}{/if}
-    {if $moduleData.moduleTitleTextBanner}-_-{$moduleData.moduleTitleTextBanner}{/if}
-    {if $moduleData.contentTitle}-_-{$moduleData.contentTitle}{/if}
-    {if $moduleData.moduleGroupTitle}-_-{$moduleData.moduleGroupTitle}{/if}
-    {if $moduleData.moduleGroupTitleTextBanner}-_-{$moduleData.moduleGroupTitleTextBanner}{/if}">
+    <a {if $item.iconLink}href="{$item.iconLink}"{/if} {if $moduleData}manual_cm_sp="
+    {if $item.iconId}{$item.iconId}{/if}-_-{if $item.iconLinkText}{$item.iconLinkText}{/if}-_-
+    {if $moduleData.moduleId}{$moduleData.moduleId}{else}no module ID{/if}"{/if}>
       <img src="{$item.iconImage}" alt="icon">
     </a>
   </div>
-  <a {if $item.iconLink}href="{$item.iconLink}"{/if} manual_cm_sp="
-  {if $item.productId}{$item.productId}{/if},{if $item.iconLinkText}{$item.iconLinkText}{/if}
-  {if $moduleData.moduleId},{$moduleData.moduleId}{/if}
-  {if $moduleData.moduleTitle}-_-{$moduleData.moduleTitle}{/if}
-  {if $moduleData.moduleTitleTextBanner}-_-{$moduleData.moduleTitleTextBanner}{/if}
-  {if $moduleData.contentTitle}-_-{$moduleData.contentTitle}{/if}
-  {if $moduleData.moduleGroupTitle}-_-{$moduleData.moduleGroupTitle}{/if}
-  {if $moduleData.moduleGroupTitleTextBanner}-_-{$moduleData.moduleGroupTitleTextBanner}{/if}">{if $item.iconLinkText}{$item.iconLinkText}{/if}</a>
+  {if not $moduleData or not $moduleData.hideProductName}
+  <a {if $item.iconLink}href="{$item.iconLink}"{/if} {if $moduleData}manual_cm_sp="
+  {if $item.iconId}{$item.iconId}{/if}-_-{if $item.iconLinkText}{$item.iconLinkText}{/if}-_-
+  {if $moduleData.moduleId}{$moduleData.moduleId}{else}no module ID{/if}"{/if}>{if $item.iconLinkText}{$item.iconLinkText}{/if}</a>
+  {/if}
 </li>
 {/template}

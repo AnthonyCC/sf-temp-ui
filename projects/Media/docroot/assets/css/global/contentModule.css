@@ -14,6 +14,10 @@
   border-top: 0;
 }
 
+.content-module .content.border-top {
+  border-top: 2px solid #F2F3F4;
+}
+
 .content-module [data-component="carousel"] [data-component="carousel-mask"] {
   background-color: white;
   margin: 0 2px 36px;
@@ -32,6 +36,32 @@
   margin: 0;
   min-height: 40px;
   padding: 0 18px;
+}
+
+.content-module .content-header > div {
+  display: flex;
+}
+
+.content-module .content-header .content-tittle-text-banner {
+  background-color: #f68139;
+  color: white;
+  margin-left: 15px;
+  padding-left: 10px;
+  padding-right: 20px;
+  position: relative;
+  text-transform: none;
+}
+
+.content-module .content-header .content-tittle-text-banner::after {
+  background-color: #F2F3F4;
+  min-width: 20px;
+  min-height: 20px;
+  content: '';
+  display: block;
+  position: absolute;
+  right: -9px;
+  top: 3px;
+  transform: rotate(45deg);
 }
 
 .content-module h1 {
@@ -63,24 +93,24 @@
 }
 
 .content-module .module-header .module-text-banner {
-  background-color: #eb202a;
+  background-color: #f68139;
   color: white;
   padding-left: 10px;
-  padding-right: 15px;
+  padding-right: 20px;
   position: relative;
   text-transform: none;
 }
 
 .content-module .module-header .module-text-banner::after {
-  border-bottom: 13px solid #eb202a;
-  border-top: 13px solid #eb202a;
-  border-left: none;
-  border-right: 10px solid transparent;
+  background-color: white;
+  min-width: 20px;
+  min-height: 20px;
   content: '';
   display: block;
   position: absolute;
-  right: -10px;
-  top: 0;
+  right: -9px;
+  top: 3px;
+  transform: rotate(45deg);
 }
 
 .content-module .content-header h2 {
@@ -104,8 +134,4 @@
 
 .content-module .module-header .module-title {
   margin-right: 15px;
-}
-
-.content-module .content.hide-burst [data-component="carousel"] .burst {
-  display: none;
 }

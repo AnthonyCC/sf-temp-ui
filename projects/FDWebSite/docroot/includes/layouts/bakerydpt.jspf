@@ -25,7 +25,7 @@ final int W_BAKERY_DEPT_RIGHT = 2 * W_BAKERY_DEPT_CAT;
             <td width="<%=W_BAKERY_DEPT_CAT%>"><%-- item cell_3 --%>
             <a href="<%=response.encodeURL("/category.jsp?catId=whlmlt&trk=dpage")%>"><img src="/media_stat/bakery_tmp/whlmlt_cat.jpg" alt="Homey, Nutritious, Whole-Grain Loaves" width="83" height="53" border="0"></a><br><a href="<%=response.encodeURL("/category.jsp?catId=whlmlt&trk=dpage")%>">Whole Wheat & Multigrain</a></td>
         </tr>
-        <tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" height="14" width="325"></td></tr>
+        <tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" alt="" height="14" width="325"></td></tr>
         <tr height="90" align="center" valign="top"><%-- Row 2--%>
             <td><%-- item cell_1 --%>
             <a href="<%=response.encodeURL("/category.jsp?catId=srdh&trk=dpage")%>"><img src="/media_stat/bakery_tmp/srdh_cat.jpg" alt="Tangy, Crusty Sourdough" width="96" height="56" border="0"></a><br><a href="<%=response.encodeURL("/category.jsp?catId=srdh&trk=dpage")%>">Sourdough</a></td>
@@ -34,7 +34,7 @@ final int W_BAKERY_DEPT_RIGHT = 2 * W_BAKERY_DEPT_CAT;
             <td><%-- item cell_3 --%>
             <a href="<%=response.encodeURL("/category.jsp?catId=pullman&trk=dpage")%>"><img src="/media_stat/bakery_tmp/pullman_cat.jpg" alt="Wholesome Sandwich Loaves" width="96" height="56" border="0"></a><br><a href="<%=response.encodeURL("/category.jsp?catId=pullman&trk=dpage")%>">Pullman</a></td>
         </tr>
-        <tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" height="14" width="325"></td></tr>
+        <tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" alt="" height="14" width="325"></td></tr>
         <tr height="90" align="center" valign="top"><%-- Row 3--%>
                <td><%-- item cell_1 --%>
             <a href="<%=response.encodeURL("/category.jsp?catId=bgtt&trk=dpage")%>"><img src="/media_stat/bakery_tmp/bgtt_cat.jpg" alt="Crisp, Airy Baguettes" width="101" height="53" border="0"></a><br><a href="<%=response.encodeURL("/category.jsp?catId=bgtt&trk=dpage")%>">Baguettes</a></td>
@@ -46,9 +46,9 @@ final int W_BAKERY_DEPT_RIGHT = 2 * W_BAKERY_DEPT_CAT;
     </table>
     <%-- End Par Baked Bread Area   --%></td>
 <%-- spacers --%>
-        <td width="<%=W_BAKERY_PADDING - 1%>"><img src="/media_stat/images/layout/clear.gif" width="20" height="1"></td>
-        <td width="1" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-        <td width="<%=W_BAKERY_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="26" height="1"></td>
+        <td width="<%=W_BAKERY_PADDING - 1%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="1"></td>
+        <td width="1" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
+        <td width="<%=W_BAKERY_PADDING%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="26" height="1"></td>
 <%-- end spacers --%>
         <td width="<%=W_BAKERY_DEPT_RIGHT%>" align="center">
         <%-- Start Pastries Area --%>
@@ -64,7 +64,7 @@ final int W_BAKERY_DEPT_RIGHT = 2 * W_BAKERY_DEPT_CAT;
                         <a href="<%=response.encodeURL("/category.jsp?catId=pietrt&trk=dpage")%>"><img src="/media_stat/bakery_tmp/pietrt_cat.jpg" alt="Pies & Tarts" width="83" height="53" border="0"></a><br><a href="<%=response.encodeURL("/category.jsp?catId=pietrt&trk=dpage")%>">Pies & Tarts</a>
                     </td>
                 </tr>
-                <tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" height="14" width="1" border="0"></td></tr><%-- spacer row --%>
+                <tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" alt="" height="14" width="1" border="0"></td></tr><%-- spacer row --%>
                 <tr height="90" align="center" valign="top"><%-- Row 2--%>
                     <td><%-- item cell_1 --%>
                         <a href="<%=response.encodeURL("/category.jsp?catId=bak_cake_coffee&trk=dpage")%>"><img src="/media_stat/bakery_tmp/muffnspoundck_cat.jpg" alt="Muffins  & Pound Cakes" width="83" height="53" border="0"></a><br><a href="<%=response.encodeURL("/category.jsp?catId=bak_cake_coffee&trk=dpage")%>">Muffins  & Pound Cakes</a>
@@ -72,7 +72,7 @@ final int W_BAKERY_DEPT_RIGHT = 2 * W_BAKERY_DEPT_CAT;
                     <td><%-- item cell_2 --%>
                         <a href="<%=response.encodeURL("/category.jsp?catId=ckibni&trk=dpage")%>"><img src="/media_stat/bakery_tmp/ckibni_cat.jpg" alt="Cookies & Brownies" width="83" height="53" border="0"></a><br><a href="<%=response.encodeURL("/category.jsp?catId=ckibni&trk=dpage")%>">Cookies & Brownies</a>
                     </td></tr>
-                <tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" height="14" width="1" border="0"></td></tr><%-- spacer row --%>
+                <tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" alt="" height="14" width="1" border="0"></td></tr><%-- spacer row --%>
                 <tr height="90" align="center" valign="top"><%-- Row 3--%>
                     <td><%-- item cell_1 --%>
                         <a href="<%=response.encodeURL("/category.jsp?catId=pudfl&trk=dpage")%>"><img src="/media_stat/bakery_tmp/pudfl_cat.jpg" alt="Pudding & Flan" width="83" height="53" border="0"></a><br><a href="<%=response.encodeURL("/category.jsp?catId=pudfl&trk=dpage")%>">Pudding & Souffl&eacute;</a>
@@ -82,5 +82,5 @@ final int W_BAKERY_DEPT_RIGHT = 2 * W_BAKERY_DEPT_CAT;
                     </td></tr>
         </table><%-- End Pastries Area --%></td>
         <td width="<%=W_BAKERY_PADDING%>"></td></tr>
-        <tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="22"></td></tr>
+        <tr><td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="22"></td></tr>
 </table>

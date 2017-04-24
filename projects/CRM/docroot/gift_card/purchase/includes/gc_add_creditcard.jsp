@@ -165,20 +165,20 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 		</tr>
 		<tr>
 			<td>
-				<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
+				<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
 				<%@ include file="/gift_card/purchase/includes/i_gc_creditcard_fields.jspf" %>
 			</td>
 		</tr>
 		<tr>
 			<td class="botBordLineOrange">
-				<img src="/media_stat/images/layout/clear.gif" width="1" height="17" border="0" /><br />
+				<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="17" border="0" /><br />
 			</td>
 		</tr>
 		<tr>
 			<td align="center">
-				<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
+				<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
 				<a href="<%=success_page%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16"  hspace="4" vspace="4" alt="CANCEL" border="0"></a><input type="image" name="checkout_credit_card_edit" src="/media_stat/images/buttons/save_changes.gif" width="84" height="16" hspace="4" vspace="4" alt="SAVE ADDRESS"  border="0"><br />
-				<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
+				<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
 			</td>
 		</tr>
 	</table>

@@ -12,7 +12,7 @@
 <tmpl:insert template='/common/template/left_dnav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - About FreshDirect</tmpl:put>
 <tmpl:put name='content' direct='true'>
-<img src="/media_stat/images/layout/clear.gif" width="1" height="12"><br>
+<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="12"><br>
 <div align="right">
 	<% if (aboutSection.equals("about_fdstory_promise")){
 	%>
@@ -57,7 +57,7 @@
 
 %>
 </div>				
-<br><img src="/media_stat/images/layout/clear.gif" width="1" height="12">
+<br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="12">
 </tmpl:put>
 </tmpl:insert>
 

@@ -66,16 +66,16 @@ Now that you have had several orders from FreshDirect At The Office, we'd like t
 		</fd:ErrorHandler>
 <tr>
 <td colspan="7" class="text12">
-<br><img src="/media_stat/images/layout/999966.gif" width="<%=W_CHECKOUT_SURVEY_COS_TOTAL%>" height="1" vspace="2"></td>
+<br><img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_CHECKOUT_SURVEY_COS_TOTAL%>" height="1" vspace="2"></td>
 	</tr>
 	<tr align="center">
-		<td><img src="/media_stat/images/layout/clear.gif" width="20" height="8" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_CHECKOUT_SURVEY_COS_TOTAL-70)/6+50%>" height="8" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_CHECKOUT_SURVEY_COS_TOTAL-70)/6%>" height="8" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_CHECKOUT_SURVEY_COS_TOTAL-70)/6%>" height="8" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_CHECKOUT_SURVEY_COS_TOTAL-70)/6%>" height="8" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_CHECKOUT_SURVEY_COS_TOTAL-70)/6%>" height="8" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_CHECKOUT_SURVEY_COS_TOTAL-70)/6%>" height="8" border="0"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="8" border="0"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=(W_CHECKOUT_SURVEY_COS_TOTAL-70)/6+50%>" height="8" border="0"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=(W_CHECKOUT_SURVEY_COS_TOTAL-70)/6%>" height="8" border="0"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=(W_CHECKOUT_SURVEY_COS_TOTAL-70)/6%>" height="8" border="0"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=(W_CHECKOUT_SURVEY_COS_TOTAL-70)/6%>" height="8" border="0"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=(W_CHECKOUT_SURVEY_COS_TOTAL-70)/6%>" height="8" border="0"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=(W_CHECKOUT_SURVEY_COS_TOTAL-70)/6%>" height="8" border="0"></td>
 	</tr>
 
 	<%  int quesNum = 0; 
@@ -113,7 +113,7 @@ Now that you have had several orders from FreshDirect At The Office, we'd like t
 				<tr>
 					<td colspan="7" class="text12"><%=quesNum%>. <b><%=question.getDescription()%></b></td>
 				</tr>
-				<tr><td colspan="7"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0"></td></tr>
+				<tr><td colspan="7"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10" border="0"></td></tr>
 					<% if (currQues.equals("q2")) { %>
 						<tr align="center">
 							<td colspan="2" align="left"></td>
@@ -222,13 +222,13 @@ Now that you have had several orders from FreshDirect At The Office, we'd like t
 				</tr>
 				<tr>
 					<td></td>
-					<td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0"><br><textarea wrap="virtual" cols="70" rows="<%= question.getName().indexOf("recommend") > -1?"4":"3"%>" class="text12" name="<%=question.getName()%>"><%=request.getParameter(question.getName())%></textarea></td>
+					<td colspan="6"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10" border="0"><br><textarea wrap="virtual" cols="70" rows="<%= question.getName().indexOf("recommend") > -1?"4":"3"%>" class="text12" name="<%=question.getName()%>"><%=request.getParameter(question.getName())%></textarea></td>
 				</tr>
 				<tr><td colspan="7"><br><br></td></tr>
 			<% } %>
         </logic:iterate>
 		<tr>
-		<td colspan="7" align="center" class="text12"><img src="/media_stat/images/layout/999966.gif" width="<%=W_CHECKOUT_SURVEY_COS_TOTAL%>" height="1" vspace="10"><br><input type="image" src="/media_stat/images/buttons/survey_submit.gif" width="91" height="21" name="submit_survey" alt="SUBMIT"><br><br>
+		<td colspan="7" align="center" class="text12"><img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_CHECKOUT_SURVEY_COS_TOTAL%>" height="1" vspace="10"><br><input type="image" src="/media_stat/images/buttons/survey_submit.gif" width="91" height="21" name="submit_survey" alt="SUBMIT"><br><br>
 		
 		</td>
 	</tr>

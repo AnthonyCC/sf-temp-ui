@@ -147,7 +147,7 @@ response.setHeader("Cache-Control", "no-cache");
 	</tr>
 	<tr>
 		<td>
-			<img width="<%= W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL %>" height="1" border="0" src="/media_stat/images/layout/ff9933.gif"><br/>
+			<img width="<%= W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL %>" height="1" border="0" alt="" src="/media_stat/images/layout/ff9933.gif"><br/>
 		</td>
 	</tr>
 	<tr>
@@ -183,13 +183,13 @@ response.setHeader("Cache-Control", "no-cache");
 
 <!-- * end the actual summary info * -->
 <br><br>
-<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%= W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%= W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
 <FONT CLASS="space4pix"><BR><BR></FONT>
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL %>">
 <tr VALIGN="TOP">
 <td WIDTH="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="CONTINUE SHOPPING" ALIGN="LEFT"></a></td>
 <td WIDTH="<%= W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL - 35 %>"><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="CONTINUE SHOPPING"></a>
-<BR>from <FONT CLASS="text11bold"><A HREF="/index.jsp">Home Page</A></FONT><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="340" HEIGHT="1" BORDER="0"></td>
+<BR>from <FONT CLASS="text11bold"><A HREF="/index.jsp">Home Page</A></FONT><BR><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="340" HEIGHT="1" BORDER="0"></td>
 </tr>
 
 </TABLE>

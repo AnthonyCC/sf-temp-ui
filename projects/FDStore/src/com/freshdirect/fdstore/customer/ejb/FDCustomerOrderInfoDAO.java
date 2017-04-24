@@ -13,12 +13,15 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Category;
+
+import weblogic.descriptor.annotation.AnnotationDefinition.UnSetValueAnnotation;
 
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.crm.ejb.CriteriaBuilder;
@@ -29,6 +32,7 @@ import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
 import com.freshdirect.fdstore.customer.FDCustomerSearchCriteria;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDOrderSearchCriteria;
+import com.freshdirect.fdstore.customer.UnsettledOrdersInfo;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -363,5 +367,49 @@ class FDCustomerOrderInfoDAO {
 		ps.close();
 
 		return savings;
+	}
+	
+	private static final String UNSETTLED_ORDERS = "select \"Delivery Date\","+
+			" MAX(DECODE(\"Status\",'STL',\"Order Count\")) \"Settled\", "+
+			" MAX(DECODE(\"Status\",'CBK',\"Order Count\")) \"Charge Back\","+
+			" MAX(DECODE(\"Status\",'STF',\"Order Count\")) \"Settlement Failed\","+
+			" MAX(DECODE(\"Status\",'ENR',\"Order Count\")) \"Enroute\","+
+			" MAX(DECODE(\"Status\",'PPG',\"Order Count\")) \"Payment Pending\","+
+			" MAX(DECODE(\"Status\",'CPG',\"Order Count\")) \"Capture Pending\","+
+			" MAX(DECODE(\"Status\",'STP',\"Order Count\")) \"GC Settlement Pending\","+
+			" MAX(DECODE(\"Status\",'REF',\"Order Count\")) \"Pending Refusal\","+
+			" MAX(DECODE(\"Status\",'POG',\"Order Count\")) \"GC Payment Pending\","+
+			" MAX(DECODE(\"Status\",'RPG',\"Order Count\")) \"GC Registration Pending\""+
+			" FROM ("+
+			" select count(s.id) \"Order Count\", sa.requested_Date \"Delivery Date\", s.status \"Status\""+
+			" from cust.sale s, cust.salesaction sa where s.id=sa.sale_id  and sa.action_type in ('CRO','MOD') and S.CROMOD_DATE=sa.action_date"+
+			" and sa.requested_date between trunc(sysdate-15) and trunc(sysdate-1) and s.status!='CAN' "+
+			" Group BY sa.requested_Date,s.status"+
+			" Order BY sa.requested_Date"+
+			" )"+
+			" Group BY \"Delivery Date\" Order BY \"Delivery Date\"";
+
+	public static List<UnsettledOrdersInfo> getUnsettledOrders(Connection conn, java.util.Date date) throws SQLException {
+		Statement statement =  conn.createStatement();
+		ResultSet rs = statement.executeQuery(UNSETTLED_ORDERS);
+		List<UnsettledOrdersInfo> unsettledOrders = new ArrayList<UnsettledOrdersInfo>();
+		while(rs.next()){
+			UnsettledOrdersInfo order = new UnsettledOrdersInfo();
+			order.setDeliveryDate(rs.getDate("Delivery Date"));
+			order.setSettled(rs.getString("Settled"));
+			order.setChargeBack(rs.getString("Charge Back"));
+			order.setSettlementFailed(rs.getString("Settlement Failed"));
+			order.setEnroute(rs.getString("Enroute"));
+			order.setPaymentPending(rs.getString("Payment Pending"));
+			order.setCapturePending(rs.getString("Capture Pending"));
+			order.setPendingRefusal(rs.getString("Pending Refusal"));
+			order.setGCSettlementPending(rs.getString("GC Settlement Pending"));
+			order.setGCPaymentPending(rs.getString("GC Payment Pending"));
+			order.setGCRegistrationPending(rs.getString("GC Registration Pending"));
+			
+			unsettledOrders.add(order);
+		}
+		return unsettledOrders;
+		
 	}
 }

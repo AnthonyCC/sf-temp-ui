@@ -77,7 +77,7 @@
 				<tr class="NOMOBWEB"><td colspan="4">&nbsp;</td></tr>
 				<tr>
 					<% if (!mobWeb) { %><td valign="top"><img src="/media/images/layout/clear.gif" width="10" height="1" alt="" border="0" /></td><% } %>
-					<td colspan="<%= (mobWeb)? "4":"3" %>"><img src="/media_stat/images/layout/999966.gif" height="1" border="0" width="100%" VSPACE="3"><br /></td>
+					<td colspan="<%= (mobWeb)? "4":"3" %>"><img src="/media_stat/images/layout/999966.gif" alt="" height="1" border="0" width="100%" VSPACE="3"><br /></td>
 				</tr>
 				<tr><td colspan="4">&nbsp;</td></tr>
 				<%	int itemCount = (Integer) pageContext.getAttribute("searchResultsSize"); %>

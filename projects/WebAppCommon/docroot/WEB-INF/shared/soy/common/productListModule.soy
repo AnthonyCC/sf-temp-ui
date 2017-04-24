@@ -10,7 +10,7 @@
   	{call common.moduleHeader}
   		{param content: $moduleData /}
   	{/call}
-  	<div class="content {if $moduleData.hideProductBadge} hide-burst {/if}">
+  	<div class="content {if  not $moduleData.contentTitle and not $moduleData.contentTitleTextBanner and $moduleData.hideViewAllButton} border-top {/if}">
   		{call common.contentHeader}
   			{param content: $moduleData /}
   		{/call}
@@ -20,6 +20,7 @@
   				{call common.transactionalGridItem}
   					{param extraClass:'carouselTransactionalItem' /}
             {param cmEventSource: $moduleData.cmEventSource /}
+            {param moduleData: $moduleData /}
   					{param item: $item /}
   				{/call}
   			{/foreach}

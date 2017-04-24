@@ -79,94 +79,104 @@ public class CartController extends BaseController {
     @Override
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
             SessionUser user) throws FDException, ServiceException, JsonException, NoSessionException {
-
-        if (ACTION_ADD_ITEM_TO_CART.equals(action)) {
-            AddItemToCart reqestMessage = parseRequestObject(request, response, AddItemToCart.class);
-            model = addItemInCart(model, user, reqestMessage, request);
-        } else if (ACTION_REMOVE_ITEM_FROM_CART.equals(action) || ACTION_REMOVE_ALL_ITEMS_FROM_CART.equals(action)) {
-            String cartLineId = null;
-            boolean isRemoveAll = false;
-            if (ACTION_REMOVE_ALL_ITEMS_FROM_CART.equals(action)) {
-                isRemoveAll = true;
-            } else {
-                //Simplify this logic to not have simple request object when fully converted.
-                cartLineId = request.getParameter(PARAM_CART_LINE_ID);
-                if ((cartLineId == null) || (cartLineId.isEmpty())) {
-                    cartLineId = parseRequestObject(request, response, SimpleRequest.class).getId();
-                }
-                isRemoveAll = false;
-            }
-            model = removeItemInCart(model, user, cartLineId, isRemoveAll, request);
-        } else if (ACTION_UPDATE_ITEM_IN_CART.equals(action)) {
-            UpdateItemInCart reqestMessage = parseRequestObject(request, response, UpdateItemInCart.class);
-            model = updateItemInCart(model, user, reqestMessage, request);
-        } else if (ACTION_GET_CART_DETAIL.equals(action)) {
-            model = getCartDetail(model, user, request);
-        } else if (ACTION_APPLY_PROMO.equals(action)) {
-            String promoId = request.getParameter(PARAM_PROMO_ID);
-            if (promoId != null) {
-                model = applyPromoCode(model, user, promoId, request);
-            } else {
-                SimpleRequest reqestMessage = parseRequestObject(request, response, SimpleRequest.class);
-                model = applyPromoCode(model, user, reqestMessage, request);
-            }
-        } else if(ACTION_APPLY_CODE.equals(action)){
-            String promoId = request.getParameter(PARAM_PROMO_ID);
-            if (promoId != null) {
-            	if(isValidPromoId(user, promoId)){
-            		model = applyPromoCode(model, user, promoId, request);
-            	} else {
-            		model = applyCode(model, user, promoId, request);
-            	}
-                
-            } else {
-                SimpleRequest reqestMessage = parseRequestObject(request, response, SimpleRequest.class);
-                if(isValidPromoId(user, reqestMessage.getId())){
-                	model = applyPromoCode(model, user, reqestMessage, request);
-                } else {
-                	model = applyCode(model, user, reqestMessage, request);
-                }
-            }      	
-        }else if (ACTION_REMOVE_PROMO.equals(action)) {
-        
-            String promoId = request.getParameter(PARAM_PROMO_ID);
-            if (promoId != null) {
-                model = removePromoCode(model, user, promoId, request);
-            } else {
-                SimpleRequest reqestMessage = parseRequestObject(request, response, SimpleRequest.class);
-                model = removePromoCode(model, user, reqestMessage, request);
-            }
-        } else if (ACTION_REMOVE_ALCOHOL.equals(action)) {
-            model = removeAlcohol(model, user, request);
-        } else if (ACTION_ADD_MULTIPLE_ITEMS_TO_CART.equals(action)) {
-            AddMultipleItemsToCart reqestMessage = parseRequestObject(request, response, AddMultipleItemsToCart.class);
-            model = addMultipleItemsInCart(model, user, reqestMessage, request);
-        } else if (ACTION_REMOVE_MULTIPLE_ITEMS_TO_CART.equals(action)) {
-            MultipleRequest reqestMessage = parseRequestObject(request, response, MultipleRequest.class);
-            model = removeMultipleItemsInCart(model, user, reqestMessage, request);
-        }  else if (ACTION_COUPON_CLIP.equals(action)) {            
-            model = clipCoupon(model, user, request.getParameter(PARAM_COUPON_ID), request);
-        }   else if (ACTION_VIEW_CARTLINE.equals(action)) {            
-            try {
-				model = getCartLine(model, request, response, user);
-			} catch (NoSessionException e) {
-				throw new ServiceException(e);
-			} catch (ModelException e) {
-				throw new ServiceException(e);
-			}
-        } else if(ACTION_SET_TIP.equals(action)) {
-        	String tipAmount = request.getParameter(PARAM_TIP_AMOUNT);
-        	double _tip = Double.parseDouble(tipAmount);
-        	user.getShoppingCart().setTip(_tip);
-        	Message responseMessage = Message.createSuccessMessage("Tip added successfully.");
-			setResponseMessage(model, responseMessage, user);
-        } else if(ACTION_SAVE_CART.equals(action)) {
-        	user.getFDSessionUser().saveCart(true);
-        	Message responseMessage = Message.createSuccessMessage("Cart Saved successfully");
-			setResponseMessage(model, responseMessage, user);
-        }
-
+    	if(UserExists(user)){
+	        if (ACTION_ADD_ITEM_TO_CART.equals(action)) {
+	            AddItemToCart reqestMessage = parseRequestObject(request, response, AddItemToCart.class);
+	            model = addItemInCart(model, user, reqestMessage, request);
+	        } else if (ACTION_REMOVE_ITEM_FROM_CART.equals(action) || ACTION_REMOVE_ALL_ITEMS_FROM_CART.equals(action)) {
+	            String cartLineId = null;
+	            boolean isRemoveAll = false;
+	            if (ACTION_REMOVE_ALL_ITEMS_FROM_CART.equals(action)) {
+	                isRemoveAll = true;
+	            } else {
+	                //Simplify this logic to not have simple request object when fully converted.
+	                cartLineId = request.getParameter(PARAM_CART_LINE_ID);
+	                if ((cartLineId == null) || (cartLineId.isEmpty())) {
+	                    cartLineId = parseRequestObject(request, response, SimpleRequest.class).getId();
+	                }
+	                isRemoveAll = false;
+	            }
+	            model = removeItemInCart(model, user, cartLineId, isRemoveAll, request);
+	        } else if (ACTION_UPDATE_ITEM_IN_CART.equals(action)) {
+	            UpdateItemInCart reqestMessage = parseRequestObject(request, response, UpdateItemInCart.class);
+	            model = updateItemInCart(model, user, reqestMessage, request);
+	        } else if (ACTION_GET_CART_DETAIL.equals(action)) {
+	            model = getCartDetail(model, user, request);
+	        } else if (ACTION_APPLY_PROMO.equals(action)) {
+	            String promoId = request.getParameter(PARAM_PROMO_ID);
+	            if (promoId != null) {
+	                model = applyPromoCode(model, user, promoId, request);
+	            } else {
+	                SimpleRequest reqestMessage = parseRequestObject(request, response, SimpleRequest.class);
+	                model = applyPromoCode(model, user, reqestMessage, request);
+	            }
+	        } else if(ACTION_APPLY_CODE.equals(action)){
+	            String promoId = request.getParameter(PARAM_PROMO_ID);
+	            if (promoId != null) {
+	            	if(isValidPromoId(user, promoId)){
+	            		model = applyPromoCode(model, user, promoId, request);
+	            	} else {
+	            		model = applyCode(model, user, promoId, request);
+	            	}
+	                
+	            } else {
+	                SimpleRequest reqestMessage = parseRequestObject(request, response, SimpleRequest.class);
+	                if(isValidPromoId(user, reqestMessage.getId())){
+	                	model = applyPromoCode(model, user, reqestMessage, request);
+	                } else {
+	                	model = applyCode(model, user, reqestMessage, request);
+	                }
+	            }      	
+	        }else if (ACTION_REMOVE_PROMO.equals(action)) {
+	        
+	            String promoId = request.getParameter(PARAM_PROMO_ID);
+	            if (promoId != null) {
+	                model = removePromoCode(model, user, promoId, request);
+	            } else {
+	                SimpleRequest reqestMessage = parseRequestObject(request, response, SimpleRequest.class);
+	                model = removePromoCode(model, user, reqestMessage, request);
+	            }
+	        } else if (ACTION_REMOVE_ALCOHOL.equals(action)) {
+	            model = removeAlcohol(model, user, request);
+	        } else if (ACTION_ADD_MULTIPLE_ITEMS_TO_CART.equals(action)) {
+	            AddMultipleItemsToCart reqestMessage = parseRequestObject(request, response, AddMultipleItemsToCart.class);
+	            model = addMultipleItemsInCart(model, user, reqestMessage, request);
+	        } else if (ACTION_REMOVE_MULTIPLE_ITEMS_TO_CART.equals(action)) {
+	            MultipleRequest reqestMessage = parseRequestObject(request, response, MultipleRequest.class);
+	            model = removeMultipleItemsInCart(model, user, reqestMessage, request);
+	        }  else if (ACTION_COUPON_CLIP.equals(action)) {            
+	            model = clipCoupon(model, user, request.getParameter(PARAM_COUPON_ID), request);
+	        }   else if (ACTION_VIEW_CARTLINE.equals(action)) {            
+	            try {
+					model = getCartLine(model, request, response, user);
+				} catch (NoSessionException e) {
+					throw new ServiceException(e);
+				} catch (ModelException e) {
+					throw new ServiceException(e);
+				}
+	        } else if(ACTION_SET_TIP.equals(action)) {
+	        	String tipAmount = request.getParameter(PARAM_TIP_AMOUNT);
+	        	double _tip = Double.parseDouble(tipAmount);
+	        	user.getShoppingCart().setTip(_tip);
+	        	Message responseMessage = Message.createSuccessMessage("Tip added successfully.");
+				setResponseMessage(model, responseMessage, user);
+	        } else if(ACTION_SAVE_CART.equals(action)) {
+	        	user.getFDSessionUser().saveCart(true);
+	        	Message responseMessage = Message.createSuccessMessage("Cart Saved successfully");
+				setResponseMessage(model, responseMessage, user);
+	        }
+    	}
+    	else{
+    		Message responseMessage = new Message();
+            responseMessage.setStatus(Message.STATUS_FAILED);
+            responseMessage = Message.createFailureMessage("USER_NULL");
+            setResponseMessage(model, responseMessage, user);
+    	}
         return model;
+    }
+    
+    public boolean UserExists(SessionUser user){
+    	return user!=null ? true:false;
     }
     
     private boolean isValidPromoId(SessionUser user, String promoId) throws FDResourceException {

@@ -12,19 +12,19 @@
     
 %>
 <tr>
-<td width="60" COLSPAN="3"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="100" HEIGHT="1"></td>
-<td><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=brandWidth%>" HEIGHT="1"></td>
+<td width="60" COLSPAN="3"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="100" HEIGHT="1"></td>
+<td><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="<%=brandWidth%>" HEIGHT="1"></td>
 <% if ("kosher".equalsIgnoreCase(sortBy)) { %>
-	<td width="44"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="44" HEIGHT="1"></td>
+	<td width="44"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="44" HEIGHT="1"></td>
 <% } else if("nutrition".equalsIgnoreCase(sortBy)) { %>
-	<td width="65"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="50" HEIGHT="1"></td>
-        <td width="50"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="50" HEIGHT="1"></td>
+	<td width="65"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="50" HEIGHT="1"></td>
+        <td width="50"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="50" HEIGHT="1"></td>
         <%if(displayAttribute){%>
-            <td width="50"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="50" HEIGHT="1"></td>
+            <td width="50"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="50" HEIGHT="1"></td>
         <%}%>
         
 <% } %>
-<TD WIDTH="30" ALIGN="CENTER"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="30" HEIGHT="1"></TD>
+<TD WIDTH="30" ALIGN="CENTER"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="30" HEIGHT="1"></TD>
 </tr>
 <TR VALIGN="BOTTOM" CLASS="text10grbold">
 	<TD ALIGN="CENTER" COLSPAN="3" width="40">Quantity</TD>

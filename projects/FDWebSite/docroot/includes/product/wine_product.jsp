@@ -11,6 +11,7 @@
 <%@ page import='com.freshdirect.framework.webapp.*' %>
 <%@ page import='java.net.URLEncoder' %>
 <%@ page import='java.util.*' %>
+<%@ page import='com.freshdirect.cms.util.ProductInfoUtil'%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -56,15 +57,15 @@ final int W_WINE_PRODUCT_RIGHT = 314;
 	<TR VALIGN="TOP">
 	<TD WIDTH="<%=W_WINE_PRODUCT_LEFT%>" ALIGN="center" CLASS="text11">
 		<!-- Product transactional area include start -->
-                <img src="/media_stat/images/layout/clear.gif" border="0" width="<%=W_WINE_PRODUCT_LEFT%>" height="1"><br><br>
+                <img src="/media_stat/images/layout/clear.gif" alt="" border="0" width="<%=W_WINE_PRODUCT_LEFT%>" height="1"><br><br>
 		<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
 		<%@ include file="/shared/includes/product/i_product_image.jspf" %>
         </TD>
 
-		<TD WIDTH="<%=W_WINE_PRODUCT_CENTER_PADDING%>"><IMG SRC="/media_stat/images/layout/clear.gif" WIDTH="<%=W_WINE_PRODUCT_CENTER_PADDING%>" HEIGHT="1" BORDER="0" HSPACE="0" VSPACE="0"></TD>
+		<TD WIDTH="<%=W_WINE_PRODUCT_CENTER_PADDING%>"><IMG SRC="/media_stat/images/layout/clear.gif" alt="" WIDTH="<%=W_WINE_PRODUCT_CENTER_PADDING%>" HEIGHT="1" BORDER="0" HSPACE="0" VSPACE="0"></TD>
 
 		<TD <%=alignment%> WIDTH="<%=W_WINE_PRODUCT_RIGHT%>" CLASS="text12">
-                <img src="/media_stat/images/layout/clear.gif" border="0" width="<%=W_WINE_PRODUCT_RIGHT%>" height="1"><br>
+                <img src="/media_stat/images/layout/clear.gif" alt="" border="0" width="<%=W_WINE_PRODUCT_RIGHT%>" height="1"><br>
                 <%@ include file="/shared/includes/product/i_show_promo_flag.jspf" %>
 		<%@ include file="/shared/includes/product/i_product.jspf" %>
 		<% if(qualifies && !productNode.isUnavailable()){%>
@@ -88,7 +89,7 @@ final int W_WINE_PRODUCT_RIGHT = 314;
 	if (productNode.getWineType()!=null   || 
             productNode.getWineRegion()!=null || 
 	    productNode.getWineFyi()!=null) {  %>
-        <br><img src="/media_stat/images/layout/cccccc.gif" border="0" width="<%=W_WINE_PRODUCT_RIGHT%>" height="1"><br><br>
+        <br><img src="/media_stat/images/layout/cccccc.gif" alt="" border="0" width="<%=W_WINE_PRODUCT_RIGHT%>" height="1"><br><br>
 	<%@ include file="/shared/includes/product/wine_info.jspf" %><br>
 <%  } %>
 	<!-- Content end -->

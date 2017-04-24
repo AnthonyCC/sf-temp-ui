@@ -164,9 +164,9 @@ if (isValidPaymentId) {
 
 %>
 
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 <IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CHECKOUT_STEP_3_CHECKACCT_FIELDS_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR><br>
+<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR><br>
 
 	<table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_3_CHECKACCT_FIELDS_TOTAL%>">
 	<tr valign="bottom">
@@ -183,7 +183,7 @@ if (isValidPaymentId) {
 	</tr>
 </table>
 
-<img src="/media_stat/images/layout/999966.gif" width="<%=W_CHECKOUT_STEP_3_CHECKACCT_FIELDS_TOTAL%>" height="1" border="0" VSPACE="3"><BR><BR>
+<img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_CHECKOUT_STEP_3_CHECKACCT_FIELDS_TOTAL%>" height="1" border="0" VSPACE="3"><BR><BR>
 
 <input type="hidden" name="<%=PaymentMethodName.PAYMENT_METHOD_TYPE%>" value="<%=paymentMethodType%>">
 <table border="0" cellspacing="1" cellpadding="0" width="693">
@@ -225,7 +225,7 @@ if (isValidPaymentId) {
 <table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_3_CHECKACCT_FIELDS_TOTAL%>">
 <tr valign="top">
 	<td width="693" class="text12"><img src="/media_stat/images/headers/address_for_acct.gif" width="179" height="9" border="0" alt="ADDRESS FOR THIS ACCOUNT">&nbsp;&nbsp;&nbsp;* Required information<BR>
-		<img src="/media_stat/images/layout/999966.gif" width="<%=W_CHECKOUT_STEP_3_CHECKACCT_FIELDS_TOTAL%>" height="1" border="0" vspace="3"><br>
+		<img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_CHECKOUT_STEP_3_CHECKACCT_FIELDS_TOTAL%>" height="1" border="0" vspace="3"><br>
 		<br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br></td></tr>
 </table>
 <table border="0" cellspacing="1" cellpadding="0" width="693">
@@ -253,7 +253,7 @@ if (isValidPaymentId) {
 <table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_3_CHECKACCT_FIELDS_TOTAL%>">
 <tr valign="top">
 <td width="693" class="text12"><img src="/media_stat/images/headers/terms_of_use.gif" width="86" height="9" border="0" alt="TERMS OF USE">&nbsp;&nbsp;&nbsp;* Required information<BR>
-<IMG src="/media_stat/images/layout/999966.gif" width="<%=W_CHECKOUT_STEP_3_CHECKACCT_FIELDS_TOTAL%>" height="1" border="0" VSPACE="3"><br>
+<IMG src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_CHECKOUT_STEP_3_CHECKACCT_FIELDS_TOTAL%>" height="1" border="0" VSPACE="3"><br>
 <span class="text11">These terms form part of the FreshDirect <a href="javascript:popup('/registration/user_agreement.jsp?show=terms','large')">Customer Agreement</a>.</span>
 </td>
 </tr></table><br>

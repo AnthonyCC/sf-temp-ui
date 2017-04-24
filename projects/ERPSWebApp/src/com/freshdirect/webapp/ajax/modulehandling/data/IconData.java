@@ -9,6 +9,7 @@ public class IconData implements Serializable {
     private String iconImage;
     private String iconLink;
     private String iconLinkText;
+    private String iconId;
 
     public String getIconImage() {
         return iconImage;
@@ -32,6 +33,14 @@ public class IconData implements Serializable {
 
     public void setIconLinkText(String iconLinkText) {
         this.iconLinkText = iconLinkText;
+    }
+
+    public String getIconId() {
+        return iconId;
+    }
+
+    public void setIconId(String iconId) {
+        this.iconId = iconId;
     }
 
 }

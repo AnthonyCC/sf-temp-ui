@@ -20,7 +20,7 @@
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="147">
 			    <TR VALIGN="TOP">
 				    <TD WIDTH="6"><IMG src="/media_stat/images/layout/clear.gif" 
-			            WIDTH="6" HEIGHT="1" BORDER="0"></TD>
+			            WIDTH="6" HEIGHT="1" ALT="" BORDER="0"></TD>
 				    <TD WIDTH="141"><BR>
 <A HREF="faq_index.jsp" TARGET="_top"><img src="/media_stat/images/template/help/fdqa_catnav.gif" width="118" height="56" border="0" alt="FreshDirect Q &amp; A"></A><BR>
 <BR>

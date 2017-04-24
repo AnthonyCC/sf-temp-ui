@@ -1,6 +1,7 @@
 <%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@page import="com.freshdirect.fdstore.FDSkuNotFoundException"%>
 <%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
+<%@ page import='com.freshdirect.cms.util.ProductInfoUtil'%>
 <%@ taglib uri="logic" prefix="logic" %>
 <%
 /* This include paints the: description/nutrition/ratings/tell a friend items for the product page 
@@ -304,7 +305,7 @@
 			String seasonText = productNode.getSeasonText();
 				
 			if (seasonText!=null) {
-					%><br /><img src="/media_stat/images/layout/cccccc.gif" style="margin: 6px 0;" width="100%" height="1"><br /><%=seasonText%><img src="/media_stat/images/layout/cccccc.gif" style="margin: 6px 0;" width="100%" height="1"><br />
+					%><br /><img src="/media_stat/images/layout/cccccc.gif" alt="" style="margin: 6px 0;" width="100%" height="1"><br /><%=seasonText%><img src="/media_stat/images/layout/cccccc.gif" alt="" style="margin: 6px 0;" width="100%" height="1"><br />
 				<%
 				}
 
@@ -320,11 +321,11 @@
 					<fd:FDProductInfo id="productInfo" skuCode="<%= defaultSku.getSkuCode() %>">
 					<%
 						
-						if ( productInfo.getSustainabilityRating(plantID) != null ) { 
+						if ( productInfo.getSustainabilityRating(ProductInfoUtil.getPickingPlantId(productInfo)) != null ) { 
 							
 							String rating="";
 							boolean skipDisplay = true;
-							EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(plantID);
+							EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(ProductInfoUtil.getPickingPlantId(productInfo));
 							
 							if ( enumRating != null && enumRating.isEligibleToDisplay() ) {
 								if (enumRating.getId() == 0) {
@@ -414,7 +415,7 @@
                         <%
                CategoryModel _parentNode = (CategoryModel) productNode.getParentNode();
 			if (_parentNode.getCategoryStorageGuideMedia() != null) {
-					%><br /><img src="/media_stat/images/template/fruit/from_our_experts.gif" width="133" height="13"><br /><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br /><a href="javascript:popup('/shared/popup.jsp?catId=<%=_parentNode.getContentName()%>&attrib=CAT_STORAGE_GUIDE_MEDIA&tmpl=large','large')"><%=productNode.getDepartment().getFullName()%> Storage Guide</a><br />
+					%><br /><img src="/media_stat/images/template/fruit/from_our_experts.gif" width="133" height="13"><br /><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"><br /><a href="javascript:popup('/shared/popup.jsp?catId=<%=_parentNode.getContentName()%>&attrib=CAT_STORAGE_GUIDE_MEDIA&tmpl=large','large')"><%=productNode.getDepartment().getFullName()%> Storage Guide</a><br />
 				<%
 				}
 			}

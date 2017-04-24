@@ -32,10 +32,12 @@ import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.dataloader.BadDataException;
 import com.freshdirect.dataloader.DataLoaderProperties;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.BINInfo;
 import com.freshdirect.payment.ejb.BINInfoManagerHome;
 import com.freshdirect.payment.ejb.BINInfoManagerSB;
+import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.sap.ejb.SapException;
 
 public class PaymentechBinLoader /*implements BINLoader*/ {
@@ -222,9 +224,13 @@ public class PaymentechBinLoader /*implements BINLoader*/ {
 		binInfos.add(visaBINInfo);
 		binInfos.add(mcBINInfo);
 		
-		
+		if(FDStoreProperties.isStorefront2_0Enabled()){
+			FDECommerceService.getInstance().saveBINInfo(binInfos);
+		}else {
 		BINInfoManagerSB binInfoManagerSB = lookupBINInfoManagerHome().create();
 		binInfoManagerSB.saveBINInfo(binInfos);
+		}
+
 	}
 	
 	private void downloadFile(File visaBinFile, File mcBinFile) throws UnknownHostException, IOException {

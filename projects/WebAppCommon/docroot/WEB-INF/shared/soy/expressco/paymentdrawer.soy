@@ -107,10 +107,10 @@
 			</form>
 		{else}
 			{if $displayedCardType != 'MP' or $mpCardPaired == 'Yes' }
-				<img src='/media_stat/images/layout/clear.gif'>
+				<img src='/media_stat/images/layout/clear.gif' alt="">
 	        <hr><span>Or</span><hr>
 				</div>
-		    	<img src='/media_stat/images/layout/clear.gif'>
+		    	<img src='/media_stat/images/layout/clear.gif' alt="">
 				<form id="disppaymentmethod_masterpass" fdform="MPC" fdform-endpoint-submit="/api/expresscheckout/payment">
 					<input type="hidden" name="action" value="selectMPPaymentMethod" />		
 					<input type="image" id="MP_button" src="https://static.masterpass.com/dyn/img/btn/en/US/mp_chk_btn_166x038px.png" alt="Buy With MasterPass">
@@ -194,7 +194,7 @@
 			        <div id="payment-method-separator">
 		        		<hr><span>Or</span><hr>
 					</div>
-			    		<img src='/media_stat/images/layout/clear.gif'>
+			    		<img src='/media_stat/images/layout/clear.gif' alt="">
 					<form id="disppaymentmethod_masterpass" fdform="MPC" fdform-endpoint-submit="/api/expresscheckout/payment">
 						<input type="hidden" name="action" value="selectMPPaymentMethod" />		
 						<input type="image" id="MP_button" src="https://static.masterpass.com/dyn/img/btn/en/US/mp_chk_btn_166x038px.png" alt="Buy With MasterPass">

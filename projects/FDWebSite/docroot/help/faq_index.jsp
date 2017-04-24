@@ -179,7 +179,7 @@ if (request.getParameter("show") != null && !"".equals(request.getParameter("sho
 				<% }} %>				<br><br>
 				</td>
 				<td></td>
-				<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+				<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
 				<td>
 					<% if(!isDefaultFtl){ %>
 						<fd:IncludeMedia name="<%= ftl%>" parameters="<%=params%>" withErrorReport="true"/>
@@ -189,10 +189,10 @@ if (request.getParameter("show") != null && !"".equals(request.getParameter("sho
 				</td>
 			</tr>
 			<tr>
-				<td><img src="/media_stat/images/layout/clear.gif" width="125" height="1"></td>
-				<td><img src="/media_stat/images/layout/clear.gif" width="6" height="1"></td>
-				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-				<td><img src="/media_stat/images/layout/clear.gif" width="388" height="1"></td>
+				<td><img src="/media_stat/images/layout/clear.gif" alt="" width="125" height="1"></td>
+				<td><img src="/media_stat/images/layout/clear.gif" alt="" width="6" height="1"></td>
+				<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
+				<td><img src="/media_stat/images/layout/clear.gif" alt="" width="388" height="1"></td>
 			</tr>
 		</table>
 

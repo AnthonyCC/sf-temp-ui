@@ -54,7 +54,7 @@
 	<tmpl:put name='side_nav' direct='true'><font class="space4pix"><br></font>
 	<%--
 	   <tmpl:put name='banner' direct='true'>
-	      <a href="/newproducts.jsp"><img src="/media_stat/images/template/quickshop/qs_banner_newproduct.gif" width="140" height="108" border="0"></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br>
+	      <a href="/newproducts.jsp"><img src="/media_stat/images/template/quickshop/qs_banner_newproduct.gif" width="140" height="108" border="0"></a><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"><br>
 	   </tmpl:put>
 	--%>
 	    
@@ -195,7 +195,7 @@
 	   <TABLE id="Starter_lists" style="margin-top: 4px;" cellpadding="0" cellspacing="3" border="0" width="100%">
 	      <TBODY>
 	      <TR height="1px" style="padding: 0px; margin: 0px" >
-	      <TD style="padding: 0px; margin: 0px"><img src="/media_stat/images/layout/clear.gif" width="175px" height="1px"></TD>
+	      <TD style="padding: 0px; margin: 0px"><img src="/media_stat/images/layout/clear.gif" alt="" width="175px" height="1px"></TD>
 	      	<TD>
 	      	</TD>
 	      </TR>

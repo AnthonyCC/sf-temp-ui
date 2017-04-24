@@ -130,7 +130,7 @@ if (EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))
 if (prodsAvailable>0) {
     %>
 	<table align="center" width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" >
-        <tr><td align="center"><img src="media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="6"></td></tr>
+        <tr><td align="center"><img src="media_stat/images/layout/cccccc.gif" alt="" width="100%" height="1" vspace="6"></td></tr>
         <tr><td align="center" style="padding-bottom:8px;"><i>Click on name for more info.</i></td></tr>
     </table>
 <fd:PendingOrderChecker/>    
@@ -323,11 +323,11 @@ if (prodsAvailable>0) {
     
     <input type="hidden" name="itemCount" value="<%= Math.min(itemsToDisplay, idx) %>">
     <table align="center" width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" >
-        <tr><td colspan="4"><img src="media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="6"></td>
+        <tr><td colspan="4"><img src="media_stat/images/layout/cccccc.gif" alt="" width="100%" height="1" vspace="6"></td>
         </tr>
         <tr>
             <td width="98" style="padding-right:4px;"><input type="image" name="addMultipleToCart" src="media_stat/images/buttons/add_to_cart.gif" width="93" height="20" border="0" alt="ADD SELECTED ITEMS TO CART"></td>
-			<td width="12"><fd:CCLCheck><a href="/unsupported.jsp" onclick="return CCL.save_items('transac_grouped_items',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" border="0"/></a></fd:CCLCheck></td>
+			<td width="12"><fd:CCLCheck><a href="/unsupported.jsp" onclick="return CCL.save_items('transac_grouped_items',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_save_icon_lg.gif" alt="save to lists" width="12" height="14" border="0"/></a></fd:CCLCheck></td>
             <td align="right">&nbsp;&nbsp;<b>Total Price:</b>&nbsp;&nbsp;&nbsp;
             <input type="text" name="total" size="8" maxlength="8" class="text11" value="" onFocus="blur()"></td>
             <td><img src="media_stat/images/layout/clear.gif"  height="1" width="10"></td>

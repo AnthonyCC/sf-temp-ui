@@ -79,10 +79,10 @@ if(user != null) {
 	                <td>
 	                    <font class="text12rbold"><%=ann.getHeader()%></font><br>
 	                    <%=ann.getCopy()%>
-	                    <br><img src="/media_stat/images/layout/clear.gif" width="1" height="6">
+	                    <br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6">
 	                </td>
 	            </tr>
-	            <tr bgcolor="#999966"><td class="onePxTall"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+	            <tr bgcolor="#999966"><td class="onePxTall"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td></tr>
 	        </table><br>
 	    </logic:iterate></fd:GetSiteAnnouncements></div><%
 	} %>

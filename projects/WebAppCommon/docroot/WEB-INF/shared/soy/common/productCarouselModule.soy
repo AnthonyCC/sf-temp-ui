@@ -13,7 +13,7 @@
     {call common.contentHeader}
       {param content: $moduleData /}
     {/call}
-  	<div class="content {if $moduleData.hideProductBadge} hide-burst {/if}">
+  	<div class="content {if  not $moduleData.contentTitle and not $moduleData.contentTitleTextBanner and $moduleData.hideViewAllButton} border-top {/if}">
       <div class="carousel">
     		{call common.simpleCarousel}
     			{param items: $data.products /}

@@ -12,7 +12,7 @@
 					<tr>
 						<td><a href="http://www.freshdirect.com"><img src="http://www.freshdirect.com/media_stat/images/logos/fd_logo_md.gif" width="216" height="42" alt="FreshDirect" border="0"/></a></td>
 					</tr>
-					<tr><td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="8" border="0"/></td></tr>
+					<tr><td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"/></td></tr>
 				</table>
 			</xsl:otherwise>
 		</xsl:choose>

@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.freshdirect.customer.EnumCartonShipStatus;
@@ -19,6 +18,7 @@ import com.freshdirect.customer.ErpCartonDetails;
 import com.freshdirect.customer.ErpCartonInfo;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.util.BeanUtil;
 
 public class ErpCartonsDAO {
 
@@ -227,7 +227,7 @@ public class ErpCartonsDAO {
 					currentCartonDetail.setShortShipped(tempCartonDetail.isShortShipped());
 					currentCartonDetail.setShipping_status(tempCartonDetail.getShipping_status());
 					
-					if(CollectionUtils.isNotEmpty(headerEntrySet.getValue()) && !firstCartonWithHLine.get(tempCartonDetail.getOrderLineNumber())){
+					if(BeanUtil.isNotEmpty(headerEntrySet.getValue()) && !firstCartonWithHLine.get(tempCartonDetail.getOrderLineNumber())){
 						 currentCartonDetail.setFirstCartonWithORLN(true);
 						 firstCartonWithHLine.put(tempCartonDetail.getOrderLineNumber(), Boolean.TRUE);
 					}

@@ -6,6 +6,7 @@ This include expects the following:
     - String cartMode (constant within com.freshdirect.webapp.taglib.fdstore.CartName)
 
 --%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@ page import='java.net.*'%>
 <%@ page import='java.text.SimpleDateFormat' %>
 <%@ page import='com.freshdirect.ErpServicesProperties' %>
@@ -167,7 +168,7 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
       }
     }
 
-    boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays(plantID).isEmpty();
+    boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays(ProductInfoUtil.getPickingPlantId(productNode.getDefaultSku().getProductInfo())).isEmpty();
     %>
 
     <%@ include file="/shared/includes/product/i_pricing_script.jspf" %>
@@ -405,7 +406,7 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
 	SkuModel _defaultSku = !productNode.isUnavailable()? productNode.getDefaultSku():(SkuModel)productNode.getSkus().get(0);
     if (_defaultSku!=null) {
 	FDProduct fdprd = productNode.isUnavailable()? null:_defaultSku.getProduct();
-	if (fdprd.getKosherInfo(plantID).isKosherProduction()) { %>
+	if (fdprd.getKosherInfo(ProductInfoUtil.getPickingPlantId(_defaultSku.getProductInfo())).isKosherProduction()) { %>
 	    <br><span class="kosher">*</span> Not available for delivery on Friday, Saturday, or Sunday morning.
 	    <fd:GetDlvRestrictions id="kosherRestrictions" reason="<%=EnumDlvRestrictionReason.KOSHER%>" withinHorizon="true">
 	    <%
@@ -422,7 +423,7 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
 	}
     }
     if (isWineLayout) {     %>
-    <img src="/media_stat/images/layout/cccccc.gif" width="100%" height="1" border="0" VSPACE="10"><BR>
+    <img src="/media_stat/images/layout/cccccc.gif" alt="" width="100%" height="1" border="0" VSPACE="10"><BR>
 <%  } else  {   %>
     <img src="/media_stat/images/layout/333333.gif" width="180" height="1" border="0" VSPACE="10"><BR>
 <%  }  %>

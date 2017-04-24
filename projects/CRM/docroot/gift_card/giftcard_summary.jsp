@@ -62,7 +62,7 @@
 					<td colspan="3">
 						<table class="<%= (allowGCUsage)?"gc_caseEnabled":"gc_caseDisabled" %>">
 							<tr>
-								<td style="width: 10px;"><img src="/media_stat/images/layout/clear.gif" width="10" height="8" border="0" /></td>
+								<td style="width: 10px;"><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="8" border="0" /></td>
 								<td class="gc_caseStatus">Usage <%= (allowGCUsage)?"enabled":"disabled" %></td>
 								<td>
 									Customer <% if (!allowGCUsage) { %>NOT<% } %> allowed to Add Gift Card to their Account
@@ -96,11 +96,11 @@
 						<fd:GetGiftCardReceived id='giftcards'>
 						<table border="0" cellspacing="0" cellpadding="0" width="100%" class="gc_table1">
 							<tr>
-								<th width="10"><img src="/media_stat/images/layout/clear.gif" width="10" height="8" border="0" /></th>
+								<th width="10"><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="8" border="0" /></th>
 								<th colspan="4">Gift Cards Added To Account</th>
 							</tr>
 							<tr class="gc_colHeader">
-								<td><img src="/media_stat/images/layout/clear.gif" width="10" height="8" border="0" /></td>
+								<td><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="8" border="0" /></td>
 								<td width="100">Certificate #</td>
 								<td width="85">Balance</td>
                                 <td  width="85">Status</td>
@@ -111,7 +111,7 @@
 								Integer counterTmp = (Integer) pageContext.getAttribute("counter1");
 								if (counterTmp.intValue() <=4) { %>                                            
 									<tr valign="top" <%if(counterTmp.intValue()%2==0){%>class="list_odd_row"<%}%>>
-										<td><img src="/media_stat/images/layout/clear.gif" width="10" height="8" border="0" /></td>
+										<td><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="8" border="0" /></td>
 										<td><%= giftcard.getCertificateNumber() %></td>
 										<td><% if(giftcard.isRedeemable()){ %>$<%= giftcard.getFormattedBalance() %><% } %></td>
                                         <td><% if(giftcard.isRedeemable() && FDStoreProperties.isGivexBlackHoleEnabled()) { %>
@@ -128,10 +128,10 @@
 								<% } %>
 							</logic:iterate>
 							<tr>
-								<td colspan="4"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+								<td colspan="4"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 							</tr>
 							<tr>
-								<td><img src="/media_stat/images/layout/clear.gif" width="10" height="8" border="0" /></td>
+								<td><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="8" border="0" /></td>
 								<td colspan="3">
 									<% if (user.getGiftCardList().size()>5) {%>
 										<a href="/gift_card/giftcard_addused.jsp" class="gLink" style="color: #5EBB64;">More &gt;&gt;</a>
@@ -148,11 +148,11 @@
 						<fd:GetGiftCardPurchased id="recipients">
 						<table border="0" cellspacing="0" cellpadding="0" width="100%" class="gc_table2">
 							<tr>
-								<th width="10"><img src="/media_stat/images/layout/clear.gif" width="10" height="8" border="0" /></th>
+								<th width="10"><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="8" border="0" /></th>
 								<th colspan="3">Recently purchased Gift Cards</th>
 							</tr>
 							<tr class="gc_colHeader">
-								<td><img src="/media_stat/images/layout/clear.gif" width="10" height="8" border="0" /></td>
+								<td><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="8" border="0" /></td>
 								<td width="85">Order #</td>
 								<td width="100">Certificate #</td>
 								<td>Recipient</td>
@@ -162,7 +162,7 @@
 								Integer counterTmp = (Integer) pageContext.getAttribute("counter2");
 								if (counterTmp.intValue() <=4) { %>          
 									<tr valign="top" <%if(counterTmp.intValue()%2==0){%>class="list_odd_row"<%}%>>
-										<td><img src="/media_stat/images/layout/clear.gif" width="10" height="8" border="0" /></td>
+										<td><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="8" border="0" /></td>
 										<td><a href="/main/order_details.jsp?orderId=<%= recipient.getPurchaseSaleId() %>" class="gLink" style="color: #5EBB64;"><%= recipient.getPurchaseSaleId() %></a></td>
 										<td><%= recipient.getCertificationNumber() %></td>
 										<td><%= recipient.getRecepientModel().getRecipientName() %></td>
@@ -176,11 +176,11 @@
 						<fd:GetRedemedGiftCardOrders id='orders'>
 						<table border="0" cellspacing="0" cellpadding="0" width="100%" class="gc_table3">
 							<tr>
-								<th width="10"><img src="/media_stat/images/layout/clear.gif" width="10" height="8" border="0" /></th>
+								<th width="10"><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="8" border="0" /></th>
 								<th colspan="4">Recent Orders with Gift Card Purchase</th>
 							</tr>
 							<tr class="gc_colHeader">
-								<td><img src="/media_stat/images/layout/clear.gif" width="10" height="8" border="0" /></td>
+								<td><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="8" border="0" /></td>
 								<td width="85">Order #</td>
 								<td width="85">Delivery Date</td>
 								<td class="gc_balance">Amount</td>
@@ -191,7 +191,7 @@
 								Integer counterTmp = (Integer) pageContext.getAttribute("counter3");
 								if (counterTmp.intValue() <=4) { %>          
 									<tr <%if(counterTmp.intValue()%2==0){%>class="list_odd_row"<%}%>>
-										<td><img src="/media_stat/images/layout/clear.gif" width="10" height="8" border="0" /></td>
+										<td><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="8" border="0" /></td>
 										<td><a href="/main/order_details.jsp?orderId=<%= order.getSaleId() %>" class="gLink" style="color: #5EBB64;"><%= order.getSaleId() %></a></td>
 										<td><%= order.getRequestedDate() %></td>
 										<td class="gc_balance">$<%= order.getAmount() %></td>
@@ -200,10 +200,10 @@
 								<% } %> 
 							</logic:iterate>
 							<tr>
-								<td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+								<td colspan="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 							</tr>
 							<tr>
-								<td><img src="/media_stat/images/layout/clear.gif" width="10" height="8" border="0" /></td>
+								<td><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="8" border="0" /></td>
 								<td colspan="4">
 									<% if (orders.size()>5) {%>
 										<a href="/main/order_history.jsp" class="gLink" style="color: #5EBB64;">More &gt;&gt;</a>
@@ -218,7 +218,7 @@
 				</tr>
 
 				<tr>
-					<td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+					<td colspan="3"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 				</tr>
 
 				<tr>
@@ -298,7 +298,7 @@
 				</tr>
 				
 				<tr>
-					<td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+					<td colspan="3"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 				</tr>
 			</table>
 		</fd:RedemptionCodeController>        

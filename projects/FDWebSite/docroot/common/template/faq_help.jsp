@@ -43,13 +43,13 @@ String faqSections = FDStoreProperties.getFaqSections();
 <CENTER CLASS="text10">
 <TABLE WIDTH="<%=W_FAQ_HELP_TOTAL%>" BORDER="0" CELLPADDING="0" CELLSPACING="0">
 <TR>
-	<td width="<%=W_FAQ_HELP_TOTAL%>" COLSPAN="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
+	<td width="<%=W_FAQ_HELP_TOTAL%>" COLSPAN="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
 </TR>
 <TR>
 	<TD WIDTH="<%=W_FAQ_HELP_TOTAL%>" COLSPAN="2"><%@ include file="/common/template/includes/deptnav.jspf" %></TD>
 </TR>
 <TR>
-	<TD WIDTH="<%=W_FAQ_HELP_TOTAL%>" BGCOLOR="#999966" COLSPAN="2"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="1"></TD>
+	<TD WIDTH="<%=W_FAQ_HELP_TOTAL%>" BGCOLOR="#999966" COLSPAN="2"><IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="1" HEIGHT="1"></TD>
 </TR>
 <TR VALIGN="TOP">
 	<TD WIDTH="<%=W_FAQ_HELP_LEFT%>" BGCOLOR="#E0E3D0">
@@ -58,7 +58,7 @@ String faqSections = FDStoreProperties.getFaqSections();
 		<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="<%=W_FAQ_HELP_LEFT%>">
 		    <TR VALIGN="TOP">
 			    <TD WIDTH="10"><IMG src="/media_stat/images/layout/clear.gif" 
-		            WIDTH="10" HEIGHT="1" BORDER="0"></TD>
+		            alt="" WIDTH="10" HEIGHT="1" BORDER="0"></TD>
 			    <TD WIDTH="<%=W_FAQ_HELP_LEFT-15%>" valign=top><br><br>
 				<A HREF="faq_home.jsp?page=<%= FDFaqUtil.getFaqHomeId() %>" TARGET="_top"><!-- <img src="/media_stat/images/template/help/faq_catnav.gif" width="91" height="58" alt="Frequently Asked Questions" border="0"></A><BR> -->
 				<span class="Container_Top_help_FAQ">FREQUENTLY ASKED QUESTIONS</span>
@@ -86,7 +86,7 @@ String faqSections = FDStoreProperties.getFaqSections();
 	
 	</TD>
 	<TD width="<%=W_FAQ_HELP_RIGHT%>" align="right">
-		<img src="/media_stat/images/layout/clear.gif" height="15" width="<%=W_FAQ_HELP_RIGHT%>"><br>
+		<img src="/media_stat/images/layout/clear.gif" alt="" height="15" width="<%=W_FAQ_HELP_RIGHT%>"><br>
 		<!-- content lands here -->
 			<tmpl:get name='content'/>
 		<!-- content ends above here-->
@@ -94,8 +94,8 @@ String faqSections = FDStoreProperties.getFaqSections();
 	</TD>
 </TR>
 <TR VALIGN="BOTTOM">
-	<TD WIDTH="<%=W_FAQ_HELP_LEFT%>" BGCOLOR="#E0E3D0"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></TD>
-	<td width="<%=W_FAQ_HELP_RIGHT%>"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
+	<TD WIDTH="<%=W_FAQ_HELP_LEFT%>" BGCOLOR="#E0E3D0"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></TD>
+	<td width="<%=W_FAQ_HELP_RIGHT%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
 </TR>
 </TABLE>
 </CENTER>

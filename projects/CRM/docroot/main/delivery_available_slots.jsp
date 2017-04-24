@@ -86,7 +86,7 @@ final boolean abstractTimeslots = false;
 			</tr>
 			<tr>
 				<td colspan="3" class="text12" align="left" style="padding-bottom: 5px;">Here are the currently available timeslots for delivery to this <%=isCheckAddress ? "address" : "customer's addresses"%>:
-						<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0">
+						<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="16" BORDER="0">
 				</td>
 			</tr>
 		</table>

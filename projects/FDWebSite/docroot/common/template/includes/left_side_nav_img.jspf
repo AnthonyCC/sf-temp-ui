@@ -76,8 +76,8 @@ public final static int W_LEFT_SIDE_NAV_IMG_TOTAL = 150;
 		if (ne.isBold()) buf.append("</b>");
 
 		buf.append("</div></TD>");
-                buf.append("<td  width=\"4\"><img src=\"/media_stat/images/layout/clear.gif\" height=\"1\" width=\"4\" border=\"0\">");
-                buf.append("<td  width=\"1\" bgcolor=\"#cccccc\"><img src=\"/media_stat/images/layout/clear.gif\" height=\"1\" width=\"1\" border=\"0\">");
+                buf.append("<td  width=\"4\"><img src=\"/media_stat/images/layout/clear.gif\" alt=\"\" height=\"1\" width=\"4\" border=\"0\">");
+                buf.append("<td  width=\"1\" bgcolor=\"#cccccc\"><img src=\"/media_stat/images/layout/clear.gif\" alt=\"\" height=\"1\" width=\"1\" border=\"0\">");
                 buf.append("</td>");
                 buf.append("</td></tr>\n");
 

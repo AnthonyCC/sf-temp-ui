@@ -61,14 +61,14 @@ final int W_BOTH_DNAV_RIGHT = 191;
 <CENTER class="text10">
 <TABLE WIDTH="<%=W_BOTH_DNAV_TOTAL%>" BORDER="0" CELLPADDING="0" CELLSPACING="0">
 <TR>
-	<TD WIDTH="<%=W_BOTH_DNAV_LEFT%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_BOTH_DNAV_LEFT%>" height="1" border="0"></TD>
+	<TD WIDTH="<%=W_BOTH_DNAV_LEFT%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_BOTH_DNAV_LEFT%>" height="1" border="0"></TD>
   <td width="<%=W_BOTH_DNAV_PADDING%>"></td>
-	<TD WIDTH="<%=W_BOTH_DNAV_CENTER%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_BOTH_DNAV_CENTER%>" height="1" border="0"></TD>
+	<TD WIDTH="<%=W_BOTH_DNAV_CENTER%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_BOTH_DNAV_CENTER%>" height="1" border="0"></TD>
 	<td width="<%=W_BOTH_DNAV_PADDING%>"></td>
-	<TD WIDTH="<%=W_BOTH_DNAV_RIGHT%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_BOTH_DNAV_RIGHT%>" height="1" border="0"></TD>
+	<TD WIDTH="<%=W_BOTH_DNAV_RIGHT%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_BOTH_DNAV_RIGHT%>" height="1" border="0"></TD>
 </TR>
 <TR>
-	<td width="<%=W_BOTH_DNAV_TOTAL%>" COLSPAN="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
+	<td width="<%=W_BOTH_DNAV_TOTAL%>" COLSPAN="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
 </TR>
 <TR>
 	<TD WIDTH="<%=W_BOTH_DNAV_TOTAL%>" COLSPAN="5">
@@ -76,16 +76,16 @@ final int W_BOTH_DNAV_RIGHT = 191;
 	</TD>
 </TR>
 <TR>
-	<TD WIDTH="<%=W_BOTH_DNAV_TOTAL%>" BGCOLOR="#999966" COLSPAN="5"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="1"></TD>
+	<TD WIDTH="<%=W_BOTH_DNAV_TOTAL%>" BGCOLOR="#999966" COLSPAN="5"><IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="1" HEIGHT="1"></TD>
 </TR>
 <TR VALIGN="TOP">
 	<TD WIDTH="<%=W_BOTH_DNAV_LEFT%>" BGCOLOR="#E0E3D0" class="lNavTableContTD">
 		<% try { %><%@ include file="/common/template/includes/left_side_nav.jspf" %><% } catch (Exception ex) {ex.printStackTrace();} %><BR>
-		<img src="/media_stat/images/layout/clear.gif" height="1" width="<%=W_BOTH_DNAV_LEFT%>">
+		<img src="/media_stat/images/layout/clear.gif" alt="" height="1" width="<%=W_BOTH_DNAV_LEFT%>">
 	</TD>
 	<td width="<%=W_BOTH_DNAV_PADDING%>"></td>
 	<TD width="<%=W_BOTH_DNAV_CENTER%>" align="center">
-		<img src="/media_stat/images/layout/clear.gif" width="<%=W_BOTH_DNAV_CENTER%>" height="15"><br>
+		<img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_BOTH_DNAV_CENTER%>" height="15"><br>
 		<!-- content lands here -->
 		<tmpl:get name='content'/>
 		<!-- content ends above here-->
@@ -93,7 +93,7 @@ final int W_BOTH_DNAV_RIGHT = 191;
 	</TD>
 	<td width="<%=W_BOTH_DNAV_PADDING%>"></td>
 	<TD WIDTH="<%=W_BOTH_DNAV_RIGHT%>" align="center">
-		<img src="/media_stat/images/layout/clear.gif" height="10" width="1" border="0"><br>
+		<img src="/media_stat/images/layout/clear.gif" alt="" height="10" width="1" border="0"><br>
 		<%@ include file="/common/template/includes/right_side_nav.jspf" %>
 	</TD>
 </TR>

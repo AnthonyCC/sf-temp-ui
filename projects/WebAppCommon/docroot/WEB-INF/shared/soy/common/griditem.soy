@@ -323,140 +323,134 @@
 {template .potatoTransactionalGridItem autoescape="false"}
 /* this line return must be here, or there will be tabs in output html, which cause whitespace */
 	{let $atcItemId: $itemId ? $itemId : 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) + ($listId ? '_'+$listId : '') + ($originalLineId ? '_'+$originalLineId : '') /}
-	{let $badge: ($freeSamplePromoProduct and $cmEventSource=='ps_caraousal')?'free':($badge=='free'?'':$badge) /}
+	{let $badge: ($freeSamplePromoProduct and ($cmEventSource=='ps_caraousal' or $cmEventSource=='ps_carousel_view_cart'))?'free':($badge=='free'?'':$badge) /}
 	{let $isEligibleForStandingOrders: ($soData and $soData.settingsData.soSettings and $soData.settingsData.soSettings.isEligibleForStandingOrders) ? true : false /}
-
-	<li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and $cmEventSource=='ps_caraousal' and $productSampleQuantity >= $quantity.qMax ) ? 'unavailable' : ''} {$discontinued ? 'discontinued' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}{($isEligibleForStandingOrders) ? ' portrait-item-soPreShow' : ''}{($hookLogicBeaconClick) ? ' isHookLogicProduct' :''}" id="{$productId ? $productId : ''}"
+	<li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and ($cmEventSource=='ps_caraousal' or $cmEventSource=='ps_carousel_view_cart') and $productSampleQuantity >= $quantity.qMax ) ? 'unavailable' : ''} {$discontinued ? 'discontinued' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}{($isEligibleForStandingOrders) ? ' portrait-item-soPreShow' : ''}{($hookLogicBeaconClick) ? ' isHookLogicProduct' :''}" id="{$productId ? $productId : ''}"
 	data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}"
 	data-cat-id="{$catId ? $catId : ''}" {$replacement ? 'data-replacement-id="'+$replacement.productId+'"': ''}
 	{if $hookLogicBeaconClick} data-hooklogic-beacon-click="{$hookLogicBeaconClick}"{/if}
 	{if $hookLogicBeaconImpression} data-hooklogic-beacon-impress="{$hookLogicBeaconImpression}"{/if}
 >
 	<div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
-	  <a href="{$productPageUrl}" class="portrait-item-image-link" manual_cm_sp="
-    {$productId},{if $productName}{$productName}{/if}
-    {if $moduleData and $moduleData.moduleId},{$moduleData.moduleId}{else},{/if}
-    {if $moduleData and $moduleData.moduleTitle}-_-{$moduleData.moduleTitle}{/if}
-    {if $moduleData and $moduleData.moduleTitleTextBanner}-_-{$moduleData.moduleTitleTextBanner}{/if}
-    {if $moduleData and $moduleData.contentTitle}-_-{$moduleData.contentTitle}{/if}
-    {if $moduleData and $moduleData.moduleGroupTitle}-_-{$moduleData.moduleGroupTitle}{/if}
-    {if $moduleData and $moduleData.moduleGroupTitleTextBanner}-_-{$moduleData.moduleGroupTitleTextBanner}{/if}">
+	{if not $discontinued}
+	  <a href="{$productPageUrl}" class="portrait-item-image-link" {if $moduleData}manual_cm_sp="
+    {$productId}-_-{$productName}-_-
+    {if $moduleData.moduleId}{$moduleData.moduleId}{else}no module ID{/if}"{/if}>
+    {/if}
 		<div class="portrait-item-burst_wrapper">
 			<img src="{$productImage}" alt="Product Image - {$productName}" class="portrait-item-productimage" {if not $discontinued}data-product-url="{$productPageUrl}"{/if}>
-			{call common.bursts}{param badge:$badge /}{param deal:$deal /}{param usq:$usq /}{/call}
-		</div>
+			{if not $moduleData or not $moduleData.hideProductBadge}
+        {call common.bursts}{param badge:$badge /}{param deal:$deal /}{param usq:$usq /}{/call}
+      {/if}
+    </div>
+		{if not $discontinued}
 		</a>
+		{/if}
 		{if $timeToComplete and $timeToComplete>0}
 			<div class="portrait-product-list-time">
 				<span class="icon-clock2-before"><span>{$timeToComplete} minutes</span>
 			</div>
 		{/if}
 	</div>
-	<div class="portrait-item-header">
-	{if $brandName and $productNameNoBrand}
-		{if $discontinued}
-			<b>{$brandName}</b> <div class="product-name-no-brand">{$productNameNoBrand}</div>
-		{else}
-			<a href="{$productPageUrl}" class="portrait-item-header-name" manual_cm_sp="
-      {$productId},{if $productName}{$productName}{/if}
-      {if $moduleData and $moduleData.moduleId},{$moduleData.moduleId}{else},{/if}
-      {if $moduleData and $moduleData.moduleTitle}-_-{$moduleData.moduleTitle}{/if}
-      {if $moduleData and $moduleData.moduleTitleTextBanner}-_-{$moduleData.moduleTitleTextBanner}{/if}
-      {if $moduleData and $moduleData.contentTitle}-_-{$moduleData.contentTitle}{/if}
-      {if $moduleData and $moduleData.moduleGroupTitle}-_-{$moduleData.moduleGroupTitle}{/if}
-      {if $moduleData and $moduleData.moduleGroupTitleTextBanner}-_-{$moduleData.moduleGroupTitleTextBanner}{/if}"><b>{$brandName}</b> <div class="product-name-no-brand">{$productNameNoBrand}</div></a>
-		{/if}
-	{else}
-		{if $discontinued}
-			{$productName}
-		{else}
-			<a href="{$productPageUrl}" class="portrait-item-header-name" manual_cm_sp="
-      {$productId},{if $productName}{$productName}{/if}
-      {if $moduleData and $moduleData.moduleId},{$moduleData.moduleId}{else},{/if}
-      {if $moduleData and $moduleData.moduleTitle}-_-{$moduleData.moduleTitle}{/if}
-      {if $moduleData and $moduleData.moduleTitleTextBanner}-_-{$moduleData.moduleTitleTextBanner}{/if}
-      {if $moduleData and $moduleData.contentTitle}-_-{$moduleData.contentTitle}{/if}
-      {if $moduleData and $moduleData.moduleGroupTitle}-_-{$moduleData.moduleGroupTitle}{/if}
-      {if $moduleData and $moduleData.moduleGroupTitleTextBanner}-_-{$moduleData.moduleGroupTitleTextBanner}{/if}">{$productName}</a>
-		{/if}
-	{/if}
-	<div class="rating">
-		{call common.rating.customer}{param ratingValue:$customerRating /}{param reviewCount:$customerRatingReviewCount /}{/call}
-		{call common.rating.expert}{param ratingValue:$expertRating /}{/call}
-		{call common.rating.wine}{param ratingValue:$wineRating /}{/call}
-		{if not $customerRating and not $expertRating and not $wineRating and $showRatings}
-			<b class="norating smallrating">Not rated</b>
-		{/if}
-		{if $sustainabilityRating}
-			{call common.rating.sustainability}{param ratingValue:$sustainabilityRating /}{/call}
-		{/if}
-	</div>
-		{if $salesUnitDescrPDP}
-			<div class="configDescr">
-				{$salesUnitDescrPDP}
-			</div>
-		{/if}
-	</div>
-	{if $freeSamplePromoProduct and $cmEventSource=='ps_caraousal'}
-		<div class="portrait-item-price product-sample-free">FREE</div>
-	{else}
-		{if $pricePerDefaultSalesUnit and $dispDefaultSalesUnit}
-			<div class="portrait-item-price display-default-sales-unit-container">
-				<span class="display-default-sales-unit">{$dispDefaultSalesUnit} |</span>
-				{if $dealInfo and not $grpLink}
-					<div class="portrait-item-price-deal">{$dealInfo}</div>
-				{/if}
-				{call common.price}
-					{param wasPrice:$wasPrice /}
-					{param price:$price /}
-					{param scaleUnit:$scaleUnit /}
-					{param aboutPriceText:$aboutPriceText /}
-				{/call}
-				<div class="price-per-default-sales-unit">
-					 ${$pricePerDefaultSalesUnit}
-				</div>
-				{if $dealInfo and $grpLink}
-					<a href="{$grpLink}" class="portrait-item-price-deal">{$dealInfo}</a>
-				{/if}
-				{if $savingString}
-					{if $grpLink}
-					<a href="{$grpLink}" class="portrait-item-price-deal">{$savingString}</a>
-					{else}
-					<div class="portrait-item-price-deal">{$savingString}</div>
-					{/if}
-				{/if}
-				{if $utPrice}
-					<span class="portrait-item-unit-price">(${$utPrice}/{$utSalesUnit})</span>
-				{/if}
-			</div>
-		{else}
-			<div class="portrait-item-price">
-				{call common.price}
-					{param wasPrice:$wasPrice /}
-					{param price:$price /}
-					{param scaleUnit:$scaleUnit /}
-					{param aboutPriceText:$aboutPriceText /}
-				{/call}
-				{if $dealInfo}
-					{if $grpLink}
-					<a href="{$grpLink}" class="portrait-item-price-deal">{$dealInfo}</a>
-					{else}
-					<div class="portrait-item-price-deal">{$dealInfo}</div>
-					{/if}
-				{/if}
-				{if $savingString}
-					{if $grpLink}
-					<a href="{$grpLink}" class="portrait-item-price-deal">{$savingString}</a>
-					{else}
-					<div class="portrait-item-price-deal">{$savingString}</div>
-					{/if}
-				{/if}
-				{if $utPrice}
-					<span class="portrait-item-unit-price">(${$utPrice}/{$utSalesUnit})</span>
-				{/if}
-				{if $mixNMatch}{/if}
-			</div>
-		{/if}
+  {if not $moduleData or not $moduleData.hideProductName}
+  	<div class="portrait-item-header">
+  	{if $brandName and $productNameNoBrand}
+  		{if $discontinued}
+  			<b>{$brandName}</b> <div class="product-name-no-brand">{$productNameNoBrand}</div>
+  		{else}
+  			<a href="{$productPageUrl}" class="portrait-item-header-name" {if $moduleData}manual_cm_sp="
+        {$productId}-_-{$productName}-_-
+        {if $moduleData.moduleId}{$moduleData.moduleId}{else}no module ID{/if}"{/if}><b>{$brandName}</b> <div class="product-name-no-brand">{$productNameNoBrand}</div></a>
+  		{/if}
+  	{else}
+  		{if $discontinued}
+  			{$productName}
+  		{else}
+  			<a href="{$productPageUrl}" class="portrait-item-header-name" {if $moduleData}manual_cm_sp="
+        {$productId}-_-{$productName}-_-
+        {if $moduleData.moduleId}{$moduleData.moduleId}{else}no module ID{/if}"{/if}>{$productName}</a>
+  		{/if}
+  	{/if}
+  	<div class="rating">
+  		{call common.rating.customer}{param ratingValue:$customerRating /}{param reviewCount:$customerRatingReviewCount /}{/call}
+  		{call common.rating.expert}{param ratingValue:$expertRating /}{/call}
+  		{call common.rating.wine}{param ratingValue:$wineRating /}{/call}
+  		{if not $customerRating and not $expertRating and not $wineRating and $showRatings}
+  			<b class="norating smallrating">Not rated</b>
+  		{/if}
+  		{if $sustainabilityRating}
+  			{call common.rating.sustainability}{param ratingValue:$sustainabilityRating /}{/call}
+  		{/if}
+  	</div>
+  		{if $salesUnitDescrPDP}
+  			<div class="configDescr">
+  				{$salesUnitDescrPDP}
+  			</div>
+  		{/if}
+  	</div>
+  {/if}
+  {if not $moduleData or not $moduleData.hideProductPrice}
+  	{if $freeSamplePromoProduct and ($cmEventSource=='ps_caraousal' or $cmEventSource=='ps_carousel_view_cart')}
+  		<div class="portrait-item-price product-sample-free">FREE</div>
+  	{else}
+  		{if $pricePerDefaultSalesUnit and $dispDefaultSalesUnit}
+  			<div class="portrait-item-price display-default-sales-unit-container">
+  				<span class="display-default-sales-unit">{$dispDefaultSalesUnit} |</span>
+  				{if $dealInfo and not $grpLink}
+  					<div class="portrait-item-price-deal">{$dealInfo}</div>
+  				{/if}
+  				{call common.price}
+  					{param wasPrice:$wasPrice /}
+  					{param price:$price /}
+  					{param scaleUnit:$scaleUnit /}
+  					{param aboutPriceText:$aboutPriceText /}
+  				{/call}
+  				<div class="price-per-default-sales-unit">
+  					 ${$pricePerDefaultSalesUnit}
+  				</div>
+  				{if $dealInfo and $grpLink}
+  					<a href="{$grpLink}" class="portrait-item-price-deal">{$dealInfo}</a>
+  				{/if}
+  				{if $savingString}
+  					{if $grpLink}
+  					<a href="{$grpLink}" class="portrait-item-price-deal">{$savingString}</a>
+  					{else}
+  					<div class="portrait-item-price-deal">{$savingString}</div>
+  					{/if}
+  				{/if}
+  				{if $utPrice}
+  					<span class="portrait-item-unit-price">(${$utPrice}/{$utSalesUnit})</span>
+  				{/if}
+  			</div>
+  		{else}
+  			<div class="portrait-item-price">
+  				{call common.price}
+  					{param wasPrice:$wasPrice /}
+  					{param price:$price /}
+  					{param scaleUnit:$scaleUnit /}
+  					{param aboutPriceText:$aboutPriceText /}
+  				{/call}
+  				{if $dealInfo}
+  					{if $grpLink}
+  					<a href="{$grpLink}" class="portrait-item-price-deal">{$dealInfo}</a>
+  					{else}
+  					<div class="portrait-item-price-deal">{$dealInfo}</div>
+  					{/if}
+  				{/if}
+  				{if $savingString}
+  					{if $grpLink}
+  					<a href="{$grpLink}" class="portrait-item-price-deal">{$savingString}</a>
+  					{else}
+  					<div class="portrait-item-price-deal">{$savingString}</div>
+  					{/if}
+  				{/if}
+  				{if $utPrice}
+  					<span class="portrait-item-unit-price">(${$utPrice}/{$utSalesUnit})</span>
+  				{/if}
+  				{if $mixNMatch}{/if}
+  			</div>
+  		{/if}
+    {/if}
 	{/if}
 	{if $showConfig}
 		<div class="portrait-item-configuration">

@@ -47,7 +47,7 @@ final int W_FEATURED_PADDING = 14;
     boolean showPrices = ((ProductContainer)currentFolder).isFavoriteShowPrice();
     String imagePath = null;
     String imageDim = "";
-    String clearImage = "/media_stat/images/layout/clear.gif";
+    String clearImage = "/media_stat/images/layout/clear.gif"; 
     String unAvailableImg="/media_stat/images/template/not_available.gif";
     String notAvailImgName = "";
     
@@ -213,7 +213,7 @@ final int W_FEATURED_PADDING = 14;
             
 				<table cellspacing="0" cellpadding="0" border="0" width="<%=W_FEATURED_ALL%>">
 					<tr valign="middle">
-					    <td width="<%=W_FEATURED_ALL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" width="1" height="4" border="0"></td>
+					    <td width="<%=W_FEATURED_ALL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4" border="0"></td>
 					</tr>
 					<tr valign="middle">
 					    <td width="<%=W_FEATURED_ALL%>" COLSPAN="4" CLASS="title10"><font color="#515151"><%=displayCategory.getFullName().toUpperCase()%></font></td>
@@ -225,7 +225,7 @@ final int W_FEATURED_PADDING = 14;
 						<td width="<%=W_FEATURED_ALL%>" COLSPAN="4" BGCOLOR="#DDDDDD"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" border="0"></td>
 					</tr>
 					<tr valign="middle">
-					    <td width="<%=W_FEATURED_ALL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
+					    <td width="<%=W_FEATURED_ALL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td>
 					</tr>
 				</table>
 				
@@ -343,7 +343,7 @@ final int W_FEATURED_PADDING = 14;
                     col1.append(unAvailableImg);
                 }
                 col1.append("\"");
-                col1.append("width=\"70\" height=\"9\"");
+                col1.append("width=\"70\" alt=\"\" height=\"9\"");
                 col1.append(">");
                 
                 
@@ -512,7 +512,7 @@ final int W_FEATURED_PADDING = 14;
 <% if (productLinks.size() > 0) { %>
 	<table cellspacing="0" cellpadding="0" border="0" width="<%=W_FEATURED_ALL%>">
 		<tr valign="middle">
-			<td width="<%=W_FEATURED_ALL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" width="1" height="4" border="0"></td>
+			<td width="<%=W_FEATURED_ALL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4" border="0"></td>
 		</tr>
 		<tr valign="middle">
 		    <td width="<%=W_FEATURED_ALL%>" COLSPAN="4" CLASS="title10"><font color="#515151"><%=displayCategory.getFullName().toUpperCase()%></font></td>
@@ -521,7 +521,7 @@ final int W_FEATURED_PADDING = 14;
 			<td width="<%=W_FEATURED_ALL%>" COLSPAN="4" BGCOLOR="#DDDDDD" ><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" border="0"></td>
 		</tr>
 		<tr valign="middle">
-			<td width="<%=W_FEATURED_ALL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
+			<td width="<%=W_FEATURED_ALL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td>
 		</tr>
 	</table>
 	

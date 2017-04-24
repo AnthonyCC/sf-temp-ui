@@ -28,6 +28,7 @@ import org.json.JSONObject;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.util.ProductInfoUtil;
 import com.freshdirect.common.pricing.ConfiguredPrice;
 import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.common.pricing.PricingContext;
@@ -370,7 +371,8 @@ public class Product {
             this.displayEstimatedQuantity = !this.displaySalesUnitsOnly && this.isPricedByLB && !this.isSoldByLBforDisplayEstimate;
             this.salesUnitFirst = (sellBySalesUnit == null) && !this.hasSingleSalesUnit && this.isPricedByLB && !this.isSoldByLB;
             this.hasVariationMatrix = this.defaultSku.hasVariationMatrix();
-            String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+            //String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+            String plantID=ProductInfoUtil.getPickingPlantId(this.getDefaultProductInfo());
             this.displayShortTermUnavailability = this.defaultProduct.getMaterial().getBlockedDays(plantID).isEmpty();
             if (productModel.getVariationMatrix() == null) {
                 this.domains = Collections.EMPTY_LIST;
@@ -750,8 +752,8 @@ public class Product {
                 message.append("To assure the highest quality, our chefs prepare this item to order. You must complete checkout by ")
                         .append(bodyTime).append(" to order this item for delivery tomorrow.");
             }
-        } catch (FDResourceException e) {
-            LOG.warn("FDResourceException while trying to get platter cutoff. no need to throw exception. log and go forward.", e);
+        } catch (Exception e) {
+            LOG.error("FDPlatterException : Exception while trying to get platter cutoff. no need to throw exception. log and go forward." , e);
         }
         return new String[] { title.toString(), message.toString() };
     }
@@ -1498,7 +1500,8 @@ public class Product {
         kosherRestrictions = new HashMap<String, String>();
         if (isAvailable()) {
             FDProduct defaultSku = this.defaultSku.getOriginalSku().getProduct();
-            String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+            //String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+            String plantID=ProductInfoUtil.getPickingPlantId(this.defaultSku.getOriginalSku().getProductInfo());
             if (defaultSku.getKosherInfo(plantID).isKosherProduction()) {
                 GetDlvRestrictionsTagWrapper tagWrapper = new GetDlvRestrictionsTagWrapper(user);
                 List<RestrictionI> restrictions = tagWrapper.getRestrictions(EnumDlvRestrictionReason.KOSHER);

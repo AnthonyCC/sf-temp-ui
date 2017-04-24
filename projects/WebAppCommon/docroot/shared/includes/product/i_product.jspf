@@ -31,6 +31,7 @@ This include expects the following:
 <%@ page import="com.freshdirect.common.pricing.Pricing"%>
 <%@ page import='com.freshdirect.framework.util.log.LoggerFactory' %>
 <%@ page import="com.freshdirect.common.pricing.ZoneInfo"%>
+<%@ page import='com.freshdirect.cms.util.ProductInfoUtil'%>
 <%@ page import='org.apache.log4j.Category' %>
 
 <%@ taglib uri="logic" prefix="logic" %>
@@ -85,6 +86,7 @@ if ( skuSize == 0 ) {
     }
 
     FDProduct defaultProduct = FDCachedFactory.getProduct( FDCachedFactory.getProductInfo( defaultSku.getSkuCode() ) );
+    FDProductInfo productinfo=defaultSku.getProductInfo();
 
     if ( !hasTemplate ) {
 
@@ -221,7 +223,7 @@ if ( skuSize == 0 ) {
 				    boolean displayEstimatedQuantity = !displaySalesUnitsOnly && isPricedByLB && !isSoldByLB;
 				    boolean salesUnitFirst = ( sellBySalesUnit == null ) && !hasSingleSalesUnit && isPricedByLB && !isSoldByLB;
 				    boolean hasVariationMatrix = ( defaultSku.getVariationMatrix().size() > 0);
-					boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays(plantID).isEmpty();    
+					boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays(ProductInfoUtil.getPickingPlantId(productinfo)).isEmpty();    
 				%>
 
 		
@@ -274,7 +276,7 @@ if ( skuSize == 0 ) {
 		   					String altText = ((BrandModel)prodBrands.get(bIdx)).getFullName();
 		   					
 	    	     			if ( bIdx > 0 ) { 
-	    	     				%><img src="/media_stat/images/layout/clear.gif" width="10" height="1" border="0" hspace="0" vspace="0"><% 
+	    	     				%><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="1" border="0" hspace="0" vspace="0"><% 
 	    	     			}   	     
 	    	     			
 		     				if ( brandPopupLink != null ) {
@@ -992,7 +994,7 @@ if ( skuSize == 0 ) {
 						SkuModel _defaultSku = !__prd.isUnavailable()? __prd.getDefaultSku():(SkuModel)__prd.getSkus().get(0);
     					if ( _defaultSku != null ) {
         					FDProduct fdprd = __prd.isUnavailable() ? null : _defaultSku.getProduct();
-        					if ( fdprd.getKosherInfo(plantID).isKosherProduction() ) { %>
+        					if ( fdprd.getKosherInfo(ProductInfoUtil.getPickingPlantId(_defaultSku.getProductInfo())).isKosherProduction() ) { %>
             					<br/><span class="kosher">*</span> Not available for delivery on Friday, Saturday, or Sunday morning.
             					<fd:GetDlvRestrictions id="kosherRestrictions" reason="<%= EnumDlvRestrictionReason.KOSHER %>" withinHorizon="true">
 					            	<% if ( kosherRestrictions.size() > 0 ) { %>

@@ -30,7 +30,7 @@
 <td><img src="/media/images/layout/clear.gif" width="15" height="1" alt="" border="0"></td>
 <td>
 <img src="/media_stat/images/template/help/faq_hdr.gif" width="358" height="21" alt="Frequently Asked Questions" border="0"><br>
-<FONT CLASS="space2pix"><BR><br></FONT><#if isPageNull><IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="375" HEIGHT="1"><#else><IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="500" HEIGHT="1"></#if><BR><FONT CLASS="space2pix"><BR><br><br></FONT>
+<FONT CLASS="space2pix"><BR><br></FONT><#if isPageNull><IMG src="/media_stat/images/layout/cccccc.gif" ALT="" WIDTH="375" HEIGHT="1"><#else><IMG src="/media_stat/images/layout/cccccc.gif" ALT="" WIDTH="500" HEIGHT="1"></#if><BR><FONT CLASS="space2pix"><BR><br><br></FONT>
 <FONT CLASS="title12"><a href="${aboutLink}" target="_parent">What We Do</a></FONT><BR>
 Find out who we are and what we sell.<br>
 <font class="space4pix"><br></font>

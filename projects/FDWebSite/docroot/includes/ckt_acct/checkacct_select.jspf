@@ -139,14 +139,14 @@ final int W_CHECKACCT_SELECT_CARD = 280;
 		<input name="delete_cc" type="IMAGE" src="/media_stat/images/buttons/delete.gif" WIDTH="51" HEIGHT="16" ALT="Delete" BORDER="0" onClick="javascript:return deletePaymentMethod(this,'<%=paymentPKId%>', <%=standingOrderDependencyIds%>, helpSoInfo)">
 		
 	<!-- error message about card being expired goes here -->
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH=<%= W_CHECKACCT_SELECT_CARD %> HEIGHT="1">
+	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH=<%= W_CHECKACCT_SELECT_CARD %> HEIGHT="1">
 	</TD>
 <%          itemCounter++;
 			itemNum++;
             if (itemNum <  numEChecks && (itemCounter % 3)!=0){     %>
-			<TD width="20"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="20" HEIGHT="1"></TD>
-			<TD width="1" bgcolor="#CCCCCC"><IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="1" HEIGHT="1"></TD>
-			<TD width="14"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="14" HEIGHT="1"></TD>
+			<TD width="20"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="20" HEIGHT="1"></TD>
+			<TD width="1" bgcolor="#CCCCCC"><IMG src="/media_stat/images/layout/cccccc.gif" ALT="" WIDTH="1" HEIGHT="1"></TD>
+			<TD width="14"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="14" HEIGHT="1"></TD>
 <%          }
         } // end of loop
 
@@ -154,12 +154,12 @@ final int W_CHECKACCT_SELECT_CARD = 280;
             if (itemCounter==1) {
 %>
         <%-- this spacer cell and image width should be dynamic: when no second payment method, 460 --%>
-        <TD WIDTH="670"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="670" HEIGHT="1" BORDER="0"><BR></TD>
+        <TD WIDTH="670"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="670" HEIGHT="1" BORDER="0"><BR></TD>
 <%
             } else if(itemCounter==2) {
 %>
         <%-- this spacer cell  --%>
-        <TD WIDTH="335"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="335" HEIGHT="1" BORDER="0"><BR></TD>
+        <TD WIDTH="335"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="335" HEIGHT="1" BORDER="0"><BR></TD>
 <%
             }
 %>

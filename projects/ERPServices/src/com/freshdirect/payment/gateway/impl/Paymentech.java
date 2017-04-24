@@ -159,6 +159,11 @@ public class Paymentech implements Gateway {
 		Response response;
 		try {
 			response = capture(request);
+			if(!EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType()) && !response.isRequestProcessed()){
+				ErpAuthorizationModel newAuth = this.authorize(paymentMethod, orderNumber, amount, tax, auth.getMerchantId());
+				request=GatewayAdapter.getCaptureRequest(paymentMethod, newAuth, amount, tax);
+				response = capture(request);
+			}
 			capture = GatewayAdapter.getCaptureResponse(response,auth);
 		} catch (Exception e) {
 			throw new ErpTransactionException(e.getMessage());

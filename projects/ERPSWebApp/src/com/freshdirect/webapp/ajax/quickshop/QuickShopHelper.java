@@ -251,7 +251,7 @@ public class QuickShopHelper {
 		try {
 			productSelection.refreshConfiguration();
 		} catch ( Exception e ) {
-			LOG.error("Refresh configuration failed with exception: " + e);
+			LOG.error("Refresh configuration failed with configissue1: " + e);
 			return null;
 		}
 		

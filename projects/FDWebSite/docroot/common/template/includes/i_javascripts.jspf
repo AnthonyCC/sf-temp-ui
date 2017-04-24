@@ -4,6 +4,7 @@
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.common.context.MasqueradeContext' %>
+<%@ page import='javax.servlet.http.Cookie' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri="fd-features" prefix="features" %>
@@ -12,7 +13,7 @@
 		using the same /directory/version/ system as scriptaculous for jquery
 		also to avoid conflicts, jQuery's $ will always be set to $jq
 	--%>
-	
+
   <%-- Feature version switcher --%>
   <features:potato />
   <%-- TODO !!! --%>
@@ -24,7 +25,7 @@
   (function () {
     window.FreshDirect = window.FreshDirect || {};
     var fd = window.FreshDirect;
-    
+
     fd.features = fd.features || {};
 
     fd.features.active = <fd:ToJSON object="${featuresPotato.active}" noHeaders="true"/>
@@ -36,17 +37,17 @@
     fd.gtm = fd.gtm || {};
     fd.gtm.key = '<%= FDStoreProperties.getGoogleTagManagerKey() %>';
 
-    <% 
+    <%
     FDSessionUser jsUser = (FDSessionUser)session.getAttribute(SessionName.USER);
     if (jsUser != null) {
       int sessionUserLevel = jsUser.getLevel();
       FDSessionUser sessionUser = (FDSessionUser) jsUser;
-      boolean hideZipCheckPopup = (jsUser.getLevel() != FDSessionUser.GUEST || jsUser.isZipCheckPopupUsed() || sessionUser.isZipPopupSeenInSession());
-      
+      boolean hideZipCheckPopup = (!FDStoreProperties.isZipCheckOverLayEnabled() || (jsUser.getLevel() != FDSessionUser.GUEST || jsUser.isZipCheckPopupUsed() || sessionUser.isZipPopupSeenInSession()));
+
       if (!hideZipCheckPopup){
           sessionUser.setZipPopupSeenInSession(true);
       }
-      
+
       String zipCode = jsUser.getZipCode();
       String cohortName = jsUser.getCohortName();
       MasqueradeContext jsMasqueradeContext = jsUser.getMasqueradeContext();
@@ -102,16 +103,12 @@
 
     <% if (gtm_user.hasJustLoggedIn()) { %>
     // user logged in
-    dataLayer.push({
-      'event': 'user-login'
-    });
+    document.cookie = "hasJustLoggedIn=true;path=/";
     <% } %>
 
     <% if (gtm_user.hasJustSignedUp()) { %>
-    // user logged in
-    dataLayer.push({
-      'event': 'user-signup'
-    });
+    // user signed up
+    document.cookie = "hasJustSignedUp=true;path=/";
     <% } %>
   </script>
   <% } %>
@@ -123,17 +120,17 @@
 	<fd:javascript src="/assets/javascript/popupLogicDispatcher.js"/>
 	<fd:javascript src="/assets/javascript/coremetrics.js"/>
 	<fd:javascript src="/assets/javascript/USQLegalWarning.js"/>
-	
+
 	<fd:javascript src="/assets/javascript/jquery.hint.js"/>
 	<fd:javascript src="/assets/javascript/jquery.pwstrength.js"/>
-	
+
 <%@ include file="/common/template/includes/extol_tags.jspf" %>
 
   <%-- HTML5 support for IE8 --%>
   <!--[if lt IE 9]>
     <fd:javascript src="/assets/javascript/html5.js"/>
   <![endif]-->
-	
+
 	<script type="text/javascript" language="javascript">
 
 		var FreshDirect = FreshDirect || {};
@@ -141,7 +138,7 @@
 		FreshDirect.USQLegalWarning.sessionStore = '<%=session.getId()%>';
 
 		var $jq;
-		var jqInit = false; 
+		var jqInit = false;
 		function initJQuery() {
 			if (typeof(jQuery) == 'undefined') {
 				if (!jqInit) {
@@ -158,14 +155,14 @@
 	<script>
 	(function ($) {
 		$(function () {
-			
+
 			$.smartbanner({daysHidden: 0, daysReminder: 0,author:'FreshDirect',button: 'VIEW'});
 			if(!$jq('#smartbanner.shown').is(':visible')) { $jq('#smartbanner').show(); }
-		
+
 		});
 	})($jq);
-	</script> 
-	
+	</script>
+
 	<% if (request.getRequestURI().indexOf("/checkout/step_1_choose.jsp") == -1)  { %>
 		<fd:javascript src="/assets/javascript/prototype.js"/>
 		<%-- when upgrading scriptaculous please create a new directory for the version --%>
@@ -179,7 +176,7 @@
 	<fd:javascript src="/assets/javascript/FD_PromoEligibility.js"/>
 
 	<fd:IncludeMedia name="/media/editorial/site_pages/javascript.html"/>
-	
+
 	<%
 		FDUserI dpTcCheckUser = (FDUserI)session.getAttribute(SessionName.USER);
 		FDSessionUser dpTcCheckSessionUser = (FDSessionUser)session.getAttribute(SessionName.USER);
@@ -196,6 +193,5 @@
 	    	<%
 		}
 	%>
-	
+
 <script src="/assets/javascript/jquery/jquery_validate/jquery.validate.js"></script>
-  

@@ -104,7 +104,7 @@ public class QuickShopHelper {
 		try {
 			productSelection.refreshConfiguration();
 		} catch (Exception e) {
-			LOG.error("Refresh configuration failed with exception: " + e);
+			LOG.error("Refresh configuration failed with configissue2: " + e);
 			return null;
 		}
 
@@ -380,7 +380,9 @@ public class QuickShopHelper {
 			if (EnumQuickShopTab.TOP_ITEMS.equals(tab)) {
 				Collections.sort(result, QuickShopLineItemWrapper.FREQUENCY_COMPARATOR);
 				List<FilteringSortingItem<QuickShopLineItemWrapper>> wrappedItems = QuickShopServlet.prepareForFiltering(result);
-				removeSkuDuplicates(wrappedItems);
+				if(!FDStoreProperties.isQSTopItemsPerfOptimizationEnabled()){
+					removeSkuDuplicates(wrappedItems);
+				}
 				result = FilteringSortingItem.unwrap(wrappedItems);
 				final int topItemMaxCount = FDStoreProperties.getQuickShopResultMaxLimit();
 				if (result.size() > topItemMaxCount) {
@@ -654,11 +656,14 @@ public class QuickShopHelper {
 	private static List<QuickShopLineItemWrapper> getWrappedOrderHistory(FDUserI user, EnumQuickShopTab tab) throws FDResourceException {
 
 		List<QuickShopLineItemWrapper> result = new ArrayList<QuickShopLineItemWrapper>();
-
-		List<FDProductSelectionI> items = FDListManager.getQsSpecificEveryItemEverOrderedList(user.getIdentity(), user.getUserContext().getStoreContext());
+		List<FDProductSelectionI> items = null;
+	
 		//APPDEV-4179 - Item quantities should NOT be honored in "Your Top Items" - START
+		
 		if (EnumQuickShopTab.TOP_ITEMS.equals(tab)) {
 			items = FDListManager.getQsSpecificEveryItemEverOrderedListTopItems(user.getIdentity(),user.getUserContext().getStoreContext());
+		} else {
+			items = FDListManager.getQsSpecificEveryItemEverOrderedList(user.getIdentity(), user.getUserContext().getStoreContext());
 		}
 		//APPDEV-4179 - Item quantities should NOT be honored in "Your Top Items" - END
 		if (items == null || items.isEmpty()) {

@@ -70,6 +70,9 @@ public class LogisticsDataEncoder {
 		Address address = new Address(model.getId(), model.getAddress1(), model.getAddress2(), model.getApartment(), model.getCity(), model.getState(), model.getZipCode(),
 				model.getCountry(), "", "", model.getScrubbedStreet(), model.getLongitude(), model.getLatitude(), model.getServiceType().getName(),
 				model.getCompanyName());
+		if(model.getAddressType() != null) {
+			address.setAddressType(model.getAddressType().getName());
+		}
 		return address;
 		
 	}

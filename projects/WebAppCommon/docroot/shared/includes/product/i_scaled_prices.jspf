@@ -13,7 +13,7 @@
 	
 	if ( scales.length > 0 ) {
 		%>
-		<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br/>
+		<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"><br/>
 		<font class="specialPriceLabel">Save! </font>
 		<font class="specialPrice"><%
 		for ( int sci = 0; sci < scales.length; sci++ ) {

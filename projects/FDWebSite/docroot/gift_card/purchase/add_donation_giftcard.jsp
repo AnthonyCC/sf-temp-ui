@@ -124,7 +124,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 				</tr>
 				<tr>
 					<td colspan="2" style="padding: 2px 0px;">
-						<img style="margin: 2px 0;" width="<%=W_ADD_GIFTCARD_TOTAL%>" height="1" border="0" src="/media_stat/images/layout/999966.gif" /><br />
+						<img style="margin: 2px 0;" width="<%=W_ADD_GIFTCARD_TOTAL%>" height="1" alt="" border="0" src="/media_stat/images/layout/999966.gif" /><br />
 					</td>
 				</tr>
 			</table>
@@ -136,7 +136,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
                 <input type="hidden" id="gcDonId" name="gcDonId" value="<%= gcDonId %>">				
 				<table width="<%=W_ADD_GIFTCARD_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 					<tr>
-						<td colspan="5" align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="6" border="0" /></td>
+						<td colspan="5" align="center"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6" border="0" /></td>
 					</tr>
 					<tr>
 						<td width="380" valign="top">
@@ -163,7 +163,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 									</td>									
 								</tr>
 								<tr>
-									<td align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="40" border="0" /></td>
+									<td align="center"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="40" border="0" /></td>
 								</tr>
 								<tr>
 									<td align="center" width="250" valign="top">
@@ -189,15 +189,15 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 					</tr>
 				</table>
 	        </form>
-		<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
-		<img src="/media_stat/images/layout/999966.gif" width="<%=W_ADD_GIFTCARD_TOTAL%>" height="1" border="0" /><br />
-		<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
+		<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
+		<img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_ADD_GIFTCARD_TOTAL%>" height="1" border="0" /><br />
+		<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
 		
 		<table width="<%=W_ADD_GIFTCARD_TOTAL%>" cellspacing="0" cellpadding="0" border="0" valign="middle">			
 			<tr valign="top">
 				<td align="right" colspan="2">
 					&nbsp;
-					<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" />
+					<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" />
 					<input type="image" onClick="return setCheckOut();" name="form_action_name" src="/media_stat/images/giftcards/purchase/btn_continue.gif" width="80" height="25"  hspace="4" vspace="4" alt="continue" border="0">
 				</td>
 			</tr>

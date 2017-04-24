@@ -89,7 +89,7 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 		<tr>
 			<td class="text11" WIDTH="<%=W_RH_ADD_CREDITCARD_TOTAL%>">
 				Please enter new credit card information. <BR> 
-				<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=W_RH_ADD_CREDITCARD_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR><BR>
+				<IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%=W_RH_ADD_CREDITCARD_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR><BR>
 			</td>
 		</tr>
 </table>
@@ -117,9 +117,9 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 
 
 <br><br>
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%=W_RH_ADD_CREDITCARD_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%=W_RH_ADD_CREDITCARD_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_RH_ADD_CREDITCARD_TOTAL%>">
 	<TR VALIGN="TOP">
 	<TD WIDTH="<%=W_RH_ADD_CREDITCARD_TOTAL%>" ALIGN="RIGHT">

@@ -498,10 +498,6 @@ public class SubmitOrderAction extends WebActionSupport {
 			}
 		}
 		
-		BINCache binCache = BINCache.getInstance();
-        boolean isDebitCard = binCache.isDebitCard(cart.getPaymentMethod().getAccountNumber(), EnumCardType.VISA)||binCache.isDebitCard(cart.getPaymentMethod().getAccountNumber(), EnumCardType.MC);
-        cart.getPaymentMethod().setDebitCard(isDebitCard);
-		
         if (!(user.getMasqueradeContext() != null && user.getMasqueradeContext().isAddOnOrderEnabled())) {
             ErpAddressModel address = cart.getDeliveryAddress();
             if (address instanceof ErpDepotAddressModel) {

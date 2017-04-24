@@ -20,6 +20,7 @@ import com.freshdirect.WineUtil;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.util.ProductInfoUtil;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
@@ -398,12 +399,12 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 */
 	@Override
     public boolean isPlatter() {
-		String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+		//String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 		List<SkuModel> skus = getPrimarySkus();
 		for ( SkuModel sku  : skus ) {
 			try {
 				FDProduct product = sku.getProduct();
-				if (product.getMaterial().isPlatter(plantID))
+				if (product.getMaterial().isPlatter(ProductInfoUtil.getPickingPlantId(sku.getProductInfo())))
 					return true;
 			} catch (FDSkuNotFoundException ignore) {
 			} catch (FDResourceException ex) {
@@ -415,13 +416,13 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 
 	@Override
     public DayOfWeekSet getBlockedDays() {
-		String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+		//String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 		List<SkuModel> skus = getPrimarySkus();
 		DayOfWeekSet allBlockedDays = DayOfWeekSet.EMPTY;
 		for ( SkuModel sku  : skus ) {
 			try {
 				FDProduct product = sku.getProduct();
-				allBlockedDays = allBlockedDays.union(product.getMaterial().getBlockedDays(plantID));
+				allBlockedDays = allBlockedDays.union(product.getMaterial().getBlockedDays(ProductInfoUtil.getPickingPlantId(sku.getProductInfo())));
 			} catch (FDSkuNotFoundException ignore) {
 			} catch (FDResourceException ex) {
 				throw new FDRuntimeException(ex);
@@ -1670,7 +1671,8 @@ inner:
                 // grab sku prefixes that should show ratings
                 String _skuPrefixes = FDStoreProperties.getRatingsSkuPrefixes();
                 // LOG.debug("* getRatingsSkuPrefixes :"+_skuPrefixes);
-                String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+                //String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+               
                 // if we have prefixes then check them
                 if (_skuPrefixes != null && !"".equals(_skuPrefixes)) {
                     StringTokenizer st = new StringTokenizer(_skuPrefixes, ","); // setup for splitting property
@@ -1688,7 +1690,7 @@ inner:
                         if (skuCode.startsWith(curPrefix)) {
                             productInfo = FDCachedFactory.getProductInfo(skuCode);
                             // LOG.debug(" Rating productInfo :"+productInfo);
-                            EnumOrderLineRating enumRating = productInfo.getRating(plantID);
+                            EnumOrderLineRating enumRating = productInfo.getRating(ProductInfoUtil.getPickingPlantId(productInfo));
 
                             if (enumRating != null) {
                                 if (enumRating.isEligibleToDisplay()) {
@@ -1768,7 +1770,7 @@ inner:
                         // if prefix matches get product info
                         if (sku.getSkuCode().startsWith(curPrefix)) {
                             productInfo = FDCachedFactory.getProductInfo(sku.getSkuCode());
-                            String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+                            String plantID=ProductInfoUtil.getPickingPlantId(productInfo);
                             freshness = productInfo.getFreshness(plantID);
                             if ((freshness != null && freshness.trim().length() > 0) 
                             		&& !"000".equalsIgnoreCase(freshness.trim()) 
@@ -1966,8 +1968,8 @@ inner:
                 }
                 */
                 productInfo = FDCachedFactory.getProductInfo(skuCode);
-                String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
-                EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(plantID);
+               // String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+                EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(ProductInfoUtil.getPickingPlantId(productInfo));
                 if (enumRating != null && enumRating.isEligibleToDisplay()) { 
                 	if (enumRating.getId() == 0) { /* check against CMS */
                 		if (this.showDefaultSustainabilityRating()) {

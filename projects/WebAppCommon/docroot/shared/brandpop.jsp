@@ -118,7 +118,7 @@ if (brandId!=null) {
             featProdStringBuffer.append("<td width=\"8\">");
             featProdStringBuffer.append("<img src=\"");
             featProdStringBuffer.append("/media_stat/images/layout/clear.gif");
-            featProdStringBuffer.append("\" width=\"8\" height=\"1\"></td>");
+            featProdStringBuffer.append("\" width=\"8\" alt=\"\" height=\"1\"></td>");
             }
 			
             if (itemCount == 5 || itemCount == favItemCount) { //last prod
@@ -166,8 +166,8 @@ if (brandId!=null) {
     if (featProdStringBuffer.length()>0) {
 %>
 <table border="0" cellpadding="0" cellspacing="0" width="520">
-	<tr><td colspan="2"><img src="/media_stat/images/template/about/brand_featured_items.gif" width="113" height="14" alt="Featured Items"><br><img src="/media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="3"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"></td></tr>
-	<tr><td colspan="2" align="center"><%=featProdStringBuffer.toString()%><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td></tr>
+	<tr><td colspan="2"><img src="/media_stat/images/template/about/brand_featured_items.gif" width="113" height="14" alt="Featured Items"><br><img src="/media_stat/images/layout/cccccc.gif" alt="" width="100%" height="1" vspace="3"><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"></td></tr>
+	<tr><td colspan="2" align="center"><%=featProdStringBuffer.toString()%><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"></td></tr>
 </table>
 <%
     }
@@ -176,8 +176,8 @@ if (brandId!=null) {
 <table border="0" cellpadding="0" cellspacing="0" width="520">
  
 <tr>
-	<td><img src="/media_stat/images/layout/clear.gif" width="260" height="20"><br><a href="#top">Back to top</a></td>
-	<td align="right"><img src="/media_stat/images/layout/clear.gif" width="260" height="20"><br><a href="javascript:try { window.reallyClose(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}">Close window</a></td>
+	<td><img src="/media_stat/images/layout/clear.gif" alt="" width="260" height="20"><br><a href="#top">Back to top</a></td>
+	<td align="right"><img src="/media_stat/images/layout/clear.gif" alt="" width="260" height="20"><br><a href="javascript:try { window.reallyClose(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}">Close window</a></td>
 </tr>
 </table>-->
 </center>

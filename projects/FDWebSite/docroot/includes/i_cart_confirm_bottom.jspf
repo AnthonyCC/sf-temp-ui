@@ -97,10 +97,10 @@ final int W_CART_CONFIRM_BOTTOM_ICON_MESSAGE = 255;
 		
 <table cellpadding="0" cellspacing="0" border="0" width="<%= W_CART_CONFIRM_BOTTOM_TOTAL %>">
 		<tr>
-      <td><img src="/media_stat/images/layout/clear.gif" width="<%= W_CART_CONFIRM_BOTTOM_ICON %>" height="8"></td>
-      <td><img src="/media_stat/images/layout/clear.gif" width="<%= W_CART_CONFIRM_BOTTOM_ICON_MESSAGE %>" height="8"></td>
-      <td><img src="/media_stat/images/layout/clear.gif" width="<%= W_CART_CONFIRM_BOTTOM_ICON_MESSAGE %>" height="8"></td>
-      <td><img src="/media_stat/images/layout/clear.gif" width="<%= W_CART_CONFIRM_BOTTOM_ICON %>" height="8"></td>
+      <td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%= W_CART_CONFIRM_BOTTOM_ICON %>" height="8"></td>
+      <td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%= W_CART_CONFIRM_BOTTOM_ICON_MESSAGE %>" height="8"></td>
+      <td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%= W_CART_CONFIRM_BOTTOM_ICON_MESSAGE %>" height="8"></td>
+      <td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%= W_CART_CONFIRM_BOTTOM_ICON %>" height="8"></td>
 		</tr>
 		<tr valign="middle">                    
 			<td valign="top"><a href="<%=continueShoppingLink%>"><img src="/media_stat/images/template/confirmation/arrow_green_left.gif" width="28" height="28" border="0" alt="CONTINUE SHOPPING"></a></td>
@@ -109,8 +109,8 @@ final int W_CART_CONFIRM_BOTTOM_ICON_MESSAGE = 255;
 				<a href="view_cart.jsp?trk=conf"><img src="/media_stat/images/buttons/checkout.gif" width="57" height="9" border="0" alt="CHECKOUT" vspace="2"></a>
 				<table cellpadding="0" cellspacing="0" border="0">
 					<tr>
-						<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-						<td><img src="/media_stat/images/layout/clear.gif" width="45" height="1"></td>
+						<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
+						<td><img src="/media_stat/images/layout/clear.gif" alt="" width="45" height="1"></td>
 					</tr>
 <%
 	boolean isSecondOrder = user.getAdjustedValidOrderCount() == 1;
@@ -126,7 +126,7 @@ final int W_CART_CONFIRM_BOTTOM_ICON_MESSAGE = 255;
 					<tr align="right">
 						<td><!--Est. Subtotal ($<%=(int) user.getMinimumOrderAmount()%> Min.) :--></td>
 						<td><%=JspMethods.formatPrice(cart
-									.getSubTotal())%><img src="/media_stat/images/layout/clear.gif" width="5" height="1"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="2"></td>
+									.getSubTotal())%><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1"><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="2"></td>
 					</tr>
 					<tr align="right">
 						<td><b><a href="<%=promotionFile%>">FREE FOOD</a></b> :</td>
@@ -143,7 +143,7 @@ final int W_CART_CONFIRM_BOTTOM_ICON_MESSAGE = 255;
 						<td><%=JspMethods.formatPrice(cart
 									.getTotal())%><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br></td>
 					</tr>
-					<tr align="right"><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="15"></td></tr>												
+					<tr align="right"><td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="15"></td></tr>												
 				</table>
 			</td>
 			<td align="right" valign="top">

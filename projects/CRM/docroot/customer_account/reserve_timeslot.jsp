@@ -129,7 +129,7 @@
 
 						<tr>
 							<td colspan="7" align="center"><img
-								src="/media_stat/images/layout/clear.gif" width="1" height="14"><br>
+								src="/media_stat/images/layout/clear.gif" alt="" width="1" height="14"><br>
 							<%if((rsv == null || rsv.isAnonymous()) && !hasReservation){%> 
 								<input type="image"
 										src="/media_stat/images/buttons/reserve_delivery.gif" alt="Reserve Delivery"

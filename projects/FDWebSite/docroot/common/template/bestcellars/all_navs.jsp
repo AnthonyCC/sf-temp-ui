@@ -48,23 +48,23 @@ final int W_ALL_NAVS_RIGHT = 191;
 <CENTER CLASS="text10">
 <TABLE WIDTH="<%=W_ALL_NAVS_TOTAL%>" BORDER="0" CELLPADDING="0" CELLSPACING="0">
 <TR>
-	<TD WIDTH="<%=W_ALL_NAVS_LEFT%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_ALL_NAVS_LEFT%>" height="1" border="0"></TD>
-	<TD WIDTH="<%=W_ALL_NAVS_CENTER%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_ALL_NAVS_CENTER%>" height="1" border="0"></TD>
-	<TD WIDTH="<%=W_ALL_NAVS_RIGHT%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_ALL_NAVS_RIGHT%>" height="1" border="0"></TD>
+	<TD WIDTH="<%=W_ALL_NAVS_LEFT%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_ALL_NAVS_LEFT%>" height="1" border="0"></TD>
+	<TD WIDTH="<%=W_ALL_NAVS_CENTER%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_ALL_NAVS_CENTER%>" height="1" border="0"></TD>
+	<TD WIDTH="<%=W_ALL_NAVS_RIGHT%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_ALL_NAVS_RIGHT%>" height="1" border="0"></TD>
 </TR>
 <TR>
-	<td width="<%=W_ALL_NAVS_TOTAL%>" COLSPAN="3" valign="top" BGCOLOR="#999966"><img src="/media_stat/images/layout/999966.gif" width="<%=W_ALL_NAVS_TOTAL%>" height="1" border="0"></td>
+	<td width="<%=W_ALL_NAVS_TOTAL%>" COLSPAN="3" valign="top" BGCOLOR="#999966"><img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_ALL_NAVS_TOTAL%>" height="1" border="0"></td>
 </TR>
 <TR VALIGN="TOP">
 	<TD WIDTH="<%=W_ALL_NAVS_LEFT%>" class="left_nav">
 		<% try { %><%@ include file="/common/template/includes/left_side_nav_usq.jspf" %>
                 <% } catch (Exception ex) {ex.printStackTrace();} %><BR>
-		<img src="/media_stat/images/layout/clear.gif" height="1" width="<%=W_ALL_NAVS_LEFT%>">
+		<img src="/media_stat/images/layout/clear.gif" alt="" height="1" width="<%=W_ALL_NAVS_LEFT%>">
 	</TD>
 	<TD width="<%=W_ALL_NAVS_CENTER%>" align="center">
                 <TABLE WIDTH="100%" align="center" cellspacing="0" cellpadding="0" border="0">
                     <tr>
-                      <td align="center"><img src="/media_stat/images/layout/clear.gif" height="35" width="1"><br><img src="<%=tmplFldrLbl%>" border="0"></td>
+                      <td align="center"><img src="/media_stat/images/layout/clear.gif" alt="" height="35" width="1"><br><img src="<%=tmplFldrLbl%>" border="0"></td>
                     </tr>
                     <tr>
                       <td align="center"><img usemap="#categoryNav" src="<%=tmplNavBar%>" border="0"></td>
@@ -83,7 +83,7 @@ final int W_ALL_NAVS_RIGHT = 191;
 		<tmpl:get name='bottomLegend'/>
   	</TD>
 	<TD WIDTH="<%=W_ALL_NAVS_RIGHT%>" align="center">
-		<img src="/media_stat/images/layout/clear.gif" height="10" width="1" border="0"><br>
+		<img src="/media_stat/images/layout/clear.gif" alt="" height="10" width="1" border="0"><br>
 		<%@ include file="/common/template/includes/right_side_nav.jspf" %>
 	</TD>
 </TR>
@@ -92,7 +92,7 @@ final int W_ALL_NAVS_RIGHT = 191;
     </td>
 </tr>
 <TR>
-<td width="<%=W_ALL_NAVS_TOTAL%>" COLSPAN="3" BGCOLOR="#999966" VALIGN="BOTTOM"><img src="/media_stat/images/layout/999966.gif" width="<%=W_ALL_NAVS_TOTAL%>" height="1" border="0"></td>
+<td width="<%=W_ALL_NAVS_TOTAL%>" COLSPAN="3" BGCOLOR="#999966" VALIGN="BOTTOM"><img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_ALL_NAVS_TOTAL%>" height="1" border="0"></td>
 </TR>
 </TABLE>
 </CENTER>

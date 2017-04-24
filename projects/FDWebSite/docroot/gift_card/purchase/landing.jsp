@@ -66,7 +66,7 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 							</td>
 						</tr>
 						<tr>
-							<td align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+							<td align="center"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 						</tr>
 						<tr>
 							<td align="center">
@@ -77,7 +77,7 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 							</td>
 						</tr>
 						<tr>
-							<td align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+							<td align="center"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 						</tr> 				
 					</table>
 				</td>
@@ -95,7 +95,7 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 							</td>
 						</tr>
 						<tr>
-							<td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+							<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 						</tr>
 						<tr>
 							<td>
@@ -138,7 +138,7 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 				<% } %>
 			</tr>
 			<tr>
-				<td align="center" colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="16" border="0" /></td>
+				<td align="center" colspan="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="16" border="0" /></td>
 			</tr>
 			<tr>
 				<td colspan="3" align="center"><a href="">
@@ -151,7 +151,7 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 			<% } %>
 			</tr>
 			<tr>
-				<td align="center" colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="16" border="0" /></td>
+				<td align="center" colspan="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="16" border="0" /></td>
 			</tr>
 			<tr>
 				<td align="center" colspan="5">

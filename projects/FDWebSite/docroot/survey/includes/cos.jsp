@@ -66,10 +66,10 @@ if("slite".equals(request.getParameter("referrer_page"))) {
 	<table cellpadding="0" cellspacing="0" border="0" width="100%">
 	<%-- 1 --%>
 	    <tr class="NOMOBWEB">
-	        <td><img src="/media_stat/images/layout/clear.gif" width="140" height="1" border="0"></td>
-	        <td><img src="/media_stat/images/layout/clear.gif" width="280" height="8" border="0"></td>
-	        <td><img src="/media_stat/images/layout/clear.gif" width="80" height="1" border="0"></td>
-	        <td><img src="/media_stat/images/layout/clear.gif" width="220" height="1" border="0"></td>
+	        <td><img src="/media_stat/images/layout/clear.gif" alt="" width="140" height="1" border="0"></td>
+	        <td><img src="/media_stat/images/layout/clear.gif" alt="" width="280" height="8" border="0"></td>
+	        <td><img src="/media_stat/images/layout/clear.gif" alt="" width="80" height="1" border="0"></td>
+	        <td><img src="/media_stat/images/layout/clear.gif" alt="" width="220" height="1" border="0"></td>
 	    </tr>
 	    <tr>
 	        <td class="text12"><fd:ErrorHandler result="<%=result%>" name="companyName"><span style="color:#CC0000; font-weight: bold;"></fd:ErrorHandler><label for="companyName">Company Name</label><fd:ErrorHandler result="<%=result%>" name="companyName"></span></fd:ErrorHandler></td>
@@ -117,11 +117,11 @@ if("slite".equals(request.getParameter("referrer_page"))) {
 	        <td colspan="3"><input type="text" size="35" class="text13" name="email" value="<%=request.getParameter("email")%>"><fd:ErrorHandler result="<%=result%>" name="email" id="errorMsg"> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 	    </tr>
 	        <tr>
-	            <td colspan="4" class="text12" align="center"><br><img src="/media_stat/images/layout/999966.gif" width="100%" height="1" vspace="10"><br>
+	            <td colspan="4" class="text12" align="center"><br><img src="/media_stat/images/layout/999966.gif" alt="" width="100%" height="1" vspace="10"><br>
 	            <input type="image" value="submit" src="/media_stat/images/template/help/b_submit.gif" width="68" height="18" alt="">
 	            <input type="image" src="/media_stat/images/template/help/b_clear.gif" alt="Clear" onclick="document.corporateServiceSurvey.reset(); return false;" width="69" height="19" id="corporateServiceSurvey_bClear" />
 	            <%--input type="submit" value="SUBMIT SURVEY" style="background-color:#336600; color:#FFFFFF; font-weight: bold; font-size:9pt; padding-left: 40px; padding-right: 40px;"--%><br>
-	            <img src="/media_stat/images/layout/999966.gif" width="100%" height="1" vspace="10">
+	            <img src="/media_stat/images/layout/999966.gif" alt="" width="100%" height="1" vspace="10">
 	        </tr>
 		<input type="hidden" name="successPage" value="<%=redirectSuccessPage%>">
 	 <% 

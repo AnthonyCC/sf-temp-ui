@@ -230,14 +230,14 @@ zonePromoEnabled=true;
 	<TR>
 		<td colspan="2">
 			<% if(!modifyOrderMode) { %>
-				<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
+				<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
 			<% } %>
 			<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
 		</td>
 	</TR>
 	<TR>
 		<td colspan="2">
-			<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0">
+			<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0">
 			<%@ include file="/includes/delivery/i_top_modules.jspf" %>
 		</td>
 	</TR>
@@ -399,7 +399,7 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 									<%}%>
 									<%if(deliveryModel.getEarlyAMCount() > 0) { %>
 										<td >
-											<img src="/media_stat/images/timeslots/early_delivery_icon_web.png" WIDTH="20" HEIGHT="16" border="0">
+											<img src="/media_stat/images/timeslots/early_delivery_icon_web.png" alt="early unattended" WIDTH="20" HEIGHT="16" border="0">
 										</td>
 										<td>
 										&nbsp;
@@ -432,7 +432,7 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 		<tr>
 			<td colspan="2">
 	<% if(timeslotList.size()>1 && idx.intValue()==1) { %>
-			<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><span class="title13 fleft tsAdvanceHeader">Advance Order Delivery Timeslots&nbsp;&nbsp;</span><a class="title13 fleft tsDivHide" id="displayAdvanceOrderGrid" href="javascript:hideAdvanceOrder();">Hide Delivery Timeslots</a><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
+			<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="10" BORDER="0"><span class="title13 fleft tsAdvanceHeader">Advance Order Delivery Timeslots&nbsp;&nbsp;</span><a class="title13 fleft tsDivHide" id="displayAdvanceOrderGrid" href="javascript:hideAdvanceOrder();">Hide Delivery Timeslots</a><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
 	<% } %>
 	
 	<%	
@@ -573,7 +573,7 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 				<%if(user.getTotalCTSlots() > 0){%>
 					<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/prp1x1.gif"> <b>Chef's Table only</b>
 				<%}if(hasPreReserved){%>
-						&nbsp;&nbsp;<img src="/media_stat/images/layout/ff9933.gif" width="12" height="12"> <b> Your Reserved Delivery Slot </b>
+						&nbsp;&nbsp;<img src="/media_stat/images/layout/ff9933.gif" alt="" width="12" height="12"> <b> Your Reserved Delivery Slot </b>
 				<%}%>
 				</td>
 				<%if(zonePromoAmount > 0){ %>
@@ -600,9 +600,9 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 		</table>
 	<%}%>
 <%}%>
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 <IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CHECKOUT_STEP_2_SELECT_TOTAL%>" HEIGHT="3" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 <div style="margin-bottom: 10px;">
 	<div style="float: left;">
@@ -622,9 +622,9 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 	<div style="clear: both;"></div>
 </div>
 
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 <IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CHECKOUT_STEP_2_SELECT_TOTAL%>" HEIGHT="3" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
 

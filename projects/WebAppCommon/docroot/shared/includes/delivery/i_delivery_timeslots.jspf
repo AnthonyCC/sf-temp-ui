@@ -46,13 +46,13 @@
 		<%@ include file="/shared/includes/delivery/i_loyalty_banner.jspf" %>
 <%}%>
 
-<img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br/>
+<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8"><br/>
 <!-- GEO Restriction Message Added -->
 <% if((messages != null && messages.size() > 0) || (user.getMasqueradeContext()!=null && comments!=null && comments.size() > 0)) { %>
 	<%@ include file="/shared/includes/delivery/i_geowarning_message.jspf"%>
 	
 <% } %>
-<img src="/media_stat/images/layout/clear.gif" width="1" height="8">
+<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8">
 <!-- Error Messages -->
 
 <%if(DeliveryTimeSlotResult != null && !DeliveryTimeSlotResult.isSuccess() ){%>
@@ -62,7 +62,7 @@
 <%}%>
 
 <%@ include file="/includes/delivery/i_holiday_warning.jspf"%>
-<img src="/media_stat/images/layout/clear.gif" width="1" height="6">
+<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6">
 
 <!-- ~~~~~~~~~~~~~~~~~~~~~~ LEGEND DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ -->
 <%if(FDStoreProperties.isNewFDTimeslotGridEnabled()){%>
@@ -101,7 +101,7 @@
 								<%}%>
 								<%if(deliveryModel.getEarlyAMCount() > 0) { %>
 										<td>
-											<img src="/media_stat/images/timeslots/early_delivery_icon_web.png" WIDTH="20" HEIGHT="16" border="0">
+											<img src="/media_stat/images/timeslots/early_delivery_icon_web.png" alt="early unattended" WIDTH="20" HEIGHT="16" border="0">
 										</td>
 										<td>
 										&nbsp;
@@ -118,7 +118,7 @@
 			</td>
 		</tr>
 	</table>
-	<img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br/><br/>
+	<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8"><br/><br/>
 <!-- ~~~~~~~~~~~~~~~~~~~~~~ END LEGEND DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ -->
 
 <!-- ~~~~~~~~~~~~~~~~~~~~~~ START TIMESLOT GRID ~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -154,7 +154,7 @@
 				<%if(page_type == TimeslotLogic.PAGE_CHEFSTABLE){%>
 					<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/prp1x1.gif"> <b>Chef's Table only</b>
 				<%}if(hasPreReserved){%>
-					&nbsp;&nbsp;<img src="/media_stat/images/layout/ff9933.gif" width="12" height="12"> <b> Your Reserved Delivery Slot </b>
+					&nbsp;&nbsp;<img src="/media_stat/images/layout/ff9933.gif" alt="" width="12" height="12"> <b> Your Reserved Delivery Slot </b>
 				<%}%>
 				</td>
 				<%if(zonePromoAmount > 0 && "true".equals(request.getAttribute("SHOW_WINDOWS_STEERING"))){ %>
@@ -198,7 +198,7 @@
 						</td>
 					</tr>
 				</table>
-				<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br/>
+				<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br/>
 		<% } %>
 	<%}%>
 <!-- ~~~~~~~~~~~~~~~~~~~~~~ END TIMESLOT GRID ~~~~~~~~~~~~~~~~~~~~~~ -->

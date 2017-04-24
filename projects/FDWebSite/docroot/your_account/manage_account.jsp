@@ -139,7 +139,7 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 		</td>
 	</tr>
 	<tr>
-		<td><img src="/media_stat/images/template/checkout/loy_ctcard_bot.gif"/></td>
+		<td><img src="/media_stat/images/template/checkout/loy_ctcard_bot.gif" alt="" /></td>
 	</tr>
 	</table>
 	<% } %>
@@ -251,9 +251,9 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 </table>
 </td>
 <% if(!user.isChefsTable() && (user.isOkayToDisplayCTEligibility() && !user.hasQualifiedForCT())) { %>
-<TD width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1"></td>
-<TD width="1" bgcolor="#ff9900"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-<TD width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1"></td>
+<TD width="20"><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="1"></td>
+<TD width="1" bgcolor="#ff9900"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
+<TD width="20"><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="1"></td>
 <% } %>
 <td valign="top" width="<%= W_YA_CT %>" class="NOMOBWEB">
 	<!-- ct user logo -->

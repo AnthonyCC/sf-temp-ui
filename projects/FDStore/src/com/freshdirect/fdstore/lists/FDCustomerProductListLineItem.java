@@ -28,6 +28,8 @@ public class FDCustomerProductListLineItem extends FDCustomerListItem {
 	private String recipeSourceId; // null if not recipe source
 	
 	private transient ProductModel cachedProduct;
+	
+	private boolean sojustAddedItemToCart;
 
 	public boolean equals(Object o) {
 		if (!(o instanceof FDCustomerProductListLineItem))
@@ -182,6 +184,14 @@ public class FDCustomerProductListLineItem extends FDCustomerListItem {
 		} catch (FDSkuNotFoundException e) {
 			return "";
 		}
+	}
+
+	public boolean isSojustAddedItemToCart() {
+		return sojustAddedItemToCart;
+	}
+
+	public void setSojustAddedItemToCart(boolean sojustAddedItemToCart) {
+		this.sojustAddedItemToCart = sojustAddedItemToCart;
 	}
 	
 }

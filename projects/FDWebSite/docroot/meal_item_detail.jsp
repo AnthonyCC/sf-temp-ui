@@ -170,9 +170,9 @@ int prodCount = 0;%>
 	<br><br><br>
 <%-- END NAVIGATION --%>
 </td>
-<td width="10" rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
-<td width="1" bgcolor="#999966" rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-<td width="15" rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="15" height="1"></td>
+<td width="10" rowspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="1"></td>
+<td width="1" bgcolor="#999966" rowspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
+<td width="15" rowspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="15" height="1"></td>
 <td valign="top" width="379">
 
 <table width="379" border="0" cellpadding="0" cellspacing="2">
@@ -192,7 +192,7 @@ int prodCount = 0;%>
             fdprd = selectSku.getProduct();
         } catch (FDSkuNotFoundException fdsnfe) { throw fdsnfe; }
 %>
-		<img src="/media_stat/images/layout/clear.gif" width="379" height="3"><br>
+		<img src="/media_stat/images/layout/clear.gif" alt="" width="379" height="3"><br>
 		<img src="<%=prodImg.getPath()%>" width="<%=prodImg.getWidth()%>" height="<%=prodImg.getHeight()%>" alt="" border="0">
 		
 		<br><span class="space2pix"><br></span>

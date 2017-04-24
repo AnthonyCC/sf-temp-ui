@@ -284,7 +284,13 @@ public class AddToCartServlet extends BaseJsonServlet {
                 if (!reqData.isIgnoreRedirect()) {
                     responseData.setRedirectUrl("/view_cart.jsp");
                 }
-            } else if (("ps_caraousal".equals(reqData.getEventSource()) || "view_cart".equals(reqData.getEventSource()) || "TRY".equals(reqData.getEventSource()))
+            } else if (
+            		(
+	            		"ps_caraousal".equals(reqData.getEventSource()) || 
+	            		"ps_carousel_view_cart".equals(reqData.getEventSource()) || 
+	            		"view_cart".equals(reqData.getEventSource()) || 
+	            		"TRY".equals(reqData.getEventSource())
+            		)
                     && ONLY_OLD_VIEW_CART_PAGES_PATTERN.matcher(referer).matches()) {
                 if (!reqData.isIgnoreRedirect()) {
                     responseData.setRedirectUrl(referer);

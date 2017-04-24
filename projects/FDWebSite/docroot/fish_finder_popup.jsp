@@ -158,7 +158,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                         <tr valign='top'>
                             <td bgcolor='<%=green%>' class='textureLabels'>
                                 <img src='/media_stat/images/template/fishfinder/texture_delicate.gif'><br>
-                                <img src="/media_stat/images/layout/clear.gif" width="1" height="40">
+                                <img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="40">
                             </td>
                             <td class='bodycells'>
                                 <logic:iterate id="fish" collection="<%= delicateMild %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="idx">
@@ -168,7 +168,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                                     <a href="javascript:goThere('/product.jsp?productId=<%=fish.getContentName()%>&catId=<%=phName%>&trk=cpage')"><FONT class='<%=fish.getContentName().equals(selected)?"selected":"unSelected"%>'><%=fish.getGlanceName()%></font></a><%=(idx.intValue() != delicateMild.size() - 1)?",&nbsp;":""%>
                                 </logic:iterate>
                             </td>
-                            <td WIDTH="1" BGCOLOR="<%=green%>"><img src="/media_stat/images/layout/clear.gif" width="1"></td>
+                            <td WIDTH="1" BGCOLOR="<%=green%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="1"></td>
                             <td class='bodycells'>
                                 <logic:iterate id="fish" collection="<%= delicateModerate %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="idx">
                                     <%
@@ -177,7 +177,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                                     <a href="javascript:goThere('/product.jsp?productId=<%=fish.getContentName()%>&catId=<%=phName%>&trk=cpage')"><FONT class='<%=fish.getContentName().equals(selected)?"selected":"unSelected"%>'><%=fish.getGlanceName()%></font></a><%=(idx.intValue() != delicateModerate.size() - 1)?",&nbsp;":""%>
                                 </logic:iterate>
                             </td>
-                            <td WIDTH="1" BGCOLOR="<%=green%>"><img src="/media_stat/images/layout/clear.gif" width="1"></td>
+                            <td WIDTH="1" BGCOLOR="<%=green%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="1"></td>
                             <td class='bodycells'>
                                 <logic:iterate id="fish" collection="<%= delicateFull %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="idx">
                                     <%
@@ -186,7 +186,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                                     <a href="javascript:goThere('/product.jsp?productId=<%=fish.getContentName()%>&catId=<%=phName%>&trk=cpage')"><FONT class='<%=fish.getContentName().equals(selected)?"selected":"unSelected"%>'><%=fish.getGlanceName()%></font></a><%=(idx.intValue() != delicateFull.size() - 1)?",&nbsp;":""%>
                                 </logic:iterate>
                             </td>
-                            <td WIDTH="1" BGCOLOR="<%=green%>"><img src="/media_stat/images/layout/clear.gif" width="1"></td>
+                            <td WIDTH="1" BGCOLOR="<%=green%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="1"></td>
                         </tr>
                         <tr height="1">
                             <td BGCOLOR="<%=white%>"></td>
@@ -200,7 +200,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                         <tr valign='top' bgcolor='<%=grey%>'>
                             <td bgcolor='<%=green%>' class='textureLabels'>
                                 <img src='/media_stat/images/template/fishfinder/texture_flaky.gif'><br>
-                                <img src="/media_stat/images/layout/clear.gif" width="1" height="40">
+                                <img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="40">
                             </td>
                             <td class='bodycells'>
                                 <logic:iterate id="fish" collection="<%= flakyMild %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="idx">
@@ -210,7 +210,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                                     <a href="javascript:goThere('/product.jsp?productId=<%=fish.getContentName()%>&catId=<%=phName%>&trk=cpage')"><FONT class='<%=fish.getContentName().equals(selected)?"selected":"unSelected"%>'><%=fish.getGlanceName()%></font></a><%=(idx.intValue() != flakyMild.size() - 1)?",&nbsp;":""%>
                                 </logic:iterate>
                             </td>
-                            <td WIDTH="1" BGCOLOR="<%=green%>"><img src="/media_stat/images/layout/clear.gif" width="1"></td>
+                            <td WIDTH="1" BGCOLOR="<%=green%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="1"></td>
                             <td class='bodycells'>
                                 <logic:iterate id="fish" collection="<%= flakyModerate %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="idx">
                                     <%
@@ -219,7 +219,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                                     <a href="javascript:goThere('/product.jsp?productId=<%=fish.getContentName()%>&catId=<%=phName%>&trk=cpage')"><FONT class='<%=fish.getContentName().equals(selected)?"selected":"unSelected"%>'><%=fish.getGlanceName()%></font></a><%=(idx.intValue() != flakyModerate.size() - 1)?",&nbsp;":""%>
                                 </logic:iterate>
                             </td>
-                            <td WIDTH="1" BGCOLOR="<%=green%>"><img src="/media_stat/images/layout/clear.gif" width="1"></td>
+                            <td WIDTH="1" BGCOLOR="<%=green%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="1"></td>
                             <td class='bodycells'>
                                 <logic:iterate id="fish" collection="<%= flakyFull %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="idx">
                                     <%
@@ -228,7 +228,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                                     <a href="javascript:goThere('/product.jsp?productId=<%=fish.getContentName()%>&catId=<%=phName%>&trk=cpage')"><FONT class='<%=fish.getContentName().equals(selected)?"selected":"unSelected"%>'><%=fish.getGlanceName()%></font></a><%=(idx.intValue() != flakyFull.size() - 1)?",&nbsp;":""%>
                                 </logic:iterate>
                             </td>
-                            <td WIDTH="1" BGCOLOR="<%=green%>"><img src="/media_stat/images/layout/clear.gif" width="1"></td>
+                            <td WIDTH="1" BGCOLOR="<%=green%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="1"></td>
                         </tr>
                         <tr height="1">
                             <td BGCOLOR="<%=white%>"></td>
@@ -242,7 +242,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                         <tr valign='top'>
                             <td bgcolor='<%=green%>' class='textureLabels'>
                                 <img src='/media_stat/images/template/fishfinder/texture_meaty.gif'><br>
-                                <img src="/media_stat/images/layout/clear.gif" width="1" height="40">
+                                <img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="40">
                             </td>
                             <td class='bodycells'>
                                 <logic:iterate id="fish" collection="<%= meatyMild %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="idx">
@@ -252,7 +252,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                                     <a href="javascript:goThere('/product.jsp?productId=<%=fish.getContentName()%>&catId=<%=phName%>&trk=cpage')"><FONT class='<%=fish.getContentName().equals(selected)?"selected":"unSelected"%>'><%=fish.getGlanceName()%></font></a><%=(idx.intValue() != meatyMild.size() - 1)?",&nbsp;":""%>
                                 </logic:iterate>
                             </td>
-                            <td WIDTH="1" BGCOLOR="<%=green%>"><img src="/media_stat/images/layout/clear.gif" width="1"></td>
+                            <td WIDTH="1" BGCOLOR="<%=green%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="1"></td>
                             <td class='bodycells'> 
                                 <logic:iterate id="fish" collection="<%= meatyModerate %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="idx">
                                     <%
@@ -261,7 +261,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                                     <a href="javascript:goThere('/product.jsp?productId=<%=fish.getContentName()%>&catId=<%=phName%>&trk=cpage')"><FONT class='<%=fish.getContentName().equals(selected)?"selected":"unSelected"%>'><%=fish.getGlanceName()%></font></a><%=(idx.intValue() != meatyModerate.size() - 1)?",&nbsp;":""%>
                                 </logic:iterate>
                             </td>
-                            <td WIDTH="1" BGCOLOR="<%=green%>"><img src="/media_stat/images/layout/clear.gif" width="1"></td>
+                            <td WIDTH="1" BGCOLOR="<%=green%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="1"></td>
                             <td class='bodycells'>
                                 <logic:iterate id="fish" collection="<%= meatyFull %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="idx">
                                     <%
@@ -270,7 +270,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                                     <a href="javascript:goThere('/product.jsp?productId=<%=fish.getContentName()%>&catId=<%=phName%>&trk=cpage')"><FONT class='<%=fish.getContentName().equals(selected)?"selected":"unSelected"%>'><%=fish.getGlanceName()%></font></a><%=(idx.intValue() != meatyFull.size() - 1)?",&nbsp;":""%>
                                 </logic:iterate>
                             </td>
-                            <td WIDTH="1" BGCOLOR="<%=green%>"><img src="/media_stat/images/layout/clear.gif" width="1"></td>
+                            <td WIDTH="1" BGCOLOR="<%=green%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="1"></td>
                         </tr>
                         <tr height="1">
                             <td BGCOLOR="<%=green%>"></td>

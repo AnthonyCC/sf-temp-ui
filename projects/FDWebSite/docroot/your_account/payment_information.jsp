@@ -87,9 +87,9 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
     </tr>
 </table>
 
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><br><br>
+<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><br><br>
 <!--  MP Use Case #4 -->
 <!-- <script type="text/javascript" src="https://sandbox.masterpass.com/lightbox/Switch/integration/MasterPass.client.js"></script> -->
 
@@ -112,7 +112,7 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
               <script type="text/javascript">var helpSoInfo=<%=helpSoInfo%>;</script>
               <table width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
               	<tr><td class="acc-payment-methods-title-header">ADD NEW PAYMENT METHOD</td></tr>
-              	<tr><td colspan="9"><img src="/media_stat/images/layout/999966.gif" width="970" height="1" border="0" vspace="3"></td></tr>
+              	<tr><td colspan="9"><img src="/media_stat/images/layout/999966.gif" alt="" width="970" height="1" border="0" vspace="3"></td></tr>
               	<tr align="middle">
        				<td>
        				<div>
@@ -160,7 +160,7 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
 		              <% if (masqueradeContext == null) { %>
 		              	<div class="disconnectWallet" id=deletePPWallet ><img src=/media_stat/images/common/delete-white-icon.png><span id=deleteMPWallet class=disconnect-cssbutton-green>UNLINK</span></div>
 		              <% } %>
-		              </td></tr><tr><td colspan=9><img src=/media_stat/images/layout/999966.gif width=970 height=1 border=0 vspace=3></td></tr>
+		              </td></tr><tr><td colspan=9><img src=/media_stat/images/layout/999966.gif alt="" width=970 height=1 border=0 vspace=3></td></tr>
 		              
 		              <tr height=14></tr>
 		              <tr><td width=280 class=wallet-first-card>
@@ -186,7 +186,7 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
                      <% if (hasCheck) { %>
               <tr valign="top">
                   <td><!-- <img src="/media_stat/images/headers/check_acct_details.gif" width="181" height="9" alt="CHECKING ACCOUNT DETAILS"> --><span class="Container_Top_ChkAcctDetails">Checking Account Details</span> &nbsp;&nbsp;&nbsp;<a href="javascript:popup('/registration/checkacct_terms.jsp','large')"><span class="Terms"> Terms of Use </span></a><br>
-                  <IMG src="/media_stat/images/layout/999966.gif" width="<%= W_YA_PAYMENT_INFO_TOTAL %>" height="1" border="0" VSPACE="3"><br>
+                  <IMG src="/media_stat/images/layout/999966.gif" alt="" width="<%= W_YA_PAYMENT_INFO_TOTAL %>" height="1" border="0" VSPACE="3"><br>
                   </td>
               </tr>
               <tr valign="middle">
@@ -213,7 +213,7 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
                   <td><!-- <img src="/media_stat/images/navigation/credit_card_details.gif"
 		WIDTH="152" HEIGHT="15" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<BR> -->
 		<span vspace="0" border="0" class="Container_Top_YourAccCCDetails">Credit Card Details</span><BR>
-		    <IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+		    <IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 		    </td>
               </tr>
               <tr valign="middle">
@@ -233,7 +233,7 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
               <table width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
               <tr valign="top">
                   <td><img src="/media_stat/images/navigation/ebt_card_details.gif" WIDTH="119" HEIGHT="11" border="0" alt="EBT CARD DETAILS">&nbsp;&nbsp;&nbsp;<BR>
-                  <IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+                  <IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
                   </td>
               </tr>
               <%if(user.isEbtAccepted()){ %>
@@ -252,13 +252,13 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
               </table>
               <% } %>
               <br>
-              <IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
+              <IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
               <FONT CLASS="space4pix"><BR><BR></FONT>
               <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>">
               <TR VALIGN="TOP">
               <TD WIDTH="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="CONTINUE SHOPPING" ALIGN="LEFT"></a></TD>
               <TD WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL - 35 %>"><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="CONTINUE SHOPPING"></a>
-              <BR>from <FONT CLASS="text11bold"><A HREF="/index.jsp">Home Page</A></FONT><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="340" HEIGHT="1" BORDER="0"></TD>
+              <BR>from <FONT CLASS="text11bold"><A HREF="/index.jsp">Home Page</A></FONT><BR><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="340" HEIGHT="1" BORDER="0"></TD>
               </TR>
               </TABLE>
        </fd:GetStandingOrderHelpInfo>

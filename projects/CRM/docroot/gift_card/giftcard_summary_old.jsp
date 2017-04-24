@@ -41,7 +41,7 @@
 		<img src="/media_stat/images/giftcards/your_account/resend_hdr.gif" width="169" height="16" alt="Resend Gift Card" />
 		<a href="#" onclick="Modalbox.hide(); return false;"><img src="/media_stat/images/giftcards/your_account/close.gif" width="50" height="11" alt="close" border="0" style="float: right;" /></a>
 		<br />If your Recipient never received their Gift Card, you may resend it by clicking Resend Now. If there was an error in the Recipient's email address, or to use a new one, edit the email field.
-		<br /><br /><img src="/media_stat/images/layout/cccccc.gif" width="390" height="1" border="0"><br /><br />
+		<br /><br /><img src="/media_stat/images/layout/cccccc.gif" alt="" width="390" height="1" border="0"><br /><br />
         <input type="hidden" id="gcSaleId" value""/>
         <input type="hidden" id="gcCertNum" value""/>
 		<table border="0" cellspacing="0" cellpadding="4" width="100%">
@@ -66,7 +66,7 @@
 				<td><a href="#" onclick="recipResendEmail(); return false;"><img src="/media_stat/images/giftcards/your_account/resend_now_btn.gif" width="85" height="25" alt="RESEND" border="0" /></a></td>
 			</tr>
 		</table>
-		<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
+		<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
 		PLEASE NOTE: You will NOT receive a confirmation email for resent email Gift Cards.<br /><br />
 		<div id="gcResendErr">&nbsp;</div>
 	</div>
@@ -81,7 +81,7 @@
 				</td>
 			</tr>
 		</table>
-		<br /><img src="/media_stat/images/layout/cccccc.gif" width="675" height="1" border="0"><br /><br />
+		<br /><img src="/media_stat/images/layout/cccccc.gif" alt="" width="675" height="1" border="0"><br /><br />
         <fd:GiftCardController actionName='applyGiftCard' result='result' successPage='/your_account/giftcards.jsp'>
             <fd:ErrorHandler result='<%=result%>' name='invalid_card' id='errorMsg'>
                 <%@ include file="/includes/i_error_messages.jspf" %>   
@@ -104,7 +104,7 @@
 			</tr>
 		</table>
         </form>
-		<br /><img src="/media_stat/images/layout/cccccc.gif" width="675" height="1" border="0"><br /><br />
+		<br /><img src="/media_stat/images/layout/cccccc.gif" alt="" width="675" height="1" border="0"><br /><br />
 		</fd:GiftCardController>
 		<fd:GetGiftCardReceived id='giftcards'>
 
@@ -121,7 +121,7 @@
 					<!--  -->
 					<table class="gcYourActTableList">
 						<tr>
-							<td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+							<td colspan="6"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 						</tr>
 						<tr class="th">
 							<td width="85">Certificate #</td>
@@ -147,7 +147,7 @@
 						</tr>
                         </logic:iterate>
 						<tr>
-							<td colspan="7"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+							<td colspan="7"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 						</tr>
 						<tr>
 							<td colspan="7"><a href="#">All Gift Cards Received ></a></td>
@@ -172,7 +172,7 @@
 					<!--  -->
 					<table class="gcYourActTableList">
 						<tr>
-							<td colspan="7"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+							<td colspan="7"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 						</tr>
 						<tr class="th">
 							<td width="85">Certificate #</td>
@@ -195,7 +195,7 @@
 						</tr>
                          </logic:iterate>
 						<tr>
-							<td colspan="7"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+							<td colspan="7"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 						</tr>
 						<tr>
 							<td colspan="7"><a href="#">All Purchased Gift Cards ></a></td>
@@ -208,15 +208,15 @@
 		<br /><br /><div style="font-size: 16px; font-weight: bold;"><a href="/gift_card/purchase/landing.jsp">Click here to purchase Gift Cards today.</a></div><br /><br />
 
 
-		<br /><img src="/media_stat/images/layout/cccccc.gif" width="675" height="1" border="0"><br /><br />
+		<br /><img src="/media_stat/images/layout/cccccc.gif" alt="" width="675" height="1" border="0"><br /><br />
 
 		
-		<img src="/media_stat/images/layout/ff9933.gif" width="675" height="1" border="0"><br /><br />
+		<img src="/media_stat/images/layout/ff9933.gif" alt="" width="675" height="1" border="0"><br /><br />
 		<table border="0" cellspacing="0" cellpadding="0" width="675">
 			<tr valign="top">
 				<td width="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="continue shopping" align="left"></a></td>
 				<td width="640"  class="text11" ><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="continue shopping"></a><br />from <a href="/index.jsp"><b>Home Page</b></a><br />
-				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0" /></td>
+				<img src="/media_stat/images/layout/clear.gif" alt="" width="340" height="1" border="0" /></td>
 			</tr>
 		</table>
 </fd:RedemptionCodeController>        

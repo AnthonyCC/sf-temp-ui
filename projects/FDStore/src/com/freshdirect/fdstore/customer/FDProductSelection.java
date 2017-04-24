@@ -8,8 +8,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.affiliate.ExternalAgency;
+import com.freshdirect.cms.util.ProductInfoUtil;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
@@ -43,6 +46,7 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ZonePriceModel;
 import com.freshdirect.fdstore.content.BrandModel;
+import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
@@ -51,10 +55,12 @@ import com.freshdirect.fdstore.content.ProxyProduct;
 import com.freshdirect.fdstore.content.SkuReference;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.framework.util.MathUtil;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class FDProductSelection implements FDProductSelectionI {
 
 	private static final long	serialVersionUID	= 4143825923906335052L;
+	private static final Logger LOGGER = LoggerFactory.getInstance(FDProductSelection.class);
 	
 	protected final static NumberFormat CURRENCY_FORMATTER = NumberFormat.getCurrencyInstance(Locale.US);
 	protected final static DecimalFormat QUANTITY_FORMATTER = new DecimalFormat("0.##");
@@ -426,7 +432,9 @@ public class FDProductSelection implements FDProductSelectionI {
 	public boolean isKosher() {
 		try {
 			FDProduct pr = lookupFDProduct();
-			return pr.isKosherProduction(getUserContext().getFulfillmentContext().getPlantId());
+			FDProductInfo prodInfo = this.lookupFDProductInfo();
+			//return pr.isKosherProduction(getUserContext().getFulfillmentContext().getPlantId());
+			return pr.isKosherProduction(ProductInfoUtil.getPickingPlantId(prodInfo));
 		} catch (Exception exc) {
 			return false;
 		}
@@ -435,7 +443,9 @@ public class FDProductSelection implements FDProductSelectionI {
 	public boolean isPlatter() {
 		try {
 			FDProduct fdProduct = this.lookupFDProduct();
-			return fdProduct.isPlatter(getUserContext().getFulfillmentContext().getPlantId());
+			FDProductInfo prodInfo = this.lookupFDProductInfo();
+			//return fdProduct.isPlatter(getUserContext().getFulfillmentContext().getPlantId());
+			return fdProduct.isPlatter(ProductInfoUtil.getPickingPlantId(prodInfo));
 		} catch (Exception exc) {
 			return false;
 		}
@@ -820,11 +830,12 @@ public class FDProductSelection implements FDProductSelectionI {
 		if(null != getUserContext()){
 			if(null != prodInfo && null !=getUserContext().getPricingContext() && null!=getUserContext().getPricingContext().getZoneInfo()){
 				pickingPlantId = prodInfo.getPickingPlantId(getUserContext().getPricingContext().getZoneInfo().getSalesOrg(),getUserContext().getPricingContext().getZoneInfo().getDistributionChanel());
-			}
+			}			
 			if(null == pickingPlantId && null !=getUserContext().getFulfillmentContext()){
-				pickingPlantId = getUserContext().getFulfillmentContext().getPlantId();
+				LOGGER.info("PickingPlantId is not found for this product: "+prodInfo.getSkuCode());
+				pickingPlantId = getUserContext().getFulfillmentContext().getPlantId();				
 			}
 		}
-		return pickingPlantId;		
+		return pickingPlantId;
 	}
 }

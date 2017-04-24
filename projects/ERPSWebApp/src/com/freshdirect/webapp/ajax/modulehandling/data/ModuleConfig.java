@@ -13,6 +13,7 @@ public class ModuleConfig implements Serializable {
     private String moduleTitle;
     private String moduleTitleTextBanner;
     private String contentTitle;
+    private String contentTitleTextBanner;
     private String viewAllButtonLink;
 
     private boolean hideViewAllButton;
@@ -74,6 +75,14 @@ public class ModuleConfig implements Serializable {
 
     public void setContentTitle(String contentTitle) {
         this.contentTitle = contentTitle;
+    }
+
+    public String getContentTitleTextBanner() {
+        return contentTitleTextBanner;
+    }
+
+    public void setContentTitleTextBanner(String contentTitleTextBanner) {
+        this.contentTitleTextBanner = contentTitleTextBanner;
     }
 
     public String getViewAllButtonLink() {

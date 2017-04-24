@@ -10,14 +10,14 @@
   	{call common.moduleHeader}
   		{param content: $moduleData /}
   	{/call}
-  	<div class="content">
+  	<div class="content {if  not $moduleData.contentTitle and not $moduleData.contentTitleTextBanner and $moduleData.hideViewAllButton} border-top {/if}">
   		{call common.contentHeader}
   			{param content: $moduleData /}
   		{/call}
   		<div class="image-grid">
   		  <div class="first-line">
   				<div class="small-block">
-  					<div class="small" >
+  					<div class="small-image" >
   						<a href="{$data.imageGridData[0].iconLink}">
   							<img src="{$data.imageGridData[0].iconImage}" alt="{$data.imageGridData[0].iconLinkText}">
   							{if $data.imageGridData[0].iconLinkText}
@@ -25,7 +25,7 @@
                 {/if}
               </a>
   					</div>
-  					<div class="small" >
+  					<div class="small-image" >
   						<a href="{$data.imageGridData[1].iconLink}">
   							<img src="{$data.imageGridData[1].iconImage}" alt="{$data.imageGridData[1].iconLinkText}">
   							{if $data.imageGridData[1].iconLinkText}
@@ -53,7 +53,7 @@
   					</a>
   				</div>
   				<div class="small-block">
-  					<div class="small">
+  					<div class="small-image">
   						<a href="{$data.imageGridData[4].iconLink}">
   							<img src="{$data.imageGridData[4].iconImage}" alt="{$data.imageGridData[4].iconLinkText}">
   							{if $data.imageGridData[4].iconLinkText}
@@ -61,7 +61,7 @@
                 {/if}
   						</a>
   					</div>
-  					<div class="small">
+  					<div class="small-image">
   						<a href="{$data.imageGridData[5].iconLink}">
   							<img src="{$data.imageGridData[5].iconImage}" alt="{$data.imageGridData[5].iconLinkText}">
   							{if $data.imageGridData[5].iconLinkText}

@@ -35,7 +35,7 @@ public interface FDListManagerSB extends EJBObject {
     //APPDEV-4179 - Item quantities should NOT be honored in "Your Top Items"
     public List<FDProductSelectionI> getQsSpecificEveryItemEverOrderedListTopItems(FDIdentity identity, StoreContext storeContext) throws FDResourceException, RemoteException;
 
-    public String storeCustomerList(FDCustomerList list) throws FDResourceException, RemoteException;
+    public FDCustomerList storeCustomerList(FDCustomerList list) throws FDResourceException, RemoteException;
     
     public boolean removeCustomerListItem(FDIdentity identity, PrimaryKey id) throws FDResourceException, RemoteException;
 

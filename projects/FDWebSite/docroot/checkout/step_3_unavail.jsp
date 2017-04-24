@@ -41,9 +41,9 @@ if(true ){//if(isEBTBlocked ){
 %>
 <table width="<%=W_CHECKOUT_STEP_2_UNAVAIL_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 <tr><td><span class="title18">Some items are ineligible with EBT Card payment</span></td></tr>
-<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"><br>
-<img src="/media_stat/images/layout/ff9933.gif" width="<%=W_CHECKOUT_STEP_2_UNAVAIL_TOTAL%>" height="1" border="0"><br>
-<img src="/media_stat/images/layout/clear.gif" width="1" height="6" border="0"><br>
+<tr><td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0"><br>
+<img src="/media_stat/images/layout/ff9933.gif" alt="" width="<%=W_CHECKOUT_STEP_2_UNAVAIL_TOTAL%>" height="1" border="0"><br>
+<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6" border="0"><br>
 </td></tr>
 <tr><td class="text11">
 		We're sorry, but some items are restricted for payment with EBT card.
@@ -56,7 +56,7 @@ if(true ){//if(isEBTBlocked ){
 			All items will remain in your cart until you click the button below to proceed with checkout.
 		</font>
 		
-		<br><img src="/media_stat/images/layout/clear.gif" width="1" height="4">
+		<br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4">
 </td></tr>
 </table>
 <br> 
@@ -110,9 +110,9 @@ if(true ){//if(isEBTBlocked ){
 <%} %>
 
 <CENTER>
-<img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"><br>
-<img src="/media_stat/images/layout/ff9933.gif" width="<%=W_CHECKOUT_STEP_2_UNAVAIL_TOTAL%>" height="1" border="0"><br>
-<img src="/media_stat/images/layout/clear.gif" width="1" height="6" border="0"><br>
+<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0"><br>
+<img src="/media_stat/images/layout/ff9933.gif" alt="" width="<%=W_CHECKOUT_STEP_2_UNAVAIL_TOTAL%>" height="1" border="0"><br>
+<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6" border="0"><br>
 <table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_2_UNAVAIL_TOTAL%>">
 	<tr valign="TOP">
 		<td width="350"><a href="/checkout/step_3_choose.jsp?duplicateCheck=skip"><img src="/media_stat/images/navigation/ebt_choose_non_ebt.jpg" width="280" height="32" alt="" border="0"></a></td>
@@ -124,8 +124,8 @@ if(true ){//if(isEBTBlocked ){
 		
 	</tr>
 </table>
-<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br>
-<img src="/media_stat/images/layout/ff9933.gif" width="<%=W_CHECKOUT_STEP_2_UNAVAIL_TOTAL%>" height="1" border="0"><br>
+<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br>
+<img src="/media_stat/images/layout/ff9933.gif" alt="" width="<%=W_CHECKOUT_STEP_2_UNAVAIL_TOTAL%>" height="1" border="0"><br>
 
 </CENTER>
 

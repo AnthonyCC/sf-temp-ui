@@ -3,8 +3,6 @@ package com.freshdirect.webapp.ajax.viewcart.data;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.freshdirect.webapp.ajax.browse.data.CarouselData;
-
 public class ViewCartCarouselData {
 	
 	private List<RecommendationTab> recommendationTabs = new ArrayList<RecommendationTab>();

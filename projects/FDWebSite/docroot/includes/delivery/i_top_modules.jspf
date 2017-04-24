@@ -79,7 +79,7 @@ double currentHour = h+m;
 		<td bgcolor="#cccccc" width="1" rowspan="4">
 			<img height="1" border="0" width="1" src="/media_stat/images/layout/dotted_line_w.gif"><br>
 		</td>
-		<td width="15" rowspan="2"><img height="1" border="0" width="15" src="/media_stat/images/layout/clear.gif"></td>
+		<td width="15" rowspan="2"><img height="1" border="0" width="15" alt="" src="/media_stat/images/layout/clear.gif"></td>
 		
 		<td width="<%=W_TOP_MODULES_C%>" rowspan="2" align="center">
 			<%if(deliveryModel.getMaxDiscount()>0 && user.isDlvPassActive()){%>
@@ -111,7 +111,7 @@ double currentHour = h+m;
 		<td bgcolor="#cccccc" width="1" rowspan="4">
 			<img height="1" border="0" width="1" src="/media_stat/images/layout/dotted_line_w.gif"><br>
 		</td>
-		<td width="15" rowspan="2"><img height="1" border="0" width="15" src="/media_stat/images/layout/clear.gif"></td>
+		<td width="15" rowspan="2"><img height="1" border="0" width="15" alt="" src="/media_stat/images/layout/clear.gif"></td>
 		
 		<td width="<%=W_TOP_MODULES_C%>" rowspan="2" align="center">
 			<%if(clickToCall && (user.isDlvPassActive() || (user.isCorporateUser() || "CORPORATE".equals(address.getServiceType().getName())))){%>
@@ -144,6 +144,6 @@ double currentHour = h+m;
 
 </table>
 
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 <IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_TOP_MODULES_TOTAL%>" HEIGHT="3" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>

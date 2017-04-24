@@ -2,6 +2,7 @@ package com.freshdirect.webapp.ajax.standingorder;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -25,10 +26,13 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeVariant;
 import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.FDCustomerList;
+import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
 import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
@@ -237,7 +241,15 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 
 		// Save list
 		try {
-			FDListManager.storeCustomerList(list);
+			list = FDListManager.storeCustomerList(list);
+			if(StandingOrderHelper.isEligibleForSo3_0(user) && reqData.getStandingOrderId()!=null){
+				List<FDCustomerListItem> cartLine=list.getLineItems();
+				for (Iterator<FDCustomerListItem> iterator = cartLine.iterator(); iterator.hasNext();) {
+						FDCustomerProductListLineItem fDCustomerProductListLineItem = (FDCustomerProductListLineItem) iterator.next();
+							if(fDCustomerProductListLineItem.isSojustAddedItemToCart() && null != fDCustomerProductListLineItem.getPK())
+									user.getSoCartLineMessagesMap().put(fDCustomerProductListLineItem.getPK().getId(), "NewItem");
+				}
+			}
 		} catch (FDResourceException e) {
 			returnHttpError(500, "System error (FDResourceException) - couldn't persist Standing order  list", e); // 500 Internal Server Error
 		}
@@ -253,7 +265,7 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 			try {
 				FDCustomerProductListLineItem listItem = createListLineItem(item, recipeId, false);
 				list.addLineItem(listItem);
-
+				listItem.setSojustAddedItemToCart(true);
 				// create response item
 				responseItem.setItemName(listItem.getFullName());
 				responseItem.setMessage("Added to List");

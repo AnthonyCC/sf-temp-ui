@@ -17,7 +17,7 @@ String fontClass = yourAccount? "text12" : "text11";
 	<%}%>
 	<tr>
 		<td class="<%= fontClass %>">
-      <label><b>What day of the week would you like a reminder?</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
+      <label><b>What day of the week would you like a reminder?</b><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"><br>
 		&nbsp;<select name="dayOfWeek">
 		<option value="<%=Calendar.SUNDAY%>" <%=custInfo.getReminderDayOfWeek() == Calendar.SUNDAY ? "selected" : "" %>>Sunday</option>
 		<option value="<%=Calendar.MONDAY%>" <%=custInfo.getReminderDayOfWeek() == Calendar.MONDAY ? "selected" : "" %>>Monday</option>
@@ -38,8 +38,8 @@ String fontClass = yourAccount? "text12" : "text11";
 	</tr>
 	<tr>
 		<td class="<%= fontClass %>">
-		The reminder will be sent to <b><%= custInfo.getEmail() %></b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br>
-		<label for="altEmailOption">If you like, we can also send it to your alternate email addresses:</label><br><img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br>
+		The reminder will be sent to <b><%= custInfo.getEmail() %></b><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6"><br>
+		<label for="altEmailOption">If you like, we can also send it to your alternate email addresses:</label><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6"><br>
 		&nbsp;&nbsp;&nbsp;<input type="checkbox" id="altEmailOption" name="altEmailOption" value="checkbox" <%=custInfo.isReminderAltEmail() && custInfo.getAlternateEmail() != null && !"".equals(custInfo.getAlternateEmail()) ? "checked" : ""%>> <label for="userInfoAltEmail">Also send to</label>
 		<% if (custInfo.getAlternateEmail() != null && !"".equals(custInfo.getAlternateEmail()) && !result.hasError(EnumUserInfoName.ALT_EMAIL.getCode())) { %>
       <b><%= custInfo.getAlternateEmail() %></b><input type="hidden" name="<%=EnumUserInfoName.ALT_EMAIL.getCode()%>" value="<%=custInfo.getAlternateEmail()%>">

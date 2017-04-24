@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.content.browse.filter;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.cms.util.ProductInfoUtil;
 import com.freshdirect.content.nutrition.EnumKosherSymbolValue;
 import com.freshdirect.fdstore.FDKosherInfo;
 import com.freshdirect.fdstore.FDProduct;
@@ -41,7 +42,8 @@ public class KosherFilter extends AbstractProductItemFilter {
 
 		try {
 			FDProduct fdProd = productItem.getFdProduct();
-			String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+			//String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+			String plantID=ProductInfoUtil.getPickingPlantId(productItem.getFdProductInfo());
 			FDKosherInfo kInfo = fdProd.getKosherInfo(plantID);
 			
 			final int kosherPriority = kInfo != null ? kInfo.getPriority() : NON_KOSHER_PRI;

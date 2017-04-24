@@ -238,16 +238,16 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
 			<td colspan="4"><fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler> <fd:ErrorHandler result='<%=result%>' name='duplicate_user_address' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 		</tr>
 		<tr valign="TOP">
-			<td ROWSPAN="12"><img src="/media_stat/images/layout/clear.gif" width="15" height="1" border="0"></td>
-			<td align="right" class="text12"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>*&nbsp;First Name&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>"></span></fd:ErrorHandler></td>
-			<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br><input type="text" SIZE="21" maxlength="25" class="text11" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" required="true" value="<%=fldFirstName %>">&nbsp;(full name or first initial)<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>' id='errorMsg'>&nbsp;<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+			<td ROWSPAN="12"><img src="/media_stat/images/layout/clear.gif" alt="" width="15" height="1" border="0"></td>
+			<td align="right" class="text12"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>*&nbsp;First Name&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>"></span></fd:ErrorHandler></td>
+			<td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br><input type="text" SIZE="21" maxlength="25" class="text11" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" required="true" value="<%=fldFirstName %>">&nbsp;(full name or first initial)<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>' id='errorMsg'>&nbsp;<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 		</tr>
 		<tr valign="MIDDLE">
 			<td align="right" class="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>*&nbsp;Last Name&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>"></span></fd:ErrorHandler></td>
 			<td colspan="2"><input type="text" maxlength="25" SIZE="21" class="text11" name="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>" required="true" value="<%=fldLastName %>">&nbsp;&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 		</tr>
 		<tr valign="MIDDLE">
-			<td align="right" class="text12"><img src="/media_stat/images/layout/clear.gif" width="1" height="6" border="0"><br><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>* Service&nbsp;Type&nbsp;&nbsp;</td>
+			<td align="right" class="text12"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6" border="0"><br><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>* Service&nbsp;Type&nbsp;&nbsp;</td>
 			<td colspan="2">
 				<script type="text/javascript">
 				<!--
@@ -355,10 +355,10 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
 			&nbsp;&nbsp;Ext.&nbsp;&nbsp;<input type="text" maxlength="6" size="4" class="text11" name="<%=EnumUserInfoName.DLV_ALT_CONTACT_EXT.getCode()%>" value="<%=fldAltContactExt%>"></td>
 		</tr>
 		<tr>
-			<td><img src="/media_stat/images/layout/clear.gif" width="15" height="1"></td>
-			<td><img src="/media_stat/images/layout/clear.gif" width="115" height="1"></td>
-			<td><img src="/media_stat/images/layout/clear.gif" width="210" height="1"></td>
-			<td><img src="/media_stat/images/layout/clear.gif" width="335" height="1"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" alt="" width="15" height="1"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" alt="" width="115" height="1"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" alt="" width="210" height="1"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" alt="" width="335" height="1"></td>
 		</tr>
 	</table>
 
@@ -383,11 +383,11 @@ if(request.getParameter(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode()) != nu
 	<table border="0" cellspacing="1" cellpadding="0" width="675" <%= (udConfirm) ? "style=\"display: none;\"" : "" %>>
 	<tr valign="top">
 		<td width="30" ROWSPAN="2">&nbsp;</td>
-		<td width="645" colspan="2" class="text12"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br><font class="text12bold">IMPORTANT: Enter cross street and any special delivery instructions
+		<td width="645" colspan="2" class="text12"><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6"><br><font class="text12bold">IMPORTANT: Enter cross street and any special delivery instructions
 	</font><BR>Please enter any information our delivery person will need to get your order to your door.</td>
 	</tr>
 	<tr valign="top">
-		<td width="645"><input type="text" class="text11" name="<%=EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode()%>" size="50" maxLength="80" value="<%=(fldDlvInstructions!=null)?fldDlvInstructions.replaceAll("\"","&quot;"):"none"%>"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="27"><br></td>
+		<td width="645"><input type="text" class="text11" name="<%=EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode()%>" size="50" maxLength="80" value="<%=(fldDlvInstructions!=null)?fldDlvInstructions.replaceAll("\"","&quot;"):"none"%>"><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="27"><br></td>
 	</tr>
 	</table>
 
@@ -436,7 +436,7 @@ if(request.getParameter(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode()) != nu
 	<tr valign="top">
 	   <td width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL%>">
 		   <img src="/media_stat/images/navigation/unattended_delivery_hdr.gif" alt="UNATTENDED DELIVERY (Limited Availability)" border="0"><br>
-		   <img width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL%>" vspace="3" height="1" border="0" src="/media_stat/images/layout/999966.gif"/><br>
+		   <img width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL%>" vspace="3" height="1" alt="" border="0" src="/media_stat/images/layout/999966.gif"/><br>
 	   </td>
 	 </tr>
 	 </table>
@@ -513,7 +513,7 @@ if(request.getParameter(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode()) != nu
 						  <%= !unattendedOptIn ? "disabled" : ""%>
 				/>
 				   <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span><br/></fd:ErrorHandler>
-				   <br/><img width="1" height="27" src="/media_stat/images/layout/clear.gif"/><br/>
+				   <br/><img width="1" height="27" alt="" src="/media_stat/images/layout/clear.gif"/><br/>
 			</tr>
 			</tbody>
 			</table>
@@ -543,7 +543,7 @@ if(showDoorman){
 	<tr valign="top">
 		<td width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL%>">
 			<img src="/media_stat/images/navigation/ttcgi.gif"  border="0" alt="OTHER PERSON AUTHORIZED TO ACCEPT DELIVERY AT THIS ADDRESS (Optional)"><br>
-			<img src="/media_stat/images/layout/999966.gif" width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL%>" height="1" border="0" VSPACE="3"><br>
+			<img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL%>" height="1" border="0" VSPACE="3"><br>
 		</td>
 	</tr>
 	</table>
@@ -569,7 +569,7 @@ if(showDoorman){
 	<table border="0" cellspacing="1" cellpadding="0" width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL%>" <%= (udConfirm) ? "style=\"display: none;\"" : "" %>>
 	<tr valign="MIDDLE">
 		<td></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="105" height="1" border="0"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="105" height="1" border="0"></td>
 		<td></td>
 	</tr>
 	</table>
@@ -592,7 +592,7 @@ if(showAltDelivery){
 	<%}else{%>
 			<img src="/media_stat/images/navigation/other_person_auth_delivery.gif" width="487" height="10" border="0" alt="OTHER PERSON AUTHORIZED TO ACCEPT DELIVERY AT THIS ADDRESS (Optional)"><br>
 	<%}%>
-			<img src="/media_stat/images/layout/999966.gif" width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL%>" height="1" border="0" VSPACE="3"><br>
+			<img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_DELIVERY_ADDRESS_FIELD_TOTAL%>" height="1" border="0" VSPACE="3"><br>
 		</td>
 	</tr>
 	</table>
@@ -631,11 +631,11 @@ if(showAltDelivery){
 	<table border="0" cellspacing="1" cellpadding="0" width="675" <%= (udConfirm) ? "style=\"display: none;\"" : "" %>>
 	<tr>
 		<td></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="115" height="8" border="0"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="115" height="8" border="0"></td>
 		<td></td>
 	</tr>
 	<tr>
-		<td width="15" rowspan="5"><img src="/media_stat/images/layout/clear.gif" width="13" height="1" border="0"></td>
+		<td width="15" rowspan="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="13" height="1" border="0"></td>
 		<td width="115" align="right" class="text12">
 			<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ALT_FIRSTNAME.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>
 			*First Name&nbsp;&nbsp;

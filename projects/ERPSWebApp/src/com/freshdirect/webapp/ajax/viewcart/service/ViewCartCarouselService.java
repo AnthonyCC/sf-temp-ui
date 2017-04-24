@@ -82,6 +82,11 @@ public class ViewCartCarouselService {
     private static final int MAX_RECOMMENDATIONS = 5;
     private static final int MAX_TABS = 3;
     private static final String SMART_STORE_FACILILTY = "view_cart";
+    
+    public static final String CAROUSEL_PRODUCT_DONATIONS_SITE_FEATURE = "PRODUCT_DONATIONS";
+    public static final String CAROUSEL_PRODUCT_DONATIONS_TAB_TITLE = "Donation Samples";
+    public static final String CAROUSEL_PRODUCT_SAMPLES_SITE_FEATURE = "PRODUCT_SAMPLES";
+    public static final String CAROUSEL_PRODUCT_SAMPLES_TAB_TITLE = "Free Sample!";
 
     private ViewCartCarouselService() {
     }
@@ -211,7 +216,11 @@ public class ViewCartCarouselService {
 
     public ProductSamplesCarousel populateViewCartPageProductSampleCarousel(HttpServletRequest request) throws Exception {
         CarouselData carouselData = new CarouselData();
-        ProductSamplesCarousel tab = new ProductSamplesCarousel(FDStoreProperties.getProductSamplesTitle(), "Product Samples", "", "", "");
+        /* make title configurable */
+        String prodSampelsTitle = FDStoreProperties.getProductSamplesTitle()
+        		.replaceAll("%%N%%", Integer.toString( FDStoreProperties.getProductSamplesMaxBuyProductsLimit() ))
+        		.replaceAll("%%Q%%", Integer.toString( FDStoreProperties.getProductSamplesMaxQuantityLimit() ));
+        ProductSamplesCarousel tab = new ProductSamplesCarousel(prodSampelsTitle, ViewCartCarouselService.CAROUSEL_PRODUCT_SAMPLES_SITE_FEATURE.toString(), "", "", "");
         tab.setCarouselData(carouselData);
         FDSessionUser user = (FDSessionUser) getUserFromSession(request.getSession());
         List<ProductData> sampleProducts = new ArrayList<ProductData>();
@@ -230,6 +239,7 @@ public class ViewCartCarouselService {
                 if (null != orderLine.getDiscount() && orderLine.getDiscount().getDiscountType().equals(EnumDiscountType.FREE)) {
                     productSamplesInCart.add(orderLine);
                     orderLine.setErpOrderLineSource(EnumEventSource.ps_caraousal);
+                    carouselData.setCmEventSource(EnumEventSource.ps_caraousal.toString());
                 }
             }
         }
@@ -465,7 +475,7 @@ public class ViewCartCarouselService {
     
     public ProductSamplesCarousel populateViewCartPageDonationProductSampleCarousel(HttpServletRequest request) throws Exception {
         CarouselData carouselData = new CarouselData();
-        ProductSamplesCarousel tab = new ProductSamplesCarousel("", "Donation Samples", "", "", "");
+        ProductSamplesCarousel tab = new ProductSamplesCarousel("Donate to Grand Giving! For every $1 donated, 5 meals will be given to a family in need.", ViewCartCarouselService.CAROUSEL_PRODUCT_DONATIONS_SITE_FEATURE.toString(), "", "", "");
         tab.setCarouselData(carouselData);
         FDSessionUser user = (FDSessionUser) getUserFromSession(request.getSession());
         List<ProductData> sampleProducts = new ArrayList<ProductData>();

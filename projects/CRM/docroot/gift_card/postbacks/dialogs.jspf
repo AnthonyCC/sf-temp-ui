@@ -6,7 +6,7 @@
 			<img src="/media_stat/images/giftcards/your_account/resend_hdr.gif" width="169" height="16" alt="Resend Gift Card" />
 			<a href="#" onclick="Modalbox.hide(); return false;"><img src="/media_stat/images/giftcards/your_account/close.gif" width="50" height="11" alt="close" border="0" style="float: right;" /></a>
 			<br />If your Recipient never received their Gift Card, you may resend it by clicking Resend Now. If there was an error in the Recipient's email address, or to use a new one, edit the email field.
-			<br /><br /><img src="/media_stat/images/layout/cccccc.gif" width="390" height="1" border="0"><br /><br />
+			<br /><br /><img src="/media_stat/images/layout/cccccc.gif" alt="" width="390" height="1" border="0"><br /><br />
 			<input type="hidden" id="gcSaleId" value=""/>
 			<input type="hidden" id="gcCertNum" value=""/>
 			<table border="0" cellspacing="0" cellpadding="4" width="100%">
@@ -31,7 +31,7 @@
 					<td><a href="#" onclick="recipResendEmail(); return false;"><img src="/media_stat/images/giftcards/your_account/resend_now_btn.gif" width="85" height="25" alt="RESEND" border="0" /></a></td>
 				</tr>
 			</table>
-			<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
+			<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
 			PLEASE NOTE: You will NOT receive a confirmation email for resent email Gift Cards.<br /><br />
 			<div id="gcResendErr">&nbsp;</div>
 		</div>
@@ -64,7 +64,7 @@
 				<span id="gcCheckAddressBoxMsg" class="gcCheckAddressBoxMsg">Sorry, we don't currently deliver to this address.<br />
 			If this is a New York address, may we suggest our Pickup Window in Long Island City?</span>
 			</div><br />
-			<img src="/media_stat/images/layout/cccccc.gif" width="390" height="1" border="0"><br /><br />
+			<img src="/media_stat/images/layout/cccccc.gif" alt="" width="390" height="1" border="0"><br /><br />
 			<table border="0" cellspacing="0" cellpadding="4" width="100%">
 				<tr>
 					<th width="130" align="right">Street Address 1:</th>
@@ -142,7 +142,7 @@
 					<td><input type="text" id="" value="" /></td>
 				</tr>
 				<tr class="gcResendCRMBox_recipLine">
-					<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+					<td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 				</tr>
 				<tr class="gcResendCRMBox_recipLine">
 					<td><input type="submit" class="submit" value="SEND EMAIL" /></td>
@@ -201,7 +201,7 @@
 									<td><textarea id="gcResendRecipMsg_gcResendCRMBox"></textarea></td>
 								</tr>
 								<tr class="gcResendCRMBox_recipLine">
-									<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+									<td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 								</tr>
 								<tr class="gcResendCRMBox_recipLine">
 									<td colspan="2"><input type="submit" class="submit" value="SEND EMAIL" onclick="recipResendEmailCRM(); return false;" /></td>
@@ -248,7 +248,7 @@
 									<td><input type="text" id="newRecpEmail_gcResendCRMCancelBox" value="" /></td>
 								</tr>
 								<tr class="gcResendCRMCancelBox_recipLine">
-									<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+									<td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 								</tr>
 								<tr class="gcResendCRMCancelBox_recipLine">
 									<td colspan="2"><input type="submit" class="submit" value="SEND CANCELLATION EMAIL" onclick="sendCancellation(); return false;"/></td>

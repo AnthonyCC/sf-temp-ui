@@ -121,10 +121,10 @@ if(weRecommendImgProds.size() > 0) {
             }
             String prdImgPath = "/media_stat/images/layout/clear.gif";
             Image prdImg = prdMdl.getThumbnailImage();
-            String prdImgDim = "width=\"30\" height=\"30\"";
+            String prdImgDim = "width=\"30\" alt=\"\" height=\"30\"";
             if (prdImg!=null) {
                 prdImgPath = prdImg.getPath();
-                prdImgDim = "width=\""+prdImg.getWidth()+"\" height=\""+prdImg.getHeight()+"\" ";
+                prdImgDim = "width=\""+prdImg.getWidth()+"\" height=\""+prdImg.getHeight()+"\" alt=\"\" "; 
             }
             weRecSku = prdMdl.getDefaultSku();
             String weRecPrice = null;

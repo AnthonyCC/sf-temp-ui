@@ -24,7 +24,7 @@ final int W_QIUCK_SHOP_CONFIRM_INNER = 590;
 %><%
 	request.setAttribute("confirmation.location","quickshop");
 	String fromPage = null;
-	String spacer = "/media_stat/images/layout/clear.gif";
+	String spacer = "/media_stat/images/layout/clear.gif"; 
 	String servlet_context = request.getContextPath();
 	String qsDeptId = request.getParameter("qsDeptId");
 	boolean hasDeptId = qsDeptId != null && !"".equals(qsDeptId);

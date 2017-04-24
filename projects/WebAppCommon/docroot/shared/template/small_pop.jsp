@@ -22,8 +22,8 @@
 <td colspan="2"><a href="javascript:try { window.reallyClose(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}"><img src="/media_stat/images/layout/pop_up_header_sm.gif" width="400" height="43" border="0" alt="FreshDirect     (close window)"></a></td>
 </tr>-->
 <tr>
-<td><img src="/media_stat/images/layout/clear.gif" width="165" height="8"></td>
-<td><img src="/media_stat/images/layout/clear.gif" width="165" height="8"></td>
+<td><img src="/media_stat/images/layout/clear.gif" alt="" width="165" height="8"></td>
+<td><img src="/media_stat/images/layout/clear.gif" alt="" width="165" height="8"></td>
 </tr>
 <tr><td colspan="2" align="center">
 <%-- content lands here --%>
@@ -31,7 +31,7 @@
 <%-- content ends above here--%>
 </td></tr>
 <tr>
-<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td>
+<td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"></td>
 </tr>
 <!-- APPDEV 4198 popup debranding FDX project
 <tr>

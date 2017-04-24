@@ -675,6 +675,7 @@
 				<EnumValue value="BELOW_DEPARTMENT" label="On/Appearing below depratment"/>
 				<EnumValue value="BELOW_LOWEST_LEVEL_CATEGROY" label="On/Appearing below lowest level category"/>
 				<EnumValue value="OFF" label="Turned off"/>
+				<EnumValue value="ORIGINAL" label="On/Appearing in original order"/>
 			</EnumDef>
 			<AttributeDef type="B" name="disableCategoryYmalRecommender" label="Disable Category YMAL Recommender" inheritable="true"/>
 			<AttributeDef name="SEO_META_DESC" type="S" label="SEO Meta Description" inheritable="false"/>
@@ -2768,6 +2769,7 @@
 			<AttributeDef type="S" name="moduleTitleTextBanner" label="Module Title Text Banner" required="false"/>
 			<AttributeDef type="S" name="viewAllButtonLink" label="View All Button Link" required="false"/>
 			<AttributeDef type="S" name="contentTitle" label="Content Title" required="false"/>
+			<AttributeDef type="S" name="contentTitleTextBanner" label="Content Title Text Banner" required="false"/>
 			<AttributeDef type="S" name="heroTitle" label="Hero Title" required="false"/>
 			<AttributeDef type="S" name="heroSubtitle" label="Hero Subtitle" required="false"/>
 			<AttributeDef type="S" name="headerTitle" label="Header Title" required="false"/>
@@ -2785,6 +2787,7 @@
 				<EnumValue value="FEATURED_RECOMMENDER" label="FEATURED_RECOMMENDER"/>
 				<EnumValue value="MOST_POPULAR_PRODUCTS" label="MOST_POPULAR_PRODUCTS"/>
 				<EnumValue value="BRAND_FEATURED_PRODUCTS" label="BRAND_FEATURED_PRODUCTS"/>
+				<EnumValue value="STAFF_PICKS" label="STAFF_PICKS"/>
 			</EnumDef>			
 			<EnumDef type="S" name="displayType"  label="Display Type" required="true">
 				<EnumValue value="PRODUCT_CAROUSEL_MODULE" label="PRODUCT_CAROUSEL_MODULE"/>

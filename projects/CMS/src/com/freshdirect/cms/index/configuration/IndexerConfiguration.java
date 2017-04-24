@@ -59,7 +59,7 @@ public class IndexerConfiguration {
         defaultConfiguration.setIndexDirectoryPath(SearchServiceConfiguration.getInstance().getCmsIndexLocation());
         defaultConfiguration.setStoreContentSource(CmsManager.getInstance());
         defaultConfiguration.setAnalyzer(IndexingConstants.ANALYZER);
-        defaultConfiguration.setPartialIndex(true);
+        defaultConfiguration.setPartialIndex(false);
         defaultConfiguration.setMaxFieldLength(IndexingConstants.MAX_FIELD_LENGTH_1024);
         defaultConfiguration.setIndexWriterRamBufferSize(IndexingConstants.DICTIONARY_WRITER_RAM_BUFFER_SIZE);
         defaultConfiguration.setIndexWriterMergeFactor(IndexingConstants.DICTIONARY_WRITER_MERGE_FACTOR);

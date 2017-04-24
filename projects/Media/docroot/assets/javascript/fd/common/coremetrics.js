@@ -93,18 +93,18 @@ var FreshDirect = FreshDirect || {};
   		var coremetricsItem = [],
           dataString,
           pageNumber = $(event.currentTarget).closest('[carousel-page-number]')[0].attributes['carousel-page-number'].value,
-          carouselInfo = $(event.currentTarget).closest('[manual_cm_sp]')[0].attributes['manual_cm_sp'].value.split(',');
+          carouselInfo = $(event.currentTarget).closest('[manual_cm_sp]')[0].attributes['manual_cm_sp'].value.split('-_-');
 
       if(carouselInfo.length > 2) {
-        dataString = carouselInfo[2] + '-_-' + 'Pane' + pageNumber + '-_-' + carouselInfo[1];
+        dataString = carouselInfo[2] + '-_-' + pageNumber + '-_-' + carouselInfo[0];
       } else {
-        dataString = '-_-' + 'Pane' + pageNumber + '-_-' + carouselInfo[1];
+        dataString = '-_-' + pageNumber + '-_-' + carouselInfo[0];
       }
 
       coremetricsItem.push('cmCreateManualLinkClickTag');
       coremetricsItem.push(event.currentTarget.baseURI + '?cm_sp=' + encodeURI(dataString));
       coremetricsItem.push('');
-      coremetricsItem.push('PRODUCT: ' + carouselInfo[1] + '(' + carouselInfo[0] + ')');
+      coremetricsItem.push('PRODUCT: ' + carouselInfo[1]);
       coremetrics.playOneItem(coremetricsItem);
     }
 	});

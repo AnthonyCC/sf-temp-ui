@@ -63,19 +63,39 @@ if (mobWeb) {
         <soy:render template="expressco.cartheader" data="${cartDataPotato}" />
       </div>
 
+		<% if (!mobWeb) { /* no mobWeb for now */  %>
+        	<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user_view_cart)) { %>
+				<%-- APPDEV-5916 --%>
+				<div id="cartCarousels">
+					<potato:viewCart />
+					<soy:render template="expressco.viewCartTabbedCarousel" data="${viewCartPotato}" />
+					<script>
+						/* figure out which tab should be selected */
+						/*$jq('#cartCarousels').ready(function() {
+							var $tab = $jq(this).find('.tabbed-carousel:first');
+							if ($tab) {
+								var cmeventsource = $tab.data('cmeventsource');
+								$tab.find('.tabs [data-component="tabitem"]:first').trigger('click');
+							}
+							
+						});*/
+					</script>
+				</div>
+			<% } %>
+		<% } %>
 <%-- APPDEV-5516 : Cart Carousel - Grand Giving Donation Technology --%>
 <%-- If the donationProductSampleCarousel is not enabled, the fallback div is productsamplecarousel --%>
-  <%   
-   if(FDStoreProperties.isPropDonationProductSamplesEnabled()){ %>
-     <div id="donationProductSampleCarousel" class="donation-product-sample-carousel">
-        <soy:render template="expressco.donationProductSampleCarouselWrapper" data="${cartDataPotato}" />
-      </div>     
-<%}else{ %>
-	  <div id="productsamplecarousel" class="product-sample-carousel">
-        <soy:render template="expressco.productSampleCarouselWrapper" data="${cartDataPotato}" />
-      </div>
-      <%} 
-  %>
+  <% if (FDStoreProperties.isObsoleteCartCarouselsEnabled()) {
+		   if(FDStoreProperties.isPropDonationProductSamplesEnabled()){ %>
+		     <div id="donationProductSampleCarousel" class="donation-product-sample-carousel">
+		        <soy:render template="expressco.donationProductSampleCarouselWrapper" data="${cartDataPotato}" />
+		      </div>     
+		<% } else { %>
+			  <div id="productsamplecarousel" class="product-sample-carousel">
+		        <soy:render template="expressco.productSampleCarouselWrapper" data="${cartDataPotato}" />
+		      </div>
+		      <%}
+  } %>
 
       <div id="questions">
         <soy:render template="expressco.cartheaderQuestions" data="${cartDataPotato}" />
@@ -91,6 +111,11 @@ if (mobWeb) {
       window.FreshDirect.expressco = {};
       window.FreshDirect.expressco.data = <fd:ToJSON object="${cartDataPotato}" noHeaders="true"/>
       window.FreshDirect.expressco.pendingCustomizations = <fd:ToJSON object="${pendingExternalAtcItemPotato}" noHeaders="true"/>
+		<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user_view_cart)) { %>
+      		window.FreshDirect.expressco.viewCartPotato = <fd:ToJSON object="${viewCartPotato}" noHeaders="true"/>
+		<% } else { %>
+			window.FreshDirect.expressco.viewCartPotato = {};
+		<% } %>
 
       // override coupon api url
       window.overrideCouponEndpoint = '/api/expressco/coupon';

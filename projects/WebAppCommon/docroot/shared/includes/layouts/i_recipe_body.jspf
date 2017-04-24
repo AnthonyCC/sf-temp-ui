@@ -135,7 +135,7 @@ final int W_RECIPE_BODY_TOTAL = 806;
                 <% } %>
 				<span class="recipe_title"><%=recipe.getName().toUpperCase()%></span><br>
 	 			<span class="recipe_author"><%=recipe.getDisplayableSource(true)%></span>
-	 			<% if(recipeDesc!=null){ %><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br><fd:IncludeMedia name='<%= recipeDesc.getPath() %>' /><% } %>
+	 			<% if(recipeDesc!=null){ %><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"><br><fd:IncludeMedia name='<%= recipeDesc.getPath() %>' /><% } %>
 				</td>
 				<td width="10%" align="right"><% if (source != null) { %><a href="javascript:popup('/recipe_source.jsp?recipeId=<%=recipe%>&trk=rec','large_long')"><% } %><% if(recipePhoto!=null){ %><img src=<%=recipePhoto.getPath()%> width="<%=recipePhoto.getWidth()%>" height="<%=recipePhoto.getHeight()%>" border="0" alt=""><% } %><% if (source != null) { %></a><% } %></td></tr>
 			</table>
@@ -143,7 +143,7 @@ final int W_RECIPE_BODY_TOTAL = 806;
 	</tr>
 	<tr><td colspan="3"><img src="/media_stat/recipe/recipe_line<%=theme%>.gif" width="<%=W_RECIPE_BODY_TOTAL%>" height="1" style="margin: 10px 0;alt=""></td></tr>
 	<tr valign="top">
-		<td style="padding-right:15px;"><% if(recipeIngrdMedia!=null){ %><a href="#ingredients"><img src="/media_stat/recipe/rec_hdr_ingredients<%=theme%>.gif" width="92" height="10" border="0" alt="INGREDIENTS"></a> (<a href="#ingredients"><b>CLICK TO BUY</b></a>)<br><img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br><fd:IncludeMedia name='<%= recipeIngrdMedia.getPath() %>' /><br><% } %>
+		<td style="padding-right:15px;"><% if(recipeIngrdMedia!=null){ %><a href="#ingredients"><img src="/media_stat/recipe/rec_hdr_ingredients<%=theme%>.gif" width="92" height="10" border="0" alt="INGREDIENTS"></a> (<a href="#ingredients"><b>CLICK TO BUY</b></a>)<br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"><br><fd:IncludeMedia name='<%= recipeIngrdMedia.getPath() %>' /><br><% } %>
 		<table>
 			<tr>
 				<td align="right"><a href="javascript:popup('/shared/recipe_print.jsp?recipeId=<%=recipe%>','print')"><img src="/media_stat/recipe/print.gif" width="16" height="16" border="0" alt="Print"></a></td>
@@ -160,12 +160,12 @@ final int W_RECIPE_BODY_TOTAL = 806;
 			<% } %>
 		</table>
 		</td>
-		<td colspan="2"><% if(recipePrepdMedia!=null){ %><img src="/media_stat/recipe/rec_hdr_preparation<%=theme%>.gif" width="93" height="10" hspace="4" alt="PREPARATION"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br><fd:IncludeMedia name='<%= recipePrepdMedia.getPath() %>' /><% } %></td>
+		<td colspan="2"><% if(recipePrepdMedia!=null){ %><img src="/media_stat/recipe/rec_hdr_preparation<%=theme%>.gif" width="93" height="10" hspace="4" alt="PREPARATION"><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"><br><fd:IncludeMedia name='<%= recipePrepdMedia.getPath() %>' /><% } %></td>
 	</tr>
 	<tr>
-		<td><img src="/media_stat/images/layout/clear.gif" width="273" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="127" height="1"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_RECIPE_BODY_TOTAL - 400 %>" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="273" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="127" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_RECIPE_BODY_TOTAL - 400 %>" height="1"></td>
 	</tr>
 </table>
 
@@ -319,10 +319,10 @@ span.selectedRecipeVariant {
         <td rowspan="2" valign="bottom" align="right"><img src="/media_stat/recipe/rechm_corn_tr<%=theme%>.gif" width="8" height="8"></td>
       </tr>
       <tr>
-        <td colspan="2"  class="recipe_leftBorder<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="1" height="6"></td>
+        <td colspan="2"  class="recipe_leftBorder<%=theme%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6"></td>
       </tr>
       <tr>
-        <td class="recipe_leftBorder<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+        <td class="recipe_leftBorder<%=theme%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
         <td align="center" style="padding: 0px 0px 10px 0px;">
 <%
 // render pricing script
@@ -392,15 +392,15 @@ if (!result.getErrors().isEmpty()) {
 	<td colspan="4">Est.Price</td>
 </tr>
 <tr>
-	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="4" height="4"></td>
-	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="86" height="4"></td>
-	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="10" height="4"></td>
-	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="20" height="4"></td>
-	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_RECIPE_BODY_TOTAL - 270%>" height="4"></td>
-	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="66" height="4"></td>
-	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="18" height="4"></td>
-	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="12" height="4"></td>
-	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="4" height="4"></td>
+	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="4" height="4"></td>
+	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="86" height="4"></td>
+	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="4"></td>
+	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="4"></td>
+	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_RECIPE_BODY_TOTAL - 270%>" height="4"></td>
+	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="66" height="4"></td>
+	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="18" height="4"></td>
+	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="12" height="4"></td>
+	<td class="recipe_topLine<%=theme%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="4" height="4"></td>
 </tr>
 
 <%
@@ -450,7 +450,7 @@ int prodIdx = 0;
 
 		<%--top buffer --%>
 		<tr bgcolor="<%=rowColor%>">
-			<td colspan="9"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td>
+			<td colspan="9"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5"></td>
 		</tr>
 		
 		<tr valign="top" bgcolor="<%=rowColor%>">
@@ -502,7 +502,7 @@ int prodIdx = 0;
                       </div>
                     </td>
 
-                    <td><%if (!"".equals(orderLine.getLabel())){%><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br><img src="/media_stat/images/layout/clear.gif" width="2" height="1"><%=orderLine.getLabel()%><% } else { %>&nbsp;<% } %></td>
+                    <td><%if (!"".equals(orderLine.getLabel())){%><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"><br><img src="/media_stat/images/layout/clear.gif" alt="" width="2" height="1"><%=orderLine.getLabel()%><% } else { %>&nbsp;<% } %></td>
                     <%
                 }
                 String earliestAvailability = sku.getEarliestAvailabilityMessage();
@@ -555,7 +555,7 @@ int prodIdx = 0;
                     <input type="hidden" name='<%= entry.getKey() + "_" + prodIdx %>' value="<%= entry.getValue() %>">
                 </logic:iterate>
                 
-                <td colspan="4" align="right" style="padding-right: 3px;"><% if (flagList.contains(configuredProduct) || flagList.contains(orderLine)) { %><img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br><img src="/media_stat/images/template/quickshop/qs_check_gray.gif" width="9" height="9" border="0" alt="Item already in your cart"><% } else { %>&nbsp;<% } %></td>
+                <td colspan="4" align="right" style="padding-right: 3px;"><% if (flagList.contains(configuredProduct) || flagList.contains(orderLine)) { %><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="2"><br><img src="/media_stat/images/template/quickshop/qs_check_gray.gif" width="9" height="9" border="0" alt="Item already in your cart"><% } else { %>&nbsp;<% } %></td>
 
             <%
             } else {
@@ -580,7 +580,7 @@ int prodIdx = 0;
 
 		<%-- bottom buffer --%>
 		<tr bgcolor="<%=rowColor%>">
-			<td colspan="9"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td>
+			<td colspan="9"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5"></td>
 		</tr>
 
 		<%
@@ -594,10 +594,10 @@ int prodIdx = 0;
 		</logic:iterate>
 		
 		<tr><td colspan="9">
-			<img src="/media_stat/images/layout/clear.gif" width="1" height="4">
+			<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4">
 		</td></tr>
 		<tr>
-			<td class="recipe_topLine<%=theme%>" colspan="9"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+			<td class="recipe_topLine<%=theme%>" colspan="9"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
 		</tr>
 		<tr>
 			<td colspan="5" style="padding-top: 1em;">
@@ -623,11 +623,11 @@ int prodIdx = 0;
 		</script>
 		<input type="hidden" name="itemCount" value="<%= quickCartSize %>">
 		</td>
-        <td  class="recipe_rightBorder<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+        <td  class="recipe_rightBorder<%=theme%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
       </tr>
       <tr>
         <td><img src="/media_stat/recipe/rechm_corn_bl<%=theme%>.gif" width="8" height="8"></td>
-        <td  class="recipe_bottomBorder<%=theme%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_RECIPE_BODY_TOTAL - 16%>" height="1"></td>
+        <td  class="recipe_bottomBorder<%=theme%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_RECIPE_BODY_TOTAL - 16%>" height="1"></td>
         <td align="right"><img src="/media_stat/recipe/rechm_corn_br<%=theme%>.gif" width="8" height="8"></td>
       </tr>
     </table>

@@ -22,12 +22,12 @@
 </TD>
 </TR>
 <TR>
-<TD VALIGN="BOTTOM" WIDTH="10"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="10" HEIGHT="1" HSPACE="0" VSPACE="0"></TD>
+<TD VALIGN="BOTTOM" WIDTH="10"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="10" HEIGHT="1" HSPACE="0" VSPACE="0"></TD>
 <TD VALIGN="TOP" WIDTH="480"><P>
 <tmpl:get name='content'/>
 </TD>
 <TD VALIGN="BOTTOM" WIDTH="10"><IMG src="/media_stat/images/layout/clear.gif"
-WIDTH="10" HEIGHT="1" HSPACE="0" VSPACE="0"></TD>
+WIDTH="10" HEIGHT="1" alt="" HSPACE="0" VSPACE="0"></TD>
 </TR>
 <TR VALIGN="TOP">
 <TD COLSPAN="3" WIDTH="550" ALIGN="RIGHT">

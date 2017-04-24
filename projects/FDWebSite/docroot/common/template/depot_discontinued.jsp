@@ -37,7 +37,7 @@
 	<tr>
 		<td align="center">
 			<span class="space4pix"><br><br><br></span>
-			<img src="/media_stat/images/layout/cccccc.gif" width="250" height="1" vspace="8"><br>
+			<img src="/media_stat/images/layout/cccccc.gif" alt="" width="250" height="1" vspace="8"><br>
 			<%@ include file="/shared/template/includes/copyright.jspf" %>
 			<br><br>
 		</td>

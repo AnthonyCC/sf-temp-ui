@@ -66,6 +66,7 @@ import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.BillingReferenceInfo;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData;
+import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData.Item;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData.Section;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData.SectionInfo;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartOperations;
@@ -385,9 +386,13 @@ public class CartDataService {
         item.setHasTax(cartLine.hasTax());
         item.setHasDepositValue(cartLine.hasDepositValue());
         item.setHasScaledPricing(calculateHasScaledPricing(cartLine));
+        if (StandingOrderHelper.isSO3StandingOrder(user) && user.getCurrentStandingOrder() != null &&
+        		"Y".equalsIgnoreCase(user.getCurrentStandingOrder().getActivate())){
+        		if (user.getSoCartLineMessagesMap().containsKey(cartLine.getCustomerListLineId()))
+        			item.setSo3ItemStatus(user.getSoCartLineMessagesMap().get(cartLine.getCustomerListLineId()));
+        	}
         return item;
-    }
-
+   }
     /**
      * @see i_viewcart.jspf:396, i_viewcart.jspf:482
      * 
@@ -574,7 +579,11 @@ public class CartDataService {
             cartData.setHardLimit(StandingOrderHelper.formatDecimalPrice(ErpServicesProperties.getStandingOrderHardLimit()));
 
             cartData.setCouponMessage(populateCouponMessage(user, cartLines));
-			cartData.setDeliveryBegins(StandingOrderHelper.isSO3StandingOrder(user)?StandingOrderHelper.getDeliveryBeginsInfo(user):null);
+            if(StandingOrderHelper.isSO3StandingOrder(user))
+            	{	
+            		cartData.setDeliveryBegins(StandingOrderHelper.getDeliveryBeginsInfo(user));
+            		cartData.setsOCartLineMessages(user.issOCartLineMessages());
+            	}
             
             //APPDEV-5516 If the property is true, set the Donation Carousel to Cart Data, else fall back to Product Sample Carousel
             if(FDStoreProperties.isPropDonationProductSamplesEnabled()){

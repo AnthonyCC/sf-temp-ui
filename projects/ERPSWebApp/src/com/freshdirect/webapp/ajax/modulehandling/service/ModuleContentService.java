@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.ajax.modulehandling.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -17,8 +18,12 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SortOptionModel;
+import com.freshdirect.fdstore.content.SortStrategyType;
+import com.freshdirect.fdstore.content.browse.sorter.ProductItemSorterFactory;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.ValueHolder;
@@ -28,12 +33,15 @@ import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
+import com.freshdirect.webapp.ajax.browse.data.BrowseDataContext;
 import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
+import com.freshdirect.webapp.ajax.browse.data.SectionContext;
 import com.freshdirect.webapp.ajax.browse.data.SectionData;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringFlow;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
 import com.freshdirect.webapp.ajax.filtering.NavigationUtil;
+import com.freshdirect.webapp.ajax.filtering.ProductItemComparatorUtil;
 import com.freshdirect.webapp.ajax.modulehandling.data.IconData;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
@@ -182,26 +190,23 @@ public class ModuleContentService {
 
     public List<ProductData> loadPresidentPicksProducts(FDUserI user) {
         List<ProductModel> promotionProducts = new ArrayList<ProductModel>();
-        CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNode("picks_love");
+        CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNode(FDStoreProperties.getHomepageRedesignPrespicksCategoryId());
         FDSessionUser sessionUser = (FDSessionUser) user;
         String variantId = null;
 
+        // PRODUCT LOADING
         if (category != null) {
             promotionProducts = category.getProducts();
         }
 
-        // List<ProductModel> featProds = ProductPromotionUtil.getFeaturedProducts(promotionProducts, false);
+        List<ProductModel> featProds = ProductPromotionUtil.getFeaturedProducts(promotionProducts, false);
         List<ProductModel> nonfeatProds = ProductPromotionUtil.getNonFeaturedProducts(promotionProducts, false);
 
-        List<ProductModel> availableProducts = new ArrayList<ProductModel>();
-        for (ProductModel productModel : nonfeatProds) {
-            if (productModel.isFullyAvailable() && !productModel.isDiscontinued()) {
-                availableProducts.add(productModel);
-            }
-        }
-
         List<ProductData> productDatas = new ArrayList<ProductData>();
-        for (ProductModel product : availableProducts) {
+
+        List<ProductModel> filteredProductModels = sortPresidentsPicks(featProds, nonfeatProds, user);
+
+        for (ProductModel product : filteredProductModels) {
             try {
                 ProductData productData = ProductDetailPopulator.createProductData(sessionUser, product);
                 productData = ProductDetailPopulator.populateBrowseRecommendation(sessionUser, productData, product);
@@ -221,6 +226,44 @@ public class ModuleContentService {
 
     }
 
+    public List<ProductData> loadStaffPicksProducts(FDUserI user) {
+        List<ProductModel> promotionProducts = new ArrayList<ProductModel>();
+        String variantId = null;
+        CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNode(FDStoreProperties.getHomepageRedesignStaffpicksCategoryId());
+        FDSessionUser sessionUser = (FDSessionUser) user;
+
+        if (category != null) {
+            promotionProducts = category.getProducts();
+        }
+
+        List<ProductModel> availableFeaturedProducts = new ArrayList<ProductModel>();
+        for (ProductModel productModel : promotionProducts) {
+            if (productModel.isFullyAvailable() && !productModel.isDiscontinued()) {
+                availableFeaturedProducts.add(productModel);
+            }
+        }
+
+        List<ProductData> productDatas = new ArrayList<ProductData>();
+
+        for (ProductModel product : promotionProducts) {
+            try {
+                ProductData productData = ProductDetailPopulator.createProductData(sessionUser, product);
+                productData = ProductDetailPopulator.populateBrowseRecommendation(sessionUser, productData, product);
+                productData.setVariantId(variantId);
+                productData.setProductPageUrl(FDURLUtil.getNewProductURI(product, variantId));
+                productDatas.add(productData);
+            } catch (FDResourceException e) {
+                LOGGER.error("failed to create ProductData", e);
+            } catch (FDSkuNotFoundException e) {
+                LOGGER.error("failed to create ProductData", e);
+            } catch (HttpErrorResponse e) {
+                LOGGER.error("failed to create ProductData", e);
+            }
+        }
+
+        return productDatas;
+    }
+
     public IconData populateIconData(ContentNodeI imageBanner) {
         IconData iconData = new IconData();
         Image iconImage = MediaUtils.generateImageFromImageContentKey(imageBanner.getAttributeValue("ImageBannerImage"));
@@ -236,6 +279,7 @@ public class ModuleContentService {
         }
 
         iconData.setIconLink(linkUrl);
+        iconData.setIconId(imageBanner.getKey().getId());
 
         return iconData;
     }
@@ -281,4 +325,72 @@ public class ModuleContentService {
 
     }
 
+    private List<ProductModel> sortPresidentsPicks(List<ProductModel> featProds, List<ProductModel> nonfeatProds, FDUserI user) {
+
+        List<ProductModel> availableFeaturedProducts = new ArrayList<ProductModel>();
+        for (ProductModel productModel : featProds) {
+            if (productModel.isFullyAvailable() && !productModel.isDiscontinued()) {
+                availableFeaturedProducts.add(productModel);
+            }
+        }
+
+        List<ProductModel> availableNonFeaturedProducts = new ArrayList<ProductModel>();
+        for (ProductModel productModel : nonfeatProds) {
+            if (productModel.isFullyAvailable() && !productModel.isDiscontinued()) {
+                availableNonFeaturedProducts.add(productModel);
+            }
+        }
+
+        // PRODUCTMODEL TO FILTERINGPRODUCT CONVERSION
+        List<FilteringProductItem> filteringProducts = new ArrayList<FilteringProductItem>();
+        if (null != nonfeatProds) {
+            for (ProductModel productModel : availableNonFeaturedProducts) {
+                FilteringProductItem item = new FilteringProductItem(productModel);
+                filteringProducts.add(item);
+            }
+        }
+
+        // SORTING PREPARATION
+        BrowseDataContext sortingBrowseDataContext = new BrowseDataContext();
+        SortOptionModel defaultSorter = null;
+        Comparator<FilteringProductItem> comparator = null;
+        SortStrategyType usedSortStrategy = null;
+        SectionContext sortingSectionContext = new SectionContext(filteringProducts);
+        List<SectionContext> sortingSectionContexts = new ArrayList<SectionContext>();
+        CmsFilteringNavigator nav = new CmsFilteringNavigator();
+
+        // SORTING SETUP
+        sortingSectionContexts.add(sortingSectionContext);
+        sortingBrowseDataContext.setSectionContexts(sortingSectionContexts);
+        defaultSorter = ContentFactory.getInstance().getStore().getPresidentsPicksPageSortOptions().get(0);
+
+        if (defaultSorter != null) {
+            usedSortStrategy = defaultSorter.getSortStrategyType();
+        } else {
+            LOGGER.info("No default sorter was present for president picks setting name sortation.");
+            usedSortStrategy = SortStrategyType.NAME;
+        }
+
+        comparator = ProductItemSorterFactory.createComparator(usedSortStrategy, user, false);
+        nav.setPageTypeType(FilteringFlowType.PRES_PICKS);
+        nav.setOrderAscending(true);
+
+        // SORTING
+        if (comparator == null) {
+            comparator = ProductItemSorterFactory.createDefaultComparator();
+        }
+        ProductItemComparatorUtil.sortSectionDatas(sortingBrowseDataContext, comparator); // sort items/section
+        ProductItemComparatorUtil.postProcess(sortingBrowseDataContext, nav, usedSortStrategy, user);
+
+        // ADDING FEATURED PRODUCTS BEFORE ANYTHING ELSE
+        List<ProductModel> filteredProductModels = new ArrayList<ProductModel>();
+        filteredProductModels.addAll(availableFeaturedProducts);
+
+        // FILTERINGPRODUCT TO PRODUCT MODEL CONVERSION
+        for (FilteringProductItem filteringProduct : sortingBrowseDataContext.getSectionContexts().get(0).getProductItems()) {
+            filteredProductModels.add(filteringProduct.getProductModel());
+        }
+
+        return filteredProductModels;
+    }
 }

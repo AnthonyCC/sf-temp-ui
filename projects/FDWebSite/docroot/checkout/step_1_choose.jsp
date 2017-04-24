@@ -211,10 +211,10 @@ while (e.hasMoreElements()) {
 </tmpl:insert>
 <!-- PROFILE HEADER -->
 	<% if(!modifyOrderMode) { %>
-		<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
+		<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
 	<% } %>
 	<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
 
 	<TABLE border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_1_CHOOSE_TOTAL%>">
 		 <tr valign="top"> 
@@ -241,7 +241,7 @@ while (e.hasMoreElements()) {
 				        </td>
 	    </tr>
 	</TABLE>
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
 	<% 
 	String[] checkDlvAddressForm =  {EnumUserInfoName.DLV_NOT_IN_ZONE.getCode(), "address",
 	                                "pickup_contact_number", "order_minimum","apartment",
@@ -264,9 +264,9 @@ while (e.hasMoreElements()) {
 	    <%@ include file="/includes/ckt_acct/i_delivery_address_select.jspf" %>
 	    <br/><br/>
 	
-	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br/>
+	<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br/>
 	<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_1_CHOOSE_TOTAL%>" height="1" border="0"><br/>
-	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br/>
+	<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br/>
 	
 	<div style="margin-bottom: 10px;">
 	    <div style="float: left;">
@@ -292,9 +292,9 @@ while (e.hasMoreElements()) {
 	<% } %>
 	</form>
 
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
 	<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_1_CHOOSE_TOTAL%>" height="1" border="0"><br/>
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
 

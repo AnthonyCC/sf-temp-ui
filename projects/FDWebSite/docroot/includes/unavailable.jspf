@@ -39,7 +39,7 @@ DisplayObject displayObj = null;
 if (unAvailableList.size() > 0) {
 %>
 <table width="<%=W_UNAVAILABLE%>">
-	<TR VALIGN="TOP"><TD WIDTH="<%=W_UNAVAILABLE%>"><IMG src="/media_stat/images/layout/cccccc.gif" height="1" width="<%=W_UNAVAILABLE%>"></TD></TR>
+	<TR VALIGN="TOP"><TD WIDTH="<%=W_UNAVAILABLE%>"><IMG src="/media_stat/images/layout/cccccc.gif" alt="" height="1" width="<%=W_UNAVAILABLE%>"></TD></TR>
 	<TR><TD WIDTH="<%=W_UNAVAILABLE%>"><IMG src="/media_stat/images/layout/clear.gif" ALT="" WIDTH="1" HEIGHT="1"><br></td></tr>
 	<TR><TD WIDTH="<%=W_UNAVAILABLE%>" align="Left"><br><br><img src="<%=unAvailableHdrImg%>" border="0" alt=""><br><br></td></tr>
 	<fd:ItemSorter nodes='<%= unAvailableList %>' strategy='<%= unAvailSortStrategy %>'/>

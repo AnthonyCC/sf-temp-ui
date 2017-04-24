@@ -30,8 +30,7 @@
 	border:1px solid #8E7092;
 	vertical-align:middle;
 	text-align:left;
-	max-height:95%;
-	overflow:hidden;
+	max-height:85%;
 	display:inline-flex;
 	flex-direction:column;
   -webkit-overflow-scrolling: touch;
@@ -49,11 +48,12 @@
 	overflow-y:auto;
 	overflow-x:hidden;
   -webkit-overflow-scrolling: touch;
+  flex: 1;
 }
 
 #ifrPopup iframe {
 	width:520px;
-	height:300px;	
+	height:300px;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -119,10 +119,12 @@
 }
 .qs-popup-close-icon {
   display: none;
-	top: 5px;
-	width: 18px;
-	height: 18px;
-	background: url(/media_stat/images/quickshop/button-close.png) no-repeat;
+	top: -35px;
+  right: -35px;
+	width: 25px;
+	height: 25px;
+	background: url(/media_stat/images/close.png) no-repeat;
+  background-size: 100%;
 }
 .qs-hidehelp .qs-popup-help-icon {
   display: none;

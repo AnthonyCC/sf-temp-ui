@@ -73,12 +73,12 @@ MediaI recipeCpyrghtMedia = recipe.getCopyrightMedia();
 				<span class="title16"><%=recipe.getName().toUpperCase()%></span><br>
 	 			<span class="recipe_author"><%=sourceName%> <%=recipe.getAuthorNames()%></span><br>
 	 			<% if(recipeDesc!=null){ %><br><fd:IncludeMedia name='<%= recipeDesc.getPath() %>' /><br><% } %>
-				<% if(recipeIngrdMedia!=null){ %><br><img src="/media_stat/recipe/rec_hdr_ingredients.gif" width="92" height="10"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br><fd:IncludeMedia name='<%= recipeIngrdMedia.getPath() %>' /><br><% } %>
+				<% if(recipeIngrdMedia!=null){ %><br><img src="/media_stat/recipe/rec_hdr_ingredients.gif" width="92" height="10"><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"><br><fd:IncludeMedia name='<%= recipeIngrdMedia.getPath() %>' /><br><% } %>
 				</td>
 				<td width="10%" style="padding-left:15px;"><% if(recipePhoto!=null){ %><img src=<%=recipePhoto.getPath()%> width="<%=recipePhoto.getWidth()%>" height="<%=recipePhoto.getHeight()%>" border="0"><% } %></td>
 			</tr>
 			<tr>
-				<td colspan="2"><% if(recipePrepdMedia!=null){ %><img src="/media_stat/recipe/rec_hdr_preparation.gif" width="93" height="10"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br><fd:IncludeMedia name='<%= recipePrepdMedia.getPath() %>' /><br><% } %>
+				<td colspan="2"><% if(recipePrepdMedia!=null){ %><img src="/media_stat/recipe/rec_hdr_preparation.gif" width="93" height="10"><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"><br><fd:IncludeMedia name='<%= recipePrepdMedia.getPath() %>' /><br><% } %>
 				<% if (recipeCpyrghtMedia!=null) {  %><br><span class="recipe_copyright"><fd:IncludeMedia name='<%= recipeCpyrghtMedia.getPath() %>' /></span><% } %>
 				<div class="recipe_fd" style="border-top:solid 1px #CCCCCC; border-bottom:solid 1px #CCCCCC; margin-top: 10px; margin-bottom: 10px; padding-top: 6px; padding-bottom: 6px; font-weight:bold;">This recipe &mdash; and hundreds of others from your favorite chefs and authors &mdash; can be found at FreshDirect.com</strong></div>
 				</td>

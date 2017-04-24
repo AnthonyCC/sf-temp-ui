@@ -67,9 +67,9 @@ for(Iterator itr=sortedColl.iterator(); itr.hasNext() && allSoldOut;) {
       
 <% if (introCopy !=null && introCopy.trim().length()>0 && introCopy.indexOf("blank_file.txt") == -1 ) {   %>
 	<tr><td>
-	  <img src="/media_stat/images/layout/clear.gif" height="5" width="1">
+	  <img src="/media_stat/images/layout/clear.gif" alt="" height="5" width="1">
 	  <br><fd:IncludeMedia name='<%= introCopy %>'/>
-	  <simg src="/media_stat/images/layout/clear.gif" height="2" width="1">
+	  <simg src="/media_stat/images/layout/clear.gif" alt="" height="2" width="1">
 	</td></tr>
 <%  }  %>
 </table>
@@ -107,7 +107,7 @@ for(Iterator itr=sortedColl.iterator(); itr.hasNext() && allSoldOut;) {
 <%            }  %> </tr>
           </fd:FDProductInfo>
 <%      }  %></table>
-        <BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10"><BR>
+        <BR><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="10"><BR>
 <% } %>
     </td>
    </tr>

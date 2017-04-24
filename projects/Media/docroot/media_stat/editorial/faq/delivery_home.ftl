@@ -44,7 +44,7 @@ function linkTo(url){
 				<TR VALIGN="TOP">
 					<TD WIDTH="15"><img src="/media/images/layout/clear.gif" width="15" height="1" alt="" border="0"></TD>
 					<TD WIDTH="${tableWidth}" class="bodyCopy">
-						<img src="/media_stat/images/layout/cccccc.gif" width="${tableWidth}" height="1"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
+						<img src="/media_stat/images/layout/cccccc.gif" alt="" width="${tableWidth}" height="1"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
 						<ul>
 							<li><A HREF="#question1">Where does FreshDirect deliver?</A></li>
 							<li><A HREF="#question2">When does FreshDirect deliver?</A></li>

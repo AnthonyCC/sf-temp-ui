@@ -41,10 +41,12 @@ import com.freshdirect.dataloader.payment.PaymentFileType;
 import com.freshdirect.dataloader.payment.SFTPFileProcessor;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.BINInfo;
 import com.freshdirect.payment.ejb.BINInfoManagerHome;
 import com.freshdirect.payment.ejb.BINInfoManagerSB;
+import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.sap.ejb.SapException;
 
 public class PaymentechSFTPBinLoader /*implements BINLoader*/ {
@@ -209,8 +211,12 @@ public class PaymentechSFTPBinLoader /*implements BINLoader*/ {
 		binInfos.add(mcBINInfo);
 		
 		
+		if(FDStoreProperties.isStorefront2_0Enabled()){
+			FDECommerceService.getInstance().saveBINInfo(binInfos);
+		}else {
 		BINInfoManagerSB binInfoManagerSB = lookupBINInfoManagerHome().create();
 		binInfoManagerSB.saveBINInfo(binInfos);
+		}
 	}
 	
 	private static FileContext getFileContext(String[] args) {

@@ -61,27 +61,27 @@ final int W_GMAP_NAV_TOTAL = 970;
 	<center class="text10">
 		<table width="<%=W_GMAP_NAV_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 			<tr>
-				<td width="<%=W_GMAP_NAV_TOTAL%>" valign="top" bgcolor="#<%=color%>"><img src="/media_stat/images/layout/clear.gif" width="733" height="1" border="0"></td>
+				<td width="<%=W_GMAP_NAV_TOTAL%>" valign="top" bgcolor="#<%=color%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="733" height="1" border="0"></td>
 			</tr>
 			<tr>
-				<td width="<%=W_GMAP_NAV_TOTAL%>" valign="top"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
+				<td width="<%=W_GMAP_NAV_TOTAL%>" valign="top"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
 			</tr>
 			<tr>
 				<td><%@ include file="/common/template/includes/deptnav.jspf" %></td>
 			</tr>
 			<tr>
-				<td width="<%=W_GMAP_NAV_TOTAL%>" bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+				<td width="<%=W_GMAP_NAV_TOTAL%>" bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
 			</tr>
 			<tr valign="TOP">
 				<td align="center">
-					<img src="/media_stat/images/layout/clear.gif" height="15" width="<%=W_GMAP_NAV_TOTAL%>"><br />
+					<img src="/media_stat/images/layout/clear.gif" alt="" height="15" width="<%=W_GMAP_NAV_TOTAL%>"><br />
 					<!-- content lands here -->
 					<tmpl:get name='content'/>
 					<!-- content ends above here-->
 				</td>
 			</tr>
 			<tr>
-				<td width="<%=W_GMAP_NAV_TOTAL%>" bgcolor="#<%=color%>" valign="bottom"><img src="/media_stat/images/layout/clear.gif" width="733" height="1" border="0"></td>
+				<td width="<%=W_GMAP_NAV_TOTAL%>" bgcolor="#<%=color%>" valign="bottom"><img src="/media_stat/images/layout/clear.gif" alt="" width="733" height="1" border="0"></td>
 			</tr>
 		</table>
 	</center>

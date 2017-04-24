@@ -16,6 +16,7 @@ import org.json.JSONObject;
 
 import com.freshdirect.WineUtil;
 import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.util.ProductInfoUtil;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.util.GroupScaleUtil;
@@ -335,7 +336,8 @@ public class ProductExtraDataPopulator {
 			}
 			
 		}
-		String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+		//String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+		String plantID=ProductInfoUtil.getPickingPlantId(productInfo);
 		// origin (or Country of Origin Label, a.k.a. COOL)
 		if (productInfo != null) {
 			final String skuCode = productInfo.getSkuCode();
@@ -408,7 +410,8 @@ public class ProductExtraDataPopulator {
 			 * According to ticket http://jira.freshdirect.com:8080/browse/APPDEV-2328
 			 */
 			if(defaultSku != null && FDStoreProperties.isSeafoodSustainEnabled()) {
-				EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(user.getUserContext().getFulfillmentContext().getPlantId());
+				//EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(user.getUserContext().getFulfillmentContext().getPlantId());
+				EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(ProductInfoUtil.getPickingPlantId(productInfo));
 				if ( enumRating != null) {
 					if ( enumRating != null && enumRating.isEligibleToDisplay() && (enumRating.getId() == 4 || enumRating.getId() == 5) ) {
 						ContentNodeModel ssBrandCheck = ContentFactory.getInstance().getContentNode("bd_ocean_friendly");
@@ -1194,6 +1197,7 @@ public class ProductExtraDataPopulator {
 	private static ProductExtraData populateClaimsData(ProductExtraData data, FDUserI user,
 			ProductModel productNode, String grpId, String grpVersion) throws FDResourceException, FDSkuNotFoundException {
 		
+		// organic claims
 		{
 			@SuppressWarnings("unchecked")
 			Set<EnumOrganicValue> commonOrgs = productNode.getCommonNutritionInfo(ErpNutritionInfoType.ORGANIC);

@@ -17,7 +17,7 @@
 	$wineData.agingNotes or
 	$wineData.grape
 }
-<li class="pdp-accordion-wine pdp-accordion-item"><input type="checkbox" id="pdp-wine"><label for="pdp-wine"><span class="pdp-accordion-item-carrot"></span>Wine Information</label><div>
+<li class="pdp-accordion-wine pdp-accordion-item"><input type="checkbox" id="pdp-wine"><label for="pdp-wine"><span class="pdp-accordion-item-carrot"></span>Alcohol Information</label><div>
 /*
  * table element is added to ensure that broken media don't break the site
  * TODO remove if all broken media is fixed
@@ -28,11 +28,11 @@
 <div>{$wineData.country}</div>
 {/if}
 {if $wineData.region}
-<strong>Region</strong>
+<strong>Region/State</strong>
 <div>{$wineData.region}</div>
 {/if}
 {if $wineData.city}
-<strong>City</strong>
+<strong>Sub-Region</strong>
 <div>{$wineData.city}</div>
 {/if}
 {if $wineData.types and length($wineData.types)>0}

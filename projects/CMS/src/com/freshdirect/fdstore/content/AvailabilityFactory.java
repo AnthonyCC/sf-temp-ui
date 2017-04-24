@@ -7,6 +7,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import com.freshdirect.cms.util.ProductInfoUtil;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.erp.EnumATPRule;
@@ -35,7 +36,7 @@ public class AvailabilityFactory {
 
 	public static Set<EnumDlvRestrictionReason> getApplicableRestrictions(FDProduct product, FDProductInfo fdpi) {
 		Set<EnumDlvRestrictionReason> s = new HashSet<EnumDlvRestrictionReason>();
-		String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+		String plantID=ProductInfoUtil.getPickingPlantId(fdpi);
 		
 		if (product.isAlcohol()) {
 			s.add(EnumDlvRestrictionReason.ALCOHOL);

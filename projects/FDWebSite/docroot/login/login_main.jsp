@@ -11,9 +11,9 @@
 			
 		<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="500">
 		        <TR VALIGN="TOP">
-		            <TD><img src="/media_stat/images/navigation/current_cust_log_in_now.gif" WIDTH="222" HEIGHT="13" border="0" alt="CURRENT CUSTOMERS LOG IN NOW">   <FONT CLASS="text9">* Required Information</FONT><BR><IMG src="/media_stat/images/layout/999966.gif" VSPACE="3" HSPACE="0" WIDTH="400" HEIGHT="1" BORDER="0"><BR></TD>
+		            <TD><img src="/media_stat/images/navigation/current_cust_log_in_now.gif" WIDTH="222" HEIGHT="13" border="0" alt="CURRENT CUSTOMERS LOG IN NOW">   <FONT CLASS="text9">* Required Information</FONT><BR><IMG src="/media_stat/images/layout/999966.gif" ALT="" VSPACE="3" HSPACE="0" WIDTH="400" HEIGHT="1" BORDER="0"><BR></TD>
 			</TR>
-                        <tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br><%@ include file="/includes/i_login_field.jspf" %></td></tr>
+                        <tr><td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8"><br><%@ include file="/includes/i_login_field.jspf" %></td></tr>
                         <tr>
 			<td class="text13">
 		<font class="text13bold">Forgot your password?</FONT><BR>

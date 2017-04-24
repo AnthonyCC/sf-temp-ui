@@ -29,6 +29,7 @@ import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -1064,4 +1065,5 @@ public class ContentFactory {
         }
         return isAllowToUseContentCache;
     }
+    
 }

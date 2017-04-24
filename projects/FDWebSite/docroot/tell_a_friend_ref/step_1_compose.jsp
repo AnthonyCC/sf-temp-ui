@@ -73,14 +73,14 @@ function linkTo(url){
 			<td>&nbsp;</td>
 			<td class="text12"><b>FROM:</b></td> 
 			<td>&nbsp;</td>
-			<td colspan="2" class="text12"><%=taf.getCustomerFirstName()%> <%=taf.getCustomerLastName()%><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br><%=taf.getCustomerEmail()%><br><img src="/media_stat/images/layout/clear.gif" width="1" height="14"></td>
+			<td colspan="2" class="text12"><%=taf.getCustomerFirstName()%> <%=taf.getCustomerLastName()%><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br><%=taf.getCustomerEmail()%><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="14"></td>
 			</td>
 		</tr>
 	
 		<tr valign="top">
 			<td>&nbsp;</td>
 			<td class="text12"><b>TO:</b></td>
-			<td class="text12" align="right"><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>* Friend's Name&nbsp;&nbsp;</td>
+			<td class="text12" align="right"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>* Friend's Name&nbsp;&nbsp;</td>
 			<td colspan="2">
 				<input type="text" name="friend_name" class="text11" size="28" maxlength="30" value="<%=taf.getFriendName()%>">&nbsp;<fd:ErrorHandler result='<%=result%>' name='friend_name' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 			</td>
@@ -88,15 +88,15 @@ function linkTo(url){
 	
 		<tr valign="top">
 			<td>&nbsp;</td>
-			<td colspan="2" class="text12" align="right"><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>* Friend's E-mail Address&nbsp;&nbsp;</td>
-			<td colspan="2"><input type="text" name="friend_email" class="text11" size="28" value="<%=taf.getFriendEmail()%>">&nbsp;<fd:ErrorHandler result='<%=result%>' name='friend_email' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
+			<td colspan="2" class="text12" align="right"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>* Friend's E-mail Address&nbsp;&nbsp;</td>
+			<td colspan="2"><input type="text" name="friend_email" class="text11" size="28" value="<%=taf.getFriendEmail()%>">&nbsp;<fd:ErrorHandler result='<%=result%>' name='friend_email' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"><br>
 			<fd:IncludeMedia name="/media/editorial/tell_a_friend/submit_note.html" />
 			</td>
 		</tr>
 	
 		<tr>
 			<td>&nbsp;</td>
-			<td colspan="4" class="text12"><img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br><b>MESSAGE:</b> <span class="text9">(you may add to or edit this text)</span><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
+			<td colspan="4" class="text12"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="14"><br><b>MESSAGE:</b> <span class="text9">(you may add to or edit this text)</span><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td>
 		</tr>
 	
 		<tr>
@@ -106,11 +106,11 @@ function linkTo(url){
 		</tr>
 		
 		<tr>
-			<td colspan="5" bgcolor="#cccccc" height="1"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+			<td colspan="5" bgcolor="#cccccc" height="1"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
 		</tr>
 
 		<tr>
-			<td colspan="7" align="left"><img src="/media_stat/images/layout/clear.gif" width="1" height="18"><br><input type="image" name="send_email" src="/media_stat/images/template/tell_a_friend/send_email.gif" width="80" height="15" border="0" alt="Send E-mail"></td>
+			<td colspan="7" align="left"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="18"><br><input type="image" name="send_email" src="/media_stat/images/template/tell_a_friend/send_email.gif" width="80" height="15" border="0" alt="Send E-mail"></td>
 		</tr>
 
 		</form>

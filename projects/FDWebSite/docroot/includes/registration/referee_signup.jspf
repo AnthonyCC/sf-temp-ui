@@ -214,7 +214,7 @@ if(user.isDepotUser()){
 <tr valign="top">
 	<td width="693">
 		<img src="/media_stat/images/template/depot/home_address.gif" width="96" height="9" alt="" border="0" />&nbsp;&nbsp;&nbsp;<font class="text9">* Required information</font><br />
-		<img src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" vspace="3" /><br />
+		<img src="/media_stat/images/layout/999966.gif" alt="" width="693" height="1" border="0" vspace="3" /><br />
 		If your home address is within a FreshDirect <a href="javascript:popup('/help/delivery_zones.jsp','large')">delivery zone</a>, you can also get deliveries there.<br />
 		<% if ("bnl".equalsIgnoreCase(user.getDepotCode())) {%>
 			<b>If you reside on the Brookhaven Labs Campus, please call FreshDirect at <%=user.getCustomerServiceContact()%> to assist you in registering your address.</b><br />
@@ -238,7 +238,7 @@ if(user.isDepotUser()){
 <tr valign="top">
 	<td width="693">
 		<img src="/media_stat/images/navigation/site_access_preferences.gif" width="160" height="9" border="0" alt="SITE ACCESS PREFERENCES" />&nbsp;&nbsp;&nbsp;<font class="text9">* Required information</font><br />
-		<img src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" vspace="3" /><br />
+		<img src="/media_stat/images/layout/999966.gif" alt="" width="693" height="1" border="0" vspace="3" /><br />
 	</td>
 </tr>
 </table>
@@ -263,7 +263,7 @@ if(user.isDepotUser()){
 <tr valign="middle">
 	<td width="120"></td>
 	<td class="text11">
-		<img src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0" />This will be your User Name. You will use this to access the site.<br /><font class="space4pix"><br /></font>
+		<img src="/media_stat/images/layout/clear.gif" alt="" width="8" height="11" border="0" />This will be your User Name. You will use this to access the site.<br /><font class="space4pix"><br /></font>
 	</td>
 </tr>
 <tr valign="middle">
@@ -284,7 +284,7 @@ if(user.isDepotUser()){
 </tr>
 <tr valign="top">
 	<td width="120" align="right" class="text12"></td>
-	<td class="text11"><img src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0" />Must be at least 6 characters. Passwords are case sensitive.<font class="space4pix"><br /></font></td>
+	<td class="text11"><img src="/media_stat/images/layout/clear.gif" alt="" width="8" height="11" border="0" />Must be at least 6 characters. Passwords are case sensitive.<font class="space4pix"><br /></font></td>
 </tr>
 
 <tr valign="top">
@@ -301,7 +301,7 @@ if(user.isDepotUser()){
 		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.PASSWORD_HINT.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
 <tr valign="top">
-	<td class="text11"><img src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0" />If you forget your password, we'll use this security word to verify your identity.<font class="space4pix"><br /></font></td>
+	<td class="text11"><img src="/media_stat/images/layout/clear.gif" alt="" width="8" height="11" border="0" />If you forget your password, we'll use this security word to verify your identity.<font class="space4pix"><br /></font></td>
 </tr>
 </table>
 
@@ -312,7 +312,7 @@ if(user.isDepotUser()){
 <table border="0" cellspacing="0" cellpadding="2" width="693">
 	<td width="693">
 		<img src="/media_stat/images/navigation/help_us_serve_you.gif" width="169" height="9" border="0" alt="HELP US SERVE YOU" /><br />
-		<img src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" vspace="3" /><br />
+		<img src="/media_stat/images/layout/999966.gif" alt="" width="693" height="1" border="0" vspace="3" /><br />
 	</td>
 </tr>
 </table>
@@ -350,7 +350,7 @@ function showSurveys(element) {
 <table border="0" cellspacing="0" cellpadding="2" width="693">
 	<tr valign="top">
 		<td width="693"><img src="/media_stat/images/navigation/customer_agreement.gif" border="0" alt="TERMS OF SERVICE" />&nbsp;&nbsp;&nbsp;<font class="text9">* Required information</font><br />
-		<img src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" vspace="3" /><br /></td>
+		<img src="/media_stat/images/layout/999966.gif" alt="" width="693" height="1" border="0" vspace="3" /><br /></td>
 	</tr>
 </table><br />
 <textarea cols="60" rows="7" readonly xname="tos">
@@ -375,9 +375,9 @@ function showSurveys(element) {
 <br /><br />
 <% if (request.getRequestURI().toLowerCase().indexOf("checkout")==-1){ %>
 <table cellpadding="0" cellspacing="0" border="0" width="675">
-	<tr valign="top" bgcolor="#999966"><td width="675"><img src="/media_stat/images/layout/999966.gif" hspace="0" width="1" height="1" border="0" /></td></tr>
+	<tr valign="top" bgcolor="#999966"><td width="675"><img src="/media_stat/images/layout/999966.gif" alt="" hspace="0" width="1" height="1" border="0" /></td></tr>
 		<td width="675" align="right"><input type="image" src="/media_stat/images/buttons/sign_up_2.gif" name="register_new_user" alt="SIGN UP" vspace="4" hspace="4" border="0" /></td></tr>
-	<tr valign="top" bgcolor="#999966"><td width="675"><img src="/media_stat/images/layout/999966.gif" hspace="0" width="1" height="1" border="0" /></td></tr>
+	<tr valign="top" bgcolor="#999966"><td width="675"><img src="/media_stat/images/layout/999966.gif" alt="" hspace="0" width="1" height="1" border="0" /></td></tr>
 </table><br />
 <% } %>
 

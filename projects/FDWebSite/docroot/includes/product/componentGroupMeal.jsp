@@ -561,7 +561,7 @@ if (isAvailable ) {
     <%          if (((Html)mediaRef).getPath()!=null  && ((Html)mediaRef).getPath().toLowerCase().indexOf("blank.")==-1) { 
                                if(indexNo.intValue()!=0){ %>
                                      <img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
-                                     <IMG src="/media_stat/images/layout/cccccc.gif" alt="" WIDTH="295" HEIGHT="1" BORDER="0"><BR>
+                                     <IMG src="/media_stat/images/layout/cccccc.gif" ALT="" WIDTH="295" HEIGHT="1" BORDER="0"><BR>
                                      <img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
                                <%}%>
                             <fd:IncludeMedia name='<%= ((Html)mediaRef).getPath() %>' />
@@ -791,7 +791,7 @@ if (isAvailable ) {
     <%          if (((Html)mediaRef).getPath()!=null) { %>
                                <% if(indexNo.intValue()!=0){ %>
                                      <img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
-                                     <IMG src="/media_stat/images/layout/cccccc.gif" alt="" WIDTH="295" HEIGHT="1" BORDER="0"><BR>
+                                     <IMG src="/media_stat/images/layout/cccccc.gif" ALT="" WIDTH="295" HEIGHT="1" BORDER="0"><BR>
                                      <img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
                                <%}%>
                             <fd:IncludeMedia name='<%= ((Html)mediaRef).getPath() %>' />

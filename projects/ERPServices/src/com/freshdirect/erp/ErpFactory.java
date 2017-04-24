@@ -49,7 +49,9 @@ import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.erp.model.ErpProductModel;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.VersionedPrimaryKey;
+import com.freshdirect.payment.service.FDECommerceService;
 
 /**
  * Singleton class for accessing the ERP-layer remote objects.
@@ -409,8 +411,13 @@ public class ErpFactory {
 			lookupBatchHome();
 		}
 		try {
-			BatchManagerSB batchSB = batchHome.create();
-			BatchModel bm = (BatchModel) batchSB.getBatch(batchId);
+			BatchModel bm = null;
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				bm =FDECommerceService.getInstance().getBatch(batchId);
+			}else{
+				BatchManagerSB batchSB = batchHome.create();
+				bm = (BatchModel) batchSB.getBatch(batchId);
+			}
 			return bm;
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
@@ -424,8 +431,14 @@ public class ErpFactory {
 			lookupBatchHome();
 		}
 		try {
-			BatchManagerSB batchSB = batchHome.create();
-			return batchSB.getRecentBatches();
+			Collection batches = null;
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				batches =FDECommerceService.getInstance().getRecentBatches();
+			}else{
+				BatchManagerSB batchSB = batchHome.create();
+				batches = batchSB.getRecentBatches();
+			}
+			return batches;
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
@@ -510,11 +523,16 @@ public class ErpFactory {
 			//
 			// get the attributes for this erpmodel and its children
 			//
-			AttributeFacadeSB atrSB = attributeHome.create();
+			FlatAttributeCollection attrs = null;
 			GetRootNodesErpVisitor idVisitor = new GetRootNodesErpVisitor();
 			erpModel.accept(idVisitor);
 			String[] rootIds = idVisitor.getRootIds();
-			FlatAttributeCollection attrs = atrSB.getAttributes(rootIds);
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				attrs= FDECommerceService.getInstance().getAttributes(rootIds);
+			}else{
+			AttributeFacadeSB atrSB = attributeHome.create();
+			attrs = atrSB.getAttributes(rootIds);
+			}
 			//
 			// apply attributes to the erpmodel and its children
 			//
@@ -548,7 +566,12 @@ public class ErpFactory {
 			//
 			// ask it to save the attributes
 			//
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				FDECommerceService.getInstance().storeAttributes(attrs, user, sapId);
+			}else{
 			atrSB.storeAttributes(attrs, user, sapId);
+			}
+			
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {
@@ -564,7 +587,12 @@ public class ErpFactory {
 					GetRootNodesErpVisitor idVisitor = new GetRootNodesErpVisitor();
 					erpModel.accept(idVisitor);
 					String[] rootIds = idVisitor.getRootIds();
+					if(FDStoreProperties.isStorefront2_0Enabled()){
+						attrs= FDECommerceService.getInstance().getAttributes(rootIds);
+					}else{
 					attrs = atrSB.getAttributes(rootIds);
+					}
+					///JJ
 					//
 					// and re-apply attributes to the erpObject and its characteristics
 					//

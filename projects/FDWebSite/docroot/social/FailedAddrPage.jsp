@@ -99,12 +99,12 @@ System.out.println("email:"+email);
 <tr align="center"><td class="text12">Let us notify you when we are in your area.</td></tr>
 <input type="hidden" name="serviceType" value="<%= serviceType %>">
 <tr align="center">
-     <td class="text12"><br><b>Enter your e-mail:</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>
+     <td class="text12"><br><b>Enter your e-mail:</b><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>
      <input class="text11" type="text" size="30" name="userEmail" value="<%= email %>" placeholder="Email">
      <br>
      <fd:ErrorHandler result='<%= result %>' name='technicalDifficulty' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
      <fd:ErrorHandler result='<%= result %>' name='email' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
-     <img src="/media_stat/images/layout/clear.gif" width="8" height="1">
+     <img src="/media_stat/images/layout/clear.gif" alt="" width="8" height="1">
      <br>
      <input type="submit" id="signupbtn" maxlength="25" size="19" value="Notify Me"> 
      </td>

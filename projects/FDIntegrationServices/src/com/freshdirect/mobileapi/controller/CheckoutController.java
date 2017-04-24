@@ -150,120 +150,133 @@ public class CheckoutController extends BaseController {
     @Override
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
             SessionUser user) throws FDException, ServiceException, JsonException, NoSessionException {
+    	
+    	if(UserExists(user)){
 
-        if (ACTION_INIT_CHECKOUT.equals(action) || ACTION_AUTH_CHECKOUT.equals(action)) {
-            //Validate pre-req. If pass, go directly to get payment method
-            Login requestMessage = null;
-
-            if (ACTION_AUTH_CHECKOUT.equals(action)) {
-                requestMessage = parseRequestObject(request, response, Login.class);
-            }
-            if (validateCheckoutRequirements(model, requestMessage, user, request)) {
-                model = getDeliveryAddresses(model, user);
-                //model = applycredit(model, requestMessage, user, request);
-            }
-        } else if(ACTION_GET_CONSOLIDATED_CART.equals(action)) {       	
-                model = applycredit(model, user, request);           
-        }
-        else if (ACTION_GET_DELIVERY_ADDRESSES.equals(action)) {
-            model = getDeliveryAddresses(model, user);
-        } else if (ACTION_SET_DELIVERY_ADDRESS.equals(action)) {
-            DeliveryAddressSelection reqestMessage = parseRequestObject(request, response, DeliveryAddressSelection.class);
-            model = setDeliveryAddress(model, user, reqestMessage, request);
-        } else if (ACTION_SET_DELIVERY_ADDRESS_EX.equals(action)) {
-            DeliveryAddressSelection reqestMessage = parseRequestObject(request, response, DeliveryAddressSelection.class);
-            model = setDeliveryAddressEx(model, user, reqestMessage, request);
-        } else if (ACTION_ADD_AND_SET_DELIVERY_ADDRESS.equals(action)) {
-        	DeliveryAddressRequest requestMessage = parseRequestObject(request, response, DeliveryAddressRequest.class);
-            model = addAndSetDeliveryAddress(model, user, requestMessage, request);
-        }else if (ACTION_RESERVE_TIMESLOT.equals(action)) {
-            String slotId = request.getParameter(PARAM_SLOT_ID);
-            if (slotId == null) {
-                DeliverySlotReservation requestMessage = parseRequestObject(request, response, DeliverySlotReservation.class);
-                model = reserveTimeslot(model, user, requestMessage.getDeliveryTimeslotId(), request);
-            } else {
-                model = reserveTimeslot(model, user, slotId, request);
-            }
-        } else if (ACTION_RESERVE_TIMESLOT_EX.equals(action)) {
-            String slotId = request.getParameter(PARAM_SLOT_ID);
-            if (slotId == null) {
-                DeliverySlotReservation requestMessage = parseRequestObject(request, response, DeliverySlotReservation.class);
-                model = reserveTimeslotEx(model, user, requestMessage.getDeliveryTimeslotId(), request);
-            } else {
-                model = reserveTimeslotEx(model, user, slotId, request);
-            }
-        } else if (ACTION_GET_PAYMENT_METHODS.equals(action)) {
-            Message responseMessage = getPaymentMethods(user);
+	        if (ACTION_INIT_CHECKOUT.equals(action) || ACTION_AUTH_CHECKOUT.equals(action)) {
+	            //Validate pre-req. If pass, go directly to get payment method
+	            Login requestMessage = null;
+	
+	            if (ACTION_AUTH_CHECKOUT.equals(action)) {
+	                requestMessage = parseRequestObject(request, response, Login.class);
+	            }
+	            if (validateCheckoutRequirements(model, requestMessage, user, request)) {
+	                model = getDeliveryAddresses(model, user);
+	                //model = applycredit(model, requestMessage, user, request);
+	            }
+	        } else if(ACTION_GET_CONSOLIDATED_CART.equals(action)) {       	
+	                model = applycredit(model, user, request);           
+	        }
+	        else if (ACTION_GET_DELIVERY_ADDRESSES.equals(action)) {
+	            model = getDeliveryAddresses(model, user);
+	        } else if (ACTION_SET_DELIVERY_ADDRESS.equals(action)) {
+	            DeliveryAddressSelection reqestMessage = parseRequestObject(request, response, DeliveryAddressSelection.class);
+	            model = setDeliveryAddress(model, user, reqestMessage, request);
+	        } else if (ACTION_SET_DELIVERY_ADDRESS_EX.equals(action)) {
+	            DeliveryAddressSelection reqestMessage = parseRequestObject(request, response, DeliveryAddressSelection.class);
+	            model = setDeliveryAddressEx(model, user, reqestMessage, request);
+	        } else if (ACTION_ADD_AND_SET_DELIVERY_ADDRESS.equals(action)) {
+	        	DeliveryAddressRequest requestMessage = parseRequestObject(request, response, DeliveryAddressRequest.class);
+	            model = addAndSetDeliveryAddress(model, user, requestMessage, request);
+	        }else if (ACTION_RESERVE_TIMESLOT.equals(action)) {
+	            String slotId = request.getParameter(PARAM_SLOT_ID);
+	            if (slotId == null) {
+	                DeliverySlotReservation requestMessage = parseRequestObject(request, response, DeliverySlotReservation.class);
+	                model = reserveTimeslot(model, user, requestMessage.getDeliveryTimeslotId(), request);
+	            } else {
+	                model = reserveTimeslot(model, user, slotId, request);
+	            }
+	        } else if (ACTION_RESERVE_TIMESLOT_EX.equals(action)) {
+	            String slotId = request.getParameter(PARAM_SLOT_ID);
+	            if (slotId == null) {
+	                DeliverySlotReservation requestMessage = parseRequestObject(request, response, DeliverySlotReservation.class);
+	                model = reserveTimeslotEx(model, user, requestMessage.getDeliveryTimeslotId(), request);
+	            } else {
+	                model = reserveTimeslotEx(model, user, slotId, request);
+	            }
+	        } else if (ACTION_GET_PAYMENT_METHODS.equals(action)) {
+	            Message responseMessage = getPaymentMethods(user);
+	            setResponseMessage(model, responseMessage, user);
+	        } else if (ACTION_SET_PAYMENT_METHOD.equals(action)) {
+	            PaymentMethodSelection requestMessage = parseRequestObject(request, response, PaymentMethodSelection.class);
+	            model = setPaymentMethod(model, user, requestMessage, request);
+	        } else if (ACTION_SET_PAYMENT_METHOD_EX.equals(action)) {
+	            PaymentMethodSelection requestMessage = parseRequestObject(request, response, PaymentMethodSelection.class);
+	            model = setPaymentMethodEx(model, user, requestMessage, request);
+	        } else if (ACTION_ORDER_DETAIL.equals(action)) {
+	            //Check Order Info Currently being ordered.
+	            model = reviewOrder(model, user, request, EnumCouponContext.VIEWCART);
+	        } else if (ACTION_REVIEW_ORDER_DETAIL.equals(action)) {
+	            //Review order. What's being order, where it's going, how it's being paid for, etc.
+	            model = reviewOrder(model, user, request, EnumCouponContext.CHECKOUT);
+	        } else if (ACTION_SUBMIT_ORDER.equals(action)) {
+	        	if(getPostData(request, response)!=null && getPostData(request, response).contains(DEVICE_ID)) {
+	        	SubmitOrderRequest requestMessage = parseRequestObject(request, response, SubmitOrderRequest.class);
+	            model = submitOrder(model, user, request,requestMessage);
+	        	} else {
+	        		model = submitOrder(model, user, request);
+	        	}
+	        } else if (ACTION_GET_ATP_ERROR_DETAIL.equals(action)) {
+	            model = getAtpErrorDetail(model, user, request);
+	        } else if (ACTION_GET_REMOVE_UNAVAILABLE_ITEMS.equals(action)) {
+	            model = removeUnavailableItemsFromCart(model, user, request);
+	        } else if (ACTION_ALCOHOL_AGE_VERIFY.equals(action)) {
+	            model = verifyAlcoholAge(model, user, request);
+	        }else if (ACTION_ADD_PAYMENT_METHOD.equals(action)) {
+	        	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
+	            model = addPaymentMethod(model, user, requestMessage, request, response);
+	        }else if (ACTION_ADD_PAYMENT_METHOD_EX.equals(action)) {
+	        	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
+	            model = addPaymentMethodEx(model, user, requestMessage, request, response);
+	        }else if (ACTION_ADD_AND_SET_PAYMENT_METHOD.equals(action)) {
+	        	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
+	            model = addAndSetPaymentMethod(model, user, requestMessage, request, response);
+	        }else if (ACTION_SAVE_PAYMENT_METHOD.equals(action)) {
+	            	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
+	                model = savePaymentMethod(model, user, requestMessage, request, response);
+	       }else if (ACTION_EDIT_PAYMENT_METHOD.equals(action)) {
+	        	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
+	            model = editPaymentMethod(model, user, requestMessage, request, response);
+	        }else if (ACTION_DELETE_PAYMENT_METHOD.equals(action)) {
+	        	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
+	            model = deletePaymentMethod(model, user, requestMessage, request);
+	        }else if (ACTION_DELETE_PAYMENT_METHOD_EX.equals(action)) {
+	        	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
+	            model = deletePaymentMethodEx(model, user, requestMessage, request);
+	        }else if (ACTION_DELETE_DELIVERY_ADDRESS.equals(action)) {
+	        	DeliveryAddressRequest requestMessage = parseRequestObject(request, response, DeliveryAddressRequest.class);
+	            model = deleteDeliveryAddress(model, user, requestMessage, request);
+	        }else if (ACTION_DELETE_DELIVERY_ADDRESS_EX.equals(action)) {
+	        	DeliveryAddressRequest requestMessage = parseRequestObject(request, response, DeliveryAddressRequest.class);
+	            model = deleteDeliveryAddressEx(model, user, requestMessage, request);
+	        }else if (ACTION_GET_SELECTED_DELIVERY_ADDRESS.equals(action)) {
+	            model = getSelectedDeliveryAddress(model, user);
+	        }else if (ACTION_GET_PAYMENTMETHOD_VERIFY_STATUS.equals(action)) {
+	            model = getCVVStatus(model, user);
+	        }  else if (ACTION_ACCEPT_DP_TERMSANDCONDITIONS.equals(action)) {            
+	            model = this.acceptDeliveryPassTerms(model, user, request);
+	        }  else if (ACTION_REMOVE_SPECIAL_RESTRICTED_ITEMS.equals(action)) {
+	            model = removeSpecialRestrictedItemsFromCart(model, user, request);
+	        }  else if (ACTION_GET_SPECIAL_RESTRICTED_DETAIL.equals(action)) {
+	            model = getSpecialRestrictedItemDetail(model, user, request);
+	        } else if(ACTION_SUBMIT_ORDER_FDX.equals(action)){
+	        	model = submitOrderFDX(model,user,request);
+	        } else if(ACTION_SET_ORDER_MOBILE_NUMBER_FDX.equals(action)){
+	        	OrderMobileNumberRequest requestMessage = parseRequestObject(request, response, OrderMobileNumberRequest.class);
+	            model = setOrderMobileNumberEx(model, user, request, requestMessage.getMobile_number());
+	        }
+    	}else{
+    		Message responseMessage = new Message();
+            responseMessage.setStatus(Message.STATUS_FAILED);
+            responseMessage = Message.createFailureMessage("USER_NULL");
             setResponseMessage(model, responseMessage, user);
-        } else if (ACTION_SET_PAYMENT_METHOD.equals(action)) {
-            PaymentMethodSelection requestMessage = parseRequestObject(request, response, PaymentMethodSelection.class);
-            model = setPaymentMethod(model, user, requestMessage, request);
-        } else if (ACTION_SET_PAYMENT_METHOD_EX.equals(action)) {
-            PaymentMethodSelection requestMessage = parseRequestObject(request, response, PaymentMethodSelection.class);
-            model = setPaymentMethodEx(model, user, requestMessage, request);
-        } else if (ACTION_ORDER_DETAIL.equals(action)) {
-            //Check Order Info Currently being ordered.
-            model = reviewOrder(model, user, request, EnumCouponContext.VIEWCART);
-        } else if (ACTION_REVIEW_ORDER_DETAIL.equals(action)) {
-            //Review order. What's being order, where it's going, how it's being paid for, etc.
-            model = reviewOrder(model, user, request, EnumCouponContext.CHECKOUT);
-        } else if (ACTION_SUBMIT_ORDER.equals(action)) {
-        	if(getPostData(request, response)!=null && getPostData(request, response).contains(DEVICE_ID)) {
-        	SubmitOrderRequest requestMessage = parseRequestObject(request, response, SubmitOrderRequest.class);
-            model = submitOrder(model, user, request,requestMessage);
-        	} else {
-        		model = submitOrder(model, user, request);
-        	}
-        } else if (ACTION_GET_ATP_ERROR_DETAIL.equals(action)) {
-            model = getAtpErrorDetail(model, user, request);
-        } else if (ACTION_GET_REMOVE_UNAVAILABLE_ITEMS.equals(action)) {
-            model = removeUnavailableItemsFromCart(model, user, request);
-        } else if (ACTION_ALCOHOL_AGE_VERIFY.equals(action)) {
-            model = verifyAlcoholAge(model, user, request);
-        }else if (ACTION_ADD_PAYMENT_METHOD.equals(action)) {
-        	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
-            model = addPaymentMethod(model, user, requestMessage, request, response);
-        }else if (ACTION_ADD_PAYMENT_METHOD_EX.equals(action)) {
-        	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
-            model = addPaymentMethodEx(model, user, requestMessage, request, response);
-        }else if (ACTION_ADD_AND_SET_PAYMENT_METHOD.equals(action)) {
-        	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
-            model = addAndSetPaymentMethod(model, user, requestMessage, request, response);
-        }else if (ACTION_SAVE_PAYMENT_METHOD.equals(action)) {
-            	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
-                model = savePaymentMethod(model, user, requestMessage, request, response);
-       }else if (ACTION_EDIT_PAYMENT_METHOD.equals(action)) {
-        	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
-            model = editPaymentMethod(model, user, requestMessage, request, response);
-        }else if (ACTION_DELETE_PAYMENT_METHOD.equals(action)) {
-        	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
-            model = deletePaymentMethod(model, user, requestMessage, request);
-        }else if (ACTION_DELETE_PAYMENT_METHOD_EX.equals(action)) {
-        	PaymentMethodRequest requestMessage = parseRequestObject(request, response, PaymentMethodRequest.class);
-            model = deletePaymentMethodEx(model, user, requestMessage, request);
-        }else if (ACTION_DELETE_DELIVERY_ADDRESS.equals(action)) {
-        	DeliveryAddressRequest requestMessage = parseRequestObject(request, response, DeliveryAddressRequest.class);
-            model = deleteDeliveryAddress(model, user, requestMessage, request);
-        }else if (ACTION_DELETE_DELIVERY_ADDRESS_EX.equals(action)) {
-        	DeliveryAddressRequest requestMessage = parseRequestObject(request, response, DeliveryAddressRequest.class);
-            model = deleteDeliveryAddressEx(model, user, requestMessage, request);
-        }else if (ACTION_GET_SELECTED_DELIVERY_ADDRESS.equals(action)) {
-            model = getSelectedDeliveryAddress(model, user);
-        }else if (ACTION_GET_PAYMENTMETHOD_VERIFY_STATUS.equals(action)) {
-            model = getCVVStatus(model, user);
-        }  else if (ACTION_ACCEPT_DP_TERMSANDCONDITIONS.equals(action)) {            
-            model = this.acceptDeliveryPassTerms(model, user, request);
-        }  else if (ACTION_REMOVE_SPECIAL_RESTRICTED_ITEMS.equals(action)) {
-            model = removeSpecialRestrictedItemsFromCart(model, user, request);
-        }  else if (ACTION_GET_SPECIAL_RESTRICTED_DETAIL.equals(action)) {
-            model = getSpecialRestrictedItemDetail(model, user, request);
-        } else if(ACTION_SUBMIT_ORDER_FDX.equals(action)){
-        	model = submitOrderFDX(model,user,request);
-        } else if(ACTION_SET_ORDER_MOBILE_NUMBER_FDX.equals(action)){
-        	OrderMobileNumberRequest requestMessage = parseRequestObject(request, response, OrderMobileNumberRequest.class);
-            model = setOrderMobileNumberEx(model, user, request, requestMessage.getMobile_number());
-        }
+    	}
+    	
         return model;
+    }
+    
+    public boolean UserExists(SessionUser user){
+    	return user!=null ? true:false;
     }
 
     private ModelAndView applycredit(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDResourceException, JsonException {

@@ -12,8 +12,10 @@ import org.apache.log4j.Category;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.enums.ejb.EnumManagerHome;
 import com.freshdirect.enums.ejb.EnumManagerSB;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.service.FDECommerceService;
 
 public class EnumManager {
 
@@ -45,7 +47,11 @@ public class EnumManager {
 	public List loadEnums(Class daoClass) {
 		EnumManagerSB sb = this.getEnumManagerSB();
 		try {
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+			return	FDECommerceService.getInstance().loadEnum(daoClass.getName());
+			}else{
 			return sb.loadEnum(daoClass.getName());
+			}
 		} catch (RemoteException e) {
 			throw new EJBException(e);
 		}

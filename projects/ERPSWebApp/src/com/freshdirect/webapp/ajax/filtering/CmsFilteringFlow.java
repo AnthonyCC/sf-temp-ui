@@ -35,6 +35,7 @@ import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.EnumBrandFilterLocation;
 import com.freshdirect.fdstore.content.EnumLayoutType;
 import com.freshdirect.fdstore.content.EnumSortingValue;
 import com.freshdirect.fdstore.content.FilteringProductItem;
@@ -87,13 +88,13 @@ public class CmsFilteringFlow {
 
     private static final Logger LOG = LoggerFactory.getInstance(CmsFilteringFlow.class);
 
-    private static String FALLBACK_URL = "/";
-    private static String RECIPE_DEPARTMENT_URL_FS = "/recipe_dept.jsp?deptId=%s";
-    private static String SPECIAL_LAYOUT_URL_FS = "/browse_special.jsp?id=%s";
-    private static String HOLIDAY_MEAL_BUNDLE_LAYOUT_URL_FS = "/hmb/category.jsp?id=%s";
-    private static String RECIPE_MEALKIT_LAYOUT_URL_FS = "/handpick/category.jsp?id=%s";
-    private static String ONE_CATEGORY_REDIRECT_URL = "/browse.jsp?id=%s";
-    private static String SUPER_DEPARTMENT_WITHOUT_GLOBALNAV_URL = "/index.jsp";
+    private static final String FALLBACK_URL = "/";
+    private static final String RECIPE_DEPARTMENT_URL_FS = "/recipe_dept.jsp?deptId=%s";
+    private static final String SPECIAL_LAYOUT_URL_FS = "/browse_special.jsp?id=%s";
+    private static final String HOLIDAY_MEAL_BUNDLE_LAYOUT_URL_FS = "/hmb/category.jsp?id=%s";
+    private static final String RECIPE_MEALKIT_LAYOUT_URL_FS = "/handpick/category.jsp?id=%s";
+    private static final String ONE_CATEGORY_REDIRECT_URL = "/browse.jsp?id=%s";
+    private static final String SUPER_DEPARTMENT_WITHOUT_GLOBALNAV_URL = "/index.jsp";
 
     private static final CmsFilteringFlow INSTANCE = new CmsFilteringFlow();
 
@@ -582,11 +583,7 @@ public class CmsFilteringFlow {
                 LOG.warn("Getting DDPP products failed!", e);
             }
         }
-        
-     
-        List<FilteringProductItem> filteredSectionProducts=browseDataContext.getSectionContexts().get(0).getProductItems();
-        
-        
+
        // for staff picks: group the products based on the erp_category column value in product_promotion_group table
         for (Map.Entry<String, List<ProductModel>> entry : searchResults.getAssortProducts().entrySet()) {
             for(ProductModel product:entry.getValue()){
@@ -686,15 +683,18 @@ public class CmsFilteringFlow {
             }
         }
 
-        // -- RELOCATE BRAND FILTER BASED ON CMS SETTING
-        if (browseDataContext.getNavigationModel().getBrandFilterLocation() != null) {
-            MenuBuilderFactory.getInstance().relocateBrandFilter(browseDataContext.getMenuBoxes().getMenuBoxes(), browseDataContext.getNavigationModel().getBrandFilterLocation());
-        }
+        relocateBrandFilterBasedOnCmsSetting(browseDataContext);
 
         // populate browseData with filterLabels
         BrowseDataBuilderFactory.getInstance().populateWithFilterLabels(browseDataContext, navigationModel);
 
         return browseDataContext;
+    }
+
+    private void relocateBrandFilterBasedOnCmsSetting(BrowseDataContext browseDataContext) {
+        if (EnumBrandFilterLocation.ORIGINAL != browseDataContext.getNavigationModel().getBrandFilterLocation()) {
+            MenuBuilderFactory.getInstance().relocateBrandFilter(browseDataContext.getMenuBoxes().getMenuBoxes(), browseDataContext.getNavigationModel().getBrandFilterLocation());
+        }
     }
 
     /** based on com.freshdirect.webapp.taglib.fdstore.FDParseSearchTermsTag.getSearchList(String) **/
@@ -932,10 +932,7 @@ public class CmsFilteringFlow {
         // populate browseData with breadcrumbs
         BrowseDataBuilderFactory.getInstance().populateWithBreadCrumbAndDesciptiveContent(browseDataContext, navigationModel);
 
-        // -- RELOCATE BRAND FILTER BASED ON CMS SETTING
-        if (browseDataContext.getNavigationModel().getBrandFilterLocation() != null) {
-            MenuBuilderFactory.getInstance().relocateBrandFilter(browseDataContext.getMenuBoxes().getMenuBoxes(), browseDataContext.getNavigationModel().getBrandFilterLocation());
-        }
+        relocateBrandFilterBasedOnCmsSetting(browseDataContext);
 
         // populate browseData with filterLabels
         BrowseDataBuilderFactory.getInstance().populateWithFilterLabels(browseDataContext, navigationModel);
