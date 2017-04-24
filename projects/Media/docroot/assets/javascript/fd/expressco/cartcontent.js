@@ -579,6 +579,23 @@ etids.div_tooltipPopup = "#tooltipPopup";
 					fd.common.dispatcher.signal('productSampleCarousel', ajaxData);
 					fd.common.dispatcher.signal('donationProductSampleCarousel', ajaxData);
 					
+					/* only if the samples/donation tab is selected */
+					if (
+						$jq('.tabbed-carousel [data-component="tabitem"].selected').data('sitefeature') === 'PRODUCT_DONATIONS'
+						|| $jq('.tabbed-carousel [data-component="tabitem"].selected').data('sitefeature') === 'PRODUCT_SAMPLES'
+					) {
+						try {
+							var recData = {};
+							recData.siteFeature = ajaxData.productSamplesTab.siteFeature;
+							recData.title = ajaxData.productSamplesTab.title;
+							recData.items = ajaxData.productSamplesTab.carouselData.products;
+							recData.cmEventSource = ajaxData.productSamplesTab.carouselData.cmEventSource;
+							
+							fd.common.dispatcher.signal('recommenderResult', recData);
+						} catch (e) {
+						}
+					}
+					
 					if(focusedElementId) {
 						try {
 							document.getElementById(focusedElementId).focus();
