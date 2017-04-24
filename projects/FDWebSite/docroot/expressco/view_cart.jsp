@@ -64,7 +64,7 @@ if (mobWeb) {
       </div>
 
 		<% if (!mobWeb) { /* no mobWeb for now */  %>
-        	<%-- if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user_view_cart)) { --%>
+        	<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user_view_cart)) { %>
 				<%-- APPDEV-5916 --%>
 				<div id="cartCarousels">
 					<potato:viewCart />
@@ -81,7 +81,7 @@ if (mobWeb) {
 						});*/
 					</script>
 				</div>
-			<%-- } --%>
+			<% } %>
 		<% } %>
 <%-- APPDEV-5516 : Cart Carousel - Grand Giving Donation Technology --%>
 <%-- If the donationProductSampleCarousel is not enabled, the fallback div is productsamplecarousel --%>
@@ -111,7 +111,11 @@ if (mobWeb) {
       window.FreshDirect.expressco = {};
       window.FreshDirect.expressco.data = <fd:ToJSON object="${cartDataPotato}" noHeaders="true"/>
       window.FreshDirect.expressco.pendingCustomizations = <fd:ToJSON object="${pendingExternalAtcItemPotato}" noHeaders="true"/>
-      window.FreshDirect.expressco.viewCartPotato = <fd:ToJSON object="${viewCartPotato}" noHeaders="true"/>
+		<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user_view_cart)) { %>
+      		window.FreshDirect.expressco.viewCartPotato = <fd:ToJSON object="${viewCartPotato}" noHeaders="true"/>
+		<% } else { %>
+			window.FreshDirect.expressco.viewCartPotato = {};
+		<% } %>
 
       // override coupon api url
       window.overrideCouponEndpoint = '/api/expressco/coupon';

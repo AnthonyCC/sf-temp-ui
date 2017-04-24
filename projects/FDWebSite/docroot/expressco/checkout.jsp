@@ -132,6 +132,9 @@ if (mobWeb) {
 				<div id="cartCarousels">
 					<potato:viewCart />
 					<soy:render template="expressco.checkoutTabbedCarousel" data="${viewCartPotato}" />
+					<script>
+						var $curSelectedTab = $jq('.tabbed-carousel [data-component="tabitem"].selected');
+					</script>
 				</div>
 			<% } %>
 		<% } %>
@@ -156,6 +159,11 @@ if (mobWeb) {
 		window.FreshDirect.expressco.viewCartPotato = <fd:ToJSON object="${viewCartPotato}" noHeaders="true"/>
       window.FreshDirect.metaData = window.FreshDirect.expressco.data.formMetaData;
       window.FreshDirect.pendingCustomizations = <fd:ToJSON object="${pendingExternalAtcItemPotato}" noHeaders="true"/>
+  		<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user)) { %>
+  			window.FreshDirect.expressco.viewCartPotato = <fd:ToJSON object="${viewCartPotato}" noHeaders="true"/>
+		<% } else { %>
+			window.FreshDirect.expressco.viewCartPotato = {};
+		<% } %>
     </script>
   </tmpl:put>
   
