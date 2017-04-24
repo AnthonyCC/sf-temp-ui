@@ -927,6 +927,8 @@ public class FDStoreProperties {
     /* APPDEV-5916 */
     // previous product donation/sample carousels, for QA
     private static final String PROP_OBSOLETE_CART_CAROUSELS_ENABLED = "fdstore.obsolete.cart.carousels.enabled";
+    
+    private final static String PROP_QS_TOP_ITEMS_PERF_OPT_ENABLED = "quickshop.topitems.perf.optimize.enabled";
 
     static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1197,7 +1199,7 @@ public class FDStoreProperties {
         defaults.put(PROP_FDWHATSGOOD_PEAKPRODUCE_ENABLED, "true");
         defaults.put(PROP_FDWHATSGOOD_BBLOCK_ENABLED, "false");
         defaults.put(PROP_FDWHATSGOOD_ROWS, "");
-        defaults.put(PROP_SUFFOLK_ZIPS, "11703,11725,11729,11731,11767,11787,11788,11798,11704,11746,11702,11747");
+        defaults.put(PROP_SUFFOLK_ZIPS, "11701,11702,11703,11704,11706,11717,11720,11724,11725,11726,11729,11731,11735,11740,11743,11746,11747,11749,11751,11755,11757,11767,11780,11787,11788,11795,11798");
 
         defaults.put(PROP_FDWHATSGOOD_DEBUG_ENABLED, "false");
 
@@ -4522,5 +4524,9 @@ public class FDStoreProperties {
     /* APPDEV-5916 */
     public static boolean isObsoleteCartCarouselsEnabled() {
         return (Boolean.valueOf(get(PROP_OBSOLETE_CART_CAROUSELS_ENABLED))).booleanValue();
+    }
+    
+    public static boolean isQSTopItemsPerfOptimizationEnabled(){
+    	return (Boolean.valueOf(get(PROP_QS_TOP_ITEMS_PERF_OPT_ENABLED))).booleanValue();
     }
 }
