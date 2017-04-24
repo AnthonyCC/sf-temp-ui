@@ -319,7 +319,7 @@
 					<fd:ErrorHandler result='<%=result%>' name='userid' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 					<fd:ErrorHandler result='<%=result%>' name='email_format' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 					</td>
-					<td width="30" rowspan="3"><img src="/media_stat/images/layout/clear.gif" width="30" height="1" border="0"><br></td>
+					<td width="30" rowspan="3"><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1" border="0"><br></td>
 				</tr>
 				<tr valign="MIDDLE">
 					<!--<td width="110" ALIGN="right" class="text13" style="padding-right: 10px;"><label for="password">* Password&nbsp;</label></td>-->
@@ -332,7 +332,7 @@
 					</td>
 				</tr>
 				<tr valign="MIDDLE">
-					<!--<td width="110"><img src="/media_stat/images/layout/clear.gif" WIDTH="110" HEIGHT="1" BORDER="0"></td>-->
+					<!--<td width="110"><img src="/media_stat/images/layout/clear.gif" alt="" WIDTH="110" HEIGHT="1" BORDER="0"></td>-->
 					<td colspan=3 class="text13">Passwords are case sensitive.</td>
 				</tr>
 				</table>

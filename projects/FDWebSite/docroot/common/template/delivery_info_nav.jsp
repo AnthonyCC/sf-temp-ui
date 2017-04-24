@@ -74,7 +74,7 @@ final int W_DELIVERY_INFO_NAV_TOTAL = 970;
 <center class="text10">
 	<table width="<%=W_DELIVERY_INFO_NAV_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 		<tr>
-			<td width="<%=W_DELIVERY_INFO_NAV_TOTAL%>" colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
+			<td width="<%=W_DELIVERY_INFO_NAV_TOTAL%>" colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
 		</tr>
 		<tr valign="top">
 			<td width="219" style="padding: 5px 5px 10px 5px;" class="text9_lh12"><a href="/help/delivery_info.jsp"><img src="/media_stat/images/template/help/delivery/delivery_pickup_deptnav.gif" width="219" height="26" border="0" alt="DELIVERY & PICK UP INFO"></a></td>
@@ -83,7 +83,7 @@ final int W_DELIVERY_INFO_NAV_TOTAL = 970;
 					<tr>
 						<% for ( int colIndex = 0; colIndex < maxCols; colIndex++ ) { %>
 							<td class="onePxTall" rowspan="maxRows"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
-							<td width="1" bgcolor="#999966" rowspan="maxRows"><img src="/media_stat/images/layout/clear.gif" width="1" height="12" border="0"></td>
+							<td width="1" bgcolor="#999966" rowspan="maxRows"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="12" border="0"></td>
 							<td class="onePxTall" rowspan="maxRows"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
 							<td class="text9_lh12">
 								<%
@@ -112,17 +112,17 @@ final int W_DELIVERY_INFO_NAV_TOTAL = 970;
 				<img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" />
 			</td>
 		</tr>
-		<tr bgcolor="#999966"><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+		<tr bgcolor="#999966"><td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td></tr>
 		<tr valign="top">
 			<td align="center" colspan="2"><%-- content lands here --%><tmpl:get name='content'/><%-- content ends above here--%></td>
 		</tr>
 		<%-- This row is to hold the table --%>
 		<tr valign="top">
-			<td width="<%=W_DELIVERY_INFO_NAV_TOTAL%>" align="center"  colspan="2"><img src="/media_stat/images/layout/clear.gif" height="1" width="<%=W_DELIVERY_INFO_NAV_TOTAL%>"></td>
+			<td width="<%=W_DELIVERY_INFO_NAV_TOTAL%>" align="center"  colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" height="1" width="<%=W_DELIVERY_INFO_NAV_TOTAL%>"></td>
 		</tr>
 		
 		<tr valign="bottom">
-			<td width="<%=W_DELIVERY_INFO_NAV_TOTAL%>" colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
+			<td width="<%=W_DELIVERY_INFO_NAV_TOTAL%>" colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
 		</tr>
 	</table>
 </center>

@@ -21,14 +21,12 @@ public class ProductInfoUtil {
 	public static String getPickingPlantId(FDProductInfo fdpi){
     	String pickingPlantId = null;
         UserContext userContext = ContentFactory.getInstance().getCurrentUserContext();
-        if(null != userContext && null !=userContext.getPricingContext() && null !=userContext.getPricingContext().getZoneInfo()){
+        if(null != userContext){
              if(fdpi!=null){        
                      String salesOrg=userContext.getPricingContext().getZoneInfo().getSalesOrg();
                      String distChannel=userContext.getPricingContext().getZoneInfo().getDistributionChanel();
                      pickingPlantId = fdpi.getPickingPlantId(salesOrg, distChannel);    
-                     /*if(null == pickingPlantId){
-                    	 LOGGER.info("PickingPlantId is not found for this product: "+fdpi.getSkuCode()+", for customer:"+userContext.getFdIdentity());
-                     }*/
+                     
              }
              if(null == pickingPlantId && null !=userContext.getFulfillmentContext()){
 //            	 LOGGER.info("PickingPlantId is not found for this product: "+fdpi.getSkuCode());

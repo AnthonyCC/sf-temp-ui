@@ -36,6 +36,25 @@
 
 
 /**
+ * @param soData
+ */
+{template .soShowBtnPdp}
+	{if $soData.settingsData.soSettings}
+		{if $soData.settingsData.soSettings.isEligibleForStandingOrders}
+			<div class="so-container">
+					{if length($soData.settingsData.soData) > 0}
+						{call .soShowBtn /}
+					{else}
+						{call .soRecurring}
+							{param useButton: true /}
+						{/call}
+					{/if}
+			</div>
+		{/if}
+	{/if}
+{/template}
+
+/**
  * @param? customClass custom class added to container
  * @param? useButton use text or button in second container
  */
@@ -82,7 +101,7 @@
  *
  */
 {template .soAddBtn}
-	<button type="button" fd-login-required fd-login-successpage-current data-component="addToSOButton" class="cssbutton cssbutton-flat purple nontransparent">Add</button>
+	<button type="button" fd-login-required fd-login-successpage-current data-component="addToSOButton" class="cssbutton cssbutton-flat purple nontransparent">Add to Order</button>
 {/template}
 
 /**
@@ -90,6 +109,13 @@
  */
 {template .soCreateBtn}
 	<button type="button" data-component="createSOButton" class="cssbutton cssbutton-flat purple nontransparent">Create Standing Order</button>
+{/template}
+
+/**
+ *
+ */
+{template .soNextBtn}
+	<button type="button" onclick="addToSONextHandler()" fd-login-required fd-login-successpage-current data-component="nextStepSOButton" class="cssbutton cssbutton-flat purple transparent">Next</button>
 {/template}
 
 /**
@@ -113,6 +139,7 @@
 						</select>
 					</div>
 					{call .soAddBtn /}
+					{call .soNextBtn /}
 				</div>
 			</div>
 		{/if}

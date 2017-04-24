@@ -94,7 +94,7 @@
 						<soy:render template="pdp.heatRating" data="${productPotato}" />
 					</div>
 					
-					<soy:render template="common.soPdp" data="${productPotato}" />
+					<!-- <soy:render template="common.soPdp" data="${productPotato}" /> -->
 					
 				</c:if>
 				<c:if test="${not productPotato.available }">
@@ -123,7 +123,7 @@
 								</div>
 								<%-- <button id="pdp-atc-addtolist" class="addtolist cssbutton cssbutton-flat purpleborder medium" type="button" data-component="addToListButton">Add to List</button> --%>
 							</div>
-							
+							<soy:render template="common.soShowBtnPdp" data="${productPotato}" />
 						</div>
 					</form>
 				</c:if>
@@ -229,11 +229,11 @@
 									<div class="pdp-atc-button-wrapper"><button class="cssbutton cssbutton-flat orange medium" type="button" data-component="ATCButton">Add to Cart</button><soy:render template="pdp.atcInCart" data="${productPotato}"/></div><button id="pdp-atc-addtolist" class="addtolist cssbutton cssbutton-flat purpleborder medium" type="button" data-component="addToListButton">Add to List</button>
 									
 								</div>
-								
+								<soy:render template="common.soShowBtnPdp" data="${productPotato}" />
 							</div>
 						</form>
 						
-						<soy:render template="common.soPdp" data="${productPotato}" />
+						<!-- <soy:render template="common.soPdp" data="${productPotato}" /> -->
 						
 						<soy:render template="pdp.groupProducts" data="${productExtraPotato}" />
 							<%-- don't show evenBetter if we're in group scale context --%>

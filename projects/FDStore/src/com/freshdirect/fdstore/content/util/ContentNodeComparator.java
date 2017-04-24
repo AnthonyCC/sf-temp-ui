@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.util.ProductInfoUtil;
 import com.freshdirect.content.nutrition.EnumKosherSymbolValue;
 import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.fdstore.FDKosherInfo;
@@ -314,8 +315,8 @@ public class ContentNodeComparator implements Comparator<ContentNodeModel> {
 				return Integer.MAX_VALUE;
 			}
 			
-			String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
-			FDKosherInfo kosherInfo = skuModel.getProduct().getKosherInfo(plantID);
+			//String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+			FDKosherInfo kosherInfo = skuModel.getProduct().getKosherInfo(ProductInfoUtil.getPickingPlantId(skuModel.getProductInfo()));
 			
 			if (kosherInfo == null || !kosherInfo.hasKosherSymbol() || kosherInfo.getKosherSymbol().equals(EnumKosherSymbolValue.NONE)) {
 				return Integer.MAX_VALUE;

@@ -170,8 +170,9 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	@Override
 	public AddressVerificationResponse verifyAddress(Address address) throws FDLogisticsServiceException {
 		AddressVerificationRequest request = new AddressVerificationRequest();
-		request.setAddress(address);
+	    request.setAddress(address);
 		String inputJson = buildRequest(request);
+		LOGGER.info(inputJson);
 		AddressVerificationResponse response =  getData(inputJson, getEndPoint(ADDRESSVERIFY_API), AddressVerificationResponse.class);
 		return response;		
 	}

@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -310,7 +311,11 @@ public class FDUser extends ModelSupport implements FDUserI {
     private boolean refreshValidSO3 = true;
 
     private boolean isZipCheckPopupUsed = false;
-
+    
+    private boolean sOCartLineMessages;
+    
+    private Map<String,String> soCartLineMessagesMap=new HashMap<String,String>();
+    
     public Date getTcAcknowledgeDate() {
         return tcAcknowledgeDate;
     }
@@ -2322,7 +2327,10 @@ public class FDUser extends ModelSupport implements FDUserI {
 //        String pricingZoneId = FDZoneInfoManager.findZoneId(getZPServiceType().getName(), address != null ? address.getZipCode() : getZipCode());
         String zipCode = address != null ? address.getZipCode() : getZipCode();
         boolean isPickupOnlyORNotServicebleZip = isPickupOnlyORNotServicebleZip(userContext, zipCode);
-        String pricingZoneId = FDZoneInfoManager.findZoneId(getZPServiceType().getName(), zipCode ,isPickupOnlyORNotServicebleZip);
+        /*Adding this condition as part of APPDEV 6036
+         * We are passing the zone pricing service type to be in sync with user selected service type*/
+        EnumServiceType zpServiceType = address != null ? address.getServiceType() : getZPServiceType();
+        String pricingZoneId = FDZoneInfoManager.findZoneId(zpServiceType.getName(), zipCode ,isPickupOnlyORNotServicebleZip);
 
         FulfillmentInfo fulfillmentInfo = null;
         ZoneInfo zoneInfo = null;
@@ -3566,4 +3574,20 @@ public class FDUser extends ModelSupport implements FDUserI {
     public void setZipCheckPopupUsed(boolean isZipCheckPopupUsed) {
         this.isZipCheckPopupUsed = isZipCheckPopupUsed;
     }
+
+	public boolean issOCartLineMessages() {
+		return sOCartLineMessages;
+	}
+
+	public void setsOCartLineMessages(boolean sOCartLineMessages) {
+		this.sOCartLineMessages = sOCartLineMessages;
+	}
+	public Map<String, String> getSoCartLineMessagesMap() {
+		return soCartLineMessagesMap;
+	}
+
+	public void setSoCartLineMessagesMap(Map<String, String> soCartLineMessagesMap) {
+		this.soCartLineMessagesMap = soCartLineMessagesMap;
+	}
+	
 }

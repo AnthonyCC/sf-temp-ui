@@ -351,7 +351,7 @@ p.fi{margin:20px 0px;}
 				<td class="title14" colspan="<%= products.size() * 2 %>">
 					Popular Items
 					<br>
-					<img src="/media_stat/images/layout/clear.gif" width="1" height="8">
+					<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8">
 				</td>
 			</tr>
 			<tr valign="bottom">

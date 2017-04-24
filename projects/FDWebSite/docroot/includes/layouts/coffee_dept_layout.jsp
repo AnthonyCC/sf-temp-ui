@@ -91,15 +91,15 @@ if (catDescription !=null && catDescription.trim().length() >=1) { %>
 <FONT CLASS="space4pix"><BR></FONT></TD>
 <%
     if (itmCounter %2==0) { %>
-<TD WIDTH="<%=W_COFFEE_DEPT_LAYOUT_PADDING%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="35" HEIGHT="1" BORDER="0"></TD>
+<TD WIDTH="<%=W_COFFEE_DEPT_LAYOUT_PADDING%>"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="35" HEIGHT="1" BORDER="0"></TD>
 <%  }%>
 <%}
 // if we did not print an even amount then put the remain cell in.
 if (itmCounter<=0 && itmCounter%2==0 ) {
 %>
-<TD WIDTH="<%=W_COFFEE_DEPT_LAYOUT_IMG%>"><img src="/media_stat/images/layout/clear.gif" width="50" height ="1" border="0"></TD>
-<td width="<%=W_COFFEE_DEPT_LAYOUT_IMG_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_COFFEE_DEPT_LAYOUT_IMG_PADDING%>" height ="1" border="0"></td>
-<TD WIDTH="<%=W_COFFEE_DEPT_LAYOUT_TEXT%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_COFFEE_DEPT_LAYOUT_TEXT%>" height ="1" border="0"><BR>
+<TD WIDTH="<%=W_COFFEE_DEPT_LAYOUT_IMG%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="50" height ="1" border="0"></TD>
+<td width="<%=W_COFFEE_DEPT_LAYOUT_IMG_PADDING%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_COFFEE_DEPT_LAYOUT_IMG_PADDING%>" height ="1" border="0"></td>
+<TD WIDTH="<%=W_COFFEE_DEPT_LAYOUT_TEXT%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_COFFEE_DEPT_LAYOUT_TEXT%>" height ="1" border="0"><BR>
 <BR><FONT CLASS="space4pix"><BR></FONT></TD>
 <%} %>
 </TR></TABLE>

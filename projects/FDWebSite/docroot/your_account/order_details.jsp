@@ -225,7 +225,7 @@ if(orderId==null){
 	<img src="/media_stat/images/layout/clear.gif" width="1" height="15" border="0" alt="" /><br />
 	<%@ include file="/includes/your_account/i_order_detail_delivery_payment.jspf" %><br />
 	<img src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_ORDER_DETAILS_TOTAL %>" height="1" border="0" alt="" /><br />
-	<img src="/media_stat/images/layout/clear.gif" width="1" height="4" border="0"><br /><span class="space4pix"><br /></span>
+	<img src="/media_stat/images/layout/clear.gif" width="1" height="4" border="0" alt="" ><br /><span class="space4pix"><br /></span>
 	<%@ include file="/includes/your_account/i_order_detail_cart_details.jspf" %><br />
 <%  } %>
 <br />
@@ -279,12 +279,12 @@ if(orderId==null){
                         creditRow.append("<td>"+ccc.getMethod().getName()+"</td>");
                         creditRow.append("<td align=\"right\"><font class=\"text10bold\">"+currencyFormatter.format(ccc.getAmount())+"</font></td>");
                         creditRow.append("<td>&nbsp;</td></tr>");
-                        creditRow.append("<tr><td colspan=\"7\"><img src=\"/media_stat/images/layout/clear.gif\" width=\"1\" height=\"3\"></td></tr>");
+                        creditRow.append("<tr><td colspan=\"7\"><img src=\"/media_stat/images/layout/clear.gif\" alt=\"\" width=\"1\" height=\"3\"></td></tr>");
                     } // if ccc.getAmount() > 0.0
                 } //for cc
             } //c!=null
         } //for comp
-        creditRow.append("<tr><td colspan=\"7\"><img src=\"/media_stat/images/layout/clear.gif\" width=\"1\" height=\"3\"></td></tr>");
+        creditRow.append("<tr><td colspan=\"7\"><img src=\"/media_stat/images/layout/clear.gif\" alt=\"\" width=\"1\" height=\"3\"></td></tr>");
 %>
 <table width="<%= W_YA_ORDER_DETAILS_TOTAL %>" cellpadding="0" cellspacing="0" border="0" align="center">
     <tr>
@@ -303,10 +303,10 @@ if(orderId==null){
 	    <td align="right"><b>Amount</b></td>
 	    <td>&nbsp;</td>
     </tr>
-    <tr><td colspan="7"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
+    <tr><td colspan="7"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td></tr>
     <%=creditRow%>
-    <tr><td colspan="7" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
-    <tr><td colspan="7"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
+    <tr><td colspan="7" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td></tr>
+    <tr><td colspan="7"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td></tr>
     <tr>
 	    <td colspan="5" align="right"><b>Total credit issued for this order:</b>&nbsp;&nbsp;</td>
 	    <td align="right"><font class="text10bold"><%=currencyFormatter.format(totalCredit)%></font></td>

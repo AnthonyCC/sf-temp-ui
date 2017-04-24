@@ -154,7 +154,7 @@ String prodPrice = null;
             <tr valign="top">
             <td colspan="3" class="text11"><fd:IncludeMedia name="<%=pathToMedia%>" /></td>
             </tr>
-                        <tr><td><img src="/media_stat/images/layout/clear.gif" width="85" height="12"></td><td><img src="/media_stat/images/layout/clear.gif" width="305" height="12"></td><td><img src="/media_stat/images/layout/clear.gif" width="130" height="12"></td></tr>
+                        <tr><td><img src="/media_stat/images/layout/clear.gif" alt="" width="85" height="12"></td><td><img src="/media_stat/images/layout/clear.gif" alt="" width="305" height="12"></td><td><img src="/media_stat/images/layout/clear.gif" alt="" width="130" height="12"></td></tr>
             <tr valign="top">
                 <td rowspan="2"><img src="<%=prodImg.getPath()%>" width="<%=prodImg.getWidth()%>" height="<%=prodImg.getHeight()%>" border="0" alt="<%= prod.getFullName() %>"></td>
                 <td><font class="title14"><%=prod.getFullName()%></font></td>
@@ -168,7 +168,7 @@ String prodPrice = null;
                             <td class="text11"><fd:IncludeMedia name="<%=pathToMedia%>" /></td>
                                 <td align="right"><img src="<%=prodImg.getPath()%>" width="<%=prodImg.getWidth()%>" height="<%=prodImg.getHeight()%>" border="0" alt="<%= prod.getFullName() %>"></td>
                             <tr>
-                                <tr><td><img src="/media_stat/images/layout/clear.gif" width="230" height="10"></td><td><img src="/media_stat/images/layout/clear.gif" width="85" height="10"></td></tr>
+                                <tr><td><img src="/media_stat/images/layout/clear.gif" alt="" width="230" height="10"></td><td><img src="/media_stat/images/layout/clear.gif" alt="" width="85" height="10"></td></tr>
                                 <tr valign="top">
                                 <td colspan="2"><font class="title14"><%=prod.getFullName()%></font><br><img src="/media_stat/images/layout/669933.gif" width="315" height="1" hspace="0" vspace="3"><br><fd:IncludeMedia name="<%=recTable%>" /></td>
                                 </tr>
@@ -209,23 +209,23 @@ String prodPrice = null;
                                             headerBg += "F2948F";
                                         } else if ("bey".equalsIgnoreCase(winId)) {
                                             headerBg += "8E343F";
-                                            icon = "/media_stat/images/layout/clear.gif";
+                                            icon = "/media_stat/images/layout/clear.gif"; 
                                         } 
                                 %>
                                     <table width="100%" cellpadding="0" cellspacing="0" border="0">
                                         <tr>
-                                            <td bgcolor="<%= headerBg %>"><img src="<%= icon %>" width="35" height="35"></td>
-                                            <td><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
+                                            <td bgcolor="<%= headerBg %>"><img src="<%= icon %>" width="35" alt="" height="35"></td>
+                                            <td><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1"></td>
                                             <td width="100%" align="center" class="text12wbold" bgcolor="<%= headerBg %>"><span class="text15"><%=prod.getGlanceName().toUpperCase()%></span><br><%=prod.getNavName().toUpperCase()%></td>
-                                            <td><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
-                                            <td bgcolor="<%= headerBg %>"><img src="<%= icon %>" width="35" height="35"></td>
+                                            <td><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1"></td>
+                                            <td bgcolor="<%= headerBg %>"><img src="<%= icon %>" width="35" alt="" height="35"></td>
                                         </tr>
                                     </table>
                                 <% } else { %>
                                     <b><%=title%></b>
                                 <% } %>
                                 </td></tr>
-                                <tr><td><img src="/media_stat/images/layout/clear.gif" width="90" height="10"></td><td><img src="/media_stat/images/layout/clear.gif" width="225" height="10"></td></tr>
+                                <tr><td><img src="/media_stat/images/layout/clear.gif" alt="" width="90" height="10"></td><td><img src="/media_stat/images/layout/clear.gif" alt="" width="225" height="10"></td></tr>
                                 <tr valign="top">
                                 <td <%= isWine ? "align=\"center\"" : ""%>><img src="<%=prodImg.getPath()%>" width="<%=prodImg.getWidth()%>" height="<%=prodImg.getHeight()%>" border="0" alt="<%= prod.getFullName() %>"><% if (isWine) { %><br><font class="space4pix"><br></font><span class="text12"><b><%=prodPrice%></b></span><% } %></td>
                             <td class="text11"><fd:IncludeMedia name="<%=pathToMedia%>" /><% if (isWine) { %><br><br><br><%@ include file="/shared/includes/wine_copyright.jspf" %><% } %></td>

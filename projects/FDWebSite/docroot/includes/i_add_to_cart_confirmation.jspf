@@ -99,12 +99,12 @@ lastDepartmentName = null;
 		<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0">
 		<TR VALIGN="TOP">
 			<TD WIDTH="39" ROWSPAN="2" BGCOLOR="#FF9933"><img src="/media_stat/images/template/confirmation/grocery_confirm_tleft_cor.gif" width="6" height="5" border="0"></TD>
-			<TD WIDTH="<%=imgWidth%>" BGCOLOR="#FF9933" COLSPAN="2"><IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="1" HEIGHT="1"></TD>
+			<TD WIDTH="<%=imgWidth%>" BGCOLOR="#FF9933" COLSPAN="2"><IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="1" HEIGHT="1"></TD>
 			<TD WIDTH="6" ROWSPAN="2" COLSPAN="2"><img src="/media_stat/images/template/confirmation/grocery_confirm_tright_cor.gif" width="6" height="5" border="0"></TD>
 		</TR>
 		<TR VALIGN="TOP">
-			<TD WIDTH="10" ROWSPAN="3"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="10" HEIGHT="1" BORDER="0"></TD>
-			<TD><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="4" BORDER="0"></TD>
+			<TD WIDTH="10" ROWSPAN="3"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="10" HEIGHT="1" BORDER="0"></TD>
+			<TD><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="4" BORDER="0"></TD>
 		</TR>
 		<TR VALIGN="TOP">
 			<TD WIDTH="39" BGCOLOR="#FF9933" VALIGN="MIDDLE" ALIGN="CENTER"><FONT CLASS="space2pix"><BR></FONT><img src="/media_stat/images/template/confirmation/grocery_confirm_cart.gif" width="23" height="18" border="0" alt="Item confirmed in your shopping cart" HSPACE="8"></TD>
@@ -132,16 +132,16 @@ lastDepartmentName = null;
 		
 		
 			</TD>
-			<TD WIDTH="5"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="5" HEIGHT="1" BORDER="0"></TD>
-			<TD WIDTH="1" BGCOLOR="#FF9933"><IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="1" HEIGHT="1"></TD>
+			<TD WIDTH="5"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="5" HEIGHT="1" BORDER="0"></TD>
+			<TD WIDTH="1" BGCOLOR="#FF9933"><IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="1" HEIGHT="1"></TD>
 		</TR>
 		<TR VALIGN="TOP">
 			<TD WIDTH="39" ROWSPAN="2" BGCOLOR="#FF9933"><img src="/media_stat/images/template/confirmation/grocery_confirm_bleft_cor.gif" width="6" height="5" border="0"></TD>
-			<TD><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="4"></TD>
+			<TD><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="4"></TD>
 			<TD WIDTH="6" ROWSPAN="2" COLSPAN="2"><img src="/media_stat/images/template/confirmation/grocery_confirm_bright_cor.gif" width="6" height="5" border="0"></TD>
 		</TR>
 		<TR VALIGN="TOP">
-      <TD WIDTH="<%=imgWidth%>" COLSPAN="2" BGCOLOR="#FF9933"><IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="1" HEIGHT="1" BORDER="0"></TD>
+      <TD WIDTH="<%=imgWidth%>" COLSPAN="2" BGCOLOR="#FF9933"><IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="1" HEIGHT="1" BORDER="0"></TD>
 		</TR>
 		</TABLE>
 
@@ -169,7 +169,7 @@ lastDepartmentName = null;
 
             String deptName = dept.getFullName();
 %>
-    <tr><td colspan="9"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td></tr>
+    <tr><td colspan="9"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8"></td></tr>
    <tr><td colspan="7"><a class="title12" style="color: #969; text-decoration: none; text-transform: uppercase;"
                        href="/department.jsp?deptId=<%= deptId %>&trk=qslist"><%= deptName %></a></td>
 <%
@@ -206,7 +206,7 @@ lastDepartmentName = null;
 </logic:iterate>
 		<TR><TD  COLSPAN="9"><BR></TD></TR>
 		<TR><TD  COLSPAN="9" bgcolor="#669933"><IMG src="/media_stat/images/layout/669933.gif"  HEIGHT="1" BORDER="0"></TD></TR>
-		<TR><TD  COLSPAN="9"><IMG src="/media_stat/images/layout/clear.gif"  HEIGHT="2" BORDER="0"></TD></TR>	
+		<TR><TD  COLSPAN="9"><IMG src="/media_stat/images/layout/clear.gif"  alt="" HEIGHT="2" BORDER="0"></TD></TR>	
 		<TR>
             <TD WIDTH="20">&nbsp;</TD>
             <TD colspan="4">
@@ -225,7 +225,7 @@ lastDepartmentName = null;
 			<TD style="width: 45px; text-align: right; vertical-align: top; padding-top: 5px"><%=currencyFormatter.format(subTotal)%></TD>
 			<TD WIDTH="25"><BR></TD>
 		</TR>
-		<TR><TD  COLSPAN="9"><IMG src="/media_stat/images/layout/clear.gif"  HEIGHT="2" BORDER="0"></TD></TR>		
+		<TR><TD  COLSPAN="9"><IMG src="/media_stat/images/layout/clear.gif"  alt="" HEIGHT="2" BORDER="0"></TD></TR>		
 		<TR><TD  COLSPAN="9" bgcolor="#669933"><IMG src="/media_stat/images/layout/669933.gif" WIDTH="400" HEIGHT="1" BORDER="0"></TD></TR>
 </table>
 <br>
@@ -241,12 +241,12 @@ lastDepartmentName = null;
 		<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" width="<%=tableWidth%>">
 		<TR VALIGN="TOP">
 			<TD WIDTH="39" ROWSPAN="2" BGCOLOR="#FF9933"><img src="/media_stat/images/template/confirmation/grocery_confirm_tleft_cor.gif" width="6" height="5" border="0"></TD>
-			<TD BGCOLOR="#FF9933" COLSPAN="2"><IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="1" HEIGHT="1"></TD>
+			<TD BGCOLOR="#FF9933" COLSPAN="2"><IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="1" HEIGHT="1"></TD>
 			<TD WIDTH="6" ROWSPAN="2" COLSPAN="2"><img src="/media_stat/images/template/confirmation/grocery_confirm_tright_cor.gif" width="6" height="5" border="0"></TD>
 		</TR>
 		<TR VALIGN="TOP">
-			<TD WIDTH="10" ROWSPAN="3"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="10" HEIGHT="1" BORDER="0"></TD>
-			<TD><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="4" BORDER="0"></TD>
+			<TD WIDTH="10" ROWSPAN="3"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="10" HEIGHT="1" BORDER="0"></TD>
+			<TD><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="4" BORDER="0"></TD>
 		</TR>
 		<TR VALIGN="TOP">
 			<TD WIDTH="39" BGCOLOR="#FF9933" VALIGN="MIDDLE" ALIGN="CENTER"><FONT CLASS="space2pix"><BR></FONT><img src="/media_stat/images/template/confirmation/grocery_confirm_cart.gif" width="23" height="18" border="0" alt="Item confirmed in your shopping cart" HSPACE="8"></TD>
@@ -265,16 +265,16 @@ lastDepartmentName = null;
 				</TABLE>
 				
 			</TD>
-			<TD WIDTH="5"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="5" HEIGHT="1" BORDER="0"></TD>
-			<TD WIDTH="1" BGCOLOR="#FF9933"><IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="1" HEIGHT="1"></TD>
+			<TD WIDTH="5"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="5" HEIGHT="1" BORDER="0"></TD>
+			<TD WIDTH="1" BGCOLOR="#FF9933"><IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="1" HEIGHT="1"></TD>
 		</TR>
 		<TR VALIGN="TOP">
 			<TD WIDTH="39" ROWSPAN="2" BGCOLOR="#FF9933"><img src="/media_stat/images/template/confirmation/grocery_confirm_bleft_cor.gif" width="6" height="5" border="0"></TD>
-			<TD><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="4"></TD>
+			<TD><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="4"></TD>
 			<TD WIDTH="6" ROWSPAN="2" COLSPAN="2"><img src="/media_stat/images/template/confirmation/grocery_confirm_bright_cor.gif" width="6" height="5" border="0"></TD>
 		</TR>
 		<TR VALIGN="TOP">
-			<TD COLSPAN="2" BGCOLOR="#FF9933"><IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="1" HEIGHT="1" BORDER="0"></TD>
+			<TD COLSPAN="2" BGCOLOR="#FF9933"><IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="1" HEIGHT="1" BORDER="0"></TD>
 		</TR>
 		</TABLE>
 

@@ -323,8 +323,7 @@ var FreshDirect = FreshDirect || {};
     if (trPopupBox && trPopupBox.width !== 0) {
       positions = {
         left: trPopupBox.left + scLeft,
-        top: trPopupBox.top + scTop,
-        minHeight: trPopupBox.height
+        top: trPopupBox.top + scTop
       };
 
       wwidth = $(".container").size() ? $(".container").first()[0].getBoundingClientRect().right : $(window).width();

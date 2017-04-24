@@ -6,7 +6,7 @@
   justify-content: space-between;
 }
 
-.content-module.image-grid-module .content .small,
+.content-module.image-grid-module .content .small-image,
 .content-module.image-grid-module .content .medium {
   box-sizing: border-box;
   height: 241px;
@@ -14,7 +14,7 @@
   margin: .9px;
 }
 
-.content-module.image-grid-module .content .small {
+.content-module.image-grid-module .content .small-image {
   width: 241px;
 }
 
@@ -30,7 +30,7 @@
   width: 100%;
 }
 
-.content-module.image-grid-module .content .image-grid div div .small a > div,
+.content-module.image-grid-module .content .image-grid div div .small-image a > div,
 .content-module.image-grid-module .content .image-grid div .medium a > div {
   align-items: center;
   background-color: rgba(255,255,255,.90);
@@ -51,26 +51,26 @@
   text-transform: uppercase;
 }
 
-.content-module.image-grid-module .content .image-grid div div .small a > div,
-.content-module.image-grid-module .content .image-grid div div .small a > div .text {
-  width: 211px;
+.content-module.image-grid-module .content .image-grid div div .small-image a > div,
+.content-module.image-grid-module .content .image-grid div div .small-image a > div .text {
+  max-width: 231px;
 }
 
 .content-module.image-grid-module .content .image-grid div div .medium a > div,
 .content-module.image-grid-module .content .image-grid div .medium a > div .text {
-  width: 474px;
+  max-width: 474px;
 }
 
-.content-module.image-grid-module .content .image-grid div div .small a > div .text,
+.content-module.image-grid-module .content .image-grid div div .small-image a > div .text,
 .content-module.image-grid-module .content .image-grid div .medium a > div .text {
   text-overflow: ellipsis;
   max-height: 2em;
   overflow: hidden;
 }
 
-.content-module.image-grid-module .content .image-grid div div .small a > div:after,
+.content-module.image-grid-module .content .image-grid div div .small-image a > div:after,
 .content-module.image-grid-module .content .image-grid div .medium a > div:after {
   content: '\276F';
   position: relative;
-  right: -9px;
+  right: -5px;
 }

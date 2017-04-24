@@ -194,7 +194,7 @@ Integer len = new Integer(itemsToDisplay);
 <%if (DAYS_1==days){%><b><%= DAYS_1 %> days</b><%}else{%><a href="/newwines.jsp?deptId=win&catId=win_new&days=1"><%= DAYS_1 %> days</a><%}%> | 
 <%if (DAYS_2==days){%><b><%= DAYS_2 %> days</b><%}else{%><a href="/newwines.jsp?deptId=win&catId=win_new&days=2"><%= DAYS_2 %> days</a><%}%> | 
 <%if (DAYS_3==days){%><b><%= DAYS_3 %> days</b><%}else{%><a href="/newwines.jsp?deptId=win&catId=win_new&days=3"><%= DAYS_3 %> days</a><%}%>&nbsp;
-   <br><img src="/media_stat/images/layout/clear.gif" height="24">
+   <br><img src="/media_stat/images/layout/clear.gif" alt="" height="24">
   </td>
 </tr>
 </table>
@@ -205,8 +205,8 @@ if (displayList.size()!=0) {
 <%
 } else {   %>
     <table cellspacing="0" cellpadding="0"  border="0" width="<%=W_NEWWINES_TOTAL%>"><tr><td>
-      <img src="/media_stat/images/layout/clear.gif" height="54"><br>&nbsp;&nbsp;<b>No new wines within the last <%=days%> days.<b><br>
-      <img src="/media_stat/images/layout/clear.gif" height="24">
+      <img src="/media_stat/images/layout/clear.gif" alt="" height="54"><br>&nbsp;&nbsp;<b>No new wines within the last <%=days%> days.<b><br>
+      <img src="/media_stat/images/layout/clear.gif" alt="" height="24">
     </td></tr></table>
 <%
 } %>

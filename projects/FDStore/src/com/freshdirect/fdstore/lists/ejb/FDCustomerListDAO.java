@@ -24,6 +24,7 @@ import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.PopulatorUtil;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -388,7 +389,7 @@ class FDCustomerListDAO {
 	}
 	
 	// CCL
-	public String store(Connection conn, FDCustomerList list) throws SQLException {
+	public FDCustomerList store(Connection conn, FDCustomerList list) throws SQLException {
 		LOGGER.debug( "FDCustomerListDAO:store() - " + list.getId() + ", " + list.getName() );
 
 		String listId = list.getId();
@@ -412,7 +413,7 @@ class FDCustomerListDAO {
 			throw new IllegalArgumentException("Unknown list type");
 		}
 		
-		return listId;
+		return list;
 	}
 	
 	private String persistList(Connection conn, FDCustomerList list) throws SQLException {
@@ -589,9 +590,23 @@ class FDCustomerListDAO {
 			return result;
 		}
 		
+		private String QUERY_EVERY_ITEM_QS_TOP_ITEMS =
+		"SELECT ol.sku_code, ol.sales_unit, ol.configuration, ol.quantity, starttime, s.id AS sale_id, s.status, ol.recipe_source_id, ol.id AS orderline_id  FROM   (SELECT ol.sku_code, max(ol.id) olid FROM "+ 
+			    "(select  s,  sa, starttime from (SELECT s.id s, sa.id sa, di.starttime FROM cust.sale s, cust.salesaction sa,cust.deliveryinfo di  WHERE s.type='REG' AND "+  
+			    "s.customer_id=? AND NVL(s.e_store,'FreshDirect')= ? AND s.cromod_date=sa.action_date  AND sa.action_type IN ('CRO','MOD') AND sa.sale_id=s.id AND SA.REQUESTED_DATE> ? "+
+			    "AND s.customer_id=sa.customer_id and sa.id=DI.SALESACTION_ID order by di.starttime desc ) where rownum<=100 ) T, cust.sale s, cust.salesaction sa,cust.orderline ol WHERE s.id=sa.sale_id AND sa.id=ol.salesaction_id "+
+			    "AND NVL(ol.promotion_type,0)<> 3 AND NVL(ol.delivery_grp, 0) = 0 and s.id=T.s and  sa.id=T.sa group by ol.sku_code) O, cust.sale s,cust.salesaction sa, cust.deliveryinfo di,cust.orderline ol "+
+			    "where s.type='REG' AND  "+
+			    "s.customer_id=? AND NVL(s.e_store,'FreshDirect')= ? AND s.cromod_date=sa.action_date  AND sa.action_type IN ('CRO','MOD') AND sa.sale_id=s.id AND SA.REQUESTED_DATE> ? "+
+			    "and  sa.id=DI.SALESACTION_ID and sa.id=ol.salesaction_id and O.olid=ol.id "; 
 		//APPDEV-4179 - Item quantities should NOT be honored in "Your Top Items" 
 		public List<FDQsProductListLineItem> getQsSpecificEveryItemEverOrderedListTopItemsTopItems(Connection conn, FDIdentity identity, StoreContext storeContext) throws SQLException, FDSkuNotFoundException {
-			PreparedStatement ps = conn.prepareStatement(QUERY_EVERY_ITEM_QS_1);
+			PreparedStatement ps = null;
+			if(FDStoreProperties.isQSTopItemsPerfOptimizationEnabled()){
+				ps = conn.prepareStatement(QUERY_EVERY_ITEM_QS_TOP_ITEMS);
+			} else {
+				ps= conn.prepareStatement(QUERY_EVERY_ITEM_QS_1);
+			}
 			
 			
 			Calendar timeLimit = Calendar.getInstance();
@@ -600,6 +615,12 @@ class FDCustomerListDAO {
 			ps.setString(1, identity.getErpCustomerPK());
 			ps.setString(2, storeContext.getEStoreId().getContentId());
 			ps.setDate(3, new java.sql.Date(timeLimit.getTimeInMillis()));
+			
+			if(FDStoreProperties.isQSTopItemsPerfOptimizationEnabled()){
+				ps.setString(4, identity.getErpCustomerPK());
+				ps.setString(5, storeContext.getEStoreId().getContentId());
+				ps.setDate(6, new java.sql.Date(timeLimit.getTimeInMillis()));
+			}
 			
 			ResultSet rs = ps.executeQuery();
 			

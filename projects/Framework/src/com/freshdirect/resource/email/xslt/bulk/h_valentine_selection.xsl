@@ -35,16 +35,16 @@
 <table cellpadding="0" cellspacing="0" border="0" width="100%">
 <tr><td align="center"><img src="http://www.freshdirect.com/media_stat/images/template/email/valentine/vday_header.gif" width="609" height="69" alt="Valentine's Day ideas from FreshDirect. Valentine's Day is just a few days away..." /></td></tr>
 <tr><td><br/></td></tr>
-<tr><td background="http://www.freshdirect.com/media_stat/images/template/email/valentine/heart_line.gif"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="100%" height="7" /></td></tr>
+<tr><td background="http://www.freshdirect.com/media_stat/images/template/email/valentine/heart_line.gif"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="100%" height="7" /></td></tr>
 <tr><td><br/></td></tr>
 <tr><td>
 	<table cellpadding="0" cellspacing="0" border="0" width="100%">
 		<tr valign="top">
 			<td width="52%">
 				<table cellpadding="0" cellspacing="0" border="0" width="100%">
-				<tr><td colspan="2" class="vdaySubheader">What could be more sexy and fun than teasing your partner with long stem strawberries dipped in melted chocolate?<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="12" /></td></tr>
+				<tr><td colspan="2" class="vdaySubheader">What could be more sexy and fun than teasing your partner with long stem strawberries dipped in melted chocolate?<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="12" /></td></tr>
 				<tr valign="top">
-				<td width="5%" align="left"><a href="http://www.freshdirect.com/departments/hmr/holiday2.jsp?catId=holiday2&amp;cmpgn=vday"><img src="http://www.freshdirect.com/media_stat/images/template/email/valentine/fondue_strawberry.jpg" width="97" height="116" border="0" /></a><br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="108" height="14" /></td>
+				<td width="5%" align="left"><a href="http://www.freshdirect.com/departments/hmr/holiday2.jsp?catId=holiday2&amp;cmpgn=vday"><img src="http://www.freshdirect.com/media_stat/images/template/email/valentine/fondue_strawberry.jpg" width="97" height="116" border="0" /></a><br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="108" height="14" /></td>
 				<td width="95%">Forget about last minute reservations, over-priced restaurants, or preparing dinner for Valentine's Day. This year stay at home and let our chef David McInerney prepare a romantic fondue dinner for you and your Valentine. We'll bring everything to your door (even the next morning's breakfast). All you have to do is heat, dip and enjoy.<br/><br/></td>
 				</tr>
 				</table>
@@ -56,32 +56,32 @@
 				Meat Fondue for Two - $94.99</b>
 				<br/><br/>
 				INCLUDES: fondue pot, Caesar salad, chocolate fondue dessert, and even breakfast for the next morning (fresh orange juice, croissants, coffee, and fresh fruit).</td>
-				<td width="5%"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="10" height="1" /><a href="http://www.freshdirect.com/departments/hmr/holiday2.jsp?catId=holiday2&amp;cmpgn=vday"><img src="http://www.freshdirect.com/media_stat/images/template/email/valentine/fondue.jpg" width="122" height="122" border="0" /></a></td>
+				<td width="5%"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="10" height="1" /><a href="http://www.freshdirect.com/departments/hmr/holiday2.jsp?catId=holiday2&amp;cmpgn=vday"><img src="http://www.freshdirect.com/media_stat/images/template/email/valentine/fondue.jpg" width="122" height="122" border="0" /></a></td>
 				</tr>
-				<tr><td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="12" /></td></tr>
+				<tr><td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="12" /></td></tr>
 				</table>
 				<b><a href="http://www.freshdirect.com/departments/hmr/holiday2.jsp?catId=holiday2&amp;cmpgn=vday" style="color:#336600;">Click here for more details about our Fondue Dinners!</a></b><br/><br/>
 				<b>Fondue orders must be placed by 6pm, Feb. 11 for delivery by Valentine's Day! Phone orders only. Call us toll free 1-866-283-7374.</b>
 			</td>
-			<td width="2%"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="10" height="1" /></td>
-			<td bgcolor="#99CCCC" width="1"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="1" /></td>
-			<td width="2%"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="10" height="1" /></td>
+			<td width="2%"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="10" height="1" /></td>
+			<td bgcolor="#99CCCC" width="1"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="1" /></td>
+			<td width="2%"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="10" height="1" /></td>
 			<td width="44%">
 				<table cellpadding="0" cellspacing="0" border="0" width="100%">
-					<tr><td colspan="2" class="promoProduct"><a href="http://www.freshdirect.com/product.jsp?productId=usa_cupidcam_hv&amp;catId=camem&amp;cmpgn=vday" class="promoProduct">HUDSON VALLEY CUPID'S CHOICE CAMEMBERT - 4oz - $6.50</a><br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="8" /></td></tr>
+					<tr><td colspan="2" class="promoProduct"><a href="http://www.freshdirect.com/product.jsp?productId=usa_cupidcam_hv&amp;catId=camem&amp;cmpgn=vday" class="promoProduct">HUDSON VALLEY CUPID'S CHOICE CAMEMBERT - 4oz - $6.50</a><br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="8" /></td></tr>
 					<tr>
 					<td width="95%" valign="top">A sweet and buttery blend of sheep's milk, cow's milk, and fresh cream. Very rich and mild, with a white rind that blooms naturally as the cheese ripens. Available for a limited time.<br/><br/><a href="http://www.freshdirect.com/product.jsp?productId=usa_cupidcam_hv&amp;catId=camem&amp;cmpgn=vday" style="color:#336600;"><b>Click here to learn more!</b></a></td>
-					<td width="5%"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="6" height="1" /><a href="http://www.freshdirect.com/product.jsp?productId=usa_cupidcam_hv&amp;catId=camem&amp;cmpgn=vday"><img src="http://www.freshdirect.com/media_stat/images/template/email/valentine/hv_cupidcam.jpg" width="95" height="95" border="0" /></a></td>
+					<td width="5%"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="6" height="1" /><a href="http://www.freshdirect.com/product.jsp?productId=usa_cupidcam_hv&amp;catId=camem&amp;cmpgn=vday"><img src="http://www.freshdirect.com/media_stat/images/template/email/valentine/hv_cupidcam.jpg" width="95" height="95" border="0" /></a></td>
 					</tr>
-					<tr><td colspan="2"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="12" /></td></tr>
-					<tr><td bgcolor="#99CCCC" colspan="2"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="1" /></td></tr>
-					<tr><td colspan="2"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="10" /></td></tr>
-					<tr><td colspan="2" class="promoProduct"><a href="http://www.freshdirect.com/category.jsp?catId=gro_candy&amp;sortBy=name&amp;groceryVirtual=gro_candy&amp;showThumbnails=true&amp;DisplayPerPage=20&amp;brandValue=bd_eric_girerd&amp;prodCatId=gro_candy_candy&amp;productId=spe_eg_choc_01&amp;cmpgn=vday" class="promoProduct">ERIC GIRERD CHOCOLATES</a><br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="8" /></td></tr>
+					<tr><td colspan="2"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="12" /></td></tr>
+					<tr><td bgcolor="#99CCCC" colspan="2"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="1" /></td></tr>
+					<tr><td colspan="2"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="10" /></td></tr>
+					<tr><td colspan="2" class="promoProduct"><a href="http://www.freshdirect.com/category.jsp?catId=gro_candy&amp;sortBy=name&amp;groceryVirtual=gro_candy&amp;showThumbnails=true&amp;DisplayPerPage=20&amp;brandValue=bd_eric_girerd&amp;prodCatId=gro_candy_candy&amp;productId=spe_eg_choc_01&amp;cmpgn=vday" class="promoProduct">ERIC GIRERD CHOCOLATES</a><br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="8" /></td></tr>
 					<tr valign="top">
 					<td width="95%">Eric Girerd is a third generation Pastry Chef formerly of Le Chantilly and Tavern on the Green. Chef Girerd blends his own beans to make his unique chocolate paste and fillings. His creations are currently offered by fine establishments like the Waldorf-Astoria, Ritz-Carlton, and Four Seasons in New York City.</td>
-					<td width="5%" valign="bottom"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="6" height="1" /><a href="http://www.freshdirect.com/category.jsp?catId=gro_candy&amp;sortBy=name&amp;groceryVirtual=gro_candy&amp;showThumbnails=true&amp;DisplayPerPage=20&amp;brandValue=bd_eric_girerd&amp;prodCatId=gro_candy_candy&amp;productId=spe_eg_choc_01&amp;cmpgn=vday"><img src="http://www.freshdirect.com/media_stat/images/template/email/valentine/eg_chocolates.jpg" width="123" height="124" border="0" /></a></td>
+					<td width="5%" valign="bottom"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="6" height="1" /><a href="http://www.freshdirect.com/category.jsp?catId=gro_candy&amp;sortBy=name&amp;groceryVirtual=gro_candy&amp;showThumbnails=true&amp;DisplayPerPage=20&amp;brandValue=bd_eric_girerd&amp;prodCatId=gro_candy_candy&amp;productId=spe_eg_choc_01&amp;cmpgn=vday"><img src="http://www.freshdirect.com/media_stat/images/template/email/valentine/eg_chocolates.jpg" width="123" height="124" border="0" /></a></td>
 					</tr>
-					<tr><td colspan="2"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="12" /></td></tr>	
+					<tr><td colspan="2"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="12" /></td></tr>	
 				</table>
 			<b>Assorted Classically Flavored Chocolates</b><br/>
 			9 piece - $5.99, 15 piece - $8.99, 27 piece - $15.99<br/><br/>
@@ -92,8 +92,8 @@
 		</tr>
 	</table>
 </td></tr>
-<tr><td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="18" /></td></tr>
-<tr><td background="http://www.freshdirect.com/media_stat/images/template/email/valentine/heart_line.gif"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="100%" height="7" /></td></tr>
+<tr><td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="18" /></td></tr>
+<tr><td background="http://www.freshdirect.com/media_stat/images/template/email/valentine/heart_line.gif"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="100%" height="7" /></td></tr>
 <tr><td><br/></td></tr>
 <tr><td>
 	<table cellpadding="6" cellspacing="0" border="0" width="100%">
@@ -115,7 +115,7 @@
 	</tr>
 	</table>
 </td></tr>
-<tr><td align="center"><br/><br/>Price and availability subject to change. Please see Web site for current prices and availability.<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="18" /><br/><a href="http://www.freshdirect.com?cmpgn=vday"><img src="http://www.freshdirect.com/media_stat/images/template/email/valentine/fd_logo_url.gif" width="265" height="36" border="0" alt="www.freshdirect.com" /></a><br/><br/></td></tr>
+<tr><td align="center"><br/><br/>Price and availability subject to change. Please see Web site for current prices and availability.<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="18" /><br/><a href="http://www.freshdirect.com?cmpgn=vday"><img src="http://www.freshdirect.com/media_stat/images/template/email/valentine/fd_logo_url.gif" width="265" height="36" border="0" alt="www.freshdirect.com" /></a><br/><br/></td></tr>
 </table>
 	
 	<xsl:call-template name="h_optout_footer"/><xsl:call-template name="h_footer_v2"/>

@@ -30,17 +30,17 @@ final int W_DELIVERY_FIRE_ISLAND_RIGHT = 191;
 		<tmpl:put name='content' direct='true'>
 <table width="<%=W_DELIVERY_FIRE_ISLAND_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
      <tr>
-          <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DELIVERY_FIRE_ISLAND_LEFT%>" height="18"></td>
-          <td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="<%=(W_DELIVERY_FIRE_ISLAND_CENTER-1)/2%>" height="1"></td>
-          <td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-          <td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="<%=(W_DELIVERY_FIRE_ISLAND_CENTER-1)/2%>" height="1"></td>
-          <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DELIVERY_FIRE_ISLAND_RIGHT%>" height="1"></td>
+          <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DELIVERY_FIRE_ISLAND_LEFT%>" alt="" height="18"></td>
+          <td rowspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=(W_DELIVERY_FIRE_ISLAND_CENTER-1)/2%>" height="1"></td>
+          <td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
+          <td rowspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=(W_DELIVERY_FIRE_ISLAND_CENTER-1)/2%>" height="1"></td>
+          <td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_DELIVERY_FIRE_ISLAND_RIGHT%>" height="1"></td>
     </tr>
           
     <tr valign="top">
     <% boolean isPopup = false; %>
           <td class="text12"><%@ include file="/shared/includes/delivery/i_fire_island.jspf"%><br><br><br></td>
-          <td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+          <td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
           <td align="center"><a href="http://www.pagelinx.com/fififerry/index.shtml" target="fi_sched"><img src="/media_stat/images/template/pickup/fi_learn_more.gif" width="146" height="31" border="0" alt="Learn more about Fire Island ferries!"><br><img src="/media_stat/images/template/pickup/fi_ferries.jpg" width="159" height="59" border="0" alt="Fire Island ferry" vspace="6"><br>Click here</a> to visit Fire Island Ferries online.<br><br>
 <b>Passenger ferry schedules</b><br>
 <a href="http://www.fireislandferries.com/beach.shtml" target="fi_sched">Ocean Beach</a><br>

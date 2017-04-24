@@ -1186,6 +1186,7 @@ private static String convert(Date time) {
 		FDStandingOrder fdStandingOrder = user.getCurrentStandingOrder();
 		try {
 			if (fdStandingOrder != null	&& "Y".equalsIgnoreCase(fdStandingOrder.getActivate())&& fdStandingOrder.getDeliveryMonthDate() != null) {
+				user.setsOCartLineMessages(true);
 				return fdStandingOrder.getDayOfWeek(fdStandingOrder, false)+ ", "+ fdStandingOrder.getDeliveryMonthDate()+ ", "
 						+ DateUtil.formatHourAMPMRange(fdStandingOrder.getStartTime(), user.getCurrentStandingOrder().getEndTime());
 			}

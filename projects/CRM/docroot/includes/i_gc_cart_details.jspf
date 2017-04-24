@@ -115,10 +115,10 @@
     <% } %>
 </tr>
 </table>
-<IMG src="/media_stat/images/layout/clear.gif" width="1" HEIGHT="8" border="0"><br>
-<IMG src="/media_stat/images/layout/ff9933.gif" width="100%" HEIGHT="1" border="0"><br>
+<IMG src="/media_stat/images/layout/clear.gif" alt="" width="1" HEIGHT="8" border="0"><br>
+<IMG src="/media_stat/images/layout/ff9933.gif" alt="" width="100%" HEIGHT="1" border="0"><br>
 
-<IMG src="/media_stat/images/layout/clear.gif" width="1" HEIGHT="4" border="0"><br><FONT CLASS="space4pix"><br></FONT>
+<IMG src="/media_stat/images/layout/clear.gif" alt="" width="1" HEIGHT="4" border="0"><br><FONT CLASS="space4pix"><br></FONT>
 
 <%  } %>
 <br>
@@ -138,7 +138,7 @@ FDRecipientList recipients = cart.getGiftCardRecipients();
 
 <table  width="100%" class="gcYourActTableList1">
     <tr>
-        <td colspan="15"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+        <td colspan="15"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
     </tr>
     <tr class="th" >
         <td width="10%">Certificate #</td>

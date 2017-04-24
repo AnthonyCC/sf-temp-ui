@@ -37,7 +37,7 @@ public class ModuleHandlingServlet extends BaseJsonServlet {
             HttpSession session = request.getSession();
             String moduleContentKey = null;
             String moduleId = request.getParameter("moduleId");
-            boolean isViewAll = Boolean.parseBoolean(request.getParameter("viewAll"));
+            boolean viewAll = Boolean.parseBoolean(request.getParameter("viewAll"));
 
             if (moduleId != null) {
                 moduleContentKey = "Module:" + moduleId;
@@ -47,7 +47,7 @@ public class ModuleHandlingServlet extends BaseJsonServlet {
 
             ModuleContainerData result = ModuleHandlingService.getDefaultService().loadModuleforViewAll(moduleContentKey, user, session);
 
-            if (isViewAll) {
+            if (viewAll) {
                 result.getConfig().get(0).setSourceType(ModuleSourceType.PRODUCT_LIST_MODULE.toString());
             }
 

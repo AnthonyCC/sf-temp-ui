@@ -28,7 +28,7 @@ attribute name="modifyOrderAlert" required="true" rtexprvalue="true" type="java.
 							int pendingOrderCount = 0;
 							List<FDOrderInfoI> validPendingOrders = new ArrayList<FDOrderInfoI>();
 							//If there is any order in 'NEW' status, clear the order history to fetch and see the order is submitted to SAP which makes the order modifiable.
-							if(user.isAnyNewOrder()){
+							if(!modifyOrderAlert && user.isAnyNewOrder()){
 								user.invalidateOrderHistoryCache();
 								user.setAnyNewOrder(false);
 							}

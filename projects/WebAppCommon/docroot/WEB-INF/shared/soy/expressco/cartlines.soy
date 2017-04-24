@@ -22,9 +22,10 @@
  * @param etipTotal eTipTotal
  * @param containsWineSection containsWineSection
  * @param totalWithoutTax TotalWithoutTax
-* @param? displayCheckout
-* @param? softLimit
-* @param? isEBTused
+ * @param? displayCheckout
+ * @param? softLimit
+ * @param? isEBTused
+ * @param? deliveryBegins
 */
 {template .viewcartlines autoescape="false"}
        {if $displayCheckout}
@@ -51,7 +52,7 @@
 				{param numOfSections : length($cartSections) /}
 				{param isLastSection : isLast($section) /}
 				{param containsWineSection : $containsWineSection /}
-				{param displayCheckout : $displayCheckout /}
+				{param displayCheckout : $displayCheckout /}				
 				{param isEBTused : $isEBTused /}
 			{/call}
 		{/foreach}
@@ -75,7 +76,7 @@
 	{/call}
 	{call .footer}
 		{param buttonText: 'Checkout' /}
-    		{param successPage: '/expressco/checkout.jsp' /}
+    	{param successPage: '/expressco/checkout.jsp' /}
 		{param form: 'viewcart_startcheckout' /}
 		{param eTippingEnabled: $eTippingEnabled /}
 		{param avalaraEnabled: $avalaraEnabled /} 
@@ -130,6 +131,7 @@
                                   {param isLastSection : isLast($section) /}
                                   {param containsWineSection : $containsWineSection /}
                                   {param isEBTused : $isEBTused /}
+                                  {param deliveryBegins : $deliveryBegins /}
                            {/call}
                      {/foreach}
                      {else} 
@@ -484,6 +486,7 @@
  * @param? isEBTused Is the customer using EBT? 
  * @param? displayCheckout to display checkout
  * @param? noModifyLinks hide product modify links
+ * @param? deliveryBegins
  */
 {template .cartsection autoescape="false"}
 	/* HACK OVERRIDE (yes, there are a lot of those lately) for when this is the success page */
@@ -510,6 +513,7 @@
 				{param avalaraEnabled: $avalaraEnabled /}
 				{param displayCheckout: $displayCheckout /}
 				{param noModifyLinks: $noModifyLinks /}
+				{param deliveryBegins: $deliveryBegins /}
 			{/delcall}
 		{/foreach}
 
@@ -630,6 +634,8 @@
  * @param? complaintReason masquerade mode make good order reason text
  * @param avalaraEnabled avalaraEnabled
  * @param displayCheckout
+ * @param? deliveryBegins
+ * @param? so3ItemStatus 
  */
 {deltemplate expressco.cartline autoescape="false" variant="'YOUR_CART'"}
 	<div class='cartsection__cartline' data-component='cartline' data-cartlineid='{$id}'>
@@ -729,6 +735,22 @@
 				{if $hasScaledPricing and not $avalaraEnabled}<div class="legend-item">S</div>{/if}
 			</div>
 		</div>
+		{if not $displayCheckout and $deliveryBegins and $so3ItemStatus}
+			<div class="so-cartline-delivery-date">
+				<div class="so-cartline-delivery-date-info">{if $so3ItemStatus == 'ModifiedItem'}Changes Saved{elseif $so3ItemStatus == 'NewItem'}Just Added{/if}</div>
+				<div class="so-cartline-delivery-date-begins">Delivery Begins: {$deliveryBegins}</div>
+				<div class="so-cartline-delivery-date-tip">
+					<div class="so-cartline-delivery-date-tip-i">i</div>
+					<div class="so-cartline-delivery-date-tip-cont">
+						{if $so3ItemStatus == 'ModifiedItem'}
+							Changing a Standing Order Master List may not effect your next delivery
+						{elseif $so3ItemStatus == 'NewItem'}
+							Items Added to a Standing Order Master List may not effect your next delivery.
+						{/if}
+					</div>
+				</div>
+			</div>
+		{/if}
 	</div>
 {/deltemplate}
 

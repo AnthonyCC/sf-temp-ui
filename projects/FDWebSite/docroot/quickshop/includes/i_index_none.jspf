@@ -26,9 +26,9 @@ final int W_QUICKSHOP_INDEX_NONE_LHALF = 350;
 				<%@ include file="/quickshop/includes/ccl_lists.jspf" %>
 			</div>
 		 </td>
-        <td width="10"><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
-		<td width="1" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-		<td width="10"><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
+        <td width="10"><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="1"></td>
+		<td width="1" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
+		<td width="10"><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="1"></td>
 </fd:CCLCheck>
         <fd:IncludeMedia name="media/editorial/site_pages/lists/quickshop_intro.html" >
         <td width="<%= W_QUICKSHOP_INDEX_NONE_LHALF %>" class="text13">

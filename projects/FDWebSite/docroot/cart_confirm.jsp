@@ -8,6 +8,7 @@
 <%@ page import="com.freshdirect.fdstore.ecoupon.*" %>
 <%@ page import='com.freshdirect.fdstore.atp.FDLimitedAvailabilityInfo'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
+<%@ page import='com.freshdirect.cms.util.ProductInfoUtil'%>
 <%@ page import='java.util.*' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='bean' prefix='bean' %>
@@ -106,10 +107,10 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
                 <tr>
                 <td colspan="2">
 					<%  if (isWineProductAdded) { %>
-						<img src="/media_stat/images/layout/clear.gif" width="1" height="15"><br>
+						<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="15"><br>
 					<% } %>
 					<img src="/media_stat/images/template/confirmation/you_have_just_added.gif" width="233" height="13" border="0" alt="YOU HAVE JUST ADDED TO YOUR CART:">
-                    <br><img src="/media_stat/images/layout/clear.gif" width="1" height="6"></td>
+                    <br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6"></td>
                 </tr>
 
 <%
@@ -125,7 +126,7 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
     String earliestAvailability = prdNode.getSku(orderLine.getSkuCode()).getEarliestAvailabilityMessage();
 
     FDProduct defaultProduct = prdNode.getDefaultSku().getProduct();
-	boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays(plantID).isEmpty();
+	boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays(ProductInfoUtil.getPickingPlantId(prdNode.getDefaultSku().getProductInfo())).isEmpty();
 	
     boolean isPricedByLB = ("LB".equalsIgnoreCase((defaultProduct.getPricing().getZonePrice(userd.getPricingContext().getZoneInfo()).getMaterialPrices()[0]).getPricingUnit()));
     boolean isSoldByLB = isPricedByLB && ("LB".equalsIgnoreCase((defaultProduct.getSalesUnits()[0]).getName()));
@@ -153,7 +154,7 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
 <%   if (itemShown < 1) {   %>  
        <img src="<%= confirmImage.getPath() %>" border="0" width="<%= confirmImage.getWidth() %>" height="<%= confirmImage.getHeight() %>">
 <%   } else {  %>
-       <img src="/media_stat/images/layout/clear.gif" width="30" height="1" border="0">
+       <img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1" border="0">
 <%   }  %>
     </td></tr>
 <%
@@ -168,17 +169,17 @@ String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillme
   
   int level = userd.getLevel();
   if(level == FDUserI.GUEST && !userd.isInZone() && !userd.isCorporateUser()){%>
-    <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td></tr>
+    <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"></td></tr>
     <tr><td class="text12gr" colspan="2"><b>Please note:</b> We are not yet in your area and cannot complete your delivery.</td></tr>
 <%}   %>
 	
     <%-- spacers --%>
     <tr>
-      <td><img src="/media_stat/images/layout/clear.gif" width="320" height="10"></td>
-      <td><img src="/media_stat/images/layout/clear.gif" width="80" height="10"></td>
+      <td><img src="/media_stat/images/layout/clear.gif" alt="" width="320" height="10"></td>
+      <td><img src="/media_stat/images/layout/clear.gif" alt="" width="80" height="10"></td>
     </tr>
     <tr>
-      <td colspan="2" bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+      <td colspan="2" bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
     </tr>
     </table>
     <%@ include file="/includes/i_cart_confirm_bottom.jspf"%>

@@ -54,11 +54,11 @@ if (request.getParameter("show") != null && !"".equals(request.getParameter("sho
 		<tmpl:put name='content' direct='true'>
 		<table width="520" cellpadding="0" cellspacing="0" border="0">
 			<tr>
-				<td><img src="/media_stat/images/layout/clear.gif" width="130" height="4"></td>
-				<td><img src="/media_stat/images/layout/clear.gif" width="8" height="4"></td>
-				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
-				<td><img src="/media_stat/images/layout/clear.gif" width="8" height="4"></td>
-				<td><img src="/media_stat/images/layout/clear.gif" width="373" height="4"></td>
+				<td><img src="/media_stat/images/layout/clear.gif" alt="" width="130" height="4"></td>
+				<td><img src="/media_stat/images/layout/clear.gif" alt="" width="8" height="4"></td>
+				<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td>
+				<td><img src="/media_stat/images/layout/clear.gif" alt="" width="8" height="4"></td>
+				<td><img src="/media_stat/images/layout/clear.gif" alt="" width="373" height="4"></td>
 			</tr>
 			<tr valign="top">
 				<td align="right" class="text12"><img src="/media_stat/images/template/kitchen/catering/catering_menu.gif" width="90" height="37"><br><br>
@@ -73,7 +73,7 @@ if (request.getParameter("show") != null && !"".equals(request.getParameter("sho
 				<span class="text11">Please contact us for pricing.</span><br><br>
 				</td>
 				<td></td>
-				<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+				<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
 				<td></td>
 				<td align="center">
 				<% if (breakfast) { %>

@@ -111,6 +111,24 @@ public class AddressUtil {
 		 */
 		response = FDDeliveryManager.getInstance().scrubAddress(address, useApartment);
 				
+		verifyAddress(address, useApartment, result, response);
+        
+        if(result.isFailure()) {
+        	return address;
+        }
+        //
+        // all's well, return fixed/cleaned corrected address
+        //
+        return response.getAddress();
+       } catch (FDInvalidAddressException e) {
+		LOGGER.info("FDInvalidAddressException thrown during address scrub " + e.getMessage());
+       }
+	
+		return address;
+			
+    }
+
+	public static void verifyAddress(AddressModel address, boolean useApartment, ActionResult result, FDDeliveryAddressVerificationResponse response) {
 		String apartment = address.getApartment();
 		
         LOGGER.debug("Scrubbing response: "+response.getVerifyResult());
@@ -143,20 +161,9 @@ public class AddressUtil {
 
             //
             // return original broken address is there was an error
-            //
-            return address;
+            //            
         }
-        //
-        // all's well, return fixed/cleaned corrected address
-        //
-        return response.getAddress();
-       } catch (FDInvalidAddressException e) {
-		LOGGER.info("FDInvalidAddressException thrown during address scrub");
-       }
-	
-		return address;
-			
-    }
+	}
 
 	public static FDDeliveryZoneInfo getZoneInfo(FDUserI user, AddressModel address, ActionResult result, Date date, CustomerAvgOrderSize iPackagingModel, EnumRegionServiceType serviceType) throws FDResourceException {
 

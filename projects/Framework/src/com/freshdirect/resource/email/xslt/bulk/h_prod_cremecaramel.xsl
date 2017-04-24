@@ -32,7 +32,7 @@
 
 <table cellpadding="0" cellspacing="0">
 <tr>
-<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="20" height="1" border="0" /></td>
+<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0" /></td>
 <td><xsl:call-template name="h_header_v1" />
 	<table cellpadding="0" cellspacing="0" width="90%">
 		<tr>
@@ -55,7 +55,7 @@
 		<tr><td colspan="2"><xsl:call-template name="h_optout_footer"/><xsl:call-template name="h_footer_v2"/></td></tr>
 	</table>
 </td>
-<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="20" height="1" border="0" /></td>
+<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0" /></td>
 </tr>
 </table>
 

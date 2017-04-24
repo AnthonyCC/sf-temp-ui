@@ -42,7 +42,7 @@ final int W_LEFT_DNAV_RIGHT = 820;
 <CENTER CLASS="text10">
 <table width="<%=W_LEFT_DNAV_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 <tr>
-<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
+<td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
 </tr>
 
 <tr>
@@ -50,14 +50,14 @@ final int W_LEFT_DNAV_RIGHT = 820;
 </tr>
 
 <tr>
-<td width="<%=W_LEFT_DNAV_LEFT%>" bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-<td width="<%=W_LEFT_DNAV_RIGHT%>" bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+<td width="<%=W_LEFT_DNAV_LEFT%>" bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
+<td width="<%=W_LEFT_DNAV_RIGHT%>" bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
 </tr>
 
 <tr valign="top">
 	<td bgcolor="#E0E3D0" class="lNavTableContTD"><%@ include file="/common/template/includes/left_side_nav.jspf" %><BR>
-		<img src="/media_stat/images/layout/clear.gif" height="1" width="<%=W_LEFT_DNAV_LEFT%>"></td>
-		<td align="right"><img src="/media_stat/images/layout/clear.gif" height="15" width="1"><br>
+		<img src="/media_stat/images/layout/clear.gif" alt="" height="1" width="<%=W_LEFT_DNAV_LEFT%>"></td>
+		<td align="right"><img src="/media_stat/images/layout/clear.gif" alt="" height="15" width="1"><br>
 		<%-- content lands here --%>
 		<tmpl:get name='content'/>
 		<%-- content ends above here--%>

@@ -9,8 +9,11 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.service.FDECommerceService;
+import com.freshdirect.payment.service.IECommerceService;
 
 public class ExternalAccountManager{
 	
@@ -24,8 +27,14 @@ public class ExternalAccountManager{
 		lookupManagerHome();
 		String userId="";
 		try {
-			ExternalAccountManagerSB sb = externalLoginManagerHome.create();
-			userId = sb.getUserIdForUserToken(userToken);
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				IECommerceService service = FDECommerceService.getInstance();
+				userId=service.getUserIdForUserToken(userToken);
+				
+			}else{
+				ExternalAccountManagerSB sb = externalLoginManagerHome.create();
+				userId = sb.getUserIdForUserToken(userToken);
+			}
 			LOGGER.info("USER ID for token: "+userToken+" is:"+userId);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -41,8 +50,16 @@ public class ExternalAccountManager{
 	public static boolean isUserEmailAlreadyExist(String email) throws FDResourceException {
 		lookupManagerHome();
 		try {
-			ExternalAccountManagerSB sb = externalLoginManagerHome.create();
-			return sb.isUserEmailAlreadyExist(email);
+			boolean isUserEmailExist = false;
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				IECommerceService service = FDECommerceService.getInstance();
+				isUserEmailExist = service.isUserEmailAlreadyExist(email);
+				
+			}else{
+				ExternalAccountManagerSB sb = externalLoginManagerHome.create();
+				isUserEmailExist = sb.isUserEmailAlreadyExist(email);
+			}
+			return isUserEmailExist;
 			
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -53,12 +70,20 @@ public class ExternalAccountManager{
 		}
 	}
 	
-	public static int isUserEmailAlreadyExist(String email, String provider) throws FDResourceException {
+	public static int isUserEmailAlreadyExist(String email, String provider)
+			throws FDResourceException {
 		lookupManagerHome();
 		try {
-			ExternalAccountManagerSB sb = externalLoginManagerHome.create();
-			return sb.isUserEmailAlreadyExist(email, provider);
-			
+			int isUserEmailExist = 0;
+			if (FDStoreProperties.isStorefront2_0Enabled()) {
+				IECommerceService service = FDECommerceService.getInstance();
+				isUserEmailExist = service.isUserEmailAlreadyExist(email,provider);
+			} else {
+				ExternalAccountManagerSB sb = externalLoginManagerHome.create();
+				isUserEmailExist = sb.isUserEmailAlreadyExist(email, provider);
+			}
+			return isUserEmailExist;
+
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -72,8 +97,15 @@ public class ExternalAccountManager{
 	public static List<String> getConnectedProvidersByUserId(String userId, EnumExternalLoginSource source) throws FDResourceException {
 		lookupManagerHome();
 		try {
-			ExternalAccountManagerSB sb = externalLoginManagerHome.create();
-			return sb.getConnectedProvidersByUserId(userId, source);
+			List<String> connectedproviders = null;
+			if (FDStoreProperties.isStorefront2_0Enabled()) {
+				IECommerceService service = FDECommerceService.getInstance();
+				connectedproviders = service.getConnectedProvidersByUserId(userId, source);
+			} else {
+				ExternalAccountManagerSB sb = externalLoginManagerHome.create();
+				connectedproviders = sb.getConnectedProvidersByUserId(userId, source);
+			}
+			return connectedproviders;
 			
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -87,8 +119,15 @@ public class ExternalAccountManager{
 	public static List<String> getConnectedProvidersByUserId(String userId) throws FDResourceException {
 		lookupManagerHome();
 		try {
-			ExternalAccountManagerSB sb = externalLoginManagerHome.create();
-			return sb.getConnectedProvidersByUserId(userId);
+			List<String> connectedProviders = null;
+			if (FDStoreProperties.isStorefront2_0Enabled()) {
+				IECommerceService service = FDECommerceService.getInstance();
+				connectedProviders = service.getConnectedProvidersByUserId(userId);
+			} else {
+				ExternalAccountManagerSB sb = externalLoginManagerHome.create();
+				connectedProviders = sb.getConnectedProvidersByUserId(userId);
+			}
+			return connectedProviders;
 			
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -103,8 +142,14 @@ public class ExternalAccountManager{
 	{
 		lookupManagerHome();
 		try {
+			if (FDStoreProperties.isStorefront2_0Enabled()) {
+				IECommerceService service = FDECommerceService.getInstance();
+				return service.isExternalLoginOnlyUser(userId, source);
+			} else {
 			ExternalAccountManagerSB sb = externalLoginManagerHome.create();
 			return sb.isExternalLoginOnlyUser(userId, source);
+			}
+			
 			
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -122,9 +167,13 @@ public class ExternalAccountManager{
 	{
 		lookupManagerHome();
 		try {
-			ExternalAccountManagerSB sb = externalLoginManagerHome.create();
-			sb.linkUserTokenToUserId(customerId, userId, userToken, identityToken, provider, displayName, preferredUserName, email, emailVerified);
-			
+			if (FDStoreProperties.isStorefront2_0Enabled()) {
+				IECommerceService service = FDECommerceService.getInstance();
+				service.linkUserTokenToUserId(customerId, userId, userToken, identityToken, provider, displayName, preferredUserName, email, emailVerified);
+			} else {
+				ExternalAccountManagerSB sb = externalLoginManagerHome.create();
+				sb.linkUserTokenToUserId(customerId, userId, userToken, identityToken, provider, displayName, preferredUserName, email, emailVerified);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -149,8 +198,13 @@ public class ExternalAccountManager{
 	public static void unlinkExternalAccountWithUser(String email, String userToken, String provider) throws FDResourceException {
 		lookupManagerHome();
 		try {
-			ExternalAccountManagerSB sb = externalLoginManagerHome.create();
-			sb.unlinkExternalAccountWithUser(email, userToken, provider);
+			if (FDStoreProperties.isStorefront2_0Enabled()) {
+				IECommerceService service = FDECommerceService.getInstance();
+				service.unlinkExternalAccountWithUser(email, userToken, provider);
+			} else {
+				ExternalAccountManagerSB sb = externalLoginManagerHome.create();
+				sb.unlinkExternalAccountWithUser(email, userToken, provider);
+			}
 			
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -165,8 +219,13 @@ public class ExternalAccountManager{
 	public static void unlinkExternalAccountWithUser(String email, String provider) throws FDResourceException {
 		lookupManagerHome();
 		try {
-			ExternalAccountManagerSB sb = externalLoginManagerHome.create();
-			sb.unlinkExternalAccountWithUser(email, provider);
+			if (FDStoreProperties.isStorefront2_0Enabled()) {
+				IECommerceService service = FDECommerceService.getInstance();
+				service.unlinkExternalAccountWithUser(email, provider);
+			} else {
+				ExternalAccountManagerSB sb = externalLoginManagerHome.create();
+				sb.unlinkExternalAccountWithUser(email, provider);
+			}
 			
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -182,8 +241,15 @@ public class ExternalAccountManager{
 	public static boolean isSocialLoginOnlyUser(String customer_id) throws FDResourceException {
 		lookupManagerHome();
 		try {
-			ExternalAccountManagerSB sb = externalLoginManagerHome.create();
-			return sb.isSocialLoginOnlyUser(customer_id);
+			boolean isSocialLoginOnlyUser = false;
+			if (FDStoreProperties.isStorefront2_0Enabled()) {
+				IECommerceService service = FDECommerceService.getInstance();
+				isSocialLoginOnlyUser = service.isSocialLoginOnlyUser(customer_id);
+			} else {
+				ExternalAccountManagerSB sb = externalLoginManagerHome.create();
+			    isSocialLoginOnlyUser =  sb.isSocialLoginOnlyUser(customer_id);
+			}
+			return isSocialLoginOnlyUser;
 			
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -192,6 +258,7 @@ public class ExternalAccountManager{
 			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
+		
 	}	
 
 }

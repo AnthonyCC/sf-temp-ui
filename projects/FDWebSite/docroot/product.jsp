@@ -15,6 +15,7 @@
 <%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
 <%@ page import='java.net.URLEncoder'%>
 <%@page import="java.util.Locale"%>
+<%@ page import='com.freshdirect.cms.util.ProductInfoUtil'%>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='bean' prefix='bean' %>

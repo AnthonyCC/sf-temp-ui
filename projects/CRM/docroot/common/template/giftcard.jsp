@@ -83,35 +83,35 @@
 	<table width="745" border="0" cellpadding="0" cellspacing="0">
 		<tr>
 			<td width="6" colspan="2" rowspan="2"><img src="/media_stat/images/layout/top_left_curve<%=suffix%>.gif" width="6" height="6" border="0"></td>
-			<td width="733" valign="top" bgcolor="#<%=color%>"><img src="/media_stat/images/layout/clear.gif" width="733" height="1" border="0"></td>
+			<td width="733" valign="top" bgcolor="#<%=color%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="733" height="1" border="0"></td>
 			<td width="6" colspan="2" rowspan="2"><img src="/media_stat/images/layout/top_right_curve<%=suffix%>.gif" width="6" height="6" border="0"></td>
 		</tr>
 		<tr>
-			<td width="733" valign="top"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
+			<td width="733" valign="top"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
 		</tr>
 		<tr valign="top">
-			<td bgcolor="#<%=color%>" valign="bottom" width="1" rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+			<td bgcolor="#<%=color%>" valign="bottom" width="1" rowspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
 			<td colspan="3" align="center">
-				<img src="/media_stat/images/layout/clear.gif" height="15" width="733"><br />
+				<img src="/media_stat/images/layout/clear.gif" alt="" height="15" width="733"><br />
 				<!-- content lands here -->
 				<tmpl:get name='content'/>
 				<!-- content ends above here-->
 				<br /><br />
 			</td>
-			<td bgcolor="#<%=color%>" valign="bottom" width="1" rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+			<td bgcolor="#<%=color%>" valign="bottom" width="1" rowspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
 		</tr>
 		<tr>
-			<td width="5"><img src="/media_stat/images/layout/clear.gif" height="1" width="5"></td>
-			<td width="733" align="center"><img src="/media_stat/images/layout/clear.gif" height="1" width="733"><br></td>
-			<td width="5"><img src="/media_stat/images/layout/clear.gif" height="1" width="5"></td>
+			<td width="5"><img src="/media_stat/images/layout/clear.gif" alt="" height="1" width="5"></td>
+			<td width="733" align="center"><img src="/media_stat/images/layout/clear.gif" alt="" height="1" width="733"><br></td>
+			<td width="5"><img src="/media_stat/images/layout/clear.gif" alt="" height="1" width="5"></td>
 		</tr>
 		<tr valign="bottom">
 			<td width="6" colspan="2" rowspan="2"><img src="/media_stat/images/layout/bottom_left_curve<%=suffix%>.gif" width="6" height="6" border="0"></td>
-			<td width="733"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
+			<td width="733"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
 			<td width="6" colspan="2" rowspan="2"><img src="/media_stat/images/layout/bottom_right_curve<%=suffix%>.gif" width="6" height="6" border="0"></td>
 		</tr>
 		<tr>
-			<td width="733" bgcolor="#<%=color%>" valign="bottom"><img src="/media_stat/images/layout/clear.gif" width="733" height="1" border="0"></td>
+			<td width="733" bgcolor="#<%=color%>" valign="bottom"><img src="/media_stat/images/layout/clear.gif" alt="" width="733" height="1" border="0"></td>
 		</tr>
 	</table>
 

@@ -41,7 +41,7 @@ function linkTo(url){
 	<TR VALIGN="TOP">
 		<TD WIDTH="15"><img src="/media/images/layout/clear.gif" width="15" height="1" alt="" border="0"></TD>
 		<TD WIDTH="<%=tableWidth%>" class="bodyCopy">
-			<IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%=tableWidth%>" HEIGHT="1"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>			
+			<IMG src="/media_stat/images/layout/cccccc.gif" ALT="" WIDTH="<%=tableWidth%>" HEIGHT="1"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>			
 			<li type="dot"><A HREF="#question1">How do I pay?</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt=""><br></li>
 			<li type="dot"><A HREF="#question2">How does credit card payment work?</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt=""><br></li>
 			<li type="dot"><A HREF="#question3">How does checking account payment work?</A><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt=""><br></li>

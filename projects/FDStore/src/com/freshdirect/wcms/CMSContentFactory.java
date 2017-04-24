@@ -16,7 +16,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.joda.time.DateTime;
@@ -51,6 +50,7 @@ import com.freshdirect.fdstore.content.CMSSectionModel;
 import com.freshdirect.fdstore.content.CMSTextComponentModel;
 import com.freshdirect.fdstore.content.CMSWebPageModel;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.framework.util.BeanUtil;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -256,7 +256,7 @@ public class CMSContentFactory {
 		List<CMSScheduleModel> schedules = null;
 		if(pageNode != null){			
 			List<ContentKey> sectionKeys = getContentKeysList(pageNode, "WebPageSection");		
-			if(CollectionUtils.isNotEmpty(sectionKeys)){
+			if(BeanUtil.isNotEmpty(sectionKeys)){
 				for(ContentKey sectionKey: sectionKeys){
 					ContentNodeI sectionNode = getContentNodeByKey(sectionKey, request);
 					CMSSectionModel section = new CMSSectionModel();
@@ -353,7 +353,7 @@ public class CMSContentFactory {
 		List<CMSComponentModel> components = new ArrayList<CMSComponentModel>();
 		if(sectionNode != null){
 			List<ContentKey> componentKeys = getContentKeysList(sectionNode,"SectionComponent");
-			if(CollectionUtils.isNotEmpty(componentKeys)){
+			if(BeanUtil.isNotEmpty(componentKeys)){
 				for(ContentKey componentKey: componentKeys){
 					ContentNodeI componentNode = getContentNodeByKey(componentKey, request);
 					if("Anchor".equals(componentKey.getType().getName())){
@@ -512,7 +512,7 @@ public class CMSContentFactory {
 	
 	private List<CMSPickListItemModel> createPickList(List<ContentKey> keys, CMSPageRequest request){	
 		List<CMSPickListItemModel> pickListItems = null;
-		if(CollectionUtils.isNotEmpty(keys)){
+		if(BeanUtil.isNotEmpty(keys)){
 			pickListItems = new ArrayList<CMSPickListItemModel>();
 			for(ContentKey key:keys){
 				ContentNodeI contentNode = getContentNodeByKey(key, request);
@@ -533,7 +533,7 @@ public class CMSContentFactory {
 	
 	private List<CMSScheduleModel> createSchedule(List<ContentKey> contentKeys, CMSPageRequest request) {
 		List<CMSScheduleModel> schedules = null;
-		if(CollectionUtils.isNotEmpty(contentKeys)){
+		if(BeanUtil.isNotEmpty(contentKeys)){
 			schedules = new ArrayList<CMSScheduleModel>();
 			for(ContentKey contentKey: contentKeys){
 				try{
@@ -578,7 +578,7 @@ public class CMSContentFactory {
 	
 	public boolean isSchedulesMatches(List<CMSScheduleModel> schedules, CMSPageRequest request, boolean isFeedLevel){
 		boolean isMatchingSchedule = false;
-		if(CollectionUtils.isNotEmpty(schedules)){
+		if(BeanUtil.isNotEmpty(schedules)){
 			for(CMSScheduleModel schedule:schedules){
 				if(isScheduleMatches(schedule, request, isFeedLevel)){
 					isMatchingSchedule = true;

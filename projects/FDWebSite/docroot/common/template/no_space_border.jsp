@@ -33,7 +33,7 @@ public static final int W_NO_SPACE_BORDER_TOTAL = 970;
 <table width="<%=W_NO_SPACE_BORDER_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 
 <tr>
-	<td valign="top"><img src="/media_stat/images/layout/clear.gif" width="<%=W_NO_SPACE_BORDER_TOTAL%>" height="5" border="0"></td>
+	<td valign="top"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_NO_SPACE_BORDER_TOTAL%>" height="5" border="0"></td>
 </tr>
 
 <tr valign="top">

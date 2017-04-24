@@ -73,23 +73,23 @@ function linkTo(url){
 	<table width="500" cellpadding="0" cellspacing="0" border="0" class="text12">
 	<form name="request_product" method="post">
 	<tr>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="60" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="280" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="20" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="60" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="280" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="8"></td>
 	</tr>
 	<tr>
 	    <td colspan="3" class="text12">
 			<img src="/media_stat/images/template/newproduct/wine_req_hdr_request.gif"><br />
-			<img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br />
+			<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="14"><br />
 			Please describe the wines you'd like to see us carry in as much detail as possible including specific brands as well as regions and varietals if you know them.
 	    </td>
 	</tr>
 	<tr>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="60" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="280" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="20" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="60" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="280" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="8"></td>
 	</tr>
     <tr>
      	<td colspan="3" class="text12">
@@ -112,7 +112,7 @@ function linkTo(url){
             </logic:iterate>
         </fd:GetDomainValues>
         </SELECT>
-        <img src="/media_stat/images/layout/clear.gif" width="45" height="1">
+        <img src="/media_stat/images/layout/clear.gif" alt="" width="45" height="1">
         <fd:GetDomainValues domainID='z_request_varietal' id='domainValues'>
         <SELECT NAME='<%="subCategory"+i%>'>
             <OPTION VALUE="">Choose Grape/Varietal
@@ -124,10 +124,10 @@ function linkTo(url){
         </td>
     </tr>
         <tr>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="4"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="60" height="4"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="280" height="4"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="20" height="4"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="4"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="60" height="4"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="280" height="4"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="4"></td>
 	    </tr>
     <tr>
         <td colspan="2" class="text12">
@@ -138,19 +138,19 @@ function linkTo(url){
         </td>
     </tr>
     	<tr>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="60" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="280" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="20" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="60" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="280" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="8"></td>
 	    </tr>
         <% if(i<3){%>
-        <tr><td colspan="4"><img src="/media_stat/images/layout/999966.gif" width="510" height="1" vspace="1"></td></tr>
+        <tr><td colspan="4"><img src="/media_stat/images/layout/999966.gif" alt="" width="510" height="1" vspace="1"></td></tr>
         <%}%>
     	<tr>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="60" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="280" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="20" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="60" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="280" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="8"></td>
 	</tr>
     <% }%>
 	
@@ -179,7 +179,7 @@ function linkTo(url){
 	<tr>
 			    <td colspan="9" class="text12">
         <img src="/media_stat/images/template/newproduct/wine_req_hdr_feedback.gif"><br>
-        <img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br />
+        <img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="14"><br />
 		We're working hard to make our wine store as good as it can be. Let us know what you think - of the store, of the selection, of the wines you've tried.
 <br><br>
 
@@ -193,51 +193,51 @@ function linkTo(url){
 		</td>
 	</tr>
 	<tr>
-		<td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1"></td>
 	</tr>
     <tr>
-		<td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1"></td>
     </tr>
    <tr>
-		<td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="60" height="1"></td>
-        <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="60" height="1"></td>
+        <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1"></td>
         <td colspan="1" align="center"><b>Excellent</b></td>
-        <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
+        <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1"></td>
         <td colspan="1" align="center"><b>Good</b></td>
-        <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
+        <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="1"></td>
         <td colspan="1" align="center"><b>Poor</b></td>
     </tr>
     <tr>
-		<td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
     </tr>
 
 	<% int quesCount = 0;
@@ -280,27 +280,27 @@ function linkTo(url){
 
 <% } %>
 	<tr>
-		<td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="30" height="8"></td>
 	</tr>
 
 	<tr>
 		<td colspan="10" align="center">
 			<a href="javascript:document.request_product.reset()"><img src="/media_stat/images/template/newproduct/b_clear.gif" width="47" height="17" border="0" alt="Clear"></a>&nbsp;&nbsp;
-			<input type="image" name="send_email" src="/media_stat/images/template/newproduct/b_send.gif" width="45" height="15" vspace="1" border="0" alt="Send Request"onClick="javascript:document.request_product.submit()"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="12"><br>
+			<input type="image" name="send_email" src="/media_stat/images/template/newproduct/b_send.gif" width="45" height="15" vspace="1" border="0" alt="Send Request"onClick="javascript:document.request_product.submit()"><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="12"><br>
     </td>
     </tr>
 
 </table>
-<img src="/media_stat/images/layout/999966.gif" width="510" height="1" vspace="1">   
+<img src="/media_stat/images/layout/999966.gif" alt="" width="510" height="1" vspace="1">   
 </fd:RequestAWineTag>
 	</tmpl:put>
 </tmpl:insert>

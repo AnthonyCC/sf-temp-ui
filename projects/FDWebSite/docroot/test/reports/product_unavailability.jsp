@@ -268,7 +268,7 @@ if ((selectedDept != null || !"".equals(selectedDept )) && !"null".equals(select
 				<% total_in_department += di.getSkuCount(); %>
 				<td><%= NumberFormat.getPercentInstance().format(di.getPercentMatching()) %></td>
 			</tr>
-			<% if (overview) { %><tr><td colspan="5" class="separator"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr><%}%>
+			<% if (overview) { %><tr><td colspan="5" class="separator"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td></tr><%}%>
 		</logic:iterate>
 		<%-- if (!overview) { %><tr><td></td><td colspan="4"><hr class="black1px" noshade></td></tr><%}--%>
 		<%--tr style="font-weight: bold;" align="right">
@@ -303,7 +303,7 @@ if ((selectedDept != null || !"".equals(selectedDept )) && !"null".equals(select
 				<td width="22%">SAP #</td>
 				<td width="28%">Message</td>
 				<%-- 28 16 28 td width="28%" align="right">Last Time Available</td --%>
-				<% if (!printview) { %><td><img src="/media_stat/images/layout/clear.gif" width="16" height="1"></td><% } %>
+				<% if (!printview) { %><td><img src="/media_stat/images/layout/clear.gif" alt="" width="16" height="1"></td><% } %>
 			</tr>
 		</table>
 		<% if (!printview) { %><div id="detail_list" style="width: 100%; height: 90%; overflow-y: scroll;"><% } %>
@@ -315,7 +315,7 @@ if ((selectedDept != null || !"".equals(selectedDept )) && !"null".equals(select
 				<td width="28%"><%= sku.getEarliestAvailabilityMessage() %></td>
 				<%-- td width="28%" align="right">8/27/2003 11:16 PM</td --%>
 			</tr>
-			<tr><td colspan="3" class="separator"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+			<tr><td colspan="3" class="separator"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td></tr>
 			</logic:iterate>
 			</table>
 		<% if (!printview) { %></div><% } %>
@@ -323,6 +323,6 @@ if ((selectedDept != null || !"".equals(selectedDept )) && !"null".equals(select
 </div>
 <% } %>
 <%= !printview && !overview ? "<br clear=\"all\">" : ""%>
-<div style="width: 100%; height: 1px; border-top: solid 1px #000000;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></div>
+<div style="width: 100%; height: 1px; border-top: solid 1px #000000;"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></div>
 </body>
 </html>

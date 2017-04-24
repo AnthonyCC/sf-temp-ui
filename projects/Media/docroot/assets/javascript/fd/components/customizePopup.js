@@ -132,7 +132,6 @@ var FreshDirect = FreshDirect || {};
         var item = config.item,
             cartData = config.cartData,
             request = {};
-
         this.popup.show($(config.element));
         this.popup.clicked = true;
 		
@@ -185,11 +184,12 @@ var FreshDirect = FreshDirect || {};
       }
     }
 
-	$('#' + customizePopup.popupId).removeClass('soShow');
+	$('#' + customizePopup.popupId).removeClass('soShow').removeClass('so-review').removeClass('so-review-success');
     if ($(element).data('soshow')) {
     	$('#' + customizePopup.popupId).addClass('soShow');
     }
-
+    customizePopup.popup.$overlay.removeClass('customize-overlay').addClass('customize-overlay');
+    
     if($(element).data('soshow')){
     	if(!FreshDirect.user.recognized && !FreshDirect.user.guest){
     		var item = fd.modules.common.productSerialize(element).pop();

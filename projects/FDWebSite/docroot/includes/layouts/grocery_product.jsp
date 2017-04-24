@@ -724,11 +724,11 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 							if (shelfLife != null && shelfLife.trim().length() > 0) { %>		
 								<table border="0" cellspacing="0" cellpadding="0" style="clear: both;">
 									<tr>
-									    <td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="240" height="9"></td>
+									    <td colspan="3"><img src="/media_stat/images/layout/clear.gif" alt="" width="240" height="9"></td>
 									</tr>
 									<tr>
 									    <td height="5"><img src="/media_stat/images/layout/top_left_curve.gif" width="6" height="6"></td>
-									    <td height="5" style="border-top: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="228" height="1"></td>
+									    <td height="5" style="border-top: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" alt="" width="228" height="1"></td>
 									    <td height="5"><img src="/media_stat/images/layout/top_right_curve.gif" width="6" height="6"></td>
 									</tr>
 							
@@ -742,12 +742,12 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 							
 							
 													<tr valign="top">
-													    <td><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
+													    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1"></td>
 													    <td width="27"><img src="/media/images/site_pages/shelflife/days_<%=shelfLife%>.gif" width="27" height="27" border="0"></td>
-													    <td><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
+													    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1"></td>
 													    <td  valign="top"><img src="/media/images/site_pages/shelflife/guarant_fresh_hdr_lg.gif" width="129" height="10"><br />
 													    <span class="text12">at least </span><span class="title12"><%=shelfLife%> days</span><span class="text12"><br> from delivery</span></td>
-													    <td><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>								    
+													    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1"></td>								    
 													</tr>
 							
 							
@@ -758,7 +758,7 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 									</tr>
 									<tr>
 									    <td height="5"><img src="/media_stat/images/layout/bottom_left_curve.gif" width="6" height="6"></td>
-									    <td height="5" style="border-bottom: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+									    <td height="5" style="border-bottom: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
 									    <td height="5"><img src="/media_stat/images/layout/bottom_right_curve.gif" width="6" height="6"></td>
 									</tr>
 									
@@ -766,7 +766,7 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 								<table width="238">
 									<tr>
 										<td align="center">
-										<img src="/media_stat/images/layout/clear.gif" width="100%" height="6">
+										<img src="/media_stat/images/layout/clear.gif" alt="" width="100%" height="6">
 										<a href="javascript:pop('/shared/brandpop.jsp?brandId=bd_fd_fresh_guarantee',400,585)">Learn more about our Freshness Guarantee - CLICK&nbsp;HERE</a>
 										</td>
 									</tr>
@@ -864,13 +864,13 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 			if (doRenderEditorialPartial && editorialMedia != null && !editorialMedia.isBlank()) {
 				%>
 				<tr>
-				    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td>
+				    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8"></td>
 				</tr>
 				<tr>
 				    <td colspan="2"><fd:IncludeMedia name='<%=editorialMedia.getPath()%>'/></td>
 				</tr>
 				<tr>
-				    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td>
+				    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8"></td>
 				</tr>
 			<% }
 		%>
@@ -927,7 +927,7 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 		</tr>
 
 		<tr>
-		    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
+		    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td>
 		</tr>
 		<%
 			if (!bigProdShown && brandPopupLink!=null) {
@@ -936,13 +936,13 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 			    <td colspan="2"><a href="<%=brandPopupLink%>">Learn more about <%=brandName%></a></td>
 			</tr>
 			<tr>
-			    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
+			    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td>
 			</tr>
 			<tr valign="top">
-			    <td colspan="2" bgcolor="#FF9933"><IMG src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"></td>
+			    <td colspan="2" bgcolor="#FF9933"><IMG src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1" border="0"></td>
 			</tr>
 			<tr>
-			    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
+			    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td>
 			</tr>
 		<%
 			}
@@ -1156,9 +1156,9 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 				}
 			%></td>
 		</tr>
-		<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
-		<tr><td colspan="2" bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
-		<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
+		<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td></tr>
+		<tr><td colspan="2" bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td></tr>
+		<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td></tr>
 	</table>
 	
 	<table border="0" cellspacing="0" cellpadding="0" width="<%=contentWidth%>">

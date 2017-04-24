@@ -40,7 +40,7 @@ final int W_YA_GC_ORDER_DETAILS = 970;
 			<img src="/media_stat/images/giftcards/your_account/resend_hdr.gif" width="169" height="16" alt="Resend Gift Card" />
 			<a href="#" onclick="Modalbox.hide(); return false;"><img src="/media_stat/images/giftcards/your_account/close.gif" width="50" height="11" alt="close" border="0" style="float: right;" /></a>
 			<br />If your Recipient never received their Gift Card, you may resend it by clicking Resend Now. If there was an error in the Recipient's email address, or to use a new one, edit the email field.
-			<br /><br /><img src="/media_stat/images/layout/cccccc.gif" width="390" height="1" border="0" /><br /><br />
+			<br /><br /><img src="/media_stat/images/layout/cccccc.gif" alt="" width="390" height="1" border="0" /><br /><br />
 			<input type="hidden" id="gcSaleId" value="" />
 			<input type="hidden" id="gcCertNum" value="" />
 			<input type="hidden" id="gcType" value="" />
@@ -66,7 +66,7 @@ final int W_YA_GC_ORDER_DETAILS = 970;
 					<td><a href="#" onclick="recipResendEmail(); return false;"><img src="/media_stat/images/giftcards/your_account/resend_now_btn.gif" width="85" height="25" alt="RESEND" border="0" /></a></td>
 				</tr>
 			</table>
-			<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
+			<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
 			PLEASE NOTE: You will NOT receive a confirmation email for resent email Gift Cards.<br /><br />
 			<div id="gcResendErr">&nbsp;</div>
 		</div>
@@ -127,12 +127,12 @@ final int W_YA_GC_ORDER_DETAILS = 970;
     <% } %>
 </tr>
 </table>
-<IMG src="/media_stat/images/layout/clear.gif" width="1" HEIGHT="8" border="0"><br>
-<IMG src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_GC_ORDER_DETAILS %>" HEIGHT="1" border="0"><br>
-<IMG src="/media_stat/images/layout/clear.gif" width="1" HEIGHT="15" border="0"><br>
+<IMG src="/media_stat/images/layout/clear.gif" alt="" width="1" HEIGHT="8" border="0"><br>
+<IMG src="/media_stat/images/layout/ff9933.gif" alt="" width="<%= W_YA_GC_ORDER_DETAILS %>" HEIGHT="1" border="0"><br>
+<IMG src="/media_stat/images/layout/clear.gif" alt="" width="1" HEIGHT="15" border="0"><br>
 <%@ include file="/includes/your_account/i_gc_order_detail_payment.jspf" %><br>
-<IMG src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_GC_ORDER_DETAILS %>" HEIGHT="1" border="0"><br>
-<IMG src="/media_stat/images/layout/clear.gif" width="1" HEIGHT="4" border="0"><br><FONT CLASS="space4pix"><br></FONT>
+<IMG src="/media_stat/images/layout/ff9933.gif" alt="" width="<%= W_YA_GC_ORDER_DETAILS %>" HEIGHT="1" border="0"><br>
+<IMG src="/media_stat/images/layout/clear.gif" alt="" width="1" HEIGHT="4" border="0"><br><FONT CLASS="space4pix"><br></FONT>
 
 <%  } %>
 <br>
@@ -152,7 +152,7 @@ FDRecipientList recipients = cart.getGiftCardRecipients();
 
 <table class="gcYourActTableList">
     <tr>
-        <td colspan="7"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+        <td colspan="7"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
     </tr>
     <tr class="th">
         <td width="85">Certificate #</td>

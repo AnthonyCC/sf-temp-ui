@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.util.ProductInfoUtil;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.FDGroup;
@@ -467,7 +468,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 			FDProductInfo productInfo;
 			try {
 				productInfo = sku.getProductInfo();
-				List<String> countries = productInfo.getCountryOfOrigin(getPlantID());
+				List<String> countries = productInfo.getCountryOfOrigin(ProductInfoUtil.getPickingPlantId(productInfo));
 				String text = getCOOLText( countries );
 				if ( !"".equals( text ) )
 					coolInfo.add( text );
@@ -493,7 +494,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 					String domainValue = sku.getVariationMatrix().get( 0 ).getValue();
 					try {
 						productInfo = sku.getProductInfo();
-						countries = productInfo.getCountryOfOrigin(getPlantID());
+						countries = productInfo.getCountryOfOrigin(ProductInfoUtil.getPickingPlantId(productInfo));
 						text = getCOOLText( countries );
 					} catch ( FDSkuNotFoundException ignore ) {
 						text = "";

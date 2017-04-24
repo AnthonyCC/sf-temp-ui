@@ -3,11 +3,10 @@
 <%@page import="java.io.ByteArrayOutputStream"%>
 <%@page import="com.freshdirect.fdstore.customer.UnsettledOrdersInfo"%>
 <%@page import="java.util.*"%>
-<%@page import="java.text.SimpleDateFormat" %>
 <%@ taglib uri='freshdirect' prefix='fd'%>
 
 
-<html lang="en-US" xml:lang="en-US">
+<html>
 <head>
 <style>
 <
@@ -224,7 +223,6 @@ form label {
 		result='result' successPage='<%request.getRequestURI()%>'>
 		<%
 			List<UnsettledOrdersInfo> orders =  (List<UnsettledOrdersInfo>)request.getAttribute("unsettledOrders");
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		%>
 		<div align="center">
 			<table align="center" border="1">
@@ -246,17 +244,17 @@ form label {
 						for(int i=0;i<orders.size();i++){
 				%>
 				<tr>
-					<td><%=dateFormat.format(orders.get(i).getDeliveryDate()) != null ? dateFormat.format(orders.get(i).getDeliveryDate()) : ""%></td>
-					<td><%=orders.get(i).getSettled() !=null ? orders.get(i).getSettled() : ""%></td>
-					<td><%=orders.get(i).getChargeBack() !=null ? orders.get(i).getChargeBack() : ""%></td>
-					<td><%=orders.get(i).getSettlementFailed() != null ? orders.get(i).getSettlementFailed() : ""%></td>
-					<td><%=orders.get(i).getEnroute() !=null ? orders.get(i).getEnroute() : ""%></td>
-					<td><%=orders.get(i).getPaymentPending() !=null ? orders.get(i).getPaymentPending() : ""%></td>
-					<td><%=orders.get(i).getCapturePending() !=null ? orders.get(i).getCapturePending() : ""%></td>
-					<td><%=orders.get(i).getGCSettlementPending() !=null ? orders.get(i).getGCSettlementPending() : ""%></td>
-					<td><%=orders.get(i).getPendingRefusal() !=null ? orders.get(i).getPendingRefusal() : ""%></td>
-					<td><%=orders.get(i).getGCPaymentPending() !=null ? orders.get(i).getGCPaymentPending() : ""%></td>
-					<td><%=orders.get(i).getGCRegistrationPending() !=null ? orders.get(i).getGCRegistrationPending() : ""%></td>
+					<td><%=orders.get(i).getDeliveryDate()%></td>
+					<td><%=orders.get(i).getSettled()%></td>
+					<td><%=orders.get(i).getChargeBack()%></td>
+					<td><%=orders.get(i).getSettlementFailed()%></td>
+					<td><%=orders.get(i).getEnroute()%></td>
+					<td><%=orders.get(i).getPaymentPending()%></td>
+					<td><%=orders.get(i).getCapturePending()%></td>
+					<td><%=orders.get(i).getGCSettlementPending()%></td>
+					<td><%=orders.get(i).getPendingRefusal()%></td>
+					<td><%=orders.get(i).getGCPaymentPending()%></td>
+					<td><%=orders.get(i).getGCRegistrationPending()%></td>
 
 				</tr>
 				<%

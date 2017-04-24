@@ -12,7 +12,7 @@
             <TD WIDTH="400" COLSPAN="3">
 				<img src="/media_stat/images/template/site_access/thank_you_pswd.gif" width="72" height="9" alt="" border="0">
 				<BR>
-           		<IMG src="/media_stat/images/layout/999966.gif" VSPACE="3" HSPACE="0" WIDTH="400" HEIGHT="1" BORDER="0"><BR>
+           		<IMG src="/media_stat/images/layout/999966.gif" ALT="" VSPACE="3" HSPACE="0" WIDTH="400" HEIGHT="1" BORDER="0"><BR>
 			</TD>
 		</TR>
         <TR VALIGN="TOP">

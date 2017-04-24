@@ -29,7 +29,7 @@ final int W_YA_GIFTCARDS = 970;
 			<img src="/media_stat/images/giftcards/your_account/resend_hdr.gif" width="169" height="16" alt="Resend Gift Card" />
 			<a href="#" onclick="Modalbox.hide(); return false;"><img src="/media_stat/images/giftcards/your_account/close.gif" width="50" height="11" alt="close" border="0" style="float: right;" /></a>
 			<br />If your Recipient never received their Gift Card, you may resend it by clicking Resend Now. If there was an error in the Recipient's email address, or to use a new one, edit the email field.
-			<br /><br /><img src="/media_stat/images/layout/cccccc.gif" width="390" height="1" border="0"><br /><br />
+			<br /><br /><img src="/media_stat/images/layout/cccccc.gif" alt="" width="390" height="1" border="0"><br /><br />
 			<input type="hidden" id="gcSaleId" value="" />
 			<input type="hidden" id="gcCertNum" value="" />
 			<input type="hidden" id="gcType" value="" />
@@ -55,7 +55,7 @@ final int W_YA_GIFTCARDS = 970;
 					<td><a href="#" onclick="recipResendEmail(); return false;"><img src="/media_stat/images/giftcards/your_account/resend_now_btn.gif" width="85" height="25" alt="RESEND" border="0" /></a></td>
 				</tr>
 			</table>
-			<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
+			<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
 			PLEASE NOTE: You will NOT receive a confirmation email for resent email Gift Cards.<br /><br />
 			<div id="gcResendErr">&nbsp;</div>
 		</div>
@@ -75,7 +75,7 @@ final int W_YA_GIFTCARDS = 970;
 				</td>
 			</tr>
 		</table>
-		<br /><img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_GIFTCARDS %>" height="1" border="0"><br /><br />
+		<br /><img src="/media_stat/images/layout/cccccc.gif" alt="" width="<%= W_YA_GIFTCARDS %>" height="1" border="0"><br /><br />
 		<%
 			String sPage = "/your_account/giftcards.jsp";
 			if (request.getParameter("trk") != null) {
@@ -126,7 +126,7 @@ final int W_YA_GIFTCARDS = 970;
 			</tr>
 		</table>
         </form>
-		<br /><img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_GIFTCARDS %>" height="1" border="0"><br /><br />
+		<br /><img src="/media_stat/images/layout/cccccc.gif" alt="" width="<%= W_YA_GIFTCARDS %>" height="1" border="0"><br /><br />
 		</fd:GiftCardController>
 		<fd:GetGiftCardReceived id='giftcards'>
 
@@ -143,7 +143,7 @@ final int W_YA_GIFTCARDS = 970;
 					<!--  -->
 					<table class="gcYourActTableList">
 						<tr>
-							<td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+							<td colspan="6"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 						</tr>
 						<tr class="th">
 							<td width="85">Certificate #</td>
@@ -175,7 +175,7 @@ final int W_YA_GIFTCARDS = 970;
 						</tr>
                         </logic:iterate>
 						<tr>
-							<td colspan="7"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+							<td colspan="7"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 						</tr>
                         <% if(!showAllReceived && user.getGiftCardList().size() > GetGiftCardReceivedTag.GC_RECEIVED_DISPLAY_LIMIT) { %>
 						<tr>
@@ -202,7 +202,7 @@ final int W_YA_GIFTCARDS = 970;
 					<!--  -->
 					<table class="gcYourActTableList">
 						<tr>
-							<td colspan="7"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+							<td colspan="7"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 						</tr>
 						<tr class="th">
 							<td width="85">Certificate #</td>
@@ -251,7 +251,7 @@ final int W_YA_GIFTCARDS = 970;
 						</tr>
                          </logic:iterate>
 						<tr>
-							<td colspan="7"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+							<td colspan="7"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 						</tr>
                         <% if(!showAllPurchased) { %>
 						<tr>
@@ -266,15 +266,15 @@ final int W_YA_GIFTCARDS = 970;
 		<br /><br /><div style="font-size: 16px; font-weight: bold;"><a href="<%= FDStoreProperties.getGiftCardLandingUrl() %>">Click here to purchase Gift Cards today.</a></div><br /><br />
 
 
-		<br /><img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_GIFTCARDS %>" height="1" border="0"><br /><br />
+		<br /><img src="/media_stat/images/layout/cccccc.gif" alt="" width="<%= W_YA_GIFTCARDS %>" height="1" border="0"><br /><br />
 
 		
-		<img src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_GIFTCARDS %>" height="1" border="0"><br /><br />
+		<img src="/media_stat/images/layout/ff9933.gif" alt="" width="<%= W_YA_GIFTCARDS %>" height="1" border="0"><br /><br />
 		<table border="0" cellspacing="0" cellpadding="0" width="<%= W_YA_GIFTCARDS %>">
 			<tr valign="top">
 				<td width="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="continue shopping" align="left"></a></td>
 				<td width="<%= W_YA_GIFTCARDS - 35 %>"  class="text11" ><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="continue shopping"></a><br />from <a href="/index.jsp"><b>Home Page</b></a><br />
-				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0" /></td>
+				<img src="/media_stat/images/layout/clear.gif" alt="" width="340" height="1" border="0" /></td>
 			</tr>
 		</table>
 </fd:RedemptionCodeController>        

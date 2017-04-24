@@ -30,7 +30,7 @@
 <tr><td colspan="3" align="center" class="text11" style="color: #999999;"><br><%@ include file="/shared/template/includes/copyright.jspf" %><span class="space8pix"><br><br></span>
 All content is the property of FreshDirect or its content suppliers and<br>may not be reproduced in any form without prior written permission.<br><br>
 </td></tr>
-<%--tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="12"></td></tr>
+<%--tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="12"></td></tr>
 <tr>
 	<td width="33%"><a href="#top">Back to top</a></td>
 	<td align="center" width="34%"><a href="javascript:window.print();">Print page</a></td>

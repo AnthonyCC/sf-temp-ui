@@ -206,7 +206,7 @@ response.setHeader("Cache-Control", "no-cache");
 		    	 <td><a href="?serviceType=CORPORATE">Corporate Profile</a></td>
 		    	</tr>
 		    </table>
-		    <img width="120" height="10" src="/media_stat/images/layout/clear.gif"/>
+		    <img width="120" height="10" alt="" src="/media_stat/images/layout/clear.gif"/>
 		    <% } %>
 			<table cellpadding="0" cellspacing="0" border="0" width="100%">
 

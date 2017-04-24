@@ -41,9 +41,9 @@ ErpCustomerInfoModel custInfo = FDCustomerFactory.getErpCustomerInfo(identity);%
 			</tr>
 			<tr>
 				<td colspan="2">
-					<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br>
-          <img src="/media_stat/images/layout/ff9933.gif" width="<%= W_YA_REMINDER_SERVICE %>" height="1" border="0"><br>
-					<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0">
+					<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br>
+          <img src="/media_stat/images/layout/ff9933.gif" alt="" width="<%= W_YA_REMINDER_SERVICE %>" height="1" border="0"><br>
+					<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0">
 				</td>
 			</tr>
 			<tr>

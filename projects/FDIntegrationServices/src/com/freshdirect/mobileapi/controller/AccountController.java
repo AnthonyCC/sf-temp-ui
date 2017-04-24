@@ -60,48 +60,58 @@ public class AccountController extends BaseController implements Comparator <Ord
     @Override
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
             SessionUser user) throws FDException, ServiceException, JsonException {
-
-        if (ACTION_GET_ADDRESSES.equals(action)) {
-            model = getDeliveryAddresses(model, user);
-        } else if (ACTION_GET_TIMESLOTS.equals(action)) {
-            String addressId = request.getParameter(PARAM_ADDRESS_ID);
-            if (addressId == null || addressId.isEmpty()) {
-                model = getReservationTimeslot(model, request, user);
-            } else {
-                model = getReservationTimeslot(model, request, user, addressId);
-            }
-        } else if (ACTION_GET_TIMESLOTS_BY_TIMEZONE.equals(action)) {
-            String addressId = request.getParameter(PARAM_ADDRESS_ID);
-            Timezone requestMessage = parseRequestObject(request, response, Timezone.class);
-            String timezone = requestMessage.getTimezone();
-            if (addressId == null || addressId.isEmpty()) {
-            	model = getDeliveryTimeslotByTimezone(model, user, timezone);
-            } else {
-            	model = getDeliveryTimeslotByTimezone(model, user, addressId, timezone);
-            }
-        } else if (ACTION_CANCEL_RESERVATION.equals(action)) {
-            String addressId = request.getParameter(PARAM_ADDRESS_ID);
-            ReserveTimeslot requestMessage = parseRequestObject(request, response, ReserveTimeslot.class);
-            model = cancelReservation(model, user, addressId, defaultReservationType(requestMessage), request);
-        } else if (ACTION_RESERVE_TIMESLOT.equals(action)) {
-            String addressId = request.getParameter(PARAM_ADDRESS_ID);
-            ReserveTimeslot requestMessage = parseRequestObject(request, response, ReserveTimeslot.class);
-            model = makeReservation(model, user, addressId, defaultReservationType(requestMessage), request);
-        } else if (ACTION_GET_ORDER_HISTORY.equals(action)) {
-            model = getOrderHistory(model, user, request, response);
-        } else if (ACTION_ACCEPT_DP_TERMSANDCONDITIONS.equals(action)) {
-           // APPDEV-2567 Logging DP Terms acceptance - mobile API
-            FDCustomerManager.storeDPTCAgreeDate(AccountActivityUtil.getActionInfo(request.getSession())
-            										, user.getFDSessionUser().getIdentity().getErpCustomerPK(), new Date());
-            setResponseMessage(model, Message.createSuccessMessage(MSG_ACCEPT_DP_TERMSANDCONDITIONS), user);
-        }else if(ACTION_ADD_PROFILE.equals(action)){
-        	AddProfileRequest requestMessage = parseRequestObject(request, response, AddProfileRequest.class);
-			String notePrefix = "Add Profile Attribute: " + requestMessage.getName() + " = " + requestMessage.getValue() + ", Note: ";
-			FDActionInfo info =	AccountActivityUtil.getActionInfo(request.getSession(), notePrefix + requestMessage.getNotes());
-			FDCustomerManager.setProfileAttribute(user.getFDSessionUser().getIdentity(),requestMessage.getName(), requestMessage.getValue(), info);
-			setResponseMessage(model, Message.createSuccessMessage(MSG_ACCEPT_DP_TERMSANDCONDITIONS), user);
-        }
+    	if(UserExists(user)){
+	        if (ACTION_GET_ADDRESSES.equals(action)) {
+	            model = getDeliveryAddresses(model, user);
+	        } else if (ACTION_GET_TIMESLOTS.equals(action)) {
+	            String addressId = request.getParameter(PARAM_ADDRESS_ID);
+	            if (addressId == null || addressId.isEmpty()) {
+	                model = getReservationTimeslot(model, request, user);
+	            } else {
+	                model = getReservationTimeslot(model, request, user, addressId);
+	            }
+	        } else if (ACTION_GET_TIMESLOTS_BY_TIMEZONE.equals(action)) {
+	            String addressId = request.getParameter(PARAM_ADDRESS_ID);
+	            Timezone requestMessage = parseRequestObject(request, response, Timezone.class);
+	            String timezone = requestMessage.getTimezone();
+	            if (addressId == null || addressId.isEmpty()) {
+	            	model = getDeliveryTimeslotByTimezone(model, user, timezone);
+	            } else {
+	            	model = getDeliveryTimeslotByTimezone(model, user, addressId, timezone);
+	            }
+	        } else if (ACTION_CANCEL_RESERVATION.equals(action)) {
+	            String addressId = request.getParameter(PARAM_ADDRESS_ID);
+	            ReserveTimeslot requestMessage = parseRequestObject(request, response, ReserveTimeslot.class);
+	            model = cancelReservation(model, user, addressId, defaultReservationType(requestMessage), request);
+	        } else if (ACTION_RESERVE_TIMESLOT.equals(action)) {
+	            String addressId = request.getParameter(PARAM_ADDRESS_ID);
+	            ReserveTimeslot requestMessage = parseRequestObject(request, response, ReserveTimeslot.class);
+	            model = makeReservation(model, user, addressId, defaultReservationType(requestMessage), request);
+	        } else if (ACTION_GET_ORDER_HISTORY.equals(action)) {
+	            model = getOrderHistory(model, user, request, response);
+	        } else if (ACTION_ACCEPT_DP_TERMSANDCONDITIONS.equals(action)) {
+	           // APPDEV-2567 Logging DP Terms acceptance - mobile API
+	            FDCustomerManager.storeDPTCAgreeDate(AccountActivityUtil.getActionInfo(request.getSession())
+	            										, user.getFDSessionUser().getIdentity().getErpCustomerPK(), new Date());
+	            setResponseMessage(model, Message.createSuccessMessage(MSG_ACCEPT_DP_TERMSANDCONDITIONS), user);
+	        }else if(ACTION_ADD_PROFILE.equals(action)){
+	        	AddProfileRequest requestMessage = parseRequestObject(request, response, AddProfileRequest.class);
+				String notePrefix = "Add Profile Attribute: " + requestMessage.getName() + " = " + requestMessage.getValue() + ", Note: ";
+				FDActionInfo info =	AccountActivityUtil.getActionInfo(request.getSession(), notePrefix + requestMessage.getNotes());
+				FDCustomerManager.setProfileAttribute(user.getFDSessionUser().getIdentity(),requestMessage.getName(), requestMessage.getValue(), info);
+				setResponseMessage(model, Message.createSuccessMessage(MSG_ACCEPT_DP_TERMSANDCONDITIONS), user);
+	        }
+        }else{
+    		Message responseMessage = new Message();
+            responseMessage.setStatus(Message.STATUS_FAILED);
+            responseMessage = Message.createFailureMessage("USER_NULL");
+            setResponseMessage(model, responseMessage, user);
+    	}
         return model;
+    }
+    
+    public boolean UserExists(SessionUser user){
+    	return user!=null ? true:false;
     }
 
     private ModelAndView getOrderHistory(ModelAndView model, SessionUser user, HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {

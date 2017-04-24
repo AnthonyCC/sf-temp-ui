@@ -65,9 +65,9 @@ final int W_PROMOTION_RIGHT = 100;
     <tmpl:put name='content' direct='true'>
     <table width="100%" cellpadding="0" cellspacing="0">
     <tr>
-      <td width="<%= W_PROMOTION_LEFT %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_PROMOTION_LEFT %>" height="1"></td>
-      <td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-      <td width="<%= W_PROMOTION_RIGHT %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_PROMOTION_RIGHT %>" height="1"></td>
+      <td width="<%= W_PROMOTION_LEFT %>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%= W_PROMOTION_LEFT %>" height="1"></td>
+      <td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
+      <td width="<%= W_PROMOTION_RIGHT %>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%= W_PROMOTION_RIGHT %>" height="1"></td>
     </tr>
     <tr>
     <td>&nbsp;</td>

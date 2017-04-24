@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -33,6 +32,7 @@ import com.freshdirect.fdstore.services.tax.data.DetailLevel;
 import com.freshdirect.fdstore.services.tax.data.DocType;
 import com.freshdirect.fdstore.services.tax.data.GetTaxRequest;
 import com.freshdirect.fdstore.services.tax.data.Line;
+import com.freshdirect.framework.util.BeanUtil;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
 public class AvalaraTaxRequestConverter {
@@ -121,7 +121,7 @@ public class AvalaraTaxRequestConverter {
 	private void createChargeTaxEntry(FDCartI cart,
 			List<Line> taxLines) {
 		Collection<ErpChargeLineModel> charges = cart.getCharges();
-		if (CollectionUtils.isNotEmpty(charges)) {
+		if (BeanUtil.isNotEmpty(charges)) {
 			for (ErpChargeLineModel charge : charges) {
 				if (charge.getAmount() > 0.0d && null == charge.getDiscount()) {
 					Line taxLine = new Line();
@@ -179,7 +179,7 @@ public class AvalaraTaxRequestConverter {
 
 	private void createCartLinesTaxEntry(FDCartI cart, List<Line> taxLines) {
 
-		if (CollectionUtils.isNotEmpty(cart.getOrderLines())) {
+		if (BeanUtil.isNotEmpty(cart.getOrderLines())) {
 			for (FDCartLineI line : cart.getOrderLines()) {
 
 				ErpInvoiceLineI invoice = line.getInvoiceLine();

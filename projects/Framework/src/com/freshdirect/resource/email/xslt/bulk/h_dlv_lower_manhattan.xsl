@@ -76,7 +76,7 @@ http://www.freshdirect.com/help/faq_home.jsp
 <table cellpadding="0" cellspacing="0">
 <tr>
 <!-- =============== START LEFT SPACER =============== -->
-<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1" border="0" /></td>
+<td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0" /></td>
 <!-- =============== END LEFT SPACER ================= -->
 
 <!-- ~~~~~~~~~~~~~~~ START CONTENT ~~~~~~~~~~~~~~~ -->
@@ -89,23 +89,23 @@ http://www.freshdirect.com/help/faq_home.jsp
 	<table cellpadding="0" cellspacing="0" width="90%">
         <tr><td colspan="3" class="header"><font size="4"><b>FreshDirect continues to expand delivery to Lower Manhattan!</b></font></td></tr>
         <tr valign="top">
-            <td width="401"><img src="/media_stat/images/layout/clear.gif" width="1" height="14" /><br/><img src="/media_stat/images/template/email/lower_manhattan.gif" width="401" height="361" alt="Map"/><br/><img src="/media_stat/images/layout/clear.gif" width="1" height="18" /></td>
-            <td width="18"><img src="/media_stat/images/layout/clear.gif" width="18" height="1" /></td>
-            <td width="100%"><img src="/media_stat/images/layout/clear.gif" width="1" height="18" />
+            <td width="401"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="14" /><br/><img src="/media_stat/images/template/email/lower_manhattan.gif" width="401" height="361" alt="Map"/><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="18" /></td>
+            <td width="18"><img src="/media_stat/images/layout/clear.gif" alt="" width="18" height="1" /></td>
+            <td width="100%"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="18" />
                 <br/><img src="/media_stat/images/template/homepages/truck.gif" width="61" height="43"/>
-                <br/><img src="/media_stat/images/layout/clear.gif" width="1" height="8" /><br/>
+                <br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" /><br/>
                 <b>Lower Manhattan Delivery Details</b>
-                <br/><img src="/media_stat/images/layout/clear.gif" width="1" height="12" /><br/>
+                <br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="12" /><br/>
                 <font color="#CC0000" class="red12px"><b>Deliveries Begin<br/>Friday June 20th, 2003</b></font>
-                <br/><img src="/media_stat/images/layout/clear.gif" width="1" height="4" /><br/>
-                See map for new delivery area<br/><img src="/media_stat/images/layout/clear.gif" width="1" height="8" /><br/>
+                <br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4" /><br/>
+                See map for new delivery area<br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" /><br/>
                 Orders may be placed on the web today!
-                <br/><img src="/media_stat/images/layout/clear.gif" width="1" height="10" />
+                <br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10" />
                 <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0" alt="" /></td></tr></table>
-                <img src="/media_stat/images/layout/clear.gif" width="1" height="10" /><br/>
-                <b>A note about our delivery areas:</b><br/><img src="/media_stat/images/layout/clear.gif" width="1" height="4" /><br/>
+                <img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10" /><br/>
+                <b>A note about our delivery areas:</b><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4" /><br/>
                 <font color="#CC0000" class="red12px">We look forward to delivering to all of Downtown in the very near future. We thank you for your patience and will send you an email as we continue to expand our delivery area.</font>
-                <br/><img src="/media_stat/images/layout/clear.gif" width="1" height="18" /><br/>
+                <br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="18" /><br/>
             </td>
         </tr>
 		<tr>
@@ -129,7 +129,7 @@ http://www.freshdirect.com/help/faq_home.jsp
 <!-- ~~~~~~~~~~~~~~~ END CONTENT ~~~~~~~~~~~~~~~ -->
 
 <!-- =============== BEGIN RIGHT SPACER =============== -->
-<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1" border="0" /></td>
+<td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="1" border="0" /></td>
 <!-- =============== END RIGHT SPACER ================= -->
 </tr>
 </table>

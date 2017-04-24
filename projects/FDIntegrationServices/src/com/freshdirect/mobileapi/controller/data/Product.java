@@ -494,8 +494,10 @@ public class Product extends Message {
         this.setSashType(product.getSashType());
         
         this.setFilters(product.getFilters());
+        this.setNutrition(product.getNutrition());
+        //Commenting Nutrition Facts as part of APPDEV-5816 as it always returns empty
+      //this.setNutritionFacts(product.getNutritionFacts());
         
-        this.setNutritionFacts(product.getNutritionFacts());
         //RSUNG: this.deliveryNote = product.getDayOfWeekNotice();
         //RSUNG: this.dayOfTheWeekNotice = product.getDeliveryNote();
         //RSUNG: this.setCancellationNote(product.getCancellationNote());
@@ -514,9 +516,11 @@ public class Product extends Message {
         //improvement as asked for in FDX-903
         //gro_bounty_select - No Nutrition information for this product id.
         //hmr_bufchxfgr_10oz - Nutrition information available for this product id.
-        if(product.getDefaultProduct()!=null && product.getDefaultProduct().hasNutritionFacts())
-        this.setNutrition(product.getNutrition());
         
+      //APPDEV-5816 - Commenting this condition below as hasNutritionFacts always returns empty 
+  /*      if(product.getDefaultProduct()!=null && product.getDefaultProduct().hasNutritionFacts())
+        this.setNutrition(product.getNutrition());
+        */
         this.setHeatingInstructions(product.getHeatingInstructions());
         
     }

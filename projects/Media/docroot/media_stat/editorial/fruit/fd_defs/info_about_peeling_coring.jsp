@@ -14,7 +14,7 @@
 <TD VALIGN="BOTTOM" WIDTH="10">
 <IMG SRC="/media/images/layout/clear.gif" WIDTH="10" HEIGHT="1" HSPACE="0" VSPACE="0"></TD>
 <TD WIDTH="90" ROWSPAN="2">
-<IMG SRC="/media/images/layout/CCCCCC.gif" WIDTH="80" HEIGHT="60" HSPACE="0" VSPACE="0" border=1>
+<IMG SRC="/media/images/layout/CCCCCC.gif" ALT="" WIDTH="80" HEIGHT="60" HSPACE="0" VSPACE="0" border=1>
 <BR>
 <IMG SRC="/media/images/layout/clear.gif" WIDTH="90" HEIGHT="1" HSPACE="0" VSPACE="0"><BR></TD>
 <TD VALIGN="TOP" WIDTH="220">

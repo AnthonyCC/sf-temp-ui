@@ -24,6 +24,7 @@ import com.freshdirect.dataloader.sap.jco.server.FdSapServer;
 import com.freshdirect.dataloader.util.FDSapHelperUtils;
 import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.payment.service.FDECommerceService;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
 import com.sap.conn.jco.JCoFunction;
@@ -153,11 +154,8 @@ public class FDPricingZoneJcoServer extends FdSapServer
 
 					if(zoneInfos.size() > 0) 
 					{
-						if(FDStoreProperties.isStorefront2_0Enabled()){
-							LogisticsServiceLocator.getInstance().getCommerceService().savePricingZoneData(zoneInfos);
-						}else{
 							storeZoneInfo(zoneInfos);
-						}
+
 					}
 									
 					exportParamList.setValue("RETURN", "S");
@@ -254,14 +252,17 @@ public class FDPricingZoneJcoServer extends FdSapServer
 		Context ctx = null;
 		try 
 		{
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				LogisticsServiceLocator.getInstance().getCommerceService().loadData(zoneInfos);
+			}else{			
 			ctx = ErpServicesProperties.getInitialContext();
 			SAPZoneInfoLoaderHome mgr = (SAPZoneInfoLoaderHome) ctx.lookup("freshdirect.dataloader.SAPZoneInfoLoader");
 			SAPZoneInfoLoaderSB sb = mgr.create();
-	      
-			sb.loadData(zoneInfos);			 
+			sb.loadData(zoneInfos);	
+			}
 			
 		} catch(Exception ex) {
-			throw new EJBException("Storing pricing zone info failed. Exception: " + ex.toString());
+			throw new EJBException("Storing pricing zone info failed. Exception:" + ex.toString());
 		} finally {
 			if (ctx != null) {
 				try {

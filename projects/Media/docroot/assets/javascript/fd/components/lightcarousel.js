@@ -29,14 +29,14 @@ var FreshDirect = FreshDirect || {};
     var $mask = $('[data-component="carousel-mask"]', carousel ),
         $list = $('[data-component="carousel-list"]', carousel ),
         elements = $list.children(),
-        itemsize = elements[0].getBoundingClientRect().width,
+        itemsize = Math.floor(elements[0].getBoundingClientRect().width), //decimals throw off calc
         currentPage = carousel.data('carousel-page') || 0,
         itemPerPage = Math.floor($mask.width() / itemsize) || 1,
         nrPages = Math.ceil($list.children().size() / itemPerPage),
         newPage, result, targetElem;
 
     carousel.removeClass('first').removeClass('last');
-
+    
     elements.each(function(index, element) {
       $(element).attr('carousel-page-number', Math.floor(index / itemPerPage) + 1);
     });

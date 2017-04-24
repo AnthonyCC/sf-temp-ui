@@ -152,7 +152,7 @@
 						 <%} %>
 			 		</logic:iterate>
 			 	</tr>
-			 	<tr><td><img src="/media_stat/images/layout/clear.gif" width="25" height="25"></td></tr>
+			 	<tr><td><img src="/media_stat/images/layout/clear.gif" alt="" width="25" height="25"></td></tr>
 			 	</table>
 			 	<table cellpadding="0" cellspacing="0" border="0"><tr>
 			 <% prodList = new ArrayList(); //create a new list for the next row of products
@@ -216,7 +216,7 @@
 					 <% } %>
 				</logic:iterate>
 				</tr>
-			 	<tr><td><img src="/media_stat/images/layout/clear.gif" width="25" height="25"></td></tr>
+			 	<tr><td><img src="/media_stat/images/layout/clear.gif" alt="" width="25" height="25"></td></tr>
 			 	</table>
 			 	<table cellpadding="0" cellspacing="0" border="0"><tr>
 			 <% prodList = new ArrayList(); //create a new list for the next row of products

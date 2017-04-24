@@ -375,7 +375,7 @@ final int W_PRODUCT_MULTIPLE_SKUS_SEC_DOMAIN = 15;
 					<% if ( hasSecondaryDomain ) { %>			
 						</td></tr>					
 					<% } else { %>
-						<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0">
+						<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0">
 						</td></tr>
 					<% } %>
 

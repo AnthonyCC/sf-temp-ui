@@ -17,6 +17,8 @@ import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
 import com.freshdirect.fdstore.brandads.service.BrandProductAdServiceException;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.service.FDECommerceService;
+import com.freshdirect.payment.service.FDEcomServiceException;
 
 public class FDBrandProductsAdManager {
 
@@ -28,12 +30,17 @@ public class FDBrandProductsAdManager {
 		lookupManagerHome();
 		
 		try {
+			HLBrandProductAdResponse data = null;
 			FDBrandProductsAdManagerSB sb = managerHome.create();
 		/*	hLRequestData.setUserId("1234");
 			hLRequestData.setSearchKeyWord("storag");*/
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+			data =FDECommerceService.getInstance().getSearchbykeyword(hLRequestData);
 			
-			
-			return sb.getSearchbykeyword(hLRequestData);
+			}else {			
+			data= sb.getSearchbykeyword(hLRequestData);
+			}
+			return data;
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -48,9 +55,14 @@ public class FDBrandProductsAdManager {
 		lookupManagerHome();
 		
 		try {
+			HLBrandProductAdResponse result = null;
 			FDBrandProductsAdManagerSB sb = managerHome.create();
-			return sb.getCategoryProducts(hLRequestData);
-			
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				result = FDECommerceService.getInstance().getCategoryProducts(hLRequestData);
+			}else{
+				result= sb.getCategoryProducts(hLRequestData);
+			}
+			return result;
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -91,8 +103,14 @@ public class FDBrandProductsAdManager {
 		lookupManagerHome();
 		
 		try {
-			FDBrandProductsAdManagerSB sb = managerHome.create();			
-			return sb.getLastSentFeedOrderTime();
+			Date date = null;
+			FDBrandProductsAdManagerSB sb = managerHome.create();		
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				date =  FDECommerceService.getInstance().getLastSentFeedOrderTime();
+			}else{
+			date= sb.getLastSentFeedOrderTime();
+			}
+			return date;
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");

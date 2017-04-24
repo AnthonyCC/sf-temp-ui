@@ -130,7 +130,7 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 	}
 %>
 	<tr>
-	<td><IMG src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0">
+	<td><IMG src="/media_stat/images/layout/clear.gif" alt="" width="8" height="11" border="0">
 	</td>
 	</tr>
 	<tr>
@@ -153,7 +153,7 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 	<tr valign="top">
 	<td width="<%=W_GC_SIGN_UP_TOTAL%>">
 		<img src="/media_stat/images/navigation/site_access_preferences.gif" width="160" height="9" border="0" alt="SITE ACCESS PREFERENCES">&nbsp;&nbsp;&nbsp;<FONT class="text9">* Required information</FONT><BR>
-		<IMG src="/media_stat/images/layout/999966.gif" width="<%=W_GC_SIGN_UP_TOTAL%>" height="1" border="0" VSPACE="3"><BR>
+		<IMG src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_GC_SIGN_UP_TOTAL%>" height="1" border="0" VSPACE="3"><BR>
 	</td>
 	</tr>
 </table>
@@ -178,7 +178,7 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 	<tr valign="top">
 	<td width="120"></td>
 	<td colspan="3" class="text11">
-		<IMG src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0">This will be your User Name. You will use this to access the site.<BR/><FONT class="space4pix"><BR/></FONT>
+		<IMG src="/media_stat/images/layout/clear.gif" alt="" width="8" height="11" border="0">This will be your User Name. You will use this to access the site.<BR/><FONT class="space4pix"><BR/></FONT>
 	</td>
 	</tr>
 	<tr valign="middle">
@@ -199,7 +199,7 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 	</tr>
 	<tr valign="top">
 	<td width="120" align="right" class="text12"></td>
-	<td colspan="3" class="text11"><IMG src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0">Must be at least 6 characters. Passwords are case sensitive.<FONT class="space4pix"><BR/></FONT></td>
+	<td colspan="3" class="text11"><IMG src="/media_stat/images/layout/clear.gif" alt="" width="8" height="11" border="0">Must be at least 6 characters. Passwords are case sensitive.<FONT class="space4pix"><BR/></FONT></td>
 	</tr>
 	<tr valign="top">
 	<td><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"></td>
@@ -216,7 +216,7 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 		</td>
 	</tr>
 	<tr valign="top">
-	<td colspan="3" class="text11"><IMG src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0">If you forget your password, we'll use this security word to verify your identity.<FONT class="space4pix"><BR/></FONT>
+	<td colspan="3" class="text11"><IMG src="/media_stat/images/layout/clear.gif" alt="" width="8" height="11" border="0">If you forget your password, we'll use this security word to verify your identity.<FONT class="space4pix"><BR/></FONT>
 	</td>
 	</tr>
 </table>
@@ -260,7 +260,7 @@ if("GET".equalsIgnoreCase(request.getMethod()) || sessionuser.getLevel()==FDUser
 <table border="0" cellspacing="0" cellpadding="0" width="<%=W_GC_SIGN_UP_TOTAL%>">
 	<tr valign="top">
 	<td width="<%=W_GC_SIGN_UP_TOTAL%>"><img src="/media_stat/images/navigation/customer_agreement.gif"  border="0" alt="TERMS OF SERVICE">&nbsp;&nbsp;&nbsp;<FONT class="text9">* Required information</FONT><BR>
-	<IMG src="/media_stat/images/layout/999966.gif" width="<%=W_GC_SIGN_UP_TOTAL%>" height="1" border="0" VSPACE="3"><BR></td>
+	<IMG src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_GC_SIGN_UP_TOTAL%>" height="1" border="0" VSPACE="3"><BR></td>
 	</tr>
 </table>
 <br/>
@@ -287,7 +287,7 @@ if("GET".equalsIgnoreCase(request.getMethod()) || sessionuser.getLevel()==FDUser
     <table width=<%=W_GC_SIGN_UP_TOTAL%> cellspacing="0" cellpadding="0" border="0">
 	<tr>
 		<td colspan="2" style="padding: 2px 0px;">
-			<img style="margin: 2px 0;" width="<%=W_GC_SIGN_UP_TOTAL%>" height="1" border="0" src="/media_stat/images/layout/999966.gif" /><br /><br/></br>
+			<img style="margin: 2px 0;" width="<%=W_GC_SIGN_UP_TOTAL%>" height="1" alt="" border="0" src="/media_stat/images/layout/999966.gif" /><br /><br/></br>
         </td>
      	</tr>
         <tr>

@@ -156,18 +156,18 @@ if (request.getParameter("fldMessage") !=null) {
     </tr>
 	</fd:ErrorHandler>
     <tr>
-        <td rowspan="10" width="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" border="0" /></td>
+        <td rowspan="10" width="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1" border="0" /></td>
         <td align="right" class="text12">
 			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
 				<label>*&nbsp;Your&nbsp;Name</label> 
 			</span>
 		</td>
-        <td rowspan="10" width="15"><img src="/media_stat/images/layout/clear.gif" width="10" height="1" border="0" /></td>
+        <td rowspan="10" width="15"><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="1" border="0" /></td>
         <td colspan="2">
 			<input type="text" maxlength="55" tabIndex="1" size="21" class="text11" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>"  id="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>" required="true" value="<%=fldYourName %>" />
 	</td>
         <td rowspan="10" width="350" align="center"><div id="gcDisplayContainer"><!--  --></div></td>
-        <td rowspan="10" width="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" border="0"></td>
+        <td rowspan="10" width="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1" border="0"></td>
     </tr>
     <tr>
         <td align="right" class="text12">
@@ -263,7 +263,7 @@ if (request.getParameter("fldMessage") !=null) {
 </table>
 
 
-<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
+<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
 
 <table border="0" cellspacing="0" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>">
     <tr valign="top">
@@ -277,11 +277,11 @@ if (request.getParameter("fldMessage") !=null) {
         </td>
     </tr>
     <tr valign="middle">
-	    <td><img src="/media_stat/images/layout/999966.gif" width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>" height="1" border="0" vspace="3"></td>
+	    <td><img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>" height="1" border="0" vspace="3"></td>
 	</tr>
 </table>
 
-<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
+<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
 
 <table border="0" cellspacing="0" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>">
 	<tr>
@@ -295,6 +295,6 @@ if (request.getParameter("fldMessage") !=null) {
 
 <table border="0" cellspacing="1" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>">
 <tr valign="MIDDLE">
-    <td><img src="/media_stat/images/layout/clear.gif" width="105" height="1" border="0"></td>
+    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="105" height="1" border="0"></td>
 </tr>
 </table>

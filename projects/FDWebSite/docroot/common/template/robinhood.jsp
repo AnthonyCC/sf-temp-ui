@@ -91,14 +91,14 @@ final int W_ROBINHOOD_TOTAL = 970;
 
 	<table width="<%=W_ROBINHOOD_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 		<tr>
-			<td width="<%=W_ROBINHOOD_TOTAL%>" valign="top" bgcolor="#<%=color%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_ROBINHOOD_TOTAL%>" height="1" border="0"></td>
+			<td width="<%=W_ROBINHOOD_TOTAL%>" valign="top" bgcolor="#<%=color%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_ROBINHOOD_TOTAL%>" height="1" border="0"></td>
 		</tr>
 		<tr>
-			<td width="<%=W_ROBINHOOD_TOTAL%>" valign="top"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
+			<td width="<%=W_ROBINHOOD_TOTAL%>" valign="top"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
 		</tr>
 		<tr valign="top">
 			<td align="center">
-				<img src="/media_stat/images/layout/clear.gif" height="15" width="<%=W_ROBINHOOD_TOTAL%>"><br />
+				<img src="/media_stat/images/layout/clear.gif" alt="" height="15" width="<%=W_ROBINHOOD_TOTAL%>"><br />
 				<!-- content lands here -->
 				<tmpl:get name='content'/>
 				<!-- content ends above here-->
@@ -106,13 +106,13 @@ final int W_ROBINHOOD_TOTAL = 970;
 			</td>
 		</tr>
 		<tr>
-			<td width="<%=W_ROBINHOOD_TOTAL%>" align="center"><img src="/media_stat/images/layout/clear.gif" height="1" width="<%=W_ROBINHOOD_TOTAL%>"><br></td>
+			<td width="<%=W_ROBINHOOD_TOTAL%>" align="center"><img src="/media_stat/images/layout/clear.gif" alt="" height="1" width="<%=W_ROBINHOOD_TOTAL%>"><br></td>
 		</tr>
 		<tr valign="bottom">
-			<td width="<%=W_ROBINHOOD_TOTAL%>"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
+			<td width="<%=W_ROBINHOOD_TOTAL%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
 		</tr>
 		<tr>
-			<td width="<%=W_ROBINHOOD_TOTAL%>" bgcolor="#<%=color%>" valign="bottom"><img src="/media_stat/images/layout/clear.gif" width="<%=W_ROBINHOOD_TOTAL%>" height="1" border="0"></td>
+			<td width="<%=W_ROBINHOOD_TOTAL%>" bgcolor="#<%=color%>" valign="bottom"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_ROBINHOOD_TOTAL%>" height="1" border="0"></td>
 		</tr>
 	</table>
 

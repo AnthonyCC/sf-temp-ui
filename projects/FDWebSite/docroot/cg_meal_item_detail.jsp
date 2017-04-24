@@ -177,8 +177,8 @@ if (productNode != null) {
 	<tmpl:put name='content' direct='true'>
 <table border="0" cellpadding="0" cellspacing="0" width="520">
 <tr valign="top">
-<td style="border-right:solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="120" height="1"></td>
-<td><img src="/media_stat/images/layout/clear.gif" width="400" height="1"></td>
+<td style="border-right:solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" alt="" width="120" height="1"></td>
+<td><img src="/media_stat/images/layout/clear.gif" alt="" width="400" height="1"></td>
 </tr>
 <tr valign="top">
 <td align="right" style="border-right:solid 1px #999966; padding-right: 6px;">
@@ -300,7 +300,7 @@ int prodCount = 0;%>
             fdprd = selectSku.getProduct();
         } catch (FDSkuNotFoundException fdsnfe) { throw fdsnfe; }
 %>
-		<img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>
+		<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>
 		<img src="<%=prodImg.getPath()%>" width="<%=prodImg.getWidth()%>" height="<%=prodImg.getHeight()%>" alt="" border="0">
 		
 		<br><span class="space2pix"><br></span>
@@ -364,13 +364,13 @@ int prodCount = 0;%>
         <span class="recipe_author"><%=sourceName%> <%=recipe.getAuthorNames()%></span><br><br></td>
     </tr>
 	<tr valign="top">    
-		<td><% if(recipeIngrdMedia!=null){ %><img src="/media_stat/recipe/rec_hdr_ingredients.gif" width="92" height="10"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br><fd:IncludeMedia name='<%= recipeIngrdMedia.getPath() %>' /><% } %>
+		<td><% if(recipeIngrdMedia!=null){ %><img src="/media_stat/recipe/rec_hdr_ingredients.gif" width="92" height="10"><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"><br><fd:IncludeMedia name='<%= recipeIngrdMedia.getPath() %>' /><% } %>
 		</td>
         <td style="padding-left:15px;" align="right"><% if(recipePhoto!=null){ %><img src=<%=recipePhoto.getPath()%> width="<%=recipePhoto.getWidth()%>" height="<%=recipePhoto.getHeight()%>" border="0"><% } %></td>
     </tr>
 	<% if(recipeDesc!=null){ %>
 		<tr><td colspan="2"><br></td></tr>
-		<tr><td colspan="2" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+		<tr><td colspan="2" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td></tr>
 		<tr>
 			<td colspan="2"><br><fd:IncludeMedia name='<%= recipeDesc.getPath() %>' /><br></td>
 		</tr>

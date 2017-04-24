@@ -60,7 +60,7 @@ boolean showBars = (deptMngrImg!=null ||  deptBottom.size() > 0 || secondaryCate
 
 
 <BR>
-        <%if(showBars){%><IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%=W_DEPARTMENT_BOTTOM_TOTAL%>" HEIGHT="1" BORDER="0"><BR><%}%>
+        <%if(showBars){%><IMG src="/media_stat/images/layout/cccccc.gif" ALT="" WIDTH="<%=W_DEPARTMENT_BOTTOM_TOTAL%>" HEIGHT="1" BORDER="0"><BR><%}%>
         <FONT CLASS="space4pix"><BR></FONT>
         <FONT CLASS="space4pix"><BR></FONT>
         <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_DEPARTMENT_BOTTOM_TOTAL%>">
@@ -81,7 +81,7 @@ if ("OUR_PICKS, FRO, GRO, DAI, SPE".indexOf(department.getContentName().toUpperC
                       %>
                       <A HREF="<%=bioLink%>"><img src="<%=deptMngrImg.getPath()%>" <%=JspMethods.getImageDimensions(deptMngrImg) %> border="0" alt="<%=department.getFullName()%>: MANAGER"></A>
                       <% } %>
-                      <BR><IMG src="/media_stat/images/layout/clear.gif"   WIDTH="<%=W_DEPARTMENT_BOTTOM_LEFT%>" HEIGHT="1" BORDER="0">
+                      <BR><IMG src="/media_stat/images/layout/clear.gif" alt=""  WIDTH="<%=W_DEPARTMENT_BOTTOM_LEFT%>" HEIGHT="1" BORDER="0">
                    </TD>
                    <TD WIDTH="<%=W_DEPARTMENT_BOTTOM_CENTER%>" ROWSPAN="2"> <%--left side title content --%><BR>
 
@@ -96,9 +96,9 @@ if ("OUR_PICKS, FRO, GRO, DAI, SPE".indexOf(department.getContentName().toUpperC
                                         <%--paint seperator if other left side content type --%>
                       <BR>
 <%-- column seperator --%>
-                   <TD WIDTH="<%=W_DEPARTMENT_BOTTOM_RIGHT_PADDING%>" ROWSPAN="2"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_DEPARTMENT_BOTTOM_RIGHT_PADDING%>" HEIGHT="1" BORDER="0"></TD>
+                   <TD WIDTH="<%=W_DEPARTMENT_BOTTOM_RIGHT_PADDING%>" ROWSPAN="2"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="<%=W_DEPARTMENT_BOTTOM_RIGHT_PADDING%>" HEIGHT="1" BORDER="0"></TD>
                             <%-- The Right Side of the Bottom Template  --%>
-                   <TD WIDTH="1" <%if(showBars){%>BGCOLOR="#CCCCCC"<%}%> ROWSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="1" BORDER="0"><BR></TD>
+                   <TD WIDTH="1" <%if(showBars){%>BGCOLOR="#CCCCCC"<%}%> ROWSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="1" BORDER="0"><BR></TD>
 <%-- paint the secondary Categories --%>
                    <TD WIDTH="<%=W_DEPARTMENT_BOTTOM_RIGHT - 1%>">
 <%
@@ -141,7 +141,7 @@ if (deptBottom.size() > 0 ) {
                 if(cntr !=0 ) {%></tr><% } %>
                         <tr VALIGN="top" ALIGN="CENTER">
 <%          }%>
-                            <TD WIDTH="14"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="14" HEIGHT="1" BORDER="0"></TD>
+                            <TD WIDTH="14"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="14" HEIGHT="1" BORDER="0"></TD>
                             <TD WIDTH="87">
                                 <A HREF="<%=scURL%>"><img src="<%=scImgPath%>" <%=scImgDims%> border="0" alt="<%=sc.getFullName()%>"></A><BR>
                                 <A HREF="<%=scURL%>"><%=sc.getFullName()%></A>

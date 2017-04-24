@@ -68,7 +68,7 @@ final int W_CHECKOUT_NAV_TOTAL = 970;
 			<table width="<%=W_CHECKOUT_NAV_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 				<tr valign="top">
 					<td width="<%=W_CHECKOUT_NAV_TOTAL%>" align="center">
-						<img src="/media_stat/images/layout/clear.gif" height="15" width="<%=W_CHECKOUT_NAV_TOTAL%>"/><br/>
+						<img src="/media_stat/images/layout/clear.gif" alt="" height="15" width="<%=W_CHECKOUT_NAV_TOTAL%>"/><br/>
 			
 						<!-- content lands here -->
 						
@@ -81,11 +81,11 @@ final int W_CHECKOUT_NAV_TOTAL = 970;
 				</tr>
 				
 				<tr valign="bottom">
-					<td width="<%=W_CHECKOUT_NAV_TOTAL%>"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"/></td>
+					<td width="<%=W_CHECKOUT_NAV_TOTAL%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"/></td>
 				</tr>
 				
 				<tr>
-					<td width="<%=W_CHECKOUT_NAV_TOTAL%>" bgcolor="#<%=color%>" valign="bottom"><img src="/media_stat/images/layout/clear.gif" width="<%=W_CHECKOUT_NAV_TOTAL%>" height="1" border="0"/></td>
+					<td width="<%=W_CHECKOUT_NAV_TOTAL%>" bgcolor="#<%=color%>" valign="bottom"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_CHECKOUT_NAV_TOTAL%>" height="1" border="0"/></td>
 				</tr>
 			</table>
 			

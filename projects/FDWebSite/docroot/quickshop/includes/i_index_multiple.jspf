@@ -17,16 +17,16 @@ final int W_QUICKSHOP_INDEX_MULTIPLE_LHALF = 350;
 			<div class="title11" style="padding-bottom: 2em; color: #FF9933">CHOOSE AN ORDER:</div>
 			<%@ include file="/quickshop/includes/order_nav_qs_index.jspf" %>
 			
-			<img src="/media_stat/images/layout/clear.gif" width="0" height="25">
+			<img src="/media_stat/images/layout/clear.gif" alt="" width="0" height="25">
 			<fd:GetCustomerRecipeList id="recipes">
 				<div class="text14" style="font-weight: bold;">Your Recipes</div>
 				<div class="title11" style="padding-top: 2px; color: #FF9933">REORDER YOUR FAVORITES:</div>
 				<div style="font-weight: bold; padding: 1em 0 2em 0"><a href="/quickshop/your_recipes.jsp">Click here to shop from your previous recipes</a></div>
 			</fd:GetCustomerRecipeList>
 		</td>
-		<td width="10"><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
-		<td width="1" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-		<td width="10"><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
+		<td width="10"><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="1"></td>
+		<td width="1" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
+		<td width="10"><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="1"></td>
 
     <td width="<%= W_QUICKSHOP_INDEX_MULTIPLE_LHALF %>" class="text13">
 			<% if ( user.isEligibleForStandingOrders() ) { maxQuickshopItems = null; %>					
@@ -63,7 +63,7 @@ final int W_QUICKSHOP_INDEX_MULTIPLE_LHALF = 350;
 		</td>
 	</tr>
 	<tr><td colspan="5"><br></td></tr>
-	<tr><td colspan="5" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+	<tr><td colspan="5" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td></tr>
 	<tr><td colspan="5" align="center"><font class="space4pix"><br><br></font>            
                 <font class="space2pix"><br><br><br></font>
         </td></tr>
@@ -74,16 +74,16 @@ final int W_QUICKSHOP_INDEX_MULTIPLE_LHALF = 350;
 	</div>
 
 <BR>
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 <% if (!"true".equals(request.getAttribute("recommendationsRendered"))) { %>
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 	<%
 	int barWidth = 693;
 	if(request.getRequestURI().indexOf("quickshop") > -1) {
 		barWidth = 535;
 	}
 	%>
-	<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%=barWidth%>" HEIGHT="1" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%=barWidth%>" HEIGHT="1" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 <% } %>
 					

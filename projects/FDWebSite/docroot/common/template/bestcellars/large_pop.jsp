@@ -21,8 +21,8 @@
 	<td colspan="2" align="center"><a href="javascript:window.reallyClose();"><img src="/media_stat/images/template/wine/bc_logo_s.gif" width="158" height="25" border="0" alt="Best Cellars (close window)"></a></td>
 </tr>
 <tr>
-<td><img src="/media_stat/images/layout/clear.gif" width="260" height="8"></td>
-<td><img src="/media_stat/images/layout/clear.gif" width="260" height="8"></td>
+<td><img src="/media_stat/images/layout/clear.gif" alt="" width="260" height="8"></td>
+<td><img src="/media_stat/images/layout/clear.gif" alt="" width="260" height="8"></td>
 </tr>
 <tr valign="top">
 	<td colspan="2" align="center">
@@ -31,7 +31,7 @@
 	<%-- content ends above here--%>
 	</td>
 </tr>
-<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="12"></td></tr>
+<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="12"></td></tr>
 <tr>
 	<td><a href="#top">Back to top</a></td>
 	<td align="right"><a href="javascript:window.reallyClose();">Close window</a></td>

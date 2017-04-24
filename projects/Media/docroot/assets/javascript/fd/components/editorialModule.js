@@ -20,16 +20,20 @@ var FreshDirect = FreshDirect || {};
     },
     learnMore: function (ev) {
       var module = $(ev.target).closest('.content-module.editorial-module')[0],
+          buttonContainers = $(module).find('.learn-more.visible')[0],
           showLessButton = $(module).find('.learn-more button[show-less]')[0];
       $(module).addClass('learn-more');
       $(ev.target).removeClass('visible');
+      $(buttonContainers).addClass('show-less');
       $(showLessButton).addClass('visible');
     },
     showLess: function (ev) {
       var module = $(ev.target).closest('.content-module.editorial-module')[0],
+          buttonContainers = $(module).find('.learn-more.visible')[0],
           learnMoreButton = $(module).find('.learn-more button[learn-more]')[0];
       $(module).removeClass('learn-more');
       $(ev.target).removeClass('visible');
+      $(buttonContainers).removeClass('show-less');
       $(learnMoreButton).addClass('visible');
     }
   };

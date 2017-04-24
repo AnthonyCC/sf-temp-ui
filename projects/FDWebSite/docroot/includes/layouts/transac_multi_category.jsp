@@ -155,7 +155,7 @@ for (int itemIndex=0; itemIndex < sortedList.size();itemIndex++) {
                     </table>
 </td>
 </tr>
-<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td></tr>
+<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8"></td></tr>
 </table>
 <br>
 <%
@@ -170,7 +170,7 @@ for (int itemIndex=0; itemIndex < sortedList.size();itemIndex++) {
           <table width="<%=maxWidth%>"  align="center" cellpadding="0" cellspacing="0" border="0">
           <tr><td>
           <img src="<%=catHeader.getPath()%>" width="<%=catHeader.getWidth()%>" height="<%=catHeader.getHeight()%>">
-          <br><img src="media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="4"><br>
+          <br><img src="media_stat/images/layout/cccccc.gif" alt="" width="100%" height="1" vspace="4"><br>
           <%= cat.getBlurb() %>
           </td></tr>
           </table>
@@ -202,7 +202,7 @@ for (int itemIndex=0; itemIndex < sortedList.size();itemIndex++) {
 %>
                <table width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" align="center">
                <tr valign="top">
-               <td width="100"><img src="<%= displayObj.getImagePath()%>" alt="<%=displayObj.getAltText()%>" border="0" name="<%=cat%>_prodImg"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="12"></td>
+               <td width="100"><img src="<%= displayObj.getImagePath()%>" alt="<%=displayObj.getAltText()%>" border="0" name="<%=cat%>_prodImg"><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="12"></td>
                <td>
                     <table width="100%" cellpadding="0" cellspacing="3" border="0">
 <%
@@ -256,7 +256,7 @@ for (int itemIndex=0; itemIndex < sortedList.size();itemIndex++) {
                          <%  if (displayObj.getPrice()!=null) { %>
                          <br><font class="price"><%=displayObj.getPrice()%></font>
                          <%  } %>
-                         <br><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
+                         <br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td>
                          <% if (!prodUnavailable) {
 
 			               skus.add( defaultSku );
@@ -272,7 +272,7 @@ for (int itemIndex=0; itemIndex < sortedList.size();itemIndex++) {
 <%
                          if (cols==0) { //paint separator cell
 %>                         
-                         <td><img src="/media_stat/images/layout/clear.gif" width="4" height="1"></td>                         
+                         <td><img src="/media_stat/images/layout/clear.gif" alt="" width="4" height="1"></td>                         
 
 <%
                     }
@@ -341,12 +341,12 @@ if (newCategoryCount > 0) {
 <br>
 <%}%>
 <table width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" align="center">
-<tr><td colspan="3"><img src="media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="6"></td></tr>
+<tr><td colspan="3"><img src="media_stat/images/layout/cccccc.gif" alt="" width="100%" height="1" vspace="6"></td></tr>
 <tr>
 <td width="80">&nbsp;&nbsp;<b>Total Price:</b>&nbsp;</td>
 <td><input type="text" name="total" size="8" maxlength="8" class="text11" value="" onFocus="blur()"></td>
 <td align="right"><input type="image" name="addMultipleToCart" src="media_stat/images/buttons/add_to_cart.gif" width="93" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART"></td></tr>
-<tr><td colspan="3"><img src="media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="6"></td></tr>
+<tr><td colspan="3"><img src="media_stat/images/layout/cccccc.gif" alt="" width="100%" height="1" vspace="6"></td></tr>
 </table>
 <br>
 </form>

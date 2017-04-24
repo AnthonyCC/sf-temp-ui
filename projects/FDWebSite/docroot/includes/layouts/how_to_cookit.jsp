@@ -195,7 +195,7 @@ if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
 %>
 <TABLE CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="<%=W_HOW_TO_COOK_IT_TOTAL%>">
 <TR VALIGN="MIDDLE">
-	<TD WIDTH="<%=W_HOW_TO_COOK_IT_TOTAL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="4" border="0"></TD>
+	<TD WIDTH="<%=W_HOW_TO_COOK_IT_TOTAL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="4" border="0"></TD>
 </TR>
 <TR VALIGN="MIDDLE">
 	<TD WIDTH="<%=W_HOW_TO_COOK_IT_TOTAL%>" COLSPAN="4" CLASS="title11"><%=displayCategory.getFullName()%></td></tr>

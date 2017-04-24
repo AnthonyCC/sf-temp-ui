@@ -8,8 +8,12 @@
   width: 25%;
 }
 
-.content-module.icon-carousel [data-component="carousel"] [data-component="carousel-list"] li a{
+.content-module.icon-carousel [data-component="carousel"] [data-component="carousel-list"] li a {
   display: inline-block;
+}
+
+.content-module.icon-carousel [data-component="carousel"] [data-component="carousel-list"] li a img {
+  width: 100%;
 }
 
 .content-module.icon-carousel [data-component="carousel"] [data-component="carousel-mask"] {

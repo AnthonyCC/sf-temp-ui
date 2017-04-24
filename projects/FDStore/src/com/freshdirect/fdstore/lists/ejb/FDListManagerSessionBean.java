@@ -194,7 +194,7 @@ public class FDListManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
-	public String storeCustomerList( FDCustomerList list ) throws FDResourceException {
+	public FDCustomerList storeCustomerList( FDCustomerList list ) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();

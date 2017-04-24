@@ -22,6 +22,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
+import com.freshdirect.cms.util.ProductInfoUtil;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDCachedFactory;
@@ -84,7 +85,7 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 	}
 	
 	private Collection getAllPeakProduceForDept(DepartmentModel dept,UserContext userCtx) throws FDResourceException {
-		String plantID=userCtx.getFulfillmentContext().getPlantId();
+		//String plantID=userCtx.getFulfillmentContext().getPlantId();
 	    List products=new ArrayList();
 		List deptList=new ArrayList();
 		//System.out.println("|=== dept.getContentKey().getId()  :"+dept.getContentKey().getId());
@@ -101,7 +102,8 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 				sku=i.next().toString();
 				try {
 					productInfo=FDCachedFactory.getProductInfo(sku);
-					if(productInfo.isAvailable(userCtx.getPricingContext().getZoneInfo().getSalesOrg(),userCtx.getPricingContext().getZoneInfo().getDistributionChanel()) && isPeakProduce(productInfo.getRating(plantID))) {
+					if(productInfo.isAvailable(userCtx.getPricingContext().getZoneInfo().getSalesOrg(),userCtx.getPricingContext().getZoneInfo().getDistributionChanel()) && 
+							isPeakProduce(productInfo.getRating(ProductInfoUtil.getPickingPlantId(productInfo)))) {
 						
 						try {
 							   ProductModel sm=ContentFactory.getInstance().getProduct(sku);
@@ -325,7 +327,7 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 					continue;
 				}
 				try {
-					rating=sku.getProductInfo().getRating(plantID);
+					rating=sku.getProductInfo().getRating(ProductInfoUtil.getPickingPlantId(sku.getProductInfo()));
 				} catch (FDSkuNotFoundException e) {
 					throw new FDResourceException(e);
 				}

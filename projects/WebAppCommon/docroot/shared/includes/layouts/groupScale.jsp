@@ -757,11 +757,11 @@ final int W_GROUPSCALE_TOTAL = 601;
 
 							<table width="0" border="0" cellspacing="0" cellpadding="0"><%-- Freshness Guaranteed --%>
 								<tr>
-									<td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="140" height="9"></td>
+									<td colspan="3"><img src="/media_stat/images/layout/clear.gif" alt=""  width="140" height="9"></td>
 								</tr>
 								<tr>
 									<td height="5"><img src="/media_stat/images/layout/top_left_curve.gif" width="6" height="6"></td>
-									<td height="5" style="border-top: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="160" height="1"></td>
+									<td height="5" style="border-top: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" alt="" width="160" height="1"></td>
 									<td height="5"><img src="/media_stat/images/layout/top_right_curve.gif" width="6" height="6"></td>
 								</tr>
 
@@ -775,12 +775,12 @@ final int W_GROUPSCALE_TOTAL = 601;
 
 
 												<tr valign="top">
-													<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
+													<td><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1"></td>
 													<td width="27"><img src="/media/images/site_pages/shelflife/days_<%=shelfLife%>.gif" width="27" height="27" border="0"></td>
-													<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
+													<td><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1"></td>
 													<td  valign="top"><img src="/media/images/site_pages/shelflife/guarant_fresh_hdr_lg.gif" width="129" height="10"><br />
 													<span class="text12">at least </span><span class="title12"><%=shelfLife%> days</span><span class="text12"><br /> from delivery</span></td>
-													<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>								    
+													<td><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1"></td>								    
 												</tr>
 											</table>
 										</td></tr>
@@ -789,7 +789,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 								</tr>
 								<tr>
 									<td height="5"><img src="/media_stat/images/layout/bottom_left_curve.gif" width="6" height="6"></td>
-									<td height="5" style="border-bottom: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+									<td height="5" style="border-bottom: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
 									<td height="5"><img src="/media_stat/images/layout/bottom_right_curve.gif" width="6" height="6"></td>
 								</tr>
 								
@@ -797,7 +797,7 @@ final int W_GROUPSCALE_TOTAL = 601;
 							<table width="188">
 								<tr>
 									<td align="left">
-									<img src="/media_stat/images/layout/clear.gif" width="100%" height="6">
+									<img src="/media_stat/images/layout/clear.gif" alt="" width="100%" height="6">
 									<a href="javascript:pop('/brandpop.jsp?brandId=bd_fd_fresh_guarantee',400,585)">Learn more about our Freshness Guarantee - CLICK&nbsp;HERE</a>
 									</td>
 								</tr>

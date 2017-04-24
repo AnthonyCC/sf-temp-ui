@@ -61,7 +61,7 @@ RequestUtil.appendToAttribute(request,"windowOnBeforeUnload","FormChangeUtil.war
 	<tr><td colspan="2" class="title18" align="center"><b><%= custFirstName.toUpperCase().charAt(0) + custFirstName.substring(1,firstNameLength).toLowerCase() %>'<%= custFirstName.toLowerCase().lastIndexOf("s") > -1 && custFirstName.toLowerCase().lastIndexOf("s") == firstNameLastIndex ? "" : "s" %> Order <%= currentOrder %></b></td></tr>
 	<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"></td></tr>
 	<tr><td bgcolor="#996699" height="1" colspan="2"><img src="/media_stat/images/layout/996699.gif" width="1" height="1" border="0"></td></tr>
-	<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td></tr>
+	<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td></tr>
 	<tr>
 	    <td valign="top"><ul><li></li></ul></td>
 	    <td class="text11"><b>Enter quantities in boxes on the left</b> (if you don't want an item, enter "0" quantity, or click the green button to zero all quantities).</td>

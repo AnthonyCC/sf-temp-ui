@@ -133,7 +133,7 @@ final int W_ROBINHOOD_LANDING_TOTAL = 970;
 								<%} %>
 								
 							</tr>
-							<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td></tr>
+							<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td></tr>
 							<tr>
 								<td align="right" colspan="2"><a href="">
 									<input type="image" src="/media_stat/images/donation/robinhood/landing/btn_continue.gif" width="98" height="34" alt="Continue" name="rhLand_continue" id="rhLand_continue" border="0" onclick="$('rh_form').submit();return false;" />
@@ -151,10 +151,10 @@ final int W_ROBINHOOD_LANDING_TOTAL = 970;
 			}
 		%>
 			<tr>
-				<td align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+				<td align="center"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 			</tr>
 			<tr>
-				<td align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+				<td align="center"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 			</tr>
 
 		</table>

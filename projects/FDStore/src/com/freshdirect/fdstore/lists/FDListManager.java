@@ -128,7 +128,7 @@ public class FDListManager {
 		}
 	}
 
-	public static String storeCustomerList(FDCustomerList list) throws FDResourceException {
+	public static FDCustomerList storeCustomerList(FDCustomerList list) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDListManagerSB sb = managerHome.create();

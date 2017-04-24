@@ -31,7 +31,7 @@
 <xsl:call-template name="h_header_v1"><xsl:with-param name="preview" select="preview" /></xsl:call-template>
 	<table cellpadding="0" cellspacing="0" border="0" width="100%">
 		<tr>
-			<td bgcolor="#cccccc"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="1" /></td>
+			<td bgcolor="#cccccc"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="1" /></td>
 		</tr>
 	</table>
 	<table cellpadding="0" cellspacing="0" border="0" width="100%">
@@ -62,18 +62,18 @@
 					</a>
 				<br /><br/>
 			</td>
-			<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="6" height="1" /></td>
+			<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="6" height="1" /></td>
 			<td valign="center" align="right" width="25%"><img border="0" alt="10 Percent off" name="10percent_img" src="http://www.freshdirect.com/media_stat/images/template/tell_a_friend/email_friend_invite_img.jpg"/></td>
 		</tr>
 		<tr></tr>
 		<tr>
-			<td colspan="2"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="8" /></td>
+			<td colspan="2"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="8" /></td>
 		</tr>
 	</table>	
 	<table cellpadding="0" cellspacing="0" border="0" width="100%">
 		<tr></tr>
 		<tr>
-			<td bgcolor="#cccccc"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="1" /></td>
+			<td bgcolor="#cccccc"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="1" /></td>
 		</tr>
 		<tr>
 			<td width="75%" class="noteFooter" valign="top">

@@ -8,7 +8,7 @@
 	<xsl:template name="h_rh_cart_info">
 		<br/>
 
-<img src="/media_stat/images/layout/cccccc.gif" width="693" height="1"/><br/>
+<img src="/media_stat/images/layout/cccccc.gif" alt="" width="693" height="1"/><br/>
 
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
 
@@ -56,11 +56,11 @@
 	</xsl:for-each>
 		</xsl:for-each>
 	<tr>
-				<td align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+				<td align="center"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 	</tr>
 	 <tr>
 		<td></td>
-		<td colspan="4"><img src="/media_stat/images/layout/clear.gif" width="170" height="1" /></td>
+		<td colspan="4"><img src="/media_stat/images/layout/clear.gif" alt="" width="170" height="1" /></td>
 		<td  style="background-color: #969;color: white;line-height: 20px;" colspan="4" width="" align="right"><font face="verdana, arial, sans-serif" size="1" color="black">
 			<b>ORDER TOTAL:&nbsp;&nbsp;		
 			 $<xsl:value-of select='format-number(order/total, "###,##0.00", "USD")'/> </b>

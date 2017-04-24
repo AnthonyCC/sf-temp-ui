@@ -110,7 +110,7 @@ for (;qryStringTokn.hasMoreTokens();) {
 	if (catLabelImg != null) {
 		%>
 		<img src="<%=catLabelPath%>"  width="<%=catLabelImg.getWidth()%>" height="<%=catLabelImg.getHeight()%>" border="0">
-		<br/><img src="/media_stat/images/layout/clear.gif" width="1" height="<%=editorialPath!=null && !"".equals(editorialPath.trim())?"6":"8"%>"><br/>
+		<br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="<%=editorialPath!=null && !"".equals(editorialPath.trim())?"6":"8"%>"><br/>
 		<%
 	}
 	%>
@@ -120,7 +120,7 @@ for (;qryStringTokn.hasMoreTokens();) {
 		%>
 		<div style="width: <%=W_RECIPE_SUBCAT_BODY_TOTAL%>px; text-align:left;" class="text11">
 			<fd:IncludeMedia name='<%= editorialPath %>' />
-			<br/><img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br/><img src="/media_stat/images/layout/cccccc.gif" width="<%=W_RECIPE_SUBCAT_BODY_TOTAL%>" height="1" vspace="4">
+			<br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="2"><br/><img src="/media_stat/images/layout/cccccc.gif" alt="" width="<%=W_RECIPE_SUBCAT_BODY_TOTAL%>" height="1" vspace="4">
 		</div>
 		<%
 	}
@@ -229,7 +229,7 @@ for (;qryStringTokn.hasMoreTokens();) {
 		  if (!labelPrinted) { 
 		     labelPrinted=true;%>
 			<tr>
-			  <td align="center" valign="top"><%if (grpLabel!=null) {%><span class="recipe_header"><%=grpLabel %></span><br/><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br/><%}%>
+			  <td align="center" valign="top"><%if (grpLabel!=null) {%><span class="recipe_header"><%=grpLabel %></span><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8"><br/><%}%>
 <%		}  	  	   %>
 			    <a href="<%=response.encodeURL("recipe.jsp?catId="+recipeCat+subCatIdParam+"&recipeId="+oneRecipe+"&trk=cpage")%>" class="recipe_name"><b><%=oneRecipe.getName()%></b></a><br/><span class="recipe_author"><%=oneRecipe.getDisplayableSource()%></span><br/><br/>
  <% 		   paintCount++;

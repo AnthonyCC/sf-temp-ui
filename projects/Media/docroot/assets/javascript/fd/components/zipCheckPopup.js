@@ -29,7 +29,8 @@ var FreshDirect = FreshDirect || {};
         align:false,
         overlay:true,
         overlayExtraClass:'white-popup-overlay',
-        hideOnOverlayClick: true
+        hideOnOverlayClick: true,
+        zIndex:460
       }
     },
     hasClose: {
@@ -58,5 +59,9 @@ var FreshDirect = FreshDirect || {};
 }(FreshDirect));
 
 if (FreshDirect.user && !FreshDirect.user.isZipPopupUsed) {
-  FreshDirect.components.zipCheckPopup.openPopup(FreshDirect.components.zipCheckPopup);
+  FreshDirect.libs.$( document ).ready( function () {
+    setTimeout( function () {
+      FreshDirect.components.zipCheckPopup.openPopup();
+    }, 10);
+  });
 }

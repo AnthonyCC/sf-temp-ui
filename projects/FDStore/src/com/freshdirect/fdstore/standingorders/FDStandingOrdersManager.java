@@ -415,7 +415,8 @@ public class FDStandingOrdersManager {
 				}
 
 				LOGGER.debug( "storing customer list :" + l );
-				String listId = FDListManager.storeCustomerList(l);
+				FDCustomerList list = FDListManager.storeCustomerList(l);
+				String listId = list.getId();
 				LOGGER.debug( "FDListManager.storeCustomerList() returned:" + listId );
 				
 				// Standing Order - INIT PHASE #2

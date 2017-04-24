@@ -139,6 +139,8 @@ public class CartData extends AbstractCoremetricsResponse {
     
     private String deliveryBegins;
     
+    private boolean sOCartLineMessages;
+    
     
     public String getErrorMessage() {
         return errorMessage;
@@ -612,6 +614,7 @@ public class CartData extends AbstractCoremetricsResponse {
         private boolean isMealBundle;
         private String productId;
         private String categoryId;
+		private String so3ItemStatus;
 
         /**
          * Reason given for the given cart line item
@@ -812,8 +815,16 @@ public class CartData extends AbstractCoremetricsResponse {
         public void setCategoryId(String categoryId) {
             this.categoryId = categoryId;
         }
+        
+        public String getSo3ItemStatus() {
+			return so3ItemStatus;
+		}
 
-        public static class Discount implements Serializable {
+		public void setSo3ItemStatus(String so3ItemStatus) {
+			this.so3ItemStatus = so3ItemStatus;
+		}
+
+		public static class Discount implements Serializable {
 
             private static final long serialVersionUID = 8370395169692317105L;
 
@@ -1164,5 +1175,12 @@ public class CartData extends AbstractCoremetricsResponse {
 		this.deliveryBegins = deliveryBegins;
 	}
 
-    
+	public boolean issOCartLineMessages() {
+		return sOCartLineMessages;
+	}
+
+	public void setsOCartLineMessages(boolean sOCartLineMessages) {
+		this.sOCartLineMessages = sOCartLineMessages;
+	}
+
 }

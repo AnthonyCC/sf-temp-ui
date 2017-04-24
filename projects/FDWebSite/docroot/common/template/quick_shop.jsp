@@ -68,9 +68,9 @@ if ("indexGuest".equals(level)){%>
 
 <TABLE WIDTH="<%= W_QUICK_SHOP_TOTAL %>" CELLPADDING="0" CELLSPACING="0" BORDER="0">
 <TR VALIGN="TOP">
-  <TD WIDTH="<%= W_QUICK_SHOP_CONTENT %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_QUICK_SHOP_CONTENT %>" height="1" border="0"></TD>
-  <TD WIDTH="<%= W_QUICK_SHOP_DELIMITER %>"><img src="/media_stat/images/layout/clear.gif" width="10" height="1" border="0"></TD>
-  <TD WIDTH="<%= W_QUICK_SHOP_CART %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_QUICK_SHOP_CART %>" height="1" border="0"></TD>
+  <TD WIDTH="<%= W_QUICK_SHOP_CONTENT %>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%= W_QUICK_SHOP_CONTENT %>" height="1" border="0"></TD>
+  <TD WIDTH="<%= W_QUICK_SHOP_DELIMITER %>"><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="1" border="0"></TD>
+  <TD WIDTH="<%= W_QUICK_SHOP_CART %>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%= W_QUICK_SHOP_CART %>" height="1" border="0"></TD>
 </TR>
 <TR VALIGN="TOP">
 	<TD WIDTH="<%= W_QUICK_SHOP_CONTENT %>">
@@ -84,12 +84,12 @@ if ("indexGuest".equals(level)){%>
 				<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
 				<TR VALIGN="MIDDLE">
 					<TD><A HREF="/quickshop/index.jsp"><img src="/media_stat/images/navigation/department/quickshop/qs_depnav.gif" width="158" height="28" border="0" alt="REORDER"></A></TD>
-					<TD WIDTH="11" ALIGN="CENTER" VALIGN="BOTTOM"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="28" border="0" HSPACE="7"><BR></TD>
+					<TD WIDTH="11" ALIGN="CENTER" VALIGN="BOTTOM"><img src="/media_stat/images/layout/cccccc.gif" alt="" width="1" height="28" border="0" HSPACE="7"><BR></TD>
 					<TD valign="top">
 						<A HREF="/quickshop/previous_orders.jsp">Your Previous Orders</A><BR>
 						<A HREF="/quickshop/every_item.jsp">Every Item Ordered</A><BR>
 					</TD>
-					<TD WIDTH="11" ALIGN="CENTER" VALIGN="BOTTOM"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="28" border="0" HSPACE="7"><BR></TD>
+					<TD WIDTH="11" ALIGN="CENTER" VALIGN="BOTTOM"><img src="/media_stat/images/layout/cccccc.gif" alt="" width="1" height="28" border="0" HSPACE="7"><BR></TD>
 					<TD valign="top">
 						<% int brs = 2; %>
 						<fd:GetCustomerRecipeList id="recipes">
@@ -102,7 +102,7 @@ if ("indexGuest".equals(level)){%>
 						</fd:CCLCheck>
 						<% for (int i=0; i<brs; i++) { %><BR><% } %>
 					</TD>
-					<TD WIDTH="11" ALIGN="CENTER" VALIGN="BOTTOM"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="28" border="0" HSPACE="7"><BR></TD>
+					<TD WIDTH="11" ALIGN="CENTER" VALIGN="BOTTOM"><img src="/media_stat/images/layout/cccccc.gif" alt="" width="1" height="28" border="0" HSPACE="7"><BR></TD>
 					<% if ( user.isEligibleForStandingOrders() ) { %>					
 						<TD valign="top">
 							<A HREF="/quickshop/standing_orders.jsp">Your Standing Orders</A>
@@ -112,7 +112,7 @@ if ("indexGuest".equals(level)){%>
 					<% } %>
 				</TR>
 				<TR>
-					<TD><img src="/media_stat/images/layout/clear.gif" width="1" height="4" border="0"></TD>
+					<TD><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4" border="0"></TD>
 				</TR>
 				</TABLE>
 			</TD>
@@ -130,12 +130,12 @@ if ("indexGuest".equals(level)){%>
 			</td>
 		</TR>
 		<TR VALIGN="TOP">
-			<TD WIDTH="<%= W_QUICK_SHOP_CONTENT %>"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" border="0"></TD>
+			<TD WIDTH="<%= W_QUICK_SHOP_CONTENT %>"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4" border="0"></TD>
 		</TR>
 		</TABLE>
 
 	</TD>
-  <TD WIDTH="<%= W_QUICK_SHOP_DELIMITER %>"><img src="/media_stat/images/layout/clear.gif" width="<%= W_QUICK_SHOP_DELIMITER %>" height="1" border="0"></TD>
+  <TD WIDTH="<%= W_QUICK_SHOP_DELIMITER %>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%= W_QUICK_SHOP_DELIMITER %>" height="1" border="0"></TD>
 	<TD WIDTH="<%= W_QUICK_SHOP_CART %>">
 	<%@ include file="/includes/i_promotion_counter.jspf" %>
 	 <% if (FDStoreProperties.isAdServerEnabled()) { %>

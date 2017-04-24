@@ -63,7 +63,7 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") == -1) {
 			<%if(yuzer.isPickupOnly()) {
 				%>
 				<font class="text12"><b>Unfortunately, we do not currently deliver to your neighborhood.</b></font><br>
-				<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
+				<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"><br>
 				<%
 			}%>
 			<% if(parentOrderId==null || !(yuzer.isVoucherHolder() && yuzer.getMasqueradeContext()== null)) {%>

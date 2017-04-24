@@ -63,7 +63,7 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 	</tr>
 	<tr>
 		<td colspan="2" style="padding: 2px 0px;">
-			<img style="margin: 2px 0;" width="<%=W_RH_SINGUP_TOTAL%>" height="1" border="0" src="/media_stat/images/layout/999966.gif" /><br />
+			<img style="margin: 2px 0;" width="<%=W_RH_SINGUP_TOTAL%>" height="1" alt="" border="0" src="/media_stat/images/layout/999966.gif" /><br />
 		</td>
 	</tr>
 </table>
@@ -151,7 +151,7 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 	}
 %>
 	<tr>
-	<td><IMG src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0">
+	<td><IMG src="/media_stat/images/layout/clear.gif" alt="" width="8" height="11" border="0">
 	</td>
 	</tr>
 	<tr>
@@ -174,7 +174,7 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 	<tr valign="top">
 	<td width="<%=W_RH_SINGUP_TOTAL%>">
 		<img src="/media_stat/images/navigation/site_access_preferences.gif" width="160" height="9" border="0" alt="SITE ACCESS PREFERENCES">&nbsp;&nbsp;&nbsp;<FONT class="text9">* Required information</FONT><br />
-		<IMG src="/media_stat/images/layout/999966.gif" width="<%=W_RH_SINGUP_TOTAL%>" height="1" border="0" VSPACE="3"><br />
+		<IMG src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_RH_SINGUP_TOTAL%>" height="1" border="0" VSPACE="3"><br />
 	</td>
 	</tr>
 </table>
@@ -199,7 +199,7 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 	<tr valign="top">
 	<td width="120"></td>
 	<td colspan="3" class="text11">
-		<IMG src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0">This will be your User Name. You will use this to access the site.<br /><FONT class="space4pix"><br /></FONT>
+		<IMG src="/media_stat/images/layout/clear.gif" alt="" width="8" height="11" border="0">This will be your User Name. You will use this to access the site.<br /><FONT class="space4pix"><br /></FONT>
 	</td>
 	</tr>
 	<tr valign="middle">
@@ -220,7 +220,7 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 	</tr>
 	<tr valign="top">
 	<td width="120" align="right" class="text12"></td>
-	<td colspan="3" class="text11"><IMG src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0">Must be at least 6 characters. Passwords are case sensitive.<FONT class="space4pix"><br /></FONT></td>
+	<td colspan="3" class="text11"><IMG src="/media_stat/images/layout/clear.gif" alt="" width="8" height="11" border="0">Must be at least 6 characters. Passwords are case sensitive.<FONT class="space4pix"><br /></FONT></td>
 	</tr>
 	<tr valign="top">
 	<td><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"></td>
@@ -237,7 +237,7 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 		</td>
 	</tr>
 	<tr valign="top">
-	<td colspan="3" class="text11"><IMG src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0">If you forget your password, we'll use this security word to verify your identity.<FONT class="space4pix"><br /></FONT>
+	<td colspan="3" class="text11"><IMG src="/media_stat/images/layout/clear.gif" alt="" width="8" height="11" border="0">If you forget your password, we'll use this security word to verify your identity.<FONT class="space4pix"><br /></FONT>
 	</td>
 	</tr>
 </table>
@@ -268,7 +268,7 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 <table border="0" cellspacing="0" cellpadding="0" width="<%=W_RH_SINGUP_TOTAL%>">
 	<tr valign="top">
 	<td width="<%=W_RH_SINGUP_TOTAL%>"><img src="/media_stat/images/navigation/customer_agreement.gif"  border="0" alt="TERMS OF SERVICE">&nbsp;&nbsp;&nbsp;<FONT class="text9">* Required information</FONT><br />
-	<IMG src="/media_stat/images/layout/999966.gif" width="<%=W_RH_SINGUP_TOTAL%>" height="1" border="0" VSPACE="3"><br /></td>
+	<IMG src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_RH_SINGUP_TOTAL%>" height="1" border="0" VSPACE="3"><br /></td>
 	</tr>
 </table>
 <br />
@@ -296,7 +296,7 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 <table border="0" cellspacing="0" cellpadding="0" width="<%=W_RH_SINGUP_TOTAL%>">
 	<tr valign="top">
 	<td width="<%=W_RH_SINGUP_TOTAL%>">
-		<IMG src="/media_stat/images/layout/999966.gif" width="<%=W_RH_SINGUP_TOTAL%>" height="1" border="0" VSPACE="3"><br />
+		<IMG src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_RH_SINGUP_TOTAL%>" height="1" border="0" VSPACE="3"><br />
 	</td>
 	</tr>
 </table>
@@ -325,7 +325,7 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 	</tr>
 	<tr>
 		<td><IMG src="/media_stat/images/layout/clear.gif" width="8"
-			height="11" border="0"></td>
+			alt="" height="11" border="0"></td>
 	</tr>
 	<tr>
 		<td align="right"><b>No, please do not share my personal info with Robin Hood.</b><br />
@@ -340,7 +340,7 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 	</tr>
 	<tr>
 		<td><IMG src="/media_stat/images/layout/clear.gif" width="8"
-			height="11" border="0"></td>
+			alt="" height="11" border="0"></td>
 	</tr>
 
 </table>
@@ -348,7 +348,7 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 <br />
 
 <table cellpadding="0" cellspacing="0" border="0" width="<%=W_RH_SINGUP_TOTAL%>">
-	<tr valign="top" BGCOLOR="#999966"><td width="<%=W_RH_SINGUP_TOTAL%>"><IMG src="/media_stat/images/layout/999966.gif" hspace="0" width="1" height="1" border="0"></td></tr>
+	<tr valign="top" BGCOLOR="#999966"><td width="<%=W_RH_SINGUP_TOTAL%>"><IMG src="/media_stat/images/layout/999966.gif" alt="" hspace="0" width="1" height="1" border="0"></td></tr>
 		<td width="<%=W_RH_SINGUP_TOTAL%>" align="right"><input type="image" onclick="displayStatus();" src="/media_stat/images/giftcards/purchase/gc_submit_order.gif" name="register_new_user" id="register_new_user" alt="SIGN UP" vspace="4" hspace="4" border="0"></td></tr>
-	<tr valign="top" BGCOLOR="#999966"><td width="<%=W_RH_SINGUP_TOTAL%>"><IMG src="/media_stat/images/layout/999966.gif" hspace="0" width="1" height="1" border="0"></td></tr>
+	<tr valign="top" BGCOLOR="#999966"><td width="<%=W_RH_SINGUP_TOTAL%>"><IMG src="/media_stat/images/layout/999966.gif" alt="" hspace="0" width="1" height="1" border="0"></td></tr>
 </table><br />

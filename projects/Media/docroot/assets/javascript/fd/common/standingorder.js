@@ -26,7 +26,7 @@ $jq('button[data-component="addToSOButton"]').on('click', function() {
 });
 
 function AddProductToSO(element, ids, that){
-	if(!FreshDirect.user.recognized && !FreshDirect.user.guest){		
+	if(!FreshDirect.user.recognized && !FreshDirect.user.guest){
 		if(FreshDirect.components.AddToCart.requiredValidator(FreshDirect.modules.common.productSerialize(element, true, true))){
 			$jq.post('/api/standingOrderCartServlet',
 				{
@@ -100,6 +100,14 @@ function addToSoSuccessHandler($contextElem, data) {
 	$soResultsCont.find('.so-results-addedTo').html('Added to: <a href="/quickshop/standing_orders.jsp?soid='+data.id+'#soid_'+data.id+'">'+data.name+'</a>');
 	$soResultsCont.find('.so-results-items-total').html(data.productCount+', '+'<span class="total">$'+data.amount+'</span>');
 	$soResultsCont.find('.so-results-changes-required').html(data.message);
+	
+	$jq('#customizePopup').addClass('so-review-success'); 
+	$jq('#customizePopup .so-review-header').text("Added to");
+	$jq('#customizePopup .so-review-date').text(data.name);
+	$jq('#customizePopup .so-review-link').html('<a href="/quickshop/standing_orders.jsp?soid='+data.id+'#soid_'+data.id+'">See Order Details</a>');
+	$jq('#customizePopup .so-listadd-content .cssbutton[data-component="addToSOButton"]').remove();
+	$jq('#customizePopup .so-review-selected').before('<button type="button" data-popup-control="close" class="okReviewSOButton cssbutton cssbutton-flat green nontransparent">Ok</button>');
+	
 
 	$soResultsCont.toggleClass('so-close');
 	
@@ -168,4 +176,17 @@ $jq('.cssbutton[data-component="createSOButton"]').on('click', function(e) {
 	window.location = "/quickshop/standing_orders.jsp";
 	return false;
 });
+
+function addToSONextHandler() {
+	if(FreshDirect.components.AddToCart.requiredValidator(FreshDirect.modules.common.productSerialize($jq('#customizePopup form[fdform="customize"]'), true, true))){
+		$jq('#customizePopup').addClass('so-review');
+		$jq('#customizePopup .so-review-selected').text($jq('#customizePopup .so-select option:selected').text());
+		if($jq('#customizePopup .skucontrol-quantity input.qty').val() == 1){
+			itemQuantity = $jq('#customizePopup .skucontrol-quantity input.qty').val() + ' item';
+		} else {
+			itemQuantity = $jq('#customizePopup .skucontrol-quantity input.qty').val() + ' items';
+		}
+		$jq('#customizePopup .rightColumn').append('<div class="so-review-item-total">' + itemQuantity + ' (' + $jq('#customizePopup .skucontrol-quantity .subtotal .subtotal-inner').text() + ')</div>');
+	}
+};
 

@@ -13,7 +13,7 @@
     {call common.contentHeader}
       {param content: $moduleData /}
     {/call}
-  	<div class="content">
+  	<div class="content {if  not $moduleData.contentTitle and not $moduleData.contentTitleTextBanner and $moduleData.hideViewAllButton} border-top {/if}">
   		{call common.simpleCarousel}
   			{param isIconCarousel: true /}
   			{param items: $data.icons /}

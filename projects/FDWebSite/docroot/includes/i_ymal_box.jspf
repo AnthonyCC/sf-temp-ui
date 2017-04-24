@@ -289,7 +289,7 @@ final int W_YMAL_BOX_INNER = 540;
 											</fd:IsAlcoholic>--%>
 										</td>
 										<td align="right" width="33%">
-											Total&nbsp;Price:&nbsp;&nbsp;<img src="/media_stat/images/layout/clear.gif" width="4" height="1"><input type="text" style="width:60px" name="total" value="" size="6" class="text11bold" onChange="" onFocus="blur()">
+											Total&nbsp;Price:&nbsp;&nbsp;<img src="/media_stat/images/layout/clear.gif" alt="" width="4" height="1"><input type="text" style="width:60px" name="total" value="" size="6" class="text11bold" onChange="" onFocus="blur()">
 											<script type="text/javascript">	<%= TX_JS_NAMESPACE %>.updateTotal();</script>
 										</td>
 									</tr>
@@ -314,7 +314,7 @@ final int W_YMAL_BOX_INNER = 540;
 			showSeparator = true;
 		}
 %>				<img src="/media_stat/images/template/confirmation/ymal_recipes_hdr.gif" width="170" height="11" border="0" alt="YOU MIGHT ALSO LIKE"><br>
-				<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
+				<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"><br>
 <%
 		for (Iterator<Recipe> it = r_recipes.iterator(); it.hasNext();) {
 			Recipe rec = it.next();
@@ -336,7 +336,7 @@ final int W_YMAL_BOX_INNER = 540;
 <%		}
 %>				<div align="center" style="padding-top: 8px; padding-bottom: 8px;">
 					<div style="font-size:11px; color: #996699; font-weight: bold;">CONTINUE SHOPPING FOR</div>
-					<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
+					<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"><br>
 <%
 		for (Iterator<CategoryModel> it = r_cats.iterator(); it.hasNext();) {
 			CategoryModel c = it.next();

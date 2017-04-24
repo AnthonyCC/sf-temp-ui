@@ -48,7 +48,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td colspan="4" class="list_separator" style="padding: 0px;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+						<td colspan="4" class="list_separator" style="padding: 0px;"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
 					</tr>
 					
 					<% idx = 0; %>
@@ -154,7 +154,7 @@ Short shipped items:
 						</td>
 					</tr>
 					<tr>
-						<td colspan="4" class="list_separator" style="padding: 0px;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+						<td colspan="4" class="list_separator" style="padding: 0px;"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
 					</tr>
 					
 					<% idx = 0; %>

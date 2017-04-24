@@ -49,7 +49,7 @@
   <tr> 
     <td colspan="11" align="center"><a href="http://www.freshdirect.com/department.jsp?deptId=our_picks&amp;trk=epicks05b" class="picks" style="color: #336600;"><img src="http://www.freshdirect.com/media/images/promotions/picks_halloween_5b.gif" width="634" height="57" border="0"/></a><br/>
       <img src="http://www.freshdirect.com/media_stat/images/template/email/halloween/skull_line.gif" width="626" height="17" vspace="3"/><br/>
-      <img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="5"/></td>
+      <img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="5"/></td>
   </tr>
   <tr> 
     <td colspan="2" align="right" valign="bottom"><img src="http://www.freshdirect.com/media_stat/images/template/email/halloween/crazy_eyes4.gif" width="44" height="25"/></td>
@@ -83,7 +83,7 @@
   </tr>
   <tr> 
     <td rowspan="2"></td>
-    <td colspan="3" valign="top"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="8"/><br/>
+    <td colspan="3" valign="top"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="8"/><br/>
       Here's a cake that will satisfy the most passionate of chocolate obsessions. 
       Three layers of rich, dense cake that tastes of milky chocolate, generously 
       frosted with our thick, fudgy icing. The cake layers have a mellow sweetness, 
@@ -98,7 +98,7 @@
     <td colspan="2" height="24"><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text><a href="http://www.freshdirect.com/product.jsp?productId=cake_hween_chccke&amp;catId=bak_cake_fd&amp;trk=epicks05b" class="promoProduct" style="color: #336600;"><font color="#336600"><u>Don't be scared, click here to buy!</u></font></a></td>
   </tr>
   <tr> 
-    <td colspan="11" align="center"><img src="http://www.freshdirect.com/media_stat/images/template/email/halloween/skull_line.gif" width="626" height="17" vspace="12"/><br/><img src="/media_stat/images/layout/clear.gif" width="1" height="10"/></td>
+    <td colspan="11" align="center"><img src="http://www.freshdirect.com/media_stat/images/template/email/halloween/skull_line.gif" width="626" height="17" vspace="12"/><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"/></td>
   </tr>
   <tr> 
     <td colspan="10" align="center"> 
@@ -108,7 +108,7 @@
           <td><a href="http://www.freshdirect.com/category.jsp?catId=gro_candy_chocb&amp;prodCatId=gro_candy_chocb&amp;productId=gro_hersheys_assorted_01&amp;trk=epicks05b" class="promoProduct" style="color: #336600;"><img src="http://www.freshdirect.com/media/images/product/grocery/gro_hersheys_assorted_01_c.jpg" width="80" height="80" border="0"/><br/><font color="#336600"><u><b>Hershey's</b> Assorted Miniatures Chocolate Bars</u></font></a><br/><b>$2.99/ea</b></td>
           <td><a href="http://www.freshdirect.com/category.jsp?catId=gro_peanu_marma&amp;prodCatId=gro_peanu_marma&amp;productId=spe_sarabe_blood_or_01&amp;trk=epicks05b" class="promoProduct" style="color: #336600;"><img src="http://www.freshdirect.com/media/images/product/specialty/spe_sarabe_blood_or_01_c.jpg" width="80" height="80" border="0"/><br/><font color="#336600"><u><b>Sarabeth's</b> Blood Orange Marmalade</u></font></a><br/><b>$6.99/ea</b></td>
           <td><a href="http://www.freshdirect.com/category.jsp?catId=gro_beer_domes&amp;prodCatId=gro_beer_domes&amp;productId=beer_brooklyn_pum_sxbt&amp;trk=epicks05b" class="promoProduct" style="color: #336600;"><img src="http://www.freshdirect.com/media/images/product/grocery_three/beer_brooklyn_pum_sxbt_c.jpg" width="80" height="80" border="0"/><br/><font color="#336600"><u><b>Brooklyn Brewery</b> Post Road Pumpkin Ale</u></font></a><br/><b>$7.49/6pk</b></td>
-          <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="10"/><br/>
+          <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="10"/><br/>
             <a href="http://www.freshdirect.com/product.jsp?productId=sq_hrd_pump&amp;catId=sqw&amp;trk=epicks05b" class="promoProduct" style="color: #336600;"><img src="http://www.freshdirect.com/media/images/product/vegetables/squash/sq_hrd_pump_cr.jpg" width="70" height="70" border="0"/><br/><font color="#336600"><u>Pumpkin</u></font></a><br/><b>$0.39/lb</b></td>
           <td><a href="http://www.freshdirect.com/category.jsp?catId=gro_candy_candy&amp;prodCatId=gro_candy_candy&amp;productId=gro_hersheys_kisses_m_01&amp;trk=epicks05b" class="promoProduct" style="color: #336600;"><img src="http://www.freshdirect.com/media/images/product/grocery/gro_hersheys_kisses_m_01_c.jpg" width="80" height="80" border="0"/><br/><font color="#336600"><u><b>Hershey's</b> Chocolate Kisses</u></font></a><br/><b>$2.99/ea</b></td>
         </tr>
@@ -127,17 +127,17 @@
     <td></td>
   </tr>
   <tr> 
-    <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="20" height="20"/></td>
-    <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="45" height="20"/></td>
-    <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="202" height="20"/></td>
-    <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="50" height="20"/></td>
-    <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="15" height="20"/></td>
-    <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="20"/></td>
-    <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="15" height="20"/></td>
-    <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="148" height="20"/></td>
-    <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="60" height="20"/></td>
-    <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="50" height="20"/></td>
-    <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="20" height="20"/></td>
+    <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="20" height="20"/></td>
+    <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="45" height="20"/></td>
+    <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="202" height="20"/></td>
+    <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="50" height="20"/></td>
+    <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="15" height="20"/></td>
+    <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="20"/></td>
+    <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="15" height="20"/></td>
+    <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="148" height="20"/></td>
+    <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="60" height="20"/></td>
+    <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="50" height="20"/></td>
+    <td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="20" height="20"/></td>
   </tr>
   <tr valign="top"> 
     <td colspan="2" align="right"><img src="http://www.freshdirect.com/media_stat/images/template/email/halloween/bat_bot.gif" width="43" height="35"/></td>
@@ -150,7 +150,7 @@
       <a href="http://www.freshdirect.com?trk=epicks05b"><img src="http://www.freshdirect.com/media_stat/images/template/email/mother/logo_url.gif" width="264" height="35" vspace="6" border="0" alt="www.FreshDirect.com"/></a><br/>
       Price and availability subject to change. Please see Web site for current 
       prices and availability.<br/>
-      <img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="8"/></td>
+      <img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="8"/></td>
     <td></td>
   </tr>
   <tr> 

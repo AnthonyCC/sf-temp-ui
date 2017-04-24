@@ -126,10 +126,10 @@ sortStrategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, S
           lastFilterValue=null;
           lastCatId = parentCat.getContentName();
           Image _img  = parentCat.getCategoryLabel();
-          String imgPath = _img!=null ?  _img.getPath()  : "/media_stat/images/layout/clear.gif";
+          String imgPath = _img!=null ?  _img.getPath()  : "/media_stat/images/layout/clear.gif"; 
          
 %>
-        <tr><td><%if (shownALabel){%><br><%}%><img src="<%=imgPath%>"></td></tr>
+        <tr><td><%if (shownALabel){%><br><%}%><img src="<%=imgPath%>" alt=""></td></tr>
 <%        shownALabel = true;
       }
       if (lastFilterValue==null || !lastFilterValue.equalsIgnoreCase(curFilterValue)) {

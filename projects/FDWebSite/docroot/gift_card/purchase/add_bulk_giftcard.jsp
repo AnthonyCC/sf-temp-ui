@@ -72,7 +72,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 				</tr>
 				<tr>
 					<td colspan="2" style="padding: 2px;">
-						<img style="margin: 2px 0;" width="675" height="1" border="0" src="/media_stat/images/layout/clear.gif" /><br />
+						<img style="margin: 2px 0;" width="675" height="1" border="0" alt="" src="/media_stat/images/layout/clear.gif" /><br />
 					</td>
 				</tr>
 				<tr>
@@ -86,7 +86,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 					</td>
 				</tr>
 				<tr>
-					<td colspan="2" class="botBordLineOrange"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+					<td colspan="2" class="botBordLineOrange"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 				</tr>
 				<tr>
 					<td colspan="2" align="right">

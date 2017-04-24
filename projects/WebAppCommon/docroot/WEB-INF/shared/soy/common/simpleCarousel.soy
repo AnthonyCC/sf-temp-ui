@@ -8,26 +8,29 @@
  * @param? mobWeb
  * @param? isIconCarousel
  * @param? moduleData
+ * @param? siteFeature
  */
 {template .simpleCarousel autoescape="false"}
-<div data-component="carousel" class="first">
+<div data-component="carousel" class="first" product-count="{length($items)}">
+	{if $siteFeature}<!-- {$siteFeature} -->{/if}/* testing */
 	{if $title}<h2>{$title}</h2>{/if}
 	<div data-component="carousel-mask" class="transactional">
 		<ul data-component="carousel-list" data-carousel-page="0">
 			{foreach $item in $items}
-			{if $isIconCarousel}
-				{call common.iconCarouselItem}
-					{param item:$item /}
-          {param moduleData:$moduleData /}
-				{/call}
-			{else}
-				{delcall common.carouselItem variant="$itemType"}
-					{param item:$item /}
-					{param cmEventSource:$cmEventSource /}
-					{param mobWeb:$mobWeb /}
-          {param moduleData:$moduleData /}
-				{/delcall}
-			{/if}
+				{if $isIconCarousel}
+					{call common.iconCarouselItem}
+						{param item:$item /}
+						{param moduleData:$moduleData /}
+					{/call}
+				{else}
+					{delcall common.carouselItem variant="$itemType"}
+						{param item:$item /}
+						{param itemCount:length($items) /}
+						{param cmEventSource:$cmEventSource /}
+						{param mobWeb:$mobWeb /}
+						{param moduleData:$moduleData /}
+					{/delcall}
+				{/if}
 			{/foreach}
 		</ul>
 	</div>

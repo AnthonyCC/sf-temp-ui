@@ -55,7 +55,7 @@ final int W_YA_ADD_DELIVERY_ADDR = 970;
 		
 		<table cellpadding="0" cellspacing="0" border="0" width="<%= W_YA_ADD_DELIVERY_ADDR %>">
 			<tr valign="top">
-				<td width="<%= W_YA_ADD_DELIVERY_ADDR %>" colspan="2"><img src="/media_stat/images/layout/ff9933.gif" hspace="0" width="1" height="1" border="0"></TD>
+				<td width="<%= W_YA_ADD_DELIVERY_ADDR %>" colspan="2"><img src="/media_stat/images/layout/ff9933.gif" alt="" hspace="0" width="1" height="1" border="0"></TD>
 			</tr>
 			<tr>
 				<td width="<%= W_YA_ADD_DELIVERY_ADDR %>" align="right" valign="top">

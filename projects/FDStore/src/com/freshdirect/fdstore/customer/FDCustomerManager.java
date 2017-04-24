@@ -4933,14 +4933,38 @@ public class FDCustomerManager {
 
 			try {
 				FDCustomerManagerSB sb = managerHome.create();
-				return sb.getModifiedCartlines(orderId, userContext);
-
+				List<FDCartLineI> modCartLines = sb.getModifiedCartlines(orderId, userContext);
+				setUserContextToOrderLines(userContext, modCartLines);
+				return modCartLines;
 			} catch (CreateException ce) {
 				invalidateManagerHome();
 				throw new FDResourceException(ce, "Error creating session bean");
 			} catch (RemoteException re) {
 				invalidateManagerHome();
 				throw new FDResourceException(re, "Error talking to session bean");
+			}
+		}
+
+		private static void setUserContextToOrderLines(UserContext userContext, List<FDCartLineI> cartLines) {
+			if(null != cartLines){
+				List<FDCartLineI> invalids=new ArrayList<FDCartLineI>(cartLines.size());
+				for (FDCartLineI cartLine : cartLines) {
+					cartLine.setUserContext(userContext);
+					
+					try {
+						OrderLineUtil.cleanup(cartLine);
+					} catch (FDInvalidConfigurationException e) {
+						invalids.add(cartLine);
+						LOGGER.warn(e.getMessage());
+					} catch(FDResourceException e1){
+						LOGGER.warn(e1.getMessage());
+					}
+					
+				}
+								
+				for(FDCartLineI cartLine:invalids) {
+					cartLines.remove(cartLine);
+				}
 			}
 		}
 
@@ -4998,6 +5022,22 @@ public class FDCustomerManager {
 			try{
 				FDCustomerManagerSB sb = managerHome.create();
 				sb.clearModifyCartlines(currentOrderId);
+
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}			
+		}
+		
+		public static List<UnsettledOrdersInfo> getUnsettledOrders(Date date) throws FDResourceException {
+			lookupManagerHome();
+			
+			try{
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getUnsettledOrders(date);
 
 			} catch (CreateException ce) {
 				invalidateManagerHome();

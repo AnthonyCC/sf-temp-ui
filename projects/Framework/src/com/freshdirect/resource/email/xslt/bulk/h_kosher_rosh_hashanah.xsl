@@ -82,7 +82,7 @@ http://www.freshdirect.com/help/faq_home.jsp
 		<img src="/media_stat/images/template/email/kosher/salmon.jpg" width="197" height="155" vspace="8" border="0" alt="Salmon with Dill, Lemon &amp; Capers (Ready-to-Bake)"/></a></td>
 	</tr>
 	<tr>
-		<td background="/media_stat/images/template/email/kosher/kos_star.gif"><img src="/media_stat/images/layout/clear.gif" width="1" height="24"/></td>
+		<td background="/media_stat/images/template/email/kosher/kos_star.gif"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="24"/></td>
 	</tr>
 	<tr><td align="center"><a href="http://www.freshdirect.com/category.jsp?catId=hmr_khm&amp;trk=rosh">
 		<img src="/media_stat/images/template/email/kosher/matzo_ball.jpg" width="113" height="90" vspace="8" border="0" alt="Matzo Ball Soup"/>
@@ -93,9 +93,9 @@ http://www.freshdirect.com/help/faq_home.jsp
 		</td>
 	</tr>
 	<tr>
-		<td align="center" bgcolor="#6699CC" class="bodyCopySmall"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"/><br/>
+		<td align="center" bgcolor="#6699CC" class="bodyCopySmall"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"/><br/>
 		<font color="#FFFFFF"><b>Please note:</b> Most of the items in our Rosh Hashanah menu are <b>not certified kosher</b>.<br/>Items that are certified kosher are shown with their kosher symbol.</font>
-		<br/><img src="/media_stat/images/layout/clear.gif" width="1" height="4"/>
+		<br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"/>
 		</td>
 	</tr>
 	<tr><td class="mainLink" align="center"><br/>

@@ -69,9 +69,9 @@
 			<tr>
 				<td colspan="2">
 					<%= viewContent.getHeaderInfo() %><br>
-					<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-					<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%= W_YA_DELIVERY_PASS_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
-					<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><br><br>
+					<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+					<IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%= W_YA_DELIVERY_PASS_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
+					<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><br><br>
 					
 				</td>
 			</tr>
@@ -179,7 +179,7 @@
 						<% if(EnumDPAutoRenewalType.YES.equals(arType)) {%>
 
 							<% if(user.getDlvPassInfo().getAutoRenewUsablePassCount()>0) {%>
-								<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_DELIVERY_PASS_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><br><br>	
+								<IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%= W_YA_DELIVERY_PASS_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><br><br>	
 
 								<form name="autoRenew" method="POST">
 								<% if(!DeliveryPassUtil.getAutoRenewalDate(user).equals("")) {%>
@@ -195,7 +195,7 @@
 									<input type="hidden" name="action" value="">
 									<A HREF="#" onClick="javascript:flipAutoRenewalOFF()"><font class="text12">Click here to turn renewal OFF.</A>
 								</form>
-								<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_DELIVERY_PASS_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><br><br>	
+								<IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%= W_YA_DELIVERY_PASS_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><br><br>	
                                           <%} else if (user.getUsableDeliveryPassCount()==0) {%>
 								<form name="signup" method="POST">
 									<input type="hidden" name="action" value="">
@@ -204,7 +204,7 @@
 							<% }%>
 						<%} else {%>
 							<% if(user.getDlvPassInfo().getAutoRenewUsablePassCount()>0) {%>
-								<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_DELIVERY_PASS_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3">
+								<IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%= W_YA_DELIVERY_PASS_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3">
 								<br><br>	
 
 
@@ -229,7 +229,7 @@
 									</td>
 								</tr>
 							</table>
-								<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_DELIVERY_PASS_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><br><br>	
+								<IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%= W_YA_DELIVERY_PASS_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><br><br>	
                                           <%} else if (user.getUsableDeliveryPassCount()==0){%>
 								<form name="signup" method="POST">
 									<input type="hidden" name="action" value="">
@@ -315,7 +315,7 @@
 			
 			<tr>
 				<td colspan="2">
-				<IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%= W_YA_DELIVERY_PASS_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3">			
+				<IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%= W_YA_DELIVERY_PASS_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3">			
 				</td>
 			</tr>	
 		</table>
@@ -324,7 +324,7 @@
 	<table width="<%= W_YA_DELIVERY_PASS_TOTAL %>" align="center" border="0" cellpadding="0" cellspacing="0">
 		<tr>
 			<td align="center" colspan="2">
-				<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="20" BORDER="0"><BR>
+				<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="20" BORDER="0"><BR>
 <A HREF="javascript:pop('/shared/template/generic_popup.jsp?contentPath=/media/editorial/picks/deliverypass/dp_tc.html&windowSize=large&name=Delivery Pass Information',400,560,alt='')">
 				<font class="text11bold">Click here to learn more about FreshDirect DeliveryPass.</font>
 				</A>
@@ -332,13 +332,13 @@
 		</tr>				
 	</table>
 
-	<BR><BR><IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="<%= W_YA_DELIVERY_PASS_TOTAL %>" HEIGHT="1" BORDER="0"><BR><BR>
+	<BR><BR><IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%= W_YA_DELIVERY_PASS_TOTAL %>" HEIGHT="1" BORDER="0"><BR><BR>
 	<FONT CLASS="space4pix"></FONT>
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_YA_DELIVERY_PASS_TOTAL %>">
 	<TR VALIGN="TOP">
 	<TD WIDTH="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="CONTINUE SHOPPING" ALIGN="LEFT"></a></TD>
 	<TD WIDTH="<%= W_YA_DELIVERY_PASS_TOTAL - 35 %>"  class="text11" ><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="CONTINUE SHOPPING"></a>
-	<BR>from <A HREF="/index.jsp"><b>Home Page</b></A><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="340" HEIGHT="1" BORDER="0"></TD>
+	<BR>from <A HREF="/index.jsp"><b>Home Page</b></A><BR><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="340" HEIGHT="1" BORDER="0"></TD>
 	</TR>
 	</TABLE>
 	<BR>

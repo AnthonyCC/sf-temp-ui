@@ -39,7 +39,7 @@ if (ai < max) {
 <tmpl:put name='title' direct='true'>FreshDirect - About FreshDirect: Press</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <table cellpadding="0" cellspacing="0" border="0" width="568">
-<tr><td align="right"><a href="<%=article_path%><%=next_ai%>"><img src="/media_stat/images/template/about/press/next_recent_article.gif" width="127" height="13" border="0"></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td></tr>
+<tr><td align="right"><a href="<%=article_path%><%=next_ai%>"><img src="/media_stat/images/template/about/press/next_recent_article.gif" width="127" height="13" border="0"></a><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8"></td></tr>
 <tr><td>
 <fd:IncludeMedia name="<%= ((ArticleMedia)ra.get(ai)).getPath() %>" />
 </tr></td>

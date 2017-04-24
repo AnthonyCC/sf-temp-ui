@@ -69,7 +69,7 @@ int idx = 0;
 			Please select one.
 			<a href="#" onclick="Modalbox.hide(); return false;"><img src="/media_stat/images/donation/robinhood/close_x.gif" width="50" height="11" alt="close" border="0" style="float: right;" /></a>
 			<br />
-			<br /><img src="/media_stat/images/layout/cccccc.gif" width="320" height="1" border="0"><br /><br />
+			<br /><img src="/media_stat/images/layout/cccccc.gif" alt="" width="320" height="1" border="0"><br /><br />
 			<table border="0" cellspacing="0" cellpadding="2" width="100%">
 				<tr>
 					<td valign="top"><input type="radio" name="optInd" id="rhOptIn" value="rhOptIn" checked /></td>
@@ -105,14 +105,14 @@ int idx = 0;
 		<td colspan="6"class="text11">
 			<span class="title18">Thank you for your donation.</span><br>
 			<br>
-			<img src="/media_stat/images/layout/ff9933.gif" width="<%=W_RH_RECEIPT_TOTAL%>" height="1" border="0" vspace="8"><br><br>
+			<img src="/media_stat/images/layout/ff9933.gif" alt="" width="<%=W_RH_RECEIPT_TOTAL%>" height="1" border="0" vspace="8"><br><br>
 		</td>
 	</tr>
 	<tr>
 		<td colspan="6"class="text11">
 			<span class="title18"><span class="title18or">ORDER INFORMATION</span> for ORDER NUMBER <%= orderNumber%></span><br>
 			<br>
-			 <img src="/media_stat/images/layout/clear.gif" width="1" height="1"><br><br><br>
+			 <img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"><br><br><br>
 		</td>
 	</tr>
 	<tr valign="top">
@@ -157,11 +157,11 @@ int idx = 0;
         </TABLE>
     </TD>
     <TD valign="top" align="CENTER" width="40">
-    	 	<img src="/media_stat/images/layout/cccccc.gif" width="1" height="280"><br>
+    	 	<img src="/media_stat/images/layout/cccccc.gif" alt="" width="1" height="280"><br>
 	    </td>
     <TD WIDTH="300">
         <img src="/media_stat/images/navigation/payment_info.gif" WIDTH="100" HEIGHT="15" border="0" alt="PAYMENT INFO"><BR>
-        <IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=lineWidth%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+        <IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%=lineWidth%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
         <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="300">
         <TR VALIGN="TOP">
             <TD WIDTH="10"><BR></TD>
@@ -218,8 +218,8 @@ int idx = 0;
         
  </TABLE>  
  <br />
- <IMG src="/media_stat/images/layout/clear.gif" width="1" height="1"><br>
-<IMG src="/media_stat/images/layout/cccccc.gif" width="<%=W_RH_RECEIPT_TOTAL%>" height="1"><br>
+ <IMG src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"><br>
+<IMG src="/media_stat/images/layout/cccccc.gif" alt="" width="<%=W_RH_RECEIPT_TOTAL%>" height="1"><br>
 <br /><br />
 
 
@@ -234,7 +234,7 @@ int idx = 0;
 			<td class="text11bold" align="center">Final<br/>Price</td>
 	</tr>
 		<tr>
-			<td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+			<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 		</tr>
 		
 	<tr>
@@ -243,7 +243,7 @@ int idx = 0;
 			</td>
 	</tr>
 		<tr>
-			<td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+			<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 		</tr>
 		
 	<tr>
@@ -259,7 +259,7 @@ int idx = 0;
 
 	</tr>
 	<tr>
-				<td align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
+				<td align="center"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 	</tr>
 	
 
@@ -267,8 +267,8 @@ int idx = 0;
 
 <table width="<%=W_RH_RECEIPT_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 	<tr>
-			<td colspan="4"><img src="/media_stat/images/layout/clear.gif" width="<%=W_RH_RECEIPT_TOTAL-320%>" height="8" border="0" /></td>
-			<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="320" height="8" border="0" /></td>
+			<td colspan="4"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_RH_RECEIPT_TOTAL-320%>" height="8" border="0" /></td>
+			<td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="320" height="8" border="0" /></td>
 		</tr>
 	<tr>
 		    <td colspan="4"></td>
@@ -283,8 +283,8 @@ int idx = 0;
 		
         <% if (FDStoreProperties.isAdServerEnabled()) { %>
 			<tr><td><br><br></td></tr>
-			<tr><td bgcolor="#ccc"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
-			<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td></tr>
+			<tr><td bgcolor="#ccc"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td></tr>
+			<tr><td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5"></td></tr>
 			<tr><td>
 			<table width="<%=W_RH_RECEIPT_TOTAL%>" cellpadding="0" cellspacing="0">
 			<tr><td width="50%" style="border-right: solid 1px #CCCCCC; padding-right: 10px;" align="center">

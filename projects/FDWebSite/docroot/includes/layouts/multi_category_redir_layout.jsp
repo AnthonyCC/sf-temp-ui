@@ -123,7 +123,7 @@ for( int itmIdx=0; itmIdx < availableList.size(); itmIdx++ ) {
 				<table width="<%=maxWidth%>" align="center" cellpadding="0"	cellspacing="0" border="0">
 					<tr>
 						<td>
-							<img src="/media_stat/images/layout/clear.gif" width="1" height="8">
+							<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8">
 						</td>
 					</tr>
 				</table>

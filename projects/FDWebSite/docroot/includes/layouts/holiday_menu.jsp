@@ -65,7 +65,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
 	ContentNodeModel owningFolder = currentFolder;
 
     boolean showPrices = true;
-     String clearImage = "/media_stat/images/layout/clear.gif";
+     String clearImage = "/media_stat/images/layout/clear.gif"; 
     String unAvailableImg="/media_stat/images/template/not_available.gif";
     ContentNodeModel parentNode = currentFolder.getParentNode();
     while (parentNode!=null && !(parentNode instanceof DepartmentModel)) {
@@ -204,14 +204,14 @@ if (sortedColl==null) sortedColl = new ArrayList();
             if (!headingShown) {   %>
                 <TABLE CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="<%=W_HOLIDAY_MENU_TOTAL%>">
                 <TR VALIGN="MIDDLE">
-                	<TD WIDTH="<%=W_HOLIDAY_MENU_TOTAL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="12" border="0"></TD>
+                	<TD WIDTH="<%=W_HOLIDAY_MENU_TOTAL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="12" border="0"></TD>
                 </TR>
                 <TR VALIGN="MIDDLE">
                 	<TD ALIGN="CENTER" WIDTH="<%=W_HOLIDAY_MENU_TOTAL%>" COLSPAN="4" CLASS="title12"><font color="#FF9933"><%=displayCategory.getFullName().toUpperCase()%></font></TD>
                 </TR>
                 <TR VALIGN="MIDDLE"><TD WIDTH="<%=W_HOLIDAY_MENU_TOTAL%>" COLSPAN="4"><img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"></TD></TR>
                 <TR VALIGN="MIDDLE">
-                	<TD WIDTH="<%=W_HOLIDAY_MENU_TOTAL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="4"></TD>
+                	<TD WIDTH="<%=W_HOLIDAY_MENU_TOTAL%>" COLSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="4"></TD>
                 </TR>
                 </TABLE>
 

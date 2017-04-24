@@ -76,17 +76,17 @@ if (sortedColl==null) sortedColl = new ArrayList();
  
  <table width="427" cellpadding="0" cellspacing="0" border="0">
 		<tr>
-			<td><img src="/media_stat/images/layout/clear.gif" width="195" height="1"></td>
-			<td><img src="/media_stat/images/layout/clear.gif" width="13" height="1"></td>
-			<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-			<td><img src="/media_stat/images/layout/clear.gif" width="13" height="1"></td>
-			<td><img src="/media_stat/images/layout/clear.gif" width="205" height="1"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" alt="" width="195" height="1"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" alt="" width="13" height="1"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" alt="" width="13" height="1"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" alt="" width="205" height="1"></td>
 		</tr>
 		<tr valign="top">
 			
     <td align="center" class="text12">
 		<img src="/media/images/headers/chefs_picks.gif" width="129" height="23"><br>
-		<img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br>
+		<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6"><br>
 <%
 	// TEST CategoryModel testCat = (CategoryModel) ContentFactory.getInstance().getContentNode("cof_ef_org");
 	boolean hideFi = false;
@@ -127,8 +127,8 @@ if (sortedColl==null) sortedColl = new ArrayList();
 			<td></td>
 			<td bgcolor="#CCCCCC"></td>
 			<td></td>
-			<td class="text12"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"><br><img src="/media/images/headers/menu.gif" width="61" height="14"><br>
-			<img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br>
+			<td class="text12"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5"><br><img src="/media/images/headers/menu.gif" width="61" height="14"><br>
+			<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"><br>
 <%
 
     CategoryModel displayCategory = null;

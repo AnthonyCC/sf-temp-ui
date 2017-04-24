@@ -10,9 +10,11 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.event.ejb.EventLoggerHome;
 import com.freshdirect.event.ejb.EventLoggerSB;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.event.EventSinkI;
 import com.freshdirect.framework.event.FDWebEvent;
+import com.freshdirect.payment.service.FDECommerceService;
 
 /**
  * @author knadeem Date May 18, 2005
@@ -27,8 +29,12 @@ public class RemoteEventSink implements EventSinkI {
 
 	public boolean log(FDWebEvent event) {
 		try {
-			EventLoggerSB sb = this.getEventLoggerHome().create();
-			sb.log(event);
+			if (FDStoreProperties.isStorefront2_0Enabled()) {
+				FDECommerceService.getInstance().log(event);
+			} else {
+				EventLoggerSB sb = this.getEventLoggerHome().create();
+				sb.log(event);
+			}
 			return true;
 		} catch (RemoteException e) {
 			throw new EJBException("Cannot Create EventLoggerSB", e);

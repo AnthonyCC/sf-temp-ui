@@ -47,7 +47,7 @@ function linkTo(url){
 				<TR VALIGN="TOP">
 					<TD WIDTH="15"><img src="/media/images/layout/clear.gif" width="15" height="1" alt="" border="0"></TD>
 					<TD WIDTH="<%=tableWidth%>" class="bodyCopy">
-						<img src="/media_stat/images/layout/cccccc.gif" width="<%=tableWidth%>" height="1"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
+						<img src="/media_stat/images/layout/cccccc.gif" alt="" width="<%=tableWidth%>" height="1"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
 						<table cellpadding="0" cellspacing="0">
 							<tr><td colspan="2" class="bodyCopy"><span class="text13"><b>What is FreshDirect At The Office?</b></span><br><br>
 					FreshDirect At The Office brings area businesses the same great, fresh food that's made FreshDirect indispensable for tens of thousands of New York households, with expanded product and service offerings especially for corporate clients. These include:<br><br></td></tr>

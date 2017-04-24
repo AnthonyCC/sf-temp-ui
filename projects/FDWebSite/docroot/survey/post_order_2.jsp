@@ -143,7 +143,7 @@ Please note that this research will help us improve our service, however, we are
 	<tr>
 		<td colspan="8" class="text12"><br><span class="title18">Order Feedback Survey (Page 2 of 2)</span><br><span class="space4pix"><br></span>
 		A few details about the problem you experienced will help us improve.
-<br><img src="/media_stat/images/layout/ff9933.gif" width="<%=W_SURVEY_POST_ORDER_2_TOTAL%>" height="1" vspace="8"><br>
+<br><img src="/media_stat/images/layout/ff9933.gif" alt="" width="<%=W_SURVEY_POST_ORDER_2_TOTAL%>" height="1" vspace="8"><br>
 <span class="text15"><b>Which of the following best describe your problem?</b> (check all that apply) </span><br>
 		<fd:ErrorHandler result='<%=result%>' field='<%=checkSurveyForm%>'>
 			<% String errorMsg = SystemMessageList.MSG_MISSING_SURVEY_INFO; %>
@@ -153,14 +153,14 @@ Please note that this research will help us improve our service, however, we are
 		</td>
 	</tr>
 	<tr>
-		<td><img src="/media_stat/images/layout/clear.gif" width="25" height="8"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="25" height="8"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="25" height="8"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_SURVEY_POST_ORDER_2_TOTAL-125)/3+1%>" height="8"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="25" height="8"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_SURVEY_POST_ORDER_2_TOTAL-125)/3+1%>" height="8"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="25" height="8"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="<%=(W_SURVEY_POST_ORDER_2_TOTAL-125)/3%>" height="8"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="25" height="8"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="25" height="8"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="25" height="8"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=(W_SURVEY_POST_ORDER_2_TOTAL-125)/3+1%>" height="8"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="25" height="8"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=(W_SURVEY_POST_ORDER_2_TOTAL-125)/3+1%>" height="8"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="25" height="8"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=(W_SURVEY_POST_ORDER_2_TOTAL-125)/3%>" height="8"></td>
 	</tr>
 	
 	    <logic:iterate id="question" collection="<%= shownQuestions %>" type="com.freshdirect.fdstore.survey.FDSurveyQuestion" indexId='index'>
@@ -183,15 +183,15 @@ Please note that this research will help us improve our service, however, we are
             </fd:ErrorHandler>
 			<% if ("q_other".equalsIgnoreCase(question.getName())) { %>
 				<tr>
-					<td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="25" height="1"></td>
+					<td rowspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="25" height="1"></td>
 					<td colspan="7" class="text13"><%=question.getDescription()%>: <b><%=q_other_text%></b></td>
 					<input type="hidden" name="q_other" value="<%=q_other_text%>">
 				</tr>
-		        <tr><td colspan="7"><img src="/media_stat/images/layout/999966.gif" width="<%=W_SURVEY_POST_ORDER_2_TOTAL-80%>" height="1" vspace="2"><br><span class="space8pix"><br><br></span></td></tr>
+		        <tr><td colspan="7"><img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_SURVEY_POST_ORDER_2_TOTAL-80%>" height="1" vspace="2"><br><span class="space8pix"><br><br></span></td></tr>
 			<% } else if ("q_additional_information".equalsIgnoreCase(question.getName())) { %>
 				<tr>
 					<td></td>
-					<td colspan="7" class="text13"><br><b><%=question.getDescription()%></b><br><img src="/media_stat/images/layout/999966.gif" width="<%=W_SURVEY_POST_ORDER_2_TOTAL-80%>" height="1" vspace="4"><br>
+					<td colspan="7" class="text13"><br><b><%=question.getDescription()%></b><br><img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_SURVEY_POST_ORDER_2_TOTAL-80%>" height="1" vspace="4"><br>
 					<textarea wrap="virtual" cols="80" rows="4" class="text13" name="<%=question.getName()%>"><%=request.getParameter(question.getName())%></textarea>
 					<br><span class="space8pix"><br><br></span></td>
 				</tr>
@@ -221,7 +221,7 @@ Please note that this research will help us improve our service, however, we are
 				} 
 				%>
 				<tr>
-					<td rowspan="<% if (columns) { %><%=(numCols +1) * 2%><% } else { %><%=(question.getAnswers().size() + (hasOther?2:1)) * 2%><% } %>" <%=subQuestion? "colspan=\"2\"" : ""%>><img src="/media_stat/images/layout/clear.gif" width="25" height="1"></td>
+					<td rowspan="<% if (columns) { %><%=(numCols +1) * 2%><% } else { %><%=(question.getAnswers().size() + (hasOther?2:1)) * 2%><% } %>" <%=subQuestion? "colspan=\"2\"" : ""%>><img src="/media_stat/images/layout/clear.gif" alt="" width="25" height="1"></td>
 					<td colspan="<%=subQuestion? "6" : "7"%>" class="<%=surveyQuestion%>"><b><%=question.getDescription()%></b></td>
 				</tr>
 				
@@ -288,7 +288,7 @@ Please note that this research will help us improve our service, however, we are
         </logic:iterate>
 	
 	<tr>
-	<td colspan="8" align="center"><img src="/media_stat/images/layout/ff9933.gif" width="<%=W_SURVEY_POST_ORDER_2_TOTAL%>" height="1" vspace="12"><br><input type="image" src="/media_stat/images/buttons/survey_submit.gif" width="91" height="21" onClick="postOrderSurvey.submit()" alt="SUBMIT"><br><br><br></td></tr>
+	<td colspan="8" align="center"><img src="/media_stat/images/layout/ff9933.gif" alt="" width="<%=W_SURVEY_POST_ORDER_2_TOTAL%>" height="1" vspace="12"><br><input type="image" src="/media_stat/images/buttons/survey_submit.gif" width="91" height="21" onClick="postOrderSurvey.submit()" alt="SUBMIT"><br><br><br></td></tr>
 </form>
 <% } %>
 </table>

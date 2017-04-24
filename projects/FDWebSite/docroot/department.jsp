@@ -144,7 +144,7 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 	<%
 	/*try {*/
 		if (isIncludeMediaLayout) {
-			%><img src="/media_stat/images/layout/clear.gif" width="1" height="10" /> <%@ include file="/common/template/includes/catLayoutManager.jspf" %><br /><%  
+			%><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10" /> <%@ include file="/common/template/includes/catLayoutManager.jspf" %><br /><%  
 		} else {
 			Html introCopyAttribute = departmentModel.getEditorial();
 			String introCopy = (introCopyAttribute == null ? "" : introCopyAttribute.getPath());
@@ -170,22 +170,22 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 					<tr valign="top">
 						<% if (deptIdentifier.equalsIgnoreCase("Coffee")) { %>
 							<td class="text11" width="<%=W_DEPARTMENT_COFFEE_LEFT%>">
-								<Img src="/media_stat/images/layout/clear.gif" width="1" height="9" /><br />
+								<Img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="9" /><br />
 								<font class="title16">
 									<% if (introTitle != null || !"".equals(introTitle)) { %>
 										<%=introTitle%>
 									<% } %>
 								</font><br />
-								<img src="/media_stat/images/layout/clear.gif" width="1" height="3" /><br />
+								<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" /><br />
 								<fd:IncludeMedia name='<%= introCopy %>' /><br />
-								<img src="/media_stat/images/layout/clear.gif" width="1" height="4" />
+								<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4" />
 							</td>
 						<% } else if ( EnumLayoutType.FOURMM_DEPARTMENT.getId() != layouttype ) { %>
-							<td class="text11" width="<%=W_DEPARTMENT_TOTAL%>"><img src="/media_stat/images/layout/clear.gif" width="1" height="9" /><br />
+							<td class="text11" width="<%=W_DEPARTMENT_TOTAL%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="9" /><br />
 								<font class="title16"><%=introTitle%></font><br />
-								<img src="/media_stat/images/layout/clear.gif" width="1" height="3" /><br />
+								<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" /><br />
 								<fd:IncludeMedia name='<%= introCopy %>' /><br />
-								<img src="/media_stat/images/layout/clear.gif" width="1" height="4" />
+								<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4" />
 							</td>
 						<% } %>
 					</tr>
@@ -199,19 +199,19 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 			if (rateNRankLinks.length()>0) { %>
 				<table width="<%=W_DEPARTMENT_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 					<tr valign="top">
-						<td width="<%=W_DEPARTMENT_TOTAL%>" colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="2" /></td>
+						<td width="<%=W_DEPARTMENT_TOTAL%>" colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="2" /></td>
 					</tr>
 					<tr valign="top">
 						<td width="<%=W_DEPARTMENT_RATE_LEFT%>"><font class="text10bold">Compare <%= departmentModel.getFullName() %> by:&nbsp;</font><%= rateNRankLinks.toString() %><%-- include file="/include/i_show_rating_groups.jsp" --%><br />
-						<img src="/media_stat/images/layout/clear.gif" WIDTH="10" HEIGHT="3" border="0"></td>
+						<img src="/media_stat/images/layout/clear.gif" alt="" WIDTH="10" HEIGHT="3" border="0"></td>
 						<td width="<%=W_DEPARTMENT_RATE_RIGHT%>" align="right"><a href="javascript:soon()">View all <%= departmentModel.getFullName().toLowerCase() %></a><br />
-						<img src="/media_stat/images/layout/clear.gif" width="<%=W_DEPARTMENT_RATE_RIGHT%>" height="1" border="0"></td>
+						<img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_DEPARTMENT_RATE_RIGHT%>" height="1" border="0"></td>
 					</tr>
 					<tr valign="top">
-						<td width="<%=W_DEPARTMENT_TOTAL%>" bgcolor="#cccccc" colspan="2"><img src="/media_stat/images/layout/cccccc.gif" width="10" height="1" /></td>
+						<td width="<%=W_DEPARTMENT_TOTAL%>" bgcolor="#cccccc" colspan="2"><img src="/media_stat/images/layout/cccccc.gif" alt="" width="10" height="1" /></td>
 					</tr>
 					<tr valign="top">
-						<td width="<%=W_DEPARTMENT_TOTAL%>" colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" /></td>
+						<td width="<%=W_DEPARTMENT_TOTAL%>" colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10" /></td>
 					</tr>
 				</table>
 			<% } // rateNRankLinks.length()>0
@@ -227,7 +227,7 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 			// when the bakery related cms changes are done this section is to be removed!
 			} else if ("bak".equals(deptId) && !ContentNodeModelUtil.getLayout(departmentModel, null).equals(EnumLayoutType.BAKERY_DEPARTMENT) ) { 
 				String trkCode= "dpage";	 
-				%><img src="/media_stat/images/layout/clear.gif" width="1" height="12" />	 
+				%><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="12" />	 
 				<%@ include file="/includes/layouts/bakerydpt.jspf" %><br />	 
 				<%@ include file="/includes/department_bottom.jspf"%><%
 			//-----------------------------------------------------------------------------------	
@@ -236,7 +236,7 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 				
 				//use this spacer image if not on buy big department (media include available for spacing)
 				if (!"big".equals(deptId)) {
-					%><img src="/media_stat/images/layout/clear.gif" width="1" height="10" /><%
+					%><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10" /><%
 				} %>
 
 				<%@ include file="/common/template/includes/catLayoutManager.jspf" %><br /><%

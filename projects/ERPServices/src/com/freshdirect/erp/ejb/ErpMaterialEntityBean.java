@@ -357,8 +357,10 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 	 */
 	public PayloadI loadRowPayload(Connection conn, PrimaryKey pk) throws SQLException {
 		VersionedPrimaryKey vpk = (VersionedPrimaryKey) pk;
-		PreparedStatement ps = conn.prepareStatement("SELECT M.SAP_ID, M.skucode, M.BASE_UNIT, M.DESCRIPTION, M.CHAR_QUANTITY, M.CHAR_SALESUNIT, M.UPC, M.ALCOHOLIC_CONTENT, M.TAXABLE," +
-				" P.DAYSFRESH, M.MATERIAL_TYPE, M.APPROVAL_STATUS, M.TAX_CODE, M.MATERIAL_GROUP FROM ERPS.MATERIAL M, ERPS.PLANT_MATERIAL P WHERE M.id=P.MAT_ID AND M.ID = ? AND M.VERSION = ?");
+		
+		PreparedStatement ps = conn.prepareStatement("SELECT SAP_ID, skucode, BASE_UNIT, DESCRIPTION, CHAR_QUANTITY, CHAR_SALESUNIT, UPC, ALCOHOLIC_CONTENT, " +
+				"TAXABLE,  MATERIAL_TYPE, APPROVAL_STATUS, TAX_CODE, MATERIAL_GROUP FROM ERPS.MATERIAL WHERE ID = ? AND VERSION = ?");
+		
 		ps.setString(1, vpk.getId());
 		ps.setInt(2, vpk.getVersion());
 		
@@ -378,11 +380,11 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 		p.UPC = rs.getString(7);
       p.alcoholicContent = EnumAlcoholicContent.getAlcoholicContent(rs.getString(8));
 		p.taxable = "X".equalsIgnoreCase(rs.getString(9));
-      p.daysFresh = rs.getString(10);
-      p.materialType = rs.getString(11);
-      p.approvedStatus = EnumProductApprovalStatus.getApprovalStatus(rs.getString(12));
-      p.taxCode = rs.getString(13);
-      p.materialGroup = rs.getString(14);
+     // p.daysFresh = rs.getString(10);
+      p.materialType = rs.getString(10);
+      p.approvedStatus = EnumProductApprovalStatus.getApprovalStatus(rs.getString(11));
+      p.taxCode = rs.getString(12);
+      p.materialGroup = rs.getString(13);
       
 		rs.close();
 		ps.close();

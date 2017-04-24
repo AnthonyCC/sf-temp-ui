@@ -34,4 +34,4 @@
 
 <div style="text-align:center"><a href="<%=response.encodeURL(view_cart_redir)%>">
 	<img name="viewcartbutton" onmouseout="swapImage('viewcartbutton','/media_stat/images/buttons/continueshop_f1.png')" onmouseover="swapImage('viewcartbutton','/media_stat/images/buttons/continueshop_f2.png')" src="/media_stat/images/buttons/continueshop_f1.png" border="0"></a></div>
-<img src="/media_stat/images/layout/clear.gif" width="1" height="50px">
+<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="50px">

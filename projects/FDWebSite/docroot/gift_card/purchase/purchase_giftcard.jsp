@@ -223,7 +223,7 @@ UserUtil.initializeGiftCart(user);
 	</tr>
 	<tr>
 		<td colspan="2" style="padding: 2px 0px;">
-			<img style="margin: 2px 0;" width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" height="1" border="0" src="/media_stat/images/layout/999966.gif" /><br />
+			<img style="margin: 2px 0;" width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" height="1" border="0" alt="" src="/media_stat/images/layout/999966.gif" /><br />
 		</td>
 	</tr>
 </table>
@@ -278,9 +278,9 @@ boolean isCheckEligible = false;
     	}
     %>
     	<tr>
-    	<td><IMG src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0">
+    	<td><IMG src="/media_stat/images/layout/clear.gif" alt="" width="8" height="11" border="0">
     	</td>
-    	<td><IMG src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0">
+    	<td><IMG src="/media_stat/images/layout/clear.gif" alt="" width="8" height="11" border="0">
     	</td>
     	</tr>
     	<tr>
@@ -296,9 +296,9 @@ boolean isCheckEligible = false;
     	</tr>
 </table>
 
-<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br />
+<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br />
 
-<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br /><br />
+<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br /><br />
 
 <script language="javascript">
 	<!--
@@ -310,7 +310,7 @@ boolean isCheckEligible = false;
 	<table width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
 		<tr valign="top">
 			<td width="<%=W_PURCHASE_GIFTCARD_TOTAL%>"><img src="/media_stat/images/navigation/choose_credit_card.gif" width="135" height="9" border="0" alt="CHOOSE CREDIT CARD">&nbsp;&nbsp;&nbsp;<br />
-					<img src="/media_stat/images/layout/999966.gif" width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" height="1" border="0" vspace="3"><br />
+					<img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" height="1" border="0" vspace="3"><br />
 				<font class="space2pix"><br /></font>  
 			</td>   
 		</tr>
@@ -336,7 +336,7 @@ boolean isCheckEligible = false;
 		</tr>
 	</table>
 		<br />
-		<img src="/media_stat/images/layout/ff9933.gif" width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" height="1" border="0"><br />
+		<img src="/media_stat/images/layout/ff9933.gif" alt="" width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" height="1" border="0"><br />
 		<font class="space4pix"><br /><br /></font>
 		<table border="0" cellspacing="0" cellpadding="2" width="<%=W_PURCHASE_GIFTCARD_TOTAL%>">
 		<tr valign="top">

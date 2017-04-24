@@ -197,7 +197,7 @@ StringBuffer buffer = new StringBuffer(
 <% boolean http_link = true; %>
 <!-- PROFILE HEADER -->
 <% if(!modifyOrderMode) { %>
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
 <% } %>
 <%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
 <img src="/media_stat/images/layout/clear.gif" width="1" height="16" border="0" alt="" />

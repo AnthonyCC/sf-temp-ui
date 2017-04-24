@@ -206,7 +206,6 @@ request.setAttribute("noyui", true);
 			<%
 			} else if (!showAltHome && !location2Media) {
 				%><comp:welcomeMessage user="<%= user %>" segmentMessage="<%= segmentMessage %>" isCosPage="<%=false%>"/>
-				  <comp:deliverySlotReserved user="<%= user %>" />
 			<%
 			}
 			%>

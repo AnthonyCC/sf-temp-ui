@@ -484,7 +484,7 @@ if(productCode!=null && prodCatId !=null ) {
         <%        } %>
         </td>
 <% } %>
-</tr></table><img src="/media_stat/images/layout/clear.gif" width="1" height="5"><br>
+</tr></table><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5"><br>
 <font class="title14" <% if (!skuAvailable) { %>color="#999999"<% } %>><%
         //
         // annotation mode
@@ -677,7 +677,7 @@ if (brandLogo !=null) {
 %>
 <table border="0" cellspacing="0" cellpadding="0" width="<%= W_DEALS_TOTAL %>">
 <tr>
-    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
+    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td>
 </tr>
 <%
 
@@ -703,14 +703,14 @@ if (FDStoreProperties.isAdServerEnabled()) {
 Html editorialMedia = currentFolder.getEditorial();
 if (doRenderEditorialPartial && editorialMedia != null && !editorialMedia.isBlank() && !bigProdShown) { %>
 	<tr>
-	    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td>
+	    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8"></td>
 	</tr>
 	<tr>
 	    <td colspan="2"><fd:IncludeMedia name='<%= editorialMedia.getPath() %>'/></td>
 	</tr>
 <% } else { %>
 	<tr>
-	    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td>
+	    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5"></td>
 	</tr>	
 	<tr>
 		<td><font class="title11"><%=brandOrFolderName%></font> <font class="text9">(<%= skuCount %> items)</font><br></td>
@@ -718,13 +718,13 @@ if (doRenderEditorialPartial && editorialMedia != null && !editorialMedia.isBlan
 	</tr>
 <% } %>
 <tr>
-    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td>
+    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5"></td>
 </tr>
 <tr>
-    <td colspan="2" bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+    <td colspan="2" bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
 </tr>
 <tr>
-    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
+    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td>
 </tr>
 <%
 
@@ -735,13 +735,13 @@ if (!bigProdShown && brandPopupLink!=null) {
     <td colspan="2"><a href="<%=brandPopupLink%>">Learn more about <%=brandName%></a></td>
 </tr>
 <tr>
-    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
+    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td>
 </tr>
 <tr valign="top">
-    <td colspan="2" bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"></td>
+    <td colspan="2" bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1" border="0"></td>
 </tr>
 <tr>
-    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
+    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td>
 </tr>
 <%
 }
@@ -766,7 +766,7 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
 }
  // if we are not displaying the amplified product (bigProduct area) then show the add selected to cart button at the top
 %>
-<img src="/media_stat/images/layout/clear.gif" width="1" height="6">
+<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6">
 
 
 <%
@@ -890,9 +890,9 @@ Thumbnails <a href="<%=thumbNailURL%>">ON</a> | <b>OFF</b><%
 }
 %></td>
 </tr>
-<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
-<tr><td colspan="2" bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
-<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
+<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td></tr>
+<tr><td colspan="2" bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td></tr>
+<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td></tr>
 </table>
 <table border="0" cellspacing="0" cellpadding="0" width="<%= W_DEALS_TOTAL %>">
 <tr valign="top"><td CLASS="text10bold" width="370">Page: <%= pageNumberLinks %><br></td>

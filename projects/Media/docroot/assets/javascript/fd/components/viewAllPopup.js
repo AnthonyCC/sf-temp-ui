@@ -30,7 +30,7 @@ var FreshDirect = FreshDirect || {};
         overlay:true,
         overlayExtraClass:'white-popup-overlay',
         hideOnOverlayClick: true,
-        zIndex:450
+        zIndex:460
       }
     },
     hasClose: {
@@ -70,8 +70,9 @@ var FreshDirect = FreshDirect || {};
   });
 
   function closeTransactionalPopup () {
-    var transactionalPopup = $(document).find('.transactional-popup.shown')[0];
-    $(transactionalPopup).removeClass('shown');
+    var transactionalPopup = fd.common.transactionalPopup;
+    transactionalPopup.popup.lastFocused = null;
+    transactionalPopup.close();
   }
 
   viewallPopup.listen();

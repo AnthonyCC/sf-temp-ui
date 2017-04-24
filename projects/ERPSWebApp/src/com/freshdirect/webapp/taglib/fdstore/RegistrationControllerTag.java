@@ -544,40 +544,6 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
         return erpAddress;
     }
 
-    protected void performEditDeliveryAddress(HttpServletRequest request, ActionResult actionResult, TimeslotEvent event) throws FDResourceException {
-        HttpSession session = (HttpSession) pageContext.getSession();
-        FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
-
-        // call common delivery address check
-        ErpAddressModel erpAddress = checkDeliveryAddressInForm(request, actionResult, session);
-        if (erpAddress == null) {
-            return;
-        }
-
-        String shipToAddressId = request.getParameter("updateShipToAddressId");
-//        boolean foundFraud = AddressUtil.updateShipToAddress(request.getSession(), actionResult, user, shipToAddressId, erpAddress);
-        boolean foundFraud = DeliveryAddressManipulator.updateShipToAddress(request.getSession(), actionResult, user, shipToAddressId, erpAddress);
-        if (foundFraud) {
-            /*
-             * session.setAttribute(SessionName.SIGNUP_WARNING, MessageFormat.format( SystemMessageList.MSG_NOT_UNIQUE_INFO, new Object[] {user.getCustomerServiceContact()}));
-             */
-            this.applyFraudChange(user);
-        }
-        /*
-         * if(user.getOrderHistory().getValidOrderCount()==0) { user.setZipCode(erpAddress.getZipCode()); user.setSelectedServiceType(erpAddress.getServiceType());
-         * //user.resetPricingContext(); }
-         */
-        FDReservation reservation = user.getReservation();
-        if (reservation != null) {
-            reservation = FDCustomerManager.validateReservation(user, reservation, event);
-            user.setReservation(reservation);
-            session.setAttribute(USER, user);
-            if (reservation == null) {
-                session.setAttribute(REMOVED_RESERVATION, Boolean.TRUE);
-            }
-        }
-    }
-
     protected void performAddDeliveryAddress(HttpServletRequest request, ActionResult actionResult) throws FDResourceException {
         HttpSession session = (HttpSession) pageContext.getSession();
         FDSessionUser user = (FDSessionUser) session.getAttribute(USER);

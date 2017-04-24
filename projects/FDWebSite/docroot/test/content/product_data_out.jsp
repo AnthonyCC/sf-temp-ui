@@ -1,6 +1,7 @@
 <%@ page import='com.freshdirect.framework.util.NVL'%>
 <%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.cms.ContentKey'%>
+<%@ page import='com.freshdirect.cms.util.ProductInfoUtil'%>
 <%
 	//check for a passed pId
 		String pId = NVL.apply(request.getParameter("pId"), "");
@@ -31,7 +32,7 @@
 					out.print(pRef.getProductRating());
 				}else if (sRef instanceof SkuModel) {
 					//sku
-					out.print(sRef.getProductInfo().getRating(plantID));
+					out.print(sRef.getProductInfo().getRating(ProductInfoUtil.getPickingPlantId(sRef.getProductInfo())));
 				}
 			}
 		}

@@ -862,7 +862,7 @@ public class FilteringNavigator {
 	// convenience method
 	private static String safeURLEncode(String str) {
 		try {
-			return URLEncoder.encode(str, "ISO-8859-1");
+			return URLEncoder.encode(str!=null?str:"", "ISO-8859-1");
 		} catch (UnsupportedEncodingException e) {
 			// NOTE: this should never happen!
 			return "";

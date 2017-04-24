@@ -320,7 +320,7 @@ public class StandingOrderUtil {
 		ActionResult addressValidatorResult = new ActionResult();
 		
 		try { 
-			addressValidator.validateAddressWithoutScrub( addressValidatorResult );
+			addressValidator.validateAddress( addressValidatorResult );
 		}catch (FDResourceException e) {
 			LOGGER.warn( "Address validation failed with FDResourceException ", e );
 			return SOResult.createTechnicalError( so, "Address validation failed with FDResourceException." );

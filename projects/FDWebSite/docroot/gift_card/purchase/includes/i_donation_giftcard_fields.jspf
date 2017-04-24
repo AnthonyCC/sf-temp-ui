@@ -150,17 +150,17 @@ if (_donOrganization != null && request.getParameter("gcDonId") != null) {
     </tr>
 	</fd:ErrorHandler>
     <tr>
-        <td rowspan="10" width="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" border="0" /></td>
+        <td rowspan="10" width="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1" border="0" /></td>
         <td align="right" class="text12" width="185">
 			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
 				<label>*&nbsp;Your&nbsp;Name</label> 
 			</span>
 		</td>
-        <td rowspan="10" width="15"><img src="/media_stat/images/layout/clear.gif" width="10" height="1" border="0" /></td>
+        <td rowspan="10" width="15"><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="1" border="0" /></td>
         <td colspan="2">
 			<input type="text" maxlength="55" tabIndex="1" size="40" class="text11" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>"  id="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>" required="true" value="<%=fldYourName %>" />
 		</td>       
-        <td rowspan="10" width="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" border="0"></td>
+        <td rowspan="10" width="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1" border="0"></td>
     </tr>
     <tr>
         <td align="right" class="text12">
@@ -225,7 +225,7 @@ if (_donOrganization != null && request.getParameter("gcDonId") != null) {
 		</td>
 	</tr>    
 	<tr>
-	 	<td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br /></td>
+	 	<td colspan="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br /></td>
 	</tr>
 	<tr>
 	 	<td colspan="5" align="center"><div id="gcDisplayContainer"><!--  --></div></td>
@@ -234,6 +234,6 @@ if (_donOrganization != null && request.getParameter("gcDonId") != null) {
 
 <table border="0" cellspacing="1" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TABLE%>">
 <tr valign="MIDDLE">
-    <td><img src="/media_stat/images/layout/clear.gif" width="105" height="1" border="0"></td>
+    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="105" height="1" border="0"></td>
 </tr>
 </table>

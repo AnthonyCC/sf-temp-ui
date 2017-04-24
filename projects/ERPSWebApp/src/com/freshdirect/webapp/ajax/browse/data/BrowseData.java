@@ -308,7 +308,13 @@ public class BrowseData implements Serializable {
 			public int compare(String category1, String category2) {
 				CategoryKey categoryKey1=getCategoryKeyForCategory(category1, catKeys);
 				CategoryKey categoryKey2=getCategoryKeyForCategory(category2, catKeys);
-				return categoryKey1.getCategoryPosition().compareTo(categoryKey2.getCategoryPosition());
+				//Added the condition as part of APPBUG-4991. When all the products have the same category position, the comparator was returning only one category header name
+				//If the category position is 0- we are now comparing by category name
+				if(0==categoryKey1.getCategoryPosition().compareTo(categoryKey2.getCategoryPosition())){
+					return categoryKey1.getCategoryName().compareTo(categoryKey2.getCategoryName());
+				}else{
+					return categoryKey1.getCategoryPosition().compareTo(categoryKey2.getCategoryPosition());
+				}
 				
 			}
 		});

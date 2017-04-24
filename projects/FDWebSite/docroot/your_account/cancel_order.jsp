@@ -93,7 +93,7 @@
 				<tr>
 					<td>&nbsp;</td>
 					<td colspan="2" class="text13">
-						<img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br />
+						<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"><br />
 						You are about to cancel this order. If you cancel it, you will not receive a delivery and your account will not be charged. We will save the items from this order in "Reorder."<br />
 						<br />
 						If you would like to change this order instead, <a href="/your_account/modify_order.jsp?orderId=<%= orderId %>">click here</a>.<br />
@@ -110,9 +110,9 @@
 						<img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" />
 					</td>
 				</tr>
-				<tr class="NOMOBWEB"><td bgcolor="#CCCCCC" colspan="3"><img src="/media_stat/images/layout/clear.gif" width="<%= W_YA_CANCEL_ORDER %>" height="1" border="0"></td></tr>
+				<tr class="NOMOBWEB"><td bgcolor="#CCCCCC" colspan="3"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%= W_YA_CANCEL_ORDER %>" height="1" border="0"></td></tr>
 				<tr>
-					<td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br />
+					<td colspan="3"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8"><br />
 						<table cellspacing="0" cellpadding="0" border="0">
 							<tr>
 							    <td rowspan="2"><a href="order_details.jsp?orderId=<%= orderId %>"><img src="/media_stat/images/template/youraccount/cross.gif" border="0"></a></td>
@@ -124,7 +124,7 @@
 				</tr>
 			<% } %>
 			<tr>
-				<td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="20"><br /><b>Having Problems?</b><br /><%@ include file="/includes/i_footer_account.jspf" %></td>
+				<td colspan="3"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="20"><br /><b>Having Problems?</b><br /><%@ include file="/includes/i_footer_account.jspf" %></td>
 			</tr>
 		</table>
 	</tmpl:put>

@@ -61,7 +61,7 @@ final int W_NEWPRODUCTS_DFGS_RIGHT = 191;
 		<tmpl:put name='rightNav' direct='true'>
 			<td width="<%=W_NEWPRODUCTS_DFGS_RIGHT%>" align="right" class="rnav">
 			<div style="margin-left:<%=W_NEWPRODUCTS_DFGS_CENTER_PADDING%>px;">
-			<img src="/media_stat/images/layout/clear.gif" height="10" width="1"><br />
+			<img src="/media_stat/images/layout/clear.gif" alt="" height="10" width="1"><br />
 			<%@ include file="/common/template/includes/right_side_nav.jspf"%>
 			</div>
 			</td>
@@ -71,7 +71,7 @@ final int W_NEWPRODUCTS_DFGS_RIGHT = 191;
 		</tmpl:put>
 		<tmpl:put name='header_seperator' direct='true'>
 			<tr>
-				<td width="<%=W_NEWPRODUCTS_DFGS_RIGHT%>" bgcolor="#999966" colspan="2"><img width="1" height="1" src="/media_stat/images/layout/999966.gif"></td>
+				<td width="<%=W_NEWPRODUCTS_DFGS_RIGHT%>" bgcolor="#999966" colspan="2"><img width="1" height="1" alt="" src="/media_stat/images/layout/999966.gif"></td>
 			</tr>
 		</tmpl:put>
 		<tmpl:put name='header_2' direct='true'><br /><div style="width: <%=W_NEWPRODUCTS_DFGS_LEFT%>px;"><%@ include file="/includes/i_header_new.jspf" %></div></tmpl:put>

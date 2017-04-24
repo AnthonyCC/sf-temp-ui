@@ -19,6 +19,7 @@ import com.freshdirect.erp.ejb.ErpCOOLManagerHome;
 import com.freshdirect.erp.ejb.ErpCOOLManagerSB;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.service.FDECommerceService;
 
 public class FDCOOLInfoCache extends FDAbstractCache {
 	
@@ -42,7 +43,7 @@ public class FDCOOLInfoCache extends FDAbstractCache {
 			LOGGER.info("REFRESHING");
 			if(FDStoreProperties.isStorefront2_0Enabled()){
 				// cannot invoke fdcommerce service gateway directly from this project.
-				//data = LogisticsServiceLocator.getInstance().getCommerceService().getCountryOfOriginData(); 
+				data = FDECommerceService.getInstance().getCountryOfOriginData(since); 
 			}else{
 				ErpCOOLManagerSB sb = this.lookupCOOLInfoHome().create();
 				data = sb.load(since);

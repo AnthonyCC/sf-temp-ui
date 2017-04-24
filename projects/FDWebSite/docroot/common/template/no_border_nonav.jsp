@@ -41,7 +41,7 @@
 				  <tr>
 					<td align="center" colspan="3">
 						<img src="/media_stat/images/template/site_access/zip_logo_lg.gif" width="227" height="55" alt="Fresh Direct!" border="0">
-						<br><img src="/media_stat/images/layout/clear.gif" width="1" height="18"><br>						
+						<br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="18"><br>						
 					</td>
 				</tr>         
                  <tr>                
@@ -58,13 +58,13 @@
 						<table cellpadding="0" cellspacing="0" border="0">
 							
 							<tr valign="top">
-								<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+								<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
 								<td align="center" colspan="3">
 									<!-- content lands here -->
 									<tmpl:get name='content'/>
 									<!-- content ends above here-->
 								</td>
-								<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+								<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
 							</tr>
 														
 						</table>
@@ -73,7 +73,7 @@
 				</tr>
 				<tr>
 					<td align="center" colspan="3" class="text12">
-						<br><b>Current customer? <a href='/login/login_main.jsp'>Click here to log in</a>.</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="8">
+						<br><b>Current customer? <a href='/login/login_main.jsp'>Click here to log in</a>.</b><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8">
 					</td>
 				</tr>
 					
@@ -88,8 +88,8 @@
 						
 						<img src="/media_stat/images/template/site_access/zip_subhead.gif" width="355" height="11" alt="OUR FOOD IS FRESH. OUR CUSTOMERS ARE SPOILED." border="0" vspace="6"><br>It's food shopping at its best. Order on the web today and get next-day delivery of the best<br>food at the best price, exactly the way you want it, with 100% satisfaction guaranteed.<br>
 						
-						<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
-						<img src="/media_stat/images/layout/999966.gif" width="100%" height="1" vspace="10"><br>
+						<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"><br>
+						<img src="/media_stat/images/layout/999966.gif" alt="" width="100%" height="1" vspace="10"><br>
 						<%@ include file="/shared/template/includes/copyright.jspf"%>
 						<br><br><br>
 					</td>

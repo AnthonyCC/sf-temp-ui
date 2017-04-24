@@ -32,13 +32,13 @@ final int W_RH_ORDER_INFO_TOTAL = 970;
 		<td align="right" class="text11"><%= JspMethods.formatPrice(totalPrice) %></td>
 	</tr>
 	<tr>
-		<td align="center" colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" border="0" /></td>
+		<td align="center" colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4" border="0" /></td>
 	</tr>
 	<tr>
-		<td align="center" colspan="2"><img style="margin: 0;" width="<%=W_RH_ORDER_INFO_TOTAL%>" height="1" border="0" src="/media_stat/images/layout/cccccc.gif" /><br /></td>
+		<td align="center" colspan="2"><img style="margin: 0;" width="<%=W_RH_ORDER_INFO_TOTAL%>" height="1" alt="" border="0" src="/media_stat/images/layout/cccccc.gif" /><br /></td>
 	</tr>
 	<tr>
-		<td align="center" colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="12" border="0" /></td>
+		<td align="center" colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="12" border="0" /></td>
 	</tr>
 	<tr>
 		<td align="right" colspan="2" class="text13bold">TOTAL: <%= JspMethods.formatPrice(totalPrice) %></td>

@@ -20,10 +20,10 @@
 		<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="520">
 		<TR VALIGN="TOP">
 			<TD WIDTH="160"><img src="/media_stat/images/template/homepages/home_grapes.jpg" width="170" height="141" border="0" alt="Grapes"></TD>
-			<TD WIDTH="10"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="10" HEIGHT="1" BORDER="0"></TD>
+			<TD WIDTH="10"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="10" HEIGHT="1" BORDER="0"></TD>
 			<TD WIDTH="350" CLASS="text12">
 				<BR><img src="/media_stat/images/logos/fd_logo_lg.gif" width="245" height="52" border="0" alt="FreshDirect"><BR>
-				<IMG src="/media_stat/images/layout/clear.gif" WIDTH="310" HEIGHT="10" BORDER="0"><BR>
+				<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="310" HEIGHT="10" BORDER="0"><BR>
 
 			<table>
 			<tr>

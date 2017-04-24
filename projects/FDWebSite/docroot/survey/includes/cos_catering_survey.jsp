@@ -55,10 +55,10 @@ boolean curNewCust = request.getParameter("curNewCust") != null && Boolean.parse
 	<div align="center">
 	<table cellpadding="0" cellspacing="0" border="0" width="100%">
 	    <tr>
-	        <td><img src="/media_stat/images/layout/clear.gif" width="110" height="1" border="0"></td>
-	        <td><img src="/media_stat/images/layout/clear.gif" width="260" height="1" border="0"></td>
-	        <td><img src="/media_stat/images/layout/clear.gif" width="100" height="1" border="0"></td>
-	        <td><img src="/media_stat/images/layout/clear.gif" width="60" height="1" border="0"></td>
+	        <td><img src="/media_stat/images/layout/clear.gif" alt="" width="110" height="1" border="0"></td>
+	        <td><img src="/media_stat/images/layout/clear.gif" alt="" width="260" height="1" border="0"></td>
+	        <td><img src="/media_stat/images/layout/clear.gif" alt="" width="100" height="1" border="0"></td>
+	        <td><img src="/media_stat/images/layout/clear.gif" alt="" width="60" height="1" border="0"></td>
 	    </tr>
 	    <tr>
 	        <td class="text12"><fd:ErrorHandler result="<%=result%>" name="companyName"><span style="color:#CC0000; font-weight: bold;"></fd:ErrorHandler>Company Name<fd:ErrorHandler result="<%=result%>" name="companyName"></span></fd:ErrorHandler></td>
@@ -114,11 +114,11 @@ boolean curNewCust = request.getParameter("curNewCust") != null && Boolean.parse
 	        <td colspan="3"><input type="text" size="35" class="text13" name="dateOfCatering" value="<%=request.getParameter("dateOfCatering")%>"></td>
 	    </tr>
 	        <tr>
-	            <td colspan="4" class="text12" align="center"><br><img src="/media_stat/images/layout/999966.gif" width="100%" height="1" vspace="10"><br>
+	            <td colspan="4" class="text12" align="center"><br><img src="/media_stat/images/layout/999966.gif" alt="" width="100%" height="1" vspace="10"><br>
 	            <input type="image" value="submit" src="/media_stat/images/template/help/b_submit.gif" width="68" height="18">
 	            <input type="image"  src="/media_stat/images/template/help/b_clear.gif"  onclick="document.cosCateringSurvey.reset(); return false;" width="69" height="19">
 	            <%--input type="submit" value="SUBMIT SURVEY" style="background-color:#336600; color:#FFFFFF; font-weight: bold; font-size:9pt; padding-left: 40px; padding-right: 40px;"--%><br>
-	            <img src="/media_stat/images/layout/999966.gif" width="100%" height="1" vspace="10"></td>
+	            <img src="/media_stat/images/layout/999966.gif" alt="" width="100%" height="1" vspace="10"></td>
 	        </tr>
 	</table>
 	<input type="hidden" name="successPage" value="<%=redirectSuccessPage%>">

@@ -37,35 +37,35 @@ final int W_RIGHT_DNAV_RIGHT = 191;
 <CENTER CLASS="text10">
 <TABLE WIDTH="<%=W_RIGHT_DNAV_TOTAL%>" BORDER="0" CELLPADDING="0" CELLSPACING="0">
 <TR>
-<TD WIDTH="<%=W_RIGHT_DNAV_LEFT%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_RIGHT_DNAV_LEFT%>" height="1" border="0"></TD>
-<TD WIDTH="<%=W_RIGHT_DNAV_CENTER_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_RIGHT_DNAV_CENTER_PADDING%>" height="1" border="0"></TD>
-<TD WIDTH="<%=W_RIGHT_DNAV_RIGHT%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_RIGHT_DNAV_RIGHT%>" height="1" border="0"></TD>
+<TD WIDTH="<%=W_RIGHT_DNAV_LEFT%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_RIGHT_DNAV_LEFT%>" height="1" border="0"></TD>
+<TD WIDTH="<%=W_RIGHT_DNAV_CENTER_PADDING%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_RIGHT_DNAV_CENTER_PADDING%>" height="1" border="0"></TD>
+<TD WIDTH="<%=W_RIGHT_DNAV_RIGHT%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_RIGHT_DNAV_RIGHT%>" height="1" border="0"></TD>
 </TR>
 <TR>
-<td width="<%=W_RIGHT_DNAV_TOTAL%>" COLSPAN="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
+<td width="<%=W_RIGHT_DNAV_TOTAL%>" COLSPAN="3"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
 </TR>
 <TR>
 <TD WIDTH="<%=W_RIGHT_DNAV_TOTAL%>" COLSPAN="3"><%@ include file="/common/template/includes/deptnav.jspf" %></TD>
 </TR>
 <TR>
-<TD WIDTH="<%=W_RIGHT_DNAV_TOTAL%>" BGCOLOR="#999966" COLSPAN="3"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="1"></TD>
+<TD WIDTH="<%=W_RIGHT_DNAV_TOTAL%>" BGCOLOR="#999966" COLSPAN="3"><IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="1" HEIGHT="1"></TD>
 </TR>
 <TR VALIGN="TOP">
 <TD width="<%=W_RIGHT_DNAV_LEFT%>" align="center">
-<img src="/media_stat/images/layout/clear.gif" height="15" width="<%=W_RIGHT_DNAV_LEFT%>"><br>
+<img src="/media_stat/images/layout/clear.gif" alt="" height="15" width="<%=W_RIGHT_DNAV_LEFT%>"><br>
 <!-- content lands here -->
 <tmpl:get name='content'/>
 <!-- content ends above here-->
 <br><br></TD>
 <TD WIDTH="<%=W_RIGHT_DNAV_CENTER_PADDING%>"></TD>
 <TD WIDTH="<%=W_RIGHT_DNAV_RIGHT%>" align="center">
-<img src="/media_stat/images/layout/clear.gif" height="10" width="1"><br>
+<img src="/media_stat/images/layout/clear.gif" alt="" height="10" width="1"><br>
 <%@ include file="/common/template/includes/right_side_nav.jspf" %>
 </TD>
 </TR>
 <tmpl:get name='banner2'/>
 <TR VALIGN="BOTTOM">
-<td width="<%=W_RIGHT_DNAV_TOTAL%>" COLSPAN="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
+<td width="<%=W_RIGHT_DNAV_TOTAL%>" COLSPAN="3"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
 </TR>
 </TABLE>
 </CENTER>

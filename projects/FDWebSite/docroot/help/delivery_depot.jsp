@@ -39,7 +39,7 @@ function linkTo(url){
 				<TR VALIGN="TOP">
 					<TD WIDTH="15"><img src="/media/images/layout/clear.gif" width="15" height="1" alt="" border="0"></TD>
 					<TD>
-					<img src="/media_stat/images/template/help/faq_hdr_pop_depot.gif" width="380" height="30" alt="" border="0"><br><img src="/media_stat/images/layout/cccccc.gif" width="<%=tableWidth%>" height="1"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
+					<img src="/media_stat/images/template/help/faq_hdr_pop_depot.gif" width="380" height="30" alt="" border="0"><br><img src="/media_stat/images/layout/cccccc.gif" alt="" width="<%=tableWidth%>" height="1"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
 				   </TD>
 				</TR>
 			</TABLE>

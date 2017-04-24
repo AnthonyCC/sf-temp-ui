@@ -30,7 +30,7 @@
         prodId = ((ProductModel)products.get(0)).getContentName();
     }
     
-    String catImg = "/media_stat/images/layout/clear.gif";
+    String catImg = "/media_stat/images/layout/clear.gif"; 
     {
         ContentNodeModel _cat = cpv.getCategory();
         Image _catImg = _cat instanceof ProductContainer ? ((ProductContainer)_cat).getCategoryTitle() : null;
@@ -48,7 +48,7 @@
         <table border="0" cellpadding="0" cellspacing="0">
             <tr valign="top"><td colspan="5" width="520"></td></tr>
             <tr valign="top">
-                <td width="130" align="right" rowspan="2"><a href="<%=request.getRequestURI()%>?catId=<%=catId%><%=parent != null?"&parent="+parent:""%>&title=<%=title%>"><img src="<%=catImg%>" border="0"></a><br>
+                <td width="130" align="right" rowspan="2"><a href="<%=request.getRequestURI()%>?catId=<%=catId%><%=parent != null?"&parent="+parent:""%>&title=<%=title%>"><img src="<%=catImg%>" alt="" border="0"></a><br>
                     <br>
                     <%if(products.size() > 1){%>
                     <logic:iterate id='item' collection="<%=products%>" type='com.freshdirect.fdstore.content.ProductModel' indexId="idx">
@@ -56,15 +56,15 @@
                             catId = item.getParentNode().getContentName(); 
                         }%>
                         <a href="<%=request.getRequestURI()%>?catId=<%=catId%>&prodId=<%=item.getContentName()%><%=parent != null?"&parent="+parent:""%>&title=<%=title%>&level=detail"><%=item.getNavName() != null?item.getNavName():item.getFullName()%></a><br>
-                        <img src="/media_stat/images/layout/clear.gif" height="15" width="1">
+                        <img src="/media_stat/images/layout/clear.gif" alt="" height="15" width="1">
                     </logic:iterate>
                     <%}%>
                     <%catId = cpv.getCategory().getContentName();%>
                     <br><br><br>             
                 </td>
-                <td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
-                <td width="1" bgcolor="#999966" rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-                <td width="15" rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="15" height="1"></td>                
+                <td rowspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="1"></td>
+                <td width="1" bgcolor="#999966" rowspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
+                <td width="15" rowspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="15" height="1"></td>                
                 <td valign="top" width='349'>
 <%
 if (level.equalsIgnoreCase("home")){
@@ -89,8 +89,8 @@ if (level.equalsIgnoreCase("home")){
 						<% } %>
                                                 <font class="space4pix"><br><br></font>
 					</td>
-					<td><img src="/media_stat/images/layout/clear.gif" width="10" height="0"></td>
-					<td><img src="/media_stat/images/layout/clear.gif" width="249" height="0">
+					<td><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="0"></td>
+					<td><img src="/media_stat/images/layout/clear.gif" alt="" width="249" height="0">
                                             <font class="text11bold">
                                             <%if(parent != null){
                                                 catId = item.getParentNode().getContentName(); 
@@ -119,7 +119,7 @@ if (level.equalsIgnoreCase("home")){
     }
     
 %>
-                <img src="/media_stat/images/layout/clear.gif" width="349" height="0"><br>
+                <img src="/media_stat/images/layout/clear.gif" alt="" width="349" height="0"><br>
 		<img src="<%=prodImg.getPath()%>" width="<%=prodImg.getWidth()%>" height="<%=prodImg.getHeight()%>" alt="" border="0">
 		
 		<br>

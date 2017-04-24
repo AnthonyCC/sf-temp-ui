@@ -47,8 +47,8 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 		actionPage = "/main/delivery_available_slots.jsp";
 %>
 
-<img src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0">
-<img src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0">
+<img src="/media_stat/images/layout/clear.gif"  alt="" WIDTH="1" HEIGHT="8" BORDER="0">
+<img src="/media_stat/images/layout/clear.gif"  alt="" WIDTH="1" HEIGHT="8" BORDER="0">
 
 <%@ include file="/shared/includes/i_loyalty_bar.jspf" %> <br/>
 
@@ -75,7 +75,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 								<%}%>
 							</tr>
 						</table>
-						<img src="/media_stat/images/layout/clear.gif" width="1" height="3">
+						<img src="/media_stat/images/layout/clear.gif"  alt="" width="1" height="3">
 					</td>
 				</tr>
 				<tr>
@@ -133,7 +133,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 							});
 						</script>
 						<FORM name="addressForm" id="addressForm" method="POST" action="<%= actionPage %>" >
-						<img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br/>
+						<img src="/media_stat/images/layout/clear.gif"  alt="" width="1" height="14"><br/>
 						<input type="hidden" value="Y" id="addressChange" name="addressChange" />
 						<SELECT name="addressId" id="addressId" CLASS="text12" style="width: 250px;">
 								<% if (timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)) { %>
@@ -188,7 +188,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 			<% } else {
 				if(address!=null){ %>
 					<td class="text12" colspan="2">
-						<img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br/>
+						<img src="/media_stat/images/layout/clear.gif"  alt="" width="1" height="14"><br/>
 						<b><%=address.getAddress1()%><br/><%=address.getCity()%> <%=address.getState()%> <%=address.getZipCode()%></b><br/>
 						<%if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)){%>
 							<a href="/help/delivery_info_check_slots.jsp" class="text11">change address</a>
@@ -204,10 +204,10 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 
 			<%if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM)&&!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)){%>
 				<tr>
-					<td colspan="3"><img src="/media_stat/images/layout/clear.gif" style="width: <%= (mobWeb_address_finder) ? "100%": "430px" %>; height: 15px"></td>
+					<td colspan="3"><img src="/media_stat/images/layout/clear.gif"  alt="" style="width: <%= (mobWeb_address_finder) ? "100%": "430px" %>; height: 15px"></td>
 				</tr>
 				<tr>
-					<td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
+					<td colspan="3"><img src="/media_stat/images/layout/clear.gif"  alt="" width="1" height="4"></td>
 				</tr>
 			<% } %>
 </table>
@@ -228,7 +228,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 
 	<tr>
 		<td colspan="7">
-			<img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br/>
+			<img src="/media_stat/images/layout/clear.gif"  alt="" width="1" height="2"><br/>
 	<% if(user.isEligibleForPreReservation()) { %>
 			
 		<table width="100%" style="padding-left: 5px; padding-right: 5px;">
@@ -272,7 +272,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 		</td>
 	</tr>
 	</table>
-	<img src="/media_stat/images/layout/clear.gif" width="1" height="12"><br/>
+	<img src="/media_stat/images/layout/clear.gif"  alt="" width="1" height="12"><br/>
 
 <%}%>
 

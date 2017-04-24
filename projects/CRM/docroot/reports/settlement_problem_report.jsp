@@ -124,7 +124,7 @@ if(report != null){%>
         <td width="10%">Delivery Date</td>
         <td width="10%">Failure Date</td>
         <td width="10%">Payment Method</td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="12" height="1"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="12" height="1"></td>
     </tr>
 </table>
 </div>

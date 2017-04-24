@@ -58,11 +58,11 @@ final int W_RECIPE_DL_NAVS_RIGHT = 820;
 <CENTER CLASS="text10">
 <table width="<%=W_RECIPE_DL_NAVS_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 <tr>
-	<td width="<%=W_RECIPE_DL_NAVS_LEFT%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_RECIPE_DL_NAVS_LEFT%>" height="1" border="0"></td>
-	<td width="<%=W_RECIPE_DL_NAVS_RIGHT%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_RECIPE_DL_NAVS_RIGHT%>" height="1" border="0"></td>
+	<td width="<%=W_RECIPE_DL_NAVS_LEFT%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_RECIPE_DL_NAVS_LEFT%>" height="1" border="0"></td>
+	<td width="<%=W_RECIPE_DL_NAVS_RIGHT%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_RECIPE_DL_NAVS_RIGHT%>" height="1" border="0"></td>
 </tr>
 <tr>
-	<td width="<%=W_RECIPE_DL_NAVS_TOTAL%>" colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
+	<td width="<%=W_RECIPE_DL_NAVS_TOTAL%>" colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
 </tr>
 <tr>
 	<td width="<%=W_RECIPE_DL_NAVS_TOTAL%>" colspan="2">
@@ -73,7 +73,7 @@ final int W_RECIPE_DL_NAVS_RIGHT = 820;
 	</td>
 </tr>
 <tr>
-	<td width="<%=W_RECIPE_DL_NAVS_TOTAL%>" bgcolor="#999966" colspan="6"><img src="/media_stat/images/layout/999966.gif" width="1" height="1"></td>
+	<td width="<%=W_RECIPE_DL_NAVS_TOTAL%>" bgcolor="#999966" colspan="6"><img src="/media_stat/images/layout/999966.gif" alt="" width="1" height="1"></td>
 </tr>
 <tr valign="top">
 	<td width="<%=W_RECIPE_DL_NAVS_LEFT%>" bgcolor="#E0E3D0">
@@ -83,10 +83,10 @@ final int W_RECIPE_DL_NAVS_RIGHT = 820;
 		</oscache:cache>
 
 		<!-- END RECIPE SIDE NAV -->
-		<img src="/media_stat/images/layout/clear.gif" height="1" width="<%=W_RECIPE_DL_NAVS_LEFT%>">
+		<img src="/media_stat/images/layout/clear.gif" alt="" height="1" width="<%=W_RECIPE_DL_NAVS_LEFT%>">
 	</td>
 	<td width="<%=W_RECIPE_DL_NAVS_RIGHT%>" align="right">
-		<img src="/media_stat/images/layout/clear.gif" width="<%=W_RECIPE_DL_NAVS_RIGHT%>" height="15"><br>
+		<img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_RECIPE_DL_NAVS_RIGHT%>" height="15"><br>
 		<!-- content lands here -->
 		<tmpl:get name='content'/>
 		<!-- content ends above here-->

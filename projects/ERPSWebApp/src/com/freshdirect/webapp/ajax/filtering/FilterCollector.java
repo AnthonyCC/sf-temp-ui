@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.util.ProductInfoUtil;
 import com.freshdirect.content.nutrition.EnumKosherSymbolValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.content.nutrition.NutritionValueEnum;
@@ -50,7 +51,7 @@ public class FilterCollector {
 
 			FDProduct fdProduct = defSku.getProduct();
 			if (fdProduct != null) {
-				String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+				String plantID=ProductInfoUtil.getPickingPlantId(defSku.getProductInfo());;
 	            
 				collectShowMeOnlyKosherFilter(showMeOnlyOfSearchResults, fdProduct.getKosherInfo(plantID));
 				collectShowMeOnlyOrganicFilter(showMeOnlyOfSearchResults, fdProduct.getNutritionInfoList(ErpNutritionInfoType.ORGANIC));

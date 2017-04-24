@@ -8,6 +8,7 @@ import mockit.MockUp;
 import org.junit.Test;
 
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.delivery.ejb.DlvRestrictionManagerHome;
 import com.freshdirect.fdlogistics.services.ILogisticsService;
 import com.freshdirect.fdlogistics.services.impl.FDLogisticsService;
 import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
@@ -27,6 +28,8 @@ public class DeliveryAddressValidatorTest {
 			void $init() {
 			}
 		};
+		
+		
 		
 		new MockUp<LogisticsServiceLocator>() {
 			
@@ -56,7 +59,7 @@ public class DeliveryAddressValidatorTest {
 			ActionResult actionResult = new ActionResult();
 			
 			
-			boolean isAddressValid = validator.validateAddressWithoutScrub(actionResult);	
+			boolean isAddressValid = validator.validateAddress(actionResult);	
 			
 
 			System.out.println("isAddressValid:"+isAddressValid);
@@ -107,7 +110,7 @@ public class DeliveryAddressValidatorTest {
 			ActionResult actionResult = new ActionResult();
 			
 			
-			boolean isAddressValid = validator.validateAddressWithoutScrub(actionResult);
+			boolean isAddressValid = validator.validateAddress(actionResult);
 			
 			System.out.println("isAddressValid:"+isAddressValid);
 			

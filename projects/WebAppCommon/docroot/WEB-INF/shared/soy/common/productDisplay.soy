@@ -67,12 +67,16 @@
 			{if $data.soData and $data.soData.settingsData and $data.soData.settingsData.soSettings.isEligibleForStandingOrders}
 				{if length($data.soData.settingsData.soData) > 0}
 					<div class="so-container">
+						<div class="so-review-header">Delivery Begins</div>
+						<div class="so-review-date">{$data.soData.settingsData.soData[0].dayOfWeek}, {$data.soData.settingsData.soData[0].deliveryDate}</div>
+						<div class="so-review-link"></div>
 						{call common.soResults /}
 						{call common.soList}
 							{param soData: $data.soData.settingsData.soData /}
 							{param isContainerOpen: $data.soData.settingsData.soSettings.isContainerOpen /}
 							{param selectedSoId: $data.soData.settingsData.soSettings.selectedSoId /}
 						{/call}
+						<div class="so-review-selected"></div>
 					</div>
 				{/if}
 			{/if}

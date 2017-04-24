@@ -27,16 +27,16 @@
 <xsl:call-template name="h_header_v1" />
 	<table cellpadding="0" cellspacing="0" border="0" width="100%">
 		<tr>
-			<td bgcolor="#CCCCCC"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="1" /></td>
+			<td bgcolor="#CCCCCC"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="1" /></td>
 		</tr>
 		<tr>
 			<td><a href="http://www.freshdirect.com/about/plant_tour/index.jsp?catId=about_tour"><img src="http://www.freshdirect.com/media_stat/images/template/about/plant_tour/taketour_hdr.gif" width="611" height="41" vspace="8" alt="Take a tour of FreshDirect!" border="0" /></a></td>
 		</tr>
 		<tr>
-			<td bgcolor="#CCCCCC"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="1" /></td>
+			<td bgcolor="#CCCCCC"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="1" /></td>
 		</tr>
 		<tr>
-			<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="14" /></td>
+			<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="14" /></td>
 		</tr>
 	</table>
 	<table cellpadding="0" cellspacing="0" border="0" width="100%">
@@ -61,11 +61,11 @@
 				<b>FreshDirect</b><br />
 				It's All About the Food<br />
 			</td>
-			<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="8" height="1" /></td>
+			<td><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="8" height="1" /></td>
 			<td width="25%" align="right"><a href="http://www.freshdirect.com/about/plant_tour/index.jsp?catId=about_tour"><img src="http://www.freshdirect.com/media_stat/images/template/about/plant_tour/taketour_img.jpg" width="180" height="330" border="0" alt="Our Facility" /></a></td>
 		</tr>
 		<tr>
-			<td colspan="3"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" width="1" height="8" /></td>
+			<td colspan="3"><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="8" /></td>
 		</tr>
 	</table>
 	

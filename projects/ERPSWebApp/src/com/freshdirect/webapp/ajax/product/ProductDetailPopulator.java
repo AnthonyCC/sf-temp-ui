@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
 import com.freshdirect.WineUtil;
+import com.freshdirect.cms.util.ProductInfoUtil;
 import com.freshdirect.common.pricing.CharacteristicValuePrice;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.PricingContext;
@@ -749,8 +750,17 @@ public class ProductDetailPopulator {
 				item.setMsgLeadTime( "" );
 			}
 		}
-		String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
-        
+		//String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+		String plantID=null;
+		try {
+			plantID = ProductInfoUtil.getPickingPlantId(sku.getProductInfo());
+		} catch (FDResourceException ex) {
+			LOG.debug("Exception while getting the plantId "+ex);
+			// TODO Auto-generated catch block
+		} catch (FDSkuNotFoundException exsku) {
+			// TODO Auto-generated catch block
+			LOG.debug("Exception while getting the plantId"+exsku);
+		}
 		// Kosher restrictions
 		if ( fdProduct != null && fdProduct.getKosherInfo(plantID) != null && fdProduct.getKosherInfo(plantID).isKosherProduction() ) {
 			try {
@@ -983,7 +993,10 @@ public class ProductDetailPopulator {
 		ProductReference prodRef = new ProductReferenceImpl(product);
 		boolean isFree = user.isProductSample(prodRef);
 	
-		item.setDeal( deal );
+		/* compare against prop limits */
+		if ((FDStoreProperties.getBurstsLowerLimit()<=deal) && (FDStoreProperties.getBurstUpperLimit()>=deal)) {
+			item.setDeal( deal );
+		}
 		
 		// determine what to display
 		if(isFree){

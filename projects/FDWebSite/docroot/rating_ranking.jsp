@@ -131,14 +131,14 @@ if (orderBy==null) {
 <%
    if (rateNRankLinks.length() > 0 ) {
 %>
-<tr align="center"><td><img src="/media_stat/images/layout/clear.gif" height="7" width="1"></td></tr>
-    <tr><td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" height="1" width="1"></td></tr>
-    <tr><td><img src="/media_stat/images/layout/clear.gif" height="4" width="1"></td></tr>
+<tr align="center"><td><img src="/media_stat/images/layout/clear.gif" alt="" height="7" width="1"></td></tr>
+    <tr><td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" alt="" height="1" width="1"></td></tr>
+    <tr><td><img src="/media_stat/images/layout/clear.gif" alt="" height="4" width="1"></td></tr>
     <tr align="center"><td align="center">
-    <table cellpadding="0" cellspacing="0" border="0"><tr><td><img src="/media_stat/images/template/gstar.gif" width="15" height="14" border="0" alt="*"><img src="/media_stat/images/layout/clear.gif" height="1" width="6"></td><td class="text11bold">Compare by:&nbsp;</td><td><b><%=rateNRankLinks%></b> | <b><a href="<%=unSortLink%>">Back</a></b></td><td><img src="/media_stat/images/layout/clear.gif" height="1" width="6"><img src="/media_stat/images/template/gstar.gif" width="15" height="14" border="0" alt="*"></td></tr></table></td></tr>
+    <table cellpadding="0" cellspacing="0" border="0"><tr><td><img src="/media_stat/images/template/gstar.gif" width="15" height="14" border="0" alt="*"><img src="/media_stat/images/layout/clear.gif" alt="" height="1" width="6"></td><td class="text11bold">Compare by:&nbsp;</td><td><b><%=rateNRankLinks%></b> | <b><a href="<%=unSortLink%>">Back</a></b></td><td><img src="/media_stat/images/layout/clear.gif" alt="" height="1" width="6"><img src="/media_stat/images/template/gstar.gif" width="15" height="14" border="0" alt="*"></td></tr></table></td></tr>
 <%}%>
-<TR VALIGN="TOP"><TD WIDTH="<%=tablewid%>"><IMG src="/media_stat/images/layout/clear.gif" height="4" width="<%=tablewid%>"></TD></TR>
-<TR><TD BGCOLOR="#CCCCCC"><IMG src="/media_stat/images/layout/clear.gif" height="1" width="1"></TD></TR>
+<TR VALIGN="TOP"><TD WIDTH="<%=tablewid%>"><IMG src="/media_stat/images/layout/clear.gif" alt="" height="4" width="<%=tablewid%>"></TD></TR>
+<TR><TD BGCOLOR="#CCCCCC"><IMG src="/media_stat/images/layout/clear.gif" alt="" height="1" width="1"></TD></TR>
 <TR><TD><IMG src="/media_stat/images/layout/clear.gif" ALT="" WIDTH="1" HEIGHT="5"></td></tr></TABLE>
 <FONT CLASS="space4pix"><BR></FONT>
 <fd:ItemGrabber category='<%= (ContentNodeModel)currentFolder %>' id='sortedStuff'  

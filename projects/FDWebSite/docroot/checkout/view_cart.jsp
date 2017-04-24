@@ -213,10 +213,10 @@ StringBuffer buffer = new StringBuffer(
 
 <!-- PROFILE HEADER -->
 <% if(!modifyOrderMode) { %>
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
 <% } %>
 <%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0">
+<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="16" BORDER="0">
 
 <%@ include file="/includes/i_cartcleanup.jspf" %>
 

@@ -59,11 +59,11 @@ final int W_RECIPE_DR_NAVS_RIGHT = 191;
 <CENTER CLASS="text10">
 <table width="<%=W_RECIPE_DR_NAVS_TOTAL%>" BORDER="0" CELLPADDING="0" CELLSPACING="0">
 <tr>
-	<td width="<%=W_RECIPE_DR_NAVS_LEFT%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_RECIPE_DR_NAVS_LEFT%>" height="1" border="0"></td>
-	<td width="<%=W_RECIPE_DR_NAVS_RIGHT%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_RECIPE_DR_NAVS_RIGHT%>" height="1" border="0"></td>
+	<td width="<%=W_RECIPE_DR_NAVS_LEFT%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_RECIPE_DR_NAVS_LEFT%>" height="1" border="0"></td>
+	<td width="<%=W_RECIPE_DR_NAVS_RIGHT%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_RECIPE_DR_NAVS_RIGHT%>" height="1" border="0"></td>
 </tr>
 <tr>
-	<td width="<%=W_RECIPE_DR_NAVS_TOTAL%>" colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
+	<td width="<%=W_RECIPE_DR_NAVS_TOTAL%>" colspan="2"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"></td>
 </tr>
 <tr>
 	<td width="<%=W_RECIPE_DR_NAVS_TOTAL%>" colspan="2">
@@ -74,18 +74,18 @@ final int W_RECIPE_DR_NAVS_RIGHT = 191;
 	</td>
 </tr>
 <tr>
-	<td width="<%=W_RECIPE_DR_NAVS_TOTAL%>" bgcolor="#999966" colspan="2"><IMG src="/media_stat/images/layout/999966.gif" width="1" height="1"></td>
+	<td width="<%=W_RECIPE_DR_NAVS_TOTAL%>" bgcolor="#999966" colspan="2"><IMG src="/media_stat/images/layout/999966.gif" alt="" width="1" height="1"></td>
 </tr>
 <tr valign="TOP">
 	<td width="<%=W_RECIPE_DR_NAVS_LEFT%>" align="left">
-		<img src="/media_stat/images/layout/clear.gif" width="<%=W_RECIPE_DR_NAVS_LEFT%>" height="15"><br>
+		<img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_RECIPE_DR_NAVS_LEFT%>" height="15"><br>
 		<!-- content lands here -->
 		<tmpl:get name='content'/>
 		<!-- content ends above here-->
 		<br><br>
 	</td>
 	<td width="<%=W_RECIPE_DR_NAVS_RIGHT%>" align="center">
-		<img src="/media_stat/images/layout/clear.gif" height="10" width="1" border="0"><br>
+		<img src="/media_stat/images/layout/clear.gif" alt="" height="10" width="1" border="0"><br>
 		<%@ include file="/common/template/includes/right_side_nav.jspf" %>
 	</td>
 </tr>

@@ -30,13 +30,13 @@ ErpCustomerInfoModel custInfo = FDCustomerFactory.getErpCustomerInfo(identity);%
 	<table width="520" cellpadding="0" cellspacing="0" border="0">
 		<form name="reminder_signup" method="POST">
 		<tr>
-			<td colspan="2"><img src="/media_stat/images/template/reminder/email_reminder.gif" width="287" height="21" vspace="4"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br>
+			<td colspan="2"><img src="/media_stat/images/template/reminder/email_reminder.gif" width="287" height="21" vspace="4"><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8"><br>
 			If you ever worry that you'll forget to place your FreshDirect order in time, sign up for our handy, free e-mail reminder service. On the weekday of your choosing, first thing in the morning, you'll receive an e-mail reminding you to place your order for the next day. 
 			Just fill out the short form below and click "submit." You can cancel this free service at any time.
 			</td>
 		</tr>
 		<tr valign="top">
-			<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1"><br></td>
+			<td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="1"><br></td>
 			<td><br>
 				<%@ include file="/includes/your_account/reminder.jspf" %>
 			</td>

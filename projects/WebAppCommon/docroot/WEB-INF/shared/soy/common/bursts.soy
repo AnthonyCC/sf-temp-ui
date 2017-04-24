@@ -7,7 +7,10 @@
  */
 {template .bursts autoescape="false"}
 	{let $burst}
-		{if isNonnull($badge)}
+		/* APPDEV-5076 deals should be top priority */
+		{if $deal > 0}
+			/media_stat/images/deals/brst_sm_{$deal}.png
+		{elseif isNonnull($badge)}
 			{switch $badge}
 				{case 'fav'}
 					/media_stat/images/bursts/brst_sm_fave.png
@@ -18,8 +21,6 @@
 				{case 'free'}
 					/media_stat/images/bursts/brst_sm_free.png
 			{/switch}
-		{elseif $deal > 0}
-			/media_stat/images/deals/brst_sm_{$deal}.png
 		{/if}
 	{/let}
 	{if $burst}
