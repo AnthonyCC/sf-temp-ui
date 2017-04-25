@@ -153,7 +153,7 @@
 
     dataLayer.push(gtm_userdata);
 
-    <% if (gtm_user.hasJustLoggedIn()) { %>
+    <% if (gtm_user.hasJustLoggedIn(false)) { %>
     // user logged in
     document.cookie = "hasJustLoggedIn=true;path=/";
     <% } %>
