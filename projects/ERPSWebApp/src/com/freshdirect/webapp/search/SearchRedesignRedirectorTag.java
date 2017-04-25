@@ -34,6 +34,8 @@ public class SearchRedesignRedirectorTag extends BodyTagSupport {
 		PageContext ctx = (PageContext) pageContext;
 		HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
 		boolean disabledPartialRolloutRedirector = CmsFilteringNavigator.isDisabledPartialRolloutRedirector(request);
+		this.redirected = false;
+		LOGGER.debug("this.redirected=======search redesign redirector========starting"+this.redirected);
 		LOGGER.debug("disabledPartialRolloutRedirector========================"+disabledPartialRolloutRedirector);
 		LOGGER.debug("FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.searchredesign2014, user)========================"+FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.searchredesign2014, user));
 		if (!disabledPartialRolloutRedirector && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.searchredesign2014, user)) {
