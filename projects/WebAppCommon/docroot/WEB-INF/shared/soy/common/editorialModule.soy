@@ -30,12 +30,12 @@
         <div class="right-side">
         {if $moduleData.editorialContainer.headerGraphic or $moduleData.editorialContainer.headerTitle or $moduleData.editorialContainer.headerSubtitle}
           <div class="editorial-header">
-          {if $moduleData.editorialContainer.headerGraphic}
-            <div class="header-graphic">
-              <img src="{$moduleData.editorialContainer.headerGraphic}" alt="{$moduleData.editorialContainer.headerTitle}">
-            </div>
-          {/if}
             <div class="header-title">
+            {if $moduleData.editorialContainer.headerGraphic}
+              <div class="header-graphic">
+                <img src="{$moduleData.editorialContainer.headerGraphic}" alt="{$moduleData.editorialContainer.headerTitle}">
+              </div>
+            {/if}
             {if $moduleData.editorialContainer.headerTitle}
               <h1>{$moduleData.editorialContainer.headerTitle}</h1>
             {/if}
