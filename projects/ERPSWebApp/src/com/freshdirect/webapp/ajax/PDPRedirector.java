@@ -45,6 +45,7 @@ public class PDPRedirector extends BodyTagSupport {
 		// partial rollout check
 		boolean isPDP = !EnumFeatureRolloutStrategy.NONE.equals(FeatureRolloutArbiter.getFeatureRolloutStrategy(EnumRolloutFeature.pdplayout2014, user));
 		String redirectUrl = null;
+		this.redirected = false;
 
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest(); 
 		String originalUrl = request.getRequestURI();
