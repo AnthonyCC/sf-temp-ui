@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -554,7 +555,10 @@ public class UserUtil {
           }
           
           if(user != null) {
-        	  user.setJustLoggedIn(true);
+        	user.setJustLoggedIn(true);
+  			Cookie cookie = new Cookie("hasJustLoggedIn","true");
+  			cookie.setPath("/");
+  			response.addCookie(cookie);
           }
 
           CmRegistrationTag.setPendingLoginEvent(session);
