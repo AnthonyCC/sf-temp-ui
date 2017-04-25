@@ -34,10 +34,13 @@ public class SearchRedesignRedirectorTag extends BodyTagSupport {
 		PageContext ctx = (PageContext) pageContext;
 		HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
 		boolean disabledPartialRolloutRedirector = CmsFilteringNavigator.isDisabledPartialRolloutRedirector(request);
+		LOGGER.debug("disabledPartialRolloutRedirector========================"+disabledPartialRolloutRedirector);
+		LOGGER.debug("FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.searchredesign2014, user)========================"+FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.searchredesign2014, user));
 		if (!disabledPartialRolloutRedirector && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.searchredesign2014, user)) {
 
 			String redirectUrl = null;
 
+			LOGGER.debug("=====pageType============"+pageType);
 			switch(pageType) {
 				case SEARCH:
 					String searchParams = request.getParameter("searchParams");
@@ -82,7 +85,10 @@ public class SearchRedesignRedirectorTag extends BodyTagSupport {
 				httpServletResponse.setHeader("Location", redirectUrl);
 				return SKIP_PAGE;
 			}
+			LOGGER.debug("redirectUrl==============="+redirectUrl);
+
 		}
+		
 		return EVAL_BODY_BUFFERED;
 	}
 
@@ -103,6 +109,8 @@ public class SearchRedesignRedirectorTag extends BodyTagSupport {
 	}
 
     public int doEndTag() throws JspException {
+		LOGGER.debug("this.redirected=======search redesign redirector========"+this.redirected);
+
    	 if (this.redirected) {
             return SKIP_PAGE;
         } else {
