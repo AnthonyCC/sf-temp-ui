@@ -72,10 +72,10 @@ List tmpList=new ArrayList();
 		<tr valign="bottom">
 		<logic:iterate id="contentNode" collection="<%= sortedColl %>" type="java.lang.Object" indexId="idx">
 			<%
-				if (idx.intValue() >= MAX_FAVS2SHOW) { continue; }
-				if(contentNode instanceof CategoryModel) { continue; }
-				else if(contentNode instanceof ProductModel){
-					if(((ProductModel)contentNode).isUnavailable()){ continue;}
+				if (!(idx.intValue() >= MAX_FAVS2SHOW)) {
+				if(!(contentNode instanceof CategoryModel)) { 
+				if(contentNode instanceof ProductModel){
+					if(!(((ProductModel)contentNode).isUnavailable())){ 
 					ProductModel pm = (ProductModel) contentNode;
 					String prodNameAttribute = JspMethods.getProductNameToUse(pm);
 					DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId,pm,prodNameAttribute,true);
@@ -85,16 +85,16 @@ List tmpList=new ArrayList();
 				<td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
 					<display:ProductImage product="<%= pm %>" showRolloverImage="false" action="<%= actionUrl %>"/>
 				</td>
-				<% } %>
+				<% } } } }%>
 		</logic:iterate>
 		</tr>
 		<tr>
 		<logic:iterate id="contentNode" collection="<%= sortedColl %>" type="java.lang.Object" indexId="idx">
 			<%
-				if (idx.intValue() >= MAX_FAVS2SHOW) { continue; } 
-				if(contentNode instanceof CategoryModel) { continue; }
-				else if(contentNode instanceof ProductModel){
-					if(((ProductModel)contentNode).isUnavailable()){ continue;}
+				if (!(idx.intValue() >= MAX_FAVS2SHOW)) {  
+				if(!(contentNode instanceof CategoryModel)) { 
+				if(contentNode instanceof ProductModel){
+					if(!(((ProductModel)contentNode).isUnavailable())){ 
 					ProductModel pm = (ProductModel) contentNode;
 					String prodNameAttribute = JspMethods.getProductNameToUse(pm);
 					DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId,pm,prodNameAttribute,true);
@@ -106,7 +106,7 @@ List tmpList=new ArrayList();
 					<display:ProductName product="<%= pm %>" action="<%= actionUrl %>"/>								
 					<display:ProductPrice impression="<%= new ProductImpression( pm ) %>" showAboutPrice="false" showDescription="false"/>
 				</td>
-				<% } %>
+				<% } } } }%>
 		</logic:iterate>
 		</tr>
 	</table>
