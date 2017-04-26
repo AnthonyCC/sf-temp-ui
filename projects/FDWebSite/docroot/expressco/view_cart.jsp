@@ -70,15 +70,12 @@ if (mobWeb) {
 					<potato:viewCart />
 					<soy:render template="expressco.viewCartTabbedCarousel" data="${viewCartPotato}" />
 					<script>
-						/* figure out which tab should be selected */
-						/*$jq('#cartCarousels').ready(function() {
-							var $tab = $jq(this).find('.tabbed-carousel:first');
-							if ($tab) {
-								var cmeventsource = $tab.data('cmeventsource');
-								$tab.find('.tabs [data-component="tabitem"]:first').trigger('click');
-							}
-							
-						});*/
+						/* make sure some tab has been loaded */
+						$jq('#cartCarousels').ready(function() {
+							if ($jq('.tabbed-carousel [data-component="tabitem"].selected').closest('.tabbed-carousel').find('[data-component="tabpanel"]').children().length === 0) {
+								$jq('.tabbed-carousel [data-component="tabitem"].selected').trigger('click');
+							}						
+						});
 					</script>
 				</div>
 			<% } %>
