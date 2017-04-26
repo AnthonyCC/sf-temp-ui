@@ -171,7 +171,7 @@ String eStoreId = user.getUserContext().getStoreContext().getEStoreId().toString
 lastName = cm.getLastName();
 firstName = cm.getFirstName();
 email = cm.getEmail();
-otherEmail = cm.getAlternateEmail();
+otherEmail = cm.getAlternateEmail()==null?"":cm.getAlternateEmail();
 homePhone = cm.getHomePhone()==null?"":cm.getHomePhone().getPhone();
 homePhoneExt = cm.getHomePhone()==null?"":cm.getHomePhone().getExtension();
 
@@ -181,7 +181,7 @@ busPhoneExt = cm.getBusinessPhone()==null?"":cm.getBusinessPhone().getExtension(
 cellPhone = cm.getCellPhone()==null?"":cm.getCellPhone().getPhone();
 cellPhoneExt = cm.getCellPhone()==null?"":cm.getCellPhone().getExtension();
 
-displayName = cm.getDisplayName();
+displayName = cm.getDisplayName()==null?"":cm.getDisplayName();
 
 title = cm.getTitle();
 
