@@ -55,7 +55,7 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 
 	private static final Logger LOG = LoggerFactory.getInstance(StandingOrderCartServlet.class);
 	
-	private static final String ACTION_REMIDER_OVERLAY="reminderOverlay";
+	private static final String ACTION_TURN_OFF_REMINDER_OVERLAY="turnOffReminderOverlay";
 
 	@Override
 	protected boolean synchronizeOnUser() {
@@ -138,7 +138,7 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 			 LOG.error(" ERROR WHILE RETRIEVING THE STANDING ORDER DATA"+ reqData.getStandingOrderId());
 			}
 		
-			if (null != reqData.getActiontype()	&& ACTION_REMIDER_OVERLAY.equalsIgnoreCase(reqData.getActiontype())
+			if (null != reqData.getActiontype()	&& ACTION_TURN_OFF_REMINDER_OVERLAY.equalsIgnoreCase(reqData.getActiontype())
 					&& user.getCurrentStandingOrder() != null) {
 				try {
 					if (user.getCurrentStandingOrder().getId() != null)
@@ -382,4 +382,5 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 		return recipe.getName();
 	}
 
+	
 }
