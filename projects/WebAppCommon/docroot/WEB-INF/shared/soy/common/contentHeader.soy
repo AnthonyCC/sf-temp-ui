@@ -14,7 +14,7 @@
     </div>
     {if not $content.hideViewAllButton}
       <div class="view-all" tabindex="-1">
-      <a {if $content.useViewAllPopup}data-view-all-popup data-moduleId={$content.moduleId}{else}href="{if $content.viewAllButtonLink}{$content.viewAllButtonLink}{/if}"{/if} tabindex="-1" class="cssbutton small green arrowbutton" data-viewallinfo="Home Page Module,{if $content.viewAllButtonLink}{$content.viewAllButtonLink}{/if}">view all
+      <a {if $content.useViewAllPopup}data-view-all-popup data-moduleId={$content.moduleId} data-moduleVirtualCategory="{$content.moduleVirtualCategory}" {else}href="{if $content.viewAllButtonLink}{$content.viewAllButtonLink}{/if}"{/if} tabindex="-1" class="cssbutton small green arrowbutton" data-viewallinfo="Home Page Module,{if $content.viewAllButtonLink}{$content.viewAllButtonLink}{/if}">view all
         <div class="offscreen">{if $content.contentTitle}{$content.contentTitle}{elseif $content.moduleTitle}{$content.moduleTitle}{/if}</div>
       </a>
       </div>
