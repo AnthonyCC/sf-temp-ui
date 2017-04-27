@@ -47,9 +47,11 @@ import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
+import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityLogModel;
 import com.freshdirect.framework.event.FDWebEvent;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.BINInfo;
+import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
 import com.freshdirect.referral.extole.ExtoleServiceException;
 import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
 import com.freshdirect.referral.extole.model.ExtoleResponse;
@@ -105,6 +107,8 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String EXTOLE_MANAGER_CREATECONVERSION ="extolemanager/createconversion";
 	private static final String EXTOLE_MANAGER_APPROVECONVERSION ="extolemanager/approveconversion";
 	private static final String EXTOLE_MANAGER_DOWNLOAD ="extolemanager/download";
+	private static final String LOG_ECOUPON_ACTIVITY = "couponactivity/log";
+	private static final String LOG_EWALLET_ACTIVITY = "ewalletactivity/log";
 	
 	
 	
@@ -1034,5 +1038,25 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	}
 	
 	
+	@Override
+	public void logCouponActivity(FDCouponActivityLogModel log)throws FDResourceException{
+	
+		try {
+			Request<FDCouponActivityLogModel> couponActivityLogReq = new Request<FDCouponActivityLogModel>();
+			couponActivityLogReq.setData(log);
+			String inputJson = buildRequest(couponActivityLogReq);
+			@SuppressWarnings("unchecked")
+			Response<String> response = this.postData(inputJson, getFdCommerceEndPoint(LOG_ECOUPON_ACTIVITY), Response.class);
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
+		}catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
+		}
+	}
 	
 }

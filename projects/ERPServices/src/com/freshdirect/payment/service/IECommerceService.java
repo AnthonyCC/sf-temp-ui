@@ -22,8 +22,10 @@ import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
+import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityLogModel;
 import com.freshdirect.framework.event.FDWebEvent;
 import com.freshdirect.payment.BINInfo;
+import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
 import com.freshdirect.referral.extole.ExtoleServiceException;
 import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
 import com.freshdirect.referral.extole.model.ExtoleResponse;
@@ -122,4 +124,8 @@ public interface IECommerceService {
 
 	public void downloadAndSaveRewards(String fileName) throws ExtoleServiceException, IOException, FDResourceException, RemoteException, ParseException;
 
+	public void logCouponActivity(FDCouponActivityLogModel log)throws FDResourceException;
+	
+//	public void logActivity(EwalletActivityLogModel logModel)throws FDResourceException;
+	
 }

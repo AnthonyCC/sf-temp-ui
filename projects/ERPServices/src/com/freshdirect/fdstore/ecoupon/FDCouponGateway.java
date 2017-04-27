@@ -18,6 +18,7 @@ import javax.naming.NamingException;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ecoupon.model.CouponCart;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityContext;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityLogModel;
@@ -40,6 +41,8 @@ import com.freshdirect.fdstore.ecoupon.service.CouponServiceException;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.service.FDECommerceService;
+import com.freshdirect.payment.service.IECommerceService;
 
 public class FDCouponGateway {
 	
@@ -343,9 +346,14 @@ public class FDCouponGateway {
 
 	private static void logCouponActivity(FDCouponActivityLogModel couponActvityLog) {
 		try {
-			FDCouponActivityLogHome home = getActivityLogHome();
-			FDCouponActivityLogSB sb =home.create();
-			sb.logCouponActivity(couponActvityLog);
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				IECommerceService commerceService =   FDECommerceService.getInstance();
+				commerceService.logCouponActivity(couponActvityLog);
+			}else{
+				FDCouponActivityLogHome home = getActivityLogHome();
+				FDCouponActivityLogSB sb =home.create();
+				sb.logCouponActivity(couponActvityLog);
+			}
 		} catch (FDResourceException e) {
 			LOG.info("Coupon activity logging failed. "+e);
 		} catch (RemoteException e) {
