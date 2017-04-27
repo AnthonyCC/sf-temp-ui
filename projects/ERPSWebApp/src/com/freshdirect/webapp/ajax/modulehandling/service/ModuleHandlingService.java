@@ -105,6 +105,7 @@ public final class ModuleHandlingService {
         result.setConfig(configs);
 
         result = filterDisplayableModules(result);
+        decorateVirtualCategory(result);
 
         return result;
     }
@@ -194,6 +195,26 @@ public final class ModuleHandlingService {
         filteredModuleContainerData.setConfig(filteredModuleConfigs);
 
         return filteredModuleContainerData;
+    }
+
+    /**
+     * 
+     * @param moduleContainer
+     * 
+     * @author dviktor
+     * 
+     *         Decorates all modules with their position and id as a virtual category. ModuleGroups won't be assigned a position.
+     */
+    private void decorateVirtualCategory(ModuleContainerData moduleContainer) {
+        List<ModuleConfig> moduleConfigs = moduleContainer.getConfig();
+        int moduleVirtualCategoryPosition = 1;
+
+        for (ModuleConfig moduleConfig : moduleConfigs) {
+            if (moduleConfig.getSourceType() != "MODULE_GROUP") {
+                moduleConfig.setModuleVirtualCategory("POSITION " + moduleVirtualCategoryPosition + ":" + moduleConfig.getModuleId());
+                moduleVirtualCategoryPosition++;
+            }
+        }
     }
 
 }

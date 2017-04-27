@@ -26,6 +26,7 @@ public class ModuleConfig implements Serializable {
     private boolean hideModuleGroupViewAllButton;
     private String moduleGroupViewAllButtonLink;
     private boolean useViewAllPopup;
+    private String moduleVirtualCategory;
 
     private ModuleEditorialContainer editorialContainer;
 
@@ -171,6 +172,14 @@ public class ModuleConfig implements Serializable {
 
     public void setEditorialContainer(ModuleEditorialContainer editorialContainer) {
         this.editorialContainer = editorialContainer;
+    }
+
+    public String getModuleVirtualCategory() {
+        return moduleVirtualCategory;
+    }
+
+    public void setModuleVirtualCategory(String moduleVirtualCategory) {
+        this.moduleVirtualCategory = moduleVirtualCategory;
     }
 
 }
