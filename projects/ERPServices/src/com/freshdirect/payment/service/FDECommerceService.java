@@ -28,7 +28,6 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.common.customer.EnumCardType;
-import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.content.attributes.AttributeException;
 import com.freshdirect.content.attributes.FlatAttribute;
@@ -40,13 +39,6 @@ import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.customer.accounts.external.UserTokenData;
 import com.freshdirect.ecommerce.data.payment.BINData;
-import com.freshdirect.ecommerce.data.survey.FDIdentityData;
-import com.freshdirect.ecommerce.data.survey.FDSurveyAnswerData;
-import com.freshdirect.ecommerce.data.survey.FDSurveyData;
-import com.freshdirect.ecommerce.data.survey.FDSurveyQuestionData;
-import com.freshdirect.ecommerce.data.survey.FDSurveyResponseData;
-import com.freshdirect.ecommerce.data.survey.SurveyData;
-import com.freshdirect.ecommerce.data.survey.SurveyKeyData;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.model.BatchModel;
@@ -55,22 +47,8 @@ import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
-
-import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.survey.EnumFormDisplayType;
-import com.freshdirect.fdstore.survey.EnumSurveyType;
-import com.freshdirect.fdstore.survey.EnumViewDisplayType;
-import com.freshdirect.fdstore.survey.FDSurvey;
-import com.freshdirect.fdstore.survey.FDSurveyAnswer;
-import com.freshdirect.fdstore.survey.FDSurveyQuestion;
-import com.freshdirect.fdstore.survey.FDSurveyResponse;
-import com.freshdirect.fdstore.survey.SurveyKey;
-import com.freshdirect.framework.core.PrimaryKey;
-
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityLogModel;
-
 import com.freshdirect.framework.event.FDWebEvent;
-import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.BINInfo;
 import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
@@ -131,11 +109,6 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String EXTOLE_MANAGER_DOWNLOAD ="extolemanager/download";
 	private static final String LOG_ECOUPON_ACTIVITY = "couponactivity/log";
 	private static final String LOG_EWALLET_ACTIVITY = "ewalletactivity/log";
-	
-	private static final String SURVEY ="survey";
-	private static final String STORE_SURVEY = "survey/store";
-	private static final String SURVEY_RESPONSE = "survey/surveyresponse";
-	private static final String GET_CUSTOMER_PROFILE = "survey/customerprofile";
 	
 	
 	
@@ -339,16 +312,14 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	public void saveBINInfo(List<List<BINInfo>> binInfos)
 			throws FDResourceException {
 		
-		Request<List<List<BINData>>> request = new Request<List<List<BINData>>>();
+		Request<List<BINData>> request = new Request<List<BINData>>();
 		List<BINData> binDataList = new ArrayList<BINData>(binInfos.size());
-		List<List<BINData>> binDataRequest = new ArrayList<List<BINData>>();
 		for (List<BINInfo> bininfol : binInfos) {
 			for(BINInfo bininfo : bininfol){
 			binDataList.add(buildBinDataModel(bininfo));
 			}
-			binDataRequest.add(binDataList);
 		}
-		request.setData(binDataRequest);
+		request.setData(binDataList);
 		String inputJson;
 		Response<String> response = null;
 		try {
@@ -380,7 +351,6 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			binData.setLowRange(binInfo.getLowRange());
 			binData.setHighRange(binInfo.getLowRange());
 			binData.setSequence(binInfo.getSequence());
-			binData.setCardType(binInfo.getCardType().getFdName());
 			binData.setPaymentCode(binInfo.getCardType().getPaymentechCode());
 		return binData;
 	}
@@ -1067,167 +1037,10 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		}
 	}
 	
-	@Override
-	public FDSurvey getSurvey(SurveyKey key) throws RemoteException {
-		Response<FDSurveyData> response = new Response<FDSurveyData>();
-		try {
-			response = httpGetDataTypeMap(getFdCommerceEndPoint(SURVEY+"?serviceType="+key.getUserType()+"&surveyType="+key.getSurveyType()),
-						new TypeReference<Response<FDSurveyData>>() {});
-			if (!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-			
-		} catch (FDResourceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-		FDSurvey fdSurvey = buildFdSurvey(response);
-		return fdSurvey;
-	}
-	private FDSurvey buildFdSurvey(Response<FDSurveyData> response) {
-		SurveyKey surveykey = new SurveyKey(EnumSurveyType.getEnum(response.getData().getKey().surveyType), EnumServiceType.getEnum(response.getData().getKey().getUserType()));
-		FDSurvey fdSurvey = new FDSurvey(surveykey, response.getData().isOrderSurvey(), response.getData().getAcceptableCoverage());
-		buildSurveyQuestionData(response, fdSurvey);
-		return fdSurvey;
-	}
-	private void buildSurveyQuestionData(Response<FDSurveyData> response,
-			FDSurvey fdSurvey) {
-		List<FDSurveyQuestionData> questions = response.getData().getQuestions();
-		List<FDSurveyQuestion> surveyQuestionList = new ArrayList<FDSurveyQuestion>();
-		for (FDSurveyQuestionData fdSurveyQuestionData : questions) {
-			FDSurveyQuestion surveyQuestion = new FDSurveyQuestion(fdSurveyQuestionData.getName(), fdSurveyQuestionData.getDescription(), fdSurveyQuestionData.getShortDescr(),
-					fdSurveyQuestionData.isRequired(), fdSurveyQuestionData.isMultiselect(), fdSurveyQuestionData.isOpenEnded(), fdSurveyQuestionData.isRating(),
-					fdSurveyQuestionData.isPulldown(), fdSurveyQuestionData.isSubQuestion(),EnumFormDisplayType.getEnum(fdSurveyQuestionData.getFormDisplayType()), EnumViewDisplayType.getEnum(fdSurveyQuestionData.getViewDisplayType()));
-			buildSurveyAnswers(fdSurveyQuestionData, surveyQuestion);
-			surveyQuestionList.add(surveyQuestion);
-			
-		}
-		for (FDSurveyQuestion fdSurveyQuestion : surveyQuestionList) {
-				fdSurvey.addQuestion(fdSurveyQuestion);
-		}
-	}
-	private void buildSurveyAnswers(FDSurveyQuestionData fdSurveyQuestionData,
-			FDSurveyQuestion surveyQuestion) {
-		List<FDSurveyAnswer> surveyAnswerList = new ArrayList<FDSurveyAnswer>();
-		List<FDSurveyAnswerData> answerdataList = fdSurveyQuestionData.getAnswers();
-		for (FDSurveyAnswerData fdSurveyAnswerData : answerdataList) {
-			FDSurveyAnswer surveyAnswer = new FDSurveyAnswer(fdSurveyAnswerData.getName(), fdSurveyAnswerData.getDescription(), fdSurveyAnswerData.getGroup());
-			surveyAnswerList.add(surveyAnswer);
-		}
-		surveyQuestion.setAnswers(surveyAnswerList);
-	}
-	@Override
-	public FDSurveyResponse getCustomerProfile(FDIdentity identity,
-			EnumServiceType serviceType) throws RemoteException {
-		FDSurveyResponse fdSurveyResponse = null;
-		try {
-			Request<SurveyData> request = buildSurveyData(identity, serviceType);
-			String inputJson = buildRequest(request);
-			Response<FDSurveyResponseData> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(GET_CUSTOMER_PROFILE), new TypeReference<Response<FDSurveyResponseData>>() {});
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-			fdSurveyResponse = buildFdSurveyResponse(response);
-			
-		} catch (FDPayPalServiceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}catch (FDResourceException e){
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		}
-		return fdSurveyResponse;
-	}
-	private Request<SurveyData> buildSurveyData(FDIdentity identity,
-			EnumServiceType serviceType) {
-		Request<SurveyData> request = new Request<SurveyData>();
-		SurveyData surveyData = new SurveyData();
-		surveyData.setErpCustomerid(identity.getErpCustomerPK());
-		surveyData.setFdCustomerId(identity.getFDCustomerPK());
-		surveyData.setServiceType(serviceType.toString());
-		request.setData(surveyData);
-		return request;
-	}
-	private FDSurveyResponse buildFdSurveyResponse(
-			Response<FDSurveyResponseData> response) {
-		FDSurveyResponseData responseData = response.getData();
-		FDIdentity fdIdentity = new FDIdentity(responseData.getIdentity().getErpCustomerPK(), responseData.getIdentity().getFdCustomerPK());
-		SurveyKey surveykey = new SurveyKey(EnumSurveyType.getEnum(response.getData().getKey().getSurveyType()), EnumServiceType.getEnum(response.getData().getKey().getUserType()));
-		FDSurveyResponse fdSurveyResponse = null;
-		if(!StringUtil.isEmpty(responseData.getSalePk())){
-			 PrimaryKey saleId = new PrimaryKey(responseData.getSalePk());
-			 fdSurveyResponse = new FDSurveyResponse(fdIdentity, surveykey,saleId);
-		}
-		else{
-			 fdSurveyResponse = new FDSurveyResponse(fdIdentity, surveykey);
-		}
-		fdSurveyResponse.setAnswers(responseData.getAnswers());
-		return fdSurveyResponse;
-	}
-	@Override
-	public FDSurveyResponse getSurveyResponse(FDIdentity identity, SurveyKey key) throws RemoteException {
-		FDSurveyResponse fdSurveyResponse = null;
-		try {
-			Request<SurveyData> request = new Request<SurveyData>();
-			SurveyData surveyData = new SurveyData();
-			surveyData.setErpCustomerid(identity.getErpCustomerPK());
-			surveyData.setFdCustomerId(identity.getFDCustomerPK());
-			surveyData.setServiceType(key.getUserType().toString());
-			surveyData.setSurveyType(key.getSurveyType().getLabel());
-			request.setData(surveyData);
-			String inputJson = buildRequest(request);
-			Response<FDSurveyResponseData> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SURVEY_RESPONSE), new TypeReference<Response<FDSurveyResponseData>>() {});
-			
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-			fdSurveyResponse = buildFdSurveyResponse(response);
-			
-		} catch (FDPayPalServiceException e) {
-			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage());
-		} catch (FDResourceException e) {
-			LOGGER.error(e);
-			throw new RemoteException(e.getMessage());
-		}
-		return fdSurveyResponse;
-	}
-	@Override
-	public void storeSurvey(FDSurveyResponse survey) throws FDResourceException {
-		try {
-			Request<FDSurveyResponseData> request = buildStoreSurveyRequest(survey);
-			String inputJson = buildRequest(request);
-			Response<FDSurveyResponse> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(STORE_SURVEY), new TypeReference<Response<Void>>() {});
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
-		} catch (FDPayPalServiceException e) {
-			LOGGER.error(e.getMessage());
-			throw new FDResourceException(e, "Unable to process the request.");
-		}
-	}
-	private Request<FDSurveyResponseData> buildStoreSurveyRequest(
-			FDSurveyResponse survey) {
-		Request<FDSurveyResponseData> request = new Request<FDSurveyResponseData>();
-		FDIdentityData fdIdentity = new FDIdentityData();
-		fdIdentity.setErpCustomerPK(survey.getIdentity().getErpCustomerPK());
-		fdIdentity.setFdCustomerPK(survey.getIdentity().getFDCustomerPK());
-		SurveyKeyData key = new SurveyKeyData();
-		key.setSurveyType(survey.getKey().getSurveyType().getLabel());
-		key.setUserType(survey.getKey().getUserType().toString());
-		FDSurveyResponseData fdSurveyResponse = new FDSurveyResponseData();
-		fdSurveyResponse.setAnswers(survey.getAnswers());
-		fdSurveyResponse.setIdentity(fdIdentity);
-		fdSurveyResponse.setKey(key);
-		if(survey.getSalePk()  != null && StringUtil.isEmpty(survey.getSalePk().getId())){
-			fdSurveyResponse.setSalePk(survey.getSalePk().getId());
-		}
-		request.setData(fdSurveyResponse);
-		return request;
-	}
 	
 	@Override
-	public void logCouponActivity(FDCouponActivityLogModel log)throws FDResourceException {
+	public void logCouponActivity(FDCouponActivityLogModel log)throws FDResourceException{
+	
 		try {
 			Request<FDCouponActivityLogModel> couponActivityLogReq = new Request<FDCouponActivityLogModel>();
 			couponActivityLogReq.setData(log);

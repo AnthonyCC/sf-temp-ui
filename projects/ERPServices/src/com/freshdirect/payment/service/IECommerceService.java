@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 
-import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.content.attributes.AttributeException;
 import com.freshdirect.content.attributes.FlatAttributeCollection;
@@ -23,11 +22,6 @@ import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
-
-import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.survey.FDSurvey;
-import com.freshdirect.fdstore.survey.FDSurveyResponse;
-import com.freshdirect.fdstore.survey.SurveyKey;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityLogModel;
 import com.freshdirect.framework.event.FDWebEvent;
 import com.freshdirect.payment.BINInfo;
@@ -130,16 +124,8 @@ public interface IECommerceService {
 
 	public void downloadAndSaveRewards(String fileName) throws ExtoleServiceException, IOException, FDResourceException, RemoteException, ParseException;
 
-	public FDSurvey getSurvey(SurveyKey key) throws RemoteException;
-	
-	public FDSurveyResponse getCustomerProfile(FDIdentity identity, EnumServiceType serviceType) throws RemoteException ;
-	
-	public FDSurveyResponse getSurveyResponse(FDIdentity identity, SurveyKey key) throws RemoteException ;
-	
-	public void storeSurvey(FDSurveyResponse survey) throws FDResourceException;
-
 	public void logCouponActivity(FDCouponActivityLogModel log)throws FDResourceException;
 	
 //	public void logActivity(EwalletActivityLogModel logModel)throws FDResourceException;
-
+	
 }
