@@ -1039,7 +1039,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	
 	
 	@Override
-	public void logCouponActivity(FDCouponActivityLogModel log)throws FDResourceException{
+	public void logCouponActivity(FDCouponActivityLogModel log)throws FDResourceException,RemoteException{
 	
 		try {
 			Request<FDCouponActivityLogModel> couponActivityLogReq = new Request<FDCouponActivityLogModel>();
@@ -1052,11 +1052,28 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			}
 		} catch (FDPayPalServiceException e) {
 			LOGGER.error(e.getMessage());
-			throw new FDResourceException(e, "Unable to process the request.");
-		}catch (FDResourceException e){
-			LOGGER.error(e.getMessage());
-			throw new FDResourceException(e, "Unable to process the request.");
+			throw new RemoteException(e.getMessage());
 		}
 	}
 	
+	@Override
+	public void logActivity(EwalletActivityLogModel logModel)throws RemoteException{
+		
+		try {
+			Request<EwalletActivityLogModel> ewalletActivityLogReq = new Request<EwalletActivityLogModel>();
+			ewalletActivityLogReq.setData(logModel);
+			String inputJson = buildRequest(ewalletActivityLogReq);
+			@SuppressWarnings("unchecked")
+			Response<String> response = this.postData(inputJson, getFdCommerceEndPoint(LOG_EWALLET_ACTIVITY), Response.class);
+			if(!response.getResponseCode().equals("OK")){
+				throw new RemoteException(response.getMessage());
+			}
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
 }

@@ -124,8 +124,8 @@ public interface IECommerceService {
 
 	public void downloadAndSaveRewards(String fileName) throws ExtoleServiceException, IOException, FDResourceException, RemoteException, ParseException;
 
-	public void logCouponActivity(FDCouponActivityLogModel log)throws FDResourceException;
+	public void logCouponActivity(FDCouponActivityLogModel log)throws FDResourceException,RemoteException;
 	
-//	public void logActivity(EwalletActivityLogModel logModel)throws FDResourceException;
+	public void logActivity(EwalletActivityLogModel logModel)throws RemoteException;
 	
 }
