@@ -890,7 +890,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		ps.setString(45, this.partnerMessages.value());
 		ps.setString(46, this.smsNoThanksflag);
 		
-		ps.setString(47, this.goGreen?"Y":"N");
+		ps.setString(47, "Y");
 		
 		ps.setString(48, this.displayName);
 		
