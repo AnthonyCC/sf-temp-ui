@@ -9,15 +9,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.log4j.Category;
-
 import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class FilteringSortingMenuBuilder<N extends ContentNodeModel> extends GenericFilteringMenuBuilder<FilteringSortingItem<N>> {
-	
-    private static final Category LOGGER = LoggerFactory.getInstance(FilteringSortingMenuBuilder.class);
-
 
 	public FilteringSortingMenuBuilder(Map<FilteringValue, List<Object>> filterValues, Set<FilteringValue> filters) {
 		super(filterValues, new HashSet<FilteringValue>(filters));
@@ -68,9 +62,7 @@ public class FilteringSortingMenuBuilder<N extends ContentNodeModel> extends Gen
 						mI = menuItem;
 					}
 					
-					mI.setCounter(mI.getCounter() + 1);	
-					LOGGER.debug("menuName==============="+menuName);
-					LOGGER.debug("mI==============="+mI);
+					mI.setCounter(mI.getCounter() + 1);							
 					domain.put(menuName, mI);
 				}
 			}
