@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpSession;
 
@@ -103,6 +104,8 @@ public final class ModuleHandlingService {
         result.setData(datas);
         result.setConfig(configs);
 
+        result = filterDisplayableModules(result);
+
         return result;
     }
 
@@ -148,6 +151,49 @@ public final class ModuleHandlingService {
         DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
         ContentNodeI module = CmsManager.getInstance().getContentNode(moduleContentKey, currentDraftContext);
         return DatasourceService.getDefaultService().loadModuleData(module, user, session, showAllProducts);
+    }
+
+    /**
+     * 
+     * @param moduleContainer
+     * 
+     * @author dviktor
+     * 
+     *         This method removes any modules from the container that are product display modules and have less than 3 products
+     * @return
+     */
+    private ModuleContainerData filterDisplayableModules(ModuleContainerData moduleContainer) {
+        // TODO reverse iterate first on config then on data so instead of removing we can use adding to empty list.
+        Map<String, ModuleData> moduleDatas = moduleContainer.getData();
+        List<ModuleConfig> moduleConfigs = moduleContainer.getConfig();
+
+        ModuleContainerData filteredModuleContainerData = new ModuleContainerData();
+        Map<String, ModuleData> filteredModuleDatas = new HashMap<String, ModuleData>();
+        List<ModuleConfig> filteredModuleConfigs = new ArrayList<ModuleConfig>();
+
+        filteredModuleDatas.putAll(moduleDatas);
+        filteredModuleConfigs.addAll(moduleConfigs);
+
+        for (Entry<String, ModuleData> entry : moduleDatas.entrySet()) {
+            String key = entry.getKey();
+            ModuleData moduleData = entry.getValue();
+
+            if (moduleData.getImageGridData() == null && moduleData.getOpenHTMLEditorial() == null && moduleData.getIcons() == null) {
+                if (moduleData.getProducts().size() < 3) {
+                    for (ModuleConfig moduleConfig : moduleConfigs) {
+                        if (moduleConfig.getModuleId() == key) {
+                            filteredModuleConfigs.remove(moduleConfig);
+                        }
+                    }
+                    filteredModuleDatas.remove(key);
+                }
+            }
+        }
+
+        filteredModuleContainerData.setData(filteredModuleDatas);
+        filteredModuleContainerData.setConfig(filteredModuleConfigs);
+
+        return filteredModuleContainerData;
     }
 
 }
