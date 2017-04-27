@@ -310,28 +310,28 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		}
 	@Override
 	public void saveBINInfo(List<List<BINInfo>> binInfos)
-			throws FDResourceException {
-		
-		Request<List<BINData>> request = new Request<List<BINData>>();
-		List<BINData> binDataList = new ArrayList<BINData>(binInfos.size());
-		for (List<BINInfo> bininfol : binInfos) {
-			for(BINInfo bininfo : bininfol){
-			binDataList.add(buildBinDataModel(bininfo));
+			throws FDResourceException {Request<List<List<BINData>>> request = new Request<List<List<BINData>>>();
+			List<BINData> binDataList = new ArrayList<BINData>(binInfos.size());
+			List<List<BINData>> binDataRequest = new ArrayList<List<BINData>>();
+			for (List<BINInfo> bininfol : binInfos) {
+				for(BINInfo bininfo : bininfol){
+				binDataList.add(buildBinDataModel(bininfo));
+				}
+				binDataRequest.add(binDataList);
 			}
-		}
-		request.setData(binDataList);
-		String inputJson;
-		Response<String> response = null;
-		try {
-			inputJson = buildRequest(request);
-			 response = postData(inputJson, getFdCommerceEndPoint(SAVE_ACTIVE_BINS), Response.class);
-			if(!response.getResponseCode().equals("OK"))
+			request.setData(binDataRequest);
+			String inputJson;
+			Response<String> response = null;
+			try {
+				inputJson = buildRequest(request);
+				 response = postData(inputJson, getFdCommerceEndPoint(SAVE_ACTIVE_BINS), Response.class);
+				if(!response.getResponseCode().equals("OK"))
+					throw new FDResourceException(response.getMessage());
+			} catch (FDPayPalServiceException e) {
+				
 				throw new FDResourceException(response.getMessage());
-		} catch (FDPayPalServiceException e) {
-			
-			throw new FDResourceException(response.getMessage());
-		}
-	}
+			}
+			}
 	//Move the below method to util class
 	private NavigableMap<Long, BINInfo> buildBinInfoModel(
 			NavigableMap<Long, BINData> data) {
@@ -351,6 +351,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			binData.setLowRange(binInfo.getLowRange());
 			binData.setHighRange(binInfo.getLowRange());
 			binData.setSequence(binInfo.getSequence());
+			binData.setCardType(binInfo.getCardType().getFdName());
 			binData.setPaymentCode(binInfo.getCardType().getPaymentechCode());
 		return binData;
 	}
