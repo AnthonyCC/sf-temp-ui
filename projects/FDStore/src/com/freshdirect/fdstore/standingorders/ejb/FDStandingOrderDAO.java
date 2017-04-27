@@ -53,7 +53,7 @@ public class FDStandingOrderDAO {
 
 	private static final Logger LOGGER = LoggerFactory.getInstance( FDStandingOrderDAO.class );
 
-	private static final String FIELDZ_ALL = "SO.ID, SO.CUSTOMER_ID, SO.CUSTOMERLIST_ID, SO.ADDRESS_ID, SO.PAYMENTMETHOD_ID, SO.START_TIME, SO.END_TIME, SO.NEXT_DATE, SO.FREQUENCY, SO.ALCOHOL_AGREEMENT, SO.DELETED, SO.LAST_ERROR, SO.ERROR_HEADER, SO.ERROR_DETAIL, CCL.NAME, C.USER_ID,SO.IS_ACTIVATED,SO.DEFAULT_SO, SO.TIP";
+	private static final String FIELDZ_ALL = "SO.ID, SO.CUSTOMER_ID, SO.CUSTOMERLIST_ID, SO.ADDRESS_ID, SO.PAYMENTMETHOD_ID, SO.START_TIME, SO.END_TIME, SO.NEXT_DATE, SO.FREQUENCY, SO.ALCOHOL_AGREEMENT, SO.DELETED, SO.LAST_ERROR, SO.ERROR_HEADER, SO.ERROR_DETAIL, CCL.NAME, C.USER_ID,SO.IS_ACTIVATED,SO.DEFAULT_SO, SO.TIP, SO.REMINDER_OVERLAY";
 
 	private static final String LOAD_CUSTOMER_OLD_STANDING_ORDERS =
 		"select " + FIELDZ_ALL + " " +
@@ -103,8 +103,8 @@ public class FDStandingOrderDAO {
 		"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
 		"where SO.ID=?";
 
-	private static final String INSERT_STANDING_ORDER = "insert into CUST.STANDING_ORDER(ID, CUSTOMER_ID, CUSTOMERLIST_ID, ADDRESS_ID, PAYMENTMETHOD_ID, START_TIME, END_TIME, NEXT_DATE, FREQUENCY, ALCOHOL_AGREEMENT, DELETED, LAST_ERROR, ERROR_HEADER, ERROR_DETAIL,IS_ACTIVATED,CREATED_TIME,MODIFIED_TIME, TIP,DEFAULT_SO) " +
-	"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?)";
+	private static final String INSERT_STANDING_ORDER = "insert into CUST.STANDING_ORDER(ID, CUSTOMER_ID, CUSTOMERLIST_ID, ADDRESS_ID, PAYMENTMETHOD_ID, START_TIME, END_TIME, NEXT_DATE, FREQUENCY, ALCOHOL_AGREEMENT, DELETED, LAST_ERROR, ERROR_HEADER, ERROR_DETAIL,IS_ACTIVATED,CREATED_TIME,MODIFIED_TIME, TIP,DEFAULT_SO,REMINDER_OVERLAY) " +
+	"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?)";
 	
 	private static final String UPDATE_STANDING_ORDER = "update CUST.STANDING_ORDER set " +
 	"CUSTOMER_ID = ?, " +
@@ -168,7 +168,7 @@ public class FDStandingOrderDAO {
 	
 	private final static String QUERY_SO_UPDATE_SO ="  UPDATE CUST.STANDING_ORDER SET START_TIME=NULL, END_TIME=NULL, NEXT_DATE=NULL , LAST_ERROR=? ,ERROR_HEADER=?, ERROR_DETAIL=? WHERE ID=?";
 
-	private static final String ACTIVATE_STANDING_ORDER=" update cust.standing_order  so set so.is_activated='Y'  where  so.id=?" ;
+	private static final String ACTIVATE_STANDING_ORDER=" update cust.standing_order  so set so.is_activated='Y', so.reminder_overlay='N' where so.id=?";
 	
 	private static final String IS_CUSTOMER_HAS_STANDING_ORDER="SELECT  count(*)  as SO_COUNT from CUST.STANDING_ORDER SO WHERE "+
 				" SO.CUSTOMER_ID=? AND SO.DELETED<>1 ";
@@ -176,6 +176,8 @@ public class FDStandingOrderDAO {
 	private static final String UPDATE_DEFAULT_STANDING_ORDER="update CUST.STANDING_ORDER so SET so.default_so='Y' WHERE  so.customer_id = ? AND SO.CUSTOMERLIST_ID=? ";
 	
 	private static final String REVERT_DEFAULT_STANDING_ORDER="update CUST.STANDING_ORDER so SET so.default_so=NULL WHERE  so.customer_id = ? AND SO.default_so='Y' ";
+	
+	private static final String UPDATE_REMIDER_OVERLAY_STANDING_ORDER="update CUST.STANDING_ORDER so SET so.reminder_overlay='N' WHERE  so.id = ? AND SO.reminder_overlay='Y'";
 
 	protected String getNextId(Connection conn) throws SQLException {
 		return SequenceGenerator.getNextId(conn, "CUST");
@@ -420,6 +422,8 @@ public class FDStandingOrderDAO {
 		so.setDefault(rs.getString("DEFAULT_SO")!=null && "Y".equals(rs.getString("DEFAULT_SO"))?true:false);
 		
 		so.setTipAmount(rs.getDouble("TIP"));
+		so.setReminderOverlayForNewSo(rs.getString("REMINDER_OVERLAY")!=null?(rs.getString("REMINDER_OVERLAY").equalsIgnoreCase("Y")?true:false):false);
+		
 		
 		return so;
 	}
@@ -484,6 +488,7 @@ public class FDStandingOrderDAO {
 			ps.setTimestamp(counter++, new Timestamp( currDate.getTime() ));//Created Time
 			ps.setTimestamp(counter++, new Timestamp( currDate.getTime() ));//Modified Time
 			ps.setDouble(counter++, so.getTipAmount());
+			ps.setString(counter++, "Y");
 			ps.setString(counter++, "Y");
 
 			ps.execute();
@@ -1978,4 +1983,22 @@ public void removeTimeSlotInfoFromSO(Connection con,List<String> list) throws SQ
 			}
 		}		
 	}
+
+public void turnOffReminderOverLayNewSo(Connection con, String standingOrderId) throws SQLException {
+	PreparedStatement ps=null;
+		try{	
+			ps = con.prepareStatement(UPDATE_REMIDER_OVERLAY_STANDING_ORDER);
+			ps.setString(1, standingOrderId);
+			ps.executeUpdate();
+			LOGGER.info("turn Off ReminderOverLayNewSo for standing order id: "+standingOrderId);
+		} catch (SQLException exc) {
+			throw exc;
+		} finally {
+			if(ps != null) {
+				ps.close();
+			}
+		}
+		
+	}
+
 }

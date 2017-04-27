@@ -54,6 +54,8 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 	private static final long serialVersionUID = 3987286560828009595L;
 
 	private static final Logger LOG = LoggerFactory.getInstance(StandingOrderCartServlet.class);
+	
+	private static final String ACTION_REMIDER_OVERLAY="reminderOverlay";
 
 	@Override
 	protected boolean synchronizeOnUser() {
@@ -136,6 +138,15 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 			 LOG.error(" ERROR WHILE RETRIEVING THE STANDING ORDER DATA"+ reqData.getStandingOrderId());
 			}
 		
+			if (null != reqData.getActiontype()	&& ACTION_REMIDER_OVERLAY.equalsIgnoreCase(reqData.getActiontype())
+					&& user.getCurrentStandingOrder() != null) {
+				try {
+					if (user.getCurrentStandingOrder().getId() != null)
+						FDStandingOrdersManager.getInstance().turnOffReminderOverLayNewSo(user.getCurrentStandingOrder().getId());
+				} catch (FDResourceException e) {
+					LOG.error("Got the exeption while updating the RemiderOverlay flag for New Standing order"+e);
+				}
+			}
 		}else{
 			// User level not sufficient.
 			 orderResponseData.setMessage("User Session is expired please try login to add the product to Standing order") ;

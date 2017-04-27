@@ -903,6 +903,8 @@ public class StandingOrderHelper {
 								.setMessage("Changes will begin with your "
 										+ getModifyDeliveryDate(so.getNextDeliveryDate())
 										+ " delivery.");
+						if (isSOActivated(so) ? false : true)
+							orderResponseData.setReminderOverlayForNewSo(so.isReminderOverlayForNewSo());
 					}
 				} else {
 					if (isValidStandingOrder(so,false) && Calendar.getInstance().getTime().before(so.getCutOffDeliveryDateTime())) {
