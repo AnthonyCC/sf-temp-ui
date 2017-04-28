@@ -55,6 +55,7 @@
  * @param? showConfig show configuration and similar things for e.g. quickshop
  * @param? mobWeb
  * @param? moduleData
+ * @param? moduleVirtualCategory
  */
 {template .transactionalGridItem autoescape="false"}
 {call .potatoTransactionalGridItem}
@@ -136,6 +137,11 @@
   {param mobWeb:$mobWeb /}
   {param timeToComplete:$item.timeToComplete /}
   {param moduleData:$moduleData /}
+  {param moduleVirtualCategory}
+    {if $moduleVirtualCategory}
+      {$moduleVirtualCategory}
+    {/if}
+  {/param}
 {/call}
 {/template}
 
@@ -319,6 +325,7 @@
  * @param? mobWeb
  * @param? timeToComplete
  * @param? moduleData
+ * @param? moduleVirtualCategory
  */
 {template .potatoTransactionalGridItem autoescape="false"}
 /* this line return must be here, or there will be tabs in output html, which cause whitespace */
@@ -501,6 +508,15 @@
 			{param listId:$listId /}
 			{param freeSamplePromoProduct:$freeSamplePromoProduct /}
 			{param mobWeb:$mobWeb /}
+      {param moduleVirtualCategory}
+        {if $moduleVirtualCategory}
+          {$moduleVirtualCategory}
+        {else}
+          {if $moduleData and $moduleData.moduleVirtualCategory}
+            {$moduleData.moduleVirtualCategory}
+          {/if}
+        {/if}
+      {/param}
 		{/call}
 		{call common.atcInCart}
 			{param amount:$inCartAmount /}
@@ -538,6 +554,11 @@
 				{param item:$relatedItem /}
 				{param extraClass:$extraClass /}
 				{param mobWeb:$mobWeb /}
+        {param moduleVirtualCategory}
+          {if $moduleData and $moduleData.moduleVirtualCategory}
+            {$moduleData.moduleVirtualCategory}
+          {/if}
+        {/param}
 			{/call}
 		</ul>
 	{/if}
@@ -547,6 +568,11 @@
 				{param item:$replacement /}
 				{param extraClass:$extraClass /}
 				{param mobWeb:$mobWeb /}
+        {param moduleVirtualCategory}
+          {if $moduleData and $moduleData.moduleVirtualCategory}
+            {$moduleData.moduleVirtualCategory}
+          {/if}
+        {/param}
 			{/call}
 		</ul>
 	{/if}
@@ -595,6 +621,7 @@
  * @param? availabilityMessage
  * @param? productPageUrl
  * @param? cmEventSource optional coremetrics event source
+ *@param? moduleVirtualCategory
  */
 {template .potatoGridItemControls autoescape="false"}
   <div class="portrait-item-controls" data-component="product-controls">
@@ -641,6 +668,11 @@
         {param atcItemId:$atcItemId /}
         {param isAlcoholic:$isAlcoholic /}
         {param productPageUrl:$productPageUrl /}
+        {param moduleVirtualCategory}
+          {if $moduleVirtualCategory}
+            {$moduleVirtualCategory}
+          {/if}
+        {/param}
       {/call}
     </div>
   </div>
@@ -670,6 +702,7 @@
  * @param? listId list id
  * @param? freeSamplePromoProduct free sample product
  * @param? mobWeb
+ * @param? moduleVirtualCategory
  */
 {template .potatoTransactionalGridItemControls autoescape="false"}
   <div class="portrait-item-controls" data-component="product-controls">
@@ -736,6 +769,11 @@
         {param atcItemId:$atcItemId /}
         {param isAlcoholic:$isAlcoholic /}
         {param productPageUrl:$productPageUrl /}
+        {param moduleVirtualCategory}
+          {if $moduleVirtualCategory}
+            {$moduleVirtualCategory}
+          {/if}
+        {/param}
       {/call}
     </div>
   </div>

@@ -128,7 +128,7 @@ var FreshDirect = FreshDirect || {};
 		try {
 			addCmData('coremetricsPageId',Coremetrics.pageId,event);
 			addCmData('coremetricsPageContentHierarchy',Coremetrics.pageContentHierarchy,event);
-			addCmData('coremetricsVirtualCategory',Coremetrics.virtualCategory,event);
+			addCmData('coremetricsVirtualCategory',event.cmData.coremetricsVirtualCategory || Coremetrics.virtualCategory,event);
 		} catch(e){
 			// TODO: log coremetrics errors
 		}

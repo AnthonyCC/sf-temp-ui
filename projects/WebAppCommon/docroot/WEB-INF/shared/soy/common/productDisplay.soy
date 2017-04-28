@@ -22,6 +22,9 @@
 			{if $data.pageType}
 				<input type="hidden" data-component="productData" data-productdata-name="pageType" name="pageType" value="{$data.pageType}">
 			{/if}
+      {if $data.moduleVirtualCategory}
+      <input type="hidden" data-component="productData" data-productdata-name="moduleVirtualCategory" name="moduleVirtualCategory" value="{$data.moduleVirtualCategory}">
+      {/if}
 			{if $data.skus}
 				<ol class="productDisplay-skulist">
 					{foreach $sku in $data.skus}
