@@ -108,7 +108,7 @@ if(user != null) {
 					*/
 				%>
 				<div class="searchform-cont">
-					<form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
+					<form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="UTF-8">
 						<label for="topSearchField">Search</label>
 						<%
 							{
