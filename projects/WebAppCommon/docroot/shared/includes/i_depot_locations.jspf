@@ -79,11 +79,13 @@ if( request.getRequestURI().indexOf("depot") > -1){
 	if (location.getPK().getId().equalsIgnoreCase(fldDepotLocation)){
 		checkedAddress = true;
     }
-	if (now.before(location.getStartDate()) || now.after(location.getEndDate())) continue;
+	if (!(now.before(location.getStartDate()) || now.after(location.getEndDate()))) {
 	
 	if(locations.size() == 1){
 			checkedAddress = true;
 	}
+	
+	
 %>
 
 <%
@@ -129,7 +131,11 @@ cnt++;
 			<%}%>				
 
 		</td>
-<% checkedAddress = false;%>
+<% checkedAddress = false;
+
+	}
+
+%>
 
 	</logic:iterate>
 
