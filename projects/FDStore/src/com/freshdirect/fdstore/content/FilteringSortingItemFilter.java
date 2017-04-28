@@ -10,7 +10,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
+import com.freshdirect.framework.util.log.LoggerFactory;
+
 public class FilteringSortingItemFilter<N extends ContentNodeModel> extends GenericFilter<FilteringSortingItem<N>> {
+	
+	private final static Logger LOG = LoggerFactory.getInstance(FilteringSortingItemFilter.class);
+
 
 	public FilteringSortingItemFilter(Map<FilteringValue, List<Object>> filterValues, Set<FilteringValue> filters) {
 		super(filterValues, filters);
@@ -43,6 +50,8 @@ public class FilteringSortingItemFilter<N extends ContentNodeModel> extends Gene
 						}
 					}
 				}
+				LOG.debug("items size==============="+items.size());
+				LOG.debug("filter==============="+filter);
 				menuBuilder.buildMenuForFilter(items, filter, !tempMenuNeeded, tempMenuNeeded);
 			}
 				
