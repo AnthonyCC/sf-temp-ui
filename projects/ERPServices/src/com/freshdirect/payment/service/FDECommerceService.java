@@ -28,6 +28,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.content.attributes.AttributeException;
 import com.freshdirect.content.attributes.FlatAttribute;
@@ -39,6 +40,10 @@ import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.customer.accounts.external.UserTokenData;
 import com.freshdirect.ecommerce.data.payment.BINData;
+import com.freshdirect.ecommerce.data.survey.FDSurveyData;
+import com.freshdirect.ecommerce.data.survey.FDSurveyResponseData;
+import com.freshdirect.ecommerce.data.survey.SurveyData;
+import com.freshdirect.ecommerce.data.survey.SurveyKeyData;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.model.BatchModel;
@@ -47,6 +52,7 @@ import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
+import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityLogModel;
 import com.freshdirect.framework.event.FDWebEvent;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -109,6 +115,11 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String EXTOLE_MANAGER_DOWNLOAD ="extolemanager/download";
 	private static final String LOG_ECOUPON_ACTIVITY = "couponactivity/log";
 	private static final String LOG_EWALLET_ACTIVITY = "ewalletactivity/log";
+	
+	private static final String SURVEY ="survey";
+	private static final String STORE_SURVEY = "survey/store";
+	private static final String SURVEY_RESPONSE = "survey/surveyresponse";
+	private static final String GET_CUSTOMER_PROFILE = "survey/customerprofile";
 	
 	
 	
@@ -1077,4 +1088,99 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			throw new RemoteException(e.getMessage());
 		}
 	}
+	
+	@Override
+	public FDSurveyData getSurvey(SurveyKeyData key) throws RemoteException {
+		Response<FDSurveyData> response = new Response<FDSurveyData>();
+		try {
+			Request<SurveyKeyData> request = new Request<SurveyKeyData>();
+			request.setData(key);
+			String inputJson = buildRequest(request);
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SURVEY), new TypeReference<Response<FDSurveyData>>() {});
+			if (!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		}
+		catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	
+	@Override
+	public FDSurveyResponseData getCustomerProfile(FDIdentity identity,
+			EnumServiceType serviceType) throws RemoteException {
+		Response<FDSurveyResponseData> response= null;
+		try {
+			Request<SurveyData> request = buildSurveyData(identity, serviceType);
+			String inputJson = buildRequest(request);
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(GET_CUSTOMER_PROFILE), new TypeReference<Response<FDSurveyResponseData>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	private Request<SurveyData> buildSurveyData(FDIdentity identity,
+			EnumServiceType serviceType) {
+		Request<SurveyData> request = new Request<SurveyData>();
+		SurveyData surveyData = new SurveyData();
+		surveyData.setErpCustomerid(identity.getErpCustomerPK());
+		surveyData.setFdCustomerId(identity.getFDCustomerPK());
+		surveyData.setServiceType(serviceType.toString());
+		request.setData(surveyData);
+		return request;
+	}
+	@Override
+	public FDSurveyResponseData getSurveyResponse(FDIdentity identity, SurveyKeyData key) throws RemoteException {
+		Response<FDSurveyResponseData> response = null;
+		try {
+			Request<SurveyData> request = new Request<SurveyData>();
+			SurveyData surveyData = new SurveyData();
+			surveyData.setErpCustomerid(identity.getErpCustomerPK());
+			surveyData.setFdCustomerId(identity.getFDCustomerPK());
+			surveyData.setServiceType(key.getUserType().toString());
+			surveyData.setSurveyType(key.getSurveyType());
+			request.setData(surveyData);
+			String inputJson = buildRequest(request);
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SURVEY_RESPONSE), new TypeReference<Response<FDSurveyResponseData>>() {});
+			
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		} catch (FDResourceException e) {
+			LOGGER.error(e);
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	@Override
+	public void storeSurvey(FDSurveyResponseData survey) throws FDResourceException {
+		try {
+			String inputJson = buildRequest(survey);
+			Response<FDSurveyResponseData> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(STORE_SURVEY), new TypeReference<Response<Void>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
+		}
+	}
+	
 }
