@@ -51,7 +51,7 @@ public abstract class FilteringFlow<N extends ContentNodeModel> {
 		if (FDStoreProperties.isFavouritesTopNumberFilterSwitchedOn() && nav.getSortBy()!=null && nav.getSortBy().equals(SearchSortType.BY_RELEVANCY)) {
 			items = reOrganizeFavourites(items);
 		}
-
+		LOG.debug("items size================="+items.size());
 		// Build the rest of the menu
 		menuBuilder.buildMenu(items);
 

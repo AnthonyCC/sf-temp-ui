@@ -9,9 +9,15 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class FilteringSortingMenuBuilder<N extends ContentNodeModel> extends GenericFilteringMenuBuilder<FilteringSortingItem<N>> {
+	
+	private final static Logger LOG = LoggerFactory.getInstance(FilteringSortingMenuBuilder.class);
+
 
 	public FilteringSortingMenuBuilder(Map<FilteringValue, List<Object>> filterValues, Set<FilteringValue> filters) {
 		super(filterValues, new HashSet<FilteringValue>(filters));
@@ -21,6 +27,7 @@ public class FilteringSortingMenuBuilder<N extends ContentNodeModel> extends Gen
 	public void buildMenu(List<FilteringSortingItem<N>> items) { 
 		
 		for (FilteringValue value : filters) {
+			LOG.debug("filters value==================="+value);
 			buildMenuForFilter(items, value, false, false);
 		}
 
@@ -45,6 +52,7 @@ public class FilteringSortingMenuBuilder<N extends ContentNodeModel> extends Gen
 			domain.put( "1", new FilteringMenuItem("1", "1", 0, filter) );
 		}
 		
+		LOG.debug("items size============"+items.size());
 		for (FilteringSortingItem<N> item : items) {
 			Set<FilteringMenuItem> menuItems = item.getMenuValue(filter);
 
@@ -62,7 +70,11 @@ public class FilteringSortingMenuBuilder<N extends ContentNodeModel> extends Gen
 						mI = menuItem;
 					}
 					
-					mI.setCounter(mI.getCounter() + 1);							
+					mI.setCounter(mI.getCounter() + 1);	
+					if(menuName!=null && menuName.equals("flo")){
+						LOG.debug("mI.getCounter()==========="+mI.getCounter());
+					}
+											
 					domain.put(menuName, mI);
 				}
 			}
