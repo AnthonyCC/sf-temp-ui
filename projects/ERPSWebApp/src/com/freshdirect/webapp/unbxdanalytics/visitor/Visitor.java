@@ -30,7 +30,7 @@ public final class Visitor {
     
     private static final String UNKNOWN_UID = "URANDOM"; 
     
-    private static final Logger LOGGER = LoggerFactory.getInstance(EventLoggerService.class);
+    private static final Logger LOGGER = LoggerFactory.getInstance(Visitor.class);
 
     /**
      * Default way to obtain a Visitor
@@ -56,7 +56,7 @@ public final class Visitor {
      * 
      * @param uid
      */
-    public Visitor(String uid, VisitType visitType) {
+    private Visitor(String uid, VisitType visitType) {
         this.uid = uid;
         this.visitType = visitType;
     }
