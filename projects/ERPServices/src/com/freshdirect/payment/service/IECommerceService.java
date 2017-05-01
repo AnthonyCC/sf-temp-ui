@@ -80,7 +80,8 @@ public interface IECommerceService {
 
 	public Map<ErpCOOLKey, ErpCOOLInfo> getCountryOfOriginData(Date since) throws RemoteException;
 
-	public List loadEnum(String daoClassName)throws RemoteException;
+	public <E> List loadEnum(String daoClassName)throws RemoteException;
+	
 	
 	public String getUserIdForUserToken(String userToken) ;
 	
@@ -133,7 +134,7 @@ public interface IECommerceService {
 	public void logCouponActivity(FDCouponActivityLogModel log)throws FDResourceException,RemoteException;
 	
 	public void logActivity(EwalletActivityLogModel logModel)throws RemoteException;
-	
+
 	public FDSurveyData getSurvey(SurveyKeyData key) throws RemoteException;
 	
 	public FDSurveyResponseData getCustomerProfile(FDIdentity identity, EnumServiceType serviceType) throws RemoteException ;
@@ -142,5 +143,5 @@ public interface IECommerceService {
 	
 	public void storeSurvey(FDSurveyResponseData survey) throws FDResourceException;
 	
-	
+
 }

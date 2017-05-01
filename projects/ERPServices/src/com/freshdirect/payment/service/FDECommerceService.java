@@ -27,19 +27,28 @@ import weblogic.auddi.util.Logger;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.content.attributes.AttributeException;
 import com.freshdirect.content.attributes.FlatAttribute;
+import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
+import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.ecommerce.data.attributes.FlatAttributeCollection;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.customer.accounts.external.UserTokenData;
+import com.freshdirect.ecommerce.data.enums.BillingCountryInfoData;
+import com.freshdirect.ecommerce.data.enums.CrmCaseSubjectData;
+import com.freshdirect.ecommerce.data.enums.DeliveryPassTypeData;
+import com.freshdirect.ecommerce.data.enums.EnumFeaturedHeaderTypeData;
+import com.freshdirect.ecommerce.data.enums.ErpAffiliateData;
 import com.freshdirect.ecommerce.data.payment.BINData;
+import com.freshdirect.erp.EnumFeaturedHeaderType;
 import com.freshdirect.ecommerce.data.survey.FDSurveyData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyResponseData;
 import com.freshdirect.ecommerce.data.survey.SurveyData;
@@ -57,6 +66,7 @@ import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityLogModel;
 import com.freshdirect.framework.event.FDWebEvent;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.BINInfo;
+import com.freshdirect.payment.BillingCountryInfo;
 import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
 import com.freshdirect.referral.extole.ExtoleServiceException;
 import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
@@ -97,7 +107,7 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String CHECK_EXT_LOGIN_USER = "account/external/checkexternalloginuser";
 	
 	private static final String CONNECTED_PROVIDERS_BY_USERID = "account/external/providerbyuserid";
-	private static final String LOAD_ENUMS = "/enums";
+	private static final String LOAD_ENUMS = "enums/all";
 	private static final String BRAND_SEARCH_BY_KEY ="brand/products/search";
 	private static final String BRAND_SEARCH_BY_PRODUCT ="brand/products/products";
 	private static final String BRAND_LAST_SENT_FEED ="brand/products/ordertime";
@@ -799,20 +809,53 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	
 	}
 	@Override
-	public List loadEnum(String daoClassName) {
+	public <E> List loadEnum(String daoClassName) throws RemoteException {
 		Response<List> response = null;
 		try {
-			response = httpGetDataTypeMap(
-					getFdCommerceEndPoint(LOAD_ENUMS+"?daoClassName="+daoClassName),new TypeReference<Response<List>>() {
-					});
+			response = httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_ENUMS+"?daoClassName="+daoClassName),(TypeReference<E>)typeReferenceFor(daoClassName));
 			if (!response.getResponseCode().equals("OK"))
 				throw new FDResourceException(response.getMessage());
 
 		} catch (FDResourceException e) {
-			e.printStackTrace();
 			LOGGER.error(e.getMessage());
+			throw new RemoteException();
 		}
-		return response.getData();
+
+		return buildServiceEnumModel(response.getData());
+	}
+	
+	private List buildServiceEnumModel(List data) {
+		if(data.size()>0){
+			if(data.get(1) instanceof BillingCountryInfoData ){
+				return ModelConverter.buildBillingCountryInfoList(data);
+			}else if(data.get(1) instanceof ErpAffiliateData ){
+				return ModelConverter.buildErpAffiliateList(data);
+			}else if(data.get(1) instanceof DeliveryPassTypeData ){
+				return ModelConverter.buildDeliveryPassTypeList(data);
+			}else if(data.get(1) instanceof EnumFeaturedHeaderTypeData ){
+				return ModelConverter.buildEnumFeaturedHeaderTypeList(data);
+			}else if(data.get(1) instanceof CrmCaseSubjectData ){
+				return ModelConverter.buildCrmCaseSubjectList(data);
+			}
+		}
+
+		return null;
+	}
+	private <E> E typeReferenceFor(String daoClassName) {
+		
+		
+		if (daoClassName.equals("BillingCountryDAO")) {
+			return   (E) new TypeReference<Response<List<BillingCountryInfoData>>>(){} ;
+		} else if (daoClassName.equals("ErpAffiliateDAO")) {
+			return  (E) new TypeReference<Response<List<ErpAffiliateData>>>() {} ;
+		} else if (daoClassName.equals("DlvPassTypeDAO")) {
+			return  (E) new TypeReference<Response<List<DeliveryPassTypeData>>>() {} ;
+		} else if (daoClassName.equals("EnumFeaturedHeaderTypeDAO")) {
+			return  (E) new TypeReference<Response<List<EnumFeaturedHeaderTypeData>>>() {} ;
+		} else if (daoClassName.equals("CrmCaseSubjectDAO")) {
+			return   (E) new TypeReference<Response<List<CrmCaseSubjectData>>>() {} ;
+		}
+		return null;
 	}
 	@Override
 	public 	Map<ErpCOOLKey, ErpCOOLInfo> getCountryOfOriginData(Date since)
