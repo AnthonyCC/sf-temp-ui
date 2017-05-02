@@ -669,7 +669,7 @@ public class StandingOrderHelper {
 		map.put("currentDeliveryDate", map.get("deliveryDate"));
 		map.put("currentDeliveryTime", map.get("deliveryTime"));
 		map.put("currentDayOfWeek", map.get("dayOfWeek"));
-		map.put("reminderOverlayforNewSo", isSOActivated(so) ? false:so.isReminderOverlayForNewSo());
+		map.put("reminderOverlayforNewSo", (Boolean) map.get("readyForActivation")?so.isReminderOverlayForNewSo(): false);
 		if("Y".equalsIgnoreCase(so.getActivate())&& isUpcomingorders)
 			setUpcomingStandingOrder(so);
 		map.put("upComingOrderId", so.getUpcomingDelivery()!=null?so.getUpcomingDelivery().getErpSalesId():null);
