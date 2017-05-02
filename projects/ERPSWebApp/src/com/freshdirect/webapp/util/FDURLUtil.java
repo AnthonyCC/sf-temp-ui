@@ -933,9 +933,15 @@ public class FDURLUtil {
 
 		// pass tracking parameters too
 		FDURLUtil.appendCommonParameters(redirBuilder, req.getParameterMap());
-
+		
 		// unescape query param separators before appending params to redirect URL
-		return redirectUrl + redirBuilder.toString().replaceAll(ProductDisplayUtil.URL_PARAM_SEP, "&");
+		String toBeAppended = redirBuilder.toString().replaceAll(ProductDisplayUtil.URL_PARAM_SEP, "&");
+		
+		if(toBeAppended!=null && toBeAppended.indexOf("?")==-1 && redirectUrl!=null && redirectUrl.indexOf("?")==-1) {
+			return (redirectUrl + toBeAppended).replaceFirst("&", "?");
+		}
+
+		return redirectUrl + toBeAppended;
 	}
 
 }
