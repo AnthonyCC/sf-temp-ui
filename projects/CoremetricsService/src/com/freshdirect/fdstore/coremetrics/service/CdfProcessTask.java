@@ -25,6 +25,7 @@ import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.CategoryModel;
@@ -135,6 +136,9 @@ public class CdfProcessTask {
             addCmPageViewTagCategory(externalAgency.toString(), categoryKeys);
         }
 
+        // HomepageRedesign block
+        addNewHomepageModuleKeys();
+
         // CMS block
 
         final CmsManager svc = CmsManager.getInstance();
@@ -210,6 +214,81 @@ public class CdfProcessTask {
             for (DepartmentModel dept : ContentFactory.getInstance().getStore().getDepartments()) {
                 if (!processedDepartments.contains(dept)) {
                     processCmsCategory(dept, null);
+                }
+            }
+        }
+    }
+
+    private void addNewHomepageModuleKeys() {
+        final CmsManager cmsManager = CmsManager.getInstance();
+
+        if (CmInstance.GLOBAL == context.getInstance() || CmInstance.FDW == context.getInstance()) {
+            // Add first level category
+            cdfRowModels.add(buildModel("NEW HOME PAGE CAROUSELS", "NEW HOME PAGE CAROUSELS", null));
+
+            // Get Homepage active moduleContainerContentKeys
+            List<String> homepageModuleContainerContentKeys = new ArrayList<String>();
+            String newUserModuleContainer = FDStoreProperties.getHomepageRedesignNewUserContainerContentKey();
+            String currentUserModuleContainer = FDStoreProperties.getHomepageRedesignCurrentUserContainerContentKey();
+
+            if (newUserModuleContainer != currentUserModuleContainer) {
+                homepageModuleContainerContentKeys.add(newUserModuleContainer);
+                homepageModuleContainerContentKeys.add(currentUserModuleContainer);
+            } else {
+                homepageModuleContainerContentKeys.add(newUserModuleContainer);
+            }
+
+            // Generate CDF row models for ModuleContainers
+            for (String moduleContainerContentKey : homepageModuleContainerContentKeys) {
+                ContentNodeI moduleContainer = cmsManager.getContentNode(ContentKey.getContentKey(moduleContainerContentKey), DraftContext.MAIN);
+                String moduleContainerName = ContentNodeUtil.getStringAttribute(moduleContainer, "name");
+
+                List<ContentKey> moduleContentKeysWithPossibleDuplicates = generateModuleContentKeys(moduleContainer);
+                int moduleCount = moduleContentKeysWithPossibleDuplicates.size();
+                // Generate cdfRowModels with positions and original length and moduleContainer id
+                createCDFRowModelFromModuleContentKeys(moduleContentKeysWithPossibleDuplicates, moduleContainerContentKey.split(":")[1], moduleContainerName, moduleCount);
+            }
+
+        }
+
+    }
+
+    private List<ContentKey> generateModuleContentKeys(ContentNodeI moduleContainer) {
+        final CmsManager cmsManager = CmsManager.getInstance();
+        List<ContentKey> contentKeys = new ArrayList<ContentKey>();
+
+        if (moduleContainer != null) {
+            List<ContentKey> modulesAndGroups = (List<ContentKey>) moduleContainer.getAttributeValue("modulesAndGroups");
+            for (ContentKey contentKey : modulesAndGroups) {
+                if (FDContentTypes.MODULE.equals(contentKey.getType())) {
+                    contentKeys.add(contentKey);
+                } else if (FDContentTypes.MODULE_GROUP.equals(contentKey.getType())) {
+                    ContentNodeI moduleGroup = cmsManager.getContentNode(contentKey, DraftContext.MAIN);
+                    List<ContentKey> moduleContentKeys = (List<ContentKey>) moduleGroup.getAttributeValue("modules");
+                    for (ContentKey moduleContentKey : moduleContentKeys) {
+                        contentKeys.add(moduleContentKey);
+                    }
+                }
+            }
+        }
+
+        return contentKeys;
+    }
+
+    private void createCDFRowModelFromModuleContentKeys(List<ContentKey> contentkeys, String moduleContainerId, String moduleContainerName, int originalModuleCount) {
+        final CmsManager cmsManager = CmsManager.getInstance();
+
+        Set<ContentKey> moduleContentKeysWithoutDuplication = new HashSet<ContentKey>();
+
+        for (ContentKey contentKey : contentkeys) {
+            if (moduleContentKeysWithoutDuplication.add(contentKey)) {
+                ContentNodeI module = cmsManager.getContentNode(contentKey, DraftContext.MAIN);
+                String moduleName = ContentNodeUtil.getStringAttribute(module, "name");
+                String moduleContentKeyId = contentKey.getId();
+                for (int i = 1; i < originalModuleCount + 1; i++) {
+                    String moduleContentKeyWithPosition = moduleContainerId + ":POSITION " + i + ":" + moduleContentKeyId;
+                    String moduleNameWithPosition = moduleContainerName + ":POSITION " + i + ":" + moduleName;
+                    cdfRowModels.add(buildModel(moduleContentKeyWithPosition, moduleNameWithPosition, "NEW HOME PAGE CAROUSELS"));
                 }
             }
         }
