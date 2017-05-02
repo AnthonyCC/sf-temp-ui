@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.util.QueryParameterCollection;
+import com.freshdirect.fdstore.coremetrics.CmContext;
 import com.freshdirect.fdstore.coremetrics.builder.ProductViewTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
 import com.freshdirect.fdstore.coremetrics.tagmodel.AbstractTagModel;
@@ -29,6 +30,11 @@ public class CmProductViewTag extends AbstractCmTag {
         if (CM_VC == null || "".equals(CM_VC)) {
             CM_VC = model.getVirtualCategoryId();
         }
+
+        if (CM_VC != null || !"".equals(CM_VC)) {
+            CM_VC = CmContext.getContext().prefixedCategoryId((String) CM_VC);
+        }
+
         String tagJs = getFormattedTag(toJsVar(model.getProductId()), toJsVar(model.getProductName()), toJsVar(CM_VC == null ? model.getCategoryId() : CM_VC),
                 toJsVar(mapToAttrString(model.getAttributesMaps())) + decorateFromCoremetricsTrackingObject(), toJsVar(model.getVirtualCategoryId()));
 
