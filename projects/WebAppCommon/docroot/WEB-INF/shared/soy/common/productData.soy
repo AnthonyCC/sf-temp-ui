@@ -15,7 +15,7 @@
  * @param? configuration product configuration
  * @param? isAlcoholic product configuration
  * @param? originalLineId product configuration
- * @param? moduleVirtualCategory
+ * @param? moduleData
  *
  */
 {template .productData autoescape="false"}
@@ -28,11 +28,7 @@
 {param pageType:$pageType /}
 {param skuCode:$skuCode /}
 {param alcoholic:$isAlcoholic /}
-{param moduleVirtualCategory}
-  {if $moduleVirtualCategory}
-    {$moduleVirtualCategory}
-  {/if}
-{/param}
+{param moduleData:$moduleData /}
 {/call}
 {if $listId}
 <input type="hidden" data-component="productData" data-productdata-name="listId" name="listId" value="{$listId}">
@@ -64,7 +60,7 @@
  * @param? skuCode skuId
  * @param? alcoholic product configuration
  * @param? productPageUrl productPageUrl
- * @param? moduleVirtualCategory
+ * @param? moduleData
  *
  */
 {template .productDataMin autoescape="false"}
@@ -94,7 +90,7 @@
 {if $pageType}
 <input type="hidden" data-component="productData" data-productdata-name="pageType" name="pageType" value="{$pageType}">
 {/if}
-{if $moduleVirtualCategory}
-<input type="hidden" data-component="productData" data-productdata-name="moduleVirtualCategory" name="moduleVirtualCategory" value="{$moduleVirtualCategory}">
+{if $moduleData and $moduleData.moduleVirtualCategory}
+<input type="hidden" data-component="productData" data-productdata-name="moduleVirtualCategory" name="moduleVirtualCategory" value="{$moduleData.moduleVirtualCategory}">
 {/if}
 {/template}

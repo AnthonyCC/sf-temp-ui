@@ -104,7 +104,7 @@ var FreshDirect = FreshDirect || {};
         value.cartData = this.dataConfig.cartData;
         value.pageType = this.dataConfig.pageType;
         value.variantId = this.dataConfig.variantId;
-        if (this.dataConfig.moduleVirtualCategory) {value.moduleVirtualCategory = this.dataConfig.moduleVirtualCategory;}
+        if (this.dataConfig.moduleVirtualCategory) {value.moduleVirtualCategory = this.dataConfig.moduleVirtualCategory}
         this.refreshBody(value);
         this.refreshSkuControls();
 
