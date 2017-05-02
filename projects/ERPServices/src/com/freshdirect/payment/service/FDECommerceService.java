@@ -359,7 +359,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		NavigableMap<Long, BINInfo> binInfoData = new TreeMap();
 		for(Long key: data.keySet()){
 			BINData binData = data.get(key);
-			BINInfo bINInfo = new BINInfo(binData.getId(), binData.getLowRange(), binData.getHighRange(), binData.getSequence(), EnumCardType.getByPaymentechCode(binData.getPaymentCode()));
+			BINInfo bINInfo = new BINInfo(binData.getId(), binData.getLowRange(), binData.getHighRange(), binData.getSequence(),EnumCardType.getEnum(binData.getCardType()));
 			binInfoData.put(key, bINInfo);
 		}
 		return binInfoData;
@@ -373,7 +373,6 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			binData.setHighRange(binInfo.getLowRange());
 			binData.setSequence(binInfo.getSequence());
 			binData.setCardType(binInfo.getCardType().getFdName());
-			binData.setPaymentCode(binInfo.getCardType().getPaymentechCode());
 		return binData;
 	}
 	@Override
