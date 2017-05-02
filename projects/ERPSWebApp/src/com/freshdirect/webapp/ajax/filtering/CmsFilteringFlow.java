@@ -694,8 +694,9 @@ public class CmsFilteringFlow {
     }
 
     private void relocateBrandFilterBasedOnCmsSetting(BrowseDataContext browseDataContext) {
-        if (EnumBrandFilterLocation.ORIGINAL != browseDataContext.getNavigationModel().getBrandFilterLocation()) {
-            MenuBuilderFactory.getInstance().relocateBrandFilter(browseDataContext.getMenuBoxes().getMenuBoxes(), browseDataContext.getNavigationModel().getBrandFilterLocation());
+        EnumBrandFilterLocation location = browseDataContext.getNavigationModel().getBrandFilterLocation();
+        if (location != null && EnumBrandFilterLocation.ORIGINAL != location) {
+            MenuBuilderFactory.getInstance().relocateBrandFilter(browseDataContext.getMenuBoxes().getMenuBoxes(), location);
         }
     }
 
