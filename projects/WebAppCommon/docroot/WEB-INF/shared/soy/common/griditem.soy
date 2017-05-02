@@ -341,7 +341,7 @@
 >
 	<div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
 	{if not $discontinued}
-	  <a href="{$productPageUrl}{if $moduleVirtualCategory}&cm_vc={$moduleVirtualCategory}{/if}{if $moduleData.moduleVirtualCategory}&cm_vc={$moduleData.moduleVirtualCategory}{/if}" class="portrait-item-image-link" {if $moduleData}manual_cm_sp="
+	  <a href="{$productPageUrl}{if $moduleVirtualCategory}&cm_vc={$moduleVirtualCategory}{/if}{if $moduleData.moduleVirtualCategory}&cm_vc={$moduleData.moduleVirtualCategory}{/if}" class="portrait-item-image-link" {if $moduleData}data-cm-click="
     {$productId}-_-{$productName}-_-
     {if $moduleData.moduleId}{$moduleData.moduleId}{else}no module ID{/if}"{/if}>
     {/if}
@@ -366,7 +366,7 @@
   		{if $discontinued}
   			<b>{$brandName}</b> <div class="product-name-no-brand">{$productNameNoBrand}</div>
   		{else}
-  			<a href="{$productPageUrl}{if $moduleVirtualCategory}&cm_vc={$moduleVirtualCategory}{/if}{if $moduleData.moduleVirtualCategory}&cm_vc={$moduleData.moduleVirtualCategory}{/if}" class="portrait-item-header-name" {if $moduleData}manual_cm_sp="
+  			<a href="{$productPageUrl}{if $moduleVirtualCategory}&cm_vc={$moduleVirtualCategory}{/if}{if $moduleData.moduleVirtualCategory}&cm_vc={$moduleData.moduleVirtualCategory}{/if}" class="portrait-item-header-name" {if $moduleData}data-cm-click="
         {$productId}-_-{$productName}-_-
         {if $moduleData.moduleId}{$moduleData.moduleId}{else}no module ID{/if}"{/if}><b>{$brandName}</b> <div class="product-name-no-brand">{$productNameNoBrand}</div></a>
   		{/if}
@@ -374,7 +374,7 @@
   		{if $discontinued}
   			{$productName}
   		{else}
-  			<a href="{$productPageUrl}{if $moduleVirtualCategory}&cm_vc={$moduleVirtualCategory}{/if}{if $moduleData.moduleVirtualCategory}&cm_vc={$moduleData.moduleVirtualCategory}{/if}" class="portrait-item-header-name" {if $moduleData}manual_cm_sp="
+  			<a href="{$productPageUrl}{if $moduleVirtualCategory}&cm_vc={$moduleVirtualCategory}{/if}{if $moduleData.moduleVirtualCategory}&cm_vc={$moduleData.moduleVirtualCategory}{/if}" class="portrait-item-header-name" {if $moduleData}data-cm-click="
         {$productId}-_-{$productName}-_-
         {if $moduleData.moduleId}{$moduleData.moduleId}{else}no module ID{/if}"{/if}>{$productName}</a>
   		{/if}
