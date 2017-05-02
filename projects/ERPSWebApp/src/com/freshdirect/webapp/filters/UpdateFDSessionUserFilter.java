@@ -24,7 +24,16 @@ public class UpdateFDSessionUserFilter extends AbstractFilter {
 		filterChain.doFilter(request, response);
 		FDSessionUser user = (FDSessionUser) ((HttpServletRequest)request).getSession().getAttribute(SessionName.USER);
 		if (user != null) {
-			user.hasJustLoggedIn();
+			if (user.hasJustLoggedIn()) {
+				Cookie cookie = new Cookie("hasJustLoggedIn", "true");
+				cookie.setPath("/");
+				((HttpServletResponse)response).addCookie(cookie);
+			}
+			if (user.hasJustSignedUp()) {
+				Cookie cookie = new Cookie("hasJustSignedUp", "true");
+				cookie.setPath("/");
+				((HttpServletResponse)response).addCookie(cookie);
+			}
 		}
 	}
 
