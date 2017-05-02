@@ -25,6 +25,12 @@ public class SearchQuery extends Message {
 	private String searchParams;
 	
 	private String pageType;
+	
+	private String pdUserId;
+	
+	private String lat;
+	
+	private String platform;
 
 	public String getQuery() {
 		return query;
@@ -104,5 +110,29 @@ public class SearchQuery extends Message {
 
 	public void setPageType(String pageType) {
 		this.pageType = pageType;
+	}
+	
+	public String getPdUserId() {
+		return pdUserId;
+	}
+
+	public void setPdUserID(String pdUserId) {
+		this.pdUserId = pdUserId;
+	}
+	
+	public String getLat() {
+		return lat;
+	}
+
+	public void setLat(String lat) {
+		this.lat = lat;
+	}
+	
+	public String getPlatform() {
+		return platform;
+	}
+
+	public void setPlatform(String platform) {
+		this.platform = platform;
 	}
 }
