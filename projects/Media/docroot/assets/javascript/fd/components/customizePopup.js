@@ -186,7 +186,7 @@ var FreshDirect = FreshDirect || {};
       }
     }
 
-	$('#' + customizePopup.popupId).removeClass('soShow').removeClass('so-review').removeClass('so-review-success');
+	$('#' + customizePopup.popupId).removeClass('soShow').removeClass('so-review').removeClass('so-review-success').removeClass('so-review-min-met-alert');
     if ($(element).data('soshow')) {
     	$('#' + customizePopup.popupId).addClass('soShow');
     }
