@@ -216,6 +216,10 @@
 	.qs-content .lineitems22 .itemlist-item-controls.smaller [data-component-extra="showSOButton"]{
 		margin: auto;
 		margin-right: 4px;
+		white-space: initial;
+		height: auto;
+		line-height: 15px;
+		padding: 5px 0;
 	}
 	
 /* new */
