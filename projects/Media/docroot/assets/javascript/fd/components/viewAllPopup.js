@@ -45,10 +45,6 @@ var FreshDirect = FreshDirect || {};
     		});
         var $t = e && $(e.currentTarget) || $(document.body);
 
-        if (this.popup) {
-          viewallPopup.noscroll(true);
-        }
-
         this.refreshBody();
         this.popup.show($t);
         this.popup.clicked = true;
