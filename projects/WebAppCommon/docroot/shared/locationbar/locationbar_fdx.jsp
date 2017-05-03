@@ -176,7 +176,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 	</div></tmpl:put>
 
 <%-- FOODKICK tab --%>
-	<tmpl:put name="tab_fdx"><% if (hasFdxServices && FDStoreProperties.isFdxTabEnabled()) { %><a href="https://www.foodkick.com" class="locabar-tab locabar-tab-fdx-cont"><div class="locabar-tab-fdx"></div></a><% } else { %><!-- --><% } %></tmpl:put>
+	<tmpl:put name="tab_fdx"><% if (hasFdxServices && FDStoreProperties.isFdxTabEnabled()) { %><a href="https://www.foodkick.com" class="locabar-tab locabar-tab-fdx-cont"><span class="offscreen">Visit Foodkick Store</span><div class="locabar-tab-fdx"></div></a><% } else { %><!-- --><% } %></tmpl:put>
 
 <%-- COS tab --%>
 	<tmpl:put name="tab_cos"><!-- --><%-- PLACEHOLDER, NOT LAUNCHING 20151109 -- <a href="/cos.jsp" class="locabar-tab"><div class="locabar-tab-cos"></div></a>	--%></tmpl:put>

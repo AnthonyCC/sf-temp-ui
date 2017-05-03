@@ -16,7 +16,7 @@ var API;
 				"navbars": [
 					{
 						"position": "bottom",
-						"content": (FreshDirect && FreshDirect.locabar && FreshDirect.locabar.hasFdxServices) ? "<div class='navbar-cont'><a href='https://www.foodkick.com' class='locabar-tab locabar-tab-fdx-cont'><div class='locabar-tab-fdx'></div></a></div>" : ""
+						"content": (FreshDirect && FreshDirect.locabar && FreshDirect.locabar.hasFdxServices) ? "<div class='navbar-cont'><a href='https://www.foodkick.com' class='locabar-tab locabar-tab-fdx-cont'><span class='offscreen'>Visit Foodkick Store</span><div class='locabar-tab-fdx'></div></a></div>" : ""
 					}
 				],
 				"iconPanels": true,

@@ -19,15 +19,24 @@ var FreshDirect = FreshDirect || {};
   }
 
   function done(listPos) {
-    listPos.forEach(function (pos) {
-      var cnt = $jq("#oas_b_"+pos);
-      if (cnt.size()) {
-        cnt.html('');
-        postscribe(cnt[0], '<script>OAS_RICH("'+pos+'");</script>',{ error: function () {}
-          });
-      }
-    });
-  }
+	    listPos.forEach(function (pos) {
+	      var cnt = $jq("#oas_b_"+pos);
+	      if (cnt.size()) {
+	        cnt.html('');
+	        postscribe(cnt[0], '<script>OAS_RICH("'+pos+'");</script>', {
+	            error: function () {},
+	            done: function (pos) {
+	                $.each($('a[href*="/default/empty.gif/"]'), function(i, e) {
+	                	$(e).attr("tabindex", "-1");
+	                    $(e).attr("role", "presentation");
+	                   $(e).attr("aria-hidden", "true");
+	                    console.log('updateOAS', event,id);
+	                });
+	            }
+	        });
+	      }
+	    });
+	  }
 
   Object.create(fd.common.signalTarget,{
     allowNull:{
