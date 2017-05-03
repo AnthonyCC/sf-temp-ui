@@ -12,6 +12,7 @@
 
 #viewallPopup .fixedPopupContent .qs-popup-content {
   min-height: 250px;
+  flex: 1;
 }
 
 #viewallPopup .spinner {
