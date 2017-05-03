@@ -35,6 +35,8 @@ import com.freshdirect.content.attributes.AttributeException;
 import com.freshdirect.content.attributes.FlatAttribute;
 import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.customer.EnumExternalLoginSource;
+import com.freshdirect.customer.ErpGrpPriceModel;
+import com.freshdirect.customer.ErpGrpPriceZoneModel;
 import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.deliverypass.DeliveryPassType;
@@ -47,6 +49,7 @@ import com.freshdirect.ecommerce.data.enums.CrmCaseSubjectData;
 import com.freshdirect.ecommerce.data.enums.DeliveryPassTypeData;
 import com.freshdirect.ecommerce.data.enums.EnumFeaturedHeaderTypeData;
 import com.freshdirect.ecommerce.data.enums.ErpAffiliateData;
+import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
 import com.freshdirect.ecommerce.data.payment.BINData;
 import com.freshdirect.erp.EnumFeaturedHeaderType;
 import com.freshdirect.ecommerce.data.survey.FDSurveyData;
@@ -131,7 +134,7 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String SURVEY_RESPONSE = "survey/surveyresponse";
 	private static final String GET_CUSTOMER_PROFILE = "survey/customerprofile";
 	
-	
+	private static final String SAP_GROUP_PRICE_LOADER_LOAD_API ="dataloader/sapGrp/groupScalePrice";
 	
 	private static final String GET_COO_API ="/coo";
 	
@@ -859,18 +862,40 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	@Override
 	public 	Map<ErpCOOLKey, ErpCOOLInfo> getCountryOfOriginData(Date since)
 			throws RemoteException {
-			Response<Map<ErpCOOLKey, ErpCOOLInfo>> response = new Response<Map<ErpCOOLKey, ErpCOOLInfo>>();
+			Response<List<CountryOfOriginData>> response = new Response<List<CountryOfOriginData>>();
 
 				try {
-					response= getData(getFdCommerceEndPoint(GET_COO_API), Response.class);
+					response= httpGetDataTypeMap(getFdCommerceEndPoint(GET_COO_API),  new TypeReference<Response<List<CountryOfOriginData>>>() {});
+					
 				} catch (FDResourceException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			
-			return response.getData();
+				Map<ErpCOOLKey, ErpCOOLInfo> data = ModelConverter.buildCoolModel(response.getData());
+			return data;
 		
 	}
+	/*@Override // Will be removed
+	public 	void updateCOOLInfo(List<ErpCOOLInfo> erpCOOLInfoList)
+			throws RemoteException {
+		
+					Request<List<CountryOfOriginData>> request = new Request<List<CountryOfOriginData>>();
+					request.setData(ModelConverter.buildCoolModelData(erpCOOLInfoList));
+					try {
+						String inputJson = buildRequest(request);
+	
+					Response<List<CountryOfOriginData>> response = this.postDataTypeMap(inputJson,getFdCommerceEndPoint(GET_COO_API),  new TypeReference<Response<List<CountryOfOriginData>>>() {});
+					
+				} catch (FDResourceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (FDPayPalServiceException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+		
+	}
+	*/
 	@Override
 	public HLBrandProductAdResponse getSearchbykeyword(
 			HLBrandProductAdRequest hLRequestData) throws RemoteException {
@@ -1224,5 +1249,26 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			throw new FDResourceException(e, "Unable to process the request.");
 		}
 	}
-	
+	@Override
+	public void loadGroupPriceData(List<ErpGrpPriceModel> grpPricelist)
+			throws FDResourceException {
+			try {
+				Request<List<ErpGrpPriceModel>> request = new Request<List<ErpGrpPriceModel>>();
+				request.setData(grpPricelist);
+				String inputJson = buildRequest(request);
+				@SuppressWarnings("unchecked")
+				Response<String> response = this.postData(inputJson, getFdCommerceEndPoint(SAP_GROUP_PRICE_LOADER_LOAD_API), Response.class);
+				if(!response.getResponseCode().equals("OK")){
+					throw new FDResourceException(response.getMessage());
+				}
+			} catch (FDPayPalServiceException e) {
+				LOGGER.error(e.getMessage());
+				throw new FDResourceException(e, "Unable to process the request.");
+			}catch (FDResourceException e){
+				LOGGER.error(e.getMessage());
+				throw new FDResourceException(e, "Unable to process the request.");
+			}
+			
+	}
+
 }
