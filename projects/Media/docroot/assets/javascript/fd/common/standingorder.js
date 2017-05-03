@@ -184,7 +184,7 @@ $jq('.cssbutton[data-component="createSOButton"]').on('click', function(e) {
 
 $jq(document).on('click', '#customizePopup.so-review-min-met-alert [data-popup-control="close"]', function(){
 	if($jq('#customizePopup.so-review-min-met-alert #so-min-do-not-show-checkbox:checked').length > 0){
-		getStandingOrderData($jq('#customizePopup .so-select').val().split(':'),'turnOffReminderOverlay');
+		postStandingOrderData($jq('#customizePopup .so-select').val().split(':'),'turnOffReminderOverlay');
 	}
 });	
 
@@ -223,4 +223,16 @@ function getStandingOrderData(ids, action){
         	}
         }
  	});
+}
+
+function postStandingOrderData(ids, action){
+	dataString = "action="+ action + "&id=" + ids[0];
+	$jq.ajax({
+	    url: '/api/standingOrderCartServlet',
+	    type: 'POST',
+	    data: dataString,
+	    success: function(data) {
+	    	
+	    }
+	});
 }
