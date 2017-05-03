@@ -748,16 +748,19 @@ public class ProductDetailPopulator {
 				item.setMsgLeadTime( "" );
 			}
 		}
-		//String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
-		String plantID=null;
-		try {
-			plantID = ProductInfoUtil.getPickingPlantId(sku.getProductInfo());
-		} catch (FDResourceException ex) {
-			LOG.debug("Exception while getting the plantId "+ex);
-			// TODO Auto-generated catch block
-		} catch (FDSkuNotFoundException exsku) {
-			// TODO Auto-generated catch block
-			LOG.debug("Exception while getting the plantId"+exsku);
+//		String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+		String plantID = null;
+		
+		if ( fdProduct != null ) {
+			try {
+				plantID = ProductInfoUtil.getPickingPlantId(FDCachedFactory.getProductInfo(fdProduct.getSkuCode()));
+			} catch (FDResourceException ex) {
+				LOG.debug("Exception while getting the plantId "+ex);
+				// TODO Auto-generated catch block
+			} catch (FDSkuNotFoundException exsku) {
+				// TODO Auto-generated catch block
+				LOG.debug("Exception while getting the plantId"+exsku);
+			}
 		}
 		// Kosher restrictions
 		if ( fdProduct != null && fdProduct.getKosherInfo(plantID) != null && fdProduct.getKosherInfo(plantID).isKosherProduction() ) {
