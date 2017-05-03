@@ -619,6 +619,11 @@
 		<welcome-file>index.html</welcome-file>
 		<welcome-file>index.htm</welcome-file>
 	</welcome-file-list>
+    <error-page>
+        <!-- Missing resource -->
+        <error-code>404</error-code>
+        <location>/notfound.jsp</location>
+    </error-page>
 	<error-page>
 		<error-code>500</error-code>
 		<location>/error.jsp</location>

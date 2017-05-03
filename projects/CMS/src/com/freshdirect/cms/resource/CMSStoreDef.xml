@@ -246,6 +246,7 @@
 			<AttributeDef type="S" name="PAGE_TITLE" label="Page Title" inheritable="false"/>
 			<AttributeDef type="S" name="SEO_META_DESC_FDX" label="SEO Meta Description FDX" inheritable="false"/>
 			<AttributeDef type="S" name="PAGE_TITLE_FDX" label="Page Title FDX" inheritable="false"/>
+			<AttributeDef type="B" name="SKIP_SITEMAP" label="Skip Sitemap" inheritable="false"/>
 			<EnumDef type="S" name="bannerLocation"  label="SuperDepartment Banner Location">
 				<EnumValue value="TOP" label="TOP"/>
 				<EnumValue value="BOTTOM" label="BOTTOM"/>
@@ -412,6 +413,7 @@
 			<AttributeDef name="PAGE_TITLE" type="S" label="Page Title" inheritable="false"/>
 			<AttributeDef name="SEO_META_DESC_FDX" type="S" label="SEO Meta Description FDX" inheritable="false"/>
 			<AttributeDef name="PAGE_TITLE_FDX" type="S" label="Page Title FDX" inheritable="false"/>
+			<AttributeDef name="SKIP_SITEMAP" type="B" label="Skip Sitemap" inheritable="false"/>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="categories" navigable="true" cardinality="Many">
@@ -682,6 +684,7 @@
 			<AttributeDef name="PAGE_TITLE" type="S" label="Page Title" inheritable="false"/>
 			<AttributeDef name="SEO_META_DESC_FDX" type="S" label="SEO Meta Description FDX" inheritable="false"/>
 			<AttributeDef name="PAGE_TITLE_FDX" type="S" label="Page Title FDX" inheritable="false"/>
+			<AttributeDef name="SKIP_SITEMAP" type="B" label="Skip Sitemap" inheritable="false"/>
 			<AttributeDef name="PrimaryText" type="S" label="Primary Text" inheritable="false"/>
 			<AttributeDef name="SecondaryText" type="S" label="Secondary Text" inheritable="false"/>
 		</AttributeDefs>
@@ -1056,6 +1059,7 @@
 			<AttributeDef name="PAGE_TITLE" type="S" label="Page Title" inheritable="false"/>
 			<AttributeDef name="SEO_META_DESC_FDX" type="S" label="SEO Meta Description FDX" inheritable="false"/>
 			<AttributeDef name="PAGE_TITLE_FDX" type="S" label="Page Title FDX" inheritable="false"/>
+			<AttributeDef name="SKIP_SITEMAP" type="B" label="Skip Sitemap" inheritable="false"/>
 			
 			<AttributeDef type="S" name="PAIR_IT_HEADING" label="PAIR IT - HEADING"/>
 			<AttributeDef type="S" name="PAIR_IT_TEXT" label="PAIR IT - TEXT"/>
@@ -2524,6 +2528,7 @@
 			<AttributeDef name="PAGE_TITLE_FDX" type="S" label="Page Title FDX" required="false"/>
 			<AttributeDef name="SEO_META_DESC_FDX" type="S" label="SEO Meta Description FDX" required="false"/>
 			<AttributeDef name="URL" type="S" label="URL of the  page" required="false"/>
+			<AttributeDef name="SKIP_SITEMAP" type="B" label="Skip Sitemap" inheritable="false"/>
 			<EnumDef type="S" name="WebPageType"  label="WebPage Type">
 				<EnumValue value="FEED" label="FEED"/>
 				<EnumValue value="TODAYSPICK" label="TODAYSPICK"/>

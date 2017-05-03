@@ -135,9 +135,6 @@ public class ProductDetailPopulator {
 	
 		// Get the ProductModel
 		ProductModel product = PopulatorUtil.getProduct( productId, categoryId );
-		if (PopulatorUtil.isProductIncomplete(product)) {
-			return createProductDataLight(user, product);
-		}
 		
 		return createProductData( user, product );
 	}
@@ -346,7 +343,6 @@ public class ProductDetailPopulator {
 		return data;
 	}
 	
-	
 	/**
 	 * Create generic product data from ProductModel using default sku
 	 * 
@@ -361,7 +357,11 @@ public class ProductDetailPopulator {
 	 * @throws FDResourceException
 	 * @throws FDSkuNotFoundException 
 	 */
-	public static ProductData createProductData( FDUserI user, ProductModel product ) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
+	public static ProductData createProductData( FDUserI user, ProductModel product) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
+	    return createProductData(user, product, FDStoreProperties.getPreviewMode());
+	}
+	
+	public static ProductData createProductData( FDUserI user, ProductModel product, boolean enableProductIncomplete) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
 		
 		if ( product == null ) {
 			BaseJsonServlet.returnHttpError( 500, "product not found" );
@@ -372,7 +372,7 @@ public class ProductDetailPopulator {
 			product = ProductPricingFactory.getInstance().getPricingAdapter( product, user.getUserContext().getPricingContext() );
 		}
 		
-		if (PopulatorUtil.isProductIncomplete(product)) {
+		if (enableProductIncomplete && PopulatorUtil.isProductIncomplete(product) && PopulatorUtil.isProductNotArchived(product)) {
 			return createProductDataLight(user, product);
 		}
 		
@@ -384,9 +384,7 @@ public class ProductDetailPopulator {
 		return createProductData( user, product, sku, null, false );
 	}
 
-
-
-	// APPDEV-4251
+    // APPDEV-4251
 	public static ProductData createProductDataForCarousel( FDUserI user, ProductModel product ) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
 		
 		if ( product == null ) {
@@ -398,7 +396,7 @@ public class ProductDetailPopulator {
 			product = ProductPricingFactory.getInstance().getPricingAdapter( product, user.getUserContext().getPricingContext() );
 		}
 		
-		if (PopulatorUtil.isProductIncomplete(product)) {
+		if (FDStoreProperties.getPreviewMode() && PopulatorUtil.isProductIncomplete(product) && PopulatorUtil.isProductNotArchived(product)) {
 			return createProductDataLight(user, product);
 		}
 		
