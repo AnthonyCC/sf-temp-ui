@@ -186,6 +186,9 @@ public class RobotRecognizer {
 		friendlyRobotPatternSet.add(Pattern.compile("^.*okhttp.*$"));  // okhttp/3.4.1
 		friendlyRobotPatternSet.add(Pattern.compile("^.*maxpointcrawler.*$")); // MaxPointCrawler/Nutch-1.10 (maxpoint.crawler at maxpointinteractive dot com)
 		friendlyRobotPatternSet.add(Pattern.compile("^.*alertbot.*$")); // Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 6.1; AlertBot)
+		friendlyRobotPatternSet.add(Pattern.compile("^.*prerender.*$")); //Mozilla/5.0 (Unknown; Linux x86_64) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1 Prerender (+https://github.com/prerender/prerender)
+		friendlyRobotPatternSet.add(Pattern.compile("^.*weborama.*$")); // weborama-fetcher (+http://www.weborama.com)
+		friendlyRobotPatternSet.add(Pattern.compile("^.*cxense.*$")); // Mozilla/5.0 (Macintosh; U; Intel Mac OS X; en-US) AppleWebKit/533.3 (KHTML, like Gecko) cXensebot/1.1a; +http://www.cxense.com/bot.html/0.1 Safari/533.3
 		//END : OCT 2016 Start Blocking more bots and crawlers
 		
 		//START : Feb 2017 Start Blocking Movable Ink email campaign web crop module 
