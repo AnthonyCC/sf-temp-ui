@@ -830,8 +830,8 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 		try {
 			response.sendRedirect(response.encodeRedirectURL(url));
-			JspWriter writer = pageContext.getOut();
-			writer.close();
+			//JspWriter writer = pageContext.getOut();
+			//writer.close();
 			return SKIP_BODY;
 		} catch (IOException ioe) {
 			throw new JspException(ioe.getMessage());
