@@ -8,8 +8,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.Set;
 
+import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.content.attributes.AttributeException;
 import com.freshdirect.content.attributes.FlatAttributeCollection;
@@ -18,6 +21,7 @@ import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.customer.ErpEWalletModel;
 import com.freshdirect.customer.ErpGrpPriceModel;
 import com.freshdirect.customer.ErpProductFamilyModel;
+import com.freshdirect.customer.ErpRestrictedAvailabilityModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.sessionimpressionlog.SessionImpressionLogEntryData;
@@ -27,6 +31,7 @@ import com.freshdirect.ecommerce.data.survey.SurveyKeyData;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.model.BatchModel;
+import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
@@ -34,6 +39,11 @@ import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityLogModel;
 import com.freshdirect.framework.event.FDWebEvent;
+import com.freshdirect.logistics.analytics.model.TimeslotEvent;
+import com.freshdirect.logistics.delivery.model.DeliveryException;
+import com.freshdirect.logistics.delivery.model.OrderContext;
+import com.freshdirect.logistics.delivery.model.SiteAnnouncement;
+import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.payment.BINInfo;
 import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
 import com.freshdirect.referral.extole.ExtoleServiceException;
@@ -168,5 +178,41 @@ public interface IECommerceService {
 	public void saveLogEntry(Request<SessionImpressionLogEntryData> entry) throws RemoteException, FDResourceException;
 	
 	public void saveLogEntries(Request<Collection<SessionImpressionLogEntryData>> entries) throws FDResourceException, RemoteException;
+	
+	public void saveFutureZoneNotification(String email, String zip,String serviceType) throws FDResourceException;
+
+	public List<SiteAnnouncement> getSiteAnnouncements() throws FDResourceException;
+
+	public void logFailedFdxOrder(String orderId) throws FDResourceException;
+
+	public List<MunicipalityInfo> getMunicipalityInfos() throws FDResourceException;
+
+	public void sendOrderSizeFeed() throws FDResourceException;
+
+	public void sendLateOrderFeed() throws FDResourceException;
+
+	public Set<StateCounty> getCountiesByState(String state) throws FDResourceException;
+
+	public int unlockInModifyOrders() throws FDResourceException;
+
+	public StateCounty lookupStateCountyByZip(String zipcode) throws FDResourceException;
+
+	public void commitReservation(String rsvId, String customerId,
+			OrderContext context, ContactAddressModel address, boolean pr1,
+			TimeslotEvent event) throws FDResourceException;
+
+	public void recommitReservation(String rsvId, String customerId,
+			OrderContext context, ContactAddressModel address, boolean pr1) throws FDResourceException;
+
+	public Map<String, DeliveryException> getCartonScanInfo() throws FDResourceException;
+
+	public int queryForMissingFdxOrders() throws FDResourceException;
+	
+	public void updateInventories(List<ErpInventoryModel> stockEntries) throws FDResourceException;
+
+	public void updateRestrictedInfos(
+			Set<ErpRestrictedAvailabilityModel> restrictedInfos,
+			Set<String> deletedMaterials) throws FDResourceException;
+
 	
 }

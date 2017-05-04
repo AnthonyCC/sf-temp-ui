@@ -10,9 +10,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.log4j.Category;
@@ -27,8 +29,11 @@ import weblogic.auddi.util.Logger;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.common.pricing.EnumTaxationType;
+import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.content.attributes.AttributeException;
 import com.freshdirect.content.attributes.FlatAttribute;
@@ -37,17 +42,24 @@ import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.customer.ErpEWalletModel;
 import com.freshdirect.customer.ErpGrpPriceModel;
 import com.freshdirect.customer.ErpProductFamilyModel;
+import com.freshdirect.customer.ErpRestrictedAvailabilityModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.ecommerce.data.attributes.FlatAttributeCollection;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.customer.accounts.external.UserTokenData;
+import com.freshdirect.ecommerce.data.dlv.FutureZoneNotificationParam;
+import com.freshdirect.ecommerce.data.dlv.MunicipalityInfoData;
+import com.freshdirect.ecommerce.data.dlv.ReservationParam;
+import com.freshdirect.ecommerce.data.dlv.StateCountyData;
 import com.freshdirect.ecommerce.data.enums.BillingCountryInfoData;
 import com.freshdirect.ecommerce.data.enums.CrmCaseSubjectData;
 import com.freshdirect.ecommerce.data.enums.DeliveryPassTypeData;
 import com.freshdirect.ecommerce.data.enums.EnumFeaturedHeaderTypeData;
 import com.freshdirect.ecommerce.data.enums.ErpAffiliateData;
 import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
+import com.freshdirect.ecommerce.data.erp.inventory.ErpRestrictedAvailabilityData;
+import com.freshdirect.ecommerce.data.erp.inventory.RestrictedInfoParam;
 import com.freshdirect.ecommerce.data.payment.BINData;
 import com.freshdirect.ecommerce.data.sessionimpressionlog.SessionImpressionLogEntryData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyData;
@@ -57,6 +69,7 @@ import com.freshdirect.ecommerce.data.survey.SurveyKeyData;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.model.BatchModel;
+import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.fdstore.FDPayPalServiceException;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -67,12 +80,20 @@ import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityLogModel;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.event.FDWebEvent;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.logistics.analytics.model.TimeslotEvent;
+import com.freshdirect.logistics.delivery.dto.Address;
+import com.freshdirect.logistics.delivery.model.DeliveryException;
+import com.freshdirect.logistics.delivery.model.OrderContext;
+import com.freshdirect.logistics.delivery.model.SiteAnnouncement;
+import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.payment.BINInfo;
 import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
 import com.freshdirect.referral.extole.ExtoleServiceException;
 import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
 import com.freshdirect.referral.extole.model.ExtoleResponse;
 import com.freshdirect.referral.extole.model.FDRafCreditModel;
+//import com.freshdirect.content.attributes.FlatAttributeCollection;
+//import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 
 
 public class FDECommerceService extends AbstractService implements IECommerceService {
@@ -135,7 +156,7 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String SAP_GROUP_PRICE_LOADER_LOAD_API ="dataloader/sapGrp/groupScalePrice";
 	
 	private static final String GET_COO_API ="/coo";
-
+	
 	private static final String GET_EWALLET_BY_ID = "erp/ewallet/findbyid/";
 	private static final String GET_EWALLET_BY_TYPE = "erp/ewallet/findbytype/";
 	private static final String GET_CUSTEWALLET_TOKEN_BY_CUSTID = "erp/ewallet/get/";
@@ -145,7 +166,23 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	
 	private static final String SAVE_LOG_ENTRY = "sessionimpression/logentry";
 	private static final String SAVE_LOG_ENTRIES = "sessionimpression/logentries";
+
+	private static final String DLV_MANAGER_FUTURENOTIFICATION = "dlvmanager/futurezonealert";
+	private static final String DLV_MANAGER_FDANNOUNCEMENT = "dlvmanager/fdannouncement";
+	private static final String DLV_MANAGER_LOGFAILED_FDXDORDER = "dlvmanager/logfailedorder";
+	private static final String DLV_MANAGER_MUNICIPALITY_INFO = "dlvmanager/municipalityinfo";
+	private static final String DLV_MANAGER_SEND_ORDER_FEED = "dlvmanager/transmitorderinformation";
+	private static final String DLV_MANAGER_SEND_LATE_ORDER_FEED = "dlvmanager/deliveryattemptinfo";
+	private static final String DLV_MANAGER_COMMIT_RESERVATION = "dlvmanager/savereservation";
+	private static final String DLV_MANAGER_RECOMMIT_RESERVATION = "dlvmanager/recommitreservation";
+	private static final String DLV_MANAGER_COUNTIES_BY_STATE = "dlvmanager/countiesbystate";
+	private static final String DLV_MANAGER_RELEASE_ORDER_LOCK = "dlvmanager/releaseorderlock";
+	private static final String DLV_MANAGER_COUNTIES_BY_ZIP = "dlvmanager/countiesbyzip";
+	private static final String DLV_MANAGER_CARTON_SCAN_INFO = "dlvmanager/cartoninfo";
+	private static final String DLV_MANAGER_MISSING_ORDER = "dlvmanager/updateorder";
 	
+	private static final String ERP_INVENTORY_UPDATE = "erpinventory/updateinventory";
+	private static final String ERP_INVENTORY_UPDATE_RESTRICT_INFO = "erpinventory/updaterestrictedinfos";
 	private static FDECommerceService INSTANCE;
 
 
@@ -1125,6 +1162,14 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	}
 	
 	
+	
+	@Override
+	public Map<String, DeliveryException> getCartonScanInfo()
+			throws FDResourceException {
+		Response<Map<String, DeliveryException>> response =	this.httpGetDataTypeMap(getFdCommerceEndPoint(DLV_MANAGER_CARTON_SCAN_INFO), new TypeReference<Response<Map<String,DeliveryException>>>() { });
+		return response.getData();
+	}
+	
 	@Override
 	public void logCouponActivity(FDCouponActivityLogModel log)throws FDResourceException,RemoteException{
 	
@@ -1418,5 +1463,220 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			throw new FDResourceException(e, "Unable to process the request.");
 		}
 	}	
+	
+	@Override
+	public void saveFutureZoneNotification(String email, String zip,
+			String serviceType) throws FDResourceException {
+		String inputJson=null;
+		Request<FutureZoneNotificationParam> request = new Request<FutureZoneNotificationParam>();
+		FutureZoneNotificationParam  notificationParam = new FutureZoneNotificationParam(email, zip,serviceType);
+		request.setData(notificationParam);
+		try {
+			inputJson = buildRequest(request);
+			Response<Void> response = this.postData(inputJson, getFdCommerceEndPoint(DLV_MANAGER_FUTURENOTIFICATION), Response.class);
+			if(!response.getResponseCode().equals("OK"))
+				throw new FDResourceException(response.getMessage());
+		} catch (FDPayPalServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	@Override
+	public List<SiteAnnouncement> getSiteAnnouncements() throws FDResourceException {
+		String inputJson=null;
+		Response<List<SiteAnnouncement>> response = this.getData(getFdCommerceEndPoint(DLV_MANAGER_FDANNOUNCEMENT), Response.class);
+		if(!response.getResponseCode().equals("OK"))
+			throw new FDResourceException(response.getMessage());
+		return response.getData();
+	}
+	
+	@Override
+	public void logFailedFdxOrder(String orderId) throws FDResourceException {
+		String inputJson=null;
+		Response<Void> response = this.postData(inputJson, getFdCommerceEndPoint(DLV_MANAGER_LOGFAILED_FDXDORDER+"/"+orderId), Response.class);
+		if(!response.getResponseCode().equals("OK"))
+			throw new FDResourceException(response.getMessage());
+	
+	}
+	
+	@Override
+	public List<MunicipalityInfo> getMunicipalityInfos() throws FDResourceException {
+		List<MunicipalityInfo> minInfos = new ArrayList<MunicipalityInfo>();
+		Response<List<MunicipalityInfoData>> response = httpGetDataTypeMap(getFdCommerceEndPoint(DLV_MANAGER_MUNICIPALITY_INFO), new TypeReference<Response<List<MunicipalityInfoData>>>() {});
+		if(!response.getResponseCode().equals("OK"))
+			throw new FDResourceException(response.getMessage());
+		for (MunicipalityInfoData muniInfoData : response.getData()) {
+			MunicipalityInfo municipalityInfo = new MunicipalityInfo(muniInfoData.getId(), muniInfoData.getState(), muniInfoData.getCounty(),
+					muniInfoData.getCity(), muniInfoData.getGlCode(),
+					muniInfoData.getTaxRate(), muniInfoData.getBottleDeposit(), muniInfoData.isAlcoholRestricted(), EnumTaxationType.getEnum(muniInfoData.getTaxationType()));
+			minInfos.add(municipalityInfo);
+		}
+		return minInfos;
+		
+	}
+	
+	@Override
+	public void sendOrderSizeFeed() throws FDResourceException {
+		String inputJson=null;
+		Response<Void> response = this.postData(inputJson, getFdCommerceEndPoint(DLV_MANAGER_SEND_ORDER_FEED), Response.class);
+		if(!response.getResponseCode().equals("OK"))
+			throw new FDResourceException(response.getMessage());
+	
+	}
+	
+	@Override
+	public void sendLateOrderFeed() throws FDResourceException {
+		String inputJson=null;
+		Response<Void> response = this.postData(inputJson, getFdCommerceEndPoint(DLV_MANAGER_SEND_LATE_ORDER_FEED), Response.class);
+		if(!response.getResponseCode().equals("OK"))
+			throw new FDResourceException(response.getMessage());
+	}
+	
+	@Override
+	public Set<StateCounty> getCountiesByState(String state) throws FDResourceException {
+		String inputJson=null;
+		Set<StateCounty> stateCountySet = new HashSet<StateCounty>();
+		Response<List<StateCountyData>> response = this.httpGetDataTypeMap((getFdCommerceEndPoint(DLV_MANAGER_COUNTIES_BY_STATE)+"/"+state), new TypeReference<Response<List<StateCountyData>>>() {});
+		/*if(!response.getResponseCode().equals(HttpStatus.OK))
+			throw new FDResourceException(response.getMessage());*/
+		for (StateCountyData stateCountyData : response.getData()) {
+			StateCounty stateCounty = new StateCounty(stateCountyData.getState(), stateCountyData.getCounty(),
+					stateCountyData.getCity());
+			stateCountySet.add(stateCounty);
+			
+		}
+		return stateCountySet;
+	}
+	
+	@Override
+	public StateCounty lookupStateCountyByZip(String zip) throws FDResourceException {
+		String inputJson=null;
+		Response<StateCountyData> response = this.httpGetDataTypeMap((getFdCommerceEndPoint(DLV_MANAGER_COUNTIES_BY_ZIP+"/"+zip)), new TypeReference<Response<StateCountyData>>() {});
+		StateCountyData stateCountyData = response.getData();
+		StateCounty stateCounty = new StateCounty(stateCountyData.getState(), stateCountyData.getCounty(),
+				stateCountyData.getCity());
+		if(!response.getResponseCode().equals("OK"))
+			throw new FDResourceException(response.getMessage());
+		return stateCounty;
+	}
+	
+	@Override
+	public int unlockInModifyOrders() throws FDResourceException {
+		String inputJson=null;
+		Response<Integer> response = this.getData(getFdCommerceEndPoint(DLV_MANAGER_RELEASE_ORDER_LOCK), Response.class);
+		if(!response.getResponseCode().equals("OK"))
+			throw new FDResourceException(response.getMessage());
+		return response.getData();
+	}
+	
+	@Override
+	public int queryForMissingFdxOrders() throws FDResourceException {
+		String inputJson=null;
+		Response<Integer> response = this.getData(getFdCommerceEndPoint(DLV_MANAGER_MISSING_ORDER), Response.class);
+		if(!response.getResponseCode().equals("OK"))
+			throw new FDResourceException(response.getMessage());
+		return response.getData();
+	}
+	
+	@Override
+	public void commitReservation(String rsvId, String customerId,
+			OrderContext context, ContactAddressModel address, boolean pr1,
+			TimeslotEvent event) throws FDResourceException {
+		Request<ReservationParam> request = new Request<ReservationParam>();
+		ReservationParam  reservationParam = new ReservationParam(rsvId, customerId,
+				DlvManagerEncoder.encodeOrderContext(context), DlvManagerEncoder.encodeContactAddress(address) , pr1,
+				DlvManagerEncoder.encodeTimeSlotEvent(event));
+		request.setData(reservationParam);
+		String inputJson;
+		try {
+			
+			inputJson = buildRequest(request);
+			Response<Void> response = this.postData(inputJson, getFdCommerceEndPoint(DLV_MANAGER_COMMIT_RESERVATION), Response.class);
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDPayPalServiceException e) {
+			throw new FDResourceException(e);
+		} catch (FDResourceException e) {
+			throw new FDResourceException(e);
+		}
+		
+	}
+		
+	private static Address encodeAddress(ContactAddressModel model) {
+		
+		Address address = new Address(model.getId(), model.getAddress1(), model.getAddress2(), model.getApartment(), model.getCity(), model.getState(), model.getZipCode(),
+				model.getCountry(), model.getFirstName(), model.getLastName(), model.getScrubbedStreet(), model.getLongitude(), model.getLatitude(), model.getServiceType().getName(),
+				model.getCompanyName());
+		return address;
+		
+	}
+	@Override
+	public void recommitReservation(String rsvId, String customerId,
+			OrderContext context, ContactAddressModel address, boolean pr1) throws FDResourceException {
+		Request<ReservationParam> request = new Request<ReservationParam>();
+		ReservationParam  reservationParam = new ReservationParam(rsvId, customerId, DlvManagerEncoder.encodeOrderContext(context), DlvManagerEncoder.encodeContactAddress(address), pr1);
+		
+		request.setData(reservationParam);
+		String inputJson;
+		try {
+			inputJson = buildRequest(request);
+			Response<Void> response = this.postData(inputJson, getFdCommerceEndPoint(DLV_MANAGER_RECOMMIT_RESERVATION), Response.class);
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDPayPalServiceException e) {
+			throw new FDResourceException(e);
+		} catch (FDResourceException e) {
+			throw new FDResourceException(e);
+		}
+		
+	}
+	
+	@Override
+	public void updateInventories(List<ErpInventoryModel> erpInventoryEntryModel) throws FDResourceException {
+		try {
+			
+			Request<List<ErpInventoryModel>> request = new Request<List<ErpInventoryModel>>();
+			request.setData(erpInventoryEntryModel);
+			String inputJson = buildRequest(request);
+			
+			Response<Void> response = this.postData(inputJson, getFdCommerceEndPoint(ERP_INVENTORY_UPDATE), Response.class);
+			
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
+		}
+		
+	}
+	@Override
+	public void updateRestrictedInfos(
+			Set<ErpRestrictedAvailabilityModel> restrictedInfos,
+			Set<String> deletedMaterials) throws FDResourceException {
 
+		Request<RestrictedInfoParam> request = new Request<RestrictedInfoParam>();
+		RestrictedInfoParam restrictedInfoParam = new RestrictedInfoParam();
+		try {
+			Set<ErpRestrictedAvailabilityData> erpRestrictedAvailabilityData = getMapper().convertValue(restrictedInfos, Set.class);
+			restrictedInfoParam.setDeletedMaterials(deletedMaterials);
+			restrictedInfoParam.setRestrictedInfos(erpRestrictedAvailabilityData);
+		
+			request.setData(restrictedInfoParam);
+			String inputJson = buildRequest(request);
+			Response<Void> response = this.postData(inputJson, getFdCommerceEndPoint(ERP_INVENTORY_UPDATE_RESTRICT_INFO), Response.class);
+		
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+		throw new FDResourceException(e, "Unable to process the request.");
+		}
+		
+	}
 }
