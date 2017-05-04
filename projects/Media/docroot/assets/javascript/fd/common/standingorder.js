@@ -226,13 +226,13 @@ function getStandingOrderData(ids, action){
 }
 
 function postStandingOrderData(ids, action){
-	dataString = "action="+ action + "&id=" + ids[0];
-	$jq.ajax({
-	    url: '/api/standingOrderCartServlet',
-	    type: 'POST',
-	    data: dataString,
-	    success: function(data) {
-	    	
-	    }
-	});
+	$jq.post('/api/standingOrderCartServlet',
+			{		data: JSON.stringify({
+					actiontype: action,
+					standingOrderId: ids[0],
+					})
+			},function(data){
+		
+	})
+	
 }
