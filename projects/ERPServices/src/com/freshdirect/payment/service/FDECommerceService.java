@@ -28,17 +28,32 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.content.attributes.AttributeException;
 import com.freshdirect.content.attributes.FlatAttribute;
 import com.freshdirect.customer.EnumExternalLoginSource;
+import com.freshdirect.customer.ErpCustEWalletModel;
+import com.freshdirect.customer.ErpEWalletModel;
+import com.freshdirect.customer.ErpGrpPriceModel;
 import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.ecommerce.data.attributes.FlatAttributeCollection;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.customer.accounts.external.UserTokenData;
+import com.freshdirect.ecommerce.data.enums.BillingCountryInfoData;
+import com.freshdirect.ecommerce.data.enums.CrmCaseSubjectData;
+import com.freshdirect.ecommerce.data.enums.DeliveryPassTypeData;
+import com.freshdirect.ecommerce.data.enums.EnumFeaturedHeaderTypeData;
+import com.freshdirect.ecommerce.data.enums.ErpAffiliateData;
+import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
 import com.freshdirect.ecommerce.data.payment.BINData;
+import com.freshdirect.ecommerce.data.sessionimpressionlog.SessionImpressionLogEntryData;
+import com.freshdirect.ecommerce.data.survey.FDSurveyData;
+import com.freshdirect.ecommerce.data.survey.FDSurveyResponseData;
+import com.freshdirect.ecommerce.data.survey.SurveyData;
+import com.freshdirect.ecommerce.data.survey.SurveyKeyData;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.model.BatchModel;
@@ -47,9 +62,13 @@ import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
+import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityLogModel;
+import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.event.FDWebEvent;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.BINInfo;
+import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
 import com.freshdirect.referral.extole.ExtoleServiceException;
 import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
 import com.freshdirect.referral.extole.model.ExtoleResponse;
@@ -89,7 +108,7 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String CHECK_EXT_LOGIN_USER = "account/external/checkexternalloginuser";
 	
 	private static final String CONNECTED_PROVIDERS_BY_USERID = "account/external/providerbyuserid";
-	private static final String LOAD_ENUMS = "/enums";
+	private static final String LOAD_ENUMS = "enums/all";
 	private static final String BRAND_SEARCH_BY_KEY ="brand/products/search";
 	private static final String BRAND_SEARCH_BY_PRODUCT ="brand/products/products";
 	private static final String BRAND_LAST_SENT_FEED ="brand/products/ordertime";
@@ -105,10 +124,27 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String EXTOLE_MANAGER_CREATECONVERSION ="extolemanager/createconversion";
 	private static final String EXTOLE_MANAGER_APPROVECONVERSION ="extolemanager/approveconversion";
 	private static final String EXTOLE_MANAGER_DOWNLOAD ="extolemanager/download";
+	private static final String LOG_ECOUPON_ACTIVITY = "couponactivity/log";
+	private static final String LOG_EWALLET_ACTIVITY = "ewalletactivity/log";
 	
+	private static final String SURVEY ="survey";
+	private static final String STORE_SURVEY = "survey/store";
+	private static final String SURVEY_RESPONSE = "survey/surveyresponse";
+	private static final String GET_CUSTOMER_PROFILE = "survey/customerprofile";
 	
+	private static final String SAP_GROUP_PRICE_LOADER_LOAD_API ="dataloader/sapGrp/groupScalePrice";
 	
 	private static final String GET_COO_API ="/coo";
+
+	private static final String GET_EWALLET_BY_ID = "erp/ewallet/findbyid/";
+	private static final String GET_EWALLET_BY_TYPE = "erp/ewallet/findbytype/";
+	private static final String GET_CUSTEWALLET_TOKEN_BY_CUSTID = "erp/ewallet/get/";
+	private static final String UPDATE_CUSTEWALLET_TOKEN = "erp/ewallet/update/";
+	private static final String DELETE_CUSTEWALLET_TOKEN = "erp/ewallet/delete/";
+	private static final String INSERT_CUSTEWALLET_TOKEN = "erp/ewallet/save";
+	
+	private static final String SAVE_LOG_ENTRY = "sessionimpression/logentry";
+	private static final String SAVE_LOG_ENTRIES = "sessionimpression/logentries";
 	
 	private static FDECommerceService INSTANCE;
 
@@ -306,35 +342,35 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		}
 	@Override
 	public void saveBINInfo(List<List<BINInfo>> binInfos)
-			throws FDResourceException {
-		
-		Request<List<BINData>> request = new Request<List<BINData>>();
-		List<BINData> binDataList = new ArrayList<BINData>(binInfos.size());
-		for (List<BINInfo> bininfol : binInfos) {
-			for(BINInfo bininfo : bininfol){
-			binDataList.add(buildBinDataModel(bininfo));
+			throws FDResourceException {Request<List<List<BINData>>> request = new Request<List<List<BINData>>>();
+			List<BINData> binDataList = new ArrayList<BINData>(binInfos.size());
+			List<List<BINData>> binDataRequest = new ArrayList<List<BINData>>();
+			for (List<BINInfo> bininfol : binInfos) {
+				for(BINInfo bininfo : bininfol){
+				binDataList.add(buildBinDataModel(bininfo));
+				}
+				binDataRequest.add(binDataList);
 			}
-		}
-		request.setData(binDataList);
-		String inputJson;
-		Response<String> response = null;
-		try {
-			inputJson = buildRequest(request);
-			 response = postData(inputJson, getFdCommerceEndPoint(SAVE_ACTIVE_BINS), Response.class);
-			if(!response.getResponseCode().equals("OK"))
+			request.setData(binDataRequest);
+			String inputJson;
+			Response<String> response = null;
+			try {
+				inputJson = buildRequest(request);
+				 response = postData(inputJson, getFdCommerceEndPoint(SAVE_ACTIVE_BINS), Response.class);
+				if(!response.getResponseCode().equals("OK"))
+					throw new FDResourceException(response.getMessage());
+			} catch (FDPayPalServiceException e) {
+				
 				throw new FDResourceException(response.getMessage());
-		} catch (FDPayPalServiceException e) {
-			
-			throw new FDResourceException(response.getMessage());
-		}
-	}
+			}
+			}
 	//Move the below method to util class
 	private NavigableMap<Long, BINInfo> buildBinInfoModel(
 			NavigableMap<Long, BINData> data) {
 		NavigableMap<Long, BINInfo> binInfoData = new TreeMap();
 		for(Long key: data.keySet()){
 			BINData binData = data.get(key);
-			BINInfo bINInfo = new BINInfo(binData.getId(), binData.getLowRange(), binData.getHighRange(), binData.getSequence(), EnumCardType.getByPaymentechCode(binData.getPaymentCode()));
+			BINInfo bINInfo = new BINInfo(binData.getId(), binData.getLowRange(), binData.getHighRange(), binData.getSequence(),EnumCardType.getEnum(binData.getCardType()));
 			binInfoData.put(key, bINInfo);
 		}
 		return binInfoData;
@@ -347,7 +383,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			binData.setLowRange(binInfo.getLowRange());
 			binData.setHighRange(binInfo.getLowRange());
 			binData.setSequence(binInfo.getSequence());
-			binData.setPaymentCode(binInfo.getCardType().getPaymentechCode());
+			binData.setCardType(binInfo.getCardType().getFdName());
 		return binData;
 	}
 	@Override
@@ -783,36 +819,91 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	
 	}
 	@Override
-	public List loadEnum(String daoClassName) {
+	public <E> List loadEnum(String daoClassName) throws RemoteException {
 		Response<List> response = null;
 		try {
-			response = httpGetDataTypeMap(
-					getFdCommerceEndPoint(LOAD_ENUMS+"?daoClassName="+daoClassName),new TypeReference<Response<List>>() {
-					});
+			response = httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_ENUMS+"?daoClassName="+daoClassName),(TypeReference<E>)typeReferenceFor(daoClassName));
 			if (!response.getResponseCode().equals("OK"))
 				throw new FDResourceException(response.getMessage());
 
 		} catch (FDResourceException e) {
-			e.printStackTrace();
 			LOGGER.error(e.getMessage());
+			throw new RemoteException();
 		}
-		return response.getData();
+
+		return buildServiceEnumModel(response.getData());
+	}
+	
+	private List buildServiceEnumModel(List data) {
+		if(data.size()>0){
+			if(data.get(1) instanceof BillingCountryInfoData ){
+				return ModelConverter.buildBillingCountryInfoList(data);
+			}else if(data.get(1) instanceof ErpAffiliateData ){
+				return ModelConverter.buildErpAffiliateList(data);
+			}else if(data.get(1) instanceof DeliveryPassTypeData ){
+				return ModelConverter.buildDeliveryPassTypeList(data);
+			}else if(data.get(1) instanceof EnumFeaturedHeaderTypeData ){
+				return ModelConverter.buildEnumFeaturedHeaderTypeList(data);
+			}else if(data.get(1) instanceof CrmCaseSubjectData ){
+				return ModelConverter.buildCrmCaseSubjectList(data);
+			}
+		}
+
+		return null;
+	}
+	private <E> E typeReferenceFor(String daoClassName) {
+		
+		
+		if (daoClassName.equals("BillingCountryDAO")) {
+			return   (E) new TypeReference<Response<List<BillingCountryInfoData>>>(){} ;
+		} else if (daoClassName.equals("ErpAffiliateDAO")) {
+			return  (E) new TypeReference<Response<List<ErpAffiliateData>>>() {} ;
+		} else if (daoClassName.equals("DlvPassTypeDAO")) {
+			return  (E) new TypeReference<Response<List<DeliveryPassTypeData>>>() {} ;
+		} else if (daoClassName.equals("EnumFeaturedHeaderTypeDAO")) {
+			return  (E) new TypeReference<Response<List<EnumFeaturedHeaderTypeData>>>() {} ;
+		} else if (daoClassName.equals("CrmCaseSubjectDAO")) {
+			return   (E) new TypeReference<Response<List<CrmCaseSubjectData>>>() {} ;
+		}
+		return null;
 	}
 	@Override
 	public 	Map<ErpCOOLKey, ErpCOOLInfo> getCountryOfOriginData(Date since)
 			throws RemoteException {
-			Response<Map<ErpCOOLKey, ErpCOOLInfo>> response = new Response<Map<ErpCOOLKey, ErpCOOLInfo>>();
+			Response<List<CountryOfOriginData>> response = new Response<List<CountryOfOriginData>>();
 
 				try {
-					response= getData(getFdCommerceEndPoint(GET_COO_API), Response.class);
+					response= httpGetDataTypeMap(getFdCommerceEndPoint(GET_COO_API),  new TypeReference<Response<List<CountryOfOriginData>>>() {});
+					
 				} catch (FDResourceException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			
-			return response.getData();
+				Map<ErpCOOLKey, ErpCOOLInfo> data = ModelConverter.buildCoolModel(response.getData());
+			return data;
 		
 	}
+	/*@Override // Will be removed
+	public 	void updateCOOLInfo(List<ErpCOOLInfo> erpCOOLInfoList)
+			throws RemoteException {
+		
+					Request<List<CountryOfOriginData>> request = new Request<List<CountryOfOriginData>>();
+					request.setData(ModelConverter.buildCoolModelData(erpCOOLInfoList));
+					try {
+						String inputJson = buildRequest(request);
+	
+					Response<List<CountryOfOriginData>> response = this.postDataTypeMap(inputJson,getFdCommerceEndPoint(GET_COO_API),  new TypeReference<Response<List<CountryOfOriginData>>>() {});
+					
+				} catch (FDResourceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (FDPayPalServiceException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+		
+	}
+	*/
 	@Override
 	public HLBrandProductAdResponse getSearchbykeyword(
 			HLBrandProductAdRequest hLRequestData) throws RemoteException {
@@ -1034,5 +1125,298 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	}
 	
 	
+	@Override
+	public void logCouponActivity(FDCouponActivityLogModel log)throws FDResourceException,RemoteException{
 	
+		try {
+			Request<FDCouponActivityLogModel> couponActivityLogReq = new Request<FDCouponActivityLogModel>();
+			couponActivityLogReq.setData(log);
+			String inputJson = buildRequest(couponActivityLogReq);
+			@SuppressWarnings("unchecked")
+			Response<String> response = this.postData(inputJson, getFdCommerceEndPoint(LOG_ECOUPON_ACTIVITY), Response.class);
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	
+	@Override
+	public void logActivity(EwalletActivityLogModel logModel)throws RemoteException{
+		
+		try {
+			Request<EwalletActivityLogModel> ewalletActivityLogReq = new Request<EwalletActivityLogModel>();
+			ewalletActivityLogReq.setData(logModel);
+			String inputJson = buildRequest(ewalletActivityLogReq);
+			@SuppressWarnings("unchecked")
+			Response<String> response = this.postData(inputJson, getFdCommerceEndPoint(LOG_EWALLET_ACTIVITY), Response.class);
+			if(!response.getResponseCode().equals("OK")){
+				throw new RemoteException(response.getMessage());
+			}
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	
+	@Override
+	public FDSurveyData getSurvey(SurveyKeyData key) throws RemoteException {
+		Response<FDSurveyData> response = new Response<FDSurveyData>();
+		try {
+			Request<SurveyKeyData> request = new Request<SurveyKeyData>();
+			request.setData(key);
+			String inputJson = buildRequest(request);
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SURVEY), new TypeReference<Response<FDSurveyData>>() {});
+			if (!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		}
+		catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	
+	@Override
+	public FDSurveyResponseData getCustomerProfile(FDIdentity identity,
+			EnumServiceType serviceType) throws RemoteException {
+		Response<FDSurveyResponseData> response= null;
+		try {
+			Request<SurveyData> request = buildSurveyData(identity, serviceType);
+			String inputJson = buildRequest(request);
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(GET_CUSTOMER_PROFILE), new TypeReference<Response<FDSurveyResponseData>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	private Request<SurveyData> buildSurveyData(FDIdentity identity,
+			EnumServiceType serviceType) {
+		Request<SurveyData> request = new Request<SurveyData>();
+		SurveyData surveyData = new SurveyData();
+		surveyData.setErpCustomerid(identity.getErpCustomerPK());
+		surveyData.setFdCustomerId(identity.getFDCustomerPK());
+		surveyData.setServiceType(serviceType.toString());
+		request.setData(surveyData);
+		return request;
+	}
+	@Override
+	public FDSurveyResponseData getSurveyResponse(FDIdentity identity, SurveyKeyData key) throws RemoteException {
+		Response<FDSurveyResponseData> response = null;
+		try {
+			Request<SurveyData> request = new Request<SurveyData>();
+			SurveyData surveyData = new SurveyData();
+			surveyData.setErpCustomerid(identity.getErpCustomerPK());
+			surveyData.setFdCustomerId(identity.getFDCustomerPK());
+			surveyData.setServiceType(key.getUserType().toString());
+			surveyData.setSurveyType(key.getSurveyType());
+			request.setData(surveyData);
+			String inputJson = buildRequest(request);
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SURVEY_RESPONSE), new TypeReference<Response<FDSurveyResponseData>>() {});
+			
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		} catch (FDResourceException e) {
+			LOGGER.error(e);
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	@Override
+	public void storeSurvey(FDSurveyResponseData survey) throws FDResourceException {
+		try {
+			String inputJson = buildRequest(survey);
+			Response<FDSurveyResponseData> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(STORE_SURVEY), new TypeReference<Response<Void>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
+		}
+	}
+	@Override
+	public void loadGroupPriceData(List<ErpGrpPriceModel> grpPricelist)
+			throws FDResourceException {
+			try {
+				Request<List<ErpGrpPriceModel>> request = new Request<List<ErpGrpPriceModel>>();
+				request.setData(grpPricelist);
+				String inputJson = buildRequest(request);
+				@SuppressWarnings("unchecked")
+				Response<String> response = this.postData(inputJson, getFdCommerceEndPoint(SAP_GROUP_PRICE_LOADER_LOAD_API), Response.class);
+				if(!response.getResponseCode().equals("OK")){
+					throw new FDResourceException(response.getMessage());
+				}
+			} catch (FDPayPalServiceException e) {
+				LOGGER.error(e.getMessage());
+				throw new FDResourceException(e, "Unable to process the request.");
+			}catch (FDResourceException e){
+				LOGGER.error(e.getMessage());
+				throw new FDResourceException(e, "Unable to process the request.");
+			}
+			
+	}
+	
+	@Override
+	public ErpEWalletModel findEWalletById(String eWalletId) throws RemoteException {
+		try {
+			Response<ErpEWalletModel> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_EWALLET_BY_ID) + eWalletId,
+					new TypeReference<Response<ErpEWalletModel>>() {});
+			if (!response.getResponseCode().equals("OK")) {
+				throw new FDResourceException(response.getMessage());
+			}
+			return response.getData();
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	@Override
+	public ErpEWalletModel findEWalletByType(String eWalletType) throws RemoteException {
+		try {
+			Response<ErpEWalletModel> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_EWALLET_BY_TYPE) + eWalletType,
+					new TypeReference<Response<ErpEWalletModel>>() {});
+			if (!response.getResponseCode().equals("OK")) {
+				throw new FDResourceException(response.getMessage());
+			}
+			return response.getData();
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	@Override
+	public ErpCustEWalletModel getLongAccessTokenByCustID(String custID, String eWalletType) throws RemoteException {
+		try {
+			Response<ErpCustEWalletModel> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_CUSTEWALLET_TOKEN_BY_CUSTID) + custID + "/" + eWalletType, new TypeReference<Response<ErpCustEWalletModel>>() {});
+			if (!response.getResponseCode().equals("OK")) {
+				throw new FDResourceException(response.getMessage());
+			}
+			return response.getData();
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	@Override
+	public int updateLongAccessToken(String custId, String longAccessToken, String eWalletType) throws RemoteException {
+		try {
+			Response<Integer> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(UPDATE_CUSTEWALLET_TOKEN) + custId + "/" + longAccessToken + "/" + eWalletType,
+					new TypeReference<Response<Integer>>() {});
+			if (!response.getResponseCode().equals("OK")) {
+				throw new FDResourceException(response.getMessage());
+			}
+			return response.getData();
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	@Override
+	public int deleteLongAccessToken(String custId, String eWalletID) throws RemoteException {
+		try {
+			Response<Integer> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(DELETE_CUSTEWALLET_TOKEN) + custId + "/" + eWalletID,
+					new TypeReference<Response<Integer>>() {});
+			if (!response.getResponseCode().equals("OK")) {
+				throw new FDResourceException(response.getMessage());
+			}
+			return response.getData();
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	@Override
+	public List<ErpEWalletModel> getAllEWallets() throws RemoteException {
+		try {
+			@SuppressWarnings("unchecked")
+			Response<List<ErpEWalletModel>> response = this.getData(getFdCommerceEndPoint(""), Response.class);
+			if (!response.getResponseCode().equals("OK")) {
+				throw new FDResourceException(response.getMessage());
+			}
+			return response.getData();
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	@Override
+	public int insertCustomerLongAccessToken(ErpCustEWalletModel custEWallet) throws RemoteException {
+		try {
+			Request<ErpCustEWalletModel> request = new Request<ErpCustEWalletModel>();
+			if(custEWallet.getPK() == null){	// While inserting into DB it will generate the new ID.
+				custEWallet.setPK(new PrimaryKey());
+			}
+			request.setData(custEWallet);
+			String inputJson = buildRequest(request);
+			Response<Integer> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(INSERT_CUSTEWALLET_TOKEN), new TypeReference<Response<Integer>>() {});
+			if (!response.getResponseCode().equals("OK")) {
+				throw new FDResourceException(response.getMessage());
+			}
+			return response.getData();
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	
+	@Override
+	public void saveLogEntry(Request<SessionImpressionLogEntryData> entry) throws FDResourceException {
+		try {
+			String inputJson = buildRequest(entry);
+			Response<String> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SAVE_LOG_ENTRY), new TypeReference<Response<String>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
+		}
+	}
+	
+	@Override
+	public void saveLogEntries(Request<Collection<SessionImpressionLogEntryData>> entries) throws FDResourceException,RemoteException {
+		try {
+			String inputJson = buildRequest(entries);
+			Response<String> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SAVE_LOG_ENTRIES), new TypeReference<Response<String>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
+		}
+	}	
+
 }

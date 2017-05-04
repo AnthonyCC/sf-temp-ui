@@ -7,14 +7,14 @@
 {template .iconCarouselItem}
 <li class="portrait-item">
   <div class="icon-image">
-    <a {if $item.iconLink}href="{$item.iconLink}"{/if} {if $moduleData}manual_cm_sp="
+    <a {if $item.iconLink}href="{$item.iconLink}"{/if} {if $moduleData}data-cm-click="
     {if $item.iconId}{$item.iconId}{/if}-_-{if $item.iconLinkText}{$item.iconLinkText}{/if}-_-
     {if $moduleData.moduleId}{$moduleData.moduleId}{else}no module ID{/if}"{/if}>
       <img src="{$item.iconImage}" alt="icon">
     </a>
   </div>
   {if not $moduleData or not $moduleData.hideProductName}
-  <a {if $item.iconLink}href="{$item.iconLink}"{/if} {if $moduleData}manual_cm_sp="
+  <a {if $item.iconLink}href="{$item.iconLink}"{/if} {if $moduleData}data-cm-click="
   {if $item.iconId}{$item.iconId}{/if}-_-{if $item.iconLinkText}{$item.iconLinkText}{/if}-_-
   {if $moduleData.moduleId}{$moduleData.moduleId}{else}no module ID{/if}"{/if}>{if $item.iconLinkText}{$item.iconLinkText}{/if}</a>
   {/if}

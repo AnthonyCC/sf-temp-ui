@@ -104,6 +104,7 @@ var FreshDirect = FreshDirect || {};
         value.cartData = this.dataConfig.cartData;
         value.pageType = this.dataConfig.pageType;
         value.variantId = this.dataConfig.variantId;
+        if (this.dataConfig.moduleVirtualCategory) {value.moduleVirtualCategory = this.dataConfig.moduleVirtualCategory}
         this.refreshBody(value);
         this.refreshSkuControls();
 
@@ -120,7 +121,7 @@ var FreshDirect = FreshDirect || {};
 			function sOResultsClose() {
 				$('.so-results-content').addClass('so-close');
 			}
-			
+
 			$jq(this).closest('.so-container').find('.so-results-content').toggleClass('so-close');
 			window.setTimeout(sOResultsClose, 3000);
 			return false;
@@ -134,7 +135,7 @@ var FreshDirect = FreshDirect || {};
             request = {};
         this.popup.show($(config.element));
         this.popup.clicked = true;
-		
+
         request.productId = item.productId;
         request.configuration = item.configuration;
         request.quantity = parseFloat(item.quantity);
@@ -152,7 +153,8 @@ var FreshDirect = FreshDirect || {};
             variantId:item.variantId,
             ATCApply:config.hasApply && fd.quickshop && fd.quickshop.itemType === 'pastOrders'
         };
-        
+        if (config.item.moduleVirtualCategory) { this.dataConfig.moduleVirtualCategory = config.item.moduleVirtualCategory; }
+
         fd.common.dispatcher.signal('server',{
           url:'/api/productconfig',
           data:{data:JSON.stringify(request)},
@@ -184,12 +186,12 @@ var FreshDirect = FreshDirect || {};
       }
     }
 
-	$('#' + customizePopup.popupId).removeClass('soShow').removeClass('so-review').removeClass('so-review-success');
+	$('#' + customizePopup.popupId).removeClass('soShow').removeClass('so-review').removeClass('so-review-success').removeClass('so-review-min-met-alert');
     if ($(element).data('soshow')) {
     	$('#' + customizePopup.popupId).addClass('soShow');
     }
     customizePopup.popup.$overlay.removeClass('customize-overlay').addClass('customize-overlay');
-    
+
     if($(element).data('soshow')){
     	if(!FreshDirect.user.recognized && !FreshDirect.user.guest){
     		var item = fd.modules.common.productSerialize(element).pop();

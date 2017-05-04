@@ -9,6 +9,7 @@
 			<div class="pull-left navbar-header-left">
 				<button id="navbarShow" type="button" class="navbar-toggle pull-left">
 					<span class="icon-bar"></span>
+					<span class="offscreen">main menu</span>
 				</button>
 				<a class="navbar-brand" href="#"><img src="/media/mobileweb/images/topbar-fd-logo.png" alt="FreshDirect" class="img-responsive" /></a>
 			</div>
@@ -45,7 +46,7 @@
 							}
 						}
 					%>
-					<a href="<%= temp_delivery_link %>" class="icon-truck"></a>
+					<a href="<%= temp_delivery_link %>" class="icon-truck"><span class="offscreen">View Delivery Timeslots</span></a>
 				</div>
 				<%-- TODO: CART is hard-coded, boo --%>
 				<div class="navbar-ecomvalue">

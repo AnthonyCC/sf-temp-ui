@@ -183,7 +183,7 @@ var FreshDirect = FreshDirect || {};
           $('#'+popupId+' [data-component="product"]').trigger('transactionalPopup-open');
 
           // set learn more url
-          learnMoreLink.attr('href', mainHolder.find('[data-productdata-name="productPageUrl"]').first().val());
+          learnMoreLink.attr('href', mainHolder.find('[data-productdata-name="productPageUrl"]').first().val() + (config.virtualCategory ? '&cm_vc="' + config.virtualCategory + '"' : ''));
 
           if ($('#'+popupId+' [data-component="product"]').hasClass('discontinued')) {
             learnMoreLink.hide();
@@ -269,7 +269,6 @@ var FreshDirect = FreshDirect || {};
             // fix for: icon font does not appear on :before in IE8, only on hover
             $('#'+popupId + ' ' + "[data-component='addToListButton']").trigger('focus');
           }
-          
 
 
           /* hooklogic click event */
@@ -278,7 +277,7 @@ var FreshDirect = FreshDirect || {};
                 	/* exclusion elems */
                 	if (
                 		$(this).is('[data-component-extra="showSOButton"], .quantity_minus, .quantity_plus')
-                	) { return; 
+                	) { return;
                 	} else {
                 		$(e).data('hooklogic-beacon-click', 'true');
                 		$(e).on('click', function(event) {
@@ -354,7 +353,7 @@ var FreshDirect = FreshDirect || {};
   };
 
   $(".product-name-no-brand").ellipsis({ lines: 4 });
-  
+
    $(document).on('mouseover','.transactional [data-transactional-trigger] *',function(event){
 
     // block popup open if we force it in browseMain
@@ -363,13 +362,17 @@ var FreshDirect = FreshDirect || {};
       return false;
     }
 
-    var element = $(event.currentTarget).closest('[data-component="product"]');
+    var element = $(event.currentTarget).closest('[data-component="product"]'),
+        config = {
+          element: element,
+          productId:element.data('productId'),
+          catId:element.data('catId')
+        };
+    if (element.data('virtualCategory')) {
+      config.virtualCategory = element.data('virtualCategory');
+    }
     if ((!element.hasClass('unavailable') || element.hasClass('useReplacement')) && element.closest('.stepping[data-component="carousel"]').size() === 0) {
-      transactionalPopup.open({
-        element: element,
-        productId:element.data('productId'),
-        catId:element.data('catId')
-      });
+      transactionalPopup.open(config);
     }
 
    });

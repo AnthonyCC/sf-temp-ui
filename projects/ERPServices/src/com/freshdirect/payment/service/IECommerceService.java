@@ -9,12 +9,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.content.attributes.AttributeException;
 import com.freshdirect.content.attributes.FlatAttributeCollection;
 import com.freshdirect.customer.EnumExternalLoginSource;
+import com.freshdirect.customer.ErpCustEWalletModel;
+import com.freshdirect.customer.ErpEWalletModel;
+import com.freshdirect.customer.ErpGrpPriceModel;
 import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
+import com.freshdirect.ecommerce.data.common.Request;
+import com.freshdirect.ecommerce.data.sessionimpressionlog.SessionImpressionLogEntryData;
+import com.freshdirect.ecommerce.data.survey.FDSurveyData;
+import com.freshdirect.ecommerce.data.survey.FDSurveyResponseData;
+import com.freshdirect.ecommerce.data.survey.SurveyKeyData;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.model.BatchModel;
@@ -22,8 +31,11 @@ import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
+import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityLogModel;
 import com.freshdirect.framework.event.FDWebEvent;
 import com.freshdirect.payment.BINInfo;
+import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
 import com.freshdirect.referral.extole.ExtoleServiceException;
 import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
 import com.freshdirect.referral.extole.model.ExtoleResponse;
@@ -72,7 +84,8 @@ public interface IECommerceService {
 
 	public Map<ErpCOOLKey, ErpCOOLInfo> getCountryOfOriginData(Date since) throws RemoteException;
 
-	public List loadEnum(String daoClassName)throws RemoteException;
+	public <E> List loadEnum(String daoClassName)throws RemoteException;
+	
 	
 	public String getUserIdForUserToken(String userToken) ;
 	
@@ -122,4 +135,38 @@ public interface IECommerceService {
 
 	public void downloadAndSaveRewards(String fileName) throws ExtoleServiceException, IOException, FDResourceException, RemoteException, ParseException;
 
+	public void logCouponActivity(FDCouponActivityLogModel log)throws FDResourceException,RemoteException;
+	
+	public void logActivity(EwalletActivityLogModel logModel)throws RemoteException;
+
+	public FDSurveyData getSurvey(SurveyKeyData key) throws RemoteException;
+	
+	public FDSurveyResponseData getCustomerProfile(FDIdentity identity, EnumServiceType serviceType) throws RemoteException ;
+	
+	public FDSurveyResponseData getSurveyResponse(FDIdentity identity, SurveyKeyData key) throws RemoteException ;
+	
+	public void storeSurvey(FDSurveyResponseData survey) throws FDResourceException;
+
+	public void loadGroupPriceData(List<ErpGrpPriceModel> grpPriceZonelist)throws FDResourceException;
+
+//	public void updateCOOLInfo(List<ErpCOOLInfo> erpCOOLInfoList)throws RemoteException;
+
+	public List<ErpEWalletModel> getAllEWallets() throws RemoteException;
+
+	public ErpEWalletModel findEWalletById(String eWalletId) throws RemoteException;
+
+	public ErpEWalletModel findEWalletByType(String eWalletType) throws RemoteException;
+
+	public int insertCustomerLongAccessToken(ErpCustEWalletModel custEWallet) throws RemoteException;
+
+	public ErpCustEWalletModel getLongAccessTokenByCustID(String custID, String eWalletType) throws RemoteException;
+
+	public int updateLongAccessToken(String custId, String longAccessToken, String eWalletType) throws RemoteException;
+
+	public int deleteLongAccessToken(String custId, String eWalletID) throws RemoteException;
+
+	public void saveLogEntry(Request<SessionImpressionLogEntryData> entry) throws RemoteException, FDResourceException;
+	
+	public void saveLogEntries(Request<Collection<SessionImpressionLogEntryData>> entries) throws FDResourceException, RemoteException;
+	
 }

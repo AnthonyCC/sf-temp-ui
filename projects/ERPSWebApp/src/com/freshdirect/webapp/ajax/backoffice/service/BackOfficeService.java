@@ -211,6 +211,7 @@ public class BackOfficeService {
 				throw new FDResourceException("Not able to Process Requrest at this time, please retry again");
 			} catch (IOException ie) {
 				LOGGER.error(ie);
+				ie.printStackTrace();
 				throw new FDResourceException("Not able to Process Requrest at this time, please try again");
 			}finally {
 				if(br!=null){

@@ -10,7 +10,7 @@
 </head>
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#FF9900" text="#333333" onLoad="window.focus()">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
-<a name="top"></a>
+<!--   <a name="top"></a> -->
 <center>
 <table border="0" cellpadding="0" cellspacing="0" width="520">
 	<!-- APPDEV 4284 <tr valign="TOP">

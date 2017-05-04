@@ -330,10 +330,11 @@
 	data-cat-id="{$catId ? $catId : ''}" {$replacement ? 'data-replacement-id="'+$replacement.productId+'"': ''}
 	{if $hookLogicBeaconClick} data-hooklogic-beacon-click="{$hookLogicBeaconClick}"{/if}
 	{if $hookLogicBeaconImpression} data-hooklogic-beacon-impress="{$hookLogicBeaconImpression}"{/if}
+  {if $moduleData and $moduleData.moduleVirtualCategory}data-virtual-category="{$moduleData.moduleVirtualCategory}"{/if}
 >
 	<div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
 	{if not $discontinued}
-	  <a href="{$productPageUrl}" class="portrait-item-image-link" {if $moduleData}manual_cm_sp="
+	  <a href="{$productPageUrl}{if $moduleData and $moduleData.moduleVirtualCategory}&cm_vc={$moduleData.moduleVirtualCategory}{/if}" class="portrait-item-image-link" {if $moduleData}data-cm-click="
     {$productId}-_-{$productName}-_-
     {if $moduleData.moduleId}{$moduleData.moduleId}{else}no module ID{/if}"{/if}>
     {/if}
@@ -358,7 +359,7 @@
   		{if $discontinued}
   			<b>{$brandName}</b> <div class="product-name-no-brand">{$productNameNoBrand}</div>
   		{else}
-  			<a href="{$productPageUrl}" class="portrait-item-header-name" {if $moduleData}manual_cm_sp="
+  			<a href="{$productPageUrl}{if $moduleData and $moduleData.moduleVirtualCategory}&cm_vc={$moduleData.moduleVirtualCategory}{/if}" class="portrait-item-header-name" {if $moduleData}data-cm-click="
         {$productId}-_-{$productName}-_-
         {if $moduleData.moduleId}{$moduleData.moduleId}{else}no module ID{/if}"{/if}><b>{$brandName}</b> <div class="product-name-no-brand">{$productNameNoBrand}</div></a>
   		{/if}
@@ -366,7 +367,7 @@
   		{if $discontinued}
   			{$productName}
   		{else}
-  			<a href="{$productPageUrl}" class="portrait-item-header-name" {if $moduleData}manual_cm_sp="
+  			<a href="{$productPageUrl}{if $moduleData and $moduleData.moduleVirtualCategory}&cm_vc={$moduleData.moduleVirtualCategory}{/if}" class="portrait-item-header-name" {if $moduleData}data-cm-click="
         {$productId}-_-{$productName}-_-
         {if $moduleData.moduleId}{$moduleData.moduleId}{else}no module ID{/if}"{/if}>{$productName}</a>
   		{/if}
@@ -501,6 +502,7 @@
 			{param listId:$listId /}
 			{param freeSamplePromoProduct:$freeSamplePromoProduct /}
 			{param mobWeb:$mobWeb /}
+      {param moduleData:$moduleData/}
 		{/call}
 		{call common.atcInCart}
 			{param amount:$inCartAmount /}
@@ -538,6 +540,7 @@
 				{param item:$relatedItem /}
 				{param extraClass:$extraClass /}
 				{param mobWeb:$mobWeb /}
+        {param moduleData:$moduleData/}
 			{/call}
 		</ul>
 	{/if}
@@ -547,6 +550,7 @@
 				{param item:$replacement /}
 				{param extraClass:$extraClass /}
 				{param mobWeb:$mobWeb /}
+        {param moduleData:$moduleData/}
 			{/call}
 		</ul>
 	{/if}
@@ -595,6 +599,7 @@
  * @param? availabilityMessage
  * @param? productPageUrl
  * @param? cmEventSource optional coremetrics event source
+ * @param? moduleData
  */
 {template .potatoGridItemControls autoescape="false"}
   <div class="portrait-item-controls" data-component="product-controls">
@@ -641,6 +646,7 @@
         {param atcItemId:$atcItemId /}
         {param isAlcoholic:$isAlcoholic /}
         {param productPageUrl:$productPageUrl /}
+        {param moduleData:$moduleData/}
       {/call}
     </div>
   </div>
@@ -670,6 +676,7 @@
  * @param? listId list id
  * @param? freeSamplePromoProduct free sample product
  * @param? mobWeb
+ * @param? moduleData
  */
 {template .potatoTransactionalGridItemControls autoescape="false"}
   <div class="portrait-item-controls" data-component="product-controls">
@@ -722,7 +729,7 @@
               {param customTemplate:'common.subtotalTransactionalInner' /}
               {param soldBySalesUnit:$soldBySalesUnit /}
             {/call}
-            <button type="button" class="addtocart cssbutton cssbutton-flat orange small" {if $hasTerms or ($mobWeb and $soldBySalesUnit) or ($mobWeb and $availabilityMessage)}data-component="customizeButton" data-bypasscustomizepopup="true"{else}data-component="ATCButton"{/if}><span class="message" alt="">Add to Cart</span><ins class="iehelper">Added</ins></button>
+            <button type="button" class="addtocart cssbutton cssbutton-flat orange small" {if $hasTerms or ($mobWeb and $soldBySalesUnit) or ($mobWeb and $availabilityMessage)}data-component="customizeButton" data-bypasscustomizepopup="true"{else}data-component="ATCButton"{/if}><span class="{if $mobWeb}offscreen{else}message{/if}" alt="">Add to Cart</span><ins class="iehelper">Added</ins></button>
           {/if}
         {/if}
       </div>
@@ -736,6 +743,7 @@
         {param atcItemId:$atcItemId /}
         {param isAlcoholic:$isAlcoholic /}
         {param productPageUrl:$productPageUrl /}
+        {param moduleData:$moduleData/}
       {/call}
     </div>
   </div>

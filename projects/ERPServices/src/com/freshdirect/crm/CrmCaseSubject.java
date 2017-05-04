@@ -87,7 +87,12 @@ public class CrmCaseSubject extends EnumModel implements TerminableI {
 	public boolean isObsolete() {
 		return obsolete;
 	}
-
+	// StoreFront2.0 requirement
+	public String getQueueCode() {
+		return this.queueCode;
+	}
+	
+	
 	public CrmCaseQueue getQueue() {
 		return CrmCaseQueue.getEnum(this.queueCode);
 	}

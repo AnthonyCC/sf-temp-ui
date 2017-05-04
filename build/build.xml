@@ -129,8 +129,7 @@
 		<pathelement location="${thirdparty.home}/orika-core-1.5.0.jar"/>
 		<pathelement location="${thirdparty.home}/fdcommerce-data.jar"/>
 		<pathelement location="${thirdparty.home}/fdcommerce-domain.jar"/>
-		<pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
-		<pathelement location="${thirdparty.home}/struts.jar"/>
+        <pathelement location="${thirdparty.home}/sitemapgen4j-1.0.6.jar"/>
 	</path>
 
 	<path id="testing.classpath">
@@ -1309,6 +1308,7 @@
 					<include name="orika-core-1.5.0.jar"/>
 					<include name="fdcommerce-data.jar"/>
 					<include name="opencsv-1.8.jar"/>
+					<include name="sitemapgen4j-1.0.6.jar"/>
 
 					<lib/>
 				</zipfileset>
@@ -1438,6 +1438,7 @@
 					<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
 					<include name="fdcommerce-data.jar"/>
 					<include name="orika-core-1.5.0.jar"/>
+					<include name="sitemapgen4j-1.0.6.jar"/>
 					<lib/>
 				</zipfileset>
 				<extra/>
@@ -2628,12 +2629,12 @@
 			<zipfileset src="${thirdparty.home}/jakarta-oro-2.0.5.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/${log4j.jar}" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/sapjco3.jar" excludes="META-INF/*"/>
-           		<zipfileset src="${thirdparty.home}/givexclient.jar" excludes="META-INF/*"/>
+            <zipfileset src="${thirdparty.home}/givexclient.jar" excludes="META-INF/*"/>
 			<!-- hivemind -->
 			<zipfileset src="${thirdparty.home}/hivemind-1.1.1.jar"/>
 			<zipfileset src="${thirdparty.home}/hivemind-lib-1.1.1.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/javassist-3.4.jar" excludes="META-INF/*"/>
-           		<zipfileset src="${thirdparty.home}/jsonrpc-1.0.jar" excludes="META-INF/*"/>
+            <zipfileset src="${thirdparty.home}/jsonrpc-1.0.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/jawr-core-3.8.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/soy-latest.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/ehcache-2.10.0.jar" excludes="META-INF/*"/>
@@ -2646,7 +2647,8 @@
 			<zipfileset src="${thirdparty.home}/jackson-core-2.2.0.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/jackson-databind-2.2.0.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/jackson-annotations-2.2.0.jar" excludes="META-INF/*"/>
-			<zipfileset src="${thirdparty.home}/commons-codec-1.9.jar"  excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/commons-codec-1.9.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/sitemapgen4j-1.0.6.jar" excludes="META-INF/*"/>
 
 			<!-- FD classes -->
 			<zipfileset src="${work.dir}/Framework.jar"/>

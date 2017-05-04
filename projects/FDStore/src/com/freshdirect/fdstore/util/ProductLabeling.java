@@ -105,7 +105,9 @@ public class ProductLabeling {
      */
     private void setCustomer(FDUserI customer) {
         this.customer = customer;
-        this.pricingZone = customer != null ? customer.getUserContext().getPricingContext().getZoneInfo() : ZonePriceListing.DEFAULT_ZONE_INFO; 
+        this.pricingZone = customer != null && customer.getUserContext()!= null && 
+        				   customer.getUserContext().getPricingContext()!=null && 
+        				   customer.getUserContext().getPricingContext().getZoneInfo()!=null ? customer.getUserContext().getPricingContext().getZoneInfo() : ZonePriceListing.DEFAULT_ZONE_INFO; 
     }
 	
 	

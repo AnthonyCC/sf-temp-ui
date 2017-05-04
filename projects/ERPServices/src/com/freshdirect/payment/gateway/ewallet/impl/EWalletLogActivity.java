@@ -10,11 +10,14 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.ewallet.ejb.EwalletActivityLogHome;
 import com.freshdirect.payment.ewallet.ejb.EwalletActivityLogSB;
 import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
+import com.freshdirect.payment.service.FDECommerceService;
+import com.freshdirect.payment.service.IECommerceService;
 
 /**
  * @author Aniwesh Vatsal
@@ -39,8 +42,13 @@ private static Category LOGGER = LoggerFactory.getInstance(EWalletLogActivity.cl
 	
 	public static void logActivity(EwalletActivityLogModel eWalletLogModel) {
 		try {
-			EwalletActivityLogSB logSB = getActivityLogHome().create();
-			logSB.logActivity(eWalletLogModel);
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				IECommerceService commerceService =   FDECommerceService.getInstance();
+				commerceService.logActivity(eWalletLogModel);
+			}else{
+				EwalletActivityLogSB logSB = getActivityLogHome().create();
+				logSB.logActivity(eWalletLogModel);
+			}
 		} catch (RemoteException e) {
 			throw new EJBException(e);
 		} catch (CreateException e) {

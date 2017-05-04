@@ -23,7 +23,6 @@ public class FreshDirectSitemapProperties {
     private static final String DEPARTMENT_CONTEXT_PATH_TEMPLATE = "sitemap.department.context.path";
     private static final String BASE_PATH = "sitemap.base.path";
     private static final String BASE_PATH_POSTFIX = "sitemap.base.path.postfix";
-    private static final String CONTEXT_PATH = "sitemap.context.path";
     private static final String DIRECTORY_PATH = "sitemap.directory.path";
 
     private static final FreshDirectSitemapProperties INSTANCE = new FreshDirectSitemapProperties();
@@ -33,7 +32,7 @@ public class FreshDirectSitemapProperties {
 
     static {
         DEFAULTS.put(MAIN_CONTEXT_PATHS,
-                "/,/index.jsp,/index.jsp?serviceType=HOME,/index.jsp?serviceType=CORPORATE,/srch.jsp?pageType=ecoupon,/srch.jsp?pageType=newproducts,/gift_card/purchase/landing.jsp,/gift_card/purchase/add_giftcard.jsp,/gift_card/purchase/tac.jsp,/about/index.jsp,"
+                "/,/index.jsp,/cos.jsp,/srch.jsp?pageType=ecoupon,/srch.jsp?pageType=newproducts,/gift_card/purchase/landing.jsp,/gift_card/purchase/add_giftcard.jsp,/gift_card/purchase/tac.jsp,/about/index.jsp,"
                         + "/help/index.jsp,/help/privacy_policy.jsp,/help/terms_of_service.jsp,/help/platform_agreement.jsp,/help/delivery_info.jsp,/help/delivery_info_check_slots.jsp,/help/delivery_zones.jsp,"
                         + "/help/faq_home.jsp?page=faqHome,/help/faq_home.jsp?page=accessibility,/help/faq_home.jsp?page=acct_info,/help/faq_home.jsp?page=cos,/faq_home.jsp?page=chef_table,/faq_home.jsp?page=delivery_feedback,"
                         + "/help/faq_home.jsp?page=delivery_pass,/help/faq_home.jsp?page=cpns,/help/faq_home.jsp?page=gen_feedback,/help/faq_home.jsp?page=home_delivery,/help/faq_home.jsp?page=inside,/help/faq_home.jsp?page=order_change,"
@@ -45,7 +44,6 @@ public class FreshDirectSitemapProperties {
         DEFAULTS.put(DEPARTMENT_CONTEXT_PATH_TEMPLATE, "/browse.jsp?id={0}");
         DEFAULTS.put(BASE_PATH, "https://www.freshdirect.com");
         DEFAULTS.put(BASE_PATH_POSTFIX, "");
-        DEFAULTS.put(CONTEXT_PATH, "/sitemap");
         DEFAULTS.put(DIRECTORY_PATH, "/var/tmp/sitemap");
     }
 
@@ -96,10 +94,6 @@ public class FreshDirectSitemapProperties {
 
     public String getBasePathPostfix() {
         return get(BASE_PATH_POSTFIX);
-    }
-
-    public String getContextPath() {
-        return get(CONTEXT_PATH);
     }
 
     public String getDirectoryPath() {

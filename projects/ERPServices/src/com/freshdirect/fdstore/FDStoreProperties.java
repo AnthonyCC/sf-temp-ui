@@ -930,6 +930,8 @@ public class FDStoreProperties {
     
     private final static String PROP_QS_TOP_ITEMS_PERF_OPT_ENABLED = "fdstore.quickshop.topitems.perf.optimize.enabled";
     private final static String PROP_ZIP_CHECK_OVER_LAY_ENABLED = "fdstore.zipcheck.overlay.enabled";
+    /* APPDEV-5781 */
+    private final static String PROP_OBSOLETE_MERGECARTPAGE_ENABLED = "fdstore.obsolete.mergecartpage.enabled";
 
     static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1545,7 +1547,8 @@ public class FDStoreProperties {
 
         defaults.put("feature.rollout.standingorder3_0", "GLOBAL:ENABLED,false;");
         defaults.put("feature.rollout.browseaggregatedcategories1_0", "GLOBAL:ENABLED,false;");
-        defaults.put("feature.rollout.unbxdintegrationblackhole2016", "GLOBAL:ENABLED,false;");
+        defaults.put("feature.rollout.unbxdintegrationblackhole2016", "GLOBAL:ENABLED,true;");
+        defaults.put("feature.rollout.unbxdanalytics2016", "GLOBAL:ENABLED,true;");
 
         defaults.put(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE, "true");
         defaults.put(PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING, "ISO-8859-1");
@@ -1765,6 +1768,9 @@ public class FDStoreProperties {
         
         defaults.put(PROP_QS_TOP_ITEMS_PERF_OPT_ENABLED, "true");
         defaults.put(PROP_ZIP_CHECK_OVER_LAY_ENABLED, "true");
+        
+        /* APPDEV-5781 */
+        defaults.put(PROP_OBSOLETE_MERGECARTPAGE_ENABLED, "true");
 
         refresh();
     }
@@ -4537,4 +4543,8 @@ public class FDStoreProperties {
     public static boolean isZipCheckOverLayEnabled(){
     	return (Boolean.valueOf(get(PROP_ZIP_CHECK_OVER_LAY_ENABLED))).booleanValue();
     }
+
+	public static boolean isObsoleteMergeCartPageEnabled() {
+    	return (Boolean.valueOf(get(PROP_OBSOLETE_MERGECARTPAGE_ENABLED))).booleanValue();
+	}
 }

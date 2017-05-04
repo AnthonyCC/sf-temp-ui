@@ -955,6 +955,8 @@ public class Product {
             }
         } catch (FDResourceException e) {
             throw new ModelException("Unable to get CutOffTime", e);
+        } catch (Exception e) {
+            LOG.error("FDPlatterException : Exception while trying to get platter cutoff. no need to throw exception. log and go forward." , e);
         }
         return result;
     }

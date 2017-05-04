@@ -60,12 +60,7 @@ public class PopulatorUtil {
 	 * @throws FDResourceException 
 	 */
 	public static final boolean isProductIncomplete(ProductModel prd) throws FDResourceException, FDSkuNotFoundException {
-		if (!FDStoreProperties.getPreviewMode()) {
-			// usual business
-			return false;
-		}
-		
-		if (null == prd.getSkus() || prd.getSkus().isEmpty()) {
+	    if (null == prd.getSkus() || prd.getSkus().isEmpty()) {
 			// No SKUs found. This is really bad.
 			// Let the execution go and break somewhere else
 			throw new FDSkuNotFoundException("Product " + prd.getContentName() + " contains NO SKUs!");
@@ -111,5 +106,9 @@ public class PopulatorUtil {
             }
         }
 		return matchFound;
+	}
+	
+	public static boolean isProductNotArchived(final ProductModel product){
+	    return product != null && !product.isOrphan() && !"Archive".equalsIgnoreCase(product.getDepartment().getContentName());
 	}
 }

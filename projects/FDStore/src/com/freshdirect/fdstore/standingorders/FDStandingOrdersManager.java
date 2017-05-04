@@ -1002,4 +1002,20 @@ public class FDStandingOrdersManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		} 
 	}
+	
+	public void turnOffReminderOverLayNewSo(String soId) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();
+			 sb.turnOffReminderOverLayNewSo(soId);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		} 
+	}
+	
+	
 }

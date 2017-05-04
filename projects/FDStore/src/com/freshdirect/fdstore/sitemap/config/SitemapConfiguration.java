@@ -10,7 +10,6 @@ public class SitemapConfiguration {
     private String namePrefix;
     private String basePath;
     private String basePathPostfix;
-    private String contextPath;
     private boolean gzip;
     private boolean indexEnable;
     private List<SitemapUrlConfiguration> sitemapUrlConfigs;
@@ -36,22 +35,13 @@ public class SitemapConfiguration {
         this.basePath = basePath;
         return this;
     }
-
+    
     public String getBasePathPostfix() {
         return basePathPostfix;
     }
 
     public SitemapConfiguration setBasePathPostfix(String basePathPostfix) {
         this.basePathPostfix = basePathPostfix;
-        return this;
-    }
-
-    public String getContextPath() {
-        return contextPath;
-    }
-
-    public SitemapConfiguration setContextPath(String contextPath) {
-        this.contextPath = contextPath;
         return this;
     }
 

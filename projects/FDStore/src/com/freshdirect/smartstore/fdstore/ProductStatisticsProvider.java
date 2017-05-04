@@ -88,7 +88,7 @@ public class ProductStatisticsProvider {
 			service = LogisticsServiceLocator.getInstance().getCommerceService();
 			try {
 				Map<String,Float> intermediaryMap=service.getDYFModelGlobalProductscores();
-				globalProductScores =  convertSimpleMapToConentKeyMap (intermediaryMap);//(service.getDYFModelGlobalProductscores();
+				globalProductScores =  convertSimpleMapToContentKeyMap (intermediaryMap);//(service.getDYFModelGlobalProductscores();
 			} catch (FDResourceException e) {
 				throw new FDRuntimeException(e);
 
@@ -163,7 +163,7 @@ public class ProductStatisticsProvider {
 	}
 	
 	
-	 static Map<ContentKey, Float> convertSimpleMapToConentKeyMap(Map<String, Float> intermediarymap) {
+	 static Map<ContentKey, Float> convertSimpleMapToContentKeyMap(Map<String, Float> intermediarymap) {
 		Map<ContentKey, Float> mapToReturn = new HashMap<ContentKey, Float>();
 
 		Set<String> keys = intermediarymap.keySet();

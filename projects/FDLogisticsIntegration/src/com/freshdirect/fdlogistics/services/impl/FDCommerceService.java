@@ -95,7 +95,7 @@ public class FDCommerceService extends AbstractLogisticsService implements IComm
 		
 	}
 	
-	public void getCountryOfOriginData() throws RemoteException, LoaderException{
+/*	public void getCountryOfOriginData() throws RemoteException, LoaderException{
 		try {
 			httpGetData(getFdCommerceEndPoint(COO_API), Response.class);
 		} catch (FDLogisticsServiceException e) {
@@ -106,7 +106,7 @@ public class FDCommerceService extends AbstractLogisticsService implements IComm
 		}
 		
 		
-	}
+	}*/
 	
 	public void healthCheck() throws RemoteException{
 		try {

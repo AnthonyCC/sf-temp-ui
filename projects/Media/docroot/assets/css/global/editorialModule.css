@@ -99,7 +99,7 @@
 }
 
 .content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header {
-  display: flex;
+  margin-bottom: 17px;
   max-width: 100%;
 }
 
@@ -111,18 +111,8 @@
   overflow-y: hidden;
 }
 
-.content-module.editorial-module.product-carousel .editorial-content .right-side,
-.content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header .header-title {
-  display: flex;
-  flex-direction: column;
-}
-
-.content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header {
-  min-height: 82px;
-}
-
-.content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header .header-title {
-  justify-content: flex-start;
+.content-module.editorial-module.product-carousel .editorial-content .right-side {
+  overflow: hidden;
 }
 
 .content-module.editorial-module.product-carousel .editorial-content .left-side,
@@ -138,8 +128,6 @@
 }
 
 .content-module.editorial-module.product-carousel .editorial-content .right-side .header-graphic {
-  align-items: flex-start;
-  display: flex;
   float: left;
   height: 82px;
   width: 82px;
@@ -188,10 +176,6 @@
   font-family: 'Brandon Text';
   font-weight: 500;
   margin: 0;
-}
-
-.content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header {
-  margin-bottom: 17px;
 }
 
 .content-module.editorial-module.product-carousel .editorial-content .right-side .editorial-header .header-title h1 {

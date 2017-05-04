@@ -1,12 +1,10 @@
 package com.freshdirect.webapp.taglib.coremetrics;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.util.QueryParameterCollection;
+import com.freshdirect.fdstore.coremetrics.CmContext;
 import com.freshdirect.fdstore.coremetrics.builder.ProductViewTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
 import com.freshdirect.fdstore.coremetrics.tagmodel.AbstractTagModel;
@@ -32,6 +30,11 @@ public class CmProductViewTag extends AbstractCmTag {
         if (CM_VC == null || "".equals(CM_VC)) {
             CM_VC = model.getVirtualCategoryId();
         }
+
+        if (CM_VC != null || !"".equals(CM_VC)) {
+            CM_VC = CmContext.getContext().prefixedCategoryId((String) CM_VC);
+        }
+
         String tagJs = getFormattedTag(toJsVar(model.getProductId()), toJsVar(model.getProductName()), toJsVar(CM_VC == null ? model.getCategoryId() : CM_VC),
                 toJsVar(mapToAttrString(model.getAttributesMaps())) + decorateFromCoremetricsTrackingObject(), toJsVar(model.getVirtualCategoryId()));
 
@@ -51,28 +54,8 @@ public class CmProductViewTag extends AbstractCmTag {
     }
 
     private String extractVirtualCategoryId() {
-        String virtualCategoryId = null;
-
-        HttpServletRequest request = getRequest();
-
-        String referer = request.getHeader("referer");
-        int refererUriSeparatorLocation = StringUtils.ordinalIndexOf(referer, "/", 3);
-
-        try {
-            String refererURI = referer.substring(refererUriSeparatorLocation);
-
-            QueryParameterCollection qv = QueryParameterCollection.decode(getRequest().getHeader("referer"));
-
-            if (refererURI.equals("/index.jsp") || refererURI.equals("/")) {
-                virtualCategoryId = "HOME_PAGE_CAROUSEL";
-            } else {
-                virtualCategoryId = qv.getParameterValue("cm_vc");
-            }
-        } catch (NullPointerException e) {
-            LOGGER.debug("Referrer was empty, product page opened directly.", e);
-        }
-
-        return virtualCategoryId;
+        QueryParameterCollection qv = QueryParameterCollection.decode(getRequest().getHeader("referer"));
+        return qv.getParameterValue("cm_vc");
     }
 
     public void setProductModel(ProductModel productModel) {

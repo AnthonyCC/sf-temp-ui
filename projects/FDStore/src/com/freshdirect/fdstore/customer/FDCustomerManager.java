@@ -71,7 +71,6 @@ import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
-import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ErpWebOrderHistory;
 import com.freshdirect.customer.OrderHistoryI;
@@ -87,6 +86,9 @@ import com.freshdirect.deliverypass.DlvPassUsageInfo;
 import com.freshdirect.deliverypass.DlvPassUsageLine;
 import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.ecommerce.data.survey.FDIdentityData;
+import com.freshdirect.ecommerce.data.survey.FDSurveyResponseData;
+import com.freshdirect.ecommerce.data.survey.SurveyKeyData;
 import com.freshdirect.erp.ejb.ErpEWalletHome;
 import com.freshdirect.erp.ejb.ErpEWalletSB;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
@@ -130,6 +132,7 @@ import com.freshdirect.framework.mail.FTLEmailI;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.xml.XSLTransformer;
 import com.freshdirect.giftcard.CardInUseException;
@@ -143,10 +146,11 @@ import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
-import com.freshdirect.logistics.delivery.model.ShippingDetail;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
 import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.payment.service.FDECommerceService;
+import com.freshdirect.payment.service.IECommerceService;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
 import com.freshdirect.sms.EnumSMSAlertStatus;
@@ -683,9 +687,13 @@ public class FDCustomerManager {
 	public static int insertLongAccessToken(ErpCustEWalletModel custEWallet){
 		lookupeWalletHome();
 		int rows=0;
-		 try {
-			 ErpEWalletSB erpEWalletSB =  eWalletHome.create();
-			 rows= erpEWalletSB.insertCustomerLongAccessToken(custEWallet);
+		try {
+			ErpEWalletSB erpEWalletSB = eWalletHome.create();
+			if (FDStoreProperties.isStorefront2_0Enabled()) {
+				rows = FDECommerceService.getInstance().insertCustomerLongAccessToken(custEWallet);
+			} else {
+				rows = erpEWalletSB.insertCustomerLongAccessToken(custEWallet);
+			}
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		} catch (CreateException e) {
@@ -717,7 +725,12 @@ public class FDCustomerManager {
 		lookupeWalletHome();
 		 try {
 			 ErpEWalletSB erpEWalletSB =  eWalletHome.create();
-			 ErpEWalletModel erpEWalletModel= erpEWalletSB.findEWalletByType(eWalletType);
+			ErpEWalletModel erpEWalletModel = null;
+			if (FDStoreProperties.isStorefront2_0Enabled()) {
+				erpEWalletModel = FDECommerceService.getInstance().findEWalletByType(eWalletType);
+			} else {
+				erpEWalletModel = erpEWalletSB.findEWalletByType(eWalletType);
+			}
 			 if(erpEWalletModel!=null && erpEWalletModel.geteWalletStatus()!=null){
 				 if(erpEWalletModel.getEwalletmStatus().equalsIgnoreCase("Y"))
 				 	return true;
@@ -740,9 +753,13 @@ public class FDCustomerManager {
 	public static int updateLongAccessToken(String custId, String longAccessToken, String eWalletType){
 		lookupeWalletHome();
 		int rows=0;
-		 try {
-			 ErpEWalletSB erpEWalletSB =  eWalletHome.create();
-			 rows= erpEWalletSB.updateLongAccessToken(custId, longAccessToken, eWalletType);
+		try {
+			ErpEWalletSB erpEWalletSB = eWalletHome.create();
+			if (FDStoreProperties.isStorefront2_0Enabled()) {
+				rows = FDECommerceService.getInstance().updateLongAccessToken(custId, longAccessToken, eWalletType);
+			} else {
+				rows = erpEWalletSB.updateLongAccessToken(custId, longAccessToken, eWalletType);
+			}
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -763,9 +780,13 @@ public class FDCustomerManager {
 	public static int deleteLongAccessToken(String custId, String eWalletID){
 		lookupeWalletHome();
 		int rows=0;
-		 try {
-			 ErpEWalletSB erpEWalletSB =  eWalletHome.create();
-			 rows= erpEWalletSB.deleteLongAccessToken(custId, eWalletID);
+		try {
+			ErpEWalletSB erpEWalletSB = eWalletHome.create();
+			if (FDStoreProperties.isStorefront2_0Enabled()) {
+				rows = FDECommerceService.getInstance().deleteLongAccessToken(custId, eWalletID);
+			} else {
+				rows = erpEWalletSB.deleteLongAccessToken(custId, eWalletID);
+			}
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -779,9 +800,13 @@ public class FDCustomerManager {
 	public static ErpCustEWalletModel findLongAccessTokenByCustID(String customerId, String eWalletType){
 		lookupeWalletHome();
 		ErpCustEWalletModel custEWalletModel = null;
-		 try {
-			 ErpEWalletSB erpEWalletSB =  eWalletHome.create();
-			 custEWalletModel = erpEWalletSB.getLongAccessTokenByCustID(customerId, eWalletType);
+		try {
+			ErpEWalletSB erpEWalletSB = eWalletHome.create();
+			if (FDStoreProperties.isStorefront2_0Enabled()) {
+				custEWalletModel = FDECommerceService.getInstance().getLongAccessTokenByCustID(customerId, eWalletType);
+			} else {
+				custEWalletModel = erpEWalletSB.getLongAccessTokenByCustID(customerId, eWalletType);
+			}
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		} catch (CreateException e) {
@@ -2213,10 +2238,36 @@ public class FDCustomerManager {
 
 	public static void storeSurvey(FDSurveyResponse survey) throws FDResourceException {
 	    try {
+	    	if(FDStoreProperties.isStorefront2_0Enabled()){
+        		IECommerceService service = FDECommerceService.getInstance();
+        		FDSurveyResponseData surveyDataRequest = buildStoreSurveyRequest(survey);
+        		 service.storeSurvey(surveyDataRequest);
+        	}
+			else{
                 LOCATOR.getSurveySessionBean().storeSurvey(survey);
+			}
             } catch (RemoteException re) {
                 throw new FDResourceException(re, "Error talking to session bean");
             }
+	}
+	
+	private static FDSurveyResponseData buildStoreSurveyRequest(
+			FDSurveyResponse survey) {
+		FDSurveyResponseData surveyRequest = new FDSurveyResponseData();
+		FDIdentityData fdIdentity = new FDIdentityData();
+		fdIdentity.setErpCustomerPK(survey.getIdentity().getErpCustomerPK());
+		fdIdentity.setFdCustomerPK(survey.getIdentity().getFDCustomerPK());
+		SurveyKeyData key = new SurveyKeyData();
+		key.setSurveyType(survey.getKey().getSurveyType().getLabel());
+		key.setUserType(survey.getKey().getUserType().toString());
+		FDSurveyResponseData fdSurveyResponse = new FDSurveyResponseData();
+		fdSurveyResponse.setAnswers(survey.getAnswers());
+		fdSurveyResponse.setIdentity(fdIdentity);
+		fdSurveyResponse.setKey(key);
+		if(survey.getSalePk()  != null && StringUtil.isEmpty(survey.getSalePk().getId())){
+			fdSurveyResponse.setSalePk(survey.getSalePk().getId());
+		}
+		return surveyRequest;
 	}
 
 	public static void setProfileAttribute(FDIdentity identity, String key, String value) throws FDResourceException {

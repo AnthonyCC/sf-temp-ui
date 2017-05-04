@@ -132,8 +132,19 @@ if (mobWeb) {
 				<div id="cartCarousels">
 					<potato:viewCart />
 					<soy:render template="expressco.checkoutTabbedCarousel" data="${viewCartPotato}" />
+					
 					<script>
-						var $curSelectedTab = $jq('.tabbed-carousel [data-component="tabitem"].selected');
+						/* make sure some tab has been loaded */
+						$jq('#cartCarousels').ready(function() {
+							if ($jq('.tabbed-carousel [data-component="tabitem"].selected').closest('.tabbed-carousel').find('[data-component="tabpanel"]').children().length === 0) {
+								$jq('.tabbed-carousel [data-component="tabitem"].selected').trigger('click');
+							}
+							/* flip to other tab in checkout */
+							var $tabs = $jq('.tabbed-carousel [data-component="tabitem"]').not('[data-sitefeature="PRODUCT_DONATIONS"]').not('[data-sitefeature="PRODUCT_SAMPLES"]');
+							if ($tabs.length) {
+								$tabs.first().trigger('click');
+							}
+						});
 					</script>
 				</div>
 			<% } %>

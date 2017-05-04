@@ -570,7 +570,7 @@ public class CartDataService {
             cartData.setModifyCartData(isModifyOrderMode(session));
             cartData.setModifyOrder(cartData.getModifyCartData().isModifyOrderEnabled());
             cartData.setErrorMessage(null);
-            if(user.getCurrentStandingOrder()!=null)
+            //if(user.getCurrentStandingOrder()!=null)
             if (!StandingOrderHelper.isSO3StandingOrder(user)) {
                 cartData.setWarningMessage(AvailabilityService.defaultService().translateWarningMessage(request.getParameter("warning_message"), user));
             }

@@ -118,7 +118,7 @@ if(user != null) {
 							<%
 							}
 						%>
-						<button id="topInputFindButton_fdx" class="locabar-search cssbutton fdxgreen cssbutton-flat"></button>
+						<button id="topInputFindButton_fdx" class="locabar-search cssbutton fdxgreen cssbutton-flat"><span class="offscreen">search</span></button>
 					</form>
 				</div>
 				

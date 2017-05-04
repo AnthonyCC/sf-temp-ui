@@ -6,10 +6,13 @@
 #viewallPopup.fixedpopup .fixedPopupContent {
   min-height: 300px;
   min-width: 300px;
+  max-height: 80%;
+  margin-bottom: 50px;
 }
 
 #viewallPopup .fixedPopupContent .qs-popup-content {
   min-height: 250px;
+  flex: 1;
 }
 
 #viewallPopup .spinner {

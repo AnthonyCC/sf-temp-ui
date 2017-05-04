@@ -38,6 +38,7 @@ public class ModuleHandlingServlet extends BaseJsonServlet {
             String moduleContentKey = null;
             String moduleId = request.getParameter("moduleId");
             boolean viewAll = Boolean.parseBoolean(request.getParameter("viewAll"));
+            String moduleVirtualCategory = request.getParameter("moduleVirtualCategory");
 
             if (moduleId != null) {
                 moduleContentKey = "Module:" + moduleId;
@@ -50,6 +51,8 @@ public class ModuleHandlingServlet extends BaseJsonServlet {
             if (viewAll) {
                 result.getConfig().get(0).setSourceType(ModuleSourceType.PRODUCT_LIST_MODULE.toString());
             }
+
+            result.getConfig().get(0).setModuleVirtualCategory(moduleVirtualCategory);
 
             Map<String, ModuleContainerData> moduleContent = new HashMap<String, ModuleContainerData>();
 

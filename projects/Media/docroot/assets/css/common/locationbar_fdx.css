@@ -1779,16 +1779,16 @@ option.address-icon {
 	font-weight: bold;
 }
 
-.text13 div:nth-child(1),.section-warning div{
-	font-weight: normal;
+.section-warning .text13 div:nth-child(1),.section-warning div{
+    font-weight: normal;
     font-size: 14px;
     line-height: normal;
     float:left;
     display:inline-block;
 }
 
-.text13 div:nth-child(2),.text13.bold{
-	font-weight: bold;
+.section-warning .text13 div:nth-child(2), .section-warning .text13.bold{
+    font-weight: bold;
     font-size: 14px;
     color: #333;
     position: relative;

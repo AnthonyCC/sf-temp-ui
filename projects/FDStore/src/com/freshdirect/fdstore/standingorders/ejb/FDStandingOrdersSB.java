@@ -74,4 +74,6 @@ public interface FDStandingOrdersSB extends EJBObject {
 	
 	public FDStandingOrder loadSOCron(PrimaryKey pk) throws FDResourceException,RemoteException;
 	
+	public void turnOffReminderOverLayNewSo(String standingOrderId)throws FDResourceException,RemoteException;
+	
 }

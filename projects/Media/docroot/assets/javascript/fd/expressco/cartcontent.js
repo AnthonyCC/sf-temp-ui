@@ -595,7 +595,7 @@ etids.div_tooltipPopup = "#tooltipPopup";
 						} catch (e) {
 						}
 					} else {
-						$jq('.tabbed-carousel [data-component="tabitem"].selected').trigger('click');
+						//$jq('.tabbed-carousel [data-component="tabitem"].selected').trigger('click');
 					}
 					
 					if(focusedElementId) {

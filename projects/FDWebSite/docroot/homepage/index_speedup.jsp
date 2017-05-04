@@ -1,23 +1,24 @@
+<%@page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import="com.freshdirect.customer.EnumSaleStatus" %>
 <%@ page import='com.freshdirect.*'%>
 <%@ page import='com.freshdirect.fdlogistics.model.FDReservation'%>
 <%@ page import='com.freshdirect.fdlogistics.model.FDTimeslot'%>
-<%@ page import='com.freshdirect.storeapi.content.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import="com.freshdirect.webapp.util.prodconf.DefaultProductConfigurationStrategy"%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
-<%@ page import='com.freshdirect.storeapi.fdstore.FDContentTypes' %>
-<%@ page import="com.freshdirect.cms.core.domain.ContentKey"%>
-<%@ page import="com.freshdirect.storeapi.content.StoreModel"%>
+<%@ page import='com.freshdirect.cms.fdstore.FDContentTypes' %>
+<%@ page import="com.freshdirect.cms.ContentKey"%>
+<%@ page import="com.freshdirect.fdstore.content.StoreModel"%>
 <%@ page import="org.apache.commons.lang.StringUtils"%>
-<%@ page import="com.freshdirect.storeapi.application.CmsManager"%>
-<%@ page import="com.freshdirect.cms.core.domain.ContentType"%>
+<%@ page import="com.freshdirect.cms.application.CmsManager"%>
+<%@ page import="com.freshdirect.cms.ContentType"%>
 <%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
 <%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
 <%@ page import='java.text.*' %>
@@ -59,7 +60,7 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <fd:SEOMetaTag pageId="index" includeSiteSearchLink="true" title="Welcome to FreshDirect"></fd:SEOMetaTag>
     <fd:IncludeMedia name="/media/editorial/site_pages/javascript.html" />
@@ -88,13 +89,14 @@
   	</script>
 
     <jwr:style src="/newhomepage.css" media="all" />
-    
-    <jwr:style src="/homepage.css" media="all" />
 
     <%-- Keep the media include last, so it can always override any css auto-loaded --%>
     <fd:IncludeMedia name="/media/editorial/site_pages/stylesheet.html" />
+
+  <fd:css href="/assets/css/homepage/homepage.css" media="all" />
 </head>
   <body>
+    <%@ include file="/shared/template/includes/i_body_start.jspf" %>
     <%@ include file="/common/template/includes/globalnav_optimized.jspf" %>
     <div id="content">
       <center class="text10">
@@ -143,10 +145,10 @@
             /* these use OAS pages like www.freshdirect.com/mobileweb/[PAGENAME] */
 
                if (FDStoreProperties.isAdServerEnabled()) {
-              %><div id="oas_HPMob01" class="home-page-banner">
+              %><div id="OAS_HPMob01" class="home-page-banner">
                   <script type="text/javascript">OAS_AD('HPMob01');</script>
                 </div><%
-              %><div id="oas_HPMob02" class="home-page-banner">
+              %><div id="OAS_HPMob02" class="home-page-banner">
                   <script type="text/javascript">OAS_AD('HPMob02');</script>
                 </div><%
               }
@@ -278,7 +280,6 @@
 
       fd.gtm = fd.gtm || {};
       fd.gtm.key = '<%= FDStoreProperties.getGoogleTagManagerKey() %>';
-      fd.properties.isDFPEnabled = <%= FDStoreProperties.isDfpEnabled() ? true : false %>;
     </script>
 
     <%-- Google Tag Manager login/signup events --%>
@@ -319,6 +320,16 @@
       %>
 
       dataLayer.push(gtm_userdata);
+
+      <% if (gtm_user.hasJustLoggedIn()) { %>
+      // user logged in
+      document.cookie = "hasJustLoggedIn=true;path=/";
+      <% } %>
+
+      <% if (gtm_user.hasJustSignedUp()) { %>
+      // user signed up
+      document.cookie = "hasJustSignedUp=true;path=/";
+      <% } %>
     </script>
     <% } %>
 
@@ -328,6 +339,8 @@
     <features:potato />
     <%-- TODO !!! --%>
     <script type="text/javascript">
+    	//test
+  	//function setAndAppendExtoleObject() {}
     (function () {
       window.FreshDirect = window.FreshDirect || {};
       var fd = window.FreshDirect;
@@ -361,7 +374,6 @@
       fd.user.isZipPopupUsed = <%= hideZipCheckPopup %>;
       fd.user.zipCode = '<%= zipCode %>';
       fd.user.cohortName = '<%= cohortName %>';
-      fd.user.isCorporateUser = <%= sessionUser.isCorporateUser() %>;
         <% if (jsMasqueradeContext != null) {%>
           fd.user.masquerade = true;
         <% } %>
@@ -390,6 +402,24 @@
   	<jwr:script src="/fdmisc.js" useRandomParam="false" />
   	<jwr:script src="/commonjavascript.js" useRandomParam="false" />
 
+  	<%
+  		FDUserI dpTcCheckUser = (FDUserI)session.getAttribute(SessionName.USER);
+  		FDSessionUser dpTcCheckSessionUser = (FDSessionUser)session.getAttribute(SessionName.USER);
+
+  		if (dpTcCheckUser != null && request.getRequestURI().indexOf("brownie_points.jsp") == -1 &&
+  				(dpTcCheckUser.getLevel() == FDSessionUser.SIGNED_IN && Boolean.FALSE.equals(dpTcCheckSessionUser.hasSeenDpNewTc()) && dpTcCheckUser.isDpNewTcBlocking())
+  			) {
+  			%>
+  				<script type="text/javascript">
+  		    		$jq(document).ready(function() {
+  			    		doOverlayWindow('/overlays/delivery_pass_tc.jsp?showButtons=true&count=true');
+  		    		});
+  		    	</script>
+  	    	<%
+  		}
+  	%>
+
+  <script src="/assets/javascript/jquery/jquery_validate/jquery.validate.js"></script>
 <!-- i_javascript_opt end-->
 
     <%@ include file="/common/template/includes/footer.jspf" %>

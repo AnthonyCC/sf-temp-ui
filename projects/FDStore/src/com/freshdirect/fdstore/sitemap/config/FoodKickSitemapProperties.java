@@ -23,7 +23,6 @@ public class FoodKickSitemapProperties {
     private static final String DEPARTMENT_CONTEXT_PATH_TEMPLATE = "sitemap.department.context.path";
     private static final String BASE_PATH = "sitemap.base.path";
     private static final String BASE_PATH_POSTFIX = "sitemap.base.path.postfix";
-    private static final String CONTEXT_PATH = "sitemap.context.path";
     private static final String DIRECTORY_PATH = "sitemap.directory.path";
 
     private static final FoodKickSitemapProperties INSTANCE = new FoodKickSitemapProperties();
@@ -38,8 +37,7 @@ public class FoodKickSitemapProperties {
         DEFAULTS.put(BROWSE_CONTEXT_PATH_TEMPLATE, "/browse/{0}");
         DEFAULTS.put(DEPARTMENT_CONTEXT_PATH_TEMPLATE, "/department/{0}");
         DEFAULTS.put(BASE_PATH, "https://www.foodkick.com");
-        DEFAULTS.put(BASE_PATH_POSTFIX, "");
-        DEFAULTS.put(CONTEXT_PATH, "/sitemap");
+        DEFAULTS.put(BASE_PATH_POSTFIX, "/#!");
         DEFAULTS.put(DIRECTORY_PATH, "/var/tmp/sitemap");
     }
 
@@ -90,10 +88,6 @@ public class FoodKickSitemapProperties {
 
     public String getBasePathPostfix() {
         return get(BASE_PATH_POSTFIX);
-    }
-
-    public String getContextPath() {
-        return get(CONTEXT_PATH);
     }
 
     public String getDirectoryPath() {

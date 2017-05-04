@@ -244,7 +244,13 @@
 							<CmsField><attribute>PAGE_TITLE_FDX</attribute></CmsField>
 							<CmsField><attribute>SEO_META_DESC_FDX</attribute></CmsField>
 						</fields>
-					</CmsSection>				    
+					</CmsSection>
+                    <CmsSection>
+                        <title>Sitemap</title>
+                        <fields>
+                            <CmsField><attribute>SKIP_SITEMAP</attribute></CmsField>
+                        </fields>
+                    </CmsSection>
 				</sections>
 			</CmsPage>
 		</pages>
@@ -594,7 +600,13 @@
 							<CmsField><attribute>PAGE_TITLE_FDX</attribute></CmsField>
 							<CmsField><attribute>SEO_META_DESC_FDX</attribute></CmsField>
 						</fields>
-					</CmsSection>				    
+					</CmsSection>
+                    <CmsSection>
+                        <title>Sitemap</title>
+                        <fields>
+                            <CmsField><attribute>SKIP_SITEMAP</attribute></CmsField>
+                        </fields>
+                    </CmsSection>
 				</sections>
 			</CmsPage>
 		</pages>
@@ -915,6 +927,12 @@
 							<CmsField><attribute>SEO_META_DESC_FDX</attribute></CmsField>
 						</fields>
 					</CmsSection>
+                    <CmsSection>
+                        <title>Sitemap</title>
+                        <fields>
+                            <CmsField><attribute>SKIP_SITEMAP</attribute></CmsField>
+                        </fields>
+                    </CmsSection>
 				</sections>
 			</CmsPage>
 		</pages>
@@ -2006,6 +2024,12 @@
 							<CmsField><attribute>SEO_META_DESC_FDX</attribute></CmsField>
 						</fields>
 					</CmsSection>
+                    <CmsSection>
+                        <title>Sitemap</title>
+                        <fields>
+                            <CmsField><attribute>SKIP_SITEMAP</attribute></CmsField>
+                        </fields>
+                    </CmsSection>
 				</sections>
 			</CmsPage>
 		</pages>
@@ -2045,6 +2069,12 @@
 							<CmsField><attribute>SEO_META_DESC_FDX</attribute></CmsField>
 						</fields>
 					</CmsSection>
+                    <CmsSection>
+                        <title>Sitemap</title>
+                        <fields>
+                            <CmsField><attribute>SKIP_SITEMAP</attribute></CmsField>
+                        </fields>
+                    </CmsSection>
 					<CmsSection>
 						<title>DARK STORE TARGETING</title>
 						<fields>

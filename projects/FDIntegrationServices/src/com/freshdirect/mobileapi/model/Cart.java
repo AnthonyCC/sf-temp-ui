@@ -792,10 +792,13 @@ public class Cart {
 
                 //Slightly altering condition logic.  do only once and add to cart level later. 
                 if ((platterCutoffTime == null) && productLineItem.hasPlatterRestriction()) {
-                    TimeOfDay platterTime = RestrictionUtil.getPlatterRestrictionStartTime();
-                    if (platterTime != null) {
-                        platterCutoffTime = platterTime.getAsDate();
-
+                	try{
+                		TimeOfDay platterTime = RestrictionUtil.getPlatterRestrictionStartTime();
+                		if (platterTime != null) {
+                			platterCutoffTime = platterTime.getAsDate();
+                		}
+                	}catch (Exception e) {
+                        LOG.error("FDPlatterException : Exception while trying to get platter cutoff. no need to throw exception. log and go forward." , e);
                     }
                 }
                 //Add item to bucket

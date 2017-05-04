@@ -15,7 +15,8 @@
  * @param? configuration product configuration
  * @param? isAlcoholic product configuration
  * @param? originalLineId product configuration
- * 
+ * @param? moduleData
+ *
  */
 {template .productData autoescape="false"}
 {call .productDataMin}
@@ -27,6 +28,7 @@
 {param pageType:$pageType /}
 {param skuCode:$skuCode /}
 {param alcoholic:$isAlcoholic /}
+{param moduleData:$moduleData /}
 {/call}
 {if $listId}
 <input type="hidden" data-component="productData" data-productdata-name="listId" name="listId" value="{$listId}">
@@ -58,7 +60,8 @@
  * @param? skuCode skuId
  * @param? alcoholic product configuration
  * @param? productPageUrl productPageUrl
- * 
+ * @param? moduleData
+ *
  */
 {template .productDataMin autoescape="false"}
 {if isNonnull($atcItemId)}
@@ -86,5 +89,8 @@
 {/if}
 {if $pageType}
 <input type="hidden" data-component="productData" data-productdata-name="pageType" name="pageType" value="{$pageType}">
+{/if}
+{if $moduleData and $moduleData.moduleVirtualCategory}
+<input type="hidden" data-component="productData" data-productdata-name="moduleVirtualCategory" name="moduleVirtualCategory" value="{$moduleData.moduleVirtualCategory}">
 {/if}
 {/template}

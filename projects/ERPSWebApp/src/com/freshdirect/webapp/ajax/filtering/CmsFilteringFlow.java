@@ -244,13 +244,15 @@ public class CmsFilteringFlow {
              * Here we are iterating through this sorted section data and adding them to the assort products map based upon the product id
              * Thus the assort product map and section data sorted products are always in sync 
              * */
-            if(!browseDataContext.getSectionContexts().isEmpty()){
+            if(!browseDataContext.getSectionContexts().isEmpty() && null !=browseDataContext.getSectionContexts().get(0).getProductItems()){
             	
             	for(FilteringProductItem filteredProduct: browseDataContext.getSectionContexts().get(0).getProductItems()){
-            		for(ProductData productData:browseDataContext.getAssortProducts().getUnfilteredAssortedProducts()){
-            			if(productData.getProductId().equalsIgnoreCase(filteredProduct.getProductModel().getContentKey().getId())){
-                			browseDataContext.getAssortProducts().addProdDataToCat(productData.getErpCategory(), productData);		
-                		}
+            		if(null !=browseDataContext.getAssortProducts() & null !=browseDataContext.getAssortProducts().getUnfilteredAssortedProducts()){
+	            		for(ProductData productData:browseDataContext.getAssortProducts().getUnfilteredAssortedProducts()){
+	            			if(productData.getProductId().equalsIgnoreCase(filteredProduct.getProductModel().getContentKey().getId())){
+	                			browseDataContext.getAssortProducts().addProdDataToCat(productData.getErpCategory(), productData);		
+	                		}
+	            		}
             		}
             		
             	}
@@ -692,8 +694,9 @@ public class CmsFilteringFlow {
     }
 
     private void relocateBrandFilterBasedOnCmsSetting(BrowseDataContext browseDataContext) {
-        if (EnumBrandFilterLocation.ORIGINAL != browseDataContext.getNavigationModel().getBrandFilterLocation()) {
-            MenuBuilderFactory.getInstance().relocateBrandFilter(browseDataContext.getMenuBoxes().getMenuBoxes(), browseDataContext.getNavigationModel().getBrandFilterLocation());
+        EnumBrandFilterLocation location = browseDataContext.getNavigationModel().getBrandFilterLocation();
+        if (location != null && EnumBrandFilterLocation.ORIGINAL != location) {
+            MenuBuilderFactory.getInstance().relocateBrandFilter(browseDataContext.getMenuBoxes().getMenuBoxes(), location);
         }
     }
 

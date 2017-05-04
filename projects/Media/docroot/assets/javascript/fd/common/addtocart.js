@@ -4,16 +4,16 @@ var FreshDirect = FreshDirect || {};
 
 // module initialization
 (function (fd) {
-	
+
 	var $=fd.libs.$;
 
 	function filterValue(val) {
 		return !val.invalid && val['salesUnit'] && parseFloat(val['quantity'])>0;
 	};
-	
+
 	function atcFilter(items) {
-		var productList; 
-		
+		var productList;
+
 		return items.map(function(item){
 			delete item.DOMElement;
 			delete item.required;
@@ -23,13 +23,13 @@ var FreshDirect = FreshDirect || {};
 	}
 
 	function atcHandler(event){
-		
+
 		var productList = atcFilter(event.atcList),
 			request = { items:productList },
       eventSource = $(document.body).data('cmeventsource');
-		
+
 		$.extend(request,event.ATCMeta,event.cmData);
-    
+
     if (fd.components && fd.components.atcInfo) {
       fd.components.atcInfo.setServerMessage(request.items);
     }
@@ -43,25 +43,25 @@ var FreshDirect = FreshDirect || {};
     }
 
     $(event.target).addClass('ATCinProgress');
-    
+
     //Close the popup after added product to the cart with delay on mobile
     if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
     	setTimeout(function(){
         fd.common.transactionalPopup.popup.hide();
-      }, 1000);    	
+      }, 1000);
     }
-    
-    
+
+
 		fd.common.dispatcher.signal('server',{
 			url:'/api/addtocart',
 			data:{data:JSON.stringify(request)},
-			method:'POST'			
-		});			
+			method:'POST'
+		});
 	}
-	
+
 	function requiredValidator(items){
 		var valid = true;
-		
+
 		items.forEach(function(item){
 			var required = item.required;
 			if(required.length) {
@@ -90,20 +90,20 @@ var FreshDirect = FreshDirect || {};
 				});
 			}
 		});
-		
+
 		return valid;
 	}
-	
+
 	function usqValidator(items) {
 		return items.some(function(item){
-			return item.isAlcoholic === 'true'; 
-		});		
+			return item.isAlcoholic === 'true';
+		});
 	}
-	
-	
+
+
 	var ATC_BUS = new Bacon.Bus();
 	var BASIC_ATC = ATC_BUS.filter(function(event){ return requiredValidator(event.items)}).toProperty();
-	
+
 	Bacon.combineWith(function(value,usqState){
 		//value.usqState = usqState;
 		value.usqState = fd.USQLegalWarning.checkHealthCondition('freshdirect.healthwarning','1');
@@ -133,7 +133,7 @@ var FreshDirect = FreshDirect || {};
 				return !item.isAlcoholic;
 			});
 		}
-		value.items = newItems.filter(filterValue); 
+		value.items = newItems.filter(filterValue);
 		return value;
 	}).filter(function(event){
 		return event.items.length > 0;
@@ -141,18 +141,27 @@ var FreshDirect = FreshDirect || {};
 		triggerATC(event.items,{},event.target,event.eventSource,event.ignoreRedirect);
 	});
 
-	
-	function triggerATC(items,meta,triggerElement,eventSource,ignoreRedirect){
+
+  function triggerATC(items,meta,triggerElement,eventSource,ignoreRedirect){
+    var cmData = {};
+    if (eventSource) {
+      cmData.eventSource = eventSource;
+    }
+
+    if (items[0].moduleVirtualCategory) {
+      cmData.coremetricsVirtualCategory = items[0].moduleVirtualCategory;
+    }
+
 		$(triggerElement || document.body).trigger({
 			type:'addToCart',
 			atcList:items,
 			ATCMeta:(meta || {}),
 			valid:true,
-			cmData:eventSource ? {eventSource: eventSource} : {},
+			cmData:cmData,
       ignoreRedirect: !!ignoreRedirect
-		});		
+		});
 	}
-	
+
 	function addToCart(element, extraData) {
 		var items = fd.modules.common.productSerialize(element, true, true);
     ATC_BUS.push($.extend({items: items}, extraData));
@@ -222,7 +231,7 @@ var FreshDirect = FreshDirect || {};
 	    $products.each(function () {
 	      var subtotal = $(this).find('[data-component="product-controls"] [data-component="subtotal"] b, [data-component="product-controls"] [data-component="subtotal"] span').text();
 	      if (subtotal.substring(1)!="0.00" && subtotal.substring(1)!="") {
-	        sumsubtotal += +(subtotal.substring(1));        
+	        sumsubtotal += +(subtotal.substring(1));
 	      }
 	      else{
 	    	  $finalProductSize  = $finalProductSize - 1;
@@ -243,4 +252,3 @@ var FreshDirect = FreshDirect || {};
   } , fd);
 
 }(FreshDirect));
-

@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
@@ -58,7 +59,7 @@ public class SectionContext extends SectionData {
 			for (FilteringProductItem productItem : productItems) {
 				ProductModel product = productItem.getProductModel();
 				try{
-					ProductData productData = ProductDetailPopulator.createProductData(user, product);
+					ProductData productData = ProductDetailPopulator.createProductData(user, product, (nav.isPdp() || FDStoreProperties.getPreviewMode()));
 					productData = ProductDetailPopulator.populateBrowseRecommendation(user, productData, product);
 					if (!productData.isIncomplete()) {
 						productData = ProductDetailPopulator.populateSelectedNutritionFields(user, productData, productItem.getFdProduct(), nav.getErpNutritionTypeType());

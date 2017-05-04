@@ -17,5 +17,9 @@
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/ehcache-2.10.0.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/masterpassExpressSdk.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/braintree-java-2.53.0.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-web-4.0.1.RELEASE.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/fdcommerce-data.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-core-4.0.1.RELEASE.jar"/>
+        <classpathentry kind="var" path="FD_LIBS/thirdparty/sitemapgen4j-1.0.6.jar" sourcepath="FD_LIBS/thirdparty/sitemapgen4j-1.0.6-src.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

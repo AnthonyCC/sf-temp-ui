@@ -57,19 +57,19 @@
 			</div>
 			<div class="socialmedia">
 				<a href="http://www.facebook.com/FreshDirect" target="_blank"><img
-					src="/media/mobileweb/images/facebook.png" border="0" /></a> <a
+					src="/media/mobileweb/images/facebook.png" border="0" alt="visit facebook freshdirect page"/></a> <a
 					href="http://www.twitter.com/FreshDirect" target="_blank"><img
-					src="/media/mobileweb/images/twitter.png" border="0" /></a> <a
+					src="/media/mobileweb/images/twitter.png" border="0" alt="visit twitter freshdirect page"/></a> <a
 					href="http://www.pinterest.com/FreshDirect" target="_blank"><img
-					src="/media/mobileweb/images/pinterest.png" border="0" /></a> <a
+					src="/media/mobileweb/images/pinterest.png" border="0" alt="visit pinterest freshdirect page"/></a> <a
 					href="https://plus.google.com/107881041343024996566" target="_blank"><img
-					src="/media/mobileweb/images/google.png" border="0" /></a> <a
+					src="/media/mobileweb/images/google.png" border="0" alt="visit google freshdirect page"/></a> <a
 					href="http://www.youtube.com/FreshDirect" target="_blank"><img
-					src="/media/mobileweb/images/youtube.png" border="0" /></a>
+					src="/media/mobileweb/images/youtube.png" border="0" alt="visit youtube freshdirect page"/></a>
 			</div>
 			<div class="storemedia">
-				<a href="https://itunes.apple.com/us/app/freshdirect/id346631494" target="_blank"><img src="/media/mobileweb/images/appstore.png" border="0" /></a>
-				<a href="https://market.android.com/details?id=com.freshdirect.android" target="_blank"><img src="/media/mobileweb/images/googleplay.png" border="0" /></a>
+				<a href="https://itunes.apple.com/us/app/freshdirect/id346631494" target="_blank"><img src="/media/mobileweb/images/appstore.png" alt="download freshdirect iphone app" border="0" /></a>
+				<a href="https://market.android.com/details?id=com.freshdirect.android" target="_blank"><img src="/media/mobileweb/images/googleplay.png" alt="download freshdirect android app" border="0" /></a>
 			</div>
 		</div>
 		<div class="basicHits">

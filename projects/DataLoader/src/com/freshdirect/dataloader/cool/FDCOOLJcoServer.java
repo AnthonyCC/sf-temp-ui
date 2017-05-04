@@ -28,6 +28,7 @@ import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.payment.service.FDECommerceService;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
 import com.sap.conn.jco.JCoFunction;
@@ -200,11 +201,8 @@ public class FDCOOLJcoServer extends FdSapServer {
 			}
 
 			if (erpCOOLInfoList.size() > 0) {
-				if(FDStoreProperties.isStorefront2_0Enabled()){
-					LogisticsServiceLocator.getInstance().getCommerceService().saveCountryOfOriginData(erpCOOLInfoList);
-				}else{
 					storeCOOLInfo(erpCOOLInfoList);
-				}
+				
 			}
 		} catch (final Exception e) {
 			throw new LoaderException("Saving cool info failed. No update will happen. Exception is " + e);
@@ -221,10 +219,13 @@ public class FDCOOLJcoServer extends FdSapServer {
 		try {
 			ctx = ErpServicesProperties.getInitialContext();
 //			ServiceLocator serviceLocator = new ServiceLocator(FDStoreProperties.getInitialContext());
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				LogisticsServiceLocator.getInstance().getCommerceService().saveCountryOfOriginData(erpCOOLInfoList);
+			}else{
 			ErpCOOLManagerHome mgr = (ErpCOOLManagerHome) ctx.lookup(ErpServicesProperties.getCOOLManagerHome());
 			ErpCOOLManagerSB sb = mgr.create();
-
 			sb.updateCOOLInfo(erpCOOLInfoList);
+			}
 		} catch (Exception ex) {
 			throw new EJBException(ex.toString());
 		} finally {
