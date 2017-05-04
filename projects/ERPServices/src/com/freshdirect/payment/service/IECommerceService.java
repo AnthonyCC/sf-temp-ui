@@ -19,6 +19,8 @@ import com.freshdirect.customer.ErpEWalletModel;
 import com.freshdirect.customer.ErpGrpPriceModel;
 import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
+import com.freshdirect.ecommerce.data.common.Request;
+import com.freshdirect.ecommerce.data.sessionimpressionlog.SessionImpressionLogEntryData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyResponseData;
 import com.freshdirect.ecommerce.data.survey.SurveyKeyData;
@@ -163,5 +165,8 @@ public interface IECommerceService {
 
 	public int deleteLongAccessToken(String custId, String eWalletID) throws RemoteException;
 
-
+	public void saveLogEntry(Request<SessionImpressionLogEntryData> entry) throws RemoteException, FDResourceException;
+	
+	public void saveLogEntries(Request<Collection<SessionImpressionLogEntryData>> entries) throws FDResourceException, RemoteException;
+	
 }

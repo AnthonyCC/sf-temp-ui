@@ -22,6 +22,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import weblogic.auddi.util.Logger;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -47,6 +49,7 @@ import com.freshdirect.ecommerce.data.enums.EnumFeaturedHeaderTypeData;
 import com.freshdirect.ecommerce.data.enums.ErpAffiliateData;
 import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
 import com.freshdirect.ecommerce.data.payment.BINData;
+import com.freshdirect.ecommerce.data.sessionimpressionlog.SessionImpressionLogEntryData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyResponseData;
 import com.freshdirect.ecommerce.data.survey.SurveyData;
@@ -70,8 +73,6 @@ import com.freshdirect.referral.extole.ExtoleServiceException;
 import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
 import com.freshdirect.referral.extole.model.ExtoleResponse;
 import com.freshdirect.referral.extole.model.FDRafCreditModel;
-
-import weblogic.auddi.util.Logger;
 
 
 public class FDECommerceService extends AbstractService implements IECommerceService {
@@ -141,6 +142,9 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String UPDATE_CUSTEWALLET_TOKEN = "erp/ewallet/update/";
 	private static final String DELETE_CUSTEWALLET_TOKEN = "erp/ewallet/delete/";
 	private static final String INSERT_CUSTEWALLET_TOKEN = "erp/ewallet/save";
+	
+	private static final String SAVE_LOG_ENTRY = "sessionimpression/logentry";
+	private static final String SAVE_LOG_ENTRIES = "sessionimpression/logentries";
 	
 	private static FDECommerceService INSTANCE;
 
@@ -1387,5 +1391,32 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		}
 	}
 	
+	@Override
+	public void saveLogEntry(Request<SessionImpressionLogEntryData> entry) throws FDResourceException {
+		try {
+			String inputJson = buildRequest(entry);
+			Response<String> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SAVE_LOG_ENTRY), new TypeReference<Response<String>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
+		}
+	}
+	
+	@Override
+	public void saveLogEntries(Request<Collection<SessionImpressionLogEntryData>> entries) throws FDResourceException,RemoteException {
+		try {
+			String inputJson = buildRequest(entries);
+			Response<String> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SAVE_LOG_ENTRIES), new TypeReference<Response<String>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
+		}
+	}	
 
 }
