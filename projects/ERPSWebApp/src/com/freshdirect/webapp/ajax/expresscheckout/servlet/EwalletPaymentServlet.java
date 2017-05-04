@@ -22,7 +22,7 @@ import com.freshdirect.fdstore.ewallet.EwalletRequestData;
 import com.freshdirect.fdstore.ewallet.EwalletResponseData;
 import com.freshdirect.fdstore.ewallet.EwalletUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.webapp.ajax.EwalletBaseServlet;
+import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.data.PageAction;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataResponse;
@@ -34,11 +34,7 @@ import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
-/**
- * @author Aniwesh Vatsal
- * 
- */
-public class EwalletPaymentServlet extends EwalletBaseServlet {
+public class EwalletPaymentServlet extends BaseJsonServlet {
 
 	private final static Category LOGGER = LoggerFactory
 			.getInstance(EwalletPaymentServlet.class);
@@ -81,8 +77,7 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 
 			// Create Ewallet Response Object
 			EwalletResponseData ewalletResponseData = null;
-			final FormDataRequest requestData = EwalletBaseServlet
-					.parseRequestData(request, FormDataRequest.class);
+			final FormDataRequest requestData = parseRequestData(request, FormDataRequest.class);
 			
 			// Read all the params from Request
 			checkRequestParams(requestData,ewalletRequestData);
@@ -429,7 +424,6 @@ public class EwalletPaymentServlet extends EwalletBaseServlet {
 
 	@Override
 	protected boolean synchronizeOnUser() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
