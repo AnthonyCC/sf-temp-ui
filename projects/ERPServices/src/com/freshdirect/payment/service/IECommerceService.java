@@ -14,6 +14,8 @@ import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.content.attributes.AttributeException;
 import com.freshdirect.content.attributes.FlatAttributeCollection;
 import com.freshdirect.customer.EnumExternalLoginSource;
+import com.freshdirect.customer.ErpCustEWalletModel;
+import com.freshdirect.customer.ErpEWalletModel;
 import com.freshdirect.customer.ErpGrpPriceModel;
 import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
@@ -146,6 +148,20 @@ public interface IECommerceService {
 	public void loadGroupPriceData(List<ErpGrpPriceModel> grpPriceZonelist)throws FDResourceException;
 
 //	public void updateCOOLInfo(List<ErpCOOLInfo> erpCOOLInfoList)throws RemoteException;
-	
+
+	public List<ErpEWalletModel> getAllEWallets() throws RemoteException;
+
+	public ErpEWalletModel findEWalletById(String eWalletId) throws RemoteException;
+
+	public ErpEWalletModel findEWalletByType(String eWalletType) throws RemoteException;
+
+	public int insertCustomerLongAccessToken(ErpCustEWalletModel custEWallet) throws RemoteException;
+
+	public ErpCustEWalletModel getLongAccessTokenByCustID(String custID, String eWalletType) throws RemoteException;
+
+	public int updateLongAccessToken(String custId, String longAccessToken, String eWalletType) throws RemoteException;
+
+	public int deleteLongAccessToken(String custId, String eWalletID) throws RemoteException;
+
 
 }

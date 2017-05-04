@@ -687,9 +687,13 @@ public class FDCustomerManager {
 	public static int insertLongAccessToken(ErpCustEWalletModel custEWallet){
 		lookupeWalletHome();
 		int rows=0;
-		 try {
-			 ErpEWalletSB erpEWalletSB =  eWalletHome.create();
-			 rows= erpEWalletSB.insertCustomerLongAccessToken(custEWallet);
+		try {
+			ErpEWalletSB erpEWalletSB = eWalletHome.create();
+			if (FDStoreProperties.isStorefront2_0Enabled()) {
+				rows = FDECommerceService.getInstance().insertCustomerLongAccessToken(custEWallet);
+			} else {
+				rows = erpEWalletSB.insertCustomerLongAccessToken(custEWallet);
+			}
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		} catch (CreateException e) {
@@ -721,7 +725,12 @@ public class FDCustomerManager {
 		lookupeWalletHome();
 		 try {
 			 ErpEWalletSB erpEWalletSB =  eWalletHome.create();
-			 ErpEWalletModel erpEWalletModel= erpEWalletSB.findEWalletByType(eWalletType);
+			ErpEWalletModel erpEWalletModel = null;
+			if (FDStoreProperties.isStorefront2_0Enabled()) {
+				erpEWalletModel = FDECommerceService.getInstance().findEWalletByType(eWalletType);
+			} else {
+				erpEWalletModel = erpEWalletSB.findEWalletByType(eWalletType);
+			}
 			 if(erpEWalletModel!=null && erpEWalletModel.geteWalletStatus()!=null){
 				 if(erpEWalletModel.getEwalletmStatus().equalsIgnoreCase("Y"))
 				 	return true;
@@ -744,9 +753,13 @@ public class FDCustomerManager {
 	public static int updateLongAccessToken(String custId, String longAccessToken, String eWalletType){
 		lookupeWalletHome();
 		int rows=0;
-		 try {
-			 ErpEWalletSB erpEWalletSB =  eWalletHome.create();
-			 rows= erpEWalletSB.updateLongAccessToken(custId, longAccessToken, eWalletType);
+		try {
+			ErpEWalletSB erpEWalletSB = eWalletHome.create();
+			if (FDStoreProperties.isStorefront2_0Enabled()) {
+				rows = FDECommerceService.getInstance().updateLongAccessToken(custId, longAccessToken, eWalletType);
+			} else {
+				rows = erpEWalletSB.updateLongAccessToken(custId, longAccessToken, eWalletType);
+			}
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -767,9 +780,13 @@ public class FDCustomerManager {
 	public static int deleteLongAccessToken(String custId, String eWalletID){
 		lookupeWalletHome();
 		int rows=0;
-		 try {
-			 ErpEWalletSB erpEWalletSB =  eWalletHome.create();
-			 rows= erpEWalletSB.deleteLongAccessToken(custId, eWalletID);
+		try {
+			ErpEWalletSB erpEWalletSB = eWalletHome.create();
+			if (FDStoreProperties.isStorefront2_0Enabled()) {
+				rows = FDECommerceService.getInstance().deleteLongAccessToken(custId, eWalletID);
+			} else {
+				rows = erpEWalletSB.deleteLongAccessToken(custId, eWalletID);
+			}
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -783,9 +800,13 @@ public class FDCustomerManager {
 	public static ErpCustEWalletModel findLongAccessTokenByCustID(String customerId, String eWalletType){
 		lookupeWalletHome();
 		ErpCustEWalletModel custEWalletModel = null;
-		 try {
-			 ErpEWalletSB erpEWalletSB =  eWalletHome.create();
-			 custEWalletModel = erpEWalletSB.getLongAccessTokenByCustID(customerId, eWalletType);
+		try {
+			ErpEWalletSB erpEWalletSB = eWalletHome.create();
+			if (FDStoreProperties.isStorefront2_0Enabled()) {
+				custEWalletModel = FDECommerceService.getInstance().getLongAccessTokenByCustID(customerId, eWalletType);
+			} else {
+				custEWalletModel = erpEWalletSB.getLongAccessTokenByCustID(customerId, eWalletType);
+			}
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		} catch (CreateException e) {
