@@ -21,7 +21,7 @@ public class ProductInfoUtil {
 	public static String getPickingPlantId(FDProductInfo fdpi){
     	String pickingPlantId = null;
         UserContext userContext = ContentFactory.getInstance().getCurrentUserContext();
-        if(null != userContext){
+        if(null != userContext && null !=userContext.getPricingContext() && null !=userContext.getPricingContext().getZoneInfo()){
              if(fdpi!=null){        
                      String salesOrg=userContext.getPricingContext().getZoneInfo().getSalesOrg();
                      String distChannel=userContext.getPricingContext().getZoneInfo().getDistributionChanel();
