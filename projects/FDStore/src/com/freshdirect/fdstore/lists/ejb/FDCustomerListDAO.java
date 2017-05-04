@@ -17,6 +17,8 @@ import java.util.List;
 
 import org.apache.log4j.Category;
 
+import weblogic.auddi.util.Logger;
+
 import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.ejb.ErpOrderLineUtil;
@@ -602,9 +604,13 @@ class FDCustomerListDAO {
 		//APPDEV-4179 - Item quantities should NOT be honored in "Your Top Items" 
 		public List<FDQsProductListLineItem> getQsSpecificEveryItemEverOrderedListTopItemsTopItems(Connection conn, FDIdentity identity, StoreContext storeContext) throws SQLException, FDSkuNotFoundException {
 			PreparedStatement ps = null;
+			
+			LOGGER.debug("FDStoreProperties.isQSTopItemsPerfOptimizationEnabled()>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+FDStoreProperties.isQSTopItemsPerfOptimizationEnabled());
 			if(FDStoreProperties.isQSTopItemsPerfOptimizationEnabled()){
+				LOGGER.debug("QUERY_EVERY_ITEM_QS_TOP_ITEMS>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+QUERY_EVERY_ITEM_QS_TOP_ITEMS);
 				ps = conn.prepareStatement(QUERY_EVERY_ITEM_QS_TOP_ITEMS);
 			} else {
+				LOGGER.debug("QUERY_EVERY_ITEM_QS_1>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+QUERY_EVERY_ITEM_QS_1);
 				ps= conn.prepareStatement(QUERY_EVERY_ITEM_QS_1);
 			}
 			
@@ -648,6 +654,8 @@ class FDCustomerListDAO {
 					result.add(item);
 				}
 			}
+			
+			LOGGER.debug("result.size()==========================="+result.size());
 
 			rs.close();
 			ps.close();

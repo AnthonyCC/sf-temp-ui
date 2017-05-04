@@ -216,6 +216,10 @@
 	.qs-content .lineitems22 .itemlist-item-controls.smaller [data-component-extra="showSOButton"]{
 		margin: auto;
 		margin-right: 4px;
+		white-space: initial;
+		height: auto;
+		line-height: 15px;
+		padding: 5px 0;
 	}
 	
 /* new */
@@ -290,6 +294,7 @@
 	#customizePopup.soShow .so .cssbutton[data-component="addToSOButton"],
 	#customizePopup.soShow .so-container .so-review-header,
 	#customizePopup.soShow .so-container .so-review-date,
+	#customizePopup.soShow .so-container .so-review-min-details,
 	.cssbutton[data-component="nextStepSOButton"],
 	#customizePopup.soShow.so-review .so .cssbutton[data-component="nextStepSOButton"],
 	#customizePopup.soShow.so-review .productDisplay-skuconfig,
@@ -300,7 +305,14 @@
 	#customizePopup.soShow .so-review-selected,
 	#customizePopup.soShow .so-container .so-review-link,
 	#customizePopup.soShow.so-review .so .so-listadd-content .select-wrapper,
-	#customizePopup.soShow.so-review.so-review-success .leftright-bottom .so-container .so-review-selected{
+	#customizePopup.soShow.so-review.so-review-success .leftright-bottom .so-container .so-review-selected,
+	#customizePopup.soShow.so-review.so-review-success .leftright-bottom .so-container .so-review-min-details,
+	#customizePopup.soShow.so-review .so-container .so-review-min-details.show .so-review-min-details-tip,
+	#customizePopup.soShow .so-review-min-not-show-top,
+	#customizePopup.soShow.so-review-min-met-alert .leftColumn,
+	#customizePopup.soShow.so-review-min-met-alert .rightColumn,
+	#customizePopup.soShow.so-review-min-met-alert .so-container,
+	#customizePopup.soShow .so-review-min-not-show-bottom{
 		display: none;
 	}
 	#customizePopup.soShow .so .cssbutton[data-component="addToSOButton"], #customizePopup.soShow .so .cssbutton[data-component="showOButton"] {
@@ -313,8 +325,67 @@
 	#customizePopup .so-container{
 		display: none;
 	}
+	#customizePopup.soShow.so-review .so-container .so-review-date{
+		min-height: 30px;
+	}
+	#customizePopup.soShow.so-review .so-container .so-review-date img{
+	    height: 30px;
+	    display: block;
+	    margin: auto;
+	}
 	#customizePopup.soShow.so-review .so-review-item-total{
 		font-size: 18px;
+	}
+	#customizePopup.soShow.so-review .so-container .so-review-min-details.show{
+		position: relative;
+		width: 65px;
+		margin: auto;
+		cursor: pointer;
+	}
+	#customizePopup.soShow.so-review .so-container .so-review-min-details .so-review-min-details-tip{
+		position: absolute;
+		width: 200px;
+	    white-space: normal;
+	    /* visibility: hidden;
+	    opacity: 0; */
+	    position: absolute;
+	    bottom: 0px;
+		left: 50%;
+		margin-left: -117px;
+	    padding: 17px;
+	    margin-bottom: 35px;
+	    color: #000;
+	    background: #f9f8f7;
+	    border: solid 1px #aaa;
+	    text-align: center;
+	    -moz-user-select: text;
+	    -khtml-user-select: text;
+	    -webkit-user-select: text;
+	    -o-user-select: text;
+	    user-select: text;
+		cursor: auto;
+	}
+	#customizePopup.soShow.so-review .so-container .so-review-min-details .so-review-min-details-tip:before{
+	    content: "";
+	    position: absolute;
+	    bottom: -15px;
+	    right: 105px;
+	    border-width: 14px 14px 0;
+	    border-style: solid;
+	    border-color: #aaa transparent;
+	    display: block;
+	    width: 0;
+	}
+	#customizePopup.soShow.so-review .so-container .so-review-min-details .so-review-min-details-tip:after{
+	    content: "";
+	    position: absolute;
+	    bottom: -14px;
+	    right: 105px;
+	    border-width: 14px 14px 0;
+	    border-style: solid;
+	    border-color: #f9f8f7 transparent;
+	    display: block;
+	    width: 0;
 	}
 	#customizePopup.soShow .so-container,
 	#customizePopup.soShow.so-review .so .cssbutton[data-component="addToSOButton"],
@@ -322,20 +393,51 @@
 	#customizePopup.soShow.so-review .so-container .so-review-header,
 	#customizePopup.soShow.so-review .so-container .so-review-date,
 	#customizePopup.soShow.so-review .so-container .so-review-link,
-	#customizePopup.soShow.so-review .so-container .so-review-selected{
+	#customizePopup.soShow.so-review .so-container .so-review-selected,
+	#customizePopup.soShow.so-review .so-container .so-review-min-details.show,
+	#customizePopup.soShow.so-review .so-container .so-review-min-details.show:hover .so-review-min-details-tip,
+	#customizePopup.soShow.so-review.so-review-min-met-alert .so-review-min-not-show-top,
+	#customizePopup.soShow.so-review.so-review-min-met-alert .so-review-min-not-show-bottom{
 		display: block;
 	}
 	#customizePopup.soShow .productDisplay-skuconfig{
 		padding: 20px 0 0;
 	}
+	#customizePopup.soShow.so-review.so-review-min-met-alert .so-review-min-not-show-header{
+	    font-size: 20px;
+	    font-weight: bold;
+	    padding: 0 20px 20px;
+	}
+	#customizePopup.soShow.so-review.so-review-min-met-alert .so-review-min-not-show-text{
+	    font-size: 18px;
+	    padding: 0 20px 20px;
+	}
+	#customizePopup.soShow.so-review.so-review-min-met-alert .so-review-min-not-show-bottom{
+		font-size: 16px;
+		padding: 18px 0 0 20px;
+	}
+	#customizePopup.soShow.so-review.so-review-min-met-alert .so-review-min-not-show-bottom #so-min-do-not-show-checkbox{
+		vertical-align: text-top;
+		margin: 0 15px 0 0;
+	}
+	#customizePopup.soShow.so-review.so-review-min-met-alert .so-review-min-not-show-buttons{
+		margin: 40px auto 20px;
+		text-align: center;
+	}
+	#customizePopup.soShow.so-review.so-review-min-met-alert .so-review-min-not-show-buttons a,
+	#customizePopup.soShow.so-review.so-review-min-met-alert .so-review-min-not-show-buttons button{
+		min-width: 210px;
+	}
 	#customizePopup.soShow .productDisplay-skuconfig .skucontrol-salesunit b{
 		padding: 0 0 5px;
 		font-size: 14px;
 	}
-	#customizePopup.soShow.so-review .so-container .so-review-link{
+	#customizePopup.soShow.so-review .so-container .so-review-link,
+	#customizePopup.soShow.so-review .so-container .so-review-min-details{
 		text-align: center;
 	}
-	#customizePopup.soShow.so-review .so-container .so-review-link a{
+	#customizePopup.soShow.so-review .so-container .so-review-link a,
+	#customizePopup.soShow.so-review .so-container .so-review-min-details{
 		font-size: 16px;
 		color: #458b4c;
 	}

@@ -217,6 +217,7 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 				FDCartLineI cartLine = new FDCartLineModel(fdSelection);
 				if (!cartLine.isInvalidConfig()) {
 					// cartLine.refreshConfiguration();
+					if(fdSelection.getCustomerListLineId()!=null)
 					cartLine.setCustomerListLineId(fdSelection.getCustomerListLineId());
 					so.getStandingOrderCart().addOrderLine(cartLine);
 				}
@@ -1107,4 +1108,21 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 		}
 		return isUpdate;
 	}
+	
+	public void	turnOffReminderOverLayNewSo(String standingOrderId)throws FDResourceException,RemoteException{
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO dao = new FDStandingOrderDAO();
+			dao.turnOffReminderOverLayNewSo(conn, standingOrderId);
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in turnOffReminderOverLayNewSo(): " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+	}
+	
+
 }

@@ -340,8 +340,8 @@ public class ProductController extends BaseController {
             setResponseMessage(model, responseMessage, user);
             return model;
         }
-
-        final ProductPotatoData data = ProductPotatoUtil.getProductPotato(productId, null, user.getFDSessionUser(), true);
+        // enable product incomplete true for pdp
+        final ProductPotatoData data = ProductPotatoUtil.getProductPotato(productId, null, user.getFDSessionUser(), true, true);
         if (data == null) {
             Message responseMessage = Message.createFailureMessage("Product not found");
             setResponseMessage(model, responseMessage, user);

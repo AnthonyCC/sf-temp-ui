@@ -35,26 +35,29 @@
 <fd:PDPRedirector user="<%=user %>" />
 
 <%
+// should we show the new leftnav
+boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, user);
+%>
+
+<potato:product name="productPotato" extraName="productExtraPotato" productId='${param.productId}' categoryId='${param.catId}' variantId='${param.variantId}' grpId='${param.grpId}' version='${param.version}' />
+<potato:browse name="browsePotato" pdp="true" nodeId='${param.catId}'/>
+
+<%
 ProductModel productNode = ProductPricingFactory.getInstance().getPricingAdapter( ContentFactory.getInstance().getProductByName( request.getParameter("catId"), request.getParameter("productId") ), user.getPricingContext() );
 
 // Handle no-product case
 if (productNode==null) {
     throw new JspException("Product not found in Content Management System");
-} else if (productNode.isDiscontinued() && !FDStoreProperties.getPreviewMode()) {
-    throw new JspException("Product Discontinued :"+request.getParameter("productId"));
+} else if (!PopulatorUtil.isProductNotArchived(productNode)) {
+    response.sendError(HttpServletResponse.SC_NOT_FOUND);
 }
+%>
 
-String title =  productNode.getPageTitle() != null && !productNode.getPageTitle().isEmpty() ? productNode.getPageTitle() : productNode.getFullName();
-String productFullName = productNode.getFullName().replaceAll("<[^>]*>", "");
-title = title.replaceAll("<[^>]*>", ""); 
+<%-- OAS page variables --%>
+<c:set var="sitePage" scope="request" value="${browsePotato.descriptiveContent.oasSitePage}" />
+<c:set var="listPos" scope="request" value="SystemMessage,ProductNote" />
 
-boolean isWine = EnumTemplateType.WINE.equals( productNode.getTemplateType() );
-
-//--------OAS Page Variables-----------------------
-request.setAttribute("sitePage", productNode.getPath());
-request.setAttribute("listPos", "SystemMessage,ProductNote");
-
-
+<%
 //REDIRECT to the redirect-url IF there is any
 String redirectURL = productNode.getRedirectUrl();
 
@@ -104,23 +107,10 @@ if (mobWeb) {
 	}%>
 </fd:IsAlcoholic>
 
-<%
-EnumProductLayout prodLayout = productNode.getProductLayout();
-
-// should we show the new leftnav
-boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, user);
-%>
-
-<potato:product name="productPotato" extraName="productExtraPotato" productId='${param.productId}' categoryId='${param.catId}' variantId='${param.variantId}' grpId='${param.grpId}' version='${param.version}' />
-
-<% if(shouldBeOnNew) {  // new leftnav, TODO: remove this after full rollout%>
-	<potato:browse name="browsePotato" pdp="true" nodeId='${param.catId}'/>
-<%}%>
-
 <tmpl:insert template="<%= pageTemplate %>">
 
   <tmpl:put name="seoMetaTag">
-  	<fd:SEOMetaTag metaDescription="<%= productNode.getSEOMetaDescription() %>" title='<%=title%>'/>
+  	<fd:SEOMetaTag metaDescription="${browsePotato.descriptiveContent.metaDescription}" title='${browsePotato.descriptiveContent.pageTitle}'/>
   </tmpl:put>
 
   <tmpl:put name='cmeventsource' direct='true'>pdp_main</tmpl:put>
@@ -167,9 +157,9 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
     
 <% } else { //old leftnav %>
 
- <tmpl:put name='title' direct='true'>FreshDirect - <%= productNode.getFullName() %></tmpl:put>    
+ <tmpl:put name='title' direct='true'>FreshDirect - ${browsePotato.descriptiveContent.pageTitle}</tmpl:put>
     
-    <% if ( !isWine ) { // Wine template has no deptnav, and special leftnav, so only put these for regular layouts %>
+    <c:if test="${browsePotato.descriptiveContent.wineDepartment == true}">
 	    <tmpl:put name='leftnav' direct='true'>	    	
 	    	<td width="150" BGCOLOR="#E0E3D0" class="lNavTableConttd">		
 			<!-- start : leftnav -->
@@ -183,7 +173,8 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
 		    <% try { %><%@ include file="/common/template/includes/deptnav.jspf" %><% } catch (Exception ex) {ex.printStackTrace();} %>
 			<hr class="deptnav-separator">
 	    </tmpl:put>
-    <% } else { %>
+  </c:if>
+  <c:if test="${browsePotato.descriptiveContent.wineDepartment == false}">
     	<tmpl:put name="extraJs">
 			<fd:javascript src="/assets/javascript/wine.js"/>
 			<fd:javascript src="/assets/javascript/wine-nav.js"/>	
@@ -196,12 +187,12 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
 			<% try { %><%@ include file="/common/template/includes/left_side_nav_usq.jspf" %><% } catch (Exception ex) {ex.printStackTrace();} %>
 			</td>    	
 		</tmpl:put>
-    <% } %>
+    </c:if>
 
 <% } %>
     
 	<tmpl:put name='facebookmeta' direct='true'>
-		<meta property="og:title" content="FreshDirect - <%= productFullName %>"/>
+		<meta property="og:title" content="FreshDirect - ${productPotato.data.productName}/>
 		<meta property="og:site_name" content="FreshDirect"/>
 		<% 
 			Image detailImage = productNode.getDetailImage();
@@ -216,7 +207,7 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
 		<meta property="og:image" content="https://www.freshdirect.com/media_stat/images/logos/FD-logo-300.jpg"/>
 	</tmpl:put>
 <%
-
+    EnumProductLayout prodLayout = productNode.getProductLayout();
 	String layoutPath = prodLayout.getLayoutPath();
 	/* leaving this, in case we need to go to this solution
 	if (mobWeb && prodLayout.equals(EnumProductLayout.COMPONENTGROUP_MEAL)) {

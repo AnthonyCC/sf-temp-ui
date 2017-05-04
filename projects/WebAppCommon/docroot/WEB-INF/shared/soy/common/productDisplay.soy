@@ -5,8 +5,21 @@
  */
 {template .productDisplay autoescape="false"}
 	<form fdform="customize" fdform-submit="FreshDirect.components.AddToCart.formAddToCart" data-component="product" data-cmeventsource="{$data.cmEventSource}" data-productid="{$data.productId}">
+		{if $data.soData and $data.soData.settingsData and $data.soData.settingsData.soSettings.isEligibleForStandingOrders}
+				{if length($data.soData.settingsData.soData) > 0}
+					<div class="so-review-min-not-show-top">
+						<div class="so-review-min-not-show-header">Reminder</div>
+						<div class="so-review-min-not-show-text">Place Your Order when you're finished shopping.</div>
+						<div class="so-review-min-not-show-text">Go to the <a class="so-review-min-not-show-text-link" href="/quickshop/standing_orders.jsp">Standing Order page</a> to Place Your Order.</div>
+						<div class="so-review-min-not-show-buttons">
+							<a class="so-review-min-not-show-go-so cssbutton cssbutton-flat purple nontransparent" href="/quickshop/standing_orders.jsp">Go to Standing Order</a>
+							<button class="so-review-min-not-show-close cssbutton cssbutton-flat green nontransparent" data-popup-control="close">Keep Shopping</button>
+						</div>
+					</div>
+				{/if}
+		{/if}
 		<div class="leftColumn">
-			<a href="{$data.productPageUrl}" class="learnmore">Learn more</a>
+			<a href="{$data.productPageUrl}{if $data.moduleVirtualCategory}&cm_vc={$data.moduleVirtualCategory}{/if}" class="learnmore">Learn more</a>
 			<img src="{if $data.productDetailImage and $data.productDetailImage != 'undefined'}{$data.productDetailImage}{/if}">
 		</div>
 		<div class="rightColumn">
@@ -22,6 +35,9 @@
 			{if $data.pageType}
 				<input type="hidden" data-component="productData" data-productdata-name="pageType" name="pageType" value="{$data.pageType}">
 			{/if}
+      {if $data.moduleVirtualCategory}
+      <input type="hidden" data-component="productData" data-productdata-name="moduleVirtualCategory" name="moduleVirtualCategory" value="{$data.moduleVirtualCategory}">
+      {/if}
 			{if $data.skus}
 				<ol class="productDisplay-skulist">
 					{foreach $sku in $data.skus}
@@ -68,7 +84,8 @@
 				{if length($data.soData.settingsData.soData) > 0}
 					<div class="so-container">
 						<div class="so-review-header">Delivery Begins</div>
-						<div class="so-review-date">{$data.soData.settingsData.soData[0].dayOfWeek}, {$data.soData.settingsData.soData[0].deliveryDate}</div>
+							<div class="so-review-date"><img src="/media_stat/images/navigation/spinner.gif"></div>
+							<div class="so-review-min-details">Details<div class="so-review-min-details-tip">Order minimum of ${$data.soData.settingsData.soSettings.soSoftLimit} must be met to place your order.</div></div>
 						<div class="so-review-link"></div>
 						{call common.soResults /}
 						{call common.soList}
@@ -78,6 +95,7 @@
 						{/call}
 						<div class="so-review-selected"></div>
 					</div>
+					<div class="so-review-min-not-show-bottom"><input id="so-min-do-not-show-checkbox" type="checkbox">Do not show this message again</div>
 				{/if}
 			{/if}
 		</div>

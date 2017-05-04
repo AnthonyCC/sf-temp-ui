@@ -106,9 +106,14 @@ function addToSoSuccessHandler($contextElem, data) {
 	$jq('#customizePopup .so-review-date').text(data.name);
 	$jq('#customizePopup .so-review-link').html('<a href="/quickshop/standing_orders.jsp?soid='+data.id+'#soid_'+data.id+'">See Order Details</a>');
 	$jq('#customizePopup .so-listadd-content .cssbutton[data-component="addToSOButton"]').remove();
-	$jq('#customizePopup .so-review-selected').before('<button type="button" data-popup-control="close" class="okReviewSOButton cssbutton cssbutton-flat green nontransparent">Ok</button>');
+	if(data.reminderOverlayForNewSo){
+		$jq('#customizePopup .so-review-selected').before('<button type="button" onclick="reviewSOOkHandler()" class="okReviewSOButton cssbutton cssbutton-flat green nontransparent">Ok</button>');
+		$jq('#customizePopup a.so-review-min-not-show-text-link').attr('href','/quickshop/standing_orders.jsp?soid='+data.id+'#soid_'+data.id);
+		$jq('#customizePopup a.so-review-min-not-show-go-so').attr('href','/quickshop/standing_orders.jsp?soid='+data.id+'#soid_'+data.id);
+	} else {
+		$jq('#customizePopup .so-review-selected').before('<button type="button" data-popup-control="close" class="okReviewSOButton cssbutton cssbutton-flat green nontransparent">Ok</button>');
+	}
 	
-
 	$soResultsCont.toggleClass('so-close');
 	
 	function soResultsClose() {
@@ -177,9 +182,16 @@ $jq('.cssbutton[data-component="createSOButton"]').on('click', function(e) {
 	return false;
 });
 
+$jq(document).on('click', '#customizePopup.so-review-min-met-alert [data-popup-control="close"]', function(){
+	if($jq('#customizePopup.so-review-min-met-alert #so-min-do-not-show-checkbox:checked').length > 0){
+		postStandingOrderData($jq('#customizePopup .so-select').val().split(':'),'turnOffReminderOverlay');
+	}
+});	
+
 function addToSONextHandler() {
 	if(FreshDirect.components.AddToCart.requiredValidator(FreshDirect.modules.common.productSerialize($jq('#customizePopup form[fdform="customize"]'), true, true))){
 		$jq('#customizePopup').addClass('so-review');
+		getStandingOrderData($jq('#customizePopup .so-select').val().split(':'),'deliveryBegins');
 		$jq('#customizePopup .so-review-selected').text($jq('#customizePopup .so-select option:selected').text());
 		if($jq('#customizePopup .skucontrol-quantity input.qty').val() == 1){
 			itemQuantity = $jq('#customizePopup .skucontrol-quantity input.qty').val() + ' item';
@@ -190,3 +202,37 @@ function addToSONextHandler() {
 	}
 };
 
+function reviewSOOkHandler(){
+	$jq('#customizePopup').addClass('so-review-min-met-alert');
+}
+
+function getStandingOrderData(ids, action){
+	var dataString = "soId=" + ids[0];
+	$jq.ajax({
+        url: '/api/manageStandingOrder',
+        type: 'GET',
+        data: dataString,
+        success: function(data){
+        	if('deliveryBegins'==action){
+        		if(data.lastError=="MINORDER"){
+        			$jq('#customizePopup .so-review-date').text('Order Minimum Not Met');
+        			$jq('#customizePopup .so-review-min-details').addClass('show');
+        		} else{
+        			$jq('#customizePopup .so-review-date').text(ids[2] + ', ' + ids[3]);
+        		}
+        	}
+        }
+ 	});
+}
+
+function postStandingOrderData(ids, action){
+	$jq.post('/api/standingOrderCartServlet',
+			{		data: JSON.stringify({
+					actiontype: action,
+					standingOrderId: ids[0],
+					})
+			},function(data){
+		
+	})
+	
+}

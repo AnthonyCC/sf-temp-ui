@@ -841,7 +841,7 @@ public class FDUserDAO {
         PreparedStatement ps = null;
         try {
             ps = conn.prepareStatement("update CUST.CUSTOMERINFO set go_green=? where customer_id=?");
-            ps.setString(1, "Y".equals(goGreen) ? "Y" : "N");
+            ps.setString(1, "Y");
             ps.setString(2, customerId);
             ps.execute();
         } catch (Exception e) {
@@ -966,7 +966,7 @@ public class FDUserDAO {
             ps1.setString(4, fdCustomerId);
             ps1.setString(5, eStoreid.getContentId());
             ps1.execute();
-            ps.setString(1, "Y".equals(goGreen) ? "Y" : "N");
+            ps.setString(1, "Y");
             ps.setString(2, bphone.getPhone());
             ps.setString(3, bphone.getExtension());
             ps.setString(4, EnumMobilePreferenceType.UPDATED_FROM_RECEIPT_PAGE.getName());

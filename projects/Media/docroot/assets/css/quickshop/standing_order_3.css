@@ -1424,3 +1424,27 @@
 	visibility: visible;
 	opacity: 1;
 }
+#create-so-page-loading{
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	text-align: center;
+	padding: 235px 0 0 0;
+	font-size: 30px;
+	font-weight: bold;
+	background: rgba(255, 255, 255, 0.5);
+}
+.standing-orders-3-so-settings-container .standing-orders-3-so-settings-square-line-1 .standing-orders-3-so-settings-square-line-1-label{
+	display:block;
+}
+.standing-orders-3-so-settings-container .standing-orders-3-so-settings-square-line-2 .standing-orders-3-so-settings-square-line-2-label{
+	display:none;
+}
+.standing-orders-3-so-settings-container.open .standing-orders-3-so-settings-square-line-1 .standing-orders-3-so-settings-square-line-1-label{
+	display:none;
+}
+.standing-orders-3-so-settings-container.open .standing-orders-3-so-settings-square-line-2 .standing-orders-3-so-settings-square-line-2-label{
+	display:block;
+}

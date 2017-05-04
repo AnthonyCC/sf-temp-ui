@@ -9,17 +9,22 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.jsp.JspWriter;
 
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.common.pricing.CatalogKey;
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerModel;
+import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
@@ -39,6 +44,7 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDBulkRecipientList;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerCreditUtil;
@@ -466,17 +472,92 @@ public class UserUtil {
                 
                 if ((currentLines > 0) && (loginLines > 0)) {
                     // keep the current cart in the session and send them to the merge cart page
-                    if(successPage != null && !successPage.contains("/robin_hood") && !successPage.contains("/gift_card")
-                    		&& mergePage != null && mergePage.trim().length() > 0){
-	                    session.setAttribute(SessionName.CURRENT_CART, currentUser.getShoppingCart());
+                    if (
+                    		successPage != null && !successPage.contains("/robin_hood") && !successPage.contains("/gift_card")
+                    		&& mergePage != null && mergePage.trim().length() > 0
+                    ){
+                    	/* APPDEV-5781 */
+                    	if (!FDStoreProperties.isObsoleteMergeCartPageEnabled()) {
+                    	/* ---- logic from MergeCartControllerTag */
+	                		//
+	                        // the uers's saved cart has already been recalled in the login process
+	                        //
+	                		//FDSessionUser user = (FDSessionUser) session.getAttribute( SessionName.USER );
+	                		FDCartModel cartSaved = loginUser.getShoppingCart();
+	                        //
+	                        // and the cart they previously were working on was stored in the session as well
+	                        //
+	                		//FDCartModel cartCurrent = (FDCartModel) session.getAttribute(SessionName.CURRENT_CART);
+	                		/* currentUser is only used here and when set to session */
+	                		FDCartModel cartCurrent = currentUser.getShoppingCart();
+	                		
+	                		/* check for null here */
+	                		if (cartCurrent == null) {
+	                			cartCurrent = new FDCartModel();
+	                		}
+	                		cartCurrent.setEStoreId(loginUser.getUserContext().getStoreContext().getEStoreId());
+	                		ErpDeliveryPlantInfoModel delPlantInfo=new ErpDeliveryPlantInfoModel();
+	                		delPlantInfo.setPlantId(loginUser.getUserContext().getFulfillmentContext().getPlantId());
+	                		delPlantInfo.setSalesOrg(loginUser.getUserContext().getPricingContext().getZoneInfo().getSalesOrg());
+	                		delPlantInfo.setDistChannel(loginUser.getUserContext().getPricingContext().getZoneInfo().getDistributionChanel());
+	                		CatalogKey catalogKey = new CatalogKey(
+	                			loginUser.getUserContext().getStoreContext().getEStoreId().name(),
+	                			Long.parseLong(loginUser.getUserContext().getFulfillmentContext().getPlantId()),
+	                			loginUser.getUserContext().getPricingContext().getZoneInfo()
+	                		);
+	                		delPlantInfo.setCatalogKey(catalogKey);
+	                		cartCurrent.setDeliveryPlantInfo(delPlantInfo);
+	                		
+	                		ContentFactory.getInstance().setCurrentUserContext(loginUser.getUserContext());
+	                		cartCurrent.setUserContextToOrderLines(loginUser.getUserContext());
+	                		cartCurrent.setEStoreId(loginUser.getUserContext().getStoreContext().getEStoreId());
+	                		FDCartModel cartMerged = new FDCartModel( cartCurrent );
+	                		cartMerged.mergeCart( cartSaved );
+	                		cartMerged.sortOrderLines();
+	                		cartMerged.setUserContextToOrderLines(loginUser.getUserContext());
+	                		cartMerged.setEStoreId(loginUser.getUserContext().getStoreContext().getEStoreId());
+	                		
+	                		/* "merge" choice logic */
+	                		loginUser.setShoppingCart( cartMerged );
+		                        //Check for multiple savings. 
+		                        checkForMultipleSavings(cartCurrent, cartSaved, cartMerged);
+		    					// invalidate promotion and recalc
+		                        loginUser.updateUserState();
+		                        session.setAttribute(SessionName.USER, currentUser);
+
+	        				if(null == loginUser.getShoppingCart().getDeliveryPlantInfo()){
+	        					loginUser.getShoppingCart().setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(loginUser));
+	        				}
+	        				loginUser.getShoppingCart().setUserContextToOrderLines(currentUser.getUserContext());	
+	        				
+	        				//evaluate the coupons, after the merge cart.
+	        				FDCustomerCouponUtil.evaluateCartAndCoupons(session);
+	        				
+	                        // get rid of the extra cart in the session
+	                        session.removeAttribute(SessionName.CURRENT_CART);
+
+	                        //LOGGER.debug("redirect after mergeCart ==> " + this.successPage);
+	                        //response.sendRedirect(response.encodeRedirectURL( this.successPage ));
+	                        //JspWriter writer = pageContext.getOut();
+	                        //writer.close();
+	                    /* ---- logic from MergeCartControllerTag */
+                    	}
+                    	
+	                    session.setAttribute(SessionName.CURRENT_CART, loginUser.getShoppingCart());
 	                    if (FDStoreProperties.isSocialLoginEnabled() ) {
-	       				 String preSuccessPage = (String) session.getAttribute(SessionName.PREV_SUCCESS_PAGE);
-	       				 if( preSuccessPage != null){
-	       					 session.removeAttribute(SessionName.PREV_SUCCESS_PAGE);
-	       					 successPage = preSuccessPage;
-	       				 	}	       				
+							String preSuccessPage = (String) session.getAttribute(SessionName.PREV_SUCCESS_PAGE);
+							if (preSuccessPage != null) {
+								session.removeAttribute(SessionName.PREV_SUCCESS_PAGE);
+								successPage = preSuccessPage;
+							}	       				
 	                    }
+	                    
+	                    if (!FDStoreProperties.isObsoleteMergeCartPageEnabled()) {
+	                    	/* don't go to merge cart page */
+	                    	updatedSuccessPage = successPage;
+	                    } else {
 	                    	updatedSuccessPage =  mergePage + "?successPage=" + URLEncoder.encode( successPage ) ;
+	                    }
                     }
                     
                 } else if ((currentLines > 0) && (loginLines == 0)) {
@@ -554,11 +635,14 @@ public class UserUtil {
           }
           
           if(user != null) {
-        	  user.setJustLoggedIn(true);
+        	user.setJustLoggedIn(true);
+  			Cookie cookie = new Cookie("hasJustLoggedIn","true");
+  			cookie.setPath("/");
+  			response.addCookie(cookie);
           }
 
           CmRegistrationTag.setPendingLoginEvent(session);
-          logExtraLoginDetailsLogin(request, userId, password, mergePage, successPage, externalLogin, "LOGINSUCCESS");
+          //logExtraLoginDetailsLogin(request, userId, password, mergePage, successPage, externalLogin, "LOGINSUCCESS"); THis is commented because it breaks using https://mobileapi.freshdirect.com/mobileapi/v/1/social/login/
           
         } catch (FDResourceException fdre) {
         	logExtraLoginDetailsLogin(request, userId, password, mergePage, successPage, externalLogin, "LOGINFAILED");
@@ -596,8 +680,6 @@ public class UserUtil {
 				+" : "+CookieMonster.getCookie(request)+" : "+request.getRequestURL());
 	}
 	
-	
-	
 	/*
 	 * In RegistrationAction, dummy password "^0X!3X!X!1^" has been set for social login. 
 	 */
@@ -614,5 +696,23 @@ public class UserUtil {
 		return true;
 	}	
 
+	/* copied from MergeCartControllerTag */
+	private static void checkForMultipleSavings(FDCartModel cartCurrent, FDCartModel cartSaved, FDCartModel cartMerged) {
+		Set savedProdKeys = cartSaved.getProductKeysForLineItems();
+		Set currProdKeys = cartCurrent.getProductKeysForLineItems();
+		Set savedSavingIds = cartSaved.getUniqueSavingsIds();
+		Set currSavingIds = cartCurrent.getUniqueSavingsIds();
+		
+		for (Iterator i = cartMerged.getOrderLines().iterator(); i.hasNext();) {
+			FDCartLineI line     = (FDCartLineI) i.next();
+			String productId = line.getProductRef().getContentKey().getId();
+			if((savedProdKeys.contains(productId) && !currProdKeys.contains(productId)) && 
+					savedSavingIds.contains(line.getSavingsId()) && currSavingIds.contains(line.getSavingsId())){
+				//Product is only in the saved cart and savings id is in both carts then reset savings id for saved cart line.
+				line.setSavingsId(null);
+			}
+		}
+			
+	}
 
 }

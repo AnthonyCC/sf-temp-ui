@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpSession;
 
@@ -72,7 +73,12 @@ public final class ModuleHandlingService {
                             for (ContentKey moduleContentKey : modules) {
                                 ModuleData moduleData = new ModuleData();
                                 ModuleConfig moduleConfig = new ModuleConfig();
-                                moduleData = loadModuleData(moduleContentKey, user, session, false);
+
+                                if (datas.containsKey(moduleContentKey.getId())) {
+                                    moduleData = datas.get(moduleContentKey.getId());
+                                } else {
+                                    moduleData = loadModuleData(moduleContentKey, user, session, false);
+                                }
 
                                 if (moduleData != null) {
                                     moduleConfig = loadModuleConfig(moduleContentKey, user);
@@ -85,7 +91,12 @@ public final class ModuleHandlingService {
                     } else if (FDContentTypes.MODULE.equals(moduleContainerChildContentKey.getType())) {
                         ModuleData moduleData = new ModuleData();
                         ModuleConfig moduleConfig = new ModuleConfig();
-                        moduleData = loadModuleData(moduleContainerChildContentKey, user, session, false);
+
+                        if (datas.containsKey(moduleContainerChildContentKey.getId())) {
+                            moduleData = datas.get(moduleContainerChildContentKey.getId());
+                        } else {
+                            moduleData = loadModuleData(moduleContainerChildContentKey, user, session, false);
+                        }
 
                         if (moduleData != null) {
                             moduleConfig = loadModuleConfig(moduleContainerChildContentKey, user);
@@ -102,6 +113,9 @@ public final class ModuleHandlingService {
 
         result.setData(datas);
         result.setConfig(configs);
+
+        result = filterDisplayableModules(result);
+        decorateVirtualCategory(result, moduleContainerId.split(":")[1]);
 
         return result;
     }
@@ -148,6 +162,70 @@ public final class ModuleHandlingService {
         DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
         ContentNodeI module = CmsManager.getInstance().getContentNode(moduleContentKey, currentDraftContext);
         return DatasourceService.getDefaultService().loadModuleData(module, user, session, showAllProducts);
+    }
+
+    /**
+     * 
+     * @param moduleContainer
+     * 
+     * @author dviktor
+     * 
+     *         This method removes any modules from the container that are product display modules and have less than 3 products
+     * @return
+     */
+    private ModuleContainerData filterDisplayableModules(ModuleContainerData moduleContainer) {
+        // TODO reverse iterate first on config then on data so instead of removing we can use adding to empty list.
+        Map<String, ModuleData> moduleDatas = moduleContainer.getData();
+        List<ModuleConfig> moduleConfigs = moduleContainer.getConfig();
+
+        ModuleContainerData filteredModuleContainerData = new ModuleContainerData();
+        Map<String, ModuleData> filteredModuleDatas = new HashMap<String, ModuleData>();
+        List<ModuleConfig> filteredModuleConfigs = new ArrayList<ModuleConfig>();
+
+        filteredModuleDatas.putAll(moduleDatas);
+        filteredModuleConfigs.addAll(moduleConfigs);
+
+        for (Entry<String, ModuleData> entry : moduleDatas.entrySet()) {
+            String key = entry.getKey();
+            ModuleData moduleData = entry.getValue();
+
+            if (moduleData.getImageGridData() == null && moduleData.getOpenHTMLEditorial() == null && moduleData.getIcons() == null) {
+                if (moduleData.getProducts().size() < 3) {
+                    for (ModuleConfig moduleConfig : moduleConfigs) {
+                        if (moduleConfig.getModuleId() == key) {
+                            filteredModuleConfigs.remove(moduleConfig);
+                        }
+                    }
+                    filteredModuleDatas.remove(key);
+                }
+            }
+        }
+
+        filteredModuleContainerData.setData(filteredModuleDatas);
+        filteredModuleContainerData.setConfig(filteredModuleConfigs);
+
+        return filteredModuleContainerData;
+    }
+
+    /**
+     * 
+     * @param moduleContainer
+     * 
+     * @author dviktor
+     * 
+     *         Decorates all modules with their position and id as a virtual category. ModuleGroups won't be assigned a position.
+     * @param moduleContainerId
+     */
+    private void decorateVirtualCategory(ModuleContainerData moduleContainer, String moduleContainerId) {
+        List<ModuleConfig> moduleConfigs = moduleContainer.getConfig();
+        int moduleVirtualCategoryPosition = 1;
+
+        for (ModuleConfig moduleConfig : moduleConfigs) {
+            if (moduleConfig.getSourceType() != "MODULE_GROUP") {
+                moduleConfig.setModuleVirtualCategory(moduleContainerId + ":POSITION " + moduleVirtualCategoryPosition + ":" + moduleConfig.getModuleId());
+                moduleVirtualCategoryPosition++;
+            }
+        }
     }
 
 }

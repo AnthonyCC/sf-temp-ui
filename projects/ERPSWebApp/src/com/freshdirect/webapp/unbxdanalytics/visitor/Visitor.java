@@ -1,6 +1,10 @@
 package com.freshdirect.webapp.unbxdanalytics.visitor;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.unbxdanalytics.service.EventLoggerService;
 
 /**
  * This class represents the visitor type of
@@ -23,6 +27,10 @@ public final class Visitor {
     private final String uid;
 
     private final VisitType visitType;
+    
+    private static final String UNKNOWN_UID = "URANDOM"; 
+    
+    private static final Logger LOGGER = LoggerFactory.getInstance(Visitor.class);
 
     /**
      * Default way to obtain a Visitor
@@ -33,9 +41,11 @@ public final class Visitor {
      */
     public static Visitor withUser(FDUserI user) {
         
-        final String uid = (user.getCookie() == null ? Double.toString(Math.random()) : user.getCookie());
+        final String uid = (user.getPrimaryKey() == null ? UNKNOWN_UID : user.getPrimaryKey());
 
         final VisitType visitType = VisitTypeCache.getInstance().createVisitType(uid);
+        
+        LOGGER.debug("UNBXDVISTOR:" +uid+ "--->" +visitType+ "--->" +user.getCookie());
         
         return new Visitor(uid, visitType);
     }
@@ -46,7 +56,7 @@ public final class Visitor {
      * 
      * @param uid
      */
-    public Visitor(String uid, VisitType visitType) {
+    private Visitor(String uid, VisitType visitType) {
         this.uid = uid;
         this.visitType = visitType;
     }

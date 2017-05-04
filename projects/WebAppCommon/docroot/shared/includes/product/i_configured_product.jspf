@@ -121,9 +121,11 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
         }
 
     }
+    FDProductInfo defaultProductInfo = FDCachedFactory.getProductInfo(defaultSku.getSkuCode());
+    FDProduct defaultProduct = FDCachedFactory.getProduct(defaultProductInfo);
+    
 
-    FDProduct defaultProduct = FDCachedFactory.getProduct( FDCachedFactory.getProductInfo(defaultSku.getSkuCode()) );
-
+    
     if (!hasTemplate) {
 
         String reqQuantity = request.getParameter("quantity");
@@ -168,7 +170,7 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
       }
     }
 
-    boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays(ProductInfoUtil.getPickingPlantId(productNode.getDefaultSku().getProductInfo())).isEmpty();
+    boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays(ProductInfoUtil.getPickingPlantId(defaultProductInfo)).isEmpty();
     %>
 
     <%@ include file="/shared/includes/product/i_pricing_script.jspf" %>

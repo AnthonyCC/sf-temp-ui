@@ -26,6 +26,12 @@
 		<filter-class>com.freshdirect.webapp.filters.WebTrackingCodeFilter</filter-class>
 	</filter>
 	<filter>
+		<description>User just logged in status flag flipping mechanic</description>
+		<display-name>UpdateFDSessionUserFilter</display-name>
+		<filter-name>UpdateFDSessionUserFilter</filter-name>
+		<filter-class>com.freshdirect.webapp.filters.UpdateFDSessionUserFilter</filter-class>
+	</filter>
+	<filter>
 		<description>This filter creates availability horizon and today's date as threadlocal</description>
 		<display-name>OncePerRequestDateFilter</display-name>
 		<filter-name>OncePerRequestDateFilter</filter-name>
@@ -53,6 +59,10 @@
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>TrackingCodeFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>UpdateFDSessionUserFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
@@ -614,6 +624,11 @@
 		<welcome-file>index.html</welcome-file>
 		<welcome-file>index.htm</welcome-file>
 	</welcome-file-list>
+    <error-page>
+        <!-- Missing resource -->
+        <error-code>404</error-code>
+        <location>/notfound.jsp</location>
+    </error-page>
 	<error-page>
 		<error-code>500</error-code>
 		<location>/error.jsp</location>

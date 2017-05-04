@@ -79,6 +79,9 @@ public class FDStandingOrder extends ModelSupport {
 	
 	double tipAmount;
 	
+	private boolean reminderOverlayForNewSo;
+	
+	
 	public FDStandingOrder() {
 		super();
 	}
@@ -642,5 +645,12 @@ public class FDStandingOrder extends ModelSupport {
 	
 	public String getLastErrorCode(){
 		return this.lastError;
+	}
+
+	public boolean isReminderOverlayForNewSo() {
+		return reminderOverlayForNewSo;
+	}
+	public void setReminderOverlayForNewSo(boolean reminderOverlayForNewSo) {
+		this.reminderOverlayForNewSo = reminderOverlayForNewSo;
 	}
 }

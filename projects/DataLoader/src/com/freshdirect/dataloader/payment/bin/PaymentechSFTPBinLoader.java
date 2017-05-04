@@ -77,18 +77,19 @@ public class PaymentechSFTPBinLoader /*implements BINLoader*/ {
 	
 	private static void loadBINs(FileContext ctx) throws UnknownHostException, IOException, CreateException, EJBException, RemoteException, SapException, FDResourceException {
 		String timestamp = SF.format(new Date());
-		//String timestamp ="2013_05_30_10_24";
+
 		//make the dfr file
 		System.out.println("DataLoaderProperties.getWorkingDir() :"+DataLoaderProperties.getWorkingDir());
-		File visaBinFile = new File(DataLoaderProperties.getWorkingDir() + "Paymentech_VISA_" + timestamp + ".dfr");
-		File mcBinFile = new File(DataLoaderProperties.getWorkingDir() + "Paymentech_MC_" + timestamp + ".dfr");
+		File binFileA = new File(DataLoaderProperties.getWorkingDir() + "Paymentech_BIN_A_" + timestamp + ".dfr");
+		File binFileB = new File(DataLoaderProperties.getWorkingDir() + "Paymentech_BIN_B_" + timestamp + ".dfr"); 
+
 		
 		boolean getFileFromProcessor=ctx.downloadFiles();
 		
 		if(getFileFromProcessor) {
-			downloadFile(ctx,visaBinFile, mcBinFile);
+			downloadFile(ctx,binFileA, binFileB);
 		}
-		loadBinFiles(visaBinFile, mcBinFile);
+		loadBinFiles(binFileA, binFileB);
 	}
 	
 	public static void parseFile(InputStream fileStream, BINContext context) {
@@ -98,7 +99,7 @@ public class PaymentechSFTPBinLoader /*implements BINLoader*/ {
 		List<BINInfo> binInfos=new ArrayList<BINInfo>(5000);
 		int recordCount=0;
 		int counter=0;
-		
+		EnumCardType cardType=null;
 		String seq="";
 		String lowRange="";
 		String highRange="";
@@ -120,6 +121,11 @@ public class PaymentechSFTPBinLoader /*implements BINLoader*/ {
 				}
 				if(isHeaderRecord(line)) {
 					processedHeader=true;
+					if(isVISA(line))
+						cardType=EnumCardType.VISA;
+					else 
+						cardType=EnumCardType.MC;
+					
 				} else if (isTrailerRecord(line)){
 					if(!processedHeader) {
 						String msg="Error at line " + lineNumber + ": Invalid data (Trailer record without Header record.)"; 
@@ -139,7 +145,7 @@ public class PaymentechSFTPBinLoader /*implements BINLoader*/ {
 					seq=line.substring(0,8);
 					lowRange=line.substring(8,17);
 					highRange=line.substring(17,26);
-					binInfos.add(new BINInfo(Long.parseLong(lowRange),Long.parseLong(highRange),Long.parseLong(seq),context.getCardType()));
+					binInfos.add(new BINInfo(Long.parseLong(lowRange),Long.parseLong(highRange),Long.parseLong(seq),cardType));
 					counter++;
 				}
 				
@@ -164,9 +170,16 @@ public class PaymentechSFTPBinLoader /*implements BINLoader*/ {
 	}
 	
 	private static boolean isHeaderRecord(String line) {
-		return (line.startsWith("00000000VIUSDBTBIN") || line.startsWith("00000000MCUSDBTBIN"))?true:false;
+		return (isVISA(line) || isMC(line))?true:false;
 	}
 	
+	private static boolean isVISA(String header) {
+		return header.startsWith("00000000VIUSDBTBIN");
+	}
+	
+	private static boolean isMC(String header) {
+		return header.startsWith("00000000MCUSDBTBIN");
+	}
 	
 	private static void processHeader(String header, EnumCardType cardType) throws BadDataException {
 		if(EnumCardType.VISA.equals(cardType)|| EnumCardType.MC.equals(cardType)) {

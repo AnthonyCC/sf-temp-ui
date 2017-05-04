@@ -106,6 +106,9 @@ public class SearchController extends BaseController {
             String departmentToFilter = null;
             String pageType = request.getParameter("pageType");
             String searchParams = request.getParameter("searchParams");
+            String pdUserId = request.getParameter("pdUserId");
+            String lat = request.getParameter("lat");
+            String platform = request.getParameter("platform");
 
             // Retrieving any possible payload
             String postData = getPostData(request, response);
@@ -123,6 +126,9 @@ public class SearchController extends BaseController {
                 departmentToFilter = requestMessage.getDepartment();
                 pageType = requestMessage.getPageType();
                 searchParams = requestMessage.getSearchParams();
+                pdUserId = requestMessage.getPdUserId();
+                lat = requestMessage.getLat();
+                platform = requestMessage.getPlatform();
             }
             
             SearchResult data = new SearchResult();
@@ -276,6 +282,9 @@ public class SearchController extends BaseController {
         SearchQuery requestMessage = null;
         String pageType = request.getParameter("pageType");
         String searchParams = request.getParameter("searchParams");
+        String pdUserId = request.getParameter("pdUserId");
+        String lat = request.getParameter("lat");
+        String platform = request.getParameter("platform");
 
         // Retrieving any possible payload
         String postData = getPostData(request, response);
@@ -293,6 +302,9 @@ public class SearchController extends BaseController {
             departmentToFilter = requestMessage.getDepartment();
             pageType = requestMessage.getPageType();
             searchParams = requestMessage.getSearchParams();
+            pdUserId = requestMessage.getPdUserId();
+            lat = requestMessage.getLat();
+            platform = requestMessage.getPlatform();
         }
 
 

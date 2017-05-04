@@ -88,12 +88,12 @@ var FreshDirect = FreshDirect || {};
 		populateCmData('variantId',event);
 	});
 
-	$(document.body).on('click','[manual_cm_sp]',function(event){
+	$(document.body).on('click','[data-cm-click]',function(event){
     if($(event.currentTarget).closest('[carousel-page-number]').length > 0) {
   		var coremetricsItem = [],
           dataString,
           pageNumber = $(event.currentTarget).closest('[carousel-page-number]')[0].attributes['carousel-page-number'].value,
-          carouselInfo = $(event.currentTarget).closest('[manual_cm_sp]')[0].attributes['manual_cm_sp'].value.split('-_-');
+          carouselInfo = $(event.currentTarget).closest('[data-cm-click]')[0].attributes['data-cm-click'].value.split('-_-');
 
       if(carouselInfo.length > 2) {
         dataString = carouselInfo[2] + '-_-' + pageNumber + '-_-' + carouselInfo[0];
@@ -128,7 +128,7 @@ var FreshDirect = FreshDirect || {};
 		try {
 			addCmData('coremetricsPageId',Coremetrics.pageId,event);
 			addCmData('coremetricsPageContentHierarchy',Coremetrics.pageContentHierarchy,event);
-			addCmData('coremetricsVirtualCategory',Coremetrics.virtualCategory,event);
+			addCmData('coremetricsVirtualCategory',event.cmData.coremetricsVirtualCategory || Coremetrics.virtualCategory,event);
 		} catch(e){
 			// TODO: log coremetrics errors
 		}

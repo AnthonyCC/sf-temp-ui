@@ -21,14 +21,18 @@
 		<c:when test="<%=!FDStoreProperties.isSiteMapEnabled()%>">
 			Sitemap is disabled
 		</c:when>		
-		<c:when test="${empty siteMapData}">
-			Please provide password to see sitemap
-			<form method="post">
-				<input type="password" name="password">
-				<input type="submit" value="Submit">
-			</form>
+		<c:when test="${not empty siteMapGenerated}">
+            Sitemap is created. Please choose from options to take other action. 
+            <form method="post">
+                <select name="type">
+                    <option value="preview">Preview sitemap</option>
+                    <option value="generate">Generate sitemap</option>
+                </select>
+                <input type="password" name="password">
+                <input type="submit" value="Submit">
+            </form>
 		</c:when>
-		<c:otherwise>
+		<c:when test="${not empty siteMapData}">
 			<!-- 	<div id="log">Processing</div> -->
 			<div class="control">
 				<button id="btn_open_all">open all</button>
@@ -45,6 +49,17 @@
 			</script>
 			<script src="/assets/javascript/d3.v3.min.js" charset="utf-8"></script>
 			<script src="/assets/javascript/fd/sitemap/sitemap.js" charset="utf-8"></script>
+		</c:when>
+		<c:otherwise>
+            Please provide password to see sitemap
+            <form method="post">
+                <select name="type">
+                    <option value="preview">Preview sitemap</option>
+                    <option value="generate">Generate sitemap</option>
+                </select>
+                <input type="password" name="password">
+                <input type="submit" value="Submit">
+            </form>
 		</c:otherwise>
 	</c:choose>
 

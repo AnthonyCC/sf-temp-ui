@@ -104,6 +104,12 @@
 
 			$.smartbanner({daysHidden: 0, daysReminder: 0,author:'FreshDirect',button: 'VIEW'});
 			if(!$jq('#smartbanner.shown').is(':visible')) { $jq('#smartbanner').show(); }
+			$.each($('a[href*="/default/empty.gif/"]'), function(i, e) {
+                $(e).attr("aria-hidden", "true");
+                $(e).attr("tabindex", "-1");
+                $(e).attr("role", "presentation");
+                console.log('updateOAS', event,id);
+			 });
 
 		});
 	})($jq);
@@ -152,16 +158,6 @@
     %>
 
     dataLayer.push(gtm_userdata);
-
-    <% if (gtm_user.hasJustLoggedIn()) { %>
-    // user logged in
-    document.cookie = "hasJustLoggedIn=true;path=/";
-    <% } %>
-
-    <% if (gtm_user.hasJustSignedUp()) { %>
-    // user signed up
-    document.cookie = "hasJustSignedUp=true;path=/";
-    <% } %>
   </script>
   <% } %>
 

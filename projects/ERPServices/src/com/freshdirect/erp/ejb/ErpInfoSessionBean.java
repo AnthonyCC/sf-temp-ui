@@ -399,7 +399,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
         boolean isAlcohol=StringUtil.isEmpty(rs.getString("ALCOHOLIC_CONTENT"))?false:true;
         fetchErpProductInfoModel(rs, matNos, matPrices, matPlants, matSalesAreas, days_fresh);
         while (rs.next()) {
-        	fetchErpProductInfoModel(rs, matNos, matPrices, matPlants,	matSalesAreas, days_fresh);
+        	fetchErpProductInfoModel(rs, matNos, matPrices, matPlants,	matSalesAreas, rs.getString("daysfresh"));
         }
 
         return new ErpProductInfoModel(
