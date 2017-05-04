@@ -46,6 +46,11 @@
 		</fileset>
 	</path>
 	<property name="uilib"			value="${basedir}/uilib" />
+	<path id="uilib.classpath">
+	<fileset dir="${uilib}">
+		<include name="*.jar"/>
+	</fileset>
+	</path>
 
 	<!-- UI configurations ends -->
 	
@@ -130,6 +135,8 @@
 		<pathelement location="${thirdparty.home}/fdcommerce-data.jar"/>
 		<pathelement location="${thirdparty.home}/fdcommerce-domain.jar"/>
         <pathelement location="${thirdparty.home}/sitemapgen4j-1.0.6.jar"/>
+	<pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
+	<pathelement location="${thirdparty.home}/struts.jar"/>
 	</path>
 
 	<path id="testing.classpath">
@@ -3084,17 +3091,9 @@
 	</target>
 	
 	<target name="erpswebapp_ui" description="Build ERPSWebApp UI" depends="prereq_ui">
-		<path id="erpswebapp_ui.classpath">
-			<pathelement location="${tomcat.home}/lib/servlet-api.jar"/>
-			<pathelement location="${tomcat.home}/lib/jsp-api.jar"/>
-			<pathelement location="${tomcat.home}/lib/jasper-el.jar"/>
-			<pathelement location="${tomcat.home}/lib/jasper.jar"/>			
-			<pathelement location="${thirdparty.home}/FDClient.jar"/>
-			<pathelement location="${thirdparty.home}/wlthint3client.jar"/>
-			<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
-			<pathelement location="${thirdparty.home}/httpclient-4.5.jar"/>
-			<pathelement location="${thirdparty.home}/httpcore-4.4.1.jar"/>
-			<pathelement location="${thirdparty.home}/httpmime-4.5.jar"/>
+		<path id="erpswebapp_ui.classpath">			
+			<path refid="tomcat.classpath"/>
+			<path refid="uilib.classpath"/>
 		</path>
 
 		<makeUIProject
@@ -3122,7 +3121,6 @@
 				debug="${javac.debug}"
 				source="@{source}">
 						<classpath>
-							<path refid="common.classpath"/>
 							<path refid="@{classpathref}"/>
 						</classpath>
 					</javac>
@@ -3130,8 +3128,6 @@
 				</try>
 				<catch>
 					<record name="${work.dir}/logs/log.txt" action="stop"/>
-					<!-- send email...compilation failed -->
-					<!--<emailCompilationError projectName="@{project}"/>-->
 					<fail/>
 				</catch>
 			</trycatch>
@@ -3149,53 +3145,16 @@
 					<exclude name="**/*.java"/>
 				</fileset>
 			</jar>
-			<path id="@{project}.instrsrc">
-				<pathelement location="${work.dir}/@{project}"/>
-			</path>
-			<mkdir dir="${work.dir}/@{project}.instrout"/>
-	        <!-- instrument emma -->
-	        <emma enabled="${emma.enabled}">
-	            <instr instrpathref="@{project}.instrsrc"
-	                destdir="${work.dir}/@{project}.instrout"
-	                metadatafile="${work.dir}/logs/metadata-@{project}.emma"
-	                merge="true">
-	            </instr>
-	        </emma>
-			<!-- copy non-instrumened resources to instrout -->
-			<copy todir="${work.dir}/@{project}.instrout" overwrite="false">
-				<fileset dir="${work.dir}/@{project}"/>
-			</copy>
-	        <jar destfile="${work.dir}/@{project}-emma.jar">
-                <manifest>
-                    <attribute name="Specification-Version" value="${build.counter}"/>
-                    <attribute name="Specification-Vendor" value="FreshDirect LLC"/>
-                    <attribute name="Implementation-Title" value="@{project}"/>
-                    <attribute name="Implementation-Version" value="${build.counter}"/>
-                    <attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
-                    <attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
-                </manifest>
-                <fileset dir="${work.dir}/@{project}.instrout" />
-                <fileset dir="${projects.dir}/@{project}/src">
-                    <exclude name="**/*.java"/>
-                </fileset>
-            </jar>
 		</sequential>
 	</macrodef>
 	
 	<target name="fdwebsite_ui" description="FDWebSite .war file" depends="erpswebapp_ui">
 		<path id="fdwebsite_ui.classpath">
-			<pathelement location="${jdk.home}/lib/tools.jar"/>			
+			<!--
+			<pathelement location="${jdk.home}/lib/tools.jar"/>-->
 			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
-			<pathelement location="${tomcat.home}/lib/servlet-api.jar"/>
-			<pathelement location="${tomcat.home}/lib/jsp-api.jar"/>
-			<pathelement location="${tomcat.home}/lib/jasper-el.jar"/>
-			<pathelement location="${tomcat.home}/lib/jasper.jar"/>
-			<pathelement location="${thirdparty.home}/FDClient.jar"/>
-			<pathelement location="${thirdparty.home}/wlthint3client.jar"/>
-			<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
-			<pathelement location="${thirdparty.home}/httpclient-4.5.jar"/>
-			<pathelement location="${thirdparty.home}/httpcore-4.4.1.jar"/>
-			<pathelement location="${thirdparty.home}/httpmime-4.5.jar"/>
+			<path refid="tomcat.classpath"/>
+			<path refid="uilib.classpath"/>
 		</path>
 		<makeUIWebProject
 			project="FDWebSite"
@@ -3247,7 +3206,6 @@
 								debug="${javac.debug}"
 								source="${javac.source}">
 								<classpath>
-									<path refid="common.classpath"/>
 									<path refid="@{classpathref}"/>
 								</classpath>
 							</javac>
@@ -3255,12 +3213,9 @@
 						</try>
 						<catch>
 							<record name="${work.dir}/logs/log.txt" action="stop"/>
-							<!-- send email...compilation failed -->
-							<!--<emailCompilationError projectName="(jsp) @{project}"/>-->
 							<fail>Compiling web project: @{project}</fail>
 						</catch>
 					</trycatch>
-
 					<!-- copy non-java resources -->
 					<copy todir="${work.dir}/@{project}/WEB-INF/classes">
 						<fileset dir="${projects.dir}/@{project}/src" excludes="**/*.java"/>
@@ -3283,8 +3238,6 @@
 					<taskdef classname="org.apache.jasper.JspC" name="jasper">
 						<classpath>
 							<path refid="@{classpathref}"/>
-							<path refid="tomcat.classpath"/>
-							<path refid="common.classpath"/>
 						</classpath>
 					</taskdef>
 	
@@ -3301,12 +3254,7 @@
 			source="${javac.source}"
 			encoding="utf-8">  
 			<classpath>
-				<fileset dir="${tomcat.home}/lib">
-					<include name="*.jar"/>
-				</fileset>
-				<path refid="common.classpath"/>
 				<path refid="@{classpathref}"/>
-				<path refid="tomcat.classpath"/>
 			</classpath>
 			<include name="**" />
 			<exclude name="**/tags/**" />
