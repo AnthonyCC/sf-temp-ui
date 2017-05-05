@@ -10,7 +10,11 @@ import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.dataloader.LoaderException;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.model.BatchModel;
+import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.logistics.analytics.model.TimeslotEvent;
+import com.freshdirect.logistics.delivery.dto.Customer;
+import com.freshdirect.logistics.delivery.model.EnumReservationType;
 
 public interface ICommerceService {
 
@@ -37,6 +41,12 @@ public interface ICommerceService {
 
 	public Map<String , Float> getDYFModelGlobalProductscores() throws FDResourceException, RemoteException;
 	// Map<ContentKey, Float>getDYFModelProductFrequencies(String customerID)
+
+	public FDReservation reserveTimeslot(String timeslotId, String customerId,
+			EnumReservationType type, Customer customer, boolean chefsTable,
+			String ctDeliveryProfile, boolean isForced, TimeslotEvent event,
+			boolean hasSteeringDiscount, String deliveryFeeTier)
+			throws FDResourceException;
 	
 
 } 

@@ -1,28 +1,10 @@
 package com.freshdirect.payment.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.BeanUtils;
-
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.ecommerce.data.dlv.AddressData;
-import com.freshdirect.ecommerce.data.dlv.CustomerAvgOrderSizeData;
-import com.freshdirect.ecommerce.data.dlv.CustomerData;
 import com.freshdirect.ecommerce.data.dlv.OrderContextData;
-import com.freshdirect.ecommerce.data.dlv.OrderHistoryData;
-import com.freshdirect.ecommerce.data.dlv.ProfileData;
 import com.freshdirect.ecommerce.data.dlv.RoutingModelData;
-import com.freshdirect.ecommerce.data.dlv.TimeslotEventData;
-import com.freshdirect.ecommerce.data.dlv.TimeslotEventDetailData;
 import com.freshdirect.logistics.analytics.model.RoutingModel;
-import com.freshdirect.logistics.analytics.model.TimeslotEvent;
-import com.freshdirect.logistics.analytics.model.TimeslotEventDetail;
-import com.freshdirect.logistics.delivery.dto.Address;
-import com.freshdirect.logistics.delivery.dto.Customer;
-import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
-import com.freshdirect.logistics.delivery.dto.OrderHistory;
-import com.freshdirect.logistics.delivery.dto.Profile;
 import com.freshdirect.logistics.delivery.model.OrderContext;
 
 public class DlvManagerEncoder {
@@ -41,7 +23,7 @@ public class DlvManagerEncoder {
 		return orderContextData;
 	}
 
-	public static TimeslotEventData encodeTimeSlotEvent(TimeslotEvent event) {
+	/*public static TimeslotEventData encodeTimeSlotEvent(TimeslotEvent event) {
 		TimeslotEventData timeslotEvent = new TimeslotEventData(event.getTransactionSource(), 
 				event.isDlvPassApplied(), event.getDeliveryCharge(), event.isDeliveryChargeWaived(), event.isZoneCtActive(), event.getFdUserId(), event.getCompanyCode());
 		if(event.getEventType() !=null)
@@ -70,9 +52,9 @@ public class DlvManagerEncoder {
 		if(event.getDetail()!=null)
 		for (TimeslotEventDetail timeslotEventDetail : event.getDetail()) {
 			TimeslotEventDetailData details = new TimeslotEventDetailData();
-			BeanUtils.copyProperties(timeslotEventDetail, details);
+//			BeanUtils.copyProperties(timeslotEventDetail, details);
 			
-			/*details.setWs_amount(timeslotEventDetail.getWs_amount());
+			details.setWs_amount(timeslotEventDetail.getWs_amount());
 			details.setAlcohol_restriction(timeslotEventDetail.isAlcohol_restriction());
 			details.setHoliday_restriction(timeslotEventDetail.isHoliday_restriction());
 			details.setEcofriendlyslot(timeslotEventDetail.isEcofriendlyslot());
@@ -81,9 +63,10 @@ public class DlvManagerEncoder {
 			details.setCtCapacity(timeslotEventDetail.getCtCapacity());
 			details.setStoreFrontAvailable(timeslotEventDetail.getStoreFrontAvailable());
 			details.setCtAllocated(timeslotEventDetail.getCtAllocated());
-			details.setTotalAllocated(timeslotEventDetail.getTotalAllocated());*/
+			details.setTotalAllocated(timeslotEventDetail.getTotalAllocated());
+			if(timeslotEventDetail.getRoutingModel()!=null)
 			details.setRoutingModel(loadRountineModel(timeslotEventDetail.getRoutingModel()));
-			/*details.setZoneCode(timeslotEventDetail.getZoneCode());
+			details.setZoneCode(timeslotEventDetail.getZoneCode());
 			details.setStartTime(timeslotEventDetail.getStartTime());
 			details.setStopTime(timeslotEventDetail.getStopTime());
 			details.setRoutingStartTime(timeslotEventDetail.getRoutingStartTime());
@@ -94,12 +77,12 @@ public class DlvManagerEncoder {
 			details.setGeoRestricted(timeslotEventDetail.isGeoRestricted());
 			details.setId(timeslotEventDetail.getId());
 			details.setGrName(timeslotEventDetail.getGrName());
-			details.setBoundaryCode(timeslotEventDetail.getBoundaryCode());*/
+			details.setBoundaryCode(timeslotEventDetail.getBoundaryCode());
 			timeslotEventDetails.add(details);
 		}
 		
 		return timeslotEventDetails;
-	}
+	}*/
 
 	private static RoutingModelData loadRountineModel(RoutingModel routingModel) {
 //		RoutingModelData  routingModelData = new RoutingModelData();
@@ -112,7 +95,7 @@ public class DlvManagerEncoder {
 		return routingModelData;
 	}
 
-	public static CustomerData encodeCustomer(Customer customer) {
+	/*public static CustomerData encodeCustomer(Customer customer) {
 		CustomerData customerData = new CustomerData();
 		BeanUtils.copyProperties(customer, customerData);
 		CustomerAvgOrderSize customerAvgOrderSize = customer.getOrderSize();
@@ -156,18 +139,18 @@ public class DlvManagerEncoder {
 			customerData.setOrderHistory(orderHistoryData);
 		}
 		return customerData;
-	}
+	}*/
 
-	private static AddressData decodeAddress(Address address) {
+	/*private static AddressData decodeAddress(Address address) {
 		AddressData addressData = new AddressData();
-	/*	AddressData addressData = new AddressData(address.getId(), address.getAddress1(), address.getAddress2(), address.getApartment(), address.getCity(), address.getState(), address.getZipCode(), address.getCountry(), 
+		AddressData addressData = new AddressData(address.getId(), address.getAddress1(), address.getAddress2(), address.getApartment(), address.getCity(), address.getState(), address.getZipCode(), address.getCountry(), 
 				address.getFirstName(), address.getLastName(), address.getScrubbedStreet(), address.getLongitude(), address.getLatitude(), address.getServiceType(), address.getCompanyName());
-	*/	try {
+		try {
 			BeanUtils.copyProperties(address, addressData);
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
 		return addressData;
-	}
+	}*/
 
 }

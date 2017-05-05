@@ -54,6 +54,7 @@ import com.freshdirect.logistics.delivery.model.DeliverySignature;
 import com.freshdirect.logistics.delivery.model.DeliverySummary;
 import com.freshdirect.logistics.delivery.model.EnumApplicationException;
 import com.freshdirect.logistics.delivery.model.RouteNextel;
+import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.sms.CrmSmsDisplayInfo;
 
 public class AirclicManager {
@@ -375,9 +376,13 @@ public class AirclicManager {
 
 	public Map<String, DeliveryException> getCartonScanInfo()
 			throws FDResourceException {
+		Map<String, DeliveryException> response;
 		try{
 			DlvManagerSB sb = getDlvManagerHome().create();
-			Map<String, DeliveryException> response =  sb.getCartonScanInfo();
+			if (FDStoreProperties.isStorefront2_0Enabled())
+				response = FDECommerceService.getInstance().getCartonScanInfo();
+			else
+				response =  sb.getCartonScanInfo();
 			return response;
 		}catch (RemoteException re) {
 			throw new FDResourceException(re);

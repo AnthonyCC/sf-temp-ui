@@ -13,8 +13,10 @@ import java.util.Set;
 import org.apache.log4j.Category;
 import org.springframework.http.HttpStatus;
 
+import com.bea.core.repackaged.aspectj.weaver.ReferenceType;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.dataloader.LoaderException;
@@ -28,13 +30,23 @@ import com.freshdirect.ecommerce.data.erp.pricing.PricingZoneData;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.model.BatchModel;
 import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
+import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.services.ICommerceService;
 
+import com.freshdirect.fdstore.FDPayPalServiceException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.logistics.analytics.model.TimeslotEvent;
+import com.freshdirect.logistics.delivery.dto.Customer;
+import com.freshdirect.logistics.delivery.model.EnumReservationType;
+import com.freshdirect.payment.service.DlvManagerEncoder;
 
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
+import com.freshdirect.ecommerce.data.dlv.CustomerData;
+import com.freshdirect.ecommerce.data.dlv.FDReservationData;
+import com.freshdirect.ecommerce.data.dlv.ReserveTimeParam;
+import com.freshdirect.ecommerce.data.dlv.TimeslotEventData;
 
 
 public class FDCommerceService extends AbstractLogisticsService implements ICommerceService{
@@ -59,6 +71,8 @@ public class FDCommerceService extends AbstractLogisticsService implements IComm
 	private static final String DYF_MODEL_API_GLOBAL_PRODUCT_SCORES = "DyfModel/globalproductscores/";
 	private static final String DYF_MODEL_API_PRODUCT_FREQUENCIES_MAP = "DyfModel/productfrequenciesmap/";
 	private static final String DYF_MODEL_API_PRODUCTS = "DyfModel/products/";
+	
+	private static final String DLV_MANAGER_RESERVE_TIME = "dlvmanager/reservetime";
 	
 	public void loadData(List<ErpZoneMasterInfo> zoneInfoList) throws RemoteException, LoaderException{
 		try {
@@ -465,6 +479,47 @@ public BatchModel getBatch(int versionID) throws FDResourceException{
 			throw new FDResourceException(e.getMessage(), e);
 		}
 
+	}
+	@Override
+	public FDReservation reserveTimeslot(String timeslotId, String customerId,
+			EnumReservationType type, Customer customer, boolean chefsTable,
+			String ctDeliveryProfile, boolean isForced, TimeslotEvent event,
+			boolean hasSteeringDiscount, String deliveryFeeTier) throws FDResourceException {
+
+		Request<ReserveTimeParam> request = new Request<ReserveTimeParam>();
+		FDReservation fdReservation = null;
+		
+		CustomerData customerData = getMapper().convertValue(customer, CustomerData.class);
+		TimeslotEventData timeSlotevent = getMapper().convertValue(event, TimeslotEventData.class);
+		ReserveTimeParam  reservationParam = new ReserveTimeParam(timeslotId, customerId,type.getName(),customerData,chefsTable,ctDeliveryProfile,isForced,timeSlotevent,hasSteeringDiscount,deliveryFeeTier);
+		request.setData(reservationParam);
+		
+		String inputJson = null;
+		try {
+			inputJson = buildRequest(request);
+			
+			String str = getData(inputJson, getFdCommerceEndPoint(DLV_MANAGER_RESERVE_TIME), String.class);
+			Response<FDReservationData> response =	getMapper().readValue(str, new TypeReference<Response<FDReservationData>>() {});
+				
+			
+//			Response<FDReservationData> response =	httpGetDataTypeMap(inputJson,getFdCommerceEndPoint(DLV_MANAGER_RESERVE_TIME), );
+			FDReservationData data = response.getData();
+			fdReservation = DlvManagerDecoder.decodeFDReservation(data);
+			
+		} catch (FDLogisticsServiceException e) {
+			throw new FDResourceException(e);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return fdReservation; 
+		
 	}
 
 }
