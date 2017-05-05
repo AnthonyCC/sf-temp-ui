@@ -32,6 +32,7 @@ import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.model.BatchModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
+import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
@@ -214,5 +215,9 @@ public interface IECommerceService {
 			Set<ErpRestrictedAvailabilityModel> restrictedInfos,
 			Set<String> deletedMaterials) throws FDResourceException;
 
-	
+	public Collection<FDGroup> loadAllGrpInfoMaster() throws RemoteException, FDResourceException;
+    
+    public int getLatestVersionNumber(String grpId) throws RemoteException, FDResourceException;   
+    
+    
 }
