@@ -152,7 +152,7 @@
                  $(e).attr("aria-hidden", "true");
                  $(e).attr("tabindex", "-1");
                  $(e).attr("role", "presentation");
-                 console.log('updateOAS', event,id);
+                 //console.log('updateOAS', event,id);
 			 });
 
 		});
