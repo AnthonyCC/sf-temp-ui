@@ -70,7 +70,6 @@ import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.model.BatchModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
-import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDPayPalServiceException;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -184,10 +183,6 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	
 	private static final String ERP_INVENTORY_UPDATE = "erpinventory/updateinventory";
 	private static final String ERP_INVENTORY_UPDATE_RESTRICT_INFO = "erpinventory/updaterestrictedinfos";
-	
-	private static final String GET_LATEST_VERSION = "groupinfo/latestversion";
-	private static final String LOAD_ALL_GRP_INFO_MASTER = "groupinfo/loadall";
-	
 	private static FDECommerceService INSTANCE;
 
 
@@ -1684,26 +1679,4 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		}
 		
 	}
-	/* (non-Javadoc)
-	 * @see com.freshdirect.payment.service.IECommerceService#loadAllGrpInfoMaster()
-	 */
-	@Override
-	public Collection<FDGroup> loadAllGrpInfoMaster() throws RemoteException, FDResourceException {
-		Response<Collection<FDGroup>> response = this.getData(getFdCommerceEndPoint(LOAD_ALL_GRP_INFO_MASTER), Response.class);
-		if(!response.getResponseCode().equals("OK"))
-			throw new FDResourceException(response.getMessage());
-		return response.getData();
-	}
-	/* (non-Javadoc)
-	 * @see com.freshdirect.payment.service.IECommerceService#getLatestVersionNumber(java.lang.String)
-	 */
-	@Override
-	public int getLatestVersionNumber(String grpId) throws RemoteException, FDResourceException {
-		Response<Integer> response = this.getData(getFdCommerceEndPoint(GET_LATEST_VERSION+"?groupid="+grpId), Response.class);
-		if(!response.getResponseCode().equals("OK"))
-			throw new FDResourceException(response.getMessage());
-		return response.getData();
-	}
-	
-	
 }
