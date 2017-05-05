@@ -30,7 +30,7 @@ var FreshDirect = FreshDirect || {};
 	                	$(e).attr("tabindex", "-1");
 	                    $(e).attr("role", "presentation");
 	                   $(e).attr("aria-hidden", "true");
-	                    console.log('updateOAS', event,id);
+	                    //console.log('updateOAS', event,id);
 	                });
 	            }
 	        });
