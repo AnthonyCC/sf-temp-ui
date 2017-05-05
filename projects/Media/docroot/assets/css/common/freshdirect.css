@@ -1027,6 +1027,11 @@ section.main .leftnav .menuBox li.selected:hover input[type="radio"] + span {
     opacity: .7;
 }
 
+.draftIndicator button {
+    cursor: pointer;
+    pointer-events: visible;
+}
+
 .draftIndicator[draft-name="main"],
 .draftIndicator[draft-name="Main"],
 .draftIndicator[draft-name="MAIN"] {
