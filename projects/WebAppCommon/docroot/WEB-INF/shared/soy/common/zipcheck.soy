@@ -13,7 +13,9 @@
     </div>
       <label>ZIP Code</label>
       <input type="text" name="zipCode" placeholder="Enter ZIP Code" onClick="this.select();" {if $data.zipCode}value="{$data.zipCode}"{/if}>
-      <button type="button" clear-zip-code></button>
+      <button type="button" clear-zip-code>
+        <span class="offscreen">Clear Zip Code</span>
+      </button>
       <div fdform-error-for="zipCode"></div>
     <div>
     </div>
