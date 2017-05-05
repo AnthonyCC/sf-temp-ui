@@ -52,6 +52,7 @@ import com.freshdirect.ecommerce.data.dlv.FutureZoneNotificationParam;
 import com.freshdirect.ecommerce.data.dlv.MunicipalityInfoData;
 import com.freshdirect.ecommerce.data.dlv.ReservationParam;
 import com.freshdirect.ecommerce.data.dlv.StateCountyData;
+import com.freshdirect.ecommerce.data.dlv.TimeslotEventData;
 import com.freshdirect.ecommerce.data.enums.BillingCountryInfoData;
 import com.freshdirect.ecommerce.data.enums.CrmCaseSubjectData;
 import com.freshdirect.ecommerce.data.enums.DeliveryPassTypeData;
@@ -1585,9 +1586,10 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			OrderContext context, ContactAddressModel address, boolean pr1,
 			TimeslotEvent event) throws FDResourceException {
 		Request<ReservationParam> request = new Request<ReservationParam>();
+		TimeslotEventData timeSlotEventData = getMapper().convertValue(event, TimeslotEventData.class);
 		ReservationParam  reservationParam = new ReservationParam(rsvId, customerId,
 				DlvManagerEncoder.encodeOrderContext(context), DlvManagerEncoder.encodeContactAddress(address) , pr1,
-				DlvManagerEncoder.encodeTimeSlotEvent(event));
+				timeSlotEventData);
 		request.setData(reservationParam);
 		String inputJson;
 		try {
@@ -1617,6 +1619,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	public void recommitReservation(String rsvId, String customerId,
 			OrderContext context, ContactAddressModel address, boolean pr1) throws FDResourceException {
 		Request<ReservationParam> request = new Request<ReservationParam>();
+		
 		ReservationParam  reservationParam = new ReservationParam(rsvId, customerId, DlvManagerEncoder.encodeOrderContext(context), DlvManagerEncoder.encodeContactAddress(address), pr1);
 		
 		request.setData(reservationParam);
