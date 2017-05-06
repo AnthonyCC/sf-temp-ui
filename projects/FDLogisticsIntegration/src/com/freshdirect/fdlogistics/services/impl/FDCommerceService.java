@@ -2,51 +2,38 @@ package com.freshdirect.fdlogistics.services.impl;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Category;
-import org.springframework.http.HttpStatus;
 
-import com.bea.core.repackaged.aspectj.weaver.ReferenceType;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.dataloader.LoaderException;
 import com.freshdirect.ecommerce.data.cms.CmsCreateFeedParams;
-//import com.freshdirect.cms.ContentKey;
-
-import com.freshdirect.ecommerce.data.common.Request;
-import com.freshdirect.ecommerce.data.common.Response;
-import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
-import com.freshdirect.ecommerce.data.erp.pricing.PricingZoneData;
-import com.freshdirect.erp.ErpCOOLInfo;
-import com.freshdirect.erp.model.BatchModel;
-import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
-import com.freshdirect.fdlogistics.model.FDReservation;
-import com.freshdirect.fdlogistics.services.ICommerceService;
-
-import com.freshdirect.fdstore.FDPayPalServiceException;
-import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.logistics.analytics.model.TimeslotEvent;
-import com.freshdirect.logistics.delivery.dto.Customer;
-import com.freshdirect.logistics.delivery.model.EnumReservationType;
-import com.freshdirect.payment.service.DlvManagerEncoder;
-
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.dlv.CustomerData;
 import com.freshdirect.ecommerce.data.dlv.FDReservationData;
 import com.freshdirect.ecommerce.data.dlv.ReserveTimeParam;
 import com.freshdirect.ecommerce.data.dlv.TimeslotEventData;
+import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
+import com.freshdirect.erp.ErpCOOLInfo;
+import com.freshdirect.erp.model.BatchModel;
+import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
+import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdlogistics.services.ICommerceService;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.logistics.analytics.model.TimeslotEvent;
+import com.freshdirect.logistics.delivery.dto.Customer;
+import com.freshdirect.logistics.delivery.model.EnumReservationType;
+//import com.freshdirect.cms.ContentKey;
 
 
 public class FDCommerceService extends AbstractLogisticsService implements ICommerceService{
@@ -504,19 +491,20 @@ public BatchModel getBatch(int versionID) throws FDResourceException{
 			
 //			Response<FDReservationData> response =	httpGetDataTypeMap(inputJson,getFdCommerceEndPoint(DLV_MANAGER_RESERVE_TIME), );
 			FDReservationData data = response.getData();
-			fdReservation = DlvManagerDecoder.decodeFDReservation(data);
+			DlvManagerDecoder.setMapper(getMapper());
+			fdReservation = DlvManagerDecoder.converter(data);
 			
 		} catch (FDLogisticsServiceException e) {
 			throw new FDResourceException(e);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new FDResourceException(e);
 		} catch (JsonMappingException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new FDResourceException(e);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new FDResourceException(e);
 		}
 		return fdReservation; 
 		

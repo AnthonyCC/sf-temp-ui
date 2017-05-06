@@ -48,8 +48,10 @@ import com.freshdirect.ecommerce.data.attributes.FlatAttributeCollection;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.customer.accounts.external.UserTokenData;
+import com.freshdirect.ecommerce.data.dlv.ContactAddressData;
 import com.freshdirect.ecommerce.data.dlv.FutureZoneNotificationParam;
 import com.freshdirect.ecommerce.data.dlv.MunicipalityInfoData;
+import com.freshdirect.ecommerce.data.dlv.OrderContextData;
 import com.freshdirect.ecommerce.data.dlv.ReservationParam;
 import com.freshdirect.ecommerce.data.dlv.StateCountyData;
 import com.freshdirect.ecommerce.data.dlv.TimeslotEventData;
@@ -1586,9 +1588,12 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			OrderContext context, ContactAddressModel address, boolean pr1,
 			TimeslotEvent event) throws FDResourceException {
 		Request<ReservationParam> request = new Request<ReservationParam>();
+		OrderContextData orderData = getMapper().convertValue(context, OrderContextData.class);
+		ContactAddressData contactAddressData = getMapper().convertValue(address, ContactAddressData.class);
+				
 		TimeslotEventData timeSlotEventData = getMapper().convertValue(event, TimeslotEventData.class);
-		ReservationParam  reservationParam = new ReservationParam(rsvId, customerId,
-				DlvManagerEncoder.encodeOrderContext(context), DlvManagerEncoder.encodeContactAddress(address) , pr1,
+		
+		ReservationParam  reservationParam = new ReservationParam(rsvId, customerId,orderData, contactAddressData , pr1,
 				timeSlotEventData);
 		request.setData(reservationParam);
 		String inputJson;
@@ -1619,8 +1624,9 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	public void recommitReservation(String rsvId, String customerId,
 			OrderContext context, ContactAddressModel address, boolean pr1) throws FDResourceException {
 		Request<ReservationParam> request = new Request<ReservationParam>();
-		
-		ReservationParam  reservationParam = new ReservationParam(rsvId, customerId, DlvManagerEncoder.encodeOrderContext(context), DlvManagerEncoder.encodeContactAddress(address), pr1);
+		OrderContextData orderData = getMapper().convertValue(context, OrderContextData.class);
+		ContactAddressData contactAddressData = getMapper().convertValue(address, ContactAddressData.class);
+		ReservationParam  reservationParam = new ReservationParam(rsvId, customerId, /*DlvManagerEncoder.encodeOrderContext(context)*/orderData, /*DlvManagerEncoder.encodeContactAddress(address)*/contactAddressData, pr1);
 		
 		request.setData(reservationParam);
 		String inputJson;
