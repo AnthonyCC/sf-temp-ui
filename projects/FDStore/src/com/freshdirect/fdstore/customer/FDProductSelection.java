@@ -832,7 +832,7 @@ public class FDProductSelection implements FDProductSelectionI {
 				pickingPlantId = prodInfo.getPickingPlantId(getUserContext().getPricingContext().getZoneInfo().getSalesOrg(),getUserContext().getPricingContext().getZoneInfo().getDistributionChanel());
 			}			
 			if(null == pickingPlantId && null !=getUserContext().getFulfillmentContext()){
-				LOGGER.info("PickingPlantId is not found for this product: "+prodInfo.getSkuCode());
+//				LOGGER.info("PickingPlantId is not found for this product: "+prodInfo.getSkuCode());
 				pickingPlantId = getUserContext().getFulfillmentContext().getPlantId();				
 			}
 		}
