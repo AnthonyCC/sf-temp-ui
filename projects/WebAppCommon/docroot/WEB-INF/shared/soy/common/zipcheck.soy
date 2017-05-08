@@ -43,8 +43,8 @@
     <h1 tabindex="0">Want to know when we're in your area?</h1>
     <form fdform="zipcheckNotify" data-zip="{$data}">
       <div class="email-address">
-        <label>Email</label>
-        <input type="email" name="email" placeholder="Enter email address">
+        <label for="zipcheckNotifyEmail">Email</label>
+        <input id="zipcheckNotifyEmail" type="email" name="email" placeholder="Enter email address">
         <input type="radio" class="offscreen" name="addressType" value="{$data.addressType}" checked>
         <input type="text" class="offscreen" name="zipCode" value="{$data.zipCode}">
       </div>
