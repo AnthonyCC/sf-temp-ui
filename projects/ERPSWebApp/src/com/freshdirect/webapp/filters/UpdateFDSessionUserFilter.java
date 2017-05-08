@@ -22,6 +22,9 @@ public class UpdateFDSessionUserFilter extends AbstractFilter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
 			throws IOException, ServletException {
 		filterChain.doFilter(request, response);
+				
+		if(((HttpServletRequest)request).getSession(false)!=null) {
+
 		FDSessionUser user = (FDSessionUser) ((HttpServletRequest)request).getSession().getAttribute(SessionName.USER);
 		if (user != null) {
 			if (user.hasJustLoggedIn()) {
@@ -34,6 +37,8 @@ public class UpdateFDSessionUserFilter extends AbstractFilter {
 				cookie.setPath("/");
 				((HttpServletResponse)response).addCookie(cookie);
 			}
+		}
+		
 		}
 	}
 
