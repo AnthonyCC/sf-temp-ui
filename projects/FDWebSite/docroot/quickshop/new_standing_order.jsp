@@ -98,7 +98,7 @@ if (true) {
 
 			<div class="standing-orders-3-create-header">
 				Complete your settings
-				<button class="standing-orders-3-new-start-shop cssbutton cssbutton-flat orange" disabled onclick="submitFormNewSO('create');">Start Shopping</a>
+				<button class="standing-orders-3-new-start-shop cssbutton cssbutton-flat purple nontransparent" disabled onclick="submitFormNewSO('create');">Start Shopping</a>
 				<button class="standing-orders-3-new-cancel-button cssbutton cssbutton-flat green transparent" type="button" onclick="standingOrderNewCancel()">Cancel</button>
 				<hr>
 				<!-- 
