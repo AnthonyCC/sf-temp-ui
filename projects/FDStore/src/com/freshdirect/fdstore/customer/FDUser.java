@@ -312,8 +312,6 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     private boolean isZipCheckPopupUsed = false;
     
-    private boolean sOCartLineMessages;
-    
     private Map<String,String> soCartLineMessagesMap=new HashMap<String,String>();
     
     public Date getTcAcknowledgeDate() {
@@ -3575,13 +3573,6 @@ public class FDUser extends ModelSupport implements FDUserI {
         this.isZipCheckPopupUsed = isZipCheckPopupUsed;
     }
 
-	public boolean issOCartLineMessages() {
-		return sOCartLineMessages;
-	}
-
-	public void setsOCartLineMessages(boolean sOCartLineMessages) {
-		this.sOCartLineMessages = sOCartLineMessages;
-	}
 	public Map<String, String> getSoCartLineMessagesMap() {
 		return soCartLineMessagesMap;
 	}

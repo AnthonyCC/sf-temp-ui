@@ -20,9 +20,7 @@ import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
-import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.services.ILogisticsService;
-import com.freshdirect.fdlogistics.services.helper.LogisticsDataDecoder;
 import com.freshdirect.fdlogistics.services.helper.LogisticsDataEncoder;
 import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
 import com.freshdirect.fdstore.FDResourceException;
@@ -46,7 +44,6 @@ import com.freshdirect.fdstore.standingorders.ejb.FDStandingOrdersHome;
 import com.freshdirect.fdstore.standingorders.ejb.FDStandingOrdersSB;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.logistics.controller.data.response.DeliveryReservations;
 import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
 
 /**

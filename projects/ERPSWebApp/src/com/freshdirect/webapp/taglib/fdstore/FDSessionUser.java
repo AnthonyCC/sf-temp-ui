@@ -166,8 +166,6 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
     private boolean zipPopupSeenInSession = false;
     
-    private boolean sOCartLineMessages;
-    
 	private Map<String,String> soCartLineMessagesMap=new HashMap<String,String>();
 
     @Override
@@ -2249,13 +2247,6 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         this.zipPopupSeenInSession = ZipPopupSeenInSession;
     }
 
-	public boolean issOCartLineMessages() {
-		return sOCartLineMessages;
-	}
-
-	public void setsOCartLineMessages(boolean sOCartLineMessages) {
-		this.sOCartLineMessages = sOCartLineMessages;
-	}
 	public Map<String, String> getSoCartLineMessagesMap() {
 		return soCartLineMessagesMap;
 	}

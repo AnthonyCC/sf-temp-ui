@@ -11,16 +11,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.log4j.Logger;
-
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpSaleInfo;
-import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.EnumCheckoutMode;
@@ -45,8 +41,6 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.util.FDTimeslotUtil;
 import com.freshdirect.framework.util.DateUtil;
-import com.freshdirect.framework.webapp.ActionError;
-import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.ajax.expresscheckout.location.data.FormLocationData;
 import com.freshdirect.webapp.ajax.expresscheckout.payment.data.FormPaymentData;
 import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFacade;
@@ -590,12 +584,12 @@ public class StandingOrderHelper {
 		}
 		return result;
 	}
-	public static Collection<Map<String, Object>> convertStandingOrderToSoy(Collection<FDStandingOrder> soList, boolean isUpcomignOrders, boolean isUpcomingDelivery) throws FDResourceException, PricingException, FDInvalidConfigurationException {
+	public static Collection<Map<String, Object>> convertStandingOrderToSoy(Collection<FDStandingOrder> soList, boolean isModifiedInfo, boolean isUpcomingDelivery) throws FDResourceException, PricingException, FDInvalidConfigurationException {
 		Collection<Map<String, Object>> result = new ArrayList<Map<String, Object>>(); 
 		for (FDStandingOrder so : soList) {
 			
 			
-			Map<String, Object> map = convertStandingOrderToSoy(isUpcomignOrders, so, isUpcomingDelivery);
+			Map<String, Object> map = convertStandingOrderToSoy(isModifiedInfo, so, isUpcomingDelivery);
 			
 			result.add(map);
 
@@ -612,7 +606,7 @@ public class StandingOrderHelper {
 	 * @throws FDInvalidConfigurationException
 	 * @throws PricingException
 	 */
-	public static Map<String, Object> convertStandingOrderToSoy(boolean isUpcomingorders, FDStandingOrder so, boolean isUpcomingDelivery)
+	public static Map<String, Object> convertStandingOrderToSoy(boolean isModifiedInfo, FDStandingOrder so, boolean isUpcomingDelivery)
 			throws FDResourceException, FDInvalidConfigurationException, PricingException {
 		boolean isEligibleToShowModifyInfo=false;
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -669,8 +663,7 @@ public class StandingOrderHelper {
 		map.put("currentDeliveryDate", map.get("deliveryDate"));
 		map.put("currentDeliveryTime", map.get("deliveryTime"));
 		map.put("currentDayOfWeek", map.get("dayOfWeek"));
-		map.put("reminderOverlayforNewSo", (Boolean) map.get("readyForActivation")?so.isReminderOverlayForNewSo(): false);
-		if("Y".equalsIgnoreCase(so.getActivate())&& isUpcomingorders)
+		if("Y".equalsIgnoreCase(so.getActivate())&& isModifiedInfo)
 			setUpcomingStandingOrder(so);
 		map.put("upComingOrderId", so.getUpcomingDelivery()!=null?so.getUpcomingDelivery().getErpSalesId():null);
 		map.put("isEligileToShowModifyInfo", isEligibleToShowModifyInfo);
@@ -779,7 +772,7 @@ public class StandingOrderHelper {
 
 	/* get a single Hashmap has all data that soy files need
 	 * can be used directly, returns "settingsData":{DATA} */
-	public static HashMap<String,Object> getAllSoData(FDUserI user, boolean isAddtoProduct, boolean isUpcomignOrders) {
+	public static HashMap<String,Object> getAllSoData(FDUserI user, boolean isAddtoProduct, boolean isModifiedInfo) {
 		HashMap<String,Object> allSoData = new HashMap<String,Object>();
 		HashMap<String,Object> soSettingsData = new HashMap<String,Object>();
 		String selectedSoId=null;
@@ -798,7 +791,7 @@ public class StandingOrderHelper {
 		try {
 			if(null != user.getIdentity()){
 				standingOrders = isAddtoProduct?getValidSO3(user): FDStandingOrdersManager.getInstance().loadCustomerNewStandingOrders(user.getIdentity());
-					soData = StandingOrderHelper.convertStandingOrderToSoy(standingOrders, isUpcomignOrders, false);
+					soData = StandingOrderHelper.convertStandingOrderToSoy(standingOrders, isModifiedInfo, false);
 			    if(null!=standingOrders && !standingOrders.isEmpty()){
 					for(FDStandingOrder fdStandingOrder:standingOrders){
 						if(fdStandingOrder.isDefault()){
@@ -1189,7 +1182,6 @@ private static String convert(Date time) {
 		FDStandingOrder fdStandingOrder = user.getCurrentStandingOrder();
 		try {
 			if (fdStandingOrder != null	&& "Y".equalsIgnoreCase(fdStandingOrder.getActivate())&& fdStandingOrder.getDeliveryMonthDate() != null) {
-				user.setsOCartLineMessages(true);
 				return fdStandingOrder.getDayOfWeek(fdStandingOrder, false)+ ", "+ fdStandingOrder.getDeliveryMonthDate()+ ", "
 						+ DateUtil.formatHourAMPMRange(fdStandingOrder.getStartTime(), user.getCurrentStandingOrder().getEndTime());
 			}
