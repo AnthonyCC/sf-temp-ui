@@ -20,6 +20,10 @@ public abstract class FDRecommendationEvent extends FDEvent implements Cloneable
 	private String contentId;
 	private Date timestamp;
 	
+	FDRecommendationEvent(){
+		super();
+	}
+	
 	/**
 	 * Constructor.
 	 * 
