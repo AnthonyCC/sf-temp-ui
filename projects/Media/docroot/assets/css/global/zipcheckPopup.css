@@ -25,6 +25,7 @@
 }
 
 #zipCheckPopup .zipcheck form[fdform="zipcheck"] input[name="zipCode"] {
+  display: block;
   max-width: 155px;
   padding-right: 20px;
 }
