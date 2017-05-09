@@ -49,6 +49,7 @@ import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.customer.accounts.external.UserTokenData;
 import com.freshdirect.ecommerce.data.delivery.sms.RecievedSmsData;
+import com.freshdirect.ecommerce.data.delivery.sms.SmsAlertETAInfoData;
 import com.freshdirect.ecommerce.data.delivery.sms.SmsOrderData;
 import com.freshdirect.ecommerce.data.dlv.ContactAddressData;
 import com.freshdirect.ecommerce.data.dlv.FutureZoneNotificationParam;
@@ -1708,7 +1709,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	public boolean smsOptIn(String customerId, String mobileNumber,String eStoreId) throws FDResourceException {
 		Response<Boolean> response = null;
 		try {
-		response = this.httpGetDataTypeMap((getFdCommerceEndPoint(SMS_ALERT_OPTIN)), new TypeReference<Response<Boolean>>() {});
+		response = this.httpGetDataTypeMap((getFdCommerceEndPoint(SMS_ALERT_OPTIN +"?customerId="+customerId+"&mobileNumber="+mobileNumber+"&eStoreId="+eStoreId)), new TypeReference<Response<Boolean>>() {});
 		if(!response.getResponseCode().equals("OK"))
 			throw new FDResourceException(response.getMessage());
 		} catch (FDResourceException e) {
@@ -1721,7 +1722,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	public boolean smsOptInNonMarketing(String customerId, String mobileNumber,String eStoreId) throws FDResourceException  {
 		Response<Boolean> response = null;
 		try {
-		response = this.httpGetDataTypeMap((getFdCommerceEndPoint(SMS_ALERT_OPTIN_NONMARKETING)), new TypeReference<Response<Boolean>>() {});
+		response = this.httpGetDataTypeMap((getFdCommerceEndPoint(SMS_ALERT_OPTIN_NONMARKETING +"?customerId="+customerId+"&mobileNumber="+mobileNumber+"&eStoreId="+eStoreId)), new TypeReference<Response<Boolean>>() {});
 		if(!response.getResponseCode().equals("OK"))
 			throw new FDResourceException(response.getMessage());
 		} catch (FDResourceException e) {
@@ -1734,7 +1735,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	public boolean smsOptInMarketing(String customerId, String mobileNumber,String eStoreId) throws FDResourceException {
 		Response<Boolean> response = null;
 		try {
-		response = this.httpGetDataTypeMap((getFdCommerceEndPoint(SMS_ALERT_OPTIN_MARKETING)), new TypeReference<Response<Boolean>>() {});
+		response = this.httpGetDataTypeMap((getFdCommerceEndPoint(SMS_ALERT_OPTIN_MARKETING +"?customerId="+customerId+"&mobileNumber="+mobileNumber+"&eStoreId="+eStoreId)), new TypeReference<Response<Boolean>>() {});
 		if(!response.getResponseCode().equals("OK"))
 			throw new FDResourceException(response.getMessage());
 		} catch (FDResourceException e) {
@@ -1745,13 +1746,9 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	}
 	@Override
 	public void expireOptin() throws FDResourceException {
-		Response<Void> response = null;
 		try {
 			String inputJson = null;
-			response = this.postData(inputJson, getFdCommerceEndPoint(SMS_ALERT_EXPIRE_OPTIN), Response.class);
-			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage());
-			}
+			this.postData(inputJson, getFdCommerceEndPoint(SMS_ALERT_EXPIRE_OPTIN), Response.class);
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new FDResourceException(e, "Unable to process the request.");
@@ -1790,11 +1787,11 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		return recieveSmsData;
 	}
 	@Override
-	public List<STSmsResponse> sendSmsToGateway(List<SmsAlertETAInfo> etaInfoList) throws FDResourceException {
+	public List<STSmsResponse> sendSmsToGateway(List<SmsAlertETAInfoData> etaInfoList) throws FDResourceException {
 		Response<List<STSmsResponse>> response =null;
 		try {
 			String inputJson;
-			Request<List<SmsAlertETAInfo>> recieveSmsData = new Request<List<SmsAlertETAInfo>>();
+			Request<List<SmsAlertETAInfoData>> recieveSmsData = new Request<List<SmsAlertETAInfoData>>();
 			recieveSmsData.setData(etaInfoList);
 			inputJson = buildRequest(recieveSmsData);
 			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SMS_TO_GATEWAY), new TypeReference<List<STSmsResponse>>() {});
@@ -1813,7 +1810,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		try {
 			Request<SmsOrderData> request = buildSmsOrderDataRequest(customerId, mobileNumber, orderId, eStoreId);
 			String inputJson = buildRequest(request);
-			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SMS_ALERT_ORDER_CANCEL), new TypeReference<Boolean>() {});
+			response = this.postData(inputJson, getFdCommerceEndPoint(SMS_ALERT_ORDER_CANCEL),Response.class);
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
@@ -1843,7 +1840,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		try {
 			Request<SmsOrderData> request = buildSmsOrderDataRequest(customerId, mobileNumber, orderId, eStoreId);
 			String inputJson = buildRequest(request);
-			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SMS_ALERT_ORDER_CONFIRM), new TypeReference<Boolean>() {});
+			response = this.postData(inputJson, getFdCommerceEndPoint(SMS_ALERT_ORDER_CONFIRM), Response.class);
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
@@ -1862,7 +1859,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		try {
 			Request<SmsOrderData> request = buildSmsOrderDataRequest(customerId, mobileNumber, orderId, eStoreId);
 			String inputJson = buildRequest(request);
-			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SMS_ALERT_ORDER_MODIFY), new TypeReference<Boolean>() {});
+			response = this.postData(inputJson, getFdCommerceEndPoint(SMS_ALERT_ORDER_MODIFY),Response.class);
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
