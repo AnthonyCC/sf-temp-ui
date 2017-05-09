@@ -642,7 +642,7 @@ public class UserUtil {
           }
 
           CmRegistrationTag.setPendingLoginEvent(session);
-          //logExtraLoginDetailsLogin(request, userId, password, mergePage, successPage, externalLogin, "LOGINSUCCESS"); THis is commented because it breaks using https://mobileapi.freshdirect.com/mobileapi/v/1/social/login/
+          logExtraLoginDetailsLogin(request, userId, password, mergePage, successPage, externalLogin, "LOGINSUCCESS"); //THis is commented because it breaks using https://mobileapi.freshdirect.com/mobileapi/v/1/social/login/
           
         } catch (FDResourceException fdre) {
         	logExtraLoginDetailsLogin(request, userId, password, mergePage, successPage, externalLogin, "LOGINFAILED");
