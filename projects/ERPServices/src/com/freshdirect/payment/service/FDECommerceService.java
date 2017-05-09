@@ -48,6 +48,8 @@ import com.freshdirect.ecommerce.data.attributes.FlatAttributeCollection;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.customer.accounts.external.UserTokenData;
+import com.freshdirect.ecommerce.data.delivery.sms.RecievedSmsData;
+import com.freshdirect.ecommerce.data.delivery.sms.SmsOrderData;
 import com.freshdirect.ecommerce.data.dlv.ContactAddressData;
 import com.freshdirect.ecommerce.data.dlv.FutureZoneNotificationParam;
 import com.freshdirect.ecommerce.data.dlv.MunicipalityInfoData;
@@ -73,6 +75,7 @@ import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.model.BatchModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDPayPalServiceException;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -88,6 +91,7 @@ import com.freshdirect.logistics.delivery.dto.Address;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
 import com.freshdirect.logistics.delivery.model.OrderContext;
 import com.freshdirect.logistics.delivery.model.SiteAnnouncement;
+import com.freshdirect.logistics.delivery.sms.model.SmsAlertETAInfo;
 import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.payment.BINInfo;
 import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
@@ -95,6 +99,7 @@ import com.freshdirect.referral.extole.ExtoleServiceException;
 import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
 import com.freshdirect.referral.extole.model.ExtoleResponse;
 import com.freshdirect.referral.extole.model.FDRafCreditModel;
+import com.freshdirect.sms.model.st.STSmsResponse;
 //import com.freshdirect.content.attributes.FlatAttributeCollection;
 //import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 
@@ -186,6 +191,17 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	
 	private static final String ERP_INVENTORY_UPDATE = "erpinventory/updateinventory";
 	private static final String ERP_INVENTORY_UPDATE_RESTRICT_INFO = "erpinventory/updaterestrictedinfos";
+
+	private static final String SMS_ALERT_OPTIN = "sms/optin";
+	private static final String SMS_ALERT_OPTIN_NONMARKETING = "sms/optin/nonmarketing";
+	private static final String SMS_ALERT_OPTIN_MARKETING = "sms/optin/marketing";
+	private static final String SMS_ALERT_ORDER_CANCEL = "sms/order/cancel";
+	private static final String SMS_ALERT_ORDER_CONFIRM = "sms/order/confirm";
+	private static final String SMS_ALERT_ORDER_MODIFY = "sms/order/modify";
+	private static final String SMS_ALERT_EXPIRE_OPTIN = "sms/optin/expire";
+	private static final String SMS_TO_GATEWAY = "sms/sendtogateway";
+	private static final String SMS_MESSAGE_UPDATE = "sms/update";
+	
 	private static FDECommerceService INSTANCE;
 
 
@@ -1687,5 +1703,176 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		throw new FDResourceException(e, "Unable to process the request.");
 		}
 		
+	}
+	@Override
+	public boolean smsOptIn(String customerId, String mobileNumber,String eStoreId) throws FDResourceException {
+		Response<Boolean> response = null;
+		try {
+		response = this.httpGetDataTypeMap((getFdCommerceEndPoint(SMS_ALERT_OPTIN)), new TypeReference<Response<Boolean>>() {});
+		if(!response.getResponseCode().equals("OK"))
+			throw new FDResourceException(response.getMessage());
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
+		}
+		return response.getData();
+	}
+	@Override
+	public boolean smsOptInNonMarketing(String customerId, String mobileNumber,String eStoreId) throws FDResourceException  {
+		Response<Boolean> response = null;
+		try {
+		response = this.httpGetDataTypeMap((getFdCommerceEndPoint(SMS_ALERT_OPTIN_NONMARKETING)), new TypeReference<Response<Boolean>>() {});
+		if(!response.getResponseCode().equals("OK"))
+			throw new FDResourceException(response.getMessage());
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
+		}
+		return response.getData();
+	}
+	@Override
+	public boolean smsOptInMarketing(String customerId, String mobileNumber,String eStoreId) throws FDResourceException {
+		Response<Boolean> response = null;
+		try {
+		response = this.httpGetDataTypeMap((getFdCommerceEndPoint(SMS_ALERT_OPTIN_MARKETING)), new TypeReference<Response<Boolean>>() {});
+		if(!response.getResponseCode().equals("OK"))
+			throw new FDResourceException(response.getMessage());
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
+		}
+		return response.getData();
+	}
+	@Override
+	public void expireOptin() throws FDResourceException {
+		Response<Void> response = null;
+		try {
+			String inputJson = null;
+			response = this.postData(inputJson, getFdCommerceEndPoint(SMS_ALERT_EXPIRE_OPTIN), Response.class);
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
+		}
+	}
+	@Override
+	public void updateSmsReceived(String mobileNumber, String shortCode,String carrierName, Date receivedDate, String message,
+			EnumEStoreId eStoreId) throws  FDResourceException {
+		try {
+			String inputJson;
+			Request<RecievedSmsData> recieveSmsData = buildSmsDataRequest(
+					mobileNumber, shortCode, carrierName, receivedDate,
+					message, eStoreId);
+			inputJson = buildRequest(recieveSmsData);
+			postDataTypeMap(inputJson, getFdCommerceEndPoint(SMS_MESSAGE_UPDATE), new TypeReference<Response<Void>>() {});
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			e.printStackTrace();
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
+		} 
+	}
+	private Request<RecievedSmsData> buildSmsDataRequest(String mobileNumber,
+			String shortCode, String carrierName, Date receivedDate,
+			String message, EnumEStoreId eStoreId) {
+		Request<RecievedSmsData> recieveSmsData = new Request<RecievedSmsData>();
+		RecievedSmsData smsData = new RecievedSmsData();
+		smsData.setMobileNumber(mobileNumber);
+		smsData.setShortCode(shortCode);
+		smsData.setCarrierName(carrierName);
+		smsData.setReceivedDate(receivedDate);
+		smsData.setMessage(message);
+		smsData.seteStoreId(eStoreId.getContentId());
+		recieveSmsData.setData(smsData);
+		return recieveSmsData;
+	}
+	@Override
+	public List<STSmsResponse> sendSmsToGateway(List<SmsAlertETAInfo> etaInfoList) throws FDResourceException {
+		Response<List<STSmsResponse>> response =null;
+		try {
+			String inputJson;
+			Request<List<SmsAlertETAInfo>> recieveSmsData = new Request<List<SmsAlertETAInfo>>();
+			recieveSmsData.setData(etaInfoList);
+			inputJson = buildRequest(recieveSmsData);
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SMS_TO_GATEWAY), new TypeReference<List<STSmsResponse>>() {});
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			e.printStackTrace();
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
+		} 
+		return response.getData();
+	}
+	@Override
+	public boolean smsOrderCancel(String customerId, String mobileNumber,String orderId, String eStoreId) throws  FDResourceException {
+		Response<Boolean> response = null;
+		try {
+			Request<SmsOrderData> request = buildSmsOrderDataRequest(customerId, mobileNumber, orderId, eStoreId);
+			String inputJson = buildRequest(request);
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SMS_ALERT_ORDER_CANCEL), new TypeReference<Boolean>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
+		}
+		return response.getData();
+	}
+	private Request<SmsOrderData> buildSmsOrderDataRequest(String customerId,
+			String mobileNumber, String orderId, String eStoreId) {
+		Request<SmsOrderData> request = new Request<SmsOrderData>();
+		SmsOrderData smsOrderData = new SmsOrderData();
+		smsOrderData.setCustomerId(customerId);
+		smsOrderData.setMobileNumber(mobileNumber);
+		smsOrderData.setOrderId(orderId);
+		smsOrderData.seteStoreId(eStoreId);
+		request.setData(smsOrderData);
+		return request;
+	}
+	@Override
+	public boolean smsOrderConfirmation(String customerId, String mobileNumber,String orderId, String eStoreId) throws FDResourceException {
+		Response<Boolean> response = null;
+		try {
+			Request<SmsOrderData> request = buildSmsOrderDataRequest(customerId, mobileNumber, orderId, eStoreId);
+			String inputJson = buildRequest(request);
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SMS_ALERT_ORDER_CONFIRM), new TypeReference<Boolean>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
+		}
+		return response.getData();
+	}
+	@Override
+	public boolean smsOrderModification(String customerId, String mobileNumber,String orderId, String eStoreId) throws FDResourceException {
+		Response<Boolean> response = null;
+		try {
+			Request<SmsOrderData> request = buildSmsOrderDataRequest(customerId, mobileNumber, orderId, eStoreId);
+			String inputJson = buildRequest(request);
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SMS_ALERT_ORDER_MODIFY), new TypeReference<Boolean>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
+		}
+		return response.getData();
 	}
 }

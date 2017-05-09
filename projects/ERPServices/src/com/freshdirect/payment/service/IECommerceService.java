@@ -32,6 +32,7 @@ import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.model.BatchModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
@@ -43,6 +44,7 @@ import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
 import com.freshdirect.logistics.delivery.model.OrderContext;
 import com.freshdirect.logistics.delivery.model.SiteAnnouncement;
+import com.freshdirect.logistics.delivery.sms.model.SmsAlertETAInfo;
 import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.payment.BINInfo;
 import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
@@ -50,6 +52,7 @@ import com.freshdirect.referral.extole.ExtoleServiceException;
 import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
 import com.freshdirect.referral.extole.model.ExtoleResponse;
 import com.freshdirect.referral.extole.model.FDRafCreditModel;
+import com.freshdirect.sms.model.st.STSmsResponse;
 
 public interface IECommerceService {
 
@@ -213,6 +216,24 @@ public interface IECommerceService {
 	public void updateRestrictedInfos(
 			Set<ErpRestrictedAvailabilityModel> restrictedInfos,
 			Set<String> deletedMaterials) throws FDResourceException;
+	
+	public boolean smsOptIn(String customerId,String mobileNumber, String eStoreId) throws FDResourceException;
+	
+	public boolean smsOptInNonMarketing(String customerId,String mobileNumber, String eStoreId) throws FDResourceException;
+	
+	public boolean smsOptInMarketing(String customerId,String mobileNumber, String eStoreId) throws FDResourceException;
+	
+	public void expireOptin() throws FDResourceException;
+	
+	public void updateSmsReceived(String mobileNumber, String shortCode, String carrierName, Date receivedDate, String message, EnumEStoreId eStoreId) throws FDResourceException;
+	
+	public List<STSmsResponse> sendSmsToGateway(List<SmsAlertETAInfo> etaInfoList) throws FDResourceException;
+	
+	public boolean smsOrderCancel(String customerId, String mobileNumber, String orderId, String eStoreId) throws FDResourceException ;
+	
+	public boolean smsOrderConfirmation(String customerId, String mobileNumber, String orderId, String eStoreId) throws FDResourceException;
+	
+	public boolean smsOrderModification(String customerId, String mobileNumber, String orderId, String eStoreId) throws  FDResourceException;
 
 	
 }
