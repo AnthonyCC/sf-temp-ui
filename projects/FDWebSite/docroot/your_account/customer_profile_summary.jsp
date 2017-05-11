@@ -248,8 +248,8 @@ response.setHeader("Cache-Control", "no-cache");
             <% if(questions!=null){%>
             <logic:iterate id="question" collection="<%= questions %>" type="com.freshdirect.fdstore.survey.FDSurveyQuestion" indexId='index'>
             
-            <% if(FDSurveyConstants.PROFILE.equals(question.getName()) || FDSurveyConstants.BIRTHDAY.equals(question.getName()))
-               continue;
+            <% if(!(FDSurveyConstants.PROFILE.equals(question.getName()) || FDSurveyConstants.BIRTHDAY.equals(question.getName())))
+               {
             %>
             <% if(surveyResponse!=null && SurveyHtmlHelper.hasActiveAnswers(question,surveyResponse.getAnswerAsList(question.getName()))) {%>
                 <tr>
@@ -259,7 +259,8 @@ response.setHeader("Cache-Control", "no-cache");
                 </tr>
                <%=SurveyHtmlHelper.getAnswers(question,surveyResponse.getAnswerAsList(question.getName()))%>
 			   <tr><td><img height="8" width="1" alt="" src="/media_stat/images/layout/clear.gif"/></td></tr>
-            <%}%>
+            <%} 
+               }%>
             </logic:iterate>
             <%}%>
 			</table>
