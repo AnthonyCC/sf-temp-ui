@@ -37,6 +37,7 @@ import com.freshdirect.event.RecommendationEventsAggregate;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -240,5 +241,26 @@ public interface IECommerceService {
 	public void log(FDRecommendationEvent event, int frequency) throws RemoteException;
 	
 	public void log(Class<? extends FDRecommendationEvent> eventClazz, Collection<RecommendationEventsAggregate> events) throws RemoteException;
+	
+	public Map<String, double[]> getPersonalizedFactors(String eStoreId,
+			String erpCustomerId, List<String> factors) throws FDRuntimeException;
+
+	public Map<String, double[]> getGlobalFactors(String eStoreId, List<String> factors);
+
+	public Set<String> getPersonalizedFactorNames();
+
+	public Set<String> getGlobalFactorNames();
+
+	public Set<String> getGlobalProducts(String eStoreId);
+
+	public Set<String> getPersonalizedProducts(String eStoreId, String erpCustomerId);
+
+	public List<String> getProductRecommendations(String recommender, String contentKey); // need to fix this
+
+	public List<String> getPersonalRecommendations(String recommender,
+			String erpCustomerId);
+
+	public String getPreferredWinePrice(String erpCustomerId);
+
 	
 }

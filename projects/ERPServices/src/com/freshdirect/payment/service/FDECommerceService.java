@@ -69,6 +69,8 @@ import com.freshdirect.ecommerce.data.erp.inventory.RestrictedInfoParam;
 import com.freshdirect.ecommerce.data.logger.recommendation.FDRecommendationEventData;
 import com.freshdirect.ecommerce.data.payment.BINData;
 import com.freshdirect.ecommerce.data.sessionimpressionlog.SessionImpressionLogEntryData;
+import com.freshdirect.ecommerce.data.smartstore.ProductFactorParam;
+import com.freshdirect.ecommerce.data.smartstore.ScoreResult;
 import com.freshdirect.ecommerce.data.survey.FDSurveyData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyResponseData;
 import com.freshdirect.ecommerce.data.survey.SurveyData;
@@ -82,6 +84,7 @@ import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDPayPalServiceException;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -91,7 +94,6 @@ import com.freshdirect.framework.event.FDRecommendationEvent;
 import com.freshdirect.framework.event.FDWebEvent;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
-import com.freshdirect.logistics.delivery.dto.Address;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
 import com.freshdirect.logistics.delivery.model.OrderContext;
 import com.freshdirect.logistics.delivery.model.SiteAnnouncement;
@@ -207,6 +209,17 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 
 	private static final String LOG_EVENT_RECOMMENDATION = "eventlogger/recommendation/log";
 	private static final String LOG_BATCHEVENT_RECOMMENDATION = "eventlogger/recommendation/logbatch";
+	
+	
+	private static final String SMARTSTORE_PERSONALIZED_FACTORS = "scorefactor/personalfactorscores";
+	private static final String SMARTSTORE_GLOBAL_FACTORS = "scorefactor/globalfactorscores";
+	private static final String SMARTSTORE_PERSONALIZED_FACTORS_NAME = "scorefactor/personalfactorsname";
+	private static final String SMARTSTORE_GLOBAL_FACTORS_NAME = "scorefactor/globalfactorsname";
+	private static final String SMARTSTORE_GLOBAL_PRODUCTS = "scorefactor/globalproducts";
+	private static final String SMARTSTORE_PERSONALIZED_PRODUCTS = "scorefactor/personalproducts";
+	private static final String SMARTSTORE_PRODUCT_RECOMMENDATIONS = "scorefactor/recommendglobalproducts";
+	private static final String SMARTSTORE_PERSONAL_RECOMMENDATIONS = "scorefactor/recommendpersonalproducts";
+	private static final String SMARTSTORE_PREFERRED_WINEPRICE = "scorefactor/wineprice";
 	
 	private static FDECommerceService INSTANCE;
 
@@ -1634,14 +1647,6 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		
 	}
 		
-	private static Address encodeAddress(ContactAddressModel model) {
-		
-		Address address = new Address(model.getId(), model.getAddress1(), model.getAddress2(), model.getApartment(), model.getCity(), model.getState(), model.getZipCode(),
-				model.getCountry(), model.getFirstName(), model.getLastName(), model.getScrubbedStreet(), model.getLongitude(), model.getLatitude(), model.getServiceType().getName(),
-				model.getCompanyName());
-		return address;
-		
-	}
 	@Override
 	public void recommitReservation(String rsvId, String customerId,
 			OrderContext context, ContactAddressModel address, boolean pr1) throws FDResourceException {
@@ -1893,4 +1898,175 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			throw new RemoteException(e.getMessage());
 		}
 	}
+
+	@Override
+	public Map<String, double[]> getPersonalizedFactors(String eStoreId,
+			String erpCustomerId, List<String> factors) {
+		Response<ScoreResult> response = null;
+		ScoreResult result;
+			try {
+				Request<ProductFactorParam> request = new Request<ProductFactorParam>();
+				ProductFactorParam productFactorParam = new ProductFactorParam(eStoreId,erpCustomerId,factors);
+				request.setData(productFactorParam);
+				String inputJson = buildRequest(request);
+				response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SMARTSTORE_PERSONALIZED_FACTORS),new TypeReference<Response<ScoreResult>>() {});
+				if(!response.getResponseCode().equals("OK")){
+					throw new FDResourceException(response.getMessage());
+				}
+				result = response.getData();
+			} catch (FDResourceException e){
+				LOGGER.error(e.getMessage());
+				throw new FDRuntimeException(e, "Unable to process the request.");
+			} catch (FDPayPalServiceException e) {
+				LOGGER.error(e.getMessage());
+				throw new FDRuntimeException(e, "Unable to process the request.");
+			} 
+			return result.getResult();
+		}
+	
+	@Override
+	public Map<String, double[]> getGlobalFactors(String eStoreId, List<String> factors) {
+		Response<ScoreResult> response = null;
+		ScoreResult result;
+			try {
+				Request<ProductFactorParam> request = new Request<ProductFactorParam>();
+				ProductFactorParam productFactorParam = new ProductFactorParam(eStoreId,factors);
+				request.setData(productFactorParam);
+				String inputJson = buildRequest(request);
+				response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SMARTSTORE_GLOBAL_FACTORS),new TypeReference<Response<ScoreResult>>() {});
+				if(!response.getResponseCode().equals("OK")){
+					throw new FDResourceException(response.getMessage());
+				}
+				result = response.getData();
+			} catch (FDResourceException e){
+				LOGGER.error(e.getMessage());
+				throw new FDRuntimeException(e, "Unable to process the request.");
+			} catch (FDPayPalServiceException e) {
+				LOGGER.error(e.getMessage());
+				throw new FDRuntimeException(e, "Unable to process the request.");
+			} 
+			return result.getResult();
+	}
+	
+	@Override
+	public Set<String> getPersonalizedFactorNames() {
+		Response<Set<String>> response = null;
+		Set<String> result;
+			try {
+				response = this.httpGetDataTypeMap(getFdCommerceEndPoint(SMARTSTORE_PERSONALIZED_FACTORS_NAME), new TypeReference<Response<Set<String>>>() {});
+				if(!response.getResponseCode().equals("OK")){
+					throw new FDResourceException(response.getMessage());
+				}
+				result = response.getData();
+			} catch (FDResourceException e){
+				LOGGER.error(e.getMessage());
+				throw new FDRuntimeException(e, "Unable to process the request.");
+			}
+			return result;
+	}
+	
+	@Override
+	public Set<String> getGlobalFactorNames() {
+		Response<Set<String> > response = null;
+		Set<String> result;
+			try {
+				Request<String> request = new Request<String>();
+				response = this.httpGetDataTypeMap(getFdCommerceEndPoint(SMARTSTORE_GLOBAL_FACTORS_NAME), new TypeReference<Response<Set<String>>>() {});
+				if(!response.getResponseCode().equals("OK")){
+					throw new FDResourceException(response.getMessage());
+				}
+				result = response.getData();
+			} catch (FDResourceException e){
+				LOGGER.error(e.getMessage());
+				throw new FDRuntimeException(e, "Unable to process the request.");
+			}
+			return result;
+	}
+
+	@Override
+	public Set<String> getGlobalProducts(String eStoreId) {
+		Response<Set<String> > response = null;
+		Set<String>  result;
+			try {
+				response = this.httpGetDataTypeMap(getFdCommerceEndPoint(SMARTSTORE_GLOBAL_PRODUCTS)+"/"+eStoreId, new TypeReference<Response<Set<String> >>() {});
+				if(!response.getResponseCode().equals("OK")){
+					throw new FDResourceException(response.getMessage());
+				}
+				result = response.getData();
+			} catch (FDResourceException e){
+				LOGGER.error(e.getMessage());
+				throw new FDRuntimeException(e, "Unable to process the request.");
+			}
+			return result;
+	}
+
+	@Override
+	public Set<String> getPersonalizedProducts(String eStoreId,String erpCustomerId) {
+		Response<Set<String> > response = null;
+		Set<String>  result;
+			try {
+				Request<String> request = new Request<String>();
+				response = this.httpGetDataTypeMap(getFdCommerceEndPoint(SMARTSTORE_PERSONALIZED_PRODUCTS)+"/"+eStoreId+"/"+erpCustomerId, new TypeReference<Response<Set<String>>>() {});
+				if(!response.getResponseCode().equals("OK")){
+					throw new FDResourceException(response.getMessage());
+				}
+				result = response.getData();
+			} catch (FDResourceException e){
+				LOGGER.error(e.getMessage());
+				throw new FDRuntimeException(e, "Unable to process the request.");
+			}
+			return result;
+	}
+	@Override
+	public List<String> getProductRecommendations(String recommender,String contentKey) {
+		Response<List<String>> response = null;
+		List<String>  result;
+			try {
+				response = this.httpGetDataTypeMap(getFdCommerceEndPoint(SMARTSTORE_PRODUCT_RECOMMENDATIONS)+"/"+recommender+"/"+contentKey, new TypeReference<Response<List<String>>>() {});
+				if(!response.getResponseCode().equals("OK")){
+					throw new FDResourceException(response.getMessage());
+				}
+				result = response.getData();
+			} catch (FDResourceException e){
+				LOGGER.error(e.getMessage());
+				throw new FDRuntimeException(e, "Unable to process the request.");
+			}
+			return result;
+	}
+	@Override
+	public List<String> getPersonalRecommendations(String recommender,String erpCustomerId) {
+		Response<List<String>> response = null;
+		List<String> result;
+			try {
+				Request<String> request = new Request<String>();
+				response = this.httpGetDataTypeMap(getFdCommerceEndPoint(SMARTSTORE_PRODUCT_RECOMMENDATIONS)+"/"+recommender+"/"+erpCustomerId, new TypeReference<Response<List<String>>>() {});
+				if(!response.getResponseCode().equals("OK")){
+					throw new FDResourceException(response.getMessage());
+				}
+				result = response.getData();
+			} catch (FDResourceException e){
+				LOGGER.error(e.getMessage());
+				throw new FDRuntimeException(e, "Unable to process the request.");
+			}
+			return result;
+	}
+
+	@Override
+	public String getPreferredWinePrice(String erpCustomerId) {
+		Response<String> response = null;
+			try {
+				Request<String> request = new Request<String>();
+				response = this.getData(getFdCommerceEndPoint(SMARTSTORE_PREFERRED_WINEPRICE)+"/"+erpCustomerId, Response.class);
+				if(!response.getResponseCode().equals("OK")){
+					throw new FDResourceException(response.getMessage());
+				}
+				
+			} catch (FDResourceException e){
+				LOGGER.error(e.getMessage());
+				throw new FDRuntimeException(e, "Unable to process the request.");
+			}
+			return response.getData();
+	}
+	
+
 }
