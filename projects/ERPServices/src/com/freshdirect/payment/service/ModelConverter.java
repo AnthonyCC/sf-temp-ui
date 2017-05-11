@@ -1,14 +1,11 @@
 package com.freshdirect.payment.service;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.crm.CrmCaseSubject;
@@ -22,14 +19,15 @@ import com.freshdirect.ecommerce.data.enums.DeliveryPassTypeData;
 import com.freshdirect.ecommerce.data.enums.EnumFeaturedHeaderTypeData;
 import com.freshdirect.ecommerce.data.enums.ErpAffiliateData;
 import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
+import com.freshdirect.ecommerce.data.logger.recommendation.FDRecommendationEventData;
 import com.freshdirect.erp.EnumFeaturedHeaderType;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
+import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.framework.event.FDRecommendationEvent;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.payment.BillingCountryInfo;
 import com.freshdirect.payment.BillingRegionInfo;
-import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
-import com.freshdirect.fdstore.EnumEStoreId;
-import com.freshdirect.framework.util.StringUtil;
 
 public class ModelConverter {
 
@@ -230,6 +228,16 @@ public class ModelConverter {
 		return recieveSmsData;
 	}
 	
+	public static FDRecommendationEventData convertFDRecommendationEvent(FDRecommendationEvent event) {
+		if(event==null)
+			return null;
+		FDRecommendationEventData fdRecommendationEventData = new FDRecommendationEventData();
+		fdRecommendationEventData.setContentId(event.getContentId());
+		fdRecommendationEventData.seteStoreId(event.getEStoreId());
+		fdRecommendationEventData.setTimestamp(event.getTimeStamp());
+		fdRecommendationEventData.setVariantId(event.getVariantId());
+		return fdRecommendationEventData;
+	}
 
 
 }
