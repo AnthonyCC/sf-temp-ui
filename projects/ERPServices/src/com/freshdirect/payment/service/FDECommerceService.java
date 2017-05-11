@@ -1759,7 +1759,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			EnumEStoreId eStoreId) throws  FDResourceException {
 		try {
 			String inputJson;
-			Request<RecievedSmsData> recieveSmsData = buildSmsDataRequest(
+			Request<RecievedSmsData> recieveSmsData = ModelConverter.buildSmsDataRequest(
 					mobileNumber, shortCode, carrierName, receivedDate,
 					message, eStoreId);
 			inputJson = buildRequest(recieveSmsData);
@@ -1772,20 +1772,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			throw new FDResourceException(e, "Unable to process the request.");
 		} 
 	}
-	private Request<RecievedSmsData> buildSmsDataRequest(String mobileNumber,
-			String shortCode, String carrierName, Date receivedDate,
-			String message, EnumEStoreId eStoreId) {
-		Request<RecievedSmsData> recieveSmsData = new Request<RecievedSmsData>();
-		RecievedSmsData smsData = new RecievedSmsData();
-		smsData.setMobileNumber(mobileNumber);
-		smsData.setShortCode(shortCode);
-		smsData.setCarrierName(carrierName);
-		smsData.setReceivedDate(receivedDate);
-		smsData.setMessage(message);
-		smsData.seteStoreId(eStoreId.getContentId());
-		recieveSmsData.setData(smsData);
-		return recieveSmsData;
-	}
+	
 	@Override
 	public List<STSmsResponse> sendSmsToGateway(List<SmsAlertETAInfoData> etaInfoList) throws FDResourceException {
 		Response<List<STSmsResponse>> response =null;
@@ -1808,7 +1795,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	public boolean smsOrderCancel(String customerId, String mobileNumber,String orderId, String eStoreId) throws  FDResourceException {
 		Response<Boolean> response = null;
 		try {
-			Request<SmsOrderData> request = buildSmsOrderDataRequest(customerId, mobileNumber, orderId, eStoreId);
+			Request<SmsOrderData> request = ModelConverter.buildSmsOrderDataRequest(customerId, mobileNumber, orderId, eStoreId);
 			String inputJson = buildRequest(request);
 			response = this.postData(inputJson, getFdCommerceEndPoint(SMS_ALERT_ORDER_CANCEL),Response.class);
 			if(!response.getResponseCode().equals("OK")){
@@ -1823,22 +1810,11 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		}
 		return response.getData();
 	}
-	private Request<SmsOrderData> buildSmsOrderDataRequest(String customerId,
-			String mobileNumber, String orderId, String eStoreId) {
-		Request<SmsOrderData> request = new Request<SmsOrderData>();
-		SmsOrderData smsOrderData = new SmsOrderData();
-		smsOrderData.setCustomerId(customerId);
-		smsOrderData.setMobileNumber(mobileNumber);
-		smsOrderData.setOrderId(orderId);
-		smsOrderData.seteStoreId(eStoreId);
-		request.setData(smsOrderData);
-		return request;
-	}
 	@Override
 	public boolean smsOrderConfirmation(String customerId, String mobileNumber,String orderId, String eStoreId) throws FDResourceException {
 		Response<Boolean> response = null;
 		try {
-			Request<SmsOrderData> request = buildSmsOrderDataRequest(customerId, mobileNumber, orderId, eStoreId);
+			Request<SmsOrderData> request = ModelConverter.buildSmsOrderDataRequest(customerId, mobileNumber, orderId, eStoreId);
 			String inputJson = buildRequest(request);
 			response = this.postData(inputJson, getFdCommerceEndPoint(SMS_ALERT_ORDER_CONFIRM), Response.class);
 			if(!response.getResponseCode().equals("OK")){
@@ -1857,7 +1833,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	public boolean smsOrderModification(String customerId, String mobileNumber,String orderId, String eStoreId) throws FDResourceException {
 		Response<Boolean> response = null;
 		try {
-			Request<SmsOrderData> request = buildSmsOrderDataRequest(customerId, mobileNumber, orderId, eStoreId);
+			Request<SmsOrderData> request = ModelConverter.buildSmsOrderDataRequest(customerId, mobileNumber, orderId, eStoreId);
 			String inputJson = buildRequest(request);
 			response = this.postData(inputJson, getFdCommerceEndPoint(SMS_ALERT_ORDER_MODIFY),Response.class);
 			if(!response.getResponseCode().equals("OK")){

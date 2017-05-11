@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,9 @@ import java.util.Map;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.deliverypass.DeliveryPassType;
+import com.freshdirect.ecommerce.data.common.Request;
+import com.freshdirect.ecommerce.data.delivery.sms.RecievedSmsData;
+import com.freshdirect.ecommerce.data.delivery.sms.SmsOrderData;
 import com.freshdirect.ecommerce.data.enums.BillingCountryInfoData;
 import com.freshdirect.ecommerce.data.enums.CrmCaseSubjectData;
 import com.freshdirect.ecommerce.data.enums.DeliveryPassTypeData;
@@ -24,6 +28,7 @@ import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.payment.BillingCountryInfo;
 import com.freshdirect.payment.BillingRegionInfo;
 import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.framework.util.StringUtil;
 
 public class ModelConverter {
@@ -197,6 +202,34 @@ public class ModelConverter {
 
 		return data;
 	}
+	
+	public static Request<SmsOrderData> buildSmsOrderDataRequest(String customerId,
+			String mobileNumber, String orderId, String eStoreId) {
+		Request<SmsOrderData> request = new Request<SmsOrderData>();
+		SmsOrderData smsOrderData = new SmsOrderData();
+		smsOrderData.setCustomerId(customerId);
+		smsOrderData.setMobileNumber(mobileNumber);
+		smsOrderData.setOrderId(orderId);
+		smsOrderData.seteStoreId(eStoreId);
+		request.setData(smsOrderData);
+		return request;
+	}
+	
+	public static  Request<RecievedSmsData> buildSmsDataRequest(String mobileNumber,
+			String shortCode, String carrierName, Date receivedDate,
+			String message, EnumEStoreId eStoreId) {
+		Request<RecievedSmsData> recieveSmsData = new Request<RecievedSmsData>();
+		RecievedSmsData smsData = new RecievedSmsData();
+		smsData.setMobileNumber(mobileNumber);
+		smsData.setShortCode(shortCode);
+		smsData.setCarrierName(carrierName);
+		smsData.setReceivedDate(receivedDate);
+		smsData.setMessage(message);
+		smsData.seteStoreId(eStoreId.getContentId());
+		recieveSmsData.setData(smsData);
+		return recieveSmsData;
+	}
+	
 
 
 }
