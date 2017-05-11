@@ -21,6 +21,7 @@ public class RecommendationEventsAggregate implements Serializable {
 	private int frequency;
 	private String eStoreId;
 	
+	public RecommendationEventsAggregate(){}
 	/**
 	 * Constructor.
 	 * @param contentId 

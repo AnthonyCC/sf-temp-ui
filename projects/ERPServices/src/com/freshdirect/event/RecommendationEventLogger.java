@@ -11,8 +11,10 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.event.ejb.RecommendationEventLoggerHome;
 import com.freshdirect.event.ejb.RecommendationEventLoggerSB;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.event.FDRecommendationEvent;
+import com.freshdirect.payment.service.FDECommerceService;
 
 /**
  * Recommendation event logger instance.
@@ -67,7 +69,11 @@ public class RecommendationEventLogger {
 			throw new EJBException("Could not create impression logger home",e);
 		}
 		try {
-			bean.log((FDRecommendationEvent)event,frequency);
+			if (FDStoreProperties.isStorefront2_0Enabled()) {
+				FDECommerceService.getInstance().log((FDRecommendationEvent) event, frequency);
+			} else {
+				bean.log((FDRecommendationEvent) event, frequency);
+			}
 		} catch (RemoteException e) {
 			throw new EJBException("Could not log event " + event,e);
 		}
@@ -89,7 +95,11 @@ public class RecommendationEventLogger {
 			throw new EJBException("Could not create impression logger home",e);
 		}
 		try {
-			bean.log(eventClazz,events);
+			if (FDStoreProperties.isStorefront2_0Enabled()) {
+				FDECommerceService.getInstance().log(eventClazz, events);
+			} else {
+				bean.log(eventClazz, events);
+			}
 		} catch (RemoteException e) {
 			throw new EJBException("Could not log " + events.size() + " events",e);
 		}
