@@ -2658,7 +2658,7 @@
 	
 	<target name="fdstorefront-domain" description="build jar that combines all the classes needed to run a client of the system">
 		<mkdir dir="${release.dir}/applications" />
-		<jar destfile="${release.dir}/applications/fdstorefront-domain.jar" excludes="com/google/" >
+		<jar destfile="${release.dir}/applications/fdstorefront-domain.jar" >
 			<!-- specify the manifest -->
             <manifest>
                 <attribute name="Specification-Version" value="${build.counter}"/>
@@ -2694,7 +2694,7 @@
 			<zipfileset src="${thirdparty.home}/hivemind-lib-1.1.1.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/jsonrpc-1.0.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/jawr-core-3.8.jar" excludes="META-INF/*"/>
-			<zipfileset src="${thirdparty.home}/soy-latest.jar" excludes="META-INF/*"/>
+			<!-- <zipfileset src="${thirdparty.home}/soy-latest.jar" excludes="META-INF/*"/>-->
 			<zipfileset src="${thirdparty.home}/ehcache-2.10.0.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/slf4j-api-1.6.6.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/slf4j-jdk14-1.6.6.jar" excludes="META-INF/*"/>
@@ -2710,18 +2710,20 @@
 
 			<!-- FD classes -->
 			<zipfileset src="${work.dir}/Framework.jar"/>
-			<zipfileset src="${work.dir}/ERPServicesEJB-WL.jar" excludes="META-INF/* com/google/"/>
-			<zipfileset src="${work.dir}/DeliveryEJB-WL.jar" excludes="META-INF/* com/google/"/>
-			<zipfileset src="${work.dir}/CMS.jar" excludes="META-INF/* com/google/" />
-			<zipfileset src="${work.dir}/DataLoaderEJB-WL.jar" excludes="META-INF/* com/google/"/>
-			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/* com/google/"/>
-            <zipfileset src="${work.dir}/FDLogisticsIntegration.jar" excludes="META-INF/* com/google/"/>
-            <zipfileset src="${work.dir}/StandingOrdersService.jar" excludes="META-INF/* com/google/"/>
-            <zipfileset src="${work.dir}/CoremetricsService.jar" excludes="META-INF/* com/google/" />
+			<zipfileset src="${work.dir}/ERPServicesEJB-WL.jar" excludes="META-INF/*"/>
+			<zipfileset src="${work.dir}/DeliveryEJB-WL.jar" excludes="META-INF/*"/>
+			<zipfileset src="${work.dir}/CMS.jar" excludes="META-INF/*"/>
+			<zipfileset src="${work.dir}/DataLoaderEJB-WL.jar" excludes="META-INF/*"/>
+			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/*"/>
+            <zipfileset src="${work.dir}/FDLogisticsIntegration.jar" excludes="META-INF/*"/>
+            <zipfileset src="${work.dir}/StandingOrdersService.jar" excludes="META-INF/*"/>
+            <zipfileset src="${work.dir}/CoremetricsService.jar" excludes="META-INF/*"/>
 
 			<!-- Tools -->
-			<zipfileset src="${work.dir}/Tools.jar" excludes="META-INF/* com/google/"/>
+			<zipfileset src="${work.dir}/Tools.jar" excludes="META-INF/*"/>
 			
+			<delete dir="com/google"/>
+
 		</jar>
 	</target>
 
