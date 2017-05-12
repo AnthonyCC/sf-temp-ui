@@ -2658,7 +2658,7 @@
 	
 	<target name="fdstorefront-domain" description="build jar that combines all the classes needed to run a client of the system">
 		<mkdir dir="${release.dir}/applications" />
-		<jar destfile="${release.dir}/applications/fdstorefront-domain.jar">
+		<jar destfile="${release.dir}/applications/fdstorefront-domain.jar" excludes="com/google/" >
 			<!-- specify the manifest -->
             <manifest>
                 <attribute name="Specification-Version" value="${build.counter}"/>
