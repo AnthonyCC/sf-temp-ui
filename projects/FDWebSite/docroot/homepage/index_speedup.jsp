@@ -320,7 +320,6 @@
       %>
 
       dataLayer.push(gtm_userdata);
-      <% } %>
     </script>
     <% } %>
 
