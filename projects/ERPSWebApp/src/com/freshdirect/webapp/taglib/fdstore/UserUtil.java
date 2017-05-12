@@ -636,9 +636,6 @@ public class UserUtil {
           
           if(user != null) {
         	user.setJustLoggedIn(true);
-  			Cookie cookie = new Cookie("hasJustLoggedIn","true");
-  			cookie.setPath("/");
-  			response.addCookie(cookie);
           }
 
           CmRegistrationTag.setPendingLoginEvent(session);

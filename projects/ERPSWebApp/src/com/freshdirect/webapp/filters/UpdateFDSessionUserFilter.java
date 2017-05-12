@@ -21,7 +21,6 @@ public class UpdateFDSessionUserFilter extends AbstractFilter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
 			throws IOException, ServletException {
-		filterChain.doFilter(request, response);
 		FDSessionUser user = (FDSessionUser) ((HttpServletRequest)request).getSession().getAttribute(SessionName.USER);
 		if (user != null) {
 			if (user.hasJustLoggedIn()) {
@@ -35,6 +34,7 @@ public class UpdateFDSessionUserFilter extends AbstractFilter {
 				((HttpServletResponse)response).addCookie(cookie);
 			}
 		}
+		filterChain.doFilter(request, response);
 	}
 
 	@Override
