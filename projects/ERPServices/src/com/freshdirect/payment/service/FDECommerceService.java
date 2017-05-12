@@ -29,6 +29,7 @@ import weblogic.auddi.util.Logger;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.customer.EnumServiceType;
@@ -47,6 +48,7 @@ import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.ecommerce.data.attributes.FlatAttributeCollection;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
+import com.freshdirect.ecommerce.data.customer.ErpGrpPriceModelData;
 import com.freshdirect.ecommerce.data.customer.accounts.external.UserTokenData;
 import com.freshdirect.ecommerce.data.delivery.sms.RecievedSmsData;
 import com.freshdirect.ecommerce.data.delivery.sms.SmsAlertETAInfoData;
@@ -64,8 +66,16 @@ import com.freshdirect.ecommerce.data.enums.DeliveryPassTypeData;
 import com.freshdirect.ecommerce.data.enums.EnumFeaturedHeaderTypeData;
 import com.freshdirect.ecommerce.data.enums.ErpAffiliateData;
 import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
+import com.freshdirect.ecommerce.data.erp.model.ErpProductPromotionPreviewInfoData;
+import com.freshdirect.ecommerce.data.erp.pricing.FDProductPromotionInfoData;
+import com.freshdirect.ecommerce.data.erp.pricing.ZoneInfoData;
+import com.freshdirect.ecommerce.data.erp.pricing.ZoneInfoDataWrapper;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpRestrictedAvailabilityData;
 import com.freshdirect.ecommerce.data.erp.inventory.RestrictedInfoParam;
+import com.freshdirect.ecommerce.data.fdstore.FDGroupData;
+import com.freshdirect.ecommerce.data.fdstore.FDSkuData;
+import com.freshdirect.ecommerce.data.fdstore.GroupScalePricingData;
+import com.freshdirect.ecommerce.data.fdstore.SalesAreaInfoFDGroupWrapper;
 import com.freshdirect.ecommerce.data.logger.recommendation.FDRecommendationEventData;
 import com.freshdirect.ecommerce.data.payment.BINData;
 import com.freshdirect.ecommerce.data.sessionimpressionlog.SessionImpressionLogEntryData;
@@ -77,13 +87,19 @@ import com.freshdirect.ecommerce.data.survey.SurveyData;
 import com.freshdirect.ecommerce.data.survey.SurveyKeyData;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
+import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
 import com.freshdirect.erp.model.BatchModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.event.RecommendationEventsAggregate;
 import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.fdstore.FDGroup;
+import com.freshdirect.fdstore.FDGroupNotFoundException;
 import com.freshdirect.fdstore.FDPayPalServiceException;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSku;
+import com.freshdirect.fdstore.GroupScalePricing;
+import com.freshdirect.fdstore.SalesAreaInfo;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
@@ -117,6 +133,8 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String SAP_PRODUCT_FAMILY_LOADER_GET_SKUCODE_BYPRODFLY_API ="dataloader/sap/skucodesbyproductfamily";
 	private static final String SAP_PRODUCT_FAMILY_LOADER_LOAD_API ="dataloader/sap/productfamily";
 	private static final String PRODUCT_BY_PROMO_TYPE = "productPromo/type/";
+	private static final String PROMOTION_BY_TYPE = "productPromo/promtype/";
+	private static final String PROMOTION_PREVIEW = "productPromo/";
 	private static final String PROD_MATERIAL_ATTRIBUTES = "attributes/ids";
 	private static final String GET_ACTIVE_BINS = "bin/activebins";
 	private static final String SAVE_ACTIVE_BINS = "bin/storebins";
@@ -222,6 +240,21 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String SMARTSTORE_PREFERRED_WINEPRICE = "scorefactor/wineprice";
 	
 	private static FDECommerceService INSTANCE;
+	
+	private static final String ERP_GROUP_SCALE_API ="groupScale";
+	private static final String ERP_GROUP_SCALE_IDS_API ="groupScale/grpInfoByIds";
+	private static final String ERP_GROUP_SCALE_ID_API ="groupScale/grpInfoById";
+	private static final String ERP_GROUP_INFO_BY_MATID_API ="groupScale/grpInfoByMatId";
+	private static final String ERP_GROUP_IDENTITY_BY_MATID_API ="groupScale/grpIdentityByMatId";
+	private static final String ERP_GROUP_FILTERED_SKU_API ="groupScale/getFilteredSkus";
+	private static final String ERP_ALL_GROUP_INFO_API ="groupScale/getAllGrpInfoMaster";
+	private static final String ERP_LATEST_VER_FOR_GRPID_API ="groupScale/getLatestVerNumb";
+	private static final String ERP_GRP_FOR_MAT_ID_API ="groupScale/getGrpforMatId";
+	private static final String ERP_LATEST_GRP_API ="groupScale/getLatestActGrp";
+	private static final String ERP_LAST_MOD_GRP_API ="groupScale/lastModifiedGroups";
+	
+	
+	
 
 
 	public static IECommerceService getInstance() {
@@ -287,7 +320,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		ResponseEntity<String> response;
 		try {
 			response = restTemplate.getForEntity(new URI(url),String.class);
-			responseOfTypestring = getMapper().readValue(response.getBody(), type);
+			responseOfTypestring =getMapper().readValue(response.getBody(), type);
 		} catch (JsonParseException e) {
 			LOGGER.info(e.getMessage());
 			LOGGER.info("api url:"+url);
@@ -392,17 +425,120 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	public Map<ZoneInfo, List<FDProductPromotionInfo>> getAllProductsByType(
 			String ppType) throws FDResourceException {
 	
-			Response<Map<ZoneInfo, List<FDProductPromotionInfo>>> response;
+			Response<List<ZoneInfoDataWrapper>> response;
 			try {
-				response = httpGetDataTypeMap(getFdCommerceEndPoint(PRODUCT_BY_PROMO_TYPE+ppType), new TypeReference<Response<Map<ZoneInfo, List<FDProductPromotionInfo>>>>() {});
+				
+				response = httpGetDataTypeMap(getFdCommerceEndPoint(PRODUCT_BY_PROMO_TYPE+ppType), new TypeReference<Response<List<ZoneInfoDataWrapper>>>() {});
 				if(!response.getResponseCode().equals("OK"))
 					throw new FDResourceException(response.getMessage());
-					return response.getData();
+				
+					Map<ZoneInfo, List<FDProductPromotionInfo>> data = new HashMap();
+					for(ZoneInfoDataWrapper wrapper: response.getData()){
+						ZoneInfo key = ModelConverter.buildZoneInfo(wrapper.getKey());
+						List<FDProductPromotionInfo> value = ModelConverter.buildFDProductPromotionInfo(wrapper.getValue());
+						data.put(key,value);
+					}
+					return data;
 			} catch (FDResourceException e) {
 				LOGGER.error(e.getMessage());
 				throw new FDResourceException(e, "Unable to process the request.");
 			}
 		}
+	@Override
+	public Map<ZoneInfo, List<FDProductPromotionInfo>> getAllProductsByType(
+			String ppType, Date lastPublished) throws FDResourceException {
+	
+			Response<List<ZoneInfoDataWrapper>> response;
+			try {
+				
+				response = httpGetDataTypeMap(getFdCommerceEndPoint(PRODUCT_BY_PROMO_TYPE+ppType+"/lastPublishDate/"+lastPublished), new TypeReference<Response<List<ZoneInfoDataWrapper>>>() {});
+				if(!response.getResponseCode().equals("OK"))
+					throw new FDResourceException(response.getMessage());
+				
+					Map<ZoneInfo, List<FDProductPromotionInfo>> data = new HashMap();
+					for(ZoneInfoDataWrapper wrapper: response.getData()){
+						ZoneInfo key = ModelConverter.buildZoneInfo(wrapper.getKey());
+						List<FDProductPromotionInfo> value = ModelConverter.buildFDProductPromotionInfo(wrapper.getValue());
+						data.put(key,value);
+					}
+					return data;
+			} catch (FDResourceException e) {
+				LOGGER.error(e.getMessage());
+				throw new FDResourceException(e, "Unable to process the request.");
+			}
+		}
+	
+	
+	@Override
+	public Map<String, Map<ZoneInfo, List<FDProductPromotionInfo>>> getAllPromotionsByType(
+			String ppType, Date lastPublished) throws FDResourceException {
+	
+			Response<Map<String, List<ZoneInfoDataWrapper>>> response;
+			try {
+				
+				response = httpGetDataTypeMap(getFdCommerceEndPoint(PROMOTION_BY_TYPE+ppType+"/lastPublishDate/"+lastPublished), new TypeReference<Response<Map<String, List<ZoneInfoDataWrapper>>>>() {});
+				if(!response.getResponseCode().equals("OK"))
+					throw new FDResourceException(response.getMessage());
+				
+				Map<String, Map<ZoneInfo, List<FDProductPromotionInfo>>> data = new HashMap();
+				for(String key:response.getData().keySet() ){
+					
+					Map<ZoneInfo, List<FDProductPromotionInfo>> zoneData = new HashMap();
+					for(ZoneInfoDataWrapper wrapper: response.getData().get(key)){
+						ZoneInfo zoneInfo = ModelConverter.buildZoneInfo(wrapper.getKey());
+						List<FDProductPromotionInfo> value = ModelConverter.buildFDProductPromotionInfo(wrapper.getValue());
+						zoneData.put(zoneInfo,value);
+					}
+					data.put(key, zoneData);
+				}
+					return data;
+			} catch (FDResourceException e) {
+				LOGGER.error(e.getMessage());
+				throw new FDResourceException(e, "Unable to process the request.");
+			}
+		}
+	
+	@Override
+	public List<FDProductPromotionInfo> getProductsByZoneAndType(
+			String ppType, String zoneId) throws FDResourceException {
+	
+			Response<List<FDProductPromotionInfoData>> response;
+			try {
+				
+				response = httpGetDataTypeMap(getFdCommerceEndPoint(PRODUCT_BY_PROMO_TYPE+ppType+"/zoneId/"+zoneId), new TypeReference<Response<List<FDProductPromotionInfoData>>>() {});
+				if(!response.getResponseCode().equals("OK"))
+					throw new FDResourceException(response.getMessage());
+				
+				List<FDProductPromotionInfo> data = new ArrayList();
+				data = ModelConverter.buildFDProductPromotionInfo(response.getData());
+				return data;
+			} catch (FDResourceException e) {
+				LOGGER.error(e.getMessage());
+				throw new FDResourceException(e, "Unable to process the request.");
+			}
+		}
+	
+	@Override
+	public ErpProductPromotionPreviewInfo getProductPromotionPreviewInfo(
+			String ppPreviewId) throws FDResourceException {
+		// TODO Auto-generated method stub 
+		
+		Response<ErpProductPromotionPreviewInfoData> response;
+		try {
+			
+			response = httpGetDataTypeMap(getFdCommerceEndPoint(PROMOTION_PREVIEW+"promPreview/"+ppPreviewId), new TypeReference<Response<ErpProductPromotionPreviewInfoData>>() {});
+			if(!response.getResponseCode().equals("OK"))
+				throw new FDResourceException(response.getMessage());
+			
+			ErpProductPromotionPreviewInfo data ;
+			data = ModelConverter.buildErpProductPromotionPreviewInfo(response.getData());
+			return data;
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
+		}
+	
+	}
 	@Override
 	public NavigableMap<Long, BINInfo> getActiveBINs()
 			throws FDResourceException {
@@ -942,6 +1078,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		}
 		return null;
 	}
+	
 	@Override
 	public 	Map<ErpCOOLKey, ErpCOOLInfo> getCountryOfOriginData(Date since)
 			throws RemoteException {
@@ -1344,8 +1481,9 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	public void loadGroupPriceData(List<ErpGrpPriceModel> grpPricelist)
 			throws FDResourceException {
 			try {
-				Request<List<ErpGrpPriceModel>> request = new Request<List<ErpGrpPriceModel>>();
-				request.setData(grpPricelist);
+				Request<List<ErpGrpPriceModelData>> request = new Request<List<ErpGrpPriceModelData>>();
+				List<ErpGrpPriceModelData> listData = getMapper().convertValue(grpPricelist, new TypeReference<List<ErpGrpPriceModelData>>() {});
+				request.setData(listData);
 				String inputJson = buildRequest(request);
 				@SuppressWarnings("unchecked")
 				Response<String> response = this.postData(inputJson, getFdCommerceEndPoint(SAP_GROUP_PRICE_LOADER_LOAD_API), Response.class);
@@ -1632,8 +1770,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 				timeSlotEventData);
 		request.setData(reservationParam);
 		String inputJson;
-		try {
-			
+		try {			
 			inputJson = buildRequest(request);
 			Response<Void> response = this.postData(inputJson, getFdCommerceEndPoint(DLV_MANAGER_COMMIT_RESERVATION), Response.class);
 			if(!response.getResponseCode().equals("OK")){
@@ -1715,6 +1852,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		}
 		
 	}
+
 	@Override
 	public boolean smsOptIn(String customerId, String mobileNumber,String eStoreId) throws FDResourceException {
 		Response<Boolean> response = null;
@@ -1858,6 +1996,196 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		}
 		return response.getData();
 	}
+	
+	
+	@Override
+	public Collection<GroupScalePricing> findGrpInfoMaster(FDGroup[] grpIds)
+			throws RemoteException {
+		Response<Collection<GroupScalePricingData>> response =null;
+			try {
+				String inputJson;
+				Request<FDGroup[]> request = new Request<FDGroup[]>();
+				request.setData(grpIds);
+				inputJson = buildRequest(request);
+				response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ERP_GROUP_SCALE_IDS_API), new TypeReference<Response<Collection<GroupScalePricingData>>>() {});
+			} catch (FDResourceException e) {
+				LOGGER.error(e.getMessage());
+				throw new RemoteException( e.getMessage());
+			} catch (FDPayPalServiceException e) {
+				LOGGER.error(e.getMessage());
+				throw new RemoteException( e.getMessage());
+			} 
+			
+			Collection<GroupScalePricing> finalData = new ArrayList();
+			for(GroupScalePricingData obj:response.getData()){
+				finalData.add(ModelConverter.buildGroupScalePricing(obj));
+			}
+			
+			return finalData;
+			}
+	@Override
+	public Collection<FDGroup> loadAllGrpInfoMaster() throws RemoteException {
+		Response<Collection<FDGroupData>> response =null;
+		try {
+		
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_ALL_GROUP_INFO_API), new TypeReference<Response<Collection<FDGroupData>>>() {});
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException( e.getMessage());
+		} 
+		Collection<FDGroup> responseData = new ArrayList();
+		for(FDGroupData obj:response.getData()){
+			responseData.add(ModelConverter.buildFDGroup(obj));
+		}
+		return responseData;
+		}
+	@Override
+	public GroupScalePricing findGrpInfoMaster(FDGroup group)
+			throws FDGroupNotFoundException, RemoteException {
+		Response<GroupScalePricingData> response =null;
+		try {
+			String inputJson;
+			Request<FDGroup> request = new Request<FDGroup>();
+			request.setData(group);
+			inputJson = buildRequest(request);
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ERP_GROUP_SCALE_ID_API), new TypeReference<Response<GroupScalePricingData>>() {});
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException( e.getMessage());
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException( e.getMessage());
+		} 
+		return ModelConverter.buildGroupScalePricing(response.getData());
+		}
+	
+	@Override
+	public Map<String, FDGroup> getGroupIdentityForMaterial(String matId)
+			throws RemoteException {
+		Response<Map<String, FDGroupData>> response =null;
+		try {
+		
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_GROUP_INFO_BY_MATID_API+"/"+matId), new TypeReference<Response<Map<String, FDGroupData>>>() {});
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException( e.getMessage());
+		} 
+		Map<String, FDGroup> responseData = new HashMap();
+		for(String obj:response.getData().keySet()){
+			responseData.put(obj, ModelConverter.buildFDGroup(response.getData().get(obj)));
+		}
+		return responseData;
+		}
+	
+	@Override
+	public Map<SalesAreaInfo, FDGroup> getGroupIdentitiesForMaterial(
+			String matId) throws RemoteException {
+		Response<List<SalesAreaInfoFDGroupWrapper>> response =null;
+		try {
+		
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_GROUP_IDENTITY_BY_MATID_API+"/"+matId), new TypeReference<Response<List<SalesAreaInfoFDGroupWrapper>>>() {});
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException( e.getMessage());
+		} 
+		Map<SalesAreaInfo, FDGroup> responseData = new HashMap();
+		for(SalesAreaInfoFDGroupWrapper obj:response.getData()){
+			responseData.put(ModelConverter.buildSalesAreaInfo(obj.getSalesAreaInfoData()), ModelConverter.buildFDGroup(obj.getfDGroupData()));
+		}
+		return responseData;
+		}
+	@Override
+	public Collection getFilteredSkus(List skuList) throws RemoteException {
+		Response<List<FDSkuData>> response =null;
+		try {
+			String inputJson;
+			Request<List<FDSkuData>> request = new Request<List<FDSkuData>>();
+			List<FDSkuData> skuData = new ArrayList();
+			for(Object obj :skuList){FDSku sku=(FDSku)obj;skuData.add(ModelConverter.buildFDSkyData(sku));}
+			request.setData(skuData);
+			inputJson = buildRequest(request);
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ERP_GROUP_FILTERED_SKU_API), new TypeReference<Response<List<FDSkuData>>>() {});
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException( e.getMessage());
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException( e.getMessage());
+		} 
+		
+		List<FDSku> responseData = new ArrayList();
+		for(FDSkuData skuData :response.getData()){
+			responseData.add(ModelConverter.buildFDSky(skuData));
+		}
+		return responseData;
+		}
+	
+	
+	@Override
+	public int getLatestVersionNumber(String grpId) throws RemoteException {
+		Response<String> response =null;
+
+			try {
+				response = this.httpGetData(getFdCommerceEndPoint(ERP_LATEST_VER_FOR_GRPID_API+"/"+grpId), Response.class);
+			} catch (FDPayPalServiceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				throw new RemoteException( e.getMessage());
+			}
+
+		return Integer.valueOf(response.getData());
+		}
+	@Override
+	public Collection<FDGroup> findGrpsForMaterial(String matId)
+			throws RemoteException {
+		Response<Collection<FDGroupData>> response =null;
+		try {
+		
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_GRP_FOR_MAT_ID_API+"/"+matId), new TypeReference<Response<Collection<FDGroupData>>>() {});
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException( e.getMessage());
+		} 
+		Collection<FDGroup> responseData = new ArrayList();
+		for(FDGroupData obj:response.getData()){
+			responseData.add(ModelConverter.buildFDGroup(obj));
+		}
+		return responseData;
+		}
+	
+	@Override
+	public FDGroup getLatestActiveGroup(String groupID)
+			throws FDGroupNotFoundException, RemoteException {
+		Response<FDGroupData> response =null;
+		try {
+		
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_LATEST_GRP_API+"/"+groupID), new TypeReference<Response<FDGroupData>>() {});
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException( e.getMessage());
+		} 
+		return ModelConverter.buildFDGroup(response.getData());
+		}
+	
+	@Override
+	public Map<String, List<String>> getModifiedOnlyGroups(Date lastModified)
+			throws RemoteException {
+		
+		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+		String date1 = format1.format(lastModified); 
+
+		Response<Map<String, List<String>>> response =null;
+		try {
+		
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_LAST_MOD_GRP_API+"/"+date1), new TypeReference<Response<Map<String, List<String>>>>() {});
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException( e.getMessage());
+		} 
+		return response.getData();
+		
+	}
+
 	
 	@Override
 	public void log(Class<? extends FDRecommendationEvent> eventClazz, Collection<RecommendationEventsAggregate> events) throws RemoteException{
@@ -2068,5 +2396,4 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			return response.getData();
 	}
 	
-
 }

@@ -18,6 +18,7 @@ import com.freshdirect.fdstore.grp.ejb.FDGrpInfoHome;
 import com.freshdirect.fdstore.grp.ejb.FDGrpInfoSB;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.service.FDECommerceService;
 
 public class FDGrpInfoManager {
 	
@@ -29,13 +30,16 @@ public class FDGrpInfoManager {
 		
 		private static FDGrpInfoHome managerHome = null;
 		
+		// The SF2.0 switch will be introduced once AdServerGatewaySessionBean is moved to service, B'cos of transaction isolation
 	    public static Collection<FDGroup> loadAllGrpInfoMaster() throws FDResourceException{
 	    		    	
 	    	 Collection<FDGroup> zoneInfo=null;
 	 		try{
+
 	 			lookupManagerHome();
 	 			FDGrpInfoSB sb = managerHome.create();	 			
 	 			zoneInfo=sb.loadAllGrpInfoMaster();
+	 			
 	 		}catch (CreateException ce) {
 				invalidateManagerHome();
 				throw new FDResourceException(ce, "Error creating session bean");
@@ -48,9 +52,14 @@ public class FDGrpInfoManager {
 	
 	    public static int getLatestVersionNumber(String grpId) throws FDResourceException{
 	 		try{
+	 			if(FDStoreProperties.isStorefront2_0Enabled())
+	 			{
+	 			return FDECommerceService.getInstance().getLatestVersionNumber(grpId);
+	 			}else{
 	 			lookupManagerHome();
 	 			FDGrpInfoSB sb = managerHome.create();	 			
 	 			return sb.getLatestVersionNumber(grpId);
+	 			}
 	 		}catch (CreateException ce) {
 				invalidateManagerHome();
 				throw new FDResourceException(ce, "Error creating session bean");

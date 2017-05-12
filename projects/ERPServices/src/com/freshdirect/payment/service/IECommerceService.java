@@ -31,12 +31,17 @@ import com.freshdirect.ecommerce.data.survey.FDSurveyResponseData;
 import com.freshdirect.ecommerce.data.survey.SurveyKeyData;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
+import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
 import com.freshdirect.erp.model.BatchModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.event.RecommendationEventsAggregate;
 import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.fdstore.FDGroup;
+import com.freshdirect.fdstore.FDGroupNotFoundException;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.GroupScalePricing;
+import com.freshdirect.fdstore.SalesAreaInfo;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
@@ -238,8 +243,32 @@ public interface IECommerceService {
 	
 	public boolean smsOrderModification(String customerId, String mobileNumber, String orderId, String eStoreId) throws  FDResourceException;
 
+
+	public Map<ZoneInfo, List<FDProductPromotionInfo>> getAllProductsByType(String ppType, Date lastPublished) throws FDResourceException;
+
+	public Map<String, Map<ZoneInfo, List<FDProductPromotionInfo>>> getAllPromotionsByType(	String ppType, Date lastPublishedDate)throws FDResourceException;
+
+	List<FDProductPromotionInfo> getProductsByZoneAndType(String ppType,String zoneId) throws FDResourceException;
+
+	public ErpProductPromotionPreviewInfo getProductPromotionPreviewInfo(String ppPreviewId)throws FDResourceException;
+
+
 	public void log(FDRecommendationEvent event, int frequency) throws RemoteException;
+
+	/// Group Scale (ERPGrpInfoSessionBean) API
+	public Collection<GroupScalePricing> findGrpInfoMaster(FDGroup grpIds[]) throws RemoteException;
+	public Collection<FDGroup> loadAllGrpInfoMaster() throws RemoteException;
+	public GroupScalePricing findGrpInfoMaster(FDGroup group) throws FDGroupNotFoundException, RemoteException;
+	public  Map<String,FDGroup> getGroupIdentityForMaterial(String matId) throws RemoteException;
+	public Map<SalesAreaInfo, FDGroup> getGroupIdentitiesForMaterial(String matId) throws RemoteException;
+	public Collection getFilteredSkus(List skuList) throws RemoteException;
+	public int getLatestVersionNumber(String grpId) throws RemoteException;
+	public Collection<FDGroup> findGrpsForMaterial(String matId) throws RemoteException;
+	public FDGroup getLatestActiveGroup(String groupID) throws FDGroupNotFoundException, RemoteException;
+	public Map<String,List<String>> getModifiedOnlyGroups(Date lastModified) throws RemoteException;
+	// End Group Scale API 
 	
+
 	public void log(Class<? extends FDRecommendationEvent> eventClazz, Collection<RecommendationEventsAggregate> events) throws RemoteException;
 	
 	public Map<String, double[]> getPersonalizedFactors(String eStoreId,
@@ -262,5 +291,5 @@ public interface IECommerceService {
 
 	public String getPreferredWinePrice(String erpCustomerId);
 
-	
+
 }
