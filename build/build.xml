@@ -506,7 +506,7 @@
         </copy>
     </target>
 
-	<target name="build" depends="framework,erpservices,FDLogisticsIntegration,delivery,cms,fdstore,dataloader,erpswebapp,tools,StandingOrdersService,CoremetricsService,Athena" description="Build everything">
+	<target name="build" depends="framework,erpservices,FDLogisticsIntegration,delivery,cms,fdstore,dataloader,erpswebapp,tools,StandingOrdersService,CoremetricsService,Athena,fdstorefront-domain" description="Build everything">
 	</target>
 
 	<target name="test" depends="tests_compile" description="Run unit tests">
