@@ -2710,17 +2710,17 @@
 
 			<!-- FD classes -->
 			<zipfileset src="${work.dir}/Framework.jar"/>
-			<zipfileset src="${work.dir}/ERPServicesEJB-WL.jar" excludes="META-INF/*"/>
-			<zipfileset src="${work.dir}/DeliveryEJB-WL.jar" excludes="META-INF/*"/>
-			<zipfileset src="${work.dir}/CMS.jar" excludes="META-INF/*"/>
-			<zipfileset src="${work.dir}/DataLoaderEJB-WL.jar" excludes="META-INF/*"/>
-			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/*"/>
-            <zipfileset src="${work.dir}/FDLogisticsIntegration.jar" excludes="META-INF/*"/>
-            <zipfileset src="${work.dir}/StandingOrdersService.jar" excludes="META-INF/*"/>
-            <zipfileset src="${work.dir}/CoremetricsService.jar" excludes="META-INF/*"/>
+			<zipfileset src="${work.dir}/ERPServicesEJB-WL.jar" excludes="META-INF/* com/google/"/>
+			<zipfileset src="${work.dir}/DeliveryEJB-WL.jar" excludes="META-INF/* com/google/"/>
+			<zipfileset src="${work.dir}/CMS.jar" excludes="META-INF/* com/google/" />
+			<zipfileset src="${work.dir}/DataLoaderEJB-WL.jar" excludes="META-INF/* com/google/"/>
+			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/* com/google/"/>
+            <zipfileset src="${work.dir}/FDLogisticsIntegration.jar" excludes="META-INF/* com/google/"/>
+            <zipfileset src="${work.dir}/StandingOrdersService.jar" excludes="META-INF/* com/google/"/>
+            <zipfileset src="${work.dir}/CoremetricsService.jar" excludes="META-INF/* com/google/" />
 
 			<!-- Tools -->
-			<zipfileset src="${work.dir}/Tools.jar" excludes="META-INF/*"/>
+			<zipfileset src="${work.dir}/Tools.jar" excludes="META-INF/* com/google/"/>
 			
 		</jar>
 	</target>
