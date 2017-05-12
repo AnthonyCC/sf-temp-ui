@@ -191,7 +191,7 @@
 			<pathelement location="${testing.home}/ant-contrib.jar"/>
 		</classpath>
 	</taskdef>
-	<target name="daily" depends="startNotify,clean,prereq,checkout,build,media-checkout,media-stat,webapps,ears,client,test,checkin,mail" description="Daily build">
+	<target name="daily" depends="startNotify,clean,prereq,checkout,build,media-checkout,media-stat,webapps,ears,client,fdstorefront-domain,test,checkin,mail" description="Daily build">
 	</target>
 
 	<target name="label" description="Label latest revision">
