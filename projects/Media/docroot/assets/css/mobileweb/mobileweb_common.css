@@ -2329,3 +2329,10 @@ li.cleanli .gen-arrow {
 	.mm-page .order_history_header_desc{
 		font-size: 12px;
 	}
+
+	
+/* new zip check overlay fix */
+	[data-ismobweb="true"] #zipCheckPopup {
+		position: absolute;
+		height: auto;
+	}
