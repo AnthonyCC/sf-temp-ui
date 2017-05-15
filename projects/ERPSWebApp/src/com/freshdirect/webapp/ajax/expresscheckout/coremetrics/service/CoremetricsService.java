@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.coremetrics.CmContext;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder.CustomCategory;
@@ -35,10 +36,10 @@ public class CoremetricsService {
     }
     
     public String getCustomerTypeByOrderCount(FDUserI user) {
-    	String result = "newCustomerPage";
+    	String result = FDStoreProperties.getHomepageRedesignNewUserContainerContentKey();
     	try {
 			if (user.getAdjustedValidOrderCount() > 0) {
-				result = "existingCustomerPage";
+				result = FDStoreProperties.getHomepageRedesignCurrentUserContainerContentKey();
 			}
 		} catch (FDResourceException e) {
 			LOGGER.error("User[" + user.getUserId() + "] order count evaluation failed", e);
