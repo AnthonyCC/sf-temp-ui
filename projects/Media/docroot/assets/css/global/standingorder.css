@@ -564,8 +564,17 @@
 		margin-left: 8px; /* APPBUG-4499 */
 	}
 	/* APPBUG-4499 */
-	#evenBetterPopup .pdp-evenbetter-atc .pdp-evenbetter-atcbutton button.cssbutton[data-component="ATCButton"] {
+	#evenBetterPopup .pdp-evenbetter-atc .pdp-evenbetter-atcbutton button.cssbutton[data-component="ATCButton"],
+	#evenBetterPopup .pdp-evenbetter-atc .pdp-evenbetter-atcbutton button.cssbutton[data-component="customizeButton"],
+	#evenBetterPopup .pdp-evenbetter-atc .pdp-evenbetter-atcbutton button.cssbutton[data-component="addToListButton"]{
+		width: 235px;
 		font-size: 14px;
+	}
+	#evenBetterPopup .pdp-evenbetter-atc .pdp-evenbetter-atcbutton button.cssbutton[data-component="customizeButton"]{
+		margin: 10px 0 0;
+	}
+	#evenBetterPopup .pdp-evenbetter-atc .pdp-evenbetter-atcbutton{
+		text-align: right;
 	}
 	.pdp-evenbetter-soPreShow .pdp-evenbetter-atcbutton button.cssbutton {
 		padding: 10px 6px !important;
