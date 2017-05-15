@@ -1664,7 +1664,7 @@ public class Product {
 			}
 		}
 
-		final boolean useCache = false;
+		final boolean useCache = true;
 		final String skuCode = defaultSku.getSkuCode();
 
 		NutritionPanel panel = null;
