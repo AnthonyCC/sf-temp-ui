@@ -541,9 +541,13 @@ public class UserUtil {
 	                        //JspWriter writer = pageContext.getOut();
 	                        //writer.close();
 	                    /* ---- logic from MergeCartControllerTag */
+	                        
+	                    	//set in to session (from login user)
+		                    session.setAttribute(SessionName.CURRENT_CART, loginUser.getShoppingCart());
+                    	} else { //using merge cart page
+	                    	//set in to session (from cur user)
+                    		session.setAttribute(SessionName.CURRENT_CART, currentUser.getShoppingCart());
                     	}
-                    	
-	                    session.setAttribute(SessionName.CURRENT_CART, loginUser.getShoppingCart());
 	                    if (FDStoreProperties.isSocialLoginEnabled() ) {
 							String preSuccessPage = (String) session.getAttribute(SessionName.PREV_SUCCESS_PAGE);
 							if (preSuccessPage != null) {
