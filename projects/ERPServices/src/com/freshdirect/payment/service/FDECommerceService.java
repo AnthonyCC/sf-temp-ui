@@ -29,7 +29,6 @@ import weblogic.auddi.util.Logger;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.customer.EnumServiceType;
@@ -66,18 +65,18 @@ import com.freshdirect.ecommerce.data.enums.DeliveryPassTypeData;
 import com.freshdirect.ecommerce.data.enums.EnumFeaturedHeaderTypeData;
 import com.freshdirect.ecommerce.data.enums.ErpAffiliateData;
 import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
-import com.freshdirect.ecommerce.data.erp.model.ErpProductPromotionPreviewInfoData;
-import com.freshdirect.ecommerce.data.erp.pricing.FDProductPromotionInfoData;
-import com.freshdirect.ecommerce.data.erp.pricing.ZoneInfoData;
-import com.freshdirect.ecommerce.data.erp.pricing.ZoneInfoDataWrapper;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpRestrictedAvailabilityData;
 import com.freshdirect.ecommerce.data.erp.inventory.RestrictedInfoParam;
+import com.freshdirect.ecommerce.data.erp.model.ErpProductPromotionPreviewInfoData;
+import com.freshdirect.ecommerce.data.erp.pricing.FDProductPromotionInfoData;
+import com.freshdirect.ecommerce.data.erp.pricing.ZoneInfoDataWrapper;
 import com.freshdirect.ecommerce.data.fdstore.FDGroupData;
 import com.freshdirect.ecommerce.data.fdstore.FDSkuData;
 import com.freshdirect.ecommerce.data.fdstore.GroupScalePricingData;
 import com.freshdirect.ecommerce.data.fdstore.SalesAreaInfoFDGroupWrapper;
 import com.freshdirect.ecommerce.data.logger.recommendation.FDRecommendationEventData;
 import com.freshdirect.ecommerce.data.payment.BINData;
+import com.freshdirect.ecommerce.data.payment.FDGatewayActivityLogModelData;
 import com.freshdirect.ecommerce.data.sessionimpressionlog.SessionImpressionLogEntryData;
 import com.freshdirect.ecommerce.data.smartstore.ProductFactorParam;
 import com.freshdirect.ecommerce.data.smartstore.ScoreResult;
@@ -97,10 +96,10 @@ import com.freshdirect.fdstore.FDGroupNotFoundException;
 import com.freshdirect.fdstore.FDPayPalServiceException;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.SalesAreaInfo;
-import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -116,6 +115,7 @@ import com.freshdirect.logistics.delivery.model.SiteAnnouncement;
 import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.payment.BINInfo;
 import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
+import com.freshdirect.payment.gateway.ejb.FDGatewayActivityLogModel;
 import com.freshdirect.referral.extole.ExtoleServiceException;
 import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
 import com.freshdirect.referral.extole.model.ExtoleResponse;
@@ -252,8 +252,7 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String ERP_GRP_FOR_MAT_ID_API ="groupScale/getGrpforMatId";
 	private static final String ERP_LATEST_GRP_API ="groupScale/getLatestActGrp";
 	private static final String ERP_LAST_MOD_GRP_API ="groupScale/lastModifiedGroups";
-	
-	
+	private static final String LOG_GATEWAY_ACTIVITY = "gatewayactivity/log";	
 	
 
 
@@ -2396,4 +2395,23 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			return response.getData();
 	}
 	
+	@Override
+	public void logGatewayActivity(FDGatewayActivityLogModel logModel)throws RemoteException{
+		try {
+			Request<FDGatewayActivityLogModelData> gatewayActivityLogReq = new Request<FDGatewayActivityLogModelData>();
+			gatewayActivityLogReq.setData(ModelConverter.convertFDGatewayActivityLogModel(logModel));
+			String inputJson = buildRequest(gatewayActivityLogReq);
+			@SuppressWarnings("unchecked")
+			Response<String> response = this.postData(inputJson, getFdCommerceEndPoint(LOG_GATEWAY_ACTIVITY), Response.class);
+			if(!response.getResponseCode().equals("OK")){
+				throw new RemoteException(response.getMessage());
+			}
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
 }

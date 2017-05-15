@@ -56,6 +56,7 @@ import com.freshdirect.logistics.delivery.model.SiteAnnouncement;
 import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.payment.BINInfo;
 import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
+import com.freshdirect.payment.gateway.ejb.FDGatewayActivityLogModel;
 import com.freshdirect.referral.extole.ExtoleServiceException;
 import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
 import com.freshdirect.referral.extole.model.ExtoleResponse;
@@ -290,6 +291,9 @@ public interface IECommerceService {
 			String erpCustomerId);
 
 	public String getPreferredWinePrice(String erpCustomerId);
+
+	void logGatewayActivity(FDGatewayActivityLogModel logModel)
+			throws RemoteException;
 
 
 }

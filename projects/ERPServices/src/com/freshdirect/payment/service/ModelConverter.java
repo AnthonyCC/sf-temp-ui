@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedSet;
 
 import com.freshdirect.affiliate.ErpAffiliate;
@@ -24,22 +23,6 @@ import com.freshdirect.ecommerce.data.enums.DeliveryPassTypeData;
 import com.freshdirect.ecommerce.data.enums.EnumFeaturedHeaderTypeData;
 import com.freshdirect.ecommerce.data.enums.ErpAffiliateData;
 import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
-import com.freshdirect.erp.EnumATPRule;
-import com.freshdirect.ecommerce.data.logger.recommendation.FDRecommendationEventData;
-import com.freshdirect.erp.EnumFeaturedHeaderType;
-import com.freshdirect.erp.ErpCOOLInfo;
-import com.freshdirect.erp.ErpCOOLKey;
-import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
-import com.freshdirect.erp.model.ErpProductInfoModel;
-import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialPrice;
-import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialSalesAreaInfo;
-import com.freshdirect.erp.model.ErpProductInfoModel.ErpPlantMaterialInfo;
-import com.freshdirect.fdstore.EnumEStoreId;
-import com.freshdirect.framework.event.FDRecommendationEvent;
-import com.freshdirect.framework.util.StringUtil;
-import com.freshdirect.payment.BillingCountryInfo;
-import com.freshdirect.payment.BillingRegionInfo;
-import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
 import com.freshdirect.ecommerce.data.erp.model.ErpMaterialPriceData;
 import com.freshdirect.ecommerce.data.erp.model.ErpMaterialSalesAreaInfoData;
 import com.freshdirect.ecommerce.data.erp.model.ErpPlantMaterialInfoData;
@@ -55,6 +38,18 @@ import com.freshdirect.ecommerce.data.fdstore.GrpZonePriceListingData;
 import com.freshdirect.ecommerce.data.fdstore.GrpZonePriceListingWrapper;
 import com.freshdirect.ecommerce.data.fdstore.GrpZonePriceModelData;
 import com.freshdirect.ecommerce.data.fdstore.SalesAreaInfoData;
+import com.freshdirect.ecommerce.data.logger.recommendation.FDRecommendationEventData;
+import com.freshdirect.ecommerce.data.payment.FDGatewayActivityLogModelData;
+import com.freshdirect.erp.EnumATPRule;
+import com.freshdirect.erp.EnumFeaturedHeaderType;
+import com.freshdirect.erp.ErpCOOLInfo;
+import com.freshdirect.erp.ErpCOOLKey;
+import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
+import com.freshdirect.erp.model.ErpProductInfoModel;
+import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialPrice;
+import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialSalesAreaInfo;
+import com.freshdirect.erp.model.ErpProductInfoModel.ErpPlantMaterialInfo;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDSku;
@@ -62,7 +57,12 @@ import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.GrpZonePriceListing;
 import com.freshdirect.fdstore.GrpZonePriceModel;
 import com.freshdirect.fdstore.SalesAreaInfo;
+import com.freshdirect.framework.event.FDRecommendationEvent;
 import com.freshdirect.framework.util.DayOfWeekSet;
+import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.payment.BillingCountryInfo;
+import com.freshdirect.payment.BillingRegionInfo;
+import com.freshdirect.payment.gateway.ejb.FDGatewayActivityLogModel;
 
 
 public class ModelConverter {
@@ -479,6 +479,50 @@ public class ModelConverter {
 	}
 	
 	
+	public static FDGatewayActivityLogModelData convertFDGatewayActivityLogModel(FDGatewayActivityLogModel activityLogModel) {
+		if(activityLogModel==null)
+			return null;
+		
+		FDGatewayActivityLogModelData fdGatewayActivityLogModelData = new FDGatewayActivityLogModelData();
+		fdGatewayActivityLogModelData.setAccountNumLast4(activityLogModel.getAccountNumLast4());
+		fdGatewayActivityLogModelData.setAddressLine1(activityLogModel.getAddressLine1());
+		fdGatewayActivityLogModelData.setAddressLine2(activityLogModel.getAddressLine2());
+		fdGatewayActivityLogModelData.setAmount(activityLogModel.getAmount());
+		fdGatewayActivityLogModelData.setApproved(activityLogModel.isApproved());
+		fdGatewayActivityLogModelData.setAuthCode(activityLogModel.getAuthCode());
+		fdGatewayActivityLogModelData.setAVSMatch(activityLogModel.isAVSMatch());
+		fdGatewayActivityLogModelData.setAvsResponse(activityLogModel.getAvsResponse());
+		fdGatewayActivityLogModelData.setBankAccountType(activityLogModel.getBankAccountType().name());
+		fdGatewayActivityLogModelData.setCardType(activityLogModel.getCardType().name());
+		fdGatewayActivityLogModelData.setCity(activityLogModel.getCity());
+		fdGatewayActivityLogModelData.setCountryCode(activityLogModel.getCountryCode());
+		fdGatewayActivityLogModelData.setCustomerId(activityLogModel.getCustomerId());
+		fdGatewayActivityLogModelData.setCVVMatch(activityLogModel.isCVVMatch());
+		fdGatewayActivityLogModelData.setCvvResponse(activityLogModel.getCvvResponse());
+		fdGatewayActivityLogModelData.setDeclined(activityLogModel.isDeclined());
+		fdGatewayActivityLogModelData.setDeviceId(activityLogModel.getDeviceId());
+		fdGatewayActivityLogModelData.seteStoreId(activityLogModel.getEStoreId().name());
+		fdGatewayActivityLogModelData.seteWalletId(activityLogModel.geteWalletId());
+		fdGatewayActivityLogModelData.seteWalletTxId(activityLogModel.geteWalletTxId());
+		fdGatewayActivityLogModelData.setExpirationDate(activityLogModel.getExpirationDate());
+		fdGatewayActivityLogModelData.setGatewayOrderID(activityLogModel.getGatewayOrderID());
+		fdGatewayActivityLogModelData.setGatewayType(activityLogModel.getGatewayType().getName());
+		fdGatewayActivityLogModelData.setMerchant(activityLogModel.getMerchant());
+		fdGatewayActivityLogModelData.setPaymentType(activityLogModel.getPaymentType().name());
+		fdGatewayActivityLogModelData.setProcessingError(activityLogModel.isProcessingError());
+		fdGatewayActivityLogModelData.setProfileId(activityLogModel.getProfileId());
+		fdGatewayActivityLogModelData.setRequestProcessed(activityLogModel.isRequestProcessed());
+		fdGatewayActivityLogModelData.setResponseCode(activityLogModel.getResponseCode());
+		fdGatewayActivityLogModelData.setResponseCodeAlt(activityLogModel.getResponseCodeAlt());
+		fdGatewayActivityLogModelData.setState(activityLogModel.getState());
+		fdGatewayActivityLogModelData.setStatusCode(activityLogModel.getStatusCode());
+		fdGatewayActivityLogModelData.setStatusMsg(activityLogModel.getStatusMsg());
+		fdGatewayActivityLogModelData.setTransactionType(activityLogModel.getTransactionType().name());
+		fdGatewayActivityLogModelData.setTxRefIdx(activityLogModel.getTxRefIdx());
+		fdGatewayActivityLogModelData.setTxRefNum(activityLogModel.getTxRefNum());
+		
+		return fdGatewayActivityLogModelData;
+	}
 
 
 }
