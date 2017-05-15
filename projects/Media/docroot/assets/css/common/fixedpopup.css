@@ -254,3 +254,23 @@
   display: inline-block;
   white-space: nowrap;
 }
+
+@media (max-width: 568px) {
+	.fixedPopupHelper {
+		display:none;
+	}
+
+	.fixedPopupContent {
+		position:absolute;
+		box-sizing: border-box;
+		top:45px;
+		right:0;
+		bottom: 0;
+		left:0;
+		max-height:100%;
+	}
+
+	.qs-popup-close-icon {
+		right:10px;
+	}
+}
