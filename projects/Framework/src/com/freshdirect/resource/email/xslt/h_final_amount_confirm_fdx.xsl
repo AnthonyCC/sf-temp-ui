@@ -49,6 +49,10 @@
 							The rest of your order <xsl:value-of select="order/erpSalesId"/> is on the way, and the final total is <xsl:choose><xsl:when test="order/invoicedTotal &lt;= order/total">$<xsl:value-of select='format-number(order/invoicedTotal, "###,##0.00", "USD")'/></xsl:when><xsl:otherwise>$<xsl:value-of select='format-number(order/invoicedTotal, "###,##0.00", "USD")'/></xsl:otherwise></xsl:choose>. Expect our kickers to arrive between <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime"/></xsl:call-template> - <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="order/deliveryReservation/endTime" /></xsl:call-template> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime"/></xsl:call-template>.
 							<br /><br />
 							Chat with us! We always want to make things right. [link to chat]
+							<br /><br />
+							See ya soon,<br />
+							Your FoodKick SideKicks<br />
+							<span style="font-weight: bold;">#FoodKick</span>
 						</div>
 					</p>
 				</xsl:when>
@@ -57,16 +61,24 @@
 					<div style="margin: 15px 0; font-size: 16px;">
 						(Is there any better phrase in the English language?) Expect our Kickers to arrive between <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime"/></xsl:call-template> - <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="order/deliveryReservation/endTime" /></xsl:call-template>.<br />
 						<br />
-						Your final total is <xsl:choose><xsl:when test="order/invoicedTotal &lt;= order/total">$<xsl:value-of select='format-number(order/invoicedTotal, "###,##0.00", "USD")'/></xsl:when><xsl:otherwise>$<xsl:value-of select='format-number(order/invoicedTotal, "###,##0.00", "USD")'/></xsl:otherwise></xsl:choose>. Hope everything is absolutely Instagram-worthy. <span style="font-weight: bold;">#FoodKick</span>
+						Your final total is <xsl:choose><xsl:when test="order/invoicedTotal &lt;= order/total">$<xsl:value-of select='format-number(order/invoicedTotal, "###,##0.00", "USD")'/></xsl:when><xsl:otherwise>$<xsl:value-of select='format-number(order/invoicedTotal, "###,##0.00", "USD")'/></xsl:otherwise></xsl:choose>. Hope everything is absolutely Instagram-worthy.
+						
+						<br /><br />
+						See ya soon,<br />
+						Your FoodKick SideKicks<br />
+						<span style="font-weight: bold;">#FoodKick</span>
 					</div>
-					
-					<xsl:call-template name="h_invoice_info_fdx"/>
 				</xsl:when>
 			</xsl:choose>
 			
 			
 			
+			
 			<!-- <div class="email-footer-block" style="height: 30px; margin: 10px 0;"><a class="email-body-button" href="#">ADD MORE STUFF</a></div> -->
+		</div>
+		
+		<div style="margin: 15px 0;">
+			<xsl:call-template name="h_invoice_info_fdx"/>
 		</div>
 
 		<xsl:call-template name="h_footer_fdx"/>
