@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
+import java.util.TreeMap;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.MaterialPrice;
@@ -22,6 +23,24 @@ import com.freshdirect.ecommerce.data.enums.CrmCaseSubjectData;
 import com.freshdirect.ecommerce.data.enums.DeliveryPassTypeData;
 import com.freshdirect.ecommerce.data.enums.EnumFeaturedHeaderTypeData;
 import com.freshdirect.ecommerce.data.enums.ErpAffiliateData;
+import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
+import com.freshdirect.erp.EnumATPRule;
+import com.freshdirect.ecommerce.data.logger.recommendation.FDRecommendationEventData;
+import com.freshdirect.ecommerce.data.rules.RuleData;
+import com.freshdirect.erp.EnumFeaturedHeaderType;
+import com.freshdirect.erp.ErpCOOLInfo;
+import com.freshdirect.erp.ErpCOOLKey;
+import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
+import com.freshdirect.erp.model.ErpProductInfoModel;
+import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialPrice;
+import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialSalesAreaInfo;
+import com.freshdirect.erp.model.ErpProductInfoModel.ErpPlantMaterialInfo;
+import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.framework.event.FDRecommendationEvent;
+import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.payment.BillingCountryInfo;
+import com.freshdirect.payment.BillingRegionInfo;
+import com.freshdirect.rules.Rule;
 import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
 import com.freshdirect.ecommerce.data.erp.model.ErpMaterialPriceData;
 import com.freshdirect.ecommerce.data.erp.model.ErpMaterialSalesAreaInfoData;
@@ -476,6 +495,37 @@ public class ModelConverter {
 	public static FDSku buildFDSky(FDSkuData skuData) {
 		FDSku sku = new FDSku(skuData.getSkuCode(),skuData.getVersion());
 		return sku;
+	}
+
+	public static Map<String, Rule> buildRuleMap(Map<String, RuleData> rules) {
+		Map<String, Rule> ruleMap = new TreeMap<String, Rule>();
+		for (String key: rules.keySet()){
+			RuleData ruleData = rules.get(key);
+    		Rule rule = new Rule();
+    		rule.setId(ruleData.getId());
+    		rule.setName(ruleData.getName());
+    		rule.setStartDate(ruleData.getStartDate());
+    		rule.setEndDate(ruleData.getEndDate());
+    		rule.setOutcomeStr(ruleData.getOutcomeStr());
+    		rule.setSubsystem(ruleData.getSubsystem());
+    		rule.setPriority(ruleData.getPriority());
+    		rule.setConditionStr(ruleData.getConditionStr());
+    		ruleMap.put(key, rule);
+		}
+		return ruleMap;
+	}
+
+	public static RuleData buildRuleData(Rule ruleObj) {
+    		RuleData ruleData = new RuleData();
+    		ruleData.setId(ruleObj.getId());
+    		ruleData.setName(ruleObj.getName());
+    		ruleData.setStartDate(ruleObj.getStartDate());
+    		ruleData.setEndDate(ruleObj.getEndDate());
+    		ruleData.setOutcomeStr(ruleObj.getOutcomeStr());
+    		ruleData.setSubsystem(ruleObj.getSubsystem());
+    		ruleData.setPriority(ruleObj.getPriority());
+    		ruleData.setConditionStr(ruleObj.getConditionStr());
+		return ruleData;
 	}
 	
 	

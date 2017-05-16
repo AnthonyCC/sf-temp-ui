@@ -77,6 +77,7 @@ import com.freshdirect.ecommerce.data.fdstore.SalesAreaInfoFDGroupWrapper;
 import com.freshdirect.ecommerce.data.logger.recommendation.FDRecommendationEventData;
 import com.freshdirect.ecommerce.data.payment.BINData;
 import com.freshdirect.ecommerce.data.payment.FDGatewayActivityLogModelData;
+import com.freshdirect.ecommerce.data.rules.RuleData;
 import com.freshdirect.ecommerce.data.sessionimpressionlog.SessionImpressionLogEntryData;
 import com.freshdirect.ecommerce.data.smartstore.ProductFactorParam;
 import com.freshdirect.ecommerce.data.smartstore.ScoreResult;
@@ -120,6 +121,7 @@ import com.freshdirect.referral.extole.ExtoleServiceException;
 import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
 import com.freshdirect.referral.extole.model.ExtoleResponse;
 import com.freshdirect.referral.extole.model.FDRafCreditModel;
+import com.freshdirect.rules.Rule;
 import com.freshdirect.sms.model.st.STSmsResponse;
 //import com.freshdirect.content.attributes.FlatAttributeCollection;
 //import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
@@ -252,7 +254,12 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String ERP_GRP_FOR_MAT_ID_API ="groupScale/getGrpforMatId";
 	private static final String ERP_LATEST_GRP_API ="groupScale/getLatestActGrp";
 	private static final String ERP_LAST_MOD_GRP_API ="groupScale/lastModifiedGroups";
-	private static final String LOG_GATEWAY_ACTIVITY = "gatewayactivity/log";	
+	private static final String LOG_GATEWAY_ACTIVITY = "gatewayactivity/log";
+
+	private static final String GET_RULE = "rule/findByRuleId";
+	private static final String DELETE_RULE = "rule/delete";
+	private static final String STORE_RULES = "rule/store";
+	private static final String GET_RULES = "rule";	
 	
 
 
@@ -319,6 +326,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		ResponseEntity<String> response;
 		try {
 			response = restTemplate.getForEntity(new URI(url),String.class);
+			System.out.println(response.getBody());
 			responseOfTypestring =getMapper().readValue(response.getBody(), type);
 		} catch (JsonParseException e) {
 			LOGGER.info(e.getMessage());
@@ -2412,6 +2420,61 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		}catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
+		}
+	}
+	
+	@Override
+	public Map<String, Rule> getRules(String subsystem)throws FDResourceException, RemoteException {
+		Map<String, Rule>  rules = null;
+		try {
+		Response<Map<String, RuleData>> response = this.httpGetDataTypeMap((getFdCommerceEndPoint(GET_RULES +"?subsystem="+ subsystem)), new TypeReference<Response<Map<String, RuleData>>>() {});
+		rules = ModelConverter.buildRuleMap(response.getData());
+		if(!response.getResponseCode().equals("OK"))
+			throw new FDResourceException(response.getMessage());
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
+		}
+		return rules;
+	}
+	@Override
+	public Rule getRule(String ruleId) throws FDResourceException,RemoteException {
+
+		Response<Rule> response = null;
+		try {
+		response = this.httpGetDataTypeMap((getFdCommerceEndPoint(GET_RULE +"?ruleId="+ruleId)), new TypeReference<Response<Rule>>() {});
+		if(!response.getResponseCode().equals("OK"))
+			throw new FDResourceException(response.getMessage());
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
+		}
+		return response.getData();
+	}
+	@Override
+	public void deleteRule(String ruleId) throws FDResourceException,RemoteException {
+		try {
+		this.getData(getFdCommerceEndPoint(DELETE_RULE+"?ruleId="+ruleId), Response.class);
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
+		}
+	}
+	@Override
+	public void storeRule(Rule rule) throws FDResourceException,RemoteException {
+		String inputJson;
+		try {
+			Request<RuleData> ruleData = new Request<RuleData>();
+			ruleData.setData(ModelConverter.buildRuleData(rule));
+			inputJson = buildRequest(ruleData);
+			this.postData(inputJson, getFdCommerceEndPoint(STORE_RULES), Response.class);
+			
+		} catch (FDPayPalServiceException e) {
+			throw new FDResourceException(e, "Unable to process the request.");
+		}
+		catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDResourceException(e, "Unable to process the request.");
 		}
 	}
 }

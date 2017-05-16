@@ -40,9 +40,9 @@ import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDGroupNotFoundException;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.SalesAreaInfo;
-import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -61,6 +61,7 @@ import com.freshdirect.referral.extole.ExtoleServiceException;
 import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
 import com.freshdirect.referral.extole.model.ExtoleResponse;
 import com.freshdirect.referral.extole.model.FDRafCreditModel;
+import com.freshdirect.rules.Rule;
 import com.freshdirect.sms.model.st.STSmsResponse;
 
 public interface IECommerceService {
@@ -294,6 +295,15 @@ public interface IECommerceService {
 
 	void logGatewayActivity(FDGatewayActivityLogModel logModel)
 			throws RemoteException;
+	
+	public Map<String, Rule> getRules(String subsystem) throws FDResourceException, RemoteException;
+
+
+	public Rule getRule(String ruleId) throws FDResourceException,RemoteException;
+	
+	public void deleteRule(String ruleId) throws FDResourceException,RemoteException;
+	
+	public void storeRule(Rule rule) throws FDResourceException,RemoteException;
 
 
 }
