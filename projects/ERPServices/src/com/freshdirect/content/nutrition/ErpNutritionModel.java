@@ -1,5 +1,8 @@
 package com.freshdirect.content.nutrition;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -9,11 +12,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.freshdirect.content.nutrition.panel.NutritionPanel;
 import com.freshdirect.framework.core.ModelSupport;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class ErpNutritionModel extends ModelSupport {
 	
 	private static final long serialVersionUID = 165757752576184510L;
+	
+	private static final Logger LOGGER = LoggerFactory.getInstance( ErpNutritionModel.class ); 
+
 
 	/** String skuCode to which this nutrition model belongs to */
 	private String skuCode;
@@ -520,5 +533,21 @@ public class ErpNutritionModel extends ModelSupport {
 	
 	public boolean hasNutritionInfo(ErpNutritionInfoType type) {
 		return this.info.get(type) != null;
+	}
+	
+	public String toJSON() {
+		ObjectMapper mapper = new ObjectMapper();
+		Writer writer = new StringWriter();
+		try {
+			mapper.writeValue(writer, this);
+			return writer.toString();
+		} catch (JsonGenerationException e) {
+			LOGGER.error("Cannot convert panel to JSON", e);
+		} catch (JsonMappingException e) {
+			LOGGER.error("Cannot convert panel to JSON", e);
+		} catch (IOException e) {
+			LOGGER.error("Cannot convert panel to JSON", e);
+		}
+		return null;
 	}
 }
