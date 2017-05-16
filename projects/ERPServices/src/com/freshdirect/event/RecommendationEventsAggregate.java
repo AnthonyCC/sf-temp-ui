@@ -59,6 +59,10 @@ public class RecommendationEventsAggregate implements Serializable {
 		return frequency;
 	}
 	
+	public String geteStoreId() {
+		return eStoreId;
+	}
+	
 	public String getEStoreId() {
 		return eStoreId;
 	}
