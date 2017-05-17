@@ -251,7 +251,13 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
             this.saveCart();
 
             if (FDStoreProperties.isSessionLoggingEnabled()) {
-                user.setSessionEvent(new SessionEvent());
+            	if(user.getUserContext()!=null){
+					EnumEStoreId  eStoreId = user.getUserContext().getStoreContext() != null ? user.getUserContext().getStoreContext().getEStoreId(): EnumEStoreId.FD;
+					if(eStoreId!=null)
+					user.setSessionEvent(new SessionEvent(eStoreId.toString().toLowerCase()));
+				}
+            	else
+            		user.setSessionEvent(new SessionEvent());
             }
 
             // store cohort ID
