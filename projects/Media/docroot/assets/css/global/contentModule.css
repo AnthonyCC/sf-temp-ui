@@ -1,3 +1,11 @@
+.contentModules > div:first-child {
+  margin-top: 10px;
+}
+
+.contentModules > div:last-child {
+  margin-bottom: 27px;
+}
+
 .content-module {
   font-family: 'Brandon Text';
 }
@@ -6,7 +14,7 @@
 }
 
 .content-module.single-module {
-  margin-top: 0px;
+  margin-top: 10px;
 }
 
 .content-module .content {
@@ -99,7 +107,6 @@
   text-transform: uppercase;
   min-height: 52px;
   margin: 0;
-  margin-top: 10px;
   padding: 0 10px;
 }
 
