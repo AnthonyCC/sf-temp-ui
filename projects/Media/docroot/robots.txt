@@ -3,8 +3,13 @@ Disallow: /site_access/
 Disallow: /registration/
 Disallow: /quickshop/
 Disallow: /checkout/
+Disallow: /expressco/
 Disallow: /your_account/
 Disallow: /login/
 Disallow: /view_cart.jsp
 Disallow: /cart_confirm.jsp
 Disallow: /group.jsp
+Disallow: /health_warning.jsp
+Disallow: *jsessionid*
+Disallow: /invite/
+Disallow: *grpId=*
