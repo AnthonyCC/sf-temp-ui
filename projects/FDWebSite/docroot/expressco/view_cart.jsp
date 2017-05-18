@@ -26,7 +26,7 @@ if (mobWeb) {
 %>
 
 <potato:pendingExternalAtcItem/>
-<potato:cartData />
+
 <tmpl:insert template='<%=template %>'>
 	<tmpl:put name="soytemplates"><soy:import packageName="expressco"/></tmpl:put>
 	<tmpl:put name="jsmodules">

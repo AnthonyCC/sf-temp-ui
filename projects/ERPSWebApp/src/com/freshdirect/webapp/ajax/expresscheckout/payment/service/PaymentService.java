@@ -215,9 +215,12 @@ public class PaymentService {
         return data;
     }
 
-    public List<PaymentData> loadUserPaymentMethods(FDUserI user, HttpServletRequest request) throws FDResourceException {
+    public List<PaymentData> loadUserPaymentMethods(FDUserI user, HttpServletRequest request, List<ErpPaymentMethodI> paymentMethods) throws FDResourceException {
         List<PaymentData> paymentDatas = new ArrayList<PaymentData>();
-        List<ErpPaymentMethodI> paymentMethods = (List<ErpPaymentMethodI>) user.getPaymentMethods();
+//        List<ErpPaymentMethodI> paymentMethods = (List<ErpPaymentMethodI>) user.getPaymentMethods();
+        if(null == paymentMethods){
+        	paymentMethods = (List<ErpPaymentMethodI>) user.getPaymentMethods();
+        }
         paymentMethods = PaymentMethodManipulator.disconnectInvalidPayPalWallet(paymentMethods, request);
         sortPaymentMethods(user, paymentMethods);
         String selectedPaymentId = null;
@@ -227,7 +230,8 @@ public class PaymentService {
         	if(vaidateSO3Payment(user,paymentMethods)){
         		selectedPaymentId=user.getCurrentStandingOrder().getPaymentMethodId();
         	}else if (user.getShoppingCart().getPaymentMethod() == null) {
-                selectedPaymentId = FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity());
+//                selectedPaymentId = FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity());
+        		selectedPaymentId = user.getFDCustomer().getDefaultPaymentMethodPK();
                 selectionError = selectPaymentMethod(selectedPaymentId, PageAction.SELECT_PAYMENT_METHOD.actionName, request);
             } else {
                 PrimaryKey paymentMethodPrimaryKey = user.getShoppingCart().getPaymentMethod().getPK();

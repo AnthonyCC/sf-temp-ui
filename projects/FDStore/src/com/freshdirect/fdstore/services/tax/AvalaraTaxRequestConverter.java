@@ -91,12 +91,17 @@ public class AvalaraTaxRequestConverter {
 			customercode = getCustomerCode(order);
 		} else {
 			FDIdentity identity = cart.getOrderLines().get(0) != null ? cart.getOrderLines().get(0).getUserContext().getFdIdentity(): null;
-			if (null != identity && null != identity.getFDCustomerPK() && !"".equals(identity.getFDCustomerPK())) {
-				try {
-					model = FDCustomerFactory.getErpCustomer(identity);
-					customercode = null != model ? model.getSapId()	: "DEFAULT_CUSTOMER_CODE";
-				} catch (FDResourceException e) {
-					customercode = "DEFAULT_CUSTOMER_CODE";
+			String custSapId = cart.getOrderLines().get(0) != null ? cart.getOrderLines().get(0).getUserContext().getCustSapId(): null;
+			if (null != identity && null != identity.getFDCustomerPK() && !"".equals(identity.getFDCustomerPK()) ) {
+				if(null != custSapId){
+					customercode = custSapId;
+				} else {
+					try {
+						model = FDCustomerFactory.getErpCustomer(identity);
+						customercode = null != model ? model.getSapId()	: "DEFAULT_CUSTOMER_CODE";
+					} catch (FDResourceException e) {
+						customercode = "DEFAULT_CUSTOMER_CODE";
+					}
 				}
 			}
 		}

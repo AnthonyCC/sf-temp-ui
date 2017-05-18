@@ -31,8 +31,12 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class FDCustomerCreditUtil {
 
 	private static final Category LOGGER = LoggerFactory.getInstance(FDCustomerCreditUtil.class);
-
+	
 	public static void applyCustomerCredit(FDCartModel cart, FDIdentity identity) throws FDResourceException {
+		applyCustomerCredit(cart, identity, null);
+	}
+
+	public static void applyCustomerCredit(FDCartModel cart, FDIdentity identity, List customerCredits) throws FDResourceException {
 
 		if (cart.getPaymentMethod() != null && EnumPaymentType.MAKE_GOOD.equals(cart.getPaymentMethod().getPaymentType())) {
 			// don't apply credits on make-good orders
@@ -40,8 +44,12 @@ public class FDCustomerCreditUtil {
 			return;
 		}
 
-		ErpCustomerModel erpCustomer = FDCustomerFactory.getErpCustomer(identity.getErpCustomerPK());
-		List customerCredits = new ArrayList(erpCustomer.getCustomerCredits());
+//		ErpCustomerModel erpCustomer = FDCustomerFactory.getErpCustomer(identity.getErpCustomerPK());
+//		List customerCredits = new ArrayList(erpCustomer.getCustomerCredits());
+		if(null == customerCredits){
+			ErpCustomerModel erpCustomer = FDCustomerFactory.getErpCustomer(identity.getErpCustomerPK());
+			customerCredits = new ArrayList(erpCustomer.getCustomerCredits());
+		}
 
 		LOGGER.debug("Customer Credit size: " + customerCredits.size());
 
