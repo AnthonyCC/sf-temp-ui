@@ -1,5 +1,5 @@
 .cartsection__cartline{
-  margin:20px 0;
+  margin: 0 0 5px 0;
 }
 
 #cartcontent .cartsection__cartline{
@@ -30,8 +30,8 @@
 }
 
 .cartline-imageholder .cartline-image{
-  max-width:70px;
-  max-height:70px;
+  max-width: 60px;
+  max-height: 60px;
 }
 
 .cartsection__cartline .cartline-title{
@@ -117,7 +117,7 @@
 }
 
 .cartline-titleholder .cartline-link{
-  font-weight:bold;
+  font-weight: normal;
 }
 
 .cartline-titleholder .cartline-descriptor{
@@ -154,14 +154,14 @@
 }
 
 .cartsection .cartsection__title{
-  color:#FF9900;
-  font-size:18px;
-  font-weight:bold;
-  margin:5px 0;
+  color: #333;
+  font-size: 14px;
+  font-weight: normal;
+  margin: 0 0;
 }
 
 #cartcontent .cartsection .cartsection__title{
-  margin-left:30px;
+  margin-left: 0;
 }
 
 .cartsection .cartsection__title [data-component="removeRecipeButton"] {
@@ -424,7 +424,7 @@ p.cartsection__tax{
 
 .cartsection__totalwrapper{
 	border-top:1px solid #e0e3d0;
-	padding: 30px 0;
+	padding: 10px 0 15px 0;
 }
 
 .cartheader{
@@ -459,6 +459,7 @@ p.cartsection__tax{
 .cartheader__action_w_subtotal {
   width: 510px;
   text-align: right;
+	vertical-align: top;
 }
 
 .cartheader__title{
@@ -551,7 +552,7 @@ p.cartsection__tax{
   display:inline-block;
   width:50%;
   vertical-align:top;
-  line-height:70px;
+  line-height:30px;
 }
 
 .questions__left{
@@ -1530,3 +1531,14 @@ label[for="dontupdatecartlines"] {
   font-size:14px;
   padding-right:90px;
   }
+ 
+ #questions {
+ 	margin-bottom: 20px;
+ }
+ .questions__left,
+ button[data-component="update-cart"] {
+ 	display: none;
+ }
+ .questions__right {
+ 	width: 100%;
+ }

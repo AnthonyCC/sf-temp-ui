@@ -15,7 +15,7 @@
  * @param coveredByGiftCard
  * @param mpEwalletStatus
  * @param ppEwalletStatus
- * @param backupPaymentRequiredForGiftCard  
+ * @param backupPaymentRequiredForGiftCard
  * @param? walletErrorMsg  
  * @param? mpButtonImgURL
  * @param? onOpenCoremetrics
@@ -39,240 +39,57 @@
         {call .paymentmethodpreviewitem data="$payment"}
         {/call}
       {/if}
-    {/foreach}
- 
+    {/foreach} 		
  		{if $mpEwalletStatus or $ppEwalletStatus}
- 		 	<div id="payment-method-separator">
-		        <hr><span>Or</span><hr>
+			<div class="external-payments">
+				{call .externalpaymentsseparator /}
+				{call .externalpaymentspaypal}
+					{param ppEwalletStatus:$ppEwalletStatus /}
+					{param ppEwalletPaired:$ppEwalletPaired /}
+				{/call}
+				{call .externalpaymentsmasterpass}
+					{param mpEwalletStatus:$mpEwalletStatus /}
+					{param walletErrorMsg:$walletErrorMsg /}
+					{param mpButtonImgURL:$mpButtonImgURL /}
+				{/call}
 			</div>
 		{/if}
-		 <!-- PayPal -->
-		 {if $ppEwalletStatus}
-		     <form id="addpaymentmethod_paypal"  class="checkout-wallet-button" fdform="PP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
-			    	<input type="hidden" name="action" value="PP_Pairing_Start" />
-			    	<input type="hidden" name="ewalletType" value="PP" />
-			    	
-			    	<div id="PP_ERROR" style="display: none;">
-				    	<div class="wallet-error-msg">
-				    		<img src='/media_stat/images/masterpass/mpwarning.png'> <span>Cannot Connect to PayPal at this time.</span>
-				    	</div> 
-				    </div>
-			    	
-			  		{if $ppEwalletPaired}
-			  			<div id="PP_wrapper">
-				  			<input id = "PP_button" type="image" src="/media_stat/images/paypal/CheckoutscreenPayPallogo.png" alt="Buy With PayPal"  onclick="checkout.paypal.initAuthFlow()">
-				  			<div class="wallet-connected-indicator"><img src="/media_stat/images/common/link-small.png" alt="linked account"> LINKED</div>
-				  		</div>
-			  		{else}
-			  			<input id = "PP_button" type="image" src="/media_stat/images/paypal/CheckoutscreenPayPallogo.png" alt="Buy With PayPal"  onclick="checkout.paypal.initAuthFlow()">
-			  		{/if}
-			</form>
-		{/if}
-		<!-- PayPal -->
-		
- 	/** Masterpass Standard Checkout  */ 
-    	{if $mpEwalletStatus}
-			       
-			    <form id="addpaymentmethod_masterpass" class="checkout-wallet-button" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
-			    	<input type="hidden" name="action" value="MP_Standard_Checkout" />
-			    	<input type="hidden" name="ewalletType" value="MP" />
-			    	
-			    	<div id="MP_ERROR" style="display: none;">
-				    	<div class="wallet-error-msg">
-				    		<img src='/media_stat/images/masterpass/mpwarning.png'> <span>Cannot Connect</span>
-				    	</div>
-			    	</div>
-			    	{if $walletErrorMsg}
-				    	<div class="wallet-error-msg">
-				    		<img src='/media_stat/images/masterpass/mpwarning.png'> <span>{$walletErrorMsg}</span>
-				    	</div>
-			    	{/if}
-			  		<input type="image" id="MP_button" src="{$mpButtonImgURL}" alt="Buy With MasterPass">
-			  		<div style="padding-left: 10px;"><a href="https://www.mastercard.com/mc_us/wallet/learnmore/en/US/" target="_blank">Learn More</a></div>
-				</form>
-		 {/if}
-		
- /** Masterpass Express Checkout Code */   
- /**
-   	{if $mpEwalletStatus}
-	    {if $mpEWalletID != '1' and $mpCardPaired != 'Yes'}
-		        <div id="payment-method-separator">
-	        <hr><span>Or</span><hr>
-				</div>
-		    <form id="addpaymentmethod_masterpass" class="checkout-wallet-button" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
-		    	<input type="hidden" name="action" value="MP_Pairing_Start" />
-		    	<input type="hidden" name="ewalletType" value="MP" />
-		  		<input type="image" id="MP_button" src="https://static.masterpass.com/dyn/img/btn/en/US/mp_chk_btn_166x038px.png" alt="Buy With MasterPass">
-		  		<div style="padding-left: 10px;"><a href="https://www.mastercard.com/mc_us/wallet/learnmore/en/US/" target="_blank">Learn More</a></div>
-			</form>
-		{else}
-			{if $displayedCardType != 'MP' or $mpCardPaired == 'Yes' }
-				<img src='/media_stat/images/layout/clear.gif' alt="">
-	        <hr><span>Or</span><hr>
-				</div>
-		    	<img src='/media_stat/images/layout/clear.gif' alt="">
-				<form id="disppaymentmethod_masterpass" fdform="MPC" fdform-endpoint-submit="/api/expresscheckout/payment">
-					<input type="hidden" name="action" value="selectMPPaymentMethod" />		
-					<input type="image" id="MP_button" src="https://static.masterpass.com/dyn/img/btn/en/US/mp_chk_btn_166x038px.png" alt="Buy With MasterPass">
-			  		<div style="padding-left: 10px;"><a href="https://www.mastercard.com/mc_us/wallet/learnmore/en/US/" target="_blank">Learn More</a></div>
-				</form>
-		    {/if}
-	    {/if}
-	 {/if}
-	 
-	 */ 
-	 /** End here MP Exp Checkout */
-	 
   {else}
   	<div class="drawer__previewitem__button__section">
     {if $payments and length($payments) > 0}
     	<button class='cssbutton green' data-component="pickmethodbutton">Pick a Method</button>
     
     	{if $mpEwalletStatus or $ppEwalletStatus}
- 		 	<div id="payment-method-separator">
-		        <hr><span>Or</span><hr>
+			<div class="external-payments">
+				{call .externalpaymentsseparator /}
+				{call .externalpaymentspaypal}
+					{param ppEwalletStatus:$ppEwalletStatus /}
+					{param ppEwalletPaired:$ppEwalletPaired /}
+				{/call}
+				{call .externalpaymentsmasterpass}
+					{param mpEwalletStatus:$mpEwalletStatus /}
+					{param walletErrorMsg:$walletErrorMsg /}
+					{param mpButtonImgURL:$mpButtonImgURL /}
+				{/call}
 			</div>
 		{/if}
-		<!-- PayPal -->
-		{if $ppEwalletStatus}
-		     <form id="addpaymentmethod_paypal" class="checkout-wallet-button" fdform="PP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
-			    	<input type="hidden" name="action" value="PP_Pairing_Start" />
-			    	<input type="hidden" name="ewalletType" value="PP" />
-			    	<div id="PP_ERROR" style="display: none;">
-				    	<div class="wallet-error-msg">
-				    		<img src='/media_stat/images/masterpass/mpwarning.png'> <span>Cannot Connect to PayPal at this time.</span>
-				    	</div> 
-				    </div>
-			  		{if $ppEwalletPaired}
-			  			<div id="PP_wrapper">
-				  			<input id = "PP_button" type="image" src="/media_stat/images/paypal/CheckoutscreenPayPallogo.png" alt="Buy With PayPal"  onclick="checkout.paypal.initAuthFlow()">
-				  			<div class="wallet-connected-indicator"><img src="/media_stat/images/common/link-small.png" alt="linked account"> LINKED</div>
-				  		</div>
-			  		{else}
-			  			<input id = "PP_button" type="image" src="/media_stat/images/paypal/CheckoutscreenPayPallogo.png" alt="Buy With PayPal"  onclick="checkout.paypal.initAuthFlow()">
-			  		{/if}
-				</form>
-		{/if}
-		<!-- PayPal -->
-		
- 	/** Masterpass Standard Checkout  */ 
-    	{if $mpEwalletStatus}
-			    <form id="addpaymentmethod_masterpass" class="checkout-wallet-button" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
-			    	<input type="hidden" name="action" value="MP_Standard_Checkout" />
-			    	<input type="hidden" name="ewalletType" value="MP" />
-			    	<div id="MP_ERROR" style="display: none;">
-			    	<div class="wallet-error-msg">
-			    		<img src='/media_stat/images/masterpass/mpwarning.png'> <span>Cannot Connect</span>
-			    	</div>	
-			    	</div>
-			    	{if $walletErrorMsg}
-				    	<div class="wallet-error-msg">
-				    		<img src='/media_stat/images/masterpass/mpwarning.png'> <span>{$walletErrorMsg}</span>
-				    	</div>
-			    	{/if}
-			  		<input type="image" id="MP_button" src="{$mpButtonImgURL}" alt="Buy With MasterPass">
-			  		<div style="padding-left: 10px;"><a href="https://www.mastercard.com/mc_us/wallet/learnmore/en/US/" target="_blank">Learn More</a></div>
-				</form>
-			 	
-		 {/if}
-		 
-   	/** Masterpass Express Checkout Code */   
-   	/**
-    	{if $mpEwalletStatus}
-	     	 {if $mpEWalletID != '1' and $mpCardPaired != 'Yes' }
-			        <div id="payment-method-separator">
-		        <hr><span>Or</span><hr>
-					</div>
-	     		<form id="addpaymentmethod_masterpass" class="checkout-wallet-button" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
-		    		<input type="hidden" name="action" value="MP_Pairing_Start" />
-		    		<input type="hidden" name="ewalletType" value="MP" />
-		  			<input type="image" id="MP_button" src="https://static.masterpass.com/dyn/img/btn/en/US/mp_chk_btn_166x038px.png" alt="Buy With MasterPass">
-		  			<div style="padding-left: 10px;"><a href="https://www.mastercard.com/mc_us/wallet/learnmore/en/US/" target="_blank">Learn More</a></div>
-				</form>
-			{else}
-				{if $displayedCardType != 'MP' and $mpCardPaired == 'Yes' }
-			        <div id="payment-method-separator">
-		        		<hr><span>Or</span><hr>
-					</div>
-			    		<img src='/media_stat/images/layout/clear.gif' alt="">
-					<form id="disppaymentmethod_masterpass" fdform="MPC" fdform-endpoint-submit="/api/expresscheckout/payment">
-						<input type="hidden" name="action" value="selectMPPaymentMethod" />		
-						<input type="image" id="MP_button" src="https://static.masterpass.com/dyn/img/btn/en/US/mp_chk_btn_166x038px.png" alt="Buy With MasterPass">
-						<div style="padding-left: 10px;"><a href="https://www.mastercard.com/mc_us/wallet/learnmore/en/US/" target="_blank">Learn More</a></div>
-					</form>
-		    	{/if}
-			{/if}
-		{/if}	
-
-		*/ 
-	 /** End here MP Exp Checkout */
-	 
     {else}
 		<button aria-haspopup="true" class='cssbutton green' data-component="addpaymentmethodbutton" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Add a Method</button>
 
 		{if $mpEwalletStatus or $ppEwalletStatus}
- 		 	<div id="payment-method-separator">
-		        <hr><span>Or</span><hr>
+			<div class="external-payments">
+				{call .externalpaymentsseparator /}
+				{call .externalpaymentspaypal}
+					{param ppEwalletStatus:$ppEwalletStatus /}
+					{param ppEwalletPaired:$ppEwalletPaired /}
+				{/call}
+				{call .externalpaymentsmasterpass}
+					{param mpEwalletStatus:$mpEwalletStatus /}
+					{param walletErrorMsg:$walletErrorMsg /}
+					{param mpButtonImgURL:$mpButtonImgURL /}
+				{/call}
 			</div>
 		{/if}
-		
-		<!-- PayPal -->
-		{if $ppEwalletStatus} 
-		     <form id="addpaymentmethod_paypal" class="checkout-wallet-button" fdform="PP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
-			    	<input type="hidden" name="action" value="PP_Pairing_Start" />
-			    	<input type="hidden" name="ewalletType" value="PP" />
-			    	<div id="PP_ERROR" class="wallet-error-msg" style="display: none;">
-			    		<img src='/media_stat/images/masterpass/mpwarning.png'> 
-			    		<span>Cannot Connect to PayPal at this time.</span>
-			    	</div> 
-			  		{if $ppEwalletPaired}
-			  			<div id="PP_wrapper">
-				  			<input id = "PP_button" type="image" src="/media_stat/images/paypal/CheckoutscreenPayPallogo.png" alt="Buy With PayPal"  onclick="checkout.paypal.initAuthFlow()">
-				  			<div class="wallet-connected-indicator"><img src="/media_stat/images/common/link-small.png" alt="linked account"> LINKED</div>
-				  		</div>
-			  		{else}
-			  			<input id = "PP_button" type="image" src="/media_stat/images/paypal/CheckoutscreenPayPallogo.png" alt="Buy With PayPal"  onclick="checkout.paypal.initAuthFlow()">
-			  		{/if}
-			</form>
-		{/if}
-		<!-- PayPal -->
-		
- 		/** Masterpass Standard Checkout  */ 
-    	{if $mpEwalletStatus}
-			    <form id="addpaymentmethod_masterpass" class="checkout-wallet-button" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
-			    	<input type="hidden" name="action" value="MP_Standard_Checkout" />
-			    	<input type="hidden" name="ewalletType" value="MP" />
-			    	<div id="MP_ERROR" style="display: none;">
-				    	<div class="wallet-error-msg">
-				    		<img src='/media_stat/mages/masterpass/mpwarning.png'> <span>Cannot Connect</span>
-				    	</div>
-			    	</div>
-			    	{if $walletErrorMsg}
-				    	<div class="wallet-error-msg">
-				    		<img src='/media_stat/images/masterpass/mpwarning.png'> <span>{$walletErrorMsg}</span>
-				    	</div>
-			    	{/if}
-			  		<input type="image" id="MP_button" src="{$mpButtonImgURL}" alt="Buy With MasterPass">
-			  		<div style="padding-left: 10px;"><a href="https://www.mastercard.com/mc_us/wallet/learnmore/en/US/" target="_blank">Learn More</a></div>
-				</form>
-		 {/if}
-		
-   	/** Masterpass Express Checkout Code */   
-   	/**		    
-		    {if $mpEwalletStatus}
-			        <div id="payment-method-separator">
-		        <hr><span>Or</span><hr>
-					</div>
-			    <form id="addpaymentmethod_masterpass" class="checkout-wallet-button" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
-			    	<input type="hidden" name="action" value="MP_Pairing_Start" />
-			    	<input type="hidden" name="ewalletType" value="MP" />
-			  		<input type="image" id="MP_button" src="https://static.masterpass.com/dyn/img/btn/en/US/mp_chk_btn_166x038px.png" alt="Buy With MasterPass">
-			  		<div style="padding-left: 10px;"><a href="https://www.mastercard.com/mc_us/wallet/learnmore/en/US/" target="_blank">Learn More</a></div>
-				</form>
-		   {/if}
-		   
-		*/ 
-	 /** End here MP Exp Checkout */   
     {/if}
   </div>
   {/if}
@@ -291,6 +108,79 @@
   {/if}
 {/if}
 {/template}
+
+/**
+ *
+ */
+{template .externalpaymentsseparator autoescape="false"}
+ 	<div id="payment-method-separator">
+        <hr><span>Or</span><hr>
+	</div>
+{/template}
+
+/**
+ * @param ppEwalletStatus
+ * @param? ppEwalletPaired
+ *
+ */
+{template .externalpaymentspaypal autoescape="false"}
+	{if $ppEwalletStatus}
+		<div class="external-payments-cont external-payments-paypal">
+		<!-- PayPal -->
+	     <form id="addpaymentmethod_paypal" class="checkout-wallet-button" fdform="PP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
+		    	<input type="hidden" name="action" value="PP_Pairing_Start" />
+		    	<input type="hidden" name="ewalletType" value="PP" />
+		    	<div id="PP_ERROR" class="wallet-error-msg" style="display: none;">
+		    		<img src='/media_stat/images/masterpass/mpwarning.png'> 
+		    		<span>Cannot Connect to PayPal at this time.</span>
+		    	</div> 
+		  		{if $ppEwalletPaired}
+		  			<div id="PP_wrapper">
+			  			<input id = "PP_button" type="image" src="/media_stat/images/paypal/CheckoutscreenPayPallogo.png" alt="Buy With PayPal"  onclick="checkout.paypal.initAuthFlow()">
+			  			<div class="wallet-connected-indicator"><img src="/media_stat/images/common/link-small.png" alt="linked account"> LINKED</div>
+			  		</div>
+		  		{else}
+		  			<input id = "PP_button" type="image" src="/media_stat/images/paypal/CheckoutscreenPayPallogo.png" alt="Buy With PayPal"  onclick="checkout.paypal.initAuthFlow()">
+		  		{/if}
+		</form>
+		<!-- PayPal -->
+		</div>
+	{/if}
+{/template}
+
+/**
+ * @param mpEwalletStatus
+ * @param? walletErrorMsg
+ * @param? mpButtonImgURL
+ *
+ */
+{template .externalpaymentsmasterpass autoescape="false"}
+	{if $mpEwalletStatus}
+		/** Masterpass Standard Checkout  */ 
+		<div class="external-payments-cont external-payments-masterpass">
+			<form id="addpaymentmethod_masterpass" class="checkout-wallet-button" fdform="MP" action="#" fdform-endpoint-submit="/api/expresscheckout/addpayment/ewalletPayment" fdform-disable-resubmit="true">
+				<input type="hidden" name="action" value="MP_Standard_Checkout" />
+				<input type="hidden" name="ewalletType" value="MP" />
+	
+				<div id="MP_ERROR" style="display: none;">
+					<div class="wallet-error-msg">
+						<img src='/media_stat/images/masterpass/mpwarning.png'> <span>Cannot Connect</span>
+					</div>
+				</div>
+	
+				{if $walletErrorMsg}
+					<div class="wallet-error-msg">
+						<img src='/media_stat/images/masterpass/mpwarning.png'> <span>{$walletErrorMsg}</span>
+					</div>
+				{/if}
+	
+				<input type="image" id="MP_button" src="{$mpButtonImgURL}" alt="Buy With MasterPass">
+				<div style="padding-left: 10px;"><a href="https://www.mastercard.com/mc_us/wallet/learnmore/en/US/" target="_blank">Learn More</a></div>
+			</form>
+		</div>
+	{/if}
+{/template}
+
 
 /**
  * @param? payments

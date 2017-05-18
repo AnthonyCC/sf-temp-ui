@@ -607,6 +607,26 @@ etids.div_tooltipPopup = "#tooltipPopup";
 					try {
 						fd.common.transactionalPopup.close();
 					} catch(e) {}
+					
+
+					/* make apply buttons disabled when input is also empty */
+					function toggleDisabled(selector, makeDisabled) {
+						var $elems = $(selector);
+						if (makeDisabled) {
+							$elems.addClass('disabled').prop('disabled', true);
+						} else {
+							$elems.removeClass('disabled').prop('disabled', false);
+						}
+					}
+					/* update load */
+					toggleDisabled('#promotional-code-applybtn,#apply-gift-card-applybtn', true);
+					
+					$('#promotional-code').on('keyup', function(event) {
+						toggleDisabled('#promotional-code-applybtn', $(this).val() === '');
+					});
+					$('#apply-gift-card').on('keyup', function(event) {
+						toggleDisabled('#apply-gift-card-applybtn', $(this).val() === '');
+					});
 				});
 
 				template_cleanup();

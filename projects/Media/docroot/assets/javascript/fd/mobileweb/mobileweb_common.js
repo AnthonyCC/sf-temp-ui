@@ -220,6 +220,19 @@ var API;
 		$('.noClickThrough').on('click', function(e) {
 			return false;
 		});
+		
+		/* CHECKOUT */
+		/* anchor header */
+		function co_alignHeader() {
+			/* if we need to anchor on any page with the app smartbanner, then calc with offsetTop
+			 * note: depending on page load timing, this can mis-calc */
+			var offsetTop = 0; //$('.mobweb-topnav').offset().top;
+			$('[data-ec-page] .mm-page #cartheader').css({'top': offsetTop+$('.mobweb-topnav').outerHeight(true)+'px' });
+			$('[data-ec-page] .mm-page #content').css({'padding-top': ($('.mobweb-topnav').outerHeight(true)+$('[data-ec-page] .mm-page #cartheader').outerHeight(true))+'px'});
+		}
+		$('[data-ec-page] .mm-page .mobweb-topnav').on('resize', co_alignHeader);
+		co_alignHeader();
+		
 	});
 	
 }(jQuery));

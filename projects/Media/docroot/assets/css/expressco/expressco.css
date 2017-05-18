@@ -92,13 +92,13 @@
   font-size:22px;
   color:#333;
   font-weight:bold;
-  margin:0;
+  margin: 0 10px 0 0;
   line-height:44px;
+  display: inline-block;
 }
 
 .checkout-contentheader a{
   position:absolute;
-  right:0;
   top:4px;
   font-size:14px;
   color:#693;
@@ -132,7 +132,7 @@
 }
 #payment-method-separator hr{
 	display: inline-block;
-	width: 60px;
+	width: 120px;
 }
 #payment-method-separator span{
 	font-size: 15px;
@@ -140,19 +140,30 @@
 }
 .wallet-error-msg{
 	padding-bottom: 4px;
+	white-space: nowrap;
 }
 .wallet-error-msg span{
 	color: #c94747;
-    font-size: 14px;
+    font-size: 10px;
     font-weight: bold;
     vertical-align: top;
-	width: 180px;
     display: inline-block;
     text-align: left;
     margin-left: 4px;
+	white-space: normal;
 }
 #PP_button, #MP_button {
 	padding: 0;
+}
+.external-payments-cont {
+	float: left;
+	max-width: 50%;
+}
+.external-payments-paypal {
+	max-width: 140px;
+}
+.external-payments-masterpass {
+	margin-left: 10px;
 }
 
   /* Tooltip: Default, Hover */

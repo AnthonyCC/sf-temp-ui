@@ -297,8 +297,8 @@ font-size: 14px;
     color: #999966;	
 }
 [data-component="carousel"] [data-component="carousel-list"]{
-                text-align: center;
-                padding-top: 12px;
+	text-align: center;
+	padding-top: 0;
 }
 
 /* BEST CELLARS */
@@ -3263,4 +3263,8 @@ div#i_viewcart td {
 	font-size: 32px;
     font-weight: bold;
     font-family: Verdana, Arial, sans-serif;
+}
+
+.browse-oas-top {
+	margin-bottom: 8px;
 }

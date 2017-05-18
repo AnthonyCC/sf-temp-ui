@@ -246,8 +246,8 @@
 	.globalnav_top .topnavitem, .globalnav_top .topnavitem a {
 		margin: 5px 0 0 0px;
 	}
-	.container.globalnav_top.hsaFDX{
-		padding: 20px 0px;
+	.container.globalnav_top.hasFDX{
+		padding: 10px 0px 15px 0px;
 	}
 	#topSearchField {
 		margin: 0px 0 0 0;
@@ -1031,6 +1031,22 @@
 		transform: translate(0, 0);
 		/*transform: translate(0, -20px); chrome Version 51.0.2704.79 m is now also doing this */
 		-moz-transform: translate(0, 0); /* firefox adds negatives, disable for now */
+	}
+	
+	
+	#locabar_user_trigger #locabar_user_reco {
+		transition: visibility 0s, opacity 0s linear, transform 0s;
+		visibility: hidden;
+		opacity: 0;
+		transform: translate(0, 0);
+	}
+	
+	#locabar_user_trigger[data-signedin="true"]:hover #locabar_user_reco,
+	#locabar_user_trigger[data-recog="true"]:hover #locabar_user_reco {
+		transition: visibility 0.3s, opacity 0.3s linear, transform 0.3s;
+		visibility: visible;
+		opacity: 1;
+		transform: translate(-380px, 0); /* width of #locabar_user_reco */
 	}
 
 
@@ -1834,4 +1850,20 @@ option.address-icon {
 }
 #sitemessage.alerts.open #nodeliver-form > div{
 	margin-right:15px !important;
+}
+
+#locabar_user_reco_cont {
+	position: absolute;
+	width: 10px;
+	color: #333;
+	background-color: red;
+	visibility: hidden;
+}
+
+#locabar_user_reco {
+	position: relative;
+	background-color: #fff;
+	height: 100%;
+	width: 380px;
+	box-shadow:  0px 25px 20px -20px rgba(0, 0, 0, 0.3), 0px 0px 40px 0px rgba(0, 0, 0, 0.2)!important;
 }

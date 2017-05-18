@@ -255,6 +255,33 @@ var FreshDirect = FreshDirect || {};
 		}
 		
 		window.isHLchangable = false;
+
+		try {
+			if (fd.browse && fd.browse.data && fd.browse.data.descriptiveContent) {
+				var allClassNames = 'browse-breadcrumbs-category browse-breadcrumbs-subcategory browse-breadcrumbs-department';
+				allClassNames += 'browse-pager-category browse-pager-subcategory browse-pager-department';
+				var $placeholder = $('.browse-breadcrumbs');
+				var $pager = $('.pager-holder.top');
+				$placeholder.removeClass(allClassNames);
+				$pager.removeClass(allClassNames);
+				switch (fd.browse.data.descriptiveContent.navDepth) {
+					case 'DEPARTMENT':
+						$placeholder.addClass('browse-breadcrumbs-department');
+						$pager.removeClass(allClassNames).addClass('browse-pager-department');
+						break;
+					case 'SUB_CATEGORY':
+						$placeholder.addClass('browse-breadcrumbs-subcategory');
+						$pager.removeClass(allClassNames).addClass('browse-pager-subcategory');
+						/* flow in to category*/
+					case 'CATEGORY':
+						$placeholder.addClass('browse-breadcrumbs-category');
+						$pager.addClass('browse-pager-category');
+						break;
+					default: 
+				}
+			}
+		} catch (e) {
+		}
 	});
 
 	fd.modules.common.utils.register("browse", "sections", sections, fd);
