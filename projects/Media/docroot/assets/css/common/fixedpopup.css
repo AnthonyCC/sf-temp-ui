@@ -255,22 +255,23 @@
   white-space: nowrap;
 }
 
-@media (max-width: 568px) {
-	.fixedPopupHelper {
-		display:none;
-	}
+/* overlay fix */
+[data-ismobweb="true"] .fixedPopupHelper {
+  display:none;
+}
 
-	.fixedPopupContent {
-		position:absolute;
-		box-sizing: border-box;
-		top:45px;
-		right:0;
-		bottom: 0;
-		left:0;
-		max-height:100%;
-	}
+[data-ismobweb="true"] .fixedPopupContent {
+  position:absolute;
+  box-sizing: border-box;
+  top:45px;
+  right:0;
+  bottom: 0;
+  left:0;
+  right: 0;
+  margin: 0 auto;
+  max-height:100%;
+}
 
-	.qs-popup-close-icon {
-		right:10px;
-	}
+[data-ismobweb="true"] .qs-popup-close-icon {
+  right:10px;
 }
