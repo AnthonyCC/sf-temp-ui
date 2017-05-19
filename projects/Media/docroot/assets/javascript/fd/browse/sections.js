@@ -140,17 +140,19 @@ var FreshDirect = FreshDirect || {};
 				
 				//now, page beacon
 				hlSkusStr = hlSkus.join(',');
-				if (hlSkusStr !== '' && $('.browseContent .HLpageBeaconImg.page_'+activePage+'_id_'+cur).length === 0) {
-					if (FreshDirect.browse.data.adProducts.hlSelectionOfProductList[cur].length === FreshDirect.browse.data.adProducts.hlCatProductsCount[cur]) {
-						//all hlprods
-						$(".browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_'+activePage+'_id_'+cur+'" src="' + window.FreshDirect.browse.data.adProducts.hlSelectionsPageBeacons[cur] + 'all&random=' + new Date().getTime() + '" />');
-					} else {
-						//not ALL hlprods
-						$(".browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_'+activePage+'_id_'+cur+'" src="' + window.FreshDirect.browse.data.adProducts.hlSelectionsPageBeacons[cur] + hlSkusStr + '&random=' + new Date().getTime() + '" />');
+				if (window.FreshDirect.browse.data.adProducts.hlSelectionsPageBeacons.hasOwnProperty(cur)) { /* this is required for the src url */
+					if (hlSkusStr !== '' && $('.browseContent .HLpageBeaconImg.page_'+activePage+'_id_'+cur).length === 0) {
+						if (FreshDirect.browse.data.adProducts.hlSelectionOfProductList[cur].length === FreshDirect.browse.data.adProducts.hlCatProductsCount[cur]) {
+							//all hlprods
+							$(".browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_'+activePage+'_id_'+cur+'" src="' + window.FreshDirect.browse.data.adProducts.hlSelectionsPageBeacons[cur] + 'all&random=' + new Date().getTime() + '" />');
+						} else {
+							//not ALL hlprods
+							$(".browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_'+activePage+'_id_'+cur+'" src="' + window.FreshDirect.browse.data.adProducts.hlSelectionsPageBeacons[cur] + hlSkusStr + '&random=' + new Date().getTime() + '" />');
+						}
+					} else if (hlSkusStr === '' && $('.browseContent .HLpageBeaconImg.page_'+activePage+'_id_'+cur).length === 0) {
+						//no hlprods
+						$(".browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_'+activePage+'_id_'+cur+'" src="' + window.FreshDirect.browse.data.adProducts.hlSelectionsPageBeacons[cur] + 'none&random=' + new Date().getTime() + '" />');
 					}
-				} else if (hlSkusStr === '' && $('.browseContent .HLpageBeaconImg.page_'+activePage+'_id_'+cur).length === 0) {
-					//no hlprods
-					$(".browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_'+activePage+'_id_'+cur+'" src="' + window.FreshDirect.browse.data.adProducts.hlSelectionsPageBeacons[cur] + 'none&random=' + new Date().getTime() + '" />');
 				}
 			}
 		}
