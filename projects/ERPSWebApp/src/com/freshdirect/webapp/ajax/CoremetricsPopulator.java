@@ -14,6 +14,7 @@ import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.ajax.expresscheckout.coremetrics.service.CoremetricsService;
 
 /**
  * 
@@ -53,19 +54,20 @@ public class CoremetricsPopulator {
     }
 
     public void appendPageViewTag(Map<String, Object> flatData, final PageViewTagInput input, String searchTerm, String suggestedTerm, Integer searchResultsSize,
-            Integer recipeSearchResultsSize, String userCohort) throws SkipTagException {
+            Integer recipeSearchResultsSize, FDUserI user) throws SkipTagException {
         tagModelBuilder.setSearchTerm(searchTerm);
         tagModelBuilder.setSuggestedTerm(suggestedTerm);
         tagModelBuilder.setSearchResultsSize(searchResultsSize);
         tagModelBuilder.setRecipeSearchResultsSize(recipeSearchResultsSize);
 
-        appendPageViewTag(flatData, input, userCohort);
+        appendPageViewTag(flatData, input, user);
     }
 
-    public void appendPageViewTag(Map<String, Object> flatData, final PageViewTagInput input, String userCohort) throws SkipTagException {
+    public void appendPageViewTag(Map<String, Object> flatData, final PageViewTagInput input, FDUserI user) throws SkipTagException {
 
         tagModelBuilder.setInput(input);
-        tagModelBuilder.setUserCohort(userCohort);
+        tagModelBuilder.setUserCohort(user.getCohortName());
+        tagModelBuilder.setCustomerType(CoremetricsService.defaultService().getCustomerTypeByOrderCount(user));
 
         final List<String> cmResult = tagModelBuilder.buildTagModel().toStringList();
 

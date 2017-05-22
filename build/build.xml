@@ -212,7 +212,7 @@
 			<pathelement location="${testing.home}/ant-contrib.jar"/>
 		</classpath>
 	</taskdef>
-	<target name="daily" depends="startNotify,clean,prereq,checkout,build,media-checkout,media-stat,webapps,ears,client,test,checkin,mail" description="Daily build">
+	<target name="daily" depends="startNotify,clean,prereq,checkout,build,media-checkout,media-stat,webapps,ears,client,fdstorefront-domain,test,checkin,mail" description="Daily build">
 	</target>
 
 	<target name="label" description="Label latest revision">
@@ -526,7 +526,7 @@
         </copy>
     </target>
 
-	<target name="build" depends="framework,erpservices,FDLogisticsIntegration,delivery,cms,fdstore,dataloader,erpswebapp,tools,StandingOrdersService,CoremetricsService,Athena" description="Build everything">
+	<target name="build" depends="framework,erpservices,FDLogisticsIntegration,delivery,cms,fdstore,dataloader,erpswebapp,tools,StandingOrdersService,CoremetricsService,Athena,fdstorefront-domain" description="Build everything">
 	</target>
 
 	<target name="test" depends="tests_compile" description="Run unit tests">
@@ -2674,6 +2674,76 @@
 		</jar>
 	</target>
 
+
+	
+	<target name="fdstorefront-domain" description="build jar that combines all the classes needed to run a client of the system">
+		<mkdir dir="${release.dir}/applications" />
+		<jar destfile="${release.dir}/applications/fdstorefront-domain.jar" >
+			<!-- specify the manifest -->
+            <manifest>
+                <attribute name="Specification-Version" value="${build.counter}"/>
+                <attribute name="Specification-Vendor" value="FreshDirect LLC"/>
+                <attribute name="Implementation-Title" value="FreshDirect Domain Classes JAR"/>
+                <attribute name="Implementation-Version" value="${build.counter}"/>
+                <attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
+                <attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
+            </manifest>
+			<!-- thirdparty classes -->
+			<zipfileset src="${thirdparty.home}/commons-lang-2.3.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/commons-logging-1.1.1.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/commons-collections-3.1.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/commons-httpclient-2.0.2.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/commons-net-1.0.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/logistics-data-0.0.1-SNAPSHOT.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/orika-core-1.5.0.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/fdcommerce-data.jar" excludes="META-INF/*"/>
+
+			<zipfileset src="${thirdparty.home}/lucene-core-${lucene.version}.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/lucene-queries-${lucene.version}.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/lucene-snowball-${lucene.version}.jar" excludes="META-INF/*"/>
+
+			<!-- zipfileset src="${thirdparty.home}/commons-fileupload-1.0.jar" excludes="META-INF/*"/ -->
+			<zipfileset src="${thirdparty.home}/commons-fileupload-1.1.1.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/dom4j-1.6.1.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/jaxen-1.1-beta-4.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/jakarta-oro-2.0.5.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/${log4j.jar}" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/givexclient.jar" excludes="META-INF/*"/>
+			<!-- hivemind -->
+			<zipfileset src="${thirdparty.home}/hivemind-1.1.1.jar"/>
+			<zipfileset src="${thirdparty.home}/hivemind-lib-1.1.1.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/jsonrpc-1.0.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/jawr-core-3.8.jar" excludes="META-INF/*"/>
+			<!-- <zipfileset src="${thirdparty.home}/soy-latest.jar" excludes="META-INF/*"/>-->
+			<zipfileset src="${thirdparty.home}/ehcache-2.10.0.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/slf4j-api-1.6.6.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/slf4j-jdk14-1.6.6.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/jsch-0.1.44.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/commons-vfs2-2.0.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/zip4j_1.3.2.jar" excludes="META-INF/*"/>
+
+			<zipfileset src="${thirdparty.home}/commons-codec-1.9.jar" excludes="META-INF/*"/>
+			
+			<!-- FD classes -->
+			<zipfileset src="${work.dir}/Framework.jar"/>
+			<zipfileset src="${work.dir}/ERPServicesEJB-WL.jar" excludes="META-INF/*"/>
+			<zipfileset src="${work.dir}/DeliveryEJB-WL.jar" excludes="META-INF/*"/>
+			<zipfileset src="${work.dir}/CMS.jar" excludes="META-INF/*"/>
+			<zipfileset src="${work.dir}/DataLoaderEJB-WL.jar" excludes="META-INF/*"/>
+			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/*"/>
+            <zipfileset src="${work.dir}/FDLogisticsIntegration.jar" excludes="META-INF/*"/>
+            <zipfileset src="${work.dir}/StandingOrdersService.jar" excludes="META-INF/*"/>
+            <zipfileset src="${work.dir}/CoremetricsService.jar" excludes="META-INF/*"/>
+
+			<!-- Tools -->
+			<zipfileset src="${work.dir}/Tools.jar" excludes="META-INF/*"/>
+			
+		</jar>
+	</target>
+
+	
+	
+				
 	<target name="USPSLoader" depends="dataloader" description="build executable jar to run USPS Loader outside container">
 		<jar destfile="${release.dir}/applications/USPSLoader.jar">
 			<!-- specify the manifest -->

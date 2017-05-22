@@ -191,16 +191,37 @@
 {template .errorSOAlert}
 	{if $soData.settingsData.soSettings.isEligibleForStandingOrders}
 		{foreach $item in $soData.settingsData.soData}
-			{if $item.errorDetails}
+			{if $item.errorDetails and $item.lastError!='MINORDER'}
 				<hr class="so-alert-line-separator">
 				<div class="so-error-alert">
-					<div class="so-error-alert-img">						
+					<div class="so-error-alert-img">
 					</div>
 					<div class="so-error-alert-message">
 						<div class="so-error-alert-message-bold">There's an issue with your {$item.soName}'s Standing Order.</div>
 					</div>
 					<div class="so-error-alert-button-container">
 						<button class="so-error-alert-button cssbutton cssbutton-flat orange" onclick="window.location.href='/quickshop/standing_orders.jsp#soid_{$item.id}'">View Details</button>
+					</div>
+					<div class="clear"></div>
+				</div>
+			{/if}
+		{/foreach}
+	{/if}
+{/template}
+
+/**
+ * @param? soData
+ */
+{template .minSOAlert}
+	{if $soData.settingsData.soSettings.isEligibleForStandingOrders}
+		{foreach $item in $soData.settingsData.soData}
+			{if $item.errorDetails and $item.lastError=='MINORDER'}
+				<hr class="so-alert-line-separator">
+				<div class="so-min-alert">
+					<div class="so-min-alert-img">
+					</div>
+					<div class="so-min-alert-message">
+						<div class="so-min-alert-message-bold">Standing Order "{$item.soName}" does not met the minimum $ amount.</div>
 					</div>
 					<div class="clear"></div>
 				</div>
@@ -220,9 +241,9 @@
 				<div class="so-activate-alert-img">					
 				</div>
 				<div class="so-activate-alert-message">
-					<div class="so-activate-alert-message-bold">Congratulations! Your "{$item.soName}" Standing Order has met the order minimum and can now be placed.</div>
+					<div class="so-activate-alert-message-bold">Standing Order "{$item.soName}" meets the minimum $ amount.</div>
 					<br>
-					Note: You must activate before {$item.cutOffFormattedDeliveryDate} @ {$item.cutOffDeliveryTime} or you will lose your delivery time.
+					Place Order by {$item.cutOffDeliveryTime}, {$item.cutOffFormattedDeliveryDate} to reserve your delivery time.
 				</div>
 				<div class="so-activate-alert-button-container">
 					<button class="so-activate-alert-button cssbutton cssbutton-flat orange" onclick="window.location.href='/quickshop/standing_orders.jsp?soid={$item.id}#soid_{$item.id}'">Review & Place Order</button>

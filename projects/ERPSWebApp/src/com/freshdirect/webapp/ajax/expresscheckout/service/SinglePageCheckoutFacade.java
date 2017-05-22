@@ -3,6 +3,8 @@ package com.freshdirect.webapp.ajax.expresscheckout.service;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +16,9 @@ import javax.servlet.jsp.JspException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpCustomerInfoModel;
+import com.freshdirect.customer.ErpCustomerModel;
+import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
 import com.freshdirect.fdstore.EnumCheckoutMode;
@@ -120,6 +125,7 @@ public class SinglePageCheckoutFacade {
     }
 
     public SinglePageCheckoutData load(final FDUserI user, HttpServletRequest request) throws FDResourceException, IOException, TemplateException, JspException, RedirectToPage {
+    	ErpCustomerModel customerModel = FDCustomerManager.getCustomer(user.getIdentity());
         FDCartI cart = populateCartDataFromParentOrder(user);
         SinglePageCheckoutData result = new SinglePageCheckoutData();
         if (StandingOrderHelper.isSO3StandingOrder(user)) {
@@ -128,9 +134,9 @@ public class SinglePageCheckoutFacade {
         handleModifyCartPreSelections(user, request);
         result.setHeaderData(SinglePageCheckoutHeaderService.defaultService().populateHeader(user));
         result.setDrawer(DrawerService.defaultService().loadDrawer(user));
-        result.setPayment(loadUserPaymentMethods(user, request));
+        result.setPayment(loadUserPaymentMethods(user, request, customerModel.getPaymentMethods(), customerModel.getCustomerCredits()));
         result.setFormMetaData(FormMetaDataService.defaultService().populateFormMetaData(user));
-        result.setAddress(loadAddress(user, request.getSession(), cart));
+        result.setAddress(loadAddress(user, request.getSession(), cart, customerModel.getShipToAddresses(),customerModel.getCustomerInfo()));
         if (FDStoreProperties.getAtpAvailabiltyMockEnabled()) {
             UnavailabilityData atpFailureData = UnavailabilityPopulator.createUnavailabilityData((FDSessionUser) user);
             if (!atpFailureData.getNonReplaceableLines().isEmpty() || !atpFailureData.getReplaceableLines().isEmpty() || atpFailureData.getNotMetMinAmount() != null
@@ -138,13 +144,11 @@ public class SinglePageCheckoutFacade {
                 result.setAtpFailure(atpFailureData);
             }
         }
-
         if (StandingOrderHelper.isSO3StandingOrder(user)) {
             result.setTimeslot(timeslotService.loadCartTimeslot(user, user.getSoTemplateCart()));
         } else {
             result.setTimeslot(timeslotService.loadCartTimeslot(user, user.getShoppingCart()));
         }
-
         if (!StandingOrderHelper.isSO3StandingOrder(user)) {
             result.setRestriction(CheckoutService.defaultService().preCheckOrder(user));
             result.setRedirectUrl(RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL,
@@ -188,11 +192,12 @@ public class SinglePageCheckoutFacade {
                 break;
             case SELECT_DELIVERY_ADDRESS_METHOD:
                 if (validationResult != null && validationResult.getErrors().isEmpty()) {
+                	ErpCustomerModel customerModel = FDCustomerManager.getCustomer(user.getIdentity());
                     result.put(ADDRESS_JSON_KEY, loadAddress(user, session, cart));
                     result.put(TIMESLOT_JSON_KEY, timeslotService.loadCartTimeslot(user, cart));
                     Boolean cartPaymentSelectionDisabled = (Boolean) session.getAttribute(SessionName.CART_PAYMENT_SELECTION_DISABLED);
                     if (cartPaymentSelectionDisabled != null && cartPaymentSelectionDisabled) {
-                        result.put(PAYMENT_JSON_KEY, loadUserPaymentMethods(user, request));
+                        result.put(PAYMENT_JSON_KEY, loadUserPaymentMethods(user, request, customerModel.getPaymentMethods(), customerModel.getCustomerCredits()));
                     }
                     if (!StandingOrderHelper.isSO3StandingOrder(user)) {
                         result.put(
@@ -304,8 +309,12 @@ public class SinglePageCheckoutFacade {
         return result;
     }
 
-    public FormLocationData loadAddress(final FDUserI user, final HttpSession session, final FDCartI cart) throws FDResourceException, JspException, RedirectToPage {
-        List<LocationData> deliveryAddresses = deliveryAddressService.loadAddress(cart, user, session);
+    public FormLocationData loadAddress(final FDUserI user, final HttpSession session, final FDCartI cart) throws FDResourceException, JspException, RedirectToPage {  	
+    	return loadAddress(user,session,cart,null, null);
+    }
+    
+    public FormLocationData loadAddress(final FDUserI user, final HttpSession session, final FDCartI cart, Collection<ErpAddressModel> shippingAddresses, ErpCustomerInfoModel customerInfo) throws FDResourceException, JspException, RedirectToPage {
+        List<LocationData> deliveryAddresses = deliveryAddressService.loadAddress(cart, user, session, shippingAddresses, customerInfo);
         FormLocationData formLocation = new FormLocationData();
         formLocation.setAddresses(deliveryAddresses);
         formLocation.setSelected(getSelectedAddressId(deliveryAddresses));
@@ -452,7 +461,7 @@ public class SinglePageCheckoutFacade {
     }
 
     /** based on step_3_choose.jsp */
-    private void processGiftCards(FDUserI user, FormPaymentData formPaymentData) {
+    private void processGiftCards(FDUserI user, FormPaymentData formPaymentData, List customerCredits) {
         if (user.getGiftCardList() != null) {
             user.getShoppingCart().setSelectedGiftCards(user.getGiftCardList().getSelectedGiftcards());
         }
@@ -467,7 +476,7 @@ public class SinglePageCheckoutFacade {
              * calculate the 25% perishable buffer amount to decide if another mode of payment is needed.
              */
             if (!isSOTMPL) {
-                FDCustomerCreditUtil.applyCustomerCredit(cart, user.getIdentity());
+                FDCustomerCreditUtil.applyCustomerCredit(cart, user.getIdentity(), customerCredits);
             }
 
             double gcSelectedBalance = isSOTMPL ? 0 : user.getGiftcardBalance() - cart.getTotalAppliedGCAmount();
@@ -584,19 +593,22 @@ public class SinglePageCheckoutFacade {
         return textMessageAlertData;
     }
 
-    private FormPaymentData loadUserPaymentMethods(FDUserI user, HttpServletRequest request) throws FDResourceException {
+	private FormPaymentData loadUserPaymentMethods(FDUserI user, HttpServletRequest request) throws FDResourceException {
+		return loadUserPaymentMethods(user,request,null, null);
+	}
+    private FormPaymentData loadUserPaymentMethods(FDUserI user, HttpServletRequest request, List<ErpPaymentMethodI> paymentMethods,List customerCredits) throws FDResourceException {
 
         FormPaymentData formPaymentData = new FormPaymentData();
 
         if (!StandingOrderHelper.isSO3StandingOrder(user)) {
-            processGiftCards(user, formPaymentData);
+            processGiftCards(user, formPaymentData, customerCredits);
         }
         // boolean isMPCard = false;
 
         if (formPaymentData.isCoveredByGiftCard() && !StandingOrderHelper.isSO3StandingOrder(user)) {
             paymentService.setNoPaymentMethod(user, request);
-        } else {
-            List<PaymentData> userPaymentMethods = paymentService.loadUserPaymentMethods(user, request);
+        } else {        	            
+            List<PaymentData> userPaymentMethods = paymentService.loadUserPaymentMethods(user, request, paymentMethods);
             formPaymentData.setPayments(userPaymentMethods);
             for (PaymentData data : userPaymentMethods) {
                 if (data.isSelected()) {

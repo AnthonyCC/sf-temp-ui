@@ -20,6 +20,10 @@ public abstract class FDRecommendationEvent extends FDEvent implements Cloneable
 	private String contentId;
 	private Date timestamp;
 	
+	FDRecommendationEvent(){
+		super();
+	}
+	
 	/**
 	 * Constructor.
 	 * 
@@ -72,7 +76,7 @@ public abstract class FDRecommendationEvent extends FDEvent implements Cloneable
 	 *
 	 */
 	public static class Impression extends FDRecommendationEvent {
-
+		public Impression(){}
 		/**
 		 * Constructor.
 		 * @param variantId
@@ -92,7 +96,7 @@ public abstract class FDRecommendationEvent extends FDEvent implements Cloneable
 	 *
 	 */
 	public static class ClickThrough extends FDRecommendationEvent {
-
+		public ClickThrough(){}
 		/**
 		 * Constructor.
 		 * @param variantId

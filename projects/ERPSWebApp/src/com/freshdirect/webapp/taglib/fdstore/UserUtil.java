@@ -541,9 +541,13 @@ public class UserUtil {
 	                        //JspWriter writer = pageContext.getOut();
 	                        //writer.close();
 	                    /* ---- logic from MergeCartControllerTag */
+	                        
+	                    	//set in to session (from login user)
+		                    session.setAttribute(SessionName.CURRENT_CART, loginUser.getShoppingCart());
+                    	} else { //using merge cart page
+	                    	//set in to session (from cur user)
+                    		session.setAttribute(SessionName.CURRENT_CART, currentUser.getShoppingCart());
                     	}
-                    	
-	                    session.setAttribute(SessionName.CURRENT_CART, loginUser.getShoppingCart());
 	                    if (FDStoreProperties.isSocialLoginEnabled() ) {
 							String preSuccessPage = (String) session.getAttribute(SessionName.PREV_SUCCESS_PAGE);
 							if (preSuccessPage != null) {
@@ -636,13 +640,10 @@ public class UserUtil {
           
           if(user != null) {
         	user.setJustLoggedIn(true);
-  			Cookie cookie = new Cookie("hasJustLoggedIn","true");
-  			cookie.setPath("/");
-  			response.addCookie(cookie);
           }
 
           CmRegistrationTag.setPendingLoginEvent(session);
-          //logExtraLoginDetailsLogin(request, userId, password, mergePage, successPage, externalLogin, "LOGINSUCCESS"); THis is commented because it breaks using https://mobileapi.freshdirect.com/mobileapi/v/1/social/login/
+          logExtraLoginDetailsLogin(request, userId, password, mergePage, successPage, externalLogin, "LOGINSUCCESS"); //THis is commented because it breaks using https://mobileapi.freshdirect.com/mobileapi/v/1/social/login/
           
         } catch (FDResourceException fdre) {
         	logExtraLoginDetailsLogin(request, userId, password, mergePage, successPage, externalLogin, "LOGINFAILED");

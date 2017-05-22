@@ -30,7 +30,7 @@ if (mobWeb) {
 %>
 <potato:pendingExternalAtcItem/>
 <potato:singlePageCheckout />
-<potato:cartData />
+
 
 
 <tmpl:insert template='<%= pageTemplate %>'>
@@ -152,7 +152,7 @@ if (mobWeb) {
        
         <div class="checkout-contentheader">
           <h2>Cart Details</h2>
-          <a class="cssbutton green" href="/expressco/view_cart.jsp">Make Changes<span class="offscreen">in My Cart</span></a>
+          <a class="cssbutton green" href="/expressco/view_cart.jsp">Edit Cart</a>
         </div>
 
         <%-- cart content --%>

@@ -51,6 +51,7 @@ public class PageViewTagModelBuilder {
     private boolean wineFilterValueSet;
     private PageViewTagModel tagModel = new PageViewTagModel();
     private String userCohort;
+    private String customerType;
 
     private CmContext context = CmContext.getContext();
 
@@ -381,6 +382,8 @@ public class PageViewTagModelBuilder {
         if (userCohort != null && tagModel.getAttributesMaps().get(8) == null) {
             tagModel.getAttributesMaps().put(8, userCohort);
         }
+        
+        tagModel.getAttributesMaps().put(10, customerType);
     }
 
     /**
@@ -432,4 +435,12 @@ public class PageViewTagModelBuilder {
     public void setUserCohort(String userCohort) {
         this.userCohort = userCohort;
     }
+
+	public String getCustomerType() {
+		return customerType;
+	}
+
+	public void setCustomerType(String customerType) {
+		this.customerType = customerType;
+	}
 }

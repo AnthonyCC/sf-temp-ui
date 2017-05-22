@@ -1660,7 +1660,7 @@ public class FDStoreProperties {
         defaults.put(PROP_EWALLET_MASTERPASS_LIGHT_BOX_URL, "https://sandbox.masterpass.com/lightbox/Switch/integration/MasterPass.client.js");
         defaults.put(PROP_EWALLET_MASTERPASS_ENV_PROP_NAME, "Sandbox-Profile.ini");
         defaults.put(PROP_EWALLET_PAYPAL_ENV_PROP_NAME, "PayPal-Profile.ini");
-        defaults.put(PROP_EWALLET_MP_BTN_IMG_URL, "https://www.mastercard.com/mc_us/wallet/img/mcpp_wllt_btn_chk_166x038px.png");
+        defaults.put(PROP_EWALLET_MP_BTN_IMG_URL, "https://static.masterpass.com/dyn/img/btn/global/mp_chk_btn_147x034px.svg");
         defaults.put(PROP_EWALLET_MP_LOGO_URL, "https://www.mastercard.com/mc_us/wallet/img/en/US/mp_acc_046px_gif.gif");
 
         defaults.put(PROP_SOCIAL_ONEALL_SUBDOMAIN, "freshdirect");

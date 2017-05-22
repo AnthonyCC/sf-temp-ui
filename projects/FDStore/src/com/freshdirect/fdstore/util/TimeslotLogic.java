@@ -28,6 +28,7 @@ import com.freshdirect.fdlogistics.model.EnumDeliveryFeeTier;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdlogistics.services.helper.LogisticsDataEncoder;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -579,7 +580,13 @@ public class TimeslotLogic {
 			if (user.getSessionEvent() != null) {
 				sessionEvent = user.getSessionEvent();
 			} else {
-				sessionEvent = new SessionEvent();
+				if(user.getUserContext()!=null){
+					EnumEStoreId  eStoreId = user.getUserContext().getStoreContext() != null ? user.getUserContext().getStoreContext().getEStoreId(): EnumEStoreId.FD;
+					 if(eStoreId!=null)
+				 		sessionEvent = new SessionEvent(eStoreId.toString().toLowerCase());
+				}
+				else
+					sessionEvent = new SessionEvent();
 			}
 			sessionEvent.setSameDay(event.getSameDay());
 			for (FDTimeslotUtil timeslots : timeslotList) {
@@ -654,7 +661,7 @@ public class TimeslotLogic {
 							sessionEvent.setSoldCount(soldCount);
 							sessionEvent.setHiddenCount(hiddenCount);
 							sessionEvent.setSector(event.getSector());
-							sessionEvent.setCompanyCode(FDStoreProperties.getLogisticsCompanyCode());
+							//sessionEvent.setCompanyCode(FDStoreProperties.getLogisticsCompanyCode());
 							user.setSessionEvent(sessionEvent);
 						}
 					}

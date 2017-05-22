@@ -335,8 +335,12 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				return FDECommerceService.getInstance().findGrpInfoMaster(grpIds);
+			}else{
 			FDFactorySB sb = factoryHome.create();
-          return sb.getGrpInfos(grpIds);
+			return sb.getGrpInfos(grpIds);
+			}
          
 		} catch (CreateException ce) {
 			factoryHome=null;
@@ -569,9 +573,12 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				return FDECommerceService.getInstance().getFilteredSkus(skuList);
+			}else{
 			FDFactorySB sb = factoryHome.create();
-
             return sb.getFilteredSkus(skuList);
+			}
            
 		} catch (CreateException ce) {
 			factoryHome=null;
@@ -889,8 +896,12 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+			return FDECommerceService.getInstance().getLatestActiveGroup(groupId);
+			}else{
 			FDFactorySB sb = factoryHome.create();
           return sb.getLatestActiveGroup(groupId);
+			}
          
 		} catch (CreateException ce) {
 			factoryHome=null;
@@ -906,8 +917,12 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				return FDECommerceService.getInstance().getGroupIdentityForMaterial(matId);
+			}else{
 			FDFactorySB sb = factoryHome.create();
           return sb.getGroupIdentityForMaterial(matId);
+			}
          
 		} catch (CreateException ce) {
 			factoryHome=null;
@@ -923,8 +938,12 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+			return 	FDECommerceService.getInstance().getModifiedOnlyGroups(lastModified);
+			}else{
 			FDFactorySB sb = factoryHome.create();
 			return sb.getModifiedOnlyGroups(lastModified);
+			}
          
 		} catch (CreateException ce) {
 			factoryHome=null;

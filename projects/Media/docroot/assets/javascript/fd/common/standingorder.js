@@ -182,11 +182,10 @@ $jq('.cssbutton[data-component="createSOButton"]').on('click', function(e) {
 	return false;
 });
 
-$jq(document).on('click', '#customizePopup.so-review-min-met-alert [data-popup-control="close"]', function(){
-	if($jq('#customizePopup.so-review-min-met-alert #so-min-do-not-show-checkbox:checked').length > 0){
-		postStandingOrderData($jq('#customizePopup .so-select').val().split(':'),'turnOffReminderOverlay');
-	}
-});	
+function disableAlertMinMetSO(){
+	$jq('#customizePopup.so-review-min-met-alert #so-min-do-not-show-checkbox:checked').prop( "disabled", true );
+	postStandingOrderData($jq('#customizePopup .so-select').val().split(':'),'turnOffReminderOverlay');
+}
 
 function addToSONextHandler() {
 	if(FreshDirect.components.AddToCart.requiredValidator(FreshDirect.modules.common.productSerialize($jq('#customizePopup form[fdform="customize"]'), true, true))){
@@ -219,6 +218,12 @@ function getStandingOrderData(ids, action){
         			$jq('#customizePopup .so-review-min-details').addClass('show');
         		} else{
         			$jq('#customizePopup .so-review-date').text(ids[2] + ', ' + ids[3]);
+        			$jq('#customizePopup .so-review-selected').addClass('show');
+        		}
+        		if(!data.activated){
+        			$jq('#customizePopup .so-listadd-content .cssbutton[data-component="addToSOButton"]').addClass('show').text('Add Item');
+        		} else{
+        			$jq('#customizePopup .so-listadd-content .cssbutton[data-component="addToSOButton"]').addClass('show');
         		}
         	}
         }
@@ -232,7 +237,6 @@ function postStandingOrderData(ids, action){
 					standingOrderId: ids[0],
 					})
 			},function(data){
-		
 	})
 	
 }

@@ -21,6 +21,8 @@ import com.freshdirect.dataloader.util.FDSapHelperUtils;
 import com.freshdirect.erp.ejb.ErpInventoryManagerHome;
 import com.freshdirect.erp.ejb.ErpInventoryManagerSB;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.payment.service.FDECommerceService;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
 import com.sap.conn.jco.JCoFunction;
@@ -174,8 +176,11 @@ public class FDRestrictedAvailabilityJcoServer extends FdSapServer
 			ctx = ErpServicesProperties.getInitialContext();
 			ErpInventoryManagerHome mgr = (ErpInventoryManagerHome) ctx.lookup("freshdirect.erp.InventoryManager");
 			ErpInventoryManagerSB sb = mgr.create();
-
-			sb.updateRestrictedInfos(restrictedInfos, deletedMaterials);
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				FDECommerceService.getInstance().updateRestrictedInfos(restrictedInfos, deletedMaterials);
+			}else{
+				sb.updateRestrictedInfos(restrictedInfos, deletedMaterials);
+			}
 		} 
 		catch(Exception ex)
 		{

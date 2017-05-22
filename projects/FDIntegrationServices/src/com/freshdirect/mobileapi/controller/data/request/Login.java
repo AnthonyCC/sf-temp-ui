@@ -15,6 +15,8 @@ public class Login extends Message {
     private transient String password;
     
     private String source;
+    
+    private String channelId;
 
     public String getUsername() {
         return username;
@@ -39,5 +41,13 @@ public class Login extends Message {
 	public void setSource(String source) {
 		this.source = source;
 	}
-        
+	
+	// For IBM silverpop integration ..
+	public String getChannelId() {
+		return channelId;
+	}
+
+	public void setChannelId(String channelId) {
+		this.channelId = channelId;
+	}   
 }

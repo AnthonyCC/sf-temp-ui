@@ -22,6 +22,8 @@ import com.freshdirect.erp.ejb.ErpInventoryManagerHome;
 import com.freshdirect.erp.ejb.ErpInventoryManagerSB;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.sap.SapProperties;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
@@ -218,8 +220,11 @@ public class FDInventoryJcoServer extends FdSapServer {
 			ctx = ErpServicesProperties.getInitialContext();
 			ErpInventoryManagerHome mgr = (ErpInventoryManagerHome) ctx.lookup("freshdirect.erp.InventoryManager");
 			ErpInventoryManagerSB sb = mgr.create();
-
-			sb.updateInventories(stockEntries);
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				FDECommerceService.getInstance().updateInventories(stockEntries);
+			}else{
+				sb.updateInventories(stockEntries);
+			}
 		} catch (Exception ex) {
 			throw new EJBException(ex.toString());
 		} finally {

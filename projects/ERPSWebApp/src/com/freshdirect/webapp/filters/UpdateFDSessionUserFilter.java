@@ -21,7 +21,6 @@ public class UpdateFDSessionUserFilter extends AbstractFilter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
 			throws IOException, ServletException {
-		filterChain.doFilter(request, response);
 				
 		if(((HttpServletRequest)request).getSession(false)!=null) {
 
@@ -38,8 +37,7 @@ public class UpdateFDSessionUserFilter extends AbstractFilter {
 				((HttpServletResponse)response).addCookie(cookie);
 			}
 		}
-		
-		}
+		filterChain.doFilter(request, response);
 	}
 
 	@Override

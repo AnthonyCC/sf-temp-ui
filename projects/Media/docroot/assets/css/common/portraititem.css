@@ -570,14 +570,16 @@ a.portrait-item-header-name:link {
 
 /* transactional popup */
 #transactionalPopup {
-  top:-40px;
+	margin-top: -11px; /* these need to offset the li.portrait-item margins */
+	margin-bottom: -10px;
+  /*top:-40px;
   bottom:-60px;
   left:-15px;
-  right:-15px;
+  right:-15px;*/
   position:absolute;
   width: auto;
-  margin-top:-51px;
-  margin-left:-1px;
+  /* margin-top:-51px;
+  margin-left:-1px; */
   z-index:500;
   opacity:0;
   transition:opacity 0.2s linear;
@@ -629,6 +631,8 @@ a.portrait-item-header-name:link {
   -ms-transition: all 0.1s ease-in-out;
   -o-transition: all 0.1s ease-in-out;
   transition: all 0.1s ease-in-out;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 #transactionalPopup .transactional-related-item.hidden {

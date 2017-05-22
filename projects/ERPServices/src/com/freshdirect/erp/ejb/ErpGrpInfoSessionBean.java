@@ -27,6 +27,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class ErpGrpInfoSessionBean extends SessionBeanSupport{
 	
+	// This bean is being migrated to StoreFront 2.0 service get in touch with SF 2.0 team to get more details on this bean.
+	
     /** logger for messages
      */
     private static Category LOGGER = LoggerFactory.getInstance( ErpGrpInfoSessionBean.class );

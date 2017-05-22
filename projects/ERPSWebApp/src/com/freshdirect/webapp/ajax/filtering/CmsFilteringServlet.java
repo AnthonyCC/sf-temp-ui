@@ -109,10 +109,10 @@ public class CmsFilteringServlet extends BaseJsonServlet {
 
                                 new CoremetricsPopulator().appendPageViewTag((Map<String, Object>) payload,
                                         PageViewTagInput.populateFromJSONInput(request.getRequestURI(), clientInput), searchTerm, suggestedTerm, searchResultsSize,
-                                        recipeSearchResultsSize, user.getCohortName());
+                                        recipeSearchResultsSize, user);
                             } else {
                                 new CoremetricsPopulator().appendPageViewTag((Map<String, Object>) payload,
-                                        PageViewTagInput.populateFromJSONInput(request.getRequestURI(), clientInput), user.getCohortName());
+                                        PageViewTagInput.populateFromJSONInput(request.getRequestURI(), clientInput), user);
                             }
                             break;
                         case ELEMENT:

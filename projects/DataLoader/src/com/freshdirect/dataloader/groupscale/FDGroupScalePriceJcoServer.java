@@ -35,6 +35,7 @@ import com.freshdirect.erp.ejb.ErpGrpInfoSB;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.SalesAreaInfo;
+import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.sap.SapProperties;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
@@ -384,8 +385,12 @@ public class FDGroupScalePriceJcoServer extends FdSapServer {
 				LOG.info(String.format("Storing scale group(s) [%s], [%s] ", scaleGroups.size(), new Date()));
 
 				SAPGrpInfoLoaderHome mgr = (SAPGrpInfoLoaderHome) ctx.lookup("freshdirect.dataloader.SAPGrpInfoLoader");
+				if(FDStoreProperties.isStorefront2_0Enabled()){
+					FDECommerceService.getInstance().loadGroupPriceData(scaleGroups);
+				}else{
 				SapGrpInfoLoaderSB sb = mgr.create();
 				sb.loadData(scaleGroups);
+				}
 
 			} catch (Exception ex) {
 				throw new EJBException("Failed to store: " + saleId + "Msg: " + ex.toString());
@@ -452,7 +457,12 @@ public class FDGroupScalePriceJcoServer extends FdSapServer {
 			ctx = ErpServicesProperties.getInitialContext();
 			ErpGrpInfoHome mgr = (ErpGrpInfoHome) ctx.lookup("freshdirect.erp.GrpInfoManager");
 			ErpGrpInfoSB sb = mgr.create();
-			Map<SalesAreaInfo, FDGroup> salesAreaGroup = sb.getGroupIdentitiesForMaterial(scaleGrpRecord.getMaterialID());
+			Map<SalesAreaInfo, FDGroup> salesAreaGroup = null;
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				salesAreaGroup = FDECommerceService.getInstance().getGroupIdentitiesForMaterial(scaleGrpRecord.getMaterialID());
+			}else{
+			salesAreaGroup=sb.getGroupIdentitiesForMaterial(scaleGrpRecord.getMaterialID());
+			}
 			SalesAreaInfo salesArea = new SalesAreaInfo(scaleGrpRecord.getSalesOrganizationId(), scaleGrpRecord.getDistributionChannelId());
 			if(null != salesAreaGroup && salesAreaGroup.containsKey(salesArea)){
 				group =salesAreaGroup.get(salesArea);

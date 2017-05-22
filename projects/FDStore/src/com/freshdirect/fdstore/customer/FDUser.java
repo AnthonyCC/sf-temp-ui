@@ -152,6 +152,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     private EnumServiceType zpServiceType = null;
 
     private FDIdentity identity;
+    private String custSapId;
     private SessionEvent event;
 
     private AddressModel address;
@@ -236,6 +237,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     protected Boolean isSOEligible = null;
     protected Boolean hasEBTAlert = null;
+    protected Boolean isEcheckRestricted = null;
+    protected EnumDPAutoRenewalType hasAutoRenewDP = null;
 
     protected Boolean cliCodeEligible = null;
     private Set<String> allAppliedPromos = new HashSet<String>();
@@ -311,8 +314,6 @@ public class FDUser extends ModelSupport implements FDUserI {
     private boolean refreshValidSO3 = true;
 
     private boolean isZipCheckPopupUsed = false;
-    
-    private boolean sOCartLineMessages;
     
     private Map<String,String> soCartLineMessagesMap=new HashMap<String,String>();
     
@@ -704,6 +705,8 @@ public class FDUser extends ModelSupport implements FDUserI {
         this.isSOEligible = null;
         this.hasEBTAlert = null;
         this.vHPopupDisplay = false;
+        this.isEcheckRestricted = null;
+        this.hasAutoRenewDP = null;
 
     }
 
@@ -1336,7 +1339,13 @@ public class FDUser extends ModelSupport implements FDUserI {
         if (this.identity == null) {
             return false;
         }
-        return FDCustomerManager.isECheckRestricted(this.identity);
+        if(isEcheckRestricted == null){
+        	isEcheckRestricted = Boolean.FALSE;
+        	if(FDCustomerManager.isECheckRestricted(this.identity)){
+        		isEcheckRestricted = Boolean.TRUE;
+        	}
+        }
+        return isEcheckRestricted.booleanValue();
     }
 
     public String getRegRefTrackingCode() {
@@ -1761,10 +1770,13 @@ public class FDUser extends ModelSupport implements FDUserI {
     @Override
     public EnumDPAutoRenewalType hasAutoRenewDP() throws FDResourceException {
         if (this.identity != null) {
-            FDCustomerModel customer = this.getFDCustomer();
-            String customerPK = customer.getErpCustomerPK();
-
-            return FDCustomerManager.hasAutoRenewDP(customerPK);
+        	if(null == hasAutoRenewDP){
+	            FDCustomerModel customer = this.getFDCustomer();
+	            String customerPK = customer.getErpCustomerPK();
+	
+	            hasAutoRenewDP = FDCustomerManager.hasAutoRenewDP(customerPK);
+	            return hasAutoRenewDP;
+        	}
         }
         return EnumDPAutoRenewalType.NONE;
     }
@@ -2274,6 +2286,7 @@ public class FDUser extends ModelSupport implements FDUserI {
                 userContext.setStoreContext(storeContext); // TODO this should be changed once FDX_CMS is merged!!! also check StoreContext.createDefault()
 
                 userContext.setFdIdentity(getIdentity()); // TODO maybe FDIdentity should be removed from FDUser
+                userContext.setCustSapId(getCustSapId()); // Avalara needs customer's SAP Id.
                 ErpAddressModel address = null;
                 if (this.getAddress() != null && this.getAddress().isCustomerAnonymousAddress()) {
                     address = new ErpAddressModel(this.getAddress());
@@ -3575,19 +3588,20 @@ public class FDUser extends ModelSupport implements FDUserI {
         this.isZipCheckPopupUsed = isZipCheckPopupUsed;
     }
 
-	public boolean issOCartLineMessages() {
-		return sOCartLineMessages;
-	}
-
-	public void setsOCartLineMessages(boolean sOCartLineMessages) {
-		this.sOCartLineMessages = sOCartLineMessages;
-	}
 	public Map<String, String> getSoCartLineMessagesMap() {
 		return soCartLineMessagesMap;
 	}
 
 	public void setSoCartLineMessagesMap(Map<String, String> soCartLineMessagesMap) {
 		this.soCartLineMessagesMap = soCartLineMessagesMap;
+	}
+
+	public String getCustSapId() {
+		return custSapId;
+	}
+
+	public void setCustSapId(String custSapId) {
+		this.custSapId = custSapId;
 	}
 	
 }

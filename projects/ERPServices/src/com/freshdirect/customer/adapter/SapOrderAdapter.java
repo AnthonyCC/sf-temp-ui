@@ -562,7 +562,7 @@ public class SapOrderAdapter implements SapOrderI {
 		public EnumATPRule getAtpRule() {
 			
 			//return this.fdProduct.getMaterial().getAtpRule();
-			return this.fdProduct.getMaterial().getMaterialPlants().get(plantInfo.getPlantId()).getAtpRule();
+			return this.fdProduct.getMaterial().getMaterialPlants().get(getPickingPlantId()).getAtpRule();
 		}
 
 		public double getFixedPrice() {

@@ -53,10 +53,14 @@ public class ProductPromotionInfoManager {
 	
 	public static Map<ZoneInfo,List<FDProductPromotionInfo>> getAllProductsByType(String ppType, Date lastPublished) throws FDResourceException{
 		lookupManagerHome();
-
+		Map<ZoneInfo,List<FDProductPromotionInfo>> productPromoInfoMap= null;
 		try {
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				productPromoInfoMap= FDECommerceService.getInstance().getAllProductsByType(ppType,lastPublished);
+			}else{
 			ErpProductPromotionInfoSB sb = managerHome.create();
-			Map<ZoneInfo,List<FDProductPromotionInfo>> productPromoInfoMap =sb.getAllProductsByType(ppType,lastPublished);
+			productPromoInfoMap =sb.getAllProductsByType(ppType,lastPublished);
+			}
 			return productPromoInfoMap;
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -113,11 +117,15 @@ public class ProductPromotionInfoManager {
 	}	
 	
 	public static ErpProductPromotionPreviewInfo getProductPromotionPreviewInfo(String ppPreviewId)throws FDResourceException{
-		lookupManagerHome();
-
+//		lookupManagerHome();
+		ErpProductPromotionPreviewInfo erpProductPromotionPreviewInfo;
 		try {
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				erpProductPromotionPreviewInfo=	FDECommerceService.getInstance().getProductPromotionPreviewInfo(ppPreviewId);
+			}else{
 			ErpProductPromotionInfoSB sb = managerHome.create();
-			ErpProductPromotionPreviewInfo erpProductPromotionPreviewInfo =sb.getProductPromotionPreviewInfo(ppPreviewId);
+			erpProductPromotionPreviewInfo =sb.getProductPromotionPreviewInfo(ppPreviewId);
+			}
 			return erpProductPromotionPreviewInfo;
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -151,11 +159,16 @@ public class ProductPromotionInfoManager {
 	}
 		
 	public static Map<String,Map<ZoneInfo,List<FDProductPromotionInfo>>> getAllPromotionsByType(String ppType,Date lastPublishedDate) throws FDResourceException{
-		lookupManagerHome();
-
+//		lookupManagerHome();
+		Map<String,Map<ZoneInfo,List<FDProductPromotionInfo>>> productPromoInfoMap;
 		try {
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+			productPromoInfoMap= FDECommerceService.getInstance().getAllPromotionsByType(ppType,lastPublishedDate);
+			}else{
 			ErpProductPromotionInfoSB sb = managerHome.create();
-			Map<String,Map<ZoneInfo,List<FDProductPromotionInfo>>> productPromoInfoMap =sb.getAllPromotionsByType(ppType,lastPublishedDate);
+			productPromoInfoMap =sb.getAllPromotionsByType(ppType,lastPublishedDate);
+			
+			}
 			return productPromoInfoMap;
 		} catch (CreateException ce) {
 			invalidateManagerHome();

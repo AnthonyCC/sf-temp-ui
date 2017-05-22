@@ -329,7 +329,7 @@
 		min-height: 30px;
 	}
 	#customizePopup.soShow.so-review .so-container .so-review-date img{
-	    height: 30px;
+		padding: 48px 0 15px;
 	    display: block;
 	    margin: auto;
 	}
@@ -388,12 +388,11 @@
 	    width: 0;
 	}
 	#customizePopup.soShow .so-container,
-	#customizePopup.soShow.so-review .so .cssbutton[data-component="addToSOButton"],
 	#customizePopup.soShow .so .cssbutton[data-component="nextStepSOButton"],
 	#customizePopup.soShow.so-review .so-container .so-review-header,
 	#customizePopup.soShow.so-review .so-container .so-review-date,
 	#customizePopup.soShow.so-review .so-container .so-review-link,
-	#customizePopup.soShow.so-review .so-container .so-review-selected,
+	#customizePopup.soShow.so-review .so-container .so-review-selected.show,
 	#customizePopup.soShow.so-review .so-container .so-review-min-details.show,
 	#customizePopup.soShow.so-review .so-container .so-review-min-details.show:hover .so-review-min-details-tip,
 	#customizePopup.soShow.so-review.so-review-min-met-alert .so-review-min-not-show-top,
@@ -420,6 +419,9 @@
 		vertical-align: text-top;
 		margin: 0 15px 0 0;
 	}
+	#customizePopup.soShow.so-review.so-review-min-met-alert .so-review-min-not-show-bottom #so-min-do-not-show-checkbox:disabled{
+		opacity: 0.7;
+	}
 	#customizePopup.soShow.so-review.so-review-min-met-alert .so-review-min-not-show-buttons{
 		margin: 40px auto 20px;
 		text-align: center;
@@ -441,7 +443,7 @@
 		font-size: 16px;
 		color: #458b4c;
 	}
-	#customizePopup.soShow.so-review .so .cssbutton[data-component="addToSOButton"],
+	#customizePopup.soShow.so-review .so .cssbutton[data-component="addToSOButton"].show,
 	#customizePopup.soShow.so-review  .cssbutton.okReviewSOButton,
 	#customizePopup.soShow .so .so-listadd-content .select-wrapper{
 		display: block;
@@ -522,7 +524,10 @@
 	.portrait-item-so-recurring {
 		font-size: 10px;
 	}
-	
+	#evenBetterPopup.shown .pdp-evenbetter-atc{
+		width: 235px;
+		text-align: center;
+	}
 	.pdp-evenbetter .pdp-evenbetter-soPreShow,
 	.pdp-evenbetter .pdp-evenbetter-soShow {
 		display: none;
@@ -539,7 +544,7 @@
 	.pdp-evenbetter-soPreShow {
 		padding: 0 15px;
 	}
-	.pdp-evenbetter-soPreShow .pdp-evenbetter-atcbutton  {
+	.pdp-evenbetter-atc .pdp-evenbetter-atcbutton  {
 		display: block;
 		width: 100%;
 		max-width: 100%;
@@ -562,8 +567,18 @@
 		margin-left: 8px; /* APPBUG-4499 */
 	}
 	/* APPBUG-4499 */
-	#evenBetterPopup .pdp-evenbetter-atc .pdp-evenbetter-atcbutton button.cssbutton[data-component="ATCButton"] {
+	#evenBetterPopup .pdp-evenbetter-atc .pdp-evenbetter-atcbutton button.cssbutton[data-component="ATCButton"],
+	#evenBetterPopup .pdp-evenbetter-atc .pdp-evenbetter-atcbutton button.cssbutton[data-component="customizeButton"],
+	#evenBetterPopup .pdp-evenbetter-atc .pdp-evenbetter-atcbutton button.cssbutton[data-component="addToListButton"]{
+		width: 235px;
 		font-size: 14px;
+	}
+	#evenBetterPopup .pdp-evenbetter-atc .pdp-evenbetter-atcbutton button.cssbutton[data-component="customizeButton"],
+	#evenBetterPopup .pdp-evenbetter-atc .pdp-evenbetter-atcbutton button.cssbutton[data-component="addToListButton"]{
+		margin: 10px 0 0;
+	}
+	#evenBetterPopup .pdp-evenbetter-atc .pdp-evenbetter-atcbutton{
+		text-align: right;
 	}
 	.pdp-evenbetter-soPreShow .pdp-evenbetter-atcbutton button.cssbutton {
 		padding: 10px 6px !important;

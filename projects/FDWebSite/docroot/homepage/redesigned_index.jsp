@@ -247,6 +247,12 @@ request.setAttribute("noyui", true);
     <script type="text/javascript">
       var FreshDirect = window.FreshDirect || {};
       FreshDirect.homepage = true;
+
+      var dataLayer = window.dataLayer || [];
+
+      dataLayer.push({
+        'is-new-homepage': 'true'
+      });
     </script>
 
 </tmpl:put>

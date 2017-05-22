@@ -363,6 +363,21 @@ section.main .breadcrumbs {
   text-decoration: underline;
 }
 
+section.main .browse-breadcrumbs-department .breadcrumbs {
+  padding: 6px 0 13px 0;
+  margin: 0;
+  border-bottom: none;
+}
+
+section.main .browse-breadcrumbs-category .breadcrumbs {
+	padding: 6px 0 0 0;
+	margin-bottom: 10px;
+	border-bottom: 1px solid #e0e3d0;
+}
+section.main .browse-breadcrumbs-subcategory .breadcrumbs {
+  border-bottom: none;
+}
+
 section.main .breadcrumbs li {
   display: inline-block;
   line-height: 24px;
@@ -397,6 +412,7 @@ section.main .pager {
   overflow: hidden;
   padding: 5px;
   margin: 5px 0 5px;
+  height: 22px;
 }
 
 section.main .pager .pagination {
@@ -478,13 +494,14 @@ section.main .leftnav h2.menuName {
   font-size: 12px;
   color: #333;
   text-transform: uppercase;
-  text-align: center;
+  text-align: left;
   font-weight: bold;
+  padding-left: 3px;
 }
 
 section.main .leftnav .menuBox {
   position: relative;
-  margin-top: 16px;
+  margin-top: 10px;
   background: #fffffa;
   border: 1px solid #dce6be;
   border-radius: 3px;
@@ -510,7 +527,7 @@ section.main .leftnav h2 + .menuBox {
 }
 
 section.main .leftnav .menuBox[data-selectiontype="LINK"] + .menuBox {
-  margin-top: 12px;
+  margin-top: 10px;
 }
 
 section.main .leftnav .menuBox + .menuBox[data-selectiontype="LINK"] {
@@ -1027,6 +1044,11 @@ section.main .leftnav .menuBox li.selected:hover input[type="radio"] + span {
     opacity: .7;
 }
 
+.draftIndicator button {
+    cursor: pointer;
+    pointer-events: visible;
+}
+
 .draftIndicator[draft-name="main"],
 .draftIndicator[draft-name="Main"],
 .draftIndicator[draft-name="MAIN"] {
@@ -1043,16 +1065,15 @@ section.main .leftnav .menuBox li.selected:hover input[type="radio"] + span {
     text-decoration: underline;
     pointer-events: auto;
 }
-
+/* why are these duplicated from expressco.css? */
 .wallet-error-msg{
 	padding-bottom: 4px;
 }
 .wallet-error-msg span{
 	color: #c94747;
-    font-size: 14px;
+    font-size: 10px;
     font-weight: bold;
     vertical-align: top;
-	width: 180px;
     display: inline-block;
     text-align: left;
     margin-left: 4px;

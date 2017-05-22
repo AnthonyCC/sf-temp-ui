@@ -308,6 +308,14 @@
 	float: right;
 	margin: 5px 0 0;
 }
+.standing-orders-3-create-header button.standing-orders-3-new-start-shop[disabled],
+.standing-orders-3-create-header button.standing-orders-3-new-start-shop[disabled]:hover{
+	color: #858585;
+    background-color: #e8e8ea;
+    border-color: #e8e8ea;
+    cursor: not-allowed;
+    box-shadow: none;
+}
 #newsoErroMessage{
 	position: absolute;
 	font-size: 12px;
