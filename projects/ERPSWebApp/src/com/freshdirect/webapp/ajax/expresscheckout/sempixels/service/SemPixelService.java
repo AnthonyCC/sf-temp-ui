@@ -1,6 +1,9 @@
 package com.freshdirect.webapp.ajax.expresscheckout.sempixels.service;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
@@ -8,6 +11,9 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
+import com.freshdirect.fdstore.promotion.PromotionFactory;
+import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.webapp.ajax.expresscheckout.sempixels.data.SemPixelData;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
@@ -41,16 +47,31 @@ public class SemPixelService {
         result.setUserCounty(user.getDefaultCounty());
         result.setValidOrders(user.getAdjustedValidOrderCount());
         result.setProductId(getProductIdInformation(order));
+        result.setRedeemedPromotions(populateRedeemedPromotionCodes(order));
         return result;
     }
-    
-    public String getProductIdInformation(FDOrderI order){
-     	StringBuilder productIds=new StringBuilder();
-    	for(FDCartLineI cartLine : order.getOrderLines()){
-    		productIds.append(cartLine.getCategoryName()+"_"+cartLine.getSkuCode()+"_"+cartLine.getProductName());   		
-    		productIds.append(",");
-    	}
-    	String productResult=productIds.toString();
-    	return productResult.substring(0, productResult.length()-1);
+
+    public String getProductIdInformation(FDOrderI order) {
+        StringBuilder productIds = new StringBuilder();
+        for (FDCartLineI cartLine : order.getOrderLines()) {
+            productIds.append(cartLine.getCategoryName() + "_" + cartLine.getSkuCode() + "_" + cartLine.getProductName());
+            productIds.append(",");
+        }
+        String productResult = productIds.toString();
+        return productResult.substring(0, productResult.length() - 1);
+    }
+
+    public List<String> populateRedeemedPromotionCodes(FDOrderI order) {
+        List<String> result = new ArrayList<String>();
+        Set<String> usedPromotionCodes = ((FDOrderAdapter) order).getUsedPromotionCodes();
+        if (usedPromotionCodes != null) {
+            for (String usedPromotionCode : usedPromotionCodes) {
+                PromotionI promotion = PromotionFactory.getInstance().getPromotion(usedPromotionCode);
+                if (promotion.isRedemption()) {
+                    result.add(usedPromotionCode);
+                }
+            }
+        }
+        return result;
     }
 }
