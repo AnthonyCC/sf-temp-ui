@@ -100,6 +100,10 @@
 						{param cvPrices:$cvPrices /}
 						{param qInc:$quantity.qInc /}
 					{/call}
+					{call common.atcInCart}
+						{param amount:$inCartAmount /}
+						{param atcItemId:$atcItemId /}
+					{/call}
 				</div>
 				<div class="pdp-evenbetter-atcbutton">
 					{if $isEligibleForStandingOrders and length($soData.settingsData.soData) > 0}						
@@ -108,12 +112,8 @@
 						<button type="button" class="addtolist pdp-evenbetter-addtolist cssbutton cssbutton-flat purpleborder" data-component="addToListButton">Add to List</button>
 					{else}
 						<button type="button" data-component="ATCButton" class="cssbutton orange small">Add to Cart</button>
-						<button type="button" class="addtolist pdp-evenbetter-addtolist cssbutton purple notext icon-file2-before" data-component="addToListButton">Add to List</button>
+						<button type="button" class="addtolist pdp-evenbetter-addtolist cssbutton cssbutton-flat purpleborder" data-component="addToListButton">Add to List</button>
 					{/if}
-					{call common.atcInCart}
-						{param amount:$inCartAmount /}
-						{param atcItemId:$atcItemId /}
-					{/call}
 				</div>
 			</form>
 			
