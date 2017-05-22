@@ -2413,10 +2413,8 @@
 						    <CmsField><attribute>moduleTitle</attribute></CmsField>						    
 						    <CmsField><attribute>moduleTitleTextBanner</attribute></CmsField>						    
 						    <CmsField><attribute>viewAllButtonLink</attribute></CmsField>
-						    <CmsField><attribute>contentTitle</attribute></CmsField>
-						    <CmsField><attribute>contentTitleTextBanner</attribute></CmsField>	
-						    <CmsField><attribute>hideViewAllButton</attribute></CmsField>
-						    <CmsField><attribute>useViewAllPopup</attribute></CmsField>					    
+						    
+						    <CmsField><attribute>contentTitleTextBanner</attribute></CmsField>							    			    
 						</fields>
 					</CmsSection>
 					<CmsSection>
@@ -2434,6 +2432,9 @@
 					<CmsSection>
 						<title>CONTENT</title>
 						<fields>
+							<CmsField><attribute>contentTitle</attribute></CmsField>
+							<CmsField><attribute>hideViewAllButton</attribute></CmsField>
+						    <CmsField><attribute>useViewAllPopup</attribute></CmsField>	
 							<CmsField><attribute>productSourceType</attribute></CmsField>
 							<CmsField><attribute>sourceNode</attribute></CmsField>
 						    <CmsField><attribute>displayType</attribute></CmsField>
