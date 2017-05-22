@@ -13,10 +13,9 @@ import com.freshdirect.cms.search.ContentIndex;
 
 /**
  * 
- * Class to hold the index creation rules. These rules decide which node attributes should be indexed and how. 
+ * Class to hold the index creation rules. These rules decide which node attributes should be indexed and how.
  * 
- * ! IMPORTANT ! The IndexerService builds upon the fact that these
- * rules are not changed runtime! Keep in mind!
+ * ! IMPORTANT ! The IndexerService builds upon the fact that these rules are not changed runtime! Keep in mind!
  *
  */
 public class IndexConfiguration {
@@ -71,6 +70,9 @@ public class IndexConfiguration {
         CONFIGURATIONS.add(new AttributeIndexBuilder("Section", "headlineText").withText(true).build());
         CONFIGURATIONS.add(new AttributeIndexBuilder("DomainValue", "Label").withText(true).build());
         CONFIGURATIONS.add(new AttributeIndexBuilder("DomainValue", "VALUE").withText(true).build());
+        CONFIGURATIONS.add(new AttributeIndexBuilder("Module", "name").withText(true).build());
+        CONFIGURATIONS.add(new AttributeIndexBuilder("ModuleGroup", "name").withText(true).build());
+        CONFIGURATIONS.add(new AttributeIndexBuilder("ModuleContainer", "name").withText(true).build());
     }
 
     public List<ContentIndex> getIndexConfiguration() {
