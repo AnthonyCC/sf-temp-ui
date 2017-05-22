@@ -22,6 +22,7 @@ import com.freshdirect.cmsadmin.domain.Draft;
 import com.freshdirect.cmsadmin.domain.DraftChange;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.cache.EhCacheUtil;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.http.HttpService;
 
@@ -219,9 +220,9 @@ public class DraftService {
         return getDraftContext(parseDraftId, draftName);
     }
 
-    public DraftContext getDraftContext(Long draftId, String draftName) {
+    public DraftContext getDraftContext(long draftId, String draftName) {
         DraftContext currentDraftContext;
-        if (draftId != null && draftName != null && DraftContext.MAIN_DRAFT_ID != draftId) {
+        if (draftName != null && DraftContext.MAIN_DRAFT_ID != draftId) {
             currentDraftContext = new DraftContext(draftId, draftName);
         } else {
             currentDraftContext = DraftContext.MAIN;
@@ -229,8 +230,8 @@ public class DraftService {
         return currentDraftContext;
     }
 
-    public Long parseDraftId(String draftId) {
-        Long parsedDraftId = null;
+    public long parseDraftId(String draftId) {
+        long parsedDraftId = DraftContext.MAIN_DRAFT_ID;
         if (draftId != null) {
             try {
                 parsedDraftId = Long.parseLong(draftId);
@@ -239,6 +240,17 @@ public class DraftService {
             }
         }
         return parsedDraftId;
+    }
+
+    public void updateDraftContext(String draftId, String draftName) {
+        updateDraftContext(parseDraftId(draftId), draftName);
+    }
+
+    public void updateDraftContext(long draftId, String draftName) {
+        DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
+        if (draftId != currentDraftContext.getDraftId()) {
+            ContentFactory.getInstance().setCurrentDraftContext(getDraftContext(draftId, draftName));
+        }
     }
 
     private String safeURLEncode(String str) {

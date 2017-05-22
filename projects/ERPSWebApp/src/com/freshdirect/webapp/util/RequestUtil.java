@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Category;
@@ -152,5 +153,35 @@ public class RequestUtil {
             urlBuilder.append("?").append(request.getQueryString());
         }
         return urlBuilder.toString();
+    }
+
+    public static String getValueFromCookie(HttpServletRequest request, String cookieKey) {
+        String value = null;
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookieKey.equals(cookie.getName())) {
+                    value = cookie.getValue();
+                    break;
+                }
+            }
+        }
+        return value;
+    }
+
+    public static Cookie createCookie(String cookieKey, String cookieValue, int maxAge) {
+        Cookie cookie = new Cookie(cookieKey, cookieValue);
+        cookie.setMaxAge(maxAge);
+        cookie.setPath("/");
+        LOGGER.debug("Set cookie " + cookieKey + " = " + cookieValue);
+        return cookie;
+    }
+
+    public static String getInputValue(HttpServletRequest request, String parameter, String cookieName) {
+        String value = request.getParameter(parameter);
+        if (value == null) {
+            value = getValueFromCookie(request, cookieName);
+        }
+        return value;
     }
 }

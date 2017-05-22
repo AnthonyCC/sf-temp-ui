@@ -84,7 +84,7 @@ if (mobWeb) {
 
 	<c:if test="${not empty browsePotato.pager.activePage}">
   <tmpl:put name='content' direct='true'>
-    <div class="browse-breadcrumbs">
+    <div class="browse-breadcrumbs<c:choose><c:when test="${browsePotato.descriptiveContent.navDepth == 'CATEGORY'}"> browse-breadcrumbs-category</c:when><c:when test="${browsePotato.descriptiveContent.navDepth == 'SUB_CATEGORY'}"> browse-breadcrumbs-category</c:when><c:when test="${browsePotato.descriptiveContent.navDepth == 'DEPARTMENT'}"> browse-breadcrumbs-department</c:when></c:choose>">
       <soy:render template="browse.breadCrumb" data="${browsePotato.breadCrumbs}" />
     </div>
 
@@ -103,8 +103,9 @@ if (mobWeb) {
       <soy:render template="browse.topCarousels" data="${browsePotato.carousels}" />
     </div>
 
-	
-    <div class="pager-holder top">
+	<%-- remove top pagination
+     --%>
+    <div class="pager-holder top<c:choose><c:when test="${browsePotato.descriptiveContent.navDepth == 'CATEGORY'}"> browse-pager-category</c:when><c:when test="${browsePotato.descriptiveContent.navDepth == 'SUB_CATEGORY'}"> browse-pager-subcategory</c:when><c:when test="${browsePotato.descriptiveContent.navDepth == 'DEPARTMENT'}"> browse-pager-department</c:when></c:choose>">
       <soy:render template="browse.pager" data="${browsePotato.pager}" />
     </div>
     

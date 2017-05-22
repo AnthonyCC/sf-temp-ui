@@ -166,8 +166,6 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
     private boolean zipPopupSeenInSession = false;
     
-    private boolean sOCartLineMessages;
-    
 	private Map<String,String> soCartLineMessagesMap=new HashMap<String,String>();
 
     @Override
@@ -253,7 +251,13 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
             this.saveCart();
 
             if (FDStoreProperties.isSessionLoggingEnabled()) {
-                user.setSessionEvent(new SessionEvent());
+            	if(user.getUserContext()!=null){
+					EnumEStoreId  eStoreId = user.getUserContext().getStoreContext() != null ? user.getUserContext().getStoreContext().getEStoreId(): EnumEStoreId.FD;
+					if(eStoreId!=null)
+					user.setSessionEvent(new SessionEvent(eStoreId.toString().toLowerCase()));
+				}
+            	else
+            		user.setSessionEvent(new SessionEvent());
             }
 
             // store cohort ID
@@ -2249,13 +2253,6 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         this.zipPopupSeenInSession = ZipPopupSeenInSession;
     }
 
-	public boolean issOCartLineMessages() {
-		return sOCartLineMessages;
-	}
-
-	public void setsOCartLineMessages(boolean sOCartLineMessages) {
-		this.sOCartLineMessages = sOCartLineMessages;
-	}
 	public Map<String, String> getSoCartLineMessagesMap() {
 		return soCartLineMessagesMap;
 	}

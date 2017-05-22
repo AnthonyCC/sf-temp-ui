@@ -215,7 +215,7 @@ var FreshDirect = FreshDirect || {};
       var el = this.$el;
       setTimeout(function(){
         boundingRect = el[0].getBoundingClientRect();
-        
+
         screenOffset =  $(window).height() - (boundingRect.bottom);
         if(screenOffset<0) {
           try {
@@ -232,7 +232,8 @@ var FreshDirect = FreshDirect || {};
   };
 
   PopupContent.prototype.focus = function () {
-    var $el = this.$el;
+    var $el = this.$el,
+        lastEl = '';
 
     // store old tabindices & reset
     this.tabIndices = [];
@@ -258,8 +259,15 @@ var FreshDirect = FreshDirect || {};
     $el.find('input, button, textarea, select, a').not('[disabled]').not('[type="hidden"]').not('[nofocus]').each(function (i, tiel) {
       var $tiel = $(tiel);
 
-      $tiel.attr('tabindex', i+1);
+      lastEl = i+1;
+
+      $tiel.attr('tabindex', lastEl);
     });
+
+    if ($el.find('.qs-popup-close-icon').size() > 0 ) {
+      var close = $el.find('.qs-popup-close-icon')[0];
+      $(close).attr('tabindex', lastEl+1);
+    }
 
     // focus first element
     if ($el.find('form').size() > 0) {
@@ -357,9 +365,9 @@ var FreshDirect = FreshDirect || {};
 
     if (this.$alignTo.attr('data-alignpopupfunction') && !ignoreCustomFunction) {
       // call custom alignment function if exists
-      // align function should be registered under 
+      // align function should be registered under
       // FreshDirect.popups.alignment namespace
-      var alignFunction = fd.popups && fd.popups.alignment && 
+      var alignFunction = fd.popups && fd.popups.alignment &&
                           fd.popups.alignment[this.$alignTo.attr('data-alignpopupfunction')];
 
       if (alignFunction) {
@@ -392,7 +400,7 @@ var FreshDirect = FreshDirect || {};
       this.$alignTo.appendTo(this.$ghost);
       this.placeholderActive = true;
     }
-    
+
     if(align) {
       var position={};
       // trigger, vertical
@@ -403,7 +411,7 @@ var FreshDirect = FreshDirect || {};
       } else if(align[0]==='c') {
         position.top = offset.top + height/2;
       }
-      
+
       // trigger, horizontal
       if(align[1]==='l') {
         position.left = offset.left;
@@ -412,14 +420,14 @@ var FreshDirect = FreshDirect || {};
       } else if(align[1]==='c') {
         position.left = offset.left + width/2;
       }
-      
+
       // popup, vertical
       if(align[3]==='c') {
         position.top = position.top - contentHeight/2;
       } else if(align[3]==='b') {
         position.top = position.top - contentHeight;
       }
-      
+
       // popup, horizontal
       if(align[4]==='c') {
         position.left = position.left - contentWidth/2;

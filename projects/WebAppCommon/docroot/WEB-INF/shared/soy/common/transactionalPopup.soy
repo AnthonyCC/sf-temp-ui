@@ -11,9 +11,11 @@
 <div class="{$customClass} transactional-popup" id="{$popupId}">
   <div class="transactional-popup-wrapper">
     <div class="transactional-main-item">
-      <div class="transactional-item-header transactional-popup-header"><span>
+    
+	<!-- {$productId}:{$catId} -->
+      /*<div class="transactional-item-header transactional-popup-header"><span>
         {call .transactionalPopupHeader data="all" /}
-      </span></div>
+      </span></div>*/
       <div class="transactional-popup-body" data-component="product">{$bodyContent}</div>
     </div>
     <div class="transactional-related-wrapper">
@@ -31,6 +33,7 @@
  * @param catId 
  */
 {template .transactionalPopupHeader autoescape="false"}
-  <a class="transactional-popup-learnmore" href="/product.jsp?productId={$productId}&catId={$catId}">learn more</a>
+	<!-- {$productId}:{$catId} -->
+  /*<a class="transactional-popup-learnmore" href="/product.jsp?productId={$productId}&catId={$catId}">learn more</a>*/
 {/template}
 

@@ -28,7 +28,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.AjaxErrorHandlingService;
-
+import com.freshdirect.webapp.util.DraftUtil;
 
 public abstract class BaseJsonServlet extends HttpServlet {
 
@@ -40,6 +40,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 	protected final void doGet( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException {
 		try {
 			FDUserI user = authenticate( request );
+			DraftUtil.draft(request, response);
 			if ( synchronizeOnUser() ) {
 				synchronized ( user ) {
 					doGet( request, response, user );
@@ -51,7 +52,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 			response.sendError( e.getErrorCode() );
 		}
 	}	
-	@SuppressWarnings( "static-method" )
+
 	protected void doGet( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {
 		returnHttpError( 405 );	// 405 Method Not Allowed
 	}
@@ -73,7 +74,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 			response.sendError( e.getErrorCode() );
 		}
 	}
-	@SuppressWarnings( "static-method" )
+
 	protected void doPut( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {
 		returnHttpError( 405 );	// 405 Method Not Allowed
 	}
@@ -93,7 +94,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 			response.sendError( e.getErrorCode() );
 		}
 	}
-	@SuppressWarnings( "static-method" )
+
 	protected void doDelete( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {
 		returnHttpError( 405 );	// 405 Method Not Allowed
 	}
@@ -115,7 +116,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
             response.sendError(e.getErrorCode(), errorMessage);
 		}
 	}
-	@SuppressWarnings( "static-method" )
+
 	protected void doPost( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {
 		returnHttpError( 405 );	// 405 Method Not Allowed
 	}

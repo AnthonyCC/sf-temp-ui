@@ -69,10 +69,10 @@ function newStandingOrderInfoCheck(){
 }
 
 function submitFormNewSO(action){
+	var dataString = "";
 	if(action=="create"){
 		$jq("body").append("<div id='create-so-page-loading'>Creating Standing Order</div>");
 	}
-	var dataString = "";
 	dataString = "action="+ action +"&soName=" + $jq(".standing-orders-3-name-input[name='soName']").val() + "&isSO=true" + "&address=" + $jq("[fdform='address'] input:checked").val() + "&payment=" + $jq("[fdform='payment'] input:checked").val() + "&timeslot=" + $jq("[fdform='timeslot'] input:checked").val() + "&freq=" + $jq("#soFreq2 option:selected").val();
 	$jq.ajax({
 	    url: '/api/manageStandingOrder',

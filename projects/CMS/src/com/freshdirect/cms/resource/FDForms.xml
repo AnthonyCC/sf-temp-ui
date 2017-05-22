@@ -2365,7 +2365,7 @@
 				<title>Core Attributes</title>
 				<sections>
 					<CmsSection>
-						<title>CORE</title>
+						<title>CORE (click &lt;a target="_blank" href="http://home.freshdirect.com/confluence/display/web/New+home+page+CMS+configuration"&gt;here&lt;/a&gt; for setup guide)</title>
 						<fields>
 						    <CmsField><attribute>name</attribute></CmsField>
 						    <CmsField><attribute>modulesAndGroups</attribute></CmsField>
@@ -2383,7 +2383,7 @@
 				<title>Core Attributes</title>
 				<sections>
 					<CmsSection>
-						<title>CORE</title>
+						<title>CORE (click &lt;a target="_blank" href="http://home.freshdirect.com/confluence/display/web/New+home+page+CMS+configuration"&gt;here&lt;/a&gt; for setup guide)</title>
 						<fields>
 						    <CmsField><attribute>name</attribute></CmsField>
 						    <CmsField><attribute>moduleGroupTitle</attribute></CmsField>
@@ -2407,16 +2407,14 @@
 				<title>Core Attributes</title>
 				<sections>
 					<CmsSection>
-						<title>CORE</title>
+						<title>CORE (click &lt;a target="_blank" href="http://home.freshdirect.com/confluence/display/web/New+home+page+CMS+configuration"&gt;here&lt;/a&gt; for setup guide)</title>
 						<fields>
 						    <CmsField><attribute>name</attribute></CmsField>
 						    <CmsField><attribute>moduleTitle</attribute></CmsField>						    
 						    <CmsField><attribute>moduleTitleTextBanner</attribute></CmsField>						    
 						    <CmsField><attribute>viewAllButtonLink</attribute></CmsField>
-						    <CmsField><attribute>contentTitle</attribute></CmsField>
-						    <CmsField><attribute>contentTitleTextBanner</attribute></CmsField>	
-						    <CmsField><attribute>hideViewAllButton</attribute></CmsField>
-						    <CmsField><attribute>useViewAllPopup</attribute></CmsField>					    
+						    
+						    <CmsField><attribute>contentTitleTextBanner</attribute></CmsField>							    			    
 						</fields>
 					</CmsSection>
 					<CmsSection>
@@ -2434,6 +2432,9 @@
 					<CmsSection>
 						<title>CONTENT</title>
 						<fields>
+							<CmsField><attribute>contentTitle</attribute></CmsField>
+							<CmsField><attribute>hideViewAllButton</attribute></CmsField>
+						    <CmsField><attribute>useViewAllPopup</attribute></CmsField>	
 							<CmsField><attribute>productSourceType</attribute></CmsField>
 							<CmsField><attribute>sourceNode</attribute></CmsField>
 						    <CmsField><attribute>displayType</attribute></CmsField>

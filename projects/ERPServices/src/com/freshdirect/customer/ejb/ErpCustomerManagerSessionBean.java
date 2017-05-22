@@ -88,6 +88,7 @@ import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpSettlementModel;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.customer.ErpTransactionModel;
 import com.freshdirect.customer.ErpTruckInfo;
 import com.freshdirect.customer.ErpWebOrderHistory;
 import com.freshdirect.customer.OrderHistoryI;
@@ -613,12 +614,14 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			    		Request request = GatewayAdapter.getReverseAuthRequest(sale.getCurrentOrder().getPaymentMethod(), auth);
 			    		request.getBillingInfo().setEwalletTxId(auth.getEwalletTxId());
 			    		request.getBillingInfo().getPaymentMethod().setType(PaymentMethodType.PP);
+			    		request.getBillingInfo().getPaymentMethod().setCustomerID(originalOrder.getCustomerId());
 			    		try {
 				    		Gateway gateway = GatewayFactory.getGateway(GatewayType.PAYPAL);
-				    		Response response = gateway.reverseAuthorize(request);
-				    		if (!response.isApproved()) {
+				    		Response response = gateway.reverseAuthorize(request);				    		
+				    		if (!response.isApproved()) {				    			
 				    			LOGGER.warn("Reverse auth failed for PayPal transaction during order modification of Order " + sale.getId() + ". Ewallet Tx Id " + auth.getEwalletTxId());
-				    		} else {
+				    		} else {				    			
+				    			updatePaymentAuthResponse(auth);				    			
 				    			LOGGER.info("Auth voided for PayPal transaction during order modification of Order " + sale.getId() + ". Ewallet Tx Id " + auth.getEwalletTxId());
 				    		}
 			    		} catch (ErpTransactionException e) {
@@ -639,6 +642,42 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	}
 	
 
+	private void updatePaymentAuthResponse(ErpAuthorizationModel auth) {
+		Connection conn = null;
+		try {
+			conn = this.getConnection();
+
+			PreparedStatement ps = conn.prepareStatement("UPDATE CUST.PAYMENT SET RESPONSE_CODE=? WHERE SALESACTION_ID=? and SEQUENCE_NUMBER=?");
+			ps.setString(1, EnumPaymentResponse.REVERSED.getCode());
+			ps.setString(2, auth.getId());
+			ps.setString(3,  auth.getSequenceNumber());
+			
+			try {
+				if (ps.executeUpdate() != 1) {
+					throw new SQLException("Payment not updated");
+				}
+			} catch (SQLException sqle) {
+				throw sqle;
+			} finally {
+				ps.close();
+			}
+
+		} catch(SQLException exc) {
+			throw new EJBException(exc);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+					conn = null;
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("SQLException while cleaning up", se);
+			}
+		}
+		
+	}
+
+	
 	private void preCheckGiftCardOrderFraud(
 			PrimaryKey erpCustomerPk,
 			ErpAbstractOrderModel order,

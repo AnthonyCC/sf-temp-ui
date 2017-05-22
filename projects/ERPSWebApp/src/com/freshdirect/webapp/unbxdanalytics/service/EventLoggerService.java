@@ -15,7 +15,7 @@ public final class EventLoggerService implements EventSinkI {
 
     private static EventLoggerService sharedInstance = null;
 
-    private final BlockingQueue<AnalyticsEventI> buffer = new LinkedBlockingQueue<AnalyticsEventI>();
+    private final BlockingQueue<AnalyticsEventI> buffer = new LinkedBlockingQueue<AnalyticsEventI>(10000); //limit buffer size to 10 k rather than default Integer.MAX_VALUE
 
     private final EventSinkI eventConsumer;
 

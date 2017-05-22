@@ -23,6 +23,7 @@ import com.freshdirect.fdstore.rules.ejb.RulesManagerHome;
 import com.freshdirect.fdstore.rules.ejb.RulesManagerSB;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.rules.AbstractRuleStore;
 import com.freshdirect.rules.ClassDescriptor;
 import com.freshdirect.rules.Rule;
@@ -73,8 +74,14 @@ public class RulesManager extends AbstractRuleStore {
 	@Override
 	public Map<String, Rule> getRules() {
 		try{
-			RulesManagerSB sb = getRulesManagerHome().create();
-			Map<String, Rule> rules = sb.getRules(getSubsystem());
+			Map<String, Rule> rules = null;
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				rules = FDECommerceService.getInstance().getRules(getSubsystem());
+			}
+			else{
+				RulesManagerSB sb = getRulesManagerHome().create();
+				rules = sb.getRules(getSubsystem());
+			}
 			for(Rule r:rules.values()){
 				createXMLObject(r);
 			}
@@ -121,8 +128,14 @@ public class RulesManager extends AbstractRuleStore {
 	@Override
 	public Rule getRule(String ruleId) {
 		try{
-			RulesManagerSB sb = getRulesManagerHome().create();
-			Rule r = sb.getRule(ruleId);
+			Rule r =  null;
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				r = FDECommerceService.getInstance().getRule(ruleId);
+			}
+			else{
+				RulesManagerSB sb = getRulesManagerHome().create();
+				r = sb.getRule(ruleId);
+			}
 			createXMLObject(r);
 			return r;
 		} catch (FDResourceException e) {
@@ -137,11 +150,17 @@ public class RulesManager extends AbstractRuleStore {
 	@Override
 	public void storeRule(Rule rule) {
 		try{
-			RulesManagerSB sb = getRulesManagerHome().create();
-			rule.setConditionStr(getConditionsXML(rule.getConditions()).trim());
-			rule.setOutcomeStr(xstream.toXML(rule.getOutcome()).trim());
-			
-			sb.storeRule(rule);
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				rule.setConditionStr(getConditionsXML(rule.getConditions()).trim());
+				rule.setOutcomeStr(xstream.toXML(rule.getOutcome()).trim());
+				FDECommerceService.getInstance().storeRule(rule);
+			}
+			else{
+				RulesManagerSB sb = getRulesManagerHome().create();
+				rule.setConditionStr(getConditionsXML(rule.getConditions()).trim());
+				rule.setOutcomeStr(xstream.toXML(rule.getOutcome()).trim());
+				sb.storeRule(rule);
+			}
 		} catch (FDResourceException e) {
 			throw new RulesRuntimeException(e, "Cannot talk to the SessionBean");
 		} catch (CreateException e) {
@@ -154,8 +173,13 @@ public class RulesManager extends AbstractRuleStore {
 	@Override
 	public void deleteRule(String ruleId) {
 		try{
-			RulesManagerSB sb = getRulesManagerHome().create();
-			sb.deleteRule(ruleId);
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				FDECommerceService.getInstance().deleteRule(ruleId);
+			}
+			else{
+				RulesManagerSB sb = getRulesManagerHome().create();
+				sb.deleteRule(ruleId);
+			}
 		} catch (FDResourceException e) {
 			throw new RulesRuntimeException(e, "Cannot talk to the SessionBean");
 		} catch (CreateException e) {

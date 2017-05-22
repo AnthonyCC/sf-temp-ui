@@ -330,6 +330,12 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 			ps = null;
 		}
 
+		//APPDEV 5692 updated email address is not being stored in cust.customerinfo table
+		if (null!=this.userId && !this.userId.equalsIgnoreCase(customerInfo.getEmail())){
+			customerInfo.setEmail(this.userId);
+			this.customerInfo.store(conn);
+		}
+	
 		// store children
 		if (this.shipToAddress.isModified()) {
 			this.shipToAddress.store( conn );

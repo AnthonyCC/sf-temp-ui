@@ -131,7 +131,7 @@ public class FormMetaDataService {
 	}
 
 	public boolean populateECheck(FDUserI user) throws FDResourceException {
-		return user.isCheckEligible() && !FDCustomerManager.isECheckRestricted(user.getIdentity());
+		return user.isCheckEligible() && !user.isECheckRestricted();//!FDCustomerManager.isECheckRestricted(user.getIdentity());
 	}
 
 	public boolean populateEbtCheck(FDUserI user) {

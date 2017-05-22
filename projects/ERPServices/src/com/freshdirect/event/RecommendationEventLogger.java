@@ -11,8 +11,10 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.event.ejb.RecommendationEventLoggerHome;
 import com.freshdirect.event.ejb.RecommendationEventLoggerSB;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.event.FDRecommendationEvent;
+import com.freshdirect.payment.service.FDECommerceService;
 
 /**
  * Recommendation event logger instance.
@@ -58,18 +60,29 @@ public class RecommendationEventLogger {
 	 * @param frequency assigned frequency
 	 */
 	public void log(FDRecommendationEvent event, int frequency) {
-		RecommendationEventLoggerSB bean;
-		try {
-			bean = this.getImpressionLoggerHome().create();
-		} catch (RemoteException e) {
-			throw new EJBException("Could not create impression logger home",e);
-		} catch (CreateException e) {
-			throw new EJBException("Could not create impression logger home",e);
-		}
-		try {
-			bean.log((FDRecommendationEvent)event,frequency);
-		} catch (RemoteException e) {
-			throw new EJBException("Could not log event " + event,e);
+		if (FDStoreProperties.isStorefront2_0Enabled()) {
+			try {
+				FDECommerceService.getInstance().log(
+						(FDRecommendationEvent) event, frequency);
+			} catch (RemoteException e) {
+				throw new EJBException("Could not log event " + event, e);
+			}
+		} else {
+			RecommendationEventLoggerSB bean;
+			try {
+				bean = this.getImpressionLoggerHome().create();
+			} catch (RemoteException e) {
+				throw new EJBException(
+						"Could not create impression logger home", e);
+			} catch (CreateException e) {
+				throw new EJBException(
+						"Could not create impression logger home", e);
+			}
+			try {
+				bean.log((FDRecommendationEvent) event, frequency);
+			} catch (RemoteException e) {
+				throw new EJBException("Could not log event " + event, e);
+			}
 		}
 	}
 	
@@ -79,19 +92,33 @@ public class RecommendationEventLogger {
 	 * @param eventClazz subclass of {@link FDRecommendationEvent}
 	 * @param events Collection<{@link RecommendationEventsAggregate}>
 	 */
-	public void log(Class<? extends FDRecommendationEvent> eventClazz, Collection<RecommendationEventsAggregate> events) {
-		RecommendationEventLoggerSB bean;
-		try {
-			bean = this.getImpressionLoggerHome().create();
-		} catch (RemoteException e) {
-			throw new EJBException("Could not create impression logger home",e);
-		} catch (CreateException e) {
-			throw new EJBException("Could not create impression logger home",e);
-		}
-		try {
-			bean.log(eventClazz,events);
-		} catch (RemoteException e) {
-			throw new EJBException("Could not log " + events.size() + " events",e);
+	public void log(Class<? extends FDRecommendationEvent> eventClazz,
+			Collection<RecommendationEventsAggregate> events) {
+
+		if (FDStoreProperties.isStorefront2_0Enabled()) {
+			try {
+				FDECommerceService.getInstance().log(eventClazz, events);
+			} catch (RemoteException e) {
+				throw new EJBException("Could not log " + events.size()
+						+ " events", e);
+			}
+		} else {
+			RecommendationEventLoggerSB bean;
+			try {
+				bean = this.getImpressionLoggerHome().create();
+			} catch (RemoteException e) {
+				throw new EJBException(
+						"Could not create impression logger home", e);
+			} catch (CreateException e) {
+				throw new EJBException(
+						"Could not create impression logger home", e);
+			}
+			try {
+				bean.log(eventClazz, events);
+			} catch (RemoteException e) {
+				throw new EJBException("Could not log " + events.size()
+						+ " events", e);
+			}
 		}
 	}
 	

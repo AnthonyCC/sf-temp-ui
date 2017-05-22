@@ -48,7 +48,7 @@ public class EnumManager {
 		EnumManagerSB sb = this.getEnumManagerSB();
 		try {
 			if(FDStoreProperties.isStorefront2_0Enabled()){
-			return	FDECommerceService.getInstance().loadEnum(daoClass.getName());
+			return	FDECommerceService.getInstance().loadEnum(daoClass.getSimpleName());
 			}else{
 			return sb.loadEnum(daoClass.getName());
 			}

@@ -87,6 +87,20 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
 			<jsp:param name="catId" value="${ param.catId }"/>
 			<jsp:param name="cartlineId" value="${ param.cartlineId }"/>
 		</jsp:include>
+		
+		
+	    <script>
+	      window.FreshDirect = window.FreshDirect || {};
+	      window.FreshDirect.browse = window.FreshDirect.browse || {};
+	      window.FreshDirect.globalnav = window.FreshDirect.globalnav || {};
+	      window.FreshDirect.activeDraft = window.FreshDirect.activeDraft || {};
+	
+	      window.FreshDirect.browse.data = <fd:ToJSON object="${browsePotato}" noHeaders="true"/>
+	      window.FreshDirect.globalnav.data = <fd:ToJSON object="${globalnav}" noHeaders="true"/>
+	      window.FreshDirect.coremetricsData = window.FreshDirect.browse.data.coremetrics;
+	      window.FreshDirect.activeDraft = "${activeDraft}"
+	      window.FreshDirect.activeDraftDirectLink = "${activeDraftDirectLink}"
+	    </script>
 	</tmpl:put>
 	
 <% } else { // old leftnav %>  

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpHeaders;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -44,6 +45,7 @@ import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.Sku;
 import com.freshdirect.mobileapi.model.WhatsGood;
 import com.freshdirect.mobileapi.model.data.WhatsGoodCategory;
+import com.freshdirect.mobileapi.model.tagwrapper.SmartSearchTagWrapper;
 import com.freshdirect.mobileapi.service.ProductServiceImpl;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ListPaginator;
@@ -53,6 +55,7 @@ import com.freshdirect.mobileapi.util.SortType;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.ajax.product.data.ProductPotatoData;
 import com.freshdirect.webapp.util.ProductRecommenderUtil;
+import com.freshdirect.webapp.util.RequestUtil;
 
 import freemarker.template.TemplateException;
 
@@ -220,8 +223,11 @@ public class ProductController extends BaseController {
 		if (products.size() == 0) {
 	        ProductServiceImpl productService = new ProductServiceImpl();
 			try {
+				SmartSearchTagWrapper wrapper = new SmartSearchTagWrapper(user);
+		        wrapper.setRequestUrl(RequestUtil.getFullRequestUrl(request));
+		        setContextHeaders(request, wrapper);
 	            List<com.freshdirect.mobileapi.model.Product> searchResults = productService.search("", null, 0, 10, SortType.RELEVANCY, null, null, null,
-	                    user, request);
+	                    user, request, wrapper);
 	            products.addAll(searchResults);
             } catch (ServiceException e) {
                 result.addDebugMessage("ERROR_LOADING_SEARCH_ITEMS", this.traceFor(e));

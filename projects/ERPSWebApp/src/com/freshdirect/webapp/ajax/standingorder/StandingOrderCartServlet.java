@@ -20,14 +20,11 @@ import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeVariant;
 import com.freshdirect.fdstore.customer.FDActionInfo;
-import com.freshdirect.fdstore.customer.FDCartLineI;
-import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
@@ -139,10 +136,9 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 			}
 		
 			if (null != reqData.getActiontype()	&& ACTION_TURN_OFF_REMINDER_OVERLAY.equalsIgnoreCase(reqData.getActiontype())
-					&& user.getCurrentStandingOrder() != null) {
+					&& reqData.getStandingOrderId() != null) {
 				try {
-					if (user.getCurrentStandingOrder().getId() != null)
-						FDStandingOrdersManager.getInstance().turnOffReminderOverLayNewSo(user.getCurrentStandingOrder().getId());
+						FDStandingOrdersManager.getInstance().turnOffReminderOverLayNewSo(reqData.getStandingOrderId());
 				} catch (FDResourceException e) {
 					LOG.error("Got the exeption while updating the RemiderOverlay flag for New Standing order"+e);
 				}

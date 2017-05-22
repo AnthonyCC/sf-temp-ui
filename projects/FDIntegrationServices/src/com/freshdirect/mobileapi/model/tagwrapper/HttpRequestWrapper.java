@@ -88,6 +88,15 @@ public class HttpRequestWrapper implements HttpServletRequest {
         if(arg0.equals(HttpHeaders.REFERER)){
             return referer;
         }
+        if(arg0.equals("True-Client-IP")){
+            return this.getTrueClientIp();
+        }
+        if(arg0.equals("X-Forwarded-For")){
+            return this.getForwardedFrom();
+        }
+        if(arg0.equals("X-Akamai-Edgescape")){
+        	return this.getAkamaiEdgeScape();
+        }
         throw new IllegalAccessError("this method has not been implemented in this wrapper");
     }
 
@@ -347,10 +356,10 @@ public class HttpRequestWrapper implements HttpServletRequest {
         throw new IllegalAccessError("this method has not been implemented in this wrapper");
     }
 
-    @Override
-    public String getRemoteAddr() {
-        throw new IllegalAccessError("this method has not been implemented in this wrapper");
-    }
+//    @Override
+//    public String getRemoteAddr() {
+//        throw new IllegalAccessError("this method has not been implemented in this wrapper");
+//    }
 
     @Override
     public String getRemoteHost() {
@@ -428,5 +437,45 @@ public class HttpRequestWrapper implements HttpServletRequest {
     
     public void setReferer(String referer) {
         this.referer = referer;
+    }
+    
+    private String trueclientip = "";
+    
+    public String getTrueClientIp() {
+        return trueclientip;
+    }
+    
+    public void setTrueClientIp(String trueclientip) {
+        this.trueclientip = trueclientip;
+    }
+    
+    private String forwardedfrom = "";
+    
+    public String getForwardedFrom() {
+        return forwardedfrom;
+    }
+    
+    public void setForwardedFrom(String forwardedfrom) {
+        this.forwardedfrom = forwardedfrom;
+    }
+    
+    private String remoteaddr = "";
+    
+    public String getRemoteAddr() {
+        return remoteaddr;
+    }
+    
+    public void setRemoteAddr(String remoteaddr) {
+        this.remoteaddr = remoteaddr;
+    }
+    
+    private String akamaiedgescape = "";
+    
+    public String getAkamaiEdgeScape() {
+        return akamaiedgescape;
+    }
+    
+    public void setAkamaiEdgeScape(String akamaiedgescape) {
+        this.akamaiedgescape = akamaiedgescape;
     }
 }

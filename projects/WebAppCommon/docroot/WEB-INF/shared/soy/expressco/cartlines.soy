@@ -57,6 +57,9 @@
 			{/call}
 		{/foreach}
 	</div>
+   <div id="questions">
+          {call .cartheaderQuestions /}
+   </div>
 	{call .total}
 		{param cartlineType: 'YOUR_CART' /}
 		{param subTotalBox: $subTotalBox /}
@@ -373,7 +376,8 @@
  * @param? deliveryCharge Formatted price value
  * @param? cartChangedByCleanUp Boolean flag
  * @param? avalaraEnabled avalaraEnabled
- * @param? totalWithoutTax totalWithoutTax 
+ * @param? totalWithoutTax totalWithoutTax
+ * @param? mobWeb is mobile web?
  */
 {template .cartheader autoescape="false"}
 	<div class='cartheader'>
@@ -389,7 +393,7 @@
 						<div class="charges__rowcell charges-price" id="div_deliveryCharge">{$deliveryCharge}</div>
 					</div>
 				{/if}
-				{if $estimatedTotal}
+				{if $estimatedTotal and not $mobWeb}
 					<div class="charges__row">
 						{if $avalaraEnabled}
 							<div class="charges__rowcell charges-text">&nbsp Order Subtotal:</div>
@@ -404,7 +408,24 @@
 		</div>
 		<div class='cartheader__action'>
 			<form fdform="viewcart_startcheckout" action="#" fdform-disable-resubmit="true" fdform-disable-resubmit-selector=".cssbutton.orange" fdform-disable-resubmit-release="manual">
-				<button class="cssbutton orange cartheader__button icon-chevron-right-after" fd-login-required fd-login-successpage="/expressco/checkout.jsp">Checkout</button>
+				{if $mobWeb}
+					<button class="cssbutton orange cartheader__button icon-chevron-right-after" fd-login-required fd-login-successpage="/expressco/checkout.jsp">
+						Checkout
+						{if $estimatedTotal}
+							<div class="charges__row">
+								{if $avalaraEnabled}
+									<div class="charges__rowcell charges-text">Subtotal:&nbsp;</div>
+									<div class="charges__rowcell charges-price" id="div_estimatedTotal">{$totalWithoutTax}</div>
+							    {else}
+									<div class="charges__rowcell charges-text">Est.&nbsp;Total:&nbsp;</div>
+									<div class="charges__rowcell charges-price" id="div_estimatedTotal">{$estimatedTotal}</div>
+								{/if}
+							</div>
+						{/if}
+					</button>
+				{else}
+					<button class="cssbutton orange cartheader__button icon-chevron-right-after" fd-login-required fd-login-successpage="/expressco/checkout.jsp">Checkout</button>
+				{/if}
 			</form>
 		</div>
 	</div>
@@ -454,7 +475,7 @@
 				<span>Don't update cartlines automatically</span>
 			</label>
 			<button class="cssbutton transparent green icon-reorder-icon-before" data-component="update-cart">Update cart</button>
-			<button role="alertdialog" class='questions__empty cssbutton transparent white' data-component='emptycart'>
+			<button role="alertdialog" class='questions__empty cssbutton transparent green' data-component='emptycart'>
 				<img src="/media_stat/images/icon-trash.png" alt="" class='questions__emptycart-image' />Empty Cart
 			</button>
 		</div>
@@ -492,7 +513,7 @@
 	/* HACK OVERRIDE (yes, there are a lot of those lately) for when this is the success page */
 	{let $cartlineTypeRevised: ($cartlineType == 'CHECKOUT_SUCCESS')? 'CHECKOUT' : $cartlineType /}
 
-       <div class='cartsection {if $info.wine}cartsection-wine{/if} {if ($eTippingEnabled and $cartlineType == 'CHECKOUT') or (not $displayCheckout and $cartlineType != 'CHECKOUT_SUCCESS')}eTippingEnabled{/if}' {if $info.recipe}data-recipe-section="{$title}"{/if}>
+	<div class='cartsection {if $info.wine}cartsection-wine{/if} {if ($eTippingEnabled and $cartlineType == 'CHECKOUT') or (not $displayCheckout and $cartlineType != 'CHECKOUT_SUCCESS')}eTippingEnabled{/if}' {if $info.recipe}data-recipe-section="{$title}"{/if}>
 		<h2 class='cartsection__title'>
 			{if $info.recipe}
 				Recipe: <span class="cartsection__title-noweight">{$title}</span>
@@ -501,7 +522,7 @@
 			{/if}
 			{if $info.recipe and $cartlineType == 'YOUR_CART'}
 				<span data-component="removeRecipeButton">
-					<img src="/media_stat/images/icon-trash.png" alt="" class='cartline-delete-image' />Delete all recipe ingredients
+					<img src="/media_stat/images/icon-trash-green.png" alt="" class='cartline-delete-image' />Delete all recipe ingredients
 				</span>
 			{/if}
 		</h2>
@@ -518,9 +539,10 @@
 		{/foreach}
 
 		{if $info.subTotal}
-       				{let $cartlineType: (not $displayCheckout and $cartlineType != 'CHECKOUT_SUCCESS')? 'CHECKOUT' : $cartlineType /}
-			<div class='cartsection__totalwrapper'>
-				{if $eTippingEnabled and $cartlineType == 'CHECKOUT' }
+       		{let $cartlineType: (not $displayCheckout and $cartlineType != 'CHECKOUT_SUCCESS')? 'CHECKOUT' : $cartlineType /}
+			
+			{if $eTippingEnabled and $cartlineType == 'CHECKOUT' }
+				<div class='cartsection__totalwrapper'>
 					{if $numOfSections > 1 and $containsWineSection}
 						<p class='cartsection__total'>
 							{if $info.subTotalText}{$info.subTotalText}{else}Subtotal{/if}: {$info.subTotal} {if $info.hasEstimatedPrice}*{/if}
@@ -557,52 +579,62 @@
 								{param etipTotal: $etipTotal /}
 							{/call}
 						{/if}
-					 {/if}  /*end {if $isLastSection or $numOfSections == 1}  */
-				{else}
-					{if $eTippingEnabled and $cartlineType == 'CHECKOUT'}<div class="orderSummary">{/if}
-					<p class='cartsection__total'>
-						<span class="strl_text">
-						{if $info.subTotalText}
-							{if $avalaraEnabled}
-								Subtotal
+					{/if}/* end {if $isLastSection or $numOfSections == 1} */
+				</div>
+			{else}
+				
+				/* only show subtotal if there's also wines */
+				{if ($isLastSection and $info.wine) or $containsWineSection}
+					<div class='cartsection__totalwrapper'>
+						/* when will this be true in this else section? */
+						{if $eTippingEnabled and $cartlineType == 'CHECKOUT'}<div class="orderSummary">{/if}/* START div.orderSummary */
+						
+						<p class='cartsection__total'>
+							<span class="strl_text">
+							{if $info.subTotalText}
+								{if $avalaraEnabled}
+									Subtotal
+								{else}
+									{$info.subTotalText}
+								{/if}
 							{else}
-								{$info.subTotalText}
+								Subtotal
+							{/if}</span> <span class="subtotal__rowcell-mid">{$info.subTotal} {if $info.hasEstimatedPrice}*</span>{/if}
+						</p>
+							
+						/* when will this be true in this else section? */
+						{if $eTippingEnabled and $cartlineType == 'CHECKOUT'}
+							<div class="subtotal__rowcell-left" id="optionaltip">
+							 	<p class='cartsection__total'>
+							 		
+							 		<span class="strl_text">Optional Tip</span> <span class="subtotal__rowcell-mid">{$etipTotal}</span>
+							 		{call .optToolTip /}
+							 	</p>
+						 	</div>
+						{/if}
+	
+						{if $avalaraEnabled}
+							{if $cartlineType == 'CHECKOUT'}
+								<p class='cartsection__tax'><span class="strl_text">Tax</span> <span class="subtotal__rowcell-mid">{$info.taxTotal}</span></p>
 							{/if}
 						{else}
-							Subtotal
-						{/if}</span> <span class="subtotal__rowcell-mid">{$info.subTotal} {if $info.hasEstimatedPrice}*</span>{/if}
-					</p>
-						
-					{if $eTippingEnabled and $cartlineType == 'CHECKOUT'}
-						<div class="subtotal__rowcell-left" id="optionaltip">
-						 	<p class='cartsection__total'>
-						 		
-						 		<span class="strl_text">Optional Tip</span> <span class="subtotal__rowcell-mid">{$etipTotal}</span>
-						 		{call .optToolTip /}
-						 	</p>
-					 	</div>
-					{/if}
-
-					{if $avalaraEnabled}
-						{if $cartlineType == 'CHECKOUT'}
 							<p class='cartsection__tax'><span class="strl_text">Tax</span> <span class="subtotal__rowcell-mid">{$info.taxTotal}</span></p>
 						{/if}
-					{else}
-						<p class='cartsection__tax'><span class="strl_text">Tax</span> <span class="subtotal__rowcell-mid">{$info.taxTotal}</span></p>
-					{/if}
-						
-					{if $eTippingEnabled and $cartlineType == 'CHECKOUT'}
-							<div class="SSorderTotal">
-								{foreach $box in $subTotalBox.estimatedTotalBox}
-									<span class="strl_text">{$box.text}</span> <span class="subtotal__rowcell-mid">{$box.value}</span>
-								{/foreach}
-							</div>
-						</div><!--end div.orderSummary-->
-					{/if}
-				{/if} /*end if/else $eTippingEnabled */
-			</div>
+							
+						/* when will this be true in this else section? */
+						{if $eTippingEnabled and $cartlineType == 'CHECKOUT'}
+								<div class="SSorderTotal">
+									{foreach $box in $subTotalBox.estimatedTotalBox}
+										<span class="strl_text">{$box.text}</span> <span class="subtotal__rowcell-mid">{$box.value}</span>
+									{/foreach}
+								</div>
+							</div>/* end div.orderSummary */
+						{/if}
+					</div>/* end cartsection__totalwrapper */
+				{/if} /* if ($isLastSection and $info.wine) or $containsWineSection */
+			{/if}/* end if/else $eTippingEnabled and $cartlineType == 'CHECKOUT' */
 		{/if}
-	</div><!--end div.cartsection.cartsection-wine?-->
+	</div>/* end div.cartsection.cartsection-wine */
 {/template}
 
 /**
@@ -782,6 +814,7 @@
  * @param? categoryId
  */
 {deltemplate expressco.cartline autoescape="false" variant="'CHECKOUT'"}
+	{let $noModifyLinks: true /}/* remove linking */
 	<div class='cartsection__cartline' data-component='cartline' data-cartlineid='{$id}'>
 		<div class='cartline-imageholder cartline-box'>
 			{if $noModifyLinks}
@@ -901,7 +934,7 @@
 						<label for="promotional-code"></label>  
 						<input type="text" class="promotion-input" id="promotional-code" name="promotionCode" placeholder="Enter here" />
 						<input type="hidden" name="action" value="applyPromotion" />
-						<button class="cssbutton green small">apply<span class="offscreen">promotion code</span></button>
+						<button id="promotional-code-applybtn" class="cssbutton green small">apply<span class="offscreen">promotion code</span></button>
 						<span fdform-error-for="promotionCode"></span>
 					</div>
 				</form>
@@ -914,7 +947,7 @@
 							<label for="apply-gift-card"></label>  
 							<input type="text" class="promotion-input" id="apply-gift-card" name="givexNum" placeholder="Enter here" />
 							<input type="hidden" name="action" value="applyGiftCard" />
-							<button class="cssbutton green small">apply<span class="offscreen">new gift card</span></button>
+							<button id="apply-gift-card-applybtn" class="cssbutton green small">apply<span class="offscreen">new gift card</span></button>
 							<span fdform-error-for="givexNum"></span>
 						</div>
 					</form>
@@ -1066,10 +1099,10 @@
 
 	{if $subTotalBox}
 		{foreach $box in $subTotalBox}
-		<div class='subtotal__row {if $box.id == 'youSaved'}row-style-saving{/if} {if $box.id == 'ssOrderTotal'}row-size-big{/if}' data-boxid='{$box.id}'>
-		{if ($avalaraEnabledRevised and $box.id=='totaltax' and $cartlineTypeRevised == 'YOUR_CART') or ($avalaraEnabledRevised and $box.id=='subtotal' and $cartlineTypeRevised == 'YOUR_CART') or ($avalaraEnabledRevised and $box.id == 'totalAvalaratax' and $cartlineTypeRevised == 'CHECKOUT')}/* IF NOT AVLARA TOTAL TAX   */
+			<div class='subtotal__row {if $box.id == 'youSaved'}row-style-saving{/if} {if $box.id == 'ssOrderTotal'}row-size-big{/if}' data-boxid='{$box.id}'>
+			{if ($avalaraEnabledRevised and $box.id=='totaltax' and $cartlineTypeRevised == 'YOUR_CART') or ($avalaraEnabledRevised and $box.id=='subtotal' and $cartlineTypeRevised == 'YOUR_CART') or ($avalaraEnabledRevised and $box.id == 'totalAvalaratax' and $cartlineTypeRevised == 'CHECKOUT')}/* IF NOT AVLARA TOTAL TAX   */
 		
-		{else}
+			{else}
 				<div class='subtotal__rowcell-left rowcell-colon-right st_label st_label_{$box.id}' id='st_label_{$box.id}'>
 					{if $box.id == 'freefood'}
 						<a href='/shared/promotion_popup.jsp?promoCode=signup'
@@ -1129,53 +1162,53 @@
 						{/if}
 					{/if}
 				</div>
-				{/if}/* IF NOT AVLARA TOTAL TAX   */
+			{/if}/* IF NOT AVLARA TOTAL TAX   */
 			
-				{if $avalaraEnabledRevised}
+			{if $avalaraEnabledRevised}
 					
-					{if $cartlineTypeRevised == 'YOUR_CART'}
-						{if $box.id != 'deliveryfee' and $box.id != 'ssOrderTotal' and $box.id!='totaltax' and $box.id!='subtotal'}
-							<div class='subtotal__rowcell-left rowcell-colon-right st_label st_label_{$box.id}' id='st_label_{$box.id}'>
-								{if $box.id == 'freefood'}
-									<a href='/shared/promotion_popup.jsp?promoCode=signup'
+				{if $cartlineTypeRevised == 'YOUR_CART'}
+					{if $box.id != 'deliveryfee' and $box.id != 'ssOrderTotal' and $box.id!='totaltax' and $box.id!='subtotal'}
+						<div class='subtotal__rowcell-left rowcell-colon-right st_label st_label_{$box.id}' id='st_label_{$box.id}'>
+							{if $box.id == 'freefood'}
+								<a href='/shared/promotion_popup.jsp?promoCode=signup' 
 									data-ifrpopup='/shared/promotion_popup.jsp?promoCode=signup'
 									data-ifrpopup-width='585' data-ifrpopup-height='400'>
 										{$box.text}
-									</a>
-								{else}
-									{if $box.other and $box.other.promoCode}
-										<a href='/shared/promotion_popup.jsp?promoCode={$box.other.promoCode}'
+								</a>
+							{else}
+								{if $box.other and $box.other.promoCode}
+									<a href='/shared/promotion_popup.jsp?promoCode={$box.other.promoCode}'
 										data-ifrpopup='/shared/promotion_popup.jsp?promoCode={$box.other.promoCode}'
 										data-ifrpopup-width='375' data-ifrpopup-height='335'>
 											{$box.text}
-										</a>
-									{else}
-										{if $box.id == 'deliveryfee' and ($deliveryUsed == 0) and not $box.other.deliveryPassPopupNeeded}
-											{$box.text}
-											{if $eTippingEnabled and $cartlineTypeRevised == 'CHECKOUT'}
-												{call .dfToolTip /}
-											{/if}
-											
-											
-											{let $deliveryUsed: 1 /}
-										{else}
-											{$box.text}
-										{/if} /*end if/else $box.id == 'deliveryfee' and not $box.other.deliveryPassPopupNeeded */
-									{/if} /*end if/else $box.other and $box.other.promoCoded */
-								{/if} /*end if $box.id == 'freefood' */
-							</div>
-	
-							<div class='subtotal__rowcell-mid rowcell-text-right st_val st_val_{$box.id}'>
-								{if $box.id == 'deliveryfee' and ($deliveryUsed == 0) and not $box.other.deliveryPassPopupNeeded}
-									<div class="rowcontent-free-with-pass">
-										{$box.value}
-									</div>
-									
-									{let $deliveryUsed: 1 /}
+									</a>
 								{else}
+									{if $box.id == 'deliveryfee' and ($deliveryUsed == 0) and not $box.other.deliveryPassPopupNeeded}
+										{$box.text}
+										{if $eTippingEnabled and $cartlineTypeRevised == 'CHECKOUT'}
+											{call .dfToolTip /}
+										{/if}
+								
+											
+										{let $deliveryUsed: 1 /}
+									{else}
+										{$box.text}
+									{/if} /*end if/else $box.id == 'deliveryfee' and not $box.other.deliveryPassPopupNeeded */
+								{/if} /*end if/else $box.other and $box.other.promoCoded */
+							{/if} /*end if $box.id == 'freefood' */
+						</div>
+	
+						<div class='subtotal__rowcell-mid rowcell-text-right st_val st_val_{$box.id}'>
+							{if $box.id == 'deliveryfee' and ($deliveryUsed == 0) and not $box.other.deliveryPassPopupNeeded}
+								<div class="rowcontent-free-with-pass">
 									{$box.value}
-								{/if}
-							</div>
+								</div>
+								
+								{let $deliveryUsed: 1 /}
+							{else}
+								{$box.value}
+							{/if}
+						</div>
 						{/if} /*end if/else $box.id != 'deliveryfee' */
 					{/if} /*end if $box.id != 'deliveryfee' and $box.id != 'ssOrderTotal' */
 				{/if} /*end if $cartlineTypeRevised == 'YOUR_CART' */

@@ -20,8 +20,10 @@ import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
 import com.freshdirect.delivery.sms.ejb.SmsAlertsHome;
 import com.freshdirect.delivery.sms.ejb.SmsAlertsSB;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
+import com.freshdirect.payment.service.FDECommerceService;
 
 
 /**
@@ -41,7 +43,10 @@ public class OrderSizeFeedCronRunner {
 			
 			DlvManagerHome dlvManager = (DlvManagerHome) ctx.lookup( DlvProperties.getDlvManagerHome());
 			DlvManagerSB dlvManagerSB = dlvManager.create();
-			dlvManagerSB.sendOrderSizeFeed();
+			if (FDStoreProperties.isStorefront2_0Enabled())
+				FDECommerceService.getInstance().sendOrderSizeFeed();
+			else
+				dlvManagerSB.sendOrderSizeFeed();
 		
 		} catch (Exception e) {
 			StringWriter sw = new StringWriter();

@@ -34,6 +34,7 @@
 	<div id="location-alerts" class="">
 		<tmpl:get name="location_out_of_area_alert" />
 		<tmpl:get name="error_so_alerts" />
+		<tmpl:get name="min_so_alerts" />
 		<tmpl:get name="activate_so_alerts" />
 		<tmpl:get name="modify_order_alerts" />	
 	</div>

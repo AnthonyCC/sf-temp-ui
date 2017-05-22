@@ -56,28 +56,39 @@
 	};
 	window['sendZip']=sendZip;
 
+	/* called for each msg (so be careful with the count) */
 	function updateMessagesCount() {
 		var $messages_count = $('.messages-count');
 		var curCount = 0;
-		var soCount = 0;
-		
+		var countOthers = getNonMessagesCount();
+
 		$messages_count.data('count', ($messages_count.data('count') || $messages_count.attr('data-count') || curCount));
-
 		curCount = $messages_count.data('count');
-		
-		curCount++;
-		
-		if($('#activatesoalert .so-activate-alert').length){
-			soCount = $('#activatesoalert .so-activate-alert').length;
-		}
-		
-		
-		$messages_count.data('count', curCount);
-		$messages_count.html(curCount + soCount);
 
-		if (curCount + soCount > 0) {
+		curCount++;
+
+		$messages_count.data('count', curCount);
+		$messages_count.html(curCount + countOthers);
+		if (curCount + countOthers > 0) {
 			$('.locabar-messages-section').show();
 		}
+	}
+	
+	/* count aletrts here */
+	function getNonMessagesCount() {
+		var count = 0;
+
+		if($('#activatesoalert .so-activate-alert').length){
+			count += $('#activatesoalert .so-activate-alert').length;
+		}
+		if($('#minsoalert .so-min-alert').length){
+			count += $('#minsoalert .so-min-alert').length;
+		}
+		//count test alerts for debugging
+		if ($jq('.testalerts').length) {
+			count += $jq('.testalerts').length; 
+		}
+		return count;
 	}
 
 	$document.on('messageAdded',function(e){

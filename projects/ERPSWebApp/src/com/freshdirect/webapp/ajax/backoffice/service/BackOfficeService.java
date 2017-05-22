@@ -178,11 +178,12 @@ public class BackOfficeService {
     private String getCatProdInfoBySku(HttpServletRequest  request, String skuCodeDetails) throws FDResourceException {
     	
     	String basePath = "";//request.getScheme()+"://"+request.getServerName();
-		 if(FDStoreProperties.isLocalDeployment()){
+		 basePath = "http" + "://" + request.getServerName() + ":" + request.getServerPort();
+		 /*if(FDStoreProperties.isLocalDeployment()){
 			 basePath = "http" + "://" + request.getServerName() + ":" + request.getServerPort();
 		 }else{
 			 basePath = "https" + "://" + request.getServerName();
-		 }
+		 }*/
 		 basePath=basePath + request.getContextPath();
 		 LOGGER.info("The BasePath : "+basePath);
 			StringBuffer sb = null;

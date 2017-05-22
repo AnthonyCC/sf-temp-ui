@@ -247,7 +247,9 @@ $jq('#locabar_messages_trigger').on('click', function() {
 	$jq("#messages").addClass("open");
 	if($jq('#activatesoalert .so-activate-alert').length && $jq('#activatesoalert .so-activate-alert').length > 0){
 		$jq('#activatesoalert').messages('openAlerts', ['activatesoalert']);
-		
+	}
+	if($jq('#minsoalert .so-min-alert').length && $jq('#minsoalert .so-min-alert').length > 0){
+		$jq('#minsoalert').messages('openAlerts', ['minsoalert']);
 	}
 	
 });
@@ -386,7 +388,10 @@ $jq(document).ready(function() {
 					$jq('#locabar_messages_trigger').show();
 					//$jq("#locabar_messages_trigger").focus();
 				}
-			}); 
+			});
+		$jq('#location-alerts').on('alertClose', function(event) {
+			$jq('#locabar_messages_trigger').show();
+		});
 
 	if ($jq('#locabar_addresses .locabar_addresses-anon-deliverable').length) {
 		$jq('#locabar_addresses').addClass('anon-deliverable');
@@ -497,7 +502,10 @@ $jq('#locabar_messages_trigger').keydown(function(event){
 		$jq(this).hide();
 		
 		if($jq('#activatesoalert .so-activate-alert').length && $jq('#activatesoalert .so-activate-alert').length > 0){
-			$jq('#activatesoalert').messages('openAlerts', ['activatesoalert']);			
+			$jq('#activatesoalert').messages('openAlerts', ['activatesoalert']);
+		}
+		if($jq('#minsoalert .so-min-alert').length && $jq('#minsoalert .so-min-alert').length > 0){
+			$jq('#minsoalert').messages('openAlerts', ['minsoalert']);
 		}
 		setTimeout(function(){$jq("#messages.hashandler.open a:first").focus()},100);
 	}

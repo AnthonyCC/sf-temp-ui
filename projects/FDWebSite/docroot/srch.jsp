@@ -180,12 +180,13 @@
 	    </div>
 
 	    <soy:render template="browse.topMedia" data="${browsePotato.descriptiveContent}" />
-	
+		<%-- remove top pagination
 	    <div class="pager-holder top">
 	      <c:if test="${not empty browsePotato.pager}">
 	        <soy:render template="browse.pager" data="${browsePotato.pager}" />
 	      </c:if>
 	    </div>
+	     --%>
 	
 		<c:choose>
 			<c:when test="${browsePotato.searchParams.pageType != ''}">

@@ -1,7 +1,4 @@
 package com.freshdirect.fdstore.standingorders.ejb;
-
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,18 +12,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.ejb.CreateException;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
-
-
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
-
 import com.freshdirect.common.address.AddressModel;
-
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumDeliverySetting;
 import com.freshdirect.customer.EnumStandingOrderType;
@@ -39,7 +30,6 @@ import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -53,7 +43,6 @@ import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
-import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSessionBean;
 import com.freshdirect.fdstore.customer.ejb.FDSessionBeanSupport;
 import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.lists.FDListManager;
@@ -65,13 +54,8 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrderFilterCriteria;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderInfo;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderInfoList;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderSkuResultInfo;
-
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
-
-import com.freshdirect.fdstore.standingorders.SOResult;
-
 import com.freshdirect.fdstore.standingorders.UnavDetailsReportingBean;
-import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
 import com.freshdirect.fdstore.standingorders.SOResult.Result;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.mail.XMLEmailI;

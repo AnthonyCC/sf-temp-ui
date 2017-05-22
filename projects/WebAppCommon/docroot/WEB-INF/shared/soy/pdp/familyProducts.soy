@@ -80,6 +80,8 @@
 			<form fdform="enevbetter_{$atcItemId}" fdform-submit="FreshDirect.components.AddToCart.formAddToCart" class="pdp-evenbetter-atc" data-cmeventsource="EB">
 				<input type="hidden" name="skuCode" value="{$skuCode}" data-component="productData" data-productdata-name="skuCode">
 				<input type="hidden" data-component="productData" data-productdata-name="atcItemId" name="atcItemId" value="{$atcItemId}">
+				<input type="hidden" data-component="productData" data-productdata-name="productId" name="productId" value="{$productId}">
+				<input type="hidden" data-component="productData" data-productdata-name="categoryId" name="categoryId" value="{$catId}">
 				{if $alcoholic}
 					<input type="hidden" data-component="productData" data-productdata-name="isAlcoholic" name="isAlcoholic" value="{$alcoholic}">
 				{/if}
@@ -94,20 +96,20 @@
 						{param cvPrices:$cvPrices /}
 						{param qInc:$quantity.qInc /}
 					{/call}
-			</div>
-				<div class="pdp-evenbetter-atcbutton">
-					{if $isEligibleForStandingOrders and length($soData.settingsData.soData) > 0}
-						<button type="button" class="addtolist pdp-evenbetter-addtolist cssbutton cssbutton-flat purpleborder" data-component="addToListButton">Add to List</button>
-						<button type="button" data-component="ATCButton" class="cssbutton cssbutton-flat orange small">Add to Cart</button>
-						<button type="button" fd-login-required fd-login-successpage-current data-component="showSOButton" class="cssbutton cssbutton-flat purple nontransparent">Standing Order</button>
-					{else}
-						<button type="button" data-component="ATCButton" class="cssbutton orange small">add to cart</button>
-						<button type="button" class="addtolist pdp-evenbetter-addtolist cssbutton purple notext icon-file2-before" data-component="addToListButton">add to list</button>
-					{/if}
 					{call common.atcInCart}
 						{param amount:$inCartAmount /}
 						{param atcItemId:$atcItemId /}
 					{/call}
+			</div>
+				<div class="pdp-evenbetter-atcbutton">
+					{if $isEligibleForStandingOrders and length($soData.settingsData.soData) > 0}
+						<button type="button" data-component="ATCButton" class="cssbutton cssbutton-flat orange small">Add to Cart</button>
+						<button type="button" fd-login-required fd-login-successpage-current data-component="customizeButton" data-alignpopupfunction="transactionalCustomize" data-component="showSOButton" data-soshow="true" class="cssbutton cssbutton-flat purple nontransparent">Add to Standing Order</button>
+						<button type="button" class="addtolist pdp-evenbetter-addtolist cssbutton cssbutton-flat purpleborder" data-component="addToListButton">Add to List</button>
+					{else}
+						<button type="button" data-component="ATCButton" class="cssbutton orange small">Add to Cart</button>
+						<button type="button" class="addtolist pdp-evenbetter-addtolist cssbutton cssbutton-flat purpleborder" data-component="addToListButton">Add to List</button>
+					{/if}
 				</div>
 			</form>
 			

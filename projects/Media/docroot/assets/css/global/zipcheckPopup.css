@@ -25,6 +25,7 @@
 }
 
 #zipCheckPopup .zipcheck form[fdform="zipcheck"] input[name="zipCode"] {
+  display: block;
   max-width: 155px;
   padding-right: 20px;
 }
@@ -157,13 +158,7 @@
     100% { transform: rotate(360deg); }
 }
 
-@media (max-width: 568px) {
-  #zipCheckPopup .fixedPopupContent {
-    width: 100%;
-    max-width: 100%;
-  }
-
-  #zipCheckPopup .qs-popup-content {
-    padding: 10px;
-  }
+[data-ismobweb="true"] #zipCheckPopup .fixedPopupContent {
+  width: 100%;
+  max-width: 100%;
 }

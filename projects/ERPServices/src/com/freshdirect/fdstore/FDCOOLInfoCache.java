@@ -42,7 +42,7 @@ public class FDCOOLInfoCache extends FDAbstractCache {
 		try {
 			LOGGER.info("REFRESHING");
 			if(FDStoreProperties.isStorefront2_0Enabled()){
-				// cannot invoke fdcommerce service gateway directly from this project.
+			
 				data = FDECommerceService.getInstance().getCountryOfOriginData(since); 
 			}else{
 				ErpCOOLManagerSB sb = this.lookupCOOLInfoHome().create();

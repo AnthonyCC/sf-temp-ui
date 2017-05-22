@@ -746,6 +746,12 @@ if (curHref.indexOf('successPage') === -1 && $jq.QueryString['successPage']) {
 		</div>
 	</tmpl:put>
 
+	<tmpl:put name="min_so_alerts">
+		<div id="minsoalert" class="alerts invisible" data-type="minsoalert">
+			<soy:render template="standingorder.minSOAlert" data="<%=errorSOAlert%>"/>			
+		</div>
+	</tmpl:put>
+
 	<%
 		Map<String,Object> activateSOAlert = new HashMap<String,Object>();
 		activateSOAlert.put("soData", StandingOrderHelper.getAllSoData(user_locationbar_fdx, false,false));

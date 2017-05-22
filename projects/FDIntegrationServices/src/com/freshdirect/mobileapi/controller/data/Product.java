@@ -14,7 +14,9 @@ import java.util.TreeSet;
 import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSalesUnit;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.util.UnitPriceUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -495,8 +497,7 @@ public class Product extends Message {
         
         this.setFilters(product.getFilters());
         this.setNutrition(product.getNutrition());
-        //Commenting Nutrition Facts as part of APPDEV-5816 as it always returns empty
-      //this.setNutritionFacts(product.getNutritionFacts());
+        this.setNutritionFacts(product.getNutritionFacts());
         
         //RSUNG: this.deliveryNote = product.getDayOfWeekNotice();
         //RSUNG: this.dayOfTheWeekNotice = product.getDeliveryNote();

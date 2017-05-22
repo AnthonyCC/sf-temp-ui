@@ -92,7 +92,7 @@ if(user != null) {
     <div class="message invisible" id="deliveryetawarning" data-type="deliveryetawarning"><%@ include file="/common/template/includes/i_delivery_eta_info.jspf"%></div>
     
 <!-- GLOBALNAV TOP -->
-	<div class="container globalnav_top<%= (onCartPage) ? " disableCart" : "" %><%= (useFdxGlobalNav) ? " hsaFDX" : "" %>">
+	<div class="container globalnav_top<%= (onCartPage) ? " disableCart" : "" %><%= (useFdxGlobalNav) ? " hasFDX" : "" %>">
 		
 		<% if (useFdxGlobalNav) { %>
 			

@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.http.HttpHeaders;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -145,6 +146,7 @@ public class ExternalAccountController extends BaseController implements SystemM
 
     private Message recognizeAccountAndLogin(SessionUser user,ExternalAccountLogin requestMessage, HttpServletRequest request) throws FDException{
 		ExternalAccountControllerTagWrapper wrapper = new ExternalAccountControllerTagWrapper(user);
+		setContextHeaders(request, wrapper);
 		ResultBundle resultBundle = wrapper.recognizeAccount(requestMessage);
 		ActionResult result = resultBundle.getActionResult();
 		propogateSetSessionValues(request.getSession(), resultBundle);

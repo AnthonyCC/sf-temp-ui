@@ -320,16 +320,6 @@
       %>
 
       dataLayer.push(gtm_userdata);
-
-      <% if (gtm_user.hasJustLoggedIn()) { %>
-      // user logged in
-      document.cookie = "hasJustLoggedIn=true;path=/";
-      <% } %>
-
-      <% if (gtm_user.hasJustSignedUp()) { %>
-      // user signed up
-      document.cookie = "hasJustSignedUp=true;path=/";
-      <% } %>
     </script>
     <% } %>
 

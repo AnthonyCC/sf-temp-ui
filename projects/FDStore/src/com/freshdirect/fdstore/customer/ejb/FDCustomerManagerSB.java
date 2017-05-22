@@ -897,5 +897,6 @@ public interface FDCustomerManagerSB extends EJBObject {
 
 	public List<UnsettledOrdersInfo> getUnsettledOrders(Date date) throws FDResourceException, RemoteException;
 
+	public ErpCustomerModel getCustomer(FDIdentity identity) throws FDResourceException, RemoteException;
 }
 

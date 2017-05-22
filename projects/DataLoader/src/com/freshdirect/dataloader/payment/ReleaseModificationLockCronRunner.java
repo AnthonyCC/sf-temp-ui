@@ -30,8 +30,10 @@ import com.freshdirect.dataloader.payment.ejb.SaleCronSB;
 import com.freshdirect.delivery.DlvProperties;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
+import com.freshdirect.payment.service.FDECommerceService;
 
 public class ReleaseModificationLockCronRunner {
 
@@ -45,6 +47,9 @@ public class ReleaseModificationLockCronRunner {
 			
 			DlvManagerHome dlvManager = (DlvManagerHome) ctx.lookup( DlvProperties.getDlvManagerHome());
 			DlvManagerSB dlvManagerSB = dlvManager.create();
+			if (FDStoreProperties.isStorefront2_0Enabled())
+				FDECommerceService.getInstance().unlockInModifyOrders();
+			else
 			dlvManagerSB.unlockInModifyOrders();
 
 		} catch (Exception e) {

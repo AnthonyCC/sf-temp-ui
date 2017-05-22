@@ -755,8 +755,12 @@ public class ErpFactory {
 			lookupGrpInfoHome();
 		}
 		try {
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+			return FDECommerceService.getInstance().findGrpsForMaterial(matId);
+			}else{
 			ErpGrpInfoSB remote = erpGrpInfoHome.create();
 			return remote.findGrpsForMaterial(matId);
+			}
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {

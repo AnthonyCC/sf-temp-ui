@@ -8,8 +8,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.Set;
 
+import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.content.attributes.AttributeException;
 import com.freshdirect.content.attributes.FlatAttributeCollection;
@@ -18,28 +21,48 @@ import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.customer.ErpEWalletModel;
 import com.freshdirect.customer.ErpGrpPriceModel;
 import com.freshdirect.customer.ErpProductFamilyModel;
+import com.freshdirect.customer.ErpRestrictedAvailabilityModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.ecommerce.data.common.Request;
+import com.freshdirect.ecommerce.data.delivery.sms.SmsAlertETAInfoData;
 import com.freshdirect.ecommerce.data.sessionimpressionlog.SessionImpressionLogEntryData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyResponseData;
 import com.freshdirect.ecommerce.data.survey.SurveyKeyData;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
+import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
 import com.freshdirect.erp.model.BatchModel;
+import com.freshdirect.erp.model.ErpInventoryModel;
+import com.freshdirect.event.RecommendationEventsAggregate;
+import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.fdstore.FDGroup;
+import com.freshdirect.fdstore.FDGroupNotFoundException;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.GroupScalePricing;
+import com.freshdirect.fdstore.SalesAreaInfo;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityLogModel;
+import com.freshdirect.framework.event.FDRecommendationEvent;
 import com.freshdirect.framework.event.FDWebEvent;
+import com.freshdirect.logistics.analytics.model.TimeslotEvent;
+import com.freshdirect.logistics.delivery.model.DeliveryException;
+import com.freshdirect.logistics.delivery.model.OrderContext;
+import com.freshdirect.logistics.delivery.model.SiteAnnouncement;
+import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.payment.BINInfo;
 import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
+import com.freshdirect.payment.gateway.ejb.FDGatewayActivityLogModel;
 import com.freshdirect.referral.extole.ExtoleServiceException;
 import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
 import com.freshdirect.referral.extole.model.ExtoleResponse;
 import com.freshdirect.referral.extole.model.FDRafCreditModel;
+import com.freshdirect.rules.Rule;
+import com.freshdirect.sms.model.st.STSmsResponse;
 
 public interface IECommerceService {
 
@@ -169,4 +192,118 @@ public interface IECommerceService {
 	
 	public void saveLogEntries(Request<Collection<SessionImpressionLogEntryData>> entries) throws FDResourceException, RemoteException;
 	
+	public void saveFutureZoneNotification(String email, String zip,String serviceType) throws FDResourceException;
+
+	public List<SiteAnnouncement> getSiteAnnouncements() throws FDResourceException;
+
+	public void logFailedFdxOrder(String orderId) throws FDResourceException;
+
+	public List<MunicipalityInfo> getMunicipalityInfos() throws FDResourceException;
+
+	public void sendOrderSizeFeed() throws FDResourceException;
+
+	public void sendLateOrderFeed() throws FDResourceException;
+
+	public Set<StateCounty> getCountiesByState(String state) throws FDResourceException;
+
+	public int unlockInModifyOrders() throws FDResourceException;
+
+	public StateCounty lookupStateCountyByZip(String zipcode) throws FDResourceException;
+
+	public void commitReservation(String rsvId, String customerId,
+			OrderContext context, ContactAddressModel address, boolean pr1,
+			TimeslotEvent event) throws FDResourceException;
+
+	public void recommitReservation(String rsvId, String customerId,
+			OrderContext context, ContactAddressModel address, boolean pr1) throws FDResourceException;
+
+	public Map<String, DeliveryException> getCartonScanInfo() throws FDResourceException;
+
+	public int queryForMissingFdxOrders() throws FDResourceException;
+	
+	public void updateInventories(List<ErpInventoryModel> stockEntries) throws FDResourceException;
+
+	public void updateRestrictedInfos(
+			Set<ErpRestrictedAvailabilityModel> restrictedInfos,
+			Set<String> deletedMaterials) throws FDResourceException;
+	
+	public boolean smsOptIn(String customerId,String mobileNumber, String eStoreId) throws FDResourceException;
+	
+	public boolean smsOptInNonMarketing(String customerId,String mobileNumber, String eStoreId) throws FDResourceException;
+	
+	public boolean smsOptInMarketing(String customerId,String mobileNumber, String eStoreId) throws FDResourceException;
+	
+	public void expireOptin() throws FDResourceException;
+	
+	public void updateSmsReceived(String mobileNumber, String shortCode, String carrierName, Date receivedDate, String message, EnumEStoreId eStoreId) throws FDResourceException;
+	
+	public List<STSmsResponse> sendSmsToGateway(List<SmsAlertETAInfoData> etaInfoList) throws FDResourceException;
+	
+	public boolean smsOrderCancel(String customerId, String mobileNumber, String orderId, String eStoreId) throws FDResourceException ;
+	
+	public boolean smsOrderConfirmation(String customerId, String mobileNumber, String orderId, String eStoreId) throws FDResourceException;
+	
+	public boolean smsOrderModification(String customerId, String mobileNumber, String orderId, String eStoreId) throws  FDResourceException;
+
+
+	public Map<ZoneInfo, List<FDProductPromotionInfo>> getAllProductsByType(String ppType, Date lastPublished) throws FDResourceException;
+
+	public Map<String, Map<ZoneInfo, List<FDProductPromotionInfo>>> getAllPromotionsByType(	String ppType, Date lastPublishedDate)throws FDResourceException;
+
+	List<FDProductPromotionInfo> getProductsByZoneAndType(String ppType,String zoneId) throws FDResourceException;
+
+	public ErpProductPromotionPreviewInfo getProductPromotionPreviewInfo(String ppPreviewId)throws FDResourceException;
+
+
+	public void log(FDRecommendationEvent event, int frequency) throws RemoteException;
+
+	/// Group Scale (ERPGrpInfoSessionBean) API
+	public Collection<GroupScalePricing> findGrpInfoMaster(FDGroup grpIds[]) throws RemoteException;
+	public Collection<FDGroup> loadAllGrpInfoMaster() throws RemoteException;
+	public GroupScalePricing findGrpInfoMaster(FDGroup group) throws FDGroupNotFoundException, RemoteException;
+	public  Map<String,FDGroup> getGroupIdentityForMaterial(String matId) throws RemoteException;
+	public Map<SalesAreaInfo, FDGroup> getGroupIdentitiesForMaterial(String matId) throws RemoteException;
+	public Collection getFilteredSkus(List skuList) throws RemoteException;
+	public int getLatestVersionNumber(String grpId) throws RemoteException;
+	public Collection<FDGroup> findGrpsForMaterial(String matId) throws RemoteException;
+	public FDGroup getLatestActiveGroup(String groupID) throws FDGroupNotFoundException, RemoteException;
+	public Map<String,List<String>> getModifiedOnlyGroups(Date lastModified) throws RemoteException;
+	// End Group Scale API 
+	
+
+	public void log(Class<? extends FDRecommendationEvent> eventClazz, Collection<RecommendationEventsAggregate> events) throws RemoteException;
+	
+	public Map<String, double[]> getPersonalizedFactors(String eStoreId,
+			String erpCustomerId, List<String> factors) throws FDRuntimeException;
+
+	public Map<String, double[]> getGlobalFactors(String eStoreId, List<String> factors);
+
+	public Set<String> getPersonalizedFactorNames();
+
+	public Set<String> getGlobalFactorNames();
+
+	public Set<String> getGlobalProducts(String eStoreId);
+
+	public Set<String> getPersonalizedProducts(String eStoreId, String erpCustomerId);
+
+	public List<String> getProductRecommendations(String recommender, String contentKey); // need to fix this
+
+	public List<String> getPersonalRecommendations(String recommender,
+			String erpCustomerId);
+
+	public String getPreferredWinePrice(String erpCustomerId);
+
+	void logGatewayActivity(FDGatewayActivityLogModel logModel)
+			throws RemoteException;
+	
+	public Map<String, Rule> getRules(String subsystem) throws FDResourceException, RemoteException;
+
+
+	public Rule getRule(String ruleId) throws FDResourceException,RemoteException;
+	
+	public void deleteRule(String ruleId) throws FDResourceException,RemoteException;
+	
+	public void storeRule(Rule rule) throws FDResourceException,RemoteException;
+
+
 }

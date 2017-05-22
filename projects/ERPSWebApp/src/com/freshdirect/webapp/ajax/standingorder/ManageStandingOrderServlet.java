@@ -3,10 +3,6 @@ package com.freshdirect.webapp.ajax.standingorder;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.text.DateFormatSymbols;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -29,12 +25,9 @@ import com.freshdirect.common.customer.EnumStandingOrderActiveType;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.ErpAddressModel;
-import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
-import com.freshdirect.fdstore.customer.FDAuthenticationException;
-import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
@@ -51,11 +44,7 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrderAdapter;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.template.TemplateException;
-import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.webapp.ajax.cart.PendingExternalAtcItemsPopulator;
-import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData;
-import com.freshdirect.webapp.ajax.expresscheckout.cart.service.CartDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.data.SinglePageCheckoutData;
 import com.freshdirect.webapp.ajax.expresscheckout.receipt.data.SuccessPageData;
 import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFacade;
@@ -71,8 +60,6 @@ public class ManageStandingOrderServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -3650318272577031376L;
 	private String spName = "singlePageCheckoutPotato";
-	private String cdName = "cartDataPotato";
-	private String pendinExternalgName = "pendingExternalAtcItemPotato";
 	private static final Logger LOG = LoggerFactory.getInstance(ManageStandingOrderServlet.class);
 
 	@Override
@@ -105,27 +92,6 @@ public class ManageStandingOrderServlet extends HttpServlet {
 				throw new ServletException(e);
 			} 
 		}
-		/*
-		 * try { Map<String, Object> responseData; String actionName =
-		 * request.getParameter("action"); if
-		 * ("startCheckout".equals(actionName)) { final FormDataRequest
-		 * startCheckoutData = BaseJsonServlet.parseRequestData(request,
-		 * FormDataRequest.class); responseData =
-		 * SoyTemplateEngine.convertToMap(
-		 * CartDataService.defaultService().validateOrderMinimumOnStartCheckout
-		 * (user, startCheckoutData)); } else { String orderId =
-		 * request.getParameter(ORDER_ID); if (orderId == null) { CartData
-		 * cartData = CartDataService.defaultService().loadCartData(request,
-		 * user); responseData = SoyTemplateEngine.convertToMap(cartData); }
-		 * else { CartData cartData =
-		 * CartDataService.defaultService().loadCartSuccessData(request, user,
-		 * orderId); responseData = SoyTemplateEngine.convertToMap(cartData); }
-		 * } writeResponseData(response, responseData); } catch
-		 * (FDResourceException e) { BaseJsonServlet.returnHttpError(500,
-		 * "Failed to load cart for user."); } catch (JspException e) {
-		 * BaseJsonServlet.returnHttpError(500,
-		 * "Failed to load cart for user."); }
-		 */
 	}
 
 	@Override
@@ -157,11 +123,6 @@ public class ManageStandingOrderServlet extends HttpServlet {
 						
 						u.setSoTemplateCart(so.getStandingOrderCart());
 						u.setCheckoutMode(EnumCheckoutMode.CREATE_SO);
-						/*
-						pageContext.setAttribute(pendinExternalgName,
-								SoyTemplateEngine.convertToMap(PendingExternalAtcItemsPopulator.createPendingExternalAtcItemsData(u,request)));
-						*/
-	
 						
 						SinglePageCheckoutData result = SinglePageCheckoutFacade.defaultFacade().load(u, request);
 						Map<String, ?> potato = SoyTemplateEngine.convertToMap(result);
@@ -175,15 +136,6 @@ public class ManageStandingOrderServlet extends HttpServlet {
 						writeResponseData( response, potato );
 						 
 						pageContext.setAttribute(spName, potato);
-	
-						/*CartData cartResult=null;
-						try {
-							cartResult = CartDataService.defaultService().loadCartData(request, u);
-						} catch (com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse e) {
-							throw new ServletException(e);
-						}
-						Map<String, ?> cartPotato = SoyTemplateEngine.convertToMap(cartResult);
-						pageContext.setAttribute(cdName, cartPotato);*/
 	
 					}
 				} else if ("delete".equalsIgnoreCase(action)) {

@@ -126,7 +126,8 @@
         'co-discountamount': FreshDirect.expressco.data.semPixelData && FreshDirect.expressco.data.semPixelData.discountAmount,
         'co-discountamount-nd': FreshDirect.expressco.data.semPixelData && FreshDirect.expressco.data.semPixelData.discountAmountND,
         'co-productid': FreshDirect.expressco.data.semPixelData && FreshDirect.expressco.data.semPixelData.productId,
-        'co-validorders': FreshDirect.expressco.data.semPixelData && FreshDirect.expressco.data.semPixelData.validOrders
+        'co-validorders': FreshDirect.expressco.data.semPixelData && FreshDirect.expressco.data.semPixelData.validOrders,
+        'co-promocode': FreshDirect.expressco.data.semPixelData && FreshDirect.expressco.data.semPixelData.redeemedPromotions && FreshDirect.expressco.data.semPixelData.redeemedPromotions.join(','),
       });
 
       if (FreshDirect.expressco.data.semPixelData && (FreshDirect.expressco.data.semPixelData.newOrder || FreshDirect.expressco.data.semPixelData.modifyOrder)) {

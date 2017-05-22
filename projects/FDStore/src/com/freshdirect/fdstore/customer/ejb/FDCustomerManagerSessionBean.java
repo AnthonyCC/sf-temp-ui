@@ -8598,4 +8598,19 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 		
 	}
+	
+	public ErpCustomerModel getCustomer(FDIdentity identity) throws FDResourceException {
+		try {
+			String erpCustomerPK = identity.getErpCustomerPK();
+			ErpCustomerEB eb = getErpCustomerHome().findByPrimaryKey(
+					new PrimaryKey(erpCustomerPK));
+			
+			return (ErpCustomerModel)eb.getModel();
+
+		} catch (FinderException fe) {
+			throw new FDResourceException(fe);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		} 
+	}
 }

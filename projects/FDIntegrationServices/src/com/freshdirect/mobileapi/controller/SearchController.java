@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpHeaders;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.cms.ContentKey;
@@ -40,6 +41,7 @@ import com.freshdirect.mobileapi.model.Department;
 import com.freshdirect.mobileapi.model.Product;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.comparator.FilterOptionLabelComparator;
+import com.freshdirect.mobileapi.model.tagwrapper.SmartSearchTagWrapper;
 import com.freshdirect.mobileapi.service.ProductServiceImpl;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.BrowseUtil;
@@ -52,6 +54,7 @@ import com.freshdirect.webapp.ajax.filtering.SearchResultsUtil;
 import com.freshdirect.webapp.search.SearchService;
 import com.freshdirect.webapp.search.unbxd.UnbxdServiceUnavailableException;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.util.RequestUtil;
 
 public class SearchController extends BaseController {
 
@@ -150,8 +153,11 @@ public class SearchController extends BaseController {
 
                 ProductServiceImpl productService = new ProductServiceImpl();
                 FilterOptionLabelComparator filterComparator = new FilterOptionLabelComparator();
+                SmartSearchTagWrapper wrapper = new SmartSearchTagWrapper(user);
+                wrapper.setRequestUrl(RequestUtil.getFullRequestUrl(request));
+                setContextHeaders(request, wrapper);
                 List<Product> products = productService.search(searchTerm, upc, page, resultMax, sortType, brandToFilter, categoryToFilter, departmentToFilter,
-                        getUserFromSession(request, response), request);
+                        getUserFromSession(request, response), request, wrapper);
                 
                 List<Product> favProducts = new ArrayList<Product>();
                 favProducts.clear();
@@ -328,8 +334,11 @@ public class SearchController extends BaseController {
         ProductServiceImpl productService = new ProductServiceImpl();
         FilterOptionLabelComparator filterComparator = new FilterOptionLabelComparator();
 
+        SmartSearchTagWrapper wrapper = new SmartSearchTagWrapper(user);
+        wrapper.setRequestUrl(request.getRequestURL().toString());
+        setContextHeaders(request, wrapper);
         List<String> products = productService.searchProductIds(searchTerm, upc, page, resultMax, sortType, brandToFilter, categoryToFilter, departmentToFilter,
-                getUserFromSession(request, response), request);
+                getUserFromSession(request, response), request, wrapper);
         
         List<String> favProducts = new ArrayList<String>();
         favProducts.clear();

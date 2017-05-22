@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.http.HttpHeaders;
 import org.apache.log4j.Category;
 import org.springframework.core.io.Resource;
 import org.springframework.util.StringUtils;
@@ -909,5 +910,14 @@ public abstract class BaseController extends AbstractController implements Messa
             }
         }
         return potatoes;
+    }
+    
+    protected void setContextHeaders(HttpServletRequest request,  HttpContextWrapper wrapper) {
+    	wrapper.setReferer(request.getHeader(HttpHeaders.REFERER));
+    	wrapper.setTrueCleintIp(request.getHeader("True-Client-IP"));
+		wrapper.setForwardedFrom(request.getHeader("X-Forwarded-For"));
+		wrapper.setAkamaiEdgescape(request.getHeader("X-Akamai-Edgescape"));
+		wrapper.setRemoteAddr(request.getRemoteAddr());
+		
     }
 }

@@ -38,12 +38,18 @@ import com.freshdirect.common.pricing.SalesUnitRatio;
 import com.freshdirect.content.nutrition.EnumAllergenValue;
 import com.freshdirect.content.nutrition.EnumClaimValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
+import com.freshdirect.content.nutrition.ErpNutritionModel;
+import com.freshdirect.content.nutrition.panel.NutritionPanel;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.RestrictionI;
+import com.freshdirect.erp.ErpFactory;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDNutrition;
+import com.freshdirect.fdstore.FDNutritionCache;
+import com.freshdirect.fdstore.FDNutritionPanelCache;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -62,6 +68,7 @@ import com.freshdirect.fdstore.content.EnumProductLayout;
 import com.freshdirect.fdstore.content.Html;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.MediaI;
+import com.freshdirect.fdstore.content.PopulatorUtil;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
@@ -1632,15 +1639,82 @@ public class Product {
      * TODO: Look for caching if we find any performance issue.
      * @return
      */
-    public String getNutrition() {
-        String result = "";
-        if (isAvailable()) {
-            StringWriter st = new StringWriter();
-            NutritionInfoPanelRendererUtil.renderPanelWithNutritionList(getDefaultProduct().getNutrition(), st);
-            result = st.toString();
-        }
-        return result;
-    }
+	public String getNutrition() {
+
+		// nutritions
+		String result = "";
+		ProductExtraData data = new ProductExtraData();
+		FDProduct fdprd = null;
+		FDProductInfo productInfo = null;
+		if (defaultSku != null) {
+			try {
+				productInfo = FDCachedFactory.getProductInfo(defaultSku
+						.getSkuCode());
+			} catch (FDResourceException e) {
+				LOG.debug(e);
+			} catch (FDSkuNotFoundException e) {
+				LOG.debug(e);
+			}
+			try {
+				fdprd = FDCachedFactory.getProduct(productInfo);
+			} catch (FDResourceException e) {
+				LOG.debug(e);
+			} catch (FDSkuNotFoundException e) {
+				LOG.debug(e);
+			}
+		}
+
+		final boolean useCache = true;
+		final String skuCode = defaultSku.getSkuCode();
+
+		NutritionPanel panel = null;
+
+		if (useCache) {
+			// For storefront get panel from cache
+			panel = FDNutritionPanelCache.getInstance().getNutritionPanel(
+					skuCode);
+		} else {
+			// No caching for erpsadmin, just get the real stuff directly
+			try {
+				panel = ErpFactory.getInstance().getNutritionPanel(skuCode);
+
+			} catch (FDResourceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		if (panel != null) {
+			// nutritionMap.put(skuCode, panel);
+			data.setNutritionPanel(panel);
+			result = panel.toJSON(); // we will be sending JSON response which will be converted to HTML on app side
+
+		} else if (fdprd != null && fdprd.hasNutritionFacts()) {
+			// old style
+
+			ErpNutritionModel nutritionModel = FDNutritionCache.getInstance()
+					.getNutrition(defaultSku.getSkuCode());
+
+			if (nutritionModel != null) {
+				result = nutritionModel.toJSON(); // we are sending JSON response which will be converted to HTML on app side
+				/*
+				 * try {
+				 * 
+				 * if
+				 * (NutritionInfoPanelRendererUtil.renderClassicPanel(nutritionModel
+				 * , false, wr)) { data.setOldNutritionPanel(wr.toString());
+				 * result= } } catch (IOException e) {
+				 * LOG.error("Failed to render old nutrition panel", e); }
+				 */
+			}
+
+		} else {
+			// generate classic nutrition panel
+
+			LOG.warn("Not found new nutrition info data for SKU " + skuCode);
+		}
+		return result;
+	}    
 
     public String getSkuNutrition(Sku sku) throws FDResourceException, FDSkuNotFoundException {
         String result = "";

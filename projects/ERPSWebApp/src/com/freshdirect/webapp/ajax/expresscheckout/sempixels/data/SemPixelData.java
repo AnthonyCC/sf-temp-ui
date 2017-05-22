@@ -1,5 +1,7 @@
 package com.freshdirect.webapp.ajax.expresscheckout.sempixels.data;
 
+import java.util.List;
+
 public class SemPixelData {
 
     private boolean isNewOrder;
@@ -13,6 +15,7 @@ public class SemPixelData {
     private String discountAmountND;
     private int validOrders;
     private String productId;
+    private List<String> redeemedPromotions;
 
     public String getDiscountAmount() {
         return discountAmount;
@@ -100,5 +103,13 @@ public class SemPixelData {
 
 	public void setProductId(String productId) {
 		this.productId = productId;
+	}
+
+	public List<String> getRedeemedPromotions() {
+		return redeemedPromotions;
+	}
+
+	public void setRedeemedPromotions(List<String> redeemedPromotions) {
+		this.redeemedPromotions = redeemedPromotions;
 	}
 }

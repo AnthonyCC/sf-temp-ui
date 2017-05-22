@@ -1,3 +1,11 @@
+.contentModules > div:first-child {
+  margin-top: 10px;
+}
+
+.contentModules > div:last-child {
+  margin-bottom: 27px;
+}
+
 .content-module {
   font-family: 'Brandon Text';
 }
@@ -6,7 +14,7 @@
 }
 
 .content-module.single-module {
-  margin-top: 0px;
+  margin-top: 10px;
 }
 
 .content-module .content {
@@ -42,6 +50,16 @@
   display: flex;
 }
 
+.content-module .content-header  div {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.content-module .content-header  .view-all {
+  right: 18px;
+}
+
 .content-module .content-header .content-tittle-text-banner {
   background-color: #f68139;
   color: white;
@@ -72,7 +90,8 @@
   margin: 0;
 }
 
-.content-module h3 {
+.content-module h3,
+.content-module .module-header h2 {
   font-family: 'Brandon Text';
   font-weight: 500;
   font-size: 16px;
@@ -88,7 +107,6 @@
   text-transform: uppercase;
   min-height: 52px;
   margin: 0;
-  margin-top: 10px;
   padding: 0 10px;
 }
 

@@ -348,7 +348,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
     public boolean isDiscontinued() {
 		List<SkuModel> skus = getPrimarySkus();
 		for ( SkuModel sku  : skus ) {
-			if (!sku.isDiscontinued())
+			if (null != sku && !sku.isDiscontinued())
 				return false;
 		}
 		return true;

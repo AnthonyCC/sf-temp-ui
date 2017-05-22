@@ -198,7 +198,7 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 	 */
 	public static List findByParent(Connection conn, PrimaryKey parentPK) throws SQLException { 
 	    java.util.List lst = new java.util.LinkedList();
-		PreparedStatement ps = conn.prepareStatement("SELECT ID FROM CUST.ADDRESS WHERE CUSTOMER_ID=?");
+		PreparedStatement ps = conn.prepareStatement("SELECT ID FROM CUST.ADDRESS WHERE CUSTOMER_ID=? ORDER BY ID DESC");
 		ps.setString(1, parentPK.getId());
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
