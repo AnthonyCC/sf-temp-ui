@@ -718,8 +718,11 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		
 		Response<Map<String, List<com.freshdirect.ecommerce.data.attributes.FlatAttribute>>> response = null;
 			try {
+				String date1=null;
 				SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-				String date1 = format1.format(since); 
+				if(since!=null){
+				date1 = format1.format(since); 
+				}
 				response =httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_ATTRIBUTES_DATE+date1),new TypeReference<Response<Map<String, List<com.freshdirect.ecommerce.data.attributes.FlatAttribute>>>>() {});
 				if(!response.getResponseCode().equals("OK"))
 					throw new FDResourceException(response.getMessage());
@@ -2236,10 +2239,11 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	@Override
 	public Map<String, List<String>> getModifiedOnlyGroups(Date lastModified)
 			throws RemoteException {
-		
+		String date1 =null;
 		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-		String date1 = format1.format(lastModified); 
-
+		if(lastModified!=null){
+		date1 = format1.format(lastModified); 
+		}
 		Response<Map<String, List<String>>> response =null;
 		try {
 		
