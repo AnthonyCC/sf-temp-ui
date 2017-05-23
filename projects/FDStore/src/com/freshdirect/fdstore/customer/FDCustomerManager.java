@@ -4188,8 +4188,13 @@ public class FDCustomerManager {
 	public static void logMassCancelActivity(ErpActivityRecord record) {
 		ActivityLogHome home = getActivityLogHome();
 		try {
-			ActivityLogSB logSB = home.create();
-			logSB.logActivity(record);
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				FDECommerceService.getInstance().logActivity(record);
+			}
+			else{
+				ActivityLogSB logSB = home.create();
+				logSB.logActivity(record);
+			}
 		} catch (RemoteException e) {
 			throw new EJBException(e);
 		} catch (CreateException e) {

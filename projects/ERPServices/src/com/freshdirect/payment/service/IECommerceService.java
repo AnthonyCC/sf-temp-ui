@@ -17,6 +17,7 @@ import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.content.attributes.AttributeException;
 import com.freshdirect.content.attributes.FlatAttributeCollection;
 import com.freshdirect.customer.EnumExternalLoginSource;
+import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.customer.ErpEWalletModel;
 import com.freshdirect.customer.ErpGrpPriceModel;
@@ -302,8 +303,18 @@ public interface IECommerceService {
 	public Rule getRule(String ruleId) throws FDResourceException,RemoteException;
 	
 	public void deleteRule(String ruleId) throws FDResourceException,RemoteException;
-	
+
 	public void storeRule(Rule rule) throws FDResourceException,RemoteException;
+
+	public Collection<ErpActivityRecord> findActivityByTemplate(ErpActivityRecord template) throws FDResourceException,RemoteException;
+
+	public void logActivity(ErpActivityRecord rec) throws RemoteException;
+
+	public void logActivityNewTX(ErpActivityRecord rec) throws RemoteException;
+
+	public Map<String, List> getFilterLists(ErpActivityRecord template)throws FDResourceException,RemoteException;
+
+	public Collection<ErpActivityRecord> getCCActivitiesByTemplate(ErpActivityRecord template) throws FDResourceException,RemoteException;
 
 
 }

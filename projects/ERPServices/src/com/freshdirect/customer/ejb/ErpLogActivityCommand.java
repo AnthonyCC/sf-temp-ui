@@ -7,7 +7,9 @@ import javax.ejb.EJBException;
 import javax.naming.NamingException;
 
 import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.ServiceLocator;
+import com.freshdirect.payment.service.FDECommerceService;
 
 public class ErpLogActivityCommand {
 	
@@ -36,9 +38,19 @@ public class ErpLogActivityCommand {
 			ActivityLogSB logSB = getActivityLogHome().create();
 			
 			if (newTx) {
-				logSB.logActivityNewTX(record);
+				if(FDStoreProperties.isStorefront2_0Enabled()){
+					FDECommerceService.getInstance().logActivityNewTX(record);
+				}
+				else{
+					logSB.logActivityNewTX(record);
+				}
 			} else {
-				logSB.logActivity(record);
+				if(FDStoreProperties.isStorefront2_0Enabled()){
+					FDECommerceService.getInstance().logActivity(record);
+				}
+				else{
+					logSB.logActivity(record);
+				}
 			}
 			
 		} catch (RemoteException e) {

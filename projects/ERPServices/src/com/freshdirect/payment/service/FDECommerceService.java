@@ -38,6 +38,7 @@ import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.content.attributes.AttributeException;
 import com.freshdirect.content.attributes.FlatAttribute;
 import com.freshdirect.customer.EnumExternalLoginSource;
+import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.customer.ErpEWalletModel;
 import com.freshdirect.customer.ErpGrpPriceModel;
@@ -47,6 +48,7 @@ import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.ecommerce.data.attributes.FlatAttributeCollection;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
+import com.freshdirect.ecommerce.data.customer.ErpActivityRecordData;
 import com.freshdirect.ecommerce.data.customer.ErpGrpPriceModelData;
 import com.freshdirect.ecommerce.data.customer.accounts.external.UserTokenData;
 import com.freshdirect.ecommerce.data.delivery.sms.RecievedSmsData;
@@ -259,7 +261,14 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String GET_RULE = "rule/findByRuleId";
 	private static final String DELETE_RULE = "rule/delete";
 	private static final String STORE_RULES = "rule/store";
-	private static final String GET_RULES = "rule";	
+	private static final String GET_RULES = "rule";
+
+	private static final String ACTIVITY_TEMPLATE = "activity/template";
+	private static final String CC_ACTIVITIES = "activity/ccactivity";
+	private static final String LOG_ACTIVITY_NEWTXN = "activity/log/newTx";
+	private static final String LOG_ACTIVITY = "activity/log";
+	private static final String FILTER_LISTS = "activity/log/filterlist";
+	
 	
 
 
@@ -2477,4 +2486,107 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			throw new FDResourceException(e, "Unable to process the request.");
 		}
 	}
+	@Override
+	public Collection<ErpActivityRecord> findActivityByTemplate(
+			ErpActivityRecord template) throws FDResourceException,
+			RemoteException {
+			Collection<ErpActivityRecord> erpActivityRecordResponse = null;
+			try {
+				Request<ErpActivityRecordData> request = new Request<ErpActivityRecordData>();
+				ErpActivityRecordData erpActivityRecordData = ModelConverter.buildErpActivityRecordData(template);
+				request.setData(erpActivityRecordData);
+				String inputJson = buildRequest(request);
+				Response<Collection<ErpActivityRecordData>> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ACTIVITY_TEMPLATE),new TypeReference<Response<Collection<ErpActivityRecordData>>>() {});
+				erpActivityRecordResponse = ModelConverter.buildErpActivityRecord(response.getData());
+				if(!response.getResponseCode().equals("OK")){
+					throw new FDResourceException(response.getMessage());
+				}
+			} catch (FDResourceException e){
+				LOGGER.error(e.getMessage());
+				throw new FDRuntimeException(e, "Unable to process the request.");
+			} catch (FDPayPalServiceException e) {
+				LOGGER.error(e.getMessage());
+				throw new FDRuntimeException(e, "Unable to process the request.");
+			} 
+			return erpActivityRecordResponse;
+	}
+	@Override
+	public void logActivity(ErpActivityRecord rec) throws RemoteException {
+		try {
+			Request<ErpActivityRecordData> request = new Request<ErpActivityRecordData>();
+			ErpActivityRecordData erpActivityRecordData = ModelConverter.buildErpActivityRecordData(rec);
+			request.setData(erpActivityRecordData);
+			String inputJson = buildRequest(request);
+			this.postDataTypeMap(inputJson, getFdCommerceEndPoint(LOG_ACTIVITY),new TypeReference<Response<Void>>() {});
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new FDRuntimeException(e, "Unable to process the request.");
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDRuntimeException(e, "Unable to process the request.");
+		} 
+}
+	@Override
+	public void logActivityNewTX(ErpActivityRecord rec)throws  RemoteException {
+		try {
+			Request<ErpActivityRecordData> request = new Request<ErpActivityRecordData>();
+			ErpActivityRecordData erpActivityRecordData = ModelConverter.buildErpActivityRecordData(rec);
+			request.setData(erpActivityRecordData);
+			String inputJson = buildRequest(request);
+			this.postDataTypeMap(inputJson, getFdCommerceEndPoint(LOG_ACTIVITY_NEWTXN),new TypeReference<Response<Void>>() {});
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new FDRuntimeException(e, "Unable to process the request.");
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDRuntimeException(e, "Unable to process the request.");
+		} 
+}
+	@Override
+	public Map<String, List> getFilterLists(ErpActivityRecord template)throws FDResourceException, RemoteException {
+		Map<String, List> filterListResponse = null;
+		try {
+			Request<ErpActivityRecordData> request = new Request<ErpActivityRecordData>();
+			ErpActivityRecordData erpActivityRecordData = ModelConverter.buildErpActivityRecordData(template);
+			request.setData(erpActivityRecordData);
+			String inputJson = buildRequest(request);
+			Response<Map<String, List<String>>> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(FILTER_LISTS),new TypeReference<Response<Map<String, List<String>>>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			filterListResponse = ModelConverter.buildFilterListResponse(response.getData());
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new FDRuntimeException(e, "Unable to process the request.");
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDRuntimeException(e, "Unable to process the request.");
+		} 
+		return filterListResponse;
+
+	}
+	@Override
+	public Collection<ErpActivityRecord> getCCActivitiesByTemplate(
+			ErpActivityRecord template) throws FDResourceException,
+			RemoteException {
+		Collection<ErpActivityRecord> ccActivityResponse = null;
+		try {
+			Request<ErpActivityRecordData> request = new Request<ErpActivityRecordData>();
+			ErpActivityRecordData erpActivityRecordData = ModelConverter.buildErpActivityRecordData(template);
+			request.setData(erpActivityRecordData);
+			String inputJson = buildRequest(request);
+			Response<Collection<ErpActivityRecordData>> response  = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(CC_ACTIVITIES),new TypeReference<Response<Collection<ErpActivityRecordData>>>() {});
+			ccActivityResponse = ModelConverter.buildErpActivityRecord(response.getData());
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new FDRuntimeException(e, "Unable to process the request.");
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDRuntimeException(e, "Unable to process the request.");
+		} 
+		return ccActivityResponse;
+}
 }
