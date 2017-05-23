@@ -618,10 +618,11 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			    		try {
 				    		Gateway gateway = GatewayFactory.getGateway(GatewayType.PAYPAL);
 				    		Response response = gateway.reverseAuthorize(request);				    		
-				    		if (!response.isApproved()) {				    			
+				    		if (!response.isApproved()) {	
+				    			updatePaymentAuthResponse(auth, EnumPaymentResponse.DECLINED.getCode());
 				    			LOGGER.warn("Reverse auth failed for PayPal transaction during order modification of Order " + sale.getId() + ". Ewallet Tx Id " + auth.getEwalletTxId());
 				    		} else {				    			
-				    			updatePaymentAuthResponse(auth);				    			
+				    			updatePaymentAuthResponse(auth, EnumPaymentResponse.REVERSED.getCode());				    			
 				    			LOGGER.info("Auth voided for PayPal transaction during order modification of Order " + sale.getId() + ". Ewallet Tx Id " + auth.getEwalletTxId());
 				    		}
 			    		} catch (ErpTransactionException e) {
@@ -642,13 +643,13 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	}
 	
 
-	private void updatePaymentAuthResponse(ErpAuthorizationModel auth) {
+	private void updatePaymentAuthResponse(ErpAuthorizationModel auth, String responseCode) {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
 
 			PreparedStatement ps = conn.prepareStatement("UPDATE CUST.PAYMENT SET RESPONSE_CODE=? WHERE SALESACTION_ID=? and SEQUENCE_NUMBER=?");
-			ps.setString(1, EnumPaymentResponse.REVERSED.getCode());
+			ps.setString(1, responseCode);
 			ps.setString(2, auth.getId());
 			ps.setString(3,  auth.getSequenceNumber());
 			

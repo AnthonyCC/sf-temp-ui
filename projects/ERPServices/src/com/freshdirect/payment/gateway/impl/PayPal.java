@@ -311,7 +311,7 @@ public class PayPal implements Gateway {
 		} else {
 			setFailureResponse(response, payPalResponse);
 			GatewayLogActivity.logActivity(GatewayType.PAYPAL, response);
-			throw new ErpTransactionException("PayPal error " + payPalResponse.getMessage());
+			//throw new ErpTransactionException("PayPal error " + payPalResponse.getMessage());
 		}
 		
 		return response;
@@ -472,15 +472,18 @@ public class PayPal implements Gateway {
 	}
 	
 	private void setFailureResponse(ResponseImpl response, PayPalResponse payPalResponse) {
-		TransactionModel result = payPalResponse.getTransactionModel();
+		TransactionModel result = null;
+		if(null != payPalResponse)
+		result = payPalResponse.getTransactionModel();
 		response.setError(true);
 		response.setApproved(false);
 		response.setRequestProcessed(true);
 //		Transaction trxn = result.getTransaction();
-		response.setStatusMessage(result.getMessage());
+		
 		
 		// Added settlement processor status code as part of APPDEV-5490
 		if(result!=null){
+			response.setStatusMessage(result.getMessage());
 			response.setStatusCode(result.getProcessorSettlementResponseCode());
 			response.setResponseCode(result.getProcessorResponseCode());
 		}
