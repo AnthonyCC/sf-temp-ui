@@ -43,7 +43,6 @@
   background: #F2F3F4;
   margin: 0;
   min-height: 40px;
-  padding: 0 18px;
 }
 
 .content-module .content-header > div {
@@ -82,14 +81,6 @@
   transform: rotate(45deg);
 }
 
-.content-module h1 {
-  font-family: 'Brandon Text';
-  font-size: 25px;
-  font-weight: 700;
-  line-height: 25px;
-  margin: 0;
-}
-
 .content-module h3,
 .content-module .module-header h2 {
   font-family: 'Brandon Text';
@@ -100,14 +91,22 @@
   margin: 0;
 }
 
-.content-module .module-header {
+.content-module .module-header h1,
+.content-module .content-header h2 {
   align-items: center;
   font-size: 25px;
   font-family: 'Brandon Text';
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 25px;
   text-transform: uppercase;
-  min-height: 52px;
   margin: 0;
   padding: 0 10px;
+}
+
+.content-module .module-header {
+  align-items: center;
+  min-height: 52px;
 }
 
 .content-module .module-header .module-text-banner {
@@ -131,14 +130,14 @@
   transform: rotate(45deg);
 }
 
-.content-module .content-header h2 {
+/*.content-module .content-header h2 {
   margin: 0;
   font-family: 'Brandon Text';
   font-weight: 500;
   font-size: 22px;
   height: 22px;
   line-height: 22px;
-}
+}*/
 
 .content-module .content-header .view-all {
   margin-left: 15px;
