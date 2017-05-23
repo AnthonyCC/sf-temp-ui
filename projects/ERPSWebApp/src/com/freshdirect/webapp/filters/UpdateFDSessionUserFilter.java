@@ -37,6 +37,7 @@ public class UpdateFDSessionUserFilter extends AbstractFilter {
 				((HttpServletResponse)response).addCookie(cookie);
 			}
 		}
+		}
 		filterChain.doFilter(request, response);
 	}
 
