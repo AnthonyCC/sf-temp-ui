@@ -3,6 +3,7 @@ package com.freshdirect.payment.service;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.rmi.RemoteException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -69,6 +70,9 @@ import com.freshdirect.ecommerce.data.enums.ErpAffiliateData;
 import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpRestrictedAvailabilityData;
 import com.freshdirect.ecommerce.data.erp.inventory.RestrictedInfoParam;
+import com.freshdirect.ecommerce.data.erp.material.OverrideSkuAttrParam;
+import com.freshdirect.ecommerce.data.erp.material.SkuPrefixParam;
+import com.freshdirect.ecommerce.data.erp.model.ErpProductInfoModelData;
 import com.freshdirect.ecommerce.data.erp.model.ErpProductPromotionPreviewInfoData;
 import com.freshdirect.ecommerce.data.erp.pricing.FDProductPromotionInfoData;
 import com.freshdirect.ecommerce.data.erp.pricing.ZoneInfoDataWrapper;
@@ -90,8 +94,10 @@ import com.freshdirect.ecommerce.data.survey.SurveyKeyData;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
+import com.freshdirect.erp.SkuAvailabilityHistory;
 import com.freshdirect.erp.model.BatchModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
+import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.event.RecommendationEventsAggregate;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDGroup;
@@ -270,8 +276,38 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String FILTER_LISTS = "activity/log/filterlist";
 	
 	
-
-
+	
+	private static final String ERP_MATERIALINFO_VERSION = "erpmaterialinfo/materialbybatch";
+	private static final String ERP_MATERIALINFO_SAPID = "erpmaterialinfo/materialsbysapid";
+	private static final String ERP_MATERIALINFO_SKUCODE = "erpmaterialinfo/materialsbyskucode";
+	private static final String ERP_MATERIALINFO_DESCRIPTION = "erpmaterialinfo/materialsbydescription";
+	private static final String ERP_MATERIALINFO_CHARACTERISTIC = "erpmaterialinfo/materialsbyclassandcharacteristic";
+	private static final String ERP_MATERIALSINFO_CLASS= "erpmaterialinfo/materialsbyclass";
+	private static final String ERP_PRODUCTINFO_SKUCODE = "erpmaterialinfo/productbysku";
+	private static final String ERP_PRODUCTINFO_SAPID = "erpmaterialinfo/productbysapid";
+	private static final String ERP_PRODUCTINFO_DESCRIPTION = "erpmaterialinfo/productsbydescription";
+	private static final String ERP_PRODUCTINFO_LIKESKU = "erpmaterialinfo/productslikesku";
+	private static final String ERP_PRODUCTINFO_UPC = "erpmaterialinfo/productsbyupc";
+	private static final String ERP_PRODUCTINFO_CUSTOMER_UPC = "erpmaterialinfo/productsbycustomerupc";
+	private static final String ERP_PRODUCTINFO_LIKEUPC = "erpmaterialinfo/productslikeupc";
+	private static final String ERP_SKUS_SAPID = "erpmaterialinfo/skusbySapId";
+	private static final String ERP_NEW_SKUS_DAYS = "erpmaterialinfo/newskucodes";
+	private static final String ERP_SKUS_OLDNESS = "erpmaterialinfo/skuoldness";
+	private static final String ERP_PRODUCTINFO_SKUCODE_VERSION = "erpmaterialinfo/productbyskuandversion";
+	private static final String ERP_REINTRODUCED_SKUCODES = "erpmaterialinfo/reintroducedSkuCodes";
+	private static final String ERP_OUTOFSTOCK_SKUCODES = "erpmaterialinfo/outofstockskucodes";
+	private static final String ERP_PRODUCT_SKUS = "erpmaterialinfo/productsbyskus";
+	private static final String ERP_OVERRIDDEN_NEWNESS = "erpmaterialinfo/overriddennewness";
+	private static final String ERP_OVERRIDDEN_BACK_IN_STOCK = "erpmaterialinfo/overriddenbackinstock";
+	private static final String ERP_NEW_SKUS = "erpmaterialinfo/newskus";
+	private static final String ERP_BACK_IN_STOCK_SKUS = "erpmaterialinfo/backinstockskus";
+	private static final String ERP_OVERRIDDEN_NEW_SKUS = "erpmaterialinfo/overriddennewskus";
+	private static final String ERP_OVERRIDDEN_BACK_IN_STOCK_SKUS = "erpmaterialinfo/overriddenbackinstockskus";
+	private static final String ERP_SKU_AVAILABILITY_HISTORY = "erpmaterialinfo/skuavailabilityhistory";
+	private static final String ERP_REFRESH_NEW_AND_BACK_VIEWS = "erpmaterialinfo/refreshnewandbackviews";
+	private static final String ERP_SKUS_BY_DEAL = "erpmaterialinfo/skusbydeal";
+	private static final String ERP_PEAK_PRODUCE_SKUS_BY_DEPARTMENT = "erpmaterialinfo/peakproduceskusbydepartment";
+	
 	public static IECommerceService getInstance() {
 		if (INSTANCE == null)
 			INSTANCE = new FDECommerceService();
@@ -1280,8 +1316,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		
 	}
 	@Override
-	public void saveExtoleRewardsFile(List<FDRafCreditModel> rewards) throws FDResourceException,
-			RemoteException {
+	public void saveExtoleRewardsFile(List<FDRafCreditModel> rewards) throws FDResourceException,RemoteException {
 		Request<List<FDRafCreditModel>> request = new Request<List<FDRafCreditModel>>();
 		request.setData(rewards);
 		Response<HLBrandProductAdResponse> response = null;
@@ -1661,7 +1696,11 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			String serviceType) throws FDResourceException {
 		String inputJson=null;
 		Request<FutureZoneNotificationParam> request = new Request<FutureZoneNotificationParam>();
-		FutureZoneNotificationParam  notificationParam = new FutureZoneNotificationParam(email, zip,serviceType);
+		FutureZoneNotificationParam  notificationParam = new FutureZoneNotificationParam();
+		notificationParam.setEmail(email);
+		notificationParam.setServiceType(serviceType);
+		notificationParam.setZip(zip);
+		
 		request.setData(notificationParam);
 		try {
 			inputJson = buildRequest(request);
@@ -1782,8 +1821,13 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 				
 		TimeslotEventData timeSlotEventData = getMapper().convertValue(event, TimeslotEventData.class);
 		
-		ReservationParam  reservationParam = new ReservationParam(rsvId, customerId,orderData, contactAddressData , pr1,
-				timeSlotEventData);
+		ReservationParam  reservationParam = new ReservationParam();
+		reservationParam.setRsvId(rsvId);
+		reservationParam.setCustomerId(customerId);
+		reservationParam.setOrderContext(orderData);
+		reservationParam.setAddress(contactAddressData);
+		reservationParam.setPr1(pr1);
+		reservationParam.setEvent(timeSlotEventData);
 		request.setData(reservationParam);
 		String inputJson;
 		try {			
@@ -1806,7 +1850,13 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		Request<ReservationParam> request = new Request<ReservationParam>();
 		OrderContextData orderData = getMapper().convertValue(context, OrderContextData.class);
 		ContactAddressData contactAddressData = getMapper().convertValue(address, ContactAddressData.class);
-		ReservationParam  reservationParam = new ReservationParam(rsvId, customerId, /*DlvManagerEncoder.encodeOrderContext(context)*/orderData, /*DlvManagerEncoder.encodeContactAddress(address)*/contactAddressData, pr1);
+		ReservationParam  reservationParam = new ReservationParam();
+		
+		reservationParam.setRsvId(rsvId);
+		reservationParam.setCustomerId(customerId);
+		reservationParam.setOrderContext(orderData);
+		reservationParam.setAddress(contactAddressData);
+		reservationParam.setPr1(pr1);
 		
 		request.setData(reservationParam);
 		String inputJson;
@@ -2250,7 +2300,10 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		ScoreResult result;
 			try {
 				Request<ProductFactorParam> request = new Request<ProductFactorParam>();
-				ProductFactorParam productFactorParam = new ProductFactorParam(eStoreId,erpCustomerId,factors);
+				ProductFactorParam productFactorParam = new ProductFactorParam();
+				productFactorParam.seteStoreId(eStoreId);
+				productFactorParam.setErpCustomerId(erpCustomerId);
+				productFactorParam.setFactors(factors);
 				request.setData(productFactorParam);
 				String inputJson = buildRequest(request);
 				response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SMARTSTORE_PERSONALIZED_FACTORS),new TypeReference<Response<ScoreResult>>() {});
@@ -2274,7 +2327,9 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		ScoreResult result;
 			try {
 				Request<ProductFactorParam> request = new Request<ProductFactorParam>();
-				ProductFactorParam productFactorParam = new ProductFactorParam(eStoreId,factors);
+				ProductFactorParam productFactorParam = new ProductFactorParam();
+				productFactorParam.seteStoreId(eStoreId);
+				productFactorParam.setFactors(factors);
 				request.setData(productFactorParam);
 				String inputJson = buildRequest(request);
 				response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SMARTSTORE_GLOBAL_FACTORS),new TypeReference<Response<ScoreResult>>() {});
@@ -2383,7 +2438,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		List<String> result;
 			try {
 				Request<String> request = new Request<String>();
-				response = this.httpGetDataTypeMap(getFdCommerceEndPoint(SMARTSTORE_PRODUCT_RECOMMENDATIONS)+"/"+recommender+"/"+erpCustomerId, new TypeReference<Response<List<String>>>() {});
+				response = this.httpGetDataTypeMap(getFdCommerceEndPoint(SMARTSTORE_PERSONAL_RECOMMENDATIONS)+"/"+recommender+"/"+erpCustomerId, new TypeReference<Response<List<String>>>() {});
 				if(!response.getResponseCode().equals("OK")){
 					throw new FDResourceException(response.getMessage());
 				}
@@ -2411,7 +2466,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			}
 			return response.getData();
 	}
-	
+		
 	@Override
 	public void logGatewayActivity(FDGatewayActivityLogModel logModel)throws RemoteException{
 		try {
@@ -2486,6 +2541,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			throw new FDResourceException(e, "Unable to process the request.");
 		}
 	}
+	
 	@Override
 	public Collection<ErpActivityRecord> findActivityByTemplate(
 			ErpActivityRecord template) throws FDResourceException,
@@ -2588,5 +2644,583 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			throw new FDRuntimeException(e, "Unable to process the request.");
 		} 
 		return ccActivityResponse;
-}
+	}
+	
+	@Override
+	public Collection findMaterialsByBatch(int batchNum) throws RemoteException {
+		Response<Collection> response = null;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_MATERIALINFO_VERSION)+"/"+batchNum, new TypeReference<Response<Collection>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	@Override
+	public Collection findMaterialsBySapId(String sapId) throws RemoteException {
+		Response<Collection> response = null;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_MATERIALINFO_SAPID)+"/"+sapId, new TypeReference<Response<Collection>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	@Override
+	public Collection findMaterialsBySku(String skuCode) throws RemoteException {
+		Response<Collection> response = null;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_MATERIALINFO_SKUCODE)+"/"+skuCode, new TypeReference<Response<Collection>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	@Override
+	public Collection findMaterialsByDescription(String description) throws RemoteException {
+		Response<Collection> response = null;
+		try {
+			
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_MATERIALINFO_DESCRIPTION)+"/"+URLEncoder.encode(description), new TypeReference<Response<Collection>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	@Override
+	public Collection findMaterialsByCharacteristic(String characteristic) throws RemoteException {
+		Response<Collection> response = null;
+		try {
+			characteristic = characteristic.replace('_', '-');
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_MATERIALINFO_CHARACTERISTIC)+"/"+URLEncoder.encode(characteristic), new TypeReference<Response<Collection>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	
+
+	@Override
+	public Collection findMaterialsByClass(String className) throws RemoteException {
+		Response<Collection> response = null;
+		Collection erpMaterialInfoModels;
+		try {
+			className = className.replace('_', '-');
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_MATERIALSINFO_CLASS)+"/"+className,  new TypeReference<Response<Collection>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	
+	@Override
+	public ErpProductInfoModel findProductBySku(String skuCode) throws RemoteException {
+		Response<ErpProductInfoModelData> response = null;
+		ErpProductInfoModel erpProductInfoModel;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_PRODUCTINFO_SKUCODE)+"/"+skuCode,  new TypeReference<Response<ErpProductInfoModelData>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			erpProductInfoModel = ErpProductInfoModelConvert.convertModelToData(response.getData());
+			
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return erpProductInfoModel;
+	}
+	
+	@Override
+	public Collection<ErpProductInfoModel> findProductsBySapId(String sapId) throws RemoteException {
+		Response<Collection<ErpProductInfoModelData>> response = null;
+		Collection<ErpProductInfoModel> erpProductInfoModels;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_PRODUCTINFO_SAPID)+"/"+sapId,  new TypeReference<Response<Collection<ErpProductInfoModelData>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			erpProductInfoModels = ErpProductInfoModelConvert.convertListModelToListData(response.getData());
+			
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return erpProductInfoModels;
+	}
+	@Override
+	public Collection findProductsByDescription(String description) throws RemoteException {
+		
+		Response<Collection<ErpProductInfoModelData>> response = null;
+		Collection<ErpProductInfoModel> erpProductInfoModels;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_PRODUCTINFO_DESCRIPTION)+"/"+URLEncoder.encode(description),  new TypeReference<Response<Collection<ErpProductInfoModelData>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			erpProductInfoModels = ErpProductInfoModelConvert.convertListModelToListData(response.getData());
+			
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return erpProductInfoModels;
+	}
+	
+	@Override
+	public Collection findProductsLikeSku(String sku) throws RemoteException {
+		
+		Response<Collection<ErpProductInfoModelData>> response = null;
+		Collection<ErpProductInfoModel> erpProductInfoModels;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_PRODUCTINFO_LIKESKU)+"/"+sku,  new TypeReference<Response<Collection<ErpProductInfoModelData>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			erpProductInfoModels = ErpProductInfoModelConvert.convertListModelToListData(response.getData());
+			
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return erpProductInfoModels;
+	}
+	
+	@Override
+	public Collection<ErpProductInfoModel> findProductsByUPC(String upc) throws RemoteException {
+		
+		Response<Collection<ErpProductInfoModelData>> response = null;
+		Collection<ErpProductInfoModel> erpProductInfoModels;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_PRODUCTINFO_UPC)+"/"+upc,  new TypeReference<Response<Collection<ErpProductInfoModelData>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			erpProductInfoModels = ErpProductInfoModelConvert.convertListModelToListData(response.getData());
+			
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return erpProductInfoModels;
+	}
+	
+	
+	@Override
+	public Collection<String> findProductsByCustomerUPC(String erpCustomerPK, String upc) throws RemoteException {
+		
+		Response<Collection<String>> response = null;
+		Collection<String> productIds;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_PRODUCTINFO_CUSTOMER_UPC)+"/"+erpCustomerPK+"/"+upc,  new TypeReference<Response<Collection>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	
+	@Override
+	public Collection<ErpProductInfoModel> findProductsLikeUPC(String upc) throws RemoteException {
+		
+		Response<Collection<ErpProductInfoModelData>> response = null;
+		Collection<ErpProductInfoModel> erpProductInfoModels;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_PRODUCTINFO_LIKEUPC)+"/"+upc,  new TypeReference<Response<Collection<ErpProductInfoModelData>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			erpProductInfoModels = ErpProductInfoModelConvert.convertListModelToListData(response.getData());
+		}catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return erpProductInfoModels;
+	}
+	
+	@Override
+	public Collection<String> findSkusBySapId(String sapId) throws RemoteException {
+		
+		Response<Collection<String>> response = null;
+		Collection<String> productIds;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_SKUS_SAPID)+"/"+sapId,  new TypeReference<Response<Collection>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	
+	@Override
+	public Collection<String> findNewSkuCodes(int days) throws RemoteException {
+		
+		Response<Collection<String>> response = null;
+		Collection<String> productIds;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_NEW_SKUS_DAYS)+"/"+days,  new TypeReference<Response<Collection>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		}catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	
+	@Override
+	public Map<String, Integer> getSkusOldness() throws RemoteException {
+		
+		Response<Map<String, Integer>> response = null;
+		Collection<Map<String, Integer>> productIds;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_SKUS_OLDNESS),  new TypeReference<Response<Map<String, Integer>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	
+	@Override
+	public ErpProductInfoModel findProductBySku(String skuCode, int version) throws RemoteException {
+		Response<ErpProductInfoModelData> response = null;
+		ErpProductInfoModel erpProductInfoModel;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_PRODUCTINFO_SKUCODE_VERSION)+"/"+skuCode+"/"+version,  new TypeReference<Response<ErpProductInfoModelData>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			erpProductInfoModel = ErpProductInfoModelConvert.convertModelToData(response.getData());
+			
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return erpProductInfoModel;
+	}
+	@Override
+	public Collection<String> findReintroducedSkuCodes(int days) throws RemoteException {
+		Response<Collection<String>> response = null;
+		Collection<String> productIds;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_REINTRODUCED_SKUCODES)+"/"+days,  new TypeReference<Response<Collection>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	
+	@Override
+	public Collection<String> findOutOfStockSkuCodes() throws RemoteException {
+		Response<Collection<String>> response = null;
+		Collection<String> productIds;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_OUTOFSTOCK_SKUCODES),  new TypeReference<Response<Collection>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	
+	
+	@Override
+	public Collection<ErpProductInfoModel> findProductsBySku(String[] skuCodes) throws RemoteException {
+		Response<Collection<ErpProductInfoModelData>> response = null;
+		Collection<ErpProductInfoModel> erpProductInfoModels;
+		Request<String[]> request = new Request<String[]>();
+		try {
+			request.setData(skuCodes);
+			String inputJson = buildRequest(request);
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ERP_PRODUCT_SKUS),  new TypeReference<Response<Collection<ErpProductInfoModelData>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			erpProductInfoModels = ErpProductInfoModelConvert.convertListModelToListData(response.getData());
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new FDRuntimeException(e, "Unable to process the request.");
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return erpProductInfoModels;
+	}
+	
+	@Override
+	public void setOverriddenNewness(String sku,
+			Map<String, String> salesAreaOverrides) throws RemoteException {
+		Response<Void> response = null;
+		Request<OverrideSkuAttrParam> request = new Request<OverrideSkuAttrParam>();
+		try {
+			OverrideSkuAttrParam overrideskuattrparam = new OverrideSkuAttrParam();
+			overrideskuattrparam.setSalesAreaOverrides(salesAreaOverrides);
+			overrideskuattrparam.setSku(sku);
+			request.setData(overrideskuattrparam);
+			String inputJson = buildRequest(request);
+			response = this.postData(inputJson, getFdCommerceEndPoint(ERP_OVERRIDDEN_NEWNESS),  Response.class);
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new FDRuntimeException(e, "Unable to process the request.");
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	
+	
+	@Override
+	public void setOverriddenBackInStock(String sku,
+			Map<String, String> salesAreaOverrides) throws RemoteException {
+		Response<Void> response = null;
+		Request<OverrideSkuAttrParam> request = new Request<OverrideSkuAttrParam>();
+		try {
+			OverrideSkuAttrParam overrideskuattrparam = new OverrideSkuAttrParam();
+			overrideskuattrparam.setSku(sku);
+			overrideskuattrparam.setSalesAreaOverrides(salesAreaOverrides);
+			request.setData(overrideskuattrparam);
+			String inputJson = buildRequest(request);
+			response = this.postData(inputJson, getFdCommerceEndPoint(ERP_OVERRIDDEN_BACK_IN_STOCK),  Response.class);
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new FDRuntimeException(e, "Unable to process the request.");
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	
+	@Override
+	public Map<String, String> getOverriddenNewness(String sku) throws RemoteException {
+		Response<Map<String, String>> response = null;
+		Map<String, String> productIds;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_OVERRIDDEN_NEWNESS)+"/"+sku,  new TypeReference<Response<Map<String, String>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	
+	@Override
+	public Map<String, String> getOverriddenBackInStock(String sku) throws RemoteException {
+		Response<Map<String, String>> response = null;
+		Map<String, String> productIds;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_OVERRIDDEN_BACK_IN_STOCK)+"/"+sku,  new TypeReference<Response<Map<String, String>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	
+	@Override
+	public Map<String, Map<String,Date>> getNewSkus() throws RemoteException {
+		Response<Map<String, Map<String,Date>>> response = null;
+		Map<String, Map<String,Date>> productIds;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_NEW_SKUS),  new TypeReference<Response<Map<String, Map<String,Date>>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	
+	@Override
+	public Map<String, Map<String,Date>> getBackInStockSkus() throws RemoteException {
+		Response<Map<String, Map<String,Date>>> response = null;
+		Map<String, Map<String,Date>> productIds;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_BACK_IN_STOCK_SKUS),  new TypeReference<Response<Map<String, Map<String,Date>>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	
+	
+	@Override
+	public Map<String, Map<String,Date>> getOverriddenNewSkus() throws RemoteException {
+		Response<Map<String, Map<String,Date>>> response = null;
+		Map<String, Map<String,Date>> productIds;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_OVERRIDDEN_NEW_SKUS),  new TypeReference<Response<Map<String, Map<String,Date>>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	
+	@Override
+	public Map<String, Map<String,Date>> getOverriddenBackInStockSkus() throws RemoteException {
+		Response<Map<String, Map<String,Date>>> response = null;
+		Map<String, Map<String,Date>> productIds;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_OVERRIDDEN_BACK_IN_STOCK_SKUS),  new TypeReference<Response<Map<String, Map<String,Date>>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	
+	
+	@Override
+	public List<SkuAvailabilityHistory> getSkuAvailabilityHistory(String skuCode) throws RemoteException {
+		Response<List<SkuAvailabilityHistory>> response = null;
+		List<SkuAvailabilityHistory> skuAvailabilityHistories;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_SKU_AVAILABILITY_HISTORY)+"/"+skuCode,  new TypeReference<Response<List<SkuAvailabilityHistory>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	
+	@Override
+	public void refreshNewAndBackViews() throws RemoteException {
+		Response<Void> response = null;
+		List<SkuAvailabilityHistory> skuAvailabilityHistories;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_REFRESH_NEW_AND_BACK_VIEWS),  new TypeReference<Response<Void>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	
+	@Override
+	public Collection<String> findSKUsByDeal(double lowerLimit, double upperLimit,List skuPrefixes) throws RemoteException {
+		Response<Collection> response = null;
+		Request<SkuPrefixParam> request = new Request<SkuPrefixParam>();
+		try {
+			SkuPrefixParam overrideskuattrparam = new SkuPrefixParam();
+			overrideskuattrparam.setLowerLimit(lowerLimit);
+			overrideskuattrparam.setUpperLimit(upperLimit);
+			overrideskuattrparam.setSkuPrefixes(skuPrefixes);
+			request.setData(overrideskuattrparam);
+			String inputJson = buildRequest(request);
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ERP_SKUS_BY_DEAL),  new TypeReference<Response<Collection<String>>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new FDRuntimeException(e, "Unable to process the request.");
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	
+	@Override
+	public Collection<String> findPeakProduceSKUsByDepartment(List skuPrefixes) throws RemoteException {
+		Response<Collection> response = null;
+		Request<SkuPrefixParam> request = new Request<SkuPrefixParam>();
+		try {
+			SkuPrefixParam overrideskuattrparam = new SkuPrefixParam();
+			overrideskuattrparam.setSkuPrefixes(skuPrefixes);
+			request.setData(overrideskuattrparam);
+			String inputJson = buildRequest(request);
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ERP_PEAK_PRODUCE_SKUS_BY_DEPARTMENT),  new TypeReference<Response<Collection<String>>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new FDRuntimeException(e, "Unable to process the request.");
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	
+	
+	
+	
 }
