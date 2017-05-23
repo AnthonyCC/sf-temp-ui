@@ -92,7 +92,7 @@ class FDAvailabilityMapper {
 
 				if (!r.isEmpty()) {
 					//Filter Alcohol restrictions by current State and county.
-					List<RestrictionI> filteredList = RestrictionUtil.filterAlcoholRestrictionsForStateCounty(address.getState(), county, r);
+					List<RestrictionI> filteredList = RestrictionUtil.filterAlcoholRestrictionsForStateCounty(address!=null?address.getState():null, county, r);
 					if(!filteredList.isEmpty())
 						inv = new FDRestrictedAvailability(inv, new DlvRestrictionsList(filteredList));
 				}
