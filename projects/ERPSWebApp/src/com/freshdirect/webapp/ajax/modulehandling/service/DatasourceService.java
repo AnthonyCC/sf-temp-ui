@@ -15,11 +15,18 @@ import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
+import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
+import com.freshdirect.webapp.ajax.browse.data.SectionData;
+import com.freshdirect.webapp.ajax.filtering.CmsFilteringFlow;
+import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
+import com.freshdirect.webapp.ajax.filtering.NavigationUtil;
 import com.freshdirect.webapp.ajax.modulehandling.DatasourceType;
 import com.freshdirect.webapp.ajax.modulehandling.ModuleSourceType;
 import com.freshdirect.webapp.ajax.modulehandling.data.IconData;
@@ -27,6 +34,7 @@ import com.freshdirect.webapp.ajax.modulehandling.data.ModuleConfig;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleData;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleEditorialContainer;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.util.MediaUtils;
 
 public class DatasourceService {
@@ -52,6 +60,33 @@ public class DatasourceService {
         DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
         ContentNodeI brand = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"), currentDraftContext);
         return ModuleContentService.getDefaultService().loadBrandFeaturedProducts(brand, user);
+    }
+
+    private List<SectionData> generateBrowseProductsForViewAll(ContentNodeI module, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException {
+        DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
+        ContentNodeI category = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"), currentDraftContext);
+        String categoryId = category.getKey().getId();
+        List<SectionData> sections = new ArrayList<SectionData>();
+
+        CategoryModel categoryModel = (CategoryModel) ContentFactory.getInstance().getContentNode(categoryId);
+        boolean isForbidden = NavigationUtil.isCategoryForbiddenInContext(user, categoryModel);
+
+        if (!isForbidden) {
+            CmsFilteringNavigator nav = new CmsFilteringNavigator();
+
+            // Set special layout false to skip content loading from HMB and RecipeKits.
+            nav.setSpecialPage(false);
+            nav.setPageTypeType(FilteringFlowType.BROWSE);
+            nav.setPageSize(FDStoreProperties.getBrowsePageSize());
+            nav.setId(categoryId);
+
+            List<ProductData> products = new ArrayList<ProductData>();
+            final CmsFilteringFlowResult result = CmsFilteringFlow.getInstance().doFlow(nav, (FDSessionUser) user);
+
+            sections = result.getBrowseDataPrototype().getSections().getSections();
+
+        }
+        return sections;
     }
 
     private List<ProductData> generateBrowseProducts(ContentNodeI module, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException {
@@ -196,6 +231,9 @@ public class DatasourceService {
         String productListCarouselLineMax = ContentNodeUtil.getStringAttribute(module, "productListRowMax");
         List<ProductData> products = new ArrayList<ProductData>();
 
+        List<SectionData> sections = new ArrayList<SectionData>();
+        SectionData sectionData = new SectionData();
+
         // LOAD PRODUCTS
         switch (datasourceEnum) {
             case MOST_POPULAR_PRODUCTS:
@@ -223,7 +261,11 @@ public class DatasourceService {
                 }
                 break;
             case BROWSE:
-                products = generateBrowseProducts(module, user);
+                if (showAllProducts) {
+                    sections = generateBrowseProductsForViewAll(module, user);
+                } else {
+                    products = generateBrowseProducts(module, user);
+                }
                 break;
             case FEATURED_RECOMMENDER:
                 products = generateFeaturedRecommenderProducts(module, user);
@@ -248,7 +290,17 @@ public class DatasourceService {
             products = ModuleContentService.getDefaultService().setMaxProductLinesForProductList(products, Integer.parseInt(productListCarouselLineMax));
         }
 
-        moduleData.setProducts(products);
+        if (showAllProducts && sections.size() == 0) {
+            sectionData.setProducts(products);
+            sections.add(sectionData);
+        }
+
+        if (showAllProducts) {
+            moduleData.setSectionData(sections);
+        } else {
+            moduleData.setProducts(products);
+        }
+
         return moduleData;
     }
 

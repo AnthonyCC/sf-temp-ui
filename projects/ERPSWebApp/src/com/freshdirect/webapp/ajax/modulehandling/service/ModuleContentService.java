@@ -64,7 +64,7 @@ public class ModuleContentService {
     private ModuleContentService() {
     }
 
-    private List<ProductData> generateBrowseProductData(CmsFilteringNavigator nav, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException {
+    public List<ProductData> generateBrowseProductData(CmsFilteringNavigator nav, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException {
 
         List<ProductData> products = new ArrayList<ProductData>();
         final CmsFilteringFlowResult result = CmsFilteringFlow.getInstance().doFlow(nav, (FDSessionUser) user);
