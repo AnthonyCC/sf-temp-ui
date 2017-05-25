@@ -39,13 +39,13 @@ public class FDCachedFactory {
 	/** 
 	 * FDProductInfo instances hashed by SKU strings.
 	 */
-	private final static LazyTimedCache productInfoCache =
-		new LazyTimedCache("FDProductInfo", FDStoreProperties.getProductCacheSize(), FDStoreProperties.getRefreshSecsProductInfo() * 1000);
+	private final static LazyTimedCache<String, Object> productInfoCache =
+		new LazyTimedCache<String, Object>("FDProductInfo", FDStoreProperties.getProductCacheSize(), FDStoreProperties.getRefreshSecsProductInfo() * 1000);
 
 	/**
 	 * FDProduct instances hashed by FDSku instances.
 	 */
-	private final static LazyTimedCache productCache = new LazyTimedCache("FDProduct", FDStoreProperties.getProductCacheSize(), FDStoreProperties.getRefreshSecsProduct() * 1000);
+	private final static LazyTimedCache<FDSku, FDProduct> productCache = new LazyTimedCache<FDSku, FDProduct>("FDProduct", FDStoreProperties.getProductCacheSize(), FDStoreProperties.getRefreshSecsProduct() * 1000);
 	
 	
 	/**
@@ -494,8 +494,8 @@ public class FDCachedFactory {
 		Collection prods = FDFactory.getProducts(loadSkus);
 
 		// cache these
-		Object o;
-		for (Iterator i=prods.iterator(); i.hasNext(); ) {
+		FDProduct o;
+		for (Iterator<FDProduct> i=prods.iterator(); i.hasNext(); ) {
 			o = i.next();
 			productCache.put(o,o);
 		}
@@ -587,7 +587,7 @@ public class FDCachedFactory {
 			if(null !=pi){
 				FDSku fdSku = new FDSku(sku, pi.getVersion());
 				FDProduct p = FDFactory.getProduct(fdSku);
-				productCache.put(sku, p);
+				productCache.put(fdSku, p);
 			}
 		} catch (FDSkuNotFoundException ex) {
 			productInfoCache.put(sku, SKU_NOT_FOUND);					
