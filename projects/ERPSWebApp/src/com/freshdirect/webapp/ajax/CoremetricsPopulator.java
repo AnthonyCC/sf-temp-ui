@@ -12,9 +12,9 @@ import com.freshdirect.fdstore.coremetrics.builder.ElementTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagInput;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
+import com.freshdirect.fdstore.coremetrics.util.CoremetricsUtil;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.webapp.ajax.expresscheckout.coremetrics.service.CoremetricsService;
 
 /**
  * 
@@ -67,7 +67,7 @@ public class CoremetricsPopulator {
 
         tagModelBuilder.setInput(input);
         tagModelBuilder.setUserCohort(user.getCohortName());
-        tagModelBuilder.setCustomerType(CoremetricsService.defaultService().getCustomerTypeByOrderCount(user));
+        tagModelBuilder.setCustomerType(CoremetricsUtil.defaultService().getCustomerTypeByOrderCount(user));
 
         final List<String> cmResult = tagModelBuilder.buildTagModel().toStringList();
 
