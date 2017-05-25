@@ -59,6 +59,7 @@ import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.erp.ejb.FDXOrderPickEligibleCronHome;
 import com.freshdirect.erp.ejb.FDXOrderPickEligibleCronSB;
 import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.MessageDrivenBeanSupport;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -68,6 +69,7 @@ import com.freshdirect.giftcard.ejb.GCGatewayHome;
 import com.freshdirect.giftcard.ejb.GCGatewaySB;
 import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.mail.ErpMailSender;
+import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.routing.ejb.ErpRoutingGatewayHome;
 import com.freshdirect.routing.ejb.ErpRoutingGatewaySB;
 import com.freshdirect.sap.SapOrderPickEligibleInfo;
@@ -223,8 +225,13 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 							//Send register message to register queue only if blackhole is disabled.
 							//otherwise leave it in register pending so register cron picks up
 							//after blackhole is disabled.
-							GCGatewaySB gateway = getGCGatewayHome().create();
-							gateway.sendRegisterGiftCard(saleId, saleEB.getCurrentOrder().getSubTotal());
+
+							if (FDStoreProperties.isStorefront2_0Enabled()) {
+								FDECommerceService.getInstance().sendRegisterGiftCard(saleId, saleEB.getCurrentOrder().getSubTotal());
+							} else {
+								GCGatewaySB gateway = getGCGatewayHome().create();
+								gateway.sendRegisterGiftCard(saleId, saleEB.getCurrentOrder().getSubTotal());
+							}
 						}
 					}
 
