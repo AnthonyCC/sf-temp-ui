@@ -932,7 +932,8 @@ public class FDStoreProperties {
     private final static String PROP_ZIP_CHECK_OVER_LAY_ENABLED = "fdstore.zipcheck.overlay.enabled";
     /* APPDEV-5781 */
     private final static String PROP_OBSOLETE_MERGECARTPAGE_ENABLED = "fdstore.obsolete.mergecartpage.enabled";
-
+	private final static String PROP_CLUSTER_NAME = "fdsystem.cluster.name";
+	private final static String PROP_NODE_NAME = "fdsystem.node.name";
     static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_INIT_CTX_FACTORY, "weblogic.jndi.WLInitialContextFactory");
@@ -1771,6 +1772,9 @@ public class FDStoreProperties {
         
         /* APPDEV-5781 */
         defaults.put(PROP_OBSOLETE_MERGECARTPAGE_ENABLED, "true");
+        defaults.put(PROP_CLUSTER_NAME, "localhost");
+        defaults.put(PROP_NODE_NAME, "localhost");
+    	
 
         refresh();
     }
@@ -4547,4 +4551,13 @@ public class FDStoreProperties {
 	public static boolean isObsoleteMergeCartPageEnabled() {
     	return (Boolean.valueOf(get(PROP_OBSOLETE_MERGECARTPAGE_ENABLED))).booleanValue();
 	}
+
+	public static String getClusterName() {
+		return get(PROP_CLUSTER_NAME);
+	}
+
+	public static String getNodeName() {
+		return get(PROP_NODE_NAME);
+	}
+
 }
