@@ -14,8 +14,10 @@ import com.freshdirect.fdstore.coremetrics.builder.OrderTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.Shop5TagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.Shop9TagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
+import com.freshdirect.fdstore.coremetrics.extradata.CoremetricsExtraData;
 import com.freshdirect.fdstore.coremetrics.tagmodel.OrderTagModel;
 import com.freshdirect.fdstore.coremetrics.tagmodel.ShopTagModel;
+import com.freshdirect.fdstore.coremetrics.util.CoremetricsUtil;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -233,6 +235,11 @@ public class CreateCMRequest {
         int httpResponseCode;
 
         OrderTagModelBuilder tagModelBuilder = new OrderTagModelBuilder(order, user);
+
+        CoremetricsExtraData cmExtraData = new CoremetricsExtraData();
+        cmExtraData.setCustomerType(CoremetricsUtil.defaultService().getCustomerTypeByOrderCount(user));
+        tagModelBuilder.setCoremetricsExtraData(cmExtraData);
+
         OrderTagModel orderTagModel = tagModelBuilder.buildTagModel();
 
         String orderQueryPart;
