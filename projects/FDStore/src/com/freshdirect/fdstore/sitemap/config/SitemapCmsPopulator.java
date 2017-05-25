@@ -19,11 +19,14 @@ public class SitemapCmsPopulator {
 
     private static final SitemapCmsPopulator INSTANCE = new SitemapCmsPopulator();
 
+    private final CmsManager contentService;
+
     public static SitemapCmsPopulator getInstance() {
         return INSTANCE;
     }
 
     private SitemapCmsPopulator() {
+        contentService = CmsManager.getInstance();
     }
 
     public Map<String, List<ContentKey>> getCategoriesByDepartment() {
@@ -102,20 +105,43 @@ public class SitemapCmsPopulator {
         return (FDContentTypes.SUPER_DEPARTMENT.equals(type) || FDContentTypes.DEPARTMENT.equals(type) || FDContentTypes.CATEGORY.equals(type));
     }
 
+    private boolean doesContentTypeProducts(ContentKey key) {
+        return FDContentTypes.PRODUCT.equals(key.getType());
+    }
+
     private Boolean isSitemapValid(ContentNodeI node) {
-        return !Boolean.TRUE.equals((Boolean) node.getAttributeValue("SKIP_SITEMAP"));
+        return !Boolean.TRUE.equals((Boolean) node.getAttributeValue("SKIP_SITEMAP")) && !isKeyOrphan(node.getKey());
     }
 
     private Collection<ContentNodeI> getNodesByType(ContentType type) {
-        return getContentNodes(CmsManager.getInstance().getContentKeysByType(type, DraftContext.MAIN));
+        return getContentNodes(contentService.getContentKeysByType(type, DraftContext.MAIN));
     }
 
     private Collection<ContentNodeI> getContentNodes(Set<ContentKey> keys) {
-        return CmsManager.getInstance().getContentNodes(keys, DraftContext.MAIN).values();
+        return contentService.getContentNodes(keys, DraftContext.MAIN).values();
     }
 
     public ContentKey getPrimaryHomeKey(ContentKey key) {
-        return CmsManager.getInstance().getPrimaryHomeKey(key, DraftContext.MAIN);
+        return contentService.getPrimaryHomeKey(key, DraftContext.MAIN);
+    }
+
+    private boolean isKeyOrphan(ContentKey key) {
+        boolean isOrphan = false;
+        if (doesContentTypeProducts(key) || doesContentTypeContainProducts(key)) {
+            Set<ContentKey> parentKeys = contentService.getParentKeys(key, DraftContext.MAIN);
+            if (parentKeys.isEmpty()) {
+                isOrphan = true;
+            } else {
+                for (ContentKey parentKey : parentKeys) {
+                    boolean isParentOrphan = isKeyOrphan(parentKey);
+                    if (isParentOrphan){
+                        isOrphan = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return isOrphan;
     }
 
 }
