@@ -119,7 +119,7 @@ class FDAvailabilityMapper {
 
 			if (applicableRestrictions.contains(EnumDlvRestrictionReason.ALCOHOL)) {
 
-				MunicipalityInfo muniInfo = muni.getMunicipalityInfo(address.getState(), county, address.getCity());
+				MunicipalityInfo muniInfo = muni.getMunicipalityInfo(address!=null?address.getState():null, county, address!=null?address.getCity():null);
 
 				if (muniInfo.isAlcoholRestricted()) {
 					inv = new FDMuniAvailability(muniInfo);
