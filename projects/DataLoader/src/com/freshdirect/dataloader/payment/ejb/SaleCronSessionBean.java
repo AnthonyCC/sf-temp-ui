@@ -65,6 +65,7 @@ import com.freshdirect.payment.ejb.PaymentGatewayHome;
 import com.freshdirect.payment.ejb.PaymentGatewaySB;
 import com.freshdirect.payment.ejb.PaymentHome;
 import com.freshdirect.payment.ejb.PaymentSB;
+import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.sap.SapEBTOrderSettlementInfo;
 import com.freshdirect.sap.SapOrderSettlementInfo;
 import com.freshdirect.sap.SapProperties;
@@ -1001,10 +1002,13 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		GiftCardManagerSB gmb = null;
 		PaymentCommandI command = null;
 		boolean useQueue = ErpServicesProperties.isUseRegisterQueue();
-		if(useQueue){
-			gsb = this.getGCGatewaySB();
-		}else{
-			gmb = this.getGiftCardManagerSB();
+
+		if (!FDStoreProperties.isStorefront2_0Enabled()) {
+			if (useQueue) {
+				gsb = this.getGCGatewaySB();
+			} else {
+				gmb = this.getGiftCardManagerSB();
+			}
 		}
 		//LOGGER.info("********** use queue:"+ErpServicesProperties.isUseQueue());
 		for (Iterator<String> i = saleIds.keySet().iterator(); i.hasNext();) {
@@ -1020,14 +1024,25 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 				utx.begin();
 				String saleId = i.next();
 				Double subTotal = saleIds.get(saleId);
-				if(useQueue){
-					gsb.sendRegisterGiftCard(saleId, subTotal.doubleValue());
-					LOGGER.info("*******sending message to register Queue for order:"+saleIds.get(i));
-				}else{
-					gmb.registerGiftCard(saleId, subTotal.doubleValue());
-					LOGGER.info("*******do register transaction for order:"+saleIds.get(i));
-				}
 
+				if (FDStoreProperties.isStorefront2_0Enabled()) {
+					if(useQueue){
+						FDECommerceService.getInstance().sendRegisterGiftCard(saleId, subTotal.doubleValue());
+						LOGGER.info("*******sending message to register Queue for order:"+saleIds.get(i));
+					}else{
+						// TODO Not implemented yet
+						// FDECommerceService.getInstance().registerGiftCard(saleId, subTotal.doubleValue());
+						LOGGER.info("*******do register transaction for order:"+saleIds.get(i));
+					}
+				} else {
+					if (useQueue) {
+						gsb.sendRegisterGiftCard(saleId, subTotal.doubleValue());
+						LOGGER.info("*******sending message to register Queue for order:" + saleIds.get(i));
+					} else {
+						gmb.registerGiftCard(saleId, subTotal.doubleValue());
+						LOGGER.info("*******do register transaction for order:" + saleIds.get(i));
+					}
+				}
 				utx.commit();
 			} catch (Exception e) {
 				LOGGER.warn("Exception occured during register", e);
