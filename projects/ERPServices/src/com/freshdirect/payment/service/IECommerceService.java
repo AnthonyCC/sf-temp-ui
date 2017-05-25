@@ -318,6 +318,8 @@ public interface IECommerceService {
 	public Map<String, List> getFilterLists(ErpActivityRecord template)throws FDResourceException,RemoteException;
 
 	public Collection<ErpActivityRecord> getCCActivitiesByTemplate(ErpActivityRecord template) throws FDResourceException,RemoteException;
+	
+	public void sendRegisterGiftCard(String saleId, double saleAmount) throws RemoteException;
 
 
 	public Collection findMaterialsByBatch(int batchNum) throws RemoteException;

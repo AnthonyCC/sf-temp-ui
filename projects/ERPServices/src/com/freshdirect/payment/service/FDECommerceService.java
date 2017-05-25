@@ -308,6 +308,8 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String ERP_SKUS_BY_DEAL = "erpmaterialinfo/skusbydeal";
 	private static final String ERP_PEAK_PRODUCE_SKUS_BY_DEPARTMENT = "erpmaterialinfo/peakproduceskusbydepartment";
 	
+	private static final String SEND_GIFTCARD = "giftcard/send/";
+	
 	public static IECommerceService getInstance() {
 		if (INSTANCE == null)
 			INSTANCE = new FDECommerceService();
@@ -3223,7 +3225,21 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		}
 		return response.getData();
 	}
-	
+
+
+	@Override
+	public void sendRegisterGiftCard(String saleId, double saleAmount) throws RemoteException {
+
+		Response<String> response = null;
+		try {
+			response = this.httpGetDataTypeMap((getFdCommerceEndPoint(SEND_GIFTCARD + saleId + "/" + saleAmount)), new TypeReference<Response<Object>>() {});
+		if(!response.getResponseCode().equals("OK"))
+			throw new FDResourceException(response.getMessage());
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new FDRuntimeException(e, "Unable to process the request.");
+		}
+	}	
 	
 	
 	
