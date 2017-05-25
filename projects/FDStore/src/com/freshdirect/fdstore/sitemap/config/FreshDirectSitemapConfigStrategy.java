@@ -34,7 +34,8 @@ public class FreshDirectSitemapConfigStrategy implements SitemapConfigStrategy {
         switch (type) {
             case MAIN:
                 config = new SitemapConfiguration().setStoreName(STORE_CONTENT_ID).setDirectoryPath(properties.getDirectoryPath()).setNamePrefix(MAIN_NAME_PREFIX)
-                        .setBasePath(properties.getBasePath()).setBasePathPostfix(properties.getBasePathPostfix()).setGzip(SITEMAP_GZIP).setIndexEnabled(false);
+                        .setBasePath(properties.getBasePath()).setBasePathPostfix(properties.getBasePathPostfix()).setContextPath(properties.getContextPath())
+                        .setGzip(SITEMAP_GZIP).setIndexEnabled(false);
 
                 config.addUrlConfig(new SitemapUrlConfiguration().addUrlPaths(properties.getMainContextPaths()).setLastModification(new Date())
                         .setPriority(SitemapPriorityEnum.HIGHEST.getPriority()));
@@ -43,7 +44,8 @@ public class FreshDirectSitemapConfigStrategy implements SitemapConfigStrategy {
 
             case CATEGORY:
                 config = new SitemapConfiguration().setStoreName(STORE_CONTENT_ID).setDirectoryPath(properties.getDirectoryPath()).setNamePrefix(CATEGORY_NAME_PREFIX)
-                        .setBasePath(properties.getBasePath()).setBasePathPostfix(properties.getBasePathPostfix()).setGzip(SITEMAP_GZIP).setIndexEnabled(true);
+                        .setBasePath(properties.getBasePath()).setBasePathPostfix(properties.getBasePathPostfix()).setContextPath(properties.getContextPath())
+                        .setGzip(SITEMAP_GZIP).setIndexEnabled(true);
 
                 for (Map.Entry<String, List<ContentKey>> entry : populator.getCategoriesByDepartment().entrySet()) {
                     config.addUrlConfig(new SitemapUrlConfiguration().addUrlPaths(translateNodeToUrl(entry.getValue())).setLastModification(new Date())
@@ -54,7 +56,8 @@ public class FreshDirectSitemapConfigStrategy implements SitemapConfigStrategy {
 
             case PRODUCT:
                 config = new SitemapConfiguration().setStoreName(STORE_CONTENT_ID).setDirectoryPath(properties.getDirectoryPath()).setNamePrefix(PRODUCT_NAME_PREFIX)
-                        .setBasePath(properties.getBasePath()).setBasePathPostfix(properties.getBasePathPostfix()).setGzip(SITEMAP_GZIP).setIndexEnabled(true);
+                        .setBasePath(properties.getBasePath()).setBasePathPostfix(properties.getBasePathPostfix()).setContextPath(properties.getContextPath())
+                        .setGzip(SITEMAP_GZIP).setIndexEnabled(true);
 
                 for (Map.Entry<String, List<ContentKey>> entry : populator.getProductsByDepartment().entrySet()) {
                     config.addUrlConfig(new SitemapUrlConfiguration().addUrlPaths(translateNodeToUrl(entry.getValue())).setLastModification(new Date())

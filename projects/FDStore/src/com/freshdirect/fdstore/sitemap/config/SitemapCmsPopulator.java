@@ -19,14 +19,11 @@ public class SitemapCmsPopulator {
 
     private static final SitemapCmsPopulator INSTANCE = new SitemapCmsPopulator();
 
-    private final CmsManager contentService;
-
     public static SitemapCmsPopulator getInstance() {
         return INSTANCE;
     }
 
     private SitemapCmsPopulator() {
-        contentService = CmsManager.getInstance();
     }
 
     public Map<String, List<ContentKey>> getCategoriesByDepartment() {
@@ -114,21 +111,21 @@ public class SitemapCmsPopulator {
     }
 
     private Collection<ContentNodeI> getNodesByType(ContentType type) {
-        return getContentNodes(contentService.getContentKeysByType(type, DraftContext.MAIN));
+        return getContentNodes(CmsManager.getInstance().getContentKeysByType(type, DraftContext.MAIN));
     }
 
     private Collection<ContentNodeI> getContentNodes(Set<ContentKey> keys) {
-        return contentService.getContentNodes(keys, DraftContext.MAIN).values();
+        return CmsManager.getInstance().getContentNodes(keys, DraftContext.MAIN).values();
     }
 
     public ContentKey getPrimaryHomeKey(ContentKey key) {
-        return contentService.getPrimaryHomeKey(key, DraftContext.MAIN);
+        return CmsManager.getInstance().getPrimaryHomeKey(key, DraftContext.MAIN);
     }
 
     private boolean isKeyOrphan(ContentKey key) {
         boolean isOrphan = false;
         if (doesContentTypeProducts(key) || doesContentTypeContainProducts(key)) {
-            Set<ContentKey> parentKeys = contentService.getParentKeys(key, DraftContext.MAIN);
+            Set<ContentKey> parentKeys = CmsManager.getInstance().getParentKeys(key, DraftContext.MAIN);
             if (parentKeys.isEmpty()) {
                 isOrphan = true;
             } else {

@@ -89,7 +89,7 @@ public class SitemapService {
         List<SitemapIndexUrl> indexUrls = new ArrayList<SitemapIndexUrl>();
         Date now = new Date();
         for (File sitemap : sitemaps) {
-            indexUrls.add(new SitemapIndexUrl(MessageFormat.format(URL_TEMPLATE, config.getBasePath(), sitemap.getName()), now));
+            indexUrls.add(new SitemapIndexUrl(MessageFormat.format(URL_TEMPLATE, decorateBasePath(config.getBasePath(), config.getContextPath()), sitemap.getName()), now));
         }
         return indexUrls;
     }
