@@ -57,6 +57,16 @@ public abstract class BasicProductData implements Serializable {
     protected String productJumboImage;
 
     /**
+     * Product alternate image url (CMS: ALTERNATE_IMAGE)
+     */
+    private String productAlternateImage;
+
+    /**
+     * Product package image url (CMS: PROD_IMAGE_PACKAGE)
+     */
+    private String productImagePackage;
+
+    /**
      * Link to product page (FDURLUtil.getProductURI)
      */
     protected String productPageUrl;
@@ -439,5 +449,21 @@ public abstract class BasicProductData implements Serializable {
 
     public boolean getHasTerms() {
         return hasTerms;
+    }
+
+    public String getProductAlternateImage() {
+        return productAlternateImage;
+    }
+
+    public void setProductAlternateImage(String productAlternateImage) {
+        this.productAlternateImage = productAlternateImage;
+    }
+
+    public String getProductImagePackage() {
+        return productImagePackage;
+    }
+
+    public void setProductImagePackage(String productImagePackage) {
+        this.productImagePackage = productImagePackage;
     }
 }
