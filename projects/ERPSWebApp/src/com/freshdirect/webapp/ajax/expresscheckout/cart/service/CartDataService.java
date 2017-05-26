@@ -40,6 +40,8 @@ import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.coremetrics.CmContextUtility;
+import com.freshdirect.fdstore.coremetrics.extradata.CoremetricsExtraData;
+import com.freshdirect.fdstore.coremetrics.util.CoremetricsUtil;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -338,7 +340,7 @@ public class CartDataService {
         CartData.Item item = populateCartDataItemByCartLine(user, cartLine, cart, recentIds);
         populateCartDataItemWithUnitPriceAndQuantity(item, fdProduct, productNode.getPriceCalculator());
         item.setMealBundle(isMealBundle(productNode));
-    	item.setImage((productNode.getProdImage() == null) ? "" : productNode.getProdImage().getPathWithPublishId()); //APPDEV-6014
+        item.setImage((productNode.getProdImage() == null) ? "" : productNode.getProdImage().getPathWithPublishId()); // APPDEV-6014
         item.setProductId(productNode.getContentKey().getId());
         item.setCategoryId(productNode.getCategory().getContentKey().getId());
 
@@ -382,13 +384,13 @@ public class CartDataService {
         item.setHasTax(cartLine.hasTax());
         item.setHasDepositValue(cartLine.hasDepositValue());
         item.setHasScaledPricing(calculateHasScaledPricing(cartLine));
-        if (StandingOrderHelper.isSO3StandingOrder(user) && user.getCurrentStandingOrder() != null &&
-        		"Y".equalsIgnoreCase(user.getCurrentStandingOrder().getActivate())){
-        		if (user.getSoCartLineMessagesMap().containsKey(cartLine.getCustomerListLineId()))
-        			item.setSo3ItemStatus(user.getSoCartLineMessagesMap().get(cartLine.getCustomerListLineId()));
-        	}
+        if (StandingOrderHelper.isSO3StandingOrder(user) && user.getCurrentStandingOrder() != null && "Y".equalsIgnoreCase(user.getCurrentStandingOrder().getActivate())) {
+            if (user.getSoCartLineMessagesMap().containsKey(cartLine.getCustomerListLineId()))
+                item.setSo3ItemStatus(user.getSoCartLineMessagesMap().get(cartLine.getCustomerListLineId()));
+        }
         return item;
-   }
+    }
+
     /**
      * @see i_viewcart.jspf:396, i_viewcart.jspf:482
      * 
@@ -539,8 +541,7 @@ public class CartDataService {
                 if (sessionUserLevel == FDUserI.GUEST) {
                     // session.setAttribute(SessionName.PREV_SUCCESS_PAGE,request.getRequestURI());
                     session.setAttribute(SessionName.PREV_SUCCESS_PAGE, "/expressco/checkout.jsp");
-                    cartData.setBeforeCheckoutAction(
-                            "onclick=\"FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', height: 590, opacity: .5}); return false;\"");
+                    cartData.setBeforeCheckoutAction("onclick=\"FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp', height: 590, opacity: .5}); return false;\"");
                 } else if (sessionUserLevel == FDUserI.RECOGNIZED) {
                     // session.setAttribute(SessionName.PREV_SUCCESS_PAGE,request.getRequestURI());
                     session.setAttribute(SessionName.PREV_SUCCESS_PAGE, "/expressco/checkout.jsp");
@@ -549,24 +550,23 @@ public class CartDataService {
             }
 
             populateSubTotalBox(cartData, cart, user, request.getRequestURI());
-            populateSubTotalBoxForNonAlcoholSections(cart, sections, hasEstimatedPriceItemInCart,
-                    getSubTotalTextForNonAlcoholicSections(isWineInCart, hasEstimatedPriceItemInCart));
+            populateSubTotalBoxForNonAlcoholSections(cart, sections, hasEstimatedPriceItemInCart, getSubTotalTextForNonAlcoholicSections(isWineInCart, hasEstimatedPriceItemInCart));
 
             if (FDUserI.GUEST < user.getLevel()) {
                 cartData.setUserRecognized(true);
                 cartData.setUserCorporate(user.isCorporateUser());
-                if(StandingOrderHelper.isSO3StandingOrder(user)){
+                if (StandingOrderHelper.isSO3StandingOrder(user)) {
                     cartData.setUserCorporate(true);
 
                 }
-                cartData.setGoGreen(("Y".equalsIgnoreCase(GoGreenService.defaultService().loadGoGreenOption(user)))?true:false);
+                cartData.setGoGreen(("Y".equalsIgnoreCase(GoGreenService.defaultService().loadGoGreenOption(user))) ? true : false);
             }
             cartData.setBillingReferenceInfo(populateBillingReferenceInfo(session, user));
             checkCartCleanUpAction(request, cartData);
             cartData.setModifyCartData(isModifyOrderMode(session));
             cartData.setModifyOrder(cartData.getModifyCartData().isModifyOrderEnabled());
             cartData.setErrorMessage(null);
-            //if(user.getCurrentStandingOrder()!=null)
+            // if(user.getCurrentStandingOrder()!=null)
             if (!StandingOrderHelper.isSO3StandingOrder(user)) {
                 cartData.setWarningMessage(AvailabilityService.defaultService().translateWarningMessage(request.getParameter("warning_message"), user));
             }
@@ -575,16 +575,15 @@ public class CartDataService {
             cartData.setHardLimit(StandingOrderHelper.formatDecimalPrice(ErpServicesProperties.getStandingOrderHardLimit()));
 
             cartData.setCouponMessage(populateCouponMessage(user, cartLines));
-            if(StandingOrderHelper.isSO3StandingOrder(user))
-            	{	
-            		cartData.setDeliveryBegins(StandingOrderHelper.getDeliveryBeginsInfo(user));
-            	}
-            
-            //APPDEV-5516 If the property is true, set the Donation Carousel to Cart Data, else fall back to Product Sample Carousel
-            if(FDStoreProperties.isPropDonationProductSamplesEnabled()){
-            	cartData.setProductSamplesTab(ViewCartCarouselService.defaultService().populateViewCartPageDonationProductSampleCarousel(request));	
+            if (StandingOrderHelper.isSO3StandingOrder(user)) {
+                cartData.setDeliveryBegins(StandingOrderHelper.getDeliveryBeginsInfo(user));
+            }
+
+            // APPDEV-5516 If the property is true, set the Donation Carousel to Cart Data, else fall back to Product Sample Carousel
+            if (FDStoreProperties.isPropDonationProductSamplesEnabled()) {
+                cartData.setProductSamplesTab(ViewCartCarouselService.defaultService().populateViewCartPageDonationProductSampleCarousel(request));
             } else {
-            	cartData.setProductSamplesTab(ViewCartCarouselService.defaultService().populateViewCartPageProductSampleCarousel(request));
+                cartData.setProductSamplesTab(ViewCartCarouselService.defaultService().populateViewCartPageProductSampleCarousel(request));
             }
             cartData.setCustomerServiceRepresentative(CustomerServiceRepresentativeService.defaultService().loadCustomerServiceRepresentativeInfo(user));
             cartData.setAvalaraEnabled(FDStoreProperties.getAvalaraTaxEnabled());
@@ -600,9 +599,9 @@ public class CartDataService {
                 cartData.setTipApplied(cart.isTipApplied());
 
             }
-		if(StandingOrderHelper.isSO3StandingOrder(user)){
-			cartData.setUserCorporate(true);
-		}
+            if (StandingOrderHelper.isSO3StandingOrder(user)) {
+                cartData.setUserCorporate(true);
+            }
         } catch (Exception e) {
             LOG.error("Error while processing cart for user " + userId, e);
             BaseJsonServlet.returnHttpError(500, "Error while processing cart for user " + userId, e);
@@ -723,30 +722,30 @@ public class CartDataService {
         return recentIds;
     }
 
-    private boolean hasMultiplestores(FDCartI cart, String userId){
-    	boolean hasWine = false;
-    	boolean hasFdStore = false;
-    	try {
-    		 List<FDCartLineI> cartLines = this.loadCartOrderLines(userId, cart);
-			for (FDCartLineI cartLine : cartLines) {
-				if(cartLine.isWine()){
-					hasWine = true;
-				}else{
-					hasFdStore = true;
-				}
-			}
-		} catch (HttpErrorResponse e) {
-			e.printStackTrace();
-		}
-    	return (hasWine & hasFdStore);
+    private boolean hasMultiplestores(FDCartI cart, String userId) {
+        boolean hasWine = false;
+        boolean hasFdStore = false;
+        try {
+            List<FDCartLineI> cartLines = this.loadCartOrderLines(userId, cart);
+            for (FDCartLineI cartLine : cartLines) {
+                if (cartLine.isWine()) {
+                    hasWine = true;
+                } else {
+                    hasFdStore = true;
+                }
+            }
+        } catch (HttpErrorResponse e) {
+            e.printStackTrace();
+        }
+        return (hasWine & hasFdStore);
     }
-    
+
     private void populateSubTotalBox(CartData cartData, FDCartI cart, FDUserI user, String uri) {
-    	cartData.setAvalaraEnabled(FDStoreProperties.getAvalaraTaxEnabled());
+        cartData.setAvalaraEnabled(FDStoreProperties.getAvalaraTaxEnabled());
         List<CartSubTotalFieldData> subTotalBox = new ArrayList<CartSubTotalFieldData>();
         CartSubTotalBoxService.defaultService().populateSubTotalToBox(subTotalBox, cart);
         CartSubTotalBoxService.defaultService().populateTaxToBox(subTotalBox, cart, uri, hasMultiplestores(cart, user.getUserId()));
-        //CartSubTotalBoxService.defaultService().populateTipToBox(subTotalBox, cart);
+        // CartSubTotalBoxService.defaultService().populateTipToBox(subTotalBox, cart);
         CartSubTotalBoxService.defaultService().populateDepositValueToBox(subTotalBox, cart.getDepositValue());
         CartSubTotalBoxService.defaultService().populateFuelSurchargeToBox(subTotalBox, cart);
         CartSubTotalBoxService.defaultService().populateDiscountsToBox(subTotalBox, cart, cartData, user);
@@ -877,7 +876,9 @@ public class CartDataService {
 
                     // [APPDEV-4558] check if CM reporting is enabled
                     if (CmContextUtility.isCoremetricsAvailable(user)) {
-                        CartOperations.populateCoremetricsShopTag(cartData, cartLine);
+                        CoremetricsExtraData cmExtraData = new CoremetricsExtraData();
+                        cmExtraData.setCustomerType(CoremetricsUtil.defaultService().getCustomerTypeByOrderCount(user));
+                        CartOperations.populateCoremetricsShopTag(cartData, cartLine, cmExtraData);
                     }
                 }
         } catch (Exception e) {

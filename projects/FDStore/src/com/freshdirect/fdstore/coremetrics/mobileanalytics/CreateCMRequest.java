@@ -203,6 +203,11 @@ public class CreateCMRequest {
         int counter = 0;
 
         Shop9TagModelBuilder tagModelBuilder = new Shop9TagModelBuilder();
+
+        CoremetricsExtraData cmExtraData = new CoremetricsExtraData();
+        cmExtraData.setCustomerType(CoremetricsUtil.defaultService().getCustomerTypeByOrderCount(user));
+        tagModelBuilder.setCoremetricsExtraData(cmExtraData);
+
         tagModelBuilder.setCart(cart);
         tagModelBuilder.setOrder(order);
         tagModelBuilder.setUser(user);
