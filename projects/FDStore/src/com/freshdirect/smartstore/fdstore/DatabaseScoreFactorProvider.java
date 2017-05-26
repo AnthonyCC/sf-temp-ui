@@ -148,8 +148,8 @@ public class DatabaseScoreFactorProvider {
         			try{
         			contentKeys.add(ContentKey.create(FDContentTypes.PRODUCT, productId));
         			}catch (InvalidContentKeyException e) {
-        				// TODO Auto-generated catch block
-        	        	throw new FDRuntimeException(e);
+        				LOGGER.warn("invalid content key '" + productId + "', for "
+    							+ key + ", from recommender " + recommender);
         			}
 				}
         		return contentKeys;
@@ -180,8 +180,9 @@ public class DatabaseScoreFactorProvider {
         			try{
         			contentKeys.add(ContentKey.create(FDContentTypes.PRODUCT, productId));
         			}catch (InvalidContentKeyException e) {
-        				// TODO Auto-generated catch block
-        	        	throw new FDRuntimeException(e);
+        				LOGGER.warn("invalid Product Id '" + productId + "', for "
+    							+ erpCustomerId + ", from recommender "
+    							+ recommender + " for personal recommendation");
         			}
 				}
         		return contentKeys;

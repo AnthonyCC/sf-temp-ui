@@ -18,6 +18,8 @@ import java.util.NavigableMap;
 import java.util.Set;
 import java.util.TreeMap;
 
+import javax.ejb.ObjectNotFoundException;
+
 import org.apache.log4j.Category;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -68,6 +70,7 @@ import com.freshdirect.ecommerce.data.enums.DeliveryPassTypeData;
 import com.freshdirect.ecommerce.data.enums.EnumFeaturedHeaderTypeData;
 import com.freshdirect.ecommerce.data.enums.ErpAffiliateData;
 import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
+import com.freshdirect.ecommerce.data.erp.inventory.ErpInventoryData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpRestrictedAvailabilityData;
 import com.freshdirect.ecommerce.data.erp.inventory.RestrictedInfoParam;
 import com.freshdirect.ecommerce.data.erp.material.OverrideSkuAttrParam;
@@ -277,39 +280,46 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	
 	
 	
-	private static final String ERP_MATERIALINFO_VERSION = "erpmaterialinfo/materialbybatch";
-	private static final String ERP_MATERIALINFO_SAPID = "erpmaterialinfo/materialsbysapid";
-	private static final String ERP_MATERIALINFO_SKUCODE = "erpmaterialinfo/materialsbyskucode";
-	private static final String ERP_MATERIALINFO_DESCRIPTION = "erpmaterialinfo/materialsbydescription";
-	private static final String ERP_MATERIALINFO_CHARACTERISTIC = "erpmaterialinfo/materialsbyclassandcharacteristic";
-	private static final String ERP_MATERIALSINFO_CLASS= "erpmaterialinfo/materialsbyclass";
-	private static final String ERP_PRODUCTINFO_SKUCODE = "erpmaterialinfo/productbysku";
-	private static final String ERP_PRODUCTINFO_SAPID = "erpmaterialinfo/productbysapid";
-	private static final String ERP_PRODUCTINFO_DESCRIPTION = "erpmaterialinfo/productsbydescription";
-	private static final String ERP_PRODUCTINFO_LIKESKU = "erpmaterialinfo/productslikesku";
-	private static final String ERP_PRODUCTINFO_UPC = "erpmaterialinfo/productsbyupc";
-	private static final String ERP_PRODUCTINFO_CUSTOMER_UPC = "erpmaterialinfo/productsbycustomerupc";
-	private static final String ERP_PRODUCTINFO_LIKEUPC = "erpmaterialinfo/productslikeupc";
-	private static final String ERP_SKUS_SAPID = "erpmaterialinfo/skusbySapId";
-	private static final String ERP_NEW_SKUS_DAYS = "erpmaterialinfo/newskucodes";
-	private static final String ERP_SKUS_OLDNESS = "erpmaterialinfo/skuoldness";
-	private static final String ERP_PRODUCTINFO_SKUCODE_VERSION = "erpmaterialinfo/productbyskuandversion";
-	private static final String ERP_REINTRODUCED_SKUCODES = "erpmaterialinfo/reintroducedSkuCodes";
-	private static final String ERP_OUTOFSTOCK_SKUCODES = "erpmaterialinfo/outofstockskucodes";
-	private static final String ERP_PRODUCT_SKUS = "erpmaterialinfo/productsbyskus";
-	private static final String ERP_OVERRIDDEN_NEWNESS = "erpmaterialinfo/overriddennewness";
-	private static final String ERP_OVERRIDDEN_BACK_IN_STOCK = "erpmaterialinfo/overriddenbackinstock";
-	private static final String ERP_NEW_SKUS = "erpmaterialinfo/newskus";
-	private static final String ERP_BACK_IN_STOCK_SKUS = "erpmaterialinfo/backinstockskus";
-	private static final String ERP_OVERRIDDEN_NEW_SKUS = "erpmaterialinfo/overriddennewskus";
-	private static final String ERP_OVERRIDDEN_BACK_IN_STOCK_SKUS = "erpmaterialinfo/overriddenbackinstockskus";
-	private static final String ERP_SKU_AVAILABILITY_HISTORY = "erpmaterialinfo/skuavailabilityhistory";
-	private static final String ERP_REFRESH_NEW_AND_BACK_VIEWS = "erpmaterialinfo/refreshnewandbackviews";
-	private static final String ERP_SKUS_BY_DEAL = "erpmaterialinfo/skusbydeal";
-	private static final String ERP_PEAK_PRODUCE_SKUS_BY_DEPARTMENT = "erpmaterialinfo/peakproduceskusbydepartment";
+	private static final String ERP_MATERIALINFO_VERSION = "erpinfo/materialbybatch";
+	private static final String ERP_MATERIALINFO_SAPID = "erpinfo/materialsbysapid";
+	private static final String ERP_MATERIALINFO_SKUCODE = "erpinfo/materialsbyskucode";
+	private static final String ERP_MATERIALINFO_DESCRIPTION = "erpinfo/materialsbydescription";
+	private static final String ERP_MATERIALINFO_CHARACTERISTIC = "erpinfo/materialsbyclassandcharacteristic";
+	private static final String ERP_MATERIALSINFO_CLASS= "erpinfo/materialsbyclass";
+	private static final String ERP_PRODUCTINFO_SKUCODE = "erpinfo/productbysku";
+	private static final String ERP_PRODUCTINFO_SKUCODE_VERSION = "erpinfo/productbyskuandversion";
+	private static final String ERP_PRODUCT_SKUS = "erpinfo/productsbyskus";
+	private static final String ERP_PRODUCTINFO_SAPID = "erpinfo/productbysapid";
+	private static final String ERP_SKUS_SAPID = "erpinfo/skusbysapid";
+	private static final String ERP_PRODUCTINFO_DESCRIPTION = "erpinfo/productsbydescription";
+	private static final String ERP_PRODUCTINFO_LIKESKU = "erpinfo/productslikesku";
+	private static final String ERP_PRODUCTINFO_UPC = "erpinfo/productsbyupc";
+	private static final String ERP_PRODUCTINFO_CUSTOMER_UPC = "erpinfo/productsbycustomerupc";
+	private static final String ERP_PRODUCTINFO_LIKEUPC = "erpinfo/productslikeupc";
+	private static final String ERP_INVENTORY_INFO = "erpinfo/inventoryinfo";
+	private static final String ERP_LOAD_INVENTORY_INFO = "erpinfo/loadinventory";
 	
+	private static final String ERP_NEW_SKUS_DAYS = "erpinfo/newskucodes";
+	private static final String ERP_SKUS_OLDNESS = "erpinfo/skuoldness";
+	private static final String ERP_REINTRODUCED_SKUCODES = "erpinfo/reintroducedskucodes";
+	private static final String ERP_OUTOFSTOCK_SKUCODES = "erpinfo/outofstockskucodes";
+	private static final String ERP_SKUS_BY_DEAL = "erpinfo/skusbydeal";
+	private static final String ERP_PEAK_PRODUCE_SKUS_BY_DEPARTMENT = "erpinfo/peakproduceskusbydepartment";
+	private static final String ERP_NEW_SKUS = "erpinfo/newskus";
+	private static final String ERP_BACK_IN_STOCK_SKUS = "erpinfo/backinstockskus";
+	private static final String ERP_OVERRIDDEN_NEW_SKUS = "erpinfo/overriddennewskus";
+	private static final String ERP_OVERRIDDEN_BACK_IN_STOCK_SKUS = "erpinfo/overriddenbackinstockskus";
+	private static final String ERP_SKU_AVAILABILITY_HISTORY = "erpinfo/skuavailabilityhistory";
+	private static final String ERP_REFRESH_NEW_AND_BACK_VIEWS = "erpinfo/refreshnewandbackviews";
+//	availabledeliverydates
+	
+	private static final String ERP_OVERRIDDEN_NEWNESS = "erpinfo/overriddennewness";
+	private static final String ERP_OVERRIDDEN_BACK_IN_STOCK = "erpinfo/overriddenbackinstock";
+	
+
 	private static final String SEND_GIFTCARD = "giftcard/send/";
 	
+
 	public static IECommerceService getInstance() {
 		if (INSTANCE == null)
 			INSTANCE = new FDECommerceService();
@@ -804,7 +814,9 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		Response<String> response = new Response<String>(); 
 	
 			try {
+				LOGGER.info("give input are zoneServiceType: "+zoneServiceType+" zipCode: "+zipCode+" isPickupOnlyORNotServicebleZip: "+isPickupOnlyORNotServicebleZip+" starting time: "+System.currentTimeMillis());
 				response = getData(getFdCommerceEndPoint(LOAD_ZONE_ID_ISPICK)+"?zoneServiceType="+zoneServiceType+"&zipCode="+zipCode+"&isPickup="+isPickupOnlyORNotServicebleZip, Response.class);
+				LOGGER.info("Ending time: "+System.currentTimeMillis());
 			} catch (FDResourceException e) {
 				throw new RemoteException(e.getMessage());
 			}
@@ -2749,11 +2761,14 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	}
 	
 	@Override
-	public ErpProductInfoModel findProductBySku(String skuCode) throws RemoteException {
+	public ErpProductInfoModel findProductBySku(String skuCode) throws RemoteException, ObjectNotFoundException {
 		Response<ErpProductInfoModelData> response = null;
 		ErpProductInfoModel erpProductInfoModel;
 		try {
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_PRODUCTINFO_SKUCODE)+"/"+skuCode,  new TypeReference<Response<ErpProductInfoModelData>>(){});
+			if(response.getData() == null){
+				throw new ObjectNotFoundException(response.getMessage());
+			}
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
@@ -2775,7 +2790,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
-			erpProductInfoModels = ErpProductInfoModelConvert.convertListModelToListData(response.getData());
+			erpProductInfoModels = ErpProductInfoModelConvert.convertListDataToListModel(response.getData());
 			
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
@@ -2793,7 +2808,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
-			erpProductInfoModels = ErpProductInfoModelConvert.convertListModelToListData(response.getData());
+			erpProductInfoModels = ErpProductInfoModelConvert.convertListDataToListModel(response.getData());
 			
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
@@ -2812,7 +2827,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
-			erpProductInfoModels = ErpProductInfoModelConvert.convertListModelToListData(response.getData());
+			erpProductInfoModels = ErpProductInfoModelConvert.convertListDataToListModel(response.getData());
 			
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
@@ -2831,7 +2846,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
-			erpProductInfoModels = ErpProductInfoModelConvert.convertListModelToListData(response.getData());
+			erpProductInfoModels = ErpProductInfoModelConvert.convertListDataToListModel(response.getData());
 			
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
@@ -2868,12 +2883,48 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
-			erpProductInfoModels = ErpProductInfoModelConvert.convertListModelToListData(response.getData());
+			erpProductInfoModels = ErpProductInfoModelConvert.convertListDataToListModel(response.getData());
 		}catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
 		return erpProductInfoModels;
+	}
+	
+	@Override
+	public ErpInventoryModel getInventoryInfo(String materialNo) throws RemoteException {
+		
+		Response<ErpInventoryData> response = null;
+		ErpInventoryModel erpInventoryModel = null;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_INVENTORY_INFO)+"/"+materialNo,  new TypeReference<Response<ErpInventoryData>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			erpInventoryModel = ErpInventoryModelConvert.convertDataToModel(response.getData());
+		}catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return erpInventoryModel;
+	}
+	
+	@Override
+	public Map<String,ErpInventoryModel> loadInventoryInfo(Date date) throws RemoteException {
+		
+		Response<Map<String,ErpInventoryData>> response = null;
+		Map<String,ErpInventoryModel> erpInventoryModelMap = null;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_LOAD_INVENTORY_INFO)+"/"+date,  new TypeReference<Response<Map<String,ErpInventoryData>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			erpInventoryModelMap = ErpInventoryModelConvert.convertDataMapToModelMap(response.getData());
+		}catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return erpInventoryModelMap;
 	}
 	
 	@Override
@@ -2928,7 +2979,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	}
 	
 	@Override
-	public ErpProductInfoModel findProductBySku(String skuCode, int version) throws RemoteException {
+	public ErpProductInfoModel findProductBySkuAndVersion(String skuCode, int version) throws RemoteException {
 		Response<ErpProductInfoModelData> response = null;
 		ErpProductInfoModel erpProductInfoModel;
 		try {
@@ -2989,7 +3040,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
-			erpProductInfoModels = ErpProductInfoModelConvert.convertListModelToListData(response.getData());
+			erpProductInfoModels = ErpProductInfoModelConvert.convertListDataToListModel(response.getData());
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new FDRuntimeException(e, "Unable to process the request.");

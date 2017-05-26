@@ -85,7 +85,10 @@ public class ErpFactory {
 		}
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
-			return infoSB.findMaterialsBySapId(searchterm);
+			if(FDStoreProperties.isStorefront2_0Enabled())
+				return FDECommerceService.getInstance().findMaterialsBySapId(searchterm);
+			else
+				return infoSB.findMaterialsBySapId(searchterm);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
@@ -99,7 +102,10 @@ public class ErpFactory {
 		}
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
-			return infoSB.findMaterialsBySku(searchterm);
+			if(FDStoreProperties.isStorefront2_0Enabled())
+				return FDECommerceService.getInstance().findMaterialsBySku(searchterm);
+			else
+				return infoSB.findMaterialsBySku(searchterm);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
@@ -113,6 +119,9 @@ public class ErpFactory {
 		}
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
+			if(FDStoreProperties.isStorefront2_0Enabled())
+				return FDECommerceService.getInstance().findMaterialsByDescription(searchterm);
+			else
 			return infoSB.findMaterialsByDescription(searchterm);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
@@ -127,7 +136,10 @@ public class ErpFactory {
 		}
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
-			return infoSB.findMaterialsByClass(searchterm);
+			if(FDStoreProperties.isStorefront2_0Enabled())
+				return FDECommerceService.getInstance().findMaterialsByClass(searchterm);
+			else
+				return infoSB.findMaterialsByClass(searchterm);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
@@ -141,6 +153,9 @@ public class ErpFactory {
 		}
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
+			if(FDStoreProperties.isStorefront2_0Enabled())
+				return FDECommerceService.getInstance().findMaterialsByCharacteristic(searchterm);
+			else
 			return infoSB.findMaterialsByCharacteristic(searchterm);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
@@ -155,7 +170,10 @@ public class ErpFactory {
 		}
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
-			return infoSB.findMaterialsByBatch(batchNum);
+			if(FDStoreProperties.isStorefront2_0Enabled())
+				return FDECommerceService.getInstance().findMaterialsByBatch(batchNum);
+			else
+				return infoSB.findMaterialsByBatch(batchNum);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
@@ -169,7 +187,10 @@ public class ErpFactory {
 		}
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
-			return infoSB.findProductsBySapId(searchterm);
+			if(FDStoreProperties.isStorefront2_0Enabled())
+				return FDECommerceService.getInstance().findProductsBySapId(searchterm);
+			else
+				return infoSB.findProductsBySapId(searchterm);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
@@ -184,7 +205,10 @@ public class ErpFactory {
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
 			try {
-				return infoSB.findProductBySku(searchterm);
+				if(FDStoreProperties.isStorefront2_0Enabled())
+					return FDECommerceService.getInstance().findProductBySku(searchterm);
+				else
+					return infoSB.findProductBySku(searchterm);
 			} catch (ObjectNotFoundException onfe) {
 				return null;
 			}
@@ -201,7 +225,10 @@ public class ErpFactory {
 		}
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
-			return infoSB.findProductsLikeSku(searchterm);
+			if(FDStoreProperties.isStorefront2_0Enabled())
+				return FDECommerceService.getInstance().findProductsLikeSku(searchterm);
+			else
+				return infoSB.findProductsLikeSku(searchterm);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
@@ -215,7 +242,10 @@ public class ErpFactory {
 		}
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
-			return infoSB.findProductsByDescription(searchterm);
+			if(FDStoreProperties.isStorefront2_0Enabled())
+				return FDECommerceService.getInstance().findProductsByDescription(searchterm);
+			else
+				return infoSB.findProductsByDescription(searchterm);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
@@ -229,7 +259,10 @@ public class ErpFactory {
 		}
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
-			return infoSB.findProductsLikeUPC(searchterm);
+			if(FDStoreProperties.isStorefront2_0Enabled())
+				return FDECommerceService.getInstance().findProductsLikeUPC(searchterm);
+			else
+				return infoSB.findProductsLikeUPC(searchterm);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
@@ -243,7 +276,10 @@ public class ErpFactory {
 		}
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
-			return infoSB.findProductsByUPC(upc);
+			if(FDStoreProperties.isStorefront2_0Enabled())
+				return FDECommerceService.getInstance().findProductsByUPC(upc);
+			else
+				return infoSB.findProductsByUPC(upc);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
@@ -257,6 +293,9 @@ public class ErpFactory {
 		}
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
+			if(FDStoreProperties.isStorefront2_0Enabled())
+				return FDECommerceService.getInstance().findProductsByCustomerUPC(erpCustomerPK,upc);
+			else
 			return infoSB.findProductsByCustomerUPC(erpCustomerPK, upc);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
@@ -755,11 +794,11 @@ public class ErpFactory {
 			lookupGrpInfoHome();
 		}
 		try {
-			if(FDStoreProperties.isStorefront2_0Enabled()){
-			return FDECommerceService.getInstance().findGrpsForMaterial(matId);
-			}else{
 			ErpGrpInfoSB remote = erpGrpInfoHome.create();
-			return remote.findGrpsForMaterial(matId);
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				return FDECommerceService.getInstance().findGrpsForMaterial(matId);
+			}else{
+				return remote.findGrpsForMaterial(matId);
 			}
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
@@ -795,7 +834,11 @@ public class ErpFactory {
 		}
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
-			 infoSB.setOverriddenBackInStock(sku, salesAreaOverrides);
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				FDECommerceService.getInstance().setOverriddenBackInStock(sku, salesAreaOverrides);
+			}else{
+				infoSB.setOverriddenBackInStock(sku, salesAreaOverrides);
+			}
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
@@ -809,7 +852,11 @@ public class ErpFactory {
 		}
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
-			 infoSB.setOverriddenNewness(sku, salesAreaOverrides);
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				FDECommerceService.getInstance().setOverriddenNewness(sku, salesAreaOverrides);
+			}else{
+				infoSB.setOverriddenNewness(sku, salesAreaOverrides);
+			}
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
@@ -823,7 +870,11 @@ public class ErpFactory {
 		}
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				return FDECommerceService.getInstance().getOverriddenBackInStock(sku);
+			}else{
 			 return infoSB.getOverriddenBackInStock(sku);
+			}
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
@@ -837,11 +888,16 @@ public class ErpFactory {
 		}
 		try {
 			ErpInfoSB infoSB = erpInfoHome.create();
+			if(FDStoreProperties.isStorefront2_0Enabled()){
+				return FDECommerceService.getInstance().getOverriddenNewness(sku);
+			}else{
 			 return infoSB.getOverriddenNewness(sku);
+			}
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		}
 	}
+
 }

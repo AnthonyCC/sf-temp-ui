@@ -31,7 +31,7 @@ public class ErpProductInfoModelConvert {
 				data.getDescription(),
 				getErpMaterialPriceModel(data.getMaterialPrices()),
 				data.getUpc(),
-				getErpMaterialPriceModel(data.getMaterialPlants()),
+				getErpMaterialPlantModel(data.getMaterialPlants()),
 				getErpMaterialSalesAreaInfoModel(data.getMaterialSalesAreas()),
 				data.isAlcohol());
 		return model;
@@ -56,7 +56,7 @@ public class ErpProductInfoModelConvert {
 		return salesAreaInfo;
 	}
 
-	private static ErpPlantMaterialInfo[] getErpMaterialPriceModel(
+	private static ErpPlantMaterialInfo[] getErpMaterialPlantModel(
 			ErpPlantMaterialInfoData[] materialPlants) {
 		if(null == materialPlants){
 			return null;
@@ -65,23 +65,25 @@ public class ErpProductInfoModelConvert {
 		for (int i = 0; i < materialPlants.length; i++) {
 			ErpPlantMaterialInfoData erpPlantMaterialData = materialPlants[i];
 			ErpPlantMaterialInfo erpPlantMaterialInfo = new ErpPlantMaterialInfo(erpPlantMaterialData.isKosherProduction(), erpPlantMaterialData.isPlatter(), getDayOfWeekSet(erpPlantMaterialData.getBlockedDays()), getAtpRule(erpPlantMaterialData.getAtpRule()), erpPlantMaterialData.getRating(), erpPlantMaterialData.getFreshness(), erpPlantMaterialData.getSustainabilityRating(), erpPlantMaterialData.getPlantId(), erpPlantMaterialData.isLimitedQuantity());
-//			erpPlantMaterialData.getLeadTime();
 			data[i]= erpPlantMaterialInfo;
 		}
 		return data;
 	}
 
 	private static EnumATPRule getAtpRule(EnumATPRuleData atpRule) {
+		if(atpRule!=null)
 		return EnumATPRule.getEnum(atpRule.getName());
+		return null;
 	}
 
 	private static DayOfWeekSet getDayOfWeekSet(DayOfWeekSetData blockedDays) {
-		DayOfWeekSet dayOfWeekSet = null;
-		
-		Iterator iterator = blockedDays.getDaysOfWeek().iterator();
-		while(iterator.hasNext()){
-			String dayNumber = (String) iterator.next();
-			dayOfWeekSet = DayOfWeekSet.decode(dayNumber);
+		DayOfWeekSet dayOfWeekSet = DayOfWeekSet.decode(null);
+		if(blockedDays!=null){
+			Iterator iterator = blockedDays.getDaysOfWeek().iterator();
+			while(iterator.hasNext()){
+				String dayNumber = (String) iterator.next();
+				dayOfWeekSet = DayOfWeekSet.decode(dayNumber);
+			}
 		}
 		return dayOfWeekSet;
 	}
@@ -100,7 +102,7 @@ public class ErpProductInfoModelConvert {
 	}
 
 
-	public static Collection<ErpProductInfoModel> convertListModelToListData(
+	public static Collection<ErpProductInfoModel> convertListDataToListModel(
 			Collection<ErpProductInfoModelData> datas) {
 		Collection<ErpProductInfoModel> erpProductInfoModels = new ArrayList<ErpProductInfoModel>();
 		for (ErpProductInfoModelData erpProductInfoModelData : datas) {
