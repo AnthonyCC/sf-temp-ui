@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Set;
 
+import javax.ejb.ObjectNotFoundException;
+
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.MunicipalityInfo;
@@ -335,7 +337,7 @@ public interface IECommerceService {
 	
 	public Collection findMaterialsByClass(String searchterm) throws RemoteException;
 
-	public ErpProductInfoModel findProductBySku(String skuCode) throws RemoteException;
+	public ErpProductInfoModel findProductBySku(String skuCode) throws RemoteException, ObjectNotFoundException;
 
 	public Collection findProductsBySapId(String searchterm) throws RemoteException;
 
@@ -355,7 +357,7 @@ public interface IECommerceService {
 
 	public Map<String, Integer> getSkusOldness() throws RemoteException;
 
-	public ErpProductInfoModel findProductBySku(String skuCode, int version) throws RemoteException;
+	public ErpProductInfoModel findProductBySkuAndVersion(String skuCode, int version) throws RemoteException;
 
 	public Collection<String> findReintroducedSkuCodes(int days) throws RemoteException;
 
@@ -386,6 +388,10 @@ public interface IECommerceService {
 	public Collection<String> findSKUsByDeal(double lowerLimit, double upperLimit,List skuPrefixes) throws RemoteException;
 
 	public Collection<String> findPeakProduceSKUsByDepartment(List<String> skuPrefixes) throws RemoteException;
+
+	public ErpInventoryModel getInventoryInfo(String materialNo) throws RemoteException;
+
+	public Map<String, ErpInventoryModel> loadInventoryInfo(Date date)	throws RemoteException;
 
 
 
