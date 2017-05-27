@@ -252,7 +252,7 @@ public class ReferralCreditCron {
 						rec.setDate(new Date());
 						rec.setNote("$" + model.getReferral_fee() + ", "
 								+ model.getCustomerId());
-						if(FDStoreProperties.isStorefront2_0Enabled()){
+						if(FDStoreProperties.isSF2_0_AndServiceEnabled("customer.ejb.ActivityLogSB")){
 							FDECommerceService.getInstance().logActivity(rec);
 						}
 						else{
@@ -398,7 +398,7 @@ public class ReferralCreditCron {
 						rec.setCustomerId(referral_customer_id);
 						rec.setDate(new Date());
 						rec.setNote("$" + model.getReferral_fee() + ", " + model.getCustomerId());
-						if(FDStoreProperties.isStorefront2_0Enabled()){
+						if(FDStoreProperties.isSF2_0_AndServiceEnabled("customer.ejb.ActivityLogSB")){
 							FDECommerceService.getInstance().logActivity(rec);
 						}
 						else{

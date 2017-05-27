@@ -46,7 +46,7 @@ public class FDEcommProperties {
         long t = System.currentTimeMillis();
 
         if (true/*force || ((t - lastRefresh) > REFRESH_PERIOD)*/) {
-            config = ConfigHelper.getPropertiesFromDB(EnumPropertyType.LOG.toString(),
+            config = ConfigHelper.getPropertiesFromDB(EnumPropertyType.WEB.toString(),
             		FDStoreProperties.getClusterName(),
             		FDStoreProperties.getNodeName(), defaults);
             lastRefresh = t;

@@ -423,7 +423,7 @@ public class FDPromotionManagerSessionBean extends FDSessionBeanSupport {
 	private void logActivity(ErpActivityRecord rec) {
 		ActivityLogHome home = this.getActivityLogHome();
 		try {
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("customer.ejb.ActivityLogSB")){
 				FDECommerceService.getInstance().logActivity(rec);
 			}
 			else{

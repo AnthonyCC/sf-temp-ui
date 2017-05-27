@@ -234,7 +234,7 @@ public class FDDeliveryManager {
 			try {
 				DlvManagerSB sb = getDlvManagerHome().create();
 				List<SiteAnnouncement> l = null;
-				if (FDStoreProperties.isStorefront2_0Enabled()) {
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB")) {
 					l = buildSiteModel(FDECommerceService.getInstance()
 							.getSiteAnnouncements());
 
@@ -790,7 +790,7 @@ public class FDDeliveryManager {
 
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
-			if (FDStoreProperties.isStorefront2_0Enabled()){
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB")){
 				return LogisticsServiceLocator.getInstance().getCommerceService().reserveTimeslot(timeslotId, customerId, type, customer, chefsTable, ctDeliveryProfile, isForced, event, hasSteeringDiscount, deliveryFeeTier);
 			}
 			else{
@@ -847,13 +847,14 @@ public class FDDeliveryManager {
 
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
-			if (FDStoreProperties.isStorefront2_0Enabled())
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB")){
 				FDECommerceService.getInstance().commitReservation(rsvId, customerId,
 						context, address, pr1,
 						event);
-			else
+			}else{
 			sb.commitReservation(rsvId, customerId, context, address, pr1,
 					event);
+			}
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {
@@ -933,7 +934,7 @@ public class FDDeliveryManager {
 			EnumServiceType serviceType) throws FDResourceException {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
-			if (FDStoreProperties.isStorefront2_0Enabled()){
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB")){
 				FDECommerceService.getInstance().saveFutureZoneNotification(
 						email, zip, serviceType.getName());
 			}else{
@@ -1003,7 +1004,7 @@ public class FDDeliveryManager {
 			Set<StateCounty> stateCounty = countiesByState.get(state);
 			if (stateCounty == null) {
 				DlvManagerSB sb = getDlvManagerHome().create();
-				if (FDStoreProperties.isStorefront2_0Enabled())
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB"))
 					stateCounty=FDECommerceService.getInstance().getCountiesByState(state);
 				else
 				stateCounty = sb.getCountiesByState(state);
@@ -1161,12 +1162,12 @@ public class FDDeliveryManager {
 				|| System.currentTimeMillis() - muni_lastRefresh > MUNI_REFRESH_PERIOD) {
 			try {
 				DlvManagerSB sb = getDlvManagerHome().create();
-				if (FDStoreProperties.isStorefront2_0Enabled()){
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB")){
 					this.municipalityInfos = new MunicipalityInfoWrapper(
 							FDECommerceService.getInstance().getMunicipalityInfos());
-				}else
+				}else{
 				this.municipalityInfos = new MunicipalityInfoWrapper(
-						sb.getMunicipalityInfos());
+						sb.getMunicipalityInfos());}
 				muni_lastRefresh = System.currentTimeMillis();
 			} catch (CreateException e) {
 				throw new FDResourceException(e, "Cannot create SessionBean");
@@ -1185,7 +1186,7 @@ public class FDDeliveryManager {
 				StateCounty sc = stateCountyByZip.get(zipcode);
 				if (sc == null) {
 					DlvManagerSB sb = getDlvManagerHome().create();
-					if (FDStoreProperties.isStorefront2_0Enabled())
+					if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB"))
 						sc = FDECommerceService.getInstance().lookupStateCountyByZip(zipcode);
 					else
 						sc = sb.lookupStateCountyByZip(zipcode);
@@ -1508,7 +1509,7 @@ public class FDDeliveryManager {
 		} catch (FDLogisticsServiceException e) {
 			try {
 				DlvManagerSB sb = getDlvManagerHome().create();
-				if (FDStoreProperties.isStorefront2_0Enabled()){
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB")){
 					FDECommerceService.getInstance().logFailedFdxOrder(orderId);
 				}else{
 					sb.logFailedFdxOrder(orderId);
@@ -1692,7 +1693,7 @@ public class FDDeliveryManager {
 
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
-			if (FDStoreProperties.isStorefront2_0Enabled()) 
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB")) 
 				FDECommerceService.getInstance().recommitReservation(rsvId, customerId,context, address, pr1);
 			else
 				sb.recommitReservation(rsvId, customerId, context, address, pr1);

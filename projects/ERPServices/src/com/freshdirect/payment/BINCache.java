@@ -60,7 +60,7 @@ public class BINCache {
 			synchronized (reloadSync) {
 				LOGGER_LOADER.info("reloading BIN cache");
 				try {
-					if(FDStoreProperties.isStorefront2_0Enabled()){
+					if(FDStoreProperties.isSF2_0_AndServiceEnabled("payment.ejb.BINInfoManagerSB")){
 						binInfoMap=FDECommerceService.getInstance().getActiveBINs();
 					}else{
 					@SuppressWarnings("unchecked")

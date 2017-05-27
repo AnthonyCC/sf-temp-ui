@@ -4459,7 +4459,11 @@ public class FDStoreProperties {
         return (Boolean.valueOf(get(PROP_DONATION_PRODUCT_SAMPLES_ENABLED))).booleanValue();
     }
 
-    public static boolean isStorefront2_0Enabled() {
+    public static boolean isSF2_0_AndServiceEnabled(String beanName) {
+    	
+        return ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue()&&FDEcommProperties.isServiceEnabled(beanName));
+    }
+    private static boolean isStorefront2_0Enabled() {
         return (Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue();
     }
 

@@ -41,7 +41,7 @@ public class FDCOOLInfoCache extends FDAbstractCache {
 		Map<ErpCOOLKey, ErpCOOLInfo> data = new HashMap<ErpCOOLKey, ErpCOOLInfo>();
 		try {
 			LOGGER.info("REFRESHING");
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpCOOLManagerSB")){
 			
 				data = FDECommerceService.getInstance().getCountryOfOriginData(since); 
 			}else{

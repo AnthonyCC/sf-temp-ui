@@ -39,7 +39,7 @@ public class FDInventoryCache extends FDAbstractCache {
 			LOGGER.info("REFRESHING entries newer than "+ new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.S").format(since));
 			Map data;
 			ErpInfoSB sb = this.lookupInfoHome().create();
-			if(FDStoreProperties.isStorefront2_0Enabled())
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpInfoSB"))
 				data = FDECommerceService.getInstance().loadInventoryInfo(since);
 			else
 				data = sb.loadInventoryInfo(since);

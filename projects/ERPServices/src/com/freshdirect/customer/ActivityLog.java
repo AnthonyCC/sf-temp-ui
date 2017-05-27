@@ -39,7 +39,7 @@ public class ActivityLog {
 
 	public Collection<ErpActivityRecord> findActivityByTemplate(ErpActivityRecord template) throws FDResourceException {
 		try {
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("customer.ejb.ActivityLogSB")){
 				return FDECommerceService.getInstance().findActivityByTemplate(template);
 			}
 			else{
@@ -52,7 +52,7 @@ public class ActivityLog {
 	
 	public Collection<ErpActivityRecord> getCCActivitiesByTemplate(ErpActivityRecord template) throws FDResourceException {
 		try {
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("customer.ejb.ActivityLogSB")){
 				return FDECommerceService.getInstance().getCCActivitiesByTemplate(template);
 			}
 			else{
@@ -65,7 +65,7 @@ public class ActivityLog {
 	
 	public void logActivity(ErpActivityRecord rec) throws FDResourceException {
 		try {
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("customer.ejb.ActivityLogSB")){
 				FDECommerceService.getInstance().logActivity(rec);
 			}
 			else{
@@ -91,7 +91,7 @@ public class ActivityLog {
 	
 	public Map<String, List> getFilterLists(ErpActivityRecord template) throws FDResourceException {
 		try {
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("customer.ejb.ActivityLogSB")){
 				return FDECommerceService.getInstance().getFilterLists(template);
 			}
 			else{

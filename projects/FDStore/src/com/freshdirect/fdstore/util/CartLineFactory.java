@@ -64,7 +64,7 @@ public class CartLineFactory {
 			for (int i=0; i<materials.length; i++) {
 				Collection<ErpProductInfoModel> prods  = new ArrayList<ErpProductInfoModel>();
 				String mat = materials[i];
-				if(FDStoreProperties.isStorefront2_0Enabled())
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpInfoSB"))
 					prods = FDECommerceService.getInstance().findProductsBySapId(mat);
 				else
 					prods = infoBean.findProductsBySapId(mat);
