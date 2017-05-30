@@ -317,7 +317,11 @@ public class FDUser extends ModelSupport implements FDUserI {
     
     private Map<String,String> soCartLineMessagesMap=new HashMap<String,String>();
     
-    public Date getTcAcknowledgeDate() {
+    private boolean refreshSoCartOverlay = true;
+    
+    private boolean  soCartOverlayFirstTime=false;
+    
+	public Date getTcAcknowledgeDate() {
         return tcAcknowledgeDate;
     }
 
@@ -3603,5 +3607,23 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public void setCustSapId(String custSapId) {
 		this.custSapId = custSapId;
 	}
+
+	public boolean isRefreshSoCartOverlay() {
+		return refreshSoCartOverlay;
+	}
+
+	public void setRefreshSoCartOverlay(boolean refreshSoCartOverlay) {
+		this.refreshSoCartOverlay = refreshSoCartOverlay;
+	}
+
+	public boolean isSoCartOverlayFirstTime() {
+		return soCartOverlayFirstTime;
+	}
+
+	public void setSoCartOverlayFirstTime(boolean soCartOverlayFirstTime) {
+		this.soCartOverlayFirstTime = soCartOverlayFirstTime;
+	}
+
 	
+		
 }

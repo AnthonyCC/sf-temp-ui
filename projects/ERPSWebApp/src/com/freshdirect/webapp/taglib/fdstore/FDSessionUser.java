@@ -168,6 +168,10 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     
 	private Map<String,String> soCartLineMessagesMap=new HashMap<String,String>();
 
+	private boolean soCartOverlayFirstTime = false;
+	
+	private boolean isRefreshSoCartOverlay=true;
+	
     @Override
     public boolean isSoContainerOpen() {
         return isSoContainerOpen;
@@ -2259,6 +2263,22 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
 	public void setSoCartLineMessagesMap(Map<String, String> soCartLineMessagesMap) {
 		this.soCartLineMessagesMap = soCartLineMessagesMap;
+	}
+
+	public boolean isSoCartOverlayFirstTime() {
+		return soCartOverlayFirstTime;
+	}
+
+	public void setSoCartOverlayFirstTime(boolean soCartOverlayFirstTime) {
+		this.soCartOverlayFirstTime = soCartOverlayFirstTime;
+	}
+
+	public boolean isRefreshSoCartOverlay() {
+		return isRefreshSoCartOverlay;
+	}
+
+	public void setRefreshSoCartOverlay(boolean isRefreshSoCartOverlay) {
+		this.isRefreshSoCartOverlay = isRefreshSoCartOverlay;
 	}    
   
 }

@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
@@ -27,6 +28,8 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.fdstore.customer.FDCustomerFactory;
+import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDOrderHistory;
@@ -818,6 +821,8 @@ public class StandingOrderHelper {
         
 
 		soSettings.put("selectedSoId", selectedSoId); 
+		
+		allSoData.put("cartOverlayFirstTime",  setCartOverlayFirstTime(user).isSoCartOverlayFirstTime());
 
 		allSoData.put("soData", soData);
 		
@@ -1192,4 +1197,20 @@ private static String convert(Date time) {
 		}
 		return null;
 	}
+	
+	public static FDUserI setCartOverlayFirstTime(FDUserI user){
+		try{
+			if(user!=null && user.isRefreshSoCartOverlay()){
+			ErpCustomerInfoModel cusotmerInfoModel = FDCustomerFactory.getErpCustomer(user.getIdentity()).getCustomerInfo();
+			if(cusotmerInfoModel!=null){
+				user.setSoCartOverlayFirstTime(cusotmerInfoModel.getSoCartOverlayFirstTime()!=null?
+						("Y".equalsIgnoreCase(cusotmerInfoModel.getSoCartOverlayFirstTime())?true:false):false);
+				user.setRefreshSoCartOverlay(false);
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.info("while th setting the Cart Overlay FirstTime"+ e);
+		}
+		return user;
+		}
 }

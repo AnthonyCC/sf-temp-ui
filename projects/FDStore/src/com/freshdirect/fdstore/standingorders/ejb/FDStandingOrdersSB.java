@@ -76,4 +76,6 @@ public interface FDStandingOrdersSB extends EJBObject {
 	
 	public void turnOffReminderOverLayNewSo(String standingOrderId)throws FDResourceException,RemoteException;
 	
+	public void updateSoCartOverlayFirstTimePreferences(String customerId, boolean soCartOverlay)throws FDResourceException,RemoteException;
+	
 }
