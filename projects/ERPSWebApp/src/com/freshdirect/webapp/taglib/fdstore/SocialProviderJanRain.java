@@ -108,9 +108,8 @@ public class SocialProviderJanRain implements SocialProvider {
       }
       String data = sb.toString();
       
+      BufferedReader rd = null;
       try {
-          
-  
       	  URL url = new URL(resourceURI);
           HttpURLConnection conn = (HttpURLConnection)url.openConnection();
           conn.setRequestMethod("POST");
@@ -121,16 +120,11 @@ public class SocialProviderJanRain implements SocialProvider {
           osw.write(data);
           osw.close();
          
-          
-          byte [] b = new byte[1024];
-          
-          InputStream in = conn.getInputStream();
-          
           StringBuilder result = new StringBuilder();
 		  String line = null;
 		 
 		  // Read result
-		  BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		  rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 		  while ((line = rd.readLine()) != null) {
 		    result.append(line);
 		  }
@@ -143,7 +137,15 @@ public class SocialProviderJanRain implements SocialProvider {
       } catch (IOException e) {
           throw new RuntimeException("Unexpected IO error", e);
     	  
-      } 
+      } finally  {
+          if (rd != null) {
+              try {
+	          rd.close();
+              } catch (IOException ioe) {
+                  // intentionally do nothing here
+              }
+          }
+      }
 	
   }
   

@@ -8,6 +8,7 @@
  */
 package com.freshdirect.fdstore.customer.ejb;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -38,10 +39,8 @@ import javax.naming.NamingException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
-import com.braintreegateway.CreditCard.CardType;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.address.PhoneNumber;
-import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.crm.CallLogModel;
@@ -135,13 +134,11 @@ import com.freshdirect.payment.gateway.BillingInfo;
 import com.freshdirect.payment.gateway.Gateway;
 import com.freshdirect.payment.gateway.GatewayType;
 import com.freshdirect.payment.gateway.Merchant;
-import com.freshdirect.payment.gateway.PaymentMethodType;
 import com.freshdirect.payment.gateway.Request;
 import com.freshdirect.payment.gateway.Response;
 import com.freshdirect.payment.gateway.TransactionType;
 import com.freshdirect.payment.gateway.impl.BillingInfoFactory;
 import com.freshdirect.payment.gateway.impl.GatewayFactory;
-import com.freshdirect.payment.gateway.impl.PayPal;
 import com.freshdirect.payment.gateway.impl.PaymentMethodFactory;
 import com.freshdirect.payment.gateway.impl.Paymentech;
 import com.freshdirect.payment.gateway.impl.RequestFactory;
@@ -2776,6 +2773,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 	}
 
 	private VoiceShotResponseParser getCallData(String xmlPost) {
+		java.io.BufferedReader br = null;
 		try {
 			
 			java.net.URL programUrl = new java.net.URL(FDStoreProperties.getVSURL());   
@@ -2790,7 +2788,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			connection.connect();
 			java.io.InputStream is = connection.getInputStream();
 			java.io.InputStreamReader isr = new java.io.InputStreamReader(is);
-			java.io.BufferedReader br = new java.io.BufferedReader(isr);
+			br = new java.io.BufferedReader(isr);
 		 
 			String line = null;
 			String firstresult = "";
@@ -2821,6 +2819,14 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			}
 		} catch(Exception e) {
 			LOGGER.error("",e);
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException ioe) {
+					// intentionally do nothing here
+				}
+			}
 		}
 		return null;
 	}

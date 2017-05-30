@@ -8,7 +8,6 @@
  */
 package com.freshdirect.framework.util;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,17 +74,19 @@ public class LazyTimedCache<K,V> extends TimedLruCache<K,V> {
 			try {
 				
 				while(true) {
-					long startTime = System.currentTimeMillis();
+					//long startTime = System.currentTimeMillis();
 					List<K> expiredKeys = null;
-					synchronized(this.cache) {
-						do {
-							this.cache.wait(this.maxDelay);
-							//System.out.println("Object waiting for $$$$$$$$ "+(System.currentTimeMillis()-startTime)+" secs");
-						} while (System.currentTimeMillis()-startTime < this.refreshFrequency);
-						
-						expiredKeys = this.cache.clearExpiredKeys();
-					}
+//					synchronized(this.cache) {
+//						do {
+//							this.cache.wait(this.maxDelay);
+//							//System.out.println("Object waiting for $$$$$$$$ "+(System.currentTimeMillis()-startTime)+" secs");
+//						} while (System.currentTimeMillis()-startTime < this.refreshFrequency);
+//						
+//						expiredKeys = this.cache.clearExpiredKeys();
+//					}
 					
+					Thread.sleep( this.refreshFrequency);					
+					expiredKeys = this.cache.clearExpiredKeys();
 					if (expiredKeys!=null) {
 						//System.out.println("Next Refresh started for "+expiredKeys.size());
 						this.refresh(expiredKeys);

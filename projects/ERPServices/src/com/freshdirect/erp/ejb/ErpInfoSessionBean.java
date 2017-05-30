@@ -29,7 +29,6 @@ import java.util.TreeMap;
 import javax.ejb.EJBException;
 import javax.ejb.ObjectNotFoundException;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.erp.EnumATPRule;
@@ -352,32 +351,38 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 	public Collection<ErpProductInfoModel> findProductsBySku(String[] skuCodes) {
 		Connection conn = null;
-		try {
-
-			List<ErpProductInfoModel> products = new ArrayList<ErpProductInfoModel>(skuCodes.length);
-			conn = getConnection();
-
-			PreparedStatement ps = conn.prepareStatement(QUERY_PRODUCTS_BY_SKU);
-			for (int i = 0; i < skuCodes.length; i++) {
-				ps.setString(1, skuCodes[i]);
-				ps.setString(2, skuCodes[i]);
-				ResultSet rs = ps.executeQuery();
-
-				if (rs.next()) {
-				    ErpProductInfoModel m = fetchErpProductInfoModel(rs, skuCodes[i]);
-				    products.add(m);
+		PreparedStatement ps = null;
+		List<ErpProductInfoModel> products = new ArrayList<ErpProductInfoModel>();
+		if (skuCodes != null && skuCodes.length > 0) {
+			try {
+				conn = getConnection();
+				ps = conn.prepareStatement(QUERY_PRODUCTS_BY_SKU);
+				for (int i = 0; i < skuCodes.length; i++) {
+					ps.setString(1, skuCodes[i]);
+					ps.setString(2, skuCodes[i]);
+					ResultSet rs = null;
+					try {
+						rs = ps.executeQuery();
+						if (rs.next()) {
+							ErpProductInfoModel m = fetchErpProductInfoModel(rs, skuCodes[i]);
+							products.add(m);
+						}
+					} finally {
+						close(rs);						
+					}
 				}
-				rs.close();
+			} catch (SQLException sqle) {
+				LOGGER.error("Error finding SKUs ", sqle);
+				throw new EJBException(sqle);
+			} catch (Exception e) {
+				LOGGER.error("Unhandled exception in findProductsBySku : " + e.getMessage());
+				throw new EJBException(e);
+			} finally {
+				close(ps); 
+				close(conn);
 			}
-			ps.close();
-
-			return products;
-		} catch (SQLException sqle) {
-			LOGGER.error("Error finding SKUs ", sqle);
-			throw new EJBException(sqle);
-		} finally {
-                    close(conn);
 		}
+		return products;
 	}
 
     /**

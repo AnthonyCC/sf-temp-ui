@@ -55,7 +55,6 @@ import com.freshdirect.fdlogistics.services.IAirclicService;
 import com.freshdirect.fdlogistics.services.ILogisticsService;
 import com.freshdirect.fdlogistics.services.helper.LogisticsDataDecoder;
 import com.freshdirect.fdlogistics.services.helper.LogisticsDataEncoder;
-import com.freshdirect.fdlogistics.services.impl.FDCommerceService;
 import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.DateRange;
@@ -108,7 +107,10 @@ import com.freshdirect.payment.service.FDECommerceService;
  */
 
 public class FDDeliveryManager {
-
+	Object depotMonitor = new Object();
+	Object restrictionMonitor = new Object();
+	Object announcementMonitor = new Object();
+	
 	private final ServiceLocator serviceLocator;
 	private static FDDeliveryManager dlvManager = null;
 
@@ -207,8 +209,9 @@ public class FDDeliveryManager {
 		}
 	}
 
-	private synchronized void refreshRestrictionsCache()
+	private void refreshRestrictionsCache()
 			throws FDResourceException {
+		synchronized(restrictionMonitor) {
 		if (System.currentTimeMillis() - lastRefresh > REFRESH_PERIOD) {
 			try {
 				DlvRestrictionManagerSB sb = getDlvRestrictionManagerHome()
@@ -226,10 +229,12 @@ public class FDDeliveryManager {
 						"Cannot talk to the SessionBean");
 			}
 		}
+		}
 	}
 
-	private synchronized void refreshSiteAnnouncementsCache()
+	private void refreshSiteAnnouncementsCache()
 			throws FDResourceException {
+		synchronized(announcementMonitor) {
 		if (System.currentTimeMillis() - lastAnnRefresh > ANN_REFRESH_PERIOD) {
 			try {
 				DlvManagerSB sb = getDlvManagerHome().create();
@@ -251,6 +256,7 @@ public class FDDeliveryManager {
 						"Cannot talk to the SessionBean");
 			}
 		}
+		}
 	}
 
 	private List<SiteAnnouncement> buildSiteModel(
@@ -268,7 +274,8 @@ public class FDDeliveryManager {
 		return FDStoreProperties.getDepotCacheRefreshPeriod() * 1000 * 60;
 	}
 
-	private synchronized void refreshDepots() throws FDResourceException {
+	private void refreshDepots() throws FDResourceException {
+		synchronized(depotMonitor) {
 		if (System.currentTimeMillis() - lastDepotRefresh > getRefreshInterval()) {
 
 			HashMap<String, FDDeliveryDepotModel> newDepotMap = new HashMap<String, FDDeliveryDepotModel>();
@@ -299,6 +306,7 @@ public class FDDeliveryManager {
 			}
 
 			lastDepotRefresh = System.currentTimeMillis();
+		}
 		}
 	}
 
