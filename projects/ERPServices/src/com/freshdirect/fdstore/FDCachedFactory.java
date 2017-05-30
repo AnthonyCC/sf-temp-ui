@@ -160,8 +160,20 @@ public class FDCachedFactory {
 	};
 	
 	static {
+		//Staggered start times for different threads.
 		piRefreshThread.start();
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			//Do nothing
+		}
 		prodRefreshThread.start();
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			//Do nothing.
+		}
+		gRefreshThread.start();
 	}
 
 	public static FDProductInfo getProductInfo(String sku, int version) throws FDResourceException, FDSkuNotFoundException {

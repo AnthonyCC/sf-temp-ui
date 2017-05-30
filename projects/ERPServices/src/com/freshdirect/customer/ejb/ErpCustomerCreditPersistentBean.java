@@ -175,13 +175,13 @@ public class ErpCustomerCreditPersistentBean extends DependentPersistentBeanSupp
 					// do nothing, safety block
 				}
 			}
-                        if (ps != null) {
-                                try {
-                                        ps.close();
-                                } catch (Exception e) {
-                                        // do nothing, safety block
-                                }
-                        }
+            if (ps != null) {
+                    try {
+                            ps.close();
+                    } catch (Exception e) {
+                            // do nothing, safety block
+                    }
+            }
 		}
 		if (errMsg != null) {
 			throw new SQLException(errMsg);

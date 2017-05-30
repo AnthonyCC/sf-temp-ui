@@ -179,7 +179,12 @@ public class ProducersController extends BaseController {
 		} catch (Throwable e) {
 			return null;
 		} finally {
-			get.releaseConnection();
+			try {
+				if(null != get)
+				get.releaseConnection();
+			} catch (Exception e) {
+				
+			}
 		}
 	}
 

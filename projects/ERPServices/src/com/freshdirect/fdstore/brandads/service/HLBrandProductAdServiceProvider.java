@@ -154,8 +154,12 @@ public HLBrandProductAdResponse getCategoryProducts(HLBrandProductAdRequest hLRe
 			LOGGER.error("Exception while making a FD Order confirmation call to Hook Logic API : "+io);
 			throw new BrandProductAdServiceException(io);
 		} finally {
-			if (connection != null) {
-				connection.disconnect();
+			try {
+				if (connection != null) {
+					connection.disconnect();
+				}
+			} catch (Exception e) {
+				LOGGER.warn("Exception while disconnecting the httpconnection: ", e);
 			}
 		}
 		return returnString;

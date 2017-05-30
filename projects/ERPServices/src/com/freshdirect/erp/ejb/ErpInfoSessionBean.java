@@ -70,13 +70,15 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 	public Collection<ErpMaterialInfoModel> findMaterialsByBatch(int batchNumber) {
 		Connection conn = null;
+		ResultSet rs = null;
+		PreparedStatement ps = null;
 		try {
 			conn = getConnection();
-			PreparedStatement ps =
+			ps =
 				conn.prepareStatement(
 					"select id, version, sap_id, description from erps.material where version = ? order by description");
 			ps.setInt(1, batchNumber);
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 
 			ArrayList<ErpMaterialInfoModel> materials = new ArrayList<ErpMaterialInfoModel>();
 			while (rs.next()) {
@@ -85,8 +87,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				materials.add(matlInfo);
 			}
 
-			rs.close();
-			ps.close();
+//			rs.close();
+//			ps.close();
 
 			return materials;
 
@@ -94,7 +96,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find materials for batch " + batchNumber, sqle);
 			throw new EJBException(sqle);
 		} finally {
-                    close(conn);
+			close(rs);
+			close(ps);
+			close(conn);
 		}
 	}
 
@@ -105,12 +109,14 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 	public Collection<ErpMaterialInfoModel> findMaterialsBySapId(String sapId) {
 		Connection conn = null;
+		ResultSet rs = null;
+		PreparedStatement ps = null;
 		try {
 			conn = getConnection();
 
-			PreparedStatement ps = conn.prepareStatement(QUERY_MATERIALS_BY_SAPID);
+			ps = conn.prepareStatement(QUERY_MATERIALS_BY_SAPID);
 			ps.setString(1, "%" + sapId);
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 
 			ArrayList<ErpMaterialInfoModel> materials = new ArrayList<ErpMaterialInfoModel>();
 			while (rs.next()) {
@@ -119,8 +125,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				materials.add(matlInfo);
 			}
 
-			rs.close();
-			ps.close();
+//			rs.close();
+//			ps.close();
 
 			return materials;
 
@@ -128,7 +134,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find materials for SapId " + sapId, sqle);
 			throw new EJBException(sqle);
 		} finally {
-                    close(conn);
+			close(rs);
+			close(ps);
+            close(conn);
 		}
 	}
 
@@ -145,13 +153,14 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 	public Collection<ErpMaterialInfoModel> findMaterialsBySku(String skuCode) {
 		Connection conn = null;
-
+		ResultSet rs = null;
+		PreparedStatement ps = null;
 		try {
 			conn = getConnection();
 
-			PreparedStatement ps = conn.prepareStatement(QUERY_MATERIALS_BY_SKU);
+			ps = conn.prepareStatement(QUERY_MATERIALS_BY_SKU);
 			ps.setString(1, skuCode);
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 
 			ArrayList<ErpMaterialInfoModel> materials = new ArrayList<ErpMaterialInfoModel>();
 			while (rs.next()) {
@@ -160,8 +169,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				materials.add(matlInfo);
 			}
 
-			rs.close();
-			ps.close();
+//			rs.close();
+//			ps.close();
 
 			return materials;
 
@@ -169,7 +178,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find materials for SKU " + skuCode, sqle);
 			throw new EJBException(sqle);
 		} finally {
-                    close(conn);
+			close(rs);
+			close(ps);
+			close(conn);
 		}
 	}
 
@@ -180,12 +191,14 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 	public Collection<ErpMaterialInfoModel> findMaterialsByDescription(String description) {
 		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
 			conn = getConnection();
 
-			PreparedStatement ps = conn.prepareStatement(QUERY_MATERIALS_BY_DESCRIPTION);
+			ps = conn.prepareStatement(QUERY_MATERIALS_BY_DESCRIPTION);
 			ps.setString(1, "%" + description.toUpperCase() + "%");
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 
 			ArrayList<ErpMaterialInfoModel> materials = new ArrayList<ErpMaterialInfoModel>();
 			while (rs.next()) {
@@ -194,8 +207,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				materials.add(matlInfo);
 			}
 
-			rs.close();
-			ps.close();
+//			rs.close();
+//			ps.close();
 
 			return materials;
 
@@ -203,7 +216,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find materials for description \"" + description + "\"", sqle);
 			throw new EJBException(sqle);
 		} finally {
-                    close(conn);
+			close(rs);
+			close(ps);
+            close(conn);
 		}
 	}
 

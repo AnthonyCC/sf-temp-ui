@@ -49,8 +49,12 @@ public class HttpService {
 				delete = new HttpDelete(uri);
 				client.execute(delete);
 			} finally {
-				if (delete != null) {
-					delete.releaseConnection();
+				try {
+					if (delete != null) {
+						delete.releaseConnection();
+					}
+				} catch (Exception e) {
+					
 				}
 			}
 		}
@@ -67,9 +71,12 @@ public class HttpService {
 				post.setEntity(new UrlEncodedFormEntity(params));
 				client.execute(post);
                         } finally {
-                                if (post != null) {
-                                        post.releaseConnection();
-                                }
+                                try {
+									if (post != null) {
+									        post.releaseConnection();
+									}
+								} catch (Exception e) {
+								}
                         }
 		}
 	}
@@ -86,9 +93,13 @@ public class HttpService {
 				HttpResponse response = client.execute(post);
 				LOG.debug(response.getStatusLine());
                         } finally {
-                                if (post != null) {
-                                        post.releaseConnection();
-                                }
+                                try {
+									if (post != null) {
+									        post.releaseConnection();
+									}
+								} catch (Exception e) {
+									
+								}
                         }
 		}
 	}
@@ -110,9 +121,13 @@ public class HttpService {
 
 				client.execute(post);
                         } finally {
-                                if (post != null) {
-                                        post.releaseConnection();
-                                }
+                                try {
+									if (post != null) {
+									        post.releaseConnection();
+									}
+								} catch (Exception e) {
+									
+								}
                         }
 		}
 	}
@@ -136,11 +151,13 @@ public class HttpService {
 					try {
 						payload.close();
 					} catch (IOException ioe) {
-						ioe.printStackTrace();
 					}
 				}
-				if (get != null) {
-					get.releaseConnection();
+				try {
+					if (get != null) {
+						get.releaseConnection();
+					}
+				} catch (Exception e) {
 				}
 			}
 		}
@@ -171,12 +188,14 @@ public class HttpService {
                                         try {
                                                 payload.close();
                                         } catch (IOException ioe) {
-                                                ioe.printStackTrace();
                                         }
                                 }
-                                if (get != null) {
-                                        get.releaseConnection();
-                                }
+                                try {
+									if (get != null) {
+									        get.releaseConnection();
+									}
+								} catch (Exception e) {
+								}
 			}
 		}
 		return result;

@@ -112,8 +112,12 @@ public class YTCouponProvider implements CouponService {
 			LOGGER.error("Exception while making a call to YT: "+io);
 			throw new CouponServiceException(io);
 		} finally {
-			if (connection != null) {
-				connection.disconnect();
+			try {
+				if (connection != null) {
+					connection.disconnect();
+				}
+			} catch (Exception e) {
+				LOGGER.warn("Exception while disconnecting the httpconnection: ", e);
 			}
 		}
 //		LOGGER.debug("callYT/Response = "+returnString);

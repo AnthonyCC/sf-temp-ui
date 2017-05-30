@@ -89,7 +89,11 @@ public class CacheWarmupUtil {
 			}
 		}
 
-		execSvc.shutdown();
+		try {
+			execSvc.shutdown();
+		} catch (Exception e) {
+			LOGGER.warn("Exception while shutting down the ExecutorService ", e);
+		}
 		
 	}
 
