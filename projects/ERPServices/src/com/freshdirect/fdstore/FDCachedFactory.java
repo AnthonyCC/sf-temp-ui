@@ -144,14 +144,39 @@ public class FDCachedFactory {
 		protected void refresh(List expiredKeys) {
 			try {
 				LOGGER.debug("FDProductRefresh reloading "+expiredKeys.size()+" products");
-				Collection prods = FDFactory.getProducts( (FDSku[])expiredKeys.toArray(new FDSku[0]) );
-
-				// cache these
-				FDProduct temp;
-				for (Iterator i=prods.iterator(); i.hasNext(); ) {
-					temp = (FDProduct)i.next();
-					this.cache.put(temp, temp);
+				
+				if(FDStoreProperties.isProductCacheOptimizationEnabled()){
+					//check and refresh only the latest version of the expired products in the cache.
+					for (Iterator iterator = expiredKeys.iterator(); iterator.hasNext();) {
+						FDSku fdSku = (FDSku) iterator.next();
+						if(null != fdSku){
+							FDProductInfo pi = (FDProductInfo)productInfoCache.get(fdSku.getSkuCode());
+							if(null != pi){
+								if(null == this.cache.get(pi)){
+									fdSku = new FDSku(pi.getSkuCode(), pi.getVersion());
+									try {
+										this.cache.put(fdSku,FDFactory.getProduct(fdSku));
+									} catch (FDSkuNotFoundException ex) {
+										// not found
+									}
+								}else{
+									this.cache.remove(fdSku);//remove the old versions of the product from cache once expired, as the cache has latest version.
+								}
+							}
+						}
+						
+					}
+				} else {
+						Collection prods = FDFactory.getProducts( (FDSku[])expiredKeys.toArray(new FDSku[0]) );
+		
+						// cache these
+						FDProduct temp;
+						for (Iterator i=prods.iterator(); i.hasNext(); ) {
+							temp = (FDProduct)i.next();
+							this.cache.put(temp, temp);
+						}
 				}
+				
 
 			} catch (Exception ex) {
 				LOGGER.warn("Error occured in FDProductRefresh", ex);

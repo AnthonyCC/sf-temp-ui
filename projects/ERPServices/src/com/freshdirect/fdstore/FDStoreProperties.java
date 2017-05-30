@@ -934,6 +934,9 @@ public class FDStoreProperties {
     private final static String PROP_OBSOLETE_MERGECARTPAGE_ENABLED = "fdstore.obsolete.mergecartpage.enabled";
 	private final static String PROP_CLUSTER_NAME = "fdsystem.cluster.name";
 	private final static String PROP_NODE_NAME = "fdsystem.node.name";
+    
+    private final static String PROP_PRODUCT_CACHE_OPTIMIZATION_ENABLED = "fdstore.product.cache.optimization.enabled";
+
     static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_INIT_CTX_FACTORY, "weblogic.jndi.WLInitialContextFactory");
@@ -1647,7 +1650,7 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.checkout1_0", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.checkout2_0", "GLOBAL:ENABLED,false;");
 
-        defaults.put(PROP_LOGISTICS_COMPANY_CODE, EnumCompanyCode.fd.name());
+//        defaults.put(PROP_LOGISTICS_COMPANY_CODE, EnumCompanyCode.fd.name());
         defaults.put(PROP_LOGISTICS_CONNECTION_TIMEOUT, 120);
         defaults.put(PROP_LOGISTICS_CONNECTION_POOL, 15);
         defaults.put(PROP_LOGISTICS_CONN_READ_TIMEOUT, 120);
@@ -1776,6 +1779,7 @@ public class FDStoreProperties {
         defaults.put(PROP_NODE_NAME, "localhost");
     	
 
+        defaults.put(PROP_PRODUCT_CACHE_OPTIMIZATION_ENABLED, "true");
         refresh();
     }
 
@@ -4564,4 +4568,8 @@ public class FDStoreProperties {
 		return get(PROP_NODE_NAME);
 	}
 
+	
+	public static boolean isProductCacheOptimizationEnabled(){
+		return (Boolean.valueOf(get(PROP_PRODUCT_CACHE_OPTIMIZATION_ENABLED))).booleanValue();
+	}
 }
