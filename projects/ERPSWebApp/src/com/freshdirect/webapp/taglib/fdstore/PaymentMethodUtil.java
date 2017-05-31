@@ -78,7 +78,10 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
         try {
         	sessionuser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
         	BINCache binCache = BINCache.getInstance();
-	        boolean isDebitCard = binCache.isDebitCard(paymentMethod.getAccountNumber(), EnumCardType.VISA)||binCache.isDebitCard(paymentMethod.getAccountNumber(), EnumCardType.MC);
+        	 boolean isDebitCard = false;
+             if(paymentMethod.getCardType().equals(EnumCardType.VISA) || paymentMethod.getCardType().equals(EnumCardType.MC)){
+             	isDebitCard = binCache.isDebitCard(paymentMethod.getAccountNumber(), paymentMethod.getCardType());
+             }
 	        paymentMethod.setDebitCard(isDebitCard);
             FDCustomerManager.addPaymentMethod(info, paymentMethod, sessionuser.isPaymentechEnabled());
         } catch (ErpPaymentMethodException ex) {
@@ -316,7 +319,11 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
            
             paymentMethod.setCVV(csv);
             BINCache binCache = BINCache.getInstance();
-	        boolean isDebitCard = binCache.isDebitCard(accountNumber, EnumCardType.VISA)||binCache.isDebitCard(accountNumber, EnumCardType.MC);
+            boolean isDebitCard = false;
+            if(paymentMethod.getCardType().equals(EnumCardType.VISA) || paymentMethod.getCardType().equals(EnumCardType.MC)){
+            	isDebitCard = binCache.isDebitCard(accountNumber, paymentMethod.getCardType());
+            }
+	        
 	        paymentMethod.setDebitCard(isDebitCard);
 	       
             if(StringUtil.isEmpty(paymentMethod.getCustomerId()) && identity!=null) {
