@@ -1,5 +1,16 @@
-.contentModules > div:first-child {
+.contentModules > div:first-child .module-group {
   margin-top: 10px;
+}
+
+.contentModules > div:first-child .content-header,
+.contentModules > div:first-child.editorial-module {
+  margin-top: 27px;
+}
+
+.contentModules > div:first-child .module-group+.content-header,
+.contentModules > div:first-child.editorial-module .content-header,
+.contentModules > div:first-child .module-header+.content-header {
+  margin-top: 0px;
 }
 
 .contentModules > div:last-child {
