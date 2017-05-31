@@ -49,6 +49,7 @@ import com.freshdirect.logistics.controller.data.response.DeliveryZones;
 import com.freshdirect.logistics.controller.data.response.Employees;
 import com.freshdirect.logistics.controller.data.response.FulfillmentInfoResponse;
 import com.freshdirect.logistics.controller.data.response.ListOfDates;
+import com.freshdirect.logistics.controller.data.response.ListOfFulfillmentInfoResponse;
 import com.freshdirect.logistics.controller.data.response.ListOfObjects;
 import com.freshdirect.logistics.controller.data.response.Timeslot;
 import com.freshdirect.logistics.delivery.dto.Address;
@@ -168,4 +169,7 @@ public interface ILogisticsService {
 	Result reconfirmReservation(ReconfirmReservationRequest reservationRequest) throws FDLogisticsServiceException;
 
 	RouteStopInfo getRouteStopInfo(String orderId) throws FDLogisticsServiceException;
+
+	ListOfFulfillmentInfoResponse getAllFulfillmentInfo()
+			throws FDLogisticsServiceException;
 }
