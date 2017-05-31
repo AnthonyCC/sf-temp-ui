@@ -9,13 +9,11 @@ import java.util.TreeSet;
 
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.fdstore.EnumEStoreId;
-import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.Domain;
 import com.freshdirect.mobileapi.controller.data.Image;
-import com.freshdirect.mobileapi.controller.data.ImageBanner;
 import com.freshdirect.mobileapi.controller.data.Image.ImageSizeType;
+import com.freshdirect.mobileapi.controller.data.ImageBanner;
 import com.freshdirect.mobileapi.controller.data.response.FilterOption;
 import com.freshdirect.mobileapi.model.comparator.FilterOptionLabelComparator;
 
@@ -75,19 +73,6 @@ public class Category extends ProductContainer {
             images.add(detailImage);
         }
         result.setNoOfProducts(noOfProducts);
-
-        try {
-			Set<BrandModel> brandModels = model.getAllBrands();
-			TreeSet<FilterOption> brands = new TreeSet<FilterOption>(new FilterOptionLabelComparator());
-			for (BrandModel brand : brandModels) {
-				FilterOption filterOption = new FilterOption();
-				filterOption.setId(brand.getContentName());
-				filterOption.setLabel(brand.getName());
-				brands.add(filterOption);
-			}
-//			result.getFilterOptions().put("brands", brands);
-		} catch (FDResourceException e) {
-		}
 
         List<Domain> domains = model.getWineSideNavFullList();
         TreeSet<FilterOption> wineFilters = new TreeSet<FilterOption>(new FilterOptionLabelComparator());
