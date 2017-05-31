@@ -1665,7 +1665,10 @@ public class Product {
 		}
 
 		final boolean useCache = true;
-		final String skuCode = defaultSku.getSkuCode();
+		String skuCode = null;
+		if(defaultSku!=null){
+			skuCode = defaultSku.getSkuCode();
+		}
 
 		NutritionPanel panel = null;
 
@@ -1693,7 +1696,7 @@ public class Product {
 			// old style
 
 			ErpNutritionModel nutritionModel = FDNutritionCache.getInstance()
-					.getNutrition(defaultSku.getSkuCode());
+					.getNutrition(skuCode);
 
 			if (nutritionModel != null) {
 				result = nutritionModel.toJSON(); // we are sending JSON response which will be converted to HTML on app side
