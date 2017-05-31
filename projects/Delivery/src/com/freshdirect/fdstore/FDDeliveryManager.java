@@ -81,6 +81,7 @@ import com.freshdirect.logistics.controller.data.response.DeliveryZoneCapacity;
 import com.freshdirect.logistics.controller.data.response.DeliveryZoneCutoffs;
 import com.freshdirect.logistics.controller.data.response.DeliveryZones;
 import com.freshdirect.logistics.controller.data.response.ListOfDates;
+import com.freshdirect.logistics.controller.data.response.ListOfFulfillmentInfoResponse;
 import com.freshdirect.logistics.controller.data.response.ListOfObjects;
 import com.freshdirect.logistics.controller.data.response.Timeslot;
 import com.freshdirect.logistics.delivery.dto.Address;
@@ -93,6 +94,7 @@ import com.freshdirect.logistics.delivery.model.EnumApplicationException;
 import com.freshdirect.logistics.delivery.model.EnumRegionServiceType;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.ExceptionAddress;
+import com.freshdirect.logistics.delivery.model.FulfillmentInfo;
 import com.freshdirect.logistics.delivery.model.GeoLocation;
 import com.freshdirect.logistics.delivery.model.OrderContext;
 import com.freshdirect.logistics.delivery.model.RouteStopInfo;
@@ -1474,6 +1476,20 @@ public class FDDeliveryManager {
 					.getInstance().getAirclicService();
 			ListOfObjects<String> result = airclicService
 					.getScanReportedLates();
+			LogisticsDataDecoder.decodeResult(result);
+			return result.getData();
+		} catch (FDLogisticsServiceException e) {
+			throw new FDResourceException(e);
+		}
+
+	}
+	
+	public List<FulfillmentInfo> getAllFulfillmentInfo() throws FDResourceException {
+
+		try {
+			ILogisticsService logisticsService = LogisticsServiceLocator
+					.getInstance().getLogisticsService();
+			ListOfFulfillmentInfoResponse result = logisticsService.getAllFulfillmentInfo();
 			LogisticsDataDecoder.decodeResult(result);
 			return result.getData();
 		} catch (FDLogisticsServiceException e) {
