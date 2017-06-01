@@ -46,7 +46,6 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
 ProductModel productNode = ProductPricingFactory.getInstance().getPricingAdapter( ContentFactory.getInstance().getProductByName( request.getParameter("catId"), request.getParameter("productId") ), user.getPricingContext() );
 boolean isWine = EnumTemplateType.WINE.equals( productNode.getTemplateType() );
 String title =  productNode.getPageTitle() != null && !productNode.getPageTitle().isEmpty() ? productNode.getPageTitle() : productNode.getFullName();
-String productFullName = productNode.getFullName().replaceAll("<[^>]*>", "");
 title = title.replaceAll("<[^>]*>", "");
 
 // Handle no-product case
@@ -113,6 +112,8 @@ if (mobWeb) {
 
 <tmpl:insert template="<%= pageTemplate %>">
 
+  <tmpl:put name='title' direct='true'><%= title %></tmpl:put>
+
   <tmpl:put name="seoMetaTag">
     <fd:SEOMetaTag metaDescription="<%= productNode.getSEOMetaDescription() %>" title="<%= title %>"/>
   </tmpl:put>
@@ -159,8 +160,6 @@ if (mobWeb) {
     
 <% } else { //old leftnav %>
 
- <tmpl:put name='title' direct='true'>FreshDirect - <%= productNode.getFullName() %></tmpl:put>
-    
     <% if ( !isWine ) { // Wine template has no deptnav, and special leftnav, so only put these for regular layouts %>
 	    <tmpl:put name='leftnav' direct='true'>	    	
 	    	<td width="150" BGCOLOR="#E0E3D0" class="lNavTableConttd">		
@@ -193,7 +192,7 @@ if (mobWeb) {
 <% } %>
     
 	<tmpl:put name='facebookmeta' direct='true'>
-		<meta property="og:title" content="FreshDirect - <%= productFullName %>"/>
+		<meta property="og:title" content="<%= title %>"/>
 		<meta property="og:site_name" content="FreshDirect"/>
 		<% 
 			Image detailImage = productNode.getDetailImage();
