@@ -184,7 +184,12 @@ $jq('.cssbutton[data-component="createSOButton"]').on('click', function(e) {
 
 function disableAlertMinMetSO(){
 	$jq('#customizePopup.so-review-min-met-alert #so-min-do-not-show-checkbox:checked').prop( "disabled", true );
-	postStandingOrderData($jq('#customizePopup .so-select').val().split(':'),'turnOffReminderOverlay');
+	postStandingOrderData($jq('#customizePopup .so-select').val().split(':')[0],'turnOffReminderOverlay');
+}
+
+function disableAccidentalAtcSO(){
+	$jq('.so-accidental-atc #so-accidental-atc-checkbox:checked').prop( "disabled", true );
+	postStandingOrderData(0,'turnOffCartOverlayFirsttime');
 }
 
 function addToSONextHandler() {
@@ -230,13 +235,15 @@ function getStandingOrderData(ids, action){
  	});
 }
 
-function postStandingOrderData(ids, action){
+function postStandingOrderData(id, action){
 	$jq.post('/api/standingOrderCartServlet',
 			{		data: JSON.stringify({
 					actiontype: action,
-					standingOrderId: ids[0],
+					standingOrderId: id,
 					})
 			},function(data){
-	})
-	
+				if(action == "turnOffCartOverlayFirsttime"){
+					FreshDirect.standingorder.isSoCartOverlayFirstTime = false;
+				}
+	})	
 }

@@ -785,6 +785,7 @@ public class StandingOrderHelper {
 		soSettings.put("isContainerOpen", ((FDSessionUser)user).isSoContainerOpen()); /* replace with real value - get from fdsessionuser */
 		soSettings.put("soHardLimitDisplay", StandingOrderHelper.formatDecimalPrice(ErpServicesProperties.getStandingOrderHardLimit()));
 		soSettings.put("soSoftLimit", (int)(ErpServicesProperties.getStandingOrderSoftLimit()));
+		soSettings.put("cartOverlayFirstTime", setCartOverlayFirstTime(user).isSoCartOverlayFirstTime());
 		allSoData.put("soSettings", soSettings);
 		
 		/* these are the so's themselves */
@@ -821,8 +822,6 @@ public class StandingOrderHelper {
         
 
 		soSettings.put("selectedSoId", selectedSoId); 
-		
-		allSoData.put("cartOverlayFirstTime",  setCartOverlayFirstTime(user).isSoCartOverlayFirstTime());
 
 		allSoData.put("soData", soData);
 		
