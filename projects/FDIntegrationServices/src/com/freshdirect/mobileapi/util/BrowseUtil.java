@@ -1513,6 +1513,9 @@ public class BrowseUtil {
 						}else{
 							tmp.setPricingZone(new ZoneInfo(zoneId, fulfillmentInfo.getSalesArea().getSalesOrg(), fulfillmentInfo.getSalesArea().getDistChannel()));
 						}
+						if(StringUtils.isBlank(fulfillmentInfo.getSalesArea().getBusinessUnit())){
+							fulfillmentInfo.getSalesArea().setBusinessUnit("FD");
+						}
 						if((fulfillmentInfo.getSalesArea().getBusinessUnit().equals("FDX") && eStore.equals("FDX"))	||
 						   (fulfillmentInfo.getSalesArea().getBusinessUnit().equals("FD") && eStore.equals("FreshDirect"))){
 							keyList.add(tmp);
