@@ -112,8 +112,6 @@ if (mobWeb) {
 
 <tmpl:insert template="<%= pageTemplate %>">
 
-  <tmpl:put name='title' direct='true'><%= title %></tmpl:put>
-
   <tmpl:put name="seoMetaTag">
     <fd:SEOMetaTag metaDescription="<%= productNode.getSEOMetaDescription() %>" title="<%= title %>"/>
   </tmpl:put>
@@ -159,6 +157,8 @@ if (mobWeb) {
     </tmpl:put>
     
 <% } else { //old leftnav %>
+
+  <tmpl:put name='title' direct='true'><%= title %></tmpl:put>
 
     <% if ( !isWine ) { // Wine template has no deptnav, and special leftnav, so only put these for regular layouts %>
 	    <tmpl:put name='leftnav' direct='true'>	    	
