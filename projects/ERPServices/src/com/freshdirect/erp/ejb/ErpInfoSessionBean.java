@@ -1402,29 +1402,37 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
         	 salesOrg=rs.getString(2);
         	 distributionChannel=rs.getString(3);
         	String ds = rs.getString(4);
+        	//To fix NumberFormatException
+        	if(null == ds || "".equals(ds.trim())){
+        		continue;
+        	}
         	Date date;
         	try {
-        		date = DATE_FORMAT1.parse(ds);
-        	} catch (ParseException e) {
-        		try {
-        			date = DATE_FORMAT3.parse(ds);
-        		} catch (ParseException e1) {
-        			try {
-        				date = DATE_FORMAT2.parse(ds);
-        			} catch (ParseException e2) {
-        				// skip this bad date
-        				continue;
-        			}
-        		}
-        		
-        		if(skus.containsKey(sku)) {
-					value=skus.get(sku);
-					value.put(new StringBuilder(5).append(salesOrg).append(distributionChannel).toString(), date);
-				} else {
-					value=new HashMap<String,Date>();
-					value.put(new StringBuilder(5).append(salesOrg).append(distributionChannel).toString(), date);
+				try {
+					date = DATE_FORMAT1.parse(ds);
+				} catch (ParseException e) {
+					try {
+						date = DATE_FORMAT3.parse(ds);
+					} catch (ParseException e1) {
+						try {
+							date = DATE_FORMAT2.parse(ds);
+						} catch (ParseException e2) {
+							// skip this bad date
+							continue;
+						}
+					}
 				}
-        	}
+			} catch (Exception e) {
+				continue;
+			}
+    		if(skus.containsKey(sku)) {
+				value=skus.get(sku);
+				value.put(new StringBuilder(5).append(salesOrg).append(distributionChannel).toString(), date);
+			} else {
+				value=new HashMap<String,Date>();
+				value.put(new StringBuilder(5).append(salesOrg).append(distributionChannel).toString(), date);
+			}
+//        	}
         	skus.put(sku, value);
         }
 
