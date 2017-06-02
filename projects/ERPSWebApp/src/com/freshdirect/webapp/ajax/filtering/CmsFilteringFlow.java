@@ -230,7 +230,7 @@ public class CmsFilteringFlow {
                 // -- CALCULATE SECTION MAX LEVEL --
                 BrowseDataBuilderFactory.getInstance().calculateMaxSectionLevel(browseData.getSections(), browseData.getSections().getSections(), 0);
             }
-        } else if (nav.getPageType().isSearchLike()) {
+        } else if (null != nav && null != nav.getPageType() && nav.getPageType().isSearchLike()) {
 
             if (browseDataContext == null) {
                 browseDataContext = doSearchLikeFlow(nav, user);
