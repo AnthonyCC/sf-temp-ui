@@ -125,16 +125,38 @@ public class ErpCouponDiscountLinePersistentBean extends ErpReadOnlyPersistentBe
 
 	public void load(Connection conn) throws SQLException {
 				
-		PreparedStatement ps = conn.prepareStatement("SELECT COUPON_ID, ORDERLINE_ID, VERSION, DISC_AMT,DISC_TYPE, REQUIRED_QTY, COUPON_DESC FROM CUST.COUPONLINE WHERE ID=?");
-		ps.setString(1, this.getPK().getId());
-		ResultSet rs = ps.executeQuery();
-		if (rs.next()) {
-			this.loadFromResultSet(rs);
-		} else {
-			throw new SQLException("No such ErpCouponLine PK: " + this.getPK()); 
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement("SELECT COUPON_ID, ORDERLINE_ID, VERSION, DISC_AMT,DISC_TYPE, REQUIRED_QTY, COUPON_DESC FROM CUST.COUPONLINE WHERE ID=?");
+			ps.setString(1, this.getPK().getId());
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				this.loadFromResultSet(rs);
+			} else {
+				throw new SQLException("No such ErpCouponLine PK: " + this.getPK()); 
+			}
+//			rs.close();
+//			ps.close();
+		} catch (Exception e) {
+			
+		} finally {
+			if(null != rs){
+				try {
+					rs.close();
+				} catch (Exception e) {
+					
+				}
+			}
+			
+			if(null != ps){
+				try {
+					ps.close ();
+				} catch (Exception e) {
+					
+				}
+			}
 		}
-		rs.close();
-		ps.close();
 	}
 
 	private void loadFromResultSet(ResultSet rs) throws SQLException {
