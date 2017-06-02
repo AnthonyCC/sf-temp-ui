@@ -27,7 +27,13 @@ import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpRestrictedAvailabilityModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.ecommerce.data.common.Request;
+import com.freshdirect.ecommerce.data.delivery.AbstractRestrictionData;
+import com.freshdirect.ecommerce.data.delivery.AddressAndRestrictedAdressData;
+import com.freshdirect.ecommerce.data.delivery.AlcoholRestrictionData;
+import com.freshdirect.ecommerce.data.delivery.RestrictedAddressModelData;
+import com.freshdirect.ecommerce.data.delivery.RestrictionData;
 import com.freshdirect.ecommerce.data.delivery.sms.SmsAlertETAInfoData;
+import com.freshdirect.ecommerce.data.dlv.AddressData;
 import com.freshdirect.ecommerce.data.sessionimpressionlog.SessionImpressionLogEntryData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyResponseData;
@@ -56,6 +62,7 @@ import com.freshdirect.framework.event.FDRecommendationEvent;
 import com.freshdirect.framework.event.FDWebEvent;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
+import com.freshdirect.logistics.delivery.model.EnumRestrictedAddressReason;
 import com.freshdirect.logistics.delivery.model.OrderContext;
 import com.freshdirect.logistics.delivery.model.SiteAnnouncement;
 import com.freshdirect.logistics.fdstore.StateCounty;
@@ -392,6 +399,42 @@ public interface IECommerceService {
 	public ErpInventoryModel getInventoryInfo(String materialNo) throws RemoteException;
 
 	public Map<String, ErpInventoryModel> loadInventoryInfo(Date date)	throws RemoteException;
+	
+	public List getDlvRestrictions(String dlvReason,String dlvType,String dlvCriterion) throws FDResourceException, RemoteException;
+	
+	public Object getDlvRestriction(String restrictionId) throws FDResourceException, RemoteException;
+	
+	public AlcoholRestrictionData getAlcoholRestriction(String restrictionId, String municipalityId) throws FDResourceException, RemoteException;
+	
+	public RestrictedAddressModelData getAddressRestriction(String address1,String apartment, String zipCode) throws FDResourceException, RemoteException;
+	
+	public void storeDlvRestriction(RestrictionData restriction)  throws FDResourceException, RemoteException;
+	
+	public void storeAddressRestriction(AddressAndRestrictedAdressData restriction)  throws FDResourceException, RemoteException;
+	
+	public void deleteDlvRestriction(String restrictionId)  throws FDResourceException, RemoteException;
+	
+	public void deleteAlcoholRestriction(String restrictionId)  throws FDResourceException, RemoteException;
+	
+	public void deleteAddressRestriction(String address1,String apartment,String zipCode)  throws FDResourceException, RemoteException;
+	
+	public void addDlvRestriction(RestrictionData restriction)  throws FDResourceException, RemoteException;
+	
+	public void addAddressRestriction(RestrictedAddressModelData restriction)  throws FDResourceException, RemoteException;
+	
+	public void setAlcoholRestrictedFlag(String municipalityId, boolean restricted)  throws FDResourceException, RemoteException;
+	
+	public Map<String, List<String>> getMunicipalityStateCounties()throws FDResourceException, RemoteException;
+	
+	public void storeAlcoholRestriction(AlcoholRestrictionData restriction)  throws FDResourceException, RemoteException;
+	
+	public String addAlcoholRestriction(AlcoholRestrictionData restriction)  throws FDResourceException, RemoteException;
+
+	public List<RestrictionData> getDlvRestrictions() throws FDResourceException, RemoteException;
+	
+	public boolean checkForAlcoholDelivery(String scrubbedAddress, String zipcode, String apartment) throws RemoteException;
+	
+    public String checkAddressForRestrictions(AddressData address) throws RemoteException;
 
 
 

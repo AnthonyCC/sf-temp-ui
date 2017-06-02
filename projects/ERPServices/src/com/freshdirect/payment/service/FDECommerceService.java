@@ -54,9 +54,17 @@ import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.customer.ErpActivityRecordData;
 import com.freshdirect.ecommerce.data.customer.ErpGrpPriceModelData;
 import com.freshdirect.ecommerce.data.customer.accounts.external.UserTokenData;
+import com.freshdirect.ecommerce.data.delivery.AbstractRestrictionData;
+import com.freshdirect.ecommerce.data.delivery.AddressAndRestrictedAdressData;
+import com.freshdirect.ecommerce.data.delivery.AddressRestrictionData;
+import com.freshdirect.ecommerce.data.delivery.AlcoholRestrictionData;
+import com.freshdirect.ecommerce.data.delivery.OneTimeReverseRestrictionData;
+import com.freshdirect.ecommerce.data.delivery.RestrictedAddressModelData;
+import com.freshdirect.ecommerce.data.delivery.RestrictionData;
 import com.freshdirect.ecommerce.data.delivery.sms.RecievedSmsData;
 import com.freshdirect.ecommerce.data.delivery.sms.SmsAlertETAInfoData;
 import com.freshdirect.ecommerce.data.delivery.sms.SmsOrderData;
+import com.freshdirect.ecommerce.data.dlv.AddressData;
 import com.freshdirect.ecommerce.data.dlv.ContactAddressData;
 import com.freshdirect.ecommerce.data.dlv.FutureZoneNotificationParam;
 import com.freshdirect.ecommerce.data.dlv.MunicipalityInfoData;
@@ -122,6 +130,7 @@ import com.freshdirect.framework.event.FDWebEvent;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
+import com.freshdirect.logistics.delivery.model.EnumRestrictedAddressReason;
 import com.freshdirect.logistics.delivery.model.OrderContext;
 import com.freshdirect.logistics.delivery.model.SiteAnnouncement;
 import com.freshdirect.logistics.fdstore.StateCounty;
@@ -319,6 +328,23 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 
 	private static final String SEND_GIFTCARD = "giftcard/send/";
 	
+	private static final String GET_DLV_RESTRICTIONS = "restriction/delivery";
+	private static final String GET_ALCOHOL_RESTRICTIONS = "restriction/alcohol";
+	private static final String GET_ADDRESS_RESTRICTION = "restriction/address";
+	private static final String STORE_DLV_RESTRICTION = "restriction/delivery/store";
+	private static final String STORE_ADDRESS_RESTRICTION = "restriction/address/store";
+	private static final String DELETE_DLV_RESTRICTION = "restriction/delete";
+	private static final String DELETE_ALCOHOL_RETRICTION = "restriction/alcohol/delete";
+	private static final String DELETE_ADDRESS_RESTRICTION = "restriction/address/delete";
+	private static final String ADD_ADDRESS_RESTRICTION = "restriction/address/add";
+	private static final String ALCOHOL_RESTRICTED_FLAG = "restriction/alcohol/flag";
+	private static final String MUNICIPALITY_STATE_COUNTIES = "restriction/muncipality/state";
+	private static final String STORE_ALCOHOL_RESTRICTION = "restriction/alcohol/store";
+	private static final String ADD_ALCOHOL_RESTRICTION = "restriction/alcohol/add";
+	private static final String CHECK_ALCOHOL_RESTRICTION = "restriction/alcoholdelivery";
+	private static final String CHECK_ADDRESS_RESTRICTION = "restriction/checkaddress";
+	private static final String ADD_DLV_RESTRICTION = "restriction/delivery/add";
+	private static final String GET_RESTRICTIONS = "restriction/delivery";
 
 	public static IECommerceService getInstance() {
 		if (INSTANCE == null)
@@ -3290,7 +3316,283 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			LOGGER.error(e.getMessage());
 			throw new FDRuntimeException(e, "Unable to process the request.");
 		}
+	}
+	@Override
+	public List getDlvRestrictions(String dlvReason, String dlvType,String dlvCriterion) throws FDResourceException, RemoteException {
+		Response<List<RestrictionData>> response = null;
+		List dlvrestictions = null;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_DLV_RESTRICTIONS+"/dlvReason/"+dlvReason+"/dlvType/"+dlvType+"/dlvCriterion/"+dlvCriterion),  new TypeReference<Response<List<RestrictionData>>>(){});
+			dlvrestictions = DlvRestrictionModelConverter.buildDlvRestrictionListResponse(response.getData());
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return dlvrestictions;
+	}
+	@Override
+	public Object  getDlvRestriction(String restrictionId)throws FDResourceException, RemoteException {
+		Response<RestrictionData> response = null;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_DLV_RESTRICTIONS+"/restrictionId/"+restrictionId),  new TypeReference<Response<RestrictionData>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return DlvRestrictionModelConverter.buildDlvRestrictionResponse(response.getData());
+	}
+	@Override
+	public AlcoholRestrictionData getAlcoholRestriction(String restrictionId,String municipalityId) throws FDResourceException, RemoteException {
+		Response<AlcoholRestrictionData> response = null;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_ALCOHOL_RESTRICTIONS+"?restrictionId="+restrictionId+"&municipalityId="+municipalityId),  new TypeReference<Response<AlcoholRestrictionData>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	@Override
+	public RestrictedAddressModelData getAddressRestriction(String address1,String apartment, String zipCode) throws FDResourceException,
+			RemoteException {
+		Response<RestrictedAddressModelData> response = null;
+		Request<AddressRestrictionData> request = new Request<AddressRestrictionData>();
+		try {
+			request.setData(DlvRestrictionModelConverter.buildAddressRestrictionData( address1, apartment,  zipCode));
+			String inputJson = buildRequest(request);
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(GET_ADDRESS_RESTRICTION),  new TypeReference<Response<RestrictedAddressModelData>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new FDRuntimeException(e, "Unable to process the request.");
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	@Override
+	public void storeDlvRestriction(RestrictionData restriction)throws FDResourceException, RemoteException {
+		Request<RestrictionData> request = new Request<RestrictionData>();
+		try {
+			request.setData(restriction);
+			String inputJson = buildRequest(request);
+			this.postDataTypeMap(inputJson, getFdCommerceEndPoint(STORE_DLV_RESTRICTION),  new TypeReference<Response<Object>>() {});
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new FDRuntimeException(e, "Unable to process the request.");
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
 	}	
+	@Override
+	public void storeAddressRestriction(AddressAndRestrictedAdressData restriction)
+			throws FDResourceException, RemoteException {
+		Request<AddressAndRestrictedAdressData> request = new Request<AddressAndRestrictedAdressData>();
+			try {
+				request.setData(restriction);
+				String inputJson = buildRequest(request);
+				this.postDataTypeMap(inputJson, getFdCommerceEndPoint(STORE_ADDRESS_RESTRICTION),  new TypeReference<Response<Object>>() {});
+			} catch (FDResourceException e){
+				LOGGER.error(e.getMessage());
+				throw new FDRuntimeException(e, "Unable to process the request.");
+			} catch (FDPayPalServiceException e) {
+				LOGGER.error(e.getMessage());
+				throw new RemoteException(e.getMessage());
+			}}
+	@Override
+	public void deleteDlvRestriction(String restrictionId)throws FDResourceException, RemoteException {
+		try {
+			this.httpGetDataTypeMap(getFdCommerceEndPoint(DELETE_DLV_RESTRICTION+"?restrictionId="+restrictionId),  new TypeReference<Response<Object>>(){});
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		
+	}
+	@Override
+	public void deleteAlcoholRestriction(String restrictionId)throws FDResourceException, RemoteException {
+		try {
+			this.httpGetDataTypeMap(getFdCommerceEndPoint(DELETE_ALCOHOL_RETRICTION+"?restrictionId="+restrictionId),  new TypeReference<Response<Object>>(){});
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		
+	}
+	@Override
+	public void deleteAddressRestriction(String address1, String apartment,String zipCode) throws FDResourceException, RemoteException {
+		Request<AddressRestrictionData> request = new Request<AddressRestrictionData>();
+		try {
+			request.setData(DlvRestrictionModelConverter.buildAddressRestrictionData(address1, apartment, zipCode));
+			String inputJson = buildRequest(request);
+			this.postDataTypeMap(inputJson, getFdCommerceEndPoint(DELETE_ADDRESS_RESTRICTION),  new TypeReference<Response<Object>>() {});
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	@Override
+	public void addAddressRestriction(RestrictedAddressModelData restriction)throws FDResourceException, RemoteException {
+		Request<RestrictedAddressModelData> request = new Request<RestrictedAddressModelData>();
+		try {
+			request.setData(restriction);
+			String inputJson = buildRequest(request);
+			this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ADD_ADDRESS_RESTRICTION),  new TypeReference<Response<Object>>() {});
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		
+	}
+	@Override
+	public void setAlcoholRestrictedFlag(String municipalityId,boolean restricted) throws FDResourceException, RemoteException {
+		try {
+			this.postDataTypeMap(null, getFdCommerceEndPoint(ALCOHOL_RESTRICTED_FLAG+"?municipalityId="+municipalityId+"&restricted="+restricted),  new TypeReference<Response<Object>>() {});
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		
+		
+	}
+	@Override
+	public Map<String, List<String>> getMunicipalityStateCounties() throws FDResourceException, RemoteException {
+		Response<Map<String, List<String>>> response = null;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(MUNICIPALITY_STATE_COUNTIES),  new TypeReference<Response<Map<String, List<String>>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	@Override
+	public void storeAlcoholRestriction(AlcoholRestrictionData restriction)throws FDResourceException, RemoteException {
+		Request<AlcoholRestrictionData> request = new Request<AlcoholRestrictionData>();
+		try {
+			request.setData(restriction);
+			String inputJson = buildRequest(request);
+			this.postDataTypeMap(inputJson, getFdCommerceEndPoint(STORE_ALCOHOL_RESTRICTION),  new TypeReference<Response<Object>>() {});
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		
+	}
+	@Override
+	public String addAlcoholRestriction(AlcoholRestrictionData restriction)throws FDResourceException, RemoteException {
+		Request<AlcoholRestrictionData> request = new Request<AlcoholRestrictionData>();
+		Response<String> response = new Response<String>();
+		try {
+			request.setData(restriction);
+			String inputJson = buildRequest(request);
+			response =this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ADD_ALCOHOL_RESTRICTION),  new TypeReference<Response<String>>() {});
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+		
+	}
+	@Override
+	public boolean checkForAlcoholDelivery(String scrubbedAddress,String zipcode, String apartment) throws RemoteException {
+		Request<AddressRestrictionData> request = new Request<AddressRestrictionData>();
+		Response<Boolean> response = new Response<Boolean>();
+		try {
+			request.setData(DlvRestrictionModelConverter.buildAddressRestrictionData(scrubbedAddress, apartment, zipcode));
+			String inputJson = buildRequest(request);
+			response =this.postDataTypeMap(inputJson, getFdCommerceEndPoint(CHECK_ALCOHOL_RESTRICTION),  new TypeReference<Response<Boolean>>() {});
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+		
+	}
+	@Override
+	public String checkAddressForRestrictions(AddressData address) throws RemoteException {
+		Request<AddressData> request = new Request<AddressData>();
+		Response<String> response = new Response<String>();
+		try {
+			request.setData(address);
+			String inputJson = buildRequest(request);
+			response =this.postDataTypeMap(inputJson, getFdCommerceEndPoint(CHECK_ADDRESS_RESTRICTION),  new TypeReference<Response<String>>() {});
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+		
+	}
+	@Override
+	public void addDlvRestriction(RestrictionData restriction)throws FDResourceException, RemoteException {
+		Request<RestrictionData> request = new Request<RestrictionData>();
+		try {
+			request.setData(restriction);
+			String inputJson = buildRequest(request);
+			this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ADD_DLV_RESTRICTION),  new TypeReference<Response<Object>>() {});
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new FDRuntimeException(e, "Unable to process the request.");
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	@Override
+	public List<RestrictionData> getDlvRestrictions()throws FDResourceException, RemoteException {
+		Response<List<RestrictionData>> response = null;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_RESTRICTIONS),  new TypeReference<Response<List<RestrictionData>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
 	
 	
 	
