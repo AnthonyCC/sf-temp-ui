@@ -1543,6 +1543,7 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.browseflyoutrecommenders", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.quickshop2_2", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.homepageredesign", "GLOBAL:ENABLED,false;");
+        defaults.put("feature.rollout.mobweb", "GLOBAL:ENABLED,true;");
         // defaults.put("feature.rollout.sociallogin", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.printinvoice", "GLOBAL:ENABLED,true;");
 
@@ -1551,9 +1552,7 @@ public class FDStoreProperties {
 
         defaults.put("feature.rollout.standingorder3_0", "GLOBAL:ENABLED,false;");
         defaults.put("feature.rollout.browseaggregatedcategories1_0", "GLOBAL:ENABLED,false;");
-        defaults.put("feature.rollout.unbxdintegrationblackhole2016", "GLOBAL:ENABLED,true;");
-        defaults.put("feature.rollout.unbxdanalytics2016", "GLOBAL:ENABLED,true;");
-
+        
         defaults.put(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE, "true");
         defaults.put(PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING, "ISO-8859-1");
 
@@ -1741,6 +1740,9 @@ public class FDStoreProperties {
         defaults.put(PROP_UNBXD_BASE_URL, "http://search.unbxdapi.com/");
         defaults.put(PROP_UNBXD_FALLBACK_ON_ERROR, "false");
         defaults.put(PROP_UNBXD_TRACKING_BASE_URL, "http://tracker.unbxdapi.com/v2/1p.jpg");
+        defaults.put("feature.rollout.unbxdintegrationblackhole2016", "GLOBAL:ENABLED,true;");
+        defaults.put("feature.rollout.unbxdanalytics2016", "GLOBAL:ENABLED,true;");
+
 
         defaults.put(PROP_MEAL_KIT_MATERIAL_GROUP, "MEALKIT");
 
@@ -1764,7 +1766,7 @@ public class FDStoreProperties {
 
         defaults.put(PROP_SF_2_0_ENABLED, "false");
         defaults.put(PROP_MAT_SALESORG__EXPORT_PICKPLANT_VALIDATION_ENABLED, "true");
-        defaults.put(PROP_EXTRA_LOG_FOR_LOGIN_FAILS_ENABLED, "true");
+        defaults.put(PROP_EXTRA_LOG_FOR_LOGIN_FAILS_ENABLED, "false");
         defaults.put(PROP_MEALBUNDLE_CARTONVIEW_ENABLED, "true");
 
         /* APPDEV-5916 */
