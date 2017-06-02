@@ -5,10 +5,8 @@ import java.text.ParseException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
-import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.context.MasqueradeContext;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
@@ -22,10 +20,14 @@ import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
+import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
+import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.util.DateUtil;
@@ -68,7 +70,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 		}
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 		FDUserI dpTcCheckUser = (FDUserI)session.getAttribute(SessionName.USER);
-		
+		FDDeliveryZoneInfo previousZone = null;
 		FDCartModel cart = StandingOrderHelper.isSO3StandingOrder(user)? user.getSoTemplateCart()
 				:user.getShoppingCart();
 		ErpAddressModel erpAddress=StandingOrderHelper.isSO3StandingOrder(user)?user.getCurrentStandingOrder().getDeliveryAddress():cart.getDeliveryAddress();
@@ -115,6 +117,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 				String addressId = "";
 				if (!(erpAddress instanceof ErpDepotAddressModel)) {
 					FDDeliveryZoneInfo zoneInfo = AddressUtil.getZoneInfo(user, erpAddress, actionResult, timeSlot.getStartDateTime(), user.getHistoricOrderSize(), timeSlot.getRegionSvcType());
+					previousZone = cart.getZoneInfo();
 					cart.setZoneInfo(zoneInfo);
 					addressId = erpAddress.getPK().getId();
 				} else {
@@ -178,7 +181,8 @@ public class ChooseTimeslotAction extends WebActionSupport {
 					}
 					}
 					
-
+					call_zoneswitch_logic( previousZone, cart, user, erpAddress);
+					
 				}catch (ReservationUnavailableException re) {
 							actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_CHECKOUT_TIMESLOT_NA));
 				}catch (ReservationException re) {
@@ -191,6 +195,41 @@ public class ChooseTimeslotAction extends WebActionSupport {
 		return actionResult;
 	}
 	
+	
+	/**
+	 * APPDEV 6131 - FDC Transition
+	 * 
+	 * @param previousZone - previous zone from the cart
+	 * @param cart
+	 * @param user
+	 * @param erpAddress
+	 * @throws FDResourceException
+	 */
+	private static void call_zoneswitch_logic(FDDeliveryZoneInfo previousZone,
+			FDCartModel cart, FDSessionUser user, ErpAddressModel erpAddress)
+			throws FDResourceException {
+		boolean isZoneInfoNotMatched = ((previousZone != null
+				&& cart.getZoneInfo() != null && !previousZone.getZoneCode()
+				.equals(cart.getZoneInfo().getZoneCode())) || (previousZone == null && cart.getZoneInfo() != null));
+		if ((isZoneInfoNotMatched)|| (null == cart.getDeliveryAddress() && erpAddress != null)) {
+			cart.setDeliveryAddress(erpAddress);
+			user.setAddress(erpAddress);
+			user.setZPServiceType(erpAddress.getServiceType());
+			user.resetUserContext();
+			cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
+			if (!cart.isEmpty()) {
+				for (FDCartLineI cartLine : cart.getOrderLines()) {
+					cartLine.setUserContext(user.getUserContext());
+				}
+			}
+			try {
+				cart.refreshAll(true);
+			} catch (FDInvalidConfigurationException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	private static void reserveTimeslot(FDSessionUser user,
 			FDTimeslot timeSlot, ErpAddressModel erpAddress,
 			boolean chefsTable, boolean isForced, boolean hasSteeringDiscount,
