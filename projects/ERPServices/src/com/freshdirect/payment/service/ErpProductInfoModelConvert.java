@@ -13,6 +13,7 @@ import com.freshdirect.ecommerce.data.erp.model.ErpProductInfoModelData;
 import com.freshdirect.ecommerce.data.fdstore.SalesAreaInfoData;
 import com.freshdirect.ecommerce.data.utill.DayOfWeekSetData;
 import com.freshdirect.erp.EnumATPRule;
+import com.freshdirect.erp.EnumAlcoholicContent;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialPrice;
 import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialSalesAreaInfo;
@@ -33,7 +34,7 @@ public class ErpProductInfoModelConvert {
 				data.getUpc(),
 				getErpMaterialPlantModel(data.getMaterialPlants()),
 				getErpMaterialSalesAreaInfoModel(data.getMaterialSalesAreas()),
-				data.isAlcohol());
+				/*data.alcoholicType()*/ EnumAlcoholicContent.NONE);
 		return model;
 	}
 

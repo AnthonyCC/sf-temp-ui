@@ -26,8 +26,38 @@ public class EnumAlcoholicContent implements java.io.Serializable {
 	private final String code;
 	private final String name;
     
+	public static boolean isBeer(String code) {
+		return (BEER.getCode().equalsIgnoreCase(code));
+	}
+	
+	public static boolean isBeer(EnumAlcoholicContent alcoholicContent) {
+		if(alcoholicContent==null) return false;
+		return isBeer(alcoholicContent.getCode());
+	}
+	public static boolean isWineOrSpirit(String code) {
+		if(BC_WINE.getCode().equals(code)||
+	 			   USQ_WINE.getCode().equals(code)||		
+	 			   FD_WINE.getCode().equals(code)
+	 					)
+	 				return true;
+	 		else 
+	 				return false;
+    }
+	public static boolean isWineOrSpirit(EnumAlcoholicContent alcoholicContent) {
+		if(alcoholicContent==null) return false;
+		return isWineOrSpirit(alcoholicContent.getCode());
+	}
+	
+	public static boolean isAlcoholic(String code) {
+		return isBeer(code)||isWineOrSpirit(code);
+	}
+	
+	public static boolean isAlcoholic(EnumAlcoholicContent alcoholicContent) {
+		return isBeer(alcoholicContent)||isWineOrSpirit(alcoholicContent);
+	}
+	
     public static EnumAlcoholicContent getAlcoholicContent(String code) {
-        if (BEER.getCode().equalsIgnoreCase(code))
+        if (isBeer(code))
             return BEER;
         else if (BC_WINE.getCode().equalsIgnoreCase(code))
             return BC_WINE;

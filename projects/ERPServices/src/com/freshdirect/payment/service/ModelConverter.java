@@ -48,6 +48,7 @@ import com.freshdirect.ecommerce.data.logger.recommendation.FDRecommendationEven
 import com.freshdirect.ecommerce.data.payment.FDGatewayActivityLogModelData;
 import com.freshdirect.ecommerce.data.rules.RuleData;
 import com.freshdirect.erp.EnumATPRule;
+import com.freshdirect.erp.EnumAlcoholicContent;
 import com.freshdirect.erp.EnumFeaturedHeaderType;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
@@ -334,7 +335,7 @@ public class ModelConverter {
 				erpProductInfoModelData.getUpc(), 
 				buildPlantMAterialInfo(erpProductInfoModelData.getMaterialPlants()),
 				buildMaterialSaleInfo(erpProductInfoModelData.getMaterialSalesAreas()), 
-				erpProductInfoModelData.isAlcohol());
+				EnumAlcoholicContent.getAlcoholicContent(String.valueOf(erpProductInfoModelData.isAlcohol())));
 
 		return responseData;
 	}
