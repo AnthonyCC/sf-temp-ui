@@ -176,7 +176,7 @@ public class FDCachedFactory {
 							this.cache.put(temp, temp);
 						}
 				}
-				
+				LOGGER.info("FDProductRefresh cache size: "+this.cache.size()+" products");
 
 			} catch (Exception ex) {
 				LOGGER.warn("Error occured in FDProductRefresh", ex);
@@ -471,8 +471,9 @@ public class FDCachedFactory {
 		FDProduct p = (FDProduct)productCache.get(fdSku);
 		if (p==null) {
 			p = FDFactory.getProduct(sku, version);
+			productCache.put(fdSku, p);
 		}
-		productCache.put(fdSku, p);
+//		productCache.put(fdSku, p);
 		return p;
 	}
 
@@ -490,8 +491,9 @@ public class FDCachedFactory {
 		FDProduct p = (FDProduct)productCache.get(sku);
 		if (p==null) {
 			p = FDFactory.getProduct(sku);
+			productCache.put(sku, p);
 		}
-		productCache.put(sku, p);
+//		productCache.put(sku, p);
 		return p;
 	}
 
