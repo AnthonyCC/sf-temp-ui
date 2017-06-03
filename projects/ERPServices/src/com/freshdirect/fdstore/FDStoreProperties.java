@@ -936,6 +936,8 @@ public class FDStoreProperties {
 	private final static String PROP_NODE_NAME = "fdsystem.node.name";
     
     private final static String PROP_PRODUCT_CACHE_OPTIMIZATION_ENABLED = "fdstore.product.cache.optimization.enabled";
+    
+    private final static String PROP_REQUEST_SCHEME_FOR_REDIRECT_URL = "fdstore.request.scheme.redirecturl";
 
     static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1782,6 +1784,7 @@ public class FDStoreProperties {
     	
 
         defaults.put(PROP_PRODUCT_CACHE_OPTIMIZATION_ENABLED, "true");
+        defaults.put(PROP_REQUEST_SCHEME_FOR_REDIRECT_URL, "http");;
         refresh();
     }
 
@@ -4573,5 +4576,9 @@ public class FDStoreProperties {
 	
 	public static boolean isProductCacheOptimizationEnabled(){
 		return (Boolean.valueOf(get(PROP_PRODUCT_CACHE_OPTIMIZATION_ENABLED))).booleanValue();
+	}
+	
+	public static String getRequestSchemeForRedirectUrl(){
+		return get(PROP_REQUEST_SCHEME_FOR_REDIRECT_URL);
 	}
 }
