@@ -10,6 +10,7 @@ import javax.servlet.jsp.PageContext;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
@@ -75,7 +76,14 @@ public class SearchRedesignRedirectorTag extends BodyTagSupport {
 				LOGGER.debug("Redirecting from " + originalUrl + " to " + redirectUrl);
 
 				// To ensure that https requests get redirect to https correctly
-				redirectUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + redirectUrl;
+				//OPT-14 - Avoid redirect to "http://".
+				String requestScheme = FDStoreProperties.getRequestSchemeForRedirectUrl();
+				if(null == requestScheme || (!"http".equals(requestScheme) && !"https".equals(requestScheme))){
+					requestScheme = request.getScheme();
+				}
+				//
+//				redirectUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + redirectUrl;
+				redirectUrl = requestScheme + "://" + request.getServerName() + ":" + request.getServerPort() + redirectUrl;
 				redirected = true;
 				HttpServletResponse httpServletResponse = (HttpServletResponse) ctx.getResponse();
 				httpServletResponse.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
