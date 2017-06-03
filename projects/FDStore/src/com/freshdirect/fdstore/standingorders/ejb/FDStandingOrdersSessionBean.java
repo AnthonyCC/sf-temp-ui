@@ -1112,7 +1112,7 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			FDStandingOrderDAO.updateSoCartOverlayFirstTimePreferences(conn, customerId, false);	
+			FDStandingOrderDAO.updateSoCartOverlayFirstTimePreferences(conn, customerId, soCartOverlay);	
 		} catch (SQLException e) {
 			LOGGER.error( "SQL ERROR in updateSoCartOverlayFirstTimePreferences(): " + e.getMessage(), e );
 			e.printStackTrace();

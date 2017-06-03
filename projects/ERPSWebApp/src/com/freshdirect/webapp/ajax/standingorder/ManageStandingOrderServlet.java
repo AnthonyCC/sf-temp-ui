@@ -285,22 +285,12 @@ public class ManageStandingOrderServlet extends HttpServlet {
 				StandingOrderUtil.createStandingOrder(pageContext.getSession(), u.getSoTemplateCart(), so, null);
 				u.setCurrentStandingOrder(so);
 				u.setCheckoutMode( EnumCheckoutMode.CREATE_SO );
-				updateSoCartOverlayFirstTimePreferences(u);
 				returnMessage = so.getId();
 			}
 		} catch (FDResourceException e2) {
 			throw new JspException(e2);
 		}
 		return returnMessage;
-	}
-
-	private void updateSoCartOverlayFirstTimePreferences(FDSessionUser u) throws FDResourceException {
-		try {
-			FDStandingOrdersManager.getInstance().updateSoCartOverlayFirstTimePreferences(u.getIdentity().getErpCustomerPK(), true);
-			u.setRefreshSoCartOverlay(true);
-			} catch (FDResourceException ex) {
-			LOG.error("while the updating SoCartOverlayFirstTime flag got exception " + ex);
-		}
 	}
 
 	protected String onloadNewStandingOrder(String soName, FDSessionUser u, PageContext pageContext) throws JspException {

@@ -2006,19 +2006,10 @@ public void turnOffReminderOverLayNewSo(Connection con, String standingOrderId) 
 			boolean soCartOverlay)throws SQLException {
 		PreparedStatement ps = null;
 		try {
-			if (soCartOverlay) {
-				ps = conn.prepareStatement(
-						"update CUST.CUSTOMERINFO set SO_CART_OVERLAY_FIRSTTIME = (select case when"
-						+ " count(so.id)= 1 then 'Y' else 'N' end from CUST.STANDING_ORDER so where so.customer_id=?) where customer_id=?");
-				ps.setString(1, customerId);
-				ps.setString(2, customerId);
-				ps.execute();
-			} else {
 				ps = conn.prepareStatement("update CUST.CUSTOMERINFO set SO_CART_OVERLAY_FIRSTTIME = ? where customer_id=?");
-				ps.setString(1, "N");
+				ps.setString(1, soCartOverlay?"N":"Y");
 				ps.setString(2, customerId);
 				ps.execute();
-			}
 
 		} catch (Exception e) {
 			LOGGER.error("Error while updating updateSoCartOverlayFirstTimePreferences in DB", e);

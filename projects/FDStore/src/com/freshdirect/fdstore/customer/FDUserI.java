@@ -714,7 +714,4 @@ public interface FDUserI extends java.io.Serializable {
 
 	public void setSoCartOverlayFirstTime(boolean soCartOverlayFirstTime);
 	
-	public boolean isRefreshSoCartOverlay();
-
-	public void setRefreshSoCartOverlay(boolean isRefreshSoCartOverlay);
 }

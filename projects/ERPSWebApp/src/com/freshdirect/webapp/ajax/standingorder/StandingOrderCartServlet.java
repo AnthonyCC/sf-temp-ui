@@ -153,8 +153,6 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 				try {
 						FDStandingOrdersManager.getInstance().updateSoCartOverlayFirstTimePreferences(
 										user.getIdentity().getErpCustomerPK(), false);
-						user.setRefreshSoCartOverlay(true);
-						
 				} catch (FDResourceException e) {
 					LOG.error("Got the exeption while updating the StandingOrder Cart Overlay FirstTime flag for New Standing order"+e);
 				}
