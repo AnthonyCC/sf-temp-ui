@@ -3,7 +3,6 @@ package com.freshdirect.fdstore.survey;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -42,7 +41,7 @@ public class FDSurveyFactory {
             FDStoreProperties.getSurveyDefCacheSize(), FDStoreProperties.getRefreshSecsSurveyDef() * 1000);
 
     private final static Thread piRefreshThread = new LazyTimedCache.RefreshThread<SurveyKey, FDSurvey>(surveyDefCache, 3 * 60 * 1000) {
-        protected void refresh(Set<SurveyKey> expiredKeys) {
+        protected void refresh(List<SurveyKey> expiredKeys) {
             try {
                 LOGGER.debug("FDSurvey Refresh reloading " + expiredKeys.size() + " survey definitions");
 

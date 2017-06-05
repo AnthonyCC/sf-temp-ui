@@ -9,9 +9,7 @@
 package com.freshdirect.framework.util;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Timed LRU cache, with lazy expiration of entries.
@@ -21,13 +19,13 @@ import java.util.Set;
  */
 public class LazyTimedCache<K,V> extends TimedLruCache<K,V> {
 
-	private Set<K> expiredKeys;
+	private List<K> expiredKeys;
 	String name;
 
 	public LazyTimedCache(String name, int capacity, long expire) {
 		super(capacity, expire);
 		this.name = name;
-		this.expiredKeys = new HashSet<K>();
+		this.expiredKeys = new ArrayList<K>();
 	}
 
 	/**
@@ -37,19 +35,19 @@ public class LazyTimedCache<K,V> extends TimedLruCache<K,V> {
 	protected V getExpired(TimedEntry<K,V> entry) {
 		this.expiredKeys.add( entry.key );
 		entry.renewLease(this.expire);
-//		this.notifyAll();
+		this.notifyAll();
 		return entry.value;
 	}
 
 	/**
 	 * @return list of expired keys, or null, if it's empty
 	 */
-	public synchronized Set<K> clearExpiredKeys() {
+	public synchronized List<K> clearExpiredKeys() {
 		if (this.expiredKeys.isEmpty()) {
 			return null;
 		}
-		Set<K> temp = this.expiredKeys;
-		this.expiredKeys = new HashSet<K>();
+		List<K> temp = this.expiredKeys;
+		this.expiredKeys = new ArrayList<K>();
 		return temp;
 	}
 
@@ -77,7 +75,7 @@ public class LazyTimedCache<K,V> extends TimedLruCache<K,V> {
 				
 				while(true) {
 					//long startTime = System.currentTimeMillis();
-					Set<K> expiredKeys = null;
+					List<K> expiredKeys = null;
 //					synchronized(this.cache) {
 //						do {
 //							this.cache.wait(this.maxDelay);
@@ -98,7 +96,7 @@ public class LazyTimedCache<K,V> extends TimedLruCache<K,V> {
 			} catch (InterruptedException ex) {}
 		}
 
-		protected abstract void refresh(Set<K> expiredKeys);
+		protected abstract void refresh(List<K> expiredKeys);
 		
 	}
 

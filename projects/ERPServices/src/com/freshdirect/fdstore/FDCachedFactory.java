@@ -71,7 +71,7 @@ public class FDCachedFactory {
 	 * Thread that reloads expired productInfos, every 10 seconds.
 	 */
 	private final static Thread gRefreshThread = new LazyTimedCache.RefreshThread(grpCache, 10000) {
-		protected void refresh(Set expiredKeys) {
+		protected void refresh(List expiredKeys) {
 			try {
 				LOGGER.debug("FDGrpRefresh reloading "+expiredKeys.size()+" grpInfos");
 				Collection<GroupScalePricing> pis = FDFactory.getGrpInfo((FDGroup[])expiredKeys.toArray(new FDGroup[0]));
@@ -95,7 +95,7 @@ public class FDCachedFactory {
 	 * Thread that reloads expired productInfos, every 10 seconds.
 	 */
 	private final static Thread zRefreshThread = new LazyTimedCache.RefreshThread(zoneCache,10000) {
-		protected void refresh(Set expiredKeys) {
+		protected void refresh(List expiredKeys) {
 			try {
 				LOGGER.debug("FDZoneRefresh reloading "+expiredKeys.size()+" zoneInfos");
 				Collection pis = FDFactory.getZoneInfo((String[])expiredKeys.toArray(new String[0]) );
@@ -119,7 +119,7 @@ public class FDCachedFactory {
 	 * Thread that reloads expired productInfos, every 10 seconds.
 	 */
 	private final static Thread piRefreshThread = new LazyTimedCache.RefreshThread(productInfoCache, 10000) {
-		protected void refresh(Set expiredKeys) {
+		protected void refresh(List expiredKeys) {
 			try {
 				LOGGER.debug("FDProductInfoRefresh reloading "+expiredKeys.size()+" productInfos");
 				Collection pis = FDFactory.getProductInfos( (String[])expiredKeys.toArray(new String[0]) );
@@ -140,13 +140,12 @@ public class FDCachedFactory {
 	/**
 	 * Thread that reloads expired products, every 5 minutes.
 	 */
-	private final static Thread prodRefreshThread = new LazyTimedCache.RefreshThread(productCache, 1*60*1000) {
-		protected void refresh(Set expiredKeys) {
+	private final static Thread prodRefreshThread = new LazyTimedCache.RefreshThread(productCache, 5*60*1000) {
+		protected void refresh(List expiredKeys) {
 			try {
 				LOGGER.debug("FDProductRefresh reloading "+expiredKeys.size()+" products");
 				
 				if(FDStoreProperties.isProductCacheOptimizationEnabled()){
-					Map<FDSku, FDProduct> refreshedKeys = new HashMap<FDSku, FDProduct>(expiredKeys.size());
 					//check and refresh only the latest version of the expired products in the cache.
 					for (Iterator iterator = expiredKeys.iterator(); iterator.hasNext();) {
 						FDSku fdSku = (FDSku) iterator.next();
@@ -156,8 +155,7 @@ public class FDCachedFactory {
 								if(null == this.cache.get(pi)){
 									fdSku = new FDSku(pi.getSkuCode(), pi.getVersion());
 									try {
-//										this.cache.put(fdSku,FDFactory.getProduct(fdSku));
-										refreshedKeys.put(fdSku, FDFactory.getProduct(fdSku));
+										this.cache.put(fdSku,FDFactory.getProduct(fdSku));
 									} catch (FDSkuNotFoundException ex) {
 										// not found
 									}
@@ -168,7 +166,6 @@ public class FDCachedFactory {
 						}
 						
 					}
-					this.cache.putAll(refreshedKeys);
 				} else {
 						Collection prods = FDFactory.getProducts( (FDSku[])expiredKeys.toArray(new FDSku[0]) );
 		

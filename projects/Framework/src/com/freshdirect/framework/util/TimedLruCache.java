@@ -8,8 +8,6 @@
  */
 package com.freshdirect.framework.util;
 
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * LRU cache with expiration of entries.
@@ -35,23 +33,9 @@ public class TimedLruCache<K,V> extends LruCache<K,V> {
 	public synchronized void put(K key, V value) {
 		super.putEntry( new TimedEntry<K,V>(key, value, this.expire) );
 	}
-	
-	public synchronized void putAll(Map<K, V> map) {
-		if(null != map && !map.isEmpty()){
-			for (Map.Entry<K, V> entry : map.entrySet()) {
-				super.putEntry( new TimedEntry<K,V>(entry.getKey(), entry.getValue(), this.expire) );
-			}
-		}
-//		super.putEntry( new TimedEntry<K,V>(key, value, this.expire) );
-	}
 
-	public  V get(K key) {
-		Entry<K,V> entry = null;
-		
-		//Reduce the synchronization scope to a block from method level.
-		synchronized (this) {
-			entry = this.getEntry(key);
-		}
+	public synchronized V get(K key) {
+		Entry<K,V> entry = this.getEntry(key);
 		if (entry==null) {
 			return null;
 		}
