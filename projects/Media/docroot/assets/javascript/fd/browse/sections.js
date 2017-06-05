@@ -96,8 +96,10 @@ var FreshDirect = FreshDirect || {};
 				//find sku
 				hlSkus.push($(this).find('[data-productdata-name="skuCode"]').val());
 				//fire impression
-				if ($('.browseContent .HLpageBeaconImg.impress-page_'+activePage+'_id_'+i+'_'+$(this).attr('id')).length === 0 && $(this).attr('data-hooklogic-beacon-impress') !== null) {
-					$('.browseContent').append('<img style="display: none;" class="HLpageBeaconImg impress-page_'+activePage+'_id_'+i+'_'+$(this).attr('id')+'" src="' + $(this).attr('data-hooklogic-beacon-impress') + '&random=' + new Date().getTime() + '" />');
+				if ($(this).attr('data-hooklogic-beacon-impress') !== 'http:') { //catch invalid data from HL
+					if ($('.browseContent .HLpageBeaconImg.impress-page_'+activePage+'_id_'+i+'_'+$(this).attr('id')).length === 0 && $(this).attr('data-hooklogic-beacon-impress') !== null) {
+						$('.browseContent').append('<img style="display: none;" class="HLpageBeaconImg impress-page_'+activePage+'_id_'+i+'_'+$(this).attr('id')+'" src="' + $(this).attr('data-hooklogic-beacon-impress') + '&random=' + new Date().getTime() + '" />');
+					}
 				}
 			});
 			
@@ -135,8 +137,10 @@ var FreshDirect = FreshDirect || {};
 					//find sku and hold it
 					hlSkus.push($(this).find('[data-productdata-name="skuCode"]').val());
 					//fire impression
-					if ($('.browseContent .HLpageBeaconImg.impress-page_'+activePage+'_id_'+cur+'_'+$(this).attr('id')).length === 0) {
-						$('.browseContent').append('<img style="display: none;" class="HLpageBeaconImg impress-page_'+activePage+'_id_'+cur+'_'+$(this).attr('id')+'" src="' + $(this).attr('data-hooklogic-beacon-impress') + '&random=' + new Date().getTime() + '" />');
+					if ($(this).attr('data-hooklogic-beacon-impress') !== 'http:') { //catch invalid data from HL
+						if ($('.browseContent .HLpageBeaconImg.impress-page_'+activePage+'_id_'+cur+'_'+$(this).attr('id')).length === 0) {
+							$('.browseContent').append('<img style="display: none;" class="HLpageBeaconImg impress-page_'+activePage+'_id_'+cur+'_'+$(this).attr('id')+'" src="' + $(this).attr('data-hooklogic-beacon-impress') + '&random=' + new Date().getTime() + '" />');
+						}
 					}
 				});
 				
