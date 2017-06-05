@@ -1483,10 +1483,10 @@ public class CheckoutController extends BaseController {
         ResultBundle dlvValidationResult = new ResultBundle();
         dlvValidationResult.setActionResult(new ActionResult());
         
-        if(user!=null && user.getUserContext() != null && user.getUserContext().getStoreContext() != null && 
-           user.getUserContext().getStoreContext().getEStoreId().equals(EnumEStoreId.FD) && user.isChefsTable()){
-        	TimeslotService.defaultService().applyPreReservedDeliveryTimeslot(request.getSession());
-        }
+//        if(user!=null && user.getUserContext() != null && user.getUserContext().getStoreContext() != null && 
+//           user.getUserContext().getStoreContext().getEStoreId().equals(EnumEStoreId.FD) && user.isChefsTable()){
+//        	TimeslotService.defaultService().applyPreReservedDeliveryTimeslot(request.getSession());
+//        }
 
         if (user != null && user.getShoppingCart() != null && user.getShoppingCart().getDeliveryReservation() != null
                 && fdUser.getShoppingCart().getPaymentMethod() != null
