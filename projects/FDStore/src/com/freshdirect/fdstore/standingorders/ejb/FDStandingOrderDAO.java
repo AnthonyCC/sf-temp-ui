@@ -2007,7 +2007,7 @@ public void turnOffReminderOverLayNewSo(Connection con, String standingOrderId) 
 		PreparedStatement ps = null;
 		try {
 				ps = conn.prepareStatement("update CUST.CUSTOMERINFO set SO_CART_OVERLAY_FIRSTTIME = ? where customer_id=?");
-				ps.setString(1, soCartOverlay?"N":"Y");
+				ps.setString(1, soCartOverlay?"Y":"N");
 				ps.setString(2, customerId);
 				ps.execute();
 
