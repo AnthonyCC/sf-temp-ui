@@ -1784,7 +1784,6 @@ public class FDStoreProperties {
     	
 
         defaults.put(PROP_PRODUCT_CACHE_OPTIMIZATION_ENABLED, "true");
-        defaults.put(PROP_REQUEST_SCHEME_FOR_REDIRECT_URL, "http");;
         refresh();
     }
 
