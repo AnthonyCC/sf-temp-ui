@@ -1014,8 +1014,7 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 		}
 	}
 
-
-	if (((redemptionPromo == null && maxPromotion <= 0.0) || (redemptionPromo != null && !user.getPromotionEligibility().isEligible(promoCode) && request.getAttribute("promoError") == null)) && user.getCurrentStandingOrder() == null) {
+	if (((redemptionPromo == null && maxPromotion <= 0.0) || (redemptionPromo != null && !user.getPromotionEligibility().isEligible(promoCode) && request.getAttribute("promoError") == null)) && !user.getCheckoutMode().equals(EnumCheckoutMode.MODIFY_SO_TMPL)) {
 		%>
         <tr align="right"><% String errorMsg1 = ""; %>
 			<td colspan="6">
