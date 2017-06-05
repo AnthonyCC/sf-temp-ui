@@ -78,12 +78,19 @@ public class SearchRedesignRedirectorTag extends BodyTagSupport {
 				// To ensure that https requests get redirect to https correctly
 				//OPT-14 - Avoid redirect to "http://".
 				String requestScheme = FDStoreProperties.getRequestSchemeForRedirectUrl();
-				if(null == requestScheme || (!"http".equals(requestScheme) && !"https".equals(requestScheme))){
-					requestScheme = request.getScheme();
+				LOGGER.debug("Request scheme from properties for " + originalUrl + " :" +requestScheme);
+				if(null != requestScheme && !"".equals(requestScheme)){
+					//The property value should be either http or https.
+					if((!"http".equals(requestScheme) && !"https".equals(requestScheme))){
+						requestScheme = request.getScheme();
+					}
+					redirectUrl = requestScheme + "://" + request.getServerName() + redirectUrl;
+				} else{
+					redirectUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + redirectUrl;
 				}
+				LOGGER.debug("Redirect url for "+ originalUrl+" is "+redirectUrl);
 				//
 //				redirectUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + redirectUrl;
-				redirectUrl = requestScheme + "://" + request.getServerName() + ":" + request.getServerPort() + redirectUrl;
 				redirected = true;
 				HttpServletResponse httpServletResponse = (HttpServletResponse) ctx.getResponse();
 				httpServletResponse.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
