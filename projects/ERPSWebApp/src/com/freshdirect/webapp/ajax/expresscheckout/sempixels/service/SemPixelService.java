@@ -69,7 +69,7 @@ public class SemPixelService {
 	            for (String usedPromotionCode : usedPromotionCodes) {
 	                PromotionI promotion = PromotionFactory.getInstance().getPromotion(usedPromotionCode);
 	                if (promotion.isRedemption()) {
-	                    result.add(usedPromotionCode);
+                        result.add(promotion.getRedemptionCode());
 	                }
 	            }
 	        }
