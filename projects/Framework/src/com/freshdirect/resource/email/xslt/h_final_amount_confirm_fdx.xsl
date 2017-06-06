@@ -9,26 +9,26 @@
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
 <html>
-<head>
-	<xsl:choose>
-		<xsl:when test="count(order/shortedItems/shortedItems) = 1">
-			<title>Heads Up! Item Missing From Your FoodKick Order</title>
-		</xsl:when>
-		<xsl:when test="count(order/shortedItems/shortedItems) > 1">
-			<title>Heads Up! <xsl:value-of select="count(order/shortedItems/shortedItems)" /> Items Missing From Your Order</title>
-		</xsl:when>
-		<xsl:when test="count(order/shortedItems/shortedItems) = 0">
-			<title>Your FoodKick Order Is on Its Way</title>
-		</xsl:when>
-	</xsl:choose>
-	<link rel="stylesheet" href="http://www.freshdirect.com/assets/css/emails.css"/>
-</head>
+	<head>
+		<xsl:choose>
+			<xsl:when test="count(order/shortedItems/shortedItems) + count(order/bundleShortItems/bundleShortItems) + count(order/bundleCompleteShort/bundleCompleteShort) = 1">
+				<title>Heads Up! Item Missing From Your FoodKick Order</title>
+			</xsl:when>
+			<xsl:when test="count(order/shortedItems/shortedItems) + count(order/bundleShortItems/bundleShortItems) + count(order/bundleCompleteShort/bundleCompleteShort) > 1">
+				<title>Heads Up! <xsl:value-of select="count(order/shortedItems/shortedItems) + count(order/bundleShortItems/bundleShortItems) + count(order/bundleCompleteShort/bundleCompleteShort)" /> Items Missing From Your Order</title>
+			</xsl:when>
+			<xsl:when test="count(order/shortedItems/shortedItems) + count(order/bundleShortItems/bundleShortItems) + count(order/bundleCompleteShort/bundleCompleteShort) = 0">
+				<title>Your FoodKick Order Is on Its Way</title>
+			</xsl:when>
+		</xsl:choose>
+		<link rel="stylesheet" href="http://www.freshdirect.com/assets/css/emails.css"/>
+	</head>
 	<body bgcolor="#CCCCCC">
 		<div style="display:none; font-size: 1px; color: #333333; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;">
 			<xsl:choose>
-				<xsl:when test="count(order/shortedItems/shortedItems) = 1">The rest of your order is on the way.</xsl:when>
-				<xsl:when test="count(order/shortedItems/shortedItems) > 1">The rest of your order is on the way.</xsl:when>
-				<xsl:when test="count(order/shortedItems/shortedItems) = 0">See you soon!</xsl:when>
+				<xsl:when test="count(order/shortedItems/shortedItems) + count(order/bundleShortItems/bundleShortItems) + count(order/bundleCompleteShort/bundleCompleteShort) = 1">The rest of your order is on the way.</xsl:when>
+				<xsl:when test="count(order/shortedItems/shortedItems) + count(order/bundleShortItems/bundleShortItems) + count(order/bundleCompleteShort/bundleCompleteShort) > 1">The rest of your order is on the way.</xsl:when>
+				<xsl:when test="count(order/shortedItems/shortedItems) + count(order/bundleShortItems/bundleShortItems) + count(order/bundleCompleteShort/bundleCompleteShort) = 0">See you soon!</xsl:when>
 			</xsl:choose>
 		</div>
 		
@@ -36,21 +36,64 @@
 			<div style="margin: 0 0 15px 0;"><xsl:call-template name="h_header_fdx" /></div>
 			
 			<xsl:choose>
-				<xsl:when test="count(order/shortedItems/shortedItems) > 0">
+				<xsl:when test="count(order/shortedItems/shortedItems) + count(order/bundleShortItems/bundleShortItems) + count(order/bundleCompleteShort/bundleCompleteShort) > 0">
 					<div style="color: #732484; font-size: 36px; font-weight: bold; margin: 15px 0;">Hey <xsl:value-of select="customer/firstName"/>,</div>
 					
 					<p>We're sorry that one or more of your items are now unavailable. We know this is inconvenient–and wanted to let you know ASAP.<br /><br />
 						<table width="100%" cellspacing="0" cellpadding="0" align="center">
-							<tr>
-								<td colspan="3"><b>ITEMS NOT IN YOUR ORDER<br /><br /></b></td>
-							</tr>
-							<xsl:for-each select="order/shortedItems/shortedItems">
-								<tr>
-									<td width="50">&#160;</td>
-									<td><xsl:value-of select="orderedQuantity - deliveredQuantity" />&#160;<xsl:value-of select="unitsOfMeasure" /></td>
-									<td><b><xsl:value-of select="description" /></b><xsl:if test="configurationDesc != '' "><xsl:text> - </xsl:text>(<xsl:value-of select="configurationDesc"/>)</xsl:if></td>
-								</tr>		
-							</xsl:for-each>
+							<xsl:choose>
+								<xsl:when test="count(order/shortedItems/shortedItems) > 0">
+									<tr>
+										<td colspan="3"><b>ITEMS NOT IN YOUR ORDER<br /><br /></b></td>
+									</tr>
+									<xsl:for-each select="order/shortedItems/shortedItems">
+										<tr>
+											<td width="50">&#160;</td>
+											<td><xsl:value-of select="orderedQuantity - deliveredQuantity" />&#160;<xsl:value-of select="unitsOfMeasure" /></td>
+											<td><b><xsl:value-of select="description" /></b><xsl:if test="configurationDesc != '' "><xsl:text> - </xsl:text>(<xsl:value-of select="configurationDesc"/>)</xsl:if></td>
+										</tr>
+										<tr>
+											<td colspan="3">&#160;</td>
+										</tr>
+									</xsl:for-each>
+								</xsl:when>
+							</xsl:choose>
+							
+							<xsl:choose>
+								<xsl:when test="count(order/bundleCompleteShort/bundleCompleteShort) > 0">
+									<tr>
+										<td colspan="3"><b>YOUR BUNDLE(S) ARE NOT AVAILABLE<br /><br /></b></td>
+									</tr>
+									<xsl:for-each select="order/bundleCompleteShort/bundleCompleteShort">
+										<tr>
+											<td width="50">&#160;</td>
+											<td><xsl:value-of select="orderedQuantity - deliveredQuantity" />&#160;<xsl:value-of select="unitsOfMeasure" /></td>
+											<td><b><xsl:value-of select="description" /></b><xsl:if test="configurationDesc != '' "><xsl:text> - </xsl:text>(<xsl:value-of select="configurationDesc"/>)</xsl:if></td>
+										</tr>
+										<tr>
+											<td colspan="3">&#160;</td>
+										</tr>
+									</xsl:for-each>
+								</xsl:when>
+							</xsl:choose>
+							
+							<xsl:choose>
+								<xsl:when test="count(order/bundleShortItems/bundleShortItems) > 0">
+									<tr>
+										<td colspan="3"><b>SOME ITEMS IN YOUR BUNDLE(S) ARE NOT AVAILABLE<br /><br /></b></td>
+									</tr>
+									<xsl:for-each select="order/bundleShortItems/bundleShortItems">
+										<tr>
+											<td width="50">&#160;</td>
+											<td>Partial</td>
+											<td><b><xsl:value-of select="description" /></b><xsl:if test="configurationDesc != '' "><xsl:text> - </xsl:text>(<xsl:value-of select="configurationDesc"/>)</xsl:if></td>
+										</tr>
+										<tr>
+											<td colspan="3">&#160;</td>
+										</tr>
+									</xsl:for-each>
+								</xsl:when>
+							</xsl:choose>
 						</table>
 						
 						<div style="margin: 15px 0; font-size: 16px;">
@@ -64,7 +107,7 @@
 						</div>
 					</p>
 				</xsl:when>
-				<xsl:when test="count(order/shortedItems/shortedItems) = 0">
+				<xsl:when test="count(order/shortedItems/shortedItems) + count(order/bundleShortItems/bundleShortItems) + count(order/bundleCompleteShort/bundleCompleteShort) = 0">
 					<div style="color: #732484; font-size: 36px; font-weight: bold; margin: 15px 0;">Your FoodKick Order Is on Its Way.</div>
 					<div style="margin: 15px 0; font-size: 16px;">
 						(Is there any better phrase in the English language?) Expect our Kickers to arrive between <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime"/></xsl:call-template> - <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="order/deliveryReservation/endTime" /></xsl:call-template>.<br />

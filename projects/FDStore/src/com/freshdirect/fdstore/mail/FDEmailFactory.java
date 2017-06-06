@@ -98,11 +98,12 @@ public class FDEmailFactory {
 			email.setHtmlEmail(true);
 			email.setFromEmail(FDX_ORDER_EMAIL); //add to email's data for footer text
 			email.setFromAddress(new EmailAddress(FDX_GENERAL_LABEL, FDX_ORDER_EMAIL));
-			if(order.getShortedItems().size() > 0 || order.getBundleShortItems().size() > 0 || order.getBundleCompleteShort().size() > 0) {
-				if(order.getShortedItems().size() == 1) {
+			int totalShorts = order.getShortedItems().size() + order.getBundleShortItems().size() + order.getBundleCompleteShort().size();
+			if(totalShorts > 0) {
+				if(totalShorts == 1) {
 					email.setSubject("Heads Up! Item Missing From Your FoodKick Order");	
 				} else {
-					email.setSubject("Heads Up! " + order.getShortedItems().size() + " Items Missing From Your FoodKick Order");
+					email.setSubject("Heads Up! " + totalShorts + " Items Missing From Your FoodKick Order");
 				}
 			} else {
 				//no shorts, regular subject
