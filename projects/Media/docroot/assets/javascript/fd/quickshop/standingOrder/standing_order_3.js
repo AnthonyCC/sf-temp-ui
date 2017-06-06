@@ -3,6 +3,7 @@ FreshDirect.standingorder.isSelectFrequencyChanged = false;
 var soName = "";
 var isNewSOCreated = false;
 var isActiveDrawerOpen = false;
+var drawerSuccessConformationDate;
 
 $jq( document ).ready(function() {
 	if($jq(".standing-orders-3-newso-drawer-container").length){
@@ -305,7 +306,7 @@ function soItemTriggerUpdate(id, data, isCartUpdate){
 		}, 7000);
 	} else {
 		$jq(soID).addClass("drawer-saved");
-		getSOData(id, "soItemUpdate");
+		getSOData(id, "soItemUpdateDrawer");
 		if(data.standingOrderResponseData.activate){
 			$jq(soID + " .standing-orders-3-so-settings-activate").addClass("open");
       	}
@@ -351,6 +352,20 @@ function getSOData(id, action){
         		soPlaceOrderDisplay(data.amount);
         		soSaved(id, activatedAndHasAddress, false);
         		updateSOItem(id, data);
+        	}
+        	if('soItemUpdateDrawer'==action){
+        		if(data.activated && data.deliveryDate !=  null){
+        			activatedAndHasAddress = true;
+        		} else {
+        			activatedAndHasAddress = false;
+        		}
+        		soPlaceOrderDisplay(data.amount);
+        		soSaved(id, activatedAndHasAddress, false);
+        		updateSOItem(id, data);
+        		if(data.isEligileToShowModifyInfo){
+        			drawerSuccessConformationDate = data.dayOfWeek + ", " + data.deliveryDate + ", " + data.deliveryTime;
+        			doOverlayDialogNew("/quickshop/includes/drawer_success_conformation.jsp");        			
+        		}
         	}
         	if('displayShopNow'==action){
         		if(data.displayCart){
