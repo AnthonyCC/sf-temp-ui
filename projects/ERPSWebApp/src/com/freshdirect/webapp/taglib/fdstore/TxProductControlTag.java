@@ -158,7 +158,7 @@ public class TxProductControlTag extends BodyTagSupport {
 				}
 				buf.append("      <div class=\"qtyinput\" data-component=\"quantity\">");
 				buf.append("        <span class=\"quantity_minus\" onclick=\""+jsNamespace+".pricings["+ seqNum +"].changeQty("+ (-product.getQuantityIncrement()) + ");\"><span>Decrease quantity</span></span>\n");
-				buf.append("        <input data-ATCAttribute=\"quantity\" class=\"qty text10\" type=\"text\" id=\"quantity"+txPostfix+"\" name=\"quantity"+txPostfix+"\" value=\""+(setMinimumQt ? defaultQuantity: "")+"\" size=\"3\" maxlength=\"4\" onChange=\""+ jsNamespace +".pricings["+ seqNum +"].changeQty(0);\" onBlur=\""+ jsNamespace +".pricings["+ seqNum +"].setQuantity(this.value);\">\n");
+				buf.append("        <input data-ATCAttribute=\"quantity\" aria-label=\"quantity\" class=\"qty text10\" type=\"text\" id=\"quantity"+txPostfix+"\" name=\"quantity"+txPostfix+"\" value=\""+(setMinimumQt ? defaultQuantity: "")+"\" size=\"3\" maxlength=\"4\" onChange=\""+ jsNamespace +".pricings["+ seqNum +"].changeQty(0);\" onBlur=\""+ jsNamespace +".pricings["+ seqNum +"].setQuantity(this.value);\">\n");
 				buf.append("        <span class=\"quantity_plus\" onclick=\""+jsNamespace+".pricings["+ seqNum +"].changeQty("+ product.getQuantityIncrement() + ");\"><span>Increase quantity</span></span>\n");
 				buf.append("      </div>");
 				buf.append("    </td>\n");

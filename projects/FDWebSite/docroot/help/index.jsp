@@ -123,6 +123,7 @@
 				<fd:ContactFdController result="result" successPage=''>
 					<form method="post" name="contact_fd" id="contact_fd_faq">
 						<span class="icon-search"></span>
+						<label for="search-faq" class="offscreen">search</label>
 						<input type="text" id="search-faq" class="search-field fnt-18" value="" maxlength="100" name="searchFAQ" placeholder="Search" autocomplete="off" />
 					</form>
 				</fd:ContactFdController>
@@ -194,7 +195,7 @@
 					<%-- SEARCH --%>
 					<form method="post" name="contact_fd" id="contact_fd_faq">
 						<h2 class="help-heading bold uppercase">Search</h2>
-						<label for="search-faq"></label><input type="text" id="search-faq" class="search" value="" maxlength="100" name="searchFAQ" />
+						<label for="search-faq" class="offscreen">search</label><input type="text" id="search-faq" class="search" value="" maxlength="100" name="searchFAQ" />
 						<button class="cssbutton orange small" type="submit" name="searchFAQButton">find</button>
 					</form>
 					

@@ -47,7 +47,7 @@ boolean isCorporate = user.getSelectedServiceType().equals(EnumServiceType.CORPO
 
 <div class="delivery_info_nav_header">Delivery & Pickup info</div>
 <div class="delivery_info_nav_select">
-<select name="delivery_info_nav" id="delivery_info_nav" onchange="select_delivery_info_nav()"  style="width: 100%">
+<select name="delivery_info_nav" title="Delivery & Pickup info" id="delivery_info_nav" onchange="select_delivery_info_nav()"  style="width: 100%">
 	<option  value="0"></option>
 	<% for ( int i = 0; i < maxItems; i++ ) { %>
 		<%

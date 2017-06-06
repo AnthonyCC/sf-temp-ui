@@ -316,7 +316,7 @@ if (prodsAvailable > 0 && !oneNotAvailable) {
     %>
         <div class="qtyinput qtyinput_fixedwidth">
           <a href="javascript:chgQty<%=catIndex%>(<%=itemShownIndex%>,'<%= qtyFldName %>', -<%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);" class="quantity_minus"><div class="vahidden">Decrease quantity</div></a>
-          <INPUT TYPE="text" NAME="<%= qtyFldName %>" SIZE="2" MAXLENGTH="2"  CLASS="qty" value="<%= displayQuantity %>" onChange="javascript:chgQty<%=catIndex%>(<%=itemShownIndex%>,'<%= qtyFldName %>', 0, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);">
+          <INPUT TYPE="text" NAME="<%= qtyFldName %>" SIZE="2" MAXLENGTH="2" aria-label="quantity" CLASS="qty" value="<%= displayQuantity %>" onChange="javascript:chgQty<%=catIndex%>(<%=itemShownIndex%>,'<%= qtyFldName %>', 0, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);">
           <a href="javascript:chgQty<%=catIndex%>(<%=itemShownIndex%>,'<%= qtyFldName %>', <%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);" class="quantity_plus"><div class="vahidden">Increase quantity</div></a>
         </div>
     <%  }   %>
