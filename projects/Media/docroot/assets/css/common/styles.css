@@ -267,10 +267,10 @@ form {
 		padding: 1px;
 	}
 	.youraccount input.radio{
-		width: initial;
+		width: auto;
 	}
 	.youraccount_contact .youraccount_left_2 input:last-child {
-    	width: 45px;
+    	/*width: 45px;*/
 	}
 	.youraccount_contact .youraccount_phone_ext{
 		padding: 0 0 0 5px;
@@ -325,7 +325,7 @@ form {
 	.youraccount_user_mobile_pref p{
 		text-align: left;
 	}
-	.youraccount_mobile_pref .youraccount_left_1:first-of-type{
+	.youraccount_mobile_pref>.youraccount_left_1:first-of-type{
 		width: 145px;
 	}
 	.youraccount_mobile_pref .youraccount_left_1,
@@ -367,4 +367,7 @@ form {
 	}
 	.youraccount_continue a:first-child img{
 		padding: 0 8px 0 0;
+	}
+	.youraccount input.ext56, .ext56{
+	width:45px;
 	}

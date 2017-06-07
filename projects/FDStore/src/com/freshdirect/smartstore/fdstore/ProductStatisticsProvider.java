@@ -83,7 +83,7 @@ public class ProductStatisticsProvider {
 	 */
 	/* TODO ASK IF THIS NEEDS A STOREFRONT 2.0 TOGGLE */
 	private ProductStatisticsProvider() throws NamingException, RemoteException, CreateException {
-		if (FDStoreProperties.isStorefront2_0Enabled()) {
+		if (FDStoreProperties.isSF2_0_AndServiceEnabled("smartstore.ejb.DyfModelSB")) {
 
 			service = LogisticsServiceLocator.getInstance().getCommerceService();
 			try {
@@ -123,7 +123,7 @@ public class ProductStatisticsProvider {
 	 */
 	public Set getProducts(String customerID) {
 
-		if (FDStoreProperties.isStorefront2_0Enabled()) {
+		if (FDStoreProperties.isSF2_0_AndServiceEnabled("smartstore.ejb.DyfModelSB")) {
 
 			try {
 				Set<String>intermediary = service.getDYFModelProducts(customerID);;

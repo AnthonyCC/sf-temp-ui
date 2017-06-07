@@ -22,6 +22,7 @@ import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ejb.ActivityLogHome;
 import com.freshdirect.customer.ejb.ActivityLogSB;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.ejb.FDSessionBeanSupport;
 import com.freshdirect.fdstore.promotion.PromoVariantModel;
@@ -38,6 +39,7 @@ import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.service.FDECommerceService;
 
 public class FDPromotionManagerSessionBean extends FDSessionBeanSupport {
 	private static final long serialVersionUID = -3247737890824031137L;
@@ -421,8 +423,13 @@ public class FDPromotionManagerSessionBean extends FDSessionBeanSupport {
 	private void logActivity(ErpActivityRecord rec) {
 		ActivityLogHome home = this.getActivityLogHome();
 		try {
-			ActivityLogSB logSB = home.create();
-			logSB.logActivity(rec);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("customer.ejb.ActivityLogSB")){
+				FDECommerceService.getInstance().logActivity(rec);
+			}
+			else{
+				ActivityLogSB logSB = home.create();
+				logSB.logActivity(rec);
+			}
 		} catch (RemoteException e) {
 			throw new EJBException(e);
 		} catch (CreateException e) {

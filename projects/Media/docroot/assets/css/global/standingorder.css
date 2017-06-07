@@ -308,11 +308,11 @@
 	#customizePopup.soShow.so-review.so-review-success .leftright-bottom .so-container .so-review-selected,
 	#customizePopup.soShow.so-review.so-review-success .leftright-bottom .so-container .so-review-min-details,
 	#customizePopup.soShow.so-review .so-container .so-review-min-details.show .so-review-min-details-tip,
-	#customizePopup.soShow .so-review-min-not-show-top,
+	#customizePopup .so-review-min-not-show-top,
 	#customizePopup.soShow.so-review-min-met-alert .leftColumn,
 	#customizePopup.soShow.so-review-min-met-alert .rightColumn,
 	#customizePopup.soShow.so-review-min-met-alert .so-container,
-	#customizePopup.soShow .so-review-min-not-show-bottom{
+	#customizePopup .so-review-min-not-show-bottom{
 		display: none;
 	}
 	#customizePopup.soShow .so .cssbutton[data-component="addToSOButton"], #customizePopup.soShow .so .cssbutton[data-component="showOButton"] {
@@ -832,4 +832,103 @@
 	.successtimeslot .standing-orders-3-successtimeslot_date-reservation,
 	.successtimeslot .standing-orders-3-successtimeslot_date-next-delivery{
 		padding-top: 10px;
+	}
+	.so-accidental-atc{
+		width: 386px;
+		font-family: Verdana;
+		text-align: center;
+	}
+	.so-accidental-atc .so-accidental-atc-top{
+		padding: 25px;
+		background-color: #f7f7f7;
+		font-size: 22px;
+		font-weight: bold;
+		color: #333333;
+		text-align: center;    
+	}
+	.so-accidental-atc .so-accidental-atc-middle{
+		padding: 38px 0 46px;
+	}
+	.so-accidental-atc .so-accidental-atc-middle-text{
+		color: #555555;
+		font-size: 20px;
+	}
+	.so-accidental-atc .so-accidental-atc-middle-text-purple{
+		color: #a367ab;
+		font-weight: bold;
+	}
+	.so-accidental-atc .so-accidental-atc-middle-img{
+		padding: 28px 0 31px;
+	}
+	.so-accidental-atc .so-accidental-atc-middle-button{
+		text-align: center;
+	}
+	.so-accidental-atc .so-accidental-atc-middle-button a{
+		width: 307px;
+	}
+	.so-accidental-atc .so-accidental-atc-bottom{
+		padding: 18px 0 20px 20px;
+		font-size: 16px;
+		background-color: #f7f7f7;
+		text-align: left;
+	}
+	.so-accidental-atc #so-accidental-atc-checkbox{
+		vertical-align: text-top;
+		margin: 0 15px 0 0;
+		border: 2px solid #c2c2c2;
+		background: #fefefe;
+		border-radius: 0;
+		box-sizing: border-box;
+		color: #444;
+		font-size: 16px;
+		font-weight: normal;
+		font-family: Verdana, arial, sans-serif;
+		box-shadow: none;
+		height: auto;
+		line-height: 22px;
+		outline: none;
+		padding: 8px;
+		-webkit-font-smoothing: antialiased;
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		appearance: none;
+	}
+	.so-accidental-atc #so-accidental-atc-checkbox:checked{
+		background-color: #68aa6d;
+	}
+	.so-accidental-atc #so-accidental-atc-checkbox:disabled{
+		opacity: 0.7;
+	}
+	.ui-dialog.overlay-dialog-new{
+		border: 0;
+		padding: 0;
+		box-shadow: 0 5px 30px 0 rgba(0, 0, 0, 0.3);
+		border-radius: 0;
+		overflow: visible;
+	}
+	.ui-dialog.overlay-dialog-new .ui-dialog-title{
+		display: none;
+	}
+	.ui-dialog.overlay-dialog-new .ui-dialog-titlebar{
+		padding: 0;
+		margin: 0;
+		overflow: visible;
+		height: 0;
+		min-height: 0;
+	}
+	.ui-dialog.overlay-dialog-new #uimodal-output{
+		padding: 0;
+	}
+	.ui-dialog.overlay-dialog-new .ui-dialog-titlebar button.ui-dialog-titlebar-close{
+		position: absolute;
+		top: -35px;
+		right: -35px;
+		background: none;
+	}
+	.ui-dialog.overlay-dialog-new .ui-dialog-titlebar button.ui-dialog-titlebar-close span.ui-icon-closethick{
+		width: 25px;
+		height: 25px;
+		background: url(/media_stat/images/close.png) no-repeat;
+		background-size: 100%;
+		cursor: pointer;
 	}

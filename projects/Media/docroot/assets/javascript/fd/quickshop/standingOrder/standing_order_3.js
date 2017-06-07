@@ -3,6 +3,7 @@ FreshDirect.standingorder.isSelectFrequencyChanged = false;
 var soName = "";
 var isNewSOCreated = false;
 var isActiveDrawerOpen = false;
+var drawerSuccessConformationDate;
 
 $jq( document ).ready(function() {
 	if($jq(".standing-orders-3-newso-drawer-container").length){
@@ -188,13 +189,13 @@ function soSaved(id, activatedAndHasAddress, isNewSO){
 		}, 5000);
 	} else {
 		if(activatedAndHasAddress){
-			$jq(soID).addClass("show-saved");
-			$jq(soID).addClass("show-saved-activated");
+			//$jq(soID).addClass("show-saved");
+			//$jq(soID).addClass("show-saved-activated");
 			setTimeout(function(){
 				$jq(soID).removeClass("show-saved").removeClass("show-saved-activated").removeClass("drawer-saved").removeClass("cart-saved");
 			}, 5000);
 		} else {
-			$jq(soID).addClass("show-saved");
+			//$jq(soID).addClass("show-saved");
 			setTimeout(function(){
 				$jq(soID).removeClass("show-saved").removeClass("drawer-saved").removeClass("cart-saved");
 			}, 5000);
@@ -221,7 +222,7 @@ function submitFormManageSO(id,action,name,freq){
 	      		}
       			$jq(soID + ' .standing-orders-3-so-settings-drawer-cart .standing-orders-3-so-settings-drawer-cart-container .standing-orders-3-so-settings-drawer-cart-container-wrap').prepend('<div id="cartcontent" class="view_cart" data-ec-linetemplate="expressco.viewcartlines" gogreen-status="false"></div>');
       			populateCartContent();
-      			$jq(soID + ' .standing-orders-3-so-settings-drawer-cart .standing-orders-3-so-settings-drawer-cart-container .standing-orders-3-so-settings-drawer-cart-container-wrap').prepend("<div class='standing-orders-3-saved-container-cart'>" + $jq(soID + " .standing-orders-3-saved-container").html() + "</div>");
+      			//$jq(soID + ' .standing-orders-3-so-settings-drawer-cart .standing-orders-3-so-settings-drawer-cart-container .standing-orders-3-so-settings-drawer-cart-container-wrap').prepend("<div class='standing-orders-3-saved-container-cart'>" + $jq(soID + " .standing-orders-3-saved-container").html() + "</div>");
       			$jq(soID + ' .standing-orders-3-so-settings-drawer-cart .standing-orders-3-so-settings-drawer-cart-container .standing-orders-3-so-settings-drawer-cart-container-wrap').prepend('<div id="ec-drawer"></div>');      			
       			populateDrawer(id);
       			$jq("#soFreq").select2({
@@ -230,7 +231,7 @@ function submitFormManageSO(id,action,name,freq){
       			// Catches all updates
       			$jq("#cartcontent").on( "cartcontent-update", function(){ soItemTriggerUpdate(id, data, false); });
       			$jq("#cartcontent").on( "quantity-change", function(){ soItemTriggerUpdate(id, data, true); });
-      			$jq("#cartcontent").on( "cartline-delete", function(){ soItemTriggerUpdate(id, data, true); });
+      			$jq("#cartcontent").on( "cartline-delete", function(){ soItemTriggerUpdate(id, data, true); $jq(soID).addClass("cartline-deleted"); });
       			$jq("#ec-drawer").on( "address-update", function(){ soItemTriggerUpdate(id, data, false); });
       			$jq("#ec-drawer").on( "timeselector-update", function(){ soItemTriggerUpdate(id, data, false); });
       			$jq("#ec-drawer").on( "paymentmethod-update", function(){ soItemTriggerUpdate(id, data, false); });
@@ -295,8 +296,8 @@ function populateDrawer(id){
 function soItemTriggerUpdate(id, data, isCartUpdate){
 	var soID = "#soid_" + id;
 	if(isCartUpdate){
-		$jq(soID).addClass("cart-saved");
-		$jq(soID + ' .standing-orders-3-so-settings-drawer-cart .standing-orders-3-so-settings-drawer-cart-container .standing-orders-3-so-settings-drawer-cart-container-wrap .standing-orders-3-saved-container-cart').html($jq(soID + " .standing-orders-3-saved-container").html());
+		//$jq(soID).addClass("cart-saved");
+		//$jq(soID + ' .standing-orders-3-so-settings-drawer-cart .standing-orders-3-so-settings-drawer-cart-container .standing-orders-3-so-settings-drawer-cart-container-wrap .standing-orders-3-saved-container-cart').html($jq(soID + " .standing-orders-3-saved-container").html());
 		setTimeout(function(){
 			getSOData(id, "soItemUpdate");
 			if(data.standingOrderResponseData.activate){
@@ -305,7 +306,7 @@ function soItemTriggerUpdate(id, data, isCartUpdate){
 		}, 7000);
 	} else {
 		$jq(soID).addClass("drawer-saved");
-		getSOData(id, "soItemUpdate");
+		getSOData(id, "soItemUpdateDrawer");
 		if(data.standingOrderResponseData.activate){
 			$jq(soID + " .standing-orders-3-so-settings-activate").addClass("open");
       	}
@@ -351,6 +352,20 @@ function getSOData(id, action){
         		soPlaceOrderDisplay(data.amount);
         		soSaved(id, activatedAndHasAddress, false);
         		updateSOItem(id, data);
+        	}
+        	if('soItemUpdateDrawer'==action){
+        		if(data.activated && data.deliveryDate !=  null){
+        			activatedAndHasAddress = true;
+        		} else {
+        			activatedAndHasAddress = false;
+        		}
+        		soPlaceOrderDisplay(data.amount);
+        		soSaved(id, activatedAndHasAddress, false);
+        		updateSOItem(id, data);
+        		if(data.isEligileToShowModifyInfo){
+        			drawerSuccessConformationDate = data.dayOfWeek + ", " + data.deliveryDate + ", " + data.deliveryTime;
+        			doOverlayDialogNew("/quickshop/includes/drawer_success_conformation.jsp");        			
+        		}
         	}
         	if('displayShopNow'==action){
         		if(data.displayCart){

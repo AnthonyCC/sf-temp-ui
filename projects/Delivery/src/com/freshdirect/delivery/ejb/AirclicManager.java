@@ -379,7 +379,7 @@ public class AirclicManager {
 		Map<String, DeliveryException> response;
 		try{
 			DlvManagerSB sb = getDlvManagerHome().create();
-			if (FDStoreProperties.isStorefront2_0Enabled())
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB"))
 				response = FDECommerceService.getInstance().getCartonScanInfo();
 			else
 				response =  sb.getCartonScanInfo();

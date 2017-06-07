@@ -23,6 +23,7 @@ public class FreshDirectSitemapProperties {
     private static final String DEPARTMENT_CONTEXT_PATH_TEMPLATE = "sitemap.department.context.path";
     private static final String BASE_PATH = "sitemap.base.path";
     private static final String BASE_PATH_POSTFIX = "sitemap.base.path.postfix";
+    private static final String CONTEXT_PATH = "sitemap.context.path";
     private static final String DIRECTORY_PATH = "sitemap.directory.path";
 
     private static final FreshDirectSitemapProperties INSTANCE = new FreshDirectSitemapProperties();
@@ -44,6 +45,7 @@ public class FreshDirectSitemapProperties {
         DEFAULTS.put(DEPARTMENT_CONTEXT_PATH_TEMPLATE, "/browse.jsp?id={0}");
         DEFAULTS.put(BASE_PATH, "https://www.freshdirect.com");
         DEFAULTS.put(BASE_PATH_POSTFIX, "");
+        DEFAULTS.put(CONTEXT_PATH, "/sitemap");
         DEFAULTS.put(DIRECTORY_PATH, "/var/tmp/sitemap");
     }
 
@@ -94,6 +96,10 @@ public class FreshDirectSitemapProperties {
 
     public String getBasePathPostfix() {
         return get(BASE_PATH_POSTFIX);
+    }
+
+    public String getContextPath() {
+        return get(CONTEXT_PATH);
     }
 
     public String getDirectoryPath() {

@@ -34,7 +34,7 @@ public class ProductPromotionInfoManager {
 		lookupManagerHome();
 		Map<ZoneInfo,List<FDProductPromotionInfo>> productPromoInfoMap=null;
 		try {
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpProductPromotionInfoSB")){
 			productPromoInfoMap=FDECommerceService.getInstance().getAllProductsByType(ppType);
 			}else{
 				ErpProductPromotionInfoSB sb = managerHome.create();
@@ -55,7 +55,7 @@ public class ProductPromotionInfoManager {
 		lookupManagerHome();
 		Map<ZoneInfo,List<FDProductPromotionInfo>> productPromoInfoMap= null;
 		try {
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpProductPromotionInfoSB")){
 				productPromoInfoMap= FDECommerceService.getInstance().getAllProductsByType(ppType,lastPublished);
 			}else{
 			ErpProductPromotionInfoSB sb = managerHome.create();
@@ -99,7 +99,7 @@ public class ProductPromotionInfoManager {
 		try{
 			ErpZoneInfoHome home=getErpZoneInfoHome();
 			ErpZoneInfoSB remote= home.create();
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpZoneInfoSB")){
 				zoneInfo= FDECommerceService.getInstance().getAllZoneInfoDetails();
 			}else{
 			zoneInfo=remote.getAllZoneInfoDetails();
@@ -120,7 +120,7 @@ public class ProductPromotionInfoManager {
 //		lookupManagerHome();
 		ErpProductPromotionPreviewInfo erpProductPromotionPreviewInfo;
 		try {
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpProductPromotionInfoSB")){
 				erpProductPromotionPreviewInfo=	FDECommerceService.getInstance().getProductPromotionPreviewInfo(ppPreviewId);
 			}else{
 			ErpProductPromotionInfoSB sb = managerHome.create();
@@ -162,7 +162,7 @@ public class ProductPromotionInfoManager {
 //		lookupManagerHome();
 		Map<String,Map<ZoneInfo,List<FDProductPromotionInfo>>> productPromoInfoMap;
 		try {
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpProductPromotionInfoSB")){
 			productPromoInfoMap= FDECommerceService.getInstance().getAllPromotionsByType(ppType,lastPublishedDate);
 			}else{
 			ErpProductPromotionInfoSB sb = managerHome.create();

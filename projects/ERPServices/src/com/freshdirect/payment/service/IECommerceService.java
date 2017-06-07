@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Set;
 
+import javax.ejb.ObjectNotFoundException;
+
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.MunicipalityInfo;
@@ -17,6 +19,8 @@ import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.content.attributes.AttributeException;
 import com.freshdirect.content.attributes.FlatAttributeCollection;
 import com.freshdirect.customer.EnumExternalLoginSource;
+import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.customer.ErpEWalletModel;
 import com.freshdirect.customer.ErpGrpPriceModel;
@@ -24,7 +28,13 @@ import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpRestrictedAvailabilityModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.ecommerce.data.common.Request;
+import com.freshdirect.ecommerce.data.delivery.AbstractRestrictionData;
+import com.freshdirect.ecommerce.data.delivery.AddressAndRestrictedAdressData;
+import com.freshdirect.ecommerce.data.delivery.AlcoholRestrictionData;
+import com.freshdirect.ecommerce.data.delivery.RestrictedAddressModelData;
+import com.freshdirect.ecommerce.data.delivery.RestrictionData;
 import com.freshdirect.ecommerce.data.delivery.sms.SmsAlertETAInfoData;
+import com.freshdirect.ecommerce.data.dlv.AddressData;
 import com.freshdirect.ecommerce.data.sessionimpressionlog.SessionImpressionLogEntryData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyResponseData;
@@ -32,12 +42,15 @@ import com.freshdirect.ecommerce.data.survey.SurveyKeyData;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
+import com.freshdirect.erp.SkuAvailabilityHistory;
 import com.freshdirect.erp.model.BatchModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
+import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.event.RecommendationEventsAggregate;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDGroupNotFoundException;
+import com.freshdirect.fdstore.FDPayPalServiceException;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
@@ -51,6 +64,7 @@ import com.freshdirect.framework.event.FDRecommendationEvent;
 import com.freshdirect.framework.event.FDWebEvent;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
+import com.freshdirect.logistics.delivery.model.EnumRestrictedAddressReason;
 import com.freshdirect.logistics.delivery.model.OrderContext;
 import com.freshdirect.logistics.delivery.model.SiteAnnouncement;
 import com.freshdirect.logistics.fdstore.StateCounty;
@@ -293,17 +307,167 @@ public interface IECommerceService {
 
 	public String getPreferredWinePrice(String erpCustomerId);
 
+
 	void logGatewayActivity(FDGatewayActivityLogModel logModel)
 			throws RemoteException;
-	
+
 	public Map<String, Rule> getRules(String subsystem) throws FDResourceException, RemoteException;
 
 
 	public Rule getRule(String ruleId) throws FDResourceException,RemoteException;
 	
 	public void deleteRule(String ruleId) throws FDResourceException,RemoteException;
-	
+
 	public void storeRule(Rule rule) throws FDResourceException,RemoteException;
+	
+	public Collection<ErpActivityRecord> findActivityByTemplate(ErpActivityRecord template) throws FDResourceException,RemoteException;
+
+	public void logActivity(ErpActivityRecord rec) throws RemoteException;
+
+	public void logActivityNewTX(ErpActivityRecord rec) throws RemoteException;
+
+	public Map<String, List> getFilterLists(ErpActivityRecord template)throws FDResourceException,RemoteException;
+
+	public Collection<ErpActivityRecord> getCCActivitiesByTemplate(ErpActivityRecord template) throws FDResourceException,RemoteException;
+	
+	public void sendRegisterGiftCard(String saleId, double saleAmount) throws RemoteException;
+
+
+	public Collection findMaterialsByBatch(int batchNum) throws RemoteException;
+
+
+	public Collection findMaterialsBySapId(String sapId) throws RemoteException;
+
+	public Collection findMaterialsBySku(String skuCode) throws RemoteException;
+
+	public Collection findMaterialsByDescription(String description) throws RemoteException;
+
+	public Collection findMaterialsByCharacteristic(String classAndCharName) throws RemoteException;
+	
+	public Collection findMaterialsByClass(String searchterm) throws RemoteException;
+
+	public ErpProductInfoModel findProductBySku(String skuCode) throws RemoteException, ObjectNotFoundException;
+
+	public Collection findProductsBySapId(String searchterm) throws RemoteException;
+
+	public Collection findProductsByDescription(String searchterm) throws RemoteException;
+
+	public Collection findProductsLikeSku(String sku) throws RemoteException;
+
+	public Collection<ErpProductInfoModel> findProductsByUPC(String upc) throws RemoteException;
+
+	public Collection<String> findProductsByCustomerUPC(String erpCustomerPK, String upc) throws RemoteException;
+
+	public Collection findProductsLikeUPC(String searchterm) throws RemoteException;
+
+	public Collection<String> findSkusBySapId(String sapId) throws RemoteException;
+
+	public Collection<String> findNewSkuCodes(int days) throws RemoteException;
+
+	public Map<String, Integer> getSkusOldness() throws RemoteException;
+
+	public ErpProductInfoModel findProductBySkuAndVersion(String skuCode, int version) throws RemoteException;
+
+	public Collection<String> findReintroducedSkuCodes(int days) throws RemoteException;
+
+	public Collection<String> findOutOfStockSkuCodes() throws RemoteException;
+
+	public Collection findProductsBySku(String[] skuCodes) throws RemoteException;
+
+	public void setOverriddenNewness(String sku,Map<String, String> salesAreaOverrides) throws RemoteException;
+
+	public void setOverriddenBackInStock(String sku,Map<String, String> salesAreaOverrides) throws RemoteException;
+
+	public Map<String, String> getOverriddenNewness(String sku) throws RemoteException;
+
+	public Map<String, String> getOverriddenBackInStock(String sku) throws RemoteException;
+
+	public Map<String, Map<String, Date>> getNewSkus() throws RemoteException;
+
+	public Map<String, Map<String, Date>> getBackInStockSkus() throws RemoteException;
+
+	public Map<String, Map<String, Date>> getOverriddenNewSkus() throws RemoteException;
+
+	public Map<String, Map<String, Date>> getOverriddenBackInStockSkus() throws RemoteException;
+
+	public List<SkuAvailabilityHistory> getSkuAvailabilityHistory(String skuCode) throws RemoteException;
+
+	public void refreshNewAndBackViews() throws RemoteException;
+
+	public Collection<String> findSKUsByDeal(double lowerLimit, double upperLimit,List skuPrefixes) throws RemoteException;
+
+	public Collection<String> findPeakProduceSKUsByDepartment(List<String> skuPrefixes) throws RemoteException;
+
+	public ErpInventoryModel getInventoryInfo(String materialNo) throws RemoteException;
+
+	public Map<String, ErpInventoryModel> loadInventoryInfo(Date date)	throws RemoteException;
+	
+	public List getDlvRestrictions(String dlvReason,String dlvType,String dlvCriterion) throws FDResourceException, RemoteException;
+	
+	public Object getDlvRestriction(String restrictionId) throws FDResourceException, RemoteException;
+	
+	public AlcoholRestrictionData getAlcoholRestriction(String restrictionId, String municipalityId) throws FDResourceException, RemoteException;
+	
+	public RestrictedAddressModelData getAddressRestriction(String address1,String apartment, String zipCode) throws FDResourceException, RemoteException;
+	
+	public void storeDlvRestriction(RestrictionData restriction)  throws FDResourceException, RemoteException;
+	
+	public void storeAddressRestriction(AddressAndRestrictedAdressData restriction)  throws FDResourceException, RemoteException;
+	
+	public void deleteDlvRestriction(String restrictionId)  throws FDResourceException, RemoteException;
+	
+	public void deleteAlcoholRestriction(String restrictionId)  throws FDResourceException, RemoteException;
+	
+	public void deleteAddressRestriction(String address1,String apartment,String zipCode)  throws FDResourceException, RemoteException;
+	
+	public void addDlvRestriction(RestrictionData restriction)  throws FDResourceException, RemoteException;
+	
+	public void addAddressRestriction(RestrictedAddressModelData restriction)  throws FDResourceException, RemoteException;
+	
+	public void setAlcoholRestrictedFlag(String municipalityId, boolean restricted)  throws FDResourceException, RemoteException;
+	
+	public Map<String, List<String>> getMunicipalityStateCounties()throws FDResourceException, RemoteException;
+	
+	public void storeAlcoholRestriction(AlcoholRestrictionData restriction)  throws FDResourceException, RemoteException;
+	
+	public String addAlcoholRestriction(AlcoholRestrictionData restriction)  throws FDResourceException, RemoteException;
+
+	public List<RestrictionData> getDlvRestrictions() throws FDResourceException, RemoteException;
+	
+	public boolean checkForAlcoholDelivery(String scrubbedAddress, String zipcode, String apartment) throws RemoteException;
+	
+    public String checkAddressForRestrictions(AddressData address) throws RemoteException;
+
+    public void sendReservationUpdateRequest(String  reservationId, ContactAddressModel address, String sapOrderNumber) throws RemoteException, FDPayPalServiceException;
+	
+    public void sendSubmitOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
+			String unattendedInstr,String orderMobileNumber,String erpOrderId) throws RemoteException;
+	
+    public void sendCancelOrderRequest(String saleId) throws RemoteException;
+	
+    public void sendModifyOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
+			String unattendedInstr,String orderMobileNumber,String erpOrderId) throws RemoteException;
+
+	/*EwalletResponseData getToken(EwalletRequestData ewalletRequestData) throws RemoteException;
+	EwalletResponseData checkout(EwalletRequestData ewalletRequestData) throws RemoteException;
+	EwalletResponseData expressCheckout(EwalletRequestData ewalletRequestData) throws RemoteException;
+	EwalletResponseData connect(EwalletRequestData ewalletRequestData) throws RemoteException;
+	EwalletResponseData getAllPayMethodInEwallet(EwalletRequestData ewalletRequestData) throws RemoteException;
+	EwalletResponseData connectComplete(EwalletRequestData ewalletRequestData) throws RemoteException;
+	EwalletResponseData disconnect(EwalletRequestData ewalletRequestData) throws RemoteException;
+	
+	//Batch
+	EwalletResponseData postbackTrxns(EwalletRequestData req) throws RemoteException;
+	
+	//Standard checkout
+	EwalletResponseData standardCheckout(EwalletRequestData ewalletRequestData) throws RemoteException;
+	EwalletResponseData preStandardCheckout(EwalletRequestData ewalletRequestData) throws RemoteException;
+	EwalletResponseData expressCheckoutWithoutPrecheckout(EwalletRequestData ewalletRequestData) throws RemoteException;
+	//PayPal
+	EwalletResponseData addPayPalWallet(EwalletRequestData ewalletRequestData) throws RemoteException;*/
+
+
+
 
 
 }

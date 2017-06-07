@@ -65,6 +65,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
+import com.freshdirect.payment.service.FDECommerceService;
 
 public class ReferralCreditCron {
 	private static Category LOGGER = LoggerFactory
@@ -251,7 +252,12 @@ public class ReferralCreditCron {
 						rec.setDate(new Date());
 						rec.setNote("$" + model.getReferral_fee() + ", "
 								+ model.getCustomerId());
-						logSB.logActivity(rec);
+						if(FDStoreProperties.isSF2_0_AndServiceEnabled("customer.ejb.ActivityLogSB")){
+							FDECommerceService.getInstance().logActivity(rec);
+						}
+						else{
+							logSB.logActivity(rec);
+						}
 						models.add(model);
 					}
 					
@@ -392,7 +398,12 @@ public class ReferralCreditCron {
 						rec.setCustomerId(referral_customer_id);
 						rec.setDate(new Date());
 						rec.setNote("$" + model.getReferral_fee() + ", " + model.getCustomerId());
-						logSB.logActivity(rec);
+						if(FDStoreProperties.isSF2_0_AndServiceEnabled("customer.ejb.ActivityLogSB")){
+							FDECommerceService.getInstance().logActivity(rec);
+						}
+						else{
+							logSB.logActivity(rec);
+						}
 					}
 					//Ignore the exceptions and proceed with the next record.
 				} catch (FDResourceException e) {

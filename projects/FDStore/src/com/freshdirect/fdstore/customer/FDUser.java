@@ -317,7 +317,11 @@ public class FDUser extends ModelSupport implements FDUserI {
     
     private Map<String,String> soCartLineMessagesMap=new HashMap<String,String>();
     
-    public Date getTcAcknowledgeDate() {
+    private boolean refreshSoCartOverlay = true;
+    
+    private boolean  soCartOverlayFirstTime=false;
+    
+	public Date getTcAcknowledgeDate() {
         return tcAcknowledgeDate;
     }
 
@@ -2310,10 +2314,10 @@ public class FDUser extends ModelSupport implements FDUserI {
         return (address != null && !StringUtil.isEmpty(address.getZipCode())) ? true : false;
     }
 
-    private FulfillmentInfo getFulfillmentInfo(ErpAddressModel address) {
+    private FulfillmentInfo getFulfillmentInfo(ErpAddressModel address, Date deliveryDate) {
 
         try {
-            FDDeliveryZoneInfo deliveryZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, today(), getHistoricOrderSize(), this.getRegionSvcType(address.getId()),
+            FDDeliveryZoneInfo deliveryZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, (deliveryDate!=null)?deliveryDate: today(), getHistoricOrderSize(), this.getRegionSvcType(address.getId()),
                     address.getCustomerId());
             if (deliveryZoneInfo != null)
                 return deliveryZoneInfo.getFulfillmentInfo();
@@ -2349,7 +2353,13 @@ public class FDUser extends ModelSupport implements FDUserI {
         ZoneInfo zoneInfo = null;
 
         if (isAddressValidForFulfillmentCheck(address)) {
-            fulfillmentInfo = getFulfillmentInfo(address);
+            fulfillmentInfo = getFulfillmentInfo(address, (this.getShoppingCart()!=null && this.getShoppingCart().getDeliveryReservation()!=null 
+            		&& this.getShoppingCart().getDeliveryReservation().getTimeslot()!=null 
+            		&& this.getShoppingCart().getDeliveryReservation().getTimeslot().getDeliveryDate()!=null
+            		&& address!=null && address.getPK()!=null 
+            		&& this.getShoppingCart().getDeliveryReservation().getAddressId().equals(address.getId())
+            		&& !this.getShoppingCart().getDeliveryReservation().getTimeslot().getDeliveryDate().before(today()))?
+            				this.getShoppingCart().getDeliveryReservation().getTimeslot().getDeliveryDate():null);
         }
 
         if (fulfillmentInfo == null) {
@@ -3603,5 +3613,23 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public void setCustSapId(String custSapId) {
 		this.custSapId = custSapId;
 	}
+
+	public boolean isSoCartOverlayFirstTime() {
+		return soCartOverlayFirstTime;
+	}
+
+	public void setSoCartOverlayFirstTime(boolean soCartOverlayFirstTime) {
+		this.soCartOverlayFirstTime = soCartOverlayFirstTime;
+	}
+
+	public boolean isRefreshSoCartOverlay() {
+		return refreshSoCartOverlay;
+	}
+
+	public void setRefreshSoCartOverlay(boolean refreshSoCartOverlay) {
+		this.refreshSoCartOverlay = refreshSoCartOverlay;
+	}
+
 	
+		
 }

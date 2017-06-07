@@ -34,18 +34,18 @@ public class Pricing implements Serializable {
 	private ZonePriceListing zonePriceList;
 	private CharacteristicValuePrice[] cvPrices;
 	private SalesUnitRatio[] salesUnits;
-	private boolean isAlcohol;
+	private boolean isWineOrSpirit;
 
 	/**
 	 * @param materialPrices array of material pricing conditions
 	 * @param cvPrices array of characteristic value pricing conditions
 	 * @param salesUnits array of sales unit ratios
 	 */
-	public Pricing(ZonePriceListing zonePriceList, CharacteristicValuePrice[] cvPrices, SalesUnitRatio[] salesUnits, boolean isAlcohol) {
+	public Pricing(ZonePriceListing zonePriceList, CharacteristicValuePrice[] cvPrices, SalesUnitRatio[] salesUnits, boolean isWineOrSpirit) {
 		this.zonePriceList=zonePriceList;
 		this.cvPrices=cvPrices;
 		this.salesUnits=salesUnits;
-		this.isAlcohol=isAlcohol;
+		this.isWineOrSpirit=isWineOrSpirit;
 	}
 
 	/**
@@ -186,7 +186,7 @@ public class Pricing implements Serializable {
 			zpModel=_getZonePrice(zone);
 		}
 		try {
-			if(!pricingZoneInfo.getSalesOrg().equals(zpModel.getPricingZone().getSalesOrg()) && ZoneInfo.PricingIndicator.BASE.equals(pricingZoneInfo.getPricingIndicator()) && !isAlcohol) {
+			if(!pricingZoneInfo.getSalesOrg().equals(zpModel.getPricingZone().getSalesOrg()) && ZoneInfo.PricingIndicator.BASE.equals(pricingZoneInfo.getPricingIndicator()) && !isWineOrSpirit) {
 				MaterialPrice[] baseIndicatorMaterialPrice=getBaseIndicatorMaterialPrice(zpModel.getMaterialPrices());
 				return new ZonePriceModel(zpModel.getPricingZone(),baseIndicatorMaterialPrice);
 			}else 

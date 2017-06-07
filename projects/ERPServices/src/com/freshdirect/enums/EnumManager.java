@@ -47,7 +47,7 @@ public class EnumManager {
 	public List loadEnums(Class daoClass) {
 		EnumManagerSB sb = this.getEnumManagerSB();
 		try {
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("enums.ejb.EnumManagerSB")){
 			return	FDECommerceService.getInstance().loadEnum(daoClass.getSimpleName());
 			}else{
 			return sb.loadEnum(daoClass.getName());

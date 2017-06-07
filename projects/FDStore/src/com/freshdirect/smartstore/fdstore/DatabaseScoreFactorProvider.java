@@ -59,7 +59,7 @@ public class DatabaseScoreFactorProvider {
             if (erpCustomerId == null) {
                 return Collections.emptyMap();
             }
-            if(FDStoreProperties.isStorefront2_0Enabled())
+            if(FDStoreProperties.isSF2_0_AndServiceEnabled("smartstore.ejb.ScoreFactorSB"))
             	return FDECommerceService.getInstance().getPersonalizedFactors(eStoreId, erpCustomerId, factors);
             else
             return getSessionBean().getPersonalizedFactors(eStoreId, erpCustomerId, factors);
@@ -71,7 +71,7 @@ public class DatabaseScoreFactorProvider {
 
     public Map<String,double[]> getGlobalFactors(List<String> factors) {
         try {
-        	if(FDStoreProperties.isStorefront2_0Enabled())
+        	if(FDStoreProperties.isSF2_0_AndServiceEnabled("smartstore.ejb.ScoreFactorSB"))
             	return FDECommerceService.getInstance().getGlobalFactors(eStoreId, factors);
             else
             	return getSessionBean().getGlobalFactors(eStoreId, factors);
@@ -83,7 +83,7 @@ public class DatabaseScoreFactorProvider {
 
     public Set<String> getGlobalFactorNames() {
         try {
-        	if(FDStoreProperties.isStorefront2_0Enabled())
+        	if(FDStoreProperties.isSF2_0_AndServiceEnabled("smartstore.ejb.ScoreFactorSB"))
             	return FDECommerceService.getInstance().getGlobalFactorNames();
             else
             	return getSessionBean().getGlobalFactorNames();
@@ -95,7 +95,7 @@ public class DatabaseScoreFactorProvider {
 
     public Set<String> getPersonalizedFactorNames() {
         try {
-        	if(FDStoreProperties.isStorefront2_0Enabled())
+        	if(FDStoreProperties.isSF2_0_AndServiceEnabled("smartstore.ejb.ScoreFactorSB"))
             	return FDECommerceService.getInstance().getPersonalizedFactorNames();
             else
             	return getSessionBean().getPersonalizedFactorNames();
@@ -107,7 +107,7 @@ public class DatabaseScoreFactorProvider {
 
     public Set<String> getPersonalizedProducts(String erpCustomerId) {
         try {
-        	if(FDStoreProperties.isStorefront2_0Enabled())
+        	if(FDStoreProperties.isSF2_0_AndServiceEnabled("smartstore.ejb.ScoreFactorSB"))
             	return FDECommerceService.getInstance().getPersonalizedProducts(eStoreId, erpCustomerId);
             else
             	return getSessionBean().getPersonalizedProducts(eStoreId, erpCustomerId);
@@ -119,7 +119,7 @@ public class DatabaseScoreFactorProvider {
 
     public Set<String> getGlobalProducts() {
         try {
-        	if(FDStoreProperties.isStorefront2_0Enabled())
+        	if(FDStoreProperties.isSF2_0_AndServiceEnabled("smartstore.ejb.ScoreFactorSB"))
             	return FDECommerceService.getInstance().getGlobalProducts(eStoreId);
             else
             	return getSessionBean().getGlobalProducts(eStoreId);
@@ -142,14 +142,14 @@ public class DatabaseScoreFactorProvider {
     public List<ContentKey> getProductRecommendations(String recommender, ContentKey key) {
         try {
         	List<ContentKey> contentKeys = new ArrayList<ContentKey>();
-        	if(FDStoreProperties.isStorefront2_0Enabled()){
+        	if(FDStoreProperties.isSF2_0_AndServiceEnabled("smartstore.ejb.ScoreFactorSB")){
             	List<String> result = FDECommerceService.getInstance().getProductRecommendations(recommender, key.getId());
             	for (String productId : result) {
         			try{
         			contentKeys.add(ContentKey.create(FDContentTypes.PRODUCT, productId));
         			}catch (InvalidContentKeyException e) {
-        				// TODO Auto-generated catch block
-        	        	throw new FDRuntimeException(e);
+        				LOGGER.warn("invalid content key '" + productId + "', for "
+    							+ key + ", from recommender " + recommender);
         			}
 				}
         		return contentKeys;
@@ -174,14 +174,15 @@ public class DatabaseScoreFactorProvider {
     public List<ContentKey> getPersonalRecommendations(String recommender, String erpCustomerId) {
         try {
         	List<ContentKey> contentKeys = new ArrayList<ContentKey>();
-        	if(FDStoreProperties.isStorefront2_0Enabled()){
+        	if(FDStoreProperties.isSF2_0_AndServiceEnabled("smartstore.ejb.ScoreFactorSB")){
         		List<String> result = FDECommerceService.getInstance().getPersonalRecommendations(recommender,erpCustomerId);
         		for (String productId : result) {
         			try{
         			contentKeys.add(ContentKey.create(FDContentTypes.PRODUCT, productId));
         			}catch (InvalidContentKeyException e) {
-        				// TODO Auto-generated catch block
-        	        	throw new FDRuntimeException(e);
+        				LOGGER.warn("invalid Product Id '" + productId + "', for "
+    							+ erpCustomerId + ", from recommender "
+    							+ recommender + " for personal recommendation");
         			}
 				}
         		return contentKeys;
@@ -207,7 +208,7 @@ public class DatabaseScoreFactorProvider {
     @Deprecated
     public EnumWinePrice getPreferredWinePrice(String erpCustomerId) {
         try {
-        	if(FDStoreProperties.isStorefront2_0Enabled()){
+        	if(FDStoreProperties.isSF2_0_AndServiceEnabled("smartstore.ejb.ScoreFactorSB")){
         		String result = FDECommerceService.getInstance().getPreferredWinePrice(erpCustomerId);
         		return EnumWinePrice.valueOf(result);
         	}else

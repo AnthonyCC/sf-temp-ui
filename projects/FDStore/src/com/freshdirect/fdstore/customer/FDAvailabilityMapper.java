@@ -92,7 +92,7 @@ class FDAvailabilityMapper {
 
 				if (!r.isEmpty()) {
 					//Filter Alcohol restrictions by current State and county.
-					List<RestrictionI> filteredList = RestrictionUtil.filterAlcoholRestrictionsForStateCounty(address.getState(), county, r);
+					List<RestrictionI> filteredList = RestrictionUtil.filterAlcoholRestrictionsForStateCounty(address!=null?address.getState():null, county, r);
 					if(!filteredList.isEmpty())
 						inv = new FDRestrictedAvailability(inv, new DlvRestrictionsList(filteredList));
 				}
@@ -119,9 +119,9 @@ class FDAvailabilityMapper {
 
 			if (applicableRestrictions.contains(EnumDlvRestrictionReason.ALCOHOL)) {
 
-				MunicipalityInfo muniInfo = muni.getMunicipalityInfo(address.getState(), county, address.getCity());
+				MunicipalityInfo muniInfo = muni.getMunicipalityInfo(address!=null?address.getState():null, county, address!=null?address.getCity():null);
 
-				if (muniInfo.isAlcoholRestricted()) {
+				if (muniInfo!=null && muniInfo.isAlcoholRestricted()) {
 					inv = new FDMuniAvailability(muniInfo);
 				}
 			}

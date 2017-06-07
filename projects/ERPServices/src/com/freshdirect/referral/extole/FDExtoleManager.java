@@ -32,7 +32,7 @@ public class FDExtoleManager {
 
 		try {
 			
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("referral.extole.FDExtoleManagerSB")){
         		IECommerceService service = FDECommerceService.getInstance();
         		return service.getExtoleCreateConversionRequest();
 			}else{
@@ -55,7 +55,7 @@ public class FDExtoleManager {
 
 		try {
 			
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("referral.extole.FDExtoleManagerSB")){
         		IECommerceService service = FDECommerceService.getInstance();
         		return service.getExtoleApproveConversionRequest();
 			}else {
@@ -78,7 +78,7 @@ public class FDExtoleManager {
 
 		try {
 			
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("referral.extole.FDExtoleManagerSB")){
         		IECommerceService service = FDECommerceService.getInstance();
         		service.updateConversionRequest(convResponse);
 			}else { 
@@ -101,7 +101,7 @@ public class FDExtoleManager {
 
 		try {
 			
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("referral.extole.FDExtoleManagerSB")){
         		IECommerceService service = FDECommerceService.getInstance();
         		service.saveExtoleRewardsFile(rewards);
 			}else{
@@ -151,7 +151,7 @@ public class FDExtoleManager {
 
 		try {
 			
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("referral.extole.FDExtoleManagerSB")){
         		IECommerceService service = FDECommerceService.getInstance();
         		service.createConversion();
 			}else{
@@ -175,7 +175,7 @@ public class FDExtoleManager {
 
 		try {
 			
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("referral.extole.FDExtoleManagerSB")){
         		IECommerceService service = FDECommerceService.getInstance();
         		service.approveConversion();
 			}else {
@@ -198,7 +198,7 @@ public class FDExtoleManager {
 		lookupManagerHome();
 
 		try {
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("referral.extole.FDExtoleManagerSB")){
         		IECommerceService service = FDECommerceService.getInstance();
         		service.downloadAndSaveRewards(fileName);
 			}else{

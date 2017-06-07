@@ -144,10 +144,12 @@ public static SearchResults getHLBrandProductAdProducts(SearchResults searchResu
 			hLBrandProductAdRequest.setUserId(user.getUser().getPK().getId());
 			hLBrandProductAdRequest.setSearchKeyWord(searchResults.getSuggestedTerm()!=null?searchResults.getSuggestedTerm():nav.getSearchParams());
 					
-			if(user.isMobilePlatForm())
+			if(user.getPlatForm()!=null)
+				hLBrandProductAdRequest.setPlatformSource(user.getPlatForm());
+			else if(user.isMobilePlatForm())
 				hLBrandProductAdRequest.setPlatformSource("mobile");	
-		 	  else
-			 	 hLBrandProductAdRequest.setPlatformSource("web");
+		 	else
+		 		hLBrandProductAdRequest.setPlatformSource("web");
 			
 			HLBrandProductAdResponse hlBrandProductAdResponse = FDBrandProductsAdManager.getHLBrandproducts(hLBrandProductAdRequest);
 			if(hlBrandProductAdResponse!=null){

@@ -8,6 +8,7 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.coremetrics.util.CoremetricsUtil;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
@@ -47,6 +48,11 @@ public class ModuleHandlingPotatoTag extends SimpleTagSupport {
         PageContext ctx = (PageContext) getJspContext();
         HttpSession session = ctx.getSession();
         FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
+
+        if (moduleContainerId == null || moduleContainerId == "") {
+            LOGGER.info("ModuleContainerId was empty, loading default moduleContainer based on user");
+            moduleContainerId = CoremetricsUtil.defaultService().getCustomerTypeByOrderCount(user);
+        }
 
         LOGGER.info("Loading module container: " + moduleContainerId + " for user: " + user.getUserId() + " with cookie: " + user.getCookie());
 

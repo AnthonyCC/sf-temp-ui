@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.freshdirect.erp.EnumATPRule;
+import com.freshdirect.erp.EnumAlcoholicContent;
 import com.freshdirect.fdstore.EnumAvailabilityStatus;
 import com.freshdirect.fdstore.EnumDayPartValueType;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -498,7 +499,10 @@ public class ErpProductInfoModel extends ModelSupport {
 	
 	private ErpMaterialSalesAreaInfo materialSalesAreas[];
 
-	private final boolean isAlcohol;
+//	private final boolean isAlcohol;
+	
+	private EnumAlcoholicContent alcoholicType;
+	
 	
 
 	/**
@@ -569,7 +573,7 @@ public class ErpProductInfoModel extends ModelSupport {
 	*/
 	public ErpProductInfoModel(String skuCode,int version, 
 			String[] materialNumbers, String description, ErpMaterialPrice[] materialPrices,
-			String upc, ErpPlantMaterialInfo[] materialPlants,ErpMaterialSalesAreaInfo[] materialSalesAreas, boolean isAlcohol) {
+			String upc, ErpPlantMaterialInfo[] materialPlants,ErpMaterialSalesAreaInfo[] materialSalesAreas, EnumAlcoholicContent alcoholicType) {
 		super();
 		this.version = version;
 		this.skuCode = skuCode;
@@ -579,12 +583,12 @@ public class ErpProductInfoModel extends ModelSupport {
 		this.upc = upc;
 		this.materialPlants = materialPlants;
 		this.materialSalesAreas = materialSalesAreas;
-		this.isAlcohol=isAlcohol;
+		this.alcoholicType = alcoholicType;
 	}
 
 	public ErpProductInfoModel( String skuCode,int version,
 			String[] materialNumbers, String description, String upc,
-			ErpPlantMaterialInfo[] materialPlants,  boolean isAlcohol) {
+			ErpPlantMaterialInfo[] materialPlants,  EnumAlcoholicContent alcoholicType) {
 		super();
 		this.version = version;
 		this.skuCode = skuCode;
@@ -592,7 +596,7 @@ public class ErpProductInfoModel extends ModelSupport {
 		this.description = description;
 		this.upc = upc;
 		this.materialPlants = materialPlants;
-		this.isAlcohol=isAlcohol;
+		this.alcoholicType=alcoholicType;
 	}
 
 	/**
@@ -732,18 +736,17 @@ public class ErpProductInfoModel extends ModelSupport {
 
 	@Override
 	public String toString() {
-		return "ErpProductInfoModel [version=" + version +" isAlcohol=" +isAlcohol+ ", skuCode="
+		return "ErpProductInfoModel [version=" + version +" alcoholicType=" +alcoholicType+ ", skuCode="
 				+ skuCode + ", materialNumbers="
 				+ Arrays.toString(materialNumbers) + ", materialPrices="
-				+ Arrays.toString(materialPrices) + ", description="
 				+ description + ", upc=" + upc + ", materialPlants="
 				+ Arrays.toString(materialPlants) + ", materialSalesAreas="
 				+ Arrays.toString(materialSalesAreas) + "]";
 	}
 
-	public boolean isAlcohol() {
+	public EnumAlcoholicContent getAlcoholicType() {
 		// TODO Auto-generated method stub
-		return isAlcohol;
+		return alcoholicType;
 	}
 
 	

@@ -44,6 +44,9 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
 
 <%
 ProductModel productNode = ProductPricingFactory.getInstance().getPricingAdapter( ContentFactory.getInstance().getProductByName( request.getParameter("catId"), request.getParameter("productId") ), user.getPricingContext() );
+boolean isWine = EnumTemplateType.WINE.equals( productNode.getTemplateType() );
+String title =  productNode.getPageTitle() != null && !productNode.getPageTitle().isEmpty() ? productNode.getPageTitle() : productNode.getFullName();
+title = title.replaceAll("<[^>]*>", "");
 
 // Handle no-product case
 if (productNode==null) {
@@ -54,7 +57,7 @@ if (productNode==null) {
 %>
 
 <%-- OAS page variables --%>
-<c:set var="sitePage" scope="request" value="${browsePotato.descriptiveContent.oasSitePage}" />
+<c:set var="sitePage" scope="request" value="productNode.getPath()" />
 <c:set var="listPos" scope="request" value="SystemMessage,ProductNote" />
 
 <%
@@ -110,7 +113,7 @@ if (mobWeb) {
 <tmpl:insert template="<%= pageTemplate %>">
 
   <tmpl:put name="seoMetaTag">
-  	<fd:SEOMetaTag metaDescription="${browsePotato.descriptiveContent.metaDescription}" title='${browsePotato.descriptiveContent.pageTitle}'/>
+    <fd:SEOMetaTag metaDescription="<%= productNode.getSEOMetaDescription() %>" title="<%= title %>"/>
   </tmpl:put>
 
   <tmpl:put name='cmeventsource' direct='true'>pdp_main</tmpl:put>
@@ -129,8 +132,6 @@ if (mobWeb) {
   
 <% if(shouldBeOnNew) {  // new leftnav, TODO: remove this after full rollout%>
 
-  
-    
   <tmpl:put name='deptnav' direct='true'>
     <div class="browse-titlebar">
       <soy:render template="browse.titleBar" data="${browsePotato.descriptiveContent}" />
@@ -157,9 +158,9 @@ if (mobWeb) {
     
 <% } else { //old leftnav %>
 
- <tmpl:put name='title' direct='true'>FreshDirect - ${browsePotato.descriptiveContent.pageTitle}</tmpl:put>
-    
-    <c:if test="${browsePotato.descriptiveContent.wineDepartment == true}">
+  <tmpl:put name='title' direct='true'><%= title %></tmpl:put>
+
+    <% if ( !isWine ) { // Wine template has no deptnav, and special leftnav, so only put these for regular layouts %>
 	    <tmpl:put name='leftnav' direct='true'>	    	
 	    	<td width="150" BGCOLOR="#E0E3D0" class="lNavTableConttd">		
 			<!-- start : leftnav -->
@@ -173,8 +174,7 @@ if (mobWeb) {
 		    <% try { %><%@ include file="/common/template/includes/deptnav.jspf" %><% } catch (Exception ex) {ex.printStackTrace();} %>
 			<hr class="deptnav-separator">
 	    </tmpl:put>
-  </c:if>
-  <c:if test="${browsePotato.descriptiveContent.wineDepartment == false}">
+  <% } else { %>
     	<tmpl:put name="extraJs">
 			<fd:javascript src="/assets/javascript/wine.js"/>
 			<fd:javascript src="/assets/javascript/wine-nav.js"/>	
@@ -187,12 +187,12 @@ if (mobWeb) {
 			<% try { %><%@ include file="/common/template/includes/left_side_nav_usq.jspf" %><% } catch (Exception ex) {ex.printStackTrace();} %>
 			</td>    	
 		</tmpl:put>
-    </c:if>
+     <% } %>
 
 <% } %>
     
 	<tmpl:put name='facebookmeta' direct='true'>
-		<meta property="og:title" content="FreshDirect - ${productPotato.data.productName}/>
+		<meta property="og:title" content="<%= title %>"/>
 		<meta property="og:site_name" content="FreshDirect"/>
 		<% 
 			Image detailImage = productNode.getDetailImage();

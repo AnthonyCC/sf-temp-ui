@@ -203,7 +203,7 @@ public class FDProductFamilyJcoServer extends FdSapServer
 			try
 			{
 				LOG.info(String.format("Storing  product family [%s], [%s] ", familyIds.size(), new Date()));
-				if(FDStoreProperties.isStorefront2_0Enabled()){
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled("sap.ejb.SAPProductFamilyLoaderSB")){
 					IECommerceService service = FDECommerceService.getInstance();
 					Map<String,List<String>> familySkucodeMap = service.updateCacheWithProdFly(familyIds);
 					if(familySkucodeMap != null && familySkucodeMap.size() > 0 ){
@@ -335,7 +335,7 @@ public class FDProductFamilyJcoServer extends FdSapServer
 			LOG.info(String.format("Storing  product family [%s], [%s] ", prodFamily.size(), new Date()));
 			try
 			{
-				if(FDStoreProperties.isStorefront2_0Enabled()){
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled("sap.ejb.SAPProductFamilyLoaderSB")){
 					IECommerceService service = FDECommerceService.getInstance();
 					service.loadData(prodFamily);
 					

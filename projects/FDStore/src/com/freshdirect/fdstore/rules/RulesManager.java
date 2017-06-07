@@ -75,7 +75,7 @@ public class RulesManager extends AbstractRuleStore {
 	public Map<String, Rule> getRules() {
 		try{
 			Map<String, Rule> rules = null;
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("rules.ejb.RulesManagerSB")){
 				rules = FDECommerceService.getInstance().getRules(getSubsystem());
 			}
 			else{
@@ -129,7 +129,7 @@ public class RulesManager extends AbstractRuleStore {
 	public Rule getRule(String ruleId) {
 		try{
 			Rule r =  null;
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("rules.ejb.RulesManagerSB")){
 				r = FDECommerceService.getInstance().getRule(ruleId);
 			}
 			else{
@@ -150,7 +150,7 @@ public class RulesManager extends AbstractRuleStore {
 	@Override
 	public void storeRule(Rule rule) {
 		try{
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("rules.ejb.RulesManagerSB")){
 				rule.setConditionStr(getConditionsXML(rule.getConditions()).trim());
 				rule.setOutcomeStr(xstream.toXML(rule.getOutcome()).trim());
 				FDECommerceService.getInstance().storeRule(rule);
@@ -173,7 +173,7 @@ public class RulesManager extends AbstractRuleStore {
 	@Override
 	public void deleteRule(String ruleId) {
 		try{
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("rules.ejb.RulesManagerSB")){
 				FDECommerceService.getInstance().deleteRule(ruleId);
 			}
 			else{

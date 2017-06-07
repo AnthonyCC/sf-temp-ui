@@ -33,6 +33,7 @@ import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
+import com.freshdirect.webapp.ajax.browse.data.BrowseData.SectionDataCointainer;
 import com.freshdirect.webapp.ajax.browse.data.BrowseDataContext;
 import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
 import com.freshdirect.webapp.ajax.browse.data.SectionContext;
@@ -64,7 +65,7 @@ public class ModuleContentService {
     private ModuleContentService() {
     }
 
-    private List<ProductData> generateBrowseProductData(CmsFilteringNavigator nav, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException {
+    public List<ProductData> generateBrowseProductData(CmsFilteringNavigator nav, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException {
 
         List<ProductData> products = new ArrayList<ProductData>();
         final CmsFilteringFlowResult result = CmsFilteringFlow.getInstance().doFlow(nav, (FDSessionUser) user);
@@ -129,6 +130,29 @@ public class ModuleContentService {
         }
 
         return productDatas;
+    }
+
+    public SectionDataCointainer loadBrowseSectionDataContainer(String categoryId, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException {
+        SectionDataCointainer sectionDataContainer = new SectionDataCointainer();
+        CategoryModel categoryModel = (CategoryModel) ContentFactory.getInstance().getContentNode(categoryId);
+        boolean isForbidden = NavigationUtil.isCategoryForbiddenInContext(user, categoryModel);
+
+        if (!isForbidden) {
+            CmsFilteringNavigator nav = new CmsFilteringNavigator();
+
+            // Set special layout false to skip content loading from HMB and RecipeKits.
+            nav.setSpecialPage(false);
+            nav.setPageTypeType(FilteringFlowType.BROWSE);
+            nav.setPageSize(FDStoreProperties.getBrowsePageSize());
+            nav.setId(categoryId);
+
+            List<ProductData> products = new ArrayList<ProductData>();
+            final CmsFilteringFlowResult result = CmsFilteringFlow.getInstance().doFlow(nav, (FDSessionUser) user);
+
+            sectionDataContainer = result.getBrowseDataPrototype().getSections();
+
+        }
+        return sectionDataContainer;
     }
 
     public List<ProductData> loadBrowseProducts(String categoryId, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException {

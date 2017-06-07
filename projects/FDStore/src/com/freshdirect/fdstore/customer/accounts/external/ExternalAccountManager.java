@@ -27,7 +27,7 @@ public class ExternalAccountManager{
 		lookupManagerHome();
 		String userId="";
 		try {
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("accounts.external.ExternalAccountManagerSB")){
 				IECommerceService service = FDECommerceService.getInstance();
 				userId=service.getUserIdForUserToken(userToken);
 				
@@ -51,7 +51,7 @@ public class ExternalAccountManager{
 		lookupManagerHome();
 		try {
 			boolean isUserEmailExist = false;
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("accounts.external.ExternalAccountManagerSB")){
 				IECommerceService service = FDECommerceService.getInstance();
 				isUserEmailExist = service.isUserEmailAlreadyExist(email);
 				
@@ -75,7 +75,7 @@ public class ExternalAccountManager{
 		lookupManagerHome();
 		try {
 			int isUserEmailExist = 0;
-			if (FDStoreProperties.isStorefront2_0Enabled()) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("accounts.external.ExternalAccountManagerSB")) {
 				IECommerceService service = FDECommerceService.getInstance();
 				isUserEmailExist = service.isUserEmailAlreadyExist(email,provider);
 			} else {
@@ -98,7 +98,7 @@ public class ExternalAccountManager{
 		lookupManagerHome();
 		try {
 			List<String> connectedproviders = null;
-			if (FDStoreProperties.isStorefront2_0Enabled()) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("accounts.external.ExternalAccountManagerSB")) {
 				IECommerceService service = FDECommerceService.getInstance();
 				connectedproviders = service.getConnectedProvidersByUserId(userId, source);
 			} else {
@@ -120,7 +120,7 @@ public class ExternalAccountManager{
 		lookupManagerHome();
 		try {
 			List<String> connectedProviders = null;
-			if (FDStoreProperties.isStorefront2_0Enabled()) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("accounts.external.ExternalAccountManagerSB")) {
 				IECommerceService service = FDECommerceService.getInstance();
 				connectedProviders = service.getConnectedProvidersByUserId(userId);
 			} else {
@@ -142,7 +142,7 @@ public class ExternalAccountManager{
 	{
 		lookupManagerHome();
 		try {
-			if (FDStoreProperties.isStorefront2_0Enabled()) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("accounts.external.ExternalAccountManagerSB")) {
 				IECommerceService service = FDECommerceService.getInstance();
 				return service.isExternalLoginOnlyUser(userId, source);
 			} else {
@@ -167,7 +167,7 @@ public class ExternalAccountManager{
 	{
 		lookupManagerHome();
 		try {
-			if (FDStoreProperties.isStorefront2_0Enabled()) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("accounts.external.ExternalAccountManagerSB")) {
 				IECommerceService service = FDECommerceService.getInstance();
 				service.linkUserTokenToUserId(customerId, userId, userToken, identityToken, provider, displayName, preferredUserName, email, emailVerified);
 			} else {
@@ -198,7 +198,7 @@ public class ExternalAccountManager{
 	public static void unlinkExternalAccountWithUser(String email, String userToken, String provider) throws FDResourceException {
 		lookupManagerHome();
 		try {
-			if (FDStoreProperties.isStorefront2_0Enabled()) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("accounts.external.ExternalAccountManagerSB")) {
 				IECommerceService service = FDECommerceService.getInstance();
 				service.unlinkExternalAccountWithUser(email, userToken, provider);
 			} else {
@@ -219,7 +219,7 @@ public class ExternalAccountManager{
 	public static void unlinkExternalAccountWithUser(String email, String provider) throws FDResourceException {
 		lookupManagerHome();
 		try {
-			if (FDStoreProperties.isStorefront2_0Enabled()) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("accounts.external.ExternalAccountManagerSB")) {
 				IECommerceService service = FDECommerceService.getInstance();
 				service.unlinkExternalAccountWithUser(email, provider);
 			} else {
@@ -242,7 +242,7 @@ public class ExternalAccountManager{
 		lookupManagerHome();
 		try {
 			boolean isSocialLoginOnlyUser = false;
-			if (FDStoreProperties.isStorefront2_0Enabled()) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("accounts.external.ExternalAccountManagerSB")) {
 				IECommerceService service = FDECommerceService.getInstance();
 				isSocialLoginOnlyUser = service.isSocialLoginOnlyUser(customer_id);
 			} else {

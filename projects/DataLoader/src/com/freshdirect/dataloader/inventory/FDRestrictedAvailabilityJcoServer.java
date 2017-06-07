@@ -176,7 +176,7 @@ public class FDRestrictedAvailabilityJcoServer extends FdSapServer
 			ctx = ErpServicesProperties.getInitialContext();
 			ErpInventoryManagerHome mgr = (ErpInventoryManagerHome) ctx.lookup("freshdirect.erp.InventoryManager");
 			ErpInventoryManagerSB sb = mgr.create();
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpInventoryManagerSB")){
 				FDECommerceService.getInstance().updateRestrictedInfos(restrictedInfos, deletedMaterials);
 			}else{
 				sb.updateRestrictedInfos(restrictedInfos, deletedMaterials);

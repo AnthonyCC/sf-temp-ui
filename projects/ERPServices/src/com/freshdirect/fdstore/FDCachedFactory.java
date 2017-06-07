@@ -39,13 +39,13 @@ public class FDCachedFactory {
 	/** 
 	 * FDProductInfo instances hashed by SKU strings.
 	 */
-	private final static LazyTimedCache productInfoCache =
-		new LazyTimedCache("FDProductInfo", FDStoreProperties.getProductCacheSize(), FDStoreProperties.getRefreshSecsProductInfo() * 1000);
+	private final static LazyTimedCache<String, Object> productInfoCache =
+		new LazyTimedCache<String, Object>("FDProductInfo", FDStoreProperties.getProductCacheSize(), FDStoreProperties.getRefreshSecsProductInfo() * 1000);
 
 	/**
 	 * FDProduct instances hashed by FDSku instances.
 	 */
-	private final static LazyTimedCache productCache = new LazyTimedCache("FDProduct", FDStoreProperties.getProductCacheSize(), FDStoreProperties.getRefreshSecsProduct() * 1000);
+	private final static LazyTimedCache<FDSku, FDProduct> productCache = new LazyTimedCache<FDSku, FDProduct>("FDProduct", FDStoreProperties.getProductCacheSize(), FDStoreProperties.getRefreshSecsProduct() * 1000);
 	
 	
 	/**
@@ -144,14 +144,39 @@ public class FDCachedFactory {
 		protected void refresh(List expiredKeys) {
 			try {
 				LOGGER.debug("FDProductRefresh reloading "+expiredKeys.size()+" products");
-				Collection prods = FDFactory.getProducts( (FDSku[])expiredKeys.toArray(new FDSku[0]) );
-
-				// cache these
-				FDProduct temp;
-				for (Iterator i=prods.iterator(); i.hasNext(); ) {
-					temp = (FDProduct)i.next();
-					this.cache.put(temp, temp);
+				
+				if(FDStoreProperties.isProductCacheOptimizationEnabled()){
+					//check and refresh only the latest version of the expired products in the cache.
+					for (Iterator iterator = expiredKeys.iterator(); iterator.hasNext();) {
+						FDSku fdSku = (FDSku) iterator.next();
+						if(null != fdSku){
+							FDProductInfo pi = (FDProductInfo)productInfoCache.get(fdSku.getSkuCode());
+							if(null != pi){
+								if(null == this.cache.get(pi)){
+									fdSku = new FDSku(pi.getSkuCode(), pi.getVersion());
+									try {
+										this.cache.put(fdSku,FDFactory.getProduct(fdSku));
+									} catch (FDSkuNotFoundException ex) {
+										// not found
+									}
+								}else{
+									this.cache.remove(fdSku);//remove the old versions of the product from cache once expired, as the cache has latest version.
+								}
+							}
+						}
+						
+					}
+				} else {
+						Collection prods = FDFactory.getProducts( (FDSku[])expiredKeys.toArray(new FDSku[0]) );
+		
+						// cache these
+						FDProduct temp;
+						for (Iterator i=prods.iterator(); i.hasNext(); ) {
+							temp = (FDProduct)i.next();
+							this.cache.put(temp, temp);
+						}
 				}
+				LOGGER.info("FDProductRefresh cache size: "+this.cache.size()+" products");
 
 			} catch (Exception ex) {
 				LOGGER.warn("Error occured in FDProductRefresh", ex);
@@ -160,8 +185,20 @@ public class FDCachedFactory {
 	};
 	
 	static {
+		//Staggered start times for different threads.
 		piRefreshThread.start();
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			//Do nothing
+		}
 		prodRefreshThread.start();
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			//Do nothing.
+		}
+		gRefreshThread.start();
 	}
 
 	public static FDProductInfo getProductInfo(String sku, int version) throws FDResourceException, FDSkuNotFoundException {
@@ -434,8 +471,9 @@ public class FDCachedFactory {
 		FDProduct p = (FDProduct)productCache.get(fdSku);
 		if (p==null) {
 			p = FDFactory.getProduct(sku, version);
+			productCache.put(fdSku, p);
 		}
-		productCache.put(fdSku, p);
+//		productCache.put(fdSku, p);
 		return p;
 	}
 
@@ -453,8 +491,9 @@ public class FDCachedFactory {
 		FDProduct p = (FDProduct)productCache.get(sku);
 		if (p==null) {
 			p = FDFactory.getProduct(sku);
+			productCache.put(sku, p);
 		}
-		productCache.put(sku, p);
+//		productCache.put(sku, p);
 		return p;
 	}
 
@@ -494,8 +533,8 @@ public class FDCachedFactory {
 		Collection prods = FDFactory.getProducts(loadSkus);
 
 		// cache these
-		Object o;
-		for (Iterator i=prods.iterator(); i.hasNext(); ) {
+		FDProduct o;
+		for (Iterator<FDProduct> i=prods.iterator(); i.hasNext(); ) {
 			o = i.next();
 			productCache.put(o,o);
 		}
@@ -587,7 +626,7 @@ public class FDCachedFactory {
 			if(null !=pi){
 				FDSku fdSku = new FDSku(sku, pi.getVersion());
 				FDProduct p = FDFactory.getProduct(fdSku);
-				productCache.put(sku, p);
+				productCache.put(fdSku, p);
 			}
 		} catch (FDSkuNotFoundException ex) {
 			productInfoCache.put(sku, SKU_NOT_FOUND);					

@@ -102,8 +102,12 @@ public class SitemapCmsPopulator {
         return (FDContentTypes.SUPER_DEPARTMENT.equals(type) || FDContentTypes.DEPARTMENT.equals(type) || FDContentTypes.CATEGORY.equals(type));
     }
 
+    private boolean doesContentTypeProducts(ContentKey key) {
+        return FDContentTypes.PRODUCT.equals(key.getType());
+    }
+
     private Boolean isSitemapValid(ContentNodeI node) {
-        return !Boolean.TRUE.equals((Boolean) node.getAttributeValue("SKIP_SITEMAP"));
+        return !Boolean.TRUE.equals((Boolean) node.getAttributeValue("SKIP_SITEMAP")) && !isKeyOrphan(node.getKey());
     }
 
     private Collection<ContentNodeI> getNodesByType(ContentType type) {
@@ -116,6 +120,25 @@ public class SitemapCmsPopulator {
 
     public ContentKey getPrimaryHomeKey(ContentKey key) {
         return CmsManager.getInstance().getPrimaryHomeKey(key, DraftContext.MAIN);
+    }
+
+    private boolean isKeyOrphan(ContentKey key) {
+        boolean isOrphan = false;
+        if (doesContentTypeProducts(key) || doesContentTypeContainProducts(key)) {
+            Set<ContentKey> parentKeys = CmsManager.getInstance().getParentKeys(key, DraftContext.MAIN);
+            if (parentKeys.isEmpty()) {
+                isOrphan = true;
+            } else {
+                for (ContentKey parentKey : parentKeys) {
+                    boolean isParentOrphan = isKeyOrphan(parentKey);
+                    if (isParentOrphan){
+                        isOrphan = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return isOrphan;
     }
 
 }

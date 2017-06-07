@@ -689,7 +689,7 @@ public class FDCustomerManager {
 		int rows=0;
 		try {
 			ErpEWalletSB erpEWalletSB = eWalletHome.create();
-			if (FDStoreProperties.isStorefront2_0Enabled()) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpEWalletSB")) {
 				rows = FDECommerceService.getInstance().insertCustomerLongAccessToken(custEWallet);
 			} else {
 				rows = erpEWalletSB.insertCustomerLongAccessToken(custEWallet);
@@ -726,7 +726,7 @@ public class FDCustomerManager {
 		 try {
 			 ErpEWalletSB erpEWalletSB =  eWalletHome.create();
 			ErpEWalletModel erpEWalletModel = null;
-			if (FDStoreProperties.isStorefront2_0Enabled()) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpEWalletSB")) {
 				erpEWalletModel = FDECommerceService.getInstance().findEWalletByType(eWalletType);
 			} else {
 				erpEWalletModel = erpEWalletSB.findEWalletByType(eWalletType);
@@ -755,7 +755,7 @@ public class FDCustomerManager {
 		int rows=0;
 		try {
 			ErpEWalletSB erpEWalletSB = eWalletHome.create();
-			if (FDStoreProperties.isStorefront2_0Enabled()) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpEWalletSB")) {
 				rows = FDECommerceService.getInstance().updateLongAccessToken(custId, longAccessToken, eWalletType);
 			} else {
 				rows = erpEWalletSB.updateLongAccessToken(custId, longAccessToken, eWalletType);
@@ -782,7 +782,7 @@ public class FDCustomerManager {
 		int rows=0;
 		try {
 			ErpEWalletSB erpEWalletSB = eWalletHome.create();
-			if (FDStoreProperties.isStorefront2_0Enabled()) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpEWalletSB")) {
 				rows = FDECommerceService.getInstance().deleteLongAccessToken(custId, eWalletID);
 			} else {
 				rows = erpEWalletSB.deleteLongAccessToken(custId, eWalletID);
@@ -802,7 +802,7 @@ public class FDCustomerManager {
 		ErpCustEWalletModel custEWalletModel = null;
 		try {
 			ErpEWalletSB erpEWalletSB = eWalletHome.create();
-			if (FDStoreProperties.isStorefront2_0Enabled()) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpEWalletSB")) {
 				custEWalletModel = FDECommerceService.getInstance().getLongAccessTokenByCustID(customerId, eWalletType);
 			} else {
 				custEWalletModel = erpEWalletSB.getLongAccessTokenByCustID(customerId, eWalletType);
@@ -2238,7 +2238,7 @@ public class FDCustomerManager {
 
 	public static void storeSurvey(FDSurveyResponse survey) throws FDResourceException {
 	    try {
-	    	if(FDStoreProperties.isStorefront2_0Enabled()){
+	    	if(FDStoreProperties.isSF2_0_AndServiceEnabled("survey.ejb.FDSurveySB")){
         		IECommerceService service = FDECommerceService.getInstance();
         		FDSurveyResponseData surveyDataRequest = buildStoreSurveyRequest(survey);
         		 service.storeSurvey(surveyDataRequest);
@@ -4188,8 +4188,13 @@ public class FDCustomerManager {
 	public static void logMassCancelActivity(ErpActivityRecord record) {
 		ActivityLogHome home = getActivityLogHome();
 		try {
-			ActivityLogSB logSB = home.create();
-			logSB.logActivity(record);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("customer.ejb.ActivityLogSB")){
+				FDECommerceService.getInstance().logActivity(record);
+			}
+			else{
+				ActivityLogSB logSB = home.create();
+				logSB.logActivity(record);
+			}
 		} catch (RemoteException e) {
 			throw new EJBException(e);
 		} catch (CreateException e) {

@@ -2001,4 +2001,22 @@ public void turnOffReminderOverLayNewSo(Connection con, String standingOrderId) 
 		
 	}
 
+	//New customer who has 1 SO gets the Popup
+	public static void updateSoCartOverlayFirstTimePreferences(Connection conn, String customerId,
+			boolean soCartOverlay)throws SQLException {
+		PreparedStatement ps = null;
+		try {
+				ps = conn.prepareStatement("update CUST.CUSTOMERINFO set SO_CART_OVERLAY_FIRSTTIME = ? where customer_id=?");
+				ps.setString(1, soCartOverlay?"Y":"N");
+				ps.setString(2, customerId);
+				ps.execute();
+
+		} catch (Exception e) {
+			LOGGER.error("Error while updating updateSoCartOverlayFirstTimePreferences in DB", e);
+		} finally {
+			if (ps != null) {
+				ps.close();
+			}
+	}
+ }
 }

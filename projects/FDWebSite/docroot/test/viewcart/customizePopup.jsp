@@ -53,7 +53,7 @@
                 <div style:"display:none;">Decrease quantity</div>
                 <span class="quantity_minus" data-component="quantitybox.dec">-</span>
                 <span class="qtywrapper">
-                <input class="qty" type="text" value="1" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity" data-mayempty="true">
+                <input class="qty" aria-label="quantity" type="text" value="1" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity" data-mayempty="true">
                 </span>
                 <div style:"display:none;">Increase quantity</div>
                 <span class="quantity_plus" data-component="quantitybox.inc">+</span>
@@ -126,7 +126,7 @@
               <div style:"display:none;">Decrease quantity</div>
               <span class="quantity_minus" data-component="quantitybox.dec">-</span>
               <span class="qtywrapper">
-              <input class="qty" type="text" value="1" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity" data-mayempty="true">
+              <input class="qty" aria-label="quantity" type="text" value="1" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity" data-mayempty="true">
               </span>
               <div style:"display:none;">Increase quantity</div>
               <span class="quantity_plus" data-component="quantitybox.inc">+</span>
@@ -186,7 +186,7 @@
               <div style:"display:none;">Decrease quantity</div>	
                 <span class="quantity_minus" data-component="quantitybox.dec">-</span>
                 <span class="qtywrapper">
-                <input class="qty" type="text" value="1" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity" data-mayempty="true">
+                <input class="qty" aria-label="quantity" type="text" value="1" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity" data-mayempty="true">
                 </span>
                 <div style:"display:none;">Increase quantity</div>
                 <span class="quantity_plus" data-component="quantitybox.inc">+</span>
@@ -259,7 +259,7 @@
             <div style:"display:none;">Decrease quantity</div>
               <span class="quantity_minus" data-component="quantitybox.dec">-</span>
               <span class="qtywrapper">
-              <input class="qty" type="text" value="1" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity" data-mayempty="true">
+              <input class="qty" aria-label="quantity" type="text" value="1" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity" data-mayempty="true">
               </span>
               <div style:"display:none;">Increase quantity</div>
               <span class="quantity_plus" data-component="quantitybox.inc">+</span>

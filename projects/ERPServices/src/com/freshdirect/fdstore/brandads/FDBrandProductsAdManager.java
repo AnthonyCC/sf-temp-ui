@@ -34,7 +34,7 @@ public class FDBrandProductsAdManager {
 			FDBrandProductsAdManagerSB sb = managerHome.create();
 		/*	hLRequestData.setUserId("1234");
 			hLRequestData.setSearchKeyWord("storag");*/
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.brandads.FDBrandProductsAdManagerSB")){
 			data =FDECommerceService.getInstance().getSearchbykeyword(hLRequestData);
 			
 			}else {			
@@ -57,7 +57,7 @@ public class FDBrandProductsAdManager {
 		try {
 			HLBrandProductAdResponse result = null;
 			FDBrandProductsAdManagerSB sb = managerHome.create();
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.brandads.FDBrandProductsAdManagerSB")){
 				result = FDECommerceService.getInstance().getCategoryProducts(hLRequestData);
 			}else{
 				result= sb.getCategoryProducts(hLRequestData);
@@ -105,7 +105,7 @@ public class FDBrandProductsAdManager {
 		try {
 			Date date = null;
 			FDBrandProductsAdManagerSB sb = managerHome.create();		
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.brandads.FDBrandProductsAdManagerSB")){
 				date =  FDECommerceService.getInstance().getLastSentFeedOrderTime();
 			}else{
 			date= sb.getLastSentFeedOrderTime();

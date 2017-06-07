@@ -63,14 +63,16 @@ public class SemPixelService {
 
     public List<String> populateRedeemedPromotionCodes(FDOrderI order) {
         List<String> result = new ArrayList<String>();
-        Set<String> usedPromotionCodes = ((FDOrderAdapter) order).getUsedPromotionCodes();
-        if (usedPromotionCodes != null) {
-            for (String usedPromotionCode : usedPromotionCodes) {
-                PromotionI promotion = PromotionFactory.getInstance().getPromotion(usedPromotionCode);
-                if (promotion.isRedemption()) {
-                    result.add(usedPromotionCode);
-                }
-            }
+        if(order instanceof FDOrderAdapter) {
+	        Set<String> usedPromotionCodes = ((FDOrderAdapter) order).getUsedPromotionCodes();
+	        if (usedPromotionCodes != null) {
+	            for (String usedPromotionCode : usedPromotionCodes) {
+	                PromotionI promotion = PromotionFactory.getInstance().getPromotion(usedPromotionCode);
+	                if (promotion.isRedemption()) {
+                        result.add(promotion.getRedemptionCode());
+	                }
+	            }
+	        }
         }
         return result;
     }

@@ -5,7 +5,7 @@
  * @param data
  */
 {template .productListModule}
-{if $data.products and length($data.products) > 0}
+{if ($data.products and length($data.products) > 0) or ($data.sectionDataContainer)}
   <div class="content-module product-list" id="{$moduleData.moduleId}">
   	{call common.moduleHeader}
   		{param content: $moduleData /}
@@ -14,6 +14,7 @@
   		{call common.contentHeader}
   			{param content: $moduleData /}
   		{/call}
+      {if $data.products}
   		<div class="transactional">
   			<ul>
   			{foreach $item in $data.products}
@@ -26,6 +27,21 @@
   			{/foreach}
   		</ul>
   		</div>
+      {/if}
+      {if $data.sectionDataContainer}
+      <div class='sections'>
+        {foreach $section in $data.sectionDataContainer.sections}
+          {call common.section}
+            {param section:$section /}
+            {param lastLevel:$data.sectionDataContainer.sectionMaxLevel /}
+            {param level:1 /}
+            {param usePopularCategoriesLayout:$data.sectionDataContainer.usePopularCategoriesLayout /}
+            {param filterLabels:$data.sectionDataContainer.filterLabels.filterLabels /}
+            {param itemPerLine:4 /}
+          {/call}
+        {/foreach}
+      </div>
+      {/if}
   	</div>
   </div>
 {/if}

@@ -13,11 +13,12 @@ import com.freshdirect.fdstore.content.WineFilterValue;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagInput;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
+import com.freshdirect.fdstore.coremetrics.extradata.CoremetricsExtraData;
 import com.freshdirect.fdstore.coremetrics.tagmodel.AbstractTagModel;
 import com.freshdirect.fdstore.coremetrics.tagmodel.PageViewTagModel;
+import com.freshdirect.fdstore.coremetrics.util.CoremetricsUtil;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.webapp.ajax.expresscheckout.coremetrics.service.CoremetricsService;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class CmPageViewTag extends AbstractCmTag {
@@ -39,7 +40,11 @@ public class CmPageViewTag extends AbstractCmTag {
     public String getTagJs() throws SkipTagException {
         FDUserI user = (FDUserI) getSession().getAttribute(SessionName.USER);
         tagModelBuilder.setUserCohort(user.getCohortName());
-        tagModelBuilder.setCustomerType(CoremetricsService.defaultService().getCustomerTypeByOrderCount(user));
+
+        CoremetricsExtraData cmExtraData = new CoremetricsExtraData();
+        cmExtraData.setCustomerType(CoremetricsUtil.defaultService().getCustomerTypeByOrderCount(user));
+        tagModelBuilder.setCoremetricsExtraData(cmExtraData);
+
         tagModelBuilder.setInput(PageViewTagInput.populateFromRequest(getRequest()));
         PageViewTagModel tagModel = tagModelBuilder.buildTagModel();
 

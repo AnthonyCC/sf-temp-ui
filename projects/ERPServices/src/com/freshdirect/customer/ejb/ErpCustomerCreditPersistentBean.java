@@ -141,29 +141,51 @@ public class ErpCustomerCreditPersistentBean extends DependentPersistentBeanSupp
 	}
 
 	public void load(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("SELECT COMPLAINT_ID, AMOUNT, ORIGINAL_AMOUNT, DEPARTMENT, CREATE_DATE, AFFILIATE FROM CUST.CUSTOMERCREDIT WHERE ID=?");
-		ps.setString(1, this.getPK().getId());
-		ResultSet rs = ps.executeQuery();
-		if (rs.next()) {
-			String pk = rs.getString("COMPLAINT_ID");
-			if(!rs.wasNull()){
-				this.complaintPk = new PrimaryKey(pk);
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		String errMsg = null;
+		try {
+			ps = conn.prepareStatement("SELECT COMPLAINT_ID, AMOUNT, ORIGINAL_AMOUNT, DEPARTMENT, CREATE_DATE, AFFILIATE FROM CUST.CUSTOMERCREDIT WHERE ID=?");
+			ps.setString(1, this.getPK().getId());
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				String pk = rs.getString("COMPLAINT_ID");
+				if(!rs.wasNull()){
+					this.complaintPk = new PrimaryKey(pk);
+				}
+				this.remainingAmount = rs.getDouble("AMOUNT");
+				this.originalAmount = rs.getDouble("ORIGINAL_AMOUNT");
+				this.department = rs.getString("DEPARTMENT");
+				this.createDate = rs.getTimestamp("CREATE_DATE");
+				ErpAffiliate a = ErpAffiliate.getEnum(rs.getString("AFFILIATE"));
+				this.affiliate = a == null ? ErpAffiliate.getEnum(ErpAffiliate.CODE_FD) : a;
+			} else {
+				errMsg = "No such ErpCustomerCredit PK: " + this.getPK();
 			}
-			this.remainingAmount = rs.getDouble("AMOUNT");
-			this.originalAmount = rs.getDouble("ORIGINAL_AMOUNT");
-			this.department = rs.getString("DEPARTMENT");
-			this.createDate = rs.getTimestamp("CREATE_DATE");
-			ErpAffiliate a = ErpAffiliate.getEnum(rs.getString("AFFILIATE"));
-			this.affiliate = a == null ? ErpAffiliate.getEnum(ErpAffiliate.CODE_FD) : a;
-		} else {
-			throw new SQLException("No such ErpCustomerCredit PK: " + this.getPK());
+			this.unsetModified();
+		} catch (SQLException sqe) {
+			throw sqe;
+		} catch (Exception e) {
+			throw new SQLException("Unexpected database load error : " + e.getMessage());
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e) {
+					// do nothing, safety block
+				}
+			}
+            if (ps != null) {
+                    try {
+                            ps.close();
+                    } catch (Exception e) {
+                            // do nothing, safety block
+                    }
+            }
 		}
-		rs.close();
-		rs = null;
-		ps.close();
-		ps = null;
-
-		this.unsetModified();
+		if (errMsg != null) {
+			throw new SQLException(errMsg);
+		}
 	}
 
 	public void store(Connection conn) throws SQLException {

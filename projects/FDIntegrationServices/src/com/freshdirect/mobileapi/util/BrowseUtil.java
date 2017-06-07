@@ -34,6 +34,7 @@ import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.common.pricing.ZoneInfo.PricingIndicator;
 import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.fdstore.EnumAvailabilityStatus;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDProduct;
@@ -75,6 +76,7 @@ import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.logistics.delivery.model.FulfillmentInfo;
 import com.freshdirect.mobileapi.catalog.model.CatalogInfo;
 import com.freshdirect.mobileapi.catalog.model.CatalogInfo.CatalogId;
 import com.freshdirect.mobileapi.catalog.model.CatalogKey;
@@ -1449,12 +1451,12 @@ public class BrowseUtil {
 	    	
 	    	try {
 				List<String> zoneIds = new ArrayList<String>(FDZoneInfoManager.loadAllZoneInfoMaster());
-				ZoneInfo plantlic;
+				CatalogKey tmp;
+				keyList = new ArrayList<CatalogKey>(zoneIds.size() * 2);
+				/*ZoneInfo plantlic;
 				ZoneInfo plantwdc;
 				ZoneInfo plant1300;
 				ZoneInfo plant1310;
-				CatalogKey tmp;
-				keyList = new ArrayList<CatalogKey>(zoneIds.size() * 2);
 				for(String zoneId : zoneIds){
 					//TODO: replace stubs with something else
 					//Currently using stubs for sales and distribution
@@ -1497,6 +1499,28 @@ public class BrowseUtil {
 					tmp.setPlantId(1310);
 					tmp.setPricingZone(plant1310);
 					keyList.add(tmp);
+				}*/
+				List<FulfillmentInfo> fulfillmentInfoList = FDDeliveryManager.getInstance().getAllFulfillmentInfo();
+				for(String zoneId : zoneIds){
+					for(FulfillmentInfo fulfillmentInfo : fulfillmentInfoList){
+						tmp = new CatalogKey();
+						tmp.seteStore(eStore);
+						tmp.setPlantId(Long.parseLong(fulfillmentInfo.getPlantCode()));
+						if(fulfillmentInfo.getSalesArea().getDefaultSalesArea().getSalesOrg()!=null){
+							tmp.setPricingZone(new ZoneInfo(zoneId, fulfillmentInfo.getSalesArea().getSalesOrg(), fulfillmentInfo.getSalesArea().getDistChannel(), 
+															"B".equalsIgnoreCase(fulfillmentInfo.getSalesArea().getPricingIndicator())? PricingIndicator.BASE: PricingIndicator.SALE,
+															new ZoneInfo(zoneId, fulfillmentInfo.getSalesArea().getDefaultSalesArea().getSalesOrg(), fulfillmentInfo.getSalesArea().getDefaultSalesArea().getDistChannel())));
+						}else{
+							tmp.setPricingZone(new ZoneInfo(zoneId, fulfillmentInfo.getSalesArea().getSalesOrg(), fulfillmentInfo.getSalesArea().getDistChannel()));
+						}
+						if(StringUtils.isBlank(fulfillmentInfo.getSalesArea().getBusinessUnit())){
+							fulfillmentInfo.getSalesArea().setBusinessUnit("FD");
+						}
+						if((fulfillmentInfo.getSalesArea().getBusinessUnit().equals("FDX") && eStore.equals("FDX"))	||
+						   (fulfillmentInfo.getSalesArea().getBusinessUnit().equals("FD") && eStore.equals("FreshDirect"))){
+							keyList.add(tmp);
+						}
+					}
 				}
 				
 			} catch (FDResourceException e) {
@@ -1508,6 +1532,7 @@ public class BrowseUtil {
 	    		for(CatalogKey key : keyList){
 	    			stringyfiedKeyList.add(key.toString());
 	    		}
+	    		Collections.sort(stringyfiedKeyList);
 	    		return stringyfiedKeyList;
 	    	}
 	    	

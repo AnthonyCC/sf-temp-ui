@@ -710,4 +710,12 @@ public interface FDUserI extends java.io.Serializable {
 
 	public void setSoCartLineMessagesMap(Map<String, String> soCartLineMessagesMap);
 
+	public boolean isSoCartOverlayFirstTime();
+
+	public void setSoCartOverlayFirstTime(boolean soCartOverlayFirstTime);
+			
+	public boolean isRefreshSoCartOverlay();
+	
+	public void setRefreshSoCartOverlay(boolean isRefreshSoCartOverlay);
+
 }

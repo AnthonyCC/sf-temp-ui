@@ -16,6 +16,7 @@ import com.freshdirect.erp.ejb.ErpInfoSB;
 import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.service.FDECommerceService;
 
 public class FDInventoryCache extends FDAbstractCache {
 	private static Category LOGGER = LoggerFactory.getInstance(FDInventoryCache.class);
@@ -36,8 +37,12 @@ public class FDInventoryCache extends FDAbstractCache {
 	protected Map loadData(Date since) {
 		try {
 			LOGGER.info("REFRESHING entries newer than "+ new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.S").format(since));
+			Map data;
 			ErpInfoSB sb = this.lookupInfoHome().create();
-			Map data = sb.loadInventoryInfo(since);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpInfoSB"))
+				data = FDECommerceService.getInstance().loadInventoryInfo(since);
+			else
+				data = sb.loadInventoryInfo(since);
 			LOGGER.info("REFRESHED: " + data.size());
 			//LOGGER.debug("REFRESHED ENTRIES: " + data);
 			return data;

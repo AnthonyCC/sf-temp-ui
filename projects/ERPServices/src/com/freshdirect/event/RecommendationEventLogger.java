@@ -60,7 +60,7 @@ public class RecommendationEventLogger {
 	 * @param frequency assigned frequency
 	 */
 	public void log(FDRecommendationEvent event, int frequency) {
-		if (FDStoreProperties.isStorefront2_0Enabled()) {
+		if (FDStoreProperties.isSF2_0_AndServiceEnabled("event.ejb.RecommendationEventLoggerSB")) {
 			try {
 				FDECommerceService.getInstance().log(
 						(FDRecommendationEvent) event, frequency);
@@ -95,7 +95,7 @@ public class RecommendationEventLogger {
 	public void log(Class<? extends FDRecommendationEvent> eventClazz,
 			Collection<RecommendationEventsAggregate> events) {
 
-		if (FDStoreProperties.isStorefront2_0Enabled()) {
+		if (FDStoreProperties.isSF2_0_AndServiceEnabled("event.ejb.RecommendationEventLoggerSB")) {
 			try {
 				FDECommerceService.getInstance().log(eventClazz, events);
 			} catch (RemoteException e) {

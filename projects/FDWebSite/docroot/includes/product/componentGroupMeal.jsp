@@ -364,8 +364,9 @@ if (isAvailable ) {
 					if ( varOpts!=null && varOpts.length>1) {
 						if (paintDropdownVertical) { %>
 						  <img src="/media_stat/images/layout/clear.gif" alt="" width="14" height="11">&nbsp;
-<%                                              }  %>						
-						<select name="<%=mcName+suffix%>" CLASS="text11" <%=(!paintDropdownVertical ?"style=\"width: 190px\"" :"")%>><option value=""><%=(String)fdVarOptDesc.get(mcName)%></option>
+<%                                              }  %>	
+					      <label><%=(String)fdVarOptDesc.get(mcName)%>
+						<select name="<%=mcName+suffix%>" CLASS="text11" <%=(!paintDropdownVertical ?"style=\"width: 190px\"" :"")%>><option value="">please choose</option>
 						<%				
 						for (int voIdx = 0; voIdx < varOpts.length; voIdx++) {
 							String optSkuCode=varOpts[voIdx].getSkuCode();
@@ -384,7 +385,7 @@ if (isAvailable ) {
 							%> 
 							<option value="<%=varOpts[voIdx].getName()%>" <%=selected%>>&nbsp;<%=varOpts[voIdx].getDescription()%></option> <%
 						}
-						%> </select>
+						%> </select> </label>
 						<% if (paintDropdownVertical || selectTagCnt%3==2  || !mcnItr.hasNext() ) { %>
 						     <br> <font class="space4pix"><br></font><%
 						   } else { %>
@@ -524,7 +525,7 @@ if (isAvailable ) {
 					<!-- /fd:IsAlcoholic -->
           <div class="qtyinput">
             <a href="javascript:chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',-<%= optProd.getQuantityIncrement() %>,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true);" class="quantity_minus"><div class="vahidden">Decrease quantity</div></a>
-            <input class="qty" name ="quantity_<%=prodCount%>" value="<%=(request.getParameter("quantity_"+prodCount)==null ?"" : request.getParameter("quantity_"+prodCount))%>" type="text" size="3" onChange="chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',0,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true)">
+            <input class="qty" aria-label="quantity" name ="quantity_<%=prodCount%>" value="<%=(request.getParameter("quantity_"+prodCount)==null ?"" : request.getParameter("quantity_"+prodCount))%>" type="text" size="3" onChange="chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',0,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true)">
             <a href="javascript:chgNamedQty(pricing_<%=prodCount%>,'quantity_<%=prodCount%>',<%= optProd.getQuantityIncrement() %>,<%= optProd.getQuantityMinimum() %>,<%= user.getQuantityMaximum(optProd) %>,true);" class="quantity_plus"><div class="vahidden">Increase quantity</div></a>
           </div>
         </td>
@@ -601,11 +602,11 @@ if (isAvailable ) {
 				<div class="qtyinput">
 					<span class="qtymessage">Quantity</span>
 					<a href="javascript:chgNamedQty(pricing,'quantity<%=suffix%>',-<%=productNode.getQuantityIncrement() %>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);" class="quantity_minus"><div class="vahidden">Decrease quantity</div></a>
-					<input type="text" CLASS="qty" size="3" name="quantity<%=suffix%>" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgNamedQty(pricing,'quantity<%=suffix%>',0,<%= productNode.getQuantityIncrement() %>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);" onChange="pricing.setQuantity(this.value);"/>
+					<input type="text" CLASS="qty" aria-label="quantity" size="3" name="quantity<%=suffix%>" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgNamedQty(pricing,'quantity<%=suffix%>',0,<%= productNode.getQuantityIncrement() %>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);" onChange="pricing.setQuantity(this.value);"/>
 					<a href="javascript:chgNamedQty(pricing,'quantity<%=suffix%>',<%= productNode.getQuantityIncrement() %>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);" class="quantity_plus"><div class="vahidden">Increase quantity</div></a>
 					<%= (mobWeb && CartName.MODIFY_CART.equals(cartMode)) ? "<br />" : "" %>
-					<span class="qtyprice">Price</span>
-					<input class="<%= (mobWeb) ? "qty " : "" %>qtypriceinput" type="text" name="price" size="6" onChange="" onFocus="blur()" value=""/>
+					<span class="qtyprice"><label for="price_field">Price</label></span>
+					<input class="<%= (mobWeb) ? "qty " : "" %>qtypriceinput" type="text" id="price_field" name="price" size="6" onChange="" onFocus="blur()" value=""/>
 				</div>
 			<% if (mobWeb && CartName.MODIFY_CART.equals(cartMode)) { %>
 				<%-- do nothing, but make the row a single column (above), the divs will handle the split --%>

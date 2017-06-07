@@ -64,7 +64,7 @@ public class SessionImpressionLog {
 	public void saveLogEntry(SessionImpressionLogEntry entry) {
 		try {
 			
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("smartstore.ejb.SessionImpressionLogSB")){
 				Request<SessionImpressionLogEntryData> request = new Request<SessionImpressionLogEntryData>();
 				SessionImpressionLogEntryData data = dataConversion(entry);
 				request.setData(data);
@@ -86,7 +86,7 @@ public class SessionImpressionLog {
 
 	public void saveLogEntries(Collection entries) {
 		try {
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("smartstore.ejb.SessionImpressionLogSB")){
 				try {
 					Collection<SessionImpressionLogEntryData> entriesCollection = new ArrayList<SessionImpressionLogEntryData>();
 					Request<Collection<SessionImpressionLogEntryData>> request = new Request<Collection<SessionImpressionLogEntryData>>();

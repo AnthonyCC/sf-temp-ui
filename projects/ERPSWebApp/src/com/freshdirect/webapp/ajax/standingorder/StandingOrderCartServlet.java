@@ -25,6 +25,7 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeVariant;
 import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
@@ -53,6 +54,8 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 	private static final Logger LOG = LoggerFactory.getInstance(StandingOrderCartServlet.class);
 	
 	private static final String ACTION_TURN_OFF_REMINDER_OVERLAY="turnOffReminderOverlay";
+ 
+	private static final String ACTION_TURN_OFF_CART_OVERLAY_FIRSTTIME="turnOffCartOverlayFirsttime";
 
 	@Override
 	protected boolean synchronizeOnUser() {
@@ -141,6 +144,18 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 						FDStandingOrdersManager.getInstance().turnOffReminderOverLayNewSo(reqData.getStandingOrderId());
 				} catch (FDResourceException e) {
 					LOG.error("Got the exeption while updating the RemiderOverlay flag for New Standing order"+e);
+				}
+			}
+			
+			
+			if (null!= reqData && ACTION_TURN_OFF_CART_OVERLAY_FIRSTTIME.equalsIgnoreCase(reqData.getActiontype())&&
+									user!=null&& user.getIdentity().getErpCustomerPK()!=null) {
+				try {
+						user.setRefreshSoCartOverlay(true);
+						FDStandingOrdersManager.getInstance().updateSoCartOverlayFirstTimePreferences(
+										user.getIdentity().getErpCustomerPK(), false);
+				} catch (FDResourceException e) {
+					LOG.error("Got the exeption while updating the StandingOrder Cart Overlay FirstTime flag for New Standing order"+e);
 				}
 			}
 		}else{

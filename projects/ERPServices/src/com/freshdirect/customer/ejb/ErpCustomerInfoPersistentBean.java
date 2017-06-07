@@ -114,6 +114,8 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 	private List<ErpCustomerSocialLoginModel> socialLoginInfo;
 	
 	private String companyNameSignup;
+	
+	private String soCartOverlayFirstTime;
 
 	/**
 	 * Default constructor.
@@ -185,6 +187,8 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		this.socialLoginInfo = null;
 		
 		this.companyNameSignup = null;
+		
+		this.soCartOverlayFirstTime = null;
 	}
 
 	/**
@@ -292,6 +296,8 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		
 		model.setCompanyNameSignup(this.companyNameSignup);
 		
+		model.setSoCartOverlayFirstTime(this.soCartOverlayFirstTime);
+		
 		return model;
 	}
 
@@ -369,6 +375,8 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		this.fdTcAgreeDate=m.getFdTcAgreeDate();
 		
 		this.companyNameSignup = m.getCompanyNameSignup();
+		
+		this.soCartOverlayFirstTime = m.getSoCartOverlayFirstTime();
 		
 		this.setModified();
 	}
@@ -558,7 +566,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 					+ " RSV_END_TIME, RSV_ADDRESS_ID, UNSUBSCRIBE_DATE, REG_REF_TRACKING_CODE, REG_REF_PROG_ID, REF_PROG_INVT_ID, "
 					+ " RECEIVE_OPTINNEWSLETTER, HAS_AUTORENEW_DP, AUTORENEW_DP_TYPE, EMAIL_LEVEL, NO_CONTACT_MAIL, NO_CONTACT_PHONE, "
 					+ " mobile_number, mobile_preference_flag, delivery_notification, offers_notification, ORDER_NOTIFICATION, ORDEREXCEPTION_NOTIFICATION, SMS_OFFERS_ALERT, PARTNERMESSAGE_NOTIFICATION,SMS_PREFERENCE_FLAG, go_green, display_name, "
-					+ " DP_TC_VIEWS, DP_TC_AGREE_DATE,INDUSTRY,NUM_OF_EMPLOYEES,SECOND_EMAIL_ADDRESS, SMS_OPTIN_DATE,FD_TC_AGREE,FD_TC_AGREE_DATE,COMPANY_NAME_SIGNUP"
+					+ " DP_TC_VIEWS, DP_TC_AGREE_DATE,INDUSTRY,NUM_OF_EMPLOYEES,SECOND_EMAIL_ADDRESS, SMS_OPTIN_DATE,FD_TC_AGREE,FD_TC_AGREE_DATE,COMPANY_NAME_SIGNUP, SO_CART_OVERLAY_FIRSTTIME"
 					+ " FROM CUST.CUSTOMERINFO WHERE CUSTOMER_ID = ?");
 		ps.setString(1, this.getPK().getId());
 		ResultSet rs = ps.executeQuery();
@@ -673,6 +681,8 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 			this.socialLoginInfo = loadSocialUserInfo(conn, this.email, this.getParentPK());
 
 			this.companyNameSignup = rs.getString("COMPANY_NAME_SIGNUP");
+			
+			this.soCartOverlayFirstTime = rs.getString("SO_CART_OVERLAY_FIRSTTIME");
 			
 		} else {
 			throw new SQLException("No such ErpCustomerInfo PK: " + this.getPK());

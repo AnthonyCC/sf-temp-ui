@@ -7,9 +7,13 @@ import com.freshdirect.fdstore.content.util.QueryParameterCollection;
 import com.freshdirect.fdstore.coremetrics.CmContext;
 import com.freshdirect.fdstore.coremetrics.builder.ProductViewTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
+import com.freshdirect.fdstore.coremetrics.extradata.CoremetricsExtraData;
 import com.freshdirect.fdstore.coremetrics.tagmodel.AbstractTagModel;
 import com.freshdirect.fdstore.coremetrics.tagmodel.ProductViewTagModel;
+import com.freshdirect.fdstore.coremetrics.util.CoremetricsUtil;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class CmProductViewTag extends AbstractCmTag {
 
@@ -23,8 +27,14 @@ public class CmProductViewTag extends AbstractCmTag {
 
     @Override
     public String getTagJs() throws SkipTagException {
+        FDUserI user = (FDUserI) getSession().getAttribute(SessionName.USER);
 
         builder.setVirtualCategoryId(extractVirtualCategoryId());
+
+        CoremetricsExtraData cmExtraData = new CoremetricsExtraData();
+        cmExtraData.setCustomerType(CoremetricsUtil.defaultService().getCustomerTypeByOrderCount(user));
+        builder.setCoremetricsExtraData(cmExtraData);
+
         ProductViewTagModel model = builder.buildTagModel();
         Object CM_VC = this.getRequest().getParameter("cm_vc");
         if (CM_VC == null || "".equals(CM_VC)) {
