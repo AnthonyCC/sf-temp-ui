@@ -20,6 +20,7 @@ import com.freshdirect.content.attributes.AttributeException;
 import com.freshdirect.content.attributes.FlatAttributeCollection;
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.customer.ErpEWalletModel;
 import com.freshdirect.customer.ErpGrpPriceModel;
@@ -49,6 +50,7 @@ import com.freshdirect.event.RecommendationEventsAggregate;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDGroupNotFoundException;
+import com.freshdirect.fdstore.FDPayPalServiceException;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
@@ -436,6 +438,33 @@ public interface IECommerceService {
 	
     public String checkAddressForRestrictions(AddressData address) throws RemoteException;
 
+    public void sendReservationUpdateRequest(String  reservationId, ContactAddressModel address, String sapOrderNumber) throws RemoteException, FDPayPalServiceException;
+	
+    public void sendSubmitOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
+			String unattendedInstr,String orderMobileNumber,String erpOrderId) throws RemoteException;
+	
+    public void sendCancelOrderRequest(String saleId) throws RemoteException;
+	
+    public void sendModifyOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
+			String unattendedInstr,String orderMobileNumber,String erpOrderId) throws RemoteException;
+
+	/*EwalletResponseData getToken(EwalletRequestData ewalletRequestData) throws RemoteException;
+	EwalletResponseData checkout(EwalletRequestData ewalletRequestData) throws RemoteException;
+	EwalletResponseData expressCheckout(EwalletRequestData ewalletRequestData) throws RemoteException;
+	EwalletResponseData connect(EwalletRequestData ewalletRequestData) throws RemoteException;
+	EwalletResponseData getAllPayMethodInEwallet(EwalletRequestData ewalletRequestData) throws RemoteException;
+	EwalletResponseData connectComplete(EwalletRequestData ewalletRequestData) throws RemoteException;
+	EwalletResponseData disconnect(EwalletRequestData ewalletRequestData) throws RemoteException;
+	
+	//Batch
+	EwalletResponseData postbackTrxns(EwalletRequestData req) throws RemoteException;
+	
+	//Standard checkout
+	EwalletResponseData standardCheckout(EwalletRequestData ewalletRequestData) throws RemoteException;
+	EwalletResponseData preStandardCheckout(EwalletRequestData ewalletRequestData) throws RemoteException;
+	EwalletResponseData expressCheckoutWithoutPrecheckout(EwalletRequestData ewalletRequestData) throws RemoteException;
+	//PayPal
+	EwalletResponseData addPayPalWallet(EwalletRequestData ewalletRequestData) throws RemoteException;*/
 
 
 

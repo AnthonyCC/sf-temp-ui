@@ -42,6 +42,7 @@ import com.freshdirect.content.attributes.AttributeException;
 import com.freshdirect.content.attributes.FlatAttribute;
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.customer.ErpEWalletModel;
 import com.freshdirect.customer.ErpGrpPriceModel;
@@ -94,6 +95,7 @@ import com.freshdirect.ecommerce.data.fdstore.SalesAreaInfoFDGroupWrapper;
 import com.freshdirect.ecommerce.data.logger.recommendation.FDRecommendationEventData;
 import com.freshdirect.ecommerce.data.payment.BINData;
 import com.freshdirect.ecommerce.data.payment.FDGatewayActivityLogModelData;
+import com.freshdirect.ecommerce.data.routing.SubmitOrderRequestData;
 import com.freshdirect.ecommerce.data.rules.RuleData;
 import com.freshdirect.ecommerce.data.sessionimpressionlog.SessionImpressionLogEntryData;
 import com.freshdirect.ecommerce.data.smartstore.ProductFactorParam;
@@ -345,7 +347,10 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String CHECK_ADDRESS_RESTRICTION = "restriction/checkaddress";
 	private static final String ADD_DLV_RESTRICTION = "restriction/delivery/add";
 	private static final String GET_RESTRICTIONS = "restriction/delivery";
-
+	private static final String RESERVATION_UPDATE = "routing/reservationupdate/"; 
+	private static final String MODIFYORDERREQUEST = "routing/modifyorderrequest";
+	private static final String CANCEL_ORDER_REQUEST = "routing/cancelorderrequest";
+	private static final String SUBMIT_ORDER_REQUEST = "routing/submitorderrequest";
 	public static IECommerceService getInstance() {
 		if (INSTANCE == null)
 			INSTANCE = new FDECommerceService();
@@ -3594,6 +3599,89 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		return response.getData();
 	}
 	
+	@Override
+	public void sendCancelOrderRequest(String saleId) throws RemoteException {
+		String inputJson;
+		Response<String> response = null;
+		try {
+			this.postDataTypeMap(null, getFdCommerceEndPoint(CANCEL_ORDER_REQUEST+"?saleid="+saleId),  new TypeReference<Response<Object>>() {});
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		
+	}
+	@Override
+	public void sendModifyOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
+			String unattendedInstr,String orderMobileNumber,String erpOrderId) throws RemoteException {
+		
+		SubmitOrderRequestData submitOrderRequestData = new SubmitOrderRequestData();
+		submitOrderRequestData = buildOrderRequestData(saleId, parentOrderId, tip, reservationId, firstName, lastName, deliveryInstructions, serviceType, 
+				 unattendedInstr, orderMobileNumber,erpOrderId);
+		Request<SubmitOrderRequestData> request = new Request<SubmitOrderRequestData>();
+		try {
+			request.setData(submitOrderRequestData);
+			String inputJson = buildRequest(request);
+			this.postDataTypeMap(inputJson, getFdCommerceEndPoint(MODIFYORDERREQUEST),  new TypeReference<Response<Object>>() {});
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		
+	}
+	@Override
+	public void sendReservationUpdateRequest(String  reservationId, ContactAddressModel address, String sapOrderNumber) throws RemoteException {
+		try {
+			String inputJson = buildRequest(address);
+			this.postDataTypeMap(null, getFdCommerceEndPoint(RESERVATION_UPDATE+"?reservationid="+reservationId+"&sapordernumber="+sapOrderNumber),  new TypeReference<Response<Object>>() {});
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		
+	}
+	@Override
+	public void sendSubmitOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
+			String unattendedInstr,String orderMobileNumber,String erpOrderId) throws RemoteException {
+		SubmitOrderRequestData submitOrderRequestData = new SubmitOrderRequestData();
+		submitOrderRequestData = buildOrderRequestData(saleId, parentOrderId, tip, reservationId, firstName, lastName, deliveryInstructions, serviceType, 
+				 unattendedInstr, orderMobileNumber,erpOrderId);
+		Request<SubmitOrderRequestData> request = new Request<SubmitOrderRequestData>();
+		try {
+			request.setData(submitOrderRequestData);
+			String inputJson = buildRequest(request);
+			this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SUBMIT_ORDER_REQUEST),  new TypeReference<Response<Object>>() {});
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		
+	}
 	
+	private SubmitOrderRequestData buildOrderRequestData(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
+			String unattendedInstr,String orderMobileNumber,String erpOrderId){
+		SubmitOrderRequestData submitOrderRequestData = new SubmitOrderRequestData();
+		submitOrderRequestData.setSaleId(saleId);
+		submitOrderRequestData.setParentOrderId(parentOrderId);
+		submitOrderRequestData.setTip(tip);
+		submitOrderRequestData.setReservationId(reservationId);
+		submitOrderRequestData.setFirstName(firstName);
+		submitOrderRequestData.setLastName(lastName);
+		submitOrderRequestData.setDeliveryInstructions(deliveryInstructions);
+		submitOrderRequestData.setServiceType(serviceType);
+		submitOrderRequestData.setUnattendedInstr(unattendedInstr);
+		submitOrderRequestData.setOrderMobileNumber(orderMobileNumber);
+		submitOrderRequestData.setErpOrderId(erpOrderId);
+		return submitOrderRequestData;
+	}
 	
 }
