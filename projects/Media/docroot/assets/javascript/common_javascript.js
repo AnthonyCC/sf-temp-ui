@@ -1378,8 +1378,8 @@ function doOverlayWindow(olURL, titleVar) {
 	function doOverlayDialogNew(olURL) {
 		var overlayDialog = setupOverlayDialog();
 		overlayDialog.load(olURL, function() { overlayDialog.dialog('open'); });
-		$jq('.ui-dialog').addClass('overlay-dialog-new').css('z-index','1000');
-		$jq('.ui-widget-overlay').css('z-index','1001');;
+		$jq('.ui-dialog').addClass('overlay-dialog-new').css('z-index','1001');
+		$jq('.ui-widget-overlay').css('z-index','1000');
 	}
 	
 	/* use dialog by css selector */
@@ -1400,6 +1400,14 @@ function doOverlayWindow(olURL, titleVar) {
 		overlayDialog.dialog('open');
 
 		return overlayDialog;
+	}
+	
+	function doOverlayDialogByHtmlNew(olHtml) {
+		var overlayDialog = setupOverlayDialog();		
+		overlayDialog.html(olHtml);
+		overlayDialog.dialog('open');
+		$jq('.ui-dialog').addClass('overlay-dialog-new').css('z-index','1001');
+		$jq('.ui-widget-overlay').css('z-index','1000');
 	}
 
 	/* use dialog by url */

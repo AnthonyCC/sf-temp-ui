@@ -863,8 +863,10 @@
 	.so-accidental-atc .so-accidental-atc-middle-button{
 		text-align: center;
 	}
-	.so-accidental-atc .so-accidental-atc-middle-button a{
+	.so-accidental-atc .so-accidental-atc-middle-button button{
 		width: 307px;
+		font-size: 14px;
+		font-family: Verdana;
 	}
 	.so-accidental-atc .so-accidental-atc-bottom{
 		padding: 18px 0 20px 20px;
