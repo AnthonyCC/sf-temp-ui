@@ -740,6 +740,11 @@ if (curHref.indexOf('successPage') === -1 && $jq.QueryString['successPage']) {
 		Map<String,Object> errorSOAlert = new HashMap<String,Object>();
 		errorSOAlert.put("soData", StandingOrderHelper.getAllSoData(user_locationbar_fdx, false, false));
 	%>
+	
+	<script>
+		FreshDirect.standingorder = FreshDirect.standingorder || {};
+		FreshDirect.standingorder.isSoCartOverlayFirstTime = <%= user_locationbar_fdx.isSoCartOverlayFirstTime() %>;
+	</script>
 	<tmpl:put name="error_so_alerts">
 		<div id="errorsoalerts" class="alerts invisible" data-type="errorsoalerts">
 			<soy:render template="standingorder.errorSOAlert" data="<%=errorSOAlert%>"/>

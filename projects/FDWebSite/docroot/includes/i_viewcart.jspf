@@ -365,7 +365,7 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 				</script>
         <div class="qtyinput">
           <a href="javascript:chgQty<%=idx%>(<%= -productNode.getQuantityIncrement() %>);" class="quantity_minus"><div class="vahidden">Decrease quantity</div></a>
-          <input class="qty" type="text" size="4" id="quantity_<%=idx%>" name="quantity_<%=idx%>" maxlength="5" value="<%= quantityFormatter.format(cartLine.getQuantity()) %>" onChange="chgQty<%=idx%>(0);" onBlur=""/>
+          <input class="qty" aria-label="quantity" type="text" size="4" id="quantity_<%=idx%>" name="quantity_<%=idx%>" maxlength="5" value="<%= quantityFormatter.format(cartLine.getQuantity()) %>" onChange="chgQty<%=idx%>(0);" onBlur=""/>
           <a href="javascript:chgQty<%=idx%>(<%= productNode.getQuantityIncrement() %>);" class="quantity_plus"><div class="vahidden">Increase quantity</div></a>
         </div>
 				<input name="rnd_<%=idx%>" type="hidden" value="<%= cartLine.getRandomId() %>">
@@ -1014,8 +1014,7 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 		}
 	}
 
-
-	if (((redemptionPromo == null && maxPromotion <= 0.0) || (redemptionPromo != null && !user.getPromotionEligibility().isEligible(promoCode) && request.getAttribute("promoError") == null)) && user.getCurrentStandingOrder() == null) {
+	if (((redemptionPromo == null && maxPromotion <= 0.0) || (redemptionPromo != null && !user.getPromotionEligibility().isEligible(promoCode) && request.getAttribute("promoError") == null)) && !user.getCheckoutMode().equals(EnumCheckoutMode.MODIFY_SO_TMPL)) {
 		%>
         <tr align="right"><% String errorMsg1 = ""; %>
 			<td colspan="6">

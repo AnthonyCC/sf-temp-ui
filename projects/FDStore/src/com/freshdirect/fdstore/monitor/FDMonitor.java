@@ -14,9 +14,8 @@ import javax.ejb.CreateException;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
-import com.freshdirect.fdlogistics.services.ICommerceService;
-import com.freshdirect.fdlogistics.services.impl.FDCommerceService;
 import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.monitor.ejb.FDMonitorHome;
@@ -37,7 +36,7 @@ public class FDMonitor {
         lookupMonitorHome();
         
         try {
-        	if(FDStoreProperties.isStorefront2_0Enabled()){
+        	if(FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.monitor.FDMonitorSB")){
         	
         		LogisticsServiceLocator.getInstance().getCommerceService().healthCheck();
             

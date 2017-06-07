@@ -13,6 +13,12 @@ public class SkuAvailabilityHistory implements Serializable {
 	private String unavailabilityStatus;
 
 	private Date eventDate;
+	
+	
+	// this change is for storefront 2.0 as we need default constructor for parsing json
+	public SkuAvailabilityHistory() {
+		super();
+	}
 
 	public SkuAvailabilityHistory(String skuCode, int version, String unavailabilityStatus, Date eventDate) {
 		super();

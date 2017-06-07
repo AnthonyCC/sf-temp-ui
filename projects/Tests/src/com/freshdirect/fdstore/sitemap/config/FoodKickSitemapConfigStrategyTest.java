@@ -28,6 +28,7 @@ public class FoodKickSitemapConfigStrategyTest {
         SitemapConfiguration config = strategy.getConfig(SitemapTypeEnum.MAIN);
         assertEquals("https://www.foodkick.com", config.getBasePath());
         assertEquals("/#!", config.getBasePathPostfix());
+        assertEquals("/sitemap", config.getContextPath());
         assertEquals("/var/tmp/sitemap", config.getDirectoryPath());
         assertEquals("sitemap", config.getNamePrefix());
         assertEquals("FDX", config.getStoreName());
@@ -40,6 +41,7 @@ public class FoodKickSitemapConfigStrategyTest {
 
         assertEquals("https://www.foodkick.com", config.getBasePath());
         assertEquals("/#!", config.getBasePathPostfix());
+        assertEquals("/sitemap", config.getContextPath());
         assertEquals("/var/tmp/sitemap", config.getDirectoryPath());
         assertEquals("sitemap_category", config.getNamePrefix());
         assertEquals("FDX", config.getStoreName());
@@ -54,6 +56,7 @@ public class FoodKickSitemapConfigStrategyTest {
 
         assertEquals("https://www.foodkick.com", config.getBasePath());
         assertEquals("/#!", config.getBasePathPostfix());
+        assertEquals("/sitemap", config.getContextPath());
         assertEquals("/var/tmp/sitemap", config.getDirectoryPath());
         assertEquals("sitemap_product", config.getNamePrefix());
         assertEquals("FDX", config.getStoreName());

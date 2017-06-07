@@ -50,7 +50,7 @@ public class FDOrderFeedGeneratorCron {
 							if (null != noOfMins
 									&& !noOfMins.trim().equalsIgnoreCase("")) {
 								orderFeedDateFrom = getDate(noOfMins);
-								if(FDStoreProperties.isStorefront2_0Enabled()){
+								if(FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.brandads.FDBrandProductsAdManagerSB")){
 								FDECommerceService.getInstance().submittedOrderdDetailsToHL(orderFeedDateFrom);
 								}else{
 								sb.submittedOrderdDetailsToHL(orderFeedDateFrom);
@@ -60,7 +60,7 @@ public class FDOrderFeedGeneratorCron {
 							String orders = arg.substring("orders=".length());
 							String[] order = orders.split(",");
 							ordersList = new ArrayList<String>(Arrays.asList(order));
-							if(FDStoreProperties.isStorefront2_0Enabled()){
+							if(FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.brandads.FDBrandProductsAdManagerSB")){
 								FDECommerceService.getInstance().submittedOrderdDetailsToHL(ordersList);
 								}else{
 									sb.submittedOrderdDetailsToHL(ordersList);
@@ -82,7 +82,7 @@ public class FDOrderFeedGeneratorCron {
 						orderFeedDateFrom = getDate(noOfMins.toString());
 					}
 					LOGGER.info("FDOrderFeedGeneratorCron - sending orders from: "+orderFeedDateFrom);
-					if(FDStoreProperties.isStorefront2_0Enabled()){
+					if(FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.brandads.FDBrandProductsAdManagerSB")){
 						FDECommerceService.getInstance().submittedOrderdDetailsToHL(orderFeedDateFrom);
 						}else{
 					sb.submittedOrderdDetailsToHL(orderFeedDateFrom);

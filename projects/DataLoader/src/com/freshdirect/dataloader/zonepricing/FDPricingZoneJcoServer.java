@@ -252,7 +252,7 @@ public class FDPricingZoneJcoServer extends FdSapServer
 		Context ctx = null;
 		try 
 		{
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("sap.ejb.SAPZoneInfoLoaderSB")){
 				LogisticsServiceLocator.getInstance().getCommerceService().loadData(zoneInfos);
 			}else{			
 			ctx = ErpServicesProperties.getInitialContext();

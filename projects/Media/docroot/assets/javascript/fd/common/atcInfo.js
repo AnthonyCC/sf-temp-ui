@@ -117,7 +117,9 @@ var FreshDirect = FreshDirect || {};
           }
 
           setTimeout(this.removeMessage.bind(element),1800);
-
+          if(FreshDirect.standingorder && FreshDirect.standingorder.isSoCartOverlayFirstTime){
+        	  doOverlayDialogNew("/quickshop/includes/accidental_add_to_cart.jsp");
+          }
         }
       }
     },

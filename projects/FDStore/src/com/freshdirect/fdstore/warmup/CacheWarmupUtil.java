@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.apache.log4j.Logger;
 
@@ -37,14 +40,61 @@ public class CacheWarmupUtil {
 	 * Trigger various FD caches
 	 */
 	public static void warmupFDCaches() {
-		// Get instance loads up the inventory
-		FDInventoryCache.getInstance();
-		// Get instance loads up the Attributes
-		FDAttributeCache.getInstance();
-		// Get instance loads up the Nutrition
-		FDNutritionCache.getInstance();
-		// Get instance loads up the Drug Nutrition
-		FDNutritionPanelCache.getInstance();
+		
+		int taskSize = 4;
+		ExecutorService execSvc = Executors.newFixedThreadPool(taskSize);
+		Collection<Future<?>> futures = new ArrayList<Future<?>>(taskSize);
+		futures.add(execSvc.submit(
+			new Runnable() {
+				@Override
+				public void run() {
+					// Get instance loads up the inventory
+					FDInventoryCache.getInstance();					
+				}
+			}
+		));
+		futures.add(execSvc.submit(
+			new Runnable() {
+				@Override
+				public void run() {
+					// Get instance loads up the Attributes
+					FDAttributeCache.getInstance();
+				}
+			}
+		));
+		futures.add(execSvc.submit(
+			new Runnable() {
+				@Override
+				public void run() {
+					// Get instance loads up the Nutrition
+					FDNutritionCache.getInstance();
+				}
+			}
+		));
+		futures.add(execSvc.submit(
+			new Runnable() {
+				@Override
+				public void run() {
+					// Get instance loads up the Drug Nutrition
+					FDNutritionPanelCache.getInstance();
+				}
+			}
+		));
+
+		for (Future<?> future:futures) {
+			try {
+				future.get();
+			} catch(Exception e) {
+				LOGGER.warn("Warmup did not complete normally", e);
+			}
+		}
+
+		try {
+			execSvc.shutdown();
+		} catch (Exception e) {
+			LOGGER.warn("Exception while shutting down the ExecutorService ", e);
+		}
+		
 	}
 
 	

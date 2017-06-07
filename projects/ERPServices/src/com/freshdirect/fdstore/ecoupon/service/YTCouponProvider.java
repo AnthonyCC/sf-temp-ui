@@ -111,25 +111,44 @@ public class YTCouponProvider implements CouponService {
 		} catch (IOException io) {
 			LOGGER.error("Exception while making a call to YT: "+io);
 			throw new CouponServiceException(io);
+		} finally {
+			try {
+				if (connection != null) {
+					connection.disconnect();
+				}
+			} catch (Exception e) {
+				LOGGER.warn("Exception while disconnecting the httpconnection: ", e);
+			}
 		}
 //		LOGGER.debug("callYT/Response = "+returnString);
 		return returnString;
 	}
 	
-	
-
-	private String sendRequest(HttpURLConnection connection)
-			throws IOException, UnsupportedEncodingException {
-		String returnString="";
-		InputStream response = connection.getInputStream();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(response,charSet));
-		StringBuilder responseString = new StringBuilder();			
-		for ( String oneLine; (oneLine = reader.readLine()) != null; ) {
-			responseString.append(oneLine);
-		}
-		returnString = responseString.toString();
-		return returnString;
-	}
+        private String sendRequest(HttpURLConnection connection)
+                        throws IOException, UnsupportedEncodingException {
+                String returnString="";
+                InputStream response = null;
+                try {
+                        response = connection.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(response,charSet));
+                        StringBuilder responseString = new StringBuilder();
+                        for ( String oneLine; (oneLine = reader.readLine()) != null; ) {
+                                responseString.append(oneLine);
+                        }
+                        returnString = responseString.toString();
+                } catch (IOException e) {
+                        // handle an exception
+                } finally { //  finally blocks are guaranteed to be executed
+                        try {
+                                if (response != null) {
+                                        response.close();
+                                }
+                        } catch (IOException e) {
+                                // do nothing - intentionally empty
+                        }
+                }
+                return returnString;
+        }
 	
 	private StringBuilder getBaseUrl(String urlToCallStr, TreeMap<String,String> urlParameters) throws CouponServiceException {
 		

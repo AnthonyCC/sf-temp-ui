@@ -31,8 +31,20 @@ import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
 import com.freshdirect.delivery.ejb.DlvRestrictionManagerHome;
 import com.freshdirect.delivery.ejb.DlvRestrictionManagerSB;
+import com.freshdirect.delivery.restriction.AlcoholRestriction;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
+import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
+import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
+import com.freshdirect.delivery.restriction.EnumDlvRestrictionType;
+import com.freshdirect.delivery.restriction.OneTimeRestriction;
+import com.freshdirect.delivery.restriction.OneTimeReverseRestriction;
+import com.freshdirect.delivery.restriction.RecurringRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
+import com.freshdirect.ecommerce.data.delivery.AlcoholRestrictionData;
+import com.freshdirect.ecommerce.data.delivery.OneTimeRestrictionData;
+import com.freshdirect.ecommerce.data.delivery.OneTimeReverseRestrictionData;
+import com.freshdirect.ecommerce.data.delivery.RecurringRestrictionData;
+import com.freshdirect.ecommerce.data.delivery.RestrictionData;
 import com.freshdirect.erp.EnumStateCodes;
 import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdlogistics.model.DuplicateKeyException;
@@ -55,11 +67,11 @@ import com.freshdirect.fdlogistics.services.IAirclicService;
 import com.freshdirect.fdlogistics.services.ILogisticsService;
 import com.freshdirect.fdlogistics.services.helper.LogisticsDataDecoder;
 import com.freshdirect.fdlogistics.services.helper.LogisticsDataEncoder;
-import com.freshdirect.fdlogistics.services.impl.FDCommerceService;
 import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.GenericSearchCriteria;
+import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.TimedLruCache;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.analytics.model.SessionEvent;
@@ -82,6 +94,7 @@ import com.freshdirect.logistics.controller.data.response.DeliveryZoneCapacity;
 import com.freshdirect.logistics.controller.data.response.DeliveryZoneCutoffs;
 import com.freshdirect.logistics.controller.data.response.DeliveryZones;
 import com.freshdirect.logistics.controller.data.response.ListOfDates;
+import com.freshdirect.logistics.controller.data.response.ListOfFulfillmentInfoResponse;
 import com.freshdirect.logistics.controller.data.response.ListOfObjects;
 import com.freshdirect.logistics.controller.data.response.Timeslot;
 import com.freshdirect.logistics.delivery.dto.Address;
@@ -94,6 +107,7 @@ import com.freshdirect.logistics.delivery.model.EnumApplicationException;
 import com.freshdirect.logistics.delivery.model.EnumRegionServiceType;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.ExceptionAddress;
+import com.freshdirect.logistics.delivery.model.FulfillmentInfo;
 import com.freshdirect.logistics.delivery.model.GeoLocation;
 import com.freshdirect.logistics.delivery.model.OrderContext;
 import com.freshdirect.logistics.delivery.model.RouteStopInfo;
@@ -108,7 +122,10 @@ import com.freshdirect.payment.service.FDECommerceService;
  */
 
 public class FDDeliveryManager {
-
+	Object depotMonitor = new Object();
+	Object restrictionMonitor = new Object();
+	Object announcementMonitor = new Object();
+	
 	private final ServiceLocator serviceLocator;
 	private static FDDeliveryManager dlvManager = null;
 
@@ -207,14 +224,22 @@ public class FDDeliveryManager {
 		}
 	}
 
-	private synchronized void refreshRestrictionsCache()
+	private void refreshRestrictionsCache()
 			throws FDResourceException {
+		synchronized(restrictionMonitor) {
 		if (System.currentTimeMillis() - lastRefresh > REFRESH_PERIOD) {
 			try {
-				DlvRestrictionManagerSB sb = getDlvRestrictionManagerHome()
-						.create();
-
-				List<RestrictionI> l = sb.getDlvRestrictions();
+				
+				List<RestrictionI> l = null;
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvRestrictionManagerSB")){
+					 l = buildRestriction(FDECommerceService.getInstance().getDlvRestrictions());
+				}
+				else
+				{
+					DlvRestrictionManagerSB sb = getDlvRestrictionManagerHome()
+							.create();
+					l =  sb.getDlvRestrictions();
+				}
 				this.dlvRestrictions = new DlvRestrictionsList(l);
 
 				lastRefresh = System.currentTimeMillis();
@@ -226,15 +251,69 @@ public class FDDeliveryManager {
 						"Cannot talk to the SessionBean");
 			}
 		}
+		}
+	}
+	private static List<RestrictionI> buildRestriction(List<RestrictionData> dlvRestrictions) {
+		List<RestrictionI> restriction = new ArrayList<RestrictionI>();
+		for (RestrictionData restrictionData : dlvRestrictions) {
+			RestrictionI restrictionI = buildRestriction(restrictionData);
+			if(restrictionI!=null){
+				restriction.add(restrictionI);
+			}
+		}
+		return restriction;
+	}
+	private final static TimeOfDay JUST_BEFORE_MIDNIGHT = new TimeOfDay("11:59 PM");
+	private static RestrictionI buildRestriction(RestrictionData dlvRestriction) {
+		if (dlvRestriction == null || dlvRestriction.getClassType()==null) {
+			return null;
+		}
+		
+		if (dlvRestriction.getClassType().equals(RecurringRestrictionData.class.getName())) {
+			RecurringRestrictionData recurringRestrictionData =  dlvRestriction.getRecurringRestrictionData();
+			TimeOfDay startDate = new TimeOfDay(recurringRestrictionData.getTimeOfDayRange().getStartDate().getNormalDate());
+			TimeOfDay endDate = new TimeOfDay(recurringRestrictionData.getTimeOfDayRange().getEndDate().getNormalDate());
+
+			if (JUST_BEFORE_MIDNIGHT.equals(endDate)) {
+				endDate = TimeOfDay.NEXT_MIDNIGHT;
+			}
+			RecurringRestriction recurringRestriction = new RecurringRestriction(recurringRestrictionData.getId(), EnumDlvRestrictionCriterion.getEnum(recurringRestrictionData.getCriterion()),
+					EnumDlvRestrictionReason.getEnum(recurringRestrictionData.getReason()), recurringRestrictionData.getName(), recurringRestrictionData.getMessage(),  recurringRestrictionData.getDayOfWeek(),  
+					startDate, endDate, recurringRestrictionData.getPath());
+			return recurringRestriction;
+		} else if (dlvRestriction.getClassType().equals(OneTimeReverseRestrictionData.class.getName())) {
+			OneTimeReverseRestrictionData oneTimeReverseRestrictionData =  dlvRestriction.getOneTimeReverseRestrictionData();
+			OneTimeReverseRestriction oneTimeReverseRestriction = new OneTimeReverseRestriction(oneTimeReverseRestrictionData.getId(), EnumDlvRestrictionCriterion.getEnum(oneTimeReverseRestrictionData.getCriterion()), 
+					EnumDlvRestrictionReason.getEnum(oneTimeReverseRestrictionData.getReason()),oneTimeReverseRestrictionData.getName(), oneTimeReverseRestrictionData.getMessage(),
+					oneTimeReverseRestrictionData.getRange().getStartdate(), oneTimeReverseRestrictionData.getRange().getEndDate(), oneTimeReverseRestrictionData.getPath());
+			return oneTimeReverseRestriction;
+		} else if (dlvRestriction.getClassType().equals(OneTimeRestrictionData.class.getName())) {
+			OneTimeRestrictionData oneTimeRestrictionData = dlvRestriction.getOneTimeRestrictionData();
+			OneTimeRestriction oneTimeRestriction = new OneTimeRestriction(oneTimeRestrictionData.getId(), EnumDlvRestrictionCriterion.getEnum(oneTimeRestrictionData.getCriterion()), 
+					EnumDlvRestrictionReason.getEnum(oneTimeRestrictionData.getReason()),oneTimeRestrictionData.getName(), oneTimeRestrictionData.getMessage(),
+					oneTimeRestrictionData.getRange().getStartdate(), oneTimeRestrictionData.getRange().getEndDate(), oneTimeRestrictionData.getPath());
+			return oneTimeRestriction;
+
+		} else if (dlvRestriction.getClassType().equals(AlcoholRestrictionData.class.getName())) {
+			AlcoholRestrictionData alcoholRestrictionData = dlvRestriction.getAlcoholRestrictionData();
+			AlcoholRestriction alcoholRestriction = new AlcoholRestriction(alcoholRestrictionData.getId(), EnumDlvRestrictionCriterion.getEnum(alcoholRestrictionData.getCriterion()), 
+					EnumDlvRestrictionReason.getEnum(alcoholRestrictionData.getReason()),alcoholRestrictionData.getName(), alcoholRestrictionData.getMessage(),
+					alcoholRestrictionData.getDateRange().getStartdate(), alcoholRestrictionData.getDateRange().getEndDate(), EnumDlvRestrictionType.getEnum(alcoholRestrictionData.getType()),
+					alcoholRestrictionData.getPath(), alcoholRestrictionData.getState(), alcoholRestrictionData.getCounty(),
+					alcoholRestrictionData.getCity(), alcoholRestrictionData.getMunicipalityId(), alcoholRestrictionData.isAlcoholRestricted());
+			return alcoholRestriction;
+			}
+		return null;
 	}
 
-	private synchronized void refreshSiteAnnouncementsCache()
+	private void refreshSiteAnnouncementsCache()
 			throws FDResourceException {
+		synchronized(announcementMonitor) {
 		if (System.currentTimeMillis() - lastAnnRefresh > ANN_REFRESH_PERIOD) {
 			try {
 				DlvManagerSB sb = getDlvManagerHome().create();
 				List<SiteAnnouncement> l = null;
-				if (FDStoreProperties.isStorefront2_0Enabled()) {
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB")) {
 					l = buildSiteModel(FDECommerceService.getInstance()
 							.getSiteAnnouncements());
 
@@ -250,6 +329,7 @@ public class FDDeliveryManager {
 				throw new FDResourceException(e,
 						"Cannot talk to the SessionBean");
 			}
+		}
 		}
 	}
 
@@ -268,7 +348,8 @@ public class FDDeliveryManager {
 		return FDStoreProperties.getDepotCacheRefreshPeriod() * 1000 * 60;
 	}
 
-	private synchronized void refreshDepots() throws FDResourceException {
+	private void refreshDepots() throws FDResourceException {
+		synchronized(depotMonitor) {
 		if (System.currentTimeMillis() - lastDepotRefresh > getRefreshInterval()) {
 
 			HashMap<String, FDDeliveryDepotModel> newDepotMap = new HashMap<String, FDDeliveryDepotModel>();
@@ -299,6 +380,7 @@ public class FDDeliveryManager {
 			}
 
 			lastDepotRefresh = System.currentTimeMillis();
+		}
 		}
 	}
 
@@ -790,7 +872,7 @@ public class FDDeliveryManager {
 
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
-			if (FDStoreProperties.isStorefront2_0Enabled()){
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB")){
 				return LogisticsServiceLocator.getInstance().getCommerceService().reserveTimeslot(timeslotId, customerId, type, customer, chefsTable, ctDeliveryProfile, isForced, event, hasSteeringDiscount, deliveryFeeTier);
 			}
 			else{
@@ -847,13 +929,14 @@ public class FDDeliveryManager {
 
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
-			if (FDStoreProperties.isStorefront2_0Enabled())
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB")){
 				FDECommerceService.getInstance().commitReservation(rsvId, customerId,
 						context, address, pr1,
 						event);
-			else
+			}else{
 			sb.commitReservation(rsvId, customerId, context, address, pr1,
 					event);
+			}
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {
@@ -933,7 +1016,7 @@ public class FDDeliveryManager {
 			EnumServiceType serviceType) throws FDResourceException {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
-			if (FDStoreProperties.isStorefront2_0Enabled()){
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB")){
 				FDECommerceService.getInstance().saveFutureZoneNotification(
 						email, zip, serviceType.getName());
 			}else{
@@ -1003,7 +1086,7 @@ public class FDDeliveryManager {
 			Set<StateCounty> stateCounty = countiesByState.get(state);
 			if (stateCounty == null) {
 				DlvManagerSB sb = getDlvManagerHome().create();
-				if (FDStoreProperties.isStorefront2_0Enabled())
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB"))
 					stateCounty=FDECommerceService.getInstance().getCountiesByState(state);
 				else
 				stateCounty = sb.getCountiesByState(state);
@@ -1161,12 +1244,12 @@ public class FDDeliveryManager {
 				|| System.currentTimeMillis() - muni_lastRefresh > MUNI_REFRESH_PERIOD) {
 			try {
 				DlvManagerSB sb = getDlvManagerHome().create();
-				if (FDStoreProperties.isStorefront2_0Enabled()){
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB")){
 					this.municipalityInfos = new MunicipalityInfoWrapper(
 							FDECommerceService.getInstance().getMunicipalityInfos());
-				}else
+				}else{
 				this.municipalityInfos = new MunicipalityInfoWrapper(
-						sb.getMunicipalityInfos());
+						sb.getMunicipalityInfos());}
 				muni_lastRefresh = System.currentTimeMillis();
 			} catch (CreateException e) {
 				throw new FDResourceException(e, "Cannot create SessionBean");
@@ -1185,7 +1268,7 @@ public class FDDeliveryManager {
 				StateCounty sc = stateCountyByZip.get(zipcode);
 				if (sc == null) {
 					DlvManagerSB sb = getDlvManagerHome().create();
-					if (FDStoreProperties.isStorefront2_0Enabled())
+					if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB"))
 						sc = FDECommerceService.getInstance().lookupStateCountyByZip(zipcode);
 					else
 						sc = sb.lookupStateCountyByZip(zipcode);
@@ -1472,6 +1555,20 @@ public class FDDeliveryManager {
 		}
 
 	}
+	
+	public List<FulfillmentInfo> getAllFulfillmentInfo() throws FDResourceException {
+
+		try {
+			ILogisticsService logisticsService = LogisticsServiceLocator
+					.getInstance().getLogisticsService();
+			ListOfFulfillmentInfoResponse result = logisticsService.getAllFulfillmentInfo();
+			LogisticsDataDecoder.decodeResult(result);
+			return result.getData();
+		} catch (FDLogisticsServiceException e) {
+			throw new FDResourceException(e);
+		}
+
+	}
 
 	public List<AddressModel> findSuggestionsForAmbiguousAddress(
 			AddressModel address) throws FDResourceException,
@@ -1508,7 +1605,7 @@ public class FDDeliveryManager {
 		} catch (FDLogisticsServiceException e) {
 			try {
 				DlvManagerSB sb = getDlvManagerHome().create();
-				if (FDStoreProperties.isStorefront2_0Enabled()){
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB")){
 					FDECommerceService.getInstance().logFailedFdxOrder(orderId);
 				}else{
 					sb.logFailedFdxOrder(orderId);
@@ -1692,7 +1789,7 @@ public class FDDeliveryManager {
 
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
-			if (FDStoreProperties.isStorefront2_0Enabled()) 
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB")) 
 				FDECommerceService.getInstance().recommitReservation(rsvId, customerId,context, address, pr1);
 			else
 				sb.recommitReservation(rsvId, customerId, context, address, pr1);

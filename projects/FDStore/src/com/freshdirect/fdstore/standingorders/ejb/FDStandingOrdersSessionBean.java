@@ -1108,5 +1108,19 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
+	public void	updateSoCartOverlayFirstTimePreferences(String customerId, boolean soCartOverlay)throws FDResourceException,RemoteException{
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO.updateSoCartOverlayFirstTimePreferences(conn, customerId, soCartOverlay);	
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in updateSoCartOverlayFirstTimePreferences(): " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+	}
+	
 
 }

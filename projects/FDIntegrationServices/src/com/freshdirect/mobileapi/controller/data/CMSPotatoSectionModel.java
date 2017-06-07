@@ -32,6 +32,7 @@ public class CMSPotatoSectionModel extends CMSSectionModel {
         model.setDrawer(section.getDrawer());
         model.setImageBanner(section.getImageBanner());
         model.setProductList(section.getProductList());
+        model.setMustHaveProdList(section.getMustHaveProdList());
         model.setCategoryList(section.getCategoryList());
         
         return model;

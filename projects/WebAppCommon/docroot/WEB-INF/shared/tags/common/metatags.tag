@@ -39,8 +39,8 @@
 <%--Set the page title --%>
 <c:if test="${empty title}">
 	<c:set var="title" value="FreshDirect"/>
-	<title>${title}</title>
 </c:if>
+	<title>${title}</title>
 <meta name="description" content="${metaDescription}" />
 <%-- Site link Search Box --%>
 <c:if test="${includeSiteSearchLink}">

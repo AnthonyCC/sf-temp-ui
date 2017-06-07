@@ -358,51 +358,76 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 	public PayloadI loadRowPayload(Connection conn, PrimaryKey pk) throws SQLException {
 		VersionedPrimaryKey vpk = (VersionedPrimaryKey) pk;
 		
-		PreparedStatement ps = conn.prepareStatement("SELECT SAP_ID, skucode, BASE_UNIT, DESCRIPTION, CHAR_QUANTITY, CHAR_SALESUNIT, UPC, ALCOHOLIC_CONTENT, " +
-				"TAXABLE,  MATERIAL_TYPE, APPROVAL_STATUS, TAX_CODE, MATERIAL_GROUP FROM ERPS.MATERIAL WHERE ID = ? AND VERSION = ?");
-		
-		ps.setString(1, vpk.getId());
-		ps.setInt(2, vpk.getVersion());
-		
-		ResultSet rs = ps.executeQuery();
-		if (!rs.next())
-		{
-			return null;
+		ErpMaterialPayload p = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement("SELECT SAP_ID, skucode, BASE_UNIT, DESCRIPTION, CHAR_QUANTITY, CHAR_SALESUNIT, UPC, ALCOHOLIC_CONTENT, " +
+					"TAXABLE,  MATERIAL_TYPE, APPROVAL_STATUS, TAX_CODE, MATERIAL_GROUP FROM ERPS.MATERIAL WHERE ID = ? AND VERSION = ?");
+			
+			ps.setString(1, vpk.getId());
+			ps.setInt(2, vpk.getVersion());
+			
+			rs = ps.executeQuery();
+			if (!rs.next())
+			{
+				return null;
+			}
+
+			p = new ErpMaterialPayload();
+			p.sapId = rs.getString(1);
+			p.skuCode = rs.getString(2);
+			p.baseUnit = rs.getString(3);
+			p.description = rs.getString(4);
+			p.quantityCharacteristic = rs.getString(5);
+			p.salesUnitCharacteristic = rs.getString(6);
+			p.UPC = rs.getString(7);
+			p.alcoholicContent = EnumAlcoholicContent.getAlcoholicContent(rs.getString(8));
+					p.taxable = "X".equalsIgnoreCase(rs.getString(9));
+			// p.daysFresh = rs.getString(10);
+			p.materialType = rs.getString(10);
+			p.approvedStatus = EnumProductApprovalStatus.getApprovalStatus(rs.getString(11));
+			p.taxCode = rs.getString(12);
+			p.materialGroup = rs.getString(13);
+     
+//			rs.close();
+//			ps.close();
+		} catch (Exception e) {
+			throw new SQLException(e);
+		} finally {
+			if(null != rs){
+				try {
+					rs.close();
+				} catch (Exception e) {
+					
+				}
+			}
+			
+			if(null != ps){
+				try {
+					ps.close ();
+				} catch (Exception e) {
+					
+				}
+			}
 		}
 
-		ErpMaterialPayload p = new ErpMaterialPayload();
-		p.sapId = rs.getString(1);
-		p.skuCode = rs.getString(2);
-		p.baseUnit = rs.getString(3);
-		p.description = rs.getString(4);
-		p.quantityCharacteristic = rs.getString(5);
-		p.salesUnitCharacteristic = rs.getString(6);
-		p.UPC = rs.getString(7);
-      p.alcoholicContent = EnumAlcoholicContent.getAlcoholicContent(rs.getString(8));
-		p.taxable = "X".equalsIgnoreCase(rs.getString(9));
-     // p.daysFresh = rs.getString(10);
-      p.materialType = rs.getString(10);
-      p.approvedStatus = EnumProductApprovalStatus.getApprovalStatus(rs.getString(11));
-      p.taxCode = rs.getString(12);
-      p.materialGroup = rs.getString(13);
-      
-		rs.close();
-		ps.close();
-
 		// load children
-		p.prices.setParentPK(pk);
-		p.prices.load(conn);
-		p.salesUnits.setParentPK(pk);
-		p.salesUnits.load(conn);
-		p.classes.setParentPK(pk);
-		p.classes.setEJBHome(getClassHome());
-		p.classes.load(conn);
-		p.displaySalesUnitList.setParentPK(pk);
-		p.displaySalesUnitList.load(conn);
-		p.plantMaterials.setParentPK(pk);
-		p.plantMaterials.load(conn);
-		p.materialSalesAreas.setParentPK(pk);
-		p.materialSalesAreas.load(conn);
+		if(null != p){
+			p.prices.setParentPK(pk);
+			p.prices.load(conn);
+			p.salesUnits.setParentPK(pk);
+			p.salesUnits.load(conn);
+			p.classes.setParentPK(pk);
+			p.classes.setEJBHome(getClassHome());
+			p.classes.load(conn);
+			p.displaySalesUnitList.setParentPK(pk);
+			p.displaySalesUnitList.load(conn);
+			p.plantMaterials.setParentPK(pk);
+			p.plantMaterials.load(conn);
+			p.materialSalesAreas.setParentPK(pk);
+			p.materialSalesAreas.load(conn);
+		}
 
 		return p;
 	}

@@ -15,6 +15,7 @@ img {
 img {
 	border: 0;
 }
+.capital { text-transform: uppercase; }
 .invisible {
 	width: 0;
 }
@@ -2089,9 +2090,6 @@ li.cleanli .gen-arrow {
 		width: 100%;
 		box-sizing: border-box;
 	}
-	.mm-page #cartcontent{
-		border-top: 1px solid #BBBBBB;
-	}
 	.mm-page #cartcontent .cartsection__cartline{
 		margin: 0;
 		padding: 0;
@@ -2108,10 +2106,8 @@ li.cleanli .gen-arrow {
 		text-align: center;
 	}
 	.mm-page #cartcontent .cartsection .cartsection__title{
-		background: #F2F0EF;
 		margin: 0;
-		padding: 20px;
-		border-bottom: 1px solid #BBBBBB;
+		padding: 20px 10px;
 	}
 	.mm-page #cartcontent .cartsection .cartsection__title [data-component="removeRecipeButton"]{
 		display: block;
@@ -2438,4 +2434,7 @@ li.cleanli .gen-arrow {
 	position: fixed;
 	height: 100%;
     top: 0 !important;
+}
+#nutritionPopup.fixedpopup.mm-page {
+    min-height: 100vh;
 }

@@ -1219,7 +1219,7 @@ function doOverlayWindow(olURL, titleVar) {
 						}
                 });		
 	}
-	
+
 	function doOverlayWindowFormSubmit(olURL, formname) {		
 		var olURL = olURL || '';
 		if (olURL == '') { return false; }
@@ -1373,6 +1373,13 @@ function doOverlayWindow(olURL, titleVar) {
 		}
 
 		return overlayDialog;
+	}
+	
+	function doOverlayDialogNew(olURL) {
+		var overlayDialog = setupOverlayDialog();
+		overlayDialog.load(olURL, function() { overlayDialog.dialog('open'); });
+		$jq('.ui-dialog').addClass('overlay-dialog-new').css('z-index','1000');
+		$jq('.ui-widget-overlay').css('z-index','1001');;
 	}
 	
 	/* use dialog by css selector */

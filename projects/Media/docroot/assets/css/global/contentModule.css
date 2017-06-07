@@ -1,5 +1,16 @@
-.contentModules > div:first-child {
+.contentModules > div:first-child .module-group {
   margin-top: 10px;
+}
+
+.contentModules > div:first-child .content-header,
+.contentModules > div:first-child.editorial-module {
+  margin-top: 27px;
+}
+
+.contentModules > div:first-child .module-group+.content-header,
+.contentModules > div:first-child.editorial-module .content-header,
+.contentModules > div:first-child .module-header+.content-header {
+  margin-top: 0px;
 }
 
 .contentModules > div:last-child {
@@ -17,9 +28,11 @@
   margin-top: 10px;
 }
 
-.content-module .content {
+.contentModules .content-module .content {
   border: 2px solid #F2F3F4;
   border-top: 0;
+  box-sizing: border-box;
+  float: none;
 }
 
 .content-module .content.border-top {
@@ -34,6 +47,7 @@
 .content-module .module-header,
 .content-module .content-header {
   display: flex;
+  position: relative;
 }
 
 .content-module .content-header {
@@ -43,7 +57,6 @@
   background: #F2F3F4;
   margin: 0;
   min-height: 40px;
-  padding: 0 18px;
 }
 
 .content-module .content-header > div {
@@ -82,14 +95,6 @@
   transform: rotate(45deg);
 }
 
-.content-module h1 {
-  font-family: 'Brandon Text';
-  font-size: 25px;
-  font-weight: 700;
-  line-height: 25px;
-  margin: 0;
-}
-
 .content-module h3,
 .content-module .module-header h2 {
   font-family: 'Brandon Text';
@@ -100,14 +105,22 @@
   margin: 0;
 }
 
-.content-module .module-header {
+.content-module .module-header h1,
+.content-module .content-header h2 {
   align-items: center;
   font-size: 25px;
   font-family: 'Brandon Text';
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 25px;
   text-transform: uppercase;
-  min-height: 52px;
   margin: 0;
   padding: 0 10px;
+}
+
+.content-module .module-header {
+  align-items: center;
+  min-height: 52px;
 }
 
 .content-module .module-header .module-text-banner {
@@ -129,15 +142,6 @@
   right: -9px;
   top: 3px;
   transform: rotate(45deg);
-}
-
-.content-module .content-header h2 {
-  margin: 0;
-  font-family: 'Brandon Text';
-  font-weight: 500;
-  font-size: 22px;
-  height: 22px;
-  line-height: 22px;
 }
 
 .content-module .content-header .view-all {

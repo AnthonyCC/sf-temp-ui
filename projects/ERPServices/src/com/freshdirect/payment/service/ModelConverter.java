@@ -1,6 +1,7 @@
 package com.freshdirect.payment.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,8 +15,12 @@ import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.crm.CrmCaseSubject;
+import com.freshdirect.customer.EnumAccountActivityType;
+import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.ecommerce.data.common.Request;
+import com.freshdirect.ecommerce.data.customer.ErpActivityRecordData;
 import com.freshdirect.ecommerce.data.delivery.sms.RecievedSmsData;
 import com.freshdirect.ecommerce.data.delivery.sms.SmsOrderData;
 import com.freshdirect.ecommerce.data.enums.BillingCountryInfoData;
@@ -23,24 +28,6 @@ import com.freshdirect.ecommerce.data.enums.CrmCaseSubjectData;
 import com.freshdirect.ecommerce.data.enums.DeliveryPassTypeData;
 import com.freshdirect.ecommerce.data.enums.EnumFeaturedHeaderTypeData;
 import com.freshdirect.ecommerce.data.enums.ErpAffiliateData;
-import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
-import com.freshdirect.erp.EnumATPRule;
-import com.freshdirect.ecommerce.data.logger.recommendation.FDRecommendationEventData;
-import com.freshdirect.ecommerce.data.rules.RuleData;
-import com.freshdirect.erp.EnumFeaturedHeaderType;
-import com.freshdirect.erp.ErpCOOLInfo;
-import com.freshdirect.erp.ErpCOOLKey;
-import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
-import com.freshdirect.erp.model.ErpProductInfoModel;
-import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialPrice;
-import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialSalesAreaInfo;
-import com.freshdirect.erp.model.ErpProductInfoModel.ErpPlantMaterialInfo;
-import com.freshdirect.fdstore.EnumEStoreId;
-import com.freshdirect.framework.event.FDRecommendationEvent;
-import com.freshdirect.framework.util.StringUtil;
-import com.freshdirect.payment.BillingCountryInfo;
-import com.freshdirect.payment.BillingRegionInfo;
-import com.freshdirect.rules.Rule;
 import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
 import com.freshdirect.ecommerce.data.erp.model.ErpMaterialPriceData;
 import com.freshdirect.ecommerce.data.erp.model.ErpMaterialSalesAreaInfoData;
@@ -59,7 +46,9 @@ import com.freshdirect.ecommerce.data.fdstore.GrpZonePriceModelData;
 import com.freshdirect.ecommerce.data.fdstore.SalesAreaInfoData;
 import com.freshdirect.ecommerce.data.logger.recommendation.FDRecommendationEventData;
 import com.freshdirect.ecommerce.data.payment.FDGatewayActivityLogModelData;
+import com.freshdirect.ecommerce.data.rules.RuleData;
 import com.freshdirect.erp.EnumATPRule;
+import com.freshdirect.erp.EnumAlcoholicContent;
 import com.freshdirect.erp.EnumFeaturedHeaderType;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
@@ -82,6 +71,7 @@ import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.payment.BillingCountryInfo;
 import com.freshdirect.payment.BillingRegionInfo;
 import com.freshdirect.payment.gateway.ejb.FDGatewayActivityLogModel;
+import com.freshdirect.rules.Rule;
 
 
 public class ModelConverter {
@@ -345,7 +335,7 @@ public class ModelConverter {
 				erpProductInfoModelData.getUpc(), 
 				buildPlantMAterialInfo(erpProductInfoModelData.getMaterialPlants()),
 				buildMaterialSaleInfo(erpProductInfoModelData.getMaterialSalesAreas()), 
-				erpProductInfoModelData.isAlcohol());
+				EnumAlcoholicContent.getAlcoholicContent(String.valueOf(erpProductInfoModelData.isAlcohol())));
 
 		return responseData;
 	}
@@ -574,5 +564,77 @@ public class ModelConverter {
 		return fdGatewayActivityLogModelData;
 	}
 
+	public static ErpActivityRecordData buildErpActivityRecordData(ErpActivityRecord template) {
+		ErpActivityRecordData erpActivityRecordData = new ErpActivityRecordData();
+		erpActivityRecordData.setCustomerId(template.getCustomerId());
+		erpActivityRecordData.setCustFirstName(template.getCustFirstName());
+		erpActivityRecordData.setCustLastName(template.getCustLastName());
+		erpActivityRecordData.setSource(template.getSource() != null? template.getSource().getCode() : null);
+		erpActivityRecordData.setInitiator(template.getInitiator());
+		erpActivityRecordData.setType(template.getActivityType() != null ?template.getActivityType().getCode() : null);
+		erpActivityRecordData.setNote(template.getNote());
+		erpActivityRecordData.setDate(template.getDate());
+		erpActivityRecordData.setDeliveryPassId(template.getDeliveryPassId());
+		erpActivityRecordData.setChangeOrderId(template.getChangeOrderId());
+		erpActivityRecordData.setReason(template.getReason());
+		erpActivityRecordData.setFromDate(template.getFromDate());
+		erpActivityRecordData.setFromDateStr(template.getFromDateStr());
+		erpActivityRecordData.setToDate(template.getToDate());
+		erpActivityRecordData.setToDateStr(template.getToDateStr());
+		return erpActivityRecordData;
+		
+	}
 
-}
+	public static Map<String, List> buildFilterListResponse(Map<String, List<String>> data) {
+		Map<String, List> filterListresponse = new HashMap<String, List>();
+		for (String key : data.keySet()) {
+			List<String> response = data.get(key);
+			if(key.equals("activity_id")){
+				List<EnumAccountActivityType> activityType = new ArrayList<EnumAccountActivityType>();
+				for (String activityId : response) {
+					activityType.add(EnumAccountActivityType.getActivityType(activityId));
+				}
+				filterListresponse.put(key, activityType);
+			}
+			else if(key.equals("source")){
+				List<EnumTransactionSource> sourceList = new ArrayList<EnumTransactionSource>();
+				for (String source : response) {
+					sourceList.add(EnumTransactionSource.getTransactionSource(source));
+				}
+				filterListresponse.put(key, sourceList);
+			}
+			else{
+				filterListresponse.put(key, response);
+			}
+		}
+		return filterListresponse;
+	}
+
+	public static Collection<ErpActivityRecord> buildErpActivityRecord(Collection<ErpActivityRecordData> data) {
+		List<ErpActivityRecord> activityRecordList = new ArrayList<ErpActivityRecord>();
+		for (ErpActivityRecordData erpActivityRecordData : data) {
+			ErpActivityRecord erpActivityRecord = new ErpActivityRecord();
+			erpActivityRecord.setCustomerId(erpActivityRecordData.getCustomerId());
+			erpActivityRecord.setCustFirstName(erpActivityRecordData.getCustFirstName());
+			erpActivityRecord.setCustLastName(erpActivityRecordData.getCustLastName());
+			erpActivityRecord.setSource(erpActivityRecordData.getSource() != null? EnumTransactionSource.getTransactionSource(erpActivityRecordData.getSource()) : null);
+			erpActivityRecord.setInitiator(erpActivityRecordData.getInitiator());
+			erpActivityRecord.setActivityType(erpActivityRecordData.getType() != null ?EnumAccountActivityType.getActivityType(erpActivityRecordData.getType()) : null);
+			erpActivityRecord.setNote(erpActivityRecordData.getNote());
+			erpActivityRecord.setDate(erpActivityRecordData.getDate());
+			erpActivityRecord.setDeliveryPassId(erpActivityRecordData.getDeliveryPassId());
+			erpActivityRecord.setChangeOrderId(erpActivityRecordData.getChangeOrderId());
+			erpActivityRecord.setReason(erpActivityRecordData.getReason());
+			erpActivityRecord.setFromDate(erpActivityRecordData.getFromDate());
+			erpActivityRecord.setFromDateStr(erpActivityRecordData.getFromDateStr());
+			erpActivityRecord.setToDate(erpActivityRecordData.getToDate());
+			erpActivityRecord.setToDateStr(erpActivityRecordData.getToDateStr());
+			activityRecordList.add(erpActivityRecord);
+		}
+			return activityRecordList;
+			
+		}
+		
+		
+	}
+

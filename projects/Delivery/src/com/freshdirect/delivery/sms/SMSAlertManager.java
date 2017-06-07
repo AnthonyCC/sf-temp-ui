@@ -68,7 +68,7 @@ public class SMSAlertManager {
 		//Call ejb to persist the information in the DB (After test)
 		try{
 			lookupSmsAlertsHome();
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("sms.ejb.SmsAlertsSB")){
 				LOGGER.debug("calling FDECommerceService.smsOptIn()");
 				isSent =  FDECommerceService.getInstance().smsOptIn(customerId, mobileNumber, eStoreId);
 			}
@@ -93,7 +93,7 @@ public class SMSAlertManager {
 		PhoneNumber phone = new PhoneNumber(mobileNumber);
 		try{
 			lookupSmsAlertsHome();
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("sms.ejb.SmsAlertsSB")){
 				LOGGER.debug("calling FDECommerceService.smsOptInNonMarketing()");
 				isSent =  FDECommerceService.getInstance().smsOptInNonMarketing(customerId, mobileNumber, eStoreId);
 			}
@@ -118,7 +118,7 @@ public class SMSAlertManager {
 		PhoneNumber phone = new PhoneNumber(mobileNumber);
 		try{
 			lookupSmsAlertsHome();
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("sms.ejb.SmsAlertsSB")){
 				LOGGER.debug("calling FDECommerceService.smsOptInMarketing()");
 				isSent =  FDECommerceService.getInstance().smsOptInMarketing(customerId, mobileNumber, eStoreId);
 			}
@@ -145,7 +145,7 @@ public class SMSAlertManager {
 		PhoneNumber phone = new PhoneNumber(mobileNumber);
 		try{
 			lookupSmsAlertsHome();
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("sms.ejb.SmsAlertsSB")){
 				LOGGER.debug("calling FDECommerceService.smsOrderConfirmation()");
 				isSent = FDECommerceService.getInstance().smsOrderConfirmation(customerId, mobileNumber, orderId, eStore);
 			}
@@ -169,7 +169,7 @@ public class SMSAlertManager {
 		PhoneNumber phone = new PhoneNumber(mobileNumber);
 		try{
 			lookupSmsAlertsHome();
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("sms.ejb.SmsAlertsSB")){
 				LOGGER.debug("calling FDECommerceService.smsOrderModification()");
 				isSent = FDECommerceService.getInstance().smsOrderModification(customerId, mobileNumber, orderId, eStore);
 			}
@@ -192,7 +192,7 @@ public class SMSAlertManager {
 		boolean isSent=false;
 		try{
 			lookupSmsAlertsHome();
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("sms.ejb.SmsAlertsSB")){
 				LOGGER.debug("calling FDECommerceService.smsOrderCancel()");
 				isSent = FDECommerceService.getInstance().smsOrderCancel(customerId, mobileNumber, orderId, eStore);
 			}
@@ -223,7 +223,7 @@ public class SMSAlertManager {
 			Date date = sdf.parse(receivedDate);
 			String formattedMobileNumber=formatMobileNumber(mobileNumber);
 			lookupSmsAlertsHome();
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("sms.ejb.SmsAlertsSB")){
 				FDECommerceService.getInstance().updateSmsReceived(formattedMobileNumber, shortCode, carrierName, date, message, eStoreId);
 			}
 			else{

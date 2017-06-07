@@ -117,12 +117,14 @@ if (mobWeb) {
 				<td colspan="7"><!-- <img src="/media_stat/images/template/youraccount/choose_reservation_type.gif" width="256" height="10" vspace="10" alt="Please Choose a Reservation Type"></td> -->
 				<span class="Container_Top_YourAccountTimeslot">Please Choose a Reservation Type</span>
 			</tr>
-			<tr valign="top">
+			</table>
+			<fieldset><legend class="offscreen">please choose a reservation type:</legend><table>
+						<tr valign="top">
 				<td>
-					<input type="radio" name="reservationType" <%=(rsv == null || EnumReservationType.ONETIME_RESERVATION.equals(rsv.getReservationType())) ? "checked" : "" %> value="<%=EnumReservationType.ONETIME_RESERVATION.getName()%>" class="radio">&nbsp;
+					<input type="radio" id="reservationType_field1" name="reservationType" <%=(rsv == null || EnumReservationType.ONETIME_RESERVATION.equals(rsv.getReservationType())) ? "checked" : "" %> value="<%=EnumReservationType.ONETIME_RESERVATION.getName()%>" class="radio">&nbsp;
 				</td>
 				<td colspan="6"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>
-					<span class="text12"><b>Reserve for this week only.</b>
+					<span class="text12"><b><label for="reservationType_field1"> Reserve for this week only.</label></b>
 					</span>
 				</td>
 			</tr>
@@ -131,14 +133,16 @@ if (mobWeb) {
 			</tr>
 			<tr valign="top">
 				<td>
-					<input type="radio" name="reservationType" <%=(rsv != null && EnumReservationType.RECURRING_RESERVATION.equals(rsv.getReservationType())) ? "checked" : "" %> value="<%=EnumReservationType.RECURRING_RESERVATION.getName()%>" class="radio">&nbsp;
+					<input type="radio" id="reservationType_field2" name="reservationType" <%=(rsv != null && EnumReservationType.RECURRING_RESERVATION.equals(rsv.getReservationType())) ? "checked" : "" %> value="<%=EnumReservationType.RECURRING_RESERVATION.getName()%>" class="radio">&nbsp;
 				</td>
 				<td colspan="6">
 					<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>
-					<span class="text12"><b>Reserve this day and time for me every week</b></span><br>
+					<span class="text12"><b><label for="reservationType_field2"> Reserve this day and time for me every week</label></b></span><br>
 					Select this option to make this a standing weekly reservation. Please note that reservations not used will be released for good. You will have to return to this page to reset your reservation settings.
 				</td>
 			</tr>
+			</table></fieldset>
+			<table>
 			<tr>
 				<td colspan="7" align="center">
 					<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="14"><br>

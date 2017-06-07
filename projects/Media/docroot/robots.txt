@@ -13,3 +13,6 @@ Disallow: /health_warning.jsp
 Disallow: *jsessionid*
 Disallow: /invite/
 Disallow: *grpId=*
+Sitemap: https://www.freshdirect.com/sitemap/sitemap.xml.gz
+Sitemap: https://www.freshdirect.com/sitemap/sitemap_category_index.xml
+Sitemap: https://www.freshdirect.com/sitemap/sitemap_product_index.xml

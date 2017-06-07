@@ -19,6 +19,7 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.ajax.browse.data.BrowseData.SectionDataCointainer;
 import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
 import com.freshdirect.webapp.ajax.modulehandling.DatasourceType;
 import com.freshdirect.webapp.ajax.modulehandling.ModuleSourceType;
@@ -52,6 +53,13 @@ public class DatasourceService {
         DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
         ContentNodeI brand = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"), currentDraftContext);
         return ModuleContentService.getDefaultService().loadBrandFeaturedProducts(brand, user);
+    }
+
+    private SectionDataCointainer generateBrowseProductsForViewAll(ContentNodeI module, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException {
+        DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
+        ContentNodeI category = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"), currentDraftContext);
+        String categoryId = category.getKey().getId();
+        return ModuleContentService.getDefaultService().loadBrowseSectionDataContainer(categoryId, user);
     }
 
     private List<ProductData> generateBrowseProducts(ContentNodeI module, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException {
@@ -196,6 +204,8 @@ public class DatasourceService {
         String productListCarouselLineMax = ContentNodeUtil.getStringAttribute(module, "productListRowMax");
         List<ProductData> products = new ArrayList<ProductData>();
 
+        SectionDataCointainer sectionDataContainer = null;
+
         // LOAD PRODUCTS
         switch (datasourceEnum) {
             case MOST_POPULAR_PRODUCTS:
@@ -223,7 +233,11 @@ public class DatasourceService {
                 }
                 break;
             case BROWSE:
-                products = generateBrowseProducts(module, user);
+                if (showAllProducts) {
+                    sectionDataContainer = generateBrowseProductsForViewAll(module, user);
+                } else {
+                    products = generateBrowseProducts(module, user);
+                }
                 break;
             case FEATURED_RECOMMENDER:
                 products = generateFeaturedRecommenderProducts(module, user);
@@ -248,7 +262,9 @@ public class DatasourceService {
             products = ModuleContentService.getDefaultService().setMaxProductLinesForProductList(products, Integer.parseInt(productListCarouselLineMax));
         }
 
+        moduleData.setSectionDataContainer(sectionDataContainer);
         moduleData.setProducts(products);
+
         return moduleData;
     }
 

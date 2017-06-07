@@ -12,7 +12,9 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.customer.ejb.ActivityLogHome;
 import com.freshdirect.customer.ejb.ActivityLogSB;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.ServiceLocator;
+import com.freshdirect.payment.service.FDECommerceService;
 
 public class ActivityLog {
 
@@ -37,7 +39,12 @@ public class ActivityLog {
 
 	public Collection<ErpActivityRecord> findActivityByTemplate(ErpActivityRecord template) throws FDResourceException {
 		try {
-			return this.getActivityLogSB().findActivityByTemplate(template);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("customer.ejb.ActivityLogSB")){
+				return FDECommerceService.getInstance().findActivityByTemplate(template);
+			}
+			else{
+				return this.getActivityLogSB().findActivityByTemplate(template);
+			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to ActivityLogSB");
 		}
@@ -45,7 +52,12 @@ public class ActivityLog {
 	
 	public Collection<ErpActivityRecord> getCCActivitiesByTemplate(ErpActivityRecord template) throws FDResourceException {
 		try {
-			return this.getActivityLogSB().getCCActivitiesByTemplate(template);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("customer.ejb.ActivityLogSB")){
+				return FDECommerceService.getInstance().getCCActivitiesByTemplate(template);
+			}
+			else{
+				return this.getActivityLogSB().getCCActivitiesByTemplate(template);
+			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to ActivityLogSB");
 		}
@@ -53,7 +65,12 @@ public class ActivityLog {
 	
 	public void logActivity(ErpActivityRecord rec) throws FDResourceException {
 		try {
-			this.getActivityLogSB().logActivity( rec );
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("customer.ejb.ActivityLogSB")){
+				FDECommerceService.getInstance().logActivity(rec);
+			}
+			else{
+				this.getActivityLogSB().logActivity( rec );
+			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to ActivityLogSB");
 		}		
@@ -74,7 +91,12 @@ public class ActivityLog {
 	
 	public Map<String, List> getFilterLists(ErpActivityRecord template) throws FDResourceException {
 		try {
-			return this.getActivityLogSB().getFilterLists(template);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("customer.ejb.ActivityLogSB")){
+				return FDECommerceService.getInstance().getFilterLists(template);
+			}
+			else{
+				return this.getActivityLogSB().getFilterLists(template);
+			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to ActivityLogSB");
 		}

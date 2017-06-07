@@ -137,8 +137,10 @@
 
 					/* removing the slot times for now, until accessibility is ready
 						<label for=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\">"+((soldOut||slot.isUnavailable()) ? "" : slot.getDisplayString(true))+"</label></div>
+						code before accessibility is added
+						<label for=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\"></label></div>\n
 					*/
-	stringBuffer.append("<label for=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\"></label></div>\n");
+	stringBuffer.append("<label for=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\">"+((soldOut||slot.isUnavailable()) ? "" : slot.getDisplayString(true))+"</label></div>");
 
 	stringBuffer.append("									<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_time\" class=\"fleft tsCont ")
 				.append(

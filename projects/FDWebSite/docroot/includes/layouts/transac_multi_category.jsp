@@ -245,7 +245,7 @@ for (int itemIndex=0; itemIndex < sortedList.size();itemIndex++) {
                           <%} else {%>
                             <div class="qtyinput qtyinput_fixedwidth">
                               <a href="javascript:chgQty(<%=idx%>,'<%= qtyFldName %>',-<%= product.getQuantityIncrement()%>,<%= product.getQuantityMinimum() %>,<%= user.getQuantityMaximum(product) %>);" class="quantity_minus"><div class="vahidden">Decrease quantity</div></a>
-                              <input class="qty" type="text" name="<%= qtyFldName %>" size="2" maxlength="2" value="<%= prodUnavailable ? "" : request.getParameter(qtyFldName) %>" onChange="javascript:chgQty(<%=idx%>,'<%= qtyFldName %>', 0, <%= product.getQuantityMinimum() %>, <%= user.getQuantityMaximum(product) %>);">
+                              <input class="qty" aria-label="quantity" type="text" name="<%= qtyFldName %>" size="2" maxlength="2" value="<%= prodUnavailable ? "" : request.getParameter(qtyFldName) %>" onChange="javascript:chgQty(<%=idx%>,'<%= qtyFldName %>', 0, <%= product.getQuantityMinimum() %>, <%= user.getQuantityMaximum(product) %>);">
                               <a href="javascript:chgQty(<%=idx%>,'<%= qtyFldName %>',<%= product.getQuantityIncrement() %>,<%= product.getQuantityMinimum() %>,<%= user.getQuantityMaximum(product) %>);" class="quantity_plus"><div class="vahidden">Increase quantity</div></a>
                             </div>
                           <%}%>

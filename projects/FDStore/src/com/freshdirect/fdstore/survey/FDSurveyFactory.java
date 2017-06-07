@@ -148,7 +148,7 @@ public class FDSurveyFactory {
      */
     FDSurvey getSurveyFromDatabase(SurveyKey key) throws FDResourceException {
         try {
-        	if(FDStoreProperties.isStorefront2_0Enabled()){
+        	if(FDStoreProperties.isSF2_0_AndServiceEnabled("survey.ejb.FDSurveySB")){
         		IECommerceService service = FDECommerceService.getInstance();
         		SurveyKeyData surveyKeyData = buildSurveyKeyData(key);
         		FDSurveyData surveyData = service.getSurvey(surveyKeyData);
@@ -227,7 +227,7 @@ public class FDSurveyFactory {
 
     public static FDSurveyResponse getCustomerProfileSurveyInfo(FDIdentity identity, EnumServiceType serviceType) throws FDResourceException {
         try {
-        	if(FDStoreProperties.isStorefront2_0Enabled()){
+        	if(FDStoreProperties.isSF2_0_AndServiceEnabled("survey.ejb.FDSurveySB")){
         		IECommerceService service = FDECommerceService.getInstance();
         		FDSurveyResponseData surveyResponseData = service.getCustomerProfile(identity, serviceType);
         		FDSurveyResponse fdSurveyResponse = buildFdSurveyResponse(surveyResponseData);
@@ -258,7 +258,7 @@ public class FDSurveyFactory {
 
     public static FDSurveyResponse getSurveyResponse(FDIdentity identity, SurveyKey survey) throws FDResourceException {
         try {
-        	if(FDStoreProperties.isStorefront2_0Enabled()){
+        	if(FDStoreProperties.isSF2_0_AndServiceEnabled("survey.ejb.FDSurveySB")){
         		IECommerceService service = FDECommerceService.getInstance();
         		SurveyKeyData surveyKeyData = buildSurveyKeyData(survey);
         		FDSurveyResponseData surveyResponseData =  service.getSurveyResponse(identity, surveyKeyData);

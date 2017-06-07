@@ -2,8 +2,10 @@ package com.freshdirect.payment.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 
+import com.freshdirect.ecommerce.data.erp.model.EnumATPRuleData;
 import com.freshdirect.ecommerce.data.erp.model.ErpMaterialPriceData;
 import com.freshdirect.ecommerce.data.erp.model.ErpMaterialSalesAreaInfoData;
 import com.freshdirect.ecommerce.data.erp.model.ErpPlantMaterialInfoData;
@@ -69,9 +71,9 @@ public class ErpProductInfoModelConvert {
 		return data;
 	}
 
-	private static EnumATPRule getAtpRule(String atpRule) {
+	private static EnumATPRule getAtpRule(EnumATPRuleData atpRule) {
 		if(atpRule!=null)
-		return EnumATPRule.getEnum(atpRule);
+		return EnumATPRule.getEnum(atpRule.getName());
 		return null;
 	}
 
@@ -95,7 +97,7 @@ public class ErpProductInfoModelConvert {
 		ErpMaterialPrice[] material = new ErpMaterialPrice[materialPrices.length]; 
 		for (int i = 0; i < materialPrices.length; i++) {
 			ErpMaterialPriceData erpMaterialPrice = materialPrices[i];
-			material[i]= new ErpMaterialPrice(erpMaterialPrice.getPrice(), erpMaterialPrice.getPricingUnit(), erpMaterialPrice.getPromoPrice(), erpMaterialPrice.getScaleUnit(), erpMaterialPrice.getScaleQuantity(), erpMaterialPrice.getSapZoneId(), erpMaterialPrice.getSalesOrg(), erpMaterialPrice.getDistChannel());
+			material[i]= new ErpMaterialPrice(erpMaterialPrice.getPrice(), erpMaterialPrice.getUnit(), erpMaterialPrice.getPromoPrice(), erpMaterialPrice.getScaleUnit(), erpMaterialPrice.getScaleQuantity(), erpMaterialPrice.getSapZoneId(), erpMaterialPrice.getSalesOrg(), erpMaterialPrice.getDistChannel());
 		}
 		return material;
 	}

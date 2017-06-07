@@ -45,7 +45,7 @@ final int W_GROCERY_PRODUCT_LINE_ICON_COL = 30;
   <% if (!skuAvailable) { %><font color="#999999">NA</font><% } else { %>
     <a href="javascript:chgQty('<%= qtyFldName %>', -<%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>); syncQty('<%= itemShownIndex %>', 'big');" class="quantity_minus"><div class="vahidden">Decrease quantity</div></a>
   <% } %>
-	<INPUT TYPE="<%= skuAvailable ? "text" : "hidden" %>" ID="<%=qtyFldName%>" NAME="<%= qtyFldName %>" SIZE="2" MAXLENGTH="2"  CLASS="qty" value="<%= !skuAvailable ? "" : request.getParameter(qtyFldName) %>"
+	<INPUT TYPE="<%= skuAvailable ? "text" : "hidden" %>" ID="<%=qtyFldName%>" NAME="<%= qtyFldName %>" SIZE="2" MAXLENGTH="2" aria-label="quantity" CLASS="qty" value="<%= !skuAvailable ? "" : request.getParameter(qtyFldName) %>"
     onChange="javascript:chgQty('<%= qtyFldName %>', 0, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>); syncQty('<%= itemShownIndex %>', 'big');">
   <% if (skuAvailable) { %>
     <a href="javascript:chgQty('<%= qtyFldName %>', <%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>); syncQty('<%= itemShownIndex %>', 'big');" class="quantity_plus"><div class="vahidden">Increase quantity</div></a>

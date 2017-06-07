@@ -1921,7 +1921,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 			if (m instanceof ErpAuthorizationModel) {
 				am = (ErpAuthorizationModel)m;
 				if (EnumPaymentMethodType.PAYPAL.equals(((ErpAuthorizationModel) m).getPaymentMethodType())
-						&& EnumCardType.PAYPAL.equals(am.getCardType()))
+						&& EnumCardType.PAYPAL.equals(am.getCardType()) && !EnumPaymentResponse.REVERSED.equals(am.getResponseCode()))
 					lastAuths.add((ErpAuthorizationModel)m);
 			}
 		}

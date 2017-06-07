@@ -42,7 +42,7 @@ private static Category LOGGER = LoggerFactory.getInstance(EWalletLogActivity.cl
 	
 	public static void logActivity(EwalletActivityLogModel eWalletLogModel) {
 		try {
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("ewallet.ejb.EwalletActivityLogSB")){
 				IECommerceService commerceService =   FDECommerceService.getInstance();
 				commerceService.logActivity(eWalletLogModel);
 			}else{

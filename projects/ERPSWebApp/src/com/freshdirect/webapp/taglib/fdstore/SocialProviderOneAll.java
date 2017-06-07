@@ -94,6 +94,7 @@ public class SocialProviderOneAll implements SocialProvider {
 		    // Result Container
 			String result_json = "";
 			
+			BufferedReader rd = null;
 			try
 			{
 			  
@@ -113,7 +114,7 @@ public class SocialProviderOneAll implements SocialProvider {
 			  String line = null;
 			 
 			  // Read result
-			  BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			  rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			  while ((line = rd.readLine()) != null) {
 			    sb.append(line);
 			  }
@@ -124,6 +125,14 @@ public class SocialProviderOneAll implements SocialProvider {
 			catch (Exception e)
 			{
 				LOGGER.error(e.getMessage());
+			} finally {
+				if (rd != null) {
+					try {
+						rd.close();
+					} catch (IOException ioe) {
+						// intentionally do nothing here
+					}
+				}
 			}
 
 			return result_json;
@@ -449,6 +458,7 @@ public class SocialProviderOneAll implements SocialProvider {
 		String line = null;
 		String result_json = "";
 
+		BufferedReader rd = null;
 		try {
 			URL url = new URL(resource_uri);
 			String payload = "{\"request\":{\"user\":{\"action\":\"import_from_access_token\",\"identity\":{\"source\":{\"key\":\""
@@ -477,7 +487,7 @@ public class SocialProviderOneAll implements SocialProvider {
 			osw.flush();
 			osw.close();
 
-			BufferedReader rd = new BufferedReader(new InputStreamReader(
+			rd = new BufferedReader(new InputStreamReader(
 					connection.getInputStream()));
 			while ((line = rd.readLine()) != null) {
 				sb.append(line);
@@ -485,6 +495,14 @@ public class SocialProviderOneAll implements SocialProvider {
 			result_json = sb.toString();
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage());
+		} finally {
+			if (rd != null) {
+				try {
+					rd.close();
+				} catch (IOException ioe) {
+					// intentionally do nothing here
+				}
+			}
 		}
 		return result_json;
 	}

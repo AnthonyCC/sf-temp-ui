@@ -60,10 +60,11 @@
 * @param? abFeatures
 * @param? ifSingleUL
 * @param? mobWeb
+* @param? itemPerLine
 */
 {template .productList autoescape="false"}
 	{let $version: $abFeatures ? ($abFeatures.gridlayoutcolumn ? $abFeatures.gridlayoutcolumn : 'default') : 'default' /}
-	{let $itemPerLineFinal: ($version == '4_0') ? 4 : 5 /}
+	{let $itemPerLineFinal: $itemPerLine ? $itemPerLine : (($version == '4_0') ? 4 : 5) /}
 	{let $itemPerLineFinal: $mobWeb ? 2 : $itemPerLineFinal /}
 	{call common.fixedProductList data="all"}
 		{param itemPerLine:$itemPerLineFinal /}

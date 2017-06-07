@@ -220,7 +220,7 @@ public class FDInventoryJcoServer extends FdSapServer {
 			ctx = ErpServicesProperties.getInitialContext();
 			ErpInventoryManagerHome mgr = (ErpInventoryManagerHome) ctx.lookup("freshdirect.erp.InventoryManager");
 			ErpInventoryManagerSB sb = mgr.create();
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpInventoryManagerSB")){
 				FDECommerceService.getInstance().updateInventories(stockEntries);
 			}else{
 				sb.updateInventories(stockEntries);

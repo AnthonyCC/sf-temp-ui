@@ -60,6 +60,7 @@ import com.freshdirect.logistics.controller.data.response.DeliveryZones;
 import com.freshdirect.logistics.controller.data.response.Employees;
 import com.freshdirect.logistics.controller.data.response.FulfillmentInfoResponse;
 import com.freshdirect.logistics.controller.data.response.ListOfDates;
+import com.freshdirect.logistics.controller.data.response.ListOfFulfillmentInfoResponse;
 import com.freshdirect.logistics.controller.data.response.ListOfObjects;
 import com.freshdirect.logistics.controller.data.response.ListOfStateCounty;
 import com.freshdirect.logistics.controller.data.response.Timeslot;
@@ -135,6 +136,7 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	
 	private static final String ADD_SUBSCRIPTION_API ="/delivery/messaging/subscription/add";
 	private static final String FULFILLMENTINFO_API ="/delivery/fulfillmentinfo/";
+	private static final String ALL_FULFILLMENTINFO_API ="/delivery/fulfillmentinfo/all";
 	
 	private static final String RESERVE_SOTEMPLATE_API ="/reservation/sotemplate/reserve";
 	private static final String CANCEL_SOTEMPLATE_API ="/reservation/sotemplate/cancel/";
@@ -382,6 +384,13 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 		return response;
 	}
 
+	@Override
+	public ListOfFulfillmentInfoResponse getAllFulfillmentInfo() throws FDLogisticsServiceException {
+		ListOfFulfillmentInfoResponse response =  getData(null, getEndPoint(ALL_FULFILLMENTINFO_API), ListOfFulfillmentInfoResponse.class);
+		return response;
+	}
+
+	
 	@Override
 	public DeliveryZones getZone(DeliveryZoneRequest request) throws FDLogisticsServiceException {
 

@@ -219,7 +219,7 @@ public class FDCOOLJcoServer extends FdSapServer {
 		try {
 			ctx = ErpServicesProperties.getInitialContext();
 //			ServiceLocator serviceLocator = new ServiceLocator(FDStoreProperties.getInitialContext());
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpCOOLManagerSB")){
 				LogisticsServiceLocator.getInstance().getCommerceService().saveCountryOfOriginData(erpCOOLInfoList);
 			}else{
 			ErpCOOLManagerHome mgr = (ErpCOOLManagerHome) ctx.lookup(ErpServicesProperties.getCOOLManagerHome());

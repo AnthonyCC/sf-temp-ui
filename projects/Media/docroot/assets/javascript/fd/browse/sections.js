@@ -96,8 +96,10 @@ var FreshDirect = FreshDirect || {};
 				//find sku
 				hlSkus.push($(this).find('[data-productdata-name="skuCode"]').val());
 				//fire impression
-				if ($('.browseContent .HLpageBeaconImg.impress-page_'+activePage+'_id_'+i+'_'+$(this).attr('id')).length === 0) {
-					$('.browseContent').append('<img style="display: none;" class="HLpageBeaconImg impress-page_'+activePage+'_id_'+i+'_'+$(this).attr('id')+'" src="' + $(this).attr('data-hooklogic-beacon-impress') + '&random=' + new Date().getTime() + '" />');
+				if ($(this).attr('data-hooklogic-beacon-impress') !== 'http:') { //catch invalid data from HL
+					if ($('.browseContent .HLpageBeaconImg.impress-page_'+activePage+'_id_'+i+'_'+$(this).attr('id')).length === 0 && $(this).attr('data-hooklogic-beacon-impress') !== null) {
+						$('.browseContent').append('<img style="display: none;" class="HLpageBeaconImg impress-page_'+activePage+'_id_'+i+'_'+$(this).attr('id')+'" src="' + $(this).attr('data-hooklogic-beacon-impress') + '&random=' + new Date().getTime() + '" />');
+					}
 				}
 			});
 			
@@ -105,19 +107,21 @@ var FreshDirect = FreshDirect || {};
 			
 			/* add page beacon (if it doesn't already exist) and we're on the first page only */
 			if(activePage == 1){
-				if (hlSkusStr !== '' && $(".browse-sections-top .browseContent .HLpageBeaconImg.page_SEARCH").length === 0) { /* only one instance at a time */
-					if (FreshDirect.browse.data.adProducts.products.length === FreshDirect.browse.data.adProducts.hlProductsCount) {
+				if (window.FreshDirect.browse.data.adProducts.pageBeacon !== null) {
+					if (hlSkusStr !== '' && $(".browse-sections-top .browseContent .HLpageBeaconImg.page_SEARCH").length === 0) { /* only one instance at a time */
+						if (FreshDirect.browse.data.adProducts.products.length === FreshDirect.browse.data.adProducts.hlProductsCount) {
+							
+							//all hlprods
+							$(".browse-sections-top .browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_SEARCH" src="' + window.FreshDirect.browse.data.adProducts.pageBeacon + 'all&random=' + new Date().getTime() + '" />');
+						} else {
+							//not ALL hlprods
+							$(".browse-sections-top .browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_SEARCH" src="' + window.FreshDirect.browse.data.adProducts.pageBeacon + hlSkusStr + '&random=' + new Date().getTime() + '" />');
+						}
 						
-						//all hlprods
-						$(".browse-sections-top .browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_SEARCH" src="' + window.FreshDirect.browse.data.adProducts.pageBeacon + 'all&random=' + new Date().getTime() + '" />');
-					} else {
-						//not ALL hlprods
-						$(".browse-sections-top .browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_SEARCH" src="' + window.FreshDirect.browse.data.adProducts.pageBeacon + hlSkusStr + '&random=' + new Date().getTime() + '" />');
+					} else if (hlSkusStr === '' && $(".browse-sections-top .browseContent .HLpageBeaconImg.page_SEARCH").length === 0) { /* only one instance at a time */
+						//no hlprods
+						$(".browse-sections-top .browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_SEARCH" src="' + window.FreshDirect.browse.data.adProducts.pageBeacon + 'none&random=' + new Date().getTime() + '" />');
 					}
-					
-				} else if (hlSkusStr === '' && $(".browse-sections-top .browseContent .HLpageBeaconImg.page_SEARCH").length === 0) { /* only one instance at a time */
-					//no hlprods
-					$(".browse-sections-top .browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_SEARCH" src="' + window.FreshDirect.browse.data.adProducts.pageBeacon + 'none&random=' + new Date().getTime() + '" />');
 				}
 			}
 		} else {
@@ -133,25 +137,29 @@ var FreshDirect = FreshDirect || {};
 					//find sku and hold it
 					hlSkus.push($(this).find('[data-productdata-name="skuCode"]').val());
 					//fire impression
-					if ($('.browseContent .HLpageBeaconImg.impress-page_'+activePage+'_id_'+cur+'_'+$(this).attr('id')).length === 0) {
-						$('.browseContent').append('<img style="display: none;" class="HLpageBeaconImg impress-page_'+activePage+'_id_'+cur+'_'+$(this).attr('id')+'" src="' + $(this).attr('data-hooklogic-beacon-impress') + '&random=' + new Date().getTime() + '" />');
+					if ($(this).attr('data-hooklogic-beacon-impress') !== 'http:') { //catch invalid data from HL
+						if ($('.browseContent .HLpageBeaconImg.impress-page_'+activePage+'_id_'+cur+'_'+$(this).attr('id')).length === 0) {
+							$('.browseContent').append('<img style="display: none;" class="HLpageBeaconImg impress-page_'+activePage+'_id_'+cur+'_'+$(this).attr('id')+'" src="' + $(this).attr('data-hooklogic-beacon-impress') + '&random=' + new Date().getTime() + '" />');
+						}
 					}
 				});
 				
 				//now, page beacon
 				hlSkusStr = hlSkus.join(',');
 				if (window.FreshDirect.browse.data.adProducts.hlSelectionsPageBeacons.hasOwnProperty(cur)) { /* this is required for the src url */
-					if (hlSkusStr !== '' && $('.browseContent .HLpageBeaconImg.page_'+activePage+'_id_'+cur).length === 0) {
-						if (FreshDirect.browse.data.adProducts.hlSelectionOfProductList[cur].length === FreshDirect.browse.data.adProducts.hlCatProductsCount[cur]) {
-							//all hlprods
-							$(".browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_'+activePage+'_id_'+cur+'" src="' + window.FreshDirect.browse.data.adProducts.hlSelectionsPageBeacons[cur] + 'all&random=' + new Date().getTime() + '" />');
-						} else {
-							//not ALL hlprods
-							$(".browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_'+activePage+'_id_'+cur+'" src="' + window.FreshDirect.browse.data.adProducts.hlSelectionsPageBeacons[cur] + hlSkusStr + '&random=' + new Date().getTime() + '" />');
+					if (window.FreshDirect.browse.data.adProducts.hlSelectionsPageBeacons[cur] !== null) {
+						if (hlSkusStr !== '' && $('.browseContent .HLpageBeaconImg.page_'+activePage+'_id_'+cur).length === 0) {
+							if (FreshDirect.browse.data.adProducts.hlSelectionOfProductList[cur].length === FreshDirect.browse.data.adProducts.hlCatProductsCount[cur]) {
+								//all hlprods
+								$(".browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_'+activePage+'_id_'+cur+'" src="' + window.FreshDirect.browse.data.adProducts.hlSelectionsPageBeacons[cur] + 'all&random=' + new Date().getTime() + '" />');
+							} else {
+								//not ALL hlprods
+								$(".browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_'+activePage+'_id_'+cur+'" src="' + window.FreshDirect.browse.data.adProducts.hlSelectionsPageBeacons[cur] + hlSkusStr + '&random=' + new Date().getTime() + '" />');
+							}
+						} else if (hlSkusStr === '' && $('.browseContent .HLpageBeaconImg.page_'+activePage+'_id_'+cur).length === 0) {
+							//no hlprods
+							$(".browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_'+activePage+'_id_'+cur+'" src="' + window.FreshDirect.browse.data.adProducts.hlSelectionsPageBeacons[cur] + 'none&random=' + new Date().getTime() + '" />');
 						}
-					} else if (hlSkusStr === '' && $('.browseContent .HLpageBeaconImg.page_'+activePage+'_id_'+cur).length === 0) {
-						//no hlprods
-						$(".browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_'+activePage+'_id_'+cur+'" src="' + window.FreshDirect.browse.data.adProducts.hlSelectionsPageBeacons[cur] + 'none&random=' + new Date().getTime() + '" />');
 					}
 				}
 			}

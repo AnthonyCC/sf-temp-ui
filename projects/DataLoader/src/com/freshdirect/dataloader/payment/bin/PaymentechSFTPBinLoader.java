@@ -224,7 +224,7 @@ public class PaymentechSFTPBinLoader /*implements BINLoader*/ {
 		binInfos.add(mcBINInfo);
 		
 		
-		if(FDStoreProperties.isStorefront2_0Enabled()){
+		if(FDStoreProperties.isSF2_0_AndServiceEnabled("payment.ejb.BINInfoManagerSB")){
 			FDECommerceService.getInstance().saveBINInfo(binInfos);
 		}else {
 		BINInfoManagerSB binInfoManagerSB = lookupBINInfoManagerHome().create();

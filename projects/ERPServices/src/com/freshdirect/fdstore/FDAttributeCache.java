@@ -44,7 +44,7 @@ public class FDAttributeCache extends FDAbstractCache {
 		try {
 			Map data=null;
 			LOGGER.info("REFRESHING");
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("attributes.ejb.AttributeFacadeSB")){
 				data=FDECommerceService.getInstance().loadAttributes(since);
 			}else{
 			AttributeFacadeSB sb = this.lookupAttributeHome().create();

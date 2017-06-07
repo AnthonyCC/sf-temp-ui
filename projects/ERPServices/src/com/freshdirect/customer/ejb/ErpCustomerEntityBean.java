@@ -275,22 +275,42 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 	}
 
 	public void load(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("SELECT USER_ID, PASSWORDHASH, SAP_ID, ACTIVE, SOCIAL_LOGIN_ONLY FROM CUST.CUSTOMER WHERE ID = ?");
-		ps.setString(1, this.getPK().getId());
-		ResultSet rs = ps.executeQuery();
-		if (!rs.next()) {
-			throw new SQLException("No such ErpCustomer PK: " + this.getPK());
-		}
-		this.setUserId(rs.getString("USER_ID"));
-		this.setPasswordHash(rs.getString("PASSWORDHASH"));
-		this.setSapId(rs.getString("SAP_ID"));
-		this.setActive(("1".equals(rs.getString("ACTIVE"))? true : false));
-		this.setSocialLoginOnly(("1".equals(rs.getString("SOCIAL_LOGIN_ONLY"))? true : false));
+		PreparedStatement ps = null;
+		ResultSet rs = null;	
+		try {
+			ps = conn.prepareStatement("SELECT USER_ID, PASSWORDHASH, SAP_ID, ACTIVE, SOCIAL_LOGIN_ONLY FROM CUST.CUSTOMER WHERE ID = ?");
+			ps.setString(1, this.getPK().getId());
+			rs = ps.executeQuery();
+			if (!rs.next()) {
+				throw new SQLException("No such ErpCustomer PK: " + this.getPK());
+			}
+			this.setUserId(rs.getString("USER_ID"));
+			this.setPasswordHash(rs.getString("PASSWORDHASH"));
+			this.setSapId(rs.getString("SAP_ID"));
+			this.setActive(("1".equals(rs.getString("ACTIVE"))? true : false));
+			this.setSocialLoginOnly(("1".equals(rs.getString("SOCIAL_LOGIN_ONLY"))? true : false));
 
-		rs.close();
-		rs = null;
-		ps.close();
-		ps = null;
+//			rs.close();
+//			rs = null;
+//			ps.close();
+//			ps = null;
+		} finally {
+			if(null != rs){
+				try {
+					rs.close();
+				} catch (Exception e) {
+					
+				}
+			}
+			
+			if(null != ps){
+				try {
+					ps.close();
+				} catch (Exception e) {
+					
+				}
+			}
+		}
 
 		// load children
 		//loading ship to addresses
@@ -312,6 +332,7 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 		//load customer alerts
 		this.customerAlerts.setParentPK(this.getPK());
 		this.customerAlerts.load( conn );
+		
 	}
 
 	public void store(Connection conn) throws SQLException {

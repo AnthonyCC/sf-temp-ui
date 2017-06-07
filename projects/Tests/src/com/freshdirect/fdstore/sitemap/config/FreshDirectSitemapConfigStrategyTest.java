@@ -28,6 +28,7 @@ public class FreshDirectSitemapConfigStrategyTest {
         SitemapConfiguration config = strategy.getConfig(SitemapTypeEnum.MAIN);
         assertEquals("https://www.freshdirect.com", config.getBasePath());
         assertEquals("", config.getBasePathPostfix());
+        assertEquals("/sitemap", config.getContextPath());
         assertEquals("/var/tmp/sitemap", config.getDirectoryPath());
         assertEquals("sitemap", config.getNamePrefix());
         assertEquals("FreshDirect", config.getStoreName());
@@ -40,6 +41,7 @@ public class FreshDirectSitemapConfigStrategyTest {
 
         assertEquals("https://www.freshdirect.com", config.getBasePath());
         assertEquals("", config.getBasePathPostfix());
+        assertEquals("/sitemap", config.getContextPath());
         assertEquals("/var/tmp/sitemap", config.getDirectoryPath());
         assertEquals("sitemap_category", config.getNamePrefix());
         assertEquals("FreshDirect", config.getStoreName());
@@ -54,6 +56,7 @@ public class FreshDirectSitemapConfigStrategyTest {
 
         assertEquals("https://www.freshdirect.com", config.getBasePath());
         assertEquals("", config.getBasePathPostfix());
+        assertEquals("/sitemap", config.getContextPath());
         assertEquals("/var/tmp/sitemap", config.getDirectoryPath());
         assertEquals("sitemap_product", config.getNamePrefix());
         assertEquals("FreshDirect", config.getStoreName());

@@ -9,6 +9,7 @@ import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.WineFilterValue;
 import com.freshdirect.fdstore.coremetrics.CmContext;
+import com.freshdirect.fdstore.coremetrics.extradata.CoremetricsExtraData;
 import com.freshdirect.fdstore.coremetrics.tagmodel.PageViewTagModel;
 
 public class PageViewTagModelBuilder {
@@ -51,7 +52,7 @@ public class PageViewTagModelBuilder {
     private boolean wineFilterValueSet;
     private PageViewTagModel tagModel = new PageViewTagModel();
     private String userCohort;
-    private String customerType;
+    private CoremetricsExtraData coremetricsExtraData;
 
     private CmContext context = CmContext.getContext();
 
@@ -382,8 +383,8 @@ public class PageViewTagModelBuilder {
         if (userCohort != null && tagModel.getAttributesMaps().get(8) == null) {
             tagModel.getAttributesMaps().put(8, userCohort);
         }
-        
-        tagModel.getAttributesMaps().put(10, customerType);
+
+        tagModel.getAttributesMaps().put(14, coremetricsExtraData.getCustomerType());
     }
 
     /**
@@ -436,11 +437,11 @@ public class PageViewTagModelBuilder {
         this.userCohort = userCohort;
     }
 
-	public String getCustomerType() {
-		return customerType;
-	}
+    public CoremetricsExtraData getCoremetricsExtraData() {
+        return coremetricsExtraData;
+    }
 
-	public void setCustomerType(String customerType) {
-		this.customerType = customerType;
-	}
+    public void setCoremetricsExtraData(CoremetricsExtraData coremetricsExtraData) {
+        this.coremetricsExtraData = coremetricsExtraData;
+    }
 }

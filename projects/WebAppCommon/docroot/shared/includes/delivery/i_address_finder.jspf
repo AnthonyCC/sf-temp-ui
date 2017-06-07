@@ -135,7 +135,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 						<FORM name="addressForm" id="addressForm" method="POST" action="<%= actionPage %>" >
 						<img src="/media_stat/images/layout/clear.gif"  alt="" width="1" height="14"><br/>
 						<input type="hidden" value="Y" id="addressChange" name="addressChange" />
-						<SELECT name="addressId" id="addressId" CLASS="text12" style="width: 250px;">
+						<SELECT name="addressId" id="addressId" aria-label="choose delivery address" CLASS="text12" style="width: 250px;">
 								<% if (timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)) { %>
 									<logic:iterate id="homeAddress" collection="<%=user.getAllHomeAddresses() %>" type="com.freshdirect.common.address.AddressModel">
 										<option value="<%= homeAddress.getPK().getId() %>" <%= ( (homeAddress.getPK().getId()).equals(pageAddrId) ) ? "selected=\"selected\"" : "" %>>

@@ -86,6 +86,7 @@ import com.freshdirect.mobileapi.util.DeliveryAddressValidatorUtil;
 import com.freshdirect.mobileapi.util.ProductPotatoUtil;
 import com.freshdirect.webapp.ajax.cart.CartOperations;
 import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
+import com.freshdirect.webapp.ajax.expresscheckout.timeslot.service.TimeslotService;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -1481,6 +1482,11 @@ public class CheckoutController extends BaseController {
 
         ResultBundle dlvValidationResult = new ResultBundle();
         dlvValidationResult.setActionResult(new ActionResult());
+        
+//        if(user!=null && user.getUserContext() != null && user.getUserContext().getStoreContext() != null && 
+//           user.getUserContext().getStoreContext().getEStoreId().equals(EnumEStoreId.FD) && user.isChefsTable()){
+//        	TimeslotService.defaultService().applyPreReservedDeliveryTimeslot(request.getSession());
+//        }
 
         if (user != null && user.getShoppingCart() != null && user.getShoppingCart().getDeliveryReservation() != null
                 && fdUser.getShoppingCart().getPaymentMethod() != null

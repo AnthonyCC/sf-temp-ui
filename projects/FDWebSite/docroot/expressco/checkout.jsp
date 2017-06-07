@@ -30,7 +30,7 @@ if (mobWeb) {
 %>
 <potato:pendingExternalAtcItem/>
 <potato:singlePageCheckout />
-
+<potato:cartData />
 
 
 <tmpl:insert template='<%= pageTemplate %>'>

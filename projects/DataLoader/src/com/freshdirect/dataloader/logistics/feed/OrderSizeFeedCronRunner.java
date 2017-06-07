@@ -43,7 +43,7 @@ public class OrderSizeFeedCronRunner {
 			
 			DlvManagerHome dlvManager = (DlvManagerHome) ctx.lookup( DlvProperties.getDlvManagerHome());
 			DlvManagerSB dlvManagerSB = dlvManager.create();
-			if (FDStoreProperties.isStorefront2_0Enabled())
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB"))
 				FDECommerceService.getInstance().sendOrderSizeFeed();
 			else
 				dlvManagerSB.sendOrderSizeFeed();

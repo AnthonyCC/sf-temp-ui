@@ -3,12 +3,7 @@
  * @param? filterLabels filter labels
  */
 {template .filterTags autoescape="false"}
-	{if $filterLabels and length($filterLabels) > 0}
-    <ul class="filterTags" data-component="filtertags">
-      {foreach $filterLabel in $filterLabels}
-        <li data-component="filtertag" data-id="{$filterLabel.id}" data-parentid="{$filterLabel.parentId}" class="icon-cancel-circle-before"><span>{$filterLabel.name}</span></li>
-      {/foreach}
-    </ul>
-	{/if}
+  {call common.filterTags}
+    {param filterLabels:$filterLabels /}
+  {/call}
 {/template}
-

@@ -385,7 +385,7 @@ public class FDGroupScalePriceJcoServer extends FdSapServer {
 				LOG.info(String.format("Storing scale group(s) [%s], [%s] ", scaleGroups.size(), new Date()));
 
 				SAPGrpInfoLoaderHome mgr = (SAPGrpInfoLoaderHome) ctx.lookup("freshdirect.dataloader.SAPGrpInfoLoader");
-				if(FDStoreProperties.isStorefront2_0Enabled()){
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled("sap.ejb.SapGrpInfoLoaderSB")){
 					FDECommerceService.getInstance().loadGroupPriceData(scaleGroups);
 				}else{
 				SapGrpInfoLoaderSB sb = mgr.create();
@@ -458,7 +458,7 @@ public class FDGroupScalePriceJcoServer extends FdSapServer {
 			ErpGrpInfoHome mgr = (ErpGrpInfoHome) ctx.lookup("freshdirect.erp.GrpInfoManager");
 			ErpGrpInfoSB sb = mgr.create();
 			Map<SalesAreaInfo, FDGroup> salesAreaGroup = null;
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpGrpInfoSB")){
 				salesAreaGroup = FDECommerceService.getInstance().getGroupIdentitiesForMaterial(scaleGrpRecord.getMaterialID());
 			}else{
 			salesAreaGroup=sb.getGroupIdentitiesForMaterial(scaleGrpRecord.getMaterialID());

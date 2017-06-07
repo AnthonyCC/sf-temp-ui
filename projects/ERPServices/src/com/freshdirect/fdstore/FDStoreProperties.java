@@ -932,6 +932,12 @@ public class FDStoreProperties {
     private final static String PROP_ZIP_CHECK_OVER_LAY_ENABLED = "fdstore.zipcheck.overlay.enabled";
     /* APPDEV-5781 */
     private final static String PROP_OBSOLETE_MERGECARTPAGE_ENABLED = "fdstore.obsolete.mergecartpage.enabled";
+	private final static String PROP_CLUSTER_NAME = "fdsystem.cluster.name";
+	private final static String PROP_NODE_NAME = "fdsystem.node.name";
+    
+    private final static String PROP_PRODUCT_CACHE_OPTIMIZATION_ENABLED = "fdstore.product.cache.optimization.enabled";
+    
+    private final static String PROP_REQUEST_SCHEME_FOR_REDIRECT_URL = "fdstore.request.scheme.redirecturl";
 
     static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1539,6 +1545,7 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.browseflyoutrecommenders", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.quickshop2_2", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.homepageredesign", "GLOBAL:ENABLED,false;");
+        defaults.put("feature.rollout.mobweb", "GLOBAL:ENABLED,true;");
         // defaults.put("feature.rollout.sociallogin", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.printinvoice", "GLOBAL:ENABLED,true;");
 
@@ -1547,9 +1554,7 @@ public class FDStoreProperties {
 
         defaults.put("feature.rollout.standingorder3_0", "GLOBAL:ENABLED,false;");
         defaults.put("feature.rollout.browseaggregatedcategories1_0", "GLOBAL:ENABLED,false;");
-        defaults.put("feature.rollout.unbxdintegrationblackhole2016", "GLOBAL:ENABLED,true;");
-        defaults.put("feature.rollout.unbxdanalytics2016", "GLOBAL:ENABLED,true;");
-
+        
         defaults.put(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE, "true");
         defaults.put(PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING, "ISO-8859-1");
 
@@ -1646,7 +1651,7 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.checkout1_0", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.checkout2_0", "GLOBAL:ENABLED,false;");
 
-        defaults.put(PROP_LOGISTICS_COMPANY_CODE, EnumCompanyCode.fd.name());
+//        defaults.put(PROP_LOGISTICS_COMPANY_CODE, EnumCompanyCode.fd.name());
         defaults.put(PROP_LOGISTICS_CONNECTION_TIMEOUT, 120);
         defaults.put(PROP_LOGISTICS_CONNECTION_POOL, 15);
         defaults.put(PROP_LOGISTICS_CONN_READ_TIMEOUT, 120);
@@ -1737,6 +1742,9 @@ public class FDStoreProperties {
         defaults.put(PROP_UNBXD_BASE_URL, "http://search.unbxdapi.com/");
         defaults.put(PROP_UNBXD_FALLBACK_ON_ERROR, "false");
         defaults.put(PROP_UNBXD_TRACKING_BASE_URL, "http://tracker.unbxdapi.com/v2/1p.jpg");
+        defaults.put("feature.rollout.unbxdintegrationblackhole2016", "GLOBAL:ENABLED,true;");
+        defaults.put("feature.rollout.unbxdanalytics2016", "GLOBAL:ENABLED,true;");
+
 
         defaults.put(PROP_MEAL_KIT_MATERIAL_GROUP, "MEALKIT");
 
@@ -1760,7 +1768,7 @@ public class FDStoreProperties {
 
         defaults.put(PROP_SF_2_0_ENABLED, "false");
         defaults.put(PROP_MAT_SALESORG__EXPORT_PICKPLANT_VALIDATION_ENABLED, "true");
-        defaults.put(PROP_EXTRA_LOG_FOR_LOGIN_FAILS_ENABLED, "true");
+        defaults.put(PROP_EXTRA_LOG_FOR_LOGIN_FAILS_ENABLED, "false");
         defaults.put(PROP_MEALBUNDLE_CARTONVIEW_ENABLED, "true");
 
         /* APPDEV-5916 */
@@ -1771,7 +1779,11 @@ public class FDStoreProperties {
         
         /* APPDEV-5781 */
         defaults.put(PROP_OBSOLETE_MERGECARTPAGE_ENABLED, "true");
+        defaults.put(PROP_CLUSTER_NAME, "localhost");
+        defaults.put(PROP_NODE_NAME, "localhost");
+    	
 
+        defaults.put(PROP_PRODUCT_CACHE_OPTIMIZATION_ENABLED, "true");
         refresh();
     }
 
@@ -4455,7 +4467,11 @@ public class FDStoreProperties {
         return (Boolean.valueOf(get(PROP_DONATION_PRODUCT_SAMPLES_ENABLED))).booleanValue();
     }
 
-    public static boolean isStorefront2_0Enabled() {
+    public static boolean isSF2_0_AndServiceEnabled(String beanName) {
+    	
+        return ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue()&&FDEcommProperties.isServiceEnabled(beanName));
+    }
+    private static boolean isStorefront2_0Enabled() {
         return (Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue();
     }
 
@@ -4546,5 +4562,22 @@ public class FDStoreProperties {
 
 	public static boolean isObsoleteMergeCartPageEnabled() {
     	return (Boolean.valueOf(get(PROP_OBSOLETE_MERGECARTPAGE_ENABLED))).booleanValue();
+	}
+
+	public static String getClusterName() {
+		return get(PROP_CLUSTER_NAME);
+	}
+
+	public static String getNodeName() {
+		return get(PROP_NODE_NAME);
+	}
+
+	
+	public static boolean isProductCacheOptimizationEnabled(){
+		return (Boolean.valueOf(get(PROP_PRODUCT_CACHE_OPTIMIZATION_ENABLED))).booleanValue();
+	}
+	
+	public static String getRequestSchemeForRedirectUrl(){
+		return get(PROP_REQUEST_SCHEME_FOR_REDIRECT_URL);
 	}
 }

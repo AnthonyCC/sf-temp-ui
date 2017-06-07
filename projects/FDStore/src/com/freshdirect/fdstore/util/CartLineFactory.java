@@ -27,6 +27,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -36,6 +37,7 @@ import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.service.FDECommerceService;
 
 public class CartLineFactory {
 
@@ -59,9 +61,13 @@ public class CartLineFactory {
 			ErpInfoSB infoBean = home.create();
 			
 			List<FDCartLineI> lines = new ArrayList<FDCartLineI>();
-			for (int i=0; i<materials.length; i++) {		
+			for (int i=0; i<materials.length; i++) {
+				Collection<ErpProductInfoModel> prods  = new ArrayList<ErpProductInfoModel>();
 				String mat = materials[i];
-				Collection<ErpProductInfoModel> prods = infoBean.findProductsBySapId(mat);
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpInfoSB"))
+					prods = FDECommerceService.getInstance().findProductsBySapId(mat);
+				else
+					prods = infoBean.findProductsBySapId(mat);
 			
 				if (prods.isEmpty()) {
 					LOGGER.info("No product found for material "+mat+" - skipping.");

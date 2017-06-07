@@ -52,7 +52,7 @@ public class FDGrpInfoManager {
 	
 	    public static int getLatestVersionNumber(String grpId) throws FDResourceException{
 	 		try{
-	 			if(FDStoreProperties.isStorefront2_0Enabled())
+	 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("grp.ejb.FDGrpInfoSB"))
 	 			{
 	 			return FDECommerceService.getInstance().getLatestVersionNumber(grpId);
 	 			}else{

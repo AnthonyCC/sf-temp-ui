@@ -146,6 +146,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     private boolean rafFriendSignedUp = false;
     private boolean isAvalaraTaxed;
     private boolean isMobilePlatForm;
+    private String 	platForm;
 
     private Set<ContentKey> checkoutUnavailableProductKeys; // set of items which failed the ATP test
 
@@ -168,6 +169,10 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     
 	private Map<String,String> soCartLineMessagesMap=new HashMap<String,String>();
 
+	private boolean soCartOverlayFirstTime = false;
+	
+	private boolean isRefreshSoCartOverlay=true;
+	
     @Override
     public boolean isSoContainerOpen() {
         return isSoContainerOpen;
@@ -2227,6 +2232,14 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         this.user.setRefreshValidSO3(isRefreshValidSO3);
 
     }
+    
+    public String getPlatForm() {
+        return platForm;
+    }
+
+    public void setPlatForm(String platForm) {
+        this.platForm = platForm;
+    }
 
     public boolean isMobilePlatForm() {
         return isMobilePlatForm;
@@ -2259,6 +2272,22 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
 	public void setSoCartLineMessagesMap(Map<String, String> soCartLineMessagesMap) {
 		this.soCartLineMessagesMap = soCartLineMessagesMap;
+	}
+
+	public boolean isSoCartOverlayFirstTime() {
+		return soCartOverlayFirstTime;
+	}
+
+	public void setSoCartOverlayFirstTime(boolean soCartOverlayFirstTime) {
+		this.soCartOverlayFirstTime = soCartOverlayFirstTime;
+	}
+
+	public boolean isRefreshSoCartOverlay() {
+		return isRefreshSoCartOverlay;
+	}
+
+	public void setRefreshSoCartOverlay(boolean isRefreshSoCartOverlay) {
+		this.isRefreshSoCartOverlay = isRefreshSoCartOverlay;
 	}    
   
 }

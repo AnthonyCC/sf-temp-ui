@@ -29,7 +29,7 @@ public class RemoteEventSink implements EventSinkI {
 
 	public boolean log(FDWebEvent event) {
 		try {
-			if (FDStoreProperties.isStorefront2_0Enabled()) {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("event.ejb.EventLoggerSB")) {
 				FDECommerceService.getInstance().log(event);
 			} else {
 				EventLoggerSB sb = this.getEventLoggerHome().create();

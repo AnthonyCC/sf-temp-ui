@@ -346,7 +346,7 @@ public class FDCouponGateway {
 
 	private static void logCouponActivity(FDCouponActivityLogModel couponActvityLog) {
 		try {
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.ecoupon.FDCouponActivityLogSB")){
 				IECommerceService commerceService =   FDECommerceService.getInstance();
 				commerceService.logCouponActivity(couponActvityLog);
 			}else{

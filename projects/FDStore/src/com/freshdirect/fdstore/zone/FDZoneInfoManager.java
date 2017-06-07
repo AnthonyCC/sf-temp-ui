@@ -32,7 +32,7 @@ public class FDZoneInfoManager {
     public static ErpZoneMasterInfo findZoneInfoMaster(String zoneId) throws FDResourceException {
         try {
 
-        	if(FDStoreProperties.isStorefront2_0Enabled()){
+        	if(FDStoreProperties.isSF2_0_AndServiceEnabled("zone.ejb.FDZoneInfoSB")){
         	return FDECommerceService.getInstance().findZoneInfoMaster(zoneId);
         	}else {
             return FDServiceLocator.getInstance().getFDZoneInfoSessionBean().findZoneInfoMaster(zoneId);
@@ -47,7 +47,7 @@ public class FDZoneInfoManager {
         Collection zoneInfo = null;
         try {
 
-        	if(FDStoreProperties.isStorefront2_0Enabled()){
+        	if(FDStoreProperties.isSF2_0_AndServiceEnabled("zone.ejb.FDZoneInfoSB")){
         		 zoneInfo = FDECommerceService.getInstance().loadAllZoneInfoMaster();
             	}else {
             zoneInfo = FDServiceLocator.getInstance().getFDZoneInfoSessionBean().loadAllZoneInfoMaster();
@@ -63,7 +63,7 @@ public class FDZoneInfoManager {
         try {
 
             LOGGER.debug("Service Type:" + serviceType + " ZipCode is:" + zipCode);
-            if(FDStoreProperties.isStorefront2_0Enabled()){
+            if(FDStoreProperties.isSF2_0_AndServiceEnabled("zone.ejb.FDZoneInfoSB")){
             	zoneId = FDECommerceService.getInstance().findZoneId(serviceType, zipCode);
            	}else {
             zoneId = FDServiceLocator.getInstance().getFDZoneInfoSessionBean().findZoneId(serviceType, zipCode);
@@ -73,7 +73,7 @@ public class FDZoneInfoManager {
                 throw new FDResourceException("Zone ID not found for serviceType:" + serviceType + ", zipCode:" + zipCode);
             }
 
-        	if(FDStoreProperties.isStorefront2_0Enabled()){
+        	if(FDStoreProperties.isSF2_0_AndServiceEnabled("zone.ejb.FDZoneInfoSB")){
         		IECommerceService service = FDECommerceService.getInstance();
         		 LOGGER.debug("Service Type:" + serviceType + " ZipCode is:" + zipCode);
         		zoneId = service.findZoneId(serviceType, zipCode);
@@ -96,7 +96,7 @@ public class FDZoneInfoManager {
         String zoneId = null;
         try {
             LOGGER.debug("Service Type:" + serviceType + " ZipCode is:" + zipCode);
-            if(FDStoreProperties.isStorefront2_0Enabled()){
+            if(FDStoreProperties.isSF2_0_AndServiceEnabled("zone.ejb.FDZoneInfoSB")){
             	zoneId = FDECommerceService.getInstance().findZoneId(serviceType, zipCode, isPickupOnlyORNotServiceble);
            	}else {
             zoneId = FDServiceLocator.getInstance().getFDZoneInfoSessionBean().findZoneId(serviceType, zipCode, isPickupOnlyORNotServiceble);

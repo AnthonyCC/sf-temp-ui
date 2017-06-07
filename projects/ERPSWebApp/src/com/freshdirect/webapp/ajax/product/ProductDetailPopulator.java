@@ -547,6 +547,12 @@ public class ProductDetailPopulator {
 		data.setProductZoomImage( domains + product.getZoomImage().getPathWithPublishId() );
 		if(product.getJumboImage()!=null)
 		data.setProductJumboImage( domains + product.getJumboImage().getPathWithPublishId() );
+        if (product.getAlternateImage() != null) {
+            data.setProductAlternateImage(domains + product.getAlternateImage().getPathWithPublishId());
+        }
+        if (product.getPackageImage() != null) {
+            data.setProductImagePackage(domains + product.getPackageImage().getPathWithPublishId());
+        }
 			
 		data.setProductPageUrl( FDURLUtil.getNewProductURI( product ) );
 		

@@ -1,5 +1,6 @@
 package com.freshdirect.fdstore.content;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -2129,7 +2130,7 @@ inner:
 
     @Override
 	public String getPageTitle() {
-		return getAttribute("PAGE_TITLE", "");
+		return getAttribute("PAGE_TITLE", MessageFormat.format("Order {0} | Fast Delivery", getFullName()));
 	}
 
     @Override
@@ -2139,7 +2140,7 @@ inner:
 
 	@Override
 	public String getSEOMetaDescription() {
-		return getAttribute("SEO_META_DESC", "");
+		return getAttribute("SEO_META_DESC", MessageFormat.format("Looking for {0}? Order from FreshDirect now for fast delivery. 100% happiness guarantee!", getFullName()));
 	}
 	
 	@Override

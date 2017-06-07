@@ -78,7 +78,7 @@ public class TestSupport {
 	 */
 	public void ping() {
 		try {
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("test.ejb.TestSupportSB")){
 			LogisticsServiceLocator.getInstance().getCommerceService().ping();
 			}else {
 			TestSupportSB bean = this.getTestSupportHome().create();
@@ -100,7 +100,7 @@ public class TestSupport {
 		List<Long> customersIds = null;
 		try {
 			
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("test.ejb.TestSupportSB")){
 				customersIds= LogisticsServiceLocator.getInstance().getCommerceService().getDYFEligibleCustomerIDs();
 			
 			}else {
@@ -120,7 +120,7 @@ public class TestSupport {
 
 	public List<Long> getErpCustomerIDs() {
 		try {
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("test.ejb.TestSupportSB")){
 			return LogisticsServiceLocator.getInstance().getCommerceService().getErpCustomerIds();
 			
 			}else {
@@ -141,7 +141,7 @@ public class TestSupport {
 
 	public String getFDCustomerIDForErpId(String erp_id) {
 		try {
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("test.ejb.TestSupportSB")){
 				return LogisticsServiceLocator.getInstance().getCommerceService().getFDCustomerIDForErpId(erp_id);
 				
 				}else {
@@ -160,7 +160,7 @@ public class TestSupport {
 
 	public String getErpIDForUserID(String user_id) {
 		try {
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("test.ejb.TestSupportSB")){
 				return LogisticsServiceLocator.getInstance().getCommerceService().getErpIDForUserID(user_id);
 				}else {
 			TestSupportSB bean = this.getTestSupportHome().create();
@@ -313,7 +313,7 @@ public class TestSupport {
 	
 	public Collection<String> getSkuCodes() {
 		try {
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("test.ejb.TestSupportSB")){
 				return LogisticsServiceLocator.getInstance().getCommerceService().getSkuCodes();
 			}else{
 			TestSupportSB ejb = this.getTestSupportHome().create();

@@ -104,9 +104,17 @@
                      <div class="standing-orders-3-cart-details-header">
                            <h2 class="standing-orders-3-cart-details-header-text">Item List</h2>
                            <div class="standing-orders-3-cart-details-header-buttons">
-                                  <button class="standing-orders-3-newso-shop-buttons-past cssbutton cssbutton-flat purple" onclick="window.open('/quickshop/qs_past_orders.jsp', '_self');">Shop from Past Order</button>
-                                  <button class="standing-orders-3-newso-shop-buttons-now cssbutton cssbutton-flat green" onclick="window.open('/index.jsp', '_self');">Shop Now &gt;</button>      
+                           		<button class="standing-orders-3-newso-shop-buttons-past cssbutton cssbutton-flat purple" onclick="window.open('/quickshop/qs_past_orders.jsp', '_self');">Shop from Past Order</button>
+               					<button class="standing-orders-3-newso-shop-buttons-now cssbutton cssbutton-flat green" onclick="window.open('/index.jsp', '_self');">Shop Now &gt;</button>      
                            </div>
+                           <div class="so-cartline-delivery-date">
+								<div class="so-cartline-delivery-date-info">Item Deleted</div>
+								<div class="so-cartline-delivery-date-begins">Change Takes Effect: {$deliveryBegins}</div>
+								<div class="so-cartline-delivery-date-tip">
+									<div class="so-cartline-delivery-date-tip-i">i</div>
+									<div class="so-cartline-delivery-date-tip-cont">Changing a Standing Order Master List may not effect your next delivery</div>
+								</div>
+							</div>
                            <div class="clear"></div>
                      </div>
                      {if $cartSections[0]}
@@ -929,7 +937,7 @@
 		<div class='total__promotion'>
 			<div class='promotion-item' {if $promotionApplied}style="display: none;" aria-hidden="true"{/if} fdform-container="promotion" fdform-container-promotionremove>
 				<form fdform="promotion" action="#" fdform-endpoint-submit="/api/expresscheckout/promotion" fdform-success="FreshDirect.modules.common.forms.successFns.hideOnSuccess">
-					<p class='promotion-text'>Have a promotional code?</p>
+					<p class='promotion-text'><span class="NOMOBWEB">Have a </span><span class="capital">p</span>romotional code<span class="NOMOBWEB">?</span></p>
 					<div>
 						<label for="promotional-code"></label>  
 						<input type="text" class="promotion-input" id="promotional-code" name="promotionCode" placeholder="Enter here" />
@@ -942,7 +950,7 @@
 			{if $userRecognized}
 				<div class='promotion-item' fdform-container="giftcard">
 					<form fdform="giftcard" action="#" fdform-endpoint-submit="/api/expresscheckout/giftcard" fdform-success="FreshDirect.modules.common.forms.successFns.reset">
-						<p class='promotion-text'>Have a new Gift Card?</p>
+						<p class='promotion-text'><span class="NOMOBWEB">Have a new </span>Gift Card<span class="NOMOBWEB">?</span></p>
 						<div>
 							<label for="apply-gift-card"></label>  
 							<input type="text" class="promotion-input" id="apply-gift-card" name="givexNum" placeholder="Enter here" />

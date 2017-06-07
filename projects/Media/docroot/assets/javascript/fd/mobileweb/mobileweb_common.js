@@ -232,6 +232,8 @@ var API;
 		}
 		$('[data-ec-page] .mm-page .mobweb-topnav').on('resize', co_alignHeader);
 		co_alignHeader();
+		//clone footer "or free" text/link into header
+		$jq('.free-link-holder:first').clone().appendTo('#div_deliveryCharge');
 		
 	});
 	

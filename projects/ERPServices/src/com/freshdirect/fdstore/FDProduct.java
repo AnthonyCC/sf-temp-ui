@@ -184,9 +184,10 @@ public class FDProduct extends FDSku implements AttributesI {
 		
 		for (int i = 0; i < variations.length; i++) {
 			FDVariation         variation = variations[i];
-			FDVariationOption	option    = variation.getVariationOptions()[0];
-			                 	           
-			options.put(variation.getName(), option.getName());
+			if(variation.getVariationOptions().length > 0){
+				FDVariationOption	option    = variation.getVariationOptions()[0];                	           
+				options.put(variation.getName(), option.getName());
+			}
 		}
 		
 		return options;

@@ -38,6 +38,9 @@ String moduleContainerId = "ModuleContainer:"+request.getParameter("moduleContai
 <script>
     window.FreshDirect = window.FreshDirect || {};
     window.FreshDirect.moduleContainer = window.FreshDirect.moduleContainer || {};
+    
+    window.FreshDirect.user = window.FreshDirect.user || {};
+    window.FreshDirect.user.isZipPopupUsed = true;
 
     window.FreshDirect.moduleContainer.data = <fd:ToJSON object="${moduleContainerPotato}" noHeaders="true"/>
     console.log(window.FreshDirect.moduleContainer.data);

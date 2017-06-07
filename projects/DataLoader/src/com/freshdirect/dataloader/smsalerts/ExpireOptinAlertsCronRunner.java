@@ -39,7 +39,7 @@ public class ExpireOptinAlertsCronRunner {
 			ctx = getInitialContext();
 			
 			SmsAlertsHome smsAlertsHome = (SmsAlertsHome) ctx.lookup( DlvProperties.getSmsAlertsHome());
-			if(FDStoreProperties.isStorefront2_0Enabled()){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("sms.ejb.SmsAlertsSB")){
 				FDECommerceService.getInstance().expireOptin();
 			}
 			else{
