@@ -3,7 +3,6 @@ FreshDirect.standingorder.isSelectFrequencyChanged = false;
 var soName = "";
 var isNewSOCreated = false;
 var isActiveDrawerOpen = false;
-var drawerSuccessConformationDate;
 
 $jq( document ).ready(function() {
 	if($jq(".standing-orders-3-newso-drawer-container").length){
@@ -362,10 +361,17 @@ function getSOData(id, action){
         		soPlaceOrderDisplay(data.amount);
         		soSaved(id, activatedAndHasAddress, false);
         		updateSOItem(id, data);
+        		var drawerSuccessConformation = '<div class="so-drawer-success"><div class="so-drawer-success-header"><div class="so-drawer-success-alert-img"></div>Important -- Please Read!</div>';
         		if(data.isEligileToShowModifyInfo){
-        			drawerSuccessConformationDate = data.dayOfWeek + ", " + data.deliveryDate + ", " + data.deliveryTime;
-        			doOverlayDialogNew("/quickshop/includes/drawer_success_conformation.jsp");        			
+        			drawerSuccessConformation +='<div class="so-drawer-success-text">This change will not affect your next delivery.</div>';
         		}
+        		drawerSuccessConformation += '<hr class="so-drawer-success-hr" /><div class="so-drawer-success-info">Change will take effect: <span class="so-drawer-success-date">';
+        		if(data.deliveryDate == null){
+        			drawerSuccessConformation += '<a href="javascript:closeDrawerSuccessOverlayDialog(true)">Select a delivery time</a></span></div><button class="so-drawer-success-ok cssbutton cssbutton-flat green nontransparent" onclick="closeDrawerSuccessOverlayDialog(true);">OK</div></div>';
+        		} else {
+        			drawerSuccessConformation += data.dayOfWeek + ', ' + data.deliveryDate + ', ' + data.deliveryTime + '</span></div><button class="so-drawer-success-ok cssbutton cssbutton-flat green nontransparent" onclick="closeDrawerSuccessOverlayDialog(false)">OK</div></div>';
+        		}
+        		doOverlayDialogByHtmlNew(drawerSuccessConformation);
         	}
         	if('displayShopNow'==action){
         		if(data.displayCart){
@@ -376,6 +382,13 @@ function getSOData(id, action){
         	}
         }
  	});
+}
+
+function closeDrawerSuccessOverlayDialog(openTimeslot){
+	$jq(".overlay-dialog-new .ui-dialog-titlebar-close").click();
+	if(openTimeslot){
+		$jq("#ec-drawer #timeslot-tab button.change").click();
+	}
 }
 
 function selectFrequency(item){

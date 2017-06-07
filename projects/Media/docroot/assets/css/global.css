@@ -1976,6 +1976,39 @@ div.control, div.slotRow, div.time {
 	.ui-widget-content {
     	background: #fff none;
 	}
+	.ui-dialog.overlay-dialog-new{
+		border: 0;
+		padding: 0;
+		box-shadow: 0 5px 30px 0 rgba(0, 0, 0, 0.3);
+		border-radius: 0;
+		overflow: visible;
+	}
+	.ui-dialog.overlay-dialog-new .ui-dialog-title{
+		display: none;
+	}
+	.ui-dialog.overlay-dialog-new .ui-dialog-titlebar{
+		padding: 0;
+		margin: 0;
+		overflow: visible;
+		height: 0;
+		min-height: 0;
+	}
+	.ui-dialog.overlay-dialog-new #uimodal-output{
+		padding: 0;
+	}
+	.ui-dialog.overlay-dialog-new .ui-dialog-titlebar button.ui-dialog-titlebar-close{
+		position: absolute;
+		top: -35px;
+		right: -35px;
+		background: none;
+	}
+	.ui-dialog.overlay-dialog-new .ui-dialog-titlebar button.ui-dialog-titlebar-close span.ui-icon-closethick{
+		width: 25px;
+		height: 25px;
+		background: url(/media_stat/images/close.png) no-repeat;
+		background-size: 100%;
+		cursor: pointer;
+	}
 	
 	#toptoolbar {
         position:relative;
