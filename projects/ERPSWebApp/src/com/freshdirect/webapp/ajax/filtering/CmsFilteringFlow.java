@@ -3,7 +3,6 @@ package com.freshdirect.webapp.ajax.filtering;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -1065,7 +1064,11 @@ public class CmsFilteringFlow {
             mergedSectionContext.setProductItems(productItems);
             collectCategoryProducts(nav, mainSectionContext, mergedSectionContext);
             List<SectionContext> subSectionContexts = mainSectionContext.getSectionContexts();
-            if (subSectionContexts != null && !productItems.isEmpty()) {
+            if (subSectionContexts == null){
+                subSectionContexts = new ArrayList<SectionContext>();
+                mainSectionContext.setSectionContexts(subSectionContexts);
+            }
+            if (!productItems.isEmpty()) {
                 subSectionContexts.clear();
                 subSectionContexts.add(mergedSectionContext);
             }
