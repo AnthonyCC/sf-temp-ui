@@ -151,6 +151,7 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 			if (null!= reqData && ACTION_TURN_OFF_CART_OVERLAY_FIRSTTIME.equalsIgnoreCase(reqData.getActiontype())&&
 									user!=null&& user.getIdentity().getErpCustomerPK()!=null) {
 				try {
+						user.setRefreshSoCartOverlay(true);
 						FDStandingOrdersManager.getInstance().updateSoCartOverlayFirstTimePreferences(
 										user.getIdentity().getErpCustomerPK(), false);
 				} catch (FDResourceException e) {

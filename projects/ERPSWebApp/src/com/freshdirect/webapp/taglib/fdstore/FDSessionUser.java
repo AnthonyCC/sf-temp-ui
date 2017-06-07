@@ -171,6 +171,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
 	private boolean soCartOverlayFirstTime = false;
 	
+	private boolean isRefreshSoCartOverlay=true;
+	
     @Override
     public boolean isSoContainerOpen() {
         return isSoContainerOpen;
@@ -2279,4 +2281,13 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setSoCartOverlayFirstTime(boolean soCartOverlayFirstTime) {
 		this.soCartOverlayFirstTime = soCartOverlayFirstTime;
 	}
+
+	public boolean isRefreshSoCartOverlay() {
+		return isRefreshSoCartOverlay;
+	}
+
+	public void setRefreshSoCartOverlay(boolean isRefreshSoCartOverlay) {
+		this.isRefreshSoCartOverlay = isRefreshSoCartOverlay;
+	}    
+  
 }

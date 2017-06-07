@@ -1199,13 +1199,13 @@ private static String convert(Date time) {
 	
 	public static FDUserI setCartOverlayFirstTime(FDUserI user){
 		try{
-			if(user!=null && user.isNewSO3Enabled() && user.isCustomerHasStandingOrders()){
-				LOGGER.info("Before setting SOCartOverlayFirttime ");
+			if(user!=null && user.isNewSO3Enabled() && user.isCustomerHasStandingOrders() && user.isRefreshSoCartOverlay()){
 			ErpCustomerInfoModel cusotmerInfoModel = FDCustomerFactory.getErpCustomer(user.getIdentity()).getCustomerInfo();
 			if(cusotmerInfoModel!=null){
 				user.setSoCartOverlayFirstTime(cusotmerInfoModel.getSoCartOverlayFirstTime()!=null?
 						("N".equalsIgnoreCase(cusotmerInfoModel.getSoCartOverlayFirstTime())?false:true):true);
-				}
+				user.setRefreshSoCartOverlay(false);	
+			}
 			}
 		} catch (Exception e) {
 			LOGGER.info("while setting the Cart Overlay FirstTime "+ e);

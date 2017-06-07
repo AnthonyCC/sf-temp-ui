@@ -316,7 +316,9 @@ public class FDUser extends ModelSupport implements FDUserI {
     private boolean isZipCheckPopupUsed = false;
     
     private Map<String,String> soCartLineMessagesMap=new HashMap<String,String>();
-        
+    
+    private boolean refreshSoCartOverlay = true;
+    
     private boolean  soCartOverlayFirstTime=false;
     
 	public Date getTcAcknowledgeDate() {
@@ -3618,6 +3620,14 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	public void setSoCartOverlayFirstTime(boolean soCartOverlayFirstTime) {
 		this.soCartOverlayFirstTime = soCartOverlayFirstTime;
+	}
+
+	public boolean isRefreshSoCartOverlay() {
+		return refreshSoCartOverlay;
+	}
+
+	public void setRefreshSoCartOverlay(boolean refreshSoCartOverlay) {
+		this.refreshSoCartOverlay = refreshSoCartOverlay;
 	}
 
 	
