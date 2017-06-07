@@ -2090,9 +2090,6 @@ li.cleanli .gen-arrow {
 		width: 100%;
 		box-sizing: border-box;
 	}
-	.mm-page #cartcontent{
-		border-top: 1px solid #BBBBBB;
-	}
 	.mm-page #cartcontent .cartsection__cartline{
 		margin: 0;
 		padding: 0;
