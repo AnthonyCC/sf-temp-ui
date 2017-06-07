@@ -399,6 +399,9 @@
 					<div class="charges__row">
 						<div class="charges__rowcell charges-text">Delivery Charge:</div>
 						<div class="charges__rowcell charges-price" id="div_deliveryCharge">{$deliveryCharge}</div>
+						<script>
+							$jq('.free-link-holder:first').clone().appendTo('#div_deliveryCharge');
+						</script>
 					</div>
 				{/if}
 				{if $estimatedTotal and not $mobWeb}
