@@ -379,7 +379,7 @@ public class ModelConverter {
 					materialPlants[i].isKosherProduction(), 
 					materialPlants[i].isPlatter(), 
 					ds, 
-					EnumATPRule.getEnum(materialPlants[i].getAtpRule().getName()), 
+					EnumATPRule.getEnum(materialPlants[i].getAtpRule()), 
 					materialPlants[i].getRating(), 
 					materialPlants[i].getFreshness(),
 					materialPlants[i].getSustainabilityRating(),
@@ -401,7 +401,7 @@ public class ModelConverter {
 				
 				ErpMaterialPrice matData = new ErpMaterialPrice(
 						materialPrices[i].getPrice(), 
-						materialPrices[i].getUnit(), 
+						materialPrices[i].getPricingUnit(), 
 						materialPrices[i].getPromoPrice(), 
 						materialPrices[i].getScaleUnit(), 
 						materialPrices[i].getScaleQuantity(), 
