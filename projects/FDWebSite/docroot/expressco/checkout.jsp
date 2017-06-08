@@ -102,20 +102,31 @@ if (mobWeb) {
   <tmpl:put name='content' direct='true'>
     <div id="expresscheckout">
       <div class="container">
-        <div class="header cartheader">
-          <div class="cartheader__text">
-            <h1 class="checkout icon-cart_fast-before">Checkout</h1>
-          </div><div class="cartheader__action_w_subtotal">
-            <div fdform-error-container="checkout">
-            </div>
-            <form fdform="checkout" action="#" id="checkoutbutton_top" fdform-disable-resubmit="true" fdform-disable-resubmit-selector=".cssbutton.orange" fdform-disable-resubmit-release="manual">
-              <soy:render template="expressco.checkoutButton" data="${singlePageCheckoutPotato}" />
-            </form>
-            <a class="etipping-addtip-text" href='#tipDropdown'>Add a Tip</a>
-          </div>
+        
+      	<div id="cartheader_co">
+	      	<div class="header cartheader">
+	          <% if (!mobWeb) { %>
+	          <div class="cartheader__text">
+	            <h1 class="checkout icon-cart_fast-before">Checkout</h1>
+	          </div>
+	          <% } %>
+	          <div class="cartheader__action_w_subtotal">
+	            <div fdform-error-container="checkout">
+	            </div>
+	            <form fdform="checkout" action="#" id="checkoutbutton_top" fdform-disable-resubmit="true" fdform-disable-resubmit-selector=".cssbutton.orange" fdform-disable-resubmit-release="manual">
+	              <soy:render template="expressco.checkoutButton" data="${singlePageCheckoutPotato}" />
+	            </form>
+	            <a class="etipping-addtip-text" href='#tipDropdown'>Add a Tip</a>
+	          </div>
+	        </div>
         </div>
 		
 		
+         <% if (mobWeb) { %>
+         <div class="cartheader__text">
+           <h1 class="checkout icon-cart_fast-before">Checkout</h1>
+         </div>
+         <% } %>
         <div id="modifyorder">
           <soy:render template="expressco.modifyorder" data="${cartDataPotato}" />
         </div>
@@ -126,28 +137,27 @@ if (mobWeb) {
         </div>
         
         
-        <% if (!mobWeb) { /* no mobWeb for now */  %>
-			<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user)) { %>
-				<%-- APPDEV-5916 --%>
-				<div id="cartCarousels">
-					<potato:viewCart />
-					<soy:render template="expressco.checkoutTabbedCarousel" data="${viewCartPotato}" />
-					
-					<script>
-						/* make sure some tab has been loaded */
-						$jq('#cartCarousels').ready(function() {
-							if ($jq('.tabbed-carousel [data-component="tabitem"].selected').closest('.tabbed-carousel').find('[data-component="tabpanel"]').children().length === 0) {
-								$jq('.tabbed-carousel [data-component="tabitem"].selected').trigger('click');
-							}
-							/* flip to other tab in checkout */
-							var $tabs = $jq('.tabbed-carousel [data-component="tabitem"]').not('[data-sitefeature="PRODUCT_DONATIONS"]').not('[data-sitefeature="PRODUCT_SAMPLES"]');
-							if ($tabs.length) {
-								$tabs.first().trigger('click');
-							}
-						});
-					</script>
-				</div>
-			<% } %>
+       
+		<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user)) { %>
+			<%-- APPDEV-5916 --%>
+			<div id="cartCarousels">
+				<potato:viewCart />
+				<soy:render template="expressco.checkoutTabbedCarousel" data="${viewCartPotato}" />
+				
+				<script>
+					/* make sure some tab has been loaded */
+					$jq('#cartCarousels').ready(function() {
+						if ($jq('.tabbed-carousel [data-component="tabitem"].selected').closest('.tabbed-carousel').find('[data-component="tabpanel"]').children().length === 0) {
+							$jq('.tabbed-carousel [data-component="tabitem"].selected').trigger('click');
+						}
+						/* flip to other tab in checkout */
+						var $tabs = $jq('.tabbed-carousel [data-component="tabitem"]').not('[data-sitefeature="PRODUCT_DONATIONS"]').not('[data-sitefeature="PRODUCT_SAMPLES"]');
+						if ($tabs.length) {
+							$tabs.first().trigger('click');
+						}
+					});
+				</script>
+			</div>
 		<% } %>
        
         <div class="checkout-contentheader">

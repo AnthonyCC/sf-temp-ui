@@ -1624,17 +1624,39 @@ li.cleanli .gen-arrow {
 			width: 100%;
 			z-index: 111; /* messages use ~100 */
 		}
-		[data-ec-page] .mm-page #cartheader {
+		[data-ec-page] .mm-page #expresscheckout:before {
+			background: none;
+		}
+		[data-ec-page] .mm-page #cartheader,
+		[data-ec-page] .mm-page #cartheader_co {
 			position: fixed;
 			background-color: #eee;
 			width: 100%;
-			z-index: 110;
+			z-index: 1110;
 		}
 		[data-ec-page] .mm-page .cartheader {
 			border-bottom: 1px solid #bbb;
 		}
-		[data-ec-page] .mm-page .cartheader__text {
-			display: none;
+		[data-ec-page] .mm-page [data-component="drawer"] .drawer-header h2,
+		[data-ec-page] .mm-page [data-component="drawer"] .drawer-header button.change {
+			margin-top: 10px;
+		}
+		[data-ec-page] .mm-page #cartheader_co .cartheader {
+			border-bottom: none;
+			padding: 10px 0;
+			margin-bottom: 0;
+		}
+		[data-ec-page] .mm-page #cartheader_co .etipping-addtip-text {
+		    padding-right: 0;
+		    position: absolute;
+		    left: 30px;
+		    top: 2em;
+		}
+		[data-ec-page] .mm-page #cartheader_co button.checkout_button_w_subtotal {
+			margin-right: 10px;
+		}
+		[data-ec-page] .mm-page .cartheader__text h1 {
+			font-size: 1.75em;
 		}
 		[data-ec-page] .mm-page .cartheader__text.mobweb {
 			display: block;
@@ -1700,9 +1722,24 @@ li.cleanli .gen-arrow {
 		[data-ec-page] .mm-page .total .rowcell-text-right {
 			text-align: left;
 		}
+		[data-ec-page] .mm-page .cartsection__totalwrapper .rowcell-text-right {
+			min-width: 150px;
+		}
+		[data-ec-page] .mm-page #cartcontent .cartsection .cartsection__totalwrapper {
+			text-align: right;
+		}
+		[data-ec-page] .mm-page .eTippingEnabled .rowcontent-free-with-pass {
+			float: left;
+		}
 		[data-ec-page] .mm-page .total .st_val_totalAvalaratax {
 			max-width: 100px;
 		}
+		[data-ec-page] .mm-page .cartsection__tax form[fdform="etip"] {
+			width: 320px;
+   			float: right;
+    		margin-right: 20px;
+		}
+		
 		
 		/* bottom find out more text */
 		[data-ec-page] .mm-page .footer__left {
@@ -1762,7 +1799,7 @@ li.cleanli .gen-arrow {
 	
 	.mm-page .cartheader__action_w_subtotal {
 		width: 100%;
-		text-align: center;
+		text-align: right;
 	}
 	.mm-page .etipping-addtip-text {
 		padding-right: 0;
@@ -1785,9 +1822,6 @@ li.cleanli .gen-arrow {
 	[data-drawer-id], 
 	[data-drawer-disabled] {
 		list-style-type: none;
-	}
-	[data-drawer-id] h2 {
-		/*display: inline-block;*/
 	}
 	/* drawer content popups */
 		#addaddresspopup .ec-popup.addaddresspopup {
@@ -2162,6 +2196,7 @@ li.cleanli .gen-arrow {
 	}
 	.mm-page #cartcontent .total .total-right{
 		float: right;
+		margin-top: 10px;
 	}
 	.mm-page #cartcontent .total .total-right .subtotalboxes .subtotal__rowcell-left{
 		width: 140px;
