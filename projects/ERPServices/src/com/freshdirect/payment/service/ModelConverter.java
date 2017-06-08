@@ -47,7 +47,7 @@ import com.freshdirect.ecommerce.data.fdstore.SalesAreaInfoData;
 import com.freshdirect.ecommerce.data.logger.recommendation.FDRecommendationEventData;
 import com.freshdirect.ecommerce.data.payment.FDGatewayActivityLogModelData;
 import com.freshdirect.ecommerce.data.rules.RuleData;
-import com.freshdirect.ecommerce.data.security.ticket.TicketData;
+import com.freshdirect.ecommerce.data.security.TicketData;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.EnumAlcoholicContent;
 import com.freshdirect.erp.EnumFeaturedHeaderType;
