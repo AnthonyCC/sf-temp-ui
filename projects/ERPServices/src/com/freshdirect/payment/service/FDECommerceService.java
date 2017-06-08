@@ -79,6 +79,8 @@ import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpInventoryData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpRestrictedAvailabilityData;
 import com.freshdirect.ecommerce.data.erp.inventory.RestrictedInfoParam;
+import com.freshdirect.ecommerce.data.erp.material.ErpClassData;
+import com.freshdirect.ecommerce.data.erp.material.ErpMaterialData;
 import com.freshdirect.ecommerce.data.erp.material.OverrideSkuAttrParam;
 import com.freshdirect.ecommerce.data.erp.material.SkuPrefixParam;
 import com.freshdirect.ecommerce.data.erp.model.ErpProductInfoModelData;
@@ -94,7 +96,7 @@ import com.freshdirect.ecommerce.data.payment.BINData;
 import com.freshdirect.ecommerce.data.payment.FDGatewayActivityLogModelData;
 import com.freshdirect.ecommerce.data.routing.SubmitOrderRequestData;
 import com.freshdirect.ecommerce.data.rules.RuleData;
-import com.freshdirect.ecommerce.data.security.ticket.TicketData;
+import com.freshdirect.ecommerce.data.security.TicketData;
 import com.freshdirect.ecommerce.data.sessionimpressionlog.SessionImpressionLogEntryData;
 import com.freshdirect.ecommerce.data.smartstore.ProductFactorParam;
 import com.freshdirect.ecommerce.data.smartstore.ScoreResult;
@@ -107,7 +109,11 @@ import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
 import com.freshdirect.erp.SkuAvailabilityHistory;
 import com.freshdirect.erp.model.BatchModel;
+import com.freshdirect.erp.model.ErpCharacteristicValueModel;
+import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
+import com.freshdirect.erp.model.ErpClassModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
+import com.freshdirect.erp.model.ErpMaterialModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.event.RecommendationEventsAggregate;
 import com.freshdirect.fdstore.EnumEStoreId;
@@ -125,6 +131,7 @@ import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityLogModel;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.core.VersionedPrimaryKey;
 import com.freshdirect.framework.event.FDRecommendationEvent;
 import com.freshdirect.framework.event.FDWebEvent;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -345,6 +352,14 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String CHECK_ADDRESS_RESTRICTION = "restriction/checkaddress";
 	private static final String ADD_DLV_RESTRICTION = "restriction/delivery/add";
 	private static final String GET_RESTRICTIONS = "restriction/delivery";
+
+	
+	private static final String ERPMATERIAL_BY_SAPID="erpmaterial/materialbysapid";
+	private static final String ERPCLASS_BY_SAPID="erpclass/materialbysapid";
+	private static final String ERPCLASS_ALL_CLASS="erpclass/allclass";
+	private static final String ERPCHARVALUEPRICE_BY_SAPID="erpclass/materialbysapid";
+	private static final String ERPCHARVALUEPRICE_MAT_BY_SAPID_AND_VERSION="erpclass/materialbysapidandvversion";
+
 	private static final String RESERVATION_UPDATE = "routing/reservationupdate/"; 
 	private static final String MODIFYORDERREQUEST = "routing/modifyorderrequest";
 	private static final String CANCEL_ORDER_REQUEST = "routing/cancelorderrequest";
@@ -353,6 +368,7 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String GET_TICKET = "ticket";
 	private static final String UPDATE_TICKET = "ticket/update";
 	private static final String ADD_TICKET = "ticket/create";
+
 
 	private static final String GET_START_DATES = "variant/startdates";
 	private static final String GET_VARIANTS = "variant";
@@ -1173,6 +1189,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 
 		return null;
 	}
+	
 	private <E> E typeReferenceFor(String daoClassName) {
 		
 		
@@ -1197,7 +1214,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 
 				try {
 					response= httpGetDataTypeMap(getFdCommerceEndPoint(GET_COO_API),  new TypeReference<Response<List<CountryOfOriginData>>>() {});
-					
+
 				} catch (FDResourceException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -3609,6 +3626,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		}
 		return response.getData();
 	}
+
 	
 	@Override
 	public void sendCancelOrderRequest(String saleId) throws RemoteException {
@@ -3694,9 +3712,11 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		submitOrderRequestData.setErpOrderId(erpOrderId);
 		return submitOrderRequestData;
 	}
+
 	
+
 	@Override
-public Ticket createTicket(Ticket ticket) throws RemoteException {
+	 public Ticket createTicket(Ticket ticket) throws RemoteException {
 	Request<TicketData> request = new Request<TicketData>();
 	Response<TicketData> response= null;
 	try {
@@ -3711,7 +3731,8 @@ public Ticket createTicket(Ticket ticket) throws RemoteException {
 		throw new RemoteException(e.getMessage());
 	}
 	return ModelConverter.buildTicket(response.getData());
-}
+	}
+	
 	@Override
 	public Ticket updateTicket(Ticket ticket) throws RemoteException {
 		Request<TicketData> request = new Request<TicketData>();
@@ -3829,8 +3850,4 @@ public Ticket createTicket(Ticket ticket) throws RemoteException {
 		}
 		return response.getData();
 	}
-	
-	
-	
-	
 }

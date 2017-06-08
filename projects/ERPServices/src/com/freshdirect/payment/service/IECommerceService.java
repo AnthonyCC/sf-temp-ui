@@ -20,7 +20,6 @@ import com.freshdirect.content.attributes.AttributeException;
 import com.freshdirect.content.attributes.FlatAttributeCollection;
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.ErpActivityRecord;
-import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.customer.ErpEWalletModel;
 import com.freshdirect.customer.ErpGrpPriceModel;
@@ -43,7 +42,10 @@ import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
 import com.freshdirect.erp.SkuAvailabilityHistory;
 import com.freshdirect.erp.model.BatchModel;
+import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
+import com.freshdirect.erp.model.ErpClassModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
+import com.freshdirect.erp.model.ErpMaterialModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.event.RecommendationEventsAggregate;
 import com.freshdirect.fdstore.EnumEStoreId;
@@ -59,6 +61,7 @@ import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityLogModel;
+import com.freshdirect.framework.core.VersionedPrimaryKey;
 import com.freshdirect.framework.event.FDRecommendationEvent;
 import com.freshdirect.framework.event.FDWebEvent;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
@@ -438,7 +441,11 @@ public interface IECommerceService {
     public String checkAddressForRestrictions(AddressData address) throws RemoteException;
     
 
-    public void sendReservationUpdateRequest(String  reservationId, ContactAddressModel address, String sapOrderNumber) throws RemoteException, FDPayPalServiceException;
+//	public ErpMaterialModel findBySapId(String materialNo) throws RemoteException;
+	
+//	public ErpClassModel getErpClassBySapId(String sapId) throws RemoteException;
+
+	public void sendReservationUpdateRequest(String  reservationId, ContactAddressModel address, String sapOrderNumber) throws RemoteException, FDPayPalServiceException;
 	
     public void sendSubmitOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
 			String unattendedInstr,String orderMobileNumber,String erpOrderId) throws RemoteException;
@@ -447,7 +454,11 @@ public interface IECommerceService {
 	
     public void sendModifyOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
 			String unattendedInstr,String orderMobileNumber,String erpOrderId) throws RemoteException;
-
+//	public Collection findAllClasses() throws RemoteException;
+	
+//	public ErpCharacteristicValuePriceModel findByMaterial(VersionedPrimaryKey materialPK) throws RemoteException;
+    
+//    public ErpCharacteristicValuePriceModel findByMaterialAndCharValue(VersionedPrimaryKey materialPK, VersionedPrimaryKey charValPK) throws RemoteException;
 	/*EwalletResponseData getToken(EwalletRequestData ewalletRequestData) throws RemoteException;
 	EwalletResponseData checkout(EwalletRequestData ewalletRequestData) throws RemoteException;
 	EwalletResponseData expressCheckout(EwalletRequestData ewalletRequestData) throws RemoteException;
@@ -483,9 +494,5 @@ public interface IECommerceService {
 	public List<String> getVariants(String feature) throws RemoteException;
 	
 	public List<Date> getStartDates() throws RemoteException;
-
-
-
-
 
 }
