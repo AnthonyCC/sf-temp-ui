@@ -1619,6 +1619,9 @@ li.cleanli .gen-arrow {
 
 /* CHECKOUT */
 	/* visual updates APPDEV-5966 */
+		[data-ec-page] .mm-page #ec-drawer {
+			padding: 0 10px;
+		}
 		[data-ec-page] .mm-page .mobweb-topnav {
 			position: fixed;
 			width: 100%;
@@ -1722,7 +1725,7 @@ li.cleanli .gen-arrow {
 		[data-ec-page] .mm-page .total .rowcell-text-right {
 			text-align: left;
 		}
-		[data-ec-page] .mm-page .cartsection__totalwrapper .rowcell-text-right {
+		[data-ec-page] .mm-page .cartsection__totalwrapper .subtotal__rowcell-right {
 			min-width: 150px;
 		}
 		[data-ec-page] .mm-page #cartcontent .cartsection .cartsection__totalwrapper {
@@ -1738,6 +1741,9 @@ li.cleanli .gen-arrow {
 			width: 320px;
    			float: right;
     		margin-right: 20px;
+		}
+		[data-ec-page] .mm-page .eTippingEnabled .cartsection__totalwrapper {
+			width: auto;
 		}
 		
 		
@@ -2182,7 +2188,8 @@ li.cleanli .gen-arrow {
 		max-width: 100%;
 	}
 	.mm-page #cartcontent .cartsection .cartsection__totalwrapper{
-		padding: 10px 5px;
+		margin: 0 10px;
+		padding: 0;
 	}
 	
 	.mm-page #cartcontent .total .total-right,
