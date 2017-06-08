@@ -108,9 +108,7 @@ if (mobWeb) {
 	          <% if (!mobWeb) { %>
 	          <div class="cartheader__text">
 	            <h1 class="checkout icon-cart_fast-before">Checkout</h1>
-	          </div>
-	          <% } %>
-	          <div class="cartheader__action_w_subtotal">
+	          </div><% } /* no spacing allowed */ %><div class="cartheader__action_w_subtotal">
 	            <div fdform-error-container="checkout">
 	            </div>
 	            <form fdform="checkout" action="#" id="checkoutbutton_top" fdform-disable-resubmit="true" fdform-disable-resubmit-selector=".cssbutton.orange" fdform-disable-resubmit-release="manual">
