@@ -717,7 +717,7 @@ if (curHref.indexOf('successPage') === -1 && $jq.QueryString['successPage']) {
 						   	<div class="footer-buttons">
 								<span class="close"></span><br />
 								<a class="cart cssbutton cssbutton-flat" href="/view_cart.jsp">View Cart</a>
-								<a class="checkout cssbutton orange cssbutton-flat" href="/checkout/view_cart.jsp">Checkout</a>
+								<a class="checkout cssbutton orange cssbutton-flat" href="/checkout/view_cart.jsp" fd-login-required>Checkout</a>
 							</div>
 			    		</div>
 					</fd:GetCart>
