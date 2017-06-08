@@ -8,7 +8,9 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.common.ERPServiceLocator;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.service.FDECommerceService;
 
 /**
  * @author csongor
@@ -67,7 +69,12 @@ public class TicketService {
 			int remainingTries = 5;
 			while (remainingTries > 0) {
 				Ticket ticket = new Ticket(generateKey(), owner, purpose, expiration, false);
-				ticket = sb.createTicket(ticket);
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled("security.ticket.TicketServiceSB")){
+					ticket = FDECommerceService.getInstance().createTicket(ticket);
+				}
+				else{
+					ticket = sb.createTicket(ticket);
+				}
 				if (ticket != null)
 					return ticket;
 
@@ -85,8 +92,13 @@ public class TicketService {
 
 	public Ticket reload(Ticket ticket) throws NoSuchTicketException, FDResourceException {
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("security.ticket.TicketServiceSB")){
+				ticket = FDECommerceService.getInstance().retrieveTicket(ticket.getKey());
+			}
+			else{
 			TicketServiceSB sb = getTicketService();
 			ticket = sb.retrieveTicket(ticket.getKey());
+			}
 			if (ticket == null)
 				throw new NoSuchTicketException();
 
@@ -109,13 +121,24 @@ public class TicketService {
 		if (purpose == null || purpose.length() == 0)
 			throw new IllegalArgumentException("purpose cannot be null or empty");
 		TicketServiceSB sb;
+		Ticket ticket ;
 		try {
 			sb = getTicketService();
-			Ticket ticket = sb.retrieveTicket(key);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("security.ticket.TicketServiceSB")){
+				ticket = FDECommerceService.getInstance().retrieveTicket(key);
+			}
+			else{
+				 ticket = sb.retrieveTicket(key);
+			}
 			if (ticket == null)
 				throw new NoSuchTicketException();
 			ticket.use(user, purpose);
-			ticket = sb.updateTicket(ticket);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("security.ticket.TicketServiceSB")){
+				ticket = FDECommerceService.getInstance().updateTicket(ticket);
+			}
+			else{
+				ticket = sb.updateTicket(ticket);
+			}
 			if (ticket == null)
 				throw new NoSuchTicketException();
 			else

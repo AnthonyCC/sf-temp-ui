@@ -47,6 +47,7 @@ import com.freshdirect.ecommerce.data.fdstore.SalesAreaInfoData;
 import com.freshdirect.ecommerce.data.logger.recommendation.FDRecommendationEventData;
 import com.freshdirect.ecommerce.data.payment.FDGatewayActivityLogModelData;
 import com.freshdirect.ecommerce.data.rules.RuleData;
+import com.freshdirect.ecommerce.data.security.ticket.TicketData;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.EnumAlcoholicContent;
 import com.freshdirect.erp.EnumFeaturedHeaderType;
@@ -72,6 +73,7 @@ import com.freshdirect.payment.BillingCountryInfo;
 import com.freshdirect.payment.BillingRegionInfo;
 import com.freshdirect.payment.gateway.ejb.FDGatewayActivityLogModel;
 import com.freshdirect.rules.Rule;
+import com.freshdirect.security.ticket.Ticket;
 
 
 public class ModelConverter {
@@ -634,6 +636,23 @@ public class ModelConverter {
 			return activityRecordList;
 			
 		}
+
+	public static TicketData buildTicketData(Ticket ticket) {
+		TicketData ticketData = new TicketData();
+		ticketData.setExpiration(ticket.getExpiration());
+		ticketData.setKey(ticket.getKey());
+		ticketData.setOwner(ticket.getOwner());
+		ticketData.setPurpose(ticket.getPurpose());
+		ticketData.setUsed(ticket.isUsed());
+		return ticketData;
+	}
+	
+	public static Ticket buildTicket(TicketData ticketData) {
+		Ticket ticketRequest= new Ticket(ticketData.getKey(), ticketData.getOwner(), 
+				ticketData.getPurpose(), ticketData.getExpiration(), ticketData.isUsed());
+		return ticketRequest;
+		
+	}
 		
 		
 	}

@@ -28,7 +28,6 @@ import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpRestrictedAvailabilityModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.ecommerce.data.common.Request;
-import com.freshdirect.ecommerce.data.delivery.AbstractRestrictionData;
 import com.freshdirect.ecommerce.data.delivery.AddressAndRestrictedAdressData;
 import com.freshdirect.ecommerce.data.delivery.AlcoholRestrictionData;
 import com.freshdirect.ecommerce.data.delivery.RestrictedAddressModelData;
@@ -64,7 +63,6 @@ import com.freshdirect.framework.event.FDRecommendationEvent;
 import com.freshdirect.framework.event.FDWebEvent;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
-import com.freshdirect.logistics.delivery.model.EnumRestrictedAddressReason;
 import com.freshdirect.logistics.delivery.model.OrderContext;
 import com.freshdirect.logistics.delivery.model.SiteAnnouncement;
 import com.freshdirect.logistics.fdstore.StateCounty;
@@ -76,6 +74,7 @@ import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
 import com.freshdirect.referral.extole.model.ExtoleResponse;
 import com.freshdirect.referral.extole.model.FDRafCreditModel;
 import com.freshdirect.rules.Rule;
+import com.freshdirect.security.ticket.Ticket;
 import com.freshdirect.sms.model.st.STSmsResponse;
 
 public interface IECommerceService {
@@ -437,6 +436,7 @@ public interface IECommerceService {
 	public boolean checkForAlcoholDelivery(String scrubbedAddress, String zipcode, String apartment) throws RemoteException;
 	
     public String checkAddressForRestrictions(AddressData address) throws RemoteException;
+    
 
     public void sendReservationUpdateRequest(String  reservationId, ContactAddressModel address, String sapOrderNumber) throws RemoteException, FDPayPalServiceException;
 	
@@ -465,6 +465,24 @@ public interface IECommerceService {
 	EwalletResponseData expressCheckoutWithoutPrecheckout(EwalletRequestData ewalletRequestData) throws RemoteException;
 	//PayPal
 	EwalletResponseData addPayPalWallet(EwalletRequestData ewalletRequestData) throws RemoteException;*/
+    
+    public Ticket createTicket(Ticket ticket) throws RemoteException;
+    
+    public  Ticket updateTicket(Ticket ticket) throws RemoteException;
+    
+    public Ticket retrieveTicket(String key) throws RemoteException;
+    
+    public Map<String,String> getVariantMap(String feature) throws RemoteException;
+    
+	public Map<String,String> getVariantMap(String feature, Date date) throws RemoteException;
+	
+	public Map<String, Integer> getCohorts() throws RemoteException;
+	
+	public List<String> getCohortNames() throws RemoteException;
+	
+	public List<String> getVariants(String feature) throws RemoteException;
+	
+	public List<Date> getStartDates() throws RemoteException;
 
 
 

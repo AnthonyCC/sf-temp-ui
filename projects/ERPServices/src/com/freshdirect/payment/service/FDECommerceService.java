@@ -42,7 +42,6 @@ import com.freshdirect.content.attributes.AttributeException;
 import com.freshdirect.content.attributes.FlatAttribute;
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.ErpActivityRecord;
-import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.customer.ErpEWalletModel;
 import com.freshdirect.customer.ErpGrpPriceModel;
@@ -55,11 +54,9 @@ import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.customer.ErpActivityRecordData;
 import com.freshdirect.ecommerce.data.customer.ErpGrpPriceModelData;
 import com.freshdirect.ecommerce.data.customer.accounts.external.UserTokenData;
-import com.freshdirect.ecommerce.data.delivery.AbstractRestrictionData;
 import com.freshdirect.ecommerce.data.delivery.AddressAndRestrictedAdressData;
 import com.freshdirect.ecommerce.data.delivery.AddressRestrictionData;
 import com.freshdirect.ecommerce.data.delivery.AlcoholRestrictionData;
-import com.freshdirect.ecommerce.data.delivery.OneTimeReverseRestrictionData;
 import com.freshdirect.ecommerce.data.delivery.RestrictedAddressModelData;
 import com.freshdirect.ecommerce.data.delivery.RestrictionData;
 import com.freshdirect.ecommerce.data.delivery.sms.RecievedSmsData;
@@ -97,6 +94,7 @@ import com.freshdirect.ecommerce.data.payment.BINData;
 import com.freshdirect.ecommerce.data.payment.FDGatewayActivityLogModelData;
 import com.freshdirect.ecommerce.data.routing.SubmitOrderRequestData;
 import com.freshdirect.ecommerce.data.rules.RuleData;
+import com.freshdirect.ecommerce.data.security.ticket.TicketData;
 import com.freshdirect.ecommerce.data.sessionimpressionlog.SessionImpressionLogEntryData;
 import com.freshdirect.ecommerce.data.smartstore.ProductFactorParam;
 import com.freshdirect.ecommerce.data.smartstore.ScoreResult;
@@ -132,7 +130,6 @@ import com.freshdirect.framework.event.FDWebEvent;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
-import com.freshdirect.logistics.delivery.model.EnumRestrictedAddressReason;
 import com.freshdirect.logistics.delivery.model.OrderContext;
 import com.freshdirect.logistics.delivery.model.SiteAnnouncement;
 import com.freshdirect.logistics.fdstore.StateCounty;
@@ -144,6 +141,7 @@ import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
 import com.freshdirect.referral.extole.model.ExtoleResponse;
 import com.freshdirect.referral.extole.model.FDRafCreditModel;
 import com.freshdirect.rules.Rule;
+import com.freshdirect.security.ticket.Ticket;
 import com.freshdirect.sms.model.st.STSmsResponse;
 //import com.freshdirect.content.attributes.FlatAttributeCollection;
 //import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
@@ -351,6 +349,19 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String MODIFYORDERREQUEST = "routing/modifyorderrequest";
 	private static final String CANCEL_ORDER_REQUEST = "routing/cancelorderrequest";
 	private static final String SUBMIT_ORDER_REQUEST = "routing/submitorderrequest";
+	
+	private static final String GET_TICKET = "ticket";
+	private static final String UPDATE_TICKET = "ticket/update";
+	private static final String ADD_TICKET = "ticket/create";
+
+	private static final String GET_START_DATES = "variant/startdates";
+	private static final String GET_VARIANTS = "variant";
+	private static final String GET_VARIANT_MAP = "variant/site/";
+	private static final String GET_VARIANT = "variant/site/";
+	private static final String GET_COHORTS = "variant/cohort";
+	private static final String GET_COHORTS_NAMES = "variant/cohortname";
+	
+	
 	public static IECommerceService getInstance() {
 		if (INSTANCE == null)
 			INSTANCE = new FDECommerceService();
@@ -3683,5 +3694,143 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		submitOrderRequestData.setErpOrderId(erpOrderId);
 		return submitOrderRequestData;
 	}
+	
+	@Override
+public Ticket createTicket(Ticket ticket) throws RemoteException {
+	Request<TicketData> request = new Request<TicketData>();
+	Response<TicketData> response= null;
+	try {
+		request.setData(ModelConverter.buildTicketData(ticket));
+		String inputJson = buildRequest(request);
+		response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ADD_TICKET),  new TypeReference<Response<TicketData>>() {});
+	} catch (FDResourceException e){
+		LOGGER.error(e.getMessage());
+		throw new FDRuntimeException(e, "Unable to process the request.");
+	} catch (FDPayPalServiceException e) {
+		LOGGER.error(e.getMessage());
+		throw new RemoteException(e.getMessage());
+	}
+	return ModelConverter.buildTicket(response.getData());
+}
+	@Override
+	public Ticket updateTicket(Ticket ticket) throws RemoteException {
+		Request<TicketData> request = new Request<TicketData>();
+		Response<TicketData> response= null;
+		try {
+			request.setData(ModelConverter.buildTicketData(ticket));
+			String inputJson = buildRequest(request);
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(UPDATE_TICKET),  new TypeReference<Response<TicketData>>() {});
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new FDRuntimeException(e, "Unable to process the request.");
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return ModelConverter.buildTicket(response.getData());
+	}
+	@Override
+	public Ticket retrieveTicket(String key) throws RemoteException {
+		Response<TicketData> response = null;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_TICKET+"?key="+key),  new TypeReference<Response<TicketData>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return ModelConverter.buildTicket(response.getData());
+	}
+
+	@Override
+	public Map<String, String> getVariantMap(String feature)throws RemoteException {
+		Response<Map<String, String>> response = null;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_VARIANT+feature),  new TypeReference<Response<Map<String, String>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	@Override
+	public Map<String, String> getVariantMap(String feature, Date date)
+			throws RemoteException {
+		Response<Map<String, String>> response = null;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_VARIANT_MAP+feature+"/date/"+date),  new TypeReference<Response<Map<String, String>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	@Override
+	public Map<String, Integer> getCohorts() throws RemoteException {
+		Response<Map<String, Integer>> response = null;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_COHORTS),  new TypeReference<Response<Map<String, Integer>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	@Override
+	public List<String> getCohortNames() throws RemoteException {
+		Response< List<String>> response = null;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_COHORTS_NAMES),  new TypeReference<Response<List<String>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	@Override
+	public List<String> getVariants(String feature) throws RemoteException {
+		Response< List<String>> response = null;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_VARIANTS),  new TypeReference<Response<List<String>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	@Override
+	public List<Date> getStartDates() throws RemoteException {
+		Response<List<Date>> response = null;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_START_DATES),  new TypeReference<Response<List<Date>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	
+	
+	
 	
 }
