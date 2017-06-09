@@ -83,6 +83,7 @@ import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.PasswordNotExpiredException;
+import com.freshdirect.fdstore.customer.PendingOrder;
 import com.freshdirect.fdstore.customer.ProfileAttributeName;
 import com.freshdirect.fdstore.customer.RegistrationResult;
 import com.freshdirect.fdstore.customer.SavedRecipientModel;
@@ -898,5 +899,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public List<UnsettledOrdersInfo> getUnsettledOrders(Date date) throws FDResourceException, RemoteException;
 
 	public ErpCustomerModel getCustomer(FDIdentity identity) throws FDResourceException, RemoteException;
+
+	public Map<String, List<PendingOrder>> getPendingDeliveries() throws FDResourceException, RemoteException;;
 }
 

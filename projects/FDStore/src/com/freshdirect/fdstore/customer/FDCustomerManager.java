@@ -5119,4 +5119,18 @@ public class FDCustomerManager {
 				throw new FDResourceException(re, "Error talking to session bean");
 			}
 		}
+
+		public static Map<String, List<PendingOrder>> getPendingDeliveries() throws FDResourceException {
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getPendingDeliveries();
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}
+		}
 }

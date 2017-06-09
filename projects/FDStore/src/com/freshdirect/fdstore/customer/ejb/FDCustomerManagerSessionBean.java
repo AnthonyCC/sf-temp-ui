@@ -170,6 +170,7 @@ import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.PasswordNotExpiredException;
+import com.freshdirect.fdstore.customer.PendingOrder;
 import com.freshdirect.fdstore.customer.ProfileAttributeName;
 import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.fdstore.customer.RegistrationResult;
@@ -8612,5 +8613,17 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} 
+	}
+	
+	public Map<String, List<PendingOrder>> getPendingDeliveries() throws FDResourceException{
+		Connection conn = null;
+		try{
+			conn = getConnection();
+			return FDCustomerOrderInfoDAO.getPendingDeliveries(conn);
+		}catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Some problem in getting Pending deliveries from database");
+		} finally {
+			close(conn);
+		}
 	}
 }
