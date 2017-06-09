@@ -367,9 +367,9 @@ function getSOData(id, action){
         		}
         		drawerSuccessConformation += '<hr class="so-drawer-success-hr" /><div class="so-drawer-success-info">Change will take effect: <span class="so-drawer-success-date">';
         		if(data.deliveryDate == null){
-        			drawerSuccessConformation += '<a href="javascript:closeDrawerSuccessOverlayDialog(true)">Select a delivery time</a></span></div><button class="so-drawer-success-ok cssbutton cssbutton-flat green nontransparent" onclick="closeDrawerSuccessOverlayDialog(true);">OK</div></div>';
+        			drawerSuccessConformation += '<a href="javascript:closeDrawerSuccessOverlayDialog(true)">Select a delivery time</a></span></div><button class="so-drawer-success-ok cssbutton cssbutton-flat green nontransparent" onclick="closeDrawerSuccessOverlayDialog(true)">OK</button></div>';
         		} else {
-        			drawerSuccessConformation += data.dayOfWeek + ', ' + data.deliveryDate + ', ' + data.deliveryTime + '</span></div><button class="so-drawer-success-ok cssbutton cssbutton-flat green nontransparent" onclick="closeDrawerSuccessOverlayDialog(false)">OK</div></div>';
+        			drawerSuccessConformation += data.dayOfWeek + ', ' + data.deliveryDate + ', ' + data.deliveryTime + '</span></div><button class="so-drawer-success-ok cssbutton cssbutton-flat green nontransparent" onclick="closeDrawerSuccessOverlayDialog(false)">OK</button></div>';
         		}
         		doOverlayDialogByHtmlNew(drawerSuccessConformation);
         	}
@@ -386,9 +386,11 @@ function getSOData(id, action){
 
 function closeDrawerSuccessOverlayDialog(openTimeslot){
 	$jq(".overlay-dialog-new .ui-dialog-titlebar-close").click();
-	if(openTimeslot){
-		$jq("#ec-drawer #timeslot-tab button.change").click();
-	}
+	setTimeout(function() {
+		if(openTimeslot){
+			$jq("#ec-drawer #timeslot-tab .change").click();
+		}
+	}, 50);	
 }
 
 function selectFrequency(item){
