@@ -217,13 +217,6 @@ ul.products .description-skin{
   clear: right;
 }
 
-.browse .oas-cnt .emptyOAS,
-.browse .oas-cnt img[src*="empty.gif"],
-.srch .oas-cnt .emptyOAS,
-.srch .oas-cnt img[src*="empty.gif"] {
-  display: none;
-}
-
 .browse-media {
   clear: both;
 }

@@ -5,11 +5,11 @@
  */
 {template .addpaymentmethodpopup autoescape="false"}
     <div class="formcontainer" data-show="{if not $data.paymentMethodType or $data.paymentMethodType == 'CC'}addpaymentmethod_creditcard{/if}{if $data.paymentMethodType == 'EC'}addpaymentmethod_bank{/if}{if $data.paymentMethodType == 'ET'}addpaymentmethod_ebt{/if}">
-    <div id="oas_b_AddPaymentPromo">
+    <div id="oas_b_AddPaymentPromo" class="oas-cnt">
     </div>
     {if not $data.id}
 	    <div class="formselector{if $data.metadata and $data.metadata.enableECheck and $data.metadata.paymentPromoOAS} selector-decoration{/if}">
-	      <label for="addpaymentmethod_creditcard_selector" class="tabs"><input type="radio" name="showform" id="addpaymentmethod_creditcard_selector" value="addpaymentmethod_creditcard"  class="credit_card_selector" {if not $data.paymentMethodType or $data.paymentMethodType == 'CC'}checked{/if} />Credit Card</label>
+	      <label for="addpaymentmethod_creditcard_selector" class="tabs"><input type="radio" name="showform" id="addpaymentmethod_creditcard_selector" value="addpaymentmethod_creditcard"  class="credit_card_selector" {if not $data.paymentMethodType or $data.paymentMethodType == 'CC'}checked{/if} />Credit&nbsp;/&nbsp;Debit&nbsp;Card</label>
 	      {if not $data.metadata or $data.metadata.enableECheck}<label for="addpaymentmethod_bank_selector" class="tabs"><input type="radio" id="addpaymentmethod_bank_selector" name="showform" value="addpaymentmethod_bank" {if $data.paymentMethodType == 'EC'}checked{/if}/>Bank</label>{/if}
 	      {if not $data.metadata or $data.metadata.enableEbtCheck}<label for="addpaymentmethod_ebt_selector" class="tabs"><input type="radio" id="addpaymentmethod_ebt_selector" name="showform" value="addpaymentmethod_ebt" {if $data.paymentMethodType == 'ET'}checked{/if}/>EBT</label>{/if}
 	    </div>

@@ -3301,3 +3301,8 @@ div#i_viewcart td {
 .browse-oas-top {
 	margin-bottom: 8px;
 }
+
+.oas-cnt .emptyOAS,
+.oas-cnt img[src*="empty.gif"] {
+  display: none;
+}

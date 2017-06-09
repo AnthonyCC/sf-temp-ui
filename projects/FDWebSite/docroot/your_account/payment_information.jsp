@@ -120,7 +120,7 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
   						<img src='/media_stat/images/masterpass/mpwarning.png'> <span>Cannot Connect to PayPal at this time.</span>
   					</div>
               	</div>
-       				<a class="cssbutton green add-payment-methods-button" href="/your_account/add_creditcard.jsp">CREDIT CARD</a>
+       				<a class="cssbutton green add-payment-methods-button" href="/your_account/add_creditcard.jsp">CREDIT / DEBIT CARD</a>
        					<div id="add-new-payment-method-checking-acc-disabled-master">
        						<a id="add-new-payment-method-checking-acc-disabled" class="cssbutton green add-payment-methods-button disabled" href="#" onclick="return false;">CHECKING ACCOUNT</a>
        						<div id="add-new-payment-method-checking-acc-disabled-indicator">Available after first order.</div>
@@ -212,12 +212,12 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
               <tr valign="top">
                   <td><!-- <img src="/media_stat/images/navigation/credit_card_details.gif"
 		WIDTH="152" HEIGHT="15" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<BR> -->
-		<span vspace="0" border="0" class="Container_Top_YourAccCCDetails">Credit Card Details</span><BR>
+		<span vspace="0" border="0" class="Container_Top_YourAccCCDetails">Credit / Debit Card Details</span><BR>
 		    <IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 		    </td>
               </tr>
               <tr valign="middle">
-                     <td class="text11" style="padding-top: 5px; padding-bottom: 10px;">If you need to enter another credit card: <a href="/your_account/add_creditcard.jsp"><IMG src="/media_stat/images/buttons/add_new_credit_card.jpg" WIDTH="137" HEIGHT="16" ALT="Add New Credit Card" BORDER="0" ALIGN="absmiddle"></a>
+                     <td class="text11" style="padding-top: 5px; padding-bottom: 10px;">If you need to enter another credit / debit card: <a class="cssbutton green small" href="/your_account/add_creditcard.jsp">ADD A NEW CREDIT / DEBIT CARD</a>
                      </td>
                      </tr>
                      <tr><td>
