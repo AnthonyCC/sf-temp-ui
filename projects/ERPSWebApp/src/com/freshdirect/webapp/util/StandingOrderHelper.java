@@ -786,6 +786,7 @@ public class StandingOrderHelper {
 		soSettings.put("soHardLimitDisplay", StandingOrderHelper.formatDecimalPrice(ErpServicesProperties.getStandingOrderHardLimit()));
 		soSettings.put("soSoftLimit", (int)(ErpServicesProperties.getStandingOrderSoftLimit()));
 		soSettings.put("cartOverlayFirstTime", setCartOverlayFirstTime(user).isSoCartOverlayFirstTime());
+		soSettings.put("newSoFeature", setNewSoFeature(user).isSoFeatureOverlay());
 		allSoData.put("soSettings", soSettings);
 		
 		/* these are the so's themselves */
@@ -1205,11 +1206,27 @@ private static String convert(Date time) {
 				user.setSoCartOverlayFirstTime(cusotmerInfoModel.getSoCartOverlayFirstTime()!=null?
 						("N".equalsIgnoreCase(cusotmerInfoModel.getSoCartOverlayFirstTime())?false:true):true);
 				user.setRefreshSoCartOverlay(false);	
-			}
+				}
 			}
 		} catch (Exception e) {
 			LOGGER.info("while setting the Cart Overlay FirstTime "+ e);
-		}
+			}
 		return user;
-		}
+	}
+	
+	public static FDUserI setNewSoFeature(FDUserI user){
+		try{
+			if(user!=null && user.isNewSO3Enabled() && user.isCustomerHasStandingOrders() && user.isRefreshNewSoFeature() ){
+				ErpCustomerInfoModel cusotmerInfoModel = FDCustomerFactory.getErpCustomer(user.getIdentity()).getCustomerInfo();
+				if(cusotmerInfoModel!=null){
+					user.setSoFeatureOverlay(cusotmerInfoModel.getSoFeatureOverlay()!=null?
+							("N".equalsIgnoreCase(cusotmerInfoModel.getSoFeatureOverlay())?false:true):true);
+					user.setRefreshNewSoFeature(false);	
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.info("while setting the New SO Settings Overlay FirstTime "+ e);
+			}
+		return user;
+	}
 }

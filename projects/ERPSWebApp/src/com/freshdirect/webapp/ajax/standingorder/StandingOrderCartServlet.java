@@ -56,6 +56,8 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 	private static final String ACTION_TURN_OFF_REMINDER_OVERLAY="turnOffReminderOverlay";
  
 	private static final String ACTION_TURN_OFF_CART_OVERLAY_FIRSTTIME="turnOffCartOverlayFirsttime";
+	
+	private static final String ACTION_TRUN_OFF_SO_FEATURE_OVERLAY = "turnOffSoFeatureOverlay";
 
 	@Override
 	protected boolean synchronizeOnUser() {
@@ -158,6 +160,18 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 					LOG.error("Got the exeption while updating the StandingOrder Cart Overlay FirstTime flag for New Standing order"+e);
 				}
 			}
+			
+			if (null!= reqData && ACTION_TRUN_OFF_SO_FEATURE_OVERLAY.equalsIgnoreCase(reqData.getActiontype())&&
+									user!=null&& user.getIdentity().getErpCustomerPK()!=null) {
+				try {
+						user.setRefreshNewSoFeature(true);
+						FDStandingOrdersManager.getInstance().updateNewSoFeaturePreferences(
+								user.getIdentity().getErpCustomerPK(), false);
+				} catch (FDResourceException e) {
+					LOG.error("Got the exeption while updating the StandingOrder Cart Overlay FirstTime flag for New Standing order"+e);
+					}
+			}
+			
 		}else{
 			// User level not sufficient.
 			 orderResponseData.setMessage("User Session is expired please try login to add the product to Standing order") ;

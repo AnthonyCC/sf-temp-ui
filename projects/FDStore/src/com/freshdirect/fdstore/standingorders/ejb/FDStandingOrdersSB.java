@@ -78,4 +78,6 @@ public interface FDStandingOrdersSB extends EJBObject {
 	
 	public void updateSoCartOverlayFirstTimePreferences(String customerId, boolean soCartOverlay)throws FDResourceException,RemoteException;
 	
+	public void updateNewSoFeaturePreferences(String customerId, boolean newSoFeature)throws FDResourceException,RemoteException;
+	
 }

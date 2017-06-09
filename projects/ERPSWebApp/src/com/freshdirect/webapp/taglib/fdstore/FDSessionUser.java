@@ -173,6 +173,10 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	
 	private boolean isRefreshSoCartOverlay=true;
 	
+	private boolean soFeatureOverlay = false;
+	
+	private boolean isRefreshNewSoFeature = true;
+	
     @Override
     public boolean isSoContainerOpen() {
         return isSoContainerOpen;
@@ -2288,6 +2292,22 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
 	public void setRefreshSoCartOverlay(boolean isRefreshSoCartOverlay) {
 		this.isRefreshSoCartOverlay = isRefreshSoCartOverlay;
+	}
+
+	public boolean isSoFeatureOverlay() {
+		return soFeatureOverlay;
+	}
+
+	public void setSoFeatureOverlay(boolean soFeatureOverlay) {
+		this.soFeatureOverlay = soFeatureOverlay;
+	}
+
+	public boolean isRefreshNewSoFeature() {
+		return isRefreshNewSoFeature;
+	}
+
+	public void setRefreshNewSoFeature(boolean isRefreshNewSoFeature) {
+		this.isRefreshNewSoFeature = isRefreshNewSoFeature;
 	}    
   
 }

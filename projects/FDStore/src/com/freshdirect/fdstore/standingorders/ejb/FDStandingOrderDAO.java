@@ -2011,12 +2011,33 @@ public void turnOffReminderOverLayNewSo(Connection con, String standingOrderId) 
 				ps.setString(2, customerId);
 				ps.execute();
 
-		} catch (Exception e) {
-			LOGGER.error("Error while updating updateSoCartOverlayFirstTimePreferences in DB", e);
-		} finally {
-			if (ps != null) {
-				ps.close();
-			}
-	}
- }
+			} catch (Exception e) {
+				LOGGER.error("Error while updating updateSoCartOverlayFirstTimePreferences in DB", e);
+				} finally {
+							if (ps != null) {
+								ps.close();
+							}
+				}
+		}
+	
+	//SoFeatureOverlay
+	public static void updateNewSoFeaturePreferences(Connection conn, String customerId,
+			boolean newSoFeature)throws SQLException {
+		PreparedStatement ps = null;
+		try {
+				ps = conn.prepareStatement("update CUST.CUSTOMERINFO set SO_FEATURE_OVERLAY = ? where customer_id=?");
+				ps.setString(1, newSoFeature?"Y":"N");
+				ps.setString(2, customerId);
+				ps.execute();
+
+			} catch (Exception e) {
+				LOGGER.error("Error while updating updateNewSoFeaturePreferences in DB", e);
+				} finally {
+							if (ps != null) {
+								ps.close();
+							}
+				}
+		}
+	
+	
 }

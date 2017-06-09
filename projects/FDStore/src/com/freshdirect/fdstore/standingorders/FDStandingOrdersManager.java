@@ -1029,5 +1029,18 @@ public class FDStandingOrdersManager {
 		} 
 	}
 	
+	public void updateNewSoFeaturePreferences(String customerId,boolean newSoFeature) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();
+			 sb.updateNewSoFeaturePreferences(customerId,newSoFeature);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		} 
+	}
 	
 }

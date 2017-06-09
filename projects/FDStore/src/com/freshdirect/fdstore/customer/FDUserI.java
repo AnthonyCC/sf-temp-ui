@@ -717,5 +717,15 @@ public interface FDUserI extends java.io.Serializable {
 	public boolean isRefreshSoCartOverlay();
 	
 	public void setRefreshSoCartOverlay(boolean isRefreshSoCartOverlay);
+	
+	public boolean isSoFeatureOverlay();
+	
+	public void setSoFeatureOverlay(boolean soFeatureOverlay);
+
+	public boolean isRefreshNewSoFeature();
+
+	public void setRefreshNewSoFeature(boolean isRefreshNewSoFeature);
+	
+	
 
 }

@@ -1122,5 +1122,18 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
+	public void	updateNewSoFeaturePreferences(String customerId, boolean newSoFeature)throws FDResourceException,RemoteException{
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO.updateNewSoFeaturePreferences(conn, customerId, newSoFeature);	
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in updateNewSoFeaturePreferences(): " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+	}
 
 }

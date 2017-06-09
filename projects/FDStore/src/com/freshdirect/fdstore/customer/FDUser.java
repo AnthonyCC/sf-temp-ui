@@ -319,7 +319,11 @@ public class FDUser extends ModelSupport implements FDUserI {
     
     private boolean refreshSoCartOverlay = true;
     
-    private boolean  soCartOverlayFirstTime=false;
+    private boolean  soCartOverlayFirstTime = false;
+    
+    private boolean refreshNewSoFeature = true;
+    
+    private boolean soFeatureOverlay = false;
     
 	public Date getTcAcknowledgeDate() {
         return tcAcknowledgeDate;
@@ -3628,6 +3632,22 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	public void setRefreshSoCartOverlay(boolean refreshSoCartOverlay) {
 		this.refreshSoCartOverlay = refreshSoCartOverlay;
+	}
+
+	public boolean isRefreshNewSoFeature() {
+		return refreshNewSoFeature;
+	}
+
+	public void setRefreshNewSoFeature(boolean refreshNewSoFeature) {
+		this.refreshNewSoFeature = refreshNewSoFeature;
+	}
+
+	public boolean isSoFeatureOverlay() {
+		return soFeatureOverlay;
+	}
+
+	public void setSoFeatureOverlay(boolean soFeatureOverlay) {
+		this.soFeatureOverlay = soFeatureOverlay;
 	}
 
 	
