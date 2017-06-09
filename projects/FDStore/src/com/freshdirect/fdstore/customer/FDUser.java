@@ -2361,6 +2361,7 @@ public class FDUser extends ModelSupport implements FDUserI {
             		&& this.getShoppingCart().getDeliveryReservation().getTimeslot()!=null 
             		&& this.getShoppingCart().getDeliveryReservation().getTimeslot().getDeliveryDate()!=null
             		&& address!=null && address.getPK()!=null 
+            		&& this.getShoppingCart().getDeliveryReservation().getAddressId()!=null
             		&& this.getShoppingCart().getDeliveryReservation().getAddressId().equals(address.getId())
             		&& !this.getShoppingCart().getDeliveryReservation().getTimeslot().getDeliveryDate().before(today()))?
             				this.getShoppingCart().getDeliveryReservation().getTimeslot().getDeliveryDate():null);
