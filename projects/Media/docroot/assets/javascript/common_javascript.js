@@ -1320,7 +1320,7 @@ function doOverlayWindow(olURL, titleVar) {
 			resizable: false,
 			draggable: false,
 			open: function() {
-				$jq('html').css({ 'overflow': 'hidden' });
+				$jq('body').css({ 'overflow': 'hidden' });
 				
 				overlayDialog.dialog('option', 'maxClientHeight', 0.95);
 				overlayDialog.dialog('option', 'maxClientWidth', 0.95);
@@ -1354,7 +1354,7 @@ function doOverlayWindow(olURL, titleVar) {
 
 			},
 			close: function () {
-				$jq('html').css({ 'overflow': 'auto' });
+				$jq('body').css({ 'overflow': 'initial' });
 			}
 		});	
 	

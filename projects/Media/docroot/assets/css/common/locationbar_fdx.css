@@ -1263,6 +1263,9 @@ option.address-icon {
 	width: 100%;
 	left: 0;
 }
+#location-alerts .alerts{
+	background: #FFFFFF;
+}
 .alert-cont {
 	width: 970px;
 	position: relative;
