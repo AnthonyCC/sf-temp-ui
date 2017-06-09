@@ -893,7 +893,7 @@ public class CmsFilteringFlow {
         browseDataContext = BrowseDataBuilderFactory.createBuilder(navigationModel.getNavDepth(), navigationModel.isSuperDepartment(), null).buildBrowseData(navigationModel, user,
                 nav);
 
-        if(displayHookLogicProducts(nav, user, contentNodeModel)){         //if(FDStoreProperties.isHookLogicEnabled()){  
+        if(displayHookLogicProducts(nav, user, contentNodeModel) && !nav.isPdp()){         //if(FDStoreProperties.isHookLogicEnabled()){  
             if(null != browseDataContext){
                 String catId = nav.getId();
                 Map<String, List<ProductData>> hlSelectionsofProductsList=new HashMap<String, List<ProductData>>();
