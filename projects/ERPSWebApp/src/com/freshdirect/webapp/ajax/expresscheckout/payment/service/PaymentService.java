@@ -31,6 +31,7 @@ import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.payment.EnumBankAccountType;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.PaymentManager;
@@ -241,12 +242,15 @@ public class PaymentService {
             }
         }
         for (int i = 0; i < paymentMethods.size(); i++) {
-            PaymentData paymentData = createPaymentData(paymentMethods.get(i));
-            if ((cartPaymentSelectionDisabled == null || !cartPaymentSelectionDisabled) && (paymentData.getId().equals(selectedPaymentId) || (selectedPaymentId == null && i == 0))
-                    && selectionError.isEmpty()) {
-                paymentData.setSelected(true);
-            }
-            paymentDatas.add(paymentData);
+        	ErpPaymentMethodI paymentMethod =paymentMethods.get(i);
+        	if(!(paymentMethod instanceof ErpGiftCardModel)) {//exclude giftcards
+	            PaymentData paymentData = createPaymentData(paymentMethods.get(i));
+	            if ((cartPaymentSelectionDisabled == null || !cartPaymentSelectionDisabled) && (paymentData.getId().equals(selectedPaymentId) || (selectedPaymentId == null && i == 0))
+	                    && selectionError.isEmpty()) {
+	                paymentData.setSelected(true);
+	            }
+	            paymentDatas.add(paymentData);
+        	}
         }
         // Update Shopping Cart if Wallet Cart is selected and available in session
         updateShoppingCartWithWalletCard(user, request, paymentMethods);
