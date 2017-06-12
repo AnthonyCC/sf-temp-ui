@@ -67,7 +67,9 @@ public class DatasourceService {
     private List<ProductData> generateBrowseProducts(ContentNodeI module, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException {
         DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
         ContentNodeI category = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"), currentDraftContext);
-        String categoryId = category.getKey().getId();
+        String categoryId=null;
+        if(category.getKey()!=null)
+        	categoryId = category.getKey().getId();
         return ModuleContentService.getDefaultService().loadBrowseProducts(categoryId, user);
     }
 
