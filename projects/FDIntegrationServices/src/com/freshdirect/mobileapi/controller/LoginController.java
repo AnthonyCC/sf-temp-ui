@@ -379,6 +379,9 @@ public class LoginController extends BaseController  implements SystemMessageLis
 		String username = requestMessage.getUsername();
 		String password = requestMessage.getPassword();
 		String source = requestMessage.getSource();
+		String channel = requestMessage.getChannel();
+		String destination = requestMessage.getDestination();
+		String qualifier = requestMessage.getQualifier();
 		Message responseMessage = null;
 		SessionUser user = null;
 		
