@@ -1727,6 +1727,7 @@ li.cleanli .gen-arrow {
 		}
 		[data-ec-page] .mm-page .cartsection__totalwrapper .subtotal__rowcell-right {
 			min-width: 150px;
+			text-align: left;
 		}
 		[data-ec-page] .mm-page #cartcontent .cartsection .cartsection__totalwrapper {
 			text-align: right;
@@ -1746,6 +1747,32 @@ li.cleanli .gen-arrow {
 			width: auto;
 		}
 		
+		/* fix smaller screens */
+		@media screen and (max-width: 320px) {
+			[data-ec-page] .mm-page .checkout_button_w_subtotal {
+				max-width: 200px;
+			}
+			[data-ec-page] .mm-page .cartheader__subtotal {
+				width: 40%;
+			}
+			[data-ec-page] .mm-page .cartheader__action {
+				width: 60%;
+			}
+			.mm-page .drawer-content>ul {
+			    padding-left: 10px;
+			    margin: 0 11px 21px 0;
+			}
+			[data-ec-page] .mm-page .eTippingEnabled .cartsection__tax form {
+				width: 320px;
+			}
+			[data-ec-page] .mm-page .cartsection__tax form[fdform="etip"] {
+				float: none;
+				width: auto;
+			}
+			[data-ec-page] .mm-page .eTippingEnabled .cartsection__totalwrapper #optionaltip.subtotal__rowcell-left {
+				margin-right: 0;
+			}
+		}
 		
 		/* bottom find out more text */
 		[data-ec-page] .mm-page .footer__left {
