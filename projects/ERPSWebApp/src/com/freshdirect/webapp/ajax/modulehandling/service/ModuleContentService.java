@@ -23,6 +23,7 @@ import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SortOptionModel;
 import com.freshdirect.fdstore.content.SortStrategyType;
+import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.fdstore.content.browse.sorter.ProductItemSorterFactory;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
@@ -386,7 +387,13 @@ public class ModuleContentService {
         // SORTING SETUP
         sortingSectionContexts.add(sortingSectionContext);
         sortingBrowseDataContext.setSectionContexts(sortingSectionContexts);
-        defaultSorter = ContentFactory.getInstance().getStore().getPresidentsPicksPageSortOptions().get(0);
+        
+        //defaultSorter = ContentFactory.getInstance().getStore().getPresidentsPicksPageSortOptions().get(0);
+        StoreModel storeModel=ContentFactory.getInstance().getStore();
+	        if(storeModel!=null && !storeModel.getPresidentsPicksPageSortOptions().isEmpty()) {
+	        	 defaultSorter = storeModel.getPresidentsPicksPageSortOptions().get(0);
+	        }
+        
 
         if (defaultSorter != null) {
             usedSortStrategy = defaultSorter.getSortStrategyType();
@@ -411,8 +418,11 @@ public class ModuleContentService {
         filteredProductModels.addAll(availableFeaturedProducts);
 
         // FILTERINGPRODUCT TO PRODUCT MODEL CONVERSION
-        for (FilteringProductItem filteringProduct : sortingBrowseDataContext.getSectionContexts().get(0).getProductItems()) {
-            filteredProductModels.add(filteringProduct.getProductModel());
+        List<SectionContext> sectionContextlist=sortingBrowseDataContext.getSectionContexts();
+        if(!sectionContextlist.isEmpty() && sectionContextlist.get(0)!=null) {
+	        for (FilteringProductItem filteringProduct : sectionContextlist.get(0).getProductItems()) {
+	            filteredProductModels.add(filteringProduct.getProductModel());
+	        }
         }
 
         return filteredProductModels;
