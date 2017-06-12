@@ -39,9 +39,10 @@ var FreshDirect = FreshDirect || {};
     openPopup:{
       value: function (e) {
         var moduleId = e.currentTarget.getAttribute('data-moduleId'),
-            moduleVirtualCategory = e.currentTarget.getAttribute('data-moduleVirtualCategory');
+            moduleVirtualCategory = e.currentTarget.getAttribute('data-moduleVirtualCategory'),
+            notProductList = e.currentTarget.getAttribute('data-notProductList') ? true : false;
         fd.common.dispatcher.signal('server',{
-    			url:'/api/modulehandling/load?moduleId=' + moduleId + '&viewAll=true' +'&moduleVirtualCategory=' + moduleVirtualCategory
+    			url:'/api/modulehandling/load?moduleId=' + moduleId + '&viewAll=' + notProductList +'&moduleVirtualCategory=' + moduleVirtualCategory
     		});
         var $t = e && $(e.currentTarget) || $(document.body);
 
