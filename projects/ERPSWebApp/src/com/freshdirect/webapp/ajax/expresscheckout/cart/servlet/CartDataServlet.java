@@ -1,5 +1,6 @@
 package com.freshdirect.webapp.ajax.expresscheckout.cart.servlet;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,9 @@ import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.service.CartDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataResponse;
+import com.freshdirect.webapp.ajax.expresscheckout.service.FormDataService;
+import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationResult;
+import com.freshdirect.webapp.ajax.viewcart.service.RecommenderPotatoService;
 import com.freshdirect.webapp.soy.SoyTemplateEngine;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.StandingOrderHelper;
@@ -36,8 +40,10 @@ public class CartDataServlet extends BaseJsonServlet {
 			if ("startCheckout".equals(actionName)) {
 				StandingOrderHelper.clearSO3Context(user, request, null);
 				final FormDataRequest startCheckoutData = BaseJsonServlet.parseRequestData(request, FormDataRequest.class);
-				// com.freshdirect.webapp.taglib.fdstore.FDShoppingCartControllerTag.handleMakeGood(String[], String[], HttpSession, List<FDCartLineI>, ActionResult)
-				final FormDataResponse result = CartDataService.defaultService().validateOrderMinimumOnStartCheckout(user, startCheckoutData);
+				ValidationResult validationResult = new ValidationResult();
+	            FormDataResponse result = FormDataService.defaultService().prepareFormDataResponse(startCheckoutData, validationResult);
+	            CartDataService.defaultService().validateOrderMinimumOnStartCheckout(user, result);
+	            CartDataService.defaultService().validateCarouselData(request, user, result);
 				
 				// make-good validation
 				if (user != null && user.getMasqueradeContext() != null && user.getMasqueradeContext().getMakeGoodFromOrderId() != null) {
@@ -51,7 +57,6 @@ public class CartDataServlet extends BaseJsonServlet {
                         List<String> badCartLineIds = new ArrayList<String>();
 
 						for (FDCartLineI line : user.getShoppingCart().getOrderLines()) {
-							final String cartLineId = line.getCartlineId();
 							final String orderLineId = line.getOrderLineId();
 							ErpComplaintLineModel cline = complaintModel.getComplaintLine( orderLineId );
 							if (cline == null) {

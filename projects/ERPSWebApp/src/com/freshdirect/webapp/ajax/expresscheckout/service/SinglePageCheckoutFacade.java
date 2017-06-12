@@ -70,6 +70,8 @@ import com.freshdirect.webapp.ajax.expresscheckout.textmessagealert.service.Text
 import com.freshdirect.webapp.ajax.expresscheckout.timeslot.service.TimeslotService;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationError;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationResult;
+import com.freshdirect.webapp.ajax.viewcart.service.EnumCartCarouselType;
+import com.freshdirect.webapp.ajax.viewcart.service.RecommenderPotatoService;
 import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
 import com.freshdirect.webapp.checkout.PaymentMethodManipulator;
 import com.freshdirect.webapp.checkout.RedirectToPage;
@@ -154,6 +156,7 @@ public class SinglePageCheckoutFacade {
             result.setRedirectUrl(RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL,
                     availabilityService.selectWarningType(user)));
         }
+        result.setCarouselData(RecommenderPotatoService.getDefaultService().getViewCartPageCarousels(user, request, EnumCartCarouselType.CHECKOUT_PAGE, false));
         return result;
     }
 

@@ -14,7 +14,6 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
-import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.event.ImpressionLogger;
 import com.freshdirect.fdstore.FDProduct;
@@ -32,7 +31,6 @@ import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
-import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -48,10 +46,8 @@ import com.freshdirect.webapp.ajax.browse.data.CarouselData;
 import com.freshdirect.webapp.ajax.browse.service.CarouselService;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
-import com.freshdirect.webapp.ajax.viewcart.data.ProductSamplesCarousel;
 import com.freshdirect.webapp.ajax.viewcart.data.RecommendationTab;
 import com.freshdirect.webapp.ajax.viewcart.data.ViewCartCarouselData;
-import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.smartstore.Impression;
@@ -126,15 +122,22 @@ public class ViewCartCarouselService {
             }
             recommendations = null;
         }
-
+        
         if (recommendations != null && !recommendations.isLogged()) {
             logImpressions(recommendations, user, request, parentImpressionId, parentVariantId);
             logRecommenderResults(recommendations.getProducts());
         }
 
         EnumSiteFeature siteFeature = variant.getSiteFeature();
-        CarouselData carousel = CarouselService.defaultService().createCarouselData(null, siteFeature.getName(), recommendations.getAllProducts(), user, "",
+        //TODO
+        CarouselData carousel = null;
+        if (recommendations == null){
+            carousel = CarouselService.defaultService().createCarouselData(null, siteFeature.getName(), new ArrayList<ProductModel>(), user, "",
+                    variant.getId());
+        } else {
+        carousel = CarouselService.defaultService().createCarouselData(null, siteFeature.getName(), recommendations.getAllProducts(), user, "",
                 recommendations.getVariant().getId());
+        }
         recommendationTab.setCarouselData(carousel);
     }
 
@@ -166,10 +169,11 @@ public class ViewCartCarouselService {
      * 
      * @param request
      * @return view cart specific JSON compatible carousel definition
-     * @throws Exception
+     * @throws InvalidContentKeyException 
+     * @throws FDResourceException 
      */
     @SuppressWarnings("deprecation")
-    public ViewCartCarouselData populateViewCartTabsRecommendationsAndCarousel(HttpServletRequest request) throws Exception {
+    public ViewCartCarouselData populateViewCartTabsRecommendationsAndCarousel(HttpServletRequest request) throws FDResourceException, InvalidContentKeyException {
         HttpSession session = request.getSession();
         FDSessionUser user = (FDSessionUser) getUserFromSession(session);
         ViewCartCarouselData result = new ViewCartCarouselData();
@@ -214,15 +218,14 @@ public class ViewCartCarouselService {
         return result;
     }
 
-    public ProductSamplesCarousel populateViewCartPageProductSampleCarousel(HttpServletRequest request) throws Exception {
+    public RecommendationTab populateViewCartPageProductSampleCarousel(FDUserI user, boolean isCheckout2FeatureActive) throws FDResourceException {
         CarouselData carouselData = new CarouselData();
         /* make title configurable */
         String prodSampelsTitle = FDStoreProperties.getProductSamplesTitle()
         		.replaceAll("%%N%%", Integer.toString( FDStoreProperties.getProductSamplesMaxBuyProductsLimit() ))
         		.replaceAll("%%Q%%", Integer.toString( FDStoreProperties.getProductSamplesMaxQuantityLimit() ));
-        ProductSamplesCarousel tab = new ProductSamplesCarousel(prodSampelsTitle, ViewCartCarouselService.CAROUSEL_PRODUCT_SAMPLES_SITE_FEATURE.toString(), "", "", "");
+        RecommendationTab tab = new RecommendationTab(prodSampelsTitle, EnumSiteFeature.PRODUCT_SAMPLE.getName(), "", "", "");
         tab.setCarouselData(carouselData);
-        FDSessionUser user = (FDSessionUser) getUserFromSession(request.getSession());
         List<ProductData> sampleProducts = new ArrayList<ProductData>();
         List<FDCartLineI> productSamplesInCart = new ArrayList<FDCartLineI>();
         Map<String, Double> orderLinesSkuCodeWithQuantity = new HashMap<String, Double>();
@@ -245,7 +248,7 @@ public class ViewCartCarouselService {
         }
         List<ProductReference> productSamples = new ArrayList<ProductReference>();
         boolean productSamplesMaxBuyProductsLimitReaced = productSamplesInCart.size() >= FDStoreProperties.getProductSamplesMaxBuyProductsLimit();
-        if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), user)) {
+        if (isCheckout2FeatureActive) {
             tab.setProductSamplesReacedMaximumItemQuantity(productSamplesMaxBuyProductsLimitReaced);
             productSamples = user.getProductSamples();
         } else {
@@ -287,7 +290,7 @@ public class ViewCartCarouselService {
                 } catch (FDSkuNotFoundException e) {
                     LOGGER.warn("Sku not found: " + skuCode, e);
                 }
-                if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), user)) {
+                if (isCheckout2FeatureActive) {
                     pd.setAvailable(!productSamplesMaxBuyProductsLimitReaced);
                 }
                 sampleProducts.add(pd);
@@ -473,11 +476,11 @@ public class ViewCartCarouselService {
         }
     }
     
-    public ProductSamplesCarousel populateViewCartPageDonationProductSampleCarousel(HttpServletRequest request) throws Exception {
+    public RecommendationTab populateViewCartPageDonationProductSampleCarousel(FDUserI user) throws FDSkuNotFoundException, FDResourceException  {
         CarouselData carouselData = new CarouselData();
-        ProductSamplesCarousel tab = new ProductSamplesCarousel("Donate to Grand Giving! For every $1 donated, 5 meals will be given to a family in need.", ViewCartCarouselService.CAROUSEL_PRODUCT_DONATIONS_SITE_FEATURE.toString(), "", "", "");
+        RecommendationTab tab = new RecommendationTab("Donate to Grand Giving! For every $1 donated, 5 meals will be given to a family in need.", ViewCartCarouselService.CAROUSEL_PRODUCT_DONATIONS_SITE_FEATURE.toString(), "", "", "");
         tab.setCarouselData(carouselData);
-        FDSessionUser user = (FDSessionUser) getUserFromSession(request.getSession());
+        
         List<ProductData> sampleProducts = new ArrayList<ProductData>();
         List<FDCartLineI> productSamplesInCart = new ArrayList<FDCartLineI>();
         Map<String, Double> orderLinesSkuCodeWithQuantity = new HashMap<String, Double>();

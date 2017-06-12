@@ -75,17 +75,15 @@ import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartSubTotalFieldDa
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.ItemCount;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.ModifyCartData;
 import com.freshdirect.webapp.ajax.expresscheckout.csr.service.CustomerServiceRepresentativeService;
-import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataResponse;
-import com.freshdirect.webapp.ajax.expresscheckout.data.SubmitForm;
 import com.freshdirect.webapp.ajax.expresscheckout.gogreen.service.GoGreenService;
 import com.freshdirect.webapp.ajax.expresscheckout.service.FDCartModelService;
-import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationResult;
 import com.freshdirect.webapp.ajax.holidaymealbundle.service.HolidayMealBundleService;
 import com.freshdirect.webapp.ajax.mealkit.service.MealkitService;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
-import com.freshdirect.webapp.ajax.viewcart.service.ViewCartCarouselService;
+import com.freshdirect.webapp.ajax.viewcart.service.EnumCartCarouselType;
+import com.freshdirect.webapp.ajax.viewcart.service.RecommenderPotatoService;
 import com.freshdirect.webapp.taglib.callcenter.ComplaintUtil;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -191,29 +189,21 @@ public class CartDataService {
         return cartData;
     }
 
-    public FormDataResponse validateOrderMinimumOnStartCheckout(FDUserI user, FormDataRequest request) throws FDResourceException {
-        FormDataResponse result = createStartCheckoutResponseData(request);
+    public void validateCarouselData(HttpServletRequest request, FDUserI user, FormDataResponse response){
+        if (!response.getSubmitForm().getResult().isEmpty()){
+        response.getSubmitForm().getResult().put("carouselData", RecommenderPotatoService.getDefaultService().getViewCartPageCarousels(user, request, EnumCartCarouselType.VIEWCART_PAGE, true));
+        }
+    }
+    
+    public void validateOrderMinimumOnStartCheckout(FDUserI user, FormDataResponse response) throws FDResourceException {
         String orderMinimumWarningMessageKey = AvailabilityService.defaultService().selectWarningType(user);
         if (orderMinimumWarningMessageKey != null) {
             Map<String, Object> headerMessageMap = new HashMap<String, Object>();
             headerMessageMap.put(WARNING_MESSAGE_JSON_KEY, AvailabilityService.defaultService().translateWarningMessage(orderMinimumWarningMessageKey, user));
-            result.getSubmitForm().getResult().put(VIEW_CART_HEADER_MESSAGE_JSON_KEY, headerMessageMap);
+            response.getSubmitForm().getResult().put(VIEW_CART_HEADER_MESSAGE_JSON_KEY, headerMessageMap);
         } else {
-            result.getSubmitForm().getResult().put(REDIRECT_URL_JSON_KEY, "/expressco/checkout.jsp");
-            result.getSubmitForm().setSuccess(true);
+            response.getSubmitForm().getResult().put(REDIRECT_URL_JSON_KEY, "/expressco/checkout.jsp");
         }
-        return result;
-    }
-
-    private FormDataResponse createStartCheckoutResponseData(FormDataRequest requestData) {
-        FormDataResponse responseData = new FormDataResponse();
-        SubmitForm submitForm = new SubmitForm();
-        submitForm.setFormId(requestData.getFormId());
-        responseData.setFormSubmit(submitForm);
-        ValidationResult validationResult = new ValidationResult();
-        validationResult.setFdform(requestData.getFormId());
-        responseData.setValidationResult(validationResult);
-        return responseData;
     }
 
     private CartData.Quantity cartLineSoldByQuantity(FDCartLineI cartLine, ProductModel productNode, FDUserI user, CartData.Item item) {
@@ -579,12 +569,7 @@ public class CartDataService {
                 cartData.setDeliveryBegins(StandingOrderHelper.getDeliveryBeginsInfo(user));
             }
 
-            // APPDEV-5516 If the property is true, set the Donation Carousel to Cart Data, else fall back to Product Sample Carousel
-            if (FDStoreProperties.isPropDonationProductSamplesEnabled()) {
-                cartData.setProductSamplesTab(ViewCartCarouselService.defaultService().populateViewCartPageDonationProductSampleCarousel(request));
-            } else {
-                cartData.setProductSamplesTab(ViewCartCarouselService.defaultService().populateViewCartPageProductSampleCarousel(request));
-            }
+            cartData.setCarouselData(RecommenderPotatoService.getDefaultService().getViewCartPageCarousels(user, request, EnumCartCarouselType.VIEWCART_PAGE, false));
             cartData.setCustomerServiceRepresentative(CustomerServiceRepresentativeService.defaultService().loadCustomerServiceRepresentativeInfo(user));
             cartData.setAvalaraEnabled(FDStoreProperties.getAvalaraTaxEnabled());
             if (FDStoreProperties.isETippingEnabled()) {

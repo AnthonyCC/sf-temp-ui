@@ -634,8 +634,8 @@ public class ProductDetailPopulator {
 	 * @param useFavBurst
 	 */
 	public static void populateProductData( ProductData item, FDUserI user, ProductModel productModel, SkuModel sku, FDProduct fdProduct, PriceCalculator priceCalculator, FDProductSelectionI orderLine, boolean useFavBurst, boolean usePrimaryHome ) {
-		item.setCatId( usePrimaryHome ? productModel.getPrimaryHome().getContentKey().getId() : productModel.getCategory().getContentName() );
-		item.setDepartmentId(usePrimaryHome ? productModel.getPrimaryHome().getDepartment().getContentKey().getId() : productModel.getCategory().getDepartment().getContentKey().getId()  );
+		item.setCatId( usePrimaryHome ? productModel.getParentNode().getContentKey().getId() : productModel.getCategory().getContentName() );
+		item.setDepartmentId(usePrimaryHome ? productModel.getParentNode().getParentNode().getContentKey().getId() : productModel.getCategory().getDepartment().getContentKey().getId()  );
 		item.setSkuCode( sku.getSkuCode() );
 		item.setCustomizePopup( !productModel.isAutoconfigurable() );
 		item.setHasTerms( productModel.hasTerms() );

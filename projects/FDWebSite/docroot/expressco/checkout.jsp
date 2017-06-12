@@ -30,8 +30,6 @@ if (mobWeb) {
 %>
 <potato:pendingExternalAtcItem/>
 <potato:singlePageCheckout />
-<potato:cartData />
-
 
 <tmpl:insert template='<%= pageTemplate %>'>
   <tmpl:put name="soytemplates"><soy:import packageName="expressco"/></tmpl:put>
@@ -126,7 +124,7 @@ if (mobWeb) {
          </div>
          <% } %>
         <div id="modifyorder">
-          <soy:render template="expressco.modifyorder" data="${cartDataPotato}" />
+          <soy:render template="expressco.modifyorder" data="${singlePageCheckoutPotato}" />
         </div>
 
         <%-- drawer --%>
@@ -135,27 +133,13 @@ if (mobWeb) {
         </div>
         
         
-       
-		<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user)) { %>
-			<%-- APPDEV-5916 --%>
-			<div id="cartCarousels">
-				<potato:viewCart />
-				<soy:render template="expressco.checkoutTabbedCarousel" data="${viewCartPotato}" />
-				
-				<script>
-					/* make sure some tab has been loaded */
-					$jq('#cartCarousels').ready(function() {
-						if ($jq('.tabbed-carousel [data-component="tabitem"].selected').closest('.tabbed-carousel').find('[data-component="tabpanel"]').children().length === 0) {
-							$jq('.tabbed-carousel [data-component="tabitem"].selected').trigger('click');
-						}
-						/* flip to other tab in checkout */
-						var $tabs = $jq('.tabbed-carousel [data-component="tabitem"]').not('[data-sitefeature="PRODUCT_DONATIONS"]').not('[data-sitefeature="PRODUCT_SAMPLES"]');
-						if ($tabs.length) {
-							$tabs.first().trigger('click');
-						}
-					});
-				</script>
-			</div>
+        <% if (!mobWeb) { /* no mobWeb for now */  %>
+			<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user)) { %>
+				<%-- APPDEV-5916 --%>
+				<div id="cartCarousels">
+					<soy:render template="expressco.checkoutTabbedCarousel" data="${singlePageCheckoutPotato.carouselData}" />
+				</div>
+			<% } %>
 		<% } %>
        
         <div class="checkout-contentheader">
@@ -175,14 +159,8 @@ if (mobWeb) {
       // potato loading
       window.FreshDirect.expressco = {};
       window.FreshDirect.expressco.data = <fd:ToJSON object="${singlePageCheckoutPotato}" noHeaders="true"/>
-		window.FreshDirect.expressco.viewCartPotato = <fd:ToJSON object="${viewCartPotato}" noHeaders="true"/>
       window.FreshDirect.metaData = window.FreshDirect.expressco.data.formMetaData;
       window.FreshDirect.pendingCustomizations = <fd:ToJSON object="${pendingExternalAtcItemPotato}" noHeaders="true"/>
-  		<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user)) { %>
-  			window.FreshDirect.expressco.viewCartPotato = <fd:ToJSON object="${viewCartPotato}" noHeaders="true"/>
-		<% } else { %>
-			window.FreshDirect.expressco.viewCartPotato = {};
-		<% } %>
     </script>
   </tmpl:put>
   

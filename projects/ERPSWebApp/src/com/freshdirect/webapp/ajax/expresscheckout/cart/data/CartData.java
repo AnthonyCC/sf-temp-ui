@@ -2,6 +2,7 @@ package com.freshdirect.webapp.ajax.expresscheckout.cart.data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +13,7 @@ import com.freshdirect.fdstore.content.ComparatorChain;
 import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
 import com.freshdirect.webapp.ajax.AbstractCoremetricsResponse;
 import com.freshdirect.webapp.ajax.expresscheckout.csr.data.CustomerServiceRepresentativeData;
-import com.freshdirect.webapp.ajax.viewcart.data.ProductSamplesCarousel;
+import com.freshdirect.webapp.ajax.viewcart.data.ViewCartCarouselData;
 
 /**
  * Simple java bean for cart contents. Class structure is representing the resulting JSON structure.
@@ -20,6 +21,8 @@ import com.freshdirect.webapp.ajax.viewcart.data.ProductSamplesCarousel;
  * @author treer
  */
 public class CartData extends AbstractCoremetricsResponse {
+
+    private static final List<String> TIP_AMOUNTS = Arrays.asList("$0", "$1", "$2", "$3", "$4", "$5", "$6", "$7", "$8", "$9", "Other Amount");
 
     /**
      * Optional global error message
@@ -88,7 +91,7 @@ public class CartData extends AbstractCoremetricsResponse {
 
 	private ModifyCartData modifyCartData;
 
-    private ProductSamplesCarousel productSamplesTab;
+    private ViewCartCarouselData carouselData;
 
     private BillingReferenceInfo billingReferenceInfo;
     
@@ -108,27 +111,11 @@ public class CartData extends AbstractCoremetricsResponse {
     
     private String totalWithoutTax; 
     
-    private List<String> tipAmounts = new ArrayList<String>();
-    
-    
     
     public CartData() {
-    	tipAmounts.add("$0");
-    	tipAmounts.add("$1");
-    	tipAmounts.add("$2");
-    	tipAmounts.add("$3");
-    	tipAmounts.add("$4");
-        tipAmounts.add("$5");
-		tipAmounts.add("$6");
-		tipAmounts.add("$7");
-		tipAmounts.add("$8");
-		tipAmounts.add("$9");
-		tipAmounts.add("Other Amount");
-		
 		tipAppliedTick = false;
 	}
 
-    
     private CustomerServiceRepresentativeData csr;
     
     private boolean displayCheckout=true;
@@ -319,11 +306,7 @@ public class CartData extends AbstractCoremetricsResponse {
 	}
 
 	public List<String> getTipAmounts() {
-		return tipAmounts;
-	}
-
-	public void setTipAmounts(List<String> tipAmounts) {
-		this.tipAmounts = tipAmounts;
+		return TIP_AMOUNTS;
 	}
 
 	public boolean isTipAppliedTick() {
@@ -1109,12 +1092,12 @@ public class CartData extends AbstractCoremetricsResponse {
         this.modifyCartData = modifyCartData;
     }
 
-    public ProductSamplesCarousel getProductSamplesTab() {
-        return productSamplesTab;
+    public ViewCartCarouselData getCarouselData() {
+        return carouselData;
     }
 
-    public void setProductSamplesTab(ProductSamplesCarousel productSamplesTab) {
-        this.productSamplesTab = productSamplesTab;
+    public void setCarouselData(ViewCartCarouselData carouselData) {
+        this.carouselData = carouselData;
     }
 
     public Map<Integer, String> getPopulateDCPDPromoDiscount() {

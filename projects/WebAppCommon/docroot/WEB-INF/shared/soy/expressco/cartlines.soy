@@ -449,25 +449,29 @@
 {/template}
 
 /**
- * @param? productSamplesTab sample products
+ * @param? carouselData sample products
  */
 {template .productSampleCarouselWrapper}
-	{if $productSamplesTab}
-		<div fd-toggle="product-sample-carousel" fd-toggle-state="{if $productSamplesTab.productSamplesReacedMaximumItemQuantity}disabled{else}enabled{/if}">
-			{call expressco.productSampleCarousel data="$productSamplesTab" /}
+	{if $carouselData.recommendationTabs}
+	    {foreach $recommendationTab in $carouselData.recommendationTabs}
+		<div fd-toggle="product-sample-carousel" fd-toggle-state="{if $recommendationTab.productSamplesReacedMaximumItemQuantity}disabled{else}enabled{/if}">
+			{call expressco.productSampleCarousel data="$recommendationTab" /}
 		</div>
+		{/foreach}
 	{/if}
 {/template}
 
 
 /**
- * @param? productSamplesTab sample products
+ * @param? carouselData sample products
  */
 {template .donationProductSampleCarouselWrapper}
-	{if $productSamplesTab}
-		<div fd-toggle="product-sample-carousel" fd-toggle-state="{if $productSamplesTab.donationProductSamplesReacedMaximumItemQuantity}disabled{else}enabled{/if}">
-			{call expressco.donationProductSampleCarousel data="$productSamplesTab" /}
+	{if $carouselData.recommendationTabs}
+	    {foreach $recommendationTab in $carouselData.recommendationTabs}
+		<div fd-toggle="product-sample-carousel" fd-toggle-state="{if $recommendationTab.donationProductSamplesReacedMaximumItemQuantity}disabled{else}enabled{/if}">
+			{call expressco.donationProductSampleCarousel data="$recommendationTab" /}
 		</div>
+		{/foreach}
 	{/if}
 
 {/template}

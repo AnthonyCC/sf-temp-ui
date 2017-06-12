@@ -54,6 +54,8 @@ public class EnumSiteFeature implements Serializable, Comparable<EnumSiteFeature
     public final static EnumSiteFeature CART_N_TABS = new EnumSiteFeature("CART_N_TABS", true, "Cart & Tabs");
     public final static EnumSiteFeature SMART_CATEGORY = new EnumSiteFeature("SMART_CATEGORY", true, "Smart Category (virtual)");
     
+    public final static EnumSiteFeature PRODUCT_SAMPLE = new EnumSiteFeature("PRODUCT_SAMPLES", false, "Free Sample!");
+    
     //gift cards
     @Deprecated
     public final static EnumSiteFeature GIFT_CARDS = new EnumSiteFeature("giftCards");

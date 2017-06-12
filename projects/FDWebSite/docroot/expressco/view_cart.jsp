@@ -25,8 +25,9 @@ if (mobWeb) {
 }
 %>
 
+<potato:cartData/>
 <potato:pendingExternalAtcItem/>
-<potato:cartData />
+
 <tmpl:insert template='<%=template %>'>
 	<tmpl:put name="soytemplates"><soy:import packageName="expressco"/></tmpl:put>
 	<tmpl:put name="jsmodules">
@@ -77,16 +78,7 @@ if (mobWeb) {
 		<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user_view_cart)) { %>
 			<%-- APPDEV-5916 --%>
 			<div id="cartCarousels">
-				<potato:viewCart />
-				<soy:render template="expressco.viewCartTabbedCarousel" data="${viewCartPotato}" />
-				<script>
-					/* make sure some tab has been loaded */
-					$jq('#cartCarousels').ready(function() {
-						if ($jq('.tabbed-carousel [data-component="tabitem"].selected').closest('.tabbed-carousel').find('[data-component="tabpanel"]').children().length === 0) {
-							$jq('.tabbed-carousel [data-component="tabitem"].selected').trigger('click');
-						}						
-					});
-				</script>
+				<soy:render template="expressco.viewCartTabbedCarousel" data="${cartDataPotato.carouselData}" />
 			</div>
 		<% } %>
 		<%-- APPDEV-5516 : Cart Carousel - Grand Giving Donation Technology --%>
@@ -94,11 +86,11 @@ if (mobWeb) {
 		<% if (FDStoreProperties.isObsoleteCartCarouselsEnabled()) {
 		   if(FDStoreProperties.isPropDonationProductSamplesEnabled()){ %>
 		     <div id="donationProductSampleCarousel" class="donation-product-sample-carousel">
-		        <soy:render template="expressco.donationProductSampleCarouselWrapper" data="${cartDataPotato}" />
+		        <soy:render template="expressco.donationProductSampleCarouselWrapper" data="${cartDataPotato.carouselData}" />
 		      </div>     
 			<% } else { %>
 			  <div id="productsamplecarousel" class="product-sample-carousel">
-		        <soy:render template="expressco.productSampleCarouselWrapper" data="${cartDataPotato}" />
+		        <soy:render template="expressco.productSampleCarouselWrapper" data="${cartDataPotato.carouselData}" />
 		      </div>
 			<% }
 		} %>
@@ -114,11 +106,6 @@ if (mobWeb) {
       window.FreshDirect.expressco = {};
       window.FreshDirect.expressco.data = <fd:ToJSON object="${cartDataPotato}" noHeaders="true"/>
       window.FreshDirect.expressco.pendingCustomizations = <fd:ToJSON object="${pendingExternalAtcItemPotato}" noHeaders="true"/>
-		<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user_view_cart)) { %>
-      		window.FreshDirect.expressco.viewCartPotato = <fd:ToJSON object="${viewCartPotato}" noHeaders="true"/>
-		<% } else { %>
-			window.FreshDirect.expressco.viewCartPotato = {};
-		<% } %>
 
       // override coupon api url
       window.overrideCouponEndpoint = '/api/expressco/coupon';
