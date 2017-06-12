@@ -79,8 +79,6 @@ import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpInventoryData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpRestrictedAvailabilityData;
 import com.freshdirect.ecommerce.data.erp.inventory.RestrictedInfoParam;
-import com.freshdirect.ecommerce.data.erp.material.ErpClassData;
-import com.freshdirect.ecommerce.data.erp.material.ErpMaterialData;
 import com.freshdirect.ecommerce.data.erp.material.OverrideSkuAttrParam;
 import com.freshdirect.ecommerce.data.erp.material.SkuPrefixParam;
 import com.freshdirect.ecommerce.data.erp.model.ErpProductInfoModelData;
@@ -98,6 +96,7 @@ import com.freshdirect.ecommerce.data.routing.SubmitOrderRequestData;
 import com.freshdirect.ecommerce.data.rules.RuleData;
 import com.freshdirect.ecommerce.data.security.TicketData;
 import com.freshdirect.ecommerce.data.sessionimpressionlog.SessionImpressionLogEntryData;
+import com.freshdirect.ecommerce.data.smartstore.EnumSiteFeatureData;
 import com.freshdirect.ecommerce.data.smartstore.ProductFactorParam;
 import com.freshdirect.ecommerce.data.smartstore.ScoreResult;
 import com.freshdirect.ecommerce.data.survey.FDSurveyData;
@@ -109,11 +108,7 @@ import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
 import com.freshdirect.erp.SkuAvailabilityHistory;
 import com.freshdirect.erp.model.BatchModel;
-import com.freshdirect.erp.model.ErpCharacteristicValueModel;
-import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
-import com.freshdirect.erp.model.ErpClassModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
-import com.freshdirect.erp.model.ErpMaterialModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.event.RecommendationEventsAggregate;
 import com.freshdirect.fdstore.EnumEStoreId;
@@ -131,7 +126,6 @@ import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityLogModel;
 import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.framework.core.VersionedPrimaryKey;
 import com.freshdirect.framework.event.FDRecommendationEvent;
 import com.freshdirect.framework.event.FDWebEvent;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -3766,29 +3760,43 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	}
 
 	@Override
-	public Map<String, String> getVariantMap(String feature)throws RemoteException {
+	public Map<String, String> getVariantMap(EnumSiteFeatureData feature)throws RemoteException {
 		Response<Map<String, String>> response = null;
+		Request<EnumSiteFeatureData> request = new Request<EnumSiteFeatureData>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_VARIANT+feature),  new TypeReference<Response<Map<String, String>>>(){});
+			request.setData(feature);
+			String inputJson;
+			inputJson = buildRequest(request);
+			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(GET_VARIANT),new TypeReference<Response<Map<String, String>>>() {});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
 		}
 		return response.getData();
 	}
 	@Override
-	public Map<String, String> getVariantMap(String feature, Date date)
+	public Map<String, String> getVariantMap(EnumSiteFeatureData feature, Date date)
 			throws RemoteException {
 		Response<Map<String, String>> response = null;
+		Request<EnumSiteFeatureData> request = new Request<EnumSiteFeatureData>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_VARIANT_MAP+feature+"/date/"+date),  new TypeReference<Response<Map<String, String>>>(){});
+			request.setData(feature);
+			String inputJson;
+			inputJson = buildRequest(request);
+			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(GET_VARIANTS+"/date/"+date.getTime()),new TypeReference<Response<Map<String, String>>>() {});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		} catch (FDPayPalServiceException e) {
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
@@ -3823,14 +3831,21 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		return response.getData();
 	}
 	@Override
-	public List<String> getVariants(String feature) throws RemoteException {
+	public List<String> getVariants(EnumSiteFeatureData feature) throws RemoteException {
 		Response< List<String>> response = null;
+		Request<EnumSiteFeatureData> request = new Request<EnumSiteFeatureData>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_VARIANTS),  new TypeReference<Response<List<String>>>(){});
+			request.setData(feature);
+			String inputJson;
+			inputJson = buildRequest(request);
+			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(GET_VARIANTS),new TypeReference<Response< List<String>>>() {});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		} catch (FDPayPalServiceException e) {
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
@@ -3838,16 +3853,19 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	}
 	@Override
 	public List<Date> getStartDates() throws RemoteException {
-		Response<List<Date>> response = null;
+		List<Date> dateList = new ArrayList<Date>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_START_DATES),  new TypeReference<Response<List<Date>>>(){});
+			Response<List<Long>> response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_START_DATES),  new TypeReference<Response<List<Long>>>(){});
+			for (Long date : response.getData()) {
+				dateList.add(new java.sql.Date(date));
+			}
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
-		}
-		return response.getData();
+		} 
+		return dateList;
 	}
 }

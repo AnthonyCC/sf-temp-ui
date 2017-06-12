@@ -34,6 +34,7 @@ import com.freshdirect.ecommerce.data.delivery.RestrictionData;
 import com.freshdirect.ecommerce.data.delivery.sms.SmsAlertETAInfoData;
 import com.freshdirect.ecommerce.data.dlv.AddressData;
 import com.freshdirect.ecommerce.data.sessionimpressionlog.SessionImpressionLogEntryData;
+import com.freshdirect.ecommerce.data.smartstore.EnumSiteFeatureData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyResponseData;
 import com.freshdirect.ecommerce.data.survey.SurveyKeyData;
@@ -42,10 +43,7 @@ import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
 import com.freshdirect.erp.SkuAvailabilityHistory;
 import com.freshdirect.erp.model.BatchModel;
-import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
-import com.freshdirect.erp.model.ErpClassModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
-import com.freshdirect.erp.model.ErpMaterialModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.event.RecommendationEventsAggregate;
 import com.freshdirect.fdstore.EnumEStoreId;
@@ -61,7 +59,6 @@ import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityLogModel;
-import com.freshdirect.framework.core.VersionedPrimaryKey;
 import com.freshdirect.framework.event.FDRecommendationEvent;
 import com.freshdirect.framework.event.FDWebEvent;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
@@ -483,15 +480,15 @@ public interface IECommerceService {
     
     public Ticket retrieveTicket(String key) throws RemoteException;
     
-    public Map<String,String> getVariantMap(String feature) throws RemoteException;
+    public Map<String,String> getVariantMap(EnumSiteFeatureData feature) throws RemoteException;
     
-	public Map<String,String> getVariantMap(String feature, Date date) throws RemoteException;
+	public Map<String,String> getVariantMap(EnumSiteFeatureData feature, Date date) throws RemoteException;
 	
 	public Map<String, Integer> getCohorts() throws RemoteException;
 	
 	public List<String> getCohortNames() throws RemoteException;
 	
-	public List<String> getVariants(String feature) throws RemoteException;
+	public List<String> getVariants(EnumSiteFeatureData feature) throws RemoteException;
 	
 	public List<Date> getStartDates() throws RemoteException;
 
