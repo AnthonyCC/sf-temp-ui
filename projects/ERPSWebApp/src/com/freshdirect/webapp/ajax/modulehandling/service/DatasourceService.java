@@ -59,7 +59,7 @@ public class DatasourceService {
         DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
         ContentNodeI category = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"), currentDraftContext);
         String categoryId=null;
-        if(category.getKey()!=null)
+        if(category!=null && category.getKey()!=null)
         	categoryId = category.getKey().getId();
         return ModuleContentService.getDefaultService().loadBrowseSectionDataContainer(categoryId, user);
     }
@@ -68,7 +68,7 @@ public class DatasourceService {
         DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
         ContentNodeI category = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"), currentDraftContext);
         String categoryId=null;
-        if(category.getKey()!=null)
+        if(category!=null && category.getKey()!=null)
         	categoryId = category.getKey().getId();
         return ModuleContentService.getDefaultService().loadBrowseProducts(categoryId, user);
     }
