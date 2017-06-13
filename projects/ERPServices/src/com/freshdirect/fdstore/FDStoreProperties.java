@@ -27,7 +27,6 @@ import com.freshdirect.framework.util.ConfigHelper;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
 
 public class FDStoreProperties {
 
@@ -904,6 +903,11 @@ public class FDStoreProperties {
     private static final String PROP_DONATION_PRODUCT_SAMPLES_ENABLED = "fdstore.donation.product.samples.enabled";
     private static final String PROP_DONATION_PRODUCT_SAMPLES_ID = "fdstore.donation.product.samples.productId";
 
+    private static final String PROP_VIEWCART_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES = "fdstore.viewcart.new.customer.carousel.site.features";
+    private static final String PROP_VIEWCART_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES = "fdstore.viewcart.current.customer.carousel.site.features";
+    private static final String PROP_CHECKOUT_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES = "fdstore.checkout.new.customer.carousel.site.features";
+    private static final String PROP_CHECKOUT_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES = "fdstore.checkout.current.customer.carousel.site.features";
+
     // APPDEV-5893
     private static final String PROP_USER_CART_SAVE_INTERVAL = "fdstore.user.cart.save.interval";
 
@@ -1754,6 +1758,11 @@ public class FDStoreProperties {
         defaults.put(PROP_DONATION_PRODUCT_SAMPLES_ENABLED, "false");
         defaults.put(PROP_DONATION_PRODUCT_SAMPLES_ID, "");
 
+        defaults.put(PROP_VIEWCART_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES, "PRODUCT_SAMPLES, C_YMAL, FAVORITES");
+        defaults.put(PROP_VIEWCART_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES, "PRODUCT_SAMPLES, DYF, TOP_ITEMS_QS");
+        defaults.put(PROP_CHECKOUT_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES, "C_YMAL, FAVORITES, PRODUCT_SAMPLES");
+        defaults.put(PROP_CHECKOUT_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES, "DYF, TOP_ITEMS_QS, PRODUCT_SAMPLES");
+
         defaults.put(PROP_USER_CART_SAVE_INTERVAL, "0");
 
         defaults.put(PROP_HOMEPAGE_REDESIGN_CURRENT_USER_CONTAINER_CONTENT_KEY, "ModuleContainer:mc_hp_exist_cust");
@@ -1803,6 +1812,11 @@ public class FDStoreProperties {
             LOGGER.info("Loaded configuration from fdstore.properties: " + config);
             fireEvent();
         }
+    }
+
+    private static List<String> getAsList(String key) {
+        String value = get(key);
+        return value == null ? Collections.<String> emptyList() : Arrays.asList(value.trim().split("\\s*,\\s*"));
     }
 
     public static String get(String key) {
@@ -4483,6 +4497,22 @@ public class FDStoreProperties {
         return get(PROP_DONATION_PRODUCT_SAMPLES_ID);
     }
 
+    public static List<String> getViewcartNewCustomerCarouselSiteFeatures() {
+        return getAsList(PROP_VIEWCART_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES);
+    }
+
+    public static List<String> getViewcartCurrentCustomerCarouselSiteFeatures() {
+        return getAsList(PROP_VIEWCART_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES);
+    }
+
+    public static List<String> getCheckoutNewCustomerCarouselSiteFeatures() {
+        return getAsList(PROP_CHECKOUT_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES);
+    }
+
+    public static List<String> getCheckoutCurrentCustomerCarouselSiteFeatures() {
+        return getAsList(PROP_CHECKOUT_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES);
+    }
+
     public static int getUserCartSaveInterval() {
         return Integer.parseInt(get(PROP_USER_CART_SAVE_INTERVAL));
     }
@@ -4572,12 +4602,12 @@ public class FDStoreProperties {
 		return get(PROP_NODE_NAME);
 	}
 
-	
 	public static boolean isProductCacheOptimizationEnabled(){
-		return (Boolean.valueOf(get(PROP_PRODUCT_CACHE_OPTIMIZATION_ENABLED))).booleanValue();
+        return (Boolean.valueOf(get(PROP_PRODUCT_CACHE_OPTIMIZATION_ENABLED))).booleanValue();
 	}
 	
 	public static String getRequestSchemeForRedirectUrl(){
 		return get(PROP_REQUEST_SCHEME_FOR_REDIRECT_URL);
 	}
+
 }

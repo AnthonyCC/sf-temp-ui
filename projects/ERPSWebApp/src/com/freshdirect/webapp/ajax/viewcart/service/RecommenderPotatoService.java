@@ -34,10 +34,6 @@ public class RecommenderPotatoService {
     private static final RecommenderPotatoService INSTANCE = new RecommenderPotatoService();
 
     private static final List<String> VIEW_CART_PAGE_PRODUCT_SAMPLE_SITE_FEATURE = Arrays.asList("PRODUCT_SAMPLES");
-    private static final List<String> VIEW_CART_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES = Arrays.asList("PRODUCT_SAMPLES", "C_YMAL", "FAVORITES");
-    private static final List<String> VIEW_CART_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES = Arrays.asList("PRODUCT_SAMPLES", "DYF", "TOP_ITEMS_QS");
-    private static final List<String> CHECKOUT_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES = Arrays.asList("C_YMAL", "FAVORITES", "PRODUCT_SAMPLES");
-    private static final List<String> CHECKOUT_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES = Arrays.asList("DYF", "TOP_ITEMS_QS", "PRODUCT_SAMPLES");
 
     private RecommenderPotatoService() {
     }
@@ -82,11 +78,13 @@ public class RecommenderPotatoService {
         if (isCartTabCarsFeatureActive) {
             switch (type) {
                 case VIEWCART_PAGE:
-                    siteFeatures = isCurrentUser ? VIEW_CART_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES : VIEW_CART_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES;
+                    siteFeatures = isCurrentUser ? FDStoreProperties.getViewcartCurrentCustomerCarouselSiteFeatures()
+                            : FDStoreProperties.getViewcartNewCustomerCarouselSiteFeatures();
                     break;
 
                 case CHECKOUT_PAGE:
-                    siteFeatures = isCurrentUser ? CHECKOUT_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES : CHECKOUT_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES;
+                    siteFeatures = isCurrentUser ? FDStoreProperties.getCheckoutCurrentCustomerCarouselSiteFeatures()
+                            : FDStoreProperties.getCheckoutNewCustomerCarouselSiteFeatures();
                     break;
 
                 default:
