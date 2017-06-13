@@ -1772,6 +1772,9 @@ li.cleanli .gen-arrow {
 			[data-ec-page] .mm-page .eTippingEnabled .cartsection__totalwrapper #optionaltip.subtotal__rowcell-left {
 				margin-right: 0;
 			}
+			[data-ec-page] .mm-page #payment-method-separator hr {
+				width: 105px;
+			}
 		}
 		
 		/* bottom find out more text */
@@ -1805,6 +1808,9 @@ li.cleanli .gen-arrow {
 		}
 		[data-ec-page] .mm-page #optionaltip .strl_text {
 			white-space: nowrap;
+		}
+		[data-ec-page] .mm-page #cartheader .cartheader .cartheader__text {
+			display: none;
 		}
 		
 	/* overlays */
