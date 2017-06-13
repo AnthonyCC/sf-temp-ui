@@ -35,7 +35,7 @@ public class ViewCartPotatoTag extends SimpleTagSupport {
             carousels = ViewCartCarouselService.defaultService().populateViewCartTabsRecommendationsAndCarousel(request);
           
             //APPDEV-5516 If the property is true, populate the Donation Carousel , else fall back to Product Sample Carousel
-            if(FDStoreProperties.isPropDonationProductSamplesEnabled()){
+            /*if(FDStoreProperties.isPropDonationProductSamplesEnabled()){
             	productSamplesTab = ViewCartCarouselService.defaultService().populateViewCartPageDonationProductSampleCarousel(request);
             } else {
                 productSamplesTab = ViewCartCarouselService.defaultService().populateViewCartPageProductSampleCarousel(request);
@@ -43,7 +43,7 @@ public class ViewCartPotatoTag extends SimpleTagSupport {
             carousels.setProductSamplesTab(productSamplesTab);
             
             carousels.getRecommendationTabs().add(0, new RecommendationTab(QuickShopCrazyQuickshopRecommendationService.defaultService().getTheCrazyQuickshopTitle(null), QuickShopCarouselService.QUICKSHOP_VIRTUAL_SITE_FEATURE, null, null, null));
-        } catch (Exception e) {
+ */       } catch (Exception e) {
             LOGGER.error("recommendation failed", e);
         }
         pageContext.setAttribute(VIEW_CART_POTATO_NAME, SoyTemplateEngine.convertToMap(carousels));
