@@ -72,7 +72,7 @@ public class AvailabilityFactory {
 		}
 		s.addAll(product.getMaterial().getBlockedDays(plantID).translate(DAY_REASONS));
 		
-		ZoneInfo zoneInfo=ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo();
+		ZoneInfo zoneInfo= (null !=ContentFactory.getInstance().getCurrentUserContext() && null !=ContentFactory.getInstance().getCurrentUserContext().getPricingContext())? ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo(): null;
 		if(null !=zoneInfo){
 			String salesOrg = zoneInfo.getSalesOrg();
 			String distChannel = zoneInfo.getDistributionChanel();
