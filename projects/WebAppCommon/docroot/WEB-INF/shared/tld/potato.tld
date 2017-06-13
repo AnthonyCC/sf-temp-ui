@@ -289,7 +289,10 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
-
+<tag>
+        <name>viewCart</name>
+        <tagclass>com.freshdirect.webapp.ajax.viewcart.ViewCartPotatoTag</tagclass>
+    </tag>
 	<!-- APPDEV-3901 -->
     <tag>
         <name>qsRecommender</name>
