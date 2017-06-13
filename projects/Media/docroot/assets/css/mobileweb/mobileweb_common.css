@@ -1775,6 +1775,9 @@ li.cleanli .gen-arrow {
 			[data-ec-page] .mm-page #payment-method-separator hr {
 				width: 105px;
 			}
+			[data-ec-page] .mm-page .eTippingEnabled .cartsection__totalwrapper .subtotal__rowcell-left {
+				width: 160px;
+			}
 		}
 		
 		/* bottom find out more text */
