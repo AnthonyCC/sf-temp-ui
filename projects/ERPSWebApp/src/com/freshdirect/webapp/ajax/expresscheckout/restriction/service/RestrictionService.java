@@ -168,13 +168,15 @@ public class RestrictionService {
     private List<FDCartLineI> getNonEBTExclusiveCartLine(FDUserI user) {
         FDCartModel cart = user.getShoppingCart();
         List<FDCartLineI> ebtIneligibleOrderLines = new ArrayList<FDCartLineI>();
-        if (EnumPaymentMethodType.EBT.equals(cart.getPaymentMethod().getPaymentMethodType())) {
-            for (FDCartLineI cartLine : cart.getOrderLines()) {
-                if (cartLine.getProductRef().lookupProductModel().isExcludedForEBTPayment()) {
-                    ebtIneligibleOrderLines.add(cartLine);
-                }
-            }
-            cart.setEbtIneligibleOrderLines(ebtIneligibleOrderLines);
+        if(null !=cart && null !=cart.getPaymentMethod()){
+	        if (EnumPaymentMethodType.EBT.equals(cart.getPaymentMethod().getPaymentMethodType())) {
+	            for (FDCartLineI cartLine : cart.getOrderLines()) {
+	                if (cartLine.getProductRef().lookupProductModel().isExcludedForEBTPayment()) {
+	                    ebtIneligibleOrderLines.add(cartLine);
+	                }
+	            }
+	            cart.setEbtIneligibleOrderLines(ebtIneligibleOrderLines);
+	        }
         }
         return ebtIneligibleOrderLines;
     }
