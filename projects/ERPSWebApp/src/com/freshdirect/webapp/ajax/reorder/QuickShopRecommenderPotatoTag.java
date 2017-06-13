@@ -14,6 +14,7 @@ import com.freshdirect.webapp.ajax.reorder.service.QuickShopCarouselService;
 import com.freshdirect.webapp.ajax.reorder.service.QuickShopCrazyQuickshopRecommendationService;
 import com.freshdirect.webapp.ajax.viewcart.data.RecommendationTab;
 import com.freshdirect.webapp.ajax.viewcart.data.ViewCartCarouselData;
+import com.freshdirect.webapp.ajax.viewcart.service.CarouselItemType;
 import com.freshdirect.webapp.soy.SoyTemplateEngine;
 
 /**
@@ -44,6 +45,7 @@ public class QuickShopRecommenderPotatoTag extends SimpleTagSupport {
 	}
 
 	private void appendCrazyQuickShopVirtualRecommendation(ViewCartCarouselData carousels) {
-		carousels.getRecommendationTabs().add(0, new RecommendationTab(QuickShopCrazyQuickshopRecommendationService.defaultService().getTheCrazyQuickshopTitle(null), QuickShopCarouselService.QUICKSHOP_VIRTUAL_SITE_FEATURE, null, null, null));
+        carousels.getRecommendationTabs().add(0, new RecommendationTab(QuickShopCrazyQuickshopRecommendationService.defaultService().getTheCrazyQuickshopTitle(null),
+                QuickShopCarouselService.QUICKSHOP_VIRTUAL_SITE_FEATURE, null, null, null, CarouselItemType.GRID.getType()));
 	}
 }

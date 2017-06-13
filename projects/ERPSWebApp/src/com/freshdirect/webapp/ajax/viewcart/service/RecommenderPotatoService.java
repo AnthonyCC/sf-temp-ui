@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -34,6 +33,7 @@ public class RecommenderPotatoService {
 
     private static final RecommenderPotatoService INSTANCE = new RecommenderPotatoService();
 
+    private static final List<String> VIEW_CART_PAGE_PRODUCT_SAMPLE_SITE_FEATURE = Arrays.asList("PRODUCT_SAMPLES");
     private static final List<String> VIEW_CART_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES = Arrays.asList("PRODUCT_SAMPLES", "C_YMAL", "FAVORITES");
     private static final List<String> VIEW_CART_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES = Arrays.asList("PRODUCT_SAMPLES", "DYF", "TOP_ITEMS_QS");
     private static final List<String> CHECKOUT_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES = Arrays.asList("C_YMAL", "FAVORITES", "PRODUCT_SAMPLES");
@@ -46,20 +46,15 @@ public class RecommenderPotatoService {
         return INSTANCE;
     }
 
-    public ViewCartCarouselData getViewCartPageCarousels(FDUserI user, HttpServletRequest request, EnumCartCarouselType type, boolean isError) {
+    public ViewCartCarouselData getViewCartPageCarousels(FDUserI user, HttpServletRequest request, CartCarouselType type, boolean isError) {
         ViewCartCarouselData carousels = new ViewCartCarouselData();
-        boolean isCartTabCarsFeatureActive = FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.carttabcars, request.getCookies(), user);
 
         try {
-            if (isCartTabCarsFeatureActive) {
-                boolean isUserAlreadyOrdered = isUserAlreadyOrdered(user);
-                List<String> siteFeatures = getSiteFeatures(type, isUserAlreadyOrdered);
-                String selectedSiteFeature = getDefaultSiteFeature(siteFeatures, isError, isUserAlreadyOrdered);
-                List<RecommendationRequestObject> requestDatas = getRequestDatas(siteFeatures, selectedSiteFeature);
-                getProductRecommenderTabs(user, request, carousels.getRecommendationTabs(), requestDatas);
-            } else {
-                carousels.getRecommendationTabs().add(getProductSamplesTab(user, request));
-            }
+            boolean isUserAlreadyOrdered = isUserAlreadyOrdered(user);
+            List<String> siteFeatures = getSiteFeatures(type, isUserAlreadyOrdered, request, user);
+            String selectedSiteFeature = getDefaultSiteFeature(siteFeatures, isError, isUserAlreadyOrdered);
+            List<RecommendationRequestObject> requestDatas = getRequestDatas(siteFeatures, selectedSiteFeature);
+            getProductRecommenderTabs(user, request, carousels.getRecommendationTabs(), requestDatas);
         } catch (FDResourceException e) {
             LOGGER.error("recommendation failed", e);
         } catch (FDSkuNotFoundException e) {
@@ -80,20 +75,26 @@ public class RecommenderPotatoService {
         return selected;
     }
 
-    private List<String> getSiteFeatures(EnumCartCarouselType type, boolean isCurrentUser) throws FDResourceException {
+    private List<String> getSiteFeatures(CartCarouselType type, boolean isCurrentUser, HttpServletRequest request, FDUserI user) throws FDResourceException {
         List<String> siteFeatures = null;
-        switch (type) {
-            case VIEWCART_PAGE:
-                siteFeatures = isCurrentUser ? VIEW_CART_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES : VIEW_CART_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES;
-                break;
+        // TODO refactor it
+        boolean isCartTabCarsFeatureActive = FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.carttabcars, request.getCookies(), user);
+        if (isCartTabCarsFeatureActive) {
+            switch (type) {
+                case VIEWCART_PAGE:
+                    siteFeatures = isCurrentUser ? VIEW_CART_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES : VIEW_CART_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES;
+                    break;
 
-            case CHECKOUT_PAGE:
-                siteFeatures = isCurrentUser ? CHECKOUT_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES : CHECKOUT_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES;
-                break;
+                case CHECKOUT_PAGE:
+                    siteFeatures = isCurrentUser ? CHECKOUT_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES : CHECKOUT_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES;
+                    break;
 
-            default:
-                siteFeatures = Collections.emptyList();
-                break;
+                default:
+                    siteFeatures = Collections.emptyList();
+                    break;
+            }
+        } else {
+            siteFeatures = VIEW_CART_PAGE_PRODUCT_SAMPLE_SITE_FEATURE;
         }
         return siteFeatures;
     }
@@ -120,7 +121,7 @@ public class RecommenderPotatoService {
             RecommendationTab tab = null;
             // TODO eliminates this
             if ("PRODUCT_SAMPLES".equals(siteFeature)) {
-                tab = getProductSamplesTab(user, request);
+                tab = getProductSamplesTab(user, request, requestData);
             } else {
                 tab = getRecommendationTab(request, user, requestData);
             }
@@ -128,7 +129,8 @@ public class RecommenderPotatoService {
         }
     }
 
-    public RecommendationTab getProductSamplesTab(FDUserI user, HttpServletRequest request) throws FDSkuNotFoundException, FDResourceException {
+    public RecommendationTab getProductSamplesTab(FDUserI user, HttpServletRequest request, RecommendationRequestObject requestData)
+            throws FDSkuNotFoundException, FDResourceException {
         boolean isCheckout2FeatureActive = FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), user);
         // APPDEV-5516 If the property is true, populate the Donation Carousel , else fall back to Product Sample Carousel
         RecommendationTab productSamplesTab = null;
@@ -137,6 +139,7 @@ public class RecommenderPotatoService {
         } else {
             productSamplesTab = ViewCartCarouselService.defaultService().populateViewCartPageProductSampleCarousel(user, isCheckout2FeatureActive);
         }
+        productSamplesTab.setSelected(requestData.isSelected());
         return productSamplesTab;
     }
 
@@ -146,7 +149,7 @@ public class RecommenderPotatoService {
         String siteFeature = requestData.getFeature();
         EnumSiteFeature enumSiteFeature = EnumSiteFeature.getEnum(siteFeature);
         Variant variant = VariantSelectorFactory.getSelector(enumSiteFeature).select(user, false);
-        String parentImpressionId = Integer.toString(new Random().nextInt());// requestData.getParentImpressionId();
+        String parentImpressionId = requestData.getParentImpressionId();
         String impressionId = requestData.getImpressionId();
         String parentVariantId = requestData.getParentVariantId();
 
@@ -155,9 +158,10 @@ public class RecommenderPotatoService {
         }
 
         String titleForVariant = ViewCartCarouselService.defaultService().getTitleForVariant(variant);
-        RecommendationTab recommendationTab = new RecommendationTab(titleForVariant, enumSiteFeature.getName(), parentImpressionId, impressionId, parentVariantId);
+        RecommendationTab recommendationTab = new RecommendationTab(titleForVariant, enumSiteFeature.getName(), parentImpressionId, impressionId, parentVariantId,
+                CarouselItemType.GRID.getType());
+        recommendationTab.setSelected(requestData.isSelected());
         if (requestData.isSelected()) {
-            recommendationTab.setSelected(true);
             ViewCartCarouselService.defaultService().doGenericRecommendation(session, request, (FDSessionUser) user, recommendationTab, variant, parentImpressionId,
                     parentVariantId);
         }

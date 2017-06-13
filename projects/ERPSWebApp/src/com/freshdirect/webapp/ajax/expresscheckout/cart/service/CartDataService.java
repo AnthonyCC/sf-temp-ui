@@ -82,7 +82,7 @@ import com.freshdirect.webapp.ajax.holidaymealbundle.service.HolidayMealBundleSe
 import com.freshdirect.webapp.ajax.mealkit.service.MealkitService;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
-import com.freshdirect.webapp.ajax.viewcart.service.EnumCartCarouselType;
+import com.freshdirect.webapp.ajax.viewcart.service.CartCarouselType;
 import com.freshdirect.webapp.ajax.viewcart.service.RecommenderPotatoService;
 import com.freshdirect.webapp.taglib.callcenter.ComplaintUtil;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
@@ -191,7 +191,7 @@ public class CartDataService {
 
     public void validateCarouselData(HttpServletRequest request, FDUserI user, FormDataResponse response){
         if (!response.getSubmitForm().getResult().isEmpty()){
-        response.getSubmitForm().getResult().put("carouselData", RecommenderPotatoService.getDefaultService().getViewCartPageCarousels(user, request, EnumCartCarouselType.VIEWCART_PAGE, true));
+        response.getSubmitForm().getResult().put("carouselData", RecommenderPotatoService.getDefaultService().getViewCartPageCarousels(user, request, CartCarouselType.VIEWCART_PAGE, true));
         }
     }
     
@@ -569,7 +569,7 @@ public class CartDataService {
                 cartData.setDeliveryBegins(StandingOrderHelper.getDeliveryBeginsInfo(user));
             }
 
-            cartData.setCarouselData(RecommenderPotatoService.getDefaultService().getViewCartPageCarousels(user, request, EnumCartCarouselType.VIEWCART_PAGE, false));
+            cartData.setCarouselData(RecommenderPotatoService.getDefaultService().getViewCartPageCarousels(user, request, CartCarouselType.VIEWCART_PAGE, false));
             cartData.setCustomerServiceRepresentative(CustomerServiceRepresentativeService.defaultService().loadCustomerServiceRepresentativeInfo(user));
             cartData.setAvalaraEnabled(FDStoreProperties.getAvalaraTaxEnabled());
             if (FDStoreProperties.isETippingEnabled()) {

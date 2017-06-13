@@ -12,15 +12,17 @@ public class RecommendationTab {
 	private String parentImpressionId;
 	private String impressionId;
 	private String parentVariantId;
+    private String itemType;
     private boolean productSamplesReacedMaximumItemQuantity;
     private boolean selected;
 	
-	public RecommendationTab(String title, String siteFeature, String parentImpressionId, String impressionId, String parentVariantId) {
+    public RecommendationTab(String title, String siteFeature, String parentImpressionId, String impressionId, String parentVariantId, String itemType) {
 		this.title = title;
 		this.siteFeature = siteFeature;
 		this.parentImpressionId = parentImpressionId;
 		this.impressionId = impressionId;
 		this.parentVariantId = parentVariantId;
+        this.itemType = itemType;
 	}
 
 	public String getTitle() {
@@ -89,6 +91,10 @@ public class RecommendationTab {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    public String getItemType() {
+        return itemType;
     }
 
 }

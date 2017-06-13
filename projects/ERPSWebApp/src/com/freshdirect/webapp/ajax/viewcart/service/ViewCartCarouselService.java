@@ -128,17 +128,12 @@ public class ViewCartCarouselService {
             logRecommenderResults(recommendations.getProducts());
         }
 
-        EnumSiteFeature siteFeature = variant.getSiteFeature();
-        //TODO
-        CarouselData carousel = null;
-        if (recommendations == null){
-            carousel = CarouselService.defaultService().createCarouselData(null, siteFeature.getName(), new ArrayList<ProductModel>(), user, "",
-                    variant.getId());
-        } else {
-        carousel = CarouselService.defaultService().createCarouselData(null, siteFeature.getName(), recommendations.getAllProducts(), user, "",
-                recommendations.getVariant().getId());
+        if (recommendations != null && recommendations.getAllProducts().size() > 0) {
+            EnumSiteFeature siteFeature = variant.getSiteFeature();
+            CarouselData carousel = CarouselService.defaultService().createCarouselData(null, siteFeature.getName(), recommendations.getAllProducts(), user, "",
+                    recommendations.getVariant().getId());
+            recommendationTab.setCarouselData(carousel);
         }
-        recommendationTab.setCarouselData(carousel);
     }
 
     /**
@@ -209,7 +204,8 @@ public class ViewCartCarouselService {
                 String tabTitle = tabs.getTabTitle(tabIndex);
                 tabTitle = WordUtils.capitalizeFully(tabTitle);
                 String siteFeatureName = variant.getSiteFeature().getName();
-                RecommendationTab tab = new RecommendationTab(tabTitle, siteFeatureName, tabs.getParentImpressionId(), tabs.getFeatureImpressionId(tabIndex), parentVariantId);
+                RecommendationTab tab = new RecommendationTab(tabTitle, siteFeatureName, tabs.getParentImpressionId(), tabs.getFeatureImpressionId(tabIndex), parentVariantId,
+                        CarouselItemType.GRID.getType());
                 result.getRecommendationTabs().add(tab);
                 tabIndex++;
             }
@@ -224,7 +220,7 @@ public class ViewCartCarouselService {
         String prodSampelsTitle = FDStoreProperties.getProductSamplesTitle()
         		.replaceAll("%%N%%", Integer.toString( FDStoreProperties.getProductSamplesMaxBuyProductsLimit() ))
         		.replaceAll("%%Q%%", Integer.toString( FDStoreProperties.getProductSamplesMaxQuantityLimit() ));
-        RecommendationTab tab = new RecommendationTab(prodSampelsTitle, EnumSiteFeature.PRODUCT_SAMPLE.getName(), "", "", "");
+        RecommendationTab tab = new RecommendationTab(prodSampelsTitle, EnumSiteFeature.PRODUCT_SAMPLE.getName(), "", "", "", CarouselItemType.SAMPLE_PRODUCT_GRID.getType());
         tab.setCarouselData(carouselData);
         List<ProductData> sampleProducts = new ArrayList<ProductData>();
         List<FDCartLineI> productSamplesInCart = new ArrayList<FDCartLineI>();
@@ -339,10 +335,16 @@ public class ViewCartCarouselService {
     }
 
     private Recommendations getCachedRecommendations(Variant oVariant, HttpSession session, HttpServletRequest request, String cacheId) throws FDResourceException {
-        RecommendationsCache cache = RecommendationsCache.getCache(session);
-        Recommendations r = cache.get(cacheId, oVariant);
+        Recommendations r = null;
+        RecommendationsCache cache = null;
+        if (cacheId != null) {
+            cache = RecommendationsCache.getCache(session);
+            r = cache.get(cacheId, oVariant);
+        }
         if (r == null) {
             r = extractRecommendations(session, request, oVariant.getSiteFeature());
+        }
+        if (cache != null) {
             cache.store(cacheId, oVariant, r);
         }
         return r;
@@ -478,7 +480,8 @@ public class ViewCartCarouselService {
     
     public RecommendationTab populateViewCartPageDonationProductSampleCarousel(FDUserI user) throws FDSkuNotFoundException, FDResourceException  {
         CarouselData carouselData = new CarouselData();
-        RecommendationTab tab = new RecommendationTab("Donate to Grand Giving! For every $1 donated, 5 meals will be given to a family in need.", ViewCartCarouselService.CAROUSEL_PRODUCT_DONATIONS_SITE_FEATURE.toString(), "", "", "");
+        RecommendationTab tab = new RecommendationTab("Donate to Grand Giving! For every $1 donated, 5 meals will be given to a family in need.",
+                ViewCartCarouselService.CAROUSEL_PRODUCT_DONATIONS_SITE_FEATURE.toString(), "", "", "", CarouselItemType.SAMPLE_PRODUCT_GRID.getType());
         tab.setCarouselData(carouselData);
         
         List<ProductData> sampleProducts = new ArrayList<ProductData>();

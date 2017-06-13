@@ -19,6 +19,7 @@ import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.ajax.recommendation.RecommendationRequestObject;
 import com.freshdirect.webapp.ajax.viewcart.data.RecommendationTab;
 import com.freshdirect.webapp.ajax.viewcart.data.ViewCartCarouselData;
+import com.freshdirect.webapp.ajax.viewcart.service.CarouselItemType;
 import com.freshdirect.webapp.ajax.viewcart.service.ViewCartCarouselService;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.smartstore.Impression;
@@ -52,7 +53,8 @@ public abstract class AbstractRecommenderServlet extends BaseJsonServlet {
 			ViewCartCarouselData viewCartCarouselData = new ViewCartCarouselData();
 
 			final String titleForVariant = ViewCartCarouselService.defaultService().getTitleForVariant(variant);
-			RecommendationTab recommendationTab = new RecommendationTab(titleForVariant, enumSiteFeature.getName(), parentImpressionId, impressionId, parentVariantId);
+            RecommendationTab recommendationTab = new RecommendationTab(titleForVariant, enumSiteFeature.getName(), parentImpressionId, impressionId, parentVariantId,
+                    CarouselItemType.GRID.getType());
 			viewCartCarouselData.getRecommendationTabs().add(recommendationTab);
 
 			// populate recommendation tab

@@ -16,6 +16,7 @@ import com.freshdirect.webapp.ajax.recommendation.RecommendationRequestObject;
 import com.freshdirect.webapp.ajax.reorder.service.QuickShopCarouselService;
 import com.freshdirect.webapp.ajax.reorder.service.QuickShopCrazyQuickshopRecommendationService;
 import com.freshdirect.webapp.ajax.viewcart.data.RecommendationTab;
+import com.freshdirect.webapp.ajax.viewcart.service.CarouselItemType;
 import com.freshdirect.webapp.ajax.viewcart.service.RecommenderPotatoService;
 import com.freshdirect.webapp.ajax.viewcart.service.ViewCartCarouselService;
 import com.freshdirect.webapp.features.service.FeaturesService;
@@ -56,18 +57,15 @@ public class ViewCartPotatoServlet extends BaseJsonServlet {
 				//set the tabTitle here to allow for dynamic updates if the prop changes
 				if(FDStoreProperties.isPropDonationProductSamplesEnabled()){
 	            	productSamplesTab = ViewCartCarouselService.defaultService().populateViewCartPageDonationProductSampleCarousel(user);
-	            	recommenderResult.put("tabTitle", ViewCartCarouselService.CAROUSEL_PRODUCT_DONATIONS_TAB_TITLE.toString());
-					recommenderResult.put("tabSiteFeature", ViewCartCarouselService.CAROUSEL_PRODUCT_DONATIONS_SITE_FEATURE.toString());
 	            } else {
 	                boolean isCheckout2FeatureActive = FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), user);
 	                productSamplesTab = ViewCartCarouselService.defaultService().populateViewCartPageProductSampleCarousel(user, isCheckout2FeatureActive);
-	                recommenderResult.put("tabTitle", EnumSiteFeature.PRODUCT_SAMPLE.getTitle());
-					recommenderResult.put("tabSiteFeature", EnumSiteFeature.PRODUCT_SAMPLE.getName());
 	            }
 	            
 				if (productSamplesTab != null && productSamplesTab.getCarouselData() != null) {
 					recommenderResult.put("title", productSamplesTab.getTitle());
 					recommenderResult.put("items", productSamplesTab.getCarouselData().getProducts());
+                    recommenderResult.put("itemType", CarouselItemType.SAMPLE_PRODUCT_GRID.getType());
 				}
 				recommenderResult.put("siteFeature", requestData.getFeature());
 				result.put("recommenderResult", recommenderResult);
@@ -79,7 +77,7 @@ public class ViewCartPotatoServlet extends BaseJsonServlet {
 		} else {
 			try {
 			    RecommendationTab recommendationTab = RecommenderPotatoService.getDefaultService().getRecommendationTab(request, user, requestData);
-			    //TODO
+                // TODO fix this null check hell
 				if (recommendationTab.getCarouselData() == null || recommendationTab.getCarouselData().getProducts() ==  null || recommendationTab.getCarouselData().getProducts().isEmpty()) {
 					writeResponseData(response, "No recommendations found.");
 				} else {
@@ -87,6 +85,7 @@ public class ViewCartPotatoServlet extends BaseJsonServlet {
 					Map<String, Object> recommenderResult = new HashMap<String, Object>();
 					recommenderResult.put("siteFeature", requestData.getFeature());
 					recommenderResult.put("items", recommendationTab.getCarouselData().getProducts());
+                    recommenderResult.put("itemType", CarouselItemType.GRID.getType());
 					result.put("recommenderResult", recommenderResult);
 					writeResponseData(response, result);
 				}

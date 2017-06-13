@@ -1,6 +1,6 @@
 package com.freshdirect.webapp.ajax.viewcart.service;
 
-public enum EnumCartCarouselType {
+public enum CartCarouselType {
 
     VIEWCART_PAGE,
     CHECKOUT_PAGE;

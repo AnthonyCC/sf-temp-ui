@@ -33,6 +33,7 @@ import com.freshdirect.webapp.ajax.browse.service.CarouselService;
 import com.freshdirect.webapp.ajax.reorder.QuickShopHelper;
 import com.freshdirect.webapp.ajax.viewcart.data.RecommendationTab;
 import com.freshdirect.webapp.ajax.viewcart.data.ViewCartCarouselData;
+import com.freshdirect.webapp.ajax.viewcart.service.CarouselItemType;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.smartstore.Impression;
@@ -129,6 +130,7 @@ public abstract class AbstractCarouselService {
 
 		if (recommendations != null && recommendations.getAllProducts().size() > 0) {
 			EnumSiteFeature siteFeature = variant.getSiteFeature();
+            // TODO set cmEventSource
 			CarouselData carousel = CarouselService.defaultService().createCarouselData(null, siteFeature.getName(), recommendations.getAllProducts(), user, "", recommendations.getVariant().getId());
 			recommendationTab.setCarouselData(carousel);
 		}
@@ -181,7 +183,8 @@ public abstract class AbstractCarouselService {
 				String tabTitle = tabs.getTabTitle(tabIndex);
 				tabTitle = WordUtils.capitalizeFully(tabTitle);
 				String siteFeatureName = variant.getSiteFeature().getName();
-				RecommendationTab tab = new RecommendationTab(tabTitle, siteFeatureName, tabs.getParentImpressionId(), tabs.getFeatureImpressionId(tabIndex), parentVariantId);
+                RecommendationTab tab = new RecommendationTab(tabTitle, siteFeatureName, tabs.getParentImpressionId(), tabs.getFeatureImpressionId(tabIndex), parentVariantId,
+                        CarouselItemType.GRID.getType());
 				result.getRecommendationTabs().add(tab);
 				tabIndex++;
 			}
