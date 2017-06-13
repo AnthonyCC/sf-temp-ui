@@ -23,13 +23,81 @@ public class FDEcommProperties {
     private final static long REFRESH_PERIOD = 5 * 60 * 1000;
     
 
-    private final static String PROP_OBSOLETE_MERGECARTPAGE_ENABLED = "fdstore.obsolete.mergecartpage.enabled";
-    private final static String FDMonitorSB = " monitor.FDMonitorSB";
+    private final static String FDMonitorSB = "fdstore.monitor.FDMonitorSB";
+    private final static String ErpCOOLManagerSB = "erp.ejb.ErpCOOLManagerSB";
+    private final static String ErpGrpInfoSB = "erp.ejb.ErpGrpInfoSB";
+    private final static String SapGrpInfoLoaderSB = "sap.ejb.SapGrpInfoLoaderSB";
+    private final static String ErpInventoryManagerSB = "erp.ejb.ErpInventoryManagerSB";
+    private final static String DlvManagerSB = "delivery.ejb.DlvManagerSB";
+    private final static String ActivityLogSB = "customer.ejb.ActivityLogSB";
+    private final static String FDBrandProductsAdManagerSB = "fdstore.brandads.FDBrandProductsAdManagerSB";
+    private final static String BINInfoManagerSB = "payment.ejb.BINInfoManagerSB";
+    private final static String GCGatewaySB = "giftcard.ejb.GCGatewaySB";
+    private final static String SAPProductFamilyLoaderSB = "sap.ejb.SAPProductFamilyLoaderSB";
+    private final static String SmsAlertsSB = "sms.ejb.SmsAlertsSB";
+    private final static String SAPZoneInfoLoaderSB = "sap.ejb.SAPZoneInfoLoaderSB";
+    private final static String BatchManagerSB = "erp.ejb.BatchManagerSB";
+    private final static String AttributeFacadeSB = "attributes.ejb.AttributeFacadeSB";
+    private final static String ErpProductPromotionInfoSB = "erp.ejb.ErpProductPromotionInfoSB";
+    private final static String ErpZoneInfoSB = "erp.ejb.ErpZoneInfoSB";
+    private final static String RecommendationEventLoggerSB = "event.ejb.RecommendationEventLoggerSB";
+    private final static String EventLoggerSB = "event.ejb.EventLoggerSB";
+    private final static String FDFactorySB = "fdstore.ejb.FDFactorySB";
+    private final static String FDCouponActivityLogSB = "fdstore.ecoupon.FDCouponActivityLogSB";
+    private final static String EwalletActivityLogSB = "ewallet.ejb.EwalletActivityLogSB";
+    private final static String FDExtoleManagerSB = "referral.extole.FDExtoleManagerSB";
+    private final static String ErpEWalletSB = "erp.ejb.ErpEWalletSB";
+    private final static String FDSurveySB = "survey.ejb.FDSurveySB";
+    private final static String ExternalAccountManagerSB = "accounts.external.ExternalAccountManagerSB";
+    private final static String FDGrpInfoSB = "grp.ejb.FDGrpInfoSB";
+    private final static String FDZoneInfoSB = "zone.ejb.FDZoneInfoSB";
+    private final static String ScoreFactorSB = "smartstore.ejb.ScoreFactorSB";
+    private final static String DyfModelSB = "smartstore.ejb.DyfModelSB";
+    private final static String SessionImpressionLogSB = "smartstore.ejb.SessionImpressionLogSB";
+    private final static String RulesManagerSB = "rules.ejb.RulesManagerSB";
+    private final static String TestSupportSB = "test.ejb.TestSupportSB";
+    private final static String ErpInfoSB = "erp.ejb.ErpInfoSB";
+    private final static String ErpRoutingGatewaySB ="routing.ejb.ErpRoutingGatewaySB";
     
     
     static {
-        defaults.put(PROP_OBSOLETE_MERGECARTPAGE_ENABLED, "true");
+
         defaults.put(FDMonitorSB, "false");
+        defaults.put(ErpCOOLManagerSB , "false");
+        defaults.put(ErpGrpInfoSB, "false");
+        defaults.put(SapGrpInfoLoaderSB, "false");
+        defaults.put(ErpInventoryManagerSB , "false");
+        defaults.put(DlvManagerSB , "false");
+        defaults.put(ActivityLogSB , "false");
+        defaults.put(FDBrandProductsAdManagerSB , "false");
+        defaults.put(BINInfoManagerSB, "false");
+        defaults.put(GCGatewaySB, "false");
+        defaults.put(SAPProductFamilyLoaderSB, "false");
+        defaults.put(SmsAlertsSB , "false");
+        defaults.put(SAPZoneInfoLoaderSB, "false");
+        defaults.put(BatchManagerSB, "false");
+        defaults.put(AttributeFacadeSB , "false");
+        defaults.put(ErpProductPromotionInfoSB, "false");
+        defaults.put(ErpZoneInfoSB, "false");
+        defaults.put(RecommendationEventLoggerSB , "false");
+        defaults.put(EventLoggerSB , "false");
+        defaults.put(FDFactorySB , "false");
+        defaults.put(FDCouponActivityLogSB, "false");
+        defaults.put(EwalletActivityLogSB , "false");
+        defaults.put(FDExtoleManagerSB , "false");
+        defaults.put(ErpEWalletSB , "false");
+        defaults.put(FDSurveySB , "false");
+        defaults.put(ExternalAccountManagerSB , "false");
+        defaults.put(FDGrpInfoSB , "false");
+        defaults.put(FDZoneInfoSB , "false");
+        defaults.put(ScoreFactorSB , "false");
+        defaults.put(DyfModelSB, "false");
+        defaults.put(SessionImpressionLogSB , "false");
+        defaults.put(RulesManagerSB , "false");
+        defaults.put(TestSupportSB, "false");
+        defaults.put(ErpInfoSB , "false");
+        defaults.put(ErpRoutingGatewaySB , "false");
+        
         
 
         refresh();
@@ -107,10 +175,6 @@ public class FDEcommProperties {
         return config;
     }
 
-
-	public static boolean isObsoleteMergeCartPageEnabled() {
-    	return (Boolean.valueOf(get(PROP_OBSOLETE_MERGECARTPAGE_ENABLED))).booleanValue();
-	}
 	public static boolean isServiceEnabled(String beanName) {
 		refresh();
 		if(config.containsKey(beanName))

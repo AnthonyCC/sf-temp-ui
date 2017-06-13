@@ -253,14 +253,11 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 						
 						ErpRoutingGatewaySB erpRoutingGateway = getErpRoutingGatewayHome().create();
 						if(FDStoreProperties.isSF2_0_AndServiceEnabled("routing.ejb.ErpRoutingGatewaySB")){
-							try {
+						
 								FDECommerceService.getInstance().sendReservationUpdateRequest(saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()
 										, saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress()
 										, saleEB.getSapOrderNumber());
-							} catch (FDPayPalServiceException e) {
-								LOGGER.error(e.getMessage());
-								throw new RemoteException(e.getMessage());
-							}
+							
 						}else{
 						LOGGER.info("sending sendReservationUpdateRequest ..."+ saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId());
 						erpRoutingGateway.sendReservationUpdateRequest(saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()
@@ -319,14 +316,11 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 					saleEB.modifyOrderComplete();
 					ErpRoutingGatewaySB erpRoutingGateway = getErpRoutingGatewayHome().create();
 					if(FDStoreProperties.isSF2_0_AndServiceEnabled("routing.ejb.ErpRoutingGatewaySB")){
-						try {
+
 							FDECommerceService.getInstance().sendReservationUpdateRequest(saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()
 									, saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryAddress()
 									, saleEB.getSapOrderNumber());
-						} catch (FDPayPalServiceException e) {
-							LOGGER.error(e.getMessage());
-							throw new RemoteException(e.getMessage());
-						}
+
 					}else{
 					LOGGER.info("sending sendReservationUpdateRequest ..."+ saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId());
 					erpRoutingGateway.sendReservationUpdateRequest(saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId()

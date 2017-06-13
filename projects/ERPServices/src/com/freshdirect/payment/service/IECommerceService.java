@@ -442,7 +442,7 @@ public interface IECommerceService {
 	
 //	public ErpClassModel getErpClassBySapId(String sapId) throws RemoteException;
 
-	public void sendReservationUpdateRequest(String  reservationId, ContactAddressModel address, String sapOrderNumber) throws RemoteException, FDPayPalServiceException;
+	public void sendReservationUpdateRequest(String  reservationId, ContactAddressModel address, String sapOrderNumber) throws RemoteException;
 	
     public void sendSubmitOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
 			String unattendedInstr,String orderMobileNumber,String erpOrderId) throws RemoteException;

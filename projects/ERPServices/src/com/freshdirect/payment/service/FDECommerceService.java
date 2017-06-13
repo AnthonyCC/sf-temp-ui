@@ -355,7 +355,7 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String ERPCHARVALUEPRICE_MAT_BY_SAPID_AND_VERSION="erpclass/materialbysapidandvversion";
 
 	private static final String RESERVATION_UPDATE = "routing/reservationupdate/"; 
-	private static final String MODIFYORDERREQUEST = "routing/modifyorderrequest";
+	private static final String MODIFY_ORDER_REQUEST = "routing/modifyorderrequest";
 	private static final String CANCEL_ORDER_REQUEST = "routing/cancelorderrequest";
 	private static final String SUBMIT_ORDER_REQUEST = "routing/submitorderrequest";
 	
@@ -3645,7 +3645,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		try {
 			request.setData(submitOrderRequestData);
 			String inputJson = buildRequest(request);
-			this.postDataTypeMap(inputJson, getFdCommerceEndPoint(MODIFYORDERREQUEST),  new TypeReference<Response<Object>>() {});
+			this.postDataTypeMap(inputJson, getFdCommerceEndPoint(MODIFY_ORDER_REQUEST),  new TypeReference<Response<Object>>() {});
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
