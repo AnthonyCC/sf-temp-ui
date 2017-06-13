@@ -202,12 +202,14 @@ public HLBrandProductAdResponse getCategoryProducts(HLBrandProductAdRequest hLRe
             if ( urlToCallStr != null ) {
                 boolean first = true;
                 for ( String key : urlParameters.keySet() ) {
-                    if ( first) {
-                        first = false;
-                    } else {
-                        urlToCall.append("&");
-                    }
-                    urlToCall.append(key).append("=").append(URLEncoder.encode(urlParameters.get(key),charSet));
+                	if(null !=urlParameters.get(key)){
+	                    if ( first) {
+	                        first = false;
+	                    } else {
+	                        urlToCall.append("&");
+	                    }
+	                    urlToCall.append(key).append("=").append(URLEncoder.encode(urlParameters.get(key),charSet));
+                	}
                 }
                 urlToCallStr.append(urlToCall);
             }
