@@ -239,9 +239,10 @@ public class CategoryModel extends ProductContainer {
 			if(null != fDProductPromotionSkus)
 			for (FDProductPromotionInfo fDProductPromotionSku : fDProductPromotionSkus){
 				String sku = fDProductPromotionSku.getSkuCode();
-				if(!isPreview){
-					FDCachedFactory.refreshProductPromotionSku(sku);
-				}
+				//No need to refresh the productnfo.
+				/*if(!isPreview){
+					FDCachedFactory.refreshProductPromotionSku(sku); 
+				}*/
 				ProductModel productModel = null;
 				ProductModel prodModel = null;
 				try {
