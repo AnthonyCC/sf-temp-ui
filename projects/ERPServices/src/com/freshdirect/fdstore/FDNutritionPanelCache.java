@@ -74,7 +74,7 @@ public class FDNutritionPanelCache {
 	}
 
 	public NutritionPanel getNutritionPanel(String skuCode) {		
-		if(cache!=null)
+		if(cache!=null && skuCode!=null)
 			return cache.get( skuCode );
 		else
 			return null;
