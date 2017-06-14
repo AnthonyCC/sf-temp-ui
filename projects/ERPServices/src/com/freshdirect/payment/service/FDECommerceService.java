@@ -49,6 +49,7 @@ import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpRestrictedAvailabilityModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.ecommerce.data.attributes.FlatAttributeCollection;
+import com.freshdirect.ecommerce.data.cms.CmsCreateFeedParams;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.customer.ErpActivityRecordData;
@@ -142,6 +143,7 @@ import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
 import com.freshdirect.referral.extole.model.ExtoleResponse;
 import com.freshdirect.referral.extole.model.FDRafCreditModel;
 import com.freshdirect.rules.Rule;
+import com.freshdirect.sap.SapOrderPickEligibleInfo;
 import com.freshdirect.security.ticket.Ticket;
 import com.freshdirect.sms.model.st.STSmsResponse;
 //import com.freshdirect.content.attributes.FlatAttributeCollection;
@@ -207,6 +209,7 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String SURVEY_RESPONSE = "survey/surveyresponse";
 	private static final String GET_CUSTOMER_PROFILE = "survey/customerprofile";
 	
+	private static final String CMS_FEED_API = "cms/feed/";
 	private static final String SAP_GROUP_PRICE_LOADER_LOAD_API ="dataloader/sapGrp/groupScalePrice";
 	
 	private static final String GET_COO_API ="/coo";
@@ -370,6 +373,9 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String GET_VARIANT = "variant/site/";
 	private static final String GET_COHORTS = "variant/cohort";
 	private static final String GET_COHORTS_NAMES = "variant/cohortname";
+	private static final String GET_FDX_QUERYFORSALESPICKELIGIBLE = "fdxorderpick/queryforsalespickeligible";
+	private static final String POST_FDX_ELIGIBLE_SENDORDERSTOSAP = "fdxorderpick/sendorderstosap";
+	
 	
 	
 	public static IECommerceService getInstance() {
@@ -2418,6 +2424,140 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			return result.getResult();
 	}
 	
+	// GETCMSDATA BY STORE
+		//story 17-22
+	        @Override
+			public String getCmsFeed(String storeID) throws FDResourceException{
+				String payload;
+				String responseStr = "";
+				try {
+
+					Request<String> request = new Request<String>();
+
+					request.setData("");
+					/*
+					 * This returns the entire json as a string for processing in a later step
+					 * 
+					 */
+					//System.out.println(" the url your going to is: "+getFdCommerceEndPoint(CMS_FEED_API  + storeID) );
+					responseStr = httpGetData(getFdCommerceEndPoint(CMS_FEED_API  + storeID),
+							String.class);
+					
+					Response<String> responseOfTypestring = new  Response<String>();
+					/*
+					 * In this type we are using com.fasterxml.jackson.databind.ObjectMapper in conjunction with a specific 
+					 * TypeReference<Response<BatchModel>> to convert the entire json string to Response<BatchModel>
+					 */
+				
+					
+					responseOfTypestring = getMapper().readValue(responseStr, new TypeReference<Response<String>>() {});
+					//check to see if everything was ok with the restful service call.
+					if ( !responseOfTypestring.getResponseCode().equalsIgnoreCase(HttpStatus.OK.toString())  ){
+						 
+						throw new FDResourceException(responseOfTypestring.getMessage());
+					 }
+					payload = responseOfTypestring.getData();
+				} catch (Exception ex) {
+					// (FDLogisticsServiceException e,JsonParseException e )
+					if ( ex instanceof JsonParseException
+							|| ex instanceof IOException
+
+					) {
+						LOGGER.error(" getCmsFeed(String storeID): Exception converting Json response  to  Response<BatchModel> while getting getBatch "
+								+ responseStr);
+						LOGGER.error(ex);
+						throw new FDResourceException("Could not retrieve cms information for id: "+ storeID); 
+					}
+
+					else {
+						LOGGER.error(" getCmsFeed(String storeID): unknown error while getting getBatch " + responseStr);
+						LOGGER.error(ex);
+						throw new FDResourceException(ex,"Could not retrieve cms information for id: "+ storeID); 
+					}
+
+				}
+
+				return payload;
+
+			}
+			
+			
+			/**************************************************************/
+			// create cms data
+			@Override
+			public String createFeedCmsFeed(String feedId, String storeId, String feedData) throws FDResourceException{
+				String payload;
+
+				String responseStr = "";
+			
+				CmsCreateFeedParams cmsParams = new CmsCreateFeedParams(feedId,storeId,feedData);
+				try {
+
+					Request<CmsCreateFeedParams> request = new Request<CmsCreateFeedParams>();
+
+					request.setData(cmsParams);
+					String inputJson = buildRequest(request);
+					
+					/*
+					 * This returns the entire json as a string for processing in a later step
+					 * 
+					 */
+
+					 // getData actually does a post.
+					 
+					responseStr = 	getData(inputJson, getFdCommerceEndPoint(CMS_FEED_API), String.class);
+
+					LOGGER.debug("jOHNSON THE payload was:" + responseStr);
+
+					Response<String> responseOfTypestring = new  Response<String>();
+					/*
+					 * In this type we are using com.fasterxml.jackson.databind.ObjectMapper in conjunction with a specific 
+					 * TypeReference<Response<BatchModel>> to convert the entire json string to Response<BatchModel>
+					 */
+					LOGGER.debug("the json response you got back was: : "+responseStr );
+					
+					responseOfTypestring = getMapper().readValue(responseStr, new TypeReference<Response<String>>() {});
+					//check to see if everything was ok with the restful service call.
+					if ( !responseOfTypestring.getResponseCode().equalsIgnoreCase(HttpStatus.OK.toString())  ){
+						 
+						throw new FDResourceException(responseOfTypestring.getMessage());
+					 }
+					payload  = responseOfTypestring.getData();
+					LOGGER.debug("status: "+ responseOfTypestring.getResponseCode());
+					
+					
+					/*
+					 * In this type we are using com.fasterxml.jackson.databind.ObjectMapper in conjunction with a specific 
+					 * TypeReference<Response<BatchModel>> to convert the entire json string to Response<BatchModel>
+					 */
+				
+
+				} catch (Exception ex) {
+					// (FDLogisticsServiceException e,JsonParseException e )
+					if (ex instanceof JsonParseException
+							|| ex instanceof IOException
+							
+
+					) {
+						LOGGER.error(" createFeedCmsFeed(String feedId, String storeId, String feedData): Exception converting Json response  to  Response<String> while getting getBatch "
+								+ responseStr);
+						LOGGER.error(ex);
+						throw new FDResourceException("Could not create cms information for id: "+ feedId); 
+					}
+
+					else {
+						LOGGER.error(" createFeedCmsFeed(String feedId, String storeId, String feedData): unknown error while getting getBatch " + responseStr);
+						LOGGER.error(ex);
+						throw new FDResourceException(ex, "Could not create cms information for id: "+ feedId); 
+					}
+
+				}
+
+				return payload;
+
+			}
+			
+	
 	@Override
 	public Set<String> getPersonalizedFactorNames() {
 		Response<Set<String>> response = null;
@@ -3666,6 +3806,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		} catch (FDPayPalServiceException e) {
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
+			//
 		}
 		
 	}
@@ -3868,4 +4009,48 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		} 
 		return dateList;
 	}
+	
+	@Override
+	public void queryForFDXSalesPickEligible() throws RemoteException  {
+		String inputJson=null;
+		Response<String> response = null;
+		try {
+			response = 	getData( getFdCommerceEndPoint(GET_FDX_QUERYFORSALESPICKELIGIBLE), Response.class);
+			//response = postData(inputJson, getFdCommerceEndPoint(GET_FDX_QUERYFORSALESPICKELIGIBLE), Response.class);
+		} catch (FDResourceException e) {
+			// TODO Auto-generated catch block
+			LOGGER.error("Failure in queryForSalesPickEligible  Error: ",e);
+			throw new RemoteException(" queryForSalesPickEligible failure" , e);
+		}
+		if(!response.getResponseCode().equals("OK"))
+			throw new RemoteException(response.getMessage());
+		
+	}
+	@Override
+	public void sendFDXEligibleOrdersToSap(List<SapOrderPickEligibleInfo> eligibleSapOrderLst) throws RemoteException  {
+		
+		Response<String> response = null;
+		try {
+			Request<List<SapOrderPickEligibleInfo> > requestofSapList = new Request<List<SapOrderPickEligibleInfo> >();
+			requestofSapList.setData(eligibleSapOrderLst);
+			requestofSapList.setData(eligibleSapOrderLst);
+			String inputJson = buildRequest(requestofSapList);
+			System.out.println("sendFDXEligibleOrdersToSap calling url: "+getFdCommerceEndPoint(POST_FDX_ELIGIBLE_SENDORDERSTOSAP) );
+			response = 	postData(   inputJson,getFdCommerceEndPoint(POST_FDX_ELIGIBLE_SENDORDERSTOSAP),Response.class);
+			//response = postData(inputJson, getFdCommerceEndPoint(GET_FDX_QUERYFORSALESPICKELIGIBLE), Response.class);
+		}
+		catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException( "Unable to process the request.",e);
+		}
+		catch (FDResourceException e) {
+			// TODO Auto-generated catch block
+			LOGGER.error("Failure in sendFDXEligibleOrdersToSap  Error: ",e);
+			throw new RemoteException(" sendFDXEligibleOrdersToSap failure" , e);
+		}
+		if(!response.getResponseCode().equals("OK"))
+			throw new RemoteException(response.getMessage());
+		
+	}
+	//POST_FDX_ELIGIBLE_SENDORDERSTOSAP
 }

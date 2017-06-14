@@ -27,30 +27,41 @@ import org.apache.log4j.Category;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.erp.ejb.FDXOrderPickEligibleCronHome;
 import com.freshdirect.erp.ejb.FDXOrderPickEligibleCronSB;
+import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
+
+import com.freshdirect.payment.service.FDECommerceService;
 
 public class FDXOrderPickEligibleCronRunner {
 
 	private final static Category LOGGER = LoggerFactory.getInstance(FDXOrderPickEligibleCronRunner.class);
 
 	public static void main(String[] args) {
-	
 
 		Context ctx = null;
 		try {
 			ctx = getInitialContext();
-			FDXOrderPickEligibleCronHome home = (FDXOrderPickEligibleCronHome) ctx.lookup("freshdirect.erp.FDXOrderPickEligibleCron");
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDXOrderPickEligibleSB)) {//storefront 2.0 story sf17-64
 
-			FDXOrderPickEligibleCronSB sb = home.create();
-			sb.queryForSalesPickEligible();
+				FDECommerceService.getInstance().queryForFDXSalesPickEligible();
+			} else {
+
+				FDXOrderPickEligibleCronHome home = (FDXOrderPickEligibleCronHome) ctx
+						.lookup("freshdirect.erp.FDXOrderPickEligibleCron");
+
+				FDXOrderPickEligibleCronSB sb = home.create();
+				sb.queryForSalesPickEligible();
+			}
 
 		} catch (Exception e) {
 			StringWriter sw = new StringWriter();
 			e.printStackTrace(new PrintWriter(sw));
-			String _msg=sw.getBuffer().toString();
-			LOGGER.info(new StringBuilder("FDXOrderPickEligibleCronRunner failed with Exception...").append(_msg).toString());
-			LOGGER.error(_msg);	
+			String _msg = sw.getBuffer().toString();
+			LOGGER.info(new StringBuilder("FDXOrderPickEligibleCronRunner failed with Exception...").append(_msg)
+					.toString());
+			LOGGER.error(_msg);
 		} finally {
 			try {
 				if (ctx != null) {
@@ -58,9 +69,9 @@ public class FDXOrderPickEligibleCronRunner {
 					ctx = null;
 				}
 			} catch (NamingException ne) {
-				//could not do the cleanup
+				// could not do the cleanup
 				StringWriter sw = new StringWriter();
-				ne.printStackTrace(new PrintWriter(sw));	
+				ne.printStackTrace(new PrintWriter(sw));
 				email(Calendar.getInstance().getTime(), sw.getBuffer().toString());
 			}
 		}
@@ -72,18 +83,19 @@ public class FDXOrderPickEligibleCronRunner {
 		h.put(Context.PROVIDER_URL, ErpServicesProperties.getProviderURL());
 		return new InitialContext(h);
 	}
-	
+
 	private static void email(Date processDate, String exceptionMsg) {
 		// TODO Auto-generated method stub
 		try {
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
-			String subject="FDXOrderPickEligibleCronRunner:	"+ (processDate != null ? dateFormatter.format(processDate) : " date error");
+			String subject = "FDXOrderPickEligibleCronRunner:	"
+					+ (processDate != null ? dateFormatter.format(processDate) : " date error");
 
 			StringBuffer buff = new StringBuffer();
 
-			buff.append("<html>").append("<body>");			
-			
-			if(exceptionMsg != null) {
+			buff.append("<html>").append("<body>");
+
+			if (exceptionMsg != null) {
 				buff.append("Exception is :").append("\n");
 				buff.append(exceptionMsg);
 			}
@@ -91,14 +103,13 @@ public class FDXOrderPickEligibleCronRunner {
 
 			ErpMailSender mailer = new ErpMailSender();
 			mailer.sendMail(ErpServicesProperties.getCronFailureMailFrom(),
-					ErpServicesProperties.getCronFailureMailTo(),ErpServicesProperties.getCronFailureMailCC(),
-					subject, buff.toString(), true, "");
-			
-		}catch (MessagingException e) {
+					ErpServicesProperties.getCronFailureMailTo(), ErpServicesProperties.getCronFailureMailCC(), subject,
+					buff.toString(), true, "");
+
+		} catch (MessagingException e) {
 			LOGGER.warn("Error Sending FDXOrderPickEligible Cron report email: ", e);
 		}
-		
+
 	}
-	
-	
+
 }

@@ -74,6 +74,8 @@ import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
 import com.freshdirect.referral.extole.model.ExtoleResponse;
 import com.freshdirect.referral.extole.model.FDRafCreditModel;
 import com.freshdirect.rules.Rule;
+import com.freshdirect.sap.SapOrderPickEligibleInfo;
+//import com.freshdirect.sap.ejb.SapException;
 import com.freshdirect.security.ticket.Ticket;
 import com.freshdirect.sms.model.st.STSmsResponse;
 
@@ -491,5 +493,11 @@ public interface IECommerceService {
 	public List<String> getVariants(EnumSiteFeatureData feature) throws RemoteException;
 	
 	public List<Date> getStartDates() throws RemoteException;
+	//cms manager
+	public String createFeedCmsFeed(String feedId, String storeId, String feedData) throws FDResourceException;
+	public String getCmsFeed(String storeID) throws FDResourceException;
+
+	public void queryForFDXSalesPickEligible() throws RemoteException;
+	public void sendFDXEligibleOrdersToSap(List<SapOrderPickEligibleInfo> eligibleSapOrderLst) throws RemoteException;
 
 }

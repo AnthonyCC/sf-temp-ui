@@ -22,81 +22,84 @@ public class FDEcommProperties {
     private static long lastRefresh = 0;
     private final static long REFRESH_PERIOD = 5 * 60 * 1000;
     
-
-    private final static String FDMonitorSB = "fdstore.monitor.FDMonitorSB";
-    private final static String ErpCOOLManagerSB = "erp.ejb.ErpCOOLManagerSB";
-    private final static String ErpGrpInfoSB = "erp.ejb.ErpGrpInfoSB";
-    private final static String SapGrpInfoLoaderSB = "sap.ejb.SapGrpInfoLoaderSB";
-    private final static String ErpInventoryManagerSB = "erp.ejb.ErpInventoryManagerSB";
-    private final static String DlvManagerSB = "delivery.ejb.DlvManagerSB";
-    private final static String ActivityLogSB = "customer.ejb.ActivityLogSB";
-    private final static String FDBrandProductsAdManagerSB = "fdstore.brandads.FDBrandProductsAdManagerSB";
-    private final static String BINInfoManagerSB = "payment.ejb.BINInfoManagerSB";
-    private final static String GCGatewaySB = "giftcard.ejb.GCGatewaySB";
-    private final static String SAPProductFamilyLoaderSB = "sap.ejb.SAPProductFamilyLoaderSB";
-    private final static String SmsAlertsSB = "sms.ejb.SmsAlertsSB";
-    private final static String SAPZoneInfoLoaderSB = "sap.ejb.SAPZoneInfoLoaderSB";
-    private final static String BatchManagerSB = "erp.ejb.BatchManagerSB";
-    private final static String AttributeFacadeSB = "attributes.ejb.AttributeFacadeSB";
-    private final static String ErpProductPromotionInfoSB = "erp.ejb.ErpProductPromotionInfoSB";
-    private final static String ErpZoneInfoSB = "erp.ejb.ErpZoneInfoSB";
-    private final static String RecommendationEventLoggerSB = "event.ejb.RecommendationEventLoggerSB";
-    private final static String EventLoggerSB = "event.ejb.EventLoggerSB";
-    private final static String FDFactorySB = "fdstore.ejb.FDFactorySB";
-    private final static String FDCouponActivityLogSB = "fdstore.ecoupon.FDCouponActivityLogSB";
-    private final static String EwalletActivityLogSB = "ewallet.ejb.EwalletActivityLogSB";
-    private final static String FDExtoleManagerSB = "referral.extole.FDExtoleManagerSB";
-    private final static String ErpEWalletSB = "erp.ejb.ErpEWalletSB";
-    private final static String FDSurveySB = "survey.ejb.FDSurveySB";
-    private final static String ExternalAccountManagerSB = "accounts.external.ExternalAccountManagerSB";
-    private final static String FDGrpInfoSB = "grp.ejb.FDGrpInfoSB";
-    private final static String FDZoneInfoSB = "zone.ejb.FDZoneInfoSB";
-    private final static String ScoreFactorSB = "smartstore.ejb.ScoreFactorSB";
-    private final static String DyfModelSB = "smartstore.ejb.DyfModelSB";
-    private final static String SessionImpressionLogSB = "smartstore.ejb.SessionImpressionLogSB";
-    private final static String RulesManagerSB = "rules.ejb.RulesManagerSB";
-    private final static String TestSupportSB = "test.ejb.TestSupportSB";
-    private final static String ErpInfoSB = "erp.ejb.ErpInfoSB";
-    private final static String ErpRoutingGatewaySB ="routing.ejb.ErpRoutingGatewaySB";
+    private final static String FALSE="false";
+    public final static String FDMonitorSB = "fdstore.monitor.FDMonitorSB";
+    public final static String ErpCOOLManagerSB = "erp.ejb.ErpCOOLManagerSB";
+    public final static String ErpGrpInfoSB = "erp.ejb.ErpGrpInfoSB";
+    public final static String SapGrpInfoLoaderSB = "sap.ejb.SapGrpInfoLoaderSB";
+    public final static String ErpInventoryManagerSB = "erp.ejb.ErpInventoryManagerSB";
+    public final static String DlvManagerSB = "delivery.ejb.DlvManagerSB";
+    public final static String ActivityLogSB = "customer.ejb.ActivityLogSB";
+    public final static String FDBrandProductsAdManagerSB = "fdstore.brandads.FDBrandProductsAdManagerSB";
+    public final static String BINInfoManagerSB = "payment.ejb.BINInfoManagerSB";
+    public final static String GCGatewaySB = "giftcard.ejb.GCGatewaySB";
+    public final static String SAPProductFamilyLoaderSB = "sap.ejb.SAPProductFamilyLoaderSB";
+    public final static String SmsAlertsSB = "sms.ejb.SmsAlertsSB";
+    public final static String SAPZoneInfoLoaderSB = "sap.ejb.SAPZoneInfoLoaderSB";
+    public final static String BatchManagerSB = "erp.ejb.BatchManagerSB";
+    public final static String AttributeFacadeSB = "attributes.ejb.AttributeFacadeSB";
+    public final static String ErpProductPromotionInfoSB = "erp.ejb.ErpProductPromotionInfoSB";
+    public final static String ErpZoneInfoSB = "erp.ejb.ErpZoneInfoSB";
+    public final static String RecommendationEventLoggerSB = "event.ejb.RecommendationEventLoggerSB";
+    public final static String EventLoggerSB = "event.ejb.EventLoggerSB";
+    public final static String FDFactorySB = "fdstore.ejb.FDFactorySB";
+    public final static String FDCouponActivityLogSB = "fdstore.ecoupon.FDCouponActivityLogSB";
+    public final static String EwalletActivityLogSB = "ewallet.ejb.EwalletActivityLogSB";
+    public final static String FDExtoleManagerSB = "referral.extole.FDExtoleManagerSB";
+    public final static String ErpEWalletSB = "erp.ejb.ErpEWalletSB";
+    public final static String FDSurveySB = "survey.ejb.FDSurveySB";
+    public final static String ExternalAccountManagerSB = "accounts.external.ExternalAccountManagerSB";
+    public final static String FDGrpInfoSB = "grp.ejb.FDGrpInfoSB";
+    public final static String FDZoneInfoSB = "zone.ejb.FDZoneInfoSB";
+    public final static String ScoreFactorSB = "smartstore.ejb.ScoreFactorSB";
+    public final static String DyfModelSB = "smartstore.ejb.DyfModelSB";
+    public final static String SessionImpressionLogSB = "smartstore.ejb.SessionImpressionLogSB";
+    public final static String RulesManagerSB = "rules.ejb.RulesManagerSB";
+    public final static String TestSupportSB = "test.ejb.TestSupportSB";
+    public final static String ErpInfoSB = "erp.ejb.ErpInfoSB";
+    public final static String ErpRoutingGatewaySB ="routing.ejb.ErpRoutingGatewaySB";
+    public  final static String FDXOrderPickEligibleSB ="erp.ejb.FDXOrderPickEligibleSB";//story SF17-64
+    //routing.ejb.ErpRoutingGatewaySB
     
     
     static {
 
-        defaults.put(FDMonitorSB, "false");
-        defaults.put(ErpCOOLManagerSB , "false");
-        defaults.put(ErpGrpInfoSB, "false");
-        defaults.put(SapGrpInfoLoaderSB, "false");
-        defaults.put(ErpInventoryManagerSB , "false");
-        defaults.put(DlvManagerSB , "false");
-        defaults.put(ActivityLogSB , "false");
-        defaults.put(FDBrandProductsAdManagerSB , "false");
-        defaults.put(BINInfoManagerSB, "false");
-        defaults.put(GCGatewaySB, "false");
-        defaults.put(SAPProductFamilyLoaderSB, "false");
-        defaults.put(SmsAlertsSB , "false");
-        defaults.put(SAPZoneInfoLoaderSB, "false");
-        defaults.put(BatchManagerSB, "false");
-        defaults.put(AttributeFacadeSB , "false");
-        defaults.put(ErpProductPromotionInfoSB, "false");
-        defaults.put(ErpZoneInfoSB, "false");
-        defaults.put(RecommendationEventLoggerSB , "false");
-        defaults.put(EventLoggerSB , "false");
-        defaults.put(FDFactorySB , "false");
-        defaults.put(FDCouponActivityLogSB, "false");
-        defaults.put(EwalletActivityLogSB , "false");
-        defaults.put(FDExtoleManagerSB , "false");
-        defaults.put(ErpEWalletSB , "false");
-        defaults.put(FDSurveySB , "false");
-        defaults.put(ExternalAccountManagerSB , "false");
-        defaults.put(FDGrpInfoSB , "false");
-        defaults.put(FDZoneInfoSB , "false");
-        defaults.put(ScoreFactorSB , "false");
-        defaults.put(DyfModelSB, "false");
-        defaults.put(SessionImpressionLogSB , "false");
-        defaults.put(RulesManagerSB , "false");
-        defaults.put(TestSupportSB, "false");
-        defaults.put(ErpInfoSB , "false");
-        defaults.put(ErpRoutingGatewaySB , "false");
+        defaults.put(FDMonitorSB,FALSE);
+        defaults.put(ErpCOOLManagerSB ,FALSE);
+        defaults.put(ErpGrpInfoSB,FALSE);
+        defaults.put(SapGrpInfoLoaderSB,FALSE);
+        defaults.put(ErpInventoryManagerSB ,FALSE);
+        defaults.put(DlvManagerSB ,FALSE);
+        defaults.put(ActivityLogSB ,FALSE);
+        defaults.put(FDBrandProductsAdManagerSB ,FALSE);
+        defaults.put(BINInfoManagerSB,FALSE);
+        defaults.put(GCGatewaySB,FALSE);
+        defaults.put(SAPProductFamilyLoaderSB,FALSE);
+        defaults.put(SmsAlertsSB ,FALSE);
+        defaults.put(SAPZoneInfoLoaderSB,FALSE);
+        defaults.put(BatchManagerSB,FALSE);
+        defaults.put(AttributeFacadeSB ,FALSE);
+        defaults.put(ErpProductPromotionInfoSB,FALSE);
+        defaults.put(ErpZoneInfoSB,FALSE);
+        defaults.put(RecommendationEventLoggerSB ,FALSE);
+        defaults.put(EventLoggerSB ,FALSE);
+        defaults.put(FDFactorySB ,FALSE);
+        defaults.put(FDCouponActivityLogSB,FALSE);
+        defaults.put(EwalletActivityLogSB ,FALSE);
+        defaults.put(FDExtoleManagerSB ,FALSE);
+        defaults.put(ErpEWalletSB ,FALSE);
+        defaults.put(FDSurveySB ,FALSE);
+        defaults.put(ExternalAccountManagerSB ,FALSE);
+        defaults.put(FDGrpInfoSB ,FALSE);
+        defaults.put(FDZoneInfoSB ,FALSE);
+        defaults.put(ScoreFactorSB ,FALSE);
+        defaults.put(DyfModelSB,FALSE);
+        defaults.put(SessionImpressionLogSB ,FALSE);
+        defaults.put(RulesManagerSB ,FALSE);
+        defaults.put(TestSupportSB,FALSE);
+        defaults.put(ErpInfoSB ,FALSE);
+        defaults.put(ErpRoutingGatewaySB ,FALSE);
+        defaults.put(FDXOrderPickEligibleSB, FALSE);
         
         
 
@@ -181,6 +184,22 @@ public class FDEcommProperties {
     	return (Boolean.valueOf(config.getProperty(beanName))).booleanValue();
 		return false;
 	}
+
+/**
+ * Returns the local string constant routing.ejb.ErpRoutingGatewaySB
+ * @return routing.ejb.ErpRoutingGatewaySB
+ */
+//	public static String getErproutinggatewaysb() {
+//		return ErpRoutingGatewaySB;
+//	}
+
+/**
+ *  Returns the local string erp.ejb.FDXOrderPickEligibleSB
+ * @return String 'erp.ejb.FDXOrderPickEligibleSB"
+ */
+//	public static String getFdxorderpickeligiblesb() {
+//		return FDXOrderPickEligibleSB;
+//	}
 	
 	
 }
