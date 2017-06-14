@@ -1,5 +1,8 @@
 package com.freshdirect.payment.service;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.MaterialPrice;
@@ -29,6 +33,16 @@ import com.freshdirect.ecommerce.data.enums.DeliveryPassTypeData;
 import com.freshdirect.ecommerce.data.enums.EnumFeaturedHeaderTypeData;
 import com.freshdirect.ecommerce.data.enums.ErpAffiliateData;
 import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
+import com.freshdirect.ecommerce.data.erp.inventory.ErpInventoryData;
+import com.freshdirect.ecommerce.data.erp.inventory.ErpInventoryEntryData;
+import com.freshdirect.ecommerce.data.erp.material.ErpCharacteristicData;
+import com.freshdirect.ecommerce.data.erp.material.ErpCharacteristicValueData;
+import com.freshdirect.ecommerce.data.erp.material.ErpCharacteristicValuePriceData;
+import com.freshdirect.ecommerce.data.erp.material.ErpClassData;
+import com.freshdirect.ecommerce.data.erp.material.ErpMaterialData;
+import com.freshdirect.ecommerce.data.erp.material.ErpMaterialSalesAreaData;
+import com.freshdirect.ecommerce.data.erp.material.ErpPlantMaterialData;
+import com.freshdirect.ecommerce.data.erp.material.ErpSalesUnitData;
 import com.freshdirect.ecommerce.data.erp.model.ErpMaterialPriceData;
 import com.freshdirect.ecommerce.data.erp.model.ErpMaterialSalesAreaInfoData;
 import com.freshdirect.ecommerce.data.erp.model.ErpPlantMaterialInfoData;
@@ -48,16 +62,28 @@ import com.freshdirect.ecommerce.data.logger.recommendation.FDRecommendationEven
 import com.freshdirect.ecommerce.data.payment.FDGatewayActivityLogModelData;
 import com.freshdirect.ecommerce.data.rules.RuleData;
 import com.freshdirect.ecommerce.data.security.TicketData;
+import com.freshdirect.ecommerce.data.utill.DayOfWeekSetData;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.EnumAlcoholicContent;
 import com.freshdirect.erp.EnumFeaturedHeaderType;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
+import com.freshdirect.erp.model.ErpCharacteristicModel;
+import com.freshdirect.erp.model.ErpCharacteristicValueModel;
+import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
+import com.freshdirect.erp.model.ErpClassModel;
+import com.freshdirect.erp.model.ErpInventoryEntryModel;
+import com.freshdirect.erp.model.ErpInventoryModel;
+import com.freshdirect.erp.model.ErpMaterialModel;
+import com.freshdirect.erp.model.ErpMaterialPriceModel;
+import com.freshdirect.erp.model.ErpMaterialSalesAreaModel;
+import com.freshdirect.erp.model.ErpPlantMaterialModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialPrice;
 import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialSalesAreaInfo;
 import com.freshdirect.erp.model.ErpProductInfoModel.ErpPlantMaterialInfo;
+import com.freshdirect.erp.model.ErpSalesUnitModel;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
@@ -653,7 +679,296 @@ public class ModelConverter {
 		return ticketRequest;
 		
 	}
+
+	public static ErpMaterialData convertErpMaterialModelToData(
+			ErpMaterialModel model) {
+		ErpMaterialData data = new ErpMaterialData();
+		List<ErpClassData> erpClassDatas = createErpClassDataList(model.getClasses());
+		List<ErpMaterialPriceData> erpMaterialPriceDatas = createErpMaterialPriceDataList(model.getPrices());
+		List<ErpSalesUnitData> salesUnitDatas = createErpSalesUnitDataList(model.getSalesUnits());
+		List<ErpSalesUnitData> displaySalesUnitDatas = createErpSalesUnitDataList(model.getDisplaySalesUnits());
+		List<ErpPlantMaterialData> erpPlantMaterialDatas = createErpPlantMaterialDataList(model.getMaterialPlants());
+		List<ErpMaterialSalesAreaData> erpMaterialSalesAreaDatas = createErpMaterialSalesAreaDataList(model.getMaterialSalesAreas());
 		
-		
+		data.setId(model.getId());
+		data.setBaseUnit(model.getBaseUnit());
+		data.setUPC(model.getUPC());
+		data.setDescription(model.getDescription());
+		data.setQuantityCharacteristic(model.getQuantityCharacteristic());
+		data.setSalesUnitCharacteristic(model.getSalesUnitCharacteristic());
+		data.setMaterialGroup(model.getMaterialGroup());
+		data.setSapId(model.getSapId());
+		data.setSalesUnits(getErpSaleUnitModelList(model.getSalesUnits()));
+		data.setAlcoholicContent(model.getAlcoholicContent().getCode());
+		data.setTaxable(model.isTaxable());
+		data.setTaxCode(model.getTaxCode());
+		data.setDisplaySalesUnits(getErpSaleUnitModelList(model.getDisplaySalesUnits()));
+		data.setSkuCode(model.getSkuCode());
+		data.setDaysFresh(model.getDaysFresh());
+		data.setMaterialType( model.getMaterialType());
+		data.setApprovalStatus(model.getApprovalStatus().getStatusCode());
+
+		data.setPrices(erpMaterialPriceDatas);
+		data.setClasses(erpClassDatas);
+		data.setDisplaySalesUnits(displaySalesUnitDatas);
+		data.setMaterialPlants(erpPlantMaterialDatas);
+		data.setMaterialSalesAreas(erpMaterialSalesAreaDatas);
+		data.setSalesUnits(salesUnitDatas);
+		return data;
 	}
+	
+
+	private static List getErpSaleUnitModelList(
+			List<ErpSalesUnitModel> salesUnits) {
+		List<ErpSalesUnitData> erpSaleUnits = new ArrayList<ErpSalesUnitData>();
+		for (ErpSalesUnitModel salesUnit : salesUnits) {
+				ErpSalesUnitData model = convertErpSaleUnitModelToData(salesUnit);
+				erpSaleUnits.add(model);
+			}
+		return erpSaleUnits;
+		}
+
+	/*private static ErpSalesUnitData convertErpSaleUnitModelToData(
+			ErpSalesUnitModel salesUnit) {
+		ErpSalesUnitData erpSalesUnitData = new ErpSalesUnitData();
+		erpSalesUnitData.setId(salesUnit.getId());
+		erpSalesUnitData.setAlternativeUnit(salesUnit.getAlternativeUnit());
+		erpSalesUnitData.setBaseUnit(salesUnit.getBaseUnit());
+		erpSalesUnitData.setNumerator(salesUnit.getNumerator());
+		erpSalesUnitData.setDenominator(salesUnit.getDenominator());
+		erpSalesUnitData.setDescription(salesUnit.getDescription());
+		erpSalesUnitData.setUnitPriceNumerator(salesUnit.getUnitPriceNumerator());
+		erpSalesUnitData.setUnitPriceDenominator(salesUnit.getUnitPriceDenominator());
+		erpSalesUnitData.setUnitPriceUOM(salesUnit.getUnitPriceUOM());
+		erpSalesUnitData.setUnitPriceDescription(salesUnit.getUnitPriceDescription());
+		erpSalesUnitData.setDisplayInd(salesUnit.isDisplayInd());
+		return erpSalesUnitData;
+	}*/
+	
+	public static List<ErpMaterialSalesAreaData> createErpMaterialSalesAreaDataList(List<ErpMaterialSalesAreaModel> list) {
+		List<ErpMaterialSalesAreaData> erpMaterialSalesAreaDatas = new ArrayList<ErpMaterialSalesAreaData>();
+		for (ErpMaterialSalesAreaModel erpMaterialSalesAreaModel : list) {
+			ErpMaterialSalesAreaData data = convertErpMaterialSalesAreaModelToData(erpMaterialSalesAreaModel);
+			erpMaterialSalesAreaDatas.add(data);
+		}
+		return erpMaterialSalesAreaDatas;
+	}
+
+	public static ErpMaterialSalesAreaData convertErpMaterialSalesAreaModelToData(
+			ErpMaterialSalesAreaModel erpMaterialSalesAreaModel) {
+		ErpMaterialSalesAreaData data = new  ErpMaterialSalesAreaData();
+		data.setDayPartSelling(erpMaterialSalesAreaModel.getDayPartSelling());
+		data.setDistChannel(erpMaterialSalesAreaModel.getDistChannel());
+		data.setId(erpMaterialSalesAreaModel.getId());
+		data.setPickingPlantId(erpMaterialSalesAreaModel.getPickingPlantId());
+		data.setSalesOrg(erpMaterialSalesAreaModel.getSalesOrg());
+		data.setSkuCode(erpMaterialSalesAreaModel.getSkuCode());
+		Date str1 = erpMaterialSalesAreaModel.getUnavailabilityDate();
+		Date date = null;
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
+		String str = dateFormat.format(str1);
+		try {
+			date = dateFormat.parse(str);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		data.setUnavailabilityDate(date);
+		
+		data.setUnavailabilityReason(erpMaterialSalesAreaModel.getUnavailabilityReason());
+		data.setUnavailabilityStatus(erpMaterialSalesAreaModel.getUnavailabilityStatus());
+		return data;
+	}
+	
+
+	public static List<ErpPlantMaterialData> createErpPlantMaterialDataList(List<ErpPlantMaterialModel> list) {
+		List<ErpPlantMaterialData>  erpPlantMaterialDatas = new ArrayList<ErpPlantMaterialData>();
+		for (ErpPlantMaterialModel erpPlantMaterialModel : list) {
+			ErpPlantMaterialData data = convertErpPlantMaterialModelToData(erpPlantMaterialModel);
+			erpPlantMaterialDatas.add(data);
+		}
+		return erpPlantMaterialDatas;
+	}
+
+	public static ErpPlantMaterialData convertErpPlantMaterialModelToData(
+			ErpPlantMaterialModel erpPlantMaterialModel) {
+		ErpPlantMaterialData data = new ErpPlantMaterialData();
+		data.setAtpRule(erpPlantMaterialModel.getAtpRule().getName());
+		data.setBlockedDays(getDayOfWeekSetData(erpPlantMaterialModel.getBlockedDays()));
+		data.setDays_in_house(erpPlantMaterialModel.getDays_in_house());
+		data.setHideOutOfStock(erpPlantMaterialModel.isHideOutOfStock());
+		data.setId(erpPlantMaterialModel.getId());
+		data.setKosherProduction(erpPlantMaterialModel.isKosherProduction());
+		data.setLeadTime(erpPlantMaterialModel.getLeadTime());
+		data.setNumberOfDaysFresh(erpPlantMaterialModel.getNumberOfDaysFresh());
+		data.setPlantId(erpPlantMaterialModel.getPlantId());
+		data.setPlatter(erpPlantMaterialModel.isPlatter());
+		data.setRating(erpPlantMaterialModel.getRating());
+		data.setSustainabilityRating(erpPlantMaterialModel.getSustainabilityRating());
+		return data;
+	}
+	
+	private static DayOfWeekSetData getDayOfWeekSetData(DayOfWeekSet blockedDays) {
+		DayOfWeekSetData data = new DayOfWeekSetData();
+		if (blockedDays != null) {
+			String dayString = blockedDays.encode();
+			char[] daysArray = dayString.trim().toCharArray();
+			for (int i = 0; i < daysArray.length; i++) {
+				data.getDaysOfWeek().add(daysArray[i]);
+			}
+		}
+		return data;
+	}
+	
+	public static List<ErpSalesUnitData> createErpSalesUnitDataList(List<ErpSalesUnitModel> salesUnits) {
+			List<ErpSalesUnitData> salesUnitDatas = new ArrayList<ErpSalesUnitData>();
+			for (ErpSalesUnitModel erpSalesUnitModel : salesUnits) {
+				ErpSalesUnitData data = convertErpSaleUnitModelToData(erpSalesUnitModel);
+				salesUnitDatas.add(data);
+			}
+			return salesUnitDatas;
+		}
+
+	public static ErpSalesUnitData convertErpSaleUnitModelToData(
+			ErpSalesUnitModel erpSalesUnitModel) {
+		ErpSalesUnitData data = new ErpSalesUnitData();
+		data.setAlternativeUnit(erpSalesUnitModel.getAlternativeUnit());
+		data.setBaseUnit(erpSalesUnitModel.getBaseUnit());
+		data.setDenominator(erpSalesUnitModel.getDenominator());
+		data.setDescription(erpSalesUnitModel.getDescription());
+		data.setDisplayInd(erpSalesUnitModel.isDisplayInd());
+		data.setId(erpSalesUnitModel.getId());
+		data.setNumerator(erpSalesUnitModel.getNumerator());
+		data.setUnitPriceDenominator(erpSalesUnitModel.getUnitPriceDenominator());
+		data.setUnitPriceDescription(erpSalesUnitModel.getUnitPriceDescription());
+		data.setUnitPriceUOM(erpSalesUnitModel.getUnitPriceUOM());
+		return data;
+	}
+
+	public static List<ErpMaterialPriceData> createErpMaterialPriceDataList(List<ErpMaterialPriceModel> erpMaterialPriceModels) {
+		List<ErpMaterialPriceData>  erpPlantMaterialDatas = new ArrayList<ErpMaterialPriceData>();
+		for (ErpMaterialPriceModel erpMaterialPriceModel : erpMaterialPriceModels) {
+			ErpMaterialPriceData data = convertErpMaterialPriceModelToData(erpMaterialPriceModel);
+			erpPlantMaterialDatas.add(data);
+		}
+		return erpPlantMaterialDatas;
+	}
+
+	public static ErpMaterialPriceData convertErpMaterialPriceModelToData(
+			ErpMaterialPriceModel erpMaterialPriceModel) {
+		ErpMaterialPriceData data = new ErpMaterialPriceData();
+		data.setDistChannel(erpMaterialPriceModel.getDistChannel());
+		data.setId(erpMaterialPriceModel.getId());
+		data.setPrice(erpMaterialPriceModel.getPrice());
+		data.setPricingUnit(erpMaterialPriceModel.getPricingUnit());
+		data.setPromoPrice(erpMaterialPriceModel.getPromoPrice());
+		data.setSalesOrg(erpMaterialPriceModel.getSalesOrg());
+		data.setSapId(erpMaterialPriceModel.getSapId());
+		data.setSapZoneId(erpMaterialPriceModel.getSapZoneId());
+		data.setScaleQuantity(erpMaterialPriceModel.getScaleQuantity());
+		data.setScaleUnit(erpMaterialPriceModel.getScaleUnit());
+		return data;
+	}
+	public static List<ErpClassData> createErpClassDataList(List<ErpClassModel> erpClassModels) {
+		List<ErpClassData>  erpClassDatas = new ArrayList<ErpClassData>();
+		for (ErpClassModel erpClassModel : erpClassModels) {
+			ErpClassData data = convertErpClassModelToData(erpClassModel);
+			erpClassDatas.add(data);
+		}
+		return erpClassDatas;
+	}
+	
+	public static ErpClassData convertErpClassModelToData(ErpClassModel erpClassModel) {
+		ErpClassData data = new ErpClassData();
+		data.setId(erpClassModel.getId());
+		data.setSapId(erpClassModel.getSapId());
+		data.setCharacteristics(createErpCharacteristicDataList(erpClassModel.getCharacteristics()));
+		return data;
+	}
+	
+	private static List<ErpCharacteristicData> createErpCharacteristicDataList(List<ErpCharacteristicModel> erpClassModels) {
+		List<ErpCharacteristicData>  erpCharacteristicDatas = new ArrayList<ErpCharacteristicData>();
+		for (ErpCharacteristicModel erpClassModel : erpClassModels) {
+			ErpCharacteristicData data = convertErpCharacteristicModelToData(erpClassModel);
+			erpCharacteristicDatas.add(data);
+		}
+		return erpCharacteristicDatas;
+	}
+
+	public static ErpCharacteristicData convertErpCharacteristicModelToData(
+			ErpCharacteristicModel erpClassModel) {
+		ErpCharacteristicData data = new ErpCharacteristicData();
+		data.setId(erpClassModel.getId());
+		data.setName(erpClassModel.getName());
+		data.setCharacteristicValues(createErpCharacteristicValueDataList(erpClassModel.getCharacteristicValues()));
+		return data;
+	}
+		
+	public static List<ErpCharacteristicValueData> createErpCharacteristicValueDataList(List<ErpCharacteristicValueModel> list) {
+		List<ErpCharacteristicValueData>  erpCharacteristicValueDatas = new ArrayList<ErpCharacteristicValueData>();
+		for (ErpCharacteristicValueModel erpCharacteristicValueModel : list) {
+			ErpCharacteristicValueData data = converErpCharactisticModelToData(erpCharacteristicValueModel);
+			erpCharacteristicValueDatas.add(data);
+		}
+		return erpCharacteristicValueDatas;
+	}
+
+	public static ErpCharacteristicValueData converErpCharactisticModelToData(
+			ErpCharacteristicValueModel erpCharacteristicValueModel) {
+		ErpCharacteristicValueData data = new ErpCharacteristicValueData();
+		data.setId(erpCharacteristicValueModel.getId());
+		data.setName(erpCharacteristicValueModel.getName());
+		data.setDescription(erpCharacteristicValueModel.getDescription());
+		return data;
+	}
+
+	public static ErpCharacteristicValuePriceData createErpCharacteristicValuePriceData(
+			ErpCharacteristicValuePriceModel key) {
+		ErpCharacteristicValuePriceData data = new ErpCharacteristicValuePriceData();
+		data.setCharacteristicName(key.getCharacteristicName());
+		data.setCharacteristicValueId(key.getCharacteristicValueId());
+		data.setCharacteristicValueName(key.getCharacteristicValueName());
+		data.setClassName(key.getClassName());
+		data.setConditionType(key.getConditionType());
+		data.setDistChannel(key.getDistChannel());
+		data.setId(key.getId());
+		data.setMaterialId(key.getMaterialId());
+		data.setPrice(key.getPrice());
+		data.setPricingUnit(key.getPricingUnit());
+		data.setSalesOrg(key.getSalesOrg());
+		data.setSapId(key.getSapId());
+		return data;
+	}
+
+	public static ErpInventoryModel convertErpInventoryDataToModel(
+			ErpInventoryData erpInventoryData) {
+		List<ErpInventoryEntryModel> erpInventoryEntry = createErpInventoryEntryModel(erpInventoryData.getEntries());
+		ErpInventoryModel model = new ErpInventoryModel(
+				erpInventoryData.getSapId(), erpInventoryData.getLastUpdated(),
+				erpInventoryEntry);
+		return model;
+	}
+	
+	public static List<ErpInventoryEntryModel> createErpInventoryEntryModel(
+			List<ErpInventoryEntryData> entries) {
+		List<ErpInventoryEntryModel> entryModels = new ArrayList<ErpInventoryEntryModel>();
+		for (ErpInventoryEntryData erpInventoryEntryData : entries) {
+			ErpInventoryEntryModel erpInventoryEntryModel = new ErpInventoryEntryModel(erpInventoryEntryData.getStartDate(),erpInventoryEntryData.getQuantity(),erpInventoryEntryData.getPlantId());
+			entryModels.add(erpInventoryEntryModel);
+		}
+		return entryModels;
+	}
+
+	public static Map<String, ErpInventoryModel> convertErpInventoryDataMapToModelMap(
+			Map<String, ErpInventoryData> data) {
+		Map<String,ErpInventoryModel> modelMap = new HashMap<String, ErpInventoryModel>();
+		for (Entry<String, ErpInventoryData> dataMap : data.entrySet()) {
+			String key = dataMap.getKey();
+			ErpInventoryModel model = convertErpInventoryDataToModel(dataMap.getValue());
+			modelMap.put(key, model);
+		}
+		return modelMap;
+	}
+	
+		
+}
 

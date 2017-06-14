@@ -38,18 +38,26 @@ import com.freshdirect.ecommerce.data.smartstore.EnumSiteFeatureData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyResponseData;
 import com.freshdirect.ecommerce.data.survey.SurveyKeyData;
+import com.freshdirect.erp.EnumApprovalStatus;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
 import com.freshdirect.erp.SkuAvailabilityHistory;
 import com.freshdirect.erp.model.BatchModel;
+import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
+import com.freshdirect.erp.model.ErpClassModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
+import com.freshdirect.erp.model.ErpMaterialBatchHistoryModel;
+import com.freshdirect.erp.model.ErpMaterialModel;
+import com.freshdirect.erp.model.ErpMaterialPriceModel;
+import com.freshdirect.erp.model.ErpMaterialSalesAreaModel;
+import com.freshdirect.erp.model.ErpPlantMaterialModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
+import com.freshdirect.erp.model.ErpSalesUnitModel;
 import com.freshdirect.event.RecommendationEventsAggregate;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDGroupNotFoundException;
-import com.freshdirect.fdstore.FDPayPalServiceException;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
@@ -75,9 +83,9 @@ import com.freshdirect.referral.extole.model.ExtoleResponse;
 import com.freshdirect.referral.extole.model.FDRafCreditModel;
 import com.freshdirect.rules.Rule;
 import com.freshdirect.sap.SapOrderPickEligibleInfo;
-//import com.freshdirect.sap.ejb.SapException;
 import com.freshdirect.security.ticket.Ticket;
 import com.freshdirect.sms.model.st.STSmsResponse;
+//import com.freshdirect.sap.ejb.SapException;
 
 public interface IECommerceService {
 
@@ -439,11 +447,6 @@ public interface IECommerceService {
 	
     public String checkAddressForRestrictions(AddressData address) throws RemoteException;
     
-
-//	public ErpMaterialModel findBySapId(String materialNo) throws RemoteException;
-	
-//	public ErpClassModel getErpClassBySapId(String sapId) throws RemoteException;
-
 	public void sendReservationUpdateRequest(String  reservationId, ContactAddressModel address, String sapOrderNumber) throws RemoteException;
 	
     public void sendSubmitOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
@@ -453,11 +456,9 @@ public interface IECommerceService {
 	
     public void sendModifyOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
 			String unattendedInstr,String orderMobileNumber,String erpOrderId) throws RemoteException;
-//	public Collection findAllClasses() throws RemoteException;
-	
-//	public ErpCharacteristicValuePriceModel findByMaterial(VersionedPrimaryKey materialPK) throws RemoteException;
+
     
-//    public ErpCharacteristicValuePriceModel findByMaterialAndCharValue(VersionedPrimaryKey materialPK, VersionedPrimaryKey charValPK) throws RemoteException;
+
 	/*EwalletResponseData getToken(EwalletRequestData ewalletRequestData) throws RemoteException;
 	EwalletResponseData checkout(EwalletRequestData ewalletRequestData) throws RemoteException;
 	EwalletResponseData expressCheckout(EwalletRequestData ewalletRequestData) throws RemoteException;
@@ -496,8 +497,30 @@ public interface IECommerceService {
 	//cms manager
 	public String createFeedCmsFeed(String feedId, String storeId, String feedData) throws FDResourceException;
 	public String getCmsFeed(String storeID) throws FDResourceException;
-
+	
 	public void queryForFDXSalesPickEligible() throws RemoteException;
 	public void sendFDXEligibleOrdersToSap(List<SapOrderPickEligibleInfo> eligibleSapOrderLst) throws RemoteException;
+
+	public ErpMaterialBatchHistoryModel getMaterialBatchInfo() throws RemoteException;
+	
+	public int createBatch() throws RemoteException;
+	
+	public void updateBatchStatus(int batchNumber, EnumApprovalStatus batchStatus) throws RemoteException;
+	
+	public void loadData(int batchNumber, ErpMaterialModel model,
+			Map<String, ErpClassModel> createErpClassModel,
+			Map<ErpCharacteristicValuePriceModel, Map<String, String>> chMap)
+			throws RemoteException;
+
+	public void loadSalesUnits(int batchNumber, String materialNo,
+			Set<ErpSalesUnitModel> salesUnitModels) throws RemoteException;
+
+	public void loadPriceRows(int batchNumber, String materialNo,
+			List<ErpMaterialPriceModel> priceRowModels) throws RemoteException;
+
+	public void loadMaterialPlantsAndSalesAreas(int batchNumber, String materialNo,
+			List<ErpPlantMaterialModel> erpPlantModels,
+			List<ErpMaterialSalesAreaModel> salesAreaModels)
+			throws RemoteException;
 
 }

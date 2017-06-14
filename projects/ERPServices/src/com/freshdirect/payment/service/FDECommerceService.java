@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.Set;
 import java.util.TreeMap;
@@ -80,8 +81,17 @@ import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpInventoryData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpRestrictedAvailabilityData;
 import com.freshdirect.ecommerce.data.erp.inventory.RestrictedInfoParam;
+
+import com.freshdirect.ecommerce.data.erp.material.ErpCharacteristicValuePriceData;
+import com.freshdirect.ecommerce.data.erp.material.ErpClassData;
+import com.freshdirect.ecommerce.data.erp.material.ErpMaterialData;
+
+import com.freshdirect.ecommerce.data.erp.material.ErpMaterialSalesAreaData;
+import com.freshdirect.ecommerce.data.erp.material.ErpPlantMaterialData;
+import com.freshdirect.ecommerce.data.erp.material.ErpSalesUnitData;
 import com.freshdirect.ecommerce.data.erp.material.OverrideSkuAttrParam;
 import com.freshdirect.ecommerce.data.erp.material.SkuPrefixParam;
+import com.freshdirect.ecommerce.data.erp.model.ErpMaterialPriceData;
 import com.freshdirect.ecommerce.data.erp.model.ErpProductInfoModelData;
 import com.freshdirect.ecommerce.data.erp.model.ErpProductPromotionPreviewInfoData;
 import com.freshdirect.ecommerce.data.erp.pricing.FDProductPromotionInfoData;
@@ -95,6 +105,12 @@ import com.freshdirect.ecommerce.data.payment.BINData;
 import com.freshdirect.ecommerce.data.payment.FDGatewayActivityLogModelData;
 import com.freshdirect.ecommerce.data.routing.SubmitOrderRequestData;
 import com.freshdirect.ecommerce.data.rules.RuleData;
+import com.freshdirect.ecommerce.data.sap.CharacteristicValueMap;
+import com.freshdirect.ecommerce.data.sap.LoadDataInputParam;
+import com.freshdirect.ecommerce.data.sap.LoadMatPlantAndSalesInputParam;
+import com.freshdirect.ecommerce.data.sap.LoadPriceInputParam;
+import com.freshdirect.ecommerce.data.sap.LoadSalesUnitsInputParam;
+import com.freshdirect.ecommerce.data.sap.MaterialBatchInfoRes;
 import com.freshdirect.ecommerce.data.security.TicketData;
 import com.freshdirect.ecommerce.data.sessionimpressionlog.SessionImpressionLogEntryData;
 import com.freshdirect.ecommerce.data.smartstore.EnumSiteFeatureData;
@@ -104,13 +120,26 @@ import com.freshdirect.ecommerce.data.survey.FDSurveyData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyResponseData;
 import com.freshdirect.ecommerce.data.survey.SurveyData;
 import com.freshdirect.ecommerce.data.survey.SurveyKeyData;
+import com.freshdirect.erp.EnumApprovalStatus;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
 import com.freshdirect.erp.SkuAvailabilityHistory;
 import com.freshdirect.erp.model.BatchModel;
+
+import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
+import com.freshdirect.erp.model.ErpClassModel;
+
 import com.freshdirect.erp.model.ErpInventoryModel;
+
+import com.freshdirect.erp.model.ErpMaterialBatchHistoryModel;
+import com.freshdirect.erp.model.ErpMaterialModel;
+
+import com.freshdirect.erp.model.ErpMaterialPriceModel;
+import com.freshdirect.erp.model.ErpMaterialSalesAreaModel;
+import com.freshdirect.erp.model.ErpPlantMaterialModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
+import com.freshdirect.erp.model.ErpSalesUnitModel;
 import com.freshdirect.event.RecommendationEventsAggregate;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDGroup;
@@ -350,13 +379,6 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String ADD_DLV_RESTRICTION = "restriction/delivery/add";
 	private static final String GET_RESTRICTIONS = "restriction/delivery";
 
-	
-	private static final String ERPMATERIAL_BY_SAPID="erpmaterial/materialbysapid";
-	private static final String ERPCLASS_BY_SAPID="erpclass/materialbysapid";
-	private static final String ERPCLASS_ALL_CLASS="erpclass/allclass";
-	private static final String ERPCHARVALUEPRICE_BY_SAPID="erpclass/materialbysapid";
-	private static final String ERPCHARVALUEPRICE_MAT_BY_SAPID_AND_VERSION="erpclass/materialbysapidandvversion";
-
 	private static final String RESERVATION_UPDATE = "routing/reservationupdate/"; 
 	private static final String MODIFY_ORDER_REQUEST = "routing/modifyorderrequest";
 	private static final String CANCEL_ORDER_REQUEST = "routing/cancelorderrequest";
@@ -376,6 +398,13 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String GET_FDX_QUERYFORSALESPICKELIGIBLE = "fdxorderpick/queryforsalespickeligible";
 	private static final String POST_FDX_ELIGIBLE_SENDORDERSTOSAP = "fdxorderpick/sendorderstosap";
 	
+	private static final String SAP_MATERIAL_INFO="saploader/materialinfo";
+	private static final String SAP_SAVE_DATA="saploader/save";
+	private static final String SAP_UPDATE_DATA="saploader/update";
+	private static final String SAP_LOAD_DATA="saploader/loaddata";
+	private static final String SAP_LOAD_SALES="saploader/loadsaleunit";
+	private static final String SAP_LOAD_PRICE="saploader/loadprice";
+	private static final String SAP_LOAD_MAT_PLANT_SALES_AREA="saploader/loadmatplantsandsalesarea";
 	
 	
 	public static IECommerceService getInstance() {
@@ -3094,7 +3123,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
-			erpInventoryModel = ErpInventoryModelConvert.convertDataToModel(response.getData());
+			erpInventoryModel = ModelConverter.convertErpInventoryDataToModel(response.getData());
 		}catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
@@ -3112,7 +3141,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
-			erpInventoryModelMap = ErpInventoryModelConvert.convertDataMapToModelMap(response.getData());
+			erpInventoryModelMap = ModelConverter.convertErpInventoryDataMapToModelMap(response.getData());
 		}catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
@@ -3448,7 +3477,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	}
 	
 	@Override
-	public Collection<String> findPeakProduceSKUsByDepartment(List skuPrefixes) throws RemoteException {
+	public Collection<String> findPeakProduceSKUsByDepartment(List<String> skuPrefixes) throws RemoteException {
 		Response<Collection> response = null;
 		Request<SkuPrefixParam> request = new Request<SkuPrefixParam>();
 		try {
@@ -4006,6 +4035,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
+
 		} 
 		return dateList;
 	}
@@ -4053,4 +4083,208 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		
 	}
 	//POST_FDX_ELIGIBLE_SENDORDERSTOSAP
+	
+	@Override
+	public ErpMaterialBatchHistoryModel getMaterialBatchInfo() throws RemoteException {
+		Response<MaterialBatchInfoRes> response = new Response<MaterialBatchInfoRes>();
+		MaterialBatchInfoRes data = new MaterialBatchInfoRes();
+		ErpMaterialBatchHistoryModel model = new ErpMaterialBatchHistoryModel();
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(SAP_MATERIAL_INFO), new TypeReference<Response<MaterialBatchInfoRes>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			data = response.getData();
+			model.setCreatedDate(data.getCreatedDate());
+			model.setStatus(EnumApprovalStatus.getApprovalStatus(data.getStatus()));
+			model.setVersion(data.getVersion());
+		} catch (FDResourceException e) {
+			throw new RemoteException(e.getMessage());
+		} 
+		return model;
+	}
+	
+
+
+	
+	@Override
+	public int createBatch() throws RemoteException{
+		int batchNumber = 0;
+		Response<Integer> response = new Response<Integer>();
+		String inputJson = null;
+		try {
+			response = postData(inputJson,getFdCommerceEndPoint(SAP_SAVE_DATA), Response.class);
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		Integer data  = response.getData();
+		batchNumber = data.intValue();
+		} catch (FDResourceException e) {
+			// TODO Auto-generated catch block
+			throw new RemoteException(e.getMessage());
+		}
+		return batchNumber;
+	}
+	
+	@Override
+	public void updateBatchStatus(int batchNumber, EnumApprovalStatus batchStatus) throws RemoteException{
+		Response<Void> response = new Response<Void>();
+		String inputJson = null;
+		try{
+			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(SAP_UPDATE_DATA)+"/"+batchNumber+"/"+batchStatus.getStatusCode(),new TypeReference<Response<Void>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	
+
+	@Override
+	public void loadData(int batchNumber, ErpMaterialModel model,
+			Map<String, ErpClassModel> createErpClassModel,
+			Map<ErpCharacteristicValuePriceModel, Map<String, String>> chMap) throws RemoteException {
+		Response<Void> response = null;
+		LoadDataInputParam sapLoadDataInputParam = new LoadDataInputParam();
+		Request<LoadDataInputParam> request = new Request<LoadDataInputParam>();
+		Map<String,ErpClassData> erpClassMap = new HashMap<String, ErpClassData>();
+		List<CharacteristicValueMap> charValueMapList = new ArrayList<CharacteristicValueMap>();
+		ErpMaterialData material;
+		try {
+			
+			material = ModelConverter.convertErpMaterialModelToData(model);
+			for (Entry<String, ErpClassModel> classMap : createErpClassModel.entrySet()) {
+				ErpClassData data =	ModelConverter.convertErpClassModelToData(classMap.getValue());
+				erpClassMap.put(classMap.getKey(), data);
+			}
+			for (Entry<ErpCharacteristicValuePriceModel, Map<String, String>> charValueMap : chMap.entrySet()) {
+				CharacteristicValueMap characteristicValueMap = new CharacteristicValueMap();
+				ErpCharacteristicValuePriceData data = ModelConverter.createErpCharacteristicValuePriceData(charValueMap.getKey());
+				characteristicValueMap.setCaracteristicMapValue(charValueMap.getValue());
+				characteristicValueMap.setErpCharValueData(data);
+				charValueMapList.add(characteristicValueMap);
+			}
+			sapLoadDataInputParam.setBatchNumber(batchNumber);
+			sapLoadDataInputParam.setMaterial(material);
+			sapLoadDataInputParam.setCharacteristicValueMap(charValueMapList);
+			sapLoadDataInputParam.setClasses(erpClassMap);
+			request.setData(sapLoadDataInputParam);
+			String inputJson;
+			inputJson = buildRequest(request);
+			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(SAP_LOAD_DATA),new TypeReference<Response>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		
+	}
+
+	@Override
+	public void loadSalesUnits(int batchNumber, String materialNo, Set<ErpSalesUnitModel> salesUnitModels)  throws RemoteException{
+		Response<Void> response = new Response<Void>();
+		String inputJson = null;
+		Request<LoadSalesUnitsInputParam> request = new Request<LoadSalesUnitsInputParam>();
+		LoadSalesUnitsInputParam inputParam = new LoadSalesUnitsInputParam();
+		inputParam.setBatchNumber(batchNumber);
+		inputParam.setMaterialNo(materialNo);
+		Set<ErpSalesUnitData> salesUnits = new HashSet<ErpSalesUnitData>();
+		for (ErpSalesUnitModel erpSaleUnitModel : salesUnitModels) {
+			ErpSalesUnitData data = ModelConverter.convertErpSaleUnitModelToData(erpSaleUnitModel);
+			salesUnits.add(data);
+		}
+		inputParam.setSalesUnits(salesUnits);
+		request.setData(inputParam);
+	
+		try{
+			inputJson = buildRequest(request);
+			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(SAP_LOAD_SALES),new TypeReference<Response<Void>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}catch (FDPayPalServiceException e) {
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	
+	@Override
+	public void loadPriceRows(int batchNumber, String materialNo, List<ErpMaterialPriceModel> priceRowModels)  throws RemoteException{
+		Response<Void> response = new Response<Void>();
+		String inputJson = null;
+		Request<LoadPriceInputParam> request = new Request<LoadPriceInputParam>();
+		LoadPriceInputParam inputParam = new LoadPriceInputParam();
+		inputParam.setBatchNumber(batchNumber);
+		inputParam.setMaterialNo(materialNo);
+		
+		List<ErpMaterialPriceData> priceRows = new ArrayList<ErpMaterialPriceData>();
+		for (ErpMaterialPriceModel erpMatPriceModel : priceRowModels) {
+			ErpMaterialPriceData data = ModelConverter.convertErpMaterialPriceModelToData(erpMatPriceModel);
+			priceRows.add(data);
+		}
+		inputParam.setPriceRows(priceRows);
+		request.setData(inputParam);
+		try{
+			inputJson = buildRequest(request);
+			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(SAP_LOAD_PRICE),new TypeReference<Response<Void>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}catch (FDPayPalServiceException e) {
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	
+	@Override
+	public void loadMaterialPlantsAndSalesAreas(int batchNumber, String materialNo, List<ErpPlantMaterialModel> erpPlantModels, List<ErpMaterialSalesAreaModel> salesAreaModels) throws RemoteException{
+		Response<Void> response = new Response<Void>();
+		String inputJson = null;
+		Request<LoadMatPlantAndSalesInputParam> request = new Request<LoadMatPlantAndSalesInputParam>();
+		LoadMatPlantAndSalesInputParam inputParam = new LoadMatPlantAndSalesInputParam();
+		inputParam.setBatchNumber(batchNumber);
+		inputParam.setMaterialNo(materialNo);
+		
+		List<ErpPlantMaterialData> plants = new ArrayList<ErpPlantMaterialData>();
+		for (ErpPlantMaterialModel erpPlantMatModel : erpPlantModels) {
+			ErpPlantMaterialData data = ModelConverter.convertErpPlantMaterialModelToData(erpPlantMatModel);
+			plants.add(data);
+		}
+		inputParam.setPlants(plants);
+		
+		List<ErpMaterialSalesAreaData> salesAreas = new ArrayList<ErpMaterialSalesAreaData>();
+		for (ErpMaterialSalesAreaModel erpMatSaleAreaModel : salesAreaModels) {
+			ErpMaterialSalesAreaData data = ModelConverter.convertErpMaterialSalesAreaModelToData(erpMatSaleAreaModel);
+			salesAreas.add(data);
+		}
+		inputParam.setSalesAreas(salesAreas);
+		
+		request.setData(inputParam);
+		try{
+			inputJson = buildRequest(request);
+			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(SAP_LOAD_MAT_PLANT_SALES_AREA),new TypeReference<Response<Void>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}catch (FDPayPalServiceException e) {
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	
+	
+
 }
