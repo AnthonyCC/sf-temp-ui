@@ -1639,86 +1639,16 @@ public class Product {
      * TODO: Look for caching if we find any performance issue.
      * @return
      */
-	public String getNutrition() {
-
-		// nutritions
-		String result = "";
-		ProductExtraData data = new ProductExtraData();
-		FDProduct fdprd = null;
-		FDProductInfo productInfo = null;
-		if (defaultSku != null) {
-			try {
-				productInfo = FDCachedFactory.getProductInfo(defaultSku
-						.getSkuCode());
-			} catch (FDResourceException e) {
-				LOG.debug(e);
-			} catch (FDSkuNotFoundException e) {
-				LOG.debug(e);
-			}
-			try {
-				fdprd = FDCachedFactory.getProduct(productInfo);
-			} catch (FDResourceException e) {
-				LOG.debug(e);
-			} catch (FDSkuNotFoundException e) {
-				LOG.debug(e);
-			}
-		}
-
-		final boolean useCache = true;
-		String skuCode = null;
-		if(defaultSku!=null){
-			skuCode = defaultSku.getSkuCode();
-		}
-
-		NutritionPanel panel = null;
-
-		if (useCache) {
-			// For storefront get panel from cache
-			panel = FDNutritionPanelCache.getInstance().getNutritionPanel(
-					skuCode);
-		} else {
-			// No caching for erpsadmin, just get the real stuff directly
-			try {
-				panel = ErpFactory.getInstance().getNutritionPanel(skuCode);
-
-			} catch (FDResourceException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
-		if (panel != null) {
-			// nutritionMap.put(skuCode, panel);
-			data.setNutritionPanel(panel);
-			result = panel.toJSON(); // we will be sending JSON response which will be converted to HTML on app side
-
-		} else if (fdprd != null && fdprd.hasNutritionFacts()) {
-			// old style
-
-			ErpNutritionModel nutritionModel = FDNutritionCache.getInstance()
-					.getNutrition(skuCode);
-
-			if (nutritionModel != null) {
-				result = nutritionModel.toJSON(); // we are sending JSON response which will be converted to HTML on app side
-				/*
-				 * try {
-				 * 
-				 * if
-				 * (NutritionInfoPanelRendererUtil.renderClassicPanel(nutritionModel
-				 * , false, wr)) { data.setOldNutritionPanel(wr.toString());
-				 * result= } } catch (IOException e) {
-				 * LOG.error("Failed to render old nutrition panel", e); }
-				 */
-			}
-
-		} else {
-			// generate classic nutrition panel
-
-			LOG.warn("Not found new nutrition info data for SKU " + skuCode);
-		}
-		return result;
-	}    
-
+    public String getNutrition() {
+        String result = "";
+        if (isAvailable()) {
+            StringWriter st = new StringWriter();
+            NutritionInfoPanelRendererUtil.renderPanelWithNutritionList(getDefaultProduct().getNutrition(), st);
+            result = st.toString();
+        }
+        return result;
+    }
+    
     public String getSkuNutrition(Sku sku) throws FDResourceException, FDSkuNotFoundException {
         String result = "";
         FDProduct fdProduct = sku.getOriginalSku().getProduct();
