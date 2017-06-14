@@ -243,7 +243,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 										}
 										%>
 										<option data-class="<%=addressClass%> <%=ifSel_cssClass%>" data-style="background-image: <%=ifSel_CheckImg%>;" <%=ifSelected %> value="<%=homeAddress.getPK().getId()%>">
-											<p class="<%=ifSel_cssClass%>"><%=LocationHandlerTag.formatAddressTextWithZip(homeAddress)%></p>
+											<%=LocationHandlerTag.formatAddressTextWithZip(homeAddress)%>
 										</option>
 									</logic:iterate>
 								</optgroup>
@@ -274,7 +274,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 										}
 										%>
 										<option data-class="<%=addressClass%>" data-style="background-image: <%=ifSel_CheckImg%>;" <%=ifSelected %> value="<%=corporateAddress.getPK().getId()%>">
-											<p class="<%=ifSel_cssClass%>"><%=LocationHandlerTag.formatAddressTextWithZip(corporateAddress)%></p>
+											<%=LocationHandlerTag.formatAddressTextWithZip(corporateAddress)%>
 										</option>
 									</logic:iterate>
 								</optgroup>
@@ -300,9 +300,9 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 									}
 									%>
 									<option data-class="<%=addressClass%>" data-style="background-image: <%=ifSel_CheckImg%>;" <%=ifSelected %> value="DEPOT_<%= pickupDepot.getId() %>">
-										<p class="<%=ifSel_cssClass%>">
+										
 											<%=LocationHandlerTag.formatAddressTextWithZip(pickupDepot.getAddress())%>
-										</p>
+										
 									</option>
 								</logic:iterate>
 							</optgroup>
@@ -780,6 +780,6 @@ if (curHref.indexOf('successPage') === -1 && $jq.QueryString['successPage']) {
 
 <%
 } catch (Exception e) {
-	LOGGER_LOCATIONBAR_FDX.debug("error inlocationbar_fdx.jsp");
+	LOGGER_LOCATIONBAR_FDX.debug("error in locationbar_fdx.jsp "+e);
 	e.printStackTrace();
 }%>
