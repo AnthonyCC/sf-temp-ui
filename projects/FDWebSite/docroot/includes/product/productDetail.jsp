@@ -50,14 +50,12 @@
 			FreshDirect.pdp.annotations=<fd:ToJSON object="${annotations}" noHeaders="true"/>;
 			FreshDirect.pdp.coremetrics=<fd:CmElement elementCategory="reviews" productId="<%=productNode.getContentKey().getId()%>" wrapIntoFunction="true" />;
 
-	    </script>
-		<script>
 			/* are these used? if not, remove and use name-spaced versions */
-				productData=<fd:ToJSON object="${productPotato}" noHeaders="true"/>;
-				productExtraData=<fd:ToJSON object="${productExtraPotato}" noHeaders="true"/>;
-				images=<fd:ToJSON object="${imagePotato}" noHeaders="true"/>;
-				evenBetter=<fd:ToJSON object="${evenBetter}" noHeaders="true"/>;
-				xsell=<fd:ToJSON object="${xsell}" noHeaders="true"/>;
+				productData=window.FreshDirect.pdp.data;
+				productExtraData=window.FreshDirect.pdp.extraData;
+				images=FreshDirect.pdp.images;
+				evenBetter=FreshDirect.pdp.evenBetter;
+				xsell=FreshDirect.pdp.xsell;
 		</script>
 <div itemscope itemtype="http://schema.org/Product" class="pdp">
 	<div class="prodDetail">
