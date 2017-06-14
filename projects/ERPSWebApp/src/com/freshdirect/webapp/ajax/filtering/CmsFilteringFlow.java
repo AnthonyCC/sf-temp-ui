@@ -284,7 +284,7 @@ public class CmsFilteringFlow {
 
             populateSearchCarouselProductLimit(nav.getActivePage(), browseDataContext);
         }
-        return new CmsFilteringFlowResult(browseData, browseDataContext.getNavigationModel());
+        return new CmsFilteringFlowResult(browseData, null !=browseDataContext ? browseDataContext.getNavigationModel() :null);
     }
 
     
