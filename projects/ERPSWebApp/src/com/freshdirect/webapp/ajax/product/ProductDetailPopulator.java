@@ -641,9 +641,11 @@ public class ProductDetailPopulator {
 		item.setHasTerms( productModel.hasTerms() );
 		item.setDiscontinued(productModel.isDiscontinued());
 		item.setOutOfSeason(productModel.isOutOfSeason());
-		if(StandingOrderHelper.isEligibleForSo3_0(user)){
+		
+		//Redundant - Its already populated in 'populateBasicProductData()' call prior to calling this method 'populateProductData()'.
+		/*if(StandingOrderHelper.isEligibleForSo3_0(user)){
 			item.setSoData(StandingOrderHelper.getAllSoData(user,true,false));
-		}
+		}*/
 
 		populateAvailable(item, user, productModel);
 		populateRatings( item, user, productModel, sku.getSkuCode() );
