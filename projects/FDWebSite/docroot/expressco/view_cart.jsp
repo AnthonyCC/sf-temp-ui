@@ -75,12 +75,9 @@ if (mobWeb) {
 			<div id="cartcontent" class="view_cart" data-ec-linetemplate="expressco.viewcartlines"></div>
 		<% } %>
 		
-		<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user_view_cart)) { %>
-			<%-- APPDEV-5916 --%>
 			<div id="cartCarousels">
-				<soy:render template="expressco.viewCartTabbedCarousel" data="${cartDataPotato.carouselData}" />
+				<soy:render template="common.viewCartTabbedCarousel" data="${cartDataPotato.carouselData}" />
 			</div>
-		<% } %>
 		<%-- APPDEV-5516 : Cart Carousel - Grand Giving Donation Technology --%>
 		<%-- If the donationProductSampleCarousel is not enabled, the fallback div is productsamplecarousel --%>
 		<% if (FDStoreProperties.isObsoleteCartCarouselsEnabled()) {

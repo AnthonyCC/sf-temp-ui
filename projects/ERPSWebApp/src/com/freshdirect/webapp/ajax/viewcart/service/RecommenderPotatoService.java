@@ -1,7 +1,6 @@
 package com.freshdirect.webapp.ajax.viewcart.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,8 +31,6 @@ public class RecommenderPotatoService {
     private static final Logger LOGGER = LoggerFactory.getInstance(RecommenderPotatoService.class);
 
     private static final RecommenderPotatoService INSTANCE = new RecommenderPotatoService();
-
-    private static final List<String> VIEW_CART_PAGE_PRODUCT_SAMPLE_SITE_FEATURE = Arrays.asList("PRODUCT_SAMPLES");
 
     private RecommenderPotatoService() {
     }
@@ -73,7 +70,7 @@ public class RecommenderPotatoService {
 
     private List<String> getSiteFeatures(CartCarouselType type, boolean isCurrentUser, HttpServletRequest request, FDUserI user) throws FDResourceException {
         List<String> siteFeatures = null;
-        // TODO refactor it
+        // TODO make service feature independent
         boolean isCartTabCarsFeatureActive = FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.carttabcars, request.getCookies(), user);
         if (isCartTabCarsFeatureActive) {
             switch (type) {
@@ -91,8 +88,6 @@ public class RecommenderPotatoService {
                     siteFeatures = Collections.emptyList();
                     break;
             }
-        } else {
-            siteFeatures = VIEW_CART_PAGE_PRODUCT_SAMPLE_SITE_FEATURE;
         }
         return siteFeatures;
     }

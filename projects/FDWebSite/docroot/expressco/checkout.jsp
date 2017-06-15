@@ -132,16 +132,13 @@ if (mobWeb) {
         <div id="ec-drawer">
         </div>
         
-        
+
         <% if (!mobWeb) { /* no mobWeb for now */  %>
-			<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user)) { %>
-				<%-- APPDEV-5916 --%>
-				<div id="cartCarousels">
-					<soy:render template="expressco.checkoutTabbedCarousel" data="${singlePageCheckoutPotato.carouselData}" />
-				</div>
-			<% } %>
-		<% } %>
-       
+          <div id="cartCarousels">
+            <soy:render template="common.checkoutTabbedCarousel" data="${singlePageCheckoutPotato.carouselData}" />
+          </div>
+        <% } %>
+
         <div class="checkout-contentheader">
           <h2>Cart Details</h2>
           <a class="cssbutton green" href="/expressco/view_cart.jsp">Edit Cart</a>
