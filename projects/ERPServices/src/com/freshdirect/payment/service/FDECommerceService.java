@@ -81,11 +81,9 @@ import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpInventoryData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpRestrictedAvailabilityData;
 import com.freshdirect.ecommerce.data.erp.inventory.RestrictedInfoParam;
-
 import com.freshdirect.ecommerce.data.erp.material.ErpCharacteristicValuePriceData;
 import com.freshdirect.ecommerce.data.erp.material.ErpClassData;
 import com.freshdirect.ecommerce.data.erp.material.ErpMaterialData;
-
 import com.freshdirect.ecommerce.data.erp.material.ErpMaterialSalesAreaData;
 import com.freshdirect.ecommerce.data.erp.material.ErpPlantMaterialData;
 import com.freshdirect.ecommerce.data.erp.material.ErpSalesUnitData;
@@ -105,12 +103,12 @@ import com.freshdirect.ecommerce.data.payment.BINData;
 import com.freshdirect.ecommerce.data.payment.FDGatewayActivityLogModelData;
 import com.freshdirect.ecommerce.data.routing.SubmitOrderRequestData;
 import com.freshdirect.ecommerce.data.rules.RuleData;
-import com.freshdirect.ecommerce.data.sap.CharacteristicValueMap;
-import com.freshdirect.ecommerce.data.sap.LoadDataInputParam;
-import com.freshdirect.ecommerce.data.sap.LoadMatPlantAndSalesInputParam;
-import com.freshdirect.ecommerce.data.sap.LoadPriceInputParam;
-import com.freshdirect.ecommerce.data.sap.LoadSalesUnitsInputParam;
-import com.freshdirect.ecommerce.data.sap.MaterialBatchInfoRes;
+import com.freshdirect.ecommerce.data.sap.CharacteristicValueMapData;
+import com.freshdirect.ecommerce.data.sap.LoadDataInputData;
+import com.freshdirect.ecommerce.data.sap.LoadMatPlantAndSalesInputData;
+import com.freshdirect.ecommerce.data.sap.LoadPriceInputData;
+import com.freshdirect.ecommerce.data.sap.LoadSalesUnitsInputData;
+import com.freshdirect.ecommerce.data.sap.MaterialBatchInfoData;
 import com.freshdirect.ecommerce.data.security.TicketData;
 import com.freshdirect.ecommerce.data.sessionimpressionlog.SessionImpressionLogEntryData;
 import com.freshdirect.ecommerce.data.smartstore.EnumSiteFeatureData;
@@ -126,15 +124,11 @@ import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
 import com.freshdirect.erp.SkuAvailabilityHistory;
 import com.freshdirect.erp.model.BatchModel;
-
 import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
 import com.freshdirect.erp.model.ErpClassModel;
-
 import com.freshdirect.erp.model.ErpInventoryModel;
-
 import com.freshdirect.erp.model.ErpMaterialBatchHistoryModel;
 import com.freshdirect.erp.model.ErpMaterialModel;
-
 import com.freshdirect.erp.model.ErpMaterialPriceModel;
 import com.freshdirect.erp.model.ErpMaterialSalesAreaModel;
 import com.freshdirect.erp.model.ErpPlantMaterialModel;
@@ -4086,11 +4080,11 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	
 	@Override
 	public ErpMaterialBatchHistoryModel getMaterialBatchInfo() throws RemoteException {
-		Response<MaterialBatchInfoRes> response = new Response<MaterialBatchInfoRes>();
-		MaterialBatchInfoRes data = new MaterialBatchInfoRes();
+		Response<MaterialBatchInfoData> response = new Response<MaterialBatchInfoData>();
+		MaterialBatchInfoData data = new MaterialBatchInfoData();
 		ErpMaterialBatchHistoryModel model = new ErpMaterialBatchHistoryModel();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(SAP_MATERIAL_INFO), new TypeReference<Response<MaterialBatchInfoRes>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(SAP_MATERIAL_INFO), new TypeReference<Response<MaterialBatchInfoData>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
@@ -4147,10 +4141,10 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			Map<String, ErpClassModel> createErpClassModel,
 			Map<ErpCharacteristicValuePriceModel, Map<String, String>> chMap) throws RemoteException {
 		Response<Void> response = null;
-		LoadDataInputParam sapLoadDataInputParam = new LoadDataInputParam();
-		Request<LoadDataInputParam> request = new Request<LoadDataInputParam>();
+		LoadDataInputData sapLoadDataInputParam = new LoadDataInputData();
+		Request<LoadDataInputData> request = new Request<LoadDataInputData>();
 		Map<String,ErpClassData> erpClassMap = new HashMap<String, ErpClassData>();
-		List<CharacteristicValueMap> charValueMapList = new ArrayList<CharacteristicValueMap>();
+		List<CharacteristicValueMapData> charValueMapList = new ArrayList<CharacteristicValueMapData>();
 		ErpMaterialData material;
 		try {
 			
@@ -4160,7 +4154,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 				erpClassMap.put(classMap.getKey(), data);
 			}
 			for (Entry<ErpCharacteristicValuePriceModel, Map<String, String>> charValueMap : chMap.entrySet()) {
-				CharacteristicValueMap characteristicValueMap = new CharacteristicValueMap();
+				CharacteristicValueMapData characteristicValueMap = new CharacteristicValueMapData();
 				ErpCharacteristicValuePriceData data = ModelConverter.createErpCharacteristicValuePriceData(charValueMap.getKey());
 				characteristicValueMap.setCaracteristicMapValue(charValueMap.getValue());
 				characteristicValueMap.setErpCharValueData(data);
@@ -4191,8 +4185,8 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	public void loadSalesUnits(int batchNumber, String materialNo, Set<ErpSalesUnitModel> salesUnitModels)  throws RemoteException{
 		Response<Void> response = new Response<Void>();
 		String inputJson = null;
-		Request<LoadSalesUnitsInputParam> request = new Request<LoadSalesUnitsInputParam>();
-		LoadSalesUnitsInputParam inputParam = new LoadSalesUnitsInputParam();
+		Request<LoadSalesUnitsInputData> request = new Request<LoadSalesUnitsInputData>();
+		LoadSalesUnitsInputData inputParam = new LoadSalesUnitsInputData();
 		inputParam.setBatchNumber(batchNumber);
 		inputParam.setMaterialNo(materialNo);
 		Set<ErpSalesUnitData> salesUnits = new HashSet<ErpSalesUnitData>();
@@ -4221,8 +4215,8 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	public void loadPriceRows(int batchNumber, String materialNo, List<ErpMaterialPriceModel> priceRowModels)  throws RemoteException{
 		Response<Void> response = new Response<Void>();
 		String inputJson = null;
-		Request<LoadPriceInputParam> request = new Request<LoadPriceInputParam>();
-		LoadPriceInputParam inputParam = new LoadPriceInputParam();
+		Request<LoadPriceInputData> request = new Request<LoadPriceInputData>();
+		LoadPriceInputData inputParam = new LoadPriceInputData();
 		inputParam.setBatchNumber(batchNumber);
 		inputParam.setMaterialNo(materialNo);
 		
@@ -4251,8 +4245,8 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	public void loadMaterialPlantsAndSalesAreas(int batchNumber, String materialNo, List<ErpPlantMaterialModel> erpPlantModels, List<ErpMaterialSalesAreaModel> salesAreaModels) throws RemoteException{
 		Response<Void> response = new Response<Void>();
 		String inputJson = null;
-		Request<LoadMatPlantAndSalesInputParam> request = new Request<LoadMatPlantAndSalesInputParam>();
-		LoadMatPlantAndSalesInputParam inputParam = new LoadMatPlantAndSalesInputParam();
+		Request<LoadMatPlantAndSalesInputData> request = new Request<LoadMatPlantAndSalesInputData>();
+		LoadMatPlantAndSalesInputData inputParam = new LoadMatPlantAndSalesInputData();
 		inputParam.setBatchNumber(batchNumber);
 		inputParam.setMaterialNo(materialNo);
 		
