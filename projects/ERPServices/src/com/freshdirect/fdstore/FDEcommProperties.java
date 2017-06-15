@@ -60,7 +60,9 @@ public class FDEcommProperties {
     public final static String ErpRoutingGatewaySB ="routing.ejb.ErpRoutingGatewaySB";
     public  final static String FDXOrderPickEligibleSB ="erp.ejb.FDXOrderPickEligibleSB";//story SF17-64
     public  final static String SAPLoaderSB ="sap.ejb.SAPLoaderSB";
-    //routing.ejb.ErpRoutingGatewaySB
+    public  final static String CmsFeedmanagerSB ="fdstore.cms.CMSFeedManagerSB";//story SF17-22
+    
+  
     
     
     static {
@@ -102,6 +104,9 @@ public class FDEcommProperties {
         defaults.put(ErpRoutingGatewaySB ,FALSE);
         defaults.put(FDXOrderPickEligibleSB, FALSE);
         defaults.put(SAPLoaderSB, FALSE);
+        defaults.put(CmsFeedmanagerSB, FALSE);
+        
+        
         
 
         refresh();
