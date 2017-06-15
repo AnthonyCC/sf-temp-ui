@@ -82,7 +82,7 @@ function submitFormNewSO(action){
 		    	if(!isNaN(data)){
 		    		window.location.href="/";
 		    	} else {
-		    		$jq("body #create-so-page-loading").remove()
+		    		$jq("body #create-so-page-loading").remove();
 		    		$jq('#newsoErroMessage').html(data);
 		    	}
 	    	}
