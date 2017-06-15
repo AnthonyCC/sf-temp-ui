@@ -60,10 +60,9 @@ function standingOrderNewCancel(){
 }
 
 function newStandingOrderInfoCheck(){
-	if($jq("[fdform='address'] input:checked").length && $jq("[fdform='payment'] input:checked").length && $jq("[fdform='timeslot'] input:checked").length && $jq(".standing-orders-3-name-input[name='soName']").val() != ""){
+	if($jq("[fdform='address'] input:checked").length && $jq("[fdform='payment'] input:checked").length && ($jq("[fdform='timeslot'] input:checked").length || $jq(".successtimeslot").length) && $jq(".standing-orders-3-name-input[name='soName']").val() != ""){
 		$jq(".standing-orders-3 .standing-orders-3-create-header .standing-orders-3-new-start-shop").removeAttr('disabled');
-	}
-	else {
+	} else {
 		$jq(".standing-orders-3 .standing-orders-3-create-header .standing-orders-3-new-start-shop").attr('disabled','disabled');
 	}
 }

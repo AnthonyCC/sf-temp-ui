@@ -107,6 +107,7 @@ if (true) {
 					</div>
 				-->
 			</div>
+			<div class="standing-orders-3-set-form-header">Name</div>
 			<div class="standing-orders-3-set-form">
 					<input type="hidden" name="action" value="create">
 					<% if(null!=user.getCurrentStandingOrder() && null!=user.getCurrentStandingOrder().getCustomerListName()) {

@@ -296,6 +296,12 @@
     background: #e9e9e9;
     margin: 12px 0 0;
 }
+.standing-orders-3-set-form-header{
+	font-size: 20px;
+	font-weight: bold;
+	color: #000000;
+	margin: 0 0 5px;
+}
 .standing-orders-3-set-form {
     display: inline-block;
     width: 100%;
