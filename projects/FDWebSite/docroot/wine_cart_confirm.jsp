@@ -54,6 +54,9 @@ Recipe recipe = null;
 %>
 
 <tmpl:insert template='<%=jspTemplate%>'>
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect - Cart Confirmation"/>
+    </tmpl:put>
     <tmpl:put name='title' direct='true'>FreshDirect - Cart Confirmation</tmpl:put>
 
     <tmpl:put name='leftnav' direct='true'>

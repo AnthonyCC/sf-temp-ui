@@ -40,7 +40,10 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 %>
 <fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" />
 <tmpl:insert template='/common/template/giftcard.jsp'>
-    <tmpl:put name='title' direct='true'>FreshDirect - Your Account - User Name, Password, & Contact Info</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Your Account - User Name, Password, & Contact Info"/>
+  </tmpl:put>
+  <tmpl:put name='title' direct='true'>FreshDirect - Your Account - User Name, Password, & Contact Info</tmpl:put>
     <tmpl:put name='content' direct='true'>
 
 

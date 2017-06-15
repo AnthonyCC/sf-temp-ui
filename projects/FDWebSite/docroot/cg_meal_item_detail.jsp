@@ -166,11 +166,17 @@ if (productNode != null) {
 <%
     if (productNode != null) {
 %>
-        <tmpl:put name='title' direct='true'>FreshDirect - <%=productNode.getFullName()%> Details</tmpl:put>
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect - <%=productNode.getFullName()%> Details"/>
+    </tmpl:put>
+    <tmpl:put name='title' direct='true'>FreshDirect - <%=productNode.getFullName()%> Details</tmpl:put>
 <%
     } else if (variant != null) {
 %>
-        <tmpl:put name='title' direct='true'>FreshDirect - <%=recipe.getFullName()%> Details</tmpl:put>
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect - <%=recipe.getFullName()%> Details"/>
+    </tmpl:put>
+    <tmpl:put name='title' direct='true'>FreshDirect - <%=recipe.getFullName()%> Details</tmpl:put>
 <%
     }
 %>

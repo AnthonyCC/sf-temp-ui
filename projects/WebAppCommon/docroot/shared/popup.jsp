@@ -145,6 +145,9 @@ String prodPrice = null;
 
 
 <%@page import="com.freshdirect.webapp.util.JspMethods"%><tmpl:insert template='<%=tmplFile%>'>
+      <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect - <%=title%>"/>
+      </tmpl:put>
     <tmpl:put name='title' direct='true'>FreshDirect - <%=title%></tmpl:put>
         <tmpl:put name='content' direct='true'>
 

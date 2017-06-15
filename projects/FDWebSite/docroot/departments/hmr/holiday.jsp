@@ -11,7 +11,10 @@ final int W_HOLIDAY = 970;
 
 <fd:CheckLoginStatus guestAllowed="true" />
 <tmpl:insert template='/common/template/dnav.jsp'>
-    <tmpl:put name='title' direct='true'>FreshDirect - Our SuperBowl XXXVII Menu</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Our SuperBowl XXXVII Menu"/>
+  </tmpl:put>
+  <tmpl:put name='title'>FreshDirect - Our SuperBowl XXXVII Menu</tmpl:put>
     <tmpl:put name='content' direct='true'>
 	<table cellpadding="0" cellspacing="0" border="0" width="<%=W_HOLIDAY%>">
 	<tr><td colspan="3" align="center"><img src="/media_stat/images/template/kitchen/super_title.gif" width="690" height="77" alt="OUR SUPERBOWL XXXII MENU"><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10">

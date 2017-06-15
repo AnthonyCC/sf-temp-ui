@@ -21,7 +21,10 @@ final int W_CHECKOUT_STEP_2_DUPLICATE_TOTAL = 970;
 
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
-<tmpl:put name='title' direct='true'>FreshDirect - Checkout - An order is already placed</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Checkout - An order is already placed"/>
+  </tmpl:put>
+  <tmpl:put name='title'>FreshDirect - Checkout - An order is already placed</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <%! DateFormat duplicateDate = new SimpleDateFormat("EEEE, MMM dd"); %>
 <% FDUserI user = (FDUserI)session.getAttribute(SessionName.USER); %>

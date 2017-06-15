@@ -92,6 +92,9 @@ final int W_PRODUCT_MODIFY_TOTAL = 600;
 <fd:FDShoppingCart id='cart' result='result' action='<%= tagAction %>' successPage='<%= successPage %>'>
 <tmpl:insert template='<%= pageTemplate %>'>
 
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect - Modify Item in Cart"/>
+    </tmpl:put>
     <tmpl:put name='title' direct='true'>FreshDirect - Modify Item in Cart <% // productNode.getFullName() %></tmpl:put>
 
     <tmpl:put name='leftnav' direct='true'>

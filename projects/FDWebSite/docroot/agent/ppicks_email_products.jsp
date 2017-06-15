@@ -22,7 +22,10 @@
 	}
 %>
 <tmpl:insert template='/common/template/no_border_nonav.jsp'>
-<tmpl:put name='title' direct='true'> Fresh Deals - Email Products</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Email Products"/>
+  </tmpl:put>
+  <tmpl:put name='title'>FreshDirect - Email Products</tmpl:put>
 
 <tmpl:put name='content' direct='true'>
 	<%

@@ -13,7 +13,10 @@
    %>
 
 <tmpl:insert template='<%= jspTemplate %>'>
-<tmpl:put name='title' direct='true'>FreshDirect - About FreshDirect</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - About FreshDirect"/>
+  </tmpl:put>
+  <tmpl:put name='title'>FreshDirect - About FreshDirect</tmpl:put>
 <tmpl:put name='content' direct='true'>
 	<fd:IncludeMedia name="/media/editorial/site_access/tour/plant_tour_index.html" />
 </tmpl:put>

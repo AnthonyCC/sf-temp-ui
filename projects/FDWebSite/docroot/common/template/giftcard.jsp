@@ -28,10 +28,8 @@ final int W_GIFTCARD_TOTAL = 970;
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-    <!--<title><tmpl:get name='title'/></title>-->
 	<tmpl:get name="seoMetaTag"/>
 
-	<%-- <%@ include file="/common/template/includes/metatags.jspf" %> --%>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<fd:javascript src="/assets/javascript/FD_GiftCards.js"/>
 

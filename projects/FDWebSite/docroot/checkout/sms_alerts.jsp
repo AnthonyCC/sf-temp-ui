@@ -14,7 +14,10 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
 <tmpl:insert template='/common/template/blank.jsp'>
-<tmpl:put name='title' direct='true'>FreshDirect - SMS Settings</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - SMS Settings"/>
+  </tmpl:put>
+  <tmpl:put name='title'>FreshDirect - SMS Settings</tmpl:put>
 <tmpl:put name="extraHead">
 	<style>
 		.trpad {

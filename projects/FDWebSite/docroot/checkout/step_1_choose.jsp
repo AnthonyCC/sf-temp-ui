@@ -86,9 +86,10 @@ List<ErpAddressModel> dlvAddresses = FDCustomerFactory.getErpCustomer(user.getId
 
 <%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
-<tmpl:put name="seoMetaTag" direct="true">
-	<fd:SEOMetaTag pageId=""></fd:SEOMetaTag>
-</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Checkout - Choose Delivery Address"/>
+  </tmpl:put>
+  <tmpl:put name='title'>FreshDirect - Checkout - Choose Delivery Address</tmpl:put>
 <tmpl:put name="extraCSSjs" direct="true">
 <%@ include file="/includes/i_check_unattended_delivery.jspf" %>
 
@@ -96,7 +97,6 @@ List<ErpAddressModel> dlvAddresses = FDCustomerFactory.getErpCustomer(user.getId
 <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 </tmpl:put>
-<tmpl:put name='title' direct='true'>FreshDirect - Checkout - Choose Delivery Address</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <style type="text/css">
 	td.chooser_radio {

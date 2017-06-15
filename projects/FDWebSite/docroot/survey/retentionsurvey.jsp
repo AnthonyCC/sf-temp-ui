@@ -19,7 +19,10 @@ final int W_SURVEY_RETENTION_SURVEY_TOTAL = 970;
 	
 <fd:RetentionSurvey result="result" surveyResult="surveyResult" successPage="<%=successPage%>">
 	<tmpl:insert template='/common/template/no_space_border.jsp'>
-	    <tmpl:put name='title' direct='true'>FreshDirect Feedback Survey</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Feedback Survey"/>
+  </tmpl:put>
+  <tmpl:put name='title' direct='true'>FreshDirect - Feedback Survey</tmpl:put>
 	    <tmpl:put name='content' direct='true'>
 	        
 	        	<% if(((ActionResult)result).isSuccess() && surveyResult != null) { %>

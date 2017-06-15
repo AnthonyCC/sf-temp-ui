@@ -158,7 +158,10 @@ List displayList = new ArrayList();
 String pagingLinks = "";
 %>
 <tmpl:insert template='/common/template/bestcellars/all_navs.jsp'>
- <tmpl:put name='title' direct='true'>FreshDirect - <%= currentFolder.getFullName() %></tmpl:put>
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect - <%= currentFolder.getFullName() %>"/>
+    </tmpl:put>
+   <tmpl:put name='title' direct='true'>FreshDirect - <%= currentFolder.getFullName() %></tmpl:put>
   <tmpl:put name='content' direct='true'>
    <oscache:cache time="3600" key='<%= "newwines/" + days %>'>
 <%

@@ -6,7 +6,10 @@
 <fd:CheckLoginStatus />
 <fd:ProductGroup id='productNode' categoryId='<%= request.getParameter("catId") %>' productId='<%= request.getParameter("productId") %>'>
 	<tmpl:insert template='/common/template/small_pop.jsp'>
-		<tmpl:put name='title' direct='true'>FreshDirect - <%= productNode.getFullName() %></tmpl:put>
+      <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect - <%= productNode.getFullName() %>"/>
+      </tmpl:put>
+      <tmpl:put name='title' direct='true'>FreshDirect - <%= productNode.getFullName() %></tmpl:put>
 		<tmpl:put name='content' direct='true'>
 		
 		<font class="title13"><%=productNode.getFullName()%></font>

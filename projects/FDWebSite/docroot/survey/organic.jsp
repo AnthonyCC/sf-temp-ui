@@ -49,7 +49,10 @@ response.setDateHeader ("Expires", 0);
 %>
 
 <tmpl:insert template='/common/template/no_space_border.jsp'>
-    <tmpl:put name='title' direct='true'>Organic Food Survey</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Organic Food Survey"/>
+  </tmpl:put>
+  <tmpl:put name='title' direct='true'>FreshDirect - Organic Food Survey</tmpl:put>
     <tmpl:put name='content' direct='true'>
 <table width="<%=W_SURVEY_ORGANIC_TOTAL%>" cellpadding="0" cellspacing="0" border="0" class="text12">
 <% 

@@ -13,7 +13,10 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 <fd:CheckLoginStatus />
 
 <tmpl:insert template='/common/template/giftcard.jsp'>
-	<tmpl:put name='title' direct='true'>FreshDirect - Add Gift Card</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Add Gift Card"/>
+  </tmpl:put>
+  <tmpl:put name='title' direct='true'>FreshDirect - Add Gift Card</tmpl:put>
 	<tmpl:put name='content' direct='true'>
     <div class="gcCheckAddressBox">
 		<div style="text-align: left;" class="gcCheckAddressBoxContent" id="gcCheckAddressBox">

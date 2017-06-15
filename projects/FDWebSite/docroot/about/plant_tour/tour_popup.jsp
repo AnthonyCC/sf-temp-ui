@@ -36,8 +36,11 @@ currImgSrc = imgSrc + currNum + ".jpg";
 %>
 
 <tmpl:insert template='/common/template/small_pop.jsp'>
-	<tmpl:put name='title' direct='true'>FreshDirect - A Photographic Tour</tmpl:put>
-		<tmpl:put name='content' direct='true'>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - A Photographic Tour"/>
+  </tmpl:put>
+  <tmpl:put name='title'>FreshDirect - A Photographic Tour</tmpl:put>
+  <tmpl:put name='content' direct='true'>
 <script>
 var imgNum = <%=imgNum%>;
 var maxNum = <%=deptMaxNum%>;

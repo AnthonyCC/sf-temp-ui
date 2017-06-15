@@ -6,6 +6,9 @@
 	response.sendRedirect("/login/login.jsp");
 %>
 <tmpl:insert template='/common/template/no_nav.jsp'>
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect - Log In"/>
+    </tmpl:put>
 	<tmpl:put name='title' direct='true'>FreshDirect - Log In</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 			

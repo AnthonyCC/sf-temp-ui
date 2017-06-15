@@ -24,7 +24,10 @@
 <% if (!"".equals(promoCode)) { %>
 	<fd:GetPromotionNew id="promotionNew" promotionId="<%=promoCode%>">
 		<tmpl:insert template='/shared/template/small_pop.jsp'>
-			<tmpl:put name='title' direct='true'>FreshDirect - <%= promotion.getName() %></tmpl:put>
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect - <%= promotion.getName() %>"/>
+    </tmpl:put>
+	<tmpl:put name='title' direct='true'>FreshDirect - <%= promotion.getName() %></tmpl:put>
 				<tmpl:put name='content' direct='true'>
 					<style>
 						.promoPopupTerms {

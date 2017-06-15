@@ -50,7 +50,7 @@ if(windowSize.equalsIgnoreCase("custom")){
 
 <html>
 <head>
-	<title> <%=name%></title>
+	    <tmpl:get name="seoMetaTag"/>
 		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 		<fd:javascript src="/assets/javascript/common_javascript.js"/>
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>

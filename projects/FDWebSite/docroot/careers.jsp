@@ -33,6 +33,9 @@ MediaModel catImage = ((ProductContainer) currentFolder).getCategoryPhoto();
 
 <%-- tmpl:put name='leftnav' direct='true'></tmpl:put--%>
 
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect - <%= currentFolder.getFullName() %>"/>
+    </tmpl:put>
 <tmpl:put name='title' direct='true'>FreshDirect - <%= currentFolder.getFullName() %></tmpl:put>
 <tmpl:put name='content' direct='true'>
 <table width="<%=W_CAREERS_TOTAL%>" cellpadding="0" cellspacing="0" border="0">

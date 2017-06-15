@@ -42,7 +42,10 @@ final int W_NEWPRODUCTS_DFGS_RIGHT = 191;
 %>
 <fd:GetNewProducts id="newProds" nav="<%= nav %>" simpleView="true">
 	<tmpl:insert template='/common/template/new_products_nav.jsp'>
-		<tmpl:put name='title' direct='true'>FreshDirect - New Products</tmpl:put>
+	<tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect - New Products"/>
+    </tmpl:put>
+	<tmpl:put name='title' direct='true'>FreshDirect - New Products</tmpl:put>
 		<tmpl:put name='banner2' direct='true'>
 			<tr>
 				<td colspan="2" align="right" style="margin-right: 48px"><br />

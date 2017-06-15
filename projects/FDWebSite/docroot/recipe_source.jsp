@@ -44,6 +44,9 @@ StringBuffer authorNames = new StringBuffer("");
 %>
 
 <tmpl:insert template='/common/template/large_long_pop.jsp'>
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect - <%=title%>"/>
+    </tmpl:put>
     <tmpl:put name='title' direct='true'>FreshDirect - <%=title%></tmpl:put>
     <tmpl:put name='content' direct='true'>
     	<fd:CmPageView wrapIntoScriptTag="true" recipeSource="<%=sourceName%>"/>

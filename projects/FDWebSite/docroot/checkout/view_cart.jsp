@@ -41,9 +41,10 @@ if (user.isEligibleForClientCodes()) {
 boolean showMinError = true;
 %>
 <tmpl:insert template='/common/template/no_nav.jsp'>
-<tmpl:put name="seoMetaTag" direct="true">
-	<fd:SEOMetaTag pageId=""></fd:SEOMetaTag>
-</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - View Cart"/>
+  </tmpl:put>
+  <tmpl:put name='title'>FreshDirect - View Cart</tmpl:put>
 <tmpl:put name='extraCss' direct='true'>
   <jwr:style src="/viewcart.css"/>
   <jwr:style src="/quickshop.css"/>
@@ -76,7 +77,6 @@ boolean showMinError = true;
 <fd:RedemptionCodeController actionName="<%=actionName%>" result="redemptionResult">
 <fd:SmartSavingsUpdate promoConflictMode="false"/>
 
-<tmpl:put name='title' direct='true'>FreshDirect - View Cart</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <%
 	if(!UserValidationUtil.validateContainsDlvPassOnly(request, result)) {

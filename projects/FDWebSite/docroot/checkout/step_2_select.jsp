@@ -152,10 +152,10 @@ int page_type = TimeslotLogic.PAGE_NORMAL;
 %>
 
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
-<tmpl:put name="seoMetaTag" direct="true">
-	<fd:SEOMetaTag pageId=""></fd:SEOMetaTag>
-</tmpl:put>
-<tmpl:put name='title' direct='true'>FreshDirect - Checkout - Choose Delivery Time </tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Checkout - Choose Delivery Time"/>
+  </tmpl:put>
+  <tmpl:put name='title'>FreshDirect - Checkout - Choose Delivery Time</tmpl:put>
 <tmpl:put name='content' direct='true'><%
 
 final String actionName = abstractTimeslots ? "changeSONextDeliveryDate" : "reserveDeliveryTimeSlot";

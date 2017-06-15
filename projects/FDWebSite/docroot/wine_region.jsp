@@ -68,7 +68,10 @@ sortStrategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, S
 <fd:ItemSorter nodes='<%=displayList%>' strategy='<%=sortStrategy%>'/>
 
 <tmpl:insert template='/common/template/bestcellars/no_rightnav.jsp'>
- <tmpl:put name='title' direct='true'>FreshDirect - <%= currentFolder.getFullName() %></tmpl:put>
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect - <%= currentFolder.getFullName() %>"/>
+    </tmpl:put>
+    <tmpl:put name='title' direct='true'>FreshDirect - <%= currentFolder.getFullName() %></tmpl:put>
   <tmpl:put name='content' direct='true'>
    <oscache:cache time="3600" key='<%="winebyregion/"+request.getQueryString() %>'>
   <script>

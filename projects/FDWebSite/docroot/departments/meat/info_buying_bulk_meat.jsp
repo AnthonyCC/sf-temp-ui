@@ -1,7 +1,10 @@
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <tmpl:insert template='/common/template/small_pop.jsp'>
-	<tmpl:put name='title' direct='true'>FreshDirect - Meat - About Bulk Pricing, Weight & Packaging</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Meat - About Bulk Pricing, Weight & Packaging"/>
+  </tmpl:put>
+  <tmpl:put name='title'>FreshDirect - Meat - About Bulk Pricing, Weight & Packaging</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="330">

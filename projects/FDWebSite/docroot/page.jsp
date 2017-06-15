@@ -33,7 +33,9 @@
 <fd:CheckLoginStatus guestAllowed="true" recognizedAllowed="true" />
 
 <tmpl:insert template='<%= layout %>'>
-
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect - <%= pageModel.getTitle() %>"/>
+    </tmpl:put>
 	<tmpl:put name='title' direct='true'>FreshDirect - <%= pageModel.getTitle() %></tmpl:put>
 
   <tmpl:put name='extraHead' direct='true'>

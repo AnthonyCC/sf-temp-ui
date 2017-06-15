@@ -49,6 +49,9 @@ if (redirectURL!=null && !"nm".equalsIgnoreCase(redirectURL)  && !"".equals(redi
 <tmpl:insert template='/common/template/recipe_DRnavs.jsp'>
    <tmpl:put name='leftnav' direct='true'>
    </tmpl:put>
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect - <%= ((RecipeCategory)recipeCategory).getName() %>"/>
+    </tmpl:put>
    <tmpl:put name='title' direct='true'>FreshDirect - <%= ((RecipeCategory)recipeCategory).getName() %></tmpl:put>
    <tmpl:put name='content' direct='true'>
    <fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=recipeCategory%>"/>

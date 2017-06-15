@@ -9,7 +9,10 @@ final int W_YA_EDIT_DELIVERY_ADDR = 970;
 %>
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="true" />
 <tmpl:insert template='/common/template/dnav.jsp'>
-<tmpl:put name='title' direct='true'>FreshDirect - Your Account - Unattended Delivery Confirmation</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Your Account - Unattended Delivery Confirmation"/>
+  </tmpl:put>
+  <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Unattended Delivery Confirmation</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <%
 	String successPage = (request.getParameter("successPage") == null || "".equals(request.getParameter("successPage"))) ? "/your_account/delivery_information.jsp" : request.getParameter("successPage") ;
