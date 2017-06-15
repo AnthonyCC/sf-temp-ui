@@ -2288,6 +2288,30 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
 	public void setRefreshSoCartOverlay(boolean isRefreshSoCartOverlay) {
 		this.isRefreshSoCartOverlay = isRefreshSoCartOverlay;
+	}
+
+	@Override
+	public boolean isRefreshNewSoFeature() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isSoFeatureOverlay() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setRefreshNewSoFeature(boolean arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setSoFeatureOverlay(boolean arg0) {
+		// TODO Auto-generated method stub
+		
 	}    
   
 }
