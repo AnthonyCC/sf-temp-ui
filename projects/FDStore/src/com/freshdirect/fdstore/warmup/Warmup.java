@@ -63,7 +63,12 @@ public class Warmup {
 	public void warmup() {
 
 		LOGGER.info("Warmup started");
+		try {
 		warmupOAuthProvider();
+		} catch(Exception e) {
+			LOGGER.error("Exception during warmup======="+e.getMessage());
+			e.printStackTrace();
+		}
 		
 		long time = System.currentTimeMillis();
 		contentFactory.getStore();
