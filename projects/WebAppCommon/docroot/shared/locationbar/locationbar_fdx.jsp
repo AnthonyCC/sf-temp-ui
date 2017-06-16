@@ -25,7 +25,6 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
-<%@ taglib uri="/WEB-INF/shared/tld/components.tld" prefix='comp' %>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
 <%@ page import="com.freshdirect.webapp.util.StandingOrderHelper"%>
@@ -116,7 +115,6 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 					<div class="ui-arrow-buffer"></div>
 					<div class="ui-arrow ui-top"></div>
 					<div class="section-header">
-						<comp:modifyOrderBar user="<%= user_locationbar_fdx %>" modifyOrderAlert="false" htmlId="test_modifyorderalert" />
 					</div>
 				</div>
 			</div>
@@ -771,7 +769,6 @@ if (curHref.indexOf('successPage') === -1 && $jq.QueryString['successPage']) {
 	<% if(!isStandingOrders){ %>
 	<tmpl:put name="modify_order_alerts">
 		<div id="modifyorderalert" class="alerts invisible" data-type="modifyorderalert">
-			<comp:modifyOrderBar user="<%= user_locationbar_fdx %>" modifyOrderAlert="true" htmlId="test_modifyorderalert" />
 		</div>
 	</tmpl:put>
 	<% } %>

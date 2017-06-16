@@ -4,7 +4,11 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-
+    <title>FreshDirect</title>
+    <%@ include file="/common/template/includes/metatags.jspf" %>
+    <%@ include file="/common/template/includes/i_javascripts.jspf" %>  
+    <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 </head>
 <body>
 <%  

@@ -10,8 +10,11 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" lang="en-US">
-<title>Insert title here</title>
-<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+    <title>FreshDirect - Your Account - Edit EBT Card</title>
+    <%@ include file="/common/template/includes/metatags.jspf" %>
+    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
+    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body>
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>

@@ -12,7 +12,8 @@ if (sp != null) {
 <!DOCTYPE html>
 <html>
 <head>
-<title>OAS</title>
+    <title>OAS</title>
+    <%@ include file="/common/template/includes/metatags.jspf" %>
   <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
   <jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
 </head>

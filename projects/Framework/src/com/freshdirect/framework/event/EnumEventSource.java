@@ -57,9 +57,9 @@ public enum EnumEventSource {
 	ExternalPage("ExternalPage"), //External Page
 	FinalizingExternal("FinalizingExternal"); //Finalizing External Atc failures
 	
-	String name;
+    private String name;
 	
-	EnumEventSource(String name) {
+    private EnumEventSource(String name) {
 		this.name = name;
 	}
 	
