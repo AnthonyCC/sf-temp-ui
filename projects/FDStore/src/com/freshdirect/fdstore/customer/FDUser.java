@@ -1776,7 +1776,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     }
 
     @Override
-    public EnumDPAutoRenewalType hasAutoRenewDP() throws FDResourceException {
+    /*public EnumDPAutoRenewalType hasAutoRenewDP() throws FDResourceException {
         if (this.identity != null) {
         	if(null == hasAutoRenewDP){
 	            FDCustomerModel customer = this.getFDCustomer();
@@ -1786,6 +1786,16 @@ public class FDUser extends ModelSupport implements FDUserI {
 	            return hasAutoRenewDP;
         	}
         	return hasAutoRenewDP;
+        }
+        return EnumDPAutoRenewalType.NONE;
+    }*/
+    
+    public EnumDPAutoRenewalType hasAutoRenewDP() throws FDResourceException {
+        if (this.identity != null) {
+            FDCustomerModel customer = this.getFDCustomer();
+            String customerPK = customer.getErpCustomerPK();
+
+            return FDCustomerManager.hasAutoRenewDP(customerPK);
         }
         return EnumDPAutoRenewalType.NONE;
     }
