@@ -1785,6 +1785,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	            hasAutoRenewDP = FDCustomerManager.hasAutoRenewDP(customerPK);
 	            return hasAutoRenewDP;
         	}
+        	return hasAutoRenewDP;
         }
         return EnumDPAutoRenewalType.NONE;
     }
