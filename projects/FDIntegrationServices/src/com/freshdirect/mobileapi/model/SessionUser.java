@@ -491,7 +491,7 @@ public class SessionUser {
     	String addressId = null;
     	if(address!=null && address.getPK() != null && address.getPK().getId() != null)
     		addressId = address.getPK().getId();
-    	return (deliveryReservation!=null && TimeslotLogic.isAddressChange(deliveryReservation.getAddress(), address, addressId, 
+    	return (deliveryReservation!=null && !TimeslotLogic.isAddressChange(deliveryReservation.getAddress(), address, addressId, 
     			deliveryReservation.getAddressId()));
 //    	return (deliveryReservation != null && address != null && address.getPK() != null && address.getPK().getId() != null
 //                   && address.getPK().getId().equals(deliveryReservation.getAddressId())
