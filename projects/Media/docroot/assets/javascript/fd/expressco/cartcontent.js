@@ -621,10 +621,10 @@ etids.div_tooltipPopup = "#tooltipPopup";
 					/* update load */
 					toggleDisabled('#promotional-code-applybtn,#apply-gift-card-applybtn', true);
 					
-					$(document).on('keyup', '#promotional-code', function(event) {
+					$(document).on('keyup change input', '#promotional-code', function(event) {
 						toggleDisabled('#promotional-code-applybtn', $(this).val() === '');
 					});
-					$(document).on('keyup', '#apply-gift-card', function(event) {
+					$(document).on('keyup change input', '#apply-gift-card', function(event) {
 						toggleDisabled('#apply-gift-card-applybtn', $(this).val() === '');
 					});
 				});
