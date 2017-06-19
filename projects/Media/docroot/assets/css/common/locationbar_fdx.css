@@ -11,6 +11,7 @@
 		z-index: 100;
 		width:100%;
 		min-height: 42px;
+		max-height: 42px; /* fix height for browse pages */
 		margin-top: 0px;
 		font-family: Verdana;
 	}
@@ -2023,6 +2024,7 @@ option.address-icon {
 	#location-tabs {	
 		display: inline-block;
 	    overflow: hidden;
+	    max-height: 42px; /* fix height for browse pages */
 	}
 	#locationbar {
     	background-color: #efefef ;
@@ -2036,11 +2038,3 @@ option.address-icon {
     	background-color: #6AAA6D;
     	border: 2px solid #fff;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
