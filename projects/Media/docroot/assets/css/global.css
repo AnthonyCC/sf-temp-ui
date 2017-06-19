@@ -3306,3 +3306,12 @@ div#i_viewcart td {
 .oas-cnt img[src*="empty.gif"] {
   display: none;
 }
+.icon-base{
+	width: 40px;
+	height: 40px;
+	background-size: 100%;
+	background-repeat: no-repeat;
+}
+.icon-base.icon-pdf{
+	background-image: url('/media/images/icons/adobe-pdf.png');
+}

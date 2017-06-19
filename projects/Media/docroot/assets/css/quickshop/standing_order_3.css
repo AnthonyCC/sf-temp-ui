@@ -1339,9 +1339,27 @@
 .standing-orders-3-so-settings-container.open .standing-orders-3-so-settings-activate-message{
 	display: none;
 }
+.standing-orders-3-so-settings-top{
+	width: 970px;
+	margin: auto;
+}
+.standing-orders-3-so-setting-tutorial{
+	float: right;
+	font-size: 17px;
+}
+.standing-orders-3-so-setting-tutorial a{
+	float: right;
+	cursor: pointer;
+}
+.standing-orders-3-so-setting-tutorial a.standing-orders-3-so-setting-tutorial-pdf{
+	margin: 8px 0 0 10px;
+}
+.standing-orders-3-so-setting-tutorial-text{
+	padding: 18px 0;
+}
 .so3-create-new-so {
+	display: inline-block;
     width: 450px;
-    margin: auto;
 	padding: 12px;
     background: #f7f7f7;
 	border: 1px solid #c1b5c1;
