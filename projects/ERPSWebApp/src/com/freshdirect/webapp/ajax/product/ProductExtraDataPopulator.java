@@ -1012,8 +1012,7 @@ public class ProductExtraDataPopulator {
 				try {
 					products = FDFactory.getSkuFamilyInfo(productInfo.getMaterialNumber());
 				} catch (FDGroupNotFoundException e) {
-					
-					e.printStackTrace();
+					LOG.warn("No product family group exists for material: "+productInfo, e);
 				}
 				//skuCodes = products.getSkuList();
 				familyID = products.getFamilyId();
@@ -1021,15 +1020,16 @@ public class ProductExtraDataPopulator {
 				EhCacheUtil.putListToCache(EhCacheUtil.FD_FAMILY_PRODUCT_CACHE_NAME,familyID, products.getSkuList());
 				}
 			}
-			skuCodes = EhCacheUtil.getListFromCache(EhCacheUtil.FD_FAMILY_PRODUCT_CACHE_NAME, familyID);
+			if(null != familyID){
+				skuCodes = EhCacheUtil.getListFromCache(EhCacheUtil.FD_FAMILY_PRODUCT_CACHE_NAME, familyID);
+			}
 			
 			if(skuCodes == null&&familyID!=null){
 				
 				try {
 					products = FDFactory.getFamilyInfo(familyID);
 				} catch (FDGroupNotFoundException e) {
-					
-					e.printStackTrace();
+					LOG.warn("No product family group exists for material: "+productInfo, e);
 				}
 				skuCodes = products.getSkuList();
 				EhCacheUtil.putListToCache(EhCacheUtil.FD_FAMILY_PRODUCT_CACHE_NAME,familyID, products.getSkuList());
@@ -1114,7 +1114,6 @@ public class ProductExtraDataPopulator {
 		}
 			data.setFamilyProducts(familyProducts);
 		}
-		
         data.setCustomerServiceContact(user.getCustomerServiceContact());
 
         if (EnumEStoreId.FDX == CmsManager.getInstance().getEStoreEnum()) {

@@ -561,7 +561,17 @@ public class ProductDetailPopulator {
 		data.setSoldBySalesUnit( product.isSoldBySalesUnits() );
 		data.setHasTerms( product.hasTerms() );
 		if(StandingOrderHelper.isEligibleForSo3_0(user)){
-			data.setSoData(StandingOrderHelper.getAllSoData(user,true,false));
+//			data.setSoData(StandingOrderHelper.getAllSoData(user,true,false));
+			
+			if(null == ContentFactory.getInstance().getUserAllSoData()){
+				HashMap<String,Object> soSettingsData = StandingOrderHelper.getAllSoData(user,true,false);
+				if(null == soSettingsData){
+					soSettingsData = new HashMap<String,Object>(0);
+				}
+				ContentFactory.getInstance().setUserAllSoData(soSettingsData);
+			}
+			
+			data.setSoData(ContentFactory.getInstance().getUserAllSoData());
 		}
 		// alcoholic & usq flags
 		try {
