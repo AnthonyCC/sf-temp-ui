@@ -10,7 +10,7 @@
 <fd:Department id='department' departmentId='<%= request.getParameter("deptId") %>'/>
 <%
     ContentNodeModel currentFolder = department;
-    String title = "FreshDirect - " + productNode.getFullName();
+    String title = "FreshDirect - " + currentFolder.getFullName();
 %>
 
 <tmpl:insert template='/shared/template/pop_sm.jsp'>
