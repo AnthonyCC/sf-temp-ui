@@ -244,6 +244,7 @@ if (categoryModel != null) {
 	if ( qc.getParameter("pageSize") == null ) {
 		nav.setPageSize(defaultPageSize);
 	}
+	String title = "FreshDirect - " + currentFolder.getFullName();
 %>
 <bean:define id="activeTabVal" value='<%= (!search.getProducts().isEmpty() && request.getParameter("recipes")==null) || (search.getProducts().isEmpty() && search.getRecipes().isEmpty()) ? "products" : "recipes" %>' />
 
@@ -461,9 +462,9 @@ if (categoryModel != null) {
 	</tmpl:put>
 
     <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="FreshDirect - <%= currentFolder.getFullName() %>"/>
+        <fd:SEOMetaTag title="<%= title %>"/>
     </tmpl:put>
-	<tmpl:put name='title' direct='true'>FreshDirect - <%= currentFolder.getFullName() %></tmpl:put>
+	<tmpl:put name='title' direct='true'><%= title %></tmpl:put>
 	<tmpl:put name="activeView">grid<% //= nav.isListView() && !nav.isRecipes() ? "list" : "grid" %></tmpl:put>
 	<tmpl:put name="noResult"><%= search.getProducts().isEmpty() && search.getRecipes().isEmpty() ? "noresult" : "hasresults" %></tmpl:put>
 	<tmpl:put name="startPage">resultpage</tmpl:put>

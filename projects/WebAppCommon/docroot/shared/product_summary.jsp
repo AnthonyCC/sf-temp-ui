@@ -85,15 +85,16 @@ public String getProdPageRatings(ProductModel _productNode, HttpServletResponse 
 <fd:Department id='department' departmentId='<%= deptId %>'/>
 <%
     ContentNodeModel currentFolder = department;
+    String title = "FreshDirect - " + currentFolder.getFullName() + " Guide: " + productNode.getFullName();
 %>
 
 <tmpl:insert template='/shared/template/summary.jsp'>
 <fd:ProductGroup id='productNode' categoryId='<%= request.getParameter("catId") %>' productId='<%= request.getParameter("productId") %>'>
 <%String prodPageRatingStuff = getProdPageRatings(productNode,response);%>
     <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="FreshDirect - <%= currentFolder.getFullName()  %> Guide: <%= productNode.getFullName() %>"/>
+        <fd:SEOMetaTag title="<%= title %>"/>
     </tmpl:put>
-    <tmpl:put name='title' direct='true'>FreshDirect - <%= currentFolder.getFullName()  %> Guide: <%= productNode.getFullName() %></tmpl:put>
+    <tmpl:put name='title' direct='true'><%= title %></tmpl:put>
 <tmpl:put name='pageTitle' direct='true'><%= currentFolder.getFullName().toUpperCase()  %> GUIDE</tmpl:put>
 
 <tmpl:put name='content' direct='true'>
