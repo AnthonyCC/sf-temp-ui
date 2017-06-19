@@ -113,6 +113,5 @@
  
 <script src="//cdn.optimizely.com/js/325803703.js" type="text/javascript"></script>
 
-
-
+<fd:IncludeMedia name="/media/editorial/site_pages/metadata.html" />
 
