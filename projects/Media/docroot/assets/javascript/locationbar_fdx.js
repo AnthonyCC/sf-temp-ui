@@ -73,7 +73,7 @@ if ($jq('#locabar_user').length && $jq('#locabar_user_reco_cont').length) {
 	$jq( '#locabar_user_reco_cont').height($jq('#locabar_user').height()+'px');
 
 	$jq(document).on('ready', function() {
-		/* DEBUG display */
+		//DEBUG display
 		if ($jq('.pdp-evenbetter').length) {
 			$jq('.pdp-evenbetter').clone().appendTo($jq( '#locabar_user_reco' ));
 			$jq( '#locabar_user_reco' ).addClass('pdp');
