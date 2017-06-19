@@ -115,14 +115,14 @@ request.setAttribute("noyui", true);
                          <div id="mobilehomeMainDiv">
                          <%
                                  //OAS setup
-                                 request.setAttribute("listPos", "SystemMessage,HPMob01,HPMob02");
+                                 request.setAttribute("listPos", "SystemMessage,HPMob01,HPMob02,HPMob03");
                                  /* these use OAS pages like www.freshdirect.com/mobileweb/[PAGENAME] */
  	                                
                                  if (FDStoreProperties.isAdServerEnabled()) {
-                                        %><div id="OAS_HPMob01" class="home-page-banner">
+                                        %><div id="OAS_HPMob01" class="oas-cnt home-page-banner">
                                                 <script type="text/javascript">OAS_AD('HPMob01');</script>
                                         </div><% 
-                                        %><div id="OAS_HPMob02" class="home-page-banner">
+                                        %><div id="OAS_HPMob02" class="oas-cnt home-page-banner">
                                                 <script type="text/javascript">OAS_AD('HPMob02');</script>
                                         </div><% 
                                 }
@@ -154,6 +154,14 @@ request.setAttribute("noyui", true);
                                              </div>
  	                                    </a>
 	                                <% } %>
+	                                
+									<%
+									   	if (FDStoreProperties.isAdServerEnabled()) {
+											%><div id="OAS_HPMob03" class="oas-cnt home-page-banner">
+									  			<script type="text/javascript">OAS_AD('HPMob03');</script>
+									  		</div><%
+									  	}
+									%>
  	                        </div>
                  <% } else { %>
  	                        
