@@ -85,12 +85,14 @@ public String getProdPageRatings(ProductModel _productNode, HttpServletResponse 
 <fd:Department id='department' departmentId='<%= deptId %>'/>
 <%
     ContentNodeModel currentFolder = department;
-    String title = "FreshDirect - " + currentFolder.getFullName() + " Guide: " + productNode.getFullName();
 %>
 
 <tmpl:insert template='/shared/template/summary.jsp'>
 <fd:ProductGroup id='productNode' categoryId='<%= request.getParameter("catId") %>' productId='<%= request.getParameter("productId") %>'>
-<%String prodPageRatingStuff = getProdPageRatings(productNode,response);%>
+<%
+String prodPageRatingStuff = getProdPageRatings(productNode,response);
+String title = "FreshDirect - " + currentFolder.getFullName() + " Guide: " + productNode.getFullName();
+%>
     <tmpl:put name="seoMetaTag" direct='true'>
         <fd:SEOMetaTag title="<%= title %>"/>
     </tmpl:put>
