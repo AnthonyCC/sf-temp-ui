@@ -392,6 +392,11 @@ function closeDrawerSuccessOverlayDialog(openTimeslot){
 	}, 50);	
 }
 
+function disableTutorialOverlay(){
+	$jq('.so-feature-tutorial #so-feature-tutorial-checkbox:checked').prop( "disabled", true );
+	postStandingOrderData(0,'turnOffSoFeatureOverlay');
+}
+
 function selectFrequency(item){
 	if($jq(".standing-orders-3 #ec-drawer .drawer-header li[data-drawer-id='timeslot'] button.cancel.cssbutton").css("display") == "none"){
 		$jq(".standing-orders-3 #ec-drawer .drawer-header li[data-drawer-id='timeslot'] button.change.cssbutton").click();
