@@ -21,9 +21,12 @@
 	<tmpl:get name="topwarningbar" />
 	
 	<div id="locationbar" class="<%= (uri.contains("/checkout/") || uri.contains("view_cart.jsp") || uri.contains("merge_cart.jsp")) ? "disableCart" : "" %>">
-		<div class="locabar-spacer"></div>
-		<tmpl:get name="tab_fdx" />
-		<tmpl:get name="tab_cos" />
+		<div id="location-tabs">
+			<div class="locabar-spacer"></div>
+			<tmpl:get name="tab_fd" />
+			<tmpl:get name="tab_fdx" />
+			<tmpl:get name="tab_cos" />
+		</div>
 		
 		<%-- fright sections --%>
 		<div class="locabar-right-sections">
@@ -31,12 +34,15 @@
 		</div>
 	</div>
 	
+	<tmpl:get name="fdx_promo" />
+	
 	<div id="location-alerts" class="">
 		<tmpl:get name="location_out_of_area_alert" />
 		<tmpl:get name="error_so_alerts" />
 		<tmpl:get name="min_so_alerts" />
 		<tmpl:get name="activate_so_alerts" />
 		<tmpl:get name="modify_order_alerts" />	
+		<tmpl:get name="test_alerts" />	
 	</div>
 	<div id="unrecognized" class="invisible" data-type="sitemessage">
 		<div class="unrecognized error-message">
