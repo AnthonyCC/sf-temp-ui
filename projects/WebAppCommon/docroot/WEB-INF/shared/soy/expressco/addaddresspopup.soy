@@ -8,7 +8,7 @@
   <div class="formcontainer" data-show="{if $data.service_type == 'corporate'}addaddress_office{else}addaddress_home{/if}">
     <div class="formselector">
       {if not $data.standing_order}
-        <label class="tabs" id="addaddress_home_label"><input type="radio" name="showform" value="addaddress_home" {if $data.service_type != 'corporate'}checked{/if} {if $data.standing_order}disabled{/if} />Residental</label>
+        <label class="tabs" id="addaddress_home_label"><input type="radio" name="showform" value="addaddress_home" {if $data.service_type != 'corporate'}checked{/if} {if $data.standing_order}disabled{/if} />Residential</label>
       {/if}
       <label class="tabs" id="addaddress_office_label"><input type="radio" name="showform" value="addaddress_office" {if $data.service_type == 'corporate' or $data.standing_order}checked{/if} />Office</label>
     </div>
