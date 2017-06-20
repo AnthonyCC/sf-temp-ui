@@ -34,6 +34,7 @@ final int W_GIFTCARD_TOTAL = 970;
 	<fd:javascript src="/assets/javascript/FD_GiftCards.js"/>
 
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<fd:css href="/assets/css/giftcards.css"/>
 
 	<%-- NOT THIS INCLUDE @ include file="/shared/template/includes/ccl.jspf" --%>
@@ -131,12 +132,14 @@ final int W_GIFTCARD_TOTAL = 970;
 		<tr>
 			<td align="center" class="text11">
 				<%@ include file="/shared/template/includes/copyright.jspf" %>
-				<br /><img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" />
-				<br /><a href="/help/privacy_policy.jsp">Privacy Policy</a>
-				&nbsp;<font color="#999999">|</font>
-				&nbsp;<a href="/help/terms_of_service.jsp">Customer Agreement</a>
-				&nbsp;<font color="#999999">|</font>
-				&nbsp;<a href="/help/aol_note.jsp">A note on images for AOL users</a>
+				<fd:IncludeMedia name="/media/layout/nav/globalnav/footer/after_copyright_footer.ftl">
+					<br /><img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" />
+					<br /><a href="/help/privacy_policy.jsp">Privacy Policy</a>
+					&nbsp;<font color="#999999">|</font>
+					&nbsp;<a href="/help/terms_of_service.jsp">Customer Agreement</a>
+					&nbsp;<font color="#999999">|</font>
+					&nbsp;<a href="/help/aol_note.jsp">A note on images for AOL users</a>
+				</fd:IncludeMedia>
 			</td>
 		</tr>
 	</table>
