@@ -2029,12 +2029,23 @@ option.address-icon {
 	#locationbar {
     	background-color: #efefef ;
 	}
-	.locabar_addresses-reservation-existing-time {
+	.locabar_addresses-reservation-existing-time, .locabar_addresses-reservation-none {
 	    padding: 10px;
-	    padding-top: 20px;
 	}
 	.locabar-circle-cont {
     	color: #fff;
     	background-color: #6AAA6D;
     	border: 2px solid #fff;
+	}
+	.disableCart .locabar-addresses-section,
+	.disableCart .locabar-user-section[data-signedin="true"],
+	.disableCart .locabar-popupcart-section {
+		background-color: #f6faf6 !important;
+		color: #666 !important;
+		border-left-color: #dadada;
+	}
+	.disableCart .locabar-addresses-section:hover .locabar-arrow:after,
+	.disableCart .locabar-user-section[data-signedin="true"] .locabar-arrow:after {
+    	border-bottom: 2px solid #919191;
+    	border-right: 2px solid #919191;
 	}
