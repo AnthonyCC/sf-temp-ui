@@ -39,6 +39,7 @@ import com.freshdirect.dataloader.DataLoaderProperties;
 import com.freshdirect.dataloader.payment.FileContext;
 import com.freshdirect.dataloader.payment.PaymentFileType;
 import com.freshdirect.dataloader.payment.SFTPFileProcessor;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -224,7 +225,7 @@ public class PaymentechSFTPBinLoader /*implements BINLoader*/ {
 		binInfos.add(mcBINInfo);
 		
 		
-		if(FDStoreProperties.isSF2_0_AndServiceEnabled("payment.ejb.BINInfoManagerSB")){
+		if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.BINInfoManagerSB)){
 			FDECommerceService.getInstance().saveBINInfo(binInfos);
 		}else {
 		BINInfoManagerSB binInfoManagerSB = lookupBINInfoManagerHome().create();

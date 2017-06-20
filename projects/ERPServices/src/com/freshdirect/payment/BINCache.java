@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.StringUtil;
@@ -60,7 +61,7 @@ public class BINCache {
 			synchronized (reloadSync) {
 				LOGGER_LOADER.info("reloading BIN cache");
 				try {
-					if(FDStoreProperties.isSF2_0_AndServiceEnabled("payment.ejb.BINInfoManagerSB")){
+					if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.BINInfoManagerSB)){
 						binInfoMap=FDECommerceService.getInstance().getActiveBINs();
 					}else{
 					@SuppressWarnings("unchecked")

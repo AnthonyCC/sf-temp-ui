@@ -25,6 +25,7 @@ import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ejb.ErpCOOLManagerHome;
 import com.freshdirect.erp.ejb.ErpCOOLManagerSB;
 import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.StringUtil;
@@ -219,7 +220,7 @@ public class FDCOOLJcoServer extends FdSapServer {
 		try {
 			ctx = ErpServicesProperties.getInitialContext();
 //			ServiceLocator serviceLocator = new ServiceLocator(FDStoreProperties.getInitialContext());
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpCOOLManagerSB")){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpCOOLManagerSB)){
 				LogisticsServiceLocator.getInstance().getCommerceService().saveCountryOfOriginData(erpCOOLInfoList);
 			}else{
 			ErpCOOLManagerHome mgr = (ErpCOOLManagerHome) ctx.lookup(ErpServicesProperties.getCOOLManagerHome());

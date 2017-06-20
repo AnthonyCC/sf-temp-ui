@@ -26,6 +26,7 @@ public class FDEcommProperties {
     public final static String FDMonitorSB = "fdstore.monitor.FDMonitorSB";
     public final static String ErpCOOLManagerSB = "erp.ejb.ErpCOOLManagerSB";
     public final static String ErpGrpInfoSB = "erp.ejb.ErpGrpInfoSB";
+    public static final String EnumManagerSB = "enums.ejb.EnumManagerSB";
     public final static String SapGrpInfoLoaderSB = "sap.ejb.SapGrpInfoLoaderSB";
     public final static String ErpInventoryManagerSB = "erp.ejb.ErpInventoryManagerSB";
     public final static String DlvManagerSB = "delivery.ejb.DlvManagerSB";
@@ -61,6 +62,7 @@ public class FDEcommProperties {
     public  final static String FDXOrderPickEligibleSB ="erp.ejb.FDXOrderPickEligibleSB";//story SF17-64
     public  final static String SAPLoaderSB ="sap.ejb.SAPLoaderSB";
     public  final static String CmsFeedmanagerSB ="fdstore.cms.CMSFeedManagerSB";//story SF17-22
+	
     
   
     
@@ -70,6 +72,7 @@ public class FDEcommProperties {
         defaults.put(FDMonitorSB,FALSE);
         defaults.put(ErpCOOLManagerSB ,FALSE);
         defaults.put(ErpGrpInfoSB,FALSE);
+        defaults.put(EnumManagerSB,FALSE);
         defaults.put(SapGrpInfoLoaderSB,FALSE);
         defaults.put(ErpInventoryManagerSB ,FALSE);
         defaults.put(DlvManagerSB ,FALSE);
@@ -122,7 +125,7 @@ public class FDEcommProperties {
     private synchronized static void refresh(boolean force) {
         long t = System.currentTimeMillis();
 
-        if (true/*force || ((t - lastRefresh) > REFRESH_PERIOD)*/) {
+        if (force || ((t - lastRefresh) > REFRESH_PERIOD)) {
             config = ConfigHelper.getPropertiesFromDB(EnumPropertyType.WEB.toString(),
             		FDStoreProperties.getClusterName(),
             		FDStoreProperties.getNodeName(), defaults);

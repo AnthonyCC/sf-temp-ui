@@ -17,6 +17,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -34,7 +35,7 @@ public class ProductPromotionInfoManager {
 		lookupManagerHome();
 		Map<ZoneInfo,List<FDProductPromotionInfo>> productPromoInfoMap=null;
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpProductPromotionInfoSB")){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpProductPromotionInfoSB)){
 			productPromoInfoMap=FDECommerceService.getInstance().getAllProductsByType(ppType);
 			}else{
 				ErpProductPromotionInfoSB sb = managerHome.create();
@@ -55,7 +56,7 @@ public class ProductPromotionInfoManager {
 		lookupManagerHome();
 		Map<ZoneInfo,List<FDProductPromotionInfo>> productPromoInfoMap= null;
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpProductPromotionInfoSB")){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpProductPromotionInfoSB)){
 				productPromoInfoMap= FDECommerceService.getInstance().getAllProductsByType(ppType,lastPublished);
 			}else{
 			ErpProductPromotionInfoSB sb = managerHome.create();
@@ -99,7 +100,7 @@ public class ProductPromotionInfoManager {
 		try{
 			ErpZoneInfoHome home=getErpZoneInfoHome();
 			ErpZoneInfoSB remote= home.create();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpZoneInfoSB")){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpZoneInfoSB)){
 				zoneInfo= FDECommerceService.getInstance().getAllZoneInfoDetails();
 			}else{
 			zoneInfo=remote.getAllZoneInfoDetails();
@@ -120,7 +121,7 @@ public class ProductPromotionInfoManager {
 //		lookupManagerHome();
 		ErpProductPromotionPreviewInfo erpProductPromotionPreviewInfo;
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpProductPromotionInfoSB")){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpProductPromotionInfoSB)){
 				erpProductPromotionPreviewInfo=	FDECommerceService.getInstance().getProductPromotionPreviewInfo(ppPreviewId);
 			}else{
 			ErpProductPromotionInfoSB sb = managerHome.create();
@@ -162,7 +163,7 @@ public class ProductPromotionInfoManager {
 //		lookupManagerHome();
 		Map<String,Map<ZoneInfo,List<FDProductPromotionInfo>>> productPromoInfoMap;
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpProductPromotionInfoSB")){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpProductPromotionInfoSB)){
 			productPromoInfoMap= FDECommerceService.getInstance().getAllPromotionsByType(ppType,lastPublishedDate);
 			}else{
 			ErpProductPromotionInfoSB sb = managerHome.create();

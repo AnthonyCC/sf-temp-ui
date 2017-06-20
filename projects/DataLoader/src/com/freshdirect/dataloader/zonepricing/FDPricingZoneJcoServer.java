@@ -23,6 +23,7 @@ import com.freshdirect.dataloader.sap.jco.server.FDSapFunctionHandler;
 import com.freshdirect.dataloader.sap.jco.server.FdSapServer;
 import com.freshdirect.dataloader.util.FDSapHelperUtils;
 import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.payment.service.FDECommerceService;
 import com.sap.conn.jco.JCo;
@@ -252,7 +253,7 @@ public class FDPricingZoneJcoServer extends FdSapServer
 		Context ctx = null;
 		try 
 		{
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("sap.ejb.SAPZoneInfoLoaderSB")){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SAPZoneInfoLoaderSB)){
 				LogisticsServiceLocator.getInstance().getCommerceService().loadData(zoneInfos);
 			}else{			
 			ctx = ErpServicesProperties.getInitialContext();

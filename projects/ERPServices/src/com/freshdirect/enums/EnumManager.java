@@ -12,6 +12,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.enums.ejb.EnumManagerHome;
 import com.freshdirect.enums.ejb.EnumManagerSB;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -47,7 +48,7 @@ public class EnumManager {
 	public List loadEnums(Class daoClass) {
 		EnumManagerSB sb = this.getEnumManagerSB();
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("enums.ejb.EnumManagerSB")){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EnumManagerSB)){
 			return	FDECommerceService.getInstance().loadEnum(daoClass.getSimpleName());
 			}else{
 			return sb.loadEnum(daoClass.getName());

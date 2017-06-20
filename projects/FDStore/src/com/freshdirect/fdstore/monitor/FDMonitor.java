@@ -36,7 +36,7 @@ public class FDMonitor {
         lookupMonitorHome();
         
         try {
-        	if(FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.monitor.FDMonitorSB")){
+        	if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDMonitorSB)){
         	
         		LogisticsServiceLocator.getInstance().getCommerceService().healthCheck();
             
