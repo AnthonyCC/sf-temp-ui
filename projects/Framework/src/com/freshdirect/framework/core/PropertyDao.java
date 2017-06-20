@@ -99,9 +99,10 @@ public class PropertyDao {
 			
 			Context initContext;
 			
-				initContext = new InitialContext();
-				DataSource ds = (DataSource) initContext.lookup("java:comp/env/jdbc/dbpool");
-				conn= ds.getConnection();
+//				initContext = new InitialContext();
+//				DataSource ds = (DataSource) initContext.lookup("java:comp/env/jdbc/dbpool");
+//				conn= ds.getConnection();
+				conn = DataSourceLocator.getConnection(null);
 					
 
 		ps = conn.prepareStatement(LOAD_PROPERTIES_QRY01);
