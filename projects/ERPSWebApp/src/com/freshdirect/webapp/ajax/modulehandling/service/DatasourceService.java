@@ -237,7 +237,8 @@ public class DatasourceService {
                 }
                 break;
             case BROWSE:
-                if (showAllProducts) {
+                // Special view all for browse data source with product lists.
+                if (showAllProducts && ModuleSourceType.PRODUCT_LIST_MODULE.equals(moduleSourceType)) {
                     sectionDataContainer = generateBrowseProductsForViewAll(module, user);
                 } else {
                     products = generateBrowseProducts(module, user);
