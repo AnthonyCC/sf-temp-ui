@@ -1,16 +1,26 @@
 package com.freshdirect.fdstore;
 
+import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+
+import javax.ejb.CreateException;
+
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.ERPServiceLocator;
 import com.freshdirect.ecommerce.data.enums.EnumPropertyType;
 import com.freshdirect.framework.util.ConfigHelper;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.monitor.ejb.ErpMonitorHome;
+import com.freshdirect.monitor.ejb.ErpMonitorSB;
+import com.freshdirect.monitor.ejb.ErpMonitorSessionBean;
 
 public class FDEcommProperties {
+	
+	
 
     private static final Category LOGGER = LoggerFactory.getInstance(FDEcommProperties.class);
     private static List<ConfigLoadedListener> listeners = new ArrayList<ConfigLoadedListener>();
@@ -126,9 +136,26 @@ public class FDEcommProperties {
         long t = System.currentTimeMillis();
 
         if (force || ((t - lastRefresh) > REFRESH_PERIOD)) {
-            config = ConfigHelper.getPropertiesFromDB(EnumPropertyType.WEB.toString(),
+        	ErpMonitorHome monitorHome = ERPServiceLocator.getInstance().getErpMonitorHome();
+             	ErpMonitorSB sb;
+			try {
+				sb = monitorHome.create();
+          
+				config = sb.monitorAndLoadProperties(EnumPropertyType.WEB.toString(),
+						FDStoreProperties.getClusterName(),
+						FDStoreProperties.getNodeName(), defaults);
+			} catch (FDResourceException e) {
+				e.printStackTrace();
+				 LOGGER.error("Errpr loading FDStorePropertiesDB Database FDResourceException: " + config);
+			} catch (RemoteException e) {
+				 LOGGER.error("Errpr loading FDStorePropertiesDB Database RemoteException: " + config);
+				e.printStackTrace();
+			}catch (CreateException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}/*ConfigHelper.getPropertiesFromDB(EnumPropertyType.WEB.toString(),
             		FDStoreProperties.getClusterName(),
-            		FDStoreProperties.getNodeName(), defaults);
+            		FDStoreProperties.getNodeName(), defaults);*/
             lastRefresh = t;
             LOGGER.info("Loaded configuration from FDStorePropertiesDB Database: " + config);
             fireEvent();

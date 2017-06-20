@@ -96,7 +96,7 @@ public class ConfigHelper {
         Properties propss =null;
        
         try{
-        	 propss = PropertyDao.loadProperties(type, cluster, node);
+        	 propss = PropertyDao.loadProperties(null,type, cluster, node);
             if (propss != null) {
                         
 	           for(String key:propss.stringPropertyNames())

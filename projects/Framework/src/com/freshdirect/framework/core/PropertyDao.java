@@ -89,22 +89,14 @@ public class PropertyDao {
 
 	private static final String LOAD_PROPERTIES_QRY02 = " select property_name,overriden_value from TRANSP.PROPERTY_OVERRIDE where CLUSTER_NAME = ?  ";
 
-	public static Properties loadProperties(final String type, final String cluster,
+	public static Properties loadProperties(Connection conn2, final String type, final String cluster,
 			final String node) throws SQLException {
 		final Properties p = new Properties();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		Connection conn=null;
+		Connection conn=conn2;
 		try{
 			
-			Context initContext;
-			
-//				initContext = new InitialContext();
-//				DataSource ds = (DataSource) initContext.lookup("java:comp/env/jdbc/dbpool");
-//				conn= ds.getConnection();
-				conn = DataSourceLocator.getConnection(null);
-					
-
 		ps = conn.prepareStatement(LOAD_PROPERTIES_QRY01);
 		ps.setString(1, type);
 		rs = ps.executeQuery();
