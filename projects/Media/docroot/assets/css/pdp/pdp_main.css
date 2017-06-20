@@ -481,7 +481,6 @@ span.cssbutton.annotation:hover {
 }
 
 .pdp-evenbetter-atc .pdp-evenbetter-atcbutton button.cssbutton[data-component="ATCButton"] {
-  padding: 7px;
   font-size: inherit;
 }
 

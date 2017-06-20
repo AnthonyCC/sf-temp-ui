@@ -901,3 +901,16 @@
 	.so-accidental-atc #so-accidental-atc-checkbox:disabled{
 		opacity: 0.7;
 	}
+	.portrait-item-so-container [data-component="createSOButton"]{
+		padding: 10px 5px;
+	}
+	#evenBetterPopup [data-component="createSOButton"]{
+		width: 235px;
+	}
+	#evenBetterPopup .so-recurring{
+		margin: 10px 0 0;
+	}
+	#evenBetterPopup .so-recurring-1{
+		font-size: 10px;
+		text-align: center;
+	}

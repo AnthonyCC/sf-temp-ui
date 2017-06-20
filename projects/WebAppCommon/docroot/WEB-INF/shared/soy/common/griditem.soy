@@ -511,10 +511,22 @@
 		{if $originalLineId}
 			<input type="hidden" data-component="productData" data-productdata-name="lineId" name="lineId" value="{$originalLineId}" />
 		{/if}
-	</form>
+	</form>	
 	{if not $freeSamplePromoProduct}
-		{if $isEligibleForStandingOrders and length($soData.settingsData.soData) > 0}
-			{call common.soShowBtn /}
+		{if $isEligibleForStandingOrders}
+			{if length($soData.settingsData.soData) > 0}
+				{call common.soShowBtn /}
+			{else}
+				<div class="portrait-item-so-container">
+					<div class="portrait-item-so">
+						<div class="portrait-item-so-recurring">
+							{call common.soRecurring}
+								{param useButton: true /}
+							{/call}
+						</div>
+					</div>
+				</div>
+			{/if}
 		{/if}
 		<div class="portrait-item-atl">
 			<button class="{if $customizePopup and not $showConfig}{if $hasTerms}hidden{/if}fake{/if}addtolist cssbutton cssbutton-flat purpleborder" {if not $customizePopup or $showConfig}data-component="addToListButton" data-alignpopup="tc-bc-c"{else}data-component="customizeButton" data-alignpopupfunction="transactionalCustomize"{/if}>Add to List</button>
@@ -560,20 +572,6 @@
 			<input type="hidden" value="{$su.id}" data-productdata-name="salesUnit" data-component="productData" data-salesunit-original="{$su.id}"/>
 			{/if}
 		{/foreach}
-	{/if}
-
-	{if $isEligibleForStandingOrders}
-		{if length($soData.settingsData.soData) == 0}
-			<div class="portrait-item-so-container">
-				<div class="portrait-item-so">
-					<div class="portrait-item-so-recurring">
-						{call common.soRecurring}
-							{param useButton: false /}
-						{/call}
-					</div>
-				</div>
-			</div>
-		{/if}
 	{/if}
 </li>
 {/template}

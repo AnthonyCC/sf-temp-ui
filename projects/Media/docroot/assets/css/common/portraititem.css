@@ -259,7 +259,23 @@
   text-align: center;
   margin-top: 10px;
 }
-
+.pdp-atc #pdp-atc-addtolist{
+	display: block;
+}
+#evenBetterPopup .pdp-evenbetter-atc .pdp-evenbetter-atcbutton button.cssbutton[data-component="addToListButton"],
+#transactionalPopup .portrait-item-atl .cssbutton,
+.pdp-atc #pdp-atc-addtolist{
+	border: 0 !important;
+	background: none;
+	font-weight: normal;
+	color: #458b4c !important;
+}
+#transactionalPopup .portrait-item-atl .cssbutton:hover,
+.pdp-atc #pdp-atc-addtolist:hover,
+#evenBetterPopup .pdp-evenbetter-atc .pdp-evenbetter-atcbutton button.cssbutton[data-component="addToListButton"]:hover{
+	text-decoration: underline;
+	color: #5fb069 !important;
+}
 #transactionalPopup [data-component="product"] > form {
   display: inline-block;
   width: 100%;
