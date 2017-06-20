@@ -18,6 +18,17 @@ var FreshDirect = FreshDirect || {};
 		},
 		callback:{
 			value:function(value){
+				var siteFeature = value.siteFeature || value.recommenderResult.siteFeature || '',	 
+                isTabbedSitefeature = $('[data-component="tabbedRecommender"] [data-sitefeature="'+siteFeature+'"]').length > 0;	 
+        if(isTabbedSitefeature) {	 
+          /* update tab when prop changes. data values must be updated, they're used in selectTab() */	 
+          var $selectedTab = $('[data-component="tabbedRecommender"] [data-component="tabitem"].selected');	 
+          $selectedTab.attr('data-tabname', value.tabTitle || $selectedTab.attr('data-tabname'));	 
+          $selectedTab.data('tabname', $selectedTab.attr('data-tabname'));	 
+          $selectedTab.attr('data-sitefeature', siteFeature || $selectedTab.attr('data-sitefeature'));	 
+          $selectedTab.data('sitefeature', $selectedTab.attr('data-sitefeature'));
+          $selectedTab.html(value.tabTitle);
+                }
 					$('[data-component="tabbedRecommender"] [data-component="tabpanel"]').css('min-height',0).html(this.template(value));
 					fd.components.carousel.changePage($('[data-component="tabbedRecommender"] [data-component="tabpanel"] [data-component="carousel"]'));
 			}

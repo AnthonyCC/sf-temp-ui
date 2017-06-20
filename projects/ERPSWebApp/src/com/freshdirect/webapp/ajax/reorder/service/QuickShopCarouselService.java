@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.ajax.reorder.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -23,9 +24,11 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
  */
 public class QuickShopCarouselService extends AbstractCarouselService {
 
-	public static final String QUICKSHOP_VIRTUAL_SITE_FEATURE = "CRAZY_QUICKSHOP";
+    public static final String QUICKSHOP_VIRTUAL_SITE_FEATURE = "CRAZY_QUICKSHOP";
+    private static final List<String> QS_SITE_FEATURES = Arrays.asList("DEALS_QS", "EXPRATED_QS", "CUSTRATED_QS");
+    private static final String QS_BOTTOM_GENERAL_VARIANT_ID = "qs_bottom_general";
 
-	private static QuickShopCarouselService INSTANCE = new QuickShopCarouselService();
+    private static final QuickShopCarouselService INSTANCE = new QuickShopCarouselService();
 
 	@Override
 	protected int getMaxRecommendations() {
@@ -57,20 +60,10 @@ public class QuickShopCarouselService extends AbstractCarouselService {
 		return SessionName.QSB_SELECTED_VARIANT;
 	}
 
-	/**
-	 * Tabs
-	 */
-	public static final String[] QS_SITE_FEATURES = { "DEALS_QS", "EXPRATED_QS", "CUSTRATED_QS" };
-
-	private static final List<EnumSiteFeature> _QS_FEATURES = new ArrayList<EnumSiteFeature>();
-	static {
-		for (final String n : QS_SITE_FEATURES) {
-			EnumSiteFeature sf = EnumSiteFeature.getEnum(n);
-			if (sf != null) {
-				_QS_FEATURES.add(sf);
-			}
-		}
-	}
+    @Override
+    protected String getEventSource(String siteFeature) {
+        return "";
+    }
 
 	private QuickShopCarouselService() {
 	}
@@ -85,19 +78,16 @@ public class QuickShopCarouselService extends AbstractCarouselService {
 	}
 
 	@Override
-	protected TabRecommendation getTabRecommendation(final FDUserI user, final SessionInput input) {
-		// TODO finalize
-		final RecommendationServiceConfig cfg = new RecommendationServiceConfig("qs_bottom_general", RecommendationServiceType.NIL);
-		final Variant tabVariant = new Variant("qs_bottom_general", EnumSiteFeature.QS_BOTTOM_CAROUSEL, cfg);
+    protected TabRecommendation getTabRecommendation(final FDUserI user, SessionInput input) {
+		final RecommendationServiceConfig cfg = new RecommendationServiceConfig(QS_BOTTOM_GENERAL_VARIANT_ID, RecommendationServiceType.NIL);
+		final Variant tabVariant = new Variant(QS_BOTTOM_GENERAL_VARIANT_ID, EnumSiteFeature.QS_BOTTOM_CAROUSEL, cfg);
 
 		// variants
 		List<Variant> variants = new ArrayList<Variant>();
-		for (final EnumSiteFeature sf : _QS_FEATURES) {
-			// pick right variant
-			VariantSelector selector = VariantSelectorFactory.getSelector(sf);
-			Variant v = selector.select(user);
-
-			variants.add(v);
+        for (final String siteFeature : QS_SITE_FEATURES) {
+            EnumSiteFeature enumSiteFeature = EnumSiteFeature.getEnum(siteFeature);
+            VariantSelector selector = VariantSelectorFactory.getSelector(enumSiteFeature);
+			variants.add(selector.select(user));
 		}
 
 		TabRecommendation tabs = new TabRecommendation(tabVariant, variants);

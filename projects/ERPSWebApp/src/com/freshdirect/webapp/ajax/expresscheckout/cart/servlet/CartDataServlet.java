@@ -1,6 +1,5 @@
 package com.freshdirect.webapp.ajax.expresscheckout.cart.servlet;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +20,6 @@ import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataResponse;
 import com.freshdirect.webapp.ajax.expresscheckout.service.FormDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationResult;
-import com.freshdirect.webapp.ajax.viewcart.service.RecommenderPotatoService;
 import com.freshdirect.webapp.soy.SoyTemplateEngine;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.StandingOrderHelper;
@@ -93,7 +91,7 @@ public class CartDataServlet extends BaseJsonServlet {
 			BaseJsonServlet.returnHttpError(500, "Failed to load cart for user.");
 		} catch (JspException e) {
 			BaseJsonServlet.returnHttpError(500, "Failed to load cart for user.");
-		}
+        }
 	}
 
 	@Override

@@ -133,6 +133,7 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 			if ( items.isEmpty() ) {
 				writeResponseData(response, "No recommendations found.");
 			}else{
+                // TODO use AbstractRecommenderServlet.createRecommenderResult instead
 				Map<String,Object> recommenderResult = new HashMap<String,Object>();
 				recommenderResult.put("items", items);
 				recommenderResult.put("siteFeature",requestData.getFeature());

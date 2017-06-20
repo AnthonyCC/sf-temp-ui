@@ -3,9 +3,6 @@ package com.freshdirect.webapp.ajax.viewcart.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpSession;
-
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
@@ -19,23 +16,23 @@ import com.freshdirect.smartstore.fdstore.VariantSelector;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
 import com.freshdirect.webapp.ajax.AbstractCarouselService;
 
-public class ViewCartCarouselService extends AbstractCarouselService {
+public class CheckoutCarouselService extends AbstractCarouselService {
 
-    private static final ViewCartCarouselService INSTANCE = new ViewCartCarouselService();
+    private static final CheckoutCarouselService INSTANCE = new CheckoutCarouselService();
 
-    private static final String EX_VIEW_CART_VARIANT_ID = "xc_view_cart";
+    private static final String EX_CHECKOUT_VARIANT_ID = "xc_checkout";
 
-    public static final ViewCartCarouselService getDefaultService() {
+    public static final CheckoutCarouselService getDefaultService() {
         return INSTANCE;
     }
 
     @Override
-    protected int getMaxRecommendations() {
+    protected int getMaxTabs() {
         return 5;
     }
 
     @Override
-    protected int getMaxTabs() {
+    protected int getMaxRecommendations() {
         return 3;
     }
 
@@ -63,29 +60,26 @@ public class ViewCartCarouselService extends AbstractCarouselService {
     protected String getEventSource(String siteFeature) {
         EnumEventSource eventSource = null;
         if ("PRODUCT_SAMPLE".equals(siteFeature)) {
-            eventSource = EnumEventSource.ps_carousel_view_cart;
+            eventSource = EnumEventSource.ps_carousel_checkout;
         } else if ("DONATION_SAMPLE".equals(siteFeature)) {
-            eventSource = EnumEventSource.dn_carousel_view_cart;
+            eventSource = EnumEventSource.dn_carousel_checkout;
         } else {
-            eventSource = EnumEventSource.view_cart;
+            eventSource = EnumEventSource.checkout;
         }
         return eventSource.getName();
     }
 
     @Override
     protected TabRecommendation getTabRecommendation(FDUserI user, SessionInput input) {
-        final RecommendationServiceConfig cfg = new RecommendationServiceConfig(EX_VIEW_CART_VARIANT_ID, RecommendationServiceType.NIL);
-        final Variant tabVariant = new Variant(EX_VIEW_CART_VARIANT_ID, EnumSiteFeature.EX_VIEW_CART_CAROUSEL, cfg);
+        final RecommendationServiceConfig cfg = new RecommendationServiceConfig(EX_CHECKOUT_VARIANT_ID, RecommendationServiceType.NIL);
+        final Variant tabVariant = new Variant(EX_CHECKOUT_VARIANT_ID, EnumSiteFeature.EX_CHECKOUT_CAROUSEL, cfg);
 
         // variants
         List<Variant> variants = new ArrayList<Variant>();
         for (final String siteFeature : getSiteFeatures(user)) {
             EnumSiteFeature enumSiteFeature = EnumSiteFeature.getEnum(siteFeature);
             VariantSelector selector = VariantSelectorFactory.getSelector(enumSiteFeature);
-            Variant variant = selector.select(user, false);
-            if (variant != null) {
-                variants.add(variant);
-            }
+            variants.add(selector.select(user, false));
         }
 
         TabRecommendation tabs = new TabRecommendation(tabVariant, variants);
@@ -93,25 +87,9 @@ public class ViewCartCarouselService extends AbstractCarouselService {
         return tabs;
     }
 
-    @Override
-    protected int getSelectedTab(TabRecommendation tabs, HttpSession session, ServletRequest request, FDUserI user) {
-        List<Variant> variants = tabs.getVariants();
-        int selected = 0;
-        if (tabs.isError()) {
-            String defaultSiteFeature = getDefaultSiteFeature(user);
-            for (int i = 0; i < variants.size(); i++) {
-                if (variants.get(i).getSiteFeature().getName().equals(defaultSiteFeature)) {
-                    selected = i;
-                    break;
-                }
-            }
-        }
-        return selected;
-    }
-
     protected List<String> getSiteFeatures(FDUserI user) {
         boolean isCurrentUser = isUserAlreadyOrdered(user);
-        return isCurrentUser ? FDStoreProperties.getViewcartCurrentCustomerCarouselSiteFeatures() : FDStoreProperties.getViewcartNewCustomerCarouselSiteFeatures();
+        return isCurrentUser ? FDStoreProperties.getCheckoutCurrentCustomerCarouselSiteFeatures() : FDStoreProperties.getCheckoutNewCustomerCarouselSiteFeatures();
     }
 
     protected String getDefaultSiteFeature(FDUserI user) {

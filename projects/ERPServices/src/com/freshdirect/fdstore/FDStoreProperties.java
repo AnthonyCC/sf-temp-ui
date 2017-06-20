@@ -1758,10 +1758,10 @@ public class FDStoreProperties {
         defaults.put(PROP_DONATION_PRODUCT_SAMPLES_ENABLED, "false");
         defaults.put(PROP_DONATION_PRODUCT_SAMPLES_ID, "");
 
-        defaults.put(PROP_VIEWCART_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES, "PRODUCT_SAMPLES, C_YMAL, FAVORITES");
-        defaults.put(PROP_VIEWCART_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES, "PRODUCT_SAMPLES, DYF, TOP_ITEMS_QS");
-        defaults.put(PROP_CHECKOUT_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES, "C_YMAL, FAVORITES, PRODUCT_SAMPLES");
-        defaults.put(PROP_CHECKOUT_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES, "DYF, TOP_ITEMS_QS, PRODUCT_SAMPLES");
+        defaults.put(PROP_VIEWCART_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES, "PRODUCT_SAMPLE, C_YMAL, FAVORITES");
+        defaults.put(PROP_VIEWCART_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES, "PRODUCT_SAMPLE, DYF, TOP_ITEMS_QS");
+        defaults.put(PROP_CHECKOUT_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES, "C_YMAL, FAVORITES, PRODUCT_SAMPLE");
+        defaults.put(PROP_CHECKOUT_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES, "DYF, TOP_ITEMS_QS, PRODUCT_SAMPLE");
 
         defaults.put(PROP_USER_CART_SAVE_INTERVAL, "0");
 
@@ -4493,8 +4493,8 @@ public class FDStoreProperties {
         return (Boolean.valueOf(get(PROP_MEALBUNDLE_CARTONVIEW_ENABLED))).booleanValue();
     }
 
-    public static String getPropDonationProductSamplesId() {
-        return get(PROP_DONATION_PRODUCT_SAMPLES_ID);
+    public static List<String> getPropDonationProductSamplesId() {
+        return getAsList(PROP_DONATION_PRODUCT_SAMPLES_ID);
     }
 
     public static List<String> getViewcartNewCustomerCarouselSiteFeatures() {

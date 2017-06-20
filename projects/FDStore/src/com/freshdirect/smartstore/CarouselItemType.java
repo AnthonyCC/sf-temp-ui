@@ -1,9 +1,9 @@
-package com.freshdirect.webapp.ajax.viewcart.service;
+package com.freshdirect.smartstore;
 
 public enum CarouselItemType {
 
     GRID("grid"),
-    SAMPLE_PRODUCT_GRID("grid_prodSample");
+    PRODUCT_SAMPLE_GRID("grid_prodSample");
 
     private String type;
 

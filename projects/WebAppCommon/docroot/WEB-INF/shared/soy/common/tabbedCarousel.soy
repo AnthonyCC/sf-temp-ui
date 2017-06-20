@@ -42,13 +42,12 @@
 
 /**
  * @param? recommendationTabs
- * @param? cmEventSource
  * @param? apiEndPoint
  * @param? fullSize
  */
 {template .generalTabbedCarousel}
 {if $recommendationTabs and length($recommendationTabs)}
-<div class="tabbed-carousel {if $fullSize}fullsize{/if}" data-component="tabbedRecommender" data-cmeventsource="{if $cmEventSource }{$cmEventSource}{else}tabbedRecommender{/if}" {if $apiEndPoint}data-apiendpoint="{$apiEndPoint}"{/if}>
+<div class="tabbed-carousel {if $fullSize}fullsize{/if}" data-component="tabbedRecommender" {if $apiEndPoint}data-apiendpoint="{$apiEndPoint}"{/if}>
   <ul class="tabs" role="tablist">
     {foreach $tab in $recommendationTabs}
       <li role="tab" tabindex="0" aria-selected="{if $tab.selected}true{else}false{/if}" data-component="tabitem" class="{if $tab.selected}selected{/if}" data-tabname="{$tab.title}" data-sitefeature="{$tab.siteFeature}" data-impressionid="{$tab.impressionId}" data-parentimpressionid="{$tab.parentImpressionId}" data-parentvariantid="{$tab.parentVariantId}">{$tab.title}</li>
@@ -56,11 +55,12 @@
   </ul>
   {foreach $tab in $recommendationTabs}
     {if $tab.selected}
-      <div role="tabpanel" class="tab-container light-carousel" data-component="tabpanel" data-cmSiteFeature="{$tab.siteFeature}">
+      <div role="tabpanel" class="tab-container light-carousel" data-component="tabpanel" data-cmSiteFeature="{$tab.siteFeature}" data-cmeventsource="{if $tab.carouselData.cmEventSource}{$tab.carouselData.cmEventSource}{else}tabbedRecommender{/if}">
         {if $tab.carouselData and $tab.carouselData.products}
           {call common.simpleCarousel}
             {param items:$tab.carouselData.products /}
             {param itemType:$tab.itemType /}
+            {param cmEventSource:$tab.carouselData.cmEventSource /}
           {/call}
         {/if}
       </div>
@@ -76,7 +76,6 @@
 {template .checkoutTabbedCarousel}
 {call common.generalTabbedCarousel}
   {param recommendationTabs:$recommendationTabs /}
-  {param cmEventSource:'checkout' /}
   {param apiEndPoint:'/api/viewcart/recommendation' /}
   {param fullSize:true /}
 {/call}
@@ -88,7 +87,6 @@
 {template .viewCartTabbedCarousel}
 {call common.generalTabbedCarousel}
   {param recommendationTabs:$recommendationTabs /}
-  {param cmEventSource:'view_cart' /}
   {param apiEndPoint:'/api/viewcart/recommendation' /}
   {param fullSize:true /}
 {/call}
@@ -100,7 +98,6 @@
 {template .qsBottomTabbedCarousel}
 {call common.generalTabbedCarousel}
   {param recommendationTabs:$recommendationTabs /}
-  {param cmEventSource:'qs_bottom' /}
   {param apiEndPoint:'/api/reorder/recommendation' /}
   {param fullSize:true /}
 {/call}

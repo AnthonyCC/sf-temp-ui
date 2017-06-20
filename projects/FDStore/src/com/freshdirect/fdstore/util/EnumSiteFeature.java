@@ -54,8 +54,6 @@ public class EnumSiteFeature implements Serializable, Comparable<EnumSiteFeature
     public final static EnumSiteFeature CART_N_TABS = new EnumSiteFeature("CART_N_TABS", true, "Cart & Tabs");
     public final static EnumSiteFeature SMART_CATEGORY = new EnumSiteFeature("SMART_CATEGORY", true, "Smart Category (virtual)");
     
-    public final static EnumSiteFeature PRODUCT_SAMPLE = new EnumSiteFeature("PRODUCT_SAMPLES", false, "Free Sample!");
-    
     //gift cards
     @Deprecated
     public final static EnumSiteFeature GIFT_CARDS = new EnumSiteFeature("giftCards");
@@ -80,6 +78,10 @@ public class EnumSiteFeature implements Serializable, Comparable<EnumSiteFeature
     
     public final static EnumSiteFeature QS_BOTTOM_CAROUSEL = new EnumSiteFeature("QS_BOTTOM");
     
+    public final static EnumSiteFeature EX_VIEW_CART_CAROUSEL = new EnumSiteFeature("EX_VIEW_CART");
+
+    public final static EnumSiteFeature EX_CHECKOUT_CAROUSEL = new EnumSiteFeature("EX_CHECKOUT");
+
     String name;
 	
 	/**
@@ -124,14 +126,16 @@ public class EnumSiteFeature implements Serializable, Comparable<EnumSiteFeature
 		dynamicEnum.put(name, this);
 	}
 	
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
 
-	public boolean equals(Object obj) {
+	@Override
+    public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -147,13 +151,15 @@ public class EnumSiteFeature implements Serializable, Comparable<EnumSiteFeature
 		return true;
 	}
 
-	public int compareTo(EnumSiteFeature e) {
+	@Override
+    public int compareTo(EnumSiteFeature e) {
 		if (title != null && e.title != null)
 			return title.compareTo(e.title);
 		return name.compareTo(e.name);
 	}
 	
-	public String toString() {
+	@Override
+    public String toString() {
 		return "EnumSiteFeature[" + name + "]";
 	}
 	

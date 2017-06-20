@@ -62,6 +62,7 @@ import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
@@ -82,10 +83,11 @@ import com.freshdirect.webapp.ajax.holidaymealbundle.service.HolidayMealBundleSe
 import com.freshdirect.webapp.ajax.mealkit.service.MealkitService;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
-import com.freshdirect.webapp.ajax.viewcart.service.CartCarouselType;
-import com.freshdirect.webapp.ajax.viewcart.service.RecommenderPotatoService;
+import com.freshdirect.webapp.ajax.reorder.service.QuickShopCarouselService;
+import com.freshdirect.webapp.ajax.viewcart.service.ViewCartCarouselService;
 import com.freshdirect.webapp.taglib.callcenter.ComplaintUtil;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.util.JspMethods;
@@ -189,9 +191,12 @@ public class CartDataService {
         return cartData;
     }
 
-    public void validateCarouselData(HttpServletRequest request, FDUserI user, FormDataResponse response){
+    public void validateCarouselData(HttpServletRequest request, FDUserI user, FormDataResponse response) throws FDResourceException {
         if (!response.getSubmitForm().getResult().isEmpty()){
-        response.getSubmitForm().getResult().put("carouselData", RecommenderPotatoService.getDefaultService().getViewCartPageCarousels(user, request, CartCarouselType.VIEWCART_PAGE, true));
+            SessionInput input = QuickShopCarouselService.defaultService().createSessionInput(user, request);
+            input.setError(true);
+            response.getSubmitForm().getResult().put("carouselData",
+                    ViewCartCarouselService.getDefaultService().populateViewCartTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));
         }
     }
     
@@ -569,7 +574,10 @@ public class CartDataService {
                 cartData.setDeliveryBegins(StandingOrderHelper.getDeliveryBeginsInfo(user));
             }
 
-            cartData.setCarouselData(RecommenderPotatoService.getDefaultService().getViewCartPageCarousels(user, request, CartCarouselType.VIEWCART_PAGE, false));
+            // cartData.setCarouselData(RecommenderPotatoService.getDefaultService().getViewCartPageCarousels(user, request, CartCarouselType.VIEWCART_PAGE, false));
+                SessionInput input = QuickShopCarouselService.defaultService().createSessionInput(user, request);
+                cartData.setCarouselData(
+                        ViewCartCarouselService.getDefaultService().populateViewCartTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));
             cartData.setCustomerServiceRepresentative(CustomerServiceRepresentativeService.defaultService().loadCustomerServiceRepresentativeInfo(user));
             cartData.setAvalaraEnabled(FDStoreProperties.getAvalaraTaxEnabled());
             if (FDStoreProperties.isETippingEnabled()) {

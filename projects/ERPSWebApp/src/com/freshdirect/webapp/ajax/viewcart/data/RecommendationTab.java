@@ -1,12 +1,17 @@
 package com.freshdirect.webapp.ajax.viewcart.data;
 
+import java.util.Arrays;
+import java.util.List;
+
+import com.freshdirect.smartstore.CarouselItemType;
 import com.freshdirect.webapp.ajax.browse.data.CarouselData;
 
 public class RecommendationTab {
 
-    private static final String PRODUCT_SAMPLE_MAX_QUANTITY_LIMIT = "1";
+    private static final List<String> PRODUCT_SAMPLE_GRID_SITE_FEAURES = Arrays.asList("PRODUCT_SAMPLE", "DONATION_SAMPLE");
 
 	private String title;
+    private String description;
 	private String siteFeature;
 	private CarouselData carouselData;
 	private String parentImpressionId;
@@ -15,86 +20,110 @@ public class RecommendationTab {
     private String itemType;
     private boolean productSamplesReacedMaximumItemQuantity;
     private boolean selected;
-	
-    public RecommendationTab(String title, String siteFeature, String parentImpressionId, String impressionId, String parentVariantId, String itemType) {
+
+
+    public RecommendationTab(String title, String siteFeature) {
 		this.title = title;
 		this.siteFeature = siteFeature;
-		this.parentImpressionId = parentImpressionId;
-		this.impressionId = impressionId;
-		this.parentVariantId = parentVariantId;
-        this.itemType = itemType;
-	}
+        this.itemType = getItemType(siteFeature);
+    }
+
+    private String getItemType(String siteFeature) {
+        String itemType = CarouselItemType.GRID.getType();
+        if (PRODUCT_SAMPLE_GRID_SITE_FEAURES.contains(siteFeature)) {
+            itemType = CarouselItemType.PRODUCT_SAMPLE_GRID.getType();
+        }
+        return itemType;
+    }
 
 	public String getTitle() {
 		return title;
 	}
 
-	public void setTitle(String title) {
+    public RecommendationTab setTitle(String title) {
 		this.title = title;
+        return this;
 	}
 
 	public String getSiteFeature() {
 		return siteFeature;
 	}
 
-	public void setSiteFeature(String siteFeature) {
+    public RecommendationTab setSiteFeature(String siteFeature) {
 		this.siteFeature = siteFeature;
+        return this;
 	}
 
 	public CarouselData getCarouselData() {
 		return carouselData;
 	}
 
-	public void setCarouselData(CarouselData carouselData) {
+    public RecommendationTab setCarouselData(CarouselData carouselData) {
 		this.carouselData = carouselData;
+        return this;
 	}
 
 	public String getParentImpressionId() {
 		return parentImpressionId;
 	}
 
-	public void setParentImpressionId(String parentImpressionId) {
+    public RecommendationTab setParentImpressionId(String parentImpressionId) {
 		this.parentImpressionId = parentImpressionId;
+        return this;
 	}
 
 	public String getImpressionId() {
 		return impressionId;
 	}
 
-	public void setImpressionId(String impressionId) {
+    public RecommendationTab setImpressionId(String impressionId) {
 		this.impressionId = impressionId;
+        return this;
 	}
 
 	public String getParentVariantId() {
 		return parentVariantId;
 	}
 
-	public void setParentVariantId(String parentVariantId) {
+    public RecommendationTab setParentVariantId(String parentVariantId) {
 		this.parentVariantId = parentVariantId;
+        return this;
 	}
-	
-    public String getProductSamplesMaxQuantityLimit() {
-        return PRODUCT_SAMPLE_MAX_QUANTITY_LIMIT;
-    }
 	
     public boolean isProductSamplesReacedMaximumItemQuantity() {
         return productSamplesReacedMaximumItemQuantity;
     }
 
-    public void setProductSamplesReacedMaximumItemQuantity(boolean productSamplesReacedMaximumItemQuantity) {
+    public RecommendationTab setProductSamplesReacedMaximumItemQuantity(boolean productSamplesReacedMaximumItemQuantity) {
         this.productSamplesReacedMaximumItemQuantity = productSamplesReacedMaximumItemQuantity;
+        return this;
     }
 
     public boolean isSelected() {
         return selected;
     }
 
-    public void setSelected(boolean selected) {
+    public RecommendationTab setSelected(boolean selected) {
         this.selected = selected;
+        return this;
     }
 
     public String getItemType() {
         return itemType;
+    }
+
+    public RecommendationTab setItemType(String itemType) {
+        this.itemType = itemType;
+        return this;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public RecommendationTab setDescription(String description) {
+        this.description = description;
+        return this;
     }
 
 }

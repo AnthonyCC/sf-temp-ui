@@ -193,11 +193,11 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 
 				// continue normally...
 				try {
-					type = RecommendationServiceType.getEnum(typeStr);
+                    type = RecommendationServiceType.getEnum(typeStr);
 
 					if (type != null) {
 						if (variantId.equals(variantIdConfig)) { // not an alias
-							result.add(new Variant(variantId, siteFeature, createConfig(conn, variantIdConfig, type), prios));
+                            result.add(new Variant(variantId, siteFeature, createConfig(conn, variantIdConfig, type), prios));
 						} else { // alias
 							// first fetch original configuration
 							RecommendationServiceConfig origConfig = createConfig(conn, variantIdConfig, type);
@@ -208,7 +208,7 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 								String key = it.next();
 								origConfig.set(key, aliasConfig.get(key));
 							}
-							result.add(new Variant(variantId, siteFeature, origConfig, prios));
+                            result.add(new Variant(variantId, siteFeature, origConfig, prios));
 						}
 					} else {
 						LOGGER.error("Skipping variant " + variantId + " due to unknown recommendation service type: " + typeStr);

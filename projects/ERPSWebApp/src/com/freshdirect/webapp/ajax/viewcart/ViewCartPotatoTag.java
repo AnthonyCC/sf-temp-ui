@@ -10,9 +10,9 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.webapp.ajax.viewcart.data.ViewCartCarouselData;
-import com.freshdirect.webapp.ajax.viewcart.service.CartCarouselType;
-import com.freshdirect.webapp.ajax.viewcart.service.RecommenderPotatoService;
+import com.freshdirect.webapp.ajax.viewcart.service.ViewCartCarouselService;
 import com.freshdirect.webapp.soy.SoyTemplateEngine;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -30,7 +30,8 @@ public class ViewCartPotatoTag extends SimpleTagSupport {
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         FDSessionUser user = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
         try {
-            carousels = RecommenderPotatoService.getDefaultService().getViewCartPageCarousels(user, request, CartCarouselType.VIEWCART_PAGE, false);
+            SessionInput input = ViewCartCarouselService.getDefaultService().createSessionInput(user, request);
+            carousels = ViewCartCarouselService.getDefaultService().populateViewCartTabsRecommendationsAndCarousel(request, user, input);
         } catch (Exception e) {
             LOGGER.error("recommendation failed", e);
         }

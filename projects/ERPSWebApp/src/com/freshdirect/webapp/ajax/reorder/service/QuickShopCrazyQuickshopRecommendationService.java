@@ -17,7 +17,6 @@ import org.apache.log4j.Logger;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.ContentType;
-import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.ProductModelPromotionAdapter;
 import com.freshdirect.fdstore.content.CategoryModel;
@@ -42,9 +41,9 @@ import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.smartstore.scoring.HelperFunctions;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
-import com.freshdirect.webapp.ajax.reorder.QuickShopHelper;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.recommendation.RecommendationRequestObject;
+import com.freshdirect.webapp.ajax.reorder.QuickShopHelper;
 import com.freshdirect.webapp.taglib.fdstore.GetPeakProduceTag;
 import com.freshdirect.webapp.util.ProductRecommenderUtil;
 
@@ -356,6 +355,7 @@ public class QuickShopCrazyQuickshopRecommendationService {
 			title = getTheCrazyQuickshopTitle(deptId);
 
 			if (!items.isEmpty()) {
+                // TODO use AbstractRecommenderServlet.createRecommenderResult instead
 				Map<String, Object> recommenderResult = new HashMap<String, Object>();
 				recommenderResult.put("items", items);
 				recommenderResult.put("siteFeature", siteFeature);

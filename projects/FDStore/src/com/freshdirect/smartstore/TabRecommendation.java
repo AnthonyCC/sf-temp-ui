@@ -1,19 +1,17 @@
 package com.freshdirect.smartstore;
 
-import java.util.Collections;
 import java.util.List;
-
-import com.freshdirect.fdstore.util.EnumSiteFeature;
 
 public class TabRecommendation {
 	
-    public static final String PIP_DEFAULT_DESC = "These are some of the items we recommend you:";
+    private static final String PIP_DEFAULT_DESC = "These are some of the items we recommend you:";
 
-    final List<Variant> variants;
-    final Variant tabVariant;
-    String parentImpressionId;
-    String[] featureImpId;
-    int selected;
+    private final List<Variant> variants;
+    private final Variant tabVariant;
+    private String parentImpressionId;
+    private String[] featureImpId;
+    private int selected;
+    private boolean error;
 
     public TabRecommendation(Variant tabVariant, List<Variant> variants) {
         this.tabVariant = tabVariant;
@@ -35,24 +33,6 @@ public class TabRecommendation {
 
     public Variant get(int index) {
         return variants.get(index);
-    }
-
-    public String getTabTitle(int index) {
-        Variant variant = get(index);
-
-        String prezTitle = variant.getServiceConfig().getPresentationTitle();
-        if (prezTitle == null) {
-            EnumSiteFeature siteFeature = variant.getSiteFeature();
-            prezTitle = siteFeature.getPresentationTitle();
-            if (prezTitle == null)
-                prezTitle = siteFeature.getTitle();
-            if (prezTitle == null)
-                prezTitle = siteFeature.getName();
-        }
-        if (!variant.isSmartSavings() || prezTitle.toLowerCase().startsWith("save on "))
-        	return prezTitle;
-        
-		return "Save on " + prezTitle;
     }
 
     public String getTabDescription(int index) {
@@ -90,6 +70,14 @@ public class TabRecommendation {
         return selected;
     }
 
+    public boolean isError() {
+        return error;
+    }
+
+    public void setError(boolean error) {
+        this.error = error;
+    }
+
     public int getTabIndex(String tabId) {
         for (int i = 0; i <variants.size(); i++) {
             Variant v = variants.get(i);
@@ -106,6 +94,7 @@ public class TabRecommendation {
      * @return
      */
     public List<Variant> getVariants() {
-    	return Collections.unmodifiableList(this.variants);
+        return this.variants;
     }
+
 }
