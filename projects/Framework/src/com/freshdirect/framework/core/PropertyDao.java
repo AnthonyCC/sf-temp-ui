@@ -131,10 +131,7 @@ public class PropertyDao {
 
 		}catch (SQLException e) {
 		    System.err.println("Error: " + e);
-		}catch (NamingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} finally {
+		}finally {
 			close(rs, ps, conn);
 		}
 		return p;
