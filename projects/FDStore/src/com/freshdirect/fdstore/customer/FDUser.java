@@ -1340,6 +1340,7 @@ public class FDUser extends ModelSupport implements FDUserI {
             referrerEligible = Boolean.valueOf(calc.isEligible(new FDRulesContextImpl(this)));
         }
         return referrerEligible.booleanValue();
+        
     }
 
     @Override
@@ -3660,6 +3661,12 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	public void setSoFeatureOverlay(boolean soFeatureOverlay) {
 		this.soFeatureOverlay = soFeatureOverlay;
+	}
+
+
+	// Only created for jackson parsing in Storefront 2.0
+	public void setReferrerEligible(Boolean referrerEligible) {
+		this.referrerEligible = referrerEligible;
 	}
 
 	
