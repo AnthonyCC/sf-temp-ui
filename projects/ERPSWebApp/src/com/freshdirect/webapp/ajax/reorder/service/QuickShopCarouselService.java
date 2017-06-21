@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.RecommendationServiceConfig;
@@ -78,7 +80,7 @@ public class QuickShopCarouselService extends AbstractCarouselService {
 	}
 
 	@Override
-    protected TabRecommendation getTabRecommendation(final FDUserI user, SessionInput input) {
+    protected TabRecommendation getTabRecommendation(HttpServletRequest request, final FDUserI user, SessionInput input) {
 		final RecommendationServiceConfig cfg = new RecommendationServiceConfig(QS_BOTTOM_GENERAL_VARIANT_ID, RecommendationServiceType.NIL);
 		final Variant tabVariant = new Variant(QS_BOTTOM_GENERAL_VARIANT_ID, EnumSiteFeature.QS_BOTTOM_CAROUSEL, cfg);
 

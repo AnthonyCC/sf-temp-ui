@@ -14,7 +14,6 @@ import com.freshdirect.webapp.ajax.viewcart.service.ViewCartCarouselService;
 
 /**
  * Abstract class that supplies recommendations for tabbed carousels
- *
  */
 public abstract class AbstractRecommenderServlet extends BaseJsonServlet {
 
@@ -35,11 +34,15 @@ public abstract class AbstractRecommenderServlet extends BaseJsonServlet {
     protected Map<String, Object> createRecommenderResult(RecommendationTab recommendationTab) {
         Map<String, Object> result = new HashMap<String, Object>();
         Map<String, Object> recommenderResult = new HashMap<String, Object>();
-        recommenderResult.put("siteFeature", recommendationTab.getSiteFeature());
-        recommenderResult.put("items", recommendationTab.getCarouselData().getProducts());
-        recommenderResult.put("itemType", recommendationTab.getItemType());
-        recommenderResult.put("cmEventSource", recommendationTab.getCarouselData().getCmEventSource());
-        recommenderResult.put("description", recommendationTab.getDescription());
+        if (recommendationTab != null) {
+            recommenderResult.put("siteFeature", recommendationTab.getSiteFeature());
+            recommenderResult.put("itemType", recommendationTab.getItemType());
+            recommenderResult.put("description", recommendationTab.getDescription());
+            if (recommendationTab.getCarouselData() != null) {
+                recommenderResult.put("items", recommendationTab.getCarouselData().getProducts());
+                recommenderResult.put("cmEventSource", recommendationTab.getCarouselData().getCmEventSource());
+            }
+        }
         result.put("recommenderResult", recommenderResult);
         return result;
     }

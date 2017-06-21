@@ -3,6 +3,8 @@ package com.freshdirect.webapp.ajax.viewcart.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
@@ -70,7 +72,7 @@ public class CheckoutCarouselService extends AbstractCarouselService {
     }
 
     @Override
-    protected TabRecommendation getTabRecommendation(FDUserI user, SessionInput input) {
+    protected TabRecommendation getTabRecommendation(HttpServletRequest request, FDUserI user, SessionInput input) {
         final RecommendationServiceConfig cfg = new RecommendationServiceConfig(EX_CHECKOUT_VARIANT_ID, RecommendationServiceType.NIL);
         final Variant tabVariant = new Variant(EX_CHECKOUT_VARIANT_ID, EnumSiteFeature.EX_CHECKOUT_CAROUSEL, cfg);
 
@@ -78,8 +80,13 @@ public class CheckoutCarouselService extends AbstractCarouselService {
         List<Variant> variants = new ArrayList<Variant>();
         for (final String siteFeature : getSiteFeatures(user)) {
             EnumSiteFeature enumSiteFeature = EnumSiteFeature.getEnum(siteFeature);
-            VariantSelector selector = VariantSelectorFactory.getSelector(enumSiteFeature);
-            variants.add(selector.select(user, false));
+            if (EnumSiteFeature.NIL != enumSiteFeature) {
+                VariantSelector selector = VariantSelectorFactory.getSelector(enumSiteFeature);
+                Variant variant = selector.select(user, false);
+                if (variant != null) {
+                    variants.add(variant);
+                }
+            }
         }
 
         TabRecommendation tabs = new TabRecommendation(tabVariant, variants);

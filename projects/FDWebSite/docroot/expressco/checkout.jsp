@@ -136,9 +136,11 @@ if (mobWeb) {
         
 
         <% if (!mobWeb) { /* no mobWeb for now */  %>
-          <div id="cartCarousels">
-            <soy:render template="common.checkoutTabbedCarousel" data="${singlePageCheckoutPotato.carouselData}" />
-          </div>
+          <% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user)) { %>
+            <div id="cartCarousels">
+              <soy:render template="common.checkoutTabbedCarousel" data="${singlePageCheckoutPotato.carouselData}" />
+            </div>
+          <% } %>
         <% } %>
 
         <div class="checkout-contentheader">

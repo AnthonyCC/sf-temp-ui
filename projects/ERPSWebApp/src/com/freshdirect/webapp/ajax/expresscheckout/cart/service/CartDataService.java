@@ -574,7 +574,6 @@ public class CartDataService {
                 cartData.setDeliveryBegins(StandingOrderHelper.getDeliveryBeginsInfo(user));
             }
 
-            // cartData.setCarouselData(RecommenderPotatoService.getDefaultService().getViewCartPageCarousels(user, request, CartCarouselType.VIEWCART_PAGE, false));
                 SessionInput input = QuickShopCarouselService.defaultService().createSessionInput(user, request);
                 cartData.setCarouselData(
                         ViewCartCarouselService.getDefaultService().populateViewCartTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));

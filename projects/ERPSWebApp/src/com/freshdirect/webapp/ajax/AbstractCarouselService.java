@@ -49,7 +49,7 @@ public abstract class AbstractCarouselService {
 	 * @param user
 	 * @return
 	 */
-    protected abstract TabRecommendation getTabRecommendation(final FDUserI user, final SessionInput input);
+    protected abstract TabRecommendation getTabRecommendation(final HttpServletRequest request, final FDUserI user, final SessionInput input);
 
 	/**
 	 * Maximum number of tabs
@@ -172,7 +172,7 @@ public abstract class AbstractCarouselService {
 		ViewCartCarouselData result = new ViewCartCarouselData();
         HttpSession session = request.getSession();
 
-        TabRecommendation tabs = getTabRecommendation(user, input);
+        TabRecommendation tabs = getTabRecommendation(request, user, input);
 
 		if (input.getPreviousRecommendations() != null) {
 			session.setAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS, input.getPreviousRecommendations());
@@ -200,7 +200,7 @@ public abstract class AbstractCarouselService {
 			String parentVariantId = tabs.getTabVariant().getId();
 			int tabIndex = 0;
 			for (Variant variant : tabs.getVariants()) {
-                String tabTitle = WordUtils.capitalizeFully(getTitleForVariant(tabs.get(tabIndex)));
+                String tabTitle = WordUtils.capitalizeFully(getTitleForVariant(variant));
 				String siteFeatureName = variant.getSiteFeature().getName();
                 RecommendationTab tab = new RecommendationTab(tabTitle, siteFeatureName).setParentImpressionId(tabs.getParentImpressionId())
                         .setImpressionId(tabs.getFeatureImpressionId(tabIndex)).setParentVariantId(parentVariantId).setDescription(getDescription(variant));

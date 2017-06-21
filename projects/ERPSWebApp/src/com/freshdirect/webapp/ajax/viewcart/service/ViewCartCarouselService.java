@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -73,7 +74,7 @@ public class ViewCartCarouselService extends AbstractCarouselService {
     }
 
     @Override
-    protected TabRecommendation getTabRecommendation(FDUserI user, SessionInput input) {
+    protected TabRecommendation getTabRecommendation(HttpServletRequest request, FDUserI user, SessionInput input) {
         final RecommendationServiceConfig cfg = new RecommendationServiceConfig(EX_VIEW_CART_VARIANT_ID, RecommendationServiceType.NIL);
         final Variant tabVariant = new Variant(EX_VIEW_CART_VARIANT_ID, EnumSiteFeature.EX_VIEW_CART_CAROUSEL, cfg);
 
@@ -81,10 +82,12 @@ public class ViewCartCarouselService extends AbstractCarouselService {
         List<Variant> variants = new ArrayList<Variant>();
         for (final String siteFeature : getSiteFeatures(user)) {
             EnumSiteFeature enumSiteFeature = EnumSiteFeature.getEnum(siteFeature);
-            VariantSelector selector = VariantSelectorFactory.getSelector(enumSiteFeature);
-            Variant variant = selector.select(user, false);
-            if (variant != null) {
-                variants.add(variant);
+            if (EnumSiteFeature.NIL != enumSiteFeature) {
+                VariantSelector selector = VariantSelectorFactory.getSelector(enumSiteFeature);
+                Variant variant = selector.select(user, false);
+                if (variant != null) {
+                    variants.add(variant);
+                }
             }
         }
 
