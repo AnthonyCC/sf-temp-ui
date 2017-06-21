@@ -1012,5 +1012,5 @@ $jq("#location-submit.fdxgreen").keydown(function(e){
 		$jq('.locabar-tab-fdx-cont').addClass('notselected');
 	}
 	
-	$jq(document).on('mouseenter', '.locabar-tab-fdx-cont', open_fdx_promo);
+	$jq(document).on('mouseenter focus', '.locabar-tab-fdx-cont', open_fdx_promo);
 	$jq(document).on('click', '#locationbar_fdx_promo .close', close_fdx_promo);
