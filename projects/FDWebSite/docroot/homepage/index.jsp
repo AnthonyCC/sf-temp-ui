@@ -78,14 +78,14 @@ request.setAttribute("noyui", true);
         <%!
  	
                 //APPDEV- 4368:: Need Indicator for Empty Picks List Begin
-                public static boolean hasProduct_hprd(CategoryModel categoryModel){
+                public static boolean hasProduct(CategoryModel categoryModel){
                         boolean hasProduct = false;
                        
                         if(!categoryModel.getSubcategories().isEmpty())
                         {
                                 List<CategoryModel> subCategories = categoryModel.getSubcategories();
                                 for (CategoryModel m1 : subCategories) {
-                                        boolean result = hasProduct_hprd(m1);
+                                        boolean result = hasProduct(m1);
                                         if(result){
                                                 return result; 
                                         }
@@ -133,7 +133,7 @@ request.setAttribute("noyui", true);
                  				for (CategoryModel curCat: catModels) {
                  					String curCatLink = "/browse.jsp?id="+curCat;
                  					//skip if cat has no prod(s) and is not redirecting
-                 					if ("".equals(curCat.getRedirectURL()) && !hasProduct_hprd(curCat)) {
+                 					if ("".equals(curCat.getRedirectURL()) && !hasProduct(curCat)) {
                  						continue;
                  					}
                  					if ( curCat.getRedirectURL() != null && (curCat.getRedirectURL()).startsWith("foodkick://") ) {
