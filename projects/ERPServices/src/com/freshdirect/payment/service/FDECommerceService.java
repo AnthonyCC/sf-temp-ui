@@ -632,8 +632,12 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	
 			Response<List<ZoneInfoDataWrapper>> response;
 			try {
-				
-				response = httpGetDataTypeMap(getFdCommerceEndPoint(PRODUCT_BY_PROMO_TYPE+ppType+"/lastPublishDate/"+lastPublished), new TypeReference<Response<List<ZoneInfoDataWrapper>>>() {});
+				SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+				String date1 = null;
+				if(lastPublished!=null){
+				date1 = format1.format(lastPublished); 
+				}
+				response = httpGetDataTypeMap(getFdCommerceEndPoint(PRODUCT_BY_PROMO_TYPE+ppType+"/lastPublishDate/"+date1), new TypeReference<Response<List<ZoneInfoDataWrapper>>>() {});
 				if(!response.getResponseCode().equals("OK"))
 					throw new FDResourceException(response.getMessage());
 				
@@ -657,8 +661,13 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	
 			Response<Map<String, List<ZoneInfoDataWrapper>>> response;
 			try {
+				SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+				String date1 = null;
+				if(lastPublished!=null){
+				date1 = format1.format(lastPublished); 
+				}
 				
-				response = httpGetDataTypeMap(getFdCommerceEndPoint(PROMOTION_BY_TYPE+ppType+"/lastPublishDate/"+lastPublished), new TypeReference<Response<Map<String, List<ZoneInfoDataWrapper>>>>() {});
+				response = httpGetDataTypeMap(getFdCommerceEndPoint(PROMOTION_BY_TYPE+ppType+"/lastPublishDate/"+date1), new TypeReference<Response<Map<String, List<ZoneInfoDataWrapper>>>>() {});
 				if(!response.getResponseCode().equals("OK"))
 					throw new FDResourceException(response.getMessage());
 				
