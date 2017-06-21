@@ -78,14 +78,14 @@ request.setAttribute("noyui", true);
         <%!
  	
                 //APPDEV- 4368:: Need Indicator for Empty Picks List Begin
-                public static boolean hasProduct(CategoryModel categoryModel){
+                public static boolean hasProduct_hprd(CategoryModel categoryModel){
                         boolean hasProduct = false;
                        
                         if(!categoryModel.getSubcategories().isEmpty())
                         {
                                 List<CategoryModel> subCategories = categoryModel.getSubcategories();
                                 for (CategoryModel m1 : subCategories) {
-                                        boolean result = hasProduct(m1);
+                                        boolean result = hasProduct_hprd(m1);
                                         if(result){
                                                 return result; 
                                         }
