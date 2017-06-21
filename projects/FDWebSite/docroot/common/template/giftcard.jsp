@@ -32,7 +32,7 @@ final int W_GIFTCARD_TOTAL = 970;
 
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<fd:javascript src="/assets/javascript/FD_GiftCards.js"/>
-
+    <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<fd:css href="/assets/css/giftcards.css"/>

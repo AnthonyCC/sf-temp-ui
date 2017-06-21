@@ -17,6 +17,7 @@
 <% //expanded page dimensions
 final int W_RECIPE_SEARCH_TOTAL = 601;
 %>
+
 <fd:CheckLoginStatus guestAllowed="true" />
 <%
 //RecipeDepartment recipeDepartment = (RecipeDepartment) RecipeDepartment.getDefault();
@@ -24,9 +25,6 @@ RecipeSearchPage searchPage = RecipeSearchPage.getDefault();
 request.setAttribute("listPos", "SystemMessage,SideCartBottom");
 %>
 <tmpl:insert template='/common/template/recipe_DLRnavs.jsp'>
-    <tmpl:put name="seoMetaTag" direct='true'>
-        <fd:SEOMetaTag title="FreshDirect - Recipe Search"/>
-    </tmpl:put>
     <tmpl:put name='title' direct='true'>FreshDirect - Recipe Search</tmpl:put>
 	<tmpl:put name='leftnav' direct='true'>
 		<a href="/recipe_search.jsp?trk=snav"><img src="/media_stat/recipe/recipes_advsearch_catnav.gif" alt="Advanced recipe search" width="118" height="64" vspace="17" border="0"></a>
@@ -49,7 +47,7 @@ fieldset {
  margin-bottom: 1em;
 }
 
-label.legend, .dropdown label, label.keyword {
+label.legend, .dropdown_recipe label, label.keyword {
  display: block;
  font-size: 10pt;
  font-weight: bold;
@@ -69,7 +67,7 @@ input.submit {
  padding: 4px;
 }
 
-.dropdown select {
+.dropdown_recipe select {
  font-family: Verdana, sans-serif;
  font-size: 7pt;
  width: 210px;
@@ -266,7 +264,7 @@ if (!searchPerformed) {
 			countDropdown++;
 			%>
 			
-			<div class="dropdown" style="float:<%= countDropdown%2==0 ? "right" :"left" %>;">
+			<div class="dropdown_recipe" style="float:<%= countDropdown%2==0 ? "right" :"left" %>;">
 			<label for="<%= id %>"><%= crit.getName() %></label>
 			<select id="<%= id %>" name="<%= id %>" class="text9" style="width:200px;">
 				<option value="">All</option>
@@ -287,7 +285,7 @@ if (!searchPerformed) {
 		countDropdown++;
 		%>
 		
-		<div class="dropdown" style="float:<%= countDropdown%2==0 ? "right" :"left" %>;">
+		<div class="dropdown_recipe" style="float:<%= countDropdown%2==0 ? "right" :"left" %>;">
 		<label for="recipeSource">Cookbooks</label>
 		<select id="recipeSource" name="recipeSource" class="text9" style="width:200px;">
 			<option value="">All</option>
@@ -305,9 +303,9 @@ if (!searchPerformed) {
 		<%= countDropdown%2==0 ? "<br clear =\"all\">":""%>
 		<% countDropdown++; %>
 		
-		<div class="dropdown" style="float:<%= countDropdown%2==0 ? "right" :"left" %>;">
+		<div class="dropdown_recipe" style="float:<%= countDropdown%2==0 ? "right" :"left" %>;">
 		<label for="recipeAuthor">Authors</label>
-		<select name="recipeAuthor" class="text9" style="width:200px;">
+		<select name="recipeAuthor" id="recipeAuthor" class="text9" style="width:200px;">
 			<option value="">All</option>
 			<%
 			for (Iterator i = RecipeAuthor.findAllAvailable().iterator(); i.hasNext(); ) {
@@ -332,7 +330,7 @@ if (!searchPerformed) {
 			RecipeSearchCriteria crit = (RecipeSearchCriteria) i.next();
 			%>
 			<div class="section">
-				<label class="legend" style="padding-bottom: 3px;"><%= crit.getName() %></label>
+				<fieldset><legend><label class="legend" style="padding-bottom: 3px;"><%= crit.getName() %></legend></label>
 				<% 
 				String[] params = request.getParameterValues(crit.getContentName());
 				List paramList = params==null ? Collections.EMPTY_LIST : Arrays.asList(params);
@@ -357,7 +355,7 @@ if (!searchPerformed) {
 						<td width="20"><input type="checkbox" id="<%= id %>" name="<%= crit.getContentName() %>" value="<%= dv.getContentName() %>" <%= sel ? "checked" : "" %> /></td>
 						<td width="126" style="padding-top:0.35em;"><label for="<%= id %>"><%= dv.getLabel() %></label></td>
 					</tr>
-					<tr><td><img src="/media_stat/images/layour/clear.gif" width="20" height="1" alt=""></td><td><img src="/media_stat/images/layour/clear.gif" width="124" height="1" alt=""></td></tr></table>
+					<tr><td><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt=""></td><td><img src="/media_stat/images/layout/clear.gif" width="124" height="1" alt=""></td></tr></table>
 					</div>
 					<% 
 					
@@ -386,6 +384,7 @@ if (!searchPerformed) {
 				}
 				%>
 				<div></div>
+				</fieldset>
 				</div>
 			<%
 		}

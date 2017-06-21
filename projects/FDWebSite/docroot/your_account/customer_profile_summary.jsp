@@ -231,7 +231,7 @@ response.setHeader("Cache-Control", "no-cache");
 			%>
 		    	 <td nowrap><% if (serviceType!=EnumServiceType.HOME) { %><a href="?serviceType=HOME">PERSONAL</a><% } else { %>PERSONAL<% } %></td>
 		    	 <td>|</td>
-		    	 <td nowrap><% if (serviceType!=EnumServiceType.CORPORATE) { %><a href="?serviceType=CORPORATE">CORPORATE</a><% } else { %>CORPORATE<% } %></td>
+		    	 <td nowrap><% if (serviceType!=EnumServiceType.CORPORATE) { %><a href="?serviceType=CORPORATE">Business or School</a><% } else { %>CORPORATE<% } %></td>
 		    <% } %>
 		       <td width="100%"></td>
 				 <td  nowrap>

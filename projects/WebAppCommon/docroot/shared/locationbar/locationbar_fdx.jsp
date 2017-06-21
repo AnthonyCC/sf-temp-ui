@@ -229,7 +229,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 			if( disabled == null || !disabled) {
 				%><tmpl:put name="address">
 					<div id="locabar_addresses_choices">
-						<select id="selectAddressList" name="selectAddressList" style="width: 300px;"><%
+						<select id="selectAddressList" aria-label="choose address" name="selectAddressList" style="width: 300px;"><%
 							if(allHomeAddresses.size()>0){%>
 								<optgroup label="Home Delivery">
 									<logic:iterate id="homeAddress" collection="<%=allHomeAddresses%>" type="com.freshdirect.common.address.AddressModel">

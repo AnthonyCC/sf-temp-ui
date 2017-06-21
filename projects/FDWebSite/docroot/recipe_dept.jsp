@@ -43,6 +43,7 @@ if (redirectURL!=null) {
     FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
     String title = "FreshDirect - " + recipeDepartment.getName();
 %>
+
 <tmpl:insert template='/common/template/right_nav.jsp'>
 	<tmpl:put name="seoMetaTag" direct="true">
 		<fd:SEOMetaTag title="<%= title %>"></fd:SEOMetaTag>

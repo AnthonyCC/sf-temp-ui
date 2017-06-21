@@ -289,7 +289,7 @@ final int W_YMAL_BOX_INNER = 540;
 											</fd:IsAlcoholic>--%>
 										</td>
 										<td align="right" width="33%">
-											Total&nbsp;Price:&nbsp;&nbsp;<img src="/media_stat/images/layout/clear.gif" alt="" width="4" height="1"><input type="text" style="width:60px" name="total" value="" size="6" class="text11bold" onChange="" onFocus="blur()">
+											Total&nbsp;Price:&nbsp;&nbsp;<img src="/media_stat/images/layout/clear.gif" alt="" width="4" height="1"><input type="text" aria-label="total price" style="width:60px" name="total" value="" size="6" class="text11bold" onChange="" onFocus="blur()">
 											<script type="text/javascript">	<%= TX_JS_NAMESPACE %>.updateTotal();</script>
 										</td>
 									</tr>

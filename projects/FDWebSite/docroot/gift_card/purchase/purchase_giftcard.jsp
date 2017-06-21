@@ -267,6 +267,7 @@ boolean isCheckEligible = false;
   <% StringBuffer sbErrorMsg= new StringBuffer(); %>
 
 
+<fieldset><legend class="offscreen">&nbsp;Purchase&nbsp;Type:</legend>
 <table width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" border="0" cellpadding="0" cellspacing="0" class="text11">
     <%
     	String serviceType = request.getParameter("serviceType");
@@ -293,12 +294,12 @@ boolean isCheckEligible = false;
     		</span>
         	</td>
     	<td>
-    		<input type="radio" class="text11" name="serviceType" id="Personal" value="<%=value1%>" <%= value1Selected %> />Personal
-    		<input type="radio" class="text11" name="serviceType" id="Professional" value="<%=value2%>" <%= value2Selected %> />Corporate
+    		<input type="radio" class="text11" name="serviceType" id="Personal" value="<%=value1%>" <%= value1Selected %> /><label for="Personal">Personal</label>
+    		<input type="radio" class="text11" name="serviceType" id="Professional" value="<%=value2%>" <%= value2Selected %> /><label for="Professional">Corporate</label>
         	</td>
     	</tr>
 </table>
-
+</fieldset>
 <img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br />
 
 <img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br /><br />

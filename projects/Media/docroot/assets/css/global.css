@@ -3306,6 +3306,9 @@ div#i_viewcart td {
 .oas-cnt img[src*="empty.gif"] {
   display: none;
 }
+table.accessibilitySpacing td{
+	padding:1px 0;
+}
 .icon-base{
 	width: 40px;
 	height: 40px;
