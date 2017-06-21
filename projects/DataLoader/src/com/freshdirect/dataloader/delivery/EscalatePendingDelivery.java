@@ -25,7 +25,7 @@ public class EscalatePendingDelivery {
 		Map<String, List<PendingOrder>> pendingOrders = escalatePendingDelivery.getPendingDeliveries();
 		
 		List<PendingOrder> freshdirectOrders = pendingOrders.get("freshdirect");
-		List<PendingOrder> fdxOrders = pendingOrders.get("freshdirect");
+		List<PendingOrder> fdxOrders = pendingOrders.get("fdx");
 		if(null != freshdirectOrders && freshdirectOrders.size()> 0){
 		escalatePendingDelivery.sendExceptionMail(freshdirectOrders,"FreshDirect");
 		}
