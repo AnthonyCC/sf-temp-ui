@@ -170,6 +170,15 @@ request.setAttribute("noyui", true);
 						%>
 				    <% } %>
 				<% } %>
+				<% if (bannerIndex < 5) { /* display if there's not enough banners */ %>
+					<%
+					   	if (FDStoreProperties.isAdServerEnabled()) {
+							%><div id="OAS_HPMob03" class="oas-cnt home-page-banner">
+					  			<script type="text/javascript">OAS_AD('HPMob03');</script>
+					  		</div><%
+					  	}
+					%>
+			    <% } %>
 				<%
 				   	if (FDStoreProperties.isAdServerEnabled()) {
 						%><div id="OAS_HPMob04" class="oas-cnt home-page-banner">

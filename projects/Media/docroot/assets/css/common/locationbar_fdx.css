@@ -1956,6 +1956,7 @@ option.address-icon {
 	}
 	.locabar-addresses-section .locabar-addresses-addzip {
 		max-width: 122px;
+		min-width: 122px; /* to prevent not being wide enough for the 2nd line */
 	}
 	.locabar-popupcart-label, .locabar-modify-order-container-label {
 		position: relative;
@@ -2052,4 +2053,7 @@ option.address-icon {
 	}
 	.disableCart .locabar-addresses-section .locabar-arrow {
 		display: none;
+	}
+	.locabar-addresses-addzip-2ndline {
+		white-space: nowrap;
 	}

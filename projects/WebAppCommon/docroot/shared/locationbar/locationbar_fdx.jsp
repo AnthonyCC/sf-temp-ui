@@ -479,7 +479,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 							<% } %>
 						</div>
 
-						<div>
+						<div class="locabar-addresses-addzip-2ndline">
 							<%= zipAddDisplayString %>
 							<div class="locabar-arrow"></div>
 						</div>
