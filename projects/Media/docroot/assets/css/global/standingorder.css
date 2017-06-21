@@ -1,15 +1,11 @@
 
 /* over-rides */
-	.pdp-atc.soShow, .pdp-ecoupon {
+	.pdp-ecoupon {
 		background-color: #f7f7f7;
 		border: 1px solid #f5f5f5;
 		border-width: 1px 0;
 		padding: 10px;
 		clear: both;
-	}
-	.pdp-atc.soShow {
-		height: auto;
-		padding: 10px 10px 20px;
 	}
 	#customizePopup.soShow .subtotal,
 	.pdp-evenbetter-soShow .pdp-evenbetter-atc .pdp-evenbetter-quantity .subtotal {
@@ -48,10 +44,11 @@
 		margin-bottom: 20px;
 	}
 	.pdp-atc.soShow .so-container{
-		padding: 20px 0 10px 7px;
+		padding: 20px 0 10px;
 	}
 	.pdp-atc.soShow .so-container button[data-component="createSOButton"],
 	.pdp-atc.soShow .so-container button[data-component-extra="showSOButton"]{
+		width: 100%;
 		padding: 10px 18px;
 	}
 	.pdp-atc.soShow .cssbutton[data-component="ATCButton"] {
