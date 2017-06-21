@@ -66,7 +66,15 @@ import com.freshdirect.fdstore.SalesAreaInfo;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.ecoupon.model.CouponCart;
+import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
+import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityContext;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityLogModel;
+import com.freshdirect.fdstore.ecoupon.model.FDCouponCustomer;
+import com.freshdirect.fdstore.ecoupon.model.FDCouponEligibleInfo;
+import com.freshdirect.fdstore.ecoupon.model.FDCouponInfo;
+import com.freshdirect.fdstore.ecoupon.model.FDCustomerCouponHistoryInfo;
+import com.freshdirect.fdstore.ecoupon.model.FDCustomerCouponWallet;
 import com.freshdirect.framework.event.FDRecommendationEvent;
 import com.freshdirect.framework.event.FDWebEvent;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
@@ -522,5 +530,47 @@ public interface IECommerceService {
 			List<ErpPlantMaterialModel> erpPlantModels,
 			List<ErpMaterialSalesAreaModel> salesAreaModels)
 			throws RemoteException;
+
+    public void loadAndSaveCoupons( FDCouponActivityContext context) throws RemoteException;
+	
+	public List<FDCouponInfo> getActiveCoupons() throws RemoteException;
+	
+	public List<FDCouponInfo> getActiveCoupons(Date lastModified) throws RemoteException;
+	
+	public FDCustomerCouponWallet getCouponsForUser(FDCouponCustomer couponCustomer, FDCouponActivityContext context) throws RemoteException;	
+	
+	public boolean doClipCoupon(String couponId, FDCouponCustomer couponCustomer, FDCouponActivityContext context) throws RemoteException;
+	
+	public Map<String, FDCouponEligibleInfo> evaluateCartAndCoupons(CouponCart couponCart, FDCouponActivityContext context) throws RemoteException;
+
+	public List<FDCouponInfo> loadCoupons(FDCouponActivityContext couponActivityContext) throws RemoteException;
+	
+	public List<FDCouponInfo> getCouponsForCRMSearch(String searchTerm) throws RemoteException;
+	
+	public void postSubmitPendingCouponTransactions() throws RemoteException;
+	
+	public void postCancelPendingCouponTransactions() throws RemoteException;
+	
+	public void postConfirmPendingCouponTransactions() throws RemoteException;
+	
+	public void postCouponOrder(ErpCouponTransactionModel couponTransModel, FDCouponActivityContext context) throws RemoteException;
+	
+	public int getMaxCouponsVersion() throws RemoteException;
+	
+	public List<FDCustomerCouponHistoryInfo> getCustomersCouponHistoryInfo(String customerId) throws RemoteException;
+	
+	public ErpCouponTransactionModel getConfirmPendingCouponTransaction(String saleId) throws RemoteException;
+	
+	public void updateCouponTransaction(ErpCouponTransactionModel transModel) throws RemoteException;
+	
+	public void postConfirmPendingCouponTransactions(String saleId) throws RemoteException;
+	
+	public List<String> getConfirmPendingCouponSales() throws RemoteException;
+	
+	public List<String> getSubmitPendingCouponSales() throws RemoteException;
+	
+	public void postSubmitPendingCouponTransactions(String saleId) throws RemoteException;
+
+	
 
 }

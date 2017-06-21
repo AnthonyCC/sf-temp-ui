@@ -11,9 +11,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.SortedSet;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.MaterialPrice;
@@ -22,11 +22,24 @@ import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.customer.ErpActivityRecordData;
 import com.freshdirect.ecommerce.data.delivery.sms.RecievedSmsData;
 import com.freshdirect.ecommerce.data.delivery.sms.SmsOrderData;
+import com.freshdirect.ecommerce.data.ecoupon.CartCouponData;
+import com.freshdirect.ecommerce.data.ecoupon.CouponCartData;
+import com.freshdirect.ecommerce.data.ecoupon.CouponOrderData;
+import com.freshdirect.ecommerce.data.ecoupon.CouponWalletRequestData;
+import com.freshdirect.ecommerce.data.ecoupon.DiscountData;
+import com.freshdirect.ecommerce.data.ecoupon.ErpCouponDiscountLineModelData;
+import com.freshdirect.ecommerce.data.ecoupon.ErpCouponTransactionDetailModelData;
+import com.freshdirect.ecommerce.data.ecoupon.ErpCouponTransactionModelData;
+import com.freshdirect.ecommerce.data.ecoupon.ErpOrderLineModelData;
+import com.freshdirect.ecommerce.data.ecoupon.FDConfigurationData;
+import com.freshdirect.ecommerce.data.ecoupon.FDCouponActivityContextData;
+import com.freshdirect.ecommerce.data.ecoupon.FDCouponCustomerData;
 import com.freshdirect.ecommerce.data.enums.BillingCountryInfoData;
 import com.freshdirect.ecommerce.data.enums.CrmCaseSubjectData;
 import com.freshdirect.ecommerce.data.enums.DeliveryPassTypeData;
@@ -92,6 +105,10 @@ import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.GrpZonePriceListing;
 import com.freshdirect.fdstore.GrpZonePriceModel;
 import com.freshdirect.fdstore.SalesAreaInfo;
+import com.freshdirect.fdstore.ecoupon.model.CouponCart;
+import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionDetailModel;
+import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
+import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityContext;
 import com.freshdirect.framework.event.FDRecommendationEvent;
 import com.freshdirect.framework.util.DayOfWeekSet;
 import com.freshdirect.framework.util.StringUtil;
@@ -968,6 +985,170 @@ public class ModelConverter {
 		}
 		return modelMap;
 	}
+	
+	public static FDCouponActivityContextData convertFDCouponActivityContext(FDCouponActivityContext FDCouponActivityContext){
+		return null;
+	}
+
+	public static CouponWalletRequestData convertCouponWalletRequest(FDCouponCustomerData fdCouponCustomerData, FDCouponActivityContextData context) {
+		CouponWalletRequestData couponWalletRequestData = new CouponWalletRequestData();
+		couponWalletRequestData.setFDCouponActivityContextData(context);
+		couponWalletRequestData.setFdCouponCustomerData(fdCouponCustomerData);
+		return couponWalletRequestData;
+	}
+
+	public static CartCouponData convertCartCouponData(CouponCart couponCart, FDCouponActivityContext context) {
+		CartCouponData cartCouponData = new CartCouponData();
+		CouponCartData couponCartData = new CouponCartData();
+		couponCartData.setOrderId(couponCart.getOrderId());
+		couponCartData.setTranType(couponCart.getTranType().getName());
+		FDCouponCustomerData fdCouponCustomerData = new FDCouponCustomerData();
+		if (couponCart.getCouponCustomer() != null) {
+			fdCouponCustomerData.setCouponCustomerId(couponCart.getCouponCustomer().getCouponCustomerId());
+			fdCouponCustomerData.setCouponUserId(couponCart.getCouponCustomer().getCouponUserId());
+			fdCouponCustomerData.setZipCode(couponCart.getCouponCustomer().getZipCode());
+		}
+
+		couponCartData.setCouponCustomer(fdCouponCustomerData);
+
+		List<ErpOrderLineModelData> erpOrderLineModelDatas = new ArrayList<ErpOrderLineModelData>();
+		if (couponCart.getOrderLines() != null) {
+			for (ErpOrderLineModel erpOrderLineModel : couponCart.getOrderLines()) {
+				ErpOrderLineModelData erpOrderLineModelData = new ErpOrderLineModelData();
+				if (erpOrderLineModel.getAddedFrom() != null)
+					erpOrderLineModelData.setAddedFrom(erpOrderLineModel.getAddedFrom().getName());
+				erpOrderLineModelData.setAddedFromSearch(erpOrderLineModel.isAddedFromSearch());
+				erpOrderLineModelData.setAffiliateCode(erpOrderLineModel.getAffiliate().getCode());//
+				erpOrderLineModelData.setAlcohol(erpOrderLineModel.isAlcohol());
+				erpOrderLineModelData.setBeer(erpOrderLineModel.isBeer());
+				erpOrderLineModelData.setCartLineId(erpOrderLineModel.getCartlineId());
+				if (erpOrderLineModel.getConfiguration() != null) {
+					FDConfigurationData fdConfigurationData = new FDConfigurationData();
+					fdConfigurationData.setQuantity(erpOrderLineModel.getConfiguration().getQuantity());
+					fdConfigurationData.setSalesUnit(erpOrderLineModel.getConfiguration().getSalesUnit());
+					fdConfigurationData.setOptions(erpOrderLineModel.getConfiguration().getOptions());
+					erpOrderLineModelData.setConfiguration(fdConfigurationData);
+				}
+				erpOrderLineModelData.setConfigurationDesc(erpOrderLineModel.getConfigurationDesc());
+				erpOrderLineModelData.setCoremetricsPageContentHierarchy(erpOrderLineModel.getCoremetricsPageContentHierarchy());
+				erpOrderLineModelData.setCoremetricsPageId(erpOrderLineModel.getCoremetricsPageId());
+				erpOrderLineModelData.setCoremetricsVirtualCategory(erpOrderLineModel.getCoremetricsVirtualCategory());
+				if(erpOrderLineModel.getCouponDiscount()!=null){
+				ErpCouponDiscountLineModelData erpCouponDiscountLineModelData = new ErpCouponDiscountLineModelData();
+				erpCouponDiscountLineModelData.setCouponDesc(erpOrderLineModel.getCouponDiscount().getCouponDesc());
+				erpCouponDiscountLineModelData.setCouponId(erpOrderLineModel.getCouponDiscount().getCouponId());
+				erpCouponDiscountLineModelData.setDiscountAmt(erpOrderLineModel.getCouponDiscount().getDiscountAmt());
+				erpCouponDiscountLineModelData.setDiscountType(erpOrderLineModel.getCouponDiscount().getDiscountType().getName());
+				erpCouponDiscountLineModelData.setOrderLineId(erpOrderLineModel.getCouponDiscount().getOrderLineId());
+				erpCouponDiscountLineModelData.setRequiredQuantity(erpOrderLineModel.getCouponDiscount().getRequiredQuantity());
+				erpCouponDiscountLineModelData.setVersion(erpOrderLineModel.getCouponDiscount().getVersion());
+				 erpOrderLineModelData.setCouponDiscount(erpCouponDiscountLineModelData);
+				}
+				 erpOrderLineModelData.setDeliveryPass(erpOrderLineModelData.isDeliveryPass());
+				erpOrderLineModelData.setDepartmentDesc(erpOrderLineModel.getDepartmentDesc());
+				erpOrderLineModelData.setDepartmentDesc(erpOrderLineModel.getDepartmentDesc());
+				erpOrderLineModelData.setDepositValue(erpOrderLineModel.getDepositValue());
+				erpOrderLineModelData.setDescription(erpOrderLineModel.getDescription());
+				if(erpOrderLineModel.getDiscount() != null){
+					DiscountData discountData = new  DiscountData();
+					discountData.setAmount(erpOrderLineModel.getDiscount().getAmount());
+//					discountData.setDiscountType(erpOrderLineModel.getDiscount().getDiscountType().getId());
+					discountData.setMaxPercentageDiscount(erpOrderLineModel.getDiscount().getMaxPercentageDiscount());
+					discountData.setPromotionCode(erpOrderLineModel.getDiscount().getPromotionCode());
+					discountData.setPromotionDescription(erpOrderLineModel.getDiscount().getPromotionDescription());
+					discountData.setSkuLimit(erpOrderLineModel.getDiscount().getSkuLimit());
+					erpOrderLineModelData.setDiscount(discountData);
+				}
+				erpOrderLineModelData.setDiscountAmount(erpOrderLineModel.getDiscountAmount());
+				erpOrderLineModelData.setDiscountApplied(erpOrderLineModel.isDiscountFlag());
+				erpOrderLineModelData.setDistChannel(erpOrderLineModel.getDistChannel());
+				if (erpOrderLineModel.getEStoreId() != null)
+					erpOrderLineModelData.seteStoreId(erpOrderLineModel.getEStoreId().getContentId());
+				//erpOrderLineModelData.setExternalAgency(erpOrderLineModel.getExternalAgency());
+				erpOrderLineModelData.setExternalGroup(erpOrderLineModel.getExternalGroup());
+				erpOrderLineModelData.setExternalSource(erpOrderLineModel.getExternalSource());
+				if(erpOrderLineModel.getFDGroup() != null){
+				FDGroupData groupdata = new FDGroupData();
+				groupdata.setGroupId(erpOrderLineModel.getFDGroup().getGroupId());
+				groupdata.setSkipProductPriceValidation(erpOrderLineModel.getFDGroup().isSkipProductPriceValidation());
+				groupdata.setVersion(erpOrderLineModel.getFDGroup().getVersion());
+//				erpOrderLineModelData.setGroup(groupdata);
+				}
+				erpOrderLineModelData.setGrpQuantity(erpOrderLineModel.getGroupQuantity());
+				erpOrderLineModelData.setMaterialGroup(erpOrderLineModel.getMaterialGroup());
+				erpOrderLineModelData.setMaterialNumber(erpOrderLineModel.getMaterialNumber());
+				erpOrderLineModelData.setOrderLineId(erpOrderLineModel.getOrderLineId());
+				erpOrderLineModelData.setOrderLineNumber(erpOrderLineModel.getOrderLineNumber());
+				erpOrderLineModelData.setPerishable(erpOrderLineModel.isPerishable());
+				erpOrderLineModelData.setPlantID(erpOrderLineModel.getPlantID());
+				erpOrderLineModelData.setPrice(erpOrderLineModel.getPrice());
+				if(erpOrderLineModel.getProduceRating() != null)
+				erpOrderLineModelData.setProduceRating(erpOrderLineModel.getProduceRating().getStatusCode());
+				erpOrderLineModelData.setRecipeSourceId(erpOrderLineModel.getRecipeSourceId());
+				erpOrderLineModelData.setRequestNotification(erpOrderLineModel.isRequestNotification());
+				erpOrderLineModelData.setSalesOrg(erpOrderLineModel.getSalesOrg());
+				erpOrderLineModelData.setScaleQuantity(erpOrderLineModel.getScaleQuantity());
+				if (erpOrderLineModel.getSku() != null) {
+					FDSkuData sku = new FDSkuData();
+					sku.setSkuCode(erpOrderLineModel.getSku().getSkuCode());
+					sku.setVersion(erpOrderLineModel.getSku().getVersion());
+//					erpOrderLineModelData.setSku(sku);
+				}
+				if (erpOrderLineModel.getSource() != null)
+					erpOrderLineModelData.setSource(erpOrderLineModel.getSource().getName());//
+				if (erpOrderLineModel.getSustainabilityRating() != null)
+					erpOrderLineModelData.setSustainabilityRating(erpOrderLineModel.getSustainabilityRating().getStatusCode());//
+				if (erpOrderLineModel.getTaxationType() != null)
+					erpOrderLineModelData.setTaxationType(erpOrderLineModel.getTaxationType().getName());
+				erpOrderLineModelData.setTaxCode(erpOrderLineModel.getTaxCode());
+				erpOrderLineModelData.setTaxRate(erpOrderLineModel.getTaxRate());
+				erpOrderLineModelData.setUpc(erpOrderLineModel.getUpc());
+				erpOrderLineModelData.setWine(erpOrderLineModel.isWine());
+
+				erpOrderLineModelDatas.add(erpOrderLineModelData);
+			}
+		}
+
+		couponCartData.setOrderLines(erpOrderLineModelDatas);
+		cartCouponData.setCouponCartData(couponCartData);
+		return cartCouponData;
+	}
+
+	public static CouponOrderData convertCouponOrderData(ErpCouponTransactionModel couponTransModel, FDCouponActivityContext context) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static ErpCouponTransactionModelData buildErpCouponTransactionModel(ErpCouponTransactionModel transModel) {
+		ErpCouponTransactionModelData erpCouponTransactionModelData = new  ErpCouponTransactionModelData();
+		erpCouponTransactionModelData.setCreateTime(transModel.getCreateTime());
+		erpCouponTransactionModelData.setErrorDetails(transModel.getErrorDetails());
+		erpCouponTransactionModelData.setErrorMessage(transModel.getErrorMessage());
+		erpCouponTransactionModelData.setId(transModel.getId());
+		erpCouponTransactionModelData.setSaleActionId(transModel.getSaleActionId());
+		erpCouponTransactionModelData.setSaleId(transModel.getSaleId());
+		List<ErpCouponTransactionDetailModelData> erpCouponTransactionDetailModels = new ArrayList<ErpCouponTransactionDetailModelData>(); 
+		if (transModel.getTranDetails() != null) {
+			for (ErpCouponTransactionDetailModel erpCouponTransaction : transModel.getTranDetails()) {
+				ErpCouponTransactionDetailModelData couponTransactionModelData = new ErpCouponTransactionDetailModelData();
+				couponTransactionModelData.setCouponId(erpCouponTransaction.getCouponId());
+				couponTransactionModelData.setCouponLineId(erpCouponTransaction.getCouponLineId());
+				couponTransactionModelData.setCouponTransId(erpCouponTransaction.getCouponTransId());
+				couponTransactionModelData.setDiscountAmt(erpCouponTransaction.getDiscountAmt());
+				couponTransactionModelData.setId(erpCouponTransaction.getId());
+				couponTransactionModelData.setTransTime(erpCouponTransaction.getTransTime());
+				erpCouponTransactionDetailModels.add(couponTransactionModelData);
+			}
+		}
+		erpCouponTransactionModelData.setTranDetails(erpCouponTransactionDetailModels);
+		if(transModel.getTranStatus()!=null)
+		erpCouponTransactionModelData.setTranStatus(transModel.getTranStatus().getName());
+		erpCouponTransactionModelData.setTranTime(transModel.getTranTime());
+		if(transModel.getTranType()!= null)
+		erpCouponTransactionModelData.setTranType(transModel.getTranType().getName());
+		return erpCouponTransactionModelData;
+	}
+
 	
 		
 }

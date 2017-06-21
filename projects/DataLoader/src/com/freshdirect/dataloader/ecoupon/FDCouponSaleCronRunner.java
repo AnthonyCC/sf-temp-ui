@@ -26,6 +26,8 @@ import com.freshdirect.fdstore.ecoupon.FDCouponManagerHome;
 import com.freshdirect.fdstore.ecoupon.FDCouponManagerSB;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
+import com.freshdirect.payment.service.FDECommerceService;
+import com.freshdirect.payment.service.IECommerceService;
 
 public class FDCouponSaleCronRunner {
 
@@ -44,6 +46,38 @@ public class FDCouponSaleCronRunner {
 		Context ctx = null;
 		
 		try {
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.ecoupon.FDCouponManagerSB")) {
+				IECommerceService fdECommerceService = FDECommerceService.getInstance();
+				// Cancel Pending coupon transactions
+				fdECommerceService.postCancelPendingCouponTransactions();
+
+				// Submit Pending coupon transactions
+				List<String> submitSales = fdECommerceService.getSubmitPendingCouponSales();
+				if (null != submitSales) {
+					for (Iterator<String> iterator = submitSales.iterator(); iterator.hasNext();) {
+						String saleId = iterator.next();
+						try {
+							fdECommerceService.postSubmitPendingCouponTransactions(saleId);
+						} catch (Exception e) {
+							LOGGER.info(e);
+						}
+					}
+				}
+
+				// Confirm Pending coupon transactions
+				List<String> confirmSales = fdECommerceService.getConfirmPendingCouponSales();
+				if (null != confirmSales) {
+					for (Iterator<String> iterator = confirmSales.iterator(); iterator.hasNext();) {
+						String saleId = iterator.next();
+						try {
+							fdECommerceService.postConfirmPendingCouponTransactions(saleId);
+						} catch (Exception e) {
+							LOGGER.info(e);
+						}
+					}
+				}
+				LOGGER.info("FDCouponSaleCronRunner stopped.");
+			}else{
 			ctx = getInitialContext();
 			FDCouponManagerHome home = (FDCouponManagerHome) ctx.lookup(FDStoreProperties.getFDCouponManagerHome());
 			FDCouponManagerSB sb = home.create();
@@ -76,6 +110,7 @@ public class FDCouponSaleCronRunner {
 				}
 			}
 			LOGGER.info("FDCouponSaleCronRunner stopped.");
+			}
 		} catch (Exception e){
 			StringWriter sw = new StringWriter();
 			e.printStackTrace(new PrintWriter(sw));
