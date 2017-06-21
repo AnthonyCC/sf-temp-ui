@@ -4482,8 +4482,7 @@ public class FDStoreProperties {
     }
 
     public static boolean isSF2_0_AndServiceEnabled(String beanName) {
-    	return true;
-//        return ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue()&&FDEcommProperties.isServiceEnabled(beanName));
+        return ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue()&&FDEcommProperties.isServiceEnabled(beanName));
     }
     private static boolean isStorefront2_0Enabled() {
         return (Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue();
