@@ -11,50 +11,6 @@
 		height: auto;
 		padding: 10px 10px 20px;
 	}
-	#transactionalPopup .portrait-item-soPreShow .quantity_plus, #transactionalPopup .portrait-item-soPreShow .quantity_minus,
-	#transactionalPopup .portrait-item-soPreShow .transactional-related-body .quantity_plus, #transactionalPopup .portrait-item-soPreShow .transactional-related-body .quantity_minus,
-	.portrait-item-soPreShow .quantity_plus, .portrait-item-soPreShow .quantity_minus,
-	.soShow .quantity_plus, .soShow .quantity_minus {
-		background: none;
-		background: initial;
-		border-radius: 0;
-		text-indent: 0;
-		background-color: #fff;
-		border: 1px solid #e7e7e7;
-		width: 40px;
-		height: 40px;
-		font-size: 30px;
-		box-shadow: none;
-		color: #333;
-	}
-	#transactionalPopup .portrait-item-soPreShow .quantity_plus:hover, #transactionalPopup .portrait-item-soPreShow .quantity_minus:hover,
-	.portrait-item-soPreShow .quantity_plus:hover, .portrait-item-soPreShow .quantity_minus:hover,
-	.soShow .quantity_plus:hover, .soShow .quantity_minus:hover {
-		color: #4FA157;
-		background-color: transparent;
-	}
-	#transactionalPopup .portrait-item-soPreShow .quantity_plus:active, #transactionalPopup .portrait-item-soPreShow .quantity_minus:active,
-	.portrait-item-soPreShow .quantity_plus:active, .portrait-item-soPreShow .quantity_minus:active,
-	.soShow .quantity_plus:active, .soShow .quantity_minus:active {
-		color: #f90;
-		background-color: transparent;
-	}
-	#transactionalPopup .portrait-item-soPreShow .quantity_plus:focus, #transactionalPopup .portrait-item-soPreShow .quantity_minus:focus,
-	.portrait-item-soPreShow .quantity_plus:focus, .portrait-item-soPreShow .quantity_minus:focus,
-	.soShow .quantity_plus:active, .soShow .quantity_minus:focus {
-		color: #fff;
-		background-color: #6AAA6D;
-	}
-	.pdp-atc.soShow .qty, /* .pdp-evenbetter-quantity .qty, APPBUG-4499 */
-	.portrait-item-soPreShow .qty,
-	#customizePopup.soShow .qty {
-		border-left: none;
-		border-right: none;
-		border-top: 1px solid #e7e7e7;
-		border-bottom: 1px solid #e7e7e7;
-		font-size: 20px;
-		font-weight: bold;
-	}
 	#customizePopup.soShow .subtotal,
 	.pdp-evenbetter-soShow .pdp-evenbetter-atc .pdp-evenbetter-quantity .subtotal {
 		display: inline-block;
@@ -79,51 +35,14 @@
 	#customizePopup.soShow .skucontrol-quantity .qtyinput{
 	    width: auto;
 	}
-	/* APPBUG-4515 */
 	#customizePopup .skucontrol-quantity {
-		text-align: right;
-		margin-right: 250px;
+		text-align: center;
 	}
 	#customizePopup .buttons{
-		margin-right: 243px;
+		text-align: center;
 	}
-	.pdp-atc.soShow .qtyinput input.qty,
-	.pdp-evenbetter-quantity .qtyinput input.qty,
-	.portrait-item-soPreShow input.qty,
-	#transactionalPopup .portrait-item-soPreShow input.qty,
-	#customizePopup.soShow input.qty {
-		vertical-align: top;
-		/* margin: 0; APPBUG-4498 */
-		padding: 0 2px;
-		/* height: 38px; APPBUG-4498 */
-	}
-	.pdp-atc.soShow .qtyinput input.qty,
-	.portrait-item-soPreShow input.qty,
-	#transactionalPopup .portrait-item-soPreShow input.qty,
-	#customizePopup.soShow input.qty{
-		height: 40px;
-		margin: 0;
-	}
-	 #transactionalPopup .portrait-item-soPreShow .portrait-item-controls .qtyinput > span.qtywrapper {
-		height: 40px;
-		left: 40px;
-		right: 40px;
-	}
-	.pdp-evenbetter-quantity .qtyinput input.qty {
-		/* width: 3em; APPBUG-4498 */
-		/* font-size: 16px; APPBUG-4498 */
-		color: #333;
-		font-family: Verdana, Arial, sans-serif;
-	}
-	.pdp-atc.soShow .qtyinput,
-	#customizePopup.soShow {
-		width: auto !important;
-		height: auto !important;
-	}
-	
-	.pdp-evenbetter-quantity .qtyinput {
-		/* width: 135px; APPBUG-4498
-		height: 40px;  APPBUG-4498 */
+	#customizePopup .buttons .addtocart{
+		margin: auto;
 	}
 	.pdp-atc.soShow .pdp-atc-buttons {
 		margin-bottom: 20px;
@@ -202,12 +121,12 @@
 		text-align: right;
 	}
 	.qs-content .lineitems22 .itemlist-item-controls.smaller .addtocart, .qs-content .lineitems22 .itemlist-item-controls.smaller .customize {
-		width: 124px;
+		width: 132px;
 		display: inline-block;
 	}
 	.qs-content .lineitems22 .itemlist-item-controls.smaller .atc-info {
-		width: 124px;
-		margin-left: 131px;
+		width: 132px;
+		margin: 0 4px 0;
 		display: inline-block;
 	}
 	.qs-content .lineitems22 .itemlist-item-controls.smaller .addtocart, .qs-content .lineitems22 .itemlist-item-controls.smaller .customize {
@@ -231,7 +150,7 @@
 	}
 
 	.qs-content .so-result-container {
-		display: inline-block;
+		display: none;
 		width: 130px;
 	}
 	.qs-content .lineitems22 .itemlist-item-controls.smaller .cssbutton[data-component="showSOButton"] {
@@ -902,6 +821,7 @@
 		opacity: 0.7;
 	}
 	.portrait-item-so-container [data-component="createSOButton"]{
+		width: 100%;
 		padding: 10px 5px;
 	}
 	#evenBetterPopup [data-component="createSOButton"]{
