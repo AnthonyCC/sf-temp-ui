@@ -157,6 +157,7 @@ public static SearchResults getHLBrandProductAdProducts(SearchResults searchResu
 			
 			if(null !=hlBrandAdProductsMeta){
 				searchResults.setHlProductsCount(hlBrandAdProductsMeta.size());
+				searchResults.setEmptyProductsPageBeacon(hlBrandAdProductsMeta.isEmpty()?hlBrandProductAdResponse.getPageBeacon():null);
 				for (Iterator<HLBrandProductAdInfo> iterator = hlBrandAdProductsMeta.iterator(); iterator.hasNext();) {
 					HLBrandProductAdInfo hlBrandProductAdMetaInfo = (HLBrandProductAdInfo) iterator.next();
 					hlBrandProductAdMetaInfo.setPageBeacon(hlBrandProductAdResponse.getPageBeacon());

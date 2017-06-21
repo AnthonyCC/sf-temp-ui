@@ -448,6 +448,7 @@ public class BrowseData implements Serializable {
 		private List<ProductData> products = new ArrayList<ProductData>();
 		private String pageBeacon = null;
 		private int hlProductsCount;
+		private String hlEmptyProductsPagebeacon;
 		
 		
 		
@@ -456,6 +457,8 @@ public class BrowseData implements Serializable {
 		private Map<String, String> hlSelectionsPageBeacons = new HashMap<String, String>();
 		
 		private Map<String, Integer> hlCatProductsCount = new HashMap<String, Integer>();
+		
+		private Map<String, String> hlSelectionsEmptyProductsPageBeacons = new HashMap<String, String>();
 		
 		public Map<String, List<ProductData>> getHlSelectionOfProductList() {
 			return hlSelectionOfProductList;
@@ -506,6 +509,24 @@ public class BrowseData implements Serializable {
 		public void setHlCatProductsCount(Map<String, Integer> hlCatProductsCount) {
 			this.hlCatProductsCount = hlCatProductsCount;
 		}
+
+		public String getHlEmptyProductsPagebeacon() {
+			return hlEmptyProductsPagebeacon;
+		}
+
+		public void setHlEmptyProductsPagebeacon(String hlEmptyProductsPagebeacon) {
+			this.hlEmptyProductsPagebeacon = hlEmptyProductsPagebeacon;
+		}
+
+		public Map<String, String> getHlSelectionsEmptyProductsPageBeacons() {
+			return hlSelectionsEmptyProductsPageBeacons;
+		}
+
+		public void setHlSelectionsEmptyProductsPageBeacons(
+				Map<String, String> hlSelectionsEmptyProductsPageBeacons) {
+			this.hlSelectionsEmptyProductsPageBeacons = hlSelectionsEmptyProductsPageBeacons;
+		}
+
 	}
 		
 	public static class SearchParams implements Serializable {

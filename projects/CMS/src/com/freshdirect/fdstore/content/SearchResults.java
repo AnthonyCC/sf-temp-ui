@@ -65,6 +65,8 @@ public class SearchResults implements Serializable, Cloneable {
 	private String searchTerm;
 	private String suggestedTerm; // term used when displaying products for the spelling suggestion (there's only one DYM case)
 	private Collection<String> spellingSuggestions = Collections.emptyList();
+	
+	private String emptyProductsPageBeacon; 
 
 	public SearchResults() {
 		this(Collections.<FilteringSortingItem<ProductModel>> emptyList(), Collections.<FilteringSortingItem<Recipe>> emptyList(),
@@ -218,6 +220,14 @@ public class SearchResults implements Serializable, Cloneable {
 
 	public void setHlProductsCount(int hlProductsCount) {
 		this.hlProductsCount = hlProductsCount;
+	}
+
+	public String getEmptyProductsPageBeacon() {
+		return emptyProductsPageBeacon;
+	}
+
+	public void setEmptyProductsPageBeacon(String emptyProductsPageBeacon) {
+		this.emptyProductsPageBeacon = emptyProductsPageBeacon;
 	}
 	
 }
