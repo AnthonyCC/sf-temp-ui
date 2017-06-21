@@ -119,7 +119,7 @@ request.setAttribute("noyui", true);
 			<div id="mobilehomeMainDiv">
 			<%
 				//OAS setup
-			   	request.setAttribute("listPos", "SystemMessage,HPMob01,HPMob02,HPMob03");
+			   	request.setAttribute("listPos", "SystemMessage,HPMob01,HPMob02,HPMob03,HPMob04");
 				/* these use OAS pages like www.freshdirect.com/mobileweb/[PAGENAME] */
 
 			   	if (FDStoreProperties.isAdServerEnabled()) {
@@ -132,6 +132,7 @@ request.setAttribute("noyui", true);
 			  	}
 
 				List<CategoryModel> catModels = ContentFactory.getInstance().getStore().getiPhoneHomePagePicksLists();
+				int bannerIndex = 0;
 
 				for (CategoryModel curCat: catModels) {
 					String curCatLink = "/browse.jsp?id="+curCat;
@@ -157,11 +158,22 @@ request.setAttribute("noyui", true);
 							</div>
 						</div>
 				    </a>
+				    <% bannerIndex++; %>
+				    
+				    <% if (bannerIndex == 5) { %>
+						<%
+						   	if (FDStoreProperties.isAdServerEnabled()) {
+								%><div id="OAS_HPMob03" class="oas-cnt home-page-banner">
+						  			<script type="text/javascript">OAS_AD('HPMob03');</script>
+						  		</div><%
+						  	}
+						%>
+				    <% } %>
 				<% } %>
 				<%
 				   	if (FDStoreProperties.isAdServerEnabled()) {
-						%><div id="OAS_HPMob03" class="oas-cnt home-page-banner">
-				  			<script type="text/javascript">OAS_AD('HPMob03');</script>
+						%><div id="OAS_HPMob04" class="oas-cnt home-page-banner">
+				  			<script type="text/javascript">OAS_AD('HPMob04');</script>
 				  		</div><%
 				  	}
 				%>

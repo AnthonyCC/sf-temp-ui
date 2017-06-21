@@ -115,7 +115,7 @@ request.setAttribute("noyui", true);
                          <div id="mobilehomeMainDiv">
                          <%
                                  //OAS setup
-                                 request.setAttribute("listPos", "SystemMessage,HPMob01,HPMob02,HPMob03");
+                                 request.setAttribute("listPos", "SystemMessage,HPMob01,HPMob02,HPMob03,HPMob04");
                                  /* these use OAS pages like www.freshdirect.com/mobileweb/[PAGENAME] */
  	                                
                                  if (FDStoreProperties.isAdServerEnabled()) {
@@ -127,42 +127,53 @@ request.setAttribute("noyui", true);
                                         </div><% 
                                 }
  	                                                        
-                               List<CategoryModel> catModels = ContentFactory.getInstance().getStore().getiPhoneHomePagePicksLists();
-	                                
-                                for (CategoryModel curCat: catModels) {
-                                        String curCatLink = "/browse.jsp?id="+curCat;
-                                        //skip if cat has no prod(s) and is not redirecting
-                                        if ("".equals(curCat.getRedirectURL()) && !hasProduct(curCat)) {
-                                                continue;
-                                        }
-                                        if ( curCat.getRedirectURL() != null && (curCat.getRedirectURL()).startsWith("foodkick://") ) {
-                                                curCatLink = "https://www.foodkick.com";
-                                        }
-                                        String bannerText = curCat.getPrimaryText();
-                                        if ("".equals(bannerText)) {
-                                                bannerText = curCat.getFullName();
-                                        }
- 	                                        
-                                         %>
- 	                                         
-                                        <a href="<%= curCatLink %>">
-                                             <div class="home-page-banner">
-                                                <img src="<%= curCat.getTabletThumbnailImage().getPathWithPublishId() %>" alt="" />
-                                                     <div class="home-page-banner-subtext-cont">
-                                                            <div class="home-page-banner-subtext"><%= bannerText %></div>
-                                                     </div>
-                                             </div>
- 	                                    </a>
-	                                <% } %>
-	                                
-									<%
-									   	if (FDStoreProperties.isAdServerEnabled()) {
-											%><div id="OAS_HPMob03" class="oas-cnt home-page-banner">
-									  			<script type="text/javascript">OAS_AD('HPMob03');</script>
-									  		</div><%
-									  	}
-									%>
- 	                        </div>
+                                 List<CategoryModel> catModels = ContentFactory.getInstance().getStore().getiPhoneHomePagePicksLists();
+                 				int bannerIndex = 0;
+
+                 				for (CategoryModel curCat: catModels) {
+                 					String curCatLink = "/browse.jsp?id="+curCat;
+                 					//skip if cat has no prod(s) and is not redirecting
+                 					if ("".equals(curCat.getRedirectURL()) && !hasProduct_hprd(curCat)) {
+                 						continue;
+                 					}
+                 					if ( curCat.getRedirectURL() != null && (curCat.getRedirectURL()).startsWith("foodkick://") ) {
+                 						curCatLink = "https://www.foodkick.com";
+                 					}
+                 					String bannerText = curCat.getPrimaryText();
+                 					if ("".equals(bannerText)) {
+                 						bannerText = curCat.getFullName();
+                 					}
+
+                 					 %>
+
+                 					<a href="<%= curCatLink %>">
+                 					    <div class="home-page-banner">
+                 						    <img src="<%= curCat.getTabletThumbnailImage().getPathWithPublishId() %>" alt="" />
+                 							<div class="home-page-banner-subtext-cont">
+                 								<div class="home-page-banner-subtext"><%= bannerText %></div>
+                 							</div>
+                 						</div>
+                 				    </a>
+                 				    <% bannerIndex++; %>
+                 				    
+                 				    <% if (bannerIndex == 5) { %>
+                 						<%
+                 						   	if (FDStoreProperties.isAdServerEnabled()) {
+                 								%><div id="OAS_HPMob03" class="oas-cnt home-page-banner">
+                 						  			<script type="text/javascript">OAS_AD('HPMob03');</script>
+                 						  		</div><%
+                 						  	}
+                 						%>
+                 				    <% } %>
+                 				<% } %>
+                 				<%
+                 				   	if (FDStoreProperties.isAdServerEnabled()) {
+                 						%><div id="OAS_HPMob04" class="oas-cnt home-page-banner">
+                 				  			<script type="text/javascript">OAS_AD('HPMob04');</script>
+                 				  		</div><%
+                 				  	}
+                 				%>
+                 			</div>
                  <% } else { %>
  	                        
                          <fd:GetSegmentMessage id='segmentMessage' user="<%=user%>">
