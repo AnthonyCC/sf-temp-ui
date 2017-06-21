@@ -249,9 +249,15 @@
 					{param amount:$item.inCartAmount /}
 					{param atcItemId:$item.itemId /}
 				{/call}
-				{if $isEligibleForStandingOrders and length($item.soData.settingsData.soData) > 0}
-					{call common.soResults /}
-					{call common.soShowBtn /}
+				{if $isEligibleForStandingOrders}
+					{if length($item.soData.settingsData.soData) > 0}
+						{call common.soResults /}
+						{call common.soShowBtn /}
+					{else}
+						{call common.soRecurring}
+							{param useButton: true /}
+						{/call}
+					{/if}
 				{/if}
 			</div>
 			{call common.productData}
@@ -345,9 +351,6 @@
 				{if $item.replacement and not $item.useReplacement}
 					<div class="itemlist-item-replacement">We Recommend: <button class="itemlist-item-replacement-item" data-component="item-replacement" data-replacement="{$item.useReplacement}" data-replacement-id="{$item.itemId}">{$item.replacement.productName}</button></div>
 				{/if}
-			{/if}
-			{if $isEligibleForStandingOrders and length($item.soData.settingsData.soData) > 0}
-				{call common.soRecurring /}
 			{/if}
 		</div>
 	</li>
