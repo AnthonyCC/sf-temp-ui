@@ -77,6 +77,7 @@ import com.freshdirect.fdstore.ecoupon.model.FDCustomerCouponHistoryInfo;
 import com.freshdirect.fdstore.ecoupon.model.FDCustomerCouponWallet;
 import com.freshdirect.framework.event.FDRecommendationEvent;
 import com.freshdirect.framework.event.FDWebEvent;
+import com.freshdirect.framework.mail.EmailI;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
 import com.freshdirect.logistics.delivery.model.OrderContext;
@@ -570,7 +571,8 @@ public interface IECommerceService {
 	public List<String> getSubmitPendingCouponSales() throws RemoteException;
 	
 	public void postSubmitPendingCouponTransactions(String saleId) throws RemoteException;
-
+	
+	public void enqueueEmail(EmailI email) throws RemoteException;
 	
 
 }

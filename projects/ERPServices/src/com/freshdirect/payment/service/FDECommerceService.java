@@ -105,6 +105,7 @@ import com.freshdirect.ecommerce.data.fdstore.FDSkuData;
 import com.freshdirect.ecommerce.data.fdstore.GroupScalePricingData;
 import com.freshdirect.ecommerce.data.fdstore.SalesAreaInfoFDGroupWrapper;
 import com.freshdirect.ecommerce.data.logger.recommendation.FDRecommendationEventData;
+import com.freshdirect.ecommerce.data.mail.EmailDataI;
 import com.freshdirect.ecommerce.data.payment.BINData;
 import com.freshdirect.ecommerce.data.payment.FDGatewayActivityLogModelData;
 import com.freshdirect.ecommerce.data.routing.SubmitOrderRequestData;
@@ -166,6 +167,7 @@ import com.freshdirect.fdstore.ecoupon.model.FDCustomerCouponWallet;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.event.FDRecommendationEvent;
 import com.freshdirect.framework.event.FDWebEvent;
+import com.freshdirect.framework.mail.EmailI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
@@ -413,6 +415,27 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String SAP_LOAD_SALES="saploader/loadsaleunit";
 	private static final String SAP_LOAD_PRICE="saploader/loadprice";
 	private static final String SAP_LOAD_MAT_PLANT_SALES_AREA="saploader/loadmatplantsandsalesarea";
+
+	private static final String ECOUPON_LOAD_SAVE = "ecoupon/loadsave";
+	private static final String ECOUPON_ACTIVE_COUPONS = "ecoupon/activecoupons";
+	private static final String ECOUPON_ACTIVE_COUPON_DATE = "ecoupon/activecouponsbydate/";
+	private static final String ECOUPON_WALLET = "ecoupon/couponwallet";
+	private static final String ECOUPON_CLIP_COUPON = "ecoupon/clipcoupon/";
+	private static final String ECOUPON_EVALUATE = "ecoupon/evaluate";
+	private static final String ECOUPON_LOAD = "ecoupon/load";
+	private static final String ECOUPON_SEARCH_COUPONS = "ecoupon/searchcoupons/";
+	private static final String ECOUPON_SUBMIT_PENDING = "ecoupon/post/submitpendingcoupontrans";
+	private static final String ECOUPON_CANCEL_PENDING = "ecoupon/post/cancelpendingcoupontrans";
+	private static final String ECOUPON_CONFIRM_PENDING = "ecoupon/post/confirmpendingcoupontrans";
+	private static final String ECOUPON_COUPON_ORDER = "ecoupon/post/couponorder";
+	private static final String ECOUPON_MAX_VERSION = "ecoupon/maxcouponversion";
+	private static final String ECOUPON_COUPON_HISTORY = "ecoupon/couponhistory/";
+	private static final String ECOUPON_GET_CONFIRM_PENDING = "ecoupon/get/confirmpendingcoupontran/";
+	private static final String ECOUPON_COUPON_TRANS = "ecoupon/coupontransaction";
+	private static final String ECOUPON_CONF_PENDING = "ecoupon/confirmpendingcoupontrans/";
+	private static final String ECOUPON_CONFM_PENDING = "ecoupon/confirmpendingcouponsales";
+	private static final String ECOUPON_SUB_PENDING = "ecoupon/submitpendingcouponsales";
+	private static final String ECOUPON_SUBM_PENDING = "ecoupon/submitcoupontrans/";
 	
 	
 	public static IECommerceService getInstance() {
@@ -4273,27 +4296,6 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	}
 	/*************************FDCouponManagerSessionBean*******************/
 
-	private static final String LINK_1 = "ecoupon/loadsave";
-	private static final String LINK_2 = "ecoupon/activecoupons";
-	private static final String LINK_3 = "ecoupon/activecouponsbydate/";
-	private static final String LINK_4 = "ecoupon/couponwallet";
-	private static final String LINK_5 = "ecoupon/clipcoupon/";
-	private static final String LINK_6 = "ecoupon/evaluate";
-	private static final String LINK_7 = "ecoupon/load";
-	private static final String LINK_8 = "ecoupon/searchcoupons/";
-	private static final String LINK_9 = "ecoupon/post/submitpendingcoupontrans";
-	private static final String LINK_10 = "ecoupon/post/cancelpendingcoupontrans";
-	private static final String LINK_11 = "ecoupon/post/confirmpendingcoupontrans";
-	private static final String LINK_12 = "ecoupon/post/couponorder";
-	private static final String LINK_13 = "ecoupon/maxcouponversion";
-	private static final String LINK_14 = "ecoupon/couponhistory/";
-	private static final String LINK_15 = "ecoupon/get/confirmpendingcoupontran/";
-	private static final String LINK_16 = "ecoupon/coupontransaction";
-	private static final String LINK_17 = "ecoupon/confirmpendingcoupontrans/";
-	private static final String LINK_18 = "ecoupon/confirmpendingcouponsales";
-	private static final String LINK_19 = "ecoupon/submitpendingcouponsales";
-	private static final String LINK_20 = "ecoupon/submitcoupontrans/";
-
 
 	@Override
 	public void loadAndSaveCoupons(FDCouponActivityContext context) throws RemoteException {
@@ -4303,7 +4305,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			request.setData(getMapper().convertValue(context, FDCouponActivityContextData.class));
 			String inputJson = buildRequest(request);
 
-			Response<Object> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(LINK_1), new TypeReference<Response<Object>>() {});
+			Response<Object> response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ECOUPON_LOAD_SAVE), new TypeReference<Response<Object>>() {});
 			if (!response.getResponseCode().equals("OK")) {
 				throw new FDResourceException(response.getMessage());
 			}
@@ -4320,7 +4322,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	public List<FDCouponInfo> getActiveCoupons() throws RemoteException {
 		Response<List<FDCouponInfo>> response = null;
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LINK_2), new TypeReference<Response<List<FDCouponInfo>>>() {});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ECOUPON_ACTIVE_COUPONS), new TypeReference<Response<List<FDCouponInfo>>>() {});
 			if(!response.getResponseCode().equals("OK")) {
 				throw new FDResourceException(response.getMessage());
 			}
@@ -4335,7 +4337,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	public List<FDCouponInfo> getActiveCoupons(Date lastModified) throws RemoteException {
 		Response<List<FDCouponInfo>> response = null;
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LINK_3 + lastModified.getTime()), new TypeReference<Response<List<FDCouponInfo>>>() {});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ECOUPON_ACTIVE_COUPON_DATE + lastModified.getTime()), new TypeReference<Response<List<FDCouponInfo>>>() {});
 			if(!response.getResponseCode().equals("OK")) {
 				throw new FDResourceException(response.getMessage());
 			}
@@ -4356,7 +4358,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			request.setData(ModelConverter.convertCouponWalletRequest(fdCouponCustomerData, fdCouponActivityContextData));
 			String inputJson = buildRequest(request);
 
-			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(LINK_4), new TypeReference<Response<FDCustomerCouponWallet>>() {});
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ECOUPON_WALLET), new TypeReference<Response<FDCustomerCouponWallet>>() {});
 			if (!response.getResponseCode().equals("OK")) {
 				throw new FDResourceException(response.getMessage());
 			}
@@ -4380,7 +4382,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			request.setData(ModelConverter.convertCouponWalletRequest(fdCouponCustomerData, fdCouponActivityContextData));
 			String inputJson = buildRequest(request);
 
-			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(LINK_5 + couponId), new TypeReference<Response<Boolean>>() {});
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ECOUPON_CLIP_COUPON + couponId), new TypeReference<Response<Boolean>>() {});
 			if (!response.getResponseCode().equals("OK")) {
 				throw new FDResourceException(response.getMessage());
 			}
@@ -4404,7 +4406,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			request.setData(cartCouponData);
 			String inputJson = buildRequest(request);
 
-			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(LINK_6), new TypeReference<Response<Object>>() {});
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ECOUPON_EVALUATE), new TypeReference<Response<Object>>() {});
 			if (!response.getResponseCode().equals("OK")) {
 				throw new FDResourceException(response.getMessage());
 			}
@@ -4450,7 +4452,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	public List<FDCouponInfo> getCouponsForCRMSearch(String searchTerm) throws RemoteException {
 		Response<List<FDCouponInfo>> response = null;
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LINK_8 + searchTerm), new TypeReference<Response<List<FDCouponInfo>>>() {});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ECOUPON_SEARCH_COUPONS + searchTerm), new TypeReference<Response<List<FDCouponInfo>>>() {});
 			if(!response.getResponseCode().equals("OK")) {
 				throw new FDResourceException(response.getMessage());
 			}
@@ -4465,7 +4467,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	public void postSubmitPendingCouponTransactions() throws RemoteException {
 		Response<Object> response = null;
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LINK_9), new TypeReference<Response<Object>>() {});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ECOUPON_SUBMIT_PENDING), new TypeReference<Response<Object>>() {});
 			if(!response.getResponseCode().equals("OK")) {
 				throw new FDResourceException(response.getMessage());
 			}
@@ -4479,7 +4481,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	public void postCancelPendingCouponTransactions() throws RemoteException {
 		Response<Object> response = null;
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LINK_10), new TypeReference<Response<Object>>() {});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ECOUPON_CANCEL_PENDING), new TypeReference<Response<Object>>() {});
 			if(!response.getResponseCode().equals("OK")) {
 				throw new FDResourceException(response.getMessage());
 			}
@@ -4493,7 +4495,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	public void postConfirmPendingCouponTransactions() throws RemoteException {
 		Response<Object> response = null;
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LINK_11), new TypeReference<Response<Object>>() {});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ECOUPON_CONFIRM_PENDING), new TypeReference<Response<Object>>() {});
 			if(!response.getResponseCode().equals("OK")) {
 				throw new FDResourceException(response.getMessage());
 			}
@@ -4511,7 +4513,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			request.setData(ModelConverter.convertCouponOrderData(couponTransModel, context));
 			String inputJson = buildRequest(request);
 
-			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(LINK_12), new TypeReference<Response<Object>>() {});
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ECOUPON_COUPON_ORDER), new TypeReference<Response<Object>>() {});
 			if (!response.getResponseCode().equals("OK")) {
 				throw new FDResourceException(response.getMessage());
 			}
@@ -4528,7 +4530,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	public int getMaxCouponsVersion() throws RemoteException {
 		Response<Integer> response = null;
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LINK_13), new TypeReference<Response<Integer>>() {});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ECOUPON_MAX_VERSION), new TypeReference<Response<Integer>>() {});
 			if(!response.getResponseCode().equals("OK")) {
 				throw new FDResourceException(response.getMessage());
 			}
@@ -4543,7 +4545,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	public List<FDCustomerCouponHistoryInfo> getCustomersCouponHistoryInfo(String customerId) throws RemoteException {
 		Response<List<FDCustomerCouponHistoryInfo>> response = null;
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LINK_14 + customerId), new TypeReference<Response<List<FDCustomerCouponHistoryInfo>>>() {});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ECOUPON_COUPON_HISTORY + customerId), new TypeReference<Response<List<FDCustomerCouponHistoryInfo>>>() {});
 			if(!response.getResponseCode().equals("OK")) {
 				throw new FDResourceException(response.getMessage());
 			}
@@ -4558,7 +4560,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	public ErpCouponTransactionModel getConfirmPendingCouponTransaction(String saleId) throws RemoteException {
 		Response<ErpCouponTransactionModel> response = null;
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LINK_15 + saleId), new TypeReference<Response<ErpCouponTransactionModel>>() {});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ECOUPON_GET_CONFIRM_PENDING + saleId), new TypeReference<Response<ErpCouponTransactionModel>>() {});
 			if(!response.getResponseCode().equals("OK")) {
 				throw new FDResourceException(response.getMessage());
 			}
@@ -4577,7 +4579,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			request.setData(ModelConverter.buildErpCouponTransactionModel(transModel));
 			String inputJson = buildRequest(request);
 
-			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(LINK_16), new TypeReference<Response<Object>>() {});
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ECOUPON_COUPON_TRANS), new TypeReference<Response<Object>>() {});
 			if (!response.getResponseCode().equals("OK")) {
 				throw new FDResourceException(response.getMessage());
 			}
@@ -4594,7 +4596,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	public void postConfirmPendingCouponTransactions(String saleId) throws RemoteException {
 		Response<Object> response = null;
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LINK_17 + saleId), new TypeReference<Response<Object>>() {});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ECOUPON_CONF_PENDING + saleId), new TypeReference<Response<Object>>() {});
 			if(!response.getResponseCode().equals("OK")) {
 				throw new FDResourceException(response.getMessage());
 			}
@@ -4608,7 +4610,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	public List<String> getConfirmPendingCouponSales() throws RemoteException {
 		Response<List<String>> response = null;
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LINK_18), new TypeReference<Response<List<String>>>() {});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ECOUPON_CONFM_PENDING), new TypeReference<Response<List<String>>>() {});
 			if(!response.getResponseCode().equals("OK")) {
 				throw new FDResourceException(response.getMessage());
 			}
@@ -4623,7 +4625,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	public List<String> getSubmitPendingCouponSales() throws RemoteException {
 		Response<List<String>> response = null;
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LINK_19), new TypeReference<Response<List<String>>>() {});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ECOUPON_SUB_PENDING), new TypeReference<Response<List<String>>>() {});
 			if(!response.getResponseCode().equals("OK")) {
 				throw new FDResourceException(response.getMessage());
 			}
@@ -4638,7 +4640,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	public void postSubmitPendingCouponTransactions(String saleId) throws RemoteException {
 		Response<Object> response = null;
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LINK_20 + saleId), new TypeReference<Response<Object>>() {});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ECOUPON_SUBM_PENDING + saleId), new TypeReference<Response<Object>>() {});
 			if(!response.getResponseCode().equals("OK")) {
 				throw new FDResourceException(response.getMessage());
 			}
@@ -4710,6 +4712,25 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		return null;
 	}
 
-	
+	public void enqueueEmail(EmailI email) throws RemoteException {
+		Response<Object> response = null;
+		try {
+			Request<EmailDataI> request = new Request<EmailDataI>();
+			request.setData(ModelConverter.buildEmailDataI(email));
+			String inputJson = buildRequest(request);
+
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ECOUPON_COUPON_TRANS), new TypeReference<Response<Object>>() {
+			});
+			if (!response.getResponseCode().equals("OK")) {
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
 
 }
