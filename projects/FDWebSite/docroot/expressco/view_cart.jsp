@@ -79,12 +79,10 @@ if (mobWeb) {
 			<div id="cartCarousels">
 				<soy:render template="common.viewCartTabbedCarousel" data="${cartDataPotato.carouselData}" />
 			</div>
-        <% } %>
-
-		<%-- APPDEV-5516 : Cart Carousel - Grand Giving Donation Technology --%>
-		<%-- If the donationProductSampleCarousel is not enabled, the fallback div is productsamplecarousel --%>
-		<% if (FDStoreProperties.isObsoleteCartCarouselsEnabled()) {
-		   if(FDStoreProperties.isPropDonationProductSamplesEnabled()){ %>
+        <% } else { 
+			//APPDEV-5516 : Cart Carousel - Grand Giving Donation Technology
+			// If the donationProductSampleCarousel is not enabled, the fallback div is productsamplecarousel
+		    if(FDStoreProperties.isPropDonationProductSamplesEnabled()){ %>
 		     <div id="donationProductSampleCarousel" class="donation-product-sample-carousel">
 		        <soy:render template="expressco.donationProductSampleCarouselWrapper" data="${cartDataPotato.carouselData}" />
 		      </div>     
