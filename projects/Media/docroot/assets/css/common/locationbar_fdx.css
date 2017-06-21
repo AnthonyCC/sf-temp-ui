@@ -1397,7 +1397,8 @@ option.address-icon {
 .so-alert-line-separator:first-child{
 	display: none;
 }
-#errorsoalerts .alert-closeHandler{
+#errorsoalerts .alert-closeHandler,
+#minsoalert .alert-closeHandler{
 	display: none;
 }
 #errorsoalerts .so-error-alert-button{
