@@ -2057,3 +2057,15 @@ option.address-icon {
 	.locabar-addresses-addzip-2ndline {
 		white-space: nowrap;
 	}
+	
+	#location-tabs a:focus {
+	    -webkit-box-shadow: inset 0 2px 0 #4FA157;
+	}
+	
+	#location-tabs a.locabar-tab-fdx-cont:focus {
+		-webkit-box-shadow: inset 0 2px 0 #732282;
+	}
+	
+	.locabar-tab {
+		padding: 8px 15px 5px;
+	}
