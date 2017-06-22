@@ -48,6 +48,7 @@ public abstract class AbstractCarouselService {
     private static final Logger LOGGER = LoggerFactory.getInstance(AbstractCarouselService.class);
 
     private static final String SELECTED_SITE_FEATURE_ATTRIBUTE_KEY = "selectedSiteFeature";
+    private static final String PARENT_IMPRESSION_ID_ATTRIBUTE_KEY = "parentImpressionId";
 
     /**
      * Return tab recommendation variant
@@ -133,11 +134,12 @@ public abstract class AbstractCarouselService {
     public RecommendationTab getRecommendationTab(HttpServletRequest request, FDUserI user, RecommendationRequestObject requestData)
             throws FDResourceException {
         HttpSession session = request.getSession();
-        session.setAttribute(SELECTED_SITE_FEATURE_ATTRIBUTE_KEY, requestData.getFeature());
         String siteFeature = requestData.getFeature();
+        String parentImpressionId = requestData.getParentImpressionId();
+        session.setAttribute(SELECTED_SITE_FEATURE_ATTRIBUTE_KEY, siteFeature);
+        session.setAttribute(PARENT_IMPRESSION_ID_ATTRIBUTE_KEY, parentImpressionId);
         EnumSiteFeature enumSiteFeature = EnumSiteFeature.getEnum(siteFeature);
         Variant variant = VariantSelectorFactory.getSelector(enumSiteFeature).select(user, false);
-        String parentImpressionId = requestData.getParentImpressionId();
         String impressionId = requestData.getImpressionId();
         String parentVariantId = requestData.getParentVariantId();
 
@@ -182,7 +184,6 @@ public abstract class AbstractCarouselService {
 
 			Impression impression = Impression.get(user, request, getSmartStoreFacilityName());
 			String impressionId = impression.logFeatureImpression(null, null, tabs.getTabVariant(), input.getCategory(), input.getCurrentNode(), input.getYmalSource());
-			tabs.setParentImpressionId(impressionId);
 			for (int i = 0; i < tabs.size(); i++) {
 				String tabImpression = impression.logTab(impressionId, i, tabs.get(i).getSiteFeature().getName());
 				tabs.setFeatureImpressionId(i, tabImpression);
@@ -190,7 +191,7 @@ public abstract class AbstractCarouselService {
 
             final int selectedTab = getSelectedTab(tabs, session, request, user);
 			Variant selectedVariant = tabs.get(selectedTab);
-			String parentImpressionId = impressionId;
+            String parentImpressionId = tabs.getParentImpressionId();
 			String parentVariantId = tabs.getTabVariant().getId();
 			int tabIndex = 0;
 			for (Variant variant : tabs.getVariants()) {
@@ -254,6 +255,7 @@ public abstract class AbstractCarouselService {
         TabRecommendation tabs = new TabRecommendation(getTabVariant(), variants);
         tabs.setError(input.isError());
         tabs.setSelectedSiteFeature((String) request.getSession().getAttribute(SELECTED_SITE_FEATURE_ATTRIBUTE_KEY));
+        tabs.setParentImpressionId((String) request.getSession().getAttribute(PARENT_IMPRESSION_ID_ATTRIBUTE_KEY));
         return tabs;
     }
 
