@@ -1019,10 +1019,6 @@ public class CmsFilteringFlow {
             List<ProductModel> adPrducts = new ArrayList<ProductModel>();
 
             if (hlBrandAdProductsMeta != null) {
-            
-				if (hlBrandAdProductsMeta.isEmpty()) {
-					hlCatEmptyProductPageBeacon.put(catId,	hlBrandProductAdResponse.getPageBeacon());
-				}
 				hlCatProductsCount.put(catId, hlBrandAdProductsMeta.size());
             	
                 for (Iterator<HLBrandProductAdInfo> iterator = hlBrandAdProductsMeta.iterator(); iterator.hasNext();) {
@@ -1043,6 +1039,10 @@ public class CmsFilteringFlow {
                     }
                 }
             }
+            else {
+            	hlCatEmptyProductPageBeacon.put(catId,	hlBrandProductAdResponse.getPageBeacon());	
+            }
+            
             List<FilteringSortingItem<ProductModel>> productResults = new ArrayList<FilteringSortingItem<ProductModel>>();
             if (null != adPrducts) {
                 for (ProductModel productModel : adPrducts) {

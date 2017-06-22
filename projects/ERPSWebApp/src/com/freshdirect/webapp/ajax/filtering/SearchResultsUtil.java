@@ -9,13 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.util.ProductPromotionUtil;
 import com.freshdirect.common.pricing.ZoneInfo;
-import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ProductModelPromotionAdapter;
@@ -23,7 +21,6 @@ import com.freshdirect.fdstore.brandads.FDBrandProductsAdManager;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdInfo;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
-import com.freshdirect.fdstore.brandads.service.BrandProductAdServiceException;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentKeyFactory;
@@ -157,7 +154,6 @@ public static SearchResults getHLBrandProductAdProducts(SearchResults searchResu
 			
 			if(null !=hlBrandAdProductsMeta){
 				searchResults.setHlProductsCount(hlBrandAdProductsMeta.size());
-				searchResults.setEmptyProductsPageBeacon(hlBrandAdProductsMeta.isEmpty()?hlBrandProductAdResponse.getPageBeacon():null);
 				for (Iterator<HLBrandProductAdInfo> iterator = hlBrandAdProductsMeta.iterator(); iterator.hasNext();) {
 					HLBrandProductAdInfo hlBrandProductAdMetaInfo = (HLBrandProductAdInfo) iterator.next();
 					hlBrandProductAdMetaInfo.setPageBeacon(hlBrandProductAdResponse.getPageBeacon());
@@ -173,9 +169,11 @@ public static SearchResults getHLBrandProductAdProducts(SearchResults searchResu
 					} catch (FDSkuNotFoundException e) {
 						LOG.info("FDSkuNotFoundException while populating HookLogicproduct : ", e);
 					}
-					
 				}
+			}else {
+				searchResults.setEmptyProductsPageBeacon(hlBrandProductAdResponse.getPageBeacon());
 			}
+			
 		  }
 	    }
       catch (Exception e) {
