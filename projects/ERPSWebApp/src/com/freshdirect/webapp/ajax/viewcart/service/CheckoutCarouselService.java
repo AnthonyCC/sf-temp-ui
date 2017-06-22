@@ -3,7 +3,9 @@ package com.freshdirect.webapp.ajax.viewcart.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -92,6 +94,22 @@ public class CheckoutCarouselService extends AbstractCarouselService {
         TabRecommendation tabs = new TabRecommendation(tabVariant, variants);
         tabs.setError(input.isError());
         return tabs;
+    }
+
+    @Override
+    protected int getSelectedTab(TabRecommendation tabs, HttpSession session, ServletRequest request, FDUserI user) {
+        List<Variant> variants = tabs.getVariants();
+        int selected = 0;
+        if (tabs.isError()) {
+            String defaultSiteFeature = getDefaultSiteFeature(user);
+            for (int i = 0; i < variants.size(); i++) {
+                if (variants.get(i).getSiteFeature().getName().equals(defaultSiteFeature)) {
+                    selected = i;
+                    break;
+                }
+            }
+        }
+        return selected;
     }
 
     protected List<String> getSiteFeatures(FDUserI user) {
