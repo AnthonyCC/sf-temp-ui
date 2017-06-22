@@ -189,6 +189,10 @@ public abstract class AbstractCarouselService {
 				tabs.setFeatureImpressionId(i, tabImpression);
 			}
 
+            if (tabs.getParentImpressionId() == null) {
+                tabs.setParentImpressionId(impressionId);
+            }
+
             final int selectedTab = getSelectedTab(tabs, session, request, user);
 			Variant selectedVariant = tabs.get(selectedTab);
             String parentImpressionId = tabs.getParentImpressionId();
@@ -197,7 +201,7 @@ public abstract class AbstractCarouselService {
 			for (Variant variant : tabs.getVariants()) {
                 String tabTitle = WordUtils.capitalizeFully(getTitleForVariant(variant));
 				String siteFeatureName = variant.getSiteFeature().getName();
-                RecommendationTab tab = new RecommendationTab(tabTitle, siteFeatureName).setParentImpressionId(tabs.getParentImpressionId())
+                RecommendationTab tab = new RecommendationTab(tabTitle, siteFeatureName).setParentImpressionId(parentImpressionId)
                         .setImpressionId(tabs.getFeatureImpressionId(tabIndex)).setParentVariantId(parentVariantId).setDescription(getDescription(variant));
                 tab.setSelected(variant.equals(selectedVariant));
 				result.getRecommendationTabs().add(tab);
@@ -253,7 +257,7 @@ public abstract class AbstractCarouselService {
         }
 
         TabRecommendation tabs = new TabRecommendation(getTabVariant(), variants);
-        tabs.setError(input.isError());
+        // tabs.setError(input.isError());
         tabs.setSelectedSiteFeature((String) request.getSession().getAttribute(SELECTED_SITE_FEATURE_ATTRIBUTE_KEY));
         tabs.setParentImpressionId((String) request.getSession().getAttribute(PARENT_IMPRESSION_ID_ATTRIBUTE_KEY));
         return tabs;
@@ -324,12 +328,14 @@ public abstract class AbstractCarouselService {
 	}
 
     private Recommendations getCachedRecommendations(Variant oVariant, HttpSession session, HttpServletRequest request, String cacheId, FDUserI user) throws FDResourceException {
-		RecommendationsCache cache = RecommendationsCache.getCache(session);
-		Recommendations r = cache.get(cacheId, oVariant);
-		if (r == null) {
+        RecommendationsCache cache = RecommendationsCache.getCache(session);
+        Recommendations r = cache.get(cacheId, oVariant);
+        if (r == null) {
             r = extractRecommendations(session, request, oVariant.getSiteFeature(), user);
-			cache.store(cacheId, oVariant, r);
-		}
+            if (cacheId != null){
+              cache.store(cacheId, oVariant, r);
+            }
+        }
 		return r;
 	}
 
