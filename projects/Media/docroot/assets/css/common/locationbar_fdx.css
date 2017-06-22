@@ -2029,7 +2029,8 @@ option.address-icon {
 	    max-height: 42px; /* fix height for browse pages */
 	}
 	#locationbar {
-    	background-color: #efefef ;
+    	background-color: #efefef;
+    	border-top: 2px solid #efefef;
 	}
 	.locabar_addresses-reservation-existing-time, .locabar_addresses-reservation-none {
 	    padding: 10px;
@@ -2059,13 +2060,30 @@ option.address-icon {
 	}
 	
 	#location-tabs a:focus {
+	    box-shadow: inset 0 2px 0 #4FA157;
 	    -webkit-box-shadow: inset 0 2px 0 #4FA157;
 	}
 	
 	#location-tabs a.locabar-tab-fdx-cont:focus {
+		box-shadow: inset 0 2px 0 #732282;
 		-webkit-box-shadow: inset 0 2px 0 #732282;
 	}
 	
 	.locabar-tab {
 		padding: 8px 15px 5px;
+	}
+	.locabar-modify-order-container-header {
+		margin-right: 20px; /* to accommodate the arrow */
+	}
+	#locabar_messages_trigger .section-warning-small {
+		min-height: 30px;
+	}
+	.locabar-right-sections .locabar-section {
+		border-top: 2px solid #efefef;
+	}
+	.locabar-right-sections .locabar-section.hasFocus {
+		border-top: 2px solid #4FA157;
+	}
+	.locabar-right-sections .locabar-section {
+		height: 40px;
 	}

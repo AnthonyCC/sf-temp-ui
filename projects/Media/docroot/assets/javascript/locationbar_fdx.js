@@ -24,17 +24,19 @@ $jq(document).on('ready', function() {
 			of: '#locabar_popupcart_trigger'
 		});
 		
-		window.setTimeout(function() {
-			/* add an additional align for timing */
+		$jq('locabar_popupcart_trigger').on('mouseenter', function() {
+			/* just fix on every hover */
 			$jq( '#locabar_popupcart' ).position({
 				my: 'right top',
 				at: 'right bottom+8',
 				of: '#locabar_popupcart_trigger'
 			});
 			if ($jq( '#locabar_popupcart' ).css('top') === '10px') {}
-		}, 1000);	
+		});
 	}
+	
 });
+
 
 /* right align this one arrow */
 if ($jq('#locabar_popupcart .ui-arrow.ui-top').length) {
@@ -518,6 +520,13 @@ $jq('.changeBGClr').on('focus mouseover', function(event) {
 
 $jq('.changeBGClr').on('blur mouseleave', function(event) {
 	$jq('.locabar-user-section').css('background-color', COLOR_NONSELECTED);
+});
+
+$jq('.changeBGClr, .locabar_triggers').on('focus', function(event) {
+	$jq(this).parent('.locabar-section').addClass('hasFocus');
+});
+$jq('.changeBGClr, .locabar_triggers').on('blur mouseleave', function(event) {
+	$jq(this).parent('.locabar-section').removeClass('hasFocus');
 });
 
 

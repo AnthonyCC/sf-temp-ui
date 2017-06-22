@@ -25,6 +25,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
+<%@ taglib uri="/WEB-INF/shared/tld/components.tld" prefix='comp' %>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
 <%@ page import="com.freshdirect.webapp.util.StandingOrderHelper"%>
@@ -115,6 +116,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 					<div class="ui-arrow-buffer"></div>
 					<div class="ui-arrow ui-top"></div>
 					<div class="section-header">
+						<comp:modifyOrderBar user="<%= user_locationbar_fdx %>" modifyOrderAlert="false" htmlId="test_modifyorderalert" />
 					</div>
 				</div>
 			</div>
@@ -188,7 +190,8 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 
 
 <%-- FRESHDIRECT tab --%>
-	<tmpl:put name="tab_fd"><% if (true) { %><a href="https://www.freshdirect.com" class="locabar-tab locabar-tab-fd-cont"><span class="offscreen">Visit FreshDirect Store</span><div class="locabar-tab-fd"></div></a><% } else { %><!-- --><% } %></tmpl:put>
+	<%-- change boolean to true to make it linked --%>
+	<tmpl:put name="tab_fd"><% if (false) { %><a href="https://www.freshdirect.com" class="locabar-tab locabar-tab-fd-cont"><span class="offscreen">Visit FreshDirect Store</span><div class="locabar-tab-fd"></div></a><% } else { %><div class="locabar-tab locabar-tab-fd-cont"><div class="locabar-tab-fd"></div></div><% } %></tmpl:put>
 
 
 <%-- COS tab --%>
@@ -792,6 +795,7 @@ if (curHref.indexOf('successPage') === -1 && $jq.QueryString['successPage']) {
 	<% if(!isStandingOrders){ %>
 	<tmpl:put name="modify_order_alerts">
 		<div id="modifyorderalert" class="alerts invisible" data-type="modifyorderalert">
+			<comp:modifyOrderBar user="<%= user_locationbar_fdx %>" modifyOrderAlert="true" htmlId="test_modifyorderalert" />
 		</div>
 	</tmpl:put>
 	<% } %>
