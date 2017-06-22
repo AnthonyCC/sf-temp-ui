@@ -795,7 +795,7 @@ public class StandingOrderHelper {
 
 		try {
 			if(null != user.getIdentity()){
-				standingOrders = isAddtoProduct?getValidSO3(user): FDStandingOrdersManager.getInstance().loadCustomerNewStandingOrders(user.getIdentity());
+				standingOrders = isAddtoProduct?getValidSO3(user): getAllSO3(user);
 					soData = StandingOrderHelper.convertStandingOrderToSoy(standingOrders, isModifiedInfo, false);
 			    if(null!=standingOrders && !standingOrders.isEmpty()){
 					for(FDStandingOrder fdStandingOrder:standingOrders){
@@ -863,12 +863,23 @@ public class StandingOrderHelper {
 		}
 	}
 	protected static Collection<FDStandingOrder> getValidSO3(FDUserI user) throws FDResourceException, FDInvalidConfigurationException {
-		if(user.isRefreshValidSO3()){
-			user.setValidSO3(FDStandingOrdersManager.getInstance().getValidStandingOrder(user.getIdentity()));
-			user.setRefreshValidSO3(false);
+		if(user.isRefreshSO3()){
+			refreshSO3(user);
 		}
-
 		return user.getValidSO3();
+	}
+
+	private static void refreshSO3(FDUserI user) throws FDResourceException, FDInvalidConfigurationException {
+		user.setValidSO3(FDStandingOrdersManager.getInstance().getValidStandingOrder(user.getIdentity()));
+		user.setAllSO3(FDStandingOrdersManager.getInstance().loadCustomerNewStandingOrders(user.getIdentity()));
+		user.setRefreshSO3(false);
+	}
+	
+	protected static Collection<FDStandingOrder> getAllSO3(FDUserI user) throws FDResourceException, FDInvalidConfigurationException {
+		if(user.isRefreshSO3()){
+			refreshSO3(user);
+		}
+		return user.getAllSO3();
 	}
 
 	public static boolean isValidStandingOrder(FDUserI user) {

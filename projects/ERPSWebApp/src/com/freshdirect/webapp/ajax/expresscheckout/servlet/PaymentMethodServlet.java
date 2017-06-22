@@ -279,7 +279,7 @@ public class PaymentMethodServlet extends BaseJsonServlet {
    				try {
    					StandingOrderHelper.clearSO3ErrorDetails(user.getCurrentStandingOrder(), new String[] {"PAYMENT","PAYMENT_ADDRESS"});
  					StandingOrderHelper.populateStandingOrderDetails(user.getCurrentStandingOrder(),paymentSubmitResponse.getSubmitForm().getResult());
-                    user.setRefreshValidSO3(true);
+                    user.setRefreshSO3(true);
                     if(user.getCurrentStandingOrder()!=null && user.getCurrentStandingOrder().getCustomerListId()!=null)
                     	StandingOrderUtil.createStandingOrder(request.getSession(), user.getSoTemplateCart(), user.getCurrentStandingOrder(), null);
    				} catch (FDResourceException e) {

@@ -143,7 +143,7 @@ public class ManageStandingOrderServlet extends HttpServlet {
 						FDStandingOrder so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(soId));
 	
 						if (!so.isDeleted()) {
-							 u.setRefreshValidSO3(true);
+							 u.setRefreshSO3(true);
 							FDActionInfo info = AccountActivityUtil.getActionInfo(pageContext.getSession());
 							FDStandingOrdersManager.getInstance().delete(info, so);
 						}
@@ -151,7 +151,7 @@ public class ManageStandingOrderServlet extends HttpServlet {
 					}
 	
 				}else if("onloadNewStandingOrder".equalsIgnoreCase(action)){
-					u.setRefreshValidSO3(true);
+					u.setRefreshSO3(true);
 					if (("".equalsIgnoreCase(soId) || soId==null) && (freq == null || "".equalsIgnoreCase(freq)))
 				      u.getCurrentStandingOrder().setFrequency(Integer.parseInt("1"));
 					
@@ -159,7 +159,7 @@ public class ManageStandingOrderServlet extends HttpServlet {
 					writeResponseData( response, errorMessage );
 	
 				} else if("create".equalsIgnoreCase(action)){
-					u.setRefreshValidSO3(true);
+					u.setRefreshSO3(true);
 					errorMessage=createStandingOrder(soName,u,pageContext);
 					if(null == errorMessage){
 						SuccessPageData successData=new SuccessPageData();
@@ -172,7 +172,7 @@ public class ManageStandingOrderServlet extends HttpServlet {
 	
 				} else if("selectFreq".equalsIgnoreCase(action) || "selectFreq2".equalsIgnoreCase(action)){
 					 if(freq!=null){
-						 u.setRefreshValidSO3(true);
+						 u.setRefreshSO3(true);
 						 u.getCurrentStandingOrder();
 						    u.getCurrentStandingOrder().setNewSo(true);
 						    u.getCurrentStandingOrder().setFrequency(Integer.parseInt(freq));
@@ -201,7 +201,7 @@ public class ManageStandingOrderServlet extends HttpServlet {
 						if(null !=so){
 						FDListManager.renameShoppingList(so.getCustomerListId(), soName);
 						u.getCurrentStandingOrder().setCustomerListName(soName);
-						u.setRefreshValidSO3(true);
+						u.setRefreshSO3(true);
 						}else{
 							errorMessage = "Standing order is not exist !";
 						}

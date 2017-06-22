@@ -699,10 +699,14 @@ public interface FDUserI extends java.io.Serializable {
     public Collection<FDStandingOrder> getValidSO3();
 
     public void setValidSO3(Collection<FDStandingOrder> sos);
+    
+    public Collection<FDStandingOrder> getAllSO3();
+    
+    public void setAllSO3(Collection<FDStandingOrder> sos);
 
-    public boolean isRefreshValidSO3();
+    public boolean isRefreshSO3();
 
-    public void setRefreshValidSO3(boolean isRefreshValidSO3);
+    public void setRefreshSO3(boolean isRefreshValidSO3);
 
     public boolean isZipCheckPopupUsed();
     

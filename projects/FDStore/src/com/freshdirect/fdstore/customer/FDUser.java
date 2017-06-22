@@ -311,8 +311,10 @@ public class FDUser extends ModelSupport implements FDUserI {
     private boolean vHPopupDisplay = false;
 
     private Collection<FDStandingOrder> validSO3s = new ArrayList<FDStandingOrder>();
+    
+    private Collection<FDStandingOrder> allSO3s = new ArrayList<FDStandingOrder>();
 
-    private boolean refreshValidSO3 = true;
+    private boolean refreshSO3 = true;
 
     private boolean isZipCheckPopupUsed = false;
     
@@ -3599,13 +3601,23 @@ public class FDUser extends ModelSupport implements FDUserI {
     }
 
     @Override
-    public boolean isRefreshValidSO3() {
-        return this.refreshValidSO3;
+    public Collection<FDStandingOrder> getAllSO3() {
+        return this.allSO3s;
     }
 
     @Override
-    public void setRefreshValidSO3(boolean isRefreshValidSO3) {
-        this.refreshValidSO3 = isRefreshValidSO3;
+    public void setAllSO3(Collection<FDStandingOrder> allSO3s) {
+        this.allSO3s = allSO3s;
+    }
+    
+    @Override
+    public boolean isRefreshSO3() {
+        return this.refreshSO3;
+    }
+
+    @Override
+    public void setRefreshSO3(boolean isRefreshSO3) {
+        this.refreshSO3 = isRefreshSO3;
     }
 
     public boolean isZipCheckPopupUsed() {

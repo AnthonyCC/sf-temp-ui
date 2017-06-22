@@ -2224,14 +2224,24 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     }
 
     @Override
-    public boolean isRefreshValidSO3() {
-        // TODO Auto-generated method stub
-        return user.isRefreshValidSO3();
+    public Collection<FDStandingOrder> getAllSO3() {
+        return this.user.getAllSO3();
     }
 
     @Override
-    public void setRefreshValidSO3(boolean isRefreshValidSO3) {
-        this.user.setRefreshValidSO3(isRefreshValidSO3);
+    public void setAllSO3(Collection<FDStandingOrder> allSO3s) {
+        this.user.setAllSO3(allSO3s);
+    }
+    
+    @Override
+    public boolean isRefreshSO3() {
+        // TODO Auto-generated method stub
+        return user.isRefreshSO3();
+    }
+
+    @Override
+    public void setRefreshSO3(boolean isRefreshSO3) {
+        this.user.setRefreshSO3(isRefreshSO3);
 
     }
     
