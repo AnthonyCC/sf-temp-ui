@@ -1097,3 +1097,7 @@ border-bottom-left-radius: 6px;
 .floter_right {
 	float:right;
 }
+
+.subtotal-price-estimated {
+	padding-left: 10px;
+}
