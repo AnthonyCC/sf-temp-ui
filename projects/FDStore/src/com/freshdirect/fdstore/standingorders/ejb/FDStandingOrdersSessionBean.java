@@ -1108,11 +1108,11 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
-	public void	updateSoCartOverlayFirstTimePreferences(String customerId, boolean soCartOverlay)throws FDResourceException,RemoteException{
+	public void	updateSoCartOverlayFirstTimePreferences(String customerId)throws FDResourceException,RemoteException{
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			FDStandingOrderDAO.updateSoCartOverlayFirstTimePreferences(conn, customerId, soCartOverlay);	
+			FDStandingOrderDAO.updateSoCartOverlayFirstTimePreferences(conn, customerId);	
 		} catch (SQLException e) {
 			LOGGER.error( "SQL ERROR in updateSoCartOverlayFirstTimePreferences(): " + e.getMessage(), e );
 			e.printStackTrace();
@@ -1122,11 +1122,11 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
-	public void	updateNewSoFeaturePreferences(String customerId, boolean newSoFeature)throws FDResourceException,RemoteException{
+	public void	updateNewSoFeaturePreferences(String customerId)throws FDResourceException,RemoteException{
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			FDStandingOrderDAO.updateNewSoFeaturePreferences(conn, customerId, newSoFeature);	
+			FDStandingOrderDAO.updateNewSoFeaturePreferences(conn, customerId);	
 		} catch (SQLException e) {
 			LOGGER.error( "SQL ERROR in updateNewSoFeaturePreferences(): " + e.getMessage(), e );
 			e.printStackTrace();

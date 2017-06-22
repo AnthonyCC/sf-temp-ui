@@ -25,7 +25,6 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeVariant;
 import com.freshdirect.fdstore.customer.FDActionInfo;
-import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
@@ -150,23 +149,25 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 			}
 			
 			
-			if (null!= reqData && ACTION_TURN_OFF_CART_OVERLAY_FIRSTTIME.equalsIgnoreCase(reqData.getActiontype())&&
-									user!=null&& user.getIdentity().getErpCustomerPK()!=null) {
+			if (null!= reqData && ACTION_TURN_OFF_CART_OVERLAY_FIRSTTIME.equalsIgnoreCase(reqData.getActiontype())) {
 				try {
+					String customerId=getCustomerId(user);
+					if(customerId!=null) {
 						user.setRefreshSoCartOverlay(true);
-						FDStandingOrdersManager.getInstance().updateSoCartOverlayFirstTimePreferences(
-										user.getIdentity().getErpCustomerPK(), false);
+						FDStandingOrdersManager.getInstance().updateSoCartOverlayFirstTimePreferences(customerId);
+					}
 				} catch (FDResourceException e) {
 					LOG.error("Got the exeption while updating the StandingOrder Cart Overlay FirstTime flag for New Standing order"+e);
 				}
 			}
 			
-			if (null!= reqData && ACTION_TRUN_OFF_SO_FEATURE_OVERLAY.equalsIgnoreCase(reqData.getActiontype())&&
-									user!=null&& user.getIdentity().getErpCustomerPK()!=null) {
+			if (null!= reqData && ACTION_TRUN_OFF_SO_FEATURE_OVERLAY.equalsIgnoreCase(reqData.getActiontype())) {
 				try {
-						user.setRefreshNewSoFeature(true);
-						FDStandingOrdersManager.getInstance().updateNewSoFeaturePreferences(
-								user.getIdentity().getErpCustomerPK(), false);
+					String customerId=getCustomerId(user);
+					if(customerId!=null) {
+						FDStandingOrdersManager.getInstance().updateNewSoFeaturePreferences(customerId);
+						user.setSoFeatureOverlay(false);
+					}
 				} catch (FDResourceException e) {
 					LOG.error("Got the exeption while updating the New So Feature Preferences "+e);
 					}
@@ -181,6 +182,10 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 		writeResponseData(response,orderResponseData);
 
 
+	}
+
+	private String getCustomerId(FDUserI user) {
+		return user.getIdentity()!=null?user.getIdentity().getErpCustomerPK():null;
 	}
 
 	protected boolean validateSO3AlcoholResrtiction(AddToListRequestData reqData, FDUserI user) {
