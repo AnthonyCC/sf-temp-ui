@@ -147,16 +147,14 @@ public class FDEcommProperties {
 						FDStoreProperties.getNodeName(), defaults);
 			} catch (FDResourceException e) {
 				e.printStackTrace();
-				 LOGGER.error("Errpr loading FDStorePropertiesDB Database FDResourceException: " + config);
+				 LOGGER.error("Error loading FDStorePropertiesDB Database FDResourceException: " + config);
 			} catch (RemoteException e) {
-				 LOGGER.error("Errpr loading FDStorePropertiesDB Database RemoteException: " + config);
+				 LOGGER.error("Error loading FDStorePropertiesDB Database RemoteException: " + config);
 				e.printStackTrace();
 			}catch (CreateException e) {
-				// TODO Auto-generated catch block
+				 LOGGER.error("Error loading FDStorePropertiesDB Database CreationException: " + config);
 				e.printStackTrace();
-			}/*ConfigHelper.getPropertiesFromDB(EnumPropertyType.WEB.toString(),
-            		FDStoreProperties.getClusterName(),
-            		FDStoreProperties.getNodeName(), defaults);*/
+			}
             lastRefresh = t;
             LOGGER.info("Loaded configuration from FDStorePropertiesDB Database: " + config);
             fireEvent();

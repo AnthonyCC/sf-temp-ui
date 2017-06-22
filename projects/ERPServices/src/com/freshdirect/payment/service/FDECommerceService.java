@@ -81,6 +81,7 @@ import com.freshdirect.ecommerce.data.ecoupon.FDCouponCustomerData;
 import com.freshdirect.ecommerce.data.enums.BillingCountryInfoData;
 import com.freshdirect.ecommerce.data.enums.CrmCaseSubjectData;
 import com.freshdirect.ecommerce.data.enums.DeliveryPassTypeData;
+import com.freshdirect.ecommerce.data.enums.EnumComplaintDlvIssueTypeData;
 import com.freshdirect.ecommerce.data.enums.EnumFeaturedHeaderTypeData;
 import com.freshdirect.ecommerce.data.enums.ErpAffiliateData;
 import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
@@ -1253,6 +1254,8 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 				return ModelConverter.buildEnumFeaturedHeaderTypeList(data);
 			}else if(data.get(1) instanceof CrmCaseSubjectData ){
 				return ModelConverter.buildCrmCaseSubjectList(data);
+			}else if(data.get(1) instanceof EnumComplaintDlvIssueTypeData){
+				return ModelConverter.buildComplaintDlvIssueList(data);
 			}
 		}
 

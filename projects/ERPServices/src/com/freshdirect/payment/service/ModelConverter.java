@@ -20,6 +20,7 @@ import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.customer.EnumAccountActivityType;
+import com.freshdirect.customer.EnumComplaintDlvIssueType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpOrderLineModel;
@@ -43,6 +44,7 @@ import com.freshdirect.ecommerce.data.ecoupon.FDCouponCustomerData;
 import com.freshdirect.ecommerce.data.enums.BillingCountryInfoData;
 import com.freshdirect.ecommerce.data.enums.CrmCaseSubjectData;
 import com.freshdirect.ecommerce.data.enums.DeliveryPassTypeData;
+import com.freshdirect.ecommerce.data.enums.EnumComplaintDlvIssueTypeData;
 import com.freshdirect.ecommerce.data.enums.EnumFeaturedHeaderTypeData;
 import com.freshdirect.ecommerce.data.enums.ErpAffiliateData;
 import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
@@ -1174,6 +1176,19 @@ public class ModelConverter {
 			xmlEmailDataI.setXslPath(xmlEmailDataI.getXslPath());
 		}
 		return emailDataI;
+	}
+
+	public static List buildComplaintDlvIssueList(List data) {
+		List l = new ArrayList();
+		for(Object obj:data){
+			EnumComplaintDlvIssueTypeData complData = (EnumComplaintDlvIssueTypeData)obj;
+			EnumComplaintDlvIssueType comp = new EnumComplaintDlvIssueType(
+					complData.getCode(),
+					complData.getName(),
+					complData.getDescription()	);
+		l.add(comp);
+		}
+		return l;
 	}
 
 	
