@@ -84,6 +84,7 @@ import com.freshdirect.webapp.ajax.mealkit.service.MealkitService;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.ajax.reorder.service.QuickShopCarouselService;
+import com.freshdirect.webapp.ajax.viewcart.service.CheckoutCarouselService;
 import com.freshdirect.webapp.ajax.viewcart.service.ViewCartCarouselService;
 import com.freshdirect.webapp.taglib.callcenter.ComplaintUtil;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
@@ -574,9 +575,13 @@ public class CartDataService {
                 cartData.setDeliveryBegins(StandingOrderHelper.getDeliveryBeginsInfo(user));
             }
 
-                SessionInput input = QuickShopCarouselService.defaultService().createSessionInput(user, request);
-                cartData.setCarouselData(
-                        ViewCartCarouselService.getDefaultService().populateViewCartTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));
+            CartRequestData reqData = BaseJsonServlet.parseRequestData(request, CartRequestData.class, true);
+            SessionInput input = QuickShopCarouselService.defaultService().createSessionInput(user, request);
+            if (reqData != null && reqData.getPage() != null && reqData.getPage().contains("checkout")) {
+                cartData.setCarouselData(CheckoutCarouselService.getDefaultService().populateViewCartTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));
+            } else {
+                cartData.setCarouselData(ViewCartCarouselService.getDefaultService().populateViewCartTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));
+            }
             cartData.setCustomerServiceRepresentative(CustomerServiceRepresentativeService.defaultService().loadCustomerServiceRepresentativeInfo(user));
             cartData.setAvalaraEnabled(FDStoreProperties.getAvalaraTaxEnabled());
             if (FDStoreProperties.isETippingEnabled()) {

@@ -126,7 +126,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 		return parseRequestData( request, typeClass, false );
 	}
 	
-	protected final static <T> T parseRequestData( HttpServletRequest request, Class<T> typeClass, boolean allowEmpty ) throws HttpErrorResponse {
+    public final static <T> T parseRequestData(HttpServletRequest request, Class<T> typeClass, boolean allowEmpty) throws HttpErrorResponse {
 	
 		T reqData = null;
 		try {

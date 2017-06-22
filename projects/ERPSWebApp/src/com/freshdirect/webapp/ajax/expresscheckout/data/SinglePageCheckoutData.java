@@ -9,7 +9,6 @@ import com.freshdirect.webapp.ajax.expresscheckout.location.data.FormLocationDat
 import com.freshdirect.webapp.ajax.expresscheckout.payment.data.FormPaymentData;
 import com.freshdirect.webapp.ajax.expresscheckout.timeslot.data.FormTimeslotData;
 import com.freshdirect.webapp.ajax.standingorder.StandingOrderResponseData;
-import com.freshdirect.webapp.ajax.viewcart.data.ViewCartCarouselData;
 
 public class SinglePageCheckoutData {
 
@@ -25,7 +24,6 @@ public class SinglePageCheckoutData {
 	private String redirectUrl;
 	private HeaderData headerData;
 	private StandingOrderResponseData standingOrderResponseData;
-	private ViewCartCarouselData carouselData;
 
 	public String getErrorMessage() {
 		return errorMessage;
@@ -123,13 +121,5 @@ public class SinglePageCheckoutData {
 			StandingOrderResponseData standingOrderResponseData) {
 		this.standingOrderResponseData = standingOrderResponseData;
 	}
-
-    public ViewCartCarouselData getCarouselData() {
-        return carouselData;
-    }
-
-    public void setCarouselData(ViewCartCarouselData carouselData) {
-        this.carouselData = carouselData;
-    }
 
 }
