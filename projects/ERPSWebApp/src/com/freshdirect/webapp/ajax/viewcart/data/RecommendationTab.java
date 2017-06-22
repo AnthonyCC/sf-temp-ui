@@ -10,7 +10,7 @@ public class RecommendationTab {
 
     public static final String PRODUCT_SAMPLE_SITE_FEATURE = "PRODUCT_SAMPLE";
     public static final String DONATION_SAMPLE_SITE_FEATURE = "DONATION_SAMPLE";
-    public static final List<String> PRODUCT_SAMPLE_GRID_SITE_FEAURES = Arrays.asList(PRODUCT_SAMPLE_SITE_FEATURE, DONATION_SAMPLE_SITE_FEATURE);
+    private static final List<String> PRODUCT_SAMPLE_GRID_SITE_FEAURES = Arrays.asList(PRODUCT_SAMPLE_SITE_FEATURE, DONATION_SAMPLE_SITE_FEATURE);
 
 	private String title;
     private String description;
@@ -32,7 +32,7 @@ public class RecommendationTab {
 
     private String getItemType(String siteFeature) {
         String itemType = CarouselItemType.GRID.getType();
-        if (PRODUCT_SAMPLE_GRID_SITE_FEAURES.contains(siteFeature)) {
+        if (isSample(siteFeature)) {
             itemType = CarouselItemType.PRODUCT_SAMPLE_GRID.getType();
         }
         return itemType;
@@ -124,8 +124,14 @@ public class RecommendationTab {
     }
 
     public RecommendationTab setDescription(String description) {
-        this.description = description;
+        if (isSample(siteFeature)) {
+            this.description = description;
+        }
         return this;
+    }
+
+    public static boolean isSample(String siteFeature) {
+        return PRODUCT_SAMPLE_GRID_SITE_FEAURES.contains(siteFeature);
     }
 
 }

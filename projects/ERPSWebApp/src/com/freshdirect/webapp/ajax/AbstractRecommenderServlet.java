@@ -37,7 +37,7 @@ public abstract class AbstractRecommenderServlet extends BaseJsonServlet {
         if (recommendationTab != null) {
             recommenderResult.put("siteFeature", recommendationTab.getSiteFeature());
             recommenderResult.put("itemType", recommendationTab.getItemType());
-            recommenderResult.put("description", recommendationTab.getDescription());
+            recommenderResult.put("title", recommendationTab.getDescription());
             if (recommendationTab.getCarouselData() != null) {
                 recommenderResult.put("items", recommendationTab.getCarouselData().getProducts());
                 recommenderResult.put("cmEventSource", recommendationTab.getCarouselData().getCmEventSource());

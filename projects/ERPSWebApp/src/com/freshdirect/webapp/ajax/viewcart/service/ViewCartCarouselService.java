@@ -73,7 +73,7 @@ public class ViewCartCarouselService extends AbstractCarouselService {
         if (tabs.isError()) {
             selected = selectedTab(variants, getDefaultSiteFeature(user));
         } else if (isMaxSampleReached(user.getShoppingCart()) && variants.size() > 1
-                && RecommendationTab.PRODUCT_SAMPLE_GRID_SITE_FEAURES.contains(tabs.getSelectedSiteFeature())) {
+                && RecommendationTab.isSample(tabs.getSelectedSiteFeature())) {
             selected = (selected + 1) % variants.size();
         }
 
