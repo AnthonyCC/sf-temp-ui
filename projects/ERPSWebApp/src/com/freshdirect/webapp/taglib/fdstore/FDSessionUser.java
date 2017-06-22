@@ -161,8 +161,6 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
     private Map<String, List<AddToCartItem>> pendingExternalAtcItems;
 
-    private List<ProductReference> productSamples;
-
     private boolean isSoContainerOpen = false;
 
     private boolean zipPopupSeenInSession = false;
@@ -2106,17 +2104,17 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
     @Override
     public List<ProductReference> getProductSamples() {
-        return this.user.getProductSamples();
+        return user.getProductSamples();
     }
 
     @Override
     public void setProductSample(List<ProductReference> productSamples) {
-        this.productSamples = productSamples;
+        user.setProductSample(productSamples);
     }
 
     @Override
     public boolean isProductSample(ProductReference prodRef) {
-        return this.user.isProductSample(prodRef);
+        return user.isProductSample(prodRef);
     }
 
     @Override
@@ -2270,43 +2268,53 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         this.zipPopupSeenInSession = ZipPopupSeenInSession;
     }
 
-	public Map<String, String> getSoCartLineMessagesMap() {
+	@Override
+    public Map<String, String> getSoCartLineMessagesMap() {
 		return soCartLineMessagesMap;
 	}
 
-	public void setSoCartLineMessagesMap(Map<String, String> soCartLineMessagesMap) {
+	@Override
+    public void setSoCartLineMessagesMap(Map<String, String> soCartLineMessagesMap) {
 		this.soCartLineMessagesMap = soCartLineMessagesMap;
 	}
 
-	public boolean isSoCartOverlayFirstTime() {
+	@Override
+    public boolean isSoCartOverlayFirstTime() {
 		return soCartOverlayFirstTime;
 	}
 
-	public void setSoCartOverlayFirstTime(boolean soCartOverlayFirstTime) {
+	@Override
+    public void setSoCartOverlayFirstTime(boolean soCartOverlayFirstTime) {
 		this.soCartOverlayFirstTime = soCartOverlayFirstTime;
 	}
 
-	public boolean isRefreshSoCartOverlay() {
+	@Override
+    public boolean isRefreshSoCartOverlay() {
 		return isRefreshSoCartOverlay;
 	}
 
-	public void setRefreshSoCartOverlay(boolean isRefreshSoCartOverlay) {
+	@Override
+    public void setRefreshSoCartOverlay(boolean isRefreshSoCartOverlay) {
 		this.isRefreshSoCartOverlay = isRefreshSoCartOverlay;
 	}
 
-	public boolean isSoFeatureOverlay() {
+	@Override
+    public boolean isSoFeatureOverlay() {
 		return soFeatureOverlay;
 	}
 
-	public void setSoFeatureOverlay(boolean soFeatureOverlay) {
+	@Override
+    public void setSoFeatureOverlay(boolean soFeatureOverlay) {
 		this.soFeatureOverlay = soFeatureOverlay;
 	}
 
-	public boolean isRefreshNewSoFeature() {
+	@Override
+    public boolean isRefreshNewSoFeature() {
 		return isRefreshNewSoFeature;
 	}
 
-	public void setRefreshNewSoFeature(boolean isRefreshNewSoFeature) {
+	@Override
+    public void setRefreshNewSoFeature(boolean isRefreshNewSoFeature) {
 		this.isRefreshNewSoFeature = isRefreshNewSoFeature;
 	}    
   

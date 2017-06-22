@@ -15,10 +15,13 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
+import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.event.ImpressionLogger;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.FDCartI;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -27,6 +30,7 @@ import com.freshdirect.smartstore.TabRecommendation;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
+import com.freshdirect.smartstore.fdstore.VariantSelector;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
 import com.freshdirect.webapp.ajax.browse.data.CarouselData;
 import com.freshdirect.webapp.ajax.browse.service.CarouselService;
@@ -41,15 +45,16 @@ import com.freshdirect.webapp.util.ProductRecommenderUtil;
 import com.freshdirect.webapp.util.RecommendationsCache;
 
 public abstract class AbstractCarouselService {
-	private static final Logger LOGGER = LoggerFactory.getInstance(AbstractCarouselService.class);
+    private static final Logger LOGGER = LoggerFactory.getInstance(AbstractCarouselService.class);
 
-	/**
-	 * Return tab configuration
-	 * 
-	 * @param user
-	 * @return
-	 */
-    protected abstract TabRecommendation getTabRecommendation(final HttpServletRequest request, final FDUserI user, final SessionInput input);
+    private static final String SELECTED_SITE_FEATURE_ATTRIBUTE_KEY = "selectedSiteFeature";
+
+    /**
+     * Return tab recommendation variant
+     * 
+     * @return
+     */
+    protected abstract Variant getTabVariant();
 
 	/**
 	 * Maximum number of tabs
@@ -79,21 +84,11 @@ public abstract class AbstractCarouselService {
 	 */
 	protected abstract boolean shouldConsolidateEmptyTabs();
 
-	/**
-	 * Use this name to store selected tab in session
-	 * 
-	 * @return
-	 */
-	protected abstract String getSelectedTabName();
-
-	/**
-	 * Use this name to store selected variant in session
-	 * 
-	 * @return
-	 */
-	protected abstract String getSelectedVariantName();
-
     protected abstract String getEventSource(String siteFeature);
+
+    protected abstract int getSelectedTab(TabRecommendation tabs, HttpSession session, ServletRequest request, FDUserI user);
+
+    protected abstract List<String> getSiteFeatures(FDUserI user);
 
 	/**
      * Calculates recommendations for variant-user pair and populate recommendation tab with carousel.
@@ -138,6 +133,7 @@ public abstract class AbstractCarouselService {
     public RecommendationTab getRecommendationTab(HttpServletRequest request, FDUserI user, RecommendationRequestObject requestData)
             throws FDResourceException {
         HttpSession session = request.getSession();
+        session.setAttribute(SELECTED_SITE_FEATURE_ATTRIBUTE_KEY, requestData.getFeature());
         String siteFeature = requestData.getFeature();
         EnumSiteFeature enumSiteFeature = EnumSiteFeature.getEnum(siteFeature);
         Variant variant = VariantSelectorFactory.getSelector(enumSiteFeature).select(user, false);
@@ -193,8 +189,6 @@ public abstract class AbstractCarouselService {
 			}
 
             final int selectedTab = getSelectedTab(tabs, session, request, user);
-			tabs.setSelected(selectedTab);
-
 			Variant selectedVariant = tabs.get(selectedTab);
 			String parentImpressionId = impressionId;
 			String parentVariantId = tabs.getTabVariant().getId();
@@ -243,65 +237,25 @@ public abstract class AbstractCarouselService {
 		return result;
 	}
 
-    protected int getSelectedTab(TabRecommendation tabs, HttpSession session, ServletRequest request, FDUserI user) {
-		final int numTabs = tabs.size();
-		int selectedTab = 0; // default value
-		Object selectedTabAttribute = session.getAttribute(getSelectedTabName());
+    private TabRecommendation getTabRecommendation(HttpServletRequest request, FDUserI user, SessionInput input) {
+        // variants
+        List<Variant> variants = new ArrayList<Variant>();
+        for (final String siteFeature : getSiteFeatures(user)) {
+            EnumSiteFeature enumSiteFeature = EnumSiteFeature.getEnum(siteFeature);
+            if (EnumSiteFeature.NIL != enumSiteFeature) {
+                VariantSelector selector = VariantSelectorFactory.getSelector(enumSiteFeature);
+                Variant variant = selector.select(user, false);
+                if (variant != null) {
+                    variants.add(variant);
+                }
+            }
+        }
 
-		boolean shouldStoreTabPos = selectedTabAttribute == null; // true == not
-		// stored yet
-		if (selectedTabAttribute != null) {
-			// get the stored one if exist
-			selectedTab = ((Integer) selectedTabAttribute).intValue();
-		}
-
-		if (selectedTab == -1) {
-			shouldStoreTabPos = true;
-			// try to calculate a good tab index
-			if (session.getAttribute(getSelectedVariantName()) != null) {
-				String tabId = (String) session.getAttribute(getSelectedVariantName());
-
-				selectedTab = tabs.getTabIndex(tabId);
-				if (selectedTab == -1 && tabId.indexOf(',') != -1) {
-					String[] variants = tabId.split(",");
-					for (int i = 0; i < variants.length && selectedTab == -1; i++) {
-						selectedTab = tabs.getTabIndex(variants[i]);
-						if (selectedTab != -1) {
-							session.setAttribute(getSelectedVariantName(), variants[i]);
-						}
-					}
-				}
-			}
-			// no success, fallback to 0
-			if (selectedTab == -1) {
-				selectedTab = 0;
-			}
-			// store in the session
-		}
-
-		// tab explicitly set
-		String value = request.getParameter("tab");
-		if (value != null && !"".equals(value)) {
-			selectedTab = Integer.parseInt(value);
-			shouldStoreTabPos = true;
-		}
-
-		if (selectedTab >= numTabs || (session.getAttribute(getSelectedVariantName()) != null && !tabs.get(selectedTab).getId().equals(session.getAttribute(getSelectedVariantName())))) {
-			// reset if selection is out of tab range or the variant of selected
-			// tab has changed
-			selectedTab = 0;
-			shouldStoreTabPos = true;
-		}
-
-		Integer iSelectedTab = new Integer(selectedTab);
-		if (shouldStoreTabPos) {
-			// store changed tab position in session
-			session.setAttribute(getSelectedTabName(), iSelectedTab);
-			session.setAttribute(getSelectedVariantName(), tabs.get(selectedTab).getId());
-		}
-
-		return selectedTab;
-	}
+        TabRecommendation tabs = new TabRecommendation(getTabVariant(), variants);
+        tabs.setError(input.isError());
+        tabs.setSelectedSiteFeature((String) request.getSession().getAttribute(SELECTED_SITE_FEATURE_ATTRIBUTE_KEY));
+        return tabs;
+    }
 
     /**
      * Calculates the title based on variant or site feature.
@@ -326,6 +280,7 @@ public abstract class AbstractCarouselService {
         return "Save on " + prezTitle;
     }
 
+    @SuppressWarnings("deprecation")
     public String getDescription(Variant variant) {
         String description = variant.getServiceConfig().getPresentationDescription();
         if (description == null) {
@@ -444,6 +399,28 @@ public abstract class AbstractCarouselService {
             currentUser = false;
         }
         return currentUser;
+    }
+
+    protected boolean isMaxSampleReached(FDCartI cart) {
+        int numberOfFreeSampleProducts = 0;
+        int eligibleQuantity = FDStoreProperties.getProductSamplesMaxBuyProductsLimit();
+        for (FDCartLineI orderLine : cart.getOrderLines()) {
+            if (null != orderLine.getDiscount() && orderLine.getDiscount().getDiscountType().equals(EnumDiscountType.FREE)) {
+                numberOfFreeSampleProducts++;
+            }
+        }
+        return numberOfFreeSampleProducts >= eligibleQuantity;
+    }
+
+    protected int selectedTab(List<Variant> variants, String selectedSiteFeature) {
+        int selected = 0;
+        for (int i = 0; i < variants.size(); i++) {
+            if (variants.get(i).getSiteFeature().getName().equals(selectedSiteFeature)) {
+                selected = i;
+                break;
+            }
+        }
+        return selected;
     }
 
 }

@@ -776,7 +776,6 @@ public class FDStoreProperties {
     private static final String CATEGORY_TOP_ITEM_CACHE_MAXIMAL_SIZE = "fdstore.category.top.item.cache.maximal.size";
 
     private static final String PROP_PRODUCT_SAMPLES_MAX_BUY_PRODUCTS_LIMIT = "fdstore.product.samples.max.buy.products.limit";
-    private static final String PROP_PRODUCT_SAMPLES_TITLE = "fdstore.product.samples.title";
     private static final String PROP_PRODUCT_SAMPLES_MAX_BUY_QUANTITY_LIMIT = "fdstore.product.samples.max.buy.quantity.limit";
     private static final String PROP_FEED_PUBLISH_URL = "fdstore.feed.publish.url";
     private static final String CTCAPACITY_ELIGIBLE_PROFILES = "fdstore.ctcapacity.eligibleprofiles";
@@ -1650,7 +1649,6 @@ public class FDStoreProperties {
         defaults.put(CATEGORY_TOP_ITEM_CACHE_MAXIMAL_SIZE, "10");
         defaults.put(PROP_PRODUCT_SAMPLES_MAX_BUY_PRODUCTS_LIMIT, "2");
         defaults.put(PROP_PRODUCT_SAMPLES_MAX_BUY_QUANTITY_LIMIT, "1");
-        defaults.put(PROP_PRODUCT_SAMPLES_TITLE, "Choose 2.");
 
         defaults.put("feature.rollout.checkout1_0", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.checkout2_0", "GLOBAL:ENABLED,false;");
@@ -4116,10 +4114,6 @@ public class FDStoreProperties {
 
     public static int getProductSamplesMaxQuantityLimit() {
         return Integer.parseInt(get(PROP_PRODUCT_SAMPLES_MAX_BUY_QUANTITY_LIMIT));
-    }
-
-    public static String getProductSamplesTitle() {
-        return get(PROP_PRODUCT_SAMPLES_TITLE);
     }
 
     public static String getFeedPublishURL() {

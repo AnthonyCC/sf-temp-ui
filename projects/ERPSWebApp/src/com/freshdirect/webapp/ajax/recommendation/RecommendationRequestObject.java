@@ -11,7 +11,6 @@ public class RecommendationRequestObject {
 	private String parentImpressionId;
 	private String impressionId;
 	private String parentVariantId;
-    private String eventSource;
 	private boolean selected = true;
 	
 	public String getTab() {
@@ -69,14 +68,6 @@ public class RecommendationRequestObject {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
-    }
-
-    public String getEventSource() {
-        return eventSource;
-    }
-
-    public void setEventSource(String eventSource) {
-        this.eventSource = eventSource;
     }
 
 }

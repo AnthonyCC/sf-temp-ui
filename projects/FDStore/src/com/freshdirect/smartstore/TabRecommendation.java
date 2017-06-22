@@ -12,6 +12,7 @@ public class TabRecommendation {
     private String[] featureImpId;
     private int selected;
     private boolean error;
+    private String selectedSiteFeature;
 
     public TabRecommendation(Variant tabVariant, List<Variant> variants) {
         this.tabVariant = tabVariant;
@@ -95,6 +96,14 @@ public class TabRecommendation {
      */
     public List<Variant> getVariants() {
         return this.variants;
+    }
+
+    public String getSelectedSiteFeature() {
+        return selectedSiteFeature;
+    }
+
+    public void setSelectedSiteFeature(String selectedSiteFeature) {
+        this.selectedSiteFeature = selectedSiteFeature;
     }
 
 }

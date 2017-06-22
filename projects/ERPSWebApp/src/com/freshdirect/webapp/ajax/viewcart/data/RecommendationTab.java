@@ -8,7 +8,9 @@ import com.freshdirect.webapp.ajax.browse.data.CarouselData;
 
 public class RecommendationTab {
 
-    private static final List<String> PRODUCT_SAMPLE_GRID_SITE_FEAURES = Arrays.asList("PRODUCT_SAMPLE", "DONATION_SAMPLE");
+    public static final String PRODUCT_SAMPLE_SITE_FEATURE = "PRODUCT_SAMPLE";
+    public static final String DONATION_SAMPLE_SITE_FEATURE = "DONATION_SAMPLE";
+    public static final List<String> PRODUCT_SAMPLE_GRID_SITE_FEAURES = Arrays.asList(PRODUCT_SAMPLE_SITE_FEATURE, DONATION_SAMPLE_SITE_FEATURE);
 
 	private String title;
     private String description;
