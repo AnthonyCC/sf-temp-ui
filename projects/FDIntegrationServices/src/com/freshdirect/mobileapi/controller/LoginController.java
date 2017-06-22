@@ -447,7 +447,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 					user.getShoppingCart().setDeliveryAddress(null);
 				} 
 			}
-			
+			user.setFromLogin("Login");
 			EnumEStoreId eStore = (user.getUserContext() != null && user.getUserContext().getStoreContext() != null) ? user.getUserContext().getStoreContext().getEStoreId()
                     : EnumEStoreId.FD;
             if (EnumEStoreId.FDX.equals(eStore)) {

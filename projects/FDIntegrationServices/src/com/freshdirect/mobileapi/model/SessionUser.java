@@ -757,4 +757,13 @@ public class SessionUser {
 	public void setIsMobilePlatForm(boolean isMobilePlatForm){
 		this.sessionUser.setMobilePlatForm(isMobilePlatForm);
 	}
+	
+	public String isFromLogin() {
+		return this.sessionUser.isFromLogin();
+	}
+
+
+	public void setFromLogin(String fromLogin) {
+		this.sessionUser.setFromLogin(fromLogin);
+	}
 }

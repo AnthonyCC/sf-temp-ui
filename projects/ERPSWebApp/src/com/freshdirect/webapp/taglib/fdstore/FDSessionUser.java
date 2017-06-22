@@ -2317,5 +2317,15 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     public void setRefreshNewSoFeature(boolean isRefreshNewSoFeature) {
 		this.isRefreshNewSoFeature = isRefreshNewSoFeature;
 	}    
+	
+	public String isFromLogin() {
+		return user.isFromLogin();
+	}
+
+
+	public void setFromLogin(String fromLogin) {
+		this.user.setFromLogin(fromLogin);
+	}
+
   
 }

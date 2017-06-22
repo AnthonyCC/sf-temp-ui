@@ -24,6 +24,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.cms.application.UserI;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.context.MasqueradeContext;
@@ -2069,12 +2070,12 @@ public class FDCustomerManager {
 	/**
 	 * @return FDCartModel with unavailability info populated
 	 */
-	public static FDCartModel checkAvailability(FDIdentity identity, FDCartModel cart, long timeout) throws FDResourceException {
+	public static FDCartModel checkAvailability(FDIdentity identity, FDCartModel cart, long timeout,String isFromLogin) throws FDResourceException {
 		lookupManagerHome();
 		try {
 
 			FDCustomerManagerSB sb = managerHome.create();
-
+			
 			boolean skipModifyLines = true;
 			boolean sameDeliveryDate = true;
 			if (cart instanceof FDModifyCartModel) {
@@ -2101,7 +2102,8 @@ public class FDCustomerManager {
 			ErpCreateOrderModel createOrder = FDOrderTranslator.getErpCreateOrderModel(cart, skipModifyLines, sameDeliveryDate);
 
 			long timer = System.currentTimeMillis();
-			Map<String, FDAvailabilityI> fdInvMap = sb.checkAvailability(identity, createOrder, timeout);
+		
+			Map<String, FDAvailabilityI> fdInvMap = sb.checkAvailability(identity, createOrder, timeout, isFromLogin);
 			timer = System.currentTimeMillis() - timer;
 
 			Map<String,FDAvailabilityI> invs = FDAvailabilityMapper.mapInventory(cart, createOrder, fdInvMap, skipModifyLines, sameDeliveryDate);

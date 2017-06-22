@@ -3756,17 +3756,25 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 * @return Map of order line number / FDAvailabilityI objects
 	 */
 	public Map<String, FDAvailabilityI> checkAvailability(FDIdentity identity,
-			ErpCreateOrderModel createOrder, long timeout)
+			ErpCreateOrderModel createOrder, long timeout, String isFromLogin)
 			throws FDResourceException {
 		try {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 			Map<String,List<ErpInventoryModel>> erpInvs = sb.checkAvailability(new PrimaryKey(identity
-					.getErpCustomerPK()), createOrder, timeout);
+					.getErpCustomerPK()), createOrder, timeout, isFromLogin);
 
 			Map<String, FDAvailabilityI> fdInvMap = buildAvailability(
 					createOrder, erpInvs);
-
-			logATPFailures(createOrder, fdInvMap, identity.getErpCustomerPK());
+			
+			String transactionType = "";
+			
+			if(isFromLogin.equals("Login")){
+					transactionType = "LOGIN";
+			}
+			else{
+				transactionType = "CHECKOUT";
+			}
+			logATPFailures(createOrder, fdInvMap, identity.getErpCustomerPK(), transactionType);
 
 			return fdInvMap;
 		} catch (CreateException ce) {
@@ -3783,8 +3791,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		Map<String, FDAvailabilityI> fdInvMap = new HashMap<String, FDAvailabilityI>();
 		for (Iterator i = createOrder.getOrderLines().iterator(); i.hasNext();) {
 			ErpOrderLineModel ol = (ErpOrderLineModel) i.next();
-			List<ErpInventoryModel> inventories = (List<ErpInventoryModel>) erpInvs
-					.get(ol.getOrderLineNumber());
+			List<ErpInventoryModel> inventories = (List<ErpInventoryModel>) erpInvs.get(ol.getOrderLineNumber());
 
 			FDAvailabilityI fdInv;
 			switch (inventories.size()) {
@@ -3838,7 +3845,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 
 	private void logATPFailures(ErpCreateOrderModel createOrder,
-			Map<String, FDAvailabilityI> fdInvMap, String erpCustomerId)
+			Map<String, FDAvailabilityI> fdInvMap, String erpCustomerId, String actionType)
 			throws FDResourceException {
 		List<ATPFailureInfo> lst = new ArrayList<ATPFailureInfo>();
 		String plantId="1000";
@@ -3862,7 +3869,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				ATPFailureInfo fi = new ATPFailureInfo(requestedRange
 						.getStartDate(), ol.getMaterialNumber(), ol
 						.getQuantity(), ol.getSalesUnit(), sInfo.getQuantity(),
-						erpCustomerId,plantId);
+						erpCustomerId,plantId,actionType);
 				lst.add(fi);
 			}
 		}

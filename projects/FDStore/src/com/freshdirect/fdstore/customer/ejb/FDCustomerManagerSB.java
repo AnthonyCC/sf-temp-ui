@@ -493,7 +493,7 @@ public interface FDCustomerManagerSB extends EJBObject {
      *
      * @return Map of order line number / FDAvailabilityI objects
      */
-    public Map<String, FDAvailabilityI> checkAvailability(FDIdentity identity, ErpCreateOrderModel createOrder, long timeout) throws FDResourceException, RemoteException;
+    public Map<String, FDAvailabilityI> checkAvailability(FDIdentity identity, ErpCreateOrderModel createOrder, long timeout, String isFromLogin) throws FDResourceException, RemoteException;
     
     /**
      * CallCenter method for locating all customers meeting the given criteria
@@ -900,6 +900,6 @@ public interface FDCustomerManagerSB extends EJBObject {
 
 	public ErpCustomerModel getCustomer(FDIdentity identity) throws FDResourceException, RemoteException;
 
-	public Map<String, List<PendingOrder>> getPendingDeliveries() throws FDResourceException, RemoteException;;
+	public Map<String, List<PendingOrder>> getPendingDeliveries() throws FDResourceException, RemoteException;
 }
 

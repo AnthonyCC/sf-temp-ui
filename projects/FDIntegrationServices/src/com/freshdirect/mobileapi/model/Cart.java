@@ -201,7 +201,7 @@ public class Cart {
          * WHY: The following logic was duplicate because it was specified in a JSP file.
          * WHAT: The duplicated code performs availability check of items in user's cart.
          */
-        this.cart = FDCustomerManager.checkAvailability(user.getFDSessionUser().getIdentity(), ((FDCartModel) cart), 30000);
+        this.cart = FDCustomerManager.checkAvailability(user.getFDSessionUser().getIdentity(), ((FDCartModel) cart), 30000, user.isFromLogin());
         // recalculate promotions
         user.getFDSessionUser().updateUserState();
         boolean isAvailable = ((FDCartModel) cart).isFullyAvailable();

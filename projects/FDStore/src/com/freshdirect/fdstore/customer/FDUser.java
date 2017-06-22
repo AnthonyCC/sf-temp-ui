@@ -134,8 +134,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     private final static Category LOGGER = LoggerFactory.getInstance(FDUser.class);
     public static final String ROBOT_USER_NAME = "robot";
-
-    private static final long serialVersionUID = 8492744405934393676L;
+    
+	private static final long serialVersionUID = 8492744405934393676L;
 
     public static final String SERVICE_EMAIL = "service@freshdirect.com";
     public final static int CAMPAIGN_MSG_VIEW_LIMIT = 4;
@@ -173,7 +173,8 @@ public class FDUser extends ModelSupport implements FDUserI {
     private boolean loggedIn = false;
 
     private boolean surveySkipped = false;
-
+    public String fromLogin;
+    
     private transient ErpCustomerInfoModel customerInfoModel;
     private transient FDOrderHistory cachedOrderHistory;
     private transient CustomerAvgOrderSize historicOrderSize;
@@ -3646,6 +3647,16 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public void setRefreshSoCartOverlay(boolean refreshSoCartOverlay) {
 		this.refreshSoCartOverlay = refreshSoCartOverlay;
 	}
+	
+	public String isFromLogin() {
+		return fromLogin;
+	}
+
+
+	public void setFromLogin(String fromLogin) {
+		this.fromLogin = fromLogin;
+	}
+
 
 	public boolean isRefreshNewSoFeature() {
 		return refreshNewSoFeature;
@@ -3662,7 +3673,6 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public void setSoFeatureOverlay(boolean soFeatureOverlay) {
 		this.soFeatureOverlay = soFeatureOverlay;
 	}
-
 
 	// Only created for jackson parsing in Storefront 2.0
 	public void setReferrerEligible(Boolean referrerEligible) {

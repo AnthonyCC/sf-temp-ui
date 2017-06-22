@@ -109,6 +109,7 @@ import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.TimeslotContext;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
+import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.DeliveryAddressValidator;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -762,7 +763,7 @@ public class StandingOrderUtil {
 	}
 	
 	protected static FDCartModel checkAvailability(FDIdentity identity, FDCartModel cart, long timeout) throws FDResourceException {
-		return FDCustomerManager.checkAvailability( identity, cart, timeout );
+		return FDCustomerManager.checkAvailability( identity, cart, timeout,AvailabilityService.ATP_CHECKOUT );
 	}
 
 	public List<FDProductSelectionI> getValidProductSelectionsFromCCLItems(List<FDCustomerListItem> cclItems) throws FDResourceException {
