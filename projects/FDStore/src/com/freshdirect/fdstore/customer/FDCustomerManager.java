@@ -396,7 +396,7 @@ public class FDCustomerManager {
 	}
 
 
-	private static void updateZoneInfo (FDUserI user) throws FDResourceException {
+	public static void updateZoneInfo (FDUserI user) throws FDResourceException {
 		ErpAddressModel address = user.getShoppingCart().getDeliveryAddress();
 		if(address != null) {
 			Date day = DateUtil.truncate(DateUtil.addDays(new Date(), 1));
