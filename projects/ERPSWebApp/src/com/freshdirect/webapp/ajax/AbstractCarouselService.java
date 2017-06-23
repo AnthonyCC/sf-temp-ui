@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.ajax;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -85,11 +86,14 @@ public abstract class AbstractCarouselService {
 	 */
 	protected abstract boolean shouldConsolidateEmptyTabs();
 
-    protected abstract String getEventSource(String siteFeature);
-
     protected abstract int getSelectedTab(TabRecommendation tabs, HttpSession session, ServletRequest request, FDUserI user);
 
     protected abstract List<String> getSiteFeatures(FDUserI user);
+
+    protected String getEventSource(String siteFeature) {
+        // TODO create site feature >> cm event source mapping
+        return siteFeature;
+    }
 
 	/**
      * Calculates recommendations for variant-user pair and populate recommendation tab with carousel.
@@ -107,28 +111,32 @@ public abstract class AbstractCarouselService {
      * 
      * @throws FDResourceException
      */
-	public void doGenericRecommendation(HttpSession session, HttpServletRequest request, FDSessionUser user, RecommendationTab recommendationTab, Variant variant, String parentImpressionId,
+    public CarouselData doGenericRecommendation(HttpSession session, HttpServletRequest request, FDSessionUser user, Variant variant,
+            String parentImpressionId,
             String parentVariantId) throws FDResourceException {
         Recommendations recommendations = getRecommendations(variant, request, session, parentImpressionId, user);
 
-		if (recommendations == null || recommendations.getProducts().isEmpty()) {
-			if (FDStoreProperties.isLogRecommenderResults()) {
-				LOGGER.debug("Return empty result");
-			}
-			recommendations = null;
-		}
+        if (recommendations == null || recommendations.getProducts().isEmpty()) {
+            if (FDStoreProperties.isLogRecommenderResults()) {
+                LOGGER.debug("Return empty result");
+            }
+        }
 
-		if (recommendations != null && !recommendations.isLogged()) {
-			logImpressions(recommendations, user, request, parentImpressionId, parentVariantId);
-			logRecommenderResults(recommendations.getProducts());
-		}
+        if (recommendations != null && !recommendations.isLogged()) {
+            logImpressions(recommendations, user, request, parentImpressionId, parentVariantId);
+            logRecommenderResults(recommendations.getProducts());
+        }
 
-		if (recommendations != null && recommendations.getAllProducts().size() > 0) {
-			EnumSiteFeature siteFeature = variant.getSiteFeature();
-            CarouselData carousel = CarouselService.defaultService().createCarouselData(null, siteFeature.getName(), recommendations.getAllProducts(), user,
+        EnumSiteFeature siteFeature = variant.getSiteFeature();
+        CarouselData carousel = null;
+        if (recommendations != null) {
+            carousel = CarouselService.defaultService().createCarouselData(null, siteFeature.getName(), recommendations.getAllProducts(), user,
                     getEventSource(siteFeature.getName()), recommendations.getVariant().getId());
-			recommendationTab.setCarouselData(carousel);
-		}
+        } else {
+            carousel = CarouselService.defaultService().createCarouselData(null, siteFeature.getName(), Collections.<ProductModel> emptyList(), user,
+                    getEventSource(siteFeature.getName()), variant.getId());
+        }
+        return carousel;
 	}
 
     public RecommendationTab getRecommendationTab(HttpServletRequest request, FDUserI user, RecommendationRequestObject requestData)
@@ -151,7 +159,7 @@ public abstract class AbstractCarouselService {
                 .setImpressionId(impressionId).setParentVariantId(parentVariantId).setDescription(getDescription(variant));
         recommendationTab.setSelected(requestData.isSelected());
         if (requestData.isSelected()) {
-            doGenericRecommendation(session, request, (FDSessionUser) user, recommendationTab, variant, parentImpressionId, parentVariantId);
+            recommendationTab.setCarouselData(doGenericRecommendation(session, request, (FDSessionUser) user, variant, parentImpressionId, parentVariantId));
         }
         return recommendationTab;
     }
@@ -212,16 +220,13 @@ public abstract class AbstractCarouselService {
 			if (consolidate) {
 				// APPBUG-2752 Get recommendations for all tabs in order to remove empty ones
 				for (int i=0; i<tabs.size(); i++) {
-					doGenericRecommendation(session, request, user,
-							result.getRecommendationTabs().get(i), tabs.get(i),
-                            parentImpressionId, parentVariantId);
+                    result.getRecommendationTabs().get(i).setCarouselData(doGenericRecommendation(session, request, user, tabs.get(i), parentImpressionId, parentVariantId));
 					// LOGGER.warn(">>> TAB["+i+"], SF="+result.getRecommendationTabs().get(i).getSiteFeature()+", V="+tabs.get(i).getId() + ": " + result.getRecommendationTabs().get(i).getCarouselData() );
 				}
 			} else {
 				// APPBUG-2752 Get recommendations for only the selected (visible) tab
-				doGenericRecommendation(session, request, user,
-						result.getRecommendationTabs().get(selectedTab), selectedVariant,
-                        parentImpressionId, parentVariantId);
+                result.getRecommendationTabs().get(selectedTab)
+                        .setCarouselData(doGenericRecommendation(session, request, user, selectedVariant, parentImpressionId, parentVariantId));
 			}
 
 			// post-process tabs

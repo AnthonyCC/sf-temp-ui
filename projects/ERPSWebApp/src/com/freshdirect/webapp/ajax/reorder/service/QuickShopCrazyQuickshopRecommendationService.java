@@ -3,7 +3,6 @@ package com.freshdirect.webapp.ajax.reorder.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -34,13 +33,16 @@ import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
+import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.smartstore.CarouselItemType;
 import com.freshdirect.smartstore.fdstore.FactorUtil;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.smartstore.scoring.HelperFunctions;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
+import com.freshdirect.webapp.ajax.RecommenderServlet;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.recommendation.RecommendationRequestObject;
 import com.freshdirect.webapp.ajax.reorder.QuickShopHelper;
@@ -332,7 +334,7 @@ public class QuickShopCrazyQuickshopRecommendationService {
 			}
 		}
 
-		Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> result = null;
 		try {
 			int maxItems = requestData.getNumberOfItems(); // TODO: scripted
 			// recommender
@@ -355,14 +357,7 @@ public class QuickShopCrazyQuickshopRecommendationService {
 			title = getTheCrazyQuickshopTitle(deptId);
 
 			if (!items.isEmpty()) {
-                // TODO use AbstractRecommenderServlet.createRecommenderResult instead
-				Map<String, Object> recommenderResult = new HashMap<String, Object>();
-				recommenderResult.put("items", items);
-				recommenderResult.put("siteFeature", siteFeature);
-				if (title != null) {
-					recommenderResult.put("title", title);
-				}
-				result.put("recommenderResult", recommenderResult);
+                result = RecommenderServlet.createRecommenderResult(siteFeature, CarouselItemType.GRID.getType(), title, items, EnumEventSource.REORDER.getName());
 			}
 		} catch (FDResourceException e) {
 			BaseJsonServlet.returnHttpError(500, "Cannot collect recommendations. e: " + e);

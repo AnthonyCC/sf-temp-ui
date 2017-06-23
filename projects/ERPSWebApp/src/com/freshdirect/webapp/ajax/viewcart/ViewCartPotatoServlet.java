@@ -7,12 +7,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.webapp.ajax.AbstractRecommenderServlet;
+import com.freshdirect.webapp.ajax.RecommenderServlet;
 import com.freshdirect.webapp.ajax.recommendation.RecommendationRequestObject;
 import com.freshdirect.webapp.ajax.reorder.service.QuickShopCarouselService;
 import com.freshdirect.webapp.ajax.reorder.service.QuickShopCrazyQuickshopRecommendationService;
 
-public class ViewCartPotatoServlet extends AbstractRecommenderServlet {
+public class ViewCartPotatoServlet extends RecommenderServlet {
 
 	private static final long serialVersionUID = 8935579121624355769L;
 
