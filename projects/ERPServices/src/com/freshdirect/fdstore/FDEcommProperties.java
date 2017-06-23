@@ -72,6 +72,7 @@ public class FDEcommProperties {
     public  final static String FDXOrderPickEligibleSB ="erp.ejb.FDXOrderPickEligibleSB";//story SF17-64
     public  final static String SAPLoaderSB ="sap.ejb.SAPLoaderSB";
     public  final static String CmsFeedmanagerSB ="fdstore.cms.CMSFeedManagerSB";//story SF17-22
+    public final static  String FDReferralManagerSB = "fdstore.referral.ejb.FDReferralManagerSB";
 	public final static String MailerGatewaySB ="mail.ejb.MailerGatewaySB";
 	
     
@@ -119,6 +120,7 @@ public class FDEcommProperties {
         defaults.put(FDXOrderPickEligibleSB, FALSE);
         defaults.put(SAPLoaderSB, FALSE);
         defaults.put(CmsFeedmanagerSB, FALSE);
+        defaults.put(FDReferralManagerSB, FALSE);
         
         
         

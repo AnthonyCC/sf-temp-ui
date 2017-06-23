@@ -33,6 +33,15 @@ import com.freshdirect.ecommerce.data.delivery.RestrictedAddressModelData;
 import com.freshdirect.ecommerce.data.delivery.RestrictionData;
 import com.freshdirect.ecommerce.data.delivery.sms.SmsAlertETAInfoData;
 import com.freshdirect.ecommerce.data.dlv.AddressData;
+import com.freshdirect.ecommerce.data.referral.FDReferralReportLineData;
+import com.freshdirect.ecommerce.data.referral.FDUserData;
+import com.freshdirect.ecommerce.data.referral.ReferralCampaignData;
+import com.freshdirect.ecommerce.data.referral.ReferralChannelData;
+import com.freshdirect.ecommerce.data.referral.ReferralHistoryData;
+import com.freshdirect.ecommerce.data.referral.ReferralObjectiveData;
+import com.freshdirect.ecommerce.data.referral.ReferralPartnerData;
+import com.freshdirect.ecommerce.data.referral.ReferralProgramData;
+import com.freshdirect.ecommerce.data.referral.ReferralProgramInvitaionData;
 import com.freshdirect.ecommerce.data.sessionimpressionlog.SessionImpressionLogEntryData;
 import com.freshdirect.ecommerce.data.smartstore.EnumSiteFeatureData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyData;
@@ -573,6 +582,58 @@ public interface IECommerceService {
 	public void postSubmitPendingCouponTransactions(String saleId) throws RemoteException;
 	
 	public void enqueueEmail(EmailI email) throws RemoteException;
+	
+	public void updateReferralStatus(String referralId, String ststus)throws FDResourceException,  RemoteException;
+	
+	public void updateReferralProgram(ReferralProgramData refProgram) throws FDResourceException, RemoteException;
+	
+	public void updateReferralChannel(ReferralChannelData channel) throws FDResourceException, RemoteException;
+	
+	public void updateReferralCampaign(ReferralCampaignData campaign) throws FDResourceException, RemoteException;
+	
+	public void updateReferralPartner(ReferralPartnerData partner) throws FDResourceException, RemoteException;
+	
+	public void updateReferralObjective(ReferralObjectiveData objective) throws FDResourceException, RemoteException;
+	
+	public void removeReferralProgram(String refProgramId[]) throws FDResourceException, RemoteException;
+	
+	public void removeReferralChannel(String channelIds[]) throws FDResourceException, RemoteException;
+	
+	public void removeReferralCampaign(String campaignIds[]) throws FDResourceException, RemoteException;
+	
+	public void removeReferralPartner(String partnerIds[]) throws FDResourceException, RemoteException;
+	
+	public void removeReferralObjective(String objectiveIds[]) throws FDResourceException, RemoteException;
+	
+	public abstract ReferralChannelData createReferralChannel(ReferralChannelData channel) throws FDResourceException,  RemoteException;
+
+	public abstract ReferralPartnerData createReferralPartner(ReferralPartnerData partner) throws FDResourceException,  RemoteException;
+
+	public abstract ReferralObjectiveData createReferralObjective(ReferralObjectiveData objective) throws FDResourceException,  RemoteException;
+
+	public abstract ReferralCampaignData createReferralCampaign(ReferralCampaignData campaign) throws FDResourceException, RemoteException;
+
+	public abstract ReferralProgramData createReferralProgram(ReferralProgramData program) throws FDResourceException,  RemoteException;
+
+	public abstract ReferralHistoryData createReferralHistory(ReferralHistoryData history) throws FDResourceException,  RemoteException;
+	
+
+	//public abstract ReferralProgramInvitaionData createReferralInvitee(ReferralProgramInvitaionData referral, FDUserData user) throws FDResourceException,  RemoteException;
+
+	public abstract void storeReferral(ReferralProgramInvitaionData referral, FDUserData user) throws FDResourceException, RemoteException;
+
+	public abstract ReferralProgramInvitaionData loadReferralFromPK(String referralId) throws FDResourceException, RemoteException;
+
+	public abstract List<ReferralProgramInvitaionData> loadReferralsFromReferralProgramId( String referralProgramId) throws FDResourceException, RemoteException;
+
+	public abstract List<ReferralProgramInvitaionData> loadReferralsFromReferrerCustomerId(String referrerCustomerId) throws FDResourceException, RemoteException;
+
+	public abstract List<ReferralProgramInvitaionData> loadReferralsFromReferralEmailAddress( String referralEmailAddress) throws FDResourceException, RemoteException;
+
+	public abstract List<FDReferralReportLineData> loadReferralReportFromReferrerCustomerId(String referrerCustomerId) throws FDResourceException, RemoteException;
+	
+	public abstract List<FDReferralReportLineData> loadReferralReportFromReferralCustomerId( String referralCustomerId) throws FDResourceException,	RemoteException;
+	
 	
 
 }
