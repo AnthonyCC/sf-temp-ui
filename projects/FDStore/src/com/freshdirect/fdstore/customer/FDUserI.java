@@ -730,8 +730,8 @@ public interface FDUserI extends java.io.Serializable {
 
 	public void setRefreshNewSoFeature(boolean isRefreshNewSoFeature);
 	
-	// Only created for jackson parsing in Storefront 2.0
-	public void setReferrerEligible(Boolean referrerEligible) ;
+	/*// Only created for jackson parsing in Storefront 2.0
+	public void setReferrerEligible(Boolean referrerEligible) ;*/
 	
 	
 
