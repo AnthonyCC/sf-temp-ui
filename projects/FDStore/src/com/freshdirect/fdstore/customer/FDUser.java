@@ -1218,7 +1218,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     public String getCustomerServiceContact() {
         try {
             String state = "";
-            String contactNumber = "1-212-796-8002";// DEFAULT
+            String contactNumber = "1-866-283-7374";// DEFAULT
             if (this.isChefsTable()) {
                 contactNumber = "1-866-511-1240";
             } else {

@@ -5,7 +5,7 @@ public interface SystemMessageList {
 	//
 	// Some single quotes need to be escaped like so ''
 	//
-	public final static String CUSTOMER_SERVICE_CONTACT	= "1-212-796-8002";
+	public final static String CUSTOMER_SERVICE_CONTACT	= "1-866-283-7374";
 
 	public final static String MSG_REQUIRED				= "This information is required.";
     public final static String MSG_TECHNICAL_ERROR    	= "Sorry, we're experiencing technical difficulties. Please try again later.";
