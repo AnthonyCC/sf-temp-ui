@@ -61,5 +61,18 @@ var FreshDirect = FreshDirect || {};
   });
   warningMessage.listen();
 
+  var cartCarousel = Object.create(WIDGET,{
+    signal:{
+      value:'carouselData'
+    },
+    template: {
+      value:common.viewCartTabbedCarousel
+    },
+    placeholder:{
+      value:'#cartCarousels'
+    }
+  });
+  cartCarousel.listen();
+
   fd.modules.common.utils.register('expressco', 'viewCartWarningMessage', warningMessage, fd);
 }(FreshDirect));

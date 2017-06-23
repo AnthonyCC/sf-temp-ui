@@ -262,7 +262,7 @@ public abstract class AbstractCarouselService {
         }
 
         TabRecommendation tabs = new TabRecommendation(getTabVariant(), variants);
-        // tabs.setError(input.isError());
+        tabs.setError(input.isError());
         tabs.setSelectedSiteFeature((String) request.getSession().getAttribute(SELECTED_SITE_FEATURE_ATTRIBUTE_KEY));
         tabs.setParentImpressionId((String) request.getSession().getAttribute(PARENT_IMPRESSION_ID_ATTRIBUTE_KEY));
         return tabs;
