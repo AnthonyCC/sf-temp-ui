@@ -154,7 +154,8 @@ public class SocialAccountService implements AccountService {
 					 * The socialUserId has been linked with FD account. 
 					 * Auto Login.
 					 */
-				    String updatedSuccessPage = UserUtil.loginUser(session, request, response,null, socialUserId, null, "", this.updatedSuccessPage, true);
+					/* merge cart string MUST be passed here for social to do merge cart functionality */
+				    String updatedSuccessPage = UserUtil.loginUser(session, request, response,null, socialUserId, null, "/login/merge_cart.jsp", this.updatedSuccessPage, true);
 							    
 				    if(updatedSuccessPage != null) {
 				       //redirect to successpage
