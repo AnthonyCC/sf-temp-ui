@@ -68,35 +68,29 @@ if (mobWeb) {
 			<div class='cartheader__text mobweb'>
 				<h1 class='cartheader__title'>Your Cart</h1>
 			</div>
-		<% } %>
-
-		<% if (mobWeb) { /* mobweb, above tabs */ %>
 			<%-- cart content --%>
 			<div id="cartcontent" class="view_cart" data-ec-linetemplate="expressco.viewcartlines"></div>
-		<% } %>
+		<% } else { //normal web %>
 		
-		<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user_view_cart)) { %>
-			<div id="cartCarousels">
-				<soy:render template="common.viewCartTabbedCarousel" data="${cartDataPotato.carouselData}" />
-			</div>
-        <% } else { 
-			//APPDEV-5516 : Cart Carousel - Grand Giving Donation Technology
-			// If the donationProductSampleCarousel is not enabled, the fallback div is productsamplecarousel
-		    if(FDStoreProperties.isPropDonationProductSamplesEnabled()){ %>
-		     <div id="donationProductSampleCarousel" class="donation-product-sample-carousel">
-		        <soy:render template="expressco.donationProductSampleCarouselWrapper" data="${cartDataPotato.carouselData}" />
-		      </div>     
-			<% } else { %>
-			  <div id="productsamplecarousel" class="product-sample-carousel">
-		        <soy:render template="expressco.productSampleCarouselWrapper" data="${cartDataPotato.carouselData}" />
-		      </div>
-			<% }
-		} %>
-		
-		<% if (!mobWeb) { /* non-mobweb, below tabs */ %>
-			<%-- cart content --%>
-			<div id="cartcontent" class="view_cart" data-ec-linetemplate="expressco.viewcartlines"></div>
-		<% } %>
+			<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user_view_cart)) { %>
+				<div id="cartCarousels">
+					<soy:render template="common.viewCartTabbedCarousel" data="${cartDataPotato.carouselData}" />
+				</div>
+	        <% } else { 
+				//APPDEV-5516 : Cart Carousel - Grand Giving Donation Technology
+				// If the donationProductSampleCarousel is not enabled, the fallback div is productsamplecarousel
+			    if(FDStoreProperties.isPropDonationProductSamplesEnabled()){ %>
+			     <div id="donationProductSampleCarousel" class="donation-product-sample-carousel">
+			        <soy:render template="expressco.donationProductSampleCarouselWrapper" data="${cartDataPotato.carouselData}" />
+			      </div>     
+				<% } else { %>
+				  <div id="productsamplecarousel" class="product-sample-carousel">
+			        <soy:render template="expressco.productSampleCarouselWrapper" data="${cartDataPotato.carouselData}" />
+			      </div>
+				<% }
+			} %>
+			 <div id="cartcontent" class="view_cart" data-ec-linetemplate="expressco.viewcartlines"></div>
+		  <% } %>		
     </div>
 
     <script>
