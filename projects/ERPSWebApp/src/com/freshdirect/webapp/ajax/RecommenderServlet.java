@@ -1,5 +1,6 @@
 package com.freshdirect.webapp.ajax;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.webapp.ajax.product.data.BasicProductData;
 import com.freshdirect.webapp.ajax.recommendation.RecommendationRequestObject;
 import com.freshdirect.webapp.ajax.viewcart.data.RecommendationTab;
 import com.freshdirect.webapp.ajax.viewcart.service.ViewCartCarouselService;
@@ -15,9 +17,14 @@ import com.freshdirect.webapp.ajax.viewcart.service.ViewCartCarouselService;
 /**
  * Abstract class that supplies recommendations for tabbed carousels
  */
-public abstract class AbstractRecommenderServlet extends BaseJsonServlet {
+public class RecommenderServlet extends BaseJsonServlet {
 
     private static final long serialVersionUID = -414933801631213621L;
+
+    @Override
+    protected boolean synchronizeOnUser() {
+        return false;
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
@@ -31,19 +38,22 @@ public abstract class AbstractRecommenderServlet extends BaseJsonServlet {
         }
     }
 
-    protected Map<String, Object> createRecommenderResult(RecommendationTab recommendationTab) {
+    public static Map<String, Object> createRecommenderResult(RecommendationTab recommendationTab) {
+        return createRecommenderResult(recommendationTab.getSiteFeature(), recommendationTab.getItemType(), recommendationTab.getDescription(),
+                recommendationTab.getCarouselData().getProducts(), recommendationTab.getCarouselData().getCmEventSource());
+    }
+
+    public static Map<String, Object> createRecommenderResult(String siteFeature, String itemType, String title, Collection<? extends BasicProductData> items,
+            String cmEventSource) {
         Map<String, Object> result = new HashMap<String, Object>();
         Map<String, Object> recommenderResult = new HashMap<String, Object>();
-        if (recommendationTab != null) {
-            recommenderResult.put("siteFeature", recommendationTab.getSiteFeature());
-            recommenderResult.put("itemType", recommendationTab.getItemType());
-            recommenderResult.put("title", recommendationTab.getDescription());
-            if (recommendationTab.getCarouselData() != null) {
-                recommenderResult.put("items", recommendationTab.getCarouselData().getProducts());
-                recommenderResult.put("cmEventSource", recommendationTab.getCarouselData().getCmEventSource());
-            }
-        }
+        recommenderResult.put("siteFeature", siteFeature);
+        recommenderResult.put("itemType", itemType);
+        recommenderResult.put("title", title);
+        recommenderResult.put("items", items);
+        recommenderResult.put("cmEventSource", cmEventSource);
         result.put("recommenderResult", recommenderResult);
         return result;
     }
+
 }
