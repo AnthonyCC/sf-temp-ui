@@ -2,8 +2,10 @@ package com.freshdirect.mobileapi.controller;
 
 import static com.freshdirect.mobileapi.controller.data.response.Idea.ideaFor;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +18,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.BannerModel;
 import com.freshdirect.fdstore.content.CMSPageRequest;
@@ -27,11 +30,14 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.BrowseResult;
+import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
+import com.freshdirect.mobileapi.controller.data.request.ModuleContainerRequest;
 import com.freshdirect.mobileapi.controller.data.response.FeaturedCategoriesResponse;
 import com.freshdirect.mobileapi.controller.data.response.HomeGetAllResponse;
 import com.freshdirect.mobileapi.controller.data.response.HomeResponse;
 import com.freshdirect.mobileapi.controller.data.response.Idea;
+import com.freshdirect.mobileapi.controller.data.response.ModuleContainerResponse;
 import com.freshdirect.mobileapi.controller.data.response.PageMessageResponse;
 import com.freshdirect.mobileapi.controller.data.response.WebPageResponse;
 import com.freshdirect.mobileapi.exception.JsonException;
@@ -41,15 +47,23 @@ import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.util.BrowseUtil;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.wcms.CMSContentFactory;
+import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
+import com.freshdirect.webapp.ajax.modulehandling.data.ModuleConfig;
+import com.freshdirect.webapp.ajax.modulehandling.data.ModuleContainerData;
+import com.freshdirect.webapp.ajax.modulehandling.data.ModuleData;
+import com.freshdirect.webapp.ajax.modulehandling.service.ModuleHandlingService;
 
 public class HomeController extends BaseController {
 
-    private static Logger LOGGER = LoggerFactory.getInstance(HomeController.class);
-    
+    private static final Logger LOGGER = LoggerFactory.getInstance(HomeController.class);
+
+    private static final String MODULE_CONTAINER_ERROR_MESSAGE = "Error occured when loading module container data of {0} id";
+    private static final String MODULE_CONTAINER_WARNING_MESSAGE = "No module with {0} id is found";
 	private static final String ACTION_GET_ALL = "getAll";
 	private static final String ACTION_GET_FEATURED_CATEGORIES = "getFeaturedCategories";
 	private static final String ACTION_GET_All_DETAILS = "getAllDetails";
 	private static final String ACTION_GET_CMS_PAGE = "getPage";
+    private static final String ACTION_GET_MODULE = "getModule";
 	private static final Integer DEFAULT_PAGE = 1;
 	private static final Integer DEFAULT_MAX = 998;
 
@@ -62,24 +76,29 @@ public class HomeController extends BaseController {
 	protected ModelAndView processRequest(HttpServletRequest request,
 			HttpServletResponse response, ModelAndView model, String action,
 			SessionUser user) throws JsonException, FDException {
-		
+        Message message = null;
 		if (ACTION_GET_ALL.equals(action)) {
-			return all(model, user);
+            message = all(user);
 		} else if (ACTION_GET_FEATURED_CATEGORIES.equals(action)) {
-			return featuredCategories(model, user);
+            message = featuredCategories(user);
 		} else if(ACTION_GET_All_DETAILS.equals(action)){
-			return getAllDetails(model, user, request);
+            message = getAllDetails(user, request);
         } else if (ACTION_GET_CMS_PAGE.equals(action)) {
             if (isCheckLoginStatusEnable(request)) {
-                return getCMSPages(model, user, request, response);
+                message = getCMSPages(user, request, response);
             } else {
-                return getCMSPage(model, user, request, response);
+                message = getCMSPage(user, request, response);
             }
+        } else if (ACTION_GET_MODULE.equals(action)) {
+            message = getModule(user, request, response);
+        } else {
+            throw new UnsupportedOperationException();
         }
-		throw new UnsupportedOperationException();
+        setResponseMessage(model, message, user);
+        return model;
 	}
 
-	private ModelAndView featuredCategories(ModelAndView model, SessionUser user) throws JsonException {
+    private FeaturedCategoriesResponse featuredCategories(SessionUser user) throws JsonException {
 		FeaturedCategoriesResponse result = new FeaturedCategoriesResponse();
         StoreModel store = ContentFactory.getInstance().getStore();
         List<Category> categories = new ArrayList<Category>();
@@ -88,11 +107,10 @@ public class HomeController extends BaseController {
 		}
         result.setFeaturedCategories(categories);
 //        result.setHomescreenBanner(homescreenBanner);
-		setResponseMessage(model, result, user);
-		return model;
+        return result;
 	}
 
-	private ModelAndView all(ModelAndView model, SessionUser user) throws JsonException {
+    private HomeGetAllResponse all(SessionUser user) throws JsonException {
         HomeGetAllResponse response = new HomeGetAllResponse();
         Set<ContentKey> contentKeysByType = CmsManager.getInstance().getContentKeysByType(ContentType.get("Banner"));
         List<Idea> carrouselItems = new ArrayList<Idea>();
@@ -119,9 +137,7 @@ public class HomeController extends BaseController {
 			}
 		}
 		response.setShops(shops);
-		
-        setResponseMessage(model, response, user);
-        return model;
+        return response;
 	}
 
 	/*
@@ -134,7 +150,7 @@ public class HomeController extends BaseController {
 	 * 3. to iterate over the list of categories and get the list of products.
 	 * 
 	 */
-	private ModelAndView getAllDetails(ModelAndView model, SessionUser user, HttpServletRequest request) throws JsonException, FDException{
+    private HomeResponse getAllDetails(SessionUser user, HttpServletRequest request) throws JsonException, FDException {
 		
 		HomeResponse response = new HomeResponse();
 		
@@ -195,13 +211,10 @@ public class HomeController extends BaseController {
         
         //-------------------------------------------- END ------------------------------------------------------------------  
         response.setConfiguration(getConfiguration(user));
-		
-		// Add all these to the response and send back the model.
-        setResponseMessage(model, response, user);
-		return model;
+        return response;
 	}
 	
-	private ModelAndView getCMSPage(ModelAndView model, SessionUser user, HttpServletRequest request, HttpServletResponse response) throws JsonException {
+    private WebPageResponse getCMSPage(SessionUser user, HttpServletRequest request, HttpServletResponse response) throws JsonException {
 		WebPageResponse pageResponse = new WebPageResponse();
 		CMSPageRequest pageRequest = parseRequestObject(request, response, CMSPageRequest.class);
 		
@@ -231,11 +244,10 @@ public class HomeController extends BaseController {
 		}
 		
 		setMediaPath(pageResponse);
-		setResponseMessage(model,pageResponse,user);
-		return model;
+        return pageResponse;
 	}
 	
-    private ModelAndView getCMSPages(ModelAndView model, SessionUser user, HttpServletRequest request, HttpServletResponse response) throws JsonException, FDException {
+    private PageMessageResponse getCMSPages(SessionUser user, HttpServletRequest request, HttpServletResponse response) throws JsonException, FDException {
         CMSPageRequest pageRequest = parseRequestObject(request, response, CMSPageRequest.class);
 
         if (!pageRequest.isPreview() && pageRequest.getPlantId() == null) {
@@ -244,9 +256,7 @@ public class HomeController extends BaseController {
 
         PageMessageResponse pageResponse = new PageMessageResponse();
         populateHomePages(user, pageRequest, pageResponse, request);
-
-        setResponseMessage(model, pageResponse, user);
-        return model;
+        return pageResponse;
     }
 
 	private void setMediaPath(WebPageResponse pageResponse) {
@@ -334,4 +344,35 @@ public class HomeController extends BaseController {
 		}
 	}
 	
+    private Message getModule(SessionUser user, HttpServletRequest request, HttpServletResponse response) throws JsonException {
+        ModuleContainerResponse messageResponse = new ModuleContainerResponse();
+
+        ModuleContainerRequest messageRequest = parseRequestObject(request, response, ModuleContainerRequest.class);
+        String moduleContainerId = messageRequest.getModuleContainerId();
+
+        try {
+            ModuleContainerData moduleContainer = ModuleHandlingService.getDefaultService().loadModuleContainer(moduleContainerId, user.getFDSessionUser(), request.getSession());
+            Map<String, ModuleData> data = moduleContainer.getData();
+            List<ModuleConfig> config = moduleContainer.getConfig();
+            messageResponse.setData(data);
+            messageResponse.setConfig(config);
+            if (data.isEmpty() && config.isEmpty()) {
+                messageResponse.addWarningMessage(MessageFormat.format(MODULE_CONTAINER_WARNING_MESSAGE, moduleContainerId));
+                messageResponse.setStatus(Message.STATUS_FAILED);
+            } else {
+                messageResponse.setStatus(Message.STATUS_SUCCESS);
+            }
+        } catch (InvalidFilteringArgumentException e) {
+            String errorMessage = MessageFormat.format(MODULE_CONTAINER_ERROR_MESSAGE, moduleContainerId);
+            messageResponse.setFailureMessage(errorMessage);
+            LOGGER.error(errorMessage, e);
+        } catch (FDResourceException e) {
+            String errorMessage = MessageFormat.format(MODULE_CONTAINER_ERROR_MESSAGE, moduleContainerId);
+            messageResponse.setFailureMessage(errorMessage);
+            LOGGER.error(errorMessage, e);
+        }
+
+        return messageResponse;
+    }
+
 }

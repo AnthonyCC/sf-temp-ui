@@ -1327,6 +1327,12 @@ function loadStuff() {
   	var postData = '{"pageType": "Feed", "requestedDate" : "2015-07-16T12:12:00.000-04:00"}';
   	$("#payload").val(postData);
 
+  } else if ( loaddata == "getModule"){
+    $("#url").val("/home/module/");
+    $("#header").val('{ "X-FD-Extra-Response" : "INCLUDE_USERINFO,INCLUDE_CART,INCLUDE_FEEDS" }');
+    var postData = '{"moduleContainerId":"ModuleContainer:currentUserModuleContainer"}';
+    $("#payload").val(postData);
+
   }  else if (  loaddata == "sociallogin") {
   	$("#url").val("/social/login/");
   	$("#header").val(''); 
@@ -1788,6 +1794,7 @@ function doStuff() {
   <option value="getHomeAndCategories"> Home - Get Home And Categories </option>
   <option value="getPage"> Home - Get Page </option>
   <option value="getPageWeb">Home - Get Page Web</option>
+  <option value="getModule">Home - Get Module</option>
 
   <option value=""> ========== External Login ========== </option>
   <option value="sociallogin"> External - Login</option>
