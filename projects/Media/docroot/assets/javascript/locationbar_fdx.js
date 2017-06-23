@@ -522,11 +522,11 @@ $jq('.changeBGClr').on('blur mouseleave', function(event) {
 	$jq('.locabar-user-section').css('background-color', COLOR_NONSELECTED);
 });
 
-$jq('.changeBGClr, .locabar_triggers').on('focus', function(event) {
-	$jq(this).parent('.locabar-section').addClass('hasFocus');
+$jq('.locabar_triggers, .locabar_triggers a').on('focus', function(event) {
+	$jq(this).closest('.locabar-section').addClass('hasFocus');
 });
-$jq('.changeBGClr, .locabar_triggers').on('blur mouseleave', function(event) {
-	$jq(this).parent('.locabar-section').removeClass('hasFocus');
+$jq('.locabar_triggers, .locabar_triggers a').on('blur mouseleave', function(event) {
+	$jq(this).closest('.locabar-section').removeClass('hasFocus');
 });
 
 
