@@ -79,9 +79,10 @@ public class HelpController extends BaseController {
                 StringBuilder sb = new StringBuilder(recallContent);
                 recallContent = sb.substring(sb.indexOf("<table") - 1, sb.indexOf("</table")) + "</table>";
                 SafetyDetails prodRecall = createSafetyDetails("Product Recalls", "prodRecall", recallContent);
+                SafetyDetails prodRecallComplete = createSafetyDetails("Product Recalls Complete Details", "prodRecallComplete", sb.toString());
                 SafetyDetails cookingStorage = createSafetyDetails("Cooking & Storage", "cookStorage", ProductUtil.readContent(COOKING_STOREAGE_PATH));
                 SafetyDetails foodSafety = createSafetyDetails("Handling Food Safety", "foodSafety", ProductUtil.readContent(HANDLING_FOOD_SAFETY_PATH));
-                HelpTopic foodSafetyTopic = createHelpTopic("Food Safety", "foodSafety", prodRecall, cookingStorage, foodSafety);
+                HelpTopic foodSafetyTopic = createHelpTopic("Food Safety", "foodSafety", prodRecall, cookingStorage, foodSafety, prodRecallComplete);
                 data = getJsonString(createHelpTopics(foodSafetyTopic));
             } catch (Exception e) {
                 LOGGER.warn("Unable to serialize data", e);
