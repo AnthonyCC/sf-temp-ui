@@ -43,7 +43,7 @@ public class CheckoutCarouselService extends AbstractCarouselService {
 
     @Override
     protected boolean shouldConsolidateEmptyTabs() {
-        return false;
+        return true;
     }
 
     @Override

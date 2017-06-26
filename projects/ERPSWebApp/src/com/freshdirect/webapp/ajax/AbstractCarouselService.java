@@ -231,16 +231,25 @@ public abstract class AbstractCarouselService {
 
 			// post-process tabs
 			if (consolidate) {
-				List<RecommendationTab> arr = new ArrayList<RecommendationTab>(result.getRecommendationTabs());
-				Iterator<RecommendationTab> it = arr.iterator();
+                boolean isSelectedTabRemoved = false;
+                List<RecommendationTab> arr = new ArrayList<RecommendationTab>(result.getRecommendationTabs());
+                Iterator<RecommendationTab> it = arr.iterator();
 				while (it.hasNext()) {
 					final RecommendationTab t = it.next();
-					if (t.getCarouselData() == null) {
+                    if (t.getCarouselData().getProducts().isEmpty()) {
+                        if (t.isSelected()) {
+                            isSelectedTabRemoved = true;
+                        }
 						LOGGER.warn("Removing tab " + t.getSiteFeature() + " ...");
 						it.remove();
+                    } else {
+                        if (isSelectedTabRemoved) {
+                            isSelectedTabRemoved = false;
+                            t.setSelected(true);
+                        }
 					}
 				}
-				result.setRecommendationTabs(arr);
+                result.setRecommendationTabs(arr);
 			}
 
 		}
