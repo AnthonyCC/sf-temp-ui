@@ -561,9 +561,9 @@ public class ProductDetailPopulator {
 		data.setSoldBySalesUnit( product.isSoldBySalesUnits() );
 		data.setHasTerms( product.hasTerms() );
 		if(StandingOrderHelper.isEligibleForSo3_0(user)){
-//			data.setSoData(StandingOrderHelper.getAllSoData(user,true,false));
+			data.setSoData(StandingOrderHelper.getAllSoData(user,true,false));
 			
-			if(null == ContentFactory.getInstance().getUserAllSoData()){
+			/*if(null == ContentFactory.getInstance().getUserAllSoData()){
 				HashMap<String,Object> soSettingsData = StandingOrderHelper.getAllSoData(user,true,false);
 				if(null == soSettingsData){
 					soSettingsData = new HashMap<String,Object>(0);
@@ -571,7 +571,7 @@ public class ProductDetailPopulator {
 				ContentFactory.getInstance().setUserAllSoData(soSettingsData);
 			}
 			
-			data.setSoData(ContentFactory.getInstance().getUserAllSoData());
+			data.setSoData(ContentFactory.getInstance().getUserAllSoData());*/
 		}
 		// alcoholic & usq flags
 		try {
@@ -1067,8 +1067,8 @@ public class ProductDetailPopulator {
 		
 		// Numeric quantity
 		Quantity quantity = new Quantity();
-		quantity.setqMin( productModel.getQuantityMinimum() );
-		quantity.setqMax( calculateSafeMaximumQuantity( user, productModel ) );
+		quantity.setqMin( productModel.getQuantityMinimum() );		
+		quantity.setqMax( calculateSafeMaximumQuantity( user, productModel ) );		
 		quantity.setqInc( productModel.getQuantityIncrement() );
 		quantity.setQuantity( orderLine != null ? orderLine.getQuantity() : quantity.getqMin() );	
 		item.setQuantity( quantity );
