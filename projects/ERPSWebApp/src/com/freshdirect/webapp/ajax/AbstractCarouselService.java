@@ -238,7 +238,7 @@ public abstract class AbstractCarouselService {
 				Iterator<RecommendationTab> it = arr.iterator();
 				while (it.hasNext()) {
 					final RecommendationTab t = it.next();
-                    if (t.getCarouselData().getProducts().isEmpty()) {
+                    if (t.getCarouselData() == null || t.getCarouselData().getProducts().isEmpty()) {
                         if (t.isSelected()) {
                             isSelectedTabRemoved = true;
                         }

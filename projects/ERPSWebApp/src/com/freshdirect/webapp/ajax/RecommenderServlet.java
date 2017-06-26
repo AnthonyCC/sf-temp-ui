@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.ajax;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,19 +40,29 @@ public class RecommenderServlet extends BaseJsonServlet {
     }
 
     public static Map<String, Object> createRecommenderResult(RecommendationTab recommendationTab) {
-        return createRecommenderResult(recommendationTab.getSiteFeature(), recommendationTab.getItemType(), recommendationTab.getDescription(),
-                recommendationTab.getCarouselData().getProducts(), recommendationTab.getCarouselData().getCmEventSource());
+        Map<String, Object> result = null;
+        if (recommendationTab.getCarouselData() == null) {
+            result = createRecommendationResult(Collections.<String, Object> emptyMap());
+        } else {
+            result = createRecommenderResult(recommendationTab.getSiteFeature(), recommendationTab.getItemType(), recommendationTab.getDescription(),
+                    recommendationTab.getCarouselData().getProducts(), recommendationTab.getCarouselData().getCmEventSource());
+        }
+        return result;
     }
 
     public static Map<String, Object> createRecommenderResult(String siteFeature, String itemType, String title, Collection<? extends BasicProductData> items,
             String cmEventSource) {
-        Map<String, Object> result = new HashMap<String, Object>();
         Map<String, Object> recommenderResult = new HashMap<String, Object>();
         recommenderResult.put("siteFeature", siteFeature);
         recommenderResult.put("itemType", itemType);
         recommenderResult.put("title", title);
         recommenderResult.put("items", items);
         recommenderResult.put("cmEventSource", cmEventSource);
+        return createRecommendationResult(recommenderResult);
+    }
+
+    public static Map<String, Object> createRecommendationResult(Map<String, Object> recommenderResult) {
+        Map<String, Object> result = new HashMap<String, Object>();
         result.put("recommenderResult", recommenderResult);
         return result;
     }

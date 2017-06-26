@@ -47,6 +47,7 @@ public class CarouselService {
 	 */
 	public CarouselData createCarouselData(String id, String name, List<ProductModel> products, FDSessionUser user, String cmEventSource, String variantId) {
 		CarouselData carousel = null;
+        if (!products.isEmpty()) {
 			carousel = new CarouselData();
 			carousel.setId(id);
 			carousel.setName(name);
@@ -69,6 +70,7 @@ public class CarouselService {
 				}
 			}
 			carousel.setProducts(productDatas);
+        }
 		return carousel;
 	}
 }

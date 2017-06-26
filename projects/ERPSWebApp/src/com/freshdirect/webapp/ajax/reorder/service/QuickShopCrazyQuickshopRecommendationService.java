@@ -356,9 +356,11 @@ public class QuickShopCrazyQuickshopRecommendationService {
 			items = doTheCrazyQuickshopRecommendations(user, session, deptId, maxItems, listContent);
 			title = getTheCrazyQuickshopTitle(deptId);
 
-			if (!items.isEmpty()) {
+            if (items.isEmpty()) {
+                result = RecommenderServlet.createRecommendationResult(Collections.<String, Object> emptyMap());
+            } else {
                 result = RecommenderServlet.createRecommenderResult(siteFeature, CarouselItemType.GRID.getType(), title, items, EnumEventSource.REORDER.getName());
-			}
+            }
 		} catch (FDResourceException e) {
 			BaseJsonServlet.returnHttpError(500, "Cannot collect recommendations. e: " + e);
 		}
