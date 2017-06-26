@@ -78,9 +78,9 @@ public class EnumSiteFeature implements Serializable, Comparable<EnumSiteFeature
     
     public final static EnumSiteFeature QS_BOTTOM_CAROUSEL = new EnumSiteFeature("QS_BOTTOM");
     
-    public final static EnumSiteFeature EX_VIEW_CART_CAROUSEL = new EnumSiteFeature("EX_VIEW_CART");
+    public final static EnumSiteFeature XC_VIEW_CART_CAROUSEL = new EnumSiteFeature("XC_VIEW_CART");
 
-    public final static EnumSiteFeature EX_CHECKOUT_CAROUSEL = new EnumSiteFeature("EX_CHECKOUT");
+    public final static EnumSiteFeature XC_CHECKOUT_CAROUSEL = new EnumSiteFeature("XC_CHECKOUT");
 
     String name;
 	

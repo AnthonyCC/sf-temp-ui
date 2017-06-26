@@ -31,7 +31,6 @@ import com.freshdirect.smartstore.TabRecommendation;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
-import com.freshdirect.smartstore.fdstore.VariantSelector;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
 import com.freshdirect.webapp.ajax.browse.data.CarouselData;
 import com.freshdirect.webapp.ajax.browse.service.CarouselService;
@@ -46,10 +45,11 @@ import com.freshdirect.webapp.util.ProductRecommenderUtil;
 import com.freshdirect.webapp.util.RecommendationsCache;
 
 public abstract class AbstractCarouselService {
+
     private static final Logger LOGGER = LoggerFactory.getInstance(AbstractCarouselService.class);
 
-    private static final String SELECTED_SITE_FEATURE_ATTRIBUTE_KEY = "selectedSiteFeature";
-    private static final String PARENT_IMPRESSION_ID_ATTRIBUTE_KEY = "parentImpressionId";
+    protected static final String PARENT_IMPRESSION_ID_POSTFIX = "_parentImpressionId";
+    protected static final String SELECTED_SITE_FEATURE_POSTFIX = "_selectedSiteFeature";
 
     /**
      * Return tab recommendation variant
@@ -89,6 +89,8 @@ public abstract class AbstractCarouselService {
     protected abstract int getSelectedTab(TabRecommendation tabs, HttpSession session, ServletRequest request, FDUserI user);
 
     protected abstract List<String> getSiteFeatures(FDUserI user);
+
+    protected abstract TabRecommendation getTabRecommendation(HttpServletRequest request, FDUserI user, SessionInput input);
 
     protected String getEventSource(String siteFeature) {
         // TODO create site feature >> cm event source mapping
@@ -144,8 +146,8 @@ public abstract class AbstractCarouselService {
         HttpSession session = request.getSession();
         String siteFeature = requestData.getFeature();
         String parentImpressionId = requestData.getParentImpressionId();
-        session.setAttribute(SELECTED_SITE_FEATURE_ATTRIBUTE_KEY, siteFeature);
-        session.setAttribute(PARENT_IMPRESSION_ID_ATTRIBUTE_KEY, parentImpressionId);
+        session.setAttribute(requestData.getParentVariantId() + SELECTED_SITE_FEATURE_POSTFIX, siteFeature);
+        session.setAttribute(requestData.getParentVariantId() + PARENT_IMPRESSION_ID_POSTFIX, parentImpressionId);
         EnumSiteFeature enumSiteFeature = EnumSiteFeature.getEnum(siteFeature);
         Variant variant = VariantSelectorFactory.getSelector(enumSiteFeature).select(user, false);
         String impressionId = requestData.getImpressionId();
@@ -233,7 +235,7 @@ public abstract class AbstractCarouselService {
 			if (consolidate) {
                 boolean isSelectedTabRemoved = false;
                 List<RecommendationTab> arr = new ArrayList<RecommendationTab>(result.getRecommendationTabs());
-                Iterator<RecommendationTab> it = arr.iterator();
+				Iterator<RecommendationTab> it = arr.iterator();
 				while (it.hasNext()) {
 					final RecommendationTab t = it.next();
                     if (t.getCarouselData().getProducts().isEmpty()) {
@@ -249,33 +251,12 @@ public abstract class AbstractCarouselService {
                         }
 					}
 				}
-                result.setRecommendationTabs(arr);
+				result.setRecommendationTabs(arr);
 			}
 
 		}
 		return result;
 	}
-
-    private TabRecommendation getTabRecommendation(HttpServletRequest request, FDUserI user, SessionInput input) {
-        // variants
-        List<Variant> variants = new ArrayList<Variant>();
-        for (final String siteFeature : getSiteFeatures(user)) {
-            EnumSiteFeature enumSiteFeature = EnumSiteFeature.getEnum(siteFeature);
-            if (EnumSiteFeature.NIL != enumSiteFeature) {
-                VariantSelector selector = VariantSelectorFactory.getSelector(enumSiteFeature);
-                Variant variant = selector.select(user, false);
-                if (variant != null) {
-                    variants.add(variant);
-                }
-            }
-        }
-
-        TabRecommendation tabs = new TabRecommendation(getTabVariant(), variants);
-        tabs.setError(input.isError());
-        tabs.setSelectedSiteFeature((String) request.getSession().getAttribute(SELECTED_SITE_FEATURE_ATTRIBUTE_KEY));
-        tabs.setParentImpressionId((String) request.getSession().getAttribute(PARENT_IMPRESSION_ID_ATTRIBUTE_KEY));
-        return tabs;
-    }
 
     /**
      * Calculates the title based on variant or site feature.

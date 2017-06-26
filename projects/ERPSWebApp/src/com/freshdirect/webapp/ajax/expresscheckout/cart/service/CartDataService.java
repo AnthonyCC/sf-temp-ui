@@ -193,7 +193,7 @@ public class CartDataService {
     }
 
     public void validateCarouselData(HttpServletRequest request, FDUserI user, FormDataResponse response) throws FDResourceException {
-        if (!response.getSubmitForm().getResult().isEmpty()){
+        if (!response.getSubmitForm().isSuccess()) {
             SessionInput input = QuickShopCarouselService.defaultService().createSessionInput(user, request);
             input.setError(true);
             response.getSubmitForm().getResult().put("carouselData",
@@ -207,6 +207,7 @@ public class CartDataService {
             Map<String, Object> headerMessageMap = new HashMap<String, Object>();
             headerMessageMap.put(WARNING_MESSAGE_JSON_KEY, AvailabilityService.defaultService().translateWarningMessage(orderMinimumWarningMessageKey, user));
             response.getSubmitForm().getResult().put(VIEW_CART_HEADER_MESSAGE_JSON_KEY, headerMessageMap);
+            response.getSubmitForm().setSuccess(false);
         } else {
             response.getSubmitForm().getResult().put(REDIRECT_URL_JSON_KEY, "/expressco/checkout.jsp");
         }

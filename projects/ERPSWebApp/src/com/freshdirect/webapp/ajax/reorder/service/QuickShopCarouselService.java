@@ -1,30 +1,46 @@
 package com.freshdirect.webapp.ajax.reorder.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.RecommendationServiceConfig;
 import com.freshdirect.smartstore.RecommendationServiceType;
+import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.TabRecommendation;
 import com.freshdirect.smartstore.Variant;
+import com.freshdirect.smartstore.fdstore.VariantSelector;
+import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
 import com.freshdirect.webapp.ajax.AbstractCarouselService;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
-/**
- * A copy-paste clone of {@see ViewCartCarouselService}
- */
 public class QuickShopCarouselService extends AbstractCarouselService {
 
     public static final String QUICKSHOP_VIRTUAL_SITE_FEATURE = "CRAZY_QUICKSHOP";
     private static final String QS_BOTTOM_GENERAL_VARIANT_ID = "qs_bottom_general";
+    private static final String SELECTED_SITE_FEATURE_ATTRIBUTE_KEY = QS_BOTTOM_GENERAL_VARIANT_ID + SELECTED_SITE_FEATURE_POSTFIX;
+    private static final String PARENT_IMPRESSION_ID_ATTRIBUTE_KEY = QS_BOTTOM_GENERAL_VARIANT_ID + PARENT_IMPRESSION_ID_POSTFIX;
     private static final List<String> QS_SITE_FEATURES = Arrays.asList("DEALS_QS", "EXPRATED_QS", "CUSTRATED_QS");
 
     private static final QuickShopCarouselService INSTANCE = new QuickShopCarouselService();
+
+    private QuickShopCarouselService() {
+    }
+
+    /**
+     * Gives the default carousel service.
+     * 
+     * @return the default service instance
+     */
+    public static QuickShopCarouselService defaultService() {
+        return INSTANCE;
+    }
 
 	@Override
 	protected int getMaxRecommendations() {
@@ -55,21 +71,31 @@ public class QuickShopCarouselService extends AbstractCarouselService {
 	}
 
     @Override
-    protected String getEventSource(String siteFeature) {
-        return "";
+    protected TabRecommendation getTabRecommendation(HttpServletRequest request, FDUserI user, SessionInput input) {
+        // variants
+        List<Variant> variants = new ArrayList<Variant>();
+        for (final String siteFeature : getSiteFeatures(user)) {
+            EnumSiteFeature enumSiteFeature = EnumSiteFeature.getEnum(siteFeature);
+            if (EnumSiteFeature.NIL != enumSiteFeature) {
+                VariantSelector selector = VariantSelectorFactory.getSelector(enumSiteFeature);
+                Variant variant = selector.select(user, false);
+                if (variant != null) {
+                    variants.add(variant);
+                }
+            }
+        }
+
+        TabRecommendation tabs = new TabRecommendation(getTabVariant(), variants);
+        tabs.setError(input.isError());
+        tabs.setSelectedSiteFeature((String) request.getSession().getAttribute(SELECTED_SITE_FEATURE_ATTRIBUTE_KEY));
+        tabs.setParentImpressionId((String) request.getSession().getAttribute(PARENT_IMPRESSION_ID_ATTRIBUTE_KEY));
+        return tabs;
     }
 
-	private QuickShopCarouselService() {
-	}
-
-	/**
-	 * Gives the default view cart carousel service.
-	 * 
-	 * @return the default service instance
-	 */
-	public static QuickShopCarouselService defaultService() {
-		return INSTANCE;
-	}
+    @Override
+    protected String getEventSource(String siteFeature) {
+        return siteFeature;
+    }
 
 	@Override
     protected List<String> getSiteFeatures(FDUserI user) {
