@@ -2200,16 +2200,23 @@ li.cleanli .gen-arrow {
 		padding: 10px 5px 0 10px;
 	}
 	.mm-page #cartcontent .cartsection__cartline .cartline-delete{
-		width: 30%;
+		width: 20%;
 	}
 	.mm-page #cartcontent .cartsection__cartline .cartline-quantity{
-		width: 30%;
+		width: 40%;
 	}
 	.mm-page #cartcontent .cartsection__cartline .cartline-price{
 		width: 30%;
 	}
 	.mm-page #cartcontent .cartsection__cartline .cartline-legend{
 		width: 10%;
+	}
+	.mm-page #cartcontent .cartsection__cartline .cartline-delete .cartline-delete-image{
+		max-width: 21px;
+	}
+	.mm-page #cartcontent .cartsection__cartline .cartline-quantity .qtyinput input.qty{
+		width: 46px;
+		min-width: 46px;
 	}
 	.mm-page #cartcontent .cartsection__cartline .cartline-title .cartline-titleholder{
 	}

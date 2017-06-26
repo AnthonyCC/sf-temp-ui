@@ -95,6 +95,7 @@
 }
 #cartcontent .qtyinput input.qty {
     width: 50px;
+    min-width: 50px;
     height: 36px;
     font-size: 18px;
     font-weight: bold;
@@ -192,8 +193,9 @@
 }
 
 .cartline-delete .cartline-delete-image{
-  vertical-align:middle;
-  margin-right:5px;
+  vertical-align: middle;
+  margin-right: 5px;
+  max-width: 15px;
 }
 
 .cartsection .cartsection__title{
@@ -628,8 +630,9 @@ label[for="dontupdatecartlines"] {
 }
 
 .questions__emptycart-image{
-  vertical-align:middle;
-  margin-right:5px;
+  vertical-align: middle;
+  margin-right: 5px;
+  max-width: 15px;
 }
 
 .questions__update{
