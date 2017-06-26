@@ -6,7 +6,7 @@ var FreshDirect = FreshDirect || {};
 (function (fd) {
 	
 	var $=fd.libs.$;
-	
+  var DISPATCHER = fd.common.dispatcher;
 
 	var	CARTDATA_HEADER = 'header',
 			CARTDATA_ERRORMSG = 'errorMessage',
@@ -129,6 +129,13 @@ var FreshDirect = FreshDirect || {};
     });
 
     return changeCount ? data : null;
+  };
+
+  /* GTM data dispatch */
+  var gtmDispatch = function(data) {
+    if (data.googleAnalyticsData) {
+      DISPATCHER.signal('googleAnalyticsData', data.googleAnalyticsData);
+    }
   };
 
   /* this shouldn't exist */
@@ -261,6 +268,9 @@ var FreshDirect = FreshDirect || {};
 
     /* if there is a value, then eval the coremetrics scripts */
     ajax.onValue(coremetricsEval);
+
+    /* dispatch google tag manager related data */
+    ajax.onValue(gtmDispatch);
 
     /* show spinner */
     var state = ajax.map(false).toProperty(true);

@@ -294,6 +294,7 @@
   left:0;
   right:0;
   margin: auto;
+  pointer-events: none;
 }
 
 #transactionalPopup .portrait-item-productimage {

@@ -136,6 +136,7 @@
   {param mobWeb:$mobWeb /}
   {param timeToComplete:$item.timeToComplete /}
   {param moduleData:$moduleData /}
+  {param newProduct:$item.newProduct /}
 {/call}
 {/template}
 
@@ -319,6 +320,7 @@
  * @param? mobWeb
  * @param? timeToComplete
  * @param? moduleData
+ * @param? newProduct
  */
 {template .potatoTransactionalGridItem autoescape="false"}
 /* this line return must be here, or there will be tabs in output html, which cause whitespace */
@@ -328,6 +330,10 @@
 	<li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and $maxProductSampleQuantityReached ) ? 'unavailable' : ''} {$discontinued ? 'discontinued' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}{($isEligibleForStandingOrders) ? ' portrait-item-soPreShow' : ''}{($hookLogicBeaconClick) ? ' isHookLogicProduct' :''}" id="{$productId ? $productId : ''}"
 	data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}"
 	data-cat-id="{$catId ? $catId : ''}" {$replacement ? 'data-replacement-id="'+$replacement.productId+'"': ''}
+  data-in-stock="{$available}"
+  data-price="{$price}"
+  data-new-product="{$newProduct}"
+  data-variant="{$variantId}"
 	{if $hookLogicBeaconClick} data-hooklogic-beacon-click="{$hookLogicBeaconClick}"{/if}
 	{if $hookLogicBeaconImpression} data-hooklogic-beacon-impress="{$hookLogicBeaconImpression}"{/if}
   {if $moduleData and $moduleData.moduleVirtualCategory}data-virtual-category="{$moduleData.moduleVirtualCategory}"{/if}

@@ -90,6 +90,8 @@ public class ProductData extends BasicProductData implements SkuData {
      */
     protected String badge;
 
+    protected boolean newProduct;
+
     // Ratings
     protected int wineRating;
     protected double customerRating;
@@ -903,4 +905,12 @@ public class ProductData extends BasicProductData implements SkuData {
 	public void setDepartmentId(String departmentId) {
 		this.departmentId = departmentId;
 	}
+
+    public boolean isNewProduct() {
+        return newProduct;
+    }
+
+    public void setNewProduct(boolean newProduct) {
+        this.newProduct = newProduct;
+    }
 }

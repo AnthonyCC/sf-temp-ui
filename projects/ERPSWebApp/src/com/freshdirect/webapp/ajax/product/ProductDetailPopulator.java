@@ -656,6 +656,7 @@ public class ProductDetailPopulator {
 		/*if(StandingOrderHelper.isEligibleForSo3_0(user)){
 			item.setSoData(StandingOrderHelper.getAllSoData(user,true,false));
 		}*/
+        item.setNewProduct(productModel.isNew());
 
 		populateAvailable(item, user, productModel);
 		populateRatings( item, user, productModel, sku.getSkuCode() );

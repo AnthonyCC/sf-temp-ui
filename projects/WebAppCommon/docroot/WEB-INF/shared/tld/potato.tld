@@ -345,4 +345,14 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+	<tag>
+		<name>googleAnalytics</name>
+		<tagclass>com.freshdirect.webapp.ajax.analytics.tag.GoogleAnalyticsPotatoTag</tagclass>
+		<attribute>
+			<name>name</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	
 </taglib>

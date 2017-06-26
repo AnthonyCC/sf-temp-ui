@@ -12,6 +12,7 @@ import com.freshdirect.customer.ErpComplaintReason;
 import com.freshdirect.fdstore.content.ComparatorChain;
 import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
 import com.freshdirect.webapp.ajax.AbstractCoremetricsResponse;
+import com.freshdirect.webapp.ajax.analytics.data.GoogleAnalyticsData;
 import com.freshdirect.webapp.ajax.expresscheckout.csr.data.CustomerServiceRepresentativeData;
 import com.freshdirect.webapp.ajax.viewcart.data.ViewCartCarouselData;
 
@@ -109,13 +110,15 @@ public class CartData extends AbstractCoremetricsResponse {
     
     private boolean containsWineSection;
     
-    private String totalWithoutTax; 
+    private String totalWithoutTax;    
     
+    private GoogleAnalyticsData googleAnalyticsData;
     
     public CartData() {
 		tipAppliedTick = false;
 	}
 
+    
     private CustomerServiceRepresentativeData csr;
     
     private boolean displayCheckout=true;
@@ -1165,5 +1168,13 @@ public class CartData extends AbstractCoremetricsResponse {
 	public void setsOCartLineMessages(boolean sOCartLineMessages) {
 		this.sOCartLineMessages = sOCartLineMessages;
 	}
+
+    public GoogleAnalyticsData getGoogleAnalyticsData() {
+        return googleAnalyticsData;
+    }
+
+    public void setGoogleAnalyticsData(GoogleAnalyticsData googleAnalyticsData) {
+        this.googleAnalyticsData = googleAnalyticsData;
+    }
 
 }

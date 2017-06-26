@@ -15,7 +15,6 @@ import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.webapp.ajax.expresscheckout.sempixels.data.SemPixelData;
-import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class SemPixelService {
 
@@ -35,11 +34,6 @@ public class SemPixelService {
         result.setDiscountAmount(sem_df.format(order.getTotalDiscountValue()));
         result.setDiscountAmountND(ndFormatter.format(100 * order.getTotalDiscountValue()));
         result.setModifyOrder(order.isModifiedOrder());
-        Boolean orderSubmittedFlagForSemPixel = (Boolean) session.getAttribute(SessionName.ORDER_SUBMITTED_FLAG_FOR_SEM_PIXEL);
-        if (orderSubmittedFlagForSemPixel != null && orderSubmittedFlagForSemPixel) {
-            result.setNewOrder(true);
-            session.removeAttribute(SessionName.ORDER_SUBMITTED_FLAG_FOR_SEM_PIXEL);
-        }
         result.setOrderId(order.getErpSalesId());
         result.setSubtotal(sem_df.format(order.getSubTotal()));
         result.setSubtotalND(ndFormatter.format(100 * order.getSubTotal()));

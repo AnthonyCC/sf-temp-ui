@@ -260,6 +260,7 @@ etids.div_tooltipPopup = "#tooltipPopup";
 
 	var $ = fd.libs.$;
 	var WIDGET = fd.modules.common.widget;
+	var DISPATCHER = fd.common.dispatcher;
 	var requestCounter = 0;
 	var focusedElementId;
 	
@@ -362,6 +363,11 @@ etids.div_tooltipPopup = "#tooltipPopup";
 				window.FreshDirect.cartTemplateObj.processFn = processFn;
 
 				this.updateTopCheckoutButton(data);
+
+        // GTM related data processing
+        if (data.googleAnalyticsData) {
+          DISPATCHER.signal('googleAnalyticsData', data.googleAnalyticsData);
+        }
 				
 				/*only if etipping is turned on in the properties*/
 				if( data.etipTotal !== null && typeof data.etipTotal === 'string'){

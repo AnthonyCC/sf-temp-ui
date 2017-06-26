@@ -65,6 +65,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
+import com.freshdirect.webapp.ajax.analytics.service.GoogleAnalyticsDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.BillingReferenceInfo;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData;
@@ -168,6 +169,8 @@ public class CartDataService {
         synchronized (order) {
             populateOrderData(user, request, userId, order, cartData);
         }
+        GoogleAnalyticsDataService.defaultService().populateCheckoutSuccessGAData(cartData, order, request.getSession());
+
         return cartData;
     }
 
@@ -600,6 +603,9 @@ public class CartDataService {
             if (StandingOrderHelper.isSO3StandingOrder(user)) {
                 cartData.setUserCorporate(true);
             }
+
+            cartData.setGoogleAnalyticsData(GoogleAnalyticsDataService.defaultService().populateCheckoutGAData(cart));
+
         } catch (Exception e) {
             LOG.error("Error while processing cart for user " + userId, e);
             BaseJsonServlet.returnHttpError(500, "Error while processing cart for user " + userId, e);

@@ -154,6 +154,7 @@ public class SinglePageCheckoutFacade {
             result.setRedirectUrl(RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL,
                     availabilityService.selectWarningType(user)));
         }
+
         return result;
     }
 
@@ -369,6 +370,7 @@ public class SinglePageCheckoutFacade {
         result.setSemPixelData(SemPixelService.defaultService().populateSemPixelMediaInfo(user, session, order));
        
         result.setGoGreenShow("I".equalsIgnoreCase(GoGreenService.defaultService().loadGoGreenOption(user))?true:false);
+
         return result;
     }
 

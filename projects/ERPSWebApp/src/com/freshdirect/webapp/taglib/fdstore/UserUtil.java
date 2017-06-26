@@ -11,11 +11,9 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.jsp.JspWriter;
 
 import org.apache.log4j.Category;
 
@@ -650,25 +648,22 @@ public class UserUtil {
             LOGGER.warn("Resource error during authentication", fdre);
             actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
             
-        } catch (FDAuthenticationException fdae) {       	
-        	
-        	logExtraLoginDetailsLogin(request, userId, password, mergePage, successPage, externalLogin, "LOGINFAILED");
-        	
-        	if("Account disabled".equals(fdae.getMessage())) {
-        		actionResult.addError(new ActionError("authentication", 
-	            		MessageFormat.format(SystemMessageList.MSG_DEACTIVATED, 
-	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
-        	} else {
-               	if("voucherredemption".equals(fdae.getMessage())){
-        	       	actionResult.addError(new ActionError("authentication", 
-            		MessageFormat.format(SystemMessageList.MSG_VOUCHER_REDEMPTION_FDX_NOT_ALLOWED, 
-            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
-        	} else {
-        		actionResult.addError(new ActionError("authentication", 
-	            		MessageFormat.format(SystemMessageList.MSG_AUTHENTICATION, 
-	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
-        	} 
-          }
+        } catch (FDAuthenticationException fdae) {
+
+            logExtraLoginDetailsLogin(request, userId, password, mergePage, successPage, externalLogin, "LOGINFAILED");
+
+            if ("Account disabled".equals(fdae.getMessage())) {
+                actionResult.addError(
+                        new ActionError("authentication", MessageFormat.format(SystemMessageList.MSG_DEACTIVATED, new Object[] { UserUtil.getCustomerServiceContact(request) })));
+            } else {
+                if ("voucherredemption".equals(fdae.getMessage())) {
+                    actionResult.addError(new ActionError("authentication",
+                            MessageFormat.format(SystemMessageList.MSG_VOUCHER_REDEMPTION_FDX_NOT_ALLOWED, new Object[] { UserUtil.getCustomerServiceContact(request) })));
+                } else {
+                    actionResult.addError(new ActionError("authentication",
+                            MessageFormat.format(SystemMessageList.MSG_AUTHENTICATION, new Object[] { UserUtil.getCustomerServiceContact(request) })));
+                }
+            }
 
         }
         return updatedSuccessPage;		

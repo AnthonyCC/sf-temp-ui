@@ -56,6 +56,7 @@ import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
+import com.freshdirect.webapp.ajax.analytics.service.GoogleAnalyticsDataService;
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.ajax.browse.SearchPageType;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData;
@@ -688,6 +689,10 @@ public class CmsFilteringFlow {
         }
 
         relocateBrandFilterBasedOnCmsSetting(browseDataContext);
+
+        if (FilteringFlowType.SEARCH.equals(nav.getPageType())) {
+            browseDataContext.setGoogleAnalyticsData(GoogleAnalyticsDataService.defaultService().populateSearchGAData(browseDataContext.getSearchParams()));
+        }
 
         // populate browseData with filterLabels
         BrowseDataBuilderFactory.getInstance().populateWithFilterLabels(browseDataContext, navigationModel);
