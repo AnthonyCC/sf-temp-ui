@@ -3,7 +3,6 @@ package com.freshdirect.webapp.ajax;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -233,30 +232,36 @@ public abstract class AbstractCarouselService {
 
 			// post-process tabs
 			if (consolidate) {
-                boolean isSelectedTabRemoved = false;
-                List<RecommendationTab> arr = new ArrayList<RecommendationTab>(result.getRecommendationTabs());
-				Iterator<RecommendationTab> it = arr.iterator();
-				while (it.hasNext()) {
-					final RecommendationTab t = it.next();
-                    if (t.getCarouselData() == null || t.getCarouselData().getProducts().isEmpty()) {
-                        if (t.isSelected()) {
-                            isSelectedTabRemoved = true;
-                        }
-						LOGGER.warn("Removing tab " + t.getSiteFeature() + " ...");
-						it.remove();
-                    } else {
-                        if (isSelectedTabRemoved) {
-                            isSelectedTabRemoved = false;
-                            t.setSelected(true);
-                        }
-					}
-				}
-				result.setRecommendationTabs(arr);
+                result.setRecommendationTabs(removeEmptyTabs(result.getRecommendationTabs()));
 			}
 
 		}
 		return result;
 	}
+
+    private List<RecommendationTab> removeEmptyTabs(List<RecommendationTab> tabs) {
+        List<RecommendationTab> recommendationTabs = new ArrayList<RecommendationTab>(tabs.size());
+
+        for (RecommendationTab tab : tabs) {
+            if (tab.getCarouselData() == null || tab.getCarouselData().getProducts().isEmpty()) {
+                LOGGER.warn("Removing tab " + tab.getSiteFeature() + " ...");
+            } else {
+                recommendationTabs.add(tab);
+            }
+        }
+
+        boolean isAnyTabSelected = false;
+        for (RecommendationTab recommendationTab : recommendationTabs) {
+            if (recommendationTab.isSelected()) {
+                isAnyTabSelected = true;
+                break;
+            }
+        }
+        if (!isAnyTabSelected && !recommendationTabs.isEmpty()) {
+            recommendationTabs.get(0).setSelected(true);
+        }
+        return recommendationTabs;
+    }
 
     /**
      * Calculates the title based on variant or site feature.
