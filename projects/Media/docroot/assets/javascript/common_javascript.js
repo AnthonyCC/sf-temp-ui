@@ -1354,7 +1354,7 @@ function doOverlayWindow(olURL, titleVar) {
 
 			},
 			close: function () {
-				$jq('body').css({ 'overflow': 'initial' });
+				$jq('body').css({ 'overflow': 'visible' });
 			}
 		});	
 	
