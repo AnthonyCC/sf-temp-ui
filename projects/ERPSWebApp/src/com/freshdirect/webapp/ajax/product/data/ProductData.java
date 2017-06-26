@@ -60,7 +60,7 @@ public class ProductData extends BasicProductData implements SkuData {
      */
     protected Quantity quantity;
 
-    protected double productSampleQuantity;
+    protected boolean maxProductSampleQuantityReached;
     /**
      * Amount for sales-unit enum type, containing the full enum, plus the selected value.
      */
@@ -371,12 +371,12 @@ public class ProductData extends BasicProductData implements SkuData {
         this.quantity = quantity;
     }
 
-    public Double getProductSampleQuantity() {
-        return productSampleQuantity;
+    public boolean isMaxProductSampleQuantityReached() {
+        return maxProductSampleQuantityReached;
     }
 
-    public void setProductSampleQuantity(Double productSampleQuantity) {
-        this.productSampleQuantity = productSampleQuantity;
+    public void setMaxProductSampleQuantityReached(boolean maxProductSampleQuantityReached) {
+        this.maxProductSampleQuantityReached = maxProductSampleQuantityReached;
     }
 
     @Override

@@ -92,7 +92,7 @@ public abstract class AbstractCarouselService {
 
     protected abstract TabRecommendation getTabRecommendation(HttpServletRequest request, FDUserI user, SessionInput input);
 
-    protected String getEventSource(String siteFeature) {
+    protected String getEventSource(String siteFeature, FDUserI user) {
         // TODO create site feature >> cm event source mapping
         return siteFeature;
     }
@@ -133,10 +133,10 @@ public abstract class AbstractCarouselService {
         CarouselData carousel = null;
         if (recommendations != null) {
             carousel = CarouselService.defaultService().createCarouselData(null, siteFeature.getName(), recommendations.getAllProducts(), user,
-                    getEventSource(siteFeature.getName()), recommendations.getVariant().getId());
+                    getEventSource(siteFeature.getName(), user), recommendations.getVariant().getId());
         } else {
             carousel = CarouselService.defaultService().createCarouselData(null, siteFeature.getName(), Collections.<ProductModel> emptyList(), user,
-                    getEventSource(siteFeature.getName()), variant.getId());
+                    getEventSource(siteFeature.getName(), user), variant.getId());
         }
         return carousel;
 	}
@@ -158,8 +158,8 @@ public abstract class AbstractCarouselService {
         }
 
         RecommendationTab recommendationTab = new RecommendationTab(getTitleForVariant(variant), enumSiteFeature.getName()).setParentImpressionId(parentVariantId)
-                .setImpressionId(impressionId).setParentVariantId(parentVariantId).setDescription(getDescription(variant));
-        recommendationTab.setSelected(requestData.isSelected());
+                .setImpressionId(impressionId).setParentVariantId(parentVariantId).setDescription(getDescription(variant)).setSelected(requestData.isSelected())
+                .setProductSamplesReacedMaximumItemQuantity(user.getShoppingCart().isMaxSampleReached());
         if (requestData.isSelected()) {
             recommendationTab.setCarouselData(doGenericRecommendation(session, request, (FDSessionUser) user, variant, parentImpressionId, parentVariantId));
         }
@@ -212,8 +212,8 @@ public abstract class AbstractCarouselService {
                 String tabTitle = WordUtils.capitalizeFully(getTitleForVariant(variant));
 				String siteFeatureName = variant.getSiteFeature().getName();
                 RecommendationTab tab = new RecommendationTab(tabTitle, siteFeatureName).setParentImpressionId(parentImpressionId)
-                        .setImpressionId(tabs.getFeatureImpressionId(tabIndex)).setParentVariantId(parentVariantId).setDescription(getDescription(variant));
-                tab.setSelected(variant.equals(selectedVariant));
+                        .setImpressionId(tabs.getFeatureImpressionId(tabIndex)).setParentVariantId(parentVariantId).setDescription(getDescription(variant))
+                        .setSelected(variant.equals(selectedVariant)).setProductSamplesReacedMaximumItemQuantity(user.getShoppingCart().isMaxSampleReached());
 				result.getRecommendationTabs().add(tab);
 				tabIndex++;
 			}

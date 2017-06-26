@@ -81,7 +81,7 @@
   {param cvPrices:$item.cvPrices /}
   {param configuration:$item.configuration /}
   {param inCartAmount:$item.inCartAmount /}
-  {param productSampleQuantity:$item.productSampleQuantity /}
+  {param maxProductSampleQuantityReached:$item.maxProductSampleQuantityReached /}
   {param customerRating:$item.customerRating /}
   {param customerRatingReviewCount:$item.customerRatingReviewCount /}
   {param expertRating:$item.expertRating /}
@@ -271,7 +271,7 @@
  * @param cvPrices
  * @param? configuration
  * @param inCartAmount
- * @param productSampleQuantity
+ * @param maxProductSampleQuantityReached
  * @param customerRating
  * @param customerRatingReviewCount
  * @param expertRating
@@ -323,9 +323,9 @@
 {template .potatoTransactionalGridItem autoescape="false"}
 /* this line return must be here, or there will be tabs in output html, which cause whitespace */
 	{let $atcItemId: $itemId ? $itemId : 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) + ($listId ? '_'+$listId : '') + ($originalLineId ? '_'+$originalLineId : '') /}
-	{let $badge: ($freeSamplePromoProduct and ($cmEventSource=='ps_caraousal' or $cmEventSource=='ps_carousel_view_cart'))?'free':($badge=='free'?'':$badge) /}
+	{let $badge: ($freeSamplePromoProduct)?'free':($badge=='free'?'':$badge) /}
 	{let $isEligibleForStandingOrders: ($soData and $soData.settingsData.soSettings and $soData.settingsData.soSettings.isEligibleForStandingOrders) ? true : false /}
-	<li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and ($cmEventSource=='ps_caraousal' or $cmEventSource=='ps_carousel_view_cart') and $productSampleQuantity >= $quantity.qMax ) ? 'unavailable' : ''} {$discontinued ? 'discontinued' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}{($isEligibleForStandingOrders) ? ' portrait-item-soPreShow' : ''}{($hookLogicBeaconClick) ? ' isHookLogicProduct' :''}" id="{$productId ? $productId : ''}"
+	<li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and $maxProductSampleQuantityReached ) ? 'unavailable' : ''} {$discontinued ? 'discontinued' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}{($isEligibleForStandingOrders) ? ' portrait-item-soPreShow' : ''}{($hookLogicBeaconClick) ? ' isHookLogicProduct' :''}" id="{$productId ? $productId : ''}"
 	data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}"
 	data-cat-id="{$catId ? $catId : ''}" {$replacement ? 'data-replacement-id="'+$replacement.productId+'"': ''}
 	{if $hookLogicBeaconClick} data-hooklogic-beacon-click="{$hookLogicBeaconClick}"{/if}

@@ -93,7 +93,7 @@ public class QuickShopCarouselService extends AbstractCarouselService {
     }
 
     @Override
-    protected String getEventSource(String siteFeature) {
+    protected String getEventSource(String siteFeature, FDUserI user) {
         return siteFeature;
     }
 

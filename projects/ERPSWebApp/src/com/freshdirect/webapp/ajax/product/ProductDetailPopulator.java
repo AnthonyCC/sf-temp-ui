@@ -1074,7 +1074,7 @@ public class ProductDetailPopulator {
 		
 		// populate in cart amount    	
 		FDCartModel cart = user.getShoppingCart(); 
-		item.setProductSampleQuantity(cart.getProductSampleQuantity(productModel));	
+        item.setMaxProductSampleQuantityReached(cart.isMaxProductSampleQuantityReached(productModel.getContentName()) || cart.isMaxSampleReached());
 		item.setInCartAmount( cart.getTotalQuantity( productModel, false ) );
 			
 	}

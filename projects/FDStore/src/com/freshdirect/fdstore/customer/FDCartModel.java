@@ -662,6 +662,31 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		this.sampleLines.clear();
 	}
 
+    public boolean isMaxSampleReached() {
+        int eligibleProducts = FDStoreProperties.getProductSamplesMaxBuyProductsLimit();
+        int numberOfFreeSampleProducts = 0;
+        for (FDCartLineI orderLine : orderLines) {
+            if (null != orderLine.getDiscount() && orderLine.getDiscount().getDiscountType().equals(EnumDiscountType.FREE)) {
+                numberOfFreeSampleProducts++;
+            }
+        }
+        return (numberOfFreeSampleProducts >= eligibleProducts);
+    }
+
+    public boolean isMaxProductSampleQuantityReached(String productName) {
+        int eligibleQuantity = FDStoreProperties.getProductSamplesMaxQuantityLimit();
+        double sum = 0.0;
+        for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
+            FDCartLineI line = i.next();
+            if (productName.equals(line.getProductName())) {
+                if (EnumDiscountType.FREE.equals(line.getDiscount() != null ? line.getDiscount().getDiscountType() : null)) {
+                    sum += line.getQuantity();
+                }
+            }
+        }
+        return sum >= eligibleQuantity;
+    }
+
 	/**
 	 *  Return the recently ordered line items.
 	 *  
@@ -1306,20 +1331,6 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		return sum;
 	}
 	
-	public Double getProductSampleQuantity(ProductModel productModel) {		
-		String productName = productModel.getContentName();
-		double sum = 0.0;
-		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
-			FDCartLineI line = i.next();
-			if (productName.equals(line.getProductName())) {
-			if(EnumDiscountType.FREE.equals(line.getDiscount()!=null?line.getDiscount().getDiscountType():null)){
-				sum += line.getQuantity();
-				}
-			}
-		}
-		return sum;
-	}
-
 	/**
 	 * Get the total quantity of all occurrences of a product in the cart.
 	 */

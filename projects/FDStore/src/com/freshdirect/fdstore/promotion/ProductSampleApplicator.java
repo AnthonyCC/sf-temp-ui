@@ -46,8 +46,7 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 				List<FDCartLineI> orderLines=cart.getOrderLines();
 				if(null !=orderLines && !orderLines.isEmpty()){
                     int eligibleQuantity = FDStoreProperties.getProductSamplesMaxQuantityLimit();
-					int eligibleProducts = FDStoreProperties.getProductSamplesMaxBuyProductsLimit();
-					if(!isMaxSampleReached(orderLines, eligibleProducts)){
+                    if (!cart.isMaxSampleReached()) {
                         int quantity = 0;
 						for (FDCartLineI orderLine : orderLines) {
                             if (orderLine.getProductRef().getContentKey().equals(sampleProduct.getContentKey()) 
@@ -73,19 +72,6 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 	}
 
 	
-	private boolean isMaxSampleReached(List<FDCartLineI> orderLines, int eligibleProducts) {
-		int numberOfFreeSampleProducts = 0;
-		for(FDCartLineI orderLine: orderLines){
-			if(null !=orderLine.getDiscount() && orderLine.getDiscount().getDiscountType().equals(EnumDiscountType.FREE)){
-				numberOfFreeSampleProducts++;
-			}
-		}
-		if(numberOfFreeSampleProducts >= eligibleProducts){
-			return true;
-		}
-		return false;
-	}
-
 	@Override
 	public void setZoneStrategy(DlvZoneStrategy zoneStrategy) {
 		this.zoneStrategy = zoneStrategy;		

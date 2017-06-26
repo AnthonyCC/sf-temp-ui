@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.ajax.viewcart.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.ServletRequest;
@@ -9,6 +10,8 @@ import javax.servlet.http.HttpSession;
 
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.smartstore.RecommendationServiceConfig;
@@ -76,15 +79,25 @@ public class ViewCartCarouselService extends AbstractCarouselService {
     }
 
     @Override
-    protected String getEventSource(String siteFeature) {
+    protected String getEventSource(String siteFeature, FDUserI user) {
         EnumEventSource eventSource = null;
-        if (RecommendationTab.PRODUCT_SAMPLE_SITE_FEATURE.equals(siteFeature)) {
-            eventSource = EnumEventSource.ps_carousel_view_cart;
-        } else if (RecommendationTab.DONATION_SAMPLE_SITE_FEATURE.equals(siteFeature)) {
-            eventSource = EnumEventSource.dn_carousel_view_cart;
+
+        if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user)) {
+            if (RecommendationTab.PRODUCT_SAMPLE_SITE_FEATURE.equals(siteFeature)) {
+                eventSource = EnumEventSource.ps_carousel_view_cart;
+            } else if (RecommendationTab.DONATION_SAMPLE_SITE_FEATURE.equals(siteFeature)) {
+                eventSource = EnumEventSource.dn_carousel_view_cart;
+            } else {
+                eventSource = EnumEventSource.view_cart;
+            }
         } else {
-            eventSource = EnumEventSource.view_cart;
+            if (FDStoreProperties.isPropDonationProductSamplesEnabled()) {
+                eventSource = EnumEventSource.dn_caraousal;
+            } else {
+                eventSource = EnumEventSource.ps_caraousal;
+            }
         }
+
         return eventSource.getName();
     }
 
@@ -111,8 +124,18 @@ public class ViewCartCarouselService extends AbstractCarouselService {
 
     @Override
     protected List<String> getSiteFeatures(FDUserI user) {
-        boolean isCurrentUser = isUserAlreadyOrdered(user);
-        return isCurrentUser ? FDStoreProperties.getViewcartCurrentCustomerCarouselSiteFeatures() : FDStoreProperties.getViewcartNewCustomerCarouselSiteFeatures();
+        List<String> siteFeatures = null;
+        if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user)) {
+            boolean isCurrentUser = isUserAlreadyOrdered(user);
+            siteFeatures = isCurrentUser ? FDStoreProperties.getViewcartCurrentCustomerCarouselSiteFeatures() : FDStoreProperties.getViewcartNewCustomerCarouselSiteFeatures();
+        } else {
+            if (FDStoreProperties.isPropDonationProductSamplesEnabled()) {
+                siteFeatures = Arrays.asList(RecommendationTab.DONATION_SAMPLE_SITE_FEATURE);
+            } else {
+                siteFeatures = Arrays.asList(RecommendationTab.PRODUCT_SAMPLE_SITE_FEATURE);
+            }
+        }
+        return siteFeatures;
     }
 
     protected String getDefaultSiteFeature(FDUserI user) {
