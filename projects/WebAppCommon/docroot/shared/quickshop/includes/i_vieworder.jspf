@@ -571,9 +571,9 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
 			<td colspan="3" width="100">
 				<input type="hidden" name="salesUnit_<%=idx%>" value="<%= orderLine.getSalesUnit() %>">
         <div class="qtyinput">
-          <a href="javascript:chgQty<%=idx%>(<%= -productNode.getQuantityIncrement() %>);" class="quantity_minus"><div class="vahidden">Decrease quantity</div></a>
+          <a href="javascript:chgQty<%=idx%>(<%= -productNode.getQuantityIncrement() %>);" class="quantity_minus">-<div class="vahidden">Decrease quantity</div></a>
           <input class="qty" aria-label="quantity" type="text" size="4" name="quantity_<%=idx%>" maxlength="2" value="<%= !"0".equals(quant)?quant:"" %>" onChange="chgQty<%=idx%>(0);" onBlur="pricing<%=idx%>.setQuantity(this.value);"/>
-          <a href="javascript:chgQty<%=idx%>(<%= productNode.getQuantityIncrement() %>);" class="quantity_plus"><div class="vahidden">Increase quantity</div></a>
+          <a href="javascript:chgQty<%=idx%>(<%= productNode.getQuantityIncrement() %>);" class="quantity_plus">+<div class="vahidden">Increase quantity</div></a>
         </div>
 			</td>
 		<% } %>

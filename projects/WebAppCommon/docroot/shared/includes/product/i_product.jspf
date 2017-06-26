@@ -798,9 +798,9 @@ if ( skuSize == 0 ) {
                   <div class="qtyinput" style="<%= alignRight ? "float: right;" : "" %>">
                     <span class="qtymessage"><%= __prd.getQuantityText() %><% if (__prd.getQuantityMinimum() != 1) { out.println(" *"); } %></span>
                     <span class="qtyinputholder">
-                      <a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>);" class="quantity_minus"><div class="vahidden">Decrease quantity</div></a>
+                      <a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>);" class="quantity_minus">-<div class="vahidden">Decrease quantity</div></a>
                       <input class="qty" aria-label="quantity" type="text" size="4" name="quantity" maxlength="2" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"/>
-                      <a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);" class="quantity_plus"><div class="vahidden">Increase quantity</div></a>
+                      <a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);" class="quantity_plus">+<div class="vahidden">Increase quantity</div></a>
                     </span>
                   </div>
                   <div class="clear"><%@ include file="/shared/includes/product/i_minmax_note.jspf" %></div>
@@ -818,9 +818,9 @@ if ( skuSize == 0 ) {
                   <div class="qtyinput" style="<%= alignRight ? "float: right;" : "" %>">
                     <span class="qtymessage"><%= __prd.getQuantityText() %><% if (__prd.getQuantityMinimum() != 1) { out.println(" *"); } %></span>
                     <span class="qtyinputholder">
-                      <a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>);" class="quantity_minus"><div class="vahidden">Decrease quantity</div></a>
+                      <a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>);" class="quantity_minus">-<div class="vahidden">Decrease quantity</div></a>
                       <input class="qty" aria-label="quantity" type="text" size="4" name="quantity" maxlength="2" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"/>
-                      <a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);" class="quantity_plus"><div class="vahidden">Increase quantity</div></a>
+                      <a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);" class="quantity_plus">+<div class="vahidden">Increase quantity</div></a>
                     </span>
                     <span class="qtyprice">Price</span>
                     <input class="qtypriceinput" type="text" name="PRICE" size="6" onChange="" onFocus="blur()" value=""/>
@@ -840,9 +840,9 @@ if ( skuSize == 0 ) {
                   <div class="qtyinput" style="<%= alignRight ? "float: right;" : "" %>">
                     <span class="qtymessage"><%= __prd.getQuantityText() %><% if (__prd.getQuantityMinimum() != 1) { out.println(" *"); } %></span>
                     <span class="qtyinputholder">
-                      <a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>);" class="quantity_minus"><div class="vahidden">Decrease quantity</div></a>
+                      <a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>);" class="quantity_minus">-<div class="vahidden">Decrease quantity</div></a>
                       <input class="qty" aria-label="quantity" type="text" size="4" name="quantity" maxlength="2" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"/>
-                      <a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);" class="quantity_plus"><div class="vahidden">Increase quantity</div></a>
+                      <a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);" class="quantity_plus">+<div class="vahidden">Increase quantity</div></a>
                     </span>
                   </div>
                   <div class="clear"><%@ include file="/shared/includes/product/i_minmax_note.jspf" %></div>
