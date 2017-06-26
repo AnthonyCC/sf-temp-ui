@@ -39,12 +39,12 @@
 				{param atcItemId:$cartLine.itemId /}
 				{param isAlcoholic:$cartLine.alcoholic /}
 				{param originalLineId:$cartLine.originalLineId /}
-			{/call}			
+			{/call}
 			{foreach $salesUnit in $cartLine.salesUnit}{if $salesUnit.selected}
 				<input type="hidden" value="{$salesUnit.id}" data-productdata-name="salesUnit" data-component="productData">
 			{/if}{/foreach}
 			<input type="hidden" value="{$cartLine.quantity.quantity}" data-productdata-name="quantity" data-component="productData">
-			
+
 		</div>
 		<hr />
 	{/if}
@@ -57,17 +57,17 @@
  */
 {template .cartConfirmIterator}
   {if $cartConfirmPotatoes and length($cartConfirmPotatoes)}
-    <div class="span-4 oas first append-1">
+    <div class="span-4 oas first append-1" id='oas_LittleRandy'>
       <script type="text/javascript">OAS_AD("LittleRandy");</script>
     </div>
-	
+
 	<p class="cc-incart-info">Now in cart:</p>
-	
+
     <div class="span-11">
       {foreach $cartConfirmPotato in $cartConfirmPotatoes}
        {if $cartConfirmPotato}
         {call .cartConfirm data="$cartConfirmPotato" /}
-       {/if} 
+       {/if}
       {/foreach}
 
       <p class="cc-actions">

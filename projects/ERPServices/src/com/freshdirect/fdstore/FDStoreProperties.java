@@ -935,12 +935,17 @@ public class FDStoreProperties {
     private final static String PROP_ZIP_CHECK_OVER_LAY_ENABLED = "fdstore.zipcheck.overlay.enabled";
     /* APPDEV-5781 */
     private final static String PROP_OBSOLETE_MERGECARTPAGE_ENABLED = "fdstore.obsolete.mergecartpage.enabled";
+    
+    private static final String PROP_DFP_ENABLED = "fdstore.dfp.enabled";
+    private static final String PROP_DFP_ID = "fdstore.dfp.id";
+
 	private final static String PROP_CLUSTER_NAME = "fdsystem.cluster.name";
 	private final static String PROP_NODE_NAME = "fdsystem.node.name";
     
     private final static String PROP_PRODUCT_CACHE_OPTIMIZATION_ENABLED = "fdstore.product.cache.optimization.enabled";
     
     private final static String PROP_REQUEST_SCHEME_FOR_REDIRECT_URL = "fdstore.request.scheme.redirecturl";
+
 
     static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1786,6 +1791,10 @@ public class FDStoreProperties {
         
         /* APPDEV-5781 */
         defaults.put(PROP_OBSOLETE_MERGECARTPAGE_ENABLED, "true");
+        
+        defaults.put(PROP_DFP_ENABLED, "false");
+        defaults.put(PROP_DFP_ID, "1072054678");
+
         defaults.put(PROP_CLUSTER_NAME, "localhost");
         defaults.put(PROP_NODE_NAME, "localhost");
     	
@@ -4603,4 +4612,11 @@ public class FDStoreProperties {
 		return get(PROP_REQUEST_SCHEME_FOR_REDIRECT_URL);
 	}
 
+	public static boolean isDfpEnabled() {
+		return (Boolean.valueOf(get(PROP_DFP_ENABLED))).booleanValue();
+	}
+	
+	public static String getDfpId() {
+		return get(PROP_DFP_ID);
+	}
 }

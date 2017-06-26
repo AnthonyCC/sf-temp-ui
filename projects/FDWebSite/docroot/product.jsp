@@ -182,9 +182,11 @@ String productFullName = productNode.getFullName().replaceAll("<[^>]*>", "");
 	%>
 <%if (FDStoreProperties.isAdServerEnabled()) {%>
 
+  <div id='oas_ProductNote'>
 	<script type="text/javascript">
 		OAS_AD('ProductNote');
 	</script>
+  </div>
 
 <%} else {%>
     <%@ include file="/shared/includes/product/i_product_quality_note.jspf" %>
@@ -199,7 +201,7 @@ String productFullName = productNode.getFullName().replaceAll("<[^>]*>", "");
 <%  //hand the action results off to the dynamic include
 	String cartMode = CartName.ADD_TO_CART;
 	FDCartLineI templateLine = null ;
-	
+
 	request.setAttribute("actionResult", actionResult);
 	request.setAttribute("user", user);
 	request.setAttribute("productNode", productNode);
@@ -214,7 +216,7 @@ String productFullName = productNode.getFullName().replaceAll("<[^>]*>", "");
 %>
 <%@ include file="/includes/product/cutoff_notice.jspf" %>
 <%@ include file="/includes/product/i_dayofweek_notice.jspf" %>
-<!-- product layout : <%= prodPageLayout.getLayoutPath() %> --> 
+<!-- product layout : <%= prodPageLayout.getLayoutPath() %> -->
 
 <jsp:include page="<%= prodPageLayout.getLayoutPath() %>" flush="false"/>
 

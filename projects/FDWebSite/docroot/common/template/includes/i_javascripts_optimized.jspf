@@ -16,6 +16,7 @@
 
     fd.gtm = fd.gtm || {};
     fd.gtm.key = '<%= FDStoreProperties.getGoogleTagManagerKey() %>';
+
   </script>
 
   <%-- Google Tag Manager login/signup events --%>
@@ -146,7 +147,7 @@
                   $(e).attr("tabindex", "-1");
                   $(e).attr("role", "presentation");
                   //console.log('updateOAS', event,id,$(e).attr("tabindex"));
-			 });        
+			 });
 
 		});
 	})($jq);

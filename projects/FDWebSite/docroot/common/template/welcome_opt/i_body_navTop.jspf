@@ -28,17 +28,17 @@ if(user != null) {
 	if(user.isDepotUser()){
 		depotName = com.freshdirect.fdstore.FDDeliveryManager.getInstance().getDepot(user.getDepotCode()).getName();
 	}
-	
-	
+
+
 	request.setAttribute("listPos", "SystemMessage");
-	%><% 
+	%><%
 	if (FDStoreProperties.isAdServerEnabled()) {
-  		%><div id="OAS_SystemMessage">
+  		%><div id="oas_SystemMessage">
   			<script type="text/javascript">OAS_AD('SystemMessage');</script>
-  		</div><% 
+  		</div><%
 	} else { %>
 		<div class="message" data-type="system"><fd:GetSiteAnnouncements id="announcments" user="<%=user%>">
-		
+
 			<logic:iterate id="ann" collection="<%=announcments%>" type="com.freshdirect.fdstore.FDSiteAnnouncementI">
 				<table width="<%=W_GLOBAL_NAV_TOP_TOTAL %>" cellpadding="0" cellspacing="0" border="0">
 					<tr align="center">
@@ -59,14 +59,14 @@ if(user != null) {
 		<div class="message invisible" data-type="reservationwarning"><%@ include file="/common/template/includes/i_reservation_warning.jspf"%></div><%
 	}
 	String uri = request.getRequestURI().toLowerCase();
-	%>	
+	%>
 	<div class="message invisible" data-type="deliveryetawarning"><%@ include file="/common/template/includes/i_delivery_eta_info.jspf"%></div>
-	
+
 		<!-- Adding Skip to Navigation : Start-->
 		<a href="#content" class="hidefromView">Skip to Content</a>
 		<!-- Adding Skip to Navigation : End-->
-	
-		
+
+
   	<div class="container globalnav_top<%= (uri.contains("/checkout/") || uri.contains("view_cart.jsp") || uri.contains("merge_cart.jsp")) ? " disableCart" : "" %>">
 	  	<%
 		if (user.isDepotUser()){ %>
@@ -103,7 +103,7 @@ if(user != null) {
 	    			</div>
 	    	</fd:GetCart>
 
-            <% String dlvInfoLink = ""; 
+            <% String dlvInfoLink = "";
                 if (user.isPickupOnly()) {
                     dlvInfoLink = "/help/delivery_lic_pickup";
                 } else if (user.isDepotUser()) {
@@ -114,7 +114,7 @@ if(user != null) {
                     dlvInfoLink = "/help/delivery_info";
                         if (EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())) {
                             dlvInfoLink += "_cos";
-                        } 
+                        }
                 }
             %>
             <div class="topnavitem">
@@ -146,7 +146,7 @@ if(user != null) {
             </div>
         </div>
     </div>
-    
+
     <% if (FDStoreProperties.isSearchGlobalnavAutocompleteEnabled()) { %>
         <script type="text/javascript">
             YAHOO.util.Event.onDOMReady(autoCompleteFunctionFactory(null, "topSearchTerms", "topSearchField"));
@@ -157,7 +157,7 @@ if(user != null) {
     <table width="<%=W_GLOBAL_NAV_TOP_TOTAL %>" border="0" cellpadding="0" cellspacing="0">
     <tr>
         <td width="182" ROWSPAN="3" valign="BOTTOM">
-    
+
         <a href="/index.jsp" onMouseover="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_on.gif')" onMouseout="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_off.gif')"><img src="/media/images/navigation/global_nav/fd_logo_off.gif" width="195" height="81" alt="FreshDirect" id="FD_LOGO" /></a>
         </td>
     </tr>
@@ -165,7 +165,7 @@ if(user != null) {
         <td colspan="13"><img src="/media_stat/images/layout/clear.gif" width="1" height="18" alt="" /></td>
     </tr>
     </table>
-<% } %> 
+<% } %>
 
 <!-- Changes for Skip to Content Fix -->
 <div tabindex="0" id="skip_to_content"></div>

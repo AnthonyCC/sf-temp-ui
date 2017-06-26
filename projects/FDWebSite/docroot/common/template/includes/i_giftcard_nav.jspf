@@ -32,9 +32,9 @@ final int W_GIFTCARD_NAV_TOTAL = 970;
 				// ads are enabled
 				if (FDStoreProperties.isAdServerEnabled()) {
 					request.setAttribute("listPos", "SystemMessage");
-					%><div id="OAS_SystemMessage">
+					%><div id="oas_SystemMessage">
 						  <script type="text/javascript">OAS_AD('SystemMessage');</script>
-  					</div><% 
+  					</div><%
   				} else { %>
 					<div class="message" data-type="system"><fd:GetSiteAnnouncements id="announcments" user="<%=user%>">
 						<logic:iterate id="ann" collection="<%=announcments%>" type="com.freshdirect.fdstore.FDSiteAnnouncementI">
@@ -51,12 +51,12 @@ final int W_GIFTCARD_NAV_TOTAL = 970;
 						</logic:iterate>
 					</fd:GetSiteAnnouncements></div>
 				<% } %>
-				
+
 			<% } %>
 <table width="<%=W_GIFTCARD_NAV_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 	<tr>
 		<td valign="bottom" width="182">
-			<% if (user != null) {%>					
+			<% if (user != null) {%>
 				<% if (user.isDepotUser()) { %>
 					<a href="/index.jsp"><img src="/media_stat/images/logos/<%=user.getDepotCode()%>_depot_logo.gif" alt="" border="0" /></a>
 				 <% } else { %>
@@ -72,7 +72,7 @@ final int W_GIFTCARD_NAV_TOTAL = 970;
 			<% } else if (user.isDlvPassActive()) { %>
 				<a href="/your_account/delivery_pass.jsp"><img src="/media_stat/images/navigation/global_nav/global_hdr_dp.gif" width="217" height="10" alt="CLICK HERE FOR DETAILS"  vspace="0" border="0"></a><br>
 			<% } %>
-			
+
 		</td>
 	</tr>
 </table>
@@ -154,7 +154,7 @@ final int W_GIFTCARD_NAV_TOTAL = 970;
 	if ( step == 1 ) { step1_disp = "<img src=\""+step1_img_r+"\" "+step1_attribs+" />"; }
 	if ( step == 2 ) { step2_disp = "<img src=\""+step2_img_r+"\" "+step2_attribs+" />"; }
 	if ( step == 3 ) { step3_disp = "<img src=\""+step3_img_r+"\" "+step3_attribs+" />"; }
-	
+
 	// as we pass each step, we make it a link and allow mouse overs
 	if ( step > 0 ) {
 		// this setup is extra complicated because of the rounded corners
@@ -177,7 +177,7 @@ final int W_GIFTCARD_NAV_TOTAL = 970;
       <li class="menu-header item-skin-hover">
           <a class="menu-header header-skin reset-link" href="<%= step0_link %>">gift cards</a>
       </li><!--
-    --><li class="menu-item item-skin">      
+    --><li class="menu-item item-skin">
           <span class="gf-item">gift & recipient options</span>
       </li><!--
       --><li class="menu-item item-skin">
@@ -188,15 +188,15 @@ final int W_GIFTCARD_NAV_TOTAL = 970;
       </li>
       <%} else {%>
       <li class="menu-header <% if (step == 0) { %> item-skin-hovered <% } %> <% if (step > 0) { %> item-skin-hover <% } %>">
-      
+
         <% if (step > 0) { %>
           <a class="menu-header header-skin reset-link" href="<%= step0_link %>">gift cards</a>
         <%} else {%>
           <span class="header-skin">gift cards</span>
         <%}%>
       </li><!--
-    --><li class="menu-item item-skin <% if (step == 1) { %> item-skin-hovered <% } %> <% if (step > 1) { %> item-skin-hover <% } %>">      
-        
+    --><li class="menu-item item-skin <% if (step == 1) { %> item-skin-hovered <% } %> <% if (step > 1) { %> item-skin-hover <% } %>">
+
         <% if (step > 1) { %>
           <a class="gf-item reset-link" href="<%= step1_link %>">gift & recipient options</a>
         <%} else {%>
@@ -204,7 +204,7 @@ final int W_GIFTCARD_NAV_TOTAL = 970;
         <%}%>
       </li><!--
       --><li class="menu-item item-skin <% if (step == 2) { %> item-skin-hovered <% } %> <% if (step > 2) { %> item-skin-hover <% } %>">
-        
+
         <% if (step > 2) { %>
           <a class="gf-item reset-link" href="<%= step2_link %>">payment info</a>
         <%} else {%>
@@ -219,7 +219,7 @@ final int W_GIFTCARD_NAV_TOTAL = 970;
   </div>
 <%} else {%>
   <img width="1" height="6" alt="" src="/media_stat/images/layout/clear.gif" />
-  
+
   <table class="GC_nav_table">
     <tr>
       <% if (step == 0) { %>
@@ -239,7 +239,7 @@ final int W_GIFTCARD_NAV_TOTAL = 970;
       <td class="GC_nav_corner"><img src="/media_stat/images/giftcards/nav/nav_corner_top_rt_off.gif" /></td>
     </tr>
     <tr>
-      <td class="GC_nav_corner_spacer<% if (step == 0) {%> GC_nav_on<%} %>" id="td_step0_1"><img width="1" height="1" alt="" src="/media_stat/images/layout/clear.gif" /></td>    
+      <td class="GC_nav_corner_spacer<% if (step == 0) {%> GC_nav_on<%} %>" id="td_step0_1"><img width="1" height="1" alt="" src="/media_stat/images/layout/clear.gif" /></td>
       <td class="GC_nav_corner_spacer"><img width="1" height="1" alt="" src="/media_stat/images/layout/clear.gif" /></td>
     </tr>
     <tr>
