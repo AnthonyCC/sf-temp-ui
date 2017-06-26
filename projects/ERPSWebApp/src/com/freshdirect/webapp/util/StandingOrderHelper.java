@@ -1227,7 +1227,7 @@ private static String convert(Date time) {
 	
 	public static FDUserI setNewSoFeature(FDUserI user){
 		try{
-			if(user!=null && user.isNewSO3Enabled() && user.isRefreshNewSoFeature() ){
+			if(user!=null && user.isNewSO3Enabled() && user.isRefreshNewSoFeature() && null != user.getIdentity() ){
 				ErpCustomerInfoModel cusotmerInfoModel = FDCustomerFactory.getErpCustomer(user.getIdentity()).getCustomerInfo();
 				if(cusotmerInfoModel!=null){
 					user.setSoFeatureOverlay(cusotmerInfoModel.getSoFeatureOverlay()!=null?
