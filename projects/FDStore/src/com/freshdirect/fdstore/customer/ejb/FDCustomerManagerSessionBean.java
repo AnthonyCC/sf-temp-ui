@@ -8633,4 +8633,16 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 	}
+	
+	public String getCookieByFdCustomerId(String fdCustomerId) throws FDResourceException{
+		Connection conn = null;
+		try{
+			conn = getConnection();
+			return FDUserDAO.getCookieByFdCustomerId(conn, fdCustomerId);
+		}catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Error in getting cookie from database");
+		} finally {
+			close(conn);
+		}
+	}
 }

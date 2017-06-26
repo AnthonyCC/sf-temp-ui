@@ -901,5 +901,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public ErpCustomerModel getCustomer(FDIdentity identity) throws FDResourceException, RemoteException;
 
 	public Map<String, List<PendingOrder>> getPendingDeliveries() throws FDResourceException, RemoteException;
+	
+	public String getCookieByFdCustomerId(String fdCustomerId) throws FDResourceException, RemoteException;
 }
 
