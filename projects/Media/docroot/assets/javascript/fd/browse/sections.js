@@ -134,7 +134,7 @@ var FreshDirect = FreshDirect || {};
 			for (var cur in FreshDirect.browse.data.adProducts.hlSelectionsEmptyProductsPageBeacons) {	
 				if (FreshDirect.browse.data.adProducts.hlSelectionsEmptyProductsPageBeacons[cur].length !==0) {
 				$(".browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_'+activePage+'_id_'+cur+'" src="' +
-						window.FreshDirect.browse.data.adProducts.hlSelectionsEmptyProductsPageBeacons[cur] + '&shown= '+'&random='  + new Date().getTime() + '" />');
+						window.FreshDirect.browse.data.adProducts.hlSelectionsEmptyProductsPageBeacons[cur] + '&aShown= '+'&random='  + new Date().getTime() + '" />');
 				}
 			}
 			
