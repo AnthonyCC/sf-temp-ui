@@ -313,8 +313,12 @@ public class FDUser extends ModelSupport implements FDUserI {
     private Collection<FDStandingOrder> validSO3s = new ArrayList<FDStandingOrder>();
     
     private Collection<FDStandingOrder> allSO3s = new ArrayList<FDStandingOrder>();
+    
+    private Map<String, Object> validSO3Data = new HashMap<String, Object>();
 
     private boolean refreshSO3 = true;
+    
+    private boolean refreshSO3Settings = true;
 
     private boolean isZipCheckPopupUsed = false;
     
@@ -3618,6 +3622,10 @@ public class FDUser extends ModelSupport implements FDUserI {
     @Override
     public void setRefreshSO3(boolean isRefreshSO3) {
         this.refreshSO3 = isRefreshSO3;
+        if(refreshSO3){
+			setRefreshSO3Settings(true);
+		}
+        
     }
 
     public boolean isZipCheckPopupUsed() {
@@ -3650,6 +3658,9 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	public void setSoCartOverlayFirstTime(boolean soCartOverlayFirstTime) {
 		this.soCartOverlayFirstTime = soCartOverlayFirstTime;
+		if(soCartOverlayFirstTime){
+			setRefreshSO3Settings(true);
+		}
 	}
 
 	public boolean isRefreshSoCartOverlay() {
@@ -3658,6 +3669,9 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	public void setRefreshSoCartOverlay(boolean refreshSoCartOverlay) {
 		this.refreshSoCartOverlay = refreshSoCartOverlay;
+		if(refreshSoCartOverlay){
+			setRefreshSO3Settings(true);
+		}
 	}
 	
 	public String isFromLogin() {
@@ -3676,6 +3690,10 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	public void setRefreshNewSoFeature(boolean refreshNewSoFeature) {
 		this.refreshNewSoFeature = refreshNewSoFeature;
+		if(refreshNewSoFeature){
+			setRefreshSO3Settings(true);
+		}
+		
 	}
 
 	public boolean isSoFeatureOverlay() {
@@ -3691,6 +3709,20 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.referrerEligible = referrerEligible;
 	}
 
-	
+	public void setValidSO3Data(Map<String, Object> validSO3Data){
+		this.validSO3Data = validSO3Data;
+	}
+    
+    public Map<String, Object> getValidSO3Data(){
+    	return this.validSO3Data;
+    }
 		
+    public boolean isRefreshSO3Settings(){
+    	return this.refreshSO3Settings;
+    }
+
+    public void setRefreshSO3Settings(boolean isRefreshSO3Settings){
+    	this.refreshSO3Settings = isRefreshSO3Settings;
+    }
+    
 }

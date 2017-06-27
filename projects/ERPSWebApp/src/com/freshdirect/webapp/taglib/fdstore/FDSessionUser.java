@@ -2340,5 +2340,20 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		this.user.setFromLogin(fromLogin);
 	}
 
+	public void setValidSO3Data(Map<String, Object> validSO3Data){
+		this.user.setValidSO3Data(validSO3Data);
+	}
+    
+    public Map<String, Object> getValidSO3Data(){
+    	return this.user.getValidSO3Data();
+    }
+    
+    public boolean isRefreshSO3Settings(){
+    	return this.user.isRefreshSO3Settings();
+    }
+
+    public void setRefreshSO3Settings(boolean isRefreshSO3Settings){
+    	this.user.setRefreshSO3Settings(isRefreshSO3Settings);
+    }
   
 }

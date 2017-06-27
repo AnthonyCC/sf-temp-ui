@@ -773,6 +773,17 @@ public class StandingOrderHelper {
 		return false;
 	}
 
+	
+	public static Map<String,Object> getValidSO3DataForProducts(FDUserI user){
+		Map<String,Object> validSO3Data = user.getValidSO3Data();
+		if(user.isRefreshSO3Settings()){
+			validSO3Data = getAllSoData(user,true,false);
+			user.setValidSO3Data(validSO3Data);
+			user.setRefreshSO3Settings(false);
+		}
+		
+		return validSO3Data;
+	}
 	/* get a single Hashmap has all data that soy files need
 	 * can be used directly, returns "settingsData":{DATA} */
 	public static HashMap<String,Object> getAllSoData(FDUserI user, boolean isAddtoProduct, boolean isModifiedInfo) {

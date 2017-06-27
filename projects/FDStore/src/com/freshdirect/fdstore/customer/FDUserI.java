@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.customer;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -706,7 +707,15 @@ public interface FDUserI extends java.io.Serializable {
 
     public boolean isRefreshSO3();
 
-    public void setRefreshSO3(boolean isRefreshValidSO3);
+    public void setRefreshSO3(boolean isRefreshSO3);
+    
+    public boolean isRefreshSO3Settings();
+
+    public void setRefreshSO3Settings(boolean isRefreshSO3Settings);
+    
+    public void setValidSO3Data(Map<String, Object> validSO3Data);
+    
+    public Map<String, Object> getValidSO3Data();
 
     public boolean isZipCheckPopupUsed();
     
