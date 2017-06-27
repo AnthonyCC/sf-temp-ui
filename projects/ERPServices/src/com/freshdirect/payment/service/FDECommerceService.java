@@ -41,7 +41,6 @@ import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.content.attributes.AttributeException;
 import com.freshdirect.content.attributes.FlatAttribute;
-import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpCustEWalletModel;
@@ -88,6 +87,7 @@ import com.freshdirect.ecommerce.data.enums.EnumComplaintDlvIssueTypeData;
 import com.freshdirect.ecommerce.data.enums.EnumFeaturedHeaderTypeData;
 import com.freshdirect.ecommerce.data.enums.ErpAffiliateData;
 import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
+import com.freshdirect.ecommerce.data.erp.factory.FDProductInfoData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpInventoryData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpRestrictedAvailabilityData;
 import com.freshdirect.ecommerce.data.erp.inventory.RestrictedInfoParam;
@@ -120,7 +120,7 @@ import com.freshdirect.ecommerce.data.referral.ReferralHistoryData;
 import com.freshdirect.ecommerce.data.referral.ReferralObjectiveData;
 import com.freshdirect.ecommerce.data.referral.ReferralPartnerData;
 import com.freshdirect.ecommerce.data.referral.ReferralProgramData;
-import com.freshdirect.ecommerce.data.referral.ReferralProgramInvitaionData;
+import com.freshdirect.ecommerce.data.referral.ReferralProgramInvitationData;
 import com.freshdirect.ecommerce.data.routing.SubmitOrderRequestData;
 import com.freshdirect.ecommerce.data.rules.RuleData;
 import com.freshdirect.ecommerce.data.sap.CharacteristicValueMapData;
@@ -159,10 +159,13 @@ import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDGroupNotFoundException;
 import com.freshdirect.fdstore.FDPayPalServiceException;
+import com.freshdirect.fdstore.FDProduct;
+import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSku;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.SalesAreaInfo;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
@@ -475,6 +478,10 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String LOAD_REFERRAL_EMAIL = "referral/emailId/";
 	private static final String LOAD_REFERRAL_REPORT_CUSTOMER_ID = "referral/report/customerId/";
 	private static final String LOAD_REFERRAL_REPORT_REFERRAL_CUSTOMERID = "referral/report/referal/customerId/";
+	
+	private static final String FDFACTORY_PRODUCTINFO_SKUCODE = "fdfactory/productinfobysku";
+	private static final String FDFACTORY_PRODUCTINFO_SKUCODE_VERSION = "fdfactory/productbyskuandversion";
+	private static final String FDFACTORY_PRODUCTINFO_SKUCODES = "fdfactory/productsbyskus";
 	
 	
 	public static IECommerceService getInstance() {
@@ -5152,13 +5159,13 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		return null;
 	}*/
 	@Override
-	public void storeReferral(ReferralProgramInvitaionData referral,FDUserData user) throws FDResourceException, RemoteException {
-		Request<ReferralProgramInvitaionData> request = new Request<ReferralProgramInvitaionData>();
+	public void storeReferral(ReferralProgramInvitationData referral,FDUserData user) throws FDResourceException, RemoteException {
+		Request<ReferralProgramInvitationData> request = new Request<ReferralProgramInvitationData>();
 		try {
 			request.setData(referral);
 			String inputJson = buildRequest(request);
 			 postDataTypeMap(inputJson,getFdCommerceEndPoint(STORE_REFERRAL),
-					new TypeReference<Response<ReferralProgramInvitaionData>>() {
+					new TypeReference<Response<ReferralProgramInvitationData>>() {
 					});
 		} catch (FDResourceException e) {
 			LOGGER.error(e.getMessage());
@@ -5169,10 +5176,10 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		}
 	}
 	@Override
-	public ReferralProgramInvitaionData loadReferralFromPK(String referralId)throws FDResourceException, RemoteException {
-		Response<ReferralProgramInvitaionData> response = null;
+	public ReferralProgramInvitationData loadReferralFromPK(String referralId)throws FDResourceException, RemoteException {
+		Response<ReferralProgramInvitationData> response = null;
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_REFERRAL_PK+referralId),  new TypeReference<Response<ReferralProgramInvitaionData>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_REFERRAL_PK+referralId),  new TypeReference<Response<ReferralProgramInvitationData>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
@@ -5183,11 +5190,11 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		return response.getData();
 	}
 	@Override
-	public List<ReferralProgramInvitaionData> loadReferralsFromReferralProgramId(String referralProgramId)
+	public List<ReferralProgramInvitationData> loadReferralsFromReferralProgramId(String referralProgramId)
 			throws FDResourceException, RemoteException {
-		Response<List<ReferralProgramInvitaionData>> response = null;
+		Response<List<ReferralProgramInvitationData>> response = null;
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_REFERRAL_PROGRAM_ID+referralProgramId),  new TypeReference<Response<ReferralProgramInvitaionData>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_REFERRAL_PROGRAM_ID+referralProgramId),  new TypeReference<Response<ReferralProgramInvitationData>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
@@ -5198,11 +5205,11 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		return response.getData();
 	}
 	@Override
-	public List<ReferralProgramInvitaionData> loadReferralsFromReferrerCustomerId(String referrerCustomerId)
+	public List<ReferralProgramInvitationData> loadReferralsFromReferrerCustomerId(String referrerCustomerId)
 			throws FDResourceException, RemoteException {
-		Response<List<ReferralProgramInvitaionData>> response = null;
+		Response<List<ReferralProgramInvitationData>> response = null;
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_REFERRAL_CUSTOMER_ID+referrerCustomerId),  new TypeReference<Response<ReferralProgramInvitaionData>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_REFERRAL_CUSTOMER_ID+referrerCustomerId),  new TypeReference<Response<ReferralProgramInvitationData>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
@@ -5213,11 +5220,11 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		return response.getData();
 	}
 	@Override
-	public List<ReferralProgramInvitaionData> loadReferralsFromReferralEmailAddress(String referralEmailAddress) throws FDResourceException,
+	public List<ReferralProgramInvitationData> loadReferralsFromReferralEmailAddress(String referralEmailAddress) throws FDResourceException,
 			RemoteException {
-		Response<List<ReferralProgramInvitaionData>> response = null;
+		Response<List<ReferralProgramInvitationData>> response = null;
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_REFERRAL_EMAIL+referralEmailAddress),  new TypeReference<Response<ReferralProgramInvitaionData>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_REFERRAL_EMAIL+referralEmailAddress),  new TypeReference<Response<ReferralProgramInvitationData>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
@@ -5258,4 +5265,71 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		return response.getData();
 	}
 
+	@Override
+	public FDProductInfo getProductInfo(String skuCode) throws FDSkuNotFoundException, RemoteException {
+
+		Response<FDProductInfoData> response = null;
+		FDProductInfo fdProductInfo;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FDFACTORY_PRODUCTINFO_SKUCODE)+"/"+skuCode,  new TypeReference<Response<FDProductInfoData>>(){});
+			if(response.getData() == null){
+				throw new FDSkuNotFoundException(response.getMessage());
+			}
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			fdProductInfo = ModelConverter.fdProductInfoDataToModel(response.getData());
+			
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return fdProductInfo;
+	
+	}
+	@Override
+	public FDProductInfo getProductInfo(String skuCode, int version) throws RemoteException {
+		Response<FDProductInfoData> response = null;
+		FDProductInfo fdProductInfo;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FDFACTORY_PRODUCTINFO_SKUCODE_VERSION)+"/"+skuCode+"/"+version,  new TypeReference<Response<FDProductInfoData>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			fdProductInfo = ModelConverter.fdProductInfoDataToModel(response.getData());
+			
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return fdProductInfo;
+	}
+	@Override
+	public Collection getProductInfos(String[] skus) throws FDResourceException, RemoteException {
+		Response<Collection<FDProductInfoData>> response = null;
+		Request<String[]> request = new Request<String[]>();
+		Collection<FDProductInfo> fdProductInfos = new ArrayList<FDProductInfo>();
+			try {
+				request.setData(skus);
+				String inputJson;
+				inputJson = buildRequest(request);
+				response = postDataTypeMap(inputJson,getFdCommerceEndPoint(FDFACTORY_PRODUCTINFO_SKUCODES),new TypeReference<Response<Collection<FDProductInfoData>>>() {});
+				if(!response.getResponseCode().equals("OK"))
+					throw new FDResourceException(response.getMessage());
+					
+				for (FDProductInfoData fdProductInfoData : response.getData()) {
+					fdProductInfos.add(ModelConverter.fdProductInfoDataToModel(fdProductInfoData));
+				}
+				
+			} catch (FDPayPalServiceException e) {
+				// TODO Auto-generated catch block
+				throw new RemoteException(e.getMessage());
+			}
+			return fdProductInfos;
+	}
+	@Override
+	public FDProduct getProduct(String sku, int version) {
+		return null;
+		}
+	
 }

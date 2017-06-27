@@ -41,7 +41,7 @@ import com.freshdirect.ecommerce.data.referral.ReferralHistoryData;
 import com.freshdirect.ecommerce.data.referral.ReferralObjectiveData;
 import com.freshdirect.ecommerce.data.referral.ReferralPartnerData;
 import com.freshdirect.ecommerce.data.referral.ReferralProgramData;
-import com.freshdirect.ecommerce.data.referral.ReferralProgramInvitaionData;
+import com.freshdirect.ecommerce.data.referral.ReferralProgramInvitationData;
 import com.freshdirect.ecommerce.data.sessionimpressionlog.SessionImpressionLogEntryData;
 import com.freshdirect.ecommerce.data.smartstore.EnumSiteFeatureData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyData;
@@ -67,9 +67,12 @@ import com.freshdirect.event.RecommendationEventsAggregate;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDGroupNotFoundException;
+import com.freshdirect.fdstore.FDProduct;
+import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.SalesAreaInfo;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
@@ -620,20 +623,25 @@ public interface IECommerceService {
 
 	//public abstract ReferralProgramInvitaionData createReferralInvitee(ReferralProgramInvitaionData referral, FDUserData user) throws FDResourceException,  RemoteException;
 
-	public abstract void storeReferral(ReferralProgramInvitaionData referral, FDUserData user) throws FDResourceException, RemoteException;
+	public abstract void storeReferral(ReferralProgramInvitationData referral, FDUserData user) throws FDResourceException, RemoteException;
 
-	public abstract ReferralProgramInvitaionData loadReferralFromPK(String referralId) throws FDResourceException, RemoteException;
+	public abstract ReferralProgramInvitationData loadReferralFromPK(String referralId) throws FDResourceException, RemoteException;
 
-	public abstract List<ReferralProgramInvitaionData> loadReferralsFromReferralProgramId( String referralProgramId) throws FDResourceException, RemoteException;
+	public abstract List<ReferralProgramInvitationData> loadReferralsFromReferralProgramId( String referralProgramId) throws FDResourceException, RemoteException;
 
-	public abstract List<ReferralProgramInvitaionData> loadReferralsFromReferrerCustomerId(String referrerCustomerId) throws FDResourceException, RemoteException;
+	public abstract List<ReferralProgramInvitationData> loadReferralsFromReferrerCustomerId(String referrerCustomerId) throws FDResourceException, RemoteException;
 
-	public abstract List<ReferralProgramInvitaionData> loadReferralsFromReferralEmailAddress( String referralEmailAddress) throws FDResourceException, RemoteException;
+	public abstract List<ReferralProgramInvitationData> loadReferralsFromReferralEmailAddress( String referralEmailAddress) throws FDResourceException, RemoteException;
 
 	public abstract List<FDReferralReportLineData> loadReferralReportFromReferrerCustomerId(String referrerCustomerId) throws FDResourceException, RemoteException;
 	
 	public abstract List<FDReferralReportLineData> loadReferralReportFromReferralCustomerId( String referralCustomerId) throws FDResourceException,	RemoteException;
 	
-	
+	public FDProductInfo getProductInfo(String sku) throws FDSkuNotFoundException, RemoteException;
 
+	public FDProductInfo getProductInfo(String sku, int version) throws RemoteException;
+	
+	public Collection getProductInfos(String[] skus) throws FDResourceException, RemoteException;
+
+	public FDProduct getProduct(String sku, int version);
 }

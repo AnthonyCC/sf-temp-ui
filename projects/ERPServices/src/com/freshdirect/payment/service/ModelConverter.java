@@ -57,6 +57,11 @@ import com.freshdirect.ecommerce.data.enums.EnumComplaintDlvIssueTypeData;
 import com.freshdirect.ecommerce.data.enums.EnumFeaturedHeaderTypeData;
 import com.freshdirect.ecommerce.data.enums.ErpAffiliateData;
 import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
+import com.freshdirect.ecommerce.data.erp.factory.FDMaterialSalesAreaData;
+import com.freshdirect.ecommerce.data.erp.factory.FDPlantMaterialData;
+import com.freshdirect.ecommerce.data.erp.factory.FDProductInfoData;
+import com.freshdirect.ecommerce.data.erp.factory.ZonePriceInfoData;
+import com.freshdirect.ecommerce.data.erp.factory.ZonePriceInfoListingData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpInventoryData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpInventoryEntryData;
 import com.freshdirect.ecommerce.data.erp.material.ErpCharacteristicData;
@@ -111,14 +116,22 @@ import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialPrice;
 import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialSalesAreaInfo;
 import com.freshdirect.erp.model.ErpProductInfoModel.ErpPlantMaterialInfo;
 import com.freshdirect.erp.model.ErpSalesUnitModel;
+import com.freshdirect.fdstore.EnumDayPartValueType;
 import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.fdstore.EnumOrderLineRating;
+import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDGroup;
+import com.freshdirect.fdstore.FDMaterialSalesArea;
+import com.freshdirect.fdstore.FDPlantMaterial;
+import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.GrpZonePriceListing;
 import com.freshdirect.fdstore.GrpZonePriceModel;
 import com.freshdirect.fdstore.SalesAreaInfo;
+import com.freshdirect.fdstore.ZonePriceInfoListing;
+import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.ecoupon.model.CouponCart;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionDetailModel;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
@@ -1213,6 +1226,42 @@ public class ModelConverter {
 		return l;
 	}
 
+
+	public static FDProductInfo fdProductInfoDataToModel(
+			FDProductInfoData fdProductInfoData) {
+		ZonePriceInfoListing zonePriceInfoList = createZonePriceInfoList(fdProductInfoData.getZonePriceInfoList());
+		Map<String,FDGroup> groups = createFDGrpMap(fdProductInfoData.getGroups());
+		List<FDPlantMaterial> plantMaterialInfo = createPlantMaterialInfoList(fdProductInfoData.getPlantMaterialInfo());
+		Map<String, FDMaterialSalesArea> materialAvailability = createMaterialAvailability(fdProductInfoData.getMaterialAvailability());
+		FDProductInfo fdProductInfo = new FDProductInfo(fdProductInfoData.getSkuCode(),
+				fdProductInfoData.getVersion(), fdProductInfoData.getMaterialNumber(), null,groups,fdProductInfoData.getUpc(),plantMaterialInfo, zonePriceInfoList, materialAvailability,EnumAlcoholicContent.getAlcoholicContent(fdProductInfoData.getAlcoholType()));
+		
+		return fdProductInfo;
+	}
+
+	private static List<FDPlantMaterial> createPlantMaterialInfoList(
+			Map<String, FDPlantMaterialData> plantMaterialInfo) {
+		List<FDPlantMaterial> fdPlantMaterials = new ArrayList<FDPlantMaterial>();
+		if(plantMaterialInfo!=null)
+		for (Entry<String, FDPlantMaterialData> fdPlantMaterial : plantMaterialInfo.entrySet()) {
+			fdPlantMaterials.add(buildFDPlantMaterial(fdPlantMaterial.getValue()));
+		}	
+		return fdPlantMaterials;
+	}
+
+	private static Map<String, FDMaterialSalesArea> createMaterialAvailability(
+			Map<String, FDMaterialSalesAreaData> materialAvailability) {
+		Map<String,FDMaterialSalesArea> plantMap = new HashMap<String, FDMaterialSalesArea>();
+		if(materialAvailability!=null)
+		for (Entry<String, FDMaterialSalesAreaData> grpMap : materialAvailability.entrySet()) {
+			String key= grpMap.getKey();
+			FDMaterialSalesArea value = buildFDMaterialSalesArea(grpMap.getValue());
+			plantMap.put(key, value);
+		}
+		return plantMap;
+	}
+
+
 	public static List buildCrmAgentRileList(List data) {
 		List l = new ArrayList();
 		for(Object obj:data){
@@ -1305,7 +1354,91 @@ public class ModelConverter {
 		return l;
 		
 	}
+
 	
-		
+
+	public static FDMaterialSalesArea buildFDMaterialSalesArea(
+			FDMaterialSalesAreaData value) {
+		FDMaterialSalesArea area = new FDMaterialSalesArea();
+		area.setDayPartValueType(value.getDayPartValueType()!=null? EnumDayPartValueType.getEnum(value.getDayPartValueType()):null);
+		area.setPickingPlantId(value.getPickingPlantId());
+		area.setSalesAreaInfo(buildSalesAreaInfo(value.getSalesAreaInfo()));
+//		area.setUnavailabilityDate(value.getUnavailabilityDate());
+		area.setUnavailabilityReason(value.getUnavailabilityReason());
+		area.setUnavailabilityStatus(value.getUnavailabilityStatus());
+		return null;
+	}
+
+	private static Map<String, FDPlantMaterial> createPlantMaterialInfoMap(
+			Map<String, FDPlantMaterialData> plantMaterialInfo) {
+		Map<String,FDPlantMaterial> plantMap = new HashMap<String, FDPlantMaterial>();
+		for (Entry<String, FDPlantMaterialData> plantDataMap : plantMaterialInfo.entrySet()) {
+			String key= plantDataMap.getKey();
+			FDPlantMaterial value = buildFDPlantMaterial(plantDataMap.getValue());
+			plantMap.put(key, value);
+		}
+		return plantMap;
+	}
+
+	public static FDPlantMaterial buildFDPlantMaterial(
+			FDPlantMaterialData value) {
+		FDPlantMaterial fdPlantMaterial = new FDPlantMaterial(value.getAtpRule()!=null?EnumATPRule.getEnum(value.getAtpRule()):null, 
+				value.isKosherProduction(), 
+				value.isPlatter(), 
+				getDayOfWeekSet(value.getBlockedDays()), 
+				value.getLeadTime(), 
+				value.getPlantId(), 
+				value.getFreshness(), 
+				value.getRating()!=null?EnumOrderLineRating.getEnumByStatusCode(value.getRating()):null, 
+				value.getSustainabilityRating()!=null?EnumSustainabilityRating.getEnumByStatusCode(value.getSustainabilityRating()):null , value.isLimitedQuantity());
+		return fdPlantMaterial;
+	}
+
+	private static DayOfWeekSet getDayOfWeekSet(DayOfWeekSetData blockedDays) {
+
+		DayOfWeekSet dayOfWeekSet = DayOfWeekSet.decode(null);
+		if(blockedDays != null){
+			Iterator iterator = blockedDays.getDaysOfWeek().iterator();
+			while(iterator.hasNext()){
+				String dayNumber = (String) iterator.next();
+				dayOfWeekSet = DayOfWeekSet.decode(dayNumber);
+			}
+		}
+		return dayOfWeekSet;
+	}
+
+	private static Map<String, FDGroup> createFDGrpMap(
+			Map<String, FDGroupData> map) {
+		Map<String,FDGroup> fdMap = new HashMap<String, FDGroup>();
+		if(map!=null)
+		for (Entry<String, FDGroupData> grpMap : map.entrySet()) {
+			String key= grpMap.getKey();
+			FDGroup value = buildFDGroup(grpMap.getValue());
+			fdMap.put(key, value);
+		}
+		return fdMap;
+	}
+
+	private static ZonePriceInfoListing createZonePriceInfoList(List<ZonePriceInfoListingData> zonePriceInfoList) {
+		ZonePriceInfoListing zonePriceInfoListing = new ZonePriceInfoListing();
+		ZoneInfo zoneInfo = null;
+		ZonePriceInfoModel zonePrice = null;
+		for (ZonePriceInfoListingData zonePriceInfoListingData : zonePriceInfoList) {
+			if(zonePriceInfoListingData.getZoneInfoData()!=null){
+			zoneInfo  = buildZoneInfo(zonePriceInfoListingData.getZoneInfoData()); 
+			zonePrice = buildZonePriceInfo(zonePriceInfoListingData.getZonePriceInfo());
+			zonePriceInfoListing.addZonePriceInfo(zoneInfo, zonePrice);
+			}
+		}
+		return zonePriceInfoListing;
+	}
+
+	public static ZonePriceInfoModel buildZonePriceInfo(ZonePriceInfoData zonePriceInfo) {
+		ZonePriceInfoModel zonePriceInfoModel = new ZonePriceInfoModel(zonePriceInfo.getSellingPrice(), 
+				zonePriceInfo.getPromoPrice(), zonePriceInfo.getDefaultPriceUnit(), zonePriceInfo.getDisplayableDefaultPriceUnit(), zonePriceInfo.isItemOnSale(), zonePriceInfo.getDealPercentage(), 
+				zonePriceInfo.getTieredDealPercentage(), buildZoneInfo(zonePriceInfo.getZoneInfo()), zonePriceInfo.isShowBurstImage());
+		return zonePriceInfoModel;
+	}
+
 }
 
