@@ -214,7 +214,15 @@
   padding: 2px 8px;
   margin: 0;
 }
-
+#customizePopup .buttons .addtolist{
+	border: 0;
+	background: none;
+	color: #458b4c;
+}
+#customizePopup .buttons .addtolist:hover{
+	text-decoration: underline;
+	color: #5fb069;
+}
 .portrait-item-atl .cssbutton + .cssbutton {
   margin: 4px 0 0;
 }
@@ -702,7 +710,24 @@ a.portrait-item-header-name:link {
 	text-align:center;
 	position:static;
 }
-
+.qs-content .lineitems22 .itemlist-item-controls.smaller {
+	width: 240px;
+}
+.qs-content .lineitems22 .itemlist-item-controls.smaller .itemlist-item-addtocart {
+	text-align: right;
+}
+.qs-content .lineitems22 .itemlist-item-controls.smaller .addtocart, .qs-content .lineitems22 .itemlist-item-controls.smaller .customize {
+	width: 220px;
+	display: inline-block;
+	float: right;
+}
+.qs-content .lineitems22 .itemlist-item-controls.smaller .atc-info {
+	width: 220px;
+	display: inline-block;
+}
+.qs-content .lineitems22 .itemlist-item-controls.smaller .addtocart, .qs-content .lineitems22 .itemlist-item-controls.smaller .customize {
+	margin-left: 10px;
+}
 #transactionalPopup .transactional-item-header {
   height:40px;
   position:relative;
@@ -861,16 +886,6 @@ a.portrait-item-header-name:link {
   text-transform: none;
   padding: 0;
   transition-duration: .2s;
-}
-
-.qs-content .lineitems22 .itemlist-item-controls.smaller .addtocart,
-.qs-content .lineitems22 .itemlist-item-controls.smaller .customize{
-  font-size:12px;
-  font-weight:bold;
-  height:28px;
-  line-height:28px;
-  white-space:nowrap;
-  width: 100%;
 }
 
 .qs-content .lineitems22 .itemlist-item-controls .addtocart,
@@ -1186,12 +1201,7 @@ a.portrait-item-header-name:link {
 
 .qs-content .lineitems22 .itemlist-item-controls{
   float:right;
-  width:137px;
-  margin:18px 0 28px 70px;
-}
-
-.qs-content .lineitems22 .itemlist-item-controls.smaller{
-  width:100px;
+  margin:18px 0 28px 30px;
 }
 
 .qs-content .lineitems22 .itemlist-item-controls-subtotal{
@@ -1209,6 +1219,7 @@ a.portrait-item-header-name:link {
 	width: auto;
 	float: right;
     text-align: right;
+	margin: 0 40px 0 0;
 }
 .itemlist-item-controls .qtyinput .quantity_plus{
 	background-color: #4fa157;
@@ -1228,7 +1239,20 @@ a.portrait-item-header-name:link {
 .qs-content .lineitems22 .itemlist-item-header-buttons button{
   margin-left:0;
 }
-
+.qs-content .lineitems22 .itemlist-item-header-buttons button.addtolist{
+	border: 0;
+	color: #458b4c;
+	font-weight: normal;
+}
+.qs-content .lineitems22 .itemlist-item-header-buttons button.addtolist:hover{
+	color: #5fb069;
+	background: none;
+    text-decoration: underline;
+}
+.qs-content .lineitems22 .itemlist-item-header-buttons button.deletefromlist{
+	border-left: 1px solid #e0e3d0;
+	padding: 4px 20px;
+}
 .qs-content .lineitems22 .itemlist-item-header,
 .qs-content .lineitems22 .itemlist-item-price,
 .qs-content .lineitems22 .itemlist-item-header-buttons{
