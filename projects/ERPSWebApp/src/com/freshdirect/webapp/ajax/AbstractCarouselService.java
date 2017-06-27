@@ -91,10 +91,7 @@ public abstract class AbstractCarouselService {
 
     protected abstract TabRecommendation getTabRecommendation(HttpServletRequest request, FDUserI user, SessionInput input);
 
-    protected String getEventSource(String siteFeature, FDUserI user) {
-        // TODO create site feature >> cm event source mapping
-        return siteFeature;
-    }
+    protected abstract String getEventSource(String siteFeature, FDUserI user);
 
 	/**
      * Calculates recommendations for variant-user pair and populate recommendation tab with carousel.
