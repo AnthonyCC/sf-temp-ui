@@ -53,6 +53,7 @@ request.setAttribute("noyui", true);
 	boolean isHomepageReturningUser = validOrderCount > 0;
 	String currentUserModuleContainerContentKey = FDStoreProperties.getHomepageRedesignCurrentUserContainerContentKey();
 	String newUserModuleContainerContentKey = FDStoreProperties.getHomepageRedesignNewUserContainerContentKey();
+  String moduleContainerId = isHomepageReturningUser ? currentUserModuleContainerContentKey : newUserModuleContainerContentKey;
 
 	request.setAttribute("sitePage", "www.freshdirect.com/index.jsp");
 
@@ -254,13 +255,7 @@ request.setAttribute("noyui", true);
             			mainTopBar="HPMainTopBar"
 					/>
 
-    				<%if (isHomepageReturningUser){ %>
-						<potato:modulehandling name="welcomepagePotato" moduleContainerId="<%=currentUserModuleContainerContentKey%>" />
-						<% }
-						else {
-						%>
-						<potato:modulehandling name="welcomepagePotato" moduleContainerId="<%=newUserModuleContainerContentKey%>" />
-					<%}%>
+						<potato:modulehandling name="welcomepagePotato" moduleContainerId="<%=moduleContainerId%>" />
 						<soy:render template="common.contentModules" data="${welcomepagePotato}" />
 
 					</div>
@@ -279,7 +274,8 @@ request.setAttribute("noyui", true);
       var dataLayer = window.dataLayer || [];
 
       dataLayer.push({
-        'is-new-homepage': 'true'
+        'is-new-homepage': 'true',
+        'module-container-id': '<%=moduleContainerId%>'
       });
     </script>
 
