@@ -109,11 +109,13 @@
                            </div>
                            <div class="so-cartline-delivery-date">
 								<div class="so-cartline-delivery-date-info">Item Deleted</div>
-								<div class="so-cartline-delivery-date-begins">Change Takes Effect: {$deliveryBegins}</div>
-								<div class="so-cartline-delivery-date-tip">
-									<div class="so-cartline-delivery-date-tip-i">i</div>
-									<div class="so-cartline-delivery-date-tip-cont">Changing a Standing Order Master List may not effect your next delivery</div>
-								</div>
+								{if $deliveryBegins}
+									<div class="so-cartline-delivery-date-begins">Change Takes Effect: {$deliveryBegins}</div>
+									<div class="so-cartline-delivery-date-tip">
+										<div class="so-cartline-delivery-date-tip-i">i</div>
+										<div class="so-cartline-delivery-date-tip-cont">Changing a Standing Order Master List may not effect your next delivery</div>
+									</div>
+								{/if}
 							</div>
                            <div class="clear"></div>
                      </div>
