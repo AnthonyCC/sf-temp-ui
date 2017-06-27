@@ -18,7 +18,14 @@ import java.util.TreeMap;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.ZoneInfo;
+import com.freshdirect.crm.CrmAgentRole;
+import com.freshdirect.crm.CrmCaseActionType;
+import com.freshdirect.crm.CrmCaseOrigin;
+import com.freshdirect.crm.CrmCasePriority;
+import com.freshdirect.crm.CrmCaseQueue;
+import com.freshdirect.crm.CrmCaseState;
 import com.freshdirect.crm.CrmCaseSubject;
+import com.freshdirect.crm.CrmDepartment;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumComplaintDlvIssueType;
 import com.freshdirect.customer.EnumTransactionSource;
@@ -42,7 +49,9 @@ import com.freshdirect.ecommerce.data.ecoupon.FDConfigurationData;
 import com.freshdirect.ecommerce.data.ecoupon.FDCouponActivityContextData;
 import com.freshdirect.ecommerce.data.ecoupon.FDCouponCustomerData;
 import com.freshdirect.ecommerce.data.enums.BillingCountryInfoData;
+import com.freshdirect.ecommerce.data.enums.CrmCasePriorityData;
 import com.freshdirect.ecommerce.data.enums.CrmCaseSubjectData;
+import com.freshdirect.ecommerce.data.enums.CrmEnumTypeData;
 import com.freshdirect.ecommerce.data.enums.DeliveryPassTypeData;
 import com.freshdirect.ecommerce.data.enums.EnumComplaintDlvIssueTypeData;
 import com.freshdirect.ecommerce.data.enums.EnumFeaturedHeaderTypeData;
@@ -1190,7 +1199,112 @@ public class ModelConverter {
 		}
 		return l;
 	}
+	public static List buildCasePriorityList(List data) {
+		List l = new ArrayList();
+		for(Object obj:data){
+			CrmCasePriorityData casePriorityData = (CrmCasePriorityData)obj;
+			CrmCasePriority comp = new CrmCasePriority(
+					casePriorityData.getCode(),
+					casePriorityData.getName(),
+					casePriorityData.getDescription(),
+					casePriorityData.getPriority());
+		l.add(comp);
+		}
+		return l;
+	}
 
+	public static List buildCrmAgentRileList(List data) {
+		List l = new ArrayList();
+		for(Object obj:data){
+			CrmEnumTypeData crmEnumTypeData = (CrmEnumTypeData)obj;
+			CrmAgentRole comp = new CrmAgentRole(
+					crmEnumTypeData.getCode(),
+					crmEnumTypeData.getName(),
+					crmEnumTypeData.getDescription(),
+					crmEnumTypeData.getLdapRoleName());
+		l.add(comp);
+		}
+		return l;
+		
+	}
+
+	public static List buildCaseActionTypeList(List data) {
+		List l = new ArrayList();
+		for(Object obj:data){
+			CrmEnumTypeData crmEnumTypeData = (CrmEnumTypeData)obj;
+			CrmCaseActionType comp = new CrmCaseActionType(
+					crmEnumTypeData.getCode(),
+					crmEnumTypeData.getName(),
+					crmEnumTypeData.getDescription()
+				);
+		l.add(comp);
+		}
+		return l;
+		
+	}
+
+	public static List buildCrmCaseOriginList(List data) {
+		List l = new ArrayList();
+		for(Object obj:data){
+			CrmEnumTypeData crmEnumTypeData = (CrmEnumTypeData)obj;
+			CrmCaseOrigin comp = new CrmCaseOrigin(
+					crmEnumTypeData.getCode(),
+					crmEnumTypeData.getName(),
+					crmEnumTypeData.getDescription(),
+					crmEnumTypeData.isObsolete()
+				);
+		l.add(comp);
+		}
+		return l;
+		
+	}
+
+	public static List buildCrmCaseQueueList(List data) {
+		List l = new ArrayList();
+		for(Object obj:data){
+			CrmEnumTypeData crmEnumTypeData = (CrmEnumTypeData)obj;
+			CrmCaseQueue comp = new CrmCaseQueue(
+					crmEnumTypeData.getCode(),
+					crmEnumTypeData.getName(),
+					crmEnumTypeData.getDescription(),
+					crmEnumTypeData.isObsolete()
+				);
+		l.add(comp);
+		}
+		return l;
+		
+	}
+
+	public static List buildCrmCaseStateList(List data) {
+		List l = new ArrayList();
+		for(Object obj:data){
+			CrmEnumTypeData crmEnumTypeData = (CrmEnumTypeData)obj;
+			CrmCaseState comp = new CrmCaseState(
+					crmEnumTypeData.getCode(),
+					crmEnumTypeData.getName(),
+					crmEnumTypeData.getDescription()
+				);
+		l.add(comp);
+		}
+		return l;
+		
+	}
+
+	public static List buildCrmDepartmentList(List data) {
+		List l = new ArrayList();
+		for(Object obj:data){
+			CrmEnumTypeData crmEnumTypeData = (CrmEnumTypeData)obj;
+			CrmDepartment comp = new CrmDepartment(
+					crmEnumTypeData.getCode(),
+					crmEnumTypeData.getName(),
+					crmEnumTypeData.getDescription(),
+					crmEnumTypeData.isObsolete()
+				);
+		l.add(comp);
+		}
+		return l;
+		
+	}
 	
 		
 }

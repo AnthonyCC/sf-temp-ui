@@ -41,6 +41,7 @@ import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.content.attributes.AttributeException;
 import com.freshdirect.content.attributes.FlatAttribute;
+import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpCustEWalletModel;
@@ -79,7 +80,9 @@ import com.freshdirect.ecommerce.data.ecoupon.ErpCouponTransactionModelData;
 import com.freshdirect.ecommerce.data.ecoupon.FDCouponActivityContextData;
 import com.freshdirect.ecommerce.data.ecoupon.FDCouponCustomerData;
 import com.freshdirect.ecommerce.data.enums.BillingCountryInfoData;
+import com.freshdirect.ecommerce.data.enums.CrmCasePriorityData;
 import com.freshdirect.ecommerce.data.enums.CrmCaseSubjectData;
+import com.freshdirect.ecommerce.data.enums.CrmEnumTypeData;
 import com.freshdirect.ecommerce.data.enums.DeliveryPassTypeData;
 import com.freshdirect.ecommerce.data.enums.EnumComplaintDlvIssueTypeData;
 import com.freshdirect.ecommerce.data.enums.EnumFeaturedHeaderTypeData;
@@ -1291,6 +1294,22 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 				return ModelConverter.buildCrmCaseSubjectList(data);
 			}else if(data.get(1) instanceof EnumComplaintDlvIssueTypeData){
 				return ModelConverter.buildComplaintDlvIssueList(data);
+			}else if(data.get(1) instanceof CrmCasePriorityData){
+				return ModelConverter.buildCasePriorityList(data);
+			}else if(data.get(1) instanceof CrmEnumTypeData){
+				CrmEnumTypeData obj = (CrmEnumTypeData)data.get(1);
+				if(obj.getDaoClassName().equals("CrmAgentRoleDAO"))
+					return ModelConverter.buildCrmAgentRileList(data);
+				if(obj.getDaoClassName().equals("CrmCaseActionTypeDAO"))
+					return ModelConverter.buildCaseActionTypeList(data);
+				if(obj.getDaoClassName().equals("CrmCaseOriginDAO"))
+					return ModelConverter.buildCrmCaseOriginList(data);
+				if(obj.getDaoClassName().equals("CrmCaseQueueDAO"))
+					return ModelConverter.buildCrmCaseQueueList(data);
+				if(obj.getDaoClassName().equals("CrmCaseStateDAO"))
+					return ModelConverter.buildCrmCaseStateList(data);
+				if(obj.getDaoClassName().equals("CrmDepartmentDAO"))
+					return ModelConverter.buildCrmDepartmentList(data);
 			}
 		}
 
@@ -1310,8 +1329,14 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			return  (E) new TypeReference<Response<List<EnumFeaturedHeaderTypeData>>>() {} ;
 		} else if (daoClassName.equals("CrmCaseSubjectDAO")) {
 			return   (E) new TypeReference<Response<List<CrmCaseSubjectData>>>() {} ;
+		}else if (daoClassName.equals("CrmComplaintDlvTypeDAO")) {
+			return   (E) new TypeReference<Response<List<EnumComplaintDlvIssueTypeData>>>() {} ;
+		}else if (daoClassName.equals("CrmCasePriorityDAO")) {
+			return   (E) new TypeReference<Response<List<CrmCasePriorityData>>>() {} ;
+		}else  {
+			return   (E) new TypeReference<Response<List<CrmEnumTypeData>>>() {} ;
 		}
-		return null;
+		
 	}
 	
 	@Override
