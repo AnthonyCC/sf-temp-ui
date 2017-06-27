@@ -222,6 +222,9 @@
 	#customizePopup.soShow.so-review .so-container .so-review-date{
 		min-height: 30px;
 	}
+	#customizePopup.soShow.so-review .so-container .so-review-date-red{
+		color: #c94747;
+	}
 	#customizePopup.soShow.so-review .so-container .so-review-date img{
 		padding: 48px 0 15px;
 	    display: block;
