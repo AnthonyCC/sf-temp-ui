@@ -598,7 +598,7 @@
 
     fd.properties = fd.properties || {};
     fd.properties.isDFPEnabled = <%= FDStoreProperties.isDfpEnabled() ? true : false %>;
-    fd.properties.dfpId = <%= FDStoreProperties.getDfpId() %>;
+    fd.properties.dfpId = '<%= FDStoreProperties.getDfpId() %>';
 
     DFP_query = '<%=queryString.toString()%>';
 
