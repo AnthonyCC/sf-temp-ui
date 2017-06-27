@@ -88,6 +88,7 @@ var FreshDirect = FreshDirect || {};
 
 
   var carousel = {
+      updatePager: updatePager,
       changePage: changePage,
       handleClick:function(event){
         var carousel = $(event.currentTarget),
