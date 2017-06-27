@@ -327,7 +327,7 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 			<%  
 		} else {
 			%>
-			<td width="100" colspan="2">
+			<td colspan="2">
 				<div class='quantity_col <%= isFreeProd ? "product-sample-cart-quantity" : "" %>'>
 				<script>
 				function chgQty<%=idx%>(delta) {
