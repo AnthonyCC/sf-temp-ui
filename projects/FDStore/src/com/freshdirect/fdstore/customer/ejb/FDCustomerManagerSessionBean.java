@@ -175,6 +175,7 @@ import com.freshdirect.fdstore.customer.ProfileAttributeName;
 import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.fdstore.customer.RegistrationResult;
 import com.freshdirect.fdstore.customer.SavedRecipientModel;
+import com.freshdirect.fdstore.customer.SilverPopupDetails;
 import com.freshdirect.fdstore.customer.UnsettledOrdersInfo;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
@@ -8633,6 +8634,136 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 	}
+	
+	public static String INSERT_SILVER_POPUP = "insert into CUST.CUSTOMER_PUSHNOTIFICATION(CUSTOMER_ID,QUALIFIER,DESTINATION,CREATE_TIMESTAMP,UPDATE_TIMESTAMP,SEND_TIMESTAMP) values "
+			+ "(?,?,?,trunc(sysdate),trunc(sysdate),null)";
+	
+	public void insertSilverPopupDetails(SilverPopupDetails silverPopup)  throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;		
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(INSERT_SILVER_POPUP);
+			pstmt.setString(1, silverPopup.getCustomerId());
+			pstmt.setString(2, silverPopup.getQualifier());
+			pstmt.setString(3, silverPopup.getDestination());
+			pstmt.execute();
+			LOGGER.debug("insertSilverPopupDetails in Process Successful Insert of Customer_id, Qualifier, Destination, Creat_Timestamp and Updated_Timestamp into our DataBase for cutomer_id "+silverPopup.getCustomerId());
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+	}	
+	
+	public static String UPDATE_SILVER_POPUP = "update CUST.CUSTOMER_PUSHNOTIFICATION set QUALIFIER =?,DESTINATION =?,UPDATE_TIMESTAMP=trunc(sysdate) where customer_id=?";
+	
+	public void updateSilverPopupDetails(SilverPopupDetails silverPopup)  throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;		
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(UPDATE_SILVER_POPUP);
+			pstmt.setString(1, silverPopup.getQualifier());
+			pstmt.setString(2, silverPopup.getDestination());
+			pstmt.setString(3, silverPopup.getCustomerId());
+			pstmt.execute();
+			LOGGER.debug("updateSilverPopupDetails in Process Successful Update of Qualifier, Destination and Updated_Timestamp into our DataBase for cutomer_id: "+silverPopup.getCustomerId());
+		} catch (SQLException sqle) {
+			LOGGER.info("updateSilverPopupDetails IN PROCESS FAILED... "+silverPopup.getCustomerId());
+			throw new FDResourceException(sqle, "Unable to store FDUser");
+		} finally {
+			close(conn);
+		}
+	}		
+
+	public static String SELECT_SILVER_POPUP = "select count(*) as SP_COUNT from CUST.CUSTOMER_PUSHNOTIFICATION where CUSTOMER_ID=? and QUALIFIER=? and DESTINATION=?";
+	
+	public boolean insertOrUpdateSilverPopup(SilverPopupDetails silverPopup) throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		boolean isCustomerHasSP = false;
+		if (null != silverPopup && null != silverPopup.getCustomerId()) {
+			try {
+				conn = getConnection();
+				ps = conn.prepareStatement(SELECT_SILVER_POPUP);
+				ps.setString(1, silverPopup.getCustomerId());
+				ps.setString(2, silverPopup.getQualifier());
+				ps.setString(3, silverPopup.getDestination());
+				LOGGER.info("Exicuting Query "+SELECT_SILVER_POPUP+" in insertOrUpdateSilverPopup");
+
+				rs = ps.executeQuery();
+
+				while (rs.next()) {
+
+					if (Integer.valueOf(rs.getString("SP_COUNT")) > 0) {
+						LOGGER.debug("got the Count as SP_COUNT > 0, going into updateSilverPopupDetails");
+						isCustomerHasSP = true;
+						break;
+					}
+				}
+				if (isCustomerHasSP) {
+					updateSilverPopupDetails(silverPopup);
+				} else {
+					insertSilverPopupDetails(silverPopup);
+				}
+			} catch (SQLException exc) {
+				LOGGER.info("insertOrUpdateSilverPopup IN PROCESS FAILED... " + silverPopup.getCustomerId());
+				throw new FDResourceException(exc, "Unable to store SilverPopup details");
+			} finally {
+				if (rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+				}
+				if (ps != null) {
+					try {
+						ps.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		return true;
+	}
+	
+	public List<SilverPopupDetails> getSilverPopupDetails() throws FDResourceException{
+		Connection conn = null;
+		try{
+			conn = getConnection();
+			return FDCustomerOrderInfoDAO.getSilverPopupDetails(conn);
+		}catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Some problem in getting Silver popup from database");
+		} finally {
+			close(conn);
+		}
+	}	
+	
+	public static String UPDATE_SP_DETAILS = "update CUST.CUSTOMER_PUSHNOTIFICATION set SEND_TIMESTAMP=trunc(sysdate) where CUSTOMER_ID=? and QUALIFIER =? and DESTINATION =? ";
+	
+	public void updateSPSuccessDetails(SilverPopupDetails silverPopup)  throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;		
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(UPDATE_SP_DETAILS);
+			pstmt.setString(1, silverPopup.getCustomerId());
+			pstmt.setString(2, silverPopup.getQualifier());
+			pstmt.setString(3, silverPopup.getDestination());
+			pstmt.execute();
+			LOGGER.info("updateSPSuccessDetails in Process Successful Push to IBM for "+silverPopup.getCustomerId());
+		} catch (SQLException sqle) {
+			LOGGER.info("updateSPSuccessDetails IN PROCESS FAILED... "+silverPopup.getCustomerId());
+			throw new FDResourceException(sqle, "Unable to store FDUser");
+		} finally {
+			close(conn);
+		}
+	}
+	
 	
 	public String getCookieByFdCustomerId(String fdCustomerId) throws FDResourceException{
 		Connection conn = null;

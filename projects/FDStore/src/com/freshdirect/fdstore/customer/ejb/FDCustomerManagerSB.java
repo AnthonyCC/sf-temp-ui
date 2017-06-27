@@ -87,6 +87,7 @@ import com.freshdirect.fdstore.customer.PendingOrder;
 import com.freshdirect.fdstore.customer.ProfileAttributeName;
 import com.freshdirect.fdstore.customer.RegistrationResult;
 import com.freshdirect.fdstore.customer.SavedRecipientModel;
+import com.freshdirect.fdstore.customer.SilverPopupDetails;
 import com.freshdirect.fdstore.customer.UnsettledOrdersInfo;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.iplocator.IpLocatorEventDTO;
@@ -901,6 +902,12 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public ErpCustomerModel getCustomer(FDIdentity identity) throws FDResourceException, RemoteException;
 
 	public Map<String, List<PendingOrder>> getPendingDeliveries() throws FDResourceException, RemoteException;
+	
+	public boolean insertOrUpdateSilverPopup(SilverPopupDetails silverPopupDetails) throws FDResourceException, RemoteException;
+
+	public List<SilverPopupDetails> getSilverPopupDetails() throws FDResourceException, RemoteException;
+
+	public void updateSPSuccessDetails(SilverPopupDetails detail) throws FDResourceException, RemoteException;
 	
 	public String getCookieByFdCustomerId(String fdCustomerId) throws FDResourceException, RemoteException;
 }

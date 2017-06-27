@@ -5136,6 +5136,38 @@ public class FDCustomerManager {
 			}
 		}
 		
+		public static boolean insertOrUpdateSilverPopup(SilverPopupDetails silverPopupDetails) throws FDResourceException {
+			lookupManagerHome();
+
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.insertOrUpdateSilverPopup(silverPopupDetails);
+
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}
+		}		
+		
+		public static void updateSPSuccessDetails(SilverPopupDetails silverPopupDetails) throws FDResourceException {
+			lookupManagerHome();
+
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				sb.updateSPSuccessDetails(silverPopupDetails);
+
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}
+		}	
+		
 		public static String getCookieByFdCustomerId(String fdCustomerId) throws FDResourceException{
 			lookupManagerHome();
 			try {

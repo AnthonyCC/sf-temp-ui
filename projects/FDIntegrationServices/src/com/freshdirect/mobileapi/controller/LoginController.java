@@ -34,6 +34,7 @@ import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.PasswordNotExpiredException;
+import com.freshdirect.fdstore.customer.SilverPopupDetails;
 import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -429,6 +430,14 @@ public class LoginController extends BaseController  implements SystemMessageLis
 				throw new FDAuthenticationException();
 			}
 			user.getFDSessionUser().saveCart();
+			//Silver popup changes start
+			SilverPopupDetails details = new SilverPopupDetails();
+			details.setCustomerId(user.getFDSessionUser().getIdentity().getErpCustomerPK());
+			details.setDestination(destination);
+			details.setQualifier(qualifier);
+			details.setChannel(channel);
+			user.getFDSessionUser().insertOrUpdateSilverPopup(details);
+			//Silver popup changes End
             if (isCheckLoginStatusEnable(request)) {
                 CMSPageRequest pageRequest = new CMSPageRequest();
                 pageRequest.setRequestedDate(new Date());

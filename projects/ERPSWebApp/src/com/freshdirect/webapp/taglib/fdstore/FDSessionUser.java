@@ -61,6 +61,7 @@ import com.freshdirect.fdstore.customer.FDPromotionEligibility;
 import com.freshdirect.fdstore.customer.FDRecipientList;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.SilverPopupDetails;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
@@ -423,6 +424,18 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
             }
         }
     }
+    
+    public void insertOrUpdateSilverPopup(SilverPopupDetails details) {
+ 
+        if (null != details && null != details.getCustomerId() && !"".equals(details.getCustomerId())) {
+            LOGGER.info("Saving Silverpopup details");
+            try {
+                FDCustomerManager.insertOrUpdateSilverPopup(details);
+            } catch (FDResourceException ex) {
+                LOGGER.warn("Unable to save Silver popup", ex);
+            }
+        }
+    }    
 
     private boolean isCartPersistent() {
         //
@@ -2278,52 +2291,42 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         this.zipPopupSeenInSession = ZipPopupSeenInSession;
     }
 
-	@Override
     public Map<String, String> getSoCartLineMessagesMap() {
 		return soCartLineMessagesMap;
 	}
 
-	@Override
     public void setSoCartLineMessagesMap(Map<String, String> soCartLineMessagesMap) {
 		this.soCartLineMessagesMap = soCartLineMessagesMap;
 	}
 
-	@Override
     public boolean isSoCartOverlayFirstTime() {
 		return soCartOverlayFirstTime;
 	}
 
-	@Override
     public void setSoCartOverlayFirstTime(boolean soCartOverlayFirstTime) {
 		this.soCartOverlayFirstTime = soCartOverlayFirstTime;
 	}
 
-	@Override
     public boolean isRefreshSoCartOverlay() {
 		return isRefreshSoCartOverlay;
 	}
 
-	@Override
     public void setRefreshSoCartOverlay(boolean isRefreshSoCartOverlay) {
 		this.isRefreshSoCartOverlay = isRefreshSoCartOverlay;
 	}
 
-	@Override
     public boolean isSoFeatureOverlay() {
 		return soFeatureOverlay;
 	}
 
-	@Override
     public void setSoFeatureOverlay(boolean soFeatureOverlay) {
 		this.soFeatureOverlay = soFeatureOverlay;
 	}
 
-	@Override
     public boolean isRefreshNewSoFeature() {
 		return isRefreshNewSoFeature;
 	}
 
-	@Override
     public void setRefreshNewSoFeature(boolean isRefreshNewSoFeature) {
 		this.isRefreshNewSoFeature = isRefreshNewSoFeature;
 	}    

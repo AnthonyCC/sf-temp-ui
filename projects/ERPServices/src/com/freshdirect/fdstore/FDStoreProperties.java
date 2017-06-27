@@ -946,8 +946,17 @@ public class FDStoreProperties {
     
     private final static String PROP_REQUEST_SCHEME_FOR_REDIRECT_URL = "fdstore.request.scheme.redirecturl";
 
-
-    static {
+    /* APPDEV 6174 
+     * IBM SilverPopup urls, tokens*/
+    private final static String IBM_ACCESSTOKEN_URL = "fdstore.ibm.accesstoken.url";
+    private final static String IBM_PUSHNOTIFICATION_URL = "fdstore.ibm.pushnotification.url";
+    private final static String IBM_CLIENT_ID = "fdstore.ibm.client.id";
+    private final static String IBM_CLIENT_SECRET = "fdstore.ibm.client.secret";
+    private final static String IBM_REFRESH_TOKEN = "fdstore.ibm.refresh.token";
+ 
+    
+    
+   static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_INIT_CTX_FACTORY, "weblogic.jndi.WLInitialContextFactory");
         defaults.put(PROP_CRM_GEOCODELINK,
@@ -4322,7 +4331,7 @@ public class FDStoreProperties {
     public static String getAvalaraBaseURL() {
         return StringUtils.defaultString(get(PROP_AVALARA_BASE_URL));
     }
-
+    
     public static String getAvalaraAccountNumber() {
         return StringUtils.defaultString(get(PROP_AVALARA_ACCOUNT_NUMBER));
     }
@@ -4342,7 +4351,29 @@ public class FDStoreProperties {
     public static int getAvalaraCronThreadCount() {
         return Integer.parseInt(get(PROP_AVALARA_CRON_THREAD_COUNT) != null ? get(PROP_AVALARA_CRON_THREAD_COUNT) : "10");
     }
-
+    
+    //@ IBM silverpopup chnages
+    public static String getIBMAccessTokenURL(){
+    	return StringUtils.defaultString(get(IBM_ACCESSTOKEN_URL));
+    }
+    
+    public static String getIBMPushNotificationURL() {
+        return StringUtils.defaultString(get(IBM_PUSHNOTIFICATION_URL));
+    }
+    
+    public static String getIBMClientID() {
+		return StringUtils.defaultString(get(IBM_CLIENT_ID));
+	}
+    
+    public static String getIBMClientSecret() {
+		return StringUtils.defaultString(get(IBM_CLIENT_SECRET));
+	}
+    
+    public static String getIBMRefreshToken() {
+		return StringUtils.defaultString(get(IBM_REFRESH_TOKEN));
+	} 
+    //end IBM silverpopup end
+    
     public static int getSO3ActivateCutoffTime() {
         return Integer.parseInt(get(PROP_SO3_ACTIVATE_CUTOFF_TIME));
     }

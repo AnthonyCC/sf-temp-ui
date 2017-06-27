@@ -35,6 +35,7 @@ import com.freshdirect.fdstore.customer.FDCustomerSearchCriteria;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDOrderSearchCriteria;
 import com.freshdirect.fdstore.customer.PendingOrder;
+import com.freshdirect.fdstore.customer.SilverPopupDetails;
 import com.freshdirect.fdstore.customer.UnsettledOrdersInfo;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.NVL;
@@ -450,4 +451,20 @@ class FDCustomerOrderInfoDAO {
 		totalOrders.put("fdx", fdx);
 		return totalOrders;
 	}
+	
+	private static final String retrieve_silverpopupdetails = "SELECT customer_id, qualifier, destination from cust.customer_pushnotification where trunc(UPDATE_TIMESTAMP) = trunc(sysdate)";
+	public static List<SilverPopupDetails> getSilverPopupDetails(Connection conn) throws SQLException {
+		Statement statement =  conn.createStatement();
+		ResultSet rs = statement.executeQuery(retrieve_silverpopupdetails);
+		List<SilverPopupDetails> details = new ArrayList<SilverPopupDetails>();
+		while(rs.next()){
+			SilverPopupDetails silverPopup = new SilverPopupDetails();
+			silverPopup.setCustomerId(rs.getString("customer_id"));
+			silverPopup.setQualifier(rs.getString("qualifier"));
+			silverPopup.setDestination(rs.getString("destination"));
+			details.add(silverPopup);
+		}
+		
+		return details;
+	}	
 }
