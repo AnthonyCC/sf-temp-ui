@@ -190,6 +190,7 @@ public class CartDataService {
                     StandingOrderHelper.clearSO3ErrorDetails(user.getCurrentStandingOrder(), new String[] { "MINORDER", "TIMESLOT_MINORDER" });
                 }
                 FDStandingOrdersManager.getInstance().manageStandingOrder(info, cart, user.getCurrentStandingOrder(), null);
+                user.setRefreshSO3(true);
             }
         }
         return cartData;
