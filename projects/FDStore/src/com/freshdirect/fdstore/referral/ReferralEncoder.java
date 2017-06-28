@@ -1,7 +1,6 @@
 package com.freshdirect.fdstore.referral;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.freshdirect.ecommerce.data.referral.FDReferralReportLineData;
@@ -12,6 +11,7 @@ import com.freshdirect.ecommerce.data.referral.ReferralObjectiveData;
 import com.freshdirect.ecommerce.data.referral.ReferralPartnerData;
 import com.freshdirect.ecommerce.data.referral.ReferralProgramData;
 import com.freshdirect.ecommerce.data.referral.ReferralProgramInvitationData;
+import com.freshdirect.ecommerce.data.referral.ReferralSearchCriteriaData;
 import com.freshdirect.framework.core.PrimaryKey;
 
 public class ReferralEncoder {
@@ -20,8 +20,15 @@ public class ReferralEncoder {
 		ReferralProgramData referralProgramData = new ReferralProgramData();
 		referralProgramData.setName(refProgram.getName());
 		referralProgramData.setDescription(refProgram.getDescription());
+<<<<<<< .mine
+		if(refProgram.getStartDate() != null)
+		referralProgramData.setStartDate(refProgram.getStartDate().getTime());
+		if(refProgram.getExpDate()!= null)
+		referralProgramData.setExpDate(refProgram.getExpDate().getTime());
+=======
 //		referralProgramData.setStartDate(refProgram.getStartDate());
 //		referralProgramData.setExpDate(refProgram.getExpDate());
+>>>>>>> .r69228
 		referralProgramData.setCreativeDesc(refProgram.getCreativeDesc());
 		ReferralCampaignData campaign = buildReferralCampaignData(refProgram.getCampaign());
 		referralProgramData.setCampaign(campaign);
@@ -89,12 +96,36 @@ public class ReferralEncoder {
 	}
 
 	public static ReferralObjective buildReferralObjective(ReferralObjectiveData referralObjectiveData) {
-		ReferralObjective objective = new  ReferralObjective(new PrimaryKey(referralObjectiveData.getId()), referralObjectiveData.getName());
+		ReferralObjective objective = new  ReferralObjective();
+		if(referralObjectiveData.getId() != null)
+		objective.setId(referralObjectiveData.getId());
+		objective.setName(referralObjectiveData.getName());
 		objective.setDescription(referralObjectiveData.getDescription());
 		return objective;
 	}
 	public static ReferralProgram buildReferralProgram(ReferralProgramData data) {
 		ReferralProgram referralProgram = new ReferralProgram();
+<<<<<<< .mine
+		if(data != null){
+			referralProgram.setName(data.getName());
+			referralProgram.setDescription(data.getDescription());
+			if(data.getStartDate() != null)
+			referralProgram.setStartDate(new java.sql.Date(data.getStartDate()));
+			if(data.getExpDate() != null)
+			referralProgram.setExpDate(new java.sql.Date(data.getExpDate()));
+			referralProgram.setCreativeDesc(data.getCreativeDesc());
+			ReferralCampaign campaign = buildReferralCampaign(data.getCampaign());
+			referralProgram.setCampaign(campaign);
+			ReferralChannel channel = buildReferralchannel(data.getChannel());
+			referralProgram.setChannel(channel);
+			ReferralPartner partner = buildReferralPartner(data.getPartner());
+			referralProgram.setPartner(partner);
+			referralProgram.setStatus(EnumReferralProgramStatus.getEnum(data.getStatus()));
+			referralProgram.setPromotionCode(data.getPromotionCode());
+			referralProgram.setCreativeUrl(data.getCreativeUrl());
+			referralProgram.setPK(new PrimaryKey(data.getId()));
+		}
+=======
 		referralProgram.setName(data.getName());
 		referralProgram.setDescription(data.getDescription());
 //		referralProgram.setStartDate(data.getStartDate());
@@ -110,6 +141,7 @@ public class ReferralEncoder {
 		referralProgram.setPromotionCode(data.getPromotionCode());
 		referralProgram.setCreativeUrl(data.getCreativeUrl());
 		referralProgram.setPK(new PrimaryKey(data.getId()));
+>>>>>>> .r69228
 		return referralProgram;
 	}
 
@@ -141,7 +173,9 @@ public class ReferralEncoder {
 	
 	public static ReferralProgramInvitationData buildReferralInvitationData(ReferralProgramInvitaionModel referralInvitation) {
 		ReferralProgramInvitationData data = new  ReferralProgramInvitationData();
+		if(referralInvitation.getReferralCreatedDate() != null)
 		data.setReferralCreatedDate(referralInvitation.getReferralCreatedDate().getTime());
+		if(referralInvitation.getReferralModifiedDate() != null)
 		data.setReferralModifiedDate(referralInvitation.getReferralModifiedDate().getTime());
 		data.setReferralName(referralInvitation.getReferralName());
 		data.setReferralProgramId(referralInvitation.getReferralProgramId());
@@ -149,6 +183,7 @@ public class ReferralEncoder {
 		data.setReferrerCustomerId(referralInvitation.getReferrerCustomerId());
 		data.setReferrerFirstName(referralInvitation.getReferrerFirstName());
 		data.setReferrerLastName(referralInvitation.getReferrerLastName());
+		data.setId(referralInvitation.getId());
 		if(referralInvitation.getStatus() != null)
 		data.setStatus(referralInvitation.getStatus().getName());
 		return data;
@@ -156,8 +191,10 @@ public class ReferralEncoder {
 	
 	public static ReferralProgramInvitaionModel buildReferralProgramInvitation(ReferralProgramInvitationData data) {
 		ReferralProgramInvitaionModel referralProgramInvitaionModel = new ReferralProgramInvitaionModel();
-		referralProgramInvitaionModel.setReferralCreatedDate(new Date(data.getReferralCreatedDate()));
-		referralProgramInvitaionModel.setReferralModifiedDate(new Date(data.getReferralModifiedDate()));
+		if(data.getReferralCreatedDate() != null)
+		referralProgramInvitaionModel.setReferralCreatedDate(new java.sql.Date(data.getReferralCreatedDate()));
+		if(data.getReferralModifiedDate() != null)
+		referralProgramInvitaionModel.setReferralModifiedDate(new java.sql.Date(data.getReferralModifiedDate()));
 		referralProgramInvitaionModel.setReferralName(data.getReferralName());
 		referralProgramInvitaionModel.setReferralProgramId(data.getReferralProgramId());
 		referralProgramInvitaionModel.setReferrelEmailAddress(data.getReferrelEmailAddress());
@@ -186,13 +223,13 @@ public class ReferralEncoder {
 			data.setName(fdReferralReportLineData.getName());
 			data.setNumDeliveredOrders(fdReferralReportLineData.getNumDeliveredOrders());
 			data.setIsReferralAccepted(fdReferralReportLineData.isReferralAccepted());
-			data.setReferralDate(new Date(fdReferralReportLineData.getReferralDate()));
+			data.setReferralDate(new java.sql.Date(fdReferralReportLineData.getReferralDate()));
 			data.setReferralId(fdReferralReportLineData.getReferralId());
 			data.setReferralProgramCampaignCode(fdReferralReportLineData.getReferralProgramCampaignCode());
 			data.setReferralProgramDesc(fdReferralReportLineData.getReferralProgramDesc());
-			data.setReferralProgramExpirationDate(new Date(fdReferralReportLineData.getReferralProgramExpirationDate()));
+			data.setReferralProgramExpirationDate(new java.sql.Date(fdReferralReportLineData.getReferralProgramExpirationDate()));
 			data.setReferralProgramId(fdReferralReportLineData.getReferralProgramId());
-			data.setReferralProgramStartDate(new Date(fdReferralReportLineData.getReferralProgramStartDate()));
+			data.setReferralProgramStartDate(new java.sql.Date(fdReferralReportLineData.getReferralProgramStartDate()));
 			data.setReferralProgramStatus(EnumReferralProgramStatus.getEnum(fdReferralReportLineData.getReferralProgramStatus()));
 			data.setReferralStatus(EnumReferralStatus.getEnum(fdReferralReportLineData.getReferralStatus()));
 			data.setReferrerCustomerId(fdReferralReportLineData.getReferrerCustomerId());
@@ -200,6 +237,57 @@ public class ReferralEncoder {
 		}
 		
 		return reportList;
+	}
+
+	public static List<ReferralChannel> buildReferralchannelList(List<ReferralChannelData> loadAllReferralChannels) {
+		List<ReferralChannel> referralChannel = new ArrayList<ReferralChannel>();
+		for (ReferralChannelData referralChannelData : loadAllReferralChannels) {
+			referralChannel.add(buildReferralchannel(referralChannelData));
+		}
+		return referralChannel;
+	}
+
+	public static List<ReferralProgram> buildReferralProgramList(List<ReferralProgramData> loadAllReferralPrograms) {
+		List<ReferralProgram> referralProgram = new ArrayList<ReferralProgram>();
+		for (ReferralProgramData referralProgramData : loadAllReferralPrograms) {
+			referralProgram.add(buildReferralProgram(referralProgramData));
+		}
+		return referralProgram;
+	}
+
+	public static List<ReferralCampaign> buildReferralCampaignList(List<ReferralCampaignData> loadAllReferralCampaigns) {
+		List<ReferralCampaign> referralCampaign = new ArrayList<ReferralCampaign>();
+		for (ReferralCampaignData referralCampaignData : loadAllReferralCampaigns) {
+			referralCampaign.add(buildReferralCampaign(referralCampaignData));
+		}
+		return referralCampaign;
+	}
+
+	public static List<ReferralPartner> buildReferralPartnerList(List<ReferralPartnerData> loadAllReferralpartners) {
+		List<ReferralPartner> referralPartner = new ArrayList<ReferralPartner>();
+		for (ReferralPartnerData referralPartnerData : loadAllReferralpartners) {
+			referralPartner.add(buildReferralPartner(referralPartnerData));
+		}
+		return referralPartner;
+		
+	}
+
+	public static List<ReferralObjective> buildReferralObjectiveList(List<ReferralObjectiveData> loadAllReferralObjective) {
+		List<ReferralObjective> referralObjective = new ArrayList<ReferralObjective>();
+		for (ReferralObjectiveData referralObjectiveData : loadAllReferralObjective) {
+			referralObjective.add(buildReferralObjective(referralObjectiveData));
+			
+		}
+		return referralObjective;
+	}
+
+	public static ReferralSearchCriteriaData buildSearchCriteria(ReferralSearchCriteria criteria) {
+		ReferralSearchCriteriaData searchCriteria = new ReferralSearchCriteriaData();
+		searchCriteria.setEndIndex(criteria.getEndIndex());
+		searchCriteria.setSortByColumnName(criteria.getSortByColumnName());
+		searchCriteria.setStartIndex(criteria.getStartIndex());
+		searchCriteria.setTotalRcdSize(criteria.getTotalRcdSize());
+		return searchCriteria;
 	}
 
 }

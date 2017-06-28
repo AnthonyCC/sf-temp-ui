@@ -43,6 +43,8 @@ import com.freshdirect.ecommerce.data.referral.ReferralObjectiveData;
 import com.freshdirect.ecommerce.data.referral.ReferralPartnerData;
 import com.freshdirect.ecommerce.data.referral.ReferralProgramData;
 import com.freshdirect.ecommerce.data.referral.ReferralProgramInvitationData;
+import com.freshdirect.ecommerce.data.referral.ReferralSearchCriteriaData;
+import com.freshdirect.ecommerce.data.referral.ReferralProgramInvitationData;
 import com.freshdirect.ecommerce.data.sessionimpressionlog.SessionImpressionLogEntryData;
 import com.freshdirect.ecommerce.data.smartstore.EnumSiteFeatureData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyData;
@@ -646,7 +648,63 @@ public interface IECommerceService {
 
 	public FDProductInfo getProductInfo(String sku, int version) throws RemoteException;
 	
+	
+	public abstract List<ReferralProgramData> loadAllReferralPrograms() throws FDResourceException,	RemoteException;
+	
+	public abstract List<ReferralChannelData> loadAllReferralChannels() throws FDResourceException,	RemoteException;
+	
+	public abstract List<ReferralPartnerData> loadAllReferralpartners() throws FDResourceException,	RemoteException;
+	
+	public abstract List<ReferralObjectiveData> loadAllReferralObjective() throws FDResourceException,	RemoteException;
+	
+	public abstract List<ReferralCampaignData> loadAllReferralCampaigns() throws FDResourceException,	RemoteException;
+	
+	public abstract String loadReferrerNameFromReferralCustomerId( String referralCustomerId) throws FDResourceException, RemoteException;
 	public Collection getProductInfos(String[] skus) throws FDResourceException, RemoteException;
+	public abstract ReferralProgramData loadReferralProgramFromPK(String referralProgramId) throws FDResourceException, RemoteException;
+
+	public abstract ReferralProgramData loadLastestActiveReferralProgram() throws FDResourceException, RemoteException;
+	
+	public abstract ReferralChannelData getReferralChannleModel(String refChaId) throws FDResourceException,	RemoteException;
+	
+	public abstract ReferralCampaignData getReferralCampaigneModel(String refChaId) throws FDResourceException,	RemoteException;
+	
+	public abstract ReferralObjectiveData getReferralObjectiveModel(String refChaId) throws FDResourceException,	RemoteException;
+	
+	public abstract ReferralPartnerData getReferralPartnerModel(String refChaId) throws FDResourceException,	RemoteException;
+	
+	public abstract ReferralProgramData getReferralProgramModel(String refChaId) throws FDResourceException,	RemoteException;
+	
+	
+	public abstract List<ReferralProgramData> getReferralProgarmforRefChannel(String refChaIds[]) throws FDResourceException,	RemoteException;
+	
+	public abstract List<ReferralProgramData> getReferralProgarmforRefPartner(String refpartIds[]) throws FDResourceException,	RemoteException;
+	
+	public abstract List<ReferralProgramData> getReferralProgarmforRefCampaign(String refCampIds[]) throws FDResourceException,	RemoteException;
+	
+	public abstract List<ReferralProgramData> getReferralCampaignforRefObjective(String refObjIds[]) throws FDResourceException,	RemoteException;
+	
+	public abstract boolean isReferralPartnerNameExist(String refPartName) throws FDResourceException,	RemoteException;
+	 
+	public abstract boolean isReferralCampaignNameExist(String refCampName) throws FDResourceException,	RemoteException;
+	 
+	public abstract boolean isReferralObjectiveNameExist(String refObjName) throws FDResourceException,	RemoteException;
+	 
+	public abstract boolean isReferralChannelNameAndTypeExist(String name,String type)  throws FDResourceException,	RemoteException;
+	 
+	public abstract boolean isReferralProgramNameExist(String refPrgName) throws FDResourceException, RemoteException;
+
+	public abstract List<ReferralProgramData> getReferralPrograms(ReferralSearchCriteriaData criteria) throws FDResourceException, RemoteException;
+	  
+	public abstract List<ReferralChannelData> getReferralChannels(ReferralSearchCriteriaData criteria) throws FDResourceException, RemoteException;
+	  
+	public abstract List<ReferralCampaignData> getReferralCampaigns(ReferralSearchCriteriaData criteria)throws FDResourceException, RemoteException;
+	  
+	public abstract List<ReferralPartnerData> getReferralPartners(ReferralSearchCriteriaData criteria)throws FDResourceException, RemoteException;
+	  
+	public abstract List<ReferralObjectiveData> getReferralObjective(ReferralSearchCriteriaData criteria)throws FDResourceException, RemoteException;
+	
+	
 
 	public FDProduct getProduct(String sku, int version);
 	
