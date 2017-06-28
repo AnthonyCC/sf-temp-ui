@@ -20,15 +20,10 @@ public class ReferralEncoder {
 		ReferralProgramData referralProgramData = new ReferralProgramData();
 		referralProgramData.setName(refProgram.getName());
 		referralProgramData.setDescription(refProgram.getDescription());
-<<<<<<< .mine
 		if(refProgram.getStartDate() != null)
 		referralProgramData.setStartDate(refProgram.getStartDate().getTime());
 		if(refProgram.getExpDate()!= null)
 		referralProgramData.setExpDate(refProgram.getExpDate().getTime());
-=======
-//		referralProgramData.setStartDate(refProgram.getStartDate());
-//		referralProgramData.setExpDate(refProgram.getExpDate());
->>>>>>> .r69228
 		referralProgramData.setCreativeDesc(refProgram.getCreativeDesc());
 		ReferralCampaignData campaign = buildReferralCampaignData(refProgram.getCampaign());
 		referralProgramData.setCampaign(campaign);
@@ -105,7 +100,6 @@ public class ReferralEncoder {
 	}
 	public static ReferralProgram buildReferralProgram(ReferralProgramData data) {
 		ReferralProgram referralProgram = new ReferralProgram();
-<<<<<<< .mine
 		if(data != null){
 			referralProgram.setName(data.getName());
 			referralProgram.setDescription(data.getDescription());
@@ -125,23 +119,6 @@ public class ReferralEncoder {
 			referralProgram.setCreativeUrl(data.getCreativeUrl());
 			referralProgram.setPK(new PrimaryKey(data.getId()));
 		}
-=======
-		referralProgram.setName(data.getName());
-		referralProgram.setDescription(data.getDescription());
-//		referralProgram.setStartDate(data.getStartDate());
-//		referralProgram.setExpDate(data.getExpDate());
-		referralProgram.setCreativeDesc(data.getCreativeDesc());
-		ReferralCampaign campaign = buildReferralCampaign(data.getCampaign());
-		referralProgram.setCampaign(campaign);
-		ReferralChannel channel = buildReferralchannel(data.getChannel());
-		referralProgram.setChannel(channel);
-		ReferralPartner partner = buildReferralPartner(data.getPartner());
-		referralProgram.setPartner(partner);
-		referralProgram.setStatus(EnumReferralProgramStatus.getEnum(data.getStatus()));
-		referralProgram.setPromotionCode(data.getPromotionCode());
-		referralProgram.setCreativeUrl(data.getCreativeUrl());
-		referralProgram.setPK(new PrimaryKey(data.getId()));
->>>>>>> .r69228
 		return referralProgram;
 	}
 
