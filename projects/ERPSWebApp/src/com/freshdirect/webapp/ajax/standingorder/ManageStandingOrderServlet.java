@@ -192,6 +192,7 @@ public class ManageStandingOrderServlet extends HttpServlet {
 	
 				} else if("activate".equalsIgnoreCase(action)) {
 					    boolean flg=acitivateSO(u);
+					    u.setRefreshSO3(true);
 					    LOG.info("Standing Order activated " + u.getCurrentStandingOrder().getId() + " " + flg) ;
 				} else if("changename".equalsIgnoreCase(action)){
 					// Need to update name by ID

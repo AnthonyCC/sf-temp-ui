@@ -116,8 +116,8 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 						 } if("Y".equalsIgnoreCase(reqData.getAlcoholVerified())){
 							 so.setAlcoholAgreement(true);
 							 FDStandingOrdersManager.getInstance().manageStandingOrder(info, so.getStandingOrderCart(), so, null) ;
-
 						 }
+						 user.setRefreshSO3(true);
 						orderResponseData=StandingOrderHelper.populateResponseData(so,true);
 	
 					 } else {
