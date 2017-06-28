@@ -211,6 +211,15 @@ public class ChooseTimeslotAction extends WebActionSupport {
 		boolean isZoneInfoNotMatched = ((previousZone != null
 				&& cart.getZoneInfo() != null && !previousZone.getZoneCode()
 				.equals(cart.getZoneInfo().getZoneCode())) || (previousZone == null && cart.getZoneInfo() != null));
+		
+		String oldPlant = null, newPlant = null;
+		oldPlant = (cart != null && cart.getDeliveryPlantInfo() != null && cart.getDeliveryPlantInfo().getPlantId() != null)? cart.getDeliveryPlantInfo().getPlantId() : null;
+		newPlant = (cart.getZoneInfo() != null && cart.getZoneInfo().getFulfillmentInfo() != null && cart.getZoneInfo().getFulfillmentInfo().getPlantCode() != null)? cart.getZoneInfo().getFulfillmentInfo().getPlantCode() : null;
+		
+		
+		
+		isZoneInfoNotMatched = isZoneInfoNotMatched || (  oldPlant ==null || newPlant == null || (oldPlant!=null && newPlant!=null && !oldPlant.equalsIgnoreCase(newPlant)) );
+		
 		if ((isZoneInfoNotMatched)|| (null == cart.getDeliveryAddress() && erpAddress != null)) {
 			cart.setDeliveryAddress(erpAddress);
 			user.setAddress(erpAddress);
