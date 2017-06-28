@@ -178,6 +178,30 @@ public abstract class AbstractCarouselService {
         return recommendationTab;
     }
 
+    // TODO remove this if with APPDEV-6161 is released
+    public ViewCartCarouselData populateViewCartTabsRecommendationsAndCarouselSampleCarousel(HttpServletRequest request, FDSessionUser user, SessionInput input)
+            throws FDResourceException {
+        ViewCartCarouselData result = new ViewCartCarouselData();
+        if (!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user)) {
+        if (FDStoreProperties.isPropDonationProductSamplesEnabled()) {
+            try {
+                result.addRecommendationTab(populateViewCartPageDonationProductSampleCarousel(request));
+            } catch (Exception e) {
+                LOGGER.error("Error while populating sample carousels", e);
+            }
+        } else {
+            try {
+                result.addRecommendationTab(populateViewCartPageProductSampleCarousel(request));
+            } catch (Exception e) {
+                LOGGER.error("Error while populating donation carousels", e);
+            }
+        }
+        return result;
+    } else {
+        return populateViewCartTabsRecommendationsAndCarousel(request, user, input);
+    }
+    }
+
 	/**
      * Populate view cart carousel tabs, gets recommendations and generate carousels.
      * 
@@ -190,24 +214,7 @@ public abstract class AbstractCarouselService {
             throws FDResourceException {
         ViewCartCarouselData result = new ViewCartCarouselData();
 
-        // TODO remove this if with APPDEV-6161 is released
-        if (!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user)) {
-            if (FDStoreProperties.isPropDonationProductSamplesEnabled()) {
-                try {
-                    result.addRecommendationTab(populateViewCartPageDonationProductSampleCarousel(request));
-                } catch (Exception e) {
-                    LOGGER.error("Error while populating sample carousels", e);
-                }
-            } else {
-                try {
-                    result.addRecommendationTab(populateViewCartPageProductSampleCarousel(request));
-                } catch (Exception e) {
-                    LOGGER.error("Error while populating donation carousels", e);
-                }
-            }
-        } else {
-
-		final int maxTabs = getMaxTabs();
+        final int maxTabs = getMaxTabs();
         HttpSession session = request.getSession();
 
         TabRecommendation tabs = getTabRecommendation(request, user, input);
@@ -266,7 +273,6 @@ public abstract class AbstractCarouselService {
             }
 
 		}
-        }
 		return result;
 	}
 
