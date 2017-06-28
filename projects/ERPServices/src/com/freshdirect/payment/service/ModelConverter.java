@@ -16,6 +16,7 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 
 import com.freshdirect.affiliate.ErpAffiliate;
+import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.crm.CrmAgentRole;
@@ -28,14 +29,22 @@ import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmDepartment;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumComplaintDlvIssueType;
+import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.customer.ErpCreditCardModel;
+import com.freshdirect.customer.ErpECheckModel;
+import com.freshdirect.customer.ErpEbtCardModel;
 import com.freshdirect.customer.ErpOrderLineModel;
+import com.freshdirect.customer.ErpPayPalCardModel;
+import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.customer.ErpActivityRecordData;
 import com.freshdirect.ecommerce.data.delivery.sms.RecievedSmsData;
 import com.freshdirect.ecommerce.data.delivery.sms.SmsOrderData;
+import com.freshdirect.ecommerce.data.dlv.ContactAddressData;
 import com.freshdirect.ecommerce.data.ecoupon.CartCouponData;
 import com.freshdirect.ecommerce.data.ecoupon.CouponCartData;
 import com.freshdirect.ecommerce.data.ecoupon.CouponOrderData;
@@ -91,7 +100,9 @@ import com.freshdirect.ecommerce.data.logger.recommendation.FDRecommendationEven
 import com.freshdirect.ecommerce.data.mail.EmailAddressData;
 import com.freshdirect.ecommerce.data.mail.EmailDataI;
 import com.freshdirect.ecommerce.data.mail.XMLEmailDataI;
+import com.freshdirect.ecommerce.data.payment.ErpPaymentMethodData;
 import com.freshdirect.ecommerce.data.payment.FDGatewayActivityLogModelData;
+import com.freshdirect.ecommerce.data.payment.RestrictedPaymentMethodData;
 import com.freshdirect.ecommerce.data.rules.RuleData;
 import com.freshdirect.ecommerce.data.security.TicketData;
 import com.freshdirect.ecommerce.data.utill.DayOfWeekSetData;
@@ -141,8 +152,16 @@ import com.freshdirect.framework.mail.EmailI;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.DayOfWeekSet;
 import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.giftcard.EnumGiftCardStatus;
+import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.payment.BillingCountryInfo;
 import com.freshdirect.payment.BillingRegionInfo;
+import com.freshdirect.payment.EnumBankAccountType;
+import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.payment.fraud.EnumRestrictedPatternType;
+import com.freshdirect.payment.fraud.EnumRestrictedPaymentMethodStatus;
+import com.freshdirect.payment.fraud.EnumRestrictionReason;
+import com.freshdirect.payment.fraud.RestrictedPaymentMethodModel;
 import com.freshdirect.payment.gateway.ejb.FDGatewayActivityLogModel;
 import com.freshdirect.rules.Rule;
 import com.freshdirect.security.ticket.Ticket;
@@ -1440,5 +1459,192 @@ public class ModelConverter {
 		return zonePriceInfoModel;
 	}
 
+	public static RestrictedPaymentMethodData buildRestrictedPaymentMethodData(RestrictedPaymentMethodModel model) {
+		RestrictedPaymentMethodData data = new RestrictedPaymentMethodData();
+		data.setAbaRouteNumber(model.getAbaRouteNumber());
+		if(model.getAbaRoutePatternType()!=null)
+		data.setAbaRoutePatternType(model.getAbaRoutePatternType().getName());
+		data.setAccountNumber(model.getAccountNumber());
+		if(model.getAccountPatternType()!=null)
+		data.setAccountPatternType(model.getAccountPatternType().getName());
+		if(model.getBankAccountType()!=null)
+		data.setBankAccountType(model.getBankAccountType().getName());
+		data.setBankName(model.getBankName());
+		if(model.getCardType()!=null)
+		data.setCardType(model.getCardType().getName());
+		data.setCaseId(model.getCaseId());
+		data.setCreateDate(model.getCreateDate());
+		data.setCreateUser(model.getCreateUser());
+		data.setCustomerId(model.getCustomerId());
+		data.setExpirationDate(model.getExpirationDate());
+		data.setFirstName(model.getFirstName());
+		data.setId(model.getId());
+		data.setLastModifyDate(model.getLastModifyDate());
+		data.setLastModifyUser(model.getLastModifyUser());
+		data.setLastName(model.getLastName());
+		data.setNote(model.getNote());
+		data.setPaymentMethodId(model.getPaymentMethodId());
+		if(model.getPaymentMethodType()!=null)
+		data.setPaymentMethodType(model.getPaymentMethodType().getName());
+		data.setProfileID(model.getProfileID());
+		if(model.getReason()!=null)
+		data.setReason(model.getReason().getName());
+		if(model.getSource()!=null)
+		data.setSource(model.getSource().getCode());
+		if(model.getStatus()!=null)
+		data.setStatus(model.getStatus().getName());
+		return data;
+	}
+
+	public static RestrictedPaymentMethodModel buildRestrictedPaymentMethodModel(
+			RestrictedPaymentMethodData data) {
+		RestrictedPaymentMethodModel model = new RestrictedPaymentMethodModel();
+		model.setAbaRouteNumber(data.getAbaRouteNumber());
+		if(data.getAbaRoutePatternType()!=null)
+		model.setAbaRoutePatternType(EnumRestrictedPatternType.getEnum(data.getAbaRoutePatternType()));
+		model.setAccountNumber(data.getAccountNumber());
+		if(data.getAccountPatternType()!=null)
+		model.setAccountPatternType(EnumRestrictedPatternType.getEnum(data.getAccountPatternType()));
+		if(data.getBankAccountType()!=null)
+		model.setBankAccountType(EnumBankAccountType.getEnum(data.getBankAccountType()));
+		model.setBankName(data.getBankName());
+		if(data.getCardType()!=null)
+		model.setCardType(EnumCardType.getEnum(data.getCardType()));
+		model.setCaseId(data.getCaseId());
+		model.setCreateDate(data.getCreateDate());
+		model.setCreateUser(data.getCreateUser());
+		model.setCustomerId(data.getCustomerId());
+		model.setExpirationDate(data.getExpirationDate());
+		model.setFirstName(data.getFirstName());
+		model.setId(data.getId());
+		model.setLastModifyDate(data.getLastModifyDate());
+		model.setLastModifyUser(data.getLastModifyUser());
+		model.setLastName(data.getLastName());
+		model.setNote(data.getNote());
+		model.setPaymentMethodId(data.getPaymentMethodId());
+		if(data.getPaymentMethodType()!=null)
+		model.setPaymentMethodType(EnumPaymentMethodType.getEnum(data.getPaymentMethodType()));
+		model.setProfileID(data.getProfileID());
+		if(data.getReason()!=null)
+		model.setReason(EnumRestrictionReason.getEnum(data.getReason()));
+		if(data.getSource()!=null)
+		model.setSource(EnumTransactionSource.getTransactionSource(data.getSource()));
+		if(data.getStatus()!=null)
+		model.setStatus(EnumRestrictedPaymentMethodStatus.getEnum(data.getStatus()));
+		return model;
+	}
+
+	
+	public static ErpPaymentMethodData buildErpPaymentMethodData(
+			ErpPaymentMethodI erpPaymentMethod) {
+		ErpPaymentMethodData data = new ErpPaymentMethodData();
+		data.setAccountNumber(erpPaymentMethod.getAccountNumber());
+		data.setPaymentType(erpPaymentMethod.getPaymentType().getName());
+		if(erpPaymentMethod.getBankAccountType()!=null)
+		data.setBankAccountType(erpPaymentMethod.getBankAccountType().getName());
+		data.setAbaRouteNumber(erpPaymentMethod.getAbaRouteNumber());
+		data.setCustomerId(erpPaymentMethod.getCustomerId());
+		data.setPaymentMethodType(erpPaymentMethod.getPaymentMethodType().getName());
+		return data;
+	}
+
+	public static ErpPaymentMethodI buildErpPaymentMethodModel(
+			ErpPaymentMethodData data) {
+		ErpPaymentMethodI model = null;
+		if(data.getPaymentMethodType().equals(EnumPaymentMethodType.GIFTCARD.getName())){
+			model = createErpGiftCardModel(data);
+		}
+		else if(data.getPaymentMethodType().equals(EnumPaymentMethodType.ECHECK.getName())){
+			model = createECheckModelModel(data);
+
+		}
+		else if(data.getPaymentMethodType().equals(EnumPaymentMethodType.EBT.getName())){
+			model = createErpEbtCardModel(data);
+		}
+		else if(data.equals(EnumPaymentMethodType.PAYPAL.getName())){
+			model = createErpPayPalCardModel(data);
+		}
+		else{
+			model = createErpCreditCardModel(data);
+		}
+		return model;
+	}
+	
+	private static ErpPaymentMethodI createErpCreditCardModel(ErpPaymentMethodData source) {
+		ErpCreditCardModel model = new ErpCreditCardModel();
+		createErpPaymentMethod(model,source);
+		model.setExpirationDate(source.getExpirationDate());
+		model.setCardType(EnumCardType.getCardType(source.getCardType()));
+		model.setAvsCkeckFailed(source.isAvsCkeckFailed());
+		model.setBypassAVSCheck(source.isBypassAVSCheck());
+		return model;
+	}
+
+	private static ErpPaymentMethodI createErpPayPalCardModel(ErpPaymentMethodData source) {
+		ErpPayPalCardModel model = new ErpPayPalCardModel();
+		createErpPaymentMethod(model,source);
+		return model;
+	}
+
+	private static ErpPaymentMethodI createErpEbtCardModel(ErpPaymentMethodData source) {
+		ErpEbtCardModel model = new ErpEbtCardModel();
+		createErpPaymentMethod(model,source);
+		model.setCardType(EnumCardType.getCardType(source.getCardType()));
+		return model;
+	}
+
+	private static ErpPaymentMethodI createECheckModelModel(ErpPaymentMethodData source) {
+		ErpECheckModel model = new ErpECheckModel();
+		createErpPaymentMethod(model,source);
+		model.setBankName(source.getBankName());
+		model.setAbaRouteNumber(source.getAbaRouteNumber());
+		model.setBankAccountType(EnumBankAccountType.getEnum(source.getBankAccountType()));
+		model.setIsTermsAccepted(source.isTermsAccepted());
+		return model;
+	}
+
+	private static ErpPaymentMethodI createErpGiftCardModel(ErpPaymentMethodData source) {
+		ErpGiftCardModel model = new ErpGiftCardModel();
+		createErpPaymentMethod(model,source);
+		model.setBalance(source.getBalance());
+		if(source.getStatus().equals("U")) {
+			model.setStatus(EnumGiftCardStatus.UNKNOWN);
+		}else if(source.getStatus().equals("A")) {
+			model.setStatus(EnumGiftCardStatus.ACTIVE);
+		}else if(source.getStatus().equals("I")) {
+			model.setStatus(EnumGiftCardStatus.INACTIVE);
+		}else if(source.getStatus().equals("Z")) {
+			model.setStatus(EnumGiftCardStatus.ZERO_BALANCE);
+		}
+		model.setOriginalAmount(source.getOriginalAmount());
+		model.setPurchaseSaleId(source.getPurchaseSaleId());
+		model.setPurchaseDate(source.getPurchaseDate());
+		return model;
+		
+	}
+	
+	private static void createErpPaymentMethod(ErpPaymentMethodModel model, ErpPaymentMethodData source) {
+		model.setId(source.getId());
+		model.setCustomerId(source.getCustomerId());
+		model.setName(source.getName());
+		model.setAccountNumber(source.getAccountNumber());
+		if(source.getAddress() !=null &&source.getAddress().getId() == null)
+			source.getAddress().setId("");
+//		model.setAddress(mapperFacade.map(source.getAddress(), ContactAddressModel.class));
+		model.setBillingRef(source.getBillingRef());
+		model.setPaymentType(EnumPaymentType.getEnum(source.getPaymentType()));
+		model.setReferencedOrder(source.getReferencedOrder());
+		model.setCVV(source.getCvv());
+		model.setProfileID(source.getProfileID());
+		model.setAccountNumLast4(source.getAccountNumLast4());
+		model.setBestNumberForBillingInquiries(source.getBestNumberForBillingInquiries());
+		model.seteWalletID(source.geteWalletID());
+		model.setVendorEWalletID(source.getVendorEWalletID());
+		model.seteWalletTrxnId(source.geteWalletTrxnId());
+		model.setEmailID(source.getEmailID());
+		model.setDeviceId(source.getDeviceId());
+		model.setDebitCard(source.isDebitCard());
+	}
+	
 }
 

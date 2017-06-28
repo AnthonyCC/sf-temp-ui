@@ -46,6 +46,7 @@ import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.customer.ErpEWalletModel;
 import com.freshdirect.customer.ErpGrpPriceModel;
+import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpRestrictedAvailabilityModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
@@ -111,7 +112,9 @@ import com.freshdirect.ecommerce.data.fdstore.SalesAreaInfoFDGroupWrapper;
 import com.freshdirect.ecommerce.data.logger.recommendation.FDRecommendationEventData;
 import com.freshdirect.ecommerce.data.mail.EmailDataI;
 import com.freshdirect.ecommerce.data.payment.BINData;
+import com.freshdirect.ecommerce.data.payment.ErpPaymentMethodData;
 import com.freshdirect.ecommerce.data.payment.FDGatewayActivityLogModelData;
+import com.freshdirect.ecommerce.data.payment.RestrictedPaymentMethodData;
 import com.freshdirect.ecommerce.data.referral.FDReferralReportLineData;
 import com.freshdirect.ecommerce.data.referral.FDUserData;
 import com.freshdirect.ecommerce.data.referral.ReferralCampaignData;
@@ -192,6 +195,9 @@ import com.freshdirect.logistics.delivery.model.SiteAnnouncement;
 import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.payment.BINInfo;
 import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
+import com.freshdirect.payment.fraud.EnumRestrictedPaymentMethodStatus;
+import com.freshdirect.payment.fraud.RestrictedPaymentMethodCriteria;
+import com.freshdirect.payment.fraud.RestrictedPaymentMethodModel;
 import com.freshdirect.payment.gateway.ejb.FDGatewayActivityLogModel;
 import com.freshdirect.referral.extole.ExtoleServiceException;
 import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
@@ -482,7 +488,19 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String FDFACTORY_PRODUCTINFO_SKUCODE = "fdfactory/productinfobysku";
 	private static final String FDFACTORY_PRODUCTINFO_SKUCODE_VERSION = "fdfactory/productbyskuandversion";
 	private static final String FDFACTORY_PRODUCTINFO_SKUCODES = "fdfactory/productsbyskus";
-	
+
+	private static final String CREATE_FRAUD_ENTRY="fraudactivity/create";
+	private static final String FIND_FRAUD_ENTRY_ID="fraudactivity/findbyid";
+	private static final String FIND_FRAUD_ENTRY_CUSTID_STATUS="fraudactivity/findbycustomerandstatus";
+	private static final String FIND_FRAUD_ENTRY_ID_STATUS="fraudactivity/findbyidandstatus";
+	private static final String FIND_FRAUD_ENTRY_BY_CRITERIA="fraudactivity/findbycriteria";
+	private static final String UPDATE_FRAUD_ENTRY="fraudactivity/update";
+	private static final String REMOVE_FRAUD_ENTRY="fraudactivity/delete";
+	private static final String VERIFY_FRAUD_ENTRY="fraudactivity/validate";
+	private static final String LOAD_ALL_FRAUD_ENTRY_ROUTE_PATTERN="fraudactivity/loadroutetypepattern";
+	private static final String LOAD_ALL_FRAUD_ENTRY="fraudactivity/loadrestrictedpaymentmethd";
+	private static final String LOAD_ALL_BAD_ENTRY="fraudactivity/loadbadpaymentmethods";
+	private static final String LOAD_ALL_FRAUD_ENTRY_BY_ACCOUNTINFO="fraudactivity/paymentinfobyaccount";
 	
 	public static IECommerceService getInstance() {
 		if (INSTANCE == null)
@@ -5331,5 +5349,239 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	public FDProduct getProduct(String sku, int version) {
 		return null;
 		}
+	
+	@Override
+	public PrimaryKey createRestrictedPaymentMethod(
+			RestrictedPaymentMethodModel restrictedPaymentMethod) throws RemoteException, FDResourceException {
+		Response<String> response = null;
+		Request<RestrictedPaymentMethodData> request = new Request<RestrictedPaymentMethodData>();
+		RestrictedPaymentMethodData data;
+		String inputJson;
+		PrimaryKey key = null;
+			try {
+				data = ModelConverter.buildRestrictedPaymentMethodData(restrictedPaymentMethod);
+				request.setData(data);
+				inputJson = buildRequest(request);
+				response = postDataTypeMap(inputJson,getFdCommerceEndPoint(CREATE_FRAUD_ENTRY),new TypeReference<Response<String>>() {});
+				if(!response.getResponseCode().equals("OK"))
+					throw new FDResourceException(response.getMessage());		
+				key = new PrimaryKey(response.getData());
+			} catch (FDPayPalServiceException e) {
+				throw new RemoteException(e.getMessage());
+			}
+			return key;
+	}
+	
+	@Override
+	public RestrictedPaymentMethodModel findRestrictedPaymentMethodByPrimaryKey(
+			PrimaryKey pk) throws RemoteException {
+		Response<RestrictedPaymentMethodData> response = null;
+		RestrictedPaymentMethodModel model = null;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FIND_FRAUD_ENTRY_ID)+"/"+pk.getId(),  new TypeReference<Response<RestrictedPaymentMethodData>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			model = ModelConverter.buildRestrictedPaymentMethodModel(response.getData());
+			
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return model;
+	}
+	@Override
+	public List<RestrictedPaymentMethodModel> findRestrictedPaymentMethodByCustomerId(
+			String customerId, EnumRestrictedPaymentMethodStatus status) throws RemoteException {
+		Response<List<RestrictedPaymentMethodData>> response = null;
+		List<RestrictedPaymentMethodModel> models = new ArrayList<RestrictedPaymentMethodModel>();
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FIND_FRAUD_ENTRY_CUSTID_STATUS)+"/"+customerId+"/"+status.getName(),  new TypeReference<Response<List<RestrictedPaymentMethodData>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			for (RestrictedPaymentMethodData restrictedPaymentMethodData : response.getData()) {
+				RestrictedPaymentMethodModel model = ModelConverter.buildRestrictedPaymentMethodModel(restrictedPaymentMethodData);
+				models.add(model);
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return models;
+	}
+	@Override
+	public RestrictedPaymentMethodModel findRestrictedPaymentMethodByPaymentMethodId(
+			String paymentMethodId, EnumRestrictedPaymentMethodStatus status) throws RemoteException {
+		Response<RestrictedPaymentMethodData> response = null;
+		RestrictedPaymentMethodModel model;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(FIND_FRAUD_ENTRY_ID_STATUS)+"/"+paymentMethodId+"/"+status.getName(),  new TypeReference<Response<RestrictedPaymentMethodData>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+				model = ModelConverter.buildRestrictedPaymentMethodModel(response.getData());
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return model;
+	}
+	@Override
+	public List<RestrictedPaymentMethodModel> findRestrictedPaymentMethods(
+			RestrictedPaymentMethodCriteria criteria) throws FDResourceException, RemoteException {
+		Response<List<RestrictedPaymentMethodData>> response = null;
+		Request<RestrictedPaymentMethodCriteria> request = new Request<RestrictedPaymentMethodCriteria>();
+		List<RestrictedPaymentMethodModel> models = new ArrayList<RestrictedPaymentMethodModel>();
+		String inputJson;
+			try {
+				request.setData(criteria);
+				inputJson = buildRequest(request);
+				response = postDataTypeMap(inputJson,getFdCommerceEndPoint(FIND_FRAUD_ENTRY_BY_CRITERIA),new TypeReference<Response<List<RestrictedPaymentMethodData>>>() {});
+				if(!response.getResponseCode().equals("OK"))
+					throw new FDResourceException(response.getMessage());		
+				for (RestrictedPaymentMethodData restrictedPaymentMethodData : response.getData()) {
+					RestrictedPaymentMethodModel model = ModelConverter.buildRestrictedPaymentMethodModel(restrictedPaymentMethodData);
+					models.add(model);
+				}
+			} catch (FDPayPalServiceException e) {
+				throw new RemoteException(e.getMessage());
+			}
+			return models;
+	}
+	@Override
+	public void storeRestrictedPaymentMethod(
+			RestrictedPaymentMethodModel restrictedPaymentMethod) throws FDResourceException, RemoteException {
+		Response response = null;
+		Request<RestrictedPaymentMethodData> request = new Request<RestrictedPaymentMethodData>();
+		String inputJson;
+		try{
+			RestrictedPaymentMethodData data = ModelConverter.buildRestrictedPaymentMethodData(restrictedPaymentMethod);
+			request.setData(data);
+			inputJson = buildRequest(request);
+			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(UPDATE_FRAUD_ENTRY),new TypeReference<Response>() {});
+			if(!response.getResponseCode().equals("OK"))
+				throw new FDResourceException(response.getMessage());	
+		} catch (FDPayPalServiceException e) {
+			throw new RemoteException(e.getMessage());
+		}
+		
+		
+	}
+	@Override
+	public void removeRestrictedPaymentMethod(PrimaryKey pk,
+			String lastModifyUser) throws RemoteException, FDResourceException {
+		Response response = null;
+		RestrictedPaymentMethodModel model;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(REMOVE_FRAUD_ENTRY)+"/"+pk.getId()+"/"+lastModifyUser,  new TypeReference<Response>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDRuntimeException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	@Override
+	public List<RestrictedPaymentMethodModel> loadAllPatterns() throws FDResourceException, RemoteException {
+		Response<List<RestrictedPaymentMethodData>> response = new Response<List<RestrictedPaymentMethodData>>();
+		List<RestrictedPaymentMethodModel> models = new ArrayList<RestrictedPaymentMethodModel>();
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_ALL_FRAUD_ENTRY_ROUTE_PATTERN),  new TypeReference<Response<List<RestrictedPaymentMethodData>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			for (RestrictedPaymentMethodData restrictedPaymentMethodData : response.getData()) {
+				RestrictedPaymentMethodModel model = ModelConverter.buildRestrictedPaymentMethodModel(restrictedPaymentMethodData);
+				models.add(model);
+			}
+		} catch (FDRuntimeException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return models;
+
+	}
+	@Override
+	public List<RestrictedPaymentMethodModel> loadAllRestrictedPaymentMethods() throws FDResourceException, RemoteException {
+		Response<List<RestrictedPaymentMethodData>> response = new Response<List<RestrictedPaymentMethodData>>();
+		List<RestrictedPaymentMethodModel> models = new ArrayList<RestrictedPaymentMethodModel>();
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_ALL_FRAUD_ENTRY),  new TypeReference<Response<List<RestrictedPaymentMethodData>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			for (RestrictedPaymentMethodData restrictedPaymentMethodData : response.getData()) {
+				RestrictedPaymentMethodModel model = ModelConverter.buildRestrictedPaymentMethodModel(restrictedPaymentMethodData);
+				models.add(model);
+			}
+		} catch (FDRuntimeException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return models;
+
+	}
+	@Override
+	public List<RestrictedPaymentMethodModel> loadAllBadPaymentMethods() throws FDResourceException, RemoteException {
+		Response<List<RestrictedPaymentMethodData>> response = new Response<List<RestrictedPaymentMethodData>>();
+		List<RestrictedPaymentMethodModel> models = new ArrayList<RestrictedPaymentMethodModel>();
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(LOAD_ALL_BAD_ENTRY),  new TypeReference<Response<List<RestrictedPaymentMethodData>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			for (RestrictedPaymentMethodData restrictedPaymentMethodData : response.getData()) {
+				RestrictedPaymentMethodModel model = ModelConverter.buildRestrictedPaymentMethodModel(restrictedPaymentMethodData);
+				models.add(model);
+			}
+		} catch (FDRuntimeException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return models;
+
+	}
+	@Override
+	public boolean checkBadAccount(ErpPaymentMethodI erpPaymentMethod,
+			boolean useBadAccountCache) throws FDResourceException, RemoteException {
+		Response response = null;
+		Request<ErpPaymentMethodData> request = new Request<ErpPaymentMethodData>();
+		String inputJson;
+		boolean status;
+		try{
+			ErpPaymentMethodData data = ModelConverter.buildErpPaymentMethodData(erpPaymentMethod);
+			request.setData(data);
+			inputJson = buildRequest(request);
+			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(VERIFY_FRAUD_ENTRY)+"/"+useBadAccountCache,new TypeReference<Response>() {});
+			if(!response.getResponseCode().equals("OK"))
+				throw new FDResourceException(response.getMessage());	
+			status = Boolean.getBoolean(response.getData().toString());
+		} catch (FDPayPalServiceException e) {
+			throw new RemoteException(e.getMessage());
+		}
+		return status;
+	}
+	@Override
+	public ErpPaymentMethodI findPaymentMethodByAccountInfo(
+			RestrictedPaymentMethodModel restrictedPaymentMethod) throws FDResourceException, RemoteException {
+		Response<ErpPaymentMethodData> response = null;
+		Request<RestrictedPaymentMethodData> request = new Request<RestrictedPaymentMethodData>();
+		String inputJson;
+		ErpPaymentMethodI erpPaymentMethod;
+		try{
+			RestrictedPaymentMethodData data = ModelConverter.buildRestrictedPaymentMethodData(restrictedPaymentMethod);
+			request.setData(data);
+			inputJson = buildRequest(request);
+			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(LOAD_ALL_FRAUD_ENTRY_BY_ACCOUNTINFO),new TypeReference<Response<ErpPaymentMethodData>>() {});
+			if(!response.getResponseCode().equals("OK"))
+				throw new FDResourceException(response.getMessage());
+			erpPaymentMethod = ModelConverter.buildErpPaymentMethodModel(response.getData());
+		} catch (FDPayPalServiceException e) {
+			throw new RemoteException(e.getMessage());
+		}
+		return erpPaymentMethod;
+	}
 	
 }

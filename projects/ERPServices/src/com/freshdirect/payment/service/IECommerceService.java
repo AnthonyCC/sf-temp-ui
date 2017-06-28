@@ -23,6 +23,7 @@ import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.customer.ErpEWalletModel;
 import com.freshdirect.customer.ErpGrpPriceModel;
+import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpRestrictedAvailabilityModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
@@ -87,6 +88,7 @@ import com.freshdirect.fdstore.ecoupon.model.FDCouponEligibleInfo;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponInfo;
 import com.freshdirect.fdstore.ecoupon.model.FDCustomerCouponHistoryInfo;
 import com.freshdirect.fdstore.ecoupon.model.FDCustomerCouponWallet;
+import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.event.FDRecommendationEvent;
 import com.freshdirect.framework.event.FDWebEvent;
 import com.freshdirect.framework.mail.EmailI;
@@ -97,6 +99,9 @@ import com.freshdirect.logistics.delivery.model.SiteAnnouncement;
 import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.payment.BINInfo;
 import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
+import com.freshdirect.payment.fraud.EnumRestrictedPaymentMethodStatus;
+import com.freshdirect.payment.fraud.RestrictedPaymentMethodCriteria;
+import com.freshdirect.payment.fraud.RestrictedPaymentMethodModel;
 import com.freshdirect.payment.gateway.ejb.FDGatewayActivityLogModel;
 import com.freshdirect.referral.extole.ExtoleServiceException;
 import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
@@ -644,4 +649,29 @@ public interface IECommerceService {
 	public Collection getProductInfos(String[] skus) throws FDResourceException, RemoteException;
 
 	public FDProduct getProduct(String sku, int version);
+	
+	public PrimaryKey createRestrictedPaymentMethod(RestrictedPaymentMethodModel restrictedPaymentMethod) throws RemoteException, FDResourceException;
+
+	public RestrictedPaymentMethodModel findRestrictedPaymentMethodByPrimaryKey(PrimaryKey pk) throws RemoteException;
+
+	public List<RestrictedPaymentMethodModel> findRestrictedPaymentMethodByCustomerId(String customerId, EnumRestrictedPaymentMethodStatus status) throws RemoteException;
+
+	public RestrictedPaymentMethodModel findRestrictedPaymentMethodByPaymentMethodId(String paymentMethodId, EnumRestrictedPaymentMethodStatus status) throws RemoteException;
+
+	public List<RestrictedPaymentMethodModel> findRestrictedPaymentMethods(RestrictedPaymentMethodCriteria criteria) throws FDResourceException, RemoteException;
+
+	public void storeRestrictedPaymentMethod(RestrictedPaymentMethodModel restrictedPaymentMethod) throws FDResourceException, RemoteException;
+
+	public void removeRestrictedPaymentMethod(PrimaryKey pk, String lastModifyUser) throws RemoteException, FDResourceException;
+
+	public List<RestrictedPaymentMethodModel> loadAllPatterns() throws FDResourceException, RemoteException;
+
+	public List<RestrictedPaymentMethodModel> loadAllRestrictedPaymentMethods() throws FDResourceException, RemoteException;
+
+	public List<RestrictedPaymentMethodModel> loadAllBadPaymentMethods() throws FDResourceException, RemoteException;
+
+	public boolean checkBadAccount(ErpPaymentMethodI erpPaymentMethod, boolean useBadAccountCache) throws FDResourceException, RemoteException;
+
+	public ErpPaymentMethodI findPaymentMethodByAccountInfo(
+			RestrictedPaymentMethodModel restrictedPaymentMethod) throws FDResourceException, RemoteException;
 }
