@@ -1815,6 +1815,10 @@ li.cleanli .gen-arrow {
 		[data-ec-page] .mm-page #cartheader .cartheader .cartheader__text {
 			display: none;
 		}
+		[data-ec-page] .mm-page [fdform-error-container="checkout"] span[fdform-error] {
+			text-align: left;
+			padding: 3px 10px;
+		}
 		
 	/* overlays */
 		.ec-popup.restrictionpopup {
