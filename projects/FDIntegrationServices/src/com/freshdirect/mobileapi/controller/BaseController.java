@@ -629,8 +629,7 @@ public abstract class BaseController extends AbstractController implements Messa
                 .setSuccessMessage("User has been logged in successfully.");
         responseMessage.setItemsInCartCount(user
                 .getItemsInCartCount());
-        responseMessage.setOrderCount(user.getOrderHistory()
-                .getValidOrderCount());
+        responseMessage.setOrderCount(history.getValidOrderCount());
         responseMessage.setFdUserId(user.getPrimaryKey());
 
         // DOOR3 FD-iPad FDIP-474
@@ -666,8 +665,7 @@ public abstract class BaseController extends AbstractController implements Messa
                 .getSelectedServiceType() != null ? user
                 .getSelectedServiceType().toString() : "");
         responseMessage.setCohort(user.getCohort());
-        responseMessage.setTotalOrderCount(user
-                .getTotalOrderCount());
+        responseMessage.setTotalOrderCount(user.getTotalOrderCount());
         
         responseMessage.setTcAcknowledge(user.getTcAcknowledge());
 

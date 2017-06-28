@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.fdstore.EnumEStoreId;
@@ -31,6 +32,10 @@ public class OrderHistory {
         return orderHistory.getValidOrderCount();
     }
 
+    public int getValidOrderCount(EnumDeliveryType deliveryType) {
+        return orderHistory.getValidOrderCount(deliveryType);
+    }
+
     public List<OrderInfo> getRegularOrderInfos() {
         Collection<FDOrderInfoI> fDOrderInfos = getOrderInfos(EnumSaleType.REGULAR);
 
@@ -51,18 +56,21 @@ public class OrderHistory {
      * Comparator used for sort by order delivery slot time
      */
     private final static Comparator<FDOrderInfoI> FD_ORDER_INFO_DELIVERY_START_TIME_COMPARATOR = new Comparator<FDOrderInfoI>() {
+        @Override
         public int compare(FDOrderInfoI o1, FDOrderInfoI o2) {
             return o2.getDeliveryStartTime().compareTo(o1.getDeliveryStartTime());
         }
     };
 
     private final static Comparator<OrderInfo> ORDER_INFO_REQUESTED_TIME_COMPARATOR = new Comparator<OrderInfo>() {
+        @Override
         public int compare(OrderInfo o1, OrderInfo o2) {
             return o2.getRequestedDate().compareTo(o1.getRequestedDate());
         }
     };
 
     private final static Comparator<FDOrderInfoI> FD_ORDER_INFO_CUTOFF_TIME_COMPARATOR = new Comparator<FDOrderInfoI>() {
+        @Override
         public int compare(FDOrderInfoI o1, FDOrderInfoI o2) {
             return o2.getDeliveryCutoffTime().compareTo(o1.getDeliveryCutoffTime());
         }
