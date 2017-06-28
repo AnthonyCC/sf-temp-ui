@@ -267,7 +267,7 @@ request.setAttribute("noyui", true);
 			</fd:GetSegmentMessage>
 		<% } %>
 
-    <script type="text/javascript">
+    <script>
       var FreshDirect = window.FreshDirect || {};
       FreshDirect.homepage = true;
 
@@ -275,6 +275,7 @@ request.setAttribute("noyui", true);
 
       dataLayer.push({
         'is-new-homepage': 'true',
+        'homepage-type': 'residental',
         'module-container-id': '<%=moduleContainerId%>'
       });
     </script>

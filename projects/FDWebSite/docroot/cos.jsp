@@ -142,6 +142,13 @@ if (location2Media) { %><comp:location2Media user="<%= user %>" /><% }
 		<div class="oas_home_bottom" id='oas_HPWideBottom'><script type="text/javascript">OAS_AD('HPWideBottom');</script></div>
 	</div>
 </div>
+<script>
+  var dataLayer = window.dataLayer || [];
+
+  dataLayer.push({
+    'homepage-type': 'corporate'
+  });
+</script>
 </fd:GetSegmentMessage>
 </tmpl:put>
 </tmpl:insert>
