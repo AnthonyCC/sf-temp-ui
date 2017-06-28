@@ -620,9 +620,11 @@ public class StandingOrderHelper {
 		map.put("frequencyDesc", so.getFullFrequencyDescription());
 		int productCnt = 0;
 		double amount=0.0;
+		double subtotal=0.0;
 		//TODO : need to work on calculating total amount
 		if(!isUpcomingDelivery){
-				productCnt= getNoOfItemsForSoSettings(so);	
+				productCnt= getNoOfItemsForSoSettings(so);
+				subtotal=getSubTotalAmountForSoSettings(so);
 				amount=getTotalAmountForSoSettings(so);
 		}else{
 			productCnt= getNoOfItemsForUpcomingDelivery(so);	
@@ -630,6 +632,7 @@ public class StandingOrderHelper {
 			map.put("orderId", so.getUpcomingDelivery().getErpSalesId());
 		}
 		map.put("noOfitems", productCnt );
+		map.put("subtotal", subtotal);
 		map.put("amount", amount);
 		map.put("activated", "Y".equals(so.getActivate())?true:false);
 		map.put("readyForActivation",populateResponseData(so, false).isActivate());
@@ -638,7 +641,7 @@ public class StandingOrderHelper {
 		if(null!=so.getLastError()){
 			map.put("lastError", so.getLastError().name());
 		} else {
-			String lastError= isValidStandingOrder(so, false) && amount<ErpServicesProperties.getStandingOrderSoftLimit() ? "MINORDER":null;
+			String lastError= isValidStandingOrder(so, false) && subtotal<ErpServicesProperties.getStandingOrderSoftLimit() ? "MINORDER":null;
 			if("MINORDER".equals(lastError)){
 				map.put("errorHeader", FDStandingOrder.ErrorCode.MINORDER.getErrorHeader());
 				map.put("errorDetails",FDStandingOrder.ErrorCode.MINORDER.getErrorDetail(null));
@@ -683,10 +686,19 @@ public class StandingOrderHelper {
 		List<FDCartLineI> cartLineIs = so.getStandingOrderCart().getOrderLines();
 		if (null != cartLineIs) {
 		 so.getStandingOrderCart().refreshAll(true);
-		 amount=so.getStandingOrderCart().getTotal();
-		 amount=amount+so.getTipAmount();
+		 amount = so.getStandingOrderCart().getTotal();
+		 amount = amount+so.getTipAmount();
 		}
 		return amount;
+	}
+	public static double getSubTotalAmountForSoSettings(FDStandingOrder so) throws FDResourceException, FDInvalidConfigurationException {
+		double subtotal = 0.0;
+		List<FDCartLineI> cartLineIs = so.getStandingOrderCart().getOrderLines();
+		if (null != cartLineIs) {
+		 so.getStandingOrderCart().refreshAll(true);
+		 subtotal=so.getStandingOrderCart().getTotal();		 
+		}
+		return subtotal;
 	}
 
 	private static Object getModifyDeliveryDate( Date deliveryDate ) {
@@ -914,7 +926,7 @@ public class StandingOrderHelper {
 				orderResponseData.setId(so.getId());
 				if (isPdp) {
 					orderResponseData.setProductCount(getNoOfItemsForSoSettings(so) + " items");
-					orderResponseData.setAmount(getTotalAmountForSoSettings(so));
+					orderResponseData.setAmount(getSubTotalAmountForSoSettings(so));
 					if (orderResponseData.getAmount() <= ErpServicesProperties.getStandingOrderSoftLimit()) {
 						orderResponseData.setMessage(" Add $"
 								+ StandingOrderHelper.formatDecimalPrice((ErpServicesProperties.getStandingOrderSoftLimit() - orderResponseData.getAmount()))
@@ -929,7 +941,7 @@ public class StandingOrderHelper {
 					}
 				} else {
 					if (isValidStandingOrder(so,false) && Calendar.getInstance().getTime().before(so.getCutOffDeliveryDateTime())) {
-						if (getTotalAmountForSoSettings(so) >= ErpServicesProperties.getStandingOrderSoftLimit()) {
+						if (getSubTotalAmountForSoSettings(so) >= ErpServicesProperties.getStandingOrderSoftLimit()) {
 							orderResponseData.setActivate(isSOActivated(so)?false:true);
 						} else {
 							orderResponseData
