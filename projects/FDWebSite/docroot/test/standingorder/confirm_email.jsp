@@ -93,7 +93,7 @@
 			}
 
 			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
-				FDECommerceService.getInstance().enqueueEmail(email);
+				FDECommerceService.getInstance().enqueueEmail(mail);
 			} else {
 				MailerGatewaySB mailer = mailerHome.create();
 				mailer.enqueueEmail( mail );
