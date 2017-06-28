@@ -4155,12 +4155,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public void doEmail(XMLEmailI email) throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
-				FDECommerceService.getInstance().enqueueEmail(email);
-			} else {
-				MailerGatewaySB mailer = getMailerHome().create();
-				mailer.enqueueEmail(email);
-			}
+			MailerGatewaySB mailer = getMailerHome().create();
+			mailer.enqueueEmail(email);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce, "Cannot create MailerGatewayBean");
 		} catch (RemoteException re) {
@@ -6530,12 +6526,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public void doEmail(FTLEmailI email) throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
-				FDECommerceService.getInstance().enqueueEmail(email);
-			} else {
-				MailerGatewaySB mailer = getMailerHome().create();
-				mailer.enqueueEmail(email);
-			}
+			MailerGatewaySB mailer = getMailerHome().create();
+			mailer.enqueueEmail(email);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce, "Cannot create MailerGatewayBean");
 		} catch (RemoteException re) {
@@ -8253,11 +8245,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			fdInfo.setEmailAddress(erpInfo.getEmail());
 			fdInfo.setGoGreen(erpInfo.isGoGreen());
 			mailBean = this.getMailerGatewayHome().create();
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
-				FDECommerceService.getInstance().enqueueEmail(FDEmailFactory.getInstance().createFinalAmountEmail(fdInfo, fdOrder));
-			} else {
-				mailBean.enqueueEmail(FDEmailFactory.getInstance().createFinalAmountEmail(fdInfo, fdOrder));
-			}
+			mailBean.enqueueEmail(FDEmailFactory.getInstance().createFinalAmountEmail(fdInfo, fdOrder));
 			reSendInvoiceEmail=true;
 		
 		}

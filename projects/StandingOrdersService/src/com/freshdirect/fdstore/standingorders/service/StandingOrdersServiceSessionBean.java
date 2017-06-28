@@ -287,13 +287,9 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		try {
 			XMLEmailI mail = FDEmailFactory.getInstance().createStandingOrderErrorEmail( customerInfo, so );		
 
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
-				FDECommerceService.getInstance().enqueueEmail(mail);
-			} else {
-				MailerGatewaySB mailer;
-				mailer = mailerHome.create();
-				mailer.enqueueEmail( mail );
-			}
+			MailerGatewaySB mailer;
+			mailer = mailerHome.create();
+			mailer.enqueueEmail( mail );
 			return true;
 		} catch ( RemoteException e ) {
 			invalidateMailerHome();

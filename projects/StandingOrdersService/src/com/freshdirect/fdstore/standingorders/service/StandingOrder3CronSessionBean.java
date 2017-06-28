@@ -131,13 +131,9 @@ public class StandingOrder3CronSessionBean extends SessionBeanSupport {
 			
 			XMLEmailI mail = FDEmailFactory.getInstance().createStandingOrderErrorEmail( so.getUserInfo(), so );		
 
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
-				FDECommerceService.getInstance().enqueueEmail(mail);
-			} else {
-				MailerGatewaySB mailer;
-				mailer = mailerHome.create();
-				mailer.enqueueEmail( mail );
-			}
+			MailerGatewaySB mailer;
+			mailer = mailerHome.create();
+			mailer.enqueueEmail(mail);
 			}
 			return true;
 		} catch ( RemoteException e ) {

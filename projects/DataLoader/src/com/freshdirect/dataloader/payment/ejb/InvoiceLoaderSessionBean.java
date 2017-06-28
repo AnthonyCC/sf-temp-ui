@@ -148,12 +148,8 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 			fdInfo.setEmailAddress(erpInfo.getEmail());
 			fdInfo.setGoGreen(erpInfo.isGoGreen());
 
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
-				FDECommerceService.getInstance().enqueueEmail(FDEmailFactory.getInstance().createFinalAmountEmail(fdInfo, fdOrder));
-			} else {
-				MailerGatewaySB mailBean = this.getMailerGatewayHome().create();
-				mailBean.enqueueEmail(FDEmailFactory.getInstance().createFinalAmountEmail(fdInfo, fdOrder));
-			}
+			MailerGatewaySB mailBean = this.getMailerGatewayHome().create();
+			mailBean.enqueueEmail(FDEmailFactory.getInstance().createFinalAmountEmail(fdInfo, fdOrder));
 			// collect recipes that will be sent to the users
 			List orderLines = fdOrder.getOrderLines();
 			Set<Recipe>  recipes    = new HashSet<Recipe>();
@@ -169,12 +165,7 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 			
 			// send recipe e-mails on delivery for those which were requested
 			for (Recipe recipe : recipes) {
-				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
-					FDECommerceService.getInstance().enqueueEmail(FDEmailFactory.getInstance().createFinalAmountEmail(fdInfo, fdOrder));
-				} else {
-					MailerGatewaySB mailBean = this.getMailerGatewayHome().create();
-					mailBean.enqueueEmail(FDEmailFactory.getInstance().createRecipeEmail(fdInfo, recipe));
-				}
+				mailBean.enqueueEmail(FDEmailFactory.getInstance().createRecipeEmail(fdInfo, recipe));
 			}
 				
 		} catch (ErpTransactionException e) {

@@ -4840,13 +4840,13 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	}
 
 	public void enqueueEmail(EmailI email) throws RemoteException {
-		Response<Object> response = null;
+		Response<String> response = null;
 		try {
 			Request<EmailData> request = new Request<EmailData>();
 			request.setData(ModelConverter.buildEmailData(email));
 			String inputJson = buildRequest(request);
 
-			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ENQUEUE_EMAIL), new TypeReference<Response<Object>>() {
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(ENQUEUE_EMAIL), new TypeReference<Response<String>>() {
 			});
 			if (!response.getResponseCode().equals("OK")) {
 				throw new FDResourceException(response.getMessage());

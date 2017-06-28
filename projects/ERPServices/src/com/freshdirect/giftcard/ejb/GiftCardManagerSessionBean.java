@@ -1324,12 +1324,8 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 	
 	private void doEmail(EmailI email) throws FDResourceException {
 		try {
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
-				FDECommerceService.getInstance().enqueueEmail(email);
-			} else {
-				MailerGatewaySB mailer = getMailerHome().create();
-				mailer.enqueueEmail(email);
-			}
+			MailerGatewaySB mailer = getMailerHome().create();
+			mailer.enqueueEmail(email);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce, "Cannot create MailerGatewayBean");
 		} catch (RemoteException re) {

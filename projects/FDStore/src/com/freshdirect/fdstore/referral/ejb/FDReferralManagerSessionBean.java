@@ -1231,11 +1231,7 @@ public class FDReferralManagerSessionBean extends FDSessionBeanSupport {
 				String recipient = stokens.nextToken().trim();
 				System.out.println("\n\n\n trimmed_recipient:" + recipient);
 				xemail.setRecipient(recipient);
-				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
-					FDECommerceService.getInstance().enqueueEmail(xemail);
-				} else {
-					mailer.enqueueEmail(xemail);
-				}
+				mailer.enqueueEmail(xemail);
 				//Save the email to user's invite list
 				FDReferAFriendDAO.saveInvite(conn, recipient, user.getIdentity().getErpCustomerPK());
 			}
