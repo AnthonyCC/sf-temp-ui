@@ -35,11 +35,16 @@ public class ProductPromotionInfoManager {
 		lookupManagerHome();
 		Map<ZoneInfo,List<FDProductPromotionInfo>> productPromoInfoMap=null;
 		try {
+			long startTime;
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpProductPromotionInfoSB)){
-			productPromoInfoMap=FDECommerceService.getInstance().getAllProductsByType(ppType);
+				startTime=  startIntervalTimer();
+				productPromoInfoMap=FDECommerceService.getInstance().getAllProductsByType(ppType);
+				logTimeInterval(startTime,"FDECommerceService.getAllProductsByType" );
 			}else{
+				startTime=  startIntervalTimer();
 				ErpProductPromotionInfoSB sb = managerHome.create();
 				productPromoInfoMap =sb.getAllProductsByType(ppType);
+				logTimeInterval(startTime,"ErpProductPromotionInfoSB.getAllProductsByType" );
 			}
 
 			return productPromoInfoMap;
@@ -179,4 +184,30 @@ public class ProductPromotionInfoManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}		
 	}
+	
+	public static long startIntervalTimer(){
+		
+		 return System.currentTimeMillis();
+	}
+	/**
+	 * returns the difference between the start time and the current time in Mills
+	 * @param startTime
+	 * @return
+	 */
+	public static long diffIntervalTimer(long startTime){
+		
+		 return (System.currentTimeMillis() -startTime ) ;
+	}
+	/**
+	 * Logs the elapsed time of an operation
+	 * @param startTime the start time in ms
+	 * @param methodName, indicating sb or rst call.
+	 */
+	public static  void logTimeInterval(long startTime, String methodName){
+		
+		long totalElapsedTime = diffIntervalTimer(startTime);
+		LOGGER.info(methodName+  "Elapsed Time = "+totalElapsedTime+" ms" );
+		
+	}
+	
 }
