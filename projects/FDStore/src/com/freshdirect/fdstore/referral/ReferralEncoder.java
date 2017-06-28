@@ -20,8 +20,8 @@ public class ReferralEncoder {
 		ReferralProgramData referralProgramData = new ReferralProgramData();
 		referralProgramData.setName(refProgram.getName());
 		referralProgramData.setDescription(refProgram.getDescription());
-		referralProgramData.setStartDate(refProgram.getStartDate());
-		referralProgramData.setExpDate(refProgram.getExpDate());
+//		referralProgramData.setStartDate(refProgram.getStartDate());
+//		referralProgramData.setExpDate(refProgram.getExpDate());
 		referralProgramData.setCreativeDesc(refProgram.getCreativeDesc());
 		ReferralCampaignData campaign = buildReferralCampaignData(refProgram.getCampaign());
 		referralProgramData.setCampaign(campaign);
@@ -97,8 +97,8 @@ public class ReferralEncoder {
 		ReferralProgram referralProgram = new ReferralProgram();
 		referralProgram.setName(data.getName());
 		referralProgram.setDescription(data.getDescription());
-		referralProgram.setStartDate(data.getStartDate());
-		referralProgram.setExpDate(data.getExpDate());
+//		referralProgram.setStartDate(data.getStartDate());
+//		referralProgram.setExpDate(data.getExpDate());
 		referralProgram.setCreativeDesc(data.getCreativeDesc());
 		ReferralCampaign campaign = buildReferralCampaign(data.getCampaign());
 		referralProgram.setCampaign(campaign);

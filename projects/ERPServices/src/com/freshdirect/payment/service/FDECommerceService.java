@@ -110,7 +110,7 @@ import com.freshdirect.ecommerce.data.fdstore.FDSkuData;
 import com.freshdirect.ecommerce.data.fdstore.GroupScalePricingData;
 import com.freshdirect.ecommerce.data.fdstore.SalesAreaInfoFDGroupWrapper;
 import com.freshdirect.ecommerce.data.logger.recommendation.FDRecommendationEventData;
-import com.freshdirect.ecommerce.data.mail.EmailDataI;
+import com.freshdirect.ecommerce.data.mail.EmailData;
 import com.freshdirect.ecommerce.data.payment.BINData;
 import com.freshdirect.ecommerce.data.payment.ErpPaymentMethodData;
 import com.freshdirect.ecommerce.data.payment.FDGatewayActivityLogModelData;
@@ -501,6 +501,8 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String LOAD_ALL_FRAUD_ENTRY="fraudactivity/loadrestrictedpaymentmethd";
 	private static final String LOAD_ALL_BAD_ENTRY="fraudactivity/loadbadpaymentmethods";
 	private static final String LOAD_ALL_FRAUD_ENTRY_BY_ACCOUNTINFO="fraudactivity/paymentinfobyaccount";
+	
+	private static final String ENQUEUE_EMAIL = "mailer/enqueue";
 	
 	public static IECommerceService getInstance() {
 		if (INSTANCE == null)
