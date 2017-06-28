@@ -44,7 +44,6 @@ import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.customer.ErpActivityRecordData;
 import com.freshdirect.ecommerce.data.delivery.sms.RecievedSmsData;
 import com.freshdirect.ecommerce.data.delivery.sms.SmsOrderData;
-import com.freshdirect.ecommerce.data.dlv.ContactAddressData;
 import com.freshdirect.ecommerce.data.ecoupon.CartCouponData;
 import com.freshdirect.ecommerce.data.ecoupon.CouponCartData;
 import com.freshdirect.ecommerce.data.ecoupon.CouponOrderData;
@@ -98,8 +97,7 @@ import com.freshdirect.ecommerce.data.fdstore.GrpZonePriceModelData;
 import com.freshdirect.ecommerce.data.fdstore.SalesAreaInfoData;
 import com.freshdirect.ecommerce.data.logger.recommendation.FDRecommendationEventData;
 import com.freshdirect.ecommerce.data.mail.EmailAddressData;
-import com.freshdirect.ecommerce.data.mail.EmailDataI;
-import com.freshdirect.ecommerce.data.mail.XMLEmailDataI;
+import com.freshdirect.ecommerce.data.mail.EmailData;
 import com.freshdirect.ecommerce.data.payment.ErpPaymentMethodData;
 import com.freshdirect.ecommerce.data.payment.FDGatewayActivityLogModelData;
 import com.freshdirect.ecommerce.data.payment.RestrictedPaymentMethodData;
@@ -149,6 +147,7 @@ import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityContext;
 import com.freshdirect.framework.event.FDRecommendationEvent;
 import com.freshdirect.framework.mail.EmailI;
+import com.freshdirect.framework.mail.FTLEmailI;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.DayOfWeekSet;
 import com.freshdirect.framework.util.StringUtil;
@@ -1197,28 +1196,39 @@ public class ModelConverter {
 		return erpCouponTransactionModelData;
 	}
 
-	public static EmailDataI buildEmailDataI(EmailI email) {
-		EmailDataI emailDataI = new EmailDataI();
-		emailDataI.setBCCList(email.getBCCList());
-		emailDataI.setCCList(email.getCCList());
-		emailDataI.setRecipient(email.getRecipient());
-		emailDataI.setSubject(email.getSubject());
+	public static EmailData buildEmailData(EmailI email) {
+		EmailData emailData = new EmailData();
+		buildData(emailData, email);
+		if(email instanceof XMLEmailI){
+			XMLEmailI xmlEmailI = (XMLEmailI) email;
+			emailData.setHtmlEmail(xmlEmailI.isHtmlEmail());
+			emailData.setXML(xmlEmailI.getXML());
+			emailData.setXslPath(xmlEmailI.getXslPath());
+			emailData.setEmailType("XMLEmailI");
+		} else if(email instanceof FTLEmailI){
+			FTLEmailI ftlEmailI = (FTLEmailI) email;
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			for (String key : ftlEmailI.getParameters().keySet()) {
+				map.put(key, ftlEmailI.getParameters().get(key));
+			}
+			emailData.setParameters(map);
+			emailData.setEmailType("FTLEmailI");
+		}
+		return emailData;
+	}
+	
+	public static void buildData(EmailData emailData, EmailI email){
+		emailData.setBCCList(email.getBCCList());
+		emailData.setCCList(email.getCCList());
+		emailData.setRecipient(email.getRecipient());
+		emailData.setSubject(email.getSubject());
 		EmailAddressData emailAddressData = new EmailAddressData();
 		if (email.getFromAddress() != null) {
 			emailAddressData.setAddress(email.getFromAddress().getAddress());
 			emailAddressData.setName(email.getFromAddress().getName());
-			emailDataI.setFromAddress(emailAddressData);
+			emailData.setFromAddress(emailAddressData);
 		}
-		if(email instanceof XMLEmailI){
-			XMLEmailI xmlEmailI = (XMLEmailI) email;
-			XMLEmailDataI xmlEmailDataI = new XMLEmailDataI();
-			xmlEmailDataI.setHtmlEmail(xmlEmailI.isHtmlEmail());
-			xmlEmailDataI.setXML(xmlEmailDataI.getXML());
-			xmlEmailDataI.setXslPath(xmlEmailDataI.getXslPath());
-		}
-		return emailDataI;
 	}
-
 	public static List buildComplaintDlvIssueList(List data) {
 		List l = new ArrayList();
 		for(Object obj:data){
