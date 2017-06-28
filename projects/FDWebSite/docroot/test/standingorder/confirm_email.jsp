@@ -90,9 +90,12 @@
 				mail.setHtmlEmail( false );
 			}
 
-			MailerGatewaySB mailer = mailerHome.create();
-			mailer.enqueueEmail( mail );
-			
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
+				FDECommerceService.getInstance().enqueueEmail(email);
+			} else {
+				MailerGatewaySB mailer = mailerHome.create();
+				mailer.enqueueEmail( mail );
+			}
 			emailSent = true;
 		}
 	}

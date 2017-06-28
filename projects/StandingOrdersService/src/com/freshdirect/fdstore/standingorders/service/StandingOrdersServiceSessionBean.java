@@ -21,6 +21,7 @@ import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.coremetrics.mobileanalytics.CreateCMRequest;
@@ -41,6 +42,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
+import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.webapp.util.StandingOrderUtil;
 
 
@@ -284,9 +286,14 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		lookupMailerHome();
 		try {
 			XMLEmailI mail = FDEmailFactory.getInstance().createStandingOrderErrorEmail( customerInfo, so );		
-			MailerGatewaySB mailer;
-			mailer = mailerHome.create();
-			mailer.enqueueEmail( mail );
+
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
+				FDECommerceService.getInstance().enqueueEmail(mail);
+			} else {
+				MailerGatewaySB mailer;
+				mailer = mailerHome.create();
+				mailer.enqueueEmail( mail );
+			}
 			return true;
 		} catch ( RemoteException e ) {
 			invalidateMailerHome();

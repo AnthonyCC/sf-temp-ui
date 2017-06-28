@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -132,6 +131,7 @@ import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -255,10 +255,10 @@ import com.freshdirect.payment.gateway.GatewayType;
 import com.freshdirect.payment.gateway.Request;
 import com.freshdirect.payment.gateway.Response;
 import com.freshdirect.payment.gateway.impl.GatewayFactory;
+import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.referral.extole.RafUtil;
 import com.freshdirect.referral.extole.model.FDRafTransModel;
 import com.freshdirect.sap.command.SapCartonInfoForSale;
-import com.freshdirect.sap.command.SapCreateSalesOrder;
 import com.freshdirect.sap.ejb.SapException;
 import com.freshdirect.sms.SmsPrefereceFlag;
 import com.freshdirect.temails.TEmailRuntimeException;
@@ -4155,8 +4155,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public void doEmail(XMLEmailI email) throws FDResourceException {
 		try {
-			MailerGatewaySB mailer = getMailerHome().create();
-			mailer.enqueueEmail(email);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
+				FDECommerceService.getInstance().enqueueEmail(email);
+			} else {
+				MailerGatewaySB mailer = getMailerHome().create();
+				mailer.enqueueEmail(email);
+			}
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce, "Cannot create MailerGatewayBean");
 		} catch (RemoteException re) {
@@ -6526,8 +6530,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public void doEmail(FTLEmailI email) throws FDResourceException {
 		try {
-			MailerGatewaySB mailer = getMailerHome().create();
-			mailer.enqueueEmail(email);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
+				FDECommerceService.getInstance().enqueueEmail(email);
+			} else {
+				MailerGatewaySB mailer = getMailerHome().create();
+				mailer.enqueueEmail(email);
+			}
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce, "Cannot create MailerGatewayBean");
 		} catch (RemoteException re) {
@@ -8245,7 +8253,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			fdInfo.setEmailAddress(erpInfo.getEmail());
 			fdInfo.setGoGreen(erpInfo.isGoGreen());
 			mailBean = this.getMailerGatewayHome().create();
-			mailBean.enqueueEmail(FDEmailFactory.getInstance().createFinalAmountEmail(fdInfo, fdOrder));
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
+				FDECommerceService.getInstance().enqueueEmail(FDEmailFactory.getInstance().createFinalAmountEmail(fdInfo, fdOrder));
+			} else {
+				mailBean.enqueueEmail(FDEmailFactory.getInstance().createFinalAmountEmail(fdInfo, fdOrder));
+			}
 			reSendInvoiceEmail=true;
 		
 		}

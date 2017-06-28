@@ -24,7 +24,6 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.cms.application.UserI;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.context.MasqueradeContext;
@@ -98,6 +97,7 @@ import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
@@ -2470,7 +2470,11 @@ public class FDCustomerManager {
 					+ email.getFromAddress().getName()
 					+ " XSL Path: "
 					+ email.getXslPath());
-			mailer.enqueueEmail(email);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
+				FDECommerceService.getInstance().enqueueEmail(email);
+			} else {
+				mailer.enqueueEmail(email);
+			}
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce, "Cannot create MailerGatewaySB");
 		} catch (RemoteException re) {
@@ -2482,7 +2486,6 @@ public class FDCustomerManager {
 		lookupMailerGatewayHome();
 		lookupManagerHome();
 		try {
-			MailerGatewaySB mailer = mailerHome.create();
 			XMLEmailI email = null;
 			if(ContentFactory.getInstance() != null && ContentFactory.getInstance().getStore() !=  null && 
 					ContentFactory.getInstance().getStore().getContentName() != null && !ContentFactory.getInstance().getStore().getContentName().equals("FDX")) {
@@ -2506,7 +2509,12 @@ public class FDCustomerManager {
 					email = FDEmailFactory.getInstance().createContactServiceEmail(customer, subject, body);
 				}
 			}
-			mailer.enqueueEmail(email);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
+				FDECommerceService.getInstance().enqueueEmail(email);
+			} else {
+				MailerGatewaySB mailer = mailerHome.create();
+				mailer.enqueueEmail(email);
+			}
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce, "Cannot create MailerGatewaySB");
 		} catch (RemoteException re) {
@@ -2518,10 +2526,14 @@ public class FDCustomerManager {
 		lookupMailerGatewayHome();
 		lookupManagerHome();
 		try {
-			MailerGatewaySB mailer = mailerHome.create();
 			XMLEmailI email = null;
 			email = FDEmailFactory.getInstance().createCrmCCSecurityEmail(emailVO);
-			mailer.enqueueEmail(email);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
+				FDECommerceService.getInstance().enqueueEmail(email);
+			} else {
+				MailerGatewaySB mailer = mailerHome.create();
+				mailer.enqueueEmail(email);
+			}
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce, "Cannot create MailerGatewaySB");
 		} catch (RemoteException re) {
@@ -4461,8 +4473,12 @@ public class FDCustomerManager {
 		lookupMailerGatewayHome();
 		lookupManagerHome();
 		try {
-			MailerGatewaySB mailer = mailerHome.create();
-			mailer.enqueueEmail(email);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
+				FDECommerceService.getInstance().enqueueEmail(email);
+			} else {
+				MailerGatewaySB mailer = mailerHome.create();
+				mailer.enqueueEmail(email);
+			}
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce, "Cannot create MailerGatewaySB");
 		} catch (RemoteException re) {
