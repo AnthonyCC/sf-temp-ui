@@ -14,16 +14,16 @@ public class GASignupDataService {
         return INSTANCE;
     }
 
-    public GASignupData populateSignupData() {
+    public GASignupData populateSignupData(Boolean signupSuccess) {
         GASignupData data = new GASignupData();
 
-        // if (loginSuccess != null) {
-        // if (loginSuccess) {
-        // data.setLoginAttempt("success");
-        // } else {
-        // data.setLoginAttempt("fail");
-        // }
-        // }
+        if (signupSuccess != null) {
+            if (signupSuccess) {
+                data.setSignupAttempt("success");
+            } else {
+                data.setSignupAttempt("fail");
+            }
+        }
 
         return data;
 

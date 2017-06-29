@@ -31,17 +31,24 @@ public class GoogleAnalyticsPotatoTag extends SimpleTagSupport {
         HttpServletRequest request = (HttpServletRequest) context.getRequest();
         HttpSession session = context.getSession();
         FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+
         String loginType = (String) session.getAttribute(SessionName.SOCIAL_LOGIN_PROVIDER);
         session.removeAttribute(SessionName.SOCIAL_LOGIN_PROVIDER);
+
         Boolean loginSuccess = (Boolean) session.getAttribute(SessionName.LOGIN_SUCCESS);
         if (loginSuccess != null && !loginSuccess) {
             session.removeAttribute(SessionName.LOGIN_SUCCESS);
         }
 
+        Boolean signupSuccess = (Boolean) session.getAttribute(SessionName.SIGNUP_SUCCESS);
+        if (signupSuccess != null && !signupSuccess) {
+            session.removeAttribute(SessionName.SIGNUP_SUCCESS);
+        }
+
         try {
             GAPageTypeDistinguisher distinguisher = parseParameters(request);
             context.setAttribute(name,
-                    SoyTemplateEngine.convertToMap(GoogleAnalyticsDataService.defaultService().populateBasicGAData(user, loginType, loginSuccess, distinguisher)));
+                    SoyTemplateEngine.convertToMap(GoogleAnalyticsDataService.defaultService().populateBasicGAData(user, loginType, loginSuccess, signupSuccess, distinguisher)));
 
         } catch (FDResourceException e) {
             LOGGER.error("this is the exception: ", e);

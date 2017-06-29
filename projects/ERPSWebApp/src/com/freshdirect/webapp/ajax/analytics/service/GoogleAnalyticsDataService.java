@@ -24,12 +24,13 @@ public class GoogleAnalyticsDataService {
         return INSTANCE;
     }
 
-    public GoogleAnalyticsData populateBasicGAData(FDSessionUser user, String loginType, Boolean loginSuccess, GAPageTypeDistinguisher distinguisher) throws FDResourceException {
+    public GoogleAnalyticsData populateBasicGAData(FDSessionUser user, String loginType, Boolean loginSuccess, Boolean signupSuccess, GAPageTypeDistinguisher distinguisher)
+            throws FDResourceException {
         GoogleAnalyticsData data = new GoogleAnalyticsData();
         data.getGoogleAnalyticsData().put("customer", GACustomerDataService.defaultService().populateCustomerData(user, loginType));
         data.getGoogleAnalyticsData().put("pageType", GAPageTypeDataService.defaultService().populatePageTypeData(distinguisher));
         data.getGoogleAnalyticsData().put("login", GALoginDataService.defaultService().populateLoginData(loginSuccess));
-        data.getGoogleAnalyticsData().put("signup", GASignupDataService.defaultService().populateSignupData());
+        data.getGoogleAnalyticsData().put("signup", GASignupDataService.defaultService().populateSignupData(signupSuccess));
         return data;
     }
 

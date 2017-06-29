@@ -451,9 +451,9 @@
 						</script>				
 					<% }
 				} %>
-		</fd:SiteAccessController>
+		</fd:SiteAccessController> 
+	<%@ include file="/common/template/includes/i_gtm_datalayer.jsp" %>
 	</tmpl:put>
-	
 	<tmpl:put name='jsmodules' direct='true'><%@ include file="/common/template/includes/i_jsmodules.jspf" %></tmpl:put>
 		
 	<tmpl:put name='extraJsFooter' direct='true'>
