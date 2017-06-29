@@ -12,7 +12,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
@@ -507,7 +506,7 @@ public class RegistrationController extends BaseController implements SystemMess
 		responseMessage.setItemsInCartCount(user
 				.getItemsInCartCount());
         responseMessage.setOrderCount(user.getOrderHistory().getValidOrderCount());
-        responseMessage.setFdxOrderCount(user.getOrderHistory().getValidOrderCount(EnumDeliveryType.FDX));
+        responseMessage.setFdxOrderCount(user.getOrderHistory().getValidOrderCount(EnumEStoreId.FDX));
 		responseMessage.setOrders(java.util.Collections.<OrderHistory.Order>emptyList());
 		responseMessage.setFdUserId(user.getPrimaryKey());
 

@@ -630,6 +630,7 @@ public abstract class BaseController extends AbstractController implements Messa
         responseMessage.setItemsInCartCount(user
                 .getItemsInCartCount());
         responseMessage.setOrderCount(history.getValidOrderCount());
+        responseMessage.setFdxOrderCount(history.getValidOrderCount(EnumEStoreId.FDX));
         responseMessage.setFdUserId(user.getPrimaryKey());
 
         // DOOR3 FD-iPad FDIP-474

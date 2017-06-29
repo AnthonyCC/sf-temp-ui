@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.fdstore.EnumEStoreId;
@@ -32,8 +31,8 @@ public class OrderHistory {
         return orderHistory.getValidOrderCount();
     }
 
-    public int getValidOrderCount(EnumDeliveryType deliveryType) {
-        return orderHistory.getValidOrderCount(deliveryType);
+    public int getValidOrderCount(EnumEStoreId storeId) {
+        return orderHistory.getValidOrderCount(storeId);
     }
 
     public List<OrderInfo> getRegularOrderInfos() {
