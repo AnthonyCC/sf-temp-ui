@@ -124,10 +124,10 @@ request.setAttribute("noyui", true);
 				/* these use OAS pages like www.freshdirect.com/mobileweb/[PAGENAME] */
 
 			   	if (FDStoreProperties.isAdServerEnabled()) {
-					%><div id="OAS_HPMob01" class="oas-cnt home-page-banner">
+					%><div id="oas_HPMob01" class="oas-cnt home-page-banner">
 			  			<script type="text/javascript">OAS_AD('HPMob01');</script>
 			  		</div><%
-					%><div id="OAS_HPMob02" class="oas-cnt home-page-banner">
+					%><div id="oas_HPMob02" class="oas-cnt home-page-banner">
 		  				<script type="text/javascript">OAS_AD('HPMob02');</script>
 		  			</div><%
 			  	}
@@ -160,11 +160,11 @@ request.setAttribute("noyui", true);
 						</div>
 				    </a>
 				    <% bannerIndex++; %>
-				    
+
 				    <% if (bannerIndex == 5) { %>
 						<%
 						   	if (FDStoreProperties.isAdServerEnabled()) {
-								%><div id="OAS_HPMob03" class="oas-cnt home-page-banner">
+								%><div id="oas_HPMob03" class="oas-cnt home-page-banner">
 						  			<script type="text/javascript">OAS_AD('HPMob03');</script>
 						  		</div><%
 						  	}
@@ -174,7 +174,7 @@ request.setAttribute("noyui", true);
 				<% if (bannerIndex < 5) { /* display if there's not enough banners */ %>
 					<%
 					   	if (FDStoreProperties.isAdServerEnabled()) {
-							%><div id="OAS_HPMob03" class="oas-cnt home-page-banner">
+							%><div id="oas_HPMob03" class="oas-cnt home-page-banner">
 					  			<script type="text/javascript">OAS_AD('HPMob03');</script>
 					  		</div><%
 					  	}
@@ -182,7 +182,7 @@ request.setAttribute("noyui", true);
 			    <% } %>
 				<%
 				   	if (FDStoreProperties.isAdServerEnabled()) {
-						%><div id="OAS_HPMob04" class="oas-cnt home-page-banner">
+						%><div id="oas_HPMob04" class="oas-cnt home-page-banner">
 				  			<script type="text/javascript">OAS_AD('HPMob04');</script>
 				  		</div><%
 				  	}
