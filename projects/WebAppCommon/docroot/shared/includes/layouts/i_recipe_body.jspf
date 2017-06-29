@@ -496,9 +496,9 @@ int prodIdx = 0;
                     <td colspan="3">
                       <% String quant = quantityFormatter.format(orderLine.getQuantity()); %>	
                       <div class="qtyinput">
-                        <a href="javascript:chgQty<%=prodIdx%>(<%= -_productNode.getQuantityIncrement() %>);" class="quantity_minus"><div class="vahidden">Decrease quantity</div></a>
+                        <a href="javascript:chgQty<%=prodIdx%>(<%= -_productNode.getQuantityIncrement() %>);" class="quantity_minus">-<div class="vahidden">Decrease quantity</div></a>
                         <input class="qty" aria-label="quantity" type="text" size="4" name="quantity_<%=prodIdx%>" maxlength="2" value="<%= !"0".equals(quant)?quant:"" %>" onChange="chgQty<%=prodIdx%>(0);" onBlur="pricing<%=prodIdx%>.setQuantity(this.value);"/>
-                        <a href="javascript:chgQty<%=prodIdx%>(<%= _productNode.getQuantityIncrement() %>);" class="quantity_plus"><div class="vahidden">Increase quantity</div></a>
+                        <a href="javascript:chgQty<%=prodIdx%>(<%= _productNode.getQuantityIncrement() %>);" class="quantity_plus">+<div class="vahidden">Increase quantity</div></a>
                       </div>
                     </td>
 
@@ -532,7 +532,7 @@ int prodIdx = 0;
 					<br /><display:FDCoupon coupon="<%= curCoupon %>" contClass="fdCoupon_recip"></display:FDCoupon>
                 </td>
 			
-                <td><input type="text" style="width: 60px" name="estPrice_<%=prodIdx%>" value="" size="6" class="<%=boxStyle%>" onChange="" onFocus="blur()"></td>
+                <td><input type="text" style="width: 60px" aria-label="total" name="estPrice_<%=prodIdx%>" value="" size="6" class="<%=boxStyle%>" onChange="" onFocus="blur()"></td>
                 
                 <script type="text/javascript">
                     function updatePriceField<%=prodIdx%>() {
@@ -602,12 +602,12 @@ int prodIdx = 0;
 		<tr>
 			<td colspan="5" style="padding-top: 1em;">
 			<table width="<%=W_RECIPE_BODY_TOTAL - 150%>" cellspacing="0" cellpadding="0">
-				<tr><td width="25"><input name="requestNotification" type="checkbox" checked value="true" style="padding:0px;" class="text10"></td>
-				<td width="<%=W_RECIPE_BODY_TOTAL - 295%>" class="text10bold"><b>Email a copy of this recipe on the day of delivery!</b></td>
+				<tr><td width="25"><input name="requestNotification" id="requestNotification_field" type="checkbox" checked value="true" style="padding:0px;" class="text10"></td>
+				<td width="<%=W_RECIPE_BODY_TOTAL - 295%>" class="text10bold"><b><label for="requestNotification_field">Email a copy of this recipe on the day of delivery!</label></b></td>
 				<td width="120" align="right"><b><a href="javascript:popup('/help/estimated_price.jsp','small')">Estimated</a> Total:&nbsp;&nbsp;</b></td></tr>
 			</table>
 			</td>
-			<td colspan="4" style="padding-top: 1em;"><input type="text" name="total" value="" size="6" onChange="" onFocus="blur()" style="width:60px;" class="text11"></td>
+			<td colspan="4" style="padding-top: 1em;"><input aria-label="estimated total" type="text" name="total" value="" size="6" onChange="" onFocus="blur()" style="width:60px;" class="text11"></td>
 		</tr>
 		<tr>
 			<td colspan="9">

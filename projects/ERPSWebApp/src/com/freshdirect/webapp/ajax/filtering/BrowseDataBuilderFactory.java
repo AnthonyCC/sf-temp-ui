@@ -15,15 +15,12 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.CategorySectionModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
-import com.freshdirect.fdstore.content.FilteringComparatorUtil;
 import com.freshdirect.fdstore.content.FilteringProductItem;
-import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.Html;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.ProductContainer;
@@ -43,7 +40,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.Recommendations;
-import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.ajax.browse.SearchPageType;
 import com.freshdirect.webapp.ajax.browse.data.BasicData;
@@ -65,13 +61,12 @@ import com.freshdirect.webapp.ajax.browse.data.SectionData;
 import com.freshdirect.webapp.ajax.browse.data.SelectableData;
 import com.freshdirect.webapp.ajax.browse.data.SortDropDownData;
 import com.freshdirect.webapp.ajax.browse.data.SortOptionData;
+import com.freshdirect.webapp.ajax.browse.service.CarouselService;
 import com.freshdirect.webapp.ajax.data.CMSModelToSoyDataConverter;
-import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.globalnav.data.DepartmentData;
 import com.freshdirect.webapp.globalnav.data.SuperDepartmentData;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
-import com.freshdirect.webapp.util.FDURLUtil;
 import com.freshdirect.webapp.util.MediaUtils;
 import com.freshdirect.webapp.util.ProductRecommenderUtil;
 
@@ -160,7 +155,8 @@ public class BrowseDataBuilderFactory {
 			try { //session is null because saving SMART_STORE_PREV_RECOMMENDATIONS isn't necessary here
 				ValueHolder<Variant> out = new ValueHolder<Variant>();
 				List<ProductModel> recommendedItems = ProductRecommenderUtil.getAggregatedSuperDepartmentFeaturedRecommenderProducts(superDepartmentModel, null, out);
-				data.getCarousels().setCarousel1(createCarouselData(null, superDepartmentModel.getSdFeaturedRecommenderTitle(), recommendedItems, user, EnumEventSource.SDFR.getName(), out.isSet() ? out.getValue().getId() : null ));
+                data.getCarousels().setCarousel1(CarouselService.defaultService().createCarouselData(null, superDepartmentModel.getSdFeaturedRecommenderTitle(), recommendedItems,
+                        user, EnumEventSource.SDFR.getName(), out.isSet() ? out.getValue().getId() : null));
 			} catch (FDResourceException e) {
 				LOG.error("recommendation failed", e);
 			}
@@ -261,7 +257,8 @@ public class BrowseDataBuilderFactory {
 			try {  //session is null because saving SMART_STORE_PREV_RECOMMENDATIONS isn't necessary here
 				ValueHolder<Variant> out = new ValueHolder<Variant>();
 				List<ProductModel> recommendedItems = ProductRecommenderUtil.getFeaturedRecommenderProducts(department, user, null, out);
-				data.getCarousels().setCarousel1(createCarouselData(null, department.getFeaturedRecommenderTitle(), recommendedItems, user, EnumEventSource.DFR.getName(), out.isSet() ? out.getValue().getId() : null ));
+                data.getCarousels().setCarousel1(CarouselService.defaultService().createCarouselData(null, department.getFeaturedRecommenderTitle(), recommendedItems, user,
+                        EnumEventSource.DFR.getName(), out.isSet() ? out.getValue().getId() : null));
 			} catch (FDResourceException e) {
 				LOG.error("recommendation failed", e);
 			}
@@ -335,7 +332,8 @@ public class BrowseDataBuilderFactory {
 						List<ProductModel> products = recommendations.getAllProducts();
 						
 						if (products.size()>0 && !cat.isDisableCategoryYmalRecommender()){
-							data.getCarousels().setCarousel1(createCarouselData(null, "You May Also Like", products, user, EnumEventSource.CSR.getName(), recommendations.getVariant().getId() ));
+                            data.getCarousels().setCarousel1(CarouselService.defaultService().createCarouselData(null, "You May Also Like", products, user,
+                                    EnumEventSource.CSR.getName(), recommendations.getVariant().getId()));
 						}
 					} catch (FDResourceException e) {
 						LOG.error("recommendation failed",e);
@@ -724,47 +722,13 @@ public class BrowseDataBuilderFactory {
 	}
 	
 	private CarouselData createCarouselData(String id, String name, List<ProductModel> products, FDSessionUser user, String cmEventSource){
-		return createCarouselData(id, name, products, user, cmEventSource, null);
+		return CarouselService.defaultService().createCarouselData(id, name, products, user, cmEventSource, null);
 	}
-	
-	private CarouselData createCarouselData(String id, String name, List<ProductModel> products, FDSessionUser user, String cmEventSource, String variantId){
 
-		if (products.size()==0){
-			return null; //should not display empty carousel
-		}
-		
-		CarouselData carousel = new CarouselData();
-		carousel.setId(id);
-		carousel.setName(name);
-		carousel.setCmEventSource(cmEventSource);
-		
-		List<ProductData> productDatas = new ArrayList<ProductData>();
-		for (ProductModel product : products){
-			try {
-				ProductData productData = ProductDetailPopulator.createProductData(user, product);
-				productData = ProductDetailPopulator.populateBrowseRecommendation(user, productData, product);
-				if (variantId != null) {
-					productData.setVariantId(variantId);
-					productData.setProductPageUrl( FDURLUtil.getNewProductURI(product, variantId) );
-				}
-				productDatas.add(productData);
-			} catch (FDResourceException e) {
-				LOG.error("failed to create ProductData", e);
-			} catch (FDSkuNotFoundException e) {
-				LOG.error("failed to create ProductData", e);
-			} catch (HttpErrorResponse e) {
-				LOG.error("failed to create ProductData", e);
-			}
-		}
-		carousel.setProducts(productDatas);
-		return carousel;
-	}
-	
 	private <T extends Collection<?>> T checkEmpty(T col){
 		return col.size()>0 ? col : null;
 	}
-	
-	
+
 
     /**
      * @param sorters
@@ -882,15 +846,6 @@ public class BrowseDataBuilderFactory {
 		}
 	}
 
-	@SuppressWarnings("unused")
-	private static void logSortResult(BrowseDataContext data, FDUserI user){
-		List<FilteringSortingItem<ProductModel>> items = new ArrayList<FilteringSortingItem<ProductModel>>();
-		for (FilteringProductItem p : data.getSectionContexts().get(0).getProductItems()){
-			items.add(p.getSearchResult());
-		}
-		FilteringComparatorUtil.logSortResult(items, user);
-	}
-	
 	private List<SortOptionModel> getSortersForCurrentFlow(BrowseDataContext data, CmsFilteringNavigator nav){
 		List<SortOptionModel> sorters = null;
 		
@@ -944,7 +899,8 @@ public class BrowseDataBuilderFactory {
 				List<ProductModel> products = recommendations.getAllProducts();
 				
 				if (products.size()>0 && !disableCategoryYmalRecommender){
-					browseData.getCarousels().setCarousel1(createCarouselData(null, "You Might Also Like", products, user, "", recommendations.getVariant().getId() ));
+                    browseData.getCarousels().setCarousel1(
+                            CarouselService.defaultService().createCarouselData(null, "You Might Also Like", products, user, "", recommendations.getVariant().getId()));
 				}
 			} catch (FDResourceException e) {
 				LOG.error("recommendation failed",e);
@@ -978,7 +934,8 @@ public class BrowseDataBuilderFactory {
 	
 					Recommendations recommendations = ProductRecommenderUtil.getSearchPageRecommendations(user, browseData.getSections().getSections().get(0).getProducts().get(0));
 					if (recommendations != null && recommendations.getAllProducts().size() > 0) {
-						browseData.getCarousels().setCarousel1(createCarouselData(null, "You Might Also Like", recommendations.getAllProducts(), user, "", recommendations.getVariant().getId()));
+                            browseData.getCarousels().setCarousel1(CarouselService.defaultService().createCarouselData(null, "You Might Also Like",
+                                    recommendations.getAllProducts(), user, "", recommendations.getVariant().getId()));
 					}
 				}
 				break;
@@ -988,17 +945,23 @@ public class BrowseDataBuilderFactory {
 	        	si.setCurrentNode(ContentFactory.getInstance().getContentNode("gro"));
 				Recommendations groRecommendations = ProductRecommenderUtil.doRecommend(user, EnumSiteFeature.BRAND_NAME_DEALS,si);
 				if (groRecommendations != null && groRecommendations.getAllProducts().size() > 0) {
-					browseData.getCarousels().setCarousel1(createCarouselData(null, groRecommendations.getVariant().getServiceConfig().get("prez_title_gro"), groRecommendations.getAllProducts(), user, "", groRecommendations.getVariant().getId()));
+                        browseData.getCarousels()
+                                .setCarousel1(CarouselService.defaultService().createCarouselData(null, groRecommendations.getVariant().getServiceConfig().get("prez_title_gro"),
+                                        groRecommendations.getAllProducts(), user, "", groRecommendations.getVariant().getId()));
 				}
 	        	si.setCurrentNode(ContentFactory.getInstance().getContentNode("fro"));
 				Recommendations froRecommendations = ProductRecommenderUtil.doRecommend(user, EnumSiteFeature.BRAND_NAME_DEALS,si);
 				if (froRecommendations != null && froRecommendations.getAllProducts().size() > 0) {
-					browseData.getCarousels().setCarousel2(createCarouselData(null, froRecommendations.getVariant().getServiceConfig().get("prez_title_fro"), froRecommendations.getAllProducts(), user, "", froRecommendations.getVariant().getId()));
+                        browseData.getCarousels()
+                                .setCarousel2(CarouselService.defaultService().createCarouselData(null, froRecommendations.getVariant().getServiceConfig().get("prez_title_fro"),
+                                        froRecommendations.getAllProducts(), user, "", froRecommendations.getVariant().getId()));
 				}
 	        	si.setCurrentNode(ContentFactory.getInstance().getContentNode("dai"));
 				Recommendations daiRecommendations = ProductRecommenderUtil.doRecommend(user, EnumSiteFeature.BRAND_NAME_DEALS,si);
 				if (daiRecommendations != null && daiRecommendations.getAllProducts().size() > 0) {
-					browseData.getCarousels().setCarousel3(createCarouselData(null, daiRecommendations.getVariant().getServiceConfig().get("prez_title_dai"), daiRecommendations.getAllProducts(), user, "", daiRecommendations.getVariant().getId()));
+                        browseData.getCarousels()
+                                .setCarousel3(CarouselService.defaultService().createCarouselData(null, daiRecommendations.getVariant().getServiceConfig().get("prez_title_dai"),
+                                        daiRecommendations.getAllProducts(), user, "", daiRecommendations.getVariant().getId()));
 				}
 				break;
 				

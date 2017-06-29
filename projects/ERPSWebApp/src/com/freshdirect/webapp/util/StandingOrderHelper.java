@@ -620,9 +620,11 @@ public class StandingOrderHelper {
 		map.put("frequencyDesc", so.getFullFrequencyDescription());
 		int productCnt = 0;
 		double amount=0.0;
+		double subtotal=0.0;
 		//TODO : need to work on calculating total amount
 		if(!isUpcomingDelivery){
-				productCnt= getNoOfItemsForSoSettings(so);	
+				productCnt= getNoOfItemsForSoSettings(so);
+				subtotal=getSubTotalAmountForSoSettings(so);
 				amount=getTotalAmountForSoSettings(so);
 		}else{
 			productCnt= getNoOfItemsForUpcomingDelivery(so);	
@@ -630,6 +632,7 @@ public class StandingOrderHelper {
 			map.put("orderId", so.getUpcomingDelivery().getErpSalesId());
 		}
 		map.put("noOfitems", productCnt );
+		map.put("subtotal", subtotal);
 		map.put("amount", amount);
 		map.put("activated", "Y".equals(so.getActivate())?true:false);
 		map.put("readyForActivation",populateResponseData(so, false).isActivate());
@@ -638,7 +641,7 @@ public class StandingOrderHelper {
 		if(null!=so.getLastError()){
 			map.put("lastError", so.getLastError().name());
 		} else {
-			String lastError= isValidStandingOrder(so, false) && amount<ErpServicesProperties.getStandingOrderSoftLimit() ? "MINORDER":null;
+			String lastError= isValidStandingOrder(so, false) && subtotal<ErpServicesProperties.getStandingOrderSoftLimit() ? "MINORDER":null;
 			if("MINORDER".equals(lastError)){
 				map.put("errorHeader", FDStandingOrder.ErrorCode.MINORDER.getErrorHeader());
 				map.put("errorDetails",FDStandingOrder.ErrorCode.MINORDER.getErrorDetail(null));
@@ -683,10 +686,19 @@ public class StandingOrderHelper {
 		List<FDCartLineI> cartLineIs = so.getStandingOrderCart().getOrderLines();
 		if (null != cartLineIs) {
 		 so.getStandingOrderCart().refreshAll(true);
-		 amount=so.getStandingOrderCart().getTotal();
-		 amount=amount+so.getTipAmount();
+		 amount = so.getStandingOrderCart().getTotal();
+		 amount = amount+so.getTipAmount();
 		}
 		return amount;
+	}
+	public static double getSubTotalAmountForSoSettings(FDStandingOrder so) throws FDResourceException, FDInvalidConfigurationException {
+		double subtotal = 0.0;
+		List<FDCartLineI> cartLineIs = so.getStandingOrderCart().getOrderLines();
+		if (null != cartLineIs) {
+		 so.getStandingOrderCart().refreshAll(true);
+		 subtotal=so.getStandingOrderCart().getTotal();		 
+		}
+		return subtotal;
 	}
 
 	private static Object getModifyDeliveryDate( Date deliveryDate ) {
@@ -773,6 +785,17 @@ public class StandingOrderHelper {
 		return false;
 	}
 
+	
+	public static Map<String,Object> getValidSO3DataForProducts(FDUserI user){
+		Map<String,Object> validSO3Data = user.getValidSO3Data();
+		if(user.isRefreshSO3Settings()){
+			validSO3Data = getAllSoData(user,true,false);
+			user.setValidSO3Data(validSO3Data);
+			user.setRefreshSO3Settings(false);
+		}
+		
+		return validSO3Data;
+	}
 	/* get a single Hashmap has all data that soy files need
 	 * can be used directly, returns "settingsData":{DATA} */
 	public static HashMap<String,Object> getAllSoData(FDUserI user, boolean isAddtoProduct, boolean isModifiedInfo) {
@@ -786,6 +809,7 @@ public class StandingOrderHelper {
 		soSettings.put("soHardLimitDisplay", StandingOrderHelper.formatDecimalPrice(ErpServicesProperties.getStandingOrderHardLimit()));
 		soSettings.put("soSoftLimit", (int)(ErpServicesProperties.getStandingOrderSoftLimit()));
 		soSettings.put("cartOverlayFirstTime", setCartOverlayFirstTime(user).isSoCartOverlayFirstTime());
+		soSettings.put("newSoFeature", setNewSoFeature(user).isSoFeatureOverlay());
 		allSoData.put("soSettings", soSettings);
 		
 		/* these are the so's themselves */
@@ -794,7 +818,7 @@ public class StandingOrderHelper {
 
 		try {
 			if(null != user.getIdentity()){
-				standingOrders = isAddtoProduct?getValidSO3(user): FDStandingOrdersManager.getInstance().loadCustomerNewStandingOrders(user.getIdentity());
+				standingOrders = isAddtoProduct?getValidSO3(user): getAllSO3(user);
 					soData = StandingOrderHelper.convertStandingOrderToSoy(standingOrders, isModifiedInfo, false);
 			    if(null!=standingOrders && !standingOrders.isEmpty()){
 					for(FDStandingOrder fdStandingOrder:standingOrders){
@@ -862,12 +886,23 @@ public class StandingOrderHelper {
 		}
 	}
 	protected static Collection<FDStandingOrder> getValidSO3(FDUserI user) throws FDResourceException, FDInvalidConfigurationException {
-		if(user.isRefreshValidSO3()){
-			user.setValidSO3(FDStandingOrdersManager.getInstance().getValidStandingOrder(user.getIdentity()));
-			user.setRefreshValidSO3(false);
+		if(user.isRefreshSO3()){
+			refreshSO3(user);
 		}
-
 		return user.getValidSO3();
+	}
+
+	private static void refreshSO3(FDUserI user) throws FDResourceException, FDInvalidConfigurationException {
+		user.setValidSO3(FDStandingOrdersManager.getInstance().getValidStandingOrder(user.getIdentity()));
+		user.setAllSO3(FDStandingOrdersManager.getInstance().loadCustomerNewStandingOrders(user.getIdentity()));
+		user.setRefreshSO3(false);
+	}
+	
+	protected static Collection<FDStandingOrder> getAllSO3(FDUserI user) throws FDResourceException, FDInvalidConfigurationException {
+		if(user.isRefreshSO3()){
+			refreshSO3(user);
+		}
+		return user.getAllSO3();
 	}
 
 	public static boolean isValidStandingOrder(FDUserI user) {
@@ -891,7 +926,7 @@ public class StandingOrderHelper {
 				orderResponseData.setId(so.getId());
 				if (isPdp) {
 					orderResponseData.setProductCount(getNoOfItemsForSoSettings(so) + " items");
-					orderResponseData.setAmount(getTotalAmountForSoSettings(so));
+					orderResponseData.setAmount(getSubTotalAmountForSoSettings(so));
 					if (orderResponseData.getAmount() <= ErpServicesProperties.getStandingOrderSoftLimit()) {
 						orderResponseData.setMessage(" Add $"
 								+ StandingOrderHelper.formatDecimalPrice((ErpServicesProperties.getStandingOrderSoftLimit() - orderResponseData.getAmount()))
@@ -906,7 +941,7 @@ public class StandingOrderHelper {
 					}
 				} else {
 					if (isValidStandingOrder(so,false) && Calendar.getInstance().getTime().before(so.getCutOffDeliveryDateTime())) {
-						if (getTotalAmountForSoSettings(so) >= ErpServicesProperties.getStandingOrderSoftLimit()) {
+						if (getSubTotalAmountForSoSettings(so) >= ErpServicesProperties.getStandingOrderSoftLimit()) {
 							orderResponseData.setActivate(isSOActivated(so)?false:true);
 						} else {
 							orderResponseData
@@ -1205,11 +1240,27 @@ private static String convert(Date time) {
 				user.setSoCartOverlayFirstTime(cusotmerInfoModel.getSoCartOverlayFirstTime()!=null?
 						("N".equalsIgnoreCase(cusotmerInfoModel.getSoCartOverlayFirstTime())?false:true):true);
 				user.setRefreshSoCartOverlay(false);	
-			}
+				}
 			}
 		} catch (Exception e) {
 			LOGGER.info("while setting the Cart Overlay FirstTime "+ e);
-		}
+			}
 		return user;
-		}
+	}
+	
+	public static FDUserI setNewSoFeature(FDUserI user){
+		try{
+			if(user!=null && user.isNewSO3Enabled() && user.isRefreshNewSoFeature() && null != user.getIdentity() ){
+				ErpCustomerInfoModel cusotmerInfoModel = FDCustomerFactory.getErpCustomer(user.getIdentity()).getCustomerInfo();
+				if(cusotmerInfoModel!=null){
+					user.setSoFeatureOverlay(cusotmerInfoModel.getSoFeatureOverlay()!=null?
+							("N".equalsIgnoreCase(cusotmerInfoModel.getSoFeatureOverlay())?false:true):true);
+					user.setRefreshNewSoFeature(false);	
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.info("while setting the New SO Settings Overlay FirstTime "+ e);
+			}
+		return user;
+	}
 }

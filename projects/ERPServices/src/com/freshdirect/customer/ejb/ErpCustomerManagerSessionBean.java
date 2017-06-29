@@ -854,7 +854,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	/**
 	 * @see ErpCustomerManagerSB#checkAvailability(PrimaryKey, ErpCreateOrderModel, long)
 	 */
-	public Map<String, List<ErpInventoryModel>> checkAvailability(PrimaryKey erpCustomerPk, ErpCreateOrderModel order, long timeout) {
+	public Map<String, List<ErpInventoryModel>> checkAvailability(PrimaryKey erpCustomerPk, ErpCreateOrderModel order, long timeout,String isFromLogin) {
 		SapOrderAdapter sapOrder = this.adaptOrder(erpCustomerPk, order, null);
 
 		try {

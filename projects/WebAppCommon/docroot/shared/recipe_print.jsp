@@ -61,11 +61,14 @@ MediaI recipeIngrdMedia = recipe.getIngredientsMedia();
 MediaI recipePrepdMedia = recipe.getPreparationMedia();
 MediaI recipeCpyrghtMedia = recipe.getCopyrightMedia();
 
-	
+String title = "FreshDirect - " + recipe.getName();
 %>
 
 <tmpl:insert template='/common/template/print_pop.jsp'>
-    <tmpl:put name='title' direct='true'>FreshDirect - <%= recipe.getName() %></tmpl:put>
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="<%= title %>"/>
+    </tmpl:put>
+    <tmpl:put name='title' direct='true'><%= title %></tmpl:put>
     <tmpl:put name='content' direct='true'>
 		<table cellpadding="0" cellspacing="0" border="0" width="600">
 			<tr valign="top">

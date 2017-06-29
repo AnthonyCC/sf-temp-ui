@@ -34,7 +34,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
-import com.freshdirect.logistics.delivery.model.EnumZipCheckResponses;
 import com.freshdirect.webapp.action.Action;
 import com.freshdirect.webapp.action.HttpContext;
 import com.freshdirect.webapp.action.fdstore.RegistrationAction;
@@ -158,7 +157,8 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 	}
 
 	/** keep in sync with CheckLoginStatusTag.createUser(String zipCode)*/
-	public int doStartTag() throws JspException {
+	@Override
+    public int doStartTag() throws JspException {
 		ActionResult result = new ActionResult();
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 		String application = (String) request.getSession().getAttribute(SessionName.APPLICATION);
@@ -459,39 +459,45 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					ra.validateSocialSignupEmail();
 
 					
-					if (result.isSuccess()) {
-						
-							// set default address for express registration user
-							if(this.address == null){
-								address = new AddressModel();  
-								/*address.setAddress1("23-30 borden ave");
-								address.setCity("Long Island City");
-								address.setState("NY");
-								address.setCountry("US");*/
-								address.setZipCode(request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode()));
-							}
-							this.serviceType = EnumServiceType.getEnum(request.getParameter("serviceType"));
-						
-							// Create a user for express registration user
-							if (EnumDeliveryStatus.DELIVER.equals(dlvStatus)) {
-								this.createUser(this.serviceType, availableServices);
-							} else { 
-								this.createUser(((this.serviceType != null) ? this.serviceType : EnumServiceType.PICKUP), availableServices);
-							}		
-							
-														
-							// Delegate to RegistrationAction to register the new user						
-							try {							
-								String res = ra.executeEx();
-								if((Action.SUCCESS).equals(res)) {
-									// "EXPRESS_REGISTRATION_COMPLETE" is used in 'signup_lite.jsp' to return control back to original workflow
-									session.setAttribute("EXPRESS_REGISTRATION_COMPLETE", "true");     					
-								}
-							} catch (Exception ex) {
-								LOGGER.error("Error performing action expresssignup", ex);
-								result.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
-							}																		
-					}
+                    if (result.isSuccess()) {
+
+                        // set default address for express registration user
+                        if (this.address == null) {
+                            address = new AddressModel();
+                            /*
+                             * address.setAddress1("23-30 borden ave"); address.setCity("Long Island City"); address.setState("NY"); address.setCountry("US");
+                             */
+                            address.setZipCode(request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode()));
+                        }
+                        this.serviceType = EnumServiceType.getEnum(request.getParameter("serviceType"));
+
+                        // Create a user for express registration user
+                        if (EnumDeliveryStatus.DELIVER.equals(dlvStatus)) {
+                            this.createUser(this.serviceType, availableServices);
+                        } else {
+                            this.createUser(((this.serviceType != null) ? this.serviceType : EnumServiceType.PICKUP), availableServices);
+                        }
+
+                        // Delegate to RegistrationAction to register the new user
+                        try {
+                            String res = ra.executeEx();
+                            if ((Action.SUCCESS).equals(res)) {
+                                // "EXPRESS_REGISTRATION_COMPLETE" is used in 'signup_lite.jsp' to return control back to original workflow
+                                session.setAttribute("EXPRESS_REGISTRATION_COMPLETE", "true");
+                                session.setAttribute(SessionName.SIGNUP_SUCCESS, true);
+                            } else if (Action.ERROR.equals(res)) {
+                                session.setAttribute(SessionName.SIGNUP_SUCCESS, false);
+                            }
+                        } catch (Exception ex) {
+                            LOGGER.error("Error performing action expresssignup", ex);
+                            result.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
+                            session.setAttribute(SessionName.SIGNUP_SUCCESS, false);
+                        }
+
+                    } else {
+                        session.setAttribute(SessionName.SIGNUP_SUCCESS, false);
+                    }
+
 				}
 				else if ("signupSocialDlvAddr".equalsIgnoreCase(action)) { 
 					HttpSession session = this.pageContext.getSession();

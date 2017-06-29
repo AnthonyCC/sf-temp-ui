@@ -12,7 +12,10 @@
 
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
-<tmpl:put name='title' direct='true'>FreshDirect - Checkout - Age Verification for orders containing alcohol</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Checkout - Age Verification for orders containing alcohol"/>
+  </tmpl:put>
+  <tmpl:put name='title'>FreshDirect - Checkout - Age Verification for orders containing alcohol</tmpl:put>
 <tmpl:put name='content' direct='true'>
 
 <%

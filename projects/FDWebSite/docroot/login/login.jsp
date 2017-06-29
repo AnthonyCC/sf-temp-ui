@@ -43,6 +43,9 @@ String sPage = (request.getParameter("successPage")!=null)?request.getParameter(
 	}
 %>
 <tmpl:insert template='<%=template%>'>
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect - Log In"/>
+    </tmpl:put>
 <tmpl:put name='title' direct='true'>FreshDirect - Log In</tmpl:put>
 <tmpl:put name='content' direct='true'>
 	

@@ -109,7 +109,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 					</div>
 					<div class="locabar-modify-order-container">
 						<div class="locabar-modify-order-container-message"></div>
-						<div><div class="locabar-modify-order-container-header">Modify Order</div><div class="locabar-down-arrow"></div></div>
+						<div class="locabar-modify-order-container-label"><div class="locabar-modify-order-container-header">Modify Order</div><div class="locabar-arrow"></div></div>
 					</div>
 				</div>
 				<div id="locabar_orders" class="posAbs">
@@ -176,14 +176,30 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 	</div></tmpl:put>
 
 <%-- FOODKICK tab --%>
-	<tmpl:put name="tab_fdx"><% if (hasFdxServices && FDStoreProperties.isFdxTabEnabled()) { %><a href="https://www.foodkick.com" class="locabar-tab locabar-tab-fdx-cont"><span class="offscreen">Visit Foodkick Store</span><div class="locabar-tab-fdx"></div></a><% } else { %><!-- --><% } %></tmpl:put>
+	<tmpl:put name="tab_fdx"><% if (hasFdxServices && FDStoreProperties.isFdxTabEnabled()) { %><a href="https://www.foodkick.com" class="locabar-tab locabar-tab-fdx-cont notselected"><span class="offscreen">Visit Foodkick Store</span><div class="locabar-tab-fdx"></div></a><% } else { %><!-- --><% } %></tmpl:put>
+
+<%-- FOODKICK promo content/container --%>
+	<tmpl:put name="fdx_promo">
+		<%-- this is the fdx promo content container --%>
+		<div id="locationbar_fdx_promo" class="">
+			<div class="visWrapper" style="display: none;"><%-- don't remove this, it keeps the content from showing during page load --%>
+				<fd:IncludeMedia name="/media/layout/nav/globalnav/fdx/promo/main.ftl"></fd:IncludeMedia>
+			</div>
+		</div>
+	</tmpl:put>
+
+
+<%-- FRESHDIRECT tab --%>
+	<%-- change boolean to true to make it linked --%>
+	<tmpl:put name="tab_fd"><% if (false) { %><a href="https://www.freshdirect.com" class="locabar-tab locabar-tab-fd-cont"><span class="offscreen">Visit FreshDirect Store</span><div class="locabar-tab-fd"></div></a><% } else { %><div class="locabar-tab locabar-tab-fd-cont"><div class="locabar-tab-fd"></div></div><% } %></tmpl:put>
+
 
 <%-- COS tab --%>
 	<tmpl:put name="tab_cos"><!-- --><%-- PLACEHOLDER, NOT LAUNCHING 20151109 -- <a href="/cos.jsp" class="locabar-tab"><div class="locabar-tab-cos"></div></a>	--%></tmpl:put>
 
 <%-- ZIP/ADDRESS area --%>
 	<%
-		String zipAddDisplayString = "Delivery Information";
+		String zipAddDisplayString = "Delivery Times";
 		boolean isEligibleForPreReservation = false;
 		FDReservation userReservervation = null;
 		SimpleDateFormat dateFormatterNoYear = new SimpleDateFormat("EEE MM/dd");
@@ -195,7 +211,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 		
 	
 		if (user_locationbar_fdx!=null && user_locationbar_fdx.getLevel() != FDUserI.GUEST) {
-			zipAddDisplayString = "View Delivery Timeslots";
+			zipAddDisplayString = "Delivery Times";
 			isEligibleForPreReservation = user_locationbar_fdx.isEligibleForPreReservation();
 			
 			
@@ -216,7 +232,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 			if( disabled == null || !disabled) {
 				%><tmpl:put name="address">
 					<div id="locabar_addresses_choices">
-						<select id="selectAddressList" name="selectAddressList" style="width: 300px;"><%
+						<select id="selectAddressList" aria-label="choose address" name="selectAddressList" style="width: 300px;"><%
 							if(allHomeAddresses.size()>0){%>
 								<optgroup label="Home Delivery">
 									<logic:iterate id="homeAddress" collection="<%=allHomeAddresses%>" type="com.freshdirect.common.address.AddressModel">
@@ -243,7 +259,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 										}
 										%>
 										<option data-class="<%=addressClass%> <%=ifSel_cssClass%>" data-style="background-image: <%=ifSel_CheckImg%>;" <%=ifSelected %> value="<%=homeAddress.getPK().getId()%>">
-											<p class="<%=ifSel_cssClass%>"><%=LocationHandlerTag.formatAddressTextWithZip(homeAddress)%></p>
+											<%=LocationHandlerTag.formatAddressTextWithZip(homeAddress)%>
 										</option>
 									</logic:iterate>
 								</optgroup>
@@ -274,7 +290,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 										}
 										%>
 										<option data-class="<%=addressClass%>" data-style="background-image: <%=ifSel_CheckImg%>;" <%=ifSelected %> value="<%=corporateAddress.getPK().getId()%>">
-											<p class="<%=ifSel_cssClass%>"><%=LocationHandlerTag.formatAddressTextWithZip(corporateAddress)%></p>
+											<%=LocationHandlerTag.formatAddressTextWithZip(corporateAddress)%>
 										</option>
 									</logic:iterate>
 								</optgroup>
@@ -300,9 +316,9 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 									}
 									%>
 									<option data-class="<%=addressClass%>" data-style="background-image: <%=ifSel_CheckImg%>;" <%=ifSelected %> value="DEPOT_<%= pickupDepot.getId() %>">
-										<p class="<%=ifSel_cssClass%>">
+										
 											<%=LocationHandlerTag.formatAddressTextWithZip(pickupDepot.getAddress())%>
-										</p>
+										
 									</option>
 								</logic:iterate>
 							</optgroup>
@@ -312,7 +328,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 					<%
 						/* one last zipAddDisplayString change now that we know selected address type */
 						if (isEligibleForPreReservation && userReservervation == null && "HOME".equals(foundSelectedAddressType)) {
-							zipAddDisplayString = "Make a Reservation";
+							zipAddDisplayString = "Delivery Times";
 						}
 
 					
@@ -320,7 +336,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 							reservationDate = dateFormatterNoYear.format(userReservervation.getStartTime());
 							reservationTime = FDTimeslot.format(userReservervation.getStartTime(), userReservervation.getEndTime());
 							
-							zipAddDisplayString = (reservationDate+" @ "+reservationTime).toUpperCase();
+							zipAddDisplayString = (reservationDate).toUpperCase();
 						}
 					%>
 				</tmpl:put><%
@@ -466,9 +482,9 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 							<% } %>
 						</div>
 
-						<div>
+						<div class="locabar-addresses-addzip-2ndline">
 							<%= zipAddDisplayString %>
-							<div class="locabar-down-arrow"></div>
+							<div class="locabar-arrow"></div>
 						</div>
 					</div>
 				</div>
@@ -598,7 +614,7 @@ if (curHref.indexOf('successPage') === -1 && $jq.QueryString['successPage']) {
 									<%= greetingsString %>
 					            </div>
 					            <div class="locabar-user-action">
-									<%= actionString %><div class="locabar-down-arrow"></div>
+									<%= actionString %><div class="locabar-arrow"></div>
 					            </div>
 							</div>
 						</div>
@@ -610,6 +626,12 @@ if (curHref.indexOf('successPage') === -1 && $jq.QueryString['successPage']) {
 					Map<String, String> folderMap=new LinkedHashMap<String, String>();
 				%>
 				<%@ include file="/shared/template/includes/i_youraccount_links.jspf"%>
+				
+				<%-- USER RECOMMENDERS TEST - also see locationbar_fdx.js
+					<div id="locabar_user_reco_cont" class="user-reco-cont">
+						<div id="locabar_user_reco">test reco</div>
+					</div>
+				--%>
 				<div id="locabar_user" class="locabar_triggers_menu posAbs">
 					<div class="ui-arrow-buffer"></div>
 					<div class="ui-arrow ui-top"></div>
@@ -686,9 +708,9 @@ if (curHref.indexOf('successPage') === -1 && $jq.QueryString['successPage']) {
 								<!-- <div>&nbsp;</div> -->
 								<div class="locabar-popupcart-total">$0.00</div>
 							</div>
-							<div>
+							<div class="locabar-popupcart-label">
 								Cart
-								<div class="locabar-down-arrow"></div>
+								<div class="locabar-arrow"></div>
 							</div>
 						</div>
 					</a>
@@ -717,7 +739,7 @@ if (curHref.indexOf('successPage') === -1 && $jq.QueryString['successPage']) {
 						   	<div class="footer-buttons">
 								<span class="close"></span><br />
 								<a class="cart cssbutton cssbutton-flat" href="/view_cart.jsp">View Cart</a>
-								<a class="checkout cssbutton orange cssbutton-flat" href="/checkout/view_cart.jsp">Checkout</a>
+								<a class="checkout cssbutton orange cssbutton-flat" href="/checkout/view_cart.jsp" fd-login-required>Checkout</a>
 							</div>
 			    		</div>
 					</fd:GetCart>
@@ -736,9 +758,11 @@ if (curHref.indexOf('successPage') === -1 && $jq.QueryString['successPage']) {
 	<%
 	  String standingOrder_uri = request.getRequestURI();
 	  boolean isStandingOrders = (standingOrder_uri.indexOf("/standing_orders.jsp") != -1) ? true : false;
+	  
 	  if(user_locationbar_fdx.isNewSO3Enabled() && !isStandingOrders) {
 		Map<String,Object> errorSOAlert = new HashMap<String,Object>();
-		errorSOAlert.put("soData", StandingOrderHelper.getAllSoData(user_locationbar_fdx, false, false));
+		HashMap<String,Object> soData = StandingOrderHelper.getAllSoData(user_locationbar_fdx, false, false) ;
+		errorSOAlert.put("soData", soData);
 	%>
 	
 	<script>
@@ -759,7 +783,7 @@ if (curHref.indexOf('successPage') === -1 && $jq.QueryString['successPage']) {
 
 	<%
 		Map<String,Object> activateSOAlert = new HashMap<String,Object>();
-		activateSOAlert.put("soData", StandingOrderHelper.getAllSoData(user_locationbar_fdx, false,false));
+		activateSOAlert.put("soData", soData);//StandingOrderHelper.getAllSoData(user_locationbar_fdx, false,false));
 	%>
 	<tmpl:put name="activate_so_alerts">
 		<div id="activatesoalert" class="alerts invisible" data-type="activatesoalert">
@@ -775,11 +799,24 @@ if (curHref.indexOf('successPage') === -1 && $jq.QueryString['successPage']) {
 		</div>
 	</tmpl:put>
 	<% } %>
+	
+<%-- TEST ALERTS
+
+	<tmpl:put name="test_alerts">
+		<div id="testalerts1" class="testalerts alerts invisible" data-type="testalerts1">
+			this is a test alert 1
+		</div>
+		<div id="testalerts2" class="testalerts alerts invisible" data-type="testalerts2">
+			this is a test alert 2
+		</div>
+	</tmpl:put>
+	
+--%>
 </tmpl:insert>
 
 
 <%
 } catch (Exception e) {
-	LOGGER_LOCATIONBAR_FDX.debug("error inlocationbar_fdx.jsp");
+	LOGGER_LOCATIONBAR_FDX.debug("error in locationbar_fdx.jsp "+e);
 	e.printStackTrace();
 }%>

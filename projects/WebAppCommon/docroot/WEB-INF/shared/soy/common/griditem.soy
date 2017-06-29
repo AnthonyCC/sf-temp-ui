@@ -81,7 +81,7 @@
   {param cvPrices:$item.cvPrices /}
   {param configuration:$item.configuration /}
   {param inCartAmount:$item.inCartAmount /}
-  {param productSampleQuantity:$item.productSampleQuantity /}
+  {param maxProductSampleQuantityReached:$item.maxProductSampleQuantityReached /}
   {param customerRating:$item.customerRating /}
   {param customerRatingReviewCount:$item.customerRatingReviewCount /}
   {param expertRating:$item.expertRating /}
@@ -136,6 +136,7 @@
   {param mobWeb:$mobWeb /}
   {param timeToComplete:$item.timeToComplete /}
   {param moduleData:$moduleData /}
+  {param newProduct:$item.newProduct /}
 {/call}
 {/template}
 
@@ -271,7 +272,7 @@
  * @param cvPrices
  * @param? configuration
  * @param inCartAmount
- * @param productSampleQuantity
+ * @param maxProductSampleQuantityReached
  * @param customerRating
  * @param customerRatingReviewCount
  * @param expertRating
@@ -319,15 +320,20 @@
  * @param? mobWeb
  * @param? timeToComplete
  * @param? moduleData
+ * @param? newProduct
  */
 {template .potatoTransactionalGridItem autoescape="false"}
 /* this line return must be here, or there will be tabs in output html, which cause whitespace */
 	{let $atcItemId: $itemId ? $itemId : 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) + ($listId ? '_'+$listId : '') + ($originalLineId ? '_'+$originalLineId : '') /}
-	{let $badge: ($freeSamplePromoProduct and ($cmEventSource=='ps_caraousal' or $cmEventSource=='ps_carousel_view_cart'))?'free':($badge=='free'?'':$badge) /}
+	{let $badge: ($freeSamplePromoProduct)?'free':($badge=='free'?'':$badge) /}
 	{let $isEligibleForStandingOrders: ($soData and $soData.settingsData.soSettings and $soData.settingsData.soSettings.isEligibleForStandingOrders) ? true : false /}
-	<li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and ($cmEventSource=='ps_caraousal' or $cmEventSource=='ps_carousel_view_cart') and $productSampleQuantity >= $quantity.qMax ) ? 'unavailable' : ''} {$discontinued ? 'discontinued' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}{($isEligibleForStandingOrders) ? ' portrait-item-soPreShow' : ''}{($hookLogicBeaconClick) ? ' isHookLogicProduct' :''}" id="{$productId ? $productId : ''}"
+	<li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and $maxProductSampleQuantityReached ) ? 'unavailable' : ''} {$discontinued ? 'discontinued' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}{($isEligibleForStandingOrders) ? ' portrait-item-soPreShow' : ''}{($hookLogicBeaconClick) ? ' isHookLogicProduct' :''}" id="{$productId ? $productId : ''}"
 	data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}"
 	data-cat-id="{$catId ? $catId : ''}" {$replacement ? 'data-replacement-id="'+$replacement.productId+'"': ''}
+  data-in-stock="{$available}"
+  data-price="{$price}"
+  data-new-product="{$newProduct}"
+  data-variant="{$variantId}"
 	{if $hookLogicBeaconClick} data-hooklogic-beacon-click="{$hookLogicBeaconClick}"{/if}
 	{if $hookLogicBeaconImpression} data-hooklogic-beacon-impress="{$hookLogicBeaconImpression}"{/if}
   {if $moduleData and $moduleData.moduleVirtualCategory}data-virtual-category="{$moduleData.moduleVirtualCategory}"{/if}
@@ -511,10 +517,22 @@
 		{if $originalLineId}
 			<input type="hidden" data-component="productData" data-productdata-name="lineId" name="lineId" value="{$originalLineId}" />
 		{/if}
-	</form>
+	</form>	
 	{if not $freeSamplePromoProduct}
-		{if $isEligibleForStandingOrders and length($soData.settingsData.soData) > 0}
-			{call common.soShowBtn /}
+		{if $isEligibleForStandingOrders}
+			{if length($soData.settingsData.soData) > 0}
+				{call common.soShowBtn /}
+			{else}
+				<div class="portrait-item-so-container">
+					<div class="portrait-item-so">
+						<div class="portrait-item-so-recurring">
+							{call common.soRecurring}
+								{param useButton: true /}
+							{/call}
+						</div>
+					</div>
+				</div>
+			{/if}
 		{/if}
 		<div class="portrait-item-atl">
 			<button class="{if $customizePopup and not $showConfig}{if $hasTerms}hidden{/if}fake{/if}addtolist cssbutton cssbutton-flat purpleborder" {if not $customizePopup or $showConfig}data-component="addToListButton" data-alignpopup="tc-bc-c"{else}data-component="customizeButton" data-alignpopupfunction="transactionalCustomize"{/if}>Add to List</button>
@@ -560,20 +578,6 @@
 			<input type="hidden" value="{$su.id}" data-productdata-name="salesUnit" data-component="productData" data-salesunit-original="{$su.id}"/>
 			{/if}
 		{/foreach}
-	{/if}
-
-	{if $isEligibleForStandingOrders}
-		{if length($soData.settingsData.soData) == 0}
-			<div class="portrait-item-so-container">
-				<div class="portrait-item-so">
-					<div class="portrait-item-so-recurring">
-						{call common.soRecurring}
-							{param useButton: false /}
-						{/call}
-					</div>
-				</div>
-			</div>
-		{/if}
 	{/if}
 </li>
 {/template}

@@ -1,4 +1,4 @@
-/*global jQuery*/
+/*global jQuery, common*/
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {
@@ -11,8 +11,8 @@ var FreshDirect = FreshDirect || {};
 
   zipCheck.register({
     id: 'zipcheck',
-    submit : function (e) {
-      data = zipCheck.serialize(e.form.id)
+    submit: function (e) {
+      data = zipCheck.serialize(e.form.id);
       DISPATCHER.signal('server', {
         url: '/api/locationhandling/user/ziphandling',
         method: 'POST',
@@ -25,7 +25,10 @@ var FreshDirect = FreshDirect || {};
       });
       $('.spinner-overlay').addClass('active');
     },
-    failure : function () {
+    success: function () {
+      DISPATCHER.signal('zipCheckSuccess', data);
+    },
+    failure: function () {
       if (FreshDirect.components.zipCheckPopup) {
         FreshDirect.components.zipCheckPopup.refreshBody(data,common.zipcheckNotify);
       }

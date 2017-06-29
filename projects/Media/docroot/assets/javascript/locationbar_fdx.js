@@ -1,3 +1,8 @@
+/* easy color replace */
+//var COLOR_NONSELECTED = '#4fa157', COLOR_SELECTED = '#458d4e';
+var COLOR_NONSELECTED = '#fff', COLOR_SELECTED = '#f6faf6';
+
+
 function centerLoginModal() {
 	if ($jq('#login_cont_formContent').length) {
 		$jq( '#login_cont_formContent' ).position({
@@ -19,19 +24,19 @@ $jq(document).on('ready', function() {
 			of: '#locabar_popupcart_trigger'
 		});
 		
-		//window.setTimeout(function() {
-			/* add an additional align for timing */
-			//$jq( '#locabar_popupcart' ).position({
-			//	my: 'right top',
-			//	at: 'right bottom-12',
-			//	of: '#locabar_popupcart_trigger'
-			//});
-			//if ($jq( '#locabar_popupcart' ).css('top') === '10px' 
-			//}, 1000);
-		
-		
+		$jq('locabar_popupcart_trigger').on('mouseenter', function() {
+			/* just fix on every hover */
+			$jq( '#locabar_popupcart' ).position({
+				my: 'right top',
+				at: 'right bottom+8',
+				of: '#locabar_popupcart_trigger'
+			});
+			if ($jq( '#locabar_popupcart' ).css('top') === '10px') {}
+		});
 	}
+	
 });
+
 
 /* right align this one arrow */
 if ($jq('#locabar_popupcart .ui-arrow.ui-top').length) {
@@ -59,6 +64,25 @@ if ($jq('#locabar_user').length) {
 		of: '#locabar_user_trigger'
 	});
 }
+
+/* USER RECOMMENDERS TEST - also see locationbar_fdx.jsp
+if ($jq('#locabar_user').length && $jq('#locabar_user_reco_cont').length) {
+	$jq( '#locabar_user_reco_cont' ).position({
+		my: 'left top',
+		at: 'left top',
+		of: '#locabar_user'
+	});
+	$jq( '#locabar_user_reco_cont').height($jq('#locabar_user').height()+'px');
+
+	$jq(document).on('ready', function() {
+		//DEBUG display
+		if ($jq('.pdp-evenbetter').length) {
+			$jq('.pdp-evenbetter').clone().appendTo($jq( '#locabar_user_reco' ));
+			$jq( '#locabar_user_reco' ).addClass('pdp');
+		}
+	});
+}
+*/
 
 function showOverlay(zIndexVar) {
 	var zIndex = zIndexVar || 0;
@@ -246,12 +270,16 @@ $jq('#locabar_messages_trigger').on('click', function() {
 	$jq(this).hide();
 	$jq("#messages").addClass("open");
 	if($jq('#activatesoalert .so-activate-alert').length && $jq('#activatesoalert .so-activate-alert').length > 0){
-		$jq('#activatesoalert').messages('openAlerts', ['activatesoalert']);
+		$jq('#activatesoalert').messages('openAlerts', ['activatesoalert']);	
 	}
 	if($jq('#minsoalert .so-min-alert').length && $jq('#minsoalert .so-min-alert').length > 0){
 		$jq('#minsoalert').messages('openAlerts', ['minsoalert']);
 	}
-	
+	/*
+	$jq('.alerts').each(function(i,e) {
+		$jq(e).messages('openAlerts', [$jq(e).attr('data-type')]);
+	});
+	*/
 });
 
 $jq('#login_cont_formContent').on('hide', function() {
@@ -388,7 +416,7 @@ $jq(document).ready(function() {
 					$jq('#locabar_messages_trigger').show();
 					//$jq("#locabar_messages_trigger").focus();
 				}
-			});
+			}); 
 		$jq('#location-alerts').on('alertClose', function(event) {
 			$jq('#locabar_messages_trigger').show();
 		});
@@ -402,7 +430,9 @@ $jq(document).ready(function() {
 		
 		//$jq('.locabar-modify-order-section').css("display","block");
 		//$jq("#locabar_modify_order_trigger").focus();
-	} 
+	}
+	
+	/*$jq('.alerts').on('alertClose', function() { $jq('#locabar_messages_trigger').show(); });*/
 });
 
 //delivery information change zip code button click event
@@ -435,7 +465,7 @@ $jq('.locabar_addresses-anon-deliverable-add-address-btn').on('click', function(
 });
 
 $jq('#locabar_addresses_trigger').on('focus mouseover', function(event) {
-	$jq('.locabar-addresses-section').css('background-color', '#458d4e');
+	$jq('.locabar-addresses-section').css('background-color', COLOR_SELECTED);
 	//	$jq("#location-email").removeClass("input-error");
 		//$jq(".error-msg").css("visibility","hidden");
 	if($jq(".locabar-section.locabar-user-section").attr("data-signedin")=="true"){
@@ -447,49 +477,56 @@ $jq('#locabar_addresses_trigger').on('focus mouseover', function(event) {
 });
 
 $jq('#locabar_addresses_trigger').on('blur mouseleave', function(event) {
-	$jq('.locabar-addresses-section').css('background-color', '#4fa157');
+	$jq('.locabar-addresses-section').css('background-color', COLOR_NONSELECTED);
 });
 
 $jq('#locabar_user_trigger').on('focus mouseover', function(event) {
-	$jq('.locabar-user-section').css('background-color', '#458d4e');
+	$jq('.locabar-user-section').css('background-color', COLOR_SELECTED);
 });
 
 $jq('#locabar_user_trigger').on('blur mouseleave', function(event) {
-	$jq('.locabar-user-section').css('background-color', '#4fa157');
+	$jq('.locabar-user-section').css('background-color', COLOR_NONSELECTED);
 });
 
 $jq('#locabar_popupcart_trigger').on('focus mouseover', function(event) {
-	$jq('.locabar-popupcart-section').css('background-color', '#458d4e');
+	$jq('.locabar-popupcart-section').css('background-color', COLOR_SELECTED);
 });
 
 $jq('#locabar_popupcart_trigger').on('blur mouseleave', function(event) {
-	$jq('.locabar-popupcart-section').css('background-color', '#4fa157');
+	$jq('.locabar-popupcart-section').css('background-color', COLOR_NONSELECTED);
 });
 
 $jq('#locabar_modify_order_trigger').on('focus mouseover', function(event) {
-	$jq('.locabar-modify-order-section').css('background-color', '#458d4e');
+	$jq('.locabar-modify-order-section').css('background-color', COLOR_SELECTED);
 });
 
 $jq('#locabar_modify_order_trigger').on('blur mouseleave', function(event) {
 	//console.log('blur on locabar_triggers ');
-	$jq('.locabar-modify-order-section').css('background-color', '#4fa157');
+	$jq('.locabar-modify-order-section').css('background-color', COLOR_NONSELECTED);
 });
 
 
 $jq('#locabar_messages_trigger').on('focus mouseover', function(event) {
-	$jq('.locabar-messages-section').css('background-color', '#458d4e');
+	$jq('.locabar-messages-section').css('background-color', COLOR_SELECTED);
 });
 
 $jq('#locabar_messages_trigger').on('blur mouseleave', function(event) {
-	$jq('.locabar-messages-section').css('background-color', '#4fa157');
+	$jq('.locabar-messages-section').css('background-color', COLOR_NONSELECTED);
 });
 
 $jq('.changeBGClr').on('focus mouseover', function(event) {
-	$jq('.locabar-user-section').css('background-color', '#458d4e');
+	$jq('.locabar-user-section').css('background-color', COLOR_SELECTED);
 });
 
 $jq('.changeBGClr').on('blur mouseleave', function(event) {
-	$jq('.locabar-user-section').css('background-color', '#4fa157');
+	$jq('.locabar-user-section').css('background-color', COLOR_NONSELECTED);
+});
+
+$jq('.locabar_triggers, .locabar_triggers a').on('focus', function(event) {
+	$jq(this).closest('.locabar-section').addClass('hasFocus');
+});
+$jq('.locabar_triggers, .locabar_triggers a').on('blur mouseleave', function(event) {
+	$jq(this).closest('.locabar-section').removeClass('hasFocus');
 });
 
 
@@ -502,7 +539,7 @@ $jq('#locabar_messages_trigger').keydown(function(event){
 		$jq(this).hide();
 		
 		if($jq('#activatesoalert .so-activate-alert').length && $jq('#activatesoalert .so-activate-alert').length > 0){
-			$jq('#activatesoalert').messages('openAlerts', ['activatesoalert']);
+			$jq('#activatesoalert').messages('openAlerts', ['activatesoalert']);			
 		}
 		if($jq('#minsoalert .so-min-alert').length && $jq('#minsoalert .so-min-alert').length > 0){
 			$jq('#minsoalert').messages('openAlerts', ['minsoalert']);
@@ -647,7 +684,7 @@ $jq(".locabar_addresses-anon-deliverable-add-address-btn").keydown(function(e){
 			$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("opacity","0");
 			$jq(".locabar_addresses.locabar_triggers_menu.anon-deliverable").css("visibilty","hidden");
 			$jq(".changeBGClr").focus();
-			$jq(".locabar-user-section mouse").css('background-color', '#4fa157');
+			$jq(".locabar-user-section mouse").css('background-color', COLOR_NONSELECTED);
 			$jq("#locabar_addresses_trigger").removeClass("hover");
 			$jq("#locabar_addresses").hide();
 		}
@@ -703,7 +740,7 @@ $jq(window).load(function(){
 	if($jq("#locabar_user_trigger .changeBGClr").length >0){
 		//$jq('.locabar-modify-order-section').hide();
 	}
-	
+		
 	if($jq("#messages").hasClass("open")){
 		$jq('#locabar_messages_trigger').hide();
 	}
@@ -969,3 +1006,20 @@ $jq("#location-submit.fdxgreen").keydown(function(e){
   	//e.preventDefault();
 
 });
+
+/* fdx promo */
+	function open_fdx_promo() {
+		$jq('#locationbar_fdx_promo>.visWrapper').show();
+		$jq('#locationbar_fdx_promo').addClass('open');
+		$jq('.locabar-tab-fd-cont').addClass('notselected');
+		$jq('.locabar-tab-fdx-cont').removeClass('notselected');
+	}
+	function close_fdx_promo() {
+		$jq('#locationbar_fdx_promo>.visWrapper').hide();
+		$jq('#locationbar_fdx_promo').removeClass('open');
+		$jq('.locabar-tab-fd-cont').removeClass('notselected');
+		$jq('.locabar-tab-fdx-cont').addClass('notselected');
+	}
+	
+	$jq(document).on('mouseenter focus', '.locabar-tab-fdx-cont', open_fdx_promo);
+	$jq(document).on('click', '#locationbar_fdx_promo .close', close_fdx_promo);

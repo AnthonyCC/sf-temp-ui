@@ -107,6 +107,9 @@ var FreshDirect = FreshDirect || {};
 			
 			/* add page beacon (if it doesn't already exist) and we're on the first page only */
 			if(activePage == 1){
+				if (window.FreshDirect.browse.data.adProducts.hlEmptyProductsPagebeacon !== null && $(".browse-sections-top .browseContent .HLpageBeaconImg.empty_Product_page_SEARCH").length === 0)
+							$(".browse-sections-top .browseContent").append('<img style="display: none;" class="HLpageBeaconImg empty_Product_page_SEARCH" src="' + window.FreshDirect.browse.data.adProducts.hlEmptyProductsPagebeacon + '&aShown'+''+'&random=' + new Date().getTime() + '" />');
+				
 				if (window.FreshDirect.browse.data.adProducts.pageBeacon !== null) {
 					if (hlSkusStr !== '' && $(".browse-sections-top .browseContent .HLpageBeaconImg.page_SEARCH").length === 0) { /* only one instance at a time */
 						if (FreshDirect.browse.data.adProducts.products.length === FreshDirect.browse.data.adProducts.hlProductsCount) {
@@ -128,7 +131,6 @@ var FreshDirect = FreshDirect || {};
 			//prob NOT search
 			/* this uses a marker class on the page beacon image to determine if it needs to be fired again,
 			 * since it can be on any page, not just the first one. */
-			
 			for (var cur in FreshDirect.browse.data.adProducts.hlSelectionOfProductList) {
 				//get sku code in HL items for cat
 				var hlSkus = [], hlSkusStr = '';
@@ -161,6 +163,13 @@ var FreshDirect = FreshDirect || {};
 							$(".browseContent").append('<img style="display: none;" class="HLpageBeaconImg page_'+activePage+'_id_'+cur+'" src="' + window.FreshDirect.browse.data.adProducts.hlSelectionsPageBeacons[cur] + 'none&random=' + new Date().getTime() + '" />');
 						}
 					}
+				}
+			}
+			
+			for (var cur in FreshDirect.browse.data.adProducts.hlSelectionsEmptyProductsPageBeacons) {	
+				if (FreshDirect.browse.data.adProducts.hlSelectionsEmptyProductsPageBeacons[cur].length !==0 && $('.browseContent .HLpageBeaconImg.emptyPage_'+activePage+'_id_'+cur).length === 0) {
+				$(".browseContent").append('<img style="display: none;" class="HLpageBeaconImg emptyPage_'+activePage+'_id_'+cur+'" src="' +
+						window.FreshDirect.browse.data.adProducts.hlSelectionsEmptyProductsPageBeacons[cur] + '&aShown'+'&random='  + new Date().getTime() + '" />');
 				}
 			}
 		}

@@ -41,10 +41,15 @@ StringBuffer authorNames = new StringBuffer("");
    if (authors.size() > 0) {
    	authorNames.append("</b>");
    }
+
+title = "FreshDirect - " + title;
 %>
 
 <tmpl:insert template='/common/template/large_long_pop.jsp'>
-    <tmpl:put name='title' direct='true'>FreshDirect - <%=title%></tmpl:put>
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="<%=title%>"/>
+    </tmpl:put>
+    <tmpl:put name='title' direct='true'><%=title%></tmpl:put>
     <tmpl:put name='content' direct='true'>
     	<fd:CmPageView wrapIntoScriptTag="true" recipeSource="<%=sourceName%>"/>
 		<table width="520">

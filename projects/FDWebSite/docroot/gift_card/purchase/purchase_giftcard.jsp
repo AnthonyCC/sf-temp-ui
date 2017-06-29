@@ -6,7 +6,7 @@
 <%@ page import='com.freshdirect.payment.fraud.*' %>
 <%@ page import='java.util.*' %>
 <%@ page import='com.freshdirect.giftcard.*' %>
- 
+
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -25,15 +25,18 @@ Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 
 
 <tmpl:insert template='/common/template/giftcard.jsp'>
-   <tmpl:put name='title' direct='true'>FreshDirect - Purchase Gift Card</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Purchase Gift Card"/>
+  </tmpl:put>
+  <tmpl:put name='title' direct='true'>FreshDirect - Purchase Gift Card</tmpl:put>
     <tmpl:put name='content' direct='true'>
 
 
-<% 
+<%
     FDSessionUser sessionuser = (FDSessionUser)session.getAttribute(SessionName.USER);
     if(sessionuser.isGCSignupError()) {
-       
-%>    
+
+%>
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
     <td rowspan="5" width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
@@ -67,11 +70,11 @@ Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 </tr>
 </table>
 <br>
-<% 
+<%
 //clear info from session.
 sessionuser.setGCSignupError(false);
 sessionuser.setGcFraudReason("");
-} 
+}
 %>
 
 
@@ -79,20 +82,20 @@ sessionuser.setGcFraudReason("");
 <%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){%>
 			<script type="text/javascript">
 			if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) {
-				
-				FreshDirect.components.ifrPopup.open({ url: '/registration/tcaccept_lite.jsp?successPage=nonIndex', width: 320, height: 400, opacity: .5}); 
+
+				FreshDirect.components.ifrPopup.open({ url: '/registration/tcaccept_lite.jsp?successPage=nonIndex', width: 320, height: 400, opacity: .5});
 				} else {
-					
+
 				doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'320px\' height=\'400px\' frameborder=\'0\' ></iframe>');
 			}
-			
+
 			</script>
 <%}%>
 
 <%
 if(sessionuser.isAddressVerificationError()) {
-       
-%>    
+
+%>
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
     <td rowspan="5" width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
@@ -111,8 +114,8 @@ if(sessionuser.isAddressVerificationError()) {
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
 				<%= SystemMessageList.MSG_GC_SIGNUP_SUCCESS %><br><br>
                 <%= sessionuser.getAddressVerficationMsg() %>
-                
-                
+
+
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
 	</td>
     <td bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
@@ -128,17 +131,17 @@ if(sessionuser.isAddressVerificationError()) {
 </tr>
 </table>
 <br>
-<% 
+<%
 //clear info from session.
 sessionuser.setAddressVerificationError(false);
 }
-%>	
+%>
 
 <%
         String action_name = "";
         if(null != request.getParameter("deleteId") && !"".equals(request.getParameter("deleteId"))) {
             action_name = "deleteSavedRecipient";
-        } 
+        }
 %>
 
 <fd:AddSavedRecipientController actionName='<%=action_name%>' resultName='result'>
@@ -158,58 +161,58 @@ UserUtil.initializeGiftCart(user);
 
 <fd:CheckoutController actionName="<%= actionName %>" result="result" successPage="/gift_card/purchase/receipt.jsp" ccdProblemPage="/gift_card/purchase/includes/gc_add_creditcard.jsp?ccerror=true">
         <fd:ErrorHandler result='<%=result%>' name='gc_order_amount_fraud' id='errorMsg'>
-            <%@ include file="/includes/i_error_messages.jspf" %>	
-        </fd:ErrorHandler>        
+            <%@ include file="/includes/i_error_messages.jspf" %>
+        </fd:ErrorHandler>
         <fd:ErrorHandler result='<%=result%>' name='gc_order_count_fraud' id='errorMsg'>
-            <%@ include file="/includes/i_error_messages.jspf" %>	
-        </fd:ErrorHandler>    
+            <%@ include file="/includes/i_error_messages.jspf" %>
+        </fd:ErrorHandler>
         <fd:ErrorHandler result='<%=result%>' name='address_verification_failed' id='errorMsg'>
-            <%@ include file="/includes/i_error_messages.jspf" %>	
+            <%@ include file="/includes/i_error_messages.jspf" %>
         </fd:ErrorHandler>
          <fd:ErrorHandler result='<%=result%>' name='authorization_failed' id='errorMsg'>
-            <%@ include file="/includes/i_error_messages.jspf" %>	
+            <%@ include file="/includes/i_error_messages.jspf" %>
         </fd:ErrorHandler>
         <fd:ErrorHandler result='<%=result%>' name='fraud_check_failed' id='errorMsg'>
-                <% 
-                StringBuffer sbErrorMsg= new StringBuffer(); 
+                <%
+                StringBuffer sbErrorMsg= new StringBuffer();
                 sbErrorMsg.append("<br>Checkout prevented because:<br>");
                 sbErrorMsg.append(errorMsg);
                 sbErrorMsg.append("<br>");
                 errorMsg = sbErrorMsg.toString();
                 %>
-            <%@ include file="/includes/i_error_messages.jspf"%>                 
-        </fd:ErrorHandler>    
+            <%@ include file="/includes/i_error_messages.jspf"%>
+        </fd:ErrorHandler>
         <fd:ErrorHandler result='<%=result%>' name='limitReached' id='errorMsg'>
            <%@ include file="/includes/i_error_messages.jspf" %>
-        </fd:ErrorHandler>       
+        </fd:ErrorHandler>
         <% String[] checkPaymentForm = {"system", "order_minimum", "payment_inadequate", "technical_difficulty", "paymentMethodList", "payment", "declinedCCD", "matching_addresses", "expiration","bil_apartment","bil_address1","cardNum"}; %>
             <fd:ErrorHandler result='<%=result%>' field='<%=checkPaymentForm%>' id='errorMsg'>
-                <%@ include file="/includes/i_error_messages.jspf" %>	
-            </fd:ErrorHandler>      
+                <%@ include file="/includes/i_error_messages.jspf" %>
+            </fd:ErrorHandler>
             <fd:ErrorHandler result='<%=result%>' name='payment_method_fraud' id='errorMsg'>
-            <%@ include file="/includes/i_error_messages.jspf" %>	
-        </fd:ErrorHandler>        
-		<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>        
+            <%@ include file="/includes/i_error_messages.jspf" %>
+        </fd:ErrorHandler>
+		<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 
 <%
-	if (user.getFailedAuthorizations() > 0) { 
+	if (user.getFailedAuthorizations() > 0) {
 		String errorMsg = "<span class=\"text12\">There was a problem with the credit card you selected.<br>Please choose or add a new payment method.<br><br>If you have tried this and are still experiencing problems, please do not attempt to submit your information again but contact us as soon as possible at" + user.getCustomerServiceContact() + ". A customer service representative will help you to complete your order.</span>";
 	%>
 		<%@ include file="/includes/i_error_messages.jspf" %>
-<% 
+<%
     }
     if(user.getOneTimeGCPaymentError()!=null && user.getOneTimeGCPaymentError().size()>0){
         String errorMsg="";
            List alist=user.getOneTimeGCPaymentError();
            for(int k=0;k<alist.size();k++){
              errorMsg=errorMsg+(String)alist.get(k)+"\n";
-           }  
-     %>        
+           }
+     %>
        <%@ include file="/includes/i_error_messages.jspf" %>
-<%       
+<%
      }
 %>
-	<BR>	
+	<BR>
 <form method="post" id="form1" name="order_form">
 <table width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 	<tr>
@@ -230,7 +233,7 @@ UserUtil.initializeGiftCart(user);
 <br /><br />
 
     <%@ include file="/gift_card/purchase/includes/recipient_list.jspf" %>
-    
+
 <fd:PaymentMethodController actionName='<%=actionName%>' result='result'>
 <%
 
@@ -240,8 +243,8 @@ FDIdentity identity = null;
 
 if(user!=null  && user.getIdentity()!=null) {
     identity = user.getIdentity();
-    paymentMethods = FDCustomerManager.getPaymentMethods(identity);	
-    
+    paymentMethods = FDCustomerManager.getPaymentMethods(identity);
+
     if(paymentMethods != null && !paymentMethods.isEmpty()){
     	List<ErpPaymentMethodI> paymentsNew = new ArrayList<ErpPaymentMethodI>();
 	   	Iterator payItr = paymentMethods.iterator();
@@ -251,7 +254,7 @@ if(user!=null  && user.getIdentity()!=null) {
 	    		paymentsNew.add(paymentM);
 	        }
 	   	}
-	   	
+
 	   	paymentMethods = paymentsNew;
 	}
 }
@@ -264,11 +267,12 @@ boolean isCheckEligible = false;
   <% StringBuffer sbErrorMsg= new StringBuffer(); %>
 
 
+<fieldset><legend class="offscreen">&nbsp;Purchase&nbsp;Type:</legend>
 <table width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" border="0" cellpadding="0" cellspacing="0" class="text11">
     <%
     	String serviceType = request.getParameter("serviceType");
-    	String value1 = "personal"; 
-    	String value2 = "professional"; 
+    	String value1 = "personal";
+    	String value2 = "professional";
         	String value1Selected = "checked";
         	String value2Selected = "";
     	if (value1.equals(serviceType)) {
@@ -290,29 +294,31 @@ boolean isCheckEligible = false;
     		</span>
         	</td>
     	<td>
-    		<input type="radio" class="text11" name="serviceType" id="Personal" value="<%=value1%>" <%= value1Selected %> />Personal
-    		<input type="radio" class="text11" name="serviceType" id="Professional" value="<%=value2%>" <%= value2Selected %> />Corporate
+    		<input type="radio" class="text11" name="serviceType" id="Personal" value="<%=value1%>" <%= value1Selected %> /><label for="Personal">Personal</label>
+    		<input type="radio" class="text11" name="serviceType" id="Professional" value="<%=value2%>" <%= value2Selected %> /><label for="Professional">Corporate</label>
         	</td>
     	</tr>
 </table>
-
+</fieldset>
 <img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br />
 
 <img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br /><br />
 
-<script language="javascript">
-	<!--
-	OAS_AD('CategoryNote');
-	//-->
-</script>
+<div id='oas_CategoryNote'>
+  <script language="javascript">
+  	<!--
+  	OAS_AD('CategoryNote');
+  	//-->
+  </script>
+</div>
 
 
 	<table width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
 		<tr valign="top">
 			<td width="<%=W_PURCHASE_GIFTCARD_TOTAL%>"><img src="/media_stat/images/navigation/choose_credit_card.gif" width="135" height="9" border="0" alt="CHOOSE CREDIT CARD">&nbsp;&nbsp;&nbsp;<br />
 					<img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" height="1" border="0" vspace="3"><br />
-				<font class="space2pix"><br /></font>  
-			</td>   
+				<font class="space2pix"><br /></font>
+			</td>
 		</tr>
 
 		<tr valign="middle">

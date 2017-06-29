@@ -629,8 +629,8 @@ public abstract class BaseController extends AbstractController implements Messa
                 .setSuccessMessage("User has been logged in successfully.");
         responseMessage.setItemsInCartCount(user
                 .getItemsInCartCount());
-        responseMessage.setOrderCount(user.getOrderHistory()
-                .getValidOrderCount());
+        responseMessage.setOrderCount(history.getValidOrderCount());
+        responseMessage.setFdxOrderCount(history.getValidOrderCount(EnumEStoreId.FDX));
         responseMessage.setFdUserId(user.getPrimaryKey());
 
         // DOOR3 FD-iPad FDIP-474
@@ -666,8 +666,7 @@ public abstract class BaseController extends AbstractController implements Messa
                 .getSelectedServiceType() != null ? user
                 .getSelectedServiceType().toString() : "");
         responseMessage.setCohort(user.getCohort());
-        responseMessage.setTotalOrderCount(user
-                .getTotalOrderCount());
+        responseMessage.setTotalOrderCount(user.getTotalOrderCount());
         
         responseMessage.setTcAcknowledge(user.getTcAcknowledge());
 
@@ -873,7 +872,7 @@ public abstract class BaseController extends AbstractController implements Messa
             for (final CMSSectionModel section : page.getSections()) {
                 final CMSPotatoSectionModel potatoSection = CMSPotatoSectionModel.withSection(section);
                 potatoSection.setProducts(collectProductPotatos(user, section.getProductList(), errorProductKeys));
-                if (areMustHaveSectionProductsAvailable(section.getMustHaveProdList(), section.getProductList(), errorProductKeys)) {
+                if (areMustHaveSectionProductsAvailable(section.getMustHaveProdList(), section.getProductList(), errorProductKeys, user)) {
                     sectionWithProducts.add(potatoSection);
                 }
                 errorProductKeys.clear();
@@ -882,13 +881,20 @@ public abstract class BaseController extends AbstractController implements Messa
         }
     }
 
-    private boolean areMustHaveSectionProductsAvailable(List<String> mustHaveProductkeys, List<String> productKeys, List<String> errorProductKeys) {
+    private boolean areMustHaveSectionProductsAvailable(List<String> mustHaveProductkeys, List<String> productKeys, List<String> errorProductKeys, SessionUser user) {
         boolean allMustHaveProductsAreAvailable = true;
         if (mustHaveProductkeys != null && productKeys != null) {
             for (String mustHaveProductId : mustHaveProductkeys) {
                 if (!productKeys.contains(mustHaveProductId) || errorProductKeys.contains(mustHaveProductId)) {
                     allMustHaveProductsAreAvailable = false;
                     break;
+                }
+                
+                final String prodId = mustHaveProductId.substring(FDContentTypes.PRODUCT.getName().length() + 1);
+                final ProductPotatoData data = ProductPotatoUtil.getProductPotato(prodId, null, user.getFDSessionUser(), false);
+                if (data == null || !data.getProductData().isAvailable()) {
+                	allMustHaveProductsAreAvailable = false;
+                	break;
                 }
             }
         }

@@ -2,11 +2,12 @@
 
 <html>
 <head>
-	<title></title>
-	
+	<title>FreshDirect</title>
+    <%@ include file="/common/template/includes/metatags.jspf" %>
   	<%@ include file="/common/template/includes/i_javascripts.jspf" %>  
   	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
   	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+  	<% request.getSession(false).removeAttribute("signupSuccess"); %>
 </head>
 <body>
 	<div id="sulCont" class="signup-style-social signin-social-account-create-success">

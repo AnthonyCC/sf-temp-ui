@@ -15,10 +15,10 @@ final int W_CHECKOUT_STEP_3_WAIVE_TOTAL = 970;
 
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
-<tmpl:put name="seoMetaTag" direct="true">
-	<fd:SEOMetaTag pageId=""></fd:SEOMetaTag>
-</tmpl:put>
-<tmpl:put name='title' direct='true'>FreshDirect - Checkout - Pass on the offer & Continue checkout</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Checkout - Pass on the offer & Continue checkout"/>
+  </tmpl:put>
+  <tmpl:put name='title'>FreshDirect - Checkout - Pass on the offer & Continue checkout</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <% FDUserI user = (FDUserI)session.getAttribute(SessionName.USER); %>
 <table width="<%=W_CHECKOUT_STEP_3_WAIVE_TOTAL%>" cellpadding="0" cellspacing="0" border="0">

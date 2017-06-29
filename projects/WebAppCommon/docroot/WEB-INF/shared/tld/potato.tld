@@ -294,12 +294,11 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
-    <tag>
+<tag>
         <name>viewCart</name>
         <tagclass>com.freshdirect.webapp.ajax.viewcart.ViewCartPotatoTag</tagclass>
         <body-content>empty</body-content>
     </tag>
-
 	<!-- APPDEV-3901 -->
     <tag>
         <name>qsRecommender</name>
@@ -362,4 +361,14 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+	<tag>
+		<name>googleAnalytics</name>
+		<tagclass>com.freshdirect.webapp.ajax.analytics.tag.GoogleAnalyticsPotatoTag</tagclass>
+		<attribute>
+			<name>name</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	
 </taglib>

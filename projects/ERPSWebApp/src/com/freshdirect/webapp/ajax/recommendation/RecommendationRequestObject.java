@@ -11,6 +11,7 @@ public class RecommendationRequestObject {
 	private String parentImpressionId;
 	private String impressionId;
 	private String parentVariantId;
+	private boolean selected = true;
 	
 	public String getTab() {
 		return tab;
@@ -59,5 +60,14 @@ public class RecommendationRequestObject {
 	}
 	public void setParentVariantId(String parentVariantId) {
 		this.parentVariantId = parentVariantId;
-	}	
+	}
+    
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
 }

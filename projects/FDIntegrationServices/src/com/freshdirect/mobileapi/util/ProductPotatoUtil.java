@@ -68,7 +68,7 @@ public class ProductPotatoUtil {
                     if (enableProductIncomplete && PopulatorUtil.isProductIncomplete(product) && PopulatorUtil.isProductNotArchived(product)){
                         extraData = ProductExtraDataPopulator.createLightExtraData(user, product);
                     } else {
-                        extraData = ProductExtraDataPopulator.createExtraData(user, product, null, null);
+                        extraData = ProductExtraDataPopulator.createExtraData(user, product, null, null, false);
                     }
                     data.setProductExtraData( extraData);
                 }

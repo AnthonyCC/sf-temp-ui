@@ -75,10 +75,14 @@
 	request.setAttribute("sitePage", departmentModel.getPath());
 	request.setAttribute("listPos", "LittleRandy,SystemMessage,CategoryNote,SideCartBottom,WineTopRight,WineBotLeft,WineBotMiddle,WineBotRight,4mmAd1,4mmAd2");
 
+    String title = "FreshDirect - " + departmentModel.getFullName();
 %>
 
 <tmpl:insert template='/common/template/no_nav.jsp'>
-<tmpl:put name='title' direct='true'>FreshDirect - <%= departmentModel.getFullName() %></tmpl:put>
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="<%= title %>"/>
+    </tmpl:put>
+    <tmpl:put name='title' direct='true'><%= title %></tmpl:put>
 <tmpl:put name='content' direct='true'>
 	<fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=currentFolder%>"/>
 	<%

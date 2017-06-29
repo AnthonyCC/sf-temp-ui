@@ -15,7 +15,6 @@ import java.util.StringTokenizer;
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
 import javax.ejb.ObjectNotFoundException;
-import javax.mail.MessagingException;
 
 import org.apache.log4j.Logger;
 
@@ -24,15 +23,12 @@ import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpCustomerCreditModel;
-import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
-import com.freshdirect.deliverypass.DeliveryPassModel;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.customer.FDCustomerFactory;
-import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ejb.FDSessionBeanSupport;
@@ -52,12 +48,10 @@ import com.freshdirect.fdstore.referral.ReferralSearchCriteria;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.mail.EmailAddress;
-import com.freshdirect.framework.mail.EmailSupport;
-import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
+import com.freshdirect.payment.service.FDECommerceService;
 
 /**
  * @author jng

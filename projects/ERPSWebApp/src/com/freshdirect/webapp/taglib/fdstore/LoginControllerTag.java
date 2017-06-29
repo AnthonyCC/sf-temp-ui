@@ -17,15 +17,9 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;
-import com.freshdirect.fdstore.rollout.EnumFeatureRolloutStrategy;
-import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
-import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -48,9 +42,10 @@ public class LoginControllerTag extends AbstractControllerTag {
 		this.mergePage = mp;
 	}
 
-	protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
+	@Override
+    protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		HttpSession session = request.getSession(true);
-		Integer fdLoginAttempt = session.getAttribute("fdLoginAttempt") != null ? (Integer) session.getAttribute("fdLoginAttempt") : Integer.valueOf(0);
+        Integer fdLoginAttempt = session.getAttribute(SessionName.LOGIN_ATTEMPT) != null ? (Integer) session.getAttribute(SessionName.LOGIN_ATTEMPT) : Integer.valueOf(0);
 		boolean isCaptchaSuccess = true;
 		
 		if (request.getParameter("captchaEnabled") != null) {
@@ -134,6 +129,7 @@ public class LoginControllerTag extends AbstractControllerTag {
 			
 			if(actionResult.getErrors() != null && actionResult.getErrors().size() <= 0  && isCaptchaSuccess){		
 				fdLoginAttempt = 0;
+
 			} else {
 				fdLoginAttempt++;
 			}
@@ -158,7 +154,10 @@ public class LoginControllerTag extends AbstractControllerTag {
         } else {
 			fdLoginAttempt++;
 		}
-		session.setAttribute("fdLoginAttempt", fdLoginAttempt);
+
+        session.setAttribute(SessionName.LOGIN_ATTEMPT, fdLoginAttempt);
+
+        session.setAttribute(SessionName.LOGIN_SUCCESS, fdLoginAttempt != null && fdLoginAttempt == 0);
 		
 		return true;
 		

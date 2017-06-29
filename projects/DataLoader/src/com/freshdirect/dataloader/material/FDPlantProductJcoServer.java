@@ -35,8 +35,10 @@ import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.EnumApprovalStatus;
 import com.freshdirect.erp.model.ErpMaterialSalesAreaModel;
 import com.freshdirect.erp.model.ErpPlantMaterialModel;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.DayOfWeekSet;
+import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.sap.SapProperties;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
@@ -406,20 +408,32 @@ public class FDPlantProductJcoServer extends FdSapServer {
 			SAPLoaderHome home = (SAPLoaderHome) ctx.lookup("freshdirect.dataloader.SAPLoader");
 			SAPLoaderSB sapLoader = home.create();
 			// create a new batch
-			batchNumber = sapLoader.createBatch();
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SAPLoaderSB)){
+				batchNumber = FDECommerceService.getInstance().createBatch();
+			}else{
+				batchNumber = sapLoader.createBatch();
+			}
 			for (Iterator<String> iterator = materialPlantsMap.keySet().iterator(); iterator.hasNext();) {
 				String materialNo = iterator.next();
 				List<ErpPlantMaterialModel> plantModels = materialPlantsMap.get(materialNo);
 				List<ErpMaterialSalesAreaModel> salesAreas = materialSalesAreaMap.get(materialNo);
 
 				try {
-					sapLoader.loadMaterialPlantsAndSalesAreas(batchNumber, materialNo, plantModels, salesAreas);
+					if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SAPLoaderSB)){
+						FDECommerceService.getInstance().loadMaterialPlantsAndSalesAreas(batchNumber, materialNo, plantModels, salesAreas);
+					}else{
+						sapLoader.loadMaterialPlantsAndSalesAreas(batchNumber, materialNo, plantModels, salesAreas);
+					}
 				} catch (Exception e) {
 					LOG.error("Saving Plant Records for material# " + materialNo + " failed. Exception is ", e);
 					populateErrorResponse(result, materialErrorTable, materialNo, e.toString());
 				}
 				// mark the batch status
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SAPLoaderSB)){
+					FDECommerceService.getInstance().updateBatchStatus(batchNumber, EnumApprovalStatus.NEW);
+				}else{
 				sapLoader.updateBatchStatus(batchNumber, EnumApprovalStatus.NEW);
+				}
 
 			}
 		} catch (NamingException e) {

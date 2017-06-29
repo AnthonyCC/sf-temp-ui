@@ -40,7 +40,7 @@
 <c:if test="${empty title}">
 	<c:set var="title" value="FreshDirect"/>
 </c:if>
-	<title>${title}</title>
+<title>${title}</title>
 <meta name="description" content="${metaDescription}" />
 <%-- Site link Search Box --%>
 <c:if test="${includeSiteSearchLink}">
@@ -113,6 +113,5 @@
  
 <script src="//cdn.optimizely.com/js/325803703.js" type="text/javascript"></script>
 
-
-
+<fd:IncludeMedia name="/media/editorial/site_pages/metadata.html" />
 

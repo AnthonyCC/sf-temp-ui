@@ -6,7 +6,10 @@ final int W_BC_ABOUT_TOTAL = 601;
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:CheckLoginStatus guestAllowed='true' />
 <tmpl:insert template='/common/template/bestcellars/no_botcatnav.jsp'>
-	<tmpl:put name='title' direct='true'>FreshDirect - About Best Cellars</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - About Best Cellars"/>
+  </tmpl:put>
+  <tmpl:put name='title'>FreshDirect - About Best Cellars</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 	<table width="<%=W_BC_ABOUT_TOTAL%>" cellpadding="0" cellspacing="0">
 	<tr><td><br>

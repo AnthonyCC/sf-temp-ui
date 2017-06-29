@@ -12,7 +12,7 @@
 <%
 	CategoryNodeTree categoryTree = newProds.getCategoryTree();
 	int noOfProds = newProds.getNoOfProducts();
-%> 
+%>
 
 
 <div id="categoryPanel" style="width:150px;">
@@ -30,7 +30,7 @@
 	</div>
 	<%
 		}
-	%> 
+	%>
 	<%
  	String selectedDept = nav.getDepartment();
 	if (selectedDept == null && nav.getCategory() != null) {
@@ -69,7 +69,7 @@
 <%
 	if (FDStoreProperties.isAdServerEnabled()) { %>
 <%--
-<div style="width:150px; margin-top: 15px; overflow: hidden;">
+<div style="width:150px; margin-top: 15px; overflow: hidden;" id='oas_LittleRandy'>
 <script type="text/javascript">
 	OAS_AD('LittleRandy');
 </script>
@@ -81,5 +81,3 @@
 <%
 	}
 %>
-
-

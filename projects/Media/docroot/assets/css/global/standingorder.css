@@ -1,59 +1,11 @@
 
 /* over-rides */
-	.pdp-atc.soShow, .pdp-ecoupon {
+	.pdp-ecoupon {
 		background-color: #f7f7f7;
 		border: 1px solid #f5f5f5;
 		border-width: 1px 0;
 		padding: 10px;
 		clear: both;
-	}
-	.pdp-atc.soShow {
-		height: auto;
-		padding: 10px 10px 20px;
-	}
-	#transactionalPopup .portrait-item-soPreShow .quantity_plus, #transactionalPopup .portrait-item-soPreShow .quantity_minus,
-	#transactionalPopup .portrait-item-soPreShow .transactional-related-body .quantity_plus, #transactionalPopup .portrait-item-soPreShow .transactional-related-body .quantity_minus,
-	.portrait-item-soPreShow .quantity_plus, .portrait-item-soPreShow .quantity_minus,
-	.soShow .quantity_plus, .soShow .quantity_minus {
-		background: none;
-		background: initial;
-		border-radius: 0;
-		text-indent: 0;
-		background-color: #fff;
-		border: 1px solid #e7e7e7;
-		width: 40px;
-		height: 40px;
-		font-size: 30px;
-		box-shadow: none;
-		color: #333;
-	}
-	#transactionalPopup .portrait-item-soPreShow .quantity_plus:hover, #transactionalPopup .portrait-item-soPreShow .quantity_minus:hover,
-	.portrait-item-soPreShow .quantity_plus:hover, .portrait-item-soPreShow .quantity_minus:hover,
-	.soShow .quantity_plus:hover, .soShow .quantity_minus:hover {
-		color: #4FA157;
-		background-color: transparent;
-	}
-	#transactionalPopup .portrait-item-soPreShow .quantity_plus:active, #transactionalPopup .portrait-item-soPreShow .quantity_minus:active,
-	.portrait-item-soPreShow .quantity_plus:active, .portrait-item-soPreShow .quantity_minus:active,
-	.soShow .quantity_plus:active, .soShow .quantity_minus:active {
-		color: #f90;
-		background-color: transparent;
-	}
-	#transactionalPopup .portrait-item-soPreShow .quantity_plus:focus, #transactionalPopup .portrait-item-soPreShow .quantity_minus:focus,
-	.portrait-item-soPreShow .quantity_plus:focus, .portrait-item-soPreShow .quantity_minus:focus,
-	.soShow .quantity_plus:active, .soShow .quantity_minus:focus {
-		color: #fff;
-		background-color: #6AAA6D;
-	}
-	.pdp-atc.soShow .qty, /* .pdp-evenbetter-quantity .qty, APPBUG-4499 */
-	.portrait-item-soPreShow .qty,
-	#customizePopup.soShow .qty {
-		border-left: none;
-		border-right: none;
-		border-top: 1px solid #e7e7e7;
-		border-bottom: 1px solid #e7e7e7;
-		font-size: 20px;
-		font-weight: bold;
 	}
 	#customizePopup.soShow .subtotal,
 	.pdp-evenbetter-soShow .pdp-evenbetter-atc .pdp-evenbetter-quantity .subtotal {
@@ -79,60 +31,24 @@
 	#customizePopup.soShow .skucontrol-quantity .qtyinput{
 	    width: auto;
 	}
-	/* APPBUG-4515 */
 	#customizePopup .skucontrol-quantity {
-		text-align: right;
-		margin-right: 250px;
+		text-align: center;
 	}
 	#customizePopup .buttons{
-		margin-right: 243px;
+		text-align: center;
 	}
-	.pdp-atc.soShow .qtyinput input.qty,
-	.pdp-evenbetter-quantity .qtyinput input.qty,
-	.portrait-item-soPreShow input.qty,
-	#transactionalPopup .portrait-item-soPreShow input.qty,
-	#customizePopup.soShow input.qty {
-		vertical-align: top;
-		/* margin: 0; APPBUG-4498 */
-		padding: 0 2px;
-		/* height: 38px; APPBUG-4498 */
-	}
-	.pdp-atc.soShow .qtyinput input.qty,
-	.portrait-item-soPreShow input.qty,
-	#transactionalPopup .portrait-item-soPreShow input.qty,
-	#customizePopup.soShow input.qty{
-		height: 40px;
-		margin: 0;
-	}
-	 #transactionalPopup .portrait-item-soPreShow .portrait-item-controls .qtyinput > span.qtywrapper {
-		height: 40px;
-		left: 40px;
-		right: 40px;
-	}
-	.pdp-evenbetter-quantity .qtyinput input.qty {
-		/* width: 3em; APPBUG-4498 */
-		/* font-size: 16px; APPBUG-4498 */
-		color: #333;
-		font-family: Verdana, Arial, sans-serif;
-	}
-	.pdp-atc.soShow .qtyinput,
-	#customizePopup.soShow {
-		width: auto !important;
-		height: auto !important;
-	}
-	
-	.pdp-evenbetter-quantity .qtyinput {
-		/* width: 135px; APPBUG-4498
-		height: 40px;  APPBUG-4498 */
+	#customizePopup .buttons .addtocart{
+		margin: auto;
 	}
 	.pdp-atc.soShow .pdp-atc-buttons {
 		margin-bottom: 20px;
 	}
 	.pdp-atc.soShow .so-container{
-		padding: 20px 0 10px 7px;
+		padding: 20px 0 10px;
 	}
 	.pdp-atc.soShow .so-container button[data-component="createSOButton"],
 	.pdp-atc.soShow .so-container button[data-component-extra="showSOButton"]{
+		width: 100%;
 		padding: 10px 18px;
 	}
 	.pdp-atc.soShow .cssbutton[data-component="ATCButton"] {
@@ -194,34 +110,6 @@
 		height: auto !important;
 		margin: 0 !important;
 	}
-
-	.qs-content .lineitems22 .itemlist-item-controls.smaller {
-		width: 264px;
-	}
-	.qs-content .lineitems22 .itemlist-item-controls.smaller .itemlist-item-addtocart {
-		text-align: right;
-	}
-	.qs-content .lineitems22 .itemlist-item-controls.smaller .addtocart, .qs-content .lineitems22 .itemlist-item-controls.smaller .customize {
-		width: 124px;
-		display: inline-block;
-	}
-	.qs-content .lineitems22 .itemlist-item-controls.smaller .atc-info {
-		width: 124px;
-		margin-left: 131px;
-		display: inline-block;
-	}
-	.qs-content .lineitems22 .itemlist-item-controls.smaller .addtocart, .qs-content .lineitems22 .itemlist-item-controls.smaller .customize {
-		margin-left: 10px;
-	}
-	.qs-content .lineitems22 .itemlist-item-controls.smaller [data-component-extra="showSOButton"]{
-		margin: auto;
-		margin-right: 4px;
-		white-space: initial;
-		height: auto;
-		line-height: 15px;
-		padding: 5px 0;
-	}
-	
 /* new */
 	.so-results-addedTo, .so-results-items-total .total {
 		font-weight: bold;
@@ -229,16 +117,22 @@
 	#customizePopup.soShow .so-results-content{
 		display: none;
 	}
-
 	.qs-content .so-result-container {
-		display: inline-block;
+		display: none;
 		width: 130px;
 	}
-	.qs-content .lineitems22 .itemlist-item-controls.smaller .cssbutton[data-component="showSOButton"] {
-		width: 124px;
-		display: inline-block;
+	.qs-content .lineitems22 .itemlist-item-controls.smaller .so-recurring{
+		float: right;
 	}
-	
+	.qs-content .lineitems22 .itemlist-item-controls.smaller .so-recurring .so-recurring-1{
+		text-align: left;
+	}
+	.qs-content .lineitems22 .itemlist-item-controls.smaller .so-recurring [data-component="createSOButton"]{
+		width: 220px;
+	}
+	.qs-content .lineitems22 .itemlist-item-controls.smaller [data-component-extra="showSOButton"]{
+		width: 220px;
+	}	
 	.so-results-continer {
 		position: relative;
 	}
@@ -327,6 +221,9 @@
 	}
 	#customizePopup.soShow.so-review .so-container .so-review-date{
 		min-height: 30px;
+	}
+	#customizePopup.soShow.so-review .so-container .so-review-date-red{
+		color: #c94747;
 	}
 	#customizePopup.soShow.so-review .so-container .so-review-date img{
 		padding: 48px 0 15px;
@@ -863,8 +760,10 @@
 	.so-accidental-atc .so-accidental-atc-middle-button{
 		text-align: center;
 	}
-	.so-accidental-atc .so-accidental-atc-middle-button a{
+	.so-accidental-atc .so-accidental-atc-middle-button button{
 		width: 307px;
+		font-size: 14px;
+		font-family: Verdana;
 	}
 	.so-accidental-atc .so-accidental-atc-bottom{
 		padding: 18px 0 20px 20px;
@@ -899,36 +798,17 @@
 	.so-accidental-atc #so-accidental-atc-checkbox:disabled{
 		opacity: 0.7;
 	}
-	.ui-dialog.overlay-dialog-new{
-		border: 0;
-		padding: 0;
-		box-shadow: 0 5px 30px 0 rgba(0, 0, 0, 0.3);
-		border-radius: 0;
-		overflow: visible;
+	.portrait-item-so-container [data-component="createSOButton"]{
+		width: 100%;
+		padding: 10px 5px;
 	}
-	.ui-dialog.overlay-dialog-new .ui-dialog-title{
-		display: none;
+	#evenBetterPopup [data-component="createSOButton"]{
+		width: 235px;
 	}
-	.ui-dialog.overlay-dialog-new .ui-dialog-titlebar{
-		padding: 0;
-		margin: 0;
-		overflow: visible;
-		height: 0;
-		min-height: 0;
+	#evenBetterPopup .so-recurring{
+		margin: 10px 0 0;
 	}
-	.ui-dialog.overlay-dialog-new #uimodal-output{
-		padding: 0;
-	}
-	.ui-dialog.overlay-dialog-new .ui-dialog-titlebar button.ui-dialog-titlebar-close{
-		position: absolute;
-		top: -35px;
-		right: -35px;
-		background: none;
-	}
-	.ui-dialog.overlay-dialog-new .ui-dialog-titlebar button.ui-dialog-titlebar-close span.ui-icon-closethick{
-		width: 25px;
-		height: 25px;
-		background: url(/media_stat/images/close.png) no-repeat;
-		background-size: 100%;
-		cursor: pointer;
+	#evenBetterPopup .so-recurring-1{
+		font-size: 10px;
+		text-align: center;
 	}

@@ -21,7 +21,10 @@ function linkTo(url){
 </script>
 
 <tmpl:insert template='/common/template/large_pop.jsp'>
-	<tmpl:put name='title' direct='true'>FreshDirect - Tell a Friend</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Tell a Friend"/>
+  </tmpl:put>
+  <tmpl:put name='title' direct='true'>FreshDirect - Tell a Friend</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 <%
 	TellAFriend taf = (TellAFriend)session.getAttribute(SessionName.TELL_A_FRIEND);

@@ -623,7 +623,7 @@ function showDialogs() {
 									/*Builder.node( 'img', { src: this.mediaStaticRoot+'purchase/choose_design.gif', alt: 'Choose Design', id: 'gcChooseDesign_img' } )*/
 								]),
 								Builder.node( 'div', { className: 'card_controls_select' }, [
-									Builder.node( 'select', { id: this.selectBoxId, onChange: 'window[\''+this.refId+'\'].selectCard();', onKeyUp: 'window[\''+this.refId+'\'].selectCard();' }, [
+									Builder.node( 'select', { 'aria-label':'choose card design',id: this.selectBoxId, onChange: 'window[\''+this.refId+'\'].selectCard();', onKeyUp: 'window[\''+this.refId+'\'].selectCard();' }, [
 										optionArray
 									])
 								])

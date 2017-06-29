@@ -52,12 +52,13 @@ user.setSoTemplateCart(new FDCartModel());
 <potato:singlePageCheckout standingOrder="true"/>
 <potato:cartData standingOrder="true"/>
 <%	
-	Collection<FDStandingOrder> sos=FDStandingOrdersManager.getInstance().loadCustomerNewStandingOrders( user.getIdentity());
+	//Collection<FDStandingOrder> sos=FDStandingOrdersManager.getInstance().loadCustomerNewStandingOrders( user.getIdentity());
 	Collection<Map<String,Object>> soList= null;// StandingOrderHelper.convertStandingOrderToSoy(
 	//FDStandingOrdersManager.getInstance().getAllSOUpcomingOrders( user, sos), true);
 	Map<String,Object> upComingDataMap = new HashMap<String,Object>();
 	Map<String,Object> standingOrderSettingDataMap = new HashMap<String,Object>();
 	upComingDataMap.put( "upComingData", soList );
+	user.setRefreshSO3(true);
 	standingOrderSettingDataMap.put("soData", StandingOrderHelper.getAllSoData(user, false,true));
 %>
 <script>
@@ -97,9 +98,15 @@ user.setSoTemplateCart(new FDCartModel());
 		</a>
 		<hr class="standing-orders-3-edit-header-line">
 	</div>
-	<div class="so3-create-new-so">
-		<div class="so3-create-new-so-text">Create a New Standing Order</div>
-		<a class="so3-create-new-so-link cssbutton cssbutton-flat green" href="/quickshop/new_standing_order.jsp">Go!</a>
+	<div class="standing-orders-3-so-settings-top">
+		<div class="so3-create-new-so">
+			<div class="so3-create-new-so-text">Create a New Standing Order</div>
+			<a class="so3-create-new-so-link cssbutton cssbutton-flat green" href="/quickshop/new_standing_order.jsp">Go!</a>
+		</div>
+		<div class="standing-orders-3-so-setting-tutorial">
+			<a class="standing-orders-3-so-setting-tutorial-pdf icon-base icon-pdf" href="/media/editorial/site_pages/standing_orders/SO2017_tutorial.pdf" target="_blank"></a>
+			<a class="standing-orders-3-so-setting-tutorial-text" href="/media/editorial/site_pages/standing_orders/SO2017_tutorial.pdf" target="_blank"><b>Need Help?</b> Download the User Guide.</a>
+		</div>
 		<div class="clear"></div>
 	</div>
 	<div class="standing-orders-3-edit-so-settings">

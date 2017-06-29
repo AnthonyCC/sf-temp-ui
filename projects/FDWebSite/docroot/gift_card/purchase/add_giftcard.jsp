@@ -13,7 +13,10 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 <fd:CheckLoginStatus />
 
 <tmpl:insert template='/common/template/giftcard.jsp'>
-	<tmpl:put name='title' direct='true'>FreshDirect - Add Gift Card</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Add Gift Card"/>
+  </tmpl:put>
+  <tmpl:put name='title' direct='true'>FreshDirect - Add Gift Card</tmpl:put>
 	<tmpl:put name='content' direct='true'>
     <div class="gcCheckAddressBox">
 		<div style="text-align: left;" class="gcCheckAddressBoxContent" id="gcCheckAddressBox">
@@ -24,27 +27,28 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 			If this is a New York address, may we suggest our Pickup Window in Long Island City?</span>
 			</div><br />
 			<img src="/media_stat/images/layout/cccccc.gif" alt="" width="390" height="1" border="0"><br /><br />
-			<table border="0" cellspacing="0" cellpadding="4" width="100%">
+			<table border="0" cellspacing="0" cellpadding="4" width="100%" class="accessibilitySpacing">
 				<tr>
-					<th width="130" align="right">Street Address 1:</th>
+					<th width="130" align="right"><label for="address1">Street Address 1:</label></th>
 					<td><input name="address1" id="address1" class="gcCheckAddress-address1" value="" /></td>
 				</tr>
 				<tr valign="middle">
-					<th width="130" align="right">Street Address 2:</th>
+					<th width="130" align="right"><label for="address2">Street Address 2:</label></th>
 					<td><input name = "address2" class="gcCheckAddress-address2" id="address2" value="" /></td>
 				</tr>
 				<tr>
-					<th width="130" align="right">City/Town:</th>
+					<th width="130" align="right"><label for="city">City/Town:</label></th>
 					<td><input name="city" id="city" class="gcCheckAddress-city" value="" /></td>
 				</tr>
 				<tr>
 					<th width="130" align="right">State:</th>
-					<td><input type="radio" name="state" id="stateNY" value="NY" checked /> New York <input type="radio" name="state" id="stateNJ" value="NJ"/> New Jersey <br />
-					<input type="radio" name="state" id="stateCT" value="CT" /> Connecticut <input type="radio" name="state" id="statePA" value="PA" /> Pennsylvania <br/>
-					<input type="radio" name="state" id="stateDE" value="DE" /> Delaware <input type="radio" name="state" id="stateDC" value="DC" /> Washington, D.C. </td>
+					
+					<td><fieldset><legend class="offscreen">state:</legend><input type="radio" name="state" id="stateNY" value="NY" checked /> <label for="stateNY">New York </label><input type="radio" name="state" id="stateNJ" value="NJ"/> <label for="stateNJ">New Jersey</label><br />
+					<input type="radio" name="state" id="stateCT" value="CT" /><label for="stateCT"> Connecticut</label> <input type="radio" name="state" id="statePA" value="PA" /><label for="statePA"> Pennsylvania </label><br/>
+					<input type="radio" name="state" id="stateDE" value="DE" /> <label for="stateDE">Delaware</label> <input type="radio" name="state" id="stateDC" value="DC" /><label for="stateDC"> Washington, D.C. </label></fieldset></td>
 				</tr>
 				<tr>
-					<th width="130" align="right">ZIP Code:</th>
+					<th width="130" align="right"><label for="zipcode">ZIP Code:</label></th>
 					<td><input name="zipcode" id="zipcode" class="gcCheckAddress-zipcode" value="" /></td>
 				</tr>
 				<tr>

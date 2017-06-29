@@ -33,9 +33,8 @@ import com.freshdirect.smartstore.impl.ClassicYMALRecommendationService;
 import com.freshdirect.smartstore.impl.FavoritesRecommendationService;
 import com.freshdirect.smartstore.impl.FeaturedItemsRecommendationService;
 import com.freshdirect.smartstore.impl.ManualOverrideRecommendationService;
-import com.freshdirect.smartstore.impl.MostFrequentlyBoughtDyfVariant;
 import com.freshdirect.smartstore.impl.NullRecommendationService;
-import com.freshdirect.smartstore.impl.RandomDyfVariant;
+import com.freshdirect.smartstore.impl.ProductSampleRecommendationService;
 import com.freshdirect.smartstore.impl.ScriptedRecommendationService;
 import com.freshdirect.smartstore.impl.SmartSavingRecommendationService;
 import com.freshdirect.smartstore.impl.SmartYMALRecommendationService;
@@ -320,7 +319,11 @@ public class RecommendationServiceFactory {
 				LOGGER.error("cannot instantiate script recommender (fall back to NIL): " + variant.getId(), e);
 				return new NullRecommendationService(variant);
 			}
-		} else {
+        } else if (RecommendationServiceType.PRODUCT_SAMPLE.equals(serviceType)) {
+            service = new ProductSampleRecommendationService(variant, sampler, includeCartItems);
+        } else if (RecommendationServiceType.PRODUCT_DONATION.equals(serviceType)) {
+            service = new ProductSampleRecommendationService(variant, sampler, includeCartItems);
+        } else {
 			service = new NullRecommendationService(variant);
 		}
 

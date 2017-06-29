@@ -401,6 +401,7 @@ if ( skuSize == 0 ) {
 	       					onChangeText = "pricing.setSalesUnit(this.value);";
 	        			}
 	        		%>
+	        		<label><%= ( "".equals(__prd.getSalesUnitLabel()) || __prd.getSalesUnitLabel() == null ) ?"<span class=\"offscreen\">Please Choose</span>" :"<span class=\"offscreen\">"+ __prd.getSalesUnitLabel()+"</span>" %>
 	        		<select name="salesUnit" class="text11" style="width:165px" onChange="<%= onChangeText %>">
         		
 						<option value=""><%= __prd.getSalesUnitLabel() %></option>
@@ -413,6 +414,7 @@ if ( skuSize == 0 ) {
             				<option value="FDD">NEED HELP CHOOSING?</option>
             			<% } %>
         			</select><br/>
+        			</label>
         				
         		<% } else if ( (sellBySalesUnit != null) && (hasSingleSalesUnit) ) { %>
         			<input type="hidden" name="salesUnit" value="<%= defaultProduct.getSalesUnits()[0].getName() %>">
@@ -585,6 +587,8 @@ if ( skuSize == 0 ) {
 				            %>
 				                    
 				            <% if (!availableFDVarOptions.isEmpty()) { %>
+				               <label><%= ( "".equals(variation.getDescription()) || variation.getDescription() == null ) ?"<span class=\"offscreen\">Please Choose</span>" :"<span class=\"offscreen\">"+ variation.getDescription()+((variation.isOptional())?" (optional)":"")+"</span>" %>
+				            
 					            <select name="<%= charId %>" class="text11" style="width:165px" onChange="checkFDDefAndSetOption(this.form,'<%= charId %>',this.options[this.selectedIndex].value,'<%=fddefPop%>?catId=<%= __tempLine.getCategoryName() %>&prodId=<%= __tempLine.getProductName() %>&charName=<%=charName%>&tmpl=<%=large?lpop:spop%>&title=<%=title%>',<%=(large?largePopup:smallPopup).getHeight()%>,<%=(large?largePopup:smallPopup).getWidth()%>);">
 					            
 		            				<option value=""><%= variation.getDescription() %><% if (variation.isOptional()) { %> (optional) <% } %></option>
@@ -613,6 +617,7 @@ if ( skuSize == 0 ) {
 	            					<% } %>
 	            					
 	            				</select>
+	            				</label>
             				<% } %>
             				
             				<%
@@ -793,9 +798,9 @@ if ( skuSize == 0 ) {
                   <div class="qtyinput" style="<%= alignRight ? "float: right;" : "" %>">
                     <span class="qtymessage"><%= __prd.getQuantityText() %><% if (__prd.getQuantityMinimum() != 1) { out.println(" *"); } %></span>
                     <span class="qtyinputholder">
-                      <a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>);" class="quantity_minus"><div class="vahidden">Decrease quantity</div></a>
+                      <a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>);" class="quantity_minus">-<div class="vahidden">Decrease quantity</div></a>
                       <input class="qty" aria-label="quantity" type="text" size="4" name="quantity" maxlength="2" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"/>
-                      <a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);" class="quantity_plus"><div class="vahidden">Increase quantity</div></a>
+                      <a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);" class="quantity_plus">+<div class="vahidden">Increase quantity</div></a>
                     </span>
                   </div>
                   <div class="clear"><%@ include file="/shared/includes/product/i_minmax_note.jspf" %></div>
@@ -813,9 +818,9 @@ if ( skuSize == 0 ) {
                   <div class="qtyinput" style="<%= alignRight ? "float: right;" : "" %>">
                     <span class="qtymessage"><%= __prd.getQuantityText() %><% if (__prd.getQuantityMinimum() != 1) { out.println(" *"); } %></span>
                     <span class="qtyinputholder">
-                      <a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>);" class="quantity_minus"><div class="vahidden">Decrease quantity</div></a>
+                      <a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>);" class="quantity_minus">-<div class="vahidden">Decrease quantity</div></a>
                       <input class="qty" aria-label="quantity" type="text" size="4" name="quantity" maxlength="2" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"/>
-                      <a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);" class="quantity_plus"><div class="vahidden">Increase quantity</div></a>
+                      <a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);" class="quantity_plus">+<div class="vahidden">Increase quantity</div></a>
                     </span>
                     <span class="qtyprice">Price</span>
                     <input class="qtypriceinput" type="text" name="PRICE" size="6" onChange="" onFocus="blur()" value=""/>
@@ -835,9 +840,9 @@ if ( skuSize == 0 ) {
                   <div class="qtyinput" style="<%= alignRight ? "float: right;" : "" %>">
                     <span class="qtymessage"><%= __prd.getQuantityText() %><% if (__prd.getQuantityMinimum() != 1) { out.println(" *"); } %></span>
                     <span class="qtyinputholder">
-                      <a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>);" class="quantity_minus"><div class="vahidden">Decrease quantity</div></a>
+                      <a href="javascript:chgQty(<%= -__prd.getQuantityIncrement() %>);" class="quantity_minus">-<div class="vahidden">Decrease quantity</div></a>
                       <input class="qty" aria-label="quantity" type="text" size="4" name="quantity" maxlength="2" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"/>
-                      <a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);" class="quantity_plus"><div class="vahidden">Increase quantity</div></a>
+                      <a href="javascript:chgQty(<%= __prd.getQuantityIncrement() %>);" class="quantity_plus">+<div class="vahidden">Increase quantity</div></a>
                     </span>
                   </div>
                   <div class="clear"><%@ include file="/shared/includes/product/i_minmax_note.jspf" %></div>
@@ -855,7 +860,7 @@ if ( skuSize == 0 ) {
     					 
 
 	        				if ( displayEstimatedQuantity ) {
-	            				%><a href="javascript:popup('/help/estimated_price.jsp','small')" class="text11bold">Estimated</a>&nbsp;<input class="text11" type="text" name="EST_QTY" size="7" onChange="" onFocus="blur()" value="">
+	            				%><a href="javascript:popup('/help/estimated_price.jsp','small')" class="text11bold">Estimated</a>&nbsp;<input class="text11" type="text" aria-label="estimated quantity" name="EST_QTY" size="7" onChange="" onFocus="blur()" value="">
 	            				<%
 	        				} else if ( isPricedByLB ) {
 	            				%><a href="javascript:popup('/help/estimated_price.jsp','small')" class="text11bold">Estimated Price</a><%
@@ -863,7 +868,7 @@ if ( skuSize == 0 ) {
 	            				%>Price<%
 	        				}
 	
-	    					%>&nbsp;<input class="text11bold" type="text" name="PRICE" size="6" onChange="" onFocus="blur()" value="">
+	    					%>&nbsp;<input class="text11bold" aria-label="estimated price:" type="text" name="PRICE" size="6" onChange="" onFocus="blur()" value="">
 	    					
     					</td></tr>
 					<% } %>

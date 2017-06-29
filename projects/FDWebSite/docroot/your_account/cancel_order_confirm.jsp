@@ -10,7 +10,10 @@ final int W_YA_CANCEL_ORDER_CONFIRM = 970;
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <fd:CancelOrderFeedbackController successPage="/your_account/feedback_thank_you.jsp" result="result">
 <tmpl:insert template='/common/template/no_nav.jsp'>
-    <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Order Cancelled</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Your Account - Order Cancelled"/>
+  </tmpl:put>
+  <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Order Cancelled</tmpl:put>
     <tmpl:put name='content' direct='true'>
 
 <%

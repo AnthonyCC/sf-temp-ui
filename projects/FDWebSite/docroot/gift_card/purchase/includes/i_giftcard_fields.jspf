@@ -159,7 +159,7 @@ if (request.getParameter("fldMessage") !=null) {
         <td rowspan="10" width="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1" border="0" /></td>
         <td align="right" class="text12">
 			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
-				<label>*&nbsp;Your&nbsp;Name</label> 
+				<label for="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>">*&nbsp;Your&nbsp;Name</label> 
 			</span>
 		</td>
         <td rowspan="10" width="15"><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="1" border="0" /></td>
@@ -172,7 +172,7 @@ if (request.getParameter("fldMessage") !=null) {
     <tr>
         <td align="right" class="text12">
 			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
-				<label>*&nbsp;Your&nbsp;Email</label>
+				<label for="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>">*&nbsp;Your&nbsp;Email</label>
 			</span>
 		</td>
         <td colspan="2">
@@ -182,7 +182,7 @@ if (request.getParameter("fldMessage") !=null) {
     <tr>
         <td align="right" class="text12">
 			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_RECIPIENT_NAME.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
-				<label>*&nbsp;Recipient's&nbsp;Name</label>
+				<label for="<%= EnumUserInfoName.GC_RECIPIENT_NAME.getCode() %>">*&nbsp;Recipient's&nbsp;Name</label>
 			</span>
         </td>
         <td colspan="2">
@@ -195,25 +195,25 @@ if (request.getParameter("fldMessage") !=null) {
 				<label>*&nbsp;Delivery&nbsp;Method</label>
 			</span>
     	</td>
-    	<td colspan="2">
+    	<td colspan="2"><fieldset><legend class="offscreen">Delivery Method</legend>
 			<table border="0" cellpadding="0" cellspacing="0" width="100%">
 				<tr>
 					<td width="15">
 						<input type="radio" tabIndex="4"  class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode() %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode() %>Email" value="<%=value1%>" <%= value1Selected %> onclick="$('gcRecipientEmail').disabled=false; $('recipEmailStar').innerHTML='*';" />
     				</td>
-					<td width="25%">Email</td>
+					<td width="25%"><label for="<%= EnumUserInfoName.DLV_METHOD.getCode() %>Email">Email</label></td>
 					<td width="15">
 						<input type="radio" tabIndex="5"  class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>Pdf" value="<%=value2%>" <%= value2Selected %>  />
 					</td>
-					<td width="70%">I'll Download a PDF and Print It.</td>
+					<td width="70%"><label for="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>Pdf">I'll Download a PDF and Print It.</label></td>
 				</tr>
-			</table>
+			</table></fieldset>
     	</td>
     </tr>
     <tr>
         <td align="right" class="text12">
 			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode()%>">class="text11rbold"</fd:ErrorHandler> >
-				<span id="recipEmailStar">*</span><label>&nbsp;Recipient's&nbsp;Email</label>
+				<span id="recipEmailStar">*</span><label for="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>">&nbsp;Recipient's&nbsp;Email</label>
 			</span>
         </td>
         <td colspan="2">
@@ -221,7 +221,7 @@ if (request.getParameter("fldMessage") !=null) {
 	</td>
 	</tr>
 	<tr>
-		<td align="right" class="text12"><span <fd:ErrorHandler result="<%=result%>" name="fldAmount">class="text11rbold"</fd:ErrorHandler>><label>*&nbsp;Amount&nbsp;$</label></td>
+		<td align="right" class="text12"><span <fd:ErrorHandler result="<%=result%>" name="fldAmount">class="text11rbold"</fd:ErrorHandler>><label for="fldAmount">*&nbsp;Amount&nbsp;$</label></td>
     	<td colspan="2">
 			<table>
 				<tr>
@@ -240,7 +240,7 @@ if (request.getParameter("fldMessage") !=null) {
 						<input type="text" tabIndex="8"  maxlength="10" size="8" class="text9" name="fldAltAmount" id="fldAltAmount" value="<%=fldAltAmount%>" <%=!"".equalsIgnoreCase(fldAmount)?"":"disabled"%> onkeydown="$('fldAmount').value='OTHER';" />
 					</td>
 					<td>
-						<span style="white-space: nowrap;"><label>Enter amount<br>(min. $20.00)</label></span>
+						<span style="white-space: nowrap;"><label for="fldAltAmount">Enter amount<br>(min. $20.00)</label></span>
 					</td>
 				</tr>
 			</table>
@@ -251,7 +251,7 @@ if (request.getParameter("fldMessage") !=null) {
 	</tr>
     <tr>
 		<td align="right" class="text12" width="150">
-			<label>*&nbsp;Message<br />
+			<label for="fldMessage">*&nbsp;Message<br />
 			Type a personalized message over the default.<br />
 			<br />
 			150 character max.</label>

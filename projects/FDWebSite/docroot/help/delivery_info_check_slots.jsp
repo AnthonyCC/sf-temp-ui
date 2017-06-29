@@ -70,9 +70,6 @@ FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
   
 %>
 <tmpl:insert template='<%= pageTemplate %>'>
-	<tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="delivery_info_check_slots"></fd:SEOMetaTag>
-	</tmpl:put>
 	<tmpl:put name='title' direct='true'>Delivery Information</tmpl:put>
 	 <tmpl:put name="seoMetaTag" direct="true">
 		<fd:SEOMetaTag pageId="delivery_info_check"></fd:SEOMetaTag>

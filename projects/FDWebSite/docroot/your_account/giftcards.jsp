@@ -114,8 +114,8 @@ final int W_YA_GIFTCARDS = 970;
 			<tr valign="middle">
 				<td style="height: 25px;" align="center">
 					<!-- <img src="/media_stat/images/giftcards/your_account/card_enter.gif" width="400" height="21" alt="Have a New Gift card? Enter the Code Here" /> -->
-					<span class="Container_Top_YourAccGiftCard">Have a New Gift card? Enter the Code Here</span>
-					 <input type="text"name="givexNum" /> <input type="image" name="gcApplyCode" src="/media_stat/images/giftcards/your_account/apply_btn.gif" width="57" height="21" alt="APPLY" border="0" />
+					<span class="Container_Top_YourAccGiftCard"><label for="givexNum_field">Have a New Gift card? Enter the Code Here</label></span>
+					 <input type="text" id="givexNum_field" name="givexNum" /> <input type="image" name="gcApplyCode" src="/media_stat/images/giftcards/your_account/apply_btn.gif" width="57" height="21" alt="APPLY" border="0" />
 				</td>
 			</tr>
 			<tr>

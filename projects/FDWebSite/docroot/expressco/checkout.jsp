@@ -30,8 +30,6 @@ if (mobWeb) {
 %>
 <potato:pendingExternalAtcItem/>
 <potato:singlePageCheckout />
-<potato:cartData />
-
 
 <tmpl:insert template='<%= pageTemplate %>'>
   <tmpl:put name="soytemplates"><soy:import packageName="expressco"/></tmpl:put>
@@ -91,7 +89,9 @@ if (mobWeb) {
   <tmpl:put name="bottomnav">
     <div class="container checkout__footer">
         <p class="checkout__footer-rights"><%@ include file="/shared/template/includes/copyright.jspf" %></p>
-        <p class="checkout__footer-links"><a href='/help/privacy_policy.jsp' data-ifrpopup="/help/privacy_policy.jsp?type=popup" data-ifrpopup-width="600">Privacy Policy</a> | <a href="/help/terms_of_service.jsp" data-ifrpopup="/help/terms_of_service.jsp?type=popup" data-ifrpopup-width="600">Customer Agreement</a></p>
+		<fd:IncludeMedia name="/media/layout/nav/globalnav/footer/after_copyright_footer.ftl">
+			<p class="checkout__footer-links"><a href='/help/privacy_policy.jsp' data-ifrpopup="/help/privacy_policy.jsp?type=popup" data-ifrpopup-width="600">Privacy Policy</a> | <a href="/help/terms_of_service.jsp" data-ifrpopup="/help/terms_of_service.jsp?type=popup" data-ifrpopup-width="600">Customer Agreement</a></p>
+		</fd:IncludeMedia>
     </div>
   </tmpl:put>
 
@@ -102,22 +102,32 @@ if (mobWeb) {
   <tmpl:put name='content' direct='true'>
     <div id="expresscheckout">
       <div class="container">
-        <div class="header cartheader">
-          <div class="cartheader__text">
-            <h1 class="checkout icon-cart_fast-before">Checkout</h1>
-          </div><div class="cartheader__action_w_subtotal">
-            <div fdform-error-container="checkout">
-            </div>
-            <form fdform="checkout" action="#" id="checkoutbutton_top" fdform-disable-resubmit="true" fdform-disable-resubmit-selector=".cssbutton.orange" fdform-disable-resubmit-release="manual">
-              <soy:render template="expressco.checkoutButton" data="${singlePageCheckoutPotato}" />
-            </form>
-            <a class="etipping-addtip-text" href='#tipDropdown'>Add a Tip</a>
-          </div>
+        
+      	<div id="cartheader_co">
+	      	<div class="header cartheader">
+	          <% if (!mobWeb) { %>
+	          <div class="cartheader__text">
+	            <h1 class="checkout icon-cart_fast-before">Checkout</h1>
+	          </div><% } /* no spacing allowed */ %><div class="cartheader__action_w_subtotal">
+				<% if (!mobWeb) { %><div fdform-error-container="checkout"></div><% } %>
+	            <form fdform="checkout" action="#" id="checkoutbutton_top" fdform-disable-resubmit="true" fdform-disable-resubmit-selector=".cssbutton.orange" fdform-disable-resubmit-release="manual">
+	              <soy:render template="expressco.checkoutButton" data="${singlePageCheckoutPotato}" />
+	            </form>
+	            <a class="etipping-addtip-text" href='#tipDropdown'>Add a Tip</a>
+	          </div>
+	        </div>
+	        <%-- this needs to be AFTER the main header in mobweb (but still IN the header) --%>
+			<% if (mobWeb) { %><div fdform-error-container="checkout"></div><% } %>
         </div>
 		
 		
+         <% if (mobWeb) { %>
+         <div class="cartheader__text">
+           <h1 class="checkout icon-cart_fast-before">Checkout</h1>
+         </div>
+         <% } %>
         <div id="modifyorder">
-          <soy:render template="expressco.modifyorder" data="${cartDataPotato}" />
+          <soy:render template="expressco.modifyorder" data="${singlePageCheckoutPotato}" />
         </div>
 
         <%-- drawer --%>
@@ -125,31 +135,15 @@ if (mobWeb) {
         <div id="ec-drawer">
         </div>
         
-        
+
         <% if (!mobWeb) { /* no mobWeb for now */  %>
-			<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user)) { %>
-				<%-- APPDEV-5916 --%>
-				<div id="cartCarousels">
-					<potato:viewCart />
-					<soy:render template="expressco.checkoutTabbedCarousel" data="${viewCartPotato}" />
-					
-					<script>
-						/* make sure some tab has been loaded */
-						$jq('#cartCarousels').ready(function() {
-							if ($jq('.tabbed-carousel [data-component="tabitem"].selected').closest('.tabbed-carousel').find('[data-component="tabpanel"]').children().length === 0) {
-								$jq('.tabbed-carousel [data-component="tabitem"].selected').trigger('click');
-							}
-							/* flip to other tab in checkout */
-							var $tabs = $jq('.tabbed-carousel [data-component="tabitem"]').not('[data-sitefeature="PRODUCT_DONATIONS"]').not('[data-sitefeature="PRODUCT_SAMPLES"]');
-							if ($tabs.length) {
-								$tabs.first().trigger('click');
-							}
-						});
-					</script>
-				</div>
-			<% } %>
-		<% } %>
-       
+          <% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user)) { %>
+            <div id="cartCarousels">
+              <soy:render template="common.checkoutTabbedCarousel" data="${singlePageCheckoutPotato.carouselData}" />
+            </div>
+          <% } %>
+        <% } %>
+
         <div class="checkout-contentheader">
           <h2>Cart Details</h2>
           <a class="cssbutton green" href="/expressco/view_cart.jsp">Edit Cart</a>
@@ -167,14 +161,8 @@ if (mobWeb) {
       // potato loading
       window.FreshDirect.expressco = {};
       window.FreshDirect.expressco.data = <fd:ToJSON object="${singlePageCheckoutPotato}" noHeaders="true"/>
-		window.FreshDirect.expressco.viewCartPotato = <fd:ToJSON object="${viewCartPotato}" noHeaders="true"/>
       window.FreshDirect.metaData = window.FreshDirect.expressco.data.formMetaData;
       window.FreshDirect.pendingCustomizations = <fd:ToJSON object="${pendingExternalAtcItemPotato}" noHeaders="true"/>
-  		<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user)) { %>
-  			window.FreshDirect.expressco.viewCartPotato = <fd:ToJSON object="${viewCartPotato}" noHeaders="true"/>
-		<% } else { %>
-			window.FreshDirect.expressco.viewCartPotato = {};
-		<% } %>
     </script>
   </tmpl:put>
   

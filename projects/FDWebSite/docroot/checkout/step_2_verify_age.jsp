@@ -15,10 +15,10 @@ final int W_CHECKOUT_STEP_2_VERIFY_AGE_TOTAL = 970;
 
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
-<tmpl:put name="seoMetaTag" direct="true">
-	<fd:SEOMetaTag pageId=""></fd:SEOMetaTag>
-</tmpl:put>
-<tmpl:put name='title' direct='true'>FreshDirect - Checkout - Age Verification for orders containing alcohol</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Checkout - Age Verification for orders containing alcohol"/>
+  </tmpl:put>
+  <tmpl:put name='title'>FreshDirect - Checkout - Age Verification for orders containing alcohol</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <% FDUserI user = (FDUserI)session.getAttribute(SessionName.USER); %>
 <fd:AgeVerificationController result="result" successPage="/checkout/step_2_select.jsp" blockedAddressPage="/checkout/no_alcohol_address.jsp">

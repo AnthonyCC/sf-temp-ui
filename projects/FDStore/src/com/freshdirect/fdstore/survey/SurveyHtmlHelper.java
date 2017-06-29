@@ -231,7 +231,7 @@ public class SurveyHtmlHelper {
 	}
 
 	static String wrapText(String[] data, String style) {
-		return "<div class=\""+style+"\" style=\"line-height:22px; width: 100%;\">"+data[0]+"&nbsp;"+data[1]+"</div>";
+		return "<div class=\""+style+"\" style=\"line-height:22px; width: 100%;\">"+wrapLabel(data[0]+"&nbsp;"+data[1])+"</div>";
 	}
 	
 	static String wrapText(String data, boolean nobr) {
@@ -349,8 +349,8 @@ public class SurveyHtmlHelper {
 				answer=(FDSurveyAnswer)answers.get(i);
 				String value = answer.getName();
 				boolean checked = previousAnswers.contains(value) ? true: false;
-				temp.append(getInputTag(FDSurveyConstants.SINGLE_SELECT_INPUT, question.getName()+FDSurveyConstants.NAME_SEPERATOR+group, "", value, checked, false, ""));
-				temp.append(answer.getDescription());
+				temp.append("<label>"+getInputTag(FDSurveyConstants.SINGLE_SELECT_INPUT, question.getName()+FDSurveyConstants.NAME_SEPERATOR+group, "", value, checked, false, ""));
+				temp.append(answer.getDescription()+"</label>");
 				if (i==0 || i%2 == 0) {
 					temp.append("<br>");
 				}
@@ -461,7 +461,7 @@ public class SurveyHtmlHelper {
 			answers=question.getAnswersByGroup(group);
 		else
 			answers=question.getAnswers();
-		response.append("<select name=\"").append(question.getName()).append("\" style=\"width:"+width+"px;\" class=\"surveyText\">");
+		response.append("<select name=\"").append(question.getName()).append("\" style=\"width:"+width+"px;\" aria-label=\"please choose\" class=\"surveyText\">");
 		response.append("<option value=\"\" selected=\"selected\">"+chooseText+"</option>");
 		FDSurveyAnswer answer=null;
 		for(int i=0;i<answers.size();i++) {
@@ -588,18 +588,18 @@ public class SurveyHtmlHelper {
 					value = customResponseList.remove(0).toString();
 				else
 					value = "";
-				displayElements.add(answer.getDescription()
+				displayElements.add(wrapLabel(answer.getDescription()
 						+ getInputTag(FDSurveyConstants.TEXT_INPUT,
 								question.getName(),
 								FDSurveyConstants.OTHER_INPUT_STYLE, value,
-								false, disable, ""));
+								false, disable, "")));
 			} else if (isNoneOption(answer.getName())) {
 				String script = "onclick=\" " + FDSurveyConstants.CLEAR_SCRIPT
 						+ "(\'" + id + "\',this.checked)\" ";
-				displayElements.add(getInputTag(input, question
+				displayElements.add(wrapLabel(getInputTag(input, question
 						.getName(), FDSurveyConstants.NONE_INPUT_STYLE, value,
 						checked, false, script)
-						+ "&nbsp;" + answer.getDescription());
+						+ "&nbsp;" + answer.getDescription()));
 				/*
 				displayElements.add(getDivTag(getInputTag(input, question
 						.getName(), FDSurveyConstants.NONE_INPUT_STYLE, value,
@@ -607,9 +607,9 @@ public class SurveyHtmlHelper {
 						+ answer.getDescription());
 				*/
 			} else {
-				displayElements.add(getInputTag(input, question
+				displayElements.add(wrapLabel(getInputTag(input, question
 						.getName(), "", value, checked, disable, "")
-						+ "&nbsp;" + answer.getDescription());
+						+ "&nbsp;" + answer.getDescription()));
 				/*
 				displayElements.add(getDivTag(getInputTag(input, question
 						.getName(), "", value, checked, disable, ""))

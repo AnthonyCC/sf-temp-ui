@@ -15,7 +15,10 @@ String emailAddress = request.getParameter("emailAddress");
 <fd:CheckLoginStatus id="user" />
 <fd:ForgotPasswordController results="result" successPage='/index.jsp' password="password">	
 <tmpl:insert template='/common/template/no_site_nav.jsp'>
-	<tmpl:put name='title' direct='true'>FreshDirect - Forgot Your Password? - Enter Security Word</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Forgot Your Password? - Enter Security Word"/>
+  </tmpl:put>
+  <tmpl:put name='title' direct='true'>FreshDirect - Forgot Your Password? - Enter Security Word</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 			<%@ include file="/login/includes/retrieve_password.jspf" %>
 		</tmpl:put>

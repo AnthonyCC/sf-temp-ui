@@ -31,10 +31,9 @@
  * @param item list info
  */ 
 {template .editListInfo private="true" autoescape="true"}
-  <span class="name" data-listid="{$item.listId}"><span>{$item.name}</span> <i>({$item.count})</i></span>
-  <span class="rename"><label class="error"></label><input name="rename" maxlength="35" /></span>
-  <span class="default"><input type="radio" name="default" {if $item.default}checked{/if}/></span>
-  <span class="delete"><input type="checkbox" name="delete" id="list_delete_{$item.listId}" {if $item.delete}checked{/if}/></span>
+  <span class="name" data-listid="{$item.listId}" data-listname="{$item.name}"><label class="error"></label><label for="rename_{$item.name}" class="offscreen">Lists name</label><input id="rename_{$item.name}" name="rename" maxlength="35" value="{$item.name}"/></span>
+  <span class="default"><label><input type="radio" name="default" {if $item.default}checked{/if}/>Make Default List</label></span>
+  <span class="delete"><label><input type="checkbox" name="delete" id="list_delete_{$item.listId}" {if $item.delete}checked{/if}/>Delete List</label></span>
 {/template}
 
 /**
@@ -62,7 +61,7 @@
  * @param item list info
  */ 
 {template .editListInfoQS22 private="true" autoescape="true"}
-  <span class="name" data-listid="{$item.listId}" data-listname="{$item.name}"><label class="error"></label><input name="rename" maxlength="35" value="{$item.name}"/></span>
+  <span class="name" data-listid="{$item.listId}" data-listname="{$item.name}"><label class="error"></label><label for="rename_{$item.name}" class="offscreen">Lists name</label><input id="rename_{$item.name}" name="rename" maxlength="35" value="{$item.name}"/></span>
   <span class="default"><label><input type="radio" name="default" {if $item.default}checked{/if}/>Make Default List</label></span>
   <span class="delete"><label><input type="checkbox" name="delete" id="list_delete_{$item.listId}" {if $item.delete}checked{/if}/>Delete List</label></span>
 {/template}

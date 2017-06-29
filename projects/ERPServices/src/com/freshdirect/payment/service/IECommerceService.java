@@ -20,63 +20,100 @@ import com.freshdirect.content.attributes.AttributeException;
 import com.freshdirect.content.attributes.FlatAttributeCollection;
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.ErpActivityRecord;
-import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.customer.ErpEWalletModel;
 import com.freshdirect.customer.ErpGrpPriceModel;
+import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpRestrictedAvailabilityModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.ecommerce.data.common.Request;
-import com.freshdirect.ecommerce.data.delivery.AbstractRestrictionData;
 import com.freshdirect.ecommerce.data.delivery.AddressAndRestrictedAdressData;
 import com.freshdirect.ecommerce.data.delivery.AlcoholRestrictionData;
 import com.freshdirect.ecommerce.data.delivery.RestrictedAddressModelData;
 import com.freshdirect.ecommerce.data.delivery.RestrictionData;
 import com.freshdirect.ecommerce.data.delivery.sms.SmsAlertETAInfoData;
 import com.freshdirect.ecommerce.data.dlv.AddressData;
+import com.freshdirect.ecommerce.data.referral.FDReferralReportLineData;
+import com.freshdirect.ecommerce.data.referral.FDUserData;
+import com.freshdirect.ecommerce.data.referral.ReferralCampaignData;
+import com.freshdirect.ecommerce.data.referral.ReferralChannelData;
+import com.freshdirect.ecommerce.data.referral.ReferralHistoryData;
+import com.freshdirect.ecommerce.data.referral.ReferralObjectiveData;
+import com.freshdirect.ecommerce.data.referral.ReferralPartnerData;
+import com.freshdirect.ecommerce.data.referral.ReferralProgramData;
+import com.freshdirect.ecommerce.data.referral.ReferralProgramInvitationData;
+import com.freshdirect.ecommerce.data.referral.ReferralSearchCriteriaData;
+import com.freshdirect.ecommerce.data.referral.ReferralProgramInvitationData;
 import com.freshdirect.ecommerce.data.sessionimpressionlog.SessionImpressionLogEntryData;
+import com.freshdirect.ecommerce.data.smartstore.EnumSiteFeatureData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyResponseData;
 import com.freshdirect.ecommerce.data.survey.SurveyKeyData;
+import com.freshdirect.erp.EnumApprovalStatus;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ErpCOOLKey;
 import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
 import com.freshdirect.erp.SkuAvailabilityHistory;
 import com.freshdirect.erp.model.BatchModel;
+import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
+import com.freshdirect.erp.model.ErpClassModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
+import com.freshdirect.erp.model.ErpMaterialBatchHistoryModel;
+import com.freshdirect.erp.model.ErpMaterialModel;
+import com.freshdirect.erp.model.ErpMaterialPriceModel;
+import com.freshdirect.erp.model.ErpMaterialSalesAreaModel;
+import com.freshdirect.erp.model.ErpPlantMaterialModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
+import com.freshdirect.erp.model.ErpSalesUnitModel;
 import com.freshdirect.event.RecommendationEventsAggregate;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDGroupNotFoundException;
-import com.freshdirect.fdstore.FDPayPalServiceException;
+import com.freshdirect.fdstore.FDProduct;
+import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.SalesAreaInfo;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.ecoupon.model.CouponCart;
+import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
+import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityContext;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityLogModel;
+import com.freshdirect.fdstore.ecoupon.model.FDCouponCustomer;
+import com.freshdirect.fdstore.ecoupon.model.FDCouponEligibleInfo;
+import com.freshdirect.fdstore.ecoupon.model.FDCouponInfo;
+import com.freshdirect.fdstore.ecoupon.model.FDCustomerCouponHistoryInfo;
+import com.freshdirect.fdstore.ecoupon.model.FDCustomerCouponWallet;
+import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.event.FDRecommendationEvent;
 import com.freshdirect.framework.event.FDWebEvent;
+import com.freshdirect.framework.mail.EmailI;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
-import com.freshdirect.logistics.delivery.model.EnumRestrictedAddressReason;
 import com.freshdirect.logistics.delivery.model.OrderContext;
 import com.freshdirect.logistics.delivery.model.SiteAnnouncement;
 import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.payment.BINInfo;
 import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
+import com.freshdirect.payment.fraud.EnumRestrictedPaymentMethodStatus;
+import com.freshdirect.payment.fraud.RestrictedPaymentMethodCriteria;
+import com.freshdirect.payment.fraud.RestrictedPaymentMethodModel;
 import com.freshdirect.payment.gateway.ejb.FDGatewayActivityLogModel;
 import com.freshdirect.referral.extole.ExtoleServiceException;
 import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
 import com.freshdirect.referral.extole.model.ExtoleResponse;
 import com.freshdirect.referral.extole.model.FDRafCreditModel;
 import com.freshdirect.rules.Rule;
+import com.freshdirect.sap.SapOrderPickEligibleInfo;
+import com.freshdirect.security.ticket.Ticket;
 import com.freshdirect.sms.model.st.STSmsResponse;
+//import com.freshdirect.sap.ejb.SapException;
 
 public interface IECommerceService {
 
@@ -437,8 +474,8 @@ public interface IECommerceService {
 	public boolean checkForAlcoholDelivery(String scrubbedAddress, String zipcode, String apartment) throws RemoteException;
 	
     public String checkAddressForRestrictions(AddressData address) throws RemoteException;
-
-    public void sendReservationUpdateRequest(String  reservationId, ContactAddressModel address, String sapOrderNumber) throws RemoteException, FDPayPalServiceException;
+    
+	public void sendReservationUpdateRequest(String  reservationId, ContactAddressModel address, String sapOrderNumber) throws RemoteException;
 	
     public void sendSubmitOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
 			String unattendedInstr,String orderMobileNumber,String erpOrderId) throws RemoteException;
@@ -447,6 +484,8 @@ public interface IECommerceService {
 	
     public void sendModifyOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
 			String unattendedInstr,String orderMobileNumber,String erpOrderId) throws RemoteException;
+
+    
 
 	/*EwalletResponseData getToken(EwalletRequestData ewalletRequestData) throws RemoteException;
 	EwalletResponseData checkout(EwalletRequestData ewalletRequestData) throws RemoteException;
@@ -465,9 +504,232 @@ public interface IECommerceService {
 	EwalletResponseData expressCheckoutWithoutPrecheckout(EwalletRequestData ewalletRequestData) throws RemoteException;
 	//PayPal
 	EwalletResponseData addPayPalWallet(EwalletRequestData ewalletRequestData) throws RemoteException;*/
+    
+    public Ticket createTicket(Ticket ticket) throws RemoteException;
+    
+    public  Ticket updateTicket(Ticket ticket) throws RemoteException;
+    
+    public Ticket retrieveTicket(String key) throws RemoteException;
+    
+    public Map<String,String> getVariantMap(EnumSiteFeatureData feature) throws RemoteException;
+    
+	public Map<String,String> getVariantMap(EnumSiteFeatureData feature, Date date) throws RemoteException;
+	
+	public Map<String, Integer> getCohorts() throws RemoteException;
+	
+	public List<String> getCohortNames() throws RemoteException;
+	
+	public List<String> getVariants(EnumSiteFeatureData feature) throws RemoteException;
+	
+	public List<Date> getStartDates() throws RemoteException;
+	//cms manager
+	public String createFeedCmsFeed(String feedId, String storeId, String feedData) throws FDResourceException;
+	public String getCmsFeed(String storeID) throws FDResourceException;
+	
+	public void queryForFDXSalesPickEligible() throws RemoteException;
+	public void sendFDXEligibleOrdersToSap(List<SapOrderPickEligibleInfo> eligibleSapOrderLst) throws RemoteException;
 
+	public ErpMaterialBatchHistoryModel getMaterialBatchInfo() throws RemoteException;
+	
+	public int createBatch() throws RemoteException;
+	
+	public void updateBatchStatus(int batchNumber, EnumApprovalStatus batchStatus) throws RemoteException;
+	
+	public void loadData(int batchNumber, ErpMaterialModel model,
+			Map<String, ErpClassModel> createErpClassModel,
+			Map<ErpCharacteristicValuePriceModel, Map<String, String>> chMap)
+			throws RemoteException;
 
+	public void loadSalesUnits(int batchNumber, String materialNo,
+			Set<ErpSalesUnitModel> salesUnitModels) throws RemoteException;
 
+	public void loadPriceRows(int batchNumber, String materialNo,
+			List<ErpMaterialPriceModel> priceRowModels) throws RemoteException;
 
+	public void loadMaterialPlantsAndSalesAreas(int batchNumber, String materialNo,
+			List<ErpPlantMaterialModel> erpPlantModels,
+			List<ErpMaterialSalesAreaModel> salesAreaModels)
+			throws RemoteException;
 
+    public void loadAndSaveCoupons( FDCouponActivityContext context) throws RemoteException;
+	
+	public List<FDCouponInfo> getActiveCoupons() throws RemoteException;
+	
+	public List<FDCouponInfo> getActiveCoupons(Date lastModified) throws RemoteException;
+	
+	public FDCustomerCouponWallet getCouponsForUser(FDCouponCustomer couponCustomer, FDCouponActivityContext context) throws RemoteException;	
+	
+	public boolean doClipCoupon(String couponId, FDCouponCustomer couponCustomer, FDCouponActivityContext context) throws RemoteException;
+	
+	public Map<String, FDCouponEligibleInfo> evaluateCartAndCoupons(CouponCart couponCart, FDCouponActivityContext context) throws RemoteException;
+
+	public List<FDCouponInfo> loadCoupons(FDCouponActivityContext couponActivityContext) throws RemoteException;
+	
+	public List<FDCouponInfo> getCouponsForCRMSearch(String searchTerm) throws RemoteException;
+	
+	public void postSubmitPendingCouponTransactions() throws RemoteException;
+	
+	public void postCancelPendingCouponTransactions() throws RemoteException;
+	
+	public void postConfirmPendingCouponTransactions() throws RemoteException;
+	
+	public void postCouponOrder(ErpCouponTransactionModel couponTransModel, FDCouponActivityContext context) throws RemoteException;
+	
+	public int getMaxCouponsVersion() throws RemoteException;
+	
+	public List<FDCustomerCouponHistoryInfo> getCustomersCouponHistoryInfo(String customerId) throws RemoteException;
+	
+	public ErpCouponTransactionModel getConfirmPendingCouponTransaction(String saleId) throws RemoteException;
+	
+	public void updateCouponTransaction(ErpCouponTransactionModel transModel) throws RemoteException;
+	
+	public void postConfirmPendingCouponTransactions(String saleId) throws RemoteException;
+	
+	public List<String> getConfirmPendingCouponSales() throws RemoteException;
+	
+	public List<String> getSubmitPendingCouponSales() throws RemoteException;
+	
+	public void postSubmitPendingCouponTransactions(String saleId) throws RemoteException;
+	
+	public void enqueueEmail(EmailI email) throws RemoteException;
+	
+	public void updateReferralStatus(String referralId, String ststus)throws FDResourceException,  RemoteException;
+	
+	public void updateReferralProgram(ReferralProgramData refProgram) throws FDResourceException, RemoteException;
+	
+	public void updateReferralChannel(ReferralChannelData channel) throws FDResourceException, RemoteException;
+	
+	public void updateReferralCampaign(ReferralCampaignData campaign) throws FDResourceException, RemoteException;
+	
+	public void updateReferralPartner(ReferralPartnerData partner) throws FDResourceException, RemoteException;
+	
+	public void updateReferralObjective(ReferralObjectiveData objective) throws FDResourceException, RemoteException;
+	
+	public void removeReferralProgram(String refProgramId[]) throws FDResourceException, RemoteException;
+	
+	public void removeReferralChannel(String channelIds[]) throws FDResourceException, RemoteException;
+	
+	public void removeReferralCampaign(String campaignIds[]) throws FDResourceException, RemoteException;
+	
+	public void removeReferralPartner(String partnerIds[]) throws FDResourceException, RemoteException;
+	
+	public void removeReferralObjective(String objectiveIds[]) throws FDResourceException, RemoteException;
+	
+	public abstract ReferralChannelData createReferralChannel(ReferralChannelData channel) throws FDResourceException,  RemoteException;
+
+	public abstract ReferralPartnerData createReferralPartner(ReferralPartnerData partner) throws FDResourceException,  RemoteException;
+
+	public abstract ReferralObjectiveData createReferralObjective(ReferralObjectiveData objective) throws FDResourceException,  RemoteException;
+
+	public abstract ReferralCampaignData createReferralCampaign(ReferralCampaignData campaign) throws FDResourceException, RemoteException;
+
+	public abstract ReferralProgramData createReferralProgram(ReferralProgramData program) throws FDResourceException,  RemoteException;
+
+	public abstract ReferralHistoryData createReferralHistory(ReferralHistoryData history) throws FDResourceException,  RemoteException;
+	
+
+	//public abstract ReferralProgramInvitaionData createReferralInvitee(ReferralProgramInvitaionData referral, FDUserData user) throws FDResourceException,  RemoteException;
+
+	public abstract void storeReferral(ReferralProgramInvitationData referral, FDUserData user) throws FDResourceException, RemoteException;
+
+	public abstract ReferralProgramInvitationData loadReferralFromPK(String referralId) throws FDResourceException, RemoteException;
+
+	public abstract List<ReferralProgramInvitationData> loadReferralsFromReferralProgramId( String referralProgramId) throws FDResourceException, RemoteException;
+
+	public abstract List<ReferralProgramInvitationData> loadReferralsFromReferrerCustomerId(String referrerCustomerId) throws FDResourceException, RemoteException;
+
+	public abstract List<ReferralProgramInvitationData> loadReferralsFromReferralEmailAddress( String referralEmailAddress) throws FDResourceException, RemoteException;
+
+	public abstract List<FDReferralReportLineData> loadReferralReportFromReferrerCustomerId(String referrerCustomerId) throws FDResourceException, RemoteException;
+	
+	public abstract List<FDReferralReportLineData> loadReferralReportFromReferralCustomerId( String referralCustomerId) throws FDResourceException,	RemoteException;
+	
+	public FDProductInfo getProductInfo(String sku) throws FDSkuNotFoundException, RemoteException;
+
+	public FDProductInfo getProductInfo(String sku, int version) throws RemoteException;
+	
+	
+	public abstract List<ReferralProgramData> loadAllReferralPrograms() throws FDResourceException,	RemoteException;
+	
+	public abstract List<ReferralChannelData> loadAllReferralChannels() throws FDResourceException,	RemoteException;
+	
+	public abstract List<ReferralPartnerData> loadAllReferralpartners() throws FDResourceException,	RemoteException;
+	
+	public abstract List<ReferralObjectiveData> loadAllReferralObjective() throws FDResourceException,	RemoteException;
+	
+	public abstract List<ReferralCampaignData> loadAllReferralCampaigns() throws FDResourceException,	RemoteException;
+	
+	public abstract String loadReferrerNameFromReferralCustomerId( String referralCustomerId) throws FDResourceException, RemoteException;
+	public Collection getProductInfos(String[] skus) throws FDResourceException, RemoteException;
+	public abstract ReferralProgramData loadReferralProgramFromPK(String referralProgramId) throws FDResourceException, RemoteException;
+
+	public abstract ReferralProgramData loadLastestActiveReferralProgram() throws FDResourceException, RemoteException;
+	
+	public abstract ReferralChannelData getReferralChannleModel(String refChaId) throws FDResourceException,	RemoteException;
+	
+	public abstract ReferralCampaignData getReferralCampaigneModel(String refChaId) throws FDResourceException,	RemoteException;
+	
+	public abstract ReferralObjectiveData getReferralObjectiveModel(String refChaId) throws FDResourceException,	RemoteException;
+	
+	public abstract ReferralPartnerData getReferralPartnerModel(String refChaId) throws FDResourceException,	RemoteException;
+	
+	public abstract ReferralProgramData getReferralProgramModel(String refChaId) throws FDResourceException,	RemoteException;
+	
+	
+	public abstract List<ReferralProgramData> getReferralProgarmforRefChannel(String refChaIds[]) throws FDResourceException,	RemoteException;
+	
+	public abstract List<ReferralProgramData> getReferralProgarmforRefPartner(String refpartIds[]) throws FDResourceException,	RemoteException;
+	
+	public abstract List<ReferralProgramData> getReferralProgarmforRefCampaign(String refCampIds[]) throws FDResourceException,	RemoteException;
+	
+	public abstract List<ReferralProgramData> getReferralCampaignforRefObjective(String refObjIds[]) throws FDResourceException,	RemoteException;
+	
+	public abstract boolean isReferralPartnerNameExist(String refPartName) throws FDResourceException,	RemoteException;
+	 
+	public abstract boolean isReferralCampaignNameExist(String refCampName) throws FDResourceException,	RemoteException;
+	 
+	public abstract boolean isReferralObjectiveNameExist(String refObjName) throws FDResourceException,	RemoteException;
+	 
+	public abstract boolean isReferralChannelNameAndTypeExist(String name,String type)  throws FDResourceException,	RemoteException;
+	 
+	public abstract boolean isReferralProgramNameExist(String refPrgName) throws FDResourceException, RemoteException;
+
+	public abstract List<ReferralProgramData> getReferralPrograms(ReferralSearchCriteriaData criteria) throws FDResourceException, RemoteException;
+	  
+	public abstract List<ReferralChannelData> getReferralChannels(ReferralSearchCriteriaData criteria) throws FDResourceException, RemoteException;
+	  
+	public abstract List<ReferralCampaignData> getReferralCampaigns(ReferralSearchCriteriaData criteria)throws FDResourceException, RemoteException;
+	  
+	public abstract List<ReferralPartnerData> getReferralPartners(ReferralSearchCriteriaData criteria)throws FDResourceException, RemoteException;
+	  
+	public abstract List<ReferralObjectiveData> getReferralObjective(ReferralSearchCriteriaData criteria)throws FDResourceException, RemoteException;
+	
+	
+
+	public FDProduct getProduct(String sku, int version);
+	
+	public PrimaryKey createRestrictedPaymentMethod(RestrictedPaymentMethodModel restrictedPaymentMethod) throws RemoteException, FDResourceException;
+
+	public RestrictedPaymentMethodModel findRestrictedPaymentMethodByPrimaryKey(PrimaryKey pk) throws RemoteException;
+
+	public List<RestrictedPaymentMethodModel> findRestrictedPaymentMethodByCustomerId(String customerId, EnumRestrictedPaymentMethodStatus status) throws RemoteException;
+
+	public RestrictedPaymentMethodModel findRestrictedPaymentMethodByPaymentMethodId(String paymentMethodId, EnumRestrictedPaymentMethodStatus status) throws RemoteException;
+
+	public List<RestrictedPaymentMethodModel> findRestrictedPaymentMethods(RestrictedPaymentMethodCriteria criteria) throws FDResourceException, RemoteException;
+
+	public void storeRestrictedPaymentMethod(RestrictedPaymentMethodModel restrictedPaymentMethod) throws FDResourceException, RemoteException;
+
+	public void removeRestrictedPaymentMethod(PrimaryKey pk, String lastModifyUser) throws RemoteException, FDResourceException;
+
+	public List<RestrictedPaymentMethodModel> loadAllPatterns() throws FDResourceException, RemoteException;
+
+	public List<RestrictedPaymentMethodModel> loadAllRestrictedPaymentMethods() throws FDResourceException, RemoteException;
+
+	public List<RestrictedPaymentMethodModel> loadAllBadPaymentMethods() throws FDResourceException, RemoteException;
+
+	public boolean checkBadAccount(ErpPaymentMethodI erpPaymentMethod, boolean useBadAccountCache) throws FDResourceException, RemoteException;
+
+	public ErpPaymentMethodI findPaymentMethodByAccountInfo(
+			RestrictedPaymentMethodModel restrictedPaymentMethod) throws FDResourceException, RemoteException;
 }

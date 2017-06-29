@@ -23,11 +23,10 @@ final int W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL = 970;
 
 <fd:CheckLoginStatus id="yuzer" guestAllowed="false" redirectPage="/checkout/signup_ckt.jsp" />
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
-
-<tmpl:put name="seoMetaTag" direct="true">
-	<fd:SEOMetaTag pageId=""></fd:SEOMetaTag>
-</tmpl:put>
-<tmpl:put name='title' direct='true'>FreshDirect - Checkout - Choose Delivery Address</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Checkout - Choose Delivery Address"/>
+  </tmpl:put>
+  <tmpl:put name='title'>FreshDirect - Checkout - Choose Delivery Address</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <fd:DepotLoginController actionName='checkByDepotCode' successPage='/checkout/step_1_choose.jsp' result='result'>
 

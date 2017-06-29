@@ -13,10 +13,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>FreshDirect</title>
-  <%@ include file="/common/template/includes/i_javascripts.jspf" %>  
-  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
-  <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+    <title>FreshDirect</title>
+    <%@ include file="/common/template/includes/metatags.jspf" %>
+    <%@ include file="/common/template/includes/i_javascripts.jspf" %>  
+    <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 </head>
 <body>
 	

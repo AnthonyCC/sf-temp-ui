@@ -56,6 +56,7 @@ import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
+import com.freshdirect.webapp.ajax.analytics.service.GoogleAnalyticsDataService;
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.ajax.browse.SearchPageType;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData;
@@ -284,7 +285,7 @@ public class CmsFilteringFlow {
 
             populateSearchCarouselProductLimit(nav.getActivePage(), browseDataContext);
         }
-        return new CmsFilteringFlowResult(browseData, browseDataContext.getNavigationModel());
+        return new CmsFilteringFlowResult(browseData, null !=browseDataContext ? browseDataContext.getNavigationModel() :null);
     }
 
     
@@ -674,6 +675,9 @@ public class CmsFilteringFlow {
                     }
 
                 } 
+                if(null!=searchResults.getEmptyProductsPageBeacon())
+                	browseDataContext.getAdProducts().setHlEmptyProductsPagebeacon(searchResults.getEmptyProductsPageBeacon());
+                
                 if (null != searchResults.getPageBeacon()) {
                     StringBuffer PageBeacon = new StringBuffer(searchResults.getPageBeacon());
                     browseDataContext.getAdProducts().setPageBeacon(PageBeacon.append(updatedPageBeacon).toString());
@@ -685,6 +689,10 @@ public class CmsFilteringFlow {
         }
 
         relocateBrandFilterBasedOnCmsSetting(browseDataContext);
+
+        if (FilteringFlowType.SEARCH.equals(nav.getPageType())) {
+            browseDataContext.setGoogleAnalyticsData(GoogleAnalyticsDataService.defaultService().populateSearchGAData(browseDataContext.getSearchParams()));
+        }
 
         // populate browseData with filterLabels
         BrowseDataBuilderFactory.getInstance().populateWithFilterLabels(browseDataContext, navigationModel);
@@ -893,14 +901,16 @@ public class CmsFilteringFlow {
         browseDataContext = BrowseDataBuilderFactory.createBuilder(navigationModel.getNavDepth(), navigationModel.isSuperDepartment(), null).buildBrowseData(navigationModel, user,
                 nav);
 
-        if(displayHookLogicProducts(nav, user, contentNodeModel)){         //if(FDStoreProperties.isHookLogicEnabled()){  
+        if(displayHookLogicProducts(nav, user, contentNodeModel) && !nav.isPdp()){         //if(FDStoreProperties.isHookLogicEnabled()){  
             if(null != browseDataContext){
                 String catId = nav.getId();
                 Map<String, List<ProductData>> hlSelectionsofProductsList=new HashMap<String, List<ProductData>>();
                 Map<String, String> hlSelectionsofPageBeacons=new HashMap<String, String>();
                 Map<String, Integer> hlCatProductsCount=new HashMap<String, Integer>();
+                Map<String, String> hlCatEmptyProductPageBeacon=new HashMap<String, String>();
                 List<SectionContext> sectionContexts = browseDataContext.getSectionContexts();
-                getAdProductsByCategory(user, navigationModel, catId, hlSelectionsofProductsList, hlSelectionsofPageBeacons, sectionContexts, browseDataContext, hlCatProductsCount);
+                getAdProductsByCategory(user, navigationModel, catId, hlSelectionsofProductsList, hlSelectionsofPageBeacons, sectionContexts,
+                		browseDataContext, hlCatProductsCount, hlCatEmptyProductPageBeacon);
                 browseDataContext.getAdProducts().setHlSelectionOfProductList(hlSelectionsofProductsList);
                 browseDataContext.getAdProducts().setHlSelectionsPageBeacons(hlSelectionsofPageBeacons);
                 browseDataContext.getAdProducts().setHlCatProductsCount(hlCatProductsCount);
@@ -982,19 +992,21 @@ public class CmsFilteringFlow {
 		return isExcluded;
 	}
     private void getAdProductsByCategory(FDSessionUser user, NavigationModel navigationModel, String catId, Map<String, List<ProductData>> hlSelectionsofProductsList,
-            Map<String, String> hlSelectionsofPageBeacons, List<SectionContext> sectionContexts, BrowseDataContext browseDataContext, Map<String, Integer> hlCatProductsCount) throws FDResourceException {
+            Map<String, String> hlSelectionsofPageBeacons, List<SectionContext> sectionContexts, BrowseDataContext browseDataContext, Map<String, Integer> hlCatProductsCount,
+            Map<String, String> hlCatEmptyProductPageBeacon) throws FDResourceException {
         if (null != sectionContexts) {
             for (Iterator<SectionContext> iterator = sectionContexts.iterator(); iterator.hasNext();) {
                 SectionContext categorySectionsContext = iterator.next();
                 getAdProductsByCategory(user, navigationModel, categorySectionsContext.getCatId(), hlSelectionsofProductsList, hlSelectionsofPageBeacons,
-                        categorySectionsContext.getSectionContexts(), browseDataContext, hlCatProductsCount);
+                        categorySectionsContext.getSectionContexts(), browseDataContext, hlCatProductsCount, hlCatEmptyProductPageBeacon);
             }
-            getAdProductsByCategory(user, navigationModel, catId, hlSelectionsofProductsList, hlSelectionsofPageBeacons, browseDataContext, hlCatProductsCount);
+            getAdProductsByCategory(user, navigationModel, catId, hlSelectionsofProductsList, hlSelectionsofPageBeacons, browseDataContext, hlCatProductsCount, hlCatEmptyProductPageBeacon);
         }
     }
 
     private void getAdProductsByCategory(FDSessionUser user, NavigationModel navigationModel, String catId, Map<String, List<ProductData>> hlSelectionsofProductsList,
-            Map<String, String> hlSelectionsofPageBeacons, BrowseDataContext browseDataContext, Map<String, Integer> hlCatProductsCount) throws FDResourceException {
+            Map<String, String> hlSelectionsofPageBeacons, BrowseDataContext browseDataContext,
+            Map<String, Integer> hlCatProductsCount, Map<String, String> hlCatEmptyProductPageBeacon) throws FDResourceException {
 
         HLBrandProductAdRequest hLBrandProductAdRequest = new HLBrandProductAdRequest();
         hLBrandProductAdRequest.setUserId(user.getUser().getPK().getId());
@@ -1012,7 +1024,7 @@ public class CmsFilteringFlow {
             List<ProductModel> adPrducts = new ArrayList<ProductModel>();
 
             if (hlBrandAdProductsMeta != null) {
-            	hlCatProductsCount.put(catId, hlBrandAdProductsMeta.size());
+				hlCatProductsCount.put(catId, hlBrandAdProductsMeta.size());
             	
                 for (Iterator<HLBrandProductAdInfo> iterator = hlBrandAdProductsMeta.iterator(); iterator.hasNext();) {
                     HLBrandProductAdInfo hlBrandProductAdMetaInfo = iterator.next();
@@ -1032,6 +1044,10 @@ public class CmsFilteringFlow {
                     }
                 }
             }
+            else {
+            	hlCatEmptyProductPageBeacon.put(catId,	hlBrandProductAdResponse.getPageBeacon());	
+            }
+            
             List<FilteringSortingItem<ProductModel>> productResults = new ArrayList<FilteringSortingItem<ProductModel>>();
             if (null != adPrducts) {
                 for (ProductModel productModel : adPrducts) {
@@ -1042,6 +1058,7 @@ public class CmsFilteringFlow {
             List<ProductData> hlAvailableProductDataList = getProductDataList(user, productResults, navigationModel);
             hlSelectionsofProductsList.put(catId, hlAvailableProductDataList);
             buildHlCategoriesPageBeacon(hlSelectionsofPageBeacons, browseDataContext, user, productResults, catId);
+            browseDataContext.getAdProducts().setHlSelectionsEmptyProductsPageBeacons(hlCatEmptyProductPageBeacon);
         } catch (BrandProductAdServiceException e) {
             // TODO Auto-generated catch block
             LOG.warn("Exception while populating HookLogic Product for Categorypages: ", e);

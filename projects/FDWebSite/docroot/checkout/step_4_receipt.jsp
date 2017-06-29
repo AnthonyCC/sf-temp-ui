@@ -19,7 +19,7 @@
 // final java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 %>
-<% 
+<%
 	//expanded page dimensions
 	final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
 
@@ -28,13 +28,13 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 %>
 <fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
 <tmpl:insert template='/common/template/blank.jsp'>
-<tmpl:put name="seoMetaTag" direct="true">
-	<fd:SEOMetaTag pageId=""></fd:SEOMetaTag>
-</tmpl:put>
-<tmpl:put name='title' direct='true'>FreshDirect - Checkout - Order Placed</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Checkout - Order Placed"/>
+  </tmpl:put>
+  <tmpl:put name='title'>FreshDirect - Checkout - Order Placed</tmpl:put>
 <tmpl:put name='content' direct='true'>
-	
-	<% 
+
+	<%
 		FDSessionUser fdSessionUser = (FDSessionUser)session.getAttribute(SessionName.USER);
 		MasqueradeContext masqueradeContext = fdSessionUser.getMasqueradeContext();
 		if (masqueradeContext != null) {
@@ -51,14 +51,14 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 	<% } %>
 
 	<%
-		boolean _modifyOrderMode = false; 	
+		boolean _modifyOrderMode = false;
 		String _ordNum = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
-		
+
 		if(session.getAttribute("MODIFIED" + _ordNum) != null && session.getAttribute("MODIFIED" + _ordNum).equals(_ordNum)) {
 			_modifyOrderMode = true;
 		}
 		%>
-		
+
 		<fd:GetOrder id='order' saleId='<%=_ordNum%>'>
 			<script type="text/javascript">
 				<fd:CmShop9 order="<%=order%>"/>
@@ -71,12 +71,12 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 			</script>
 		</fd:GetOrder>
 		<%
-	
+
 		if (!_modifyOrderMode) {
 			FDUserI curruser = (FDUserI)session.getAttribute(SessionName.USER);
 			FDIdentity curridentity  = curruser.getIdentity();
 			ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(curridentity);
-			
+
 			FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(curridentity);
 			// if atleast one of the smsAlerts is none -- Will have to change this
 			if(FDStoreProperties.getSMSOverlayFlag() && fdCustomer.getCustomerSmsPreferenceModel().getSmsPreferenceflag()==null ){
@@ -90,7 +90,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 								var temp = new curvyCorners(settingsObj, document.getElementById(elemId)).applyCornersToAll();
 							}
 						}
-						
+
 						var ccSettings = {
 							tl: { radius: 18 },
 							tr: { radius: 18 },
@@ -101,12 +101,12 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 							antiAlias: true,
 							autoPad: true
 						};
-	
+
 						/* display an overlay containing a remote page */
 						function doSmsRemoteOverlay(olURL) {
 							var olURL = olURL || '';
 							if (olURL == '') { return false; }
-					
+
 							 Modalbox.show(olURL, {
 		                        loadingString: 'Loading Preview...',
 		                        title: ' ',
@@ -130,7 +130,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 		                        afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
 			                });
 						}
-						
+
 						function doSmsRemoteOverlay1(olURL) {
 							var olURL = olURL || '',
 								paramsVar;
@@ -141,13 +141,13 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 		                        loadingString: 'Loading Preview...',
 		                        title: ' ',
 		                        overlayOpacity: .80,
-		                        width: 750, 
+		                        width: 750,
 		                        centered: true,
 		                        method: 'post',
 		                        params: paramsVar,
 		                        closeValue: '<img src="/media/editorial/site_access/images/round_x.gif" />',
 		                        afterLoad: function() {
-			                        
+
                                     	$('MB_frame').style.border = '1px solid #CCCCCC';
 										$('MB_header').style.border = '0px solid #CCCCCC';
 										$('MB_header').style.display = 'block';
@@ -162,14 +162,14 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 		                        afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
 			                });
 						}
-						
+
 						doSmsRemoteOverlay('sms_alerts.jsp');
 					</script>
 		<% }
-				
-			}else if(cm.getMobilePreference() == null || (com.freshdirect.fdstore.customer.ejb.EnumMobilePreferenceType.SAW_MOBILE_PREF.getName()).equals(cm.getMobilePreference())) {		
+
+			}else if(cm.getMobilePreference() == null || (com.freshdirect.fdstore.customer.ejb.EnumMobilePreferenceType.SAW_MOBILE_PREF.getName()).equals(cm.getMobilePreference())) {
 				//session.removeAttribute("SMSSubmission"+ _ordNum);
-				if(session.getAttribute("SMSSubmission" + _ordNum) == null) { 
+				if(session.getAttribute("SMSSubmission" + _ordNum) == null) {
 					//Store the flag to capture the user has seen the window atleast once event
 					FDCustomerManager.storeSMSWindowDisplayedFlag(curridentity.getErpCustomerPK());
 					%>
@@ -181,7 +181,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 								var temp = new curvyCorners(settingsObj, document.getElementById(elemId)).applyCornersToAll();
 							}
 						}
-						
+
 						var ccSettings = {
 							tl: { radius: 6 },
 							tr: { radius: 6 },
@@ -192,12 +192,12 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 							antiAlias: true,
 							autoPad: true
 						};
-	
+
 						/* display an overlay containing a remote page */
 						function doRemoteOverlay(olURL) {
 							var olURL = olURL || '';
 							if (olURL == '') { return false; }
-					
+
 							 Modalbox.show(olURL, {
 		                        loadingString: 'Loading Preview...',
 		                        title: ' ',
@@ -221,7 +221,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 		                        afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
 			                });
 						}
-						
+
 						function doRemoteOverlay1(olURL) {
 							var olURL = olURL || '',
 								paramsVar;
@@ -232,13 +232,13 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 		                        loadingString: 'Loading Preview...',
 		                        title: ' ',
 		                        overlayOpacity: .80,
-		                        width: 750, 
+		                        width: 750,
 		                        centered: true,
 		                        method: 'post',
 		                        params: paramsVar,
 		                        closeValue: '<img src="/media/editorial/site_access/images/round_x.gif" />',
 		                        afterLoad: function() {
-			                        
+
                                     	$('MB_frame').style.border = '1px solid #CCCCCC';
 										$('MB_header').style.border = '0px solid #CCCCCC';
 										$('MB_header').style.display = 'block';
@@ -253,7 +253,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 		                        afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
 			                });
 						}
-						
+
 						doRemoteOverlay('sms_capture.jsp');
 					</script>
 		<% }
@@ -300,14 +300,14 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 			</tr>
 		</table>
 	</div>
-	
+
 	<% /* top rows (everything above the top solid line, line is in /checkout/includes/i_checkout_receipt.jspf) */	%>
-	
+
 	<table class="globalnav_top" border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_4_RECEIPT_TOTAL%>" style="margin-top: 5px;">
-		<tr valign="bottom">      
+		<tr valign="bottom">
 			<td colspan="2" width="<%=W_CHECKOUT_STEP_4_RECEIPT_TOTAL%>" align="right">
 			<%
-				if (user.isChefsTable()) {        
+				if (user.isChefsTable()) {
 			%>		<a href="/your_account/manage_account.jsp"><img src="/media_stat/images/template/checkout/loy_global_member_stars_2008.gif" width="314" height="9" alt="CLICK HERE FOR EXCLUSIVE CHEF'S TABLE OFFERS" vspace="0" border="0" /></a><br />
 			<%
 				}
@@ -317,15 +317,15 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 		<tr valign="bottom">
 			<td width="<%=W_CHECKOUT_STEP_4_RECEIPT_TOTAL-450%>">
 				<a href="/index.jsp">
-					<!--  
+					<!--
 					<img src="/media_stat/images/logos/fd_logo_md.gif" width="216" height="42" border="0" alt="FreshDirect" />
 					-->
 					<img src="/media/layout/nav/globalnav/fdx/fd-logo_v2.png" width="216" height="44" border="0" alt="FreshDirect" />
 				</a>
 			</td>
 			<td width="450" align="right">
-			
-				<% String dlvInfoLink = ""; 
+
+				<% String dlvInfoLink = "";
 					if (user.isPickupOnly()) {
 						dlvInfoLink = "/help/delivery_lic_pickup";
 					} else if (user.isDepotUser()) {
@@ -336,13 +336,13 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 						dlvInfoLink = "/help/delivery_info";
 							if (EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())) {
 								dlvInfoLink += "_cos";
-							} 
+							}
 					}
 				%>
-			
+
 				<div class="topnavitem" id="topnavitem_help">
 			    	<a href="/help/index.jsp?trk=gnav" style="margin-right: 10px;">Help</a>
-			    </div>    
+			    </div>
 			    <div class="topnavitem" id="topnavitem_deliveryInfo">
 			    	<a href="<%=dlvInfoLink%>.jsp">Delivery Info</a>
 			    </div>
@@ -365,31 +365,35 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 		sem_orderNumber = NVL.apply((String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER), "0");
 	%>
 	<%@include file="/checkout/includes/i_checkout_receipt_summary.jspf"%>
-	
+
 	<br />
 	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
-	
+
 	<% if (FDStoreProperties.isAdServerEnabled()) { %>
 		<table width="<%=W_CHECKOUT_RECEIPT_TOTAL%>" cellpadding="0" cellspacing="0">
 			<tr>
 				<td width="50%" style="border-right: solid 1px #CCCCCC; padding-right: 10px;" align="center">
-					<script type="text/javascript">
+					<div id='oas_ReceiptBotLeft'>
+            <script type="text/javascript">
 						OAS_AD('ReceiptBotLeft');
-					</script>
+					  </script>
+          </div>
 				</td>
 				<td width="50%" style="padding-left: 10px;" align="center">
-					<script type="text/javascript">
-						OAS_AD('ReceiptBotRight');
-					</script>
+          <div id='oas_ReceiptBotRight'>
+  					<script type="text/javascript">
+  						OAS_AD('ReceiptBotRight');
+  					</script>
+          </div>
 				</td>
-			</tr>		
+			</tr>
 		</table>
 	<% } %>
-	
+
 <% if (session != null && session.getAttribute(SessionName.USER) != null) { %>
 	<%
 		FDUserI sem_user = (FDUserI)session.getAttribute(SessionName.USER);
-		
+
 		if(sem_user != null && sem_user.getShoppingCart() != null && request.getRequestURI().startsWith("/checkout/step_4_receipt.jsp")) {
 			//Shared Pixel vars
 			String sem_validOrderCount = "0";
@@ -399,7 +403,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 			DecimalFormat sem_df = new DecimalFormat("0.00");
 				sem_cartSubtotal = NVL.apply((String)request.getAttribute("cartSubtotal"), "0").replace("$", "").replace(",","");
 				sem_cartSubtotal = sem_df.format(Double.parseDouble(sem_cartSubtotal));
-					
+
 			String sem_totalDiscountAmount = "0";
 				sem_totalDiscountAmount = NVL.apply((String)request.getAttribute("totalDiscountAmount"), "0").replace("$", "");
 				sem_totalDiscountAmount = sem_df.format(Double.parseDouble(sem_totalDiscountAmount));
@@ -407,13 +411,13 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 			String sem_defaultCounty = sem_user.getDefaultCounty();
 			String sem_totalCartItems = "0";
 				sem_totalCartItems = NVL.apply((Integer)request.getAttribute("totalCartItems"), 0).toString();
-	
+
 			/* Google AdWords Pixel */
 			%><fd:SemPixelIncludeMedia pixelNames="GoogleAdWords" /><%
-	
+
 			/* CheetahMail Pixel */
 			SemPixelModel semPixel_CM = FDSemPixelCache.getInstance().getSemPixel("CheetahMail");
-	
+
 			//add a param to the params sent to the FTL
 			semPixel_CM.setParam("subtotal", sem_cartSubtotal);
 			semPixel_CM.setParam("orderId", sem_orderNumber);
@@ -421,20 +425,20 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 			semPixel_CM.setParam("userCounty", sem_defaultCounty);
 			semPixel_CM.setParam("totalCartItems", sem_totalCartItems);
 			%><fd:SemPixelIncludeMedia pixelNames="CheetahMail" /><%
-		
+
 			/* TheSearchAgency Pixel */
 			if ( !isOrderModify ) { //do not send on order modify
 				//get ref to Pixel
 				SemPixelModel semPixel_TSA = FDSemPixelCache.getInstance().getSemPixel("TheSearchAgency");
-				
+
 				sem_cartSubtotal = sem_cartSubtotal.replace(".", "");
 				sem_totalDiscountAmount = sem_totalDiscountAmount.replace(".", "");
-	
+
 				//change triple zero ($0.00 -> 000) to single zero
 				if ("000".equals(sem_cartSubtotal)) { sem_cartSubtotal = "0"; }
 				if ("000".equals(sem_totalDiscountAmount)) { sem_totalDiscountAmount = "0"; }
-				
-	
+
+
 				//add a param to the params sent to the FTL
 				semPixel_TSA.setParam("subtotal", sem_cartSubtotal);
 				semPixel_TSA.setParam("orderId", sem_orderNumber);
@@ -442,20 +446,20 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 				semPixel_TSA.setParam("discountAmount", sem_totalDiscountAmount);
 				%><fd:SemPixelIncludeMedia pixelNames="TheSearchAgency" /><%
 			}
-			
+
 
 			/* Digo2 Pixel */
 			if ( !isOrderModify ) { //do not send on order modify
 				SemPixelModel semPixel_DIGO2 = FDSemPixelCache.getInstance().getSemPixel("DiGo2");
 				FDUserI user_DIGO2 = (FDSessionUser)session.getAttribute(SessionName.USER);
 				semPixel_DIGO2.clearParams();
-	
+
 				semPixel_DIGO2.setParam("checkout_receipt", "true");
 				semPixel_DIGO2.setParam("subtotal", sem_cartSubtotal);
 				semPixel_DIGO2.setParam("orderId", sem_orderNumber);
 				%><fd:SemPixelIncludeMedia pixelNames="DiGo2" /><%
 			}
-			
+
 		}
 	%>
 <% } %>

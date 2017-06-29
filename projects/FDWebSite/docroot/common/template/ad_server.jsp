@@ -28,7 +28,7 @@
 %><%@ page import='com.freshdirect.smartstore.fdstore.SmartStoreUtil'
 %><%@ page import='com.freshdirect.fdstore.zone.FDZoneInfoManager'
 %><%@ page import='com.freshdirect.fdstore.ZonePriceListing'
-%><%@ page import='com.freshdirect.webapp.util.JspMethods' 
+%><%@ page import='com.freshdirect.webapp.util.JspMethods'
 %><%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"
 %><%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"
 %><%@ taglib prefix="fd" uri="freshdirect"
@@ -37,7 +37,7 @@
 	private final static String CCL_NONELIGIBLE = "0";
 	private final static String CCL_INEXPERIENCED = "1";
 	private final static String CCL_EXPERIENCED = "2";
-	
+
 	private String cclExperienceLevel(FDUserI user) {
 		if (!user.isCCLEnabled())
 			return CCL_NONELIGIBLE;
@@ -50,8 +50,8 @@
 
 	if (FDStoreProperties.isAdServerEnabled()) {
 
-%><fd:SmartSavingsUpdate justCheckSavingVariantId="true"></fd:SmartSavingsUpdate><%	    
-		
+%><fd:SmartSavingsUpdate justCheckSavingVariantId="true"></fd:SmartSavingsUpdate><%
+
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 
 		QueryStringBuilder queryString = new QueryStringBuilder();
@@ -330,16 +330,16 @@
 					}
 				}
 			}
-			
+
 			if(user.getDefaultState()!=null){
 				queryString.addParam("state", user.getDefaultState());
 			}
 			if(user.isEbtAccepted()){
 				queryString.addParam("ebt_accepted", "true");
 			}
-			
+
 			// record cohort ID
-			queryString.addParam("cohort", user.getCohortName());			
+			queryString.addParam("cohort", user.getCohortName());
 		} else { //! user == null
 			if (request.getAttribute("RefProgId") != null) {
 				queryString.addParam("ref_prog_id", NVL.apply(
@@ -357,15 +357,15 @@
 			String zoneId = FDZoneInfoManager.findZoneId((null!=user.getSelectedServiceType()?user.getSelectedServiceType().getName():null), user.getZipCode());
 			if(zoneId.equalsIgnoreCase(ZonePriceListing.MASTER_DEFAULT_ZONE)){
 				queryString.addParam("mzid",zoneId);
-				
+
 			}else if(zoneId.equalsIgnoreCase(ZonePriceListing.RESIDENTIAL_DEFAULT_ZONE)||zoneId.equalsIgnoreCase(ZonePriceListing.CORPORATE_DEFAULT_ZONE)){
 				queryString.addParam("szid",zoneId);
-				queryString.addParam("mzid",ZonePriceListing.MASTER_DEFAULT_ZONE);				
+				queryString.addParam("mzid",ZonePriceListing.MASTER_DEFAULT_ZONE);
 			}else{
-				queryString.addParam("zid",zoneId);				
+				queryString.addParam("zid",zoneId);
 				zoneId = FDZoneInfoManager.findZoneId((null!=user.getSelectedServiceType()?user.getSelectedServiceType().getName():null),null);
 				queryString.addParam("szid",zoneId);
-				queryString.addParam("mzid",ZonePriceListing.MASTER_DEFAULT_ZONE);				
+				queryString.addParam("mzid",ZonePriceListing.MASTER_DEFAULT_ZONE);
 			}
 			}
 		}
@@ -379,7 +379,7 @@
 			String sp = URLDecoder.decode(request.getParameter("successPage").toString(), "UTF-8");
 			if (sp.indexOf("TSAPROMO") != -1) {
 				String pairs[] = sp.replace("?", "&").split("&");
-				
+
 			    for (String pair : pairs) {
 					 String name = null;
 					 String value = null;
@@ -389,7 +389,7 @@
 					 } else {
 						try {
 							name = URLDecoder.decode(pair.substring(0, pos), "UTF-8");
-							value = URLDecoder.decode(pair.substring(pos+1, pair.length()), "UTF-8");            
+							value = URLDecoder.decode(pair.substring(pos+1, pair.length()), "UTF-8");
 						} catch (UnsupportedEncodingException e) {
 							// Not really possible, throw unchecked
 						    throw new IllegalStateException("ad_server.jsp: No UTF-8");
@@ -401,7 +401,7 @@
 					}
 			    }
 			}
-		}		
+		}
 		if(request.getParameter("apc") != null) {
 			queryString.addParam("apc", request.getParameter("apc"));
 		}
@@ -409,11 +409,11 @@
 		if(user != null) {
 			queryString.addParam("sub", user.getShoppingCart().getSubTotal() + "");
 		}
-		
+
 		if (user != null) {
 			queryString.addParam("mobWeb", (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"))) + "");
 		}
-		
+
 		String sitePage = request.getAttribute("sitePage") == null ? "www.freshdirect.com"
 				: (String) request.getAttribute("sitePage");
 		String listPos = request.getAttribute("listPos") == null ? "SystemMessage"
@@ -455,8 +455,8 @@ function OAS_RICH(pos) {
 OAS_version = 11;
 if ((navigator.userAgent.indexOf('Mozilla/3') != -1) ||
   (navigator.userAgent.indexOf('Mozilla/4.0 WebTV') != -1))
-	OAS_version = 10;  
-  
+	OAS_version = 10;
+
 if (OAS_version >= 11)
   document.write('<scr' + 'ipt type="text/javascript" src="' + OAS_url + 'adstream_mjx.ads/' +
 OAS_sitepage + '/1' + OAS_rns + '@' +
@@ -474,14 +474,14 @@ function OAS_AD(pos) {
 	}
 
 		if (FDStoreProperties.getAdServerUsesDeferredImageLoading()) {
-%><iframe name="oasif" id="OAS_IF" width="1" height="1" src="about:blank" style="visibility: hidden; border: 0; position: absolute; top: 1px; left: 1px;"></iframe>
+%><iframe name="oasif" id="oas_IF" width="1" height="1" src="about:blank" style="visibility: hidden; border: 0; position: absolute; top: 1px; left: 1px;"></iframe>
 <script type="text/javascript">
 OAD_POS = OAS_listpos.split(/,/);
 
 
 function createOASFrame() {
 	// write static content to iframe
-	var ifr = document.getElementById('OAS_IF');
+	var ifr = document.getElementById('oas_IF');
 	var idoc;
 	if (ifr.contentWindow) {
 	  // IE way
@@ -494,19 +494,19 @@ function createOASFrame() {
 	// Inject IFRAME content
 	idoc.open();
 	idoc.writeln("<html><body>");
-	
+
 	// modified document.write function
 	idoc.writeln("<scr" + "ipt type='text/javascript'>");
 	idoc.writeln("document._fragment='';");
 	idoc.writeln("document.fwrite=function(str){document._fragment+=str};");
 	idoc.writeln("document._write=document.write;");
-	
+
     idoc.writeln("var ads_done = [];");
     idoc.writeln("var tries = 2;");
 <%for (int k = 0; k < listPosArray.length; k++) {%>
     idoc.writeln("ads_done['<%=listPosArray[k]%>'] = false;");
 <%}%>
-	
+
     idoc.writeln("function copy_ad(oas_id) {");
     idoc.writeln("  var done=false; document._fragment='';");
     idoc.writeln("  document.write=document.fwrite;OAS_RICH(oas_id);document.write=document._write;");
@@ -541,17 +541,17 @@ function createOASFrame() {
 
 
 	idoc.writeln("<\/script>");
-	
+
 	// Put placeholder DIVs
 <%for (int k = 0; k < listPosArray.length; k++) {%>
 	idoc.writeln("<div id='<%=listPosArray[k]%>'><\/div>");
 <%}%>
-	
+
 	// bootstrap loader
 	idoc.writeln('<scr' + 'ipt type="text/javascript" src="' + OAS_url + 'adstream_mjx.ads/' +
 	  OAS_sitepage + '/1' + OAS_rns + '@' +
 	  OAS_listpos + '?' + OAS_query + '" defer="defer"><\/script>');
-	
+
     // handlers
 	idoc.writeln("<scr" + "ipt type='text/javascript' defer='defer'>");
 	idoc.writeln("do_copy();");
@@ -573,7 +573,7 @@ if (isOldSafari) {
 
 
 function OAS_AD(pos) {
-	document.writeln('<div id="OAS_' + pos + '"><\/div>');
+	document.writeln('<div id="oas_' + pos + '"><\/div>');
 }
 
 // document.onDocumentLoaded = createOASIFrame;
@@ -594,7 +594,7 @@ function OAS_AD(pos) {
 %>
 <script>
 function OAS_DONE(oas_id) {
-	var e = document.getElementById('OAS_'+oas_id);
+	var e = document.getElementById('oas_'+oas_id);
 	if(window.jQuery && e) {
 		jQuery(e).trigger('OAS_DONE',[oas_id]);
 	}

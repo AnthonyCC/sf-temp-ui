@@ -20,7 +20,7 @@ public class CarouselService {
 
 	private static final Logger LOGGER = LoggerFactory.getInstance(CarouselService.class);
 
-	private static CarouselService INSTANCE = new CarouselService();
+    private static final CarouselService INSTANCE = new CarouselService();
 
 	private CarouselService() {
 	}
@@ -47,7 +47,7 @@ public class CarouselService {
 	 */
 	public CarouselData createCarouselData(String id, String name, List<ProductModel> products, FDSessionUser user, String cmEventSource, String variantId) {
 		CarouselData carousel = null;
-		if (products.size() > 0) {
+        if (!products.isEmpty()) {
 			carousel = new CarouselData();
 			carousel.setId(id);
 			carousel.setName(name);
@@ -70,7 +70,7 @@ public class CarouselService {
 				}
 			}
 			carousel.setProducts(productDatas);
-		}
+        }
 		return carousel;
 	}
 }

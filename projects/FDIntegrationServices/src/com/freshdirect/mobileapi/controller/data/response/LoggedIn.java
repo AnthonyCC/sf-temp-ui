@@ -29,7 +29,9 @@ public class LoggedIn extends Message {
     private String newUser;
 
 	private int orderCount;
-    
+
+    private int fdxOrderCount;
+
     //Added during Mobile Coremetrics Implementation
     private String selectedServiceType;
     private String cohort;
@@ -73,7 +75,15 @@ public class LoggedIn extends Message {
 		this.orderCount = orderCount;
 	}
 
-	public String getCustomerServicePhoneNumber() {
+    public int getFdxOrderCount() {
+        return fdxOrderCount;
+    }
+
+    public void setFdxOrderCount(int fdxOrderCount) {
+        this.fdxOrderCount = fdxOrderCount;
+    }
+
+    public String getCustomerServicePhoneNumber() {
         return customerServicePhoneNumber;
     }
 

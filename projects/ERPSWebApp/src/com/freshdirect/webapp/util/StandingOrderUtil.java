@@ -21,7 +21,6 @@ import org.apache.log4j.Category;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.CustomerRatingI;
@@ -48,6 +47,7 @@ import com.freshdirect.fdlogistics.model.FDTimeslotList;
 import com.freshdirect.fdstore.EnumAvailabilityStatus;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -109,6 +109,8 @@ import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.TimeslotContext;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
+import com.freshdirect.payment.service.FDECommerceService;
+import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.DeliveryAddressValidator;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -718,9 +720,13 @@ public class StandingOrderUtil {
 	private static void sendSuccessMail ( FDStandingOrder so, FDCustomerInfo customerInfo, String orderId, List<FDCartLineI> unavCartItems, MailerGatewayHome mailerHome ) {
 		try {
 			FDOrderI order = FDCustomerManager.getOrder( orderId );
-			XMLEmailI mail = FDEmailFactory.getInstance().createConfirmStandingOrderEmail( customerInfo, order, so, unavCartItems );		
-			MailerGatewaySB mailer = mailerHome.create();
-			mailer.enqueueEmail( mail );
+			XMLEmailI mail = FDEmailFactory.getInstance().createConfirmStandingOrderEmail( customerInfo, order, so, unavCartItems );
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
+				FDECommerceService.getInstance().enqueueEmail(mail);
+			} else {		
+				MailerGatewaySB mailer = mailerHome.create();
+				mailer.enqueueEmail( mail );
+			}
 		} catch ( FDResourceException e ) {
 			LOGGER.error("sending success mail failed", e);
 		} catch ( RemoteException e ) {
@@ -733,9 +739,13 @@ public class StandingOrderUtil {
 	private static void sendNotificationMail ( FDStandingOrder so, FDCustomerInfo customerInfo, String orderId, MailerGatewayHome mailerHome ) {
 		try {
 			FDOrderI order = FDCustomerManager.getOrder( orderId );
-			XMLEmailI mail = FDEmailFactory.getInstance().createConfirmDeliveryStandingOrderEmail( customerInfo, order, so, null );		
-			MailerGatewaySB mailer = mailerHome.create();
-			mailer.enqueueEmail( mail );
+			XMLEmailI mail = FDEmailFactory.getInstance().createConfirmDeliveryStandingOrderEmail( customerInfo, order, so, null );
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
+				FDECommerceService.getInstance().enqueueEmail(mail);
+			} else {		
+				MailerGatewaySB mailer = mailerHome.create();
+				mailer.enqueueEmail( mail );
+			}
 		} catch ( FDResourceException e ) {
 			LOGGER.error("sending notification mail failed", e);
 		} catch ( RemoteException e ) {
@@ -762,7 +772,7 @@ public class StandingOrderUtil {
 	}
 	
 	protected static FDCartModel checkAvailability(FDIdentity identity, FDCartModel cart, long timeout) throws FDResourceException {
-		return FDCustomerManager.checkAvailability( identity, cart, timeout );
+		return FDCustomerManager.checkAvailability( identity, cart, timeout,AvailabilityService.ATP_CHECKOUT );
 	}
 
 	public List<FDProductSelectionI> getValidProductSelectionsFromCCLItems(List<FDCustomerListItem> cclItems) throws FDResourceException {

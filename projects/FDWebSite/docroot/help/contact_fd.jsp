@@ -135,6 +135,9 @@ if ("true".equalsIgnoreCase(overlay)) {
     		<jwr:style src="/mobileweb.css" media="all" /><%-- mobileweb should be last, for overriding --%>
     	<% } %>
    	</tmpl:put>
+    <tmpl:put name="seoMetaTag" direct='true'>
+      <fd:SEOMetaTag title="FreshDirect - Help - Contact Us"/>
+    </tmpl:put>
     <tmpl:put name='title' direct='true'>FreshDirect - Help - Contact Us</tmpl:put>
     <tmpl:put name='content' direct='true'>
     	<% if (mobWeb) { %>

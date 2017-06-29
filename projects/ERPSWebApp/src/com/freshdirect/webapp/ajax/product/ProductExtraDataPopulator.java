@@ -94,7 +94,7 @@ public class ProductExtraDataPopulator {
 	private static final java.text.DecimalFormat QTY_FORMATTER = new java.text.DecimalFormat("0");
 	private static final java.text.DecimalFormat TOTAL_FORMATTER = new java.text.DecimalFormat("0.00");
 
-	public static ProductExtraData createExtraData( FDUserI user, ProductModel product, String grpId, String grpVersion ) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
+	public static ProductExtraData createExtraData( FDUserI user, ProductModel product, String grpId, String grpVersion, boolean includeProductAboutMedia) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
 		
 		if ( product == null ) {
 			BaseJsonServlet.returnHttpError( 500, "product not found" );
@@ -104,7 +104,7 @@ public class ProductExtraDataPopulator {
 		ProductExtraData data = new ProductExtraData();
 		
 		// First populate product-level data
-		populateData( data, user, product, grpId, grpVersion );
+		populateData( data, user, product, grpId, grpVersion, includeProductAboutMedia );
 		
 		return data;
 	}
@@ -118,7 +118,7 @@ public class ProductExtraDataPopulator {
 		// Get the ProductModel
 		ProductModel product = PopulatorUtil.getProduct( productId, categoryId );
 		
-		return createExtraData( user, product, grpId, grpVersion );
+		return createExtraData( user, product, grpId, grpVersion, true );
 	}
 
     public static ProductExtraData createLightExtraData(FDUserI user, ProductModel product) throws HttpErrorResponse {
@@ -141,7 +141,7 @@ public class ProductExtraDataPopulator {
     }
 	
 	private static void populateData(ProductExtraData data, FDUserI user,
-			ProductModel productNode, String grpId, String grpVersion) throws FDResourceException, FDSkuNotFoundException {
+			ProductModel productNode, String grpId, String grpVersion, boolean incProductAboutMedia) throws FDResourceException, FDSkuNotFoundException {
 
 		final String popupPage = "/shared/popup.jsp";
 
@@ -208,7 +208,9 @@ public class ProductExtraDataPopulator {
 		if ( productNode.getProductAbout() != null ) {
 			TitledMedia tm = (TitledMedia) productNode.getProductAbout();
 			try {
-				data.setProductAboutMedia( fetchMedia(tm.getPath(), user, false) );
+				if(incProductAboutMedia){
+					data.setProductAboutMedia( fetchMedia(tm.getPath(), user, false) );
+				}
                 data.setProductAboutMediaPath(tm.getPath());
 			} catch (IOException e) {
                 LOG.error("Failed to fetch product about media " + tm.getPath(), e);
@@ -1010,8 +1012,7 @@ public class ProductExtraDataPopulator {
 				try {
 					products = FDFactory.getSkuFamilyInfo(productInfo.getMaterialNumber());
 				} catch (FDGroupNotFoundException e) {
-					
-					e.printStackTrace();
+					LOG.warn("No product family group exists for material: "+productInfo, e);
 				}
 				//skuCodes = products.getSkuList();
 				familyID = products.getFamilyId();
@@ -1019,15 +1020,16 @@ public class ProductExtraDataPopulator {
 				EhCacheUtil.putListToCache(EhCacheUtil.FD_FAMILY_PRODUCT_CACHE_NAME,familyID, products.getSkuList());
 				}
 			}
-			skuCodes = EhCacheUtil.getListFromCache(EhCacheUtil.FD_FAMILY_PRODUCT_CACHE_NAME, familyID);
+			if(null != familyID){
+				skuCodes = EhCacheUtil.getListFromCache(EhCacheUtil.FD_FAMILY_PRODUCT_CACHE_NAME, familyID);
+			}
 			
 			if(skuCodes == null&&familyID!=null){
 				
 				try {
 					products = FDFactory.getFamilyInfo(familyID);
 				} catch (FDGroupNotFoundException e) {
-					
-					e.printStackTrace();
+					LOG.warn("No product family group exists for material: "+productInfo, e);
 				}
 				skuCodes = products.getSkuList();
 				EhCacheUtil.putListToCache(EhCacheUtil.FD_FAMILY_PRODUCT_CACHE_NAME,familyID, products.getSkuList());
@@ -1112,7 +1114,6 @@ public class ProductExtraDataPopulator {
 		}
 			data.setFamilyProducts(familyProducts);
 		}
-		
         data.setCustomerServiceContact(user.getCustomerServiceContact());
 
         if (EnumEStoreId.FDX == CmsManager.getInstance().getEStoreEnum()) {

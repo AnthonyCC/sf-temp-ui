@@ -1,7 +1,6 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -96,6 +95,7 @@ public class SocialAccountService implements AccountService {
 	    
 	    if(socialUserProfile != null)
 	    {
+            ActionResult actionResult = new ActionResult();
 	    	//Set up the socialUserProfile in session so that you can track the user
 	    	session.setAttribute(SessionName.SOCIAL_USER,socialUserProfile);
 	    	
@@ -154,7 +154,10 @@ public class SocialAccountService implements AccountService {
 					 * The socialUserId has been linked with FD account. 
 					 * Auto Login.
 					 */
-				    String updatedSuccessPage = UserUtil.loginUser(session, request, response,null, socialUserId, null, "", this.updatedSuccessPage, true);
+                /* merge cart string MUST be passed here for social to do merge cart functionality */
+                String updatedSuccessPage = UserUtil.loginUser(session, request, response, actionResult, socialUserId, null, "/login/merge_cart.jsp", this.updatedSuccessPage, true);
+
+                session.setAttribute(SessionName.SOCIAL_LOGIN_PROVIDER, providerName);
 							    
 				    if(updatedSuccessPage != null) {
 				       //redirect to successpage
@@ -264,7 +267,10 @@ public class SocialAccountService implements AccountService {
 							return socialLoginAccountLinked;							
 						}else{							
 				    		// Auto login
-				    		UserUtil.loginUser(session, request, response,null, socialUserId, null, "", this.updatedSuccessPage, true);
+                        UserUtil.loginUser(session, request, response, actionResult, socialUserId, null, "", this.updatedSuccessPage, true);
+
+                        session.setAttribute(SessionName.SOCIAL_LOGIN_PROVIDER, providerName);
+
 				    		// APPDEV-4381 TC Accept.
 				    		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 				    		 if(!user.getTcAcknowledge()){
@@ -479,7 +485,7 @@ public class SocialAccountService implements AccountService {
 						//user = (FDSessionUser) session.getAttribute(USER);
 						LOGGER.debug(user.getIdentity().getErpCustomerPK());
 						LOGGER.debug(user.getUserId());
-						LOGGER.debug((String) pageContext.getSession().getAttribute("REFERRALNAME"));
+						LOGGER.debug(pageContext.getSession().getAttribute("REFERRALNAME"));
 						LOGGER.debug("Adding referral record for CID:" + user.getIdentity().getErpCustomerPK() + "-email:" + user.getUserId() + "-reflink:" + (String) pageContext.getSession().getAttribute("REFERRALNAME"));
 						String customerId = user.getIdentity().getErpCustomerPK();
 						String referralCustomerId = FDCustomerManager.recordReferral(customerId, (String) pageContext.getSession().getAttribute("REFERRALNAME"), user.getUserId());

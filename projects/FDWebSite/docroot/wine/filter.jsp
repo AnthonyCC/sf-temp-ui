@@ -20,8 +20,12 @@
 		}
 	}
 	
+	String title = "FreshDirect - " + pageName;
 	%>
-	<tmpl:put name="title" direct="true">FreshDirect - <%= pageName %></tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="<%= title %>"/>
+  </tmpl:put>
+  <tmpl:put name="title" direct="true"><%= title %></tmpl:put>
 
 	<tmpl:put name="content" direct="true">
 	<jsp:include page="/includes/layouts/wine_filter.jsp"/>

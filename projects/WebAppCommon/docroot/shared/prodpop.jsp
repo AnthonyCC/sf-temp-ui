@@ -10,12 +10,16 @@
 <fd:Department id='department' departmentId='<%= request.getParameter("deptId") %>'/>
 <%
     ContentNodeModel currentFolder = department;
+    String title = "FreshDirect - " + currentFolder.getFullName();
 %>
 
 <tmpl:insert template='/shared/template/pop_sm.jsp'>
 <fd:ProductGroup id='productNode' categoryId='<%= request.getParameter("catId") %>' productId='<%= request.getParameter("productId") %>'>
 
-<tmpl:put name='title' direct='true'>FreshDirect - <%= productNode.getFullName() %></tmpl:put>
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="<%= title %>"/>
+    </tmpl:put>
+    <tmpl:put name='title' direct='true'><%= title %></tmpl:put>
 
 <tmpl:put name='content' direct='true'>
 <table  width="100%" border="0" cellpadding="0" cellspacing="0">

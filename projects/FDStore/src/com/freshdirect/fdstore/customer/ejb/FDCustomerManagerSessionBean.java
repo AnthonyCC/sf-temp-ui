@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -132,6 +131,7 @@ import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -170,10 +170,12 @@ import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.PasswordNotExpiredException;
+import com.freshdirect.fdstore.customer.PendingOrder;
 import com.freshdirect.fdstore.customer.ProfileAttributeName;
 import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.fdstore.customer.RegistrationResult;
 import com.freshdirect.fdstore.customer.SavedRecipientModel;
+import com.freshdirect.fdstore.customer.SilverPopupDetails;
 import com.freshdirect.fdstore.customer.UnsettledOrdersInfo;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
@@ -253,10 +255,10 @@ import com.freshdirect.payment.gateway.GatewayType;
 import com.freshdirect.payment.gateway.Request;
 import com.freshdirect.payment.gateway.Response;
 import com.freshdirect.payment.gateway.impl.GatewayFactory;
+import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.referral.extole.RafUtil;
 import com.freshdirect.referral.extole.model.FDRafTransModel;
 import com.freshdirect.sap.command.SapCartonInfoForSale;
-import com.freshdirect.sap.command.SapCreateSalesOrder;
 import com.freshdirect.sap.ejb.SapException;
 import com.freshdirect.sms.SmsPrefereceFlag;
 import com.freshdirect.temails.TEmailRuntimeException;
@@ -3755,17 +3757,25 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 * @return Map of order line number / FDAvailabilityI objects
 	 */
 	public Map<String, FDAvailabilityI> checkAvailability(FDIdentity identity,
-			ErpCreateOrderModel createOrder, long timeout)
+			ErpCreateOrderModel createOrder, long timeout, String isFromLogin)
 			throws FDResourceException {
 		try {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 			Map<String,List<ErpInventoryModel>> erpInvs = sb.checkAvailability(new PrimaryKey(identity
-					.getErpCustomerPK()), createOrder, timeout);
+					.getErpCustomerPK()), createOrder, timeout, isFromLogin);
 
 			Map<String, FDAvailabilityI> fdInvMap = buildAvailability(
 					createOrder, erpInvs);
-
-			logATPFailures(createOrder, fdInvMap, identity.getErpCustomerPK());
+			
+			String transactionType = "";
+			
+			if(isFromLogin.equals("Login")){
+					transactionType = "LOGIN";
+			}
+			else{
+				transactionType = "CHECKOUT";
+			}
+			logATPFailures(createOrder, fdInvMap, identity.getErpCustomerPK(), transactionType);
 
 			return fdInvMap;
 		} catch (CreateException ce) {
@@ -3782,8 +3792,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		Map<String, FDAvailabilityI> fdInvMap = new HashMap<String, FDAvailabilityI>();
 		for (Iterator i = createOrder.getOrderLines().iterator(); i.hasNext();) {
 			ErpOrderLineModel ol = (ErpOrderLineModel) i.next();
-			List<ErpInventoryModel> inventories = (List<ErpInventoryModel>) erpInvs
-					.get(ol.getOrderLineNumber());
+			List<ErpInventoryModel> inventories = (List<ErpInventoryModel>) erpInvs.get(ol.getOrderLineNumber());
 
 			FDAvailabilityI fdInv;
 			switch (inventories.size()) {
@@ -3837,7 +3846,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 
 	private void logATPFailures(ErpCreateOrderModel createOrder,
-			Map<String, FDAvailabilityI> fdInvMap, String erpCustomerId)
+			Map<String, FDAvailabilityI> fdInvMap, String erpCustomerId, String actionType)
 			throws FDResourceException {
 		List<ATPFailureInfo> lst = new ArrayList<ATPFailureInfo>();
 		String plantId="1000";
@@ -3861,7 +3870,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				ATPFailureInfo fi = new ATPFailureInfo(requestedRange
 						.getStartDate(), ol.getMaterialNumber(), ol
 						.getQuantity(), ol.getSalesUnit(), sInfo.getQuantity(),
-						erpCustomerId,plantId);
+						erpCustomerId,plantId,actionType);
 				lst.add(fi);
 			}
 		}
@@ -8612,5 +8621,159 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} 
+	}
+	
+	public Map<String, List<PendingOrder>> getPendingDeliveries() throws FDResourceException{
+		Connection conn = null;
+		try{
+			conn = getConnection();
+			return FDCustomerOrderInfoDAO.getPendingDeliveries(conn);
+		}catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Some problem in getting Pending deliveries from database");
+		} finally {
+			close(conn);
+		}
+	}
+	
+	public static String INSERT_SILVER_POPUP = "insert into CUST.CUSTOMER_PUSHNOTIFICATION(CUSTOMER_ID,QUALIFIER,DESTINATION,CREATE_TIMESTAMP,UPDATE_TIMESTAMP,SEND_TIMESTAMP) values "
+			+ "(?,?,?,trunc(sysdate),trunc(sysdate),null)";
+	
+	public void insertSilverPopupDetails(SilverPopupDetails silverPopup)  throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;		
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(INSERT_SILVER_POPUP);
+			pstmt.setString(1, silverPopup.getCustomerId());
+			pstmt.setString(2, silverPopup.getQualifier());
+			pstmt.setString(3, silverPopup.getDestination());
+			pstmt.execute();
+			LOGGER.debug("insertSilverPopupDetails in Process Successful Insert of Customer_id, Qualifier, Destination, Creat_Timestamp and Updated_Timestamp into our DataBase for cutomer_id "+silverPopup.getCustomerId());
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+	}	
+	
+	public static String UPDATE_SILVER_POPUP = "update CUST.CUSTOMER_PUSHNOTIFICATION set QUALIFIER =?,DESTINATION =?,UPDATE_TIMESTAMP=trunc(sysdate) where customer_id=?";
+	
+	public void updateSilverPopupDetails(SilverPopupDetails silverPopup)  throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;		
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(UPDATE_SILVER_POPUP);
+			pstmt.setString(1, silverPopup.getQualifier());
+			pstmt.setString(2, silverPopup.getDestination());
+			pstmt.setString(3, silverPopup.getCustomerId());
+			pstmt.execute();
+			LOGGER.debug("updateSilverPopupDetails in Process Successful Update of Qualifier, Destination and Updated_Timestamp into our DataBase for cutomer_id: "+silverPopup.getCustomerId());
+		} catch (SQLException sqle) {
+			LOGGER.info("updateSilverPopupDetails IN PROCESS FAILED... "+silverPopup.getCustomerId());
+			throw new FDResourceException(sqle, "Unable to store FDUser");
+		} finally {
+			close(conn);
+		}
+	}		
+
+	public static String SELECT_SILVER_POPUP = "select count(*) as SP_COUNT from CUST.CUSTOMER_PUSHNOTIFICATION where CUSTOMER_ID=? and QUALIFIER=? and DESTINATION=?";
+	
+	public boolean insertOrUpdateSilverPopup(SilverPopupDetails silverPopup) throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		boolean isCustomerHasSP = false;
+		if (null != silverPopup && null != silverPopup.getCustomerId()) {
+			try {
+				conn = getConnection();
+				ps = conn.prepareStatement(SELECT_SILVER_POPUP);
+				ps.setString(1, silverPopup.getCustomerId());
+				ps.setString(2, silverPopup.getQualifier());
+				ps.setString(3, silverPopup.getDestination());
+				LOGGER.info("Exicuting Query "+SELECT_SILVER_POPUP+" in insertOrUpdateSilverPopup");
+
+				rs = ps.executeQuery();
+
+				while (rs.next()) {
+
+					if (Integer.valueOf(rs.getString("SP_COUNT")) > 0) {
+						LOGGER.debug("got the Count as SP_COUNT > 0, going into updateSilverPopupDetails");
+						isCustomerHasSP = true;
+						break;
+					}
+				}
+				if (isCustomerHasSP) {
+					updateSilverPopupDetails(silverPopup);
+				} else {
+					insertSilverPopupDetails(silverPopup);
+				}
+			} catch (SQLException exc) {
+				LOGGER.info("insertOrUpdateSilverPopup IN PROCESS FAILED... " + silverPopup.getCustomerId());
+				throw new FDResourceException(exc, "Unable to store SilverPopup details");
+			} finally {
+				if (rs != null) {
+					try {
+						rs.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+				}
+				if (ps != null) {
+					try {
+						ps.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		return true;
+	}
+	
+	public List<SilverPopupDetails> getSilverPopupDetails() throws FDResourceException{
+		Connection conn = null;
+		try{
+			conn = getConnection();
+			return FDCustomerOrderInfoDAO.getSilverPopupDetails(conn);
+		}catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Some problem in getting Silver popup from database");
+		} finally {
+			close(conn);
+		}
+	}	
+	
+	public static String UPDATE_SP_DETAILS = "update CUST.CUSTOMER_PUSHNOTIFICATION set SEND_TIMESTAMP=trunc(sysdate) where CUSTOMER_ID=? and QUALIFIER =? and DESTINATION =? ";
+	
+	public void updateSPSuccessDetails(SilverPopupDetails silverPopup)  throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;		
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(UPDATE_SP_DETAILS);
+			pstmt.setString(1, silverPopup.getCustomerId());
+			pstmt.setString(2, silverPopup.getQualifier());
+			pstmt.setString(3, silverPopup.getDestination());
+			pstmt.execute();
+			LOGGER.info("updateSPSuccessDetails in Process Successful Push to IBM for "+silverPopup.getCustomerId());
+		} catch (SQLException sqle) {
+			LOGGER.info("updateSPSuccessDetails IN PROCESS FAILED... "+silverPopup.getCustomerId());
+			throw new FDResourceException(sqle, "Unable to store FDUser");
+		} finally {
+			close(conn);
+		}
+	}
+	
+	
+	public String getCookieByFdCustomerId(String fdCustomerId) throws FDResourceException{
+		Connection conn = null;
+		try{
+			conn = getConnection();
+			return FDUserDAO.getCookieByFdCustomerId(conn, fdCustomerId);
+		}catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Error in getting cookie from database");
+		} finally {
+			close(conn);
+		}
 	}
 }

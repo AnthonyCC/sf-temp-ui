@@ -3,7 +3,6 @@ FreshDirect.standingorder.isSelectFrequencyChanged = false;
 var soName = "";
 var isNewSOCreated = false;
 var isActiveDrawerOpen = false;
-var drawerSuccessConformationDate;
 
 $jq( document ).ready(function() {
 	if($jq(".standing-orders-3-newso-drawer-container").length){
@@ -61,10 +60,9 @@ function standingOrderNewCancel(){
 }
 
 function newStandingOrderInfoCheck(){
-	if($jq("[fdform='address'] input:checked").length && $jq("[fdform='payment'] input:checked").length && $jq("[fdform='timeslot'] input:checked").length && $jq(".standing-orders-3-name-input[name='soName']").val() != ""){
+	if($jq("[fdform='address'] input:checked").length && $jq("[fdform='payment'] input:checked").length && ($jq("[fdform='timeslot'] input:checked").length || $jq(".successtimeslot").length) && $jq(".standing-orders-3-name-input[name='soName']").val() != ""){
 		$jq(".standing-orders-3 .standing-orders-3-create-header .standing-orders-3-new-start-shop").removeAttr('disabled');
-	}
-	else {
+	} else {
 		$jq(".standing-orders-3 .standing-orders-3-create-header .standing-orders-3-new-start-shop").attr('disabled','disabled');
 	}
 }
@@ -84,7 +82,7 @@ function submitFormNewSO(action){
 		    	if(!isNaN(data)){
 		    		window.location.href="/";
 		    	} else {
-		    		$jq("body #create-so-page-loading").remove()
+		    		$jq("body #create-so-page-loading").remove();
 		    		$jq('#newsoErroMessage').html(data);
 		    	}
 	    	}
@@ -362,10 +360,17 @@ function getSOData(id, action){
         		soPlaceOrderDisplay(data.amount);
         		soSaved(id, activatedAndHasAddress, false);
         		updateSOItem(id, data);
+        		var drawerSuccessConformation = '<div class="so-drawer-success"><div class="so-drawer-success-header"><div class="so-drawer-success-alert-img"></div>Important -- Please Read!</div>';
         		if(data.isEligileToShowModifyInfo){
-        			drawerSuccessConformationDate = data.dayOfWeek + ", " + data.deliveryDate + ", " + data.deliveryTime;
-        			doOverlayDialogNew("/quickshop/includes/drawer_success_conformation.jsp");        			
+        			drawerSuccessConformation +='<div class="so-drawer-success-text">This change will not affect your next delivery.</div>';
         		}
+        		drawerSuccessConformation += '<hr class="so-drawer-success-hr" /><div class="so-drawer-success-info">Change will take effect: <span class="so-drawer-success-date">';
+        		if(data.deliveryDate == null){
+        			drawerSuccessConformation += '<a href="javascript:closeDrawerSuccessOverlayDialog(true)">Select a delivery time</a></span></div><button class="so-drawer-success-ok cssbutton cssbutton-flat green nontransparent" onclick="closeDrawerSuccessOverlayDialog(true)">OK</button></div>';
+        		} else {
+        			drawerSuccessConformation += data.dayOfWeek + ', ' + data.deliveryDate + ', ' + data.deliveryTime + '</span></div><button class="so-drawer-success-ok cssbutton cssbutton-flat green nontransparent" onclick="closeDrawerSuccessOverlayDialog(false)">OK</button></div>';
+        		}
+        		doOverlayDialogByHtmlNew(drawerSuccessConformation);
         	}
         	if('displayShopNow'==action){
         		if(data.displayCart){
@@ -376,6 +381,20 @@ function getSOData(id, action){
         	}
         }
  	});
+}
+
+function closeDrawerSuccessOverlayDialog(openTimeslot){
+	$jq(".overlay-dialog-new .ui-dialog-titlebar-close").click();
+	setTimeout(function() {
+		if(openTimeslot){
+			$jq("#ec-drawer #timeslot-tab .change").click();
+		}
+	}, 50);	
+}
+
+function disableTutorialOverlay(){
+	$jq('.so-feature-tutorial #so-feature-tutorial-checkbox:checked').prop( "disabled", true );
+	postStandingOrderData(0,'turnOffSoFeatureOverlay');
 }
 
 function selectFrequency(item){

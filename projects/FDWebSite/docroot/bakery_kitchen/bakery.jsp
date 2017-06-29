@@ -23,7 +23,7 @@
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <BODY BGCOLOR="White" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333" CLASS="text10" leftmargin=0 topmargin=0>
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>

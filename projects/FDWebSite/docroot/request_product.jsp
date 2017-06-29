@@ -48,8 +48,9 @@
 %>
 
 <tmpl:insert template='/shared/template/large_pop.jsp'>
-
-
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect -  Request a Product"/>
+    </tmpl:put>
 	<tmpl:put name='title' direct='true'>FreshDirect - Request a Product</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 
@@ -465,24 +466,24 @@
 					<td align="right" rowspan="2"><strong>Request<br /> #<%= n %><strong></td>
 					<td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" /></td>
 					<td>
-						<select id="dept_prod<%= n %>" name="dept_prod<%= n %>" class="text11" onchange="depts.populateCatsList('cat_prod<%= n %>', this.id);" style="width: 206px;">
+						<select id="dept_prod<%= n %>" aria-label="choose department" name="dept_prod<%= n %>" class="text11" onchange="depts.populateCatsList('cat_prod<%= n %>', this.id);" style="width: 206px;">
 						</select>
 					</td>
 					<td>
-						<select id="cat_prod<%= n %>" name="cat_prod<%= n %>" class="text11" style="width: 206px;" disabled="true">
+						<select id="cat_prod<%= n %>" aria-label="choose category" name="cat_prod<%= n %>" class="text11" style="width: 206px;" disabled="true">
 						</select>
 					</td>
 				</tr>
 				<tr>
 					<td style="padding-top: 12px;">
 						<div id="brandSearchContainer_prod<%= n %>" style="position: relative; z-index: <%= z %>;">
-							<input type="text" id="brandParams_prod<%= n %>" name="brandParams_prod<%= n %>" value="" style="width: 200px;" maxlength="50" class="text11" onfocus="fillVal(this.id);" onblur="fillVal(this.id, 'B');" value="Brand" />
+							<input type="text" id="brandParams_prod<%= n %>" aria-label="brand" name="brandParams_prod<%= n %>" value="" style="width: 200px;" maxlength="50" class="text11" onfocus="fillVal(this.id);" onblur="fillVal(this.id, 'B');" value="Brand" />
 							<div id="brands_prod<%= n %>" name="brands_prod<%= n %>" style="position: absolute;background-color: white" class="brandsAC selectFree"><!--[if lte IE 6.5]><iframe></iframe><![endif]--></div>
 						</div>
 			
 					</td>
 					<td style="padding-top: 12px;">
-						<input id="descrip_prod<%= n %>" name="descrip_prod<%= n %>" style="width: 200px;" maxlength="255" class="text11" onfocus="fillVal(this.id);" onblur="fillVal(this.id, 'D');" value="Description" />
+						<input id="descrip_prod<%= n %>" aria-label="description" name="descrip_prod<%= n %>" style="width: 200px;" maxlength="255" class="text11" onfocus="fillVal(this.id);" onblur="fillVal(this.id, 'D');" value="Description" />
 					</td>
 				</tr>
 				<% if (n<prodRequests) {%>

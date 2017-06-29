@@ -1585,14 +1585,14 @@ li.cleanli .gen-arrow {
 		#cartCarousels .tabbed-carousel.fullsize,
 		.product-sample-carousel,
 		.mm-page .product-sample-carousel [data-component="carousel"] [data-component="carousel-mask"] ul li,
-		#cartCarousels .tabbed-carousel .tab-container[data-cmsitefeature="PRODUCT_SAMPLES"] [data-component="carousel"] [data-component="carousel-mask"] ul li
+		#cartCarousels .tabbed-carousel .tab-container[data-cmsitefeature="PRODUCT_SAMPLE"] [data-component="carousel"] [data-component="carousel-mask"] ul li
 		{
 			width: 100% !important;
 		}
 		.product-sample-carousel h2.product-sample-header {
 			padding-right: 50px;
 		}
-		.mm-page #cartCarousels [data-cmsitefeature="PRODUCT_SAMPLES"] [data-component="carousel"],
+		.mm-page #cartCarousels [data-cmsitefeature="PRODUCT_SAMPLE"] [data-component="carousel"],
 		.product-sample-carousel [data-component="carousel"] {
 			padding: 0 36px !important;
 		}
@@ -1619,22 +1619,47 @@ li.cleanli .gen-arrow {
 
 /* CHECKOUT */
 	/* visual updates APPDEV-5966 */
+		[data-ec-page] .mm-page #ec-drawer {
+			padding: 0 10px;
+		}
 		[data-ec-page] .mm-page .mobweb-topnav {
 			position: fixed;
 			width: 100%;
 			z-index: 111; /* messages use ~100 */
 		}
-		[data-ec-page] .mm-page #cartheader {
+		[data-ec-page] .mm-page #expresscheckout:before {
+			background: none;
+		}
+		[data-ec-page] .mm-page #cartheader,
+		[data-ec-page] .mm-page #cartheader_co {
 			position: fixed;
 			background-color: #eee;
 			width: 100%;
-			z-index: 110;
+			z-index: 1110;
 		}
 		[data-ec-page] .mm-page .cartheader {
 			border-bottom: 1px solid #bbb;
 		}
-		[data-ec-page] .mm-page .cartheader__text {
-			display: none;
+		[data-ec-page] .mm-page [data-component="drawer"] .drawer-header h2,
+		[data-ec-page] .mm-page [data-component="drawer"] .drawer-header button.change {
+			margin-top: 10px;
+		}
+		[data-ec-page] .mm-page #cartheader_co .cartheader {
+			border-bottom: none;
+			padding: 10px 0;
+			margin-bottom: 0;
+		}
+		[data-ec-page] .mm-page #cartheader_co .etipping-addtip-text {
+		    padding-right: 0;
+		    position: absolute;
+		    left: 30px;
+		    top: 2em;
+		}
+		[data-ec-page] .mm-page #cartheader_co button.checkout_button_w_subtotal {
+			margin-right: 10px;
+		}
+		[data-ec-page] .mm-page .cartheader__text h1 {
+			font-size: 1.75em;
 		}
 		[data-ec-page] .mm-page .cartheader__text.mobweb {
 			display: block;
@@ -1666,8 +1691,8 @@ li.cleanli .gen-arrow {
 		[data-ec-page] .mm-page .cartheader__button:after {
 			top: 0.75em;
 		}
-		[data-ec-page] .mm-page #cartCarousels [data-cmsitefeature="PRODUCT_SAMPLES"] h2,
-		[data-ec-page] .mm-page #cartCarousels [data-cmsitefeature="PRODUCT_DONATIONS"] h2 {
+		[data-ec-page] .mm-page #cartCarousels [data-cmsitefeature="PRODUCT_SAMPLE"] h2,
+		[data-ec-page] .mm-page #cartCarousels [data-cmsitefeature="PRODUCT_DONATION"] h2 {
 			font-size: 12px;
 			white-space: normal;
 		}
@@ -1700,8 +1725,59 @@ li.cleanli .gen-arrow {
 		[data-ec-page] .mm-page .total .rowcell-text-right {
 			text-align: left;
 		}
+		[data-ec-page] .mm-page .cartsection__totalwrapper .subtotal__rowcell-right {
+			min-width: 150px;
+			text-align: left;
+		}
+		[data-ec-page] .mm-page #cartcontent .cartsection .cartsection__totalwrapper {
+			text-align: right;
+		}
+		[data-ec-page] .mm-page .eTippingEnabled .rowcontent-free-with-pass {
+			float: left;
+		}
 		[data-ec-page] .mm-page .total .st_val_totalAvalaratax {
 			max-width: 100px;
+		}
+		[data-ec-page] .mm-page .cartsection__tax form[fdform="etip"] {
+			width: 320px;
+   			float: right;
+    		margin-right: 20px;
+		}
+		[data-ec-page] .mm-page .eTippingEnabled .cartsection__totalwrapper {
+			width: auto;
+		}
+		
+		/* fix smaller screens */
+		@media screen and (max-width: 320px) {
+			[data-ec-page] .mm-page .checkout_button_w_subtotal {
+				max-width: 200px;
+			}
+			[data-ec-page] .mm-page .cartheader__subtotal {
+				width: 40%;
+			}
+			[data-ec-page] .mm-page .cartheader__action {
+				width: 60%;
+			}
+			.mm-page .drawer-content>ul {
+			    padding-left: 10px;
+			    margin: 0 11px 21px 0;
+			}
+			[data-ec-page] .mm-page .eTippingEnabled .cartsection__tax form {
+				width: 320px;
+			}
+			[data-ec-page] .mm-page .cartsection__tax form[fdform="etip"] {
+				float: none;
+				width: auto;
+			}
+			[data-ec-page] .mm-page .eTippingEnabled .cartsection__totalwrapper #optionaltip.subtotal__rowcell-left {
+				margin-right: 0;
+			}
+			[data-ec-page] .mm-page #payment-method-separator hr {
+				width: 105px;
+			}
+			[data-ec-page] .mm-page .eTippingEnabled .cartsection__totalwrapper .subtotal__rowcell-left {
+				width: 160px;
+			}
 		}
 		
 		/* bottom find out more text */
@@ -1736,6 +1812,13 @@ li.cleanli .gen-arrow {
 		[data-ec-page] .mm-page #optionaltip .strl_text {
 			white-space: nowrap;
 		}
+		[data-ec-page] .mm-page #cartheader .cartheader .cartheader__text {
+			display: none;
+		}
+		[data-ec-page] .mm-page [fdform-error-container="checkout"] span[fdform-error] {
+			text-align: left;
+			padding: 3px 10px;
+		}
 		
 	/* overlays */
 		.ec-popup.restrictionpopup {
@@ -1762,7 +1845,7 @@ li.cleanli .gen-arrow {
 	
 	.mm-page .cartheader__action_w_subtotal {
 		width: 100%;
-		text-align: center;
+		text-align: right;
 	}
 	.mm-page .etipping-addtip-text {
 		padding-right: 0;
@@ -1785,9 +1868,6 @@ li.cleanli .gen-arrow {
 	[data-drawer-id], 
 	[data-drawer-disabled] {
 		list-style-type: none;
-	}
-	[data-drawer-id] h2 {
-		/*display: inline-block;*/
 	}
 	/* drawer content popups */
 		#addaddresspopup .ec-popup.addaddresspopup {
@@ -2124,16 +2204,23 @@ li.cleanli .gen-arrow {
 		padding: 10px 5px 0 10px;
 	}
 	.mm-page #cartcontent .cartsection__cartline .cartline-delete{
-		width: 30%;
+		width: 20%;
 	}
 	.mm-page #cartcontent .cartsection__cartline .cartline-quantity{
-		width: 30%;
+		width: 40%;
 	}
 	.mm-page #cartcontent .cartsection__cartline .cartline-price{
 		width: 30%;
 	}
 	.mm-page #cartcontent .cartsection__cartline .cartline-legend{
 		width: 10%;
+	}
+	.mm-page #cartcontent .cartsection__cartline .cartline-delete .cartline-delete-image{
+		max-width: 21px;
+	}
+	.mm-page #cartcontent .cartsection__cartline .cartline-quantity .qtyinput input.qty{
+		width: 46px;
+		min-width: 46px;
 	}
 	.mm-page #cartcontent .cartsection__cartline .cartline-title .cartline-titleholder{
 	}
@@ -2148,7 +2235,8 @@ li.cleanli .gen-arrow {
 		max-width: 100%;
 	}
 	.mm-page #cartcontent .cartsection .cartsection__totalwrapper{
-		padding: 10px 5px;
+		margin: 0 10px;
+		padding: 0;
 	}
 	
 	.mm-page #cartcontent .total .total-right,
@@ -2162,6 +2250,7 @@ li.cleanli .gen-arrow {
 	}
 	.mm-page #cartcontent .total .total-right{
 		float: right;
+		margin-top: 10px;
 	}
 	.mm-page #cartcontent .total .total-right .subtotalboxes .subtotal__rowcell-left{
 		width: 140px;

@@ -153,7 +153,7 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 			</span>
 			<% } %>
 			<a href="<%= request.getRequestURI() %>?remove=1" name="remove_all" onClick='return confirm("Are you sure that you want to delete all items from your cart?");'>Delete All Items</a></td>
-			<td width="20" align="right"><a href="<%= request.getRequestURI() %>?remove=1" name="remove_all" onClick='return confirm("Are you sure that you want to delete all items from your cart?");'><img src="/media_stat/images/icon-trash.png" alt="Delete All Items" /></a></td>
+			<td width="20" align="right"><a href="<%= request.getRequestURI() %>?remove=1" name="remove_all" onClick='return confirm("Are you sure that you want to delete all items from your cart?");'><img src="/media_stat/images/icon-trash.png" alt="Delete All Items" style="max-width: 15px;" /></a></td>
 	</tr>
 </table>
 
@@ -250,7 +250,7 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 						<td colspan="5" align="right"><%= (!firstRecipe) ? "<img src=\"/media_stat/images/layout/clear.gif\" alt=\"\" width=\"1\" height=\"15\"><br>":""%>
 							<a href="<%= request.getRequestURI() + "?removeRecipe=" + cartLine.getRecipeSourceId() %>" onClick='return confirm("Are you sure that you want to delete recipe ingredients?");'>Delete all recipe ingredients</a></td>
 						<td width="20" align="right">
-							<a href="<%= request.getRequestURI() + "?removeRecipe=" + cartLine.getRecipeSourceId() %>" onClick='return confirm("Are you sure that you want to delete recipe ingredients?");'><img src="/media_stat/images/icon-trash.png" alt="Delete all recipe ingredients" /></a></td>
+							<a href="<%= request.getRequestURI() + "?removeRecipe=" + cartLine.getRecipeSourceId() %>" onClick='return confirm("Are you sure that you want to delete recipe ingredients?");'><img src="/media_stat/images/icon-trash.png" alt="Delete all recipe ingredients" style="max-width: 15px;" /></a></td>
 						</td>
 					</tr>
 					<tr><td colspan="11"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5"></td></tr>
@@ -327,7 +327,7 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 			<%  
 		} else {
 			%>
-			<td width="100" colspan="2">
+			<td colspan="2">
 				<div class='quantity_col <%= isFreeProd ? "product-sample-cart-quantity" : "" %>'>
 				<script>
 				function chgQty<%=idx%>(delta) {
@@ -364,9 +364,9 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 				FreshDirect.ClientCodes.saveQty(<%= idx %>, <%= cartLine.getQuantity() %>);
 				</script>
         <div class="qtyinput">
-          <a href="javascript:chgQty<%=idx%>(<%= -productNode.getQuantityIncrement() %>);" class="quantity_minus"><div class="vahidden">Decrease quantity</div></a>
+          <a href="javascript:chgQty<%=idx%>(<%= -productNode.getQuantityIncrement() %>);" class="quantity_minus">-<div class="vahidden">Decrease quantity</div></a>
           <input class="qty" aria-label="quantity" type="text" size="4" id="quantity_<%=idx%>" name="quantity_<%=idx%>" maxlength="5" value="<%= quantityFormatter.format(cartLine.getQuantity()) %>" onChange="chgQty<%=idx%>(0);" onBlur=""/>
-          <a href="javascript:chgQty<%=idx%>(<%= productNode.getQuantityIncrement() %>);" class="quantity_plus"><div class="vahidden">Increase quantity</div></a>
+          <a href="javascript:chgQty<%=idx%>(<%= productNode.getQuantityIncrement() %>);" class="quantity_plus">+<div class="vahidden">Increase quantity</div></a>
         </div>
 				<input name="rnd_<%=idx%>" type="hidden" value="<%= cartLine.getRandomId() %>">
 				</div>
@@ -493,7 +493,7 @@ List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
 			<%} %>
 			<td width="10"><b><%= cartLine.hasScaledPricing() || ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) ? "&nbsp;S" : "" %><%= cartLine.hasDepositValue() ? "&nbsp;D" : "" %></b></td>
 			<td width="60" align="right">&nbsp;<a href="<%= request.getRequestURI() %>?remove=1&cartLine=<%= cartLine.getRandomId() %>" class="note">Delete</A></td>
-			<td width="20" align="right"><a href="<%= request.getRequestURI() %>?remove=1&cartLine=<%= cartLine.getRandomId() %>" class="note"><img src="/media_stat/images/icon-trash.png" alt="Delete" /></a></td>
+			<td width="20" align="right"><a href="<%= request.getRequestURI() %>?remove=1&cartLine=<%= cartLine.getRandomId() %>" class="note"><img src="/media_stat/images/icon-trash.png" alt="Delete" style="max-width: 15px;" /></a></td>
 		</tr>
 
 		<%

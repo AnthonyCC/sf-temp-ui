@@ -1,6 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"
-%><%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" 
-%><%@ taglib uri="fd-data-potatoes" prefix="potato" 
+%><%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy"
+%><%@ taglib uri="fd-data-potatoes" prefix="potato"
 %><%@ page import="org.apache.commons.lang.StringEscapeUtils"
 %><%@ page import='com.freshdirect.webapp.util.JspMethods'
 %><%@page import="com.freshdirect.common.context.MasqueradeContext"
@@ -8,7 +8,7 @@
 <%@page import="com.freshdirect.webapp.taglib.location.LocationHandlerTag"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='logic' prefix='logic' %>
-<% 
+<%
 	boolean useFdxGlobalNav = FDStoreProperties.isFdxLocationbarEnabled();
 	Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 	String uri = request.getRequestURI().toLowerCase();
@@ -39,7 +39,7 @@
 		<jsp:include page="/shared/locationbar/locationbar_fdx.jsp" />
 		<jsp:include page="/shared/messages/messages_fdx.jsp" />
 	</div>
-	
+
 <% } else { %>
 
 	<div id="toptoolbar">
@@ -64,11 +64,11 @@ if(user != null) {
 		depotName = com.freshdirect.fdstore.FDDeliveryManager.getInstance().getDepot(user.getDepotCode()).getName();
 	}
 	sessionUserLevel = user.getLevel();
-    		
+
     request.setAttribute("listPos", "SystemMessage");
-    
+
     if (FDStoreProperties.isAdServerEnabled()) {
-		%><div id="OAS_SystemMessage">
+		%><div id="oas_SystemMessage">
   			<script type="text/javascript">OAS_AD('SystemMessage');</script>
   		</div>
 	<% } else { %>
@@ -90,12 +90,12 @@ if(user != null) {
 	<%@ include file="/common/template/includes/i_cutoff_warning.jspf"%>
 
     <div class="message invisible" id="deliveryetawarning" data-type="deliveryetawarning"><%@ include file="/common/template/includes/i_delivery_eta_info.jspf"%></div>
-    
+
 <!-- GLOBALNAV TOP -->
 	<div class="container globalnav_top<%= (onCartPage) ? " disableCart" : "" %><%= (useFdxGlobalNav) ? " hasFDX" : "" %>">
-		
+
 		<% if (useFdxGlobalNav) { %>
-			
+
 			<div class="nav<%= " "+hasEcouponsClass %>">
 				<a class="logo" href="/index.jsp"><img src="/media/layout/nav/globalnav/fdx/logo.png" alt="FreshDirect" border="0" /></a>
 				<%
@@ -121,14 +121,14 @@ if(user != null) {
 						<button id="topInputFindButton_fdx" class="locabar-search cssbutton fdxgreen cssbutton-flat"><span class="offscreen">search</span></button>
 					</form>
 				</div>
-				
+
 				<%-- nav links next to search field --%>
 		        <% if (user != null && user.getLevel() == FDUserI.GUEST) {  %>
-		        	<div class="topnavitem" id="topnavitem_signup">						
+		        	<div class="topnavitem" id="topnavitem_signup">
 						<a href="/registration/signup.jsp" class="signUpButton cssbutton orange" data-component="signup">Create Account</a>
 					</div>
 		        <% } %>
-		        
+
 		        <% if (user != null && user.getLevel() != FDUserI.GUEST && user.isEligibleForStandingOrders() && user.isNewSO3Enabled()) {  %>
 					<div class="topnavitem" id="topnavitem_standingorders">
 		            	<a href="/quickshop/standing_orders.jsp" class="cssbutton cssbutton-flat purple nontransparent" fd-login-required>Standing Orders</a>
@@ -148,9 +148,9 @@ if(user != null) {
 					//if(Boolean.TRUE == pageContext.getAttribute(LocationHandlerTag.SERVICE_TYPE_MODIFICATION_ENABLED)){
 						%><div class="topnavitem" id="topnavitem_dlvType"><%
 						if(user.isCorporateUser()){
-							%><a href="/index.jsp">Home delivery?</a><%			
+							%><a href="/index.jsp">Home delivery?</a><%
 						}else {
-							%><a href="/cos.jsp">Office delivery?</a><%			
+							%><a href="/cos.jsp">Office delivery?</a><%
 						}
 						%></div><%
 					//}
@@ -162,7 +162,7 @@ if(user != null) {
 					*/
 					%>
 				<% } %>
-				
+
 			    <br style="clear: both;" />
 			</div>
 		<% } else { %>
@@ -171,11 +171,11 @@ if(user != null) {
 	    	<% } else { %>
 				<a class="logo" href="/index.jsp" ><img src="/media/images/navigation/global_nav/fd_logo_on.png" border="0" alt="FreshDirect" name="FD_LOGO"></a>
 			<% } %>
-			
+
 			<div class="nav<%= " "+hasEcouponsClass %>">
 				<%-- nav links next to search field --%>
-				
-				
+
+
 					<form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
 						<label for="topSearchField">Search</label>
 						<%
@@ -188,12 +188,12 @@ if(user != null) {
 						%>
 						<input type="submit" id="topInputFindButton" value="Go">
 					</form>
-			
 
-				    
+
+
 				     <div class="topnavitem" id="topnavitem_yourAccount">
               <a href="/your_account/manage_account.jsp" fd-login-required>Your Account</a>
-				    </div> 
+				    </div>
             <div class="topnavitem" id="topnavitem_reorder">
               <a href="/quickshop/index.jsp" fd-login-required class="icon-reorder-icon-before">Reorder</a>
 				    </div>
@@ -211,15 +211,15 @@ if(user != null) {
 			                        dlvInfoLink += "_cos";
 			                    }
 			            }
-			        %> 
+			        %>
 				    <div class="topnavitem" id="topnavitem_deliveryInfo">
 				        <a href="<%=dlvInfoLink%>.jsp">Delivery Info</a>
 				    </div>
 				    <div class="topnavitem" id="topnavitem_help">
 				        <a href="/help/index.jsp?trk=gnav">Help</a>test
-				    </div> 
-				   
-				   
+				    </div>
+
+
 				<fd:GetCart id="cart">
 					<div id="sidecartbuttons">
 						<div class="buttons">
@@ -245,13 +245,13 @@ if(user != null) {
 			    </fd:GetCart>
 			</div>
 		<% } %>
-    
-		
-	</div>
-	
 
-	
-	
+
+	</div>
+
+
+
+
 <% } else { %>
 	<div class="container">
 		<% if (useFdxGlobalNav) { %>
@@ -260,16 +260,16 @@ if(user != null) {
 	    	<a href="/index.jsp" data-swapimage="/media/images/navigation/global_nav/fd_logo_on.png" border="0" data-swapimagename="FD_LOGO"><img src="/media/images/navigation/global_nav/fd_logo_off.gif" border="0" alt="FreshDirect" name="FD_LOGO"></a>
 	    <% } %>
 	</div>
-<% } %>  
+<% } %>
 
 <% if (!onCartPage) { %>
 	<!-- GLOBALNAV -->
 	<potato:globalnav/>
-	
+
 	<script>
 	globalNav=<fd:ToJSON object="${globalnav}" noHeaders="true"/>
 	</script>
-	
+
 	<div class="container global<%= (useFdxGlobalNav) ? " hasFDX" : "" %>">
 	    <nav class="gnav" data-component="globalnav">
 	        <c:if test="${not empty globalnav.media}">
@@ -283,9 +283,9 @@ if(user != null) {
 		<script type="text/javascript">
 
 		$jq(document).on('ready',  function() {
-			
+
 			doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/tcaccept_lite.jsp?successPage=nonIndex\' width=\'320px\' height=\'400px\' frameborder=\'0\' ></iframe>');
-				
+
 		});
 		</script>
 	<%}%>

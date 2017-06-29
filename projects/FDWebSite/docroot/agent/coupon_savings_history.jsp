@@ -152,7 +152,10 @@
 %>
 
 <tmpl:insert template='/common/template/no_border_nonav.jsp'>
-	<tmpl:put name='title' direct='true'>Coupons Savings History</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Coupons Savings History"/>
+  </tmpl:put>
+  <tmpl:put name='title'>FreshDirect - Coupons Savings History</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 	
 <link rel="stylesheet" href="/ccassets/css/promo.css" type="text/css">

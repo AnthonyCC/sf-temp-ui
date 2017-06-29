@@ -2,7 +2,6 @@ package com.freshdirect.webapp.taglib.fdstore;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,7 +35,8 @@ public class ExternalAccountService implements AccountService {
 	private String socialCustomMessage ="/social/social_custom_message.jsp";
 	String updatedSuccessPage ="/index.jsp";
 	
-	public String login(HttpSession session, HttpServletRequest request,
+	@Override
+    public String login(HttpSession session, HttpServletRequest request,
 			HttpServletResponse response){
 		
 		String userToken = (request.getParameter("userToken") == null) ? "" : (String) request.getParameter("userToken");
@@ -60,10 +60,11 @@ public class ExternalAccountService implements AccountService {
 			 //Login the user in the fd system with fd user and fd password	
 				
 		if (userIdInDb != null && userIdInDb.length() > 0 && userId !=null && userId.equalsIgnoreCase(userIdInDb)) {
-					
-				    
-				    String updatedSuccessPage = UserUtil.loginUser(session, request, response, new ActionResult(), userId, null, "", this.updatedSuccessPage, true);
-				    
+            ActionResult actionResult = new ActionResult();
+            String updatedSuccessPage = UserUtil.loginUser(session, request, response, actionResult, userId, null, "", this.updatedSuccessPage, true);
+
+            session.setAttribute(SessionName.SOCIAL_LOGIN_PROVIDER, providerName);
+
 				    
 				    
 				    
@@ -174,7 +175,7 @@ public class ExternalAccountService implements AccountService {
 						//user = (FDSessionUser) session.getAttribute(USER);
 						LOGGER.debug(user.getIdentity().getErpCustomerPK());
 						LOGGER.debug(user.getUserId());
-						LOGGER.debug((String) pageContext.getSession().getAttribute("REFERRALNAME"));
+						LOGGER.debug(pageContext.getSession().getAttribute("REFERRALNAME"));
 						LOGGER.debug("Adding referral record for CID:" + user.getIdentity().getErpCustomerPK() + "-email:" + user.getUserId() + "-reflink:" + (String) pageContext.getSession().getAttribute("REFERRALNAME"));
 						String customerId = user.getIdentity().getErpCustomerPK();
 						String referralCustomerId = FDCustomerManager.recordReferral(customerId, (String) pageContext.getSession().getAttribute("REFERRALNAME"), user.getUserId());

@@ -52,7 +52,10 @@ for (Iterator erItr = aerrs.iterator();erItr.hasNext();) {
 %>
 <fd:FDShoppingCart id='cart' result="sc_result">
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
-<tmpl:put name='title' direct='true'>FreshDirect - Sign Up</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Sign Up"/>
+  </tmpl:put>
+  <tmpl:put name='title'>FreshDirect - Sign Up</tmpl:put>
 <tmpl:put name='content' direct='true'>
 
 <fd:ErrorHandler result='<%=result%>' name='fraud' id='errorMsg'>

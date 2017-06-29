@@ -13,7 +13,6 @@ import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.customer.EnumExternalLoginSource;
-import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.fdstore.EnumEStoreId;
@@ -506,7 +505,8 @@ public class RegistrationController extends BaseController implements SystemMess
 		responseMessage.setSuccessMessage("User has been logged in successfully.");
 		responseMessage.setItemsInCartCount(user
 				.getItemsInCartCount());
-		responseMessage.setOrderCount(user.getOrderHistory().getValidOrderCount());
+        responseMessage.setOrderCount(user.getOrderHistory().getValidOrderCount());
+        responseMessage.setFdxOrderCount(user.getOrderHistory().getValidOrderCount(EnumEStoreId.FDX));
 		responseMessage.setOrders(java.util.Collections.<OrderHistory.Order>emptyList());
 		responseMessage.setFdUserId(user.getPrimaryKey());
 
@@ -795,7 +795,7 @@ public class RegistrationController extends BaseController implements SystemMess
     private ModelAndView setMobileGoGreenPreference(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
     	Message responseMessage = null; 
     	RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());        
-        FDSessionUser fduser = (FDSessionUser) user.getFDSessionUser();
+        FDSessionUser fduser = user.getFDSessionUser();
         ResultBundle resultBundle = tagWrapper.setMobileGoGreenPreference(fduser.getUserContext().getStoreContext().getEStoreId().getContentId());
        
         ActionResult result = resultBundle.getActionResult();
@@ -812,7 +812,7 @@ public class RegistrationController extends BaseController implements SystemMess
     }
     
     private ModelAndView getMobileGoGreenPreference(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
-	        FDSessionUser fduser = (FDSessionUser) user.getFDSessionUser();
+	        FDSessionUser fduser = user.getFDSessionUser();
     		String goGreen=null;
     		GoGreenPreferencesResult goGreenPreferencesResult = new GoGreenPreferencesResult();
     		

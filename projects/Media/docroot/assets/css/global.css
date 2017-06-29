@@ -1976,6 +1976,39 @@ div.control, div.slotRow, div.time {
 	.ui-widget-content {
     	background: #fff none;
 	}
+	.ui-dialog.overlay-dialog-new{
+		border: 0;
+		padding: 0;
+		box-shadow: 0 5px 30px 0 rgba(0, 0, 0, 0.3);
+		border-radius: 0;
+		overflow: visible;
+	}
+	.ui-dialog.overlay-dialog-new .ui-dialog-title{
+		display: none;
+	}
+	.ui-dialog.overlay-dialog-new .ui-dialog-titlebar{
+		padding: 0;
+		margin: 0;
+		overflow: visible;
+		height: 0;
+		min-height: 0;
+	}
+	.ui-dialog.overlay-dialog-new #uimodal-output{
+		padding: 0;
+	}
+	.ui-dialog.overlay-dialog-new .ui-dialog-titlebar button.ui-dialog-titlebar-close{
+		position: absolute;
+		top: -35px;
+		right: -35px;
+		background: none;
+	}
+	.ui-dialog.overlay-dialog-new .ui-dialog-titlebar button.ui-dialog-titlebar-close span.ui-icon-closethick{
+		width: 25px;
+		height: 25px;
+		background: url(/media_stat/images/close.png) no-repeat;
+		background-size: 100%;
+		cursor: pointer;
+	}
 	
 	#toptoolbar {
         position:relative;
@@ -3267,4 +3300,72 @@ div#i_viewcart td {
 
 .browse-oas-top {
 	margin-bottom: 8px;
+}
+
+.oas-cnt .emptyOAS,
+.oas-cnt img[src*="empty.gif"] {
+  display: none;
+}
+table.accessibilitySpacing td{
+	padding:1px 0;
+}
+.icon-base{
+	width: 40px;
+	height: 40px;
+	background-size: 100%;
+	background-repeat: no-repeat;
+}
+.icon-base.icon-pdf{
+	background-image: url('/media/images/icons/adobe-pdf.png');
+}
+td .qtyinput a.quantity_minus,
+td .qtyinput a.quantity_plus{
+    width: 36px;
+    color: #ffffff;
+    background-color: #4fa157;
+    border: 1px solid #4fa157;
+    height: 34px;
+    line-height: 32px;
+    font-size: 24px;
+	font-family: Verdana;
+    text-align: center;
+    font-weight: bold;
+    color: #fff;
+    background-image: none;
+    text-decoration: none;
+    text-indent: 0;
+    padding: 0;
+    border-radius: 3px;
+    transition: background-color 0.12s ease-in-out 0s;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+td .qtyinput a.quantity_minus:hover,
+td .qtyinput a.quantity_plus:hover{
+    background-color: #458d4e;
+    border: 1px solid #458d4e;
+}
+td .qtyinput input[type="text"].qty {
+    width: 58px;
+    height: 36px;
+    font-size: 18px;
+    font-weight: bold;
+    font-family: Verdana;
+    margin: -1px 3px 0;
+    padding: 0;
+    border: 2px #c2c2c2 solid;
+}
+td .qtyinput input[type="text"].qty:hover{
+    border-color: #68aa6d;
+}
+#popupcart .qtyinput input.qty {
+    height: 16px;
+    width: 38px;
+    font-size: 11px;
+    padding: 2px;
+    margin: 1px 0;
 }

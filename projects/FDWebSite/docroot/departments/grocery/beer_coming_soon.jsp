@@ -14,7 +14,10 @@ String catId = request.getParameter("catId");
 
 %>
 <tmpl:insert template='/common/template/dnav.jsp'>
-    <tmpl:put name='title' direct='true'>FreshDirect - Beer</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Beer"/>
+  </tmpl:put>
+  <tmpl:put name='title'>FreshDirect - Beer</tmpl:put>
     <tmpl:put name='content' direct='true'>
 
 <table border="0" cellpadding="0" cellspacing="0" width="470">

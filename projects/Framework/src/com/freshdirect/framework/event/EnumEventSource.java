@@ -50,6 +50,7 @@ public enum EnumEventSource {
 	ps_carousel_view_cart("ps_carousel_view_cart"),
 	ps_carousel_checkout("ps_carousel_checkout"),
 	
+    checkout("checkout"),
 	dn_caraousal("dn_caraousal"),
 	dn_carousel_view_cart("dn_carousel_view_cart"),
 	dn_carousel_checkout("dn_carousel_checkout"),
@@ -57,9 +58,9 @@ public enum EnumEventSource {
 	ExternalPage("ExternalPage"), //External Page
 	FinalizingExternal("FinalizingExternal"); //Finalizing External Atc failures
 	
-	String name;
+    private String name;
 	
-	EnumEventSource(String name) {
+    private EnumEventSource(String name) {
 		this.name = name;
 	}
 	

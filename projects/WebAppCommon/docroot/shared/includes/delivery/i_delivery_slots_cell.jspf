@@ -140,7 +140,7 @@
 						code before accessibility is added
 						<label for=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\"></label></div>\n
 					*/
-	stringBuffer.append("<label for=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\">"+((soldOut||slot.isUnavailable()) ? "" : slot.getDisplayString(true))+"</label></div>");
+	stringBuffer.append("<label for=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\"><span class=\"offscreen\">"+((soldOut||slot.isUnavailable()) ? "" : slot.getDisplayString(true))+"</span></label></div>");
 
 	stringBuffer.append("									<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_time\" class=\"fleft tsCont ")
 				.append(

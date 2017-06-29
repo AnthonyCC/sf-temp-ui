@@ -19,7 +19,7 @@
 <%@ page import="com.freshdirect.fdstore.promotion.PromotionHelper" %>
 <%@ page import="com.freshdirect.fdstore.standingorders.DeliveryInterval"%>
 <%@ page import="com.freshdirect.delivery.restriction.EnumDlvRestrictionReason"%>
-<%@ page import='com.freshdirect.fdstore.promotion.*'%>  
+<%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='java.net.URLEncoder'%>
 <%@ page import='java.text.MessageFormat' %>
 <%@ page import="com.freshdirect.fdstore.deliverypass.DeliveryPassUtil" %>
@@ -76,24 +76,24 @@ int page_type = TimeslotLogic.PAGE_NORMAL;
 
 	String addressId="";
 	String timeSlotId = request.getParameter("deliveryTimeslotId");
-	
+
 	FDStandingOrder currentStandingOrder = user.getCurrentStandingOrder();
-	
+
 	if ( EnumCheckoutMode.NORMAL == user.getCheckoutMode() || EnumCheckoutMode.CREATE_SO == user.getCheckoutMode() ) {
 
 		address = AddressFinder.getShipToAddress(user, addressId, timeSlotCtx, request);
 
-	} else { // MODIFY_SO_CSOI or MODIFY_SO_MSOI 
+	} else { // MODIFY_SO_CSOI or MODIFY_SO_MSOI
 		address = currentStandingOrder.getDeliveryAddress();
 		/* STANDING ORDER - UNFINISHED CODE */
-	} 
+	}
 
 	if(address instanceof ErpDepotAddressModel){
 		isDepotAddress = true;
 		depotAddress =  (ErpDepotAddressModel) address;
 		depotCode = com.freshdirect.fdstore.FDDeliveryManager.getInstance().getDepotByLocationId(depotAddress.getLocationId()).getDepotCode();
 	}
-	
+
 	boolean unattededChecked=false;
 	if(!isDepotAddress && address.getUnattendedDeliveryFlag()== EnumUnattendedDeliveryFlag.OPT_IN){
 		unattededChecked=true;
@@ -112,11 +112,11 @@ int page_type = TimeslotLogic.PAGE_NORMAL;
 %>
 <fd:DeliveryTimeSlot id="DeliveryTimeSlotResult" address="<%=address%>" timeSlotId="<%=timeSlotId%>" generic="<%= abstractTimeslots %>" timeSlotContext="<%=timeSlotCtx %>" forceOrder="<%= forceOrder %>">
 
-<%	
+<%
 
 	FDDeliveryTimeslotModel deliveryModel = DeliveryTimeSlotResult.getDeliveryTimeslotModel();
 	FDCartModel cart = deliveryModel.getShoppingCart();
-	
+
 	List<FDTimeslotUtil> timeslotList = deliveryModel.getTimeslotList();
 	Map zones = deliveryModel.getZones();
 	boolean zoneCtActive = deliveryModel.isZoneCtActive();
@@ -125,17 +125,17 @@ int page_type = TimeslotLogic.PAGE_NORMAL;
 	String selectedSlotId = deliveryModel.getTimeSlotId();
 	String preReserveSlotId = deliveryModel.getPreReserveSlotId();
 	boolean hasPreReserved = deliveryModel.isPreReserved();
-	FDReservation rsv = (cart!=null && cart.getDeliveryReservation()!=null && 
+	FDReservation rsv = (cart!=null && cart.getDeliveryReservation()!=null &&
 						((selectedSlotId!=null && selectedSlotId.equals(cart.getDeliveryReservation().getTimeslotId())) || (hasPreReserved && preReserveSlotId!=null && preReserveSlotId.equals(cart.getDeliveryReservation().getTimeslotId()))))?cart.getDeliveryReservation():null;
 
-	if(rsv == null) rsv = (user!=null && user.getReservation()!=null && 
+	if(rsv == null) rsv = (user!=null && user.getReservation()!=null &&
 			((selectedSlotId!=null && selectedSlotId.equals(user.getReservation().getTimeslotId())) || (hasPreReserved && preReserveSlotId!=null && preReserveSlotId.equals(user.getReservation().getTimeslotId()))))?user.getReservation():null;
 
 	boolean defaultColExp = false;
 	String zoneId = deliveryModel.getZoneId();
 
 	if (zoneId==null ) {
-		//redirect back to the view cart page 
+		//redirect back to the view cart page
 		response.sendRedirect(response.encodeRedirectURL("/checkout/view_cart.jsp?trk=chkplc"));
 		return;
 	}
@@ -152,20 +152,20 @@ int page_type = TimeslotLogic.PAGE_NORMAL;
 %>
 
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
-<tmpl:put name="seoMetaTag" direct="true">
-	<fd:SEOMetaTag pageId=""></fd:SEOMetaTag>
-</tmpl:put>
-<tmpl:put name='title' direct='true'>FreshDirect - Checkout - Choose Delivery Time </tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Checkout - Choose Delivery Time"/>
+  </tmpl:put>
+  <tmpl:put name='title'>FreshDirect - Checkout - Choose Delivery Time</tmpl:put>
 <tmpl:put name='content' direct='true'><%
 
 final String actionName = abstractTimeslots ? "changeSONextDeliveryDate" : "reserveDeliveryTimeSlot";
 %>
 <fd:CheckoutController actionName="<%= actionName %>" result="result" successPage="<%=successPage%>">
 <script type="text/javascript">
-var zonePromoString=""; 
+var zonePromoString="";
 var zonePromoEnabled=false;
 <%if(zonePromoAmount>0){ %>
-zonePromoString="<%=zonePromoString %>"; 
+zonePromoString="<%=zonePromoString %>";
 zonePromoEnabled=true;
 <%} %>
 </script>
@@ -266,88 +266,90 @@ zonePromoEnabled=true;
 
 String errorMsg = (String) session.getAttribute(SessionName.SIGNUP_WARNING);
 if (errorMsg==null && user.isPromotionAddressMismatch()) {
-	
+
 	Promotion promo = (Promotion)user.getEligibleSignupPromotion();
 	Double totalPromo = new Double(promo.getHeaderDiscountTotal());
     errorMsg = MessageFormat.format(SystemMessageList.MSG_CHECKOUT_NOT_ELIGIBLE, new Object[]{totalPromo, user.getCustomerServiceContact()});
 }
-if (errorMsg!=null) {%> 
-	<%@ include file="/includes/i_timeslot_error_messages.jspf"%> 
+if (errorMsg!=null) {%>
+	<%@ include file="/includes/i_timeslot_error_messages.jspf"%>
 <%}%>
 
-<% 
+<%
 String view_cart_redir = "/checkout/view_cart.jsp";
 if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
-<%@ include file="/shared/includes/delivery/i_variable_minnotmet_messages.jspf"%> 
+<%@ include file="/shared/includes/delivery/i_variable_minnotmet_messages.jspf"%>
 <%} %>
 
 <!-- Alcohol, SpecialItems, holiday, deliveryPass, noCapacity warning Messages -->
 
 <%if(cart.containsAlcohol() && deliveryModel.isAlcoholDelivery() && deliveryModel.getAlcoholRestrictedCount() > 0){%>
 
-	<%@ include file="/includes/delivery/i_alcohol_warning.jspf"%>	
-		
+	<%@ include file="/includes/delivery/i_alcohol_warning.jspf"%>
+
 		<% } %>
 
 <%
 
   // [APPDEV-2149] Generic timeslots have nothing to do with delivery pass
   if(!abstractTimeslots && user.getSelectedServiceType() == EnumServiceType.CORPORATE) { %>
-	
-	<%@ include file="/includes/delivery/i_delivery_pass_not_applied.jspf"%>	
-	
+
+	<%@ include file="/includes/delivery/i_delivery_pass_not_applied.jspf"%>
+
 <%}%>
 
 <%if(!hasCapacity){%>
 
 	<%@ include file="/includes/delivery/i_slots_no_capacity.jspf"%>
-	
+
 <%}else{ %>
 	<% if (FDStoreProperties.isAdServerEnabled()) { %>
+    <div id='oas_CategoryNote'>
 			<SCRIPT LANGUAGE="JavaScript">
 					OAS_AD('CategoryNote');
 			</SCRIPT>
+    </div>
 <% } %>
 
-	
+
 <%@ include file="/includes/delivery/i_holiday_warning.jspf"%>
 
 <%if(deliveryModel.isKosherRestriction()){%>
-	
+
 	<%@ include file="/includes/delivery/i_kosher_restriction_warning.jspf"%>
-		
+
 <%}%>
 
 <%if(cart.hasAdvanceOrderItem() && advOrdRangeOK && deliveryModel.isThxgivingRestriction()){%>
-	
+
 	<%@ include file="/includes/delivery/i_specialitem_thanksgiving_delivery.jspf"%>
-		
+
 <%}%>
 
 
 <%if(cart.hasAdvanceOrderItem() && advOrdRangeOK && deliveryModel.isEasterMealRestriction()){%>
-	
+
 	<%@ include file="/includes/delivery/i_specialitem_easter_delivery.jspf"%>
-		
+
 <%}%>
-	
+
 <%if(deliveryModel.isEasterMealRestriction() && !advOrdRangeOK){%>
-	
+
 	<%@ include file="/includes/delivery/i_eastermeal.jspf"%>
-		
+
 <%}%>
 <%if(deliveryModel.isThxgiving_meal_Restriction()){%>
 
 	<%@ include file="/includes/delivery/i_thanksgiving_meal.jspf"%>
-		
+
 <%}%>
 <%if(deliveryModel.isValentineRestriction()){%>
-	
+
 	<%@ include file="/includes/delivery/i_valentine.jspf"%>
-	
+
 <%}%>
 <%if (cart.hasAdvanceOrderItem() && advOrdRangeOK && (!deliveryModel.isEasterMealRestriction() && !deliveryModel.isThxgivingRestriction())){%>
-	
+
 	<%@ include file="/includes/delivery/i_adv_order_items.jspf"%>
 
 <%}%>
@@ -359,11 +361,11 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 		<tr>
 			<td>
 				<table cellpadding="0" cellspacing="0" width="675" id="legendCheckout">
-					<tr>	
+					<tr>
 						<td Valign="middle" align="right">
 						 	<table>
 								<tr>
-									
+
 									<%if(deliveryModel.isMinOrderReqd()){%>
 										<td>
 											<img src="/media_stat/images/timeslots/diamond_icon.png" WIDTH="16" HEIGHT="16" border="0">
@@ -392,7 +394,7 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 										<td>
 											<img src="/media_stat/images/timeslots/no_alcohol.gif" WIDTH="16" HEIGHT="16" border="0">
 									</td>
-										<td> 
+										<td>
 											<a onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_alcoholrestriction_timeslot.html&windowSize=small&name=Alcohol Restriction','small');return false;"><%= FDStoreProperties.getAlcoholRestrictedLabel()%></a>
 										</td>
 										<td>&nbsp;</td>
@@ -407,7 +409,7 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 										<td Valign="top">
 										<a onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_early_am_timeslot.html&windowSize=small&name=Early AM','large');return false;">Early AM - Unattended</td>
 										<td>&nbsp;</td>
-									<% } %>									
+									<% } %>
 								</tr>
 							</table>
 						</td>
@@ -417,10 +419,10 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 		</tr>
 		</table>
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~ END LEGEND DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ -->
-	
+
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~ START TIMESLOT GRID ~~~~~~~~~~~~~~~~~~~~~~ -->
 	<table CELLSPACING="0" CELLPADDING="0" id="tsContainer" align="center" width="100%">
-	
+
 	<% String gridMediaIncludePath = ""; %>
 	<logic:iterate id="timeslots" collection="<%=timeslotList%>" type="com.freshdirect.fdstore.util.FDTimeslotUtil" indexId="idx">
 		<% gridMediaIncludePath = "/media/editorial/timeslots/grid_media_"+idx.intValue()+".html"; %>
@@ -434,8 +436,8 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 	<% if(timeslotList.size()>1 && idx.intValue()==1) { %>
 			<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="10" BORDER="0"><span class="title13 fleft tsAdvanceHeader">Advance Order Delivery Timeslots&nbsp;&nbsp;</span><a class="title13 fleft tsDivHide" id="displayAdvanceOrderGrid" href="javascript:hideAdvanceOrder();">Hide Delivery Timeslots</a><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
 	<% } %>
-	
-	<%	
+
+	<%
 		Boolean isForAdvOrdSlots = false;
 		if(timeslotList.size()>1 && idx.intValue()==1){
 			isForAdvOrdSlots = true;
@@ -455,16 +457,16 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 				<img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0" alt="" /><br />
 				<fd:IncludeMedia name="<%= gridMediaIncludePath %>" />
 			</div>
-	<% } else { 
+	<% } else {
 	    showAdvanceOrderBand = timeslotList.size()>1 ? true && advOrdRangeOK: false;
 	 } %>
-	
+
 	<%
 		// calculate which timeslot to select when modifying standing orders
 		if ( currentStandingOrder != null ) {
 			//out.print( "SO=" + currentStandingOrder + "<br/>");
 			DeliveryInterval deliveryInterval;
-			try { 
+			try {
 				deliveryInterval = new DeliveryInterval( currentStandingOrder );
 			} catch ( IllegalArgumentException e ) {
 				deliveryInterval = null;
@@ -479,16 +481,16 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 				}
 			}
 		}
-	
+
 	request.setAttribute("isSoTemplate", currentStandingOrder != null );
 	%>
 		<BR><%@ include file="/shared/includes/delivery/i_delivery_slots.jspf"%>
-		
+
 		<%
-		
+
 		if (abstractTimeslots) {
 			request.setAttribute("standingOrder", currentStandingOrder);
-			
+
 			%>
 			<fd:javascript src="/assets/javascript/fd/modules/common/utils.js"/>
 			<fd:javascript src="/assets/javascript/fd/modules/standingorder/nextdlvchooser.js"/>
@@ -507,7 +509,7 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 		for (i=0; i<radios.length; i++) {
 			YAHOO.util.Event.on(radios[i], 'click', function(e) {
 				f( Number(e.target.id[4])+1 );
-				
+
 			});
 		}
 	});
@@ -515,7 +517,7 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 			<%
 		}
 		%>
-	
+
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~ END TIMESLOT GRID ~~~~~~~~~~~~~~~~~~~~~~ -->
 			</td>
 	</tr>
@@ -531,11 +533,11 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 							(timeslotList.size()==2 && isAdvOrderGap && idx.intValue()==1) ||
 							(!isAdvOrderGap && idx.intValue()==1)){
 						//if(idx.intValue() == 1){
-						
+
 						showAdvanceOrderBand=false;
 					%>
 						<span class="text12"><b>Standard Delivery Slots</b></span>
-					<%} else { 
+					<%} else {
 						showAdvanceOrderBand = timeslotList.size()>1 ? true && advOrdRangeOK: false;
 					  }
 					%>
@@ -545,7 +547,7 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 						if ( currentStandingOrder != null ) {
 							//out.print( "SO=" + currentStandingOrder + "<br/>");
 							DeliveryInterval deliveryInterval;
-							try { 
+							try {
 								deliveryInterval = new DeliveryInterval( currentStandingOrder );
 							} catch ( IllegalArgumentException e ) {
 								deliveryInterval = null;
@@ -629,15 +631,15 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
 
 	<%@ include file="/includes/delivery/i_bottom_modules.jspf" %>
-	
+
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ END BOTTOM MODEULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
 
 
 </FORM>
 <script language="javascript">
-	
-	var c2ctimeslot = document.getElementById("c2cnextdaytimeslot");	
-	var timeslotvalue=c2ctimeslot.value;	
+
+	var c2ctimeslot = document.getElementById("c2cnextdaytimeslot");
+	var timeslotvalue=c2ctimeslot.value;
 	if(timeslotvalue==1){
 		if(document.getElementById("loyalty1")){
 			document.getElementById("loyalty1").style.display="block";
@@ -650,9 +652,9 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 			document.getElementById("loyalty2").style.display="block";
 		}
 	}
-	
 
-	
+
+
 </script>
 
 </fd:CheckoutController>

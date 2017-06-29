@@ -10,8 +10,11 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" lang="en-US">
-<title>Insert title here</title>
-<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+    <title>FreshDirect - Your Account - Edit EBT Card</title>
+    <%@ include file="/common/template/includes/metatags.jspf" %>
+    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
+    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body>
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
@@ -38,7 +41,10 @@ String rhPage = (request.getParameter("rh")!=null)?request.getParameter("rh").to
 
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <tmpl:insert template='<%=template%>'>
-<tmpl:put name='title' direct='true'>FreshDirect - Your Account - Edit EBT Card</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Your Account - Edit EBT Card"/>
+  </tmpl:put>
+  <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Edit EBT Card</tmpl:put>
 <tmpl:put name='content' direct='true'>
 
 <%

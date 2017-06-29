@@ -27,12 +27,16 @@ String introCopy = introCopyAttribute==null ? "": introCopyAttribute.getPath();
 
 MediaModel catImage = ((ProductContainer) currentFolder).getCategoryPhoto();
 
+String title = "FreshDirect - " + currentFolder.getFullName();
 %>
 <tmpl:insert template='/common/template/left_dnav.jsp'>
 
 <%-- tmpl:put name='leftnav' direct='true'></tmpl:put--%>
 
-<tmpl:put name='title' direct='true'>FreshDirect - <%= currentFolder.getFullName() %></tmpl:put>
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="<%= title %>"/>
+    </tmpl:put>
+    <tmpl:put name='title' direct='true'><%= title %></tmpl:put>
 <tmpl:put name='content' direct='true'>
 	<table cellpadding="0" cellspacing="0" border="0" width="<%=W_POSITION_TOTAL%>">
 	<tr>

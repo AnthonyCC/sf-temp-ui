@@ -62,7 +62,7 @@
 	<div class="so-recurring{if $customClass} {$customClass}{/if}">
 		
 		<div class="so-recurring-1">
-			Need it on a recurring basis?&nbsp;
+			Need it on a recurring basis?
 		</div>
 		<div class="so-recurring-2">
 			{if $useButton}
@@ -101,21 +101,21 @@
  *
  */
 {template .soAddBtn}
-	<button type="button" fd-login-required fd-login-successpage-current data-component="addToSOButton" class="cssbutton cssbutton-flat purple nontransparent">Add to Order</button>
+	<button type="button" fd-login-required fd-login-successpage-current data-component="addToSOButton" class="cssbutton cssbutton-flat purple nontransparent">Confirm</button>
 {/template}
 
 /**
  *
  */
 {template .soCreateBtn}
-	<button type="button" data-component="createSOButton" class="cssbutton cssbutton-flat purple nontransparent">Create Standing Order</button>
+	<button onclick="window.location = '/quickshop/standing_orders.jsp';" type="button" data-component="createSOButton" class="cssbutton cssbutton-flat purple transparent">Create Standing Order</button>
 {/template}
 
 /**
  *
  */
 {template .soNextBtn}
-	<button type="button" onclick="addToSONextHandler()" fd-login-required fd-login-successpage-current data-component="nextStepSOButton" class="cssbutton cssbutton-flat purple transparent">Next</button>
+	<button type="button" onclick="addToSONextHandler()" fd-login-required fd-login-successpage-current data-component="nextStepSOButton" class="cssbutton cssbutton-flat purple transparent">Review & Confirm</button>
 {/template}
 
 /**

@@ -92,4 +92,9 @@ public interface SessionName {
     
     // PayPal
     public static final String PAYPAL_DEVICE_ID = "DEVICE_ID";
+
+    public static final String SOCIAL_LOGIN_PROVIDER = "social_login_provider";
+    public static final String LOGIN_ATTEMPT = "fdLoginAttempt";
+    public static final String LOGIN_SUCCESS = "loginSuccess";
+    public static final String SIGNUP_SUCCESS = "signupSuccess";
 }

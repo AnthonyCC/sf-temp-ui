@@ -60,7 +60,7 @@ public class ProductData extends BasicProductData implements SkuData {
      */
     protected Quantity quantity;
 
-    protected double productSampleQuantity;
+    protected boolean maxProductSampleQuantityReached;
     /**
      * Amount for sales-unit enum type, containing the full enum, plus the selected value.
      */
@@ -89,6 +89,8 @@ public class ProductData extends BasicProductData implements SkuData {
      * burst image type: fav, new, back, free
      */
     protected String badge;
+
+    protected boolean newProduct;
 
     // Ratings
     protected int wineRating;
@@ -371,12 +373,12 @@ public class ProductData extends BasicProductData implements SkuData {
         this.quantity = quantity;
     }
 
-    public Double getProductSampleQuantity() {
-        return productSampleQuantity;
+    public boolean isMaxProductSampleQuantityReached() {
+        return maxProductSampleQuantityReached;
     }
 
-    public void setProductSampleQuantity(Double productSampleQuantity) {
-        this.productSampleQuantity = productSampleQuantity;
+    public void setMaxProductSampleQuantityReached(boolean maxProductSampleQuantityReached) {
+        this.maxProductSampleQuantityReached = maxProductSampleQuantityReached;
     }
 
     @Override
@@ -903,4 +905,12 @@ public class ProductData extends BasicProductData implements SkuData {
 	public void setDepartmentId(String departmentId) {
 		this.departmentId = departmentId;
 	}
+
+    public boolean isNewProduct() {
+        return newProduct;
+    }
+
+    public void setNewProduct(boolean newProduct) {
+        this.newProduct = newProduct;
+    }
 }

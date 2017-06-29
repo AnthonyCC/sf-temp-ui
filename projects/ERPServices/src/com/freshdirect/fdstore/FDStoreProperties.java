@@ -27,7 +27,6 @@ import com.freshdirect.framework.util.ConfigHelper;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
 
 public class FDStoreProperties {
 
@@ -777,8 +776,9 @@ public class FDStoreProperties {
     private static final String CATEGORY_TOP_ITEM_CACHE_MAXIMAL_SIZE = "fdstore.category.top.item.cache.maximal.size";
 
     private static final String PROP_PRODUCT_SAMPLES_MAX_BUY_PRODUCTS_LIMIT = "fdstore.product.samples.max.buy.products.limit";
-    private static final String PROP_PRODUCT_SAMPLES_TITLE = "fdstore.product.samples.title";
     private static final String PROP_PRODUCT_SAMPLES_MAX_BUY_QUANTITY_LIMIT = "fdstore.product.samples.max.buy.quantity.limit";
+    private static final String PROP_PRODUCT_SAMPLES_TITLE = "fdstore.product.samples.title";
+
     private static final String PROP_FEED_PUBLISH_URL = "fdstore.feed.publish.url";
     private static final String CTCAPACITY_ELIGIBLE_PROFILES = "fdstore.ctcapacity.eligibleprofiles";
     private static final String PROP_CORE_NON_CORE_GLOBAL_NAV_SWITCH_ENABLED = "fdstore.corenoncore.globalnav.switch.enabled";
@@ -904,6 +904,11 @@ public class FDStoreProperties {
     private static final String PROP_DONATION_PRODUCT_SAMPLES_ENABLED = "fdstore.donation.product.samples.enabled";
     private static final String PROP_DONATION_PRODUCT_SAMPLES_ID = "fdstore.donation.product.samples.productId";
 
+    private static final String PROP_VIEWCART_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES = "fdstore.viewcart.new.customer.carousel.site.features";
+    private static final String PROP_VIEWCART_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES = "fdstore.viewcart.current.customer.carousel.site.features";
+    private static final String PROP_CHECKOUT_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES = "fdstore.checkout.new.customer.carousel.site.features";
+    private static final String PROP_CHECKOUT_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES = "fdstore.checkout.current.customer.carousel.site.features";
+
     // APPDEV-5893
     private static final String PROP_USER_CART_SAVE_INTERVAL = "fdstore.user.cart.save.interval";
 
@@ -932,6 +937,10 @@ public class FDStoreProperties {
     private final static String PROP_ZIP_CHECK_OVER_LAY_ENABLED = "fdstore.zipcheck.overlay.enabled";
     /* APPDEV-5781 */
     private final static String PROP_OBSOLETE_MERGECARTPAGE_ENABLED = "fdstore.obsolete.mergecartpage.enabled";
+    
+    private static final String PROP_DFP_ENABLED = "fdstore.dfp.enabled";
+    private static final String PROP_DFP_ID = "fdstore.dfp.id";
+
 	private final static String PROP_CLUSTER_NAME = "fdsystem.cluster.name";
 	private final static String PROP_NODE_NAME = "fdsystem.node.name";
     
@@ -939,7 +948,17 @@ public class FDStoreProperties {
     
     private final static String PROP_REQUEST_SCHEME_FOR_REDIRECT_URL = "fdstore.request.scheme.redirecturl";
 
-    static {
+    /* APPDEV 6174 
+     * IBM SilverPopup urls, tokens*/
+    private final static String IBM_ACCESSTOKEN_URL = "fdstore.ibm.accesstoken.url";
+    private final static String IBM_PUSHNOTIFICATION_URL = "fdstore.ibm.pushnotification.url";
+    private final static String IBM_CLIENT_ID = "fdstore.ibm.client.id";
+    private final static String IBM_CLIENT_SECRET = "fdstore.ibm.client.secret";
+    private final static String IBM_REFRESH_TOKEN = "fdstore.ibm.refresh.token";
+ 
+    
+    
+   static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_INIT_CTX_FACTORY, "weblogic.jndi.WLInitialContextFactory");
         defaults.put(PROP_CRM_GEOCODELINK,
@@ -1544,7 +1563,7 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.leftnavtut2014", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.browseflyoutrecommenders", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.quickshop2_2", "GLOBAL:ENABLED,true;");
-        defaults.put("feature.rollout.homepageredesign", "GLOBAL:ENABLED,false;");
+        defaults.put("feature.rollout.homepageredesign", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.mobweb", "GLOBAL:ENABLED,true;");
         // defaults.put("feature.rollout.sociallogin", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.printinvoice", "GLOBAL:ENABLED,true;");
@@ -1754,6 +1773,11 @@ public class FDStoreProperties {
         defaults.put(PROP_DONATION_PRODUCT_SAMPLES_ENABLED, "false");
         defaults.put(PROP_DONATION_PRODUCT_SAMPLES_ID, "");
 
+        defaults.put(PROP_VIEWCART_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES, "PRODUCT_SAMPLE, C_YMAL, FAVORITES");
+        defaults.put(PROP_VIEWCART_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES, "PRODUCT_SAMPLE, DYF, TOP_ITEMS_QS");
+        defaults.put(PROP_CHECKOUT_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES, "C_YMAL, FAVORITES, PRODUCT_SAMPLE");
+        defaults.put(PROP_CHECKOUT_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES, "DYF, TOP_ITEMS_QS, PRODUCT_SAMPLE");
+
         defaults.put(PROP_USER_CART_SAVE_INTERVAL, "0");
 
         defaults.put(PROP_HOMEPAGE_REDESIGN_CURRENT_USER_CONTAINER_CONTENT_KEY, "ModuleContainer:mc_hp_exist_cust");
@@ -1779,6 +1803,10 @@ public class FDStoreProperties {
         
         /* APPDEV-5781 */
         defaults.put(PROP_OBSOLETE_MERGECARTPAGE_ENABLED, "true");
+        
+        defaults.put(PROP_DFP_ENABLED, "false");
+        defaults.put(PROP_DFP_ID, "1072054678");
+
         defaults.put(PROP_CLUSTER_NAME, "localhost");
         defaults.put(PROP_NODE_NAME, "localhost");
     	
@@ -1803,6 +1831,11 @@ public class FDStoreProperties {
             LOGGER.info("Loaded configuration from fdstore.properties: " + config);
             fireEvent();
         }
+    }
+
+    private static List<String> getAsList(String key) {
+        String value = get(key);
+        return value == null ? Collections.<String> emptyList() : Arrays.asList(value.trim().split("\\s*,\\s*"));
     }
 
     public static String get(String key) {
@@ -4305,7 +4338,7 @@ public class FDStoreProperties {
     public static String getAvalaraBaseURL() {
         return StringUtils.defaultString(get(PROP_AVALARA_BASE_URL));
     }
-
+    
     public static String getAvalaraAccountNumber() {
         return StringUtils.defaultString(get(PROP_AVALARA_ACCOUNT_NUMBER));
     }
@@ -4325,7 +4358,29 @@ public class FDStoreProperties {
     public static int getAvalaraCronThreadCount() {
         return Integer.parseInt(get(PROP_AVALARA_CRON_THREAD_COUNT) != null ? get(PROP_AVALARA_CRON_THREAD_COUNT) : "10");
     }
-
+    
+    //@ IBM silverpopup chnages
+    public static String getIBMAccessTokenURL(){
+    	return StringUtils.defaultString(get(IBM_ACCESSTOKEN_URL));
+    }
+    
+    public static String getIBMPushNotificationURL() {
+        return StringUtils.defaultString(get(IBM_PUSHNOTIFICATION_URL));
+    }
+    
+    public static String getIBMClientID() {
+		return StringUtils.defaultString(get(IBM_CLIENT_ID));
+	}
+    
+    public static String getIBMClientSecret() {
+		return StringUtils.defaultString(get(IBM_CLIENT_SECRET));
+	}
+    
+    public static String getIBMRefreshToken() {
+		return StringUtils.defaultString(get(IBM_REFRESH_TOKEN));
+	} 
+    //end IBM silverpopup end
+    
     public static int getSO3ActivateCutoffTime() {
         return Integer.parseInt(get(PROP_SO3_ACTIVATE_CUTOFF_TIME));
     }
@@ -4468,7 +4523,6 @@ public class FDStoreProperties {
     }
 
     public static boolean isSF2_0_AndServiceEnabled(String beanName) {
-    	
         return ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue()&&FDEcommProperties.isServiceEnabled(beanName));
     }
     private static boolean isStorefront2_0Enabled() {
@@ -4479,8 +4533,24 @@ public class FDStoreProperties {
         return (Boolean.valueOf(get(PROP_MEALBUNDLE_CARTONVIEW_ENABLED))).booleanValue();
     }
 
-    public static String getPropDonationProductSamplesId() {
-        return get(PROP_DONATION_PRODUCT_SAMPLES_ID);
+    public static List<String> getPropDonationProductSamplesId() {
+        return getAsList(PROP_DONATION_PRODUCT_SAMPLES_ID);
+    }
+
+    public static List<String> getViewcartNewCustomerCarouselSiteFeatures() {
+        return getAsList(PROP_VIEWCART_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES);
+    }
+
+    public static List<String> getViewcartCurrentCustomerCarouselSiteFeatures() {
+        return getAsList(PROP_VIEWCART_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES);
+    }
+
+    public static List<String> getCheckoutNewCustomerCarouselSiteFeatures() {
+        return getAsList(PROP_CHECKOUT_PAGE_NEW_CUSTOMER_CAROUSEL_SITE_FEATURES);
+    }
+
+    public static List<String> getCheckoutCurrentCustomerCarouselSiteFeatures() {
+        return getAsList(PROP_CHECKOUT_PAGE_CURRENT_CUSTOMER_CAROUSEL_SITE_FEATURES);
     }
 
     public static int getUserCartSaveInterval() {
@@ -4572,12 +4642,19 @@ public class FDStoreProperties {
 		return get(PROP_NODE_NAME);
 	}
 
-	
 	public static boolean isProductCacheOptimizationEnabled(){
-		return (Boolean.valueOf(get(PROP_PRODUCT_CACHE_OPTIMIZATION_ENABLED))).booleanValue();
+        return (Boolean.valueOf(get(PROP_PRODUCT_CACHE_OPTIMIZATION_ENABLED))).booleanValue();
 	}
 	
 	public static String getRequestSchemeForRedirectUrl(){
 		return get(PROP_REQUEST_SCHEME_FOR_REDIRECT_URL);
+	}
+
+	public static boolean isDfpEnabled() {
+		return (Boolean.valueOf(get(PROP_DFP_ENABLED))).booleanValue();
+	}
+	
+	public static String getDfpId() {
+		return get(PROP_DFP_ID);
 	}
 }

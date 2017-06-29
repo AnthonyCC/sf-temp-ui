@@ -9,13 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.util.ProductPromotionUtil;
 import com.freshdirect.common.pricing.ZoneInfo;
-import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ProductModelPromotionAdapter;
@@ -23,7 +21,6 @@ import com.freshdirect.fdstore.brandads.FDBrandProductsAdManager;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdInfo;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
-import com.freshdirect.fdstore.brandads.service.BrandProductAdServiceException;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentKeyFactory;
@@ -48,6 +45,9 @@ import com.freshdirect.webapp.util.prodconf.DefaultProductConfigurationStrategy;
 public class SearchResultsUtil {
 	
 	private static final Logger LOG = LoggerFactory.getInstance( SearchResults.class );
+	
+	private static final String MOBILE_PLATFORM="web";
+	private static final String WEB_PLATFORM="mobile";
 	
 	public static SearchResults getPresidentsPicksProducts(CmsFilteringNavigator nav) {
 		
@@ -144,13 +144,14 @@ public static SearchResults getHLBrandProductAdProducts(SearchResults searchResu
 			hLBrandProductAdRequest.setUserId(user.getUser().getPK().getId());
 			hLBrandProductAdRequest.setSearchKeyWord(searchResults.getSuggestedTerm()!=null?searchResults.getSuggestedTerm():nav.getSearchParams());
 					
-			if(user.getPlatForm()!=null)
+			if (user.getPlatForm() != null) {
 				hLBrandProductAdRequest.setPlatformSource(user.getPlatForm());
-			else if(user.isMobilePlatForm())
-				hLBrandProductAdRequest.setPlatformSource("mobile");	
-		 	else
-		 		hLBrandProductAdRequest.setPlatformSource("web");
-			
+				hLBrandProductAdRequest.setLat(user.getLat());
+				hLBrandProductAdRequest.setPdUserId(user.getPdUserId());
+			} else {
+				hLBrandProductAdRequest.setPlatformSource(user.isMobilePlatForm() ? MOBILE_PLATFORM : WEB_PLATFORM);
+			}
+
 			HLBrandProductAdResponse hlBrandProductAdResponse = FDBrandProductsAdManager.getHLBrandproducts(hLBrandProductAdRequest);
 			if(hlBrandProductAdResponse!=null){
 			List<HLBrandProductAdInfo> hlBrandAdProductsMeta =hlBrandProductAdResponse.getSearchProductAd();
@@ -172,9 +173,11 @@ public static SearchResults getHLBrandProductAdProducts(SearchResults searchResu
 					} catch (FDSkuNotFoundException e) {
 						LOG.info("FDSkuNotFoundException while populating HookLogicproduct : ", e);
 					}
-					
 				}
+			}else {
+				searchResults.setEmptyProductsPageBeacon(hlBrandProductAdResponse.getPageBeacon());
 			}
+			
 		  }
 	    }
       catch (Exception e) {

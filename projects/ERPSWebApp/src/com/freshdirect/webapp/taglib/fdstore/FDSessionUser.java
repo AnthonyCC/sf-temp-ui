@@ -61,6 +61,7 @@ import com.freshdirect.fdstore.customer.FDPromotionEligibility;
 import com.freshdirect.fdstore.customer.FDRecipientList;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.SilverPopupDetails;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
@@ -147,6 +148,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     private boolean isAvalaraTaxed;
     private boolean isMobilePlatForm;
     private String 	platForm;
+    private String 	lat;
+    private String 	pdUserId;
 
     private Set<ContentKey> checkoutUnavailableProductKeys; // set of items which failed the ATP test
 
@@ -161,8 +164,6 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
     private Map<String, List<AddToCartItem>> pendingExternalAtcItems;
 
-    private List<ProductReference> productSamples;
-
     private boolean isSoContainerOpen = false;
 
     private boolean zipPopupSeenInSession = false;
@@ -172,6 +173,10 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	private boolean soCartOverlayFirstTime = false;
 	
 	private boolean isRefreshSoCartOverlay=true;
+	
+	private boolean soFeatureOverlay = false;
+	
+	private boolean isRefreshNewSoFeature = true;
 	
     @Override
     public boolean isSoContainerOpen() {
@@ -347,7 +352,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         }
     }
 
-    /**
+	/**
      * update the last request date.
      */
     public void touch() {
@@ -421,6 +426,18 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
             }
         }
     }
+    
+    public void insertOrUpdateSilverPopup(SilverPopupDetails details) {
+ 
+        if (null != details && null != details.getCustomerId() && !"".equals(details.getCustomerId())) {
+            LOGGER.info("Saving Silverpopup details");
+            try {
+                FDCustomerManager.insertOrUpdateSilverPopup(details);
+            } catch (FDResourceException ex) {
+                LOGGER.warn("Unable to save Silver popup", ex);
+            }
+        }
+    }    
 
     private boolean isCartPersistent() {
         //
@@ -2102,17 +2119,17 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
     @Override
     public List<ProductReference> getProductSamples() {
-        return this.user.getProductSamples();
+        return user.getProductSamples();
     }
 
     @Override
     public void setProductSample(List<ProductReference> productSamples) {
-        this.productSamples = productSamples;
+        user.setProductSample(productSamples);
     }
 
     @Override
     public boolean isProductSample(ProductReference prodRef) {
-        return this.user.isProductSample(prodRef);
+        return user.isProductSample(prodRef);
     }
 
     @Override
@@ -2222,14 +2239,24 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     }
 
     @Override
-    public boolean isRefreshValidSO3() {
-        // TODO Auto-generated method stub
-        return user.isRefreshValidSO3();
+    public Collection<FDStandingOrder> getAllSO3() {
+        return this.user.getAllSO3();
     }
 
     @Override
-    public void setRefreshValidSO3(boolean isRefreshValidSO3) {
-        this.user.setRefreshValidSO3(isRefreshValidSO3);
+    public void setAllSO3(Collection<FDStandingOrder> allSO3s) {
+        this.user.setAllSO3(allSO3s);
+    }
+    
+    @Override
+    public boolean isRefreshSO3() {
+        // TODO Auto-generated method stub
+        return user.isRefreshSO3();
+    }
+
+    @Override
+    public void setRefreshSO3(boolean isRefreshSO3) {
+        this.user.setRefreshSO3(isRefreshSO3);
 
     }
     
@@ -2266,52 +2293,86 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         this.zipPopupSeenInSession = ZipPopupSeenInSession;
     }
 
-	public Map<String, String> getSoCartLineMessagesMap() {
+    public Map<String, String> getSoCartLineMessagesMap() {
 		return soCartLineMessagesMap;
 	}
 
-	public void setSoCartLineMessagesMap(Map<String, String> soCartLineMessagesMap) {
+    public void setSoCartLineMessagesMap(Map<String, String> soCartLineMessagesMap) {
 		this.soCartLineMessagesMap = soCartLineMessagesMap;
 	}
 
-	public boolean isSoCartOverlayFirstTime() {
+    public boolean isSoCartOverlayFirstTime() {
 		return soCartOverlayFirstTime;
 	}
 
-	public void setSoCartOverlayFirstTime(boolean soCartOverlayFirstTime) {
+    public void setSoCartOverlayFirstTime(boolean soCartOverlayFirstTime) {
 		this.soCartOverlayFirstTime = soCartOverlayFirstTime;
 	}
 
-	public boolean isRefreshSoCartOverlay() {
+    public boolean isRefreshSoCartOverlay() {
 		return isRefreshSoCartOverlay;
 	}
 
-	public void setRefreshSoCartOverlay(boolean isRefreshSoCartOverlay) {
+    public void setRefreshSoCartOverlay(boolean isRefreshSoCartOverlay) {
 		this.isRefreshSoCartOverlay = isRefreshSoCartOverlay;
 	}
 
-	@Override
-	public boolean isRefreshNewSoFeature() {
-		// TODO Auto-generated method stub
-		return false;
+    public boolean isSoFeatureOverlay() {
+		return soFeatureOverlay;
 	}
 
-	@Override
-	public boolean isSoFeatureOverlay() {
-		// TODO Auto-generated method stub
-		return false;
+    public void setSoFeatureOverlay(boolean soFeatureOverlay) {
+		this.soFeatureOverlay = soFeatureOverlay;
 	}
 
-	@Override
-	public void setRefreshNewSoFeature(boolean arg0) {
-		// TODO Auto-generated method stub
-		
+    public boolean isRefreshNewSoFeature() {
+		return isRefreshNewSoFeature;
 	}
 
-	@Override
-	public void setSoFeatureOverlay(boolean arg0) {
-		// TODO Auto-generated method stub
-		
+    public void setRefreshNewSoFeature(boolean isRefreshNewSoFeature) {
+		this.isRefreshNewSoFeature = isRefreshNewSoFeature;
 	}    
-  
+	
+	public String isFromLogin() {
+		return user.isFromLogin();
+	}
+
+
+	public void setFromLogin(String fromLogin) {
+		this.user.setFromLogin(fromLogin);
+	}
+
+	public void setValidSO3Data(Map<String, Object> validSO3Data){
+		this.user.setValidSO3Data(validSO3Data);
+	}
+    
+    public Map<String, Object> getValidSO3Data(){
+    	return this.user.getValidSO3Data();
+    }
+    
+    public boolean isRefreshSO3Settings(){
+    	return this.user.isRefreshSO3Settings();
+    }
+
+    public void setRefreshSO3Settings(boolean isRefreshSO3Settings){
+    	this.user.setRefreshSO3Settings(isRefreshSO3Settings);
+    }
+
+	public String getLat() {
+		return lat;
+	}
+
+	public void setLat(String lat) {
+		this.lat = lat;
+	}
+	
+	public String getPdUserId() {
+		return pdUserId;
+	}
+
+	public void setPdUserId(String pdUserId) {
+		this.pdUserId = pdUserId;
+	}
+
+	 
 }

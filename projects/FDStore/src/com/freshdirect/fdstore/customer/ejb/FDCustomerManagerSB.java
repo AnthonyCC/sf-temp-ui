@@ -83,9 +83,11 @@ import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.PasswordNotExpiredException;
+import com.freshdirect.fdstore.customer.PendingOrder;
 import com.freshdirect.fdstore.customer.ProfileAttributeName;
 import com.freshdirect.fdstore.customer.RegistrationResult;
 import com.freshdirect.fdstore.customer.SavedRecipientModel;
+import com.freshdirect.fdstore.customer.SilverPopupDetails;
 import com.freshdirect.fdstore.customer.UnsettledOrdersInfo;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.iplocator.IpLocatorEventDTO;
@@ -492,7 +494,7 @@ public interface FDCustomerManagerSB extends EJBObject {
      *
      * @return Map of order line number / FDAvailabilityI objects
      */
-    public Map<String, FDAvailabilityI> checkAvailability(FDIdentity identity, ErpCreateOrderModel createOrder, long timeout) throws FDResourceException, RemoteException;
+    public Map<String, FDAvailabilityI> checkAvailability(FDIdentity identity, ErpCreateOrderModel createOrder, long timeout, String isFromLogin) throws FDResourceException, RemoteException;
     
     /**
      * CallCenter method for locating all customers meeting the given criteria
@@ -898,5 +900,15 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public List<UnsettledOrdersInfo> getUnsettledOrders(Date date) throws FDResourceException, RemoteException;
 
 	public ErpCustomerModel getCustomer(FDIdentity identity) throws FDResourceException, RemoteException;
+
+	public Map<String, List<PendingOrder>> getPendingDeliveries() throws FDResourceException, RemoteException;
+	
+	public boolean insertOrUpdateSilverPopup(SilverPopupDetails silverPopupDetails) throws FDResourceException, RemoteException;
+
+	public List<SilverPopupDetails> getSilverPopupDetails() throws FDResourceException, RemoteException;
+
+	public void updateSPSuccessDetails(SilverPopupDetails detail) throws FDResourceException, RemoteException;
+	
+	public String getCookieByFdCustomerId(String fdCustomerId) throws FDResourceException, RemoteException;
 }
 

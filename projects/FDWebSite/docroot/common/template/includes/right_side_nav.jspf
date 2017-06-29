@@ -37,9 +37,11 @@ if (FDStoreProperties.isAdvertisingTileEnabled() &&
        <tr>
             <td align="right">
                 <% if (FDStoreProperties.isAdServerEnabled()) { %>
+                  <div id='oas_LittleRandy'>
                     <script type="text/javascript">
                     OAS_AD("LittleRandy");
-                    </script>                    
+                    </script>
+                  </div>
                 <%}%>
             </td>
         </tr>
@@ -60,9 +62,9 @@ if (cnm != null) {
             <td colspan="3" width="140"><img src="/media_stat/images/template/lists/we_recommend_hdr.gif" width="140" height="18" border="0" alt="WE RECOMMEND"><br></td>
         </tr>
         <tr>
-            <td bgcolor="#996699" valign="bottom" width="1"><img src="/media_stat/images/layout/996699.gif" 
+            <td bgcolor="#996699" valign="bottom" width="1"><img src="/media_stat/images/layout/996699.gif"
 			    width="1" height="1"><br></td>
-			<td align="center" width="138"><img src="/media_stat/images/layout/clear.gif" ALT="" 
+			<td align="center" width="138"><img src="/media_stat/images/layout/clear.gif" ALT=""
 			    width="138" height="3"><br>
 <table border="0" cellspacing="0" cellpadding="0" width="130">
 				    <tr valign="top">
@@ -71,7 +73,7 @@ if (cnm != null) {
 						    <font class="space4pix"><br></font></td>
 				    </tr>
 <%// get the we_recommend_text stuff..only display 3 items.
-int weRecCount = 0; 
+int weRecCount = 0;
 if(weRecommendTextProds.size() > 0) {
 
 %>
@@ -97,7 +99,7 @@ if(weRecommendTextProds.size() > 0) {
 <%      weRecCount++;
         }
     }
-    if(weRecCount>0) { 
+    if(weRecCount>0) {
 %>
 <font class="space4pix"><br><br></font>
 <%  } %>
@@ -110,7 +112,7 @@ if(weRecommendImgProds.size() > 0) {
    String prdURL=null;
     for(Iterator<ProductModel> wrItr=weRecommendImgProds.iterator();wrItr.hasNext() && weRecCount<2;) {
         ProductModel prdMdl = wrItr.next();
-        if (prdMdl!=null) { 
+        if (prdMdl!=null) {
             if (prdMdl.isUnavailable() || prdMdl.isDiscontinued()) continue;
             String prdCatID = prdMdl.getParentNode().getContentName();
             // build the link so that it would also work for the grocery categories
@@ -124,14 +126,14 @@ if(weRecommendImgProds.size() > 0) {
             String prdImgDim = "width=\"30\" alt=\"\" height=\"30\"";
             if (prdImg!=null) {
                 prdImgPath = prdImg.getPath();
-                prdImgDim = "width=\""+prdImg.getWidth()+"\" height=\""+prdImg.getHeight()+"\" alt=\"\" "; 
+                prdImgDim = "width=\""+prdImg.getWidth()+"\" height=\""+prdImg.getHeight()+"\" alt=\"\" ";
             }
             weRecSku = prdMdl.getDefaultSku();
             String weRecPrice = null;
             if (weRecSku==null) continue;
-            
+
             weRecPrice = JspMethods.formatPrice(weRecSku.getProductInfo(), params.getUser() != null ? params.getUser().getPricingContext() : PricingContext.DEFAULT);
-%>						
+%>
         <tr valign="top"><td width="12"><br></td>
             <td width="35"><A HREF="<%=prdURL%>"><img src="<%=prdImgPath%>" <%=prdImgDim%> border="0" alt="<%=prdMdl.getGlanceName()%>"></A><br><font class="space4pix"><br></font></td>
             <td width="83"><div style="margin-left: 8px text-indent: -8px;"><A HREF="<%=prdURL%>"><%=prdMdl.getGlanceName()%></A><br></div><%=weRecPrice%><br><br><font class="space4pix"><br></font></td>
@@ -147,7 +149,7 @@ if(weRecommendImgProds.size() > 0) {
 <%}%>
   </table>
 		    </td>
-		    <td width="1" bgcolor="#996699" valign="bottom"><img 
+		    <td width="1" bgcolor="#996699" valign="bottom"><img
 		        src="/media_stat/images/layout/996699.gif" width="1" height="1"></td>
 	    </tr>
 	    <tr valign="top">
@@ -155,7 +157,7 @@ if(weRecommendImgProds.size() > 0) {
 	    </tr>
     </table>
 	<br>
-<% } %> 
+<% } %>
 <% } %>
 <%
 	boolean isDeptPage = false;
@@ -202,14 +204,15 @@ if(weRecommendImgProds.size() > 0) {
 <% } else { %>
 	<comp:recommenderBox siteFeature="RIGHT_NAV_PERS" />
 <% } %>
-	
+
 <p class="product-request"><a href="javascript:pop('/request_product.jsp?department=<%= deptName %>', 400, 585);">Product Request? Click here.</a></p>
 
 	 <% if (FDStoreProperties.isAdServerEnabled()) { %>
-		<script type="text/javascript">
-                OAS_AD("SideCartBottom");
-      	</script>
-      	<br><br>
+    <div id='oas_SideCartBottom'>
+  		<script type="text/javascript">
+        OAS_AD("SideCartBottom");
+      </script><br><br>
+    </div>
 	 <% } %>
 </fd:Parameters>
 <%

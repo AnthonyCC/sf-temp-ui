@@ -5,8 +5,11 @@
 <fd:CheckLoginStatus id='user' />
 
 <tmpl:insert template='/common/template/no_nav.jsp'>
-	<tmpl:put name='title' direct='true'>Important Note</tmpl:put>
-		<tmpl:put name='content' direct='true'>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Important Note"/>
+  </tmpl:put>
+  <tmpl:put name='title'>FreshDirect - Important Note</tmpl:put>
+  <tmpl:put name='content' direct='true'>
 <%
 String promoChange = "false";
 String dlvChange = "false";

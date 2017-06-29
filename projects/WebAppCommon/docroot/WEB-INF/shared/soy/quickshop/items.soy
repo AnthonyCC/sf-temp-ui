@@ -238,20 +238,26 @@
 			<div class="itemlist-item-addtocart">
 				{if $replaced}
 					{if $item.customizePopup}<button fdform-default-button type="button" class="customize cssbutton orange cssbutton-flat small {$inCart}" {if $item.hasTerms}data-bypasscustomizepopup="true" {/if} data-alignpopup="tc-bc" data-component="customizeButton">Add to Cart</button>
-					{else}<button fdform-default-button type="button" class="addtocart cssbutton orange small {$inCart}" data-component="ATCButton"><span class="message">Add to Cart</span><ins class="iehelper">Added</ins></button>
+					{else}<button fdform-default-button type="button" class="addtocart cssbutton orange medium {$inCart}" data-component="ATCButton"><span class="message">Add to Cart</span><ins class="iehelper">Added</ins></button>
 					{/if}
 				{else}
 					{if not $item.customizePopup }<button fdform-default-button type="button" class="addtocart cssbutton cssbutton-flat orange small {$inCart}" data-component="ATCButton"><span class="message">Add to Cart</span><ins class="iehelper">Added</ins></button>
-					{else}<button type="button" class="customize cssbutton orange small {$inCart}" {if $type == 'shopfromlists'}data-hasApply="true"{/if} data-component="customizeButton" data-alignpopup="tc-bc" {if $item.hasTerms}data-bypasscustomizepopup="true" {/if}>Add to Cart</button>
+					{else}<button type="button" class="customize cssbutton orange medium {$inCart}" {if $type == 'shopfromlists'}data-hasApply="true"{/if} data-component="customizeButton" data-alignpopup="tc-bc" {if $item.hasTerms}data-bypasscustomizepopup="true" {/if}>Add to Cart</button>
 					{/if}
 				{/if}
 				{call common.atcInCart}
 					{param amount:$item.inCartAmount /}
 					{param atcItemId:$item.itemId /}
 				{/call}
-				{if $isEligibleForStandingOrders and length($item.soData.settingsData.soData) > 0}
-					{call common.soResults /}
-					{call common.soShowBtn /}
+				{if $isEligibleForStandingOrders}
+					{if length($item.soData.settingsData.soData) > 0}
+						{call common.soResults /}
+						{call common.soShowBtn /}
+					{else}
+						{call common.soRecurring}
+							{param useButton: true /}
+						{/call}
+					{/if}
 				{/if}
 			</div>
 			{call common.productData}
@@ -325,7 +331,7 @@
 			</div>
 			{if $item.available}
 				<div class="itemlist-item-header-buttons">
-					<button class="addtolist cssbutton transparent icon-list-white-before purple" data-alignpopup="tc-bc">Save to a List</button>
+					<button class="addtolist cssbutton transparent purple" data-alignpopup="tc-bc">Add to List</button>
 					{if $type == 'shopfromlists' and not $replaced}
 						<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist cssbutton transparent white icon-trash-new-before" aria-haspopup="true" data-alignpopup="tc-bc">Remove</button>
 						<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="editinlist save cssbutton transparent purple">Save Changes</button>
@@ -345,9 +351,6 @@
 				{if $item.replacement and not $item.useReplacement}
 					<div class="itemlist-item-replacement">We Recommend: <button class="itemlist-item-replacement-item" data-component="item-replacement" data-replacement="{$item.useReplacement}" data-replacement-id="{$item.itemId}">{$item.replacement.productName}</button></div>
 				{/if}
-			{/if}
-			{if $isEligibleForStandingOrders and length($item.soData.settingsData.soData) > 0}
-				{call common.soRecurring /}
 			{/if}
 		</div>
 	</li>

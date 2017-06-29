@@ -102,10 +102,14 @@ for (int cvIdx = 0; cvIdx < variations.length && !aVariationUnavailable; cvIdx++
 	}
 	if (unAvailCount==varOpts.length && unAvailCount!=0) aVariationUnavailable=true;
 }
+    String title = "FreshDirect - " + productNode.getFullName() + " Details";
 %>
 
 <tmpl:insert template='/common/template/large_long_pop.jsp'>
-	<tmpl:put name='title' direct='true'>FreshDirect - <%=productNode.getFullName()%> Details</tmpl:put>
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="<%=title%>"/>
+    </tmpl:put>
+	<tmpl:put name='title' direct='true'><%=title%></tmpl:put>
 		<tmpl:put name='content' direct='true'>
 <table border="0" cellpadding="0" cellspacing="0" width="520">
 <tr valign="top"><td colspan="5" width="520"></td></tr>

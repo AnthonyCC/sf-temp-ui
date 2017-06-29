@@ -30,7 +30,10 @@ import com.freshdirect.erp.ejb.ErpMaterialEB;
 import com.freshdirect.erp.ejb.ErpMaterialHome;
 import com.freshdirect.erp.model.ErpMaterialModel;
 import com.freshdirect.erp.model.ErpMaterialPriceModel;
+import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ZonePriceListing;
+import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.sap.SapProperties;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
@@ -262,8 +265,11 @@ public class FDProductPriceJcoServer extends FdSapServer {
 				SAPLoaderSB sapLoader = home.create();
 
 				// create a new batch
-				batchNumber = sapLoader.createBatch();
-
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SAPLoaderSB)){
+					batchNumber = FDECommerceService.getInstance().createBatch();
+				}else{
+					batchNumber = sapLoader.createBatch();
+				}
 				for (final Map.Entry<String, List<MaterialPriceParameter>> priceRecordEntry : priceRecordMap.entrySet()) {
 					List<ErpMaterialPriceModel> priceRows = new ArrayList<ErpMaterialPriceModel>();
 					String materialNo = priceRecordEntry.getKey();
@@ -326,8 +332,11 @@ public class FDProductPriceJcoServer extends FdSapServer {
 						if (priceRows.size() > 0) {
 							// check for default price row per salesarea
 							checkIfDefaultPriceRowExists(priceRows);
-
-							sapLoader.loadPriceRows(batchNumber, materialNo, priceRows);
+							if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SAPLoaderSB)){
+								FDECommerceService.getInstance().loadPriceRows(batchNumber, materialNo, priceRows);
+							}else{
+								sapLoader.loadPriceRows(batchNumber, materialNo, priceRows);
+							}
 
 							successCnt = successCnt + priceRecordEntry.getValue().size();
 
@@ -337,7 +346,11 @@ public class FDProductPriceJcoServer extends FdSapServer {
 						}
 
 						// mark the batch status
-						sapLoader.updateBatchStatus(batchNumber, EnumApprovalStatus.NEW);
+						if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SAPLoaderSB)){
+							FDECommerceService.getInstance().updateBatchStatus(batchNumber, EnumApprovalStatus.NEW);
+						}else{
+							sapLoader.updateBatchStatus(batchNumber, EnumApprovalStatus.NEW);
+						}
 					} catch (final Exception e) {
 						LOG.error("Saving price row(s) for material: " + priceRecordEntry.getKey()
 								+ " failed. Exception is ", e);

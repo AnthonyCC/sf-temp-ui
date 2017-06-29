@@ -18,7 +18,7 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 60px;
+    height: 48px;
     background: -moz-linear-gradient(top, rgba(237,237,237,1) 0%, rgba(237,237,237,0.01) 100%);
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(237,237,237,1)), color-stop(100%,rgba(237,237,237,0.01)));
     background: -webkit-linear-gradient(top, rgba(237,237,237,1) 0%,rgba(237,237,237,0.01) 100%);
@@ -295,6 +295,12 @@
     color: #e9e9e9;
     background: #e9e9e9;
     margin: 12px 0 0;
+}
+.standing-orders-3-set-form-header{
+	font-size: 20px;
+	font-weight: bold;
+	color: #000000;
+	margin: 0 0 5px;
 }
 .standing-orders-3-set-form {
     display: inline-block;
@@ -1333,9 +1339,27 @@
 .standing-orders-3-so-settings-container.open .standing-orders-3-so-settings-activate-message{
 	display: none;
 }
+.standing-orders-3-so-settings-top{
+	width: 970px;
+	margin: auto;
+}
+.standing-orders-3-so-setting-tutorial{
+	float: right;
+	font-size: 17px;
+}
+.standing-orders-3-so-setting-tutorial a{
+	float: right;
+	cursor: pointer;
+}
+.standing-orders-3-so-setting-tutorial a.standing-orders-3-so-setting-tutorial-pdf{
+	margin: 8px 0 0 10px;
+}
+.standing-orders-3-so-setting-tutorial-text{
+	padding: 18px 0;
+}
 .so3-create-new-so {
+	display: inline-block;
     width: 450px;
-    margin: auto;
 	padding: 12px;
     background: #f7f7f7;
 	border: 1px solid #c1b5c1;
@@ -1463,23 +1487,49 @@
 .standing-orders-3-so-settings-container.open .standing-orders-3-so-settings-square-line-2 .standing-orders-3-so-settings-square-line-2-label{
 	display:block;
 }
-.so-drawer-success{
+.so-drawer-success,
+.so-feature-tutorial{
 	width: 500px;
 	font-family: Verdana;
 	font-size: 16px;
 }
-.so-drawer-success .so-drawer-success-header{
+.so-drawer-success .so-drawer-success-header,
+.so-feature-tutorial .so-feature-tutorial-top{
 	padding: 30px;
 	font-size: 20px;
     font-weight: bold;
 }
-.so-drawer-success .so-drawer-success-alert-img{
+.so-drawer-success .so-drawer-success-alert-img,
+.so-feature-tutorial .so-feature-tutorial-alert-img{
 	float: left;
 	margin: 2px 10px 0 0;
 	height: 32px;
 	width: 32px;
     background-image: url('/media/layout/nav/globalnav/fdx/locabar-warning-small.png');
     background-repeat: no-repeat;
+}
+.so-feature-tutorial .so-feature-tutorial-middle{
+	padding: 0 72px;
+	font-size: 16px;
+}
+.so-feature-tutorial .so-feature-tutorial-main-header{
+	font-weight: bold;
+}
+.so-feature-tutorial ul{
+	padding: 0 0 0 30px;
+}
+.so-feature-tutorial ul li{
+	padding: 20px 0 0;
+	color: #666666;
+}
+.so-feature-tutorial .so-feature-tutorial-pdf{
+	display: block;
+    float: left;
+}
+.so-feature-tutorial .so-feature-tutorial-pdf-text{
+	display: block;
+	float: left;
+	padding: 10px 0 0 12px;
 }
 .so-drawer-success .so-drawer-success-text{
 	font-size: 16px;
@@ -1505,8 +1555,47 @@
     vertical-align: bottom;
     margin: 0 0 0 60px;
 }
-.so-drawer-success .so-drawer-success-ok{
+.so-drawer-success .so-drawer-success-ok,
+.so-feature-tutorial .so-feature-tutorial-ok{
 	float: right;
 	min-width: 210px;
 	margin: 10px 40px 30px;
+}
+.so-feature-tutorial .so-feature-tutorial-ok{
+	margin: 30px 40px 30px;
+}
+.so-feature-tutorial .so-feature-tutorial-bottom{
+	padding: 18px 0 20px 20px;
+	font-size: 16px;
+	background-color: #f7f7f7;
+	text-align: left;
+}
+.so-feature-tutorial #so-feature-tutorial-checkbox{
+	vertical-align: text-top;
+	margin: 0 15px 0 0;
+	border: 2px solid #c2c2c2;
+	background: #fefefe;
+	border-radius: 0;
+	box-sizing: border-box;
+	color: #444;
+	font-size: 16px;
+	font-weight: normal;
+	font-family: Verdana, arial, sans-serif;
+	box-shadow: none;
+	height: auto;
+	line-height: 22px;
+	outline: none;
+	padding: 8px;
+	cursor: pointer;
+	-webkit-font-smoothing: antialiased;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+}
+.so-feature-tutorial #so-feature-tutorial-checkbox:checked{
+	background-color: #68aa6d;
+}
+.so-feature-tutorial #so-feature-tutorial-checkbox:disabled{
+	opacity: 0.7;
+	cursor: default;
 }

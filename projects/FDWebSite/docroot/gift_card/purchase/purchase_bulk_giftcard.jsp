@@ -20,7 +20,10 @@
 %>
 
 <tmpl:insert template='/common/template/giftcard.jsp'>
-    <tmpl:put name='title' direct='true'>Gift Card : Buy in Bulk</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Gift Card : Buy in Bulk"/>
+  </tmpl:put>
+  <tmpl:put name='title' direct='true'>FreshDirect - Gift Card : Buy in Bulk</tmpl:put>
     <tmpl:put name='content' direct='true'>
 
 <%-- 	<jsp:include page="/includes/giftcard_nav.jsp" /> --%>

@@ -189,7 +189,7 @@ try {
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	
 
-	FDCartModel cart = FDCustomerManager.checkAvailability( user.getIdentity(), user.getShoppingCart(), 30000 );
+	FDCartModel cart = FDCustomerManager.checkAvailability( user.getIdentity(), user.getShoppingCart(), 30000,"checkout" );
 	// recalculate promotions
 	user.updateUserState();
 

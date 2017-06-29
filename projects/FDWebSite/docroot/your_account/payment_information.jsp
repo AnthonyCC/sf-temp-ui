@@ -66,8 +66,8 @@ if(user!=null  && user.getIdentity()!=null) {
 		}
 		paymentMethods = paymentsNew;
     }
-    isECheckRestricted = FDCustomerManager.isECheckRestricted(identity); 
-    // Check Whether PayPal EWallet status  
+    isECheckRestricted = FDCustomerManager.isECheckRestricted(identity);
+    // Check Whether PayPal EWallet status
     isPayPalWalletEnabled = FDCustomerManager.getEwalletStatusByType(EnumEwalletType.PP.getName());
 }
 boolean isCheckEligible	= user.isCheckEligible();
@@ -93,21 +93,23 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
 <!--  MP Use Case #4 -->
 <!-- <script type="text/javascript" src="https://sandbox.masterpass.com/lightbox/Switch/integration/MasterPass.client.js"></script> -->
 
-<script type="text/javascript" src="https://js.braintreegateway.com/js/braintree-2.21.0.min.js"></script> 
-<SCRIPT LANGUAGE=JavaScript>
-	<!--
-	OAS_AD('CategoryNote');
-	//-->
-</SCRIPT> 
+<script type="text/javascript" src="https://js.braintreegateway.com/js/braintree-2.21.0.min.js"></script>
+<div id='oas_CategoryNote'>
+  <SCRIPT LANGUAGE=JavaScript>
+  	<!--
+  	OAS_AD('CategoryNote');
+  	//-->
+  </SCRIPT>
+</div>
 <!--  PP Use Case  -->
- 
+
 
 <fd:GetStandingOrderDependencyIds id="standingOrderDependencyIds" type="paymentMethod">
-     
+
      <input type="hidden" name="isPayPalDown" id= "isPayPalDown" value="false">
-     
+
 <!--  MP Use Case #4 implemenation. Please use this component -->
-      
+
        		<fd:GetStandingOrderHelpInfo id="helpSoInfo">
               <script type="text/javascript">var helpSoInfo=<%=helpSoInfo%>;</script>
               <table width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
@@ -120,15 +122,15 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
   						<img src='/media_stat/images/masterpass/mpwarning.png'> <span>Cannot Connect to PayPal at this time.</span>
   					</div>
               	</div>
-       				<a class="cssbutton green add-payment-methods-button" href="/your_account/add_creditcard.jsp">CREDIT CARD</a>
+       				<a class="cssbutton green add-payment-methods-button" href="/your_account/add_creditcard.jsp">CREDIT / DEBIT CARD</a>
        					<div id="add-new-payment-method-checking-acc-disabled-master">
        						<a id="add-new-payment-method-checking-acc-disabled" class="cssbutton green add-payment-methods-button disabled" href="#" onclick="return false;">CHECKING ACCOUNT</a>
        						<div id="add-new-payment-method-checking-acc-disabled-indicator">Available after first order.</div>
        					</div>
        					<a id="add-new-payment-method-checking-acc" class="cssbutton green add-payment-methods-button" href="/your_account/add_checkacct.jsp" style="display: none;">CHECKING ACCOUNT</a>
-       					<% if (isPayPalWalletEnabled && masqueradeContext == null) { 
+       					<% if (isPayPalWalletEnabled && masqueradeContext == null) {
        						if (isPayPalWalletConnected ) { %>
-       			  				<!--  <input type="image" src="/media_stat/images/paypal/My Account - PayPal logo.png" alt="Connect With Paypal" id="PP_logo" disabled> --> 
+       			  				<!--  <input type="image" src="/media_stat/images/paypal/My Account - PayPal logo.png" alt="Connect With Paypal" id="PP_logo" disabled> -->
        							<div id="PP_logo">
        								<img src="/media_stat/images/paypal/My Account - PayPal logo.png" alt="Paypal Logo">
        								<div class="wallet-connected-indicator"><img src="/media_stat/images/common/link-small.png" alt="linked account"> LINKED</div>
@@ -150,39 +152,39 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
               <% if (isPayPalWalletEnabled ) {%>
 	              <br>
 	              <table id="pp_wallet_cards" width="<%= W_YA_PAYMENT_INFO_TOTAL %>"  border="0" cellspacing="0" cellpadding="0">
-	              
-	               <%  if (paymentsPP!=null && paymentsPP.size() > 0){ 
+
+	               <%  if (paymentsPP!=null && paymentsPP.size() > 0){
 	            	   for(ErpPaymentMethodI paymentM1 : paymentsPP) {
 	            		   if(paymentM1 != null && paymentM1.geteWalletID()!= null && paymentM1.geteWalletID().equals(""+EnumEwalletType.PP.getValue())){
-	               %> 
-	              
+	               %>
+
 		              <tr><td class=wallet-title-header>PayPal
 		              <% if (masqueradeContext == null) { %>
 		              	<div class="disconnectWallet" id=deletePPWallet ><img src=/media_stat/images/common/delete-white-icon.png><span id=deleteMPWallet class=disconnect-cssbutton-green>UNLINK</span></div>
 		              <% } %>
 		              </td></tr><tr><td colspan=9><img src=/media_stat/images/layout/999966.gif alt="" width=970 height=1 border=0 vspace=3></td></tr>
-		              
+
 		              <tr height=14></tr>
 		              <tr><td width=280 class=wallet-first-card>
 		              <font class=text12> <img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png">
 		              <br><%=paymentM1.getName() %>
-		              <br><%= paymentM1.getEmailID() %></font> 
+		              <br><%= paymentM1.getEmailID() %></font>
 		              <br></td>
-		              </tr>              
-	              
-	               <%	
+		              </tr>
+
+	               <%
 	               }
 	               }
 	               } %>
 	              </table>
-	            <% } %>  
+	            <% } %>
               <br>
               <table width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
               <% if (isCheckEligible && !isECheckRestricted) { %>
-              	 <script> 
-               		$jq('#add-new-payment-method-checking-acc-disabled-master').css("display","none"); 
-               		$jq('#add-new-payment-method-checking-acc').css("display","inline-block"); 
-               	</script>  
+              	 <script>
+               		$jq('#add-new-payment-method-checking-acc-disabled-master').css("display","none");
+               		$jq('#add-new-payment-method-checking-acc').css("display","inline-block");
+               	</script>
                      <% if (hasCheck) { %>
               <tr valign="top">
                   <td><!-- <img src="/media_stat/images/headers/check_acct_details.gif" width="181" height="9" alt="CHECKING ACCOUNT DETAILS"> --><span class="Container_Top_ChkAcctDetails">Checking Account Details</span> &nbsp;&nbsp;&nbsp;<a href="javascript:popup('/registration/checkacct_terms.jsp','large')"><span class="Terms"> Terms of Use </span></a><br>
@@ -202,7 +204,7 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
               </tr>
               		<% } %>
                     <%--  <% } else {%>
-                           <%@ include file="/includes/your_account/add_checkacct.jspf"%> 
+                           <%@ include file="/includes/your_account/add_checkacct.jspf"%>
                      <% } %> --%>
                      <br><br>
               <% } %>
@@ -212,12 +214,12 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
               <tr valign="top">
                   <td><!-- <img src="/media_stat/images/navigation/credit_card_details.gif"
 		WIDTH="152" HEIGHT="15" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<BR> -->
-		<span vspace="0" border="0" class="Container_Top_YourAccCCDetails">Credit Card Details</span><BR>
+		<span vspace="0" border="0" class="Container_Top_YourAccCCDetails">Credit / Debit Card Details</span><BR>
 		    <IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 		    </td>
               </tr>
               <tr valign="middle">
-                     <td class="text11" style="padding-top: 5px; padding-bottom: 10px;">If you need to enter another credit card: <a href="/your_account/add_creditcard.jsp"><IMG src="/media_stat/images/buttons/add_new_credit_card.jpg" WIDTH="137" HEIGHT="16" ALT="Add New Credit Card" BORDER="0" ALIGN="absmiddle"></a>
+                     <td class="text11" style="padding-top: 5px; padding-bottom: 10px;">If you need to enter another credit / debit card: <a class="cssbutton green small" href="/your_account/add_creditcard.jsp">ADD A NEW CREDIT / DEBIT CARD</a>
                      </td>
                      </tr>
                      <tr><td>
@@ -274,7 +276,7 @@ jQuery(document).ready(function($) {
 
     var isPayPalPaired = $('#isPayPalWalletConnected').val();
     if (isPayPalPaired != 'true') {
-        // Brain Tree setup-- Start 
+        // Brain Tree setup-- Start
         brainTreeSetup($);
     }
     // Brain Trees setup -- END
@@ -340,7 +342,7 @@ function brainTreeSetup($){
                         deviceObj = JSON.parse(integration.deviceData);
 
                     },
-                    // For saving the PayPal payment Method to FD 
+                    // For saving the PayPal payment Method to FD
                     onPaymentMethodReceived: function(payload) {
 
                         $.ajax({
@@ -366,5 +368,5 @@ function brainTreeSetup($){
 
     });
 }
-</script>  
+</script>
 </tmpl:insert>

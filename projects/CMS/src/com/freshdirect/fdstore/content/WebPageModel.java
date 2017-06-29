@@ -1,5 +1,7 @@
 package com.freshdirect.fdstore.content;
 
+import java.text.MessageFormat;
+
 import com.freshdirect.cms.ContentKey;
 
 public class WebPageModel extends ContentNodeModelImpl {
@@ -10,7 +12,7 @@ public class WebPageModel extends ContentNodeModelImpl {
 	}
 
 	public String getPageTitle() {
-		return getAttribute("PAGE_TITLE", "Online grocer providing high quality fresh foods and popular grocery and household items at incredible prices delivered to the New York area.");
+		return getAttribute("PAGE_TITLE", MessageFormat.format("FreshDirect - {0}", getFullName()));
 	}
 
     public String getFdxPageTitle() {

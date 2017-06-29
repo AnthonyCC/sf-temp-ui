@@ -85,31 +85,5 @@ public class ConfigHelper {
         }
     }
     
-    /**
-     * Loads a properties file from the Data base
-     * 
-     * @return a Properties object containg properties loaded from the specified DB files
-     */
-    public static Properties getPropertiesFromDB(final String type, final String cluster,
-			final String node, Properties defaultProperties) {
-        Properties props = new Properties(defaultProperties);
-        Properties propss =null;
-       
-        try{
-        	 propss = PropertyDao.loadProperties(type, cluster, node);
-            if (propss != null) {
-                        
-	           for(String key:propss.stringPropertyNames())
-	           {
-	        	   props.put(key, propss.getProperty(key));
-	           }
-            }
-            }catch( SQLException e){
-           	 System.err.println("Error: " + e);
-            }
-            return props;
-
-    }
-    
     
 }

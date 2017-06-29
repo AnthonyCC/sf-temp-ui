@@ -38,10 +38,11 @@ var FreshDirect = FreshDirect || {};
     },
     openPopup:{
       value: function (e) {
-        var moduleId = e.currentTarget.getAttribute('data-moduleId'),
-            moduleVirtualCategory = e.currentTarget.getAttribute('data-moduleVirtualCategory');
+        var moduleId = e.currentTarget.getAttribute('data-module-id'),
+            moduleVirtualCategory = e.currentTarget.getAttribute('data-module-virtual-category'),
+            notProductList = e.currentTarget.hasAttribute('data-not-product-list');
         fd.common.dispatcher.signal('server',{
-    			url:'/api/modulehandling/load?moduleId=' + moduleId + '&viewAll=true' +'&moduleVirtualCategory=' + moduleVirtualCategory
+    			url:'/api/modulehandling/load?moduleId=' + moduleId + '&viewAll=' + !notProductList +'&moduleVirtualCategory=' + moduleVirtualCategory
     		});
         var $t = e && $(e.currentTarget) || $(document.body);
 

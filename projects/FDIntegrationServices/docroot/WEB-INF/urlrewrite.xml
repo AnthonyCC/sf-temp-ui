@@ -1006,6 +1006,10 @@
 		<from>^/v/([0-9]+)/home/all/(.*)</from>
 		<to last="true">/home.do?action=getAllDetails&amp;ver=$1</to>
 	</rule>
+    <rule>
+        <from>^/v/([0-9]+)/home/module/(.*)</from>
+        <to last="true">/home.do?action=getModule&amp;ver=$1</to>
+    </rule>
 
 	<!-- Recipes -->
 	<rule>

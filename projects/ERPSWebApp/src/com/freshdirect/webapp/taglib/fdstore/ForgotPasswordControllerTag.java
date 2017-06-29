@@ -99,7 +99,7 @@ public class ForgotPasswordControllerTag extends BodyTagSupport {
 				pageContext.setAttribute(this.password, "true");
 			}
 
-		} else {
+		} else if(null !=passStep){
 
 			if (passStep.equals("sendUrl")) {
 				//

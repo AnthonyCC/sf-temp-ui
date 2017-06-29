@@ -23,6 +23,7 @@ import com.freshdirect.fdstore.ecoupon.model.FDCustomerCouponHistoryInfo;
 import com.freshdirect.fdstore.ecoupon.model.FDCustomerCouponWallet;
 import com.freshdirect.fdstore.ecoupon.service.CouponServiceException;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.service.FDECommerceService;
 
 public class FDCouponManager {
 
@@ -31,11 +32,15 @@ public class FDCouponManager {
 	private static FDCouponManagerHome managerHome = null;
 	
 	public static List<FDCouponInfo> loadCoupons(FDCouponActivityContext couponActivityContext) throws FDResourceException, CouponServiceException{
-		lookupManagerHome();
 		
 		try {
-			FDCouponManagerSB sb = managerHome.create();
-			return sb.loadCoupons( couponActivityContext);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.ecoupon.FDCouponManagerSB")) {
+				return FDECommerceService.getInstance().loadCoupons(couponActivityContext);
+			} else {
+				lookupManagerHome();
+				FDCouponManagerSB sb = managerHome.create();
+				return sb.loadCoupons(couponActivityContext);
+			}
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -46,11 +51,15 @@ public class FDCouponManager {
 	}
 	
 	public static void loadAndSaveCoupons(FDCouponActivityContext couponActivityContext) throws FDResourceException,CouponServiceException{
-		lookupManagerHome();
 		
 		try {
-			FDCouponManagerSB sb = managerHome.create();
-			sb.loadAndSaveCoupons(couponActivityContext);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.ecoupon.FDCouponManagerSB")) {
+				FDECommerceService.getInstance().loadAndSaveCoupons(couponActivityContext);
+			} else {
+				lookupManagerHome();
+				FDCouponManagerSB sb = managerHome.create();
+				sb.loadAndSaveCoupons(couponActivityContext);
+			}
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -61,11 +70,15 @@ public class FDCouponManager {
 	}
 	
 	public static List<FDCouponInfo> getActiveCoupons() throws FDResourceException{
-		lookupManagerHome();
 		
 		try {
-			FDCouponManagerSB sb = managerHome.create();
-			return sb.getActiveCoupons();
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.ecoupon.FDCouponManagerSB")) {
+				return FDECommerceService.getInstance().getActiveCoupons();
+			} else {
+				lookupManagerHome();
+				FDCouponManagerSB sb = managerHome.create();
+				return sb.getActiveCoupons();
+			}
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -76,11 +89,15 @@ public class FDCouponManager {
 	}	
 	
 	public static List<FDCouponInfo> getActiveCoupons(Date lastModified) throws FDResourceException{
-		lookupManagerHome();
 		
 		try {
-			FDCouponManagerSB sb = managerHome.create();
-			return sb.getActiveCoupons(lastModified);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.ecoupon.FDCouponManagerSB")) {
+				return FDECommerceService.getInstance().getActiveCoupons(lastModified);
+			} else {
+				lookupManagerHome();
+				FDCouponManagerSB sb = managerHome.create();
+				return sb.getActiveCoupons(lastModified);
+			}
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -91,11 +108,15 @@ public class FDCouponManager {
 	}
 	
 	public static FDCustomerCouponWallet getCouponsForUser(FDCouponCustomer couponCustomer,FDCouponActivityContext couponActivityContext) throws FDResourceException,CouponServiceException{
-		lookupManagerHome();
 		
 		try {
-			FDCouponManagerSB sb = managerHome.create();
-			return sb.getCouponsForUser(couponCustomer,couponActivityContext);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.ecoupon.FDCouponManagerSB")) {
+				return FDECommerceService.getInstance().getCouponsForUser(couponCustomer, couponActivityContext);
+			} else {
+				lookupManagerHome();
+				FDCouponManagerSB sb = managerHome.create();
+				return sb.getCouponsForUser(couponCustomer, couponActivityContext);
+			}
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -106,11 +127,15 @@ public class FDCouponManager {
 	}
 	
 	public static boolean doClipCoupon(String couponId, FDCouponCustomer couponCustomer,FDCouponActivityContext couponActivityContext) throws FDResourceException,CouponServiceException {
-		lookupManagerHome();
 		
 		try {
-			FDCouponManagerSB sb = managerHome.create();
-			return sb.doClipCoupon(couponId,couponCustomer,couponActivityContext); 
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.ecoupon.FDCouponManagerSB")) {
+				return FDECommerceService.getInstance().doClipCoupon(couponId, couponCustomer, couponActivityContext);
+			} else {
+				lookupManagerHome();
+				FDCouponManagerSB sb = managerHome.create();
+				return sb.doClipCoupon(couponId, couponCustomer, couponActivityContext);
+			}
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -121,11 +146,15 @@ public class FDCouponManager {
 	}
 	
 	public static Map<String, FDCouponEligibleInfo> evaluateCartAndCoupons(CouponCart couponCart,FDCouponActivityContext couponActivityContext) throws FDResourceException,CouponServiceException{
-		lookupManagerHome();
 		
 		try {
-			FDCouponManagerSB sb = managerHome.create();
-			return sb.evaluateCartAndCoupons(couponCart,couponActivityContext); 
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.ecoupon.FDCouponManagerSB")) {
+				return FDECommerceService.getInstance().evaluateCartAndCoupons(couponCart, couponActivityContext);
+			} else {
+				lookupManagerHome();
+				FDCouponManagerSB sb = managerHome.create();
+				return sb.evaluateCartAndCoupons(couponCart, couponActivityContext);
+			}
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -179,11 +208,15 @@ public class FDCouponManager {
 	}*/
 	
 	public static List<FDCouponInfo> getCouponsForCRMSearch(String searchTerm) throws FDResourceException {
-		lookupManagerHome();
 		
 		try {
-			FDCouponManagerSB sb = managerHome.create();
-			return sb.getCouponsForCRMSearch(searchTerm); 
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.ecoupon.FDCouponManagerSB")) {
+				return FDECommerceService.getInstance().getCouponsForCRMSearch(searchTerm);
+			} else {
+				lookupManagerHome();
+				FDCouponManagerSB sb = managerHome.create();
+				return sb.getCouponsForCRMSearch(searchTerm);
+			}
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -219,11 +252,15 @@ public class FDCouponManager {
 	}
 	
 	public static void postCouponOrder(ErpCouponTransactionModel couponTransModel,FDCouponActivityContext couponActivityContext) throws FDResourceException{
-		lookupManagerHome();
 		
 		try {
-			FDCouponManagerSB sb = managerHome.create();
-			sb.postCouponOrder(couponTransModel,couponActivityContext); 
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.ecoupon.FDCouponManagerSB")) {
+				FDECommerceService.getInstance().postCouponOrder(couponTransModel, couponActivityContext);
+			} else {
+				lookupManagerHome();
+				FDCouponManagerSB sb = managerHome.create();
+				sb.postCouponOrder(couponTransModel, couponActivityContext);
+			}
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -234,11 +271,15 @@ public class FDCouponManager {
 	}
 	
 	public static int getMaxCouponsVersion() throws FDResourceException{
-		lookupManagerHome();
 		
 		try {
-			FDCouponManagerSB sb = managerHome.create();
-			return sb.getMaxCouponsVersion();
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.ecoupon.FDCouponManagerSB")) {
+				return FDECommerceService.getInstance().getMaxCouponsVersion();
+			} else {
+				lookupManagerHome();
+				FDCouponManagerSB sb = managerHome.create();
+				return sb.getMaxCouponsVersion();
+			}
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -249,11 +290,15 @@ public class FDCouponManager {
 	}
 	
 	public static List<FDCustomerCouponHistoryInfo> getCustomersCouponUsage(String customerId) throws FDResourceException{
-		lookupManagerHome();
 		
 		try {
-			FDCouponManagerSB sb = managerHome.create();
-			return sb.getCustomersCouponHistoryInfo(customerId);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.ecoupon.FDCouponManagerSB")) {
+				return FDECommerceService.getInstance().getCustomersCouponHistoryInfo(customerId);
+			} else {
+				lookupManagerHome();
+				FDCouponManagerSB sb = managerHome.create();
+				return sb.getCustomersCouponHistoryInfo(customerId);
+			}
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -264,11 +309,15 @@ public class FDCouponManager {
 	}
 	
 	public static ErpCouponTransactionModel getConfirmPendingCouponTransaction(String saleId) throws FDResourceException{
-		lookupManagerHome();
 		
 		try {
-			FDCouponManagerSB sb = managerHome.create();
-			return sb.getConfirmPendingCouponTransaction(saleId);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.ecoupon.FDCouponManagerSB")) {
+				return FDECommerceService.getInstance().getConfirmPendingCouponTransaction(saleId);
+			} else {
+				lookupManagerHome();
+				FDCouponManagerSB sb = managerHome.create();
+				return sb.getConfirmPendingCouponTransaction(saleId);
+			}
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -279,11 +328,15 @@ public class FDCouponManager {
 	}
 	
 	public static void updateCouponTransaction(ErpCouponTransactionModel transModel) throws FDResourceException{
-		lookupManagerHome();
 		
 		try {
-			FDCouponManagerSB sb = managerHome.create();
-			sb.updateCouponTransaction(transModel);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.ecoupon.FDCouponManagerSB")) {
+				FDECommerceService.getInstance().updateCouponTransaction(transModel);
+			} else {
+				lookupManagerHome();
+				FDCouponManagerSB sb = managerHome.create();
+				sb.updateCouponTransaction(transModel);
+			}
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -294,11 +347,15 @@ public class FDCouponManager {
 	}
 	
 	public static void postConfirmPendingCouponTransactions(String saleId) throws FDResourceException{
-		lookupManagerHome();
 		
 		try {
-			FDCouponManagerSB sb = managerHome.create();
-			sb.postConfirmPendingCouponTransactions(saleId);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.ecoupon.FDCouponManagerSB")) {
+				FDECommerceService.getInstance().postConfirmPendingCouponTransactions(saleId);
+			} else {
+				lookupManagerHome();
+				FDCouponManagerSB sb = managerHome.create();
+				sb.postConfirmPendingCouponTransactions(saleId);
+			}
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");

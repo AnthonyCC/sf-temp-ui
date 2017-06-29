@@ -24,7 +24,10 @@ final int W_YA_GC_ORDER_DETAILS = 970;
 <%  String orderId = request.getParameter("orderId"); %>
 <fd:ModifyOrderController orderId="<%= orderId %>" result="result" successPage='<%= "/your_account/order_details.jsp?orderId=" + orderId %>'>
 <tmpl:insert template='/common/template/dnav.jsp'>
-    <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Order Details</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Your Account - Order Details"/>
+  </tmpl:put>
+  <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Order Details</tmpl:put>
     <tmpl:put name='content' direct='true'>
 
 <%

@@ -13,6 +13,7 @@
 <fd:CheckLoginStatus />
 
 <%
+String title = null;
 RecipeVariant variant;
 Recipe recipe;
 
@@ -43,11 +44,15 @@ if (recipe == null) {
 if (!recipe.isAvailable()) {
     // if the recipe is unavailable, just display such a message
     // and bail out
+    title = "FreshDirect - " + recipe.getName();
 %>
 <tmpl:insert template='<%=jspTemplate%>'>
    <tmpl:put name='leftnav' direct='true'>
    </tmpl:put>
-   <tmpl:put name='title' direct='true'>FreshDirect - <%= recipe.getName() %></tmpl:put>
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="<%= title %>"/>
+    </tmpl:put>
+   <tmpl:put name='title' direct='true'><%= title %></tmpl:put>
    <tmpl:put name='content' direct='true'>
 
     Sorry, but this recipe is not available.
@@ -101,6 +106,7 @@ String successPage		= FDURLUtil.getRecipeCartConfirmPageURI(request, catIdParam)
 request.setAttribute("sitePage", recipe.getPath());
 request.setAttribute("listPos", "LittleRandy,SystemMessage,CategoryNote,ProductNote");
 
+title = "FreshDirect - " + recipe.getName();
 %>
 <tmpl:insert template='<%=jspTemplate%>'>
    <tmpl:put name='leftnav' direct='true'>
@@ -109,7 +115,10 @@ request.setAttribute("listPos", "LittleRandy,SystemMessage,CategoryNote,ProductN
     <link rel="stylesheet" href="/assets/css/quickshop/actions.css" />
     <link rel="stylesheet" href="/assets/css/quickshop/popup.css" />
    </tmpl:put>
-   <tmpl:put name='title' direct='true'>FreshDirect - <%= recipe.getName() %></tmpl:put>
+   <tmpl:put name="seoMetaTag" direct='true'>
+     <fd:SEOMetaTag title="<%= title %>"/>
+   </tmpl:put>
+   <tmpl:put name='title' direct='true'><%= title %></tmpl:put>
    <tmpl:put name='content' direct='true'>
 
   <%@ include file="/shared/includes/layouts/i_recipe_body.jspf"%>

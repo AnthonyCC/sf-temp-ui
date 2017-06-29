@@ -3,7 +3,6 @@ package com.freshdirect.webapp.ajax.expresscheckout.service;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -124,7 +123,8 @@ public class SinglePageCheckoutFacade {
         deliveryAddressService = DeliveryAddressService.defaultService();
     }
 
-    public SinglePageCheckoutData load(final FDUserI user, HttpServletRequest request) throws FDResourceException, IOException, TemplateException, JspException, RedirectToPage {
+    public SinglePageCheckoutData load(final FDUserI user, HttpServletRequest request)
+            throws FDResourceException, IOException, TemplateException, JspException, RedirectToPage {
     	ErpCustomerModel customerModel = FDCustomerManager.getCustomer(user.getIdentity());
         FDCartI cart = populateCartDataFromParentOrder(user);
         SinglePageCheckoutData result = new SinglePageCheckoutData();
@@ -154,6 +154,7 @@ public class SinglePageCheckoutFacade {
             result.setRedirectUrl(RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL,
                     availabilityService.selectWarningType(user)));
         }
+
         return result;
     }
 
@@ -369,6 +370,7 @@ public class SinglePageCheckoutFacade {
         result.setSemPixelData(SemPixelService.defaultService().populateSemPixelMediaInfo(user, session, order));
        
         result.setGoGreenShow("I".equalsIgnoreCase(GoGreenService.defaultService().loadGoGreenOption(user))?true:false);
+
         return result;
     }
 
