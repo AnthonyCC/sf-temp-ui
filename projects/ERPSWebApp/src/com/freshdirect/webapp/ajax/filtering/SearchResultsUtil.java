@@ -46,6 +46,9 @@ public class SearchResultsUtil {
 	
 	private static final Logger LOG = LoggerFactory.getInstance( SearchResults.class );
 	
+	private static final String MOBILE_PLATFORM="web";
+	private static final String WEB_PLATFORM="mobile";
+	
 	public static SearchResults getPresidentsPicksProducts(CmsFilteringNavigator nav) {
 		
 		List<ProductModel> promotionProducts = new ArrayList<ProductModel>();
@@ -141,13 +144,14 @@ public static SearchResults getHLBrandProductAdProducts(SearchResults searchResu
 			hLBrandProductAdRequest.setUserId(user.getUser().getPK().getId());
 			hLBrandProductAdRequest.setSearchKeyWord(searchResults.getSuggestedTerm()!=null?searchResults.getSuggestedTerm():nav.getSearchParams());
 					
-			if(user.getPlatForm()!=null)
+			if (user.getPlatForm() != null) {
 				hLBrandProductAdRequest.setPlatformSource(user.getPlatForm());
-			else if(user.isMobilePlatForm())
-				hLBrandProductAdRequest.setPlatformSource("mobile");	
-		 	else
-		 		hLBrandProductAdRequest.setPlatformSource("web");
-			
+				hLBrandProductAdRequest.setLat(user.getLat());
+				hLBrandProductAdRequest.setPdUserId(user.getPdUserId());
+			} else {
+				hLBrandProductAdRequest.setPlatformSource(user.isMobilePlatForm() ? MOBILE_PLATFORM : WEB_PLATFORM);
+			}
+
 			HLBrandProductAdResponse hlBrandProductAdResponse = FDBrandProductsAdManager.getHLBrandproducts(hLBrandProductAdRequest);
 			if(hlBrandProductAdResponse!=null){
 			List<HLBrandProductAdInfo> hlBrandAdProductsMeta =hlBrandProductAdResponse.getSearchProductAd();

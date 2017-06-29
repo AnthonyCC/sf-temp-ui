@@ -148,6 +148,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     private boolean isAvalaraTaxed;
     private boolean isMobilePlatForm;
     private String 	platForm;
+    private String 	lat;
+    private String 	pdUserId;
 
     private Set<ContentKey> checkoutUnavailableProductKeys; // set of items which failed the ATP test
 
@@ -350,7 +352,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         }
     }
 
-    /**
+	/**
      * update the last request date.
      */
     public void touch() {
@@ -2355,5 +2357,22 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     public void setRefreshSO3Settings(boolean isRefreshSO3Settings){
     	this.user.setRefreshSO3Settings(isRefreshSO3Settings);
     }
-  
+
+	public String getLat() {
+		return lat;
+	}
+
+	public void setLat(String lat) {
+		this.lat = lat;
+	}
+	
+	public String getPdUserId() {
+		return pdUserId;
+	}
+
+	public void setPdUserId(String pdUserId) {
+		this.pdUserId = pdUserId;
+	}
+
+	 
 }
