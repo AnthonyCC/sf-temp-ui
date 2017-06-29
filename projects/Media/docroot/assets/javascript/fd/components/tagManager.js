@@ -184,18 +184,22 @@ var dataLayer = window.dataLayer || [];
       });
     },
     zipCheckSuccess: function (data) {
+      var customer = fd.gtm && fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.customer;
       dataLayer.push({
         eventCategory: 'Lightbox Tracking',
         eventAction: 'zipcode-entered',
+        user_id: customer.userId,
         zip_code: data.zipCode
       });
 
       return {event: 'lightbox-zipcode'};
     },
     zipCheckClosed: function () {
+      var customer = fd.gtm && fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.customer;
       dataLayer.push({
         eventCategory: 'Lightbox Tracking',
-        eventAction: 'lightbox-closed'
+        eventAction: 'lightbox-closed',
+        user_id: customer.userId
       });
 
       return {event: 'lightbox-zipcode'};
