@@ -216,6 +216,10 @@ public class FDCachedFactory {
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
 	public static FDProductInfo getProductInfo(String sku) throws FDResourceException, FDSkuNotFoundException {
+		if(sku == null) {			
+			throw new FDSkuNotFoundException("SKU "+sku+" not found (cached)");			
+		}
+		
 		Object cached = productInfoCache.get(sku);
 		FDProductInfo pi;
 		if (cached==null) {
@@ -305,7 +309,11 @@ public class FDCachedFactory {
 		// find skus already in the cache
 		Object tempo;		
 		for (int i=0; i<skus.length; i++) {
-			tempo = productInfoCache.get(skus[i]);
+			String sku = skus[i];
+			if(sku == null) {
+				continue;
+			}
+			tempo = productInfoCache.get(sku);
 			if (tempo==null) {
 				missingSkus[missingCount++]=skus[i];
 			} else if (tempo!=SKU_NOT_FOUND) {
@@ -608,12 +616,12 @@ public class FDCachedFactory {
 	 * @param skus
 	 * @throws FDResourceException
 	 */
-	public static void refreshProductPromotionSkus(Set<String> skus)throws FDResourceException{
-		for (Iterator iterator = skus.iterator(); iterator.hasNext();) {
-			String sku = (String) iterator.next();
-			refreshProductPromotionSku(sku);
-		}		
-	}
+//	public static void refreshProductPromotionSkus(Set<String> skus)throws FDResourceException{
+//		for (Iterator iterator = skus.iterator(); iterator.hasNext();) {
+//			String sku = (String) iterator.next();
+//			refreshProductPromotionSku(sku);
+//		}		
+//	}
 	
 	public static void refreshProductPromotionSku(String sku)throws FDResourceException{
 		FDProductInfo pi = null;
