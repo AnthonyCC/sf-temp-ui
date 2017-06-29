@@ -5,6 +5,9 @@
 request.setAttribute("listPos", "SystemMessage,WDelivery,WAffiliate");
 
 %><tmpl:insert template="/common/template/page_template_optimized_no_yui.jsp">
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect"/>
+    </tmpl:put>
 	<tmpl:put name="title">FreshDirect</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 	    <div class="content span-24">

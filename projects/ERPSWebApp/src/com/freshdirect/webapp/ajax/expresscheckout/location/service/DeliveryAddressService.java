@@ -145,7 +145,7 @@ public class DeliveryAddressService {
             DeliveryAddressManipulator.performSetDeliveryAddress(session, user, deliveryAddressId, contactNumber, null, actionName, true, actionResult, null, null, null, null,
                     null, null);
             if (actionResult.isSuccess()) {
-                TimeslotService.defaultService().releaseTimeslot(user);
+                /*TimeslotService.defaultService().releaseTimeslot(user);*/
             }
             processErrors(validationErrors, actionResult);
         }

@@ -22,10 +22,10 @@
 	boolean isReorderOrders = (mobweb_uri.indexOf("/qs_past_orders.jsp") != -1) ? true : false;
 	boolean isCheckout = (mobweb_uri.indexOf("/expressco/") != -1) ? true : false;
 	boolean isHelp = (mobweb_uri.indexOf("/help/") != -1) ? true : false;
-	
+
 	Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 	boolean useFdxGlobalNav = FDStoreProperties.isFdxLocationbarEnabled();
-	
+
 	request.setAttribute("inMobWebTemplate", true);
 %>
 <%
@@ -38,14 +38,14 @@
   <head>
   	<title><tmpl:get name="title"/></title>
   	<tmpl:get name="seoMetaTag"/><%-- if title is used, overrides previous tag --%>
-  
+
     <meta name="HandheldFriendly" content="True">
     <meta name="MobileOptimized" content="320">
   	<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
 	<meta name="fragment" content="!">
-    
+
     <%@ include file="/common/template/includes/i_javascripts_browse.jspf" %>
-    
+
     <%-- THIS SETUP NEEDS TO BE BEFORE THE LOCABAR JS --%>
 	<script>
 		FreshDirect = FreshDirect || {};
@@ -59,17 +59,17 @@
 			%><jwr:script src="/fdproto.js" useRandomParam="false" /><%
 		}
 	%>
-	
+
 	<fd:javascript src="/assets/javascript/locationbar.js" />
 	<fd:javascript src="/assets/javascript/locationbar_fdx.js" />
-    
-    	
+
+
     <jsp:include page="/common/template/includes/ad_server.jsp" flush="false" />
 	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-	
+
   	<tmpl:get name='facebookmeta'/>
-  	
+
     <jwr:style src="/grid.css" media="all" />
     <jwr:style src="/oldglobal.css" media="all" />
     <jwr:style src="/global.css" media="all" />
@@ -82,7 +82,7 @@
 			<jwr:script src="/assets/javascript/jquery.pwstrength.js" useRandomParam="false" />
 			<script>jQuery(function($jq) { $jq('#password1').pwstrength(); });</script>
 	<% } %>
-	
+
     <%
 		if (isReorder) {
 			%><jwr:style src="/quickshop.css" media="all" /><%
@@ -94,24 +94,24 @@
 		}
 	%>
     <jwr:style src="/mobileweb.css" media="all" /><%-- mobileweb should be last, for overriding --%>
-    
+
     <tmpl:get name="extraCss" />
     <tmpl:get name="extraJs" />
     <tmpl:get name='nutritionCss'/>
-        
+
     <%
 		if ( (request.getRequestURI().indexOf("/your_account/giftcards.jsp")>-1) || (request.getRequestURI().indexOf("/your_account/gc_order_details.jsp")>-1) ) {
 			//do nothing
 		} else if(request.getRequestURI().indexOf("/your_account/")>-1) { %>
 			<%@ include file="/shared/template/includes/ccl.jspf" %>
 	<% } %>
-    
+
     <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-    
+
     <%
 		if (isReorder) {
 			%><script type="text/javascript">
-	        	function showStandardAds(){		
+	        	function showStandardAds(){
 	        		$jq('#QSTop').show();
 	        	}
         	</script><%
@@ -123,21 +123,21 @@
 <!--[if !IE]><!--><body data-ismobweb="true" <%= (isCheckout) ? "data-ec-page=" : "data-not-ec=" %>"<tmpl:get name="ecpage" />" data-printdata="<tmpl:get name='printdata'/>" data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>" <% if (isReorder) {%> data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"<% } %>><!--<![endif]-->
     <%@ include file="/shared/template/includes/i_body_start.jspf" %>
     <div class="container-fluid" id="page-content"><!-- body cont s -->
-		
+
 		<!-- top nav s -->
 		<%@ include file="/common/template/includes/globalnav_mobileWeb_top.jspf"%>
 		<!-- top nav e -->
-		
+
 		<div id="content" autoscroll="true"><!-- content starts here-->
 			<!-- popcart s -->
 				<%-- PLACEHOLDER(S) FOR NOW --%>
 			<!-- popcart e -->
-		
+
 		   	<!-- messages s -->
 		   	<jsp:include page="/shared/messages/messages_fdx.jsp" />
-		  	
+
 		  	<% if (FDStoreProperties.isAdServerEnabled()) {
-				%><div id="OAS_SystemMessage">
+				%><div id="oas_SystemMessage">
   					<script type="text/javascript">OAS_AD('SystemMessage');</script>
   				</div>
 			<% } else { %>
@@ -159,9 +159,9 @@
 			<%@ include file="/common/template/includes/i_cutoff_warning.jspf"%>
 
     		<div class="message invisible" id="deliveryetawarning" data-type="deliveryetawarning"><%@ include file="/common/template/includes/i_delivery_eta_info.jspf"%></div>
-    
+
 		   	<!-- messages e -->
-		   	
+
 		   	<!-- modorder s -->
 		   	<%-- THIS IS HIDDEN FROM DISPLAY FOR NOW --%>
 		   	<div id="modifyorderalert_cont" class="">
@@ -170,38 +170,38 @@
 				</div>
 		   	</div>
 		   	<!-- modorder e -->
-		
+
 			<section class="tabs">
     			<!-- start : tabs -->
     			<tmpl:get name='tabs'/>
-    			<!-- end : tabs -->      
+    			<!-- end : tabs -->
   			</section>
 		    <nav class="leftnav" style="display: none;">
 		      <!-- start : leftnav -->
 		      <tmpl:get name='leftnav'/>
-		      <!-- end : leftnav -->    
+		      <!-- end : leftnav -->
 		    </nav>
 		    <%
 				if (isReorder) {
 					%>
 					<div id="quickshop"  class="container text10 <tmpl:get name='containerClass' />">
 		                <div class="header">
-		                  <h1 class='qs-title icon-reorder-icon-before notext'>Reorder</h1><span class="qs-subtitle"><strong>Smart shopping</strong> from <strong>past orders &amp; lists</strong></span>      
+		                  <h1 class='qs-title icon-reorder-icon-before notext'>Reorder</h1><span class="qs-subtitle"><strong>Smart shopping</strong> from <strong>past orders &amp; lists</strong></span>
 		                </div>
 		                <% if(false){ //Remove if check when other pages done. This nav is hidden only because only Items page was optimized for mobile %>
 		                <div id="mm-reorder-nav">
 							<ul>
 								<li><a href="/quickshop/qs_top_items.jsp" class="cssbutton purple <% if(isReorderItems){ %>non<% }%>transparent">Items</a></li>
 								<li><a href="/quickshop/qs_past_orders.jsp" class="cssbutton purple <% if(isReorderOrders){ %>non<% }%>transparent">Orders</a></li>
-								<li><a href="/quickshop/qs_shop_from_list.jsp" class="cssbutton purple <% if(isReorderLists){ %>non<% }%>transparent">Lists</a></li>					
+								<li><a href="/quickshop/qs_shop_from_list.jsp" class="cssbutton purple <% if(isReorderLists){ %>non<% }%>transparent">Lists</a></li>
 							</ul>
 							<% if (user.isEligibleForStandingOrders()) { %>
-								<div id="mm-reorder-nav-so"><a href="/quickshop/qs_standing_orders.jsp" class="cssbutton purple transparent">Standing Orders</a></div>                     
+								<div id="mm-reorder-nav-so"><a href="/quickshop/qs_standing_orders.jsp" class="cssbutton purple transparent">Standing Orders</a></div>
 							<%} %>
 				    	</div>
 				    	<%} %>
-				    		                
-	               
+
+
 	                <% if (isReorderItems) { %>
 	                	<h2>Your Top Items</h2>
 	                <% } %>
@@ -225,7 +225,7 @@
 				</div>
 			<% } %>
 	    </div><!-- content ends above here-->
-	    
+
 	    <!-- bottom nav s -->
 	    <%@ include file="/common/template/includes/globalnav_mobileWeb_bottom.jspf" %>
 	    <!-- bottom nav e -->
@@ -235,18 +235,18 @@
 
     <tmpl:get name="soytemplates" />
 	<tmpl:get name='soypackage'/>
-	
+
 	<%
 		if (isReorder) { /* right place for this? */
 			%><div id="ModifyBRDContainer"></div><%
 		}
 	%>
-    
+
     <%@ include file="/common/template/includes/i_jsmodules.jspf" %>
-	
+
     <tmpl:get name="jsmodules" />
 	<tmpl:get name='extraJsModules'/>
-	    
+
 	<jwr:script src="/mobileweb.js" useRandomParam="false" />
     <tmpl:get name="extraJsFooter" />
 

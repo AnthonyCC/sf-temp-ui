@@ -1,6 +1,11 @@
 <%@ taglib uri='template' prefix='tmpl' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+
 <tmpl:insert template='/common/template/no_space_border.jsp'>
-	<tmpl:put name='title' direct='true'>FreshDirect</tmpl:put>
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect - Help"/>
+    </tmpl:put>
+	<tmpl:put name='title' direct='true'>FreshDirect - Help</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 
 <table border="0" cellpadding="0" cellspacing="0" width="470">

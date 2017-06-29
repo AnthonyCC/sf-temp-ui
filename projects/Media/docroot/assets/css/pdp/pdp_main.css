@@ -236,6 +236,7 @@ span.cssbutton.annotation:hover {
 .pdp .pdp-productconfig {
 	overflow:hidden;
 	clear:both;
+	padding: 20px 0 0;
 }
 
 .pdp .scale-deal {
@@ -295,9 +296,10 @@ span.cssbutton.annotation:hover {
 }
 
 .pdp-atcdata {
-	margin-top:20px;
-	margin-bottom:20px;
+	padding: 10px 17px;
+	background-color: #f7f7f7;
 	font-weight:normal;
+	border-bottom: 1px solid #dce6be;
 }
 
 .pdp-atcdata .skucontrol-variations i {
@@ -307,7 +309,7 @@ span.cssbutton.annotation:hover {
 .pdp-atcdata .skucontrol-salesunit b {
 	display:block;
 	margin-bottom:15px;
-	font-size:12px;
+	font-size:14px;
 	font-family:Verdana,sans-serif;
 }
 
@@ -316,8 +318,8 @@ span.cssbutton.annotation:hover {
 }
 
 .pdp-atcdata hr{
-	margin-top:0px;
-	margin-bottom:20px;
+	margin: 0;
+	height: 0;
 }
 
 .pdp-atcdata .salesunit{
@@ -365,7 +367,9 @@ span.cssbutton.annotation:hover {
 
 .pdp-atc {
 	min-height:70px;
-	margin-top:20px;
+	border: 0;
+	padding: 17px 17px 10px;
+	background-color: #f7f7f7;
 }
 
 .pdp-atc-buttons {
@@ -373,11 +377,9 @@ span.cssbutton.annotation:hover {
 }
 
 .pdp-atc-button-wrapper {
-	display:inline-block;
+	display:block;
 	position:relative;
-	/*margin-bottom:16px;*/
-	margin-left:7px;
-	margin-top: 16px;
+	margin-top: 35px;
 }
 
 .pdp-atc-button-wrapper .atc-info {
@@ -413,7 +415,9 @@ span.cssbutton.annotation:hover {
   font-weight:normal;
   cursor: pointer;
 }
-
+.pdp-atc #pdp-atc-addtolist{
+	margin: auto;	
+}
 
 .pdp .pdp-evenbetter hr {
 	margin:20px 0;
@@ -481,7 +485,6 @@ span.cssbutton.annotation:hover {
 }
 
 .pdp-evenbetter-atc .pdp-evenbetter-atcbutton button.cssbutton[data-component="ATCButton"] {
-  padding: 7px;
   font-size: inherit;
 }
 
@@ -700,7 +703,7 @@ span.cssbutton.annotation:hover {
 .pdp .pdp-evenbetter-atc {
 	text-align: left;
 	background: white;
-	padding: 0 15px 0 0;
+	padding: 5px 15px 0 0;
 	width: 231px;
 	margin: 0 0 10px auto;
 	max-height:0;
@@ -718,6 +721,60 @@ span.cssbutton.annotation:hover {
 }
 
 #evenBetterPopup .skucontrol-variations {
+}
+/* Quantity Picker Overrides */
+.pdp-atc .pdp-atc-buttons .qtyinput, 
+#evenBetterPopup .pdp-evenbetter-quantity .qtyinput, 
+#evenBetterPopup .pdp-evenbetter-quantity {
+    width: auto;
+}
+.pdp-atc .quantity_plus,
+.pdp-atc .quantity_minus,
+#evenBetterPopup .quantity_plus,
+#evenBetterPopup .quantity_minus{
+    width: 36px;
+    color: #ffffff;
+    background-color: #4fa157;
+    border: 1px solid #4fa157;
+    height: 34px;
+    line-height: 32px;
+    font-size: 24px;
+	font-family: Verdana;
+    text-align: center;
+    font-weight: bold;
+    color: #fff;
+    background-image: none;
+    text-decoration: none;
+    text-indent: 0;
+    padding: 0;
+    border-radius: 3px;
+    transition: background-color 0.12s ease-in-out 0s;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.pdp-atc .quantity_plus:hover,
+.pdp-atc .quantity_minus:hover,
+#evenBetterPopup .quantity_plus:hover,
+#evenBetterPopup .quantity_minus:hover{
+    background-color: #458d4e;
+    border: 1px solid #458d4e;
+}
+.pdp-atc .qtyinput input.qty,
+#evenBetterPopup .qtyinput input.qty {
+    width: 58px;
+    height: 36px;
+    font-size: 18px;
+    font-weight: bold;
+    margin: -1px 3px 0;
+    border: 2px #c2c2c2 solid;
+}
+.pdp-atc .qtyinput input.qty:hover,
+#evenBetterPopup input.qty:hover{
+    border-color: #68aa6d;
 }
 
 .pdp .skucontrol-variations-item select,
@@ -964,7 +1021,9 @@ button#pdp-atc-addtolist,
   padding: 10px 0;
   text-align: center;
 }
-
+.pdp-productconfig .pdp-atc .cssbutton[data-component="ATCButton"]{
+	width: 100%;
+}
 .pdp-accordion-item > div > table > tbody > tr > td,
 .pdp-accordion-item > div > table > tr > td {
   max-width: 300px;
@@ -1037,4 +1096,8 @@ border-bottom-left-radius: 6px;
 }
 .floter_right {
 	float:right;
+}
+
+.subtotal-price-estimated {
+	padding-left: 10px;
 }

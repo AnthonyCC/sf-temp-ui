@@ -92,7 +92,14 @@ public class ToJSONTag extends BodyTagSupport {
 				out.print( jsonpWrapper + "(" );
 			}
 			
-			out.print( writer.toString() );
+
+			//out.print( writer.toString() );
+			/* make json script-tag compatible */
+			/* double escape the escape */
+			out.print( writer.toString().replaceAll("</script>", "<\\\\/script>") );
+			/* alternate fix, split the tag to avoid parser */
+			//out.print( writer.toString().replaceAll("</script>", "</scr+\"+\"ipt>") );
+			
 			
 			if ( jsonpWrapper != null ) {
 				out.print( ");" );

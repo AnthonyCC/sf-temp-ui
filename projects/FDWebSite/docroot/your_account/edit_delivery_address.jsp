@@ -14,7 +14,10 @@ final int W_YA_EDIT_DELIVERY_ADDR = 970;
 	session.setAttribute("lastEditedAddressId", (String)NVL.apply(request.getParameter("addressId"), ""));
 %>
 <tmpl:insert template='/common/template/dnav.jsp'>
-<tmpl:put name='title' direct='true'>FreshDirect - Your Account - Edit Delivery Address</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Your Account - Edit Delivery Address"/>
+  </tmpl:put>
+  <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Edit Delivery Address</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <fd:RegistrationController actionName="editDeliveryAddress" result="result" successPage="/your_account/delivery_information.jsp">
 	<script>var doubleSubmitAddrAdd = false;</script>

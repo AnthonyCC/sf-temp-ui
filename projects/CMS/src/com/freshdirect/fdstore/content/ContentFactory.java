@@ -68,6 +68,7 @@ public class ContentFactory {
     private ThreadLocal<UserContext> currentUserContext;
     private ThreadLocal<Boolean> eligibleForDDPP;
     private ThreadLocal<DraftContext> currentDraftContext;
+    private ThreadLocal<HashMap<String, Object>> userAllSoData;
 
     private class WineIndex {
 
@@ -192,6 +193,14 @@ public class ContentFactory {
             protected DraftContext initialValue() {
                 LOGGER.debug("initializing draft context with main draft.");
                 return DraftContext.MAIN;
+            }
+        };
+        
+        userAllSoData = new ThreadLocal<HashMap<String,Object>> () {
+        	@Override
+            protected HashMap<String,Object> initialValue() {
+                LOGGER.debug("initializing draft context with main draft.");
+                return null;
             }
         };
     }
@@ -1065,5 +1074,13 @@ public class ContentFactory {
         }
         return isAllowToUseContentCache;
     }
-    
+
+	public HashMap<String, Object> getUserAllSoData() {
+		return userAllSoData.get();
+	}
+
+	public void setUserAllSoData(HashMap<String, Object> userAllSoData) {
+		this.userAllSoData.set(userAllSoData);
+	}
+		  
 }

@@ -5,7 +5,6 @@
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-    <title><tmpl:get name='title'/></title>
 	    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
         <fd:javascript src="/assets/javascript/common_javascript.js"/>
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>

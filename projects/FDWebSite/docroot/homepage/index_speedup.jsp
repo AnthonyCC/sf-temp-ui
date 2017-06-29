@@ -145,10 +145,10 @@
             /* these use OAS pages like www.freshdirect.com/mobileweb/[PAGENAME] */
 
                if (FDStoreProperties.isAdServerEnabled()) {
-              %><div id="OAS_HPMob01" class="home-page-banner">
+              %><div id="oas_HPMob01" class="home-page-banner">
                   <script type="text/javascript">OAS_AD('HPMob01');</script>
                 </div><%
-              %><div id="OAS_HPMob02" class="home-page-banner">
+              %><div id="oas_HPMob02" class="home-page-banner">
                   <script type="text/javascript">OAS_AD('HPMob02');</script>
                 </div><%
               }
@@ -280,6 +280,7 @@
 
       fd.gtm = fd.gtm || {};
       fd.gtm.key = '<%= FDStoreProperties.getGoogleTagManagerKey() %>';
+      fd.properties.isDFPEnabled = <%= FDStoreProperties.isDfpEnabled() ? true : false %>;
     </script>
 
     <%-- Google Tag Manager login/signup events --%>

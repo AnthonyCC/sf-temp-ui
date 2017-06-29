@@ -159,21 +159,19 @@ if (productNode != null) {
 	    defaultSku = (SkuModel) prodSkus.get(0);
     }
 }
-
+String title = null;
+if (productNode != null) {
+  title = "FreshDirect - " + productNode.getFullName() + " Details";
+} else if (variant != null) {
+  title = "FreshDirect - " + recipe.getFullName() + " Details";
+}
 %>
 
 <tmpl:insert template='/common/template/large_long_pop.jsp'>
-<%
-    if (productNode != null) {
-%>
-        <tmpl:put name='title' direct='true'>FreshDirect - <%=productNode.getFullName()%> Details</tmpl:put>
-<%
-    } else if (variant != null) {
-%>
-        <tmpl:put name='title' direct='true'>FreshDirect - <%=recipe.getFullName()%> Details</tmpl:put>
-<%
-    }
-%>
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="<%=title%>"/>
+    </tmpl:put>
+    <tmpl:put name='title' direct='true'><%=title%></tmpl:put>
 	<tmpl:put name='content' direct='true'>
 <table border="0" cellpadding="0" cellspacing="0" width="520">
 <tr valign="top">

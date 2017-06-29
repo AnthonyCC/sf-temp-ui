@@ -260,6 +260,7 @@ etids.div_tooltipPopup = "#tooltipPopup";
 
 	var $ = fd.libs.$;
 	var WIDGET = fd.modules.common.widget;
+	var DISPATCHER = fd.common.dispatcher;
 	var requestCounter = 0;
 	var focusedElementId;
 	
@@ -362,6 +363,11 @@ etids.div_tooltipPopup = "#tooltipPopup";
 				window.FreshDirect.cartTemplateObj.processFn = processFn;
 
 				this.updateTopCheckoutButton(data);
+
+        // GTM related data processing
+        if (data.googleAnalyticsData) {
+          DISPATCHER.signal('googleAnalyticsData', data.googleAnalyticsData);
+        }
 				
 				/*only if etipping is turned on in the properties*/
 				if( data.etipTotal !== null && typeof data.etipTotal === 'string'){
@@ -578,25 +584,7 @@ etids.div_tooltipPopup = "#tooltipPopup";
 					fd.common.dispatcher.signal('cartHeader', ajaxData);
 					fd.common.dispatcher.signal('productSampleCarousel', ajaxData);
 					fd.common.dispatcher.signal('donationProductSampleCarousel', ajaxData);
-					
-					/* only if the samples/donation tab is selected */
-					if (
-						$jq('.tabbed-carousel [data-component="tabitem"].selected').data('sitefeature') === 'PRODUCT_DONATIONS'
-						|| $jq('.tabbed-carousel [data-component="tabitem"].selected').data('sitefeature') === 'PRODUCT_SAMPLES'
-					) {
-						try {
-							var recData = {};
-							recData.siteFeature = ajaxData.productSamplesTab.siteFeature;
-							recData.title = ajaxData.productSamplesTab.title;
-							recData.items = ajaxData.productSamplesTab.carouselData.products;
-							recData.cmEventSource = ajaxData.productSamplesTab.carouselData.cmEventSource;
-							
-							fd.common.dispatcher.signal('recommenderResult', recData);
-						} catch (e) {
-						}
-					} else {
-						//$jq('.tabbed-carousel [data-component="tabitem"].selected').trigger('click');
-					}
+					fd.common.dispatcher.signal('cartCarousels', ajaxData.carouselData);
 					
 					if(focusedElementId) {
 						try {
@@ -621,10 +609,10 @@ etids.div_tooltipPopup = "#tooltipPopup";
 					/* update load */
 					toggleDisabled('#promotional-code-applybtn,#apply-gift-card-applybtn', true);
 					
-					$('#promotional-code').on('keyup', function(event) {
+					$(document).on('keyup change input', '#promotional-code', function(event) {
 						toggleDisabled('#promotional-code-applybtn', $(this).val() === '');
 					});
-					$('#apply-gift-card').on('keyup', function(event) {
+					$(document).on('keyup change input', '#apply-gift-card', function(event) {
 						toggleDisabled('#apply-gift-card-applybtn', $(this).val() === '');
 					});
 				});
@@ -760,7 +748,34 @@ etids.div_tooltipPopup = "#tooltipPopup";
 	});
 	donationProductSampleCarousel.listen();
 
-	
+	var cartCarousel = Object.create(WIDGET,{
+		signal:{
+			value:'cartCarousels'
+		},
+		template: {
+			value:common.viewCartTabbedCarousel
+		},
+		placeholder:{
+			value:'#cartCarousels'
+		},
+		callback: {
+			value: function(value){
+				this.render(value); /*everything after this within this function assumes that the soy template has been rendered on the page*/
+				fd.components.carousel && fd.components.carousel.initialize();
+
+				/*remove extra e-tip element crap (sorry for this hack solution)*/
+				if( $(".cartsection__totalwrapper").length > 1 ){
+					$(".cartsection__totalwrapper:first div.subtotalboxes").remove();
+
+					$(".cartsection__totalwrapper:first div.cartsection__tax").remove();
+				}
+
+				/*kill certain accidental unwanted repetive elements*/
+				template_cleanup();
+			}
+		}
+	});
+	cartCarousel.listen();
 	
 	var atcHandler = Object.create(fd.common.signalTarget, {
 		signal: {

@@ -5,11 +5,6 @@ import java.util.Date;
 
 import com.freshdirect.fdstore.EnumEStoreId;
 
-/**
- * @author skrishnasamy
- * @version 1.0
- * @created 19-Dec-2007 3:03:46 PM
- */
 public interface OrderHistoryI extends Serializable {
 	
 	public int getDeliveredOrderCount();
@@ -44,6 +39,8 @@ public interface OrderHistoryI extends Serializable {
 	
 	public int getValidOrderCount(EnumDeliveryType deliveryType);
 	
+    public int getValidOrderCount(EnumEStoreId storeId);
+
 	public int getValidPhoneOrderCount();
 	
 	public int getSettledOrderCount();

@@ -12,6 +12,7 @@ FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
 %>
 <html>
 	<head>
+	    <%@ include file="/common/template/includes/metatags.jspf" %>
 		<%@ include file="/shared/template/includes/i_stylesheets_optimized.jspf" %>
 		<jwr:style src="/assets/css/common/more_info.css" />
 	</head>

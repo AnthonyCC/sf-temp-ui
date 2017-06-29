@@ -1,20 +1,18 @@
 package com.freshdirect.webapp.ajax.analytics.service;
 
-import java.util.Arrays;
 import java.util.List;
 
-import com.freshdirect.cms.core.domain.ContentType;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.fdstore.FDContentTypes;
+import com.freshdirect.cms.ContentType;
+import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.EnumLayoutType;
 import com.freshdirect.webapp.ajax.analytics.data.GAPageTypeData;
 import com.freshdirect.webapp.ajax.analytics.domain.GAPageTypeDistinguisher;
 import com.freshdirect.webapp.ajax.analytics.domain.PageType;
 
 public class GAPageTypeDataService {
-
-    private static final List<String> SPECIAL_BROWSE_IDS = Arrays.asList("gro_gear_dlvpass", "about_ebt", "wgd_summer_central_nc", "wgd_deals", "top_rated", "wgd_summer_central", "about_overview", "local", "meals_kits_meals");
 
     private static final GAPageTypeDataService INSTANCE = new GAPageTypeDataService();
 
@@ -30,67 +28,45 @@ public class GAPageTypeDataService {
 
         GAPageTypeData pageTypeData = new GAPageTypeData();
 
-        pageTypeData.setPageType(getGAUrl(distinguisher));
+        pageTypeData.setPageType(PageType.namePageType(getParameters(distinguisher)));
         pageTypeData.setPageLanguage("english");
 
         return pageTypeData;
     }
 
-    public String getGAUrl(GAPageTypeDistinguisher distinguisher) {
+    public String getParameters(GAPageTypeDistinguisher distinguisher) {
 
-
-        String id = distinguisher.getId();
         String pageType = distinguisher.getPageType();
-        String requestURI = distinguisher.getRequestURI();
-        StringBuilder url = new StringBuilder(requestURI);
-
-        if (SPECIAL_BROWSE_IDS.contains(id)) {
-            url.append(getSpecialBrowseUrl(id));
-        } else if ("/browse.jsp".equals(requestURI)) {
-            url.append(getBrowseUrl(distinguisher));
-        } else if ("/srch.jsp".equals(requestURI)) {
-            url.append(getSearchUrl(pageType));
-        }
-        
-        return PageType.namePageType(url.toString());
-    }
-
-    private String getSpecialBrowseUrl(String id) {
-        String gaParameter = "";
-        if (id != null) {
-            gaParameter = "?id=" + id;
-        }
-        return gaParameter;
-    }
-
-    private String getBrowseUrl(GAPageTypeDistinguisher distinguisher) {
         String id = distinguisher.getId();
-        String gaParameter = "";
-        if (id != null) {
+        String requestURI = distinguisher.getRequestURI();
+        String url = requestURI;
 
-            ContentNodeModel contentNodeModel = ContentFactory.getInstance().getContentNode(id);
-            ContentType contentType = contentNodeModel.getContentKey().getType();
+        if (pageType != null && id != null) {
+            if (requestURI.equals("/browse.jsp")) {
+                ContentNodeModel contentNodeModel = ContentFactory.getInstance().getContentNode(id);
+                ContentType contentType = contentNodeModel.getContentKey().getType();
 
-            if (contentType == FDContentTypes.SUPER_DEPARTMENT || contentType == FDContentTypes.DEPARTMENT) {
-                gaParameter = "?pageType=category_list";
-            } else if (contentType == FDContentTypes.CATEGORY) {
-                CategoryModel cat = (CategoryModel) contentNodeModel;
-                List<CategoryModel> subCats = cat.getSubcategories();
-                if (distinguisher.isAll() || subCats.isEmpty()) {
-                    gaParameter = "?pageType=product_list";
-                } else {
-                    gaParameter = "?pageType=category_list";
+                if (contentType == FDContentTypes.SUPER_DEPARTMENT || contentType == FDContentTypes.DEPARTMENT) {
+                    url += "?pageType=category_list";
+                } else if (contentType == FDContentTypes.CATEGORY) {
+                    CategoryModel cat = (CategoryModel) contentNodeModel;
+                    List<CategoryModel> subCats = cat.getSubcategories();
+                    if (distinguisher.isAll() || subCats.isEmpty()) {
+                        url += "?pageType=product_list";
+                    } else if (EnumLayoutType.RECIPE_MEALKIT_CATEGORY.equals(cat.getSpecialLayout())) {
+                        url += "?pageType=meal_kits";
+                    } else {
+                        url += "?pageType=category_list";
+                    }
                 }
+            } else if ("/srch.jsp".equals(requestURI)) {
+                url += "?pageType=" + pageType;
+
+            } else if ("about_overview".equals(id)) {
+                url += "?pageType=about_us";
             }
         }
-        return gaParameter;
+        return url;
     }
 
-    private String getSearchUrl(String pageType) {
-        String gaParameter = "?pageType=search";
-        if (pageType != null) {
-            gaParameter = "?pageType=" + pageType;
-        }
-        return gaParameter;
-    }
 }

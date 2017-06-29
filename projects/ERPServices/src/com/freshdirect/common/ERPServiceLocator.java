@@ -22,6 +22,7 @@ import com.freshdirect.fdstore.ejb.FDFactoryHome;
 import com.freshdirect.fdstore.ejb.FDFactorySB;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
+import com.freshdirect.monitor.ejb.ErpMonitorHome;
 import com.freshdirect.security.ticket.TicketServiceHome;
 import com.freshdirect.security.ticket.TicketServiceSB;
 
@@ -169,6 +170,12 @@ public class ERPServiceLocator extends ServiceLocator {
             throw new EJBException(e);
         }
     }
-     
 
+    public ErpMonitorHome getErpMonitorHome() {
+        try {
+            return (ErpMonitorHome) getRemoteHome("freshdirect.monitor.Monitor");
+        } catch (NamingException ne) {
+            throw new EJBException(ne);
+        }
+    }
 }

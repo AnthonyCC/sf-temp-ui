@@ -102,6 +102,10 @@ public class ErpServicesProperties {
     private final static String PROP_SAP_MAIL_CC = "sap.mail.cc";
     private final static String PROP_SAP_MAIL_FROM = "sap.mail.from";
     
+    private final static String PROP_PD_MAIL_TO = "pd.mail.to";
+    private final static String PROP_PD_MAIL_CC_FD = "pd.mail.cc.fd";
+    private final static String PROP_PD_MAIL_CC_FDX = "pd.mail.cc.fdx";
+    
     private final static String PROP_GC_MAIL_TO = "gc.mail.to";
     private final static String PROP_GC_MAIL_CC = "gc.mail.cc";
     private final static String PROP_GC_MAIL_FROM = "gc.mail.from";
@@ -367,6 +371,10 @@ public class ErpServicesProperties {
 		defaults.put(PROP_GC_MAIL_TO, "appsupport@freshdirect.com");
 		defaults.put(PROP_GC_MAIL_CC, "");
 		defaults.put(PROP_GC_MAIL_FROM, "applicationdevelopment@freshdirect.com");
+		
+		defaults.put(PROP_PD_MAIL_TO, "TransportationOperationsTeam@freshdirect.com");
+		defaults.put(PROP_PD_MAIL_CC_FD, "OpsManagement@freshdirect.com;AppSupport@freshdirect.com;kbrown@freshdirect.com");
+		defaults.put(PROP_PD_MAIL_CC_FDX, "OpsManagement@freshdirect.com;AppSupport@freshdirect.com;kbrown@freshdirect.com");
 		
 		defaults.put(PROP_TRAN_MAIL_TO, "appsupport@freshdirect.com");
 		defaults.put(PROP_TRAN_MAIL_CC, "");
@@ -760,6 +768,18 @@ public class ErpServicesProperties {
 	
 	public static String getCronFailureMailFrom() {
 		return config.getProperty(PROP_SAP_MAIL_FROM);
+	}
+	
+	public static String getPendingDeliveryEscalationMailTo() {
+		return config.getProperty(PROP_PD_MAIL_TO);
+	}
+	
+	public static String getPendingDeliveryEscalationMailCcFD() {
+		return config.getProperty(PROP_PD_MAIL_CC_FD);
+	}
+	
+	public static String getPendingDeliveryEscalationMailCcFDX() {
+		return config.getProperty(PROP_PD_MAIL_CC_FDX);
 	}
 	
 	public static String getOcfMailTo() {

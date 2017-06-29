@@ -43,8 +43,9 @@
 %>
 
 <tmpl:insert template='/shared/template/large_pop.jsp'>
-
-
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect -  Request a Product"/>
+    </tmpl:put>
 	<tmpl:put name='title' direct='true'>FreshDirect - Request a Product</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 

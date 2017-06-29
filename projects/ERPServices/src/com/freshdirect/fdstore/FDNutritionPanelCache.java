@@ -74,7 +74,10 @@ public class FDNutritionPanelCache {
 	}
 
 	public NutritionPanel getNutritionPanel(String skuCode) {		
-		return cache.get( skuCode );
+		if(cache!=null && skuCode!=null)
+			return cache.get( skuCode );
+		else
+			return null;
 	}
 	
 	private ErpNutritionHome lookupNutritionHome() {

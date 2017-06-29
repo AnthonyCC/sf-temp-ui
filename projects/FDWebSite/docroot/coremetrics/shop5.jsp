@@ -6,7 +6,8 @@
 <fd:FDShoppingCart id='cart' result='result'>
 <html>
 <head>
-<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+  <%@ include file="/common/template/includes/metatags.jspf" %>
+  <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 <fd:javascript src="/assets/javascript/coremetrics.js"/>
 </head>
 <body>

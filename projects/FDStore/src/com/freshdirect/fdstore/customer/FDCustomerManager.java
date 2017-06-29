@@ -97,6 +97,7 @@ import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
@@ -395,7 +396,7 @@ public class FDCustomerManager {
 	}
 
 
-	private static void updateZoneInfo (FDUserI user) throws FDResourceException {
+	public static void updateZoneInfo (FDUserI user) throws FDResourceException {
 		ErpAddressModel address = user.getShoppingCart().getDeliveryAddress();
 		if(address != null) {
 			Date day = DateUtil.truncate(DateUtil.addDays(new Date(), 1));
@@ -2069,12 +2070,12 @@ public class FDCustomerManager {
 	/**
 	 * @return FDCartModel with unavailability info populated
 	 */
-	public static FDCartModel checkAvailability(FDIdentity identity, FDCartModel cart, long timeout) throws FDResourceException {
+	public static FDCartModel checkAvailability(FDIdentity identity, FDCartModel cart, long timeout,String isFromLogin) throws FDResourceException {
 		lookupManagerHome();
 		try {
 
 			FDCustomerManagerSB sb = managerHome.create();
-
+			
 			boolean skipModifyLines = true;
 			boolean sameDeliveryDate = true;
 			if (cart instanceof FDModifyCartModel) {
@@ -2101,7 +2102,8 @@ public class FDCustomerManager {
 			ErpCreateOrderModel createOrder = FDOrderTranslator.getErpCreateOrderModel(cart, skipModifyLines, sameDeliveryDate);
 
 			long timer = System.currentTimeMillis();
-			Map<String, FDAvailabilityI> fdInvMap = sb.checkAvailability(identity, createOrder, timeout);
+		
+			Map<String, FDAvailabilityI> fdInvMap = sb.checkAvailability(identity, createOrder, timeout, isFromLogin);
 			timer = System.currentTimeMillis() - timer;
 
 			Map<String,FDAvailabilityI> invs = FDAvailabilityMapper.mapInventory(cart, createOrder, fdInvMap, skipModifyLines, sameDeliveryDate);
@@ -2468,7 +2470,11 @@ public class FDCustomerManager {
 					+ email.getFromAddress().getName()
 					+ " XSL Path: "
 					+ email.getXslPath());
-			mailer.enqueueEmail(email);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
+				FDECommerceService.getInstance().enqueueEmail(email);
+			} else {
+				mailer.enqueueEmail(email);
+			}
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce, "Cannot create MailerGatewaySB");
 		} catch (RemoteException re) {
@@ -2480,7 +2486,6 @@ public class FDCustomerManager {
 		lookupMailerGatewayHome();
 		lookupManagerHome();
 		try {
-			MailerGatewaySB mailer = mailerHome.create();
 			XMLEmailI email = null;
 			if(ContentFactory.getInstance() != null && ContentFactory.getInstance().getStore() !=  null && 
 					ContentFactory.getInstance().getStore().getContentName() != null && !ContentFactory.getInstance().getStore().getContentName().equals("FDX")) {
@@ -2504,7 +2509,12 @@ public class FDCustomerManager {
 					email = FDEmailFactory.getInstance().createContactServiceEmail(customer, subject, body);
 				}
 			}
-			mailer.enqueueEmail(email);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
+				FDECommerceService.getInstance().enqueueEmail(email);
+			} else {
+				MailerGatewaySB mailer = mailerHome.create();
+				mailer.enqueueEmail(email);
+			}
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce, "Cannot create MailerGatewaySB");
 		} catch (RemoteException re) {
@@ -2516,10 +2526,14 @@ public class FDCustomerManager {
 		lookupMailerGatewayHome();
 		lookupManagerHome();
 		try {
-			MailerGatewaySB mailer = mailerHome.create();
 			XMLEmailI email = null;
 			email = FDEmailFactory.getInstance().createCrmCCSecurityEmail(emailVO);
-			mailer.enqueueEmail(email);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
+				FDECommerceService.getInstance().enqueueEmail(email);
+			} else {
+				MailerGatewaySB mailer = mailerHome.create();
+				mailer.enqueueEmail(email);
+			}
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce, "Cannot create MailerGatewaySB");
 		} catch (RemoteException re) {
@@ -4459,8 +4473,12 @@ public class FDCustomerManager {
 		lookupMailerGatewayHome();
 		lookupManagerHome();
 		try {
-			MailerGatewaySB mailer = mailerHome.create();
-			mailer.enqueueEmail(email);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
+				FDECommerceService.getInstance().enqueueEmail(email);
+			} else {
+				MailerGatewaySB mailer = mailerHome.create();
+				mailer.enqueueEmail(email);
+			}
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce, "Cannot create MailerGatewaySB");
 		} catch (RemoteException re) {
@@ -5111,6 +5129,66 @@ public class FDCustomerManager {
 				FDCustomerManagerSB sb = managerHome.create();
 				return sb.getCustomer(identity);
 
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}
+		}
+
+		public static Map<String, List<PendingOrder>> getPendingDeliveries() throws FDResourceException {
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getPendingDeliveries();
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}
+		}
+		
+		public static boolean insertOrUpdateSilverPopup(SilverPopupDetails silverPopupDetails) throws FDResourceException {
+			lookupManagerHome();
+
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.insertOrUpdateSilverPopup(silverPopupDetails);
+
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}
+		}		
+		
+		public static void updateSPSuccessDetails(SilverPopupDetails silverPopupDetails) throws FDResourceException {
+			lookupManagerHome();
+
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				sb.updateSPSuccessDetails(silverPopupDetails);
+
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}
+		}	
+		
+		public static String getCookieByFdCustomerId(String fdCustomerId) throws FDResourceException{
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getCookieByFdCustomerId(fdCustomerId);
 			} catch (CreateException ce) {
 				invalidateManagerHome();
 				throw new FDResourceException(ce, "Error creating session bean");

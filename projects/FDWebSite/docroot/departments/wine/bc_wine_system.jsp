@@ -2,7 +2,10 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:CheckLoginStatus guestAllowed='true' />
 <tmpl:insert template='/common/template/bestcellars/large_pop.jsp'>
-	<tmpl:put name='title' direct='true'>FreshDirect - Best Cellars Wine System</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Best Cellars Wine System"/>
+  </tmpl:put>
+  <tmpl:put name='title'>FreshDirect - Best Cellars Wine System</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 	<script language="JavaScript">
 		function linkTo(url){

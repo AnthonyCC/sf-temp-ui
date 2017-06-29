@@ -604,7 +604,7 @@ class FDCustomerListDAO {
 		//APPDEV-4179 - Item quantities should NOT be honored in "Your Top Items" 
 		public List<FDQsProductListLineItem> getQsSpecificEveryItemEverOrderedListTopItemsTopItems(Connection conn, FDIdentity identity, StoreContext storeContext) throws SQLException, FDSkuNotFoundException {
 			PreparedStatement ps = null;
-			
+			long startTime = System.currentTimeMillis();
 			LOGGER.debug("FDStoreProperties.isQSTopItemsPerfOptimizationEnabled()>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+FDStoreProperties.isQSTopItemsPerfOptimizationEnabled());
 			if(FDStoreProperties.isQSTopItemsPerfOptimizationEnabled()){
 				LOGGER.debug("QUERY_EVERY_ITEM_QS_TOP_ITEMS>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+QUERY_EVERY_ITEM_QS_TOP_ITEMS);
@@ -656,6 +656,7 @@ class FDCustomerListDAO {
 			}
 			
 			LOGGER.debug("result.size()==========================="+result.size());
+			LOGGER.info(new StringBuilder("*****run quickshop topitems query ").append(" for customer ").append(identity).append(" completed in ").append(System.currentTimeMillis()-startTime).append(" milliseconds, and returned ").append(result.size()).append(" records").toString());
 
 			rs.close();
 			ps.close();

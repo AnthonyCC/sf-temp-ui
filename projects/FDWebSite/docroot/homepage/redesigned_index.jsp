@@ -53,6 +53,7 @@ request.setAttribute("noyui", true);
 	boolean isHomepageReturningUser = validOrderCount > 0;
 	String currentUserModuleContainerContentKey = FDStoreProperties.getHomepageRedesignCurrentUserContainerContentKey();
 	String newUserModuleContainerContentKey = FDStoreProperties.getHomepageRedesignNewUserContainerContentKey();
+  String moduleContainerId = isHomepageReturningUser ? currentUserModuleContainerContentKey : newUserModuleContainerContentKey;
 
 	request.setAttribute("sitePage", "www.freshdirect.com/index.jsp");
 
@@ -119,19 +120,20 @@ request.setAttribute("noyui", true);
 			<div id="mobilehomeMainDiv">
 			<%
 				//OAS setup
-			   	request.setAttribute("listPos", "SystemMessage,HPMob01,HPMob02");
+			   	request.setAttribute("listPos", "SystemMessage,HPMob01,HPMob02,HPMob03,HPMob04");
 				/* these use OAS pages like www.freshdirect.com/mobileweb/[PAGENAME] */
 
 			   	if (FDStoreProperties.isAdServerEnabled()) {
-					%><div id="OAS_HPMob01" class="home-page-banner">
+					%><div id="oas_HPMob01" class="oas-cnt home-page-banner">
 			  			<script type="text/javascript">OAS_AD('HPMob01');</script>
 			  		</div><%
-					%><div id="OAS_HPMob02" class="home-page-banner">
+					%><div id="oas_HPMob02" class="oas-cnt home-page-banner">
 		  				<script type="text/javascript">OAS_AD('HPMob02');</script>
 		  			</div><%
 			  	}
 
 				List<CategoryModel> catModels = ContentFactory.getInstance().getStore().getiPhoneHomePagePicksLists();
+				int bannerIndex = 0;
 
 				for (CategoryModel curCat: catModels) {
 					String curCatLink = "/browse.jsp?id="+curCat;
@@ -157,7 +159,34 @@ request.setAttribute("noyui", true);
 							</div>
 						</div>
 				    </a>
+				    <% bannerIndex++; %>
+
+				    <% if (bannerIndex == 5) { %>
+						<%
+						   	if (FDStoreProperties.isAdServerEnabled()) {
+								%><div id="oas_HPMob03" class="oas-cnt home-page-banner">
+						  			<script type="text/javascript">OAS_AD('HPMob03');</script>
+						  		</div><%
+						  	}
+						%>
+				    <% } %>
 				<% } %>
+				<% if (bannerIndex < 5) { /* display if there's not enough banners */ %>
+					<%
+					   	if (FDStoreProperties.isAdServerEnabled()) {
+							%><div id="oas_HPMob03" class="oas-cnt home-page-banner">
+					  			<script type="text/javascript">OAS_AD('HPMob03');</script>
+					  		</div><%
+					  	}
+					%>
+			    <% } %>
+				<%
+				   	if (FDStoreProperties.isAdServerEnabled()) {
+						%><div id="oas_HPMob04" class="oas-cnt home-page-banner">
+				  			<script type="text/javascript">OAS_AD('HPMob04');</script>
+				  		</div><%
+				  	}
+				%>
 			</div>
 		<% } else { %>
 
@@ -226,13 +255,7 @@ request.setAttribute("noyui", true);
             			mainTopBar="HPMainTopBar"
 					/>
 
-    				<%if (isHomepageReturningUser){ %>
-						<potato:modulehandling name="welcomepagePotato" moduleContainerId="<%=currentUserModuleContainerContentKey%>" />
-						<% }
-						else {
-						%>
-						<potato:modulehandling name="welcomepagePotato" moduleContainerId="<%=newUserModuleContainerContentKey%>" />
-					<%}%>
+						<potato:modulehandling name="welcomepagePotato" moduleContainerId="<%=moduleContainerId%>" />
 						<soy:render template="common.contentModules" data="${welcomepagePotato}" />
 
 					</div>
@@ -244,14 +267,16 @@ request.setAttribute("noyui", true);
 			</fd:GetSegmentMessage>
 		<% } %>
 
-    <script type="text/javascript">
+    <script>
       var FreshDirect = window.FreshDirect || {};
       FreshDirect.homepage = true;
 
       var dataLayer = window.dataLayer || [];
 
       dataLayer.push({
-        'is-new-homepage': 'true'
+        'is-new-homepage': 'true',
+        'homepage-type': 'residental',
+        'module-container-id': '<%=moduleContainerId%>'
       });
     </script>
 

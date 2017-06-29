@@ -121,10 +121,10 @@ request.setAttribute("noyui", true);
 				/* these use OAS pages like www.freshdirect.com/mobileweb/[PAGENAME] */
 
 			   	if (FDStoreProperties.isAdServerEnabled()) {
-					%><div id="OAS_HPMob01" class="home-page-banner">
+					%><div id="oas_HPMob01" class="home-page-banner">
 			  			<script type="text/javascript">OAS_AD('HPMob01');</script>
 			  		</div><%
-					%><div id="OAS_HPMob02" class="home-page-banner">
+					%><div id="oas_HPMob02" class="home-page-banner">
 		  				<script type="text/javascript">OAS_AD('HPMob02');</script>
 		  			</div><%
 			  	}
@@ -415,7 +415,7 @@ request.setAttribute("noyui", true);
 			</script>
 
         <soy:render template="common.contentModules" data="${welcomepagePotato}" />
-						<div class="oas_home_bottom"><script type="text/javascript">OAS_AD('HPWideBottom');</script></div>
+						<div class="oas_home_bottom" id='oas_HPWideBottom'><script type="text/javascript">OAS_AD('HPWideBottom');</script></div>
 					</div>
 					<%-- Removed the learn more for marketing change. --%>
 					<%-- <div id="bottom_link"><a href="/welcome.jsp"><img src="/media_stat/images/home/fd_logo_learn_more_back.jpg" alt="Learn More About Our Services"></a></div> --%>

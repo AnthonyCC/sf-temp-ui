@@ -12,27 +12,27 @@
  */
 {template .atcControls autoescape="false"}
 {if $salesUnit and length($salesUnit)}
-	{if $soldBySalesUnit}
-		<input type="hidden" value="1" data-productdata-name="quantity" data-component="productData">
-		{call common.salesunit}
-			{param options:$salesUnit /}
-			{param optional:$optional /}
-		{/call}
-	{else}
-		{if not $removeSalesUnit}
-		<input type="hidden" name="salesUnit" value="{$salesUnit[0].id}" data-component="productData" data-productdata-name="salesUnit">
-		{/if}
-    {if $freeSamplePromoProduct and ($quantity and $quantity.qMax <= 1)}
-      <input type="hidden" value="1" data-productdata-name="quantity" data-component="productData">
-      <div class="product-sample-qty-one">Quantity: 1</div> 
+    {if $soldBySalesUnit}
+        <input type="hidden" value="1" data-productdata-name="quantity" data-component="productData">
+        {call common.salesunit}
+            {param options:$salesUnit /}
+            {param optional:$optional /}
+        {/call}
     {else}
-      {call common.quantitybox}
-        {param quantity:$quantity /}
-        {param optional:$optional /}
-        {param uid:$uid /}
-        {param cssbuttons:$cssbuttons /}
-      {/call}
+        {if not $removeSalesUnit}
+            <input type="hidden" name="salesUnit" value="{$salesUnit[0].id}" data-component="productData" data-productdata-name="salesUnit">
+        {/if}
+        {if $freeSamplePromoProduct}
+            <input type="hidden" value="1" data-productdata-name="quantity" data-component="productData">
+            <div class="product-sample-qty-one">Quantity: 1</div> 
+        {else}
+            {call common.quantitybox}
+                {param quantity:$quantity /}
+                {param optional:$optional /}
+                {param uid:$uid /}
+                {param cssbuttons:$cssbuttons /}
+            {/call}
+        {/if}
     {/if}
-	{/if}
 {/if}
 {/template}

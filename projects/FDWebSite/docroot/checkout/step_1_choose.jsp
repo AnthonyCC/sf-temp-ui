@@ -59,12 +59,12 @@ if (!user.isSurveySkipped() && user.getAdjustedValidOrderCount()==1 && user.getD
 	        FDSurveyResponse surveyResponse= FDSurveyFactory.getCustomerProfileSurveyInfo(user.getIdentity(), user);
            int coverage=SurveyHtmlHelper.getResponseCoverage(usability,surveyResponse);
            if(coverage<usability.getAcceptableCoverage()) {
-           
+
         	    response.sendRedirect(response.encodeRedirectURL("/checkout/survey.jsp?successPage=/checkout/step_1_choose.jsp"));
                 return;
-           } 
+           }
     	}
-	    
+
     }
 }
 request.setAttribute("sitePage", "www.freshdirect.com/checkout/step_1_choose.jsp");
@@ -73,7 +73,7 @@ request.setAttribute("listPos", "SystemMessage,ZDeliveryRight");
 <%-- =================================================================================================== --%>
 
 <% //check unattended %>
-<% 
+<%
 if (user.getLevel()==FDUserI.RECOGNIZED) {
     response.sendRedirect(response.encodeRedirectURL("/login/login.jsp?successPage=/checkout/step_1_choose.jsp"));
     return;
@@ -86,17 +86,17 @@ List<ErpAddressModel> dlvAddresses = FDCustomerFactory.getErpCustomer(user.getId
 
 <%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
-<tmpl:put name="seoMetaTag" direct="true">
-	<fd:SEOMetaTag pageId=""></fd:SEOMetaTag>
-</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Checkout - Choose Delivery Address"/>
+  </tmpl:put>
+  <tmpl:put name='title'>FreshDirect - Checkout - Choose Delivery Address</tmpl:put>
 <tmpl:put name="extraCSSjs" direct="true">
 <%@ include file="/includes/i_check_unattended_delivery.jspf" %>
 
-<%@ include file="/common/template/includes/i_javascripts.jspf" %>  
+<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 </tmpl:put>
-<tmpl:put name='title' direct='true'>FreshDirect - Checkout - Choose Delivery Address</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <style type="text/css">
 	td.chooser_radio {
@@ -110,7 +110,7 @@ List<ErpAddressModel> dlvAddresses = FDCustomerFactory.getErpCustomer(user.getId
 
 
 
-<%  
+<%
 String actionName = "setDeliveryAddress";
 String successPage = "/checkout/step_2_select.jsp";
 
@@ -126,7 +126,7 @@ while (e.hasMoreElements()) {
         request.setAttribute("deleteShipToAddressId", addrId);
         break;
     }
-} 
+}
 
 %>
 
@@ -138,23 +138,23 @@ while (e.hasMoreElements()) {
 	    response.sendRedirect(response.encodeRedirectURL("/checkout/view_cart.jsp"));
 	    return;
 	}
-	
+
 	double cartTotal = user.getShoppingCart().getTotal();
 	if (result.hasError("cantGeocode")) {
 	  String errorMsg=SystemMessageList.MSG_DONT_DELIVER_TO_ADDRESS;
 	%>
-	<%@ include file="/includes/i_error_messages.jspf" %>   
+	<%@ include file="/includes/i_error_messages.jspf" %>
 	<% } %>
-	
-	<% if (user.isEligibleForSignupPromotion() && user.getShoppingCart().getSubTotal() < user.getSignupDiscountRule().getMinSubtotal()) { 
+
+	<% if (user.isEligibleForSignupPromotion() && user.getShoppingCart().getSubTotal() < user.getSignupDiscountRule().getMinSubtotal()) {
 	    String errorMsg = "Because your cart contains less than $" + (int)user.getSignupDiscountRule().getMinSubtotal() + " of food, you are not eligible for the free fresh food promotion. You may return to your cart to add more food or continue Checkout now. <a href=\"javascript:popup('/shared/promotion_popup.jsp','large');\">Click for details</a>.";
 	    %>
-	    <%@ include file="/includes/i_error_messages.jspf" %> 
+	    <%@ include file="/includes/i_error_messages.jspf" %>
 	   <br/>
 	<% }
-	
+
 	FDCartModel cart = user.getShoppingCart(); /* cart required for i_cart_delivery_fee.jspf include */
-	
+
 	%>
 
 	<form method="POST" name="step1Form" id="step1Form" onSubmit="return checkPromoEligibilityByAddress('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');">
@@ -193,7 +193,7 @@ while (e.hasMoreElements()) {
 				</tr>
 			</table>
 		</div>
-	
+
 	<%-- Start Header --%>
 <%@ include file="/includes/i_modifyorder.jspf"  %>
 
@@ -217,10 +217,10 @@ while (e.hasMoreElements()) {
 	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
 
 	<TABLE border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_1_CHOOSE_TOTAL%>">
-		 <tr valign="top"> 
-	    <td class="text12"  valign="top"> 
+		 <tr valign="top">
+	    <td class="text12"  valign="top">
 	            <font class="title18">Choose Delivery Address (Step 1 of 4)</font><br/>
-					<%if(user.isPickupOnly() ){%>   
+					<%if(user.isPickupOnly() ){%>
 	        <b>Please Note: </b>Your home address is not in a FreshDirect <a href="javascript:popup('/help/delivery_zones.jsp','large');">delivery zone</a>.
 	        Please select one of our pickup locations to place an order.
 					<%}else if(!user.isDepotUser()){%>
@@ -231,25 +231,27 @@ while (e.hasMoreElements()) {
 	        </td>
 	        <td align="right">
 		                    <% if (FDStoreProperties.isAdServerEnabled()) { %>
-				                <SCRIPT LANGUAGE=JavaScript>
+                          <div id='oas_ZDeliveryRight'>
+				                    <SCRIPT LANGUAGE=JavaScript>
 		                        <!--
 		                            OAS_AD('ZDeliveryRight');
 		                        //-->
 		      	                </SCRIPT><br><br>
+                          </div>
 		                	 <% } %>
-		
+
 				        </td>
 	    </tr>
 	</TABLE>
 	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
-	<% 
+	<%
 	String[] checkDlvAddressForm =  {EnumUserInfoName.DLV_NOT_IN_ZONE.getCode(), "address",
 	                                "pickup_contact_number", "order_minimum","apartment",
-	                                "technical_difficulty"}; 
+	                                "technical_difficulty"};
 	%>
-	
+
 	<fd:ErrorHandler result='<%=result%>' field='<%=checkDlvAddressForm%>' id='errorMsg'>
-	    <%@ include file="/includes/i_error_messages.jspf" %>   
+	    <%@ include file="/includes/i_error_messages.jspf" %>
 	</fd:ErrorHandler>
 	<%
 	String errorMsg = (String) session.getAttribute(SessionName.SIGNUP_WARNING);
@@ -258,16 +260,16 @@ while (e.hasMoreElements()) {
 	    Double totalPromo = new Double(promo.getHeaderDiscountTotal());
 	    errorMsg = MessageFormat.format(SystemMessageList.MSG_CHECKOUT_NOT_ELIGIBLE, new Object[]{totalPromo, user.getCustomerServiceContact()});
 	}
-	if (errorMsg!=null) {%> 
-	    <%@ include file="/includes/i_error_messages.jspf"%> 
+	if (errorMsg!=null) {%>
+	    <%@ include file="/includes/i_error_messages.jspf"%>
 	<%}%>
 	    <%@ include file="/includes/ckt_acct/i_delivery_address_select.jspf" %>
 	    <br/><br/>
-	
+
 	<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br/>
 	<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_1_CHOOSE_TOTAL%>" height="1" border="0"><br/>
 	<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br/>
-	
+
 	<div style="margin-bottom: 10px;">
 	    <div style="float: left;">
 					<a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc ")%>" id="previousX">
@@ -282,7 +284,7 @@ while (e.hasMoreElements()) {
 		</div>
 		<div style="clear: both;"></div>
 	</div>
-	
+
 	<%
 	if(ClickToCallUtil.evaluateClick2CallInfoDisplay(user,null)) {
 	%>
@@ -299,7 +301,7 @@ while (e.hasMoreElements()) {
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
 
 	<%@ include file="/includes/delivery/i_bottom_modules.jspf" %>
-	
+
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ END BOTTOM MODEULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
 
 </fd:CheckoutController>

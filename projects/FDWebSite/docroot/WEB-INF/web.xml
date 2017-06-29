@@ -81,6 +81,10 @@
 		<filter-name>CORSFilter</filter-name>
 		<url-pattern>/api/*</url-pattern>
 	</filter-mapping>
+	<filter-mapping>
+		<filter-name>CORSFilter</filter-name>
+		<url-pattern>/assets/*</url-pattern>
+	</filter-mapping>
 	<servlet>
 		<servlet-name>com.freshdirect.webapp.util.json.FDJSONRPCServlet</servlet-name>
 		<servlet-class>com.freshdirect.webapp.util.json.FDJSONRPCServlet</servlet-class>
@@ -676,4 +680,8 @@
 		</taglib>
 
 	</jsp-config>
+	<mime-mapping>
+		<extension>svg</extension>
+		<mime-type>image/svg+xml</mime-type>
+	</mime-mapping> 
 </web-app>

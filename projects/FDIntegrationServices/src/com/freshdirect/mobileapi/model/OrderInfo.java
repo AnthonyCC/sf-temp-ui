@@ -55,6 +55,14 @@ public class OrderInfo {
     public double getTotal() throws PricingException {
         return target.getTotal();
     }
+    
+    public double getPendingCreditAmount() throws PricingException {
+        return target.getPendingCreditAmount();
+    }
+
+    public double getApprovedCreditAmount() throws PricingException {
+        return target.getApprovedCreditAmount();
+    }
 
     public Date getDeliveryCutoffTime() {
         return target.getDeliveryCutoffTime();

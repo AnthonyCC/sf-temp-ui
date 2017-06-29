@@ -93,7 +93,6 @@
 }
 
 .customizePopup .buttons .cssbutton {
-  float: right;
   clear: both;
 }
 
@@ -217,7 +216,51 @@
 .customizePopup .invalidQty input.qty {
   outline: 2px solid red;
 }
-
+.customizePopup .skucontrol-quantity .qtyinput{
+    width: auto;
+}
+.customizePopup .skucontrol-quantity .quantity_plus,
+.customizePopup .skucontrol-quantity .quantity_minus{
+    width: 36px;
+    color: #ffffff;
+    background-color: #4fa157;
+    border: 1px solid #4fa157;
+    height: 34px;
+    line-height: 32px;
+    font-size: 24px;
+	font-family: Verdana;
+    text-align: center;
+    font-weight: bold;
+    color: #fff;
+    background-image: none;
+    text-decoration: none;
+    text-indent: 0;
+    padding: 0;
+    border-radius: 3px;
+    transition: background-color 0.12s ease-in-out 0s;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.customizePopup .skucontrol-quantity .quantity_plus:hover,
+.customizePopup .skucontrol-quantity .quantity_minus:hover{
+    background-color: #458d4e;
+    border: 1px solid #458d4e;
+}
+.customizePopup .skucontrol-quantity .qtyinput input.qty {
+    width: 58px;
+    height: 36px;
+    font-size: 18px;
+    font-weight: bold;
+    margin: -1px 3px 0;
+    border: 2px #c2c2c2 solid;
+}
+.customizePopup .skucontrol-quantity input.qty:hover{
+    border-color: #68aa6d;
+}
 .customizePopup hr {
 	height:1px;
 	background: #dddddd;

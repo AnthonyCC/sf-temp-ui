@@ -189,7 +189,7 @@ public class ExternalInterfaceController extends BaseController {
     				
     			try{
     				String carrier = request.getParameter("carrier");
-    				if("/deliv".equalsIgnoreCase(carrier) || "/uberrush".equalsIgnoreCase(carrier)){
+    				if(!carrier.isEmpty() && carrier!=null){
     					carrier = StringUtils.upperCase(carrier.substring(1, carrier.length()));
     					FDDeliveryManager fDDeliveryManager = FDDeliveryManager.getInstance();
         				InputStream is = request.getInputStream();

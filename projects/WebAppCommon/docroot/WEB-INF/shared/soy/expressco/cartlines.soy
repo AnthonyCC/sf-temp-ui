@@ -109,11 +109,13 @@
                            </div>
                            <div class="so-cartline-delivery-date">
 								<div class="so-cartline-delivery-date-info">Item Deleted</div>
-								<div class="so-cartline-delivery-date-begins">Change Takes Effect: {$deliveryBegins}</div>
-								<div class="so-cartline-delivery-date-tip">
-									<div class="so-cartline-delivery-date-tip-i">i</div>
-									<div class="so-cartline-delivery-date-tip-cont">Changing a Standing Order Master List may not effect your next delivery</div>
-								</div>
+								{if $deliveryBegins}
+									<div class="so-cartline-delivery-date-begins">Change Takes Effect: {$deliveryBegins}</div>
+									<div class="so-cartline-delivery-date-tip">
+										<div class="so-cartline-delivery-date-tip-i">i</div>
+										<div class="so-cartline-delivery-date-tip-cont">Changing a Standing Order Master List may not effect your next delivery</div>
+									</div>
+								{/if}
 							</div>
                            <div class="clear"></div>
                      </div>
@@ -399,6 +401,9 @@
 					<div class="charges__row">
 						<div class="charges__rowcell charges-text">Delivery Charge:</div>
 						<div class="charges__rowcell charges-price" id="div_deliveryCharge">{$deliveryCharge}</div>
+						<script>
+							$jq('.free-link-holder:first').clone().appendTo('#div_deliveryCharge');
+						</script>
 					</div>
 				{/if}
 				{if $estimatedTotal and not $mobWeb}
@@ -446,25 +451,29 @@
 {/template}
 
 /**
- * @param? productSamplesTab sample products
+ * @param? carouselData sample products
  */
 {template .productSampleCarouselWrapper}
-	{if $productSamplesTab}
-		<div fd-toggle="product-sample-carousel" fd-toggle-state="{if $productSamplesTab.productSamplesReacedMaximumItemQuantity}disabled{else}enabled{/if}">
-			{call expressco.productSampleCarousel data="$productSamplesTab" /}
+	{if $carouselData.recommendationTabs}
+	    {foreach $recommendationTab in $carouselData.recommendationTabs}
+		<div fd-toggle="product-sample-carousel" fd-toggle-state="{if $recommendationTab.productSamplesReacedMaximumItemQuantity}disabled{else}enabled{/if}">
+			{call expressco.productSampleCarousel data="$recommendationTab" /}
 		</div>
+		{/foreach}
 	{/if}
 {/template}
 
 
 /**
- * @param? productSamplesTab sample products
+ * @param? carouselData sample products
  */
 {template .donationProductSampleCarouselWrapper}
-	{if $productSamplesTab}
-		<div fd-toggle="product-sample-carousel" fd-toggle-state="{if $productSamplesTab.donationProductSamplesReacedMaximumItemQuantity}disabled{else}enabled{/if}">
-			{call expressco.donationProductSampleCarousel data="$productSamplesTab" /}
+	{if $carouselData.recommendationTabs}
+	    {foreach $recommendationTab in $carouselData.recommendationTabs}
+		<div fd-toggle="product-sample-carousel" fd-toggle-state="{if $recommendationTab.donationProductSamplesReacedMaximumItemQuantity}disabled{else}enabled{/if}">
+			{call expressco.donationProductSampleCarousel data="$recommendationTab" /}
 		</div>
+		{/foreach}
 	{/if}
 
 {/template}
@@ -736,7 +745,7 @@
 		</div>
 		<div class='cartline-delete cartline-box'>
 			<a class='cartline-link' href='/expressco/view_cart.jsp?remove=1&cartLine={$id}'>
-				<img src="/media_stat/images/icon-trash.png" alt="" class='cartline-delete-image' />Delete<span class="offscreen"> {$descr}</span>
+				<img src="/media_stat/images/icon-trash.png" alt="" class='cartline-delete-image' /><span class="NOMOBWEB">Delete</span><span class="offscreen"> {$descr}</span>
 			</a>
 		</div>
 		<div class='cartline-quantity cartline-box'>
@@ -942,7 +951,7 @@
 						<label for="promotional-code"></label>  
 						<input type="text" class="promotion-input" id="promotional-code" name="promotionCode" placeholder="Enter here" />
 						<input type="hidden" name="action" value="applyPromotion" />
-						<button id="promotional-code-applybtn" class="cssbutton green small">apply<span class="offscreen">promotion code</span></button>
+						<button id="promotional-code-applybtn" disabled="disabled" class="disabled cssbutton green small">apply<span class="offscreen">promotion code</span></button>
 						<span fdform-error-for="promotionCode"></span>
 					</div>
 				</form>
@@ -955,7 +964,7 @@
 							<label for="apply-gift-card"></label>  
 							<input type="text" class="promotion-input" id="apply-gift-card" name="givexNum" placeholder="Enter here" />
 							<input type="hidden" name="action" value="applyGiftCard" />
-							<button id="apply-gift-card-applybtn" class="cssbutton green small">apply<span class="offscreen">new gift card</span></button>
+							<button id="apply-gift-card-applybtn" disabled="disabled" class="disabled cssbutton green small">apply<span class="offscreen">new gift card</span></button>
 							<span fdform-error-for="givexNum"></span>
 						</div>
 					</form>

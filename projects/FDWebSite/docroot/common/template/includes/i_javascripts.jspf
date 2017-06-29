@@ -16,11 +16,6 @@
 
   <%-- Feature version switcher --%>
   <features:potato />
-  <%-- TODO !!! --%>
-  <%
-  FDUserI gtm_user = (FDUserI)session.getAttribute(SessionName.USER);
-  if (gtm_user != null) {
-  %>
   <script type="text/javascript">
   (function () {
     window.FreshDirect = window.FreshDirect || {};
@@ -33,9 +28,6 @@
     fd.properties = fd.properties || {};
     fd.properties.isLightSignupEnabled = <%= FDStoreProperties.isLightSignupEnabled() ? "true" : "false" %>;
     fd.properties.isSocialLoginEnabled = <%= FDStoreProperties.isSocialLoginEnabled() ? "true" : "false" %>;
-
-    fd.gtm = fd.gtm || {};
-    fd.gtm.key = '<%= FDStoreProperties.getGoogleTagManagerKey() %>';
 
     <%
     FDSessionUser jsUser = (FDSessionUser)session.getAttribute(SessionName.USER);
@@ -65,43 +57,8 @@
   }());
   </script>
 
-  <%-- Google Tag Manager login/signup events --%>
-  <script>
-
-    var dataLayer = window.dataLayer || [];
-
-    dataLayer.push({
-      'config-ga-key': '<%= FDStoreProperties.getGoogleAnalyticsKey() %>',
-      'config-ga-domain': '<%= FDStoreProperties.getGoogleAnlayticsDomain() %>'
-    });
-
-    var gtm_userdata = {
-      'user-customer-type': '<%= gtm_user.getSelectedAddress().getServiceType() %>',
-      'user-ct-status': '<%= gtm_user.isChefsTable() %>',
-      'user-del-county':'<%= gtm_user.getDefaultCounty() %>',
-      'user-marketing-segment': '<%= gtm_user.getMarketingPromo() %>',
-      'user-order-count': '<%= gtm_user.getAdjustedValidOrderCount() %>'
-    };
-
-    <%
-    if (gtm_user.getDlvPassInfo() != null && gtm_user.getDlvPassInfo().getStatus() != null) {
-    %>
-    gtm_userdata['user-dp-status'] = '<%= gtm_user.getDlvPassInfo().getStatus().getDisplayName() %>';
-    <%
-    }
-    %>
-
-    <%
-    if (gtm_user.getIdentity() != null && gtm_user.getIdentity().getErpCustomerPK() != null) {
-    %>
-    gtm_userdata['user-customer-id'] = '<%= gtm_user.getIdentity().getErpCustomerPK() %>';
-    <%
-    }
-    %>
-
-    dataLayer.push(gtm_userdata);
-  </script>
-  <% } %>
+  <%-- GTM initialization --%>
+  <%@include file="/common/template/includes/i_gtm_datalayer.jsp" %>
 
 	<jwr:script src="/fdlibs.js" useRandomParam="false" />
 	<script src="/assets/javascript/jquery/corner/jquery.corner.js" type="text/javascript" language="javascript"></script>

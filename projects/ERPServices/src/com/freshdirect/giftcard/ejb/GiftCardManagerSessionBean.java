@@ -35,6 +35,7 @@ import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpSaleEB;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -68,11 +69,11 @@ import com.freshdirect.mail.GiftCardOrderInfo;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
 import com.freshdirect.payment.EnumGiftCardTransactionStatus;
 import com.freshdirect.payment.EnumGiftCardTransactionType;
-import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.GivexException;
 import com.freshdirect.payment.GivexResponseModel;
 import com.freshdirect.payment.ejb.GivexServerGateway;
 import com.freshdirect.payment.ejb.GivexServerNewGateway;
+import com.freshdirect.payment.service.FDECommerceService;
 
 public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 	

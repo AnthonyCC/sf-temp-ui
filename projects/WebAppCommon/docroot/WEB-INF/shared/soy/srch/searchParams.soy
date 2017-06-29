@@ -15,7 +15,7 @@
 /**
  * @param? tabs
  */
-{template .searchTabs autoescape="false"} 
+{template .searchTabs autoescape="false"}
   {if $tabs and length($tabs) > 0}
     {foreach $tab in $tabs}
       <li id="tab{index($tab)}" role="tab" tabindex="0" aria-controls="searchPanel" {if $tab.active}class="active" aria-selected="true"{/if} data-type="{$tab.type}"><span>{$tab.label}</span>{sp}<i>({$tab.filteredHits})</i></li>
@@ -105,13 +105,13 @@ Showing <b>{$hits}</b> {$hits > 1 ? $itemType + 's' : $itemType} found for <b>{$
   {elseif $pageType == 'SEARCH'}
     <h1 class="orange-title">Search Results</h1>
   {elseif $pageType == 'PRES_PICKS' or $pageType == 'STAFF_PICKS'}
-    <div class="oas-cnt PPHeader" id="oas_b_PPHeader">
+    <div class="oas-cnt PPHeader" id="oas_PPHeader">
       <script type="text/javascript">
           OAS_AD('PPHeader');
       </script>
     </div>
-    
-    <div class="oas-cnt PPHeader2" id="oas_b_PPHeader2">
+
+    <div class="oas-cnt PPHeader2" id="oas_PPHeader2">
       <script type="text/javascript">
           OAS_AD('PPHeader2');
       </script>
@@ -128,7 +128,7 @@ Showing <b>{$hits}</b> {$hits > 1 ? $itemType + 's' : $itemType} found for <b>{$
 
 {if $listSearchParams and $listSearchParamsList}
    {foreach $listSearchParamsHit in $listSearchParamsList}
-     <div class="listSearchHit"> 
+     <div class="listSearchHit">
       {if $listSearchParamsHit == $searchParams}
       	<b>{$listSearchParamsHit}</b>
       {else}

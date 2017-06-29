@@ -45,12 +45,6 @@ public class OAuthAuthenticationRestServiceImpl {
 			return getTokenFromResponse();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-		}finally{
-			try {
-				post.releaseConnection();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 		}
 	}
 

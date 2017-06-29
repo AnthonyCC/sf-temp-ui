@@ -4,6 +4,11 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" lang="en-US"/>
 
 	<title>Youtube Google Analytics Test Page</title>
+    <%@ include file="/common/template/includes/metatags.jspf" %>
+    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
+    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+
 	<fd:AnalyticsInit/>
 	<!-- Load the swfobject library-->
 	<fd:javascript src="/assets/javascript/swfobject.js" />

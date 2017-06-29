@@ -12,6 +12,9 @@ final int W_FORGET_PASSWORD_TOTAL = 700;
 <fd:CheckLoginStatus guestAllowed='true' recognizedAllowed='true' id='user' />
 <fd:ForgotPasswordController results="result" successPage='/login/forget_password_confirmation.jsp' password="password">	
 	<tmpl:insert template='/common/template/no_nav.jsp'>
+	    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect - Forgot Your Password? - Enter E-mail Address"/>
+    </tmpl:put>
 		<tmpl:put name='title' direct='true'>FreshDirect - Forgot Your Password? - Enter E-mail Address</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 			<%@ include file="/login/includes/forget_password.jspf" %>

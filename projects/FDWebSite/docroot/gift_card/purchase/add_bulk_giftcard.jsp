@@ -20,7 +20,10 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 <fd:CheckLoginStatus id="user" guestAllowed='false' recognizedAllowed='false'/>
 
 <tmpl:insert template='/common/template/giftcard.jsp'>
-	<tmpl:put name='title' direct='true'>Gift Card : Buy in Bulk</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Gift Card : Buy in Bulk"/>
+  </tmpl:put>
+  <tmpl:put name='title' direct='true'>FreshDirect - Gift Card : Buy in Bulk</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 		<%
 			//used?

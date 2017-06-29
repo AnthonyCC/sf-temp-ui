@@ -1,14 +1,13 @@
 package com.freshdirect.smartstore.impl;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.sampling.ImpressionSampler;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.ProductReference;
 
 public class ProductSampleRecommendationService extends AbstractRecommendationService {
 
@@ -19,7 +18,6 @@ public class ProductSampleRecommendationService extends AbstractRecommendationSe
     @Override
     protected List<ContentNodeModel> doRecommendNodes(SessionInput input) {
         List<ContentNodeModel> nodes = new ArrayList<ContentNodeModel>();
-        if(null !=input && null !=input.getProductSamples())
         for (ProductReference sample : input.getProductSamples()) {
             nodes.add(sample.lookupProductModel());
         }

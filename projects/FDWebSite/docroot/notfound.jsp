@@ -103,7 +103,9 @@
     <c:if test="${not empty cookie['developer']}">
       <a href="/" title="back to the homepage"><img src="/media_stat/images/something_went_wrong.png" alt="broken truck" /></a>
       <pre id="stacktrace">
-  <% exception.printStackTrace(new java.io.PrintWriter(out)); %>
+  <% if (exception != null) {
+      exception.printStackTrace(new java.io.PrintWriter(out));
+      } %>
       </pre>
     </c:if>
   </div>

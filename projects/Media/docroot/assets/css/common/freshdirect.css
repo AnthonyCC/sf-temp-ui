@@ -206,7 +206,7 @@ h2.centerline span {
 #i_viewcart .quantity_col {
   text-align:center;
   font-size:0;
-  width:100px;
+  /* width:100px; */
 }
 
 #vieworder_table select,

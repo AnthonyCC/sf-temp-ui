@@ -5,7 +5,7 @@ public interface SystemMessageList {
 	//
 	// Some single quotes need to be escaped like so ''
 	//
-	public final static String CUSTOMER_SERVICE_CONTACT	= "1-212-796-8002";
+	public final static String CUSTOMER_SERVICE_CONTACT	= "1-866-283-7374";
 
 	public final static String MSG_REQUIRED				= "This information is required.";
     public final static String MSG_TECHNICAL_ERROR    	= "Sorry, we're experiencing technical difficulties. Please try again later.";
@@ -210,7 +210,7 @@ public interface SystemMessageList {
 	
 	public final static String MSG_INVALID_CAPTCHA = "Captcha is not valid. Please select captcha";
 	public static final String MSG_INVALID_NON_EBT_ADDRESS_FOR_EBT_PAYMENTH_METHOD = "This delivery address is not valid for an EBT payment method.";
-    public static final String MSG_GENERAL_UNDER_ORDER_MINIMUM_MESSAGE = "Your delivery or pickup location has an order minimum of {0} (pre-tax). To place an order, add more items to your cart.";
+	public static final String MSG_GENERAL_UNDER_ORDER_MINIMUM_MESSAGE = "Your cart has not reached the order minimum of {0} (not including taxes and delivery fees). In order to check out, simply add more delicious items to your cart.";
     
     public static final String MSG_SOCIAL_ACCOUNT_EXIST_SIGNIN = "You have an existing account. You are signed in";
     public static final String MSG_SOCIAL_AUTO_SIGNIN = "Auto Sign In";

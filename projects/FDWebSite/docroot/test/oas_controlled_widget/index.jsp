@@ -45,7 +45,7 @@
       <h2>OAS slot</h2>
       <p>[HPFeature]</p>
       <div class="oas-top">
-        <div class="oas-cnt" id="oas_b_HPFeature"><script type="text/javascript">OAS_AD('HPFeature');</script></div>
+        <div class="oas-cnt" id="oas_HPFeature"><script type="text/javascript">OAS_AD('HPFeature');</script></div>
       </div>
 
       <h2>Demo widget below</h2>
@@ -65,7 +65,7 @@
     callback: {
       value: function (params) {
         var $el = $("#OAS-demo");
-        
+
         console.log('demo signal fired with the following params:', params);
         if (params.clear) {
           $el.html('');
@@ -84,4 +84,4 @@
 }(FreshDirect));
 </script>
 	</body>
-</html> 
+</html>

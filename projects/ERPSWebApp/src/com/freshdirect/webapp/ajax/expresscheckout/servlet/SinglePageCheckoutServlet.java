@@ -38,7 +38,7 @@ public class SinglePageCheckoutServlet extends BaseJsonServlet {
 			returnHttpError(500, "Failed to load single page checkout info.", e);
 		} catch (RedirectToPage e) {
 			returnHttpError(500, "Failed to load single page checkout info.", e);
-		}
+        }
 	}
 
 	@Override

@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class SapOrderPickEligibleInfo implements Serializable {
+	
+	public SapOrderPickEligibleInfo(){};
 
 	public SapOrderPickEligibleInfo(Date deliveryDate, String sapSalesOrder,
 			String webSalesOrder) {

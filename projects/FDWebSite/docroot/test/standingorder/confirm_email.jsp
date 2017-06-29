@@ -24,6 +24,8 @@
 <%@page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@page import="com.freshdirect.fdstore.standingorders.FDStandingOrder"%>
 <%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
+<%@page import="com.freshdirect.fdstore.FDEcommProperties"%>
+<%@page import="com.freshdirect.payment.service.FDECommerceService"%>
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@ taglib uri='logic' prefix='logic'%>
 <fd:CheckLoginStatus id="fduser" guestAllowed='false' recognizedAllowed='false'  />
@@ -90,9 +92,12 @@
 				mail.setHtmlEmail( false );
 			}
 
-			MailerGatewaySB mailer = mailerHome.create();
-			mailer.enqueueEmail( mail );
-			
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
+				FDECommerceService.getInstance().enqueueEmail(mail);
+			} else {
+				MailerGatewaySB mailer = mailerHome.create();
+				mailer.enqueueEmail( mail );
+			}
 			emailSent = true;
 		}
 	}

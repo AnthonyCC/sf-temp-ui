@@ -11,7 +11,10 @@ final int W_YA_ADD_DELIVERY_ADDR = 970;
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 
 <tmpl:insert template='/common/template/dnav.jsp'>
-<tmpl:put name='title' direct='true'>FreshDirect - Your Account - Add New Delivery Address</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Your Account - Add New Delivery Address"/>
+  </tmpl:put>
+  <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Add New Delivery Address</tmpl:put>
 <tmpl:put name='content' direct='true'>
 
 <fd:RegistrationController actionName="addDeliveryAddress" result="result" successPage="/your_account/delivery_information.jsp">

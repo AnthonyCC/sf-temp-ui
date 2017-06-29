@@ -135,7 +135,7 @@ public interface ErpCustomerManagerSB extends EJBObject {
      *
      * @return Map of order line number -> List of ErpInventoryModel objects
      */
-    public Map<String, List<ErpInventoryModel>> checkAvailability(PrimaryKey erpCustomerPk, ErpCreateOrderModel order, long timeout) throws RemoteException;
+    public Map<String, List<ErpInventoryModel>> checkAvailability(PrimaryKey erpCustomerPk, ErpCreateOrderModel order, long timeout, String isFromLogin) throws RemoteException;
     
     /**
      * Get a specific sale.

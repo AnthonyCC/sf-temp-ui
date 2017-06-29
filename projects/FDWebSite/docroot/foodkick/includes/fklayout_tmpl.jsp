@@ -7,6 +7,7 @@
 <html>
 	<head>
 		<title> <tmpl:get name='title'/> </title>
+        <%@ include file="/common/template/includes/metatags.jspf" %>
 		<meta charset="UTF-8" />
 		<link rel="icon" type="image/x-icon" href="<%=IMAGES_DIR %>/favicon2.ico" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />

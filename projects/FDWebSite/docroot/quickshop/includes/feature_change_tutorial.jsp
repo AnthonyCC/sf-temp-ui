@@ -12,7 +12,7 @@
 				Click the "Add to Standing Order" button on any product, at any time.
 			</li>
 		</ul>
-		<a class="so-feature-tutorial-pdf icon-base icon-pdf" href="/media/editorial/site_pages/standing_orders/SO2017_tutorial.pdf" target="_blank"><span class="offscreen">download user guide pdf</span></a>
+		<a class="so-feature-tutorial-pdf icon-base icon-pdf" href="/media/editorial/site_pages/standing_orders/SO2017_tutorial.pdf" target="_blank"></a>
 		<a class="so-feature-tutorial-pdf-text" href="/media/editorial/site_pages/standing_orders/SO2017_tutorial.pdf">Download the User Guide</a>
 		<div class="clear"></div>
 	</div>

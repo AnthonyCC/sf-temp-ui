@@ -30,28 +30,28 @@
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@ taglib uri="/WEB-INF/shared/tld/components.tld" prefix='comp' %>
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
-<%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %><% 
- 	
+<%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %><%
+
 //expanded page dimension
 final int W_INDEX_TOTAL = 970;
 final int W_INDEX_CENTER_PADDING = 20;
 final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
-	
+
 // no YUI required for index.jsp
 request.setAttribute("noyui", true);
- 	
+
 %><fd:CheckLoginStatus guestAllowed='true' pixelNames="TheSearchAgency" />
 <%-- fd:WelcomeExperience / --%><%
- 	
+
         FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
         FDSessionUser sessionUser = (FDSessionUser)session.getAttribute(SessionName.USER);
         String custFirstName = user.getFirstName();
         int validOrderCount = user.getAdjustedValidOrderCount();
         boolean mainPromo = user.getLevel() < FDUserI.RECOGNIZED && user.isEligibleForSignupPromotion();
-        boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));        
- 	        
+        boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+
         request.setAttribute("sitePage", "www.freshdirect.com/index.jsp");
- 	        
+
         String pageTemplate = "/common/template/no_shell_optimized.jsp"; //default
  	        if (mobWeb) {
  	                pageTemplate = "/common/template/mobileWeb.jsp"; //mobWeb template
@@ -59,7 +59,7 @@ request.setAttribute("noyui", true);
  	        }
  	%>
 <tmpl:insert template="<%=pageTemplate %>">
- 	
+
         <tmpl:put name="seoMetaTag" direct="true">
                 <fd:SEOMetaTag pageId="index" includeSiteSearchLink="true" title="Welcome to FreshDirect"></fd:SEOMetaTag>
         </tmpl:put>
@@ -69,25 +69,25 @@ request.setAttribute("noyui", true);
         <tmpl:put name="extraCss"><%-- MOBILE --%>
         </tmpl:put>
         <tmpl:put name="customJsBottom">
- 	                
+
         </tmpl:put>
         <tmpl:put name="extraJsFooter"><%-- MOBILE, end of body --%>
         </tmpl:put>
- 	        
+
         <tmpl:put name='content' direct='true'>
         <%!
- 	
+
                 //APPDEV- 4368:: Need Indicator for Empty Picks List Begin
                 public static boolean hasProduct(CategoryModel categoryModel){
                         boolean hasProduct = false;
-                       
+
                         if(!categoryModel.getSubcategories().isEmpty())
                         {
                                 List<CategoryModel> subCategories = categoryModel.getSubcategories();
                                 for (CategoryModel m1 : subCategories) {
                                         boolean result = hasProduct(m1);
                                         if(result){
-                                                return result; 
+                                                return result;
                                         }
                                 }
                         }
@@ -97,10 +97,10 @@ request.setAttribute("noyui", true);
                         }else
                                 return false;
                 }
- 	                
+
                 public static boolean isProductAvailable(List<ProductModel> prodList){
                         boolean result = false;
- 	                        
+
                         for(ProductModel model:prodList){
                                 if(!(model.isUnavailable() || model.isDiscontinued())){
                                    result = true;
@@ -115,50 +115,78 @@ request.setAttribute("noyui", true);
                          <div id="mobilehomeMainDiv">
                          <%
                                  //OAS setup
-                                 request.setAttribute("listPos", "SystemMessage,HPMob01,HPMob02");
+                                 request.setAttribute("listPos", "SystemMessage,HPMob01,HPMob02,HPMob03,HPMob04");
                                  /* these use OAS pages like www.freshdirect.com/mobileweb/[PAGENAME] */
- 	                                
+
                                  if (FDStoreProperties.isAdServerEnabled()) {
-                                        %><div id="OAS_HPMob01" class="home-page-banner">
+                                        %><div id="oas_HPMob01" class="oas-cnt home-page-banner">
                                                 <script type="text/javascript">OAS_AD('HPMob01');</script>
-                                        </div><% 
-                                        %><div id="OAS_HPMob02" class="home-page-banner">
+                                        </div><%
+                                        %><div id="oas_HPMob02" class="oas-cnt home-page-banner">
                                                 <script type="text/javascript">OAS_AD('HPMob02');</script>
-                                        </div><% 
+                                        </div><%
                                 }
- 	                                                        
-                               List<CategoryModel> catModels = ContentFactory.getInstance().getStore().getiPhoneHomePagePicksLists();
-	                                
-                                for (CategoryModel curCat: catModels) {
-                                        String curCatLink = "/browse.jsp?id="+curCat;
-                                        //skip if cat has no prod(s) and is not redirecting
-                                        if ("".equals(curCat.getRedirectURL()) && !hasProduct(curCat)) {
-                                                continue;
-                                        }
-                                        if ( curCat.getRedirectURL() != null && (curCat.getRedirectURL()).startsWith("foodkick://") ) {
-                                                curCatLink = "https://www.foodkick.com";
-                                        }
-                                        String bannerText = curCat.getPrimaryText();
-                                        if ("".equals(bannerText)) {
-                                                bannerText = curCat.getFullName();
-                                        }
- 	                                        
-                                         %>
- 	                                         
-                                        <a href="<%= curCatLink %>">
-                                             <div class="home-page-banner">
-                                                <img src="<%= curCat.getTabletThumbnailImage().getPathWithPublishId() %>" alt="" />
-                                                     <div class="home-page-banner-subtext-cont">
-                                                            <div class="home-page-banner-subtext"><%= bannerText %></div>
-                                                     </div>
-                                             </div>
- 	                                    </a>
-	                                <% } %>
- 	                        </div>
+
+                                 List<CategoryModel> catModels = ContentFactory.getInstance().getStore().getiPhoneHomePagePicksLists();
+                 				int bannerIndex = 0;
+
+                 				for (CategoryModel curCat: catModels) {
+                 					String curCatLink = "/browse.jsp?id="+curCat;
+                 					//skip if cat has no prod(s) and is not redirecting
+                 					if ("".equals(curCat.getRedirectURL()) && !hasProduct(curCat)) {
+                 						continue;
+                 					}
+                 					if ( curCat.getRedirectURL() != null && (curCat.getRedirectURL()).startsWith("foodkick://") ) {
+                 						curCatLink = "https://www.foodkick.com";
+                 					}
+                 					String bannerText = curCat.getPrimaryText();
+                 					if ("".equals(bannerText)) {
+                 						bannerText = curCat.getFullName();
+                 					}
+
+                 					 %>
+
+                 					<a href="<%= curCatLink %>">
+                 					    <div class="home-page-banner">
+                 						    <img src="<%= curCat.getTabletThumbnailImage().getPathWithPublishId() %>" alt="" />
+                 							<div class="home-page-banner-subtext-cont">
+                 								<div class="home-page-banner-subtext"><%= bannerText %></div>
+                 							</div>
+                 						</div>
+                 				    </a>
+                 				    <% bannerIndex++; %>
+
+                 				    <% if (bannerIndex == 5) { %>
+                 						<%
+                 						   	if (FDStoreProperties.isAdServerEnabled()) {
+                 								%><div id="oas_HPMob03" class="oas-cnt home-page-banner">
+                 						  			<script type="text/javascript">OAS_AD('HPMob03');</script>
+                 						  		</div><%
+                 						  	}
+                 						%>
+                 				    <% } %>
+                 				<% } %>
+								<% if (bannerIndex < 5) { /* display if there's not enough banners */ %>
+									<%
+									   	if (FDStoreProperties.isAdServerEnabled()) {
+											%><div id="oas_HPMob03" class="oas-cnt home-page-banner">
+									  			<script type="text/javascript">OAS_AD('HPMob03');</script>
+									  		</div><%
+									  	}
+									%>
+							    <% } %>
+                 				<%
+                 				   	if (FDStoreProperties.isAdServerEnabled()) {
+                 						%><div id="oas_HPMob04" class="oas-cnt home-page-banner">
+                 				  			<script type="text/javascript">OAS_AD('HPMob04');</script>
+                 				  		</div><%
+                 				  	}
+                 				%>
+                 			</div>
                  <% } else { %>
- 	                        
+
                          <fd:GetSegmentMessage id='segmentMessage' user="<%=user%>">
-                         
+
                          <%
                                  boolean location2Media = false;
                                  if(null != segmentMessage && segmentMessage.isLocation2()) {
@@ -166,13 +194,13 @@ request.setAttribute("noyui", true);
                                  }
  	                             request.setAttribute("listPos", "SystemMessage,HPFeatureTop,HPFeature,HPTab1,HPTab2,HPTab3,HPTab4,HPFeatureBottom,HPWideBottom,HPLeftBottom,HPMiddleBottom,HPRightBottom");
  	                     %>
- 	                        
- 	                     <% 
+
+ 	                     <%
                         boolean showAltHome = false;
-                        if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited() || 
-                                (request.getParameter("show") != null && request.getParameter("show").indexOf("letter") > -1))) 
+                        if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited() ||
+                                (request.getParameter("show") != null && request.getParameter("show").indexOf("letter") > -1)))
                                         showAltHome = true;
-                        
+
                                 //Coupons disabled warning msg
                                 if (!user.isCouponsSystemAvailable() && !sessionUser.isCouponWarningAcknowledged() && FDCouponProperties.isDisplayMessageCouponsNotAvailable()) {
                                 sessionUser.setCouponWarningAcknowledged(true);
@@ -193,20 +221,20 @@ request.setAttribute("noyui", true);
                         %>
                                 <div class="holder">
                                         <%-- MAIN CONTENT--%>
-                                                <div class="content"> 
-                        <% if (showAltHome && !location2Media) { 
+                                                <div class="content">
+                        <% if (showAltHome && !location2Media) {
                                 %><comp:homePageLetter user="<%= user %>" />
-                        <%} else if (!showAltHome && location2Media) { 
+                        <%} else if (!showAltHome && location2Media) {
                                 %><comp:welcomeMessage user="<%= user %>" segmentMessage="<%= segmentMessage %>" isCosPage="<%=false%>"/>
-                        <% 
-                        } else if (!showAltHome && !location2Media) { 
+                        <%
+                        } else if (!showAltHome && !location2Media) {
                                 %><comp:welcomeMessage user="<%= user %>" segmentMessage="<%= segmentMessage %>" isCosPage="<%=false%>"/>
                         <%
                         }
-                                        
-                        if (location2Media) { %><comp:location2Media user="<%= user %>" /><% } 
+
+                        if (location2Media) { %><comp:location2Media user="<%= user %>" /><% }
                         %>
-                                        <comp:OASFeature 
+                                        <comp:OASFeature
                                                 top="HPFeatureTop"
                                                 left="HPFeature"
                                                 tab1="HPTab1"
@@ -243,7 +271,7 @@ request.setAttribute("noyui", true);
                                         <soy:render template="common.yourTopItemsCarousel" data="${topItems}" />
                                     </div>
                                  <%
-                                  }  
+                                  }
                                                         Html edtMed = store.getEditorial();
                                                         if ( edtMed != null ) { %>
                                                                 <fd:IncludeHtml html="<%= edtMed %>"/>
@@ -255,12 +283,12 @@ request.setAttribute("noyui", true);
                                                         }
                                                 }
                         %>
-                                                <div class="oas_home_bottom"><script type="text/javascript">OAS_AD('HPWideBottom');</script></div>
+                                                <div class="oas_home_bottom" id='oas_HPWideBottom'><script type="text/javascript">OAS_AD('HPWideBottom');</script></div>
                                         </div>
                                         <%-- Removed the learn more for marketing change. --%>
                                         <%-- <div id="bottom_link"><a href="/welcome.jsp"><img src="/media_stat/images/home/fd_logo_learn_more_back.jpg" alt="Learn More About Our Services"></a></div> --%>
-                                <%-- END MAIN CONTENT--%> 
-                                                
+                                <%-- END MAIN CONTENT--%>
+
                         </div>
                         </fd:GetSegmentMessage>
                 <% } %>

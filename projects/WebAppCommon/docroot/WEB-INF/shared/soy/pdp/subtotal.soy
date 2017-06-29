@@ -13,7 +13,7 @@
  * @param pricingUnit
  */
 {template .subtotalInnerPricingUnit}
-<div class="width100"><span class="floter_left width50 subtotal-price"><b>${$price}</b></span><span class="floter_right width50 subtotal-price-estimated"><a onclick="pop('/help/estimated_price.jsp','small')"><span class="b">Estimated</span> Weight</a> <b>{round($quantity,2)}{sp}<span class="qty subtotal-price-pricingunit">{$pricingUnit}</span></b></span></div>
+<div class="width100"><span class="floter_left subtotal-price"><b>${$price}</b></span><span class="floter_right subtotal-price-estimated"><a onclick="pop('/help/estimated_price.jsp','small')"><span class="b">Est.</span> Weight</a> <b>{round($quantity,2)}{sp}<span class="qty subtotal-price-pricingunit">{$pricingUnit}</span></b></span></div>
 {/template}
 
 /**

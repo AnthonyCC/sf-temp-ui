@@ -2,11 +2,8 @@ package com.freshdirect.fdstore.standingorders.service;
 
 import java.rmi.RemoteException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.ejb.CreateException;
@@ -18,9 +15,9 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
@@ -31,6 +28,7 @@ import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
+import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.sap.ejb.SapException;
 
 public class StandingOrder3CronSessionBean extends SessionBeanSupport {
@@ -132,9 +130,10 @@ public class StandingOrder3CronSessionBean extends SessionBeanSupport {
 					,FDStandingOrder.ErrorCode.RELEASE_TIMESLOT.getErrorDetail(null));
 			
 			XMLEmailI mail = FDEmailFactory.getInstance().createStandingOrderErrorEmail( so.getUserInfo(), so );		
+
 			MailerGatewaySB mailer;
 			mailer = mailerHome.create();
-			mailer.enqueueEmail( mail );
+			mailer.enqueueEmail(mail);
 			}
 			return true;
 		} catch ( RemoteException e ) {

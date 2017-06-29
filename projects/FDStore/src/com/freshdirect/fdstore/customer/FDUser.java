@@ -134,8 +134,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     private final static Category LOGGER = LoggerFactory.getInstance(FDUser.class);
     public static final String ROBOT_USER_NAME = "robot";
-
-    private static final long serialVersionUID = 8492744405934393676L;
+    
+	private static final long serialVersionUID = 8492744405934393676L;
 
     public static final String SERVICE_EMAIL = "service@freshdirect.com";
     public final static int CAMPAIGN_MSG_VIEW_LIMIT = 4;
@@ -173,7 +173,8 @@ public class FDUser extends ModelSupport implements FDUserI {
     private boolean loggedIn = false;
 
     private boolean surveySkipped = false;
-
+    public String fromLogin;
+    
     private transient ErpCustomerInfoModel customerInfoModel;
     private transient FDOrderHistory cachedOrderHistory;
     private transient CustomerAvgOrderSize historicOrderSize;
@@ -310,8 +311,14 @@ public class FDUser extends ModelSupport implements FDUserI {
     private boolean vHPopupDisplay = false;
 
     private Collection<FDStandingOrder> validSO3s = new ArrayList<FDStandingOrder>();
+    
+    private Collection<FDStandingOrder> allSO3s = new ArrayList<FDStandingOrder>();
+    
+    private Map<String, Object> validSO3Data = new HashMap<String, Object>();
 
-    private boolean refreshValidSO3 = true;
+    private boolean refreshSO3 = true;
+    
+    private boolean refreshSO3Settings = true;
 
     private boolean isZipCheckPopupUsed = false;
     
@@ -319,7 +326,11 @@ public class FDUser extends ModelSupport implements FDUserI {
     
     private boolean refreshSoCartOverlay = true;
     
-    private boolean  soCartOverlayFirstTime=false;
+    private boolean  soCartOverlayFirstTime = false;
+    
+    private boolean refreshNewSoFeature = true;
+    
+    private boolean soFeatureOverlay = false;
     
 	public Date getTcAcknowledgeDate() {
         return tcAcknowledgeDate;
@@ -1211,7 +1222,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     public String getCustomerServiceContact() {
         try {
             String state = "";
-            String contactNumber = "1-212-796-8002";// DEFAULT
+            String contactNumber = "1-866-283-7374";// DEFAULT
             if (this.isChefsTable()) {
                 contactNumber = "1-866-511-1240";
             } else {
@@ -1336,6 +1347,7 @@ public class FDUser extends ModelSupport implements FDUserI {
             referrerEligible = Boolean.valueOf(calc.isEligible(new FDRulesContextImpl(this)));
         }
         return referrerEligible.booleanValue();
+        
     }
 
     @Override
@@ -1772,7 +1784,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     }
 
     @Override
-    public EnumDPAutoRenewalType hasAutoRenewDP() throws FDResourceException {
+    /*public EnumDPAutoRenewalType hasAutoRenewDP() throws FDResourceException {
         if (this.identity != null) {
         	if(null == hasAutoRenewDP){
 	            FDCustomerModel customer = this.getFDCustomer();
@@ -1781,6 +1793,17 @@ public class FDUser extends ModelSupport implements FDUserI {
 	            hasAutoRenewDP = FDCustomerManager.hasAutoRenewDP(customerPK);
 	            return hasAutoRenewDP;
         	}
+        	return hasAutoRenewDP;
+        }
+        return EnumDPAutoRenewalType.NONE;
+    }*/
+    
+    public EnumDPAutoRenewalType hasAutoRenewDP() throws FDResourceException {
+        if (this.identity != null) {
+            FDCustomerModel customer = this.getFDCustomer();
+            String customerPK = customer.getErpCustomerPK();
+
+            return FDCustomerManager.hasAutoRenewDP(customerPK);
         }
         return EnumDPAutoRenewalType.NONE;
     }
@@ -2357,6 +2380,7 @@ public class FDUser extends ModelSupport implements FDUserI {
             		&& this.getShoppingCart().getDeliveryReservation().getTimeslot()!=null 
             		&& this.getShoppingCart().getDeliveryReservation().getTimeslot().getDeliveryDate()!=null
             		&& address!=null && address.getPK()!=null 
+            		&& this.getShoppingCart().getDeliveryReservation().getAddressId()!=null
             		&& this.getShoppingCart().getDeliveryReservation().getAddressId().equals(address.getId())
             		&& !this.getShoppingCart().getDeliveryReservation().getTimeslot().getDeliveryDate().before(today()))?
             				this.getShoppingCart().getDeliveryReservation().getTimeslot().getDeliveryDate():null);
@@ -3581,13 +3605,27 @@ public class FDUser extends ModelSupport implements FDUserI {
     }
 
     @Override
-    public boolean isRefreshValidSO3() {
-        return this.refreshValidSO3;
+    public Collection<FDStandingOrder> getAllSO3() {
+        return this.allSO3s;
     }
 
     @Override
-    public void setRefreshValidSO3(boolean isRefreshValidSO3) {
-        this.refreshValidSO3 = isRefreshValidSO3;
+    public void setAllSO3(Collection<FDStandingOrder> allSO3s) {
+        this.allSO3s = allSO3s;
+    }
+    
+    @Override
+    public boolean isRefreshSO3() {
+        return this.refreshSO3;
+    }
+
+    @Override
+    public void setRefreshSO3(boolean isRefreshSO3) {
+        this.refreshSO3 = isRefreshSO3;
+        if(refreshSO3){
+			setRefreshSO3Settings(true);
+		}
+        
     }
 
     public boolean isZipCheckPopupUsed() {
@@ -3620,6 +3658,9 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	public void setSoCartOverlayFirstTime(boolean soCartOverlayFirstTime) {
 		this.soCartOverlayFirstTime = soCartOverlayFirstTime;
+		if(soCartOverlayFirstTime){
+			setRefreshSO3Settings(true);
+		}
 	}
 
 	public boolean isRefreshSoCartOverlay() {
@@ -3628,8 +3669,60 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	public void setRefreshSoCartOverlay(boolean refreshSoCartOverlay) {
 		this.refreshSoCartOverlay = refreshSoCartOverlay;
+		if(refreshSoCartOverlay){
+			setRefreshSO3Settings(true);
+		}
+	}
+	
+	public String isFromLogin() {
+		return fromLogin;
 	}
 
-	
+
+	public void setFromLogin(String fromLogin) {
+		this.fromLogin = fromLogin;
+	}
+
+
+	public boolean isRefreshNewSoFeature() {
+		return refreshNewSoFeature;
+	}
+
+	public void setRefreshNewSoFeature(boolean refreshNewSoFeature) {
+		this.refreshNewSoFeature = refreshNewSoFeature;
+		if(refreshNewSoFeature){
+			setRefreshSO3Settings(true);
+		}
 		
+	}
+
+	public boolean isSoFeatureOverlay() {
+		return soFeatureOverlay;
+	}
+
+	public void setSoFeatureOverlay(boolean soFeatureOverlay) {
+		this.soFeatureOverlay = soFeatureOverlay;
+	}
+
+	// Only created for jackson parsing in Storefront 2.0
+	public void setReferrerEligible(Boolean referrerEligible) {
+		this.referrerEligible = referrerEligible;
+	}
+
+	public void setValidSO3Data(Map<String, Object> validSO3Data){
+		this.validSO3Data = validSO3Data;
+	}
+    
+    public Map<String, Object> getValidSO3Data(){
+    	return this.validSO3Data;
+    }
+		
+    public boolean isRefreshSO3Settings(){
+    	return this.refreshSO3Settings;
+    }
+
+    public void setRefreshSO3Settings(boolean isRefreshSO3Settings){
+    	this.refreshSO3Settings = isRefreshSO3Settings;
+    }
+    
 }

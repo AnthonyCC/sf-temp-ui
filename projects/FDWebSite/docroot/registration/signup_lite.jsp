@@ -90,9 +90,10 @@
   
   <link rel="stylesheet" type="text/css" href="/assets/css/global.css">
   <link rel="stylesheet" type="text/css" href="/assets/css/pc_ie.css">
-	
-  <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-  <%@ include file="/shared/template/includes/i_head_end.jspf" %> 
+    <%@ include file="/common/template/includes/metatags.jspf" %>
+    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
+    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
  
     <!--  Referred  jquery-1.7.2.min.js from FD code base-->
 	<!-- <script type="text/javascript" src="/docroot/common/js/jquery-1.7.2.min.js"></script> -->

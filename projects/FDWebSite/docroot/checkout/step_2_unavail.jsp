@@ -16,10 +16,10 @@ final int W_CHECKOUT_STEP_2_UNAVAIL_TOTAL = 970;
 <potato:unavailability/>
 
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
-<tmpl:put name="seoMetaTag" direct="true">
-	<fd:SEOMetaTag pageId=""></fd:SEOMetaTag>
-</tmpl:put>
-<tmpl:put name='title' direct='true'>FreshDirect - Checkout - Unavailability</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Checkout - Unavailability"/>
+  </tmpl:put>
+  <tmpl:put name='title'>FreshDirect - Checkout - Unavailability</tmpl:put>
 <tmpl:put name='content' direct='true'>
 
 <div class="atpfailure">

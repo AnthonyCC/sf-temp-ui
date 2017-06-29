@@ -10,6 +10,8 @@
 <%@ page import="com.freshdirect.dataloader.autoorder.create.util.DateUtil" %>
 <%@ page import="com.freshdirect.common.pricing.Discount" %>
 <%@ page import="com.freshdirect.customer.EnumChargeType" %>
+<%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
+<%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -48,7 +50,7 @@ if (user.isEligibleForClientCodes()) {
 %>
 <tmpl:insert template='/common/template/no_nav.jsp'>
 <tmpl:put name="seoMetaTag" direct="true">
-	<fd:SEOMetaTag pageId=""></fd:SEOMetaTag>
+	<fd:SEOMetaTag title="FreshDirect - View Cart"></fd:SEOMetaTag>
 </tmpl:put>
 <tmpl:put name='extraCss' direct='true'>
   <jwr:style src="/viewcart.css"/>
@@ -113,8 +115,6 @@ StringBuffer buffer = new StringBuffer(
 					SystemMessageList.MSG_PROMOTION_APPLIED_VARY1);
 			result.addWarning(new ActionWarning("promo_war1", buffer
 					.toString()));
-                    
-                    
 %>
 
 <fd:ErrorHandler result='<%=result%>' name='promo_war1' id='errorMsg'>
@@ -140,12 +140,11 @@ StringBuffer buffer = new StringBuffer(
 	</fd:ErrorHandler>
 <%} %>
 
-<div fd-toggle="product-sample-carousel" fd-toggle-state="enabled">
 <potato:viewCart />
-<% if (user.getCurrentStandingOrder() == null) { %>
-<!-- product sampling carousel -->
-<soy:render template="common.productSampleCarousel" data="${viewCartPotato.productSamplesTab}" />
-<% } %>
+<div fd-toggle="product-sample-carousel" fd-toggle-state="enabled">
+  <% if (user.getCurrentStandingOrder() == null) { %>
+    <soy:render template="common.productSampleCarousel" data="${viewCartPotato.recommendationTabs[0]}" />
+  <% } %>
 </div>
 
 <form name="viewcart" id="viewcart" method="post" action="/view_cart.jsp" style="margin:0px ! important">
@@ -208,7 +207,9 @@ StringBuffer buffer = new StringBuffer(
 
 </form>
 
-<soy:render template="common.viewCartTabbedCarousel" data="${viewCartPotato}" /> 
+  <div id="cartCarousels">
+    <soy:render template="common.viewCartTabbedCarousel" data="${viewCartPotato}" />
+  </div>
 
 <table border="0" cellspacing="0" cellpadding="0" width="<%= W_VIEWCART_TOTAL %>">
     <TR valign="TOP">

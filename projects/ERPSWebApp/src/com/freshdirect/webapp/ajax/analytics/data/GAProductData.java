@@ -1,6 +1,5 @@
 package com.freshdirect.webapp.ajax.analytics.data;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class GAProductData {
 
@@ -13,10 +12,7 @@ public class GAProductData {
     private String list;
     private String newProduct;
     private String sku;
-    private double quantity;
-    private String configuredPrice;
-    @JsonProperty("lineItemTotal")
-    private String actualPrice;
+    private String quantity;
 
     public String getName() {
         return name;
@@ -90,27 +86,13 @@ public class GAProductData {
         this.sku = sku;
     }
 
-    public double getQuantity() {
+    public String getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(double quantity) {
+    public void setQuantity(String quantity) {
         this.quantity = quantity;
     }
 
-    public String getConfiguredPrice() {
-        return configuredPrice;
-    }
 
-    public void setConfiguredPrice(String configuredPrice) {
-        this.configuredPrice = configuredPrice;
-    }
-
-    public String getActualPrice() {
-        return actualPrice;
-    }
-
-    public void setActualPrice(String actualPrice) {
-        this.actualPrice = actualPrice;
-    }
 }

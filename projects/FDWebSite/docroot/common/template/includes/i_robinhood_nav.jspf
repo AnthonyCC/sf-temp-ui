@@ -25,9 +25,11 @@ final int W_ROBINHOOD_NAV_TOTAL = 970;
 				if (FDStoreProperties.isAdServerEnabled()) {
 					request.setAttribute("listPos", "SystemMessage");
 					%>
-					<script type="text/javascript">
-						OAS_AD('SystemMessage');
-					</script>
+          <div id='oas_SystemMessage'>
+  					<script type="text/javascript">
+  						OAS_AD('SystemMessage');
+  					</script>
+          </div>
 				<% } else { %>
 					<fd:GetSiteAnnouncements id="announcments" user="<%=user%>">
 						<logic:iterate id="ann" collection="<%=announcments%>" type="com.freshdirect.fdstore.FDSiteAnnouncementI">
@@ -44,13 +46,13 @@ final int W_ROBINHOOD_NAV_TOTAL = 970;
 						</logic:iterate>
 					</fd:GetSiteAnnouncements>
 				<% } %>
-				
+
 			<% } %>
 <table width="<%=W_ROBINHOOD_NAV_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 	<tr>
 		<td valign="bottom" width="182">
 			<% if (user != null) { %>
-				
+
 				<% if (user.isDepotUser()) { %>
 					<a href="/index.jsp"><img src="/media_stat/images/logos/<%=user.getDepotCode()%>_depot_logo.gif" alt="" border="0" /></a>
 				 <% } else { %>
@@ -66,7 +68,7 @@ final int W_ROBINHOOD_NAV_TOTAL = 970;
 			<% } else if (user.isDlvPassActive()) { %>
 				<a href="/your_account/delivery_pass.jsp"><img src="/media_stat/images/navigation/global_nav/global_hdr_dp.gif" width="217" height="10" alt="CLICK HERE FOR DETAILS"  vspace="0" border="0"></a><br>
 			<% } %>
-			
+
 			<% if (user.getLevel() == FDUserI.SIGNED_IN) { %>
 				<a href="/logout.jsp"><b>Click here to log out</b></a>
 			<% } else if (user.getLevel() == FDUserI.RECOGNIZED) { %>
@@ -117,7 +119,7 @@ final int W_ROBINHOOD_NAV_TOTAL = 970;
 	String step3_img_r = "/media_stat/images/donation/robinhood/nav/nav_confirm_on.gif";
 
 	// setup links to each step (used for step check)
-	
+
 	String step0_link = rhLanding1;
 	String step0b_link = "login/login.jsp";
 	String step1_link = rhLanding1;
@@ -148,24 +150,24 @@ final int W_ROBINHOOD_NAV_TOTAL = 970;
 	if ( step == 1 ) { step1_disp = "<img src=\""+step1_img_r+"\" "+step1_attribs+" />"; }
 	if ( step == 2 ) { step2_disp = "<img src=\""+step2_img_r+"\" "+step2_attribs+" />"; }
 	if ( step == 3 ) { step3_disp = "<img src=\""+step3_img_r+"\" "+step3_attribs+" />"; }
-	
+
 	// as we pass each step, we make it a link and allow mouse overs
-	/* 
+	/*
 		ROBIN HOOD HAS TO HAVE STEP ZERO FOR DOING MULTIPLE ORDERS */
 
 		if ( step > 0 ) {
 			// this setup is extra complicated because of the rounded corners
 			step0_disp = "<a href=\""+response.encodeURL(step0_link)+"\"" + "onMouseOver=\"swapImage('"+step0_id+"','" + step0_img_r + "');swapImage('gc_nav_topLf','/media_stat/images/donation/robinhood/nav/nav_corner_top_lf_on.gif');swapImage('gc_nav_botLf','/media_stat/images/donation/robinhood/nav/nav_corner_bot_lf_on.gif');$w('td_step0_1 td_step0_2').each(function(n) {$(n).style.backgroundColor='#360';});\" onMouseOut=\"swapImage('"+step0_id+"','" + step0_img + "');swapImage('gc_nav_topLf','/media_stat/images/donation/robinhood/nav/nav_corner_top_lf_off.gif');swapImage('gc_nav_botLf','/media_stat/images/donation/robinhood/nav/nav_corner_bot_lf_off.gif');$w('td_step0_1 td_step0_2').each(function(n) {$(n).style.backgroundColor='#693';});\"" + "><img src=\""+step0_img+"\" "+step0_attribs+" /></a>";
 		}
-	
+
 	if ( step > 1 ) {
 		step1_disp = "<a href=\""+response.encodeURL(step1_link)+"\"" + "onMouseOver=\"swapImage('"+step1_id+"','" + step1_img_r + "');$('td_step1').style.backgroundColor='#360';\" onMouseOut=\"swapImage('"+step1_id+"','" + step1_img + "');$('td_step1').style.backgroundColor='#693';\"" + "><img src=\""+step1_img+"\" "+step1_attribs+" /></a>";
 	}
 	if ( step > 2 ) {
 		//step2_disp = "<a href=\""+response.encodeURL(step2_link)+"\"" + "onMouseOver=\"swapImage('"+step2_id+"','" + step2_img_r + "');$('td_step2').style.backgroundColor='#360';\" onMouseOut=\"swapImage('"+step2_id+"','" + step2_img + "');$('td_step2').style.backgroundColor='#693';\"" + "><img src=\""+step2_img+"\" "+step2_attribs+" /></a>";
-		step1_disp = "<img src=\""+step1_img+"\" "+step1_attribs+" />"; 
+		step1_disp = "<img src=\""+step1_img+"\" "+step1_attribs+" />";
 		step2_disp = "<img src=\""+step2_img+"\" "+step2_attribs+" />";
-		
+
 	}
 
 %>
@@ -191,7 +193,7 @@ final int W_ROBINHOOD_NAV_TOTAL = 970;
 		<td class="GC_nav_corner"><img src="/media_stat/images/donation/robinhood/nav/nav_corner_top_rt_off.gif" /></td>
 	</tr>
 	<tr>
-		<td class="GC_nav_corner_spacer<% if (step == 0) {%> GC_nav_on<%} %>" id="td_step0_1"><img width="1" height="1" alt="" src="/media_stat/images/layout/clear.gif" /></td>		
+		<td class="GC_nav_corner_spacer<% if (step == 0) {%> GC_nav_on<%} %>" id="td_step0_1"><img width="1" height="1" alt="" src="/media_stat/images/layout/clear.gif" /></td>
 		<td class="GC_nav_corner_spacer"><img width="1" height="1" alt="" src="/media_stat/images/layout/clear.gif" /></td>
 	</tr>
 	<tr>

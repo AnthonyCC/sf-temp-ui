@@ -92,6 +92,9 @@ String ftl="/media/editorial/faq/"+faqPage+".ftl";
 String defaultFtl="/media/editorial/faq/intro.ftl";
 
 %><tmpl:insert template='/shared/template/large_pop.jsp'>
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect - Help - FAQs"/>
+    </tmpl:put>
     <tmpl:put name='title' direct='true'>FreshDirect - Help - FAQs</tmpl:put>
 	<tmpl:put name='leftnav' direct='true'>
 	</tmpl:put>

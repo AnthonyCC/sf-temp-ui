@@ -17,6 +17,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -34,11 +35,16 @@ public class ProductPromotionInfoManager {
 		lookupManagerHome();
 		Map<ZoneInfo,List<FDProductPromotionInfo>> productPromoInfoMap=null;
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpProductPromotionInfoSB")){
-			productPromoInfoMap=FDECommerceService.getInstance().getAllProductsByType(ppType);
+			long startTime=  startIntervalTimer();
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpProductPromotionInfoSB)){
+				
+				productPromoInfoMap=FDECommerceService.getInstance().getAllProductsByType(ppType);
+				logTimeInterval(startTime,"FDECommerceService.getAllProductsByType" );
 			}else{
+				
 				ErpProductPromotionInfoSB sb = managerHome.create();
 				productPromoInfoMap =sb.getAllProductsByType(ppType);
+				logTimeInterval(startTime,"ErpProductPromotionInfoSB.getAllProductsByType" );
 			}
 
 			return productPromoInfoMap;
@@ -55,11 +61,15 @@ public class ProductPromotionInfoManager {
 		lookupManagerHome();
 		Map<ZoneInfo,List<FDProductPromotionInfo>> productPromoInfoMap= null;
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpProductPromotionInfoSB")){
+			long startTime=  startIntervalTimer();
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpProductPromotionInfoSB)){
+				
 				productPromoInfoMap= FDECommerceService.getInstance().getAllProductsByType(ppType,lastPublished);
+				logTimeInterval(startTime,"FDECommerceService.getAllProductsByType-date" );
 			}else{
 			ErpProductPromotionInfoSB sb = managerHome.create();
 			productPromoInfoMap =sb.getAllProductsByType(ppType,lastPublished);
+			logTimeInterval(startTime,"ErpProductPromotionInfoSB.getAllProductsByType-date" );
 			}
 			return productPromoInfoMap;
 		} catch (CreateException ce) {
@@ -99,10 +109,13 @@ public class ProductPromotionInfoManager {
 		try{
 			ErpZoneInfoHome home=getErpZoneInfoHome();
 			ErpZoneInfoSB remote= home.create();
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpZoneInfoSB")){
+			long startTime=  startIntervalTimer();
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpZoneInfoSB)){
 				zoneInfo= FDECommerceService.getInstance().getAllZoneInfoDetails();
+				logTimeInterval(startTime,"FDECommerceService.getAllZoneInfoDetails" );
 			}else{
 			zoneInfo=remote.getAllZoneInfoDetails();
+			logTimeInterval(startTime,"ErpProductPromotionInfoSB.getAllZoneInfoDetails" );
 			}
 		}catch(CreateException sqle){
 			invalidateManagerHome();
@@ -120,11 +133,14 @@ public class ProductPromotionInfoManager {
 //		lookupManagerHome();
 		ErpProductPromotionPreviewInfo erpProductPromotionPreviewInfo;
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpProductPromotionInfoSB")){
+			long startTime=  startIntervalTimer();
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpProductPromotionInfoSB)){
 				erpProductPromotionPreviewInfo=	FDECommerceService.getInstance().getProductPromotionPreviewInfo(ppPreviewId);
+				logTimeInterval(startTime,"FDECommerceService.getProductPromotionPreviewInfo" );
 			}else{
 			ErpProductPromotionInfoSB sb = managerHome.create();
 			erpProductPromotionPreviewInfo =sb.getProductPromotionPreviewInfo(ppPreviewId);
+			logTimeInterval(startTime,"ErpProductPromotionInfoSB.getProductPromotionPreviewInfo" );
 			}
 			return erpProductPromotionPreviewInfo;
 		} catch (CreateException ce) {
@@ -162,11 +178,14 @@ public class ProductPromotionInfoManager {
 //		lookupManagerHome();
 		Map<String,Map<ZoneInfo,List<FDProductPromotionInfo>>> productPromoInfoMap;
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("erp.ejb.ErpProductPromotionInfoSB")){
+			long startTime=  startIntervalTimer();
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpProductPromotionInfoSB)){
 			productPromoInfoMap= FDECommerceService.getInstance().getAllPromotionsByType(ppType,lastPublishedDate);
+			logTimeInterval(startTime,"FDECommerceService.getAllPromotionsByType" );
 			}else{
 			ErpProductPromotionInfoSB sb = managerHome.create();
 			productPromoInfoMap =sb.getAllPromotionsByType(ppType,lastPublishedDate);
+			logTimeInterval(startTime,"ErpProductPromotionInfoSB.getAllPromotionsByType" );
 			
 			}
 			return productPromoInfoMap;
@@ -178,4 +197,30 @@ public class ProductPromotionInfoManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}		
 	}
+	
+	public static long startIntervalTimer(){
+		
+		 return System.currentTimeMillis();
+	}
+	/**
+	 * returns the difference between the start time and the current time in Mills
+	 * @param startTime
+	 * @return
+	 */
+	public static long diffIntervalTimer(long startTime){
+		
+		 return (System.currentTimeMillis() -startTime ) ;
+	}
+	/**
+	 * Logs the elapsed time of an operation
+	 * @param startTime the start time in ms
+	 * @param methodName, indicating sb or rst call.
+	 */
+	public static  void logTimeInterval(long startTime, String methodName){
+		
+		long totalElapsedTime = diffIntervalTimer(startTime);
+		LOGGER.info(methodName+  "Elapsed Time = "+totalElapsedTime+" ms" );
+		
+	}
+	
 }

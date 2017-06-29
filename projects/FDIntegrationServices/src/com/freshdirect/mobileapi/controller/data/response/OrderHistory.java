@@ -46,6 +46,10 @@ public class OrderHistory extends Message {
         private String status;
 
         private double amount;
+        
+        private double pendingCreditAmount;
+        
+    	private double approvedCreditAmount;
 
         private Timeslot deliveryTimeslot;
 
@@ -89,6 +93,8 @@ public class OrderHistory extends Message {
             this.shoppable = orderInfo.isShoppable();
             this.modifiable = orderInfo.isModifiable();
             this.deliveryType = orderInfo.getDeliveryType();
+            this.pendingCreditAmount = orderInfo.getPendingCreditAmount();
+            this.approvedCreditAmount = orderInfo.getApprovedCreditAmount();
             }
 
         public static List<Order> createOrderList(List<OrderInfo> orderInfos, SessionUser user) {
@@ -146,6 +152,22 @@ public class OrderHistory extends Message {
 
         public void setAmount(double amount) {
             this.amount = amount;
+        }
+        
+        public double getPendingCreditAmount() {
+            return pendingCreditAmount;
+        }
+
+        public void setPendingCreditAmount(double pendingCreditAmount) {
+            this.pendingCreditAmount = pendingCreditAmount;
+        }
+        
+        public double getApprovedCreditAmount() {
+            return approvedCreditAmount;
+        }
+
+        public void setApprovedCreditAmount(double approvedCreditAmount) {
+            this.approvedCreditAmount = approvedCreditAmount;
         }
 
         public Timeslot getDeliveryTimeslot() {

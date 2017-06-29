@@ -561,7 +561,8 @@ public class ProductDetailPopulator {
 		data.setSoldBySalesUnit( product.isSoldBySalesUnits() );
 		data.setHasTerms( product.hasTerms() );
 		if(StandingOrderHelper.isEligibleForSo3_0(user)){
-			data.setSoData(StandingOrderHelper.getAllSoData(user,true,false));
+//			data.setSoData(StandingOrderHelper.getAllSoData(user,true,false));
+			data.setSoData(StandingOrderHelper.getValidSO3DataForProducts(user));			
 		}
 		// alcoholic & usq flags
 		try {
@@ -634,16 +635,19 @@ public class ProductDetailPopulator {
 	 * @param useFavBurst
 	 */
 	public static void populateProductData( ProductData item, FDUserI user, ProductModel productModel, SkuModel sku, FDProduct fdProduct, PriceCalculator priceCalculator, FDProductSelectionI orderLine, boolean useFavBurst, boolean usePrimaryHome ) {
-		item.setCatId( usePrimaryHome ? productModel.getPrimaryHome().getContentKey().getId() : productModel.getCategory().getContentName() );
-		item.setDepartmentId(usePrimaryHome ? productModel.getPrimaryHome().getDepartment().getContentKey().getId() : productModel.getCategory().getDepartment().getContentKey().getId()  );
+		item.setCatId( usePrimaryHome ? productModel.getParentNode().getContentKey().getId() : productModel.getCategory().getContentName() );
+		item.setDepartmentId(usePrimaryHome ? productModel.getParentNode().getParentNode().getContentKey().getId() : productModel.getCategory().getDepartment().getContentKey().getId()  );
 		item.setSkuCode( sku.getSkuCode() );
 		item.setCustomizePopup( !productModel.isAutoconfigurable() );
 		item.setHasTerms( productModel.hasTerms() );
 		item.setDiscontinued(productModel.isDiscontinued());
 		item.setOutOfSeason(productModel.isOutOfSeason());
-		if(StandingOrderHelper.isEligibleForSo3_0(user)){
+		
+		//Redundant - Its already populated in 'populateBasicProductData()' call prior to calling this method 'populateProductData()'.
+		/*if(StandingOrderHelper.isEligibleForSo3_0(user)){
 			item.setSoData(StandingOrderHelper.getAllSoData(user,true,false));
-		}
+		}*/
+        item.setNewProduct(productModel.isNew());
 
 		populateAvailable(item, user, productModel);
 		populateRatings( item, user, productModel, sku.getSkuCode() );
@@ -1054,15 +1058,15 @@ public class ProductDetailPopulator {
 		
 		// Numeric quantity
 		Quantity quantity = new Quantity();
-		quantity.setqMin( productModel.getQuantityMinimum() );
-		quantity.setqMax( calculateSafeMaximumQuantity( user, productModel ) );
+		quantity.setqMin( productModel.getQuantityMinimum() );		
+		quantity.setqMax( calculateSafeMaximumQuantity( user, productModel ) );		
 		quantity.setqInc( productModel.getQuantityIncrement() );
 		quantity.setQuantity( orderLine != null ? orderLine.getQuantity() : quantity.getqMin() );	
 		item.setQuantity( quantity );
 		
 		// populate in cart amount    	
 		FDCartModel cart = user.getShoppingCart(); 
-		item.setProductSampleQuantity(cart.getProductSampleQuantity(productModel));	
+        item.setMaxProductSampleQuantityReached(cart.isMaxProductSampleQuantityReached(productModel.getContentName()) || cart.isMaxSampleReached());
 		item.setInCartAmount( cart.getTotalQuantity( productModel, false ) );
 			
 	}

@@ -16,8 +16,6 @@ public class Login extends Message {
     
     private String source;
     
-    private String channelId;
-
     public String getUsername() {
         return username;
     }
@@ -43,11 +41,33 @@ public class Login extends Message {
 	}
 	
 	// For IBM silverpop integration ..
-	public String getChannelId() {
-		return channelId;
+	private String channel;
+	
+	public String getChannel() {
+		return channel;
 	}
 
-	public void setChannelId(String channelId) {
-		this.channelId = channelId;
+	public void setChannel(String channel) {
+		this.channel = channel;
 	}   
+	
+	private String destination;
+	
+	public String getDestination() {
+		return destination;
+	}
+
+	public void setDestination(String destination) {
+		this.destination = destination;
+	}
+	
+	private String qualifier;
+	
+	public String getQualifier() {
+		return qualifier;
+	}
+
+	public void setQualifier(String qualifier) {
+		this.qualifier = qualifier;
+	}
 }

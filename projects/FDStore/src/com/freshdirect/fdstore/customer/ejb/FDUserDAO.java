@@ -1387,5 +1387,43 @@ public class FDUserDAO {
         return addOnOrderCountOfParent;
 
     }
+    
+    public static String getCookieByFdCustomerId(Connection conn, String fdCustomerId){
+    	String cookie = null;
+    	PreparedStatement ps = null;
+    	ResultSet rs = null;
+    	if(null != fdCustomerId && !"".equals(fdCustomerId.trim())){
+	        try {
+				ps = conn
+				        .prepareStatement("select fdu.cookie from cust.fdcustomer fdc, cust.fduser fdu where fdc.id = fdu.fdcustomer_id and fdc.id= ? ");
+				ps.setString(1, fdCustomerId);
+				rs = ps.executeQuery();
+	
+				if (rs.next()) {
+				    cookie = rs.getString(1);
+				}
+			} catch (SQLException e) {
+				LOGGER.warn("Cookie not found for fdCustomerId: "+fdCustomerId, e);
+			} finally {
+				if(null != rs){
+					try {
+						rs.close();
+					} catch (SQLException e) {
+						
+					}
+				}
+				
+				if( null != ps){
+					try {
+						ps.close();
+					} catch (SQLException e) {
+	
+					}
+				}
+				
+			}
+    	}
+        return cookie;
+    }
 
 }

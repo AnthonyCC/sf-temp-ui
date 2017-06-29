@@ -359,6 +359,16 @@ public class ProductController extends BaseController {
         		data.getProductData().getProductJumboImage().contains("/media_stat/images/layout/clear.gif")){
             	data.getProductData().setProductJumboImage(null);
         }
+        
+        if(data.getProductData()!=null && data.getProductData().getProductImagePackage()!=null && 
+        		data.getProductData().getProductImagePackage().contains("/media_stat/images/layout/clear.gif")){
+            	data.getProductData().setProductImagePackage(null);
+        }
+        
+        if(data.getProductData()!=null && data.getProductData().getProductAlternateImage()!=null && 
+        		data.getProductData().getProductAlternateImage().contains("/media_stat/images/layout/clear.gif")){
+            	data.getProductData().setProductAlternateImage(null);
+        }
 
         // setup response
         

@@ -25,7 +25,10 @@
 
 <tmpl:insert template='/common/template/top_nav_only.jsp'>
 	<tmpl:put name='leftnav' direct='true'> <%-- <<< some whitespace is needed here --%></tmpl:put>
-	<tmpl:put name='title' direct='true'>FreshDirect - 4-Minute Meals</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - 4-Minute Meals"/>
+  </tmpl:put>
+  <tmpl:put name='title' direct='true'>FreshDirect - 4-Minute Meals</tmpl:put>
 	<%-- SCRIPTS IN HEADER --%>
 	<tmpl:put name='head_content'>
 	</tmpl:put>
@@ -45,12 +48,12 @@
 
 %>
 	<div class="fourmm aboutpage">
-	<%@ include file="/includes/layouts/4mm/title.jspf"%>		
+	<%@ include file="/includes/layouts/4mm/title.jspf"%>
 <%
 	if(topMedia!=null && !topMedia.isEmpty()) {
 %>
 <fd:IncludeMedia name="<%= topMedia.get(0).getPath() %>"></fd:IncludeMedia>
-<%		
+<%
 	}
 %>
 <%
@@ -89,7 +92,7 @@
 			<% if ( brandLogo != null ) { %>
 				<img src="<%= brandLogo.getPath() %>" style="vertical-align: middle;" />&nbsp;
 			<% } %>
-			<% if ( brandCat != null) { %> 
+			<% if ( brandCat != null) { %>
 			<span class="text12" style="display: inline-block; vertical-align: middle;"><a href="/category.jsp?catId=<%= brandCat.getContentName() %>" style="font-weight:bold;">See&nbsp;Meals</a></span>
 			<% } %>
 		</div>
@@ -102,7 +105,7 @@
 
 </display:ContentNodeIterator>
 </div>
-<%		
+<%
 	}
 %>
 <%
@@ -111,17 +114,17 @@
 <logic:iterate id="middleHtml" collection="<%= middleMedia %>">
 <fd:IncludeMedia name="<%= ((Html) middleHtml).getPath() %>"></fd:IncludeMedia>
 </logic:iterate>
-<%		
+<%
 	}
 %>
 		<img src="/media_stat/images/4mm/browse_header.gif" />
 		<% boolean fourColumnLayout = true; boolean needToFilter = false; boolean enableAllItem=true; %>
 		<div style="margin:6px">
 		<%@ include file="/includes/layouts/4mm/filter_widget.jspf"%>
-		</div>					
+		</div>
 		<div id="ads">
-			<script type="text/javascript">OAS_AD('4mmAd1');</script>
-			<script type="text/javascript">OAS_AD('4mmAd2');</script>
+			<div id='oas_4mmAd1'><script type="text/javascript">OAS_AD('4mmAd1');</script></div>
+			<div id='oas_4mmAd2'><script type="text/javascript">OAS_AD('4mmAd2');</script></div>
 		</div>
 		<a href="<%= FourMinuteMealsHelper.allPageBaseUrl %>" style="text-decoration:none"><img src="/media_stat/images/4mm/dpt_4mm_viewall.gif"  border="0" alt="View all 4-Minute Meals"/></a>
 		<%@ include file="/includes/layouts/4mm/see_all_button.jspf"%>

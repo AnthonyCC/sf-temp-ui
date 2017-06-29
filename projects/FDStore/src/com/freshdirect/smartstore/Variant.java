@@ -20,7 +20,7 @@ public class Variant implements Comparable<Variant>, Serializable {
 	private static final long serialVersionUID = -1534257161948385156L;
 
 	public static final String NIL_ID = "nilv";
-	
+
 	// site feature
 	private EnumSiteFeature siteFeature;
 	
@@ -66,20 +66,20 @@ public class Variant implements Comparable<Variant>, Serializable {
 	}
 
 	/**
-	 * Constructor.
-	 * @param id
-	 * @param siteFeature {@link EnumSiteFeature}
-	 */
-	public Variant(String id, EnumSiteFeature siteFeature,
-			RecommendationServiceConfig serviceConfig) {
-		this.id = id;
-		this.siteFeature = siteFeature;
-		this.serviceConfig = serviceConfig;
-		this.tabStrategyPriorities = new TreeMap<Integer, SortedMap<Integer, CartTabStrategyPriority>>();
+     * Constructor.
+     * 
+     * @param id
+     * @param siteFeature
+     *            {@link EnumSiteFeature}
+     * @param serviceConfig
+     * @param itemType
+     */
+    public Variant(String id, EnumSiteFeature siteFeature, RecommendationServiceConfig serviceConfig) {
+        this(id, siteFeature, serviceConfig, new TreeMap<Integer, SortedMap<Integer, CartTabStrategyPriority>>());
 	}
 	
 	public Variant(String id, EnumSiteFeature siteFeature,
-			RecommendationServiceConfig serviceConfig, SortedMap<Integer, SortedMap<Integer, CartTabStrategyPriority>> tabStrategyPriorities) {
+            RecommendationServiceConfig serviceConfig, SortedMap<Integer, SortedMap<Integer, CartTabStrategyPriority>> tabStrategyPriorities) {
 		this.id = id;
 		this.siteFeature = siteFeature;
 		this.serviceConfig = serviceConfig;
@@ -91,7 +91,8 @@ public class Variant implements Comparable<Variant>, Serializable {
 	 * @param other variant
 	 * @return result of comparison on id
 	 */
-	public int compareTo(Variant other) { 
+	@Override
+    public int compareTo(Variant other) { 
 		return getId().compareTo(other.getId());
 	}
 
@@ -99,7 +100,8 @@ public class Variant implements Comparable<Variant>, Serializable {
 	 * Hash code.
 	 * @return getId().hashCode()
 	 */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		return getId().hashCode();
 	}
 	
@@ -108,7 +110,8 @@ public class Variant implements Comparable<Variant>, Serializable {
 	 * @param o object
 	 * @return whether the parameter is a {@link Variant} and has the same {@link #getId() id}
 	 */
-	public boolean equals(Object o) {
+	@Override
+    public boolean equals(Object o) {
 		if (!(o instanceof Variant)) 
 			return false;
 		
@@ -116,6 +119,7 @@ public class Variant implements Comparable<Variant>, Serializable {
 	}
 
 	
+    @Override
     public String toString() {
         return "Variant(" + id + ',' + siteFeature + ',' + serviceConfig + ',' + 
             (serviceConfig != null && serviceConfig.getType()!=null ? serviceConfig.getType().getName() : "null") + ')';
@@ -179,4 +183,5 @@ public class Variant implements Comparable<Variant>, Serializable {
 	public void setHideBursts(Set<EnumBurstType> hideBursts) {
 		this.hideBursts = hideBursts;
 	}
+
 }

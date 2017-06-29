@@ -10,6 +10,9 @@ String sPage = request.getParameter("successPage");
 --%>
 <fd:CheckLoginStatus/>
 <tmpl:insert template='/common/template/large_pop.jsp'>
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect - Log In"/>
+    </tmpl:put>
 <tmpl:put name='title' direct='true'>FreshDirect - Log In</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <table border="0" cellspacing="0" cellpadding="0" width="500" align="center">

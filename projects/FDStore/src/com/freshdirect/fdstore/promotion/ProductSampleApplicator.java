@@ -2,8 +2,6 @@ package com.freshdirect.fdstore.promotion;
 
 import java.util.List;
 
-import org.apache.log4j.Category;
-
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.fdstore.FDResourceException;
@@ -14,17 +12,14 @@ import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
-import com.freshdirect.framework.event.EnumEventSource;
-import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class ProductSampleApplicator implements PromotionApplicatorI {
 	
-	private final static Category LOGGER = LoggerFactory.getInstance(ProductSampleApplicator.class);
-	
+    private static final long serialVersionUID = -4228761928725008569L;
+
 	private final ProductReference sampleProduct;
 	private final double minSubtotal;
 	private DlvZoneStrategy zoneStrategy;
-
 	private CartStrategy cartStrategy;
 	
 	public ProductSampleApplicator(ProductReference sampleProduct, double minSubtotal){
@@ -50,29 +45,14 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 				FDCartModel cart= context.getShoppingCart();
 				List<FDCartLineI> orderLines=cart.getOrderLines();
 				if(null !=orderLines && !orderLines.isEmpty()){
-					int eligibleQuantity = 1;//FDStoreProperties.getProductSamplesMaxQuantityLimit();
-					int eligibleProducts = FDStoreProperties.getProductSamplesMaxBuyProductsLimit();
-					if(!isMaxSampleReached(orderLines, eligibleProducts)){
+                    int eligibleQuantity = FDStoreProperties.getProductSamplesMaxQuantityLimit();
+                    if (!cart.isMaxSampleReached()) {
                         int quantity = 0;
 						for (FDCartLineI orderLine : orderLines) {
-                            if (
-                            		orderLine.getProductRef().getContentKey().equals(sampleProduct.getContentKey()) 
+                            if (orderLine.getProductRef().getContentKey().equals(sampleProduct.getContentKey()) 
                             		&& quantity < eligibleQuantity
-                                    && orderLine.getQuantity() <= eligibleQuantity 
-                                    && (
-                                    	(
-                                    		EnumEventSource.ps_caraousal.equals(orderLine.getErpOrderLineSource()) 
-                                    		|| EnumEventSource.ps_caraousal.equals(orderLine.getSource())
-                                    		|| EnumEventSource.ps_carousel_view_cart.equals(orderLine.getErpOrderLineSource())
-                                    		|| EnumEventSource.ps_carousel_view_cart.equals(orderLine.getSource())
-                                    		|| EnumEventSource.ps_carousel_checkout.equals(orderLine.getErpOrderLineSource())
-                                    		|| EnumEventSource.ps_carousel_checkout.equals(orderLine.getSource())
-                                    	)
-                                    )
-                            ) {
-                            	orderLine.setErpOrderLineSource(EnumEventSource.ps_caraousal);
+                                    && orderLine.getQuantity() <= eligibleQuantity) {
                                 orderLine.setDiscount(new Discount(promotionCode, EnumDiscountType.FREE, orderLine.getQuantity()));
-								orderLine.setDepartmentDesc("FREE SAMPLE(S)");
                                 quantity += orderLine.getQuantity();
                                 isApplied = true;
 								try {
@@ -89,22 +69,9 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 			throw new FDRuntimeException(e);
 		}
 		return isApplied;
-				
 	}
 
 	
-	private boolean isMaxSampleReached(List<FDCartLineI> orderLines, int eligibleProducts) {
-		int numberOfFreeSampleProducts = 0;
-		for(FDCartLineI orderLine: orderLines){
-			if(null !=orderLine.getDiscount() && orderLine.getDiscount().getDiscountType().equals(EnumDiscountType.FREE)){
-				numberOfFreeSampleProducts++;
-			}
-		}
-		if(numberOfFreeSampleProducts >= eligibleProducts){
-			return true;
-		}
-		return false;
-	}
 	@Override
 	public void setZoneStrategy(DlvZoneStrategy zoneStrategy) {
 		this.zoneStrategy = zoneStrategy;		
@@ -132,6 +99,5 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 	public CartStrategy getCartStrategy() {
 		return this.cartStrategy;
 	}
-	
 
 }

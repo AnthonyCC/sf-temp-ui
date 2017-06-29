@@ -48,7 +48,7 @@
 			return;
 		}
 	}
-	
+
 	String template = "/common/template/browse_template.jsp";
 
 	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
@@ -124,13 +124,13 @@
 						<section class="">
 							<div class="sectionContent">
 								<soy:render template="common.simpleFixedProductList" data="${browsePotato.ddppproducts}" />
-							
+
 								<div class="oas-cnt PPSuperBuy" id="oas_b_PPSuperBuy">
 								  <script type="text/javascript">
 								      OAS_AD('PPSuperBuy');
 								  </script>
 								</div>
-								
+
 							</div>
 						</section>
 					</div>
@@ -146,7 +146,7 @@
 		</c:when>
 		<c:otherwise>
 			<section class="ddpp-oas NOMOBWEB">
-			  <div class="oas-cnt PPSuperBuy" id="oas_b_PPSuperBuy">
+			  <div class="oas-cnt PPSuperBuy" id="oas_PPSuperBuy">
 			    <script type="text/javascript">
 			        OAS_AD('PPSuperBuy');
 			    </script>
@@ -173,7 +173,7 @@
 
   <tmpl:put name='content' direct='true'>
     <div id="searchPanel" role="tabpanel" tabindex="0">
-	    <div class="oas-cnt PPSearchContent" id="oas_b_PPSearchContent">
+	    <div class="oas-cnt PPSearchContent" id="oas_PPSearchContent">
 	     <script type="text/javascript">
 	       OAS_AD('PPSearchContent');
 	     </script>
@@ -187,19 +187,19 @@
 	      </c:if>
 	    </div>
 	     --%>
-	
+
 		<c:choose>
 			<c:when test="${browsePotato.searchParams.pageType != ''}">
 				<div id="sorter">
 		     		 <soy:render template="browse.sortBar" data="${browsePotato.sortOptions}" />
 		    	</div>
-			</c:when> 
+			</c:when>
 		</c:choose>
-	
+
 	    <div class="browse-filtertags">
 	      <soy:render template="browse.filterTags" data="${browsePotato.filterLabels}" />
 	    </div>
-	   
+
 		<div class="isHookLogic-false">
 		    <c:choose>
 		      <c:when test="${browsePotato.searchParams.pageType == 'SEARCH'}">
@@ -210,40 +210,40 @@
 		        <div class="srch-carousel">
 		          <soy:render template="srch.carouselWrapper" data="${browsePotato.carousels}" />
 		        </div>
-		        
+
 		        <div class="browse-sections-bottom transactional">
 		          <soy:render template="srch.bottomContent" data="${browsePotato.sections}" />
 		        </div>
 		        <% } %>
 		      </c:when>
-		      <c:otherwise>        		
+		      <c:otherwise>
 	           <c:choose>
 	     		 <c:when test="${browsePotato.searchParams.pageType == 'STAFF_PICKS'}">
 	          		<div class="browse-sections transactional"><%-- this does the main prod grid --%>
-					<soy:render template="srch.staffPicksContent" data="${browsePotato.assortProducts}"/> 
+					<soy:render template="srch.staffPicksContent" data="${browsePotato.assortProducts}"/>
         			</div>
-        		</c:when>       	
+        		</c:when>
 	        	<c:otherwise>
 	        		<div class="browse-sections transactional"><%-- this does the main prod grid --%>
 	        		<soy:render template="browse.content" data="${browsePotato.sections}" />
 	        		</div>
-	        	</c:otherwise>	
-	        	</c:choose>	
+	        	</c:otherwise>
+	        	</c:choose>
 		      </c:otherwise>
 		    </c:choose>
 	    </div>
-	
+
 	    <div class="pager-holder bottom">
 	      <c:if test="${not empty browsePotato.pager}">
 	        <soy:render template="browse.pager" data="${browsePotato.pager}" />
 	      </c:if>
 	    </div>
-	    
+
 	    <script>
 	      window.FreshDirect = window.FreshDirect || {};
 	      window.FreshDirect.browse = window.FreshDirect.browse || {};
 	      window.FreshDirect.globalnav = window.FreshDirect.globalnav || {};
-	
+
 	      window.FreshDirect.browse.data = <fd:ToJSON object="${browsePotato}" noHeaders="true"/>
 	      window.FreshDirect.globalnav.data = <fd:ToJSON object="${globalnav}" noHeaders="true"/>
 	      window.FreshDirect.coremetricsData = window.FreshDirect.browse.data.coremetrics;
@@ -266,7 +266,7 @@
     		<fd:CmPageView wrapIntoScriptTag="true" searchTerm="${browsePotato.searchParams.searchParams}" searchResultsSize="${browsePotato.searchParams.tabs[0].hits}" suggestedTerm="${browsePotato.searchParams.searchTerm}" recipeSearchResultsSize="${browsePotato.searchParams.tabs[1].hits}"/>
 		</c:otherwise>
     </c:choose>
-   
+
     <div class="ddpp-bottom">
             <hr class="ddpp-hr top" />
             <table class="ddppBotAds">
@@ -278,21 +278,21 @@
                 	<c:when test="${browsePotato.searchParams.pageType == 'STAFF_PICKS'}">
 		                <tr>
 		                    <td align="center">
-		                        <div class="oas-cnt SPBottom1" id="oas_b_SPBottom1">
+		                        <div class="oas-cnt SPBottom1" id="oas_SPBottom1">
 		                            <script type="text/javascript">
 		                                    OAS_AD('SPBottom1');
 		                            </script>
 		                        </div>
 		                    </td>
 		                    <td align="center" class="">
-		                        <div class="oas-cnt SPBottom2" id="oas_b_SPBottom2">
+		                        <div class="oas-cnt SPBottom2" id="oas_SPBottom2">
 		                            <script type="text/javascript">
 		                                    OAS_AD('SPBottom2');
 		                            </script>
 		                        </div>
 		                    </td>
 		                    <td align="center">
-		                        <div class="oas-cnt SPBottom3" id="oas_b_SPBottom3">
+		                        <div class="oas-cnt SPBottom3" id="oas_SPBottom3">
 		                            <script type="text/javascript">
 		                                    OAS_AD('SPBottom3');
 		                            </script>
@@ -303,25 +303,25 @@
 	    			<c:otherwise>
 		                <tr>
 		                    <td align="center">
-		                        <div class="oas-cnt PPLeftBottom" id="oas_b_PPLeftBottom">
-		                            <script type="text/javascript">
-		                                    OAS_AD('PPLeftBottom');
-		                            </script>
-		                        </div>
+                          <div class="oas-cnt PPLeftBottom" id="oas_PPLeftBottom">
+                            <script type='text/javascript'>
+                               OAS_AD('PPLeftBottom');
+                            </script>
+                          </div>
 		                    </td>
 		                    <td align="center" class="ddppBotAd-sep">
-		                        <div class="oas-cnt PPMidBottom" id="oas_b_PPMidBottom">
-		                            <script type="text/javascript">
-		                                    OAS_AD('PPMidBottom');
-		                            </script>
-		                        </div>
+		                        <div class="oas-cnt PPMidBottom" id="oas_PPMidBottom">
+                              <script type='text/javascript'>
+                                 OAS_AD('PPMidBottom');
+                              </script>
+                            </div>
 		                    </td>
 		                    <td align="center">
-		                        <div class="oas-cnt PPRightBottom" id="oas_b_PPRightBottom">
-		                            <script type="text/javascript">
-		                                    OAS_AD('PPRightBottom');
-		                            </script>
-		                        </div>
+		                        <div class="oas-cnt PPRightBottom" id="oas_PPRightBottom" ad-size-width='186' ad-size-height='216'>
+                              <script type='text/javascript'>
+                                 OAS_AD('PPRightBottom');
+                              </script>
+                            </div>
 		                    </td>
 		                </tr>
 	    			</c:otherwise>
@@ -334,7 +334,7 @@
             </center>
     </div>
   </tmpl:put>
-  
+
 <% if (mobWeb) { %>
   <tmpl:put name="jsmodules">
     <%@ include file="/common/template/includes/i_jsmodules.jspf" %>

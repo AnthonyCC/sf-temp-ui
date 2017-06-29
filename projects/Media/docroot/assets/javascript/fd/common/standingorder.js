@@ -219,17 +219,13 @@ function getStandingOrderData(ids, action){
         success: function(data){
         	if('deliveryBegins'==action){
         		if(data.lastError=="MINORDER"){
-        			$jq('#customizePopup .so-review-date').text('Order Minimum Not Met');
+        			$jq('#customizePopup .so-review-date').text('Order Minimum Not Met').addClass('so-review-date-red');
         			$jq('#customizePopup .so-review-min-details').addClass('show');
         		} else{
         			$jq('#customizePopup .so-review-date').text(ids[2] + ', ' + ids[3]);
         			$jq('#customizePopup .so-review-selected').addClass('show');
         		}
-        		if(!data.activated){
-        			$jq('#customizePopup .so-listadd-content .cssbutton[data-component="addToSOButton"]').addClass('show').text('Add Item');
-        		} else{
-        			$jq('#customizePopup .so-listadd-content .cssbutton[data-component="addToSOButton"]').addClass('show');
-        		}
+        		$jq('#customizePopup .so-listadd-content .cssbutton[data-component="addToSOButton"]').addClass('show');
         	}
         }
  	});

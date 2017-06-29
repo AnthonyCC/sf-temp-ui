@@ -2,14 +2,13 @@ package com.freshdirect.webapp.ajax.browse.data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.webapp.ajax.analytics.data.GoogleAnalyticsData;
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 
@@ -448,6 +447,7 @@ public class BrowseData implements Serializable {
 		private List<ProductData> products = new ArrayList<ProductData>();
 		private String pageBeacon = null;
 		private int hlProductsCount;
+		private String hlEmptyProductsPagebeacon;
 		
 		
 		
@@ -456,6 +456,8 @@ public class BrowseData implements Serializable {
 		private Map<String, String> hlSelectionsPageBeacons = new HashMap<String, String>();
 		
 		private Map<String, Integer> hlCatProductsCount = new HashMap<String, Integer>();
+		
+		private Map<String, String> hlSelectionsEmptyProductsPageBeacons = new HashMap<String, String>();
 		
 		public Map<String, List<ProductData>> getHlSelectionOfProductList() {
 			return hlSelectionOfProductList;
@@ -506,6 +508,24 @@ public class BrowseData implements Serializable {
 		public void setHlCatProductsCount(Map<String, Integer> hlCatProductsCount) {
 			this.hlCatProductsCount = hlCatProductsCount;
 		}
+
+		public String getHlEmptyProductsPagebeacon() {
+			return hlEmptyProductsPagebeacon;
+		}
+
+		public void setHlEmptyProductsPagebeacon(String hlEmptyProductsPagebeacon) {
+			this.hlEmptyProductsPagebeacon = hlEmptyProductsPagebeacon;
+		}
+
+		public Map<String, String> getHlSelectionsEmptyProductsPageBeacons() {
+			return hlSelectionsEmptyProductsPageBeacons;
+		}
+
+		public void setHlSelectionsEmptyProductsPageBeacons(
+				Map<String, String> hlSelectionsEmptyProductsPageBeacons) {
+			this.hlSelectionsEmptyProductsPageBeacons = hlSelectionsEmptyProductsPageBeacons;
+		}
+
 	}
 		
 	public static class SearchParams implements Serializable {
@@ -650,6 +670,8 @@ public class BrowseData implements Serializable {
 	private AssortProducts assortProducts = new AssortProducts();
 	private HLBrandAdProducts adProducts = new HLBrandAdProducts();
     private String topMedia;
+
+    private GoogleAnalyticsData googleAnalyticsData;
 	
 	public PagerData getPager() {
 		return pager;
@@ -708,5 +730,13 @@ public class BrowseData implements Serializable {
 	public void setAdProducts(HLBrandAdProducts adProducts) {
 		this.adProducts = adProducts;
 	}
+
+    public GoogleAnalyticsData getGoogleAnalyticsData() {
+        return googleAnalyticsData;
+    }
+
+    public void setGoogleAnalyticsData(GoogleAnalyticsData googleAnalyticsData) {
+        this.googleAnalyticsData = googleAnalyticsData;
+    }
 
 }

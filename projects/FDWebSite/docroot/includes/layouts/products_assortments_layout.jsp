@@ -26,23 +26,23 @@
 <%
 
 	// Query string
-	QueryParameterCollection qv = QueryParameterCollection.decode(request.getQueryString()); 
+	QueryParameterCollection qv = QueryParameterCollection.decode(request.getQueryString());
 	String ppId = NVL.apply(request.getParameter("ppId"), "");
 	String isPreviewMode = NVL.apply(request.getParameter("ppPreviewId"), "false");
 	boolean disableLinks = false;
-	
+
 	if (!"false".equalsIgnoreCase(isPreviewMode)) {
 		/* manipulate layout for preview mode */
-		
+
 		//disable linking
 		disableLinks = true;
-		
+
 	%>
 <fd:CheckLoginStatus/><% } else { %>
 	<fd:CheckLoginStatus   />
 	<% }
-	
-	if (FDStoreProperties.isCclAjaxDebugClient()) { 
+
+	if (FDStoreProperties.isCclAjaxDebugClient()) {
 		// debug JS libs
 		%>
 		<script type="text/javascript" src="/assets/javascript/rounded_corners.inc.js"></script>
@@ -65,12 +65,12 @@
 	ConfigurationContext confContext = new ConfigurationContext();
 	confContext.setFDUser(user);
 	ConfigurationStrategy confStrat = new DefaultProductConfigurationStrategy();
-	
+
 	String successPage = request.getRequestURI()+(request.getQueryString() == null ? "" : "?" + request.getQueryString());
-	
+
 	String catId = NVL.apply(request.getParameter("catId"), ""); //category id
 	//String ppId = request.getParameter("pp_id");
-	
+
 	String TX_FORM_NAME        = catId+"_form"; // impression form name
 	String TX_JS_NAMESPACE     = catId+"_JSnamespace"; // impression javascript namespace
 
@@ -79,7 +79,7 @@
 
 	DecimalFormat df = new DecimalFormat("0");
 	QueryStringBuilder queryString = new QueryStringBuilder();
-	
+
 	String view = NVL.apply(request.getParameter("view"), "grid"); //switch view param, if not "list", then use default ("grid")
 		if ("".equals(view)) { view = "grid"; }
 	String sort = NVL.apply(request.getParameter("sort"), "ourFaves"); //switch sort param, if not "price", "priceDesc" or "dept", then use default ("ourFaves")
@@ -88,12 +88,12 @@
 		if ("".equals(order)) { order = "asc"; }
 	String trkCode =  NVL.apply(request.getParameter("trkCode"), "ddpa");
 		if ("".equals(trkCode)) { trkCode = "ddpa"; }
-		
+
 	boolean isFeatProd = true;
 	int tempCounter = 0;
 	int seqDDPP = 0;
 	String trk = "ddpa";
-	
+
 	Set hideBursts = new HashSet();
 		hideBursts.add(EnumBurstType.DEAL);
 		hideBursts.add(EnumBurstType.YOUR_FAVE);
@@ -102,7 +102,7 @@
 
 	String checkHtml = "<img src=\"/media/images/buttons/checkmark_green_15x10.png\" alt=\"\" />"; //escape single quotes in here
 	List<ProductModel> globalUniqueProducts = new ArrayList<ProductModel>();
-	
+
 	/* fix action url so tracking params aren't duplicated */
 /*
 	Map<String, String[]> reqMap = request.getParameterMap();
@@ -121,7 +121,7 @@
 */
 	String sp = request.getQueryString();
 	String pairs[] = sp.replace("?", "&").split("&");
-	
+
 	for (String pair : pairs) {
 		 String name = null;
 		 String value = null;
@@ -149,10 +149,10 @@
 
 	Map<String, List<ProductModel>> promoProducts = new HashMap<String, List<ProductModel>>();
 	List<ProductModel> promotionProducts = new ArrayList<ProductModel>();
-	
+
 	String ppPreviewId = request.getParameter("ppPreviewId");
 	boolean isPpPreview = (null ==((com.freshdirect.fdstore.content.CategoryModel)currentFolder).getProductPromotionType()|| null==ppPreviewId)?false:true;
-	
+
 	if(isPpPreview){
 		promotionProducts = ((com.freshdirect.fdstore.content.CategoryModel)currentFolder).getPromotionPageProductsForPreview(ppPreviewId);
 	}/* else if("".equals(ppId)){
@@ -160,16 +160,16 @@
 	}  */else{
 		promotionProducts = ((com.freshdirect.fdstore.content.CategoryModel)currentFolder).getAssortmentPromotionPageProducts(ppId);
 	}
-	
+
 	List<ProductModel> featProds = ProductPromotionUtil.getFeaturedProducts(promotionProducts,isPpPreview);
 	List<ProductModel> nonfeatProds = new ArrayList<ProductModel>();
-	
+
 	//get sorted list by sort type
 	if (SearchSortType.BY_PRICE.getLabel().equalsIgnoreCase(sort)) {
 		if("asc".equalsIgnoreCase(order)) {
-			nonfeatProds = ProductPromotionUtil.getNonFeaturedProducts(promotionProducts,ProductPromotionData.SORT_BY_PRICE_VIEW,isPpPreview);			
+			nonfeatProds = ProductPromotionUtil.getNonFeaturedProducts(promotionProducts,ProductPromotionData.SORT_BY_PRICE_VIEW,isPpPreview);
 		} else {
-			nonfeatProds = ProductPromotionUtil.getNonFeaturedProducts(promotionProducts,ProductPromotionData.SORT_BY_PRICE_VIEW_INVERSE,isPpPreview);			
+			nonfeatProds = ProductPromotionUtil.getNonFeaturedProducts(promotionProducts,ProductPromotionData.SORT_BY_PRICE_VIEW_INVERSE,isPpPreview);
 		}
 	} else if (SearchSortType.BY_DEPARTMENT.getLabel().equalsIgnoreCase(sort)) {
 		nonfeatProds = ProductPromotionUtil.getNonFeaturedProducts(promotionProducts,ProductPromotionData.SORT_BY_DEPT_VIEW,isPpPreview);
@@ -177,10 +177,10 @@
 		nonfeatProds = ProductPromotionUtil.getNonFeaturedProducts(promotionProducts,isPpPreview);
 	}
 	if ((null !=promotionProducts && !promotionProducts.isEmpty())) {
- 
+
 		//make products unique on page (promo products should be coming back unique from SAP, but we need this for the BND rows)
 		globalUniqueProducts.addAll(promotionProducts);
-		
+
 		%>
 		<script type="text/javascript">
 			<%--
@@ -190,10 +190,10 @@
 				return function() {
 					var elementId= prdId+'_'+FD_QuickBuy._randomId(16), oStyle;
 					var ctPanel = new YAHOO.widget.Panel(elementId, {
-						fixedcenter: true, 
-						constraintoviewport: true, 
-						underlay: "matte", 
-						close: true, 
+						fixedcenter: true,
+						constraintoviewport: true,
+						underlay: "matte",
+						close: true,
 						visible: false,
 						modal: true,
 						monitorresize: true,
@@ -201,16 +201,16 @@
 						zIndex: '10'
 					});
 					var isWineDept = ("<%= JspMethods.getWineAssociateId().toLowerCase() %>" == deptId);
-					
+
 					if(isWineDept) {
 						oStyle={
 							closeButton:'container-close_wine',
 							header:'hd_bg_wine'
 						};
 					} else {
-						oStyle=FD_QuickBuy.style;			
+						oStyle=FD_QuickBuy.style;
 					}
-					
+
 					ctPanel.setHeader( "&nbsp;" );
 
 					var winTitle = document.title.substring(14);
@@ -226,12 +226,12 @@
 					// include various codes for tracking purposes
 					uri = FD_QuickBuy._includeTrackingCodes(uri, tracking);
 					uri += '&amp;trkd=qb';
-					
+
 					// store master page URL and title for back-reference
 					uri += '&amp;refTitle='+encodeURIComponent(winTitle)+'&amp;referer='+encodeURIComponent(window.location.href);
 
 					var content = "";
-					
+
 					if (iatcNamespace)
 						uri += '&amp;iatcNamespace='+escape(iatcNamespace);
 					content += '<div id="'+elementId+'_ctnt">\n';
@@ -239,29 +239,29 @@
 					content += '    <div id="'+elementId+'_nfeat" class="nfeat roundedbox"></div>\n';
 					content += '    <div id="'+elementId+'_errors" class="alerts roundedbox"></div>\n';
 					content += '  </div>\n';
-					content += '<div class="quickbuy-loading">Loading product...</div>\n';		
+					content += '<div class="quickbuy-loading">Loading product...</div>\n';
 					content += '<iframe id="'+elementId+'_frame" frameborder="0" src="'+uri+'" class="prodframe" style="height:1px"></iframe>';
 					content += '</div>\n';
-					
+
 					ctPanel.setBody( content );
-					
+
 					ctPanel.render(document.body);
-					
+
 					// override .yui-panel hidden setting
 					YAHOO.util.Dom.get(elementId).style.overflow = "visible";
 
 					YAHOO.util.Dom.addClass(elementId+'_c','quickbuy-dialog');
-					
+
 					YAHOO.util.Dom.addClass( ctPanel.header, oStyle.header );
 					YAHOO.util.Dom.addClass( FD_QuickBuy._getCloseButton(ctPanel.body), oStyle.closeButton );
-					
-					
+
+
 					ctPanel.hideEvent.subscribe(function(e){
 						YAHOO.util.Dom.get(elementId+'_overbox').style.visibility = "hidden";
 
 						setTimeout(function() {
 							ctPanel.destroy();
-							if (document.quickbuyPanel) { document.quickbuyPanel = {}; } 
+							if (document.quickbuyPanel) { document.quickbuyPanel = {}; }
 						}, 0);
 						/* on panel close, it's either ATC or a simple close */
 						var statusElem = $jq('#'+iatcNamespace);
@@ -314,7 +314,7 @@
 							}
 						}
 					});
-					
+
 					document.quickbuyPanel = ctPanel;
 
 					// show panel
@@ -390,25 +390,25 @@
 				header:'quickbuy-noheader'
 		};
 		</script>
-		
+
 		<div class="ddpp clearfix">
 			<div class="socialMedia">
 				<iframe src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.freshdirect.com%2F&amp;send=false&amp;layout=button_count&amp;width=150&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font=tahoma&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width: 100px; height:21px;" allowTransparency="true"></iframe>
 				<a href="//twitter.com/share" class="twitter-share-button" data-count="horizontal">Tweet</a><script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
 			</div>
-			
-			<div class="PPHeader">
+
+			<div class="PPHeader" id='oas_PPHeader'>
 				<script type="text/javascript">
 						OAS_AD('PPHeader');
 				</script>
 			</div>
-			
-			<div class="PPHeader2">
+
+			<div class="PPHeader2" id='oas_PPHeader2'>
 				<script type="text/javascript">
 						OAS_AD('PPHeader2');
 				</script>
 			</div>
-			<div class="PPSuperBuy1">
+			<div class="PPSuperBuy1" id='oas_PPSuperBuy1'>
 				<script type="text/javascript">
 						OAS_AD('PPSuperBuy1');
 				</script>
@@ -422,29 +422,29 @@
 				<% //END error messaging %>
 				<div style="text-align: left;"><%-- this fixes chrome, don't remove --%>
 					<div class="grid-view" id="ddpp_feat_prod_cont">
-				
+
 					<%
 						int curLeftPos = 0;
 						isFeatProd = true;
 						String prodContStyle = "";
 					%>
-						
-						<div class="PPSuperBuy">
+
+						<div class="PPSuperBuy" id='oas_PPSuperBuy'>
 							<script type="text/javascript">
 									OAS_AD('PPSuperBuy1');
 							</script>
 						</div>
-						<div class="PPSuperBuy">
+						<div class="PPSuperBuy" id='oas_PPSuperBuy2'>
 							<script type="text/javascript">
 									OAS_AD('PPSuperBuy2');
 							</script>
 						</div>
-						<div class="PPSuperBuy">
+						<div class="PPSuperBuy" id='oas_PPSuperBuy3'>
 							<script type="text/javascript">
 									OAS_AD('PPSuperBuy3');
 							</script>
 						</div>
-						<div class="PPSuperBuy">
+						<div class="PPSuperBuy" id='oas_PPSuperBuy4'>
 							<script type="text/javascript">
 									OAS_AD('PPSuperBuy4');
 							</script>
@@ -457,16 +457,16 @@
 <!--[if lt IE 7]><div class="ie ie6"><![endif]-->
 <!--[if IE 7]><div class="ie ie7"> <![endif]-->
 <!--[if IE 8]><div class="ie ie8"> <![endif]-->
-<!--[if gt IE 8]><!--><div><!--<![endif]-->		
-		
+<!--[if gt IE 8]><!--><div><!--<![endif]-->
+
 <%		QueryParameterCollection qc = QueryParameterCollection.decode(request.getQueryString());
 		String uri = request.getRequestURI();
 %>
 	<fd:CmElement wrapIntoScriptTag="true" elementCategory="president_picks_sort" queryParamCollection="<%= qc %>" />
-	
-			
+
+
 			<div class="product-grid <%= qc.getParameterValue("view","grid")+"-view" %>">
-				<%	
+				<%
 				String erpCat ="";
 				boolean isFirst = true;
 					for (Iterator<ProductModel> it=nonfeatProds.iterator() ; it.hasNext();) {
@@ -477,23 +477,23 @@
 						if(null!=erpCat &&!erpCat.equalsIgnoreCase(pa.getErpCategory())){
 							newCat = true;
 							erpCat = pa.getErpCategory();
-							if(!isFirst){								
+							if(!isFirst){
 						%>
 						</div><br>
 						<% } %>
 							<% if(null !=erpCat && !"".equals(erpCat)){ %><div class="grid-item-saving ddpa_erpCat"><div class="ddpa_erpCat_Center"><%=pa.getErpCategory() %></div></div><%} %>
 							<div class="items"><% if(isFirst){ isFirst =false; } } %>
-							<div class="grid-item-container"><% if(disableLinks) { %><%@ 
-							include file="/includes/product/i_product_box_preview.jspf" %><% 
-						} else { %><%@ 
-							include file="/includes/product/i_product_box.jspf" %><% 
+							<div class="grid-item-container"><% if(disableLinks) { %><%@
+							include file="/includes/product/i_product_box_preview.jspf" %><%
+						} else { %><%@
+							include file="/includes/product/i_product_box.jspf" %><%
 						} %></div>
-							
+
 						<%}
 					if(!isFirst){
 				%></div><br><% } %><div class="clear"></div>
-				
-			
+
+
 		</div>
 		<%
 	}
@@ -514,7 +514,7 @@
 <%@ include file="/includes/layouts/i_featured_products_external.jspf" %>
 
 <fd:Department id='tempDepartment' departmentId='fro'/>
-<%	
+<%
 	featExtDept = (DepartmentModel) tempDepartment;
 	featExtIdPrefix = "ddpp_BND"+tempDepartment;
 	featExtTrackCode = "ddpp_BND"+tempDepartment;
@@ -538,7 +538,7 @@
 	</tr>
 	<tr>
 		<td align="center">
-			<div class="PPLeftBottom">
+			<div class="PPLeftBottom" id='oas_PPLeftBottom'>
 				<script type="text/javascript">
 						OAS_AD('PPLeftBottom');
 				</script>
@@ -548,7 +548,7 @@
 			<!-- sep -->
 		</td>
 		<td align="center">
-			<div class="PPMidBottom">
+			<div class="PPMidBottom" id='oas_PPMidBottom'>
 				<script type="text/javascript">
 						OAS_AD('PPMidBottom');
 				</script>
@@ -558,7 +558,7 @@
 			<!-- sep -->
 		</td>
 		<td align="center">
-			<div class="PPRightBottom">
+			<div class="PPRightBottom" id='oas_PPRightBottom'>
 				<script type="text/javascript">
 						OAS_AD('PPRightBottom');
 				</script>
@@ -570,7 +570,7 @@
 	CategoryModel cat = (CategoryModel)currentFolder;
 	if (cat.getBottomMedia() != null) {
 		String deptBotItm = null;
-		
+
 		for(Iterator<Html> deptBotItr = cat.getBottomMedia().iterator(); deptBotItr.hasNext();) {
 			Html piece = deptBotItr.next();
 			if (piece != null) {

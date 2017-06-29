@@ -62,8 +62,10 @@ import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
+import com.freshdirect.webapp.ajax.analytics.service.GoogleAnalyticsDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.BillingReferenceInfo;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData;
@@ -75,19 +77,19 @@ import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartSubTotalFieldDa
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.ItemCount;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.ModifyCartData;
 import com.freshdirect.webapp.ajax.expresscheckout.csr.service.CustomerServiceRepresentativeService;
-import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataResponse;
-import com.freshdirect.webapp.ajax.expresscheckout.data.SubmitForm;
 import com.freshdirect.webapp.ajax.expresscheckout.gogreen.service.GoGreenService;
 import com.freshdirect.webapp.ajax.expresscheckout.service.FDCartModelService;
-import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationResult;
 import com.freshdirect.webapp.ajax.holidaymealbundle.service.HolidayMealBundleService;
 import com.freshdirect.webapp.ajax.mealkit.service.MealkitService;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
+import com.freshdirect.webapp.ajax.reorder.service.QuickShopCarouselService;
+import com.freshdirect.webapp.ajax.viewcart.service.CheckoutCarouselService;
 import com.freshdirect.webapp.ajax.viewcart.service.ViewCartCarouselService;
 import com.freshdirect.webapp.taglib.callcenter.ComplaintUtil;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.util.JspMethods;
@@ -167,6 +169,8 @@ public class CartDataService {
         synchronized (order) {
             populateOrderData(user, request, userId, order, cartData);
         }
+        GoogleAnalyticsDataService.defaultService().populateCheckoutSuccessGAData(cartData, order, request.getSession());
+
         return cartData;
     }
 
@@ -186,34 +190,31 @@ public class CartDataService {
                     StandingOrderHelper.clearSO3ErrorDetails(user.getCurrentStandingOrder(), new String[] { "MINORDER", "TIMESLOT_MINORDER" });
                 }
                 FDStandingOrdersManager.getInstance().manageStandingOrder(info, cart, user.getCurrentStandingOrder(), null);
+                user.setRefreshSO3(true);
             }
         }
         return cartData;
     }
 
-    public FormDataResponse validateOrderMinimumOnStartCheckout(FDUserI user, FormDataRequest request) throws FDResourceException {
-        FormDataResponse result = createStartCheckoutResponseData(request);
+    public void validateCarouselData(HttpServletRequest request, FDUserI user, FormDataResponse response) throws FDResourceException {
+        if (!response.getSubmitForm().isSuccess()) {
+            SessionInput input = QuickShopCarouselService.defaultService().createSessionInput(user, request);
+            input.setError(true);
+            response.getSubmitForm().getResult().put("carouselData",
+                    ViewCartCarouselService.getDefaultService().populateViewCartTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));
+        }
+    }
+    
+    public void validateOrderMinimumOnStartCheckout(FDUserI user, FormDataResponse response) throws FDResourceException {
         String orderMinimumWarningMessageKey = AvailabilityService.defaultService().selectWarningType(user);
         if (orderMinimumWarningMessageKey != null) {
             Map<String, Object> headerMessageMap = new HashMap<String, Object>();
             headerMessageMap.put(WARNING_MESSAGE_JSON_KEY, AvailabilityService.defaultService().translateWarningMessage(orderMinimumWarningMessageKey, user));
-            result.getSubmitForm().getResult().put(VIEW_CART_HEADER_MESSAGE_JSON_KEY, headerMessageMap);
+            response.getSubmitForm().getResult().put(VIEW_CART_HEADER_MESSAGE_JSON_KEY, headerMessageMap);
+            response.getSubmitForm().setSuccess(false);
         } else {
-            result.getSubmitForm().getResult().put(REDIRECT_URL_JSON_KEY, "/expressco/checkout.jsp");
-            result.getSubmitForm().setSuccess(true);
+            response.getSubmitForm().getResult().put(REDIRECT_URL_JSON_KEY, "/expressco/checkout.jsp");
         }
-        return result;
-    }
-
-    private FormDataResponse createStartCheckoutResponseData(FormDataRequest requestData) {
-        FormDataResponse responseData = new FormDataResponse();
-        SubmitForm submitForm = new SubmitForm();
-        submitForm.setFormId(requestData.getFormId());
-        responseData.setFormSubmit(submitForm);
-        ValidationResult validationResult = new ValidationResult();
-        validationResult.setFdform(requestData.getFormId());
-        responseData.setValidationResult(validationResult);
-        return responseData;
     }
 
     private CartData.Quantity cartLineSoldByQuantity(FDCartLineI cartLine, ProductModel productNode, FDUserI user, CartData.Item item) {
@@ -579,11 +580,13 @@ public class CartDataService {
                 cartData.setDeliveryBegins(StandingOrderHelper.getDeliveryBeginsInfo(user));
             }
 
-            // APPDEV-5516 If the property is true, set the Donation Carousel to Cart Data, else fall back to Product Sample Carousel
-            if (FDStoreProperties.isPropDonationProductSamplesEnabled()) {
-                cartData.setProductSamplesTab(ViewCartCarouselService.defaultService().populateViewCartPageDonationProductSampleCarousel(request));
+            CartRequestData reqData = BaseJsonServlet.parseRequestData(request, CartRequestData.class, true);
+            SessionInput input = QuickShopCarouselService.defaultService().createSessionInput(user, request);
+            if (reqData != null && reqData.getPage() != null && reqData.getPage().contains("checkout")) {
+                cartData.setCarouselData(CheckoutCarouselService.getDefaultService().populateViewCartTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));
             } else {
-                cartData.setProductSamplesTab(ViewCartCarouselService.defaultService().populateViewCartPageProductSampleCarousel(request));
+                cartData.setCarouselData(
+                        ViewCartCarouselService.getDefaultService().populateViewCartTabsRecommendationsAndCarouselSampleCarousel(request, (FDSessionUser) user, input));
             }
             cartData.setCustomerServiceRepresentative(CustomerServiceRepresentativeService.defaultService().loadCustomerServiceRepresentativeInfo(user));
             cartData.setAvalaraEnabled(FDStoreProperties.getAvalaraTaxEnabled());
@@ -602,6 +605,9 @@ public class CartDataService {
             if (StandingOrderHelper.isSO3StandingOrder(user)) {
                 cartData.setUserCorporate(true);
             }
+
+            cartData.setGoogleAnalyticsData(GoogleAnalyticsDataService.defaultService().populateCheckoutGAData(cart));
+
         } catch (Exception e) {
             LOG.error("Error while processing cart for user " + userId, e);
             BaseJsonServlet.returnHttpError(500, "Error while processing cart for user " + userId, e);

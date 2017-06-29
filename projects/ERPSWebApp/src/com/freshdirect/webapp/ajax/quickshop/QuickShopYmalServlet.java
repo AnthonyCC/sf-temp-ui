@@ -3,7 +3,6 @@ package com.freshdirect.webapp.ajax.quickshop;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -36,12 +35,15 @@ import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
+import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.smartstore.CarouselItemType;
 import com.freshdirect.smartstore.fdstore.FactorUtil;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.smartstore.scoring.HelperFunctions;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
+import com.freshdirect.webapp.ajax.RecommenderServlet;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.recommendation.RecommendationRequestObject;
 import com.freshdirect.webapp.taglib.fdstore.GetPeakProduceTag;
@@ -128,16 +130,12 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 				items = doRecommend( user, session, getSiteFeature(siteFeature), maxItems, listContent, null );
 			}
 							
-			Map<String,Object> result = new HashMap<String,Object>();
 			
 			if ( items.isEmpty() ) {
 				writeResponseData(response, "No recommendations found.");
 			}else{
-				Map<String,Object> recommenderResult = new HashMap<String,Object>();
-				recommenderResult.put("items", items);
-				recommenderResult.put("siteFeature",requestData.getFeature());
-				if ( title != null ) recommenderResult.put("title",title);
-				result.put("recommenderResult", recommenderResult);
+                Map<String, Object> result = RecommenderServlet.createRecommenderResult(siteFeature, CarouselItemType.GRID.getType(), title, items,
+                        EnumEventSource.CC_YMAL.getName());
 				writeResponseData(response, result);				
 			}
 		} catch (FDResourceException e) {

@@ -23,7 +23,7 @@
 <fd:BrowsePartialRolloutRedirector user="<%=user%>" id="${param.id}"/>
 
 <%--Might be useless
- <potato:globalnav/> --%> 
+ <potato:globalnav/> --%>
 <potato:browse/>
 
 <%-- OAS variables --%>
@@ -37,7 +37,7 @@ if (mobWeb) {
 	template = "/common/template/mobileWeb.jsp"; //mobWeb template
 	String oasSitePage = request.getAttribute("sitePage").toString();
 	if (oasSitePage.startsWith("www.freshdirect.com/") && !oasSitePage.startsWith("www.freshdirect.com/mobileweb/")) {
-		request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS	
+		request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS
 	}
 }
 %>
@@ -60,8 +60,7 @@ if (mobWeb) {
   
   <c:if test="${not empty browsePotato.descriptiveContent.pageTitle}">
   <tmpl:put name='title'>${browsePotato.descriptiveContent.pageTitle}</tmpl:put>
-  </c:if>
-  
+
   <tmpl:put name="seoMetaTag" direct="true">
 		<fd:SEOMetaTag title="${browsePotato.descriptiveContent.pageTitle}" metaDescription="${browsePotato.descriptiveContent.metaDescription}"></fd:SEOMetaTag>
 	</tmpl:put>
@@ -89,10 +88,10 @@ if (mobWeb) {
     </div>
 
 	<div class="browse-oas-top">
-	    <div class="oas-cnt" id="oas_b_CategoryNote"><script type="text/javascript">OAS_AD('CategoryNote');</script></div>
-	    <div class="oas-cnt" id="oas_b_BrowseTop1"><script type="text/javascript">OAS_AD('BrowseTop1');</script></div>
-	    <div class="oas-cnt left" id="oas_b_BrowseTop2"><script type="text/javascript">OAS_AD('BrowseTop2');</script></div>
-	    <div class="oas-cnt right" id="oas_b_BrowseTop3"><script type="text/javascript">OAS_AD('BrowseTop3');</script></div>
+	    <div class="oas-cnt" id="oas_CategoryNote"><script type="text/javascript">OAS_AD('CategoryNote');</script></div>
+	    <div class="oas-cnt" id="oas_BrowseTop1"><script type="text/javascript">OAS_AD('BrowseTop1');</script></div>
+	    <div class="oas-cnt left" id="oas_BrowseTop2"><script type="text/javascript">OAS_AD('BrowseTop2');</script></div>
+	    <div class="oas-cnt right" id="oas_BrowseTop3"><script type="text/javascript">OAS_AD('BrowseTop3');</script></div>
    	</div>
 
     <div class="browse-media-top">
@@ -117,11 +116,11 @@ if (mobWeb) {
     <div class="browse-media-middle">
       <soy:render template="browse.middleMedia" data="${browsePotato.descriptiveContent}" />
     </div>
-    
+
     <div class="pagetype-header">
       <soy:render template="srch.header" data="${browsePotato.searchParams}" />
     </div>
-    
+
     <div class="browse-superdepartment">
       <soy:render template="browse.superDepartment" data="${browsePotato.sections}" />
     </div>
@@ -129,9 +128,9 @@ if (mobWeb) {
     <div class="browse-sections transactional">
       <soy:render template="browse.content" data="${browsePotato.sections}" />
     </div>
-    
-    <div class="oas-cnt left" id="oas_b_BrowseBottom1"><script type="text/javascript">OAS_AD('BrowseBottom1');</script></div>
-    <div class="oas-cnt right" id="oas_b_BrowseBottom2"><script type="text/javascript">OAS_AD('BrowseBottom2');</script></div>
+
+    <div class="oas-cnt left" id="oas_BrowseBottom1"><script type="text/javascript">OAS_AD('BrowseBottom1');</script></div>
+    <div class="oas-cnt right" id="oas_BrowseBottom2"><script type="text/javascript">OAS_AD('BrowseBottom2');</script></div>
 
     <div class="browse-media-bottom">
       <soy:render template="browse.bottomMedia" data="${browsePotato.descriptiveContent}" />
@@ -144,7 +143,7 @@ if (mobWeb) {
     <div class="pager-holder bottom">
       <soy:render template="browse.pager" data="${browsePotato.pager}" />
     </div>
-    
+
     <script>
       window.FreshDirect = window.FreshDirect || {};
       window.FreshDirect.browse = window.FreshDirect.browse || {};
@@ -159,7 +158,7 @@ if (mobWeb) {
     </script>
     <script type="text/javascript">
 	    $jq(document).ready(function() {
-	    	if($jq("#oas_b_BrowseTop1").height()>0 || $jq("#oas_b_BrowseTop2").height()>0 || $jq("#oas_b_BrowseTop3").height()>0){
+	    	if($jq("#oas_BrowseTop1").height()>0 || $jq("#oas_BrowseTop2").height()>0 || $jq("#oas_BrowseTop3").height()>0){
 	    		if ($jq(".browse .browse-oas-top").css("margin-bottom")!= "14px"){
 	    			$jq(".browse .browse-oas-top").css("display", "inline-block");
 	    			$jq(".browse .browse-oas-top").css("width", "100%");
@@ -168,7 +167,7 @@ if (mobWeb) {
 	    	}
 	    });
     </script>
-    
+
   </tmpl:put>
   </c:if>
 

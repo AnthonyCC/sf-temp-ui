@@ -93,10 +93,10 @@
 
 							//System.out.println("inside RAF tag - rpModel "+((rpModel != null)?rpModel.toString():"rpModel == null"));
 							//System.out.println("inside RAF tag - stlSaleID "+stlSaleID);
-							
+
 							if ((rpModel != null && stlSaleID != null
 									&& stlSaleID.length() > 0)||true) {
-								
+
 								//System.out.println(rpModel.toString());
 
 								String email_txt = rpModel.getReferralPageText();
@@ -117,22 +117,22 @@
 								//System.out.println("inside RAF tag1");
 			%>
 			<script language="javascript">
-			var curvyCornersVerbose = false; 
+			var curvyCornersVerbose = false;
 			var clip = null;
-				
+
 			$jq(document).ready(function () {
 				clip = new ZeroClipboard.Client();
 				clip.setHandCursor( true );
 				ZeroClipboard.setMoviePath( '/assets/javascript/ZeroClipboard.swf' );
-					
+
 				clip.addEventListener('mouseOver', my_mouse_over);
-				
+
 				clip.addEventListener('complete',function(client,text) {
 					document.getElementById('d_clip_button').style.backgroundcolor='pink';
 				});
-					
+
 				clip.glue( 'd_clip_button' );
-				
+
 
 				var curButton = $jq('.current:first');
 				$jq('#fbmenu a').each(function(i,e) {
@@ -141,12 +141,12 @@
 							curButton.removeClass('current');
 						}, mouseleave: function() {
 							curButton.addClass('current');
-							
+
 						}
 					});
 				});
 			});
-				
+
 			function my_mouse_over(client) {
 				// we can cheat a little here -- update the text on mouse over
 				clip.setText( '<%=request.getServerName() + "/invite/" + user.getReferralLink()%>' );
@@ -168,11 +168,11 @@
 						alt="" border="0"></td>
 				</tr>
 				<tr>
-					<td width="<%=W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL%>">
+					<td width="<%=W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL%>" id='oas_RAFBanner'>
 
 						<div style="width: 970; align: center;">
-							<script language="JavaScript">			
-							OAS_AD('RAFBanner');				
+							<script language="JavaScript">
+							OAS_AD('RAFBanner');
 						</script>
 						</div>
 					</td>
@@ -182,9 +182,13 @@
 
 						<table width="100%">
 							<tr>
-								<td width="230"><script language="JavaScript">
-									OAS_AD('RAFLeftHeader');
-								</script></td>
+								<td width="230">
+                  <div id='oas_RAFLeftHeader'>
+                    <script language="JavaScript">
+									    OAS_AD('RAFLeftHeader');
+								    </script>
+                  </div>
+                </td>
 								<td><img src="/media_stat/images/profile/arrow.jpg"
 									style="padding-right: 15px;"></td>
 								<td width="230" valign="center" align="center">
@@ -307,7 +311,7 @@
 																	class="cs_import"><img
 																		src="/media_stat/images/buttons/import_address.jpg" /></a></td>
 															</tr>
-			
+
 															<%
 																if (!valid) {
 															%>
@@ -321,7 +325,7 @@
 															<%
 																}
 															%>
-			
+
 															<tr>
 																<td colspan="3">
 																	<div id="greytext"
@@ -356,7 +360,7 @@
 																<td colspan="3">
 																	<div id="orangebutton" style="padding: 10px;">
 																		<center>
-			
+
 																			<a class="butCont butOrange" style="margin-right: 10px;"
 																				href="#" onclick="document.sendmails.submit();"> <span
 																				class="butLeft">
@@ -400,7 +404,7 @@
 														</div>
 													</div>
 													<script language="javascript">
-													 
+
 														$jq(document).ready(function() {
 															var	e =	document.createElement('script');
 															e.type = 'text/javascript';
@@ -408,25 +412,25 @@
 															e.async	= true;
 															$jq('#fb-root').append(e);
 														});
-		
+
 														var	loginPrompted =	false;
 														window.fbAsyncInit = function()	{
 															FB.init({
-																appId: '<%=FDStoreProperties.getFacebookAppKey()%>',												  
-																status:	true, 
-																cookie:	true, 
+																appId: '<%=FDStoreProperties.getFacebookAppKey()%>',
+																status:	true,
+																cookie:	true,
 																xfbml: true
 															});
-		
+
 															FB.getLoginStatus(function(response) {
-		
+
 																if (response.status	== 'connected')	{
 																	// logged in and connected user, someone you know
-																	$jq('#hide_login').hide();						
+																	$jq('#hide_login').hide();
 																	//window.alert('calling	friends');
 																	//show loading screen
 																	if ($jq('#fb_friendsListLoading')) { $jq('#fb_friendsListLoading').show(); }
-																 
+
 																	getFriends();
 																} else {
 																	//window.alert('not	logged in');
@@ -439,23 +443,23 @@
 																}
 															});
 														};
-														 
+
 														function login() {
 															FB.api('/me', function(response) {
-																$jq('#hide_login').hide().empty();						
+																$jq('#hide_login').hide().empty();
 															});
 														}
-		
+
 														function randomFromTo(from,	to){
 														   return Math.floor(Math.random() * (to - from	+ 1) + from);
 														}
-		
+
 														function getPicture(id)	{
-															FB.api('/' + id+'/picture',	function(response1)	{					
-																document.getElementById(id).src=response1;	
+															FB.api('/' + id+'/picture',	function(response1)	{
+																document.getElementById(id).src=response1;
 															});
 														}
-		
+
 														function postToFeed() {
 															// calling the API ...
 															var	obj	= {
@@ -466,15 +470,15 @@
 																caption: '<%=fb_headline%> ',
 																description: '<%=rpModel.getFbText()%> '
 															};
-		
+
 															function callback(response)	{
 															  //alert("Post	ID:	" +	response['post_id']);
 															}
-		
+
 															FB.ui(obj, callback);
 														}
-		
-														function sendFBMsg(friendId)	{												
+
+														function sendFBMsg(friendId)	{
 															FB.ui({
 																method: 'send',
 																name: '<%=fb_headline%>',
@@ -493,14 +497,14 @@
 																}
 															});
 														}
-		
+
 														var	post_on_wall_but = '<div class="fright">' +
 														'<a	href="#" onclick="postToFeed();	return false;" class="previewbut"><img src="/media_stat/images/buttons/post_on_wall.jpg" />' +
 														'</a></div>';
 														/*var	preview_but	= '<div	class="fright"><table class="butCont">'	+
 																'<tr><td class="butBlueMiddle20" valign="middle"><a	href="#fbarea" onclick="callFBUI();	return false;" class="previewbut"><img src="/media_stat/images/buttons/send_message.jpg" /></a></td></tr>' +
 																'</table></div>';*/
-						
+
 														function fbGetFriendCont(i,	friendObj) {
 															return '<table width=\"100%\">'+
 																	'<tr>'+
@@ -510,14 +514,14 @@
 																	'</tr>'+
 																'</table>';
 														}
-		
+
 														function getFriends(){
 															FB.api('/me/friends?fields=name,id', function(response)	{
 																var	friendsDiv = $jq('#friends');
 																friendsDiv.empty();
 																var	friends	= response.data;
 																if (friends.length == 0) { friendsDiv.append('You have no friends.'); return; }
-		
+
 																friendsDiv.append('<div	id="fb_wallpost" /><hr />');
 																	$jq('#fb_wallpost').html(post_on_wall_but).append('<br style="clear: right;" />');
 																friendsDiv.append('<div	id="fb_friendsList"	/>');
@@ -527,7 +531,7 @@
 																		$jq('#fb_preview').html(preview_but).append('<br style="clear: right;" />');
 																*/
 																friendsDiv.append('<hr />');
-		
+
 																$jq('#fb_friendsList').append('<table	id="fb_friendsListCont"	width="100%" cellpadding="2" />');
 																var	friendsListCont	= $jq('#fb_friendsListCont');
 																var	curRow = null;
@@ -547,11 +551,11 @@
 																	$jq(this).on('click', function (event) {
 																		event.stopPropagation();
 																		event.preventDefault();
-																		
+
 																		sendFBMsg( (this.id).split('_')[1] );
 																	});
 																});
-		
+
 															});
 														}
 														<%-- logout funtion for ref --%>
@@ -723,14 +727,14 @@
 			</table>
 
 			<!--[if lt IE 9 ]>
-<script language="javascript" type="text/javascript">	
+<script language="javascript" type="text/javascript">
 	if (!window.$) {
       window.$ = function(id) { return document.getElementById(id); }
     }
-	
+
     var myBorder = RUZEE.ShadedBorder.create({ corner:5, edges:"tlr" });
     myBorder.render('fbmenu');
-	
+
   </script>
 <![endif]-->
 		</fd:ReferAFriend>

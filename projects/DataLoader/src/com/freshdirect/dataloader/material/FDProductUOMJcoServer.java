@@ -24,6 +24,9 @@ import com.freshdirect.dataloader.sap.jco.server.param.MaterialUOMParameter;
 import com.freshdirect.dataloader.util.FDSapHelperUtils;
 import com.freshdirect.erp.EnumApprovalStatus;
 import com.freshdirect.erp.model.ErpSalesUnitModel;
+import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.sap.SapProperties;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
@@ -247,14 +250,20 @@ public class FDProductUOMJcoServer extends FdSapServer {
 				SAPLoaderSB sapLoader = home.create();
 
 				// create a new batch
-				batchNumber = sapLoader.createBatch();
-
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SAPLoaderSB)){
+					batchNumber = FDECommerceService.getInstance().createBatch();
+				}else{
+					batchNumber = sapLoader.createBatch();
+				}
 				for (final Map.Entry<String, HashSet<ErpSalesUnitModel>> productUOMEntry : salesUnitMap.entrySet()) {
 					final String matNo = productUOMEntry.getKey();
 					HashSet<ErpSalesUnitModel> salesUnits = productUOMEntry.getValue();
 					try {
-						sapLoader.loadSalesUnits(batchNumber, matNo, salesUnits);
-
+						if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SAPLoaderSB)){
+							FDECommerceService.getInstance().loadSalesUnits(batchNumber, matNo, salesUnits);
+						}else{
+							sapLoader.loadSalesUnits(batchNumber, matNo, salesUnits);
+						}
 						successCnt = successCnt + productUOMEntry.getValue().size();
 
 						LOG.info(String.format("%s product UOM(s) updated for material: " + matNo, productUOMEntry
@@ -276,7 +285,11 @@ public class FDProductUOMJcoServer extends FdSapServer {
 				}
 
 				// mark the batch status
-				sapLoader.updateBatchStatus(batchNumber, EnumApprovalStatus.NEW);
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SAPLoaderSB)){
+					FDECommerceService.getInstance().updateBatchStatus(batchNumber, EnumApprovalStatus.NEW);
+				}else{
+					sapLoader.updateBatchStatus(batchNumber, EnumApprovalStatus.NEW);
+				}
 			} catch (CreateException ce) {
 				LOG.warn("Unable to create session bean", ce);
 			} catch (NamingException ne) {

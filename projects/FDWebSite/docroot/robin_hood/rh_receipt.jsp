@@ -49,7 +49,7 @@ FDIdentity identity  = user.getIdentity();
 FDProductInfo productInfo = FDCachedFactory.getProductInfo(FDStoreProperties.getRobinHoodSkucode());
 ProductModel productModel = ContentFactory.getInstance().getProduct(FDStoreProperties.getRobinHoodSkucode());
 Integer totalQuantity = user.getDonationTotalQuantity();
-	
+
 
 String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
 %>
@@ -151,7 +151,7 @@ int idx = 0;
 			   Thank you for your donation to Robin Hood. Your gift will help feed New York City's hungry families during the holiday season.<br><br>
 				You may view this donation in <a href="<%=response.encodeURL("/your_account/order_history.jsp")%>">
 			  Your Orders.</a><br/><br/>
-				
+
 				FreshDirect and Robin Hood respect your privacy. To view or change your contact preferences (and indicate whether you'd like to receive a letter that confirms your tax-deductible gift), please <a href="#" onclick="rhContactPrefsShow(); return false;">click here</a>.</td>
 			</TR>
         </TABLE>
@@ -180,14 +180,14 @@ int idx = 0;
             <br><br>
 			<b>Credit Card</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
             <font class="space4pix"><br></font>
-            
+
             <font class="space4pix"><br></font>
 	                <%= paymentMethod.getName()%><BR>
 	                <%= paymentMethod.getCardType() %> - <%= paymentMethod.getMaskedAccountNumber() %><br>
             <BR>
-            
-            
-            
+
+
+
             <% if(EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())) {%>
 	                <b>Billing Address:</b><BR>
 	                <font class="space4pix"><br></font>
@@ -205,18 +205,18 @@ int idx = 0;
 	                    <%= paymentMethod.getBillingRef() %><br>
 	                <%
             }%>
-            
-			
+
+
             </FONT>
             </TD>
         </TR>
         </TABLE>
-        
+
         </TD>
-        
+
     </TR>
-        
- </TABLE>  
+
+ </TABLE>
  <br />
  <IMG src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"><br>
 <IMG src="/media_stat/images/layout/cccccc.gif" alt="" width="<%=W_RH_RECEIPT_TOTAL%>" height="1"><br>
@@ -236,7 +236,7 @@ int idx = 0;
 		<tr>
 			<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 		</tr>
-		
+
 	<tr>
 			<td align="left" class="text11bold" bgcolor="#DDDDDD" colspan="6">
 			<img src="/media_stat/images/donation/robinhood/landing/color_swatch_F0F0E7.gif" width="1" height="8" border="0"  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FRESHDIRECT
@@ -245,25 +245,25 @@ int idx = 0;
 		<tr>
 			<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 		</tr>
-		
+
 	<tr>
-		
+
 			<td class="text11bold" align="center"><%= cartLine.getOrderedQuantity() %></td>
 			<td style="padding-left:30px;" class="text11bold" align="center"><%=productModel.getFullName() %></td>
 			<td></td>
 			<td align="center"><%= JspMethods.formatPrice(productInfo, user.getPricingContext()) %></td>
 			<td></td>
 			<td align="center"  style="padding-left:4px;" class="text11bold"> <%= JspMethods.formatPrice(cart.getSubTotal()) %>
-		
-		
+
+
 
 	</tr>
 	<tr>
 				<td align="center"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /></td>
 	</tr>
-	
 
-</table> 
+
+</table>
 
 <table width="<%=W_RH_RECEIPT_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 	<tr>
@@ -279,8 +279,8 @@ int idx = 0;
 </table>
 
 <table width="<%=W_RH_RECEIPT_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
-		
-		
+
+
         <% if (FDStoreProperties.isAdServerEnabled()) { %>
 			<tr><td><br><br></td></tr>
 			<tr><td bgcolor="#ccc"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td></tr>
@@ -288,19 +288,23 @@ int idx = 0;
 			<tr><td>
 			<table width="<%=W_RH_RECEIPT_TOTAL%>" cellpadding="0" cellspacing="0">
 			<tr><td width="50%" style="border-right: solid 1px #CCCCCC; padding-right: 10px;" align="center">
-			<SCRIPT LANGUAGE=JavaScript>
-					<!--
-					OAS_AD('ReceiptBotLeft');
-					//-->
-			</SCRIPT>
+        <div id='oas_ReceiptBotLeft'>
+    			<SCRIPT LANGUAGE=JavaScript>
+    					<!--
+    					OAS_AD('ReceiptBotLeft');
+    					//-->
+    			</SCRIPT>
+        </div>
 			</td>
 			<td width="50%" style="padding-left: 10px;" align="center">
-			<SCRIPT LANGUAGE=JavaScript>
-					<!--
-					OAS_AD('ReceiptBotRight');
-					//-->
-			</SCRIPT>
-			</td>		
+        <div id='oas_ReceiptBotRight'>
+    			<SCRIPT LANGUAGE=JavaScript>
+    					<!--
+    					OAS_AD('ReceiptBotRight');
+    					//-->
+    			</SCRIPT>
+        </div>
+			</td>
 			</table><br>
 			</td></tr>
 		<% } %>

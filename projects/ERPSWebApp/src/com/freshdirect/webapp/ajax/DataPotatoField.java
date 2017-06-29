@@ -279,7 +279,7 @@ public class DataPotatoField {
 	public static Map<String, ?> digProductExtraData( FDUserI user, ProductModel product, ServletContext context, String grpId, String grpVersion ) {
 		// first get a ProductData for product level attributes
 		try {
-			ProductExtraData extraData = ProductExtraDataPopulator.createExtraData( user, product, grpId, grpVersion );
+			ProductExtraData extraData = ProductExtraDataPopulator.createExtraData( user, product, grpId, grpVersion, true );
 			
 			// convert and return
 			return SoyTemplateEngine.convertToMap( extraData );

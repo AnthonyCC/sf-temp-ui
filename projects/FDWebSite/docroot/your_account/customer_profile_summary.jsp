@@ -27,16 +27,16 @@ request.setAttribute("listPos", "HPLeftTop");
 %>
 
 <fd:CheckLoginStatus guestAllowed='false' recognizedAllowed='false' redirectPage='<%=redirectPage%>'/>
-<% 
+<%
     DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yy EEEE");
     FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
     FDIdentity customerIdentity = null;
     ErpCustomerInfoModel customerInfo = null;
     if (user!=null && user.getLevel() == 2){
         customerIdentity = user.getIdentity();
-        customerInfo = FDCustomerFactory.getErpCustomerInfo(customerIdentity);	
+        customerInfo = FDCustomerFactory.getErpCustomerInfo(customerIdentity);
     }
-	
+
 	FDCustomerModel customer = FDCustomerFactory.getFDCustomer(user.getIdentity());
 	EnumServiceType serviceType = FDSurveyFactory.getServiceType(user, request);
 
@@ -46,9 +46,9 @@ request.setAttribute("listPos", "HPLeftTop");
     %>
     <% if(coverage==0) {%>
     <jsp:forward page='<%="/your_account/customer_profile.jsp?"+request.getQueryString()%>' />
-    
-    <%}%>    
-    
+
+    <%}%>
+
     <%
     List questions = null;
     String profileImagePath="";
@@ -57,13 +57,13 @@ request.setAttribute("listPos", "HPLeftTop");
         questions=customerProfileSurvey.getQuestions();
         if(surveyResponse!=null && surveyResponse.getAnswer(FDSurveyConstants.PROFILE)!=null) {
             profileImagePath=surveyResponse.getAnswer(FDSurveyConstants.PROFILE)[0].toLowerCase();
-        } 
+        }
         if(surveyResponse!=null && surveyResponse.getAnswer(FDSurveyConstants.BIRTHDAY)!=null) {
             birthDay=surveyResponse.getAnswer(FDSurveyConstants.BIRTHDAY);
-        } 
-        
+        }
+
     }
-    
+
 
 response.setHeader("Pragma", "no-cache");
 response.setHeader("Cache-Control", "no-cache");
@@ -87,8 +87,8 @@ response.setHeader("Cache-Control", "no-cache");
 	.vertLine { width: 1px; background-color: #ccc; }
 	.vTop { vertical-align: top; }
 	.col25per { width: 25%; }
-	.col33per { width: 33.3%; }	
-	.col39per { width: 250px; }	
+	.col33per { width: 33.3%; }
+	.col39per { width: 250px; }
 	.col49per { width: 49%; }
 	.col50per { width: 50%; }
 	.col59per { width: 59%; }
@@ -169,7 +169,7 @@ response.setHeader("Cache-Control", "no-cache");
 					<td class="t11px">
 						<span class="t11px bolded">Last Ordered: </span><%=dateFormatter.format(user.getOrderHistory().getLastOrderDlvDate())%>
 					</td>
-				</tr>  
+				</tr>
                 <%}%>
                 <% if(birthDay!=null && birthDay.length==2){%>
 				<tr>
@@ -179,7 +179,7 @@ response.setHeader("Cache-Control", "no-cache");
 				</tr>
                 <%}%>
 				</table>
-   
+
 			<!-- CHEF'S TABLE member -->
             <% if(user.isChefsTable()) { %>
 	        <table class="col100per noBorder tLeft">
@@ -190,7 +190,7 @@ response.setHeader("Cache-Control", "no-cache");
 			<!-- OAS ad -->
 						<table cellpadding="0" cellspacing="0" border="0">
 							<tr><td colspan="3" style="padding-top:12px;"><img height="1" width="1" alt="" src="/media_stat/images/layout/clear.gif"/></td></tr>
-							<tr valign="top"> 
+							<tr valign="top">
 								<td><img height="6" width="6" src="/media_stat/images/layout/top_left_curve.gif"/></td>
 								<td style="border-top: 1px solid #996;"><img height="1" width="204" alt="" src="/media_stat/images/layout/clear.gif"/></td>
 								<td><img height="6" width="6" src="/media_stat/images/layout/top_right_curve.gif"/></td>
@@ -198,13 +198,15 @@ response.setHeader("Cache-Control", "no-cache");
 							<tr>
 								<td align="center" style="border-left: 1px solid #996; border-right: 1px solid #996;" colspan="3">
 									<!-- fake oas ad -->
-									<% 
+									<%
                                     if (FDStoreProperties.isAdServerEnabled()) { %>
-						                <SCRIPT LANGUAGE="JavaScript">
-						                    <!--
-						                    OAS_AD('HPLeftTop');
-                                        //-->
-						             </SCRIPT>
+                                      <div id='oas_HPLeftTop'>
+                						            <SCRIPT LANGUAGE="JavaScript">
+                						              <!--
+                						               OAS_AD('HPLeftTop');
+                                          //-->
+                						             </SCRIPT>
+                                       </div>
 					                <% } %>
 								</td>
 							  </tr>
@@ -224,30 +226,30 @@ response.setHeader("Cache-Control", "no-cache");
 		<td class="padL20px vTop tLeft t11px">
 		    <table id="profileSwitcher">
 		    	<tr class="t11px bolded tLeft">
-			<% 
+			<%
 			boolean needServiceType = false;
 			if ((user.hasServiceBasedOnUserAddress(EnumServiceType.HOME) && user.hasServiceBasedOnUserAddress(EnumServiceType.CORPORATE)) || (request.getParameter("KRIKSZKRAKSZ")!=null)) {
 			    needServiceType = true;
 			%>
 		    	 <td nowrap><% if (serviceType!=EnumServiceType.HOME) { %><a href="?serviceType=HOME">PERSONAL</a><% } else { %>PERSONAL<% } %></td>
 		    	 <td>|</td>
-		    	 <td nowrap><% if (serviceType!=EnumServiceType.CORPORATE) { %><a href="?serviceType=CORPORATE">CORPORATE</a><% } else { %>CORPORATE<% } %></td>
+		    	 <td nowrap><% if (serviceType!=EnumServiceType.CORPORATE) { %><a href="?serviceType=CORPORATE">Business or School</a><% } else { %>CORPORATE<% } %></td>
 		    <% } %>
 		       <td width="100%"></td>
 				 <td  nowrap>
 				 	<a href="/your_account/customer_profile.jsp<%= needServiceType ? "?serviceType="+ serviceType.name() : "" %>">Edit my profile</a>
 				 </td>
-		    	 
+
 		    	</tr>
 		    </table>
 		    <img width="120" height="10" alt="" src="/media_stat/images/layout/clear.gif"/>
 			<table cellpadding="0" cellspacing="0" border="0" width="100%">
 
 			<!-- header row -->
-            
+
             <% if(questions!=null){%>
             <logic:iterate id="question" collection="<%= questions %>" type="com.freshdirect.fdstore.survey.FDSurveyQuestion" indexId='index'>
-            
+
             <% if(!(FDSurveyConstants.PROFILE.equals(question.getName()) || FDSurveyConstants.BIRTHDAY.equals(question.getName())))
                {
             %>
@@ -264,12 +266,12 @@ response.setHeader("Cache-Control", "no-cache");
             </logic:iterate>
             <%}%>
 			</table>
-			
+
 		</td>
 	<!-- end right column -->
     	</tr>
 	</table>
-	
+
 
 
 <!-- * end the actual summary info * -->

@@ -32,7 +32,7 @@ public class ExternalAccountControllerTag extends
 		String redirectPage = AccountServiceFactory.getService(source).login(session, request, response);
 		
 		if(!FDStoreProperties.isLocalDeployment()){
-			if(!redirectPage.contains("https")) {
+			if(null != redirectPage && !redirectPage.contains("https")) {
 				redirectPage = redirectPage.replace("http", "https");
 			} 
 		}

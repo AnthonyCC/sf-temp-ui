@@ -7,12 +7,12 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.sampling.ImpressionSampler;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
 
 public class ProductDonationRecommendationService extends AbstractRecommendationService {
 

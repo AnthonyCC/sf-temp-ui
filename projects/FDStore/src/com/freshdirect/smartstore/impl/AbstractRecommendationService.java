@@ -12,7 +12,6 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.WineUtil;
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ContentNodeModelUtil;
@@ -36,7 +35,7 @@ import com.freshdirect.smartstore.sampling.RankedContent;
  */
 public abstract class AbstractRecommendationService implements RecommendationService {
 	
-	private static Category LOGGER = LoggerFactory.getInstance(AbstractRecommendationService.class);
+    private static final Category LOGGER = LoggerFactory.getInstance(AbstractRecommendationService.class);
 
 	protected Variant variant;
 
@@ -49,12 +48,12 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 	/**
 	 * ThreadLocal<Map<String:ContentKey.id,String:Recommender.id>>
 	 */
-	public static ThreadLocal<Map<String, String>> RECOMMENDER_SERVICE_AUDIT = new ThreadLocal<Map<String, String>>();
+    public static final ThreadLocal<Map<String, String>> RECOMMENDER_SERVICE_AUDIT = new ThreadLocal<Map<String, String>>();
 
 	/**
 	 * ThreadLocal<Map<String:ContentKey.id,String:RecommenderStrategy.id>>
 	 */
-	public static ThreadLocal<Map<String, String>> RECOMMENDER_STRATEGY_SERVICE_AUDIT = new ThreadLocal<Map<String, String>>();
+    public static final ThreadLocal<Map<String, String>> RECOMMENDER_STRATEGY_SERVICE_AUDIT = new ThreadLocal<Map<String, String>>();
 
 	protected static List<RankedContent.Single> rankListByOrder(List<? extends ContentNodeModel> nodes) {
 		int size = nodes.size();
@@ -74,11 +73,13 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 		this.includeCartItems = includeCartItems;
 	}
 
-	public Variant getVariant() {
+	@Override
+    public Variant getVariant() {
 		return this.variant;
 	}
 
-	final public List<ContentNodeModel> recommendNodes(SessionInput input) {
+	@Override
+    final public List<ContentNodeModel> recommendNodes(SessionInput input) {
 		boolean saveIncludeCartItems = input.isIncludeCartItems();
 		if (!input.isIncludeCartItems()) {
 			input.setIncludeCartItems(includeCartItems);
@@ -156,15 +157,18 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 		return result;
 	}
 
-	public boolean isIncludeCartItems() {
+	@Override
+    public boolean isIncludeCartItems() {
 		return includeCartItems;
 	}
 
-	public boolean isSmartSavings() {
+	@Override
+    public boolean isSmartSavings() {
 		return false;
 	}
 
-	public boolean isRefreshable() {
+	@Override
+    public boolean isRefreshable() {
 		return !(sampler == null || sampler.isDeterministic());
 	}
 	

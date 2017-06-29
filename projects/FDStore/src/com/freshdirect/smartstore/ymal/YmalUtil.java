@@ -33,7 +33,8 @@ public class YmalUtil {
 	private static Category LOGGER = LoggerFactory.getInstance(YmalUtil.class);
 
 	protected static class PriceComparator implements Comparator<FDCartLineI> {
-		public int compare(FDCartLineI c1, FDCartLineI c2) {
+		@Override
+        public int compare(FDCartLineI c1, FDCartLineI c2) {
 			return ProductModel.PRODUCT_MODEL_PRICE_COMPARATOR_INVERSE
 					.compare(c1.lookupProduct(), c2.lookupProduct());
 		}
@@ -96,6 +97,7 @@ public class YmalUtil {
 	 * @param source
 	 * @param request
 	 */
+    // TODO find better solution
 	public static void resetActiveYmalSetSession(YmalSource source, ServletRequest request) {
 		if (request.getAttribute("freshdirect.ymalSource.reset") == null) {
 			if (source != null)

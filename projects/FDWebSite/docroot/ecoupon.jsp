@@ -94,6 +94,9 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	<tmpl:put name="customJsBottom">
 	</tmpl:put>
 
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect - Coupon Circular Page"/>
+    </tmpl:put>
 	<tmpl:put name="title" direct="true">FreshDirect - Coupon Circular Page</tmpl:put>
 	<tmpl:put name="activeView">grid<% //= nav.isListView() && !nav.isRecipes() ? "list" : "grid" %></tmpl:put>
 	<tmpl:put name="noResult"><%= search.getProducts().isEmpty() && search.getRecipes().isEmpty() ? "noresult" : "hasresults" %></tmpl:put>

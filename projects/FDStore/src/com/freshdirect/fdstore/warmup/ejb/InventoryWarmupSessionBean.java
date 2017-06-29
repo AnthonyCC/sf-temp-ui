@@ -84,7 +84,7 @@ public class InventoryWarmupSessionBean extends SessionBeanSupport {
         //
         // perform availability check
         //
-        FDCustomerManager.checkAvailability(identity, cart, 5*60*1000);
+        FDCustomerManager.checkAvailability(identity, cart, 5*60*1000,"checkout");
         //
         // walk the subcategories
         //

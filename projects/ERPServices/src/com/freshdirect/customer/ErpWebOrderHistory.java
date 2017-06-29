@@ -7,15 +7,12 @@ import java.util.Map;
 
 import com.freshdirect.fdstore.EnumEStoreId;
 
-/**
- * @author skrishnasamy
- * @version 1.0
- * @created 19-Dec-2007 2:58:50 PM
- */
 public class ErpWebOrderHistory implements OrderHistoryI {
 
-	private Map orderHistoryInfo = new HashMap();
-	
+    private static final long serialVersionUID = -2545953657947511869L;
+
+    private Map<String, Object> orderHistoryInfo = new HashMap<String, Object>();
+
 	private static final String DELIVERED_ORDER_COUNT = "deliveredOrderCount";
 	private static final String FIRST_ORDER_DATE = "firstOrderDate";
 	private static final String FIRST_NON_PICKUP_ORDER_DATE = "firstNonPickupOrderDate";
@@ -30,6 +27,8 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 	private static final String TOTAL_ORDER_COUNT = "totalOrderCount";
 	private static final String VALID_ECHECK_ORDER_COUNT = "validECheckOrderCount";
 	private static final String VALID_ORDER_COUNT = "validOrderCount";
+    private static final String VALID_FD_STORE_ORDER_COUNT = "validFdStoreOrderCount";
+    private static final String VALID_FDX_STORE_ORDER_COUNT = "validFdxStoreOrderCount";
 	private static final String VALID_PHONE_ORDER_COUNT = "validPhoneOrderCount";
 	private static final String SETTLED_ORDER_COUNT = "settledOrderCount";
 	private static final String UNSETTLED_EBT_ORDER_COUNT = "UnsettledEBTOrderCount";
@@ -41,13 +40,9 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 	private static final String VALID_ORDER_COUNT_FD_PICKUP = "validOrderCountForFDPickUp";
 	private static final String VALID_ORDER_COUNT_FDX = "validOrderCountForFDX";
 	
-	/**
-	 * 
-	 * @param erpSaleInfos
-	 */
-	public ErpWebOrderHistory(Collection erpSaleInfos){
+    public ErpWebOrderHistory(Collection<ErpSaleInfo> erpSaleInfos) {
 		//Populate the orderHistoryInfo using erpSaleInfos Collection.
-		orderHistoryInfo.put(DELIVERED_ORDER_COUNT, new Integer(ErpOrderHistoryUtil.getDeliveredOrderCount(erpSaleInfos)));
+        orderHistoryInfo.put(DELIVERED_ORDER_COUNT, ErpOrderHistoryUtil.getDeliveredOrderCount(erpSaleInfos));
 		orderHistoryInfo.put(FIRST_ORDER_DATE, ErpOrderHistoryUtil.getFirstOrderDate(erpSaleInfos));
 		orderHistoryInfo.put(FIRST_NON_PICKUP_ORDER_DATE, ErpOrderHistoryUtil.getFirstNonPickupOrderDate(erpSaleInfos));
 		orderHistoryInfo.put(FIRST_ORDER_DATE_FOR_FD, ErpOrderHistoryUtil.getFirstOrderDateByStore(erpSaleInfos,EnumEStoreId.FD));
@@ -57,80 +52,96 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 		orderHistoryInfo.put(LAST_ORDER_ID, ErpOrderHistoryUtil.getLastOrderId(erpSaleInfos));
 		orderHistoryInfo.put(LAST_ORDER_TYPE, ErpOrderHistoryUtil.getLastOrderType(erpSaleInfos));
 		orderHistoryInfo.put(LAST_ORDER_ZONE, ErpOrderHistoryUtil.getLastOrderZone(erpSaleInfos));
-		orderHistoryInfo.put(PHONE_ORDER_COUNT,  new Integer(ErpOrderHistoryUtil.getPhoneOrderCount(erpSaleInfos)));
-		orderHistoryInfo.put(RETURNED_ORDER_COUNT, new Integer(ErpOrderHistoryUtil.getReturnOrderCount(erpSaleInfos)));
+        orderHistoryInfo.put(PHONE_ORDER_COUNT, ErpOrderHistoryUtil.getPhoneOrderCount(erpSaleInfos));
+        orderHistoryInfo.put(RETURNED_ORDER_COUNT, ErpOrderHistoryUtil.getReturnOrderCount(erpSaleInfos));
 		orderHistoryInfo.put(SECOND_TO_LAST_ORDER_ID, ErpOrderHistoryUtil.getSecondToLastSaleId(erpSaleInfos));
-		orderHistoryInfo.put(TOTAL_ORDER_COUNT, new Integer(ErpOrderHistoryUtil.getTotalOrderCount(erpSaleInfos)));
-		orderHistoryInfo.put(VALID_ECHECK_ORDER_COUNT, new Integer(ErpOrderHistoryUtil.getValidECheckOrderCount(erpSaleInfos)));
-		orderHistoryInfo.put(VALID_ORDER_COUNT, new Integer(ErpOrderHistoryUtil.getValidOrderCount(erpSaleInfos)));
-		orderHistoryInfo.put(VALID_PHONE_ORDER_COUNT, new Integer(ErpOrderHistoryUtil.getValidPhoneOrderCount(erpSaleInfos)));
-		orderHistoryInfo.put(SETTLED_ORDER_COUNT, new Integer(ErpOrderHistoryUtil.getSettledOrderCount(erpSaleInfos)));
-		orderHistoryInfo.put(UNSETTLED_EBT_ORDER_COUNT, new Integer(ErpOrderHistoryUtil.getUnSettledEBTOrderCount(erpSaleInfos)));
-		orderHistoryInfo.put(VALID_MASTERPASS_ORDER_COUNT, new Integer(ErpOrderHistoryUtil.getValidMasterPassOrderCount(erpSaleInfos)));
-		orderHistoryInfo.put(VALID_ORDER_COUNT_FD_HOME, new Integer(ErpOrderHistoryUtil.getValidOrderCount(erpSaleInfos,EnumDeliveryType.HOME)));
-		orderHistoryInfo.put(VALID_ORDER_COUNT_FD_CORP, new Integer(ErpOrderHistoryUtil.getValidOrderCount(erpSaleInfos,EnumDeliveryType.CORPORATE)));
-		orderHistoryInfo.put(VALID_ORDER_COUNT_FD_PICKUP, new Integer(ErpOrderHistoryUtil.getValidOrderCount(erpSaleInfos,EnumDeliveryType.PICKUP)));
-		orderHistoryInfo.put(VALID_ORDER_COUNT_FDX, new Integer(ErpOrderHistoryUtil.getValidOrderCount(erpSaleInfos,EnumDeliveryType.FDX)));
+        orderHistoryInfo.put(TOTAL_ORDER_COUNT, ErpOrderHistoryUtil.getTotalOrderCount(erpSaleInfos));
+        orderHistoryInfo.put(VALID_ECHECK_ORDER_COUNT, ErpOrderHistoryUtil.getValidECheckOrderCount(erpSaleInfos));
+        orderHistoryInfo.put(VALID_ORDER_COUNT, ErpOrderHistoryUtil.getValidOrderCount(erpSaleInfos));
+        orderHistoryInfo.put(VALID_FD_STORE_ORDER_COUNT, ErpOrderHistoryUtil.getValidOrderCount(erpSaleInfos, EnumEStoreId.FD));
+        orderHistoryInfo.put(VALID_FDX_STORE_ORDER_COUNT, ErpOrderHistoryUtil.getValidOrderCount(erpSaleInfos, EnumEStoreId.FDX));
+        orderHistoryInfo.put(VALID_PHONE_ORDER_COUNT, ErpOrderHistoryUtil.getValidPhoneOrderCount(erpSaleInfos));
+        orderHistoryInfo.put(SETTLED_ORDER_COUNT, ErpOrderHistoryUtil.getSettledOrderCount(erpSaleInfos));
+        orderHistoryInfo.put(UNSETTLED_EBT_ORDER_COUNT, ErpOrderHistoryUtil.getUnSettledEBTOrderCount(erpSaleInfos));
+        orderHistoryInfo.put(VALID_MASTERPASS_ORDER_COUNT, ErpOrderHistoryUtil.getValidMasterPassOrderCount(erpSaleInfos));
+        orderHistoryInfo.put(VALID_ORDER_COUNT_FD_HOME, ErpOrderHistoryUtil.getValidOrderCount(erpSaleInfos, EnumDeliveryType.HOME));
+        orderHistoryInfo.put(VALID_ORDER_COUNT_FD_CORP, ErpOrderHistoryUtil.getValidOrderCount(erpSaleInfos, EnumDeliveryType.CORPORATE));
+        orderHistoryInfo.put(VALID_ORDER_COUNT_FD_PICKUP, ErpOrderHistoryUtil.getValidOrderCount(erpSaleInfos, EnumDeliveryType.PICKUP));
+        orderHistoryInfo.put(VALID_ORDER_COUNT_FDX, ErpOrderHistoryUtil.getValidOrderCount(erpSaleInfos, EnumDeliveryType.FDX));
 	}
 
-	public int getDeliveredOrderCount(){
+	@Override
+    public int getDeliveredOrderCount(){
 		return ((Integer)orderHistoryInfo.get(DELIVERED_ORDER_COUNT)).intValue();
 	}
 
-	public Date getFirstOrderDate(){
+	@Override
+    public Date getFirstOrderDate(){
 		return ((Date)orderHistoryInfo.get(FIRST_ORDER_DATE));
 	}
 	
-	public Date getFirstNonPickupOrderDate(){
+	@Override
+    public Date getFirstNonPickupOrderDate(){
 		return ((Date)orderHistoryInfo.get(FIRST_NON_PICKUP_ORDER_DATE));
 	}
 
-	public Date getLastOrderCreateDate(){
+	@Override
+    public Date getLastOrderCreateDate(){
 		return ((Date)orderHistoryInfo.get(LAST_ORDER_CREATE_DATE));
 	}
 
-	public Date getLastOrderDlvDate(){
+	@Override
+    public Date getLastOrderDlvDate(){
 		return ((Date)orderHistoryInfo.get(LAST_ORDER_DELIVERY_DATE));
 	}
 
-	public String getLastOrderId(){
+	@Override
+    public String getLastOrderId(){
 		return ((String)orderHistoryInfo.get(LAST_ORDER_ID));
 	}
 
-	public EnumDeliveryType getLastOrderType(){
+	@Override
+    public EnumDeliveryType getLastOrderType(){
 		return ((EnumDeliveryType)orderHistoryInfo.get(LAST_ORDER_TYPE));
 	}
 
-	public String getLastOrderZone(){
+	@Override
+    public String getLastOrderZone(){
 		return ((String)orderHistoryInfo.get(LAST_ORDER_ZONE));
 	}
 
-	public int getPhoneOrderCount(){
+	@Override
+    public int getPhoneOrderCount(){
 		return ((Integer)orderHistoryInfo.get(PHONE_ORDER_COUNT)).intValue();
 	}
 
-	public int getReturnOrderCount(){
+	@Override
+    public int getReturnOrderCount(){
 		return ((Integer)orderHistoryInfo.get(RETURNED_ORDER_COUNT)).intValue();
 	}
 
-	public String getSecondToLastSaleId(){
+	@Override
+    public String getSecondToLastSaleId(){
 		return ((String)orderHistoryInfo.get(SECOND_TO_LAST_ORDER_ID));
 	}
 
-	public int getTotalOrderCount(){
+	@Override
+    public int getTotalOrderCount(){
 		return ((Integer)orderHistoryInfo.get(TOTAL_ORDER_COUNT)).intValue();
 	}
 
-	public int getValidECheckOrderCount(){
+	@Override
+    public int getValidECheckOrderCount(){
 		return ((Integer)orderHistoryInfo.get(VALID_ECHECK_ORDER_COUNT)).intValue();
 	}
 
-	public int getValidOrderCount(){
-//		return ((Integer)orderHistoryInfo.get(VALID_ORDER_COUNT)).intValue();
-		return getValidOrderCount(null);
+	@Override
+    public int getValidOrderCount(){
+        return ((Integer) orderHistoryInfo.get(VALID_ORDER_COUNT)).intValue();
 	}
 	
-	public int getValidOrderCount(EnumDeliveryType deliveryType){
+	@Override
+    public int getValidOrderCount(EnumDeliveryType deliveryType){
 		if(null != deliveryType){
 			if(EnumDeliveryType.HOME.equals(deliveryType)){
 				return ((Integer)orderHistoryInfo.get(VALID_ORDER_COUNT_FD_HOME)).intValue();
@@ -142,33 +153,60 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 				return ((Integer)orderHistoryInfo.get(VALID_ORDER_COUNT_FDX)).intValue();
 			}
 		}
-		return ((Integer)orderHistoryInfo.get(VALID_ORDER_COUNT)).intValue();
+        return getValidOrderCount();
 	}
 
-	public int getValidPhoneOrderCount(){
+    @Override
+    public int getValidOrderCount(EnumEStoreId storeId) {
+        int count = 0;
+        switch (storeId) {
+            case FD:
+                count = ((Integer) orderHistoryInfo.get(VALID_FD_STORE_ORDER_COUNT)).intValue();
+                break;
+
+            case FDX:
+                count = ((Integer) orderHistoryInfo.get(VALID_FDX_STORE_ORDER_COUNT)).intValue();
+                break;
+
+            default:
+                count = getValidOrderCount();
+                break;
+        }
+        return count;
+    }
+
+	@Override
+    public int getValidPhoneOrderCount(){
 		return ((Integer)orderHistoryInfo.get(VALID_PHONE_ORDER_COUNT)).intValue();
 	}
 
-	public int getSettledOrderCount() {
+	@Override
+    public int getSettledOrderCount() {
 		return ((Integer)orderHistoryInfo.get(SETTLED_ORDER_COUNT)).intValue();
 	}
 	
-	public double getOrderSubTotalForChefsTableEligibility() {
+	@Override
+    public double getOrderSubTotalForChefsTableEligibility() {
 		return 0.0;
 	}
 	
-	public int getTotalRegularOrderCount(){
+	@Override
+    public int getTotalRegularOrderCount(){
 		return 0;
 	}
 	
-	public int getSettledECheckOrderCount() {
+	@Override
+    public int getSettledECheckOrderCount() {
 		return 0;
 	}
 	
-	public String toString() {
+	@Override
+    public String toString() {
 		StringBuffer buf = new StringBuffer();
 		buf.append("ErpWebOrderHistory version $$$$$$$$$$$$$$$$$$$"+"\n");
 		buf.append("ValidOrderCount "+getValidOrderCount()+"\n");
+        buf.append("ValidFdStoreOrderCount " + getValidOrderCount(EnumEStoreId.FD) + "\n");
+        buf.append("ValidFdxStoreOrderCount " + getValidOrderCount(EnumEStoreId.FDX) + "\n");
 		buf.append("LastOrderId "+getLastOrderId()+"\n");
 		buf.append("ValidPhoneOrderCount "+getValidPhoneOrderCount()+"\n");
 		buf.append("TotalOrderCount "+getTotalOrderCount()+"\n");
@@ -194,11 +232,13 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 	}
 	
 	
-	public int getUnSettledEBTOrderCount(){
+	@Override
+    public int getUnSettledEBTOrderCount(){
 		return ((Integer)orderHistoryInfo.get(UNSETTLED_EBT_ORDER_COUNT)).intValue();
 	}
 	
-	public int getUnSettledEBTOrderCount(String currSaleId){
+	@Override
+    public int getUnSettledEBTOrderCount(String currSaleId){
 		//TODO: Need to fix this, if somebody wants to use it.
 		return 0;
 	}
@@ -218,4 +258,5 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 		}
 		return ((Date)orderHistoryInfo.get(FIRST_ORDER_DATE));
 	}
+
 }

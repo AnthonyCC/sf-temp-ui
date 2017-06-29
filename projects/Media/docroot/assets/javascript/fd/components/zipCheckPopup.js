@@ -1,10 +1,11 @@
-/*global jQuery*/
+/*global jQuery, common*/
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {
   "use strict";
 
   var $=fd.libs.$,
+      DISPATCHER = fd.common.dispatcher,
       zipCheckPopup = Object.create(fd.modules.common.popupWidget, {
     template: {
       value: common.fixedPopup
@@ -48,6 +49,11 @@ var FreshDirect = FreshDirect || {};
     zipchekRetry:{
       value: function () {
         this.refreshBody(null,common.zipcheck);
+      }
+    },
+    closeCB: {
+      value: function () {
+        DISPATCHER.signal('zipCheckClosed', {});
       }
     }
   });

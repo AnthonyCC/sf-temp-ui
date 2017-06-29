@@ -79,7 +79,7 @@ if (editorialPath!=null && !"".equals(editorialPath.trim())) {  %>
 				<td colspan="3" style="padding-bottom: 4px;"><img src="/media_stat/recipe/rechm_recipe_search.gif" width="98" height="10" alt="RECIPE SEARCH"></td>
 			</tr>
 		  	<tr>
-				<td style="padding-right: 6px;"><input name="keyword" size="20"></td>
+				<td style="padding-right: 6px;"><input aria-label="recipe search" name="keyword" size="20"></td>
 				<td style="padding-right: 10px;"><input type="image" src="/media_stat/recipe/rechm_find_button.gif" border="0" alt="FIND"></td>
 				<td><a href="/recipe_search.jsp?trk=dpage">Advanced recipe search</a></td>
 			</tr>
@@ -90,7 +90,7 @@ if (editorialPath!=null && !"".equals(editorialPath.trim())) {  %>
         <td valign="top">
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt=""><br>
 			<img src="/media_stat/recipe/rechm_by_cookbook.gif" border="0" width="93" height="9" vspace="5" alt="By Source"><br>
-		    <select class="text9" name="cookbook" style="width:170px;"
+		    <select class="text9" aria-label="search by source" name="cookbook" style="width:170px;"
 				onchange="if (this.value!='') window.location='/recipe_search.jsp?recipeSource=' + this.value+'&trk=pcbk';">
 				<option>Search by Source</option>
 		        <logic:iterate id="recipeSource" collection="<%= RecipeSource.findAllAvailable(true) %>" type="com.freshdirect.fdstore.content.RecipeSource">
@@ -102,7 +102,7 @@ if (editorialPath!=null && !"".equals(editorialPath.trim())) {  %>
 			</select>
 			<br><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt=""><br>
 			<img src="/media_stat/recipe/rechm_by_author.gif" border="0" width="71" height="10" vspace="5" alt="By Author"><br>
-			<select class="text9" name="author" style="width:170px;"
+			<select class="text9" aria-label="search by author" name="author" style="width:170px;"
 				onchange="if (this.value!='') window.location='/recipe_search.jsp?recipeAuthor=' + this.value+'&trk=paut';">
 			   <option>Search by Author</option>
 			   <logic:iterate id="recipeAuthor" collection="<%= RecipeAuthor.findAllAvailable() %>" type="com.freshdirect.fdstore.content.RecipeAuthor">

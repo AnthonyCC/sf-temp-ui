@@ -13,7 +13,6 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.pricing.Discount;
-import com.freshdirect.customer.EnumNotificationType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpChargeLineModel;
@@ -30,6 +29,7 @@ import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.Recipe;
@@ -38,13 +38,13 @@ import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
-import com.freshdirect.fdstore.services.tax.AvalaraContext;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
+import com.freshdirect.payment.service.FDECommerceService;
 
 public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 
@@ -147,10 +147,9 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 			fdInfo.setHtmlEmail(!erpInfo.isEmailPlaintext());
 			fdInfo.setEmailAddress(erpInfo.getEmail());
 			fdInfo.setGoGreen(erpInfo.isGoGreen());
-			
+
 			MailerGatewaySB mailBean = this.getMailerGatewayHome().create();
 			mailBean.enqueueEmail(FDEmailFactory.getInstance().createFinalAmountEmail(fdInfo, fdOrder));
-			
 			// collect recipes that will be sent to the users
 			List orderLines = fdOrder.getOrderLines();
 			Set<Recipe>  recipes    = new HashSet<Recipe>();

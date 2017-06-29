@@ -826,6 +826,7 @@ public class CheckoutController extends BaseController {
      */
     private ModelAndView reserveTimeslot(ModelAndView model, SessionUser user, String slotId, HttpServletRequest request)
             throws FDException, JsonException {
+    	user.setFromLogin("Checkout");
         DeliveryTimeslots slot = new com.freshdirect.mobileapi.model.DeliveryTimeslots(user);
         ResultBundle resultBundle = slot.reserveSlot(slotId);
         ActionResult result = resultBundle.getActionResult();
@@ -1512,6 +1513,7 @@ public class CheckoutController extends BaseController {
                 }
                 // Atp Check
                 if (isSuccess(message.getStatus())) {
+                	user.setFromLogin("Checkout");
                     ActionResult availabliltyResult = this.performAvailabilityCheck(user, request.getSession());
                     if (!availabliltyResult.isSuccess()) {
                     	if(availabliltyResult.getFirstError().getDescription().equals(AvailabilityService.REASON_MAX_PASSES) ||

@@ -8,11 +8,6 @@
   border: none;
 }
 
-/*from standingorder CSS*/
-#customizePopup .buttons{
-  margin-right: 243px;
-}
-
 #transactionalPopup .fakeaddtolist,
 #transactionalPopup .addtolist {
   border-radius: 2px;

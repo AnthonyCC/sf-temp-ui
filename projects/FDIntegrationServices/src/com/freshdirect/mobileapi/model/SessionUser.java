@@ -35,6 +35,7 @@ import com.freshdirect.fdstore.customer.QuickCart;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.util.FDTimeslotUtil;
+import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.DeliveryTimeslots.TimeSlotCalculationResult;
@@ -487,12 +488,17 @@ public class SessionUser {
     }
     
     private boolean matchReservationToAddress(FDReservation deliveryReservation, ErpAddressModel address) {
-    	return (deliveryReservation != null && address != null && address.getPK() != null && address.getPK().getId() != null
-                   && address.getPK().getId().equals(deliveryReservation.getAddressId()) 
-                   && address.getAddress1().equals(deliveryReservation.getAddress().getAddress1())
-                   && address.getAddress2().equals(deliveryReservation.getAddress().getAddress2())
-                   && address.getApartment().equals(deliveryReservation.getAddress().getApartment())
-                   && address.getZipCode().equals(deliveryReservation.getAddress().getZipCode()));
+    	String addressId = null;
+    	if(address!=null && address.getPK() != null && address.getPK().getId() != null)
+    		addressId = address.getPK().getId();
+    	return (deliveryReservation!=null && !TimeslotLogic.isAddressChange(deliveryReservation.getAddress(), address, addressId, 
+    			deliveryReservation.getAddressId()));
+//    	return (deliveryReservation != null && address != null && address.getPK() != null && address.getPK().getId() != null
+//                   && address.getPK().getId().equals(deliveryReservation.getAddressId())
+//                   && address.getAddress1().equals(deliveryReservation.getAddress().getAddress1())
+//                   && address.getAddress2().equals(deliveryReservation.getAddress().getAddress2())
+//                   && address.getApartment().equals(deliveryReservation.getAddress().getApartment())
+//                   && address.getZipCode().equals(deliveryReservation.getAddress().getZipCode()));
     }
     
     public String getDefaultShipToAddress() throws FDResourceException {
@@ -750,5 +756,14 @@ public class SessionUser {
 	
 	public void setIsMobilePlatForm(boolean isMobilePlatForm){
 		this.sessionUser.setMobilePlatForm(isMobilePlatForm);
+	}
+	
+	public String isFromLogin() {
+		return this.sessionUser.isFromLogin();
+	}
+
+
+	public void setFromLogin(String fromLogin) {
+		this.sessionUser.setFromLogin(fromLogin);
 	}
 }

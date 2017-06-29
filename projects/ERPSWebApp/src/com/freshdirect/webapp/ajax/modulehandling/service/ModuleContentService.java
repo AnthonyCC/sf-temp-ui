@@ -2,6 +2,7 @@ package com.freshdirect.webapp.ajax.modulehandling.service;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -23,6 +24,7 @@ import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SortOptionModel;
 import com.freshdirect.fdstore.content.SortStrategyType;
+import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.fdstore.content.browse.sorter.ProductItemSorterFactory;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
@@ -145,6 +147,8 @@ public class ModuleContentService {
             nav.setPageTypeType(FilteringFlowType.BROWSE);
             nav.setPageSize(FDStoreProperties.getBrowsePageSize());
             nav.setId(categoryId);
+            nav.setAll(true);
+            nav.setActivePage(0);
 
             List<ProductData> products = new ArrayList<ProductData>();
             final CmsFilteringFlowResult result = CmsFilteringFlow.getInstance().doFlow(nav, (FDSessionUser) user);
@@ -152,6 +156,31 @@ public class ModuleContentService {
             sectionDataContainer = result.getBrowseDataPrototype().getSections();
 
         }
+
+        List<SectionData> sections = sectionDataContainer.getSections();
+
+        // Filter Unav products for view all modules
+        for (int i = 0; i < sections.size(); i++) {
+            if (sections.get(i).getProducts() == null) {
+                List<SectionData> categories = sections.get(i).getSections();
+                for (int j = 0; j < categories.size(); j++) {
+                    for (Iterator<ProductData> iter = sections.get(i).getSections().get(j).getProducts().iterator(); iter.hasNext();) {
+                        ProductData productData = iter.next();
+                        if (!productData.isAvailable() || productData.isDiscontinued()) {
+                            iter.remove();
+                        }
+                    }
+                }
+            } else {
+                for (Iterator<ProductData> iter = sections.get(i).getProducts().iterator(); iter.hasNext();) {
+                    ProductData productData = iter.next();
+                    if (!productData.isAvailable() || productData.isDiscontinued()) {
+                        iter.remove();
+                    }
+                }
+            }
+        }
+
         return sectionDataContainer;
     }
 
@@ -170,6 +199,8 @@ public class ModuleContentService {
             nav.setPageTypeType(FilteringFlowType.BROWSE);
             nav.setPageSize(FDStoreProperties.getBrowsePageSize());
             nav.setId(categoryId);
+            nav.setAll(true);
+            nav.setActivePage(0);
 
             List<ProductData> products = generateBrowseProductData(nav, user);
 
@@ -386,7 +417,13 @@ public class ModuleContentService {
         // SORTING SETUP
         sortingSectionContexts.add(sortingSectionContext);
         sortingBrowseDataContext.setSectionContexts(sortingSectionContexts);
-        defaultSorter = ContentFactory.getInstance().getStore().getPresidentsPicksPageSortOptions().get(0);
+        
+        //defaultSorter = ContentFactory.getInstance().getStore().getPresidentsPicksPageSortOptions().get(0);
+        StoreModel storeModel=ContentFactory.getInstance().getStore();
+	        if(storeModel!=null && !storeModel.getPresidentsPicksPageSortOptions().isEmpty()) {
+	        	 defaultSorter = storeModel.getPresidentsPicksPageSortOptions().get(0);
+	        }
+        
 
         if (defaultSorter != null) {
             usedSortStrategy = defaultSorter.getSortStrategyType();
@@ -411,8 +448,11 @@ public class ModuleContentService {
         filteredProductModels.addAll(availableFeaturedProducts);
 
         // FILTERINGPRODUCT TO PRODUCT MODEL CONVERSION
-        for (FilteringProductItem filteringProduct : sortingBrowseDataContext.getSectionContexts().get(0).getProductItems()) {
-            filteredProductModels.add(filteringProduct.getProductModel());
+        List<SectionContext> sectionContextlist=sortingBrowseDataContext.getSectionContexts();
+        if(!sectionContextlist.isEmpty() && sectionContextlist.get(0)!=null) {
+	        for (FilteringProductItem filteringProduct : sectionContextlist.get(0).getProductItems()) {
+	            filteredProductModels.add(filteringProduct.getProductModel());
+	        }
         }
 
         return filteredProductModels;

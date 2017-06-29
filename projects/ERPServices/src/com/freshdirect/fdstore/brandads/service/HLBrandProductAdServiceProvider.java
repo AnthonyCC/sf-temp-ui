@@ -47,6 +47,10 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 	private static final String HOOKLOGIC_MINMES="minmes";
 	private static final String HOOKLOGIC_MAXMES="maxmes";
 	private static final String HOOKLOGIC_PGN="pgn";
+	private static final String HOOKLOGIC_LAT="lat";
+	private static final String HOOKLOGIC_PDUSERID = "pduserid";
+	
+	
 	
 	
 	private BrandProductAdConfigProvider hlAdConfigProvider = HLBrandProductAdConfigProvider.getInstance();
@@ -59,17 +63,15 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 		
 		StringBuilder urlToCallStr=new StringBuilder(hlAdConfigProvider.getBrandProductAdProviderURL());
 		TreeMap<String,String> urlParameters = new TreeMap<String, String>();
-
-		/*if we want to test the Hook logic API just pass the puserId and KeyWord below comment code and need to be commented below HLBrandProductAdRequest.java properties(getUserId,getSearchKeyWord). 
-			urlParameters.put(HOOKLOGIC_PUSERID, "1234");
-			urlParameters.put(HOOKLOGIC_KEYWORD, "soda");*/
-		
 		urlParameters.put(HOOKLOGIC_APIKEY, hlAdConfigProvider.getBrandProductAdProviderAPIKey());
+		if(hLRequestData.getPdUserId()!=null) {
+			urlParameters.put(HOOKLOGIC_PDUSERID, hLRequestData.getPdUserId());
+			urlParameters.put(HOOKLOGIC_LAT, hLRequestData.getLat());
+		}
 		urlParameters.put(HOOKLOGIC_PUSERID, hLRequestData.getUserId());
 		urlParameters.put(HOOKLOGIC_KEYWORD, hLRequestData.getSearchKeyWord());
 		urlParameters.put(HOOKLOGIC_TAXONOMY, "");
 		urlParameters.put(HOOKLOGIC_PLATFORM, hLRequestData.getPlatformSource());
-		//urlParameters.put(HOOKLOGIC_PLATFORM, hlAdConfigProvider.getBrandProductAdProviderPlatform());
 		urlParameters.put(HOOKLOGIC_IC, hlAdConfigProvider.getBrandProductAdProviderIc());
 		urlParameters.put(HOOKLOGIC_CULTURE, hlAdConfigProvider.getBrandProductAdProviderCulture());
 		urlParameters.put(HOOKLOGIC_MEDIASOURCE, hlAdConfigProvider.getBrandProductAdProviderMediaSource());
@@ -202,12 +204,14 @@ public HLBrandProductAdResponse getCategoryProducts(HLBrandProductAdRequest hLRe
             if ( urlToCallStr != null ) {
                 boolean first = true;
                 for ( String key : urlParameters.keySet() ) {
-                    if ( first) {
-                        first = false;
-                    } else {
-                        urlToCall.append("&");
-                    }
-                    urlToCall.append(key).append("=").append(URLEncoder.encode(urlParameters.get(key),charSet));
+                	if(null !=urlParameters.get(key)){
+	                    if ( first) {
+	                        first = false;
+	                    } else {
+	                        urlToCall.append("&");
+	                    }
+	                    urlToCall.append(key).append("=").append(URLEncoder.encode(urlParameters.get(key),charSet));
+                	}
                 }
                 urlToCallStr.append(urlToCall);
             }

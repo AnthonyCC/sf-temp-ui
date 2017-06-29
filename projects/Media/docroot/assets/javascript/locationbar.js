@@ -74,15 +74,12 @@
 		}
 	}
 	
-	/* count aletrts here */
+	/* count alerts here */
 	function getNonMessagesCount() {
 		var count = 0;
 
 		if($('#activatesoalert .so-activate-alert').length){
 			count += $('#activatesoalert .so-activate-alert').length;
-		}
-		if($('#minsoalert .so-min-alert').length){
-			count += $('#minsoalert .so-min-alert').length;
 		}
 		//count test alerts for debugging
 		if ($jq('.testalerts').length) {

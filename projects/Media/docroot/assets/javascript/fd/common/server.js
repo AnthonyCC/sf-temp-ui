@@ -14,7 +14,10 @@ var FreshDirect = FreshDirect || {};
      // "401": '<div class="unauthorized">Session expired, please refresh!</div>',
       "500": function (e) {
         var result = e.responseText,
-            message = "Internal Error";
+            message = {
+              primary: "Internal Error Occured",
+              secondary: "Please contact FreshDirect support!"
+            };
 
         try {
           message = JSON.parse(result).error;

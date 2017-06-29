@@ -104,17 +104,17 @@ final int W_CREDITCARD_SELECT_CARD = 280;
 %>
         </tr></table><br /><br />
 <%              } %>
-
+<fieldset><legend class="offscreen">Choose credit card</legend>
 <table border="0" cellpadding="0" cellspacing="0" width="<%= W_CREDITCARD_SELECT_TOTAL %>">
 	<tr valign="top">
 <%
             itemCounter=0;
           } %>
-	<td width="20" class="chooser_radio"><input type="<%=showRadioButtons?"radio":"hidden"%>" name="paymentMethodList" <%=checked%> value="<%=paymentPKId%>" ></TD>
-  <td width="<%= W_CREDITCARD_SELECT_CARD %>"> <%--<font class="text10bold">Credit Card</font><br />  --%>
+	<td width="20" class="chooser_radio"><input type="<%=showRadioButtons?"radio":"hidden"%>" id="paymentMethodList_<%=paymentPKId%>" name="paymentMethodList" <%=checked%> value="<%=paymentPKId%>" ></TD>
+  <td width="<%= W_CREDITCARD_SELECT_CARD %>" class="text12"> <%--<font class="text10bold">Credit Card</font><br />  --%>
 		<%-- <font class="text10bold"><%=paymentM.getCardType().getFdName()%></font><br /> --%>
-		<font class="text12"><%=paymentM.getName()%><br />
-		<b><%=paymentM.getCardType().getDisplayName()%></b> - <br /><%= paymentM.getMaskedAccountNumber() %><br />
+		<label for="paymentMethodList_<%=paymentPKId%>"><%=paymentM.getName()%><br />
+		<b><%=paymentM.getCardType().getDisplayName()%></b></label> - <br /><%= paymentM.getMaskedAccountNumber() %><br />
 		Expires: <%=(tmpDate.get(Calendar.MONTH)+1)+"/"+tmpDate.get(Calendar.YEAR)%><br />
 		<br />
 		<!-- if we have a billing address -->
@@ -126,8 +126,7 @@ final int W_CREDITCARD_SELECT_CARD = 280;
 		<%=paymentM.getAddress2()%><br />
 <%        }%>
 		<%=paymentM.getCity()%>, <%=paymentM.getState()%> <br /><%=paymentM.getCountry()%> <%=paymentM.getZipCode()%><br />
-		<br />
-		</font> 
+		<br /> 
 		<% if(editPage.indexOf("?")>-1) { %>
 			<a href="<%=editPage%>&paymentId=<%=paymentPKId%>">
 		<% } else { %>
@@ -165,6 +164,7 @@ final int W_CREDITCARD_SELECT_CARD = 280;
             }
 %>
     </tr></table>
+    </fieldset>
 <%
         }
     }

@@ -127,7 +127,10 @@ response.setHeader("Cache-Control", "no-cache");
 <fd:javascript  src="/assets/yui-2.9.0/json/json-min.js" />
 </tmpl:put>
 
-<tmpl:put name='title' direct='true'>FreshDirect - Your Profile</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Your Profile"/>
+  </tmpl:put>
+  <tmpl:put name='title' direct='true'>FreshDirect - Your Profile</tmpl:put>
 <tmpl:put name='content' direct='true'>
 
 <!-- * start the actual summary info * -->

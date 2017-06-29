@@ -19,6 +19,7 @@
 
 <potato:browse name="browsePotato" specialLayout="true" nodeId='${catId}'/>
 <c:set var="sitePage" scope="request" value="${browsePotato.descriptiveContent.oasSitePage}" />
+<c:set var="listPos" scope="request" value="SystemMessage,CategoryNote,BrowseTop1,BrowseTop2,BrowseTop3,BrowseBottom1,BrowseBottom2" />
 <%
 String template = "/common/template/browse_noleftnav_template.jsp";
 String oasSitePage = (request.getAttribute("sitePage") == null) ? "www.freshdirect.com/handpick/category.jsp" : request.getAttribute("sitePage").toString();
@@ -60,8 +61,21 @@ if (mobWeb) {
   </tmpl:put>
   
   <tmpl:put name="content" direct='true'>
-    <soy:render template="browse.specialMealkitLayoutMedia" data="${browsePotato}" />
-    <soy:render template="browse.specialMealkitLayoutContent" data="${browsePotato}" />
+	<div class="browse-oas-top">
+	    <div class="oas-cnt" id="oas_b_CategoryNote"><script type="text/javascript">OAS_AD('CategoryNote');</script></div>
+	    <div class="oas-cnt" id="oas_b_BrowseTop1"><script type="text/javascript">OAS_AD('BrowseTop1');</script></div>
+	    <div class="oas-cnt left" id="oas_b_BrowseTop2"><script type="text/javascript">OAS_AD('BrowseTop2');</script></div>
+	    <div class="oas-cnt right" id="oas_b_BrowseTop3"><script type="text/javascript">OAS_AD('BrowseTop3');</script></div>
+   	</div>
+   	
+   	<div class="clear">
+    	<soy:render template="browse.specialMealkitLayoutMedia" data="${browsePotato}" />
+    	<soy:render template="browse.specialMealkitLayoutContent" data="${browsePotato}" />
+    </div>
+    
+    <div class="oas-cnt left" id="oas_b_BrowseBottom1"><script type="text/javascript">OAS_AD('BrowseBottom1');</script></div>
+    <div class="oas-cnt right" id="oas_b_BrowseBottom2"><script type="text/javascript">OAS_AD('BrowseBottom2');</script></div>
+
     <script>
         window.FreshDirect = window.FreshDirect || {};
         window.FreshDirect.browse = window.FreshDirect.browse || {};

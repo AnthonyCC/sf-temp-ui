@@ -32,7 +32,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
  */
 public class SessionInput implements Cloneable {
 
-	private Set<ContentKey> cartContents = null;
+    private Set<ContentKey> cartContents;
 
 	private String customerId;
 
@@ -64,7 +64,7 @@ public class SessionInput implements Cloneable {
 
 	private Map<String, List<ContentKey>> previousRecommendations;
 
-	int maxRecommendations = Integer.MAX_VALUE;
+    private int maxRecommendations = Integer.MAX_VALUE;
 
 	/**
 	 * Page window size. Defaulted to maxRecommendations if set to 0
@@ -108,6 +108,9 @@ public class SessionInput implements Cloneable {
 	 */
 	private Set<ContentKey> cmsRecommenderKeys = new HashSet<ContentKey>();
 	
+    private List<ProductReference> productSamples;
+
+    private boolean error;
 
 	protected SessionInput() {
 	}
@@ -144,7 +147,8 @@ public class SessionInput implements Cloneable {
 			initCartContents(user);
 			initRecentItems(user);
 			this.pricingCtx = user.getUserContext().getPricingContext();
-			this.fulfillmentContext = user.getUserContext().getFulfillmentContext(); 
+            this.fulfillmentContext = user.getUserContext().getFulfillmentContext();
+            productSamples = user.getProductSamples();
 		}
 	}
 
@@ -519,10 +523,6 @@ public class SessionInput implements Cloneable {
 		return cloned;
 	}
 
-
-
-
-
 	public FulfillmentContext getFulfillmentContext() {
 		return fulfillmentContext;
 	}
@@ -531,11 +531,23 @@ public class SessionInput implements Cloneable {
 		this.fulfillmentContext = fulfillmentContext;
 	}
 
+    public List<ProductReference> getProductSamples() {
+        return productSamples;
+    }
 
+    public void setProductSamples(List<ProductReference> productSamples) {
+        this.productSamples = productSamples;
+    }
 
+    public boolean isError() {
+        return error;
+    }
 
+    public void setError(boolean error) {
+        this.error = error;
+    }
 
-	public static class Builder {
+    public static class Builder {
 		private int maxRecommendations = Integer.MAX_VALUE;
 		private int windowSize = 0;
 		
@@ -708,4 +720,5 @@ public class SessionInput implements Cloneable {
 		}
 
 	}
+
 }

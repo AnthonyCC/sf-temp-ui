@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 
+import com.freshdirect.webapp.ajax.analytics.data.GoogleAnalyticsData;
+
 /**
  *	Simple java bean for cart contents. 
  *	Class structure is representing the resulting JSON structure. 	
@@ -55,6 +57,8 @@ public class CartData implements Serializable {
 	 */
 	private Object header;
 	
+    private GoogleAnalyticsData googleAnalyticsData;
+
 	public String getErrorMessage() {
 		return errorMessage;
 	}	
@@ -111,8 +115,15 @@ public class CartData implements Serializable {
 		this.header = header;
 	}	
 	
+    public GoogleAnalyticsData getGoogleAnalyticsData() {
+        return googleAnalyticsData;
+    }
 
-	public static class Section implements Serializable {
+    public void setGoogleAnalyticsData(GoogleAnalyticsData googleAnalyticsData) {
+        this.googleAnalyticsData = googleAnalyticsData;
+    }
+
+    public static class Section implements Serializable {
 		
 		private static final long	serialVersionUID	= 1965764194639278346L;
 

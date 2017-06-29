@@ -1015,11 +1015,11 @@ public class FDStandingOrdersManager {
 		} 
 	}
 	
-	public void updateSoCartOverlayFirstTimePreferences(String customerId,boolean soCartOverlay) throws FDResourceException {
+	public void updateSoCartOverlayFirstTimePreferences(String customerId) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDStandingOrdersSB sb = soHome.create();
-			 sb.updateSoCartOverlayFirstTimePreferences(customerId,soCartOverlay);
+			 sb.updateSoCartOverlayFirstTimePreferences(customerId);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -1029,5 +1029,18 @@ public class FDStandingOrdersManager {
 		} 
 	}
 	
+	public void updateNewSoFeaturePreferences(String customerId) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();
+			 sb.updateNewSoFeaturePreferences(customerId);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		} 
+	}
 	
 }

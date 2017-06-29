@@ -88,6 +88,7 @@ final public class VariantRegistry {
 
 			sb = getServiceConfiguration();
 			Collection<Variant> variants = new ArrayList<Variant>();
+			Collection<Variant> vars = sb.getVariants(EnumSiteFeature.YMAL);
 			for (EnumSiteFeature feature : EnumSiteFeature.getSmartStoreEnumList())
 				variants.addAll(sb.getVariants(feature));
 

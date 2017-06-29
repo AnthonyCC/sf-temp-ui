@@ -1,5 +1,8 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <tmpl:insert template='/shared/template/small_pop.jsp'>
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect - Our Honest Pricing Policy"/>
+    </tmpl:put>
 	<tmpl:put name='title' direct='true'>FreshDirect - Our Honest Pricing Policy</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 	        <table width="100%"><tr><td><FONT CLASS="title12">Estimated Weight &amp; Our Honest Pricing Policy</FONT><br><br>

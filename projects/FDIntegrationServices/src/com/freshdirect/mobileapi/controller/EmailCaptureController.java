@@ -71,7 +71,7 @@ public class EmailCaptureController extends BaseController {
             } else if (EnumIPhoneCaptureType.EXISTING.equals(FDCustomerManager.iPhoneCaptureEmail(emailAddress, srcEnum))) {
 				LOGGER.info("controller:  existing iphone capture email: " + emailAddress);
                 responseMessage = getErrorMessage(ERR_INVALID_EMAIL,
-                "The email address you entered matches an existing account in our system. Please sign in to start shopping. If you have forgotten your password or need additional assistance, visit our website or call (1-212-796-8002).");
+                "The email address you entered matches an existing account in our system. Please sign in to start shopping. If you have forgotten your password or need additional assistance, visit our website or call (1-866-283-7374).");
             } else {
 				responseMessage = getErrorMessage(ERR_SYSTEM, ERR_SYSTEM_MESSAGE);
 			}

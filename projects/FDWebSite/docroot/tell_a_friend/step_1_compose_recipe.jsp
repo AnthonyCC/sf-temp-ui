@@ -37,7 +37,10 @@ function linkTo(url){
 </script>
 
 <tmpl:insert template='/common/template/minimal_pop.jsp'>
-	<tmpl:put name='title' direct='true'>FreshDirect - Tell a Friend</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Tell a Friend"/>
+  </tmpl:put>
+  <tmpl:put name='title' direct='true'>FreshDirect - Tell a Friend</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 
 <fd:SiteEmailController actionName="sendEmailNoPreview" result="result" successPage='<%= "/tell_a_friend/step_2_confirmation_recipe.jsp?recipeId=" + recipeId %>'>

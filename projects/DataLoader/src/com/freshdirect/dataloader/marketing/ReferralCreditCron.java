@@ -43,6 +43,7 @@ import com.freshdirect.customer.ejb.ActivityLogSB;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpCustomerHome;
 import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
@@ -297,7 +298,6 @@ public class ReferralCreditCron {
 		} else{ //Legacy Referral Program Credits
 
 	        MailerGatewayHome mHome = (MailerGatewayHome) ctx.lookup("freshdirect.mail.MailerGateway");
-	        MailerGatewaySB mailer = mHome.create();
 	        ErpCustomerHome ecHome = (ErpCustomerHome) ctx.lookup( FDStoreProperties.getErpCustomerHome() );
 	        LOGGER.info("Starting up now");
 			ReferralCreditCron cron = new ReferralCreditCron();
@@ -387,8 +387,12 @@ public class ReferralCreditCron {
 					    xemail.setSubject(subject);
 					    xemail.setFromAddress(new EmailAddress("FreshDirect", fromEmail));
 					    xemail.setRecipient(referralCm.getEmail());
-					    mailer.enqueueEmail(xemail);
-					    
+						if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.MailerGatewaySB)) {
+							FDECommerceService.getInstance().enqueueEmail(xemail);
+						} else {
+							MailerGatewaySB mailer = mHome.create();
+							mailer.enqueueEmail(xemail);
+						}
 					    //record the event in activity log
 					    ErpActivityRecord rec = new ErpActivityRecord();
 						rec.setActivityType(EnumAccountActivityType.REFERRAL_CREDIT);

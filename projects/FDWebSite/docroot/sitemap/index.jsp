@@ -6,6 +6,10 @@
 <head>
 <meta charset="UTF-8">
 <title>FreshDirect Sitemap</title>
+    <%@ include file="/common/template/includes/metatags.jspf" %>
+    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
+    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 <link rel="stylesheet" type="text/css" href="/assets/css/sitemap/sitemap.css">
 </head>
 <body>

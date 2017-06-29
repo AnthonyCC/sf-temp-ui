@@ -19,6 +19,7 @@ import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.CategoryModel;
@@ -78,7 +79,7 @@ public class TestSupport {
 	 */
 	public void ping() {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("test.ejb.TestSupportSB")){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.TestSupportSB)){
 			LogisticsServiceLocator.getInstance().getCommerceService().ping();
 			}else {
 			TestSupportSB bean = this.getTestSupportHome().create();
@@ -100,7 +101,7 @@ public class TestSupport {
 		List<Long> customersIds = null;
 		try {
 			
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("test.ejb.TestSupportSB")){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.TestSupportSB)){
 				customersIds= LogisticsServiceLocator.getInstance().getCommerceService().getDYFEligibleCustomerIDs();
 			
 			}else {
@@ -120,7 +121,7 @@ public class TestSupport {
 
 	public List<Long> getErpCustomerIDs() {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("test.ejb.TestSupportSB")){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.TestSupportSB)){
 			return LogisticsServiceLocator.getInstance().getCommerceService().getErpCustomerIds();
 			
 			}else {
@@ -141,7 +142,7 @@ public class TestSupport {
 
 	public String getFDCustomerIDForErpId(String erp_id) {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("test.ejb.TestSupportSB")){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.TestSupportSB)){
 				return LogisticsServiceLocator.getInstance().getCommerceService().getFDCustomerIDForErpId(erp_id);
 				
 				}else {
@@ -160,7 +161,7 @@ public class TestSupport {
 
 	public String getErpIDForUserID(String user_id) {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("test.ejb.TestSupportSB")){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.TestSupportSB)){
 				return LogisticsServiceLocator.getInstance().getCommerceService().getErpIDForUserID(user_id);
 				}else {
 			TestSupportSB bean = this.getTestSupportHome().create();
@@ -313,7 +314,7 @@ public class TestSupport {
 	
 	public Collection<String> getSkuCodes() {
 		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled("test.ejb.TestSupportSB")){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.TestSupportSB)){
 				return LogisticsServiceLocator.getInstance().getCommerceService().getSkuCodes();
 			}else{
 			TestSupportSB ejb = this.getTestSupportHome().create();

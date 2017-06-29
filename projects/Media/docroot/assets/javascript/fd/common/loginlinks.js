@@ -62,7 +62,7 @@ var FreshDirect = FreshDirect || {};
         if (fd.properties.isSocialLoginEnabled) {
           e.preventDefault();
           if (fd.user.guest && !ct.hasAttribute('fd-login-nosignup')) {
-        	  socialLogin(target);
+        	  socialSignup(target); /* why was this also login...? */
           } else {
             socialLogin(target);
           }

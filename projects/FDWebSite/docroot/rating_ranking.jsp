@@ -59,6 +59,8 @@ if (noLeftNav) {
     jspTemplate = "/common/template/left_dnav.jsp";
 }
 boolean breakOnSubfolder = productContainer != null ? productContainer.isRatingBreakOnSubfolders() : false;
+
+String title = "FreshDirect - " + currentFolder.getFullName();
 %>
 <tmpl:insert template='<%=jspTemplate%>'>
 <%
@@ -69,8 +71,10 @@ boolean breakOnSubfolder = productContainer != null ? productContainer.isRatingB
 <%
         }
 %>
-
-    <tmpl:put name='title' direct='true'>FreshDirect - <%= currentFolder.getFullName() %></tmpl:put>
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="<%= title %>"/>
+    </tmpl:put>
+    <tmpl:put name='title' direct='true'><%= title %></tmpl:put>
     <tmpl:put name='content' direct='true'>
 
 <% 

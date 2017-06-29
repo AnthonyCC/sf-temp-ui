@@ -54,7 +54,8 @@ public class RecommendationServiceConfig implements Serializable {
 	 * @see #equals(Object)
 	 * @return {@link #getVariantId()}.{@link String#hashCode()}
 	 */
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		return getVariantId().hashCode();
 	}
 
@@ -64,7 +65,8 @@ public class RecommendationServiceConfig implements Serializable {
 	 * 
 	 * @return if the two configs have the same name
 	 */
-	public boolean equals(Object o) {
+	@Override
+    public boolean equals(Object o) {
 		if (!(o instanceof RecommendationServiceConfig))
 			return false;
 		return ((RecommendationServiceConfig) o).getVariantId().equals(
@@ -94,7 +96,8 @@ public class RecommendationServiceConfig implements Serializable {
 	 * 
 	 * @return String representation
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
 		StringBuffer buf = new StringBuffer();
 
 		buf.append("{variant:" + variantId + ", ");
@@ -170,4 +173,5 @@ public class RecommendationServiceConfig implements Serializable {
 	public void setConfigStatus(SortedMap<String,ConfigurationStatus> configStatus) {
 		this.configStatus = configStatus;
 	}
+
 }

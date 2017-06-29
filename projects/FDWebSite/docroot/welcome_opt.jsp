@@ -50,7 +50,13 @@
 
 HEAD items
 	page title
-	--%><tmpl:put name="head_pageTitle"><title>FreshDirect</title></tmpl:put><%--
+	--%>
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect"/>
+    </tmpl:put>
+	<tmpl:put name="head_pageTitle"><title>FreshDirect</title></tmpl:put>
+	
+	<%--
 	meta tags
 	--%><tmpl:put name="head_metatags">
 			<%@ include file="/common/template/welcome_opt/i_head_metatags.jspf" %>

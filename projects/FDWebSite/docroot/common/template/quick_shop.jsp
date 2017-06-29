@@ -44,16 +44,16 @@ request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);%>
 </head>
 
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333"
-    onload="<%= request.getAttribute("bodyOnLoad")%>" 
+    onload="<%= request.getAttribute("bodyOnLoad")%>"
     onunload="<%= request.getAttribute("bodyOnUnload")%>"
     class="quickshop">
-<%@ include file="/shared/template/includes/i_body_start.jspf" %>      
+<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <%@ include file="/common/template/includes/globalnav.jspf" %>
 
 <CENTER CLASS="text10">
 
-				
-<% 
+
+<%
 String level = (String) request.getAttribute("quickshop.level");// This is defined in index.jsp or index_guest.jsp of quickshop
 
 if ("indexGuest".equals(level)){%>
@@ -75,7 +75,7 @@ if ("indexGuest".equals(level)){%>
 <TR VALIGN="TOP">
 	<TD WIDTH="<%= W_QUICK_SHOP_CONTENT %>">
 	<!-- nested quick shell here, content inside -->
-		
+
 		<TABLE WIDTH="<%= W_QUICK_SHOP_CONTENT %>" CELLPADDING="0" CELLSPACING="0" BORDER="0">
 
 		<TR VALIGN="TOP">
@@ -103,7 +103,7 @@ if ("indexGuest".equals(level)){%>
 						<% for (int i=0; i<brs; i++) { %><BR><% } %>
 					</TD>
 					<TD WIDTH="11" ALIGN="CENTER" VALIGN="BOTTOM"><img src="/media_stat/images/layout/cccccc.gif" alt="" width="1" height="28" border="0" HSPACE="7"><BR></TD>
-					<% if ( user.isEligibleForStandingOrders() ) { %>					
+					<% if ( user.isEligibleForStandingOrders() ) { %>
 						<TD valign="top">
 							<A HREF="/quickshop/standing_orders.jsp">Your Standing Orders</A>
 							<br>
@@ -139,11 +139,13 @@ if ("indexGuest".equals(level)){%>
 	<TD WIDTH="<%= W_QUICK_SHOP_CART %>">
 	<%@ include file="/includes/i_promotion_counter.jspf" %>
 	 <% if (FDStoreProperties.isAdServerEnabled()) { %>
-		<SCRIPT LANGUAGE=JavaScript>
-                <!--
-                OAS_AD('QSTopRight');
-                //-->
-      	</SCRIPT><br><br>
+    <div id='oas_QSTopRight'>
+		  <SCRIPT LANGUAGE=JavaScript>
+        <!--
+        OAS_AD('QSTopRight');
+        //-->
+      </SCRIPT><br><br>
+    </div>
 	 <% } %>
 	<%@ include file="/common/template/includes/your_cart_quick_shop.jspf" %>
 	</TD>

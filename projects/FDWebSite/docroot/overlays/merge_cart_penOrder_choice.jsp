@@ -220,6 +220,9 @@
 				}
 			</style>
 		</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Pending Order Merge"/>
+  </tmpl:put>
     <tmpl:put name='title'>FreshDirect - Pending Order Merge</tmpl:put>
     <tmpl:put name='content'>
     	<%

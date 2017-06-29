@@ -6,6 +6,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
@@ -76,6 +77,10 @@ public class IncludeMediaTag extends BodyTagSupport {
 			/* pass user/sessionUser by default, so it doesn't need to be added every place this tag is used. */
 			this.parameters.put("user", (FDUserI)user);
 			this.parameters.put("sessionUser", (FDSessionUser)user);
+			
+			/* add current uri */
+			HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+			this.parameters.put("uri", request.getRequestURI());
 			
 			StringWriter writer = new StringWriter();
 			

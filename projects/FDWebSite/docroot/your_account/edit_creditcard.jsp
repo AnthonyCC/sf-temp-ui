@@ -28,7 +28,10 @@ String rhPage = (request.getParameter("rh")!=null)?request.getParameter("rh").to
 
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <tmpl:insert template='<%=template%>'>
-<tmpl:put name='title' direct='true'>FreshDirect - Your Account - Edit Credit Card</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Your Account - Edit Credit / Debit Card"/>
+  </tmpl:put>
+  <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Edit Credit / Debit Card</tmpl:put>
 <tmpl:put name='content' direct='true'>
 
 <%
@@ -65,7 +68,7 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 
 <tr>
 <td class="text11" WIDTH="<%= W_YA_EDIT_CREDITCARD %>">
-<font class="title18">Edit Credit Card</font><br>
+<font class="title18">Edit Credit / Debit Card</font><br>
 </td>
 </tr>
 </table>

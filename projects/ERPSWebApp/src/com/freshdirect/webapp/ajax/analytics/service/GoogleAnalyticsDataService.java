@@ -1,7 +1,5 @@
 package com.freshdirect.webapp.ajax.analytics.service;
 
-import java.util.Map;
-
 import javax.servlet.http.HttpSession;
 
 import com.freshdirect.fdstore.FDResourceException;
@@ -26,14 +24,12 @@ public class GoogleAnalyticsDataService {
         return INSTANCE;
     }
 
-    public GoogleAnalyticsData populateBasicGAData(FDSessionUser user, String loginType, Boolean loginSuccess, Boolean signupSuccess, Boolean socialLoginSuccess,
-            GAPageTypeDistinguisher distinguisher, Map<String, Object> breadCrumbs)
+    public GoogleAnalyticsData populateBasicGAData(FDSessionUser user, String loginType, Boolean loginSuccess, Boolean signupSuccess, GAPageTypeDistinguisher distinguisher)
             throws FDResourceException {
         GoogleAnalyticsData data = new GoogleAnalyticsData();
         data.getGoogleAnalyticsData().put("customer", GACustomerDataService.defaultService().populateCustomerData(user, loginType));
         data.getGoogleAnalyticsData().put("pageType", GAPageTypeDataService.defaultService().populatePageTypeData(distinguisher));
-        data.getGoogleAnalyticsData().put("breadcrumb", GABreadCrumbDataService.defaultService().populateBreadCrumbData(breadCrumbs));
-        data.getGoogleAnalyticsData().put("login", GALoginDataService.defaultService().populateLoginData(loginSuccess, socialLoginSuccess));
+        data.getGoogleAnalyticsData().put("login", GALoginDataService.defaultService().populateLoginData(loginSuccess));
         data.getGoogleAnalyticsData().put("signup", GASignupDataService.defaultService().populateSignupData(signupSuccess));
         return data;
     }
@@ -57,11 +53,8 @@ public class GoogleAnalyticsDataService {
     }
 
 
-    public GoogleAnalyticsData populateCheckoutGAData(FDCartI cart, CartData cartData) {
-        GoogleAnalyticsData data = cartData.getGoogleAnalyticsData();
-        if (data == null) {
-            data = new GoogleAnalyticsData();
-        }
+    public GoogleAnalyticsData populateCheckoutGAData(FDCartI cart) {
+        GoogleAnalyticsData data = new GoogleAnalyticsData();
         data.getGoogleAnalyticsData().put("checkout", GACheckoutDataService.defaultService().populateCheckoutProductData(cart));
         return data;
     }

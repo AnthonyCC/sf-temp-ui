@@ -31,7 +31,10 @@ ProductModel prodModel = ContentFactory.getInstance().getProductByName(request.g
 %>
 
 <tmpl:insert template='/common/template/right_dnav.jsp'>
-<tmpl:put name='title' direct='true'>FreshDirect - Peak Produce</tmpl:put>
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect - Peak Produce"/>
+    </tmpl:put>
+    <tmpl:put name='title' direct='true'>FreshDirect - Peak Produce</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <div align="center">
 	<%@ include file="/includes/layouts/i_peak_produce_all.jspf" %>

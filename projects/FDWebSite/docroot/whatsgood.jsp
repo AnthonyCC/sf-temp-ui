@@ -40,7 +40,10 @@
 	
 %>
 
-	<tmpl:insert template='<%= templatePath %>'>
+<tmpl:insert template='<%= templatePath %>'>
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect - What's Good"/>
+    </tmpl:put>
 	<tmpl:put name='title' direct='true'>FreshDirect - What's Good</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 	<fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=ContentFactory.getInstance().getContentNode(deptId)%>"/>

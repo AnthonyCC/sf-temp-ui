@@ -260,6 +260,9 @@ private static Category  LOGGER = LoggerFactory.getInstance("group.jsp");
 	String TX_JS_NAMESPACE     = "groupScale_JSnamespace"; // impression javascript namespace
 	 %>
 <tmpl:insert template='<%= templatePath %>'>
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect - Group Scale Pricing"/>
+    </tmpl:put>
 	<tmpl:put name='title' direct='true'>FreshDirect - Group Scale Pricing</tmpl:put>
 	<tmpl:put name='left_nav_manual' direct='true'>
 		<table border="0" cellspacing="0" cellpadding="0" align="center" width="150">

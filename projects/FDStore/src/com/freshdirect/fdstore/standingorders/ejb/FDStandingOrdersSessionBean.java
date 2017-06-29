@@ -12,12 +12,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.ejb.CreateException;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
+
+import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumDeliverySetting;
 import com.freshdirect.customer.EnumStandingOrderType;
@@ -28,8 +31,10 @@ import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -55,13 +60,14 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrderInfo;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderInfoList;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderSkuResultInfo;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
-import com.freshdirect.fdstore.standingorders.UnavDetailsReportingBean;
 import com.freshdirect.fdstore.standingorders.SOResult.Result;
+import com.freshdirect.fdstore.standingorders.UnavDetailsReportingBean;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
+import com.freshdirect.payment.service.FDECommerceService;
 
 /**
  * @author kumarramachandran
@@ -1108,11 +1114,11 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
-	public void	updateSoCartOverlayFirstTimePreferences(String customerId, boolean soCartOverlay)throws FDResourceException,RemoteException{
+	public void	updateSoCartOverlayFirstTimePreferences(String customerId)throws FDResourceException,RemoteException{
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			FDStandingOrderDAO.updateSoCartOverlayFirstTimePreferences(conn, customerId, soCartOverlay);	
+			FDStandingOrderDAO.updateSoCartOverlayFirstTimePreferences(conn, customerId);	
 		} catch (SQLException e) {
 			LOGGER.error( "SQL ERROR in updateSoCartOverlayFirstTimePreferences(): " + e.getMessage(), e );
 			e.printStackTrace();
@@ -1122,5 +1128,18 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
+	public void	updateNewSoFeaturePreferences(String customerId)throws FDResourceException,RemoteException{
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO.updateNewSoFeaturePreferences(conn, customerId);	
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in updateNewSoFeaturePreferences(): " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+	}
 
 }

@@ -16,7 +16,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Category;
@@ -32,6 +34,8 @@ import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
 import com.freshdirect.fdstore.customer.FDCustomerSearchCriteria;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDOrderSearchCriteria;
+import com.freshdirect.fdstore.customer.PendingOrder;
+import com.freshdirect.fdstore.customer.SilverPopupDetails;
 import com.freshdirect.fdstore.customer.UnsettledOrdersInfo;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.NVL;
@@ -412,4 +416,55 @@ class FDCustomerOrderInfoDAO {
 		return unsettledOrders;
 		
 	}
+	
+	private static final String Pending_Deliveries_Freshdirect = "SELECT COUNT(1) \"Order Count\", SA.REQUESTED_DATE \"Delivery Date\" FROM CUST.SALE S, " +
+			"CUST.SALESACTION SA WHERE S.STATUS='ENR' AND SA.REQUESTED_DATE BETWEEN SYSDATE-3 AND SYSDATE-1 AND S.CROMOD_DATE=SA.ACTION_DATE " +
+			"AND SA.ACTION_TYPE IN ('CRO','MOD') AND S.ID=SA.SALE_ID AND S.TYPE='REG'"+
+			"AND S.E_STORE='FreshDirect'"+
+			"GROUP BY SA.REQUESTED_DATE ORDER BY SA.REQUESTED_DATE";
+	private static final String Pending_Deliveries_fdx = "SELECT COUNT(1) \"Order Count\", SA.REQUESTED_DATE \"Delivery Date\" FROM CUST.SALE S, " +
+			"CUST.SALESACTION SA WHERE S.STATUS='ENR' AND SA.REQUESTED_DATE BETWEEN SYSDATE-3 AND SYSDATE-1 AND S.CROMOD_DATE=SA.ACTION_DATE " +
+			"AND SA.ACTION_TYPE IN ('CRO','MOD') AND S.ID=SA.SALE_ID AND S.TYPE='REG'"+
+			"AND S.E_STORE='FDX'"+
+			"GROUP BY SA.REQUESTED_DATE ORDER BY SA.REQUESTED_DATE";
+
+	public static Map<String, List<PendingOrder>> getPendingDeliveries(Connection conn) throws SQLException {
+		Statement statement =  conn.createStatement();
+		ResultSet rs1 = statement.executeQuery(Pending_Deliveries_Freshdirect);
+		List<PendingOrder> freshDirectOrders = new ArrayList<PendingOrder>();
+		List<PendingOrder> fdx = new ArrayList<PendingOrder>();
+		while(rs1.next()){
+			PendingOrder order = new PendingOrder();
+			order.setOrderCount(rs1.getString("Order Count"));
+			order.setDeliveryDate(rs1.getString("Delivery Date"));
+			freshDirectOrders.add(order);
+		}
+		ResultSet rs2 = statement.executeQuery(Pending_Deliveries_fdx);
+		while(rs2.next()){
+			PendingOrder order = new PendingOrder();
+			order.setOrderCount(rs2.getString("Order Count"));
+			order.setDeliveryDate(rs2.getString("Delivery Date"));
+			fdx.add(order);
+		}
+		Map<String, List<PendingOrder>> totalOrders = new HashMap<String, List<PendingOrder>>();
+		totalOrders.put("freshdirect", freshDirectOrders);
+		totalOrders.put("fdx", fdx);
+		return totalOrders;
+	}
+	
+	private static final String retrieve_silverpopupdetails = "SELECT customer_id, qualifier, destination from cust.customer_pushnotification where trunc(UPDATE_TIMESTAMP) = trunc(sysdate)";
+	public static List<SilverPopupDetails> getSilverPopupDetails(Connection conn) throws SQLException {
+		Statement statement =  conn.createStatement();
+		ResultSet rs = statement.executeQuery(retrieve_silverpopupdetails);
+		List<SilverPopupDetails> details = new ArrayList<SilverPopupDetails>();
+		while(rs.next()){
+			SilverPopupDetails silverPopup = new SilverPopupDetails();
+			silverPopup.setCustomerId(rs.getString("customer_id"));
+			silverPopup.setQualifier(rs.getString("qualifier"));
+			silverPopup.setDestination(rs.getString("destination"));
+			details.add(silverPopup);
+		}
+		
+		return details;
+	}	
 }

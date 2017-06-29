@@ -64,7 +64,10 @@
 %>
 
 <tmpl:insert template='<%=template%>'>
-	<tmpl:put name='title' direct='true'>FreshDirect - Create Account</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Create Account"/>
+  </tmpl:put>
+  <tmpl:put name='title' direct='true'>FreshDirect - Create Account</tmpl:put>
 	
 	<tmpl:put name='extraCss' direct='true'>
 	    <!--  Added for Password Strength Display -->
@@ -448,9 +451,9 @@
 						</script>				
 					<% }
 				} %>
-		</fd:SiteAccessController>
+		</fd:SiteAccessController> 
+	<%@ include file="/common/template/includes/i_gtm_datalayer.jsp" %>
 	</tmpl:put>
-	
 	<tmpl:put name='jsmodules' direct='true'><%@ include file="/common/template/includes/i_jsmodules.jspf" %></tmpl:put>
 		
 	<tmpl:put name='extraJsFooter' direct='true'>

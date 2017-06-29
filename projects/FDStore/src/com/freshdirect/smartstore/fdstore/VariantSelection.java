@@ -9,11 +9,13 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.ecommerce.data.smartstore.EnumSiteFeatureData;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.service.FDECommerceService;
 
 public class VariantSelection {
 	private static VariantSelection sharedInstance = null;
@@ -49,7 +51,12 @@ public class VariantSelection {
 	 */
 	public Map<String, String> getVariantMap(EnumSiteFeature feature, Date date) {
 		try {
-			return serviceLocator.getVariantSelectionSessionBean().getVariantMap(feature, date);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("smartstore.ejb.VariantSelectionSB")){
+				return FDECommerceService.getInstance().getVariantMap(buildEnumFeatureData(feature),date);
+			}
+			else{
+				return serviceLocator.getVariantSelectionSessionBean().getVariantMap(feature, date);
+			}
 		} catch (RemoteException e) {
 			LOGGER.warn("Variant selection",e);
 			throw new FDRuntimeException(e);
@@ -62,21 +69,41 @@ public class VariantSelection {
 	 */
         public Map<String, String> getVariantMap(EnumSiteFeature feature) {
 		try {
-			return serviceLocator.getVariantSelectionSessionBean().getVariantMap(feature);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("smartstore.ejb.VariantSelectionSB")){
+				return FDECommerceService.getInstance().getVariantMap(buildEnumFeatureData(feature));
+			}
+			else{
+				return serviceLocator.getVariantSelectionSessionBean().getVariantMap(feature);
+			}
 		} catch (RemoteException e) {
 			LOGGER.warn("Variant selection",e);
 			throw new FDRuntimeException(e);
 		}
 	}
 	
+	private EnumSiteFeatureData buildEnumFeatureData(EnumSiteFeature feature) {
+		EnumSiteFeatureData enumSiteFeatureData = new EnumSiteFeatureData();
+		enumSiteFeatureData.setName(feature.getName());
+		enumSiteFeatureData.setPrez_desc(feature.getPresentationTitle());
+		enumSiteFeatureData.setPrez_desc(feature.getPresentationDescription());
+		enumSiteFeatureData.setSmartStore(feature.isSmartSavings());
+		enumSiteFeatureData.setTitle(feature.getTitle());
+		return enumSiteFeatureData;
+	}
+
+
 	/**
 	 * Returns the set of (cohort ID, weight) couples
 	 * @return
 	 */
 	public Map<String, Integer> getCohorts() {
 		try {
-			
-			return serviceLocator.getVariantSelectionSessionBean().getCohorts();
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("smartstore.ejb.VariantSelectionSB")){
+				return FDECommerceService.getInstance().getCohorts();
+			}
+			else{
+				return serviceLocator.getVariantSelectionSessionBean().getCohorts();
+			}
 		} catch (RemoteException e) {
 			LOGGER.warn("Variant selection", e);
 			throw new FDRuntimeException(e);
@@ -85,8 +112,14 @@ public class VariantSelection {
 	
 
 	public List<String> getCohortNames() {
+		List<String> names = null;
 		try {
-                    List<String> names = serviceLocator.getVariantSelectionSessionBean().getCohortNames();
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("smartstore.ejb.VariantSelectionSB")){
+				names =  FDECommerceService.getInstance().getCohortNames();
+			}
+			else{
+                names = serviceLocator.getVariantSelectionSessionBean().getCohortNames();
+			}
     		    return names;
 		} catch (RemoteException e) {
 			LOGGER.warn("Variant selection", e);
@@ -96,7 +129,12 @@ public class VariantSelection {
 
 	public List<String> getVariants(EnumSiteFeature feature) {
 		try {
-			return serviceLocator.getVariantSelectionSessionBean().getVariants(feature);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("smartstore.ejb.VariantSelectionSB")){
+				return  FDECommerceService.getInstance().getVariants(buildEnumFeatureData(feature));
+			}
+			else{
+				return serviceLocator.getVariantSelectionSessionBean().getVariants(feature);
+			}
 		} catch (RemoteException e) {
 			LOGGER.warn("Variant selection",e);
 			throw new FDRuntimeException(e);
@@ -109,7 +147,12 @@ public class VariantSelection {
 	 */
 	public List<Date> getStartDates() {
 		try {
-			return serviceLocator.getVariantSelectionSessionBean().getStartDates();
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("smartstore.ejb.VariantSelectionSB")){
+				return  FDECommerceService.getInstance().getStartDates();
+			}
+			else{
+				return serviceLocator.getVariantSelectionSessionBean().getStartDates();
+			}
 		} catch (RemoteException e) {
 			LOGGER.warn("Variant selection",e);
 			throw new FDRuntimeException(e);

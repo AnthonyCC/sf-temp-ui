@@ -58,14 +58,18 @@ public class DatasourceService {
     private SectionDataCointainer generateBrowseProductsForViewAll(ContentNodeI module, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException {
         DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
         ContentNodeI category = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"), currentDraftContext);
-        String categoryId = category.getKey().getId();
+        String categoryId=null;
+        if(category!=null && category.getKey()!=null)
+        	categoryId = category.getKey().getId();
         return ModuleContentService.getDefaultService().loadBrowseSectionDataContainer(categoryId, user);
     }
 
     private List<ProductData> generateBrowseProducts(ContentNodeI module, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException {
         DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
         ContentNodeI category = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"), currentDraftContext);
-        String categoryId = category.getKey().getId();
+        String categoryId=null;
+        if(category!=null && category.getKey()!=null)
+        	categoryId = category.getKey().getId();
         return ModuleContentService.getDefaultService().loadBrowseProducts(categoryId, user);
     }
 
@@ -233,7 +237,8 @@ public class DatasourceService {
                 }
                 break;
             case BROWSE:
-                if (showAllProducts) {
+                // Special view all for browse data source with product lists.
+                if (showAllProducts && ModuleSourceType.PRODUCT_LIST_MODULE.equals(moduleSourceType)) {
                     sectionDataContainer = generateBrowseProductsForViewAll(module, user);
                 } else {
                     products = generateBrowseProducts(module, user);

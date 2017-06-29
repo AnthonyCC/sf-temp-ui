@@ -14,8 +14,6 @@ final int W_DNAV_TOTAL = 970;
 <html>
 <head>
     <tmpl:get name="seoMetaTag"/>
- <%--    <%@ include file="/common/template/includes/metatags.jspf" %> --%>
-	
 	<tmpl:get name='customhead'/>
 
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
@@ -26,8 +24,7 @@ final int W_DNAV_TOTAL = 970;
   <%@ include file="/includes/sms_alerts/examples_layout.jspf" %>
 	<fd:css href="/assets/css/giftcards.css"/>
     <fd:css href="/assets/css/timeslots.css"/>
-    
-        
+
 	 <%
 		if ( (request.getRequestURI().indexOf("/your_account/giftcards.jsp")>-1) || (request.getRequestURI().indexOf("/your_account/gc_order_details.jsp")>-1) ) {
 			//do nothing

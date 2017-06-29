@@ -38,6 +38,9 @@ if (cat == null)
 %><fd:ProducerList id="prodz" needsValidGeolocation="<%= true %>" skipBodyOnEmptyResult="<%= false %>">
 <tmpl:insert template='/common/template/gmap_nav.jsp'>
 	<tmpl:put name='leftnav' direct='true'> <%-- <<< some whitespace is needed here --%></tmpl:put>
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect - What's Local"/>
+    </tmpl:put>
 	<tmpl:put name='title' direct='true'>FreshDirect - What's Local</tmpl:put>
 	<%-- SCRIPTS IN HEADER --%>
 	<tmpl:put name='head_content'>

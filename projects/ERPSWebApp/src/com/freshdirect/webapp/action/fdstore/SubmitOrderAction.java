@@ -688,6 +688,7 @@ public class SubmitOrderAction extends WebActionSupport {
 				user.getShoppingCart().setDeliveryAddress(cart.getDeliveryAddress());
 				user.getShoppingCart().setDeliveryPlantInfo(cart.getDeliveryPlantInfo());
 				user.getShoppingCart().setZoneInfo(cart.getZoneInfo());
+				FDCustomerManager.updateZoneInfo(user); // added as part of APPDEV 6272 FDC Transition
 				user.getShoppingCart().setEStoreId(cart.getEStoreId());
 				// user.updateSurcharges();
 				user.getShoppingCart().updateSurcharges(new FDRulesContextImpl(user));

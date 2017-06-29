@@ -32,9 +32,10 @@ String successPage = request.getRequestURI();
 boolean submitted = "thankYou".equalsIgnoreCase(request.getParameter("info"));
 %>
 <tmpl:insert template='/common/template/right_nav.jsp'>
-    <tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag title="FreshDirect - Catering"></fd:SEOMetaTag>
-	</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Catering"/>
+  </tmpl:put>
+  <tmpl:put name='title'>FreshDirect - Catering</tmpl:put>
     <tmpl:put name='content' direct='true'>
 		<fd:CateringOrderTag result="result" actionName="sendCateringOrder" successPage="/departments/hmr/catering.jsp?deptId=hmr">
 			<table width="<%=W_CATERING%>" cellpadding="0" cellspacing="0" border="0">

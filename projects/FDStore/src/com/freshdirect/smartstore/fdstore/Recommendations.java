@@ -238,8 +238,11 @@ public class Recommendations implements Serializable {
      * @return
      */
     public boolean isLogged() {
-    	final boolean x = logged[offset];
+        boolean x = false;
+        if (logged.length != 0) {
+            x = logged[offset];
     	logged[offset] = true;
+        }
     	return x;
     }
     

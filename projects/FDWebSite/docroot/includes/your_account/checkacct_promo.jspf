@@ -1,5 +1,5 @@
 <%
-String currentPage = request.getRequestURI(); 
+String currentPage = request.getRequestURI();
 boolean fromCheckout = currentPage.indexOf("checkout") > -1;
 String fromParam = fromCheckout ? "?from=checkout":"";
 String addCheckPage = fromCheckout ? "/checkout/step_3_checkacct_add.jsp" : "/your_account/add_checkacct.jsp";
@@ -20,10 +20,12 @@ Now FreshDirect's <b>online check-payment service</b> gives you another easy opt
 </td>
 <!--<td align="center">CHECK PAYMENT PROMOTION<br><a href="javascript:popup('/pay_by_check.jsp<%=fromParam%>','large')">Learn how it works</a></td></tr></table>-->
 <td width="60%">
-	<SCRIPT LANGUAGE=JavaScript>
-		<!--
-		OAS_AD('ProductNote');
-		//-->
-	</SCRIPT>
+  <div id='oas_ProductNote'>
+  	<SCRIPT LANGUAGE=JavaScript>
+  		<!--
+  		OAS_AD('ProductNote');
+  		//-->
+  	</SCRIPT>
+  </div>
 </td>
 </table>

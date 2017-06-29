@@ -9,7 +9,10 @@ final int W_YA_ADD_CREDITCARD = 970;
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 
 <tmpl:insert template='/common/template/dnav.jsp'>
-    <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Add Credit Card</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Your Account - Add Credit / Debit Card"/>
+  </tmpl:put>
+  <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Add Credit / Debit Card</tmpl:put>
 
     <tmpl:put name='content' direct='true'>
 
@@ -36,7 +39,7 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 <form method="post">
 <tr>
 <td class="text11" WIDTH="<%= W_YA_ADD_CREDITCARD %>">
-<font class="title18">Add Credit Card</font><br>
+<font class="title18">Add Credit / Debit Card</font><br>
 </td>
 </tr>
 </table>

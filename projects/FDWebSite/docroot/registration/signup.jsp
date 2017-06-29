@@ -38,7 +38,10 @@ final int W_SIGNUP_TOTAL = 970;
 %>
 <fd:RegistrationController actionName='register' successPage='<%= regContSuccessPage %>' result='result' fraudPage='<%= regContFraudPage %>' statusChangePage='registration_status_change.jsp' registrationType="<%=regType%>">
 <tmpl:insert template='/common/template/no_nav.jsp'>
-<tmpl:put name='title' direct='true'>FreshDirect - Sign Up</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Sign Up"/>
+  </tmpl:put>
+  <tmpl:put name='title' direct='true'>FreshDirect - Sign Up</tmpl:put>
 <tmpl:put name='content' direct='true'>
 
 

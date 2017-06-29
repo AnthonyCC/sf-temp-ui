@@ -111,36 +111,6 @@
       // potato loading
       window.FreshDirect.expressco = {};
       window.FreshDirect.expressco.data = <fd:ToJSON object="${singlePageCheckoutSuccessPotato}" noHeaders="true"/>
-
-      // Google Tag Manager - checkout related variables + 'checkout-success' event
-      var dataLayer = window.dataLayer || [];
-
-      dataLayer.push({
-        'co-subtotal': FreshDirect.expressco.data.semPixelData && FreshDirect.expressco.data.semPixelData.subtotal,
-        'co-subtotal-nd': FreshDirect.expressco.data.semPixelData && FreshDirect.expressco.data.semPixelData.subtotalND,
-        'co-neworder': FreshDirect.expressco.data.semPixelData && FreshDirect.expressco.data.semPixelData.newOrder,
-        'co-modifyorder': FreshDirect.expressco.data.semPixelData && FreshDirect.expressco.data.semPixelData.modifyOrder,
-        'co-orderid': FreshDirect.expressco.data.semPixelData && FreshDirect.expressco.data.semPixelData.orderId,
-        'co-totalcartitems': FreshDirect.expressco.data.semPixelData && FreshDirect.expressco.data.semPixelData.totalCartItems,
-        'co-usercounty': FreshDirect.expressco.data.semPixelData && FreshDirect.expressco.data.semPixelData.userCounty,
-        'co-discountamount': FreshDirect.expressco.data.semPixelData && FreshDirect.expressco.data.semPixelData.discountAmount,
-        'co-discountamount-nd': FreshDirect.expressco.data.semPixelData && FreshDirect.expressco.data.semPixelData.discountAmountND,
-        'co-productid': FreshDirect.expressco.data.semPixelData && FreshDirect.expressco.data.semPixelData.productId,
-        'co-validorders': FreshDirect.expressco.data.semPixelData && FreshDirect.expressco.data.semPixelData.validOrders,
-        'co-promocode': FreshDirect.expressco.data.semPixelData && FreshDirect.expressco.data.semPixelData.redeemedPromotions && FreshDirect.expressco.data.semPixelData.redeemedPromotions.join(','),
-      });
-
-      if (FreshDirect.expressco.data.semPixelData && (FreshDirect.expressco.data.semPixelData.newOrder || FreshDirect.expressco.data.semPixelData.modifyOrder)) {
-        dataLayer.push({
-          'event': FreshDirect.expressco.data.semPixelData.newOrder ? 'checkout-success' : 'modify-order-success'
-        });
-
-        if (FreshDirect.expressco.data.semPixelData.newOrder && FreshDirect.expressco.data.semPixelData.validOrders === 1) {
-          dataLayer.push({
-            'event': 'checkout-success-newcustomer'
-          });
-        }
-      }
     </script>
 
   </div>

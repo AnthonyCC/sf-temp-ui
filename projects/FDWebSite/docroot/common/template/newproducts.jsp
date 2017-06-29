@@ -30,18 +30,18 @@
 	<body class="newproducts <tmpl:get name="noResult"/> <tmpl:get name="startPage"/> <tmpl:get name='dfgs-container-class'/>">
 	<!--<![endif]-->
 		<%@ include file="/shared/template/includes/i_body_start.jspf" %>
-		<%@ include file="/common/template/includes/globalnav.jspf" %> 
+		<%@ include file="/common/template/includes/globalnav.jspf" %>
 	<div id="deptnav" class="newprod-deptnav container"><tmpl:get name='deptnav-header' /></div>
     <div id="content_top" class="content-header container">
     	<div class="span-7 orange eagle middle content-header-height result-text"><tmpl:get name="content-title"/><span class="result-helper"></span></span></div>
-    	<tmpl:get name="content-header"/>   	
+    	<tmpl:get name="content-header"/>
 		<div class="prepend-7 span-10 last newprod-header-count">
     		<tmpl:get name="count-header"/>
     	</div>
     </div>
-    <!-- div class="OAS-holder container"><script>OAS_AD('CategoryNote');</script></div -->
+    <!-- div class="OAS-holder container" id='oas_CategoryNote'><script>OAS_AD('CategoryNote');</script></div -->
     <div class="newprod-featured container"><tmpl:get name='featured'/></div>
-    <div class="container <tmpl:get name="activeView"/>-view"> 
+    <div class="container <tmpl:get name="activeView"/>-view">
     	<tmpl:get name='your-cart'/>
     	<div class="newprod-grid">
 		    <div class="toolbar"><div class="toolbar-content"><tmpl:get name="toolbar" /></div></div>
@@ -65,4 +65,4 @@
     <%@ include file="/common/template/includes/i_jsmodules.jspf" %>
 	  <tmpl:get name='customJsBottom'/>
 	</body>
-</html> 
+</html>

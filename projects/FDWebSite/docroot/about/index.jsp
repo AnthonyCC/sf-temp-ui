@@ -21,7 +21,10 @@
 
 
 <tmpl:insert template='<%= jspTemplate %>'>
-<tmpl:put name='title' direct='true'>FreshDirect - About Us</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - About Us"/>
+  </tmpl:put>
+  <tmpl:put name='title'>FreshDirect - About Us</tmpl:put>
 <tmpl:put name='content' direct='true'>
 	<% if ("dvlprs".equalsIgnoreCase(request.getParameter("catID"))) { %>
 		<%@ include file="/includes/i_about_preamble.jspf"%>

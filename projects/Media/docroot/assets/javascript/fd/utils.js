@@ -222,6 +222,10 @@ var FreshDirect = FreshDirect || {};
     utils.createCookie(name, "", -1);
   };
 
+  utils.isDeveloper = function () {
+    return utils.readCookie('developer');
+  };
+
   // create dummy console if there's no real one
   if (!window.console) {
     window.console = {

@@ -95,9 +95,19 @@ public class ErpCustomerInfoModel extends ModelSupport {
 	private String companyNameSignup; 
 	
 	private String soCartOverlayFirstTime;
+	
+	private String soFeatureOverlay;
 	/* APPDEV-4381  */
 	private String fdTcAgree;
 
+
+	public String getSoFeatureOverlay() {
+		return soFeatureOverlay;
+	}
+
+	public void setSoFeatureOverlay(String soFeatureOverlay) {
+		this.soFeatureOverlay = soFeatureOverlay;
+	}
 
 	public String getSoCartOverlayFirstTime() {
 		return soCartOverlayFirstTime;

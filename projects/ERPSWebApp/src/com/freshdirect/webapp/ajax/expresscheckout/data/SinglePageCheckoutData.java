@@ -122,6 +122,4 @@ public class SinglePageCheckoutData {
 		this.standingOrderResponseData = standingOrderResponseData;
 	}
 
-
-	
 }

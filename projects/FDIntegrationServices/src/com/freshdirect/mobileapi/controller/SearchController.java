@@ -179,6 +179,9 @@ public class SearchController extends BaseController {
                     SearchResults sr = SearchService.getInstance().searchProducts(searchTerm, nav.getRequestCookies(), user.getFDSessionUser(), nav.getRequestUrl(), nav.getReferer());
                     if(platform!=null){
                     	user.getFDSessionUser().setPlatForm(platform);
+                    	user.getFDSessionUser().setLat(lat);
+                    	user.getFDSessionUser().setPdUserId(pdUserId);
+                    	
                     }
                     SearchResultsUtil.getHLBrandProductAdProducts(sr, nav, user.getFDSessionUser());
                     if(!sr.getAdProducts().isEmpty()){
@@ -361,8 +364,10 @@ public class SearchController extends BaseController {
         if(pageType!=null && searchParams!=null){
             final CmsFilteringNavigator nav = CmsFilteringNavigator.createInstance(request, user.getFDSessionUser());
             SearchResults sr = SearchService.getInstance().searchProducts(searchTerm, nav.getRequestCookies(), user.getFDSessionUser(), nav.getRequestUrl(), nav.getReferer());
-            if(platform!=null){
+            if(platform!=null ){
             	user.getFDSessionUser().setPlatForm(platform);
+            	user.getFDSessionUser().setLat(lat);
+            	user.getFDSessionUser().setPdUserId(pdUserId);
             }
             SearchResultsUtil.getHLBrandProductAdProducts(sr, nav, user.getFDSessionUser());
             if(!sr.getAdProducts().isEmpty()){

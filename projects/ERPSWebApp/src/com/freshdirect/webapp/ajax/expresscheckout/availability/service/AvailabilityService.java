@@ -48,6 +48,8 @@ public class AvailabilityService {
 
 	private static final int DEFAULT_ATP_RESTRICTION_TIMEOUT = 30000;
 
+	public static final String ATP_CHECKOUT="Checkout";
+
 	private static final AvailabilityService INSTANCE = new AvailabilityService();
 
 	private AvailabilityService() {
@@ -61,7 +63,7 @@ public class AvailabilityService {
 			throws FDResourceException {
 		FDCartModel cart = FDCustomerManager.checkAvailability(
 				user.getIdentity(), user.getShoppingCart(),
-				DEFAULT_ATP_RESTRICTION_TIMEOUT);
+				DEFAULT_ATP_RESTRICTION_TIMEOUT,ATP_CHECKOUT);
 		System.out.println("WOW");
 		performDeliveryPassAvailabilityCheck(user);
 		user.updateUserState();

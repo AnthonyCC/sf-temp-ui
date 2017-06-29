@@ -128,7 +128,7 @@
 }
 
 /* hide OAS_SystemMessage from the old position */
-#OAS_SystemMessage {
+#oas_SystemMessage {
   display: none;
 }
 
@@ -170,7 +170,7 @@
 
 #messages .error-message-text {
 	color:#c00;
-	font-weight:bold;	
+	font-weight:bold;
 }
 
 #messages .warning-message {

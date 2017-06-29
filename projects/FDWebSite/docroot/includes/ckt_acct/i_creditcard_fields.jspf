@@ -223,7 +223,7 @@ if (isValidPaymentId) {
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>">
 	<tr>	
 		<td width="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" CLASS="text12">
-			In order to better protect our customers' personal information, we require a $1 validation authorization each time you add or edit a credit card. This charge may appear as a hold in your account information, but it will not be collected. The $1 charge will be returned as soon as is permitted by your issuing bank. To learn more about our <font class="text11bold">Customer Agreement</font>, 
+			In order to better protect our customers' personal information, we require a $1 validation authorization each time you add or edit a credit / debit card. This charge may appear as a hold in your account information, but it will not be collected. The $1 charge will be returned as soon as is permitted by your issuing bank. To learn more about our <font class="text11bold">Customer Agreement</font>, 
 			<a href="javascript:popup('/help/terms_of_service.jsp','large')">click here</a>.
 		</td>
 	</tr>
@@ -261,8 +261,8 @@ String addEBTPage = fromCheckout1 ? "/checkout/step_3_ebt_add.jsp" : "/your_acco
 <%-- IF NO PAYMENT METHOD YET, FIRST TIME, DEFAULTED HERE, SHOW CHECK PROMO--%>
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>">
 	<TR VALIGN="bottom">
-		<TD WIDTH="<%=proceedThruCheckout? W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL: W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL-200 %>">
-			<img src="/media_stat/images/navigation/credit_card_details.gif" WIDTH="152" HEIGHT="15" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;
+		<TD WIDTH="<%=proceedThruCheckout? W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL: W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL-200 %>" class="title14">
+<!-- 			<img src="/media_stat/images/navigation/credit_card_details.gif" WIDTH="152" HEIGHT="15" border="0" alt="CREDIT / DEBIT CARD DETAILS"> -->CREDIT / DEBIT CARD DETAILS&nbsp;&nbsp;&nbsp;
 			<FONT CLASS="text12">* Required information</FONT>
 		</TD>
 		<%if (!proceedThruCheckout) { %>
@@ -290,7 +290,7 @@ String addEBTPage = fromCheckout1 ? "/checkout/step_3_ebt_add.jsp" : "/your_acco
 	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_BRAND.getCode()%>"><span class="text11rbold"></fd:ErrorHandler><label for="<%=PaymentMethodName.CARD_BRAND%>_field">*&nbsp;Card Type&nbsp;&nbsp;</label><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_BRAND.getCode()%>"></span></fd:ErrorHandler></TD>
 	<TD WIDTH="565">
 		<SELECT class="text11" id="<%=PaymentMethodName.CARD_BRAND%>_field" name="<%=PaymentMethodName.CARD_BRAND%>" required="true">
-		<OPTION value="">Choose a credit card</OPTION>
+		<OPTION value="">Choose a credit / debit card</OPTION>
 		<%
 		
 		java.util.List ccTypes = com.freshdirect.common.customer.EnumCardType.getCardTypes();
@@ -369,12 +369,12 @@ String addEBTPage = fromCheckout1 ? "/checkout/step_3_ebt_add.jsp" : "/your_acco
 <br><br>
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>">
 <TR VALIGN="TOP">
-	<TD WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>">
-		<img src="/media_stat/images/navigation/billing_address_for_card.gif" WIDTH="229" HEIGHT="15" border="0" alt="BILLING ADDRESS">&nbsp;&nbsp;&nbsp;<FONT CLASS="text12">* Required information</FONT><BR>
+	<TD WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" class="title14">
+		<!-- <img src="/media_stat/images/navigation/billing_address_for_card.gif" WIDTH="229" HEIGHT="15" border="0" alt="BILLING ADDRESS"> -->BILLING ADDRESS FOR THIS CARD&nbsp;&nbsp;&nbsp;<FONT CLASS="text12">* Required information</FONT><BR>
 		<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" HEIGHT="1" BORDER="0" vspace="3"><BR>
 <%
 		if (yuzer.isEligibleForSignupPromotion()) {
-			%><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="2"><br><b>NOTE</b>: <font class="text11orbold">On your first home delivery order, to receive the free food promotion, your billing and delivery address must match.</font><% } else { %><font class="text12">Please enter billing address as it appears on your credit card statement.</font><%
+			%><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="2"><br><b>NOTE</b>: <font class="text11orbold">On your first home delivery order, to receive the free food promotion, your billing and delivery address must match.</font><% } else { %><font class="text12">Please enter billing address as it appears on your credit / debit card statement.</font><%
 		}
 %>
 		<br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br></TD></TR>

@@ -38,7 +38,10 @@ String[] checkSurveyForm = new String[questions.size()];
 <fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="true" /> 
 
 <tmpl:insert template='/common/template/no_space_border.jsp'>
-    <tmpl:put name='title' direct='true'>FreshDirect At The Office Feedback Survey</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - At The Office Feedback Survey"/>
+  </tmpl:put>
+  <tmpl:put name='title' direct='true'>FreshDirect - At The Office Feedback Survey</tmpl:put>
     <tmpl:put name='content' direct='true'>
 
 <fd:ReceiptSurvey actionName="submitSurvey" result="result" successPage="<%=successPage%>" survey="<%=cosFeedback%>">

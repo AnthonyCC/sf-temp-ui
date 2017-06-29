@@ -15,6 +15,7 @@ public class CartRequestData implements Serializable {
 
 	private Object header;
 	private Map<Integer,Change> change;
+    private String page;
 	
 	public Object getHeader() {
 		return header;
@@ -29,7 +30,15 @@ public class CartRequestData implements Serializable {
 		this.change = change;
 	}
 	
-	public static class Change implements Serializable {
+    public String getPage() {
+        return page;
+    }
+
+    public void setPage(String page) {
+        this.page = page;
+    }
+
+    public static class Change implements Serializable {
 		
 		private static final long	serialVersionUID	= -506884437929605359L;
 		

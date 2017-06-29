@@ -19,7 +19,7 @@ boolean mobWeb_address_finder = FeatureRolloutArbiter.isFeatureRolledOut(EnumRol
 %>
 
 <fd:LocationHandler/>
-<% 
+<%
 	/* this needs to be AFTER <fd:LocationHandler/> */
 	List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocationModel>) pageContext.getAttribute(LocationHandlerTag.ALL_PICKUP_DEPOTS_ATTR);
 
@@ -59,11 +59,13 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 				<tr>
 					<td colspan="3" class="title16">
 							<% if (FDStoreProperties.isAdServerEnabled()) { %>
+              <div id='oas_CategoryNote'>
 								<SCRIPT LANGUAGE="JavaScript">
 								<!--
 									OAS_AD('CategoryNote');
 									//-->
 								</SCRIPT>
+              </div>
 							<% } %>
 						<table>
 							<tr>
@@ -101,7 +103,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 				<tr>
 					<td colspan="3" class="text12"><%= (user != null && user.getReservation() != null) ? " Displayed below is your current delivery reservation for" : " Displayed below are the timeslots currently available to be reserved for"%>:</td>
 				</tr>
-				
+
 			<%}else if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS_CRM)){ %>
 				<tr>
 					<td colspan="3" class="text12">Displayed below are the timeslots currently available to be reserved for:</td>
@@ -110,21 +112,21 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 <%}%>
 				<tr>
 					<td>&nbsp;</td>
-				
+
 			<%
-			if (( (shipToAddresses.size() + allPickupDepots.size() >= 1) && !timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)&&!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)) || (timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER) && (shipToAddresses.size() + allPickupDepots.size() >= 1) && !isCheckAddress)) { 
+			if (( (shipToAddresses.size() + allPickupDepots.size() >= 1) && !timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)&&!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)) || (timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER) && (shipToAddresses.size() + allPickupDepots.size() >= 1) && !isCheckAddress)) {
 			%>
 					<td class="text12">
 						<script>
 
 							$jq(document).on('change','#addressId',function(e){
 								var key = $jq('#addressId').val();
-								
+
 								$jq.ajax({
 									url:'/api/locationhandler.jsp',
 									data:{
 										action:'selectAddress',
-										selectAddressList:key				
+										selectAddressList:key
 									},
 									success: function(data){
 										window.location.reload();
@@ -143,10 +145,10 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 										</option>
 									</logic:iterate>
 								<% } else { %>
-									<% 
+									<%
 									String selectedPickupId = (String)pageContext.getAttribute(LocationHandlerTag.SELECTED_PICKUP_DEPOT_ID_ATTR);
-									
-									
+
+
 									for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
 										ErpAddressModel addr = (ErpAddressModel)saItr.next();
 										String id = "";
@@ -167,7 +169,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 													address.setId(pickupAddress.getId());
 													pageAddrId = "DEPOT_"+selectedPickupId;
 												}
-											%>										
+											%>
 											<option value="DEPOT_<%= pickupAddress.getId() %>" <%= ((pickupAddress.getId()).equals(selectedPickupId)) ? "selected=\"selected\"" : "" %>>
 												<%=LocationHandlerTag.formatAddressTextWithZip(pickupAddress.getAddress())%>
 											</option>
@@ -175,7 +177,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 									</logic:iterate>
 								<% } %>
 						</SELECT><br /><br />
-						
+
 						</FORM>
 					</td>
 					<%if (!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM) && !timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM) && !timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS)){%>
@@ -183,7 +185,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 							<b>Please note that you may only have a delivery timeslot reservation for one address at a time.</b>
 						</td>
 					<%}%>
-				
+
 
 			<% } else {
 				if(address!=null){ %>
@@ -215,11 +217,11 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 
 <%
 	if (
-			!timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM) && 
-			!timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS) && 
-			!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM) && 
-			!timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS_CRM) && 
-			!timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS) && 
+			!timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM) &&
+			!timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS) &&
+			!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM) &&
+			!timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS_CRM) &&
+			!timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS) &&
 			user.isEligibleForPreReservation()
 	){
 %>
@@ -230,7 +232,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 		<td colspan="7">
 			<img src="/media_stat/images/layout/clear.gif"  alt="" width="1" height="2"><br/>
 	<% if(user.isEligibleForPreReservation()) { %>
-			
+
 		<table width="100%" style="padding-left: 5px; padding-right: 5px;">
 			<tr>
 				<td  align="left">
@@ -246,23 +248,27 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 			<% if (FDStoreProperties.isAdServerEnabled()) { %>
 				<%--
 				<tr>
+        <div id='oas_TimeslotBottom'>
 					<SCRIPT LANGUAGE=JavaScript>
 						OAS_AD('TimeslotBottom');
 					</SCRIPT><br/>
+        </div>
 				</tr>
 				--%>
 			<% } %>
 		</table>
-			
+
 	<% }else if(!user.isDlvPassActive() && !(user.isEligibleForPreReservation() && (!"true".equals(request.getParameter("chefstable"))))) { %>
 			<%--
 			<table width="100%">
 				<tr>
 				<% if (FDStoreProperties.isAdServerEnabled()) { %>
 					<tr>
+          <div id='oas_TimeslotBottom'>
 						<SCRIPT LANGUAGE=JavaScript>
 							OAS_AD('TimeslotBottom');
 						</SCRIPT><br/>
+          </div>
 					</tr>
 				<% } %>
 				 </tr>
@@ -275,6 +281,3 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 	<img src="/media_stat/images/layout/clear.gif"  alt="" width="1" height="12"><br/>
 
 <%}%>
-
-
-

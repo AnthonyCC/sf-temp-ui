@@ -39,9 +39,10 @@ final boolean isFd = "FreshDirect".equalsIgnoreCase( manager.getSingleStoreKey()
 final ContentKey key = isFd ? ContentKey.getContentKey(FDContentTypes.FDFOLDER, "FAQ") : ContentKey.getContentKey(FDContentTypes.FDFOLDER, "FAQ_fdx") ;
 ContentNodeI contentNode = manager.getContentNode(key);
 %><tmpl:insert template='/common/template/no_border_nonav.jsp'>
-
-
-<tmpl:put name='title' direct='true'> Top FAQs</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Top FAQs"/>
+  </tmpl:put>
+  <tmpl:put name='title'>FreshDirect - Top FAQs</tmpl:put>
 
 <tmpl:put name='content' direct='true'>
 

@@ -35,7 +35,10 @@ templateToUse = "/common/template/checkout_nav.jsp"; //EXPANDED_PAGE_VERIFY - sh
 %>
 
 <tmpl:insert template='<%=templateToUse%>'>
-	<tmpl:put name='title' direct='true'>Merge Cart</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Merge Cart"/>
+  </tmpl:put>
+  <tmpl:put name='title' direct='true'>FreshDirect - Merge Cart</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 
 <%if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){ System.out.println("555555555555"+fdTcAgree);%>

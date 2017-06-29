@@ -107,8 +107,14 @@
 				</div>
 				<div class="pdp-evenbetter-atcbutton">
 					{if $isEligibleForStandingOrders and length($soData.settingsData.soData) > 0}
-						<button type="button" data-component="ATCButton" class="cssbutton cssbutton-flat orange small">Add to Cart</button>
-						<button type="button" fd-login-required fd-login-successpage-current data-component="customizeButton" data-alignpopupfunction="transactionalCustomize" data-component="showSOButton" data-soshow="true" class="cssbutton cssbutton-flat purple nontransparent">Add to Standing Order</button>
+						<button type="button" data-component="ATCButton" class="cssbutton cssbutton-flat orange">Add to Cart</button>
+						{if length($soData.settingsData.soData) > 0}
+							<button type="button" fd-login-required fd-login-successpage-current data-component="customizeButton" data-alignpopupfunction="transactionalCustomize" data-component="showSOButton" data-soshow="true" class="cssbutton cssbutton-flat purple nontransparent">Add to Standing Order</button>
+						{else}
+							{call common.soRecurring}
+								{param useButton: true /}
+							{/call}
+						{/if}
 						<button type="button" class="addtolist pdp-evenbetter-addtolist cssbutton cssbutton-flat purpleborder" data-component="addToListButton">Add to List</button>
 					{else}
 						<button type="button" data-component="ATCButton" class="cssbutton orange small">Add to Cart</button>
@@ -131,15 +137,5 @@
 				</div>
 			{/if}
 		</div>
-		
-		{if $isEligibleForStandingOrders}
-			{if length($soData.settingsData.soData) == 0}
-				<div class="so-container">
-					<div class="so">
-						{call common.soRecurring /}
-					</div>
-				</div>
-			{/if}
-		{/if}
 	</div>
 {/template}

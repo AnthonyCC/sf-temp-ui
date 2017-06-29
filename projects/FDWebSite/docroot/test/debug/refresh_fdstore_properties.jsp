@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.fdstore.FDEcommProperties"%>
 <%@ page import='com.freshdirect.fdstore.promotion.PromotionFactory' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -18,6 +19,7 @@
 
 <%
     FDStoreProperties.forceRefresh();
+	FDEcommProperties.forceRefresh();
 %>
 FDStore Properties Refreshed Successfully.
 

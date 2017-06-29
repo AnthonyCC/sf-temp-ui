@@ -1,7 +1,10 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <tmpl:insert template='/common/template/no_site_nav.jsp'>
-	<tmpl:put name='title' direct='true'>Login</tmpl:put>
+    <tmpl:put name="seoMetaTag" direct='true'>
+        <fd:SEOMetaTag title="FreshDirect - Login"/>
+    </tmpl:put>
+	<tmpl:put name='title' direct='true'>FreshDirect - Login</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 				
 			
