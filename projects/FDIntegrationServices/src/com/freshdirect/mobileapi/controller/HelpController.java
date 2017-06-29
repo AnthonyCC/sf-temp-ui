@@ -76,13 +76,14 @@ public class HelpController extends BaseController {
         } else if (FOOD_SAFETY_ACTION.equalsIgnoreCase(action)) {
             try {
                 String recallContent = ProductUtil.readContent(PRODUCT_RECALLS_PATH);
-                StringBuilder sb = new StringBuilder(recallContent);
-                recallContent = sb.substring(sb.indexOf("<table") - 1, sb.indexOf("</table")) + "</table>";
+                if(!isCheckLoginStatusEnable(request)){
+                	StringBuilder sb = new StringBuilder(recallContent);
+                	recallContent = sb.substring(sb.indexOf("<table") - 1, sb.indexOf("</table")) + "</table>";
+                }
                 SafetyDetails prodRecall = createSafetyDetails("Product Recalls", "prodRecall", recallContent);
-                SafetyDetails prodRecallComplete = createSafetyDetails("Product Recalls Complete Details", "prodRecallComplete", sb.toString());
                 SafetyDetails cookingStorage = createSafetyDetails("Cooking & Storage", "cookStorage", ProductUtil.readContent(COOKING_STOREAGE_PATH));
                 SafetyDetails foodSafety = createSafetyDetails("Handling Food Safety", "foodSafety", ProductUtil.readContent(HANDLING_FOOD_SAFETY_PATH));
-                HelpTopic foodSafetyTopic = createHelpTopic("Food Safety", "foodSafety", prodRecall, cookingStorage, foodSafety, prodRecallComplete);
+                HelpTopic foodSafetyTopic = createHelpTopic("Food Safety", "foodSafety", prodRecall, cookingStorage, foodSafety);
                 data = getJsonString(createHelpTopics(foodSafetyTopic));
             } catch (Exception e) {
                 LOGGER.warn("Unable to serialize data", e);
