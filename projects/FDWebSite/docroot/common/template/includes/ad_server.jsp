@@ -205,6 +205,7 @@
 					.addParam("type", type)
 					.addParam("depot", depotAffil)
 					.addParam(sessionUser.isCorporateUser() ? "cosnod" : "fdnod", lastOrderDate)
+					.addParam("do", user.getAdjustedValidOrderCount())
 					.addParam(sessionUser.isCorporateUser() ? "cosdo" : "fddo",
 							user.getAdjustedValidOrderCount())
 					.addParam("win", 2);
