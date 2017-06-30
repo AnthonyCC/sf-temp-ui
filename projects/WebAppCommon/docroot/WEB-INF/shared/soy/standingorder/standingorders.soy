@@ -63,7 +63,7 @@
 									<div class="standing-orders-3-so-settings-activate-message-text">Place Order by {$item.cutOffFormattedDeliveryDate}, {$item.cutOffDeliveryTime}</div>
 								{/if}
 							</div>
-							<button class="standing-orders-3-so-settings-activate-button cssbutton orange checkout_button_w_subtotal" {if ($item.amount < $soData.settingsData.soSettings.soSoftLimit)}disabled{/if} onclick="activateSo({$item.id});">
+							<button class="standing-orders-3-so-settings-activate-button cssbutton orange checkout_button_w_subtotal" {if not $item.readyForActivation}disabled{/if} onclick="activateSo({$item.id});">
 								<span>Place Order</span>
 							</button>
 							<div class="clear"></div>
@@ -72,7 +72,7 @@
 					{/if}
 					<div class="standing-orders-3-so-settings-drawer-cart-container-wrap">
 					</div>
-					{if not $item.activated and $item.amount > 0}
+					{if not $item.activated and $item.subtotal > 0}
 					<div class="standing-orders-3-so-settings-activate standing-orders-3-so-settings-activate-bottom">
 						<div class="standing-orders-3-so-settings-activate-message">
 							<div class="standing-orders-3-so-settings-activate-message-date">First Delivery: {if $item.dayOfWeek and $item.deliveryDate}{$item.dayOfWeek}, {$item.deliveryDate}{/if}</div>
@@ -80,7 +80,7 @@
 								<div class="standing-orders-3-so-settings-activate-message-text">Place Order by {$item.cutOffFormattedDeliveryDate}, {$item.cutOffDeliveryTime}</div>
 							{/if}
 						</div>
-						<button class="standing-orders-3-so-settings-activate-button cssbutton orange checkout_button_w_subtotal" {if ($item.amount < $soData.settingsData.soSettings.soSoftLimit)}disabled{/if} onclick="activateSo({$item.id});">
+						<button class="standing-orders-3-so-settings-activate-button cssbutton orange checkout_button_w_subtotal" {if not $item.readyForActivation}disabled{/if} onclick="activateSo({$item.id});">
 							<span>Place Order</span>
 						</button>
 						<div class="clear"></div>

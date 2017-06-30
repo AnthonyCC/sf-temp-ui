@@ -95,8 +95,6 @@ function tip_entered(){
 	/*clean the initial tip amount of unwanted characters or needless extra periods or trailing numbers after the 1st period */
 	var tip = money_format( $jq(etids.inp_tipTextBox).val().trim() );
 	
-	console.log("now your'e a man! ", tip);
-	
 	var tipFloat = parseFloat(tip);
 
 	/*re-populate the optional custom tip textfield*/
@@ -149,11 +147,7 @@ function tip_entered(){
 		if(tipFloat >= 0 && !isNaN(tip) && (tip.length > 0) ){
 			//$jq(etids.btn_tipApply).prop('disabled', false);
 			button_enableDisable(etids.btn_tipApply, true);
-			
-			console.log("kyle");
 		}else{
-			console.log("stan");
-			
 			button_enableDisable(etids.btn_tipApply, false);
 		}
 			
@@ -168,8 +162,6 @@ function tip_entered(){
 	}
 	
 	//cartcontent.update();
-	
-	console.log("everything cool updated with "+ tip +"?");
 }
 
 /* APPDEV-4904, get the chosen payment type for the customer */

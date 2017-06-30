@@ -168,12 +168,12 @@ function standingOrdersNameInputChangeOK(id){
 	}
 }
 
-function soPlaceOrderDisplay(amount){
+function soPlaceOrderDisplay(readyForActivation){
 	if ($jq(".standing-orders-3-so-settings-activate-button").length) {
-		if(amount < FreshDirect.standingorder.softLimitDisplay){
-			$jq(".standing-orders-3-so-settings-activate-button").prop("disabled", true);
-		} else {
+		if(readyForActivation){
 			$jq(".standing-orders-3-so-settings-activate-button").prop("disabled", false);
+		} else {
+			$jq(".standing-orders-3-so-settings-activate-button").prop("disabled", true);
 		}
 	}
 }
@@ -230,6 +230,7 @@ function submitFormManageSO(id,action,name,freq){
       			$jq("#cartcontent").on( "cartcontent-update", function(){ soItemTriggerUpdate(id, data, false); });
       			$jq("#cartcontent").on( "quantity-change", function(){ soItemTriggerUpdate(id, data, true); });
       			$jq("#cartcontent").on( "cartline-delete", function(){ soItemTriggerUpdate(id, data, true); $jq(soID).addClass("cartline-deleted"); });
+      			$jq("#cartcontent").on( "click", "#tipApply", function(){ soItemTriggerUpdate(id, data, true); });
       			$jq("#ec-drawer").on( "address-update", function(){ soItemTriggerUpdate(id, data, false); });
       			$jq("#ec-drawer").on( "timeselector-update", function(){ soItemTriggerUpdate(id, data, false); });
       			$jq("#ec-drawer").on( "paymentmethod-update", function(){ soItemTriggerUpdate(id, data, false); });
@@ -301,7 +302,7 @@ function soItemTriggerUpdate(id, data, isCartUpdate){
 			if(data.standingOrderResponseData.activate){
     			$jq(soID + " .standing-orders-3-so-settings-activate").addClass("open");
 	      	}
-		}, 7000);
+		}, 5000);
 	} else {
 		$jq(soID).addClass("drawer-saved");
 		getSOData(id, "soItemUpdateDrawer");
@@ -347,7 +348,7 @@ function getSOData(id, action){
         		} else {
         			activatedAndHasAddress = false;
         		}
-        		soPlaceOrderDisplay(data.amount);
+        		soPlaceOrderDisplay(data.readyForActivation);
         		soSaved(id, activatedAndHasAddress, false);
         		updateSOItem(id, data);
         	}
@@ -357,7 +358,7 @@ function getSOData(id, action){
         		} else {
         			activatedAndHasAddress = false;
         		}
-        		soPlaceOrderDisplay(data.amount);
+        		soPlaceOrderDisplay(data.readyForActivation);
         		soSaved(id, activatedAndHasAddress, false);
         		updateSOItem(id, data);
         		var drawerSuccessConformation = '<div class="so-drawer-success"><div class="so-drawer-success-header"><div class="so-drawer-success-alert-img"></div>Important -- Please Read!</div>';
