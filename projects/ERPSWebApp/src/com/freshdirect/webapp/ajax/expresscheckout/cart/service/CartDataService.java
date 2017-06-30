@@ -585,8 +585,7 @@ public class CartDataService {
             if (reqData != null && reqData.getPage() != null && reqData.getPage().contains("checkout")) {
                 cartData.setCarouselData(CheckoutCarouselService.getDefaultService().populateViewCartTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));
             } else {
-                cartData.setCarouselData(
-                        ViewCartCarouselService.getDefaultService().populateViewCartTabsRecommendationsAndCarouselSampleCarousel(request, (FDSessionUser) user, input));
+                cartData.setCarouselData(ViewCartCarouselService.getDefaultService().populateViewCartTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));
             }
             cartData.setCustomerServiceRepresentative(CustomerServiceRepresentativeService.defaultService().loadCustomerServiceRepresentativeInfo(user));
             cartData.setAvalaraEnabled(FDStoreProperties.getAvalaraTaxEnabled());
