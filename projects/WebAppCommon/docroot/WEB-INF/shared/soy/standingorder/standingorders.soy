@@ -221,7 +221,7 @@
 					<div class="so-min-alert-img">
 					</div>
 					<div class="so-min-alert-message">
-						<div class="so-min-alert-message-bold">Standing Order "{$item.soName}" does not meet the minimum $ amount.</div>
+						<div class="so-min-alert-message-bold">Standing Order "{$item.soName}" does not meet the minimum ${$soData.settingsData.soSettings.soSoftLimit} amount.</div>
 						<br>
 						Please add more items to your Standing Order Master List.
 					</div>
@@ -321,7 +321,7 @@
 						</div>
 					</div>
 				{case 'MINORDER'}					
-					<div class="standing-orders-3-error-place-order">Your <a href="javascript:openSOSettings({$item.id})" class="standing-orders-3-error-place-order-settings">list of items</a> is below the $ dollar minimum.</div>
+					<div class="standing-orders-3-error-place-order">Your <a href="javascript:openSOSettings({$item.id})" class="standing-orders-3-error-place-order-settings">list of items</a> is below the ${$softLimit} dollar minimum.</div>
 				{case 'TIMESLOT_MINORDER'}
 					<div class="standing-orders-3-so-settings-error-header">We're sorry. There's a problem with your Standing Order:</div>
 			    	<div class="standing-orders-3-so-settings-error-header-bold">Your order has fallen below the ${$softLimit} minimum for delivery.</div>
