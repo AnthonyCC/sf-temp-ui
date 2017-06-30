@@ -356,7 +356,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 				<div class="locabar_addresses-change-zip-cont">
 					<div class="text">Change zip code.</div>
 					<span id="newzip">
-						<label for="newziptext"></label>
+						<label for="newziptext"><span class="offscreen">change your zip code</span></label>
 						<input type="text" id="newziptext" class="newziptext placeholder" placeholder="Enter zip code" maxlength="5" onkeydown="goButtonFocus(event);" autocomplete="off"  aria-describedby="zip_error" />						
 						<button id="newzipgo"  class="newzipgo cssbutton orange orange-imp cssbutton-flat">Change</button>
 						<span class="error-msg" id="zip_error" aria-live="assertive">Incomplete zip code</span>
@@ -411,7 +411,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 							<form class="n">
 								<div class=""><label class="n">Notify me when service comes to my area.</label></div>
 								<div>
-									<input type="text" id="location-email" class="placeholder" placeholder="Enter your e-mail" aria-describedby="email_error" /><button id="location-submit"  class="cssbutton fdxgreen cssbutton-flat">Send</button>
+									<input type="text" aria-label="Notify me through email when service comes to my area." id="location-email" class="placeholder" placeholder="Enter your e-mail" aria-describedby="email_error" /><button id="location-submit"  class="cssbutton fdxgreen cssbutton-flat">Send</button>
 									<span class="error-msg" id="email_error" aria-live="assertive">E-mail address is invalid</span>
 								</div>
 							</form>
@@ -429,8 +429,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 							</div>
 							<div style="display: inline-block; margin-right: 30px;" >
 								<div class="text13">Change your Zip Code.</div>
-								<label for="newzip"></label>
-								<span id="newzip"><input type="text" id="newziptext" class="newziptext placeholder" placeholder="Enter zip code" maxlength="5" onkeydown="goButtonFocusAlert(event);" aria-describedby="zip_error"><button id="newzipgo"  class="newzipgo cssbutton orange orange-imp cssbutton-flat newzipgoAlert">Change</button></span>
+								<span id="newzip"><input type="text" id="newziptext" aria-label="change your zip code" class="newziptext placeholder" placeholder="Enter zip code" maxlength="5" onkeydown="goButtonFocusAlert(event);" aria-describedby="zip_error"><button id="newzipgo"  class="newzipgo cssbutton orange orange-imp cssbutton-flat newzipgoAlert">Change</button></span>
 								<span class="error-msg" id="zip_error" aria-live="assertive">Incomplete zip code</span>
 							</div>
 							<div class="nodeliver-form" style="display: inline-block;" >
@@ -438,7 +437,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 									<form class="n">
 										<div style="display: inline-block; max-width: 350px;" class="text13"><label class="n">Notify me when service comes to my area.</label></div>
 										<div>
-											<input type="text" id="location-email" class="location-email-text placeholder" placeholder="Enter your e-mail" aria-describedby="email_error" /><button id="location-submit"  class="cssbutton fdxgreen cssbutton-flat">Send</button>
+											<input type="text" id="location-email" class="location-email-text placeholder" aria-label="notify me through email when service comes to my area" placeholder="Enter your e-mail" aria-describedby="email_error" /><button id="location-submit"  class="cssbutton fdxgreen cssbutton-flat">Send</button>
 											<span class="error-msg" id="email_error" aria-live="assertive">E-mail address is invalid</span>
 										</div>
 									</form>

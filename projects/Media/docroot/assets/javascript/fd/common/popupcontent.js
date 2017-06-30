@@ -274,7 +274,18 @@ var FreshDirect = FreshDirect || {};
       $el = $el.find('form').first();
     }
 
-    $el.find('[tabindex]').not('[tabindex="-1"]').first().focus();
+    //$el.find('[tabindex]').not('[tabindex="-1"]').first().focus();
+    var $lowestTabElem = null;
+
+    $el.find('[tabindex]').not('[tabindex="-1"]').each(function(i,e) {
+        if ($lowestTabElem === null || $jq(e).attr('tabIndex') < $jq($lowestTabElem).attr('tabIndex')) {
+            $lowestTabElem = $jq(e);
+        }
+    });
+
+    if ($lowestTabElem !== null) {
+        $lowestTabElem.focus();
+    }
   };
 
   PopupContent.prototype.unfocus = function () {
