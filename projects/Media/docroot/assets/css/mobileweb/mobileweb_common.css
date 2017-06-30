@@ -2527,3 +2527,8 @@ li.cleanli .gen-arrow {
 #nutritionPopup.fixedpopup.mm-page {
     min-height: 100vh;
 }
+
+/* mobWeb needs white icon */
+.locabar-cart {
+    background-image: url('/media/layout/nav/globalnav/fdx/locabar-cart.png');
+}
