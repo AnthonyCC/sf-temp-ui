@@ -32,12 +32,16 @@ public enum PageType {
     E_COUPONS("/srch.jsp?pageType=ecoupon"),
     FRESH_DEALS("/srch.jsp?pageType=pres_picks"),
     STAFF_PICKS("/srch.jsp?pageType=staff_picks"),
-    MEAL_KITS("/browse.jsp?pageType=meal_kits"),
+    MEAL_KITS("/handpick/category.jsp?pageType=meal_kits", "/browse.jsp?pageType=meal_kits"),
     RECIPE_DEPARTMENT("/recipe_dept.jsp"),
     RECIPE_CATEGORY("/recipe_cat.jsp"),
     RECIPE_SUBCATEGORY("/recipe_subcat.jsp"),
     RECIPE_PAGE("/recipe.jsp"),
-    ABOUT_US("/browse.jsp?pageType=about_us"),
+    ABOUT_US("/browse.jsp?id=about_overview"),
+    SALE("/browse.jsp?id=wgd_deals"),
+    TOP_RATED("/browse.jsp?id=top_rated"),
+    LOCAL("/browse.jsp?id=local"),
+    JULY_4("browse.jsp?id=wgd_summer_central"),
     NOT_RECOGNIZED("");
 
     private List<String> urls;
