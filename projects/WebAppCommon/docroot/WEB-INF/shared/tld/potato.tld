@@ -364,6 +364,7 @@
 	<tag>
 		<name>googleAnalytics</name>
 		<tagclass>com.freshdirect.webapp.ajax.analytics.tag.GoogleAnalyticsPotatoTag</tagclass>
+		<body-content>empty</body-content>
 		<attribute>
 			<name>name</name>
 			<required>false</required>
