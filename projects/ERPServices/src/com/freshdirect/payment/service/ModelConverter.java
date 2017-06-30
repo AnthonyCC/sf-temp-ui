@@ -19,6 +19,9 @@ import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.ZoneInfo;
+import com.freshdirect.content.nutrition.ErpNutritionInfoType;
+import com.freshdirect.content.nutrition.ErpNutritionModel;
+import com.freshdirect.content.nutrition.NutritionInfoAttribute;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.crm.CrmCaseActionType;
 import com.freshdirect.crm.CrmCaseOrigin;
@@ -98,6 +101,10 @@ import com.freshdirect.ecommerce.data.fdstore.SalesAreaInfoData;
 import com.freshdirect.ecommerce.data.logger.recommendation.FDRecommendationEventData;
 import com.freshdirect.ecommerce.data.mail.EmailAddressData;
 import com.freshdirect.ecommerce.data.mail.EmailData;
+import com.freshdirect.ecommerce.data.nutrition.ErpNutritionInfoTypeAttrWrapper;
+import com.freshdirect.ecommerce.data.nutrition.ErpNutritionInfoTypeData;
+import com.freshdirect.ecommerce.data.nutrition.ErpNutritionModelData;
+import com.freshdirect.ecommerce.data.nutrition.NutritionInfoAttributeData;
 import com.freshdirect.ecommerce.data.payment.ErpPaymentMethodData;
 import com.freshdirect.ecommerce.data.payment.FDGatewayActivityLogModelData;
 import com.freshdirect.ecommerce.data.payment.RestrictedPaymentMethodData;
@@ -1654,6 +1661,85 @@ public class ModelConverter {
 		model.setEmailID(source.getEmailID());
 		model.setDeviceId(source.getDeviceId());
 		model.setDebitCard(source.isDebitCard());
+	}
+
+	public static ErpNutritionModelData buildNutritionModelData(
+			ErpNutritionModel nutritionModel) {
+		ErpNutritionModelData data = new ErpNutritionModelData();
+		data.setLastModifiedDate(nutritionModel.getLastModifiedDate());
+		data.setSkuCode(nutritionModel.getSkuCode());
+		data.setUpc(nutritionModel.getUpc());
+		if(!nutritionModel.getUom().isEmpty())
+		data.setUom(nutritionModel.getUom());
+		if(!nutritionModel.getValues().isEmpty())
+		data.setValues(nutritionModel.getValues());
+		if(!nutritionModel.getNutritionInfo().isEmpty()){
+			List<ErpNutritionInfoTypeAttrWrapper> wrapperList = new ArrayList();
+			for (Map.Entry<ErpNutritionInfoType,NutritionInfoAttribute> entry : nutritionModel.getNutritionInfo().entrySet()){
+				ErpNutritionInfoTypeAttrWrapper wrapper = new ErpNutritionInfoTypeAttrWrapper();
+				wrapper.setAttributeData(buildNutritionInfoAttributeData(entry.getValue()));
+				wrapper.setNutritionData(buildErpNutritionInfoTypeData(entry.getKey()));
+				wrapperList.add(wrapper);
+			}
+		data.setInfo(wrapperList);
+		}
+		return data;
+	}
+
+
+	public static NutritionInfoAttributeData buildNutritionInfoAttributeData(
+			NutritionInfoAttribute value) {
+		NutritionInfoAttributeData data = new NutritionInfoAttributeData();
+		data.setPriority(value.getPriority());
+		data.setValue(value.getValue());
+		data.setType(buildErpNutritionInfoTypeData(value.getNutritionInfoType()));
+		return data;
+	}
+
+	public static ErpNutritionInfoTypeData buildErpNutritionInfoTypeData(ErpNutritionInfoType key) {
+		ErpNutritionInfoTypeData data = new ErpNutritionInfoTypeData();
+		data.setCode(key.getCode());
+		data.setName(key.getName());
+		data.setMultiValued(key.isMultiValued());
+		return data;
+	}
+
+	public static ErpNutritionModel buildErpNutritionModel(
+			ErpNutritionModelData nutritionModelData) {
+		ErpNutritionModel data = new ErpNutritionModel();
+		data.setLastModifiedDate(nutritionModelData.getLastModifiedDate());
+		data.setSkuCode(nutritionModelData.getSkuCode());
+		data.setUpc(nutritionModelData.getUpc());
+		if(nutritionModelData.getUom()!=null){
+			for (Map.Entry<String, String> entry : nutritionModelData.getUom().entrySet()){
+				data.setUomFor(entry.getKey(),entry.getValue());
+			}
+		}
+		if(nutritionModelData.getValues()!=null){
+			for (Map.Entry<String, Object> entry : nutritionModelData.getValues().entrySet()){
+				double val = (Double)entry.getValue();
+				data.setValueFor(entry.getKey(),val);
+			}
+		}	
+		if(nutritionModelData.getInfo()!=null){
+			for (ErpNutritionInfoTypeAttrWrapper  wrrapper : nutritionModelData.getInfo()){
+				
+				data.addNutritionAttribute(buildNutritionAttribute(wrrapper.getAttributeData()));
+			}
+		}	
+		return data;
+	}
+
+
+	public static NutritionInfoAttribute buildNutritionAttribute(
+			NutritionInfoAttributeData value) {
+		NutritionInfoAttribute data = new NutritionInfoAttribute(buildErpNutritionInfoType(value.getType()), value.getPriority(), value.getValue());
+		return data;
+	}
+
+	public static ErpNutritionInfoType buildErpNutritionInfoType(ErpNutritionInfoTypeData key) {
+		ErpNutritionInfoType data =    ErpNutritionInfoType.getInfoType(key.getCode());
+		return data;
 	}
 	
 }

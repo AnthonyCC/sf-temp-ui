@@ -41,6 +41,8 @@ import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.content.attributes.AttributeException;
 import com.freshdirect.content.attributes.FlatAttribute;
+import com.freshdirect.content.nutrition.ErpNutritionModel;
+import com.freshdirect.content.nutrition.panel.NutritionPanel;
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpCustEWalletModel;
@@ -111,6 +113,7 @@ import com.freshdirect.ecommerce.data.fdstore.GroupScalePricingData;
 import com.freshdirect.ecommerce.data.fdstore.SalesAreaInfoFDGroupWrapper;
 import com.freshdirect.ecommerce.data.logger.recommendation.FDRecommendationEventData;
 import com.freshdirect.ecommerce.data.mail.EmailData;
+import com.freshdirect.ecommerce.data.nutrition.ErpNutritionModelData;
 import com.freshdirect.ecommerce.data.payment.BINData;
 import com.freshdirect.ecommerce.data.payment.ErpPaymentMethodData;
 import com.freshdirect.ecommerce.data.payment.FDGatewayActivityLogModelData;
@@ -531,6 +534,22 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String LOAD_ALL_FRAUD_ENTRY_BY_ACCOUNTINFO="fraudactivity/paymentinfobyaccount";
 	
 	private static final String ENQUEUE_EMAIL = "mailer/enqueue";
+	
+	private static final String NUTRITION_CREATE = "nutrition/create";
+	private static final String NUTRITION_BY_SKU = "nutrition/skuCode";
+	private static final String NUTRITION_PANEL_BY_SKU ="nutrition/panelByskuCode" ;
+	private static final String NUTRITION_SKU_BY_UPC ="nutrition/skuCodeByupc" ;
+	private static final String NUTRITION_BY_DATE ="nutrition/lastModified" ;
+	private static final String NUTRITION_PANEL_BY_DATE ="nutrition/panelbyDate" ;
+	private static final String NUTRITION_SKU_UPC_MAP ="nutrition/createUpcSkuMap" ;
+	private static final String NUTRITION_PANEL_SAVE = "nutrition/savePanel";
+	private static final String NUTRITION_PANEL_DELETE = "nutrition/deletePanel";
+	
+	
+	
+	
+	
+	
 	
 	public static IECommerceService getInstance() {
 		if (INSTANCE == null)
@@ -5818,7 +5837,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 				}
 				
 			} catch (FDPayPalServiceException e) {
-				// TODO Auto-generated catch block
+				
 				throw new RemoteException(e.getMessage());
 			}
 			return fdProductInfos;
@@ -6061,5 +6080,180 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		}
 		return erpPaymentMethod;
 	}
+	@Override
+	public void createNutrition(ErpNutritionModel nutritionModel)
+			throws  RemoteException {
+		Response response = null;
+		ErpNutritionModelData data = ModelConverter.buildNutritionModelData(nutritionModel);
+		Request<ErpNutritionModelData> request = new Request<ErpNutritionModelData>();
+		String inputJson;
+		try{
+			
+			request.setData(data);
+			inputJson = buildRequest(request);
+			response = postData(inputJson,getFdCommerceEndPoint(NUTRITION_CREATE), Response.class);
+			if(!response.getResponseCode().equals("OK"))
+				throw new RemoteException(response.getMessage());	
+		} catch (FDPayPalServiceException e) {
+			throw new RemoteException(e.getMessage());
+		}catch (FDResourceException e) {
+			throw new RemoteException(e.getMessage());
+		}
+		
+		
+	}
+	@Override
+	public ErpNutritionModel getNutrition(String skuCode) throws RemoteException {
+		Response<ErpNutritionModelData> response = null;
+		
+		ErpNutritionModel nutritionModel;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(NUTRITION_BY_SKU)+"/"+skuCode,  new TypeReference<Response<ErpNutritionModelData>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new RemoteException(response.getMessage());
+			}
+			 nutritionModel = ModelConverter.buildErpNutritionModel(response.getData());
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return nutritionModel;
+	}
+	@Override
+	public NutritionPanel getNutritionPanel(String skuCode) throws RemoteException {
+		Response<NutritionPanel> response = null;
+		
+		ErpNutritionModel nutritionModel;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(NUTRITION_PANEL_BY_SKU)+"/"+skuCode,  new TypeReference<Response<NutritionPanel>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new RemoteException(response.getMessage());
+			}
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	
+	@Override
+	public String getSkuCodeForUpc(String upc) throws RemoteException {
+		Response<String> response = null;
+		
+		ErpNutritionModel nutritionModel;
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(NUTRITION_SKU_BY_UPC)+"/"+upc,  new TypeReference<Response<String>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new RemoteException(response.getMessage());
+			}
+
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	
+	
+	@Override
+	public Map<String, ErpNutritionModel> loadNutrition(Date lastModified) throws RemoteException {
+		Response<Map<String, ErpNutritionModelData>> response = null;
+		Map<String, ErpNutritionModel> data = new HashMap();
+		ErpNutritionModel nutritionModel;
+		try {
+			String date1=null;
+			SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+			if(lastModified!=null){
+			date1 = format1.format(lastModified); 
+			}
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(NUTRITION_BY_DATE)+"/"+date1,  new TypeReference<Response<Map<String, ErpNutritionModelData>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new RemoteException(response.getMessage());
+			}
+			
+			for(Map.Entry<String,ErpNutritionModelData> entry : response.getData().entrySet()){
+				data.put(entry.getKey(), ModelConverter.buildErpNutritionModel(entry.getValue()));
+			}
+			 
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return data;
+	}
+	@Override
+	public Map<String, NutritionPanel> loadNutritionPanels(Date lastModified) throws RemoteException {
+		Response<Map<String, NutritionPanel>> response = null;
+
+		try {
+			String date1=null;
+			SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+			if(lastModified!=null){
+			date1 = format1.format(lastModified); 
+			}
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(NUTRITION_PANEL_BY_DATE)+"/"+date1,  new TypeReference<Response<Map<String, NutritionPanel>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new RemoteException(response.getMessage());
+			}
+			 
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	
+	@Override
+	public void createUpcSkuMapping(String skuCode, String upcCode ) throws RemoteException {
+		Response<Map<String, NutritionPanel>> response = null;
+
+		try {
+		
+			response = this.getData(getFdCommerceEndPoint(NUTRITION_SKU_UPC_MAP)+"/skuCode/"+skuCode+"/upcCode/"+upcCode, Response.class);
+			if(!response.getResponseCode().equals("OK")){
+				throw new RemoteException(response.getMessage());
+			}
+			 
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	
+	}
+	
+	@Override
+	public void saveNutritionPanel(NutritionPanel nutritionModel)	throws  RemoteException {
+		Response response = null;
+		
+		Request<NutritionPanel> request = new Request<NutritionPanel>();
+		String inputJson;
+		try{
+			
+			request.setData(nutritionModel);
+			inputJson = buildRequest(request);
+			response = postData(inputJson,getFdCommerceEndPoint(NUTRITION_PANEL_SAVE), Response.class);
+			if(!response.getResponseCode().equals("OK"))
+				throw new RemoteException(response.getMessage());	
+		} catch (FDPayPalServiceException e) {
+			throw new RemoteException(e.getMessage());
+		}catch (FDResourceException e) {
+			throw new RemoteException(e.getMessage());
+		}
+	
+	}
+	@Override
+	public void deleteNutritionPanel(String  skuCode)	throws  RemoteException {
+		Response response = null;
+
+		try{
+			response = this.getData(getFdCommerceEndPoint(NUTRITION_PANEL_DELETE)+"/"+skuCode, Response.class);
+			if(!response.getResponseCode().equals("OK"))
+				throw new RemoteException(response.getMessage());	
+		} catch (FDResourceException e) {
+			throw new RemoteException(e.getMessage());
+		}
+	
+	}
+		
 	
 }

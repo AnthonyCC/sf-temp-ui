@@ -76,6 +76,7 @@ public class FDEcommProperties {
 	public final static String MailerGatewaySB ="mail.ejb.MailerGatewaySB";
 	public final static String ErpProductFamilySB ="erp.ejb.ErpProductFamilySB";
 	public final static String RestrictedPaymentMethodSB = "fraud.ejb.RestrictedPaymentMethodSB";
+	public static final String ErpNutritionSB = "nutrition.ejb.ErpNutritionSB";
 
 	
     

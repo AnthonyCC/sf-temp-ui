@@ -24,8 +24,11 @@ import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
 import com.freshdirect.dataloader.nutrition.EshaSpreadsheetParser;
+import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 
 /**@author ekracoff on May 6, 2004*/
@@ -116,10 +119,14 @@ public class NutritionUploadTag extends AbstractControllerTag {
 			ErpNutritionHome nutritionHome = (ErpNutritionHome) ctx.lookup(ErpServicesProperties.getNutritionHome());
 
 			ErpNutritionSB sb = nutritionHome.create();
+			ErpNutritionModel oldEnm;
 			for (Iterator nIter = nutrition.iterator(); nIter.hasNext();) {
 				ErpNutritionModel enm = (ErpNutritionModel) nIter.next();
-				ErpNutritionModel oldEnm = sb.getNutrition(enm.getSkuCode());
-				
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
+					oldEnm=FDECommerceService.getInstance().getNutrition(enm.getSkuCode());
+				}else{
+				 oldEnm = sb.getNutrition(enm.getSkuCode());
+				}
 				for(Iterator i = oldEnm.getKeyIterator(); i.hasNext();){
 					String key = (String)i.next();
 					if(!enm.containsNutritionInfoFor(key)){

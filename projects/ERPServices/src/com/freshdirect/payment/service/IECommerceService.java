@@ -18,6 +18,8 @@ import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.content.attributes.AttributeException;
 import com.freshdirect.content.attributes.FlatAttributeCollection;
+import com.freshdirect.content.nutrition.ErpNutritionModel;
+import com.freshdirect.content.nutrition.panel.NutritionPanel;
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpCustEWalletModel;
@@ -732,4 +734,22 @@ public interface IECommerceService {
 
 	public ErpPaymentMethodI findPaymentMethodByAccountInfo(
 			RestrictedPaymentMethodModel restrictedPaymentMethod) throws FDResourceException, RemoteException;
+
+	public void createNutrition(ErpNutritionModel buildNutritionModel) throws  RemoteException;
+
+	public ErpNutritionModel getNutrition(String skuCode) throws  RemoteException;
+
+	public NutritionPanel getNutritionPanel(String skuCode) throws RemoteException;
+
+	public String getSkuCodeForUpc(String upc) throws RemoteException;
+
+	public Map<String, ErpNutritionModel> loadNutrition(Date lastModified) throws RemoteException;
+
+	public Map<String, NutritionPanel> loadNutritionPanels(Date lastModified) throws RemoteException;
+
+	public void createUpcSkuMapping(String skuCode, String upcCode)	throws RemoteException;
+
+	public void saveNutritionPanel(NutritionPanel nutritionModel)throws RemoteException;
+
+	public void deleteNutritionPanel(String skuCode) throws RemoteException;
 }

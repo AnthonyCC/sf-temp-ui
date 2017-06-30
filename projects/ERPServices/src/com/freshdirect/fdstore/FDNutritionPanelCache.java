@@ -17,6 +17,7 @@ import com.freshdirect.content.nutrition.panel.NutritionPanel;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.service.FDECommerceService;
 
 // Refactored to NOT extend AbstractCache, because that cannot handle empty values,
 // and so deleting a drug panel is not possible.
@@ -59,7 +60,11 @@ public class FDNutritionPanelCache {
 		try {
 			LOGGER.info( "REFRESHING" );
 			ErpNutritionSB sb = this.lookupNutritionHome().create();
-			data = sb.loadNutritionPanels( new Date(0L) );			
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
+				data =FDECommerceService.getInstance().loadNutritionPanels(new Date(0L) );
+			}else{			
+			data = sb.loadNutritionPanels( new Date(0L) );		
+			}
 			LOGGER.info( "REFRESHED: " + data.size() );
 		} catch ( RemoteException e ) {
 			throw new FDRuntimeException( e );
