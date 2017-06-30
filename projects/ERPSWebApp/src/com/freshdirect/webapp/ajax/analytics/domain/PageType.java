@@ -5,8 +5,8 @@ import java.util.List;
 
 public enum PageType {
     HOMEPAGE("/index.jsp", "/cos.jsp", "/welcome.jsp"),
-    LOGIN("/login/login.jsp"),
-    REGISTER("/registration/signup.jsp"),
+    LOGIN("/social/login.jsp"),
+    REGISTER("/social/signup_lite.jsp"),
     CATEGORY_LIST("/browse.jsp?pageType=category_list"),
     PRODUCT_LIST("/browse.jsp?pageType=product_list"),
     SEARCH("/srch.jsp"),
@@ -37,7 +37,7 @@ public enum PageType {
     RECIPE_CATEGORY("/recipe_cat.jsp"),
     RECIPE_SUBCATEGORY("/recipe_subcat.jsp"),
     RECIPE_PAGE("/recipe.jsp"),
-    ABOUT_US("/browse.jsp?id=about_overview"),
+    ABOUT_US("/browse_special.jsp?id=about_overview"),
     SALE("/browse.jsp?id=wgd_deals"),
     TOP_RATED("/browse.jsp?id=top_rated"),
     LOCAL("/browse.jsp?id=local"),
