@@ -419,7 +419,8 @@
 		margin-top: 10px;
 	}
 	.portrait-item-so-recurring {
-		font-size: 10px;
+		font-size: 12px;
+		text-align: center;
 	}
 	#evenBetterPopup.shown .pdp-evenbetter-atc{
 		width: 235px;
