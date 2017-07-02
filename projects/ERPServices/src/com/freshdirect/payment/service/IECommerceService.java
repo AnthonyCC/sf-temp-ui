@@ -708,9 +708,9 @@ public interface IECommerceService {
 	
 	
 
-	public FDProduct getProduct(String sku, int version);
+	public FDProduct getProduct(String sku, int version) throws RemoteException;
 	
-	public PrimaryKey createRestrictedPaymentMethod(RestrictedPaymentMethodModel restrictedPaymentMethod) throws RemoteException, FDResourceException;
+	public PrimaryKey createRestrictedPaymentMethod(RestrictedPaymentMethodModel restrictedPaymentMethod) throws RemoteException;
 
 	public RestrictedPaymentMethodModel findRestrictedPaymentMethodByPrimaryKey(PrimaryKey pk) throws RemoteException;
 
@@ -718,22 +718,21 @@ public interface IECommerceService {
 
 	public RestrictedPaymentMethodModel findRestrictedPaymentMethodByPaymentMethodId(String paymentMethodId, EnumRestrictedPaymentMethodStatus status) throws RemoteException;
 
-	public List<RestrictedPaymentMethodModel> findRestrictedPaymentMethods(RestrictedPaymentMethodCriteria criteria) throws FDResourceException, RemoteException;
+	public List<RestrictedPaymentMethodModel> findRestrictedPaymentMethods(RestrictedPaymentMethodCriteria criteria) throws RemoteException;
 
-	public void storeRestrictedPaymentMethod(RestrictedPaymentMethodModel restrictedPaymentMethod) throws FDResourceException, RemoteException;
+	public void storeRestrictedPaymentMethod(RestrictedPaymentMethodModel restrictedPaymentMethod) throws RemoteException;
 
-	public void removeRestrictedPaymentMethod(PrimaryKey pk, String lastModifyUser) throws RemoteException, FDResourceException;
+	public void removeRestrictedPaymentMethod(PrimaryKey pk, String lastModifyUser) throws RemoteException;
 
 	public List<RestrictedPaymentMethodModel> loadAllPatterns() throws FDResourceException, RemoteException;
 
-	public List<RestrictedPaymentMethodModel> loadAllRestrictedPaymentMethods() throws FDResourceException, RemoteException;
+	public List<RestrictedPaymentMethodModel> loadAllRestrictedPaymentMethods() throws RemoteException;
 
-	public List<RestrictedPaymentMethodModel> loadAllBadPaymentMethods() throws FDResourceException, RemoteException;
+	public List<RestrictedPaymentMethodModel> loadAllBadPaymentMethods() throws RemoteException;
 
-	public boolean checkBadAccount(ErpPaymentMethodI erpPaymentMethod, boolean useBadAccountCache) throws FDResourceException, RemoteException;
+	public boolean checkBadAccount(ErpPaymentMethodI erpPaymentMethod, boolean useBadAccountCache) throws RemoteException;
 
-	public ErpPaymentMethodI findPaymentMethodByAccountInfo(
-			RestrictedPaymentMethodModel restrictedPaymentMethod) throws FDResourceException, RemoteException;
+	public ErpPaymentMethodI findPaymentMethodByAccountInfo(RestrictedPaymentMethodModel restrictedPaymentMethod) throws RemoteException;
 
 	public void createNutrition(ErpNutritionModel buildNutritionModel) throws  RemoteException;
 

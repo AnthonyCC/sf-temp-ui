@@ -17,11 +17,20 @@ import java.util.TreeMap;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.common.pricing.CharacteristicValuePrice;
 import com.freshdirect.common.pricing.MaterialPrice;
+import com.freshdirect.common.pricing.Pricing;
+import com.freshdirect.common.pricing.SalesUnitRatio;
 import com.freshdirect.common.pricing.ZoneInfo;
+import com.freshdirect.content.attributes.AttributeCollection;
+import com.freshdirect.content.attributes.AttributesI;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.NutritionInfoAttribute;
+import com.freshdirect.content.nutrition.panel.NutritionPanel;
+import com.freshdirect.content.nutrition.panel.NutritionPanelType;
+import com.freshdirect.content.nutrition.panel.NutritionSection;
+import com.freshdirect.content.nutrition.panel.NutritionSectionType;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.crm.CrmCaseActionType;
 import com.freshdirect.crm.CrmCaseOrigin;
@@ -68,11 +77,25 @@ import com.freshdirect.ecommerce.data.enums.EnumComplaintDlvIssueTypeData;
 import com.freshdirect.ecommerce.data.enums.EnumFeaturedHeaderTypeData;
 import com.freshdirect.ecommerce.data.enums.ErpAffiliateData;
 import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
+import com.freshdirect.ecommerce.data.erp.factory.CharacteristicValuePriceData;
+import com.freshdirect.ecommerce.data.erp.factory.FDMaterialData;
 import com.freshdirect.ecommerce.data.erp.factory.FDMaterialSalesAreaData;
+import com.freshdirect.ecommerce.data.erp.factory.FDNutritionData;
 import com.freshdirect.ecommerce.data.erp.factory.FDPlantMaterialData;
+import com.freshdirect.ecommerce.data.erp.factory.FDProductData;
 import com.freshdirect.ecommerce.data.erp.factory.FDProductInfoData;
+import com.freshdirect.ecommerce.data.erp.factory.FDSalesUnitData;
+import com.freshdirect.ecommerce.data.erp.factory.FDVariationData;
+import com.freshdirect.ecommerce.data.erp.factory.FDVariationOptionData;
+import com.freshdirect.ecommerce.data.erp.factory.MaterialSalesAreaData;
+import com.freshdirect.ecommerce.data.erp.factory.NutritionPanelData;
+import com.freshdirect.ecommerce.data.erp.factory.NutritionSectionData;
+import com.freshdirect.ecommerce.data.erp.factory.PricingData;
+import com.freshdirect.ecommerce.data.erp.factory.SalesUnitRatioData;
+import com.freshdirect.ecommerce.data.erp.factory.ZonePriceData;
 import com.freshdirect.ecommerce.data.erp.factory.ZonePriceInfoData;
 import com.freshdirect.ecommerce.data.erp.factory.ZonePriceInfoListingData;
+import com.freshdirect.ecommerce.data.erp.factory.ZonePriceListingData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpInventoryData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpInventoryEntryData;
 import com.freshdirect.ecommerce.data.erp.material.ErpCharacteristicData;
@@ -137,17 +160,25 @@ import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDGroup;
+import com.freshdirect.fdstore.FDMaterial;
 import com.freshdirect.fdstore.FDMaterialSalesArea;
+import com.freshdirect.fdstore.FDNutrition;
 import com.freshdirect.fdstore.FDPlantMaterial;
+import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
+import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
+import com.freshdirect.fdstore.FDVariation;
+import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.GrpZonePriceListing;
 import com.freshdirect.fdstore.GrpZonePriceModel;
 import com.freshdirect.fdstore.SalesAreaInfo;
 import com.freshdirect.fdstore.ZonePriceInfoListing;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
+import com.freshdirect.fdstore.ZonePriceListing;
+import com.freshdirect.fdstore.ZonePriceModel;
 import com.freshdirect.fdstore.ecoupon.model.CouponCart;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionDetailModel;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
@@ -391,7 +422,7 @@ public class ModelConverter {
 			List<FDProductPromotionInfoData> value) {
 		 List<FDProductPromotionInfo> data = new ArrayList();
 		 for(FDProductPromotionInfoData obj:value){
-			 SalesAreaInfo sAinfo = new SalesAreaInfo(obj.getSalesArea().getSalesOrg(),obj.getSalesArea().getDistChannel());
+			 SalesAreaInfo sAinfo = buildSalesAreaInfo(obj);
 			 FDProductPromotionInfo model = new FDProductPromotionInfo();
 			 model.setErpCategory(obj.getErpCategory());
 			 model.setErpCatPosition(obj.getErpCatPosition());
@@ -409,6 +440,12 @@ public class ModelConverter {
 			 data.add(model);
 		 }
 		return data;
+	}
+
+	private static SalesAreaInfo buildSalesAreaInfo(
+			FDProductPromotionInfoData obj) {
+		SalesAreaInfo sAinfo = new SalesAreaInfo(obj.getSalesArea().getSalesOrg(),obj.getSalesArea().getDistChannel());
+		return sAinfo;
 	}
 
 	public static ErpProductPromotionPreviewInfo buildErpProductPromotionPreviewInfo(
@@ -430,7 +467,7 @@ public class ModelConverter {
 				erpProductInfoModelData.getVersion(), 
 				erpProductInfoModelData.getMaterialNumbers().clone(), 
 				erpProductInfoModelData.getDescription(), 
-				buildMaterialPrice(erpProductInfoModelData.getMaterialPrices()), 
+				buildErpMaterialPrice(erpProductInfoModelData.getMaterialPrices()), 
 				erpProductInfoModelData.getUpc(), 
 				buildPlantMAterialInfo(erpProductInfoModelData.getMaterialPlants()),
 				buildMaterialSaleInfo(erpProductInfoModelData.getMaterialSalesAreas()), 
@@ -491,7 +528,7 @@ public class ModelConverter {
 	}
 
 
-	public static ErpMaterialPrice[] buildMaterialPrice(
+	public static ErpMaterialPrice[] buildErpMaterialPrice(
 			ErpMaterialPriceData[] materialPrices) {
 		if(materialPrices==null||materialPrices.length==0)
 				return null;
@@ -1740,6 +1777,237 @@ public class ModelConverter {
 	public static ErpNutritionInfoType buildErpNutritionInfoType(ErpNutritionInfoTypeData key) {
 		ErpNutritionInfoType data =    ErpNutritionInfoType.getInfoType(key.getCode());
 		return data;
+	}
+
+	public static FDProduct buildFdProduct(FDProductData data) {
+		FDProduct product = new FDProduct(data.getSkuCode(), data.getVersion(), data.getPricingDate(), buildFDMaterial(data.getMaterial()), 
+				buildFDVariation(data.getVariations()), buildFDSalesUnitArray(data.getSalesUnits()),
+				buildPricing(data.getPricing()), 
+				buildFDNutrition(data.getNutrition()),
+				buildFDSalesUnitArray(data.getDisplaySalesUnits()),
+				buildNutritionPanel(data.getNutritionPanel()), data.getUpc());
+		return product;
+	}
+
+	private static NutritionPanel buildNutritionPanel(
+			NutritionPanelData nutritionPanel) {
+		NutritionPanel panel = new NutritionPanel();
+		if(nutritionPanel!=null){
+		panel.setId(nutritionPanel.getId());
+		panel.setLastModifiedDate(nutritionPanel.getLastModifiedDate());
+		panel.setSkuCode(nutritionPanel.getSkuCode());
+		panel.setSections(buildNutritionSection(nutritionPanel.getSections()));
+		panel.setType(buildNutritionPanelType(nutritionPanel.getType()));
+		}
+		return panel;
+	}
+
+	private static List<NutritionSection> buildNutritionSection(
+			List<NutritionSectionData> sections) {
+		List<NutritionSection> nutriSections = new ArrayList<NutritionSection>();
+		if(nutriSections!=null){
+			for (NutritionSection nutritionSection : nutriSections) {
+				NutritionSection section = new NutritionSection();
+				section.setId(nutritionSection.getId());
+				section.setImportance(nutritionSection.getImportance());
+				section.setItems(nutritionSection.getItems());
+				section.setPosition(nutritionSection.getPosition());
+				section.setTitle(nutritionSection.getTitle());
+				section.setType(buildNutritionSectionType(nutritionSection.getType()));
+				nutriSections.add(nutritionSection);
+			}
+		}
+			
+		return nutriSections;
+	}
+
+
+	private static NutritionSectionType buildNutritionSectionType(
+			NutritionSectionType type) {
+		if (type.equals(NutritionSectionType.FREETEXT.getName()))
+			return NutritionSectionType.FREETEXT;
+		else if (type.equals(NutritionSectionType.INGREDIENT.getName()))
+			return NutritionSectionType.INGREDIENT;
+		else if (type.equals(NutritionSectionType.TABLE.getName()))
+			return NutritionSectionType.TABLE;
+		return type;
+	}
+
+	private static NutritionPanelType buildNutritionPanelType(String type) {
+		if(type ==null)
+			return NutritionPanelType.BABY;
+		else if (type.equals(NutritionPanelType.CLASSIC.getName()))
+			return NutritionPanelType.CLASSIC;
+		else if (type.equals(NutritionPanelType.DRUG.getName()))
+			return NutritionPanelType.DRUG;
+		else if (type.equals(NutritionPanelType.PET.getName()))
+			return NutritionPanelType.PET;
+		else if (type.equals(NutritionPanelType.SUPPL.getName()))
+			return NutritionPanelType.SUPPL;
+		return null;
+	}
+
+	private static List<FDNutrition> buildFDNutrition(
+			List<FDNutritionData> nutritionDatas) {
+		List<FDNutrition> fdNutritions = new ArrayList<FDNutrition>();
+		for (FDNutritionData fdNutrition : nutritionDatas) {
+			FDNutrition model = new FDNutrition(fdNutrition.getName(), fdNutrition.getValue(), fdNutrition.getUom());
+			fdNutritions.add(model);
+		}
+		return fdNutritions;
+	}
+
+	private static Pricing buildPricing(PricingData pricing) {
+		ZonePriceListing zonePrice = buildZonePrice(pricing.getZonePriceList());
+		SalesUnitRatio[] salesUnits =  buildSalesRatios(pricing.getSalesUnits());
+		CharacteristicValuePrice[] cvPrices = buildCharacteristicValuePrice(pricing.getCvPrices());
+		Pricing model = new Pricing(zonePrice, cvPrices, salesUnits, pricing.isWineOrSpirit());
+		return model;
+	}
+	
+	
+	private static CharacteristicValuePrice[] buildCharacteristicValuePrice(
+			CharacteristicValuePriceData[] characteristicValuePriceDatas) {
+		CharacteristicValuePrice[] models = null;
+		if (characteristicValuePriceDatas != null
+				&& characteristicValuePriceDatas.length > 0) {
+			models = new CharacteristicValuePrice[characteristicValuePriceDatas.length];
+			for (int i = 0; i < characteristicValuePriceDatas.length; i++) {
+				CharacteristicValuePriceData chaValPrice = characteristicValuePriceDatas[i];
+				CharacteristicValuePrice model = new CharacteristicValuePrice(
+						chaValPrice.getCharName(),
+						chaValPrice.getCharValueName(), chaValPrice.getPrice(),
+						chaValPrice.getPricingUnit(),
+						chaValPrice.getApplyHow(), chaValPrice.getSalesOrg(),
+						chaValPrice.getDistChannel());
+				models[i] = model;
+			}
+		}
+		return models;
+	}
+
+	private static SalesUnitRatio[] buildSalesRatios(SalesUnitRatioData[] salesUnitRatios) {
+		SalesUnitRatio[] models = null;
+		if(salesUnitRatios!=null && salesUnitRatios.length > 0){
+			models = new SalesUnitRatio[salesUnitRatios.length];
+			for(int i=0;i<salesUnitRatios.length;i++){
+				SalesUnitRatioData salesUnitRatioData = salesUnitRatios[i];
+				SalesUnitRatio salesUnitRatio = new SalesUnitRatio(salesUnitRatioData.getAlternateUnit(), salesUnitRatioData.getSalesUnit(), salesUnitRatioData.getRatio());
+				models[i]= salesUnitRatio;
+			}
+		}
+		return models;
+	}
+
+	private static ZonePriceListing buildZonePrice(
+			List<ZonePriceListingData> zonePriceList) {
+		ZonePriceListing model = new ZonePriceListing();
+		Map<ZoneInfo,ZonePriceModel> zonePriceMap = new HashMap<ZoneInfo, ZonePriceModel>();
+		ZoneInfo key;
+		ZonePriceModel value;
+		for (ZonePriceListingData zonePriceListingData : zonePriceList) {
+			key = buildZoneInfo(zonePriceListingData.getKey()); 
+			value = buildZonePriceModel(zonePriceListingData.getValue(),key);
+			zonePriceMap.put(key, value);
+		}
+		model.reloadZonePrices(zonePriceMap);
+		return model;
+	}
+
+	private static ZonePriceModel buildZonePriceModel(ZonePriceData value, ZoneInfo key) {
+		MaterialPrice[] matPrices = buildMaterialPriceArray(value.getMaterialPrices());
+		ZonePriceModel model = new ZonePriceModel(key, matPrices);
+		return null;
+	}
+
+	private static MaterialPrice[] buildMaterialPriceArray(
+			com.freshdirect.ecommerce.data.common.pricing.MaterialPrice[] materialPrices) {
+		MaterialPrice[] price = null;
+		if(materialPrices!=null && materialPrices.length > 0){
+			price = new MaterialPrice[materialPrices.length];
+			for (int i = 0; i < materialPrices.length; i++) {
+				MaterialPrice matPrice = buildMaterialPrice(materialPrices[i]);
+				price[i] = matPrice;
+			}
+		}
+		return price;
+	}
+
+
+	private static FDSalesUnit[] buildFDSalesUnitArray(
+			FDSalesUnitData[] salesUnitDatas) {
+		FDSalesUnit[] salesUnits = null;
+		if(salesUnitDatas!=null && salesUnitDatas.length > 0){
+			salesUnits = new FDSalesUnit[salesUnitDatas.length];
+			for (int i = 0; i < salesUnitDatas.length; i++) {
+				FDSalesUnitData saleUnit = salesUnitDatas[i];
+				AttributesI attributes = new AttributeCollection(saleUnit.getAttributes());
+				FDSalesUnit model = new FDSalesUnit(attributes, saleUnit.getName(), saleUnit.getDescription(), saleUnit.getNumerator(), saleUnit.getDenominator(), 
+						saleUnit.getBaseUnit(), saleUnit.getUnitPriceNumerator(), saleUnit.getUnitPriceDenominator(), saleUnit.getUnitPriceUOM(), saleUnit.getUnitPriceDescription());
+				salesUnits[i]=model; 
+			}
+		}
+		return salesUnits;
+	}
+
+	private static FDVariation[] buildFDVariation(FDVariationData[] variationDatas) {
+		FDVariation[] variations = null;
+		if(variationDatas!=null && variationDatas.length > 0){
+			variations = new FDVariation[variationDatas.length];
+			for (int i = 0; i < variationDatas.length; i++) {
+				FDVariationData fdVariation = variationDatas[i];
+				AttributesI attribute = new AttributeCollection(fdVariation.getAttributes());
+				FDVariation variation = new FDVariation(attribute, fdVariation.getName(), buildVariationOptions(fdVariation.getVariationOptions()));
+				variations[i]=variation; 
+			}
+		}
+		return variations;
+	}
+
+	private static FDVariationOption[] buildVariationOptions(
+			FDVariationOptionData[] variationOptionDatas) {
+		FDVariationOption[] variationOptions = null;
+		if(variationOptionDatas!=null && variationOptionDatas.length > 0){
+			variationOptions = new FDVariationOption[variationOptionDatas.length];
+			for (int i = 0; i < variationOptionDatas.length; i++) {
+				FDVariationOptionData fdVariationOption = variationOptionDatas[i];
+				AttributesI attributes = new AttributeCollection(fdVariationOption.getAttributes());
+				FDVariationOption options = new FDVariationOption(attributes, fdVariationOption.getName(), fdVariationOption.getDescription());
+				variationOptions[i] = options;
+			}
+		}
+		return variationOptions;
+	}
+
+	private static FDMaterial buildFDMaterial(FDMaterialData material) {
+		AttributesI attribute = new AttributeCollection(material.getAttributes());
+		FDMaterial model = new FDMaterial(attribute, material.getMaterialNumber(), material.getSalesUnitCharacteristic(), 
+				material.getQuantityCharacteristic(),EnumAlcoholicContent.getAlcoholicContent(material.getAlcoholicContent()), 
+				material.isTaxable(), material.getSkuCode(), material.getTaxCode(), material.getMaterialGroup());
+		model.setMaterialPlants(buildFDPlantMaterialMap(material.getMaterialPlants()));
+		model.setMaterialSalesAreas(buildSalesAreaMap(material.getMaterialSalesArea()));
+		
+		return model;
+	}
+
+	private static Map<SalesAreaInfo, FDMaterialSalesArea> buildSalesAreaMap(
+			List<MaterialSalesAreaData> materialSalesArea) {
+		Map<SalesAreaInfo, FDMaterialSalesArea> map = new HashMap<SalesAreaInfo, FDMaterialSalesArea>();
+		for (MaterialSalesAreaData materialSalesAreaData : materialSalesArea) {
+			SalesAreaInfo key = buildSalesAreaInfo(materialSalesAreaData.getKey());
+			FDMaterialSalesArea value =buildFDMaterialSalesArea(materialSalesAreaData.getValue());
+			map.put(key, value);
+		}
+		return map;
+	}
+
+	private static Map<String, FDPlantMaterial> buildFDPlantMaterialMap(
+			Map<String, FDPlantMaterialData> materialPlants) {
+		Map<String, FDPlantMaterial> plantMap = new HashMap<String, FDPlantMaterial>();
+		for (Entry<String, FDPlantMaterialData> dataMap : materialPlants.entrySet()) {
+			plantMap.put(dataMap.getKey(), buildFDPlantMaterial(dataMap.getValue()));
+		}
+		return plantMap;
 	}
 	
 }
