@@ -53,8 +53,11 @@ public class GoogleAnalyticsDataService {
     }
 
 
-    public GoogleAnalyticsData populateCheckoutGAData(FDCartI cart) {
-        GoogleAnalyticsData data = new GoogleAnalyticsData();
+    public GoogleAnalyticsData populateCheckoutGAData(FDCartI cart, CartData cartData) {
+        GoogleAnalyticsData data = cartData.getGoogleAnalyticsData();
+        if (data == null) {
+            data = new GoogleAnalyticsData();
+        }
         data.getGoogleAnalyticsData().put("checkout", GACheckoutDataService.defaultService().populateCheckoutProductData(cart));
         return data;
     }

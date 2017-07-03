@@ -45,7 +45,7 @@ public class GAPageTypeDataService {
         List<String> specialBrowseIds = Arrays.asList("wgd_deals", "top_rated", "wgd_summer_central", "about_overview", "local");
 
         if (id != null) {
-            if (requestURI.equals("/browse.jsp")) {
+            if ("/browse.jsp".equals(requestURI)) {
                 ContentNodeModel contentNodeModel = ContentFactory.getInstance().getContentNode(id);
                 ContentType contentType = contentNodeModel.getContentKey().getType();
 
@@ -87,15 +87,6 @@ public class GAPageTypeDataService {
 
             }
         }
-        // else if ("about_overview".equals(id)) {
-        // url += "?pageType=about_us";
-        // }
-        // if ("/srch.jsp".equals(requestURI)) {
-        // if (pageType != null) {
-        // url += "?pageType=" + pageType;
-        // }
-        // }
-
         return url;
     }
 
