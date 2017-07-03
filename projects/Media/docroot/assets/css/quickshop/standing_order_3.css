@@ -709,6 +709,9 @@
 	font-weight: bold;
 	word-wrap: break-word;
 }
+.standing-orders-3-so-settings-buttons .so-delete-popup .so-delete-popup-message{
+	color: #c94747;
+}
 .standing-orders-3-so-settings-buttons .so-delete-popup .so-delete-popup-buttons{
 	padding-top: 17px;
 }
