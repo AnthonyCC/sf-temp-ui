@@ -4,14 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.freshdirect.ecommerce.data.referral.FDReferralReportLineData;
+import com.freshdirect.ecommerce.data.referral.FDUserData;
+import com.freshdirect.ecommerce.data.referral.ManageInvitesData;
 import com.freshdirect.ecommerce.data.referral.ReferralCampaignData;
 import com.freshdirect.ecommerce.data.referral.ReferralChannelData;
 import com.freshdirect.ecommerce.data.referral.ReferralHistoryData;
+import com.freshdirect.ecommerce.data.referral.ReferralIniviteData;
 import com.freshdirect.ecommerce.data.referral.ReferralObjectiveData;
 import com.freshdirect.ecommerce.data.referral.ReferralPartnerData;
 import com.freshdirect.ecommerce.data.referral.ReferralProgramData;
 import com.freshdirect.ecommerce.data.referral.ReferralProgramInvitationData;
+import com.freshdirect.ecommerce.data.referral.ReferralPromotionData;
 import com.freshdirect.ecommerce.data.referral.ReferralSearchCriteriaData;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.core.PrimaryKey;
 
 public class ReferralEncoder {
@@ -265,6 +270,147 @@ public class ReferralEncoder {
 		searchCriteria.setStartIndex(criteria.getStartIndex());
 		searchCriteria.setTotalRcdSize(criteria.getTotalRcdSize());
 		return searchCriteria;
+	}
+
+	public static List<ManageInvitesModel> buildManageInvitesModelList(List<ManageInvitesData> invites) {
+		List<ManageInvitesModel> manageInvitesList = new ArrayList<ManageInvitesModel>();
+		for (ManageInvitesData data : invites) {
+			manageInvitesList.add(buildManageInviteModel(data));
+		}
+		return manageInvitesList;
+	}
+
+	public static ManageInvitesModel buildManageInviteModel(ManageInvitesData manageInvites) {
+		ManageInvitesModel model = new  ManageInvitesModel();
+		model.setCredit(manageInvites.getCredit());
+		if(manageInvites.getId() != null)
+		model.setId(manageInvites.getId());
+		if(manageInvites.getCreditIssuedDate() != null)
+		model.setCreditIssuedDate(new java.sql.Date(manageInvites.getCreditIssuedDate()));
+		model.setRecipientCustId(manageInvites.getRecipientCustId());
+		model.setRecipientEmail(manageInvites.getRecipientEmail());
+		model.setSaleId(manageInvites.getSaleId());
+		model.setSentDate(manageInvites.getSentDate());
+		model.setStatus(manageInvites.getStatus());
+		return model;
+	}
+
+	public static List<ReferralPromotionModel> buildReferralpromotionModelList(List<ReferralPromotionData> data) {
+		List<ReferralPromotionModel> model = new ArrayList<ReferralPromotionModel>();
+		for (ReferralPromotionData referralPromotionData : data) {
+			model.add(buildReferralPromotionModel(referralPromotionData));
+		}
+		return model;
+	}
+
+	public static ReferralPromotionModel buildReferralPromotionModel(ReferralPromotionData referralPromotionData) {
+		if(referralPromotionData != null){
+			ReferralPromotionModel model = new ReferralPromotionModel();
+			model.setAdvocateEmail(referralPromotionData.getAdvocateEmail());
+			model.setAudience_desc(referralPromotionData.getAudience_desc());
+			model.setCustomerId(referralPromotionData.getCustomerId());
+			model.setDescription(referralPromotionData.getDescription());
+			model.setExpiration_date(referralPromotionData.getExpiration_date());
+			model.setFbFile(referralPromotionData.getFbFile());
+			model.setFbHeadline(referralPromotionData.getFbHeadline());
+			model.setFbText(referralPromotionData.getFbText());
+			model.setFDCustomerId(referralPromotionData.getFDCustomerId());
+			model.setFriendEmail(referralPromotionData.getFriendEmail());
+			model.setGet_text(referralPromotionData.getGet_text());
+			model.setGetHeader(referralPromotionData.getGetHeader());
+			model.setGive_text(referralPromotionData.getGive_text());
+			model.setGiveHeader(referralPromotionData.getGiveHeader());
+			model.setId(referralPromotionData.getId());
+			model.setInviteEmailLegal(referralPromotionData.getInviteEmailLegal());
+			model.setInviteEmailOfferText(referralPromotionData.getInviteEmailOfferText());
+			model.setInviteEmailSubject(referralPromotionData.getInviteEmailSubject());
+			model.setInviteEmailText(referralPromotionData.getInviteEmailText());
+			model.setPrgm_users(referralPromotionData.getPrgm_users());
+			model.setPromotion_id(referralPromotionData.getPromotion_id());
+			model.setRefCustomerId(referralPromotionData.getRefCustomerId());
+			model.setReferral_fee(referralPromotionData.getReferral_fee());
+			model.setReferral_prgm_id(referralPromotionData.getReferral_prgm_id());
+			model.setReferralCreditEmailSubject(referralPromotionData.getReferralCreditEmailSubject());
+			model.setReferralCreditEmailText(referralPromotionData.getReferralCreditEmailText());
+			model.setReferralPageLegal(referralPromotionData.getReferralPageLegal());
+			model.setReferralPageText(referralPromotionData.getReferralPageText());
+			model.setSaleId(referralPromotionData.getSaleId());
+			model.setShareHeader(referralPromotionData.getShareHeader());
+			model.setShareText(referralPromotionData.getShareText());
+			model.setSiteAccessImageFile(referralPromotionData.getSiteAccessImageFile());
+			model.setTwitterText(referralPromotionData.getTwitterText());
+			model.setUserListFileHolder(referralPromotionData.getUserListFileHolder());
+			return model;
+		}
+		return null;
+		
+	}
+	public static List<ReferralPromotionData> buildReferralPromotionDataList(List<ReferralPromotionModel> settledSales) {
+		List<ReferralPromotionData> promotionData = new  ArrayList<ReferralPromotionData>();
+		for (ReferralPromotionModel referralPromotionModel : settledSales) {
+			promotionData.add(buildReferralPromotionData(referralPromotionModel));
+		}
+		return promotionData;
+	}
+	public static ReferralPromotionData buildReferralPromotionData(ReferralPromotionModel referralPromotionModel) {
+		ReferralPromotionData promotionData = new ReferralPromotionData();
+		promotionData.setAdvocateEmail(referralPromotionModel.getAdvocateEmail());
+		promotionData.setAudience_desc(referralPromotionModel.getAudience_desc());
+		promotionData.setCustomerId(referralPromotionModel.getCustomerId());
+		promotionData.setDescription(referralPromotionModel.getDescription());
+		promotionData.setExpiration_date(referralPromotionModel.getExpiration_date());
+		promotionData.setFbFile(referralPromotionModel.getFbFile());
+		promotionData.setFbHeadline(referralPromotionModel.getFbHeadline());
+		promotionData.setFbText(referralPromotionModel.getFbText());
+		promotionData.setFDCustomerId(referralPromotionModel.getFDCustomerId());
+		promotionData.setFriendEmail(referralPromotionModel.getFriendEmail());
+		promotionData.setGet_text(referralPromotionModel.getGet_text());
+		promotionData.setGetHeader(referralPromotionModel.getGetHeader());
+		promotionData.setGive_text(referralPromotionModel.getGive_text());
+		promotionData.setGiveHeader(referralPromotionModel.getGiveHeader());
+		promotionData.setId(referralPromotionModel.getId());
+		promotionData.setInviteEmailLegal(referralPromotionModel.getInviteEmailLegal());
+		promotionData.setInviteEmailOfferText(referralPromotionModel.getInviteEmailOfferText());
+		promotionData.setInviteEmailSubject(referralPromotionModel.getInviteEmailSubject());
+		promotionData.setInviteEmailText(referralPromotionModel.getInviteEmailText());
+		promotionData.setPrgm_users(referralPromotionModel.getPrgm_users());
+		promotionData.setPromotion_id(referralPromotionModel.getPromotion_id());
+		promotionData.setRefCustomerId(referralPromotionModel.getRefCustomerId());
+		promotionData.setReferral_fee(referralPromotionModel.getReferral_fee());
+		promotionData.setReferral_prgm_id(referralPromotionModel.getReferral_prgm_id());
+		promotionData.setReferralCreditEmailSubject(referralPromotionModel.getReferralCreditEmailSubject());
+		promotionData.setReferralCreditEmailText(referralPromotionModel.getReferralCreditEmailText());
+		promotionData.setReferralPageLegal(referralPromotionModel.getReferralPageLegal());
+		promotionData.setReferralPageText(referralPromotionModel.getReferralPageText());
+		promotionData.setSaleId(referralPromotionModel.getSaleId());
+		promotionData.setShareHeader(referralPromotionModel.getShareHeader());
+		promotionData.setShareText(referralPromotionModel.getShareText());
+		promotionData.setSiteAccessImageFile(referralPromotionModel.getSiteAccessImageFile());
+		promotionData.setTwitterText(referralPromotionModel.getTwitterText());
+		promotionData.setUserListFileHolder(referralPromotionModel.getUserListFileHolder());
+		return promotionData;
+	}
+
+	public static ReferralIniviteData buildReferralInviteeData(ReferralProgramInvitaionModel referral, FDUserI user) {
+		ReferralIniviteData data = new ReferralIniviteData();
+		FDUserData fdUserData = new FDUserData();
+		fdUserData.setErpCustomerId(user.getIdentity().getErpCustomerPK());
+		data.setFdUserData(fdUserData);
+		ReferralProgramInvitationData programInvitationData = new ReferralProgramInvitationData();
+		if(referral.getReferralCreatedDate() != null)
+		programInvitationData.setReferralCreatedDate(referral.getReferralCreatedDate().getTime());
+		if(referral.getReferralModifiedDate() != null)
+		programInvitationData.setReferralModifiedDate(referral.getReferralModifiedDate().getTime());
+		programInvitationData.setReferralName(referral.getReferralName());
+		programInvitationData.setReferralProgramId(referral.getReferralProgramId());
+		programInvitationData.setReferrelEmailAddress(referral.getReferrelEmailAddress());
+		programInvitationData.setReferrerCustomerId(referral.getReferrerCustomerId());
+		programInvitationData.setReferrerFirstName(referral.getReferrerFirstName());
+		programInvitationData.setReferrerLastName(referral.getReferrerLastName());
+		if(referral.getStatus() != null)
+		programInvitationData.setStatus(referral.getStatus().getName());
+		data.setProgramInvitationData(programInvitationData);
+		return data;
 	}
 
 }

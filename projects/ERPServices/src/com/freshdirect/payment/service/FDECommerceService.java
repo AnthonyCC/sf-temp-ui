@@ -46,6 +46,7 @@ import com.freshdirect.content.nutrition.panel.NutritionPanel;
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpCustEWalletModel;
+import com.freshdirect.customer.ErpCustomerCreditModel;
 import com.freshdirect.customer.ErpEWalletModel;
 import com.freshdirect.customer.ErpGrpPriceModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
@@ -119,17 +120,24 @@ import com.freshdirect.ecommerce.data.payment.BINData;
 import com.freshdirect.ecommerce.data.payment.ErpPaymentMethodData;
 import com.freshdirect.ecommerce.data.payment.FDGatewayActivityLogModelData;
 import com.freshdirect.ecommerce.data.payment.RestrictedPaymentMethodData;
+import com.freshdirect.ecommerce.data.referral.CustomerCreditData;
 import com.freshdirect.ecommerce.data.referral.FDReferralReportLineData;
 import com.freshdirect.ecommerce.data.referral.FDUserData;
+import com.freshdirect.ecommerce.data.referral.FNLNZipData;
+import com.freshdirect.ecommerce.data.referral.FailedAttemptData;
+import com.freshdirect.ecommerce.data.referral.MailData;
+import com.freshdirect.ecommerce.data.referral.ManageInvitesData;
 import com.freshdirect.ecommerce.data.referral.ReferralCampaignData;
 import com.freshdirect.ecommerce.data.referral.ReferralChannelData;
 import com.freshdirect.ecommerce.data.referral.ReferralHistoryData;
+import com.freshdirect.ecommerce.data.referral.ReferralIniviteData;
 import com.freshdirect.ecommerce.data.referral.ReferralObjectiveData;
 import com.freshdirect.ecommerce.data.referral.ReferralPartnerData;
 import com.freshdirect.ecommerce.data.referral.ReferralProgramData;
 import com.freshdirect.ecommerce.data.referral.ReferralProgramInvitationData;
+import com.freshdirect.ecommerce.data.referral.ReferralPromotionData;
 import com.freshdirect.ecommerce.data.referral.ReferralSearchCriteriaData;
-import com.freshdirect.ecommerce.data.referral.ReferralProgramInvitationData;
+import com.freshdirect.ecommerce.data.referral.UserCreditData;
 import com.freshdirect.ecommerce.data.routing.SubmitOrderRequestData;
 import com.freshdirect.ecommerce.data.rules.RuleData;
 import com.freshdirect.ecommerce.data.sap.CharacteristicValueMapData;
@@ -536,7 +544,33 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String LOAD_ALL_FRAUD_ENTRY_BY_ACCOUNTINFO="fraudactivity/paymentinfobyaccount";
 	
 	private static final String ENQUEUE_EMAIL = "mailer/enqueue";
-	
+
+	private static final String GET_REFERRAL_PROMOTION_DETAILS = "referral/promotion/userId/";
+	private static final String GET_REFERRAL_PROMOTION_DETAILS_BY_NAME = "referral/promotion/refName/";
+	private static final String GET_MANAGE_INVITES = "referral/invites/customerId/";
+	private static final String GET_USER_CREDITS = "referral/usercredits/";
+	private static final String GET_MANAGE_INVITES_FOR_CRM = "referral/invites/crm/customerId/";
+	private static final String GET_AVAILABLE_CREDIT = "referral/credit/available/customerId/";
+	private static final String GET_REFERRAL_DISPLAY_FLAG = "referral/flag/customerId/";
+	private static final String GET_SETTLED_SALES = "referral/sales";
+	private static final String GET_REFERRAL_LINK = "referral/link/customerId/";
+	private static final String GET_STL_SALE = "referral/stlsale/customerId/";
+	private static final String SAVE_CUSTOMER_CREDIT = "referral/customercredit";
+	private static final String IS_CUSTOMER_REFERRED = "referral/customerReferred/customerId/";
+
+	private static final String UPDATE_FDUSER = "referral/fduser/update";
+	private static final String UPDATE_CUSTOMER_INFO = "referral/customerInfo/update";
+	private static final String UPDATE_CUSTOMER_PWD = "referral/customerpw";
+	private static final String UPDATE_CUSTOMER_PWD_HINT = "referral/fdcustomer/update";
+	private static final String STORE_FAILED_ATTEMPT = "referral/failAttempt";
+	private static final String IS_UNIQUE_FNLNZIP = "referral/fnlnzip";
+	private static final String GET_REFERRAL_NAME = "referral/name/referralId/";
+	private static final String IS_REFERRAL_COMPLETE = "referral/signup/email/";
+	private static final String GET_SETTLED_TRANSACTIONS = "referral/transaction";
+	private static final String UPDATE_SETTLED_REWARD = "referral/settled/transaction/update";
+	private static final String SEND_MAILS = "referral/mails";
+	private static final String CREATE_REFERRAL_INVITES = "referral/invitee";
+
 	private static final String NUTRITION_CREATE = "nutrition/create";
 	private static final String NUTRITION_BY_SKU = "nutrition/skuCode";
 	private static final String NUTRITION_PANEL_BY_SKU ="nutrition/panelByskuCode" ;
@@ -546,12 +580,6 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String NUTRITION_SKU_UPC_MAP ="nutrition/createUpcSkuMap" ;
 	private static final String NUTRITION_PANEL_SAVE = "nutrition/savePanel";
 	private static final String NUTRITION_PANEL_DELETE = "nutrition/deletePanel";
-	
-	
-	
-	
-	
-	
 	
 	public static IECommerceService getInstance() {
 		if (INSTANCE == null)
@@ -5221,12 +5249,6 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		}
 		return response.getData();
 	}
-	/*@Override
-	public ReferralProgramInvitaionData createReferralInvitee(ReferralProgramInvitaionData referral, FDUserData user)
-			throws FDResourceException, RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}*/
 	@Override
 	public void storeReferral(ReferralProgramInvitationData referral,FDUserData user) throws FDResourceException, RemoteException {
 		Request<ReferralProgramInvitationData> request = new Request<ReferralProgramInvitationData>();
@@ -6106,6 +6128,407 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		return erpPaymentMethod;
 	}
 	@Override
+	public ReferralPromotionData getReferralPromotionDetails(String userId)throws FDResourceException, RemoteException {
+		Response<ReferralPromotionData> response = new Response<ReferralPromotionData>();
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_REFERRAL_PROMOTION_DETAILS+userId),  new TypeReference<Response<ReferralPromotionData>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDRuntimeException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+
+	}
+	@Override
+	public ReferralPromotionData getReferralPromotionDetailsByRefName(String referral) throws FDResourceException, RemoteException {
+		Response<ReferralPromotionData> response = new Response<ReferralPromotionData>();
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_REFERRAL_PROMOTION_DETAILS_BY_NAME+referral),  new TypeReference<Response<ReferralPromotionData>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDRuntimeException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+
+	}
+	@Override
+	public List<ManageInvitesData> getManageInvites(String customerId)throws FDResourceException, RemoteException {
+		Response<List<ManageInvitesData>> response = new Response<List<ManageInvitesData>>();
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_MANAGE_INVITES+customerId),  new TypeReference<Response<List<ManageInvitesData>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDRuntimeException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+
+	}
+	@Override
+	public List<ErpCustomerCreditModel> getUserCredits(String customerId)
+			throws FDResourceException, RemoteException {
+		Response<List<UserCreditData>> response = new Response<List<UserCreditData>>();
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_USER_CREDITS+customerId),  new TypeReference<Response<List<UserCreditData>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDRuntimeException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return ModelConverter.buildCustomerCreditModelList(response.getData());
+
+	}
+	@Override
+	public List<ManageInvitesData> getManageInvitesForCRM(String customerId)throws FDResourceException, RemoteException {
+		Response<List<ManageInvitesData>> response = new Response<List<ManageInvitesData>>();
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_MANAGE_INVITES_FOR_CRM+customerId),  new TypeReference<Response<List<ManageInvitesData>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDRuntimeException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+
+	}
+	@Override
+	public Double getAvailableCredit(String customerId)throws FDResourceException, RemoteException {
+		Response<Double> response = new Response<Double>();
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_AVAILABLE_CREDIT+customerId),  new TypeReference<Response<Double>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDRuntimeException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+
+	}
+	@Override
+	public Boolean getReferralDisplayFlag(String customerId)throws FDResourceException, RemoteException {
+		Response<Boolean> response = new Response<Boolean>();
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_REFERRAL_DISPLAY_FLAG+customerId),  new TypeReference<Response<Boolean>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDRuntimeException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+
+	}
+	@Override
+	public List<ReferralPromotionData> getSettledSales()throws FDResourceException, RemoteException {
+		Response<List<ReferralPromotionData>> response = new Response<List<ReferralPromotionData>>();
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_SETTLED_SALES),  new TypeReference<Response<List<ReferralPromotionData>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDRuntimeException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+
+	}
+	@Override
+	public String getReferralLink(String customerId)throws FDResourceException, RemoteException {
+		Response<String> response = new Response<String>();
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_REFERRAL_LINK+customerId),  new TypeReference<Response<String>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDRuntimeException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+
+	}
+	@Override
+	public String getLatestSTLSale(String customerId)throws FDResourceException, RemoteException {
+		Response<String> response = new Response<String>();
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_STL_SALE+customerId),  new TypeReference<Response<String>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDRuntimeException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+
+	}
+	@Override
+	public void saveCustomerCredit(String referral_customer_id,String customer_id, int ref_fee, String sale, String complaintId,
+			String refPrgmId) throws FDResourceException, RemoteException {
+		Response<Object> response = new Response<Object>();
+		try {
+			Request<CustomerCreditData> request = new Request<CustomerCreditData>();
+			request.setData(ModelConverter.buildCustomerCreditData( referral_customer_id, customer_id,  ref_fee,  sale,  complaintId,
+					 refPrgmId));
+			String inputJson = buildRequest(request);
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SAVE_CUSTOMER_CREDIT), new TypeReference<Response<Object>>() {});
+			if (!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		}
+		catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	@Override
+	public boolean isCustomerReferred(String customerId)throws FDResourceException, RemoteException {
+		Response<Boolean> response = new Response<Boolean>();
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(IS_CUSTOMER_REFERRED+customerId),  new TypeReference<Response<Boolean>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDRuntimeException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+
+	}
+	@Override
+	public String updateFDUser(String customerId, String zipCode,EnumServiceType serviceType) throws FDResourceException,
+			RemoteException {
+		Response<String> response = new Response<String>();
+		try {
+			response = this.postDataTypeMap(null, getFdCommerceEndPoint(UPDATE_FDUSER+"?zipCode="+zipCode+"&serviceType="+serviceType.getName()+"&customerId="+customerId), new TypeReference<Response<String>>() {});
+			if (!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		}
+		catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	@Override
+	public void updateCustomerInfo(String customerId, String firstName,String lastName) throws FDResourceException, RemoteException {
+		Response<Object> response = new Response<Object>();
+		try {
+			response = this.postDataTypeMap(null, getFdCommerceEndPoint(UPDATE_CUSTOMER_INFO+"?firstName="+firstName+"&lastName="+lastName+"&customerId="+customerId), new TypeReference<Response<Object>>() {});
+			if (!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		}
+		catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	@Override
+	public void updateCustomerPW(String customerId, String pwdHash)throws FDResourceException, RemoteException {
+		Response<Object> response = new Response<Object>();
+		try {
+			response = this.postDataTypeMap(null, getFdCommerceEndPoint(UPDATE_CUSTOMER_PWD+"?pwdHash="+pwdHash+"&customerId="+customerId), new TypeReference<Response<Object>>() {});
+			if (!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		}
+		catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	@Override
+	public void updateFdCustomer(String customerId, String pwdHint)throws FDResourceException, RemoteException {
+		Response<Object> response = new Response<Object>();
+		try {
+			response = this.postDataTypeMap(null, getFdCommerceEndPoint(UPDATE_CUSTOMER_PWD_HINT+"?pwdHint="+pwdHint+"&customerId="+customerId), new TypeReference<Response<Object>>() {});
+			if (!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		}
+		catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	@Override
+	public void storeFailedAttempt(String email, String dupeCustID,String zipCode, String firstName, String lastName, String referral,
+			String reason) throws FDResourceException, RemoteException {
+		Response<Object> response = new Response<Object>();
+		try {
+			Request<FailedAttemptData> request = new Request<FailedAttemptData>();
+			request.setData(ModelConverter.buildFailesAttemptData(email, dupeCustID,zipCode, firstName, lastName, referral,
+					reason));
+			String inputJson = buildRequest(request);
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(STORE_FAILED_ATTEMPT), new TypeReference<Response<Object>>() {});
+			if (!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		}
+		catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	@Override
+	public boolean isUniqueFNLNZipCombo(String firstName, String lastName,String zipCode, String customerId) throws FDResourceException,
+			RemoteException {
+		Response<Boolean> response = new Response<Boolean>();
+		try {
+			Request<FNLNZipData> request = new Request<FNLNZipData>();
+			request.setData(ModelConverter.buildFNLNZipData(firstName, lastName,zipCode, customerId));
+			String inputJson = buildRequest(request);
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(IS_UNIQUE_FNLNZIP), new TypeReference<Response<Boolean>>() {});
+			if (!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		}
+		catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	@Override
+	public String getReferralName(String referralId)throws FDResourceException, RemoteException {
+		Response<String> response = new Response<String>();
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_REFERRAL_NAME +referralId),  new TypeReference<Response<String>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDRuntimeException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+
+	}
+	@Override
+	public boolean isReferreSignUpComplete(String email)throws FDResourceException, RemoteException {
+		Response<Boolean> response = new Response<Boolean>();
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(IS_REFERRAL_COMPLETE + email),  new TypeReference<Response<Boolean>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDRuntimeException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+
+	}
+	@Override
+	public List<ReferralPromotionData> getSettledTransaction()throws FDResourceException, RemoteException {
+		Response< List<ReferralPromotionData>> response = new Response< List<ReferralPromotionData>>();
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_SETTLED_TRANSACTIONS),  new TypeReference<Response< List<ReferralPromotionData>>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDRuntimeException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+
+	}
+	@Override
+	public Map<String, String> updateSetteledRewardTransaction(List<ReferralPromotionData> models) throws FDResourceException,
+			RemoteException {
+		Response< Map<String, String>> response = new Response< Map<String, String>>();
+		try {
+			Request<List<ReferralPromotionData>> request = new Request<List<ReferralPromotionData>>();
+			request.setData(models);
+			String inputJson = buildRequest(request);
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(UPDATE_SETTLED_REWARD), new TypeReference<Response< Map<String, String>>>() {});
+			if (!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		}
+		catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	@Override
+	public void sendMails(String recipient_list, String mail_message,String identity, String rpid, String serverName)
+			throws FDResourceException, RemoteException {
+		Response<Object> response = new Response<Object>();
+		try {
+			Request<MailData> request = new Request<MailData>();
+			request.setData(ModelConverter.buildMailData(recipient_list, mail_message,identity, rpid, serverName));
+			String inputJson = buildRequest(request);
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(SEND_MAILS), new TypeReference<Response< Object>>() {});
+			if (!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		}
+		catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	@Override
+	public ReferralProgramInvitationData createReferralInvitee(
+			ReferralIniviteData referralInviteData) throws FDResourceException,
+			RemoteException {
+		Response<ReferralProgramInvitationData> response = new Response<ReferralProgramInvitationData>();
+		try {
+			Request<ReferralIniviteData> request = new Request<ReferralIniviteData>();
+			request.setData(referralInviteData);
+			String inputJson = buildRequest(request);
+			response = this.postDataTypeMap(inputJson, getFdCommerceEndPoint(CREATE_REFERRAL_INVITES), new TypeReference<Response<ReferralProgramInvitationData>>() {});
+			if (!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		}
+		catch (FDPayPalServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+	@Override
 	public void createNutrition(ErpNutritionModel nutritionModel)
 			throws  RemoteException {
 		Response response = null;
@@ -6160,7 +6583,6 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		}
 		return response.getData();
 	}
-	
 	@Override
 	public String getSkuCodeForUpc(String upc) throws RemoteException {
 		Response<String> response = null;

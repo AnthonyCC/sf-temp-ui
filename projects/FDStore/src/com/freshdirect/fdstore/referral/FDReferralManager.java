@@ -650,8 +650,13 @@ public class FDReferralManager {
 		ReferralProgramInvitaionModel referralNew=null;
 		try {
 			LOGGER.debug("inside ReferralProgramInvitaionModel createReferralInvitee");
-			FDReferralManagerSB sb = managerHome.create();
-			referralNew=sb.createReferralInvitee(referral,user);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
+				return ReferralEncoder.buildReferralProgramInvitation(FDECommerceService.getInstance().createReferralInvitee(ReferralEncoder.buildReferralInviteeData(referral,user)));
+			}
+			else{
+				FDReferralManagerSB sb = managerHome.create();
+				referralNew=sb.createReferralInvitee(referral,user);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -1178,8 +1183,13 @@ public class FDReferralManager {
 		  lookupManagerHome();
 
 			try {
-				FDReferralManagerSB sb = managerHome.create();
-				return sb.getReferralPromotionDetails(userId);
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
+					return ReferralEncoder.buildReferralPromotionModel(FDECommerceService.getInstance().getReferralPromotionDetails(userId));
+				}
+				else{
+					FDReferralManagerSB sb = managerHome.create();
+					return sb.getReferralPromotionDetails(userId);
+				}
 			} catch (CreateException ce) {
 				invalidateManagerHome();
 				throw new FDResourceException(ce, "Error creating session bean");
@@ -1194,8 +1204,13 @@ public class FDReferralManager {
 		  lookupManagerHome();
 
 			try {
-				FDReferralManagerSB sb = managerHome.create();
-				return sb.getReferralPromotionDetailsByRefName(referral);
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
+					return ReferralEncoder.buildReferralPromotionModel(FDECommerceService.getInstance().getReferralPromotionDetailsByRefName(referral));
+				}
+				else{
+					FDReferralManagerSB sb = managerHome.create();
+					return sb.getReferralPromotionDetailsByRefName(referral);
+					}
 			} catch (CreateException ce) {
 				invalidateManagerHome();
 				throw new FDResourceException(ce, "Error creating session bean");
@@ -1210,8 +1225,13 @@ public class FDReferralManager {
 		  lookupManagerHome();
 
 			try {
-				FDReferralManagerSB sb = managerHome.create();
-				sb.sendMails(recipient_list, mail_message, user, rpid, serverName);
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
+					FDECommerceService.getInstance().sendMails(recipient_list, mail_message, user.getIdentity().getErpCustomerPK(), rpid, serverName);
+				}
+				else{
+					FDReferralManagerSB sb = managerHome.create();
+					sb.sendMails(recipient_list, mail_message, user, rpid, serverName);
+				}
 			} catch (CreateException ce) {
 				invalidateManagerHome();
 				throw new FDResourceException(ce, "Error creating session bean");
@@ -1226,8 +1246,13 @@ public class FDReferralManager {
 		  lookupManagerHome();
 
 			try {
-				FDReferralManagerSB sb = managerHome.create();
-				return sb.getManageInvites(customerId);
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
+					return ReferralEncoder.buildManageInvitesModelList(FDECommerceService.getInstance().getManageInvites(customerId));
+				}
+				else{
+					FDReferralManagerSB sb = managerHome.create();
+					return sb.getManageInvites(customerId);
+				}
 			} catch (CreateException ce) {
 				invalidateManagerHome();
 				throw new FDResourceException(ce, "Error creating session bean");
@@ -1242,8 +1267,13 @@ public class FDReferralManager {
 		  lookupManagerHome();
 
 			try {
-				FDReferralManagerSB sb = managerHome.create();
-				return sb.getUserCredits(customerId);
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
+					return FDECommerceService.getInstance().getUserCredits(customerId);
+				}
+				else{
+					FDReferralManagerSB sb = managerHome.create();
+					return sb.getUserCredits(customerId);
+				}
 			} catch (CreateException ce) {
 				invalidateManagerHome();
 				throw new FDResourceException(ce, "Error creating session bean");
@@ -1258,8 +1288,13 @@ public class FDReferralManager {
 		  lookupManagerHome();
 
 			try {
-				FDReferralManagerSB sb = managerHome.create();
-				return sb.getManageInvitesForCRM(customerId);
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
+					return ReferralEncoder.buildManageInvitesModelList(FDECommerceService.getInstance().getManageInvitesForCRM(customerId));
+				}
+				else{
+					FDReferralManagerSB sb = managerHome.create();
+					return sb.getManageInvitesForCRM(customerId);
+				}
 			} catch (CreateException ce) {
 				invalidateManagerHome();
 				throw new FDResourceException(ce, "Error creating session bean");
@@ -1274,8 +1309,13 @@ public class FDReferralManager {
 		  lookupManagerHome(); 
 
 		  try {
-			  FDReferralManagerSB sb = managerHome.create();
-			  return sb.getAvailableCredit(customerId);
+			  if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
+					return FDECommerceService.getInstance().getAvailableCredit(customerId);
+				}
+				else{
+					FDReferralManagerSB sb = managerHome.create();
+					return sb.getAvailableCredit(customerId);
+				}
 		  } catch (CreateException ce) {
 			  invalidateManagerHome();
 			  throw new FDResourceException(ce, "Error creating session bean");
@@ -1289,8 +1329,13 @@ public class FDReferralManager {
 		  lookupManagerHome(); 
 
 		  try {
-			  FDReferralManagerSB sb = managerHome.create();
-			  return sb.getReferralDisplayFlag(customerId);
+			  if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
+					return FDECommerceService.getInstance().getReferralDisplayFlag(customerId);
+				}
+				else{
+					FDReferralManagerSB sb = managerHome.create();
+					return sb.getReferralDisplayFlag(customerId);
+				}
 		  } catch (CreateException ce) {
 			  invalidateManagerHome();
 			  throw new FDResourceException(ce, "Error creating session bean");
@@ -1304,8 +1349,13 @@ public class FDReferralManager {
 		  lookupManagerHome(); 
 
 		  try {
-			  FDReferralManagerSB sb = managerHome.create();
-			  return sb.getSettledSales();
+			  if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
+					return ReferralEncoder.buildReferralpromotionModelList(FDECommerceService.getInstance().getSettledSales());
+			}
+			  else{
+				  FDReferralManagerSB sb = managerHome.create();
+				  return sb.getSettledSales();
+			  }
 		  } catch (CreateException ce) {
 			  invalidateManagerHome();
 			  throw new FDResourceException(ce, "Error creating session bean");
@@ -1319,8 +1369,13 @@ public class FDReferralManager {
 		  lookupManagerHome(); 
 
 		  try {
-			  FDReferralManagerSB sb = managerHome.create();
-			  return sb.getReferralLink(customerId);
+			  if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
+					return FDECommerceService.getInstance().getReferralLink(customerId);
+			  }
+			  else{
+				  FDReferralManagerSB sb = managerHome.create();
+				  return sb.getReferralLink(customerId);
+			  }
 		  } catch (CreateException ce) {
 			  invalidateManagerHome();
 			  throw new FDResourceException(ce, "Error creating session bean");
@@ -1334,8 +1389,13 @@ public class FDReferralManager {
 		  lookupManagerHome(); 
 
 		  try {
-			  FDReferralManagerSB sb = managerHome.create();
-			  return sb.getLatestSTLSale(customerId);
+			  if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
+					return FDECommerceService.getInstance().getLatestSTLSale(customerId);
+			  }
+			  else{
+				  FDReferralManagerSB sb = managerHome.create();
+				  return sb.getLatestSTLSale(customerId);
+			  }
 		  } catch (CreateException ce) {
 			  invalidateManagerHome();
 			  throw new FDResourceException(ce, "Error creating session bean");
@@ -1349,8 +1409,13 @@ public class FDReferralManager {
 		  lookupManagerHome(); 
 
 		  try {
-			  FDReferralManagerSB sb = managerHome.create();
-			  return sb.isCustomerReferred(customerId);
+			  if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
+					return FDECommerceService.getInstance().isCustomerReferred(customerId);
+			  }
+			  else{
+				  FDReferralManagerSB sb = managerHome.create();
+			  	return sb.isCustomerReferred(customerId);
+			  }
 		  } catch (CreateException ce) {
 			  invalidateManagerHome();
 			  throw new FDResourceException(ce, "Error creating session bean");
@@ -1364,8 +1429,13 @@ public class FDReferralManager {
 		  lookupManagerHome(); 
 
 		  try {
-			  FDReferralManagerSB sb = managerHome.create();
-			  return sb.updateFDUser(customerId, zipCode, serviceType);
+			  if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
+					return FDECommerceService.getInstance().updateFDUser(customerId, zipCode, serviceType);
+			  }
+			  else{
+				  FDReferralManagerSB sb = managerHome.create();
+				  return sb.updateFDUser(customerId, zipCode, serviceType);
+			  }
 		  } catch (CreateException ce) {
 			  invalidateManagerHome();
 			  throw new FDResourceException(ce, "Error creating session bean");
@@ -1379,8 +1449,13 @@ public class FDReferralManager {
 		  lookupManagerHome(); 
 
 		  try {
-			  FDReferralManagerSB sb = managerHome.create();
-			  sb.updateCustomerInfo(customerId, firstName, lastName);
+			  if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
+				  FDECommerceService.getInstance().updateCustomerInfo(customerId, firstName, lastName);
+			  }
+			  else{
+				 FDReferralManagerSB sb = managerHome.create();
+				 sb.updateCustomerInfo(customerId, firstName, lastName);
+			  }
 		  } catch (CreateException ce) {
 			  invalidateManagerHome();
 			  throw new FDResourceException(ce, "Error creating session bean");
@@ -1394,8 +1469,13 @@ public class FDReferralManager {
 		  lookupManagerHome(); 
 
 		  try {
-			  FDReferralManagerSB sb = managerHome.create();
-			  sb.updateCustomerPW(customerId, pwdHash);
+			  if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
+				  FDECommerceService.getInstance().updateCustomerPW(customerId, pwdHash);
+			  }
+			  else{
+				  FDReferralManagerSB sb = managerHome.create();
+				  sb.updateCustomerPW(customerId, pwdHash);
+			  }
 		  } catch (CreateException ce) {
 			  invalidateManagerHome();
 			  throw new FDResourceException(ce, "Error creating session bean");
@@ -1409,8 +1489,13 @@ public class FDReferralManager {
 		  lookupManagerHome(); 
 
 		  try {
-			  FDReferralManagerSB sb = managerHome.create();
-			  sb.updateFdCustomer(customerId, pwdHint);
+			  if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
+				  FDECommerceService.getInstance().updateFdCustomer(customerId, pwdHint);
+			  }
+			  else{
+				  FDReferralManagerSB sb = managerHome.create();
+				  sb.updateFdCustomer(customerId, pwdHint);
+			  }
 		  } catch (CreateException ce) {
 			  invalidateManagerHome();
 			  throw new FDResourceException(ce, "Error creating session bean");
@@ -1424,8 +1509,13 @@ public class FDReferralManager {
 		lookupManagerHome(); 
 
 		  try {
-			  FDReferralManagerSB sb = managerHome.create();
-			  sb.storeFailedAttempt(email, dupeCustID, zipCode, firstName, lastName, referral, reason);
+			  if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
+				  FDECommerceService.getInstance().storeFailedAttempt(email, dupeCustID, zipCode, firstName, lastName, referral, reason);
+			  }
+			  else{
+				  FDReferralManagerSB sb = managerHome.create();
+				  sb.storeFailedAttempt(email, dupeCustID, zipCode, firstName, lastName, referral, reason);
+			  }
 		  } catch (CreateException ce) {
 			  invalidateManagerHome();
 			  throw new FDResourceException(ce, "Error creating session bean");
@@ -1439,8 +1529,13 @@ public class FDReferralManager {
 		lookupManagerHome(); 
 
 		  try {
-			  FDReferralManagerSB sb = managerHome.create();
-			  return sb.isUniqueFNLNZipCombo(firstName, lastName, zipCode, customerId);
+			  if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
+				  return FDECommerceService.getInstance().isUniqueFNLNZipCombo(firstName, lastName, zipCode, customerId);
+			  }
+			  else{
+				  FDReferralManagerSB sb = managerHome.create();
+				  return sb.isUniqueFNLNZipCombo(firstName, lastName, zipCode, customerId);
+			  }
 		  } catch (CreateException ce) {
 			  invalidateManagerHome();
 			  throw new FDResourceException(ce, "Error creating session bean");
@@ -1454,8 +1549,13 @@ public class FDReferralManager {
 		  lookupManagerHome(); 
 
 		  try {
-			  FDReferralManagerSB sb = managerHome.create();
-			  return sb.getReferralName(referralId);
+			  if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
+				  return FDECommerceService.getInstance().getReferralName(referralId);
+			  }
+			  else{
+				  FDReferralManagerSB sb = managerHome.create();
+				  return sb.getReferralName(referralId);
+			  }
 		  } catch (CreateException ce) {
 			  invalidateManagerHome();
 			  throw new FDResourceException(ce, "Error creating session bean");
@@ -1469,8 +1569,13 @@ public class FDReferralManager {
 		  lookupManagerHome(); 
 
 		  try {
-			  FDReferralManagerSB sb = managerHome.create();
-			  return sb.isReferreSignUpComplete(email);
+			  if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
+				  return FDECommerceService.getInstance().isReferreSignUpComplete(email);
+			  }
+			  else{
+				  FDReferralManagerSB sb = managerHome.create();
+				  return sb.isReferreSignUpComplete(email);
+			  }
 		  } catch (CreateException ce) {
 			  invalidateManagerHome();
 			  throw new FDResourceException(ce, "Error creating session bean");

@@ -23,6 +23,7 @@ import com.freshdirect.content.nutrition.panel.NutritionPanel;
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpCustEWalletModel;
+import com.freshdirect.customer.ErpCustomerCreditModel;
 import com.freshdirect.customer.ErpEWalletModel;
 import com.freshdirect.customer.ErpGrpPriceModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
@@ -38,15 +39,17 @@ import com.freshdirect.ecommerce.data.delivery.sms.SmsAlertETAInfoData;
 import com.freshdirect.ecommerce.data.dlv.AddressData;
 import com.freshdirect.ecommerce.data.referral.FDReferralReportLineData;
 import com.freshdirect.ecommerce.data.referral.FDUserData;
+import com.freshdirect.ecommerce.data.referral.ManageInvitesData;
 import com.freshdirect.ecommerce.data.referral.ReferralCampaignData;
 import com.freshdirect.ecommerce.data.referral.ReferralChannelData;
 import com.freshdirect.ecommerce.data.referral.ReferralHistoryData;
+import com.freshdirect.ecommerce.data.referral.ReferralIniviteData;
 import com.freshdirect.ecommerce.data.referral.ReferralObjectiveData;
 import com.freshdirect.ecommerce.data.referral.ReferralPartnerData;
 import com.freshdirect.ecommerce.data.referral.ReferralProgramData;
 import com.freshdirect.ecommerce.data.referral.ReferralProgramInvitationData;
+import com.freshdirect.ecommerce.data.referral.ReferralPromotionData;
 import com.freshdirect.ecommerce.data.referral.ReferralSearchCriteriaData;
-import com.freshdirect.ecommerce.data.referral.ReferralProgramInvitationData;
 import com.freshdirect.ecommerce.data.sessionimpressionlog.SessionImpressionLogEntryData;
 import com.freshdirect.ecommerce.data.smartstore.EnumSiteFeatureData;
 import com.freshdirect.ecommerce.data.survey.FDSurveyData;
@@ -630,7 +633,7 @@ public interface IECommerceService {
 	public abstract ReferralHistoryData createReferralHistory(ReferralHistoryData history) throws FDResourceException,  RemoteException;
 	
 
-	//public abstract ReferralProgramInvitaionData createReferralInvitee(ReferralProgramInvitaionData referral, FDUserData user) throws FDResourceException,  RemoteException;
+	public abstract ReferralProgramInvitationData createReferralInvitee(ReferralIniviteData referralInviteData) throws FDResourceException,  RemoteException;
 
 	public abstract void storeReferral(ReferralProgramInvitationData referral, FDUserData user) throws FDResourceException, RemoteException;
 
@@ -707,6 +710,51 @@ public interface IECommerceService {
 	public abstract List<ReferralObjectiveData> getReferralObjective(ReferralSearchCriteriaData criteria)throws FDResourceException, RemoteException;
 	
 	
+	public abstract ReferralPromotionData getReferralPromotionDetails(String userId)throws FDResourceException, RemoteException;
+	 
+	 public abstract ReferralPromotionData getReferralPromotionDetailsByRefName(String referral)throws FDResourceException, RemoteException;
+	 
+	 public abstract void sendMails(String recipient_list, String mail_message, String identity, String rpid, String serverName) throws FDResourceException, RemoteException;
+	 
+	 public abstract List<ManageInvitesData> getManageInvites(String customerId)throws FDResourceException, RemoteException;
+	 
+	 public abstract List<ErpCustomerCreditModel> getUserCredits(String customerId)throws FDResourceException, RemoteException;
+	 
+	 public abstract List<ManageInvitesData> getManageInvitesForCRM(String customerId)throws FDResourceException, RemoteException;
+	 
+	 public abstract Double getAvailableCredit(String customerId)throws FDResourceException, RemoteException;
+	 
+	 public abstract Boolean getReferralDisplayFlag(String customerId)throws FDResourceException, RemoteException;
+	 
+	 public abstract List<ReferralPromotionData> getSettledSales()throws FDResourceException, RemoteException;
+	 
+	 public abstract String getReferralLink(String customerId)throws FDResourceException, RemoteException;
+	 
+	 public abstract String getLatestSTLSale(String customerId)throws FDResourceException, RemoteException;
+	 
+	 public abstract void saveCustomerCredit(String referral_customer_id, String customer_id, int ref_fee, String sale, String complaintId, String refPrgmId) throws FDResourceException, RemoteException;
+	 
+	 public abstract boolean isCustomerReferred(String customerId)throws FDResourceException, RemoteException;
+	 
+	 public abstract String updateFDUser(String customerId, String zipCode, EnumServiceType serviceType)throws FDResourceException, RemoteException;
+	 
+	 public abstract void updateCustomerInfo(String customerId, String firstName, String lastName)throws FDResourceException, RemoteException;
+	 
+	 public abstract void updateCustomerPW(String customerId, String pwdHash)throws FDResourceException, RemoteException;
+	 
+	 public abstract void updateFdCustomer(String customerId, String pwdHint)throws FDResourceException, RemoteException;
+	 
+	 public abstract void storeFailedAttempt(String email, String dupeCustID, String zipCode, String firstName, String lastName, String referral, String reason) throws FDResourceException, RemoteException;
+	 
+	 public abstract boolean isUniqueFNLNZipCombo(String firstName, String lastName, String zipCode, String customerId) throws FDResourceException, RemoteException;
+	 
+	 public abstract String getReferralName(String referralId) throws FDResourceException, RemoteException;
+	 
+	 public abstract boolean isReferreSignUpComplete(String email) throws FDResourceException, RemoteException;
+	 
+	 public abstract List<ReferralPromotionData> getSettledTransaction() throws FDResourceException, RemoteException;
+
+	public abstract Map<String,String> updateSetteledRewardTransaction(List<ReferralPromotionData> models) throws FDResourceException, RemoteException;
 
 	public FDProduct getProduct(String sku, int version) throws RemoteException;
 	

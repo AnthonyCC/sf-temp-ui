@@ -45,6 +45,7 @@ import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpCreditCardModel;
+import com.freshdirect.customer.ErpCustomerCreditModel;
 import com.freshdirect.customer.ErpECheckModel;
 import com.freshdirect.customer.ErpEbtCardModel;
 import com.freshdirect.customer.ErpOrderLineModel;
@@ -131,6 +132,11 @@ import com.freshdirect.ecommerce.data.nutrition.NutritionInfoAttributeData;
 import com.freshdirect.ecommerce.data.payment.ErpPaymentMethodData;
 import com.freshdirect.ecommerce.data.payment.FDGatewayActivityLogModelData;
 import com.freshdirect.ecommerce.data.payment.RestrictedPaymentMethodData;
+import com.freshdirect.ecommerce.data.referral.CustomerCreditData;
+import com.freshdirect.ecommerce.data.referral.FNLNZipData;
+import com.freshdirect.ecommerce.data.referral.FailedAttemptData;
+import com.freshdirect.ecommerce.data.referral.MailData;
+import com.freshdirect.ecommerce.data.referral.UserCreditData;
 import com.freshdirect.ecommerce.data.rules.RuleData;
 import com.freshdirect.ecommerce.data.security.TicketData;
 import com.freshdirect.ecommerce.data.utill.DayOfWeekSetData;
@@ -1700,6 +1706,65 @@ public class ModelConverter {
 		model.setDebitCard(source.isDebitCard());
 	}
 
+	public static CustomerCreditData buildCustomerCreditData(String referral_customer_id, String customer_id, int ref_fee,
+			String sale, String complaintId, String refPrgmId) {
+		CustomerCreditData data = new CustomerCreditData();
+		data.setComplaintId(complaintId);
+		data.setRef_fee(ref_fee);
+		data.setCustomer_id(customer_id);
+		data.setReferral_customer_id(referral_customer_id);
+		data.setRefPrgmId(refPrgmId);
+		data.setSale(sale);
+		return data;
+	}
+
+	public static FailedAttemptData buildFailesAttemptData(String email,
+			String dupeCustID, String zipCode, String firstName,
+			String lastName, String referral, String reason) {
+		FailedAttemptData data = new FailedAttemptData();
+		data.setDupeCustID(dupeCustID);
+		data.setEmail(email);
+		data.setFirstName(firstName);
+		data.setLastName(lastName);
+		data.setReason(reason);
+		data.setReferral(referral);
+		data.setZipCode(zipCode);
+		return data;
+	}
+
+	public static FNLNZipData buildFNLNZipData(String firstName,String lastName, String zipCode, String customerId) {
+		FNLNZipData data = new FNLNZipData();
+		data.setCustomerId(customerId);
+		data.setFirstName(firstName);
+		data.setLastName(lastName);
+		data.setZipCode(zipCode);
+		return data;
+	}
+
+	public static List<ErpCustomerCreditModel> buildCustomerCreditModelList(List<UserCreditData> data) {
+		List<ErpCustomerCreditModel> creditModelList = new ArrayList<ErpCustomerCreditModel>();
+		for (UserCreditData userCreditData : data) {
+			ErpCustomerCreditModel model = new ErpCustomerCreditModel();
+			model.setAmount(userCreditData.getAmount());
+			model.setcDate(userCreditData.getcDate());
+			model.setDepartment(userCreditData.getDepartment());
+			model.setSaleId(userCreditData.getSaleId());
+			creditModelList.add(model);
+		}
+		return creditModelList;
+	}
+
+	public static MailData buildMailData(String recipient_list,String mail_message, String identity, String rpid, String serverName) {
+		MailData mail = new MailData();
+		mail.setIdentity(identity);
+		mail.setMail_message(mail_message);
+		mail.setRecipient_list(recipient_list);
+		mail.setRpid(rpid);
+		mail.setServerName(serverName);
+		return mail;
+		
+	}
+
 	public static ErpNutritionModelData buildNutritionModelData(
 			ErpNutritionModel nutritionModel) {
 		ErpNutritionModelData data = new ErpNutritionModelData();
@@ -1864,8 +1929,6 @@ public class ModelConverter {
 		Pricing model = new Pricing(zonePrice, cvPrices, salesUnits, pricing.isWineOrSpirit());
 		return model;
 	}
-	
-	
 	private static CharacteristicValuePrice[] buildCharacteristicValuePrice(
 			CharacteristicValuePriceData[] characteristicValuePriceDatas) {
 		CharacteristicValuePrice[] models = null;
