@@ -1141,5 +1141,20 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 	}
+	
+	public void	updateDeActivatedSOError(String soId)throws FDResourceException,RemoteException{
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO.updateDeActivatedSOError(conn, soId);	
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in updateDeActivatedSOError(): " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+	}	
+	
 
 }

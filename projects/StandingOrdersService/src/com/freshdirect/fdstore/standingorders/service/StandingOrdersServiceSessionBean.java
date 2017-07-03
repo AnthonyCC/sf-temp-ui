@@ -35,6 +35,7 @@ import com.freshdirect.fdstore.standingorders.SOResult;
 import com.freshdirect.fdstore.standingorders.SOResult.Result;
 import com.freshdirect.fdstore.standingorders.SOResult.Status;
 import com.freshdirect.fdstore.standingorders.UnavDetailsReportingBean;
+import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.mail.XMLEmailI;
@@ -123,8 +124,25 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 				for ( String soId : soIdList ) {
 					FDStandingOrder so = soManager.load( new PrimaryKey( soId ) );
 					if ( so != null ) {
-						soList.add( so );
+						if("N".equalsIgnoreCase(so.getActivate())){	
+							LOGGER.warn( "Standing order template is not activated "+soId );
+							sendTechnicalMail( "Standing order template is not activated "+soId );
+							soManager.updateDeActivatedSOError(soId);
+							 
+						} else {
+							soList.add( so );
+						}
+					}else{
+						if(so == null){
+							LOGGER.error( "Could not retrieve standing orders - load() returned null for OrderID: "+soId );
+							sendTechnicalMail( "Could not retrieve standing orders - load() returned null for OrderID: "+soId );
+						}
+							
 					}
+					
+				}
+				if ( soList.isEmpty()  ) {
+					return null;
 				}
 			} catch (FDResourceException re) {
 				invalidateMailerHome();

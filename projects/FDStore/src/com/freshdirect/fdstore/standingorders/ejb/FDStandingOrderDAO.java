@@ -2037,5 +2037,23 @@ public void turnOffReminderOverLayNewSo(Connection con, String standingOrderId) 
 				}
 		}
 	
+	public static void updateDeActivatedSOError(Connection conn, String soId)throws SQLException{
+		PreparedStatement ps = null;
+		try {
+				ps = conn.prepareStatement("update CUST.STANDING_ORDER set ERROR_HEADER= ?, ERROR_DETAIL=? where ID=?");
+				ps.setString(1, FDStandingOrder.ErrorCode.UNACTIVATED_SO.getErrorHeader());
+				ps.setString(2, FDStandingOrder.ErrorCode.UNACTIVATED_SO.getErrorDetail(null));
+				ps.setString(3, soId);
+				ps.execute();
+
+			} catch (Exception e) {
+				LOGGER.error("Error while updating updateSOError in DB", e);
+				} finally {
+					if (ps != null) {
+						ps.close();
+					}
+				}
+		}
+	}
 	
-}
+
