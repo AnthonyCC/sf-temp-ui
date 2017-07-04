@@ -15,6 +15,7 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -256,6 +257,7 @@ public final class ModuleHandlingService {
         moduleConfig.setModuleVirtualCategory(moduleVirtualCategory);
         moduleConfig.setSourceType(ModuleSourceType.PRODUCT_LIST_MODULE.toString());
         moduleConfig.setModuleId(imageModuleId);
+        moduleConfig.setContentTitle(ContentNodeUtil.getStringAttribute(imageBanner, "Description"));
 
         datas.put(imageModuleId, moduleData);
         configs.add(moduleConfig);
