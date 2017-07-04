@@ -39,10 +39,19 @@ var FreshDirect = FreshDirect || {};
     openPopup:{
       value: function (e) {
         var moduleId = e.currentTarget.getAttribute('data-module-id'),
+            iconId = e.currentTarget.getAttribute('data-icon-id'),
             moduleVirtualCategory = e.currentTarget.getAttribute('data-module-virtual-category'),
-            notProductList = e.currentTarget.hasAttribute('data-not-product-list');
+            notProductList = e.currentTarget.hasAttribute('data-not-product-list'),
+            url = '';
+
+        if (moduleId) {
+          url = '/api/modulehandling/load?moduleId=' + moduleId + '&viewAll=' + !notProductList +'&moduleVirtualCategory=' + moduleVirtualCategory;
+        } else {
+          url = '/api/modulehandling/imageproduct?iconId=' + iconId + '&moduleVirtualCategory=' + moduleVirtualCategory;
+        }
+
         fd.common.dispatcher.signal('server',{
-    			url:'/api/modulehandling/load?moduleId=' + moduleId + '&viewAll=' + !notProductList +'&moduleVirtualCategory=' + moduleVirtualCategory
+    			url: url
     		});
         var $t = e && $(e.currentTarget) || $(document.body);
 
@@ -79,7 +88,11 @@ var FreshDirect = FreshDirect || {};
 
   viewallPopup.listen();
 
-  $(document).on('click', viewallPopup.trigger, viewallPopup.openPopup.bind(viewallPopup));
+  $(document).on('click', viewallPopup.trigger, function (e) {
+    viewallPopup.openPopup(e);
+    e.preventDefault();
+    e.stopPropagation();
+  });
   $(document).on('click', viewallPopup.closeTrigger, viewallPopup.close.bind(viewallPopup));
 
   fd.modules.common.utils.register("components", "viewallPopup", viewallPopup, fd);
