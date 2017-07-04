@@ -27,6 +27,7 @@ public class ModuleConfig implements Serializable {
     private String moduleGroupViewAllButtonLink;
     private boolean useViewAllPopup;
     private String moduleVirtualCategory;
+    private boolean showViewAllOverlayOnImages;
 
     private ModuleEditorialContainer editorialContainer;
 
@@ -180,6 +181,14 @@ public class ModuleConfig implements Serializable {
 
     public void setModuleVirtualCategory(String moduleVirtualCategory) {
         this.moduleVirtualCategory = moduleVirtualCategory;
+    }
+
+    public boolean isShowViewAllOverlayOnImages() {
+        return showViewAllOverlayOnImages;
+    }
+
+    public void setShowViewAllOverlayOnImages(boolean showViewAllOverlayOnImages) {
+        this.showViewAllOverlayOnImages = showViewAllOverlayOnImages;
     }
 
 }

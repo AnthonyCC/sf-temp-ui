@@ -2784,6 +2784,7 @@
 			<AttributeDef type="B" name="hideProductPrice"  label="Hide Product Price" required="false"/>
 			<AttributeDef type="B" name="hideProductBadge"  label="Hide Product Badge" required="false"/>
 			<AttributeDef type="B" name="useViewAllPopup"  label="Show View all Overlay" required="false"/>
+			<AttributeDef type="B" name="showViewAllOverlayOnImages"  label="Show View all Overlay On Images" required="false"/>
 			<EnumDef type="S" name="productSourceType"  label="Product Source Type" required="true">
 				<EnumValue value="GENERIC" label="GENERIC"/>
 				<EnumValue value="BROWSE" label="BROWSE"/>

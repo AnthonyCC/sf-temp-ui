@@ -2435,6 +2435,7 @@
 							<CmsField><attribute>contentTitle</attribute></CmsField>
 							<CmsField><attribute>hideViewAllButton</attribute></CmsField>
 						    <CmsField><attribute>useViewAllPopup</attribute></CmsField>	
+						    <CmsField><attribute>showViewAllOverlayOnImages</attribute></CmsField>	
 							<CmsField><attribute>productSourceType</attribute></CmsField>
 							<CmsField><attribute>sourceNode</attribute></CmsField>
 						    <CmsField><attribute>displayType</attribute></CmsField>

@@ -20,7 +20,9 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.ajax.browse.data.BrowseData.SectionDataCointainer;
 import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
+import com.freshdirect.webapp.ajax.modulehandling.ModuleSourceType;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleConfig;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleContainerData;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleData;
@@ -226,6 +228,42 @@ public final class ModuleHandlingService {
                 moduleVirtualCategoryPosition++;
             }
         }
+    }
+
+    public ModuleContainerData loadModuleContainerForImageBanners(String imageBannerContentKey, FDUserI user, String moduleVirtualCategory) throws FDResourceException,
+            InvalidFilteringArgumentException {
+        ModuleContainerData result = new ModuleContainerData();
+        List<ModuleConfig> configs = new ArrayList<ModuleConfig>();
+        Map<String, ModuleData> datas = new HashMap<String, ModuleData>();
+        ModuleData moduleData = new ModuleData();
+        ModuleConfig moduleConfig = new ModuleConfig();
+        
+        String imageModuleId = "imageModuleId";
+
+        //Load Browse sectionDataContainer
+        SectionDataCointainer sectionDataContainer = new SectionDataCointainer();
+        // Checklogin status is not applicable for AJAX calls so we need this.
+        ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || ((FDSessionUser) user).isEligibleForDDPP());
+        DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
+        ContentNodeI imageBanner = CmsManager.getInstance().getContentNode(ContentKey.getContentKey(imageBannerContentKey), currentDraftContext);
+        ContentKey targetContentKey = (ContentKey) imageBanner.getAttributeValue("Target");
+        
+        if (targetContentKey.getType() == FDContentTypes.CATEGORY ){
+            sectionDataContainer = ModuleContentService.getDefaultService().loadBrowseSectionDataContainer(targetContentKey.getId(), user);
+        }
+
+        moduleData.setSectionDataContainer(sectionDataContainer);
+        moduleConfig.setModuleVirtualCategory(moduleVirtualCategory);
+        moduleConfig.setSourceType(ModuleSourceType.PRODUCT_LIST_MODULE.toString());
+        moduleConfig.setModuleId(imageModuleId);
+
+        datas.put(imageModuleId, moduleData);
+        configs.add(moduleConfig);
+        
+        result.setConfig(configs);
+        result.setData(datas);
+
+        return result;
     }
 
 }
