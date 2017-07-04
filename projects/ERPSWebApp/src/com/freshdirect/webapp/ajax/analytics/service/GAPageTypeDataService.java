@@ -15,6 +15,8 @@ import com.freshdirect.webapp.ajax.analytics.domain.PageType;
 
 public class GAPageTypeDataService {
 
+    private static final List<String> specialBrowseIds = Arrays.asList("wgd_deals", "top_rated", "wgd_summer_central", "about_overview", "local");
+
     private static final GAPageTypeDataService INSTANCE = new GAPageTypeDataService();
 
     private GAPageTypeDataService() {
@@ -29,20 +31,19 @@ public class GAPageTypeDataService {
 
         GAPageTypeData pageTypeData = new GAPageTypeData();
 
-        pageTypeData.setPageType(PageType.namePageType(getParameters(distinguisher)));
+        pageTypeData.setPageType(PageType.namePageType(decorateUrl(distinguisher)));
         pageTypeData.setPageLanguage("english");
 
         return pageTypeData;
     }
 
-    public String getParameters(GAPageTypeDistinguisher distinguisher) {
+    public String decorateUrl(GAPageTypeDistinguisher distinguisher) {
 
         String pageType = distinguisher.getPageType();
         String id = distinguisher.getId();
         String requestURI = distinguisher.getRequestURI();
         String url = requestURI;
 
-        List<String> specialBrowseIds = Arrays.asList("wgd_deals", "top_rated", "wgd_summer_central", "about_overview", "local");
 
         if (id != null) {
             if ("/browse.jsp".equals(requestURI)) {

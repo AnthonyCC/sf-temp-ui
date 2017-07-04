@@ -326,6 +326,7 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 </div>
 <!-- container ends here -->
 </fd:LoginController>
+<%@ include file="/common/template/includes/i_gtm_datalayer.jsp" %>
 
 </center>
 

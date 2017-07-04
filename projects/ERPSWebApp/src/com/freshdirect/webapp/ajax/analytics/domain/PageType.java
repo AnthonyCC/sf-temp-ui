@@ -5,7 +5,7 @@ import java.util.List;
 
 public enum PageType {
     HOMEPAGE("/index.jsp", "/cos.jsp", "/welcome.jsp"),
-    LOGIN("/social/login.jsp"),
+    LOGIN("/social/login.jsp", "/login/login.jsp"),
     REGISTER("/social/signup_lite.jsp"),
     CATEGORY_LIST("/browse.jsp?pageType=category_list"),
     PRODUCT_LIST("/browse.jsp?pageType=product_list"),
