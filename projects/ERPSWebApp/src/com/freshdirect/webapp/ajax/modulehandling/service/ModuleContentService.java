@@ -72,19 +72,25 @@ public class ModuleContentService {
         List<ProductData> products = new ArrayList<ProductData>();
         final CmsFilteringFlowResult result = CmsFilteringFlow.getInstance().doFlow(nav, (FDSessionUser) user);
 
-        List<SectionData> sections = result.getBrowseDataPrototype().getSections().getSections();
-        for (SectionData sectionData : sections) {
-            if (sectionData.getProducts() == null) {
-                List<SectionData> categories = sectionData.getSections();
-                for (SectionData categorySections : categories) {
-                    products.addAll(categorySections.getProducts());
-                }
-            } else {
-                products.addAll(sectionData.getProducts());
-            }
-        }
+        SectionDataCointainer sectionDataContainer = result.getBrowseDataPrototype().getSections();
+        List<SectionData> sections = sectionDataContainer.getSections();
+        
+        loadProductsFromSections(sectionDataContainer,sections,0,products);
 
         return products;
+    }
+
+    private void loadProductsFromSections(SectionDataCointainer sectionDataContainer, List<SectionData> sections, int level, List<ProductData> products ) {
+        if (sections != null && sectionDataContainer.getSectionMaxLevel() > level) {
+            for (SectionData section : sections) {
+                if (section.getProducts() != null) {
+                    products.addAll(section.getProducts());
+
+                } else {
+                    loadProductsFromSections(sectionDataContainer, section.getSections(), level + 1, products);
+                }
+            }
+        }
     }
 
     public List<ProductData> limitProductList(List<ProductData> products) {
@@ -158,30 +164,27 @@ public class ModuleContentService {
         }
 
         List<SectionData> sections = sectionDataContainer.getSections();
+        removeBrowseSectionDataContainerUnavailableProducts(sectionDataContainer, sections, 0);
 
-        // Filter Unav products for view all modules
-        for (int i = 0; i < sections.size(); i++) {
-            if (sections.get(i).getProducts() == null) {
-                List<SectionData> categories = sections.get(i).getSections();
-                for (int j = 0; j < categories.size(); j++) {
-                    for (Iterator<ProductData> iter = sections.get(i).getSections().get(j).getProducts().iterator(); iter.hasNext();) {
+        return sectionDataContainer;
+    }
+
+    private void removeBrowseSectionDataContainerUnavailableProducts(SectionDataCointainer sectionDataContainer, List<SectionData> sections, int level) {
+
+        if (sections != null && sectionDataContainer.getSectionMaxLevel() > level) {
+            for (SectionData section : sections) {
+                if (section.getProducts() != null) {
+                    for (Iterator<ProductData> iter = section.getProducts().iterator(); iter.hasNext();) {
                         ProductData productData = iter.next();
                         if (!productData.isAvailable() || productData.isDiscontinued()) {
                             iter.remove();
                         }
                     }
-                }
-            } else {
-                for (Iterator<ProductData> iter = sections.get(i).getProducts().iterator(); iter.hasNext();) {
-                    ProductData productData = iter.next();
-                    if (!productData.isAvailable() || productData.isDiscontinued()) {
-                        iter.remove();
-                    }
+                } else {
+                    removeBrowseSectionDataContainerUnavailableProducts(sectionDataContainer, section.getSections(), level + 1);
                 }
             }
         }
-
-        return sectionDataContainer;
     }
 
     public List<ProductData> loadBrowseProducts(String categoryId, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException {
