@@ -7,16 +7,16 @@
 {template .iconCarouselItem}
 <li class="portrait-item">
   <div class="icon-image">
-    <a {if $item.iconLink}href="{$item.iconLink}"{/if} {if $moduleData}data-cm-click="
+    <a href="{if $item.iconLink}{$item.iconLink}{/if}" {if $moduleData}data-cm-click="
     {if $item.iconId}{$item.iconId}{/if}-_-{if $item.iconLinkText}{$item.iconLinkText}{/if}-_-
-    {if $moduleData.moduleId}{$moduleData.moduleId}{else}no module ID{/if}"{/if}>
+    {if $moduleData.moduleId}{$moduleData.moduleId}{else}no module ID{/if}"{/if} {if $moduleData.showViewAllOverlayOnImages}data-view-all-popup data-icon-id={$item.iconId} data-module-virtual-category="{$moduleData.moduleVirtualCategory}"{/if}>
       <img src="{$item.iconImage}" alt="{if $item.iconLinkText}{$item.iconLinkText}{else}icon{/if}">
     </a>
   </div>
   {if not $moduleData or not $moduleData.hideProductName}
-  <a {if $item.iconLink}href="{$item.iconLink}"{/if} {if $moduleData}data-cm-click="
+  <a href="{if $item.iconLink}{$item.iconLink}{/if}" {if $moduleData}data-cm-click="
   {if $item.iconId}{$item.iconId}{/if}-_-{if $item.iconLinkText}{$item.iconLinkText}{/if}-_-
-  {if $moduleData.moduleId}{$moduleData.moduleId}{else}no module ID{/if}"{/if}>{if $item.iconLinkText}{$item.iconLinkText}{/if}</a>
+  {if $moduleData.moduleId}{$moduleData.moduleId}{else}no module ID{/if}"{/if} {if $moduleData.showViewAllOverlayOnImages}data-view-all-popup data-icon-id={$item.iconId} data-module-virtual-category="{$moduleData.moduleVirtualCategory}"{/if}>{if $item.iconLinkText}{$item.iconLinkText}{/if}</a>
   {/if}
 </li>
 {/template}
