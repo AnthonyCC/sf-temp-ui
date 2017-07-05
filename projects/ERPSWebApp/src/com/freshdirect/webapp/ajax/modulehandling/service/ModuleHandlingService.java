@@ -17,7 +17,6 @@ import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -27,7 +26,6 @@ import com.freshdirect.webapp.ajax.modulehandling.ModuleSourceType;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleConfig;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleContainerData;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleData;
-import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 
 /**
  * Used to load a moduleContainer for a User.
@@ -128,8 +126,7 @@ public final class ModuleHandlingService {
         List<ModuleConfig> configs = new ArrayList<ModuleConfig>();
         Map<String, ModuleData> datas = new HashMap<String, ModuleData>();
 
-        // Checklogin status is not applicable for AJAX calls so we need this.
-        ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || ((FDSessionUser) user).isEligibleForDDPP());
+
 
         ModuleData moduleData = new ModuleData();
         ModuleConfig moduleConfig = new ModuleConfig();
@@ -243,8 +240,7 @@ public final class ModuleHandlingService {
 
         //Load Browse sectionDataContainer
         SectionDataCointainer sectionDataContainer = new SectionDataCointainer();
-        // Checklogin status is not applicable for AJAX calls so we need this.
-        ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || ((FDSessionUser) user).isEligibleForDDPP());
+
         DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
         ContentNodeI imageBanner = CmsManager.getInstance().getContentNode(ContentKey.getContentKey(imageBannerContentKey), currentDraftContext);
         ContentKey targetContentKey = (ContentKey) imageBanner.getAttributeValue("Target");
