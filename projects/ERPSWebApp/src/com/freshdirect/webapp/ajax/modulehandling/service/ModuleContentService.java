@@ -80,19 +80,6 @@ public class ModuleContentService {
         return products;
     }
 
-    private void loadProductsFromSections(SectionDataCointainer sectionDataContainer, List<SectionData> sections, int level, List<ProductData> products ) {
-        if (sections != null && sectionDataContainer.getSectionMaxLevel() > level) {
-            for (SectionData section : sections) {
-                if (section.getProducts() != null) {
-                    products.addAll(section.getProducts());
-
-                } else {
-                    loadProductsFromSections(sectionDataContainer, section.getSections(), level + 1, products);
-                }
-            }
-        }
-    }
-
     public List<ProductData> limitProductList(List<ProductData> products) {
         if (products.size() > MAX_ITEMS) {
             products = products.subList(0, MAX_ITEMS);
@@ -167,24 +154,6 @@ public class ModuleContentService {
         removeBrowseSectionDataContainerUnavailableProducts(sectionDataContainer, sections, 0);
 
         return sectionDataContainer;
-    }
-
-    private void removeBrowseSectionDataContainerUnavailableProducts(SectionDataCointainer sectionDataContainer, List<SectionData> sections, int level) {
-
-        if (sections != null && sectionDataContainer.getSectionMaxLevel() > level) {
-            for (SectionData section : sections) {
-                if (section.getProducts() != null) {
-                    for (Iterator<ProductData> iter = section.getProducts().iterator(); iter.hasNext();) {
-                        ProductData productData = iter.next();
-                        if (!productData.isAvailable() || productData.isDiscontinued()) {
-                            iter.remove();
-                        }
-                    }
-                } else {
-                    removeBrowseSectionDataContainerUnavailableProducts(sectionDataContainer, section.getSections(), level + 1);
-                }
-            }
-        }
     }
 
     public List<ProductData> loadBrowseProducts(String categoryId, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException {
@@ -459,5 +428,36 @@ public class ModuleContentService {
         }
 
         return filteredProductModels;
+    }
+
+    private void loadProductsFromSections(SectionDataCointainer sectionDataContainer, List<SectionData> sections, int level, List<ProductData> products) {
+        if (sections != null && sectionDataContainer.getSectionMaxLevel() > level) {
+            for (SectionData section : sections) {
+                if (section.getProducts() != null) {
+                    products.addAll(section.getProducts());
+
+                } else {
+                    loadProductsFromSections(sectionDataContainer, section.getSections(), level + 1, products);
+                }
+            }
+        }
+    }
+
+    private void removeBrowseSectionDataContainerUnavailableProducts(SectionDataCointainer sectionDataContainer, List<SectionData> sections, int level) {
+
+        if (sections != null && sectionDataContainer.getSectionMaxLevel() > level) {
+            for (SectionData section : sections) {
+                if (section.getProducts() != null) {
+                    for (Iterator<ProductData> iter = section.getProducts().iterator(); iter.hasNext();) {
+                        ProductData productData = iter.next();
+                        if (!productData.isAvailable() || productData.isDiscontinued()) {
+                            iter.remove();
+                        }
+                    }
+                } else {
+                    removeBrowseSectionDataContainerUnavailableProducts(sectionDataContainer, section.getSections(), level + 1);
+                }
+            }
+        }
     }
 }
