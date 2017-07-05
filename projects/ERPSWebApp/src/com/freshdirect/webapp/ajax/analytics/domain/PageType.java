@@ -32,7 +32,7 @@ public enum PageType {
     E_COUPONS("/srch.jsp?pageType=ecoupon"),
     FRESH_DEALS("/srch.jsp?pageType=pres_picks"),
     STAFF_PICKS("/srch.jsp?pageType=staff_picks"),
-    MEAL_KITS("/handpick/category.jsp?pageType=meal_kits", "/browse.jsp?pageType=meal_kits"),
+    MEAL_KITS("/handpick/category.jsp?id=meals_kits_meals", "/browse.jsp?id=meals_kits_meals"),
     RECIPE_DEPARTMENT("/recipe_dept.jsp"),
     RECIPE_CATEGORY("/recipe_cat.jsp"),
     RECIPE_SUBCATEGORY("/recipe_subcat.jsp"),
