@@ -124,25 +124,8 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 				for ( String soId : soIdList ) {
 					FDStandingOrder so = soManager.load( new PrimaryKey( soId ) );
 					if ( so != null ) {
-						if("N".equalsIgnoreCase(so.getActivate())){	
-							LOGGER.warn( "Standing order template is not activated "+soId );
-							sendTechnicalMail( "Standing order template is not activated "+soId );
-							soManager.updateDeActivatedSOError(soId);
-							 
-						} else {
 							soList.add( so );
 						}
-					}else{
-						if(so == null){
-							LOGGER.error( "Could not retrieve standing orders - load() returned null for OrderID: "+soId );
-							sendTechnicalMail( "Could not retrieve standing orders - load() returned null for OrderID: "+soId );
-						}
-							
-					}
-					
-				}
-				if ( soList.isEmpty()  ) {
-					return null;
 				}
 			} catch (FDResourceException re) {
 				invalidateMailerHome();

@@ -171,6 +171,14 @@ public class StandingOrderUtil {
 			return SOResult.createSkipped( so, "Skipping because SO is deleted" );
 		}
 		
+		// check if the standingorder is Active or not..
+		if("N".equalsIgnoreCase(so.getActivate())){	
+			LOGGER.warn( "Standing order template is not activated "+so.getId() );
+			LOGGER.warn( "Standing order template is not activated "+so.getId() );
+			FDStandingOrdersManager.getInstance().updateDeActivatedSOError(so.getId() );
+			return SOResult.createSkipped( so, "Skipping because SO is Not Activated" );
+		}
+		
 		// checking if SO is in erroneous state
 		Date now = new Date();
 		if ( so.getLastError() != null ) {
