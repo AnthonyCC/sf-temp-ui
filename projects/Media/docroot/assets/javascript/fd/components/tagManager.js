@@ -153,13 +153,11 @@ var dataLayer = window.dataLayer || [];
       dataLayer.push({
         ecommerce: {
           checkout: {
-            actionField: {
-              step: coStepData.step,
-              option: coStepData.option
-            }
+            actionField: coStepData
           }
         }
-      });
+      }
+      );
     },
     topNavClick: function (data) {
       dataLayer.push({
@@ -498,31 +496,24 @@ var dataLayer = window.dataLayer || [];
   atcSuccess.listen();
 
   var coStepUpdate = function (step, data) {
-    var option = "";
+    var coStepData = {
+      step: step
+    };
 
     if (step === 'address') {
-      var selectedAddress = data.addresses.filter(function (address) { return address.selected; })[0];
-
-      if (!selectedAddress) { return; }
-
-      option = selectedAddress.street_address;
+      // don't set the option field for address
     } else if (step === 'payment') {
       var selectedPayment = data.payments.filter(function (payment) { return payment.selected; })[0];
 
       if (!selectedPayment) { return; }
 
-      option = selectedPayment.type;
+      coStepData.option = selectedPayment.type;
     } else if (step === 'timeslot') {
-      if (!data.id) { return; }
-
-      option = data.year + '/' + data.month + '/' + data.dayOfMonth + ' ' + data.timePeriod;
+      // don't set the option field for timeslot
     }
 
     fd.gtm.updateDataLayer({
-      coStep: {
-        step: step,
-        option: option
-      }
+      coStep: coStepData
     }, {
       event: 'checkoutStep'
     });
