@@ -41,7 +41,7 @@ public enum PageType {
     SALE("/browse.jsp?id=wgd_deals"),
     TOP_RATED("/browse.jsp?id=top_rated"),
     LOCAL("/browse.jsp?id=local"),
-    JULY_4("browse.jsp?id=wgd_summer_central"),
+    JULY_4("/browse.jsp?id=wgd_summer_central"),
     NOT_RECOGNIZED("");
 
     private List<String> urls;
