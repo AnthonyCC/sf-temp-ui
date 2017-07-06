@@ -311,7 +311,7 @@
 			    	<div class="standing-orders-3-so-settings-error-steps">
 						<div class="standing-orders-3-so-settings-error-steps-header">
 							To fix this issue: <button onclick="openSOSettings({$item.id})" class="standing-orders-3-so-settings-error-steps-link">Update your payment method.</button>
-						</div>											
+						</div>
 					</div>
 				{case 'ADDRESS'}
 					<div class="standing-orders-3-so-settings-error-header">We're sorry. There's a problem with your Standing Order:</div>
@@ -321,8 +321,8 @@
 							To fix this issue: <button onclick="openSOSettings({$item.id})" class="standing-orders-3-so-settings-error-steps-link">Update your address information.</button>
 						</div>
 					</div>
-				{case 'MINORDER'}					
-					<div class="standing-orders-3-error-place-order">Your <a href="javascript:openSOSettings({$item.id})" class="standing-orders-3-error-place-order-settings">list of items</a> is below the ${$softLimit} dollar minimum.</div>
+				{case 'MINORDER'}
+					<div class="standing-orders-3-error-place-order"{if not $item.activated and $item.lastError=='MINORDER'} data-minorderpopup="true"{/if}>Your <a href="javascript:openSOSettings({$item.id})" class="standing-orders-3-error-place-order-settings">list of items</a> is below the ${$softLimit} dollar minimum.</div>
 				{case 'TIMESLOT_MINORDER'}
 					<div class="standing-orders-3-so-settings-error-header">We're sorry. There's a problem with your Standing Order:</div>
 			    	<div class="standing-orders-3-so-settings-error-header-bold">Your order has fallen below the ${$softLimit} minimum for delivery.</div>

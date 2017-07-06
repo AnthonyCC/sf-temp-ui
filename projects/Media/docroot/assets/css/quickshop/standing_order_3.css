@@ -1491,13 +1491,18 @@
 	display:block;
 }
 .so-drawer-success,
-.so-feature-tutorial{
+.so-feature-tutorial,
+.so-ready-to-activate-reminder{
 	width: 500px;
 	font-family: Verdana;
 	font-size: 16px;
 }
+.so-ready-to-activate-reminder{
+	width: 510px;
+}
 .so-drawer-success .so-drawer-success-header,
-.so-feature-tutorial .so-feature-tutorial-top{
+.so-feature-tutorial .so-feature-tutorial-top,
+.so-ready-to-activate-reminder .so-ready-to-activate-reminder-header{
 	padding: 30px;
 	font-size: 20px;
     font-weight: bold;
@@ -1537,6 +1542,14 @@
 .so-drawer-success .so-drawer-success-text{
 	font-size: 16px;
 	padding: 5px 60px 30px 72px;
+}
+.so-ready-to-activate-reminder .so-ready-to-activate-reminder-text{
+	font-size: 18px;
+	padding: 0 20px 20px;
+}
+.so-ready-to-activate-reminder .so-ready-to-activate-reminder-buttons{
+	margin: 30px auto 20px;
+	text-align: center;
 }
 .so-drawer-success .so-drawer-success-hr{
 	height: 0;

@@ -168,9 +168,13 @@ function standingOrdersNameInputChangeOK(id){
 	}
 }
 
-function soPlaceOrderDisplay(readyForActivation){
+function soPlaceOrderDisplay(soID, readyForActivation){
 	if ($jq(".standing-orders-3-so-settings-activate-button").length) {
 		if(readyForActivation){
+			if($jq(soID + " .standing-orders-3-error-place-order").data("minorderpopup") == true){
+				doOverlayDialogByHtmlNew('<div class="so-ready-to-activate-reminder"><div class="so-ready-to-activate-reminder-header">Reminder</div><div class="so-ready-to-activate-reminder-text">Place Your Order when you&apos;re finished shopping.</div><div class="so-ready-to-activate-reminder-text">Go to the <a class="so-ready-to-activate-reminder-text-link" href="/quickshop/standing_orders.jsp">Standing Order page</a> to Place Your Order.</div><div class="so-ready-to-activate-reminder-buttons"><a class="so-ready-to-activate-reminder-go-so cssbutton cssbutton-flat purple nontransparent" href="/quickshop/standing_orders.jsp">Go to Standing Order</a><button class="so-ready-to-activate-reminder-close cssbutton cssbutton-flat green nontransparent" onclick="closeDrawerSuccessOverlayDialog(false)">Keep Shopping</button></div></div>');
+				$jq(soID + " .standing-orders-3-error-place-order").data("minorderpopup", false);
+			}
 			$jq(".standing-orders-3-so-settings-activate-button").prop("disabled", false);
 		} else {
 			$jq(".standing-orders-3-so-settings-activate-button").prop("disabled", true);
@@ -348,7 +352,7 @@ function getSOData(id, action){
         		} else {
         			activatedAndHasAddress = false;
         		}
-        		soPlaceOrderDisplay(data.readyForActivation);
+        		soPlaceOrderDisplay(soID, data.readyForActivation);
         		soSaved(id, activatedAndHasAddress, false);
         		updateSOItem(id, data);
         	}
@@ -358,7 +362,7 @@ function getSOData(id, action){
         		} else {
         			activatedAndHasAddress = false;
         		}
-        		soPlaceOrderDisplay(data.readyForActivation);
+        		soPlaceOrderDisplay(soID, data.readyForActivation);
         		soSaved(id, activatedAndHasAddress, false);
         		updateSOItem(id, data);
         		var drawerSuccessConformation = '<div class="so-drawer-success"><div class="so-drawer-success-header"><div class="so-drawer-success-alert-img"></div>Important -- Please Read!</div>';
