@@ -15,6 +15,8 @@ import java.util.Map.Entry;
 import java.util.SortedSet;
 import java.util.TreeMap;
 
+import weblogic.jdbc.wrapper.Array;
+
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.pricing.CharacteristicValuePrice;
@@ -44,6 +46,7 @@ import com.freshdirect.customer.EnumComplaintDlvIssueType;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.customer.ErpComplaintReason;
 import com.freshdirect.customer.ErpCreditCardModel;
 import com.freshdirect.customer.ErpCustomerCreditModel;
 import com.freshdirect.customer.ErpECheckModel;
@@ -55,6 +58,7 @@ import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.customer.ErpActivityRecordData;
+import com.freshdirect.ecommerce.data.customer.complaint.ErpComplaintReasonData;
 import com.freshdirect.ecommerce.data.delivery.sms.RecievedSmsData;
 import com.freshdirect.ecommerce.data.delivery.sms.SmsOrderData;
 import com.freshdirect.ecommerce.data.ecoupon.CartCouponData;
@@ -2072,6 +2076,34 @@ public class ModelConverter {
 		}
 		return plantMap;
 	}
+
+	public static Map<String, List<ErpComplaintReason>> buildErpComplaintReason(Map<String, List<ErpComplaintReasonData>> data) {
+		Map<String, List<ErpComplaintReason>> complaintReasonMap = new HashMap<String, List<ErpComplaintReason>>();
+		List<ErpComplaintReason> reasonList = new ArrayList<ErpComplaintReason>();
+		for (String key :  data.keySet()) {
+			List<ErpComplaintReasonData> complaintReasonDataList = data.get(key);
+			for (ErpComplaintReasonData erpComplaintReasonData : complaintReasonDataList) {
+				reasonList.add(buildErpComplaintReason(erpComplaintReasonData));
+			}
+			complaintReasonMap.put(key, reasonList);
+			
+		}
+		return complaintReasonMap;
+	}
+
+	public static ErpComplaintReason buildErpComplaintReason(
+			ErpComplaintReasonData erpComplaintReasonData) {
+		ErpComplaintReason reason = new ErpComplaintReason(
+				erpComplaintReasonData.getId(),
+				erpComplaintReasonData.getDepartmentCode(),
+				erpComplaintReasonData.getDepartmentName(),
+				erpComplaintReasonData.getReason(),
+				erpComplaintReasonData.getPriority(),
+				erpComplaintReasonData.getSubjectCode(),
+				erpComplaintReasonData.getDlvIssueType() != null ? EnumComplaintDlvIssueType
+						.getEnum(erpComplaintReasonData.getDlvIssueType()): null);
+		return reason;
+		}
 	
 }
 

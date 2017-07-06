@@ -95,6 +95,7 @@ import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.meal.MealModel;
@@ -142,6 +143,7 @@ import com.freshdirect.payment.gateway.impl.GatewayFactory;
 import com.freshdirect.payment.gateway.impl.PaymentMethodFactory;
 import com.freshdirect.payment.gateway.impl.Paymentech;
 import com.freshdirect.payment.gateway.impl.RequestFactory;
+import com.freshdirect.payment.service.FDECommerceService;
 
 import oracle.sql.ARRAY;
 import oracle.sql.ArrayDescriptor;
@@ -161,8 +163,13 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
 	public Map<String, List<ErpComplaintReason>> getComplaintReasons(boolean excludeCartonReq) throws FDResourceException {
 		try {
-			ErpComplaintManagerSB complaintSB = this.getComplaintManagerHome().create();
-			return complaintSB.getReasons(excludeCartonReq);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpComplaintManagerSB)){
+				return FDECommerceService.getInstance().getReasons(excludeCartonReq);
+			}
+			else{
+				ErpComplaintManagerSB complaintSB = this.getComplaintManagerHome().create();
+				return complaintSB.getReasons(excludeCartonReq);
+			}
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {
@@ -172,8 +179,13 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
 	public Map<String,String> getComplaintCodes() throws FDResourceException {
 		try {
-			ErpComplaintManagerSB complaintSB = this.getComplaintManagerHome().create();
-			return complaintSB.getComplaintCodes();
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpComplaintManagerSB)){
+				return FDECommerceService.getInstance().getComplaintCodes();
+			}
+			else{
+				ErpComplaintManagerSB complaintSB = this.getComplaintManagerHome().create();
+				return complaintSB.getComplaintCodes();
+			}
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {
@@ -183,8 +195,13 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 	
 	public void rejectMakegoodComplaint(String makegood_sale_id) throws FDResourceException {
 		try {
-			ErpComplaintManagerSB complaintSB = this.getComplaintManagerHome().create();
-			complaintSB.rejectMakegoodComplaint(makegood_sale_id);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpComplaintManagerSB)){
+				 FDECommerceService.getInstance().rejectMakegoodComplaint(makegood_sale_id);
+			}
+			else{
+				ErpComplaintManagerSB complaintSB = this.getComplaintManagerHome().create();
+				complaintSB.rejectMakegoodComplaint(makegood_sale_id);
+			}
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {
@@ -3452,8 +3469,13 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 	
 	public ErpComplaintReason getReasonByCompCode(String cCode) throws FDResourceException {
 		try {
-			ErpComplaintManagerSB complaintSB = this.getComplaintManagerHome().create();
-			return complaintSB.getReasonByCompCode(cCode);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpComplaintManagerSB)){
+				return FDECommerceService.getInstance().getReasonByCompCode(cCode);
+			}
+			else{
+				ErpComplaintManagerSB complaintSB = this.getComplaintManagerHome().create();
+				return complaintSB.getReasonByCompCode(cCode);
+			}
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {

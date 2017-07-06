@@ -22,6 +22,7 @@ import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.panel.NutritionPanel;
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.customer.ErpComplaintReason;
 import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.customer.ErpCustomerCreditModel;
 import com.freshdirect.customer.ErpEWalletModel;
@@ -799,4 +800,14 @@ public interface IECommerceService {
 	public void saveNutritionPanel(NutritionPanel nutritionModel)throws RemoteException;
 
 	public void deleteNutritionPanel(String skuCode) throws RemoteException;
+	
+	public Map<String, List<ErpComplaintReason>> getReasons(boolean excludeCartonReq) throws RemoteException;
+	 
+	public Map<String,String> getComplaintCodes() throws RemoteException;
+
+	public Collection<String> getPendingComplaintSaleIds() throws RemoteException;
+
+	public void rejectMakegoodComplaint(String makegood_sale_id) throws RemoteException;
+	 
+	public ErpComplaintReason getReasonByCompCode(String cCode) throws RemoteException;
 }

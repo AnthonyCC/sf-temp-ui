@@ -77,6 +77,7 @@ public class FDEcommProperties {
 	public final static String ErpProductFamilySB ="erp.ejb.ErpProductFamilySB";
 	public final static String RestrictedPaymentMethodSB = "fraud.ejb.RestrictedPaymentMethodSB";
 	public static final String ErpNutritionSB = "nutrition.ejb.ErpNutritionSB";
+	public static final String ErpComplaintManagerSB = "customer.ejb.ErpComplaintManagerSB";
 
 	
     
@@ -127,6 +128,7 @@ public class FDEcommProperties {
         defaults.put(FDReferralManagerSB, FALSE);
         defaults.put(ErpProductFamilySB,FALSE);
         defaults.put(RestrictedPaymentMethodSB,FALSE);
+        defaults.put(ErpComplaintManagerSB,FALSE);
 
         
         

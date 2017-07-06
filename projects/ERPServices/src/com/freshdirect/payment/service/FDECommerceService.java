@@ -45,6 +45,7 @@ import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.panel.NutritionPanel;
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.customer.ErpComplaintReason;
 import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.customer.ErpCustomerCreditModel;
 import com.freshdirect.customer.ErpEWalletModel;
@@ -60,6 +61,7 @@ import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.customer.ErpActivityRecordData;
 import com.freshdirect.ecommerce.data.customer.ErpGrpPriceModelData;
 import com.freshdirect.ecommerce.data.customer.accounts.external.UserTokenData;
+import com.freshdirect.ecommerce.data.customer.complaint.ErpComplaintReasonData;
 import com.freshdirect.ecommerce.data.delivery.AddressAndRestrictedAdressData;
 import com.freshdirect.ecommerce.data.delivery.AddressRestrictionData;
 import com.freshdirect.ecommerce.data.delivery.AlcoholRestrictionData;
@@ -580,6 +582,12 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String NUTRITION_SKU_UPC_MAP ="nutrition/createUpcSkuMap" ;
 	private static final String NUTRITION_PANEL_SAVE = "nutrition/savePanel";
 	private static final String NUTRITION_PANEL_DELETE = "nutrition/deletePanel";
+
+	private static final String GET_COMPLAINT_REASONS ="complaint/reason/excludeCartonReq/";
+	private static final String GET_COMPLAINT_CODES = "complaint/code";
+	private static final String REJECT_MAKE_GOOD_COMPLAINT = "complaint/reject/makeGoodSaleId/";
+	private static final String GET_REASON_BY_COMPCODE = "complaint/reason/cCode/";
+	private static final String GET_PENDING_COMPLAINTS = "complaint/pending";
 	
 	public static IECommerceService getInstance() {
 		if (INSTANCE == null)
@@ -6700,6 +6708,85 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			throw new RemoteException(e.getMessage());
 		}
 	
+	}
+	@Override
+	public Map<String, List<ErpComplaintReason>> getReasons(boolean excludeCartonReq) throws RemoteException {
+		Response< Map<String, List<ErpComplaintReasonData>>> response = null;
+		try {
+			response = httpGetDataTypeMap(
+					getFdCommerceEndPoint(GET_COMPLAINT_REASONS + excludeCartonReq),new TypeReference<Response< Map<String, List<ErpComplaintReasonData>>>>() {
+					});
+			if (!response.getResponseCode().equals("OK"))
+				throw new FDResourceException(response.getMessage());
+
+		} catch (FDResourceException e) {
+			e.printStackTrace();
+			LOGGER.error(e.getMessage());
+		}
+		return ModelConverter.buildErpComplaintReason(response.getData());
+	}
+	@Override
+	public Map<String, String> getComplaintCodes() throws RemoteException {
+		Response<Map<String, String>> response = null;
+		try {
+			response = httpGetDataTypeMap(
+					getFdCommerceEndPoint(GET_COMPLAINT_CODES),new TypeReference<Response<Map<String, String>>>() {
+					});
+			if (!response.getResponseCode().equals("OK"))
+				throw new FDResourceException(response.getMessage());
+
+		} catch (FDResourceException e) {
+			e.printStackTrace();
+			LOGGER.error(e.getMessage());
+		}
+		return response.getData();
+	}
+	@Override
+	public Collection<String> getPendingComplaintSaleIds()throws RemoteException {
+		Response<Collection<String>> response = null;
+		try {
+			response = httpGetDataTypeMap(
+					getFdCommerceEndPoint(GET_PENDING_COMPLAINTS),new TypeReference<Response<Collection<String>>>() {
+					});
+			if (!response.getResponseCode().equals("OK"))
+				throw new FDResourceException(response.getMessage());
+
+		} catch (FDResourceException e) {
+			e.printStackTrace();
+			LOGGER.error(e.getMessage());
+		}
+		return response.getData();
+	}
+	@Override
+	public void rejectMakegoodComplaint(String makegood_sale_id)throws RemoteException {
+		Response<Object> response = null;
+		try {
+			response = httpGetDataTypeMap(
+					getFdCommerceEndPoint(REJECT_MAKE_GOOD_COMPLAINT+makegood_sale_id),new TypeReference<Response<Object>>() {
+					});
+			if (!response.getResponseCode().equals("OK"))
+				throw new FDResourceException(response.getMessage());
+
+		} catch (FDResourceException e) {
+			e.printStackTrace();
+			LOGGER.error(e.getMessage());
+		}
+	}
+	@Override
+	public ErpComplaintReason getReasonByCompCode(String cCode)throws RemoteException {
+		Response<ErpComplaintReasonData> response = null;
+		try {
+			response = httpGetDataTypeMap(
+					getFdCommerceEndPoint(GET_REASON_BY_COMPCODE+cCode),new TypeReference<Response<ErpComplaintReasonData>>() {
+					});
+			if (!response.getResponseCode().equals("OK"))
+				throw new FDResourceException(response.getMessage());
+
+		} catch (FDResourceException e) {
+			e.printStackTrace();
+			LOGGER.error(e.getMessage());
+		}
+		return ModelConverter.buildErpComplaintReason(response.getData());
 	}
 		
 	
