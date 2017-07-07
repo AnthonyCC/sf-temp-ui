@@ -582,6 +582,7 @@ public class CartDataService {
 
             CartRequestData reqData = BaseJsonServlet.parseRequestData(request, CartRequestData.class, true);
             SessionInput input = QuickShopCarouselService.defaultService().createSessionInput(user, request);
+            input.setError(request.getParameter("warning_message") != null || (reqData != null && reqData.getWarningMessage() != null));
             if (reqData != null && reqData.getPage() != null && reqData.getPage().contains("checkout")) {
                 cartData.setCarouselData(CheckoutCarouselService.getDefaultService().populateTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));
             } else {

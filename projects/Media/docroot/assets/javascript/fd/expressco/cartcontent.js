@@ -522,6 +522,7 @@ etids.div_tooltipPopup = "#tooltipPopup";
 								requestCounter: (++requestCounter)
 							},
 							change: (userData || {}),
+							warningMessage: fd.utils.getParameterByName('warning_message'),
 							page: currentpagefile
 						})
 					},
