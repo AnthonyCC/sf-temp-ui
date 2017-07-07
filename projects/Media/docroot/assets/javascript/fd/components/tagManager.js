@@ -150,14 +150,28 @@ var dataLayer = window.dataLayer || [];
       return {event: event};
     },
     coStep: function (coStepData) {
+      if (coStepData.delivery_type) {
+        dataLayer.push({
+          ecommerce: {
+            delivery_type: coStepData.delivery_type
+          }
+        });
+      }
+      if (coStepData.available_timeslot_value) {
+        dataLayer.push({
+          ecommerce: {
+            available_timeslot_value: coStepData.available_timeslot_value,
+            unavailable_timeslot_present: coStepData.unavailable_timeslot_present
+          }
+        });
+      }
       dataLayer.push({
         ecommerce: {
           checkout: {
             actionField: coStepData
           }
         }
-      }
-      );
+      });
     },
     topNavClick: function (data) {
       dataLayer.push({
@@ -203,7 +217,8 @@ var dataLayer = window.dataLayer || [];
       return {event: 'lightbox-zipcode'};
     },
     checkout: function (coData) {
-      var customer = fd.gtm && fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.customer;
+      var customer = fd.gtm && fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.customer,
+          ts = coData.selectedTimeslotValue;
 
       if (coData.products) {
         dataLayer.push({
@@ -241,7 +256,10 @@ var dataLayer = window.dataLayer || [];
                 redemption_code: coData.redemptionCode && coData.redemptionCode.join(','),
                 etipping: coData.etipping || 0
               }
-            }
+            },
+            delivery_type: coData.deliveryType || 'unknown',
+            available_timeslot_value: ts && ts.deliveryDate+' '+ts.displayString || 'unknown',
+            unavailable_timeslot_present: coData.unavailableTimeslotValue ? 'yes' : 'no'
           }
         });
       }
@@ -501,7 +519,11 @@ var dataLayer = window.dataLayer || [];
     };
 
     if (step === 'address') {
-      // don't set the option field for address
+      var selectedAddress = data.addresses.filter(function (address) { return address.selected; })[0];
+
+      if (selectedAddress) {
+        coStepData.delivery_type = selectedAddress.service_type;
+      }
     } else if (step === 'payment') {
       var selectedPayment = data.payments.filter(function (payment) { return payment.selected; })[0];
 
@@ -510,6 +532,10 @@ var dataLayer = window.dataLayer || [];
       coStepData.option = selectedPayment.type;
     } else if (step === 'timeslot') {
       // don't set the option field for timeslot
+      if (data) {
+        coStepData.available_timeslot_value = data && data.timePeriod+' '+data.month+'/'+data.dayOfMonth+'/'+data.year || 'unknown';
+        coStepData.unavailable_timeslot_present = data.unavailableTimeslotValue ? 'yes' : 'no';
+      }
     }
 
     fd.gtm.updateDataLayer({
