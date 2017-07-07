@@ -81,7 +81,8 @@ public class FDStandingOrder extends ModelSupport {
 	
 	private boolean reminderOverlayForNewSo;
 	
-	
+	Date deleteDate; 		
+
 	public FDStandingOrder() {
 		super();
 	}
@@ -653,5 +654,13 @@ public class FDStandingOrder extends ModelSupport {
 	}
 	public void setReminderOverlayForNewSo(boolean reminderOverlayForNewSo) {
 		this.reminderOverlayForNewSo = reminderOverlayForNewSo;
+	}
+
+	public Date getDeleteDate() {
+		return deleteDate;
+	}
+
+	public void setDeleteDate(Date deleteDate) {
+		this.deleteDate = deleteDate;
 	}
 }

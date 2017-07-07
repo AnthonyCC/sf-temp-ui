@@ -1,5 +1,6 @@
 package com.freshdirect.webapp.util;
 
+import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -658,6 +659,7 @@ public class StandingOrderHelper {
 						.getDeliveryEndTime())
 						: so.getStartTime() != null ? DateUtil.formatHourAMPMRange(
 								so.getStartTime(), so.getEndTime()) : "");
+		map.put("deleteDateRange", getSODeleteDateRanges(getSODeliveryDate(so, isUpcomingDelivery), so.getFrequency()));
 
 		//map.put("modifyDeliveryDate", isUpcomingDelivery?getModifyDeliveryDate(so.getUpcomingDelivery().getRequestedDate()):null);
 		//map.put("shortDeliveryDate",so.getNextDeliveryDate()!=null? DateUtil.formatMonthAndDate(so.getNextDeliveryDate()):null );
@@ -1262,5 +1264,33 @@ private static String convert(Date time) {
 			LOGGER.info("while setting the New SO Settings Overlay FirstTime "+ e);
 			}
 		return user;
+	}
+
+	//populates 5 delivery dates ahead for a so template when a user prompted to delete in future.
+	public static ArrayList<String> getSODeleteDateRanges(String soDeliveryDate, int frequency) {
+		ArrayList<String> dateList = new ArrayList<String>();
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+		try {		
+			Calendar cal = Calendar.getInstance();
+			dateList.add(0,"Cancel all deliveries");
+			dateList.add(1, soDeliveryDate);
+			cal = Calendar.getInstance();
+			cal.setTime(formatter.parse(soDeliveryDate+" "+cal.get(Calendar.YEAR)));
+			for(int i=1;i<=4;i++){
+				if(frequency == 1) {
+					cal.add(Calendar.DAY_OF_YEAR, 7*i);
+				} else if(frequency == 2) {
+					cal.add(Calendar.DAY_OF_YEAR, 14*i);
+				} else {
+					cal.add(Calendar.MONTH, i);
+				}
+				dateList.add(DateUtil.formatMonthAndDate(cal.getTime()));
+			}
+		} catch (ParseException e) {
+			LOGGER.error("ParseException occurred in getSODeleteDateRanges : "+e);
+		}catch (Exception e) {
+			LOGGER.error("Exception occurred in getSODeleteDateRanges : "+e);
+		}		
+		return dateList;	
 	}
 }

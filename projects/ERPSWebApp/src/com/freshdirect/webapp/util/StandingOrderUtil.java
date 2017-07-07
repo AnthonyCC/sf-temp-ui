@@ -28,6 +28,7 @@ import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumNotificationType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
@@ -174,7 +175,7 @@ public class StandingOrderUtil {
 		// check if the standingorder is Active or not..
 		if("N".equalsIgnoreCase(so.getActivate())){	
 			LOGGER.warn( "Standing order template is not activated "+so.getId() );
-			LOGGER.warn( "Standing order template is not activated "+so.getId() );
+			LOGGER.info( "Standing order template is not activated, Skipping order  "+so.getId() );
 			FDStandingOrdersManager.getInstance().updateDeActivatedSOError(so.getId() );
 			return SOResult.createSkipped( so, "Skipping because SO is Not Activated" );
 		}
@@ -210,7 +211,7 @@ public class StandingOrderUtil {
 				return SOResult.createSkipped( so, "Skipping because SO is in error state" );
 			}
 		}
-		
+	
 		// First of all : check if next delivery date is passed for whatever reason,
 		// and step it to the first possible date which is in the future
 		while ( now.after( so.getNextDeliveryDate() ) ) {

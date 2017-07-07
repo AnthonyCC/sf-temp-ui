@@ -412,4 +412,8 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 	public UnavDetailsReportingBean getDetailsForReportGeneration() throws FDResourceException {		
 			return soManager.getDetailsForReportGeneration();	
 	}
-}
+	
+	public void deleteStandingOrders() throws FDResourceException{
+			soManager.deleteSOByDate();	
+	}
+}	
