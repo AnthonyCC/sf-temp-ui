@@ -15,13 +15,10 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
-import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.event.ImpressionLogger;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.customer.FDCartI;
-import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -30,6 +27,7 @@ import com.freshdirect.smartstore.TabRecommendation;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
+import com.freshdirect.smartstore.fdstore.VariantSelector;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
 import com.freshdirect.webapp.ajax.browse.data.CarouselData;
 import com.freshdirect.webapp.ajax.browse.service.CarouselService;
@@ -78,18 +76,10 @@ public abstract class AbstractCarouselService {
 	 */
 	protected abstract String getSmartStoreFacilityName();
 
-	/**
-	 * Return true when empty tabs should not be shown
-	 * 
-	 * @return
-	 */
-	protected abstract boolean shouldConsolidateEmptyTabs();
 
     protected abstract int getSelectedTab(TabRecommendation tabs, HttpSession session, ServletRequest request, FDUserI user);
 
     protected abstract List<String> getSiteFeatures(FDUserI user);
-
-    protected abstract TabRecommendation getTabRecommendation(HttpServletRequest request, FDUserI user, SessionInput input);
 
     protected abstract String getEventSource(String siteFeature, FDUserI user);
 
@@ -109,10 +99,8 @@ public abstract class AbstractCarouselService {
      * 
      * @throws FDResourceException
      */
-    public CarouselData doGenericRecommendation(HttpSession session, HttpServletRequest request, FDSessionUser user, Variant variant,
-            String parentImpressionId,
-            String parentVariantId) throws FDResourceException {
-        Recommendations recommendations = getRecommendations(variant, request, session, parentImpressionId, user);
+    public CarouselData doGenericRecommendation(HttpSession session, HttpServletRequest request, FDSessionUser user, Variant variant, String parentImpressionId,
+            String parentVariantId, Recommendations recommendations) throws FDResourceException {
 
         if (recommendations == null || recommendations.getProducts().isEmpty()) {
             if (FDStoreProperties.isLogRecommenderResults()) {
@@ -157,7 +145,8 @@ public abstract class AbstractCarouselService {
                 .setImpressionId(impressionId).setParentVariantId(parentVariantId).setDescription(getDescription(variant)).setSelected(requestData.isSelected())
                 .setProductSamplesReacedMaximumItemQuantity(user.getShoppingCart().isMaxSampleReached());
         if (requestData.isSelected()) {
-            recommendationTab.setCarouselData(doGenericRecommendation(session, request, (FDSessionUser) user, variant, parentImpressionId, parentVariantId));
+            Recommendations recommendations = getRecommendations(variant, request, request.getSession(), parentImpressionId, user);
+            recommendationTab.setCarouselData(doGenericRecommendation(session, request, (FDSessionUser) user, variant, parentImpressionId, parentVariantId, recommendations));
         }
         return recommendationTab;
     }
@@ -170,71 +159,95 @@ public abstract class AbstractCarouselService {
      * @throws InvalidContentKeyException
      * @throws FDResourceException
      */
-    public ViewCartCarouselData populateViewCartTabsRecommendationsAndCarousel(HttpServletRequest request, FDSessionUser user, SessionInput input)
-            throws FDResourceException {
-		final int maxTabs = getMaxTabs();
-		ViewCartCarouselData result = new ViewCartCarouselData();
+    public ViewCartCarouselData populateTabsRecommendationsAndCarousel(HttpServletRequest request, FDSessionUser user, SessionInput input) throws FDResourceException {
+        final int maxTabs = getMaxTabs();
+        ViewCartCarouselData result = new ViewCartCarouselData();
         HttpSession session = request.getSession();
 
         TabRecommendation tabs = getTabRecommendation(request, user, input);
 
-		if (input.getPreviousRecommendations() != null) {
-			session.setAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS, input.getPreviousRecommendations());
-		}
+        if (input.getPreviousRecommendations() != null) {
+            session.setAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS, input.getPreviousRecommendations());
+        }
 
-		if (tabs.size() > 0) {
-			user.logTabImpression(tabs.getTabVariant().getId(), tabs.size());
-			if (tabs.size() < maxTabs) {
-				LOGGER.warn("not enough variants (" + tabs.size() + ") for " + maxTabs + " tabs.");
-			}
+        if (tabs.size() > 0) {
+            user.logTabImpression(tabs.getTabVariant().getId(), tabs.size());
+            if (tabs.size() < maxTabs) {
+                LOGGER.warn("not enough variants (" + tabs.size() + ") for " + maxTabs + " tabs.");
+            }
 
-			Impression impression = Impression.get(user, request, getSmartStoreFacilityName());
-			String impressionId = impression.logFeatureImpression(null, null, tabs.getTabVariant(), input.getCategory(), input.getCurrentNode(), input.getYmalSource());
-			for (int i = 0; i < tabs.size(); i++) {
-				String tabImpression = impression.logTab(impressionId, i, tabs.get(i).getSiteFeature().getName());
-				tabs.setFeatureImpressionId(i, tabImpression);
-			}
+            Impression impression = Impression.get(user, request, getSmartStoreFacilityName());
+            String impressionId = impression.logFeatureImpression(null, null, tabs.getTabVariant(), input.getCategory(), input.getCurrentNode(), input.getYmalSource());
+            for (int i = 0; i < tabs.size(); i++) {
+                String tabImpression = impression.logTab(impressionId, i, tabs.get(i).getSiteFeature().getName());
+                tabs.setFeatureImpressionId(i, tabImpression);
+            }
 
             if (tabs.getParentImpressionId() == null) {
                 tabs.setParentImpressionId(impressionId);
             }
 
             final int selectedTab = getSelectedTab(tabs, session, request, user);
-			Variant selectedVariant = tabs.get(selectedTab);
             String parentImpressionId = tabs.getParentImpressionId();
-			String parentVariantId = tabs.getTabVariant().getId();
-			int tabIndex = 0;
-			for (Variant variant : tabs.getVariants()) {
+            String parentVariantId = tabs.getTabVariant().getId();
+            for (int tabIndex = 0; tabIndex < tabs.size(); tabIndex++) {
+                Variant variant = tabs.get(tabIndex);
                 String tabTitle = WordUtils.capitalizeFully(getTitleForVariant(variant));
-				String siteFeatureName = variant.getSiteFeature().getName();
-                RecommendationTab tab = new RecommendationTab(tabTitle, siteFeatureName).setParentImpressionId(parentImpressionId)
-                        .setImpressionId(tabs.getFeatureImpressionId(tabIndex)).setParentVariantId(parentVariantId).setDescription(getDescription(variant))
-                        .setSelected(variant.equals(selectedVariant)).setProductSamplesReacedMaximumItemQuantity(user.getShoppingCart().isMaxSampleReached());
-				result.getRecommendationTabs().add(tab);
-				tabIndex++;
-			}
-			final boolean consolidate = shouldConsolidateEmptyTabs();
+                String siteFeatureName = variant.getSiteFeature().getName();
+                Recommendations recommendations = getRecommendations(variant, request, request.getSession(), parentImpressionId, user);
+                if (!recommendations.getProducts().isEmpty()) {
+                    CarouselData carouselData = doGenericRecommendation(session, request, user, variant, parentImpressionId, parentVariantId, recommendations);
+                    RecommendationTab tab = new RecommendationTab(tabTitle, siteFeatureName).setParentImpressionId(parentImpressionId)
+                            .setImpressionId(tabs.getFeatureImpressionId(tabIndex)).setParentVariantId(parentVariantId).setDescription(getDescription(variant))
+                            .setProductSamplesReacedMaximumItemQuantity(user.getShoppingCart().isMaxSampleReached()).setCarouselData(carouselData)
+                            .setSelected(tabIndex == selectedTab);
+                    result.addRecommendationTab(tab);
+                }
+            }
+        }
 
-			if (consolidate) {
-				// APPBUG-2752 Get recommendations for all tabs in order to remove empty ones
-				for (int i=0; i<tabs.size(); i++) {
-                    result.getRecommendationTabs().get(i).setCarouselData(doGenericRecommendation(session, request, user, tabs.get(i), parentImpressionId, parentVariantId));
-					// LOGGER.warn(">>> TAB["+i+"], SF="+result.getRecommendationTabs().get(i).getSiteFeature()+", V="+tabs.get(i).getId() + ": " + result.getRecommendationTabs().get(i).getCarouselData() );
-				}
-			} else {
-				// APPBUG-2752 Get recommendations for only the selected (visible) tab
-                result.getRecommendationTabs().get(selectedTab)
-                        .setCarouselData(doGenericRecommendation(session, request, user, selectedVariant, parentImpressionId, parentVariantId));
-			}
+        ensureTabSelection(result.getRecommendationTabs());
 
-			// post-process tabs
-			if (consolidate) {
-                result.setRecommendationTabs(removeEmptyTabs(result.getRecommendationTabs()));
-			}
+        return result;
+    }
 
-		}
-		return result;
-	}
+    private void ensureTabSelection(List<RecommendationTab> tabs) {
+        boolean selected = false;
+        for (RecommendationTab tab : tabs) {
+            if (tab.isSelected()) {
+                selected = true;
+            }
+        }
+        if (!selected && !tabs.isEmpty()) {
+            tabs.get(0).setSelected(true);
+        }
+    }
+
+    private TabRecommendation getTabRecommendation(HttpServletRequest request, FDUserI user, SessionInput input) {
+        Variant tabVariant = getTabVariant();
+        String selectedSiteFeature = (String) request.getSession().getAttribute(tabVariant.getId() + SELECTED_SITE_FEATURE_POSTFIX);
+        String parentImpressionId = (String) request.getSession().getAttribute(tabVariant.getId() + PARENT_IMPRESSION_ID_POSTFIX);
+        TabRecommendation tabs = new TabRecommendation(tabVariant, getVariants(user));
+        tabs.setError(input.isError());
+        tabs.setSelectedSiteFeature(selectedSiteFeature);
+        tabs.setParentImpressionId(parentImpressionId);
+        return tabs;
+    }
+
+    private List<Variant> getVariants(FDUserI user) {
+        List<Variant> variants = new ArrayList<Variant>();
+        for (final String siteFeature : getSiteFeatures(user)) {
+            EnumSiteFeature enumSiteFeature = EnumSiteFeature.getEnum(siteFeature);
+            if (EnumSiteFeature.NIL != enumSiteFeature) {
+                VariantSelector selector = VariantSelectorFactory.getSelector(enumSiteFeature);
+                Variant variant = selector.select(user, false);
+                if (variant != null) {
+                    variants.add(variant);
+                }
+            }
+        }
+        return variants;
+    }
 
     private List<RecommendationTab> removeEmptyTabs(List<RecommendationTab> tabs) {
         List<RecommendationTab> recommendationTabs = new ArrayList<RecommendationTab>(tabs.size());
@@ -341,9 +354,9 @@ public abstract class AbstractCarouselService {
 			return null;
 		}
         Recommendations recommendations = getCachedRecommendations(getOverriddenVariant(variant, user), session, request, cacheId, user);
-		if (recommendations == null) {
-			throw new FDResourceException("Recommendation cache not found!");
-		}
+        if (recommendations == null) {
+            throw new FDResourceException("Recommendation cache not found!");
+        }
 		persistToSession(recommendations, session);
 		return recommendations;
 	}
@@ -406,17 +419,6 @@ public abstract class AbstractCarouselService {
         return currentUser;
     }
 
-    protected boolean isMaxSampleReached(FDCartI cart) {
-        int numberOfFreeSampleProducts = 0;
-        int eligibleQuantity = FDStoreProperties.getProductSamplesMaxBuyProductsLimit();
-        for (FDCartLineI orderLine : cart.getOrderLines()) {
-            if (null != orderLine.getDiscount() && orderLine.getDiscount().getDiscountType().equals(EnumDiscountType.FREE)) {
-                numberOfFreeSampleProducts++;
-            }
-        }
-        return numberOfFreeSampleProducts >= eligibleQuantity;
-    }
-
     protected int selectedTab(List<Variant> variants, String selectedSiteFeature) {
         int selected = 0;
         for (int i = 0; i < variants.size(); i++) {
@@ -426,6 +428,10 @@ public abstract class AbstractCarouselService {
             }
         }
         return selected;
+    }
+
+    public String getFreeProductSiteFeature() {
+        return FDStoreProperties.isPropDonationProductSamplesEnabled() ? RecommendationTab.DONATION_SAMPLE_SITE_FEATURE : RecommendationTab.PRODUCT_SAMPLE_SITE_FEATURE;
     }
 
 }

@@ -201,7 +201,7 @@ public class CartDataService {
             SessionInput input = QuickShopCarouselService.defaultService().createSessionInput(user, request);
             input.setError(true);
             response.getSubmitForm().getResult().put("carouselData",
-                    ViewCartCarouselService.getDefaultService().populateViewCartTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));
+                    ViewCartCarouselService.getDefaultService().populateTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));
         }
     }
     
@@ -583,9 +583,9 @@ public class CartDataService {
             CartRequestData reqData = BaseJsonServlet.parseRequestData(request, CartRequestData.class, true);
             SessionInput input = QuickShopCarouselService.defaultService().createSessionInput(user, request);
             if (reqData != null && reqData.getPage() != null && reqData.getPage().contains("checkout")) {
-                cartData.setCarouselData(CheckoutCarouselService.getDefaultService().populateViewCartTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));
+                cartData.setCarouselData(CheckoutCarouselService.getDefaultService().populateTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));
             } else {
-                cartData.setCarouselData(ViewCartCarouselService.getDefaultService().populateViewCartTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));
+                cartData.setCarouselData(ViewCartCarouselService.getDefaultService().populateTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));
             }
             cartData.setCustomerServiceRepresentative(CustomerServiceRepresentativeService.defaultService().loadCustomerServiceRepresentativeInfo(user));
             cartData.setAvalaraEnabled(FDStoreProperties.getAvalaraTaxEnabled());

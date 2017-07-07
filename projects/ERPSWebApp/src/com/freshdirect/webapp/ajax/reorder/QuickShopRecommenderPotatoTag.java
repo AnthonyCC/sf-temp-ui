@@ -41,9 +41,9 @@ public class QuickShopRecommenderPotatoTag extends SimpleTagSupport {
             HttpSession session = request.getSession();
             FDSessionUser user = (FDSessionUser) QuickShopHelper.getUserFromSession(session);
             SessionInput input = QuickShopCarouselService.defaultService().createSessionInput(user, request);
-            carousels = QuickShopCarouselService.defaultService().populateViewCartTabsRecommendationsAndCarousel(request, user, input);
+            carousels = QuickShopCarouselService.defaultService().populateTabsRecommendationsAndCarousel(request, user, input);
 			carousels.getRecommendationTabs().add(0, new RecommendationTab(QuickShopCrazyQuickshopRecommendationService.defaultService().getTheCrazyQuickshopTitle(null),
-                    QuickShopCarouselService.QUICKSHOP_VIRTUAL_SITE_FEATURE));
+                    QuickShopCrazyQuickshopRecommendationService.QUICKSHOP_VIRTUAL_SITE_FEATURE));
 		} catch (Exception e) {
 			LOGGER.error("recommendation failed", e);
 		}
