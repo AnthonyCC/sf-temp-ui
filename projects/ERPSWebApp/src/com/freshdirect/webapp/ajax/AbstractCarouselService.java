@@ -249,30 +249,6 @@ public abstract class AbstractCarouselService {
         return variants;
     }
 
-    private List<RecommendationTab> removeEmptyTabs(List<RecommendationTab> tabs) {
-        List<RecommendationTab> recommendationTabs = new ArrayList<RecommendationTab>(tabs.size());
-
-        for (RecommendationTab tab : tabs) {
-            if (tab.getCarouselData() == null || tab.getCarouselData().getProducts().isEmpty()) {
-                LOGGER.warn("Removing tab " + tab.getSiteFeature() + " ...");
-            } else {
-                recommendationTabs.add(tab);
-            }
-        }
-
-        boolean isAnyTabSelected = false;
-        for (RecommendationTab recommendationTab : recommendationTabs) {
-            if (recommendationTab.isSelected()) {
-                isAnyTabSelected = true;
-                break;
-            }
-        }
-        if (!isAnyTabSelected && !recommendationTabs.isEmpty()) {
-            recommendationTabs.get(0).setSelected(true);
-        }
-        return recommendationTabs;
-    }
-
     /**
      * Calculates the title based on variant or site feature.
      * 
