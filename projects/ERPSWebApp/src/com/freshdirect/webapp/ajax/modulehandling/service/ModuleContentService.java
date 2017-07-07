@@ -161,7 +161,12 @@ public class ModuleContentService {
         List<ProductData> availableProducts = new ArrayList<ProductData>();
 
         CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNode(categoryId);
-        boolean isForbidden = NavigationUtil.isCategoryForbiddenInContext(user, category);
+
+        boolean isForbidden = true;
+
+        if (category != null) {
+            isForbidden = NavigationUtil.isCategoryForbiddenInContext(user, category);
+        }
 
         if (!isForbidden) {
             CmsFilteringNavigator nav = new CmsFilteringNavigator();
