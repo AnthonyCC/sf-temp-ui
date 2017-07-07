@@ -54,8 +54,8 @@
     {/foreach}
   </ul>
   {foreach $tab in $recommendationTabs}
-    <div role="tabpanel" class="tab-container light-carousel" data-component="tabpanel" data-cmSiteFeature="{$tab.siteFeature}" data-cmeventsource="{if $tab.carouselData.cmEventSource}{$tab.carouselData.cmEventSource}{else}tabbedRecommender{/if}">
-      {if $tab.selected}
+    {if $tab.selected}
+      <div role="tabpanel" class="tab-container light-carousel" data-component="tabpanel" data-cmSiteFeature="{$tab.siteFeature}" data-cmeventsource="{if $tab.carouselData.cmEventSource}{$tab.carouselData.cmEventSource}{else}tabbedRecommender{/if}">
         {if $tab.carouselData and $tab.carouselData.products}
           {call common.simpleCarousel}
             {param items:$tab.carouselData.products /}
@@ -64,8 +64,8 @@
             {param title:$tab.description /}
           {/call}
         {/if}
-      {/if}
-    </div>
+      </div>
+    {/if}
   {/foreach}
 </div>
 {/if}
