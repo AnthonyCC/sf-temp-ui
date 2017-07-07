@@ -295,8 +295,7 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			FDStandingOrderDAO dao = new FDStandingOrderDAO();
 			
 			dao.updateDeleteSOInfo(conn, so.getId(), deleteDate);
-			//@TODO Check whether we can call Activity here or not
-			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.STANDINGORDER_DELETE_DATE_SET);
+			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.STANDINGORDER_TEMPLATE_DEL_DATE_SET);
 			rec.setStandingOrderId(so.getId());
 			this.logActivity(rec);
 		} catch (SQLException e) {

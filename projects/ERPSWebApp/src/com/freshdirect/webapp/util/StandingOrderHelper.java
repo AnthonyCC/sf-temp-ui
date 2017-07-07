@@ -1269,7 +1269,7 @@ private static String convert(Date time) {
 	//populates 5 delivery dates ahead for a so template when a user prompted to delete in future.
 	public static ArrayList<String> getSODeleteDateRanges(String soDeliveryDate, int frequency) {
 		ArrayList<String> dateList = new ArrayList<String>();
-		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+		SimpleDateFormat formatter = new SimpleDateFormat("MM/DD/YYYY");
 		try {		
 			Calendar cal = Calendar.getInstance();
 			dateList.add(0,"Cancel all deliveries");

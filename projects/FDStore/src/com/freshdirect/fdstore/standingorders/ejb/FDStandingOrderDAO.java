@@ -513,7 +513,7 @@ public class FDStandingOrderDAO {
 				if("Cancel all deliveries".equalsIgnoreCase(deleteDate)) {
 					ps = conn.prepareStatement( UPDATE_DELETE_ALL_SOINFO );
 				} else {
-					SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+					SimpleDateFormat formatter = new SimpleDateFormat("MM/DD/YYYY");
 						ps.setDate(i++, deleteDate != null ? new java.sql.Date(formatter.parse(deleteDate).getTime()) : null);
 				}
 			}
