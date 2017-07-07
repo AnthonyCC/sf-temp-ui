@@ -287,7 +287,7 @@ public class DlvRestrictionManager {
 			lookupManagerHome();
 		}
 		try {
-			if(true){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvRestrictionManagerSB")){
 				return FDECommerceService.getInstance().addAlcoholRestriction(buildAlcoholRestrictionData(restriction));
 			}
 			else{
