@@ -159,6 +159,7 @@ public final class ModuleHandlingService {
 
     private ModuleData loadModuleData(ContentKey moduleContentKey, FDUserI user, HttpSession session, boolean showAllProducts) throws FDResourceException,
             InvalidFilteringArgumentException {
+        LOGGER.info("Loading module with id: " + moduleContentKey.getId());
         DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
         ContentNodeI module = CmsManager.getInstance().getContentNode(moduleContentKey, currentDraftContext);
         return DatasourceService.getDefaultService().loadModuleData(module, user, session, showAllProducts);
@@ -238,6 +239,7 @@ public final class ModuleHandlingService {
         
         String imageModuleId = "imageModuleId";
 
+        LOGGER.info("Loading products for imageBanner: " + imageBannerContentKey);
         //Load Browse sectionDataContainer
         SectionDataCointainer sectionDataContainer = new SectionDataCointainer();
 
