@@ -225,6 +225,9 @@
 	#customizePopup.soShow.so-review .so-container .so-review-date-red{
 		color: #c94747;
 	}
+	#customizePopup.soShow.so-review.so-review-success .so-container .so-review-date-red{
+		color: #333;
+	}
 	#customizePopup.soShow.so-review .so-container .so-review-date img{
 		padding: 48px 0 15px;
 	    display: block;
