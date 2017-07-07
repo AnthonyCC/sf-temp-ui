@@ -1,0 +1,26 @@
+{namespace common}
+
+/**
+ * @param overlayId id
+ * @param customClass custom classname
+ * @param hasClose show close button
+ * @param bodyContent overlay content
+ * @param headerContent overlay header
+ */
+{template .overlay autoescape="false"}
+
+    <div id="{$overlayId}" class="overlay {if $hasClose}hasclose{/if} {$customClass}">
+      <button nofocus class="overlay-close-icon" data-close-overlay>close</button>
+      <div class="overlay-container">
+        <div class="overlay-header-helper">
+          <div class="overlay-header">
+          	{$headerContent}
+          </div>
+        </div>
+        <div class="overlay-content">
+        	{$bodyContent}
+        </div>
+      </div>
+    </div>
+
+{/template}
