@@ -3875,7 +3875,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}
 		}
 
-		this.storeATPFailureInfos(lst);
+		//[OPT-48]-check if there are any ATP failures, before making a db call.
+		if(null !=lst && !lst.isEmpty()){
+			this.storeATPFailureInfos(lst);
+		}
 	}
 
 	public FDOrderI getOrderForCRM(FDIdentity identity, String saleId)
