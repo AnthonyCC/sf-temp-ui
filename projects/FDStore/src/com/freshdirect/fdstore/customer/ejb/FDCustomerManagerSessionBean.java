@@ -3870,7 +3870,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				ATPFailureInfo fi = new ATPFailureInfo(requestedRange
 						.getStartDate(), ol.getMaterialNumber(), ol
 						.getQuantity(), ol.getSalesUnit(), sInfo.getQuantity(),
-						erpCustomerId,plantId,actionType);
+						erpCustomerId,ol.getPlantID(),actionType);
 				lst.add(fi);
 			}
 		}
@@ -8778,5 +8778,5 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} finally {
 			close(conn);
 		}
-	}
+	}	
 }
