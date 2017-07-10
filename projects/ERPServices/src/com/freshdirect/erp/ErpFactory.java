@@ -657,8 +657,12 @@ public class ErpFactory {
 			if (nutritionHome == null) {
 				lookupNutritionHome();
 			}
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
+				return FDECommerceService.getInstance().generateClaimsReport();
+			}else{
 			ErpNutritionSB nutrSB = nutritionHome.create();
 			return nutrSB.generateClaimsReport();
+			}
 		} catch (RemoteException ce) {
 			throw new FDResourceException(ce);
 		} catch (CreateException re) {
@@ -673,9 +677,12 @@ public class ErpFactory {
 				if (nutritionHome == null) {
 					lookupNutritionHome();
 				}
-
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
+					this.nutritionReport=FDECommerceService.getInstance().generateNutritionReport();
+				}else{
 				ErpNutritionSB nutrSB = nutritionHome.create();
 				this.nutritionReport = nutrSB.generateNutritionReport();
+				}
 
 				lastRefresh = System.currentTimeMillis();
 			} catch (CreateException ce) {
@@ -744,9 +751,13 @@ public class ErpFactory {
 		if (nutritionHome == null) {
 			lookupNutritionHome();
 		}
-		try {
+		try { 
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
+        	FDECommerceService.getInstance().updateNutrition(nutrition, "dataloader");
+        }else {
 			ErpNutritionSB nutrSB = nutritionHome.create();
 			nutrSB.updateNutrition(nutrition, user);
+        }
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {

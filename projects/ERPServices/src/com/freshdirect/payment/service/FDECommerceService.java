@@ -575,6 +575,7 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String CREATE_REFERRAL_INVITES = "referral/invitee";
 
 	private static final String NUTRITION_CREATE = "nutrition/create";
+	private static final String NUTRITION_UPDATE = "nutrition/update";
 	private static final String NUTRITION_BY_SKU = "nutrition/skuCode";
 	private static final String NUTRITION_PANEL_BY_SKU ="nutrition/panelByskuCode" ;
 	private static final String NUTRITION_SKU_BY_UPC ="nutrition/skuCodeByupc" ;
@@ -583,6 +584,9 @@ public class FDECommerceService extends AbstractService implements IECommerceSer
 	private static final String NUTRITION_SKU_UPC_MAP ="nutrition/createUpcSkuMap" ;
 	private static final String NUTRITION_PANEL_SAVE = "nutrition/savePanel";
 	private static final String NUTRITION_PANEL_DELETE = "nutrition/deletePanel";
+	private static final String NUTRITION_REMOVE = "nutrition/remove";
+	private static final String NUTRITION_REPORT = "nutrition/nutritionreport";
+	private static final String NUTRITION_CLAIM_REPORT = "nutrition/claimreport";
 
 	private static final String GET_COMPLAINT_REASONS ="complaint/reason/excludeCartonReq/";
 	private static final String GET_COMPLAINT_CODES = "complaint/code";
@@ -6559,6 +6563,30 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		
 		
 	}
+	
+	@Override
+	public void updateNutrition(ErpNutritionModel nutritionModel, String userId)
+			throws RemoteException {
+		Response response = null;
+		ErpNutritionModelData data = ModelConverter.buildNutritionModelData(nutritionModel);
+		Request<ErpNutritionModelData> request = new Request<ErpNutritionModelData>();
+		String inputJson;
+		try{
+			
+			request.setData(data);
+			inputJson = buildRequest(request);
+			response = postData(inputJson,getFdCommerceEndPoint(NUTRITION_UPDATE)+"/user/"+userId, Response.class);
+			if(!response.getResponseCode().equals("OK"))
+				throw new RemoteException(response.getMessage());	
+		} catch (FDPayPalServiceException e) {
+			throw new RemoteException(e.getMessage());
+		}catch (FDResourceException e) {
+			throw new RemoteException(e.getMessage());
+		}
+		
+		
+	}
+	
 	@Override
 	public ErpNutritionModel getNutrition(String skuCode) throws RemoteException {
 		Response<ErpNutritionModelData> response = null;
@@ -6702,7 +6730,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		Response response = null;
 
 		try{
-			response = this.getData(getFdCommerceEndPoint(NUTRITION_PANEL_DELETE)+"/"+skuCode, Response.class);
+			response = this.getData(getFdCommerceEndPoint(NUTRITION_PANEL_DELETE)+"/skuCode/"+skuCode, Response.class);
 			if(!response.getResponseCode().equals("OK"))
 				throw new RemoteException(response.getMessage());	
 		} catch (FDResourceException e) {
@@ -6710,6 +6738,54 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		}
 	
 	}
+	
+	@Override
+	public void removeNutrition(String  skuCode)	throws  RemoteException {
+		Response response = null;
+
+		try{
+			response = this.getData(getFdCommerceEndPoint(NUTRITION_REMOVE)+"/skuCode/"+skuCode, Response.class);
+			if(!response.getResponseCode().equals("OK"))
+				throw new RemoteException(response.getMessage());	
+		} catch (FDResourceException e) {
+			throw new RemoteException(e.getMessage());
+		}
+	
+	}
+	@Override
+	public List<Map<String, String>> generateNutritionReport()
+			throws RemoteException {
+		Response<List<Map<String, String>>> response = null;
+
+		try{
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(NUTRITION_REPORT), new TypeReference<Response<List<Map<String, String>>>>() {
+			});
+			if(!response.getResponseCode().equals("OK"))
+				throw new RemoteException(response.getMessage());	
+		} catch (FDResourceException e) {
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	
+	}
+	
+	@Override
+	public List<Map<String, String>> generateClaimsReport()
+			throws RemoteException {
+		Response<List<Map<String, String>>> response = null;
+
+		try{
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(NUTRITION_CLAIM_REPORT), new TypeReference<Response<List<Map<String, String>>>>() {
+			});
+			if(!response.getResponseCode().equals("OK"))
+				throw new RemoteException(response.getMessage());	
+		} catch (FDResourceException e) {
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	
+	}
+	
 	@Override
 	public Map<String, List<ErpComplaintReason>> getReasons(boolean excludeCartonReq) throws RemoteException {
 		Response< Map<String, List<ErpComplaintReasonData>>> response = null;
@@ -6790,7 +6866,6 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 		return ModelConverter.buildErpComplaintReason(response.getData());
 	}
 	
-	
-		
-	
+
+
 }

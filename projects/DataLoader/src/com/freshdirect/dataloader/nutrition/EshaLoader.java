@@ -113,7 +113,11 @@ public class EshaLoader {
                     enm.setIngredients(oldEnm.getIngredients());
                 
                 System.out.println("Loading nutrition for " + enm.getSkuCode());
+                if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
+                	FDECommerceService.getInstance().updateNutrition(enm, "dataloader");
+                }else {
                 sb.updateNutrition(enm, "dataloader");
+                }
             }
             
             System.out.println("\n----- normally exiting doLoad() -----");

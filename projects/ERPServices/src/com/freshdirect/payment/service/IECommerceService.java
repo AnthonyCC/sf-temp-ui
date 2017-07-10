@@ -810,4 +810,12 @@ public interface IECommerceService {
 	public void rejectMakegoodComplaint(String makegood_sale_id) throws RemoteException;
 	 
 	public ErpComplaintReason getReasonByCompCode(String cCode) throws RemoteException;
+
+	public void updateNutrition(ErpNutritionModel enm, String string) throws RemoteException;
+
+	public void removeNutrition(String skuCode) throws RemoteException;
+
+	public List<Map<String, String>> generateNutritionReport()throws RemoteException;
+
+	public List<Map<String, String>> generateClaimsReport()throws RemoteException;
 }

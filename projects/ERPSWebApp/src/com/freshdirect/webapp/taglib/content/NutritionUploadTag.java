@@ -142,7 +142,11 @@ public class NutritionUploadTag extends AbstractControllerTag {
 					enm.setIngredients(oldEnm.getIngredients());
 				
 				System.out.println("Loading nutrition for " + enm.getSkuCode());
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
+		        	FDECommerceService.getInstance().updateNutrition(enm, "dataloader");
+		        }else {
 				sb.updateNutrition(enm, "");
+		        }
 				updatedSkus.add(enm.getSkuCode());
 			}
 

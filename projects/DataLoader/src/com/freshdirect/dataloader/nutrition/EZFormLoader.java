@@ -143,8 +143,11 @@ public class EZFormLoader {
 				
 				if(enm.getIngredients().equals(""))
 					enm.setIngredients(oldEnm.getIngredients());
-
+				 if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
+	                	FDECommerceService.getInstance().updateNutrition(enm, "dataloader");
+	                }else {
                 sb.updateNutrition(enm, "dataloader");
+	                }
             }
             
             System.out.println("\n----- normally exiting doLoad() -----");
