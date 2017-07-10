@@ -1808,6 +1808,17 @@ public class FDStoreProperties {
     	
 
         defaults.put(PROP_PRODUCT_CACHE_OPTIMIZATION_ENABLED, "true");
+        
+        /* IBM silverpopup */
+        defaults.put(IBM_ACCESSTOKEN_URL, "https://api3.ibmmarketingcloud.com/oauth/token");
+        // for Dev DB
+        defaults.put(IBM_PUSHNOTIFICATION_URL, "https://api3.silverpop.com:443/rest/databases/5979940/establishidentity/");
+        									 // https://api3.silverpop.com:443/rest/databases/{databaseid}/establishidentity/ 
+        // for Prod DB
+        //defaults.put(IBM_PUSHNOTIFICATION_URL, "https://api3.silverpop.com:443/rest/databases/3745165/establishidentity/");
+        defaults.put(IBM_CLIENT_ID, "42c3eede-b1b2-43d2-b503-55682f190c2d");
+        defaults.put(IBM_CLIENT_SECRET, "5f154ee0-bae6-4833-9ce2-e013b1b3c7d5");
+        defaults.put(IBM_REFRESH_TOKEN, "r_3872jS_Gh7VmanX2TcazBB_MJ1C_RBqbJWY6gvh3koS1");
         refresh();
     }
 
@@ -4353,23 +4364,23 @@ public class FDStoreProperties {
     
     //@ IBM silverpopup chnages
     public static String getIBMAccessTokenURL(){
-    	return StringUtils.defaultString(get(IBM_ACCESSTOKEN_URL));
+    	return get(IBM_ACCESSTOKEN_URL);
     }
-    
+ 
     public static String getIBMPushNotificationURL() {
-        return StringUtils.defaultString(get(IBM_PUSHNOTIFICATION_URL));
+        return get(IBM_PUSHNOTIFICATION_URL);
     }
     
     public static String getIBMClientID() {
-		return StringUtils.defaultString(get(IBM_CLIENT_ID));
+		return get(IBM_CLIENT_ID);
 	}
     
     public static String getIBMClientSecret() {
-		return StringUtils.defaultString(get(IBM_CLIENT_SECRET));
+		return get(IBM_CLIENT_SECRET);
 	}
     
     public static String getIBMRefreshToken() {
-		return StringUtils.defaultString(get(IBM_REFRESH_TOKEN));
+		return get(IBM_REFRESH_TOKEN);
 	} 
     //end IBM silverpopup end
     
