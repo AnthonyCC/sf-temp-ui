@@ -659,7 +659,7 @@ public class StandingOrderHelper {
 						.getDeliveryEndTime())
 						: so.getStartTime() != null ? DateUtil.formatHourAMPMRange(
 								so.getStartTime(), so.getEndTime()) : "");
-		map.put("deleteDateRange", getSODeleteDateRanges(getSODeliveryDate(so, isUpcomingDelivery), so.getFrequency()));
+		map.put("deleteDateRange", getSODeleteDateRanges(getSODeliveryDate4Ranges(so, isUpcomingDelivery), so.getFrequency()));
 
 		//map.put("modifyDeliveryDate", isUpcomingDelivery?getModifyDeliveryDate(so.getUpcomingDelivery().getRequestedDate()):null);
 		//map.put("shortDeliveryDate",so.getNextDeliveryDate()!=null? DateUtil.formatMonthAndDate(so.getNextDeliveryDate()):null );
@@ -1267,30 +1267,44 @@ private static String convert(Date time) {
 	}
 
 	//populates 5 delivery dates ahead for a so template when a user prompted to delete in future.
-	public static ArrayList<String> getSODeleteDateRanges(String soDeliveryDate, int frequency) {
+	public static ArrayList<String> getSODeleteDateRanges(Date delivaryDate, int frequency) {
 		ArrayList<String> dateList = new ArrayList<String>();
-		SimpleDateFormat formatter = new SimpleDateFormat("MM/DD/YYYY");
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		try {		
 			Calendar cal = Calendar.getInstance();
 			dateList.add(0,"Cancel all deliveries");
-			dateList.add(1, soDeliveryDate);
+			dateList.add(1,formatter.format(delivaryDate) );
 			cal = Calendar.getInstance();
-			cal.setTime(formatter.parse(soDeliveryDate+" "+cal.get(Calendar.YEAR)));
+			cal.setTime(delivaryDate);
 			for(int i=1;i<=4;i++){
 				if(frequency == 1) {
-					cal.add(Calendar.DAY_OF_YEAR, 7*i);
+					cal.add(Calendar.DAY_OF_YEAR, 7);
 				} else if(frequency == 2) {
-					cal.add(Calendar.DAY_OF_YEAR, 14*i);
+					cal.add(Calendar.DAY_OF_YEAR, 14);
 				} else {
-					cal.add(Calendar.MONTH, i);
+					cal.add(Calendar.MONTH, 1);
 				}
 				dateList.add(DateUtil.formatMonthAndDate(cal.getTime()));
 			}
-		} catch (ParseException e) {
-			LOGGER.error("ParseException occurred in getSODeleteDateRanges : "+e);
 		}catch (Exception e) {
 			LOGGER.error("Exception occurred in getSODeleteDateRanges : "+e);
 		}		
 		return dateList;	
+	}
+	
+	public static Date getSODeliveryDate4Ranges(FDStandingOrder so, boolean alt) {
+
+		if (null != so.getNextDeliveryDate()) {
+			if (alt) {
+				// normal format for upcoming delivery "Feb 20"
+			return so.getUpcomingDelivery().getRequestedDate();
+			
+			} else {
+				// format for standing order settings "Feb 20"
+				return so.getNextDeliveryDate();
+				}
+			}
+		
+		return null;
 	}
 }
