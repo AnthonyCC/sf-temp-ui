@@ -279,9 +279,13 @@ public abstract class AbstractCarouselService {
     @SuppressWarnings("deprecation")
     public String getDescription(Variant variant) {
         String description = variant.getServiceConfig().getPresentationDescription();
+        EnumSiteFeature siteFeature = variant.getSiteFeature();
         if (description == null) {
-            EnumSiteFeature siteFeature = variant.getSiteFeature();
             description = siteFeature.getPresentationDescription();
+        }
+        if (PRODUCT_SAMPLE_SITE_FEATURE.equals(siteFeature.getName())) {
+            description = description.replace("%%N%%", String.valueOf(FDStoreProperties.getProductSamplesMaxBuyProductsLimit()));
+            description = description.replace("%%Q%%", String.valueOf(FDStoreProperties.getProductSamplesMaxQuantityLimit()));
         }
         return description;
     }
