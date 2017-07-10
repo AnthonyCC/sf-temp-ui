@@ -17,7 +17,6 @@ import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.TabRecommendation;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.webapp.ajax.AbstractCarouselService;
-import com.freshdirect.webapp.ajax.viewcart.data.RecommendationTab;
 
 public class ViewCartCarouselService extends AbstractCarouselService {
 
@@ -49,9 +48,9 @@ public class ViewCartCarouselService extends AbstractCarouselService {
         EnumEventSource eventSource = null;
 
         if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user)) {
-            if (RecommendationTab.PRODUCT_SAMPLE_SITE_FEATURE.equals(siteFeature)) {
+            if (PRODUCT_SAMPLE_SITE_FEATURE.equals(siteFeature)) {
                 eventSource = EnumEventSource.ps_carousel_view_cart;
-            } else if (RecommendationTab.DONATION_SAMPLE_SITE_FEATURE.equals(siteFeature)) {
+            } else if (DONATION_SAMPLE_SITE_FEATURE.equals(siteFeature)) {
                 eventSource = EnumEventSource.dn_carousel_view_cart;
             } else {
                 eventSource = EnumEventSource.view_cart;
@@ -83,7 +82,7 @@ public class ViewCartCarouselService extends AbstractCarouselService {
         if (tabs.isError()) {
             selected = selectedTab(variants, getDefaultErrorSiteFeature(isCurrentUser));
         } else if (user.getShoppingCart().isMaxSampleReached() && variants.size() > 1
-                && RecommendationTab.isSample(selectedSiteFeature)) {
+                && isSample(selectedSiteFeature)) {
             selected = (selected + 1) % variants.size();
         }
 
@@ -96,6 +95,7 @@ public class ViewCartCarouselService extends AbstractCarouselService {
         if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user)) {
             boolean isCurrentUser = isUserAlreadyOrdered(user);
             siteFeatures = isCurrentUser ? FDStoreProperties.getViewcartCurrentCustomerCarouselSiteFeatures() : FDStoreProperties.getViewcartNewCustomerCarouselSiteFeatures();
+            replaceSampleSiteFeatures(siteFeatures);
         } else {
             siteFeatures = Arrays.asList(getFreeProductSiteFeature());
         }

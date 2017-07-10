@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.ajax;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +48,9 @@ public abstract class AbstractCarouselService {
 
     protected static final String PARENT_IMPRESSION_ID_POSTFIX = "_parentImpressionId";
     protected static final String SELECTED_SITE_FEATURE_POSTFIX = "_selectedSiteFeature";
+    protected static final String PRODUCT_SAMPLE_SITE_FEATURE = "PRODUCT_SAMPLE";
+    protected static final String DONATION_SAMPLE_SITE_FEATURE = "PRODUCT_DONATION";
+    private static final List<String> PRODUCT_SAMPLE_GRID_SITE_FEAURES = Arrays.asList(PRODUCT_SAMPLE_SITE_FEATURE, DONATION_SAMPLE_SITE_FEATURE);
 
     /**
      * Return tab recommendation variant
@@ -406,8 +410,20 @@ public abstract class AbstractCarouselService {
         return selected;
     }
 
+    public void replaceSampleSiteFeatures(List<String> siteFeatures) {
+        for (int i = 0; i < siteFeatures.size(); i++) {
+            if (isSample(siteFeatures.get(i))) {
+                siteFeatures.set(i, getFreeProductSiteFeature());
+            }
+        }
+    }
+
     public String getFreeProductSiteFeature() {
-        return FDStoreProperties.isPropDonationProductSamplesEnabled() ? RecommendationTab.DONATION_SAMPLE_SITE_FEATURE : RecommendationTab.PRODUCT_SAMPLE_SITE_FEATURE;
+        return FDStoreProperties.isPropDonationProductSamplesEnabled() ? DONATION_SAMPLE_SITE_FEATURE : PRODUCT_SAMPLE_SITE_FEATURE;
+    }
+
+    public static boolean isSample(String siteFeature) {
+        return PRODUCT_SAMPLE_GRID_SITE_FEAURES.contains(siteFeature);
     }
 
 }
