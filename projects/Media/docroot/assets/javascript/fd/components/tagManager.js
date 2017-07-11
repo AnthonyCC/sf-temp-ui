@@ -142,8 +142,13 @@ var dataLayer = window.dataLayer || [];
 
       ecommerce[qty > 0 ? 'add' : 'remove'] = addRemoveData;
 
+      // send extra ATC-succes event for backward compatibility
       dataLayer.push({
         productId: productData.id,
+        event: 'ATC-success'
+      });
+
+      dataLayer.push({
         ecommerce: ecommerce
       });
 
