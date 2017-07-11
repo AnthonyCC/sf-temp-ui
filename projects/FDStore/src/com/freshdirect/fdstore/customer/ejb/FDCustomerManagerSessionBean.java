@@ -8680,7 +8680,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}		
 
-	public static String SELECT_SILVER_POPUP = "select count(*) as SP_COUNT from CUST.CUSTOMER_PUSHNOTIFICATION where CUSTOMER_ID=? and QUALIFIER=? and DESTINATION=?";
+	public static String SELECT_SILVER_POPUP = "select count(*) as SP_COUNT from CUST.CUSTOMER_PUSHNOTIFICATION where CUSTOMER_ID=?";
 	
 	public boolean insertOrUpdateSilverPopup(SilverPopupDetails silverPopup) throws FDResourceException {
 		Connection conn = null;
@@ -8692,8 +8692,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				conn = getConnection();
 				ps = conn.prepareStatement(SELECT_SILVER_POPUP);
 				ps.setString(1, silverPopup.getCustomerId());
-				ps.setString(2, silverPopup.getQualifier());
-				ps.setString(3, silverPopup.getDestination());
 				LOGGER.info("Exicuting Query "+SELECT_SILVER_POPUP+" in insertOrUpdateSilverPopup");
 
 				rs = ps.executeQuery();
