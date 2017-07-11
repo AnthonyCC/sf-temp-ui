@@ -204,6 +204,7 @@
 					.addParam("zip", user.getZipCode())
 					.addParam("type", type)
 					.addParam("depot", depotAffil)
+					.addParam("nod", lastOrderDate)
 					.addParam(sessionUser.isCorporateUser() ? "cosnod" : "fdnod", lastOrderDate)
 					.addParam("do", user.getAdjustedValidOrderCount())
 					.addParam(sessionUser.isCorporateUser() ? "cosdo" : "fddo",
@@ -234,6 +235,7 @@
 				.addParam("pt", pageType).addParam("id", pageId)
 				.addParam("brand", brand).addParam("lotype",
 					lastOrderType).addParam(sessionUser.isCorporateUser() ? "coslozn" : "fdlozn",
+					lastOrderZone).addParam("lozn",
 					lastOrderZone).addParam("ecp",
 					user.isCheckEligible() ? 1 : 0).addParam(
 					"ecpoc",
