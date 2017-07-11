@@ -46,8 +46,8 @@ public abstract class AbstractCarouselService {
 
     private static final Logger LOGGER = LoggerFactory.getInstance(AbstractCarouselService.class);
 
-    protected static final String PARENT_IMPRESSION_ID_POSTFIX = "_parentImpressionId";
-    protected static final String SELECTED_SITE_FEATURE_POSTFIX = "_selectedSiteFeature";
+    private static final String PARENT_IMPRESSION_ID_POSTFIX = "_parentImpressionId";
+    public static final String SELECTED_SITE_FEATURE_POSTFIX = "_selectedSiteFeature";
     protected static final String PRODUCT_SAMPLE_SITE_FEATURE = "PRODUCT_SAMPLE";
     protected static final String DONATION_SAMPLE_SITE_FEATURE = "PRODUCT_DONATION";
     private static final List<String> PRODUCT_SAMPLE_GRID_SITE_FEAURES = Arrays.asList(PRODUCT_SAMPLE_SITE_FEATURE, DONATION_SAMPLE_SITE_FEATURE);
@@ -86,6 +86,26 @@ public abstract class AbstractCarouselService {
     protected abstract List<String> getSiteFeatures(FDUserI user);
 
     protected abstract String getEventSource(String siteFeature, FDUserI user);
+
+    public void setSelectedSiteFeatureAttribute(HttpSession session, String siteFeature) {
+        setSelectedSiteFeatureAttribute(session, getTabVariant().getId(), siteFeature);
+    }
+
+    public String getSelectedSiteFeatureAttribute(HttpSession session, String variantId) {
+        return (String) session.getAttribute(variantId + SELECTED_SITE_FEATURE_POSTFIX);
+    }
+
+    public void setSelectedSiteFeatureAttribute(HttpSession session, String variantId, String siteFeature) {
+        session.setAttribute(variantId + SELECTED_SITE_FEATURE_POSTFIX, siteFeature);
+    }
+
+    public String getParentImpresionIdAttribute(HttpSession session, String variantId) {
+        return (String) session.getAttribute(variantId + PARENT_IMPRESSION_ID_POSTFIX);
+    }
+
+    public void setParentImpresionIdAttribute(HttpSession session, String variantId, String parentImpressionId) {
+        session.setAttribute(variantId + PARENT_IMPRESSION_ID_POSTFIX, parentImpressionId);
+    }
 
 	/**
      * Calculates recommendations for variant-user pair and populate recommendation tab with carousel.
@@ -134,8 +154,8 @@ public abstract class AbstractCarouselService {
         HttpSession session = request.getSession();
         String siteFeature = requestData.getFeature();
         String parentImpressionId = requestData.getParentImpressionId();
-        session.setAttribute(requestData.getParentVariantId() + SELECTED_SITE_FEATURE_POSTFIX, siteFeature);
-        session.setAttribute(requestData.getParentVariantId() + PARENT_IMPRESSION_ID_POSTFIX, parentImpressionId);
+        setSelectedSiteFeatureAttribute(session, requestData.getParentVariantId(), siteFeature);
+        setParentImpresionIdAttribute(session, requestData.getParentVariantId(), parentImpressionId);
         EnumSiteFeature enumSiteFeature = EnumSiteFeature.getEnum(siteFeature);
         Variant variant = VariantSelectorFactory.getSelector(enumSiteFeature).select(user, false);
         String impressionId = requestData.getImpressionId();
@@ -200,11 +220,14 @@ public abstract class AbstractCarouselService {
                 String siteFeatureName = variant.getSiteFeature().getName();
                 Recommendations recommendations = getRecommendations(variant, request, request.getSession(), parentImpressionId, user);
                 if (!recommendations.getProducts().isEmpty()) {
-                    CarouselData carouselData = doGenericRecommendation(session, request, user, variant, parentImpressionId, parentVariantId, recommendations);
+                    boolean selected = tabIndex == selectedTab;
                     RecommendationTab tab = new RecommendationTab(tabTitle, siteFeatureName).setParentImpressionId(parentImpressionId)
                             .setImpressionId(tabs.getFeatureImpressionId(tabIndex)).setParentVariantId(parentVariantId).setDescription(getDescription(variant))
-                            .setProductSamplesReacedMaximumItemQuantity(user.getShoppingCart().isMaxSampleReached()).setCarouselData(carouselData)
-                            .setSelected(tabIndex == selectedTab);
+                            .setProductSamplesReacedMaximumItemQuantity(user.getShoppingCart().isMaxSampleReached()).setSelected(selected);
+                    if (selected) {
+                        CarouselData carouselData = doGenericRecommendation(session, request, user, variant, parentImpressionId, parentVariantId, recommendations);
+                        tab.setCarouselData(carouselData);
+                    }
                     result.addRecommendationTab(tab);
                 }
             }
@@ -229,10 +252,9 @@ public abstract class AbstractCarouselService {
 
     private TabRecommendation getTabRecommendation(HttpServletRequest request, FDUserI user, SessionInput input) {
         Variant tabVariant = getTabVariant();
-        String selectedSiteFeature = (String) request.getSession().getAttribute(tabVariant.getId() + SELECTED_SITE_FEATURE_POSTFIX);
-        String parentImpressionId = (String) request.getSession().getAttribute(tabVariant.getId() + PARENT_IMPRESSION_ID_POSTFIX);
+        String selectedSiteFeature = getSelectedSiteFeatureAttribute(request.getSession(), tabVariant.getId());
+        String parentImpressionId = getParentImpresionIdAttribute(request.getSession(), tabVariant.getId());
         TabRecommendation tabs = new TabRecommendation(tabVariant, getVariants(user));
-        tabs.setError(input.isError());
         tabs.setSelectedSiteFeature(selectedSiteFeature);
         tabs.setParentImpressionId(parentImpressionId);
         return tabs;

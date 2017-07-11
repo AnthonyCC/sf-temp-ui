@@ -11,7 +11,6 @@ public class TabRecommendation {
     private String parentImpressionId;
     private String[] featureImpId;
     private int selected;
-    private boolean error;
     private String selectedSiteFeature;
 
     public TabRecommendation(Variant tabVariant, List<Variant> variants) {
@@ -69,14 +68,6 @@ public class TabRecommendation {
     
     public int getSelected() {
         return selected;
-    }
-
-    public boolean isError() {
-        return error;
-    }
-
-    public void setError(boolean error) {
-        this.error = error;
     }
 
     public int getTabIndex(String tabId) {

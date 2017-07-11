@@ -577,7 +577,12 @@ etids.div_tooltipPopup = "#tooltipPopup";
 					fd.common.dispatcher.signal('cartHeader', ajaxData);
 					fd.common.dispatcher.signal('productSampleCarousel', ajaxData);
 					fd.common.dispatcher.signal('donationProductSampleCarousel', ajaxData);
-					fd.common.dispatcher.signal('cartCarousels', ajaxData.carouselData);
+					if (ajaxData.carouselData && ajaxData.carouselData.recommendationTabs) {
+						var selected = ajaxData.carouselData.recommendationTabs.filter(function (tab) { return tab.selected; })[0];
+						if (selected && (selected.siteFeature === "PRODUCT_SAMPLE" || selected.siteFeature === "DONATION_SAMPLE")) {
+							fd.common.dispatcher.signal('cartCarousels', ajaxData.carouselData);
+						}
+					}
 					
 					if(focusedElementId) {
 						try {

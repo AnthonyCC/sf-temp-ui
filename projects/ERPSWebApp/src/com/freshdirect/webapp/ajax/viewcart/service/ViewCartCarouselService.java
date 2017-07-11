@@ -74,19 +74,9 @@ public class ViewCartCarouselService extends AbstractCarouselService {
 
     @Override
     protected int getSelectedTab(TabRecommendation tabs, HttpSession session, ServletRequest request, FDUserI user) {
-        boolean isCurrentUser = isUserAlreadyOrdered(user);
         List<Variant> variants = tabs.getVariants();
-        String selectedSiteFeature = (tabs.getSelectedSiteFeature() != null) ? tabs.getSelectedSiteFeature() : getFreeProductSiteFeature();
-        int selected = selectedTab(variants, selectedSiteFeature);
-
-        if (tabs.isError()) {
-            selected = selectedTab(variants, getDefaultErrorSiteFeature(isCurrentUser));
-        } else if (user.getShoppingCart().isMaxSampleReached() && variants.size() > 1
-                && isSample(selectedSiteFeature)) {
-            selected = (selected + 1) % variants.size();
-        }
-
-        return selected;
+        String selectedSiteFeature = tabs.getSelectedSiteFeature();
+        return selectedTab(variants, (selectedSiteFeature != null) ? selectedSiteFeature : getFreeProductSiteFeature());
     }
 
     @Override
@@ -102,7 +92,8 @@ public class ViewCartCarouselService extends AbstractCarouselService {
         return siteFeatures;
     }
 
-    protected String getDefaultErrorSiteFeature(boolean isCurrentUser) {
+    public String getDefaultErrorSiteFeature(FDUserI user) {
+        boolean isCurrentUser = isUserAlreadyOrdered(user);
         return isCurrentUser ? "DYF" : "FAVORITES";
     }
 

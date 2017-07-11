@@ -76,16 +76,7 @@ public class CheckoutCarouselService extends AbstractCarouselService {
         boolean isCurrentUser = isUserAlreadyOrdered(user);
         List<Variant> variants = tabs.getVariants();
         String selectedSiteFeature = (tabs.getSelectedSiteFeature() != null) ? tabs.getSelectedSiteFeature() : getDefaultSiteFeature(isCurrentUser);
-        int selected = selectedTab(variants, selectedSiteFeature);
-
-        if (tabs.isError()) {
-            selected = selectedTab(variants, getDefaultErrorSiteFeature(isCurrentUser));
-        } else if (user.getShoppingCart().isMaxSampleReached() && variants.size() > 1
-                && isSample(selectedSiteFeature)) {
-            selected = (selected + 1) % variants.size();
-        }
-
-        return selected;
+        return selectedTab(variants, selectedSiteFeature);
     }
 
     @Override
@@ -99,10 +90,6 @@ public class CheckoutCarouselService extends AbstractCarouselService {
             siteFeatures = Arrays.asList(getFreeProductSiteFeature());
         }
         return siteFeatures;
-    }
-
-    private String getDefaultErrorSiteFeature(boolean isCurrentUser) {
-        return isCurrentUser ? "DYF" : "FAVORITES";
     }
 
     private String getDefaultSiteFeature(boolean isCurrentUser) {
