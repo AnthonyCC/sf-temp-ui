@@ -40,19 +40,20 @@ import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
+import com.freshdirect.ecomm.gateway.DlvPassManagerService;
 import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -67,7 +68,6 @@ import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDUser;
-import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
@@ -472,11 +472,15 @@ public class DeliveryPassRenewalCron {
 		try
 		{
 			
-			ctx = getInitialContext();
-			DlvPassManagerSB dlvPassManagerSB = null;
-			DlvPassManagerHome dph =(DlvPassManagerHome) ctx.lookup("freshdirect.erp.DlvPassManager");
-			dlvPassManagerSB = dph.create();
-			pendingPasses =dlvPassManagerSB.getPendingPasses();
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvPassManagerSB)){
+				pendingPasses = DlvPassManagerService.getInstance().getPendingPasses();
+			}else{
+				ctx = getInitialContext();
+				DlvPassManagerSB dlvPassManagerSB = null;
+				DlvPassManagerHome dph =(DlvPassManagerHome) ctx.lookup("freshdirect.erp.DlvPassManager");
+				dlvPassManagerSB = dph.create();
+				pendingPasses =dlvPassManagerSB.getPendingPasses();
+			}
 			
 			if(pendingPasses.size()>0)
 				email( cal.getTime(),pendingPasses);

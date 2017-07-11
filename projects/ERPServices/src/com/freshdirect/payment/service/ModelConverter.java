@@ -53,7 +53,9 @@ import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpPayPalCardModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
+import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.DeliveryPassType;
+import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.pricing.CharacteristicValuePriceData;
 import com.freshdirect.ecommerce.data.common.pricing.PricingData;
@@ -64,6 +66,7 @@ import com.freshdirect.ecommerce.data.customer.ErpActivityRecordData;
 import com.freshdirect.ecommerce.data.customer.complaint.ErpComplaintReasonData;
 import com.freshdirect.ecommerce.data.delivery.sms.RecievedSmsData;
 import com.freshdirect.ecommerce.data.delivery.sms.SmsOrderData;
+import com.freshdirect.ecommerce.data.dlvpass.DeliveryPassData;
 import com.freshdirect.ecommerce.data.ecoupon.CartCouponData;
 import com.freshdirect.ecommerce.data.ecoupon.CouponCartData;
 import com.freshdirect.ecommerce.data.ecoupon.CouponOrderData;
@@ -289,19 +292,24 @@ public class ModelConverter {
 		List<DeliveryPassType> l = new ArrayList<DeliveryPassType>();
 		for (Object obj: data) {
 			DeliveryPassTypeData deliveryPassTypeData = (DeliveryPassTypeData)obj;
-			l.add(new DeliveryPassType(deliveryPassTypeData.getCode(),
-					deliveryPassTypeData.getName(),
-					deliveryPassTypeData.getNoOfDeliveries(),
-					deliveryPassTypeData.getDuration(),
-					deliveryPassTypeData.isUnlimited(),
-					deliveryPassTypeData.getProfileValue(),
-					deliveryPassTypeData.isAutoRenewDP(),
-					deliveryPassTypeData.isFreeTrialDP(),
-					deliveryPassTypeData.isFreeTrialDP(),
-					deliveryPassTypeData.getAutoRenewalSKU()));
+			l.add(buildDeliveryPassType(deliveryPassTypeData));
 		}
 
 		return l;
+	}
+
+	private static DeliveryPassType buildDeliveryPassType(
+			DeliveryPassTypeData deliveryPassTypeData) {
+		return new DeliveryPassType(deliveryPassTypeData.getCode(),
+				deliveryPassTypeData.getName(),
+				deliveryPassTypeData.getNoOfDeliveries(),
+				deliveryPassTypeData.getDuration(),
+				deliveryPassTypeData.isUnlimited(),
+				deliveryPassTypeData.getProfileValue(),
+				deliveryPassTypeData.isAutoRenewDP(),
+				deliveryPassTypeData.isFreeTrialDP(),
+				deliveryPassTypeData.isFreeTrialDP(),
+				deliveryPassTypeData.getAutoRenewalSKU());
 	}
 
 	public static List buildCrmCaseSubjectList(List data) {
@@ -2102,6 +2110,68 @@ public class ModelConverter {
 						.getEnum(erpComplaintReasonData.getDlvIssueType()): null);
 		return reason;
 		}
+
+	public static DeliveryPassModel buildDeliveryPassModel(
+			DeliveryPassData data) {
+		DeliveryPassModel model = new DeliveryPassModel();
+		model.setId(data.getId());
+		model.setAmount(data.getAmount());
+		model.setCustomerId(data.getCustomerId());
+		model.setDescription(data.getDescription());
+		model.setExpirationDate(data.getExpDate());
+		model.setNoOfCredits(data.getNoOfCredits());
+		model.setOrgExpirationDate(data.getOrgExpDate());
+		model.setPurchaseDate(data.getPurchaseDate());
+		model.setPurchaseOrderId(data.getPurchaseOrderId());
+		model.setRemainingDlvs(data.getRemainingDlvs());
+		model.setStatus(EnumDlvPassStatus.getEnum(data.getStatus()));
+		model.setTotalNoOfDlvs(data.getTotalNoOfDlvs());
+		model.setType(buildDeliveryPassType(data.getType()));
+		model.setUsageCount(data.getUsageCount());
+		return model;
+	}
+
+	public static List<DeliveryPassModel> buildDeliveryPassModelList(
+			List<DeliveryPassData> data) {
+		List<DeliveryPassModel> models = new ArrayList<DeliveryPassModel>();
+		for (DeliveryPassData deliveryPassData : data) {
+			models.add(buildDeliveryPassModel(deliveryPassData));
+		}
+		return models;
+	}
+
+	public static DeliveryPassData buildDeliveryPassData(DeliveryPassModel model) {
+		DeliveryPassData data = new DeliveryPassData();
+		data.setId(model.getId());
+		data.setAmount(model.getAmount());
+		data.setCustomerId(model.getCustomerId());
+		data.setDescription(model.getDescription());
+		data.setExpDate(model.getExpirationDate());
+		data.setNoOfCredits(model.getNoOfCredits());
+		data.setOrgExpDate(model.getOrgExpirationDate());
+		data.setPurchaseDate(model.getPurchaseDate());
+		data.setPurchaseOrderId(model.getPurchaseOrderId());
+		data.setRemainingDlvs(model.getRemainingDlvs());
+		data.setStatus(model.getStatus().getName());
+		data.setTotalNoOfDlvs(model.getTotalNoOfDlvs());
+		data.setType(buildDeliveryPassType(model.getType()));
+		data.setUsageCount(model.getUsageCount());
+		return data;
+	}
 	
+	public static DeliveryPassTypeData buildDeliveryPassType(DeliveryPassType type) {
+		DeliveryPassTypeData data = new DeliveryPassTypeData();
+		data.setAutoRenewalSKU(type.getAutoRenewalSKU());
+		data.setAutoRenewDP(type.isAutoRenewDP());
+		data.setCode(type.getCode());
+		data.setDuration(type.getDuration());
+		data.setFreeTrialDP(type.isFreeTrialDP());
+		data.setFreeTrialRestricted(type.isFreeTrialRestricted());
+		data.setName(type.getName());
+		data.setNoOfDeliveries(type.getNoOfDeliveries());
+		data.setProfileValue(type.getProfileValue());
+		data.setUnlimited(type.isUnlimited());
+		return data;
+	}
 }
 
