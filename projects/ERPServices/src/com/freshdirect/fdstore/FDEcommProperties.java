@@ -78,7 +78,9 @@ public class FDEcommProperties {
 	public final static String RestrictedPaymentMethodSB = "fraud.ejb.RestrictedPaymentMethodSB";
 	public static final String ErpNutritionSB = "nutrition.ejb.ErpNutritionSB";
 	public static final String ErpComplaintManagerSB = "customer.ejb.ErpComplaintManagerSB";
+	public static final String EwalletNotifyStatusSB = "ewallet.ejb.EwalletNotifyStatusSB";
 	public static final String DlvPassManagerSB = "deliverypass.ejb.DlvPassManagerSB";
+
 	
     
   
@@ -130,6 +132,8 @@ public class FDEcommProperties {
         defaults.put(RestrictedPaymentMethodSB,FALSE);
         defaults.put(ErpComplaintManagerSB,FALSE);
         defaults.put(DlvPassManagerSB, FALSE);
+        defaults.put(EwalletNotifyStatusSB, FALSE);
+        
 
         
         
@@ -231,21 +235,6 @@ public class FDEcommProperties {
 		return false;
 	}
 
-/**
- * Returns the local string constant routing.ejb.ErpRoutingGatewaySB
- * @return routing.ejb.ErpRoutingGatewaySB
- */
-//	public static String getErproutinggatewaysb() {
-//		return ErpRoutingGatewaySB;
-//	}
 
-/**
- *  Returns the local string erp.ejb.FDXOrderPickEligibleSB
- * @return String 'erp.ejb.FDXOrderPickEligibleSB"
- */
-//	public static String getFdxorderpickeligiblesb() {
-//		return FDXOrderPickEligibleSB;
-//	}
-	
 	
 }

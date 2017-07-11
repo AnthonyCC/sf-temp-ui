@@ -793,5 +793,9 @@ public interface IECommerceService {
 	 
 	public ErpComplaintReason getReasonByCompCode(String cCode) throws RemoteException;
 
+	public void postTrxnsToEwallet() throws RemoteException;
+
+	public void loadTrxnsForPostBack(int maxDays) throws RemoteException;
+
 
 }

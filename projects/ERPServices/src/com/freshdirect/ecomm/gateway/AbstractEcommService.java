@@ -77,8 +77,8 @@ public abstract class AbstractEcommService {
 	    restTemplate.setRequestFactory(requestFactory);
 
 	}
-	///////////////////////////////////
-protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FDResourceException {
+
+public  <T> T postData(String inputJson, String url, Class<T> clazz) throws FDResourceException {
 		
 		try {
  			HttpEntity<String> entity = getEntity(inputJson);
@@ -121,7 +121,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 			throw new FDResourceException("API syntax error");
 		}
 	}*/
-	protected <T,E> Response<T> httpGetDataTypeMap( String url, TypeReference<E> type) throws FDResourceException {
+	public <T,E> Response<T> httpGetDataTypeMap( String url, TypeReference<E> type) throws FDResourceException {
 		Response<T> responseOfTypestring = null;
 		RestTemplate restTemplate = getRestTemplate();	
 		ResponseEntity<String> response;
@@ -153,7 +153,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 				
 	return responseOfTypestring;
 }
-	protected <T,E> Response<T> postDataTypeMap(String inputJson, String url, TypeReference<E> type) throws FDResourceException {
+	public <T,E> Response<T> postDataTypeMap(String inputJson, String url, TypeReference<E> type) throws FDResourceException {
 		Response<T> responseOfTypestring = null;
 		RestTemplate restTemplate = getRestTemplate();	
 		ResponseEntity<String> response;
@@ -186,7 +186,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 				
 	return responseOfTypestring;
 }
-	///////////////////////////////////
+
 /*	protected <T> T getData(String inputJson, String url, Class<T> clazz) throws FDEcommServiceException {
 		
 		try {
@@ -214,7 +214,7 @@ protected <T> T postData(String inputJson, String url, Class<T> clazz) throws FD
 	 * @return
 	 * @throws FDLogisticsServiceException
 	 */
-	protected <T> T httpGetData( String url, Class<T> clazz) throws FDResourceException {
+	public <T> T httpGetData( String url, Class<T> clazz) throws FDResourceException {
 		
 		try {
 			RestTemplate restTemplate = getRestTemplate();		
