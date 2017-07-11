@@ -73,6 +73,7 @@ import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.TagModel;
+import com.freshdirect.fdstore.content.TitledMedia;
 import com.freshdirect.fdstore.content.view.ProductRating;
 import com.freshdirect.fdstore.content.view.WebProductRating;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -1699,7 +1700,13 @@ public class Product {
 	            try {
 				    ProductExtraData data= new ProductExtraData();
 	                data=ProductExtraDataPopulator.populateClaimsDataForMobile(data, user, productModel, null, null);
-	               	result.setProductExtraData(data);	
+	                
+	                if ( productModel.getProductAbout() != null ) {
+	        			TitledMedia tm = (TitledMedia) productModel.getProductAbout();
+	        			data.setProductAboutMediaPath(tm.getPath());
+	        		}
+	               	
+	                result.setProductExtraData(data);	
 	               	ProductData productData=new ProductData();
 	               	ProductDetailPopulator.populateAvailabilityMessagesForMobile(productData, productModel, null, productModel.getDefaultSku());
 	               	result.setProductData(productData);
