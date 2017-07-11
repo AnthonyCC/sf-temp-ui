@@ -13,6 +13,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
+import com.freshdirect.ecomm.gateway.ErpNutritionService;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.service.FDECommerceService;
@@ -39,7 +40,7 @@ public class FDNutritionCache extends FDAbstractCache<String,ErpNutritionModel> 
 			ErpNutritionSB sb = this.lookupNutritionHome().create();
 			Map<String,ErpNutritionModel> data ;
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
-				data=FDECommerceService.getInstance().loadNutrition(since);
+				data=ErpNutritionService.getInstance().loadNutrition(since);
 			}else{
 			data= sb.loadNutrition(since);
 			}

@@ -19,6 +19,7 @@ import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
 import com.freshdirect.dataloader.LoaderException;
+import com.freshdirect.ecomm.gateway.ErpNutritionService;
 import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.payment.service.FDECommerceService;
@@ -102,7 +103,7 @@ public class EshaLoader {
             for (ErpNutritionModel enm : nutrition) {
             	ErpNutritionModel oldEnm=null;
             	if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
-            		oldEnm=FDECommerceService.getInstance().getNutrition(enm.getSkuCode());
+            		oldEnm=ErpNutritionService.getInstance().getNutrition(enm.getSkuCode());
             	}else{
                 oldEnm = sb.getNutrition(enm.getSkuCode());
             	}
@@ -114,7 +115,7 @@ public class EshaLoader {
                 
                 System.out.println("Loading nutrition for " + enm.getSkuCode());
                 if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
-                	FDECommerceService.getInstance().updateNutrition(enm, "dataloader");
+                	ErpNutritionService.getInstance().updateNutrition(enm, "dataloader");
                 }else {
                 sb.updateNutrition(enm, "dataloader");
                 }

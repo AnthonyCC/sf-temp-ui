@@ -28,6 +28,7 @@ import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
 import com.freshdirect.dataloader.BadDataException;
 import com.freshdirect.dataloader.SynchronousParserClient;
+import com.freshdirect.ecomm.gateway.ErpNutritionService;
 import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.payment.service.FDECommerceService;
@@ -108,7 +109,7 @@ public class MappingLoader implements SynchronousParserClient {
         try{
             System.out.println("Trying to call the bean");
             if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
-            	FDECommerceService.getInstance().createUpcSkuMapping(map.getSkuCode(), map.getUpc());
+            	ErpNutritionService.getInstance().createUpcSkuMapping(map.getSkuCode(), map.getUpc());
             }else{
             sb.createUpcSkuMapping(map.getSkuCode(), map.getUpc());
             }

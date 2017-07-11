@@ -783,24 +783,6 @@ public interface IECommerceService {
 
 	public ErpPaymentMethodI findPaymentMethodByAccountInfo(RestrictedPaymentMethodModel restrictedPaymentMethod) throws RemoteException;
 
-	public void createNutrition(ErpNutritionModel buildNutritionModel) throws  RemoteException;
-
-	public ErpNutritionModel getNutrition(String skuCode) throws  RemoteException;
-
-	public NutritionPanel getNutritionPanel(String skuCode) throws RemoteException;
-
-	public String getSkuCodeForUpc(String upc) throws RemoteException;
-
-	public Map<String, ErpNutritionModel> loadNutrition(Date lastModified) throws RemoteException;
-
-	public Map<String, NutritionPanel> loadNutritionPanels(Date lastModified) throws RemoteException;
-
-	public void createUpcSkuMapping(String skuCode, String upcCode)	throws RemoteException;
-
-	public void saveNutritionPanel(NutritionPanel nutritionModel)throws RemoteException;
-
-	public void deleteNutritionPanel(String skuCode) throws RemoteException;
-	
 	public Map<String, List<ErpComplaintReason>> getReasons(boolean excludeCartonReq) throws RemoteException;
 	 
 	public Map<String,String> getComplaintCodes() throws RemoteException;
@@ -811,11 +793,5 @@ public interface IECommerceService {
 	 
 	public ErpComplaintReason getReasonByCompCode(String cCode) throws RemoteException;
 
-	public void updateNutrition(ErpNutritionModel enm, String string) throws RemoteException;
 
-	public void removeNutrition(String skuCode) throws RemoteException;
-
-	public List<Map<String, String>> generateNutritionReport()throws RemoteException;
-
-	public List<Map<String, String>> generateClaimsReport()throws RemoteException;
 }

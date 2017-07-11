@@ -14,6 +14,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
 import com.freshdirect.content.nutrition.panel.NutritionPanel;
+import com.freshdirect.ecomm.gateway.ErpNutritionService;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -61,7 +62,7 @@ public class FDNutritionPanelCache {
 			LOGGER.info( "REFRESHING" );
 			ErpNutritionSB sb = this.lookupNutritionHome().create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
-				data =FDECommerceService.getInstance().loadNutritionPanels(new Date(0L) );
+				data =ErpNutritionService.getInstance().loadNutritionPanels(new Date(0L) );
 			}else{			
 			data = sb.loadNutritionPanels( new Date(0L) );		
 			}

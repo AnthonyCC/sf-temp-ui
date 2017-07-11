@@ -30,6 +30,7 @@ import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
 import com.freshdirect.dataloader.BadDataException;
 import com.freshdirect.dataloader.LoaderException;
+import com.freshdirect.ecomm.gateway.ErpNutritionService;
 import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.payment.service.FDECommerceService;
@@ -158,7 +159,7 @@ public class KwikeeLoader {
                 String skuCode;
                 try{
                 	if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
-                		skuCode=FDECommerceService.getInstance().getSkuCodeForUpc(model.getUpc());
+                		skuCode=ErpNutritionService.getInstance().getSkuCodeForUpc(model.getUpc());
                 	}else{
                      skuCode = sb.getSkuCodeForUpc(model.getUpc());
                 	}
@@ -166,7 +167,7 @@ public class KwikeeLoader {
                     if(skuCode != null && (!skuCode.equals(""))){
                         model.setSkuCode(skuCode);
                         if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
-                        	FDECommerceService.getInstance().createNutrition(model);
+                        	ErpNutritionService.getInstance().createNutrition(model);
                         }else{
                         sb.createNutrition(model);
                         }

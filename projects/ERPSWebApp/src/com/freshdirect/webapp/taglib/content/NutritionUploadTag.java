@@ -24,6 +24,7 @@ import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
 import com.freshdirect.dataloader.nutrition.EshaSpreadsheetParser;
+import com.freshdirect.ecomm.gateway.ErpNutritionService;
 import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.webapp.ActionError;
@@ -123,7 +124,7 @@ public class NutritionUploadTag extends AbstractControllerTag {
 			for (Iterator nIter = nutrition.iterator(); nIter.hasNext();) {
 				ErpNutritionModel enm = (ErpNutritionModel) nIter.next();
 				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
-					oldEnm=FDECommerceService.getInstance().getNutrition(enm.getSkuCode());
+					oldEnm=ErpNutritionService.getInstance().getNutrition(enm.getSkuCode());
 				}else{
 				 oldEnm = sb.getNutrition(enm.getSkuCode());
 				}
@@ -143,7 +144,7 @@ public class NutritionUploadTag extends AbstractControllerTag {
 				
 				System.out.println("Loading nutrition for " + enm.getSkuCode());
 				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
-		        	FDECommerceService.getInstance().updateNutrition(enm, "dataloader");
+					ErpNutritionService.getInstance().updateNutrition(enm, "dataloader");
 		        }else {
 				sb.updateNutrition(enm, "");
 		        }
