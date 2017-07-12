@@ -680,8 +680,21 @@
     font-size: 16px;
     text-align: center;
 }
-.standing-orders-3-so-settings-buttons .so-delete-popup.open{
+.standing-orders-3-so-settings-buttons .so-delete-popup.open,
+.standing-orders-3-so-settings-buttons .so-delete-popup.open.custom .so-delete-popup-message-custom{
 	display: block;
+}
+.standing-orders-3-so-settings-buttons .so-delete-popup.open.custom .select-wrapper{
+	display: inline;
+}
+.standing-orders-3-so-settings-buttons .so-delete-popup.open .so-delete-popup-message-custom,
+.standing-orders-3-so-settings-buttons .so-delete-popup.open .select-wrapper,
+.standing-orders-3-so-settings-buttons .so-delete-popup.open.custom .so-delete-popup-header,
+.standing-orders-3-so-settings-buttons .so-delete-popup.open.custom .so-delete-popup-message{
+	display: none;
+}
+.standing-orders-3-so-settings-buttons .so-delete-popup.open.custom .so-delete-popup-select{
+	margin: 5px auto 20px;
 }
 .standing-orders-3-so-settings-buttons .so-delete-popup:after {
     content: "";

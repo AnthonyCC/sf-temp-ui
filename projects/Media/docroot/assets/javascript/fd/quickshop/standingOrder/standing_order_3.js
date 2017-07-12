@@ -111,18 +111,29 @@ function openSettingsDelete(id){
 
 function closeSettingsDelete(id){
 	var soID = "#soid_" + id;
-	$jq(soID + " .standing-orders-3-so-settings-buttons .so-delete-popup.open").removeClass("open");
+	$jq(soID + " .standing-orders-3-so-settings-buttons .so-delete-popup.open").removeClass("open").removeClass("custom");
+	$jq(soID + " .so-delete-popup-buttons-yes").html("Yes");
+	$jq(soID + " .so-delete-popup-buttons-no").html("No");
 }
 
-function deleteSO(id){
+function deleteSO(id, custom){
 	var soID = "#soid_" + id;
 	var usoID = "#usoid_" + id;
-	submitFormManageSO(id,"delete",null,null);
-	if($jq(usoID).length > 0){
-		openUpcomingOrderCancel(id);
-	}	
-	closeSettingsDelete(id);
-	$jq(soID).remove();
+	if($jq(soID + " .so-delete-popup.custom").length > 0){
+		submitFormManageSO(id,"delete",null, $jq(soID + " .so-delete-popup select").prop('selectedIndex'));
+		closeSettingsDelete(id);
+	} else {
+		if(custom){
+			$jq(soID + " .so-delete-popup.open").addClass("custom");
+			$jq(soID + " .so-delete-popup-buttons-yes").html("Confirm");
+			$jq(soID + " .so-delete-popup-buttons-no").html("Cancel");
+		} else {
+			submitFormManageSO(id,"delete",null,null);
+			closeSettingsDelete(id);
+			$jq(soID).remove();
+		}
+	}
+	//if($jq(usoID).length > 0){ openUpcomingOrderCancel(id);}
 }
 
 function openSOSettings(id) {			
