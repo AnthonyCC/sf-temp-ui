@@ -660,6 +660,7 @@ public class StandingOrderHelper {
 						: so.getStartTime() != null ? DateUtil.formatHourAMPMRange(
 								so.getStartTime(), so.getEndTime()) : "");
 		map.put("deleteDateRange", getSODeleteDateRanges(getSODeliveryDate4Ranges(so, isUpcomingDelivery), so.getFrequency()));
+		map.put("deleteDate", getSODeleteDate(so));
 
 		//map.put("modifyDeliveryDate", isUpcomingDelivery?getModifyDeliveryDate(so.getUpcomingDelivery().getRequestedDate()):null);
 		//map.put("shortDeliveryDate",so.getNextDeliveryDate()!=null? DateUtil.formatMonthAndDate(so.getNextDeliveryDate()):null );
@@ -1306,5 +1307,9 @@ private static String convert(Date time) {
 			}
 		
 		return null;
+	}
+	private static String getSODeleteDate(FDStandingOrder so) {
+		
+		return DateUtil.formatMonthAndDate(so.getDeleteDate());
 	}
 }

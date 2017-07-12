@@ -55,7 +55,7 @@ public class FDStandingOrderDAO {
 
 	private static final Logger LOGGER = LoggerFactory.getInstance( FDStandingOrderDAO.class );
 
-	private static final String FIELDZ_ALL = "SO.ID, SO.CUSTOMER_ID, SO.CUSTOMERLIST_ID, SO.ADDRESS_ID, SO.PAYMENTMETHOD_ID, SO.START_TIME, SO.END_TIME, SO.NEXT_DATE, SO.FREQUENCY, SO.ALCOHOL_AGREEMENT, SO.DELETED, SO.LAST_ERROR, SO.ERROR_HEADER, SO.ERROR_DETAIL, CCL.NAME, C.USER_ID,SO.IS_ACTIVATED,SO.DEFAULT_SO, SO.TIP, SO.REMINDER_OVERLAY";
+	private static final String FIELDZ_ALL = "SO.ID, SO.CUSTOMER_ID, SO.CUSTOMERLIST_ID, SO.ADDRESS_ID, SO.PAYMENTMETHOD_ID, SO.START_TIME, SO.END_TIME, SO.NEXT_DATE, SO.FREQUENCY, SO.ALCOHOL_AGREEMENT, SO.DELETED, SO.LAST_ERROR, SO.ERROR_HEADER, SO.ERROR_DETAIL, CCL.NAME, C.USER_ID,SO.IS_ACTIVATED,SO.DEFAULT_SO, SO.TIP, SO.REMINDER_OVERLAY, SO.DELETE_DATE";
 
 	private static final String LOAD_CUSTOMER_OLD_STANDING_ORDERS =
 		"select " + FIELDZ_ALL + " " +
@@ -440,6 +440,7 @@ public class FDStandingOrderDAO {
 		
 		so.setTipAmount(rs.getDouble("TIP"));
 		so.setReminderOverlayForNewSo(rs.getString("REMINDER_OVERLAY")!=null?(rs.getString("REMINDER_OVERLAY").equalsIgnoreCase("Y")?true:false):false);
+		so.setDeleteDate(rs.getDate("DELETE_DATE"));
 		
 		
 		return so;
@@ -513,7 +514,7 @@ public class FDStandingOrderDAO {
 				if("Cancel all deliveries".equalsIgnoreCase(deleteDate)) {
 					ps = conn.prepareStatement( UPDATE_DELETE_ALL_SOINFO );
 				} else {
-					SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+					SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
 						ps.setDate(i++, deleteDate != null ? new java.sql.Date(formatter.parse(deleteDate).getTime()) : null);
 				}
 			}
