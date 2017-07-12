@@ -583,11 +583,6 @@ public class CartDataService {
 
             CartRequestData reqData = BaseJsonServlet.parseRequestData(request, CartRequestData.class, true);
             SessionInput input = QuickShopCarouselService.defaultService().createSessionInput(user, request);
-            boolean error = request.getParameter("warning_message") != null || (reqData != null && !"".equals(reqData.getWarningMessage()));
-            if (error) {
-                ViewCartCarouselService.getDefaultService().setSelectedSiteFeatureAttribute(request.getSession(),
-                        ViewCartCarouselService.getDefaultService().getDefaultErrorSiteFeature(user));
-            }
             if (reqData != null && reqData.getPage() != null && reqData.getPage().contains("checkout")) {
                 cartData.setCarouselData(CheckoutCarouselService.getDefaultService().populateTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));
             } else {
