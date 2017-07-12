@@ -1,9 +1,13 @@
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
 <!DOCTYPE html>
 <html>
 <head>
   <title>FreshDirect</title>
   <%@ include file="/common/template/includes/i_javascripts_browse.jspf" %>
-  <% request.getSession(false).removeAttribute("loginSuccess"); %>
+  <%
+    request.getSession(false).removeAttribute(SessionName.LOGIN_SUCCESS);
+    request.getSession(false).removeAttribute(SessionName.SOCIAL_LOGIN_SUCCESS);
+  %>
 </head>
 <body>
   <div class="social-login-spinner">

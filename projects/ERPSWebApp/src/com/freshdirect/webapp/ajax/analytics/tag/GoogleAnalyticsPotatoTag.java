@@ -35,9 +35,6 @@ public class GoogleAnalyticsPotatoTag extends SimpleTagSupport {
         String loginType = (String) session.getAttribute(SessionName.SOCIAL_LOGIN_PROVIDER);
 
         Boolean loginSuccess = (Boolean) session.getAttribute(SessionName.LOGIN_SUCCESS);
-        if (loginSuccess != null && !loginSuccess) {
-            session.removeAttribute(SessionName.LOGIN_SUCCESS);
-        }
 
         Boolean signupSuccess = (Boolean) session.getAttribute(SessionName.SIGNUP_SUCCESS);
         if (signupSuccess != null && !signupSuccess) {
