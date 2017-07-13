@@ -1562,7 +1562,7 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.printinvoice", "GLOBAL:ENABLED,true;");
 
         /* APPDEV-5916 */
-        defaults.put("feature.rollout.carttabcars", "GLOBAL:DISABLED,false;");
+        defaults.put("feature.rollout.carttabcars", "GLOBAL:ENABLED,true;");
 
         defaults.put("feature.rollout.standingorder3_0", "GLOBAL:ENABLED,false;");
         defaults.put("feature.rollout.browseaggregatedcategories1_0", "GLOBAL:ENABLED,false;");
