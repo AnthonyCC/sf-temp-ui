@@ -120,7 +120,7 @@ function deleteSO(id, custom){
 	var soID = "#soid_" + id;
 	var usoID = "#usoid_" + id;
 	if($jq(soID + " .so-delete-popup.custom").length > 0){
-		submitFormManageSO(id,"delete",null, $jq(soID + " .so-delete-popup select").prop('selectedIndex'));
+		submitFormManageSO(id,"delete",null, null, $jq(soID + " .so-delete-popup select option:selected").text());
 		closeSettingsDelete(id);
 	} else {
 		if(custom){
@@ -216,9 +216,9 @@ function soSaved(id, activatedAndHasAddress, isNewSO){
 	}
 }
 
-function submitFormManageSO(id,action,name,freq){
+function submitFormManageSO(id,action,name,freq, deleteDate){
 	var soID = "#soid_" + id;
-	var dataString = "soId=" + id + "&action=" + action+ "&soName=" + name+ "&isSO=true&frequency="+freq;
+	var dataString = "soId=" + id + "&action=" + action+ "&soName=" + name+ "&isSO=true&frequency="+freq+ "&deleteDate=" + deleteDate;
 	$jq.ajax({
         url: '/api/manageStandingOrder',
         type: 'POST',
