@@ -927,10 +927,6 @@ public class FDStoreProperties {
     private static final String PROP_SF_2_0_ENABLED = "fdstore.storefront_2_0.enabled";
     private static final String PROP_MEALBUNDLE_CARTONVIEW_ENABLED = "fdstore.mealbundle_cartonview.enabled";
 
-    /* APPDEV-5916 */
-    // previous product donation/sample carousels, for QA
-    private static final String PROP_OBSOLETE_CART_CAROUSELS_ENABLED = "fdstore.obsolete.cart.carousels.enabled";
-    
     private final static String PROP_QS_TOP_ITEMS_PERF_OPT_ENABLED = "fdstore.quickshop.topitems.perf.optimize.enabled";
     private final static String PROP_ZIP_CHECK_OVER_LAY_ENABLED = "fdstore.zipcheck.overlay.enabled";
     /* APPDEV-5781 */
@@ -1566,7 +1562,7 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.printinvoice", "GLOBAL:ENABLED,true;");
 
         /* APPDEV-5916 */
-        defaults.put("feature.rollout.carttabcars", "GLOBAL:ENABLED,true;");
+        defaults.put("feature.rollout.carttabcars", "GLOBAL:DISABLED,false;");
 
         defaults.put("feature.rollout.standingorder3_0", "GLOBAL:ENABLED,false;");
         defaults.put("feature.rollout.browseaggregatedcategories1_0", "GLOBAL:ENABLED,false;");
@@ -1791,9 +1787,6 @@ public class FDStoreProperties {
         defaults.put(PROP_EXTRA_LOG_FOR_LOGIN_FAILS_ENABLED, "false");
         defaults.put(PROP_MEALBUNDLE_CARTONVIEW_ENABLED, "true");
 
-        /* APPDEV-5916 */
-        defaults.put(PROP_OBSOLETE_CART_CAROUSELS_ENABLED, "false");
-        
         defaults.put(PROP_QS_TOP_ITEMS_PERF_OPT_ENABLED, "true");
         defaults.put(PROP_ZIP_CHECK_OVER_LAY_ENABLED, "true");
         
@@ -4620,11 +4613,6 @@ public class FDStoreProperties {
         return (Boolean.valueOf(get(PROP_EXTRA_LOG_FOR_LOGIN_FAILS_ENABLED))).booleanValue();
     }
 
-    /* APPDEV-5916 */
-    public static boolean isObsoleteCartCarouselsEnabled() {
-        return (Boolean.valueOf(get(PROP_OBSOLETE_CART_CAROUSELS_ENABLED))).booleanValue();
-    }
-    
     public static boolean isQSTopItemsPerfOptimizationEnabled(){
     	return (Boolean.valueOf(get(PROP_QS_TOP_ITEMS_PERF_OPT_ENABLED))).booleanValue();
     }

@@ -16,7 +16,7 @@ public class RecommendationTab {
     private String itemType;
     private boolean productSamplesReacedMaximumItemQuantity;
     private boolean selected;
-
+    private boolean updateContent = true;
 
     public RecommendationTab(String title, String siteFeature) {
 		this.title = title;
@@ -121,6 +121,15 @@ public class RecommendationTab {
         if (AbstractCarouselService.isSample(siteFeature)) {
             this.description = description;
         }
+        return this;
+    }
+
+    public boolean isUpdateContent() {
+        return updateContent;
+    }
+
+    public RecommendationTab setUpdateContent(boolean updateContent) {
+        this.updateContent = updateContent;
         return this;
     }
 

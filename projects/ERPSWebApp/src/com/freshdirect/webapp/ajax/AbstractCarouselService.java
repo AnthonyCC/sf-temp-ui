@@ -80,12 +80,13 @@ public abstract class AbstractCarouselService {
 	 */
 	protected abstract String getSmartStoreFacilityName();
 
-
     protected abstract int getSelectedTab(TabRecommendation tabs, HttpSession session, ServletRequest request, FDUserI user);
 
     protected abstract List<String> getSiteFeatures(FDUserI user);
 
     protected abstract String getEventSource(String siteFeature, FDUserI user);
+
+    protected abstract TabRecommendation getTabRecommendation(HttpServletRequest request, FDUserI user, SessionInput input);
 
     public void setSelectedSiteFeatureAttribute(HttpSession session, String siteFeature) {
         setSelectedSiteFeatureAttribute(session, getTabVariant().getId(), siteFeature);
@@ -211,7 +212,10 @@ public abstract class AbstractCarouselService {
                 tabs.setParentImpressionId(impressionId);
             }
 
-            final int selectedTab = getSelectedTab(tabs, session, request, user);
+            int selectedTab = getSelectedTab(tabs, session, request, user);
+
+            String selectedSiteFeature = tabs.getSelectedSiteFeature();
+            String updatedSiteFeature = tabs.get(selectedTab).getSiteFeature().getName();
             String parentImpressionId = tabs.getParentImpressionId();
             String parentVariantId = tabs.getTabVariant().getId();
             for (int tabIndex = 0; tabIndex < tabs.size(); tabIndex++) {
@@ -219,16 +223,21 @@ public abstract class AbstractCarouselService {
                 String tabTitle = WordUtils.capitalizeFully(getTitleForVariant(variant));
                 String siteFeatureName = variant.getSiteFeature().getName();
                 Recommendations recommendations = getRecommendations(variant, request, request.getSession(), parentImpressionId, user);
+                boolean selected = tabIndex == selectedTab;
                 if (!recommendations.getProducts().isEmpty()) {
-                    boolean selected = tabIndex == selectedTab;
                     RecommendationTab tab = new RecommendationTab(tabTitle, siteFeatureName).setParentImpressionId(parentImpressionId)
                             .setImpressionId(tabs.getFeatureImpressionId(tabIndex)).setParentVariantId(parentVariantId).setDescription(getDescription(variant))
-                            .setProductSamplesReacedMaximumItemQuantity(user.getShoppingCart().isMaxSampleReached()).setSelected(selected);
+                            .setProductSamplesReacedMaximumItemQuantity(user.getShoppingCart().isMaxSampleReached()).setSelected(selected)
+                            .setUpdateContent(!input.isOnlyTabHeader() || !updatedSiteFeature.equals(selectedSiteFeature) || isSample(siteFeatureName));
                     if (selected) {
                         CarouselData carouselData = doGenericRecommendation(session, request, user, variant, parentImpressionId, parentVariantId, recommendations);
                         tab.setCarouselData(carouselData);
                     }
                     result.addRecommendationTab(tab);
+                } else {
+                    if (selected) {
+                        selectedTab = Math.min(tabIndex + 1, tabs.size());
+                    }
                 }
             }
         }
@@ -250,17 +259,7 @@ public abstract class AbstractCarouselService {
         }
     }
 
-    private TabRecommendation getTabRecommendation(HttpServletRequest request, FDUserI user, SessionInput input) {
-        Variant tabVariant = getTabVariant();
-        String selectedSiteFeature = getSelectedSiteFeatureAttribute(request.getSession(), tabVariant.getId());
-        String parentImpressionId = getParentImpresionIdAttribute(request.getSession(), tabVariant.getId());
-        TabRecommendation tabs = new TabRecommendation(tabVariant, getVariants(user));
-        tabs.setSelectedSiteFeature(selectedSiteFeature);
-        tabs.setParentImpressionId(parentImpressionId);
-        return tabs;
-    }
-
-    private List<Variant> getVariants(FDUserI user) {
+    protected List<Variant> getVariants(FDUserI user) {
         List<Variant> variants = new ArrayList<Variant>();
         for (final String siteFeature : getSiteFeatures(user)) {
             EnumSiteFeature enumSiteFeature = EnumSiteFeature.getEnum(siteFeature);

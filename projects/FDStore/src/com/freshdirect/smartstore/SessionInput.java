@@ -110,6 +110,10 @@ public class SessionInput implements Cloneable {
 	
     private List<ProductReference> productSamples;
 
+    private boolean onlyTabHeader;
+
+    private boolean error;
+
 	protected SessionInput() {
 	}
 	
@@ -535,6 +539,22 @@ public class SessionInput implements Cloneable {
 
     public void setProductSamples(List<ProductReference> productSamples) {
         this.productSamples = productSamples;
+    }
+
+    public boolean isOnlyTabHeader() {
+        return onlyTabHeader;
+    }
+
+    public void setOnlyTabHeader(boolean onlyTabHeader) {
+        this.onlyTabHeader = onlyTabHeader;
+    }
+
+    public boolean isError() {
+        return error;
+    }
+
+    public void setError(boolean error) {
+        this.error = error;
     }
 
     public static class Builder {

@@ -4,12 +4,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.RecommendationServiceConfig;
 import com.freshdirect.smartstore.RecommendationServiceType;
+import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.TabRecommendation;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.webapp.ajax.AbstractCarouselService;
@@ -74,6 +76,19 @@ public class QuickShopCarouselService extends AbstractCarouselService {
     }
 
     @Override
+    protected TabRecommendation getTabRecommendation(HttpServletRequest request, FDUserI user, SessionInput input) {
+        Variant tabVariant = getTabVariant();
+        String selectedSiteFeature = getSelectedSiteFeatureAttribute(request.getSession(), tabVariant.getId());
+        String parentImpressionId = getParentImpresionIdAttribute(request.getSession(), tabVariant.getId());
+        TabRecommendation tabs = new TabRecommendation(tabVariant, getVariants(user));
+        tabs.setSelectedSiteFeature(selectedSiteFeature);
+        tabs.setParentImpressionId(parentImpressionId);
+        tabs.setOnlyTabHeader(input.isOnlyTabHeader());
+        tabs.setError(input.isError());
+        return tabs;
+    }
+
+    @Override
     protected int getSelectedTab(TabRecommendation tabs, HttpSession session, ServletRequest request, FDUserI user) {
         final int numTabs = tabs.size();
         int selectedTab = 0; // default value
@@ -134,4 +149,5 @@ public class QuickShopCarouselService extends AbstractCarouselService {
 
         return selectedTab;
     }
+
 }

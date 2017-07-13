@@ -31,6 +31,7 @@ public class ViewCartPotatoTag extends SimpleTagSupport {
         FDSessionUser user = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
         try {
             SessionInput input = ViewCartCarouselService.getDefaultService().createSessionInput(user, request);
+            input.setError(request.getParameter("warning_message") != null);
             carousels = ViewCartCarouselService.getDefaultService().populateTabsRecommendationsAndCarousel(request, user, input);
         } catch (Exception e) {
             LOGGER.error("recommendation failed", e);
