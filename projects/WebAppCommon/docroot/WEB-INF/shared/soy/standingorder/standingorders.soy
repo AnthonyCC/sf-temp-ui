@@ -121,12 +121,18 @@
 						<div class="standing-orders-3-so-settings-square-line-1"><span class="standing-orders-3-so-settings-square-line-1-label offscreen">show details</span></div>
 						<div class="standing-orders-3-so-settings-square-line-2"><span class="standing-orders-3-so-settings-square-line-2-label offscreen">hide details</span></div>
 					</div>
-					
-					
 				</a>
 				<div class="clear"></div>
 			</div>
 			<div class="standing-orders-3-so-settings-error-wrap-container">
+				{if $item.deleteDate}
+					<div class="standing-orders-3-so-settings-error">
+						<div class="standing-orders-3-error-ball">!</div>
+						<div class="standing-orders-3-so-settings-error-container">
+							<div class="standing-orders-3-error-place-order"data-minorderpopup="true">This Standing Order has been cancelled. Your last delivery is {$item.deleteDate}. If you have any questions, please contact Customer Service at (212)796-8002 for assistance.</div>
+						</div>
+					</div>
+				{/if}
 				{if $item.errorDetails}
 					{call .soSettingsErrors}
 						{param item: $item /}
@@ -175,7 +181,7 @@
 				    	</div>
 			    	</div>
 		    		<div class="so-delete-popup-buttons">
-		    			<a class="so-delete-popup-buttons-yes" href="javascript:deleteSO({$item.id}, {if $item.activated and not $item.lastError}true{else}false{/if})">Yes</a>
+		    			<a class="so-delete-popup-buttons-yes" href="javascript:deleteSO({$item.id}, {if $item.activated and not $item.lastError and $item.deliveryDate}true{else}false{/if})">Yes</a>
 		    			<a class="so-delete-popup-buttons-no" href="javascript:closeSettingsDelete({$item.id})">No</a>
 		    		</div>
 		    	</div>
@@ -251,7 +257,7 @@
 		{if $item.readyForActivation and not $item.activated}
 			<hr class="so-alert-line-separator">
 			<div class="so-activate-alert">
-				<div class="so-activate-alert-img">					
+				<div class="so-activate-alert-img">
 				</div>
 				<div class="so-activate-alert-message">
 					<div class="so-activate-alert-message-bold">Standing Order "{$item.soName}" meets the minimum $ amount.</div>
