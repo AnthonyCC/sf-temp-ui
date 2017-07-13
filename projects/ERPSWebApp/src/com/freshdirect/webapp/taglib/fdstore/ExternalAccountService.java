@@ -84,7 +84,7 @@ public class ExternalAccountService implements AccountService {
             // If user already a customer of fresh direct.
             if (userId != null && isUserEmailAlreadyExist(userId)) {
                 // Recognized User
-                session.setAttribute(SessionName.SOCIAL_LOGIN_SUCCESS, true);
+                //session.setAttribute(SessionName.SOCIAL_LOGIN_SUCCESS, true);
                 return socialLoginMergePage;
 
             } else {
