@@ -48,6 +48,9 @@ public class TimedLruCache<K,V> extends LruCache<K,V> {
 		if ( timedEntry.isExpired() ) {
 			return this.getExpired(timedEntry);
 		}
+		else {
+			timedEntry.renewLease(this.expire);
+		}
 		return entry.value;
 	}
 
