@@ -93,8 +93,6 @@ public class ExternalAccountController extends BaseController implements SystemM
 		    Map<String, String> socialUserProfile = getSocialUserProfile(request.getParameter("connection_token"));
 		    message = socialConnectAccount(user, socialUserProfile, request.getParameter("context"), request, response);
 		    String redirectUrl = getRedirectUrl(request, message);
-            HttpSession session = request.getSession();
-            session.setAttribute(SessionName.SOCIAL_LOGIN_SUCCESS, true);
 			redirectAfterLogin(response, redirectUrl);
 		}
 		setResponseMessage(model, message, user);
