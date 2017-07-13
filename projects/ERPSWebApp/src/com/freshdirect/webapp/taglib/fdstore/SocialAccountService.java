@@ -158,6 +158,7 @@ public class SocialAccountService implements AccountService {
                 String updatedSuccessPage = UserUtil.loginUser(session, request, response, actionResult, socialUserId, null, "/login/merge_cart.jsp", this.updatedSuccessPage, true);
 
                 session.setAttribute(SessionName.SOCIAL_LOGIN_PROVIDER, providerName);
+                session.setAttribute(SessionName.SOCIAL_LOGIN_SUCCESS, true);
 							    
 				    if(updatedSuccessPage != null) {
 				       //redirect to successpage
@@ -270,6 +271,7 @@ public class SocialAccountService implements AccountService {
                         UserUtil.loginUser(session, request, response, actionResult, socialUserId, null, "", this.updatedSuccessPage, true);
 
                         session.setAttribute(SessionName.SOCIAL_LOGIN_PROVIDER, providerName);
+                        session.setAttribute(SessionName.SOCIAL_LOGIN_SUCCESS, true);
 
 				    		// APPDEV-4381 TC Accept.
 				    		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
