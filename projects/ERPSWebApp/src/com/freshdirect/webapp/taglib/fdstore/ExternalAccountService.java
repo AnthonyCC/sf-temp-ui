@@ -60,8 +60,6 @@ public class ExternalAccountService implements AccountService {
         if (userIdInDb != null && userIdInDb.length() > 0 && userId != null && userId.equalsIgnoreCase(userIdInDb)) {
             ActionResult actionResult = new ActionResult();
             String updatedSuccessPage = UserUtil.loginUser(session, request, response, actionResult, userId, null, "", this.updatedSuccessPage, true);
-//            session.setAttribute(SessionName.SOCIAL_LOGIN_SUCCESS, true);
-//            session.setAttribute(SessionName.SOCIAL_LOGIN_PROVIDER, providerName);
 
             if (updatedSuccessPage != null) {
                 // redirect to successpage
@@ -84,14 +82,12 @@ public class ExternalAccountService implements AccountService {
             // If user already a customer of fresh direct.
             if (userId != null && isUserEmailAlreadyExist(userId)) {
                 // Recognized User
-                //session.setAttribute(SessionName.SOCIAL_LOGIN_SUCCESS, true);
                 return socialLoginMergePage;
 
             } else {
                 return signUpUnrecognized;
             }
         }
-        //session.setAttribute(SessionName.SOCIAL_LOGIN_SUCCESS, true);
         return updatedSuccessPage;
 
     }
