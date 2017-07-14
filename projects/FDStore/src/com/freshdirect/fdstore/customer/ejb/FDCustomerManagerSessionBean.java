@@ -1800,7 +1800,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 							new PrimaryKey(info.getIdentity()
 									.getErpCustomerPK()));
 			erpCustomerEB.setCustomerInfo(customerInfo);
-
+			
 			if (foundFraud) {
 				// !!! override tx source
 				this.logActivity(info.createActivity(
@@ -1818,6 +1818,28 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} catch (FinderException ex) {
 			throw new FDResourceException(ex);
 		} catch (CreateException ex) {
+			throw new FDResourceException(ex);
+		}
+		
+	}
+
+	private void insertFDCustomerEStoreInfo(ErpCustomerInfoModel customerInfo) 
+			throws FDResourceException, ErpDuplicateUserIdException {
+		try {
+
+			FDCustomerEB fdCustomerEB = this.getFdCustomerHome()
+					.findByPrimaryKey(
+							new PrimaryKey(customerInfo.getIdentity().getErpCustomerPK()));
+			
+			customerInfo.getEmailPreferenceLevel();
+			FDCustomerEStoreModel fdCustomerEStoreModel = new FDCustomerEStoreModel();
+			//customerInfo.getEmailPreferenceLevel();
+//			fdCustomerEStoreModel.setFdxEmailOptIn(customerInfo.get);
+			fdCustomerEB.setFDCustomerEStore(fdCustomerEStoreModel);
+		
+		} catch (RemoteException ex) {
+			throw new FDResourceException(ex);
+		} catch (FinderException ex) {
 			throw new FDResourceException(ex);
 		}
 		

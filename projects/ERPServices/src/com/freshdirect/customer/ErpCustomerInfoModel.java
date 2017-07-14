@@ -17,6 +17,7 @@ import java.util.Map;
 import com.freshdirect.framework.core.*;
 import com.freshdirect.sms.EnumSMSAlertStatus;
 import com.freshdirect.common.address.*;
+import com.freshdirect.fdstore.customer.FDIdentity;
 
 /**
  * ErpCustomerInfo model class.
@@ -99,7 +100,8 @@ public class ErpCustomerInfoModel extends ModelSupport {
 	private String soFeatureOverlay;
 	/* APPDEV-4381  */
 	private String fdTcAgree;
-
+ 
+	private FDIdentity identity;
 
 	public String getSoFeatureOverlay() {
 		return soFeatureOverlay;
@@ -477,6 +479,14 @@ public class ErpCustomerInfoModel extends ModelSupport {
 
 	public void setCompanyNameSignup(String companyNameSignup) {
 		this.companyNameSignup = companyNameSignup;
+	}
+	
+	public FDIdentity getIdentity() {
+		return identity;
+	}
+	
+	public void setIdentity(FDIdentity identity) {
+		this.identity = identity;
 	}
 
 }
