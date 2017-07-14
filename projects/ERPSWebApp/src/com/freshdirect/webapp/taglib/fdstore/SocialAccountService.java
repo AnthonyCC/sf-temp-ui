@@ -137,7 +137,7 @@ public class SocialAccountService implements AccountService {
                 String updatedSuccessPage = UserUtil.loginUser(session, request, response, actionResult, socialUserId, null, "/login/merge_cart.jsp", this.updatedSuccessPage,
                         true);
 
-                setupLoginInfoToGoogleAnalytics(session, providerName);
+                session.setAttribute(SessionName.SOCIAL_LOGIN_PROVIDER, providerName);
 
                 if (updatedSuccessPage != null) {
                     // redirect to successpage
@@ -220,8 +220,7 @@ public class SocialAccountService implements AccountService {
                     } else {
                         // Auto login
                         UserUtil.loginUser(session, request, response, actionResult, socialUserId, null, "", this.updatedSuccessPage, true);
-
-                        setupLoginInfoToGoogleAnalytics(session, providerName);
+                        session.setAttribute(SessionName.SOCIAL_LOGIN_PROVIDER, providerName);
 
                         // APPDEV-4381 TC Accept.
                         FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
@@ -322,7 +321,7 @@ public class SocialAccountService implements AccountService {
 
                             // determine whether social-login is triggered from workflow or other source
                             String preSuccessPage = (String) session.getAttribute(SessionName.PREV_SUCCESS_PAGE);
-                            setupLoginInfoToGoogleAnalytics(session, providerName);
+                            session.setAttribute(SessionName.SOCIAL_LOGIN_PROVIDER, providerName);
                             if (preSuccessPage != null) {
                                 session.removeAttribute(SessionName.PREV_SUCCESS_PAGE);
                                 return newURL + "/social/success.jsp?successPage=" + preSuccessPage.substring(1, preSuccessPage.length());
@@ -341,11 +340,6 @@ public class SocialAccountService implements AccountService {
         }
         return null;
 
-    }
-
-    private void setupLoginInfoToGoogleAnalytics(HttpSession session, String providerName) {
-        session.setAttribute(SessionName.SOCIAL_LOGIN_PROVIDER, providerName);
-        session.setAttribute(SessionName.SOCIAL_LOGIN_SUCCESS, true);
     }
 
     @Override
