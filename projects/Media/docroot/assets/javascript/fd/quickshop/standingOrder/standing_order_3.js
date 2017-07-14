@@ -130,13 +130,12 @@ function deleteSO(id, custom){
 		} else {
 			submitFormManageSO(id,"delete",null,null);
 			closeSettingsDelete(id);
-			$jq(soID).remove();
 		}
 	}
 	//if($jq(usoID).length > 0){ openUpcomingOrderCancel(id);}
 }
 
-function openSOSettings(id) {			
+function openSOSettings(id) {
 	closeSOSettings();
 	submitFormManageSO(id,'settings',null,null);
 }
@@ -273,7 +272,7 @@ function submitFormManageSO(id,action,name,freq, deleteDate){
             if('activate'==action){
             	getSOData(id, action);
             }
-            if('delete'==action){
+            if('delete'==action && ($jq(soID + " .so-delete-popup select").prop('selectedIndex') == 0 || deleteDate === undefined)){
             	$jq(soID).remove();
             }
         }
