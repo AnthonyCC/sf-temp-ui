@@ -1,4 +1,4 @@
-package com.freshdirect.fdstore.referral;
+package com.freshdirect.fdstore.ecomm.converter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +17,22 @@ import com.freshdirect.ecommerce.data.referral.ReferralProgramInvitationData;
 import com.freshdirect.ecommerce.data.referral.ReferralPromotionData;
 import com.freshdirect.ecommerce.data.referral.ReferralSearchCriteriaData;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.referral.EnumReferralProgramStatus;
+import com.freshdirect.fdstore.referral.EnumReferralStatus;
+import com.freshdirect.fdstore.referral.FDReferralReportLine;
+import com.freshdirect.fdstore.referral.ManageInvitesModel;
+import com.freshdirect.fdstore.referral.ReferralCampaign;
+import com.freshdirect.fdstore.referral.ReferralChannel;
+import com.freshdirect.fdstore.referral.ReferralHistory;
+import com.freshdirect.fdstore.referral.ReferralObjective;
+import com.freshdirect.fdstore.referral.ReferralPartner;
+import com.freshdirect.fdstore.referral.ReferralProgram;
+import com.freshdirect.fdstore.referral.ReferralProgramInvitaionModel;
+import com.freshdirect.fdstore.referral.ReferralPromotionModel;
+import com.freshdirect.fdstore.referral.ReferralSearchCriteria;
 import com.freshdirect.framework.core.PrimaryKey;
 
-public class ReferralEncoder {
+public class ReferralConverter {
 
 	public static ReferralProgramData buildReferralProgramData(ReferralProgram refProgram) {
 		ReferralProgramData referralProgramData = new ReferralProgramData();
