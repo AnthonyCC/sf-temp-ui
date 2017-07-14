@@ -304,6 +304,8 @@ var dataLayer = window.dataLayer || [];
     login: function (loginData) {
       if (loginData.loginAttempt === 'success') {
         fd.gtm.updateDataLayer({loginSuccess: true});
+      } else if (loginData.loginAttempt === 'socialLoginSuccess') {
+        fd.gtm.updateDataLayer({socialLoginSuccess: true});
       } else if (loginData.loginAttempt === 'fail') {
         fd.gtm.updateDataLayer({loginFailure: true});
       }
@@ -346,6 +348,8 @@ var dataLayer = window.dataLayer || [];
     signup: function (signupData) {
       if (signupData.signupAttempt === 'success') {
         fd.gtm.updateDataLayer({signupSuccess: true});
+      } else if (signupData.signupAttempt === 'socialSignupSuccess') {
+        fd.gtm.updateDataLayer({socialSignupSuccess: true});
       } else if (signupData.signupAttempt === 'fail') {
         fd.gtm.updateDataLayer({signupFailure: true});
       }
@@ -384,6 +388,8 @@ var dataLayer = window.dataLayer || [];
     }
   };
   fd.gtm.PROCESSORS.cartLineChange = fd.gtm.PROCESSORS.ATCData;
+  fd.gtm.PROCESSORS.socialLoginSuccess = fd.gtm.PROCESSORS.loginSuccess;
+  fd.gtm.PROCESSORS.socialSignupSuccess = fd.gtm.PROCESSORS.signupSuccess;
 
   fd.gtm.updateDataLayer = function (gtmData, gtmEvent) {
     if (gtmData) {
