@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.event.ImpressionLogger;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -105,7 +106,7 @@ public abstract class AbstractCarouselService {
         return (String) session.getAttribute(variantId + PARENT_IMPRESSION_ID_POSTFIX);
     }
 
-    public void setParentImpresionIdAttribute(HttpSession session, String variantId, String parentImpressionId) {
+    public void setParentImpressionIdAttribute(HttpSession session, String variantId, String parentImpressionId) {
         session.setAttribute(variantId + PARENT_IMPRESSION_ID_POSTFIX, parentImpressionId);
     }
 
@@ -154,7 +155,7 @@ public abstract class AbstractCarouselService {
         String siteFeature = requestData.getFeature();
         String parentImpressionId = requestData.getParentImpressionId();
         setSelectedSiteFeatureAttribute(session, requestData.getParentVariantId(), siteFeature);
-        setParentImpresionIdAttribute(session, requestData.getParentVariantId(), parentImpressionId);
+        setParentImpressionIdAttribute(session, requestData.getParentVariantId(), parentImpressionId);
         EnumSiteFeature enumSiteFeature = EnumSiteFeature.getEnum(siteFeature);
         Variant variant = VariantSelectorFactory.getSelector(enumSiteFeature).select(user, false);
         String impressionId = requestData.getImpressionId();
@@ -429,7 +430,7 @@ public abstract class AbstractCarouselService {
     protected boolean isUserAlreadyOrdered(FDUserI user) {
         boolean currentUser = false;
         try {
-            currentUser = user.getLevel() > FDUserI.RECOGNIZED && user.getAdjustedValidOrderCount() >= 3;
+            currentUser = user.getLevel() > FDUserI.RECOGNIZED && user.getAdjustedValidOrderCount(EnumEStoreId.FD) >= 3;
         } catch (FDResourceException e) {
             currentUser = false;
         }

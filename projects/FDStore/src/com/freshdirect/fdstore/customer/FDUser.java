@@ -880,6 +880,19 @@ public class FDUser extends ModelSupport implements FDUserI {
     }
 
     /**
+     * @return number of valid orders, corrected in modify order mode
+     */
+    @Override
+    public int getAdjustedValidOrderCount(EnumEStoreId storeId) throws FDResourceException {
+        int orderCount = this.getOrderHistory().getValidOrderCount(storeId);
+        if (this.getShoppingCart() instanceof FDModifyCartModel) {
+            // we're in modify order mode, subtract one
+            orderCount--;
+        }
+        return orderCount;
+    }
+
+    /**
      * @return number of valid orders by delivery type
      */
     @Override
@@ -3628,6 +3641,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         
     }
 
+    @Override
     public boolean isZipCheckPopupUsed() {
         return isZipCheckPopupUsed;
     }
@@ -3636,11 +3650,13 @@ public class FDUser extends ModelSupport implements FDUserI {
         this.isZipCheckPopupUsed = isZipCheckPopupUsed;
     }
 
-	public Map<String, String> getSoCartLineMessagesMap() {
+	@Override
+    public Map<String, String> getSoCartLineMessagesMap() {
 		return soCartLineMessagesMap;
 	}
 
-	public void setSoCartLineMessagesMap(Map<String, String> soCartLineMessagesMap) {
+	@Override
+    public void setSoCartLineMessagesMap(Map<String, String> soCartLineMessagesMap) {
 		this.soCartLineMessagesMap = soCartLineMessagesMap;
 	}
 
@@ -3652,22 +3668,26 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.custSapId = custSapId;
 	}
 
-	public boolean isSoCartOverlayFirstTime() {
+	@Override
+    public boolean isSoCartOverlayFirstTime() {
 		return soCartOverlayFirstTime;
 	}
 
-	public void setSoCartOverlayFirstTime(boolean soCartOverlayFirstTime) {
+	@Override
+    public void setSoCartOverlayFirstTime(boolean soCartOverlayFirstTime) {
 		this.soCartOverlayFirstTime = soCartOverlayFirstTime;
 		if(soCartOverlayFirstTime){
 			setRefreshSO3Settings(true);
 		}
 	}
 
-	public boolean isRefreshSoCartOverlay() {
+	@Override
+    public boolean isRefreshSoCartOverlay() {
 		return refreshSoCartOverlay;
 	}
 
-	public void setRefreshSoCartOverlay(boolean refreshSoCartOverlay) {
+	@Override
+    public void setRefreshSoCartOverlay(boolean refreshSoCartOverlay) {
 		this.refreshSoCartOverlay = refreshSoCartOverlay;
 		if(refreshSoCartOverlay){
 			setRefreshSO3Settings(true);
@@ -3684,11 +3704,13 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 
 
-	public boolean isRefreshNewSoFeature() {
+	@Override
+    public boolean isRefreshNewSoFeature() {
 		return refreshNewSoFeature;
 	}
 
-	public void setRefreshNewSoFeature(boolean refreshNewSoFeature) {
+	@Override
+    public void setRefreshNewSoFeature(boolean refreshNewSoFeature) {
 		this.refreshNewSoFeature = refreshNewSoFeature;
 		if(refreshNewSoFeature){
 			setRefreshSO3Settings(true);
@@ -3696,11 +3718,13 @@ public class FDUser extends ModelSupport implements FDUserI {
 		
 	}
 
-	public boolean isSoFeatureOverlay() {
+	@Override
+    public boolean isSoFeatureOverlay() {
 		return soFeatureOverlay;
 	}
 
-	public void setSoFeatureOverlay(boolean soFeatureOverlay) {
+	@Override
+    public void setSoFeatureOverlay(boolean soFeatureOverlay) {
 		this.soFeatureOverlay = soFeatureOverlay;
 	}
 
@@ -3709,18 +3733,22 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.referrerEligible = referrerEligible;
 	}
 
-	public void setValidSO3Data(Map<String, Object> validSO3Data){
+	@Override
+    public void setValidSO3Data(Map<String, Object> validSO3Data){
 		this.validSO3Data = validSO3Data;
 	}
     
+    @Override
     public Map<String, Object> getValidSO3Data(){
     	return this.validSO3Data;
     }
 		
+    @Override
     public boolean isRefreshSO3Settings(){
     	return this.refreshSO3Settings;
     }
 
+    @Override
     public void setRefreshSO3Settings(boolean isRefreshSO3Settings){
     	this.refreshSO3Settings = isRefreshSO3Settings;
     }
