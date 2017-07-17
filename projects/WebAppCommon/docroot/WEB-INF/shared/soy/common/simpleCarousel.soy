@@ -21,6 +21,7 @@
 					{call common.iconCarouselItem}
 						{param item:$item /}
 						{param moduleData:$moduleData /}
+						{param itemIndex:index($item) /}
 					{/call}
 				{else}
 					{delcall common.carouselItem variant="$itemType"}
