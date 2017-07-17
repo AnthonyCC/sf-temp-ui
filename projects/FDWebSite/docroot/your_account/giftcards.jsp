@@ -241,8 +241,8 @@ final int W_YA_GIFTCARDS = 970;
                             %>
 							<td><%= status %></td>
                             <% if(!isPending) { %>
-                                <td><a href="#" onClick="recipResendFetch('<%= recipient.getRecepientModel().getSale_id() %>','<%= recipient.getCertificationNumber() %>'); return false;"><%= status.equals("Printed") ? "Send" : "Resend"  %><span class="offscreen"> gift card</span></a></td>
-                                <td><a href="/gift_card/postbacks/pdf_gen.jsp?saleId=<%= recipient.getRecepientModel().getSale_id() %>&certNum=<%= recipient.getCertificationNumber() %>" >View/Print<span class="offscreen"> gift card</span></a></td>
+                                <td><a href="#" onClick="recipResendFetch('<%= recipient.getRecepientModel().getSale_id() %>','<%= recipient.getCertificationNumber() %>'); return false;"><%= status.equals("Printed") ? "Send" : "Resend"  %><span class="offscreen">$<%= FormatterUtil.formatToTwoDecimal(recipient.getRecepientModel().getAmount()) %> <%= cardType %> gift card of <%= recipient.getRecepientModel().getRecipientName() %></span></a></td>
+                                <td><a href="/gift_card/postbacks/pdf_gen.jsp?saleId=<%= recipient.getRecepientModel().getSale_id() %>&certNum=<%= recipient.getCertificationNumber() %>" >View/Print<span class="offscreen">$<%= FormatterUtil.formatToTwoDecimal(recipient.getRecepientModel().getAmount()) %> <%= cardType %> gift card of <%= recipient.getRecepientModel().getRecipientName() %></span></a></td>
                             <% } else { %>    
                                 <td>&nbsp;</a></td>
                                 <td>&nbsp;</td>

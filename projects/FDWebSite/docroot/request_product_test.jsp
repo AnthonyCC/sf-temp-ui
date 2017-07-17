@@ -377,7 +377,7 @@
 						<br />To continue shopping, <a href="javascript:window.reallyClose();"><b>click here</b></a> to close this window.<br /><br /></div>
 					<% } else { %>
 						<div class="text12">We will do our best to add to our selection based on your requests.<br />To continue shopping <a href="javascript:window.reallyClose();">close this window</a> or <a href="#" onClick="javascript:backtoWin('/newproducts.jsp'); javascript:window.reallyClose();">click here to see our New Products!</a></div>
-						<div style="margin: 36px;"><img src="/media_stat/images/template/newproduct/confirm_berry.jpg" width="70" height="70"></div>
+						<div style="margin: 36px;"><img src="/media_stat/images/template/newproduct/confirm_berry.jpg" alt="" width="70" height="70"></div>
 					<% }%>
 				</td>
 			</tr>

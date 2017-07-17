@@ -200,9 +200,9 @@ for (FDOrderInfoI orderInfo : orderHistoryInfo) {
    <%}%>
 		<% if(!mobWeb){ %>
 		<td>
-			<a href="<%= orderDetailsUrl %>"><%= orderInfo.isModifiable() ? "View/Modify" : "View" %><span class="offscreen"> order <%= orderInfo.getErpSalesId() %></span></a>
+			<a href="<%= orderDetailsUrl %>"><%= orderInfo.isModifiable() ? "View/Modify" : "View" %><span class="offscreen">order <%= orderInfo.getErpSalesId() %> </span></a>
             <% if (orderInfo.isShopFromThisOrder()) { %>
-            | <a href="/quickshop/shop_from_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>">Shop From This Order<span class="offscreen"> <%= orderInfo.getErpSalesId() %></span></a>
+            | <a href="/quickshop/shop_from_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>">Shop From This Order<span class="offscreen">number <%= orderInfo.getErpSalesId() %></span></a>
             <% } %>
 		</td>
 		<% } %>
