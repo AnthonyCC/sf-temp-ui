@@ -659,7 +659,7 @@ public class StandingOrderHelper {
 						.getDeliveryEndTime())
 						: so.getStartTime() != null ? DateUtil.formatHourAMPMRange(
 								so.getStartTime(), so.getEndTime()) : "");
-		map.put("deleteDateRange", getSODeleteDateRanges(getSODeliveryDate4Ranges(so, isUpcomingDelivery), so.getFrequency()));
+		map.put("deleteDateRange", getSODeleteDateRanges(getSODeliveryDate4Ranges(so), so.getFrequency()));
 		map.put("deleteDate", getSODeleteDate(so));
 
 		//map.put("modifyDeliveryDate", isUpcomingDelivery?getModifyDeliveryDate(so.getUpcomingDelivery().getRequestedDate()):null);
@@ -1270,7 +1270,7 @@ private static String convert(Date time) {
 	//populates 5 delivery dates ahead for a so template when a user prompted to delete in future.
 	public static ArrayList<String> getSODeleteDateRanges(Date delivaryDate, int frequency) {
 		ArrayList<String> dateList = new ArrayList<String>();
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");						
 		try {		
 			Calendar cal = Calendar.getInstance();
 			dateList.add(0,"Cancel all deliveries");
@@ -1285,7 +1285,7 @@ private static String convert(Date time) {
 				} else {
 					cal.add(Calendar.MONTH, 1);
 				}
-				dateList.add(DateUtil.formatMonthAndDate(cal.getTime()));
+				dateList.add(DateUtil.getDate(cal.getTime()));
 			}
 		}catch (Exception e) {
 			LOGGER.error("Exception occurred in getSODeleteDateRanges : "+e);
@@ -1293,20 +1293,17 @@ private static String convert(Date time) {
 		return dateList;	
 	}
 	
-	public static Date getSODeliveryDate4Ranges(FDStandingOrder so, boolean alt) {
+	public static Date getSODeliveryDate4Ranges(FDStandingOrder so) {
+		Date delivaryDate = null;
+		String d1 = null;
+		try {
+			d1 = DateUtil.getDate(so.getNextDeliveryDate());
+			delivaryDate = new SimpleDateFormat("MM/dd/yyyy").parse(d1);
+		} catch (ParseException e) {
+			LOGGER.error("Exception occurred in getSODeliveryDate4Ranges : "+e);
+		}
+		return delivaryDate;
 
-		if (null != so.getNextDeliveryDate()) {
-			if (alt) {
-				// normal format for upcoming delivery "Feb 20"
-			return so.getUpcomingDelivery().getRequestedDate();
-			
-			} else {
-				// format for standing order settings "Feb 20"
-				return so.getNextDeliveryDate();
-				}
-			}
-		
-		return null;
 	}
 	private static String getSODeleteDate(FDStandingOrder so) {
 		

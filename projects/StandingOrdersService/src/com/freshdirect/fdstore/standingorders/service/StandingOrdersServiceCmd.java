@@ -177,8 +177,6 @@ public class StandingOrdersServiceCmd {
 			context.removeAttribute("IS_SO_JOB_RUNNING");
 			}
 			
-			deleteStandingOrders();	//So templates should be deleted after placing the order on date which was choose by user.
-			
 		} catch (Exception e) {
 			LOGGER.error("Manually running StandingOrdersServiceCmd failed with Exception...",e);
 			sendExceptionMail(Calendar.getInstance().getTime(), e);
@@ -186,25 +184,6 @@ public class StandingOrdersServiceCmd {
 	}
 	
 
-	private static void deleteStandingOrders() {
-		try {
-			lookupSOSHome();
-			StandingOrdersServiceSB sb = sosHome.get().create();
-			LOGGER.info( "Starting to delete standing orders based on delete date set by user..." );
-
-			sb.deleteStandingOrders();
-			LOGGER.info( "Finished deleting orders." );
-		} catch ( CreateException e ) {
-			invalidateSOSHome();
-			LOGGER.error("CreateException",e);
-		} catch ( RemoteException e ) {
-			invalidateSOSHome();
-			LOGGER.error("RemoteException",e);
-		} catch ( FDResourceException e ) {
-			invalidateSOSHome();
-			LOGGER.error("FDResourceException",e);
-		}
-	}
 
 	private static boolean isResultHasData(SOResult.ResultList result) {
 		

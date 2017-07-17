@@ -125,7 +125,6 @@ public class FDStandingOrderDAO {
 	"IS_ACTIVATED= ?, "+
 	"MODIFIED_TIME= ?, "+
 	"DELETE_DATE= ?, "+
-	"DEL_ALL_DATES= ?, "+
 	"TIP=?"+
 	"where ID = ?";
 	
@@ -183,18 +182,15 @@ public class FDStandingOrderDAO {
 	
 	private static final String UPDATE_REMIDER_OVERLAY_STANDING_ORDER="update CUST.STANDING_ORDER so SET so.reminder_overlay='N' WHERE  so.id = ? AND SO.reminder_overlay='Y'";
 
-	private static final String GET_STANDING_ORDERS_DELETE_BYDATE =
-			"select id from CUST.STANDING_ORDER where DELETED=0 and (trunc(DELETE_DATE) = trunc(sysdate) or DEL_ALL_DATES='Y')";	
+	private static final String GET_STANDING_ORDERS_DELETE_BYDATE =	"select id from CUST.STANDING_ORDER where DELETED=0 and (trunc(DELETE_DATE) = trunc(sysdate)) and ERROR_HEADER IS NULL";	
 	
-	private static final String DELETE_CUSTOMER_LIST_DETAILS_BYDATE = "delete from CUST.CUSTOMERLIST_DETAILS where LIST_ID  in (select CUSTOMERLIST_ID from CUST.STANDING_ORDER where DELETED=0 and (trunc(DELETE_DATE) = trunc(sysdate) or DEL_ALL_DATES='Y'))";
+	private static final String DELETE_CUSTOMER_LIST_DETAILS_BYDATE = "delete from CUST.CUSTOMERLIST_DETAILS where LIST_ID  in (select CUSTOMERLIST_ID from CUST.STANDING_ORDER where DELETED=0 and (trunc(DELETE_DATE) = trunc(sysdate))) and ERROR_HEADER IS NULL";
 	
-	private static final String DELETE_CUSTOMER_LIST_BYDATE = "delete from CUST.CUSTOMERLIST where ID in (select CUSTOMERLIST_ID from CUST.STANDING_ORDER where DELETED=0 and (trunc(DELETE_DATE) = trunc(sysdate) or DEL_ALL_DATES='Y'))";	
+	private static final String DELETE_CUSTOMER_LIST_BYDATE = "delete from CUST.CUSTOMERLIST where ID in (select CUSTOMERLIST_ID from CUST.STANDING_ORDER where DELETED=0 and (trunc(DELETE_DATE) = trunc(sysdate)) and ERROR_HEADER IS NULL";	
 	
-	private static final String DELETE_STANDING_ORDER_BYDATE = "update CUST.STANDING_ORDER SET DELETED=1, CUSTOMERLIST_ID=NULL where DELETED=0 and (trunc(DELETE_DATE) = trunc(sysdate) or DEL_ALL_DATES='Y')";
+	private static final String DELETE_STANDING_ORDER_BYDATE = "update CUST.STANDING_ORDER SET DELETED=1, CUSTOMERLIST_ID=NULL where DELETED=0 and (trunc(DELETE_DATE) = trunc(sysdate)) and ERROR_HEADER IS NULL";
 
 	private static final String UPDATE_DELETE_SOINFO = "update CUST.STANDING_ORDER set DELETE_DATE = ? where ID = ?";
-
-	private static final String UPDATE_DELETE_ALL_SOINFO = "update CUST.STANDING_ORDER set DEL_ALL_DATES = 'Y' where ID = ?";	
 
 	protected String getNextId(Connection conn) throws SQLException {
 		return SequenceGenerator.getNextId(conn, "CUST");
@@ -505,26 +501,25 @@ public class FDStandingOrderDAO {
 		return soList;		
 	}	
 	
-	public void updateDeleteSOInfo( Connection conn, String id, String deleteDate ) throws SQLException {
+	public void updateDeleteSOInfo(Connection conn, String id, String deleteDate) throws SQLException {
+		LOGGER.debug("FDStandingOrderDAO.updateDeleteSOInfo()");
+
+		PreparedStatement ps = null;
 		try {
-			int i=1;
-			PreparedStatement ps = conn.prepareStatement( UPDATE_DELETE_SOINFO );
-			
-			if(null != deleteDate && !"".equals(deleteDate)) {
-				if("Cancel all deliveries".equalsIgnoreCase(deleteDate)) {
-					ps = conn.prepareStatement( UPDATE_DELETE_ALL_SOINFO );
-				} else {
-					SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
-						ps.setDate(i++, deleteDate != null ? new java.sql.Date(formatter.parse(deleteDate).getTime()) : null);
-				}
-			}
-			ps.setString(i,id);
+			int i = 1;
+			ps = conn.prepareStatement(UPDATE_DELETE_SOINFO);
+			SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+			ps.setDate(i++, deleteDate != null ? new java.sql.Date(formatter.parse(deleteDate).getTime()) : null);
+			ps.setString(i, id);
 			ps.executeUpdate();
 			ps.close();
 		} catch (ParseException e) {
 			e.printStackTrace();
+		} finally {
+			if (ps != null) {
+				ps.close();
+			}
 		}
-		LOGGER.debug( "FDStandingOrderDAO.updateDeleteSOInfo()::END" );
 	}	
 	
 	public String createStandingOrder(Connection conn, FDStandingOrder so) throws SQLException {
@@ -623,7 +618,6 @@ public class FDStandingOrderDAO {
 			}
 			ps.setTimestamp(counter++, new Timestamp( currDate.getTime() ));//Modified Time
 			ps.setDate(counter++, null);
-			ps.setString(counter++, null);
 			ps.setDouble(counter++,so.getTipAmount());
 			ps.setString(counter++, so.getId());
 
