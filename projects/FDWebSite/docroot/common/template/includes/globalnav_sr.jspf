@@ -266,9 +266,7 @@ if(user != null) {
 	<!-- GLOBALNAV -->
 	<potato:globalnav/>
 
-	<script>
-	globalNav=<fd:ToJSON object="${globalnav}" noHeaders="true"/>
-	</script>
+	
 
 	<div class="container global<%= (useFdxGlobalNav) ? " hasFDX" : "" %>">
 	    <nav class="gnav" data-component="globalnav">
