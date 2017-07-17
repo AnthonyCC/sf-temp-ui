@@ -131,15 +131,8 @@ public class FDEcommProperties {
         defaults.put(RestrictedPaymentMethodSB,FALSE);
         defaults.put(ErpComplaintManagerSB,FALSE);
         defaults.put(DlvPassManagerSB, FALSE);
-<<<<<<< .mine
         defaults.put(SmartStoreServiceConfigurationSB, FALSE);
-=======
         defaults.put(EwalletNotifyStatusSB, FALSE);
-        
->>>>>>> .r69767
-
-        
-        
 
         refresh();
     }
