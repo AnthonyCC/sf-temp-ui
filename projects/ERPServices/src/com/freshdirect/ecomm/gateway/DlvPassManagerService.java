@@ -1,9 +1,6 @@
 package com.freshdirect.ecomm.gateway;
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.List;
@@ -11,13 +8,8 @@ import java.util.Map;
 
 import org.apache.log4j.Category;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
@@ -28,13 +20,11 @@ import com.freshdirect.ecommerce.data.dlvpass.DeliveryPassDataWrapper;
 import com.freshdirect.ecommerce.data.dlvpass.DlvPassAutoRenewData;
 import com.freshdirect.ecommerce.data.dlvpass.DlvPassStatusMapData;
 import com.freshdirect.fdstore.FDEcommServiceException;
-import com.freshdirect.fdstore.FDPayPalServiceException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.payment.service.AbstractService;
 import com.freshdirect.payment.service.ModelConverter;
 
-public class DlvPassManagerService extends AbstractEcommService{
+public class DlvPassManagerService extends AbstractEcommService implements DlvPassManagerServiceI{
 	
 	private static DlvPassManagerService INSTANCE;
 	
@@ -67,13 +57,14 @@ public class DlvPassManagerService extends AbstractEcommService{
 	
 
 	
-	public static DlvPassManagerService getInstance() {
+	public static DlvPassManagerServiceI getInstance() {
 		if (INSTANCE == null)
 			INSTANCE = new DlvPassManagerService();
 
 		return INSTANCE;
 	}
 
+	@Override
 	public String create(DeliveryPassModel model) throws RemoteException, DeliveryPassException {
 		Response<String> response = null;
 		
@@ -84,7 +75,7 @@ public class DlvPassManagerService extends AbstractEcommService{
 			request.setData(data);
 			inputJson = buildRequest(request);
 			response = postData(inputJson,getFdCommerceEndPoint(CREATE_DLV_PASS), Response.class);
-			if(response.getResponseCode().equals(HttpStatus.BAD_REQUEST.toString()))
+			if(response.getResponseCode().equals(HttpStatus.UNPROCESSABLE_ENTITY.toString()))
 				throw new DeliveryPassException(response.getMessage());
 			if(!response.getResponseCode().equals("OK"))
 				throw new RemoteException(response.getMessage());
@@ -96,7 +87,7 @@ public class DlvPassManagerService extends AbstractEcommService{
 		return response.getData();
 	}
 		
-	
+	@Override
 	public void apply(DeliveryPassModel model) throws RemoteException, DeliveryPassException {
 		Response response = null;
 		
@@ -107,7 +98,7 @@ public class DlvPassManagerService extends AbstractEcommService{
 			request.setData(data);
 			inputJson = buildRequest(request);
 			response = postData(inputJson,getFdCommerceEndPoint(APPLY_DLV_PASS), Response.class);
-			if(response.getResponseCode().equals(HttpStatus.BAD_REQUEST.toString()))
+			if(response.getResponseCode().equals(HttpStatus.UNPROCESSABLE_ENTITY.toString()))
 				throw new DeliveryPassException(response.getMessage());
 			if(!response.getResponseCode().equals("OK"))
 				throw new RemoteException(response.getMessage());	
@@ -118,7 +109,7 @@ public class DlvPassManagerService extends AbstractEcommService{
 		}
 	}
 	
-	
+	@Override
 	public void revoke(DeliveryPassModel model) throws RemoteException {
 		Response response = null;
 		
@@ -139,9 +130,9 @@ public class DlvPassManagerService extends AbstractEcommService{
 	}
 	
 	
-	
+	@Override
 	public String modify(String purchaseOrderId, DeliveryPassModel model) throws RemoteException, DeliveryPassException {
-		Response response = null;
+		Response<String> response = null;
 		
 		Request<DeliveryPassData> request = new Request<DeliveryPassData>();
 		String inputJson;
@@ -150,7 +141,7 @@ public class DlvPassManagerService extends AbstractEcommService{
 			request.setData(data);
 			inputJson = buildRequest(request);
 			response = postData(inputJson,getFdCommerceEndPoint(MODIFY_DLV_PASS)+purchaseOrderId, Response.class);
-			if(response.getResponseCode().equals(HttpStatus.BAD_REQUEST.toString()))
+			if(response.getResponseCode().equals(HttpStatus.UNPROCESSABLE_ENTITY.toString()))
 				throw new DeliveryPassException(response.getMessage());
 			if(!response.getResponseCode().equals("OK"))
 				throw new RemoteException(response.getMessage());	
@@ -159,10 +150,10 @@ public class DlvPassManagerService extends AbstractEcommService{
 		} catch (FDResourceException e) {
 			throw new RemoteException(e.getMessage());
 		}
-		return (String) response.getData();
+		return response.getData();
 	}
 	
-	
+	@Override
 	public void cancel(DeliveryPassModel model) throws RemoteException {
 		Response response = null;
 		
@@ -183,7 +174,7 @@ public class DlvPassManagerService extends AbstractEcommService{
 	}
 	
 	
-	
+	@Override
 	public void reactivate(DeliveryPassModel model) throws RemoteException {
 		Response response = null;
 		
@@ -204,7 +195,7 @@ public class DlvPassManagerService extends AbstractEcommService{
 	}
 	
 	
-	
+	@Override
 	public void creditDelivery(DeliveryPassModel model,int delta) throws RemoteException {
 		Response response = null;
 		
@@ -225,7 +216,7 @@ public class DlvPassManagerService extends AbstractEcommService{
 	}
 	
 	
-	
+	@Override
 	public void extendExpirationPeriod(DeliveryPassModel model,int noOfdays) throws RemoteException {
 		Response response = null;
 		
@@ -245,7 +236,7 @@ public class DlvPassManagerService extends AbstractEcommService{
 		}
 	}
 	
-	
+	@Override
 	public List<DeliveryPassModel> getDeliveryPasses(String customerPk)throws RemoteException {
 		Response<List<DeliveryPassData>> response = null;
 		try {
@@ -262,7 +253,7 @@ public class DlvPassManagerService extends AbstractEcommService{
 	}
 	
 	
-	
+	@Override
 	public List<DeliveryPassModel> getDlvPassesByStatus(String customerPk, EnumDlvPassStatus status)throws RemoteException {
 		Response<List<DeliveryPassData>> response = null;
 		try {
@@ -278,10 +269,9 @@ public class DlvPassManagerService extends AbstractEcommService{
 		return ModelConverter.buildDeliveryPassModelList(response.getData());
 	}
 	
-	
+	@Override
 	public DeliveryPassModel getDeliveryPassInfo(String deliveryPassId)throws RemoteException {
 		Response<DeliveryPassData> response = null;
-		String inputJson; 
 		try {
 			response = httpGetDataTypeMap(
 					getFdCommerceEndPoint(GET_DLV_PASS_BY_ID+deliveryPassId),new TypeReference<Response<DeliveryPassData>>() {
@@ -295,7 +285,7 @@ public class DlvPassManagerService extends AbstractEcommService{
 		return ModelConverter.buildDeliveryPassModel(response.getData());
 	}
 	
-	
+	@Override
 	public List<DeliveryPassModel> getDlvPassesByOrderId(String orderId)throws RemoteException {
 		Response<List<DeliveryPassData>> response = null;
 		try {
@@ -315,7 +305,7 @@ public class DlvPassManagerService extends AbstractEcommService{
 	
 	
 	
-	
+	@Override
 	public void applyNew(DeliveryPassModel model) throws RemoteException {
 		Response response = null;
 		
@@ -335,7 +325,7 @@ public class DlvPassManagerService extends AbstractEcommService{
 		}
 	}
 	
-	
+	@Override
 	public void remove(DeliveryPassModel model) throws RemoteException {
 		Response response = null;
 		Request<DeliveryPassData> request = new Request<DeliveryPassData>();
@@ -354,7 +344,7 @@ public class DlvPassManagerService extends AbstractEcommService{
 		}
 	}
 	
-	
+	@Override
 	public Map<Comparable, Serializable> getAllStatusMap(String customerPk)
 			throws RemoteException {
 		Response<DlvPassStatusMapData> response = null;
@@ -373,7 +363,7 @@ public class DlvPassManagerService extends AbstractEcommService{
 		return data.getStatusMap();
 	}
 	
-	
+	@Override
 	public void updatePrice(DeliveryPassModel model,double newPrice) throws RemoteException {
 		Response response = null;
 		Request<DeliveryPassData> request = new Request<DeliveryPassData>();
@@ -392,7 +382,7 @@ public class DlvPassManagerService extends AbstractEcommService{
 		}
 	}
 	
-	
+	@Override
 	public void activateReadyToUsePass(DeliveryPassModel model) throws RemoteException {
 		Response response = null;
 		Request<DeliveryPassData> request = new Request<DeliveryPassData>();
@@ -411,7 +401,7 @@ public class DlvPassManagerService extends AbstractEcommService{
 		}
 	}
 	
-	
+	@Override
 	public void revoke(DeliveryPassModel appliedPass,
 			DeliveryPassModel activePass) throws RemoteException {
 		Response response = null;
@@ -436,6 +426,7 @@ public class DlvPassManagerService extends AbstractEcommService{
 		}
 	}
 	
+	@Override
 	public boolean hasPurchasedPass(String customerPK)throws RemoteException {
 		Response<Boolean> response = null;
 		try {
@@ -451,7 +442,7 @@ public class DlvPassManagerService extends AbstractEcommService{
 		return response.getData();
 	}
 	
-	
+	@Override
 	public List<DeliveryPassModel> getUsableAutoRenewPasses(String customerPK)throws RemoteException {
 		Response<List<DeliveryPassData>> response = null;
 		try {
@@ -467,7 +458,7 @@ public class DlvPassManagerService extends AbstractEcommService{
 		return ModelConverter.buildDeliveryPassModelList(response.getData());
 	}
 	
-	
+	@Override
 	public Object[] getAutoRenewalInfo() throws RemoteException {
 		Response<DlvPassAutoRenewData> response = null;
 		try {
@@ -483,7 +474,7 @@ public class DlvPassManagerService extends AbstractEcommService{
 		return response.getData().getObj();
 	}
 	
-	
+	@Override
 	public int getDaysSinceDPExpiry(String customerID)throws RemoteException {
 		Response<Integer> response = null;
 		try {
@@ -499,7 +490,7 @@ public class DlvPassManagerService extends AbstractEcommService{
 		return response.getData();
 	}
 	
-	
+	@Override
 	public int getDaysToDPExpiry(String customerID,String activeDPID)throws RemoteException {
 		Response<Integer> response = null;
 		try {
@@ -515,7 +506,7 @@ public class DlvPassManagerService extends AbstractEcommService{
 		return response.getData();
 	}
 	
-	
+	@Override
 	public List<List<String>> getPendingPasses() throws RemoteException {
 		Response<List<List<String>>> response = null;
 		try {
