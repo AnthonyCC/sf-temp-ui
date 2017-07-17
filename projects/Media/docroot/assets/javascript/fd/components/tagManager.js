@@ -536,7 +536,7 @@ var dataLayer = window.dataLayer || [];
         coStepData.delivery_type = selectedAddress.service_type;
       }
     } else if (step === 'payment') {
-      var selectedPayment = data.payments.filter(function (payment) { return payment.selected; })[0];
+    	var selectedPayment = (!data.payments) ? null : data.payments.filter(function (payment) { return payment.selected; })[0];
 
       if (!selectedPayment) { return; }
 
