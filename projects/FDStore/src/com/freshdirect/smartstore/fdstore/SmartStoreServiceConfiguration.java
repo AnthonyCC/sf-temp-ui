@@ -10,6 +10,7 @@ import javax.ejb.EJBException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.fdstore.ecomm.gateway.SmartStoreConfigurationService;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -49,7 +50,7 @@ public class SmartStoreServiceConfiguration {
 
 	public Collection<DynamicSiteFeature> loadDynamicSiteFeatures(String eStoreId) {
 		try {
-			if(FDEcommProperties.isServiceEnabled(FDEcommProperties.SmartStoreServiceConfigurationSB)){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SmartStoreServiceConfigurationSB)){
 				return SmartStoreConfigurationService.getInstance().getSiteFeatures(eStoreId);
 			}
 			else{

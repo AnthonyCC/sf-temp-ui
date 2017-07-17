@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.fdstore.ecomm.gateway.SmartStoreConfigurationService;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
@@ -91,12 +92,12 @@ final public class VariantRegistry {
 			Collection<Variant> vars;
 			sb = getServiceConfiguration();
 			Collection<Variant> variants = new ArrayList<Variant>();
-			if(FDEcommProperties.isServiceEnabled(FDEcommProperties.SmartStoreServiceConfigurationSB)){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SmartStoreServiceConfigurationSB)){
 				vars = SmartStoreConfigurationService.getInstance().getVariants(EnumSiteFeature.YMAL);
 			}else{
 				vars = sb.getVariants(EnumSiteFeature.YMAL);
 			}
-			if(FDEcommProperties.isServiceEnabled(FDEcommProperties.SmartStoreServiceConfigurationSB)){
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SmartStoreServiceConfigurationSB)){
 				for (EnumSiteFeature feature : EnumSiteFeature.getSmartStoreEnumList())
 					variants.addAll( SmartStoreConfigurationService.getInstance().getVariants(feature));
 			}else{
