@@ -79,7 +79,7 @@ public class QuickShopCarouselService extends AbstractCarouselService {
     protected TabRecommendation getTabRecommendation(HttpServletRequest request, FDUserI user, SessionInput input) {
         Variant tabVariant = getTabVariant();
         String selectedSiteFeature = getSelectedSiteFeatureAttribute(request.getSession(), tabVariant.getId());
-        String parentImpressionId = getParentImpresionIdAttribute(request.getSession(), tabVariant.getId());
+        String parentImpressionId = getParentImpressionIdAttribute(request.getSession(), tabVariant.getId());
         TabRecommendation tabs = new TabRecommendation(tabVariant, getVariants(user));
         tabs.setSelectedSiteFeature(selectedSiteFeature);
         tabs.setParentImpressionId(parentImpressionId);

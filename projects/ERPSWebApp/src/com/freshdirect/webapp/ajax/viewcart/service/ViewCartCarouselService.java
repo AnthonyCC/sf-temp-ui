@@ -82,7 +82,7 @@ public class ViewCartCarouselService extends AbstractCarouselService {
             selectedSiteFeature = getFreeProductSiteFeature();
             setSelectedSiteFeatureAttribute(request.getSession(), selectedSiteFeature);
         }
-        String parentImpressionId = getParentImpresionIdAttribute(request.getSession(), tabVariant.getId());
+        String parentImpressionId = getParentImpressionIdAttribute(request.getSession(), tabVariant.getId());
         TabRecommendation tabs = new TabRecommendation(tabVariant, getVariants(user));
         tabs.setSelectedSiteFeature(selectedSiteFeature);
         tabs.setParentImpressionId(parentImpressionId);

@@ -81,7 +81,7 @@ public class CheckoutCarouselService extends AbstractCarouselService {
             selectedSiteFeature = getDefaultSiteFeature(user);
             setSelectedSiteFeatureAttribute(request.getSession(), selectedSiteFeature);
         }
-        String parentImpressionId = getParentImpresionIdAttribute(request.getSession(), tabVariant.getId());
+        String parentImpressionId = getParentImpressionIdAttribute(request.getSession(), tabVariant.getId());
         TabRecommendation tabs = new TabRecommendation(tabVariant, getVariants(user));
         tabs.setSelectedSiteFeature(selectedSiteFeature);
         tabs.setParentImpressionId(parentImpressionId);
