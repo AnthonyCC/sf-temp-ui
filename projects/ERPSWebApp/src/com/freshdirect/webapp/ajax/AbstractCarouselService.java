@@ -243,7 +243,7 @@ public abstract class AbstractCarouselService {
 
     private void selectedFirstAvailableTab(List<RecommendationTab> tabs) {
         for (RecommendationTab tab : tabs) {
-            if (!tab.getCarouselData().getProducts().isEmpty()) {
+            if (tab.getCarouselData() != null && !tab.getCarouselData().getProducts().isEmpty()) {
                 tab.setSelected(true);
                 break;
             }
