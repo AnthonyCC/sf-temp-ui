@@ -5,7 +5,7 @@ var FreshDirect = FreshDirect || {};
   "use strict";
 
   var $=fd.libs.$;
-  var viewallPopup = Object.create(fd.modules.common.popupWidget, {
+  var viewallPopup = Object.create(fd.modules.common.overlayWidget, {
     template: {
       value: common.viewAllPopup
     },
@@ -15,26 +15,25 @@ var FreshDirect = FreshDirect || {};
         return data.data.config ? common.contentModules({config: data.data.config, data: data.data.data}) : spinner;
       }
     },
+    headerTemplate: {
+      value: function (data) {
+        var header = data.header ? data.header : 'asdf';
+        return header;
+      }
+    },
     trigger: {
       value: '[data-view-all-popup]'
     },
-    closeTrigger: {
-      value: '[data-close-viewall-popup]'
-    },
-    popupId: {
+    overlayId: {
       value: 'viewallPopup'
     },
-    popupConfig: {
+    overlayConfig: {
       value: {
-        align:false,
-        overlay:true,
-        overlayExtraClass:'white-popup-overlay',
-        hideOnOverlayClick: true,
         zIndex:460
       }
     },
-    hasClose: {
-      value: true
+    customClass: {
+      value: 'fullscreen'
     },
     openPopup:{
       value: function (e) {
@@ -55,9 +54,7 @@ var FreshDirect = FreshDirect || {};
     		});
         var $t = e && $(e.currentTarget) || $(document.body);
 
-        this.refreshBody();
-        this.popup.show($t);
-        this.popup.clicked = true;
+        this.refresh();
 
         $(window).scroll(closeTransactionalPopup);
       }
@@ -67,15 +64,15 @@ var FreshDirect = FreshDirect || {};
     },
     close: {
         value: function (e) {
-          if (this.popup) {
-            this.popup.hide(e);
+          if (this.overlay) {
+            this.overlay.close(e);
             $(window).off('scroll', closeTransactionalPopup);
           }
         }
     },
     callback:{
       value:function( data ) {
-        return this.refreshBody(data);
+        return this.refresh(data);
       }
     }
   });
@@ -89,11 +86,11 @@ var FreshDirect = FreshDirect || {};
   viewallPopup.listen();
 
   $(document).on('click', viewallPopup.trigger, function (e) {
-    viewallPopup.openPopup(e);
     e.preventDefault();
     e.stopPropagation();
+    viewallPopup.openPopup(e);
   });
-  $(document).on('click', viewallPopup.closeTrigger, viewallPopup.close.bind(viewallPopup));
+
 
   fd.modules.common.utils.register("components", "viewallPopup", viewallPopup, fd);
 }(FreshDirect));
