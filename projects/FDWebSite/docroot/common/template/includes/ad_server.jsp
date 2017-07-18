@@ -179,7 +179,13 @@
 			pages.put("/recipe_search.jsp", "recipe_search");
 			pages.put("cart_confirm_pdp.jsp", "pdpconfirm");
 
-			String pageType = "";
+  			String pageType = NVL.apply(request.getParameter("pageType"), "");
+
+  			if (request.getParameter("searchParams") != null) {
+  				pageType = "search";
+  			}
+			
+  			/* this loop does not set the pageType from query params like it looks like */
 			String uri = request.getRequestURI().toLowerCase();
 			for (Iterator ptIter = pages.entrySet().iterator(); ptIter
 					.hasNext();) {
@@ -192,6 +198,7 @@
 					break;
 				}
 			}
+			
 			if (smartSavingVariantId != null && smartSavingVariantId.length() > 0) {
 			    queryString.addParam("ssp", smartSavingVariantId);
 			}
