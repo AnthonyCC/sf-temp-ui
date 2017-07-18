@@ -31,12 +31,7 @@ public class TimedLruCache<K,V> extends LruCache<K,V> {
 	}
 
 	public synchronized void put(K key, V value) {
-		TimedEntry<K,V> entry = (TimedEntry<K,V>)this.getEntry(key);
-		if (entry!=null) {
-			entry.renewLease(this.expire);
-			
-		} else 
-			super.putEntry( new TimedEntry<K,V>(key, value, this.expire) );
+		super.putEntry( new TimedEntry<K,V>(key, value, this.expire) );
 	}
 
 	public synchronized V get(K key) {
@@ -47,9 +42,6 @@ public class TimedLruCache<K,V> extends LruCache<K,V> {
 		TimedEntry<K,V> timedEntry = (TimedEntry<K,V>)entry;
 		if ( timedEntry.isExpired() ) {
 			return this.getExpired(timedEntry);
-		}
-		else {
-			timedEntry.renewLease(this.expire);
 		}
 		return entry.value;
 	}
