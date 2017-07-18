@@ -225,6 +225,13 @@
 	#customizePopup.soShow.so-review .so-container .so-review-date-red{
 		color: #c94747;
 	}
+	#customizePopup.soShow.so-review .so-container .so-review-date-add{
+		font-weight: normal;
+		font-size: 14px;
+	}
+	#customizePopup.soShow.so-review .so-container .so-review-date-add b{
+		font-size: 20px;
+	}
 	#customizePopup.soShow.so-review.so-review-success .so-container .so-review-date-red{
 		color: #333;
 	}
