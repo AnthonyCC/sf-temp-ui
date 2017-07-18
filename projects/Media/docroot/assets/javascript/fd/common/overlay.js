@@ -77,6 +77,19 @@ var FreshDirect = FreshDirect || {};
           $overlayBody.html(bt({data: data || {}}));
           $overlayHeader.html(ht({data: data || {}}));
         }
+
+        setTimeout(function () {
+          if (fd.modules.common.Elements) {
+            fd.modules.common.Elements.decorate($overlayBody);
+          }
+          if (fd.modules.common.Select) {
+            fd.modules.common.Select.selectize($overlayBody);
+          }
+          if (fd.modules.common.Select) {
+            fd.modules.common.aria.decorate();
+          }
+        }, 10);
+
         $('#' + this.overlayId).css({display: "block", "z-index": this.overlayConfig.zIndex});
         $('#' + this.overlayId + ' .overlay-close-icon').css({"z-index": this.overlayConfig.zIndex+2});
         $('#' + this.overlayId + ' .overlay-header-helper').css({"z-index": this.overlayConfig.zIndex+1});

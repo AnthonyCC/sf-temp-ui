@@ -22,7 +22,7 @@ body.overlay-opened {
 .overlay .overlay-container {
   display: block;
   position: relative;
-  top: 120px;
+  top: 150px;
   left: 0;
   right: 0;
   margin: 0 auto;
@@ -47,7 +47,6 @@ body.overlay-opened {
 
 .overlay.fullscreen .overlay-container {
   top: 0;
-  min-height: 100%;
   width: 100%;
 }
 
@@ -73,15 +72,15 @@ body.overlay-opened {
 }
 
 .overlay.small .overlay-content {
-  padding: 40px 30px;
+  padding: 30px;
 }
 
 .overlay.medium  .overlay-content {
-  padding: 60px 40px;
+  padding: 40px;
 }
 
 .overlay.large .overlay-content {
-  padding: 60px 40px;
+  padding: 40px;
 }
 
 .overlay.fullscreen .overlay-content {
@@ -91,37 +90,33 @@ body.overlay-opened {
   max-width: 970px;
   min-width: 970px;
   position: relative;
-  top: 45px;
+  top: -25px;
 }
 
 .overlay.fullscreen .overlay-container .overlay-header-helper {
   background-color: #4fa157;
   min-height: 45px;
-  position: fixed;
-  top: 0;
+  position: relative;
+  top: -25px;
   width: 100%;
 }
 
 .overlay.fullscreen .overlay-container .overlay-header {
-  padding-top: 10px;
-  padding-top: 10px;
-  position: relative;
-  max-width: 970px;
-  margin: 0 auto;
+  display: none;
 }
 
 .overlay .overlay-close-icon {
   position: fixed;
 	top: 120px;
   left: 50%;
-	width: 25px;
-	height: 25px;
+	width: 22px;
+	height: 22px;
 	background: url(/media_stat/images/close.png) no-repeat;
   background-size: 100%;
   border: none;
 	text-indent: -9999px;
 	overflow: hidden;
-  margin-left: 200px;
+  margin-left: 205px;
 	cursor: pointer;
 }
 
@@ -134,8 +129,22 @@ body.overlay-opened {
 }
 
 .overlay.fullscreen .overlay-close-icon {
+  position: relative;
+  display: inline-block;
   top: 10px;
   margin-left: 460px;
+  filter: brightness(0) invert(1);
+}
+
+.overlay.fullscreen  .overlay-container .overlay-header-helper .fd-logo {
+  background: url(/media_stat/images/logos/fd-logo-white.svg) no-repeat;
+  display: inline-block;
+  height: 27px;
+  margin-right: 352px;
+  position: absolute;
+  right: 50%;
+  top: 10px;
+  width: 132px;
 }
 
 @media (max-width: 425px) {
@@ -205,9 +214,14 @@ body.overlay-opened {
 @media (max-width: 970px) {
   .overlay.fullscreen .overlay-container {
     margin: 0;
-    top: 45px;
     width: 100%;
     max-width: 100%;
+  }
+
+  .overlay.fullscreen .overlay-container,
+  .overlay.fullscreen .overlay-container .overlay-header-helper,
+  .overlay.fullscreen .overlay-content {
+    top: 0;
   }
 
   .overlay.fullscreen  .overlay-container .overlay-header {
