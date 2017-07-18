@@ -253,7 +253,7 @@ public abstract class AbstractCarouselService {
     private boolean isTabSelected(List<RecommendationTab> tabs) {
         boolean selected = false;
         for (RecommendationTab tab : tabs) {
-            if (tab.isSelected() && !tab.getCarouselData().getProducts().isEmpty()) {
+            if (tab.isSelected() && tab.getCarouselData() != null && !tab.getCarouselData().getProducts().isEmpty()) {
                 selected = true;
                 break;
             }
