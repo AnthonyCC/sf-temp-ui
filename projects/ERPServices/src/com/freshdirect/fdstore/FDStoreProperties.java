@@ -533,6 +533,9 @@ public class FDStoreProperties {
 
     // APPDEV-6030 Google Tag Manager
     private static final String PROP_GOOGLE_TAG_MANAGER_KEY = "fdstore.google.tagmanager.key";
+    // APPDEV-6285 support multiple environments in GTM
+    private static final String PROP_GOOGLE_TAG_MANAGER_AUTH_TOKEN = "fdstore.google.tagmanager.authtoken";
+    private static final String PROP_GOOGLE_TAG_MANAGER_PREVIEW_ID = "fdstore.google.tagmanager.previewid";
 
     // APPDEV-2062 CS Hours.
     private static final String CUST_SERV_HOURS_DAYS = "fdstore.cust_serv_days";
@@ -1413,6 +1416,9 @@ public class FDStoreProperties {
 
         // APPDEV-6030 Google Tag Manager
         defaults.put(PROP_GOOGLE_TAG_MANAGER_KEY, "GTM-KFMTML");
+        // APPDEV-6285 support multiple environments in GTM
+        defaults.put(PROP_GOOGLE_TAG_MANAGER_AUTH_TOKEN, "");
+        defaults.put(PROP_GOOGLE_TAG_MANAGER_PREVIEW_ID, "");
 
         // APPDEV-2072 google analytics key
         defaults.put(PROP_GOOGLE_ANALYTICS_KEY, "UA-20535945-18"); // default to an empty string
@@ -3367,6 +3373,15 @@ public class FDStoreProperties {
     // APPDEV-6030 Google Tag Manager
     public static String getGoogleTagManagerKey() {
         return get(PROP_GOOGLE_TAG_MANAGER_KEY);
+    }
+
+    // APPDEV-6285 support multiple environments in GTM
+    public static String getGoogleTagManagerAuthToken() {
+        return get(PROP_GOOGLE_TAG_MANAGER_AUTH_TOKEN);
+    }
+
+    public static String getGoogleTagManagerPreviewId() {
+        return get(PROP_GOOGLE_TAG_MANAGER_PREVIEW_ID);
     }
 
     // APPDEV-2072 google analytics key

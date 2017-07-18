@@ -2,6 +2,8 @@
 
 var FreshDirect = window.FreshDirect || {};
 var GTMID = window.FreshDirect && window.FreshDirect.gtm && window.FreshDirect.gtm.key;
+var GTMAUTH = window.FreshDirect && window.FreshDirect.gtm && window.FreshDirect.gtm.auth;
+var GTMPREVIEW = window.FreshDirect && window.FreshDirect.gtm && window.FreshDirect.gtm.preview;
 var dataLayer = window.dataLayer || [];
 
 // data processors to transform incoming data and put it into the dataLayer
@@ -602,7 +604,7 @@ var dataLayer = window.dataLayer || [];
         dl=l!=='dataLayer'?'&l='+l:'';
 
     j.async=true;
-    j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+    j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl+(GTMAUTH ? '&gtm_auth='+GTMAUTH : '')+(GTMPREVIEW ? '&gtm_preview='+GTMPREVIEW+'&gtm_cookies_win=x' : '');
     f.parentNode.insertBefore(j,f);
   };
 
