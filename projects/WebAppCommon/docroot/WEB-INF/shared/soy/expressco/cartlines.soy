@@ -456,7 +456,10 @@
 {template .productSampleCarouselWrapper}
   {foreach $recommendationTab in $recommendationTabs}
     <div fd-toggle="product-sample-carousel" fd-toggle-state="{if $recommendationTab.productSamplesReacedMaximumItemQuantity}disabled{else}enabled{/if}">
-      {call expressco.productSampleCarousel data="$recommendationTab" /}
+      {call expressco.productSampleCarousel}
+        {param title: $recommendationTab.description /}
+        {param carouselData: $recommendationTab.carouselData /}
+      {/call}
     </div>
   {/foreach}
 {/template}
@@ -467,7 +470,10 @@
 {template .donationProductSampleCarouselWrapper}
   {foreach $recommendationTab in $recommendationTabs}
     <div fd-toggle="product-sample-carousel" fd-toggle-state="{if $recommendationTab.productSamplesReacedMaximumItemQuantity}disabled{else}enabled{/if}">
-      {call expressco.donationProductSampleCarousel data="$recommendationTab" /}
+      {call expressco.donationProductSampleCarousel}
+        {param title: $recommendationTab.description /}
+        {param carouselData: $recommendationTab.carouselData /}
+      {/call}
     </div>
   {/foreach}
 {/template}
