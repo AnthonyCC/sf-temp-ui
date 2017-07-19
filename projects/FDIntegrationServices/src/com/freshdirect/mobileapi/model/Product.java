@@ -43,6 +43,7 @@ import com.freshdirect.content.nutrition.panel.NutritionPanel;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.erp.ErpFactory;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDConfiguration;
@@ -97,6 +98,7 @@ import com.freshdirect.mobileapi.model.tagwrapper.GetDlvRestrictionsTagWrapper;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ProductUtil;
 import com.freshdirect.smartstore.Variant;
+import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.ProductExtraDataPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
@@ -1708,8 +1710,9 @@ public class Product {
 	               	
 	                result.setProductExtraData(data);	
 	               	ProductData productData=new ProductData();
-	               	ProductDetailPopulator.populateAvailabilityMessagesForMobile(productData, productModel, null, productModel.getDefaultSku());
-	               	result.setProductData(productData);
+	               	productData = ProductDetailPopulator.createProductData(user, productModel, true);
+	                ProductDetailPopulator.populateAvailabilityMessagesForMobile(productData, productModel, null, productModel.getDefaultSku());
+	                result.setProductData(productData);
 				} catch (FDResourceException e) {
 				
 					e.printStackTrace();
@@ -1719,7 +1722,10 @@ public class Product {
 				} /*catch (HttpErrorResponse e) {
 				
 					e.printStackTrace();
-				}*/
+				}*/ catch (HttpErrorResponse e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 	        }
         }
         return result;
