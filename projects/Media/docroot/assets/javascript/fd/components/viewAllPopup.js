@@ -12,12 +12,17 @@ var FreshDirect = FreshDirect || {};
     bodyTemplate: {
       value: function (data) {
         var spinner = '<div class="spinner"></div>';
+
+        if (data.data.config) {
+          data.data.config[0].dontFocusForm = true;
+        }
+
         return data.data.config ? common.contentModules({config: data.data.config, data: data.data.data}) : spinner;
       }
     },
     headerTemplate: {
       value: function (data) {
-        var header = data.header ? data.header : 'asdf';
+        var header = data.header ? data.header : '';
         return header;
       }
     },

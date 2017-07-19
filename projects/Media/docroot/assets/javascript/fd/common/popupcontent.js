@@ -270,7 +270,7 @@ var FreshDirect = FreshDirect || {};
     }
 
     // focus first element
-    if ($el.find('form').size() > 0) {
+    if ($($el[0]).find('li')[0].getAttribute('data-dontfocusform') != 'true' && $el.find('form').size() > 0) {
       $el = $el.find('form').first();
     }
 
