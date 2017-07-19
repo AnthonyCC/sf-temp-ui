@@ -81,6 +81,7 @@ public class FDEcommProperties {
 	public static final String EwalletNotifyStatusSB = "ewallet.ejb.EwalletNotifyStatusSB";
 	public static final String DlvPassManagerSB = "deliverypass.ejb.DlvPassManagerSB";
 	public static final String SmartStoreServiceConfigurationSB = "smartstore.ejb.SmartStoreServiceConfigurationSB";
+	public static final String PaymentGatewaySB ="payment.ejb.PaymentGatewaySB";
  
   
     
@@ -132,6 +133,7 @@ public class FDEcommProperties {
         defaults.put(ErpComplaintManagerSB,FALSE);
         defaults.put(DlvPassManagerSB, FALSE);
         defaults.put(SmartStoreServiceConfigurationSB, FALSE);
+        defaults.put(PaymentGatewaySB, FALSE);
         defaults.put(EwalletNotifyStatusSB, FALSE);
 
         refresh();
