@@ -8663,11 +8663,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public static String INSERT_SILVER_POPUP = "insert into CUST.CUSTOMER_PUSHNOTIFICATION(CUSTOMER_ID,QUALIFIER,DESTINATION,CREATE_TIMESTAMP,UPDATE_TIMESTAMP,SEND_TIMESTAMP) values "
 			+ "(?,?,?,trunc(sysdate),trunc(sysdate),null)";
 	
-	public void insertSilverPopupDetails(SilverPopupDetails silverPopup)  throws FDResourceException {
-		Connection conn = null;
+	public void insertSilverPopupDetails(SilverPopupDetails silverPopup, Connection conn)  throws FDResourceException {
 		PreparedStatement pstmt = null;		
 		try {
-			conn = getConnection();
 			pstmt = conn.prepareStatement(INSERT_SILVER_POPUP);
 			pstmt.setString(1, silverPopup.getCustomerId());
 			pstmt.setString(2, silverPopup.getQualifier());
@@ -8677,17 +8675,15 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
-			close(conn);
+			close(pstmt);
 		}
 	}	
 	
 	public static String UPDATE_SILVER_POPUP = "update CUST.CUSTOMER_PUSHNOTIFICATION set QUALIFIER =?,DESTINATION =?,UPDATE_TIMESTAMP=trunc(sysdate) where customer_id=?";
 	
-	public void updateSilverPopupDetails(SilverPopupDetails silverPopup)  throws FDResourceException {
-		Connection conn = null;
+	public void updateSilverPopupDetails(SilverPopupDetails silverPopup, Connection conn)  throws FDResourceException {
 		PreparedStatement pstmt = null;		
 		try {
-			conn = getConnection();
 			pstmt = conn.prepareStatement(UPDATE_SILVER_POPUP);
 			pstmt.setString(1, silverPopup.getQualifier());
 			pstmt.setString(2, silverPopup.getDestination());
@@ -8698,7 +8694,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			LOGGER.info("updateSilverPopupDetails IN PROCESS FAILED... "+silverPopup.getCustomerId());
 			throw new FDResourceException(sqle, "Unable to store FDUser");
 		} finally {
-			close(conn);
+			close(pstmt);
 		}
 	}		
 
@@ -8727,28 +8723,17 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					}
 				}
 				if (isCustomerHasSP) {
-					updateSilverPopupDetails(silverPopup);
+					updateSilverPopupDetails(silverPopup, conn);
 				} else {
-					insertSilverPopupDetails(silverPopup);
+					insertSilverPopupDetails(silverPopup, conn);
 				}
 			} catch (SQLException exc) {
 				LOGGER.info("insertOrUpdateSilverPopup IN PROCESS FAILED... " + silverPopup.getCustomerId());
 				throw new FDResourceException(exc, "Unable to store SilverPopup details");
 			} finally {
-				if (rs != null) {
-					try {
-						rs.close();
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
-				}
-				if (ps != null) {
-					try {
-						ps.close();
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
-				}
+				close(rs);
+				close(ps);
+				close(conn);
 			}
 		}
 		return true;
