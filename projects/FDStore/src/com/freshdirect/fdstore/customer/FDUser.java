@@ -50,8 +50,10 @@ import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
+import com.freshdirect.customer.ErpOrderHistory;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
+import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.DlvPassConstants;
@@ -743,6 +745,25 @@ public class FDUser extends ModelSupport implements FDUserI {
     }
 
     @Override
+    public OrderHistoryI getOrderHistoryByEStoreId(EnumEStoreId eStoreid) throws FDResourceException {
+        OrderHistoryI orderHistory = getOrderHistory();
+
+        if (orderHistory instanceof ErpOrderHistory) {
+            List<ErpSaleInfo> erpSaleInfos = (List<ErpSaleInfo>) ((ErpOrderHistory) orderHistory).getErpSaleInfos();
+            
+            for (Iterator<ErpSaleInfo> iter = erpSaleInfos.iterator(); iter.hasNext();) {
+               ErpSaleInfo erpSaleInfo = iter.next();
+               
+                if (!erpSaleInfo.equals(eStoreid) && !erpSaleInfo.getSaleType().equals(EnumSaleType.REGULAR)) {
+                    iter.remove();
+               }
+            }
+        }
+
+        return orderHistory;
+    }
+
+    @Override
     public Date getFirstOrderDate() throws FDResourceException {
         if (null == firstOrderDate) {
             OrderHistoryI orderHistory = this.getOrderHistory();
@@ -885,6 +906,19 @@ public class FDUser extends ModelSupport implements FDUserI {
     @Override
     public int getAdjustedValidOrderCount(EnumEStoreId storeId) throws FDResourceException {
         int orderCount = this.getOrderHistory().getValidOrderCount(storeId);
+        if (this.getShoppingCart() instanceof FDModifyCartModel) {
+            // we're in modify order mode, subtract one
+            orderCount--;
+        }
+        return orderCount;
+    }
+
+    /**
+     * @return number of valid orders by delivery type
+     */
+    @Override
+    public int getAdjustedValidOrderCount(EnumDeliveryType deliveryType) throws FDResourceException {
+        int orderCount = this.getOrderHistory().getValidOrderCount(deliveryType);
         if (this.getShoppingCart() instanceof FDModifyCartModel) {
             // we're in modify order mode, subtract one
             orderCount--;

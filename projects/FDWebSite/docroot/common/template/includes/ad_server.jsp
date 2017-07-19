@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.fdstore.EnumEStoreId"%>
 <%@ page import='com.freshdirect.framework.util.NVL'
 %><%@ page import='org.apache.commons.lang.StringUtils'
 %><%@ page import='java.util.*'
@@ -32,6 +33,7 @@
 %><%@ page import='com.freshdirect.webapp.util.JspMethods'
 %><%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"
 %><%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"
+%><%@ page import='com.freshdirect.fdstore.orderhistory.OrderHistoryService'
 %><%@ taglib prefix="fd" uri="freshdirect"
 %><%!
 
@@ -103,6 +105,24 @@
 			String orderZone = user.getOrderHistory()
 					.getLastOrderZone();
 			String lastOrderZone = orderZone != null ? orderZone : "";
+			
+		
+			Date fdDlvDate = OrderHistoryService.defaultService().getLastOrderDateByDeliveryTypeForCollectedFD(user.getOrderHistoryByEStoreId(EnumEStoreId.FD));
+			String fdLastOrderDate = (fdDlvDate != null) ? fdDlvDate.toString() : "";
+			String fdOrderZone = OrderHistoryService.defaultService().getLastOrderDeliveryZoneByDeliveryTypeForCollectedFD(user.getOrderHistoryByEStoreId(EnumEStoreId.FD));
+			String fdLastOrderZone = fdOrderZone != null ? fdOrderZone : "";
+			
+			
+			Date fkDlvDate = OrderHistoryService.defaultService().getLastOrderDateByDeliveryType(user.getOrderHistoryByEStoreId(EnumEStoreId.FDX), EnumDeliveryType.FDX);
+			String fkLastOrderDate = (fkDlvDate != null) ? fkDlvDate.toString() : "";
+			String fkOrderZone = OrderHistoryService.defaultService().getLastOrderDeliveryZoneByDeliveryType(user.getOrderHistoryByEStoreId(EnumEStoreId.FDX),EnumDeliveryType.FDX);
+			String fkLastOrderZone = fkOrderZone != null ? fkOrderZone : "";
+			
+			Date cosDlvDate = OrderHistoryService.defaultService().getLastOrderDateByDeliveryType(user.getOrderHistoryByEStoreId(EnumEStoreId.FD), EnumDeliveryType.CORPORATE);
+			String cosLastOrderDate = (cosDlvDate != null) ? cosDlvDate.toString() : "";
+			String cosOrderZone = OrderHistoryService.defaultService().getLastOrderDeliveryZoneByDeliveryType(user.getOrderHistoryByEStoreId(EnumEStoreId.FD),EnumDeliveryType.CORPORATE);
+			String cosLastOrderZone = cosOrderZone != null ? cosOrderZone : "";
+			
 
 			// Set of String (product department Ids, "rec" for recipe items)
 			Set cartDeptIds = new HashSet();
@@ -212,10 +232,13 @@
 					.addParam("type", type)
 					.addParam("depot", depotAffil)
 					.addParam("nod", lastOrderDate)
-					.addParam(sessionUser.isCorporateUser() ? "cosnod" : "fdnod", lastOrderDate)
+					.addParam("fdnod",fdLastOrderDate)
+					.addParam("cosnod", cosLastOrderDate)
+					.addParam("fknod",fkLastOrderDate)
 					.addParam("do", user.getAdjustedValidOrderCount())
-					.addParam(sessionUser.isCorporateUser() ? "cosdo" : "fddo",
-							user.getAdjustedValidOrderCount())
+					.addParam("fddo",user.getAdjustedValidOrderCount(EnumEStoreId.FD) - user.getAdjustedValidOrderCount(EnumDeliveryType.CORPORATE))
+					.addParam("cosdo", user.getAdjustedValidOrderCount(EnumDeliveryType.CORPORATE))
+					.addParam("fkdo",user.getAdjustedValidOrderCount(EnumEStoreId.FDX))
 					.addParam("win", 2);
 
 			if (cartDeptIds.size() > 0) {
@@ -240,14 +263,13 @@
 
 			queryString.addParam("lu", cclExperienceLevel(user))
 				.addParam("pt", pageType).addParam("id", pageId)
-				.addParam("brand", brand).addParam("lotype",
-					lastOrderType).addParam(sessionUser.isCorporateUser() ? "coslozn" : "fdlozn",
-					lastOrderZone).addParam("lozn",
-					lastOrderZone).addParam("ecp",
-					user.isCheckEligible() ? 1 : 0).addParam(
-					"ecpoc",
-					user.getOrderHistory()
-							.getValidECheckOrderCount())
+				.addParam("brand", brand).addParam("lotype",lastOrderType)
+					.addParam("lozn",lastOrderZone)
+					.addParam("fdlozn",fdLastOrderZone)
+					.addParam("coslozn", cosLastOrderZone)
+					.addParam("fklozn",fkLastOrderZone)
+					.addParam("ecp",user.isCheckEligible() ? 1 : 0)
+					.addParam("ecpoc",user.getOrderHistory().getValidECheckOrderCount())
 				.addParam("county",
 					NVL.apply(user.getDefaultCounty(), ""))
 				.addParam("ref_prog_id",

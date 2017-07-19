@@ -647,6 +647,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     }
 
     @Override
+    public OrderHistoryI getOrderHistoryByEStoreId(EnumEStoreId eStoreid) throws FDResourceException {
+        return this.user.getOrderHistoryByEStoreId(eStoreid);
+    }
+
+    @Override
     public CustomerAvgOrderSize getHistoricOrderSize() throws FDResourceException {
         return this.user.getHistoricOrderSize();
     }
@@ -659,6 +664,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     @Override
     public int getAdjustedValidOrderCount(EnumEStoreId storeId) throws FDResourceException {
         return this.user.getAdjustedValidOrderCount(storeId);
+    }
+
+    @Override
+    public int getAdjustedValidOrderCount(EnumDeliveryType deliveryType) throws FDResourceException {
+        return this.user.getAdjustedValidOrderCount(deliveryType);
     }
 
     @Override
