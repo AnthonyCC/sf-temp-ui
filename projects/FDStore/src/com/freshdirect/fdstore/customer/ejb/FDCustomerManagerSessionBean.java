@@ -8716,17 +8716,17 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 				while (rs.next()) {
 
-					if (Integer.valueOf(rs.getString("SP_COUNT")) > 0) {
+					if (Integer.valueOf(rs.getString("SP_COUNT")) == 0) {
 						LOGGER.debug("got the Count as SP_COUNT > 0, going into updateSilverPopupDetails");
 						isCustomerHasSP = true;
 						break;
 					}
 				}
 				if (isCustomerHasSP) {
-					updateSilverPopupDetails(silverPopup, conn);
-				} else {
 					insertSilverPopupDetails(silverPopup, conn);
-				}
+				} else {
+					updateSilverPopupDetails(silverPopup, conn);
+					}
 			} catch (SQLException exc) {
 				LOGGER.info("insertOrUpdateSilverPopup IN PROCESS FAILED... " + silverPopup.getCustomerId());
 				throw new FDResourceException(exc, "Unable to store SilverPopup details");
