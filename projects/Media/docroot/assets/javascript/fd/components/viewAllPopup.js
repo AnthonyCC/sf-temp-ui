@@ -32,6 +32,12 @@ var FreshDirect = FreshDirect || {};
     overlayId: {
       value: 'viewallPopup'
     },
+    ariaDescribedby:{
+      value:'vieaw-all'
+    },
+    ariaLabelledby:{
+      value:''
+    },
     overlayConfig: {
       value: {
         zIndex:460

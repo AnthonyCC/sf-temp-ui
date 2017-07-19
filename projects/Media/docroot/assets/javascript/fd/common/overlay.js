@@ -26,6 +26,12 @@ var FreshDirect = FreshDirect || {};
     overlayId:{
       value:''
     },
+    ariaDescribedby:{
+      value:''
+    },
+    ariaLabelledby:{
+      value:''
+    },
     customClass: {
       value: ''
     },
@@ -41,10 +47,6 @@ var FreshDirect = FreshDirect || {};
     placeholder:{
       value:'body'
     },
-    // overlayConfig:{
-    //   value:{},
-    //   writable:true
-    // },
     close: {
       value: function (e) {
         if (e && e.stopPropagation) {
@@ -71,7 +73,9 @@ var FreshDirect = FreshDirect || {};
             hasClose: this.hasClose,
             customClass: this.customClass,
             bodyContent: bt({data: data || {}}),
-            headerContent: ht({data: data || {}})
+            headerContent: ht({data: data || {}}),
+            ariaLabelledby: this.ariaLabelledby,
+            ariaDescribedby: this.ariaDescribedby
           }));
         } else {
           $overlayBody.html(bt({data: data || {}}));

@@ -27,6 +27,12 @@ var FreshDirect = FreshDirect || {};
     overlayId: {
       value: 'zipCheckPopup'
     },
+    ariaDescribedby:{
+      value:'zipcheck'
+    },
+    ariaLabelledby:{
+      value:''
+    },
     overlayConfig: {
       value: {
         zIndex:460
