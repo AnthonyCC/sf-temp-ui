@@ -34,6 +34,7 @@ import com.freshdirect.smartstore.impl.FavoritesRecommendationService;
 import com.freshdirect.smartstore.impl.FeaturedItemsRecommendationService;
 import com.freshdirect.smartstore.impl.ManualOverrideRecommendationService;
 import com.freshdirect.smartstore.impl.NullRecommendationService;
+import com.freshdirect.smartstore.impl.ProductDonationRecommendationService;
 import com.freshdirect.smartstore.impl.ProductSampleRecommendationService;
 import com.freshdirect.smartstore.impl.ScriptedRecommendationService;
 import com.freshdirect.smartstore.impl.SmartSavingRecommendationService;
@@ -322,7 +323,7 @@ public class RecommendationServiceFactory {
         } else if (RecommendationServiceType.PRODUCT_SAMPLE.equals(serviceType)) {
             service = new ProductSampleRecommendationService(variant, sampler, includeCartItems);
         } else if (RecommendationServiceType.PRODUCT_DONATION.equals(serviceType)) {
-            service = new ProductSampleRecommendationService(variant, sampler, includeCartItems);
+            service = new ProductDonationRecommendationService(variant, sampler, includeCartItems);
         } else {
 			service = new NullRecommendationService(variant);
 		}

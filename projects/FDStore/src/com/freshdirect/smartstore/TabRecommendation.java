@@ -11,8 +11,9 @@ public class TabRecommendation {
     private String parentImpressionId;
     private String[] featureImpId;
     private int selected;
-    private boolean error;
     private String selectedSiteFeature;
+    private boolean onlyTabHeader;
+    private boolean error;
 
     public TabRecommendation(Variant tabVariant, List<Variant> variants) {
         this.tabVariant = tabVariant;
@@ -71,14 +72,6 @@ public class TabRecommendation {
         return selected;
     }
 
-    public boolean isError() {
-        return error;
-    }
-
-    public void setError(boolean error) {
-        this.error = error;
-    }
-
     public int getTabIndex(String tabId) {
         for (int i = 0; i <variants.size(); i++) {
             Variant v = variants.get(i);
@@ -104,6 +97,22 @@ public class TabRecommendation {
 
     public void setSelectedSiteFeature(String selectedSiteFeature) {
         this.selectedSiteFeature = selectedSiteFeature;
+    }
+
+    public boolean isOnlyTabHeader() {
+        return onlyTabHeader;
+    }
+
+    public void setOnlyTabHeader(boolean onlyTabHeader) {
+        this.onlyTabHeader = onlyTabHeader;
+    }
+
+    public boolean isError() {
+        return error;
+    }
+
+    public void setError(boolean error) {
+        this.error = error;
     }
 
 }

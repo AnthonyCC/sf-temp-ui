@@ -20,7 +20,7 @@ public class GACustomerDataService {
 
         GACustomerData customer = new GACustomerData();
         customer.setZipCode(user.getZipCode());
-        customer.setUserId(user.getUserId());
+        customer.setUserId(user.getIdentity() != null ? user.getIdentity().getFDCustomerPK() : null);
         customer.setUserStatus(getUserLevel(user.getLevel()));
         customer.setUserType(getUserType(user.getAdjustedValidOrderCount()));
         customer.setLoginType(loginType);

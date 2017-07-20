@@ -225,6 +225,16 @@
 	#customizePopup.soShow.so-review .so-container .so-review-date-red{
 		color: #c94747;
 	}
+	#customizePopup.soShow.so-review .so-container .so-review-date-add{
+		font-weight: normal;
+		font-size: 14px;
+	}
+	#customizePopup.soShow.so-review .so-container .so-review-date-add b{
+		font-size: 20px;
+	}
+	#customizePopup.soShow.so-review.so-review-success .so-container .so-review-date-red{
+		color: #333;
+	}
 	#customizePopup.soShow.so-review .so-container .so-review-date img{
 		padding: 48px 0 15px;
 	    display: block;
@@ -419,7 +429,8 @@
 		margin-top: 10px;
 	}
 	.portrait-item-so-recurring {
-		font-size: 10px;
+		font-size: 12px;
+		text-align: center;
 	}
 	#evenBetterPopup.shown .pdp-evenbetter-atc{
 		width: 235px;

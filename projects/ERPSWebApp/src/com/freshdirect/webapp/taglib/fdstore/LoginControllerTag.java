@@ -8,6 +8,7 @@
  */
 package com.freshdirect.webapp.taglib.fdstore;
 
+import java.net.URLEncoder;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -104,7 +105,7 @@ public class LoginControllerTag extends AbstractControllerTag {
 		    	}
 		    }
         }
-	    
+        
 	    /* merging social account code ends here */
 		String newURL = request.getScheme() + "://" + request.getServerName();
 		if(FDStoreProperties.isLocalDeployment()){
@@ -121,7 +122,8 @@ public class LoginControllerTag extends AbstractControllerTag {
 //					 session.removeAttribute(SessionName.PREV_SUCCESS_PAGE);
 //					 this.setSuccessPage(newURL + "/social/success.jsp?successPage="+preSuccessPage.substring(1, preSuccessPage.length()), true);
 //				 } else {
-					 this.setSuccessPage(newURL + "/social/success.jsp?successPage="+updatedSuccessPage.substring(1, updatedSuccessPage.length()), true);
+	    			/* the start slash is prefixed in the success.jsp */
+					 this.setSuccessPage(newURL + "/social/success.jsp?successPage="+URLEncoder.encode(updatedSuccessPage.substring(1, updatedSuccessPage.length())), true);
 //				 }					 	    		
 	    	} else {
 	    		this.setSuccessPage(updatedSuccessPage);

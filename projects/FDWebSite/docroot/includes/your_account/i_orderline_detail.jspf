@@ -25,7 +25,7 @@ if (lastDept==null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc())) 
 				%>
 				<tr>
 					<td colspan="3">&nbsp;</td>
-					<td colspan="8" class="text11orbold"><br>Recipes</td>
+					<td colspan="8" class="text11bold"><br>Recipes</td>
 				</tr>
 				<%
 			}
@@ -40,7 +40,7 @@ if (lastDept==null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc())) 
 			%>
 			<tr>
 				<td colspan="3">&nbsp;</td>
-				<td colspan="8" class="text11orbold"><br><%=lastDept%></td>
+				<td colspan="8" class="text11bold"><br><%=lastDept%></td>
 			</tr>
 			<%
 		}
@@ -68,9 +68,9 @@ if (lastDept==null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc())) 
 	<td><%=quantityDlv.toString()%><%=" "+cartLine.getUnitsOfMeasure()%><%=cartLine.getLabel()%></td>
 	<td><%=(cart.hasSettledReturn() && cartLine.hasReturnLine())? "<span class=\"red\">"+cartLine.getReturnedQuantity()+"</span>":""%><%=cartLine.hasRestockingFee()?"**":""%></td>
 	
-	<td align="left"><div style="margin-left:8px; text-indent:-7px;"><font class="text10bold"><%= cartLine.getDescription() %></font>
+	<td align="left"><div style="margin-left:8px; text-indent:-7px;"><font class="text10"><%= cartLine.getDescription() %></font>
 		<% if (cartLine.getConfigurationDesc()!=null && !"".equals(cartLine.getConfigurationDesc().trim())) { %>(<%= cartLine.getConfigurationDesc() %>)<% } %>
-		<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= discountMsg %></span><% } %><% if ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= groupDiscountMsg %></span><% } %></div><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>
+		<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10"><%= discountMsg %></span><% } %><% if ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10"><%= groupDiscountMsg %></span><% } %></div><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>
 		<display:FDCoupon coupon="<%= user.getCustomerCoupon(cartLine, EnumCouponContext.VIEWORDER) %>" contClass="fdCoupon_cartlineViewOrder" pastTense="true"></display:FDCoupon>
 	</td>
 	<td><%if(cartLine.hasInvoiceLine() && cartLine.isPricedByLb()){%><%=invoiceLine.getWeight()%>&nbsp;lb <%}%></td>
@@ -85,16 +85,16 @@ if (lastDept==null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc())) 
      <% } else { %>
         <td><%=cartLine.getUnitPrice()%></td>
         <td><%= ((cartLine.hasInvoiceLine() && invoiceLine.getCustomizationPrice()>0) ? currencyFormatter.format(invoiceLine.getCustomizationPrice()) : "&nbsp;") %></td>
-        <td align="right" class="text10bold"><%= (cartLine.hasInvoiceLine()) ? currencyFormatter.format(invoiceLine.getPrice()) : currencyFormatter.format(cartLine.getPrice()) %></td>
+        <td align="right" class="text10"><%= (cartLine.hasInvoiceLine()) ? currencyFormatter.format(invoiceLine.getPrice()) : currencyFormatter.format(cartLine.getPrice()) %></td>
     <% } %>     
-	<td class="text10bold"><%
+	<td class="text10"><%
 		if (cartLine.isEstimatedPrice()) {
 			if (!cartLine.hasInvoiceLine()) {
 	        	out.print("*");
 			}
 		 }%><%=(cartLine.hasTax() ? "<b>T</b>" : "")%></td>
-	<td class="text10bold"><%= cartLine.hasScaledPricing() || ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) ? "S" : "" %></td>
-	<td class="text10bold"><%= cartLine.hasDepositValue() ? "D" : "" %></td>
+	<td class="text10"><%= cartLine.hasScaledPricing() || ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) ? "S" : "" %></td>
+	<td class="text10"><%= cartLine.hasDepositValue() ? "D" : "" %></td>
 </tr>
 <%
 if (user.isEligibleForClientCodes() && cartLine.getClientCodes().size() > 0) {
@@ -125,14 +125,14 @@ if (cart.hasInvoice()) {
 %>
 	<tr>
 		<td colspan="3">&nbsp;</td>
-		<td colspan="8" class="text11orbold"><br>Special Promotions</td>
+		<td colspan="8" class="text11bold"><br>Special Promotions</td>
 	</tr>
 	<logic:iterate id="cartLine" collection="<%= deliveredSamples %>" type="com.freshdirect.fdstore.customer.FDCartLineI">
 		<tr valign="top" align="center">
 			<td align="right" colspan="3"><%=cartLine.getDisplayQuantity()%></td>
-			<td class="text10bold"><%= cartLine.getDescription() %></td>
+			<td class="text10"><%= cartLine.getDescription() %></td>
 			<td colspan="3">&nbsp;</td>
-			<td align="right" class="text10bold">FREE!</td>
+			<td align="right" class="text10">FREE!</td>
 			<td colspan="3">&nbsp;</td>
 		</tr>
 	</logic:iterate>

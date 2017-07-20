@@ -72,17 +72,10 @@ public class ModuleContentService {
         List<ProductData> products = new ArrayList<ProductData>();
         final CmsFilteringFlowResult result = CmsFilteringFlow.getInstance().doFlow(nav, (FDSessionUser) user);
 
-        List<SectionData> sections = result.getBrowseDataPrototype().getSections().getSections();
-        for (SectionData sectionData : sections) {
-            if (sectionData.getProducts() == null) {
-                List<SectionData> categories = sectionData.getSections();
-                for (SectionData categorySections : categories) {
-                    products.addAll(categorySections.getProducts());
-                }
-            } else {
-                products.addAll(sectionData.getProducts());
-            }
-        }
+        SectionDataCointainer sectionDataContainer = result.getBrowseDataPrototype().getSections();
+        List<SectionData> sections = sectionDataContainer.getSections();
+        
+        loadProductsFromSections(sectionDataContainer,sections,0,products);
 
         return products;
     }
@@ -158,28 +151,7 @@ public class ModuleContentService {
         }
 
         List<SectionData> sections = sectionDataContainer.getSections();
-
-        // Filter Unav products for view all modules
-        for (int i = 0; i < sections.size(); i++) {
-            if (sections.get(i).getProducts() == null) {
-                List<SectionData> categories = sections.get(i).getSections();
-                for (int j = 0; j < categories.size(); j++) {
-                    for (Iterator<ProductData> iter = sections.get(i).getSections().get(j).getProducts().iterator(); iter.hasNext();) {
-                        ProductData productData = iter.next();
-                        if (!productData.isAvailable() || productData.isDiscontinued()) {
-                            iter.remove();
-                        }
-                    }
-                }
-            } else {
-                for (Iterator<ProductData> iter = sections.get(i).getProducts().iterator(); iter.hasNext();) {
-                    ProductData productData = iter.next();
-                    if (!productData.isAvailable() || productData.isDiscontinued()) {
-                        iter.remove();
-                    }
-                }
-            }
-        }
+        removeBrowseSectionDataContainerUnavailableProducts(sectionDataContainer, sections, 0);
 
         return sectionDataContainer;
     }
@@ -189,7 +161,12 @@ public class ModuleContentService {
         List<ProductData> availableProducts = new ArrayList<ProductData>();
 
         CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNode(categoryId);
-        boolean isForbidden = NavigationUtil.isCategoryForbiddenInContext(user, category);
+
+        boolean isForbidden = true;
+
+        if (category != null) {
+            isForbidden = NavigationUtil.isCategoryForbiddenInContext(user, category);
+        }
 
         if (!isForbidden) {
             CmsFilteringNavigator nav = new CmsFilteringNavigator();
@@ -456,5 +433,36 @@ public class ModuleContentService {
         }
 
         return filteredProductModels;
+    }
+
+    private void loadProductsFromSections(SectionDataCointainer sectionDataContainer, List<SectionData> sections, int level, List<ProductData> products) {
+        if (sections != null && sectionDataContainer.getSectionMaxLevel() > level) {
+            for (SectionData section : sections) {
+                if (section.getProducts() != null) {
+                    products.addAll(section.getProducts());
+
+                } else {
+                    loadProductsFromSections(sectionDataContainer, section.getSections(), level + 1, products);
+                }
+            }
+        }
+    }
+
+    private void removeBrowseSectionDataContainerUnavailableProducts(SectionDataCointainer sectionDataContainer, List<SectionData> sections, int level) {
+
+        if (sections != null && sectionDataContainer.getSectionMaxLevel() > level) {
+            for (SectionData section : sections) {
+                if (section.getProducts() != null) {
+                    for (Iterator<ProductData> iter = section.getProducts().iterator(); iter.hasNext();) {
+                        ProductData productData = iter.next();
+                        if (!productData.isAvailable() || productData.isDiscontinued()) {
+                            iter.remove();
+                        }
+                    }
+                } else {
+                    removeBrowseSectionDataContainerUnavailableProducts(sectionDataContainer, section.getSections(), level + 1);
+                }
+            }
+        }
     }
 }

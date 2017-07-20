@@ -34,10 +34,10 @@ public class PaymentFraudManager {
 	public static PrimaryKey createRestrictedPaymentMethod(RestrictedPaymentMethodModel restrictedPaymentMethod) throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
 		try {
-			RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.RestrictedPaymentMethodSB)){
 				return FDECommerceService.getInstance().createRestrictedPaymentMethod(restrictedPaymentMethod);
 			}else{
+				RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
 				return sb.createRestrictedPaymentMethod(restrictedPaymentMethod);
 			}
 		} catch (RemoteException e) {
@@ -52,10 +52,10 @@ public class PaymentFraudManager {
 	public static RestrictedPaymentMethodModel getRestrictedPaymentMethod(PrimaryKey pk) throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
 		try {
-			RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.RestrictedPaymentMethodSB)){
 				return FDECommerceService.getInstance().findRestrictedPaymentMethodByPrimaryKey(pk);
 			}else{
+				RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
 				return sb.findRestrictedPaymentMethodByPrimaryKey(pk);
 			}
 		} catch (RemoteException e) {
@@ -70,10 +70,10 @@ public class PaymentFraudManager {
 	public static List<RestrictedPaymentMethodModel> getRestrictedPaymentMethodsByCustomerId(String customerId, EnumRestrictedPaymentMethodStatus status) throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
 		try {
-			RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.RestrictedPaymentMethodSB)){
 				return  FDECommerceService.getInstance().findRestrictedPaymentMethodByCustomerId(customerId, status);
 			}else{
+				RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
 				return sb.findRestrictedPaymentMethodByCustomerId(customerId, status);
 			}
 		} catch (RemoteException e) {
@@ -88,10 +88,10 @@ public class PaymentFraudManager {
 	public static RestrictedPaymentMethodModel getRestrictedPaymentMethodByPaymentMethodId(String paymentMethodId, EnumRestrictedPaymentMethodStatus status) throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
 		try {
-			RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.RestrictedPaymentMethodSB)){
 				return  FDECommerceService.getInstance().findRestrictedPaymentMethodByPaymentMethodId(paymentMethodId, status);
 			}else{
+				RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
 				return sb.findRestrictedPaymentMethodByPaymentMethodId(paymentMethodId, status);
 			}
 		} catch (RemoteException e) {
@@ -106,10 +106,10 @@ public class PaymentFraudManager {
 	public static List<RestrictedPaymentMethodModel> getRestrictedPaymentMethods(RestrictedPaymentMethodCriteria criteria) throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
 		try {
-			RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.RestrictedPaymentMethodSB)){
 				return  FDECommerceService.getInstance().findRestrictedPaymentMethods(criteria);
 			}else{
+				RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
 				return sb.findRestrictedPaymentMethods(criteria);
 			}
 		} catch (RemoteException e) {
@@ -124,10 +124,10 @@ public class PaymentFraudManager {
 	public static void storeRestrictedPaymentMethod(RestrictedPaymentMethodModel restrictedPaymentMethod) throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
 		try {
-			RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.RestrictedPaymentMethodSB)){
 				FDECommerceService.getInstance().storeRestrictedPaymentMethod(restrictedPaymentMethod);
 			}else{
+				RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
 				sb.storeRestrictedPaymentMethod(restrictedPaymentMethod);
 			}
 		} catch (RemoteException e) {
@@ -142,10 +142,10 @@ public class PaymentFraudManager {
 	public static void removeRestrictedPaymentMethod(PrimaryKey pk, String lastModifyUser) throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
 		try {
-			RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.RestrictedPaymentMethodSB)){
 				FDECommerceService.getInstance().removeRestrictedPaymentMethod(pk, lastModifyUser);
 			}else{
+				RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
 				sb.removeRestrictedPaymentMethod(pk, lastModifyUser);
 			}
 		} catch (RemoteException e) {
@@ -160,10 +160,10 @@ public class PaymentFraudManager {
 	public static List<RestrictedPaymentMethodModel> loadAllPatterns() throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
 		try {
-			RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.RestrictedPaymentMethodSB)){
 				return  FDECommerceService.getInstance().loadAllPatterns();
 			}else{
+				RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
 				return sb.loadAllPatterns();
 			}
 		} catch (RemoteException e) {
@@ -178,10 +178,10 @@ public class PaymentFraudManager {
 	public static List<RestrictedPaymentMethodModel> loadAllRestrictedPaymentMethods() throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
 		try {
-			RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.RestrictedPaymentMethodSB)){
 				return  FDECommerceService.getInstance().loadAllRestrictedPaymentMethods();
 			}else{
+				RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
 				return sb.loadAllRestrictedPaymentMethods();
 			}
 		} catch (RemoteException e) {
@@ -196,10 +196,11 @@ public class PaymentFraudManager {
 	public static List<RestrictedPaymentMethodModel> loadAllBadPaymentMethods() throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
 		try {
-			RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
+		
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.RestrictedPaymentMethodSB)){
 				return  FDECommerceService.getInstance().loadAllBadPaymentMethods();
 			}else{
+				RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
 				return sb.loadAllBadPaymentMethods();
 			}
 		} catch (RemoteException e) {
@@ -214,10 +215,11 @@ public class PaymentFraudManager {
 	public static boolean checkBadAccount(ErpPaymentMethodI erpPaymentMethod, boolean useBadAccountCache) throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
 		try {
-			RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
+			
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.RestrictedPaymentMethodSB)){
 				return  FDECommerceService.getInstance().checkBadAccount(erpPaymentMethod, useBadAccountCache);
 			}else{
+				RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
 				return sb.checkBadAccount(erpPaymentMethod, useBadAccountCache);
 			}
 		} catch (RemoteException e) {
@@ -232,10 +234,10 @@ public class PaymentFraudManager {
 	public static ErpPaymentMethodI getPaymentMethodByAccountInfo(RestrictedPaymentMethodModel restrictedPaymentMethod) throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
 		try {
-			RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.RestrictedPaymentMethodSB)){
 				return  FDECommerceService.getInstance().findPaymentMethodByAccountInfo(restrictedPaymentMethod);
 			}else{
+				RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
 				return sb.findPaymentMethodByAccountInfo(restrictedPaymentMethod);
 			}
 		} catch (RemoteException e) {

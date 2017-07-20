@@ -30,7 +30,7 @@ var FreshDirect = FreshDirect || {};
     },
     failure: function () {
       if (FreshDirect.components.zipCheckPopup) {
-        FreshDirect.components.zipCheckPopup.refreshBody(data,common.zipcheckNotify);
+        FreshDirect.components.zipCheckPopup.refresh({data: data, zipcheckNotify: true});
       }
     }
   });

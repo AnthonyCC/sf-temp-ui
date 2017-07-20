@@ -210,8 +210,8 @@
 			<% } %>
 
 			<div class="text-center separator">
-				<button type="reset" class="cssbutton grey">clear</button>
-				<button type="submit" name="sendMessage" class="cssbutton orange">Send Message</button>
+				<button type="reset" class="cssbutton green transparent">Clear</button>
+				<button type="submit" name="sendMessage" class="cssbutton green">Send Message</button>
 			</div>
 		<div class="small-text separator">
 			<%--MEDIA INCLUDE--%><fd:IncludeMedia name="/media/editorial/site_pages/help_home_hours.html" /><%--END MEDIA INCLUDE --%>

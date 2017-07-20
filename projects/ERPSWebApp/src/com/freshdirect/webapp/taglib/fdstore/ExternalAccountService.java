@@ -35,76 +35,62 @@ public class ExternalAccountService implements AccountService {
 	private String socialCustomMessage ="/social/social_custom_message.jsp";
 	String updatedSuccessPage ="/index.jsp";
 	
-	@Override
-    public String login(HttpSession session, HttpServletRequest request,
-			HttpServletResponse response){
-		
-		String userToken = (request.getParameter("userToken") == null) ? "" : (String) request.getParameter("userToken");
-		String providerName = (request.getParameter("provider") == null) ? "" : (String)request.getParameter("provider");
-		String userId = (request.getParameter("email") == null) ? "" : (String)request.getParameter("email");
-				
-	    if(userId == null || userId.length() == 0){
-				// User email not found. User will not be able to create account with this social.
-				// The Social Provider did not return user email or user email missing.
-				return socialCustomMessage; 
-		}
-	    	
-			// call ejb to check if user token exist in the in fd social database.
-			// if exists then return user_id otherwise return null;
-	    String userIdInDb = "";
-		if(userId != null && userId.length() > 0){
-			userIdInDb = getUserIdForUserToken(userToken);
-		}
+    @Override
+    public String login(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
+        String userToken = (request.getParameter("userToken") == null) ? "" : (String) request.getParameter("userToken");
+        String providerName = (request.getParameter("provider") == null) ? "" : (String) request.getParameter("provider");
+        String userId = (request.getParameter("email") == null) ? "" : (String) request.getParameter("email");
 
-			// The social login token exist in db. Take user to home page.
-			 //Login the user in the fd system with fd user and fd password	
-				
-		if (userIdInDb != null && userIdInDb.length() > 0 && userId !=null && userId.equalsIgnoreCase(userIdInDb)) {
+        if (userId == null || userId.length() == 0) {
+            // User email not found. User will not be able to create account with this social.
+            // The Social Provider did not return user email or user email missing.
+            return socialCustomMessage;
+        }
+
+        // call ejb to check if user token exist in the in fd social database.
+        // if exists then return user_id otherwise return null;
+        String userIdInDb = "";
+        if (userId != null && userId.length() > 0) {
+            userIdInDb = getUserIdForUserToken(userToken);
+        }
+
+        // The social login token exist in db. Take user to home page.
+        // Login the user in the fd system with fd user and fd password
+
+        if (userIdInDb != null && userIdInDb.length() > 0 && userId != null && userId.equalsIgnoreCase(userIdInDb)) {
             ActionResult actionResult = new ActionResult();
             String updatedSuccessPage = UserUtil.loginUser(session, request, response, actionResult, userId, null, "", this.updatedSuccessPage, true);
 
-            session.setAttribute(SessionName.SOCIAL_LOGIN_PROVIDER, providerName);
+            if (updatedSuccessPage != null) {
+                // redirect to successpage
+                try {
+                    response.sendRedirect("/social/success.jsp?successPage=" + updatedSuccessPage.substring(1, this.updatedSuccessPage.length()));
+                    LOGGER.info("successPage:" + updatedSuccessPage.substring(1, this.updatedSuccessPage.length()));
+                } catch (IOException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
 
-				    
-				    
-				    
-				    
-				    if(updatedSuccessPage != null) {
-				       //redirect to successpage
-				    	try {
-							response.sendRedirect("/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
-							LOGGER.info("successPage:"+updatedSuccessPage.substring(1,this.updatedSuccessPage.length()));
-						} catch (IOException e) {
-							LOGGER.error(e.getMessage());
-						}
-				    }
-					
-					
-					} else {
-					// check with the email id if an account with this email id exist in
-					// our system
-					// if exist then take user to merge page. in
-					// that cause user has to log
-					// in to our site with either fresh direct account or social login.
-					// if no such account exist then take to sign up page.
+        } else {
+            // check with the email id if an account with this email id exist in
+            // our system
+            // if exist then take user to merge page. in
+            // that cause user has to log
+            // in to our site with either fresh direct account or social login.
+            // if no such account exist then take to sign up page.
 
-					//If user already a customer of fresh direct.
-					if (userId != null && isUserEmailAlreadyExist(userId)) {
-						//Recognized User
-						return socialLoginMergePage;
-							
-					} 
-					else 
-					{
-						return signUpUnrecognized;
-					}
-				}
+            // If user already a customer of fresh direct.
+            if (userId != null && isUserEmailAlreadyExist(userId)) {
+                // Recognized User
+                return socialLoginMergePage;
 
-		return updatedSuccessPage;
-	    	
-	
-		
-	}
+            } else {
+                return signUpUnrecognized;
+            }
+        }
+        return updatedSuccessPage;
+
+    }
 	
 	@Override
 	public String register(FDSessionUser user, PageContext pageContext,

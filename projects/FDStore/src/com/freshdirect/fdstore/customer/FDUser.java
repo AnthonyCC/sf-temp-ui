@@ -50,8 +50,10 @@ import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
+import com.freshdirect.customer.ErpOrderHistory;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
+import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.DlvPassConstants;
@@ -743,6 +745,25 @@ public class FDUser extends ModelSupport implements FDUserI {
     }
 
     @Override
+    public OrderHistoryI getOrderHistoryByEStoreId(EnumEStoreId eStoreid) throws FDResourceException {
+        OrderHistoryI orderHistory = getOrderHistory();
+
+        if (orderHistory instanceof ErpOrderHistory) {
+            List<ErpSaleInfo> erpSaleInfos = (List<ErpSaleInfo>) ((ErpOrderHistory) orderHistory).getErpSaleInfos();
+            
+            for (Iterator<ErpSaleInfo> iter = erpSaleInfos.iterator(); iter.hasNext();) {
+               ErpSaleInfo erpSaleInfo = iter.next();
+               
+                if (!erpSaleInfo.equals(eStoreid) && !erpSaleInfo.getSaleType().equals(EnumSaleType.REGULAR)) {
+                    iter.remove();
+               }
+            }
+        }
+
+        return orderHistory;
+    }
+
+    @Override
     public Date getFirstOrderDate() throws FDResourceException {
         if (null == firstOrderDate) {
             OrderHistoryI orderHistory = this.getOrderHistory();
@@ -872,6 +893,32 @@ public class FDUser extends ModelSupport implements FDUserI {
     @Override
     public int getAdjustedValidOrderCount() throws FDResourceException {
         int orderCount = this.getOrderHistory().getValidOrderCount();
+        if (this.getShoppingCart() instanceof FDModifyCartModel) {
+            // we're in modify order mode, subtract one
+            orderCount--;
+        }
+        return orderCount;
+    }
+
+    /**
+     * @return number of valid orders, corrected in modify order mode
+     */
+    @Override
+    public int getAdjustedValidOrderCount(EnumEStoreId storeId) throws FDResourceException {
+        int orderCount = this.getOrderHistory().getValidOrderCount(storeId);
+        if (this.getShoppingCart() instanceof FDModifyCartModel) {
+            // we're in modify order mode, subtract one
+            orderCount--;
+        }
+        return orderCount;
+    }
+
+    /**
+     * @return number of valid orders by delivery type
+     */
+    @Override
+    public int getAdjustedValidOrderCount(EnumDeliveryType deliveryType) throws FDResourceException {
+        int orderCount = this.getOrderHistory().getValidOrderCount(deliveryType);
         if (this.getShoppingCart() instanceof FDModifyCartModel) {
             // we're in modify order mode, subtract one
             orderCount--;
@@ -3628,6 +3675,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         
     }
 
+    @Override
     public boolean isZipCheckPopupUsed() {
         return isZipCheckPopupUsed;
     }
@@ -3636,11 +3684,13 @@ public class FDUser extends ModelSupport implements FDUserI {
         this.isZipCheckPopupUsed = isZipCheckPopupUsed;
     }
 
-	public Map<String, String> getSoCartLineMessagesMap() {
+	@Override
+    public Map<String, String> getSoCartLineMessagesMap() {
 		return soCartLineMessagesMap;
 	}
 
-	public void setSoCartLineMessagesMap(Map<String, String> soCartLineMessagesMap) {
+	@Override
+    public void setSoCartLineMessagesMap(Map<String, String> soCartLineMessagesMap) {
 		this.soCartLineMessagesMap = soCartLineMessagesMap;
 	}
 
@@ -3652,22 +3702,26 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.custSapId = custSapId;
 	}
 
-	public boolean isSoCartOverlayFirstTime() {
+	@Override
+    public boolean isSoCartOverlayFirstTime() {
 		return soCartOverlayFirstTime;
 	}
 
-	public void setSoCartOverlayFirstTime(boolean soCartOverlayFirstTime) {
+	@Override
+    public void setSoCartOverlayFirstTime(boolean soCartOverlayFirstTime) {
 		this.soCartOverlayFirstTime = soCartOverlayFirstTime;
 		if(soCartOverlayFirstTime){
 			setRefreshSO3Settings(true);
 		}
 	}
 
-	public boolean isRefreshSoCartOverlay() {
+	@Override
+    public boolean isRefreshSoCartOverlay() {
 		return refreshSoCartOverlay;
 	}
 
-	public void setRefreshSoCartOverlay(boolean refreshSoCartOverlay) {
+	@Override
+    public void setRefreshSoCartOverlay(boolean refreshSoCartOverlay) {
 		this.refreshSoCartOverlay = refreshSoCartOverlay;
 		if(refreshSoCartOverlay){
 			setRefreshSO3Settings(true);
@@ -3684,11 +3738,13 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 
 
-	public boolean isRefreshNewSoFeature() {
+	@Override
+    public boolean isRefreshNewSoFeature() {
 		return refreshNewSoFeature;
 	}
 
-	public void setRefreshNewSoFeature(boolean refreshNewSoFeature) {
+	@Override
+    public void setRefreshNewSoFeature(boolean refreshNewSoFeature) {
 		this.refreshNewSoFeature = refreshNewSoFeature;
 		if(refreshNewSoFeature){
 			setRefreshSO3Settings(true);
@@ -3696,11 +3752,13 @@ public class FDUser extends ModelSupport implements FDUserI {
 		
 	}
 
-	public boolean isSoFeatureOverlay() {
+	@Override
+    public boolean isSoFeatureOverlay() {
 		return soFeatureOverlay;
 	}
 
-	public void setSoFeatureOverlay(boolean soFeatureOverlay) {
+	@Override
+    public void setSoFeatureOverlay(boolean soFeatureOverlay) {
 		this.soFeatureOverlay = soFeatureOverlay;
 	}
 
@@ -3709,18 +3767,22 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.referrerEligible = referrerEligible;
 	}
 
-	public void setValidSO3Data(Map<String, Object> validSO3Data){
+	@Override
+    public void setValidSO3Data(Map<String, Object> validSO3Data){
 		this.validSO3Data = validSO3Data;
 	}
     
+    @Override
     public Map<String, Object> getValidSO3Data(){
     	return this.validSO3Data;
     }
 		
+    @Override
     public boolean isRefreshSO3Settings(){
     	return this.refreshSO3Settings;
     }
 
+    @Override
     public void setRefreshSO3Settings(boolean isRefreshSO3Settings){
     	this.refreshSO3Settings = isRefreshSO3Settings;
     }

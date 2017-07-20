@@ -35,6 +35,7 @@ import com.freshdirect.fdstore.standingorders.SOResult;
 import com.freshdirect.fdstore.standingorders.SOResult.Result;
 import com.freshdirect.fdstore.standingorders.SOResult.Status;
 import com.freshdirect.fdstore.standingorders.UnavDetailsReportingBean;
+import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.mail.XMLEmailI;
@@ -123,8 +124,8 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 				for ( String soId : soIdList ) {
 					FDStandingOrder so = soManager.load( new PrimaryKey( soId ) );
 					if ( so != null ) {
-						soList.add( so );
-					}
+							soList.add( so );
+						}
 				}
 			} catch (FDResourceException re) {
 				invalidateMailerHome();
@@ -411,4 +412,8 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 	public UnavDetailsReportingBean getDetailsForReportGeneration() throws FDResourceException {		
 			return soManager.getDetailsForReportGeneration();	
 	}
-}
+	
+	public void deleteStandingOrders() throws FDResourceException{
+			soManager.deleteSOByDate();	
+	}
+}	

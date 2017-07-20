@@ -69,6 +69,9 @@ if (mobWeb) {
   </tmpl:put>
   
   <tmpl:put name="globalnav">
+  	<%-- we need the ad_server.jsp include here because it's in the globalnav (which is not used on this page) --%>
+    <jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
+    
   	<%-- MASQUERADE HEADER STARTS HERE --%>
   	<% if (masqueradeContext != null) {
   		String makeGoodFromOrderId = masqueradeContext.getMakeGoodFromOrderId();

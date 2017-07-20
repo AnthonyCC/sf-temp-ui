@@ -451,33 +451,32 @@
 {/template}
 
 /**
- * @param? carouselData sample products
+ * @param? recommendationTabs sample products tabs
  */
 {template .productSampleCarouselWrapper}
-	{if $carouselData.recommendationTabs}
-	    {foreach $recommendationTab in $carouselData.recommendationTabs}
-		<div fd-toggle="product-sample-carousel" fd-toggle-state="{if $recommendationTab.productSamplesReacedMaximumItemQuantity}disabled{else}enabled{/if}">
-			{call expressco.productSampleCarousel data="$recommendationTab" /}
-		</div>
-		{/foreach}
-	{/if}
+  {foreach $recommendationTab in $recommendationTabs}
+    <div fd-toggle="product-sample-carousel" fd-toggle-state="{if $recommendationTab.productSamplesReacedMaximumItemQuantity}disabled{else}enabled{/if}">
+      {call expressco.productSampleCarousel}
+        {param title: $recommendationTab.description /}
+        {param carouselData: $recommendationTab.carouselData /}
+      {/call}
+    </div>
+  {/foreach}
 {/template}
-
 
 /**
- * @param? carouselData sample products
+ * @param? recommendationTabs donation product tabs
  */
 {template .donationProductSampleCarouselWrapper}
-	{if $carouselData.recommendationTabs}
-	    {foreach $recommendationTab in $carouselData.recommendationTabs}
-		<div fd-toggle="product-sample-carousel" fd-toggle-state="{if $recommendationTab.donationProductSamplesReacedMaximumItemQuantity}disabled{else}enabled{/if}">
-			{call expressco.donationProductSampleCarousel data="$recommendationTab" /}
-		</div>
-		{/foreach}
-	{/if}
-
+  {foreach $recommendationTab in $recommendationTabs}
+    <div fd-toggle="product-sample-carousel" fd-toggle-state="{if $recommendationTab.productSamplesReacedMaximumItemQuantity}disabled{else}enabled{/if}">
+      {call expressco.donationProductSampleCarousel}
+        {param title: $recommendationTab.description /}
+        {param carouselData: $recommendationTab.carouselData /}
+      {/call}
+    </div>
+  {/foreach}
 {/template}
-
 
 /**
 */
@@ -948,7 +947,7 @@
 				<form fdform="promotion" action="#" fdform-endpoint-submit="/api/expresscheckout/promotion" fdform-success="FreshDirect.modules.common.forms.successFns.hideOnSuccess">
 					<p class='promotion-text'><span class="NOMOBWEB">Have a </span><span class="capital">p</span>romotional code<span class="NOMOBWEB">?</span></p>
 					<div>
-						<label for="promotional-code"></label>  
+						<label for="promotional-code"><span class="offscreen">have a promotional code?</span></label>  
 						<input type="text" class="promotion-input" id="promotional-code" name="promotionCode" placeholder="Enter here" />
 						<input type="hidden" name="action" value="applyPromotion" />
 						<button id="promotional-code-applybtn" disabled="disabled" class="disabled cssbutton green small">apply<span class="offscreen">promotion code</span></button>
@@ -961,7 +960,7 @@
 					<form fdform="giftcard" action="#" fdform-endpoint-submit="/api/expresscheckout/giftcard" fdform-success="FreshDirect.modules.common.forms.successFns.reset">
 						<p class='promotion-text'><span class="NOMOBWEB">Have a new </span>Gift Card<span class="NOMOBWEB">?</span></p>
 						<div>
-							<label for="apply-gift-card"></label>  
+							<label for="apply-gift-card"><span class="offscreen">have a new gift card?</span></label>  
 							<input type="text" class="promotion-input" id="apply-gift-card" name="givexNum" placeholder="Enter here" />
 							<input type="hidden" name="action" value="applyGiftCard" />
 							<button id="apply-gift-card-applybtn" disabled="disabled" class="disabled cssbutton green small">apply<span class="offscreen">new gift card</span></button>

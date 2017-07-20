@@ -1,0 +1,29 @@
+{namespace common}
+
+/**
+ * @param overlayId id
+ * @param customClass custom classname
+ * @param hasClose show close button
+ * @param bodyContent overlay content
+ * @param headerContent overlay header
+ * @param ariaLabelledby
+ * @param ariaDescribedby
+ */
+{template .overlay autoescape="false"}
+
+    <div id="{$overlayId}" class="overlay {if $hasClose}hasclose{/if} {$customClass}" role="dialog">
+      <button nofocus class="overlay-close-icon" data-close-overlay>close</button>
+      <div class="overlay-container">
+        <div class="overlay-header-helper">
+          <span class="fd-logo"></span>
+          <div class="overlay-header" aria-labelledby="{$ariaLabelledby}">
+          	{$headerContent}
+          </div>
+        </div>
+        <div class="overlay-content" aria-describedby="{$ariaDescribedby}">
+        	{$bodyContent}
+        </div>
+      </div>
+    </div>
+
+{/template}

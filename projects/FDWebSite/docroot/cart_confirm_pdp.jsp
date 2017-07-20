@@ -50,6 +50,10 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
 
 <tmpl:insert template='/common/template/pdp_template.jsp'>
 
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title="FreshDirect - Confirmation"/>
+  </tmpl:put>
+
   <tmpl:put name='cmeventsource' direct='true'>cart_confirm_pdp</tmpl:put>
 
   <tmpl:put name='soypackage' direct='true'>

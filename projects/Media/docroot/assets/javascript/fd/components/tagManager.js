@@ -2,6 +2,8 @@
 
 var FreshDirect = window.FreshDirect || {};
 var GTMID = window.FreshDirect && window.FreshDirect.gtm && window.FreshDirect.gtm.key;
+var GTMAUTH = window.FreshDirect && window.FreshDirect.gtm && window.FreshDirect.gtm.auth;
+var GTMPREVIEW = window.FreshDirect && window.FreshDirect.gtm && window.FreshDirect.gtm.preview;
 var dataLayer = window.dataLayer || [];
 
 // data processors to transform incoming data and put it into the dataLayer
@@ -142,21 +144,38 @@ var dataLayer = window.dataLayer || [];
 
       ecommerce[qty > 0 ? 'add' : 'remove'] = addRemoveData;
 
+      // send extra ATC-succes event for backward compatibility
       dataLayer.push({
         productId: productData.id,
+        event: 'ATC-success'
+      });
+
+      dataLayer.push({
         ecommerce: ecommerce
       });
 
       return {event: event};
     },
     coStep: function (coStepData) {
+      if (coStepData.delivery_type) {
+        dataLayer.push({
+          ecommerce: {
+            delivery_type: coStepData.delivery_type
+          }
+        });
+      }
+      if (coStepData.available_timeslot_value) {
+        dataLayer.push({
+          ecommerce: {
+            available_timeslot_value: coStepData.available_timeslot_value,
+            unavailable_timeslot_present: coStepData.unavailable_timeslot_present
+          }
+        });
+      }
       dataLayer.push({
         ecommerce: {
           checkout: {
-            actionField: {
-              step: coStepData.step,
-              option: coStepData.option
-            }
+            actionField: coStepData
           }
         }
       });
@@ -205,7 +224,8 @@ var dataLayer = window.dataLayer || [];
       return {event: 'lightbox-zipcode'};
     },
     checkout: function (coData) {
-      var customer = fd.gtm && fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.customer;
+      var customer = fd.gtm && fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.customer,
+          ts = coData.selectedTimeslotValue;
 
       if (coData.products) {
         dataLayer.push({
@@ -243,7 +263,10 @@ var dataLayer = window.dataLayer || [];
                 redemption_code: coData.redemptionCode && coData.redemptionCode.join(','),
                 etipping: coData.etipping || 0
               }
-            }
+            },
+            delivery_type: coData.deliveryType || 'unknown',
+            available_timeslot_value: ts && ts.deliveryDate+' '+ts.displayString || 'unknown',
+            unavailable_timeslot_present: coData.unavailableTimeslotValue ? 'yes' : 'no'
           }
         });
       }
@@ -283,6 +306,8 @@ var dataLayer = window.dataLayer || [];
     login: function (loginData) {
       if (loginData.loginAttempt === 'success') {
         fd.gtm.updateDataLayer({loginSuccess: true});
+      } else if (loginData.loginAttempt === 'socialLoginSuccess') {
+        fd.gtm.updateDataLayer({socialLoginSuccess: true});
       } else if (loginData.loginAttempt === 'fail') {
         fd.gtm.updateDataLayer({loginFailure: true});
       }
@@ -325,6 +350,8 @@ var dataLayer = window.dataLayer || [];
     signup: function (signupData) {
       if (signupData.signupAttempt === 'success') {
         fd.gtm.updateDataLayer({signupSuccess: true});
+      } else if (signupData.signupAttempt === 'socialSignupSuccess') {
+        fd.gtm.updateDataLayer({socialSignupSuccess: true});
       } else if (signupData.signupAttempt === 'fail') {
         fd.gtm.updateDataLayer({signupFailure: true});
       }
@@ -363,6 +390,8 @@ var dataLayer = window.dataLayer || [];
     }
   };
   fd.gtm.PROCESSORS.cartLineChange = fd.gtm.PROCESSORS.ATCData;
+  fd.gtm.PROCESSORS.socialLoginSuccess = fd.gtm.PROCESSORS.loginSuccess;
+  fd.gtm.PROCESSORS.socialSignupSuccess = fd.gtm.PROCESSORS.signupSuccess;
 
   fd.gtm.updateDataLayer = function (gtmData, gtmEvent) {
     if (gtmData) {
@@ -498,31 +527,32 @@ var dataLayer = window.dataLayer || [];
   atcSuccess.listen();
 
   var coStepUpdate = function (step, data) {
-    var option = "";
+    var coStepData = {
+      step: step
+    };
 
     if (step === 'address') {
       var selectedAddress = data.addresses.filter(function (address) { return address.selected; })[0];
 
-      if (!selectedAddress) { return; }
-
-      option = selectedAddress.street_address;
+      if (selectedAddress) {
+        coStepData.delivery_type = selectedAddress.service_type;
+      }
     } else if (step === 'payment') {
-      var selectedPayment = data.payments.filter(function (payment) { return payment.selected; })[0];
+    	var selectedPayment = (!data.payments) ? null : data.payments.filter(function (payment) { return payment.selected; })[0];
 
       if (!selectedPayment) { return; }
 
-      option = selectedPayment.type;
+      coStepData.option = selectedPayment.type;
     } else if (step === 'timeslot') {
-      if (!data.id) { return; }
-
-      option = data.year + '/' + data.month + '/' + data.dayOfMonth + ' ' + data.timePeriod;
+      // don't set the option field for timeslot
+      if (data) {
+        coStepData.available_timeslot_value = data && data.timePeriod+' '+data.month+'/'+data.dayOfMonth+'/'+data.year || 'unknown';
+        coStepData.unavailable_timeslot_present = data.unavailableTimeslotValue ? 'yes' : 'no';
+      }
     }
 
     fd.gtm.updateDataLayer({
-      coStep: {
-        step: step,
-        option: option
-      }
+      coStep: coStepData
     }, {
       event: 'checkoutStep'
     });
@@ -574,7 +604,7 @@ var dataLayer = window.dataLayer || [];
         dl=l!=='dataLayer'?'&l='+l:'';
 
     j.async=true;
-    j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+    j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl+(GTMAUTH ? '&gtm_auth='+GTMAUTH : '')+(GTMPREVIEW ? '&gtm_preview='+GTMPREVIEW+'&gtm_cookies_win=x' : '');
     f.parentNode.insertBefore(j,f);
   };
 

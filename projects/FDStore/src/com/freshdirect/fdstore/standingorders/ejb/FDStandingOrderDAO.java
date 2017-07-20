@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -53,7 +55,7 @@ public class FDStandingOrderDAO {
 
 	private static final Logger LOGGER = LoggerFactory.getInstance( FDStandingOrderDAO.class );
 
-	private static final String FIELDZ_ALL = "SO.ID, SO.CUSTOMER_ID, SO.CUSTOMERLIST_ID, SO.ADDRESS_ID, SO.PAYMENTMETHOD_ID, SO.START_TIME, SO.END_TIME, SO.NEXT_DATE, SO.FREQUENCY, SO.ALCOHOL_AGREEMENT, SO.DELETED, SO.LAST_ERROR, SO.ERROR_HEADER, SO.ERROR_DETAIL, CCL.NAME, C.USER_ID,SO.IS_ACTIVATED,SO.DEFAULT_SO, SO.TIP, SO.REMINDER_OVERLAY";
+	private static final String FIELDZ_ALL = "SO.ID, SO.CUSTOMER_ID, SO.CUSTOMERLIST_ID, SO.ADDRESS_ID, SO.PAYMENTMETHOD_ID, SO.START_TIME, SO.END_TIME, SO.NEXT_DATE, SO.FREQUENCY, SO.ALCOHOL_AGREEMENT, SO.DELETED, SO.LAST_ERROR, SO.ERROR_HEADER, SO.ERROR_DETAIL, CCL.NAME, C.USER_ID,SO.IS_ACTIVATED,SO.DEFAULT_SO, SO.TIP, SO.REMINDER_OVERLAY, SO.DELETE_DATE";
 
 	private static final String LOAD_CUSTOMER_OLD_STANDING_ORDERS =
 		"select " + FIELDZ_ALL + " " +
@@ -122,6 +124,7 @@ public class FDStandingOrderDAO {
 	"ERROR_DETAIL = ?, " +	
 	"IS_ACTIVATED= ?, "+
 	"MODIFIED_TIME= ?, "+
+	"DELETE_DATE= ?, "+
 	"TIP=?"+
 	"where ID = ?";
 	
@@ -178,6 +181,16 @@ public class FDStandingOrderDAO {
 	private static final String REVERT_DEFAULT_STANDING_ORDER="update CUST.STANDING_ORDER so SET so.default_so=NULL WHERE  so.customer_id = ? AND SO.default_so='Y' ";
 	
 	private static final String UPDATE_REMIDER_OVERLAY_STANDING_ORDER="update CUST.STANDING_ORDER so SET so.reminder_overlay='N' WHERE  so.id = ? AND SO.reminder_overlay='Y'";
+
+	private static final String GET_STANDING_ORDERS_DELETE_BYDATE =	"select id from CUST.STANDING_ORDER where DELETED=0 and (trunc(DELETE_DATE) = trunc(sysdate)) and ERROR_HEADER IS NULL";	
+	
+	private static final String DELETE_CUSTOMER_LIST_DETAILS_BYDATE = "delete from CUST.CUSTOMERLIST_DETAILS where LIST_ID  in (select CUSTOMERLIST_ID from CUST.STANDING_ORDER where DELETED=0 and (trunc(DELETE_DATE) = trunc(sysdate))) and ERROR_HEADER IS NULL";
+	
+	private static final String DELETE_CUSTOMER_LIST_BYDATE = "delete from CUST.CUSTOMERLIST where ID in (select CUSTOMERLIST_ID from CUST.STANDING_ORDER where DELETED=0 and (trunc(DELETE_DATE) = trunc(sysdate)) and ERROR_HEADER IS NULL";	
+	
+	private static final String DELETE_STANDING_ORDER_BYDATE = "update CUST.STANDING_ORDER SET DELETED=1, CUSTOMERLIST_ID=NULL where DELETED=0 and (trunc(DELETE_DATE) = trunc(sysdate)) and ERROR_HEADER IS NULL";
+
+	private static final String UPDATE_DELETE_SOINFO = "update CUST.STANDING_ORDER set DELETE_DATE = ? where ID = ?";
 
 	protected String getNextId(Connection conn) throws SQLException {
 		return SequenceGenerator.getNextId(conn, "CUST");
@@ -423,6 +436,7 @@ public class FDStandingOrderDAO {
 		
 		so.setTipAmount(rs.getDouble("TIP"));
 		so.setReminderOverlayForNewSo(rs.getString("REMINDER_OVERLAY")!=null?(rs.getString("REMINDER_OVERLAY").equalsIgnoreCase("Y")?true:false):false);
+		so.setDeleteDate(rs.getDate("DELETE_DATE"));
 		
 		
 		return so;
@@ -446,6 +460,67 @@ public class FDStandingOrderDAO {
 		ps.executeUpdate();		
 		ps.close();
 	}
+	
+	public List<String> deleteSOByDate( Connection conn) throws SQLException {
+		
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<String> soList = new ArrayList<String>();
+		try {			
+			ps = conn.prepareStatement(GET_STANDING_ORDERS_DELETE_BYDATE);
+			rs = ps.executeQuery();			
+			
+			while (rs.next()) {
+				soList.add(rs.getString("SO_ID"));
+			}	
+			
+			rs.close();
+			ps.close();
+			
+			ps = conn.prepareStatement( DELETE_CUSTOMER_LIST_DETAILS_BYDATE );
+			ps.executeUpdate();		
+			ps.close();
+			
+			ps = conn.prepareStatement( DELETE_CUSTOMER_LIST_BYDATE );
+			ps.executeUpdate();		
+			ps.close();
+			
+			ps = conn.prepareStatement( DELETE_STANDING_ORDER_BYDATE );
+			ps.executeUpdate();
+			ps.close();				
+		} catch (SQLException exc) {
+			throw exc;
+		} finally {
+			if(rs != null){
+				rs.close();
+			}
+			if(ps != null) {
+				ps.close();
+			}
+		}		
+		return soList;		
+	}	
+	
+	public void updateDeleteSOInfo(Connection conn, String id, String deleteDate) throws SQLException {
+		LOGGER.debug("FDStandingOrderDAO.updateDeleteSOInfo()");
+
+		PreparedStatement ps = null;
+		try {
+			int i = 1;
+			ps = conn.prepareStatement(UPDATE_DELETE_SOINFO);
+			SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+			ps.setDate(i++, deleteDate != null ? new java.sql.Date(formatter.parse(deleteDate).getTime()) : null);
+			ps.setString(i, id);
+			ps.executeUpdate();
+			ps.close();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} finally {
+			if (ps != null) {
+				ps.close();
+			}
+		}
+	}	
 	
 	public String createStandingOrder(Connection conn, FDStandingOrder so) throws SQLException {
 		LOGGER.debug( "FDStandingOrderDAO.createStandingOrder()" );
@@ -542,6 +617,7 @@ public class FDStandingOrderDAO {
 
 			}
 			ps.setTimestamp(counter++, new Timestamp( currDate.getTime() ));//Modified Time
+			ps.setDate(counter++, null);
 			ps.setDouble(counter++,so.getTipAmount());
 			ps.setString(counter++, so.getId());
 
@@ -2037,5 +2113,23 @@ public void turnOffReminderOverLayNewSo(Connection con, String standingOrderId) 
 				}
 		}
 	
+	public static void updateDeActivatedSOError(Connection conn, String soId)throws SQLException{
+		PreparedStatement ps = null;
+		try {
+				ps = conn.prepareStatement("update CUST.STANDING_ORDER set ERROR_HEADER= ?, ERROR_DETAIL=? where ID=?");
+				ps.setString(1, FDStandingOrder.ErrorCode.UNACTIVATED_SO.getErrorHeader());
+				ps.setString(2, FDStandingOrder.ErrorCode.UNACTIVATED_SO.getErrorDetail(null));
+				ps.setString(3, soId);
+				ps.execute();
+
+			} catch (Exception e) {
+				LOGGER.error("Error while updating updateSOError in DB", e);
+				} finally {
+					if (ps != null) {
+						ps.close();
+					}
+				}
+		}
+	}
 	
-}
+

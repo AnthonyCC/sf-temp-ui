@@ -26,6 +26,7 @@ if (mobWeb) {
 %>
 
 <potato:cartData/>
+<potato:viewCart/>
 <potato:pendingExternalAtcItem/>
 
 <tmpl:insert template='<%=template %>'>
@@ -74,18 +75,18 @@ if (mobWeb) {
 		
 			<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user_view_cart)) { %>
 				<div id="cartCarousels">
-					<soy:render template="common.viewCartTabbedCarousel" data="${cartDataPotato.carouselData}" />
+					<soy:render template="common.viewCartTabbedCarousel" data="${viewCartPotato}" />
 				</div>
 	        <% } else { 
 				//APPDEV-5516 : Cart Carousel - Grand Giving Donation Technology
 				// If the donationProductSampleCarousel is not enabled, the fallback div is productsamplecarousel
 			    if(FDStoreProperties.isPropDonationProductSamplesEnabled()){ %>
 			     <div id="donationProductSampleCarousel" class="donation-product-sample-carousel">
-			        <soy:render template="expressco.donationProductSampleCarouselWrapper" data="${cartDataPotato.carouselData}" />
+			        <soy:render template="expressco.donationProductSampleCarouselWrapper" data="${viewCartPotato}" />
 			      </div>     
 				<% } else { %>
 				  <div id="productsamplecarousel" class="product-sample-carousel">
-			        <soy:render template="expressco.productSampleCarouselWrapper" data="${cartDataPotato.carouselData}" />
+			        <soy:render template="expressco.productSampleCarouselWrapper" data="${viewCartPotato}" />
 			      </div>
 				<% }
 			} %>

@@ -26,6 +26,8 @@ import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
 import com.freshdirect.content.nutrition.panel.NutritionPanel;
+import com.freshdirect.ecomm.gateway.ErpNutritionService;
+import com.freshdirect.ecomm.gateway.ErpNutritionServiceI;
 import com.freshdirect.erp.ejb.BatchManagerHome;
 import com.freshdirect.erp.ejb.BatchManagerSB;
 import com.freshdirect.erp.ejb.ErpCharacteristicValuePriceEB;
@@ -47,6 +49,7 @@ import com.freshdirect.erp.model.ErpClassModel;
 import com.freshdirect.erp.model.ErpMaterialModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.erp.model.ErpProductModel;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -656,8 +659,13 @@ public class ErpFactory {
 			if (nutritionHome == null) {
 				lookupNutritionHome();
 			}
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
+				ErpNutritionServiceI service = ErpNutritionService.getInstance();
+				return service.generateClaimsReport();
+			}else{
 			ErpNutritionSB nutrSB = nutritionHome.create();
 			return nutrSB.generateClaimsReport();
+			}
 		} catch (RemoteException ce) {
 			throw new FDResourceException(ce);
 		} catch (CreateException re) {
@@ -672,9 +680,12 @@ public class ErpFactory {
 				if (nutritionHome == null) {
 					lookupNutritionHome();
 				}
-
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
+					this.nutritionReport=ErpNutritionService.getInstance().generateNutritionReport();
+				}else{
 				ErpNutritionSB nutrSB = nutritionHome.create();
 				this.nutritionReport = nutrSB.generateNutritionReport();
+				}
 
 				lastRefresh = System.currentTimeMillis();
 			} catch (CreateException ce) {
@@ -708,7 +719,12 @@ public class ErpFactory {
 		}
 		try {
 			ErpNutritionSB nutrSB = nutritionHome.create();
-			return nutrSB.getNutrition(skuCode);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
+        		return ErpNutritionService.getInstance().getNutrition(skuCode);
+        	}else{
+        		return nutrSB.getNutrition(skuCode);
+        	}
+			
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
@@ -722,7 +738,11 @@ public class ErpFactory {
 		}
 		try {
 			ErpNutritionSB nutrSB = nutritionHome.create();
-			return nutrSB.getNutritionPanel(skuCode);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
+        		return ErpNutritionService.getInstance().getNutritionPanel(skuCode);
+        	}else{
+        		return nutrSB.getNutritionPanel(skuCode);
+        	}
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
@@ -734,9 +754,13 @@ public class ErpFactory {
 		if (nutritionHome == null) {
 			lookupNutritionHome();
 		}
-		try {
+		try { 
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
+				ErpNutritionService.getInstance().updateNutrition(nutrition, "dataloader");
+        }else {
 			ErpNutritionSB nutrSB = nutritionHome.create();
 			nutrSB.updateNutrition(nutrition, user);
+        }
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
@@ -750,7 +774,11 @@ public class ErpFactory {
 		}
 		try {
 			ErpNutritionSB nutrSB = nutritionHome.create();
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
+				ErpNutritionService.getInstance().saveNutritionPanel(panel);
+			}else{
 			nutrSB.saveNutritionPanel(panel);
+			}
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
@@ -764,7 +792,11 @@ public class ErpFactory {
 		}
 		try {
 			ErpNutritionSB nutrSB = nutritionHome.create();
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
+				ErpNutritionService.getInstance().deleteNutritionPanel(skuCode);
+			}else{
 			nutrSB.deleteNutritionPanel(skuCode);
+			}
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {

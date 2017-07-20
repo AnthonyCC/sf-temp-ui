@@ -219,8 +219,14 @@ function getStandingOrderData(ids, action){
         success: function(data){
         	if('deliveryBegins'==action){
         		if(data.lastError=="MINORDER"){
-        			$jq('#customizePopup .so-review-date').text('Order Minimum Not Met').addClass('so-review-date-red');
-        			$jq('#customizePopup .so-review-min-details').addClass('show');
+        			var totalAfterAdd = $jq("#customizePopup .subtotal-inner").text().replace(/\$/g, '');
+        			totalAfterAdd = Number(totalAfterAdd) + data.amount;
+        			if(totalAfterAdd > data.soSoftLimit){
+        				$jq('#customizePopup .so-review-date').html('<b>Congratulations!</b><br/>Add this item, and the $' + data.soSoftLimit + ' order minimum will be met.').addClass('so-review-date-add');
+        			} else{
+        				$jq('#customizePopup .so-review-date').text('Order Minimum Not Met').addClass('so-review-date-red');
+            			$jq('#customizePopup .so-review-min-details').addClass('show');
+        			}
         		} else{
         			$jq('#customizePopup .so-review-date').text(ids[2] + ', ' + ids[3]);
         			$jq('#customizePopup .so-review-selected').addClass('show');

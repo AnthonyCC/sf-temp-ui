@@ -55,6 +55,8 @@ public class QuickShopCrazyQuickshopRecommendationService {
 
 	private static final QuickShopCrazyQuickshopRecommendationService INSTANCE = new QuickShopCrazyQuickshopRecommendationService();
 
+    public static final String QUICKSHOP_VIRTUAL_SITE_FEATURE = "CRAZY_QUICKSHOP";
+
 	public static final String DEPT_FRUIT = "fru";
 
 	public static final String DEPT_VEG = "veg";

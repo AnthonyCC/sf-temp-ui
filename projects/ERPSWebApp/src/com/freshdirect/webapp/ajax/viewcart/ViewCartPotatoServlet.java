@@ -9,7 +9,6 @@ import javax.servlet.http.HttpSession;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.webapp.ajax.RecommenderServlet;
 import com.freshdirect.webapp.ajax.recommendation.RecommendationRequestObject;
-import com.freshdirect.webapp.ajax.reorder.service.QuickShopCarouselService;
 import com.freshdirect.webapp.ajax.reorder.service.QuickShopCrazyQuickshopRecommendationService;
 
 public class ViewCartPotatoServlet extends RecommenderServlet {
@@ -30,7 +29,7 @@ public class ViewCartPotatoServlet extends RecommenderServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
 		RecommendationRequestObject requestData = parseRequestData(request, RecommendationRequestObject.class, true);
 		
-		if (QuickShopCarouselService.QUICKSHOP_VIRTUAL_SITE_FEATURE.equals(requestData.getFeature())) {
+        if (QuickShopCrazyQuickshopRecommendationService.QUICKSHOP_VIRTUAL_SITE_FEATURE.equals(requestData.getFeature())) {
 			HttpSession session = request.getSession();
 			Map<String, Object> crazyQuickshopResult = QuickShopCrazyQuickshopRecommendationService.defaultService().populateCrazyQuickshopRecommendation(session, requestData);
 			writeResponseData(response, crazyQuickshopResult);

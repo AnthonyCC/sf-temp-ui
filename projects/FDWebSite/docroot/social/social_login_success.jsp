@@ -3,7 +3,6 @@
 
 <%@ taglib uri="freshdirect" prefix="fd" %>
 
-
   <div class="social-login-spinner">
   <img src="/media_stat/images/navigation/spinner.gif" class="fleft" />  
   </div>

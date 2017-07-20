@@ -2,7 +2,6 @@ package com.freshdirect.fdstore.customer;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -146,6 +145,8 @@ public interface FDUserI extends java.io.Serializable {
 
     public OrderHistoryI getOrderHistory() throws FDResourceException;
 
+    public OrderHistoryI getOrderHistoryByEStoreId(EnumEStoreId eStoreid) throws FDResourceException;
+
     public Date getFirstOrderDate() throws FDResourceException;
 
     public Date getFirstOrderDateByStore(EnumEStoreId eStoreId) throws FDResourceException;
@@ -169,6 +170,10 @@ public interface FDUserI extends java.io.Serializable {
     public String getEndChefsTableQualifyingDate() throws FDResourceException;
 
     public int getAdjustedValidOrderCount() throws FDResourceException;
+
+    public int getAdjustedValidOrderCount(EnumEStoreId storeId) throws FDResourceException;
+
+    public int getAdjustedValidOrderCount(EnumDeliveryType deliveryType) throws FDResourceException;
 
     public int getValidOrderCount(EnumDeliveryType deliveryType) throws FDResourceException;
 

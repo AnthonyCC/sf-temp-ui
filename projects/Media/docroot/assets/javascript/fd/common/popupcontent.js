@@ -270,11 +270,22 @@ var FreshDirect = FreshDirect || {};
     }
 
     // focus first element
-    if ($el.find('form').size() > 0) {
+    if ($($el).find('li')[0].getAttribute('data-dontfocusform') != 'true' && $el.find('form').size() > 0) {
       $el = $el.find('form').first();
     }
 
-    $el.find('[tabindex]').not('[tabindex="-1"]').first().focus();
+    //$el.find('[tabindex]').not('[tabindex="-1"]').first().focus();
+    var $lowestTabElem = null;
+
+    $el.find('[tabindex]').not('[tabindex="-1"]').each(function(i,e) {
+        if ($lowestTabElem === null || $jq(e).attr('tabIndex') < $jq($lowestTabElem).attr('tabIndex')) {
+            $lowestTabElem = $jq(e);
+        }
+    });
+
+    if ($lowestTabElem !== null) {
+        $lowestTabElem.focus();
+    }
   };
 
   PopupContent.prototype.unfocus = function () {

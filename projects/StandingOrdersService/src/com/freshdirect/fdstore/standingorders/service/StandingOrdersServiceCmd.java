@@ -149,7 +149,7 @@ public class StandingOrdersServiceCmd {
 		List<String> soIdList = null;
 		
 		try{
-						
+				
 			if(null !=orders && !orders.trim().equalsIgnoreCase("")){
 				Set<String> soSet = new HashSet<String>();
 				
@@ -177,13 +177,13 @@ public class StandingOrdersServiceCmd {
 			context.removeAttribute("IS_SO_JOB_RUNNING");
 			}
 			
-
 		} catch (Exception e) {
 			LOGGER.error("Manually running StandingOrdersServiceCmd failed with Exception...",e);
 			sendExceptionMail(Calendar.getInstance().getTime(), e);
 		}
 	}
 	
+
 
 	private static boolean isResultHasData(SOResult.ResultList result) {
 		

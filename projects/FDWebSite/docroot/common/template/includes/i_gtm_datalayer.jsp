@@ -13,6 +13,8 @@
   
   fd.gtm = fd.gtm || {};
   fd.gtm.key = '<%= FDStoreProperties.getGoogleTagManagerKey() %>';
+  fd.gtm.auth = '<%= FDStoreProperties.getGoogleTagManagerAuthToken() %>';
+  fd.gtm.preview = '<%= FDStoreProperties.getGoogleTagManagerPreviewId() %>';
   fd.gtm.data = <fd:ToJSON object="${googleAnalyticsPotato}" noHeaders="true"/>;
 
   dataLayer.push({

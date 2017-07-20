@@ -170,7 +170,7 @@ for (FDOrderInfoI orderInfo : orderHistoryInfo) {
     } else {
 		orderDetailsUrl = "/your_account/order_details.jsp?orderId="+ orderInfo.getErpSalesId() ;
     }
-%>	    <td class="order_history_table_id"><a href="<%= orderDetailsUrl %>"><%= orderInfo.getErpSalesId() %></a></td>
+%>	    <td class="order_history_table_id"><a href="<%= orderDetailsUrl %>"><span class="offscreen">details of order number</span><%= orderInfo.getErpSalesId() %></a></td>
 		<td class="text10 order_history_table_date"><div class="order_history_table_date_display"><%= dateFormatter.format( orderInfo.getRequestedDate() ) %></div></td>
 <%
 	String deliveryType = "";
@@ -200,9 +200,9 @@ for (FDOrderInfoI orderInfo : orderHistoryInfo) {
    <%}%>
 		<% if(!mobWeb){ %>
 		<td>
-			<a href="<%= orderDetailsUrl %>"><%= orderInfo.isModifiable() ? "View/Modify" : "View" %></a>
+			<a href="<%= orderDetailsUrl %>"><%= orderInfo.isModifiable() ? "View/Modify" : "View" %><span class="offscreen">order <%= orderInfo.getErpSalesId() %> </span></a>
             <% if (orderInfo.isShopFromThisOrder()) { %>
-            | <a href="/quickshop/shop_from_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>">Shop From This Order</a>
+            | <a href="/quickshop/shop_from_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>">Shop From This Order<span class="offscreen">number <%= orderInfo.getErpSalesId() %></span></a>
             <% } %>
 		</td>
 		<% } %>

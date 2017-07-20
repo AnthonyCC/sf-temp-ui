@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.http.HttpHeaders;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -65,6 +64,7 @@ public class ExternalAccountController extends BaseController implements SystemM
 	private final static String ACTION_LINK_ACCOUNT = "linkaccount";
 	private final static String ACTION_UNLINK_ACCOUNT = "unlinkaccount";
 	
+    @Override
     protected boolean validateUser() {
         return false;
     }
@@ -201,8 +201,8 @@ public class ExternalAccountController extends BaseController implements SystemM
 		
 		if(socialUser!=null){
 			userToken = socialUser.get("userToken");
-			socialEmail = (String) socialUser.get("email");
-			socialAccountProvider = (String) socialUser.get("provider");
+			socialEmail = socialUser.get("email");
+			socialAccountProvider = socialUser.get("provider");
 			if(socialEmail == null || socialEmail.equalsIgnoreCase("")) {
 				responseMessage = new SocialResponse();
 				// no email address found for social login
@@ -539,8 +539,8 @@ public class ExternalAccountController extends BaseController implements SystemM
 		 
 		// registration and login goes here
 		if (socialUser != null) {
-			String email = (String) socialUser.get("email");
-			String displayName = (String) socialUser.get("displayName");
+			String email = socialUser.get("email");
+			String displayName = socialUser.get("displayName");
 			String names[] = displayName.split(" ");
 			String firstName = (names.length == 0) ? "" : names[0];
 			String lastName = (names.length <= 1) ? ""

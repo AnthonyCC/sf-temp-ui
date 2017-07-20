@@ -9,8 +9,11 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
+import com.freshdirect.fdstore.ecomm.gateway.SmartStoreConfigurationService;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.RecommendationService;
@@ -21,6 +24,7 @@ import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationSB;
 import com.freshdirect.smartstore.external.scarab.ScarabInfrastructure;
 import com.freshdirect.smartstore.fdstore.FactorRequirer;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
+import com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration;
 import com.freshdirect.smartstore.impl.NullRecommendationService;
 
 final public class VariantRegistry {
@@ -85,12 +89,22 @@ final public class VariantRegistry {
 			ScarabInfrastructure.reload();
 			EnumSiteFeature.refresh();
 			SmartStoreServiceConfigurationSB sb;
-
+			Collection<Variant> vars;
 			sb = getServiceConfiguration();
 			Collection<Variant> variants = new ArrayList<Variant>();
-			Collection<Variant> vars = sb.getVariants(EnumSiteFeature.YMAL);
-			for (EnumSiteFeature feature : EnumSiteFeature.getSmartStoreEnumList())
-				variants.addAll(sb.getVariants(feature));
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SmartStoreServiceConfigurationSB)){
+				vars = SmartStoreConfigurationService.getInstance().getVariants(EnumSiteFeature.YMAL);
+			}else{
+				vars = sb.getVariants(EnumSiteFeature.YMAL);
+			}
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.SmartStoreServiceConfigurationSB)){
+				for (EnumSiteFeature feature : EnumSiteFeature.getSmartStoreEnumList())
+					variants.addAll( SmartStoreConfigurationService.getInstance().getVariants(feature));
+			}else{
+				for (EnumSiteFeature feature : EnumSiteFeature.getSmartStoreEnumList())
+					variants.addAll(sb.getVariants(feature));
+				
+			}
 
 			LOGGER.info("loading variants:" + variants);
 
