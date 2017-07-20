@@ -1019,33 +1019,36 @@ public class CmsFilteringFlow {
 		 	 hLBrandProductAdRequest.setPlatformSource("web");
         
         try {
-            HLBrandProductAdResponse hlBrandProductAdResponse = FDBrandProductsAdManager.getHLCategoryProducts(hLBrandProductAdRequest);
-            List<HLBrandProductAdInfo> hlBrandAdProductsMeta = hlBrandProductAdResponse.getProductAd();
+            HLBrandProductAdResponse hlBrandProductAdResponse = FDBrandProductsAdManager.getHLCategoryProducts(hLBrandProductAdRequest);    
             List<ProductModel> adPrducts = new ArrayList<ProductModel>();
-
-            if (hlBrandAdProductsMeta != null) {
-				hlCatProductsCount.put(catId, hlBrandAdProductsMeta.size());
-            	
-                for (Iterator<HLBrandProductAdInfo> iterator = hlBrandAdProductsMeta.iterator(); iterator.hasNext();) {
-                    HLBrandProductAdInfo hlBrandProductAdMetaInfo = iterator.next();
-                    hlBrandProductAdMetaInfo.setPageBeacon(hlBrandProductAdResponse.getPageBeacon());
-                    browseDataContext.getAdProducts().setPageBeacon(hlBrandProductAdResponse.getPageBeacon());
-
-                    try {
-                        ProductModel productModel = ContentFactory.getInstance().getProduct(hlBrandProductAdMetaInfo.getProductSKU());
-                        if (null != productModel) {
-                            ProductModelBrandAdsAdapter pm = new ProductModelBrandAdsAdapter(productModel, hlBrandProductAdMetaInfo.getClickBeacon(),
-                                    hlBrandProductAdMetaInfo.getImpBeacon());
-                            adPrducts.add(pm);
-                        }
-
-                    } catch (FDSkuNotFoundException e) {
-                        LOG.info("FDSkuNotFoundException while populating HookLogic product : ", e);
-                    }
-                }
-            }
-            else {
-            	hlCatEmptyProductPageBeacon.put(catId,	hlBrandProductAdResponse.getPageBeacon());	
+            if(null !=hlBrandProductAdResponse){
+	            List<HLBrandProductAdInfo> hlBrandAdProductsMeta = hlBrandProductAdResponse.getProductAd();
+	           
+	
+	            if (hlBrandAdProductsMeta != null) {
+					hlCatProductsCount.put(catId, hlBrandAdProductsMeta.size());
+	            	
+	                for (Iterator<HLBrandProductAdInfo> iterator = hlBrandAdProductsMeta.iterator(); iterator.hasNext();) {
+	                    HLBrandProductAdInfo hlBrandProductAdMetaInfo = iterator.next();
+	                    hlBrandProductAdMetaInfo.setPageBeacon(hlBrandProductAdResponse.getPageBeacon());
+	                    browseDataContext.getAdProducts().setPageBeacon(hlBrandProductAdResponse.getPageBeacon());
+	
+	                    try {
+	                        ProductModel productModel = ContentFactory.getInstance().getProduct(hlBrandProductAdMetaInfo.getProductSKU());
+	                        if (null != productModel) {
+	                            ProductModelBrandAdsAdapter pm = new ProductModelBrandAdsAdapter(productModel, hlBrandProductAdMetaInfo.getClickBeacon(),
+	                                    hlBrandProductAdMetaInfo.getImpBeacon());
+	                            adPrducts.add(pm);
+	                        }
+	
+	                    } catch (FDSkuNotFoundException e) {
+	                        LOG.info("FDSkuNotFoundException while populating HookLogic product : ", e);
+	                    }
+	                }
+	            }
+	            else {
+	            	hlCatEmptyProductPageBeacon.put(catId,	hlBrandProductAdResponse.getPageBeacon());	
+	            }
             }
             
             List<FilteringSortingItem<ProductModel>> productResults = new ArrayList<FilteringSortingItem<ProductModel>>();
