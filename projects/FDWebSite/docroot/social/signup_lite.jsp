@@ -214,9 +214,12 @@
 				<div id="sulCont" class="signup-style-social social-singup" style="<% if (!mobWeb) { %>min-width: 523px;text-align: center;<% } %>">
 					<div class="form-side-social">
 						<div class="form-side-social-header">Create Account:</div>
+						<div class="bottom-links">
+							Already have an account? <a href="/social/login.jsp?successPage=<%=successPage%>" onclick="window.parent.FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp?successPage=<%=successPage%>', opacity: .5})">Sign In</a>
+						</div>
 						<!-- form_fields start here -->
 						<div id="form_feilds" style="text-align: center;">
-							<form id="litesignup" name="litesignup" method="post" action="/social/signup_lite.jsp" autocomplete="off" autocomplete="false" style="display:inline-block; margin-left: -22px;">
+							<form id="litesignup" name="litesignup" method="post" action="/social/signup_lite.jsp" autocomplete="off" autocomplete="false">
 								<input type="hidden" name="submission" value="done" />
 								<input type="hidden" name="actionName" value="ordermobilepref" /> 
 								<input type="hidden" name="successPage" value="<%= successPage %>" />
@@ -333,7 +336,14 @@
 									<tr>
 										<td></td>
 										<td style="padding-top: 15px;" align="center">
-											<input type="submit" id="signupbtn" maxlength="25" size="19" value="Continue" class="butText social-login-continue-button" style="display:block;" onclick="dlvadrspage();">
+											<div class="bottom-contents">
+												<div class="bottom-contents-terms">
+													<div class="bottom-contents-terms-text">
+														By creating an account, you agree to the FreshDirect<br /> <a href="javascript:popup('/registration/user_agreement.jsp', 'large')">Customer Agreement</a> & <a href="javascript:popup('/registration/privacy_policy.jsp', 'large')">Privacy Policy</a>
+													</div>
+												</div>
+											</div>
+											<input type="submit" id="signupbtn" maxlength="25" size="19" value="Create Account" class="butText social-login-continue-button" style="display:block;" onclick="dlvadrspage();">
 										</td>
 									</tr>
 								
@@ -405,16 +415,6 @@
 					
 					<div class="clear"></div>
 	
-					<div class="bottom-contents">
-						<div class="bottom-contents-terms">
-							<div class="bottom-contents-terms-text">
-								By signing up, you agree to the <a href="javascript:popup('/registration/user_agreement.jsp', 'large')">Customer Agreement</a> & <a href="javascript:popup('/registration/privacy_policy.jsp', 'large')">Privacy Policy</a>
-							</div>
-						</div>
-						<div class="bottom-links">
-							Already have an account? <a href="/social/login.jsp?successPage=<%=successPage%>" onclick="window.parent.FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp?successPage=<%=successPage%>', opacity: .5})">Sign In</a>
-						</div>
-					</div>
 					
 					<% if (result.isFailure()) { %>
 						<script type="text/javascript">
