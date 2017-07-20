@@ -19,6 +19,10 @@ import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
 import com.freshdirect.dataloader.LoaderException;
+import com.freshdirect.ecomm.gateway.ErpNutritionService;
+import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.payment.service.FDECommerceService;
 
 /**
  * loads nutrition info from an EZForm export into ERPS
@@ -97,8 +101,12 @@ public class EshaLoader {
             
             ErpNutritionSB sb = home.create();
             for (ErpNutritionModel enm : nutrition) {
-                ErpNutritionModel oldEnm = sb.getNutrition(enm.getSkuCode());
-
+            	ErpNutritionModel oldEnm=null;
+            	if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
+            		oldEnm=ErpNutritionService.getInstance().getNutrition(enm.getSkuCode());
+            	}else{
+                oldEnm = sb.getNutrition(enm.getSkuCode());
+            	}
                 if(enm.getHeatingInstructions().equals(""))
                     enm.setHeatingInstructions(oldEnm.getHeatingInstructions());
                 
@@ -106,7 +114,11 @@ public class EshaLoader {
                     enm.setIngredients(oldEnm.getIngredients());
                 
                 System.out.println("Loading nutrition for " + enm.getSkuCode());
+                if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
+                	ErpNutritionService.getInstance().updateNutrition(enm, "dataloader");
+                }else {
                 sb.updateNutrition(enm, "dataloader");
+                }
             }
             
             System.out.println("\n----- normally exiting doLoad() -----");

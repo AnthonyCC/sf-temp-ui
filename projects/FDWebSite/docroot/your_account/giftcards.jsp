@@ -35,11 +35,11 @@ final int W_YA_GIFTCARDS = 970;
 			<input type="hidden" id="gcType" value="" />
 			<table border="0" cellspacing="0" cellpadding="4" width="100%">
 				<tr>
-					<td width="130" align="right">Recipient Name:</td>
+					<td width="130" align="right"><label for="gcResendRecipName">Recipient Name:</label></td>
 					<td><input id="gcResendRecipName" value="" /></td>
 				</tr>
 				<tr valign="middle">
-					<td width="130" align="right">Recipient Email (edit):</td>
+					<td width="130" align="right"><label for="gcResendRecipEmail">Recipient Email (edit):</label></td>
 					<td><input id="gcResendRecipEmail" value="" /></td>
 				</tr>
 				<tr>
@@ -47,7 +47,7 @@ final int W_YA_GIFTCARDS = 970;
 					<td><span id="gcResendRecipAmount"><!--  --></span></td>
 				</tr>
 				<tr>
-					<td width="130" align="right">Personal Message:</td>
+					<td width="130" align="right"><label for="gcResendRecipMsg">Personal Message:</label></td>
 					<td><textarea id="gcResendRecipMsg"></textarea></td>
 				</tr>
 				<tr>
@@ -71,7 +71,7 @@ final int W_YA_GIFTCARDS = 970;
                     <span class="topHeader">Gift Cards</span>
 					<!-- <img src="/media_stat/images/giftcards/your_account/" width="" height="" alt="Gift Cards" /> --><br />
 					Here you can apply a Gift Card to your current order and view FreshDirect Gift Cards you have given or received.<br />
-					For more information about Gift Cards, <a href="<%= FDStoreProperties.getGiftCardLandingUrl() %>">click here</a>.
+					<a href="<%= FDStoreProperties.getGiftCardLandingUrl() %>">More information about Gift Cards</a>.
 				</td>
 			</tr>
 		</table>
@@ -135,7 +135,7 @@ final int W_YA_GIFTCARDS = 970;
 				<td>
 					<span class="sideHeader">Gift Cards You Have Received</span><!-- <img src="/media_stat/images/giftcards/your_account/" width="" height="" alt="Gift Cards" /> --><br />
 					Here you can apply a Gift Card to your current order and view FreshDirect Gift Cards you have given or received.<br />
-					For more information about Gift Cards, <a href="<%= FDStoreProperties.getGiftCardLandingUrl() %>">click here</a>.
+					<a href="<%= FDStoreProperties.getGiftCardLandingUrl() %>">More information about Gift Cards</a>.
 				</td>
 			</tr>
 			<tr>
@@ -171,7 +171,7 @@ final int W_YA_GIFTCARDS = 970;
                                 <%= giftcard.isRedeemable() ? "Redeemed" : "Cancelled" %>
                                 <%}%>
                             </td>
-                            <td><a href="<%= request.getRequestURI() %>?action=deleteGiftCard&certNum=<%= giftcard.getCertificateNumber() %>" class="note">Remove</a></td>
+                            <td><a href="<%= request.getRequestURI() %>?action=deleteGiftCard&certNum=<%= giftcard.getCertificateNumber() %>" class="note">Remove<span class="offscreen"> gift card</span></a></td>
 						</tr>
                         </logic:iterate>
 						<tr>
@@ -194,7 +194,7 @@ final int W_YA_GIFTCARDS = 970;
 				<td>
 					<span class="sideHeader">Purchased Gift Cards</span><!-- <img src="/media_stat/images/giftcards/your_account/" width="" height="" alt="Gift Cards" /> --><br />
 					Here you can apply a Gift Card to your current order and view FreshDirect Gift Cards you have given or received.<br />
-					For more information about Gift Cards, <a href="<%= FDStoreProperties.getGiftCardLandingUrl() %>">click here</a>.
+					<a href="<%= FDStoreProperties.getGiftCardLandingUrl() %>">More information about Gift Cards</a>.
 				</td>
 			</tr>
 			<tr>
@@ -241,8 +241,8 @@ final int W_YA_GIFTCARDS = 970;
                             %>
 							<td><%= status %></td>
                             <% if(!isPending) { %>
-                                <td><a href="#" onClick="recipResendFetch('<%= recipient.getRecepientModel().getSale_id() %>','<%= recipient.getCertificationNumber() %>'); return false;"><%= status.equals("Printed") ? "Send" : "Resend" %></a></td>
-                                <td><a href="/gift_card/postbacks/pdf_gen.jsp?saleId=<%= recipient.getRecepientModel().getSale_id() %>&certNum=<%= recipient.getCertificationNumber() %>" >View/Print</a></td>
+                                <td><a href="#" onClick="recipResendFetch('<%= recipient.getRecepientModel().getSale_id() %>','<%= recipient.getCertificationNumber() %>'); return false;"><%= status.equals("Printed") ? "Send" : "Resend"  %><span class="offscreen">$<%= FormatterUtil.formatToTwoDecimal(recipient.getRecepientModel().getAmount()) %> <%= cardType %> gift card of <%= recipient.getRecepientModel().getRecipientName() %></span></a></td>
+                                <td><a href="/gift_card/postbacks/pdf_gen.jsp?saleId=<%= recipient.getRecepientModel().getSale_id() %>&certNum=<%= recipient.getCertificationNumber() %>" >View/Print<span class="offscreen">$<%= FormatterUtil.formatToTwoDecimal(recipient.getRecepientModel().getAmount()) %> <%= cardType %> gift card of <%= recipient.getRecepientModel().getRecipientName() %></span></a></td>
                             <% } else { %>    
                                 <td>&nbsp;</a></td>
                                 <td>&nbsp;</td>

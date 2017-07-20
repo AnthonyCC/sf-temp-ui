@@ -81,7 +81,7 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 
 	} else { //non-recognized user
 		String shortAddress = LocationHandlerTag.formatAddressShortText(selectedAddress);
-		%><tmpl:put name="address"><span class="text"><%="".equals(shortAddress) ?  "" : "("+shortAddress+")" %></span><span id="newzip"><label for="newziptext"></label><input type="text" id="newziptext" class="placeholder" placeholder="change zip code" maxlength="5" onkeydown="goButtonFocus(event);"><button id="newzipgo" class="">go</button></span></tmpl:put><%		
+		%><tmpl:put name="address"><span class="text"><%="".equals(shortAddress) ?  "" : "("+shortAddress+")" %></span><span id="newzip"><label for="newziptext"><span class="offscreen">change your zip code:</span></label><input type="text" id="newziptext" class="placeholder" placeholder="change zip code" maxlength="5" onkeydown="goButtonFocus(event);"><button id="newzipgo" class="">go</button></span></tmpl:put><%		
 	}
 %>
 <tmpl:put name="zipdisplay"><tmpl:get name="zipcode" /> <tmpl:get name="address" /></tmpl:put>

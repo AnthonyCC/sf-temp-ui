@@ -196,7 +196,7 @@
 					<form method="post" name="contact_fd" id="contact_fd_faq">
 						<h2 class="help-heading bold uppercase">Search</h2>
 						<label for="search-faq" class="offscreen">search</label><input type="text" id="search-faq" class="search" value="" maxlength="100" name="searchFAQ" />
-						<button class="cssbutton orange small" type="submit" name="searchFAQButton">find</button>
+						<button class="cssbutton green small" type="submit" name="searchFAQButton">Find</button>
 					</form>
 					
 					<%-- QUICK LINKS --%>

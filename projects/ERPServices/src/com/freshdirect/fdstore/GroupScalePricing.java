@@ -117,10 +117,11 @@ public class GroupScalePricing extends FDGroup {
 	public GrpZonePriceModel getGrpZonePrice(ZoneInfo pricingZoneInfo) {//new
 		ZoneInfo zone=pricingZoneInfo;
 		GrpZonePriceModel zpModel=_getZonePrice(zone);
-		/*while(zpModel==null && zone.hasParentZone()) {
+		//APPDEV-6291 - Group Scale Pricing(Cascade for Sales Org) 
+		while(zpModel==null && zone.hasParentZone()) {
 			zone=zone.getParentZone();
 			zpModel=_getZonePrice(zone);
-		}*/
+		}
 		return zpModel;
 	}
 	public List<String> getSkuList() {

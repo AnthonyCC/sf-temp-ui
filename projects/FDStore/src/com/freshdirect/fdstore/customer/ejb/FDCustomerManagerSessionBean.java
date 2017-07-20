@@ -1800,7 +1800,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 							new PrimaryKey(info.getIdentity()
 									.getErpCustomerPK()));
 			erpCustomerEB.setCustomerInfo(customerInfo);
-
+			
 			if (foundFraud) {
 				// !!! override tx source
 				this.logActivity(info.createActivity(
@@ -1818,6 +1818,28 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} catch (FinderException ex) {
 			throw new FDResourceException(ex);
 		} catch (CreateException ex) {
+			throw new FDResourceException(ex);
+		}
+		
+	}
+
+	private void insertFDCustomerEStoreInfo(ErpCustomerInfoModel customerInfo) 
+			throws FDResourceException, ErpDuplicateUserIdException {
+		try {
+
+			FDCustomerEB fdCustomerEB = this.getFdCustomerHome()
+					.findByPrimaryKey(
+							new PrimaryKey(customerInfo.getIdentity().getErpCustomerPK()));
+			
+			customerInfo.getEmailPreferenceLevel();
+			FDCustomerEStoreModel fdCustomerEStoreModel = new FDCustomerEStoreModel();
+			//customerInfo.getEmailPreferenceLevel();
+//			fdCustomerEStoreModel.setFdxEmailOptIn(customerInfo.get);
+			fdCustomerEB.setFDCustomerEStore(fdCustomerEStoreModel);
+		
+		} catch (RemoteException ex) {
+			throw new FDResourceException(ex);
+		} catch (FinderException ex) {
 			throw new FDResourceException(ex);
 		}
 		
@@ -3870,12 +3892,15 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				ATPFailureInfo fi = new ATPFailureInfo(requestedRange
 						.getStartDate(), ol.getMaterialNumber(), ol
 						.getQuantity(), ol.getSalesUnit(), sInfo.getQuantity(),
-						erpCustomerId,plantId,actionType);
+						erpCustomerId,ol.getPlantID(),actionType);
 				lst.add(fi);
 			}
 		}
 
-		this.storeATPFailureInfos(lst);
+		//[OPT-48]-check if there are any ATP failures, before making a db call.
+		if(null !=lst && !lst.isEmpty()){
+			this.storeATPFailureInfos(lst);
+		}
 	}
 
 	public FDOrderI getOrderForCRM(FDIdentity identity, String saleId)
@@ -8638,11 +8663,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public static String INSERT_SILVER_POPUP = "insert into CUST.CUSTOMER_PUSHNOTIFICATION(CUSTOMER_ID,QUALIFIER,DESTINATION,CREATE_TIMESTAMP,UPDATE_TIMESTAMP,SEND_TIMESTAMP) values "
 			+ "(?,?,?,trunc(sysdate),trunc(sysdate),null)";
 	
-	public void insertSilverPopupDetails(SilverPopupDetails silverPopup)  throws FDResourceException {
-		Connection conn = null;
+	public void insertSilverPopupDetails(SilverPopupDetails silverPopup, Connection conn)  throws FDResourceException {
 		PreparedStatement pstmt = null;		
 		try {
-			conn = getConnection();
 			pstmt = conn.prepareStatement(INSERT_SILVER_POPUP);
 			pstmt.setString(1, silverPopup.getCustomerId());
 			pstmt.setString(2, silverPopup.getQualifier());
@@ -8652,17 +8675,15 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
-			close(conn);
+			close(pstmt);
 		}
 	}	
 	
 	public static String UPDATE_SILVER_POPUP = "update CUST.CUSTOMER_PUSHNOTIFICATION set QUALIFIER =?,DESTINATION =?,UPDATE_TIMESTAMP=trunc(sysdate) where customer_id=?";
 	
-	public void updateSilverPopupDetails(SilverPopupDetails silverPopup)  throws FDResourceException {
-		Connection conn = null;
+	public void updateSilverPopupDetails(SilverPopupDetails silverPopup, Connection conn)  throws FDResourceException {
 		PreparedStatement pstmt = null;		
 		try {
-			conn = getConnection();
 			pstmt = conn.prepareStatement(UPDATE_SILVER_POPUP);
 			pstmt.setString(1, silverPopup.getQualifier());
 			pstmt.setString(2, silverPopup.getDestination());
@@ -8673,11 +8694,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			LOGGER.info("updateSilverPopupDetails IN PROCESS FAILED... "+silverPopup.getCustomerId());
 			throw new FDResourceException(sqle, "Unable to store FDUser");
 		} finally {
-			close(conn);
+			close(pstmt);
 		}
 	}		
 
-	public static String SELECT_SILVER_POPUP = "select count(*) as SP_COUNT from CUST.CUSTOMER_PUSHNOTIFICATION where CUSTOMER_ID=? and QUALIFIER=? and DESTINATION=?";
+	public static String SELECT_SILVER_POPUP = "select count(*) as SP_COUNT from CUST.CUSTOMER_PUSHNOTIFICATION where CUSTOMER_ID=?";
 	
 	public boolean insertOrUpdateSilverPopup(SilverPopupDetails silverPopup) throws FDResourceException {
 		Connection conn = null;
@@ -8689,43 +8710,30 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				conn = getConnection();
 				ps = conn.prepareStatement(SELECT_SILVER_POPUP);
 				ps.setString(1, silverPopup.getCustomerId());
-				ps.setString(2, silverPopup.getQualifier());
-				ps.setString(3, silverPopup.getDestination());
 				LOGGER.info("Exicuting Query "+SELECT_SILVER_POPUP+" in insertOrUpdateSilverPopup");
 
 				rs = ps.executeQuery();
 
 				while (rs.next()) {
 
-					if (Integer.valueOf(rs.getString("SP_COUNT")) > 0) {
+					if (Integer.valueOf(rs.getString("SP_COUNT")) == 0) {
 						LOGGER.debug("got the Count as SP_COUNT > 0, going into updateSilverPopupDetails");
 						isCustomerHasSP = true;
 						break;
 					}
 				}
 				if (isCustomerHasSP) {
-					updateSilverPopupDetails(silverPopup);
+					insertSilverPopupDetails(silverPopup, conn);
 				} else {
-					insertSilverPopupDetails(silverPopup);
-				}
+					updateSilverPopupDetails(silverPopup, conn);
+					}
 			} catch (SQLException exc) {
 				LOGGER.info("insertOrUpdateSilverPopup IN PROCESS FAILED... " + silverPopup.getCustomerId());
 				throw new FDResourceException(exc, "Unable to store SilverPopup details");
 			} finally {
-				if (rs != null) {
-					try {
-						rs.close();
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
-				}
-				if (ps != null) {
-					try {
-						ps.close();
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
-				}
+				close(rs);
+				close(ps);
+				close(conn);
 			}
 		}
 		return true;
@@ -8775,5 +8783,5 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} finally {
 			close(conn);
 		}
-	}
+	}	
 }

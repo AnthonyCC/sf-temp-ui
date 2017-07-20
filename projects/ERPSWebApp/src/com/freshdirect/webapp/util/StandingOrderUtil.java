@@ -28,6 +28,7 @@ import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumNotificationType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
@@ -90,6 +91,7 @@ import com.freshdirect.fdstore.standingorders.DeliveryInterval;
 import com.freshdirect.fdstore.standingorders.EnumStandingOrderAlternateDeliveryType;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
+import com.freshdirect.fdstore.standingorders.ejb.FDStandingOrderDAO;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderAltDeliveryDate;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.standingorders.ProcessActionResult;
@@ -171,6 +173,14 @@ public class StandingOrderUtil {
 			return SOResult.createSkipped( so, "Skipping because SO is deleted" );
 		}
 		
+		// check if the standingorder is Active or not..
+		if("N".equalsIgnoreCase(so.getActivate())){	
+			LOGGER.warn( "Standing order template is not activated "+so.getId() );
+			LOGGER.info( "Standing order template is not activated, Skipping order  "+so.getId() );
+			FDStandingOrdersManager.getInstance().updateDeActivatedSOError(so.getId() );
+			return SOResult.createSkipped( so, "Skipping because SO is Not Activated" );
+		}
+		
 		// checking if SO is in erroneous state
 		Date now = new Date();
 		if ( so.getLastError() != null ) {
@@ -202,7 +212,7 @@ public class StandingOrderUtil {
 				return SOResult.createSkipped( so, "Skipping because SO is in error state" );
 			}
 		}
-		
+	
 		// First of all : check if next delivery date is passed for whatever reason,
 		// and step it to the first possible date which is in the future
 		while ( now.after( so.getNextDeliveryDate() ) ) {
@@ -687,6 +697,16 @@ public class StandingOrderUtil {
 			
 			// step delivery date 
 			so.skipDeliveryDate();
+			
+			try {
+				LOGGER.info("Starting to delete standing orders based on delete date set by user...");
+
+				// So templates should be deleted after placing the order on date which was choose by user.
+				FDStandingOrdersManager.getInstance().deleteSOByDate();
+				LOGGER.info("Finished deleting SO templates based on date.");
+			} catch (Exception e) {
+				LOGGER.error(" FDStandingOrdersManager.getInstance().deleteSOByDate() which deletes SO templates of Todays Date has failed with Exception...", e);
+			}
 			
 			//check possible duplicate order instances in delivery window
 			FDStandingOrdersManager.getInstance().checkForDuplicateSOInstances(customer);

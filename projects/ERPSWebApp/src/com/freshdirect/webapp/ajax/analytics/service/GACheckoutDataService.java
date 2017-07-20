@@ -44,6 +44,9 @@ public class GACheckoutDataService {
         data.setNewOrder(getNewOrderStatus(session));
         data.setModifyOrder(Boolean.toString(order.isModifiedOrder()));
         data.setDiscountAmount(Double.toString(order.getTotalDiscountValue()));
+        data.setDeliveryType(order.getDeliveryAddress().getServiceType().name());
+        data.setSelectedTimeslotValue(order.getDeliveryReservation().getTimeslot());
+        data.setUnavailableTimeslotValue(null);
 
         return data;
     }

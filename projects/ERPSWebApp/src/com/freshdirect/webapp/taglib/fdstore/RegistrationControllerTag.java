@@ -846,7 +846,10 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
     protected void changeEmailPreferenceLevel(HttpServletRequest request, ActionResult result) throws FDResourceException {
 
         // get value
-        String receive_emailLevel = NVL.apply(request.getParameter("receive_emailLevel"), "0");
+    	HttpSession session = (HttpSession) pageContext.getSession();
+    	FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
+        String receive_emailLevel = NVL.apply(request.getParameter("receive_emailLevel"), " ");
+        
 
         if (!result.isSuccess()) {
             return;
@@ -864,6 +867,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 
         LOGGER.debug("Updating customer email level preference");
         FDCustomerManager.updateCustomerInfo(AccountActivityUtil.getActionInfo(pageContext.getSession()), cim);
+        FDCustomerManager.storeEmailPreferenceFlag(identity.getFDCustomerPK(), receive_emailLevel.equals("2") ? "X":"", user.getUserContext().getStoreContext().getEStoreId());
         LOGGER.debug("Customer email preference level updated");
     }
 

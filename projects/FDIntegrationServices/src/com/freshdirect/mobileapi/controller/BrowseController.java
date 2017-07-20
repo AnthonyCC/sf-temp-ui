@@ -43,6 +43,7 @@ public class BrowseController extends BaseController {
 
     private static final String ACTION_GET_DEPARTMENTS = "getDepartments";
     private static final String ACTION_GET_CATEGORIES = "getCategories";
+    private static final String ACTION_GET_CATEGORIES_SORT_DETAILED = "getCategoriesSortDetail";
     private static final String ACTION_GET_CATEGORYCONTENT = "getCategoryContent";
     private static final String ACTION_GET_CATEGORYCONTENT_PRODUCTONLY = "getCategoryContentProductOnly";
     private static final String ACTION_GET_GROUP_PRODUCTS = "getGroupProducts";
@@ -80,6 +81,13 @@ public class BrowseController extends BaseController {
                 LOG.debug(((endTime - startTime) / 1000) + " seconds");
                 return model;
             }
+        }
+        if (ACTION_GET_CATEGORIES_SORT_DETAILED.equals(action)) {
+            BrowsePageResponse res = BrowseUtil.getBrowseResponse(user, request);
+            setResponseMessage(model, res, user);
+            long endTime = System.currentTimeMillis();
+            LOG.debug(((endTime - startTime) / 1000) + " seconds");
+            return model;
         }
 
         BrowseQuery requestMessage = null;

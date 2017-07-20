@@ -670,7 +670,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
                 numberOfFreeSampleProducts++;
             }
         }
-        return (numberOfFreeSampleProducts >= eligibleProducts);
+        return numberOfFreeSampleProducts >= eligibleProducts;
     }
 
     public boolean isMaxProductSampleQuantityReached(String productName) {

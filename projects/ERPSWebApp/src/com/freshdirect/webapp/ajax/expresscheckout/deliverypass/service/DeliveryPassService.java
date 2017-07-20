@@ -98,7 +98,7 @@ public class DeliveryPassService {
 		for (ProductModel product : ContentFactory.getInstance().getProducts(category)) {
 			if (product.isFullyAvailable() && !product.isDiscontinued()) {
 				if (product.getSku(FDStoreProperties.getTwoMonthTrailDPSku()) != null) {
-					if ((!user.isDlvPassActive() || user.isDlvPassExpired()) && user.getShoppingCart().getDeliveryPassCount() == 0 && user.getDlvPassInfo().getDaysSinceDPExpiry() == 0) {
+					if (!user.getDlvPassInfo().isFreeTrialRestricted() && (!user.isDlvPassActive() || user.isDlvPassExpired()) && user.getShoppingCart().getDeliveryPassCount() == 0 && user.getDlvPassInfo().getDaysSinceDPExpiry() == 0) {
 						availableProducts.add(product);
 					}
 				} else {

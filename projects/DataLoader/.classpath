@@ -13,5 +13,6 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/jsch-0.1.44.jar" sourcepath="/FD_LIBS/jsch-0.1.44-sources.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/sapjco3.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/logistics-data-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/fdcommerce-data.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

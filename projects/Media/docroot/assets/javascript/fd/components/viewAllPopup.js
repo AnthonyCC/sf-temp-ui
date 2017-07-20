@@ -5,50 +5,67 @@ var FreshDirect = FreshDirect || {};
   "use strict";
 
   var $=fd.libs.$;
-  var viewallPopup = Object.create(fd.modules.common.popupWidget, {
+  var viewallPopup = Object.create(fd.modules.common.overlayWidget, {
     template: {
       value: common.viewAllPopup
     },
     bodyTemplate: {
       value: function (data) {
         var spinner = '<div class="spinner"></div>';
+
+        if (data.data.config) {
+          data.data.config[0].dontFocusForm = true;
+        }
+
         return data.data.config ? common.contentModules({config: data.data.config, data: data.data.data}) : spinner;
+      }
+    },
+    headerTemplate: {
+      value: function (data) {
+        var header = data.header ? data.header : '';
+        return header;
       }
     },
     trigger: {
       value: '[data-view-all-popup]'
     },
-    closeTrigger: {
-      value: '[data-close-viewall-popup]'
-    },
-    popupId: {
+    overlayId: {
       value: 'viewallPopup'
     },
-    popupConfig: {
+    ariaDescribedby:{
+      value:'vieaw-all'
+    },
+    ariaLabelledby:{
+      value:''
+    },
+    overlayConfig: {
       value: {
-        align:false,
-        overlay:true,
-        overlayExtraClass:'white-popup-overlay',
-        hideOnOverlayClick: true,
         zIndex:460
       }
     },
-    hasClose: {
-      value: true
+    customClass: {
+      value: 'fullscreen'
     },
     openPopup:{
       value: function (e) {
         var moduleId = e.currentTarget.getAttribute('data-module-id'),
+            iconId = e.currentTarget.getAttribute('data-icon-id'),
             moduleVirtualCategory = e.currentTarget.getAttribute('data-module-virtual-category'),
-            notProductList = e.currentTarget.hasAttribute('data-not-product-list');
+            notProductList = e.currentTarget.hasAttribute('data-not-product-list'),
+            url = '';
+
+        if (moduleId) {
+          url = '/api/modulehandling/load?moduleId=' + moduleId + '&viewAll=' + !notProductList +'&moduleVirtualCategory=' + moduleVirtualCategory;
+        } else {
+          url = '/api/modulehandling/imageproduct?iconId=' + iconId + '&moduleVirtualCategory=' + moduleVirtualCategory;
+        }
+
         fd.common.dispatcher.signal('server',{
-    			url:'/api/modulehandling/load?moduleId=' + moduleId + '&viewAll=' + !notProductList +'&moduleVirtualCategory=' + moduleVirtualCategory
+    			url: url
     		});
         var $t = e && $(e.currentTarget) || $(document.body);
 
-        this.refreshBody();
-        this.popup.show($t);
-        this.popup.clicked = true;
+        this.refresh();
 
         $(window).scroll(closeTransactionalPopup);
       }
@@ -58,15 +75,15 @@ var FreshDirect = FreshDirect || {};
     },
     close: {
         value: function (e) {
-          if (this.popup) {
-            this.popup.hide(e);
+          if (this.overlay) {
+            this.overlay.close(e);
             $(window).off('scroll', closeTransactionalPopup);
           }
         }
     },
     callback:{
       value:function( data ) {
-        return this.refreshBody(data);
+        return this.refresh(data);
       }
     }
   });
@@ -79,8 +96,12 @@ var FreshDirect = FreshDirect || {};
 
   viewallPopup.listen();
 
-  $(document).on('click', viewallPopup.trigger, viewallPopup.openPopup.bind(viewallPopup));
-  $(document).on('click', viewallPopup.closeTrigger, viewallPopup.close.bind(viewallPopup));
+  $(document).on('click', viewallPopup.trigger, function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    viewallPopup.openPopup(e);
+  });
+
 
   fd.modules.common.utils.register("components", "viewallPopup", viewallPopup, fd);
 }(FreshDirect));

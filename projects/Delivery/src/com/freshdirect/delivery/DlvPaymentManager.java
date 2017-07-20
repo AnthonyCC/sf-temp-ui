@@ -15,7 +15,10 @@ import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
+import com.freshdirect.ecomm.gateway.PaymentGatewayService;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.PaymentManager;
@@ -60,7 +63,13 @@ public class DlvPaymentManager {
 			for(int i = 0, size = delivered.size(); i < size; i++){
 				saleId = (String)delivered.get(i);
 				command = new DeliveryConfirmation(saleId);
-				sb.updateSaleDlvStatus(command);
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentGatewaySB)){
+					PaymentGatewayService.getInstance().updateSaleDlvStatus(command);
+				}
+				else{
+					sb.updateSaleDlvStatus(command);
+				}
+				
 			}
 			
 			for(int i = 0, size = redelivery.size(); i < size; i++){

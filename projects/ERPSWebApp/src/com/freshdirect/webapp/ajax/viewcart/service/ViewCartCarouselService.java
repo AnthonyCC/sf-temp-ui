@@ -1,6 +1,5 @@
 package com.freshdirect.webapp.ajax.viewcart.service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,18 +18,13 @@ import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.TabRecommendation;
 import com.freshdirect.smartstore.Variant;
-import com.freshdirect.smartstore.fdstore.VariantSelector;
-import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
 import com.freshdirect.webapp.ajax.AbstractCarouselService;
-import com.freshdirect.webapp.ajax.viewcart.data.RecommendationTab;
 
 public class ViewCartCarouselService extends AbstractCarouselService {
 
     private static final ViewCartCarouselService INSTANCE = new ViewCartCarouselService();
 
     private static final String XC_VIEW_CART_VARIANT_ID = "xc_view_cart";
-    private static final String SELECTED_SITE_FEATURE_ATTRIBUTE_KEY = XC_VIEW_CART_VARIANT_ID + SELECTED_SITE_FEATURE_POSTFIX;
-    private static final String PARENT_IMPRESSION_ID_ATTRIBUTE_KEY = XC_VIEW_CART_VARIANT_ID + PARENT_IMPRESSION_ID_POSTFIX;
 
     public static final ViewCartCarouselService getDefaultService() {
         return INSTANCE;
@@ -52,40 +46,13 @@ public class ViewCartCarouselService extends AbstractCarouselService {
     }
 
     @Override
-    protected boolean shouldConsolidateEmptyTabs() {
-        return true;
-    }
-
-    @Override
-    protected TabRecommendation getTabRecommendation(HttpServletRequest request, FDUserI user, SessionInput input) {
-        // variants
-        List<Variant> variants = new ArrayList<Variant>();
-        for (final String siteFeature : getSiteFeatures(user)) {
-            EnumSiteFeature enumSiteFeature = EnumSiteFeature.getEnum(siteFeature);
-            if (EnumSiteFeature.NIL != enumSiteFeature) {
-                VariantSelector selector = VariantSelectorFactory.getSelector(enumSiteFeature);
-                Variant variant = selector.select(user, false);
-                if (variant != null) {
-                    variants.add(variant);
-                }
-            }
-        }
-
-        TabRecommendation tabs = new TabRecommendation(getTabVariant(), variants);
-        tabs.setError(input.isError());
-        tabs.setSelectedSiteFeature((String) request.getSession().getAttribute(SELECTED_SITE_FEATURE_ATTRIBUTE_KEY));
-        tabs.setParentImpressionId((String) request.getSession().getAttribute(PARENT_IMPRESSION_ID_ATTRIBUTE_KEY));
-        return tabs;
-    }
-
-    @Override
     protected String getEventSource(String siteFeature, FDUserI user) {
         EnumEventSource eventSource = null;
 
         if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user)) {
-            if (RecommendationTab.PRODUCT_SAMPLE_SITE_FEATURE.equals(siteFeature)) {
+            if (PRODUCT_SAMPLE_SITE_FEATURE.equals(siteFeature)) {
                 eventSource = EnumEventSource.ps_carousel_view_cart;
-            } else if (RecommendationTab.DONATION_SAMPLE_SITE_FEATURE.equals(siteFeature)) {
+            } else if (DONATION_SAMPLE_SITE_FEATURE.equals(siteFeature)) {
                 eventSource = EnumEventSource.dn_carousel_view_cart;
             } else {
                 eventSource = EnumEventSource.view_cart;
@@ -108,17 +75,34 @@ public class ViewCartCarouselService extends AbstractCarouselService {
     }
 
     @Override
+    protected TabRecommendation getTabRecommendation(HttpServletRequest request, FDUserI user, SessionInput input) {
+        Variant tabVariant = getTabVariant();
+        String selectedSiteFeature = getSelectedSiteFeatureAttribute(request.getSession(), tabVariant.getId());
+        if (selectedSiteFeature == null) {
+            selectedSiteFeature = getFreeProductSiteFeature();
+            setSelectedSiteFeatureAttribute(request.getSession(), selectedSiteFeature);
+        }
+        String parentImpressionId = getParentImpressionIdAttribute(request.getSession(), tabVariant.getId());
+        TabRecommendation tabs = new TabRecommendation(tabVariant, getVariants(user));
+        tabs.setSelectedSiteFeature(selectedSiteFeature);
+        tabs.setParentImpressionId(parentImpressionId);
+        tabs.setOnlyTabHeader(input.isOnlyTabHeader());
+        tabs.setError(input.isError());
+        return tabs;
+    }
+
+    @Override
     protected int getSelectedTab(TabRecommendation tabs, HttpSession session, ServletRequest request, FDUserI user) {
         List<Variant> variants = tabs.getVariants();
-        int selected = selectedTab(variants, tabs.getSelectedSiteFeature());
-
+        String selectedSiteFeature = tabs.getSelectedSiteFeature();
+        int selected = selectedTab(variants, selectedSiteFeature);
         if (tabs.isError()) {
-            selected = selectedTab(variants, getDefaultSiteFeature(user));
-        } else if (isMaxSampleReached(user.getShoppingCart()) && variants.size() > 1
-                && RecommendationTab.isSample(tabs.getSelectedSiteFeature())) {
+            selected = selectedTab(variants, getDefaultErrorSiteFeature(user));
+            setSelectedSiteFeatureAttribute(session, variants.get(selected).getSiteFeature().getName());
+        } else if (user.getShoppingCart().isMaxSampleReached() && variants.size() > 1 && PRODUCT_SAMPLE_SITE_FEATURE.equals(selectedSiteFeature)) {
             selected = (selected + 1) % variants.size();
+            setSelectedSiteFeatureAttribute(session, variants.get(selected).getSiteFeature().getName());
         }
-
         return selected;
     }
 
@@ -128,17 +112,14 @@ public class ViewCartCarouselService extends AbstractCarouselService {
         if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user)) {
             boolean isCurrentUser = isUserAlreadyOrdered(user);
             siteFeatures = isCurrentUser ? FDStoreProperties.getViewcartCurrentCustomerCarouselSiteFeatures() : FDStoreProperties.getViewcartNewCustomerCarouselSiteFeatures();
+            replaceSampleSiteFeatures(siteFeatures);
         } else {
-            if (FDStoreProperties.isPropDonationProductSamplesEnabled()) {
-                siteFeatures = Arrays.asList(RecommendationTab.DONATION_SAMPLE_SITE_FEATURE);
-            } else {
-                siteFeatures = Arrays.asList(RecommendationTab.PRODUCT_SAMPLE_SITE_FEATURE);
-            }
+            siteFeatures = Arrays.asList(getFreeProductSiteFeature());
         }
         return siteFeatures;
     }
 
-    protected String getDefaultSiteFeature(FDUserI user) {
+    public String getDefaultErrorSiteFeature(FDUserI user) {
         boolean isCurrentUser = isUserAlreadyOrdered(user);
         return isCurrentUser ? "DYF" : "FAVORITES";
     }

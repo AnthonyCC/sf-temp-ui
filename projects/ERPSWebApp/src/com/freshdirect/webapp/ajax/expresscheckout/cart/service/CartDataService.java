@@ -201,7 +201,7 @@ public class CartDataService {
             SessionInput input = QuickShopCarouselService.defaultService().createSessionInput(user, request);
             input.setError(true);
             response.getSubmitForm().getResult().put("carouselData",
-                    ViewCartCarouselService.getDefaultService().populateViewCartTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));
+                    ViewCartCarouselService.getDefaultService().populateTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));
         }
     }
     
@@ -582,11 +582,11 @@ public class CartDataService {
 
             CartRequestData reqData = BaseJsonServlet.parseRequestData(request, CartRequestData.class, true);
             SessionInput input = QuickShopCarouselService.defaultService().createSessionInput(user, request);
+            input.setOnlyTabHeader(true);
             if (reqData != null && reqData.getPage() != null && reqData.getPage().contains("checkout")) {
-                cartData.setCarouselData(CheckoutCarouselService.getDefaultService().populateViewCartTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));
+                cartData.setCarouselData(CheckoutCarouselService.getDefaultService().populateTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));
             } else {
-                cartData.setCarouselData(
-                        ViewCartCarouselService.getDefaultService().populateViewCartTabsRecommendationsAndCarouselSampleCarousel(request, (FDSessionUser) user, input));
+                cartData.setCarouselData(ViewCartCarouselService.getDefaultService().populateTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));
             }
             cartData.setCustomerServiceRepresentative(CustomerServiceRepresentativeService.defaultService().loadCustomerServiceRepresentativeInfo(user));
             cartData.setAvalaraEnabled(FDStoreProperties.getAvalaraTaxEnabled());
@@ -606,7 +606,7 @@ public class CartDataService {
                 cartData.setUserCorporate(true);
             }
 
-            cartData.setGoogleAnalyticsData(GoogleAnalyticsDataService.defaultService().populateCheckoutGAData(cart));
+            cartData.setGoogleAnalyticsData(GoogleAnalyticsDataService.defaultService().populateCheckoutGAData(cart, cartData));
 
         } catch (Exception e) {
             LOG.error("Error while processing cart for user " + userId, e);
@@ -838,6 +838,7 @@ public class CartDataService {
                 for (FDCartLineI cartLine : new ArrayList<FDCartLineI>(cartLines)) {
                     Integer id = cartLine.getRandomId();
                     CartRequestData.Change change = changes.get(id);
+                    double oldQuantity = cartLine.getQuantity();
                     if (change == null) {
                         continue;
                     }
@@ -877,7 +878,7 @@ public class CartDataService {
                             }
                         }
                     } else {
-                        updateCartLinesByChangeType(user, cart, clines2report, serverName, cartLine, change, changeType);
+                        updateCartLinesByChangeType(user, cart, clines2report, serverName, cartLine, change, changeType, cartData, oldQuantity);
                     }
 
                     // [APPDEV-4558] check if CM reporting is enabled
@@ -894,18 +895,20 @@ public class CartDataService {
     }
 
     private void updateCartLinesByChangeType(FDUserI user, FDCartModel cart, List<FDCartLineI> clines2report, String serverName, FDCartLineI cartLine,
-            CartRequestData.Change change, String chType) {
+            CartRequestData.Change change, String chType, CartData cartData, double oldQuantity) {
         if (CartRequestData.Change.CHANGE_QUANTITY.equals(chType)) {
             double qu = Double.parseDouble((String) change.getData());
             CartOperations.changeQuantity(user, cart, cartLine, qu, serverName);
             clines2report.add(cartLine);
             user.setCouponEvaluationRequired(true);
+            cartData.setGoogleAnalyticsData(GoogleAnalyticsDataService.defaultService().populateAddToCartGAData(cartLine, Double.toString(cartLine.getQuantity() - oldQuantity)));
         } else if (CartRequestData.Change.CHANGE_SALESUNIT.equals(chType)) {
             String su = (String) change.getData();
             CartOperations.changeSalesUnit(user, cart, cartLine, su, serverName);
             clines2report.add(cartLine);
         } else if (CartRequestData.Change.REMOVE.equals(chType)) {
             CartOperations.removeCartLine(user, cart, cartLine, serverName);
+            cartData.setGoogleAnalyticsData(GoogleAnalyticsDataService.defaultService().populateCartLineChangeGAData(cartLine, "-" + Double.toString(oldQuantity)));
         }
     }
 

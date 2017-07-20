@@ -36,6 +36,7 @@ import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
 import com.freshdirect.content.nutrition.panel.NutritionPanel;
+import com.freshdirect.ecomm.gateway.ErpNutritionService;
 import com.freshdirect.erp.PricingFactory;
 import com.freshdirect.erp.ejb.ErpCharacteristicValuePriceEB;
 import com.freshdirect.erp.ejb.ErpCharacteristicValuePriceHome;
@@ -62,6 +63,7 @@ import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDAttributeCache;
 import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDMaterial;
 import com.freshdirect.fdstore.FDMaterialSalesArea;
@@ -538,7 +540,13 @@ public class FDProductHelper {
 		}
 		try {
 			ErpNutritionSB sb = this.nutritionHome.create();
-			ErpNutritionModel nutr = sb.getNutrition(product.getSkuCode());
+			ErpNutritionModel nutr;
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpNutritionSB)){
+				nutr=ErpNutritionService.getInstance().getNutrition(product.getSkuCode());
+        	}else{
+        		nutr = sb.getNutrition(product.getSkuCode());
+        	}
+			
 			return nutr;
 		} catch (CreateException ce) {
 			this.nutritionHome=null;

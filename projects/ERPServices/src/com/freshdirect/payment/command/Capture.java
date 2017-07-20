@@ -39,4 +39,14 @@ public class Capture implements PaymentCommandI {
 			
 	}
 
+	//Introduced for Storefront2.0  to get the saleId
+	/**
+	 * @return the saleId
+	 */
+	public String getSaleId() {
+		return saleId;
+	}
+
+	
+
 }

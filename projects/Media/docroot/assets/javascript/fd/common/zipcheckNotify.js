@@ -26,7 +26,7 @@ var FreshDirect = FreshDirect || {};
     },
     success: function () {
       if (FreshDirect.components.zipCheckPopup) {
-        FreshDirect.components.zipCheckPopup.refreshBody(null,common.zipcheckNotifyDone);
+        FreshDirect.components.zipCheckPopup.refresh({data: null, zipcheckNotifyDone: true});
       }
     },
     failure : function (id, result) {

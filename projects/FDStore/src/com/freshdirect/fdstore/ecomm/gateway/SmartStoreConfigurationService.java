@@ -3,9 +3,9 @@ package com.freshdirect.fdstore.ecomm.gateway;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.List;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.smartstore.DynamicSiteFeatureData;
@@ -15,7 +15,6 @@ import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.ejb.DynamicSiteFeature;
-import com.freshdirect.storeapi.application.CmsManager;
 
 public class SmartStoreConfigurationService extends AbstractEcommService implements
 		SmartStoreConfigurationServiceI {
@@ -47,9 +46,7 @@ public class SmartStoreConfigurationService extends AbstractEcommService impleme
 		} catch (FDResourceException e) {
 			throw new RemoteException(e.getMessage());
 		}
-		List<VariantData> data = (List<VariantData>)response.getData();
-		Collection<Variant> variants = FDStoreModelConverter.buildVariantList(data);
-		return variants;
+		return ModelConverter.buildVariantList(response.getData());
 	}
 
 	@Override
@@ -66,9 +63,7 @@ public class SmartStoreConfigurationService extends AbstractEcommService impleme
 		} catch (FDResourceException e) {
 			throw new RemoteException(e.getMessage());
 		}
-		List<DynamicSiteFeatureData> data =(List<DynamicSiteFeatureData>) response.getData();
-		Collection<DynamicSiteFeature>  coll =  FDStoreModelConverter.buildDynamicSiteFeatureList(data);
-		return coll;
+		return ModelConverter.buildDynamicSiteFeatureList(response.getData());
 	}
 
 	

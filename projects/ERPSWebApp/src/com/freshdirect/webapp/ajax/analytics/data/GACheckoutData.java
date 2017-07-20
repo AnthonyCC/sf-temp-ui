@@ -3,6 +3,8 @@ package com.freshdirect.webapp.ajax.analytics.data;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.fdlogistics.model.FDTimeslot;
+
 public class GACheckoutData {
 
     private Map<String, GAProductData> products;
@@ -17,6 +19,9 @@ public class GACheckoutData {
     private String newOrder;
     private String modifyOrder;
     private String discountAmount;
+    private String deliveryType;
+    private FDTimeslot selectedTimeslotValue;
+    private String unavailableTimeslotValue;
 
     public Map<String, GAProductData> getProducts() {
         return products;
@@ -112,6 +117,30 @@ public class GACheckoutData {
 
     public void setDiscountAmount(String discountAmount) {
         this.discountAmount = discountAmount;
+    }
+
+    public String getDeliveryType() {
+        return deliveryType;
+    }
+
+    public void setDeliveryType(String deliveryType) {
+        this.deliveryType = deliveryType;
+    }
+
+    public FDTimeslot getSelectedTimeslotValue() {
+        return selectedTimeslotValue;
+    }
+
+    public void setSelectedTimeslotValue(FDTimeslot selectedTimeslotValue) {
+        this.selectedTimeslotValue = selectedTimeslotValue;
+    }
+
+    public String getUnavailableTimeslotValue() {
+        return unavailableTimeslotValue;
+    }
+
+    public void setUnavailableTimeslotValue(String unavailableTimeslotValue) {
+        this.unavailableTimeslotValue = unavailableTimeslotValue;
     }
 
 }

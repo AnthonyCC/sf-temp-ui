@@ -1,5 +1,6 @@
 package com.freshdirect.webapp.util;
 
+import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -636,6 +637,7 @@ public class StandingOrderHelper {
 		map.put("amount", amount);
 		map.put("activated", "Y".equals(so.getActivate())?true:false);
 		map.put("readyForActivation",populateResponseData(so, false).isActivate());
+		map.put("soSoftLimit", (int)(ErpServicesProperties.getStandingOrderSoftLimit()));
 		map.put("errorHeader", so.getErrorHeader());
 		map.put("errorDetails",so.getErrorDetail());
 		if(null!=so.getLastError()){
@@ -658,6 +660,8 @@ public class StandingOrderHelper {
 						.getDeliveryEndTime())
 						: so.getStartTime() != null ? DateUtil.formatHourAMPMRange(
 								so.getStartTime(), so.getEndTime()) : "");
+		map.put("deleteDateRange", getSODeleteDateRanges(getSODeliveryDate4Ranges(so), so.getFrequency()));
+		map.put("deleteDate", getSODeleteDate(so));
 
 		//map.put("modifyDeliveryDate", isUpcomingDelivery?getModifyDeliveryDate(so.getUpcomingDelivery().getRequestedDate()):null);
 		//map.put("shortDeliveryDate",so.getNextDeliveryDate()!=null? DateUtil.formatMonthAndDate(so.getNextDeliveryDate()):null );
@@ -1262,5 +1266,48 @@ private static String convert(Date time) {
 			LOGGER.info("while setting the New SO Settings Overlay FirstTime "+ e);
 			}
 		return user;
+	}
+
+	//populates 5 delivery dates ahead for a so template when a user prompted to delete in future.
+	public static ArrayList<String> getSODeleteDateRanges(Date delivaryDate, int frequency) {
+		ArrayList<String> dateList = new ArrayList<String>();
+		SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");						
+		try {		
+			Calendar cal = Calendar.getInstance();
+			dateList.add(0,"Cancel all deliveries");
+			dateList.add(1,formatter.format(delivaryDate) );
+			cal = Calendar.getInstance();
+			cal.setTime(delivaryDate);
+			for(int i=1;i<=4;i++){
+				if(frequency == 1) {
+					cal.add(Calendar.DAY_OF_YEAR, 7);
+				} else if(frequency == 2) {
+					cal.add(Calendar.DAY_OF_YEAR, 14);
+				} else {
+					cal.add(Calendar.MONTH, 1);
+				}
+				dateList.add(DateUtil.getDate(cal.getTime()));
+			}
+		}catch (Exception e) {
+			LOGGER.error("Exception occurred in getSODeleteDateRanges : "+e);
+		}		
+		return dateList;	
+	}
+	
+	public static Date getSODeliveryDate4Ranges(FDStandingOrder so) {
+		Date delivaryDate = null;
+		String d1 = null;
+		try {
+			d1 = DateUtil.getDate(so.getNextDeliveryDate());
+			delivaryDate = new SimpleDateFormat("MM/dd/yyyy").parse(d1);
+		} catch (ParseException e) {
+			LOGGER.error("Exception occurred in getSODeliveryDate4Ranges : "+e);
+		}
+		return delivaryDate;
+
+	}
+	private static String getSODeleteDate(FDStandingOrder so) {
+		
+		return DateUtil.formatMonthAndDate(so.getDeleteDate());
 	}
 }

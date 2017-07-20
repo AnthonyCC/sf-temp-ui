@@ -1022,11 +1022,13 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			}
 		}
 
-		checkAndSetEbtAccepted(address.getZipCode(), user,cart);
-
-		// store service type except for depot locations
-		if (setServiceType)
-			user.setSelectedServiceType( address.getServiceType() );
+		if(null != address){
+			checkAndSetEbtAccepted(address.getZipCode(), user,cart);
+	
+			// store service type except for depot locations
+			if (setServiceType)
+				user.setSelectedServiceType( address.getServiceType() );
+		}
 		user.setShoppingCart( cart );
 		//cart.doCleanup();
 		session.setAttribute( SessionName.USER, user );

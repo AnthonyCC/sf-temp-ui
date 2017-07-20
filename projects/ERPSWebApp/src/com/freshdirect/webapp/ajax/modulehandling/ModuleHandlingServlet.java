@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -41,9 +42,10 @@ public class ModuleHandlingServlet extends BaseJsonServlet {
             String moduleVirtualCategory = request.getParameter("moduleVirtualCategory");
 
             if (moduleId != null) {
-                moduleContentKey = "Module:" + moduleId;
+                moduleContentKey = FDContentTypes.MODULE + ":" + moduleId;
             }
 
+            // Checklogin status is not applicable for AJAX calls so we need this.
             ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || ((FDSessionUser) user).isEligibleForDDPP());
 
             ModuleContainerData result = ModuleHandlingService.getDefaultService().loadModuleforViewAll(moduleContentKey, user, session);

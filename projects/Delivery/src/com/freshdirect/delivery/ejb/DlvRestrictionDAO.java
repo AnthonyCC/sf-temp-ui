@@ -575,11 +575,10 @@ public class DlvRestrictionDAO {
 				Set<Integer> dayOfWeeks = timeRangeMap.keySet();
 				for(Iterator<Integer> outer = dayOfWeeks.iterator(); outer.hasNext();){
 					int dayOfWeek = outer.next();
-					String detailId = SequenceGenerator.getNextId(conn, "CUST");
 					List<TimeOfDayRange> timeRanges = timeRangeMap.get(dayOfWeek);
 					Iterator<TimeOfDayRange> inner = timeRanges.iterator();
 					while(inner.hasNext()){
-						ps.setString(1, detailId);
+						ps.setString(1, SequenceGenerator.getNextId(conn, "CUST"));
 						ps.setString(2, id);
 						ps.setInt(3, dayOfWeek);
 						TimeOfDayRange timeRange = inner.next();

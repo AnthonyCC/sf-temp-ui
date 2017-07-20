@@ -101,6 +101,7 @@ public class ManageStandingOrderServlet extends HttpServlet {
 			String soId = request.getParameter("soId");
 			String soName = request.getParameter("soName");
 			String freq=request.getParameter("frequency");
+			String deleteDate=request.getParameter("deleteDate");
 			JspFactory factory = JspFactory.getDefaultFactory();
 			PageContext pageContext = factory.getPageContext(this, request, response, null, true, JspWriter.DEFAULT_BUFFER, true);
 			FDSessionUser u = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
@@ -141,15 +142,22 @@ public class ManageStandingOrderServlet extends HttpServlet {
 				} else if ("delete".equalsIgnoreCase(action)) {
 					if (soId != null && !"".equals(soId)) {
 						FDStandingOrder so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(soId));
-	
+						
 						if (!so.isDeleted()) {
-							 u.setRefreshSO3(true);
+							u.setRefreshSO3(true);
 							FDActionInfo info = AccountActivityUtil.getActionInfo(pageContext.getSession());
-							FDStandingOrdersManager.getInstance().delete(info, so);
+
+							if (null != deleteDate && "Cancel all deliveries".equalsIgnoreCase(deleteDate)){
+								FDStandingOrdersManager.getInstance().delete(info, so);
+							} else if ("Y".equalsIgnoreCase(so.getActivate())) {
+								FDStandingOrdersManager.getInstance().updateDeleteSOInfo(info, so, deleteDate);
+							} else {
+								FDStandingOrdersManager.getInstance().delete(info, so);
+							}
+
 						}
-	
+							
 					}
-	
 				}else if("onloadNewStandingOrder".equalsIgnoreCase(action)){
 					u.setRefreshSO3(true);
 					if (("".equalsIgnoreCase(soId) || soId==null) && (freq == null || "".equalsIgnoreCase(freq)))

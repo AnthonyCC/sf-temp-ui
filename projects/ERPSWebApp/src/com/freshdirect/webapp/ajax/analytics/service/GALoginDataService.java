@@ -14,7 +14,7 @@ public class GALoginDataService {
         return INSTANCE;
     }
 
-    public GALoginData populateLoginData(Boolean loginSuccess) {
+    public GALoginData populateLoginData(Boolean loginSuccess, Boolean socialLoginSuccess) {
         GALoginData data = new GALoginData();
 
         if (loginSuccess != null) {
@@ -22,6 +22,12 @@ public class GALoginDataService {
                 data.setLoginAttempt("success");
             } else {
                 data.setLoginAttempt("fail");
+            }
+        }
+
+        if (socialLoginSuccess != null) {
+            if (socialLoginSuccess) {
+                data.setLoginAttempt("socialLoginSuccess");
             }
         }
 

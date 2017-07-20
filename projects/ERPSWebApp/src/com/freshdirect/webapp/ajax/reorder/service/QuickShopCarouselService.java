@@ -1,6 +1,5 @@
 package com.freshdirect.webapp.ajax.reorder.service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,17 +14,12 @@ import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.TabRecommendation;
 import com.freshdirect.smartstore.Variant;
-import com.freshdirect.smartstore.fdstore.VariantSelector;
-import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
 import com.freshdirect.webapp.ajax.AbstractCarouselService;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class QuickShopCarouselService extends AbstractCarouselService {
 
-    public static final String QUICKSHOP_VIRTUAL_SITE_FEATURE = "CRAZY_QUICKSHOP";
     private static final String QS_BOTTOM_GENERAL_VARIANT_ID = "qs_bottom_general";
-    private static final String SELECTED_SITE_FEATURE_ATTRIBUTE_KEY = QS_BOTTOM_GENERAL_VARIANT_ID + SELECTED_SITE_FEATURE_POSTFIX;
-    private static final String PARENT_IMPRESSION_ID_ATTRIBUTE_KEY = QS_BOTTOM_GENERAL_VARIANT_ID + PARENT_IMPRESSION_ID_POSTFIX;
     private static final List<String> QS_SITE_FEATURES = Arrays.asList("DEALS_QS", "EXPRATED_QS", "CUSTRATED_QS");
 
     private static final QuickShopCarouselService INSTANCE = new QuickShopCarouselService();
@@ -57,11 +51,6 @@ public class QuickShopCarouselService extends AbstractCarouselService {
 		return "default";
 	}
 
-	@Override
-	protected boolean shouldConsolidateEmptyTabs() {
-		return true;
-	}
-
 	protected String getSelectedTabName() {
 		return SessionName.QSB_SELECTED_TAB;
 	}
@@ -69,28 +58,6 @@ public class QuickShopCarouselService extends AbstractCarouselService {
 	protected String getSelectedVariantName() {
 		return SessionName.QSB_SELECTED_VARIANT;
 	}
-
-    @Override
-    protected TabRecommendation getTabRecommendation(HttpServletRequest request, FDUserI user, SessionInput input) {
-        // variants
-        List<Variant> variants = new ArrayList<Variant>();
-        for (final String siteFeature : getSiteFeatures(user)) {
-            EnumSiteFeature enumSiteFeature = EnumSiteFeature.getEnum(siteFeature);
-            if (EnumSiteFeature.NIL != enumSiteFeature) {
-                VariantSelector selector = VariantSelectorFactory.getSelector(enumSiteFeature);
-                Variant variant = selector.select(user, false);
-                if (variant != null) {
-                    variants.add(variant);
-                }
-            }
-        }
-
-        TabRecommendation tabs = new TabRecommendation(getTabVariant(), variants);
-        tabs.setError(input.isError());
-        tabs.setSelectedSiteFeature((String) request.getSession().getAttribute(SELECTED_SITE_FEATURE_ATTRIBUTE_KEY));
-        tabs.setParentImpressionId((String) request.getSession().getAttribute(PARENT_IMPRESSION_ID_ATTRIBUTE_KEY));
-        return tabs;
-    }
 
     @Override
     protected String getEventSource(String siteFeature, FDUserI user) {
@@ -106,6 +73,19 @@ public class QuickShopCarouselService extends AbstractCarouselService {
     protected Variant getTabVariant() {
         final RecommendationServiceConfig cfg = new RecommendationServiceConfig(QS_BOTTOM_GENERAL_VARIANT_ID, RecommendationServiceType.NIL);
         return new Variant(QS_BOTTOM_GENERAL_VARIANT_ID, EnumSiteFeature.QS_BOTTOM_CAROUSEL, cfg);
+    }
+
+    @Override
+    protected TabRecommendation getTabRecommendation(HttpServletRequest request, FDUserI user, SessionInput input) {
+        Variant tabVariant = getTabVariant();
+        String selectedSiteFeature = getSelectedSiteFeatureAttribute(request.getSession(), tabVariant.getId());
+        String parentImpressionId = getParentImpressionIdAttribute(request.getSession(), tabVariant.getId());
+        TabRecommendation tabs = new TabRecommendation(tabVariant, getVariants(user));
+        tabs.setSelectedSiteFeature(selectedSiteFeature);
+        tabs.setParentImpressionId(parentImpressionId);
+        tabs.setOnlyTabHeader(input.isOnlyTabHeader());
+        tabs.setError(input.isError());
+        return tabs;
     }
 
     @Override
@@ -169,4 +149,5 @@ public class QuickShopCarouselService extends AbstractCarouselService {
 
         return selectedTab;
     }
+
 }

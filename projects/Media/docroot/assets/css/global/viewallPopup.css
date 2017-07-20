@@ -1,17 +1,13 @@
-#viewallPopup.fixedpopup {
+#viewallPopup.overlay {
   min-height: 450px;
   min-width: 450px;
 }
 
-#viewallPopup.fixedpopup .fixedPopupContent {
-  min-height: 300px;
+#viewallPopup.overlay .overlay-content {
+  min-height: 155px;
   min-width: 300px;
   max-height: 80%;
-}
-
-#viewallPopup .fixedPopupContent .qs-popup-content {
-  min-height: 250px;
-  -ms-flex: 1;
+  margin-bottom: 0;
 }
 
 #viewallPopup .spinner {
@@ -26,30 +22,22 @@
   position: absolute;
   left: 0;
   right: 0;
+  margin-top: 25px;
   margin-left: auto;
   margin-right: auto;
 }
 
-.popupcontentoverlay.white-popup-overlay {
-  opacity: 0.8;
-}
-
-#viewallPopup .fixedPopupContent .qs-popup-content .content-module {
-  margin: 0;
-}
-
-#viewallPopup .fixedPopupContent {
+#viewallPopup .overlay-close {
   text-align: center;
-}
-
-#viewallPopup .fixedPopupContent .qs-popup-close {
   margin: 20px;
+  position: relative;
+  top: -25px;
 }
 
-#viewallPopup .fixedPopupContent .qs-popup-close button {
+#viewallPopup .overlay-close button {
   text-transform: uppercase;
 }
-#viewallPopup .fixedPopupContent .view-all {
+#viewallPopup .overlay-content .view-all {
   display: none;
 }
 

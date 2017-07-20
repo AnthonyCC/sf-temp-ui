@@ -599,7 +599,7 @@ public class CmsFilteringFlow {
                 String curCat = ((ProductModelPromotionAdapter) product).getErpCategory();
                 if (curCat == null || curCat.trim() == "") {
                     //curCat = "ERROR"; // lump all the bad products together
-                    curCat = "STAFF PICKS"; // We cannot leave this variable blank. UI also needs a change
+                    curCat = "%%STAFFPICKS%%"; // We cannot leave this variable blank. UI also needs a change
                 }
                 productData.setErpCategory(curCat);
                 productData.setErpCatPosition(((ProductModelPromotionAdapter) product).getErpCatPosition());

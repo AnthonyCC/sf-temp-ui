@@ -2087,3 +2087,7 @@ option.address-icon {
 	.locabar-right-sections .locabar-section {
 		height: 40px;
 	}
+	/* hide all down arrows until submenus are shown */
+	[data-ec-page] .disableCart .locabar-arrow {
+		display: none;
+	}

@@ -81,7 +81,8 @@ public class FDStandingOrder extends ModelSupport {
 	
 	private boolean reminderOverlayForNewSo;
 	
-	
+	Date deleteDate; 		
+
 	public FDStandingOrder() {
 		super();
 	}
@@ -366,7 +367,8 @@ public class FDStandingOrder extends ModelSupport {
 		PAYMENT_ADDRESS( "The address you entered does not match the information on file with your card provider.", "Please contact a FreshDirect representative at 9999 for assistance.",true ),
 		NO_ADDRESS( "The address you set up for this standing order no longer exists in the system.", "Use the link below to modify this standing order and choose a different address.",true ), 
 		CLOSED_DAY( "We do not deliver on closed days.", "We do not deliver on closed days.", false ),
-		RELEASE_TIMESLOT( "Your delivery timeslot has expired.", "Please click the link below to select a new delivery timeslot", true );
+		RELEASE_TIMESLOT( "Your delivery timeslot has expired.", "Please click the link below to select a new delivery timeslot", true ),
+		UNACTIVATED_SO("The standing order template is not activated.","Your selected order was deactivated.",true);
 
 		private String errorHeader;
 		private String errorDetail;
@@ -652,5 +654,13 @@ public class FDStandingOrder extends ModelSupport {
 	}
 	public void setReminderOverlayForNewSo(boolean reminderOverlayForNewSo) {
 		this.reminderOverlayForNewSo = reminderOverlayForNewSo;
+	}
+
+	public Date getDeleteDate() {
+		return deleteDate;
+	}
+
+	public void setDeleteDate(Date deleteDate) {
+		this.deleteDate = deleteDate;
 	}
 }

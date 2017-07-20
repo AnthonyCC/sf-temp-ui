@@ -238,7 +238,6 @@ h2.centerline span {
 .qtyinput_fixedwidth {
   width: 100px;
 }
-
 .qtyinput .qtyprice {
   font-weight: bold;
 }
@@ -1090,4 +1089,10 @@ section.main .leftnav .menuBox li.selected:hover input[type="radio"] + span {
 }
 #PP_ERROR_WRAPPER #PP-connect{
     margin: 0;
+}
+.accessibleblurinput{
+	background-color:transparent;
+	border:1px inset;
+	user-select:none;
+	width:60px;
 }

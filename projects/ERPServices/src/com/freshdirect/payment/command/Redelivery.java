@@ -18,6 +18,7 @@ import com.freshdirect.customer.ejb.*;
 
 public class Redelivery implements PaymentCommandI {
 	
+	
 	private PaymentContext ctx;
 	private String saleId;
 	
@@ -40,5 +41,14 @@ public class Redelivery implements PaymentCommandI {
 			throw new RuntimeException("CreateException occured: "+ce.getMessage());	
 		}	
 	}
+	//introduced for Storefront2.0
+	/**
+	 * @return the saleId
+	 */
+	public String getSaleId() {
+		return saleId;
+	}
+
+
 
 }

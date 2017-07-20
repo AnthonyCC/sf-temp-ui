@@ -19,6 +19,10 @@
 <c:when test="${browsePotato!=null}">
 <tmpl:insert template='/common/template/pdp_template.jsp'>
 
+  <tmpl:put name="seoMetaTag" direct='true'>
+    <fd:SEOMetaTag title='${browsePotato.descriptiveContent.pageTitle}'/>
+  </tmpl:put>
+
   <tmpl:put name='soypackage' direct='true'>
     <soy:import packageName="pdp" />
     <soy:import packageName="browse" />
@@ -30,7 +34,7 @@
   </tmpl:put>
 
 
-  <tmpl:put name='title'>${browsePotato.descriptiveContent.pageTitle}</tmpl:put>   
+  <tmpl:put name='title'>${browsePotato.descriptiveContent.pageTitle}</tmpl:put>
     
   <tmpl:put name='deptnav' direct='true'>
     <div class="browse-titlebar">

@@ -73,9 +73,9 @@ FDRecipientList recipList = giftUser.getRecipientList();
 								gcDonId= srm.getTemplateId();
 							}
 							%>
-							<div class="recipLinks" id="<%=srm.getRandomId()%>Links">&nbsp;<a href="#" onClick="recipPreview('<%=srm.getRandomId()%>'); return false;">Preview</a><a href="/gift_card/purchase/add_donation_giftcard.jsp?recipId=<%=srm.getRandomId()%>&gcDonId=<%= gcDonId %>">Edit</a></div>
+							<div class="recipLinks" id="<%=srm.getRandomId()%>Links">&nbsp;<a href="#" onClick="recipPreview('<%=srm.getRandomId()%>'); return false;">Preview<span class="offscreen"><%= srm.getRecipientName()%> gift card </span></a><a href="/gift_card/purchase/add_donation_giftcard.jsp?recipId=<%=srm.getRandomId()%>&gcDonId=<%= gcDonId %>">Edit<span class="offscreen"><%= srm.getRecipientName()%>  gift card</span></a></div>
 						<% } else { %>
-							<div class="recipLinks" id="<%=srm.getRandomId()%>Links">&nbsp;<a href="#" onClick="recipPreview('<%=srm.getRandomId()%>'); return false;">Preview</a><a href="/gift_card/purchase/add_giftcard.jsp?recipId=<%=srm.getRandomId()%>">Edit</a><a href="<%= request.getRequestURI() %>?deleteId=<%=srm.getRandomId()%>">Delete</a></div>
+							<div class="recipLinks" id="<%=srm.getRandomId()%>Links">&nbsp;<a href="#" onClick="recipPreview('<%=srm.getRandomId()%>'); return false;">Preview<span class="offscreen"><%= srm.getRecipientName()%> gift card </span></a><a href="/gift_card/purchase/add_giftcard.jsp?recipId=<%=srm.getRandomId()%>">Edit<span class="offscreen"><%= srm.getRecipientName()%> gift card</span></a><a href="<%= request.getRequestURI() %>?deleteId=<%=srm.getRandomId()%>">Delete<span class="offscreen"><%= srm.getRecipientName()%> gift card</span></a></div>
 						<% } %>
 					</div>
 				</td>

@@ -265,6 +265,8 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 	}
+	
+	//old deletion flow coming from manage servlet
 	public void delete(FDActionInfo info, FDStandingOrder so) throws FDResourceException {
 		Connection conn = null;
 		try {
@@ -284,6 +286,48 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 	}
+	
+	//set future delete coming from manage servlet
+	public void updateDeleteSOInfo(FDActionInfo info, FDStandingOrder so, String deleteDate) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO dao = new FDStandingOrderDAO();
+			
+			dao.updateDeleteSOInfo(conn, so.getId(), deleteDate);
+			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.STANDINGORDER_TEMPLATE_DEL_DATE_SET);
+			rec.setStandingOrderId(so.getId());
+			this.logActivity(rec);
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in updateDeleteSOInfo() : " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+	}	
+	
+	//	delete flow coming from cron job cmd
+	public void deleteSOByDate() throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO dao = new FDStandingOrderDAO();
+			List<String> soList = dao.deleteSOByDate(conn);
+			if(null != soList && !soList.isEmpty()) {
+			
+				for(String id : soList) {
+					FDStandingOrdersManager.getInstance().deletesoTemplate(id);
+				}
+			}
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in delete() : " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+	}	
 
 	public String save(FDActionInfo info, FDStandingOrder so, String saleId) throws FDResourceException {
 		String primaryKey = null;
@@ -1141,5 +1185,20 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 	}
+	
+	public void	updateDeActivatedSOError(String soId)throws FDResourceException,RemoteException{
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO.updateDeActivatedSOError(conn, soId);	
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in updateDeActivatedSOError(): " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+	}	
+	
 
 }

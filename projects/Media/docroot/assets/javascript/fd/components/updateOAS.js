@@ -8,6 +8,12 @@ var FreshDirect = FreshDirect || {};
   var listPos = [];
   var lastSitePage = null;
   
+  function OAS_SCRIPT_URL(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos, OAS_query) {
+		return OAS_url + 'adstream_mjx.ads/' +
+				OAS_sitepage + '/1' + OAS_rns + '@' +
+				OAS_listpos + '?' + OAS_query;
+  }
+  
   function updateOAS(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos, OAS_query) {
     var scriptUrl = OAS_SCRIPT_URL(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos.join(','), OAS_query);
     

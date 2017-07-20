@@ -498,6 +498,15 @@
 	</servlet-mapping>
 	
 	<servlet>
+		<servlet-name>ModuleImageProductsServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.ajax.modulehandling.ModuleImageProductsServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ModuleImageProductsServlet</servlet-name>
+		<url-pattern>/api/modulehandling/imageproduct</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
 		<servlet-name>LocationHandlerServlet</servlet-name>
 		<servlet-class>com.freshdirect.webapp.ajax.location.LocationHandlerServlet</servlet-class>
 	</servlet>

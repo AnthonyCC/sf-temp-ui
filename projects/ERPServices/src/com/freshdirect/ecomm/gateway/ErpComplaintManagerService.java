@@ -17,23 +17,13 @@ import com.freshdirect.payment.service.ModelConverter;
 
 public class ErpComplaintManagerService extends AbstractEcommService implements ErpComplaintManagerServiceI {
 
-	private static final Category LOGGER = LoggerFactory
+	private final static Category LOGGER = LoggerFactory
 			.getInstance(ErpComplaintManagerService.class);
-	
-	private static ErpComplaintManagerService INSTANCE;
-	
-	
-	public static ErpComplaintManagerServiceI getInstance() {
-		if (INSTANCE == null)
-			INSTANCE = new ErpComplaintManagerService();
-
-		return INSTANCE;
-	}
-
 
 	private static final String GET_COMPLAINT_REASONS = "complaint/reason/excludeCartonReq/";
 	private static final String GET_COMPLAINT_CODES = "complaint/code";
 	private static final String REJECT_MAKE_GOOD_COMPLAINT = "complaint/reject/makeGoodSaleId/";
+	private static final String GET_REASON_BY_COMPCODE = "complaint/reason/cCode/";
 	private static final String GET_PENDING_COMPLAINTS = "complaint/pending";
 
 	@Override
@@ -50,7 +40,8 @@ public class ErpComplaintManagerService extends AbstractEcommService implements 
 				throw new FDResourceException(response.getMessage());
 
 		} catch (FDResourceException e) {
-			LOGGER.error("Error occured, excludeCartonReq=" + excludeCartonReq, e);
+			e.printStackTrace();
+			LOGGER.error(e.getMessage());
 		}
 		return ModelConverter.buildErpComplaintReason(response.getData());
 	}
@@ -67,7 +58,8 @@ public class ErpComplaintManagerService extends AbstractEcommService implements 
 				throw new FDResourceException(response.getMessage());
 
 		} catch (FDResourceException e) {
-			LOGGER.error("Error occured, ", e);
+			e.printStackTrace();
+			LOGGER.error(e.getMessage());
 		}
 		return response.getData();
 	}
@@ -85,7 +77,8 @@ public class ErpComplaintManagerService extends AbstractEcommService implements 
 				throw new FDResourceException(response.getMessage());
 
 		} catch (FDResourceException e) {
-			LOGGER.error("Error occured, ", e);
+			e.printStackTrace();
+			LOGGER.error(e.getMessage());
 		}
 		return response.getData();
 	}
@@ -93,24 +86,38 @@ public class ErpComplaintManagerService extends AbstractEcommService implements 
 	@Override
 	public void rejectMakegoodComplaint(String makegood_sale_id)
 			throws RemoteException {
-		Response<Void> response = null;
+		Response<Object> response = null;
 		try {
 			response = httpGetDataTypeMap(
 					getFdCommerceEndPoint(REJECT_MAKE_GOOD_COMPLAINT
 							+ makegood_sale_id),
-					new TypeReference<Response<Void>>() {
+					new TypeReference<Response<Object>>() {
 					});
 			if (!response.getResponseCode().equals("OK"))
-				if (response.getError() != null && response.getError().get("FDResourceException") != null) {
-					throw new FDResourceException(response.getError().get("FDResourceException").toString());
-				} else {
-					throw new FDResourceException(response.getMessage());
-				}
+				throw new FDResourceException(response.getMessage());
 
 		} catch (FDResourceException e) {
-			LOGGER.error("Error occured, makegood_sale_id=" + makegood_sale_id, e);
-			throw new RemoteException(e.getMessage());
+			e.printStackTrace();
+			LOGGER.error(e.getMessage());
 		}
 	}
 
+	@Override
+	public ErpComplaintReason getReasonByCompCode(String cCode)
+			throws RemoteException {
+		Response<ErpComplaintReasonData> response = null;
+		try {
+			response = httpGetDataTypeMap(
+					getFdCommerceEndPoint(GET_REASON_BY_COMPCODE + cCode),
+					new TypeReference<Response<ErpComplaintReasonData>>() {
+					});
+			if (!response.getResponseCode().equals("OK"))
+				throw new FDResourceException(response.getMessage());
+
+		} catch (FDResourceException e) {
+			e.printStackTrace();
+			LOGGER.error(e.getMessage());
+		}
+		return ModelConverter.buildErpComplaintReason(response.getData());
+	}
 }

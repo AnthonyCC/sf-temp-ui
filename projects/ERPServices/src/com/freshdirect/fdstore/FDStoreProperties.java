@@ -533,6 +533,9 @@ public class FDStoreProperties {
 
     // APPDEV-6030 Google Tag Manager
     private static final String PROP_GOOGLE_TAG_MANAGER_KEY = "fdstore.google.tagmanager.key";
+    // APPDEV-6285 support multiple environments in GTM
+    private static final String PROP_GOOGLE_TAG_MANAGER_AUTH_TOKEN = "fdstore.google.tagmanager.authtoken";
+    private static final String PROP_GOOGLE_TAG_MANAGER_PREVIEW_ID = "fdstore.google.tagmanager.previewid";
 
     // APPDEV-2062 CS Hours.
     private static final String CUST_SERV_HOURS_DAYS = "fdstore.cust_serv_days";
@@ -777,8 +780,6 @@ public class FDStoreProperties {
 
     private static final String PROP_PRODUCT_SAMPLES_MAX_BUY_PRODUCTS_LIMIT = "fdstore.product.samples.max.buy.products.limit";
     private static final String PROP_PRODUCT_SAMPLES_MAX_BUY_QUANTITY_LIMIT = "fdstore.product.samples.max.buy.quantity.limit";
-    private static final String PROP_PRODUCT_SAMPLES_TITLE = "fdstore.product.samples.title";
-
     private static final String PROP_FEED_PUBLISH_URL = "fdstore.feed.publish.url";
     private static final String CTCAPACITY_ELIGIBLE_PROFILES = "fdstore.ctcapacity.eligibleprofiles";
     private static final String PROP_CORE_NON_CORE_GLOBAL_NAV_SWITCH_ENABLED = "fdstore.corenoncore.globalnav.switch.enabled";
@@ -929,10 +930,6 @@ public class FDStoreProperties {
     private static final String PROP_SF_2_0_ENABLED = "fdstore.storefront_2_0.enabled";
     private static final String PROP_MEALBUNDLE_CARTONVIEW_ENABLED = "fdstore.mealbundle_cartonview.enabled";
 
-    /* APPDEV-5916 */
-    // previous product donation/sample carousels, for QA
-    private static final String PROP_OBSOLETE_CART_CAROUSELS_ENABLED = "fdstore.obsolete.cart.carousels.enabled";
-    
     private final static String PROP_QS_TOP_ITEMS_PERF_OPT_ENABLED = "fdstore.quickshop.topitems.perf.optimize.enabled";
     private final static String PROP_ZIP_CHECK_OVER_LAY_ENABLED = "fdstore.zipcheck.overlay.enabled";
     /* APPDEV-5781 */
@@ -1419,6 +1416,9 @@ public class FDStoreProperties {
 
         // APPDEV-6030 Google Tag Manager
         defaults.put(PROP_GOOGLE_TAG_MANAGER_KEY, "GTM-KFMTML");
+        // APPDEV-6285 support multiple environments in GTM
+        defaults.put(PROP_GOOGLE_TAG_MANAGER_AUTH_TOKEN, "");
+        defaults.put(PROP_GOOGLE_TAG_MANAGER_PREVIEW_ID, "");
 
         // APPDEV-2072 google analytics key
         defaults.put(PROP_GOOGLE_ANALYTICS_KEY, "UA-20535945-18"); // default to an empty string
@@ -1563,7 +1563,6 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.leftnavtut2014", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.browseflyoutrecommenders", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.quickshop2_2", "GLOBAL:ENABLED,true;");
-        defaults.put("feature.rollout.homepageredesign", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.mobweb", "GLOBAL:ENABLED,true;");
         // defaults.put("feature.rollout.sociallogin", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.printinvoice", "GLOBAL:ENABLED,true;");
@@ -1665,7 +1664,6 @@ public class FDStoreProperties {
         defaults.put(CATEGORY_TOP_ITEM_CACHE_MAXIMAL_SIZE, "10");
         defaults.put(PROP_PRODUCT_SAMPLES_MAX_BUY_PRODUCTS_LIMIT, "2");
         defaults.put(PROP_PRODUCT_SAMPLES_MAX_BUY_QUANTITY_LIMIT, "1");
-        defaults.put(PROP_PRODUCT_SAMPLES_TITLE, "Choose 2.");
 
         defaults.put("feature.rollout.checkout1_0", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.checkout2_0", "GLOBAL:ENABLED,false;");
@@ -1795,9 +1793,6 @@ public class FDStoreProperties {
         defaults.put(PROP_EXTRA_LOG_FOR_LOGIN_FAILS_ENABLED, "false");
         defaults.put(PROP_MEALBUNDLE_CARTONVIEW_ENABLED, "true");
 
-        /* APPDEV-5916 */
-        defaults.put(PROP_OBSOLETE_CART_CAROUSELS_ENABLED, "false");
-        
         defaults.put(PROP_QS_TOP_ITEMS_PERF_OPT_ENABLED, "true");
         defaults.put(PROP_ZIP_CHECK_OVER_LAY_ENABLED, "true");
         
@@ -1812,6 +1807,17 @@ public class FDStoreProperties {
     	
 
         defaults.put(PROP_PRODUCT_CACHE_OPTIMIZATION_ENABLED, "true");
+        
+        /* IBM silverpopup */
+        defaults.put(IBM_ACCESSTOKEN_URL, "https://api3.ibmmarketingcloud.com/oauth/token");
+        // for Dev DB
+        defaults.put(IBM_PUSHNOTIFICATION_URL, "https://api3.silverpop.com:443/rest/databases/5979940/establishidentity/");
+        									 // https://api3.silverpop.com:443/rest/databases/{databaseid}/establishidentity/ 
+        // for Prod DB
+        //defaults.put(IBM_PUSHNOTIFICATION_URL, "https://api3.silverpop.com:443/rest/databases/3745165/establishidentity/");
+        defaults.put(IBM_CLIENT_ID, "42c3eede-b1b2-43d2-b503-55682f190c2d");
+        defaults.put(IBM_CLIENT_SECRET, "5f154ee0-bae6-4833-9ce2-e013b1b3c7d5");
+        defaults.put(IBM_REFRESH_TOKEN, "r_3872jS_Gh7VmanX2TcazBB_MJ1C_RBqbJWY6gvh3koS1");
         refresh();
     }
 
@@ -3369,6 +3375,15 @@ public class FDStoreProperties {
         return get(PROP_GOOGLE_TAG_MANAGER_KEY);
     }
 
+    // APPDEV-6285 support multiple environments in GTM
+    public static String getGoogleTagManagerAuthToken() {
+        return get(PROP_GOOGLE_TAG_MANAGER_AUTH_TOKEN);
+    }
+
+    public static String getGoogleTagManagerPreviewId() {
+        return get(PROP_GOOGLE_TAG_MANAGER_PREVIEW_ID);
+    }
+
     // APPDEV-2072 google analytics key
     public static String getGoogleAnalyticsKey() {
         return get(PROP_GOOGLE_ANALYTICS_KEY);
@@ -4137,10 +4152,6 @@ public class FDStoreProperties {
         return Integer.parseInt(get(PROP_PRODUCT_SAMPLES_MAX_BUY_QUANTITY_LIMIT));
     }
 
-    public static String getProductSamplesTitle() {
-        return get(PROP_PRODUCT_SAMPLES_TITLE);
-    }
-
     public static String getFeedPublishURL() {
         return get(PROP_FEED_PUBLISH_URL);
     }
@@ -4361,23 +4372,23 @@ public class FDStoreProperties {
     
     //@ IBM silverpopup chnages
     public static String getIBMAccessTokenURL(){
-    	return StringUtils.defaultString(get(IBM_ACCESSTOKEN_URL));
+    	return get(IBM_ACCESSTOKEN_URL);
     }
-    
+ 
     public static String getIBMPushNotificationURL() {
-        return StringUtils.defaultString(get(IBM_PUSHNOTIFICATION_URL));
+        return get(IBM_PUSHNOTIFICATION_URL);
     }
     
     public static String getIBMClientID() {
-		return StringUtils.defaultString(get(IBM_CLIENT_ID));
+		return get(IBM_CLIENT_ID);
 	}
     
     public static String getIBMClientSecret() {
-		return StringUtils.defaultString(get(IBM_CLIENT_SECRET));
+		return get(IBM_CLIENT_SECRET);
 	}
     
     public static String getIBMRefreshToken() {
-		return StringUtils.defaultString(get(IBM_REFRESH_TOKEN));
+		return get(IBM_REFRESH_TOKEN);
 	} 
     //end IBM silverpopup end
     
@@ -4617,11 +4628,6 @@ public class FDStoreProperties {
         return (Boolean.valueOf(get(PROP_EXTRA_LOG_FOR_LOGIN_FAILS_ENABLED))).booleanValue();
     }
 
-    /* APPDEV-5916 */
-    public static boolean isObsoleteCartCarouselsEnabled() {
-        return (Boolean.valueOf(get(PROP_OBSOLETE_CART_CAROUSELS_ENABLED))).booleanValue();
-    }
-    
     public static boolean isQSTopItemsPerfOptimizationEnabled(){
     	return (Boolean.valueOf(get(PROP_QS_TOP_ITEMS_PERF_OPT_ENABLED))).booleanValue();
     }

@@ -5,8 +5,8 @@ import java.util.List;
 
 public enum PageType {
     HOMEPAGE("/index.jsp", "/cos.jsp", "/welcome.jsp"),
-    LOGIN("/login/login.jsp"),
-    REGISTER("/registration/signup.jsp"),
+    LOGIN("/social/login.jsp", "/login/login.jsp"),
+    REGISTER("/social/signup_lite.jsp"),
     CATEGORY_LIST("/browse.jsp?pageType=category_list"),
     PRODUCT_LIST("/browse.jsp?pageType=product_list"),
     SEARCH("/srch.jsp"),
@@ -32,12 +32,16 @@ public enum PageType {
     E_COUPONS("/srch.jsp?pageType=ecoupon"),
     FRESH_DEALS("/srch.jsp?pageType=pres_picks"),
     STAFF_PICKS("/srch.jsp?pageType=staff_picks"),
-    MEAL_KITS("/browse.jsp?pageType=meal_kits"),
+    MEAL_KITS("/handpick/category.jsp?id=meals_kits_meals", "/browse.jsp?id=meals_kits_meals"),
     RECIPE_DEPARTMENT("/recipe_dept.jsp"),
     RECIPE_CATEGORY("/recipe_cat.jsp"),
     RECIPE_SUBCATEGORY("/recipe_subcat.jsp"),
     RECIPE_PAGE("/recipe.jsp"),
-    ABOUT_US("/browse.jsp?pageType=about_us"),
+    ABOUT_US("/browse_special.jsp?id=about_overview"),
+    SALE("/browse.jsp?id=wgd_deals"),
+    TOP_RATED("/browse.jsp?id=top_rated"),
+    LOCAL("/browse.jsp?id=local"),
+    JULY_4("/browse.jsp?id=wgd_summer_central"),
     NOT_RECOGNIZED("");
 
     private List<String> urls;

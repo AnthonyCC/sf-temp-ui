@@ -37,9 +37,6 @@
   <tmpl:put name='content' direct='true'>
     	
     	<% if (user.isEligibleForStandingOrders()) { %>
- 			<% if(user.isSoFeatureOverlay()){ %>
- 				<script>doOverlayDialogNew("/quickshop/includes/feature_change_tutorial.jsp");</script>
- 			<% } %>
 		    <% if (user.isCustomerHasStandingOrders()) { %>
 				<div class="standing-orders-3">
 					<%@ include file="/quickshop/includes/manage_standing_orders.jspf" %>
@@ -49,6 +46,9 @@
 					<%@ include file="/quickshop/includes/first_standing_order.jspf" %>
 				</div>
 		    <% } %>
+		    <% if(user.isSoFeatureOverlay()){ %>
+ 				<script>setTimeout(function(){ doOverlayDialogNew("/quickshop/includes/feature_change_tutorial.jsp"); }, 1000);</script>
+ 			<% } %>
 	   	<%  } %>
     	
     <script>

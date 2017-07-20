@@ -111,21 +111,31 @@ function openSettingsDelete(id){
 
 function closeSettingsDelete(id){
 	var soID = "#soid_" + id;
-	$jq(soID + " .standing-orders-3-so-settings-buttons .so-delete-popup.open").removeClass("open");
+	$jq(soID + " .standing-orders-3-so-settings-buttons .so-delete-popup.open").removeClass("open").removeClass("custom");
+	$jq(soID + " .so-delete-popup-buttons-yes").html("Yes");
+	$jq(soID + " .so-delete-popup-buttons-no").html("No");
 }
 
-function deleteSO(id){
+function deleteSO(id, custom){
 	var soID = "#soid_" + id;
 	var usoID = "#usoid_" + id;
-	submitFormManageSO(id,"delete",null,null);
-	if($jq(usoID).length > 0){
-		openUpcomingOrderCancel(id);
-	}	
-	closeSettingsDelete(id);
-	$jq(soID).remove();
+	if($jq(soID + " .so-delete-popup.custom").length > 0){
+		submitFormManageSO(id,"delete",null, null, $jq(soID + " .so-delete-popup select option:selected").text());
+		closeSettingsDelete(id);
+	} else {
+		if(custom){
+			$jq(soID + " .so-delete-popup.open").addClass("custom");
+			$jq(soID + " .so-delete-popup-buttons-yes").html("Confirm");
+			$jq(soID + " .so-delete-popup-buttons-no").html("Cancel");
+		} else {
+			submitFormManageSO(id,"delete",null,null);
+			closeSettingsDelete(id);
+		}
+	}
+	//if($jq(usoID).length > 0){ openUpcomingOrderCancel(id);}
 }
 
-function openSOSettings(id) {			
+function openSOSettings(id) {
 	closeSOSettings();
 	submitFormManageSO(id,'settings',null,null);
 }
@@ -168,12 +178,16 @@ function standingOrdersNameInputChangeOK(id){
 	}
 }
 
-function soPlaceOrderDisplay(amount){
+function soPlaceOrderDisplay(soID, readyForActivation){
 	if ($jq(".standing-orders-3-so-settings-activate-button").length) {
-		if(amount < FreshDirect.standingorder.softLimitDisplay){
-			$jq(".standing-orders-3-so-settings-activate-button").prop("disabled", true);
-		} else {
+		if(readyForActivation){
+			if($jq(soID + " .standing-orders-3-error-place-order").data("minorderpopup") == true){
+				doOverlayDialogByHtmlNew('<div class="so-ready-to-activate-reminder"><div class="so-ready-to-activate-reminder-header">Reminder</div><div class="so-ready-to-activate-reminder-text">Place Your Order when you&apos;re finished shopping.</div><div class="so-ready-to-activate-reminder-text">Go to the <a class="so-ready-to-activate-reminder-text-link" href="/quickshop/standing_orders.jsp">Standing Order page</a> to Place Your Order.</div><div class="so-ready-to-activate-reminder-buttons"><a class="so-ready-to-activate-reminder-go-so cssbutton cssbutton-flat purple nontransparent" href="/quickshop/standing_orders.jsp">Go to Standing Order</a><button class="so-ready-to-activate-reminder-close cssbutton cssbutton-flat green nontransparent" onclick="closeDrawerSuccessOverlayDialog(false)">Keep Shopping</button></div></div>');
+				$jq(soID + " .standing-orders-3-error-place-order").data("minorderpopup", false);
+			}
 			$jq(".standing-orders-3-so-settings-activate-button").prop("disabled", false);
+		} else {
+			$jq(".standing-orders-3-so-settings-activate-button").prop("disabled", true);
 		}
 	}
 }
@@ -201,9 +215,9 @@ function soSaved(id, activatedAndHasAddress, isNewSO){
 	}
 }
 
-function submitFormManageSO(id,action,name,freq){
+function submitFormManageSO(id,action,name,freq, deleteDate){
 	var soID = "#soid_" + id;
-	var dataString = "soId=" + id + "&action=" + action+ "&soName=" + name+ "&isSO=true&frequency="+freq;
+	var dataString = "soId=" + id + "&action=" + action+ "&soName=" + name+ "&isSO=true&frequency="+freq+ "&deleteDate=" + deleteDate;
 	$jq.ajax({
         url: '/api/manageStandingOrder',
         type: 'POST',
@@ -230,6 +244,7 @@ function submitFormManageSO(id,action,name,freq){
       			$jq("#cartcontent").on( "cartcontent-update", function(){ soItemTriggerUpdate(id, data, false); });
       			$jq("#cartcontent").on( "quantity-change", function(){ soItemTriggerUpdate(id, data, true); });
       			$jq("#cartcontent").on( "cartline-delete", function(){ soItemTriggerUpdate(id, data, true); $jq(soID).addClass("cartline-deleted"); });
+      			$jq("#cartcontent").on( "click", "#tipApply", function(){ soItemTriggerUpdate(id, data, true); });
       			$jq("#ec-drawer").on( "address-update", function(){ soItemTriggerUpdate(id, data, false); });
       			$jq("#ec-drawer").on( "timeselector-update", function(){ soItemTriggerUpdate(id, data, false); });
       			$jq("#ec-drawer").on( "paymentmethod-update", function(){ soItemTriggerUpdate(id, data, false); });
@@ -257,7 +272,7 @@ function submitFormManageSO(id,action,name,freq){
             if('activate'==action){
             	getSOData(id, action);
             }
-            if('delete'==action){
+            if('delete'==action && ($jq(soID + " .so-delete-popup select").prop('selectedIndex') == 0 || deleteDate === undefined)){
             	$jq(soID).remove();
             }
         }
@@ -301,7 +316,7 @@ function soItemTriggerUpdate(id, data, isCartUpdate){
 			if(data.standingOrderResponseData.activate){
     			$jq(soID + " .standing-orders-3-so-settings-activate").addClass("open");
 	      	}
-		}, 7000);
+		}, 5000);
 	} else {
 		$jq(soID).addClass("drawer-saved");
 		getSOData(id, "soItemUpdateDrawer");
@@ -347,7 +362,7 @@ function getSOData(id, action){
         		} else {
         			activatedAndHasAddress = false;
         		}
-        		soPlaceOrderDisplay(data.amount);
+        		soPlaceOrderDisplay(soID, data.readyForActivation);
         		soSaved(id, activatedAndHasAddress, false);
         		updateSOItem(id, data);
         	}
@@ -357,7 +372,7 @@ function getSOData(id, action){
         		} else {
         			activatedAndHasAddress = false;
         		}
-        		soPlaceOrderDisplay(data.amount);
+        		soPlaceOrderDisplay(soID, data.readyForActivation);
         		soSaved(id, activatedAndHasAddress, false);
         		updateSOItem(id, data);
         		var drawerSuccessConformation = '<div class="so-drawer-success"><div class="so-drawer-success-header"><div class="so-drawer-success-alert-img"></div>Important -- Please Read!</div>';

@@ -9,6 +9,7 @@
 
 package com.freshdirect.fdstore.customer.ejb;
 
+import java.rmi.RemoteException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.sql.Connection;
@@ -367,6 +368,11 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 			customerEStoreModel.seteStoreId(EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId())));
 		customerEStoreModel.setEmailOptIn(emailOptIn);
 		customerEStore.setFromModel(customerEStoreModel);
+	}
+	
+	public void setFDCustomerEStore(FDCustomerEStoreModel fdCustomerEStoreModel){
+		customerEStore.setFromModel(fdCustomerEStoreModel);
+		this.setModified();
 	}
 
 	public void load(Connection conn) throws SQLException {

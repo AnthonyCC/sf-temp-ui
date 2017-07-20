@@ -22,7 +22,7 @@ import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.payment.service.IECommerceService;
 import com.freshdirect.payment.service.ModelConverter;
 
-public class ErpNutritionService extends ExtTimeAbstractEcommService implements ErpNutritionServiceI{
+public class ErpNutritionService extends AbstractEcommService implements ErpNutritionServiceI{
 	
 	private final static Category LOGGER = LoggerFactory
 			.getInstance(FDECommerceService.class);
@@ -153,9 +153,10 @@ public class ErpNutritionService extends ExtTimeAbstractEcommService implements 
 		Map<String, ErpNutritionModel> data = new HashMap();
 		ErpNutritionModel nutritionModel;
 		try {
-			long date1=0;
+			String date1=null;
+			SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
 			if(lastModified!=null){
-			date1 = lastModified.getTime(); 
+			date1 = format1.format(lastModified); 
 			}
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(NUTRITION_BY_DATE)+"/"+date1,  new TypeReference<Response<Map<String, ErpNutritionModelData>>>(){});
 			if(!response.getResponseCode().equals("OK")){
@@ -177,10 +178,10 @@ public class ErpNutritionService extends ExtTimeAbstractEcommService implements 
 		Response<Map<String, NutritionPanel>> response = null;
 
 		try {
-			long date1=0;
-			
+			String date1=null;
+			SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
 			if(lastModified!=null){
-			date1 =lastModified.getTime(); 
+			date1 = format1.format(lastModified); 
 			}
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(NUTRITION_PANEL_BY_DATE)+"/"+date1,  new TypeReference<Response<Map<String, NutritionPanel>>>(){});
 			if(!response.getResponseCode().equals("OK")){

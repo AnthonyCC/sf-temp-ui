@@ -647,6 +647,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     }
 
     @Override
+    public OrderHistoryI getOrderHistoryByEStoreId(EnumEStoreId eStoreid) throws FDResourceException {
+        return this.user.getOrderHistoryByEStoreId(eStoreid);
+    }
+
+    @Override
     public CustomerAvgOrderSize getHistoricOrderSize() throws FDResourceException {
         return this.user.getHistoricOrderSize();
     }
@@ -654,6 +659,16 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     @Override
     public int getAdjustedValidOrderCount() throws FDResourceException {
         return this.user.getAdjustedValidOrderCount();
+    }
+
+    @Override
+    public int getAdjustedValidOrderCount(EnumEStoreId storeId) throws FDResourceException {
+        return this.user.getAdjustedValidOrderCount(storeId);
+    }
+
+    @Override
+    public int getAdjustedValidOrderCount(EnumDeliveryType deliveryType) throws FDResourceException {
+        return this.user.getAdjustedValidOrderCount(deliveryType);
     }
 
     @Override
@@ -2293,42 +2308,52 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         this.zipPopupSeenInSession = ZipPopupSeenInSession;
     }
 
+    @Override
     public Map<String, String> getSoCartLineMessagesMap() {
 		return soCartLineMessagesMap;
 	}
 
+    @Override
     public void setSoCartLineMessagesMap(Map<String, String> soCartLineMessagesMap) {
 		this.soCartLineMessagesMap = soCartLineMessagesMap;
 	}
 
+    @Override
     public boolean isSoCartOverlayFirstTime() {
 		return soCartOverlayFirstTime;
 	}
 
+    @Override
     public void setSoCartOverlayFirstTime(boolean soCartOverlayFirstTime) {
 		this.soCartOverlayFirstTime = soCartOverlayFirstTime;
 	}
 
+    @Override
     public boolean isRefreshSoCartOverlay() {
 		return isRefreshSoCartOverlay;
 	}
 
+    @Override
     public void setRefreshSoCartOverlay(boolean isRefreshSoCartOverlay) {
 		this.isRefreshSoCartOverlay = isRefreshSoCartOverlay;
 	}
 
+    @Override
     public boolean isSoFeatureOverlay() {
 		return soFeatureOverlay;
 	}
 
+    @Override
     public void setSoFeatureOverlay(boolean soFeatureOverlay) {
 		this.soFeatureOverlay = soFeatureOverlay;
 	}
 
+    @Override
     public boolean isRefreshNewSoFeature() {
 		return isRefreshNewSoFeature;
 	}
 
+    @Override
     public void setRefreshNewSoFeature(boolean isRefreshNewSoFeature) {
 		this.isRefreshNewSoFeature = isRefreshNewSoFeature;
 	}    
@@ -2342,18 +2367,22 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		this.user.setFromLogin(fromLogin);
 	}
 
-	public void setValidSO3Data(Map<String, Object> validSO3Data){
+	@Override
+    public void setValidSO3Data(Map<String, Object> validSO3Data){
 		this.user.setValidSO3Data(validSO3Data);
 	}
     
+    @Override
     public Map<String, Object> getValidSO3Data(){
     	return this.user.getValidSO3Data();
     }
     
+    @Override
     public boolean isRefreshSO3Settings(){
     	return this.user.isRefreshSO3Settings();
     }
 
+    @Override
     public void setRefreshSO3Settings(boolean isRefreshSO3Settings){
     	this.user.setRefreshSO3Settings(isRefreshSO3Settings);
     }

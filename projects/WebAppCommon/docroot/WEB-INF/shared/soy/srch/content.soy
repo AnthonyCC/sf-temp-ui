@@ -73,7 +73,7 @@
 			
 	 {if $cat == ''}         
         {else}
-    <h2 class="staffpicks-cat-header last">{$cat}</h2>
+    {if $cat != '%%STAFFPICKS%%'}  <h2 class="staffpicks-cat-header last">{$cat}</h2>{/if}
     {/if}
 				<div class="sectionContent staffpicks-cat-content">
 					{call common.productList}

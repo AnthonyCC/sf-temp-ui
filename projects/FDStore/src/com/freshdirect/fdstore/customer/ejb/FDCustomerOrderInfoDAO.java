@@ -452,7 +452,7 @@ class FDCustomerOrderInfoDAO {
 		return totalOrders;
 	}
 	
-	private static final String retrieve_silverpopupdetails = "SELECT customer_id, qualifier, destination from cust.customer_pushnotification where trunc(UPDATE_TIMESTAMP) = trunc(sysdate)";
+	private static final String retrieve_silverpopupdetails = "SELECT customer_id, qualifier, destination from cust.customer_pushnotification where trunc(UPDATE_TIMESTAMP) = trunc(sysdate) and DESTINATION IS NOT NULL";
 	public static List<SilverPopupDetails> getSilverPopupDetails(Connection conn) throws SQLException {
 		Statement statement =  conn.createStatement();
 		ResultSet rs = statement.executeQuery(retrieve_silverpopupdetails);

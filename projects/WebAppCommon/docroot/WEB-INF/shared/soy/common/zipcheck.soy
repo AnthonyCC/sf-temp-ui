@@ -4,6 +4,18 @@
 * @param data
  */
 {template .zipcheck autoescape="false"}
+{if $data.zipcheckNotify or $data.zipcheckNotifyDone}
+  {if $data.zipcheckNotify}
+    {call common.zipcheckNotify}
+      {param data:$data.data /}
+    {/call}
+  {/if}
+  {if $data.zipcheckNotifyDone}
+    {call common.zipcheckNotifyDone}
+      {param data:$data.data /}
+    {/call}
+  {/if}
+{else}
 <div class="zipcheck">
   <h1 tabindex="0">Where should we deliver?</h1>
   <form fdform="zipcheck">
@@ -28,6 +40,7 @@
 <div class="spinner-overlay">
   <div class="spinner"></div>
 </div>
+{/if}
 {/template}
 
 /**
@@ -65,7 +78,7 @@
 <div class="zipcheck zipcheck-done">
   <h1 tabindex="0">Thanks!</h1>
   <h1 tabindex="0">Hope to see you soon.</h1>
-  <button class='cssbutton cssbutton-flat green full' data-close-zipcheck>Browse Store</button>
+  <button class='cssbutton cssbutton-flat green full' data-close-overlay>Browse Store</button>
   <button class="full" data-zipcheck-again tabindex="0">Try Another ZIP Code</button>
 </div>
 {/template}

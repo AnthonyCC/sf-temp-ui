@@ -1,14 +1,14 @@
-#zipCheckPopup .fixedPopupContent {
+/*#zipCheckPopup .fixedPopupContent {
   max-width: 630px;
   width: 100%;
   min-height: 232px;
-}
+}*/
 
-#zipCheckPopup .qs-popup-content {
+#zipCheckPopup .overlay-content {
   padding: 30px 40px;
 }
 
-#zipCheckPopup .qs-popup-header {
+#zipCheckPopup .overlay-header-helper {
   padding: 0;
 }
 
@@ -33,7 +33,7 @@
 #zipCheckPopup .zipcheck button[clear-zip-code] {
   background: url(/media_stat/images/quickshop/button-close.png) no-repeat;
   border: 0;
-  bottom: 25px;
+  bottom: 80px;
   cursor: pointer;
   height: 18px;
   left: 135px;
@@ -58,8 +58,8 @@
   margin-right: 30px;
 }
 
-#zipCheckPopup .zipcheck .zipcode-submit {
-  float: right;
+#zipCheckPopup .zipcheck .zipcode-submit button {
+  width: 155px;
 }
 
 #zipCheckPopup .zipcheck button.full {

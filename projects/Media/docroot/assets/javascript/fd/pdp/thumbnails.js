@@ -207,7 +207,9 @@ var FreshDirect = FreshDirect || {};
     } 
   });
 
-  loadHdImages();
+  if (!fd.mobWeb) {
+	  loadHdImages();
+  }
 
   fd.modules.common.utils.register("pdp", "replaceImage", replaceImage, fd);
   fd.modules.common.utils.register("pdp", "loadHdImages", loadHdImages, fd);

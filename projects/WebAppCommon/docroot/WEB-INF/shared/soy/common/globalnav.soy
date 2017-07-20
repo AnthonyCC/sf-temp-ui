@@ -108,7 +108,7 @@
 <li class="department" data-component="globalnav-popup-body" data-id="{$department.id}" data-popup-type="department">
   <div class="deptcontainer">
     {if $department.heroImage}
-      <div class="heroimg_cont"><img class="heroimg" src="{$department.heroImage}" alt="{if $department.name}{$department.name} department{/if}" /></div>
+      <div class="heroimg_cont"><img class="heroimg lazyload" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{$department.heroImage}" alt="{if $department.name}{$department.name} department{/if}" /></div>
     {/if}
     {if $hasCategories or $hasPrefCategories}
       <div class="department {if not $department.headerTextUsed}noheadertext{/if}">
@@ -164,7 +164,7 @@
     <a href="/browse.jsp?id={$id}">
       {$globalNavShortName}
       {if $globalNavPostNameImage}
-        <img src="{$globalNavPostNameImage}" alt="" class="smallicon" />
+        <img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{$globalNavPostNameImage}" alt="" class="smallicon" />
       {/if}
     </a>
   {/if}

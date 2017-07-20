@@ -47,42 +47,17 @@ var FreshDirect = FreshDirect || {};
     placeholder:{
       value:'body'
     },
-    tabIndixes:{
-      value:[],
-      writable: true
-    },
-    lastFocused:{
-      value: '',
-      writable: true
-    },
     close: {
       value: function (e) {
-        var $overlay = e ? $(e.currentTarget).closest('.overlay') : $(document).find('.overlay');
-
         if (e && e.stopPropagation) {
           e.stopPropagation();
         }
-        $overlay.css({display: "none"});
+        $(e.currentTarget).closest('.overlay').css({display: "none"});
         $('body').removeClass('overlay-opened');
-        setTimeout(function () {
-          this.reset();
-        }.bind(this), 10);
-        if ($overlay.attr('data-close-cb')) {
-          var closeCB = fd.utils.discover($overlay.attr('data-close-cb'));
-
-          if (closeCB) {
-            try {
-              closeCB();
-            } catch (e) {}
-          }
-        }
       }
     },
     render:{
       value:function(data){
-
-        overlayWidget.lastFocused = document.activeElement;
-
         var $overlayBody = $('#'+this.overlayId).find(this.bodySelector),
             $overlayHeader = $('#'+this.overlayId).find(this.headerSelector),
             bt = this.bodyTemplate === '' + this.bodyTemplate ? window[this.bodyTemplate.split('.')[0]][this.bodyTemplate.split('.')[1]] : this.bodyTemplate,
@@ -119,10 +94,6 @@ var FreshDirect = FreshDirect || {};
           }
         }, 10);
 
-        setTimeout(function () {
-          this.focus();
-        }.bind(this), 10);
-
         $('#' + this.overlayId).css({display: "block", "z-index": this.overlayConfig.zIndex});
         $('#' + this.overlayId + ' .overlay-close-icon').css({"z-index": this.overlayConfig.zIndex+2});
         $('#' + this.overlayId + ' .overlay-header-helper').css({"z-index": this.overlayConfig.zIndex+1});
@@ -139,99 +110,12 @@ var FreshDirect = FreshDirect || {};
         var $t = e && $(e.currentTarget) || $(document.body);
         this.render();
       }
-    },
-    focus:{
-      value:function() {
-        var $el = $('#' + this.overlayId),
-            lastEl = '';
-
-        $('[tabindex]').each(function (i, tiel) {
-          var $tiel = $(tiel),
-              ti = $tiel.prop('tabindex');
-
-          if (+ti !== -1) {
-            this.tabIndixes.push({
-              $el: $tiel,
-              ti: ti
-            });
-          }
-        }.bind(this));
-        $('input, button, textarea, select, a, [tabindex]').each(function (i, tiel) {
-          var $tiel = $(tiel);
-
-          if ($tiel.closest($el).size() === 0) {
-            $tiel.attr('tabindex', '-1');
-          }
-        });
-
-        $el.find('[tabindex]').each(function (i, tiel) {
-          var $tiel = $(tiel),
-              ti = $tiel.prop('tabindex') || 0;
-
-          if (lastEl <= ti) {
-            lastEl = ti + 1;
-          }
-        });
-
-        $el.find('input, button, textarea, select, a, [tabindex]').not('[disabled]').not('[type="hidden"]').not('[nofocus]').not('.overlay [data-view-all-popup]').each(function (i, tiel) {
-          var $tiel = $(tiel),
-              ti = $tiel.prop('tabindex') || 0;
-
-          if (!ti) {
-            $tiel.attr('tabindex', lastEl);
-          }
-
-          lastEl += 1;
-        });
-
-        if ($el.find('.overlay-close-icon').length > 0 ) {
-          $el.find('.overlay-close-icon').each(function (i, closeEl) {
-            var $close = $(closeEl);
-
-            lastEl += 1;
-
-            $close.attr('tabindex', lastEl);
-          });
-        }
-
-        var $lowestTabElem = null;
-
-        $el.find('[tabindex]').not('[tabindex="-1"]').each(function(i,e) {
-          if ($lowestTabElem === null || parseInt($(e).attr('tabindex'), 10) < parseInt($($lowestTabElem).attr('tabindex'), 10)) {
-            $lowestTabElem = $(e);
-          }
-        });
-
-        if ($lowestTabElem !== null) {
-          $lowestTabElem.focus();
-        }
-      }
-    },
-    reset:{
-      value: function () {
-        $('[tabindex="-1"]').each(function (i, tiel) {
-          var $tiel = $(tiel);
-
-          $tiel.attr('tabindex', null);
-        });
-
-        this.tabIndixes.forEach(function (tiel) {
-          tiel.$el.attr('tabindex', tiel.ti);
-        });
-
-        if (this.lastFocused) {
-          this.lastFocused.focus();
-          this.lastFocused = null;
-        }
-      }
     }
   });
-  $(document).on('click', overlayWidget.closeTrigger, overlayWidget.close.bind(overlayWidget));
-  $(document).on('keydown', function (e) {
-    if (e.keyCode === fd.utils.keyCode.ESC) {
-      overlayWidget.close();
-    }
-  }.bind(this));
+
+  $(document).on('click', overlayWidget.closeTrigger, function (e) {
+    overlayWidget.close(e);
+  });
 
   fd.modules.common.utils.register("modules.common", "overlayWidget", overlayWidget, fd);
 

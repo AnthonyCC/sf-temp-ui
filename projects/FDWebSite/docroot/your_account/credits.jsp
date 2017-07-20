@@ -206,7 +206,7 @@ YAHOO.example.DynamicData = function() {
 	// Override the built-in formatter
     YAHOO.widget.DataTable.formatLink = function(elCell, oRecord, oColumn, oData) {
        if(oData != null)
-		elCell.innerHTML = "<a href=\"/your_account/order_details.jsp?orderId=" + oData + "\">" + oData + "</a>";
+		elCell.innerHTML = "<a href=\"/your_account/order_details.jsp?orderId=" + oData + "\">" +"<span class=\"offscreen\">details of order number</span>"+ oData + "</a>";
     };
 
     // Column definitions

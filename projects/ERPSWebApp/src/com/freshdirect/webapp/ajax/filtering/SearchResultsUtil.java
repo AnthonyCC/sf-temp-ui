@@ -46,8 +46,8 @@ public class SearchResultsUtil {
 	
 	private static final Logger LOG = LoggerFactory.getInstance( SearchResults.class );
 	
-	private static final String MOBILE_PLATFORM="web";
-	private static final String WEB_PLATFORM="mobile";
+	private static final String MOBILE_PLATFORM="mobile";
+	private static final String WEB_PLATFORM="web";
 	
 	public static SearchResults getPresidentsPicksProducts(CmsFilteringNavigator nav) {
 		

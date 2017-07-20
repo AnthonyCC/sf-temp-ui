@@ -124,6 +124,15 @@ public class ErpNutritionModel extends ModelSupport {
 		return units;
 	}
 
+	// This method is used only for StoreFront 2.0 JSON parser
+	public HashMap<String, Object> getValues() {
+		return values;
+	}
+	// This method is used only for StoreFront 2.0 JSON parser
+	public HashMap<String, String> getUom() {
+		return uom;
+	}
+
 	/**
 	 * set UOM for this nutrition model
 	 *

@@ -680,8 +680,21 @@
     font-size: 16px;
     text-align: center;
 }
-.standing-orders-3-so-settings-buttons .so-delete-popup.open{
+.standing-orders-3-so-settings-buttons .so-delete-popup.open,
+.standing-orders-3-so-settings-buttons .so-delete-popup.open.custom .so-delete-popup-message-custom{
 	display: block;
+}
+.standing-orders-3-so-settings-buttons .so-delete-popup.open.custom .select-wrapper{
+	display: inline;
+}
+.standing-orders-3-so-settings-buttons .so-delete-popup.open .so-delete-popup-message-custom,
+.standing-orders-3-so-settings-buttons .so-delete-popup.open .select-wrapper,
+.standing-orders-3-so-settings-buttons .so-delete-popup.open.custom .so-delete-popup-header,
+.standing-orders-3-so-settings-buttons .so-delete-popup.open.custom .so-delete-popup-message{
+	display: none;
+}
+.standing-orders-3-so-settings-buttons .so-delete-popup.open.custom .so-delete-popup-select{
+	margin: 5px auto 20px;
 }
 .standing-orders-3-so-settings-buttons .so-delete-popup:after {
     content: "";
@@ -708,6 +721,9 @@
 .standing-orders-3-so-settings-buttons .so-delete-popup .so-delete-popup-name{
 	font-weight: bold;
 	word-wrap: break-word;
+}
+.standing-orders-3-so-settings-buttons .so-delete-popup .so-delete-popup-message{
+	color: #c94747;
 }
 .standing-orders-3-so-settings-buttons .so-delete-popup .so-delete-popup-buttons{
 	padding-top: 17px;
@@ -1047,6 +1063,12 @@
 }
 .standing-orders-3 #cartcontent .cartetip .cartetip-container #tipAppliedTick{
 	padding: 0 0 0 5px;
+}
+.standing-orders-3 #cartcontent .cartetip #tipDropdown {
+	background: transparent url(/media/images/layout/input-arrow-down.png) no-repeat 97% center;
+	border-radius: 0px;
+	-webkit-border-radius: 0px;
+	-moz-border-radius: 0px;
 }
 .standing-orders-3 .standing-orders-3-so-settings-activate{
 	display: none;
@@ -1488,13 +1510,18 @@
 	display:block;
 }
 .so-drawer-success,
-.so-feature-tutorial{
+.so-feature-tutorial,
+.so-ready-to-activate-reminder{
 	width: 500px;
 	font-family: Verdana;
 	font-size: 16px;
 }
+.so-ready-to-activate-reminder{
+	width: 510px;
+}
 .so-drawer-success .so-drawer-success-header,
-.so-feature-tutorial .so-feature-tutorial-top{
+.so-feature-tutorial .so-feature-tutorial-top,
+.so-ready-to-activate-reminder .so-ready-to-activate-reminder-header{
 	padding: 30px;
 	font-size: 20px;
     font-weight: bold;
@@ -1534,6 +1561,14 @@
 .so-drawer-success .so-drawer-success-text{
 	font-size: 16px;
 	padding: 5px 60px 30px 72px;
+}
+.so-ready-to-activate-reminder .so-ready-to-activate-reminder-text{
+	font-size: 18px;
+	padding: 0 20px 20px;
+}
+.so-ready-to-activate-reminder .so-ready-to-activate-reminder-buttons{
+	margin: 30px auto 20px;
+	text-align: center;
 }
 .so-drawer-success .so-drawer-success-hr{
 	height: 0;
@@ -1598,4 +1633,10 @@
 .so-feature-tutorial #so-feature-tutorial-checkbox:disabled{
 	opacity: 0.7;
 	cursor: default;
+}
+.eTippingEnabled #tipDropdown {
+	background: transparent url(/media/images/layout/input-arrow-down.png) no-repeat 97% center;
+	border-radius: 0px;
+	-webkit-border-radius: 0px;
+	-moz-border-radius: 0px;
 }

@@ -8,12 +8,15 @@ import java.util.Date;
 import java.util.List;
 
 import javax.mail.MessagingException;
+import javax.naming.Context;
+import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.fdstore.customer.SilverPopupDetails;
-import com.freshdirect.fdstore.ecomm.gateway.CustomerInfoService;
+import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
+import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
 import com.freshdirect.fdstore.silverpopup.util.FDIBMPushNotification;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
@@ -24,22 +27,21 @@ import com.freshdirect.mail.ErpMailSender;
 public class IBMSilverPopupCron {
 
 	private static Category LOGGER = LoggerFactory.getInstance(IBMSilverPopupCron.class);
+	private static FDCustomerManagerHome fcHome = null;
 
 	public static void main(String[] args) throws Exception {
 		try {
 			LOGGER.info("SilverPopupCron Started.");
-			List<SilverPopupDetails> result;
-				result = CustomerInfoService.getInstance().getSilverPopupDetails();
-			
+			lookupSPSHome();
+			FDCustomerManagerSB clientSB = fcHome.create();
+			List<SilverPopupDetails> result = clientSB.getSilverPopupDetails();
 			LOGGER.info("FDCustomer manager silver popup retrieved successfully " + result);
 			if (null != result && !result.isEmpty()) {
 				LOGGER.debug("Before calling IBM silverpopup ");
 				FDIBMPushNotification service = new FDIBMPushNotification();
 				for (SilverPopupDetails detail : result) {
 					if (service.execute(detail)) {
-						CustomerInfoService.getInstance().updateSPSuccessDetails(detail);
-						
-						
+						clientSB.updateSPSuccessDetails(detail);
 					}
 				}
 
@@ -48,6 +50,7 @@ public class IBMSilverPopupCron {
 			}
 		} catch (Exception e) {
 			LOGGER.error("Failed to run SilverPopupCronServlet cron job manually", e);
+			invalidateFCHome();
 			StringWriter sw = new StringWriter();
 			e.printStackTrace(new PrintWriter(sw));
 			String _msg = sw.getBuffer().toString();
@@ -81,4 +84,29 @@ public class IBMSilverPopupCron {
 
 	}
 
+	private static void lookupSPSHome() throws NamingException {
+
+		Context ctx = null;
+		try {
+			ctx = ErpServicesProperties.getInitialContext();
+			fcHome = (FDCustomerManagerHome) ctx.lookup("freshdirect.fdstore.CustomerManager");
+		} catch (NamingException ne) {
+			throw ne;
+		} catch (Exception ne) {
+			LOGGER.error("unable to lookup standing order client ejb", ne);
+			throw new NamingException("unable to lookup standing order client ejb ");
+		} finally {
+			try {
+				if (ctx != null) {
+					ctx.close();
+				}
+			} catch (NamingException ne) {
+				LOGGER.error("unable to lookup standing order client ejb", ne);
+			}
+		}
+	}
+
+	private static void invalidateFCHome() {
+		fcHome = null;
+	}
 }

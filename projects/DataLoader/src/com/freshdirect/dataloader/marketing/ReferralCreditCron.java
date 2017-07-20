@@ -53,6 +53,8 @@ import com.freshdirect.fdstore.customer.ejb.CallCenterManagerHome;
 import com.freshdirect.fdstore.customer.ejb.CallCenterManagerSB;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
+import com.freshdirect.fdstore.ecomm.converter.ReferralConverter;
+import com.freshdirect.fdstore.ecomm.gateway.FDReferralManagerService;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.mail.FDReferAFriendCreditEmail;
 import com.freshdirect.fdstore.referral.FDReferralManager;
@@ -125,7 +127,13 @@ public class ReferralCreditCron {
 			// ReferralCreditCron cron = new ReferralCreditCron();
 	
 			// List<ReferralPromotionModel> sales = sb.getSettledSales();
-			List<ReferralPromotionModel> sales = sb.getSettledTransaction();
+			List<ReferralPromotionModel> sales= null;
+			 if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
+				 sales = ReferralConverter.buildReferralpromotionModelList(FDReferralManagerService.getInstance().getSettledTransaction());
+			  }
+			  else{
+				   sales = sb.getSettledTransaction();
+			  }
 			LOGGER.info(" Sales list of the Advocates :" + sales);
 	
 			Iterator<ReferralPromotionModel> salesIter = sales.iterator();
@@ -138,8 +146,14 @@ public class ReferralCreditCron {
 					ReferralPromotionModel model = (ReferralPromotionModel) salesIter
 							.next();
 					String referral_customer_id = model.getRefCustomerId();
-					String referral_max_sale_id = sb
+					String referral_max_sale_id =   null;
+					 if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
+						 referral_max_sale_id =	 FDReferralManagerService.getInstance().getLatestSTLSale(referral_customer_id);
+					  }
+					  else{
+						   referral_max_sale_id = sb
 							.getLatestSTLSale(referral_customer_id);
+					  }
 					LOGGER.info(" Advocate Customer ID : " + referral_customer_id);
 				LOGGER.info(" Advocate Settled Sale ID : " + referral_max_sale_id);
 				// System.out.println("cust_sale_id:" + model.getSaleId());
@@ -285,7 +299,12 @@ public class ReferralCreditCron {
 			}
 			// Update the Reward Transaction status
 			try {
-				sb.updateSetteledRewardTransaction(models);
+				 if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
+					 FDReferralManagerService.getInstance().updateSetteledRewardTransaction(ReferralConverter.buildReferralPromotionDataList(models));
+				  }
+				  else{
+					  sb.updateSetteledRewardTransaction(models);
+				  }
 			} catch (NumberFormatException e) {
 				StringWriter sw = new StringWriter();
 				e.printStackTrace(new PrintWriter(sw));
@@ -301,8 +320,13 @@ public class ReferralCreditCron {
 	        ErpCustomerHome ecHome = (ErpCustomerHome) ctx.lookup( FDStoreProperties.getErpCustomerHome() );
 	        LOGGER.info("Starting up now");
 			ReferralCreditCron cron = new ReferralCreditCron();
-			List<ReferralPromotionModel> sales = sb.getSettledSales();
-			
+			List<ReferralPromotionModel> sales  = null;
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
+				 sales = ReferralConverter.buildReferralpromotionModelList(FDReferralManagerService.getInstance().getSettledSales());
+			}
+			else{
+				sales = sb.getSettledSales();
+			}
 			LOGGER.info("Got sales list:" + sales);
 			
 			Iterator<ReferralPromotionModel> salesIter = sales.iterator();
@@ -361,8 +385,13 @@ public class ReferralCreditCron {
 					    PrimaryKey cPk = fdsb.addComplaint(complaintModel, referral_max_sale_id,referral_customer_id,model.getFDCustomerId(),autoApproveAuthorized,Double.parseDouble(model.getReferral_fee()+""));
 					    
 					    //save the credit in customer invites
-					    sb.saveCustomerCredit(referral_customer_id, model.getCustomerId(), model.getReferral_fee(), model.getSaleId(), cPk.getId(), model.getReferral_prgm_id());
-					    
+					    if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDReferralManagerSB)){
+					    	FDReferralManagerService.getInstance().saveCustomerCredit(referral_customer_id, model.getCustomerId(), model.getReferral_fee(), model.getSaleId(), cPk.getId(), model.getReferral_prgm_id());
+							 
+					    }
+					    else{
+					    	sb.saveCustomerCredit(referral_customer_id, model.getCustomerId(), model.getReferral_fee(), model.getSaleId(), cPk.getId(), model.getReferral_prgm_id());
+					    }
 					    //send email to referral
 					    String subject = model.getReferralCreditEmailSubject();
 					    String message = model.getReferralCreditEmailText();
