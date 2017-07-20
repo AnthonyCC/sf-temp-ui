@@ -436,7 +436,9 @@ public class LoginController extends BaseController  implements SystemMessageLis
 			details.setDestination(destination);
 			details.setQualifier(qualifier);
 			details.setChannel(channel);
-			user.getFDSessionUser().insertOrUpdateSilverPopup(details);
+			if (null != details.getDestination() && details.getQualifier() !=null) {
+				user.getFDSessionUser().insertOrUpdateSilverPopup(details);
+			}
 			//Silver popup changes End
             if (isCheckLoginStatusEnable(request)) {
                 CMSPageRequest pageRequest = new CMSPageRequest();
