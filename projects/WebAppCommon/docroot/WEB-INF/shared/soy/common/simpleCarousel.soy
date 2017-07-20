@@ -21,7 +21,6 @@
 					{call common.iconCarouselItem}
 						{param item:$item /}
 						{param moduleData:$moduleData /}
-						{param itemIndex:index($item) /}
 					{/call}
 				{else}
 					{delcall common.carouselItem variant="$itemType"}
@@ -30,7 +29,6 @@
 						{param cmEventSource:$cmEventSource /}
 						{param mobWeb:$mobWeb /}
 						{param moduleData:$moduleData /}
-                                                {param itemIndex:index($item) /}
 					{/delcall}
 				{/if}
 			{/foreach}

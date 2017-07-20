@@ -5,7 +5,6 @@
  * @param? cmEventSource optional coremetrics event source
  * @param? mobWeb
  * @param? moduleData
- * @param? itemIndex
  *
  */
 {deltemplate common.carouselItem variant="'grid'"}
@@ -13,8 +12,7 @@
 	{param extraClass}carouselTransactionalItem{if $itemCount} item-count{$itemCount}{/if}{/param}
 	{param cmEventSource:$cmEventSource /}
 	{param mobWeb:$mobWeb /}
-	{param moduleData:$moduleData /}
-	{param itemIndex:$itemIndex /}
+  {param moduleData:$moduleData /}
 {/call}
 {/deltemplate}
 
@@ -32,7 +30,6 @@
  * @param? cmEventSource optional coremetrics event source
  * @param? mobWeb
  * @param? moduleData
- * @param? itemIndex
  *
  */
 {deltemplate common.carouselItem variant="'grid_prodSample'"}
@@ -41,6 +38,5 @@
 	{param cmEventSource:$cmEventSource /}
 	{param mobWeb:$mobWeb /}
 	{param moduleData:$moduleData /}
-	{param itemIndex:$itemIndex /}
 {/call}
 {/deltemplate}
