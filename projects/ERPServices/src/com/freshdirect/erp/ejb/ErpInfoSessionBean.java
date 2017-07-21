@@ -751,10 +751,11 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 	public Collection<ErpProductInfoModel> findProductsLikeSku(String skuCode) {
 		Connection conn = null;
+		PreparedStatement ps = null;
 		try {
 			conn = getConnection();
 
-			PreparedStatement ps = conn.prepareStatement(QUERY_PRODUCTS_LIKE_SKU);
+			ps = conn.prepareStatement(QUERY_PRODUCTS_LIKE_SKU);
 			ps.setString(1, skuCode.toUpperCase() + "%");
 			return queryProductInfoModel(ps);
 
@@ -762,7 +763,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find product for SKU " + skuCode, sqle);
 			throw new EJBException(sqle);
 		} finally {
-                    close(conn);
+			close(ps);
+			close(conn);
 		}
 	}
 
@@ -788,14 +790,17 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 	public Collection<ErpProductInfoModel> findProductsByUPC(String upc) {
 		Connection conn = null;
+		PreparedStatement ps =null;
+		ResultSet rs=null;
 		try {
 			conn = getConnection();
 
-			PreparedStatement ps = conn.prepareStatement(QUERY_PRODUCTS_BY_UPC);
+			ps = conn.prepareStatement(QUERY_PRODUCTS_BY_UPC);
 			ps.setString(1, upc);
 			ps.setString(2, upc);
 			ps.setString(3, upc);
 			ps.setString(4, upc);
+			rs = ps.executeQuery();
 			
 			return queryProductInfoModel(ps);
 
@@ -803,6 +808,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find product by UPC " + upc, sqle);
 			throw new EJBException(sqle);
 		} finally {
+					close(rs);
+			 		close(ps);
                     close(conn);
 		}
 	}
@@ -863,10 +870,12 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 	public Collection<ErpProductInfoModel> findProductsLikeUPC(String upc) {
 		Connection conn = null;
+		PreparedStatement ps = null;
+		
 		try {
 			conn = getConnection();
 
-			PreparedStatement ps = conn.prepareStatement(QUERY_PRODUCTS_LIKE_UPC);
+			ps = conn.prepareStatement(QUERY_PRODUCTS_LIKE_UPC);
 			ps.setString(1, upc + "%");
 			return queryProductInfoModel(ps);
 
@@ -874,12 +883,14 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find product like UPC " + upc, sqle);
 			throw new EJBException(sqle);
 		} finally {
-                    close(conn);
+			close(ps);
+			close(conn);
 		}
 	}
 
     /**
      * @param ps
+     * @param rs 
      * @return
      * @throws SQLException
      */
@@ -887,7 +898,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
         ResultSet rs = ps.executeQuery();
 
         ArrayList<ErpProductInfoModel> results = new ArrayList<ErpProductInfoModel>();
-        while (rs.next()) {
+        try{
+        	while (rs.next()) {
         	List<String> matNos = new ArrayList<String>(5);
         	Set<ErpMaterialPrice> matPrices = new HashSet<ErpMaterialPrice>(5);
         	Set<ErpPlantMaterialInfo> matPlants = new HashSet<ErpPlantMaterialInfo>(5);
@@ -927,11 +939,10 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
         		        	descr,
         		        	matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),       
         		        	upc, matPlants.toArray(new ErpProductInfoModel.ErpPlantMaterialInfo[0]),matSalesAreas.toArray(new ErpProductInfoModel.ErpMaterialSalesAreaInfo[0]),alcoholType)      );
-        }
-
-        close(rs);
-        close(ps);
-
+        	}
+		} finally {
+			close(rs);
+		}
         return results;
     }
 
@@ -1720,10 +1731,11 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	
 	public Collection<ErpProductInfoModel> findProductsByLastModified(Date lastModifiedTime) {
 		Connection conn = null;
+		PreparedStatement ps = null;
 		try {
 			conn = getConnection();
 
-			PreparedStatement ps = conn.prepareStatement(QUERY_PRODUCTS_BY_LAST_MODIFIED);
+			ps = conn.prepareStatement(QUERY_PRODUCTS_BY_LAST_MODIFIED);
 			ps.setTimestamp(1, new Timestamp(lastModifiedTime.getTime()));		
 			
 			return queryProductInfoModel(ps);
@@ -1732,7 +1744,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find product by last modified: " + lastModifiedTime, sqle);
 			throw new EJBException(sqle);
 		} finally {
-                    close(conn);
+			close(ps);
+			close(conn);
 		}
 	}
 }
