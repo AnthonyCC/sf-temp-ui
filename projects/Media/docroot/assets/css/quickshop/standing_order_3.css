@@ -569,6 +569,15 @@
 .standing-orders-3-so-settings-item-name-header{
 	float: left;
 }
+.standing-orders-3 a.standing-orders-3-so-settings-help{
+	float: right;
+	padding: 0 15px 0 0;
+	font-size: 13px;
+	color: #FFFFFF;
+}
+.standing-orders-3 a.standing-orders-3-so-settings-help:hover{
+	color: #FFFFFF;
+}
 .standing-orders-3-so-settings-item-name-change{
 	/*display: none;*/
 	font-size: 13px;
