@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.orderhistory;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -22,13 +23,16 @@ public class OrderHistoryService {
         return INSTANCE;
     }
 
+    private OrderHistoryService() {
+    }
+
     private static final OrderHistoryService INSTANCE = new OrderHistoryService();
 
     public ErpSaleInfo getLastOrderByDeliveryType(OrderHistoryI orderHistory, EnumDeliveryType deliveryType) {
         ErpSaleInfo latestSaleInfo = null;
 
         if (orderHistory instanceof ErpOrderHistory) {
-            List<ErpSaleInfo> erpSaleInfos = (List<ErpSaleInfo>) ((ErpOrderHistory) orderHistory).getErpSaleInfos();
+            Collection<ErpSaleInfo> erpSaleInfos = ((ErpOrderHistory) orderHistory).getErpSaleInfos();
             Date date = null;
 
             for (Iterator<ErpSaleInfo> iter = erpSaleInfos.iterator(); iter.hasNext();) {

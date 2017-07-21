@@ -749,12 +749,12 @@ public class FDUser extends ModelSupport implements FDUserI {
         OrderHistoryI orderHistory = getOrderHistory();
 
         if (orderHistory instanceof ErpOrderHistory) {
-            List<ErpSaleInfo> erpSaleInfos = (List<ErpSaleInfo>) ((ErpOrderHistory) orderHistory).getErpSaleInfos();
+            Collection<ErpSaleInfo> erpSaleInfos = ((ErpOrderHistory) orderHistory).getErpSaleInfos();
             
             for (Iterator<ErpSaleInfo> iter = erpSaleInfos.iterator(); iter.hasNext();) {
                ErpSaleInfo erpSaleInfo = iter.next();
                
-                if (!erpSaleInfo.equals(eStoreid) && !erpSaleInfo.getSaleType().equals(EnumSaleType.REGULAR)) {
+                if (erpSaleInfo.geteStore() != null && !erpSaleInfo.geteStore().equals(eStoreid) && !EnumSaleType.REGULAR.equals(erpSaleInfo.getSaleType())) {
                     iter.remove();
                }
             }
