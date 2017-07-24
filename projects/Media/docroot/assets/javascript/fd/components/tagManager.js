@@ -303,6 +303,20 @@ var dataLayer = window.dataLayer || [];
 
       return null;
     },
+    cancelOrder: function (orderData) {
+      if (orderData.orderId) {
+        dataLayer.push({
+          eventCategory: 'Orders',
+          eventAction: 'cancelled-order',
+          eventLabel: orderData.orderId
+        });
+        return {
+          event: 'order-cancellation'
+        };
+      }
+
+      return null;
+    },
     login: function (loginData) {
       if (loginData.loginAttempt === 'success') {
         fd.gtm.updateDataLayer({loginSuccess: true});
