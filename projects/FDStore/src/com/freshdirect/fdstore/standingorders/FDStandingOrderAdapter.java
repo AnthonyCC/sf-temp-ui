@@ -267,7 +267,8 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 
 
 
-	public Date getPricingDate() {
+	@Override
+    public Date getPricingDate() {
 		return erpOrder.getPricingDate();
 	}
 
@@ -277,7 +278,8 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 	public static final int IC_GROUP_BY_CARTONS = 2;
 
 	
-	public Collection<ErpChargeLineModel> getCharges() {
+	@Override
+    public Collection<ErpChargeLineModel> getCharges() {
 		return Collections.unmodifiableCollection(erpOrder.getCharges());
 	}
 
@@ -288,11 +290,13 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 	 * Retrieves the list of applied credits recorded for a given order.
 	 * @return read-only Collection of ErpAppliedCreditModel objects.
 	 */
-	public Collection<ErpAppliedCreditModel> getAppliedCredits() {
+	@Override
+    public Collection<ErpAppliedCreditModel> getAppliedCredits() {
 		return erpOrder.getAppliedCredits();
 	}
 
-	public double getCustomerCreditsValue() {
+	@Override
+    public double getCustomerCreditsValue() {
 		Collection<ErpAppliedCreditModel> appliedCredits = getAppliedCredits();
 		double creditValue = 0;
 
@@ -302,15 +306,18 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 		return creditValue;
 	}
 
-	public Collection<ErpAppliedCreditModel> getActualAppliedCredits() {
+	@Override
+    public Collection<ErpAppliedCreditModel> getActualAppliedCredits() {
 		return hasInvoice() ? lastInvoice.getAppliedCredits() : erpOrder.getAppliedCredits();
 	}
 
-	public double getActualCustomerCreditsValue() {
+	@Override
+    public double getActualCustomerCreditsValue() {
 		return lastInvoice.getCustomerCreditsValue();
 	}
 
-	public ErpAddressModel getDeliveryAddress() {
+	@Override
+    public ErpAddressModel getDeliveryAddress() {
 		return erpOrder.getDeliveryInfo().getDeliveryAddress();
 	}
 
@@ -358,15 +365,18 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 		return origAddress;
 	}
 
-	public EnumDeliveryType getDeliveryType() {
+	@Override
+    public EnumDeliveryType getDeliveryType() {
 		return erpOrder.getDeliveryInfo().getDeliveryType();
 	}
 
-	public ErpDeliveryInfoModel getDeliveryInfo() {
+	@Override
+    public ErpDeliveryInfoModel getDeliveryInfo() {
 		return erpOrder.getDeliveryInfo();
 	}
 
-	public String getDepotFacility() {
+	@Override
+    public String getDepotFacility() {
 		String depotLocationId = erpOrder.getDeliveryInfo().getDepotLocationId();
 		if (depotLocationId == null || "".equals(depotLocationId)) {
 			return "";
@@ -381,7 +391,8 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 
 
 
-	public ErpPaymentMethodI getPaymentMethod() {
+	@Override
+    public ErpPaymentMethodI getPaymentMethod() {
 		return erpOrder.getPaymentMethod();
 	}
 
@@ -389,19 +400,22 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 		return erpOrder.getDeliveryInfo().getDeliveryReservationId();
 	}
 
-	public Date getRequestedDate() {
+	@Override
+    public Date getRequestedDate() {
 		return erpOrder.getRequestedDate();
 	}
 
 
 
-	public List<FDCartLineI> getOrderLines() {
+	@Override
+    public List<FDCartLineI> getOrderLines() {
 		return orderLines;
 	}
 
 
 
-	public String getDiscountDescription() {
+	@Override
+    public String getDiscountDescription() {
 		String desc = "";
 		List<ErpDiscountLineModel> discounts = erpOrder.getDiscounts();
 		if ( discounts != null && discounts.size() > 0) {
@@ -421,7 +435,8 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 		return desc;
 	}
 
-	public String getRedeemedSampleDescription() {
+	@Override
+    public String getRedeemedSampleDescription() {
 		String desc = "NONE";
 		//Show any redeemed sample line if any.
 		if ( sampleLines != null && sampleLines.size() > 0) {
@@ -453,63 +468,77 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 		}
 		return desc;
 	}
-	public String getDeliveryZone() {
+	@Override
+    public String getDeliveryZone() {
 		return erpOrder.getDeliveryInfo().getDeliveryZone();
 	}
 
-	public double getDeliverySurcharge() {
+	@Override
+    public double getDeliverySurcharge() {
 		return this.getChargeAmount(EnumChargeType.DELIVERY)+this.getChargeAmount(EnumChargeType.DLVPREMIUM);
 	}
 	
-	public double getDeliveryPremium() {
+	@Override
+    public double getDeliveryPremium() {
 		ErpChargeLineModel charge = erpOrder.getCharge(EnumChargeType.DLVPREMIUM);
 		return charge == null ? 0.0 : charge.getAmount();
 	}
 	
-	public double getInvoicedDeliveryCharge(){
+	@Override
+    public double getInvoicedDeliveryCharge(){
 		return lastInvoice.getInvoicedDeliveryCharge();
 	}
 	
-	public double getInvoicedDeliverySurcharge(){
+	@Override
+    public double getInvoicedDeliverySurcharge(){
 		return lastInvoice.getInvoicedDeliverySurcharge();
 	}
-	public double getInvoicedDeliveryPremium(){
+	@Override
+    public double getInvoicedDeliveryPremium(){
 		return lastInvoice.getInvoicedDeliveryPremium();
 	}
 	
 
-	public boolean isDeliveryChargeWaived() {
+	@Override
+    public boolean isDeliveryChargeWaived() {
 		return this.isChargeWaived(EnumChargeType.DELIVERY) && (erpOrder.getCharge(EnumChargeType.DLVPREMIUM)==null || this.isChargeWaived(EnumChargeType.DLVPREMIUM));
 	}
 	
-	public boolean isDeliverySurChargeWaived() {
+	@Override
+    public boolean isDeliverySurChargeWaived() {
 		return isChargeWaived(EnumChargeType.MISCELLANEOUS);
 	}
 	
-	public boolean isDeliveryChargeTaxable() {
+	@Override
+    public boolean isDeliveryChargeTaxable() {
 		return this.isChargeTaxable(EnumChargeType.DELIVERY) || this.isChargeTaxable(EnumChargeType.DLVPREMIUM);
 	}
 
-	public boolean isChargeWaived(EnumChargeType chargeType) {
+	@Override
+    public boolean isChargeWaived(EnumChargeType chargeType) {
 		ErpChargeLineModel charge = erpOrder.getCharge(chargeType);
 		return charge == null ? false : charge.getDiscount() != null;
 	}
 
-	public boolean isChargeTaxable(EnumChargeType chargeType) {
+	@Override
+    public boolean isChargeTaxable(EnumChargeType chargeType) {
 		ErpChargeLineModel charge = erpOrder.getCharge(chargeType);
 		return charge == null ? false : charge.getTaxRate() > 0;
 	}
 	
-	public boolean isEstimatedPrice() {
+	@Override
+    public boolean isEstimatedPrice() {
 
 		return true;
 	}
 
-	public double getTotal() {
+	@Override
+    public double getTotal() {
 		return erpOrder.getAmount();
 	}
 
-	public double getSubTotal() {
+	@Override
+    public double getSubTotal() {
 		double subTotal = 0.0;
 		for ( FDCartLineI cartline : orderLines ) {
 			subTotal += MathUtil.roundDecimal( cartline.getPrice() );
@@ -517,19 +546,23 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 		return MathUtil.roundDecimal(subTotal);
 	}
 
-	public double getTaxValue() {
+	@Override
+    public double getTaxValue() {
 		return erpOrder.getTax();
 	}
 
-	public double getDepositValue() {
+	@Override
+    public double getDepositValue() {
 		return erpOrder.getDepositValue();
 	}
 
-	public int numberOfOrderLines() {
+	@Override
+    public int numberOfOrderLines() {
 		return orderLines.size();
 	}
 
-	public FDCartLineI getOrderLine(int idx) {
+	@Override
+    public FDCartLineI getOrderLine(int idx) {
 		return orderLines.get(idx);
 	}
 	
@@ -537,23 +570,28 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 		return erpOrder.getOrderLineByPK(orderlineId);
 	}
 
-	public List<FDCartLineI> getSampleLines() {
+	@Override
+    public List<FDCartLineI> getSampleLines() {
 		return sampleLines;
 	}
 
-	public String getCustomerServiceMessage() {
+	@Override
+    public String getCustomerServiceMessage() {
 		return erpOrder.getCustomerServiceMessage();
 	}
 
-	public String getMarketingMessage() {
+	@Override
+    public String getMarketingMessage() {
 		return erpOrder.getMarketingMessage();
 	}
 
-	public String getDeliveryInstructions() {
+	@Override
+    public String getDeliveryInstructions() {
 		return erpOrder.getDeliveryInfo().getDeliveryAddress().getInstructions();
 	}
 
-	public double getChargeAmount(EnumChargeType type) {
+	@Override
+    public double getChargeAmount(EnumChargeType type) {
 		ErpChargeLineModel charge = hasInvoice() ? lastInvoice.getCharge(type) : erpOrder.getCharge(type);
 		return charge == null ? 0.0 : charge.getAmount();
 	}
@@ -563,23 +601,28 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 		return charge == null ? 0.0 : charge.getAmount();
 	}
 	
-	public double getPhoneCharge() {
+	@Override
+    public double getPhoneCharge() {
 		return getChargeAmount(EnumChargeType.PHONE);
 	}
 
-	public double getMiscellaneousCharge() {
+	@Override
+    public double getMiscellaneousCharge() {
 		return getChargeAmount(EnumChargeType.MISCELLANEOUS);
 	}
 
-	public boolean isMiscellaneousChargeWaived() {
+	@Override
+    public boolean isMiscellaneousChargeWaived() {
 		return isChargeWaived(EnumChargeType.MISCELLANEOUS);
 	}
 	
-	public boolean isMiscellaneousChargeTaxable() {
+	@Override
+    public boolean isMiscellaneousChargeTaxable() {
 		return isChargeTaxable(EnumChargeType.MISCELLANEOUS);
 	}
 
-	public double getRestockingCharges() {
+	@Override
+    public double getRestockingCharges() {
 		double charge = 0;
 		charge += getChargeAmount(EnumChargeType.FD_RESTOCKING_FEE);
 		charge += getChargeAmount(EnumChargeType.WBL_RESTOCKING_FEE);
@@ -589,7 +632,8 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 		return charge;
 	}
 
-	public double getRestockingCharges(ErpAffiliate affiliate) {
+	@Override
+    public double getRestockingCharges(ErpAffiliate affiliate) {
 
 		double charge = 0.0;
 		if (ErpAffiliate.getEnum(ErpAffiliate.CODE_FD).equals(affiliate)) {
@@ -610,15 +654,18 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 		return charge;
 	}
 
-	public double getFDRestockingCharges() {
+	@Override
+    public double getFDRestockingCharges() {
 		return getChargeAmount(EnumChargeType.FD_RESTOCKING_FEE);
 	}
 
-	public double getWBLRestockingCharges() {
+	@Override
+    public double getWBLRestockingCharges() {
 		return getChargeAmount(EnumChargeType.WBL_RESTOCKING_FEE);
 	}
 
-	public double getCCDeclinedCharge() {
+	@Override
+    public double getCCDeclinedCharge() {
 		return getChargeAmount(EnumChargeType.CC_DECLINED);
 	}
 
@@ -626,7 +673,8 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 
 
 
-	public boolean containsAlcohol() {
+	@Override
+    public boolean containsAlcohol() {
 		for ( FDCartLineI line : orderLines ) {
 			if (line.isAlcohol()) {
 				return true;
@@ -635,15 +683,18 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 		return false;
 	}
 
-	public boolean hasInvoice() {
+	@Override
+    public boolean hasInvoice() {
 		return firstInvoice != null;
 	}
 
-	public boolean hasReturn() {
+	@Override
+    public boolean hasReturn() {
 		return returnOrder != null;
 	}
 
-	public boolean hasSettledReturn() {
+	@Override
+    public boolean hasSettledReturn() {
 		return returnOrder != null && firstInvoice != lastInvoice;
 	}
 
@@ -659,44 +710,54 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 		return returnOrder.getCharges();
 	}
 
-	public boolean hasRedelivery() {
+	@Override
+    public boolean hasRedelivery() {
 		return redeliveryModel != null;
 	}
 
-	public Date getRedeliveryStartTime() {
+	@Override
+    public Date getRedeliveryStartTime() {
 		return redeliveryModel.getDeliveryInfo().getDeliveryStartTime();
 	}
 
-	public Date getRedeliveryEndTime() {
+	@Override
+    public Date getRedeliveryEndTime() {
 		return redeliveryModel.getDeliveryInfo().getDeliveryEndTime();
 	}
 
 
-	public double getInvoicedTotal() {
+	@Override
+    public double getInvoicedTotal() {
 		return lastInvoice.getInvoicedTotal();
 	}
 
-	public double getInvoicedSubTotal() {
+	@Override
+    public double getInvoicedSubTotal() {
 		return lastInvoice.getInvoicedSubTotal();
 	}
 
-	public double getInvoicedTaxValue() {
+	@Override
+    public double getInvoicedTaxValue() {
 		return lastInvoice.getInvoicedTaxValue();
 	}
 
-	public double getInvoicedDepositValue() {
+	@Override
+    public double getInvoicedDepositValue() {
 		return lastInvoice.getInvoicedDepositValue();
 	}
 
-	public List<ErpChargeLineModel> getInvoicedCharges() {
+	@Override
+    public List<ErpChargeLineModel> getInvoicedCharges() {
 		return lastInvoice.getInvoicedCharges();
 	}
 
-	public double getActualDiscountValue() {
+	@Override
+    public double getActualDiscountValue() {
 		return lastInvoice.getActualDiscountValue();
 	}
 
-	public boolean isChargedWaivedForReturn(EnumChargeType type) {
+	@Override
+    public boolean isChargedWaivedForReturn(EnumChargeType type) {
 		if (returnOrder == null) {
 			return false;
 		}
@@ -722,7 +783,8 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 		return isWaived;
 	}
 
-	public boolean isChargeWaivedByCSROnReturn(EnumChargeType type) {
+	@Override
+    public boolean isChargeWaivedByCSROnReturn(EnumChargeType type) {
 		if (returnOrder == null) {
 			return false;
 		}
@@ -747,23 +809,28 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 		return isCsrWaived;
 	}
 
-	public WebOrderViewI getOrderView(ErpAffiliate affiliate) {
+	@Override
+    public WebOrderViewI getOrderView(ErpAffiliate affiliate) {
 		return WebOrderViewFactory.getOrderView(orderLines, affiliate, false);
 	}
 
-	public List<WebOrderViewI> getOrderViews() {
+	@Override
+    public List<WebOrderViewI> getOrderViews() {
 		return WebOrderViewFactory.getOrderViews(orderLines, false);
 	}
 	
-	public WebOrderViewI getInvoicedOrderView(ErpAffiliate affiliate) {
+	@Override
+    public WebOrderViewI getInvoicedOrderView(ErpAffiliate affiliate) {
 		return WebOrderViewFactory.getInvoicedOrderView(orderLines, getSampleLines(), affiliate);
 	}
 
-	public List<WebOrderViewI> getInvoicedOrderViews() {
+	@Override
+    public List<WebOrderViewI> getInvoicedOrderViews() {
 		return WebOrderViewFactory.getInvoicedOrderViews(orderLines, getSampleLines());
 	}
 
-	public FDReservation getDeliveryReservation() {
+	@Override
+    public FDReservation getDeliveryReservation() {
 		return deliveryReservation;
 	}
 
@@ -771,7 +838,8 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 		return getPaymentMethod().getBillingRef();
 	}
 
-	public List<FDCartLineI> getShortedItems() {
+	@Override
+    public List<FDCartLineI> getShortedItems() {
 		List<FDCartLineI> shortedItems = new ArrayList<FDCartLineI>();
 
 		for ( FDCartLineI line : orderLines ) {
@@ -790,11 +858,13 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 
 
 
-	public boolean isPhoneChargeWaived() {
+	@Override
+    public boolean isPhoneChargeWaived() {
 		return isChargeWaived(EnumChargeType.PHONE);
 	}
 
-	public boolean isPhoneChargeTaxable() {
+	@Override
+    public boolean isPhoneChargeTaxable() {
 		return isChargeTaxable(EnumChargeType.PHONE);
 	}
 
@@ -810,14 +880,16 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 		return retList;
 	}
 	
-	public Map<String, Integer> getCartonMetrics() {
+	@Override
+    public Map<String, Integer> getCartonMetrics() {
 		return cartonMetrics;
 	}
 
 
 	
 
-	public List<ErpDiscountLineModel> getDiscounts() { 
+	@Override
+    public List<ErpDiscountLineModel> getDiscounts() { 
 		return erpOrder.getDiscounts(); 
 	}
 
@@ -832,7 +904,8 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 		return null;
 	}
 	
-	public double getTotalDiscountValue() {
+	@Override
+    public double getTotalDiscountValue() {
 		double totalDiscountAmount = 0.0;
 		if ( erpOrder.getDiscounts() != null && erpOrder.getDiscounts().size() > 0 ) {
 			for ( ErpDiscountLineModel discountLine : erpOrder.getDiscounts() ) {
@@ -842,7 +915,8 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 		return MathUtil.roundDecimal(totalDiscountAmount);
 	}
 
-	public List<ErpDiscountLineModel> getActualDiscounts() { 
+	@Override
+    public List<ErpDiscountLineModel> getActualDiscounts() { 
 		return lastInvoice.getActualDiscounts(); 
 	}
 	
@@ -852,15 +926,18 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 
 
 	
-	public double getDeliverySurchargeOnReturn() {
+	@Override
+    public double getDeliverySurchargeOnReturn() {
 		return this.getChargeAmountOnReturn(EnumChargeType.DELIVERY) + this.getChargeAmountOnReturn(EnumChargeType.DLVPREMIUM);
 	}
 	
-	public double getDeliveryChargeOnReturn() {
+	@Override
+    public double getDeliveryChargeOnReturn() {
 		return this.getChargeAmountDiscAppliedOnReturn(EnumChargeType.DELIVERY) + this.getChargeAmountDiscAppliedOnReturn(EnumChargeType.DLVPREMIUM);
 	}
 
-	public boolean containsDeliveryPass() {
+	@Override
+    public boolean containsDeliveryPass() {
 		boolean deliveryPass = false;
 		for ( FDCartLineI line : orderLines ) {
 			if (line.lookupFDProduct().isDeliveryPass()) {
@@ -874,7 +951,8 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 	/*
 	 * new API which gives the total without and discounts and applied credit 
 	*/ 		
-	public double getPreDeductionTotal() {
+	@Override
+    public double getPreDeductionTotal() {
 		double preTotal = 0.0;
 		preTotal += MathUtil.roundDecimal( getSubTotal() );
 		preTotal += MathUtil.roundDecimal( getTaxValue() );
@@ -889,7 +967,8 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 	
 
 	
-	public int getLineItemDiscountCount(String promoCode){
+	@Override
+    public int getLineItemDiscountCount(String promoCode){
 		Set<String> uniqueDiscountedProducts =new HashSet<String>(); 
 		for ( FDCartLineI cartLine : orderLines ) {
 			if(cartLine.hasDiscount(promoCode)) {
@@ -899,7 +978,8 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 		return uniqueDiscountedProducts.size();
 	}
 
-	public double getTotalLineItemsDiscountAmount() {
+	@Override
+    public double getTotalLineItemsDiscountAmount() {
 		double discountAmt=0;
 		for ( FDCartLineI cartLine : orderLines ) {
 			if(cartLine.getDiscount() !=  null){
@@ -910,7 +990,8 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 	}
 	
 	//Gift cards
-	public List<ErpGiftCardModel> getGiftcardPaymentMethods() {
+	@Override
+    public List<ErpGiftCardModel> getGiftcardPaymentMethods() {
 		return erpOrder.getSelectedGiftCards();
 	}
 	
@@ -919,7 +1000,8 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 
 
 	
-	public FDRecipientList getGiftCardRecipients() {
+	@Override
+    public FDRecipientList getGiftCardRecipients() {
 		return new FDRecipientList(erpOrder.getRecipientsList());
 	}
 
@@ -964,19 +1046,22 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 		
 	}
 
-	public ErpOrderLineModel getOrderLineByNumber(String orderlineNumber) {
+	@Override
+    public ErpOrderLineModel getOrderLineByNumber(String orderlineNumber) {
 		return erpOrder.getOrderLineByOrderLineNumber(orderlineNumber);
 	}
 	
 
 	
-	public double getBufferAmt() {
+	@Override
+    public double getBufferAmt() {
 		return erpOrder.getBufferAmt();
 	}
 	
 
 	
-	public boolean isDiscountInCart(String promoCode) {
+	@Override
+    public boolean isDiscountInCart(String promoCode) {
 		for ( FDCartLineI cartLine : orderLines ) {
 			if(cartLine.getDiscount() !=  null){
 				String discountCode = cartLine.getDiscount().getPromotionCode();
@@ -986,7 +1071,8 @@ public class FDStandingOrderAdapter  implements FDOrderI{
         return false;
 	}
 	
-	public double getLineItemDiscountAmount(String promoCode){
+	@Override
+    public double getLineItemDiscountAmount(String promoCode){
 		double discountAmt=0;
 		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
 			FDCartLineI cartLine = i.next();
@@ -997,7 +1083,8 @@ public class FDStandingOrderAdapter  implements FDOrderI{
         return discountAmt;
 	}
 	
-	public double getDiscountValue(String promoCode) {
+	@Override
+    public double getDiscountValue(String promoCode) {
 		double totalDiscountAmount = 0.0;
 		if ( erpOrder.getDiscounts() != null && erpOrder.getDiscounts().size() > 0 ) {
 			for ( ErpDiscountLineModel discountLine : erpOrder.getDiscounts() ) {
@@ -1022,7 +1109,8 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 	
 
 
-	public int getLineCnt() {
+	@Override
+    public int getLineCnt() {
 		return orderLines == null ? 0 : orderLines.size();
 	}
 
@@ -1036,11 +1124,13 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 	public double getDeliveryCharge() {
 		return this.getChargeAmountDiscountApplied(EnumChargeType.DELIVERY)+this.getChargeAmountDiscountApplied(EnumChargeType.DLVPREMIUM);
 	}
-	public double getChargeAmountDiscountApplied(EnumChargeType chargeType) {
+	@Override
+    public double getChargeAmountDiscountApplied(EnumChargeType chargeType) {
 		ErpChargeLineModel charge = erpOrder.getCharge(chargeType);
 		return charge == null ? 0.0 : charge.getTotalAmount();
 	}
-	public double getChargeAmountDiscAppliedOnReturn(EnumChargeType chargeType) {
+	@Override
+    public double getChargeAmountDiscAppliedOnReturn(EnumChargeType chargeType) {
 		ErpChargeLineModel charge = returnOrder.getCharge(chargeType);
 		return charge == null ? 0.0 : charge.getTotalAmount();
 	}
@@ -1051,7 +1141,8 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 		return 0;
 	}
 	
-	public Double getEbtPurchaseAmount() {
+	@Override
+    public Double getEbtPurchaseAmount() {
 	
 		Double result = null;
 		if(getPaymentMethod() != null && EnumPaymentMethodType.EBT.equals(getPaymentMethod().getPaymentMethodType())
@@ -1147,11 +1238,13 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 
 
 	
-	public EnumNotificationType getTaxationType(){
+	@Override
+    public EnumNotificationType getTaxationType(){
 		return this.taxationtype;
 	}
 	
-	public void setTaxationType(EnumNotificationType taxationType){
+	@Override
+    public void setTaxationType(EnumNotificationType taxationType){
 		this.taxationtype = taxationType;
 	}
 
@@ -1442,5 +1535,10 @@ public class FDStandingOrderAdapter  implements FDOrderI{
 		return null;
 	}
 
+    @Override
+    public int modifyOrderCount() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
 }

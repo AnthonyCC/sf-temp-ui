@@ -47,6 +47,7 @@ public class GACheckoutDataService {
         data.setDeliveryType(order.getDeliveryAddress().getServiceType().name());
         data.setSelectedTimeslotValue(order.getDeliveryReservation().getTimeslot());
         data.setUnavailableTimeslotValue(null);
+        data.setModifiedOrderCount(Integer.toString(order.modifyOrderCount()));
 
         return data;
     }
