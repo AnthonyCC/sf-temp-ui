@@ -447,6 +447,11 @@
 		if (user != null) {
 			queryString.addParam("mobWeb", (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"))) + "");
 		}
+		
+		//Sending RAF promo code to OAS, to target different ads based on the promo code.
+		if(request.getParameter("raf_promo_code")!= null){
+			queryString.addParam("raf_promo_code", request.getParameter("raf_promo_code"));
+		}
 
 		String sitePage = request.getAttribute("sitePage") == null ? "www.freshdirect.com"
 				: (String) request.getAttribute("sitePage");
