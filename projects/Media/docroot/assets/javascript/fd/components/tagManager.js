@@ -249,12 +249,12 @@ var dataLayer = window.dataLayer || [];
         });
       }
 
-      if (coData.newOrder === 'true') {
+      if (coData.newOrder === 'true' || coData.modifyOrder === 'true') {
         dataLayer.push({
           ecommerce: {
             purchase: {
               actionField: {
-                id: coData.orderId || '',
+                id: coData.orderId + (+coData.modifiedOrderCount ? '-'+coData.modifiedOrderCount : '')|| '',
                 payment_type: coData.paymentType || '',
                 revenue: coData.revenue || 0,
                 tax: coData.tax || 0,
