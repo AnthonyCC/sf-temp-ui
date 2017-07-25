@@ -48,6 +48,8 @@ var FreshDirect = FreshDirect || {};
     },
     openPopup:{
       value: function (e) {
+        $('body').addClass('scroll-enabled');
+        
         var moduleId = e.currentTarget.getAttribute('data-module-id'),
             iconId = e.currentTarget.getAttribute('data-icon-id'),
             moduleVirtualCategory = e.currentTarget.getAttribute('data-module-virtual-category'),

@@ -1,3 +1,7 @@
+body.overlay-opened.scroll-enabled {
+  overflow: auto;
+}
+
 #viewallPopup.overlay {
   min-height: 450px;
   min-width: 450px;
