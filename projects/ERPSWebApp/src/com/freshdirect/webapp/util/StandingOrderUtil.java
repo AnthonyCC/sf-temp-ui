@@ -698,7 +698,7 @@ public class StandingOrderUtil {
 			// step delivery date 
 			so.skipDeliveryDate();
 			
-			try {
+			/*try {
 				// So templates should be deleted after placing the order on
 				// date which was choose by user.
 				if (so.getErrorHeader() != null || so.getErrorDetail() != null) {
@@ -708,7 +708,7 @@ public class StandingOrderUtil {
 				}
 			} catch (Exception e) {
 				LOGGER.error(" Got the exception while deleting the So template id:"+so.getId(), e);
-			}
+			}*/
 			
 			//check possible duplicate order instances in delivery window
 			FDStandingOrdersManager.getInstance().checkForDuplicateSOInstances(customer);

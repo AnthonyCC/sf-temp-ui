@@ -147,11 +147,11 @@ public class ManageStandingOrderServlet extends HttpServlet {
 							u.setRefreshSO3(true);
 							FDActionInfo info = AccountActivityUtil.getActionInfo(pageContext.getSession());
 
-							if (null != deleteDate && "Cancel all deliveries".equalsIgnoreCase(deleteDate)){
+							/*if (null != deleteDate && "Cancel all deliveries".equalsIgnoreCase(deleteDate)){
 								FDStandingOrdersManager.getInstance().delete(info, so);
 							} else if ("Y".equalsIgnoreCase(so.getActivate())) {
 								FDStandingOrdersManager.getInstance().updateDeleteSOInfo(info, so, deleteDate);
-							} else {
+							} else*/ {
 								FDStandingOrdersManager.getInstance().delete(info, so);
 							}
 
