@@ -19,6 +19,14 @@ body.overlay-opened {
   overflow: auto;
 }
 
+.overlay .overlay-helper{
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
 .overlay .overlay-container {
   display: block;
   position: relative;
