@@ -699,13 +699,15 @@ public class StandingOrderUtil {
 			so.skipDeliveryDate();
 			
 			try {
-				LOGGER.info("Starting to delete standing orders based on delete date set by user...");
-
-				// So templates should be deleted after placing the order on date which was choose by user.
-				FDStandingOrdersManager.getInstance().deleteSOByDate();
-				LOGGER.info("Finished deleting SO templates based on date.");
+				// So templates should be deleted after placing the order on
+				// date which was choose by user.
+				if (so.getErrorHeader() != null || so.getErrorDetail() != null) {
+					LOGGER.info("Starting to delete standing orders template based on delete date choosen by user.");
+					FDStandingOrdersManager.getInstance().deleteSOByDate();
+					LOGGER.info("Finished deleting SO templates based on date.");
+				}
 			} catch (Exception e) {
-				LOGGER.error(" FDStandingOrdersManager.getInstance().deleteSOByDate() which deletes SO templates of Todays Date has failed with Exception...", e);
+				LOGGER.error(" Got the exception while deleting the So template id:"+so.getId(), e);
 			}
 			
 			//check possible duplicate order instances in delivery window

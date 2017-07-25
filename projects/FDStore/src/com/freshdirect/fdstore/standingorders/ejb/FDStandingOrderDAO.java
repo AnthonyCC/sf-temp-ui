@@ -617,7 +617,7 @@ public class FDStandingOrderDAO {
 
 			}
 			ps.setTimestamp(counter++, new Timestamp( currDate.getTime() ));//Modified Time
-			ps.setDate(counter++, null);
+			ps.setDate(counter++, so.getDeleteDate()!=null?(java.sql.Date) so.getDeleteDate():null);
 			ps.setDouble(counter++,so.getTipAmount());
 			ps.setString(counter++, so.getId());
 
