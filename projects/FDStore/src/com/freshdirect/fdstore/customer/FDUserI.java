@@ -145,8 +145,6 @@ public interface FDUserI extends java.io.Serializable {
 
     public OrderHistoryI getOrderHistory() throws FDResourceException;
 
-    public OrderHistoryI getOrderHistoryByEStoreId(EnumEStoreId eStoreid) throws FDResourceException;
-
     public Date getFirstOrderDate() throws FDResourceException;
 
     public Date getFirstOrderDateByStore(EnumEStoreId eStoreId) throws FDResourceException;

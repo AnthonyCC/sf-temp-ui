@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.log4j.Category;
 
 import com.freshdirect.customer.EnumDeliveryType;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpOrderHistory;
 import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.customer.OrderHistoryI;
@@ -39,7 +40,7 @@ public class OrderHistoryService {
                 ErpSaleInfo erpSaleInfo = iter.next();
                 Date createDate = erpSaleInfo.getCreateDate();
 
-                if ((date == null || createDate.after(date)) && deliveryType.equals(erpSaleInfo.getDeliveryType())) {
+                if ((date == null || createDate.after(date)) && (deliveryType.equals(erpSaleInfo.getDeliveryType()) && EnumSaleType.REGULAR.equals(erpSaleInfo.getSaleType()))) {
                     date = createDate;
                     latestSaleInfo = erpSaleInfo;
                 }

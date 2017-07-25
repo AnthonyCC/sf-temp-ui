@@ -50,10 +50,8 @@ import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
-import com.freshdirect.customer.ErpOrderHistory;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
-import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.DlvPassConstants;
@@ -742,25 +740,6 @@ public class FDUser extends ModelSupport implements FDUserI {
         }
 
         return this.cachedOrderHistory;
-    }
-
-    @Override
-    public OrderHistoryI getOrderHistoryByEStoreId(EnumEStoreId eStoreid) throws FDResourceException {
-        OrderHistoryI orderHistory = getOrderHistory();
-
-        if (orderHistory instanceof ErpOrderHistory) {
-            Collection<ErpSaleInfo> erpSaleInfos = ((ErpOrderHistory) orderHistory).getErpSaleInfos();
-            
-            for (Iterator<ErpSaleInfo> iter = erpSaleInfos.iterator(); iter.hasNext();) {
-               ErpSaleInfo erpSaleInfo = iter.next();
-               
-                if (erpSaleInfo.geteStore() != null && !erpSaleInfo.geteStore().equals(eStoreid) && !EnumSaleType.REGULAR.equals(erpSaleInfo.getSaleType())) {
-                    iter.remove();
-               }
-            }
-        }
-
-        return orderHistory;
     }
 
     @Override

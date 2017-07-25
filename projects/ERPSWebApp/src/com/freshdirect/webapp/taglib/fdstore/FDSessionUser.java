@@ -647,11 +647,6 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     }
 
     @Override
-    public OrderHistoryI getOrderHistoryByEStoreId(EnumEStoreId eStoreid) throws FDResourceException {
-        return this.user.getOrderHistoryByEStoreId(eStoreid);
-    }
-
-    @Override
     public CustomerAvgOrderSize getHistoricOrderSize() throws FDResourceException {
         return this.user.getHistoricOrderSize();
     }
