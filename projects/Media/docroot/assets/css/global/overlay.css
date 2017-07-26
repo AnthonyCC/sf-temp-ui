@@ -3,6 +3,7 @@ body.overlay-opened {
 }
 
 .overlay {
+  animation: fade-in .5s;
   display: none;
   background-color: rgba(255, 255, 255, 0.8);
 	position:fixed;
@@ -17,6 +18,10 @@ body.overlay-opened {
 	text-align:left;
   -webkit-overflow-scrolling: touch;
   overflow: auto;
+}
+
+.overlay.overlay-fullscreen {
+  animation: fade-in-fullscreen .5s;
 }
 
 .overlay .overlay-helper{
@@ -288,4 +293,26 @@ body.overlay-opened {
     margin: 0;
     float: right;
   }
+}
+
+@keyframes fade-in {
+    0% {
+      opacity: 0;
+      transform: translateY(-40px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+}
+
+@keyframes fade-in-fullscreen {
+    0% {
+      opacity: 0;
+    }
+
+    100% {
+      opacity: 1;
+    }
 }
