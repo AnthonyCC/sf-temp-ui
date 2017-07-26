@@ -424,12 +424,12 @@ public class LoginController extends BaseController  implements SystemMessageLis
 			user.setEligibleForDDPP();
 			
 			//Call the MergeCartControllerTagWrapper
-			MergeCartControllerTagWrapper tagWrapper = new MergeCartControllerTagWrapper(user);
-			ActionResult mergeActionResult = tagWrapper.mergeCart(currentCart);
-			if(mergeActionResult.isFailure()){
-				throw new FDAuthenticationException();
-			}
-			user.getFDSessionUser().saveCart();
+//			MergeCartControllerTagWrapper tagWrapper = new MergeCartControllerTagWrapper(user);
+//			ActionResult mergeActionResult = tagWrapper.mergeCart(currentCart);
+//			if(mergeActionResult.isFailure()){
+//				throw new FDAuthenticationException();
+//			}
+//			user.getFDSessionUser().saveCart();
 			//Silver popup changes start
 			SilverPopupDetails details = new SilverPopupDetails();
 			details.setCustomerId(user.getFDSessionUser().getIdentity().getErpCustomerPK());
