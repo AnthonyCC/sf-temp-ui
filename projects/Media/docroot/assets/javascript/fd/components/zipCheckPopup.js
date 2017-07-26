@@ -39,7 +39,7 @@ var FreshDirect = FreshDirect || {};
       }
     },
     customClass: {
-      value: 'medium'
+      value: 'overlay-medium'
     },
     openPopup:{
       value: function (e) {
