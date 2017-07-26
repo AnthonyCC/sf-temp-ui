@@ -436,7 +436,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 			details.setDestination(destination);
 			details.setQualifier(qualifier);
 			details.setChannel(channel);
-			if (null != details.getDestination() && details.getQualifier() !=null) {
+			if (null != details.getDestination() && "" != details.getDestination() && null!=details.getQualifier()  && "" != details.getQualifier()) {
 				user.getFDSessionUser().insertOrUpdateSilverPopup(details);
 			}
 			//Silver popup changes End
