@@ -26,7 +26,7 @@ var FreshDirect = FreshDirect || {};
 
   function done(listPos) {
 	    listPos.forEach(function (pos) {
-	      var cnt = $jq("#oas_b_"+pos);
+	      var cnt = $jq("#oas_"+pos);
 	      if (cnt.size()) {
 	        cnt.html('');
 	        postscribe(cnt[0], '<script>OAS_RICH("'+pos+'");</script>', {
@@ -85,8 +85,8 @@ var FreshDirect = FreshDirect || {};
   }).listen();
 
   function initListPoses(){
-    $("[id^='oas_b_']").each(function(){ 
-      var prefix = 'oas_b_',
+    $("[id^='oas_']").each(function(){ 
+      var prefix = 'oas_',
           oasName = $(this).attr('id').slice(prefix.length);
 
       if(oasName){ listPos.push(oasName); }
