@@ -19,11 +19,13 @@ import org.apache.log4j.Logger;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.coremetrics.CmContext;
 import com.freshdirect.fdstore.coremetrics.CmFacade;
 import com.freshdirect.fdstore.coremetrics.CmInstance;
+import com.freshdirect.fdstore.ecomm.gateway.CoreMetricsCdfService;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 
@@ -172,8 +174,12 @@ public class CoremetricsCdfServiceCmd {
 			@Override
 			CdfProcessResult process(CoremetricsCdfServiceSB sb) throws RemoteException {
 				CmContext ctx = CmContext.createGlobalContext();
-
-				CdfProcessResult result = sb.processCdf(ctx);
+				CdfProcessResult result;
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CoremetricsCdfServiceSB)){
+					result = CoreMetricsCdfService.getInstance().processCdf(ctx);
+				}else{
+					result = sb.processCdf(ctx);
+				}
 
 				return result;
 			}
@@ -220,10 +226,19 @@ public class CoremetricsCdfServiceCmd {
 				}
 
 				CdfProcessResult result = null;
-				for (CmContext ctx : ctxs) {
-					result = sb.processCdf(ctx);
-					if (!result.isSuccess()) {
-						break;
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CoremetricsCdfServiceSB)){
+					for (CmContext ctx : ctxs) {
+						result = CoreMetricsCdfService.getInstance().processCdf(ctx);
+						if (!result.isSuccess()) {
+							break;
+						}
+					}
+				}else{
+					for (CmContext ctx : ctxs) {
+						result = sb.processCdf(ctx);
+						if (!result.isSuccess()) {
+							break;
+						}
 					}
 				}
 

@@ -12,11 +12,9 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.ERPServiceLocator;
 import com.freshdirect.ecommerce.data.enums.EnumPropertyType;
-import com.freshdirect.framework.util.ConfigHelper;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.monitor.ejb.ErpMonitorHome;
 import com.freshdirect.monitor.ejb.ErpMonitorSB;
-import com.freshdirect.monitor.ejb.ErpMonitorSessionBean;
 
 public class FDEcommProperties {
 	
@@ -83,6 +81,7 @@ public class FDEcommProperties {
 	public static final String SmartStoreServiceConfigurationSB = "smartstore.ejb.SmartStoreServiceConfigurationSB";
 	public static final String PaymentGatewaySB ="payment.ejb.PaymentGatewaySB";
 	public static final String EwalletServiceSB = "ewallet.ejb.EwalletServiceSB";
+	public static final String CoremetricsCdfServiceSB = "coremetrics.service.CoremetricsCdfServiceSB";
  
   
     
@@ -137,8 +136,7 @@ public class FDEcommProperties {
         defaults.put(PaymentGatewaySB, FALSE);
         defaults.put(EwalletNotifyStatusSB, FALSE);
         defaults.put(EwalletServiceSB, FALSE);
-
-
+        defaults.put(CoremetricsCdfServiceSB, FALSE);
         refresh();
     }
 
