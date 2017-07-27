@@ -26,6 +26,7 @@ import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.CMSPageRequest;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -424,12 +425,14 @@ public class LoginController extends BaseController  implements SystemMessageLis
 			user.setEligibleForDDPP();
 			
 			//Call the MergeCartControllerTagWrapper
-//			MergeCartControllerTagWrapper tagWrapper = new MergeCartControllerTagWrapper(user);
-//			ActionResult mergeActionResult = tagWrapper.mergeCart(currentCart);
-//			if(mergeActionResult.isFailure()){
-//				throw new FDAuthenticationException();
-//			}
-//			user.getFDSessionUser().saveCart();
+			if(FDStoreProperties.isObsoleteMergeCartPageEnabled()){
+				MergeCartControllerTagWrapper tagWrapper = new MergeCartControllerTagWrapper(user);
+				ActionResult mergeActionResult = tagWrapper.mergeCart(currentCart);
+				if(mergeActionResult.isFailure()){
+					throw new FDAuthenticationException();
+				}
+			}
+			user.getFDSessionUser().saveCart();
 			//Silver popup changes start
 			SilverPopupDetails details = new SilverPopupDetails();
 			details.setCustomerId(user.getFDSessionUser().getIdentity().getErpCustomerPK());
