@@ -2,6 +2,7 @@ package com.freshdirect.webapp.util;
 
 
 import java.rmi.RemoteException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -211,6 +212,26 @@ public class StandingOrderUtil {
 				LOGGER.info( "Skipping SO because it has a permanent error." );
 				return SOResult.createSkipped( so, "Skipping because SO is in error state" );
 			}
+		}
+		
+		try {
+			// So templates should be deleted after placing the order on
+			// date which was choose by user.
+			if (so.getErrorHeader() != null || so.getErrorDetail() != null) {
+				FDStandingOrdersManager.getInstance().deleteActivatedSO(info, so, null,false);
+			}else {
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+				if(so.getDeleteDate()!=null && dateFormat.format(new Date()).equals(dateFormat.format(so.getDeleteDate())) && !so.isDeleted()) {
+					LOGGER.info("Starting to delete standing orders template based on delete date choosen by user.");
+					so.setDeleteDate(null);
+					FDActionInfo soinfo = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(), 
+							INITIATOR_NAME, "so template deleted as per the delete date choosen by user", null, null);
+					deleteActivateSo(so, soinfo);
+					LOGGER.info("Finished deleting SO templates based on date.");
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.error(" Got the exception while deleting the So template id:"+so.getId(), e);
 		}
 	
 		// First of all : check if next delivery date is passed for whatever reason,
@@ -698,17 +719,31 @@ public class StandingOrderUtil {
 			// step delivery date 
 			so.skipDeliveryDate();
 			
-			/*try {
-				// So templates should be deleted after placing the order on
-				// date which was choose by user.
-				if (so.getErrorHeader() != null || so.getErrorDetail() != null) {
-					LOGGER.info("Starting to delete standing orders template based on delete date choosen by user.");
-					FDStandingOrdersManager.getInstance().deleteSOByDate();
-					LOGGER.info("Finished deleting SO templates based on date.");
+			
+			if (null != so.getDeleteDate() && !("").equals(so.getDeleteDate())) {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				try {
+					Date date1 = sdf.parse(sdf.format(so.getDeleteDate()));
+					Date date2 = sdf.parse(sdf.format(new Date()));
+					
+					if (date1.compareTo(date2) == 0 && so.isDeleted()) {
+						List<FDStandingOrder> fdStandingOrder = new ArrayList<FDStandingOrder>();
+						fdStandingOrder.add(so);
+						FDStandingOrdersManager.getInstance().getAllSOUpcomingOrders(so.getUser(), fdStandingOrder);
+						if (so.getUpcomingDelivery() != null && so.getUpcomingDelivery().getErpSalesId() != null) {
+							FDCustomerManager.cancelOrder(info, so.getUpcomingDelivery().getErpSalesId(), true, 0, true);
+							FDStandingOrdersManager.getInstance().deleteSOByDate(so);
+							LOGGER.info("Cancel the upcomming delivery:" + orderId + "for standing order template id:"+ so.getId());
+						}
+					}
+				} catch (ParseException e) {
+					LOGGER.error("ParseException occured: " +e);
+					e.printStackTrace();
+				} catch (FDAuthenticationException e) {
+					LOGGER.error("FDAuthenticationException occured: " +e);
+					e.printStackTrace();
 				}
-			} catch (Exception e) {
-				LOGGER.error(" Got the exception while deleting the So template id:"+so.getId(), e);
-			}*/
+			}
 			
 			//check possible duplicate order instances in delivery window
 			FDStandingOrdersManager.getInstance().checkForDuplicateSOInstances(customer);
@@ -737,6 +772,13 @@ public class StandingOrderUtil {
 			LOGGER.info( "ErpAddressVerificationException (Payment Address) while placing order.", e );
 			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.PAYMENT_ADDRESS );
 		}
+	}
+
+	private static void deleteActivateSo(FDStandingOrder so, FDActionInfo soinfo)
+			throws FDResourceException {
+		FDStandingOrdersManager.getInstance().deleteActivatedSO(soinfo, so, null, false);
+		FDStandingOrdersManager.getInstance().delete(soinfo, so);
+		FDStandingOrdersManager.getInstance().deletesoTemplate(so.getId());
 	}
 	
 	private static void sendSuccessMail ( FDStandingOrder so, FDCustomerInfo customerInfo, String orderId, List<FDCartLineI> unavCartItems, MailerGatewayHome mailerHome ) {

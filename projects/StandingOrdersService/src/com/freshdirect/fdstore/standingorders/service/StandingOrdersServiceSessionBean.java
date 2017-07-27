@@ -20,13 +20,17 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
+import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.coremetrics.mobileanalytics.CreateCMRequest;
 import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderAltDeliveryDate;
@@ -87,6 +91,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 
 	public SOResult.ResultList placeStandingOrders(Collection<String> soIdList, StandingOrdersJobConfig jobConfig) {
 		Collection<FDStandingOrder> soList;
+		List<String> deletedSoList=null;
 
 		if ( soIdList == null ) {
 			// We got no list at all, which means we need to process everything
@@ -99,7 +104,9 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 				
 				soList = soManager.loadActiveStandingOrders(false);	
 				
-				soList.addAll(soManager.loadActiveStandingOrders(true));	
+				soList.addAll(soManager.loadActiveStandingOrders(true));
+				
+				deletedSoList=soManager.getDeletedSoList();
 
 				if ( soList.isEmpty()  ) {
 					LOGGER.error( "Could not retrieve standing orders list! - loadActiveStandingOrders() returned null" );
@@ -194,6 +201,23 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			
 			// add (and count) the result
 			resultCounter.add( result );
+			
+			if(deletedSoList!=null && !deletedSoList.isEmpty()) {
+				try {
+					for ( String soId : deletedSoList) {
+						FDStandingOrder deletedSo = soManager.load( new PrimaryKey( soId ) );
+						if ( deletedSo != null ) {
+							FDActionInfo	info = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(), 
+									INITIATOR_NAME, "Cancel the standing order based on template criteria ", null, null);
+							 cancelNextDelevery(so, info);
+							
+					  }
+					}
+				} catch (Exception e) {
+					LOGGER.error( "while cancelling the next delivey got an exception", e );
+					
+				}
+			}
 			
 			// if there was any change (not skipped), then save the SO and log the activity
 			if ( result.getStatus() != Status.SKIPPED ) {
@@ -412,8 +436,16 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 	public UnavDetailsReportingBean getDetailsForReportGeneration() throws FDResourceException {		
 			return soManager.getDetailsForReportGeneration();	
 	}
-	
-	public void deleteStandingOrders() throws FDResourceException{
-			soManager.deleteSOByDate();	
+
+	private void cancelNextDelevery(FDStandingOrder so, FDActionInfo info)
+			throws FDResourceException, FDAuthenticationException,
+			ErpTransactionException, DeliveryPassException {
+		List<FDStandingOrder> fdStandingOrder = new ArrayList<FDStandingOrder>();
+		fdStandingOrder.add(so);
+		FDStandingOrdersManager.getInstance().getAllSOUpcomingOrders(so.getUser(), fdStandingOrder);
+		if (so.getUpcomingDelivery() != null && so.getUpcomingDelivery().getErpSalesId() != null) {
+			FDCustomerManager.cancelOrder(info, so.getUpcomingDelivery().getErpSalesId(), true, 0, false);
+			FDStandingOrdersManager.getInstance().deleteActivatedSO(info, so, null, false);
+		}
 	}
 }	

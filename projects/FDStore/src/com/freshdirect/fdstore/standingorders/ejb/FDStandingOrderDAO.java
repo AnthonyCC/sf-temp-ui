@@ -44,6 +44,7 @@ import com.freshdirect.fdstore.standingorders.SOResult.Status;
 import com.freshdirect.fdstore.standingorders.UnAvailabilityDetails;
 import com.freshdirect.fdstore.standingorders.UnavDetailsReportingBean;
 import com.freshdirect.framework.core.SequenceGenerator;
+import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class FDStandingOrderDAO {
@@ -181,16 +182,14 @@ public class FDStandingOrderDAO {
 	private static final String REVERT_DEFAULT_STANDING_ORDER="update CUST.STANDING_ORDER so SET so.default_so=NULL WHERE  so.customer_id = ? AND SO.default_so='Y' ";
 	
 	private static final String UPDATE_REMIDER_OVERLAY_STANDING_ORDER="update CUST.STANDING_ORDER so SET so.reminder_overlay='N' WHERE  so.id = ? AND SO.reminder_overlay='Y'";
-
-	private static final String GET_STANDING_ORDERS_DELETE_BYDATE =	"select id from CUST.STANDING_ORDER where DELETED=0 and (trunc(DELETE_DATE) = trunc(sysdate)) and ERROR_HEADER IS NULL";	
 	
-	private static final String DELETE_CUSTOMER_LIST_DETAILS_BYDATE = "delete from CUST.CUSTOMERLIST_DETAILS where LIST_ID  in (select CUSTOMERLIST_ID from CUST.STANDING_ORDER where DELETED=0 and (trunc(DELETE_DATE) = trunc(sysdate))) and ERROR_HEADER IS NULL";
+	private static final String DELETE_STANDING_ORDER_SET_DATE = "update CUST.STANDING_ORDER SET DELETED=1, DELETE_DATE= (trunc(sysdate)+1) where ID=? and DELETED=0";
 	
-	private static final String DELETE_CUSTOMER_LIST_BYDATE = "delete from CUST.CUSTOMERLIST where ID in (select CUSTOMERLIST_ID from CUST.STANDING_ORDER where DELETED=0 and (trunc(DELETE_DATE) = trunc(sysdate)) and ERROR_HEADER IS NULL";	
+	private static final String UPDATE_DELETE_DATE = "update CUST.STANDING_ORDER set DELETE_DATE = ? where ID = ?";
 	
-	private static final String DELETE_STANDING_ORDER_BYDATE = "update CUST.STANDING_ORDER SET DELETED=1, CUSTOMERLIST_ID=NULL where DELETED=0 and (trunc(DELETE_DATE) = trunc(sysdate)) and ERROR_HEADER IS NULL";
-
-	private static final String UPDATE_DELETE_SOINFO = "update CUST.STANDING_ORDER set DELETE_DATE = ? where ID = ?";
+	private static final String DELETED_STANDING_ORDERS_LIST ="select Id from CUST.STANDING_ORDER SO  where so.deleted=1 and (trunc(delete_date) = trunc(sysdate)) and  error_header is null";
+	
+	
 
 	protected String getNextId(Connection conn) throws SQLException {
 		return SequenceGenerator.getNextId(conn, "CUST");
@@ -443,6 +442,39 @@ public class FDStandingOrderDAO {
 	}
 	
 	
+	//activated SO template, user chosen "cancil all delivaries" / delete date
+	public void deleteActivatedSO( Connection conn, String id, String deleteDate, boolean cancelAllDeliveries ) throws SQLException {
+		PreparedStatement ps = null;
+		try {
+			if (cancelAllDeliveries) {
+				try {
+					ps = conn.prepareStatement(DELETE_STANDING_ORDER_SET_DATE);
+					ps.setString(1, id);
+					ps.executeUpdate();
+				} catch (SQLException e) {
+					LOGGER.error("while updating the Delete date for cancelAllDeliveries, got the exception for Standing order id:"+id, e);
+				}
+			} else {
+				try {
+					int i = 1;
+					ps = conn.prepareStatement(UPDATE_DELETE_DATE);
+					SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+					ps.setDate(i++,
+							deleteDate != null ? new java.sql.Date(formatter.parse(deleteDate).getTime()) : null);
+					ps.setString(i, id);
+					ps.executeUpdate();
+				} catch (ParseException e) {
+					LOGGER.error("while updating the Delete date, got the exception for Standing order id:"+id, e);
+				}
+			}
+		}finally{
+			DaoUtil.close(ps);
+		}
+		
+	}
+	
+	
+	// Deletes Unactivated SO templates coming from servlet
 	public void deleteStandingOrder( Connection conn, String soPk, String listPk ) throws SQLException {
 		
 		PreparedStatement ps = conn.prepareStatement( DELETE_STANDING_ORDER );
@@ -461,65 +493,43 @@ public class FDStandingOrderDAO {
 		ps.close();
 	}
 	
-	public List<String> deleteSOByDate( Connection conn) throws SQLException {
+	
+	private static final String DELETE_CUSTOMER_LIST_DETAILS_BYDATE = "delete from CUST.CUSTOMERLIST where ID in (select CUSTOMERLIST_ID from CUST.STANDING_ORDER where DELETED=1 and (trunc(DELETE_DATE) = trunc(sysdate)) and ID = ? and ERROR_HEADER IS NULL)";
+	
+	private static final String DELETE_CUSTOMER_LIST_BYDATE = "delete from CUST.CUSTOMERLIST where ID in (select CUSTOMERLIST_ID from CUST.STANDING_ORDER where DELETED=1 and (trunc(DELETE_DATE) = trunc(sysdate)) and ID = ? and ERROR_HEADER IS NULL )";	
+	
+	private static final String DELETE_STANDING_ORDER_BYDATE = "update CUST.STANDING_ORDER SET CUSTOMERLIST_ID=NULL where DELETED=1 and (trunc(DELETE_DATE) = trunc(sysdate)) and ID = ? and ERROR_HEADER IS NULL";
+
+	
+	//flow coming from cron 		
+	public List<String> deleteSOByDate( Connection conn, FDStandingOrder so) throws SQLException {
 		
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		List<String> soList = new ArrayList<String>();
 		try {			
-			ps = conn.prepareStatement(GET_STANDING_ORDERS_DELETE_BYDATE);
-			rs = ps.executeQuery();			
-			
-			while (rs.next()) {
-				soList.add(rs.getString("SO_ID"));
-			}	
-			
-			rs.close();
-			ps.close();
+			soList.add(so.getId());
 			
 			ps = conn.prepareStatement( DELETE_CUSTOMER_LIST_DETAILS_BYDATE );
+			ps.setString( 1, so.getId() );
 			ps.executeUpdate();		
 			ps.close();
 			
 			ps = conn.prepareStatement( DELETE_CUSTOMER_LIST_BYDATE );
+			ps.setString( 1, so.getId() );
 			ps.executeUpdate();		
 			ps.close();
 			
 			ps = conn.prepareStatement( DELETE_STANDING_ORDER_BYDATE );
+			ps.setString( 1, so.getId() );
 			ps.executeUpdate();
 			ps.close();				
 		} catch (SQLException exc) {
 			throw exc;
 		} finally {
-			if(rs != null){
-				rs.close();
-			}
-			if(ps != null) {
-				ps.close();
-			}
-		}		
+			DaoUtil.close(rs);
+			DaoUtil.close(ps);}		
 		return soList;		
-	}	
-	
-	public void updateDeleteSOInfo(Connection conn, String id, String deleteDate) throws SQLException {
-		LOGGER.debug("FDStandingOrderDAO.updateDeleteSOInfo()");
-
-		PreparedStatement ps = null;
-		try {
-			int i = 1;
-			ps = conn.prepareStatement(UPDATE_DELETE_SOINFO);
-			SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-			ps.setDate(i++, deleteDate != null ? new java.sql.Date(formatter.parse(deleteDate).getTime()) : null);
-			ps.setString(i, id);
-			ps.executeUpdate();
-			ps.close();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		} finally {
-			if (ps != null) {
-				ps.close();
-			}
-		}
 	}	
 	
 	public String createStandingOrder(Connection conn, FDStandingOrder so) throws SQLException {
@@ -2130,6 +2140,27 @@ public void turnOffReminderOverLayNewSo(Connection con, String standingOrderId) 
 					}
 				}
 		}
+
+public List<String> getDeletedSoList(Connection conn) throws SQLException {
+	
+	PreparedStatement ps = null;
+	ResultSet rs = null;
+	List<String> deletedSoList = new ArrayList<String>();
+	try {
+		ps = conn.prepareStatement(DELETED_STANDING_ORDERS_LIST);
+		rs = ps.executeQuery();
+		while (rs.next()) {
+			deletedSoList.add(rs.getString("ID"));
+		}
+	} catch (SQLException exc) {
+		throw exc;
+	} finally {
+		DaoUtil.close(rs);
+		DaoUtil.close(ps);
 	}
+	
+	return deletedSoList;
+ }
+}
 	
 

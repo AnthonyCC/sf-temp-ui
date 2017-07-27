@@ -184,6 +184,22 @@ public class FDStandingOrdersManager {
 		}
 	}
 
+	public void deleteActivatedSO(FDActionInfo info, FDStandingOrder so, String deleteDate, boolean cancelAllDeliveries) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();
+			
+			sb.deleteActivatedSO(info, so, deleteDate, cancelAllDeliveries);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	
 	public void delete(FDActionInfo info, FDStandingOrder so) throws FDResourceException {
 		lookupManagerHome();
 		try {
@@ -199,27 +215,12 @@ public class FDStandingOrdersManager {
 		}
 	}
 	
-	public void updateDeleteSOInfo(FDActionInfo info, FDStandingOrder so, String deleteDate) throws FDResourceException {
+	public void deleteSOByDate(FDStandingOrder so) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDStandingOrdersSB sb = soHome.create();
 			
-			sb.updateDeleteSOInfo(info, so, deleteDate);
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-	
-	public void deleteSOByDate() throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDStandingOrdersSB sb = soHome.create();
-			
-			sb.deleteSOByDate();
+			sb.deleteSOByDate(so);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -1085,5 +1086,21 @@ public class FDStandingOrdersManager {
 			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
-	}	
+	}
+	
+	
+	public List<String> getDeletedSoList() throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();
+			return sb.getDeletedSoList();
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
 }
