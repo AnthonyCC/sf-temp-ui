@@ -215,21 +215,6 @@ public class FDStandingOrdersManager {
 		}
 	}
 	
-	public void deleteSOByDate(FDStandingOrder so) throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDStandingOrdersSB sb = soHome.create();
-			
-			sb.deleteSOByDate(so);
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}	
-	
 	public String save(FDActionInfo info, FDStandingOrder so) throws FDResourceException {
 		return save(info, so, null);
 	}

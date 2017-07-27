@@ -209,7 +209,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 						if ( deletedSo != null ) {
 							FDActionInfo	info = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(), 
 									INITIATOR_NAME, "Cancel the standing order based on template criteria ", null, null);
-							 cancelNextDelevery(so, info);
+							cancelNextDelivery(so, info);
 							
 					  }
 					}
@@ -437,7 +437,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			return soManager.getDetailsForReportGeneration();	
 	}
 
-	private void cancelNextDelevery(FDStandingOrder so, FDActionInfo info)
+	private void cancelNextDelivery(FDStandingOrder so, FDActionInfo info)
 			throws FDResourceException, FDAuthenticationException,
 			ErpTransactionException, DeliveryPassException {
 		List<FDStandingOrder> fdStandingOrder = new ArrayList<FDStandingOrder>();
