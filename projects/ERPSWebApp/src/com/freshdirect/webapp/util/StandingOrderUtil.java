@@ -719,28 +719,6 @@ public class StandingOrderUtil {
 			// step delivery date 
 			so.skipDeliveryDate();
 			
-			
-			try {
-				// So templates should be deleted after placing the order on
-				// date which was choose by user.
-				if (so.getErrorHeader() != null || so.getErrorDetail() != null) {
-					FDActionInfo soinfo = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(), 
-							INITIATOR_NAME, "Delete the so template delete date because of So has some error", null, null);
-					FDStandingOrdersManager.getInstance().deleteActivatedSO(soinfo, so, null, false);
-				}else {
-					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-					if(so.getDeleteDate()!=null && dateFormat.format(new Date()).equals(dateFormat.format(so.getDeleteDate())) && !so.isDeleted()) {
-						LOGGER.info("Starting to delete standing orders template based on delete date choosen by user.");
-						so.setDeleteDate(null);
-						FDActionInfo soinfo = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(), 
-								INITIATOR_NAME, "so template deleted as per the delete date choosen by user", null, null);
-						deleteSoTemplate(so, soinfo);
-					}
-				}
-			} catch (Exception e) {
-				LOGGER.error(" Got the exception while deleting the So template id:"+so.getId(), e);
-			}
-			
 			//check possible duplicate order instances in delivery window
 			FDStandingOrdersManager.getInstance().checkForDuplicateSOInstances(customer);
 			
