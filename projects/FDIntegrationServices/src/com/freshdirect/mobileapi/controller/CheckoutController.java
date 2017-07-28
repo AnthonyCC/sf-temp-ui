@@ -969,7 +969,7 @@ public class CheckoutController extends BaseController {
             HttpServletRequest request) throws FDException, JsonException {
 
         Checkout checkout = new Checkout(user);
-        ResultBundle resultBundle = checkout.setPaymentMethod(reqestMessage.getPaymentMethodId(), reqestMessage.getBillingRef());
+        ResultBundle resultBundle = checkout.setPaymentMethod(reqestMessage.getPaymentMethodId(), reqestMessage.getBillingRef(), reqestMessage.getIsOrderLevel());
 
         ActionResult result = resultBundle.getActionResult();
 
@@ -998,7 +998,7 @@ public class CheckoutController extends BaseController {
     private ModelAndView setPaymentMethodEx(ModelAndView model, SessionUser user, PaymentMethodSelection reqestMessage,
             HttpServletRequest request) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
-        ResultBundle resultBundle = checkout.setPaymentMethodEx(reqestMessage.getPaymentMethodId(), reqestMessage.getBillingRef());
+        ResultBundle resultBundle = checkout.setPaymentMethodEx(reqestMessage.getPaymentMethodId(), reqestMessage.getBillingRef(), reqestMessage.getIsOrderLevel());
 
         ActionResult result = resultBundle.getActionResult();
 
@@ -1478,7 +1478,7 @@ public class CheckoutController extends BaseController {
         }
 
         if (fdUser.getShoppingCart().getPaymentMethod() == null) {
-            checkout.setPaymentMethodEx(checkout.getPreselectedPaymethodMethodId(), "");
+            checkout.setPaymentMethodEx(checkout.getPreselectedPaymethodMethodId(), "","Y");
         }
 
         ResultBundle dlvValidationResult = new ResultBundle();
