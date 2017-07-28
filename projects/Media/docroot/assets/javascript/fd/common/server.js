@@ -63,14 +63,18 @@ var FreshDirect = FreshDirect || {};
   var errorHandler = function( e ){
     var status = e.status, message;
     if(status == 401){
-	    var targetHolder = $('#target-link-holder').attr("href");
+    	var currentPage = window.location.pathname + window.location.search + window.location.hash;
+    	if (!$('#target-link-holder').length) {
+    		$("body").append("<a id=\"target-link-holder\" href="+ currentPage +" style=\"display:none;\">");
+    	}
+	    var targetHolder = e.targetHolder || $('#target-link-holder').attr("href");
 	    $('#target-link-holder').remove();
 	    fd.user.recognized=true;
 	    $("button[disabled]").removeAttr("disabled");
 	    if (fd.properties.isSocialLoginEnabled) {
-	    socialLogin(e.targetHolder);
+	    	socialLogin(targetHolder);
 	    }else{
-	    window.location.href = "/login/login.jsp";
+	    	window.location.href = "/login/login.jsp";
 	    }
 }
         message = errorMessages[status];
