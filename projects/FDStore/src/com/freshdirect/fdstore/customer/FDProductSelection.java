@@ -81,6 +81,13 @@ public class FDProductSelection implements FDProductSelectionI {
 	private Date deliveryStartDate;
 	private EnumSaleStatus saleStatus;
 	
+	//added default constructor for Storefront 2.0
+	public FDProductSelection(){
+		this.productRef = null ;
+		this.orderLine = null;
+		this.statistics = null;
+	}
+	
 	public FDProductSelection(FDSku sku, ProductModel productRef, FDConfigurableI configuration, UserContext ctx) {
 		this(sku, productRef, configuration, null, ctx);
 	}
