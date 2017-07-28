@@ -1128,7 +1128,7 @@ public class FDCustomerManager {
 		}
 	}
 
-	public static void updateWeeklyReservation(FDIdentity identity, FDTimeslot timeslot, String addressId, FDActionInfo aInfo) throws FDResourceException {
+	/*public static void updateWeeklyReservation(FDIdentity identity, FDTimeslot timeslot, String addressId, FDActionInfo aInfo) throws FDResourceException {
 		lookupManagerHome();
 		try{
 			FDCustomerManagerSB sb = managerHome.create();
@@ -1140,7 +1140,7 @@ public class FDCustomerManager {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
 		}
-	}
+	}*/
 
 	public static void updateRecurringReservation(
 		FDIdentity identity,

@@ -28,7 +28,7 @@
 
 		if(zonePromoAmount > 0) {
 			zonePromoString = CCFormatter.formatQuantity(zonePromoAmount);
-			request.setAttribute("SHOW_WINDOWS_STEERING","false");
+			request.setAttribute("SHOW_WINDOWS_STEERING","true");
 		}
 		String soFirstNextText=null;
 
@@ -202,7 +202,6 @@
 		<% } %>
 	<%}%>
 <!-- ~~~~~~~~~~~~~~~~~~~~~~ END TIMESLOT GRID ~~~~~~~~~~~~~~~~~~~~~~ -->
-
 <script language="javascript">
 	
 	var c2ctimeslot = document.getElementById("c2cnextdaytimeslot");	

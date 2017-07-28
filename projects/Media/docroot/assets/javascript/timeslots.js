@@ -2498,6 +2498,18 @@ var fdTSDisplayPreInitializeFuncs = window['fdTSDisplayPreInitializeFuncs'] || [
 			document.forms[formId].submit();
 		}
 	}
+	function changeMe(checkboxElem){
+		
+		if(checkboxElem.getValue()==FreshDirect._page_options.rsvType.ONETIME){
+			document.getElementById("reservationType_field2").value=FreshDirect._page_options.rsvType.RECURRING;
+			document.getElementById("reservationType_field2").checked=true;
+		}
+		else if(checkboxElem.getValue()==FreshDirect._page_options.rsvType.RECURRING || checkboxElem.getValue()== null){
+			document.getElementById("reservationType_field2").value=FreshDirect._page_options.rsvType.ONETIME;
+			document.getElementById("reservationType_field2").checked=false;
+		  }
+	}
+	
 /*
 	function checkPremiumSlotPopup(JSONstring, formId) {
 		var params = JSONstring.evalJSON(true);	
