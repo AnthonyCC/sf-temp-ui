@@ -495,10 +495,12 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 
         for (ListIterator<SkuModel> li = skus.listIterator(); li.hasNext();) {
             SkuModel sku = li.next();
-            if (sku.isUnavailable()) {
-                li.remove();
-            } else if (sku.getContentKey().equals(preferredSku)) {
-                return sku;
+            if (null != sku){
+	            if (sku.isUnavailable()) {
+	                li.remove();
+	            } else if (sku.getContentKey().equals(preferredSku)) {
+	                return sku;
+	            }
             }
         }
         if (skus.size() == 0)

@@ -243,9 +243,9 @@ public class ProductPriceTag extends BodyTagSupport {
             String skuCode = productInfo.getSkuCode();
             String priceString = priceCalculator.getPriceFormatted(savingsPercentage);
             String scaleString = null;
-            String salesOrg=priceCalculator.getPricingContext().getZoneInfo().getSalesOrg();
-    		String distributionChannel=priceCalculator.getPricingContext().getZoneInfo().getDistributionChanel();
-            FDGroup group = productInfo.getGroup(salesOrg,distributionChannel);
+//          String salesOrg=priceCalculator.getPricingContext().getZoneInfo().getSalesOrg();
+//    		String distributionChannel=priceCalculator.getPricingContext().getZoneInfo().getDistributionChanel();
+            FDGroup group = productInfo.getGroup(priceCalculator.getPricingContext().getZoneInfo());
 
             if (group == null) {
                 //Try getting the group from Product Impression which loops through all skus

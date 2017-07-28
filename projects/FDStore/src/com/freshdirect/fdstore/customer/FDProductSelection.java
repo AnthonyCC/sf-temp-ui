@@ -663,8 +663,10 @@ public class FDProductSelection implements FDProductSelectionI {
 		 FDGroup group = this.orderLine.getFDGroup();
 			if(group == null) {//If not in the line item level check sku level.
 				FDProductInfo _p=this.lookupFDProductInfo();
-				if(_p!=null)
-					group = _p.getGroup(this.getUserContext().getPricingContext().getZoneInfo().getSalesOrg(),this.getUserContext().getPricingContext().getZoneInfo().getDistributionChanel());
+				if(_p!=null){
+//					group = _p.getGroup(this.getUserContext().getPricingContext().getZoneInfo().getSalesOrg(),this.getUserContext().getPricingContext().getZoneInfo().getDistributionChanel());
+					group = _p.getGroup(this.getUserContext().getPricingContext().getZoneInfo());
+				}
 			}
 		 
 		 return group;

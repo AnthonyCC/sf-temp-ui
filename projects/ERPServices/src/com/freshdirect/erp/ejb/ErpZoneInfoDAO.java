@@ -146,7 +146,7 @@ public class ErpZoneInfoDAO {
 				if(ps!=null)
 					ps.close();
 	       }
-	       LOGGER.info("zoneId is :"+zoneId);
+	       LOGGER.debug("zoneId is :"+zoneId);
 		   return zoneId; 
 	}
     
@@ -171,7 +171,7 @@ public class ErpZoneInfoDAO {
 	       }catch(SQLException e){
 	      	 throw e;
 	       }
-	       LOGGER.info("zoneId is :"+zoneId);
+	       LOGGER.debug("zoneId is :"+zoneId);
 		   return zoneId; 
 	}
     

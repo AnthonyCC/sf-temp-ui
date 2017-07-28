@@ -398,7 +398,7 @@ public class Sku {
     //Added for Group Scale
     public FDGroup getFDGroup(){
     	if(getGroupPrice() > 0.0)
-    		return productInfo.getGroup(priceCalc.getPricingContext() .getZoneInfo().getSalesOrg(),priceCalc.getPricingContext().getZoneInfo().getDistributionChanel());
+    		return productInfo.getGroup(priceCalc.getPricingContext() .getZoneInfo());
     	else 
     		return null;
    }
