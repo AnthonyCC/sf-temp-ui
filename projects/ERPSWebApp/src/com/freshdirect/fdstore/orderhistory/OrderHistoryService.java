@@ -104,7 +104,7 @@ public class OrderHistoryService {
         latestErpSaleInfo = latestErpSaleInfos.get(0);
         
         for (ErpSaleInfo erpSaleInfo : latestErpSaleInfos) {
-            if (erpSaleInfo != null && (erpSaleInfo.getCreateDate().after(latestErpSaleInfo.getCreateDate()))) {
+            if (erpSaleInfo != null && latestErpSaleInfo != null && (erpSaleInfo.getCreateDate().after(latestErpSaleInfo.getCreateDate()))) {
                 latestErpSaleInfo = erpSaleInfo;
             }
         }
