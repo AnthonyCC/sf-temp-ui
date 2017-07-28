@@ -202,23 +202,6 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			// add (and count) the result
 			resultCounter.add( result );
 			
-			if(deletedSoList!=null && !deletedSoList.isEmpty()) {
-				try {
-					for ( String soId : deletedSoList) {
-						FDStandingOrder deletedSo = soManager.load( new PrimaryKey( soId ) );
-						if ( deletedSo != null ) {
-							FDActionInfo	info = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(), 
-									INITIATOR_NAME, "Cancel the standing order based on template criteria ", null, null);
-							cancelNextDelivery(so, info);
-							
-					  }
-					}
-				} catch (Exception e) {
-					LOGGER.error( "while cancelling the next delivey got an exception", e );
-					
-				}
-			}
-			
 			// if there was any change (not skipped), then save the SO and log the activity
 			if ( result.getStatus() != Status.SKIPPED ) {
 				try {
@@ -232,6 +215,22 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 								
 				logActivity( so, result );				
 			}			
+		}
+		if(deletedSoList!=null && !deletedSoList.isEmpty()) {
+			try {
+				for ( String soId : deletedSoList) {
+					FDStandingOrder deletedSo = soManager.load( new PrimaryKey( soId ) );
+					if ( deletedSo != null ) {
+						FDActionInfo	info = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, deletedSo.getCustomerIdentity(), 
+								INITIATOR_NAME, "Cancel the standing order based on template criteria ", null, null);
+						cancelNextDelivery(deletedSo, info);
+						
+				  }
+				}
+			} catch (Exception e) {
+				LOGGER.error( "while cancelling the next delivey got an exception", e );
+				
+			}
 		}
 		
 		return resultCounter;			
