@@ -2,17 +2,6 @@
 //var COLOR_NONSELECTED = '#4fa157', COLOR_SELECTED = '#458d4e';
 var COLOR_NONSELECTED = '#fff', COLOR_SELECTED = '#f6faf6';
 
-
-function centerLoginModal() {
-	if ($jq('#login_cont_formContent').length) {
-		$jq( '#login_cont_formContent' ).position({
-			my: 'center',
-			at: 'center',
-			of: window
-		});
-	}
-}
-
 /* fix cart for now, until actual solution is found */
 $jq(document).on('ready', function() {
 	if ($jq('#popupcart').length) {
@@ -234,37 +223,6 @@ $jq('.locabar_addresses-reservation-make.disabled').on('click', function(e) {
 	return false;
 });
 
-function showLoginDialog(successPage, useSocial) {
-
-	if (useSocial) {
-		var socialUrl = '/social/login.jsp';
-		if (successPage && successPage !== '') {
-			socialUrl += '?successPage='+successPage;
-		}
-
-		if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) {
-			FreshDirect.components.ifrPopup.open({ url: socialUrl, height: 580, opacity: .5});
-		}
-	} else {
-		if (successPage && successPage !== '') {
-			if ($jq('#login_cont_formContentForm #successPage').length === 0) {
-				$jq('#login_cont_formContentForm').append('<input type="hidden" id="successPage" name="successPage" value="'+successPage+'" />');
-			}
-		}
-
-
-		showOverlay(1001);
-		$jq('#login_cont_formContent').show();
-		centerLoginModal();
-		
-		//set focus
-		var f = $jq('#login_cont_formContent').find(':focusable');
-		if (f.length > 0) {
-			f[0].focus();
-		}
-	}
-}
-
 $jq('#locabar_messages_trigger').on('click', function() {
 	$jq('#messages').messages('openMessages');
 	$jq(this).hide();
@@ -275,22 +233,6 @@ $jq('#locabar_messages_trigger').on('click', function() {
 	if($jq('#minsoalert .so-min-alert').length && $jq('#minsoalert .so-min-alert').length > 0){
 		$jq('#minsoalert').messages('openAlerts', ['minsoalert']);
 	}
-	/*
-	$jq('.alerts').each(function(i,e) {
-		$jq(e).messages('openAlerts', [$jq(e).attr('data-type')]);
-	});
-	*/
-});
-
-$jq('#login_cont_formContent').on('hide', function() {
-	$jq('#fs_overlay').hide();
-});
-$jq('#login_cont_formContent_close').on('click', function() {
-	$jq('#login_cont_formContent').hide().trigger('hide');
-});
-
-$jq(window).on('resize', function(event) {
-	centerLoginModal();
 });
 
 $jq('#sitemessage').on('alertOpen', ['sitemessage'], function(event) {

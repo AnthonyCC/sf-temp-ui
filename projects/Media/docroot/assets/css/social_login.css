@@ -76,7 +76,8 @@
   	margin-bottom: 10px;
 }
 
-#sulCont input[disabled="disabled"]{
+#sulCont input[disabled="disabled"],
+#sulCont input[disabled]{
 	background: rgb(204,204,204);
 	background: -moz-linear-gradient(top,  rgba(204,204,204,1) 0%, rgba(194,194,194,1) 100%);
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(204,204,204,1)), color-stop(100%,rgba(194,194,194,1)));
@@ -450,3 +451,15 @@ br.new_cust{
 	font-weight: 700;
 	padding: 0 20px;
 }
+
+/* login overlay */
+.login-ajax-overlay.fixedpopup .qs-popup-header {
+	min-height: 0;
+	height: 0;
+	padding: 0;
+}
+.login-ajax-overlay.fixedpopup .ajaxpopup-body {
+	width: 465px;
+}
+
+
