@@ -27,7 +27,7 @@ var googletag = window.googletag || {};
   function getDfpSlotNameFromOasName(slot) {
     return slot.id.substring(4,slot.id.length);
   }
-  
+
   if (fd.properties.isDFPEnabled) {
     var $=fd.libs.$,
         slots=document.querySelectorAll("[id^=oas_]"),
@@ -44,7 +44,7 @@ var googletag = window.googletag || {};
       });
 
       slots.forEach(function (slot,index) {
-        var size = [[700, 250], [728, 90], [186, 216]];
+        var size = [[186, 216], [228, 275], [240, 154], [273, 60], [310, 200], [349, 200], [480, 279], [578, 216], [683, 250], [774, 95], [970, 100], [970, 329], [970, 80]];
         if (slot.getAttribute('ad-size-width') && slot.getAttribute('ad-size-height')) {
           size = [+slot.getAttribute('ad-size-width'), +slot.getAttribute('ad-size-height')];
         }
