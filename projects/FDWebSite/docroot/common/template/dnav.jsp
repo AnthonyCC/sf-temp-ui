@@ -72,6 +72,7 @@ final int W_DNAV_TOTAL = 970;
 </TABLE>
 </CENTER>
 <%@ include file="/common/template/includes/footer.jspf" %>
+<tmpl:get name='jsmodules'/>
 <%@ include file="/common/template/includes/i_jsmodules.jspf" %>
 </BODY>
 </HTML>
