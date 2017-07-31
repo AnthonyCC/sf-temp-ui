@@ -6,7 +6,7 @@ public class PaymentMethodSelection extends Message {
 
     private String paymentMethodId;
     private String billingRef;
-    private String isOrderLevel;
+    private String isAccountLevel;
 
     public String getBillingRef() {
         return billingRef;
@@ -24,12 +24,12 @@ public class PaymentMethodSelection extends Message {
         this.paymentMethodId = paymentMethodId;
     }
     
-    public String getIsOrderLevel() {
-        return isOrderLevel;
+    public String getIsAccountLevel() {
+        return isAccountLevel;
     }
 
-    public void setIsOrderLevel(String isOrderLevel) {
-        this.isOrderLevel = isOrderLevel;
+    public void setIsAccountLevel(String isAccountLevel) {
+        this.isAccountLevel = isAccountLevel;
     }
 
 }
