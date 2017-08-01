@@ -184,12 +184,12 @@ public class FDStandingOrdersManager {
 		}
 	}
 
-	public void deleteActivatedSO(FDActionInfo info, FDStandingOrder so, String deleteDate, boolean cancelAllDeliveries) throws FDResourceException {
+	public void deleteActivatedSO(FDActionInfo info, FDStandingOrder so, String deleteDate) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDStandingOrdersSB sb = soHome.create();
 			
-			sb.deleteActivatedSO(info, so, deleteDate, cancelAllDeliveries);
+			sb.deleteActivatedSO(info, so, deleteDate);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -1064,21 +1064,6 @@ public class FDStandingOrdersManager {
 		try {
 			FDStandingOrdersSB sb = soHome.create();			
 			sb.updateDeActivatedSOError(soId);
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-	
-	
-	public List<String> getDeletedSoList() throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDStandingOrdersSB sb = soHome.create();
-			return sb.getDeletedSoList();
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

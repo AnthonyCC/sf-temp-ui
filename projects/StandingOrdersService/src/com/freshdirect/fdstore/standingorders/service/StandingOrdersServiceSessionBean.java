@@ -91,7 +91,6 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 
 	public SOResult.ResultList placeStandingOrders(Collection<String> soIdList, StandingOrdersJobConfig jobConfig) {
 		Collection<FDStandingOrder> soList;
-		List<String> deletedSoList=null;
 
 		if ( soIdList == null ) {
 			// We got no list at all, which means we need to process everything
@@ -106,8 +105,6 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 				
 				soList.addAll(soManager.loadActiveStandingOrders(true));
 				
-				deletedSoList=soManager.getDeletedSoList();
-
 				if ( soList.isEmpty()  ) {
 					LOGGER.error( "Could not retrieve standing orders list! - loadActiveStandingOrders() returned null" );
 					sendTechnicalMail( "Could not retrieve standing orders list! - loadActiveStandingOrders() returned null" );
@@ -215,22 +212,6 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 								
 				logActivity( so, result );				
 			}			
-		}
-		if(deletedSoList!=null && !deletedSoList.isEmpty()) {
-			try {
-				for ( String soId : deletedSoList) {
-					FDStandingOrder deletedSo = soManager.load( new PrimaryKey( soId ) );
-					if ( deletedSo != null ) {
-						FDActionInfo	info = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, deletedSo.getCustomerIdentity(), 
-								INITIATOR_NAME, "Cancel the standing order based on template criteria ", null, null);
-						cancelNextDelivery(deletedSo, info);
-						
-				  }
-				}
-			} catch (Exception e) {
-				LOGGER.error( "while cancelling the next delivey got an exception", e );
-				
-			}
 		}
 		
 		return resultCounter;			
@@ -436,15 +417,4 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			return soManager.getDetailsForReportGeneration();	
 	}
 
-	private void cancelNextDelivery(FDStandingOrder so, FDActionInfo info)
-			throws FDResourceException, FDAuthenticationException,
-			ErpTransactionException, DeliveryPassException {
-		List<FDStandingOrder> fdStandingOrder = new ArrayList<FDStandingOrder>();
-		fdStandingOrder.add(so);
-		FDStandingOrdersManager.getInstance().getAllSOUpcomingOrders(so.getUser(), fdStandingOrder);
-		if (so.getUpcomingDelivery() != null && so.getUpcomingDelivery().getErpSalesId() != null) {
-			FDCustomerManager.cancelOrder(info, so.getUpcomingDelivery().getErpSalesId(), true, 0, false);
-			FDStandingOrdersManager.getInstance().deleteActivatedSO(info, so, null, false);
-		}
-	}
 }	

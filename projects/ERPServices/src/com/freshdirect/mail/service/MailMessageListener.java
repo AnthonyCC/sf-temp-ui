@@ -91,13 +91,13 @@ public class MailMessageListener extends MessageDrivenBeanSupport implements Mai
 			return;
 		}
 
-		try {
+		/*try {
 			ErpMailSender mailer = new ErpMailSender();
 			mailer.sendMail(mailFrom, mailTo, mailCc, mailBcc, mailTitle, mailBody, isHtml, personalLabel);
 		} catch (MessagingException ex) {
 			LOGGER.error("Unable to send message, throwing RuntimeException", ex);
 			throw new RuntimeException("Unable to send message: " + ex.getMessage());
-		}
+		}*/
 
 		LOGGER.debug("message sent");
 		}else if(msg instanceof ObjectMessage){

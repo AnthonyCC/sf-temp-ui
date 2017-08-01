@@ -183,11 +183,7 @@ public class FDStandingOrderDAO {
 	
 	private static final String UPDATE_REMIDER_OVERLAY_STANDING_ORDER="update CUST.STANDING_ORDER so SET so.reminder_overlay='N' WHERE  so.id = ? AND SO.reminder_overlay='Y'";
 	
-	private static final String DELETE_STANDING_ORDER_SET_DATE = "update CUST.STANDING_ORDER SET DELETED=1, DELETE_DATE= (trunc(sysdate)+1) where ID=? and DELETED=0";
-	
 	private static final String UPDATE_DELETE_DATE = "update CUST.STANDING_ORDER set DELETE_DATE = ? where ID = ?";
-	
-	private static final String DELETED_STANDING_ORDERS_LIST ="select Id from CUST.STANDING_ORDER SO  where so.deleted=1 and (trunc(delete_date) = trunc(sysdate)) and  error_header is null";
 	
 	
 
@@ -442,35 +438,23 @@ public class FDStandingOrderDAO {
 	}
 	
 	
-	//activated SO template, user chosen "cancil all delivaries" / delete date
-	public void deleteActivatedSO( Connection conn, String id, String deleteDate, boolean cancelAllDeliveries ) throws SQLException {
+	//activated SO template, user chosen delete date
+	public void deleteActivatedSO( Connection conn, String id, String deleteDate) throws SQLException {
 		PreparedStatement ps = null;
 		try {
-			if (cancelAllDeliveries) {
-				try {
-					ps = conn.prepareStatement(DELETE_STANDING_ORDER_SET_DATE);
-					ps.setString(1, id);
-					ps.executeUpdate();
-				} catch (SQLException e) {
-					LOGGER.error("while updating the Delete date for cancelAllDeliveries, got the exception for Standing order id:"+id, e);
-				}
-			} else {
-				try {
-					int i = 1;
-					ps = conn.prepareStatement(UPDATE_DELETE_DATE);
-					SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-					ps.setDate(i++,
-							deleteDate != null ? new java.sql.Date(formatter.parse(deleteDate).getTime()) : null);
-					ps.setString(i, id);
-					ps.executeUpdate();
-				} catch (ParseException e) {
-					LOGGER.error("while updating the Delete date, got the exception for Standing order id:"+id, e);
-				}
-			}
-		}finally{
+			int i = 1;
+			ps = conn.prepareStatement(UPDATE_DELETE_DATE);
+			SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+			ps.setDate(i++, deleteDate != null ? new java.sql.Date(formatter.parse(deleteDate).getTime()) : null);
+			ps.setString(i, id);
+			ps.executeUpdate();
+		} catch (ParseException e) {
+			LOGGER.error(
+					"while updating the Delete date, got the exception for Standing order id:"
+							+ id, e);
+		} finally {
 			DaoUtil.close(ps);
 		}
-		
 	}
 	
 	
@@ -2141,26 +2125,6 @@ public void turnOffReminderOverLayNewSo(Connection con, String standingOrderId) 
 				}
 		}
 
-public List<String> getDeletedSoList(Connection conn) throws SQLException {
-	
-	PreparedStatement ps = null;
-	ResultSet rs = null;
-	List<String> deletedSoList = new ArrayList<String>();
-	try {
-		ps = conn.prepareStatement(DELETED_STANDING_ORDERS_LIST);
-		rs = ps.executeQuery();
-		while (rs.next()) {
-			deletedSoList.add(rs.getString("ID"));
-		}
-	} catch (SQLException exc) {
-		throw exc;
-	} finally {
-		DaoUtil.close(rs);
-		DaoUtil.close(ps);
-	}
-	
-	return deletedSoList;
- }
 }
 	
 

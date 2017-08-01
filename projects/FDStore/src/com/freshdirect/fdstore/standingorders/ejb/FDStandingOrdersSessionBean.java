@@ -272,13 +272,13 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 	}
 	
 	// "cancel all delivaries" deletion flow coming from manage servlet
-	public void deleteActivatedSO(FDActionInfo info, FDStandingOrder so, String deleteDate, boolean cancelAllDeliveries ) throws FDResourceException {
+	public void deleteActivatedSO(FDActionInfo info, FDStandingOrder so, String deleteDate ) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			FDStandingOrderDAO dao = new FDStandingOrderDAO();
 			
-			dao.deleteActivatedSO(conn, so.getId(), deleteDate, cancelAllDeliveries);
+			dao.deleteActivatedSO(conn, so.getId(),deleteDate);
 			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.STANDINGORDER_TEMPLATE_DEL_DATE_SET);
 			rec.setStandingOrderId(so.getId());
 			this.logActivity(rec);
@@ -1182,23 +1182,5 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 	}
-	
-	public List<String> getDeletedSoList() throws FDResourceException {
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			FDStandingOrderDAO dao = new FDStandingOrderDAO();
-			
-			List<String> ret = dao.getDeletedSoList(conn);
-			return ret;
-		} catch (SQLException e) {
-			LOGGER.error( "SQL ERROR in getDeletedSoList() : " + e.getMessage(), e );
-			e.printStackTrace();
-			throw new FDResourceException(e);
-		} finally {
-			close(conn);
-		}
-	}
-	
 
 }

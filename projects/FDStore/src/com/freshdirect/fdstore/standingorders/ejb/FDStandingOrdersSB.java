@@ -80,7 +80,6 @@ public interface FDStandingOrdersSB extends EJBObject {
 	
 	public void updateNewSoFeaturePreferences(String customerId)throws FDResourceException,RemoteException;
 	public void updateDeActivatedSOError(String soId)throws FDResourceException,RemoteException;
-	public void deleteActivatedSO(FDActionInfo info, FDStandingOrder so, String deleteDate, boolean cancelAllDeliveries) throws FDResourceException, RemoteException;
-	public List<String> getDeletedSoList() throws FDResourceException, RemoteException;
+	public void deleteActivatedSO(FDActionInfo info, FDStandingOrder so, String deleteDate) throws FDResourceException, RemoteException;
 	
 }

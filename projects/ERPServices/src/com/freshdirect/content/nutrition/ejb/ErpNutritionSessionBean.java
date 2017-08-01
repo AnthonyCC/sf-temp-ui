@@ -4,7 +4,6 @@ import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -20,11 +19,6 @@ import javax.ejb.FinderException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.content.nutrition.EnumAllergenValue;
-import com.freshdirect.content.nutrition.EnumClaimValue;
-import com.freshdirect.content.nutrition.EnumKosherSymbolValue;
-import com.freshdirect.content.nutrition.EnumKosherTypeValue;
-import com.freshdirect.content.nutrition.EnumOrganicValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.NutritionInfoAttribute;
@@ -78,6 +72,7 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
      * for given skuCode
      */
     public ErpNutritionModel getNutrition(String skuCode) {
+		return new ErpNutritionModel();/*
         
         Connection con = null;
         
@@ -139,7 +134,7 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
             close(con);
         }
         
-    }
+    */}
     
     private static final String LOAD_NUTRITION = "select sku_code, nutrition_type, value, uom, date_modified "
     	+ "from ERPS.NUTRITION "
@@ -151,6 +146,7 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
     	+ "order by skucode, type, priority ";
     
     public Map<String, ErpNutritionModel> loadNutrition(Date lastModified) {
+		return new HashMap<String, ErpNutritionModel>();/*
     	Connection conn = null;
     	try{
     		conn = this.getConnection();    		 
@@ -211,14 +207,14 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
                 	 try {
 //                		 Clob infoClob = rs.getClob("INFO");
 
-    	                 /*if (infoClob != null) {
+    	                 if (infoClob != null) {
     	                	 try {
     	                		 info = infoClob.getSubString(1, (int) (infoClob.length()));
     	                	 }catch (Exception ex) {
     	                		 LOGGER.warn("An error occured while reading CLOB: "+ex.getMessage());
     	                	 }
-    	                 }*/
-                		 /*if(null!=infoClob){
+    	                 }
+                		 if(null!=infoClob){
 	                		 java.io.Reader reader0 = infoClob.getCharacterStream();
 	                		 BufferedReader reader = new BufferedReader(reader0);
 	                		 StringBuilder sb = new StringBuilder();
@@ -229,7 +225,7 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
                 		    reader0.close();
                 		    reader.close();
                 		    info = sb.toString();
-                		 }*/
+                		 }
                 		 info = rs.getString("INFO_CLOB");
                     	 StringBuffer buff = new StringBuffer();
                     	 int size = rs.getInt("LENGTH");
@@ -304,7 +300,7 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
     	}finally {
             close(conn);
         }
-    }
+    */}
     
     /** creates a new nutrition data in the database for given sku
      * using the ErpNutritionModel passed in as parameter.

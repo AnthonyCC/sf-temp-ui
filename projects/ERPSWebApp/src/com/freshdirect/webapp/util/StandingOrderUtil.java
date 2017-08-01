@@ -218,7 +218,7 @@ public class StandingOrderUtil {
 			// So templates should be deleted after placing the order on
 			// date which was choose by user.
 			if (so.getErrorHeader() != null || so.getErrorDetail() != null) {
-				FDStandingOrdersManager.getInstance().deleteActivatedSO(info, so, null,false);
+				FDStandingOrdersManager.getInstance().deleteActivatedSO(info, so, null);
 			}else {
 				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 				if(so.getDeleteDate()!=null && dateFormat.format(new Date()).equals(dateFormat.format(so.getDeleteDate())) && !so.isDeleted()) {
@@ -748,17 +748,9 @@ public class StandingOrderUtil {
 		}
 	}
 
-	private static void deleteSoTemplate(FDStandingOrder so, FDActionInfo soinfo)
-			throws FDResourceException {
-		FDStandingOrdersManager.getInstance().deleteActivatedSO(soinfo, so, null, false);
-		FDStandingOrdersManager.getInstance().delete(soinfo, so);
-		FDStandingOrdersManager.getInstance().deletesoTemplate(so.getId());
-		LOGGER.info("Finished deleting SO templates based on date.");
-	}
-
 	private static void deleteActivateSo(FDStandingOrder so, FDActionInfo soinfo)
 			throws FDResourceException {
-		FDStandingOrdersManager.getInstance().deleteActivatedSO(soinfo, so, null, false);
+		FDStandingOrdersManager.getInstance().deleteActivatedSO(soinfo, so, null);
 		FDStandingOrdersManager.getInstance().delete(soinfo, so);
 		FDStandingOrdersManager.getInstance().deletesoTemplate(so.getId());
 	}
