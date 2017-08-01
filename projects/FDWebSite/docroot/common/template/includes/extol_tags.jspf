@@ -50,7 +50,7 @@
 			//more advanced customer stuff
 			FDIdentity identity_e  = user_e1.getIdentity();
 			if(null !=identity_e){
-				ErpCustomerInfoModel cm_e = FDCustomerFactory.getErpCustomerInfo(identity_e);
+				ErpCustomerInfoModel cm_e = user_e1.getCustomerInfoModel();//FDCustomerFactory.getErpCustomerInfo(identity_e);
 				custEmail = cm_e.getEmail();
 				
 				//numerical id

@@ -29,6 +29,7 @@ import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.OrderHistoryI;
@@ -2389,7 +2390,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setLat(String lat) {
 		this.lat = lat;
 	}
-	
+		
 	public String getPdUserId() {
 		return pdUserId;
 	}
@@ -2398,5 +2399,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		this.pdUserId = pdUserId;
 	}
 
-	 
+
+	public ErpCustomerInfoModel getCustomerInfoModel() throws FDResourceException {
+		return this.user.getCustomerInfoModel();
+	}
 }
