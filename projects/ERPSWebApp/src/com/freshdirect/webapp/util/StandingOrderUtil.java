@@ -182,9 +182,22 @@ public class StandingOrderUtil {
 			return SOResult.createSkipped( so, "Skipping because SO is Not Activated" );
 		}
 		
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		// checking if SO is in erroneous state
 		Date now = new Date();
 		if ( so.getLastError() != null ) {
+			if (so.getDeleteDate()!=null && dateFormat.format(now).equals(dateFormat.format(so.getDeleteDate()))) {
+				try {
+					FDActionInfo soinfo = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(), 
+							INITIATOR_NAME, " Delete date removed because of So has an error", null, null);
+					
+					FDStandingOrdersManager.getInstance().deleteActivatedSO(soinfo, so, null);
+					LOGGER.info("updated the delete date as null because of So template has the errors.");
+				} catch (Exception e) {
+					LOGGER.error(" Got the exception while deleting the delete date of So template:"+so.getId(), e);
+				}
+			}
+			
 			if ( now.after( so.getNextDeliveryDate() ) ) {
 				// clearing the error since the delivery date has been passed
 				// and the customer did not touch the erroneous SO so far
@@ -212,30 +225,22 @@ public class StandingOrderUtil {
 				LOGGER.info( "Skipping SO because it has a permanent error." );
 				return SOResult.createSkipped( so, "Skipping because SO is in error state" );
 			}
-		}
-		
-		try {
-			// So templates should be deleted after placing the order on
-			// date which was choose by user.
-			if (so.getErrorHeader() != null || so.getErrorDetail() != null) {
-				FDStandingOrdersManager.getInstance().deleteActivatedSO(info, so, null);
-			}else {
-				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-				if(so.getDeleteDate()!=null && dateFormat.format(new Date()).equals(dateFormat.format(so.getDeleteDate())) && !so.isDeleted()) {
-					LOGGER.info("Starting to delete standing orders template based on delete date choosen by user.");
-					so.setDeleteDate(null);
+		}else {
+			// delete date which was choose by user.
+			if(so.getDeleteDate()!=null && dateFormat.format(now).equals(dateFormat.format(so.getDeleteDate()))) {
+				LOGGER.info("Starting to delete standing orders template based on delete date choosen by user.");
+				so.setDeleteDate(null);
+				try {
 					FDActionInfo soinfo = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(), 
 							INITIATOR_NAME, "so template deleted as per the delete date choosen by user", null, null);
 					deleteActivateSo(so, soinfo);
-					LOGGER.info("Finished deleting SO templates based on date.");
+				} catch (Exception e) {
+					LOGGER.error(" Got the exception while deleting the So template:"+so.getId(), e);
 				}
+				LOGGER.info("Delete the So template based on template criteria choosen by user.");
 			}
-		} catch (Exception e) {
-			LOGGER.error(" Got the exception while deleting the So template id:"+so.getId(), e);
 		}
 	
-		// First of all : check if next delivery date is passed for whatever reason,
-		// and step it to the first possible date which is in the future
 		while ( now.after( so.getNextDeliveryDate() ) ) {
 			LOGGER.info( "Skipping delivery date, because it is in the past." );
 			so.skipDeliveryDate();

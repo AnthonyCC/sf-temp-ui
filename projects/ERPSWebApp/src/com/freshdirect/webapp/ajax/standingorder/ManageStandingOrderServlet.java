@@ -156,7 +156,7 @@ public class ManageStandingOrderServlet extends HttpServlet {
 							}else {
 								FDStandingOrdersManager.getInstance().delete(info, so);
 							}
-							u.setRefreshSO3(true);
+							u.setRefreshSO3Settings(true);
 						}
 						
 							
