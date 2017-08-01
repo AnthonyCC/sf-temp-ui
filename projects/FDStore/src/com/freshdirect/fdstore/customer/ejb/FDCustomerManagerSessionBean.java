@@ -8732,7 +8732,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				if (isCustomerHasSP) {
 					insertSilverPopupDetails(silverPopup, conn);
 				} else {
-					updateSilverPopupDetails(silverPopup, conn);
+					//updateSilverPopupDetails(silverPopup, conn);
 					}
 			} catch (SQLException exc) {
 				LOGGER.info("insertOrUpdateSilverPopup IN PROCESS FAILED... " + silverPopup.getCustomerId());
