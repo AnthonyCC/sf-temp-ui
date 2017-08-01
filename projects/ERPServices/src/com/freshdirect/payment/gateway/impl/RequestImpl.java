@@ -13,6 +13,14 @@ class RequestImpl implements Request {
 	private BillingInfo billingInfo;
 	private TransactionType transactionType;
 	
+	public RequestImpl( ) {
+		 
+	}
+	
+	public void setTransactionType(TransactionType transactionType) {
+		this.transactionType = transactionType;
+	}
+
 	public RequestImpl(TransactionType transactionType) {
 		this.transactionType=transactionType;
 	}

@@ -764,6 +764,7 @@ public class FDStoreProperties {
     private static final String PROP_FDCOMMERCE_API_URL = "fdstore.fdcommerceapi.url";
 
     private static final String PROP_PAYPAL_API_URL = "fdstore.paypalapi.url";
+    private static final String PROP_ORBITAL_API_URL = "fdstore.orbitalapi.url";
     private static final String PROP_OMS_API_URL = "fdstore.omsapi.url";
     private static final String PROP_LOGISTICS_COMPANY_CODE = "fdstore.logistics.companycode";
     private static final String PROP_PRODUCTFAMILY = "fdstore.productfamily";
@@ -952,8 +953,9 @@ public class FDStoreProperties {
     private final static String IBM_CLIENT_ID = "fdstore.ibm.client.id";
     private final static String IBM_CLIENT_SECRET = "fdstore.ibm.client.secret";
     private final static String IBM_REFRESH_TOKEN = "fdstore.ibm.refresh.token";
-
+	private static final String PAYMENT_TLSSHA_ENABLED = "fdstore.payment.tls.sha.enabled";
     private final static String GOOGLE_ANALYTICS_TRACKING_ID = "fdstore.ga.tracking.id";
+
  
     
     
@@ -1654,6 +1656,7 @@ public class FDStoreProperties {
         defaults.put(PROP_LOGISTICS_API_URL, "http://logisticsdev1.nj01/");
         defaults.put(PROP_FDCOMMERCE_API_URL, "http://localhost:8080");
         defaults.put(PROP_PAYPAL_API_URL, "http://logisticsdev1.nj01/paypal");
+        defaults.put(PROP_ORBITAL_API_URL, "http://logisticsdev1.nj01/paypal");
         defaults.put(PROP_OMS_API_URL, "http://crmdev1.nj01/");
 
         defaults.put(PROP_GIVEXGATEWAY_ENDPOINT, "http://logisticsdev1api.nj01/givex/giftcard/");
@@ -1820,6 +1823,7 @@ public class FDStoreProperties {
         defaults.put(IBM_CLIENT_ID, "42c3eede-b1b2-43d2-b503-55682f190c2d");
         defaults.put(IBM_CLIENT_SECRET, "5f154ee0-bae6-4833-9ce2-e013b1b3c7d5");
         defaults.put(IBM_REFRESH_TOKEN, "r_3872jS_Gh7VmanX2TcazBB_MJ1C_RBqbJWY6gvh3koS1");
+        defaults.put(PAYMENT_TLSSHA_ENABLED,"false");
         defaults.put(GOOGLE_ANALYTICS_TRACKING_ID, "UA-20535945-18");
         refresh();
     }
@@ -4023,7 +4027,9 @@ public class FDStoreProperties {
     public static String getPayPalAPIUrl() {
         return get(PROP_PAYPAL_API_URL);
     }
-
+    public static String getOrbitalAPIUrl() {
+        return get(PROP_PAYPAL_API_URL);
+    }
     public static String getOMSAPIUrl() {
         return get(PROP_OMS_API_URL);
     }
@@ -4667,7 +4673,14 @@ public class FDStoreProperties {
 		return get(PROP_DFP_ID);
 	}
 
+
+	public static boolean isTLSSHAEnabledForPaymentGateway() {
+		return (Boolean.valueOf(get(PAYMENT_TLSSHA_ENABLED))).booleanValue();
+	}
+
+
     public static String getGoogleAnalyticsTrackingId() {
         return get(GOOGLE_ANALYTICS_TRACKING_ID);
     }
+
 }
