@@ -1,12 +1,15 @@
 package com.freshdirect.dataloader.invoice;
 
+import java.io.UnsupportedEncodingException;
 import java.rmi.RemoteException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.ejb.CreateException;
@@ -16,13 +19,16 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.customer.EnumChargeType;
-import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
@@ -41,8 +47,12 @@ import com.freshdirect.dataloader.sap.jco.server.param.InvoiceCreditParameter;
 import com.freshdirect.dataloader.sap.jco.server.param.InvoiceEntryParameter;
 import com.freshdirect.dataloader.sap.jco.server.param.InvoiceHeaderParameter;
 import com.freshdirect.dataloader.util.FDSapHelperUtils;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDOrderI;
+import com.freshdirect.http.HttpService;
 import com.freshdirect.sap.SapProperties;
 import com.sap.conn.jco.JCo;
 import com.sap.conn.jco.JCoCustomRepository;
@@ -246,7 +256,8 @@ public class FDInvoiceBatchJcoServer extends FdSapServer {
 			return functionName;
 		}
 
-		public void handleRequest(final JCoServerContext serverCtx, final JCoFunction function) {
+		@Override
+        public void handleRequest(final JCoServerContext serverCtx, final JCoFunction function) {
 			final JCoParameterList exportParamList = function.getExportParameterList();
 			final FDJcoServerResult result = new FDJcoServerResult();
 			try {
@@ -382,6 +393,12 @@ public class FDInvoiceBatchJcoServer extends FdSapServer {
 							populateResponseRecord(result, param, "No order found for the web order");
 							continue;
 						}
+                        // post to Google Analytics
+                        HttpService.defaultService().postDataWithHttpEntity("www.google-analytics.com", assembleTransactionPayloadForGA(order));
+
+                        for (FDCartLineI cartLine : order.getOrderLines()) {
+                            HttpService.defaultService().postDataWithHttpEntity("www.google-analytics.com", assembleItemPayloadForGA(order, cartLine));
+                        }
 
 						//To fix - APPDEV-5294 - Duplicate invoice export for an order from SAP, should be ignored and return success to SAP.
 						/*if (!EnumSaleStatus.INPROCESS.equals(order.getOrderStatus())) {
@@ -528,13 +545,93 @@ public class FDInvoiceBatchJcoServer extends FdSapServer {
 			}
 		}
 
-		/**
-		 * Method to log the failure records back to ERP system
-		 * 
-		 * @param param
-		 * @param invoiceErrorTable
-		 * @param errorMessage
-		 */
+        private HttpEntity assembleTransactionPayloadForGA(FDOrderI order) throws UnsupportedEncodingException {
+            HttpEntity entity = null;
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+            String version = "1";
+            String trackingId = FDStoreProperties.getGoogleAnalyticsTrackingId();
+            String customerId = order.getCustomerId();
+            String hitType = "transaction";
+            String transactionId = order.getErpSalesId() + "-Shipped";
+            String transactionCategory = "purchase";
+
+            params.add(new BasicNameValuePair("v", version));
+            params.add(new BasicNameValuePair("tid", trackingId));
+            params.add(new BasicNameValuePair("cid", customerId));
+            params.add(new BasicNameValuePair("t", hitType));
+            params.add(new BasicNameValuePair("ti", transactionId));
+            params.add(new BasicNameValuePair("ta", transactionCategory));
+            params.add(new BasicNameValuePair("tr", Double.toString(order.getTotal())));
+            params.add(new BasicNameValuePair("ts", getDeliveryCost(order)));
+            params.add(new BasicNameValuePair("tt", Double.toString(order.getTaxValue())));
+            params.add(new BasicNameValuePair("cu", "USD"));
+            params.add(new BasicNameValuePair("uid", customerId));
+            params.add(new BasicNameValuePair("cd1", customerId));
+            params.add(new BasicNameValuePair("cd12", order.getDeliveryAddress().getServiceType().name()));
+            params.add(new BasicNameValuePair("cd14", order.getDeliveryReservation().getTimeslot().getDisplayString()));
+            params.add(new BasicNameValuePair("cd15", "YES"));
+
+            entity = new UrlEncodedFormEntity(params);
+            return entity;
+        }
+
+        private String getDeliveryCost(FDOrderI order) {
+            String deliveryCost = "";
+            
+            if (order.isDlvPassApplied() || order.isChargeWaived(EnumChargeType.DELIVERY) || order.isChargeWaived(EnumChargeType.DLVPREMIUM)) {
+                deliveryCost = "$0.00";
+            } else if (order.getChargeAmount(EnumChargeType.DELIVERY) > 0 || order.getChargeAmount(EnumChargeType.DLVPREMIUM) > 0) {
+                deliveryCost = NumberFormat.getCurrencyInstance(Locale.US).format(order.getChargeAmount(EnumChargeType.DELIVERY));
+            }
+            
+            return deliveryCost;
+        }
+
+        private HttpEntity assembleItemPayloadForGA(FDOrderI order, FDCartLineI cartLine) throws UnsupportedEncodingException {
+            HttpEntity entity = null;
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            ProductModel product = cartLine.lookupProduct();
+
+            String version = "1";
+            String trackingId = FDStoreProperties.getGoogleAnalyticsTrackingId();
+            String customerId = order.getCustomerId();
+            String hitType = "item";
+            String transactionId = order.getErpSalesId() + "-Shipped";
+
+            params.add(new BasicNameValuePair("v", version));
+            params.add(new BasicNameValuePair("tid", trackingId));
+            params.add(new BasicNameValuePair("cid", customerId));
+            params.add(new BasicNameValuePair("t", hitType));
+            params.add(new BasicNameValuePair("ti", transactionId));
+            
+            params.add(new BasicNameValuePair("in", product.getFullName()));
+            params.add(new BasicNameValuePair("ip", Double.toString(cartLine.getPrice())));
+            params.add(new BasicNameValuePair("iq", cartLine.getDeliveredQuantity()));
+            params.add(new BasicNameValuePair("ic", product.getContentName()));
+            params.add(new BasicNameValuePair("iv", product.getCategory().getContentName()));
+
+            params.add(new BasicNameValuePair("uid", customerId));
+            params.add(new BasicNameValuePair("cu", "USD"));
+            params.add(new BasicNameValuePair("cd1", customerId));
+
+            params.add(new BasicNameValuePair("cd3", Boolean.toString(product.isNew())));
+            params.add(new BasicNameValuePair("cd4", product.getDefaultSkuCode()));
+            params.add(new BasicNameValuePair("cd6", "true"));
+
+           
+            entity = new UrlEncodedFormEntity(params);
+            return entity;
+        }
+
+
+        /**
+         * Method to log the failure records back to ERP system
+         * 
+         * @param param
+         * @param invoiceErrorTable
+         * @param errorMessage
+         */
 		private void populateResponseRecord(final FDJcoServerResult result, final InvoiceHeaderParameter param,
 				final String errorMessage) {
 			if (param != null && invoiceErrorTable != null) {
@@ -655,7 +752,7 @@ public class FDInvoiceBatchJcoServer extends FdSapServer {
 		double chargeAmount = 0;
 
 		for (Iterator<ErpChargeLineModel> i = order.getCharges().iterator(); i.hasNext();) {
-			ErpChargeLineModel charge = new ErpChargeLineModel((ErpChargeLineModel) i.next());
+			ErpChargeLineModel charge = new ErpChargeLineModel(i.next());
 			if (invoice.getTax() == 0) {
 				charge.setTaxRate(0);
 			}
