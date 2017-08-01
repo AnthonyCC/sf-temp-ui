@@ -1347,6 +1347,10 @@ public class FDUser extends ModelSupport implements FDUserI {
         }
         return userId;
     }
+    
+    public void setUserId(String userId){
+    	this.userId =userId;
+    }
 
     @Override
     public String getLastRefTrackingCode() {
