@@ -1668,7 +1668,7 @@ public class FDStoreProperties {
         defaults.put(PROP_PRODUCT_SAMPLES_MAX_BUY_QUANTITY_LIMIT, "1");
 
         defaults.put("feature.rollout.checkout1_0", "GLOBAL:ENABLED,true;");
-        defaults.put("feature.rollout.checkout2_0", "GLOBAL:ENABLED,true;");
+        defaults.put("feature.rollout.checkout2_0", "GLOBAL:ENABLED,false;");
 
 //        defaults.put(PROP_LOGISTICS_COMPANY_CODE, EnumCompanyCode.fd.name());
         defaults.put(PROP_LOGISTICS_CONNECTION_TIMEOUT, 120);
@@ -4539,7 +4539,7 @@ public class FDStoreProperties {
     public static boolean isSF2_0_AndServiceEnabled(String beanName) {
         return ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue()&&FDEcommProperties.isServiceEnabled(beanName));
     }
-    public static boolean isStorefront2_0Enabled() {
+    private static boolean isStorefront2_0Enabled() {
         return (Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue();
     }
 

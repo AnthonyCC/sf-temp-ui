@@ -31,7 +31,7 @@ public class FDProductPromotionFactory {
 	private Date productsAssortmentLastPublished;
 	private Date currentTime;
 	
-	private ExpiringReference< Map<ZoneInfo,List<FDProductPromotionInfo>>> presPickPromotion = new ExpiringReference<Map<ZoneInfo,List<FDProductPromotionInfo>>>(5000 * 60 * 1000) {
+	private ExpiringReference< Map<ZoneInfo,List<FDProductPromotionInfo>>> presPickPromotion = new ExpiringReference<Map<ZoneInfo,List<FDProductPromotionInfo>>>(5 * 60 * 1000) {
 		protected Map<ZoneInfo,List<FDProductPromotionInfo>> load() {
 			try {
 				LOGGER.info("REFRESHING PRESIDENT'S PICK PRODUCT PROMOTION FOR ANY NEW PROMOTIONS FROM LAST MODIFIED TIME "+presPickLastPublished);
