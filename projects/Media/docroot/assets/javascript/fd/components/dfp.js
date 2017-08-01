@@ -44,7 +44,7 @@ var googletag = window.googletag || {};
       });
 
       slots.forEach(function (slot,index) {
-        var size = [[186, 216], [228, 275], [240, 154], [273, 60], [310, 200], [349, 200], [480, 279], [578, 216], [683, 250], [774, 95], [970, 100], [970, 329], [970, 80]];
+        var size = [[186, 216], [228, 275], [240, 154], [273, 60], [310, 200], [349, 200], [480, 279], [480, 480], [578, 216], [683, 250], [774, 95], [970, 100], [970, 329], [970, 80]];
         if (slot.getAttribute('ad-size-width') && slot.getAttribute('ad-size-height')) {
           size = [+slot.getAttribute('ad-size-width'), +slot.getAttribute('ad-size-height')];
         }
