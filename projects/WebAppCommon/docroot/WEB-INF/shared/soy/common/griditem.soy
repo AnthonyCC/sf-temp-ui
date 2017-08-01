@@ -56,6 +56,7 @@
  * @param? mobWeb
  * @param? moduleData
  * @param? itemIndex
+ * @param? listName
  */
 {template .transactionalGridItem autoescape="false"}
 {call .potatoTransactionalGridItem}
@@ -139,6 +140,7 @@
   {param moduleData:$moduleData /}
   {param newProduct:$item.newProduct /}
   {param itemIndex:$itemIndex /}
+  {param listName:$listName /}
 {/call}
 {/template}
 
@@ -322,6 +324,7 @@
  * @param? moduleData
  * @param? newProduct
  * @param? itemIndex
+ * @param? listName
  */
 {template .potatoTransactionalGridItem autoescape="false"}
 /* this line return must be here, or there will be tabs in output html, which cause whitespace */
@@ -335,6 +338,8 @@
   data-price="{$price}"
   data-new-product="{$newProduct}"
   data-variant="{$variantId}"
+  {if $itemIndex or $itemIndex == 0} data-position="{$itemIndex+1}"{/if}
+  {if $listName} data-list="{$listName}"{/if}
 	{if $hookLogicBeaconClick} data-hooklogic-beacon-click="{$hookLogicBeaconClick}"{/if}
 	{if $hookLogicBeaconImpression} data-hooklogic-beacon-impress="{$hookLogicBeaconImpression}"{/if}
   {if $moduleData and $moduleData.moduleVirtualCategory}data-virtual-category="{$moduleData.moduleVirtualCategory}"{/if}
