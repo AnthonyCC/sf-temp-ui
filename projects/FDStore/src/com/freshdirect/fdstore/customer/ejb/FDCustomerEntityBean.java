@@ -326,7 +326,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		ps.setString(8, this.depotCode);
 		ps.setString(9, this.rafClickId);
 		ps.setString(10, this.rafPromoCode);
-		ps.setString(11, this.defaultPaymentMethodType.getName());
+		ps.setString(11, null != this.defaultPaymentMethodType ? this.defaultPaymentMethodType.getName(): EnumPaymentMethodDefaultType.UNDEFINED.getName());
 
 		try {
 			if (ps.executeUpdate() != 1) {
