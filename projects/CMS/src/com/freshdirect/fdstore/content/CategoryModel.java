@@ -969,6 +969,8 @@ public class CategoryModel extends ProductContainer {
 
 	        	if (prod.isInvisible() || prod.isHidden() || prod.isDiscontinued()) {
 	        		itr.remove();
+	        	} else {
+	        		return true;
 	        	}
 	        }
 	    }
