@@ -96,11 +96,13 @@ var FreshDirect = FreshDirect || {};
 				window._oneall.push([ 'social_login', 'set_custom_css_uri', '//www.freshdirect.com/media/social_login/social_login_media.css']);
 				
 				window._oneall.push([ 'social_login', 'set_event', 'on_login_redirect', my_on_login_redirect ]);
-				window._oneall.push([ 'social_login', 'do_render_ui', 'social_login_demo' ]);
-				
 				window._oneall.push([ 'social_login', 'set_callback_uri', $('#social-login-callback-uri').val()? 
 						document.location.protocol + $('#social-login-callback-uri').val() :
 							'https://' + document.location.host + '/social/social_login_success.jsp']);
+				
+				window._oneall.push([ 'social_login', 'do_render_ui', 'social_login_demo' ]);
+				
+
 			}	
 		}
 		
