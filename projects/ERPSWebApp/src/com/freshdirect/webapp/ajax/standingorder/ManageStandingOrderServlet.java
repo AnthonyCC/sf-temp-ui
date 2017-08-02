@@ -146,8 +146,8 @@ public class ManageStandingOrderServlet extends HttpServlet {
 				} else if ("delete".equalsIgnoreCase(action)) {
 					if (soId != null && !"".equals(soId)) {
 						FDStandingOrder so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(soId));
-						
 						if (!so.isDeleted()) {
+							u.setRefreshSO3(true);
 							FDActionInfo info = AccountActivityUtil.getActionInfo(pageContext.getSession());
 							if("Y".equalsIgnoreCase(so.getActivate()) && !CANCEL_ALL_DELIVERIES.equalsIgnoreCase(deleteDate)  ) {
 								FDStandingOrdersManager.getInstance().deleteActivatedSO(info, so, deleteDate);
@@ -156,7 +156,6 @@ public class ManageStandingOrderServlet extends HttpServlet {
 							}else {
 								FDStandingOrdersManager.getInstance().delete(info, so);
 							}
-							u.setRefreshSO3Settings(true);
 						}
 						
 							
