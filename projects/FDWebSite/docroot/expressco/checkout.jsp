@@ -263,25 +263,7 @@ if (mobWeb) {
 		           });
 		       }
 	
-		});
-		
-function lazyLoadImages() {
-		$jq("img.lazyload" ).after(function() {
-			var thisSrc = $jq(this).data("src");
-			var isCopied = $jq(this).data("isCopied");
-			if (typeof thisSrc != "undefined" && thisSrc != "" && (typeof isCopied == "undefined" || !isCopied)) {
-				$jq(this).attr("src", $jq(this).data("src")).data("isCopied", true);
-			}
-		});
-	}
-	if(typeof $jq !== "undefined") {
-		$jq(window ).on( "load", function() {
-			lazyLoadImages();
-		});
-		$jq( document ).ajaxComplete(function() {
-			lazyLoadImages();
-		});
-	}		
+		});		
 	</script>
   </tmpl:put>
 </tmpl:insert>
