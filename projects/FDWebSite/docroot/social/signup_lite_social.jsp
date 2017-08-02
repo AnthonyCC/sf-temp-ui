@@ -240,7 +240,7 @@
 							<!-- span id should be the input box id+"_img" -->
 							<span class="error_img" id="email_img">&nbsp;</span>
 					</td>	
-					<td><input class="padding-input-box text11ref inputDef required" type="email"  maxlength="128" size="21" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%=email%>" id="email" placeholder="E-mail">
+					<td><input class="padding-input-box text11ref inputDef required" aria-label="email" type="email"  maxlength="128" size="21" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%=email%>" id="email" placeholder="E-mail">
 					</td></tr>
 					
 					
@@ -255,7 +255,7 @@
 						
 						<td>
 						 	
-						<input class="padding-input-box text11ref inputUser required" type="password"  size="21" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" id="password1" placeholder="Password">	
+						<input class="padding-input-box text11ref inputUser required" aria-label="password" type="password"  size="21" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" id="password1" placeholder="Password">	
 						</td>						
 					</tr>
 			

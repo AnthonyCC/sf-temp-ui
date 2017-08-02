@@ -97,7 +97,7 @@ if (mobWeb) {
 		<%//Finds the address & render the timeslots %>
 		<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>
 	
-<form name="reserveTimeslot" method="POST" action="/your_account/reserve_timeslot.jsp" name="reserveTimeslot">
+<form name="reserveTimeslot" method="POST" action="/your_account/reserve_timeslot.jsp" id="reserveTimeslot" name="reserveTimeslot">
 		<input type="hidden" name="chefstable" value="<%= user.isChefsTable() %>"/>
 		<input type="hidden" name="addressId" value="<%=address.getPK()!=null ? address.getPK().getId(): null %>">
 		<input type="hidden" name="actionName" value="">
