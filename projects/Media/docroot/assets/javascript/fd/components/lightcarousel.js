@@ -67,6 +67,17 @@ var FreshDirect = FreshDirect || {};
       carousel.addClass('last');
     }
 
+    // product impression reporting based on pages
+    var vislibleProducts = elements.slice(newPage * itemPerPage, (newPage+1) * itemPerPage);
+    vislibleProducts.each(function (i, pEl) {
+      var $pEl = $(pEl);
+
+      if (!$pEl.attr('data-impression-reported')) {
+        $pEl.attr('data-impression-reported', 'true');
+        fd.common.dispatcher.signal('productImpressions', $pEl);
+      }
+    });
+
     carousel.data('carousel-page', newPage);
     carousel.data('carousel-nrpages', nrPages);
     updatePager(carousel);

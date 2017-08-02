@@ -491,7 +491,7 @@ var dataLayer = window.dataLayer || [];
   fd.gtm.reportImpressions = function (el) {
     var $el = $(el);
 
-    $el.find('[data-component="product"]').each(function (i, elm) {
+    var report = function (elm) {
       var productData = fd.gtm.getProductData(elm);
 
       dataLayer.push(['ecommerce.impressions.push', {
@@ -504,8 +504,19 @@ var dataLayer = window.dataLayer || [];
         new_product: productData.new_product,
         sku: productData.skuCode,
         in_stock: productData.in_stock,
-        position: productData.position
+        position: productData.position,
+        list: productData.list
       }]);
+    };
+
+    $el.each(function (i, elm) {
+      if ($(elm).is('[data-component="product"]')) {
+        report(elm);
+      }
+    });
+
+    $el.find('[data-component="product"]').each(function (i, elm) {
+      report(elm);
     });
   };
 
