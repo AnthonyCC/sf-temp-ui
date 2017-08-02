@@ -3770,4 +3770,13 @@ public class FDUser extends ModelSupport implements FDUserI {
     	this.refreshSO3Settings = isRefreshSO3Settings;
     }
     
+    @Override
+    public int resetDefaultPaymentValueType() {
+		try {
+			return FDCustomerManager.resetDefaultPaymentValueType();
+		} catch (FDResourceException e) {
+			LOGGER.error("Error in resetting default payment method in fdcustomer: " + this.identity, e);
+		}
+		return 0;		
+	}
 }

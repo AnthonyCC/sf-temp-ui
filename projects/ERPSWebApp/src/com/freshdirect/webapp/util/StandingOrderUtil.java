@@ -86,6 +86,8 @@ import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
 import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.fdstore.rules.FDRuleContextI;
 import com.freshdirect.fdstore.services.tax.AvalaraContext;
 import com.freshdirect.fdstore.standingorders.DeliveryInterval;
@@ -385,7 +387,16 @@ public class StandingOrderUtil {
 		//   Validate payment methods
 		// ============================
 		
-		String paymentMethodID = so.getPaymentMethodId();
+		String paymentMethodID ="";
+		boolean isDebitCardswitch = (FDStoreProperties.isDebitCardCheckEnabled() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, customerUser));
+		if(isDebitCardswitch){
+			ErpPaymentMethodI paymentMethod = com.freshdirect.fdstore.payments.util.PaymentMethodUtil.getSystemDefaultPaymentMethod(info , customerUser.getPaymentMethods());
+			if(null != paymentMethod){
+				paymentMethodID = paymentMethod.getPK().getId();
+			}
+		}else{
+			paymentMethodID = so.getPaymentMethodId();
+		}
 		
 		if ( paymentMethodID == null || paymentMethodID.trim().equals( "" ) ) {
 			LOGGER.warn( "No payment method id." );

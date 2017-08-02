@@ -16,6 +16,7 @@ import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerCreditUtil;
@@ -25,6 +26,7 @@ import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -228,8 +230,9 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		FDActionInfo info = AccountActivityUtil.getActionInfo( session );
 		final PrimaryKey pmPK = ( (ErpPaymentMethodModel)paymentMethod ).getPK();
 		// Do not set MP Ewallet card as default Payment Method
-		if(paymentMethod.geteWalletID() == null || paymentMethod.geteWalletID().equals(""+EnumEwalletType.PP.getValue())){
-			FDCustomerManager.setDefaultPaymentMethod( info, pmPK );
+		boolean isDebitCardSwitch = (FDStoreProperties.isDebitCardCheckEnabled() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user));
+		if(!isDebitCardSwitch && (paymentMethod.geteWalletID() == null || paymentMethod.geteWalletID().equals(""+EnumEwalletType.PP.getValue()))){
+			FDCustomerManager.setDefaultPaymentMethod( info, pmPK, null, false );
 		}
 		
 			/*

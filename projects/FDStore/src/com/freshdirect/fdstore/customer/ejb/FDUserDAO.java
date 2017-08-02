@@ -22,6 +22,7 @@ import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.CatalogKey;
+import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
 import com.freshdirect.customer.ErpOrderLineModel;
@@ -1426,6 +1427,39 @@ public class FDUserDAO {
     	}
         return cookie;
     }
+
+    
+	public static EnumPaymentMethodDefaultType getpaymentMethodDefaultType(String custId, Connection conn) throws SQLException {
+		PreparedStatement pstmt = null;
+		String defaultPaymentMethod = "";
+        pstmt = conn
+                .prepareStatement("select DEFAULT_PAYMENT_METHOD_TYPE from CUST.FDCUSTOMER where ID=?");
+        pstmt.setString(1, custId);
+        ResultSet rs = pstmt.executeQuery();
+
+        if (rs.next()) {
+        	defaultPaymentMethod = rs.getString(1);
+        }
+        else{
+        	return null;
+        }
+        if("".equals(defaultPaymentMethod) || null == defaultPaymentMethod){
+        	return EnumPaymentMethodDefaultType.getByName("UD");
+        }
+        else{
+		return EnumPaymentMethodDefaultType.getByName(defaultPaymentMethod);
+        }
+	}
+
+
+	public static int resetDefaultPaymentValueType(Connection conn) {
+        try {
+			return conn.createStatement().executeUpdate("update cust.fdcustomer set DEFAULT_PAYMENT_METHOD_TYPE='UD'");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;		
+	}
 
     
 }

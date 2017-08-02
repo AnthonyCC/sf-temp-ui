@@ -11,6 +11,7 @@ package com.freshdirect.fdstore.customer;
 import java.rmi.RemoteException;
 import java.util.Date;
 
+import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerSmsPreferencePersistentBean;
 import com.freshdirect.framework.core.ModelSupport;
@@ -39,6 +40,7 @@ public class FDCustomerModel extends ModelSupport implements FDCustomerI {
     private FDCustomerEStoreModel customerSmsPreferenceModel;
     private String rafClickId;
     private String rafPromoCode;
+    private EnumPaymentMethodDefaultType defaultPaymentType;
     
 	/**
      * Default constructor.
@@ -236,5 +238,12 @@ public class FDCustomerModel extends ModelSupport implements FDCustomerI {
 		this.rafPromoCode = rafPromoCode;
 	}
 
+	public EnumPaymentMethodDefaultType getDefaultPaymentType() {
+		return defaultPaymentType;
+	}
+
+	public void setDefaultPaymentType(EnumPaymentMethodDefaultType defaultPaymentType) {
+		this.defaultPaymentType = defaultPaymentType;
+	}
 
 }

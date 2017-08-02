@@ -105,6 +105,7 @@ import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.OrderHistoryI;
+import com.freshdirect.customer.ejb.ActivityDAO;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpFraudPreventionSB;
@@ -148,6 +149,7 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.AddressDAO;
 import com.freshdirect.fdstore.customer.CustomerCreditModel;
+import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.fdstore.customer.EnumIPhoneCaptureType;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
@@ -1398,14 +1400,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			Gateway gateway = null;
 			
-			if(paymentechEnabled &&( EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())||
+			if(paymentechEnabled && FDStoreProperties.isPaymentVerificationEnabled() &&( EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())||
 					                 EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())
 					)){ //add payment method profile to orbital. we need to add it as part of this transaction.
-				try {				
+				try {	
 					//first verify the payment method with orbital/paymentech. if success then add the profile.
-					gateway = GatewayFactory.getGateway(GatewayType.PAYMENTECH);
-					ErpAuthorizationModel authModel = gateway.verify(ErpAffiliate.getPrimaryAffiliate(info.geteStore()).getMerchant(paymentMethod.getCardType()),paymentMethod);
-					
+						gateway = GatewayFactory.getGateway(GatewayType.PAYMENTECH);
+						ErpAuthorizationModel authModel = gateway.verify(ErpAffiliate.getPrimaryAffiliate(info.geteStore()).getMerchant(paymentMethod.getCardType()),paymentMethod);
+											
 					if(authModel.isApproved()) {
 						Request request = GatewayAdapter.getAddProfileRequest(paymentMethod);
 						Response response = gateway.addProfile(request);
@@ -1433,7 +1435,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 							throw new ErpTransactionException();
 						
 					}
-				} catch (ErpTransactionException e) {
+				}catch (ErpTransactionException e) {
 					this.getSessionContext().setRollbackOnly();
 					throw new ErpPaymentMethodException(e.getMessage());
 				}
@@ -1456,6 +1458,18 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			deleteProfile(paymentMethod);
 			throw new FDResourceException(ex);
 		}
+	}
+	
+	public ErpAuthorizationModel verifyCard(ErpPaymentMethodI paymentMethod, boolean paymentechEnabled, EnumEStoreId storeId) throws FDResourceException, ErpPaymentMethodException {
+		ErpAuthorizationModel authModel;
+		try {
+			Gateway gateway = GatewayFactory.getGateway(GatewayType.PAYMENTECH);
+			authModel = gateway.verify(ErpAffiliate.getPrimaryAffiliate(storeId).getMerchant(paymentMethod.getCardType()),paymentMethod);
+		} catch (ErpTransactionException e) {
+			this.getSessionContext().setRollbackOnly();
+			throw new ErpPaymentMethodException(e.getMessage());
+		}
+			return authModel;
 	}
 
 	private void deleteProfile(ErpPaymentMethodI paymentMethod){
@@ -1501,12 +1515,23 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 * 
 	 *            Throws FDResourceException
 	 */
-	public void setDefaultPaymentMethod(FDActionInfo info,
-			PrimaryKey paymentMethodPK) throws FDResourceException {
+	public void setDefaultPaymentMethod(FDActionInfo info, PrimaryKey paymentMethodPK, EnumPaymentMethodDefaultType type, boolean isDebitCardSwitch) throws FDResourceException {
 		try {
-			FDCustomerEB eb = this.getFdCustomerHome().findByPrimaryKey(
-					new PrimaryKey(info.getIdentity().getFDCustomerPK()));
+			FDCustomerEB eb = this.getFdCustomerHome().findByPrimaryKey(new PrimaryKey(info.getIdentity().getFDCustomerPK()));
 			eb.setDefaultPaymentMethodPK(paymentMethodPK.getId());
+			if(isDebitCardSwitch){
+				eb.setDefaultPaymentMethodType(type);
+				EnumAccountActivityType activityType = EnumAccountActivityType.DEFAULT_PM_ND;
+				//log activity
+				if(type.name().equals(EnumPaymentMethodDefaultType.DEFAULT_CUST.name())){
+					activityType = EnumAccountActivityType.DEFAULT_PM_CUST;
+				}else if(type.name().equals(EnumPaymentMethodDefaultType.DEFAULT_SYS.name())){
+					activityType = EnumAccountActivityType.DEFAULT_PM_SYS;
+				}else{
+					activityType = EnumAccountActivityType.DEFAULT_PM_ND;
+				}
+				this.logActivity(info.createActivity(activityType));
+			}			
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (FinderException fe) {
@@ -8792,4 +8817,39 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 	}	
+public void updateFDCustomerDefaultPaymentMethodType(FDIdentity identity, EnumPaymentMethodDefaultType type, String defaultPaymentMethodpk) throws FDResourceException {
+			try {
+				FDCustomerEB eb = getFdCustomerHome().findByPrimaryKey(new PrimaryKey(identity.getFDCustomerPK()));
+				eb.setDefaultPaymentMethodType(type);
+				eb.setDefaultPaymentMethodPK(defaultPaymentMethodpk);
+			} catch (RemoteException re) {
+		throw new FDResourceException(re);
+			} catch (FinderException ce) {
+		throw new FDResourceException(ce);
+			}
+	}
+	
+	public EnumPaymentMethodDefaultType getpaymentMethodDefaultType(String custId) throws FDResourceException{
+		Connection conn = null;
+		try{
+			conn = getConnection();
+			return FDUserDAO.getpaymentMethodDefaultType(custId, conn);
+		}catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Some problem in getting default payment method info");
+		} finally {
+			close(conn);
+		}
+	}
+
+public int resetDefaultPaymentValueType() throws FDResourceException{
+		Connection conn = null;
+		try{
+			conn = getConnection();
+			return FDUserDAO.resetDefaultPaymentValueType(conn);
+		}catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Some problem in getting default payment method info");
+		} finally {
+			close(conn);
+		}
+	}
 }

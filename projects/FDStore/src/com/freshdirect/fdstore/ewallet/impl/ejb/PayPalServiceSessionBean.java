@@ -14,11 +14,13 @@ import com.braintreegateway.PaymentMethod;
 import com.braintreegateway.Result;
 import com.braintreegateway.exceptions.AuthenticationException;
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.ErpCustEWalletModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.fdstore.FDPayPalServiceException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
@@ -28,6 +30,7 @@ import com.freshdirect.fdstore.ewallet.EwalletResponseData;
 import com.freshdirect.fdstore.ewallet.ValidationError;
 import com.freshdirect.fdstore.ewallet.ValidationResult;
 import com.freshdirect.fdstore.ewallet.impl.EWalletRuntimeException;
+import com.freshdirect.fdstore.payments.util.PaymentMethodUtil;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.StringUtil;
@@ -192,20 +195,23 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 				}
 				
 				ewalletRequestData.setPaymentechEnabled(false);
-				FDCustomerManager.addPaymentMethod(ewalletRequestData.getFdActionInfo(), paymentMethod,ewalletRequestData.isPaymentechEnabled());
+				FDCustomerManager.addPaymentMethod(ewalletRequestData.getFdActionInfo(), paymentMethod,ewalletRequestData.isPaymentechEnabled(), ewalletRequestData.isDebitCardSwitch());
 		
 				List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(ewalletRequestData.getCustomerId()).getPaymentMethods();
 				
+				
 				if(paymentMethods != null && !paymentMethods.isEmpty()){
+					if (!ewalletRequestData.isDebitCardSwitch()) {
 					if (paymentMethods.size() > 1) {
 						sortPaymentMethodsByIdReserved(paymentMethods);
 					}
 			        if (!origin.equals(EwalletConstants.PAYPAL_ORIGIN_YOUR_ACCOUNT)) {
 			    		final PrimaryKey pmPK = ( (ErpPaymentMethodModel)paymentMethods.get(0)).getPK();
-			    		FDCustomerManager.setDefaultPaymentMethod( ewalletRequestData.getFdActionInfo(), pmPK );
+			    		FDCustomerManager.setDefaultPaymentMethod( ewalletRequestData.getFdActionInfo(), pmPK, null, false);
 			    		
 			        }
 					ewalletResponseData.setPaymentMethod(paymentMethods.get(0));
+				}
 				}
 			} catch (Exception exception) {
 				LOGGER.error("Error While adding PayPal account details : "+exception.getMessage());

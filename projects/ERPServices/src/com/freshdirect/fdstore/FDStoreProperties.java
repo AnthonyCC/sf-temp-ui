@@ -945,6 +945,8 @@ public class FDStoreProperties {
     private final static String PROP_PRODUCT_CACHE_OPTIMIZATION_ENABLED = "fdstore.product.cache.optimization.enabled";
     
     private final static String PROP_REQUEST_SCHEME_FOR_REDIRECT_URL = "fdstore.request.scheme.redirecturl";
+	private static final String PROP_DEBIT_CARD_PROPERTY = "fdstore.debit.card.enabled";
+	private static final String PROP_PAYMENT_VERIFICATION_ENABLED = "payment.verification.enabled";
 
     /* APPDEV 6174 
      * IBM SilverPopup urls, tokens*/
@@ -1576,6 +1578,7 @@ public class FDStoreProperties {
 
         defaults.put("feature.rollout.standingorder3_0", "GLOBAL:ENABLED,false;");
         defaults.put("feature.rollout.browseaggregatedcategories1_0", "GLOBAL:ENABLED,false;");
+        defaults.put("feature.rollout.debitCardSwitch", "GLOBAL:ENABLED,true;");
         
         defaults.put(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE, "true");
         defaults.put(PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING, "ISO-8859-1");
@@ -1825,6 +1828,8 @@ public class FDStoreProperties {
         defaults.put(IBM_REFRESH_TOKEN, "r_3872jS_Gh7VmanX2TcazBB_MJ1C_RBqbJWY6gvh3koS1");
         defaults.put(PAYMENT_TLSSHA_ENABLED,"false");
         defaults.put(GOOGLE_ANALYTICS_TRACKING_ID, "UA-20535945-18");
+        defaults.put(PROP_DEBIT_CARD_PROPERTY, "true");
+        defaults.put(PROP_PAYMENT_VERIFICATION_ENABLED, "false");
         refresh();
     }
 
@@ -4663,6 +4668,15 @@ public class FDStoreProperties {
 	
 	public static String getRequestSchemeForRedirectUrl(){
 		return get(PROP_REQUEST_SCHEME_FOR_REDIRECT_URL);
+	}
+	
+	public static boolean isDebitCardCheckEnabled(){
+		return (Boolean.valueOf(get(PROP_DEBIT_CARD_PROPERTY))).booleanValue();
+		
+	}
+
+	public static boolean isPaymentVerificationEnabled() {
+		return (Boolean.valueOf(get(PROP_PAYMENT_VERIFICATION_ENABLED))).booleanValue();
 	}
 
 	public static boolean isDfpEnabled() {

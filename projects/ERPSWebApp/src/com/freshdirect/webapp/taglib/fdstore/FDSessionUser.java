@@ -2403,4 +2403,10 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public ErpCustomerInfoModel getCustomerInfoModel() throws FDResourceException {
 		return this.user.getCustomerInfoModel();
 	}
+	@Override
+	public int resetDefaultPaymentValueType() {
+		return user.resetDefaultPaymentValueType();		
+	}
+
+	 
 }

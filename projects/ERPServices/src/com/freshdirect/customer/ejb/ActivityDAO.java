@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -257,4 +258,26 @@ public class ActivityDAO implements java.io.Serializable {
 		return list;
 	}
 	
+	private static final String paymentMethodsTimeStampQuery = "select TIMESTAMP, NOTE from CUST.ACTIVITY_LOG where CUSTOMER_ID=? and ACTIVITY_ID = ?";
+			
+	public Map<Date,String> getPaymentMethodsTimeStamp(Connection conn, String customerId) throws SQLException {
+		String last4CardNum = "";
+		Map<Date,String> paymentMethodsTimeStamp = new HashMap<Date, String>();
+		PreparedStatement ps = conn.prepareStatement(paymentMethodsTimeStampQuery);
+				ps.setString(1, customerId);
+				ps.setString(2, "A Pymt Mthd");
+				
+			ResultSet rs = ps.executeQuery();
+			
+			while(rs.next()){
+				Date date = new java.util.Date(rs.getTimestamp("TIMESTAMP").getTime());
+				String note = rs.getString("NOTE");
+				if(null != note && note.toCharArray().length>=10){
+					last4CardNum = note.substring(9).substring(6, 9);
+				}
+				paymentMethodsTimeStamp.put(date, last4CardNum);
+			}
+			
+		return null;
+	}
 }
