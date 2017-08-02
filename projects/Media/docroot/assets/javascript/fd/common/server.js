@@ -71,8 +71,8 @@ var FreshDirect = FreshDirect || {};
 	    $('#target-link-holder').remove();
 	    fd.user.recognized=true;
 	    $("button[disabled]").removeAttr("disabled");
-	    if (fd.properties.isSocialLoginEnabled) {
-	    	socialLogin(targetHolder);
+	    if (fd.modules.common && fd.modules.common.login) {
+	    	fd.modules.common.login.socialLogin();
 	    }else{
 	    	window.location.href = "/login/login.jsp";
 	    }
