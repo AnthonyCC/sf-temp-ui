@@ -157,7 +157,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     private AddressModel address;
     private FDReservation reservation;
-    private FDCartModel shoppingCart = initializeCart();
+    private FDCartModel shoppingCart /*= initializeCart()*/; // It was causing issue in SF2.0
 
     private FDCartModel soTemplateCart = new FDCartModel();
     // Creating a dummy cart for gift card processing.
@@ -404,15 +404,29 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     public FDUser(PrimaryKey pk) {
         super();
+        this.shoppingCart = initializeCart(); // Added due to the issue in SF 2.0
         this.setPK(pk);
     }
 
     public FDUser() {
         super();
+      this.shoppingCart =  initializeCart(); // Added due to the issue in SF 2.0
     }
 
     public FDUser(UserContext userContext) {
         super();
+        this.userContext = userContext;
+     // Added due to the issue in SF 2.0
+        if (this.shoppingCart == null) {
+            this.shoppingCart = new FDCartModel();
+            this.shoppingCart.setEStoreId(this.getUserContext().getStoreContext().getEStoreId());
+        }
+    }
+    
+    // Used only for Storefront 2.0
+    public FDUser(PrimaryKey pk,UserContext userContext) {
+        super();
+        this.setPK(pk);
         this.userContext = userContext;
     }
 
