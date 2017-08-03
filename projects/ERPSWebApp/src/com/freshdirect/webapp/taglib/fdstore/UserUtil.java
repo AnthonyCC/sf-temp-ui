@@ -75,8 +75,6 @@ public class UserUtil {
 	
 	private static Category LOGGER = LoggerFactory.getInstance( UserUtil.class );
 	
-	private static boolean IS_DEFAULT_PAYMENT_TYPE_VALUES_RESET = false;
-	
 	public static void createSessionUser(HttpServletRequest request, HttpServletResponse response, FDUser loginUser)
 		throws FDResourceException {
 		HttpSession session = request.getSession();
@@ -653,13 +651,11 @@ public class UserUtil {
           if(user != null) {
         	user.setJustLoggedIn(true);
           }
-          if(!FDStoreProperties.isDebitCardCheckEnabled() && !IS_DEFAULT_PAYMENT_TYPE_VALUES_RESET){
-        	 if(user.resetDefaultPaymentValueType() != 0)
-        	  IS_DEFAULT_PAYMENT_TYPE_VALUES_RESET = true;
+          if(!FDStoreProperties.isDebitCardCheckEnabled() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)){
+        	 user.resetDefaultPaymentValueType();
           }
           
 			if (FDStoreProperties.isDebitCardCheckEnabled() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)) {
-				IS_DEFAULT_PAYMENT_TYPE_VALUES_RESET = false;
 				FDActionInfo info = AccountActivityUtil.getActionInfo(request.getSession());
 				boolean isDefaultPaymentMethodRegistered = false;
 				try {

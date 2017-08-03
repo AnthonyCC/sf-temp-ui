@@ -8841,11 +8841,11 @@ public void updateFDCustomerDefaultPaymentMethodType(FDIdentity identity, EnumPa
 		}
 	}
 
-public int resetDefaultPaymentValueType() throws FDResourceException{
+public int resetDefaultPaymentValueType(String custId) throws FDResourceException{
 		Connection conn = null;
 		try{
 			conn = getConnection();
-			return FDUserDAO.resetDefaultPaymentValueType(conn);
+			return FDUserDAO.resetDefaultPaymentValueType(conn, custId);
 		}catch (SQLException sqle) {
 			throw new FDResourceException(sqle, "Some problem in getting default payment method info");
 		} finally {

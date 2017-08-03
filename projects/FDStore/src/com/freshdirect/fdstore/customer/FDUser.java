@@ -3787,7 +3787,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     @Override
     public int resetDefaultPaymentValueType() {
 		try {
-			return FDCustomerManager.resetDefaultPaymentValueType();
+			return FDCustomerManager.resetDefaultPaymentValueType(this.getFDCustomer().getId());
 		} catch (FDResourceException e) {
 			LOGGER.error("Error in resetting default payment method in fdcustomer: " + this.identity, e);
 		}

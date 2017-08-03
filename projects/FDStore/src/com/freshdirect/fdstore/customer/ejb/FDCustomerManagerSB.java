@@ -914,6 +914,6 @@ public interface FDCustomerManagerSB extends EJBObject {
 	
 	public String getCookieByFdCustomerId(String fdCustomerId) throws FDResourceException, RemoteException;
 
-	public int resetDefaultPaymentValueType() throws FDResourceException, RemoteException;
+	public int resetDefaultPaymentValueType(String custId) throws FDResourceException, RemoteException;
 }
 

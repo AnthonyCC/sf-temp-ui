@@ -1452,9 +1452,9 @@ public class FDUserDAO {
 	}
 
 
-	public static int resetDefaultPaymentValueType(Connection conn) {
+	public static int resetDefaultPaymentValueType(Connection conn, String custId) {
         try {
-			return conn.createStatement().executeUpdate("update cust.fdcustomer set DEFAULT_PAYMENT_METHOD_TYPE='UD'");
+			return conn.createStatement().executeUpdate("update cust.fdcustomer set DEFAULT_PAYMENT_METHOD_TYPE='UD' where id="+custId);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

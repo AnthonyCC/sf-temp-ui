@@ -5228,11 +5228,11 @@ public static EnumPaymentMethodDefaultType getpaymentMethodDefaultType(String cu
 			}			
 		}
 
-public static int resetDefaultPaymentValueType() throws FDResourceException{
+public static int resetDefaultPaymentValueType(String custId) throws FDResourceException{
 			lookupManagerHome();
 			try {
 				FDCustomerManagerSB sb = managerHome.create();
-				return sb.resetDefaultPaymentValueType();
+				return sb.resetDefaultPaymentValueType(custId);
 			}catch (RemoteException e) {
 				LOGGER.error("Error resetting default payment type in fdcustomer "+ e);
 				invalidateManagerHome();
