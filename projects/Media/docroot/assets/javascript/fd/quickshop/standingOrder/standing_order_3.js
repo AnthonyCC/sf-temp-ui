@@ -128,7 +128,7 @@ function deleteSO(id, custom){
 			$jq(soID + " .so-delete-popup-buttons-yes").html("Confirm");
 			$jq(soID + " .so-delete-popup-buttons-no").html("Cancel");
 		} else {
-			submitFormManageSO(id,"delete",null,null);
+			submitFormManageSO(id,"delete",null,null,null);
 			closeSettingsDelete(id);
 		}
 	}
