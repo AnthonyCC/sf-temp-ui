@@ -56,7 +56,9 @@ var FreshDirect = FreshDirect || {};
     var status = e.status, message;
     if(status == 401){
     	var currentPage = window.location.pathname + window.location.search + window.location.hash;
-    	
+    	if ( fd.modules.common.login && !fd.modules.common.login.successTarget) {
+    		fd.modules.common.login.successTarget = currentPage;
+    	}
 	    var targetHolder = e.targetHolder || (fd.modules.common.login && fd.modules.common.login.successTarget);
 	    fd.user.recognized=true;
 	    $("button[disabled]").removeAttr("disabled");

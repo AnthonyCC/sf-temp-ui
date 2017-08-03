@@ -453,6 +453,9 @@ br.new_cust{
 }
 
 /* login overlay */
+.login-ajax-overlay.fixedpopup {
+	z-index: 10003;
+}
 .login-ajax-overlay.fixedpopup .qs-popup-header {
 	min-height: 0;
 	height: 0;
