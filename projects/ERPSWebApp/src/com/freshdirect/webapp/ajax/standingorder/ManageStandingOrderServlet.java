@@ -149,18 +149,18 @@ public class ManageStandingOrderServlet extends HttpServlet {
 						if (!so.isDeleted()) {
 							u.setRefreshSO3(true);
 							FDActionInfo info = AccountActivityUtil.getActionInfo(pageContext.getSession());
-							if("Y".equalsIgnoreCase(so.getActivate()) && !CANCEL_ALL_DELIVERIES.equalsIgnoreCase(deleteDate)  ) {
-								FDStandingOrdersManager.getInstance().deleteActivatedSO(info, so, deleteDate);
-							}else if("Y".equalsIgnoreCase(so.getActivate())){
-								cancelNextDelivery(so);
-							}else {
+							if ("Y".equalsIgnoreCase(so.getActivate()) && !"null".equalsIgnoreCase(deleteDate)) {
+								if (!CANCEL_ALL_DELIVERIES.equalsIgnoreCase(deleteDate))
+									FDStandingOrdersManager.getInstance().deleteActivatedSO(info, so,deleteDate);
+								else
+									cancelNextDelivery(so);
+							} else {
 								FDStandingOrdersManager.getInstance().delete(info, so);
 							}
 						}
-						
-							
+
 					}
-				}else if("onloadNewStandingOrder".equalsIgnoreCase(action)){
+				} else if("onloadNewStandingOrder".equalsIgnoreCase(action)){
 					u.setRefreshSO3(true);
 					if (("".equalsIgnoreCase(soId) || soId==null) && (freq == null || "".equalsIgnoreCase(freq)))
 				      u.getCurrentStandingOrder().setFrequency(Integer.parseInt("1"));
