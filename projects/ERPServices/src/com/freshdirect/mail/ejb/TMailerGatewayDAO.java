@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 
 import com.freshdirect.framework.mail.TEmailI;
+import com.freshdirect.framework.util.DaoUtil;
 
 public class TMailerGatewayDAO {
 
@@ -103,13 +104,16 @@ public class TMailerGatewayDAO {
 	
 	public static void resetTransactionalEmailInfo(Connection conn) throws SQLException{
 	    int count=0;
-		try
+	    PreparedStatement ps = null;
+	    try
 		{
-   	       PreparedStatement ps = conn.prepareStatement(RESET_TRAN_EMAIL_SQL);   	          	          	       
+   	       ps = conn.prepareStatement(RESET_TRAN_EMAIL_SQL);   	          	          	       
    	        count=ps.executeUpdate();   	          	     
    	          	          	       
 		}catch(SQLException e){
 	      	 throw e;
+	    }finally{
+	    	DaoUtil.close(ps);
 	    }
 	       		   	
 	}
@@ -118,17 +122,22 @@ public class TMailerGatewayDAO {
 	
 	public static int getFailedTransactionalEmailCount(Connection conn) throws SQLException  {
 	    int count=0;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try
 		{
-   	       PreparedStatement ps = conn.prepareStatement(SELECT_FAILED_EMAILS_SQL);   	          	       
+   	       ps = conn.prepareStatement(SELECT_FAILED_EMAILS_SQL);   	          	       
    	        
-   	       ResultSet rs=ps.executeQuery();
+   	       rs=ps.executeQuery();
    	       
    	       if(rs.next())  count=rs.getInt("count");
    	          	       
    	       
 		}catch(SQLException e){
 	      	 throw e;
+	    } finally{
+	    	DaoUtil.close(rs);
+	    	DaoUtil.close(ps);
 	    }
 	       
 		return count;

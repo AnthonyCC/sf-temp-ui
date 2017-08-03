@@ -110,11 +110,13 @@ public class StandingOrder3CronSessionBean extends SessionBeanSupport {
 	public void removeTimeSlotInfoFromSO(List<String> list) throws SQLException,RemoteException {
 		
 		Connection con = null;
-		
+		try{
 			con = getConnection();
 			FDStandingOrderDAO dao = new FDStandingOrderDAO();
 			dao.removeTimeSlotInfoFromSO(con,list);
-		
+		}finally{
+			close(con);
+		}
 	}
 	
 	/**

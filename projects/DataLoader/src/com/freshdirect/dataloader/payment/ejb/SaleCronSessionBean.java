@@ -241,18 +241,21 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	
 	
 	private List<String> getSaleIds(Connection con, String query) throws SQLException {
-		
-		List<String> saleIds=new ArrayList<String>(10);
-		PreparedStatement ps = con.prepareStatement(query);
-		ResultSet rs = ps.executeQuery();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			List<String> saleIds = new ArrayList<String>(10);
+			ps = con.prepareStatement(query);
+			rs = ps.executeQuery();
 
-		while (rs.next()) {
-			saleIds.add(rs.getString(1));
+			while (rs.next()) {
+				saleIds.add(rs.getString(1));
+			}
+			return saleIds;
+		} finally {
+			close(rs);
+			close(ps);
 		}
-
-		rs.close();
-		ps.close();	
-		return saleIds;
 	}
 	/**
 	 * This method runs a AUTH_QUERY against the erpcustomer and get all the sales, that need payment authorization
@@ -357,6 +360,8 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		}
 			
 		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		List<String> saleIds = new ArrayList<String>();
 
 		UserTransaction utx = null;
@@ -364,18 +369,14 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			utx = this.getSessionContext().getUserTransaction();
 			utx.begin();
 			con = this.getConnection();
-			PreparedStatement ps = con.prepareStatement(QUERY_PRE_AUTH_NEEDED);
-			ResultSet rs = ps.executeQuery();
+			ps = con.prepareStatement(QUERY_PRE_AUTH_NEEDED);
+			rs = ps.executeQuery();
 
 			while (rs.next()) {
 				saleIds.add(rs.getString(1));
 			}
 
-			rs.close();
-			ps.close();
-
 			utx.commit();
-
 		} catch (Exception e) {
 			LOGGER.warn(e);
 			try {
@@ -385,14 +386,9 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			}
 			throw new EJBException(e);
 		} finally {
-			try {
-				if (con != null) {
-					con.close();
-					con = null;
-				}
-			} catch (SQLException se) {
-				LOGGER.warn("SQLException while cleaning up", se);
-			}
+			close(rs);
+			close(ps);
+			close(con);
 		}
 		FDCustomerManagerSB sb = this.getFDCustomerManagerSB();
 		if (saleIds.size() > 0) {
@@ -436,6 +432,8 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		}
 		
 		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		List<String> saleIds = new ArrayList<String>();
 
 		UserTransaction utx = null;
@@ -443,16 +441,12 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			utx = this.getSessionContext().getUserTransaction();
 			utx.begin();
 			con = this.getConnection();
-			PreparedStatement ps = con.prepareStatement(QUERY_REVERSE_AUTH_NEEDED);
-			ResultSet rs = ps.executeQuery();
+			ps = con.prepareStatement(QUERY_REVERSE_AUTH_NEEDED);
+			rs = ps.executeQuery();
 
 			while (rs.next()) {
 				saleIds.add(rs.getString(1));
 			}
-
-			rs.close();
-			ps.close();
-
 			utx.commit();
 
 		} catch (Exception e) {
@@ -464,14 +458,9 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			}
 			throw new EJBException(e);
 		} finally {
-			try {
-				if (con != null) {
-					con.close();
-					con = null;
-				}
-			} catch (SQLException se) {
-				LOGGER.warn("SQLException while cleaning up", se);
-			}
+			close(rs);
+			close(ps);
+			close(con);
 		}
 		GiftCardManagerSB sb = this.getGiftCardManagerSB();
 		if (saleIds.size() > 0) {
@@ -507,6 +496,8 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	
 	public void authorizeSubscriptions(long timeout) {
 		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		List<String> saleIds = new ArrayList<String>();
 		List<String> customerIds=new ArrayList<String>();
 
@@ -515,19 +506,15 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			utx = this.getSessionContext().getUserTransaction();
 			utx.begin();
 			con = this.getConnection();
-			PreparedStatement ps = con.prepareStatement(QUERY_AUTH_NEEDED_SUBSCRIPTIONS);
-			ResultSet rs = ps.executeQuery();
+			ps = con.prepareStatement(QUERY_AUTH_NEEDED_SUBSCRIPTIONS);
+			rs = ps.executeQuery();
 
 			while (rs.next()) {
 				saleIds.add(rs.getString(1));
 				customerIds.add(rs.getString(2));
 			}
-
-			rs.close();
-			ps.close();
-
 			utx.commit();
-
+			
 		} catch (Exception e) {
 			LOGGER.warn(e);
 			try {
@@ -537,14 +524,9 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			}
 			throw new EJBException(e);
 		} finally {
-			try {
-				if (con != null) {
-					con.close();
-					con = null;
-				}
-			} catch (SQLException se) {
-				LOGGER.warn("SQLException while cleaning up", se);
-			}
+			close(rs);
+			close(ps);
+			close(con);
 		}
 
 		FDCustomerManagerSB sb = this.getFDCustomerManagerSB();
@@ -642,27 +624,40 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 
 	private Map<String, Double> querySalesInStatusRPG(Connection conn) throws SQLException {
 		//saleId -> FDIdentity
-		Map<String, Double> sales = new HashMap<String, Double>();
-		PreparedStatement ps = conn.prepareStatement(QUERY_SALE_IN_RPG_STATUS);
-		ResultSet rs = ps.executeQuery();
-		while (rs.next()) {
-			sales.put(rs.getString("ID"), new Double(rs.getDouble("SUB_TOTAL")));
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			Map<String, Double> sales = new HashMap<String, Double>();
+			ps = conn.prepareStatement(QUERY_SALE_IN_RPG_STATUS);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				sales.put(rs.getString("ID"), new Double(rs.getDouble("SUB_TOTAL")));
+			}
+			return sales;
+		} finally {
+			close(rs);
+			close(ps);
 		}
-		return sales;
 	}
 	
 	private Map<String, FDIdentity> querySaleAndIdentityByStatus(Connection conn, EnumSaleStatus status) throws SQLException {
 		//saleId -> FDIdentity
-		Map<String, FDIdentity> sales = new HashMap<String, FDIdentity>();
-		PreparedStatement ps = conn.prepareStatement(QUERY_SALE_AND_IDENTITY_BY_STATUS);
-		ps.setString(1, status.getStatusCode());
-		ResultSet rs = ps.executeQuery();
-		while (rs.next()) {
-			sales.put(rs.getString("SALE_ID"), new FDIdentity(rs.getString("ERPCUSTOMER_ID"), rs.getString("FDCUSTOMER_ID")));
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			Map<String, FDIdentity> sales = new HashMap<String, FDIdentity>();
+			ps = conn.prepareStatement(QUERY_SALE_AND_IDENTITY_BY_STATUS);
+			ps.setString(1, status.getStatusCode());
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				sales.put(rs.getString("SALE_ID"),new FDIdentity(rs.getString("ERPCUSTOMER_ID"), rs.getString("FDCUSTOMER_ID")));
+			}
+			return sales;
+		} finally {
+			close(rs);
+			close(ps);
 		}
-		return sales;
 	}
-
 	/**
 	 * It also make sure that if the system. was unable to obtain an authorization for this sale,
 	 * then it cancels the order both in ERPS and SAP. it also locks the sale from further modifications until

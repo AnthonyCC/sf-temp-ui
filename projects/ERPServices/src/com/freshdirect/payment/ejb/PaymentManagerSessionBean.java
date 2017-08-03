@@ -1,6 +1,7 @@
 package com.freshdirect.payment.ejb;
 
 import java.rmi.RemoteException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -161,9 +162,14 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 					}
 				}
 			  }									
-			
-			  int orderCount=ErpSaleInfoDAO.getPreviousOrderHistory(getConnection(), sale.getCustomerPk().getId()); 
-			  
+			  int orderCount;
+			  Connection conn= null;
+			try {
+				conn = this.getConnection();
+				orderCount = ErpSaleInfoDAO.getPreviousOrderHistory(conn, sale.getCustomerPk().getId());
+			} finally {
+				close(conn);
+			}
 			if( payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck() && orderCount<ErpServicesProperties.getAvsErrorOrderCountLimit()){
 				 SessionContext ctx = getSessionContext();
 				    ctx.setRollbackOnly();
@@ -298,10 +304,14 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 
 			List<ErpAuthorizationModel> auths=null;
 			boolean isAVSFailureCase=false;
-			
-			
-			  int orderCount=ErpSaleInfoDAO.getPreviousOrderHistory(getConnection(), sale.getCustomerPk().getId()); 
-			  			
+			int orderCount;
+			Connection conn = null;
+			try{
+				conn= this.getConnection();
+			  orderCount=ErpSaleInfoDAO.getPreviousOrderHistory(conn, sale.getCustomerPk().getId()); 
+			}finally{
+				close(conn);
+			}
 			
 			if(payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck()  && orderCount<ErpServicesProperties.getAvsErrorOrderCountLimit()){
 				//throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");
@@ -584,9 +594,14 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 				}
 			  }							
 						  			  			 
-  
-			int orderCount=ErpSaleInfoDAO.getPreviousOrderHistory(getConnection(), sale.getCustomerPk().getId());  
-			
+			int orderCount;
+			Connection conn = null;
+			try {
+				conn = this.getConnection();
+				orderCount = ErpSaleInfoDAO.getPreviousOrderHistory(conn, sale.getCustomerPk().getId());
+			} finally{
+				close(conn);
+			}
 			if(!FDStoreProperties.isPaymentMethodVerificationEnabled() && payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck() && orderCount<ErpServicesProperties.getAvsErrorOrderCountLimit()){
 				 SessionContext ctx = getSessionContext();
 				    ctx.setRollbackOnly();

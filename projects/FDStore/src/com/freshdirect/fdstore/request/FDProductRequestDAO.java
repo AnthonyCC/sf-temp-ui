@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.freshdirect.framework.util.DaoUtil;
+
 public class FDProductRequestDAO {
 
 	public static void storeRequest(Connection conn, List<FDProductRequest> request) throws SQLException {
@@ -39,76 +41,83 @@ public class FDProductRequestDAO {
 	}
 
 	public static List<HashMap<String, String>> fetchAllMappings(Connection conn) throws SQLException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 
-		List<HashMap<String, String>> mapList = new ArrayList<HashMap<String, String>>();
+		try {
+			List<HashMap<String, String>> mapList = new ArrayList<HashMap<String, String>>();
 
-		PreparedStatement ps = conn.prepareStatement(
-			"select DEPTID, CATID, OBSOLETE from CUST.PRODUCT_REQ_MAP"
-		);
+			ps = conn.prepareStatement("select DEPTID, CATID, OBSOLETE from CUST.PRODUCT_REQ_MAP");
 
-		ResultSet rs = ps.executeQuery();
-		
-		while (rs.next()) {
-			HashMap<String, String> curMap = new HashMap<String, String>();
-			curMap.put("DEPTID",(String)rs.getString("DEPTID"));
-			curMap.put("CATID",(String)rs.getString("CATID"));
-			curMap.put("OBSOLETE",(String)rs.getString("OBSOLETE"));
-			mapList.add(curMap);
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+				HashMap<String, String> curMap = new HashMap<String, String>();
+				curMap.put("DEPTID", (String) rs.getString("DEPTID"));
+				curMap.put("CATID", (String) rs.getString("CATID"));
+				curMap.put("OBSOLETE", (String) rs.getString("OBSOLETE"));
+				mapList.add(curMap);
+			}
+			return mapList;
+
+		} finally {
+			DaoUtil.close(rs);
+			DaoUtil.close(ps);
 		}
-		
-		ps.close();
-
-		return mapList;
 	}
 
 	public static List<HashMap<String, String>> fetchAllCats(Connection conn) throws SQLException {
-
-		List<HashMap<String, String>> catList = new ArrayList<HashMap<String, String>>();
-
-		PreparedStatement ps = conn.prepareStatement(
-			"select ID, CATID, NAME, CATIDNAME, OBSOLETE from CUST.PRODUCT_REQ_CAT"
-		);
-
-		ResultSet rs = ps.executeQuery();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		
-		while (rs.next()) {
-			HashMap<String, String> curCat = new HashMap<String, String>();
-			curCat.put("ID",(String)rs.getString("ID"));
-			curCat.put("CATID",(String)rs.getString("CATID"));
-			curCat.put("NAME",(String)rs.getString("NAME"));
-			curCat.put("CATIDNAME",(String)rs.getString("CATIDNAME"));
-			curCat.put("OBSOLETE",(String)rs.getString("OBSOLETE"));
-			catList.add(curCat);
+		try {
+			List<HashMap<String, String>> catList = new ArrayList<HashMap<String, String>>();
+
+			ps = conn.prepareStatement("select ID, CATID, NAME, CATIDNAME, OBSOLETE from CUST.PRODUCT_REQ_CAT");
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+				HashMap<String, String> curCat = new HashMap<String, String>();
+				curCat.put("ID", (String) rs.getString("ID"));
+				curCat.put("CATID", (String) rs.getString("CATID"));
+				curCat.put("NAME", (String) rs.getString("NAME"));
+				curCat.put("CATIDNAME", (String) rs.getString("CATIDNAME"));
+				curCat.put("OBSOLETE", (String) rs.getString("OBSOLETE"));
+				catList.add(curCat);
+			}
+			return catList;
+
+		} finally {
+			DaoUtil.close(rs);
+			DaoUtil.close(ps);
 		}
-		
-		ps.close();
-		
-		return catList;
 	}
 
 	public static List<HashMap<String, String>> fetchAllDepts(Connection conn) throws SQLException {
-
-		List<HashMap<String, String>> deptList = new ArrayList<HashMap<String, String>>();
-
-		PreparedStatement ps = conn.prepareStatement(
-			"select ID, DEPTID, NAME, DEPTIDNAME, OBSOLETE from CUST.PRODUCT_REQ_DEPT"
-		);
-
-		ResultSet rs = ps.executeQuery();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		
-		while (rs.next()) {
-			HashMap<String, String> curDept = new HashMap<String, String>();
-			curDept.put("ID",(String)rs.getString("ID"));
-			curDept.put("DEPTID",(String)rs.getString("DEPTID"));
-			curDept.put("NAME",(String)rs.getString("NAME"));
-			curDept.put("DEPTIDNAME",(String)rs.getString("DEPTIDNAME"));
-			curDept.put("OBSOLETE",(String)rs.getString("OBSOLETE"));
-			deptList.add(curDept);
+		try {
+			List<HashMap<String, String>> deptList = new ArrayList<HashMap<String, String>>();
+
+			ps = conn.prepareStatement("select ID, DEPTID, NAME, DEPTIDNAME, OBSOLETE from CUST.PRODUCT_REQ_DEPT");
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				HashMap<String, String> curDept = new HashMap<String, String>();
+				curDept.put("ID", (String) rs.getString("ID"));
+				curDept.put("DEPTID", (String) rs.getString("DEPTID"));
+				curDept.put("NAME", (String) rs.getString("NAME"));
+				curDept.put("DEPTIDNAME", (String) rs.getString("DEPTIDNAME"));
+				curDept.put("OBSOLETE", (String) rs.getString("OBSOLETE"));
+				deptList.add(curDept);
+			}
+
+			return deptList;
+		} finally {
+			DaoUtil.close(rs);
+			DaoUtil.close(ps);
 		}
-		
-		ps.close();
-		
-		return deptList;
 	}
 
 }
