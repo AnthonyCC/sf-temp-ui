@@ -1844,8 +1844,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     
     public EnumDPAutoRenewalType hasAutoRenewDP() throws FDResourceException {
         if (this.identity != null) {
-            FDCustomerModel customer = this.getFDCustomer();
-            String customerPK = customer.getErpCustomerPK();
+            String customerPK = identity.getErpCustomerPK();
 
             return FDCustomerManager.hasAutoRenewDP(customerPK);
         }
