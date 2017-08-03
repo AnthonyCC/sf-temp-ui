@@ -215,7 +215,7 @@
 					<div class="form-side-social">
 						<div class="form-side-social-header">Create Account:</div>
 						<div class="bottom-links">
-							Already have an account? <a href="/social/login.jsp?successPage=<%=successPage%>" onclick="window.parent.FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp?successPage=<%=successPage%>', opacity: .5})">Sign In</a>
+							Already have an account? <a href="/social/login.jsp?successPage=<%=successPage%>" onclick="event.preventDefault();window.parent.FreshDirect.components.ifrPopup.close(); window.parent.FreshDirect.modules.common.login.socialLogin('<%=successPage%>');">Sign In</a>
 						</div>
 						<!-- form_fields start here -->
 						<div id="form_feilds" style="text-align: center;">
@@ -414,17 +414,6 @@
 					</div>
 					
 					<div class="clear"></div>
-	
-					<div class="bottom-contents">
-						<div class="bottom-contents-terms">
-							<div class="bottom-contents-terms-text">
-								By signing up, you agree to the <a href="javascript:popup('/registration/user_agreement.jsp', 'large')">Customer Agreement</a> & <a href="javascript:popup('/registration/privacy_policy.jsp', 'large')">Privacy Policy</a>
-							</div>
-						</div>
-						<div class="bottom-links">
-							Already have an account? <a href="javascript:void(0)" onclick="window.parent.FreshDirect.components.ifrPopup.close(); window.parent.FreshDirect.modules.common.login.socialLogin();">Sign In</a>
-						</div>
-					</div>
 					
 					<% if (result.isFailure()) { %>
 						<script type="text/javascript">
