@@ -31,7 +31,6 @@ import com.freshdirect.customer.ErpInvoicedCreditModel;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.dataloader.LoaderException;
-import com.freshdirect.dataloader.analytics.GoogleAnalyticsReportingService;
 import com.freshdirect.dataloader.payment.ejb.InvoiceLoaderHome;
 import com.freshdirect.dataloader.payment.ejb.InvoiceLoaderSB;
 import com.freshdirect.dataloader.response.FDJcoServerResult;
@@ -383,8 +382,6 @@ public class FDInvoiceBatchJcoServer extends FdSapServer {
 							populateResponseRecord(result, param, "No order found for the web order");
 							continue;
 						}
-
-                        GoogleAnalyticsReportingService.defaultService().postGAReporting(order);
 
 						//To fix - APPDEV-5294 - Duplicate invoice export for an order from SAP, should be ignored and return success to SAP.
 						/*if (!EnumSaleStatus.INPROCESS.equals(order.getOrderStatus())) {
