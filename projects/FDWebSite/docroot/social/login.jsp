@@ -20,7 +20,7 @@
 <%
 	String uri = request.getRequestURI();
 	String successPage = request.getParameter("successPage");
-	if ((successPage == null) || (successPage == "undefined") || (successPage == "ndefined")) {
+	if ((successPage == null) || successPage.equals("undefined")) {
 
 		successPage = "/index.jsp";
 	}
@@ -69,6 +69,7 @@
 										out.println(errorMsg);
 									}
 							%>
+							<input type="hidden" id="success-target" value="<%=successPage%>" />
 							<div class='error-message hidden'>
 								Email and password do not match.</br>Please try again.
 							</div>
@@ -86,7 +87,7 @@
 									<td><input id="email" name="userid"
 										class="padding-input-box text11ref inputDef required"
 										type="email" maxlength="128" size="23" value="<%=userid%>"
-										placeholder="E-mail" autofocus autocomplete="email"></td>
+										placeholder="E-mail" autofocus autocomplete="email" tabindex="1" /></td>
 								</tr>
 								<tr>
 									<td valign="bottom">
@@ -97,20 +98,23 @@
 										name="password"
 										class="padding-input-box text11ref inputDef required"
 										type="password" size="23" placeholder="Password"
-										autocomplete="email"></td>
+										autocomplete="email" tabindex="2" /></td>
 								</tr>
 								<tr>
 									<td></td>
-									<td style="padding-top: 15px;"><input
-											type="submit" id="signinbtn" class="button_disabled"
-											maxlength="25" size="19" value="Sign in" disabled />
+									<td style="padding-top: 15px;">
+										<a href="#sign-in" id="signinbtn" tabindex="3">
+											<input
+												type="submit" id="signinbtn" class="button_disabled"
+												maxlength="25" size="19" value="Sign in" disabled />
+										</a>
 									</td>
 								</tr>
 								<tr>
 									<td></td>
 									<td class="social-login-pass-forgot">
-										<a href="javascript:void(0)"
-											onclick="window.FreshDirect.components.ajaxPopup.close(); window.FreshDirect.components.ifrPopup.open({ url: '/social/forgot_password.jsp', height: 590, opacity: .5});">
+										<a href="/social/forgot_password.jsp" tabindex="4"
+											onclick="event.preventDefault();window.FreshDirect.components.ajaxPopup.close(); window.FreshDirect.components.ifrPopup.open({ url: '/social/forgot_password.jsp', height: 590, width:560, opacity: .5});">
 											Forgot Password?
 											</a>
 									</td>
@@ -138,7 +142,7 @@
 				</div>
 
 
-				<div id="social_login_demo" class="social-login-social">
+				<div id="social_login_demo" class="social-login-social" tabindex="5">
 					<input type="hidden" id="social-login-callback-uri" 
 					value="<%=FDStoreProperties.isLocalDeployment()?"//" + request.getServerName() + ":" + request.getServerPort() + "/social/social_login_success.jsp" : "" %>" />
 					<script type="text/javascript" async
@@ -156,8 +160,9 @@
 				<div class="bottom-contents">
 					<div class="bottom-links">
 						New to FreshDirect? <a
-							href="javascript:void(0)"
-							onclick="window.FreshDirect.components.ajaxPopup.close(); window.FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp?successPage=<%=successPage%>', height: 590, opacity: .5});">
+							href="/social/signup_lite.jsp"
+							tabindex="6"
+							onclick="event.preventDefault();window.FreshDirect.components.ajaxPopup.close(); window.FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp?successPage=<%=successPage%>', height: 590, width:560, opacity: .5});">
 							Create Account </a>
 					</div>
 				</div>

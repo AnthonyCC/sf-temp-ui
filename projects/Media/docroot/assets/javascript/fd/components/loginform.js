@@ -13,11 +13,11 @@ var FreshDirect = FreshDirect || {};
 					'change keyup',
 					function() {
 						if ($jq(this).validate().checkForm()) { // form is valid
-							$jq('#signinbtn').removeClass('button_disabled')
+							$jq('#signinbtn input').removeClass('button_disabled')
 									.prop('disabled', false);
 
 						} else { // form is invalid
-							$jq('#signinbtn').addClass('button_disabled').prop(
+							$jq('#signinbtn input').addClass('button_disabled').prop(
 									'disabled', true);
 						}
 					});
@@ -86,6 +86,11 @@ var FreshDirect = FreshDirect || {};
 					
 					return true;
 				}
+				var onWidgetLoaded = function(e){
+				
+					$(e.widget).attr('tabIndex', 4);
+				}
+				
 				/* Initialise the asynchronous queue */
 				window._oneall = window._oneall || [];
 				/* Social Login Example */
@@ -96,6 +101,7 @@ var FreshDirect = FreshDirect || {};
 				window._oneall.push([ 'social_login', 'set_custom_css_uri', '//www.freshdirect.com/media/social_login/social_login_media.css']);
 				
 				window._oneall.push([ 'social_login', 'set_event', 'on_login_redirect', my_on_login_redirect ]);
+				window._oneall.push(['social_login', 'set_event', 'on_widget_loaded', onWidgetLoaded]);
 				window._oneall.push([ 'social_login', 'set_callback_uri', $('#social-login-callback-uri').val()? 
 						document.location.protocol + $('#social-login-callback-uri').val() :
 							'https://' + document.location.host + '/social/social_login_success.jsp']);
@@ -111,12 +117,13 @@ var FreshDirect = FreshDirect || {};
 			e.preventDefault();
 			var email = $('#fd_login #email').val();
 			var password = $('#fd_login #password').val();
+			var sucessTarget = $('#fd_login #success-target').val();
 			$.post('/api/login/', {
 				"data" : '{"userId" : "'+ email + '","password" : "'+password+'"}'
 			}).then(function(response) {
 				var responseJson = JSON.parse(response);
 				if (responseJson.success) { 
-					parent.document.location.reload()
+					parent.document.location = sucessTarget || parent.document.location;
 				} else {
 					showError();
 				}

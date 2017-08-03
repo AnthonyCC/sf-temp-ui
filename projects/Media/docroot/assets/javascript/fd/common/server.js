@@ -51,29 +51,18 @@ var FreshDirect = FreshDirect || {};
       }
     } catch(e) {}
   };
-  //APPDEV-3971
-  var loginSignupPopup = function (target, popupUrl) {
-	    if (fd.components && fd.components.ifrPopup) {
-	      fd.components.ifrPopup.open({ url: popupUrl + '?successPage=' + target, height: 590, width: 560, opacity: .5, mobWeb: fd.mobWeb});
-	    }
-	  };
-  var socialLogin = function (target) {
-		    loginSignupPopup(target, '/social/login.jsp');
-		  };
+
   var errorHandler = function( e ){
     var status = e.status, message;
     if(status == 401){
     	var currentPage = window.location.pathname + window.location.search + window.location.hash;
-    	if (!$('#target-link-holder').length) {
-    		$("body").append("<a id=\"target-link-holder\" href="+ currentPage +" style=\"display:none;\">");
-    	}
-	    var targetHolder = e.targetHolder || $('#target-link-holder').attr("href");
-	    $('#target-link-holder').remove();
+    	
+	    var targetHolder = e.targetHolder || (fd.modules.common.login && fd.modules.common.login.successTarget);
 	    fd.user.recognized=true;
 	    $("button[disabled]").removeAttr("disabled");
 	    if (fd.modules.common && fd.modules.common.login) {
-	    	fd.modules.common.login.socialLogin();
-	    }else{
+	    	fd.modules.common.login.socialLogin(targetHolder);
+	    } else {
 	    	window.location.href = "/login/login.jsp";
 	    }
 }
