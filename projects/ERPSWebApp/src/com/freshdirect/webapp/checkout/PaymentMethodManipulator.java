@@ -57,7 +57,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		FDUserI user = getUser();
 		String paymentId = request.getParameter( "paymentMethodList" );
 		String billingRef = request.getParameter( "billingRef" );
-		String isOrderLevel = request.getParameter( "isOrderLevel" );
+		String isOrderLevel = request.getParameter( "isAccountLevel" );
 		setPaymentMethod(paymentId, billingRef, request, session, result, actionName);
 	}
 	

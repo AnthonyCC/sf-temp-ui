@@ -103,14 +103,14 @@ public class Checkout {
         return result;
     }
 
-    public ResultBundle setPaymentMethod(String paymentMethodId, String billingReference, String isOrderLevel) throws FDException {
+    public ResultBundle setPaymentMethod(String paymentMethodId, String billingReference, String isAccountLevel) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
-        return tagWrapper.setPaymentMethod(paymentMethodId, billingReference, isOrderLevel);
+        return tagWrapper.setPaymentMethod(paymentMethodId, billingReference, isAccountLevel);
     }
 
-    public ResultBundle setPaymentMethodEx(String paymentMethodId, String billingReference, String isOrderLevel) throws FDException {
+    public ResultBundle setPaymentMethodEx(String paymentMethodId, String billingReference, String isAccountLevel) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
-        ResultBundle result = tagWrapper.setPaymentMethod(paymentMethodId, billingReference, isOrderLevel);
+        ResultBundle result = tagWrapper.setPaymentMethod(paymentMethodId, billingReference, isAccountLevel);
         // if we have orderMinimum not met we are going to remove it and pass the result
         boolean isCustomAdded = false;
         ActionResult customActionResult = new ActionResult();
