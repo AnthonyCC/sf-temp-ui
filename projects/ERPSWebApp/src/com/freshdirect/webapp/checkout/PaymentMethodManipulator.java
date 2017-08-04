@@ -232,9 +232,10 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		final PrimaryKey pmPK = ( (ErpPaymentMethodModel)paymentMethod ).getPK();
 		// Do not set MP Ewallet card as default Payment Method
 		boolean isDebitCardSwitch = (FDStoreProperties.isDebitCardCheckEnabled() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user));
-		if(!isDebitCardSwitch && null!=isAccountLevel && isAccountLevel.equalsIgnoreCase("N") && (paymentMethod.geteWalletID() == null || paymentMethod.geteWalletID().equals(""+EnumEwalletType.PP.getValue()))){
+		if(!isDebitCardSwitch && (paymentMethod.geteWalletID() == null || paymentMethod.geteWalletID().equals(""+EnumEwalletType.PP.getValue()))){
 			FDCustomerManager.setDefaultPaymentMethod( info, pmPK, null, false );
 		}else{
+			if(isAccountLevel.equalsIgnoreCase("Y"))
 			FDCustomerManager.setDefaultPaymentMethod( info, pmPK, EnumPaymentMethodDefaultType.DEFAULT_CUST, true );
 		}
 		

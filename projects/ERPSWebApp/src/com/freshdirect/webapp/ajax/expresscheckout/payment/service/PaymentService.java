@@ -101,7 +101,7 @@ public class PaymentService {
         String billingRef = null; // TODO: needed? CORPORATE with zero payment
         // method.
         HttpSession session = request.getSession();
-        PaymentMethodManipulator.setPaymentMethod(paymentId, billingRef, request, session, result, actionName);
+        PaymentMethodManipulator.setPaymentMethod(paymentId, billingRef, request, session, result, actionName,"N");
         for (ActionError error : result.getErrors()) {
             validationErrors.add(new ValidationError(error.getType(), error.getDescription()));
         }
