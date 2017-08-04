@@ -660,7 +660,8 @@ public class StandingOrderHelper {
 						.getDeliveryEndTime())
 						: so.getStartTime() != null ? DateUtil.formatHourAMPMRange(
 								so.getStartTime(), so.getEndTime()) : "");
-		map.put("deleteDateRange", getSODeleteDateRanges(getSODeliveryDate4Ranges(so), so.getFrequency()));
+		map.put("deleteDateRange", so.getNextDeliveryDate()!=null?
+				getSODeleteDateRanges(getSODeliveryDate4Ranges(so), so.getFrequency()):new ArrayList<String>());
 		map.put("deleteDate", getSODeleteDate(so));
 
 		//map.put("modifyDeliveryDate", isUpcomingDelivery?getModifyDeliveryDate(so.getUpcomingDelivery().getRequestedDate()):null);
