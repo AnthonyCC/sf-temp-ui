@@ -51,6 +51,7 @@ public class PaymentMethodServlet extends BaseJsonServlet {
             final FormDataRequest paymentRequestData = BaseJsonServlet.parseRequestData(request, FormDataRequest.class);
             PageAction pageAction = FormDataService.defaultService().getPageAction(paymentRequestData);
             ValidationResult validationResult = new ValidationResult();
+            request.setAttribute("pageAction", pageAction);
             boolean changed = false;
             final FormDataResponse paymentSubmitResponse = FormDataService.defaultService().prepareFormDataResponse(paymentRequestData, validationResult);
             if (pageAction != null) {

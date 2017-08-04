@@ -232,7 +232,8 @@ public class PaymentService {
         if (cartPaymentSelectionDisabled == null || !cartPaymentSelectionDisabled) {
         	if(vaidateSO3Payment(user,paymentMethods)){
         		selectedPaymentId=user.getCurrentStandingOrder().getPaymentMethodId();
-        	}else if (user.getShoppingCart().getPaymentMethod() == null || (FDStoreProperties.isDebitCardCheckEnabled() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user))) {
+        	}else if (user.getShoppingCart().getPaymentMethod() == null || (FDStoreProperties.isDebitCardCheckEnabled() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)
+        					&& null ==request.getAttribute("pageAction"))) {
 //                selectedPaymentId = FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity());
         		selectedPaymentId = user.getFDCustomer().getDefaultPaymentMethodPK();
                 selectionError = selectPaymentMethod(selectedPaymentId, PageAction.SELECT_PAYMENT_METHOD.actionName, request);
