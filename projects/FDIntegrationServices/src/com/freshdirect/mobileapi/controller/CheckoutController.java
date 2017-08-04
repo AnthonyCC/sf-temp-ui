@@ -1308,6 +1308,7 @@ public class CheckoutController extends BaseController {
         }*/
         else {
         	responseMessage.setSelectedId(new Checkout(user).getPreselectedPaymethodMethodId());
+        	responseMessage.setDefaultType(user.getFDSessionUser().getFDCustomer().getDefaultPaymentType());
         }
         responseMessage.getCheckoutHeader().setHeader(user.getShoppingCart());
         responseMessage.setSuccessMessage("Payment methods fetched successfully.");
