@@ -857,7 +857,7 @@ public class Cart {
                 	deliveyPremium = 0;
                 }
                 cartDetail.addSummaryLineCharge(new SummaryLineCharge(deliveyPremium, cart.isChargeTaxable(EnumChargeType.DLVPREMIUM), 
-                		cart.isChargeWaived(EnumChargeType.DLVPREMIUM), false, "Delivery Premium (Hamptons)"));
+                		cart.isChargeWaived(EnumChargeType.DLVPREMIUM), false, "Delivery Charge"));
             }
 	
 	        //Misc Charge
