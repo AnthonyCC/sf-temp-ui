@@ -64,18 +64,7 @@ public class PaymentGatewayResponse extends Result  implements java.io.Serializa
 	
 	private PaymentMethodData paymentMethod;
 	
-	/** Credit/Debit Card specific fields*/
-	private Date expirationDate;
-	
-	private String cardType;
-	
-	private boolean isDebitCard;
-	
-	/**ECheck specific fields */
-	
-	private String bankAccountType;
-	
-	private String routingNumber;
+
 
 
 	/**
@@ -423,75 +412,6 @@ public class PaymentGatewayResponse extends Result  implements java.io.Serializa
 	}
 
 
-	/**
-	 * @return the expirationDate
-	 */
-	public Date getExpirationDate() {
-		return expirationDate;
-	}
-
-	/**
-	 * @param expirationDate the expirationDate to set
-	 */
-	public void setExpirationDate(Date expirationDate) {
-		this.expirationDate = expirationDate;
-	}
-
-	/**
-	 * @return the cardType
-	 */
-	public String getCardType() {
-		return cardType;
-	}
-
-	/**
-	 * @param cardType the cardType to set
-	 */
-	public void setCardType(String cardType) {
-		this.cardType = cardType;
-	}
-
-	/**
-	 * @return the isDebitCard
-	 */
-	public boolean isDebitCard() {
-		return isDebitCard;
-	}
-
-	/**
-	 * @param isDebitCard the isDebitCard to set
-	 */
-	public void setDebitCard(boolean isDebitCard) {
-		this.isDebitCard = isDebitCard;
-	}
-
-	/**
-	 * @return the bankAccountType
-	 */
-	public String getBankAccountType() {
-		return bankAccountType;
-	}
-
-	/**
-	 * @param bankAccountType the bankAccountType to set
-	 */
-	public void setBankAccountType(String bankAccountType) {
-		this.bankAccountType = bankAccountType;
-	}
-
-	/**
-	 * @return the routingNumber
-	 */
-	public String getRoutingNumber() {
-		return routingNumber;
-	}
-
-	/**
-	 * @param routingNumber the routingNumber to set
-	 */
-	public void setRoutingNumber(String routingNumber) {
-		this.routingNumber = routingNumber;
-	}
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
@@ -506,22 +426,18 @@ public class PaymentGatewayResponse extends Result  implements java.io.Serializa
 				+ ((authCode == null) ? 0 : authCode.hashCode());
 		result = prime * result
 				+ ((avsResponse == null) ? 0 : avsResponse.hashCode());
-		result = prime * result
-				+ ((bankAccountType == null) ? 0 : bankAccountType.hashCode());
-		result = prime * result
-				+ ((cardType == null) ? 0 : cardType.hashCode());
+
 		
 		result = prime * result
 				+ ((currency == null) ? 0 : currency.hashCode());
 	
 		result = prime * result
 				+ ((cvvResponse == null) ? 0 : cvvResponse.hashCode());
-		result = prime * result
-				+ ((expirationDate == null) ? 0 : expirationDate.hashCode());
+	
 		result = prime * result + (isAVSMatch ? 1231 : 1237);
 		result = prime * result + (isApproved ? 1231 : 1237);
 		result = prime * result + (isCVVMatch ? 1231 : 1237);
-		result = prime * result + (isDebitCard ? 1231 : 1237);
+		
 		result = prime * result + (isDeclined ? 1231 : 1237);
 		result = prime * result + (isError ? 1231 : 1237);
 		result = prime * result + (isRequestProcessed ? 1231 : 1237);
@@ -540,8 +456,6 @@ public class PaymentGatewayResponse extends Result  implements java.io.Serializa
 				+ ((responseCodeAlt == null) ? 0 : responseCodeAlt.hashCode());
 		result = prime * result
 				+ ((responseTime == null) ? 0 : responseTime.hashCode());
-		result = prime * result
-				+ ((routingNumber == null) ? 0 : routingNumber.hashCode());
 		
 		result = prime * result
 				+ ((statusCode == null) ? 0 : statusCode.hashCode());
@@ -589,17 +503,7 @@ public class PaymentGatewayResponse extends Result  implements java.io.Serializa
 				return false;
 		} else if (!avsResponse.equals(other.avsResponse))
 			return false;
-		if (bankAccountType == null) {
-			if (other.bankAccountType != null)
-				return false;
-		} else if (!bankAccountType.equals(other.bankAccountType))
-			return false;
-		if (cardType == null) {
-			if (other.cardType != null)
-				return false;
-		} else if (!cardType.equals(other.cardType))
-			return false;
-		
+				
 		if (currency == null) {
 			if (other.currency != null)
 				return false;
@@ -610,20 +514,14 @@ public class PaymentGatewayResponse extends Result  implements java.io.Serializa
 			if (other.cvvResponse != null)
 				return false;
 		} else if (!cvvResponse.equals(other.cvvResponse))
-			return false;
-		if (expirationDate == null) {
-			if (other.expirationDate != null)
-				return false;
-		} else if (!expirationDate.equals(other.expirationDate))
-			return false;
+		
 		if (isAVSMatch != other.isAVSMatch)
 			return false;
 		if (isApproved != other.isApproved)
 			return false;
 		if (isCVVMatch != other.isCVVMatch)
 			return false;
-		if (isDebitCard != other.isDebitCard)
-			return false;
+	
 		if (isDeclined != other.isDeclined)
 			return false;
 		if (isError != other.isError)
@@ -667,11 +565,7 @@ public class PaymentGatewayResponse extends Result  implements java.io.Serializa
 				return false;
 		} else if (!responseTime.equals(other.responseTime))
 			return false;
-		if (routingNumber == null) {
-			if (other.routingNumber != null)
-				return false;
-		} else if (!routingNumber.equals(other.routingNumber))
-			return false;
+		
 		
 		if (statusCode == null) {
 			if (other.statusCode != null)
@@ -725,10 +619,7 @@ public class PaymentGatewayResponse extends Result  implements java.io.Serializa
 				+ ", taxAmount=" + taxAmount + ", currency=" + currency
 				+ ", merchant=" + merchant + ", transactionId=" + transactionId
 				+ ", transactionRef=" + transactionRef + ", transactionIndex="
-				+ transactionIndex + ",expirationDate="
-				+ expirationDate + ", cardType=" + cardType + ", isDebitCard="
-				+ isDebitCard + ", bankAccountType=" + bankAccountType
-				+ ", routingNumber=" + routingNumber + "]";
+				+ transactionIndex + "]";
 	}
 
 

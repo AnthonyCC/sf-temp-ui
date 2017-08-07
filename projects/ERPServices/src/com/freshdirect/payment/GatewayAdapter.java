@@ -678,14 +678,12 @@ public static PaymentGatewayResponse getPaymentGatewayResponse(Response response
 
                    if(PaymentMethodType.ECHECK.equals(pm.getType())) {
 
-                         
+                	   pmData.setRoutingNumber(((ECheck)pm).getRoutingNumber());
 
-                         gatewayResponse.setRoutingNumber(((ECheck)pm).getRoutingNumber());
-
-                         gatewayResponse.setBankAccountType(((ECheck)pm).getBankAccountType().name());
+                	   pmData.setBankAccountType(((ECheck)pm).getBankAccountType().name());
 
                    } else {//Credit Card
-                         gatewayResponse.setExpirationDate(((CreditCard)pm).getExpirationDate());
+                	   pmData.setExpirationDate(((CreditCard)pm).getExpirationDate());
                    }
                    gatewayResponse.setPaymentMethod(pmData);
 
@@ -715,7 +713,7 @@ public static PaymentGatewayResponse getPaymentGatewayResponse(Response response
 
                 cc.setAccountNumber(pmData.getAccountNumber());
 
-                cc.setExpirationDate(pgRequest.getExpirationDate());
+                cc.setExpirationDate(pmData.getExpirationDate());
 
                 paymentMethod=cc;
 
@@ -725,9 +723,9 @@ public static PaymentGatewayResponse getPaymentGatewayResponse(Response response
 
                 ec.setAccountNumber(pmData.getAccountNumber());
 
-                ec.setRoutingNumber(pgRequest.getRoutingNumber());
+                ec.setRoutingNumber(pmData.getRoutingNumber());
 
-                String val=pgRequest.getBankAccountType();
+                String val=pmData.getBankAccountType();
 
                 if(PaymentechConstants.BankAccountType.CONSUMER_CHECKING.getCode().equals(val)) 
 
@@ -815,17 +813,18 @@ if(PaymentMethodType.CREDIT_CARD.equals(PaymentMethodType.valueOf(pmData.getPaym
 
             CreditCard cc=new CreditCardImpl();
 
-            cc.setExpirationDate(pgResponse.getExpirationDate());
-
+            cc.setExpirationDate(pmData.getExpirationDate());
+            if(pmData.getCardType()!=null)
+            cc.setCreditCardType(CreditCardType.valueOf(pmData.getCardType()));
             paymentMethod=cc;
 
      } else  {
 
             ECheck ec=new ECheckImpl();
 
-            ec.setRoutingNumber(pgResponse.getRoutingNumber());
+            ec.setRoutingNumber(pmData.getRoutingNumber());
 
-            String val=pgResponse.getBankAccountType();
+            String val=pmData.getBankAccountType();
 
             if(PaymentechConstants.BankAccountType.CONSUMER_CHECKING.getCode().equals(val)) 
 
@@ -888,15 +887,15 @@ public static PaymentGatewayRequest getPaymentGatewayRequest(Request request) {
 				 
 				 CreditCard cc=(CreditCard)pm;
 				 if(cc.getCreditCardType()!=null) {
-					 pgRequest.setCardType(PaymentechConstants.CardType.get( cc.getCreditCardType()).getType().name());
+					 pmData.setCardType(PaymentechConstants.CardType.get( cc.getCreditCardType()).getType().name());
 				 }
-				 pgRequest.setExpirationDate(cc.getExpirationDate());
+				 pmData.setExpirationDate(cc.getExpirationDate());
 			 } else {
 				 
 				 ECheck ec=(ECheck)pm;
-				 pgRequest.setRoutingNumber(ec.getRoutingNumber());
+				 pmData.setRoutingNumber(ec.getRoutingNumber());
 				 if(ec.getBankAccountType()!=null) {
-					 pgRequest.setBankAccountType(PaymentechConstants.BankAccountType.get(ec.getBankAccountType()).getCode());
+					 pmData.setBankAccountType(PaymentechConstants.BankAccountType.get(ec.getBankAccountType()).getCode());
 				 }
 			 }
 			 pmData.setAccountNumber(pm.getAccountNumber());

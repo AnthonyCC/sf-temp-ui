@@ -1,5 +1,7 @@
 package com.freshdirect.payment.gateway.impl;
 
+import java.util.Date;
+
 public class PaymentMethodData implements java.io.Serializable {
 	
 	private String paymentMethodType;
@@ -25,6 +27,62 @@ public class PaymentMethodData implements java.io.Serializable {
 	private String country;
 	
 	private String profileId;
+	
+
+	/** Credit/Debit Card specific fields*/
+	private Date expirationDate;
+	
+	private String cardType;
+	
+	private boolean isDebitCard;
+	
+	/**ECheck specific fields */
+	
+	private String bankAccountType;
+	
+	private String routingNumber;
+	
+	
+
+	public Date getExpirationDate() {
+		return expirationDate;
+	}
+
+	public void setExpirationDate(Date expirationDate) {
+		this.expirationDate = expirationDate;
+	}
+
+	public String getCardType() {
+		return cardType;
+	}
+
+	public void setCardType(String cardType) {
+		this.cardType = cardType;
+	}
+
+	public boolean isDebitCard() {
+		return isDebitCard;
+	}
+
+	public void setDebitCard(boolean isDebitCard) {
+		this.isDebitCard = isDebitCard;
+	}
+
+	public String getBankAccountType() {
+		return bankAccountType;
+	}
+
+	public void setBankAccountType(String bankAccountType) {
+		this.bankAccountType = bankAccountType;
+	}
+
+	public String getRoutingNumber() {
+		return routingNumber;
+	}
+
+	public void setRoutingNumber(String routingNumber) {
+		this.routingNumber = routingNumber;
+	}
 
 	public String getPaymentMethodType() {
 		return paymentMethodType;
@@ -113,5 +171,7 @@ public class PaymentMethodData implements java.io.Serializable {
 	public void setProfileId(String profileId) {
 		this.profileId = profileId;
 	}
+
+
 
 }

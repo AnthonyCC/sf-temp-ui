@@ -34,19 +34,8 @@ public class PaymentGatewayRequest implements java.io.Serializable {
 
 
 	/** Credit/Debit Card specific fields*/
-	@JsonFormat(pattern="yyyy-MM-dd")
-	private Date expirationDate;
-	
-	private String cardType;
-	
-	private boolean isDebitCard;
-	
-	/**ECheck specific fields */
-	
-	private String bankAccountType;
-	
-	private String routingNumber;
-	
+
+
 	private String eStore;
 	
 	
@@ -59,75 +48,7 @@ public class PaymentGatewayRequest implements java.io.Serializable {
 		this.paymentMethod = paymentMethod;
 	}
 
-	/**
-	 * @return the expirationDate
-	 */
-	public Date getExpirationDate() {
-		return expirationDate;
-	}
-
-	/**
-	 * @param expirationDate the expirationDate to set
-	 */
-	public void setExpirationDate(Date expirationDate) {
-		this.expirationDate = expirationDate;
-	}
-
-	/**
-	 * @return the cardType
-	 */
-	public String getCardType() {
-		return cardType;
-	}
-
-	/**
-	 * @param cardType the cardType to set
-	 */
-	public void setCardType(String cardType) {
-		this.cardType = cardType;
-	}
-
-	/**
-	 * @return the isDebitCard
-	 */
-	public boolean isDebitCard() {
-		return isDebitCard;
-	}
-
-	/**
-	 * @param isDebitCard the isDebitCard to set
-	 */
-	public void setDebitCard(boolean isDebitCard) {
-		this.isDebitCard = isDebitCard;
-	}
-
-	/**
-	 * @return the bankAccountType
-	 */
-	public String getBankAccountType() {
-		return bankAccountType;
-	}
-
-	/**
-	 * @param bankAccountType the bankAccountType to set
-	 */
-	public void setBankAccountType(String bankAccountType) {
-		this.bankAccountType = bankAccountType;
-	}
-
-	/**
-	 * @return the routingNumber
-	 */
-	public String getRoutingNumber() {
-		return routingNumber;
-	}
-
-	/**
-	 * @param routingNumber the routingNumber to set
-	 */
-	public void setRoutingNumber(String routingNumber) {
-		this.routingNumber = routingNumber;
-	}
+	
 
 	public String getEStore() {
 		return eStore;
@@ -212,22 +133,15 @@ public class PaymentGatewayRequest implements java.io.Serializable {
 		int result = 1;
 
 		result = prime * result + ((amount == null) ? 0 : amount.hashCode());
-		result = prime * result
-				+ ((bankAccountType == null) ? 0 : bankAccountType.hashCode());
-		result = prime * result
-				+ ((cardType == null) ? 0 : cardType.hashCode());
+
 		result = prime * result
 				+ ((currency == null) ? 0 : currency.hashCode());
 
 		result = prime * result + ((eStore == null) ? 0 : eStore.hashCode());
 		result = prime * result
-				+ ((expirationDate == null) ? 0 : expirationDate.hashCode());
-		result = prime * result + (isDebitCard ? 1231 : 1237);
-		result = prime * result
 				+ ((merchant == null) ? 0 : merchant.hashCode());
 
-		result = prime * result
-				+ ((routingNumber == null) ? 0 : routingNumber.hashCode());
+
 
 		result = prime * result
 				+ ((taxAmount == null) ? 0 : taxAmount.hashCode());
@@ -261,16 +175,7 @@ public class PaymentGatewayRequest implements java.io.Serializable {
 				return false;
 		} else if (!amount.equals(other.amount))
 			return false;
-		if (bankAccountType == null) {
-			if (other.bankAccountType != null)
-				return false;
-		} else if (!bankAccountType.equals(other.bankAccountType))
-			return false;
-		if (cardType == null) {
-			if (other.cardType != null)
-				return false;
-		} else if (!cardType.equals(other.cardType))
-			return false;
+		
 		
 		if (currency == null) {
 			if (other.currency != null)
@@ -283,24 +188,13 @@ public class PaymentGatewayRequest implements java.io.Serializable {
 				return false;
 		} else if (!eStore.equals(other.eStore))
 			return false;
-		if (expirationDate == null) {
-			if (other.expirationDate != null)
-				return false;
-		} else if (!expirationDate.equals(other.expirationDate))
-			return false;
-		if (isDebitCard != other.isDebitCard)
-			return false;
+	
 		if (merchant == null) {
 			if (other.merchant != null)
 				return false;
 		} else if (!merchant.equals(other.merchant))
 			return false;
 		
-		if (routingNumber == null) {
-			if (other.routingNumber != null)
-				return false;
-		} else if (!routingNumber.equals(other.routingNumber))
-			return false;
 		
 		if (taxAmount == null) {
 			if (other.taxAmount != null)
@@ -341,10 +235,6 @@ public class PaymentGatewayRequest implements java.io.Serializable {
 				+ ", currency=" + currency + ", merchant=" + merchant
 				+ ", transactionId=" + transactionId + ", transactionRef="
 				+ transactionRef + ", transactionIndex=" + transactionIndex
-				+ ", expirationDate="
-				+ expirationDate + ", cardType=" + cardType + ", isDebitCard="
-				+ isDebitCard + ", bankAccountType=" + bankAccountType
-				+ ", routingNumber=" + routingNumber + ", eStore=" + eStore
 				+ "]";
 	}
 	
