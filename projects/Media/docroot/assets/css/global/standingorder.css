@@ -366,7 +366,8 @@
 		font-size: 18px;
 		text-align: center;
 	}
-	#customizePopup.soShow .so-container .so-review-date{
+	#customizePopup.soShow .so-container .so-review-date,
+	#customizePopup.soShow.so-review.so-review-success .so-container .so-review-date-add{
 		font-size: 20px;
 		font-weight: bold;
 		text-align: center;
