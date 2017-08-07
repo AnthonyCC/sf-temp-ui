@@ -203,13 +203,13 @@ public class PaymentechService extends AbstractService implements Gateway {
 		Request request = GatewayAdapter.getVerifyRequest(merchantId,paymentMethod);
 		
 		if(request==null)throw new Error(INVALID_REQUEST);
-		if(!TransactionType.CC_VERIFY.equals(request.getTransactionType())||
-			!TransactionType.ACH_VERIFY.equals(request.getTransactionType()))
-			throw new Error("Transaction Type "+request.getTransactionType()+" is INVALID for this call.");
-			
+		if(TransactionType.CC_VERIFY.equals(request.getTransactionType())||
+			TransactionType.ACH_VERIFY.equals(request.getTransactionType())){
+		
 		  try {
 			String inputJson = buildRequest(GatewayAdapter.getPaymentGatewayRequest(request));
 			serviceResponse =  getData(inputJson, getOrbitalEndPoint(VERIFY_API), PaymentGatewayResponse.class);
+
 		
 		  LOGGER.info("Verify Method End ");
 		  Response response = GatewayAdapter.getResponse(serviceResponse, request);
@@ -225,6 +225,10 @@ public class PaymentechService extends AbstractService implements Gateway {
 				LOGGER.error("Verify Method Exception: "+e.getMessage());
 				throw new ErpTransactionException(e);
 			}
+			
+		}else {
+			throw new Error("Transaction Type "+request.getTransactionType()+" is INVALID for this call.");
+		}
 		return authModel;
 		
 	}
