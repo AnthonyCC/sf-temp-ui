@@ -119,7 +119,7 @@
 								/* do nothing? */
 							}
 						
-							stringBuffer.append("<input type=\"button\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\"");
+							stringBuffer.append("<input type=\"button\" aria-label=\" "+((soldOut||slot.isUnavailable()) ? "" : slot.getDisplayString(true))+((isSelectedSlotId)?" selected":((isPreReservedSlotId && hasPreReserved)?" reserved":""))+" \" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\"");
 							stringBuffer.append(
 									( isSelectedSlotId || ("".equals(selectedSlotId) && isPreReservedSlotId && hasPreReserved) ) 
 									? "checked" : ""
