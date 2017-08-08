@@ -74,8 +74,8 @@ public class EwalletPaymentServlet extends BaseJsonServlet {
 			// Create EWallet Request Object
 			EwalletRequestData ewalletRequestData = new EwalletRequestData();
 			createEwalletRequestData(ewalletRequestData, request, response,user);
-			boolean isDebitCardSwitch = (FDStoreProperties.isDebitCardCheckEnabled() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user));
-			ewalletRequestData.setDebitCardSwitch(isDebitCardSwitch);
+			
+			ewalletRequestData.setDebitCardSwitch(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user));
 			
 			// Get parameters from request object
 			getRequestParameter(request, ewalletRequestData);

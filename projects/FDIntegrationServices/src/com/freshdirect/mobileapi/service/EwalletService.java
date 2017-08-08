@@ -176,7 +176,7 @@ public class EwalletService {
 			if(ewalletStatus.equalsIgnoreCase(EWALLET_STATUS_ON)){
 				EwalletMobileRequestProcessor mobileRequestProcessor = new EwalletMobileRequestProcessor();
 				EwalletRequestData requestData = createEwalletStdCheckoutRequestData(ewalletRequest,user.getFDSessionUser(),request);
-				boolean isDebitCardSwitch = (FDStoreProperties.isDebitCardCheckEnabled() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user.getFDSessionUser()));
+				boolean isDebitCardSwitch = (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user.getFDSessionUser()));
 				requestData.setDebitCardSwitch(isDebitCardSwitch);
 				//  
 				requestData.seteWalletType(ewalletRequest.geteWalletType());
@@ -278,7 +278,7 @@ public class EwalletService {
 				if(!isPayPalPaired){
 					EwalletMobileRequestProcessor mobileRequestProcessor = new EwalletMobileRequestProcessor();
 					EwalletRequestData requestData = new EwalletRequestData();
-					boolean isDebitCardSwitch = (FDStoreProperties.isDebitCardCheckEnabled() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user.getFDSessionUser()));
+					boolean isDebitCardSwitch = (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user.getFDSessionUser()));
 					requestData.setDebitCardSwitch(isDebitCardSwitch);
 					requestData.setEnumeWalletType(EnumEwalletType.getEnum(ewalletRequest.geteWalletType()));
 					requestData.setCustomerId(user.getFDSessionUser().getIdentity().getErpCustomerPK());
@@ -446,8 +446,7 @@ public class EwalletService {
 		
 		requestData.seteWalletType(ewalletRequest.geteWalletType());
 		requestData.setMobileCallbackDomain(ewalletRequest.getCallBackUrl());
-		boolean isDebitCardSwitch = (FDStoreProperties.isDebitCardCheckEnabled() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user.getFDSessionUser()));
-		requestData.setDebitCardSwitch(isDebitCardSwitch);
+		requestData.setDebitCardSwitch(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user.getFDSessionUser()));
 		FDSessionUser fdSessionUser =user.getFDSessionUser();
 		// Prepare shopping cart for PostShopping Cart service call
 		EwalletUtil.prepareShoppingCartItems(fdSessionUser,requestData, MobileApiProperties.getMediaPath());
@@ -500,8 +499,7 @@ public class EwalletService {
 			if(ewalletStatus.equalsIgnoreCase(EWALLET_STATUS_ON)){
 				EwalletMobileRequestProcessor mobileRequestProcessor = new EwalletMobileRequestProcessor();
 				EwalletRequestData requestData = createEwalletRequestData(ewalletRequest,user.getFDSessionUser(),request);
-				boolean isDebitCardSwitch = (FDStoreProperties.isDebitCardCheckEnabled() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user.getFDSessionUser()));
-				requestData.setDebitCardSwitch(isDebitCardSwitch);
+				requestData.setDebitCardSwitch(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user.getFDSessionUser()));
 				//  
 				requestData.seteWalletType(ewalletRequest.geteWalletType());
 				EwalletResponseData ewalletResponseData = mobileRequestProcessor.checkoutData(requestData);
@@ -540,8 +538,7 @@ public class EwalletService {
 		if(ewalletStatus.equalsIgnoreCase(EWALLET_STATUS_ON)){
 			EwalletRequestData requestData = createPreCheckoutEwalletRequestData(ewalletRequest,user.getFDSessionUser());
 			requestData.seteWalletType(ewalletRequest.geteWalletType());
-			boolean isDebitCardSwitch = (FDStoreProperties.isDebitCardCheckEnabled() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user.getFDSessionUser()));
-			requestData.setDebitCardSwitch(isDebitCardSwitch);
+			requestData.setDebitCardSwitch(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user.getFDSessionUser()));
 			EwalletMobileRequestProcessor mobileRequestProcessor = new EwalletMobileRequestProcessor();
 			try{
 				EwalletResponseData ewalletResponseData = mobileRequestProcessor.preCheckoutData(requestData);
@@ -579,9 +576,7 @@ public class EwalletService {
 			EwalletRequestData requestData = createExpCheckoutEwalletReqData(ewalletRequest,user.getFDSessionUser(),request);
 			
 			requestData.seteWalletType(ewalletRequest.geteWalletType());
-			boolean isDebitCardSwitch = (FDStoreProperties.isDebitCardCheckEnabled() && 
-					FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user.getFDSessionUser()));
-			requestData.setDebitCardSwitch(isDebitCardSwitch);
+			requestData.setDebitCardSwitch(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user.getFDSessionUser()));
 			EwalletMobileRequestProcessor mobileRequestProcessor = new EwalletMobileRequestProcessor();
 			try{
 				EwalletResponseData ewalletResponseData = null;
@@ -739,8 +734,7 @@ public class EwalletService {
 		ewalletRequestData.setFdActionInfo(fdActionInfo);
 		ewalletRequestData.setPaymentechEnabled(user.isPaymentechEnabled());
 		ewalletRequestData.setCustomerId(user.getFDCustomer().getErpCustomerPK());
-		boolean isDebitCardSwitch = (FDStoreProperties.isDebitCardCheckEnabled() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user));
-		ewalletRequestData.setDebitCardSwitch(isDebitCardSwitch);
+		ewalletRequestData.setDebitCardSwitch(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user));
 		if(ewalletRequest.getTransCode().equals(EXPRESSCHECKOUT_TRASCODE_EXP)){
 			ewalletRequestData.setPrecheckoutTransactionId(ewalletRequest.getPrecheckoutTransactionId());
 			ewalletRequestData.setPrecheckoutCardId(ewalletRequest.getEwalletCardId());
@@ -759,8 +753,7 @@ public class EwalletService {
 		EwalletRequestData ewalletRequestData = new EwalletRequestData();
 		ewalletRequestData.seteWalletType(ewalletRequest.geteWalletType());
 		ewalletRequestData.setCustomerId(user.getFDCustomer().getErpCustomerPK());
-		boolean isDebitCardSwitch = (FDStoreProperties.isDebitCardCheckEnabled() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user));
-		ewalletRequestData.setDebitCardSwitch(isDebitCardSwitch);
+		ewalletRequestData.setDebitCardSwitch(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user));
 		
 		return ewalletRequestData;
 	}
@@ -799,8 +792,7 @@ public class EwalletService {
 				.getActionInfo(request.getSession());
 		ewalletRequestData.setFdActionInfo(fdActionInfo);
 		ewalletRequestData.setCustomerId(user.getFDCustomer().getErpCustomerPK());
-		boolean isDebitCardSwitch = (FDStoreProperties.isDebitCardCheckEnabled() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user));
-		ewalletRequestData.setDebitCardSwitch(isDebitCardSwitch);
+		ewalletRequestData.setDebitCardSwitch(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user));
 	
 		return ewalletRequestData;
 	}
@@ -842,8 +834,7 @@ public class EwalletService {
 		FDActionInfo fdActionInfo = AccountActivityUtil.getActionInfo(request.getSession());
 		ewalletRequestData.setFdActionInfo(fdActionInfo);
 		ewalletRequestData.setCustomerId(user.getFDCustomer().getErpCustomerPK());
-		boolean isDebitCardSwitch = (FDStoreProperties.isDebitCardCheckEnabled() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user));
-		ewalletRequestData.setDebitCardSwitch(isDebitCardSwitch);
+		ewalletRequestData.setDebitCardSwitch(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user));
 	
 		return ewalletRequestData;
 	}

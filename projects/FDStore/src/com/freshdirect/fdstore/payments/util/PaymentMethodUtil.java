@@ -36,17 +36,23 @@ public class PaymentMethodUtil {
 			if (EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())|| EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
 				ErpAuthorizationModel authModel=null;
 					try {
-						if(FDStoreProperties.isPaymentVerificationEnabled() ){
+						if(EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType()) &&
+								null != paymentMethod.getExpirationDate() && paymentMethod.getExpirationDate().before(java.util.Calendar.getInstance().getTime())){
+								continue;
+							
+						}
+							else{
+						if(FDStoreProperties.isPaymentVerificationEnabled()){
 						authModel = FDCustomerManager.verify(actionInfo, paymentMethod);
 						
-						if(null != authModel && authModel.isApproved() && paymentMethod.getExpirationDate() != null &&
-								paymentMethod.getExpirationDate().before(java.util.Calendar.getInstance().getTime())){
+						if(null != authModel && authModel.isApproved()){
 							defaultPayment = paymentMethod;
 							break;
 						}
 						}else{
 							defaultPayment = paymentMethod;
 							break;
+						}
 						}
 					} catch (FDResourceException e) {
 						LOGGER.error(e);
@@ -70,7 +76,7 @@ public class PaymentMethodUtil {
 		    	Collections.sort(paymentMethods, new PaymentMethodDefaultComparator());
 	}
 	
-	public static void updateDefaultPaymentMethod(FDActionInfo info, Collection<ErpPaymentMethodI> pMethods, String paymentId, EnumPaymentMethodDefaultType type) {		
+	public static void updateDefaultPaymentMethod(FDActionInfo info, Collection<ErpPaymentMethodI> pMethods, String paymentId, EnumPaymentMethodDefaultType type, boolean isVerificationRequired) {		
 		if(null == paymentId || "".equals(paymentId)){
 			return;
 		}
@@ -89,9 +95,14 @@ public class PaymentMethodUtil {
 			if (EnumPaymentMethodType.CREDITCARD.equals(pmethod.getPaymentMethodType())|| EnumPaymentMethodType.ECHECK.equals(pmethod.getPaymentMethodType())) {
 				ErpAuthorizationModel authModel=null;
 					try {
-						if(FDStoreProperties.isPaymentVerificationEnabled()){
+						if(EnumPaymentMethodType.CREDITCARD.equals(pmethod.getPaymentMethodType()) &&
+							null != pmethod.getExpirationDate() && pmethod.getExpirationDate().before(java.util.Calendar.getInstance().getTime())){
+								return;
+							}
+							else{
+						if(FDStoreProperties.isPaymentVerificationEnabled() && isVerificationRequired){
 						authModel = FDCustomerManager.verify(info, pmethod);
-						if(authModel.isApproved() && pmethod.getExpirationDate() != null && pmethod.getExpirationDate().before(java.util.Calendar.getInstance().getTime())){
+						if(authModel.isApproved() && pmethod.getExpirationDate() != null){
 							FDCustomerManager.setDefaultPaymentMethod(info, pmethod.getPK(), type, true);
 							return;
 						}
@@ -99,6 +110,7 @@ public class PaymentMethodUtil {
 							FDCustomerManager.setDefaultPaymentMethod(info, pmethod.getPK(), type, true);
 							return;
 						}
+							}
 					} catch (FDResourceException e) {
 						LOGGER.error(e);
 					} catch (ErpTransactionException e) {

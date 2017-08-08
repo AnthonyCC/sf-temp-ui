@@ -103,7 +103,7 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
 	                }
 	            	 if(actionResult.isSuccess()){
 	            		 FDActionInfo info = AccountActivityUtil.getActionInfo(request.getSession());
-	            		 com.freshdirect.fdstore.payments.util.PaymentMethodUtil.updateDefaultPaymentMethod(info, user.getPaymentMethods(), paymentId, EnumPaymentMethodDefaultType.DEFAULT_CUST);
+	            		 com.freshdirect.fdstore.payments.util.PaymentMethodUtil.updateDefaultPaymentMethod(info, user.getPaymentMethods(), paymentId, EnumPaymentMethodDefaultType.DEFAULT_CUST, true);
 	            	 }
 	            }
 

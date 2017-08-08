@@ -71,9 +71,8 @@ public class StandingOrderHelperService extends WebActionSupport {
 
 		if (!cart.getPaymentMethod().isGiftCard()) {
 			// set the default credit card to the one that is in the cart
-			boolean isDebitCardSwitch = (FDStoreProperties.isDebitCardCheckEnabled() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user));
 			FDCustomerManager.setDefaultPaymentMethod(AccountActivityUtil.getActionInfo(session),
-					((ErpPaymentMethodModel) cart.getPaymentMethod()).getPK(), null, isDebitCardSwitch);
+					((ErpPaymentMethodModel) cart.getPaymentMethod()).getPK(), null, FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user));
 		}
 		ErpAddressModel address = cart.getDeliveryAddress();
 

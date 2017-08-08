@@ -388,8 +388,7 @@ public class StandingOrderUtil {
 		// ============================
 		
 		String paymentMethodID ="";
-		boolean isDebitCardswitch = (FDStoreProperties.isDebitCardCheckEnabled() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, customerUser));
-		if(isDebitCardswitch){
+		if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, customerUser)){
 			ErpPaymentMethodI paymentMethod = com.freshdirect.fdstore.payments.util.PaymentMethodUtil.getSystemDefaultPaymentMethod(info , customerUser.getPaymentMethods());
 			if(null != paymentMethod){
 				paymentMethodID = paymentMethod.getPK().getId();

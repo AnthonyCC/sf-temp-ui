@@ -32,7 +32,7 @@ public class DefaultPaymentMethod implements Runnable {
 			ErpPaymentMethodI defaultPaymentMethod = com.freshdirect.fdstore.payments.util.PaymentMethodUtil.getSystemDefaultPaymentMethod(info, pMethods);
 			if(null != defaultPaymentMethod){
 			com.freshdirect.fdstore.payments.util.PaymentMethodUtil.updateDefaultPaymentMethod(info, pMethods,
-					defaultPaymentMethod.getPK().getId(), defaultPaymentType);			
+					defaultPaymentMethod.getPK().getId(), defaultPaymentType, false);			
 		}
 	}
 

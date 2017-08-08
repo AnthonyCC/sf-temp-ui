@@ -139,8 +139,7 @@ public class EwalletStandardController extends BaseController{
 		        	FDActionInfo fdActionInfo = AccountActivityUtil.getActionInfo(request.getSession());
         			requestMessage.setFdActionInfo(fdActionInfo);
 		        	requestMessage.setCustomerId(user.getFDSessionUser().getFDCustomer().getErpCustomerPK());
-		        	boolean isDebitCardSwitch = (FDStoreProperties.isDebitCardCheckEnabled() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user.getFDSessionUser()));
-		        	res = ewalletService.addPayPalWallet(requestMessage, isDebitCardSwitch);
+		        	res = ewalletService.addPayPalWallet(requestMessage, FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user.getFDSessionUser()));
         		}else{
         			res.addErrorMessages(errorMsg);
         		}

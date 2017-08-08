@@ -263,8 +263,7 @@ public class SubmitOrderAction extends WebActionSupport {
         cart.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
         
 		// set the default credit card to the one that is in the cart
-        boolean isDebitCardSwitch = (FDStoreProperties.isDebitCardCheckEnabled() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user));
-        if(!isDebitCardSwitch){
+        if(!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)){
 		FDCustomerManager.setDefaultPaymentMethod(
 			AccountActivityUtil.getActionInfo(session),
 			((ErpPaymentMethodModel) cart.getPaymentMethod()).getPK(), null, false);
@@ -487,8 +486,7 @@ public class SubmitOrderAction extends WebActionSupport {
 		if(!cart.getPaymentMethod().isGiftCard()) {	
 			// set the default credit card to the one that is in the cart if Card does not belong to EWallet
 			ErpPaymentMethodModel paymentMethodModel = (ErpPaymentMethodModel) cart.getPaymentMethod();
-			boolean isDebitCardSwitch = (FDStoreProperties.isDebitCardCheckEnabled() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user));
-			if(paymentMethodModel.geteWalletID() == null && !isDebitCardSwitch){ 
+			if(paymentMethodModel.geteWalletID() == null && !FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)){ 
 				FDCustomerManager.setDefaultPaymentMethod(
 					AccountActivityUtil.getActionInfo(session),paymentMethodModel.getPK(), null, false);
 			}else{
@@ -1073,7 +1071,7 @@ public class SubmitOrderAction extends WebActionSupport {
         cart.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
         
 		// set the default credit card to the one that is in the cart
-        if(!(FDStoreProperties.isDebitCardCheckEnabled() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user))){
+        if(!(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user))){
 		FDCustomerManager.setDefaultPaymentMethod(
 			AccountActivityUtil.getActionInfo(session),
 			((ErpPaymentMethodModel) cart.getPaymentMethod()).getPK(), null, false);
