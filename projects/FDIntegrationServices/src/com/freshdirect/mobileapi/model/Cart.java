@@ -838,15 +838,8 @@ public class Cart {
         ErpPaymentMethodI paymentMethod = cart.getPaymentMethod();
         boolean isEBTPayment = (null!=paymentMethod && EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType()));
         if(!isEBTPayment){
-	        //Delivery Charge
-        	if((int)cart.getChargeAmount(EnumChargeType.DLVPREMIUM) > 0){
-                double deliveyPremium = cart.getChargeAmount(EnumChargeType.DLVPREMIUM);
-                if (cart.isChargeWaived(EnumChargeType.DLVPREMIUM)) {
-                	deliveyPremium = 0;
-                }
-                cartDetail.addSummaryLineCharge(new SummaryLineCharge(deliveyPremium, cart.isChargeTaxable(EnumChargeType.DLVPREMIUM), 
-                		cart.isChargeWaived(EnumChargeType.DLVPREMIUM), false, "Delivery Charge"));
-            } else if (cartDetail.isDlvPassApplied()) {
+	        //Delivery Charge 
+            if (cartDetail.isDlvPassApplied()) {
 
                 cartDetail.addSummaryLineCharge(new SummaryLineCharge(0, false, false, false, "Delivery Charge", false, DeliveryPassUtil
                         .getDlvPassAppliedMessage(user.getFDSessionUser())));
@@ -857,6 +850,14 @@ public class Cart {
                 }
                 cartDetail.addSummaryLineCharge(new SummaryLineCharge(deliveyCharge, cart.isChargeTaxable(EnumChargeType.DELIVERY), 
                 		cart.isChargeWaived(EnumChargeType.DELIVERY), false, "Delivery Charge"));
+            }
+            if((int)cart.getChargeAmount(EnumChargeType.DLVPREMIUM) > 0){
+                double deliveyPremium = cart.getChargeAmount(EnumChargeType.DLVPREMIUM);
+                if (cart.isChargeWaived(EnumChargeType.DLVPREMIUM)) {
+                	deliveyPremium = 0;
+                }
+                cartDetail.addSummaryLineCharge(new SummaryLineCharge(deliveyPremium, cart.isChargeTaxable(EnumChargeType.DLVPREMIUM), 
+                		cart.isChargeWaived(EnumChargeType.DLVPREMIUM), false, "Delivery Premium (Hamptons)"));
             }
 	
 	        //Misc Charge
