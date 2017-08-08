@@ -24,6 +24,7 @@ import com.freshdirect.fdstore.content.ComparatorChain;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
@@ -232,7 +233,11 @@ public class PaymentService {
         if (cartPaymentSelectionDisabled == null || !cartPaymentSelectionDisabled) {
         	if(vaidateSO3Payment(user,paymentMethods)){
         		selectedPaymentId=user.getCurrentStandingOrder().getPaymentMethodId();
-        	}else if (user.getShoppingCart().getPaymentMethod() == null || (FDStoreProperties.isDebitCardCheckEnabled() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)
+        	}
+        	else if((user.getShoppingCart() instanceof FDModifyCartModel) && paymentMethods.size() > 0 && null ==request.getAttribute("pageAction")){
+        		selectedPaymentId= paymentMethods.get(0).getPK().getId();
+        	}
+        	else if (user.getShoppingCart().getPaymentMethod() == null || (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)
         					&& null ==request.getAttribute("pageAction"))) {
 //                selectedPaymentId = FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity());
         		selectedPaymentId = user.getFDCustomer().getDefaultPaymentMethodPK();
