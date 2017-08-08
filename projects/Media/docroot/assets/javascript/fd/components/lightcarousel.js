@@ -92,6 +92,9 @@ var FreshDirect = FreshDirect || {};
       setTimeout(function () {
         carousel.removeClass('stepping');
       }, 400);
+      
+      //lazy load on carousel "page" changes
+      $(window).trigger('lazyLoad');
     }
 
     return result;
