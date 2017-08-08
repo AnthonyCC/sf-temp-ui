@@ -229,8 +229,8 @@ public class DeliveryPassRenewalCron {
 				ae.printStackTrace(new PrintWriter(sw));	
 				email(erpCustomerID,sw.getBuffer().toString());
 			}
-			isDebitCardswitch = (FDStoreProperties.isDebitCardCheckEnabled() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user));
-			if(!isDebitCardswitch){
+
+			if(!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)){
 			pymtMethod=getMatchedPaymentMethod(lastOrder.getPaymentMethod(),getPaymentMethods(identity));
 			}
 			
