@@ -845,8 +845,8 @@ public class FDCustomerManager {
 			FDCustomerManagerSB sb = managerHome.create();
 			sb.addPaymentMethod(info, paymentMethod, paymentechEnabled);
 			
-			if(isDebitCardSwitch && getpaymentMethodDefaultType(info.getIdentity().getFDCustomerPK()).
-					getName().equals(EnumPaymentMethodDefaultType.DEFAULT_SYS.getName())){
+			if(isDebitCardSwitch && !getpaymentMethodDefaultType(info.getIdentity().getFDCustomerPK()).
+					getName().equals(EnumPaymentMethodDefaultType.DEFAULT_CUST.getName())){
 			updateDefaultPaymentNewCardAdd(info, isDebitCardSwitch);
 			}
 		} catch (CreateException ce) {
