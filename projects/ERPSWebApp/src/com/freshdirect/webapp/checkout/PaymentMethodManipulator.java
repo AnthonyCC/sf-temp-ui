@@ -235,7 +235,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		if(!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user) && (paymentMethod.geteWalletID() == null || paymentMethod.geteWalletID().equals(""+EnumEwalletType.PP.getValue()))){
 			FDCustomerManager.setDefaultPaymentMethod( info, pmPK, null, false );
 		}else{
-			if(isAccountLevel.equalsIgnoreCase("Y"))
+			if(null != isAccountLevel && isAccountLevel.equalsIgnoreCase("Y"))
 			FDCustomerManager.setDefaultPaymentMethod( info, pmPK, EnumPaymentMethodDefaultType.DEFAULT_CUST, true );
 		}
 		
