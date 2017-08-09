@@ -33,11 +33,10 @@ public class PaymentMethodUtil {
 		sortPaymentMethodsByPriority(paymentMethods);
 		for(ErpPaymentMethodI paymentMethod : paymentMethods) {
 			if(null != paymentMethod && null != paymentMethod.getPK()){
-			if (EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())|| EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
+			if (EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())) {
 				ErpAuthorizationModel authModel=null;
 					try {
-						if(EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType()) &&
-								null != paymentMethod.getExpirationDate() && paymentMethod.getExpirationDate().before(java.util.Calendar.getInstance().getTime())){
+						if(null != paymentMethod.getExpirationDate() && paymentMethod.getExpirationDate().before(java.util.Calendar.getInstance().getTime())){
 								continue;
 							
 						}
@@ -62,7 +61,8 @@ public class PaymentMethodUtil {
 						LOGGER.error(e);
 					}
 				}
-			else if(EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) || EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())){
+			else if(EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) || EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())
+							|| EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())){
 					defaultPayment = paymentMethod;
 					break;			
 				}
@@ -92,7 +92,7 @@ public class PaymentMethodUtil {
 			if(null == pmethod){
 				throw new FDResourceException("Payment method not registered with user");
 			}
-			if (EnumPaymentMethodType.CREDITCARD.equals(pmethod.getPaymentMethodType())|| EnumPaymentMethodType.ECHECK.equals(pmethod.getPaymentMethodType())) {
+			if (EnumPaymentMethodType.CREDITCARD.equals(pmethod.getPaymentMethodType())) {
 				ErpAuthorizationModel authModel=null;
 					try {
 						if(EnumPaymentMethodType.CREDITCARD.equals(pmethod.getPaymentMethodType()) &&
