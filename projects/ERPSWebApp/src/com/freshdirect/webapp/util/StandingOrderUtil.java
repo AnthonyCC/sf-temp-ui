@@ -389,7 +389,9 @@ public class StandingOrderUtil {
 		
 		String paymentMethodID ="";
 		if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, customerUser)){
-			ErpPaymentMethodI paymentMethod = com.freshdirect.fdstore.payments.util.PaymentMethodUtil.getSystemDefaultPaymentMethod(info , customerUser.getPaymentMethods());
+			FDActionInfo soinfo = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(), 
+					INITIATOR_NAME, "getting default payment method", null, null);
+			ErpPaymentMethodI paymentMethod = com.freshdirect.fdstore.payments.util.PaymentMethodUtil.getSystemDefaultPaymentMethod(soinfo , customerUser.getPaymentMethods());
 			if(null != paymentMethod){
 				paymentMethodID = paymentMethod.getPK().getId();
 			}
