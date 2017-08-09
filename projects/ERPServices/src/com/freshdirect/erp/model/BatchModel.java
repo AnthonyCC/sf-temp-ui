@@ -22,7 +22,7 @@ public class BatchModel implements java.io.Serializable {
     private int batchNumber;
     
     /** Holds value of property history. */
-    private List history;
+    private List<BatchHistoryModel> history;
     
     /** Holds value of property description. */
     private String description;
