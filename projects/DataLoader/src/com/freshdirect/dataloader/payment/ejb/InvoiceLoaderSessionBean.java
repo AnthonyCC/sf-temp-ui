@@ -149,7 +149,11 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 			MailerGatewaySB mailBean = this.getMailerGatewayHome().create();
 			mailBean.enqueueEmail(FDEmailFactory.getInstance().createFinalAmountEmail(fdInfo, fdOrder));
 
-            GoogleAnalyticsReportingService.defaultService().postGAReporting(fdOrder);
+            try {
+				GoogleAnalyticsReportingService.defaultService().postGAReporting(fdOrder);
+			} catch (Exception e) {
+				LOGGER.warn("Unexpected Exception in GoogleAnalyticsReportingService while reported to GA, for order#: "+saleId, e);
+			}
 
 			// collect recipes that will be sent to the users
 			List orderLines = fdOrder.getOrderLines();
