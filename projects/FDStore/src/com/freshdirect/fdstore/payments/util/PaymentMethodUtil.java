@@ -95,8 +95,7 @@ public class PaymentMethodUtil {
 			if (EnumPaymentMethodType.CREDITCARD.equals(pmethod.getPaymentMethodType())) {
 				ErpAuthorizationModel authModel=null;
 					try {
-						if(EnumPaymentMethodType.CREDITCARD.equals(pmethod.getPaymentMethodType()) &&
-							null != pmethod.getExpirationDate() && pmethod.getExpirationDate().before(java.util.Calendar.getInstance().getTime())){
+						if(null != pmethod.getExpirationDate() && pmethod.getExpirationDate().before(java.util.Calendar.getInstance().getTime())){
 								return;
 							}
 							else{
