@@ -51,7 +51,7 @@ for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
 		<%}%>   
 		</font> 
 		<%
-		if (!EnumUnattendedDeliveryFlag.OPT_OUT.equals(shipAddress.getUnattendedDeliveryFlag()))) {
+		if (!EnumUnattendedDeliveryFlag.OPT_OUT.equals(shipAddress.getUnattendedDeliveryFlag())) {
 		%>
 		<fd:UnattendedDelivery id="zone" address="<%= shipAddress %>" checkUserOptions="true">
 		<% if (zone.isUnattended()) { %>
