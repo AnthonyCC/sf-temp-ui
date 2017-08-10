@@ -810,7 +810,7 @@ public class StandingOrderHelper {
 		/* these are global settings */
 		HashMap<String, Object> soSettings = new HashMap<String, Object>();
 		soSettings.put("isEligibleForStandingOrders", isEligibleForSo3_0(user));
-		soSettings.put("isContainerOpen", ((FDSessionUser)user).isSoContainerOpen()); /* replace with real value - get from fdsessionuser */
+		soSettings.put("isContainerOpen", (user instanceof FDSessionUser) ? ((FDSessionUser)user).isSoContainerOpen(): false); /* replace with real value - get from fdsessionuser */
 		soSettings.put("soHardLimitDisplay", StandingOrderHelper.formatDecimalPrice(ErpServicesProperties.getStandingOrderHardLimit()));
 		soSettings.put("soSoftLimit", (int)(ErpServicesProperties.getStandingOrderSoftLimit()));
 		soSettings.put("cartOverlayFirstTime", setCartOverlayFirstTime(user).isSoCartOverlayFirstTime());
@@ -1301,7 +1301,7 @@ private static String convert(Date time) {
 		try {
 			d1 = DateUtil.getDate(so.getNextDeliveryDate());
 			delivaryDate = new SimpleDateFormat("MM/dd/yyyy").parse(d1);
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			LOGGER.error("Exception occurred in getSODeliveryDate4Ranges : "+e);
 		}
 		return delivaryDate;

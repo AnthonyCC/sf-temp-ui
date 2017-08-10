@@ -19,19 +19,21 @@ public class GACustomerDataService {
     public GACustomerData populateCustomerData(FDSessionUser user, String loginType) throws FDResourceException {
 
         GACustomerData customer = new GACustomerData();
-        customer.setZipCode(user.getZipCode());
-        customer.setUserId(user.getIdentity() != null ? user.getIdentity().getFDCustomerPK() : null);
-        customer.setUserStatus(getUserLevel(user.getLevel()));
-        customer.setUserType(getUserType(user.getAdjustedValidOrderCount()));
-        customer.setLoginType(loginType);
-        customer.setChefsTable(Boolean.toString(user.isChefsTable()));
-        customer.setDeliveryPass(Boolean.toString(user.isDlvPassActive()));
-        customer.setDeliveryType(user.getUserServiceType() != null ? user.getUserServiceType().name() : null);
-        customer.setCohort(user.getCohortName());
-        customer.setCounty(user.getDefaultCounty());
-        customer.setOrderCount(Integer.toString(user.getAdjustedValidOrderCount()));
-        customer.setDeliveryPassStatus(user.getDlvPassInfo() != null && user.getDlvPassInfo().getStatus() != null ? user.getDlvPassInfo().getStatus().getDisplayName() : null);
-        customer.setCustomerId(user.getIdentity() != null ? user.getIdentity().getErpCustomerPK() : null);
+        if(null != user) {
+	        customer.setZipCode(user.getZipCode());
+	        customer.setUserId(user.getIdentity() != null ? user.getIdentity().getFDCustomerPK() : null);
+	        customer.setUserStatus(getUserLevel(user.getLevel()));
+	        customer.setUserType(getUserType(user.getAdjustedValidOrderCount()));
+	        customer.setLoginType(loginType);
+	        customer.setChefsTable(Boolean.toString(user.isChefsTable()));
+	        customer.setDeliveryPass(Boolean.toString(user.isDlvPassActive()));
+	        customer.setDeliveryType(user.getUserServiceType() != null ? user.getUserServiceType().name() : null);
+	        customer.setCohort(user.getCohortName());
+	        customer.setCounty(user.getDefaultCounty());
+	        customer.setOrderCount(Integer.toString(user.getAdjustedValidOrderCount()));
+	        customer.setDeliveryPassStatus(user.getDlvPassInfo() != null && user.getDlvPassInfo().getStatus() != null ? user.getDlvPassInfo().getStatus().getDisplayName() : null);
+	        customer.setCustomerId(user.getIdentity() != null ? user.getIdentity().getErpCustomerPK() : null);
+        }
 
         return customer;
     }

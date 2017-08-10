@@ -2282,8 +2282,8 @@ public class FDUser extends ModelSupport implements FDUserI {
     public boolean isEligibleForStandingOrders() {
         if (isSOEligible == null) {
             isSOEligible = Boolean.FALSE;
-
-            if (isSOEnabled()) {
+            EnumEStoreId eStoreId = (null !=this.getUserContext() && null !=this.getUserContext().getStoreContext()) ? this.getUserContext().getStoreContext().getEStoreId() : EnumEStoreId.FD;
+            if (!EnumEStoreId.FDX.equals(eStoreId) && isSOEnabled()) {
                 isSOEligible = hasCorporateOrder() || isCorporateUser();
             }
         }
