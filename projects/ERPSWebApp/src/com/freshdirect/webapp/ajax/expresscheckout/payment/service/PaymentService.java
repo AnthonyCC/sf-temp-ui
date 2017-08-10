@@ -224,7 +224,7 @@ public class PaymentService {
 //        List<ErpPaymentMethodI> paymentMethods = (List<ErpPaymentMethodI>) user.getPaymentMethods();
         if(null == paymentMethods){
         	paymentMethods = (List<ErpPaymentMethodI>) user.getPaymentMethods();
-        }
+        }       
         paymentMethods = PaymentMethodManipulator.disconnectInvalidPayPalWallet(paymentMethods, request);
         sortPaymentMethods(user, paymentMethods);
         String selectedPaymentId = null;
@@ -240,6 +240,7 @@ public class PaymentService {
         	else if (user.getShoppingCart().getPaymentMethod() == null || (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)
         					&& null ==request.getAttribute("pageAction"))) {
 //                selectedPaymentId = FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity());
+        		 user.refreshFdCustomer();
         		selectedPaymentId = user.getFDCustomer().getDefaultPaymentMethodPK();
                 selectionError = selectPaymentMethod(selectedPaymentId, PageAction.SELECT_PAYMENT_METHOD.actionName, request);
             } else {

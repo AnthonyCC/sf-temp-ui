@@ -127,6 +127,8 @@ import com.freshdirect.fdstore.referral.EnumReferralStatus;
 import com.freshdirect.fdstore.referral.FDReferralManager;
 import com.freshdirect.fdstore.referral.ReferralProgramInvitaionModel;
 import com.freshdirect.fdstore.request.FDProductRequest;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
@@ -847,7 +849,7 @@ public class FDCustomerManager {
 			
 			if(isDebitCardSwitch && !getpaymentMethodDefaultType(info.getIdentity().getFDCustomerPK()).
 					getName().equals(EnumPaymentMethodDefaultType.DEFAULT_CUST.getName())){
-			updateDefaultPaymentNewCardAdd(info, isDebitCardSwitch);
+				updatePaymentMethodDefaultCard(info, isDebitCardSwitch);
 			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -859,7 +861,7 @@ public class FDCustomerManager {
 	}
 
 
-	private static void updateDefaultPaymentNewCardAdd(FDActionInfo info, boolean isDebitCardSwitch) throws FDResourceException {
+	private static void updatePaymentMethodDefaultCard(FDActionInfo info, boolean isDebitCardSwitch) throws FDResourceException {
 		Collection<ErpPaymentMethodI> paymentMethods = getPaymentMethods(info.getIdentity());
 		ErpPaymentMethodI defaultPayment = PaymentMethodUtil.getSystemDefaultPaymentMethod(info, paymentMethods);
 		setDefaultPaymentMethod(info, defaultPayment.getPK(), EnumPaymentMethodDefaultType.DEFAULT_SYS, isDebitCardSwitch);		
@@ -1045,12 +1047,16 @@ public class FDCustomerManager {
 	 *
 	 * throws FDResourceException if an error occured using remote resources
 	 */
-	public static void removePaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod) throws FDResourceException {
+	public static void removePaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean isDebitCardSwitch) throws FDResourceException {
 		lookupManagerHome();
 
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
 			sb.removePaymentMethod(info, paymentMethod);
+			
+			if(isDebitCardSwitch && null != paymentMethod && FDCustomerManager.getDefaultPaymentMethodPK(info.getIdentity()).equals(paymentMethod.getPK().getId())){
+				updatePaymentMethodDefaultCard(info, isDebitCardSwitch);
+			}	
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -5212,7 +5218,7 @@ public class FDCustomerManager {
 		}
 
 
-public static EnumPaymentMethodDefaultType getpaymentMethodDefaultType(String custId) throws FDResourceException{
+		public static EnumPaymentMethodDefaultType getpaymentMethodDefaultType(String custId) throws FDResourceException{
 			lookupManagerHome();
 			try {
 				FDCustomerManagerSB sb = managerHome.create();
@@ -5228,7 +5234,7 @@ public static EnumPaymentMethodDefaultType getpaymentMethodDefaultType(String cu
 			}			
 		}
 
-public static int resetDefaultPaymentValueType(String custId) throws FDResourceException{
+		public static int resetDefaultPaymentValueType(String custId) throws FDResourceException{
 			lookupManagerHome();
 			try {
 				FDCustomerManagerSB sb = managerHome.create();
@@ -5242,5 +5248,20 @@ public static int resetDefaultPaymentValueType(String custId) throws FDResourceE
 				invalidateManagerHome();
 				throw new FDResourceException(e, "Error creating session bean");
 			}	
+		}
+		
+		public static ErpAuthorizationModel verifyCard(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled) throws FDResourceException{
+			try{
+				lookupManagerHome();
+				FDCustomerManagerSB sb = managerHome.create();
+				ErpAuthorizationModel auth=sb.verifyCard(info, paymentMethod, paymentechEnabled);
+				return auth;
+			}catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to bean");
+			}
 		}
 }

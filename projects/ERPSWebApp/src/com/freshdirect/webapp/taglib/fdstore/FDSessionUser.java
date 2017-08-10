@@ -2408,5 +2408,10 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		return user.resetDefaultPaymentValueType();		
 	}
 
+	@Override
+	public void refreshFdCustomer() throws FDResourceException{
+		user.refreshFdCustomer();
+	}
+
 	 
 }

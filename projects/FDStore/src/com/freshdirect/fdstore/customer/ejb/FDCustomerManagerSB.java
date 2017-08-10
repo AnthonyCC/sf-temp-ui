@@ -915,5 +915,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public String getCookieByFdCustomerId(String fdCustomerId) throws FDResourceException, RemoteException;
 
 	public int resetDefaultPaymentValueType(String custId) throws FDResourceException, RemoteException;
+
+	public ErpAuthorizationModel verifyCard(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled) throws FDResourceException, RemoteException;
 }
 

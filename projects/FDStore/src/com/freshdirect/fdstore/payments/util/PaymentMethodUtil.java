@@ -33,16 +33,26 @@ public class PaymentMethodUtil {
 		sortPaymentMethodsByPriority(paymentMethods);
 		for(ErpPaymentMethodI paymentMethod : paymentMethods) {
 			if(null != paymentMethod && null != paymentMethod.getPK()){
-			if (EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())) {
+			if (EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType()) || EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
 				ErpAuthorizationModel authModel=null;
 					try {
-						if(null != paymentMethod.getExpirationDate() && paymentMethod.getExpirationDate().before(java.util.Calendar.getInstance().getTime())){
+						if(EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType()) && ((null != paymentMethod.getExpirationDate() && 
+								paymentMethod.getExpirationDate().before(java.util.Calendar.getInstance().getTime()))
+								|| (paymentMethod.isAvsCkeckFailed() && !paymentMethod.isBypassAVSCheck()))){
 								continue;
 							
 						}
-							else{
+							else{								
 						if(FDStoreProperties.isPaymentVerificationEnabled()){
-						authModel = FDCustomerManager.verify(actionInfo, paymentMethod);
+							if(EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())){
+								if(!FDCustomerManager.isECheckRestricted(actionInfo.getIdentity())){
+								authModel = FDCustomerManager.verifyCard(actionInfo, paymentMethod, FDStoreProperties.isPaymentechGatewayEnabled());
+								}else{
+									continue;
+								}
+							}else{
+								authModel = FDCustomerManager.verify(actionInfo, paymentMethod);
+							}
 						
 						if(null != authModel && authModel.isApproved()){
 							defaultPayment = paymentMethod;
@@ -61,8 +71,7 @@ public class PaymentMethodUtil {
 						LOGGER.error(e);
 					}
 				}
-			else if(EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) || EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())
-							|| EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())){
+			else if(EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) || EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())){
 					defaultPayment = paymentMethod;
 					break;			
 				}
@@ -92,16 +101,26 @@ public class PaymentMethodUtil {
 			if(null == pmethod){
 				throw new FDResourceException("Payment method not registered with user");
 			}
-			if (EnumPaymentMethodType.CREDITCARD.equals(pmethod.getPaymentMethodType())) {
+			if (EnumPaymentMethodType.CREDITCARD.equals(pmethod.getPaymentMethodType()) || EnumPaymentMethodType.ECHECK.equals(pmethod.getPaymentMethodType())) {
 				ErpAuthorizationModel authModel=null;
 					try {
-						if(null != pmethod.getExpirationDate() && pmethod.getExpirationDate().before(java.util.Calendar.getInstance().getTime())){
+						if(EnumPaymentMethodType.CREDITCARD.equals(pmethod.getPaymentMethodType())&&  ((null != pmethod.getExpirationDate() && 
+								pmethod.getExpirationDate().before(java.util.Calendar.getInstance().getTime()))
+								|| (pmethod.isAvsCkeckFailed() && !pmethod.isBypassAVSCheck()))){
 								return;
 							}
 							else{
 						if(FDStoreProperties.isPaymentVerificationEnabled() && isVerificationRequired){
-						authModel = FDCustomerManager.verify(info, pmethod);
-						if(authModel.isApproved() && pmethod.getExpirationDate() != null){
+							if(EnumPaymentMethodType.ECHECK.equals(pmethod.getPaymentMethodType())){
+								if(!FDCustomerManager.isECheckRestricted(info.getIdentity())){
+								authModel = FDCustomerManager.verifyCard(info, pmethod, FDStoreProperties.isPaymentechGatewayEnabled());
+								}else{
+									return;
+								}
+							}else{
+								authModel = FDCustomerManager.verify(info, pmethod);
+							}
+						if(null != authModel && authModel.isApproved() && pmethod.getExpirationDate() != null){
 							FDCustomerManager.setDefaultPaymentMethod(info, pmethod.getPK(), type, true);
 							return;
 						}

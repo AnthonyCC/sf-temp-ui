@@ -751,7 +751,7 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 									ErpPaymentMethodI paymentMethod = FDCustomerManager.getPaymentMethod(ewalletRequestData.getFdActionInfo().getIdentity(), mpPairedPaymentMethod);
 							        // Delete the Payment data from DB
 							        if(paymentMethod!=null)
-							        	FDCustomerManager.removePaymentMethod(ewalletRequestData.getFdActionInfo(), paymentMethod);
+							        	FDCustomerManager.removePaymentMethod(ewalletRequestData.getFdActionInfo(), paymentMethod, ewalletRequestData.isDebitCardSwitch());
 								}
 								// Insert new EWallet card
 								
@@ -816,7 +816,7 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 						ErpPaymentMethodI paymentMethod = FDCustomerManager.getPaymentMethod(ewalletRequestData.getFdActionInfo().getIdentity(), paymentData.getId());
 				        // Delete the Payment data from DB
 				        if(paymentMethod!=null)
-				        	FDCustomerManager.removePaymentMethod(ewalletRequestData.getFdActionInfo(), paymentMethod);
+				        	FDCustomerManager.removePaymentMethod(ewalletRequestData.getFdActionInfo(), paymentMethod, ewalletRequestData.isDebitCardSwitch());
 
 				        ewalletRequestData.setPaymentData(null);
 					}
@@ -1003,7 +1003,7 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 			List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(ewalletRequestData.getFdActionInfo().getIdentity()).getPaymentMethods();
 			for(ErpPaymentMethodI paymentMethod:paymentMethods){
 				 if(paymentMethod.geteWalletID() != null && paymentMethod.geteWalletID().equals("1")){
-			        FDCustomerManager.removePaymentMethod(ewalletRequestData.getFdActionInfo(), paymentMethod);
+			        FDCustomerManager.removePaymentMethod(ewalletRequestData.getFdActionInfo(), paymentMethod,ewalletRequestData.isDebitCardSwitch());
 			        break;
 				 }
 			}
@@ -2171,9 +2171,7 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 				for(ErpPaymentMethodI payment : paymentMethods){
 					if(payment.geteWalletID() != null && payment.geteWalletID().equalsIgnoreCase("1")){
 						//ewalletResponseData.setPaymentMethod(i);
-						FDCustomerManager.removePaymentMethod(
-								ewalletRequestData.getFdActionInfo(),
-								payment);
+						FDCustomerManager.removePaymentMethod(ewalletRequestData.getFdActionInfo(),	payment, ewalletRequestData.isDebitCardSwitch());
 					ewalletRequestData.setPaymentData(null);
 						break;
 					}

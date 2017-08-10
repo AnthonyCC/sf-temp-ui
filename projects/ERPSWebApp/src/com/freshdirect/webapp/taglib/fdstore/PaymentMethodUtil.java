@@ -86,7 +86,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
              }
 	        paymentMethod.setDebitCard(isDebitCard);
             FDCustomerManager.addPaymentMethod(info, paymentMethod, sessionuser.isPaymentechEnabled(), FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, sessionuser));
-            sessionuser.getFDCustomer().setDefaultPaymentMethodPK(FDCustomerManager.getDefaultPaymentMethodPK(info.getIdentity()));
+            sessionuser.refreshFdCustomer();
         } catch (ErpPaymentMethodException ex) {
             /*LOGGER.debug(ex);
             result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER));
@@ -122,19 +122,10 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
             throw new FDResourceException("payment method not found");
         }
         FDSessionUser fdUser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
-        
-        if(null != fdUser.getFDCustomer().getDefaultPaymentType() && fdUser.getFDCustomer().getDefaultPaymentMethodPK()
-        		.equals(paymentMethod.getPK().getId()) && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, fdUser)){
-        	FDCustomerManager.removePaymentMethod(info, paymentMethod);
-        	ErpPaymentMethodI defaultPaymentMethod = com.freshdirect.fdstore.payments.util.PaymentMethodUtil.getSystemDefaultPaymentMethod(info, FDCustomerManager.getPaymentMethods(info.getIdentity()));
-        	if(null != defaultPaymentMethod && null != defaultPaymentMethod.getPK()){
-        	com.freshdirect.fdstore.payments.util.PaymentMethodUtil.updateDefaultPaymentMethod(info, fdUser.getPaymentMethods(), 
-        			defaultPaymentMethod.getPK().getId(), EnumPaymentMethodDefaultType.DEFAULT_SYS, false);
-        	fdUser.getFDCustomer().setDefaultPaymentMethodPK(defaultPaymentMethod.getPK().getId());
-        	}
-        }else{        
-        FDCustomerManager.removePaymentMethod(info, paymentMethod);
-        }
+                 
+        FDCustomerManager.removePaymentMethod(info, paymentMethod, 
+        		FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, fdUser));
+        fdUser.refreshFdCustomer();
     }
     
     

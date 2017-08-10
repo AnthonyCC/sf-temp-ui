@@ -237,6 +237,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		}else{
 			if(null != isAccountLevel && isAccountLevel.equalsIgnoreCase("Y"))
 			FDCustomerManager.setDefaultPaymentMethod( info, pmPK, EnumPaymentMethodDefaultType.DEFAULT_CUST, true );
+			user.refreshFdCustomer();
 		}
 		
 			/*

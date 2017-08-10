@@ -269,7 +269,7 @@ public class EwalletService {
 							isPayPalPaired = true;
 						}else{
 							// If Paired PayPal account doesn't have valid Vault Token then delete the PayPal account/disconnect
-							FDCustomerManager.removePaymentMethod(ewalletRequest.getFdActionInfo(), paymentMethod);
+							FDCustomerManager.removePaymentMethod(ewalletRequest.getFdActionInfo(), paymentMethod, FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user.getFDSessionUser()));
 							// Delete the Vault token from CUST.CUST_EWALLET table as well.
 							FDCustomerManager.deleteLongAccessToken(ewalletRequest.getCustomerId(), ""+EnumEwalletType.PP.getValue());
 						}

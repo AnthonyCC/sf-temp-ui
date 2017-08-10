@@ -1460,16 +1460,20 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
-	public ErpAuthorizationModel verifyCard(ErpPaymentMethodI paymentMethod, boolean paymentechEnabled, EnumEStoreId storeId) throws FDResourceException, ErpPaymentMethodException {
-		ErpAuthorizationModel authModel;
+	public ErpAuthorizationModel verifyCard(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled) throws FDResourceException, ErpPaymentMethodException {
+		ErpAuthorizationModel authModel = null;
 		try {
-			Gateway gateway = GatewayFactory.getGateway(GatewayType.PAYMENTECH);
-			authModel = gateway.verify(ErpAffiliate.getPrimaryAffiliate(storeId).getMerchant(paymentMethod.getCardType()),paymentMethod);
+			if (paymentechEnabled && FDStoreProperties.isPaymentVerificationEnabled() && (EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType()) 
+							|| EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType()))) {
+				Gateway gateway = GatewayFactory.getGateway(GatewayType.PAYMENTECH);
+				authModel = gateway.verify(ErpAffiliate.getPrimaryAffiliate(info.geteStore()).getMerchant(paymentMethod.getCardType()), paymentMethod);
+				logCardVerificationActivity(info,paymentMethod,authModel,"");			
+			}
 		} catch (ErpTransactionException e) {
 			this.getSessionContext().setRollbackOnly();
 			throw new ErpPaymentMethodException(e.getMessage());
 		}
-			return authModel;
+		return authModel;
 	}
 
 	private void deleteProfile(ErpPaymentMethodI paymentMethod){

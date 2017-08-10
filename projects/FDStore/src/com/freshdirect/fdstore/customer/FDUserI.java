@@ -749,5 +749,7 @@ public interface FDUserI extends java.io.Serializable {
 	public void setReferrerEligible(Boolean referrerEligible) ;*/
 	
 	public ErpCustomerInfoModel getCustomerInfoModel() throws FDResourceException ;
+	
+	public void refreshFdCustomer() throws FDResourceException;
 
 }

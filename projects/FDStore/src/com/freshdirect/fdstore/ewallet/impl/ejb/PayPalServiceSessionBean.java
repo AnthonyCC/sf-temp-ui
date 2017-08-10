@@ -191,7 +191,7 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 		 	// Add the PayPal account details to Database
 			try {
 				if(searchedPM != null){ // PayPal card is already paired
-					FDCustomerManager.removePaymentMethod(ewalletRequestData.getFdActionInfo(), searchedPM);
+					FDCustomerManager.removePaymentMethod(ewalletRequestData.getFdActionInfo(), searchedPM, ewalletRequestData.isDebitCardSwitch());
 				}
 				
 				ewalletRequestData.setPaymentechEnabled(false);
@@ -353,7 +353,7 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 				try {
 					for (ErpPaymentMethodI payment : paymentMethods) {
 						if (payment.geteWalletID() != null && payment.geteWalletID().equalsIgnoreCase(""+EnumEwalletType.PP.getValue())) {
-							FDCustomerManager.removePaymentMethod(ewalletRequestData.getFdActionInfo(),payment);
+							FDCustomerManager.removePaymentMethod(ewalletRequestData.getFdActionInfo(),payment, ewalletRequestData.isDebitCardSwitch());
 							ewalletRequestData.setPaymentData(null);
 							break;
 						}

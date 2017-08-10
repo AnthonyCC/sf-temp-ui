@@ -3792,4 +3792,12 @@ public class FDUser extends ModelSupport implements FDUserI {
 		}
 		return 0;		
 	}
+
+	@Override
+	public void refreshFdCustomer() throws FDResourceException{
+		if (this.identity == null) {
+            throw new IllegalStateException("No identity");
+        }
+		this.cachedFDCustomer = FDCustomerFactory.getFDCustomer(this.identity);
+	}
 }
