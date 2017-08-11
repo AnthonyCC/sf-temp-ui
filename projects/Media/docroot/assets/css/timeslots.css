@@ -1114,3 +1114,10 @@ td.noTopBorder {
 #tsContainer .tsContentResE input[type="button"] + label::before {
     background-color: #4fa157;
 }
+.tsWrapper{
+	padding: 10px;
+    margin-top: 20px;
+}
+.standing-orders-3 #ec-drawer #timeslots_grid .tsDayDateE, .standing-orders-3 #ec-drawer #timeslots_grid .tsDayDateC{
+	visibility:hidden !important;
+}

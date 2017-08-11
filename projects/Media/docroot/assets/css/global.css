@@ -3369,3 +3369,13 @@ td .qtyinput input[type="text"].qty:hover{
     padding: 2px;
     margin: 1px 0;
 }
+/* //timeslots accessibility */
+.displayTable{  	
+	display:table !important;
+ }
+ .tableHeaderGroup{ 
+ 	display:table-header-group !important;
+ } 
+.tableFooterGroup{ 
+	display:table-footer-group !important;
+}
