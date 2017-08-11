@@ -27,6 +27,7 @@ import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumNotificationType;
+import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
@@ -389,11 +390,17 @@ public class StandingOrderUtil {
 		
 		String paymentMethodID ="";
 		if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, customerUser)){
+			customerUser.refreshFdCustomer();
+			if(null != customerUser.getFDCustomer() && (null == customerUser.getFDCustomer().getDefaultPaymentType() || 
+					customerUser.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName()))){
 			FDActionInfo soinfo = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(), 
 					INITIATOR_NAME, "getting default payment method", null, null);
 			ErpPaymentMethodI paymentMethod = com.freshdirect.fdstore.payments.util.PaymentMethodUtil.getSystemDefaultPaymentMethod(soinfo , customerUser.getPaymentMethods());
 			if(null != paymentMethod){
 				paymentMethodID = paymentMethod.getPK().getId();
+			}
+			}else{
+				paymentMethodID = customerUser.getFDCustomer().getDefaultPaymentMethodPK();
 			}
 		}else{
 			paymentMethodID = so.getPaymentMethodId();
