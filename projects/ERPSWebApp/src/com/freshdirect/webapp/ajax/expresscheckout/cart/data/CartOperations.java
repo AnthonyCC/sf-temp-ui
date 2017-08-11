@@ -642,7 +642,8 @@ public class CartOperations {
 
             EventLogger.getInstance().logEvent(event);
             if (FDEventFactory.FD_MODIFY_CART_EVENT.equals(event.getEventType())) {
-                if (!user.getSoCartLineMessagesMap().containsKey(cartLine.getCartlineId()))
+                if (!user.getSoCartLineMessagesMap().containsKey(cartLine.getCartlineId()) && 
+                		user.getCurrentStandingOrder() != null && "Y".equalsIgnoreCase(user.getCurrentStandingOrder().getActivate()))
                     user.getSoCartLineMessagesMap().put(cartLine.getCustomerListLineId(), "ModifiedItem");
             }
         } catch (Exception e) {
