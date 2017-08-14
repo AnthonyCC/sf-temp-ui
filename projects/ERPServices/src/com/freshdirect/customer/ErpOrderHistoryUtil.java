@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import com.freshdirect.fdstore.EnumEStoreId;
@@ -16,8 +15,7 @@ public class ErpOrderHistoryUtil {
 
     public static int getDeliveredOrderCount(Collection<ErpSaleInfo> erpSaleInfos) {
 		int ret = 0;
-		for(Iterator i = erpSaleInfos.iterator(); i.hasNext(); ){
-			ErpSaleInfo saleInfo = (ErpSaleInfo)i.next();
+        for (ErpSaleInfo saleInfo : erpSaleInfos) {
 			if (saleInfo.isDelivered()) {
 				ret++;
 			}
@@ -27,8 +25,7 @@ public class ErpOrderHistoryUtil {
 
     public static int getSettledOrderCount(Collection<ErpSaleInfo> erpSaleInfos) {
 		int ret = 0;
-		for(Iterator i = erpSaleInfos.iterator(); i.hasNext(); ){
-			ErpSaleInfo saleInfo = (ErpSaleInfo)i.next();
+        for (ErpSaleInfo saleInfo : erpSaleInfos) {
 			if (saleInfo.isSettled()) {
 				ret++;
 			}
@@ -38,8 +35,7 @@ public class ErpOrderHistoryUtil {
 	
     public static int getPhoneOrderCount(Collection<ErpSaleInfo> erpSaleInfos) {
 		int ret = 0;
-		for (Iterator it = erpSaleInfos.iterator(); it.hasNext(); ) {
-			ErpSaleInfo saleInfo = (ErpSaleInfo) it.next();
+        for (ErpSaleInfo saleInfo : erpSaleInfos) {
 			if (EnumTransactionSource.CUSTOMER_REP.equals(saleInfo.getSource())) {
 				ret++;
 			}
@@ -49,9 +45,8 @@ public class ErpOrderHistoryUtil {
 
     public static int getReturnOrderCount(Collection<ErpSaleInfo> erpSaleInfos) {
 		int ret = 0;
-		for (Iterator it = erpSaleInfos.iterator(); it.hasNext(); ) {
-			ErpSaleInfo orderInfo = (ErpSaleInfo) it.next();
-			if (orderInfo.getStatus().isReturned())
+        for (ErpSaleInfo saleInfo : erpSaleInfos) {
+            if (saleInfo.getStatus().isReturned())
 				ret++;
 		}
 		return ret;
@@ -63,8 +58,7 @@ public class ErpOrderHistoryUtil {
 
     public static int getValidECheckOrderCount(Collection<ErpSaleInfo> erpSaleInfos) {
 		int ret = 0;
-		for(Iterator i = erpSaleInfos.iterator(); i.hasNext(); ){
-			ErpSaleInfo saleInfo = (ErpSaleInfo)i.next();
+        for (ErpSaleInfo saleInfo : erpSaleInfos) {
 			if (!saleInfo.getStatus().isCanceled() && EnumPaymentMethodType.ECHECK.equals(saleInfo.getPaymentMethodType())){
 				ret++;
 			}
@@ -74,8 +68,7 @@ public class ErpOrderHistoryUtil {
 	
     public static int getValidMasterPassOrderCount(Collection<ErpSaleInfo> erpSaleInfos) {
 		int ret = 0;
-		for(Iterator i = erpSaleInfos.iterator(); i.hasNext(); ){
-			ErpSaleInfo saleInfo = (ErpSaleInfo)i.next();
+        for (ErpSaleInfo saleInfo : erpSaleInfos) {
 			if (null !=saleInfo.getEwalletType() && !saleInfo.getStatus().isCanceled() && EnumEwalletType.MP.equals(saleInfo.getEwalletType())){
 				ret++;
 			}
@@ -113,10 +106,9 @@ public class ErpOrderHistoryUtil {
         return count;
     }
 
-	public static int getValidPhoneOrderCount(Collection erpSaleInfos){
+    public static int getValidPhoneOrderCount(Collection<ErpSaleInfo> erpSaleInfos) {
 		int ret = 0;
-		for(Iterator i = erpSaleInfos.iterator(); i.hasNext(); ){
-			ErpSaleInfo saleInfo = (ErpSaleInfo)i.next();
+        for (ErpSaleInfo saleInfo : erpSaleInfos) {
 			if (!saleInfo.getStatus().isCanceled() && EnumTransactionSource.CUSTOMER_REP.equals(saleInfo.getSource())) {
 				ret++;
 			}
@@ -124,10 +116,9 @@ public class ErpOrderHistoryUtil {
 		return ret;
 	}
 
-	public static Date getFirstOrderDate(Collection erpSaleInfos){
+    public static Date getFirstOrderDate(Collection<ErpSaleInfo> erpSaleInfos) {
 		Date date = null;
-		for (Iterator i = erpSaleInfos.iterator(); i.hasNext();) {
-			ErpSaleInfo saleInfo = (ErpSaleInfo) i.next();
+        for (ErpSaleInfo saleInfo : erpSaleInfos) {
 			Date createDate = saleInfo.getCreateDate();
 			if (date==null || createDate.before(date)) {
 				date = createDate;
@@ -136,10 +127,9 @@ public class ErpOrderHistoryUtil {
 		return date;
 	}
 
-	public static Date getFirstOrderDateByStore(Collection erpSaleInfos, EnumEStoreId estoreId){
+    public static Date getFirstOrderDateByStore(Collection<ErpSaleInfo> erpSaleInfos, EnumEStoreId estoreId) {
 		Date date = null;
-		for (Iterator i = erpSaleInfos.iterator(); i.hasNext();) {
-			ErpSaleInfo saleInfo = (ErpSaleInfo) i.next();
+        for (ErpSaleInfo saleInfo : erpSaleInfos) {
 			Date createDate = saleInfo.getCreateDate();
 			if ((null == estoreId || estoreId.equals(saleInfo.geteStore())) && (date==null || createDate.before(date))) {
 				date = createDate;
@@ -148,10 +138,9 @@ public class ErpOrderHistoryUtil {
 		return date;
 	}
 	
-	public static Date getFirstNonPickupOrderDate(Collection erpSaleInfos){
+    public static Date getFirstNonPickupOrderDate(Collection<ErpSaleInfo> erpSaleInfos) {
 		Date date = null;
-		for (Iterator i = erpSaleInfos.iterator(); i.hasNext();) {
-			ErpSaleInfo saleInfo = (ErpSaleInfo) i.next();
+        for (ErpSaleInfo saleInfo : erpSaleInfos) {
 			if (!saleInfo.getStatus().isCanceled() && !EnumDeliveryType.PICKUP.equals(saleInfo.getDeliveryType()) ) {
 				Date createDate = saleInfo.getCreateDate();
 				if (date==null || createDate.before(date)) {
@@ -162,40 +151,39 @@ public class ErpOrderHistoryUtil {
 		return date;
 	}
 
-	public static ErpSaleInfo getLastSale(Collection erpSaleInfos){
+    public static ErpSaleInfo getLastSale(Collection<ErpSaleInfo> erpSaleInfos) {
 		return getLastSaleBefore(erpSaleInfos, null);
 	}
 
-	public static String getLastOrderId(Collection erpSaleInfos) {
+    public static String getLastOrderId(Collection<ErpSaleInfo> erpSaleInfos) {
 		ErpSaleInfo lastOrder = getLastSale(erpSaleInfos);
 		return lastOrder==null ? null : lastOrder.getSaleId();
 	}
 
-	public static Date getLastOrderCreateDate(Collection erpSaleInfos) {
+    public static Date getLastOrderCreateDate(Collection<ErpSaleInfo> erpSaleInfos) {
 		ErpSaleInfo lastOrder = getLastSale(erpSaleInfos);
 		return lastOrder==null ? null : lastOrder.getCreateDate();
 	}
 
-	public static Date getLastOrderDlvDate(Collection erpSaleInfos) {
+    public static Date getLastOrderDlvDate(Collection<ErpSaleInfo> erpSaleInfos) {
 		ErpSaleInfo lastOrder = getLastSale(erpSaleInfos);
 		return lastOrder==null ? null : lastOrder.getRequestedDate();
 	}
 	
-	public static EnumDeliveryType getLastOrderType(Collection erpSaleInfos){
+    public static EnumDeliveryType getLastOrderType(Collection<ErpSaleInfo> erpSaleInfos) {
 		ErpSaleInfo lastOrder = getLastSale(erpSaleInfos);
 		return lastOrder==null ? null : lastOrder.getDeliveryType();
 	}
 	
-	public static String getLastOrderZone(Collection erpSaleInfos){
+    public static String getLastOrderZone(Collection<ErpSaleInfo> erpSaleInfos) {
 		ErpSaleInfo lastOrder = getLastSale(erpSaleInfos);
 		return lastOrder==null ? null : lastOrder.getZone();
 	}
 	
-	private static ErpSaleInfo getLastSaleBefore(Collection erpSaleInfos, Date maxCreateDate){
+    private static ErpSaleInfo getLastSaleBefore(Collection<ErpSaleInfo> erpSaleInfos, Date maxCreateDate) {
 		ErpSaleInfo lastOrder = null;
 		Date date = null;
-		for (Iterator i = erpSaleInfos.iterator(); i.hasNext();) {
-			ErpSaleInfo saleInfo = (ErpSaleInfo) i.next();
+        for (ErpSaleInfo saleInfo : erpSaleInfos) {
 			Date createDate = saleInfo.getCreateDate();
 			if ((date == null || createDate.after(date)) && (maxCreateDate==null || maxCreateDate.after(createDate))) {
 				date = createDate;
@@ -205,17 +193,17 @@ public class ErpOrderHistoryUtil {
 		return lastOrder;
 	}
 
-	public static ErpSaleInfo getSecondToLastSale(Collection erpSaleInfos){
+    public static ErpSaleInfo getSecondToLastSale(Collection<ErpSaleInfo> erpSaleInfos) {
 		ErpSaleInfo lastSale = getLastSale(erpSaleInfos);
 		return lastSale == null ? null : getLastSaleBefore(erpSaleInfos, lastSale.getCreateDate());
 	}
 	
-	public static String getSecondToLastSaleId(Collection erpSaleInfos){
+    public static String getSecondToLastSaleId(Collection<ErpSaleInfo> erpSaleInfos) {
 		ErpSaleInfo secondToLastOrder = getSecondToLastSale(erpSaleInfos);
 		return secondToLastOrder==null ? null : secondToLastOrder.getSaleId();
 	}
 	
-	public static int getOrderCountForChefsTableEligibility(Collection erpSaleInfos){
+    public static int getOrderCountForChefsTableEligibility(Collection<ErpSaleInfo> erpSaleInfos) {
 		Calendar beginCal = Calendar.getInstance();
 		beginCal.set(Calendar.DAY_OF_MONTH, 1);
 		Calendar endCal = Calendar.getInstance();
@@ -224,8 +212,7 @@ public class ErpOrderHistoryUtil {
 		Date beginDate = beginCal.getTime();
 		Date endDate = endCal.getTime();
 	
-		for (Iterator i = erpSaleInfos.iterator(); i.hasNext();) {
-			ErpSaleInfo saleInfo = (ErpSaleInfo) i.next(); 			
+        for (ErpSaleInfo saleInfo : erpSaleInfos) {
 			Date deliveryDate = saleInfo.getRequestedDate();
 
 			if (!saleInfo.isMakeGood()&&deliveryDate.after(beginDate) && deliveryDate.before(endDate) && 
@@ -239,23 +226,19 @@ public class ErpOrderHistoryUtil {
 	}
 	
 	
-	public static double getOrderSubTotalForChefsTableEligibility(Collection erpSaleInfos){
-		
+    public static double getOrderSubTotalForChefsTableEligibility(Collection<ErpSaleInfo> erpSaleInfos) {
 		double amount=0.0;
 		Calendar beginCal = Calendar.getInstance();
 		beginCal.set(Calendar.DAY_OF_MONTH, 1);
 		Calendar endCal = Calendar.getInstance();
 		beginCal.add(Calendar.MONTH, -2);
-		int orderCount = 0;
 		Date beginDate = beginCal.getTime();
 		Date endDate = endCal.getTime();
-		for (Iterator i = erpSaleInfos.iterator(); i.hasNext();) {
-			ErpSaleInfo saleInfo = (ErpSaleInfo) i.next(); 			
+        for (ErpSaleInfo saleInfo : erpSaleInfos) {
 			Date deliveryDate = saleInfo.getRequestedDate();
 			if (!saleInfo.isMakeGood()&& deliveryDate.after(beginDate) && deliveryDate.before(endDate) && 
 					saleInfo.getDeliveryType()!=null && !saleInfo.getDeliveryType().equals(EnumDeliveryType.CORPORATE) &&
 					!saleInfo.getStatus().equals(EnumSaleStatus.CANCELED) &&
-					//!saleInfo.getPaymentType().equals(EnumPaymentType.MAKE_GOOD) &&
 					!saleInfo.getSaleType().equals(EnumSaleType.SUBSCRIPTION)) {
 				amount=amount+saleInfo.getSubTotal();
 			}
@@ -264,15 +247,12 @@ public class ErpOrderHistoryUtil {
 	}
 
 	public static Collection<ErpSaleInfo> filterOrders(Collection<ErpSaleInfo> erpSaleInfos, EnumSaleType saleType) {
-		
 		if(saleType==null) {
 			return erpSaleInfos;
 		}
-		List filteredOrders=new ArrayList();
+        List<ErpSaleInfo> filteredOrders = new ArrayList<ErpSaleInfo>();
 		if(erpSaleInfos!=null) {
-			ErpSaleInfo saleInfo =null;
-			for (Iterator i = erpSaleInfos.iterator(); i.hasNext();) {
-				saleInfo = (ErpSaleInfo) i.next();
+            for (ErpSaleInfo saleInfo : erpSaleInfos) {
 				if(saleType.equals(saleInfo.getSaleType())) {
 					filteredOrders.add(saleInfo);
 				}
@@ -282,13 +262,10 @@ public class ErpOrderHistoryUtil {
 		return filteredOrders;
 	}
 
-	
-	public static int getTotalRegularOrderCount(Collection erpSaleInfos){
+    public static int getTotalRegularOrderCount(Collection<ErpSaleInfo> erpSaleInfos) {
 		int intCount = 0;
 		if(erpSaleInfos != null) {
-			for (Iterator i = erpSaleInfos.iterator(); i.hasNext();) {
-				ErpSaleInfo saleInfo = (ErpSaleInfo) i.next(); 			
-				//Date deliveryDate = saleInfo.getRequestedDate();
+            for (ErpSaleInfo saleInfo : erpSaleInfos) {
 				if (saleInfo.getSaleType().equals(EnumSaleType.REGULAR)) {
 					intCount++;
 				}
@@ -297,10 +274,9 @@ public class ErpOrderHistoryUtil {
 		return intCount;
 	}
 	
-	public static int getSettledECheckOrderCount(Collection erpSaleInfos){
+    public static int getSettledECheckOrderCount(Collection<ErpSaleInfo> erpSaleInfos) {
 		int ret = 0;
-		for(Iterator i = erpSaleInfos.iterator(); i.hasNext(); ){
-			ErpSaleInfo saleInfo = (ErpSaleInfo)i.next();
+        for (ErpSaleInfo saleInfo : erpSaleInfos) {
 			if (saleInfo.isSettled() && EnumPaymentMethodType.ECHECK.equals(saleInfo.getPaymentMethodType())){
 				ret++;
 			}
@@ -308,21 +284,19 @@ public class ErpOrderHistoryUtil {
 		return ret;
 	}
 	
-	public static int getUnSettledEBTOrderCount(Collection erpSaleInfos){
+    public static int getUnSettledEBTOrderCount(Collection<ErpSaleInfo> erpSaleInfos) {
 		int ret = 0;
-		for(Iterator i = erpSaleInfos.iterator(); i.hasNext(); ){
-			ErpSaleInfo saleInfo = (ErpSaleInfo)i.next();
+        for (ErpSaleInfo saleInfo : erpSaleInfos) {
 			if (!saleInfo.isSettled()&& !saleInfo.getStatus().isCanceled() && EnumPaymentMethodType.EBT.equals(saleInfo.getPaymentMethodType())){
 				ret++;
 			}
 		}
 		return ret;
 	}
-	
-	public static int getUnSettledEBTOrderCount(Collection erpSaleInfos,String currSaleId){
+
+    public static int getUnSettledEBTOrderCount(Collection<ErpSaleInfo> erpSaleInfos, String currSaleId) {
 		int ret = 0;
-		for(Iterator i = erpSaleInfos.iterator(); i.hasNext(); ){
-			ErpSaleInfo saleInfo = (ErpSaleInfo)i.next();
+        for (ErpSaleInfo saleInfo : erpSaleInfos) {
 			if (!saleInfo.getSaleId().equalsIgnoreCase(currSaleId)&& !saleInfo.isSettled()&& !saleInfo.getStatus().isCanceled() && EnumPaymentMethodType.EBT.equals(saleInfo.getPaymentMethodType())){
 				ret++;
 			}
