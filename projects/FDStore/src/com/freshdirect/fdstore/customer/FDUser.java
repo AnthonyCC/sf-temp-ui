@@ -1318,14 +1318,22 @@ public class FDUser extends ModelSupport implements FDUserI {
     @Override
     public String getCustomerServiceEmail() throws FDResourceException {
         String serviceEmail = SERVICE_EMAIL;
-        if (isDepotUser()) {
-            serviceEmail = FDDeliveryManager.getInstance().getCustomerServiceEmail(getDepotCode());
-        } else if (isCorporateUser()) {
-            serviceEmail = "corporateservice@freshdirect.com";
-        }
         if (isChefsTable()) {
             serviceEmail = FDStoreProperties.getChefsTableEmail();
         }
+        else if (isDepotUser()) {
+            try {
+				serviceEmail = FDDeliveryManager.getInstance().getCustomerServiceEmail(getDepotCode());
+			} catch (Exception e) {
+				//Ignore
+				LOGGER.warn("Exception while fetching customer service email by depot code: "+getDepotCode(),e);
+			}
+        } else if (isCorporateUser()) {
+            serviceEmail = "corporateservice@freshdirect.com";
+        }
+        /*if (isChefsTable()) {
+            serviceEmail = FDStoreProperties.getChefsTableEmail();
+        }*/
         return serviceEmail;
     }
 
