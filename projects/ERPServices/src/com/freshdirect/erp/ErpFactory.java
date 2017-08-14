@@ -71,6 +71,10 @@ public class ErpFactory {
 	public static ErpFactory getInstance() {
 		if (factory == null) {
 			factory = new ErpFactory();
+			if(FDStoreProperties.isLocalDeployment()) {
+				factory.lastRefresh = System.currentTimeMillis();
+				factory.REFRESH_PERIOD = FDStoreProperties.TEN_DAYS_IN_MILLIS;
+			}
 		}
 		return factory;
 	}

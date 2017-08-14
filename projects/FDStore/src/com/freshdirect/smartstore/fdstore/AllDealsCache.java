@@ -172,7 +172,9 @@ public class AllDealsCache {
 		long now = System.currentTimeMillis();
 
 		if (now > (lastRefresh + HOUR_IN_MILLIS)) {
-			forceReload();
+			if(! FDStoreProperties.isLocalDeployment()) {
+				forceReload();
+			}
 			lastRefresh = now;
 		}
 	}

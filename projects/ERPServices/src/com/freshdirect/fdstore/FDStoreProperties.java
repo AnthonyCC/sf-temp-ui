@@ -720,7 +720,6 @@ public class FDStoreProperties {
     private static final String PROP_SEARCH_CAROUSEL_PRODUCT_LIMIT = "fdstore.search.carousel.product.limit";
 
     private static final String PROP_PRESIDENT_PICK_PAGING_ENABLED = "fdstore.prespicks.paging.enabled";
-
     private static final String PROP_ALL_DEALS_CACHE_ENABLED = "fdstore.all_deals_cache.enabled";
 
     private static final String PROP_SITEMAP_ENABLED = "fdstore.sitemap.enabled";
@@ -797,6 +796,7 @@ public class FDStoreProperties {
     private static final String PROP_SOCIAL_ONEALL_POSTURL = "fdstore.social.oneall.posturl";
     private static final String PROP_SOCIAL_LOGIN_ENABLED = "fdstore.social.login.enabled";
     private static final String PROP_DEPLOYMENT_LOCAL = "fdstore.deployment.local";
+    private static final String PROP_DEVELOPER_DISABLE_AVAIL_LOOKUP = "fdstore.developer.disableAvailabilityLookup";
     private static final String PROP_FDX_SMS_ORDER_CONFIRMATION = "fdstore.sms.order.confirmation";
     private static final String PROP_FDX_SMS_ORDER_MODIFICATION = "fdstore.sms.order.modification";
     private static final String PROP_FDX_SMS_ORDER_CANCEL = "fdstore.sms.order.cancel";
@@ -958,7 +958,7 @@ public class FDStoreProperties {
     private final static String GOOGLE_ANALYTICS_TRACKING_ID = "fdstore.ga.tracking.id";
 
  
-    
+    public final static long TEN_DAYS_IN_MILLIS = 1000 * 60 * 60 * 24 * 10;    
     
    static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1698,6 +1698,7 @@ public class FDStoreProperties {
         defaults.put(PROP_SOCIAL_ONEALL_POSTURL, ".api.oneall.com");
         defaults.put(PROP_SOCIAL_LOGIN_ENABLED, "false");
         defaults.put(PROP_DEPLOYMENT_LOCAL, "false");
+        defaults.put(PROP_DEVELOPER_DISABLE_AVAIL_LOOKUP, "false");
         defaults.put(PROP_FDX_SMS_ORDER_CONFIRMATION, "false");
         defaults.put(PROP_FDX_SMS_ORDER_MODIFICATION, "false");
         defaults.put(PROP_FDX_SMS_ORDER_CANCEL, "false");
@@ -3969,7 +3970,7 @@ public class FDStoreProperties {
     }
 
     public static boolean isAllDealsCacheEnabled() {
-        return Boolean.valueOf(get(PROP_ALL_DEALS_CACHE_ENABLED)).booleanValue();
+    	return ! isLocalDeployment() && Boolean.valueOf(get(PROP_ALL_DEALS_CACHE_ENABLED)).booleanValue();
     }
 
     public static boolean isSiteMapEnabled() {
@@ -4238,6 +4239,10 @@ public class FDStoreProperties {
 
     public static boolean isLocalDeployment() {
         return (Boolean.valueOf(get(PROP_DEPLOYMENT_LOCAL))).booleanValue();
+    }
+
+    public static boolean isDeveloperDisableAvailabilityLookup() {
+        return (Boolean.valueOf(get(PROP_DEVELOPER_DISABLE_AVAIL_LOOKUP))).booleanValue();
     }
 
     public static boolean getSmsOrderConfirmation() {

@@ -279,6 +279,26 @@ public class Recommendations implements Serializable {
 		this.requestId = requestId;
 	}
     
+    public void truncate() {
+    	truncate(wsize);
+    }
+    
+    public void truncate(int newSize) {
+    	productReferences = trunc(productReferences, newSize);
+    	products = trunc(products, newSize);
+    }
+        
+    private static <T> List<T> trunc(List<T> what, int newSize) {
+    	List<T> replacement = null;
+    	if(what != null && what.size() > 0 && what.size() > newSize) {
+    		replacement = new ArrayList<T>(newSize);
+    		replacement.addAll(what.subList(0, Math.min(what.size(), newSize)));
+    	} else {
+    		replacement = what;
+    	}
+    	return replacement;
+    }
+    
     @Override
     public String toString() {
     	StringBuilder sb = new StringBuilder();

@@ -21,6 +21,11 @@ public class FDMaterialGroupCache {
 
 	private static Category LOGGER = LoggerFactory.getInstance( FDMaterialGroupCache.class );
 	private static Date lastExecuted = null;
+	static {
+		if(FDStoreProperties.isLocalDeployment()) {
+			lastExecuted = new Date();
+		}
+	}
 	public static boolean warmUpComplete = false;
 	private static Map<String, Map<String,FDGroup>> materialGroupsCache = new ConcurrentHashMap<String,Map<String,FDGroup>>();
 	private static Map<String, List<String>> grpMaterialsLastModified = new HashMap<String, List<String>>();
