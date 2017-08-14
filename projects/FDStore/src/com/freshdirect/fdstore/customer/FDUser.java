@@ -1320,8 +1320,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         String serviceEmail = SERVICE_EMAIL;
         if (isChefsTable()) {
             serviceEmail = FDStoreProperties.getChefsTableEmail();
-        }
-        else if (isDepotUser()) {
+        } else if (isDepotUser()) {
             try {
 				serviceEmail = FDDeliveryManager.getInstance().getCustomerServiceEmail(getDepotCode());
 			} catch (Exception e) {
