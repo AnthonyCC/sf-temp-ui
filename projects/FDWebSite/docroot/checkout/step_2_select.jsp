@@ -247,9 +247,7 @@ zonePromoEnabled=true;
 <!--START MESSAGING SECTION-->
 
 <!-- GEO Restriction Message Added -->
-<% if((messages != null && messages.size() >= 1) || (comments!=null && comments.size() >=1)) { %>
-		<%@ include file="/shared/includes/delivery/i_geowarning_message.jspf"%>
-<% } %>
+<%@ include file="/shared/includes/delivery/i_geowarning_message.jspf"%>
 
 
 <!-- Error Messages -->

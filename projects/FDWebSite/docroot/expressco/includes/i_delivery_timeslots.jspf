@@ -80,9 +80,8 @@ if(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentSta
 		pageContext.setAttribute("advancedTimeslotMediaEnabled", advancedTimeslotMediaEnabled, PageContext.REQUEST_SCOPE);
 	%>
 
-<% if((messages != null && messages.size() >= 1) || (comments!=null && comments.size() >=1)) { %>
-		<%@ include file="/shared/includes/delivery/i_geowarning_message.jspf"%>
-<% } %>
+<%@ include file="/shared/includes/delivery/i_geowarning_message.jspf"%>
+
 <%
 
   // [APPDEV-2149] Generic timeslots have nothing to do with delivery pass
