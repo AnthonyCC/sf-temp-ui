@@ -109,6 +109,16 @@ var FreshDirect = FreshDirect || {};
 			
 
 		}	
+		// google analytics
+		if (window.ga && fd.gtm && fd.gtm.key) {
+			ga('create', fd.gtm.key, 'auto');
+			ga('set', {
+				  page: '/social/login.jsp',
+				  title: 'Login',
+				  location: window.location.protocol + '//' + window.location.host + '/social/login.jsp'
+			});
+			ga('send', 'pageview');
+		}
 	}
 	
 	function login(e) {
@@ -122,6 +132,14 @@ var FreshDirect = FreshDirect || {};
 		}).then(function(response) {
 			var responseJson = JSON.parse(response);
 			if (responseJson.success) { 
+				if (window.ga) {
+						ga('set', {
+							  page: '/social/login.jsp',
+							  title: 'Login Success',
+							  location: window.location.protocol + '//' + window.location.host + '/social/login.jsp'
+						});
+						ga('send', 'pageview');
+				}
 				parent.document.location = sucessTarget || parent.document.location;
 			} else {
 				showError();
@@ -142,6 +160,14 @@ var FreshDirect = FreshDirect || {};
 		$('#email').addClass('error');
 		$('#password_img').addClass('show_bg_arrow');
 		$('#password').addClass('error');
+		if (window.ga) {
+				ga('set', {
+					  page: '/social/login.jsp',
+					  title: 'Login Fail',
+					  location: window.location.protocol + '//' + window.location.host + '/social/login.jsp'
+				});
+				ga('send', 'pageview');
+			}
 	}
 	// if component is not registered, register
 	if (!fd.components.loginForm) {
