@@ -15,12 +15,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ewallet.EwalletConstants;
 import com.freshdirect.fdstore.ewallet.EwalletRequestData;
 import com.freshdirect.fdstore.ewallet.EwalletResponseData;
 import com.freshdirect.fdstore.ewallet.EwalletUtil;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.data.PageAction;
@@ -71,7 +74,9 @@ public class EwalletPaymentServlet extends BaseJsonServlet {
 			// Create EWallet Request Object
 			EwalletRequestData ewalletRequestData = new EwalletRequestData();
 			createEwalletRequestData(ewalletRequestData, request, response,user);
-
+			
+			ewalletRequestData.setDebitCardSwitch(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user));
+			
 			// Get parameters from request object
 			getRequestParameter(request, ewalletRequestData);
 

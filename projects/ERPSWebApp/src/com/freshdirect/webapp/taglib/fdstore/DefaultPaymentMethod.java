@@ -29,7 +29,7 @@ public class DefaultPaymentMethod implements Runnable {
 	@Override
 	public void run() {		
 		   
-			ErpPaymentMethodI defaultPaymentMethod = com.freshdirect.fdstore.payments.util.PaymentMethodUtil.getSystemDefaultPaymentMethod(info, pMethods, true);
+			ErpPaymentMethodI defaultPaymentMethod = com.freshdirect.fdstore.payments.util.PaymentMethodUtil.getSystemDefaultPaymentMethod(info, pMethods);
 			if(null != defaultPaymentMethod){
 			com.freshdirect.fdstore.payments.util.PaymentMethodUtil.updateDefaultPaymentMethod(info, pMethods,
 					defaultPaymentMethod.getPK().getId(), defaultPaymentType, false);			

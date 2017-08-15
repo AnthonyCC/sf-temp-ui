@@ -37,6 +37,7 @@ import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
 import com.freshdirect.fdstore.customer.FDCustomerReservationInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserCouponUtil;
+import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.EnumSearchType;
 import com.freshdirect.framework.util.GenericSearchCriteria;
@@ -48,7 +49,7 @@ import com.freshdirect.logistics.delivery.model.EnumReservationStatus;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.payment.SettlementBatchInfo;
 
-public class GenericSearchDAO {
+public class GenericSearchDAO extends DaoUtil{
 	
 	//private static Map queryMap = new HashMap();
 	//.put(EnumSearchType.COMPANY_SEARCH.getName(), CUSTOMER_QUERY);
@@ -350,17 +351,25 @@ public class GenericSearchDAO {
 		+ " fc.erp_customer_id = a.customer_id "; 
 	
 	public static List findCustomersByCriteria(Connection conn, GenericSearchCriteria criteria, CriteriaBuilder builder) throws SQLException {
-		String query = CUSTOMER_COMP_QUERY + " and " + builder.getCriteria();
-		PreparedStatement ps = conn.prepareStatement(query);
-		Object[] obj = builder.getParams();
-		for(int i = 0; i < obj.length; i++) {
-			ps.setObject(i+1, obj[i]);
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		try {
+			String query = CUSTOMER_COMP_QUERY + " and " + builder.getCriteria();
+			ps = conn.prepareStatement(query);
+			Object[] obj = builder.getParams();
+			for (int i = 0; i < obj.length; i++) {
+				ps.setObject(i + 1, obj[i]);
+			}
+			rs = ps.executeQuery();
+			List lst = processCustomerResultSet(rs);
+			// rs.close();
+			// ps.close();
+			return lst;
+		} finally {
+			close(rs);
+			close(ps);
 		}
-		ResultSet rs = ps.executeQuery();
-		List lst = processCustomerResultSet(rs);
-		rs.close();
-		ps.close();
-		return lst;
 	}
 
 	private static List processCustomerResultSet(ResultSet rs) throws SQLException {
@@ -458,25 +467,32 @@ public class GenericSearchDAO {
 			+ "where ci.customer_id = c.id and c.id in (";
 	
 	public static List<FDCustomerReservationInfo> findCustomersById(Connection conn, Set<String> customerIds) throws SQLException {
-		StringBuffer updateQ = new StringBuffer();
-		if(customerIds != null && customerIds.size() > 0) {			
-			updateQ.append(CUSTOMER_SEARCH_QUERY);
-			int intCount = 0;
-			for(String rsvId : customerIds) {
-				updateQ.append("'").append(rsvId).append("'");
-				intCount++;
-				if(intCount != customerIds.size()) {
-					updateQ.append(",");
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			StringBuffer updateQ = new StringBuffer();
+			if (customerIds != null && customerIds.size() > 0) {
+				updateQ.append(CUSTOMER_SEARCH_QUERY);
+				int intCount = 0;
+				for (String rsvId : customerIds) {
+					updateQ.append("'").append(rsvId).append("'");
+					intCount++;
+					if (intCount != customerIds.size()) {
+						updateQ.append(",");
+					}
 				}
+				updateQ.append(")");
 			}
-			updateQ.append(")");
+			ps = conn.prepareStatement(updateQ.toString());
+			rs = ps.executeQuery();
+			List<FDCustomerReservationInfo> lst = processReservationResultSet(rs);
+			// rs.close();
+			// ps.close();
+			return lst;
+		} finally {
+			close(rs);
+			close(ps);
 		}
-		PreparedStatement ps = conn.prepareStatement(updateQ.toString());
-		ResultSet rs = ps.executeQuery();
-		List<FDCustomerReservationInfo> lst = processReservationResultSet(rs);
-		rs.close();
-		ps.close();
-		return lst;
 
 	}
 	
@@ -545,20 +561,26 @@ public class GenericSearchDAO {
 	
 	
 	public static List findOrderForResvByCriteria(Connection conn, GenericSearchCriteria criteria, CriteriaBuilder builder) throws SQLException {
-		String query = ORDER_SEARCH_FOR_RESERVATION + " and " + builder.getCriteria();
-		PreparedStatement ps = conn.prepareStatement(query);
-		Object[] obj = builder.getParams();
-		for(int i = 0; i < obj.length; i++) {
-			ps.setObject(i+1, obj[i]);
-		}
-		ResultSet rs = ps.executeQuery();
-		List lst = processOrderForResvResultSet(rs);
-		rs.close();
-		ps.close();
-		return lst;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			String query = ORDER_SEARCH_FOR_RESERVATION + " and " + builder.getCriteria();
+			ps = conn.prepareStatement(query);
+			Object[] obj = builder.getParams();
+			for (int i = 0; i < obj.length; i++) {
+				ps.setObject(i + 1, obj[i]);
+			}
+			rs = ps.executeQuery();
+			List lst = processOrderForResvResultSet(rs);
+		//	rs.close();
+		//	ps.close();
+			return lst;
+		} finally {
+			close(rs);
+			close(ps);
 
+		}
 	}
-	
 	private static List processOrderForResvResultSet(ResultSet rs) throws SQLException {
 		List lst = new ArrayList();
 		while (rs.next()) {
@@ -603,13 +625,19 @@ public class GenericSearchDAO {
 	
 	
 	public static List findBrokenAccounts(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement(BROKEN_ACCOUNT_QUERY);
-		ResultSet rs = ps.executeQuery();
-		List lst = processBrokenAccountResultSet(rs);
-		rs.close();
-		ps.close();
-		return lst;
-
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(BROKEN_ACCOUNT_QUERY);
+			rs = ps.executeQuery();
+			List lst = processBrokenAccountResultSet(rs);
+			// rs.close();
+			// ps.close();
+			return lst;
+		} finally {
+			close(rs);
+			close(ps);
+		}
 	}	
 
 	private static List processBrokenAccountResultSet(ResultSet rs) throws SQLException {
@@ -645,18 +673,25 @@ public class GenericSearchDAO {
 		+ "and sa.id = di.salesaction_id";
 	
 	public static List findOrderForReturnsByCriteria(Connection conn, GenericSearchCriteria criteria, CriteriaBuilder builder) throws SQLException {
-		String query = ORDER_SEARCH_FOR_RETURNS + " and " + builder.getCriteria();
-		PreparedStatement ps = conn.prepareStatement(query);
-		Object[] obj = builder.getParams();
-		for(int i = 0; i < obj.length; i++) {
-			ps.setObject(i+1, obj[i]);
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			String query = ORDER_SEARCH_FOR_RETURNS + " and " + builder.getCriteria();
+			ps = conn.prepareStatement(query);
+			Object[] obj = builder.getParams();
+			for (int i = 0; i < obj.length; i++) {
+				ps.setObject(i + 1, obj[i]);
+			}
+			rs = ps.executeQuery();
+			List lst = processOrderForReturnsResultSet(rs);
+		//	rs.close();
+		//	ps.close();
+			return lst;
+		} finally {
+			close(rs);
+			close(ps);
 		}
-		ResultSet rs = ps.executeQuery();
-		List lst = processOrderForReturnsResultSet(rs);
-		rs.close();
-		ps.close();
-		return lst;
-	}
+}
 	
 	private static List processOrderForReturnsResultSet(ResultSet rs) throws SQLException {
 		List lst = new ArrayList();
@@ -708,17 +743,25 @@ public class GenericSearchDAO {
 	
 	
 	public static  List<FDCustomerOrderInfo> findOrderForSkusByCriteria(Connection conn, GenericSearchCriteria criteria, CriteriaBuilder builder) throws SQLException {
-		String query = ORDER_SEARCH_BY_SKUS + " and " + builder.getCriteria();
-		PreparedStatement ps = conn.prepareStatement(query);
-		Object[] obj = builder.getParams();
-		for(int i = 0; i < obj.length; i++) {
-			ps.setObject(i+1, obj[i]);
-		}
-		ResultSet rs = ps.executeQuery();
-		List<FDCustomerOrderInfo> lst = processOrderBySkusResultSet(rs);
-		rs.close();
-		ps.close();
-		return lst;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		try {
+			String query = ORDER_SEARCH_BY_SKUS + " and " + builder.getCriteria();
+			ps = conn.prepareStatement(query);
+			Object[] obj = builder.getParams();
+			for (int i = 0; i < obj.length; i++) {
+				ps.setObject(i + 1, obj[i]);
+			}
+			rs = ps.executeQuery();
+			List<FDCustomerOrderInfo> lst = processOrderBySkusResultSet(rs);
+		//	rs.close();
+		//	ps.close();
+			return lst;
+		}finally{
+		close(rs);
+		close(ps);
+	}
 	}
 	
 	private static List<FDCustomerOrderInfo> processOrderBySkusResultSet(ResultSet rs) throws SQLException {
@@ -752,17 +795,25 @@ public class GenericSearchDAO {
 		+"FROM CUST.MODIFY_ORDERS M WHERE ";
 	
 	public static  List<FDCustomerOrderInfo> getOrdersToModify(Connection conn, GenericSearchCriteria criteria, CriteriaBuilder builder) throws SQLException {
-		String query = GET_ORDERS_TO_MODIFY + builder.getCriteria();
-		PreparedStatement ps = conn.prepareStatement(query);
-		Object[] obj = builder.getParams();
-		for(int i = 0; i < obj.length; i++) {
-			ps.setObject(i+1, obj[i]);
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		try {
+			String query = GET_ORDERS_TO_MODIFY + builder.getCriteria();
+			ps = conn.prepareStatement(query);
+			Object[] obj = builder.getParams();
+			for (int i = 0; i < obj.length; i++) {
+				ps.setObject(i + 1, obj[i]);
+			}
+			rs = ps.executeQuery();
+			List<FDCustomerOrderInfo> lst = processOrdersToModifyResultSet(rs);
+			// rs.close();
+			// ps.close();
+			return lst;
+		} finally {
+			close(rs);
+			close(ps);
 		}
-		ResultSet rs = ps.executeQuery();
-		List<FDCustomerOrderInfo> lst = processOrdersToModifyResultSet(rs);
-		rs.close();
-		ps.close();
-		return lst;
 	}
 	
 	private static List<FDCustomerOrderInfo> processOrdersToModifyResultSet(ResultSet rs) throws SQLException {
@@ -869,101 +920,111 @@ public class GenericSearchDAO {
 		"select ID,TYPE,NAME,DAY_OF_WEEK,START_TIME,END_TIME,REASON,MESSAGE,CRITERION,MEDIA_PATH FROM CUST.restricted_days";
 
 	private static List processDeliveryRestriction(Connection conn, GenericSearchCriteria criteria, CriteriaBuilder builder) throws SQLException {
-		List restrictions=new ArrayList();		
 		
-		String query ="";
-		String sortColumn = (String)criteria.getCriteriaMap().get("sortColumn");
-		String ascending = (String)criteria.getCriteriaMap().get("ascending");
-		
-		if(sortColumn == null  || sortColumn.trim().length()==0){
-			sortColumn="start_time";			
-		}
-		if(ascending == null  || ascending.trim().length()==0){
-			ascending="asc";			
-		}
-		
-		if(builder.getParams()!=null && builder.getParams().length>0){
-		    query = new StringBuffer(DELIVERY_RESTRICTIONS_RETURN).append(" where ").append(builder.getCriteria()).append(" and reason not  in ('ACL','BER','WIN') ").append(" order by ").append(sortColumn).append(" "+ascending).toString();
-		}else{
-			query = new StringBuffer(DELIVERY_RESTRICTIONS_RETURN).append(builder.getCriteria()).append(" and reason not  in ('ACL','BER','WIN') ").append(" order by ").append(sortColumn).append(" "+ascending).toString();
-		}
-		
-		
-		LOGGER.debug("query :"+query);
-		PreparedStatement ps = conn.prepareStatement(query);
-		
-		Object[] obj = builder.getParams();
-		for(int i = 0; i < obj.length; i++) {
-			LOGGER.debug("i:"+i+":"+obj[i]);
-			LOGGER.debug(obj[i].getClass().getName());
-			ps.setObject(i+1, obj[i]);
-		}
-		
-		ResultSet rs = ps.executeQuery();
-		while (rs.next()) {
+		List restrictions=new ArrayList();	
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 
-			String id = rs.getString("ID");
-			String name = rs.getString("NAME");
-			String msg = rs.getString("MESSAGE");
-			String path = rs.getString("MEDIA_PATH");
-			EnumDlvRestrictionCriterion criterion = EnumDlvRestrictionCriterion.getEnum(rs.getString("CRITERION"));
-			if (criterion == null) {
-				// skip unknown criteria
-				continue;
+		try {
+			String query = "";
+			String sortColumn = (String) criteria.getCriteriaMap().get("sortColumn");
+			String ascending = (String) criteria.getCriteriaMap().get("ascending");
+
+			if (sortColumn == null || sortColumn.trim().length() == 0) {
+				sortColumn = "start_time";
+			}
+			if (ascending == null || ascending.trim().length() == 0) {
+				ascending = "asc";
 			}
 
-			EnumDlvRestrictionReason reason = EnumDlvRestrictionReason.getEnum(rs.getString("REASON"));
-			if (reason == null) {
-				// skip unknown reasons
-				continue;
-			}
-
-			java.util.Date startDate = new java.util.Date(rs.getTimestamp("START_TIME").getTime());
-			java.util.Date endDate = new java.util.Date(rs.getTimestamp("END_TIME").getTime());
-			int dayOfWeek = rs.getInt("DAY_OF_WEEK");
-
-			String typeCode = rs.getString("TYPE");
-			EnumDlvRestrictionType type = EnumDlvRestrictionType.getEnum(typeCode);
-			if (type == null && "PTR".equals(typeCode)) {
-				type = EnumDlvRestrictionType.RECURRING_RESTRICTION;
-			}
-
-			if (EnumDlvRestrictionType.ONE_TIME_RESTRICTION.equals(type)) {
-
-				if(!EnumDlvRestrictionReason.PLATTER.equals(reason)){
-					endDate = DateUtil.roundUp(endDate);
-				}
-
-				// FIXME one-time reverse restrictions should have a different EnumDlvRestrictionType 
-				if (reason.isSpecialHoliday()) {
-					restrictions.add(new OneTimeReverseRestriction(id,criterion, reason, name, msg, startDate, endDate,path));
-				} else {
-					restrictions.add(new OneTimeRestriction(id,criterion, reason, name, msg, startDate, endDate,path));
-				}
-
-			} else if (EnumDlvRestrictionType.RECURRING_RESTRICTION.equals(type)) {
-
-				TimeOfDay startTime = new TimeOfDay(startDate);
-				TimeOfDay endTime = new TimeOfDay(endDate);
-				// round up 11:59 to next midnight
-				if (JUST_BEFORE_MIDNIGHT.equals(endTime)) {
-					endTime = TimeOfDay.NEXT_MIDNIGHT;
-				}
-				restrictions.add(new RecurringRestriction(id,criterion, reason, name, msg, dayOfWeek, startTime, endTime,path));
-
+			if (builder.getParams() != null && builder.getParams().length > 0) {
+				query = new StringBuffer(DELIVERY_RESTRICTIONS_RETURN).append(" where ").append(builder.getCriteria())
+						.append(" and reason not  in ('ACL','BER','WIN') ").append(" order by ").append(sortColumn)
+						.append(" " + ascending).toString();
 			} else {
-				// ignore	
+				query = new StringBuffer(DELIVERY_RESTRICTIONS_RETURN).append(builder.getCriteria())
+						.append(" and reason not  in ('ACL','BER','WIN') ").append(" order by ").append(sortColumn)
+						.append(" " + ascending).toString();
 			}
 
+			LOGGER.debug("query :" + query);
+			ps = conn.prepareStatement(query);
 
+			Object[] obj = builder.getParams();
+			for (int i = 0; i < obj.length; i++) {
+				LOGGER.debug("i:" + i + ":" + obj[i]);
+				LOGGER.debug(obj[i].getClass().getName());
+				ps.setObject(i + 1, obj[i]);
+			}
 
+			rs = ps.executeQuery();
+			while (rs.next()) {
+
+				String id = rs.getString("ID");
+				String name = rs.getString("NAME");
+				String msg = rs.getString("MESSAGE");
+				String path = rs.getString("MEDIA_PATH");
+				EnumDlvRestrictionCriterion criterion = EnumDlvRestrictionCriterion.getEnum(rs.getString("CRITERION"));
+				if (criterion == null) {
+					// skip unknown criteria
+					continue;
+				}
+
+				EnumDlvRestrictionReason reason = EnumDlvRestrictionReason.getEnum(rs.getString("REASON"));
+				if (reason == null) {
+					// skip unknown reasons
+					continue;
+				}
+
+				java.util.Date startDate = new java.util.Date(rs.getTimestamp("START_TIME").getTime());
+				java.util.Date endDate = new java.util.Date(rs.getTimestamp("END_TIME").getTime());
+				int dayOfWeek = rs.getInt("DAY_OF_WEEK");
+
+				String typeCode = rs.getString("TYPE");
+				EnumDlvRestrictionType type = EnumDlvRestrictionType.getEnum(typeCode);
+				if (type == null && "PTR".equals(typeCode)) {
+					type = EnumDlvRestrictionType.RECURRING_RESTRICTION;
+				}
+
+				if (EnumDlvRestrictionType.ONE_TIME_RESTRICTION.equals(type)) {
+
+					if (!EnumDlvRestrictionReason.PLATTER.equals(reason)) {
+						endDate = DateUtil.roundUp(endDate);
+					}
+
+					// FIXME one-time reverse restrictions should have a
+					// different EnumDlvRestrictionType
+					if (reason.isSpecialHoliday()) {
+						restrictions.add(new OneTimeReverseRestriction(id, criterion, reason, name, msg, startDate, endDate, path));
+					} else {
+						restrictions.add(new OneTimeRestriction(id, criterion, reason, name, msg, startDate, endDate, path));
+					}
+
+				} else if (EnumDlvRestrictionType.RECURRING_RESTRICTION.equals(type)) {
+
+					TimeOfDay startTime = new TimeOfDay(startDate);
+					TimeOfDay endTime = new TimeOfDay(endDate);
+					// round up 11:59 to next midnight
+					if (JUST_BEFORE_MIDNIGHT.equals(endTime)) {
+						endTime = TimeOfDay.NEXT_MIDNIGHT;
+					}
+					restrictions.add(new RecurringRestriction(id, criterion, reason, name, msg, dayOfWeek, startTime, endTime, path));
+
+				} else {
+					// ignore
+				}
+
+			}
+
+			LOGGER.debug("restrictions size :" + restrictions.size());
+			// rs.close();
+			// ps.close();
+
+			return restrictions;
+		} finally {
+			close(rs);
+			close(ps);
 		}
-
-		LOGGER.debug("restrictions size :"+restrictions.size());
-		rs.close();
-		ps.close();
-
-		return restrictions;
 	}
 	
 	private static final String GET_ALCOHOL_RESTRICTION = "select  r.ID,r.TYPE,r.NAME,r.START_TIME,r.END_TIME,r.REASON,r.MESSAGE,r.CRITERION,r.MEDIA_PATH, "+
@@ -974,7 +1035,10 @@ public class GenericSearchDAO {
 											"and M.ID = MR.MUNICIPALITY_ID ";
 	private static List<AlcoholRestriction> processAlcoholRestriction(Connection conn, GenericSearchCriteria criteria, CriteriaBuilder builder) throws SQLException {
 		List<AlcoholRestriction> restrictions=new ArrayList<AlcoholRestriction>();		
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		
+		try{
 		String query ="";
 		String sortColumn = (String)criteria.getCriteriaMap().get("sortColumn");
 		String ascending = (String)criteria.getCriteriaMap().get("ascending");
@@ -993,7 +1057,7 @@ public class GenericSearchDAO {
 		}
 
 		LOGGER.debug("query :"+query);
-		PreparedStatement ps = conn.prepareStatement(query);
+		ps = conn.prepareStatement(query);
 		
 		Object[] obj = builder.getParams();
 		for(int i = 0; i < obj.length; i++) {
@@ -1015,7 +1079,7 @@ public class GenericSearchDAO {
 		String municipalityId = null;
 		boolean alcoholRestricted = false;
 		
-		ResultSet rs = ps.executeQuery();
+		rs = ps.executeQuery();
 		int count = 0;
 		//Map<Integer, List<TimeOfDayRange>> timeRangeMap = new HashMap<Integer, List<TimeOfDayRange>>();
 		while (rs.next()) {
@@ -1120,11 +1184,15 @@ public class GenericSearchDAO {
 			restrictions.add(restriction);
 		}
 		LOGGER.debug("restrictions size :"+restrictions.size());
-		rs.close();
-		ps.close();
+	//	rs.close();
+	//	ps.close();
 
 		return restrictions;
+	}finally{
+		close(rs);
+		close(ps);
 	}
+}
 	
 	private static String ADDRESS_RESTRICTIONS_RETURN = 
 		"select scrubbed_address, apartment, zipcode, reason, date_modified, modified_by from CUST.restricted_address ";
@@ -1132,57 +1200,66 @@ public class GenericSearchDAO {
 	
 	private static List processAddressRestriction(Connection conn, GenericSearchCriteria criteria, CriteriaBuilder builder) throws SQLException {
 		List restrictions=new ArrayList();
-		String query="";
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		
-		String sortColumn = (String)criteria.getCriteriaMap().get("sortColumn");
-		String ascending = (String)criteria.getCriteriaMap().get("ascending");
-		
-		if(sortColumn == null  || sortColumn.trim().length()==0){
-			sortColumn="date_modified";			
-		}
-		if(ascending == null  || ascending.trim().length()==0){
-			ascending="asc";			
-		}
-		
-		if(builder.getParams()!=null && builder.getParams().length>0){
-		    query = new StringBuffer(ADDRESS_RESTRICTIONS_RETURN).append(" where ").append(builder.getCriteria()).append(" order by ").append(sortColumn).append(" "+ascending).toString();
-		}else{
-			query = new StringBuffer(ADDRESS_RESTRICTIONS_RETURN).append(" order by ").append(sortColumn).append(" "+ascending).toString() ;
-		}
-		
-		LOGGER.debug("query2 :"+query);
-		PreparedStatement ps = conn.prepareStatement(query);
-		
-		Object[] obj = builder.getParams();
-		for(int i = 0; i < obj.length; i++) {
-			LOGGER.debug("i:"+i+":"+obj[i]);
-			LOGGER.debug(obj[i].getClass().getName());
-			ps.setObject(i+1, obj[i]);
-		}
-		
-		RestrictedAddressModel restriction=null;
-		ResultSet rs = ps.executeQuery();
-		while (rs.next()) {
+		try {
+			String query = "";
 
-			restriction= new  RestrictedAddressModel();
-			restriction.setAddress1(rs.getString("scrubbed_address"));
-			restriction.setApartment(rs.getString("apartment"));
-			restriction.setZipCode(rs.getString("zipCode"));
-			EnumRestrictedAddressReason reason = EnumRestrictedAddressReason.getRestrictionReason(rs.getString("reason"));
-			restriction.setReason(reason);	
-			java.util.Date dateModified = new java.util.Date(rs.getTimestamp("date_modified").getTime());			
-			restriction.setLastModified(dateModified);
-			restriction.setModifiedBy(rs.getString("modified_by"));
-			
-			restrictions.add(restriction);
-		
+			String sortColumn = (String) criteria.getCriteriaMap().get("sortColumn");
+			String ascending = (String) criteria.getCriteriaMap().get("ascending");
+
+			if (sortColumn == null || sortColumn.trim().length() == 0) {
+				sortColumn = "date_modified";
+			}
+			if (ascending == null || ascending.trim().length() == 0) {
+				ascending = "asc";
+			}
+
+			if (builder.getParams() != null && builder.getParams().length > 0) {
+				query = new StringBuffer(ADDRESS_RESTRICTIONS_RETURN).append(" where ").append(builder.getCriteria()).append(" order by ").append(sortColumn).append(" " + ascending).toString();
+			} else {
+				query = new StringBuffer(ADDRESS_RESTRICTIONS_RETURN).append(" order by ").append(sortColumn).append(" " + ascending).toString();
+			}
+
+			LOGGER.debug("query2 :" + query);
+			ps = conn.prepareStatement(query);
+
+			Object[] obj = builder.getParams();
+			for (int i = 0; i < obj.length; i++) {
+				LOGGER.debug("i:" + i + ":" + obj[i]);
+				LOGGER.debug(obj[i].getClass().getName());
+				ps.setObject(i + 1, obj[i]);
+			}
+
+			RestrictedAddressModel restriction = null;
+			rs = ps.executeQuery();
+			while (rs.next()) {
+
+				restriction = new RestrictedAddressModel();
+				restriction.setAddress1(rs.getString("scrubbed_address"));
+				restriction.setApartment(rs.getString("apartment"));
+				restriction.setZipCode(rs.getString("zipCode"));
+				EnumRestrictedAddressReason reason = EnumRestrictedAddressReason
+						.getRestrictionReason(rs.getString("reason"));
+				restriction.setReason(reason);
+				java.util.Date dateModified = new java.util.Date(rs.getTimestamp("date_modified").getTime());
+				restriction.setLastModified(dateModified);
+				restriction.setModifiedBy(rs.getString("modified_by"));
+
+				restrictions.add(restriction);
+
+			}
+
+			LOGGER.debug("address restrictions size :" + restrictions.size());
+		//	rs.close();
+		//	ps.close();
+
+			return restrictions;
+		} finally {
+			close(rs);
+			close(ps);
 		}
-
-		LOGGER.debug("address restrictions size :"+restrictions.size());
-		rs.close();
-		ps.close();
-
-		return restrictions;
 	}
 
 	
@@ -1194,13 +1271,19 @@ public class GenericSearchDAO {
 
 
 	public static List findFailedSettlementBatch(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement(SETTLEMENT_BATCH_QUERY);
-		ResultSet rs = ps.executeQuery();
-		List lst = processSettlementBatchResultSet(rs);
-		rs.close();
-		ps.close();
-		return lst;
-
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(SETTLEMENT_BATCH_QUERY);
+			rs = ps.executeQuery();
+			List lst = processSettlementBatchResultSet(rs);
+			rs.close();
+			ps.close();
+			return lst;
+		} finally {
+			close(rs);
+			close(ps);
+		}
 	}	
 
 	private static List processSettlementBatchResultSet(ResultSet rs) throws SQLException {
@@ -1222,6 +1305,5 @@ public class GenericSearchDAO {
 		}
 		return lst;
 	}
-
 
 }

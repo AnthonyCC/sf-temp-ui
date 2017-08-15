@@ -74,7 +74,7 @@ public class PaymentechService extends AbstractService implements Gateway {
 			  String inputJson = buildRequest(GatewayAdapter.getPaymentGatewayRequest(request));
 			  serviceResponse =  getData(inputJson, getOrbitalEndPoint(REVERSE_AUTHORIZE_API), PaymentGatewayResponse.class);
 		} catch (FDPayPalServiceException e) {
-			 LOGGER.error("reverseAuthorize Method Exception  : "+e.getMessage());
+			 LOGGER.error("reverseAuthorize Method Exception: "+e.getMessage());
 				throw new ErpTransactionException(e);
 		}
 		  LOGGER.info("reverseAuthorize Method End ");
@@ -313,7 +313,7 @@ public class PaymentechService extends AbstractService implements Gateway {
 			}
 				
 		
-		  GatewayLogActivity.logActivity(GatewayType.PAYMENTECH, response);
+		  
 		return capture;
 		
 	}
@@ -325,7 +325,6 @@ public class PaymentechService extends AbstractService implements Gateway {
 			ErpCaptureModel capModel) throws ErpTransactionException {
 		 LOGGER.info("voidCapture Method Start ");
 		 PaymentGatewayResponse  serviceResponse = null;
-		  ErpVoidCaptureModel voidCapture=null;
 		 Request request =GatewayAdapter.getVoidCaptureRequest(paymentMethod, capModel);
 		 
 		 if(request==null)throw new Error(INVALID_REQUEST);
@@ -342,41 +341,10 @@ public class PaymentechService extends AbstractService implements Gateway {
 		  LOGGER.info("voidCapture Method End ");
 		  Response response = GatewayAdapter.getResponse(serviceResponse, request); 
 		  GatewayLogActivity.logActivity(GatewayType.PAYMENTECH, response);
-		
-		try {
-			voidCapture = GatewayAdapter.getVoidCaptureResponse(response, capModel);
-		} catch (PaylinxResourceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return voidCapture;
+		return null;
 		
 	}
 
-	@Override
-	public Response voidCapture(Request _request)
-			throws ErpTransactionException {
-		 LOGGER.info("voidCapture Method Start ");
-		 PaymentGatewayResponse  serviceResponse = null;
-		 Request request =_request;
-		 
-		 if(request==null)throw new Error(INVALID_REQUEST);
-			if(!TransactionType.VOID_CAPTURE.equals(request.getTransactionType()))
-				throw new Error("Transaction Type "+request.getTransactionType()+" is INVALID for this call.");
-			
-		  try {
-			String inputJson = buildRequest(GatewayAdapter.getPaymentGatewayRequest(request));
-			serviceResponse =  getData(inputJson, getOrbitalEndPoint(VOID_CAPTURE_API), PaymentGatewayResponse.class);
-		} catch (FDPayPalServiceException e) {
-			 LOGGER.error("voidCapture Method Exception : "+e.getMessage());
-				throw new ErpTransactionException(e);
-		}
-		  LOGGER.info("voidCapture Method End ");
-		  Response response = GatewayAdapter.getResponse(serviceResponse, request); 
-		  GatewayLogActivity.logActivity(GatewayType.PAYMENTECH, response);
-		return response;
-		
-	}
 
 
 	@Override
@@ -411,7 +379,6 @@ public class PaymentechService extends AbstractService implements Gateway {
 		return cashback;
 		
 	}
-
-
+	
 	
 }

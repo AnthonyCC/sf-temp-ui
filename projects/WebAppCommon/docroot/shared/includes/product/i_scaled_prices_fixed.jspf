@@ -6,7 +6,7 @@
 	// Display scaled pricing for FDProduct product.
 	//
     boolean isGrpScale = false;
-    FDGroup grp = productInfo.getGroup(user.getPricingContext().getZoneInfo().getSalesOrg(),user.getPricingContext().getZoneInfo().getDistributionChanel()); 
+    FDGroup grp = productInfo.getGroup(user.getPricingContext().getZoneInfo()); 
     if(grp != null && GroupScaleUtil.getGroupScalePrice(grp,user.getPricingContext().getZoneInfo()) != null) {                                                                                                                                                                                                                                                                                                                                                                                        
         isGrpScale = true;	
     }	

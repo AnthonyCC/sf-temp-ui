@@ -1,5 +1,6 @@
 'use strict';
 
+
 var FreshDirect = window.FreshDirect || {};
 var GTMID = window.FreshDirect && window.FreshDirect.gtm && window.FreshDirect.gtm.key;
 var GTMAUTH = window.FreshDirect && window.FreshDirect.gtm && window.FreshDirect.gtm.auth;
@@ -8,6 +9,8 @@ var dataLayer = window.dataLayer || [];
 
 // data processors to transform incoming data and put it into the dataLayer
 (function(fd) {
+  var $=fd.libs.$;
+
   fd.gtm = fd.gtm || {};
 
   var sectionProducts = function (section) {
@@ -249,12 +252,12 @@ var dataLayer = window.dataLayer || [];
         });
       }
 
-      if (coData.newOrder === 'true') {
+      if (coData.newOrder === 'true' || coData.modifyOrder === 'true') {
         dataLayer.push({
           ecommerce: {
             purchase: {
               actionField: {
-                id: coData.orderId || '',
+                id: coData.orderId + (+coData.modifiedOrderCount ? '-'+coData.modifiedOrderCount : '')|| '',
                 payment_type: coData.paymentType || '',
                 revenue: coData.revenue || 0,
                 tax: coData.tax || 0,
@@ -299,6 +302,20 @@ var dataLayer = window.dataLayer || [];
         }
 
         return {event: 'checkout-success'};
+      }
+
+      return null;
+    },
+    cancelOrder: function (orderData) {
+      if (orderData.orderId) {
+        dataLayer.push({
+          eventCategory: 'Orders',
+          eventAction: 'cancelled-order',
+          eventLabel: orderData.orderId
+        });
+        return {
+          event: 'order-cancellation'
+        };
       }
 
       return null;
@@ -426,13 +443,100 @@ var dataLayer = window.dataLayer || [];
       });
     }
   };
+
+  // product tile serialization
+  fd.gtm.getProductData = function (productEl) {
+    var productE = $(productEl).closest('[data-component="product"]'),
+        productId = productE.attr('data-product-id'),
+        productData,
+        moduleE;
+
+    if (productId) {
+      productE = $('[data-product-id="'+productId+'"]').first();
+    }
+
+    productData = fd.modules.common.productSerialize(productE)[0];
+    moduleE = $(productE).closest('.content-module')[0];
+
+    productData.brand = productE.find('.portrait-item-header-name b').text();
+    productData.name = productE.find('.product-name-no-brand').text() || productE.find('.portrait-item-header-name').text();
+    productData.price = productE.attr('data-price');
+    productData.in_stock = productE.attr('data-in-stock');
+    productData.new_product = productE.attr('data-new-product');
+    productData.variant = productE.attr('data-variant');
+    productData.position = productE.attr('data-position');
+    productData.list = productE.attr('data-list') || productE.attr('data-virtual-category');
+
+    if (!productData.position) {
+      $('[data-component="product"]').each(function (i, el) {
+        if (!productData.position && $(el).attr('data-product-id') === productE.attr('data-product-id')) {
+          productData.position = i+1;
+        }
+      });
+    }
+
+    if (!productData.list && moduleE) {
+      productData.list = moduleE.id;
+    }
+
+    if (productE.hasClass('transactional-related-body')) {
+      productData.list = 'cross-sell';
+      productData.position = 1;
+    }
+
+    return productData;
+  };
+
+  // report product impressions for a DOM element
+  fd.gtm.reportImpressions = function (el) {
+    var $el = $(el);
+
+    var report = function (elm) {
+      var productData = fd.gtm.getProductData(elm);
+
+      dataLayer.push(['ecommerce.impressions.push', {
+        id: productData.productId,
+        name: productData.name,
+        price: productData.price,
+        brand: productData.brand,
+        category: productData.categoryId,
+        variant: productData.variant !== 'null' ? productData.variant : "default variant",
+        new_product: productData.new_product,
+        sku: productData.skuCode,
+        in_stock: productData.in_stock,
+        position: productData.position,
+        list: productData.list
+      }]);
+    };
+
+    $el.each(function (i, elm) {
+      if ($(elm).is('[data-component="product"]')) {
+        report(elm);
+      }
+    });
+
+    $el.find('[data-component="product"]').each(function (i, elm) {
+      report(elm);
+    });
+  };
+
+  // get actual dataLayer value (for verification)
+  fd.gtm.getValue = function (query) {
+    return window.google_tag_manager[GTMID].dataLayer.get(query);
+  };
 }(FreshDirect));
 
 // process data layer related attributes available at page load
 (function(fd) {
+  var $=fd.libs.$;
   var gtmData = fd.gtm && fd.gtm.data && fd.gtm.data.googleAnalyticsData;
   var browseData = fd.browse && fd.browse.data;
   var productData = fd.pdp && fd.pdp.data;
+
+  // put empty product list into dataLayer, to be able to append to it
+  dataLayer.push({
+    'ecommerce.impressions': []
+  });
 
   if (gtmData) {
     fd.gtm.updateDataLayer(gtmData);
@@ -457,6 +561,11 @@ var dataLayer = window.dataLayer || [];
     fd.gtm.updateDataLayer({product: productData});
   }
 
+  // collect impressions from content modules
+  $('.content-module.product-list').each(function (i, el) {
+    fd.gtm.reportImpressions(el);
+  });
+
 }(FreshDirect));
 
 // listen for gtm related data
@@ -476,6 +585,20 @@ var dataLayer = window.dataLayer || [];
   });
 
   gtmUpdate.listen();
+
+  // product impression update (via DOM element list)
+  var productImpressions = Object.create(fd.common.signalTarget, {
+    signal: {
+      value: 'productImpressions'
+    },
+    callback: {
+      value: function (el) {
+        fd.gtm.reportImpressions(el);
+      }
+    }
+  });
+
+  productImpressions.listen();
 
   // product list update (browse)
   var sectionsUpdate = Object.create(fd.common.signalTarget, {
@@ -538,7 +661,7 @@ var dataLayer = window.dataLayer || [];
         coStepData.delivery_type = selectedAddress.service_type;
       }
     } else if (step === 'payment') {
-    	var selectedPayment = (!data.payments) ? null : data.payments.filter(function (payment) { return payment.selected; })[0];
+      var selectedPayment = !data.payments ? null : data.payments.filter(function (payment) { return payment.selected; })[0];
 
       if (!selectedPayment) { return; }
 
@@ -634,45 +757,19 @@ var dataLayer = window.dataLayer || [];
   $(document).on('click', '[data-component="product"] a[href]', function (e) {
     e.preventDefault();
     var target = $(e.target).closest('a').prop('href'),
-        productE = $(e.target).closest('[data-component="product"]'),
-        productData = fd.modules.common.productSerialize(productE)[0],
+        productData = fd.gtm.getProductData(e.target),
         goToProduct = function () {
           window.location.assign(target);
         };
 
-    productData.brand = productE.find('.portrait-item-header-name b').text();
-    productData.name = productE.find('.product-name-no-brand').text() || productE.find('.portrait-item-header-name').text();
-    productData.price = productE.attr('data-price');
-    productData.in_stock = productE.attr('data-in-stock');
-    productData.new_product = productE.attr('data-new-product');
-    productData.variant = productE.attr('data-variant');
-
     // failsafe
     var goTimeout = setTimeout(goToProduct, 300);
-
-    var position = 0,
-        list = 'main';
-
-    $('[data-component="product"]').each(function (i, el) {
-      if (!position && $(el).attr('data-product-id') === productE.attr('data-product-id')) {
-        position = i+1;
-      }
-    });
-
-    if (productE.hasClass('carouselTransactionalItem')) {
-      list = 'carousel';
-    }
-
-    if (productE.hasClass('transactional-related-body')) {
-      list = 'cross-sell';
-      position = 1;
-    }
 
     fd.gtm.updateDataLayer({
       ecommerce: {
         click: {
           actionField: {
-            list: list
+            list: productData.list || 'main'
           },
           products: [{
             id: productData.productId,
@@ -684,7 +781,7 @@ var dataLayer = window.dataLayer || [];
             new_product: productData.new_product,
             sku: productData.skuCode,
             in_stock: productData.in_stock,
-            position: position
+            position: productData.position
           }]
         }
       }

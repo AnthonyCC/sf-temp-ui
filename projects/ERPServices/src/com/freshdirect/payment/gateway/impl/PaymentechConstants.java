@@ -9,7 +9,7 @@ import com.freshdirect.payment.gateway.Merchant;
 import com.freshdirect.payment.gateway.PaymentMethodType;
 import com.freshdirect.payment.gateway.TransactionType;
 
-final class PaymentechConstants implements java.io.Serializable {
+public final class PaymentechConstants implements java.io.Serializable {
 	
 	public static final String SUCCESS="0";
 	public static final String TERMINAL_ID = "001";
@@ -243,7 +243,7 @@ final class PaymentechConstants implements java.io.Serializable {
 		   }
 	}
 	
-	static enum BankAccountType implements java.io.Serializable {
+	static public enum BankAccountType implements java.io.Serializable {
 		CONSUMER_CHECKING( com.freshdirect.payment.gateway.BankAccountType.CHECKING,"C"),
 		CONSUMER_SAVINGS( com.freshdirect.payment.gateway.BankAccountType.SAVINGS,"S");
 		//COMMERCIAL_CHECKING("C", "Commercial Checking Account"),
@@ -271,20 +271,20 @@ final class PaymentechConstants implements java.io.Serializable {
 	        sb.append('}');
 	        return sb.toString();
 	    }
-	     String getCode() {
+	     public String getCode() {
 		        return code;
 		 }
 		 
 	     com.freshdirect.payment.gateway.BankAccountType getType() {
 		        return type;
 		 }
-	      static BankAccountType get(com.freshdirect.payment.gateway.BankAccountType type) {
+	      public static BankAccountType get(com.freshdirect.payment.gateway.BankAccountType type) {
 		        
 		     	return accountTypes.get(type);
 		  }
 	}
 	
-	static enum CardType implements java.io.Serializable {
+	public static enum CardType implements java.io.Serializable {
 		VISA( CreditCardType.VISA,"VI"),
 		MASTERCARD( CreditCardType.MASTERCARD,"MC"),
 		AMEX( CreditCardType.AMEX,"AX"),
@@ -314,14 +314,14 @@ final class PaymentechConstants implements java.io.Serializable {
 	        sb.append('}');
 	        return sb.toString();
 	    }
-	     String getCode() {
+	     public String getCode() {
 		        return code;
 		 }
 		 
-	     CreditCardType getType() {
+	     public CreditCardType getType() {
 		        return type;
 		 }
-	      static CardType get(CreditCardType type) {
+	     public static CardType get(CreditCardType type) {
 		        
 		     	return accountTypes.get(type);
 		  }

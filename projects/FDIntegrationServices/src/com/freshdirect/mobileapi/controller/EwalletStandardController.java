@@ -10,7 +10,10 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.EwalletResponse;
 import com.freshdirect.mobileapi.controller.data.request.EwalletRequest;
@@ -136,7 +139,7 @@ public class EwalletStandardController extends BaseController{
 		        	FDActionInfo fdActionInfo = AccountActivityUtil.getActionInfo(request.getSession());
         			requestMessage.setFdActionInfo(fdActionInfo);
 		        	requestMessage.setCustomerId(user.getFDSessionUser().getFDCustomer().getErpCustomerPK());
-		        	res = ewalletService.addPayPalWallet(requestMessage);
+		        	res = ewalletService.addPayPalWallet(requestMessage, FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user.getFDSessionUser()));
         		}else{
         			res.addErrorMessages(errorMsg);
         		}

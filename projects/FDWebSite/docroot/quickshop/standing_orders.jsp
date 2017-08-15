@@ -66,6 +66,7 @@
 	
   <tmpl:put name="extraJs">
     <fd:javascript src="/assets/javascript/timeslots.js" />
+    <%@ include file="/shared/template/includes/ccl.jspf" %> <%-- FIXME: absolute horror, currently needed for some functionality on standing orders pages, an extreme cleanup or replacement would be essential here ... --%>
   </tmpl:put>
 
 </tmpl:insert>

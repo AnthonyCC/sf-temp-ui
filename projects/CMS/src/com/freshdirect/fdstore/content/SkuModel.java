@@ -10,7 +10,6 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDCachedFactory;
-import com.freshdirect.fdstore.FDMaterialSalesArea;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -31,9 +30,9 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 	
 	private List<DomainValue> variationOptions = new ArrayList<DomainValue>();
 	
-	private boolean unavailable;
-	private long lastRefresh = 0;
-	private static final long AVAILABILITY_REFRESH = 1000 * FDStoreProperties.getSkuAvailabilityRefreshPeriod();
+	//private boolean unavailable;
+	//private long lastRefresh = 0;
+	//private static final long AVAILABILITY_REFRESH = 1000 * FDStoreProperties.getSkuAvailabilityRefreshPeriod();
 
 	public SkuModel(ContentKey cKey) {
 		super(cKey);
@@ -140,6 +139,9 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
     }
     
     private AvailabilityI getAvailability() {
+    	if(FDStoreProperties.isDeveloperDisableAvailabilityLookup()) {
+    		return DUMMY_AVAILABLE;
+    	}
 		try {
 
 			FDProductInfo fdpi = this.getProductInfo();
@@ -152,7 +154,8 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 				pickingPlantId = ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 			}
 			FDAvailabilityI av = AvailabilityFactory.createAvailability(this, fdpi,pickingPlantId);
-			return new AvailabilityAdapter(fdpi, av,salesOrg,distChannel,pickingPlantId);
+			AvailabilityAdapter answer = new AvailabilityAdapter(fdpi, av,salesOrg,distChannel,pickingPlantId); 
+			return answer;
 
 		} catch (FDSkuNotFoundException fdsnfe) {
 			return UNAVAILABLE;
@@ -197,6 +200,29 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 	    	return null;
 	    }	
 	};
+
+	private final static AvailabilityI DUMMY_AVAILABLE = new AvailabilityI() {
+		
+	    public boolean isDiscontinued() {
+	    	return false;
+		}
+		public boolean isTempUnavailable() {
+			return false;
+		}
+	    public boolean isOutOfSeason() {
+	    	return false;
+	    }
+	    public boolean isUnavailable() {
+	    	return false;
+	    }
+	    public boolean isAvailableWithin(int days) {
+	    	return true;
+	    }
+	    public Date getEarliestAvailability() {
+	    	return new Date();
+	    }	
+	};
+	
 	
 	/**
 	 *  An adapter class, to provide availability information to a

@@ -129,7 +129,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         return result;
     }
 
-    public ResultBundle setPaymentMethod(String paymentMethodId, String billingReference) throws FDException {
+    public ResultBundle setPaymentMethod(String paymentMethodId, String billingReference, String isAccountLevel) throws FDException {
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_CUSTOMER_SERVICE_REP, SESSION_PARAM_CRM_AGENT,SESSION_PARAM_PYMT_VERIFYFLD, SESSION_PARAM_MAKE_GOOD_ORDER, TAXATION_TYPE_SESSION, SessionName.PAYPAL_DEVICE_ID  },
                 new String[] { SESSION_PARAM_USER, SESSION_PARAM_PYMT_VERIFYFLD, SESSION_PARAM_MAKE_GOOD_ORDER, TAXATION_TYPE_SESSION, SessionName.PAYPAL_DEVICE_ID  }); //gets,sets
         addExpectedRequestValues(new String[] { REQ_PARAM_CHEF_TABLE, REQ_PARAM_PAYMENT_METHOD_ID, REQ_PARAM_BILLING_REF,
@@ -137,6 +137,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
                 REQ_PARAM_BILLING_REF, TAXATION_TYPE });//gets,sets
         addRequestValue(REQ_PARAM_PAYMENT_METHOD_ID, paymentMethodId);
         addRequestValue(REQ_PARAM_BILLING_REF, billingReference);
+        addRequestValue(REQ_PARAM_IS_ACCOUNT_LEVEL, isAccountLevel);
         getWrapTarget().setActionName(ACTION_SET_PAYMENT_METHOD);
         setMethodMode(true);
         

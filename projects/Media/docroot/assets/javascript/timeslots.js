@@ -259,16 +259,30 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 				}
 				
 				/* log change click event */
-				var timeslotId;
-				if (this.slotObjs[slot].radioExt != null) {
-					timeslotId = this.slotObjs[slot].radioExt.value;
+                var timeslotId;
+                if (this.slotObjs[slot].radioExt != null) {
+                    timeslotId = this.slotObjs[slot].radioExt.value;
 
-					this.slotObjs[slot].addCustomEvent({
-						event: 'click', 
-						func: function(argsObj) { logChange(argsObj.timeslotId); },	
-						params: {'timeslotId': timeslotId}
-					});
-				}
+                    /* set the id to a hidden input for form submit */
+                    this.slotObjs[slot].addCustomEvent({
+                        event: 'click', 
+                        func: function(argsObj) {
+                            /* add it if it doesn't exist */
+                            if (!$$('#deliveryTimeslotId').length) {
+                                $$('.tsWrapper')[0].insertBefore( new Element('input', {'id': 'deliveryTimeslotId', name: 'deliveryTimeslotId', 'type': 'hidden' }), $$('.tsWrapper')[0].firstChild );
+                            }
+                            /* and set */
+                            $$('#deliveryTimeslotId')[0].value = argsObj.timeslotId;
+                        },    
+                        params: {'timeslotId': timeslotId}
+                    });
+                    
+                    this.slotObjs[slot].addCustomEvent({
+                        event: 'click', 
+                        func: function(argsObj) { logChange(argsObj.timeslotId); },    
+                        params: {'timeslotId': timeslotId}
+                    });
+                }
 			}
 			for (var day in this.dayObjs) {
 				//check extend queue
@@ -439,7 +453,7 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 							fdTSDisplay.dayObjs[dayId].hCext.className += ' tsHeaderCMouseOver';
 						}
 					}
-
+                    $jq('#'+dayId).addClass('mouse');
 					var waitTime = this.opts.mouseOverTimeLimit;
 					var expandedDay = this.opts.expandedDayId;
 					//var isExpanded = this.dayObjs[dayId].isExpanded;
@@ -2044,7 +2058,14 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 					}
 					var afterFinishFunc = function () {
 						fdTSDisplay.dayObjs[dayId].hEext.down('.tsHeadE').appear({duration: (appearDuration)});
-						fdTSDisplay.dayObjs[dayId].ext.appear({duration: appearDuration});
+						fdTSDisplay.dayObjs[dayId].ext.appear({duration: appearDuration,
+						afterFinish:function(){
+							  if (!$jq('#'+dayId).hasClass('mouse')){
+							$jq('#'+dayId+' input[type="button"]:first').focus();
+							 }
+							}
+						});
+						//setTimeout(function(){$jq('#'+fdTSDisplay.getID('dayId', dayId, 0)+' input[type="button"]:first').focus();},appearDuration);
 					}
 
 					this.dayObjs[dayId].ext.up(0).morph(cssString, {
@@ -2092,6 +2113,7 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 						fdTSDisplay.unorganizeDay(dayId);
 						fdTSDisplay.dayObjs[dayId].isExpanded = false;
 						fdTSDisplay.reorganizeDay(dayId);
+                        $jq('#'+dayId).removeClass('mouse');
 
 						fdTSDisplay.dayObjs[dayId].hEext.hide();
 						fdTSDisplay.dayObjs[dayId].hCext.style.width = fdTSDisplay.opts.hC_beforeContractWidth;
@@ -2498,6 +2520,43 @@ var fdTSDisplayPreInitializeFuncs = window['fdTSDisplayPreInitializeFuncs'] || [
 			document.forms[formId].submit();
 		}
 	}
+	function changeMe(checkboxElem){
+		
+		if(checkboxElem.getValue()==FreshDirect._page_options.rsvType.ONETIME){
+			document.getElementById("reservationType_field2").value=FreshDirect._page_options.rsvType.RECURRING;
+			document.getElementById("reservationType_field2").checked=true;
+		}
+		else if(checkboxElem.getValue()==FreshDirect._page_options.rsvType.RECURRING || checkboxElem.getValue()== null){
+			document.getElementById("reservationType_field2").value=FreshDirect._page_options.rsvType.ONETIME;
+			document.getElementById("reservationType_field2").checked=false;
+		  }
+	}
+	
+	
+	$jq(document).on('keydown', '.tsWrapper input[type="button"]', function (e) {
+		if (e.keyCode == 13) 
+		{
+			$jq(this).click();
+			e.preventDefault();
+			if ($jq('#reserveTimeslot').length) {
+				reserveTimeslot.actionName.value='changeReservation';
+				$jq('#reserveTimeslot').submit();
+			}
+			else{
+				//$jq('[data-component="timeslotchangebutton"]').click();
+			}
+	       }
+		  });
+	$jq(document).on("focusin","#tsContainer .tsHeaderE",function(){
+		$jq(this).css({"background":"#4fa157","border-top-right-radius":"6px","border-top-left-radius":"6px"});
+		
+		//console.log("focus");
+	});
+	$jq(document).on("focusout","#tsContainer .tsHeaderE",function(){
+		$jq(this).css("background","");
+		//console.log("focus");
+	});
+
 /*
 	function checkPremiumSlotPopup(JSONstring, formId) {
 		var params = JSONstring.evalJSON(true);	

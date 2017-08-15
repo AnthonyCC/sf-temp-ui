@@ -1278,9 +1278,11 @@ public class ProductDetailPopulator {
 		MaterialPrice[] matPrices = null;
 		List<MaterialPrice> matPriceList = new ArrayList<MaterialPrice>();
 	
-		if ( productInfo.isGroupExists(pricingZone.getSalesOrg(),pricingZone.getDistributionChanel()) ) {
+		FDGroup group = productInfo.getGroup(pricingZone);
+//		if ( productInfo.isGroupExists(pricingZone.getSalesOrg(),pricingZone.getDistributionChanel()) ) {
+		if( null != group){
 			// Has a Group Scale associated with it. Check if there is GS price defined for current pricing zone.
-			FDGroup group = productInfo.getGroup(pricingZone.getSalesOrg(),pricingZone.getDistributionChanel());
+//			FDGroup group = productInfo.getGroup(pricingZone.getSalesOrg(),pricingZone.getDistributionChanel());
 			MaterialPrice[] grpPrices = null;
 			try {
 				grpPrices = GroupScaleUtil.getGroupScalePrices( group, pricingZone );
@@ -1313,9 +1315,14 @@ public class ProductDetailPopulator {
 			item.setCvPrices( fdProduct.getPricing().getCharacteristicValuePrices(priceCalculator.getPricingContext()) );
 			item.setSuRatios( fdProduct.getPricing().getSalesUnitRatios() );
 		}
-		if ( productInfo.isGroupExists(pricingZone.getSalesOrg(),pricingZone.getDistributionChanel()) && productInfo.getGroup(pricingZone.getSalesOrg(),pricingZone.getDistributionChanel()) != null ) {
-			item.setGrpPrices( GroupScaleUtil.getGroupScalePrices( productInfo.getGroup(pricingZone.getSalesOrg(),pricingZone.getDistributionChanel()), pricingZone ) );
+		if ( /*productInfo.isGroupExists(pricingZone.getSalesOrg(),pricingZone.getDistributionChanel()) && */productInfo.getGroup(pricingZone) != null ) {
+			item.setGrpPrices( GroupScaleUtil.getGroupScalePrices( productInfo.getGroup(pricingZone), pricingZone ) );
 		}
+		
+		if ( null != group ) {
+			item.setGrpPrices( GroupScaleUtil.getGroupScalePrices( group, pricingZone ) );
+		}
+		
 		ZonePriceInfoModel zone = productInfo.getZonePriceInfo( pricingZone );
 		if ( zone != null && zone.isItemOnSale() ) {
 			item.setWasPrice( zone.getSellingPrice() );
@@ -1327,8 +1334,10 @@ public class ProductDetailPopulator {
 		MaterialPrice matPrice = null;
 		GroupScalePricing grpPricing = null;
 		
-		FDGroup group = productInfo.getGroup(priceCalculator.getPricingContext().getZoneInfo().getSalesOrg(),
-						                     priceCalculator.getPricingContext().getZoneInfo().getDistributionChanel());
+//		FDGroup group = productInfo.getGroup(priceCalculator.getPricingContext().getZoneInfo().getSalesOrg(),
+//						                     priceCalculator.getPricingContext().getZoneInfo().getDistributionChanel());
+		
+		FDGroup group = productInfo.getGroup(priceCalculator.getPricingContext().getZoneInfo());
 		
 		if ( group != null ) {
 			grpPricing = GroupScaleUtil.lookupGroupPricing( group );
@@ -1415,9 +1424,7 @@ public class ProductDetailPopulator {
 			LOG.error( "Error in post-process populate. Skipping item." );
 			return;
 		}
-		
 		postProcessPopulate( user, item, productModel, productInfo, showCouponStatus, lineData );
-		
 		// post-process replacement item too, if any
 		if ( item instanceof QuickShopLineItem ) {
 	    	QuickShopLineItem replItem = ((QuickShopLineItem)item).getReplacement();

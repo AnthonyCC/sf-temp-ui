@@ -33,6 +33,7 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDProductPromotionPreviewInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ProductModelPromotionAdapter;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 import com.freshdirect.fdstore.content.grabber.GrabberServiceI;
@@ -607,15 +608,17 @@ public class CategoryModel extends ProductContainer {
 	        	}
 	        	
 	            //LOGGER.info("Category[id=\"" + this.getContentKey().getId() + "\"].getSmartProducts(\"" + zoneId + "\")");
-	            synchronized (CategoryModel.class) {
-	                if (globalSmartCategoryVersion > smartCategoryVersion) {
-	                    LOGGER.info("forced smart category recalculation : " + smartCategoryVersion + " -> " + globalSmartCategoryVersion + " for category : "
-	                            + this.getContentKey().getId());
-	                    smartCategoryVersion = globalSmartCategoryVersion;
-	                    recommendedProductsRefMap.clear();
-	                }
-	            }
-	            
+				if (! FDStoreProperties.isLocalDeployment() ) { //refreshes this.productGrabbers
+		            synchronized (CategoryModel.class) {
+		                if (globalSmartCategoryVersion > smartCategoryVersion) {
+		                    LOGGER.info("forced smart category recalculation : " + smartCategoryVersion + " -> " + globalSmartCategoryVersion + " for category : "
+		                            + this.getContentKey().getId());
+		                    smartCategoryVersion = globalSmartCategoryVersion;
+		                    recommendedProductsRefMap.clear();
+		                }
+		            }
+				}
+				
 	            synchronized (recommendedProductsSync) {
 	                if ( recommenderChanged || recommendedProductsRefMap.get(pricingZone) == null )
 	                    recommendedProductsRefMap.put(pricingZone, new RecommendedProductsRef(threadPool, pricingZone));
@@ -636,7 +639,7 @@ public class CategoryModel extends ProductContainer {
 
     	// == [APPDEV-2910] add products picked by new product grabbers ==
 		{
-			if (getProductGrabbers() != null) { //refreshes this.productGrabbers
+			if (! FDStoreProperties.isLocalDeployment() && getProductGrabbers() != null) { //refreshes this.productGrabbers
 				GrabberServiceI grabber = ContentFactory.getInstance()
 						.getProductGrabberService();
 				if (grabber != null) {
@@ -969,6 +972,8 @@ public class CategoryModel extends ProductContainer {
 
 	        	if (prod.isInvisible() || prod.isHidden() || prod.isDiscontinued()) {
 	        		itr.remove();
+	        	} else {
+	        		return true;
 	        	}
 	        }
 	    }

@@ -105,7 +105,7 @@ var FreshDirect = FreshDirect || {};
         },
         initTrigger:{
             value:function(){
-                var cnt = $('#' + this.popupId);
+                var cnt = $('#' + this.popupId), $popupBody=cnt.find(this.bodySelector);
                 this.popup = new fd.modules.common.PopupContent(
                         cnt.hide(),
                         this.$trigger,
@@ -120,6 +120,11 @@ var FreshDirect = FreshDirect || {};
                     if(e.target === e.currentTarget){ self.popup.hide(); }
                   });
                 }
+
+                //add scroll event tracking
+            	$popupBody.on('scroll', throttle(function(e) {
+            		$(window).trigger('lazyLoad');
+            	}, 500));
             }
         },
         render:{

@@ -577,17 +577,21 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 		if (order.getAmount() > ErpServicesProperties.getGiftCardStrictOrderLimit() && !csr) {
 			return EnumFraudReason.MAX_GC_ORDER_TOTAL;
 		}
-
-		try{
-		Date threeDaysAgo = DateUtil.addDays(DateUtil.truncate(new Date()), -1);
-		int ordersInOneDays = ErpSaleInfoDAO.getOrderCountPast(getConnection(), erpCustomerPk.getId(), threeDaysAgo,EnumSaleType.GIFTCARD);
-		LOGGER.debug("Found " + ordersInOneDays + " orders in past 24 hrs");
-		if(ordersInOneDays > ErpServicesProperties.getGiftCardOrderCountLimit() && !csr){
-			return EnumFraudReason.MAX_ORDER_COUNT_LIMIT;
-		}
+		
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			Date threeDaysAgo = DateUtil.addDays(DateUtil.truncate(new Date()), -1);
+			int ordersInOneDays = ErpSaleInfoDAO.getOrderCountPast(conn, erpCustomerPk.getId(), threeDaysAgo, EnumSaleType.GIFTCARD);
+			LOGGER.debug("Found " + ordersInOneDays + " orders in past 24 hrs");
+			if (ordersInOneDays > ErpServicesProperties.getGiftCardOrderCountLimit() && !csr) {
+				return EnumFraudReason.MAX_ORDER_COUNT_LIMIT;
+			}
 		} catch (SQLException ex) {
 			LOGGER.error("SQLException occurred", ex);
 			throw new EJBException(ex.getMessage());
+		}finally{
+			close(conn);
 		}
 		return null;
 		

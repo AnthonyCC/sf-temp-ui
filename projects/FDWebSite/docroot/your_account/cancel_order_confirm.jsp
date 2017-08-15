@@ -23,6 +23,18 @@ final int W_YA_CANCEL_ORDER_CONFIRM = 970;
 
 %>
 
+<%-- GTM reporting --%>
+<script>
+  var dataLayer = window.dataLayer || [];
+
+  dataLayer.push({
+    event: 'order-cancellation',
+    eventCategory: 'Orders',
+    eventAction: 'cancelled-order',
+    eventLabel: '<%= orderId %>'
+  });
+</script>
+
 <%-- error message handling here --%>
 <TABLE WIDTH="<%= W_YA_CANCEL_ORDER_CONFIRM %>" BORDER="0" CELLPADDING="0" CELLSPACING="0">
 <TR><TD class="text11">

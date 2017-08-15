@@ -28,7 +28,7 @@ public class EnumSaleStatus implements java.io.Serializable {
 	public final static EnumSaleStatus					SUBMITTED					= new EnumSaleStatus( "SUB", "Submitted", "Submitted", true );
 
 	/** Order was canceled by customer */
-	public final static EnumSaleStatus					CANCELED					= new EnumSaleStatus( "CAN", "Cancelled", "Cancelled", false );
+	public final static EnumSaleStatus					CANCELED					= new EnumSaleStatus( "CAN", "Cancelled", "Canceled", false );
 
 	/** Order in process, after cut-off time, cannot be change */
 	public final static EnumSaleStatus					INPROCESS					= new EnumSaleStatus( "PRC", "In process", "In process", true );

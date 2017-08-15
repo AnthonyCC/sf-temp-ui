@@ -12,10 +12,12 @@ import javax.servlet.jsp.PageContext;
 import org.apache.log4j.Category;
 
 import com.freshdirect.customer.EnumAccountActivityType;
+import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerCreditUtil;
@@ -25,6 +27,7 @@ import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -55,10 +58,11 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		FDUserI user = getUser();
 		String paymentId = request.getParameter( "paymentMethodList" );
 		String billingRef = request.getParameter( "billingRef" );
-		setPaymentMethod(paymentId, billingRef, request, session, result, actionName);
+		String isAccountLevel = request.getParameter( "isAccountLevel" );
+		setPaymentMethod(paymentId, billingRef, request, session, result, actionName, isAccountLevel);
 	}
 	
-	public static void setPaymentMethod(String paymentId, String billingRef, HttpServletRequest request, HttpSession session, ActionResult result, String actionName) throws FDResourceException {
+	public static void setPaymentMethod(String paymentId, String billingRef, HttpServletRequest request, HttpSession session, ActionResult result, String actionName, String isAccountLevel) throws FDResourceException {
 		FDUserI user = (FDUserI) session.getAttribute( SessionName.USER );	
 		boolean makeGoodOrder = false;
 		boolean addOnOrder = false;
@@ -78,7 +82,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 			referencedOrder = user.getMasqueradeContext().getParentOrderId();
 			addOnOrder = true;
 		}
-		setPaymentMethod( request, session, (FDUserI) session.getAttribute( SessionName.USER ), result, actionName, paymentId, billingRef, makeGoodOrder, addOnOrder, referencedOrder );
+		setPaymentMethod( request, session, (FDUserI) session.getAttribute( SessionName.USER ), result, actionName, paymentId, billingRef, makeGoodOrder, addOnOrder, referencedOrder, isAccountLevel );
 	}
 
 	private void setNoPaymentMethod( HttpServletRequest request, ActionResult result ) throws FDResourceException {
@@ -119,7 +123,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		user.updateUserState();
 	}
 	
-	private static void setPaymentMethod( HttpServletRequest request, HttpSession session, FDUserI user, ActionResult result, String actionName, String paymentId, String billingRef, boolean makeGoodOrder, boolean addOnOrder, String referencedOrder ) throws FDResourceException {
+	private static void setPaymentMethod( HttpServletRequest request, HttpSession session, FDUserI user, ActionResult result, String actionName, String paymentId, String billingRef, boolean makeGoodOrder, boolean addOnOrder, String referencedOrder, String isAccountLevel ) throws FDResourceException {
 		//
 		// check for a valid payment ID
 		//
@@ -227,8 +231,13 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		FDActionInfo info = AccountActivityUtil.getActionInfo( session );
 		final PrimaryKey pmPK = ( (ErpPaymentMethodModel)paymentMethod ).getPK();
 		// Do not set MP Ewallet card as default Payment Method
-		if(paymentMethod.geteWalletID() == null || paymentMethod.geteWalletID().equals(""+EnumEwalletType.PP.getValue())){
-			FDCustomerManager.setDefaultPaymentMethod( info, pmPK );
+		
+		if(!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user) && (paymentMethod.geteWalletID() == null || paymentMethod.geteWalletID().equals(""+EnumEwalletType.PP.getValue()))){
+			FDCustomerManager.setDefaultPaymentMethod( info, pmPK, null, false );
+		}else{
+			if(null != isAccountLevel && isAccountLevel.equalsIgnoreCase("Y"))
+			FDCustomerManager.setDefaultPaymentMethod( info, pmPK, EnumPaymentMethodDefaultType.DEFAULT_CUST, true );
+			user.refreshFdCustomer();
 		}
 		
 			/*
@@ -304,7 +313,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
                 paymentId = payMethods.get(0).getPK().getId();
             }
             if(paymentId != null) {
-                setPaymentMethod(request, session, user, result, actionName, paymentId, request.getParameter("billingRef"), false, false,"");
+                setPaymentMethod(request, session, user, result, actionName, paymentId, request.getParameter("billingRef"), false, false,"", "N");
             }
             if ( result.isSuccess() ) {
                 applyCustomerCredits(actionName, user, session);

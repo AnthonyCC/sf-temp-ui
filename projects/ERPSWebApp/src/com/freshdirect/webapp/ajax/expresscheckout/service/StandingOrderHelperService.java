@@ -12,9 +12,12 @@ import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.action.WebActionSupport;
@@ -69,7 +72,7 @@ public class StandingOrderHelperService extends WebActionSupport {
 		if (!cart.getPaymentMethod().isGiftCard()) {
 			// set the default credit card to the one that is in the cart
 			FDCustomerManager.setDefaultPaymentMethod(AccountActivityUtil.getActionInfo(session),
-					((ErpPaymentMethodModel) cart.getPaymentMethod()).getPK());
+					((ErpPaymentMethodModel) cart.getPaymentMethod()).getPK(), null, FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user));
 		}
 		ErpAddressModel address = cart.getDeliveryAddress();
 

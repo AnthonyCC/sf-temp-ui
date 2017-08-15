@@ -20,6 +20,7 @@ import java.util.List;
 import org.apache.log4j.Category;
 import org.apache.openjpa.lib.log.Log;
 
+import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.referral.extole.model.ExtoleConversionRequest;
 import com.freshdirect.referral.extole.model.ExtoleResponse;
@@ -145,10 +146,11 @@ public class FDExtoleManagerDAO implements Serializable {
 	public static List<ExtoleConversionRequest> getExtoleApproveConversionTransactions(
 			Connection conn) throws SQLException {
 		List<ExtoleConversionRequest> list = new ArrayList<ExtoleConversionRequest>();
+		ResultSet rs = null;
 		PreparedStatement ps = conn
 				.prepareStatement(SELECT_EXTOLE_APPROVE_CONVERSION_TRANSACTION);
 		try {
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			while (rs.next()) {
 				ExtoleConversionRequest requestModel = new ExtoleConversionRequest();
 				requestModel.setRafTransId(rs.getString("TRANS_ID"));
@@ -160,11 +162,9 @@ public class FDExtoleManagerDAO implements Serializable {
 
 				list.add(requestModel);
 			}
-			ps.close();
-
 		} finally {
-			if (ps != null)
-				ps.close();
+			DaoUtil.close(rs);
+			DaoUtil.close(ps);
 		}
 		return list;
 	}

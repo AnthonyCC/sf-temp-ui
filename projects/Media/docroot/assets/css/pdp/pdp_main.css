@@ -730,8 +730,8 @@ span.cssbutton.annotation:hover {
 }
 .pdp-atc .quantity_plus,
 .pdp-atc .quantity_minus,
-#evenBetterPopup .quantity_plus,
-#evenBetterPopup .quantity_minus{
+.evenbetter-popup .quantity_plus,
+.evenbetter-popup .quantity_minus{
     width: 36px;
     color: #ffffff;
     background-color: #4fa157;

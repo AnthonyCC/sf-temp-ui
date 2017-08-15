@@ -2524,6 +2524,9 @@ li.cleanli .gen-arrow {
 	height: 100%;
     top: 0 !important;
 }
+.fixedpopup.noscroll.mobWeb-nutritionPopup {
+    height: 100%;
+}
 #nutritionPopup.fixedpopup.mm-page {
     min-height: 100vh;
 }

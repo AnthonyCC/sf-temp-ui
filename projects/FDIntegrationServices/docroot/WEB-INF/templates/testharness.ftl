@@ -322,17 +322,17 @@ function loadStuff() {
   } else if (loaddata == "SetPaymentMethods") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/set/");
   	$("#header").val('');
-  	$("#payload").val('{ "paymentMethodId" : "2148933362", "billingRef" : "" }');
+  	$("#payload").val('{ "paymentMethodId" : "2148933362", "billingRef" : "", "isAccountLevel" : "N" }');
 
   } else if (loaddata == "SetPaymentMethodsEx") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/setex/");
   	$("#header").val('');
-  	$("#payload").val('{ "paymentMethodId" : "2148933362", "billingRef" : "" }');
+  	$("#payload").val('{ "paymentMethodId" : "2148933362", "billingRef" : "", "isAccountLevel" : "N" }');
     
   } else if (loaddata == "SetPaymentMethodsExWeb") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/paymentmethod/setex/");
   	$("#header").val('{ "X-FD-Extra-Response" : "INCLUDE_PAYMENT" }');
-  	$("#payload").val('{ "paymentMethodId" : "2148933362", "billingRef" : ""}');
+  	$("#payload").val('{ "paymentMethodId" : "2148933362", "billingRef" : "", "isAccountLevel" : "N" }');
 
   } else if (loaddata == "CheckoutSetOrderLevelMobileNumberEx") {
   	$("#url").val("/saptest12@freshdirect.com/checkout/order/set/");

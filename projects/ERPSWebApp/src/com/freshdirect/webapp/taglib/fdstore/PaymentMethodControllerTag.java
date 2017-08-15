@@ -96,6 +96,16 @@ public class PaymentMethodControllerTag extends com.freshdirect.framework.webapp
 	                    PaymentMethodUtil.deletePaymentMethod(request, actionResult, paymentId);
 	                }
 	            }
+	            else if(actionName.equalsIgnoreCase("defaultPaymentMethod")){
+	            	String paymentId = request.getParameter("defaultPaymentMethod");
+	            	if(paymentId == null || paymentId.length() <= 0){
+	                    actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
+	                }
+	            	 if(actionResult.isSuccess()){
+	            		 FDActionInfo info = AccountActivityUtil.getActionInfo(request.getSession());
+	            		 com.freshdirect.fdstore.payments.util.PaymentMethodUtil.updateDefaultPaymentMethod(info, user.getPaymentMethods(), paymentId, EnumPaymentMethodDefaultType.DEFAULT_CUST, true);
+	            	 }
+	            }
 
             } catch (FDResourceException ex) {
 				LOGGER.error("Error performing action "+actionName, ex);

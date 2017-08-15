@@ -44,6 +44,8 @@ public interface BrandProductAdConfigProvider {
 	
 	public  String getBrandProductAdProviderPgn() ;
 	
+	public  String getBrandProductsBeacon() ;
+	
 	
 	
 }

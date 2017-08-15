@@ -6,7 +6,7 @@ import com.freshdirect.payment.gateway.CreditCard;
 import com.freshdirect.payment.gateway.CreditCardType;
 import com.freshdirect.payment.gateway.PaymentMethodType;
 
-class CreditCardImpl extends PaymentMethodImpl implements CreditCard{
+public class CreditCardImpl extends PaymentMethodImpl implements CreditCard{
 
 	/**
 	 * 
@@ -17,7 +17,7 @@ class CreditCardImpl extends PaymentMethodImpl implements CreditCard{
 	private Date expirationDate;
 	
 
-	CreditCardImpl() {
+	public CreditCardImpl() {
 		super(PaymentMethodType.CREDIT_CARD);
 	}
 	

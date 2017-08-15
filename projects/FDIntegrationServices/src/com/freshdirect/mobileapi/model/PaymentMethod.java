@@ -95,6 +95,10 @@ public class PaymentMethod {
     		return paymentMethod.getZipCode();
     		
     }
+    
+    public boolean isDebitCard(){
+    	return paymentMethod.isDebitCard();
+    }
 
     public String getCardType() {
         // TODO Auto-generated method stub

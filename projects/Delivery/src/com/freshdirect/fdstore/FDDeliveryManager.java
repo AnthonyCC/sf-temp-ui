@@ -231,7 +231,7 @@ public class FDDeliveryManager {
 			try {
 				
 				List<RestrictionI> l = null;
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvRestrictionManagerSB")){
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvManagerSB)){
 					 l = buildRestriction(FDECommerceService.getInstance().getDlvRestrictions());
 				}
 				else
@@ -313,7 +313,7 @@ public class FDDeliveryManager {
 			try {
 				DlvManagerSB sb = getDlvManagerHome().create();
 				List<SiteAnnouncement> l = null;
-				if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB")) {
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvManagerSB)) {
 					l = buildSiteModel(FDECommerceService.getInstance()
 							.getSiteAnnouncements());
 
@@ -872,7 +872,7 @@ public class FDDeliveryManager {
 
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB")){
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvManagerSB)){
 				return LogisticsServiceLocator.getInstance().getCommerceService().reserveTimeslot(timeslotId, customerId, type, customer, chefsTable, ctDeliveryProfile, isForced, event, hasSteeringDiscount, deliveryFeeTier);
 			}
 			else{
@@ -929,7 +929,7 @@ public class FDDeliveryManager {
 
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB")){
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvManagerSB)){
 				FDECommerceService.getInstance().commitReservation(rsvId, customerId,
 						context, address, pr1,
 						event);
@@ -1016,7 +1016,7 @@ public class FDDeliveryManager {
 			EnumServiceType serviceType) throws FDResourceException {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB")){
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvManagerSB)){
 				FDECommerceService.getInstance().saveFutureZoneNotification(
 						email, zip, serviceType.getName());
 			}else{
@@ -1086,10 +1086,11 @@ public class FDDeliveryManager {
 			Set<StateCounty> stateCounty = countiesByState.get(state);
 			if (stateCounty == null) {
 				DlvManagerSB sb = getDlvManagerHome().create();
-				if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB"))
-					stateCounty=FDECommerceService.getInstance().getCountiesByState(state);
-				else
-				stateCounty = sb.getCountiesByState(state);
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvManagerSB)){
+					stateCounty = FDECommerceService.getInstance().getCountiesByState(state);
+				}else{
+					stateCounty = sb.getCountiesByState(state);
+				}
 				if (stateCounty != null) {
 					countiesByState.put(state, stateCounty);
 				}
@@ -1244,12 +1245,13 @@ public class FDDeliveryManager {
 				|| System.currentTimeMillis() - muni_lastRefresh > MUNI_REFRESH_PERIOD) {
 			try {
 				DlvManagerSB sb = getDlvManagerHome().create();
-				if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB")){
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvManagerSB)){
 					this.municipalityInfos = new MunicipalityInfoWrapper(
 							FDECommerceService.getInstance().getMunicipalityInfos());
 				}else{
 				this.municipalityInfos = new MunicipalityInfoWrapper(
-						sb.getMunicipalityInfos());}
+						sb.getMunicipalityInfos());
+				}
 				muni_lastRefresh = System.currentTimeMillis();
 			} catch (CreateException e) {
 				throw new FDResourceException(e, "Cannot create SessionBean");
@@ -1268,11 +1270,12 @@ public class FDDeliveryManager {
 				StateCounty sc = stateCountyByZip.get(zipcode);
 				if (sc == null) {
 					DlvManagerSB sb = getDlvManagerHome().create();
-					if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB"))
+					if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvManagerSB)){
 						sc = FDECommerceService.getInstance().lookupStateCountyByZip(zipcode);
-					else
+					}else{
 						sc = sb.lookupStateCountyByZip(zipcode);
-					if (sc != null) {
+					}
+						if (sc != null) {
 						stateCountyByZip.put(zipcode, sc);
 					}
 				}
@@ -1605,7 +1608,7 @@ public class FDDeliveryManager {
 		} catch (FDLogisticsServiceException e) {
 			try {
 				DlvManagerSB sb = getDlvManagerHome().create();
-				if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB")){
+				if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvManagerSB)){
 					FDECommerceService.getInstance().logFailedFdxOrder(orderId);
 				}else{
 					sb.logFailedFdxOrder(orderId);
@@ -1789,10 +1792,11 @@ public class FDDeliveryManager {
 
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
-			if (FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvManagerSB")) 
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvManagerSB)){
 				FDECommerceService.getInstance().recommitReservation(rsvId, customerId,context, address, pr1);
-			else
+			}else{
 				sb.recommitReservation(rsvId, customerId, context, address, pr1);
+			}
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {

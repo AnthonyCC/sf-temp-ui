@@ -26,7 +26,9 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.fdstore.customer.FDCustomerI;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.ProfileModel;
@@ -68,6 +70,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 	private FDCustomerSmsPreferencePersistentBean customerSmsPreferences;
 	private String rafClickId;
 	private String rafPromoCode;
+	private EnumPaymentMethodDefaultType defaultPaymentMethodType;
 	/**
 	 * Copy into model.
 	 *
@@ -90,6 +93,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		model.setRafClickId(this.rafClickId);
 		model.setRafPromoCode(this.rafPromoCode);
 		model.setCustomerSmsPreferenceModel((FDCustomerEStoreModel)this.customerSmsPreferences.getModel());
+		model.setDefaultPaymentType(this.defaultPaymentMethodType);
 		return model;
 	}
 
@@ -111,6 +115,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		this.rafClickId = m.getRafClickId();
 		this.rafPromoCode = m.getRafPromoCode();
 		this.customerSmsPreferences.setFromModel(m.getCustomerSmsPreferenceModel());
+		this.defaultPaymentMethodType = m.getDefaultPaymentType();
 		this.setModified();
 	}
 
@@ -305,7 +310,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 
 	public PrimaryKey create(Connection conn) throws SQLException {
 		this.setPK(new PrimaryKey(this.getNextId(conn, "CUST")));
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.FDCUSTOMER (ID, ERP_CUSTOMER_ID, LOGIN_COUNT, LAST_LOGIN, DEFAULT_SHIPTO, DEFAULT_PAYMENT, DEFAULT_DEPOT_LOCATION, DEPOT_CODE, RAF_CLICK_ID, RAF_PROMO_CODE) values (?,?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.FDCUSTOMER (ID, ERP_CUSTOMER_ID, LOGIN_COUNT, LAST_LOGIN, DEFAULT_SHIPTO, DEFAULT_PAYMENT, DEFAULT_DEPOT_LOCATION, DEPOT_CODE, RAF_CLICK_ID, RAF_PROMO_CODE, DEFAULT_PAYMENT_METHOD_TYPE) values (?,?,?,?,?,?,?,?,?,?,?)");
 		ps.setString(1, this.getPK().getId());
 		ps.setString(2, this.erpCustomerPK);
 		ps.setInt(3, this.loginCount);
@@ -321,6 +326,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		ps.setString(8, this.depotCode);
 		ps.setString(9, this.rafClickId);
 		ps.setString(10, this.rafPromoCode);
+		ps.setString(11, null != this.defaultPaymentMethodType ? this.defaultPaymentMethodType.getName(): EnumPaymentMethodDefaultType.UNDEFINED.getName());
 
 		try {
 			if (ps.executeUpdate() != 1) {
@@ -376,7 +382,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 	}
 
 	public void load(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("SELECT ERP_CUSTOMER_ID, LOGIN_COUNT, LAST_LOGIN, DEFAULT_SHIPTO, DEFAULT_PAYMENT, PASSREQ_EXPIRATION, PASSREQ_ID, PASSREQ_ATTEMPTS, PASSWORD_HINT, DEFAULT_DEPOT_LOCATION, DEPOT_CODE, PYMT_VERIFY_ATTEMPTS FROM CUST.FDCUSTOMER WHERE ID = ? ");
+		PreparedStatement ps = conn.prepareStatement("SELECT ERP_CUSTOMER_ID, LOGIN_COUNT, LAST_LOGIN, DEFAULT_SHIPTO, DEFAULT_PAYMENT, PASSREQ_EXPIRATION, PASSREQ_ID, PASSREQ_ATTEMPTS, PASSWORD_HINT, DEFAULT_DEPOT_LOCATION, DEPOT_CODE, PYMT_VERIFY_ATTEMPTS, DEFAULT_PAYMENT_METHOD_TYPE FROM CUST.FDCUSTOMER WHERE ID = ? ");
 		ps.setString(1, this.getPK().getId());
 		ResultSet rs = ps.executeQuery();
 		if (!rs.next()) {
@@ -397,6 +403,9 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		this.defaultDepotLocationPK = rs.getString("DEFAULT_DEPOT_LOCATION");
 		this.depotCode = rs.getString("DEPOT_CODE");
 		this.setPymtVerifyAttempts(rs.getInt("PYMT_VERIFY_ATTEMPTS"));
+		String defaultPaymentMethodType = rs.getString("DEFAULT_PAYMENT_METHOD_TYPE");
+		this.setDefaultPaymentMethodType((null != defaultPaymentMethodType && !"".equals(defaultPaymentMethodType))?
+				EnumPaymentMethodDefaultType.getByName(defaultPaymentMethodType):EnumPaymentMethodDefaultType.UNDEFINED);
 		rs.close();
 		ps.close();
 
@@ -412,7 +421,9 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		//Assigning the Estore specific values. 
 		if(null !=this.customerEStore.getModel() && null !=((FDCustomerEStoreModel)this.customerEStore.getModel()).geteStoreId()){
 			this.defaultShipToAddressPK = ((FDCustomerEStoreModel)this.customerEStore.getModel()).getDefaultShipToAddressPK();
+			if(getDefaultPaymentMethodType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName())){
 			this.defaultPaymentMethodPK = ((FDCustomerEStoreModel)this.customerEStore.getModel()).getDefaultPaymentMethodPK();
+			}
 			this.defaultDepotLocationPK = ((FDCustomerEStoreModel)this.customerEStore.getModel()).getDefaultDepotLocationPK();
 			this.tcAcknowledgeToStore = ((FDCustomerEStoreModel)this.customerEStore.getModel()).getTcAcknowledge();
 		}
@@ -420,7 +431,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 
 	public void store(Connection conn) throws SQLException {
 		if (super.isModified()) {
-			PreparedStatement ps = conn.prepareStatement("UPDATE CUST.FDCUSTOMER SET ERP_CUSTOMER_ID = ?, LOGIN_COUNT = ?, LAST_LOGIN =?, DEFAULT_SHIPTO = ?, DEFAULT_PAYMENT =?, PASSREQ_EXPIRATION =?, PASSREQ_ID =?, PASSREQ_ATTEMPTS =?, PASSWORD_HINT =?, DEFAULT_DEPOT_LOCATION = ?, DEPOT_CODE = ?, PYMT_VERIFY_ATTEMPTS=? WHERE ID = ?");
+			PreparedStatement ps = conn.prepareStatement("UPDATE CUST.FDCUSTOMER SET ERP_CUSTOMER_ID = ?, LOGIN_COUNT = ?, LAST_LOGIN =?, DEFAULT_SHIPTO = ?, DEFAULT_PAYMENT =?, PASSREQ_EXPIRATION =?, PASSREQ_ID =?, PASSREQ_ATTEMPTS =?, PASSWORD_HINT =?, DEFAULT_DEPOT_LOCATION = ?, DEPOT_CODE = ?, PYMT_VERIFY_ATTEMPTS=?, DEFAULT_PAYMENT_METHOD_TYPE=? WHERE ID = ?");
 			ps.setString(1, this.erpCustomerPK);
 			ps.setInt(2, this.loginCount);
 			ps.setDate(3, new java.sql.Date(this.lastLogin.getTime()));
@@ -437,7 +448,9 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 			ps.setString(10, this.defaultDepotLocationPK);
 			ps.setString(11, this.depotCode);
 			ps.setInt(12, this.pymtVerifyAttempts );
-			ps.setString(13, this.getPK().getId() );
+			ps.setString(13, (null != this.defaultPaymentMethodType)?this.defaultPaymentMethodType.getName():EnumPaymentMethodDefaultType.UNDEFINED.getName());
+			ps.setString(14, this.getPK().getId() );
+			
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not updated");
 			}
@@ -690,7 +703,15 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 	 */
 	public void setRafPromoCode(String rafPromoCode) {
 		this.rafPromoCode = rafPromoCode;
-	}	
+	}
 
+	public EnumPaymentMethodDefaultType getDefaultPaymentMethodType() {
+		return defaultPaymentMethodType;
+	}
+
+	public void setDefaultPaymentMethodType(EnumPaymentMethodDefaultType defaultPaymentMethodType) {
+		this.defaultPaymentMethodType = defaultPaymentMethodType;
+		this.setModified();
+	}	
 
 }

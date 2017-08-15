@@ -9,6 +9,7 @@ import java.sql.*;
 import java.util.*;
 
 import com.freshdirect.framework.core.*;
+import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.fdstore.content.meal.*;
 
 public class MealPersistentBean extends DependentPersistentBeanSupport {
@@ -102,40 +103,43 @@ public class MealPersistentBean extends DependentPersistentBeanSupport {
 	public PrimaryKey create(Connection conn) throws SQLException {
 		String id = this.getNextId(conn, "CUST");
 		PreparedStatement ps = null;
-		
-		ps = conn.prepareStatement("INSERT INTO CUST.HOLIDAYMEAL (ID, CUSTOMER_ID, NAME, DELIVERY, DATE_CREATED, AGENT, DATE_LASTMODIFIED, STATUS, PRICE) values (?,?,?,?,SYSDATE,?,SYSDATE,?,?)");
-		ps.setString(1, id);
-		ps.setString(2, this.getParentPK().getId());
-		ps.setString(3, this.meal.getName());
-        ps.setTimestamp(4, new java.sql.Timestamp(this.meal.getDelivery().getTime()));
-        ps.setString(5, this.getAgent());
-        ps.setString(6, this.meal.getStatus().getTypeName());
-        //ps.setDouble(7, this.meal.getPrice());
-        ps.setBigDecimal(7, new java.math.BigDecimal(this.meal.getPrice()));
-		
-		if (ps.executeUpdate() != 1) {
-            throw new SQLException("Row not created");
-		}
-		this.setPK(new PrimaryKey(id));
-        ps.close();
+		try {
+			ps = conn.prepareStatement("INSERT INTO CUST.HOLIDAYMEAL (ID, CUSTOMER_ID, NAME, DELIVERY, DATE_CREATED, AGENT, DATE_LASTMODIFIED, STATUS, PRICE) values (?,?,?,?,SYSDATE,?,SYSDATE,?,?)");
+			ps.setString(1, id);
+			ps.setString(2, this.getParentPK().getId());
+			ps.setString(3, this.meal.getName());
+			ps.setTimestamp(4, new java.sql.Timestamp(this.meal.getDelivery().getTime()));
+			ps.setString(5, this.getAgent());
+			ps.setString(6, this.meal.getStatus().getTypeName());
+			// ps.setDouble(7, this.meal.getPrice());
+			ps.setBigDecimal(7, new java.math.BigDecimal(this.meal.getPrice()));
 
-		// create children
-        ps = conn.prepareStatement("INSERT INTO CUST.HOLIDAYMEAL_ITEMS (HMEAL_ID, TYPE, NAME, QUANTITY) values (?,?,?,?)");
-		for (Iterator iter = meal.getItems().iterator(); iter.hasNext(); ) {
-            MealItemModel item = (MealItemModel) iter.next();
-            ps.clearParameters();
-            ps.setString(1, id);
-            ps.setString(2, item.getType().getTypeName());
-            ps.setString(3, item.getName());
-            ps.setInt(4, item.getQuantity());
-            if (ps.executeUpdate() != 1) {
-                throw new SQLException("Row not created");
-            }
-        }
-        ps.close();
-		
-		this.unsetModified();
-		return this.getPK();
+			if (ps.executeUpdate() != 1) {
+				throw new SQLException("Row not created");
+			}
+			this.setPK(new PrimaryKey(id));
+			ps.close();
+
+			// create children
+			ps = conn.prepareStatement(
+					"INSERT INTO CUST.HOLIDAYMEAL_ITEMS (HMEAL_ID, TYPE, NAME, QUANTITY) values (?,?,?,?)");
+			for (Iterator iter = meal.getItems().iterator(); iter.hasNext();) {
+				MealItemModel item = (MealItemModel) iter.next();
+				ps.clearParameters();
+				ps.setString(1, id);
+				ps.setString(2, item.getType().getTypeName());
+				ps.setString(3, item.getName());
+				ps.setInt(4, item.getQuantity());
+				if (ps.executeUpdate() != 1) {
+					throw new SQLException("Row not created");
+				}
+			}
+
+			this.unsetModified();
+			return this.getPK();
+		} finally {
+			DaoUtil.close(ps);
+		}
 	}
 	
 	public void load(Connection conn) throws SQLException {
@@ -177,40 +181,44 @@ public class MealPersistentBean extends DependentPersistentBeanSupport {
     }
     
     public void store(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("UPDATE CUST.HOLIDAYMEAL SET NAME=?, DELIVERY=?, DATE_LASTMODIFIED=SYSDATE, STATUS=?, PRICE=? WHERE ID=?");
-		
-		ps.setString(1, this.meal.getName());
-		ps.setTimestamp(2, new java.sql.Timestamp(this.meal.getDelivery().getTime()));
-        ps.setString(3, this.meal.getStatus().getTypeName());
-        //ps.setDouble(4, this.meal.getPrice());
-        ps.setBigDecimal(4, new java.math.BigDecimal(this.meal.getPrice()));
-        ps.setString(5, this.getPK().getId());
-        
-		if (ps.executeUpdate() != 1) {
-			throw new SQLException("Row not updated");
+    	PreparedStatement ps = null;
+		try {
+			ps = conn.prepareStatement("UPDATE CUST.HOLIDAYMEAL SET NAME=?, DELIVERY=?, DATE_LASTMODIFIED=SYSDATE, STATUS=?, PRICE=? WHERE ID=?");
+
+			ps.setString(1, this.meal.getName());
+			ps.setTimestamp(2, new java.sql.Timestamp(this.meal.getDelivery().getTime()));
+			ps.setString(3, this.meal.getStatus().getTypeName());
+			// ps.setDouble(4, this.meal.getPrice());
+			ps.setBigDecimal(4, new java.math.BigDecimal(this.meal.getPrice()));
+			ps.setString(5, this.getPK().getId());
+
+			if (ps.executeUpdate() != 1) {
+				throw new SQLException("Row not updated");
+			}
+			ps.close();
+
+			ps = conn.prepareStatement("DELETE FROM CUST.HOLIDAYMEAL_ITEMS WHERE HMEAL_ID=?");
+			ps.setString(1, this.getPK().getId());
+			ps.executeUpdate();
+			ps.close();
+
+			ps = conn.prepareStatement("INSERT INTO CUST.HOLIDAYMEAL_ITEMS (HMEAL_ID, TYPE, NAME, QUANTITY) values (?,?,?,?)");
+			for (Iterator iter = meal.getItems().iterator(); iter.hasNext();) {
+				MealItemModel item = (MealItemModel) iter.next();
+				ps.clearParameters();
+				ps.setString(1, this.getPK().getId());
+				ps.setString(2, item.getType().getTypeName());
+				ps.setString(3, item.getName());
+				ps.setInt(4, item.getQuantity());
+				if (ps.executeUpdate() != 1) {
+					throw new SQLException("Row not updated");
+				}
+			}
+
+			this.unsetModified();
+		} finally {
+			DaoUtil.close(ps);
 		}
-		ps.close();
-        
-        ps = conn.prepareStatement("DELETE FROM CUST.HOLIDAYMEAL_ITEMS WHERE HMEAL_ID=?");
-        ps.setString(1, this.getPK().getId());
-        ps.executeUpdate();
-        ps.close();
-        
-        ps = conn.prepareStatement("INSERT INTO CUST.HOLIDAYMEAL_ITEMS (HMEAL_ID, TYPE, NAME, QUANTITY) values (?,?,?,?)");
-		for (Iterator iter = meal.getItems().iterator(); iter.hasNext(); ) {
-            MealItemModel item = (MealItemModel) iter.next();
-            ps.clearParameters();
-            ps.setString(1, this.getPK().getId());
-            ps.setString(2, item.getType().getTypeName());
-            ps.setString(3, item.getName());
-            ps.setInt(4, item.getQuantity());
-            if (ps.executeUpdate() != 1) {
-                throw new SQLException("Row not updated");
-            }
-        }
-        ps.close();
-        
-		this.unsetModified();
 	}
 
 	public void remove(Connection conn) throws SQLException {

@@ -5,6 +5,7 @@ import java.io.Serializable;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumNotificationType;
+import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.fdstore.EnumEStoreId;
@@ -24,6 +25,7 @@ public class FDActionInfo implements Serializable {
     private String fdUserId;
     private EnumEStoreId eStore;
     private EnumNotificationType taxationType;
+    private EnumPaymentMethodDefaultType paymentDefaultType;
     
     public FDActionInfo(  EnumTransactionSource source, FDIdentity identity, String initiator, String note, CrmAgentModel agent, String fdUserId) {
 		this(EnumEStoreId.FD, source, identity, initiator, note, agent, null,fdUserId );
@@ -165,5 +167,11 @@ public class FDActionInfo implements Serializable {
 	public void setTaxationType(EnumNotificationType taxationType) {
 		this.taxationType = taxationType;
 	}
-
+	public EnumPaymentMethodDefaultType getPaymentDefaultType() {
+		return paymentDefaultType;
+	}
+	public void setPaymentDefaultType(
+			EnumPaymentMethodDefaultType paymentDefaultType) {
+		this.paymentDefaultType = paymentDefaultType;
+	}
 }

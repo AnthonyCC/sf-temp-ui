@@ -23,6 +23,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.DayOfWeekSet;
 import com.freshdirect.framework.util.NVL;
 
@@ -65,7 +66,7 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	};
 	
 	public static abstract class SkuInfoComparator implements Comparator<SkuModel> {
-		
+				
 		@Override
         public int compare(SkuModel sku1, SkuModel sku2) {
 			
@@ -74,11 +75,44 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 			if(sku1!=null && sku2==null) return 1;
 			
 			if(sku1==null && sku2!=null) return -1;
+
+			FDProductInfo pi1 = null;
+			FDProductInfo pi2 = null;
+			try {
+				pi1 = FDCachedFactory.getProductInfo(sku1.getSkuCode());
+			} catch (FDResourceException fdre) {
+				handle(fdre);				
+			} catch (FDSkuNotFoundException fdsnfe) {
+				handle(fdsnfe);				
+			} 			
+
+			try {
+				pi2 = FDCachedFactory.getProductInfo(sku2.getSkuCode());
+			} catch (FDResourceException fdre) {
+				handle(fdre);				
+			} catch (FDSkuNotFoundException fdsnfe) {
+				handle(fdsnfe);				
+			} 			
+
+			if(FDStoreProperties.isDeveloperDisableAvailabilityLookup()) {
+				if(pi1==null && pi2==null) return 0;
+				
+				if(pi1!=null && pi2==null) return 1;
+				
+				if(pi1==null && pi2!=null) return -1;				
+			}
 			
-			return doCompare(sku1, sku2);
+			return doCompare(sku1, sku2, pi1, pi2);							
+		}
+
+		private void handle(Exception e) {
+			if(! FDStoreProperties.isDeveloperDisableAvailabilityLookup()) {
+				// rethrow as a runtime exception
+				throw new RuntimeException(e.getMessage());
+			}			
 		}
 		
-		protected abstract int doCompare(SkuModel sku1, SkuModel sku2);
+		protected abstract int doCompare(SkuModel sku1, SkuModel sku2, FDProductInfo pi1, FDProductInfo pi2);
 	}
 	
 	public static class PriceComparator extends SkuInfoComparator {
@@ -86,12 +120,9 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 		private int flips;
 
 		@Override
-		public int doCompare(SkuModel sku1, SkuModel sku2) {
-			try {
+		public int doCompare(SkuModel sku1, SkuModel sku2, FDProductInfo pi1, FDProductInfo pi2) {
 				ZoneInfo zoneId1 = sku1.getPricingContext().getZoneInfo();
 				ZoneInfo zoneId2 = sku2.getPricingContext().getZoneInfo();
-				FDProductInfo pi1 = FDCachedFactory.getProductInfo(sku1.getSkuCode());
-				FDProductInfo pi2 = FDCachedFactory.getProductInfo(sku2.getSkuCode());
 				if (pi1.getZonePriceInfo(zoneId1).getDefaultPrice() > 
 								pi2.getZonePriceInfo(zoneId2).getDefaultPrice()) {
 					flips++;
@@ -102,13 +133,6 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 				} else {
 					return 0;
 				}
-			} catch (FDResourceException fdre) {
-				// rethrow as a runtime exception
-				throw new RuntimeException(fdre.getMessage());
-			} catch (FDSkuNotFoundException fdsnfe) {
-				// rethrow as a runtime exception
-				throw new RuntimeException(fdsnfe.getMessage());
-			}
 		}
 
 		public void reset() {
@@ -130,10 +154,7 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
         }
 
         @Override
-        public int doCompare(SkuModel sku1, SkuModel sku2) {
-            try {
-                FDProductInfo pi1 = FDCachedFactory.getProductInfo(sku1.getSkuCode());
-                FDProductInfo pi2 = FDCachedFactory.getProductInfo(sku2.getSkuCode());
+        public int doCompare(SkuModel sku1, SkuModel sku2, FDProductInfo pi1, FDProductInfo pi2) {
                 if (pi1.getZonePriceInfo(zoneInfo).getDefaultPrice() > pi2.getZonePriceInfo(zoneInfo).getDefaultPrice()) {
                     return 1;
                 } else if (pi1.getZonePriceInfo(zoneInfo).getDefaultPrice() < pi2.getZonePriceInfo(zoneInfo).getDefaultPrice()) {
@@ -141,11 +162,6 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
                 } else {
                     return 0;
                 }
-            } catch (FDResourceException e) {
-                throw new RuntimeException(e);
-            } catch (FDSkuNotFoundException e) {
-                throw new RuntimeException(e);
-            }
         }
 	}
 	
@@ -230,12 +246,9 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 		private int flips;
 
 		@Override
-		public int doCompare(SkuModel obj1, SkuModel obj2) {
-			try {
-				FDProductInfo pi1 = FDCachedFactory.getProductInfo(obj1.getSkuCode());
-				FDProductInfo pi2 = FDCachedFactory.getProductInfo(obj2.getSkuCode());
-				String plantID1=ProductInfoUtil.getPickingPlantId(obj1.getProductInfo());
-				String plantID2=ProductInfoUtil.getPickingPlantId(obj2.getProductInfo());
+		public int doCompare(SkuModel obj1, SkuModel obj2, FDProductInfo pi1, FDProductInfo pi2) {
+				String plantID1=ProductInfoUtil.getPickingPlantId(pi1);
+				String plantID2=ProductInfoUtil.getPickingPlantId(pi2);
 				EnumOrderLineRating oli1=pi1.getRating(plantID1);
 				EnumOrderLineRating oli2=pi2.getRating(plantID2);
 				
@@ -255,13 +268,6 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 					return -1;
 				}
 				return 0;
-			} catch (FDResourceException fdre) {
-				// rethrow as a runtime exception
-				throw new RuntimeException(fdre.getMessage());
-			} catch (FDSkuNotFoundException fdsnfe) {
-				// rethrow as a runtime exception
-				throw new RuntimeException(fdsnfe.getMessage());
-			}
 		}
 
 		public void reset() {
@@ -279,13 +285,10 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 		private int flips;
 
 		@Override
-        public int doCompare(SkuModel obj1, SkuModel obj2) {
-			try {
+        public int doCompare(SkuModel obj1, SkuModel obj2, FDProductInfo pi1, FDProductInfo pi2) {
 
-				FDProductInfo pi1 = FDCachedFactory.getProductInfo(obj1.getSkuCode());
-				FDProductInfo pi2 = FDCachedFactory.getProductInfo(obj2.getSkuCode());
-				String plantID1=ProductInfoUtil.getPickingPlantId(obj1.getProductInfo());
-				String plantID2=ProductInfoUtil.getPickingPlantId(obj2.getProductInfo());
+				String plantID1=ProductInfoUtil.getPickingPlantId(pi1);
+				String plantID2=ProductInfoUtil.getPickingPlantId(pi2);
 				EnumSustainabilityRating oli1=pi1.getSustainabilityRating(plantID1);
 				EnumSustainabilityRating oli2=pi2.getSustainabilityRating(plantID2);
 				
@@ -305,13 +308,6 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 					return -1;
 				}
 				return 0;
-			} catch (FDResourceException fdre) {
-				// rethrow as a runtime exception
-				throw new RuntimeException(fdre.getMessage());
-			} catch (FDSkuNotFoundException fdsnfe) {
-				// rethrow as a runtime exception
-				throw new RuntimeException(fdsnfe.getMessage());
-			}
 		}
 
 		public void reset() {
@@ -335,7 +331,7 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	
 	/** Don't use allTheSame/reset, that's not thread-safe */
 	public final static Comparator<SkuModel> SUSTAINABILITY_COMPARATOR = new ProductModel.SustainabilityComparator();
-
+	
 	public static final Comparator<ProductModel> GENERIC_PRICE_COMPARATOR = new Comparator<ProductModel>() {
 		@Override
 		public int compare(ProductModel p1, ProductModel p2) {

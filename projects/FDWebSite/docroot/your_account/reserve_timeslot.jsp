@@ -97,7 +97,7 @@ if (mobWeb) {
 		<%//Finds the address & render the timeslots %>
 		<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>
 	
-<form name="reserveTimeslot" method="POST" action="/your_account/reserve_timeslot.jsp" name="reserveTimeslot">
+<form name="reserveTimeslot" method="POST" action="/your_account/reserve_timeslot.jsp" id="reserveTimeslot" name="reserveTimeslot">
 		<input type="hidden" name="chefstable" value="<%= user.isChefsTable() %>"/>
 		<input type="hidden" name="addressId" value="<%=address.getPK()!=null ? address.getPK().getId(): null %>">
 		<input type="hidden" name="actionName" value="">
@@ -110,16 +110,16 @@ if (mobWeb) {
 		<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10">
 		<%//Reservation stuff%>
 		<table style="width: <%= (mobWeb) ? "100%": W_RESERVE_TIMESLOTS_TOTAL+"px" %>;" cellpadding="0" cellspacing="0" border="0">
-			<tr>
+			<%-- <tr>
 				<td colspan="7"><img src="/media_stat/images/layout/dotted_line_w.gif" style="width: <%= (mobWeb) ? "100%": W_RESERVE_TIMESLOTS_TOTAL+"px" %>;" height="1"></td>
-			</tr>
+			</tr> --%>
 			<tr>
 				<td colspan="7"><!-- <img src="/media_stat/images/template/youraccount/choose_reservation_type.gif" width="256" height="10" vspace="10" alt="Please Choose a Reservation Type"></td> -->
-				<span class="Container_Top_YourAccountTimeslot">Please Choose a Reservation Type</span>
+				<!-- <span class="Container_Top_YourAccountTimeslot">Please Choose a Reservation Type</span> -->
 			</tr>
 			</table>
 			<fieldset><legend class="offscreen">please choose a reservation type:</legend><table>
-						<tr valign="top">
+						<%-- <tr valign="top">
 				<td>
 					<input type="radio" id="reservationType_field1" name="reservationType" <%=(rsv == null || EnumReservationType.ONETIME_RESERVATION.equals(rsv.getReservationType())) ? "checked" : "" %> value="<%=EnumReservationType.ONETIME_RESERVATION.getName()%>" class="radio">&nbsp;
 				</td>
@@ -127,19 +127,21 @@ if (mobWeb) {
 					<span class="text12"><b><label for="reservationType_field1"> Reserve for this week only.</label></b>
 					</span>
 				</td>
-			</tr>
+			</tr> --%>
 			<tr>
 				<td colspan="7"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="4"></td>
 			</tr>
-			<tr valign="top">
+			<tr>
 				<td>
-					<input type="radio" id="reservationType_field2" name="reservationType" <%=(rsv != null && EnumReservationType.RECURRING_RESERVATION.equals(rsv.getReservationType())) ? "checked" : "" %> value="<%=EnumReservationType.RECURRING_RESERVATION.getName()%>" class="radio">&nbsp;
+					<input type="checkbox" id="reservationType_field2" name="reservationType" <%=(rsv == null || EnumReservationType.ONETIME_RESERVATION.equals(rsv.getReservationType())) ? "" : "checked" %> value="<%=EnumReservationType.ONETIME_RESERVATION.getName()%>" class="checkbox" onclick="javascript:changeMe(this)">&nbsp;
+					<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3">
+					<span class="text12"><b><label for="reservationType_field2"> Make this a Weekly Reservation* </label></b></span><br>
 				</td>
 				<td colspan="6">
-					<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>
-					<span class="text12"><b><label for="reservationType_field2"> Reserve this day and time for me every week</label></b></span><br>
+<!-- 					<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"><br>
+ 					<span class="text12"><b><label for="reservationType_field2"> Reserve this day and time for me every week</label></b></span><br>
 					Select this option to make this a standing weekly reservation. Please note that reservations not used will be released for good. You will have to return to this page to reset your reservation settings.
-				</td>
+				</td> -->
 			</tr>
 			</table></fieldset>
 			<table>
@@ -148,7 +150,9 @@ if (mobWeb) {
 					<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="14"><br>
 				
 					<%if((rsv == null || rsv.isAnonymous()) && !hasReservation){%>
-						<input type="image" src="/media_stat/images/buttons/reserve_delivery.gif" alt="Reserve Delivery" onclick="reserveTimeslot.actionName.value='reserveTimeslot'">
+						<input type="image" src="/media_stat/images/buttons/reserve_delivery.gif" alt="Reserve Delivery" onclick="reserveTimeslot.actionName.value='reserveTimeslot'"><br>
+						*A weekly reservation must be used or you'll lose it. <br>
+						 Timeslot discounts may vary from week to week.
 					<%} else {%>
 						<button class="cssbutton red nontransparent small" onclick="reserveTimeslot.actionName.value='cancelReservation'">CANCEL RESERVATION</button>
 						<button class="cssbutton green small" onclick="reserveTimeslot.actionName.value='changeReservation'">SAVE CHANGES</button>
@@ -158,5 +162,12 @@ if (mobWeb) {
 		</table>
 </form>
 		</fd:ReserveTimeslotController>
+		
+<script type="text/javascript">
+var FreshDirect = FreshDirect || {};
+FreshDirect._page_options = {rsvType: { RECURRING: 'WRR', ONETIME: 'OTR' }};
+changeMe($('reservationType_field2'));
+</script>
 	</tmpl:put>
 </tmpl:insert>
+

@@ -5,10 +5,12 @@ import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.payment.ejb.PaymentGatewayContext;
 import com.freshdirect.payment.gateway.Gateway;
 import com.freshdirect.payment.gateway.GatewayType;
+import com.freshdirect.payment.service.PaymentechService;
 
 public class GatewayFactory {
 	
 	private static Gateway paymentech=new Paymentech();
+	private static Gateway paymentechGateway=new PaymentechService();
 	private static Gateway cybersource=new CyberSource();
 	private static Gateway paypal=new PayPal();
 	
@@ -27,7 +29,7 @@ public class GatewayFactory {
 		
 		
 		if(GatewayType.PAYMENTECH.equals(gatewayType)) {
-			return paymentech; 
+			return getPaymentechGateway();
 		} else if(GatewayType.CYBERSOURCE.equals(gatewayType)) {
 			//return cybersource;
 			throw new IllegalAccessError(gatewayType.getName()+" is not supported.");
@@ -35,7 +37,7 @@ public class GatewayFactory {
 			return paypal; 
 		}else if(gatewayType==null) {
 			if(FDStoreProperties.isPaymentechGatewayEnabled()) {
-				return paymentech;
+				return getPaymentechGateway();
 			} else {
 				//return cybersource;
 				throw new IllegalAccessError(gatewayType.getName()+" is not supported.");
@@ -44,5 +46,12 @@ public class GatewayFactory {
 		else {
 			throw new IllegalAccessError(gatewayType.getName()+" is not supported.");
 		}
+	}
+	private static Gateway getPaymentechGateway(){
+		if(FDStoreProperties.isTLSSHAEnabledForPaymentGateway()){
+			return paymentechGateway; 
+			}else{
+			return paymentech; 
+			}
 	}
 }

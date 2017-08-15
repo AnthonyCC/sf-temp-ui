@@ -98,8 +98,7 @@ a:hover {
 }
 
 /* .form_margin{margin-left:50px;}*/
-.sulCont input[disabled="disabled"] {
+.sulCont input[disabled="disabled"],
+.sulCont input[disabled] {
 	background-color: #D6D6C2;
 }
-
-

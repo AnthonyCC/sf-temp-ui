@@ -105,24 +105,21 @@
 			String orderZone = user.getOrderHistory()
 					.getLastOrderZone();
 			String lastOrderZone = orderZone != null ? orderZone : "";
-			
-		
-			Date fdDlvDate = OrderHistoryService.defaultService().getLastOrderDateByDeliveryTypeForCollectedFD(user.getOrderHistoryByEStoreId(EnumEStoreId.FD));
+
+			Date fdDlvDate = OrderHistoryService.defaultService().getLastOrderDateByDeliveryTypes(user.getOrderHistory(), EnumDeliveryType.HOME, EnumDeliveryType.PICKUP, EnumDeliveryType.DEPOT);
 			String fdLastOrderDate = (fdDlvDate != null) ? fdDlvDate.toString() : "";
-			String fdOrderZone = OrderHistoryService.defaultService().getLastOrderDeliveryZoneByDeliveryTypeForCollectedFD(user.getOrderHistoryByEStoreId(EnumEStoreId.FD));
+			String fdOrderZone = OrderHistoryService.defaultService().getLastOrderDeliveryZoneByDeliveryTypes(user.getOrderHistory(), EnumDeliveryType.HOME, EnumDeliveryType.PICKUP, EnumDeliveryType.DEPOT);
 			String fdLastOrderZone = fdOrderZone != null ? fdOrderZone : "";
-			
-			
-			Date fkDlvDate = OrderHistoryService.defaultService().getLastOrderDateByDeliveryType(user.getOrderHistoryByEStoreId(EnumEStoreId.FDX), EnumDeliveryType.FDX);
+
+			Date fkDlvDate = OrderHistoryService.defaultService().getLastOrderDateByDeliveryTypes(user.getOrderHistory(), EnumDeliveryType.FDX);
 			String fkLastOrderDate = (fkDlvDate != null) ? fkDlvDate.toString() : "";
-			String fkOrderZone = OrderHistoryService.defaultService().getLastOrderDeliveryZoneByDeliveryType(user.getOrderHistoryByEStoreId(EnumEStoreId.FDX),EnumDeliveryType.FDX);
+			String fkOrderZone = OrderHistoryService.defaultService().getLastOrderDeliveryZoneByDeliveryTypes(user.getOrderHistory(),EnumDeliveryType.FDX);
 			String fkLastOrderZone = fkOrderZone != null ? fkOrderZone : "";
-			
-			Date cosDlvDate = OrderHistoryService.defaultService().getLastOrderDateByDeliveryType(user.getOrderHistoryByEStoreId(EnumEStoreId.FD), EnumDeliveryType.CORPORATE);
+
+			Date cosDlvDate = OrderHistoryService.defaultService().getLastOrderDateByDeliveryTypes(user.getOrderHistory(), EnumDeliveryType.CORPORATE);
 			String cosLastOrderDate = (cosDlvDate != null) ? cosDlvDate.toString() : "";
-			String cosOrderZone = OrderHistoryService.defaultService().getLastOrderDeliveryZoneByDeliveryType(user.getOrderHistoryByEStoreId(EnumEStoreId.FD),EnumDeliveryType.CORPORATE);
+			String cosOrderZone = OrderHistoryService.defaultService().getLastOrderDeliveryZoneByDeliveryTypes(user.getOrderHistory(),EnumDeliveryType.CORPORATE);
 			String cosLastOrderZone = cosOrderZone != null ? cosOrderZone : "";
-			
 
 			// Set of String (product department Ids, "rec" for recipe items)
 			Set cartDeptIds = new HashSet();
@@ -446,6 +443,11 @@
 
 		if (user != null) {
 			queryString.addParam("mobWeb", (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"))) + "");
+		}
+		
+		//Sending RAF promo code to OAS, to target different ads based on the promo code.
+		if(request.getParameter("raf_promo_code")!= null){
+			queryString.addParam("raf_promo_code", request.getParameter("raf_promo_code"));
 		}
 
 		String sitePage = request.getAttribute("sitePage") == null ? "www.freshdirect.com"

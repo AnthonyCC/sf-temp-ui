@@ -12,6 +12,7 @@
 {template .overlay autoescape="false"}
 
     <div id="{$overlayId}" class="overlay {if $hasClose}hasclose{/if} {$customClass}" role="dialog">
+      <div class='overlay-helper' data-close-overlay></div>
       <button nofocus class="overlay-close-icon" data-close-overlay>close</button>
       <div class="overlay-container">
         <div class="overlay-header-helper">

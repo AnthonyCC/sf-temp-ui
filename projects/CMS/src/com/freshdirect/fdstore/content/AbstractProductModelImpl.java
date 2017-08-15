@@ -611,7 +611,8 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 			if(sku != null){
 				try {
 					FDProductInfo pInfo = sku.getProductInfo();
-					group = pInfo.getGroup(getPriceCalculator().getPricingContext().getZoneInfo().getSalesOrg(),getPriceCalculator().getPricingContext().getZoneInfo().getDistributionChanel());
+//					group = pInfo.getGroup(getPriceCalculator().getPricingContext().getZoneInfo().getSalesOrg(),getPriceCalculator().getPricingContext().getZoneInfo().getDistributionChanel());
+					group = pInfo.getGroup(getPriceCalculator().getPricingContext().getZoneInfo());
 					if (group != null) {
 						break;
 					}

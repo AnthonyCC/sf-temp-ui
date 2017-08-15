@@ -118,12 +118,12 @@ var FreshDirect = FreshDirect || {};
     },
     serialize:{
       value:function(){
-        var ser = {};
+    	  var ser = {}, deliveryId = $("[fdform='timeslot'] #deliveryTimeslotId").val();
 
-        $(timeslot.contentHolder() + " form").serializeArray().map(function(k){
-          ser[k.name] = k.value;
-        });
-        ser['soFirstDate'] = $(timeslot.contentHolder() + ' form input[type="radio"]:checked').data('sofirstdate')||''; 
+          $(timeslot.contentHolder() + " form").serializeArray().map(function(k){
+            ser[k.name] = k.value;
+          });
+          ser['soFirstDate'] = $(timeslot.contentHolder() + ' form input[type="button"][value="'+deliveryId+'"]').data('sofirstdate')||'';
         
         DISPATCHER.signal('server', {
           url: '/api/expresscheckout/timeslot',

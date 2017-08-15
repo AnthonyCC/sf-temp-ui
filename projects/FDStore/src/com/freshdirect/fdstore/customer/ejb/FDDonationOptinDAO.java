@@ -7,22 +7,32 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.freshdirect.cms.util.DaoUtil;
 import com.freshdirect.framework.core.PrimaryKey;
 
 public class FDDonationOptinDAO {
 
 	public static void insert(Connection conn, String custId, String saleId, boolean optIn) throws SQLException {
-		
-		PreparedStatement ps =	conn.prepareStatement("INSERT INTO CUST.DONATION_OPT_IND(CUSTOMER_ID,SALE_ID, OPTIN_IND) VALUES (?,?,?)");
-		ps.setString(1, custId);
-		ps.setString(2, saleId);
-		if(optIn){			
-			ps.setString(3, "Y");
-		}else{
-			ps.setString(3, "N");
-		}	
-		ps.executeQuery();
-		ps.close();
+		PreparedStatement ps =	null;
+		try {
+			ps = conn.prepareStatement("INSERT INTO CUST.DONATION_OPT_IND(CUSTOMER_ID,SALE_ID, OPTIN_IND) VALUES (?,?,?)");
+			ps.setString(1, custId);
+			ps.setString(2, saleId);
+			if (optIn) {
+				ps.setString(3, "Y");
+			} else {
+				ps.setString(3, "N");
+			}
+			ps.executeQuery();
+		} finally {
+			if (ps != null) {
+				try {
+					ps.close();
+				} catch (SQLException sqle) {
+					//
+				}
+			}
+		}
 	}
 	
 	public static void update(Connection conn, String custId, String saleId, boolean optIn) throws SQLException {	

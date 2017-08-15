@@ -55,6 +55,8 @@
  * @param? showConfig show configuration and similar things for e.g. quickshop
  * @param? mobWeb
  * @param? moduleData
+ * @param? itemIndex
+ * @param? listName
  */
 {template .transactionalGridItem autoescape="false"}
 {call .potatoTransactionalGridItem}
@@ -137,6 +139,8 @@
   {param timeToComplete:$item.timeToComplete /}
   {param moduleData:$moduleData /}
   {param newProduct:$item.newProduct /}
+  {param itemIndex:$itemIndex /}
+  {param listName:$listName /}
 {/call}
 {/template}
 
@@ -193,8 +197,6 @@
         {call common.bursts}{param badge:$badge /}{param deal:$deal /}{/call}
       </div>
     </a>
-
-
 
     {call common.potatoGridItemControls}
       {param customizePopup:$customizePopup /}
@@ -321,6 +323,8 @@
  * @param? timeToComplete
  * @param? moduleData
  * @param? newProduct
+ * @param? itemIndex
+ * @param? listName
  */
 {template .potatoTransactionalGridItem autoescape="false"}
 /* this line return must be here, or there will be tabs in output html, which cause whitespace */
@@ -334,6 +338,8 @@
   data-price="{$price}"
   data-new-product="{$newProduct}"
   data-variant="{$variantId}"
+  {if $itemIndex or $itemIndex == 0} data-position="{$itemIndex+1}"{/if}
+  {if $listName} data-list="{$listName}"{/if}
 	{if $hookLogicBeaconClick} data-hooklogic-beacon-click="{$hookLogicBeaconClick}"{/if}
 	{if $hookLogicBeaconImpression} data-hooklogic-beacon-impress="{$hookLogicBeaconImpression}"{/if}
   {if $moduleData and $moduleData.moduleVirtualCategory}data-virtual-category="{$moduleData.moduleVirtualCategory}"{/if}
@@ -346,11 +352,15 @@
     {if $moduleData.moduleId}{$moduleData.moduleId}{else}no module ID{/if}"{/if}>
     {/if}
 		<div class="portrait-item-burst_wrapper">
-			<img src="{$productImage}" alt="Product Image - {$productName}" class="portrait-item-productimage" {if not $discontinued}data-product-url="{$productPageUrl}"{/if}>
+        {if $itemIndex and $itemIndex > 4}
+                <img class="portrait-item-productimage lazyload" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{$productImage}" alt="Product  Image - {$productName}" {if not $discontinued}data-product-url="{$productPageUrl}"{/if}>
+        {else}
+		<img src="{$productImage}" alt="Product  Image - {$productName}" class="portrait-item-productimage" {if not $discontinued}data-product-url="{$productPageUrl}"{/if}>
+        {/if}
 			{if not $moduleData or not $moduleData.hideProductBadge}
         {call common.bursts}{param badge:$badge /}{param deal:$deal /}{param usq:$usq /}{/call}
       {/if}
-    </div>
+		</div>
 		{if not $discontinued}
 		</a>
 		{/if}

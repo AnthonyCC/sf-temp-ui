@@ -174,7 +174,8 @@ public class ProductRecommenderUtil {
 	}
 	
 	// FIXME
-	public static List<ProductModel> getFeaturedRecommenderProducts(DepartmentModel deptModel, FDSessionUser user, HttpSession session, ValueHolder<Variant> outVariant) throws FDResourceException {
+    public static List<ProductModel> getFeaturedRecommenderProducts(DepartmentModel deptModel, FDUserI user, HttpSession session, ValueHolder<Variant> outVariant)
+            throws FDResourceException {
 		List<ProductModel> products = new ArrayList<ProductModel>();
 		
 		CategoryModel sourceCat = deptModel.getFeaturedRecommenderSourceCategory();
@@ -371,6 +372,26 @@ public class ProductRecommenderUtil {
 		return data;
 	}
 
+    public static List<ProductData> createProductData(FDUserI user, List<ProductModel> products, String variantId) {
+        List<ProductData> productDatas = new ArrayList<ProductData>();
+
+        for (ProductModel product : products) {
+            try {
+                ProductData productData = ProductDetailPopulator.createProductData(user, product);
+                productData = ProductDetailPopulator.populateBrowseRecommendation(user, productData, product);
+                productData.setVariantId(variantId);
+                productData.setProductPageUrl(FDURLUtil.getNewProductURI(product, variantId));
+                productDatas.add(productData);
+            } catch (FDResourceException e) {
+                LOGGER.error("failed to create ProductData", e);
+            } catch (FDSkuNotFoundException e) {
+                LOGGER.error("failed to create ProductData", e);
+            } catch (HttpErrorResponse e) {
+                LOGGER.error("failed to create ProductData", e);
+            }
+        }
+        return productDatas;
+    }
 
 	public static void cleanUpProducts (List<ProductModel> products, boolean randomize, int maxCnt){
 		if (products == null || products.size() == 0)

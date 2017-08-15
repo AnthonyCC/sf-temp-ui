@@ -17,11 +17,9 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
 <fd:CheckLoginStatus guestAllowed="true" recognizedAllowed="true" />
 <%
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
-
 request.setAttribute("sitePage", "www.freshdirect.com/help");
 request.setAttribute("listPos", "SystemMessage,CategoryNote");
 
@@ -50,5 +48,11 @@ final boolean abstractTimeslots = false;
 
 			<%//Render the timeslots %>
 			<%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>
+			
+			
 		</tmpl:put>
+		
+  	<tmpl:put name="jsmodules">
+<%--     	<%@ include file="/common/template/includes/i_jsmodules.jspf" %>
+ --%>	</tmpl:put>
 </tmpl:insert>

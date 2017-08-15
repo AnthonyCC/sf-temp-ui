@@ -243,13 +243,11 @@ zonePromoEnabled=true;
 	</TR>
 </TABLE>
 
-
+<div class="tsWrapper">
 <!--START MESSAGING SECTION-->
 
 <!-- GEO Restriction Message Added -->
-<% if((messages != null && messages.size() >= 1) || (comments!=null && comments.size() >=1)) { %>
-		<%@ include file="/shared/includes/delivery/i_geowarning_message.jspf"%>
-<% } %>
+<%@ include file="/shared/includes/delivery/i_geowarning_message.jspf"%>
 
 
 <!-- Error Messages -->
@@ -601,7 +599,7 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 			</tr>
 		</table>
 	<%}%>
-<%}%>
+<%}%> </div>
 <IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 <IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CHECKOUT_STEP_2_SELECT_TOTAL%>" HEIGHT="3" BORDER="0"><BR>
 <IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>

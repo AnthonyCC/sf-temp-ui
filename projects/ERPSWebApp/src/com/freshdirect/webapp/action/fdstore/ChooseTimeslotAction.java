@@ -229,6 +229,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 			if (!cart.isEmpty()) {
 				for (FDCartLineI cartLine : cart.getOrderLines()) {
 					cartLine.setUserContext(user.getUserContext());
+					cartLine.setFDGroup(null);//clear the group
 				}
 			}
 			try {

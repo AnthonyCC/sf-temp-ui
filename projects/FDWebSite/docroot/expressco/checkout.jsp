@@ -263,7 +263,7 @@ if (mobWeb) {
 		           });
 		       }
 	
-		});
+		});		
 	</script>
   </tmpl:put>
 </tmpl:insert>

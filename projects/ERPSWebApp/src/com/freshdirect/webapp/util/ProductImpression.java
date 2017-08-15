@@ -209,7 +209,7 @@ public class ProductImpression {
 			try{
 	            
 
-				if(sku != null && !sku.isUnavailable() && sku.getProductInfo().isGroupExists(salesOrg,distributionChannel) && sku.getSkuCode().equals(skuCode)) {
+				if(sku != null && !sku.isUnavailable() && sku.getProductInfo().getGroup(this.calculator.getPricingContext().getZoneInfo()) !=null){//sku.getProductInfo().isGroupExists(salesOrg,distributionChannel) && sku.getSkuCode().equals(skuCode)) {
 					//if atleast one sku participates in a group.
 					groupExists = true;
 					break;
@@ -237,7 +237,7 @@ public class ProductImpression {
 			try{
 				if(sku != null && !sku.isUnavailable()) {
 					//if atleast one sku participates in a group.
-					group = sku.getProductInfo().getGroup(salesOrg,distributionChannel) ;
+					group = sku.getProductInfo().getGroup(this.calculator.getPricingContext().getZoneInfo());//salesOrg,distributionChannel) ;
 					if(group != null)
 						break;
 				}

@@ -193,7 +193,7 @@ function disableAccidentalAtcSO(){
 }
 
 function addToSONextHandler() {
-	if(FreshDirect.components.AddToCart.requiredValidator(FreshDirect.modules.common.productSerialize($jq('#customizePopup form[fdform="customize"]'), true, true))){
+	if(FreshDirect.components.AddToCart.requiredValidator(FreshDirect.modules.common.productSerialize($jq('#customizePopup form[fdform="customize"]'), true, true)) && $jq("#customizePopup .skucontrol-quantity input.qty").val()!= 0){
 		$jq('#customizePopup').addClass('so-review');
 		getStandingOrderData($jq('#customizePopup .so-select').val().split(':'),'deliveryBegins');
 		$jq('#customizePopup .so-review-selected').text($jq('#customizePopup .so-select option:selected').text());

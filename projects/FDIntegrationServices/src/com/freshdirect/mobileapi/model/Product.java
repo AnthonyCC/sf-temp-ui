@@ -1776,7 +1776,7 @@ public class Product {
         FDConfiguration configuration = new FDConfiguration(quantity, salesUnit.getName(), options);
 
         if (sku != null && salesUnit != null && quantity > 0.0) {
-            ConfiguredPrice configuredPrice = PricingEngine.getConfiguredPrice(pricing, configuration, pricingContext, getFDProductInfo(skuCode).getGroup(pricingContext.getZoneInfo().getSalesOrg(),pricingContext.getZoneInfo().getDistributionChanel()),quantity,null);
+            ConfiguredPrice configuredPrice = PricingEngine.getConfiguredPrice(pricing, configuration, pricingContext, getFDProductInfo(skuCode).getGroup(pricingContext.getZoneInfo()),quantity,null);
             price = configuredPrice.getPrice().getPrice();
         }
         return price;

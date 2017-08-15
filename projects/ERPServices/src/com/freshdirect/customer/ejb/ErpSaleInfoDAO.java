@@ -40,6 +40,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
+import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
@@ -544,19 +545,24 @@ public class ErpSaleInfoDAO {
 	// get order number for a customer during specific past time.
 	private static final String orderCountPastQuery = "select count(*) from cust.sale s, cust.salesaction sa where s.customer_id =? and s.id= sa.sale_id and s.type=? and sa.action_type='CRO' and sa.action_date> ?";
 	
-	public static int getOrderCountPast(Connection conn, String erpCustomerId, Date day,EnumSaleType type) throws SQLException {
-		int orderCount =0;
-		PreparedStatement ps = conn.prepareStatement(orderCountPastQuery);
-		ps.setString(1, erpCustomerId);
-		ps.setString(2, type.getName());
-		ps.setDate(3, new java.sql.Date(day.getTime()));
-		ResultSet rs = ps.executeQuery();
-		while(rs.next()){
-			orderCount = rs.getInt(1);	
+	public static int getOrderCountPast(Connection conn, String erpCustomerId, Date day, EnumSaleType type)
+			throws SQLException {
+		int orderCount = 0;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(orderCountPastQuery);
+			ps.setString(1, erpCustomerId);
+			ps.setString(2, type.getName());
+			ps.setDate(3, new java.sql.Date(day.getTime()));
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				orderCount = rs.getInt(1);
+			}
+		} finally {
+			DaoUtil.close(rs);
+			DaoUtil.close(ps);
 		}
-		rs.close();
-		ps.close();
-		
 		return orderCount;
 	}
 	
@@ -847,5 +853,5 @@ public class ErpSaleInfoDAO {
 		}
 		return true;
 	}
-
+	
 }

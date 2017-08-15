@@ -77,11 +77,11 @@ public class OfflineRecommenderSessionBean extends FDSessionBeanSupport {
 	private int saveRecommendations(FDUserI user,
 			Recommendations recommendations) {
 		Connection conn = null;
+		PreparedStatement ps = null;
 
 		try {
 			conn = getConnection();
-			PreparedStatement ps = conn
-					.prepareStatement(DELETE_OFFLINE_RECOMMENDATION);
+			ps = conn.prepareStatement(DELETE_OFFLINE_RECOMMENDATION);
 			ps.setString(1, user.getIdentity().getErpCustomerPK());
 			ps.setString(2, recommendations.getVariant().getSiteFeature()
 					.getName());
@@ -156,6 +156,7 @@ public class OfflineRecommenderSessionBean extends FDSessionBeanSupport {
 			LOGGER.error("saving recommendations failed : "+ e.getMessage(), e);
 			throw new EJBException(e);
 		} finally {
+			close(ps);
 		    close(conn);
 		}
 	}
@@ -167,26 +168,23 @@ public class OfflineRecommenderSessionBean extends FDSessionBeanSupport {
 			FDResourceException {
 		Set<String> customerIds = new HashSet<String>(200000);
 		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 
 		try {
 			conn = getConnection();
-			PreparedStatement ps = conn
-					.prepareStatement(QUERY_RECENT_CUSTOMERS);
+			ps = conn.prepareStatement(QUERY_RECENT_CUSTOMERS);
 			ps.setInt(1, days);
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			while (rs.next()) {
 				customerIds.add(rs.getString(1));
 			}
-			rs.close();
-			rs = null;
-
-			ps.close();
-			ps = null;
-
 		} catch (SQLException e) {
 			LOGGER.error("retrieving recent customers failed " + e.getMessage(), e);
 			throw new EJBException(e);
 		} finally {
+			close(rs);
+			close(ps);
 		    close(conn);
 		}
 		return customerIds;
@@ -223,26 +221,23 @@ public class OfflineRecommenderSessionBean extends FDSessionBeanSupport {
 			FDResourceException {
 		Set<String> customerIds = new HashSet<String>(200000);
 		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 
 		try {
 			conn = getConnection();
-			PreparedStatement ps = conn
-					.prepareStatement(QUERY_UPDATED_CUSTOMERS);
+			ps = conn.prepareStatement(QUERY_UPDATED_CUSTOMERS);
 			ps.setInt(1, age);
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			while (rs.next()) {
 				customerIds.add(rs.getString(1));
 			}
-			rs.close();
-			rs = null;
-
-			ps.close();
-			ps = null;
-
 		} catch (SQLException e) {
 			LOGGER.error("retrieving recent customers failed : "+e.getMessage(), e);
 			throw new EJBException(e);
 		} finally {
+			close(rs);
+			close(ps);
 		    close(conn);
 		}
 		return customerIds;

@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.common.customer.EnumStandingOrderActiveType;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.EnumChargeType;
+import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDResourceException;
@@ -61,6 +62,9 @@ public class ManageStandingOrderServlet extends HttpServlet {
 	private static final long serialVersionUID = -3650318272577031376L;
 	private String spName = "singlePageCheckoutPotato";
 	private static final Logger LOG = LoggerFactory.getInstance(ManageStandingOrderServlet.class);
+	public static final String INITIATOR_NAME = "Standing Order Service";
+	
+	public static final String CANCEL_ALL_DELIVERIES="Cancel all deliveries";
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -142,23 +146,21 @@ public class ManageStandingOrderServlet extends HttpServlet {
 				} else if ("delete".equalsIgnoreCase(action)) {
 					if (soId != null && !"".equals(soId)) {
 						FDStandingOrder so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(soId));
-						
 						if (!so.isDeleted()) {
 							u.setRefreshSO3(true);
 							FDActionInfo info = AccountActivityUtil.getActionInfo(pageContext.getSession());
-
-							if (null != deleteDate && "Cancel all deliveries".equalsIgnoreCase(deleteDate)){
-								FDStandingOrdersManager.getInstance().delete(info, so);
-							} else if ("Y".equalsIgnoreCase(so.getActivate())) {
-								FDStandingOrdersManager.getInstance().updateDeleteSOInfo(info, so, deleteDate);
+							if ("Y".equalsIgnoreCase(so.getActivate()) && !"null".equalsIgnoreCase(deleteDate)) {
+								if (!CANCEL_ALL_DELIVERIES.equalsIgnoreCase(deleteDate))
+									FDStandingOrdersManager.getInstance().deleteActivatedSO(info, so,deleteDate);
+								else
+									cancelNextDelivery(so);
 							} else {
 								FDStandingOrdersManager.getInstance().delete(info, so);
 							}
-
 						}
-							
+
 					}
-				}else if("onloadNewStandingOrder".equalsIgnoreCase(action)){
+				} else if("onloadNewStandingOrder".equalsIgnoreCase(action)){
 					u.setRefreshSO3(true);
 					if (("".equalsIgnoreCase(soId) || soId==null) && (freq == null || "".equalsIgnoreCase(freq)))
 				      u.getCurrentStandingOrder().setFrequency(Integer.parseInt("1"));
@@ -241,7 +243,7 @@ public class ManageStandingOrderServlet extends HttpServlet {
 			LOG.error("error while activating the standing order", e);
 			throw new ServletException(e);
 
-		}
+		} 
 	}
 
 	private boolean acitivateSO(FDUserI u) throws FDResourceException, FDInvalidConfigurationException {
@@ -439,6 +441,23 @@ public class ManageStandingOrderServlet extends HttpServlet {
 
 		public int getErrorCode() {
 			return errorCode;
+		}
+	}
+	
+	public static void cancelNextDelivery(FDStandingOrder so)  {
+		try {
+			StandingOrderHelper.setUpcomingStandingOrder(so);
+			FDActionInfo info = new FDActionInfo(
+					EnumTransactionSource.STANDING_ORDER,
+					so.getCustomerIdentity(), INITIATOR_NAME,
+					"Cancel the standing order based on template criteria ",
+					null, null);
+			if (so.getUpcomingDelivery() != null && so.getUpcomingDelivery().getErpSalesId() != null) {
+				FDCustomerManager.cancelOrder(info, so.getUpcomingDelivery().getErpSalesId(), true, 0, false);
+			}
+			FDStandingOrdersManager.getInstance().delete(info, so);
+		} catch (Exception e) {
+			LOG.error("Got the exception while cancelling the next delivery of SO template:"+so.getId(), e);
 		}
 	}
 }

@@ -3,6 +3,7 @@ package com.freshdirect.mobileapi.controller.data.response;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.fdstore.FDException;
 
 public class PaymentMethods extends CheckoutResponse {
@@ -18,6 +19,8 @@ public class PaymentMethods extends CheckoutResponse {
     private String selectedId;
 
     private boolean isCheckEligible;
+    
+    private EnumPaymentMethodDefaultType defaultType; 
 
     private boolean isECheckRestricted;
     
@@ -108,4 +111,12 @@ public class PaymentMethods extends CheckoutResponse {
 		this.ebtCards = ebtCards;
 	}
 
+	public EnumPaymentMethodDefaultType getDefaultType() {
+		return defaultType;
+	}
+
+	public void setDefaultType(EnumPaymentMethodDefaultType defaultType) {
+		this.defaultType = defaultType;
+	}
+	
 }

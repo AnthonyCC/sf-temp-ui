@@ -454,7 +454,7 @@ public class SinglePageCheckoutFacade {
                 session.setAttribute(SessionName.PAYMENT_BILLING_REFERENCE, billingReference);
                 String paymentId = FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity());
                 if (paymentId != null)
-                    PaymentMethodManipulator.setPaymentMethod(paymentId, null, request, session, actionResult, PageAction.SELECT_PAYMENT_METHOD.actionName);
+                    PaymentMethodManipulator.setPaymentMethod(paymentId, null, request, session, actionResult, PageAction.SELECT_PAYMENT_METHOD.actionName,"N");
                 for (ActionError error : actionResult.getErrors()) {
                     validationErrors.add(new ValidationError(error));
                 }

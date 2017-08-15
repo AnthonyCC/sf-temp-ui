@@ -68,22 +68,25 @@ public class AddressScrubbingLoaderSessionBean extends SessionBeanSupport {
 		LOGGER.info("Inside getTotalAddressCount() ..");
 		Connection con = null;
 		long count=0;
-
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
 			con = this.getConnection();
-			PreparedStatement ps = con.prepareStatement(QUERY_ADDRESS_COUNT);
-			ResultSet rs = ps.executeQuery();
+			ps = con.prepareStatement(QUERY_ADDRESS_COUNT);
+			rs = ps.executeQuery();
 			if(rs.next()) {
 				count = rs.getLong("totalcount");
 			}
-			rs.close();
-			ps.close();            
+		//	rs.close();
+		//	ps.close();            
 
 		} catch (Exception e) {
 			LOGGER.error("Exception while getting address count from DB "+e.getMessage());
 			throw new EJBException(e);
 		} finally {
-                    close(con);
+			close(rs);
+			close(ps);
+			close(con);
 		}
 		LOGGER.info("Exist getTotalAddressCount() ..");
 		return count;
@@ -157,11 +160,12 @@ public class AddressScrubbingLoaderSessionBean extends SessionBeanSupport {
 		LOGGER.info("Inside getCustomerAddressModel() ..");
 		Connection con = null;
 		List<ScrubbedAddress> addressList = new ArrayList<ScrubbedAddress>();
-
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
 			con = this.getConnection();
-			PreparedStatement ps = con.prepareStatement(QUERY_SELECT_ADDRESS);
-			ResultSet rs = ps.executeQuery();
+			ps = con.prepareStatement(QUERY_SELECT_ADDRESS);
+			rs = ps.executeQuery();
 			while (rs.next()) {
 				ScrubbedAddress address=new ScrubbedAddress();
 				address.setId(rs.getString("ID"));
@@ -173,15 +177,13 @@ public class AddressScrubbingLoaderSessionBean extends SessionBeanSupport {
 				address.setZipCode(rs.getString("ZIP"));
 				addressList.add(address);
 			}
-
-			rs.close();
-			ps.close();            
-
 		} catch (Exception e) {
 			LOGGER.error("Exception while getting address from DB "+e.getMessage());
 			throw new EJBException(e);
 		} finally {
-                    close(con);
+			close(rs);
+			close(ps);
+			close(con);
 		}
 		LOGGER.info("Exist getCustomerAddressModel() ..");
 		return addressList;
@@ -196,9 +198,10 @@ public class AddressScrubbingLoaderSessionBean extends SessionBeanSupport {
 	public void scrubbedAddBatchUpdate(List<AddressScrubbingResponse>  addressScrubbingResponses){
 		LOGGER.info("Inside scrubbedAddBatchUpdate() ..");
 		Connection connection = null ;
+		PreparedStatement ps = null;
 		try{
 			connection = this.getConnection();
-			PreparedStatement ps = connection.prepareStatement(QUERY_UPDATE_SS_SCRUBBED_ADDRESS);
+			ps = connection.prepareStatement(QUERY_UPDATE_SS_SCRUBBED_ADDRESS);
 			final int batchSize = 1000;		// JDBC batch size is 1000
 			int count = 0;
 			for (AddressScrubbingResponse response : addressScrubbingResponses) {
@@ -219,12 +222,13 @@ public class AddressScrubbingLoaderSessionBean extends SessionBeanSupport {
 				}
 			}
 			ps.executeBatch(); // update remaining records
-			ps.close();
+		//	ps.close();
 		}catch(SQLException exception){
 			LOGGER.error("Exception while Update into ADDREESS table "+exception.getMessage());
 			exception.printStackTrace();
-		}finally{
-               close(connection);
+		} finally {
+			close(ps);
+			close(connection);
 		}
 		LOGGER.info("Exist scrubbedAddBatchUpdate() ..");
 	}
@@ -309,11 +313,12 @@ public class AddressScrubbingLoaderSessionBean extends SessionBeanSupport {
 		LOGGER.info("Inside getExceptionAddressModelWithAptRange() ..");
 		Connection con = null;
 		Map<String,List<ScrubbedAddress>> aptRangeAddress = new HashMap<String,List<ScrubbedAddress>>();
-
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
 			con = this.getConnection();
-			PreparedStatement ps = con.prepareStatement(QUERY_SELECT_EXCEPTION_ADDRESS_WITH_APT_RANGE);
-			ResultSet rs = ps.executeQuery();
+			ps = con.prepareStatement(QUERY_SELECT_EXCEPTION_ADDRESS_WITH_APT_RANGE);
+			rs = ps.executeQuery();
 			while (rs.next()) {
 				ScrubbedAddress address=new ScrubbedAddress();
 				address.setId(rs.getString("ID"));
@@ -328,15 +333,17 @@ public class AddressScrubbingLoaderSessionBean extends SessionBeanSupport {
 				
 			}
 
-			rs.close();
-			ps.close();            
+		//	rs.close();
+		//	ps.close();            
 			
 			LOGGER.info("Exit getExceptionAddressModelWithAptRange() ..");
 		} catch (Exception e) {
 			LOGGER.error("Exception while getting Exception address with Apt Range from DB "+e.getMessage());
 			throw new EJBException(e);
 		} finally {
-                    close(con);
+			close(rs);
+			close(ps);
+			close(con);
 		}
 		LOGGER.info("Exist getExceptionAddressModelWithAptRange() ..");
 		return aptRangeAddress;
@@ -351,11 +358,12 @@ public class AddressScrubbingLoaderSessionBean extends SessionBeanSupport {
 		LOGGER.info("Inside getExceptionAddressModel() ..");
 		Connection con = null;
 		List<ScrubbedAddress> addressList = new ArrayList<ScrubbedAddress>();
-
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
 			con = this.getConnection();
-			PreparedStatement ps = con.prepareStatement(QUERY_SELECT_EXCEPTION_ADDRESS_WITHOUT_APT_RANGE);
-			ResultSet rs = ps.executeQuery();
+			ps = con.prepareStatement(QUERY_SELECT_EXCEPTION_ADDRESS_WITHOUT_APT_RANGE);
+			rs = ps.executeQuery();
 			while (rs.next()) {
 				ScrubbedAddress address=new ScrubbedAddress();
 				address.setId(rs.getString("ID"));
@@ -367,14 +375,16 @@ public class AddressScrubbingLoaderSessionBean extends SessionBeanSupport {
 				addressList.add(address);
 			}
 
-			rs.close();
-			ps.close();            
+		//	rs.close();
+		//	ps.close();            
 
 		} catch (Exception e) {
 			LOGGER.error("Exception while getting address from DB "+e.getMessage());
 			throw new EJBException(e);
 		} finally {
-                    close(con);
+			close(rs);
+			close(ps);
+			close(con);
 		}
 		LOGGER.info("Exist getExceptionAddressModel() ..");
 		return addressList;
@@ -387,9 +397,10 @@ public class AddressScrubbingLoaderSessionBean extends SessionBeanSupport {
 	public void scrubbedExceptionAddressBatchUpdate(List<AddressScrubbingResponse>  addressScrubbingResponses){
 		LOGGER.info("Inside scrubbedExceptionAddressBatchUpdate() ..");
 		Connection connection = null ;
+		PreparedStatement ps = null;
 		try{
 			connection = this.getConnection();
-			PreparedStatement ps = connection.prepareStatement(QUERY_UPDATE_ZIPPLUSFOUR_EXCEPTIONS);
+			ps = connection.prepareStatement(QUERY_UPDATE_ZIPPLUSFOUR_EXCEPTIONS);
 			final int batchSize = 1000;		// JDBC batch size is 1000
 			int count = 0;
 			for (AddressScrubbingResponse response : addressScrubbingResponses) {
@@ -406,12 +417,13 @@ public class AddressScrubbingLoaderSessionBean extends SessionBeanSupport {
 				}
 			}
 			ps.executeBatch(); // update remaining records
-			ps.close();
+		//	ps.close();
 		}catch(SQLException exception){
 			LOGGER.error("Exception while Update into ZIPPLUSFOUR_EXCEPTIONS table "+exception.getMessage());
 			exception.printStackTrace();
-		}finally{
-               close(connection);
+		} finally {
+			close(ps);
+			close(connection);
 		}
 		LOGGER.info("Exist scrubbedExceptionAddressBatchUpdate() ..");
 	}
@@ -422,9 +434,10 @@ public class AddressScrubbingLoaderSessionBean extends SessionBeanSupport {
 	public void scrubbedExceptionAddressBatchUpdate(Map<String,String> notValidException){
 		LOGGER.info("Inside scrubbedExceptionAddressBatchUpdate() ..");
 		Connection connection = null ;
+		PreparedStatement ps = null;
 		try{
 			connection = this.getConnection();
-			PreparedStatement ps = connection.prepareStatement(QUERY_UPDATE_ZIPPLUSFOUR_EXCEPTIONS);
+			ps = connection.prepareStatement(QUERY_UPDATE_ZIPPLUSFOUR_EXCEPTIONS);
 			final int batchSize = 1000;		// JDBC batch size is 1000
 			int count = 0;
 			for (String id : notValidException.keySet()) {
@@ -436,12 +449,13 @@ public class AddressScrubbingLoaderSessionBean extends SessionBeanSupport {
 			    }
 			}
 			ps.executeBatch(); // update remaining records
-			ps.close();
+		//	ps.close();
 		}catch(SQLException exception){
 			LOGGER.error("Exception while Update into ZIPPLUSFOUR_EXCEPTIONS table "+exception.getMessage());
 			exception.printStackTrace();
-		}finally{
-               close(connection);
+		} finally {
+			close(ps);
+			close(connection);
 		}
 		LOGGER.info("Exist scrubbedExceptionAddressBatchUpdate() ..");
 	}

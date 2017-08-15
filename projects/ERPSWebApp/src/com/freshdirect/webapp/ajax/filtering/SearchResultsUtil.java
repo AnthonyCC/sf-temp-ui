@@ -140,9 +140,10 @@ public static SearchResults getHLBrandProductAdProducts(SearchResults searchResu
 		
 				
 		try {
-			
-			hLBrandProductAdRequest.setUserId(user.getUser().getPK().getId());
-			hLBrandProductAdRequest.setSearchKeyWord(searchResults.getSuggestedTerm()!=null?searchResults.getSuggestedTerm():nav.getSearchParams());
+			if(user.getUser()!=null && user.getUser().getPK()!=null &&
+					user.getUser().getPK().getId()!=null) {
+				hLBrandProductAdRequest.setUserId(user.getUser().getPK().getId());	
+			 hLBrandProductAdRequest.setSearchKeyWord(searchResults.getSuggestedTerm()!=null?searchResults.getSuggestedTerm():nav.getSearchParams());
 					
 			if (user.getPlatForm() != null) {
 				hLBrandProductAdRequest.setPlatformSource(user.getPlatForm());
@@ -179,6 +180,7 @@ public static SearchResults getHLBrandProductAdProducts(SearchResults searchResu
 			}
 			
 		  }
+	     }
 	    }
       catch (Exception e) {
 			LOG.info("Exception while populating HookLogicproduct: ", e);

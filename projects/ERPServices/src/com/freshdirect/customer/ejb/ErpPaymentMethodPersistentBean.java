@@ -8,15 +8,16 @@ import java.sql.Types;
 import java.util.List;
 
 import com.freshdirect.common.customer.EnumCardType;
-import com.freshdirect.payment.EnumBankAccountType;
-import com.freshdirect.payment.EnumPaymentMethodType;
-import com.freshdirect.payment.PaymentManager;
+import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.framework.core.DependentPersistentBeanSupport;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.giftcard.ErpGiftCardUtil;
+import com.freshdirect.payment.EnumBankAccountType;
+import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.payment.PaymentManager;
 
 public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSupport {
 
@@ -222,7 +223,6 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 				ps.setNull(index++, Types.VARCHAR);
 			}
 			ps.setString(index++, (model.isDebitCard()==false)?"O":"D");
-			//ps.setString(index++, model.isDebitCard()?"Y":"N");
 
 		//}
 		try {
@@ -289,6 +289,7 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 				/*model.setProfileID("36280971");
 				model.setAccountNumLast4("7978");*/
 				model.setBestNumberForBillingInquiries(rs.getString("BEST_NUM_BILLING_INQ"));
+				
 			} else {
 				throw new SQLException("No such ErpPaymentMethod PK: " + this.getPK());
 			}

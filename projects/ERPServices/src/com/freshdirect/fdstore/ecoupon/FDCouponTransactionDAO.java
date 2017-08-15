@@ -13,6 +13,7 @@ import java.util.List;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionDetailModel;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
 import com.freshdirect.framework.core.SequenceGenerator;
+import com.freshdirect.framework.util.DaoUtil;
 
 public class FDCouponTransactionDAO implements Serializable {
     
@@ -188,9 +189,10 @@ public class FDCouponTransactionDAO implements Serializable {
     		+ " AND FCT.CREATE_TIME > SYSDATE-30";
     public static List<ErpCouponTransactionModel> getCancelPendingCouponTransactions(Connection conn) throws SQLException{
     	List<ErpCouponTransactionModel> list = new ArrayList<ErpCouponTransactionModel>();
-		PreparedStatement ps =conn.prepareStatement(SELECT_CANCEL_PENDING_COUPON_TRANS_);
+    	ResultSet rs = null;
+    	PreparedStatement ps =conn.prepareStatement(SELECT_CANCEL_PENDING_COUPON_TRANS_);
 		try {
-			ResultSet rs =ps.executeQuery();
+			rs =ps.executeQuery();
 			while(rs.next()){
 				ErpCouponTransactionModel transModel = new ErpCouponTransactionModel();
 				transModel.setId(rs.getString("TRANS_ID"));
@@ -200,11 +202,9 @@ public class FDCouponTransactionDAO implements Serializable {
 				transModel.setSaleId(rs.getString("SALE_ID"));
 				list.add(transModel);			
 			}
-			ps.close();
-			
 		} finally {
-			if (ps != null)
-				ps.close();
+			DaoUtil.close(rs);
+			DaoUtil.close(ps);
 		}		
 		return list;
 	}
@@ -216,9 +216,10 @@ public class FDCouponTransactionDAO implements Serializable {
     		+" AND FCT.CREATE_TIME > SYSDATE-30";
     public static List<ErpCouponTransactionModel> getConfirmPendingCouponTransactions(Connection conn) throws SQLException{
     	List<ErpCouponTransactionModel> list = new ArrayList<ErpCouponTransactionModel>();
-		PreparedStatement ps =conn.prepareStatement(SELECT_CONFIRM_PENDING_COUPON_TRANS_);
+    	ResultSet rs = null;
+    	PreparedStatement ps =conn.prepareStatement(SELECT_CONFIRM_PENDING_COUPON_TRANS_);
 		try {
-			ResultSet rs =ps.executeQuery();
+			rs =ps.executeQuery();
 			while(rs.next()){
 				ErpCouponTransactionModel transModel = new ErpCouponTransactionModel();
 				transModel.setId(rs.getString("TRANS_ID"));
@@ -228,11 +229,9 @@ public class FDCouponTransactionDAO implements Serializable {
 				transModel.setSaleId(rs.getString("SALE_ID"));
 				list.add(transModel);			
 			}
-			ps.close();
-			
 		} finally {
-			if (ps != null)
-				ps.close();
+			DaoUtil.close(rs);
+			DaoUtil.close(ps);
 		}		
 		return list;
 	}
@@ -290,11 +289,12 @@ public class FDCouponTransactionDAO implements Serializable {
     		+" AND FCT.CREATE_TIME > SYSDATE-30 AND S.ID=? ORDER BY FCT.CREATE_TIME DESC";
     public static ErpCouponTransactionModel getConfirmPendingCouponTransaction(Connection conn,String saleId) throws SQLException{
     	ErpCouponTransactionModel transModel =null;
-		PreparedStatement ps =conn.prepareStatement(SELECT_CONFIRM_PENDING_COUPON_TRANS_SALE);
+    	ResultSet rs = null;
+    	PreparedStatement ps =conn.prepareStatement(SELECT_CONFIRM_PENDING_COUPON_TRANS_SALE);
 		if(null !=saleId){
 			ps.setString(1, saleId);
 			try {
-				ResultSet rs =ps.executeQuery();
+				rs =ps.executeQuery();
 				if(rs.next()){
 					transModel = new ErpCouponTransactionModel();
 					transModel.setId(rs.getString("TRANS_ID"));
@@ -304,11 +304,9 @@ public class FDCouponTransactionDAO implements Serializable {
 					transModel.setSaleId(rs.getString("SALE_ID"));
 								
 				}
-				ps.close();
-				
 			} finally {
-				if (ps != null)
-					ps.close();
+				DaoUtil.close(rs);
+				DaoUtil.close(ps);
 			}		
 		}
 		return transModel;

@@ -63,6 +63,8 @@ public interface FDOrderI extends FDCartI {
 	
 	/** @return true if this order was modified */
 	public boolean isModifiedOrder();
+
+    public int modifyOrderCount();
     
     public String getDepotFacility();
 
@@ -161,7 +163,8 @@ public interface FDOrderI extends FDCartI {
 	
 	public EnumSaleType getOrderType();
 	
-	public String getRedeemedSampleDescription();
+	@Override
+    public String getRedeemedSampleDescription();
 
 	//Gift cards
 	public List getGiftcardPaymentMethods() ;
@@ -176,9 +179,11 @@ public interface FDOrderI extends FDCartI {
 	
 	public ErpRecipentModel getGCResendInfoFor(String giftCardId);
 	
-	public double getTotalAppliedGCAmount();
+	@Override
+    public double getTotalAppliedGCAmount();
 	
-	public double getCCPaymentAmount();
+	@Override
+    public double getCCPaymentAmount();
 	
 	public ErpOrderLineModel getOrderLineByNumber(String orderlineNumber);
 	
@@ -188,16 +193,20 @@ public interface FDOrderI extends FDCartI {
 	
 	public boolean hasSignature();
 	
-	public double getDeliveryCharge();
+	@Override
+    public double getDeliveryCharge();
 	
 	public int getLineCnt();
 	
 	public double getDeliveryChargeOnReturn();
 	
-	public double getChargeAmountDiscountApplied(EnumChargeType chargeType); 
+	@Override
+    public double getChargeAmountDiscountApplied(EnumChargeType chargeType); 
 	public double getChargeAmountDiscAppliedOnReturn(EnumChargeType chargeType); 
-	public boolean isChargeTaxable(EnumChargeType chargeType);
-	public double getChargeAmount(EnumChargeType type);
+	@Override
+    public boolean isChargeTaxable(EnumChargeType chargeType);
+	@Override
+    public double getChargeAmount(EnumChargeType type);
 	public double getInvoicedDeliveryPremium();
 	
 	Double getEbtPurchaseAmount();

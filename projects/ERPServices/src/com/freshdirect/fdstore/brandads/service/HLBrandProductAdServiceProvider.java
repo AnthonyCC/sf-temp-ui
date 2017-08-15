@@ -49,6 +49,8 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 	private static final String HOOKLOGIC_PGN="pgn";
 	private static final String HOOKLOGIC_LAT="lat";
 	private static final String HOOKLOGIC_PDUSERID = "pduserid";
+	private static final String HOOKLOGIC_BEACON = "beacon";
+	
 	
 	
 	
@@ -77,6 +79,8 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 		urlParameters.put(HOOKLOGIC_MEDIASOURCE, hlAdConfigProvider.getBrandProductAdProviderMediaSource());
 		urlParameters.put(HOOKLOGIC_HLPT, hlAdConfigProvider.getBrandProductAdProviderHlpt());
 		urlParameters.put(HOOKLOGIC_STRATEGY, hlAdConfigProvider.getBrandProductAdProviderStrategy());
+		urlParameters.put(HOOKLOGIC_BEACON, hlAdConfigProvider.getBrandProductsBeacon());
+		
 		StringBuilder urlToCall = getBaseUrl(urlToCallStr, urlParameters);
 		String jsonResponse = sendGetRequest(urlToCall);
 		HLBrandProductAdResponse response = parseResponse(jsonResponse, HLBrandProductAdResponse.class);
@@ -102,6 +106,7 @@ public HLBrandProductAdResponse getCategoryProducts(HLBrandProductAdRequest hLRe
 		urlParameters.put(HOOKLOGIC_PGN, hlAdConfigProvider.getBrandProductAdProviderPgn());
 		urlParameters.put(HOOKLOGIC_HLPT, hlAdConfigProvider.getBrandProductAdProviderCategoryHlpt());
 		urlParameters.put(HOOKLOGIC_CREATIVE, hlAdConfigProvider.getBrandProductAdProviderCreative());
+		urlParameters.put(HOOKLOGIC_BEACON, hlAdConfigProvider.getBrandProductsBeacon());
 		StringBuilder urlToCall = getBaseUrl(urlToCallStr, urlParameters);
 		String jsonResponse = sendGetRequest(urlToCall);
 		HLBrandProductAdResponse response = parseResponse(jsonResponse, HLBrandProductAdResponse.class);

@@ -222,23 +222,14 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 			if (smsResponseModel != null && smsResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
 				smsResponseModel.setDate(new Date());
 				try {
-					con = this.getConnection();
+					//con = this.getConnection();
 					this.updateSmsAlertCaptured(con, smsResponseModel, FDX_ORDER_COFIRMATION_ALERT_TYPE, customerId);
 	
 				} catch (Exception e) {
 					LOGGER.warn(e);
 	
 					throw new EJBException(e);
-				} finally {
-					try {
-						if (con != null) {
-							con.close();
-							con = null;
-						}
-					} catch (SQLException se) {
-						LOGGER.warn("Exception while trying to cleanup", se);
-					}
-				}
+				} 
 				if (smsResponseModel.getStatus() != null && smsResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
 					isSent = true;
 				}
@@ -248,6 +239,8 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 			e.printStackTrace();
 		} catch (SmsServiceException e){
 			LOGGER.info("Confirmed sms failed with exception: " + e);
+		} finally{
+			close(con);
 		}
 
 		return isSent;
@@ -270,23 +263,15 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 				
 				try {
 					smsResponseModel.setDate(new Date());
-					con = this.getConnection();
+					//con = this.getConnection();
 					this.updateSmsAlertCaptured(con, smsResponseModel, FDX_ORDER_MODIFIED_ALERT_TYPE, customerId);
 	
 				} catch (Exception e) {
 					LOGGER.warn(e);
 	
 					throw new EJBException(e);
-				} finally {
-					try {
-						if (con != null) {
-							con.close();
-							con = null;
-						}
-					} catch (SQLException se) {
-						LOGGER.warn("Exception while trying to cleanup", se);
-					}
 				}
+				
 				if (smsResponseModel.getStatus() != null && smsResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
 					isSent = true;
 				}
@@ -296,6 +281,8 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 			e.printStackTrace();
 		} catch (SmsServiceException e){
 			LOGGER.info(" OrderMofifiedsms failed with exception: " + e);
+		}finally{
+			close(con);
 		}
 
 		return isSent;
@@ -318,21 +305,12 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 			if (smsResponseModel != null && smsResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
 				smsResponseModel.setDate(new Date());
 				try {
-					con = this.getConnection();
+					//con = this.getConnection();
 					this.updateSmsAlertCaptured(con, smsResponseModel, FDX_ORDER_CANCEL_ALERT_TYPE, customerId);
 				} catch (Exception e) {
 					LOGGER.warn(e);
 	
 					throw new EJBException(e);
-				} finally {
-					try {
-						if (con != null) {
-							con.close();
-							con = null;
-						}
-					} catch (SQLException se) {
-						LOGGER.warn("Exception while trying to cleanup", se);
-					}
 				}
 				if (smsResponseModel.getStatus() != null && smsResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
 					isSent = true;
@@ -344,6 +322,8 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		}
 		catch (SmsServiceException e){
 			LOGGER.info("OrderCancelledsms failed with exception: " + e);
+		} finally{
+			close(con);
 		}
 
 		return isSent;
@@ -866,15 +846,8 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		}catch(SQLException e){
 			e.printStackTrace();
 		}finally{
-			try {
-				if (con!= null)
-					con.close();
-					if(ps!=null)
-					ps.close();
-				}
-			 catch (SQLException se) {
-				LOGGER.warn("Exception while trying to cleanup", se);
-			}
+			close(rs);
+			close(ps);
 		}
 		return count;
 	}

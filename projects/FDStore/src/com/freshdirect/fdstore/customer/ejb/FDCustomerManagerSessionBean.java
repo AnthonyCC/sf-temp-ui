@@ -105,6 +105,7 @@ import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.OrderHistoryI;
+import com.freshdirect.customer.ejb.ActivityDAO;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpFraudPreventionSB;
@@ -148,6 +149,7 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.AddressDAO;
 import com.freshdirect.fdstore.customer.CustomerCreditModel;
+import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.fdstore.customer.EnumIPhoneCaptureType;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
@@ -208,6 +210,7 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.mail.FTLEmailI;
 import com.freshdirect.framework.mail.XMLEmailI;
+import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.GenericSearchCriteria;
@@ -1397,14 +1400,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			Gateway gateway = null;
 			
-			if(paymentechEnabled &&( EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())||
+			if(paymentechEnabled && FDStoreProperties.isPaymentVerificationEnabled() &&( EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())||
 					                 EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())
 					)){ //add payment method profile to orbital. we need to add it as part of this transaction.
-				try {				
+				try {	
 					//first verify the payment method with orbital/paymentech. if success then add the profile.
-					gateway = GatewayFactory.getGateway(GatewayType.PAYMENTECH);
-					ErpAuthorizationModel authModel = gateway.verify(ErpAffiliate.getPrimaryAffiliate(info.geteStore()).getMerchant(paymentMethod.getCardType()),paymentMethod);
-					
+						gateway = GatewayFactory.getGateway(GatewayType.PAYMENTECH);
+						ErpAuthorizationModel authModel = gateway.verify(ErpAffiliate.getPrimaryAffiliate(info.geteStore()).getMerchant(paymentMethod.getCardType()),paymentMethod);
+											
 					if(authModel.isApproved()) {
 						Request request = GatewayAdapter.getAddProfileRequest(paymentMethod);
 						Response response = gateway.addProfile(request);
@@ -1432,7 +1435,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 							throw new ErpTransactionException();
 						
 					}
-				} catch (ErpTransactionException e) {
+				}catch (ErpTransactionException e) {
 					this.getSessionContext().setRollbackOnly();
 					throw new ErpPaymentMethodException(e.getMessage());
 				}
@@ -1455,6 +1458,22 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			deleteProfile(paymentMethod);
 			throw new FDResourceException(ex);
 		}
+	}
+	
+	public ErpAuthorizationModel verifyCard(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled) throws FDResourceException, ErpPaymentMethodException {
+		ErpAuthorizationModel authModel = null;
+		try {
+			if (paymentechEnabled && FDStoreProperties.isPaymentVerificationEnabled() && (EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType()) 
+							|| EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType()))) {
+				Gateway gateway = GatewayFactory.getGateway(GatewayType.PAYMENTECH);
+				authModel = gateway.verify(ErpAffiliate.getPrimaryAffiliate(info.geteStore()).getMerchant(paymentMethod.getCardType()), paymentMethod);
+				logCardVerificationActivity(info,paymentMethod,authModel,"");			
+			}
+		} catch (ErpTransactionException e) {
+			this.getSessionContext().setRollbackOnly();
+			throw new ErpPaymentMethodException(e.getMessage());
+		}
+		return authModel;
 	}
 
 	private void deleteProfile(ErpPaymentMethodI paymentMethod){
@@ -1500,12 +1519,23 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 * 
 	 *            Throws FDResourceException
 	 */
-	public void setDefaultPaymentMethod(FDActionInfo info,
-			PrimaryKey paymentMethodPK) throws FDResourceException {
+	public void setDefaultPaymentMethod(FDActionInfo info, PrimaryKey paymentMethodPK, EnumPaymentMethodDefaultType type, boolean isDebitCardSwitch) throws FDResourceException {
 		try {
-			FDCustomerEB eb = this.getFdCustomerHome().findByPrimaryKey(
-					new PrimaryKey(info.getIdentity().getFDCustomerPK()));
+			FDCustomerEB eb = this.getFdCustomerHome().findByPrimaryKey(new PrimaryKey(info.getIdentity().getFDCustomerPK()));
 			eb.setDefaultPaymentMethodPK(paymentMethodPK.getId());
+			if(isDebitCardSwitch){
+				eb.setDefaultPaymentMethodType(type);
+				EnumAccountActivityType activityType = EnumAccountActivityType.DEFAULT_PM_ND;
+				//log activity
+				if(type.name().equals(EnumPaymentMethodDefaultType.DEFAULT_CUST.name())){
+					activityType = EnumAccountActivityType.DEFAULT_PM_CUST;
+				}else if(type.name().equals(EnumPaymentMethodDefaultType.DEFAULT_SYS.name())){
+					activityType = EnumAccountActivityType.DEFAULT_PM_SYS;
+				}else{
+					activityType = EnumAccountActivityType.DEFAULT_PM_ND;
+				}
+				this.logActivity(info.createActivity(activityType));
+			}			
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (FinderException fe) {
@@ -6849,8 +6879,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					EnumSaleType.DONATION);
 			// To store the optIn Indicator
 			Connection conn = this.getConnection();
-			FDDonationOptinDAO.insert(conn, customerPk, pk.getId(), isOptIn);
-
+			try {
+				FDDonationOptinDAO.insert(conn, customerPk, pk.getId(), isOptIn);
+			} finally {
+				close(conn);
+			}
 			// AUTH sale in CYBER SOURCE
 			PaymentManagerSB paymentManager = this.getPaymentManagerHome()
 					.create();
@@ -7603,6 +7636,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
+			close(rset);
+			close(pstmt);
 			close(conn);
 		}
 		return ccmList;
@@ -7632,6 +7667,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
+			close(rset);
+			close(pstmt);
 			close(conn);
 		}
 		return ccmList;
@@ -7673,10 +7710,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			} catch (SQLException sqle) {
 				throw new FDResourceException(sqle);
 			} finally {
-				if(pstmt != null)
-					try {
-						pstmt.close();
-					} catch(Exception e) {}
+				DaoUtil.close(rset);
+				DaoUtil.close(pstmt);
 			}
 		}
 		return ccm;
@@ -7824,6 +7859,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
+			close(pstmt);
 			close(conn);
 		}
 	}
@@ -8671,7 +8707,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			pstmt.setString(2, silverPopup.getQualifier());
 			pstmt.setString(3, silverPopup.getDestination());
 			pstmt.execute();
-			LOGGER.debug("insertSilverPopupDetails in Process Successful Insert of Customer_id, Qualifier, Destination, Creat_Timestamp and Updated_Timestamp into our DataBase for cutomer_id "+silverPopup.getCustomerId());
+			LOGGER.debug("insertSilverPopupDetails in Process Successful Insert of Customer_id, Qualifier, Destination, Creat_Timestamp and Updated_Timestamp into our DataBase for Destination "+silverPopup.getDestination());
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
@@ -8679,17 +8715,17 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}	
 	
-	public static String UPDATE_SILVER_POPUP = "update CUST.CUSTOMER_PUSHNOTIFICATION set QUALIFIER =?,DESTINATION =?,UPDATE_TIMESTAMP=trunc(sysdate) where customer_id=?";
+	public static String UPDATE_SILVER_POPUP = "update CUST.CUSTOMER_PUSHNOTIFICATION set customer_id=?, QUALIFIER =?, UPDATE_TIMESTAMP=trunc(sysdate) where DESTINATION = ?";
 	
 	public void updateSilverPopupDetails(SilverPopupDetails silverPopup, Connection conn)  throws FDResourceException {
 		PreparedStatement pstmt = null;		
 		try {
 			pstmt = conn.prepareStatement(UPDATE_SILVER_POPUP);
-			pstmt.setString(1, silverPopup.getQualifier());
-			pstmt.setString(2, silverPopup.getDestination());
-			pstmt.setString(3, silverPopup.getCustomerId());
+			pstmt.setString(1, silverPopup.getCustomerId());
+			pstmt.setString(2, silverPopup.getQualifier());
+			pstmt.setString(3, silverPopup.getDestination());
 			pstmt.execute();
-			LOGGER.debug("updateSilverPopupDetails in Process Successful Update of Qualifier, Destination and Updated_Timestamp into our DataBase for cutomer_id: "+silverPopup.getCustomerId());
+			LOGGER.debug("updateSilverPopupDetails in Process Successful Update of Customer_id, Qualifier and Updated_Timestamp into our DataBase for Destination "+silverPopup.getDestination());
 		} catch (SQLException sqle) {
 			LOGGER.info("updateSilverPopupDetails IN PROCESS FAILED... "+silverPopup.getCustomerId());
 			throw new FDResourceException(sqle, "Unable to store FDUser");
@@ -8698,7 +8734,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}		
 
-	public static String SELECT_SILVER_POPUP = "select count(*) as SP_COUNT from CUST.CUSTOMER_PUSHNOTIFICATION where CUSTOMER_ID=?";
+	public static String SELECT_SILVER_POPUP = "select count(*) as SP_COUNT from CUST.CUSTOMER_PUSHNOTIFICATION where DESTINATION = ?";
 	
 	public boolean insertOrUpdateSilverPopup(SilverPopupDetails silverPopup) throws FDResourceException {
 		Connection conn = null;
@@ -8709,7 +8745,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			try {
 				conn = getConnection();
 				ps = conn.prepareStatement(SELECT_SILVER_POPUP);
-				ps.setString(1, silverPopup.getCustomerId());
+				ps.setString(1, silverPopup.getDestination());
 				LOGGER.info("Exicuting Query "+SELECT_SILVER_POPUP+" in insertOrUpdateSilverPopup");
 
 				rs = ps.executeQuery();
@@ -8717,7 +8753,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				while (rs.next()) {
 
 					if (Integer.valueOf(rs.getString("SP_COUNT")) == 0) {
-						LOGGER.debug("got the Count as SP_COUNT > 0, going into updateSilverPopupDetails");
+						LOGGER.debug("got the Count as SP_COUNT = 0, going into insertSilverPopupDetails");
 						isCustomerHasSP = true;
 						break;
 					}
@@ -8725,7 +8761,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				if (isCustomerHasSP) {
 					insertSilverPopupDetails(silverPopup, conn);
 				} else {
-					updateSilverPopupDetails(silverPopup, conn);
+					//updateSilverPopupDetails(silverPopup, conn);
 					}
 			} catch (SQLException exc) {
 				LOGGER.info("insertOrUpdateSilverPopup IN PROCESS FAILED... " + silverPopup.getCustomerId());
@@ -8768,6 +8804,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			LOGGER.info("updateSPSuccessDetails IN PROCESS FAILED... "+silverPopup.getCustomerId());
 			throw new FDResourceException(sqle, "Unable to store FDUser");
 		} finally {
+			close(pstmt);
 			close(conn);
 		}
 	}
@@ -8784,4 +8821,39 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 	}	
+public void updateFDCustomerDefaultPaymentMethodType(FDIdentity identity, EnumPaymentMethodDefaultType type, String defaultPaymentMethodpk) throws FDResourceException {
+			try {
+				FDCustomerEB eb = getFdCustomerHome().findByPrimaryKey(new PrimaryKey(identity.getFDCustomerPK()));
+				eb.setDefaultPaymentMethodType(type);
+				eb.setDefaultPaymentMethodPK(defaultPaymentMethodpk);
+			} catch (RemoteException re) {
+		throw new FDResourceException(re);
+			} catch (FinderException ce) {
+		throw new FDResourceException(ce);
+			}
+	}
+	
+	public EnumPaymentMethodDefaultType getpaymentMethodDefaultType(String custId) throws FDResourceException{
+		Connection conn = null;
+		try{
+			conn = getConnection();
+			return FDUserDAO.getpaymentMethodDefaultType(custId, conn);
+		}catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Some problem in getting default payment method info");
+		} finally {
+			close(conn);
+		}
+	}
+
+public int resetDefaultPaymentValueType(String custId) throws FDResourceException{
+		Connection conn = null;
+		try{
+			conn = getConnection();
+			return FDUserDAO.resetDefaultPaymentValueType(conn, custId);
+		}catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Some problem in getting default payment method info");
+		} finally {
+			close(conn);
+		}
+	}
 }

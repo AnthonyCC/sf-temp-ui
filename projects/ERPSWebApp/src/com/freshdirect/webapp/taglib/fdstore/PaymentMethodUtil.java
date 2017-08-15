@@ -12,8 +12,10 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,28 +24,28 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
-import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumAccountActivityType;
+import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
-import com.freshdirect.fdlogistics.model.FDDeliveryAddressVerificationResponse;
-import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
-import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.payments.util.PaymentMethodDefaultComparator;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
-import com.freshdirect.logistics.delivery.model.EnumAddressVerificationResult;
 import com.freshdirect.payment.BINCache;
 import com.freshdirect.payment.BillingCountryInfo;
 import com.freshdirect.payment.EnumBankAccountType;
@@ -83,7 +85,8 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
              	isDebitCard = binCache.isDebitCard(paymentMethod.getAccountNumber(), paymentMethod.getCardType());
              }
 	        paymentMethod.setDebitCard(isDebitCard);
-            FDCustomerManager.addPaymentMethod(info, paymentMethod, sessionuser.isPaymentechEnabled());
+            FDCustomerManager.addPaymentMethod(info, paymentMethod, sessionuser.isPaymentechEnabled(), FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, sessionuser));
+            sessionuser.refreshFdCustomer();
         } catch (ErpPaymentMethodException ex) {
             /*LOGGER.debug(ex);
             result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER));
@@ -118,8 +121,11 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
         if (paymentMethod == null) {
             throw new FDResourceException("payment method not found");
         }
-        
-        FDCustomerManager.removePaymentMethod(info, paymentMethod);
+        FDSessionUser fdUser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
+                 
+        FDCustomerManager.removePaymentMethod(info, paymentMethod, 
+        		FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, fdUser));
+        fdUser.refreshFdCustomer();
     }
     
     
@@ -301,7 +307,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
             
             if(!EnumAccountActivityType.UPDATE_PAYMENT_METHOD.equals(activityType)){
             	paymentMethod.setCardType(EnumCardType.getCardType(cardType));
-            	paymentMethod.setAbaRouteNumber(abaRouteNumber);
+            	paymentMethod.setAbaRouteNumber(abaRouteNumber);            	
             }
             paymentMethod.setBankAccountType(EnumBankAccountType.getEnum(bankAccountType));
 //            paymentMethod.setAbaRouteNumber(abaRouteNumber);
@@ -316,7 +322,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
             if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
             	paymentMethod.setCountry("US");
             }
-           
+            
             paymentMethod.setCVV(csv);
             BINCache binCache = BINCache.getInstance();
             boolean isDebitCard = false;
@@ -330,7 +336,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
             	paymentMethod.setCustomerId(identity.getErpCustomerPK());
             }
            
-            boolean isBadAccount = PaymentFraudManager.checkBadAccount(paymentMethod, false); 
+            boolean isBadAccount = PaymentFraudManager.checkBadAccount(paymentMethod, false);            
 	        result.addError(
 	        	 isBadAccount &&
 				(bypassBadAccountCheck == null || "".equals(bypassBadAccountCheck)), 
@@ -377,8 +383,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     }
     
     
-    
-    public static String getDisplayableAccountNumber(ErpPaymentMethodI paymentMethod) {
+   	public static String getDisplayableAccountNumber(ErpPaymentMethodI paymentMethod) {
     	return ((ErpPaymentMethodModel)paymentMethod).getMaskedAccountNumber();
     }
     
@@ -814,4 +819,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 		}
     }
     
+    public static void sortPaymentMethodsByPriority(List<ErpPaymentMethodI> paymentMethods){
+    	Collections.sort(paymentMethods, new PaymentMethodDefaultComparator());
+    }
 }

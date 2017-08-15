@@ -35,5 +35,7 @@ public interface PaymentMethodName {
     
     public static final String PHONE = "phone";
     
+    public static final String DEFAULT_PAYMENT_METHOD_TYPE = "defaultPaymentMethodType";
+    
 }
 

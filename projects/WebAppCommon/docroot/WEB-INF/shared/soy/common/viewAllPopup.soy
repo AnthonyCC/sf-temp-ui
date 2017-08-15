@@ -1,29 +1,26 @@
 {namespace common}
 
 /**
- * @param overlayId id
+ * @param popupId id
  * @param customClass custom classname
- * @param bodyContent overlay content
- * @param headerContent overlay content
- * @param ariaLabelledby
- * @param ariaDescribedby
+ * @param hasClose show close button
+ * @param helpTemplate help popup template
+ * @param helpHeader help popup header
+ * @param headerContent header text
+ * @param bodyContent popup content
+ * @param? mobWeb isMobWeb or not
  */
 {template .viewAllPopup autoescape="false"}
-  <div id="{$overlayId}" class="overlay {$customClass}" role="dialog">
-    <button nofocus class="overlay-close-icon" data-close-overlay>close</button>
-    <div class="overlay-container">
-      <div class="overlay-header-helper">
-        <span class="fd-logo"></span>
-        <div class="overlay-header" aria-labelledby="{$ariaLabelledby}">
-          {$headerContent}
-        </div>
-      </div>
-      <div class="overlay-content" aria-describedby="{$ariaDescribedby}">
-        {$bodyContent}
-      </div>
-      <div class="overlay-close">
-        <button class="cssbutton cssbutton-flat green transparent" data-close-overlay>close</button>
+    <div id="{$popupId}" class="fixedpopup {if not $helpTemplate}qs-hidehelp{/if} {if $hasClose}qs-hasclose{/if} {$customClass}{if $mobWeb} mm-page{/if}">
+        <div class="fixedPopupHelper"></div>
+        <div class="fixedPopupContent">
+              <h2 class="qs-popup-header"><span>{$headerContent}</span> <button nofocus class="qs-popup-help-icon" data-bodytemplate="{$helpTemplate}" data-header="{$helpHeader}">help</button> <button nofocus class="qs-popup-close-icon" onclick="close_window_new_account();">close</button></h2>
+              <div class="qs-popup-content">
+                {$bodyContent}
+               </div>
+         <div class="qs-popup-close">
+          <button class="cssbutton cssbutton-flat green transparent" data-close-viewall-popup>close</button>
+         </div>
       </div>
     </div>
-  </div>
 {/template}

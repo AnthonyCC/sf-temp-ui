@@ -76,7 +76,8 @@
   	margin-bottom: 10px;
 }
 
-#sulCont input[disabled="disabled"]{
+#sulCont input[disabled="disabled"],
+#sulCont input[disabled]{
 	background: rgb(204,204,204);
 	background: -moz-linear-gradient(top,  rgba(204,204,204,1) 0%, rgba(194,194,194,1) 100%);
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(204,204,204,1)), color-stop(100%,rgba(194,194,194,1)));
@@ -119,6 +120,10 @@
 #sulCont.login-page #fd_login{
 	margin-left: -22px;
 	margin-top:40px;
+}
+#sulCont .form-side-social #litesignup {
+	display:inline-block;
+	margin-left: 0;
 }
 
 #sulCont .form-side-social #litesignup,
@@ -174,7 +179,7 @@ input[type="socialButton"] {
 }
 #sulCont .form-side-social-header,
 #sulCont .signin-social-forgot-pass-header-message{
-	padding: 29px 0 33px;
+	padding: 29px 0 0 0;
 	font-family: Verdana;
 	color:  #333333;
 	font-size: 16px;
@@ -255,25 +260,24 @@ input[type="socialButton"] {
 }
 
 #sulCont .bottom-contents .bottom-contents-terms{
-	width: 238px;
 	margin: auto;
 }
 
 #sulCont .bottom-contents .bottom-contents-terms-text{
-	padding-right: 30px;
     color: #888888;
     font-size: 10px;
     line-height: 12px;
-    text-align: left;
+    text-align: center;
 }
 #sulCont .bottom-contents .bottom-contents-terms-text a{
 	color: #888888;
 	text-decoration: underline;
 }
-#sulCont .bottom-contents .bottom-links{
-	padding: 20px 0 0;
+#sulCont .bottom-links{
+	padding: 20px 0 13px 0;
     font-size: 14px;
     line-height: 17px;
+    text-align: center;
 }
 #sulCont .bottom-contents .bottom-links a{
 	font-family: Verdana;
@@ -447,3 +451,18 @@ br.new_cust{
 	font-weight: 700;
 	padding: 0 20px;
 }
+
+/* login overlay */
+.login-ajax-overlay.fixedpopup {
+	z-index: 10003;
+}
+.login-ajax-overlay.fixedpopup .qs-popup-header {
+	min-height: 0;
+	height: 0;
+	padding: 0;
+}
+.login-ajax-overlay.fixedpopup .ajaxpopup-body {
+	width: 465px;
+}
+
+

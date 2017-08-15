@@ -119,7 +119,40 @@
 								/* do nothing? */
 							}
 						
-							stringBuffer.append("<input type=\"radio\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\" name=\"deliveryTimeslotId\"");
+							stringBuffer.append("<input type=\"button\" aria-label=\""
+									+((soldOut||slot.isUnavailable())
+											? "sold out" :
+												(slot.isPremiumSlot() && slot.getPremiumAmount()>0
+														?" "+slot.getPremiumAmountFmt()+"":
+													slot.getDisplayString(true))+((isSelectedSlotId)
+															?" selected":
+														((isPreReservedSlotId && hasPreReserved)
+																?" reserved":
+															(request.getAttribute("SHOW_WINDOWS_STEERING")!=null && "true".equals(request.getAttribute("SHOW_WINDOWS_STEERING")) && slot.getSteeringDiscount() > 0
+															        ?"Save&nbsp;$"+CCFormatter.formatQuantity(slot.getSteeringDiscount())+"":
+															    (slot.isEarlyAM()
+																	   ?" early unattended":
+																   (slot.isEcoFriendly() && slot.isDepot() && !(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity())
+																		  ?"Delivery&nbsp;Helper":
+																	 (slot.isEcoFriendly() && !(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity())
+																			 ?" eco friendly":
+																				   ((!soldOut||!slot.isUnavailable()) && deliveryModel.isAlcoholDelivery() && slot.isAlcoholRestricted()
+																						   ?" alcohol restricted":
+																						(slot.isMinOrderSlot() && !slot.isMinOrderMet()
+																							  ?"" + slot.getMinOrderMsg() +"":
+																						   (slot.isMinOrderSlot() && slot.isMinOrderMet()
+																							    ?" " + slot.getMinOrderMsg() +"":
+																							  (slot.isFdxSlot() && slot.getDeliveryFee()>0
+																								   ?" "+slot.getPromoDeliveryFee()+"":
+																								 (!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()
+																									  ?" &nbsp;CHEF'S&nbsp;TABLE":
+																							                ""))))))))))))+ 
+																							                (StandingOrderHelper.isSO3StandingOrder(user) && "N".equals(user.getCurrentStandingOrder().getActivate())
+																													?" "+soFirstNextTextCell+" "+slot.getFormattedSoFirstDeliveryDate()+"":
+																														(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentStandingOrder().getActivate())
+																																?" "+soFirstNextTextCell+""+slot.getFormattedSoFirstDeliveryDate()+"":
+																															(StandingOrderHelper.isSO3StandingOrder(user) && !soFirstDeliv
+																																	?" "+soFirstNextTextCell+""+slot.getFormattedSoFirstDeliveryDate()+"":"")))+" \" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\" ");
 							stringBuffer.append(
 									( isSelectedSlotId || ("".equals(selectedSlotId) && isPreReservedSlotId && hasPreReserved) ) 
 									? "checked" : ""
@@ -140,7 +173,40 @@
 						code before accessibility is added
 						<label for=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\"></label></div>\n
 					*/
-	stringBuffer.append("<label for=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\"><span class=\"offscreen\">"+((soldOut||slot.isUnavailable()) ? "" : slot.getDisplayString(true))+"</span></label></div>");
+					stringBuffer.append("<label for=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\"><span class=\"offscreen\">"
+							+((soldOut||slot.isUnavailable())
+									? "sold out" :
+										(slot.isPremiumSlot() && slot.getPremiumAmount()>0
+												?" "+slot.getPremiumAmountFmt()+"":
+											slot.getDisplayString(true))+((isSelectedSlotId)
+													?" selected":
+												((isPreReservedSlotId && hasPreReserved)
+														?" reserved":
+													(request.getAttribute("SHOW_WINDOWS_STEERING")!=null && "true".equals(request.getAttribute("SHOW_WINDOWS_STEERING")) && slot.getSteeringDiscount() > 0
+													        ?"Save&nbsp;$"+CCFormatter.formatQuantity(slot.getSteeringDiscount())+"":
+													    (slot.isEarlyAM()
+															   ?" early unattended":
+														   (slot.isEcoFriendly() && slot.isDepot() && !(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity())
+																  ?"Delivery&nbsp;Helper":
+															 (slot.isEcoFriendly() && !(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity())
+																	 ?" eco friendly":
+																		   ((!soldOut||!slot.isUnavailable()) && deliveryModel.isAlcoholDelivery() && slot.isAlcoholRestricted()
+																				   ?" alcohol restricted":
+																				(slot.isMinOrderSlot() && !slot.isMinOrderMet()
+																					  ?"" + slot.getMinOrderMsg() +"":
+																				   (slot.isMinOrderSlot() && slot.isMinOrderMet()
+																					    ?" " + slot.getMinOrderMsg() +"":
+																					  (slot.isFdxSlot() && slot.getDeliveryFee()>0
+																						   ?" "+slot.getPromoDeliveryFee()+"":
+																						 (!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()
+																							  ?" &nbsp;CHEF'S&nbsp;TABLE":
+																					                ""))))))))))))+ 
+																					                (StandingOrderHelper.isSO3StandingOrder(user) && "N".equals(user.getCurrentStandingOrder().getActivate())
+																											?" "+soFirstNextTextCell+" "+slot.getFormattedSoFirstDeliveryDate()+"":
+																												(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentStandingOrder().getActivate())
+																														?" "+soFirstNextTextCell+""+slot.getFormattedSoFirstDeliveryDate()+"":
+																													(StandingOrderHelper.isSO3StandingOrder(user) && !soFirstDeliv
+																															?" "+soFirstNextTextCell+""+slot.getFormattedSoFirstDeliveryDate()+"":"")))+"</span></label></div>");
 
 	stringBuffer.append("									<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_time\" class=\"fleft tsCont ")
 				.append(
@@ -198,7 +264,7 @@
 		stringBuffer.append("									<div class=\"tsMinOrderPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
 					.append("										<div>")
 							.append("<img src=\"/media_stat/images/layout/clear.gif\" alt=\"\" width=\"16\" height=\"16\" border=\"0\">")
-							.append("<div><a onClick=\"javascript:popup(\'/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_variable_minimum.html&windowSize=small&name=Minimum Order\',\'small\');return false;\" style=\"text-decoration:none;\"><font class=\"tsMinOrderE\" style=\"color:#ff0000;\" >" + slot.getMinOrderMsg() +"</font></a></div>")
+							.append("<div><a href=\"#\" onClick=\"javascript:popup(\'/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_variable_minimum.html&windowSize=small&name=Minimum Order\',\'small\');return false;\" style=\"text-decoration:none;\"><font class=\"tsMinOrderE\" style=\"color:#ff0000;\" >" + slot.getMinOrderMsg() +"</font></a></div>")
 						.append("</div>\n")
 					.append("									</div>")
 					.append("									<div class=\"tsMinOrderPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">\n")
@@ -208,7 +274,7 @@
 		stringBuffer.append("									<div class=\"tsMinOrderPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
 		.append("										<div>")
 				.append("<img src=\"/media_stat/images/layout/clear.gif\" alt=\"\" width=\"16\" height=\"16\" border=\"0\">")
-				.append("<div><a onClick=\"javascript:popup(\'/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_variable_minimum.html&windowSize=small&name=Minimum Order\',\'small\');return false;\" style=\"text-decoration:none;\"><font class=\"tsMinOrderE\" style=\"color:#669933;\" >" + slot.getMinOrderMsg() +"</font></a></div>")
+				.append("<div><a href=\"#\" onClick=\"javascript:popup(\'/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_variable_minimum.html&windowSize=small&name=Minimum Order\',\'small\');return false;\" style=\"text-decoration:none;\"><font class=\"tsMinOrderE\" style=\"color:#669933;\" >" + slot.getMinOrderMsg() +"</font></a></div>")
 			.append("</div>\n")
 		.append("									</div>")
 		.append("									<div class=\"tsMinOrderPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">\n")

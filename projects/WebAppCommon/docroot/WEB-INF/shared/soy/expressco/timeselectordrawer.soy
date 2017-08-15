@@ -5,9 +5,9 @@
  * @param? soFreq
 */
 {template .timeselectorcontent autoescape="false"}
-<div class="drawer__content">
-  <div class="drawer__header">
-  	{if $newSO3}
+<div class="drawer__content displayTable">
+  <div class="tableFooterGroup">
+  {if $newSO3}
   		<div class="standing-orders-3-select-freq-header">
   			Select a Delivery Day & Time
   		</div>
@@ -20,14 +20,17 @@
 			</select>
   		</div>
   	{/if}
+  <div fdform-error-container="timeslot"></div>
+  <div data-component="timeselectorcontent">
+  </div>
+  </div>
+  <div class="drawer__header tableHeaderGroup" >
     <p class="timeslot_pattern_notification">
       <iframe width="800" height="45" src="/OASonly.jsp?listPos=CheckoutTS&sitePage=www.freshdirect.com/XCpaymentpromo"></iframe>
     </p>
     <button class="cssbutton orange" data-component="timeslotchangebutton">Done <span class="offscreen">with Delivery Time</span></button>
   </div>
-  <div fdform-error-container="timeslot"></div>
-  <div data-component="timeselectorcontent">
-  </div>
+
 </div>
 {/template}
 

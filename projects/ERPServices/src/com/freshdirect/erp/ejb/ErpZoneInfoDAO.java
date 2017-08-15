@@ -17,6 +17,7 @@ import com.freshdirect.customer.ErpZoneRegionInfo;
 import com.freshdirect.customer.ErpZoneRegionZipInfo;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
+import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class ErpZoneInfoDAO {
@@ -146,7 +147,7 @@ public class ErpZoneInfoDAO {
 				if(ps!=null)
 					ps.close();
 	       }
-	       LOGGER.info("zoneId is :"+zoneId);
+	       LOGGER.debug("zoneId is :"+zoneId);
 		   return zoneId; 
 	}
     
@@ -161,17 +162,22 @@ public class ErpZoneInfoDAO {
 		   Connection conn = con;
 		   List zoneIdList=new ArrayList();	
 		   String zoneId=null;
-	       try {
-	    	   PreparedStatement ps = conn.prepareStatement(FIND_ZONE_PRICING_DEFALUT_SELECT);	    	   
-	    	   ps.setString(1,serviceType);
-	    	   ResultSet rs = ps.executeQuery();
-	           if (rs.next()) {
-	           	 zoneId=rs.getString("sap_id");	            	 
-	           }
-	       }catch(SQLException e){
+		   PreparedStatement ps = null;
+		   ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(FIND_ZONE_PRICING_DEFALUT_SELECT);
+			ps.setString(1, serviceType);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				zoneId = rs.getString("sap_id");
+			}
+		}catch(SQLException e){
 	      	 throw e;
+	       }finally{
+	    	   DaoUtil.close(rs);
+	    	   DaoUtil.close(ps);
 	       }
-	       LOGGER.info("zoneId is :"+zoneId);
+	       LOGGER.debug("zoneId is :"+zoneId);
 		   return zoneId; 
 	}
     
@@ -181,15 +187,20 @@ public class ErpZoneInfoDAO {
 	public static Collection getAllZoneIds(Connection con) throws SQLException{
 		
 		   Connection conn = con;
+		   PreparedStatement ps = null;
+		   ResultSet rs = null;
 		   List zoneIdList=new ArrayList();	
 	       try {
-	    	   PreparedStatement ps = conn.prepareStatement(ALL_ZONE_PRICING_SELECT_SQL);
-	    	   ResultSet rs = ps.executeQuery();
+	    	  ps = conn.prepareStatement(ALL_ZONE_PRICING_SELECT_SQL);
+	    	   rs = ps.executeQuery();
 	             while (rs.next()) {
 	            	 zoneIdList.add(rs.getString("sap_id"));	            	 
 	             }
 	       }catch(SQLException e){
 	      	 throw e;
+	       } finally {
+	    	   DaoUtil.close(rs);
+	    	   DaoUtil.close(ps);
 	       }
  	       LOGGER.info("All Zone Id List :"+zoneIdList.size());
 		   return zoneIdList; 
@@ -203,11 +214,13 @@ public class ErpZoneInfoDAO {
 	public static ErpZoneMasterInfo getZoneInfoDetails(Connection con,String zoneId) throws SQLException{
 		   Connection conn = con;
 		   ErpZoneMasterInfo zoneInfo=null;
-	       try {	    	   	    	   	    	   
-	    	   PreparedStatement ps = conn.prepareStatement(ZONE_PRICING_SELECT_SQL);
+		   PreparedStatement ps = null;
+		   ResultSet rs = null;
+		   try {	    	   	    	   	    	   
+	    	   ps = conn.prepareStatement(ZONE_PRICING_SELECT_SQL);
 	    	   ps.setString(1,zoneId);
 	    	   ps.setString(2,zoneId);
-	    	   ResultSet rs = ps.executeQuery();	    	   
+	    	   rs = ps.executeQuery();	    	   
 	             if(rs.next()) {
 	            	 String regionId=rs.getString("REGION_ID");
 	            	 ErpZoneRegionInfo regionInfo=getZoneRegionInfoDetails(conn,regionId);
@@ -229,6 +242,9 @@ public class ErpZoneInfoDAO {
 	             }
 	       }catch(SQLException e){
 	      	 throw e;
+	       } finally{
+	    	   DaoUtil.close(rs);
+	    	   DaoUtil.close(ps);
 	       }
  	       LOGGER.info("getZoneInfoDetails ErpZoneMasterInfo :"+zoneInfo);
 		   return zoneInfo; 			
@@ -240,9 +256,11 @@ public class ErpZoneInfoDAO {
 	public static List<ErpZoneMasterInfo> getAllZoneInfoDetails(Connection con) throws SQLException{
 		   Connection conn = con;
 		   List<ErpZoneMasterInfo> zoneInfoList=new ArrayList<ErpZoneMasterInfo>();
+			PreparedStatement ps = null;
+			ResultSet rs = null;
 	       try {	    	   	    	   	    	   
-	    	   PreparedStatement ps = conn.prepareStatement(ZONE_PRICING_SELECT_ALL_SQL);	    	  
-	    	   ResultSet rs = ps.executeQuery();	    	   
+	    	   ps = conn.prepareStatement(ZONE_PRICING_SELECT_ALL_SQL);	    	  
+	    	   rs = ps.executeQuery();	    	   
 	             while(rs.next()) {
 	            	 String regionId=rs.getString("REGION_ID");
 	            	 ErpZoneRegionInfo regionInfo=getZoneRegionInfoDetails(conn,regionId);
@@ -264,7 +282,10 @@ public class ErpZoneInfoDAO {
 	             }
 	       }catch(SQLException e){
 	      	 throw e;
-	       }
+	       } finally {
+				DaoUtil.close(rs);
+				DaoUtil.close(ps);
+			}
 	       LOGGER.info("getAllZoneInfoDetails List<ErpZoneMasterInfo> :"+zoneInfoList.size());
 		   return zoneInfoList; 			
 	}

@@ -50,15 +50,18 @@ for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
 			<%=shipAddress.getInstructions()%><br><BR>
 		<%}%>   
 		</font> 
+		<%
+		if (!EnumUnattendedDeliveryFlag.OPT_OUT.equals(shipAddress.getUnattendedDeliveryFlag())) {
+		%>
 		<fd:UnattendedDelivery id="zone" address="<%= shipAddress %>" checkUserOptions="true">
-		<% if (zone.isUnattended() && !EnumUnattendedDeliveryFlag.OPT_OUT.equals(shipAddress.getUnattendedDeliveryFlag())) { %>
+		<% if (zone.isUnattended()) { %>
 		<font class="text12bold">Unattended delivery</font>:<br>
 		<%= NVL.apply(shipAddress.getUnattendedDeliveryInstructions(),"OK") %>
 		<BR><BR>
 		<% } %>
 		</fd:UnattendedDelivery>
-
-		<%if (shipAddress.getAltDelivery() != null && shipAddress.getAltDelivery().getId() > 0 && !showingCorporateAddress) { %>
+		<% } 
+		if (shipAddress.getAltDelivery() != null && shipAddress.getAltDelivery().getId() > 0 && !showingCorporateAddress) { %>
 			<font class="text12bold">Alternate delivery</font>:<br>
 			<%= shipAddress.getAltDelivery().getName()%><br><br> 
 			<%if("NEIGHBOR".equalsIgnoreCase(shipAddress.getAltDelivery().getDeliveryCode())) {%>

@@ -58,6 +58,7 @@ import com.freshdirect.fdstore.promotion.management.WSPromotionInfo;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
+import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.FormatterUtil;
 import com.freshdirect.framework.util.NVL;
@@ -2301,8 +2302,8 @@ public class FDPromotionManagerNewDAO {
 				return rs.getString("ID");
 			}
 		} finally {
-			if (ps != null)
-				ps.close();
+			DaoUtil.close(rs);
+			DaoUtil.close(ps);
 		}
 
 		return null;

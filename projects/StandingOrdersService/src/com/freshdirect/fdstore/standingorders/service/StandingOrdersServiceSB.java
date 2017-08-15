@@ -3,6 +3,7 @@ package com.freshdirect.fdstore.standingorders.service;
 import java.rmi.RemoteException;
 import java.util.Collection;
 
+
 import javax.ejb.EJBObject;
 
 import com.freshdirect.fdstore.FDResourceException;
@@ -13,5 +14,5 @@ public interface StandingOrdersServiceSB extends EJBObject {
 	public SOResult.ResultList placeStandingOrders(Collection<String> soList, StandingOrdersJobConfig jobConfig)throws RemoteException;
 	public void persistUnavDetailsToDB(SOResult.ResultList resultCounter) throws FDResourceException, RemoteException;
 	public UnavDetailsReportingBean getDetailsForReportGeneration() throws FDResourceException, RemoteException;
-	public void deleteStandingOrders() throws FDResourceException, RemoteException;
+	
 }

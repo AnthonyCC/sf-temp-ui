@@ -64,6 +64,9 @@ public class PromotionFactory {
 	};
 
 	private PromotionFactory() {
+		if(FDStoreProperties.isLocalDeployment()) {
+			maxLastModified = new Date();
+		}
 		this.redeemPromotions = new ManagedCache<String, PromotionI>("PROMOTION", constructCache());
 		this.redemptions = new ManagedCache<String, Map<Date, Integer>>("REDEMPTION", constructRedemptionCache());
 		loadAutomaticPromotions();
@@ -72,9 +75,9 @@ public class PromotionFactory {
 	private void loadAutomaticPromotions(){
 		try {
 			List<PromotionI> promoList = FDPromotionNewManager.getAllAutomaticPromotions();
+			Date now = new Date();
 			for ( PromotionI promo : promoList ) {
 				Date promoModifyDate = promo.getModifyDate();
-				Date now = new Date();
 				if(this.maxLastModified == null || (this.maxLastModified.before(promoModifyDate) && !promoModifyDate.after(now))){
 					this.maxLastModified = new Date(promoModifyDate.getTime());
 				}
@@ -98,9 +101,9 @@ public class PromotionFactory {
 	protected synchronized Map<String, PromotionI> getAutomaticPromotionMap() {
 		List<PromotionI> promoList = this.automaticpromotions.get();
 		if(promoList.size() > 0){
+			Date now = new Date();
 			for ( PromotionI promo : promoList ) {
 				Date promoModifyDate = promo.getModifyDate();
-				Date now = new Date();
 				if(this.maxLastModified == null  || (this.maxLastModified.before(promoModifyDate) && !promoModifyDate.after(now))){
 					this.maxLastModified = new Date(promoModifyDate.getTime());
 				}

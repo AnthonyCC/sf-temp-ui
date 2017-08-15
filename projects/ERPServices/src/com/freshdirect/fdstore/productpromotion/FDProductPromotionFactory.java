@@ -1,6 +1,5 @@
 package com.freshdirect.fdstore.productpromotion;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -14,6 +13,7 @@ import com.freshdirect.erp.ejb.ProductPromotionInfoManager;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.ExpiringReference;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -23,13 +23,12 @@ public class FDProductPromotionFactory {
 	private static FDProductPromotionFactory sharedInstance = null;
 	
 	private static final Category LOGGER = LoggerFactory.getInstance(FDProductPromotionFactory.class);	
-	private static SimpleDateFormat format = new SimpleDateFormat("hh:mm:ss");
+	//private static SimpleDateFormat format = new SimpleDateFormat("hh:mm:ss");
 
 	
 	private Map<String, Map<ZoneInfo,List<FDProductPromotionInfo>>> promotionMap = new LinkedHashMap<String, Map<ZoneInfo,List<FDProductPromotionInfo>>>();
 	private Date presPickLastPublished;
 	private Date productsAssortmentLastPublished;
-	private Date currentTime;
 	
 	private ExpiringReference< Map<ZoneInfo,List<FDProductPromotionInfo>>> presPickPromotion = new ExpiringReference<Map<ZoneInfo,List<FDProductPromotionInfo>>>(5 * 60 * 1000) {
 		protected Map<ZoneInfo,List<FDProductPromotionInfo>> load() {
@@ -78,7 +77,9 @@ public class FDProductPromotionFactory {
 	};
 	
 	private FDProductPromotionFactory() {
-		
+		if(FDStoreProperties.isLocalDeployment()) {
+			productsAssortmentLastPublished = new Date();
+		}
 		loadPromotions();
 	}
 	

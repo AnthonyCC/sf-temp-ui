@@ -184,6 +184,22 @@ public class FDStandingOrdersManager {
 		}
 	}
 
+	public void deleteActivatedSO(FDActionInfo info, FDStandingOrder so, String deleteDate) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();
+			
+			sb.deleteActivatedSO(info, so, deleteDate);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	
 	public void delete(FDActionInfo info, FDStandingOrder so) throws FDResourceException {
 		lookupManagerHome();
 		try {
@@ -198,36 +214,6 @@ public class FDStandingOrdersManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
-	
-	public void updateDeleteSOInfo(FDActionInfo info, FDStandingOrder so, String deleteDate) throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDStandingOrdersSB sb = soHome.create();
-			
-			sb.updateDeleteSOInfo(info, so, deleteDate);
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-	
-	public void deleteSOByDate() throws FDResourceException {
-		lookupManagerHome();
-		try {
-			FDStandingOrdersSB sb = soHome.create();
-			
-			sb.deleteSOByDate();
-		} catch (CreateException ce) {
-			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}	
 	
 	public String save(FDActionInfo info, FDStandingOrder so) throws FDResourceException {
 		return save(info, so, null);
@@ -1085,5 +1071,6 @@ public class FDStandingOrdersManager {
 			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
-	}	
+	}
+	
 }

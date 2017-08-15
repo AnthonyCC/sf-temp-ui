@@ -14,7 +14,6 @@ import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -32,15 +31,13 @@ import com.freshdirect.webapp.util.MediaUtils;
 
 public class DatasourceService {
 
-    private static DatasourceService INSTANCE = new DatasourceService();
+    private static final DatasourceService INSTANCE = new DatasourceService();
     private static final Logger LOGGER = LoggerFactory.getInstance(DatasourceService.class);
 
     private static final String INDEX_CM_EVENT_SOURCE = "BROWSE";
-
     private static final String TOP_ITEMS_SITE_FEATURE = "TOP_ITEMS_QS";
     private static final String MOST_POPULAR_PRODUCTS_SITE_FEATURE = "FAVORITES";
     private static final String MODULE_GROUP_SOURCE_TYPE = "MODULE_GROUP";
-    private int MAX_ITEMS = FDStoreProperties.getHomepageRedesignProductLimitMax();
 
     public static DatasourceService getDefaultService() {
         return INSTANCE;

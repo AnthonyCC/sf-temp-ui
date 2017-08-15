@@ -160,7 +160,7 @@ public class CheckoutService {
 		FormRestriction checkPlaceOrderResult = null;
 		ActionResult actionResult = new ActionResult();
 		FDCartModel cart = user.getShoppingCart();
-		AvalaraContext avalaraContext = new AvalaraContext(cart);
+//		AvalaraContext avalaraContext = new AvalaraContext(cart);
 		List<ValidationError> checkEbtAddressPaymentSelectionError = DeliveryAddressService.defaultService().checkEbtAddressPaymentSelectionByZipCode(user, cart.getDeliveryAddress().getZipCode());
         DeliveryAddressManipulator.checkAddressRestriction(false, actionResult, cart.getDeliveryAddress());
         if (restriction == null && atpFailureData == null && checkEbtAddressPaymentSelectionError.isEmpty() && actionResult.isSuccess()) {

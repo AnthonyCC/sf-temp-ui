@@ -25,24 +25,24 @@ var FreshDirect = FreshDirect || {};
   }
 
   function done(listPos) {
-	    listPos.forEach(function (pos) {
-	      var cnt = $jq("#oas_b_"+pos);
-	      if (cnt.size()) {
-	        cnt.html('');
-	        postscribe(cnt[0], '<script>OAS_RICH("'+pos+'");</script>', {
-	            error: function () {},
-	            done: function (pos) {
-	                $.each($('a[href*="/default/empty.gif/"]'), function(i, e) {
-	                	$(e).attr("tabindex", "-1");
-	                    $(e).attr("role", "presentation");
-	                   $(e).attr("aria-hidden", "true");
-	                    //console.log('updateOAS', event,id);
-	                });
-	            }
-	        });
-	      }
-	    });
-	  }
+		listPos.forEach(function (pos) {
+			var selector = "#oas_"+pos+",#oas_b_"+pos;
+			$(selector).each(function(i,e){
+				$(e).html('');
+				postscribe($(e), '<script>OAS_RICH("'+pos+'");</script>', {
+					error: function () {},
+					done: function (pos) {
+						$.each($('a[href*="/default/empty.gif/"]'), function(ii, ee) {
+							$(ee).attr("tabindex", "-1");
+							$(ee).attr("role", "presentation");
+							$(ee).attr("aria-hidden", "true");
+							//console.log('updateOAS', event,id);
+						});
+					}
+				});
+			});
+		});
+	}
 
   Object.create(fd.common.signalTarget,{
     allowNull:{
@@ -85,11 +85,14 @@ var FreshDirect = FreshDirect || {};
   }).listen();
 
   function initListPoses(){
-    $("[id^='oas_b_']").each(function(){ 
-      var prefix = 'oas_b_',
-          oasName = $(this).attr('id').slice(prefix.length);
-
-      if(oasName){ listPos.push(oasName); }
+    $("[id^='oas_']").each(function(){ 
+    	var curId = $(this).attr('id'), prefix ='', oasName = null;
+    	if (curId.indexOf('oas_b_') === 0) {
+    		prefix = 'oas_b_';
+    	} else if (curId.indexOf('oas_') === 0) {
+    		prefix = 'oas_';
+    	}
+    	listPos.push(curId.slice(prefix.length));
     });
   }
 

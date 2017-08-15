@@ -65,6 +65,9 @@ user.setSoTemplateCart(new FDCartModel());
 	FreshDirect.standingorder.softLimitDisplay = <%= StandingOrderHelper.formatDecimalPrice(ErpServicesProperties.getStandingOrderSoftLimit()) %>
 	FreshDirect.standingorder.currentPage = "manage";
 </script>
+<fd:GetStandingOrderHelpInfo id="helpSoInfo">
+	<script>var helpSoInfo=<%=helpSoInfo%>;</script>
+</fd:GetStandingOrderHelpInfo>
 
 <%  if(false && soList!=null && !soList.isEmpty()) { %>
 	<div class="standing-orders-3-upcoming-deliveries">

@@ -18,10 +18,13 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ewallet.ejb.EwalletNotifyStatusHome;
 import com.freshdirect.fdstore.ewallet.ejb.EwalletNotifyStatusSB;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
+import com.freshdirect.payment.service.FDECommerceService;
 
 public class EwalletNotifyStatusCron {
 	
@@ -45,12 +48,17 @@ public class EwalletNotifyStatusCron {
 			}
 		}
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EwalletNotifyStatusSB)){
+				FDECommerceService.getInstance().loadTrxnsForPostBack(maxDays);
+				FDECommerceService.getInstance().postTrxnsToEwallet();
+			}else{
 			Context ctx=getInitialContext();
 			EwalletNotifyStatusHome ewalletHome=(EwalletNotifyStatusHome)ctx.lookup( "freshdirect.fdstore.EWalletNotify" ) ;
 			EwalletNotifyStatusSB sb = ewalletHome.create();
 
 			sb.loadTrxnsForPostBack(maxDays);
 			sb.postTrxnsToEwallet();
+			}
 
 		} catch (RemoteException e) {
 			LOGGER.error("Exception while Postback ", e.getCause());

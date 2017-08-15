@@ -48,12 +48,13 @@ var FreshDirect = FreshDirect || {};
     open: {
       value: function (config) {
         var target = config.element,
-            url = target.attr('href'),
-            type = target.attr('data-ajaxpopup-type') || "",
+            url = target && target.attr('href') || config.href,
+            type = target && target.attr('data-ajaxpopup-type') || "",
             template = config.template ||
-              target.attr('data-ajaxpopup-template') &&
-              fd.modules.common.utils.discover(target.attr('data-ajaxpopup-template')),
-            afterRenderCallback = fd.modules.common.utils.discover(target.attr('data-ajaxpopup-after-render-callback'));
+              (target && target.attr('data-ajaxpopup-template') &&
+              fd.modules.common.utils.discover(target.attr('data-ajaxpopup-template'))),
+            afterRenderCallback = target && fd.modules.common.utils.discover(target.attr('data-ajaxpopup-after-render-callback'))
+             || config.afterRenderCallback;
 
         ajaxPopup.popup.$el.attr('data-ajaxpopup-type', type);
         ajaxPopup.popup.$el.attr('data-component', this.popupConfig.noCloseOnOverlay ? null : 'ajaxpopup-popup');

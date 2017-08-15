@@ -416,11 +416,15 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 
 		public List loadRecipentsForOrder(String saleId){
 			List recList=null;
+			Connection conn = null;
 			try{
-				recList=GiftCardPersistanceDAO.loadGiftCardRecipentsBySaleId(getConnection(), saleId);
+				conn = this.getConnection();
+				recList=GiftCardPersistanceDAO.loadGiftCardRecipentsBySaleId(conn, saleId);
 			}catch (Exception e) {
 				LOGGER.warn("Unexpected Exception while trying to process invoice for order#: "+saleId, e);
 				throw new EJBException("Unexpected Exception while trying to process invoice for order#: "+saleId, e);
+			} finally{
+				close(conn);
 			}
 			return recList;
 		}

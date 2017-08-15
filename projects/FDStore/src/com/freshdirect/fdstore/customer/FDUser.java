@@ -50,10 +50,8 @@ import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
-import com.freshdirect.customer.ErpOrderHistory;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
-import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.DlvPassConstants;
@@ -159,7 +157,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     private AddressModel address;
     private FDReservation reservation;
-    private FDCartModel shoppingCart = initializeCart();
+    private FDCartModel shoppingCart /*= initializeCart()*/; // It was causing issue in SF2.0
 
     private FDCartModel soTemplateCart = new FDCartModel();
     // Creating a dummy cart for gift card processing.
@@ -406,15 +404,29 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     public FDUser(PrimaryKey pk) {
         super();
+        this.shoppingCart = initializeCart(); // Added due to the issue in SF 2.0
         this.setPK(pk);
     }
 
     public FDUser() {
         super();
+      this.shoppingCart =  initializeCart(); // Added due to the issue in SF 2.0
     }
 
     public FDUser(UserContext userContext) {
         super();
+        this.userContext = userContext;
+     // Added due to the issue in SF 2.0
+        if (this.shoppingCart == null) {
+            this.shoppingCart = new FDCartModel();
+            this.shoppingCart.setEStoreId(this.getUserContext().getStoreContext().getEStoreId());
+        }
+    }
+    
+    // Used only for Storefront 2.0
+    public FDUser(PrimaryKey pk,UserContext userContext) {
+        super();
+        this.setPK(pk);
         this.userContext = userContext;
     }
 
@@ -742,25 +754,6 @@ public class FDUser extends ModelSupport implements FDUserI {
         }
 
         return this.cachedOrderHistory;
-    }
-
-    @Override
-    public OrderHistoryI getOrderHistoryByEStoreId(EnumEStoreId eStoreid) throws FDResourceException {
-        OrderHistoryI orderHistory = getOrderHistory();
-
-        if (orderHistory instanceof ErpOrderHistory) {
-            List<ErpSaleInfo> erpSaleInfos = (List<ErpSaleInfo>) ((ErpOrderHistory) orderHistory).getErpSaleInfos();
-            
-            for (Iterator<ErpSaleInfo> iter = erpSaleInfos.iterator(); iter.hasNext();) {
-               ErpSaleInfo erpSaleInfo = iter.next();
-               
-                if (!erpSaleInfo.equals(eStoreid) && !erpSaleInfo.getSaleType().equals(EnumSaleType.REGULAR)) {
-                    iter.remove();
-               }
-            }
-        }
-
-        return orderHistory;
     }
 
     @Override
@@ -1325,14 +1318,21 @@ public class FDUser extends ModelSupport implements FDUserI {
     @Override
     public String getCustomerServiceEmail() throws FDResourceException {
         String serviceEmail = SERVICE_EMAIL;
-        if (isDepotUser()) {
-            serviceEmail = FDDeliveryManager.getInstance().getCustomerServiceEmail(getDepotCode());
+        if (isChefsTable()) {
+            serviceEmail = FDStoreProperties.getChefsTableEmail();
+        } else if (isDepotUser()) {
+            try {
+				serviceEmail = FDDeliveryManager.getInstance().getCustomerServiceEmail(getDepotCode());
+			} catch (Exception e) {
+				//Ignore
+				LOGGER.warn("Exception while fetching customer service email by depot code: "+getDepotCode(),e);
+			}
         } else if (isCorporateUser()) {
             serviceEmail = "corporateservice@freshdirect.com";
         }
-        if (isChefsTable()) {
+        /*if (isChefsTable()) {
             serviceEmail = FDStoreProperties.getChefsTableEmail();
-        }
+        }*/
         return serviceEmail;
     }
 
@@ -1367,6 +1367,10 @@ public class FDUser extends ModelSupport implements FDUserI {
             userId = ""; // empty string
         }
         return userId;
+    }
+    
+    public void setUserId(String userId){
+    	this.userId =userId;
     }
 
     @Override
@@ -1847,8 +1851,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     
     public EnumDPAutoRenewalType hasAutoRenewDP() throws FDResourceException {
         if (this.identity != null) {
-            FDCustomerModel customer = this.getFDCustomer();
-            String customerPK = customer.getErpCustomerPK();
+            String customerPK = identity.getErpCustomerPK();
 
             return FDCustomerManager.hasAutoRenewDP(customerPK);
         }
@@ -2286,8 +2289,8 @@ public class FDUser extends ModelSupport implements FDUserI {
     public boolean isEligibleForStandingOrders() {
         if (isSOEligible == null) {
             isSOEligible = Boolean.FALSE;
-
-            if (isSOEnabled()) {
+            EnumEStoreId eStoreId = (null !=this.getUserContext() && null !=this.getUserContext().getStoreContext()) ? this.getUserContext().getStoreContext().getEStoreId() : EnumEStoreId.FD;
+            if (!EnumEStoreId.FDX.equals(eStoreId) && isSOEnabled()) {
                 isSOEligible = hasCorporateOrder() || isCorporateUser();
             }
         }
@@ -3787,4 +3790,21 @@ public class FDUser extends ModelSupport implements FDUserI {
     	this.refreshSO3Settings = isRefreshSO3Settings;
     }
     
+    @Override
+    public int resetDefaultPaymentValueType() {
+		try {
+			return FDCustomerManager.resetDefaultPaymentValueType(this.getFDCustomer().getId());
+		} catch (FDResourceException e) {
+			LOGGER.error("Error in resetting default payment method in fdcustomer: " + this.identity, e);
+		}
+		return 0;		
+	}
+
+	@Override
+	public void refreshFdCustomer() throws FDResourceException{
+		if (this.identity == null) {
+            throw new IllegalStateException("No identity");
+        }
+		this.cachedFDCustomer = FDCustomerFactory.getFDCustomer(this.identity);
+	}
 }

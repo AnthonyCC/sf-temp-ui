@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import com.freshdirect.crm.ejb.CriteriaBuilder;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class ActivityDAO implements java.io.Serializable {
@@ -72,7 +74,7 @@ public class ActivityDAO implements java.io.Serializable {
 		} catch ( SQLException sqle ) {
 			throw sqle;
 		} finally {
-			ps.close();
+			DaoUtil.close(ps);
 		}
 		return;
 	}
@@ -106,21 +108,26 @@ public class ActivityDAO implements java.io.Serializable {
 				builder.addSql("TIMESTAMP < ?", new Object[] { new Timestamp(template.getToDate().getTime())});
 			}
 		}
-		PreparedStatement ps = conn.prepareStatement("SELECT * FROM CUST.ACTIVITY_LOG WHERE " + builder.getCriteria());
-		Object[] par = builder.getParams();
-		for (int i = 0; i < par.length; i++) {
-			ps.setObject(i + 1, par[i]);
-		}
-		ResultSet rs = ps.executeQuery();
+		PreparedStatement ps = null;
+		ResultSet rs =null;
 		List<ErpActivityRecord> l = new ArrayList<ErpActivityRecord>();
+		
+		try {
+			ps = conn.prepareStatement("SELECT * FROM CUST.ACTIVITY_LOG WHERE " + builder.getCriteria());
+			Object[] par = builder.getParams();
+			for (int i = 0; i < par.length; i++) {
+				ps.setObject(i + 1, par[i]);
+			}
+			rs = ps.executeQuery();
+			
 
-		while (rs.next()) {
-			l.add(this.loadFromResultSet(rs));
+			while (rs.next()) {
+				l.add(this.loadFromResultSet(rs));
+			}
+		} finally {
+			DaoUtil.close(ps);
+			DaoUtil.close(rs);
 		}
-
-		rs.close();
-		ps.close();
-
 		return l;
 	}
 	
@@ -152,21 +159,26 @@ public class ActivityDAO implements java.io.Serializable {
 		if (template.getToDate() != null) {
 			builder.addSql("TIMESTAMP < ?", new Object[] { new Timestamp(template.getToDate().getTime())});
 		}
-		PreparedStatement ps = conn.prepareStatement("SELECT AL.*,CI.FIRST_NAME,CI.LAST_NAME FROM CUST.ACTIVITY_LOG AL, CUST.CUSTOMERINFO CI WHERE CI.CUSTOMER_ID= AL.CUSTOMER_ID AND " + builder.getCriteria());
-		Object[] par = builder.getParams();
-		for (int i = 0; i < par.length; i++) {
-			ps.setObject(i + 1, par[i]);
-		}
-		ResultSet rs = ps.executeQuery();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		List<ErpActivityRecord> l = new ArrayList<ErpActivityRecord>();
+		try {
+			ps = conn.prepareStatement(
+					"SELECT AL.*,CI.FIRST_NAME,CI.LAST_NAME FROM CUST.ACTIVITY_LOG AL, CUST.CUSTOMERINFO CI WHERE CI.CUSTOMER_ID= AL.CUSTOMER_ID AND "
+							+ builder.getCriteria());
+			Object[] par = builder.getParams();
+			for (int i = 0; i < par.length; i++) {
+				ps.setObject(i + 1, par[i]);
+			}
+			rs = ps.executeQuery();
 
-		while (rs.next()) {
-			l.add(this.loadFromResultSet2(rs));
+			while (rs.next()) {
+				l.add(this.loadFromResultSet2(rs));
+			}
+		} finally {
+			DaoUtil.close(ps);
+			DaoUtil.close(rs);
 		}
-
-		rs.close();
-		ps.close();
-
 		return l;
 	}
 
@@ -214,30 +226,58 @@ public class ActivityDAO implements java.io.Serializable {
 	private List getUniqueList(Connection conn,
 			CriteriaBuilder builder,String columnName) throws SQLException {
 		List list = new ArrayList();
-		PreparedStatement ps = conn.prepareStatement("select distinct("+columnName+") from cust.activity_log  WHERE " + builder.getCriteria()+" order by "+columnName);
-		Object[] par = builder.getParams();
-		for (int i = 0; i < par.length; i++) {
-			ps.setObject(i + 1, par[i]);
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement("select distinct(" + columnName + ") from cust.activity_log  WHERE "
+					+ builder.getCriteria() + " order by " + columnName);
+			Object[] par = builder.getParams();
+			for (int i = 0; i < par.length; i++) {
+				ps.setObject(i + 1, par[i]);
+			}
+			rs = ps.executeQuery();
+
+			if ("activity_id".equalsIgnoreCase(columnName)) {
+				while (rs.next()) {
+					list.add(EnumAccountActivityType.getActivityType(rs.getString("activity_id")));
+				}
+			} else if ("source".equalsIgnoreCase(columnName)) {
+				while (rs.next()) {
+					list.add(EnumTransactionSource.getTransactionSource(rs.getString("source")));
+				}
+			} else {
+				while (rs.next()) {
+					list.add(rs.getString("initiator"));
+				}
+			}
 		}
-		ResultSet rs = ps.executeQuery();
-		
-		if("activity_id".equalsIgnoreCase(columnName)){
-			while(rs.next()){
-				list.add(EnumAccountActivityType.getActivityType(rs.getString("activity_id")));
-			}
-		}else if("source".equalsIgnoreCase(columnName)){
-			while(rs.next()){
-				list.add(EnumTransactionSource.getTransactionSource(rs.getString("source")));
-			}
-		}else{
-			while(rs.next()){
-				list.add(rs.getString("initiator"));
-			}
+		finally {
+			DaoUtil.close(ps);
+			DaoUtil.close(rs);
 		}
-		
-		rs.close();
-		ps.close();
 		return list;
 	}
 	
+	private static final String paymentMethodsTimeStampQuery = "select TIMESTAMP, NOTE from CUST.ACTIVITY_LOG where CUSTOMER_ID=? and ACTIVITY_ID = ?";
+			
+	public Map<Date,String> getPaymentMethodsTimeStamp(Connection conn, String customerId) throws SQLException {
+		String last4CardNum = "";
+		Map<Date,String> paymentMethodsTimeStamp = new HashMap<Date, String>();
+		PreparedStatement ps = conn.prepareStatement(paymentMethodsTimeStampQuery);
+				ps.setString(1, customerId);
+				ps.setString(2, "A Pymt Mthd");
+				
+			ResultSet rs = ps.executeQuery();
+			
+			while(rs.next()){
+				Date date = new java.util.Date(rs.getTimestamp("TIMESTAMP").getTime());
+				String note = rs.getString("NOTE");
+				if(null != note && note.toCharArray().length>=10){
+					last4CardNum = note.substring(9).substring(6, 9);
+				}
+				paymentMethodsTimeStamp.put(date, last4CardNum);
+			}
+			
+		return null;
+	}
 }
