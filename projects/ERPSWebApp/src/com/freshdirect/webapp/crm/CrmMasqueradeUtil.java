@@ -22,9 +22,12 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.context.MasqueradeContext;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
+import com.freshdirect.customer.EnumPaymentMethodDefaultType;
+import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartonDetail;
 import com.freshdirect.fdstore.customer.FDCartonInfo;
@@ -32,6 +35,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.payments.util.PaymentMethodUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -144,7 +148,11 @@ public class CrmMasqueradeUtil {
 				url += "&modifyOrderId=" + params.modifyOrderId;
 			}
 		}
-
+		if(null == user.getFDCustomer().getDefaultPaymentType() || user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName())){
+			FDActionInfo actionInfo = new FDActionInfo(null, user.getIdentity(), "", "Masquerading from CRM", null, user.getFDCustomer().getId());
+			ErpPaymentMethodI defaultPayment =  PaymentMethodUtil.getSystemDefaultPaymentMethod(actionInfo, user.getPaymentMethods(), true);
+			PaymentMethodUtil.updateDefaultPaymentMethod(actionInfo, user.getPaymentMethods(), defaultPayment.getPK().getId(), EnumPaymentMethodDefaultType.DEFAULT_SYS, false);
+		}
 		return url;
 	}
 
