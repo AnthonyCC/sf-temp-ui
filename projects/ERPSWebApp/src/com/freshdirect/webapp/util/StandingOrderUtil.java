@@ -388,23 +388,7 @@ public class StandingOrderUtil {
 		//   Validate payment methods
 		// ============================
 		
-		String paymentMethodID ="";
-		if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, customerUser)){
-			customerUser.refreshFdCustomer();
-			if(null != customerUser.getFDCustomer() && (null == customerUser.getFDCustomer().getDefaultPaymentType() || 
-					customerUser.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName()))){
-			FDActionInfo soinfo = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(), 
-					INITIATOR_NAME, "getting default payment method", null, null);
-			ErpPaymentMethodI paymentMethod = com.freshdirect.fdstore.payments.util.PaymentMethodUtil.getSystemDefaultPaymentMethod(soinfo , customerUser.getPaymentMethods());
-			if(null != paymentMethod){
-				paymentMethodID = paymentMethod.getPK().getId();
-			}
-			}else{
-				paymentMethodID = customerUser.getFDCustomer().getDefaultPaymentMethodPK();
-			}
-		}else{
-			paymentMethodID = so.getPaymentMethodId();
-		}
+		String paymentMethodID = so.getPaymentMethodId();
 		
 		if ( paymentMethodID == null || paymentMethodID.trim().equals( "" ) ) {
 			LOGGER.warn( "No payment method id." );

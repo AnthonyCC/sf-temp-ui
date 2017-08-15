@@ -23,7 +23,7 @@ import com.freshdirect.payment.EnumPaymentMethodType;
 public class PaymentMethodUtil {
 	private static Category LOGGER = LoggerFactory.getInstance( PaymentMethodUtil.class );
 	
-	public static ErpPaymentMethodI getSystemDefaultPaymentMethod(FDActionInfo actionInfo, Collection<ErpPaymentMethodI> pMethods) {
+	public static ErpPaymentMethodI getSystemDefaultPaymentMethod(FDActionInfo actionInfo, Collection<ErpPaymentMethodI> pMethods, boolean isVerificationRequired) {
 		ErpPaymentMethodI defaultPayment = null;
 		List<ErpPaymentMethodI> paymentMethods = new ArrayList<ErpPaymentMethodI>(pMethods);
 		if(paymentMethods.size() == 1){
@@ -43,7 +43,7 @@ public class PaymentMethodUtil {
 							
 						}
 							else{								
-						if(FDStoreProperties.isPaymentVerificationEnabled()){
+						if(FDStoreProperties.isPaymentVerificationEnabled() && isVerificationRequired){
 							if(EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())){
 								if(!FDCustomerManager.isECheckRestricted(actionInfo.getIdentity())){
 								authModel = FDCustomerManager.verifyCard(actionInfo, paymentMethod, FDStoreProperties.isPaymentechGatewayEnabled());
@@ -83,6 +83,19 @@ public class PaymentMethodUtil {
 
 	private static void sortPaymentMethodsByPriority(List<ErpPaymentMethodI> paymentMethods) {
 		    	Collections.sort(paymentMethods, new PaymentMethodDefaultComparator());
+	}
+	
+	public static boolean isDefaultPaymentUpdateRequiredDuringAdd(List<ErpPaymentMethodI> paymentMethods, ErpPaymentMethodI addedPaymentMethod, String defaultPaymentMethod){
+		if(paymentMethods.size() == 1){
+			return false;
+		}
+		else if(paymentMethods.size() > 1){
+			sortPaymentMethodsByPriority(paymentMethods);
+		}
+		if(paymentMethods.get(0).getPK().getId().equals(addedPaymentMethod.getPK().getId()) || (null !=defaultPaymentMethod && defaultPaymentMethod.equals(paymentMethods.get(0)))){
+			return false;
+		}
+		return true;
 	}
 	
 	public static void updateDefaultPaymentMethod(FDActionInfo info, Collection<ErpPaymentMethodI> pMethods, String paymentId, EnumPaymentMethodDefaultType type, boolean isVerificationRequired) {		

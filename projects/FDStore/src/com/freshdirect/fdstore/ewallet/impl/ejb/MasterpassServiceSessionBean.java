@@ -763,7 +763,7 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 				                List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(ewalletRequestData.getFdActionInfo().getIdentity()).getPaymentMethods();
 				                if (!paymentMethods.isEmpty()){
 				                	if (ewalletRequestData.isDebitCardSwitch()) {
-				                		ErpPaymentMethodI defaultPaymentMethod = PaymentMethodUtil.getSystemDefaultPaymentMethod(ewalletRequestData.getFdActionInfo(), paymentMethods);
+				                		ErpPaymentMethodI defaultPaymentMethod = PaymentMethodUtil.getSystemDefaultPaymentMethod(ewalletRequestData.getFdActionInfo(), paymentMethods, true);
 				                		FDCustomerManager.setDefaultPaymentMethod(ewalletRequestData.getFdActionInfo(), defaultPaymentMethod.getPK(), EnumPaymentMethodDefaultType.DEFAULT_SYS, true);
 				                		ewalletResponseData.setPaymentMethod(defaultPaymentMethod);
 				                	} else {
@@ -902,7 +902,7 @@ public class MasterpassServiceSessionBean extends SessionBeanSupport {
 				                List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(ewalletRequestData.getFdActionInfo().getIdentity()).getPaymentMethods();
 				                if (!paymentMethods.isEmpty()) {
 				                	if (ewalletRequestData.isDebitCardSwitch()) {
-				                		ErpPaymentMethodI defaultPaymentMethod = PaymentMethodUtil.getSystemDefaultPaymentMethod(ewalletRequestData.getFdActionInfo(), paymentMethods);
+				                		ErpPaymentMethodI defaultPaymentMethod = PaymentMethodUtil.getSystemDefaultPaymentMethod(ewalletRequestData.getFdActionInfo(), paymentMethods, true);
 				                		FDCustomerManager.setDefaultPaymentMethod(ewalletRequestData.getFdActionInfo(), defaultPaymentMethod.getPK(), EnumPaymentMethodDefaultType.DEFAULT_SYS, true);
 				                		ewalletResponseData.setPaymentMethod(defaultPaymentMethod);
 				                	} else {

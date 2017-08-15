@@ -845,11 +845,15 @@ public class FDCustomerManager {
 
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
-			sb.addPaymentMethod(info, paymentMethod, paymentechEnabled);
+			sb.addPaymentMethod(info, paymentMethod, paymentechEnabled);			
 			
 			if(isDebitCardSwitch && !getpaymentMethodDefaultType(info.getIdentity().getFDCustomerPK()).
 					getName().equals(EnumPaymentMethodDefaultType.DEFAULT_CUST.getName())){
-				updatePaymentMethodDefaultCard(info, isDebitCardSwitch);
+				Collection<ErpPaymentMethodI> paymentMethods = getPaymentMethods(info.getIdentity());
+				boolean isDefaultPaymentUpdateRequiredDuringAdd = PaymentMethodUtil.
+						isDefaultPaymentUpdateRequiredDuringAdd(new ArrayList<ErpPaymentMethodI>(paymentMethods), 
+								paymentMethod, getDefaultPaymentMethodPK(info.getIdentity()));
+				updatePaymentMethodDefaultCard(info, isDebitCardSwitch, isDefaultPaymentUpdateRequiredDuringAdd, paymentMethods);
 			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -861,9 +865,8 @@ public class FDCustomerManager {
 	}
 
 
-	private static void updatePaymentMethodDefaultCard(FDActionInfo info, boolean isDebitCardSwitch) throws FDResourceException {
-		Collection<ErpPaymentMethodI> paymentMethods = getPaymentMethods(info.getIdentity());
-		ErpPaymentMethodI defaultPayment = PaymentMethodUtil.getSystemDefaultPaymentMethod(info, paymentMethods);
+	private static void updatePaymentMethodDefaultCard(FDActionInfo info, boolean isDebitCardSwitch, boolean isVerificationRequired, Collection<ErpPaymentMethodI> paymentMethods) throws FDResourceException {
+		ErpPaymentMethodI defaultPayment = PaymentMethodUtil.getSystemDefaultPaymentMethod(info, paymentMethods, isVerificationRequired);
 		setDefaultPaymentMethod(info, defaultPayment.getPK(), EnumPaymentMethodDefaultType.DEFAULT_SYS, isDebitCardSwitch);		
 	}
 
@@ -1055,7 +1058,7 @@ public class FDCustomerManager {
 			sb.removePaymentMethod(info, paymentMethod);
 			
 			if(isDebitCardSwitch && null != paymentMethod && FDCustomerManager.getDefaultPaymentMethodPK(info.getIdentity()).equals(paymentMethod.getPK().getId())){
-				updatePaymentMethodDefaultCard(info, isDebitCardSwitch);
+				updatePaymentMethodDefaultCard(info, isDebitCardSwitch, true, getPaymentMethods(info.getIdentity()));
 			}	
 
 		} catch (CreateException ce) {
