@@ -11,7 +11,7 @@
 
 	<tag>
 		<name>script</name>
-		<tag-class>net.jawr.web.taglib.JavascriptBundleTag</tag-class>
+		<tag-class>com.freshdirect.webapp.taglib.buildver.JawrJavaScriptTag</tag-class>
 		<body-content>tagdependent</body-content>
 		<attribute>
 			<name>src</name>
@@ -34,10 +34,9 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>style</name>
-		<tag-class>net.jawr.web.taglib.CSSBundleTag</tag-class>
+		<tag-class>com.freshdirect.webapp.taglib.buildver.JawrCssTag</tag-class>
 		<body-content>tagdependent</body-content>
 		<attribute>
 			<name>src</name>
