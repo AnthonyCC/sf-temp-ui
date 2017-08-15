@@ -143,7 +143,7 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 	private double promoDeliveryFee;
 	private EnumDeliveryFeeTier dlvfeeTier;
 	private Date originalCutoffDateTime;
-	
+	private FDDeliveryZoneInfo zoneInfo;
 
 	private static final DecimalFormat premiumAmountFmt = new DecimalFormat(
 			"#.##");
@@ -668,6 +668,14 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 
 	public void setOriginalCutoffDateTime(Date originalCutoffDateTime) {
 		this.originalCutoffDateTime = originalCutoffDateTime;
+	}
+
+	public FDDeliveryZoneInfo getZoneInfo() {
+		return zoneInfo;
+	}
+
+	public void setZoneInfo(FDDeliveryZoneInfo zoneInfo) {
+		this.zoneInfo = zoneInfo;
 	}
 	
 	

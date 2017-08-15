@@ -90,6 +90,7 @@ import com.freshdirect.logistics.controller.data.response.DeliveryReservations;
 import com.freshdirect.logistics.controller.data.response.DeliveryServices;
 import com.freshdirect.logistics.controller.data.response.DeliveryTimeslots;
 import com.freshdirect.logistics.controller.data.response.DeliveryZips;
+import com.freshdirect.logistics.controller.data.response.DeliveryZone;
 import com.freshdirect.logistics.controller.data.response.DeliveryZoneCapacity;
 import com.freshdirect.logistics.controller.data.response.DeliveryZoneCutoffs;
 import com.freshdirect.logistics.controller.data.response.DeliveryZones;
@@ -106,6 +107,7 @@ import com.freshdirect.logistics.delivery.model.DlvZoneModel;
 import com.freshdirect.logistics.delivery.model.EnumApplicationException;
 import com.freshdirect.logistics.delivery.model.EnumRegionServiceType;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
+import com.freshdirect.logistics.delivery.model.EnumZipCheckResponses;
 import com.freshdirect.logistics.delivery.model.ExceptionAddress;
 import com.freshdirect.logistics.delivery.model.FulfillmentInfo;
 import com.freshdirect.logistics.delivery.model.GeoLocation;
@@ -838,7 +840,14 @@ public class FDDeliveryManager {
 					.getTimeslotById(LogisticsDataEncoder
 							.encodeTimeslotRequest(timeslotId, buildingId,
 									checkPremium));
-			return LogisticsDataDecoder.decodeTimeslot(response);
+			FDTimeslot ts =  LogisticsDataDecoder.decodeTimeslot(response);
+			DeliveryZone zone = response.getDeliveryZone();
+			
+			ts.setZoneInfo(new FDDeliveryZoneInfo(zone.getZoneCode(), zone.getZoneId(), 
+					zone.getRegionId(), EnumZipCheckResponses.getEnum(zone.getResponse()), zone.isUnattended(), 
+					zone.isCosEnabled(), zone.isCtActive(), EnumRegionServiceType.getEnum(zone.getRegionServiceType()), 
+					zone.getFulfillmentInfo()));
+			return ts;
 		} catch (FDLogisticsServiceException ex) {
 			throw new FDResourceException(ex);
 		}

@@ -957,6 +957,8 @@ public class FDStoreProperties {
 	private static final String PAYMENT_TLSSHA_ENABLED = "fdstore.payment.tls.sha.enabled";
     private final static String GOOGLE_ANALYTICS_TRACKING_ID = "fdstore.ga.tracking.id";
 
+    
+    private static final String PROP_REFRESHZONE_ENABLED = "fdstore.refresh.zone.enabled";
  
     public final static long TEN_DAYS_IN_MILLIS = 1000 * 60 * 60 * 24 * 10;    
     
@@ -4695,4 +4697,7 @@ public class FDStoreProperties {
         return get(GOOGLE_ANALYTICS_TRACKING_ID);
     }
 
+	public static boolean isRefreshZoneInfoEnabled() {
+		return (Boolean.valueOf(get(PROP_REFRESHZONE_ENABLED))).booleanValue();
+	}
 }
