@@ -243,9 +243,9 @@ public class ProductPriceTag extends BodyTagSupport {
             String skuCode = productInfo.getSkuCode();
             String priceString = priceCalculator.getPriceFormatted(savingsPercentage);
             String scaleString = null;
-            String salesOrg=priceCalculator.getPricingContext().getZoneInfo().getSalesOrg();
-    		String distributionChannel=priceCalculator.getPricingContext().getZoneInfo().getDistributionChanel();
-            FDGroup group = productInfo.getGroup(salesOrg,distributionChannel);
+//          String salesOrg=priceCalculator.getPricingContext().getZoneInfo().getSalesOrg();
+//    		String distributionChannel=priceCalculator.getPricingContext().getZoneInfo().getDistributionChanel();
+            FDGroup group = productInfo.getGroup(priceCalculator.getPricingContext().getZoneInfo());
 
             if (group == null) {
                 //Try getting the group from Product Impression which loops through all skus
@@ -361,12 +361,12 @@ public class ProductPriceTag extends BodyTagSupport {
                             buf1.append("</span><br />");
 
                             if (useTarget) {
-                                buf1.append("<a href=\"/group.jsp?grpId=" +
+                                buf1.append("<a href=\"/pdp.jsp?grpId=" +
                                     group.getGroupId() + "&version=" +
                                     group.getVersion() + buffer.toString() +
                                     "\" target=\"_top\">");
                             } else {
-                                buf1.append("<a href=\"/group.jsp?grpId=" +
+                                buf1.append("<a href=\"/pdp.jsp?grpId=" +
                                     group.getGroupId() + "&version=" +
                                     group.getVersion() + buffer.toString() +
                                     "\">");
@@ -497,14 +497,14 @@ public class ProductPriceTag extends BodyTagSupport {
 
                                     if (useTarget) {
                                         buf1.append(
-                                            "<a href=\"/group.jsp?grpId=" +
+                                            "<a href=\"/pdp.jsp?grpId=" +
                                             group.getGroupId() + "&version=" +
                                             group.getVersion() +
                                             buffer.toString() +
                                             "\" target=\"_top\" class=\"text10rbold\" style=\"color: #CC0000;\">");
                                     } else {
                                         buf1.append(
-                                            "<a href=\"/group.jsp?grpId=" +
+                                            "<a href=\"/pdp.jsp?grpId=" +
                                             group.getGroupId() + "&version=" +
                                             group.getVersion() +
                                             buffer.toString() +
@@ -530,14 +530,14 @@ public class ProductPriceTag extends BodyTagSupport {
                                 } else {
                                     if (useTarget) {
                                         buf1.append(
-                                            "<a href=\"/group.jsp?grpId=" +
+                                            "<a href=\"/pdp.jsp?grpId=" +
                                             group.getGroupId() + "&version=" +
                                             group.getVersion() +
                                             buffer.toString() +
                                             "\" target=\"_top\" class=\"text10rbold\" style=\"color: #CC0000;\">Any ");
                                     } else {
                                         buf1.append(
-                                            "<a href=\"/group.jsp?grpId=" +
+                                            "<a href=\"/pdp.jsp?grpId=" +
                                             group.getGroupId() + "&version=" +
                                             group.getVersion() +
                                             buffer.toString() +

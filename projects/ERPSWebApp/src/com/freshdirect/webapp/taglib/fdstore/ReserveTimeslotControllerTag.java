@@ -68,7 +68,7 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 				session.setAttribute(SessionName.USER, user);
 			}
 			
-			if("updateWeeklyReservation".equals(action)) {
+			/*if("updateWeeklyReservation".equals(action)) {
 				this.populate(request);
 				this.validate(actionResult);
 				if(actionResult.isFailure()){
@@ -76,7 +76,7 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 				}
 				FDTimeslot timeslot = FDDeliveryManager.getInstance().getTimeslotsById(timeslotId, null, false);
 				FDCustomerManager.updateWeeklyReservation(user.getIdentity(), timeslot, addressId, AccountActivityUtil.getActionInfo(session));
-			}
+			}*/
 
 			if ("changeReservation".equals(action)) {
 				this.populate(request);
@@ -128,7 +128,7 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 				
 		this.timeslotId = NVL.apply(request.getParameter("deliveryTimeslotId"), "");
 		this.addressId = NVL.apply(request.getParameter("addressId"), "");
-		this.rsvType = EnumReservationType.getEnum(NVL.apply(request.getParameter("reservationType"), ""));
+		this.rsvType = EnumReservationType.getEnum(NVL.apply(request.getParameter("reservationType"), "OTR"));
 		try {
 			this.chefstable = user.isChefsTable()||"true".equals(request.getParameter("chefstable"));
 		} catch (FDResourceException e) {

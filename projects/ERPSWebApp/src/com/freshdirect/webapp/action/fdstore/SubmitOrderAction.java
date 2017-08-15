@@ -60,6 +60,7 @@ import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.referral.FDReferralManager;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
@@ -262,11 +263,12 @@ public class SubmitOrderAction extends WebActionSupport {
         cart.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
         
 		// set the default credit card to the one that is in the cart
+        if(!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)){
 		FDCustomerManager.setDefaultPaymentMethod(
 			AccountActivityUtil.getActionInfo(session),
-			((ErpPaymentMethodModel) cart.getPaymentMethod()).getPK());
+			((ErpPaymentMethodModel) cart.getPaymentMethod()).getPK(), null, false);
 										
-		
+        }
 		
 		//
 		// Marketing message
@@ -484,9 +486,9 @@ public class SubmitOrderAction extends WebActionSupport {
 		if(!cart.getPaymentMethod().isGiftCard()) {	
 			// set the default credit card to the one that is in the cart if Card does not belong to EWallet
 			ErpPaymentMethodModel paymentMethodModel = (ErpPaymentMethodModel) cart.getPaymentMethod();
-			if(paymentMethodModel.geteWalletID() == null){ 
+			if(paymentMethodModel.geteWalletID() == null && !FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)){ 
 				FDCustomerManager.setDefaultPaymentMethod(
-					AccountActivityUtil.getActionInfo(session),paymentMethodModel.getPK());
+					AccountActivityUtil.getActionInfo(session),paymentMethodModel.getPK(), null, false);
 			}else{
 				if(paymentMethodModel.geteWalletID() != null && paymentMethodModel.geteWalletID().equals(""+EnumEwalletType.PP.getValue())){
 					if(session.getAttribute(SessionName.PAYPAL_DEVICE_ID) != null){
@@ -1069,11 +1071,12 @@ public class SubmitOrderAction extends WebActionSupport {
         cart.setEStoreId(user.getUserContext().getStoreContext().getEStoreId());
         
 		// set the default credit card to the one that is in the cart
+        if(!(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user))){
 		FDCustomerManager.setDefaultPaymentMethod(
 			AccountActivityUtil.getActionInfo(session),
-			((ErpPaymentMethodModel) cart.getPaymentMethod()).getPK());
+			((ErpPaymentMethodModel) cart.getPaymentMethod()).getPK(), null, false);
 										
-		
+        }
 		
 		//
 		// Marketing message

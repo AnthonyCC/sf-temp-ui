@@ -1566,9 +1566,15 @@ public class BrowseUtil {
 							&&sku.getProductInfo().getInventory(plantID).getEntries()!=null&&sku.getProductInfo().getInventory(plantID).getEntries().get(0)!=null)
 					skuInfo.setInventory(sku.getProductInfo().getInventory(plantID).getEntries().get(0).getQuantity());
 					
-					if(productInfo.getGroup(pc.getPricingContext().getZoneInfo().getSalesOrg(),pc.getPricingContext().getZoneInfo().getDistributionChanel())!=null) {
+					/*if(productInfo.getGroup(pc.getPricingContext().getZoneInfo().getSalesOrg(),pc.getPricingContext().getZoneInfo().getDistributionChanel())!=null) {
 						skuInfo.setGroupInfo(getGroupInfo(productInfo.getGroup(pc.getPricingContext().getZoneInfo().getSalesOrg(),pc.getPricingContext().getZoneInfo().getDistributionChanel()),pc));
+					}*/
+					
+					FDGroup group = productInfo.getGroup(pc.getPricingContext().getZoneInfo());
+					if(null != group){
+						skuInfo.setGroupInfo(getGroupInfo(group,pc));
 					}
+							
 					skuInfo.setSalesUnits(getSalesUnits(product.getSalesUnits()));
 					if(product.getSalesUnits().length>0) {
 						skuInfo.setUnitPrice(getUnitPrice(product.getSalesUnits()[0],pc));

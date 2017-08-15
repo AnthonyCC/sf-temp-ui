@@ -214,9 +214,12 @@
 				<div id="sulCont" class="signup-style-social social-singup" style="<% if (!mobWeb) { %>min-width: 523px;text-align: center;<% } %>">
 					<div class="form-side-social">
 						<div class="form-side-social-header">Create Account:</div>
+						<div class="bottom-links">
+							Already have an account? <a href="/social/login.jsp?successPage=<%=successPage%>" onclick="event.preventDefault();window.parent.FreshDirect.components.ifrPopup.close(); window.parent.FreshDirect.modules.common.login.socialLogin('<%=successPage%>');">Sign In</a>
+						</div>
 						<!-- form_fields start here -->
 						<div id="form_feilds" style="text-align: center;">
-							<form id="litesignup" name="litesignup" method="post" action="/social/signup_lite.jsp" autocomplete="off" autocomplete="false" style="display:inline-block; margin-left: -22px;">
+							<form id="litesignup" name="litesignup" method="post" action="/social/signup_lite.jsp" autocomplete="off" autocomplete="false">
 								<input type="hidden" name="submission" value="done" />
 								<input type="hidden" name="actionName" value="ordermobilepref" /> 
 								<input type="hidden" name="successPage" value="<%= successPage %>" />
@@ -250,19 +253,19 @@
 					                    	<td align="center">
 					                    		<div id="sul_cos_fields" style="display: none;" aria-hidden="true">
 					                    			<div>
-					                    				<input type="text" name="<%= EnumUserInfoName.DLV_COMPANY_NAME.getCode() %>" id="sul_cos_fields-workName" value="<%= companyName %>" class="padding-input-box text11ref inputDef required" placeholder="Company Name" maxlength="120" />
+					                    				<input type="text" name="<%= EnumUserInfoName.DLV_COMPANY_NAME.getCode() %>" id="sul_cos_fields-workName" value="<%= companyName %>" class="padding-input-box text11ref inputDef required" aria-label="company name" placeholder="Company Name" maxlength="120" />
 					                    			</div>
 					                    			<div>
-					                    				<input type="text" name="<%= EnumUserInfoName.DLV_FIRST_NAME.getCode() %>" id="sul_cos_fields-firstName" value="<%= firstname %>" class="padding-input-box text11ref inputDef required" placeholder="First Name" maxlength="25" />
+					                    				<input type="text" name="<%= EnumUserInfoName.DLV_FIRST_NAME.getCode() %>" id="sul_cos_fields-firstName" value="<%= firstname %>" class="padding-input-box text11ref inputDef required" aria-label="first name" placeholder="First Name" maxlength="25" />
 					                    			</div>
 					                    			<div>
-					                    				<input type="text" name="<%= EnumUserInfoName.DLV_LAST_NAME.getCode() %>" id="sul_cos_fields-lastName" value="<%= lastname %>" class="padding-input-box text11ref inputDef required" placeholder="Last Name" maxlength="25"  />
+					                    				<input type="text" name="<%= EnumUserInfoName.DLV_LAST_NAME.getCode() %>" id="sul_cos_fields-lastName" value="<%= lastname %>" class="padding-input-box text11ref inputDef required" aria-label="last name" placeholder="Last Name" maxlength="25"  />
 					                    			</div>
 					                    			<div>
-					                    				<input type="text" name="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>" id="sul_cos_fields-workPhone" value="<%= workphone %>" class="padding-input-box text11ref inputDef" placeholder="Work Phone #" maxlength="14" />
+					                    				<input type="text" name="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>" id="sul_cos_fields-workPhone" value="<%= workphone %>" class="padding-input-box text11ref inputDef" aria-label="work phone" placeholder="Work Phone #" maxlength="14" />
 					                    			</div>
 					                    			<div>
-					                    				<input type="text" name="<%= EnumUserInfoName.DLV_ZIPCODE.getCode() %>" id="sul_cos_fields-zipcode" value="<%= zipcode %>" class="padding-input-box text11ref inputDef required" placeholder="Zip Code" maxlength="5" />
+					                    				<input type="text" name="<%= EnumUserInfoName.DLV_ZIPCODE.getCode() %>" id="sul_cos_fields-zipcode" value="<%= zipcode %>" class="padding-input-box text11ref inputDef required" aria-label="zip code" placeholder="Zip Code" maxlength="5" />
 					                    			</div>
 					                    		</div>
 					                    	</td>
@@ -276,7 +279,7 @@
 										</td>
 									<td align="center">
 										<input class="padding-input-box text11ref inputDef required" style="display:block;" 
-											type="text" maxlength="128" size="23" 
+											aria-label="email" type="text" maxlength="128" size="23" 
 											name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%=email%>" 
 											id="email" placeholder="E-mail" autocomplete="off" autocomplete="false">
 									</td>
@@ -316,7 +319,7 @@
 													</div>
 												</div><!-- // .password-hinter -->
 												<div>
-														<input class="padding-input-box text11ref inputUser required" type="password" data-indicator="pwindicator" size="23" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" id="password1" placeholder="Password" autocomplete="off" autocomplete="false">
+														<input class="padding-input-box text11ref inputUser required" type="password" data-indicator="pwindicator" aria-label="password" size="23" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" id="password1" placeholder="Password" autocomplete="off" autocomplete="false">
 											<div style="position: relative"><a class="show-password">Show</a></div>
 												</div>
 												<div id="pwindicator">
@@ -333,7 +336,14 @@
 									<tr>
 										<td></td>
 										<td style="padding-top: 15px;" align="center">
-											<input type="submit" id="signupbtn" maxlength="25" size="19" value="Continue" class="butText social-login-continue-button" style="display:block;" onclick="dlvadrspage();">
+											<div class="bottom-contents">
+												<div class="bottom-contents-terms">
+													<div class="bottom-contents-terms-text">
+														By creating an account, you agree to the FreshDirect<br /> <a href="javascript:popup('/registration/user_agreement.jsp', 'large')">Customer Agreement</a> & <a href="javascript:popup('/registration/privacy_policy.jsp', 'large')">Privacy Policy</a>
+													</div>
+												</div>
+											</div>
+											<input type="submit" id="signupbtn" maxlength="25" size="19" value="Create Account" class="butText social-login-continue-button" style="display:block;" onclick="dlvadrspage();">
 										</td>
 									</tr>
 								
@@ -404,17 +414,6 @@
 					</div>
 					
 					<div class="clear"></div>
-	
-					<div class="bottom-contents">
-						<div class="bottom-contents-terms">
-							<div class="bottom-contents-terms-text">
-								By signing up, you agree to the <a href="javascript:popup('/registration/user_agreement.jsp', 'large')">Customer Agreement</a> & <a href="javascript:popup('/registration/privacy_policy.jsp', 'large')">Privacy Policy</a>
-							</div>
-						</div>
-						<div class="bottom-links">
-							Already have an account? <a href="/social/login.jsp?successPage=<%=successPage%>" onclick="window.parent.FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp?successPage=<%=successPage%>', opacity: .5})">Sign In</a>
-						</div>
-					</div>
 					
 					<% if (result.isFailure()) { %>
 						<script type="text/javascript">

@@ -29,6 +29,7 @@ import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.EnumNotificationType;
+import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
@@ -71,6 +72,9 @@ import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
+import com.freshdirect.fdstore.payments.util.PaymentMethodUtil;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.fdstore.services.tax.AvalaraContext;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
@@ -81,6 +85,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.EnumZipCheckResponses;
 import com.freshdirect.mail.ErpMailSender;
+import com.freshdirect.smartstore.fdstore.CohortSelector;
 
 public class DeliveryPassRenewalCron {
 
@@ -215,8 +220,28 @@ public class DeliveryPassRenewalCron {
 		lastOrder=getLastNonCOSOrder(erpCustomerID);
 		String orderID="";
 		if(lastOrder!=null) {
-			identity=getFDIdentity(erpCustomerID);
+			try {
+				identity=getFDIdentity(erpCustomerID);
+				actionInfo=getFDActionInfo(identity);
+				user=FDCustomerManager.getFDUser(identity);
+			} catch (FDAuthenticationException ae) {
+				LOGGER.warn("Unable to place deliveryPass autoRenewal order for customer :"+erpCustomerID);
+				StringWriter sw = new StringWriter();
+				ae.printStackTrace(new PrintWriter(sw));	
+				email(erpCustomerID,sw.getBuffer().toString());
+			}
+			
+			if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)){
+				if(null == user.getFDCustomer().getDefaultPaymentType() || user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED)){
+					ErpPaymentMethodI defaultPmethod = PaymentMethodUtil.getSystemDefaultPaymentMethod(actionInfo, user.getPaymentMethods());
+					pymtMethod = (null != defaultPmethod)?defaultPmethod: null;
+				}
+				else{
+					pymtMethod = getPaymentMethod(user.getFDCustomer().getDefaultPaymentMethodPK(), user.getPaymentMethods()) ;
+				}
+			}else{
 			pymtMethod=getMatchedPaymentMethod(lastOrder.getPaymentMethod(),getPaymentMethods(identity));
+			}
 			if(pymtMethod!=null) {
 				if(!pymtMethod.getCardType().equals(EnumCardType.PAYPAL) && !pymtMethod.getCardType().equals(EnumCardType.ECP) && isExpiredCC(pymtMethod)) {
 					LOGGER.warn("Autorenewal order payment method is expired for customer :"+erpCustomerID);
@@ -227,8 +252,7 @@ public class DeliveryPassRenewalCron {
 					FDCustomerManager.sendEmail(email);
 				} else {
 					try {
-						user=FDCustomerManager.getFDUser(identity);
-						actionInfo=getFDActionInfo(identity);
+						
 						cra=new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
 						orderID=placeOrder(actionInfo,cra,arSKU,pymtMethod,lastOrder.getDeliveryAddress(),user.getUserContext());
 
@@ -238,13 +262,7 @@ public class DeliveryPassRenewalCron {
 						StringWriter sw = new StringWriter();
 						fe.printStackTrace(new PrintWriter(sw));	
 						email(erpCustomerID,sw.getBuffer().toString());
-					}
-					catch (FDAuthenticationException ae) {
-						LOGGER.warn("Unable to place deliveryPass autoRenewal order for customer :"+erpCustomerID);
-						StringWriter sw = new StringWriter();
-						ae.printStackTrace(new PrintWriter(sw));	
-						email(erpCustomerID,sw.getBuffer().toString());
-					}
+					}					
 				}
 				
 			} else {
@@ -590,6 +608,16 @@ public class DeliveryPassRenewalCron {
 		buf.append("</table>");
 		return buf.toString();
     }
+	
+	private static ErpPaymentMethodI getPaymentMethod(String paymentMethodPk, Collection<ErpPaymentMethodI> paymentMethods){
+		for(Iterator<ErpPaymentMethodI> i=paymentMethods.iterator(); i.hasNext();){
+			ErpPaymentMethodI pmethod = i.next();
+			if(paymentMethodPk.equals(pmethod.getPK().getId())){
+				return pmethod;
+			}
+		}
+		return null;
+	}
    
     private static String buildSimpleTag( String tagName,String input) {
     	return new StringBuilder().append("<")

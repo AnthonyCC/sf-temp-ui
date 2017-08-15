@@ -163,8 +163,8 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
 	public Map<String, List<ErpComplaintReason>> getComplaintReasons(boolean excludeCartonReq) throws FDResourceException {
 		try {
-				ErpComplaintManagerSB complaintSB = this.getComplaintManagerHome().create();
-				return complaintSB.getReasons(excludeCartonReq);
+			ErpComplaintManagerSB complaintSB = this.getComplaintManagerHome().create();
+			return complaintSB.getReasons(excludeCartonReq);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {
@@ -174,8 +174,8 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
 	public Map<String,String> getComplaintCodes() throws FDResourceException {
 		try {
-				ErpComplaintManagerSB complaintSB = this.getComplaintManagerHome().create();
-				return complaintSB.getComplaintCodes();
+			ErpComplaintManagerSB complaintSB = this.getComplaintManagerHome().create();
+			return complaintSB.getComplaintCodes();
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {
@@ -185,8 +185,8 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 	
 	public void rejectMakegoodComplaint(String makegood_sale_id) throws FDResourceException {
 		try {
-				ErpComplaintManagerSB complaintSB = this.getComplaintManagerHome().create();
-				complaintSB.rejectMakegoodComplaint(makegood_sale_id);
+			ErpComplaintManagerSB complaintSB = this.getComplaintManagerHome().create();
+			complaintSB.rejectMakegoodComplaint(makegood_sale_id);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {
@@ -199,14 +199,14 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		+ "where c.status = 'PEN' ";
 
 	private static final String PEN_COMPLAINT_FILTER_QUERY = "and exists (select * from cust.complaintline cl where cl.complaint_id=c.id and "
-		+ "complaint_dept_code_id in (select id from cust.complaint_dept_code where comp_code=?))";
+			+ "complaint_dept_code_id in (select id from cust.complaint_dept_code where comp_code=?))";
 
 	private static final String PEN_COMPLAINT_QUERY_2 = "select s.id, s.status,s.type, sa.requested_date, ci.first_name, ci.last_name, ci.email, (select max(amount) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD','INV') "
-		+ "and action_date = (select max(action_date) from cust.salesaction where action_type in ('CRO','MOD','INV') and sale_id = s.id)) as order_amount, NVL(S.E_STORE,'FreshDirect') as Store, NVL(DI.PLANT_ID,'1000') as Facility "
-		+ "from cust.sale s, cust.salesaction sa, cust.customerinfo ci, CUST.DELIVERYINFO di "
-		+ "where sa.sale_id in ( ? ) and sa.action_type in ('CRO', 'MOD') "
-		+ "and sa.action_date = (select max(action_date) from cust.salesaction where sale_id = sa.sale_id and action_type in ('CRO', 'MOD')) "
-		+ "and s.id = sa.sale_id and s.customer_id = ci.customer_id and sa.id=di.salesaction_id ";
+			+ "and action_date = (select max(action_date) from cust.salesaction where action_type in ('CRO','MOD','INV') and sale_id = s.id)) as order_amount, NVL(S.E_STORE,'FreshDirect') as Store, NVL(DI.PLANT_ID,'1000') as Facility "
+			+ "from cust.sale s, cust.salesaction sa, cust.customerinfo ci, CUST.DELIVERYINFO di "
+			+ "where sa.sale_id in ( ? ) and sa.action_type in ('CRO', 'MOD') "
+			+ "and sa.action_date = (select max(action_date) from cust.salesaction where sale_id = sa.sale_id and action_type in ('CRO', 'MOD')) "
+			+ "and s.id = sa.sale_id and s.customer_id = ci.customer_id and sa.id=di.salesaction_id ";
 
 	private String substitute(String original, char marker, String replaceWith) {
 		StringBuffer sb = new StringBuffer(original);
@@ -223,20 +223,22 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
 	public List<FDComplaintInfo> getPendingComplaintOrders(String reasonCode) throws FDResourceException {
 		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
 			conn = this.getConnection();
 			String complaintQuery = PEN_COMPLAINT_QUERY_1;
-			if (reasonCode!=null && !"".equals(reasonCode)) {
+			if (reasonCode != null && !"".equals(reasonCode)) {
 				complaintQuery += PEN_COMPLAINT_FILTER_QUERY;
 			}
 
-			PreparedStatement ps = conn.prepareStatement(complaintQuery);
-			if (reasonCode!=null && !"".equals(reasonCode)) {
-				ps.setString(1,reasonCode);
+			ps = conn.prepareStatement(complaintQuery);
+			if (reasonCode != null && !"".equals(reasonCode)) {
+				ps.setString(1, reasonCode);
 			}
 
-			ResultSet rs = ps.executeQuery();
-			Map<String,FDComplaintInfo> infoMap = new HashMap<String,FDComplaintInfo>();
+			rs = ps.executeQuery();
+			Map<String, FDComplaintInfo> infoMap = new HashMap<String, FDComplaintInfo>();
 			StringBuffer saleIds = new StringBuffer();
 
 			int idCount = 0; // !!! this is just to work around the limitation of 1000 in clause in SQL
@@ -294,13 +296,9 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle) {
-					LOGGER.debug("Error while cleaning:", sqle);
-				}
-			}
+			close(rs);
+			close(ps);
+			close(conn);
 		}
 	}
 
@@ -312,13 +310,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException e) {
 			throw new FDResourceException(e, "Counld not find customers matching criteria entered.");
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after locateCustomers", e);
-				}
-			}
+			close(conn);
 		}
 	}
 
@@ -330,13 +322,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException e) {
 			throw new FDResourceException(e, "Counld not find customers matching criteria entered.");
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after locateCustomers", e);
-				}
-			}
+			close(conn);
 		}
 	}
 
@@ -363,34 +349,36 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		CriteriaBuilder builder = new CriteriaBuilder();
 
 		Date d = criteria.getStartDate();
-		if(d != null){
-			builder.addSql("c.create_date >= ?", new Object[] { new java.sql.Date(d.getTime())});
+		if (d != null) {
+			builder.addSql("c.create_date >= ?", new Object[] { new java.sql.Date(d.getTime()) });
 		}
 		d = criteria.getEndDate();
-		if(d != null){
-			builder.addSql("c.create_date < ?", new Object[] { new java.sql.Date(d.getTime())});
+		if (d != null) {
+			builder.addSql("c.create_date < ?", new Object[] { new java.sql.Date(d.getTime()) });
 		}
 		String value = criteria.getIssuedBy();
 		if (!"".equals(value)) {
 			builder.addString("c.created_by", value);
 		}
 		value = criteria.getApprovedBy();
-		if(!"".equals(value)){
+		if (!"".equals(value)) {
 			builder.addString("c.approved_by", value);
 		}
 
 		Connection conn = null;
-		try{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
 			conn = this.getConnection();
-			PreparedStatement ps = conn.prepareStatement(COMPLAINT_REPORT + " and " + builder.getCriteria());
+			ps = conn.prepareStatement(COMPLAINT_REPORT + " and " + builder.getCriteria());
 			Object[] par = builder.getParams();
 			for (int i = 0; i < par.length; i++) {
 				LOGGER.debug("Setting param[" + par[i] + "] at position[" + i + "]");
 				ps.setObject(i + 1, par[i]);
 			}
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			List l = new ArrayList();
-			while(rs.next()){
+			while (rs.next()) {
 				String saleId = rs.getString("SALE_ID");
 				FDComplaintInfo info = new FDComplaintInfo(saleId);
 				info.setComplaintAmount(rs.getDouble("AMOUNT"));
@@ -406,16 +394,12 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
 			return l;
 
-		} catch (SQLException e){
+		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			if(conn != null){
-				try{
-					conn.close();
-				}catch(SQLException e){
-					LOGGER.debug("SQLException while closing connection: ", e);
-				}
-			}
+			close(rs);
+			close(ps);
+			close(conn);
 		}
 	}
 
@@ -430,12 +414,14 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		+"and sa1.id = pi.salesaction_id and pi.account_number like ?";
 
 	public List runAuthInfoSearch(FDAuthInfoSearchCriteria criteria) throws FDResourceException {
-		if(criteria.isBlank()){
+		if (criteria.isBlank()) {
 			return Collections.EMPTY_LIST;
 		}
 
 		Connection conn = null;
-		try{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
 			conn = this.getConnection();
 			String sql = authInfoSearchQuery;
 			if (criteria.getCardType() != null) {
@@ -451,11 +437,11 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				sql += " and pi.bank_account_type = ?";
 			}
 
-			PreparedStatement ps = conn.prepareStatement(sql);
+			ps = conn.prepareStatement(sql);
 			int index = 1;
 			ps.setDate(index++, new java.sql.Date(criteria.getTransactionDate().getTime()));
 			ps.setDate(index++, new java.sql.Date(criteria.getTransactionDate().getTime()));
-			//ps.setDouble(index++, criteria.getChargedAmount());
+			// ps.setDouble(index++, criteria.getChargedAmount());
 			ps.setBigDecimal(index++, new java.math.BigDecimal(criteria.getChargedAmount()));
 			ps.setString(index++, criteria.getCCKnownNum().replace('*', '%'));
 			if (criteria.getCardType() != null) {
@@ -470,9 +456,9 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			if (criteria.getBankAccountType() != null) {
 				ps.setString(index++, criteria.getBankAccountType().getName());
 			}
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			List l = new ArrayList();
-			while(rs.next()){
+			while (rs.next()) {
 				String saleId = rs.getString("SALE_ID");
 				FDAuthInfo info = new FDAuthInfo(saleId);
 				info.setDeliveryDate(rs.getDate("REQUESTED_DATE"));
@@ -491,25 +477,21 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				info.setBankAccountType(EnumBankAccountType.getEnum(rs.getString("BANK_ACCOUNT_TYPE")));
 				info.setOrderType(rs.getString("TYPE"));
 
-				//TODO FDX - add these columns to query
+				// TODO FDX - add these columns to query
 				info.seteStore("TODO");
 				info.setFacility("TODO");
-				
+
 				l.add(info);
 			}
 
 			return l;
 
-		} catch (SQLException e){
+		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			if(conn != null){
-				try{
-					conn.close();
-				}catch(SQLException e){
-					LOGGER.debug("SQLException while closing connection: ", e);
-				}
-			}
+			close(rs);
+			close(ps);
+			close(conn);
 		}
 	}
 
@@ -550,21 +532,17 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
 	private void returnDeliveryPass(String saleId) throws FDResourceException, CreateException, RemoteException {
 		DlvPassManagerSB dlvPassManagerSB = this.getDlvPassManagerHome().create();
-		//Delivery pass is returned.
+		// Delivery pass is returned.
 		List dpasses = dlvPassManagerSB.getDlvPassesByOrderId(saleId);
-		if(dpasses == null || dpasses.size() == 0){
+		if (dpasses == null || dpasses.size() == 0) {
 			throw new FDResourceException("Unable to locate the delivery pass linked with this order.");
 		}
-		DeliveryPassModel model = (DeliveryPassModel)dpasses.get(0);
+		DeliveryPassModel model = (DeliveryPassModel) dpasses.get(0);
 		model.setStatus(EnumDlvPassStatus.PASS_RETURNED);
 		dlvPassManagerSB.cancel(model);
-		//Create a activity log to track the delivery credits.
-		ErpActivityRecord activityRecord = createActivity(EnumAccountActivityType.CANCEL_DLV_PASS,
-															"SYSTEM",
-															DlvPassConstants.CANCEL_NOTE,
-															model,
-															saleId,
-															EnumDlvPassExtendReason.OTHER.getName());
+		// Create a activity log to track the delivery credits.
+		ErpActivityRecord activityRecord = createActivity(EnumAccountActivityType.CANCEL_DLV_PASS, "SYSTEM",
+				DlvPassConstants.CANCEL_NOTE, model, saleId, EnumDlvPassExtendReason.OTHER.getName());
 		logActivity(activityRecord);
 
 	}
@@ -572,12 +550,12 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 	private void handleDeliveryPass(String saleId, ErpReturnOrderModel returnOrder) throws FDResourceException, CreateException, RemoteException {
 		boolean isDlvChargeWaived = false;
 		List charges = returnOrder.getCharges();
-		for(Iterator i = charges.iterator(); i.hasNext(); ){
-			ErpChargeLineModel charge =(ErpChargeLineModel)i.next();
-			if(EnumChargeType.DELIVERY.equals(charge.getType())){
-				if(charge.getDiscount() != null){
+		for (Iterator i = charges.iterator(); i.hasNext();) {
+			ErpChargeLineModel charge = (ErpChargeLineModel) i.next();
+			if (EnumChargeType.DELIVERY.equals(charge.getType())) {
+				if (charge.getDiscount() != null) {
 					String promoCode = charge.getDiscount().getPromotionCode();
-					//Not waived due to a Delivery Pass .
+					// Not waived due to a Delivery Pass .
 					isDlvChargeWaived = !(promoCode != null && promoCode.equals(DlvPassConstants.PROMO_CODE));
 					break;
 				}
@@ -589,16 +567,16 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		 * If either one of them is true and if delivery pass was applied then
 		 * credit the delivery back to the pass.
 		 */
-		if(isDlvChargeWaived || !returnOrder.isRestockingApplied()){
-			//Get the delivery pass id.
+		if (isDlvChargeWaived || !returnOrder.isRestockingApplied()) {
+			// Get the delivery pass id.
 			String dlvPassId = returnOrder.getDeliveryPassId();
 			DlvPassManagerSB dlvPassManagerSB = this.getDlvPassManagerHome().create();
-			//Get the Model.
+			// Get the Model.
 			DeliveryPassModel passModel = dlvPassManagerSB.getDeliveryPassInfo(dlvPassId);
 			//Increment the pass by 1 if BSGS pass. For Unlimited it will handled on a case by case basis.
 			if(!(passModel.getType().isUnlimited())){
 				dlvPassManagerSB.creditDelivery(passModel, 1);
-				//Create a activity log to track the delivery credits.
+				// Create a activity log to track the delivery credits.
 				ErpActivityRecord activityRecord = createActivity(EnumAccountActivityType.CREDIT_DLV_PASS,
 																	"SYSTEM",
 																	DlvPassConstants.RETURN_NOTE,
@@ -626,7 +604,6 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				//Delivery pass was applied.
 				handleDeliveryPass(saleId,returnOrder);
 			}
-
 
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
@@ -663,103 +640,105 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 	}
 
 	private static final String orderByStatusQuery = "select s.id as sale_id, "
-		+ "(select requested_date from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD') "
-		+ "and action_date=(select max(action_date) from cust.salesaction where action_type in ('CRO','MOD') and sale_id=s.id)) as requested_date, "
-		+ "s.status, "
-		+ "(select amount from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD','INV') "
-		+ "and action_date=(select max(action_date) from cust.salesaction where action_type in ('CRO','MOD','INV') and sale_id=s.id)) as amount, "
-		+ "ci.last_name, ci.first_name, ci.customer_id as erp_id, fdc.id as fd_id, ci.email, ci.home_phone, ci.cell_phone, ci.business_phone "
-		+ "from cust.sale s, cust.customerinfo ci, cust.fdcustomer fdc, cust.customer c "
-		+ "where s.customer_id=c.id and c.id=ci.customer_id and c.id=fdc.erp_customer_id ";
+			+ "(select requested_date from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD') "
+			+ "and action_date=(select max(action_date) from cust.salesaction where action_type in ('CRO','MOD') and sale_id=s.id)) as requested_date, "
+			+ "s.status, "
+			+ "(select amount from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD','INV') "
+			+ "and action_date=(select max(action_date) from cust.salesaction where action_type in ('CRO','MOD','INV') and sale_id=s.id)) as amount, "
+			+ "ci.last_name, ci.first_name, ci.customer_id as erp_id, fdc.id as fd_id, ci.email, ci.home_phone, ci.cell_phone, ci.business_phone "
+			+ "from cust.sale s, cust.customerinfo ci, cust.fdcustomer fdc, cust.customer c "
+			+ "where s.customer_id=c.id and c.id=ci.customer_id and c.id=fdc.erp_customer_id ";
 
 	public List getOrdersByStatus(String[] status) throws FDResourceException {
 		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		List retval = new ArrayList();
 		try {
 			conn = this.getConnection();
 			CriteriaBuilder builder = new CriteriaBuilder();
 			builder.addInString("s.status", status);
-			PreparedStatement ps = conn.prepareStatement(orderByStatusQuery + " and " +builder.getCriteria());
+			ps = conn.prepareStatement(orderByStatusQuery + " and " + builder.getCriteria());
 
 			Object[] par = builder.getParams();
 			for (int i = 0; i < par.length; i++) {
 				ps.setObject(i + 1, par[i]);
 			}
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 
 			processOrderQueryResults(rs, retval);
-			rs.close();
-			ps.close();
+		//	rs.close();
+		//	ps.close();
 			return retval;
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle) {
-					LOGGER.debug("Error while cleaning:", sqle);
-				}
-			}
+			close(rs);
+			close(ps);
+			close(conn);
 		}
 	}
-	/*private static final String NSM_ORDERS_QUERY =
-		"select  s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name "
-			+ "from cust.sale s, cust.sale_cro_mod_date scm, cust.salesaction sa, cust.customerinfo ci "
-			+ "where sa.action_date <= (sysdate - 1/48) and s.id = scm.sale_id "
-			+ "and scm.sale_id = sa.sale_id and scm.max_date = sa.action_date "
-			+ "and s.customer_id = ci.customer_id and s.status in ('NSM', 'MOD', 'MOC', 'NEW') "
-			+" AND ((sa.requested_date >= SYSDATE) OR ( s.TYPE IN ('SUB','GCD','DON') AND sa.requested_date<=(SYSDATE))) ORDER BY action_date ";*/
+	/*
+	 * private static final String NSM_ORDERS_QUERY =
+	 * "select  s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name "
+	 * +
+	 * "from cust.sale s, cust.sale_cro_mod_date scm, cust.salesaction sa, cust.customerinfo ci "
+	 * + "where sa.action_date <= (sysdate - 1/48) and s.id = scm.sale_id " +
+	 * "and scm.sale_id = sa.sale_id and scm.max_date = sa.action_date " +
+	 * "and s.customer_id = ci.customer_id and s.status in ('NSM', 'MOD', 'MOC', 'NEW') "
+	 * +" AND ((sa.requested_date >= SYSDATE) OR ( s.TYPE IN ('SUB','GCD','DON') AND sa.requested_date<=(SYSDATE))) ORDER BY action_date "
+	 * ;
+	 */
 
-	private static final String NSM_ORDERS_QUERY ="select s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name "+
-			" from cust.sale s, cust.salesaction sa,cust.customerinfo ci "+
-			" where s.status in ('NSM', 'MOD', 'MOC', 'NEW') and s.id=sa.sale_id and SA.ACTION_TYPE IN ('CRO','MOD') and S.CROMOD_DATE=SA.ACTION_DATE "+
-			" and sa.action_date <= (sysdate - 1/144) AND ((sa.requested_date >= TRUNC(SYSDATE)) OR ( s.TYPE IN ('SUB','GCD','DON') AND sa.requested_date<=(SYSDATE)))"+
-			" and S.CUSTOMER_ID=CI.CUSTOMER_ID ORDER BY action_date";
-	
-	private static final String NSM_ORDERS_QUERY_BY_DATE ="select s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name "+ 
-    "from cust.sale s, cust.salesaction sa,cust.customerinfo ci "+ 
-     "where s.status in ('NSM', 'MOD', 'MOC', 'NEW') and s.id=sa.sale_id and SA.ACTION_TYPE IN ('CRO','MOD') and S.CROMOD_DATE=SA.ACTION_DATE "+ 
-     "and sa.action_date <= (sysdate - 1/144) AND ((sa.requested_date =TO_DATE(?, 'YYYY-MM-DD')) "+ 
-     "OR ( s.TYPE IN ('SUB','GCD','DON') AND sa.requested_date=TO_DATE(?, 'YYYY-MM-DD'))) "+
-     "and S.CUSTOMER_ID=CI.CUSTOMER_ID ORDER BY action_date ";
+	private static final String NSM_ORDERS_QUERY = "select s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name "
+			+ " from cust.sale s, cust.salesaction sa,cust.customerinfo ci "
+			+ " where s.status in ('NSM', 'MOD', 'MOC', 'NEW') and s.id=sa.sale_id and SA.ACTION_TYPE IN ('CRO','MOD') and S.CROMOD_DATE=SA.ACTION_DATE "
+			+ " and sa.action_date <= (sysdate - 1/144) AND ((sa.requested_date >= TRUNC(SYSDATE)) OR ( s.TYPE IN ('SUB','GCD','DON') AND sa.requested_date<=(SYSDATE)))"
+			+ " and S.CUSTOMER_ID=CI.CUSTOMER_ID ORDER BY action_date";
 
-     private static final String NSM_ORDERS_QUERY_BY_DATE_AND_CUTOFF ="select s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name "+ 
-    "from cust.deliveryinfo di, cust.sale s, cust.salesaction sa,cust.customerinfo ci "+
-     "where "+
-    " sa.id=DI.SALESACTION_ID and to_char( DI.CUTOFFTIME,'HH12:MI AM')=? "+  
-    "and  s.status in ('NSM', 'MOD', 'MOC', 'NEW') and s.id=sa.sale_id and SA.ACTION_TYPE IN ('CRO','MOD') and S.CROMOD_DATE=SA.ACTION_DATE "+ 
-     "and sa.action_date <= (sysdate - 1/144) AND ((sa.requested_date =TO_DATE(?, 'YYYY-MM-DD')) "+ 
-     "OR ( s.TYPE IN ('SUB','GCD','DON') AND sa.requested_date=TO_DATE(?, 'YYYY-MM-DD'))) "+
-     "and S.CUSTOMER_ID=CI.CUSTOMER_ID ORDER BY action_date ";
-     
+	private static final String NSM_ORDERS_QUERY_BY_DATE = "select s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name "
+			+ "from cust.sale s, cust.salesaction sa,cust.customerinfo ci "
+			+ "where s.status in ('NSM', 'MOD', 'MOC', 'NEW') and s.id=sa.sale_id and SA.ACTION_TYPE IN ('CRO','MOD') and S.CROMOD_DATE=SA.ACTION_DATE "
+			+ "and sa.action_date <= (sysdate - 1/144) AND ((sa.requested_date =TO_DATE(?, 'YYYY-MM-DD')) "
+			+ "OR ( s.TYPE IN ('SUB','GCD','DON') AND sa.requested_date=TO_DATE(?, 'YYYY-MM-DD'))) "
+			+ "and S.CUSTOMER_ID=CI.CUSTOMER_ID ORDER BY action_date ";
+
+	private static final String NSM_ORDERS_QUERY_BY_DATE_AND_CUTOFF = "select s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name "
+			+ "from cust.deliveryinfo di, cust.sale s, cust.salesaction sa,cust.customerinfo ci " + "where "
+			+ " sa.id=DI.SALESACTION_ID and to_char( DI.CUTOFFTIME,'HH12:MI AM')=? "
+			+ "and  s.status in ('NSM', 'MOD', 'MOC', 'NEW') and s.id=sa.sale_id and SA.ACTION_TYPE IN ('CRO','MOD') and S.CROMOD_DATE=SA.ACTION_DATE "
+			+ "and sa.action_date <= (sysdate - 1/144) AND ((sa.requested_date =TO_DATE(?, 'YYYY-MM-DD')) "
+			+ "OR ( s.TYPE IN ('SUB','GCD','DON') AND sa.requested_date=TO_DATE(?, 'YYYY-MM-DD'))) "
+			+ "and S.CUSTOMER_ID=CI.CUSTOMER_ID ORDER BY action_date ";
+
 	public List getNSMOrders(String date, String cutOff) throws FDResourceException {
 		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
 			conn = this.getConnection();
 			List lst = new ArrayList();
-			PreparedStatement ps =null;
-			if((null==date && null==cutOff)||("".equals(date) && "".equals(cutOff))) {
-				ps= conn.prepareStatement(NSM_ORDERS_QUERY);
-			} else if(!"".equals(date) && ("".equals(cutOff)||null==cutOff)) {
-				ps= conn.prepareStatement(NSM_ORDERS_QUERY_BY_DATE);
-				ps.setString(1,date);
-				ps.setString(2,date);
-			} else if(!"".equals(date) && !"".equals(cutOff)) {
-				ps= conn.prepareStatement(NSM_ORDERS_QUERY_BY_DATE_AND_CUTOFF);
-				if(cutOff.length()==7) {
-					cutOff="0"+cutOff;
+			if ((null == date && null == cutOff) || ("".equals(date) && "".equals(cutOff))) {
+				ps = conn.prepareStatement(NSM_ORDERS_QUERY);
+			} else if (!"".equals(date) && ("".equals(cutOff) || null == cutOff)) {
+				ps = conn.prepareStatement(NSM_ORDERS_QUERY_BY_DATE);
+				ps.setString(1, date);
+				ps.setString(2, date);
+			} else if (!"".equals(date) && !"".equals(cutOff)) {
+				ps = conn.prepareStatement(NSM_ORDERS_QUERY_BY_DATE_AND_CUTOFF);
+				if (cutOff.length() == 7) {
+					cutOff = "0" + cutOff;
 				}
-				ps.setString(1,cutOff);
-				ps.setString(2,date);
-				ps.setString(3,date);
-				
+				ps.setString(1, cutOff);
+				ps.setString(2, date);
+				ps.setString(3, date);
+
 			} else {
-				ps= conn.prepareStatement(NSM_ORDERS_QUERY);
+				ps = conn.prepareStatement(NSM_ORDERS_QUERY);
 			}
-			ResultSet rs = ps.executeQuery();
-			while(rs.next()){
+			rs = ps.executeQuery();
+			while (rs.next()) {
 				FDCustomerOrderInfo info = new FDCustomerOrderInfo();
 				info.setSaleId(rs.getString("SALE_ID"));
 				info.setDeliveryDate(rs.getDate("REQUESTED_DATE"));
@@ -769,43 +748,38 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				info.setLastName(rs.getString("LAST_NAME"));
 				info.setLastCroModDate(rs.getTimestamp("ACTION_DATE"));
 
-				//TODO FDX - add these columns to query
+				// TODO FDX - add these columns to query
 				info.seteStore("TODO");
 				info.setFacility("TODO");
-				
+
 				lst.add(info);
 			}
-			rs.close();
-			ps.close();
-
 			return lst;
+
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle) {
-					LOGGER.debug("Error while cleaning:", sqle);
-				}
-			}
+			close(rs);
+			close(ps);
+			close(conn);
 		}
 	}
 
 	private static final String NSM_CUST_QUERY = "select c.id, c.user_id, ci.first_name, ci.last_name "
-		+ "from cust.customer c, cust.customerinfo ci "
-		+ "where c.sap_id is null and c.id = ci.customer_id "
-		+ "order by c.id";
+			+ "from cust.customer c, cust.customerinfo ci " + "where c.sap_id is null and c.id = ci.customer_id "
+			+ "order by c.id";
 
 	public List getNSMCustomers() throws FDResourceException {
 		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
 			conn = this.getConnection();
 			List lst = new ArrayList();
-			PreparedStatement ps = conn.prepareStatement(NSM_CUST_QUERY);
-			ResultSet rs = ps.executeQuery();
-			while(rs.next()){
+			ps = conn.prepareStatement(NSM_CUST_QUERY);
+			rs = ps.executeQuery();
+			while (rs.next()) {
 				FDCustomerOrderInfo info = new FDCustomerOrderInfo();
 				info.setIdentity(new FDIdentity(rs.getString("ID")));
 				info.setFirstName(rs.getString("FIRST_NAME"));
@@ -813,21 +787,15 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				info.setEmail(rs.getString("USER_ID"));
 				lst.add(info);
 			}
-			rs.close();
-			ps.close();
-
 			return lst;
+
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle) {
-					LOGGER.debug("Error while cleaning:", sqle);
-				}
-			}
+			close(rs);
+			close(ps);
+			close(conn);
 		}
 	}
 
@@ -846,61 +814,57 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			coi.setAltPhone(rs.getString("CELL_PHONE"));
 			if (coi.getAltPhone() == null || "".equals(coi.getAltPhone()))
 				coi.setAltPhone(rs.getString("BUSINESS_PHONE"));
-			
-			//TODO FDX - add these columns to query
+
+			// TODO FDX - add these columns to query
 			coi.seteStore("TODO");
 			coi.setFacility("TODO");
-			
+
 			orders.add(coi);
 		}
 	}
 
 	private final static String signupPromoAVSQuery = "select s.id as sale_id, sa.requested_date, s.status, sa.amount, ci.last_name, ci.first_name, c.id as erp_id, fdc.id as fd_id, ci.email, ci.home_phone, ci.business_phone, ci.cell_phone "
-		+ "from cust.sale s, cust.salesaction sa, cust.customer c, cust.customerinfo ci, cust.fdcustomer fdc "
-		+ "where s.id=sa.sale_id and s.customer_id=c.id and c.id=ci.customer_id and fdc.erp_customer_id=c.id "
-		+ "and s.type = 'REG' "
-		+ "and sa.requested_date >= trunc(SYSDATE) and s.status='AVE' and sa.promotion_campaign='SIGNUP' and sa.action_type in ('CRO','MOD') "
-		+ "and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD'))";
+			+ "from cust.sale s, cust.salesaction sa, cust.customer c, cust.customerinfo ci, cust.fdcustomer fdc "
+			+ "where s.id=sa.sale_id and s.customer_id=c.id and c.id=ci.customer_id and fdc.erp_customer_id=c.id "
+			+ "and s.type = 'REG' "
+			+ "and sa.requested_date >= trunc(SYSDATE) and s.status='AVE' and sa.promotion_campaign='SIGNUP' and sa.action_type in ('CRO','MOD') "
+			+ "and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD'))";
 
 	public List getSignupPromoAVSExceptions() throws FDResourceException {
 		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		List retval = new ArrayList();
 		try {
 			conn = this.getConnection();
-			PreparedStatement ps = conn.prepareStatement(signupPromoAVSQuery);
-			ResultSet rs = ps.executeQuery();
+			ps = conn.prepareStatement(signupPromoAVSQuery);
+			rs = ps.executeQuery();
 			processOrderQueryResults(rs, retval);
-			rs.close();
-			ps.close();
 			return retval;
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException se) {
-					LOGGER.debug("Error while cleaning:", se);
-				}
-			}
+			close(rs);
+			close(ps);
+			close(conn);
 		}
 	}
 
 	private static final String creditSummaryQuery = "select ci.first_name || ' ' || ci.last_name as customer_name, s.id as order_number, sao.requested_date as delivery, "
-		+ "sai.amount as invoice, cmp.amount as pending_credit, cmp.status, cmp.note, cd.name as department, cml.line_number, "
-		+ "(select description from cust.orderline where salesaction_id=sao.id and substr(orderline_number,1,4)=lpad(cml.line_number+1,4,'0')) as item_desc, "
-		+ "(select configuration_desc from cust.orderline where salesaction_id=sao.id and substr(orderline_number,1,4)=lpad(cml.line_number+1,4,'0')) as item_config, "
-		+ "(select sku_code from cust.orderline where salesaction_id=sao.id and substr(orderline_number,1,4)=lpad(cml.line_number+1,4,'0')) as item_sku, "
-		+ "cml.quantity, cc.name as reason, (select count(*) from cust.sale where customer_id=c.id and status <> 'CAN') as number_of_orders, "
-		+ "(select sum(original_amount) from cust.customercredit where customer_id=c.id) as previous_credits "
-		+ "from cust.sale s, cust.salesaction sao, cust.customer c, cust.customerinfo ci, cust.salesaction sai, "
-		+ "cust.complaint cmp, cust.complaintline cml, cust.complaint_dept_code cdc, cust.complaint_code cc, cust.complaint_dept cd "
-		+ "where s.id=sao.sale_id and s.customer_id=c.id and c.id=ci.customer_id and s.id=cmp.sale_id and s.id=sai.sale_id(+) "
-		+ "and cmp.id=cml.complaint_id and cml.complaint_dept_code_id=cdc.id and cdc.comp_code=cc.code and cdc.comp_dept=cd.code "
-		+ "and sao.action_type in ('CRO','MOD') and sao.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD')) "
-		+ "and 'INV'=sai.action_type(+) and cmp.create_date>=? and cmp.create_date<? "
-		+ "order by delivery, order_number, department, line_number ";
+			+ "sai.amount as invoice, cmp.amount as pending_credit, cmp.status, cmp.note, cd.name as department, cml.line_number, "
+			+ "(select description from cust.orderline where salesaction_id=sao.id and substr(orderline_number,1,4)=lpad(cml.line_number+1,4,'0')) as item_desc, "
+			+ "(select configuration_desc from cust.orderline where salesaction_id=sao.id and substr(orderline_number,1,4)=lpad(cml.line_number+1,4,'0')) as item_config, "
+			+ "(select sku_code from cust.orderline where salesaction_id=sao.id and substr(orderline_number,1,4)=lpad(cml.line_number+1,4,'0')) as item_sku, "
+			+ "cml.quantity, cc.name as reason, (select count(*) from cust.sale where customer_id=c.id and status <> 'CAN') as number_of_orders, "
+			+ "(select sum(original_amount) from cust.customercredit where customer_id=c.id) as previous_credits "
+			+ "from cust.sale s, cust.salesaction sao, cust.customer c, cust.customerinfo ci, cust.salesaction sai, "
+			+ "cust.complaint cmp, cust.complaintline cml, cust.complaint_dept_code cdc, cust.complaint_code cc, cust.complaint_dept cd "
+			+ "where s.id=sao.sale_id and s.customer_id=c.id and c.id=ci.customer_id and s.id=cmp.sale_id and s.id=sai.sale_id(+) "
+			+ "and cmp.id=cml.complaint_id and cml.complaint_dept_code_id=cdc.id and cdc.comp_code=cc.code and cdc.comp_dept=cd.code "
+			+ "and sao.action_type in ('CRO','MOD') and sao.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD')) "
+			+ "and 'INV'=sai.action_type(+) and cmp.create_date>=? and cmp.create_date<? "
+			+ "order by delivery, order_number, department, line_number ";
 
 	public List getCreditSummaryForDate(java.util.Date reportDate) throws FDResourceException {
 		Calendar reportDateStart = Calendar.getInstance();
@@ -913,16 +877,16 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		reportDateEnd.add(Calendar.DATE, 1);
 
 		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		List retval = new ArrayList();
 		try {
 			conn = this.getConnection();
-			PreparedStatement ps = conn.prepareStatement(
-				creditSummaryQuery,
-				ResultSet.TYPE_SCROLL_INSENSITIVE,
-				ResultSet.CONCUR_READ_ONLY);
+			ps = conn.prepareStatement(creditSummaryQuery, ResultSet.TYPE_SCROLL_INSENSITIVE,
+					ResultSet.CONCUR_READ_ONLY);
 			ps.setDate(1, new java.sql.Date(reportDateStart.getTime().getTime()));
 			ps.setDate(2, new java.sql.Date(reportDateEnd.getTime().getTime()));
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			while (rs.next()) {
 				FDCreditSummary cs = new FDCreditSummary();
 				String ordNum = rs.getString("ORDER_NUMBER");
@@ -934,7 +898,8 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				cs.setNote(rs.getString("NOTE"));
 				cs.setNumberOfOrders(rs.getInt("NUMBER_OF_ORDERS"));
 				cs.setPreviousCreditAmount(rs.getDouble("PREVIOUS_CREDITS"));
-				cs.setStatus(com.freshdirect.customer.EnumComplaintStatus.getComplaintStatus(rs.getString("STATUS")).getName());
+				cs.setStatus(com.freshdirect.customer.EnumComplaintStatus.getComplaintStatus(rs.getString("STATUS"))
+						.getName());
 				retval.add(cs);
 				do {
 					FDCreditSummary.Item item = new FDCreditSummary.Item();
@@ -947,26 +912,21 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				} while (rs.next() && ordNum.equals(rs.getString("ORDER_NUMBER")));
 				rs.previous();
 			}
-			rs.close();
-			ps.close();
+		//	rs.close();
+		//	ps.close();
 			return retval;
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException se) {
-					LOGGER.debug("Error while cleaning:", se);
-				}
-			}
+			close(rs);
+			close(ps);
+			close(conn);
 		}
 	}
 
 	public EnumPaymentResponse resubmitPayment(String saleId, ErpPaymentMethodI payment, Collection charges)
-		throws FDResourceException,
-		ErpTransactionException {
+			throws FDResourceException, ErpTransactionException {
 		try {
 			ErpCustomerManagerSB customerManagerSB = this.getErpCustomerManagerHome().create();
 			return customerManagerSB.resubmitPayment(saleId, payment, charges);
@@ -994,25 +954,23 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
   				serviceType = _reservation.getRegionSvcType();
             }
             FDDeliveryZoneInfo zInfo = FDDeliveryManager.getInstance().getZoneInfo(dlvInfo.getDeliveryAddress(),dlvInfo.getDeliveryStartTime(), null, serviceType);
-            */
-            customerManagerSB.resubmitOrder(saleId, cra, saleType, dlvInfo.getDeliveryRegionId());
-              
-              if(!EnumSaleType.REGULAR.equals(saleType) && EnumSaleStatus.NEW.equals(_order.getStatus())) {
-            	  FDCustomerManager.authorizeSale(saleId);
-              }
-              
-        } catch (CreateException ce) {
-              throw new FDResourceException(ce);
-        } catch (RemoteException re) {
-              throw new FDResourceException(re);
+			 */
+			customerManagerSB.resubmitOrder(saleId, cra, saleType, dlvInfo.getDeliveryRegionId());
+
+			if (!EnumSaleType.REGULAR.equals(saleType) && EnumSaleStatus.NEW.equals(_order.getStatus())) {
+				FDCustomerManager.authorizeSale(saleId);
+			}
+
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
         } /*catch (FDInvalidAddressException e) {
               throw new FDResourceException(e);
         } catch (FinderException fe) {
         	throw new FDResourceException(fe);
 		}*/
-  }
-  
-	
+	}
 
 	public void resubmitCustomer(String customerID) throws FDResourceException {
 		try {
@@ -1028,36 +986,29 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
 	public List getHolidayMeals(FDIdentity identity) throws FDResourceException {
 		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		java.util.List lst = new java.util.LinkedList();
 		try {
 			conn = this.getConnection();
 
-			PreparedStatement ps = conn.prepareStatement("SELECT ID FROM CUST.HOLIDAYMEAL WHERE CUSTOMER_ID=?");
+			ps = conn.prepareStatement("SELECT ID FROM CUST.HOLIDAYMEAL WHERE CUSTOMER_ID=?");
 			ps.setString(1, identity.getErpCustomerPK());
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			while (rs.next()) {
 				MealPersistentBean bean = new MealPersistentBean(new PrimaryKey(rs.getString(1)), conn);
 				bean.setParentPK(new PrimaryKey(identity.getErpCustomerPK()));
 				lst.add(bean.getModel());
 			}
-			rs.close();
-			rs = null;
-			ps.close();
-			ps = null;
 			return lst;
 
 		} catch (SQLException se) {
 			getSessionContext().setRollbackOnly();
 			throw new FDResourceException(se);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-					conn = null;
-				} catch (SQLException se) {
-					LOGGER.debug("Error while cleaning:", se);
-				}
-			}
+			close(rs);
+			close(ps);
+			close(conn);
 		}
 	}
 
@@ -1084,14 +1035,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			getSessionContext().setRollbackOnly();
 			throw new FDResourceException(se);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-					conn = null;
-				} catch (SQLException se) {
-					LOGGER.debug("Error while cleaning:", se);
-				}
-			}
+			close(conn);
 		}
 	}
 
@@ -1099,46 +1043,45 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
 	public List getCutoffTimeForDate(java.util.Date date) throws FDResourceException {
 		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
 			conn = this.getConnection();
-			PreparedStatement ps = conn.prepareStatement(CUTOFFTME_QUERY);
+			ps = conn.prepareStatement(CUTOFFTME_QUERY);
 			date = DateUtil.truncate(date);
 			ps.setTimestamp(1, new Timestamp(date.getTime()));
 			date = DateUtil.addDays(date, 1);
 			ps.setTimestamp(2, new Timestamp(date.getTime()));
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			List ret = new ArrayList();
 			while (rs.next()) {
 				ret.add(rs.getTimestamp("CUTOFFTIME"));
 			}
-			ps.close();
-			rs.close();
+		//	ps.close();
+		//	rs.close();
 			return ret;
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-					conn = null;
-				} catch (SQLException e) {
-					LOGGER.warn("Error while cleaning:", e);
-				}
-			}
+			close(rs);
+			close(ps);
+			close(conn);
 		}
 	}
 
-	private static final String CUTOFF_REPORT_QUERY = "select s.status, di.handofftime " +
-			" , count(*) as order_count from cust.sale s, cust.salesaction sa, cust.deliveryinfo di " +
-			"where s.id=sa.sale_id and sa.id=di.salesaction_id and s.type<>'SUB' and sa.action_type in ('CRO','MOD') and sa.requested_date=? and s.type = 'REG' " +
-			"and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD')) and di.starttime > ? " +
-			"and di.starttime < ? group by s.status, di.handofftime order by di.handofftime, s.status";
+	private static final String CUTOFF_REPORT_QUERY = "select s.status, di.handofftime "
+			+ " , count(*) as order_count from cust.sale s, cust.salesaction sa, cust.deliveryinfo di "
+			+ "where s.id=sa.sale_id and sa.id=di.salesaction_id and s.type<>'SUB' and sa.action_type in ('CRO','MOD') and sa.requested_date=? and s.type = 'REG' "
+			+ "and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD')) and di.starttime > ? "
+			+ "and di.starttime < ? group by s.status, di.handofftime order by di.handofftime, s.status";
 
 	public List getCutoffTimeReport(java.util.Date day) throws FDResourceException {
 		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
 			conn = this.getConnection();
-			PreparedStatement ps = conn.prepareStatement(CUTOFF_REPORT_QUERY);
+			ps = conn.prepareStatement(CUTOFF_REPORT_QUERY);
 			day = DateUtil.truncate(day);
 			ps.setDate(1, new java.sql.Date(day.getTime()));
 			ps.setTimestamp(2, new Timestamp(day.getTime()));
@@ -1146,57 +1089,54 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			cal.set(Calendar.HOUR_OF_DAY, 23);
 			cal.set(Calendar.MINUTE, 59);
 			ps.setTimestamp(3, new Timestamp(cal.getTime().getTime()));
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			List ret = new ArrayList();
 
 			while (rs.next()) {
 				EnumSaleStatus s = EnumSaleStatus.getSaleStatus(rs.getString("STATUS"));
 				ret.add(new FDCutoffTimeInfo(s, rs.getTimestamp("handofftime"), rs.getInt("ORDER_COUNT")));
 			}
-			ps.close();
-			rs.close();
+		//	ps.close();
+		//	rs.close();
 			return ret;
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-					conn = null;
-				} catch (SQLException e) {
-					LOGGER.warn("Error while cleaning:", e);
-				}
-			}
+			close(rs);
+			close(ps);
+			close(conn);
 		}
 	}
 
-	public void emailCutoffTimeReport(Date deliveryDate) throws FDResourceException{
+	public void emailCutoffTimeReport(Date deliveryDate) throws FDResourceException {
 		try {
 			deliveryDate = DateUtil.truncate(deliveryDate);
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
-			
+
 			List cReport = getCutoffTimeReport(deliveryDate);
 			StringBuffer buff = new StringBuffer();
 			String br = "\n";
 
 			buff.append("Handoff Report for ").append(dateFormatter.format(deliveryDate)).append(br);
 			buff.append(br);
-			buff.append("Handoff Time").append("\t\t\t").append("Order Count").append("\t\t").append("Sale Status").append(br);
-			buff.append("----------------------------------------------------------------------------------").append(br);
+			buff.append("Handoff Time").append("\t\t\t").append("Order Count").append("\t\t").append("Sale Status")
+					.append(br);
+			buff.append("----------------------------------------------------------------------------------")
+					.append(br);
 
-			for(Iterator i = cReport.iterator(); i.hasNext();){
+			for (Iterator i = cReport.iterator(); i.hasNext();) {
 				FDCutoffTimeInfo info = (FDCutoffTimeInfo) i.next();
-					buff.append(new SimpleDateFormat().format(info.getCutoffTime())).append("\t\t").append(info.getOrderCount()).append("\t\t\t").append(info.getStatus()).append(br);
-	
+				buff.append(new SimpleDateFormat().format(info.getCutoffTime())).append("\t\t")
+						.append(info.getOrderCount()).append("\t\t\t").append(info.getStatus()).append(br);
+
 			}
 
 			buff.append("----------------------------------------------------------------------------------");
 
 			ErpMailSender mailer = new ErpMailSender();
-			mailer.sendMail(ErpServicesProperties.getSapMailFrom(),
-							ErpServicesProperties.getSapMailTo(),
-							ErpServicesProperties.getSapMailCC(),
-							"Handoff Report For " + dateFormatter.format(deliveryDate), buff.toString());
+			mailer.sendMail(ErpServicesProperties.getSapMailFrom(), ErpServicesProperties.getSapMailTo(),
+					ErpServicesProperties.getSapMailCC(), "Handoff Report For " + dateFormatter.format(deliveryDate),
+					buff.toString());
 
 		} catch (MessagingException e) {
 			LOGGER.warn("Error Sending cutoff time report: ", e);
@@ -1205,46 +1145,38 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
 	public List getSubjectReport(Date day1, Date day2, boolean showAutoCases) throws FDResourceException {
 		String sql = "select cq.name as queue, cs.name as subject, count(*) as caseCount"
-			+ " from cust.case c, cust.case_queue cq, cust.case_subject cs, cust.caseaction ca "
-			+ " where c.case_subject=cs.code"
-			+ " and cs.case_queue=cq.code"
-			+ " and c.id=ca.case_id"
-			+ " and ca.timestamp >= ? and ca.timestamp <=? "
-			+ " and ca.timestamp=(select max(timestamp) from cust.caseaction where case_id=c.id and timestamp >= ? and timestamp <=? )"
-			+ " and (cq.obsolete is null or cq.obsolete <> 'X') and (cs.obsolete is null or cs.obsolete <> 'X')"
-			+ (!showAutoCases ? " AND c.CASE_ORIGIN NOT IN ('" + CrmCaseOrigin.CODE_SYS + "')" : "")
-			+ " group by  cq.name, cs.name"
-			+ " order by  cq.name, cs.name";
+				+ " from cust.case c, cust.case_queue cq, cust.case_subject cs, cust.caseaction ca "
+				+ " where c.case_subject=cs.code" + " and cs.case_queue=cq.code" + " and c.id=ca.case_id"
+				+ " and ca.timestamp >= ? and ca.timestamp <=? "
+				+ " and ca.timestamp=(select max(timestamp) from cust.caseaction where case_id=c.id and timestamp >= ? and timestamp <=? )"
+				+ " and (cq.obsolete is null or cq.obsolete <> 'X') and (cs.obsolete is null or cs.obsolete <> 'X')"
+				+ (!showAutoCases ? " AND c.CASE_ORIGIN NOT IN ('" + CrmCaseOrigin.CODE_SYS + "')" : "")
+				+ " group by  cq.name, cs.name" + " order by  cq.name, cs.name";
 
 		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
 			conn = this.getConnection();
-			PreparedStatement ps = conn.prepareStatement(sql);
+			ps = conn.prepareStatement(sql);
 			ps.setTimestamp(1, new Timestamp(day1.getTime()));
 			ps.setTimestamp(3, new Timestamp(day1.getTime()));
 			ps.setTimestamp(2, new Timestamp(day2.getTime()));
 			ps.setTimestamp(4, new Timestamp(day2.getTime()));
 
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			List rpt = new ArrayList();
 
 			while (rs.next()) {
 				rpt.add(new SubjectReportLine(rs.getString("QUEUE"), rs.getString("Subject"), rs.getInt("CaseCount")));
 			}
-			ps.close();
-			rs.close();
 			return rpt;
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-					conn = null;
-				} catch (SQLException e) {
-					LOGGER.warn("Error while cleaning:", e);
-				}
-			}
+			close(rs);
+			close(ps);
+			close(conn);
 		}
 	}
 
@@ -1270,39 +1202,36 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		+ " and cdc.comp_code='LATEDEL' and cdc.comp_dept='TRN'"
 		+ ") order by wave_number, truck_number, stop_sequence";*/
   
-  private static final String LATE_DLVRY_REPORT_QRY = "select * from ( "
-		+ " select create_date, s.truck_number, s.stop_sequence, s.id as order_number, di.first_name, di.last_name,di.starttime, di.endtime, 'case' as source,"
-		+ "(select 'X' from cust.fdcustomer fdc, cust.profile p where s.customer_id=fdc.erp_customer_id and fdc.id=p.customer_id(+) and p.profile_name='ChefsTable') as chefs_table,"
-		+ " (select decode(count(*),2,'X',3,'X',4,'X',NULL) from cust.sale where customer_id=s.customer_id and status<>'CAN') as undeclared"
-		+ " from cust.case c, cust.sale s, cust.salesaction sa, cust.deliveryinfo di"
-		+ " where c.sale_id=s.id and s.id=sa.sale_id and sa.id=di.salesaction_id"
-		+ " and s.type = 'REG' "
-		+ " and sa.requested_date= ? and sa.action_type in ('CRO','MOD') and s.status <> 'CAN'"
-		+ " and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD'))"
-		+ " and c.case_subject in ('LDQ-005','LDQ-006','LDQ-007')"
-		+ " union all"
-		+ " select create_date, s.truck_number, s.stop_sequence, s.id as order_number, di.first_name, di.last_name,di.starttime, di.endtime,'complaint' as source,"
-		+ " (select 'X' from cust.fdcustomer fdc, cust.profile p where s.customer_id=fdc.erp_customer_id and fdc.id=p.customer_id(+) and p.profile_name='ChefsTable') as chefs_table,"
-		+ " (select decode(count(*),2,'X',3,'X',4,'X',NULL) from cust.sale where customer_id=s.customer_id and status<>'CAN') as undeclared"
-		+ " from cust.complaint_dept_code cdc, cust.complaintline cl, cust.complaint c, cust.sale s, cust.salesaction sa, cust.deliveryinfo di"
-		+ " where cdc.id=cl.complaint_dept_code_id and cl.complaint_id=c.id and c.sale_id=s.id and s.id=sa.sale_id and sa.id=di.salesaction_id"
-		+ " and s.type = 'REG' "
-		+ " and sa.requested_date=? and sa.action_type in ('CRO','MOD') and s.status <> 'CAN'"
-		+ " and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD'))"
-		+ " and cdc.comp_code='LATEDEL' and cdc.comp_dept='TRN'"
-		+ ") order by truck_number, stop_sequence";
-
-	
+	private static final String LATE_DLVRY_REPORT_QRY = "select * from ( "
+			+ " select create_date, s.truck_number, s.stop_sequence, s.id as order_number, di.first_name, di.last_name,di.starttime, di.endtime, 'case' as source,"
+			+ "(select 'X' from cust.fdcustomer fdc, cust.profile p where s.customer_id=fdc.erp_customer_id and fdc.id=p.customer_id(+) and p.profile_name='ChefsTable') as chefs_table,"
+			+ " (select decode(count(*),2,'X',3,'X',4,'X',NULL) from cust.sale where customer_id=s.customer_id and status<>'CAN') as undeclared"
+			+ " from cust.case c, cust.sale s, cust.salesaction sa, cust.deliveryinfo di"
+			+ " where c.sale_id=s.id and s.id=sa.sale_id and sa.id=di.salesaction_id" + " and s.type = 'REG' "
+			+ " and sa.requested_date= ? and sa.action_type in ('CRO','MOD') and s.status <> 'CAN'"
+			+ " and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD'))"
+			+ " and c.case_subject in ('LDQ-005','LDQ-006','LDQ-007')" + " union all"
+			+ " select create_date, s.truck_number, s.stop_sequence, s.id as order_number, di.first_name, di.last_name,di.starttime, di.endtime,'complaint' as source,"
+			+ " (select 'X' from cust.fdcustomer fdc, cust.profile p where s.customer_id=fdc.erp_customer_id and fdc.id=p.customer_id(+) and p.profile_name='ChefsTable') as chefs_table,"
+			+ " (select decode(count(*),2,'X',3,'X',4,'X',NULL) from cust.sale where customer_id=s.customer_id and status<>'CAN') as undeclared"
+			+ " from cust.complaint_dept_code cdc, cust.complaintline cl, cust.complaint c, cust.sale s, cust.salesaction sa, cust.deliveryinfo di"
+			+ " where cdc.id=cl.complaint_dept_code_id and cl.complaint_id=c.id and c.sale_id=s.id and s.id=sa.sale_id and sa.id=di.salesaction_id"
+			+ " and s.type = 'REG' "
+			+ " and sa.requested_date=? and sa.action_type in ('CRO','MOD') and s.status <> 'CAN'"
+			+ " and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD'))"
+			+ " and cdc.comp_code='LATEDEL' and cdc.comp_dept='TRN'" + ") order by truck_number, stop_sequence";
 
 	public List getLateDeliveryReport(Date day1) throws FDResourceException {
 		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
 			conn = this.getConnection();
-			PreparedStatement ps = conn.prepareStatement(LATE_DLVRY_REPORT_QRY);
+			ps = conn.prepareStatement(LATE_DLVRY_REPORT_QRY);
 			Timestamp truncDate = new Timestamp(DateUtil.truncate(day1).getTime());
 			ps.setTimestamp(1, truncDate);
 			ps.setTimestamp(2, truncDate);
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			List rpt = new ArrayList();
 
 			while (rs.next()) {
@@ -1317,26 +1246,21 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				rl.setSource(rs.getString("source"));
 				rl.setStopSequence(rs.getString("stop_Sequence"));
 				rl.setTruckNumber(rs.getString("truck_number"));
-				//rl.setWaveNumber(rs.getString("wave_number"));
+				// rl.setWaveNumber(rs.getString("wave_number"));
 				rl.setTimeCaseOpened(rs.getTimestamp("create_date"));
 				rl.setStartTime(rs.getTimestamp("starttime"));
 				rl.setEndTime(rs.getTimestamp("endtime"));
 				rpt.add(rl);
 			}
-			ps.close();
-			rs.close();
+		//	ps.close();
+		//	rs.close();
 			return rpt;
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-					conn = null;
-				} catch (SQLException e) {
-					LOGGER.warn("Error while cleaning:", e);
-				}
-			}
+			close(rs);
+			close(ps);
+			close(conn);
 		}
 	}
 
@@ -1363,9 +1287,9 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			+ " ci.email, decode(ci.email_plain_text, 'X', 'TEXT', 'HTML') as email_format_type"
 			+ " from cust.sale s, cust.salesaction sa, cust.deliveryinfo di, cust.customerinfo ci, cust.fdcustomer_estore ce"
 			+ " where s.id=sa.sale_id and s.type ='REG' and sa.id=di.salesaction_id and s.customer_id=ci.customer_id and ce.fdcustomer_id=ci.customer_id and sa.requested_date=?";
-	
+
 	private static final String SMS_NOTIFICATION = " and ce.delivery_notification = 'Y' ";
-	
+
 	private String finalRouteStopQuery;
 
 	//private static final String ROUTE_STOP_QRY_WHERE_WAVE = " and s.wave_number=LPAD(?, 6, '0')";
@@ -1376,32 +1300,39 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
 	private static final String ROUTE_STOP_QRY_WHERE_FD = " and (s.e_store = 'FreshDirect')";
 	private static final String ROUTE_STOP_QRY_WHERE_FDX = " and (s.e_store = 'FDX')";
-	
 
-/*	private static final String ROUTE_STOP_QRY_END = " and sa.action_type in ('CRO','MOD') and s.status <> 'CAN'"
-		+ " and s.CROMOD_DATE = sa.action_date "
-		+ ") order by wave_number, truck_number, stop_sequence";*/
-	
+	/*
+	 * private static final String ROUTE_STOP_QRY_END =
+	 * " and sa.action_type in ('CRO','MOD') and s.status <> 'CAN'" +
+	 * " and s.CROMOD_DATE = sa.action_date " +
+	 * ") order by wave_number, truck_number, stop_sequence";
+	 */
+
 	private static final String ROUTE_STOP_QRY_END = " and sa.action_type in ('CRO','MOD') and s.status <> 'CAN'"
-			+ " and s.CROMOD_DATE = sa.action_date "
-			+ ") order by truck_number, stop_sequence";
+			+ " and s.CROMOD_DATE = sa.action_date " + ") order by truck_number, stop_sequence";
 
-	//public List getRouteStopReport(Date date, String wave, String route, String stop1, String stop2, String call_format, String store, String facility) throws FDResourceException {
-	
-	public List getRouteStopReport(Date date, String route, String stop1, String stop2, String call_format, String store, String facility) throws FDResourceException {
+	// public List getRouteStopReport(Date date, String wave, String route,
+	// String stop1, String stop2, String call_format, String store, String
+	// facility) throws FDResourceException {
+
+	public List getRouteStopReport(Date date, String route, String stop1, String stop2, String call_format,
+			String store, String facility) throws FDResourceException {
 
 		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
-			conn = this.getConnection();		
-			
-			if("SMS".equals(call_format)) {
+			conn = this.getConnection();
+
+			if ("SMS".equals(call_format)) {
 				finalRouteStopQuery = ROUTE_STOP_QRY_SMS;
 				finalRouteStopQuery += SMS_NOTIFICATION;
 			} else {
 				finalRouteStopQuery = ROUTE_STOP_QRY;
 			}
 
-		 //System.out.println("wave: " + wave +  " route: " + route + " stop: " + stop1 + " to " + stop2);
+			// System.out.println("wave: " + wave + " route: " + route + " stop:
+			// " + stop1 + " to " + stop2);
 			System.out.println(" route: " + route + " stop: " + stop1 + " to " + stop2);
 
 
@@ -1416,20 +1347,21 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			if ((stop1 != null && !"".equals(stop1)) || (stop2 != null && !"".equals(stop2))) {
 				finalRouteStopQuery += ROUTE_STOP_QRY_WHERE_STOP;
 			}
-			
-			if(store!=null && EnumEStoreId.FD.name().equalsIgnoreCase(store)){
+
+			if (store != null && EnumEStoreId.FD.name().equalsIgnoreCase(store)) {
 				finalRouteStopQuery += ROUTE_STOP_QRY_WHERE_FD;
-			}else if(store!=null && EnumEStoreId.FDX.name().equalsIgnoreCase(store)){
+			} else if (store != null && EnumEStoreId.FDX.name().equalsIgnoreCase(store)) {
 				finalRouteStopQuery += ROUTE_STOP_QRY_WHERE_FDX;
 			}
 
 			finalRouteStopQuery += ROUTE_STOP_QRY_END;
-			
-			PreparedStatement ps = conn.prepareStatement(finalRouteStopQuery);
+
+			ps = conn.prepareStatement(finalRouteStopQuery);
 			date = DateUtil.truncate(date);
-			//Timestamp truncDate = new Timestamp(DateUtil.truncate(date).getTime());
+			// Timestamp truncDate = new
+			// Timestamp(DateUtil.truncate(date).getTime());
 			int index = 1;
-			//ps.setTimestamp(index++, truncDate);
+			// ps.setTimestamp(index++, truncDate);
 			ps.setDate(index++, new java.sql.Date(date.getTime()));
 			
 			/*if (wave != null && !"".equals(wave)) {
@@ -1454,7 +1386,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				ps.setString(index++, stop2);
 			}
 
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			List rpt = new ArrayList();
 
 			while (rs.next()) {
@@ -1465,7 +1397,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				rl.setDlvPhone(rs.getString("phone"));
 				rl.setDlvPhoneExt(rs.getString("phone_ext"));
 				rl.setPhoneNumber(rs.getString("phone"), rs.getString("phone_ext"));
-				//rl.setWaveNumber(rs.getString("wave_number"));
+				// rl.setWaveNumber(rs.getString("wave_number"));
 				rl.setTruckNumber(rs.getString("truck_number"));
 				rl.setStopSequence(rs.getString("stop_Sequence"));
 				rl.setEmail(rs.getString("email"));
@@ -1473,20 +1405,15 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				rl.setCustomerId(rs.getString("customer_id"));
 				rpt.add(rl);
 			}
-			ps.close();
-			rs.close();
+		//	ps.close();
+		//	rs.close();
 			return rpt;
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-					conn = null;
-				} catch (SQLException e) {
-					LOGGER.warn("Error while cleaning:", e);
-				}
-			}
+			close(rs);
+			close(ps);
+			close(conn);
 		}
 	}
 
@@ -1509,7 +1436,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				ps.setObject(i + 1, par[i]);
 			}
 			rs = ps.executeQuery();
-			
+
 			//TODO FDX - add these columns to query
 			String eStore = "TODO";
 			String facility = "TODO";
@@ -1525,145 +1452,85 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-				if (ps != null) {
-					ps.close();
-				}
-				if (rs != null) {
-					rs.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("error while cleanup", e);
-			}
-
+			close(rs);
+			close(ps);
+			close(conn);
 		}
 
 	}
 
-	private static final String SETTLEMENT_PROBLEM_QUERY =
-		"SELECT s1.id, s1.status, sa1.amount, sa1.action_type, sa1.action_date AS failure_date,"
-		+ " ci.first_name || ' ' || ci.last_name AS customer_name, p.payment_method_type,"
-			+ " ("
-			+ "	SELECT di.starttime "
-				+ " FROM cust.DELIVERYINFO di, cust.SALESACTION sa2, cust.SALE s2"
-				+ " WHERE di.SALESACTION_ID = sa2.ID"
-				+ " AND sa2.sale_id = s2.id"
-				+ " AND s2.id = s1.id"
-				+ " AND sa2.ACTION_TYPE IN ('CRO', 'MOD')"
-				+ " AND sa2.action_date = ("
-									+ " SELECT MAX(sa3.action_date)"
-									+ " FROM cust.SALESACTION sa3"
-									+ " WHERE sa3.sale_id=s1.id AND sa3.action_type IN ('CRO','MOD')"
-									+ " )"
-			+ " ) AS delivery_date"
-		+ " FROM  CUST.SALE s1, CUST.SALESACTION sa1, cust.CUSTOMERINFO ci, cust.PAYMENT p"
-		+ " WHERE sa1.sale_id=s1.id"
-		+ " AND s1.customer_id = ci.customer_id"
-		+ " AND sa1.id = p.salesaction_id"
-		+ "	AND  sa1.action_type = ?"
-		+ " AND sa1.action_date = (SELECT MAX(sa4.action_date) FROM CUST.SALESACTION sa4 WHERE sa4.sale_id=s1.id AND sa4.action_type = ?)"
-		+ " AND  s1.status = ?";
+	private static final String SETTLEMENT_PROBLEM_QUERY = "SELECT s1.id, s1.status, sa1.amount, sa1.action_type, sa1.action_date AS failure_date,"
+			+ " ci.first_name || ' ' || ci.last_name AS customer_name, p.payment_method_type," + " ("
+			+ "	SELECT di.starttime " + " FROM cust.DELIVERYINFO di, cust.SALESACTION sa2, cust.SALE s2"
+			+ " WHERE di.SALESACTION_ID = sa2.ID" + " AND sa2.sale_id = s2.id" + " AND s2.id = s1.id"
+			+ " AND sa2.ACTION_TYPE IN ('CRO', 'MOD')" + " AND sa2.action_date = (" + " SELECT MAX(sa3.action_date)"
+			+ " FROM cust.SALESACTION sa3" + " WHERE sa3.sale_id=s1.id AND sa3.action_type IN ('CRO','MOD')" + " )"
+			+ " ) AS delivery_date" + " FROM  CUST.SALE s1, CUST.SALESACTION sa1, cust.CUSTOMERINFO ci, cust.PAYMENT p"
+			+ " WHERE sa1.sale_id=s1.id" + " AND s1.customer_id = ci.customer_id" + " AND sa1.id = p.salesaction_id"
+			+ "	AND  sa1.action_type = ?"
+			+ " AND sa1.action_date = (SELECT MAX(sa4.action_date) FROM CUST.SALESACTION sa4 WHERE sa4.sale_id=s1.id AND sa4.action_type = ?)"
+			+ " AND  s1.status = ?";
 
+	private static final String SETTLEMENT_PROBLEM_STF_QUERY = "SELECT s1.id, s1.status, sa1.amount, sa1.action_type, sa1.action_date AS failure_date,"
+			+ " ci.first_name || ' ' || ci.last_name AS customer_name, p.payment_method_type," + " ("
+			+ "	SELECT di.starttime " + " FROM cust.DELIVERYINFO di, cust.SALESACTION sa2, cust.SALE s2"
+			+ " WHERE di.SALESACTION_ID = sa2.ID" + " AND sa2.sale_id = s2.id" + " AND s2.id = s1.id"
+			+ " AND sa2.ACTION_TYPE IN ('CRO', 'MOD')" + " AND sa2.action_date = (" + " SELECT MAX(sa3.action_date)"
+			+ " FROM cust.SALESACTION sa3" + " WHERE sa3.sale_id=s1.id AND sa3.action_type IN ('CRO','MOD')" + " )"
+			+ " ) AS delivery_date" + " FROM  CUST.SALE s1, CUST.SALESACTION sa1, cust.CUSTOMERINFO ci, cust.PAYMENT p"
+			+ " WHERE sa1.sale_id=s1.id" + " AND s1.customer_id = ci.customer_id" + " AND sa1.id = p.salesaction_id"
+			+ "	AND  sa1.action_type = 'STF'"
+			+ " AND sa1.action_date = (SELECT MAX(sa4.action_date) FROM CUST.SALESACTION sa4 WHERE sa4.sale_id=s1.id AND sa4.action_type = 'STF')"
+			+ " AND  s1.status = 'STF'";
+	private static final String SETTLEMENT_PROBLEM_FRD_QUERY = "SELECT s1.id, s1.status, sa1.amount, sa1.action_type, sa1.action_date AS failure_date,"
+			+ " ci.first_name || ' ' || ci.last_name AS customer_name, p.payment_method_type," + " ("
+			+ "	SELECT di.starttime " + " FROM cust.DELIVERYINFO di, cust.SALESACTION sa2, cust.SALE s2"
+			+ " WHERE di.SALESACTION_ID = sa2.ID" + " AND sa2.sale_id = s2.id" + " AND s2.id = s1.id"
+			+ " AND sa2.ACTION_TYPE IN ('CRO', 'MOD')" + " AND sa2.action_date = (" + " SELECT MAX(sa3.action_date)"
+			+ " FROM cust.SALESACTION sa3" + " WHERE sa3.sale_id=s1.id AND sa3.action_type IN ('CRO','MOD')" + " )"
+			+ " ) AS delivery_date" + " FROM  CUST.SALE s1, CUST.SALESACTION sa1, cust.CUSTOMERINFO ci, cust.PAYMENT p"
+			+ " WHERE sa1.sale_id=s1.id" + " AND s1.customer_id = ci.customer_id" + " AND sa1.id = p.salesaction_id"
+			+ "	AND  sa1.action_type = 'FRD'"
+			+ " AND sa1.action_date = (SELECT MAX(sa4.action_date) FROM CUST.SALESACTION sa4 WHERE sa4.sale_id=s1.id AND sa4.action_type = 'FRD')"
+			+ " AND  s1.status = 'STL'";
 
-	private static final String SETTLEMENT_PROBLEM_STF_QUERY =
-		"SELECT s1.id, s1.status, sa1.amount, sa1.action_type, sa1.action_date AS failure_date,"
-		+ " ci.first_name || ' ' || ci.last_name AS customer_name, p.payment_method_type,"
-			+ " ("
-			+ "	SELECT di.starttime "
-				+ " FROM cust.DELIVERYINFO di, cust.SALESACTION sa2, cust.SALE s2"
-				+ " WHERE di.SALESACTION_ID = sa2.ID"
-				+ " AND sa2.sale_id = s2.id"
-				+ " AND s2.id = s1.id"
-				+ " AND sa2.ACTION_TYPE IN ('CRO', 'MOD')"
-				+ " AND sa2.action_date = ("
-									+ " SELECT MAX(sa3.action_date)"
-									+ " FROM cust.SALESACTION sa3"
-									+ " WHERE sa3.sale_id=s1.id AND sa3.action_type IN ('CRO','MOD')"
-									+ " )"
-			+ " ) AS delivery_date"
-		+ " FROM  CUST.SALE s1, CUST.SALESACTION sa1, cust.CUSTOMERINFO ci, cust.PAYMENT p"
-		+ " WHERE sa1.sale_id=s1.id"
-		+ " AND s1.customer_id = ci.customer_id"
-		+ " AND sa1.id = p.salesaction_id"
-		+ "	AND  sa1.action_type = 'STF'"
-		+ " AND sa1.action_date = (SELECT MAX(sa4.action_date) FROM CUST.SALESACTION sa4 WHERE sa4.sale_id=s1.id AND sa4.action_type = 'STF')"
-		+ " AND  s1.status = 'STF'";
-	private static final String SETTLEMENT_PROBLEM_FRD_QUERY =
-		"SELECT s1.id, s1.status, sa1.amount, sa1.action_type, sa1.action_date AS failure_date,"
-		+ " ci.first_name || ' ' || ci.last_name AS customer_name, p.payment_method_type,"
-			+ " ("
-			+ "	SELECT di.starttime "
-				+ " FROM cust.DELIVERYINFO di, cust.SALESACTION sa2, cust.SALE s2"
-				+ " WHERE di.SALESACTION_ID = sa2.ID"
-				+ " AND sa2.sale_id = s2.id"
-				+ " AND s2.id = s1.id"
-				+ " AND sa2.ACTION_TYPE IN ('CRO', 'MOD')"
-				+ " AND sa2.action_date = ("
-									+ " SELECT MAX(sa3.action_date)"
-									+ " FROM cust.SALESACTION sa3"
-									+ " WHERE sa3.sale_id=s1.id AND sa3.action_type IN ('CRO','MOD')"
-									+ " )"
-			+ " ) AS delivery_date"
-		+ " FROM  CUST.SALE s1, CUST.SALESACTION sa1, cust.CUSTOMERINFO ci, cust.PAYMENT p"
-		+ " WHERE sa1.sale_id=s1.id"
-		+ " AND s1.customer_id = ci.customer_id"
-		+ " AND sa1.id = p.salesaction_id"
-		+ "	AND  sa1.action_type = 'FRD'"
-		+ " AND sa1.action_date = (SELECT MAX(sa4.action_date) FROM CUST.SALESACTION sa4 WHERE sa4.sale_id=s1.id AND sa4.action_type = 'FRD')"
-		+ " AND  s1.status = 'STL'";
-	
-	private static final String SETTLEMENT_PROBLEM_CBK_QUERY =
-		"SELECT s1.id, s1.status, sa1.amount, sa1.action_type, sa1.action_date AS failure_date,"
-		+ " ci.first_name || ' ' || ci.last_name AS customer_name, p.payment_method_type,"
-			+ " ("
-			+ "	SELECT di.starttime "
-				+ " FROM cust.DELIVERYINFO di, cust.SALESACTION sa2, cust.SALE s2"
-				+ " WHERE di.SALESACTION_ID = sa2.ID"
-				+ " AND sa2.sale_id = s2.id"
-				+ " AND s2.id = s1.id"
-				+ " AND sa2.ACTION_TYPE IN ('CRO', 'MOD')"
-				+ " AND sa2.action_date = ("
-									+ " SELECT MAX(sa3.action_date)"
-									+ " FROM cust.SALESACTION sa3"
-									+ " WHERE sa3.sale_id=s1.id AND sa3.action_type IN ('CRO','MOD')"
-									+ " )"
-			+ " ) AS delivery_date"
-		+ " FROM  CUST.SALE s1, CUST.SALESACTION sa1, cust.CUSTOMERINFO ci, cust.PAYMENT p"
-		+ " WHERE sa1.sale_id=s1.id"
-		+ " AND s1.customer_id = ci.customer_id"
-		+ " AND sa1.id = p.salesaction_id"
-		+ "	AND  sa1.action_type = 'CBK'"
-		+ " AND sa1.action_date = (SELECT MAX(sa4.action_date) FROM CUST.SALESACTION sa4 WHERE sa4.sale_id=s1.id AND sa4.action_type = 'CBK')"
-		+ " AND  s1.status = 'CBK'";
-	public List getSettlementProblemReport(String[] statusCodes, String[] transactionTypes, Date failureStartDate, Date failureEndDate) throws FDResourceException {
+	private static final String SETTLEMENT_PROBLEM_CBK_QUERY = "SELECT s1.id, s1.status, sa1.amount, sa1.action_type, sa1.action_date AS failure_date,"
+			+ " ci.first_name || ' ' || ci.last_name AS customer_name, p.payment_method_type," + " ("
+			+ "	SELECT di.starttime " + " FROM cust.DELIVERYINFO di, cust.SALESACTION sa2, cust.SALE s2"
+			+ " WHERE di.SALESACTION_ID = sa2.ID" + " AND sa2.sale_id = s2.id" + " AND s2.id = s1.id"
+			+ " AND sa2.ACTION_TYPE IN ('CRO', 'MOD')" + " AND sa2.action_date = (" + " SELECT MAX(sa3.action_date)"
+			+ " FROM cust.SALESACTION sa3" + " WHERE sa3.sale_id=s1.id AND sa3.action_type IN ('CRO','MOD')" + " )"
+			+ " ) AS delivery_date" + " FROM  CUST.SALE s1, CUST.SALESACTION sa1, cust.CUSTOMERINFO ci, cust.PAYMENT p"
+			+ " WHERE sa1.sale_id=s1.id" + " AND s1.customer_id = ci.customer_id" + " AND sa1.id = p.salesaction_id"
+			+ "	AND  sa1.action_type = 'CBK'"
+			+ " AND sa1.action_date = (SELECT MAX(sa4.action_date) FROM CUST.SALESACTION sa4 WHERE sa4.sale_id=s1.id AND sa4.action_type = 'CBK')"
+			+ " AND  s1.status = 'CBK'";
+
+	public List getSettlementProblemReport(String[] statusCodes, String[] transactionTypes, Date failureStartDate,
+			Date failureEndDate) throws FDResourceException {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		String saleStatus="";
-		String transactionType=""; 
+		String saleStatus = "";
+		String transactionType = "";
 		try {
 			StringBuffer sb = new StringBuffer();
 			for (int i = 0; i < statusCodes.length && i < transactionTypes.length; i++) {
 				if (i != 0) {
 					sb.append(" UNION ");
 				}
-				saleStatus=statusCodes[i];
-				transactionType=transactionTypes[i];
-				if( EnumSaleStatus.SETTLEMENT_FAILED.getStatusCode().equals(saleStatus) &&
-					EnumTransactionType.SETTLEMENT_FAILED.getCode().equals(transactionType)	
-						
-				   ) {
+				saleStatus = statusCodes[i];
+				transactionType = transactionTypes[i];
+				if (EnumSaleStatus.SETTLEMENT_FAILED.getStatusCode().equals(saleStatus)
+						&& EnumTransactionType.SETTLEMENT_FAILED.getCode().equals(transactionType)
+
+				) {
 					sb.append(SETTLEMENT_PROBLEM_STF_QUERY);
-				} else if( EnumSaleStatus.CHARGEBACK.getStatusCode().equals(saleStatus)&&
-						   EnumTransactionType.CHARGEBACK.getCode().equals(transactionType)
-				           ) {
+				} else if (EnumSaleStatus.CHARGEBACK.getStatusCode().equals(saleStatus)
+						&& EnumTransactionType.CHARGEBACK.getCode().equals(transactionType)) {
 					sb.append(SETTLEMENT_PROBLEM_CBK_QUERY);
-				}else if( EnumSaleStatus.SETTLED.getStatusCode().equals(saleStatus)&&
-						  EnumTransactionType.FUNDS_REDEPOSIT.getCode().equals(transactionType)
-				         ) {
+				} else if (EnumSaleStatus.SETTLED.getStatusCode().equals(saleStatus)
+						&& EnumTransactionType.FUNDS_REDEPOSIT.getCode().equals(transactionType)) {
 					sb.append(SETTLEMENT_PROBLEM_FRD_QUERY);
 				}
 				if (failureStartDate != null) {
@@ -1674,16 +1541,16 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				}
 			}
 			sb.append(" ORDER BY failure_date");
-			
+
 			System.err.println("SALE_STATUS_OR_LAST_ACTION_TYPE_QUERY sql = " + sb.toString());
-			LOGGER.debug("The Settlement report query to be executed is "+sb.toString());
+			LOGGER.debug("The Settlement report query to be executed is " + sb.toString());
 
 			conn = this.getConnection();
 			ps = conn.prepareStatement(sb.toString());
 
 			int index = 1;
 			for (int i = 0; i < statusCodes.length && i < transactionTypes.length; i++) {
-				LOGGER.debug("Setting transactionType:"+transactionTypes[i]+" and status Code:"+statusCodes[i]);
+				LOGGER.debug("Setting transactionType:" + transactionTypes[i] + " and status Code:" + statusCodes[i]);
 				/*ps.setString(index++, transactionTypes[i]);
 				ps.setString(index++, transactionTypes[i]);
 				ps.setString(index++, statusCodes[i]);
@@ -1717,45 +1584,32 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-				if (ps != null) {
-					ps.close();
-				}
-				if (rs != null) {
-					rs.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("error while cleanup", e);
-			}
+			close(rs);
+			close(ps);
+			close(conn);
 		}
 	}
 
 	public List getMakeGoodOrder(Date date) throws FDResourceException {
-		if(date == null){
+		if (date == null) {
 			return Collections.EMPTY_LIST;
 		}
 
 		Connection conn = null;
-		try{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
 			conn = this.getConnection();
-			PreparedStatement ps = conn.prepareStatement(
-				"select sa.sale_id, sa.requested_date, sa.action_date, s.status, sa.amount, ci.first_name, ci.last_name, s.truck_number as route, s.stop_sequence as stop from cust.salesaction sa, cust.sale s, cust.customerinfo ci, cust.paymentinfo pi  "
-				+ "where requested_date=trunc(to_date(?)) "
-				+ "and action_type in ('CRO','MOD') "
-				+ "and action_date=(select max(action_date) from cust.salesaction where sale_id=sa.sale_id and action_type in ('CRO','MOD')) "
-				+ "and sa.sale_id = s.id "
-				+ "and s.type = 'REG' "
-				+ "and s.customer_id=ci.customer_id "
-				+ "and pi.salesaction_id=sa.id "
-				+ "and pi.on_fd_account='M'"
-			);
+			ps = conn.prepareStatement(
+					"select sa.sale_id, sa.requested_date, sa.action_date, s.status, sa.amount, ci.first_name, ci.last_name, s.truck_number as route, s.stop_sequence as stop from cust.salesaction sa, cust.sale s, cust.customerinfo ci, cust.paymentinfo pi  "
+							+ "where requested_date=trunc(to_date(?)) " + "and action_type in ('CRO','MOD') "
+							+ "and action_date=(select max(action_date) from cust.salesaction where sale_id=sa.sale_id and action_type in ('CRO','MOD')) "
+							+ "and sa.sale_id = s.id " + "and s.type = 'REG' " + "and s.customer_id=ci.customer_id "
+							+ "and pi.salesaction_id=sa.id " + "and pi.on_fd_account='M'");
 			ps.setDate(1, new java.sql.Date(date.getTime()));
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			List l = new ArrayList();
-			while(rs.next()){
+			while (rs.next()) {
 				String saleId = rs.getString("SALE_ID");
 				MakeGoodOrderInfo info = new MakeGoodOrderInfo(saleId);
 				info.setDeliveryDate(rs.getDate("REQUESTED_DATE"));
@@ -1771,23 +1625,17 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
 			return l;
 
-		} catch (SQLException e){
+		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			if(conn != null){
-				try{
-					conn.close();
-				}catch(SQLException e){
-					LOGGER.debug("SQLException while closing connection: ", e);
-				}
-			}
+			close(rs);
+			close(ps);
+			close(conn);
 		}
 	}
 
 	public void reverseCustomerCredit(String saleId, String complaintId)
-		throws FDResourceException,
-		ErpTransactionException,
-		ErpComplaintException {
+			throws FDResourceException, ErpTransactionException, ErpComplaintException {
 		try {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 			sb.reverseCustomerCredit(saleId, complaintId);
@@ -1800,8 +1648,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
 	private ErpComplaintManagerHome getComplaintManagerHome() {
 		try {
-			return (ErpComplaintManagerHome) LOCATOR.getRemoteHome(
-				"java:comp/env/ejb/ComplaintManager");
+			return (ErpComplaintManagerHome) LOCATOR.getRemoteHome("java:comp/env/ejb/ComplaintManager");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}
@@ -1824,14 +1671,15 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		return "com.freshdirect.fdstore.customer.ejb.CallCenterManagerHome";
 	}
 
-    private DlvPassManagerHome getDlvPassManagerHome() {
-        try {
-            return (DlvPassManagerHome) LOCATOR.getRemoteHome("java:comp/env/ejb/DlvPassManager");
-        } catch (NamingException e) {
-            throw new EJBException(e);
-        }
-    }
-    public DlvManagerHome getDlvManagerHome() {
+	private DlvPassManagerHome getDlvPassManagerHome() {
+		try {
+			return (DlvPassManagerHome) LOCATOR.getRemoteHome("java:comp/env/ejb/DlvPassManager");
+		} catch (NamingException e) {
+			throw new EJBException(e);
+		}
+	}
+
+	public DlvManagerHome getDlvManagerHome() {
 		try {
 			return (DlvManagerHome) LOCATOR.getRemoteHome(FDStoreProperties.getDeliveryManagerHome());
 		} catch (NamingException ne) {
@@ -1839,28 +1687,24 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	private ErpActivityRecord createActivity(EnumAccountActivityType type,
-			String initiator,
-			String note,
-			DeliveryPassModel model,
-			String saleId,
-			String reasonCode) {
-			ErpActivityRecord rec = new ErpActivityRecord();
-			rec.setActivityType(type);
+	private ErpActivityRecord createActivity(EnumAccountActivityType type, String initiator, String note,
+			DeliveryPassModel model, String saleId, String reasonCode) {
+		ErpActivityRecord rec = new ErpActivityRecord();
+		rec.setActivityType(type);
 
-			rec.setSource(EnumTransactionSource.SYSTEM);
-			rec.setInitiator(initiator);
-			rec.setCustomerId(model.getCustomerId());
+		rec.setSource(EnumTransactionSource.SYSTEM);
+		rec.setInitiator(initiator);
+		rec.setCustomerId(model.getCustomerId());
 
-			StringBuffer sb = new StringBuffer();
-			if (note != null) {
+		StringBuffer sb = new StringBuffer();
+		if (note != null) {
 			sb.append(note);
-			}
-			rec.setNote(sb.toString());
-			rec.setDeliveryPassId(model.getPK().getId());
-			rec.setChangeOrderId(saleId);
-			rec.setReason(reasonCode);
-			return rec;
+		}
+		rec.setNote(sb.toString());
+		rec.setDeliveryPassId(model.getPK().getId());
+		rec.setChangeOrderId(saleId);
+		rec.setReason(reasonCode);
+		return rec;
 	}
 
 	private void logActivity(ErpActivityRecord record) {
@@ -1875,26 +1719,20 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException e) {
 			throw new FDResourceException(e, "Could not find reservations matching criteria entered.");
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after searchCustomerReservations", e);
-				}
-			}
+			close(conn);
 		}
 	}
 
 	private static final String DELETE_FROM_MODIFY_ORDERS = "DELETE FROM CUST.MODIFY_ORDERS";
-	
-	private static final String INSERT_INTO_MODIFY_ORDERS = "INSERT INTO CUST.MODIFY_ORDERS (SALE_ID, ERP_CUSTOMER_ID, " +
-			"FIRST_NAME, LAST_NAME, EMAIL, HOME_PHONE, ALT_PHONE, " +
-			"REQUESTED_DATE, SALE_STATUS, STATUS, CREATE_DATE) VALUES ( ?,?,?,?,?,?,?,?,?,?,SYSDATE )";
-	
-	private void saveModifyOrders(Connection conn, List<FDCustomerOrderInfo> searchResults) throws SQLException{
-		PreparedStatement ps =  null;
+
+	private static final String INSERT_INTO_MODIFY_ORDERS = "INSERT INTO CUST.MODIFY_ORDERS (SALE_ID, ERP_CUSTOMER_ID, "
+			+ "FIRST_NAME, LAST_NAME, EMAIL, HOME_PHONE, ALT_PHONE, "
+			+ "REQUESTED_DATE, SALE_STATUS, STATUS, CREATE_DATE) VALUES ( ?,?,?,?,?,?,?,?,?,?,SYSDATE )";
+
+	private void saveModifyOrders(Connection conn, List<FDCustomerOrderInfo> searchResults) throws SQLException {
+		PreparedStatement ps = null;
 		try {
-			//Truncate all exiting rows
+			// Truncate all exiting rows
 			ps = conn.prepareStatement(DELETE_FROM_MODIFY_ORDERS);
 			ps.execute();
 			ps.close();
@@ -1905,91 +1743,75 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				ps.setString(2, orderInfo.getIdentity().getErpCustomerPK());
 				ps.setString(3, orderInfo.getFirstName());
 				ps.setString(4, orderInfo.getLastName());
-				if(orderInfo.getEmail()!=null) {
-					ps.setString(5,orderInfo.getEmail());
+				if (orderInfo.getEmail() != null) {
+					ps.setString(5, orderInfo.getEmail());
 				} else {
 					ps.setNull(5, Types.VARCHAR);
 				}	
 				ps.setString(6, orderInfo.getPhone());
-				if(orderInfo.getAltPhone()!=null) {
-					ps.setString(7,orderInfo.getAltPhone());
+				if (orderInfo.getAltPhone() != null) {
+					ps.setString(7, orderInfo.getAltPhone());
 				} else {
 					ps.setNull(7, Types.VARCHAR);
 				}	
 				ps.setDate(8, new java.sql.Date(orderInfo.getDeliveryDate().getTime()));
-				
+
 				ps.setString(9, orderInfo.getOrderStatus().getStatusCode());
 				ps.setString(10, "Pending");
 				ps.addBatch();
 			}
-			int[] result = ps.executeBatch();			
+			int[] result = ps.executeBatch();
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage());
 			throw sqle;
 		} finally {
-			if (ps != null) {
-				try {
-					ps.close();
-				} catch (SQLException sqle) {
-					LOGGER.debug("Error while cleaning:", sqle);
-				}
-			}
+			close(ps);
 		}
 	}
-	
-	public void createSnapShotForModifyOrders(GenericSearchCriteria criteria) throws FDResourceException{
+
+	public void createSnapShotForModifyOrders(GenericSearchCriteria criteria) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			List<FDCustomerOrderInfo> searchResults =  GenericSearchDAO.genericSearch(conn, criteria);
+			List<FDCustomerOrderInfo> searchResults = GenericSearchDAO.genericSearch(conn, criteria);
 			saveModifyOrders(conn, searchResults);
 		} catch (SQLException e) {
 			throw new FDResourceException(e, "Could not creating snapshot for modifying orders.");
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after createSnapShotForModifyOrders", e);
-				}
-			}
+			close(conn);
 		}
-		
+
 	}
 
 	private static final String UPDATE_ORDER_MODIFIED_STATUS = "UPDATE CUST.MODIFY_ORDERS SET STATUS = ?, ERROR_DESC = ? WHERE SALE_ID = ?";
 
-	public void updateOrderModifiedStatus(String saleId, String status, String errorDesc) throws FDResourceException{
+	public void updateOrderModifiedStatus(String saleId, String status, String errorDesc) throws FDResourceException {
 		Connection conn = null;
-		
+		PreparedStatement ps = null;
+
 		try {
 			conn = getConnection();
-			//Truncate all exiting rows
-			PreparedStatement ps = conn.prepareStatement(UPDATE_ORDER_MODIFIED_STATUS);
-			ps.setString(1,status);
-			ps.setString(2,errorDesc);
+			// Truncate all exiting rows
+			ps = conn.prepareStatement(UPDATE_ORDER_MODIFIED_STATUS);
+			ps.setString(1, status);
+			ps.setString(2, errorDesc);
 			ps.setString(3, saleId);
-			ps.executeUpdate();			
+			ps.executeUpdate();
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle, "Could not update Order modified status.");
-		}finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle) {
-					LOGGER.debug("Error while cleaning:", sqle);
-				}
-			}
+		} finally {
+			close(ps);
+			close(conn);
 		}
 	}
 
+	public int cancelReservations(GenericSearchCriteria resvCriteria, String initiator, String notes)
+			throws FDResourceException {
 
-	public int cancelReservations(GenericSearchCriteria resvCriteria, String initiator, String notes) throws FDResourceException{
-				
 		return FDDeliveryManager.getInstance().cancelReservations(resvCriteria, initiator, notes);
 	}
-		
+
 	public int fixBrokenAccounts() throws FDResourceException {
 		Connection conn = null;
 		try {
@@ -1999,94 +1821,90 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			LOGGER.error("SQL Error occurred while fixing the Broken Accounts.");
 			throw new FDResourceException(e, "Could not fix Broken Accounts due to SQL Error.");
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after fixing Broken Accounts.", e);
-				}
-			}
+			close(conn);
 		}
 	}
 
-	public Map returnOrders(FDActionInfo info, List customerOrders) throws FDResourceException{
-			List successOrders = new ArrayList();
-			List failureOrders = new ArrayList();
-			String saleId = null;
-			try {
-				ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-				for(Iterator iter = customerOrders.iterator();iter.hasNext();){
-					FDCustomerOrderInfo orderInfo = (FDCustomerOrderInfo)iter.next();
-					try{
-						//Set it to actionInfo object to write to the activity log.
-						saleId = orderInfo.getSaleId();
-						ErpSaleModel saleModel = sb.getOrder(new PrimaryKey(saleId));
-						FDOrderI order =  new FDOrderAdapter(saleModel);
-						ErpReturnOrderModel returnModel = getReturnModel(order);
-						//Process Full Return.
-						this.returnOrder(saleId, returnModel);
-						//Approve Full Return.
-						this.approveReturn(saleId, returnModel);
-						successOrders.add(orderInfo);
-						FDIdentity identity = orderInfo.getIdentity();
-						//Set it to actionInfo object to write to the activity log.
-						info.setIdentity(identity);
-						ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.MASS_RETURN);
-						this.logActivity(rec);
-					}catch(FDResourceException fe){
-						fe.printStackTrace();
-						LOGGER.error("System Error occurred while processing Sale ID : "+saleId+"\n"+fe.getMessage());
-						failureOrders.add(orderInfo);
-					}catch(ErpTransactionException te){
-						te.printStackTrace();
-						LOGGER.error("Transaction Error occurred while processing Sale ID : "+saleId+"\n"+te.getMessage());
-						failureOrders.add(orderInfo);
-					}
+	public Map returnOrders(FDActionInfo info, List customerOrders) throws FDResourceException {
+		List successOrders = new ArrayList();
+		List failureOrders = new ArrayList();
+		String saleId = null;
+		try {
+			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
+			for (Iterator iter = customerOrders.iterator(); iter.hasNext();) {
+				FDCustomerOrderInfo orderInfo = (FDCustomerOrderInfo) iter.next();
+				try {
+					// Set it to actionInfo object to write to the activity log.
+					saleId = orderInfo.getSaleId();
+					ErpSaleModel saleModel = sb.getOrder(new PrimaryKey(saleId));
+					FDOrderI order = new FDOrderAdapter(saleModel);
+					ErpReturnOrderModel returnModel = getReturnModel(order);
+					// Process Full Return.
+					this.returnOrder(saleId, returnModel);
+					// Approve Full Return.
+					this.approveReturn(saleId, returnModel);
+					successOrders.add(orderInfo);
+					FDIdentity identity = orderInfo.getIdentity();
+					// Set it to actionInfo object to write to the activity log.
+					info.setIdentity(identity);
+					ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.MASS_RETURN);
+					this.logActivity(rec);
+				} catch (FDResourceException fe) {
+					fe.printStackTrace();
+					LOGGER.error("System Error occurred while processing Sale ID : " + saleId + "\n" + fe.getMessage());
+					failureOrders.add(orderInfo);
+				} catch (ErpTransactionException te) {
+					te.printStackTrace();
+					LOGGER.error(
+							"Transaction Error occurred while processing Sale ID : " + saleId + "\n" + te.getMessage());
+					failureOrders.add(orderInfo);
 				}
-			} catch (RemoteException ex) {
-				throw new FDResourceException(ex);
-			} catch (CreateException ce) {
-				throw new FDResourceException(ce);
 			}
+		} catch (RemoteException ex) {
+			throw new FDResourceException(ex);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		}
 
-			Map results = new HashMap();
-			results.put("SUCCESS_ORDERS", successOrders);
-			results.put("FAILURE_ORDERS", failureOrders);
-			return results;
+		Map results = new HashMap();
+		results.put("SUCCESS_ORDERS", successOrders);
+		results.put("FAILURE_ORDERS", failureOrders);
+		return results;
 	}
-	private ErpReturnOrderModel getReturnModel(FDOrderI order){
+
+	private ErpReturnOrderModel getReturnModel(FDOrderI order) {
 		List returnLines = new ArrayList();
 		List orderLines = order.getOrderLines();
 		boolean containsDeliveryPass = false;
-		for(Iterator iter = orderLines.iterator();iter.hasNext();){
+		for (Iterator iter = orderLines.iterator(); iter.hasNext();) {
 			FDCartLineI line = (FDCartLineI) iter.next();
 			ErpInvoiceLineI invoiceLine = line.getInvoiceLine();
 			ErpReturnLineModel returnLine = new ErpReturnLineModel();
 			returnLine.setLineNumber(invoiceLine.getOrderLineNumber());
 			returnLine.setQuantity(invoiceLine.getQuantity());
-			//Since it is a full return
+			// Since it is a full return
 			returnLine.setRestockingOnly(false);
 			returnLines.add(returnLine);
-			if(line.lookupFDProduct().isDeliveryPass()) {
-				//Return order contains a delivery pass.
+			if (line.lookupFDProduct().isDeliveryPass()) {
+				// Return order contains a delivery pass.
 				containsDeliveryPass = true;
 			}
 
 		}
 		List charges = new ArrayList();
-		for(Iterator i = order.getCharges().iterator(); i.hasNext(); ){
-			ErpChargeLineModel charge = new ErpChargeLineModel((ErpChargeLineModel)i.next());
+		for (Iterator i = order.getCharges().iterator(); i.hasNext();) {
+			ErpChargeLineModel charge = new ErpChargeLineModel((ErpChargeLineModel) i.next());
 			charges.add(charge);
-			//Waive all the charges since it is full return.
-			if(EnumChargeType.DELIVERY.equals(charge.getType())) {
+			// Waive all the charges since it is full return.
+			if (EnumChargeType.DELIVERY.equals(charge.getType())) {
 				charge.setDiscount(new Discount("DELIVERY", EnumDiscountType.PERCENT_OFF, 1.0));
 				continue;
 			}
-			if(EnumChargeType.PHONE.equals(charge.getType())) {
+			if (EnumChargeType.PHONE.equals(charge.getType())) {
 				charge.setDiscount(new Discount(null, EnumDiscountType.PERCENT_OFF, 1.0));
 				continue;
 			}
-			if(EnumChargeType.MISCELLANEOUS.equals(charge.getType())) {
+			if (EnumChargeType.MISCELLANEOUS.equals(charge.getType())) {
 				charge.setDiscount(new Discount("DELIVERY", EnumDiscountType.PERCENT_OFF, 1.0));
 				continue;
 			}
@@ -2097,11 +1915,10 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		returnModel.setDlvPassApplied(order.isDlvPassApplied());
 		returnModel.setDeliveryPassId(order.getDeliveryPassId());
 		returnModel.setContainsDeliveryPass(containsDeliveryPass);
-		//Since it is a full return
+		// Since it is a full return
 		returnModel.setRestockingApplied(false);
 		return returnModel;
 	}
-
 
 	public int fixSettlemnentBatch(String batch_id) throws FDResourceException {
 		Connection conn = null;
@@ -2112,184 +1929,170 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			LOGGER.error("SQL Error occurred while fixing the settlement batch.");
 			throw new FDResourceException(e, "Could not fix settlement batch due to SQL Error.");
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after fixing settlement batch.", e);
-				}
-			}
+			close(conn);
 		}
 	}
-	
-	private static final String INSERT_TOP_FAQS =
-		"INSERT INTO CUST.TOP_FAQS(CMSNODE_ID, TIME_STAMP) VALUES(?,?)";
-	public void saveTopFaqs(List faqIds) throws FDResourceException, RemoteException{
+
+	private static final String INSERT_TOP_FAQS = "INSERT INTO CUST.TOP_FAQS(CMSNODE_ID, TIME_STAMP) VALUES(?,?)";
+
+	public void saveTopFaqs(List faqIds) throws FDResourceException, RemoteException {
 		Connection conn = null;
+		PreparedStatement ps =  null;
 		try {
 			conn = this.getConnection();
 			List lst = new ArrayList();
 			Date date = new Date();
-			PreparedStatement ps = conn.prepareStatement(INSERT_TOP_FAQS);
+			ps = conn.prepareStatement(INSERT_TOP_FAQS);
 			for (Iterator iterator = faqIds.iterator(); iterator.hasNext();) {
 				String faqNodeId = (String) iterator.next();
 				ps.setString(1, faqNodeId);
-				ps.setTimestamp(2, new java.sql.Timestamp(date.getTime()));	
+				ps.setTimestamp(2, new java.sql.Timestamp(date.getTime()));
 				ps.addBatch();
 			}
-			int[] result = ps.executeBatch();			
-			ps.close();			
+			int[] result = ps.executeBatch();
+		//	ps.close();
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle) {
-					LOGGER.debug("Error while cleaning:", sqle);
-				}
-			}
+			close(ps);
+			close(conn);
 		}
 	}
-   
-	
+
 	private static final String CLICK2CALL_QUERY = "select * from CUST.CLICK2CALL where cro_mod_date = (select max(cro_mod_date) from CUST.CLICK2CALL)";
-	
-	public CrmClick2CallModel getClick2CallInfo() throws FDResourceException{
+
+	public CrmClick2CallModel getClick2CallInfo() throws FDResourceException {
 		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		PreparedStatement ps1 = null;
+		ResultSet rs1 = null;
 		CrmClick2CallModel click2callModel = new CrmClick2CallModel();
-		try{
+		try {
 			conn = this.getConnection();
-			PreparedStatement ps = conn.prepareStatement(CLICK2CALL_QUERY);
-			ResultSet rs = ps.executeQuery();
-			
-			if(rs.next()){
+			ps = conn.prepareStatement(CLICK2CALL_QUERY);
+			rs = ps.executeQuery();
+
+			if (rs.next()) {
 				click2callModel.setId(rs.getString(1));
-				click2callModel.setStatus(("Y"==rs.getString(2))?true:false);
+				click2callModel.setStatus(("Y" == rs.getString(2)) ? true : false);
 				click2callModel.setEligibleCustomers(rs.getString(3));
-				click2callModel.setNextDayTimeSlot(("Y"==rs.getString(4))?true:false);
+				click2callModel.setNextDayTimeSlot(("Y" == rs.getString(4)) ? true : false);
 				click2callModel.setUserId(rs.getString(5));
 				click2callModel.setCroModDate(rs.getDate(6));
-				PreparedStatement ps1 = conn.prepareStatement("select * from CUST.CLICK2CALL_TIME where click2call_id="+rs.getString(1));
-				ResultSet rs1 = ps1.executeQuery();
+				ps1 = conn
+						.prepareStatement("select * from CUST.CLICK2CALL_TIME where click2call_id=" + rs.getString(1));
+				rs1 = ps1.executeQuery();
 				CrmClick2CallTimeModel[] click2CallTimeModel = new CrmClick2CallTimeModel[7];
-				int i=0;
-				while(rs1.next()){
-					click2CallTimeModel[i++] = new CrmClick2CallTimeModel(rs1.getString(1),rs1.getString(2),rs1.getString(3),("Y"==rs1.getString(4))?true:false,rs1.getString(5));					
+				int i = 0;
+				while (rs1.next()) {
+					click2CallTimeModel[i++] = new CrmClick2CallTimeModel(rs1.getString(1), rs1.getString(2),
+							rs1.getString(3), ("Y" == rs1.getString(4)) ? true : false, rs1.getString(5));
 				}
 				click2callModel.setDays(click2CallTimeModel);
-				rs1.close();
-				ps1.close();
+			//	rs1.close();
+			//	ps1.close();
 			}
-			rs.close();
-			ps.close();
-		}catch (SQLException sqle) {
+		//	rs.close();
+		//	ps.close();
+		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle) {
-					LOGGER.debug("Error while cleaning:", sqle);
-				}
-			}
+			close(rs1);
+			close(ps1);
+			close(rs);
+			close(ps);
+			close(conn);
 		}
-		
+
 		return click2callModel;
 	}
 
-	private static final String INSERT_CLICK2CALL =
-		"INSERT INTO CUST.Click2Call(id, status,eligible_customers,delivery_zones,nextday_timeslot,userId ,cro_mod_date) VALUES(?,?,?,?,?,?,?)";
-	
-	private static final String INSERT_CLICK2CALL_TIME =
-		"INSERT INTO CUST.CLICK2CALL_TIME(day_name,start_time, end_time, show_flag, click2call_id) VALUES(?,?,?,?,?)";
-	public void saveClick2CallInfo(CrmClick2CallModel click2CallModel) throws FDResourceException{
+	private static final String INSERT_CLICK2CALL = "INSERT INTO CUST.Click2Call(id, status,eligible_customers,delivery_zones,nextday_timeslot,userId ,cro_mod_date) VALUES(?,?,?,?,?,?,?)";
+
+	private static final String INSERT_CLICK2CALL_TIME = "INSERT INTO CUST.CLICK2CALL_TIME(day_name,start_time, end_time, show_flag, click2call_id) VALUES(?,?,?,?,?)";
+
+	public void saveClick2CallInfo(CrmClick2CallModel click2CallModel) throws FDResourceException {
 		Connection conn = null;
-//		CrmClick2CallModel click2callModel = new CrmClick2CallModel();
-		try{
+		PreparedStatement ps = null;
+		PreparedStatement ps1 = null;
+		// CrmClick2CallModel click2callModel = new CrmClick2CallModel();
+		try {
 			conn = this.getConnection();
-			String id =SequenceGenerator.getNextId(conn, "CUST");
-			PreparedStatement ps = conn.prepareStatement(INSERT_CLICK2CALL);
+			String id = SequenceGenerator.getNextId(conn, "CUST");
+			ps = conn.prepareStatement(INSERT_CLICK2CALL);
 			ps.setString(1, id);
-			ps.setString(2, (click2CallModel.isStatus()?"Y":"N"));
-			ps.setString(3,click2CallModel.getEligibleCustomers());
+			ps.setString(2, (click2CallModel.isStatus() ? "Y" : "N"));
+			ps.setString(3, click2CallModel.getEligibleCustomers());
 			ArrayDescriptor desc = ArrayDescriptor.createDescriptor("CUST.CLICK2CALLZONECODES", conn);
 			ARRAY newArray = new ARRAY(desc, conn, click2CallModel.getDeliveryZones());
 
 			ps.setArray(4, newArray);
-			ps.setString(5, (click2CallModel.isNextDayTimeSlot()?"Y":"N"));
+			ps.setString(5, (click2CallModel.isNextDayTimeSlot() ? "Y" : "N"));
 			ps.setString(6, click2CallModel.getUserId());
 			ps.setTimestamp(7, new java.sql.Timestamp(new Date().getTime()));
-			ps.execute();		
-			PreparedStatement ps1 = conn.prepareStatement(INSERT_CLICK2CALL_TIME);
+			ps.execute();
+			ps1 = conn.prepareStatement(INSERT_CLICK2CALL_TIME);
 			CrmClick2CallTimeModel[] daysArray = click2CallModel.getDays();
 			for (CrmClick2CallTimeModel crmClick2CallTimeModel : daysArray) {
 				ps1.setString(1, crmClick2CallTimeModel.getDayName());
 				ps1.setString(2, crmClick2CallTimeModel.getStartTime());
 				ps1.setString(3, crmClick2CallTimeModel.getEndTime());
-				ps1.setString(4, (crmClick2CallTimeModel.isShow()?"Y":"N"));
-				ps1.setString(5, id);	
+				ps1.setString(4, (crmClick2CallTimeModel.isShow() ? "Y" : "N"));
+				ps1.setString(5, id);
 				ps1.addBatch();
 			}
 			ps1.executeBatch();
-			ps1.close();
-			ps.close();
-		}catch (SQLException sqle) {
+		//	ps1.close();
+		//	ps.close();
+		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle) {
-					LOGGER.debug("Error while cleaning:", sqle);
-				}
-			}
+			close(ps1);
+			close(ps);
+			close(conn);
 		}
 	}
-	
-	private static final String UPDATE_CLICK2CALL =
-		"UPDATE CUST.Click2Call set userId=?, status = ? where id =?";
-	public void saveClick2CallStatus(String id, String userId, boolean status) throws FDResourceException{
+
+	private static final String UPDATE_CLICK2CALL = "UPDATE CUST.Click2Call set userId=?, status = ? where id =?";
+
+	public void saveClick2CallStatus(String id, String userId, boolean status) throws FDResourceException {
 		Connection conn = null;
-//		CrmClick2CallModel click2callModel = new CrmClick2CallModel();
-		try{
+		PreparedStatement ps = null;
+		// CrmClick2CallModel click2callModel = new CrmClick2CallModel();
+		try {
 			conn = this.getConnection();
-			
-			PreparedStatement ps = conn.prepareStatement(UPDATE_CLICK2CALL);
+
+			ps = conn.prepareStatement(UPDATE_CLICK2CALL);
 			ps.setString(1, userId);
-			ps.setString(2, (status?"Y":"N"));
+			ps.setString(2, (status ? "Y" : "N"));
 			ps.setString(3, id);
-			
-			ps.execute();			
-			ps.close();
-		}catch (SQLException sqle) {
+
+			ps.execute();
+		//	ps.close();
+		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle) {
-					LOGGER.debug("Error while cleaning:", sqle);
-				}
-			}
+			close(ps);
+			close(conn);
 		}
 	}
-	
+
 	public List<CrmVSCampaignModel> getVSCampaignList() throws FDResourceException {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		List<CrmVSCampaignModel> cList = new ArrayList<CrmVSCampaignModel>();
-		
-		try{
+
+		try {
 			conn = this.getConnection();
 			ps = conn.prepareStatement("select * from CUST.VOICESHOT_CAMPAIGN order by upper(campaign_name)");
-			rs = ps.executeQuery();			
-			while(rs.next()) {
+			rs = ps.executeQuery();
+			while (rs.next()) {
 				CrmVSCampaignModel model = new CrmVSCampaignModel();
 				model.setCampaignId(rs.getString("CAMPAIGN_ID"));
 				model.setCampaignName(rs.getString("CAMPAIGN_NAME"));
@@ -2303,46 +2106,39 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				model.setDelay(rs.getInt("DELAY_IN_MINUTES"));
 				cList.add(model);
 			}
-		}catch (SQLException sqle) {
+		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			try {
-				if (conn != null) 				
-					conn.close();
-				if(ps != null)
-					ps.close();
-				if(rs != null)
-					rs.close();
-			} catch (SQLException sqle) {
-				LOGGER.debug("Error while cleaning:", sqle);
-			}			
+			close(rs);
+			close(ps);
+			close(conn);
 		}
 		return cList;
 	}
-	
+
 	private static String getStops(List<String> phonenumbers) {
 		StringBuffer stopSeq = new StringBuffer();
 		Hashtable stopHash = new Hashtable();
-		for(int i=0;i<phonenumbers.size(); i++) {
+		for (int i = 0; i < phonenumbers.size(); i++) {
 			String pStr = (String) phonenumbers.get(i);
 			StringTokenizer st = new StringTokenizer(pStr, "|");
 			String phone = st.nextToken();
 			String saleId = st.nextToken();
 			String customerId = st.nextToken();
 			String stopNumber = st.nextToken();
-			if(stopNumber != null)
+			if (stopNumber != null)
 				stopNumber = Integer.parseInt(stopNumber) + "";
-			if(!stopHash.containsKey(stopNumber)) {
+			if (!stopHash.containsKey(stopNumber)) {
 				stopSeq.append(stopNumber);
 				stopHash.put(stopNumber, stopNumber);
-				if(i+1 != phonenumbers.size())
+				if (i + 1 != phonenumbers.size())
 					stopSeq.append(",");
-			}			
+			}
 		}
 		return stopSeq.toString();
 	}
-	
+
 	private void createLateIssue(CrmVSCampaignModel model, long vsId) {
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -2350,21 +2146,21 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		PreparedStatement ps2 = null;
 		Date now = new Date();
 		String id = null;
-		try {			
+		try {
 			conn = this.getConnection();
 			Enumeration enumer = model.getRouteList().keys();
-			while(enumer.hasMoreElements()) {
+			while (enumer.hasMoreElements()) {
 				String key = (String) enumer.nextElement();
-				List phones = (List) model.getRouteList().get(key);			
-			
+				List phones = (List) model.getRouteList().get(key);
+
 				id = SequenceGenerator.getNextId(conn, "CUST");
 				ps = conn.prepareStatement(
 						"INSERT INTO CUST.LATEISSUE(ID, ROUTE, STOPSTEXT, DELIVERY_DATE, AGENT_USER_ID, REPORTED_AT, REPORTED_BY,DELAY_MINUTES,DELIVERY_WINDOW,COMMENTS,ACTUAL_STOPSTEXT,ACTUAL_STOPSCOUNT) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
 				ps.setString(1, id);
 				ps.setString(2, key);
-				ps.setString(3,getStops(phones));
+				ps.setString(3, getStops(phones));
 				ps.setDate(4, new java.sql.Date(now.getTime()));
-				ps.setString(5,model.getAddByUser());
+				ps.setString(5, model.getAddByUser());
 				ps.setTimestamp(6, new java.sql.Timestamp(now.getTime()));
 				ps.setString(7, "Driver");
 				ps.setInt(8, Integer.parseInt(model.getDelayMinutes()));
@@ -2377,60 +2173,55 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				ps1.setLong(1, vsId);
 				ps1.setString(2, id);
 				ps1.execute();
-				
-				ps2 = conn.prepareStatement("insert into cust.lateissue_orders columns(lateissue_id,stop_number,sale_id) values(?,?,?)");
-				for(int i=0;i<phones.size(); i++) {
+
+				ps2 = conn.prepareStatement(
+						"insert into cust.lateissue_orders columns(lateissue_id,stop_number,sale_id) values(?,?,?)");
+				for (int i = 0; i < phones.size(); i++) {
 					String pStr = (String) phones.get(i);
 					System.out.println(pStr + "-lateid" + id);
 					StringTokenizer st = new StringTokenizer(pStr, "|");
 					String phone = st.nextToken();
 					String saleId = st.nextToken();
 					String customerId = st.nextToken();
-					String stopNumber = st.nextToken();				
+					String stopNumber = st.nextToken();
 					ps2.setString(1, id);
 					ps2.setString(2, stopNumber);
 					ps2.setString(3, saleId);
 					ps2.execute();
 				}
-				
-				
+
 			}
 		} catch (Exception e) {
-			LOGGER.error("LateIssue row not created for: Route:"+model.getRoute(),e);
+			LOGGER.error("LateIssue row not created for: Route:" + model.getRoute(), e);
 		} finally {
-			try {
-				if (conn != null) 				
-					conn.close();
-				if(ps != null) 				
-					ps.close();
-				if(ps1 != null)
-					ps1.close();
-				if(ps2 != null)
-					ps2.close();
-				
-			} catch(Exception e1) {}
+			close(ps2);
+			close(ps1);
+			close(ps);
+			close(conn);
 		}
 	}
-	
-	public String saveVSCampaignInfo(CrmVSCampaignModel model) throws FDResourceException {		
-		//Create voiceshot details for this late issue
+
+	public String saveVSCampaignInfo(CrmVSCampaignModel model) throws FDResourceException {
+		// Create voiceshot details for this late issue
 		Connection conn = null;
 		PreparedStatement ps = null;
-		long id = 1; 
+		long id = 1;
 		String call_id = "CID_" + id;
-		try{
+		try {
 			conn = this.getConnection();
 			id = Long.parseLong(SequenceGenerator.getNextId(conn, "CUST", "VOICESHOT_SEQUENCE"));
 			call_id = "CID_" + id;
-			if(model.getManual()) {						
-				ps = conn.prepareStatement("INSERT INTO CUST.VOICESHOT_SCHEDULED(VS_ID,CAMPAIGN_ID,REASON_ID,CREATED_BY_USER,CREATED_BY_DATE,START_TIME, CALL_ID, CAMPAIGN_TYPE, CALL_DATA_PULLED)" +
-											" VALUES(?,?,?,?,?,TO_DATE(?, 'HH:MI AM'),?,'MANUAL', 'Y')");
+			if (model.getManual()) {
+				ps = conn.prepareStatement(
+						"INSERT INTO CUST.VOICESHOT_SCHEDULED(VS_ID,CAMPAIGN_ID,REASON_ID,CREATED_BY_USER,CREATED_BY_DATE,START_TIME, CALL_ID, CAMPAIGN_TYPE, CALL_DATA_PULLED)"
+								+ " VALUES(?,?,?,?,?,TO_DATE(?, 'HH:MI AM'),?,'MANUAL', 'Y')");
 			} else {
-				ps = conn.prepareStatement("INSERT INTO CUST.VOICESHOT_SCHEDULED(VS_ID,CAMPAIGN_ID,REASON_ID,CREATED_BY_USER,CREATED_BY_DATE,START_TIME, CALL_ID, CAMPAIGN_TYPE)" +
-											" VALUES(?,?,?,?,?,TO_DATE(?, 'HH:MI AM'),?,'LATEISSUE')");
+				ps = conn.prepareStatement(
+						"INSERT INTO CUST.VOICESHOT_SCHEDULED(VS_ID,CAMPAIGN_ID,REASON_ID,CREATED_BY_USER,CREATED_BY_DATE,START_TIME, CALL_ID, CAMPAIGN_TYPE)"
+								+ " VALUES(?,?,?,?,?,TO_DATE(?, 'HH:MI AM'),?,'LATEISSUE')");
 			}
 			System.out.println(model.toString());
-			ps.setLong(1,id);			
+			ps.setLong(1, id);
 			ps.setString(2, model.getCampaignId());
 			ps.setString(3, model.getReasonId());
 			ps.setString(4, model.getAddByUser());
@@ -2438,49 +2229,44 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			ps.setString(6, model.getStartTime());
 			ps.setString(7, call_id);
 			ps.execute();
-		}catch (SQLException sqle) {
+		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			try {
-				if (conn != null) 				
-					conn.close();
-				if(ps != null)
-					ps.close();
-			} catch (SQLException sqle) {
-				LOGGER.debug("Error while cleaning:", sqle);
-			}
+			close(ps);
+			close(conn);
 		}
-		
-		//Create lateissue_orders rows
+
+		// Create lateissue_orders rows
 		storePhoneNumbers(id, model);
-		//Create LASTISSUE 
+		// Create LASTISSUE
 		createLateIssue(model, id);
-			
+
 		return call_id;
-	}	
-	
+	}
+
 	private void storePhoneNumbers(long id, CrmVSCampaignModel model) {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		List<String> phonenumbers = model.getPhonenumbers();
-		
+
 		try {
 			conn = this.getConnection();
-			if(model.getManual()) {
-				ps = conn.prepareStatement("INSERT INTO CUST.voiceshot_customers(VS_ID,PHONE, CUSTOMER_ID, SALE_ID, status)" +
-											" VALUES(?,?,?,?,0)");
+			if (model.getManual()) {
+				ps = conn.prepareStatement(
+						"INSERT INTO CUST.voiceshot_customers(VS_ID,PHONE, CUSTOMER_ID, SALE_ID, status)"
+								+ " VALUES(?,?,?,?,0)");
 			} else {
-				ps = conn.prepareStatement("INSERT INTO CUST.voiceshot_customers(VS_ID,PHONE, CUSTOMER_ID, SALE_ID)" +
-											" VALUES(?,?,?,?)");
+				ps = conn.prepareStatement(
+						"INSERT INTO CUST.voiceshot_customers(VS_ID,PHONE, CUSTOMER_ID, SALE_ID)" + " VALUES(?,?,?,?)");
 			}
-			for(int i=0;i<phonenumbers.size(); i++) {
+			for (int i = 0; i < phonenumbers.size(); i++) {
 				String pStr = (String) phonenumbers.get(i);
 				StringTokenizer st = new StringTokenizer(pStr, "|");
 				String phone = st.nextToken();
 				String saleId = st.nextToken();
 				String customerId = st.nextToken();
-				String stopNumber = st.nextToken();				
+				String stopNumber = st.nextToken();
 				ps.setLong(1, id);
 				ps.setString(2, phone);
 				ps.setString(3, customerId);
@@ -2488,21 +2274,15 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				ps.execute();
 			}
 		} catch (SQLException sqle) {
-			LOGGER.error(sqle.getMessage(), sqle);			
+			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			try {
-				if (conn != null) 				
-					conn.close();
-				if(ps != null)
-					ps.close();
-			} catch (SQLException sqle) {
-				LOGGER.debug("Error while cleaning:", sqle);
-			}
+			close(ps);
+			close(conn);
 		}
-		//record the call activity
+		// record the call activity
 		updateActivity(model);
 	}
-	
+
 	public static final String GET_VS_LOG = "select vl.lateissue_id, vl.vs_ID, L.ROUTE, VC.CAMPAIGN_ID, VC.CAMPAIGN_MENU_ID, VC.CAMPAIGN_NAME, L.STOPSTEXT, vs.redial, " + 
     "vs.created_by_user, vc.sound_file_text, " +
     "to_char(vs.created_by_date,  'MM/DD/YYYY HH12:MI AM') created_by_Date, VC.SOUND_FILE_NAME, to_char(vs.start_time, 'HH12:MI AM') start_time, " + 
@@ -2539,30 +2319,30 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		List<CrmVSCampaignModel> cList = new ArrayList<CrmVSCampaignModel>();
-		
-		try{
+
+		try {
 			conn = this.getConnection();
-			if(date == null)
+			if (date == null)
 				ps = conn.prepareStatement(GET_VS_LOG);
 			else {
 				ps = conn.prepareStatement(GET_VS_LOG_BY_DATE);
 				ps.setDate(1, new java.sql.Date(date.getTime()));
 			}
-			rs = ps.executeQuery();			
-			while(rs.next()) {
+			rs = ps.executeQuery();
+			while (rs.next()) {
 				CrmVSCampaignModel model = new CrmVSCampaignModel();
 				String vs_id = rs.getString("VS_ID");
 				String lateissue_id = rs.getString("lateissue_id");
 				model.setVsDetailsID(rs.getString("VS_ID"));
 				model.setLateIssueId(rs.getString("lateissue_id"));
-				model.setRoute(rs.getString("ROUTE"));				
+				model.setRoute(rs.getString("ROUTE"));
 				model.setCampaignId(rs.getString("CAMPAIGN_ID"));
 				model.setCampaignName(rs.getString("CAMPAIGN_NAME"));
 				model.setCampaignMenuId(rs.getString("CAMPAIGN_MENU_ID"));
 				model.setReasonId(rs.getString("REASON"));
-				//model.setStopSequence(rs.getString("STOPSTEXT"));
+				// model.setStopSequence(rs.getString("STOPSTEXT"));
 				model.setStopSequence(getStopsTextInSequence(lateissue_id, vs_id));
-				model.setRedial(rs.getString("REDIAL"));				
+				model.setRedial(rs.getString("REDIAL"));
 				model.setAddByDate(rs.getString("CREATED_BY_DATE"));
 				model.setAddByUser(rs.getString("CREATED_BY_USER"));
 				model.setSoundfileName(rs.getString("SOUND_FILE_NAME"));
@@ -2570,16 +2350,18 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				model.setStartTime(rs.getString("START_TIME"));
 				model.setCallId(rs.getString("CALL_ID"));
 				model.setUpdatable(true);
-				if("MANUAL".equals(rs.getString("CAMPAIGN_TYPE"))) {
+				if ("MANUAL".equals(rs.getString("CAMPAIGN_TYPE"))) {
 					model.setManual(true);
 				} else {
 					model.setManual(false);
 				}
-				boolean data_pulled = "Y".equals(rs.getString("CALL_DATA_PULLED"))?true:false;
-				if(!data_pulled && rs.getString("CALL_ID") != null) {
+				boolean data_pulled = "Y".equals(rs.getString("CALL_DATA_PULLED")) ? true : false;
+				if (!data_pulled && rs.getString("CALL_ID") != null) {
 					StringBuffer sb = new StringBuffer("<campaign action=\"3\" menuid=\"");
 					sb.append(rs.getString("CAMPAIGN_MENU_ID"));
-					//sb.append("\" username=\"mtrachtenberg\" password=\"whitshell\"><phonenumbers><phonenumber callid=\"");
+					// sb.append("\" username=\"mtrachtenberg\"
+					// password=\"whitshell\"><phonenumbers><phonenumber
+					// callid=\"");
 					sb.append("\" username=\"");
 					sb.append(FDStoreProperties.getVSUserName());
 					sb.append("\" password=\"");
@@ -2589,7 +2371,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 					sb.append("\" /></phonenumbers></campaign>");
 					System.out.println(sb.toString());
 					VoiceShotResponseParser vsrp = getCallData(sb.toString());
-					if(vsrp != null) {
+					if (vsrp != null) {
 						model.setUpdatable(true);
 						updateVSLog(rs.getLong("VS_ID"), vsrp);
 						updateUserStatus(rs.getLong("VS_ID"), vsrp.getPhonenumbers());
@@ -2597,37 +2379,30 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 						model.setUpdatable(false);
 					}
 				}
-				
-				//get call data
+
+				// get call data
 				getCallStats(model, vs_id, lateissue_id);
 				cList.add(model);
 			}
-		}catch (SQLException sqle) {
+		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			try {
-				if (conn != null) 				
-					conn.close();
-				if(ps != null)
-					ps.close();
-				if(rs != null)
-					rs.close();
-			} catch (SQLException sqle) {
-				LOGGER.debug("Error while cleaning:", sqle);
-			}			
+			close(rs);
+			close(ps);
+			close(conn);
 		}
 		return cList;
 	}
-	
+
 	private String getStopsTextInSequence(String lateissueId, String vsId) {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		
-		try{
+
+		try {
 			conn = this.getConnection();
-			
+
 			ps = conn.prepareStatement("SELECT SUBSTR (SYS_CONNECT_BY_PATH (stop_number , ', '), 2) stop_number " +
 										      "FROM (SELECT to_number(stop_number) stop_number , ROW_NUMBER () OVER (ORDER BY to_number(stop_number) ) rn, " +
 										                   "COUNT (*) OVER () cnt " +
@@ -2648,31 +2423,24 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			if (rs.next()) {
 				return rs.getString(1);
 			}
-		}catch (SQLException sqle) {
+		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			try {
-				if (conn != null) 				
-					conn.close();
-				if(ps != null)
-					ps.close();
-				if(rs != null)
-					rs.close();
-			} catch (SQLException sqle) {
-				LOGGER.debug("Error while cleaning:", sqle);
-			}			
-		}	
+			close(rs);
+			close(ps);
+			close(conn);
+		}
 		return "";
 	}
-	
+
 	private void getCallStats(CrmVSCampaignModel model, String vsId, String lateissueId) {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		
-		try{
+
+		try {
 			conn = this.getConnection();
-			
+
 			ps = conn.prepareStatement("select NVL(vo.status,1) from CUST.LATEISSUE_ORDERS lo, cust.voiceshot_lateissue vl, cust.voiceshot_customers vo " +
 									   "where LO.LATEISSUE_ID = ? and LO.LATEISSUE_ID = vl.lateissue_id and vl.vs_id = vo.vs_id " +
 									   "and   vl.vs_id = ? and LO.SALE_ID = vo.sale_id");
@@ -2686,129 +2454,120 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			while (rs.next()) {
 				total_calls++;
 				int status = rs.getInt(1);
-				if(status == EnumVSStatus.UNSUCCESSFUL.getValue())
+				if (status == EnumVSStatus.UNSUCCESSFUL.getValue())
 					unsucessful++;
-				else if(status == EnumVSStatus.ANS_MACHINE.getValue())
+				else if (status == EnumVSStatus.ANS_MACHINE.getValue())
 					am_calls++;
-				else if(status == EnumVSStatus.LIVE_ANS.getValue())
+				else if (status == EnumVSStatus.LIVE_ANS.getValue())
 					live_calls++;
 			}
 			model.setDeliveredCallsLive(live_calls);
 			model.setDeliveredCallsAM(am_calls);
 			model.setUndeliveredCalls(unsucessful);
 			model.setScheduledCalls(total_calls);
-		}catch (SQLException sqle) {
+		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			try {
-				if (conn != null) 				
-					conn.close();
-				if(ps != null)
-					ps.close();
-				if(rs != null)
-					rs.close();
-			} catch (SQLException sqle) {
-				LOGGER.debug("Error while cleaning:", sqle);
-			}			
-		}	
-		
+			close(rs);
+			close(ps);
+			close(conn);
+		}
+
 	}
 
 	private void updateUserStatus(long long1, Hashtable<String, String> phonenumbers) {
 		Connection conn = null;
 		PreparedStatement ps = null;
-		
-		try{
+
+		try {
 			conn = this.getConnection();
 			ps = conn.prepareStatement("update CUST.voiceshot_customers set STATUS=? where VS_ID=? and PHONE=?");
 			Enumeration<String> enumber = phonenumbers.keys();
-			while(enumber.hasMoreElements()) {
-				String key = (String)enumber.nextElement();
+			while (enumber.hasMoreElements()) {
+				String key = (String) enumber.nextElement();
 				String phone = key;
-				if(phone.length() == 11) {
-					//remove 1 and make it 10
+				if (phone.length() == 11) {
+					// remove 1 and make it 10
 					phone = phone.substring(1);
 				}
 				PhoneNumber phonenumber = new PhoneNumber(phone);
-				
+
 				String value = phonenumbers.get(key);
 				ps.setInt(1, Integer.parseInt(value));
 				ps.setLong(2, long1);
 				ps.setString(3, phonenumber.getPhone());
 				ps.execute();
-			}			
-		}catch (SQLException sqle) {
+			}
+		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			try {
-				if (conn != null) 				
-					conn.close();
-				if(ps != null)
-					ps.close();
-			} catch (SQLException sqle) {
-				LOGGER.debug("Error while cleaning:", sqle);
-			}			
-		}		
+			close(ps);
+			close(conn);
+		}
 	}
 
 	private void updateVSLog(long id, VoiceShotResponseParser vsrp) {
 		Connection conn = null;
 		PreparedStatement ps = null;
-		
-		try{
+
+		try {
 			conn = this.getConnection();
 			ps = conn.prepareStatement("update CUST.VOICESHOT_SCHEDULED set CALL_DATA_PULLED='Y' where VS_ID=?");
 			ps.setLong(1, id);
 			ps.execute();
-		}catch (SQLException sqle) {
+		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			try {
-				if (conn != null) 				
-					conn.close();
-				if(ps != null)
-					ps.close();
-			} catch (SQLException sqle) {
-				LOGGER.debug("Error while cleaning:", sqle);
-			}			
-		}		
+			close(ps);
+			close(conn);
+		}
 	}
 
 	private VoiceShotResponseParser getCallData(String xmlPost) {
 		java.io.BufferedReader br = null;
 		try {
-			
-			java.net.URL programUrl = new java.net.URL(FDStoreProperties.getVSURL());   
-			java.net.HttpURLConnection connection = (java.net.HttpURLConnection)programUrl.openConnection();
+
+			java.net.URL programUrl = new java.net.URL(FDStoreProperties.getVSURL());
+			java.net.HttpURLConnection connection = (java.net.HttpURLConnection) programUrl.openConnection();
 			connection.setRequestMethod("POST");
 			connection.setDoOutput(true);
-			connection.setUseCaches(false); 
+			connection.setUseCaches(false);
 			connection.setRequestProperty("Content-Type", "text/xml");
-			java.io.PrintWriter output = new java.io.PrintWriter(new java.io.OutputStreamWriter(connection.getOutputStream()));
+			java.io.PrintWriter output = new java.io.PrintWriter(
+					new java.io.OutputStreamWriter(connection.getOutputStream()));
 			output.println(xmlPost);
-			output.close(); 
+			output.close();
 			connection.connect();
 			java.io.InputStream is = connection.getInputStream();
 			java.io.InputStreamReader isr = new java.io.InputStreamReader(is);
 			br = new java.io.BufferedReader(isr);
-		 
+
 			String line = null;
 			String firstresult = "";
-		 
+
 			while ((line = br.readLine()) != null) {
-				 firstresult += "\n" + line;
+				firstresult += "\n" + line;
 			}
-			
+
 			System.out.println(firstresult);
-			
-			
-			//String firstresult = "<?xml version=\"1.0\"?><campaign menuid=\"4766-159328639\" ><phonenumbers><phonenumber number=\"12038430301\"  dateandtime=\"11/8/2011 2:13:45 PM\"     callid=\"CID_42\"   duration=\"7\" status=\"Successful\"     lasterror=\"Human Answer\"><prompts></prompts></phonenumber><phonenumber number=\"12034469229\"  dateandtime=\"11/8/2011 2:14:22 PM\"     callid=\"CID_42\"   duration=\"44\" status=\"Successful\"     lasterror=\"Answering Machine\"><prompts><prompt promptid=\"1\" keypress=\"\" /></prompts></phonenumber></phonenumbers></campaign> ";
-			
-			if(firstresult.indexOf("status=\"Pending\"") == -1) {
+
+			// String firstresult = "<?xml version=\"1.0\"?><campaign
+			// menuid=\"4766-159328639\" ><phonenumbers><phonenumber
+			// number=\"12038430301\" dateandtime=\"11/8/2011 2:13:45 PM\"
+			// callid=\"CID_42\" duration=\"7\" status=\"Successful\"
+			// lasterror=\"Human
+			// Answer\"><prompts></prompts></phonenumber><phonenumber
+			// number=\"12034469229\" dateandtime=\"11/8/2011 2:14:22 PM\"
+			// callid=\"CID_42\" duration=\"44\" status=\"Successful\"
+			// lasterror=\"Answering Machine\"><prompts><prompt promptid=\"1\"
+			// keypress=\"\"
+			// /></prompts></phonenumber></phonenumbers></campaign> ";
+
+			if (firstresult.indexOf("status=\"Pending\"") == -1) {
 				LOGGER.debug("Ready to update the call record");
-				VoiceShotResponseParser vsrp = new VoiceShotResponseParser(firstresult);				
+				VoiceShotResponseParser vsrp = new VoiceShotResponseParser(firstresult);
 				vsrp.populateCallData();
-				if(vsrp.getTotalCalls() > 0) {
+				if (vsrp.getTotalCalls() > 0) {
 					LOGGER.debug("Total calls:" + vsrp.getTotalCalls());
 					LOGGER.debug("Total Successful calls:" + vsrp.getSuccessfulCalls());
 					LOGGER.debug("Total UnSuccessful calls:" + vsrp.getUnsuccessfulCalls());
@@ -2819,8 +2578,8 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			} else {
 				LOGGER.debug("Call is still happening. Don't let the user redial.");
 			}
-		} catch(Exception e) {
-			LOGGER.error("",e);
+		} catch (Exception e) {
+			LOGGER.error("", e);
 		} finally {
 			if (br != null) {
 				try {
@@ -2832,13 +2591,13 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		}
 		return null;
 	}
-	
+
 	public List<CrmVSCampaignModel> getVoiceShotCallDetails(String id, String lateId) throws FDResourceException {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rset = null;
 		List<CrmVSCampaignModel> cList = new ArrayList<CrmVSCampaignModel>();
-		try{
+		try {
 			conn = this.getConnection();
 			ps = conn.prepareStatement("select  vo.customer_id, vo.sale_id, vo.phone, vo.status, S.TRUCK_NUMBER, S.STOP_SEQUENCE " +
                     "from cust.voiceshot_customers vo, " +
@@ -2854,7 +2613,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			ps.setString(1, lateId);
 			ps.setLong(2, Long.parseLong(id));
 			rset = ps.executeQuery();
-			while(rset.next()) {
+			while (rset.next()) {
 				String phone = rset.getString("PHONE");
 				int status = rset.getInt("STATUS");
 				CrmVSCampaignModel model = new CrmVSCampaignModel();
@@ -2868,23 +2627,16 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				model.setStopSequence(iSeq + "");
 				cList.add(model);
 			}
-		}catch (SQLException sqle) {
+		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			try {
-				if (conn != null) 				
-					conn.close();
-				if(ps != null)
-					ps.close();
-				if(rset != null)
-					rset.close();
-			} catch (SQLException sqle) {
-				LOGGER.debug("Error while cleaning:", sqle);
-			}			
+			close(rset);
+			close(ps);
+			close(conn);
 		}
 		return cList;
 	}
-	
+
 	public static final String GET_REDIAL_LIST = "select phone, nvl(vo.last_redialed_date, vd.created_by_date) last_redialed_Date, vo.sale_id, vo.customer_id, S.TRUCK_NUMBER, S.STOP_SEQUENCE " + 
 									    "from cust.voiceshot_customers  vo, " +
 									    "CUST.VOICESHOT_SCHEDULED vd, " +
@@ -2905,14 +2657,14 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		PreparedStatement ps = null;
 		ResultSet rset = null;
 		List<CrmVSCampaignModel> cList = new ArrayList<CrmVSCampaignModel>();
-		try{
+		try {
 			conn = this.getConnection();
 			ps = conn.prepareStatement(GET_REDIAL_LIST);
 			ps.setString(1, lateId);
 			ps.setLong(2, Long.parseLong(id));
 			ps.setInt(3, EnumVSStatus.UNSUCCESSFUL.getValue());
 			rset = ps.executeQuery();
-			while(rset.next()) {
+			while (rset.next()) {
 				String phone = rset.getString("PHONE");
 				Date last_date = rset.getDate("last_redialed_Date");
 				Calendar c1 = Calendar.getInstance();
@@ -2921,8 +2673,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				c2.setTime(new Date());
 				long timeDiff = (c2.getTime().getTime() - c1.getTime().getTime());
 				long hours = java.util.concurrent.TimeUnit.MILLISECONDS.toHours(timeDiff);
-				System.out.println("hours Between " + c1.getTime() + " and "
-						+ c2.getTime() + " is:" + hours);
+				System.out.println("hours Between " + c1.getTime() + " and " + c2.getTime() + " is:" + hours);
 				if (hours < 24) {
 					CrmVSCampaignModel model = new CrmVSCampaignModel();
 					model.setPhonenumber(phone);
@@ -2936,23 +2687,16 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 					cList.add(model);
 				}
 			}
-		}catch (SQLException sqle) {
+		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			try {
-				if (conn != null) 				
-					conn.close();
-				if(ps != null)
-					ps.close();
-				if(rset != null)
-					rset.close();
-			} catch (SQLException sqle) {
-				LOGGER.debug("Error while cleaning:", sqle);
-			}			
+			close(rset);
+			close(ps);
+			close(conn);
 		}
 		return cList;
 	}
-	
+
 	public String saveVSRedialInfo(CrmVSCampaignModel model) throws FDResourceException {
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -2963,35 +2707,37 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		try {
 			conn = this.getConnection();
 			id = Long.parseLong(SequenceGenerator.getNextId(conn, "CUST", "VOICESHOT_SEQUENCE"));
-			ps = conn.prepareStatement("INSERT INTO CUST.VOICESHOT_SCHEDULED(VS_ID,CAMPAIGN_ID,REASON_ID,CREATED_BY_USER,CREATED_BY_DATE,START_TIME, CALL_ID, CAMPAIGN_TYPE, redial) " +
-										"select ?, campaign_id, reason_id, ?, sysdate, TO_DATE(?, 'HH:MI AM'),?,'LATEISSUE', 'Y' " +
-										"from cust.voiceshot_scheduled where vs_id = ?");
-			
+			ps = conn.prepareStatement(
+					"INSERT INTO CUST.VOICESHOT_SCHEDULED(VS_ID,CAMPAIGN_ID,REASON_ID,CREATED_BY_USER,CREATED_BY_DATE,START_TIME, CALL_ID, CAMPAIGN_TYPE, redial) "
+							+ "select ?, campaign_id, reason_id, ?, sysdate, TO_DATE(?, 'HH:MI AM'),?,'LATEISSUE', 'Y' "
+							+ "from cust.voiceshot_scheduled where vs_id = ?");
+
 			call_id = "CID_" + id;
 			System.out.println(model.toString());
-			ps.setLong(1,id);
+			ps.setLong(1, id);
 			ps.setString(2, model.getAddByUser());
 			Calendar today_date = Calendar.getInstance();
 			today_date.setTime(new Date());
 			int hour = today_date.get(Calendar.HOUR);
 			int minute = today_date.get(Calendar.MINUTE);
-			if(hour == 0)
+			if (hour == 0)
 				hour = 12;
-			String am_pm = today_date.get(Calendar.AM_PM) == 0?"AM":"PM";
-			String start_time = hour + ":" + minute + " " + am_pm;	
+			String am_pm = today_date.get(Calendar.AM_PM) == 0 ? "AM" : "PM";
+			String start_time = hour + ":" + minute + " " + am_pm;
 			ps.setString(3, start_time);
 			ps.setString(4, call_id);
 			ps.setLong(5, Long.parseLong(model.getVsDetailsID()));
 			ps.execute();
-			
+
 			ps1 = conn.prepareStatement("INSERT INTO CUST.VOICESHOT_LATEISSUE(VS_ID, LATEISSUE_ID) VALUES(?,?)");
 			ps1.setLong(1, id);
 			ps1.setString(2, model.getLateIssueId());
 			ps1.execute();
-			
-			ps2 = conn.prepareStatement("INSERT INTO CUST.voiceshot_customers(VS_ID,PHONE, CUSTOMER_ID, SALE_ID, LAST_REDIALED_DATE)" +
-											" VALUES(?,?,?,?, sysdate)");
-			for(int i=0;i<model.getPhonenumbers().size(); i++) {
+
+			ps2 = conn.prepareStatement(
+					"INSERT INTO CUST.voiceshot_customers(VS_ID,PHONE, CUSTOMER_ID, SALE_ID, LAST_REDIALED_DATE)"
+							+ " VALUES(?,?,?,?, sysdate)");
+			for (int i = 0; i < model.getPhonenumbers().size(); i++) {
 				String pStr = (String) model.getPhonenumbers().get(i);
 				StringTokenizer st = new StringTokenizer(pStr, "|");
 				String phone = st.nextToken();
@@ -3007,31 +2753,24 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			try {
-				if (conn != null) 				
-					conn.close();
-				if(ps != null)
-					ps.close();
-				if(ps1 != null)
-					ps1.close();
-				if(ps2 != null)
-					ps2.close();
-			} catch (SQLException sqle) {
-				LOGGER.debug("Error while cleaning:", sqle);
-			}
+			close(ps2);
+			close(ps1);
+			close(ps);
+			close(conn);
 		}
 		updateActivity(model);
 		return call_id;
 	}
-	
+
 	private void updatePhonenumbers(List<String> phonenumbers, String detailId) {
 		Connection conn = null;
 		PreparedStatement ps = null;
-		
+
 		try {
 			conn = this.getConnection();
-			ps = conn.prepareStatement("UPDATE CUST.voiceshot_customers set LAST_REDIALED_DATE=sysdate where sale_id = ? and customer_id = ? and vs_id = ?");
-			for(int i=0;i<phonenumbers.size(); i++) {
+			ps = conn.prepareStatement(
+					"UPDATE CUST.voiceshot_customers set LAST_REDIALED_DATE=sysdate where sale_id = ? and customer_id = ? and vs_id = ?");
+			for (int i = 0; i < phonenumbers.size(); i++) {
 				String pStr = (String) phonenumbers.get(i);
 				StringTokenizer st = new StringTokenizer(pStr, "|");
 				String phone = st.nextToken();
@@ -3039,33 +2778,27 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				String customerId = st.nextToken();
 				ps.setString(1, saleId);
 				ps.setString(2, customerId);
-				ps.setLong(3, Long.parseLong(detailId));				
+				ps.setLong(3, Long.parseLong(detailId));
 				ps.execute();
 			}
 		} catch (SQLException sqle) {
-			LOGGER.error(sqle.getMessage(), sqle);			
+			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			try {
-				if (conn != null) 				
-					conn.close();
-				if(ps != null)
-					ps.close();
-			} catch (SQLException sqle) {
-				LOGGER.debug("Error while cleaning:", sqle);
-			}
+			close(ps);
+			close(conn);
 		}
 	}
 
 	private void updateActivity(CrmVSCampaignModel model) {
 		List<String> phonenumbers = model.getPhonenumbers();
-		for(int i=0;i<phonenumbers.size(); i++) {
+		for (int i = 0; i < phonenumbers.size(); i++) {
 			String pStr = (String) phonenumbers.get(i);
 			StringTokenizer st = new StringTokenizer(pStr, "|");
 			String phone = st.nextToken();
 			String saleId = st.nextToken();
 			String customerId = st.nextToken();
-				
-			//record the call activity
+
+			// record the call activity
 			ErpActivityRecord rec = new ErpActivityRecord();
 			rec.setActivityType(EnumAccountActivityType.VOICE_SHOT);
 			rec.setSource(EnumTransactionSource.CUSTOMER_REP);
@@ -3074,18 +2807,19 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			rec.setCustomerId(customerId);
 			rec.setDate(new Date());
 			rec.setNote(model.getCampaignName() + " - " + model.getReasonId());
-			this.logActivity(rec);				
+			this.logActivity(rec);
 		}
 	}
-	
+
 	public void addNewCampaign(CrmVSCampaignModel model) throws FDResourceException {
 		Connection conn = null;
 		PreparedStatement ps = null;
-		
+
 		try {
 			conn = this.getConnection();
-			ps = conn.prepareStatement("INSERT INTO CUST.VOICESHOT_CAMPAIGN(CAMPAIGN_ID,CAMPAIGN_NAME,ADD_BY_DATE,ADD_BY_USER,SOUND_FILE_NAME,SOUND_FILE_TEXT,CAMPAIGN_MENU_ID,DELAY_IN_MINUTES)" +
-										" VALUES(?,?,sysdate,?,?,?,?,?)");
+			ps = conn.prepareStatement(
+					"INSERT INTO CUST.VOICESHOT_CAMPAIGN(CAMPAIGN_ID,CAMPAIGN_NAME,ADD_BY_DATE,ADD_BY_USER,SOUND_FILE_NAME,SOUND_FILE_TEXT,CAMPAIGN_MENU_ID,DELAY_IN_MINUTES)"
+							+ " VALUES(?,?,sysdate,?,?,?,?,?)");
 			long id = Long.parseLong(SequenceGenerator.getNextId(conn, "CUST", "VOICESHOT_SEQUENCE"));
 			ps.setLong(1, id);
 			ps.setString(2, model.getCampaignName());
@@ -3096,31 +2830,25 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			ps.setInt(7, model.getDelay());
 			ps.execute();
 		} catch (SQLException sqle) {
-			LOGGER.error(sqle.getMessage(), sqle);			
+			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			try {
-				if (conn != null) 				
-					conn.close();
-				if(ps != null)
-					ps.close();
-			} catch (SQLException sqle) {
-				LOGGER.debug("Error while cleaning:", sqle);
-			}
+			close(ps);
+			close(conn);
 		}
 	}
-	
+
 	public CrmVSCampaignModel getCampaignDetails(String id) throws FDResourceException {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		CrmVSCampaignModel model = new CrmVSCampaignModel();
-		
-		try{
+
+		try {
 			conn = this.getConnection();
 			ps = conn.prepareStatement("select * from CUST.VOICESHOT_CAMPAIGN where CAMPAIGN_ID=?");
 			ps.setLong(1, Long.parseLong(id));
-			rs = ps.executeQuery();			
-			while(rs.next()) {
+			rs = ps.executeQuery();
+			while (rs.next()) {
 				model.setCampaignId(rs.getString("CAMPAIGN_ID"));
 				model.setCampaignName(rs.getString("CAMPAIGN_NAME"));
 				model.setCampaignMenuId(rs.getString("CAMPAIGN_MENU_ID"));
@@ -3132,33 +2860,27 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				model.setSoundFileText(rs.getString("SOUND_FILE_TEXT"));
 				model.setDelay(rs.getInt("DELAY_IN_MINUTES"));
 			}
-		}catch (SQLException sqle) {
+		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			try {
-				if (conn != null) 				
-					conn.close();
-				if(ps != null)
-					ps.close();
-				if(rs != null)
-					rs.close();
-			} catch (SQLException sqle) {
-				LOGGER.debug("Error while cleaning:", sqle);
-			}			
+			close(rs);
+			close(ps);
+			close(conn);
 		}
 		return model;
 	}
-	
+
 	public void updateCampaign(CrmVSCampaignModel model) throws FDResourceException {
 		Connection conn = null;
 		PreparedStatement ps = null;
-		
+
 		try {
 			conn = this.getConnection();
-			ps = conn.prepareStatement("UPDATE CUST.VOICESHOT_CAMPAIGN set CAMPAIGN_NAME=?, SOUND_FILE_NAME=?, SOUND_FILE_TEXT=?, CAMPAIGN_MENU_ID=?," +
-										" CHANGE_BY_USER=?, CHANGE_BY_DATE=SYSDATE, DELAY_IN_MINUTES=? where CAMPAIGN_ID=?");
-			ps.setString(1, model.getCampaignName());			
+			ps = conn.prepareStatement(
+					"UPDATE CUST.VOICESHOT_CAMPAIGN set CAMPAIGN_NAME=?, SOUND_FILE_NAME=?, SOUND_FILE_TEXT=?, CAMPAIGN_MENU_ID=?,"
+							+ " CHANGE_BY_USER=?, CHANGE_BY_DATE=SYSDATE, DELAY_IN_MINUTES=? where CAMPAIGN_ID=?");
+			ps.setString(1, model.getCampaignName());
 			ps.setString(2, model.getSoundfileName());
 			ps.setString(3, model.getSoundFileText());
 			ps.setString(4, model.getCampaignMenuId());
@@ -3167,42 +2889,30 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			ps.setLong(7, Long.parseLong(model.getCampaignId()));
 			ps.execute();
 		} catch (SQLException sqle) {
-			LOGGER.error(sqle.getMessage(), sqle);			
+			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			try {
-				if (conn != null) 				
-					conn.close();
-				if(ps != null)
-					ps.close();
-			} catch (SQLException sqle) {
-				LOGGER.debug("Error while cleaning:", sqle);
+			close(ps);
+			close(conn);
 			}
-		}
 	}
-	
+
 	public void deleteCampaign(String id) throws FDResourceException {
 		Connection conn = null;
 		PreparedStatement ps = null;
-		
+
 		try {
 			conn = this.getConnection();
 			ps = conn.prepareStatement("DELETE CUST.VOICESHOT_CAMPAIGN where CAMPAIGN_ID=?");
 			ps.setLong(1, Long.parseLong(id));
 			ps.execute();
 		} catch (SQLException sqle) {
-			LOGGER.error(sqle.getMessage(), sqle);			
+			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			try {
-				if (conn != null) 				
-					conn.close();
-				if(ps != null)
-					ps.close();
-			} catch (SQLException sqle) {
-				LOGGER.debug("Error while cleaning:", sqle);
-			}
+			close(ps);
+			close(conn);
 		}
 	}
-	
+
 	public static final String GET_VS_DETAILS_FOR_ORDER = "select vc.campaign_name, Vs.created_BY_USER,  to_char(vs.created_BY_DATE, 'MM/DD/YYYY HH:MI AM') ADD_BY_DATE, Vr.REASON, vo.vs_id " +
             "from CUST.voiceshot_customers vo, cust.voiceshot_campaign vc, CUST.VOICESHOT_SCHEDULED vs, " +
             " cust.voiceshot_Reasoncodes vr " +
@@ -3221,37 +2931,30 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		try {
 			conn = this.getConnection();
 			ps = conn.prepareStatement(GET_VS_DETAILS_FOR_ORDER);
-			ps.setString(1, orderId);			
+			ps.setString(1, orderId);
 			rset = ps.executeQuery();
-			if(rset.next()) {
+			if (rset.next()) {
 				StringBuffer sb = new StringBuffer("Late Report: ");
 				sb.append(rset.getString("ADD_BY_DATE"));
 				sb.append(", ");
 				sb.append(rset.getString("created_BY_USER"));
 				sb.append(", ");
-				sb.append( rset.getString("CAMPAIGN_NAME"));
+				sb.append(rset.getString("CAMPAIGN_NAME"));
 				sb.append(", ");
 				sb.append(rset.getString("REASON"));
-				
-				vsMsg = sb.toString();  
+
+				vsMsg = sb.toString();
 			}
 		} catch (SQLException sqle) {
-			LOGGER.error(sqle.getMessage(), sqle);			
+			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			try {
-				if (conn != null) 				
-					conn.close();
-				if(ps != null)
-					ps.close();
-				if(rset != null)
-					rset.close();
-			} catch (SQLException sqle) {
-				LOGGER.debug("Error while cleaning:", sqle);
-			}
+			close(rset);
+			close(ps);
+			close(conn);
 		}
 		return vsMsg;
 	}
-	
+
 	public List<VSReasonCodes> getVSReasonCodes() throws FDResourceException {
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -3261,29 +2964,22 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			conn = this.getConnection();
 			ps = conn.prepareStatement("select * from cust.voiceshot_reasoncodes");
 			rset = ps.executeQuery();
-			while(rset.next()) {
+			while (rset.next()) {
 				VSReasonCodes vrc = new VSReasonCodes();
 				vrc.setReasonId(rset.getString("REASON_ID"));
 				vrc.setReason(rset.getString("REASON"));
 				lst.add(vrc);
 			}
 		} catch (SQLException sqle) {
-			LOGGER.error(sqle.getMessage(), sqle);			
+			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			try {
-				if (conn != null) 				
-					conn.close();
-				if(ps != null)
-					ps.close();
-				if(rset != null)
-					rset.close();
-			} catch (SQLException sqle) {
-				LOGGER.debug("Error while cleaning:", sqle);
-			}
+			close(rset);
+			close(ps);
+			close(conn);
 		}
 		return lst;
 	}
-	
+
 	public String getSoundFileMessage(String campaignId) throws FDResourceException {
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -3292,28 +2988,21 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		try {
 			conn = this.getConnection();
 			ps = conn.prepareStatement("select sound_file_text from cust.voiceshot_campaign where campaign_id = ?");
-			ps.setString(1, campaignId);			
+			ps.setString(1, campaignId);
 			rset = ps.executeQuery();
-			if(rset.next()) {
-				vsMsg = rset.getString(1);  
+			if (rset.next()) {
+				vsMsg = rset.getString(1);
 			}
 		} catch (SQLException sqle) {
-			LOGGER.error(sqle.getMessage(), sqle);			
+			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			try {
-				if (conn != null) 				
-					conn.close();
-				if(ps != null)
-					ps.close();
-				if(rset != null)
-					rset.close();
-			} catch (SQLException sqle) {
-				LOGGER.debug("Error while cleaning:", sqle);
-			}
+			close(rset);
+			close(ps);
+			close(conn);
 		}
 		return vsMsg;
 	}
-	
+
 	public List getAutoLateDeliveryCredits() throws FDResourceException {
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -3321,33 +3010,28 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		List<CustomerCreditModel> ccmList = new ArrayList<CustomerCreditModel>();
 		try {
 			conn = this.getConnection();
-			ps = conn.prepareStatement("select ID, order_Date as order_date, status, approved_by from cust.AUTO_LATE_DELIVERY order by order_date desc");
+			ps = conn.prepareStatement(
+					"select ID, order_Date as order_date, status, approved_by from cust.AUTO_LATE_DELIVERY order by order_date desc");
 			rset = ps.executeQuery();
-			while(rset.next()) {
+			while (rset.next()) {
 				CustomerCreditModel ccm = new CustomerCreditModel();
 				ccm.setId(rset.getString("ID"));
-				ccm.setOrderDate(rset.getDate("order_date") != null ? DateUtil.formatDate(rset.getDate("order_date")) : null);
+				ccm.setOrderDate(
+						rset.getDate("order_date") != null ? DateUtil.formatDate(rset.getDate("order_date")) : null);
 				ccm.setStatus(rset.getString("status"));
 				ccm.setApprovedBy(rset.getString("approved_by"));
 				ccmList.add(ccm);
 			}
 		} catch (SQLException sqle) {
-			LOGGER.error(sqle.getMessage(), sqle);			
+			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			try {
-				if (conn != null) 				
-					conn.close();
-				if(ps != null)
-					ps.close();
-				if(rset != null)
-					rset.close();
-			} catch (SQLException sqle) {
-				LOGGER.debug("Error while cleaning:", sqle);
-			}
+			close(rset);
+			close(ps);
+			close(conn);
 		}
 		return ccmList;
 	}
-	
+
 	public List getAutoLateDeliveryOrders(String id) throws FDResourceException {
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -3355,17 +3039,14 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		List<CustomerCreditModel> ccmList = new ArrayList<CustomerCreditModel>();
 		try {
 			conn = this.getConnection();
-			ps = conn.prepareStatement("select sale_id, a.customer_id, rem_amount, rem_type, original_amount, tax_amount, tax_rate, dlv_pass_id, CI.FIRST_NAME, CI.LAST_NAME, complaint_code, c.user_id, a.status " +
-											"from cust.AUTO_LATE_DELIVERY_ORDERS a, " +
-											"cust.customerinfo ci, " +
-											"cust.customer c " +
-											"where auto_late_delivery_id = ? " +
-											"and a.customer_id = ci.customer_id " +
-											"and a.customer_id = c.id " +
-											"and a.dlv_pass_id is null");
+			ps = conn.prepareStatement(
+					"select sale_id, a.customer_id, rem_amount, rem_type, original_amount, tax_amount, tax_rate, dlv_pass_id, CI.FIRST_NAME, CI.LAST_NAME, complaint_code, c.user_id, a.status "
+							+ "from cust.AUTO_LATE_DELIVERY_ORDERS a, " + "cust.customerinfo ci, " + "cust.customer c "
+							+ "where auto_late_delivery_id = ? " + "and a.customer_id = ci.customer_id "
+							+ "and a.customer_id = c.id " + "and a.dlv_pass_id is null");
 			ps.setString(1, id);
 			rset = ps.executeQuery();
-			while(rset.next()) {
+			while (rset.next()) {
 				CustomerCreditModel ccm = new CustomerCreditModel();
 				ccm.setId(id);
 				ccm.setSaleId(rset.getString("sale_id"));
@@ -3384,22 +3065,15 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				ccmList.add(ccm);
 			}
 		} catch (SQLException sqle) {
-			LOGGER.error(sqle.getMessage(), sqle);			
+			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			try {
-				if (conn != null) 				
-					conn.close();
-				if(ps != null)
-					ps.close();
-				if(rset != null)
-					rset.close();
-			} catch (SQLException sqle) {
-				LOGGER.debug("Error while cleaning:", sqle);
-			}
+			close(rset);
+			close(ps);
+			close(conn);
 		}
 		return ccmList;
 	}
-	
+
 	public List getAutoLateDlvPassOrders(String id) throws FDResourceException {
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -3407,17 +3081,14 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		List<CustomerCreditModel> ccmList = new ArrayList<CustomerCreditModel>();
 		try {
 			conn = this.getConnection();
-			ps = conn.prepareStatement("select sale_id, a.customer_id, rem_amount, rem_type, original_amount, tax_amount, tax_rate, dlv_pass_id, CI.FIRST_NAME, CI.LAST_NAME, complaint_code, c.user_id, a.status " +
-											"from cust.AUTO_LATE_DELIVERY_ORDERS a, " +
-											"cust.customerinfo ci, " +
-											"cust.customer c " +
-											"where auto_late_delivery_id = ? " +
-											"and a.customer_id = ci.customer_id " +
-											"and a.customer_id = c.id " +
-											"and a.dlv_pass_id is not null");
+			ps = conn.prepareStatement(
+					"select sale_id, a.customer_id, rem_amount, rem_type, original_amount, tax_amount, tax_rate, dlv_pass_id, CI.FIRST_NAME, CI.LAST_NAME, complaint_code, c.user_id, a.status "
+							+ "from cust.AUTO_LATE_DELIVERY_ORDERS a, " + "cust.customerinfo ci, " + "cust.customer c "
+							+ "where auto_late_delivery_id = ? " + "and a.customer_id = ci.customer_id "
+							+ "and a.customer_id = c.id " + "and a.dlv_pass_id is not null");
 			ps.setString(1, id);
 			rset = ps.executeQuery();
-			while(rset.next()) {
+			while (rset.next()) {
 				CustomerCreditModel ccm = new CustomerCreditModel();
 				ccm.setId(id);
 				ccm.setSaleId(rset.getString("sale_id"));
@@ -3436,43 +3107,37 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				ccmList.add(ccm);
 			}
 		} catch (SQLException sqle) {
-			LOGGER.error(sqle.getMessage(), sqle);			
+			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			try {
-				if (conn != null) 				
-					conn.close();
-				if(ps != null)
-					ps.close();
-				if(rset != null)
-					rset.close();
-			} catch (SQLException sqle) {
-				LOGGER.debug("Error while cleaning:", sqle);
-			}
+			close(rset);
+			close(ps);
+			close(conn);
 		}
 		return ccmList;
 	}
-	
+
 	public ErpComplaintReason getReasonByCompCode(String cCode) throws FDResourceException {
 		try {
-				ErpComplaintManagerSB complaintSB = this.getComplaintManagerHome().create();
-				return complaintSB.getReasonByCompCode(cCode);
+			ErpComplaintManagerSB complaintSB = this.getComplaintManagerHome().create();
+			return complaintSB.getReasonByCompCode(cCode);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		}
 	}
-	
+
 	public void addNewIVRCallLog(CallLogModel model) throws FDResourceException {
-		
+
 		Connection conn = null;
 		PreparedStatement ps = null;
-		
+
 		try {
 			conn = this.getConnection();
-			ps = conn.prepareStatement("INSERT INTO CUST.IVR_CALLLOG(ID,CALLERID,ORDERNUMBER,CALLTIME,CALLDURATION,TALKTIME,PHONE_NUMBER,CALL_OUTCOME,MENU_OPTION,INSERT_TIMESTAMP)" +
-										" VALUES(?,?,?,?,?,?,?,?,?,?)");
-				
+			ps = conn.prepareStatement(
+					"INSERT INTO CUST.IVR_CALLLOG(ID,CALLERID,ORDERNUMBER,CALLTIME,CALLDURATION,TALKTIME,PHONE_NUMBER,CALL_OUTCOME,MENU_OPTION,INSERT_TIMESTAMP)"
+							+ " VALUES(?,?,?,?,?,?,?,?,?,?)");
+
 			ps.setString(1, model.getCallerGUIId());
 			ps.setString(2, model.getCallerId());
 			ps.setString(3, model.getOrderNumber());
@@ -3485,235 +3150,225 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			ps.setTimestamp(10, new java.sql.Timestamp(System.currentTimeMillis()));
 			ps.execute();
 		} catch (SQLException sqle) {
-			LOGGER.error(sqle.getMessage(), sqle);			
+			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			try {
-				if (conn != null) 				
-					conn.close();
-				if(ps != null)
-					ps.close();
-			} catch (SQLException sqle) {
-				LOGGER.debug("Error while cleaning:", sqle);
-			}
+			close(ps);
+			close(conn);
 		}
-		
+
 	}
-	
-	/*"select DISTINCT A.sale_id, A.status, A.requested_date, A.amount, A.action_date,A.last_name,A.first_name from "+
-			"(select  s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name from cust.sale s, "+ 
-			"cust.salesaction sa,cust.customerinfo ci, cust.paymentinfo pi  where s.status='CAN' "+ 
-			"and s.id=sa.sale_id and SA.ACTION_TYPE IN ('CRO','MOD') and S.CROMOD_DATE=SA.ACTION_DATE "+ 
-			" AND sa.requested_date =TO_DATE(?, 'YYYY-MM-DD') and s.customer_id=ci.customer_id and PI.SALESACTION_ID=sa.id and PI.PAYMENT_METHOD_TYPE='CC' "+ 
-			"and PI.ON_FD_ACCOUNT='R' ) A, "+
-			"cust.salesaction sa1, cust.payment p "+
-			"where A.sale_id=sa1.sale_id and sa1.id=P.SALESACTION_ID and sa1.action_type='AUT' "+
-			"and  exists (select 1 from MIS.GATEWAY_ACTIVITY_LOG gal where P.GATEWAY_ORDER=GAL.ORDER_ID and transaction_type='AUTHORIZE' and GAL.IS_APPROVED='Y' )";
-	*/
-	private static final String REVERSE_AUTH_ORDERS_QUERY_BY_DATE =
-	"select DISTINCT A.sale_id, A.status,  A.amount, A.action_date,A.last_name||',' ||A.first_name as CUSTOMER_NAME, A.e_store from "+
-    " (select  s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name,s.e_store from cust.sale s, "+
-    " cust.salesaction sa,cust.customerinfo ci, cust.paymentinfo pi  where s.status='CAN' "+
-    " and s.id=sa.sale_id and SA.ACTION_TYPE IN ('CRO','MOD') and S.CROMOD_DATE=SA.ACTION_DATE "+
-    " AND sa.requested_date =TO_DATE(?, 'YYYY-MM-DD') and s.customer_id=ci.customer_id and PI.SALESACTION_ID=sa.id and PI.PAYMENT_METHOD_TYPE='CC' "+
-    " and PI.ON_FD_ACCOUNT='R' and pi.card_type != 'PP' ) A, "+
-    " cust.salesaction sa1, cust.payment p "+
-    " where A.sale_id=sa1.sale_id and sa1.id=P.SALESACTION_ID and sa1.action_type='AUT' and p.card_type != 'PP' "+
-    " and  exists (select 1 from MIS.GATEWAY_ACTIVITY_LOG gal where P.GATEWAY_ORDER=GAL.ORDER_ID and transaction_type='AUTHORIZE' and GAL.IS_APPROVED='Y' ) "+
-    " UNION "+
-    " select GAL.ORDER_ID SALE_ID, 'N/A', GAL.AMOUNT, GAL.TRANSACTION_TIME ACTION_DATE,GAL.CUSTOMER_NAME,GAL.E_STORE from MIS.GATEWAY_ACTIVITY_LOG gal where GAL.TRANSACTION_TIME between TO_DATE(?, 'YYYY-MM-DD')  and  "+
-    " TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS') and transaction_type='AUTHORIZE' and GAL.IS_APPROVED='Y' and GAL.IS_AVS_MATCH!='Y' and CARD_TYPE != 'PP' ";
-	
+
+	/*
+	 * "select DISTINCT A.sale_id, A.status, A.requested_date, A.amount, A.action_date,A.last_name,A.first_name from "
+	 * +
+	 * "(select  s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name from cust.sale s, "
+	 * +
+	 * "cust.salesaction sa,cust.customerinfo ci, cust.paymentinfo pi  where s.status='CAN' "
+	 * +
+	 * "and s.id=sa.sale_id and SA.ACTION_TYPE IN ('CRO','MOD') and S.CROMOD_DATE=SA.ACTION_DATE "
+	 * +
+	 * " AND sa.requested_date =TO_DATE(?, 'YYYY-MM-DD') and s.customer_id=ci.customer_id and PI.SALESACTION_ID=sa.id and PI.PAYMENT_METHOD_TYPE='CC' "
+	 * + "and PI.ON_FD_ACCOUNT='R' ) A, "+
+	 * "cust.salesaction sa1, cust.payment p "+
+	 * "where A.sale_id=sa1.sale_id and sa1.id=P.SALESACTION_ID and sa1.action_type='AUT' "
+	 * +
+	 * "and  exists (select 1 from MIS.GATEWAY_ACTIVITY_LOG gal where P.GATEWAY_ORDER=GAL.ORDER_ID and transaction_type='AUTHORIZE' and GAL.IS_APPROVED='Y' )"
+	 * ;
+	 */
+	private static final String REVERSE_AUTH_ORDERS_QUERY_BY_DATE = "select DISTINCT A.sale_id, A.status,  A.amount, A.action_date,A.last_name||',' ||A.first_name as CUSTOMER_NAME, A.e_store from "
+			+ " (select  s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name,s.e_store from cust.sale s, "
+			+ " cust.salesaction sa,cust.customerinfo ci, cust.paymentinfo pi  where s.status='CAN' "
+			+ " and s.id=sa.sale_id and SA.ACTION_TYPE IN ('CRO','MOD') and S.CROMOD_DATE=SA.ACTION_DATE "
+			+ " AND sa.requested_date =TO_DATE(?, 'YYYY-MM-DD') and s.customer_id=ci.customer_id and PI.SALESACTION_ID=sa.id and PI.PAYMENT_METHOD_TYPE='CC' "
+			+ " and PI.ON_FD_ACCOUNT='R' and pi.card_type != 'PP' ) A, " + " cust.salesaction sa1, cust.payment p "
+			+ " where A.sale_id=sa1.sale_id and sa1.id=P.SALESACTION_ID and sa1.action_type='AUT' and p.card_type != 'PP' "
+			+ " and  exists (select 1 from MIS.GATEWAY_ACTIVITY_LOG gal where P.GATEWAY_ORDER=GAL.ORDER_ID and transaction_type='AUTHORIZE' and GAL.IS_APPROVED='Y' ) "
+			+ " UNION "
+			+ " select GAL.ORDER_ID SALE_ID, 'N/A', GAL.AMOUNT, GAL.TRANSACTION_TIME ACTION_DATE,GAL.CUSTOMER_NAME,GAL.E_STORE from MIS.GATEWAY_ACTIVITY_LOG gal where GAL.TRANSACTION_TIME between TO_DATE(?, 'YYYY-MM-DD')  and  "
+			+ " TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS') and transaction_type='AUTHORIZE' and GAL.IS_APPROVED='Y' and GAL.IS_AVS_MATCH!='Y' and CARD_TYPE != 'PP' ";
+
 	public List<FDCustomerOrderInfo> getReverseAuthOrders(String date) throws FDResourceException {
 		Connection conn = null;
-		if(StringUtils.isEmpty(date))
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		if (StringUtils.isEmpty(date))
 			throw new FDResourceException("Please pass a valid date");
 		try {
 			System.out.println(REVERSE_AUTH_ORDERS_QUERY_BY_DATE);
 			conn = this.getConnection();
 			List lst = new ArrayList();
-			PreparedStatement ps =null;
-			
-				ps= conn.prepareStatement(REVERSE_AUTH_ORDERS_QUERY_BY_DATE);
-				ps.setString(1,date);
-				ps.setString(2,date);
-				ps.setString(3,date+" 23:59:59");
-			
-			ResultSet rs = ps.executeQuery();
-			while(rs.next()){
+			ps = conn.prepareStatement(REVERSE_AUTH_ORDERS_QUERY_BY_DATE);
+			ps.setString(1, date);
+			ps.setString(2, date);
+			ps.setString(3, date + " 23:59:59");
+
+			rs = ps.executeQuery();
+			while (rs.next()) {
 				FDCustomerOrderInfo info = new FDCustomerOrderInfo();
 				info.setSaleId(rs.getString("SALE_ID"));
-				//info.setDeliveryDate(rs.getDate("REQUESTED_DATE"));
+				// info.setDeliveryDate(rs.getDate("REQUESTED_DATE"));
 				info.setOrderStatus(EnumSaleStatus.CANCELED);
 				info.setAmount(rs.getDouble("AMOUNT"));
 				info.setFirstName(rs.getString("CUSTOMER_NAME"));
 				info.setLastCroModDate(rs.getTimestamp("ACTION_DATE"));
 				info.seteStore(rs.getString("E_STORE"));
 				lst.add(info);
-}
-			rs.close();
-			ps.close();
+			}
+		//	rs.close();
+		//	ps.close();
 
 			return lst;
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle) {
-					LOGGER.debug("Error while cleaning:", sqle);
-				}
-			}
+			close(rs);
+			close(ps);
+			close(conn);
 		}
-	}	
-	
-	private static final String VOID_CAPTURE_ORDERS_QUERY_BY_DATE ="select DISTINCT A.sale_id, A.status, A.requested_date, A.amount, A.action_date,A.last_name,A.first_name from "+
-            " (select  s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name from cust.sale s, "+ 
-            " cust.salesaction sa,cust.customerinfo ci, cust.paymentinfo pi  where s.status='PPG' "+ 
-            " and s.id=sa.sale_id and SA.ACTION_TYPE IN ('CRO','MOD') and S.CROMOD_DATE=SA.ACTION_DATE "+ 
-            " AND sa.requested_date =TO_DATE(?, 'YYYY-MM-DD') and s.customer_id=ci.customer_id and PI.SALESACTION_ID=sa.id and PI.PAYMENT_METHOD_TYPE IN ('EC','CC' ) "+
-            " and PI.ON_FD_ACCOUNT='R' and PI.CARD_TYPE != 'PP') A, "+
-            " cust.salesaction sa1, cust.payment p "+
-            " where A.sale_id=sa1.sale_id and sa1.id=P.SALESACTION_ID and sa1.action_type='CAP' and p.card_type != 'PP' "+
-            " and  exists (select 1 from MIS.GATEWAY_ACTIVITY_LOG gal where P.GATEWAY_ORDER=GAL.ORDER_ID and transaction_type='CAPTURE' and GAL.IS_APPROVED='Y' ) ";
-			
-			public List<FDCustomerOrderInfo> getOrdersForVoidCapture(String date) throws FDResourceException {
+	}
+
+	private static final String VOID_CAPTURE_ORDERS_QUERY_BY_DATE = "select DISTINCT A.sale_id, A.status, A.requested_date, A.amount, A.action_date,A.last_name,A.first_name from "
+			+ " (select  s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name from cust.sale s, "
+			+ " cust.salesaction sa,cust.customerinfo ci, cust.paymentinfo pi  where s.status='PPG' "
+			+ " and s.id=sa.sale_id and SA.ACTION_TYPE IN ('CRO','MOD') and S.CROMOD_DATE=SA.ACTION_DATE "
+			+ " AND sa.requested_date =TO_DATE(?, 'YYYY-MM-DD') and s.customer_id=ci.customer_id and PI.SALESACTION_ID=sa.id and PI.PAYMENT_METHOD_TYPE IN ('EC','CC' ) "
+			+ " and PI.ON_FD_ACCOUNT='R' and PI.CARD_TYPE != 'PP') A, " + " cust.salesaction sa1, cust.payment p "
+			+ " where A.sale_id=sa1.sale_id and sa1.id=P.SALESACTION_ID and sa1.action_type='CAP' and p.card_type != 'PP' "
+			+ " and  exists (select 1 from MIS.GATEWAY_ACTIVITY_LOG gal where P.GATEWAY_ORDER=GAL.ORDER_ID and transaction_type='CAPTURE' and GAL.IS_APPROVED='Y' ) ";
+
+	public List<FDCustomerOrderInfo> getOrdersForVoidCapture(String date) throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		if (StringUtils.isEmpty(date))
+			throw new FDResourceException("Please pass a valid date");
+		try {
+			conn = this.getConnection();
+			List lst = new ArrayList();
+			ps = null;
+
+			ps = conn.prepareStatement(VOID_CAPTURE_ORDERS_QUERY_BY_DATE);
+			ps.setString(1, date);
+			// ps.setString(2,date);
+
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				FDCustomerOrderInfo info = new FDCustomerOrderInfo();
+				info.setSaleId(rs.getString("SALE_ID"));
+				info.setDeliveryDate(rs.getDate("REQUESTED_DATE"));
+				info.setOrderStatus(EnumSaleStatus.getSaleStatus(rs.getString("STATUS")));
+				info.setAmount(rs.getDouble("AMOUNT"));
+				info.setFirstName(rs.getString("FIRST_NAME"));
+				info.setLastName(rs.getString("LAST_NAME"));
+				info.setLastCroModDate(rs.getTimestamp("ACTION_DATE"));
+				lst.add(info);
+			}
+			return lst;
+
+		} catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage());
+			throw new FDResourceException(sqle);
+		} finally {
+			close(rs);
+			close(ps);
+			close(conn);
+		}
+	}
+
+	private String TxFOR_REVERSE_AUTH = "select * from MIS.GATEWAY_ACTIVITY_LOG gal where GAL.ORDER_ID=? and transaction_type='AUTHORIZE' and GAL.IS_APPROVED='Y' and GAL.IS_AVS_MATCH!='Y'";
+
+	public void reverseAuthOrder(String saleId) throws RemoteException, FDResourceException, ErpTransactionException {
+
+		if (StringUtils.isEmpty(saleId))
+			return;
+		Gateway gateway = GatewayFactory.getGateway(GatewayType.PAYMENTECH);
+		try {
+			if (saleId.indexOf("X") < 0) {
+				ErpCustomerManagerSB customerManagerSB = (ErpCustomerManagerSB) this.getErpCustomerManagerHome()
+						.create();
+				ErpSaleModel _order = customerManagerSB.getOrder(new PrimaryKey(saleId));
+				if (_order == null)
+					return;
+				if (EnumSaleStatus.CANCELED.equals(_order.getStatus())) {
+
+					ErpAbstractOrderModel order = _order.getCurrentOrder();
+					List<ErpAuthorizationModel> auths = _order.getAuthorizations();
+					for (ErpAuthorizationModel auth : auths) {
+
+						if (!StringUtils.isEmpty(auth.getAuthCode())) {
+							Request _request = RequestFactory.getRequest(TransactionType.REVERSE_AUTHORIZE);
+							BillingInfo billinginfo = null;
+
+							billinginfo = BillingInfoFactory.getBillingInfo(Merchant.valueOf(auth.getMerchantId()),
+									GatewayAdapter.getCreditCardModel(order.getPaymentMethod()));
+							billinginfo.setTransactionID(auth.getGatewayOrderID());
+							billinginfo.getPaymentMethod().setCustomerID(_order.getCustomerPk().getId());
+							billinginfo.setTransactionRefIndex(auth.getTrasactionRefIndex());
+							billinginfo.setTransactionRef(auth.getSequenceNumber());
+							billinginfo.setAmount(auth.getAmount());
+							_request.setBillingInfo(billinginfo);
+							Response _response = gateway.reverseAuthorize(_request);
+							if (!_response.isSuccess())
+								throw new ErpTransactionException(_response.getStatusMessage());
+						}
+					}
+
+				}
+			} else {
 				Connection conn = null;
-				if(StringUtils.isEmpty(date))
-					throw new FDResourceException("Please pass a valid date");
+				Request _request = null;
+				PreparedStatement ps = null;
+				ResultSet rs = null;
 				try {
 					conn = this.getConnection();
 					List lst = new ArrayList();
-					PreparedStatement ps =null;
-					
-						ps= conn.prepareStatement(VOID_CAPTURE_ORDERS_QUERY_BY_DATE);
-						ps.setString(1,date);
-						//ps.setString(2,date);
-					
-					ResultSet rs = ps.executeQuery();
-					while(rs.next()){
-						FDCustomerOrderInfo info = new FDCustomerOrderInfo();
-						info.setSaleId(rs.getString("SALE_ID"));
-						info.setDeliveryDate(rs.getDate("REQUESTED_DATE"));
-						info.setOrderStatus(EnumSaleStatus.getSaleStatus(rs.getString("STATUS")));
-						info.setAmount(rs.getDouble("AMOUNT"));
-						info.setFirstName(rs.getString("FIRST_NAME"));
-						info.setLastName(rs.getString("LAST_NAME"));
-						info.setLastCroModDate(rs.getTimestamp("ACTION_DATE"));
-						lst.add(info);
-					}
-					rs.close();
-					ps.close();
+					ps = null;
 
-					return lst;
+					ps = conn.prepareStatement(TxFOR_REVERSE_AUTH);
+					ps.setString(1, saleId);
+					// ps.setString(2,date);
+
+					rs = ps.executeQuery();
+					if (rs.next()) {
+						_request = RequestFactory.getRequest(TransactionType.REVERSE_AUTHORIZE);
+						BillingInfo billinginfo = null;
+
+						billinginfo = BillingInfoFactory.getBillingInfo(Merchant.valueOf(rs.getString("MERCHANT")),
+								PaymentMethodFactory.getCreditCard());
+						billinginfo.setTransactionID(saleId);
+						billinginfo.getPaymentMethod().setCustomerID(rs.getString("CUSTOMER_ID"));
+						billinginfo.setTransactionRefIndex(rs.getString("TX_REF_IDX"));
+						billinginfo.setTransactionRef(rs.getString("TX_REF_NUM"));
+						billinginfo.setAmount(rs.getDouble("AMOUNT"));
+						_request.setBillingInfo(billinginfo);
+
+					}
+				//	rs.close();
+				//	ps.close();
+					if (_request != null) {
+						Response _response = gateway.reverseAuthorize(_request);
+						if (!_response.isSuccess())
+							throw new ErpTransactionException(_response.getStatusMessage());
+					}
+
 				} catch (SQLException sqle) {
 					LOGGER.error(sqle.getMessage());
 					throw new FDResourceException(sqle);
 				} finally {
-					if (conn != null) {
-						try {
-							conn.close();
-						} catch (SQLException sqle) {
-							LOGGER.debug("Error while cleaning:", sqle);
-						}
-					}
+					close(rs);
+					close(ps);
+					close(conn);
 				}
+
 			}
 
-            private String TxFOR_REVERSE_AUTH="select * from MIS.GATEWAY_ACTIVITY_LOG gal where GAL.ORDER_ID=? and transaction_type='AUTHORIZE' and GAL.IS_APPROVED='Y' and GAL.IS_AVS_MATCH!='Y'";
-			public void reverseAuthOrder(String saleId) throws RemoteException, FDResourceException, ErpTransactionException {
-				
-				if(StringUtils.isEmpty(saleId))
-					return ;
-				Gateway gateway=GatewayFactory.getGateway(GatewayType.PAYMENTECH);
-				 try {
-					 if(saleId.indexOf("X")<0) {
-		              ErpCustomerManagerSB customerManagerSB = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
-		              ErpSaleModel _order=customerManagerSB.getOrder(new PrimaryKey(saleId));
-		              if(_order==null) return ;
-		              if(EnumSaleStatus.CANCELED.equals(_order.getStatus())) {
-		            	  
-			              ErpAbstractOrderModel order =_order.getCurrentOrder();
-			              List<ErpAuthorizationModel> auths= _order.getAuthorizations();
-			              for (ErpAuthorizationModel auth : auths) {
-			            	  
-			          		if(!StringUtils.isEmpty(auth.getAuthCode())) {
-			          			Request _request=RequestFactory.getRequest(TransactionType.REVERSE_AUTHORIZE);
-					              BillingInfo billinginfo=null;
-					              
-					              billinginfo=BillingInfoFactory.getBillingInfo(Merchant.valueOf(auth.getMerchantId()),GatewayAdapter.getCreditCardModel(order.getPaymentMethod()));
-					              billinginfo.setTransactionID(auth.getGatewayOrderID());
-					              billinginfo.getPaymentMethod().setCustomerID(_order.getCustomerPk().getId());
-					              billinginfo.setTransactionRefIndex(auth.getTrasactionRefIndex());
-					              billinginfo.setTransactionRef(auth.getSequenceNumber());
-					              billinginfo.setAmount(auth.getAmount());
-					              _request.setBillingInfo(billinginfo);
-					              Response _response=gateway.reverseAuthorize(_request);
-					              if (!_response.isSuccess())
-					              	throw new ErpTransactionException(_response.getStatusMessage()) ;
-			          		}
-			          	  }
-			  			  
-			              
-		              }
-					 } else {
-						 Connection conn = null;
-						 Request _request=null;
-						 try {
-								conn = this.getConnection();
-								List lst = new ArrayList();
-								PreparedStatement ps =null;
-		              
-									ps= conn.prepareStatement(TxFOR_REVERSE_AUTH);
-									ps.setString(1,saleId);
-									//ps.setString(2,date);
-		              
-								ResultSet rs = ps.executeQuery();
-								if(rs.next()){
-									_request=RequestFactory.getRequest(TransactionType.REVERSE_AUTHORIZE);
-						              BillingInfo billinginfo=null;
-						              
-						              billinginfo=BillingInfoFactory.getBillingInfo(Merchant.valueOf(rs.getString("MERCHANT")),PaymentMethodFactory.getCreditCard());
-						              billinginfo.setTransactionID(saleId);
-						              billinginfo.getPaymentMethod().setCustomerID(rs.getString("CUSTOMER_ID"));
-						              billinginfo.setTransactionRefIndex(rs.getString("TX_REF_IDX"));
-						              billinginfo.setTransactionRef(rs.getString("TX_REF_NUM"));
-						              billinginfo.setAmount(rs.getDouble("AMOUNT"));
-						              _request.setBillingInfo(billinginfo);
-						              
-								}
-								rs.close();
-								ps.close();
-								if(_request!=null) {
-									Response _response=gateway.reverseAuthorize(_request);
-						              if (!_response.isSuccess())
-						              	throw new ErpTransactionException(_response.getStatusMessage()) ;
-								}
-								
-							} catch (SQLException sqle) {
-								LOGGER.error(sqle.getMessage());
-								throw new FDResourceException(sqle);
-							} finally {
-								if (conn != null) {
-									try {
-										conn.close();
-									} catch (SQLException sqle) {
-										LOGGER.debug("Error while cleaning:", sqle);
-									}
-								}
-							}
-						 
-					 }
-		              
-		              
-		        } catch (CreateException ce) {
-		              throw new FDResourceException(ce);
-		        } catch (RemoteException re) {
-		              throw new FDResourceException(re);
-		        } 
-			}
-			
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
 			/*select A.sale_id, A.status, A.requested_date, A.amount, A.action_date,A.last_name,A.first_name from
 			(select  s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name from cust.sale s, 
 			cust.salesaction sa,cust.customerinfo ci, cust.paymentinfo pi  where s.status='CAN' 
@@ -3724,59 +3379,59 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			where A.sale_id=sa1.sale_id and sa1.id=P.SALESACTION_ID and sa1.action_type='AUT'
 			and  exists (select 1 from MIS.GATEWAY_ACTIVITY_LOG gal where P.GATEWAY_ORDER=GAL.ORDER_ID and transaction_type='AUTHORIZE' and GAL.IS_APPROVED='Y' )*/ 
 			
-			public void voidCaptureOrder(String saleId) throws RemoteException, FDResourceException, ErpTransactionException {
-				
+	public void voidCaptureOrder(String saleId) throws RemoteException, FDResourceException, ErpTransactionException {
 
-				if(StringUtils.isEmpty(saleId))
-					return;
-				Paymentech gateway=(Paymentech)GatewayFactory.getGateway(GatewayType.PAYMENTECH);
-				 try {
-		              ErpCustomerManagerSB customerManagerSB = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
-		              ErpSaleModel _order=customerManagerSB.getOrder(new PrimaryKey(saleId));
-		              if(_order==null) return;
-		              if(EnumSaleStatus.PAYMENT_PENDING.equals(_order.getStatus())) {
-		            	  
-			              ErpAbstractOrderModel order =_order.getCurrentOrder();
-			              List<ErpCaptureModel> captures= _order.getCaptures();
-			              for (ErpCaptureModel capture : captures) {
-			            	
-			          			Request _request=RequestFactory.getRequest(TransactionType.VOID_CAPTURE);
-					              BillingInfo billinginfo=null;
-					              
-					              if(EnumPaymentMethodType.CREDITCARD.equals(order.getPaymentMethod().getPaymentMethodType())) {
-					              
-					      			billinginfo=BillingInfoFactory.getBillingInfo(Merchant.valueOf(capture.getMerchantId()), GatewayAdapter.getCreditCardModel(order.getPaymentMethod()));
-					      		  }
-					      		  else if(EnumPaymentMethodType.ECHECK.equals(order.getPaymentMethod().getPaymentMethodType())) {
-					      			billinginfo=BillingInfoFactory.getBillingInfo(Merchant.valueOf(capture.getMerchantId()), GatewayAdapter.getECheckModel(order.getPaymentMethod()));
-					      		  } else
-					      			  return;
+		if (StringUtils.isEmpty(saleId))
+			return;
+		Paymentech gateway = (Paymentech) GatewayFactory.getGateway(GatewayType.PAYMENTECH);
+		try {
+			ErpCustomerManagerSB customerManagerSB = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
+			ErpSaleModel _order = customerManagerSB.getOrder(new PrimaryKey(saleId));
+			if (_order == null)
+				return;
+			if (EnumSaleStatus.PAYMENT_PENDING.equals(_order.getStatus())) {
 
-					              billinginfo.setTransactionID(capture.getGatewayOrderID());
-					              billinginfo.setTransactionRefIndex(capture.getTrasactionRefIndex());
-					              billinginfo.setTransactionRef(capture.getSequenceNumber());
-					              billinginfo.setAmount(capture.getAmount());
-					              billinginfo.getPaymentMethod().setCustomerID(_order.getCustomerPk().getId());
-					              
-					              _request.setBillingInfo(billinginfo);
-					              Response _response=gateway.voidCapture(_request);
-					              if (!_response.isSuccess())
-						              	throw new ErpTransactionException(_response.getStatusMessage());
-					              ErpVoidCaptureModel voidCapture=GatewayAdapter.getVoidCaptureResponse(_response, capture);
-					              _order.addVoidCapture(voidCapture);
-			          		
-			          	  }
-			  			  
-			              
-		              }
-		              
-		        } catch (CreateException ce) {
-		              throw new FDResourceException(ce);
-		        } catch (RemoteException re) {
-		              throw new FDResourceException(re);
-		        } catch ( PaylinxResourceException pre) {
-		        	throw new FDResourceException(pre);
-		        }
+				ErpAbstractOrderModel order = _order.getCurrentOrder();
+				List<ErpCaptureModel> captures = _order.getCaptures();
+				for (ErpCaptureModel capture : captures) {
+
+					Request _request = RequestFactory.getRequest(TransactionType.VOID_CAPTURE);
+					BillingInfo billinginfo = null;
+
+					if (EnumPaymentMethodType.CREDITCARD.equals(order.getPaymentMethod().getPaymentMethodType())) {
+
+						billinginfo = BillingInfoFactory.getBillingInfo(Merchant.valueOf(capture.getMerchantId()),
+								GatewayAdapter.getCreditCardModel(order.getPaymentMethod()));
+					} else if (EnumPaymentMethodType.ECHECK.equals(order.getPaymentMethod().getPaymentMethodType())) {
+						billinginfo = BillingInfoFactory.getBillingInfo(Merchant.valueOf(capture.getMerchantId()),
+								GatewayAdapter.getECheckModel(order.getPaymentMethod()));
+					} else
+						return;
+
+					billinginfo.setTransactionID(capture.getGatewayOrderID());
+					billinginfo.setTransactionRefIndex(capture.getTrasactionRefIndex());
+					billinginfo.setTransactionRef(capture.getSequenceNumber());
+					billinginfo.setAmount(capture.getAmount());
+					billinginfo.getPaymentMethod().setCustomerID(_order.getCustomerPk().getId());
+
+					_request.setBillingInfo(billinginfo);
+					Response _response = gateway.voidCapture(_request);
+					if (!_response.isSuccess())
+						throw new ErpTransactionException(_response.getStatusMessage());
+					ErpVoidCaptureModel voidCapture = GatewayAdapter.getVoidCaptureResponse(_response, capture);
+					_order.addVoidCapture(voidCapture);
+
+				}
+
 			}
-			
+
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		} catch (PaylinxResourceException pre) {
+			throw new FDResourceException(pre);
+		}
+	}
+
 }

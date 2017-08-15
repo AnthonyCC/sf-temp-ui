@@ -10,7 +10,7 @@ public class ReserveTimeslotControllerTagWrapper extends ControllerTagWrapper im
 
     public static final String ACTION_RESERVE_TIMESLOT = "reserveTimeslot";
 
-    public static final String ACTION_UPDATE_WEEKLY_RESERVATION = "updateWeeklyReservation"; //Not supported
+	//public static final String ACTION_UPDATE_WEEKLY_RESERVATION = "updateWeeklyReservation"; //Not supported
 
     public static final String ACTION_CHANGE_RESERVATION = "changeReservation"; //Not supported
 

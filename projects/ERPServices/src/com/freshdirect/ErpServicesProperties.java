@@ -272,6 +272,8 @@ public class ErpServicesProperties {
 	
 	public final static String  PROP_HOOK_LOGIC_CATEGORY_URL="fdstore.erp.hooklogic.category.url";
 	
+	public final static String  PROP_HOOK_LOGIC_BEACON="fdstore.erp.hl.beacon";
+	
 	public final static String PROP_SAP_BAPI_UNATTENDED_DELIVERY="sap.bapi.unattended.delivery.flg.feature";
 	
 	public final static String PROP_SHIPPING_DETAILS_ROW_COUNT="sale.shipping.detail.row.count";
@@ -492,6 +494,7 @@ public class ErpServicesProperties {
 		defaults.put(PROP_HOOK_LOGIC_MAXMES, "5");
 		defaults.put(PROP_HOOK_LOGIC_PGN, "1");
 		defaults.put(PROP_HOOK_LOGIC_CATEGORY_URL, "http://uat1.hlserve.com/delivery/api/taxonomy?");
+		defaults.put(PROP_HOOK_LOGIC_BEACON, "individual");
 		
 		
 		defaults.put(PROP_PP_SETTLEMENT_STL_EVENTCODES, "T0006, T0003");
@@ -1233,6 +1236,10 @@ public class ErpServicesProperties {
 	
 	public static String getBrandProductAdProviderPgn(){
 		return config.getProperty(PROP_HOOK_LOGIC_PGN);
+	}
+	
+	public static String getBrandProductsBeacon(){
+		return config.getProperty(PROP_HOOK_LOGIC_BEACON);
 	}
 	
 	public static boolean isSAPUnattendedDelivery(){

@@ -12,6 +12,7 @@ package com.freshdirect.fdstore.customer.ejb;
 import java.rmi.RemoteException;
 import java.util.Date;
 
+import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.fdstore.customer.FDCustomerI;
 import com.freshdirect.framework.core.EntityBeanRemoteI;
 
@@ -36,5 +37,7 @@ public interface FDCustomerEB extends EntityBeanRemoteI, FDCustomerI {
 	public int getPymtVerifyAttempts()  throws RemoteException;
 	public void resetPymtVerifyAttempts() throws RemoteException;
     public int incrementPymtVerifyAttempts() throws RemoteException;
+    public EnumPaymentMethodDefaultType getDefaultPaymentMethodType() throws RemoteException;
+	public void setDefaultPaymentMethodType(EnumPaymentMethodDefaultType defaultPaymentType) throws RemoteException;	
     public void setFDCustomerEStore(FDCustomerEStoreModel fdCustomerEStoreModel) throws RemoteException;
 }

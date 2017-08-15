@@ -1,6 +1,8 @@
 package com.freshdirect.payment.service;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.rmi.RemoteException;
 import java.text.ParseException;
@@ -21,6 +23,9 @@ import javax.ejb.ObjectNotFoundException;
 
 import org.apache.log4j.Category;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClientException;
+
 import weblogic.auddi.util.Logger;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -33,13 +38,9 @@ import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.content.attributes.AttributeException;
 import com.freshdirect.content.attributes.FlatAttribute;
-import com.freshdirect.content.nutrition.ErpNutritionModel;
-import com.freshdirect.content.nutrition.panel.NutritionPanel;
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.ErpActivityRecord;
-import com.freshdirect.customer.ErpComplaintReason;
 import com.freshdirect.customer.ErpCustEWalletModel;
-import com.freshdirect.customer.ErpCustomerCreditModel;
 import com.freshdirect.customer.ErpEWalletModel;
 import com.freshdirect.customer.ErpGrpPriceModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
@@ -47,6 +48,7 @@ import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpRestrictedAvailabilityModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
+import com.freshdirect.ecomm.gateway.CustomResponseDeserializer;
 import com.freshdirect.ecommerce.data.attributes.FlatAttributeCollection;
 import com.freshdirect.ecommerce.data.cms.CmsCreateFeedParams;
 import com.freshdirect.ecommerce.data.common.Request;
@@ -54,7 +56,6 @@ import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.customer.ErpActivityRecordData;
 import com.freshdirect.ecommerce.data.customer.ErpGrpPriceModelData;
 import com.freshdirect.ecommerce.data.customer.accounts.external.UserTokenData;
-import com.freshdirect.ecommerce.data.customer.complaint.ErpComplaintReasonData;
 import com.freshdirect.ecommerce.data.delivery.AddressAndRestrictedAdressData;
 import com.freshdirect.ecommerce.data.delivery.AddressRestrictionData;
 import com.freshdirect.ecommerce.data.delivery.AlcoholRestrictionData;
@@ -110,29 +111,10 @@ import com.freshdirect.ecommerce.data.fdstore.GroupScalePricingData;
 import com.freshdirect.ecommerce.data.fdstore.SalesAreaInfoFDGroupWrapper;
 import com.freshdirect.ecommerce.data.logger.recommendation.FDRecommendationEventData;
 import com.freshdirect.ecommerce.data.mail.EmailData;
-import com.freshdirect.ecommerce.data.nutrition.ErpNutritionModelData;
 import com.freshdirect.ecommerce.data.payment.BINData;
 import com.freshdirect.ecommerce.data.payment.ErpPaymentMethodData;
 import com.freshdirect.ecommerce.data.payment.FDGatewayActivityLogModelData;
 import com.freshdirect.ecommerce.data.payment.RestrictedPaymentMethodData;
-import com.freshdirect.ecommerce.data.referral.CustomerCreditData;
-import com.freshdirect.ecommerce.data.referral.FDReferralReportLineData;
-import com.freshdirect.ecommerce.data.referral.FDUserData;
-import com.freshdirect.ecommerce.data.referral.FNLNZipData;
-import com.freshdirect.ecommerce.data.referral.FailedAttemptData;
-import com.freshdirect.ecommerce.data.referral.MailData;
-import com.freshdirect.ecommerce.data.referral.ManageInvitesData;
-import com.freshdirect.ecommerce.data.referral.ReferralCampaignData;
-import com.freshdirect.ecommerce.data.referral.ReferralChannelData;
-import com.freshdirect.ecommerce.data.referral.ReferralHistoryData;
-import com.freshdirect.ecommerce.data.referral.ReferralIniviteData;
-import com.freshdirect.ecommerce.data.referral.ReferralObjectiveData;
-import com.freshdirect.ecommerce.data.referral.ReferralPartnerData;
-import com.freshdirect.ecommerce.data.referral.ReferralProgramData;
-import com.freshdirect.ecommerce.data.referral.ReferralProgramInvitationData;
-import com.freshdirect.ecommerce.data.referral.ReferralPromotionData;
-import com.freshdirect.ecommerce.data.referral.ReferralSearchCriteriaData;
-import com.freshdirect.ecommerce.data.referral.UserCreditData;
 import com.freshdirect.ecommerce.data.routing.SubmitOrderRequestData;
 import com.freshdirect.ecommerce.data.rules.RuleData;
 import com.freshdirect.ecommerce.data.sap.CharacteristicValueMapData;
@@ -218,6 +200,8 @@ import com.freshdirect.security.ticket.Ticket;
 import com.freshdirect.sms.model.st.STSmsResponse;
 //import com.freshdirect.content.attributes.FlatAttributeCollection;
 //import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 
 public class FDECommerceService extends AbstractEcommService implements IECommerceService {
@@ -918,22 +902,59 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	}
 	@Override
 	public BatchModel getBatch(int batchId) throws FDResourceException {
-		Response<BatchModel> response;
+		ResponseEntity<String> response=null;
+		try{
+//		response = httpGetDataTypeMap(getFdCommerceEndPoint(ERP_BATCH_PROCESS_API+batchId), new TypeReference<Response<BatchModel>>() {});
+		response =  getRestTemplate().getForEntity(new URI(getFdCommerceEndPoint(ERP_BATCH_PROCESS_API+batchId)),String.class);
+		} catch (RestClientException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (URISyntaxException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		Collection<BatchModel> models = new ArrayList();
+		String ss = response.getBody();
 		
-		response = httpGetDataTypeMap(getFdCommerceEndPoint(ERP_BATCH_PROCESS_API+batchId), new TypeReference<Response<BatchModel>>() {});
-		if(!response.getResponseCode().equals("OK"))
-			throw new FDResourceException(response.getMessage());
-			return response.getData();
+			GsonBuilder  gSon=  new GsonBuilder();
+			gSon.registerTypeAdapter(Response.class, new CustomResponseDeserializer());
+			
+			
+			Gson g = gSon.create();
+			Response<Collection<BatchModel>> jsons = g.fromJson(ss, Response.class);
+			Collection<BatchModel> bmlist = jsons.getData();
+		if(!jsons.getResponseCode().equals("OK"))
+			throw new FDResourceException(jsons.getMessage());
+			return bmlist.iterator().next();
 
 	}
 	@Override
 	public Collection getRecentBatches() throws FDResourceException {
-		Response<Collection<BatchModel>> response;
+		Response<Collection<BatchModel>> response=null;
+	ResponseEntity<String> responsess=null;
+
+	try {
+		responsess = getRestTemplate().getForEntity(new URI(getFdCommerceEndPoint(ERP_RECENT_BATCHES_API)),String.class);
+	} catch (RestClientException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	} catch (URISyntaxException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}
+		Collection<BatchModel> models = new ArrayList();
+		String ss = responsess.getBody();
 		
-		response = httpGetDataTypeMap(getFdCommerceEndPoint(ERP_RECENT_BATCHES_API), new TypeReference<Response<Collection<BatchModel>>>() {});
-		if(!response.getResponseCode().equals("OK"))
-			throw new FDResourceException(response.getMessage());
-			return response.getData();
+			GsonBuilder  gSon=  new GsonBuilder();
+			gSon.registerTypeAdapter(Response.class, new CustomResponseDeserializer());
+			
+			
+			Gson g = gSon.create();
+			Response<Collection<BatchModel>> jsons = g.fromJson(ss, Response.class);
+		
+		if(!jsons.getResponseCode().equals("OK"))
+			throw new FDResourceException(jsons.getMessage());
+			return jsons.getData();
 
 	}
 	

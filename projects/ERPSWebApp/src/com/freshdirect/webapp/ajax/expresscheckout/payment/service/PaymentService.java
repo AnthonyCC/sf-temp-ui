@@ -24,8 +24,11 @@ import com.freshdirect.fdstore.content.ComparatorChain;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.StringUtil;
@@ -99,7 +102,7 @@ public class PaymentService {
         String billingRef = null; // TODO: needed? CORPORATE with zero payment
         // method.
         HttpSession session = request.getSession();
-        PaymentMethodManipulator.setPaymentMethod(paymentId, billingRef, request, session, result, actionName);
+        PaymentMethodManipulator.setPaymentMethod(paymentId, billingRef, request, session, result, actionName,"N");
         for (ActionError error : result.getErrors()) {
             validationErrors.add(new ValidationError(error.getType(), error.getDescription()));
         }
@@ -221,7 +224,7 @@ public class PaymentService {
 //        List<ErpPaymentMethodI> paymentMethods = (List<ErpPaymentMethodI>) user.getPaymentMethods();
         if(null == paymentMethods){
         	paymentMethods = (List<ErpPaymentMethodI>) user.getPaymentMethods();
-        }
+        }       
         paymentMethods = PaymentMethodManipulator.disconnectInvalidPayPalWallet(paymentMethods, request);
         sortPaymentMethods(user, paymentMethods);
         String selectedPaymentId = null;
@@ -230,8 +233,14 @@ public class PaymentService {
         if (cartPaymentSelectionDisabled == null || !cartPaymentSelectionDisabled) {
         	if(vaidateSO3Payment(user,paymentMethods)){
         		selectedPaymentId=user.getCurrentStandingOrder().getPaymentMethodId();
-        	}else if (user.getShoppingCart().getPaymentMethod() == null) {
+        	}
+        	else if((user.getShoppingCart() instanceof FDModifyCartModel) && paymentMethods.size() > 0 && null ==request.getAttribute("pageAction")){
+        		selectedPaymentId= paymentMethods.get(0).getPK().getId();
+        	}
+        	else if (user.getShoppingCart().getPaymentMethod() == null || (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)
+        					&& null ==request.getAttribute("pageAction"))) {
 //                selectedPaymentId = FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity());
+        		 user.refreshFdCustomer();
         		selectedPaymentId = user.getFDCustomer().getDefaultPaymentMethodPK();
                 selectionError = selectPaymentMethod(selectedPaymentId, PageAction.SELECT_PAYMENT_METHOD.actionName, request);
             } else {

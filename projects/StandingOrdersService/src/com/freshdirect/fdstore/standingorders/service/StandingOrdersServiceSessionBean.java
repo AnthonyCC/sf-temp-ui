@@ -20,13 +20,17 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
+import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.coremetrics.mobileanalytics.CreateCMRequest;
 import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderAltDeliveryDate;
@@ -99,8 +103,8 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 				
 				soList = soManager.loadActiveStandingOrders(false);	
 				
-				soList.addAll(soManager.loadActiveStandingOrders(true));	
-
+				soList.addAll(soManager.loadActiveStandingOrders(true));
+				
 				if ( soList.isEmpty()  ) {
 					LOGGER.error( "Could not retrieve standing orders list! - loadActiveStandingOrders() returned null" );
 					sendTechnicalMail( "Could not retrieve standing orders list! - loadActiveStandingOrders() returned null" );
@@ -412,8 +416,5 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 	public UnavDetailsReportingBean getDetailsForReportGeneration() throws FDResourceException {		
 			return soManager.getDetailsForReportGeneration();	
 	}
-	
-	public void deleteStandingOrders() throws FDResourceException{
-			soManager.deleteSOByDate();	
-	}
+
 }	

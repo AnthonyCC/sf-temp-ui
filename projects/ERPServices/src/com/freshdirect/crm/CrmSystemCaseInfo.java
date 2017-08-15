@@ -55,7 +55,7 @@ public class CrmSystemCaseInfo implements Serializable {
 		
 		//default values
 		this.origin = CrmCaseOrigin.getEnum(CrmCaseOrigin.CODE_SYS);
-		this.state = CrmCaseState.getEnum(CrmCaseState.CODE_OPEN);
+		this.state = CrmCaseSubject.CODE_EARLY_DELIVERY_REQEUST.equals(subject.getCode()) ?CrmCaseState.getEnum(CrmCaseState.CODE_CLOSED):CrmCaseState.getEnum(CrmCaseState.CODE_OPEN);
 	}
 	
 	public PrimaryKey getCustomerPK(){

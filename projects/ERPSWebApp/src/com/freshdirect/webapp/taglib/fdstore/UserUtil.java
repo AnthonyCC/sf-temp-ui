@@ -20,6 +20,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.CatalogKey;
 import com.freshdirect.customer.EnumExternalLoginSource;
+import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
@@ -40,6 +41,7 @@ import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDBulkRecipientList;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -54,6 +56,8 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.customer.SavedRecipientModel;
 import com.freshdirect.fdstore.customer.accounts.external.ExternalAccountManager;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.MD5Hasher;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -647,6 +651,21 @@ public class UserUtil {
           if(user != null) {
         	user.setJustLoggedIn(true);
           }
+          if(!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)){
+        	 user.resetDefaultPaymentValueType();
+          }else {
+				FDActionInfo info = AccountActivityUtil.getActionInfo(request.getSession());
+				boolean isDefaultPaymentMethodRegistered = false;
+				try {
+					isDefaultPaymentMethodRegistered = (null != user.getFDCustomer().getDefaultPaymentType() && 
+							!user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName()));
+				} catch (FDResourceException e) {
+					LOGGER.error(e);
+				}
+				if (!isDefaultPaymentMethodRegistered) {
+					new Thread(new DefaultPaymentMethod(info, EnumPaymentMethodDefaultType.DEFAULT_SYS, user.getPaymentMethods())).start();
+				}
+			}
 
           CmRegistrationTag.setPendingLoginEvent(session);
           logExtraLoginDetailsLogin(request, userId, password, mergePage, successPage, externalLogin, "LOGINSUCCESS"); //THis is commented because it breaks using https://mobileapi.freshdirect.com/mobileapi/v/1/social/login/

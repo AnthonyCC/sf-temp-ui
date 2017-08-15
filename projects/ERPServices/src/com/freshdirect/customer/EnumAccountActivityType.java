@@ -103,7 +103,7 @@ public class EnumAccountActivityType implements java.io.Serializable {
 	public final static EnumAccountActivityType		STANDINGORDER_CREATED				= new EnumAccountActivityType( "SO-Created", "Standing Order created." );
 	public final static EnumAccountActivityType		STANDINGORDER_MODIFIED				= new EnumAccountActivityType( "SO-Modified", "Standing Order modified." );
 	public final static EnumAccountActivityType		STANDINGORDER_DELETED				= new EnumAccountActivityType( "SO-Deleted", "Standing Order deleted." );
-	public final static EnumAccountActivityType		STANDINGORDER_TEMPLATE_DEL_DATE_SET	= new EnumAccountActivityType( "SO-TemplateDel", "SO-temp del date has picked by user" );
+	public final static EnumAccountActivityType		STANDINGORDER_TEMPLATE_DEL_DATE_SET	= new EnumAccountActivityType( "SO-TemptDelete", "SO-template delete date was choosen by user");
 	public final static EnumAccountActivityType		STANDINGORDER_SAVE_FAILED			= new EnumAccountActivityType( "SO-SaveFailed", "Standing Order update/save failed." );
 	public final static EnumAccountActivityType		STANDINGORDER_ERROR_CLEARED			= new EnumAccountActivityType( "SO-ErrorCleared", "Standing Order error cleared." );
 	
@@ -126,9 +126,12 @@ public class EnumAccountActivityType implements java.io.Serializable {
 	public final static EnumAccountActivityType		DISABLE_REFERRAL_PROMO				= new EnumAccountActivityType( "Disable RAFPromo", "Disable Referral Promotion" );
 	public final static EnumAccountActivityType		NEW_DP_TC_AGREE						= new EnumAccountActivityType( "Agreed To DpTc", "Agreed To New DeliveryPass Terms" );
 	public final static EnumAccountActivityType		SMS_ALERT  	                        = new EnumAccountActivityType( "SMS Notif.", "SMS Notification text message options" );
+	public final static EnumAccountActivityType		DEFAULT_PM_SYS  	           		= new EnumAccountActivityType( "Dflt PM S", "Default Payment Method added by SYSTEM" );
+	public final static EnumAccountActivityType		DEFAULT_PM_CUST  	           		= new EnumAccountActivityType( "Dflt PM C", "Default Payment Method added by CUSTOMER" );
+	public final static EnumAccountActivityType		DEFAULT_PM_ND  	           		= new EnumAccountActivityType( "Dflt PM ND", "Default Payment Method not entered" );
+	public final static EnumAccountActivityType		DEFAULT_PM_DELETED  	           	= new EnumAccountActivityType( "Dflt PM DLTD", "Default Payment Method deleted" );
 	
-	
-    private EnumAccountActivityType(String code, String name) {
+	private EnumAccountActivityType(String code, String name) {
         this.id = idCounter++;
         this.code = code;
         this.name = name;

@@ -406,12 +406,15 @@ public class DeliveryAddressService {
             .<ErpAddressModel> reverseOrder(ComparatorChain.create(DELIVERY_ADDRESS_COMPARATOR_BY_ID));
 
     private boolean isDeliveryZoneUnattended(ErpAddressModel deliveryAddress) throws FDResourceException {
-        boolean isUnatteded = false;
-        try {
-            FDDeliveryZoneInfo deliveryZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(deliveryAddress, new Date(), null, null, deliveryAddress.getCustomerId());
-            isUnatteded = deliveryZoneInfo.isUnattended() && isDeliveryAddressUnattended(deliveryAddress);
-        } catch (FDInvalidAddressException e) {
-            LOGGER.error("Can not find zone info of delivery address.", e);
+        boolean isUnatteded = isDeliveryAddressUnattended(deliveryAddress);
+        if (isUnatteded) {
+	        try {
+	            FDDeliveryZoneInfo deliveryZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(deliveryAddress, new Date(), null, null, deliveryAddress.getCustomerId());
+	            isUnatteded = deliveryZoneInfo.isUnattended();
+	        } catch (FDInvalidAddressException e) {
+	            LOGGER.error("Can not find zone info of delivery address.", e);
+	            return false;
+	        }
         }
         return isUnatteded;
     }

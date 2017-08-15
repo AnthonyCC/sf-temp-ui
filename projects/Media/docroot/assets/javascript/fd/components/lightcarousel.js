@@ -67,6 +67,21 @@ var FreshDirect = FreshDirect || {};
       carousel.addClass('last');
     }
 
+    // product impression reporting based on pages
+    var vislibleProducts = elements.slice(newPage * itemPerPage, (newPage+1) * itemPerPage);
+    vislibleProducts.each(function (i, pEl) {
+      var $pEl = $(pEl);
+
+      if (!$pEl.attr('data-impression-reported')) {
+        $pEl.attr('data-impression-reported', 'true');
+
+        // give some time for the GTM module to load
+        setTimeout(function () {
+          fd.common.dispatcher.signal('productImpressions', $pEl);
+        }, 100);
+      }
+    });
+
     carousel.data('carousel-page', newPage);
     carousel.data('carousel-nrpages', nrPages);
     updatePager(carousel);
@@ -81,6 +96,9 @@ var FreshDirect = FreshDirect || {};
       setTimeout(function () {
         carousel.removeClass('stepping');
       }, 400);
+      
+      //lazy load on carousel "page" changes
+      $(window).trigger('lazyLoad');
     }
 
     return result;

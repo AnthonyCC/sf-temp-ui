@@ -26,7 +26,8 @@
 				Your account is not connected to <%= provider %>.
 				</br>Sign in to connect your accounts.							
 			</div>
-			<button class="social-login-green-button" onclick="window.parent.FreshDirect.components.ifrPopup.open({ url: '/social/login.jsp?triedToConnect=<%= provider %>'}) ">
+			<button class="social-login-green-button"
+				onclick="window.parent.FreshDirect.components.ifrPopup.close(); window.parent.FreshDirect.modules.common.login.socialLogin();">
 				Sign In
 			</button>
 			<div class="social-login-green-button-space"></div>

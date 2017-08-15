@@ -142,7 +142,7 @@
 					</td>
 					 <!-- This field is named as 'userid' to be consistent with naming rule in LoginControllerTag. The email validation rule is applied to this field as shown below.  -->
 					<td>
-						<input id="email" name="userid" class="padding-input-box text11ref inputDef required" type="email" maxlength="128" size="23" value="<%=userid%>" placeholder="E-mail">
+						<input id="email" aria-label="email" name="userid" class="padding-input-box text11ref inputDef required" type="email" maxlength="128" size="23" value="<%=userid%>" placeholder="E-mail">
 					</td>
 				</tr>
 				<tr>
@@ -151,7 +151,7 @@
 						<span class="error_img" id="password_img"></span>
 					</td>
 					<td style="padding-top: 15px;">
-						<input id="password" name="password" class="padding-input-box text11ref inputDef required" type="password" size="23" placeholder="Password">
+						<input id="password" aria-label="password" name="password" class="padding-input-box text11ref inputDef required" type="password" size="23" placeholder="Password">
 					</td>
 				</tr>
 				<tr>

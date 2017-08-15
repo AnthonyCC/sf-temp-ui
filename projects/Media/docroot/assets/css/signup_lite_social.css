@@ -60,7 +60,8 @@ input[type="submit"]{
      	 
      	 }
 
-input[disabled="disabled"]{
+input[disabled="disabled"],
+input[disabled]{
      	
      	background-color:#D6D6C2;
      	}

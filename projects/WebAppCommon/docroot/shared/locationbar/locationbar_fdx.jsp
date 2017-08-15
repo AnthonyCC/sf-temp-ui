@@ -56,8 +56,6 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 <!-- Adding Skip to Navigation : End-->
 
 <tmpl:insert template="/shared/locationbar/locationbar_layout_fdx.jsp">
-
-<%-- new login form --%>
 	
 	<tmpl:put name="fdx_login_form">
     	<div id="login_cont_formContent" style="display: none; z-index: 1002" class="locabar_login">
@@ -596,14 +594,6 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
       <div id="locabar_user_trigger" class="locabar_triggers" <% if (signedIn || recog) { %>tabindex="0"<% } %> role="menuitem" aria-haspopup="true" data-signedin="<%= signedIn %>" data-recog="<%= recog %>" data-social="<%= FDStoreProperties.isSocialLoginEnabled() %>">
 		        <% if (!signedIn) {%>
 					<a id="locabar_user_login_link" class = "changeBGClr" href="/login/login.jsp" <%if(recog) { %> tabindex="-1" <%}%> fd-login-required fd-login-nosignup fd-login-successpage="/index.jsp">
-					<script>
-						$jq('#locabar_user_login_link').on('click', function(e) {
-							var curHref = $jq(this).attr('href'); 
-if (curHref.indexOf('successPage') === -1 && $jq.QueryString['successPage']) {
-								$jq(this).attr('href', curHref+((curHref.indexOf('?')=== -1)?'?':'&')+'successPage='+$jq.QueryString['successPage']);
-							}
-						});
-					</script> 
 		        <% } %>
 					<div class="bold cursor-pointer">
 						<%-- <div class="locabar-user" style="display: inline-block;"></div> --%>
@@ -799,18 +789,6 @@ if (curHref.indexOf('successPage') === -1 && $jq.QueryString['successPage']) {
 	</tmpl:put>
 	<% } %>
 	
-<%-- TEST ALERTS
-
-	<tmpl:put name="test_alerts">
-		<div id="testalerts1" class="testalerts alerts invisible" data-type="testalerts1">
-			this is a test alert 1
-		</div>
-		<div id="testalerts2" class="testalerts alerts invisible" data-type="testalerts2">
-			this is a test alert 2
-		</div>
-	</tmpl:put>
-	
---%>
 </tmpl:insert>
 
 

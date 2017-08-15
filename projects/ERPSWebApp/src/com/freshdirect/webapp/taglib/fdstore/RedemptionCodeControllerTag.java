@@ -24,6 +24,8 @@ import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.WaiveChargeApplicator;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewManager;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -118,7 +120,7 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 					
 					FDGiftCardModel model = (FDGiftCardModel)giftCards1.getGiftCard(certNum);
 					FDCustomerManager.removePaymentMethod(AccountActivityUtil
-							.getActionInfo(pageContext.getSession()), model.getGiftCardModel());
+							.getActionInfo(pageContext.getSession()), model.getGiftCardModel(), FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user));
 					//Remove it from user cache.
 					giftCards.remove(certNum);
 				}

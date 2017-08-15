@@ -11,14 +11,33 @@
 	width: 223px;
 }
 
-#timeslot-tab-content input[type="radio"] {
+#timeslot-tab-content input[type="button"] {
 	height: 13px;
 }
 
+#tsContainer a:focus,#tsContainer a:hover{
+	text-decoration:none;
+}
+#tsContainer .tsHeaderC a{
+	color:#000;
+}
+#tsContainer .tsHeaderC a:focus table{
+	background-color:#4fa157;
+}
+#tsContainer .tsHeaderC a:focus{
+	color:#000;
+}
 table.tsContainer td {
 	border: 1px solid #ccc;
 }
-
+#tsContainer .tsHeaderE a:visited,#tsContainer .tsHeaderE a:focus{
+	background-color:red;
+	/*border-top-left-radius:8px;
+	border-top-right-radius:8px;*/
+}
+#tsContainer .tsHeaderE a:focus .tsHeaderE_top img{
+	display:none;
+}
 .tsTable {
 	border-collapse: collapse;
 	cursor: pointer;
@@ -1057,9 +1076,9 @@ td.noTopBorder {
 	background: #FFFFFF;
 }
 
-#tsContainer input[type="radio"] {
-    position: absolute;
-    left: -999em;
+#tsContainer input[type="button"] {
+     position: absolute;
+     left: -999em;
 }
 
 #tsContainer input:focus, [data-component="timeselectorcontent"] textarea:focus {
@@ -1070,14 +1089,14 @@ td.noTopBorder {
     box-shadow: none;
     outline: none;
 }
-#tsContainer input[type="radio"]:checked + label::before {
+#tsContainer input[type="button"]:checked + label::before {
     background: #4fa157;
     box-shadow: 0 0 0 1px #4fa157;
 }
-#tsContainer input[type="radio"]:focus + label::before {
+#tsContainer input[type="button"]:focus + label::before {
     box-shadow: 0 0 0 1px #ffffff, 0 0 0 3px #4fa157;
 }
-#tsContainer input[type="radio"] + label::before {
+#tsContainer input[type="button"] + label::before {
     background: #fafafa;
     box-shadow: 0 0 0 1px #c2c2c2;
     content: '\a0';
@@ -1088,4 +1107,17 @@ td.noTopBorder {
     line-height: 14px;
     margin-right: 10px;
     vertical-align: 2px;
+}
+#tsContainer .tcSelectionBGC input[type="button"] + label::before {
+    background-color: #4fa157;
+}
+#tsContainer .tsContentResE input[type="button"] + label::before {
+    background-color: #4fa157;
+}
+.tsWrapper{
+	padding: 10px;
+    margin-top: 20px;
+}
+.standing-orders-3 #ec-drawer #timeslots_grid .tsDayDateE, .standing-orders-3 #ec-drawer #timeslots_grid .tsDayDateC{
+	visibility:hidden !important;
 }

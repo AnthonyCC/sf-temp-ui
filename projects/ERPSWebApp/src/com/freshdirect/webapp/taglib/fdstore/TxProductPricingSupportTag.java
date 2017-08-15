@@ -265,10 +265,12 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 		List<MaterialPrice> matPriceList=  new ArrayList<MaterialPrice>();
 		String salesOrg=customer.getUserContext().getPricingContext().getZoneInfo().getSalesOrg();
 		String distributionChannel=customer.getUserContext().getPricingContext().getZoneInfo().getDistributionChanel();
-		if(productInfo.isGroupExists(salesOrg,distributionChannel)) {
+		FDGroup group = productInfo.getGroup(customer.getUserContext().getPricingContext().getZoneInfo());
+//		if(productInfo.isGroupExists(salesOrg,distributionChannel)) {
+		if(null != group) {
 			//Has a Group Scale associated with it. Check if there is GS price defined for
 			//current pricing zone.
-			FDGroup group = productInfo.getGroup(salesOrg,distributionChannel);
+//			FDGroup group = productInfo.getGroup(salesOrg,distributionChannel);
 			MaterialPrice[] grpPrices = null;
 			try {
 				grpPrices = GroupScaleUtil.getGroupScalePrices(group, customer.getUserContext().getPricingContext().getZoneInfo());

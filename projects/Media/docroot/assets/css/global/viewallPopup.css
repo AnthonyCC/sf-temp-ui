@@ -1,13 +1,17 @@
-#viewallPopup.overlay {
+#viewallPopup.fixedpopup {
   min-height: 450px;
   min-width: 450px;
 }
 
-#viewallPopup.overlay .overlay-content {
-  min-height: 155px;
+#viewallPopup.fixedpopup .fixedPopupContent {
+  min-height: 300px;
   min-width: 300px;
   max-height: 80%;
-  margin-bottom: 0;
+}
+
+#viewallPopup .fixedPopupContent .qs-popup-content {
+  min-height: 250px;
+  -ms-flex: 1;
 }
 
 #viewallPopup .spinner {
@@ -22,22 +26,30 @@
   position: absolute;
   left: 0;
   right: 0;
-  margin-top: 25px;
   margin-left: auto;
   margin-right: auto;
 }
 
-#viewallPopup .overlay-close {
-  text-align: center;
-  margin: 20px;
-  position: relative;
-  top: -25px;
+.popupcontentoverlay.white-popup-overlay {
+  opacity: 0.8;
 }
 
-#viewallPopup .overlay-close button {
+#viewallPopup .fixedPopupContent .qs-popup-content .content-module {
+  margin: 0;
+}
+
+#viewallPopup .fixedPopupContent {
+  text-align: center;
+}
+
+#viewallPopup .fixedPopupContent .qs-popup-close {
+  margin: 20px;
+}
+
+#viewallPopup .fixedPopupContent .qs-popup-close button {
   text-transform: uppercase;
 }
-#viewallPopup .overlay-content .view-all {
+#viewallPopup .fixedPopupContent .view-all {
   display: none;
 }
 

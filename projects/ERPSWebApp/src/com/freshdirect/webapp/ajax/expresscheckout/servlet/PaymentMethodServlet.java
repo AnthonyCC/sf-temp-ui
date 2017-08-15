@@ -51,6 +51,7 @@ public class PaymentMethodServlet extends BaseJsonServlet {
             final FormDataRequest paymentRequestData = BaseJsonServlet.parseRequestData(request, FormDataRequest.class);
             PageAction pageAction = FormDataService.defaultService().getPageAction(paymentRequestData);
             ValidationResult validationResult = new ValidationResult();
+            request.setAttribute("pageAction", pageAction);
             boolean changed = false;
             final FormDataResponse paymentSubmitResponse = FormDataService.defaultService().prepareFormDataResponse(paymentRequestData, validationResult);
             if (pageAction != null) {
@@ -280,8 +281,10 @@ public class PaymentMethodServlet extends BaseJsonServlet {
    					StandingOrderHelper.clearSO3ErrorDetails(user.getCurrentStandingOrder(), new String[] {"PAYMENT","PAYMENT_ADDRESS"});
  					StandingOrderHelper.populateStandingOrderDetails(user.getCurrentStandingOrder(),paymentSubmitResponse.getSubmitForm().getResult());
                     user.setRefreshSO3(true);
-                    if(user.getCurrentStandingOrder()!=null && user.getCurrentStandingOrder().getCustomerListId()!=null)
+                    if(user.getCurrentStandingOrder()!=null && user.getCurrentStandingOrder().getCustomerListId()!=null) {
+                    	user.getCurrentStandingOrder().setDeleteDate(null);
                     	StandingOrderUtil.createStandingOrder(request.getSession(), user.getSoTemplateCart(), user.getCurrentStandingOrder(), null);
+                    }
    				} catch (FDResourceException e) {
    					BaseJsonServlet.returnHttpError(500, "Error while submit payment for user " + user.getUserId(), e);  				}
    			}

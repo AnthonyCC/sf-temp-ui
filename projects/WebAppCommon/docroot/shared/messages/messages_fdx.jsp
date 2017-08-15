@@ -11,7 +11,7 @@
 <div id="messages" class="visHidden">
 	<ul class="content"></ul>
 	<hr class="shadow">
-	<div class="handler close-handler" id="locabar-messages-close"></div>
+	<a href="#" class="handler close-handler" id="locabar-messages-close"><span class="offscreen">close</span></a>
 	<br class="NOMOBWEB" />
 </div>
 <fd:javascript src="/assets/javascript/messages.js"/>

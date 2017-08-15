@@ -39,7 +39,7 @@ var FreshDirect = FreshDirect || {};
       }
     },
     customClass: {
-      value: 'medium'
+      value: 'overlay-medium'
     },
     openPopup:{
       value: function (e) {
@@ -48,6 +48,9 @@ var FreshDirect = FreshDirect || {};
         this.refresh(FreshDirect.user);
         // this.popup.show($t);
         // this.popup.clicked = true;
+
+        // set close callback
+        $('#'+this.overlayId).attr('data-close-cb', 'FreshDirect.components.zipCheckPopup.closeCB');
       }
     },
     zipchekRetry:{

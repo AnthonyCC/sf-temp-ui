@@ -28,13 +28,13 @@ import org.apache.log4j.*;
 public class BatchManagerSessionBean extends SessionBeanSupport {
     
     /** logger for messages
-     */
-    private static Category LOGGER = LoggerFactory.getInstance( BatchManagerSessionBean.class );
-    
-    /** Creates new SAPLoaderSessionBean */
-    public BatchManagerSessionBean() {
-        super();
-    }
+	 */
+	private static Category LOGGER = LoggerFactory.getInstance(BatchManagerSessionBean.class);
+
+	/** Creates new SAPLoaderSessionBean */
+	public BatchManagerSessionBean() {
+		super();
+	}
     
     /*
     public Collection getBatches(EnumBatchStatus status, java.util.Date since)
@@ -107,7 +107,7 @@ public class BatchManagerSessionBean extends SessionBeanSupport {
             return batches;
         }
     }
-     */
+	 */
     
     /*
     public void updateStatus(int batchNumber, String user, EnumBatchStatus status, String notes)
@@ -138,127 +138,110 @@ public class BatchManagerSessionBean extends SessionBeanSupport {
     }
      */
     
-    public BatchModel getBatch(int batchNumber)
-    throws EJBException {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            conn = getConnection();
-            ps = conn.prepareStatement("select version, date_created, approval_status from erps.history where version=?");
-            ps.setInt(1, batchNumber);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                BatchModel bm = new BatchModel();
-                bm.setBatchNumber(rs.getInt(1));
-                bm.setDescription("");
-                BatchHistoryModel bhm = new BatchHistoryModel();
-                bhm.setStatusDate(rs.getTimestamp(2));
-                String status = rs.getString(3);
-                if ("L".equalsIgnoreCase(status))
-                    bhm.setStatus(EnumBatchStatus.EMS_LOADING);
-                else if ("N".equalsIgnoreCase(status))
-                    bhm.setStatus(EnumBatchStatus.EMS_NEW);
-                else
-                    bhm.setStatus(EnumBatchStatus.EMS_REJ);
-                bhm.setUser("");
-                bhm.setNotes("");
-                bm.updateStatus(bhm);
-                return bm;
-            } else {
-                return null;
-            }
-        } catch (SQLException sqle) {
-            LOGGER.error("Unable to find batch " + batchNumber, sqle);
-            throw new EJBException(sqle);
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
-                if (conn != null) conn.close();
-            } catch (SQLException sqle) {
-                LOGGER.error("Unable to close db connection", sqle);
-                throw new EJBException(sqle);
-            }
-        }
-    }
+	public BatchModel getBatch(int batchNumber) throws EJBException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn = getConnection();
+			ps = conn.prepareStatement(
+					"select version, date_created, approval_status from erps.history where version=?");
+			ps.setInt(1, batchNumber);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				BatchModel bm = new BatchModel();
+				bm.setBatchNumber(rs.getInt(1));
+				bm.setDescription("");
+				BatchHistoryModel bhm = new BatchHistoryModel();
+				bhm.setStatusDate(rs.getTimestamp(2));
+				String status = rs.getString(3);
+				if ("L".equalsIgnoreCase(status))
+					bhm.setStatus(EnumBatchStatus.EMS_LOADING);
+				else if ("N".equalsIgnoreCase(status))
+					bhm.setStatus(EnumBatchStatus.EMS_NEW);
+				else
+					bhm.setStatus(EnumBatchStatus.EMS_REJ);
+				bhm.setUser("");
+				bhm.setNotes("");
+				bm.updateStatus(bhm);
+				return bm;
+			} else {
+				return null;
+			}
+		} catch (SQLException sqle) {
+			LOGGER.error("Unable to find batch " + batchNumber, sqle);
+			throw new EJBException(sqle);
+		} finally {
+			close(rs);
+			close(ps);
+			close(conn);
+		}
+	}
+
+	public Collection getBatches() throws EJBException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn = getConnection();
+			ps = conn.prepareStatement(
+					"select version, date_created, approval_status from erps.history order by version desc");
+			rs = ps.executeQuery();
+			Collection retval = processResultSet(rs);
+			return retval;
+		} catch (SQLException sqle) {
+			LOGGER.error("Unable to find batches", sqle);
+			throw new EJBException(sqle);
+		} finally {
+			close(rs);
+			close(ps);
+			close(conn);
+		}
+	}
+
     
-    public Collection getBatches()
-    throws EJBException {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            conn = getConnection();
-            ps = conn.prepareStatement("select version, date_created, approval_status from erps.history order by version desc");
-            rs = ps.executeQuery();
-            Collection retval = processResultSet(rs);
-            rs.close();
-            ps.close();
-            return retval;
-        } catch (SQLException sqle) {
-            LOGGER.error("Unable to find batches", sqle);
-            throw new EJBException(sqle);
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
-                if (conn != null) conn.close();
-            } catch (SQLException sqle) {
-                LOGGER.error("Unable to close db connection", sqle);
-                throw new EJBException(sqle);
-            }
-        }
-    }
-    
-    private Collection processResultSet(ResultSet rs) throws SQLException {
+	private Collection processResultSet(ResultSet rs) throws SQLException {
         
-        ArrayList batches = new ArrayList();
-        while (rs.next()) {
-            BatchModel bm = new BatchModel();
-            bm.setBatchNumber(rs.getInt(1));
-            bm.setDescription("");
-            BatchHistoryModel bhm = new BatchHistoryModel();
-            bhm.setStatusDate(rs.getTimestamp(2));
-            String status = rs.getString(3);
-            if ("N".equalsIgnoreCase(status))
-                bhm.setStatus(EnumBatchStatus.EMS_NEW);
-            else
-                bhm.setStatus(EnumBatchStatus.EMS_REJ);
-            bhm.setUser("");
-            bhm.setNotes("");
-            bm.updateStatus(bhm);
-            batches.add(bm);
-        }
-        return batches;
-        
-    }
-    
-    
-    public Collection getRecentBatches()
-    throws EJBException {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            conn = getConnection();
-            ps = conn.prepareStatement("select * from (select version, date_created, approval_status from erps.history order by version desc) where rownum < 100");
-            rs = ps.executeQuery();
-            Collection retval = processResultSet(rs);
-            rs.close();
-            ps.close();
-            return retval;
-        } catch (SQLException sqle) {
-            LOGGER.error("Unable to find batches", sqle);
-            throw new EJBException(sqle);
-        } finally {
-            try {
-                if (conn != null) conn.close();
-            } catch (SQLException sqle) {
-                LOGGER.error("Unable to close db connection", sqle);
-                throw new EJBException(sqle);
-            }
-        }
-    }
-    
+		ArrayList batches = new ArrayList();
+		while (rs.next()) {
+			BatchModel bm = new BatchModel();
+			bm.setBatchNumber(rs.getInt(1));
+			bm.setDescription("");
+			BatchHistoryModel bhm = new BatchHistoryModel();
+			bhm.setStatusDate(rs.getTimestamp(2));
+			String status = rs.getString(3);
+			if ("N".equalsIgnoreCase(status))
+				bhm.setStatus(EnumBatchStatus.EMS_NEW);
+			else
+				bhm.setStatus(EnumBatchStatus.EMS_REJ);
+			bhm.setUser("");
+			bhm.setNotes("");
+			bm.updateStatus(bhm);
+			batches.add(bm);
+		}
+		return batches;
+
+	}
+
+	public Collection getRecentBatches() throws EJBException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn = getConnection();
+			ps = conn.prepareStatement(
+					"select * from (select version, date_created, approval_status from erps.history order by version desc) where rownum < 100");
+			rs = ps.executeQuery();
+			Collection retval = processResultSet(rs);
+			return retval;
+		} catch (SQLException sqle) {
+			LOGGER.error("Unable to find batches", sqle);
+			throw new EJBException(sqle);
+		} finally {
+			close(rs);
+			close(ps);
+			close(conn);
+		}
+	}
+
 }

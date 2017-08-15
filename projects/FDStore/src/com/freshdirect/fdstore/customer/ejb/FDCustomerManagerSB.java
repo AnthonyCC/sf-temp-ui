@@ -22,6 +22,7 @@ import com.freshdirect.crm.CrmClick2CallModel;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.DlvSaleInfo;
+import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
@@ -209,7 +210,7 @@ public interface FDCustomerManagerSB extends EJBObject {
      */
     public void addPaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled) throws FDResourceException, RemoteException, ErpPaymentMethodException;
    
-    public void setDefaultPaymentMethod(FDActionInfo info, PrimaryKey paymentMethodPK) throws FDResourceException,RemoteException;
+    public void setDefaultPaymentMethod(FDActionInfo info, PrimaryKey paymentMethodPK, EnumPaymentMethodDefaultType type, boolean isDebitCardSwitch) throws FDResourceException,RemoteException;
     
     /****
      * return the Pk Id that is stored in the defaultPaymentMethodPK field
@@ -902,6 +903,8 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public ErpCustomerModel getCustomer(FDIdentity identity) throws FDResourceException, RemoteException;
 
 	public Map<String, List<PendingOrder>> getPendingDeliveries() throws FDResourceException, RemoteException;
+
+	public EnumPaymentMethodDefaultType getpaymentMethodDefaultType(String custId) throws FDResourceException, RemoteException;
 	
 	public boolean insertOrUpdateSilverPopup(SilverPopupDetails silverPopupDetails) throws FDResourceException, RemoteException;
 
@@ -910,5 +913,9 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public void updateSPSuccessDetails(SilverPopupDetails detail) throws FDResourceException, RemoteException;
 	
 	public String getCookieByFdCustomerId(String fdCustomerId) throws FDResourceException, RemoteException;
+
+	public int resetDefaultPaymentValueType(String custId) throws FDResourceException, RemoteException;
+
+	public ErpAuthorizationModel verifyCard(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled) throws FDResourceException, RemoteException;
 }
 

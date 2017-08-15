@@ -13,6 +13,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.ZoneInfo;
+import com.freshdirect.common.pricing.ZoneInfo.PricingIndicator;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.EnumAlcoholicContent;
@@ -408,15 +409,34 @@ public class FDProductInfo extends FDSku  {
         return groups;
     }
 
-	public FDGroup getGroup(String salesOrg, String distributionChannel) {
+	/*public FDGroup getGroup(String salesOrg, String distributionChannel) {
 		if(groups==null)
 			return null;
 
 		if(StringUtils.isEmpty(salesOrg)|| StringUtils.isEmpty(distributionChannel))
 			return null;
 		return groups.get(salesOrg+"-"+distributionChannel);
+	}*/
+	
+	public FDGroup getGroup(ZoneInfo pricingZone) {
+		FDGroup group = null;
+		if(groups!=null && pricingZone !=null){
+			group =_getGroup(pricingZone);
+		}
+		return group;
 	}
-	public boolean isGroupExists(String salesOrg, String distributionChannel) {
+	private FDGroup _getGroup(ZoneInfo pricingZone) {
+		FDGroup group =null;
+		if(!StringUtils.isEmpty(pricingZone.getSalesOrg()) && !StringUtils.isEmpty(pricingZone.getDistributionChanel())){
+			group = groups.get(pricingZone.getSalesOrg()+"-"+pricingZone.getDistributionChanel());
+		}		
+		if(null == group && null !=pricingZone.getParentZone() && PricingIndicator.SALE.equals(pricingZone.getPricingIndicator())){
+			group =_getGroup(pricingZone.getParentZone());
+		}
+		return group;
+	}
+	
+	/*public boolean isGroupExists(String salesOrg, String distributionChannel) {
 
 		if(StringUtils.isEmpty(salesOrg)|| StringUtils.isEmpty(distributionChannel))
 			return false;
@@ -425,7 +445,7 @@ public class FDProductInfo extends FDSku  {
 			return false;
 
 		return groups.containsKey(salesOrg+"-"+distributionChannel);
-	}
+	}*/
 	/** Getter for property sustainabilityRating.
      * @return Value of property sustainabilityRating.
      */

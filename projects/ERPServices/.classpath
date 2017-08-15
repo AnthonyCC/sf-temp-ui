@@ -46,6 +46,6 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-web-4.0.1.RELEASE.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-core-4.0.1.RELEASE.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-beans-4.0.1.RELEASE.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/fdcommerce-data.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/fdcommerce-data.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

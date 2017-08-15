@@ -354,6 +354,7 @@
 }
 .standing-orders-3-select-freq{
 	display: inline-block;
+	margin-left:30px;
 }
 .standing-orders-3-pick-freq p {
     margin: 0;
@@ -377,6 +378,7 @@
     font-weight: bold;
     color: #333;
     padding: 10px 0 20px;
+    margin-left:30px;
 }
 .standing-orders-3-upcoming-deliveries {
     padding-top: 40px;
@@ -568,6 +570,15 @@
 }
 .standing-orders-3-so-settings-item-name-header{
 	float: left;
+}
+.standing-orders-3 a.standing-orders-3-so-settings-help{
+	float: right;
+	padding: 0 15px 0 0;
+	font-size: 13px;
+	color: #FFFFFF;
+}
+.standing-orders-3 a.standing-orders-3-so-settings-help:hover{
+	color: #FFFFFF;
 }
 .standing-orders-3-so-settings-item-name-change{
 	/*display: none;*/

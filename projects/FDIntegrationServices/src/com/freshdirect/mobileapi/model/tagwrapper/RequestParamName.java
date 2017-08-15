@@ -9,7 +9,7 @@ public interface RequestParamName {
     public static final String REQ_PARAM_ACTION = "action";
 
     public static final String REQ_PARAM_PAYMENT_METHOD_ID = "paymentMethodList";
-
+    public static final String REQ_PARAM_IS_ACCOUNT_LEVEL = "isAccountLevel";
     public static final String REQ_PARAM_BILLING_REF = "billingRef";
 
     public static final String REQ_PARAM_BYPASS_ACCOUNT_CHECK = PaymentMethodName.BYPASS_BAD_ACCOUNT_CHECK;

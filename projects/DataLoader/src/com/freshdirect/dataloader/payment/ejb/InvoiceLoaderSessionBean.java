@@ -29,8 +29,7 @@ import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
-import com.freshdirect.fdstore.FDEcommProperties;
-import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.dataloader.analytics.GoogleAnalyticsReportingService;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -44,7 +43,6 @@ import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
-import com.freshdirect.payment.service.FDECommerceService;
 
 public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 
@@ -150,6 +148,13 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 
 			MailerGatewaySB mailBean = this.getMailerGatewayHome().create();
 			mailBean.enqueueEmail(FDEmailFactory.getInstance().createFinalAmountEmail(fdInfo, fdOrder));
+
+            try {
+				GoogleAnalyticsReportingService.defaultService().postGAReporting(fdOrder);
+			} catch (Exception e) {
+				LOGGER.warn("Unexpected Exception in GoogleAnalyticsReportingService while reported to GA, for order#: "+saleId, e);
+			}
+
 			// collect recipes that will be sent to the users
 			List orderLines = fdOrder.getOrderLines();
 			Set<Recipe>  recipes    = new HashSet<Recipe>();

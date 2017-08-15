@@ -1,4 +1,4 @@
-/*global content modules render*/
+/*global common*/
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {
@@ -27,9 +27,11 @@ var FreshDirect = FreshDirect || {};
           if ($ph.length) {
             $ph.after(this.updateTemplate({moduleConfig:module, data:data.data[module.moduleInstanceId]}));
             $ph.remove();
-            // fd.modules.common.Select.selectize($ph);
-            // fd.modules.common.Elements.decorate($ph);
-            //fd.modules.common.aria.decorate();
+            fd.modules.common.Select.selectize($ph);
+            fd.modules.common.Elements.decorate($ph);
+            fd.modules.common.aria.decorate();
+
+            fd.common.dispatcher.signal('productImpressions', $ph);
           }
 
         }.bind(this));

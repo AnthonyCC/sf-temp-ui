@@ -283,13 +283,17 @@ public class StandingOrderCartServlet extends BaseJsonServlet {
 		// Save list
 		try {
 			list = FDListManager.storeCustomerList(list);
-			if(StandingOrderHelper.isEligibleForSo3_0(user) && reqData.getStandingOrderId()!=null){
+			FDStandingOrdersManager.getInstance().load(new PrimaryKey(reqData.getStandingOrderId()));
+			if (StandingOrderHelper.isEligibleForSo3_0(user) && reqData.getStandingOrderId() != null) {
+				FDStandingOrder so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(reqData.getStandingOrderId()));
+				if( so!= null && "Y".equalsIgnoreCase(so.getActivate())) {
 				List<FDCustomerListItem> cartLine=list.getLineItems();
 				for (Iterator<FDCustomerListItem> iterator = cartLine.iterator(); iterator.hasNext();) {
 						FDCustomerProductListLineItem fDCustomerProductListLineItem = (FDCustomerProductListLineItem) iterator.next();
 							if(fDCustomerProductListLineItem.isSojustAddedItemToCart() && null != fDCustomerProductListLineItem.getPK())
 									user.getSoCartLineMessagesMap().put(fDCustomerProductListLineItem.getPK().getId(), "NewItem");
 				}
+			  }
 			}
 		} catch (FDResourceException e) {
 			returnHttpError(500, "System error (FDResourceException) - couldn't persist Standing order  list", e); // 500 Internal Server Error

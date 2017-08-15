@@ -3,6 +3,7 @@ package com.freshdirect.fdstore;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.naming.NamingException;
 
@@ -10,8 +11,6 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
-
-import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class FDAbstractCache<K,V> {
 	private static Category LOGGER = LoggerFactory.getInstance(FDAbstractCache.class);
@@ -21,11 +20,17 @@ public abstract class FDAbstractCache<K,V> {
 	private final Thread refresher;
 	
 	private Map<K,V> cache = new ConcurrentHashMap<K,V>();
-	private Date lastMaxModifiedDate;
-	
+	protected Date lastMaxModifiedDate;
+
 	public FDAbstractCache(long refreshDelay) {
+		if(FDStoreProperties.isLocalDeployment()) {
+			this.lastMaxModifiedDate = new Date();			
+			refreshDelay = FDStoreProperties.TEN_DAYS_IN_MILLIS; //ten days
+		} else {
+			this.lastMaxModifiedDate = new Date(0);
+		}
 		this.refreshDelay = refreshDelay;
-		this.lastMaxModifiedDate = new Date(0);
+		
 		refresher = new RefreshThread(this.getClass().getName());
 		refresher.start();
 		try{
@@ -33,10 +38,10 @@ public abstract class FDAbstractCache<K,V> {
 			this.refresh();
 		} catch (NamingException e) {
 			throw new FDRuntimeException(e);
-		}
+		}		
 	}
 	
-	private synchronized void refresh() {
+	protected synchronized void refresh() {
 		
 		Map<K,V> m = loadData(lastMaxModifiedDate);
 		if (!m.isEmpty()) {

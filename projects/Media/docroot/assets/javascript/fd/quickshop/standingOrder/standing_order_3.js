@@ -60,7 +60,7 @@ function standingOrderNewCancel(){
 }
 
 function newStandingOrderInfoCheck(){
-	if($jq("[fdform='address'] input:checked").length && $jq("[fdform='payment'] input:checked").length && ($jq("[fdform='timeslot'] input:checked").length || $jq(".successtimeslot").length) && $jq(".standing-orders-3-name-input[name='soName']").val() != ""){
+	if($jq("[fdform='address'] input:checked").length && $jq("[fdform='payment'] input:checked").length && (($jq("[fdform='timeslot'] #deliveryTimeslotId").length && $jq("[fdform='timeslot'] #deliveryTimeslotId").val() !== '') || $jq(".successtimeslot").length) && $jq(".standing-orders-3-name-input[name='soName']").val() != ""){
 		$jq(".standing-orders-3 .standing-orders-3-create-header .standing-orders-3-new-start-shop").removeAttr('disabled');
 	} else {
 		$jq(".standing-orders-3 .standing-orders-3-create-header .standing-orders-3-new-start-shop").attr('disabled','disabled');
@@ -128,7 +128,7 @@ function deleteSO(id, custom){
 			$jq(soID + " .so-delete-popup-buttons-yes").html("Confirm");
 			$jq(soID + " .so-delete-popup-buttons-no").html("Cancel");
 		} else {
-			submitFormManageSO(id,"delete",null,null);
+			submitFormManageSO(id,"delete",null,null,null);
 			closeSettingsDelete(id);
 		}
 	}
@@ -272,8 +272,12 @@ function submitFormManageSO(id,action,name,freq, deleteDate){
             if('activate'==action){
             	getSOData(id, action);
             }
-            if('delete'==action && ($jq(soID + " .so-delete-popup select").prop('selectedIndex') == 0 || deleteDate === undefined)){
-            	$jq(soID).remove();
+            if('delete'==action){
+            	if($jq(soID + " .so-delete-popup select").prop('selectedIndex') == 0 || deleteDate === undefined){
+            		$jq(soID).remove();
+            	} else {
+            		getSOData(id, "soItemUpdateDelete");
+            	}
             }
         }
  	});
@@ -386,6 +390,9 @@ function getSOData(id, action){
         			drawerSuccessConformation += data.dayOfWeek + ', ' + data.deliveryDate + ', ' + data.deliveryTime + '</span></div><button class="so-drawer-success-ok cssbutton cssbutton-flat green nontransparent" onclick="closeDrawerSuccessOverlayDialog(false)">OK</button></div>';
         		}
         		doOverlayDialogByHtmlNew(drawerSuccessConformation);
+        	}
+        	if('soItemUpdateDelete'==action){
+        		updateSOItem(id, data);
         	}
         	if('displayShopNow'==action){
         		if(data.displayCart){

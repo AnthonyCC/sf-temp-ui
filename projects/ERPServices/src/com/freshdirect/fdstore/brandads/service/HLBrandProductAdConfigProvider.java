@@ -98,6 +98,8 @@ public class HLBrandProductAdConfigProvider implements BrandProductAdConfigProvi
 		return ErpServicesProperties.getBrandProductAdProviderPgn();
 	}
 	
-	
+	public  String getBrandProductsBeacon(){
+		return ErpServicesProperties.getBrandProductsBeacon();
+	}
 	
 }

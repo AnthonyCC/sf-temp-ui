@@ -21,12 +21,14 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.customer.BasicSaleInfo;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumDeliverySetting;
 import com.freshdirect.customer.EnumStandingOrderType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
@@ -41,13 +43,16 @@ import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDOrderHistory;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
+import com.freshdirect.fdstore.customer.FDOrderSearchCriteria;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
+import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
 import com.freshdirect.fdstore.customer.ejb.FDSessionBeanSupport;
 import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.lists.FDListManager;
@@ -266,20 +271,19 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
-	//old deletion flow coming from manage servlet
-	public void delete(FDActionInfo info, FDStandingOrder so) throws FDResourceException {
+	// "cancel all delivaries" deletion flow coming from manage servlet
+	public void deleteActivatedSO(FDActionInfo info, FDStandingOrder so, String deleteDate ) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			FDStandingOrderDAO dao = new FDStandingOrderDAO();
 			
-			dao.deleteStandingOrder(conn, so.getId(), so.getCustomerListId());
-			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.STANDINGORDER_DELETED);
+			dao.deleteActivatedSO(conn, so.getId(),deleteDate);
+			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.STANDINGORDER_TEMPLATE_DEL_DATE_SET);
 			rec.setStandingOrderId(so.getId());
-			FDStandingOrdersManager.getInstance().deletesoTemplate(so.getId());
 			this.logActivity(rec);
 		} catch (SQLException e) {
-			LOGGER.error( "SQL ERROR in delete() : " + e.getMessage(), e );
+			LOGGER.error( "SQL ERROR in deleteActivatedSO() : " + e.getMessage(), e );
 			e.printStackTrace();
 			throw new FDResourceException(e);
 		} finally {
@@ -287,48 +291,27 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
-	//set future delete coming from manage servlet
-	public void updateDeleteSOInfo(FDActionInfo info, FDStandingOrder so, String deleteDate) throws FDResourceException {
+	// coming from servlet deletes unactivated SO templates
+	public void delete(FDActionInfo info, FDStandingOrder so) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			FDStandingOrderDAO dao = new FDStandingOrderDAO();
-			
-			dao.updateDeleteSOInfo(conn, so.getId(), deleteDate);
-			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.STANDINGORDER_TEMPLATE_DEL_DATE_SET);
+
+			dao.deleteStandingOrder(conn, so.getId(), so.getCustomerListId());
+			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.STANDINGORDER_DELETED);
 			rec.setStandingOrderId(so.getId());
+			FDStandingOrdersManager.getInstance().deletesoTemplate(so.getId());
 			this.logActivity(rec);
 		} catch (SQLException e) {
-			LOGGER.error( "SQL ERROR in updateDeleteSOInfo() : " + e.getMessage(), e );
+			LOGGER.error("SQL ERROR in delete() : " + e.getMessage(), e);
 			e.printStackTrace();
 			throw new FDResourceException(e);
 		} finally {
 			close(conn);
 		}
-	}	
+	}
 	
-	//	delete flow coming from cron job cmd
-	public void deleteSOByDate() throws FDResourceException {
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			FDStandingOrderDAO dao = new FDStandingOrderDAO();
-			List<String> soList = dao.deleteSOByDate(conn);
-			if(null != soList && !soList.isEmpty()) {
-			
-				for(String id : soList) {
-					FDStandingOrdersManager.getInstance().deletesoTemplate(id);
-				}
-			}
-		} catch (SQLException e) {
-			LOGGER.error( "SQL ERROR in delete() : " + e.getMessage(), e );
-			e.printStackTrace();
-			throw new FDResourceException(e);
-		} finally {
-			close(conn);
-		}
-	}	
-
 	public String save(FDActionInfo info, FDStandingOrder so, String saleId) throws FDResourceException {
 		String primaryKey = null;
 		Connection conn = null;
@@ -1198,7 +1181,6 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 		} finally {
 			close(conn);
 		}
-	}	
-	
+	}
 
 }

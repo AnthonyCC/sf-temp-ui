@@ -81,8 +81,24 @@ public class FDProductSelection implements FDProductSelectionI {
 	private Date deliveryStartDate;
 	private EnumSaleStatus saleStatus;
 	
+	
 	public FDProductSelection(FDSku sku, ProductModel productRef, FDConfigurableI configuration, UserContext ctx) {
 		this(sku, productRef, configuration, null, ctx);
+	}
+	
+	//Introduced for Storefront 2.0
+	public FDProductSelection(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String variantId, UserContext ctx,String plantId) {
+		this.orderLine = new ErpOrderLineModel();
+
+		this.orderLine.setSku(sku);
+		this.productRef = new ProductReferenceImpl((productRef instanceof ProxyProduct) ? ((ProxyProduct) productRef).getProduct() : productRef);
+		this.orderLine.setConfiguration( new FDConfiguration(configuration) );
+		
+		this.orderLine.setVariantId(variantId);
+		//For now setting the default. Need to be parameterized
+		this.orderLine.setUserContext(ctx);
+		this.orderLine.setEStoreId(ctx.getStoreContext().getEStoreId());
+		this.orderLine.setPlantID(plantId);
 	}
 
 	public FDProductSelection(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String variantId, UserContext ctx) {
@@ -662,8 +678,10 @@ public class FDProductSelection implements FDProductSelectionI {
 		 FDGroup group = this.orderLine.getFDGroup();
 			if(group == null) {//If not in the line item level check sku level.
 				FDProductInfo _p=this.lookupFDProductInfo();
-				if(_p!=null)
-					group = _p.getGroup(this.getUserContext().getPricingContext().getZoneInfo().getSalesOrg(),this.getUserContext().getPricingContext().getZoneInfo().getDistributionChanel());
+				if(_p!=null){
+//					group = _p.getGroup(this.getUserContext().getPricingContext().getZoneInfo().getSalesOrg(),this.getUserContext().getPricingContext().getZoneInfo().getDistributionChanel());
+					group = _p.getGroup(this.getUserContext().getPricingContext().getZoneInfo());
+				}
 			}
 		 
 		 return group;
@@ -841,4 +859,17 @@ public class FDProductSelection implements FDProductSelectionI {
 		}
 		return pickingPlantId;
 	}
+
+	//Introduced for Storefront 2.0
+	/**
+	 * @return the orderLine
+	 */
+	public ErpOrderLineModel getOrderLine() {
+		return orderLine;
+	}
+	public boolean getDirty() {
+		return this.dirty;
+	}
+	
+	
 }

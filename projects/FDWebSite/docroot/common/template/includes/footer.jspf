@@ -239,17 +239,4 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
 
 <br /><img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" />
 </center>
-<script>
-        // This will any img tags with class lazyload by copying content of the img data-src attribute to the img src attribute
-	if(typeof $jq !== "undefined") {
-		window.addEventListener('load', function () {
-			$jq("img.lazyload" ).after(function() {
-				var thisSrc = $jq(this).data("src");
-				var isCopied = $jq(this).data("isCopied");
-				if (typeof thisSrc != "undefined" && thisSrc != "" && (typeof isCopied == "undefined" || !isCopied)) {
-					$jq(this).attr("src", $jq(this).data("src")).data("isCopied", true);
-				}
-			});
-		}, false);
-	}
-</script>
+

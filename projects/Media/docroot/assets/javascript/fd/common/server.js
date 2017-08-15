@@ -51,26 +51,21 @@ var FreshDirect = FreshDirect || {};
       }
     } catch(e) {}
   };
-  //APPDEV-3971
-  var loginSignupPopup = function (target, popupUrl) {
-	    if (fd.components && fd.components.ifrPopup) {
-	      fd.components.ifrPopup.open({ url: popupUrl + '?successPage=' + target, height: 590, width: 560, opacity: .5, mobWeb: fd.mobWeb});
-	    }
-	  };
-  var socialLogin = function (target) {
-		    loginSignupPopup(target, '/social/login.jsp');
-		  };
+
   var errorHandler = function( e ){
     var status = e.status, message;
     if(status == 401){
-	    var targetHolder = $('#target-link-holder').attr("href");
-	    $('#target-link-holder').remove();
+    	var currentPage = window.location.pathname + window.location.search + window.location.hash;
+    	if ( fd.modules.common.login && !fd.modules.common.login.successTarget) {
+    		fd.modules.common.login.successTarget = currentPage;
+    	}
+	    var targetHolder = e.targetHolder || (fd.modules.common.login && fd.modules.common.login.successTarget);
 	    fd.user.recognized=true;
 	    $("button[disabled]").removeAttr("disabled");
-	    if (fd.properties.isSocialLoginEnabled) {
-	    socialLogin(e.targetHolder);
-	    }else{
-	    window.location.href = "/login/login.jsp";
+	    if (fd.modules.common && fd.modules.common.login) {
+	    	fd.modules.common.login.socialLogin(targetHolder);
+	    } else {
+	    	window.location.href = "/login/login.jsp";
 	    }
 }
         message = errorMessages[status];

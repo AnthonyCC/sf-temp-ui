@@ -22,6 +22,7 @@ public class GACheckoutData {
     private String deliveryType;
     private FDTimeslot selectedTimeslotValue;
     private String unavailableTimeslotValue;
+    private String modifiedOrderCount;
 
     public Map<String, GAProductData> getProducts() {
         return products;
@@ -141,6 +142,14 @@ public class GACheckoutData {
 
     public void setUnavailableTimeslotValue(String unavailableTimeslotValue) {
         this.unavailableTimeslotValue = unavailableTimeslotValue;
+    }
+
+    public String getModifiedOrderCount() {
+        return modifiedOrderCount;
+    }
+
+    public void setModifiedOrderCount(String modifiedOrderCount) {
+        this.modifiedOrderCount = modifiedOrderCount;
     }
 
 }

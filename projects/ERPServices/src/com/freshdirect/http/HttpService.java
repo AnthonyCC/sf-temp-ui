@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -60,26 +61,45 @@ public class HttpService {
 		}
 	}
 
-	public void postData(String uri, String data) throws IOException {
-		if (uri != null && data != null) {
-			HttpClient client = new DefaultHttpClient();
-			HttpPost post = null;
-			try {
-				post = new HttpPost(uri);
-				List<NameValuePair> params = new ArrayList<NameValuePair>();
-				params.add(new BasicNameValuePair("data", data));
-				post.setEntity(new UrlEncodedFormEntity(params));
-				client.execute(post);
-                        } finally {
-                                try {
-									if (post != null) {
-									        post.releaseConnection();
-									}
-								} catch (Exception e) {
-								}
-                        }
-		}
-	}
+    public void postData(String uri, String data) throws IOException {
+        if (uri != null && data != null) {
+            HttpClient client = new DefaultHttpClient();
+            HttpPost post = null;
+            try {
+                post = new HttpPost(uri);
+                List<NameValuePair> params = new ArrayList<NameValuePair>();
+                params.add(new BasicNameValuePair("data", data));
+                post.setEntity(new UrlEncodedFormEntity(params));
+                client.execute(post);
+            } finally {
+                try {
+                    if (post != null) {
+                        post.releaseConnection();
+                    }
+                } catch (Exception e) {
+                }
+            }
+        }
+    }
+
+    public void postDataWithHttpEntity(String uri, HttpEntity entity) throws IOException {
+        if (uri != null && entity != null) {
+            HttpClient client = new DefaultHttpClient();
+            HttpPost post = null;
+            try {
+                post = new HttpPost(uri);
+                post.setEntity(entity);
+                client.execute(post);
+            } finally {
+                try {
+                    if (post != null) {
+                        post.releaseConnection();
+                    }
+                } catch (Exception e) {
+                }
+            }
+        }
+    }
 
 	public void postDataWithContentTypeJson(String uri, String data) throws IOException {
 		if (uri != null) {

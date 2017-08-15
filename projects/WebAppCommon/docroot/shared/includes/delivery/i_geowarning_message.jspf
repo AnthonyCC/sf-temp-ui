@@ -1,4 +1,7 @@
 <%@ page import="java.util.Iterator"%>
+
+<% if((messages != null && messages.size() > 0) || (user.getMasqueradeContext()!=null && comments!=null && comments.size() > 0)) { %>
+
 <table width="100%" cellspacing="0" cellpadding="0" border="0" class="geowarn-table">
 <tr>
     <td rowspan="5" width="20"  style="font-size:1px;"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
@@ -62,3 +65,4 @@
 </tr>
 </table>
 <img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" border="0">
+<% } %>

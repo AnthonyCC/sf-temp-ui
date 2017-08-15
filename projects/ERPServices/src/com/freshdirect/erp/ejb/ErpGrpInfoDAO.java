@@ -54,7 +54,7 @@ public class ErpGrpInfoDAO {
 	    	   if(rs != null) rs.close();
 	    	   if(ps != null) ps.close();
 	       }
- 	       LOGGER.info("All Grp Id List :"+groups.size());
+ 	       LOGGER.debug("All Grp Id List :"+groups.size());
 		   return groups; 
 	}
     
@@ -219,7 +219,7 @@ public class ErpGrpInfoDAO {
 	    	   if(rs != null) rs.close();
 	    	   if(ps != null) ps.close();
 	       }
-	       LOGGER.info("zoneList :"+zoneList.size());
+	       LOGGER.debug("zoneList :"+zoneList.size());
 		   return zoneList; 	
 	}
 	
@@ -311,7 +311,7 @@ public class ErpGrpInfoDAO {
     	   if(rs != null) rs.close();
     	   if(ps != null) ps.close();
        }
-       LOGGER.info("sku size :"+skus.size());
+       LOGGER.debug("sku size :"+skus.size());
 	   return skus;
 	   
    }
@@ -343,7 +343,7 @@ public class ErpGrpInfoDAO {
 	    	   if(rs != null) rs.close();
 	    	   if(ps != null) ps.close();
 	       }
-	       LOGGER.info("matList :"+matList.size());
+	       LOGGER.debug("matList :"+matList.size());
 		   return matList; 	
 	}
 	
@@ -385,7 +385,7 @@ public class ErpGrpInfoDAO {
 	    	   if(rs != null) rs.close();
 	    	   if(ps != null) ps.close();
 	       }
-	       LOGGER.info("matList :"+skuList.size());
+	       LOGGER.debug("matList :"+skuList.size());
 		   return skuList; 	
 	}
 	

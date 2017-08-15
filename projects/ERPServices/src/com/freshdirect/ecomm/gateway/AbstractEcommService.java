@@ -127,7 +127,6 @@ public  <T> T postData(String inputJson, String url, Class<T> clazz) throws FDRe
 		ResponseEntity<String> response;
 		try {
 			response = restTemplate.getForEntity(new URI(url),String.class);
-			System.out.println(response.getBody());
 			responseOfTypestring =getMapper().readValue(response.getBody(), type);
 		} catch (JsonParseException e) {
 			LOGGER.info(e.getMessage());

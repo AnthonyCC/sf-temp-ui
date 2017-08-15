@@ -225,7 +225,14 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 		for (ErpSettlementTransactionModel txModel : txModels) {
 			txModel.setStatus(PENDING);
 		}
-		String id = bean.create(this.getConnection()).getId();
+		Connection conn = null;
+		String id;
+		try {
+			conn = this.getConnection();
+			id = bean.create(conn).getId();
+		} finally {
+			close(conn);
+		}
 		model.setId(id);
 	}
 		

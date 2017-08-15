@@ -66,6 +66,8 @@ public class FDBrandProductsAdManagerSessionBean extends ERPSessionBeanSupport {
 		} catch (Exception e) {
 			LOGGER.error("Getting excetption while sending sumbmitted order details to the Hooklogic :"+e);
 			throw new FDResourceException(e);
+		} finally {
+			close(conn);
 		}
 	
 	 }
@@ -85,10 +87,12 @@ public class FDBrandProductsAdManagerSessionBean extends ERPSessionBeanSupport {
 		sendOrderDetailsToHL(map, false);
 		}
 		
-	} catch (Exception e) {
-		LOGGER.error("Getting excetption while sending sumbmitted order details to the Hooklogic :"+e);
-		throw new FDResourceException(e);
-	}
+		} catch (Exception e) {
+			LOGGER.error("Getting excetption while sending sumbmitted order details to the Hooklogic :" + e);
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
 
  }
 	
@@ -139,6 +143,7 @@ public class FDBrandProductsAdManagerSessionBean extends ERPSessionBeanSupport {
 	private void insertOrderFeedLog(String lastOrderId, Date lastOrderTime,
 			Date startTime){
 		Date endTime = new Date();
+		Connection conn = null;
 		try {
 			if(null !=lastOrderId && null !=lastOrderTime){
 				HLOrderFeedLogModel orderFeedLogModel = new HLOrderFeedLogModel();
@@ -146,12 +151,14 @@ public class FDBrandProductsAdManagerSessionBean extends ERPSessionBeanSupport {
 				orderFeedLogModel.setEndTime(endTime);
 				orderFeedLogModel.setLastSentOrderTime(lastOrderTime);
 				orderFeedLogModel.setDetails(""+lastOrderId);
-				Connection conn = getConnection();
+				conn = getConnection();
 				FDBrandProductsAdManagerDAO dao = new FDBrandProductsAdManagerDAO();
 				dao.insertOrderFeedLog(conn, orderFeedLogModel);
 			}
 		} catch (SQLException e) {
 			LOGGER.warn("Exception in insertOrderFeedLog(): "+e);
+		}finally {
+			close(conn);
 		}
 	}
 	
@@ -165,6 +172,8 @@ public class FDBrandProductsAdManagerSessionBean extends ERPSessionBeanSupport {
 		} catch (SQLException e) {
 			LOGGER.error("Exception while getting lastSentFeedOrderTime: "+e);
 			throw new FDResourceException("Exception while getting lastSentFeedOrderTime: "+e);
+		} finally {
+			close(conn);
 		}
 		return lastSentFeedOrderTime;
 	}

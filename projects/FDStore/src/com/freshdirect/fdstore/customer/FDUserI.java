@@ -15,6 +15,7 @@ import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.OrderHistoryI;
@@ -144,8 +145,6 @@ public interface FDUserI extends java.io.Serializable {
     public void invalidateCache();
 
     public OrderHistoryI getOrderHistory() throws FDResourceException;
-
-    public OrderHistoryI getOrderHistoryByEStoreId(EnumEStoreId eStoreid) throws FDResourceException;
 
     public Date getFirstOrderDate() throws FDResourceException;
 
@@ -744,9 +743,13 @@ public interface FDUserI extends java.io.Serializable {
 
 	public void setRefreshNewSoFeature(boolean isRefreshNewSoFeature);
 	
+	public int resetDefaultPaymentValueType();
+	
 	/*// Only created for jackson parsing in Storefront 2.0
 	public void setReferrerEligible(Boolean referrerEligible) ;*/
 	
+	public ErpCustomerInfoModel getCustomerInfoModel() throws FDResourceException ;
 	
+	public void refreshFdCustomer() throws FDResourceException;
 
 }

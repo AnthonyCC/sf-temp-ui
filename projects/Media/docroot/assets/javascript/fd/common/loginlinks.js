@@ -3,13 +3,45 @@ var FreshDirect = FreshDirect || {};
 (function (fd) {
   "use strict";
   var $ = fd.libs.$;
-
+  var loginAjaxOverlayClassName = 'login-ajax-overlay';
+  
   fd.properties = fd.properties || {};
   fd.user = fd.user || {};
-
+  
   var loginSignupPopup = function (target, popupUrl) {
-    if (fd.components && fd.components.ifrPopup) {
-      fd.components.ifrPopup.open({ url: popupUrl + '?successPage=' + target, height: 590, width: 560, opacity: .5});
+	    if (fd.components && fd.components.ifrPopup) {
+	      fd.components.ifrPopup.open({ url: popupUrl + '?successPage=' + target, height: 590, width: 560, opacity: .5});
+	    }
+	  };
+	  
+  var showLoginAjaxPopup = function (target, popupUrl) {
+    if (fd.components && fd.components.ajaxPopup) {
+      var loginAjaxPopup;
+      
+      var hideCallback = function() {
+    	  if (loginAjaxPopup) {
+    		  loginAjaxPopup.popup.$el.removeClass(loginAjaxOverlayClassName);
+    		  
+    	  }
+    	  loginAjaxPopup = null;
+      };
+      var renderCallback  = function(ajaxPopup, target, data) {
+    	  loginAjaxPopup = ajaxPopup;
+		  ajaxPopup.popup.$overlay.off('click');
+		  ajaxPopup.popup.config.valign = 'top';
+		  ajaxPopup.popup.config.stayOnClick = true;
+		  ajaxPopup.popup.config.noCloseOnOverlay = true;
+		  ajaxPopup.popup.config.hidecallback = hideCallback;
+		  ajaxPopup.scrollCheck.splice(0, ajaxPopup.scrollCheck.length);
+		  ajaxPopup.popup.$overlay.css('opacity', 0.5);
+		  ajaxPopup.popup.$el.addClass(loginAjaxOverlayClassName);
+		  ajaxPopup.popup.show($('body'), 't');
+		  fd.components.loginForm.init();
+
+	  };
+      fd.components.ajaxPopup.open({ 
+    	  href: popupUrl + '?successPage=' + target,
+    	  afterRenderCallback: renderCallback});
     }
   };
 
@@ -22,7 +54,7 @@ var FreshDirect = FreshDirect || {};
   };
 
   var socialLogin = function (target) {
-    loginSignupPopup(target, '/social/login.jsp');
+	  showLoginAjaxPopup(target, '/social/login.jsp');
   };
 
   var showLoginDialog = function (target, e) {
@@ -57,19 +89,17 @@ var FreshDirect = FreshDirect || {};
           currentPage = window.location.pathname + window.location.search + window.location.hash,
           target = ct.hasAttribute('fd-login-successpage-current') && currentPage || ct.getAttribute('fd-login-successpage') || ct.pathname || ct.href || currentPage;
       //APPDEV-3971
-          $("body").append("<a id=target-link-holder href="+ target +" style=display:none;>");
+    	  login.successTarget = target;
+      
           if (window.location.pathname.indexOf('login.jsp') === -1 && isMouseEvent && fd.user && (fd.user.guest || fd.user.recognized)) {
-        if (fd.properties.isSocialLoginEnabled) {
-          e.preventDefault();
-          if (fd.user.guest && !ct.hasAttribute('fd-login-nosignup')) {
-        	  socialSignup(target); /* why was this also login...? */
-          } else {
-            socialLogin(target);
+	          e.preventDefault();
+	          if (fd.user.guest && !ct.hasAttribute('fd-login-nosignup')) {
+	        	  socialSignup(target);
+	          } else {
+	        	  socialLogin(target);
+	          }
+        
           }
-        } else {
-          showLoginDialog(target);
-        }
-      }
     });
   };
   //APPDEV-3971

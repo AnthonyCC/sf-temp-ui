@@ -980,6 +980,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			if (!cart.isEmpty()) {
 				for (FDCartLineI cartLine : cart.getOrderLines()) {
 					cartLine.setUserContext(user.getUserContext());
+					cartLine.setFDGroup(null);//clear the group
 					
 				}
 			}
@@ -1011,6 +1012,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			if (!cart.isEmpty()) {
 				for (FDCartLineI cartLine : cart.getOrderLines()) {
 					cartLine.setUserContext(user.getUserContext());
+					cartLine.setFDGroup(null);//clear the group
 					
 				}
 			}
@@ -1078,6 +1080,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			if (!cart.isEmpty()) {
 				for (FDCartLineI cartLine : cart.getOrderLines()) {
 					cartLine.setUserContext(user.getUserContext());
+					cartLine.setFDGroup(null);//clear the group
 					
 				}
 			}

@@ -5,46 +5,36 @@ var FreshDirect = FreshDirect || {};
   "use strict";
 
   var $=fd.libs.$;
-  var viewallPopup = Object.create(fd.modules.common.overlayWidget, {
+  var viewallPopup = Object.create(fd.modules.common.popupWidget, {
     template: {
       value: common.viewAllPopup
     },
     bodyTemplate: {
       value: function (data) {
         var spinner = '<div class="spinner"></div>';
-
-        if (data.data.config) {
-          data.data.config[0].dontFocusForm = true;
-        }
-
         return data.data.config ? common.contentModules({config: data.data.config, data: data.data.data}) : spinner;
-      }
-    },
-    headerTemplate: {
-      value: function (data) {
-        var header = data.header ? data.header : '';
-        return header;
       }
     },
     trigger: {
       value: '[data-view-all-popup]'
     },
-    overlayId: {
+    closeTrigger: {
+      value: '[data-close-viewall-popup]'
+    },
+    popupId: {
       value: 'viewallPopup'
     },
-    ariaDescribedby:{
-      value:'vieaw-all'
-    },
-    ariaLabelledby:{
-      value:''
-    },
-    overlayConfig: {
+    popupConfig: {
       value: {
+        align:false,
+        overlay:true,
+        overlayExtraClass:'white-popup-overlay',
+        hideOnOverlayClick: true,
         zIndex:460
       }
     },
-    customClass: {
-      value: 'fullscreen'
+    hasClose: {
+      value: true
     },
     openPopup:{
       value: function (e) {
@@ -61,11 +51,13 @@ var FreshDirect = FreshDirect || {};
         }
 
         fd.common.dispatcher.signal('server',{
-    			url: url
-    		});
+                        url: url
+                });
         var $t = e && $(e.currentTarget) || $(document.body);
 
-        this.refresh();
+        this.refreshBody();
+        this.popup.show($t);
+        this.popup.clicked = true;
 
         $(window).scroll(closeTransactionalPopup);
       }
@@ -75,15 +67,17 @@ var FreshDirect = FreshDirect || {};
     },
     close: {
         value: function (e) {
-          if (this.overlay) {
-            this.overlay.close(e);
+          if (this.popup) {
+            this.popup.hide(e);
             $(window).off('scroll', closeTransactionalPopup);
           }
         }
     },
     callback:{
       value:function( data ) {
-        return this.refresh(data);
+        this.refreshBody(data);
+
+        fd.common.dispatcher.signal('productImpressions', $('#'+this.popupId));
       }
     }
   });
@@ -97,11 +91,11 @@ var FreshDirect = FreshDirect || {};
   viewallPopup.listen();
 
   $(document).on('click', viewallPopup.trigger, function (e) {
+    viewallPopup.openPopup(e);
     e.preventDefault();
     e.stopPropagation();
-    viewallPopup.openPopup(e);
   });
-
+  $(document).on('click', viewallPopup.closeTrigger, viewallPopup.close.bind(viewallPopup));
 
   fd.modules.common.utils.register("components", "viewallPopup", viewallPopup, fd);
 }(FreshDirect));

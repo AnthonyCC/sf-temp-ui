@@ -536,7 +536,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
         GroupScalePricing gsp = null;
         GroupPrices groupPrices;
         try {
-            FDGroup fdGroup = FDCachedFactory.getProductInfo(skucode).getGroup(ZonePriceListing.DEFAULT_SALES_ORG, ZonePriceListing.DEFAULT_DIST_CHANNEL);
+            FDGroup fdGroup = FDCachedFactory.getProductInfo(skucode).getGroup(ZonePriceListing.DEFAULT_ZONE_INFO);//DEFAULT_SALES_ORG, ZonePriceListing.DEFAULT_DIST_CHANNEL);
             gsp = fdGroup != null ? FDCachedFactory.getGrpInfo(fdGroup) : null;
         } catch (FDSkuNotFoundException e) {
             // DO Nothing

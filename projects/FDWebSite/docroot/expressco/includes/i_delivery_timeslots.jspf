@@ -80,9 +80,8 @@ if(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentSta
 		pageContext.setAttribute("advancedTimeslotMediaEnabled", advancedTimeslotMediaEnabled, PageContext.REQUEST_SCOPE);
 	%>
 
-<% if((messages != null && messages.size() >= 1) || (comments!=null && comments.size() >=1)) { %>
-		<%@ include file="/shared/includes/delivery/i_geowarning_message.jspf"%>
-<% } %>
+<%@ include file="/shared/includes/delivery/i_geowarning_message.jspf"%>
+
 <%
 
   // [APPDEV-2149] Generic timeslots have nothing to do with delivery pass
@@ -172,7 +171,7 @@ if(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentSta
 	<script type="text/javascript">
 	YAHOO.util.Event.onDOMReady(function() {
 		var f = new FreshDirect.modules.standingorder.NextDeliveryDateChooserObserver(<%= sodlv_selectable %>, <%= sodlv_candidates %>, 'soDeliveryWeekOffset');
-		var radios = YAHOO.util.Selector.query('input[type=radio]', 'step2Form');
+		var radios = YAHOO.util.Selector.query('input[type=button]', 'step2Form');
 		var i;
 		for (i=0; i<radios.length; i++) {
 			YAHOO.util.Event.on(radios[i], 'click', function(e) {
@@ -216,7 +215,7 @@ if(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentSta
 											<td class="timeslots_legend_ecofriendly">
 												<img src="/media_stat/images/timeslots/ecofriendly_leaf.gif" alt="Eco-Friendly" WIDTH="16" HEIGHT="16" border="0">
 											</td>
-											<td class="timeslots_legend_ecofriendly"><a onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_ecofriendly_timeslot.html&windowSize=small&name=Eco Friendly','small');return false;"><%= FDStoreProperties.getEcoFriendlyLabel()%></a></td>
+											<td class="timeslots_legend_ecofriendly"><a href="#" onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_ecofriendly_timeslot.html&windowSize=small&name=Eco Friendly','small');return false;"><%= FDStoreProperties.getEcoFriendlyLabel()%></a></td>
 											<td>&nbsp;</td>
 										<%}%>
 										<%if(deliveryModel.getNeighbourhoodCount() > 0){%>
@@ -224,7 +223,7 @@ if(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentSta
 												<img src="/media_stat/images/timeslots/neighbourhood_favs.gif" WIDTH="15" HEIGHT="20" border="0">
 											</td>
 											<td class="timeslots_legend_neighbourhood">
-												<a onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_neighbourhood_timeslot.html&windowSize=small&name=Neighbourhood+Favs','small');return false;"><%= FDStoreProperties.getMyBuildingFavsLabel()%></a>
+												<a href="#" onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_neighbourhood_timeslot.html&windowSize=small&name=Neighbourhood+Favs','small');return false;"><%= FDStoreProperties.getMyBuildingFavsLabel()%></a>
 											</td>
 											<td>&nbsp;</td>
 										<%}%>
@@ -233,7 +232,7 @@ if(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentSta
 												<img src="/media_stat/images/timeslots/no_alcohol.gif" WIDTH="16" HEIGHT="16" border="0">
 										</td>
 											<td class="timeslots_legend_no_alcohol"> 
-												<a onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_alcoholrestriction_timeslot.html&windowSize=small&name=Alcohol Restriction','small');return false;"><%= FDStoreProperties.getAlcoholRestrictedLabel()%></a>
+												<a href="#" onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_alcoholrestriction_timeslot.html&windowSize=small&name=Alcohol Restriction','small');return false;"><%= FDStoreProperties.getAlcoholRestrictedLabel()%></a>
 											</td>
 											<td>&nbsp;</td>
 										<%}%>
@@ -245,7 +244,7 @@ if(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentSta
 												&nbsp;
 												</td>
 												<td Valign="top" class="timeslots_legend_early_delivery">
-												<a onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_early_am_timeslot.html&windowSize=small&name=Early AM','large');return false;">Early AM - Unattended</td>
+												<a href="#" onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_early_am_timeslot.html&windowSize=small&name=Early AM','large');return false;">Early AM - Unattended</td>
 												<td>&nbsp;</td>
 										<% } %>
 									</tr>

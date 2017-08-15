@@ -87,7 +87,8 @@ public class PriceCalculator {
     
     public FDGroup getFDGroup() {
         try {
-            return skuModel != null ? getProductInfo().getGroup(this.getPricingContext().getZoneInfo().getSalesOrg(),this.getPricingContext().getZoneInfo().getDistributionChanel()) : null; 
+//            return skuModel != null ? getProductInfo().getGroup(this.getPricingContext().getZoneInfo().getSalesOrg(),this.getPricingContext().getZoneInfo().getDistributionChanel()) : null;
+        	return skuModel != null ? getProductInfo().getGroup(this.getPricingContext().getZoneInfo()) : null;
         } catch (FDResourceException e) {
             return null;
         } catch (FDSkuNotFoundException e) {
@@ -96,7 +97,7 @@ public class PriceCalculator {
     }
     
     public FDGroup getProductGroup() throws FDResourceException, FDSkuNotFoundException{        
-         return skuModel != null && getProductInfo()!=null ? getProductInfo().getGroup(this.getPricingContext().getZoneInfo().getSalesOrg(),this.getPricingContext().getZoneInfo().getDistributionChanel()) : null;         
+         return skuModel != null && getProductInfo()!=null ? getProductInfo().getGroup(this.getPricingContext().getZoneInfo()) : null;         
     }
     
     public double getDefaultPriceValue() {
@@ -268,7 +269,7 @@ public class PriceCalculator {
     			ZonePriceInfoModel priceModel = getZonePriceInfoModel();
     			if(priceModel != null) {
     				int tieredPercentage = priceModel.getTieredDealPercentage();
-    				FDGroup group = productInfo.getGroup(this.getPricingContext().getZoneInfo().getSalesOrg(),this.getPricingContext().getZoneInfo().getDistributionChanel());
+    				FDGroup group = productInfo.getGroup(this.getPricingContext().getZoneInfo());
     				//if(tieredPercentage > 0 && group != null){
     				//APPDEV-2414 - Take group price into account if exists when calculating highest deal percentage
     				if( (priceModel.isItemOnSale() || tieredPercentage > 0) && group != null){
@@ -303,7 +304,7 @@ public class PriceCalculator {
                 //return getZonePriceInfoModel().getHighestDealPercentage();
     			ZonePriceInfoModel priceModel = getZonePriceInfoModel();
     			if(priceModel != null) {
-    				FDGroup group = productInfo.getGroup(this.getPricingContext().getZoneInfo().getSalesOrg(),this.getPricingContext().getZoneInfo().getDistributionChanel());
+    				FDGroup group = productInfo.getGroup(this.getPricingContext().getZoneInfo());
    					if(group != null) {
    						MaterialPrice gsPrice = GroupScaleUtil.getGroupScalePrice(group, ctx.getZoneInfo());
    						if(gsPrice != null) {

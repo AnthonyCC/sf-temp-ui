@@ -23,13 +23,14 @@ public class TicketServiceSessionBean extends ERPSessionBeanSupport {
 
 	public Ticket createTicket(Ticket ticket) {
 		Connection conn = null;
+		PreparedStatement ps = null;
 
 		try {
 			conn = getConnection();
 			Ticket existing = retrieveTicket(ticket.getKey());
 			if (existing == null) {
 				// insert
-				PreparedStatement ps = conn.prepareStatement("INSERT INTO cust.securityticket "
+				ps = conn.prepareStatement("INSERT INTO cust.securityticket "
 						+ "(key1, owner, purpose, expiration, used, created) VALUES (?, ?, ?, ?, ?, SYSDATE)");
 				ps.setString(1, ticket.getKey());
 				ps.setString(2, ticket.getOwner());
@@ -48,8 +49,6 @@ public class TicketServiceSessionBean extends ERPSessionBeanSupport {
 					else
 						throw e;
 				}
-				ps.close();
-				ps = null;
 			} else {
 				ticket = null;
 			}
@@ -58,34 +57,34 @@ public class TicketServiceSessionBean extends ERPSessionBeanSupport {
 			LOGGER.error("query of security tickets failed : " + e.getMessage(), e);
 			throw new EJBException(e);
 		} finally {
+			close(ps);
 			close(conn);
 		}
 	}
 
 	public Ticket updateTicket(Ticket ticket) {
 		Connection conn = null;
-
+		PreparedStatement ps = null;
 		try {
 			conn = getConnection();
 			Ticket existing = retrieveTicket(ticket.getKey());
 			if (existing != null) {
 				// update
 				// only 'used' attribute can be updated
-				PreparedStatement ps = conn.prepareStatement("UPDATE cust.securityticket SET used = ? WHERE key1 = ?");
+				ps = conn.prepareStatement("UPDATE cust.securityticket SET used = ? WHERE key1 = ?");
 				if (ticket.isUsed())
 					ps.setTimestamp(1, new Timestamp(new Date().getTime()));
 				else
 					ps.setNull(1, Types.TIMESTAMP);
 				ps.setString(2, ticket.getKey());
 				ps.executeUpdate();
-				ps.close();
-				ps = null;
 			}
 			return ticket;
 		} catch (SQLException e) {
 			LOGGER.error("query of security tickets failed : " + e.getMessage(), e);
 			throw new EJBException(e);
 		} finally {
+			close(ps);
 			close(conn);
 		}
 	}
@@ -105,27 +104,29 @@ public class TicketServiceSessionBean extends ERPSessionBeanSupport {
 	}
 
 	private Ticket retrieveTicket(String key, Connection conn) throws SQLException {
-		PreparedStatement ps = conn
-				.prepareStatement("SELECT key1, owner, purpose, expiration, used FROM cust.securityticket WHERE key1 = ?");
-		ps.setString(1, key);
-		ResultSet rs = ps.executeQuery();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		try {
+			ps = conn.prepareStatement(
+					"SELECT key1, owner, purpose, expiration, used FROM cust.securityticket WHERE key1 = ?");
+			ps.setString(1, key);
+			rs = ps.executeQuery();
 
-		Ticket ticket = null;
-		if (rs.next()) {
-			key = rs.getString(1);
-			String owner = rs.getString(2);
-			String purpose = rs.getString(3);
-			Date expiration = new Date(rs.getTimestamp(4).getTime());
-			boolean used = rs.getTimestamp(5) != null;
-			ticket = new Ticket(key, owner, purpose, expiration, used);
+			Ticket ticket = null;
+			if (rs.next()) {
+				key = rs.getString(1);
+				String owner = rs.getString(2);
+				String purpose = rs.getString(3);
+				Date expiration = new Date(rs.getTimestamp(4).getTime());
+				boolean used = rs.getTimestamp(5) != null;
+				ticket = new Ticket(key, owner, purpose, expiration, used);
+			}
+
+			return ticket;
+		} finally {
+			close(rs);
+			close(ps);
 		}
-
-		rs.close();
-		rs = null;
-
-		ps.close();
-		ps = null;
-
-		return ticket;
 	}
 }

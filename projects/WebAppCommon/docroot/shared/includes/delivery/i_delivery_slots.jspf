@@ -259,7 +259,7 @@ if (timeslots.size() > 0) {
 
 	stringBuffer.append("				<td class=\"ts_d\" valign=\"top\">\n")
 				.append("					<div id=\"ts_d"+dayIndex+"_hC\" class=\"tsHeaderC\" >\n")
-				.append("						<table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">\n")
+				.append("						<a href=\"#\" aria-label=\""+TimeslotPageUtil.formatDayNameExp(day)+". "+((user.getCurrentStandingOrder())!=null?"": TimeslotPageUtil.formatDeliveryDateNew(day) )+"  "+((timeslots.getTimeslotsForDate(day).size()==0)? "sorry! no delivery timeslots available" : " has "  +timeslots.getTimeslotsForDate(day).size()+  " timeslots ")+"  \"><table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">\n")
 				.append("							<tr>\n")
 				.append("								<td align=\"center\" colspan=\"3\">\n")
 				.append("									<div class=\"tsDayNameC\"><b>"+TimeslotPageUtil.formatDayName(day)+"</b></div>\n");
@@ -272,10 +272,10 @@ if (timeslots.size() > 0) {
 	
 	stringBuffer.append("								</td>\n")
 				.append("							</tr>\n")
-				.append("						</table>\n")
+				.append("						</table></a>\n")
 				.append("					</div>\n")
 				.append("					<div id=\"ts_d"+dayIndex+"_hE\" class=\"tsHeaderE\" style=\"display: none;\">\n")
-				.append("						<table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">\n")
+				.append("						<a href=\"#\" aria-label=\""+TimeslotPageUtil.formatDayNameExp(day)+". "+((user.getCurrentStandingOrder())!=null?"": TimeslotPageUtil.formatDeliveryDateNew(day) )+" "+((timeslots.getTimeslotsForDate(day).size()==0)? "sorry! no delivery timeslots available" : " has "  +timeslots.getTimeslotsForDate(day).size()+  " timeslots ")+" \"><table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">\n")
 				.append("							<tr>\n")
 				.append("								<td class=\"tsHeaderE_top\" width=\"6\"><img src=\"/media_stat/images/layout/top_left.gif\" alt=\"\" width=\"6\" height=\"6\" /></td>\n")
 				.append("								<td class=\"tsHeaderE_topC\"><img src=\"/media_stat/images/layout/clear.gif\" alt=\"\" /></td>\n")
@@ -295,7 +295,7 @@ if (timeslots.size() > 0) {
 	stringBuffer.append("									</div>\n")
 				.append("								</td>\n")
 				.append("							</tr>\n")
-				.append("						</table>\n")
+				.append("						</table></a>\n")
 				.append("					</div>\n")
 				.append("					<div id=\"ts_d"+dayIndex+"_tsTable_timeInfo\" style=\"display: none;\">"+day.getTime()+"</div>\n")
 				.append("					<table border=\"0\" id=\"ts_d"+dayIndex+"_tsTable\" class=\"tsTable tsTableC\" cellspacing=\"0\" cellpadding=\"0\">\n");

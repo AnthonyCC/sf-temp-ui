@@ -21,6 +21,7 @@ import com.freshdirect.fdstore.temails.TEmailTemplateInfo;
 import com.freshdirect.fdstore.temails.TransEmailInfoModel;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.mail.EmailAddress;
+import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.EnumEmailType;
 import com.freshdirect.mail.EnumTEmailProviderType;
@@ -67,12 +68,14 @@ public class TEmailInfoDAO {
 		
 		  Connection conn = con;
 		   TEmailTemplateInfo info=null;	
-		   
+			PreparedStatement ps = null;
+			ResultSet rs = null;
+			
 	       try {
-	    	   PreparedStatement ps = conn.prepareStatement(TEMPLATE_SELECT_SQL);
+	    	   ps = conn.prepareStatement(TEMPLATE_SELECT_SQL);
 	    	   ps.setString(1,tranType.getName());
 	    	   ps.setString(2,emailType.getName());
-	    	   ResultSet rs = ps.executeQuery();
+	    	   rs = ps.executeQuery();
 	           if (rs.next()) {
 	           	 	info=new TEmailTemplateInfo();
 	           	 	info.setId(rs.getString("ID"));
@@ -87,10 +90,11 @@ public class TEmailInfoDAO {
 	           	    info.setProvider(rs.getString("PROVIDER")==null?EnumTEmailProviderType.CHEETAH:EnumTEmailProviderType.getEnum(rs.getString("PROVIDER")));
 	           	    info.setTransactionType(tranType);
 	           }
-	           if(rs!=null) rs.close();
-	           if(ps!=null) ps.close();
 	       }catch(SQLException e){
 	      	 throw e;
+	       } finally{
+	    	   DaoUtil.close(rs);
+	    	   DaoUtil.close(ps);
 	       }
 	       LOGGER.info("TEmailTemplateInfo is :"+info);
 		   return info; 				
@@ -241,15 +245,16 @@ public class TEmailInfoDAO {
 	
 	
 	 public static List getFailedTransactions(Connection conn, int max_count,boolean isEmailContentReqd) throws SQLException{
-		 
+			PreparedStatement ps = null;
+			ResultSet rs = null;
 		
 		   List failedTransList=new ArrayList();	
 		   if(max_count==0) max_count=999;
 	       try {
-	    	   PreparedStatement ps = conn.prepareStatement(GET_ALL_FAILED_TRANS_MAIL_SQL);
+	    	   ps = conn.prepareStatement(GET_ALL_FAILED_TRANS_MAIL_SQL);
 	    	   
 	    	   ps.setInt(1, max_count);
-	    	   ResultSet rs = ps.executeQuery();
+	    	   rs = ps.executeQuery();
 	           while (rs.next()) {
 	        	   TransEmailInfoModel model=new TransEmailInfoModel();
 	           	 
@@ -290,9 +295,11 @@ public class TEmailInfoDAO {
 	           	    failedTransList.add(model);
 	           	    	           	    
 	           }
-	           ps.close();
 	       }catch(SQLException e){
 	      	 throw e;
+	       } finally{
+	    	   DaoUtil.close(rs);
+	    	   DaoUtil.close(ps);
 	       }
 	       LOGGER.info("failedTransList size is :"+failedTransList.size());
 		   return failedTransList; 				
@@ -308,13 +315,15 @@ public class TEmailInfoDAO {
 
 
 	public static Map getFailedTransactionsDetails(Connection conn) throws SQLException{
+				PreparedStatement ps= null;
+				ResultSet rs = null;
 				
 				Map transMap=new HashMap();
 				int totalCount=0;
 				try {
-				PreparedStatement ps = conn.prepareStatement(GET_FAILED_TRANS_MAIL_SQL);
+				ps = conn.prepareStatement(GET_FAILED_TRANS_MAIL_SQL);
 							
-				ResultSet rs = ps.executeQuery();
+				rs = ps.executeQuery();
 				while (rs.next()) {
 				
 				   int count=rs.getInt("count");
@@ -323,11 +332,12 @@ public class TEmailInfoDAO {
 				
 				}
 				transMap.put("total_count",""+totalCount);
-				
-				
-				ps.close();
+
 				}catch(SQLException e){
 					throw e;
+				} finally{
+					DaoUtil.close(rs);
+					DaoUtil.close(ps);
 				}
 				LOGGER.info("failedTransList size is :"+transMap.size());
 			return transMap; 				
