@@ -92,7 +92,9 @@ public class PaymentMethodUtil {
 		else if(paymentMethods.size() > 1){
 			sortPaymentMethodsByPriority(paymentMethods);
 		}
-		if(paymentMethods.get(0).getPK().getId().equals(addedPaymentMethod.getPK().getId()) || (null !=defaultPaymentMethod && defaultPaymentMethod.equals(paymentMethods.get(0)))){
+		if((null != addedPaymentMethod && addedPaymentMethod.getCardType().equals(paymentMethods.get(0).getCardType()) && 
+				paymentMethods.get(0).getMaskedAccountNumber().equals(addedPaymentMethod.getMaskedAccountNumber())) || 
+				(null !=defaultPaymentMethod && defaultPaymentMethod.equals(paymentMethods.get(0).getPK().getId()))){
 			return false;
 		}
 		return true;
@@ -102,14 +104,9 @@ public class PaymentMethodUtil {
 		if(null == paymentId || "".equals(paymentId)){
 			return;
 		}
-		ErpPaymentMethodI pmethod = null;
+		
 		List<ErpPaymentMethodI> paymentMethods = new ArrayList<ErpPaymentMethodI>(pMethods);
-		for(ErpPaymentMethodI paymentMethod : paymentMethods){
-			if(paymentMethod.getPK().getId().equals(paymentId)){
-				pmethod = paymentMethod;
-				break;
-			}
-		}
+		ErpPaymentMethodI pmethod = getPaymentMethod(paymentId, paymentMethods);
 		try {
 			if(null == pmethod){
 				throw new FDResourceException("Payment method not registered with user");
@@ -154,5 +151,16 @@ public class PaymentMethodUtil {
 		} catch (FDResourceException e) {
 			LOGGER.error(e);
 		}		
+	}
+
+	private static ErpPaymentMethodI getPaymentMethod(String paymentId, List<ErpPaymentMethodI> paymentMethods) {
+		ErpPaymentMethodI pmethod = null;
+		for(ErpPaymentMethodI paymentMethod : paymentMethods){
+			if(paymentMethod.getPK().getId().equals(paymentId)){
+				pmethod = paymentMethod;
+				break;
+			}
+		}
+		return pmethod;
 	}
 }
