@@ -74,7 +74,11 @@ var FreshDirect = FreshDirect || {};
 
       if (!$pEl.attr('data-impression-reported')) {
         $pEl.attr('data-impression-reported', 'true');
-        fd.common.dispatcher.signal('productImpressions', $pEl);
+
+        // give some time for the GTM module to load
+        setTimeout(function () {
+          fd.common.dispatcher.signal('productImpressions', $pEl);
+        }, 100);
       }
     });
 
