@@ -82,6 +82,7 @@ public class FDEcommProperties {
 	public static final String PaymentGatewaySB ="payment.ejb.PaymentGatewaySB";
 	public static final String EwalletServiceSB = "ewallet.ejb.EwalletServiceSB";
 	public static final String CoremetricsCdfServiceSB = "coremetrics.service.CoremetricsCdfServiceSB";
+	 public final static  String FDPromotionManagerNewSB = "fdstore.ejb.FDPromotionNewManagerSB";//story SF17-88
  
   
     
