@@ -21,6 +21,7 @@ import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponInfo;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponUPCInfo;
 import com.freshdirect.fdstore.ecoupon.model.FDCustomerCouponHistoryInfo;
+import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 
@@ -198,33 +199,39 @@ public class FDCouponManagerDAO {
 		return upcInfo;
 	}
 	
-	public static List<FDCouponInfo> getActiveCoupons(Connection conn,Date lastModified) throws SQLException{
-		List<FDCouponInfo> coupons= new ArrayList<FDCouponInfo>();
+	public static List<FDCouponInfo> getActiveCoupons(Connection conn, Date lastModified) throws SQLException {
+		List<FDCouponInfo> coupons = new ArrayList<FDCouponInfo>();
 		PreparedStatement ps = null;
-		if(null ==lastModified){
-			ps=conn.prepareStatement("SELECT * FROM  CUST.FDCOUPON FC, CUST.FDCOUPON_REQ_UPC UPC,CUST.FDCOUPON_HISTORY CH WHERE  FC.ID=UPC.FDCOUPON_ID AND FC.VERSION=(SELECT MAX(FC1.VERSION) " +
-					" FROM CUST.FDCOUPON FC1 WHERE FC1.COUPON_ID=FC.COUPON_ID) AND CH.VERSION=(select min(fc2.version) from cust.fdcoupon fc2 where FC2.COUPON_ID=FC.COUPON_ID)"+
-					" ORDER BY FC.COUPON_ID");
-			if(FDCouponProperties.isCouponCacheDaysLimitEnabled()){
-				int days = FDCouponProperties.getCouponCacheDaysLimit();
-				ps=conn.prepareStatement("SELECT * FROM  CUST.FDCOUPON FC, CUST.FDCOUPON_REQ_UPC UPC, CUST.FDCOUPON_HISTORY CH2 WHERE  FC.ID=UPC.FDCOUPON_ID AND FC.VERSION=(SELECT MAX(FC1.VERSION) FROM CUST.FDCOUPON FC1,CUST.FDCOUPON_HISTORY CH WHERE FC1.COUPON_ID=FC.COUPON_ID"+
-						" AND FC1.VERSION=CH.VERSION AND CH.DATE_CREATED >(SYSDATE-"+days+")) AND CH2.VERSION=(select min(fc2.version) from cust.fdcoupon fc2 where FC2.COUPON_ID=FC.COUPON_ID) ORDER BY FC.COUPON_ID");
-			}
-		}else{
-			ps=conn.prepareStatement("SELECT * FROM  CUST.FDCOUPON FC, CUST.FDCOUPON_REQ_UPC UPC, CUST.FDCOUPON_HISTORY CH1 WHERE  FC.ID=UPC.FDCOUPON_ID AND FC.VERSION=(SELECT MAX(FC1.VERSION) FROM CUST.FDCOUPON FC1,CUST.FDCOUPON_HISTORY CH WHERE FC1.COUPON_ID=FC.COUPON_ID"+
-					" AND FC1.VERSION=CH.VERSION AND CH.DATE_CREATED >?) AND CH1.VERSION=(select min(fc2.version) from cust.fdcoupon fc2 where FC2.COUPON_ID=FC.COUPON_ID)  ORDER BY FC.COUPON_ID");
-			
-//			ps=conn.prepareStatement("SELECT * FROM CUST.FDCOUPON FC WHERE VERSION=(SELECT MAX(VERSION) FROM CUST.FDCOUPON_HISTORY WHERE DATE_CREATED > ?)");
-			ps.setTimestamp(1, new Timestamp(lastModified.getTime()));			
-		}
-		
-		ResultSet rs = ps.executeQuery();
-		loadCouponsFromResultSet(coupons, rs);
+		ResultSet rs = null;
+		try {
+			if (null == lastModified) {
+				ps = conn.prepareStatement(
+						"SELECT * FROM  CUST.FDCOUPON FC, CUST.FDCOUPON_REQ_UPC UPC,CUST.FDCOUPON_HISTORY CH WHERE  FC.ID=UPC.FDCOUPON_ID AND FC.VERSION=(SELECT MAX(FC1.VERSION) "
+								+ " FROM CUST.FDCOUPON FC1 WHERE FC1.COUPON_ID=FC.COUPON_ID) AND CH.VERSION=(select min(fc2.version) from cust.fdcoupon fc2 where FC2.COUPON_ID=FC.COUPON_ID)"
+								+ " ORDER BY FC.COUPON_ID");
+				if (FDCouponProperties.isCouponCacheDaysLimitEnabled()) {
+					int days = FDCouponProperties.getCouponCacheDaysLimit();
+					ps = conn.prepareStatement(
+							"SELECT * FROM  CUST.FDCOUPON FC, CUST.FDCOUPON_REQ_UPC UPC, CUST.FDCOUPON_HISTORY CH2 WHERE  FC.ID=UPC.FDCOUPON_ID AND FC.VERSION=(SELECT MAX(FC1.VERSION) FROM CUST.FDCOUPON FC1,CUST.FDCOUPON_HISTORY CH WHERE FC1.COUPON_ID=FC.COUPON_ID"
+									+ " AND FC1.VERSION=CH.VERSION AND CH.DATE_CREATED >(SYSDATE-" + days
+									+ ")) AND CH2.VERSION=(select min(fc2.version) from cust.fdcoupon fc2 where FC2.COUPON_ID=FC.COUPON_ID) ORDER BY FC.COUPON_ID");
+				}
+			} else {
+				ps = conn.prepareStatement(
+						"SELECT * FROM  CUST.FDCOUPON FC, CUST.FDCOUPON_REQ_UPC UPC, CUST.FDCOUPON_HISTORY CH1 WHERE  FC.ID=UPC.FDCOUPON_ID AND FC.VERSION=(SELECT MAX(FC1.VERSION) FROM CUST.FDCOUPON FC1,CUST.FDCOUPON_HISTORY CH WHERE FC1.COUPON_ID=FC.COUPON_ID"
+								+ " AND FC1.VERSION=CH.VERSION AND CH.DATE_CREATED >?) AND CH1.VERSION=(select min(fc2.version) from cust.fdcoupon fc2 where FC2.COUPON_ID=FC.COUPON_ID)  ORDER BY FC.COUPON_ID");
 
-		rs.close();
-		ps.close();
-		
-		return coupons;
+				// ps=conn.prepareStatement("SELECT * FROM CUST.FDCOUPON FC WHERE VERSION=(SELECT MAX(VERSION) FROM CUST.FDCOUPON_HISTORY WHERE DATE_CREATED > ?)");
+				ps.setTimestamp(1, new Timestamp(lastModified.getTime()));
+			}
+
+			rs = ps.executeQuery();
+			loadCouponsFromResultSet(coupons, rs);
+			return coupons;
+		} finally {
+			DaoUtil.close(rs);
+			DaoUtil.close(ps);
+		}
 	}
 
 	private static void loadCouponsFromResultSet(List<FDCouponInfo> coupons,

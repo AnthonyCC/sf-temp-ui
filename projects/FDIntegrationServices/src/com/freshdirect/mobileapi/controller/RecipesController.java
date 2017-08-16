@@ -153,6 +153,12 @@ public class RecipesController extends BaseController {
 			throw new RuntimeException(e);
 		} catch (final JsonException e) {
 			throw new RuntimeException(e);
+		} finally{
+			try {
+				get.releaseConnection();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return model;
 	}
@@ -263,6 +269,7 @@ public class RecipesController extends BaseController {
 				recipe.setIngredientsYmah(ingredientsYmah);
 				
 			}
+			get.releaseConnection();
 		} catch (HttpException e) {
 			throw new RuntimeException(e);
 		} catch (IOException e) {
@@ -367,25 +374,27 @@ public class RecipesController extends BaseController {
 		
 			final GetMethod get = getMethodURL( searchTerm);
 			if (200 == get.getStatusCode()) {
-				final String json = get.getResponseBodyAsString();
-				final ObjectMapper mapper = new ObjectMapper();
-				@SuppressWarnings("unchecked")
-				final
-				Map<String, Object> res = mapper.readValue(json, Map.class);
+				try {
+					final String json = get.getResponseBodyAsString();
+					final ObjectMapper mapper = new ObjectMapper();
+					@SuppressWarnings("unchecked")
+					final Map<String, Object> res = mapper.readValue(json, Map.class);
 
-				@SuppressWarnings("unchecked")
-				final
-				List<Map<String, Object>> recipeJsons = (List<Map<String, Object>>) res.get("recipes");
-				final List<RecipeDetailResponse> recipes = new ArrayList<RecipeDetailResponse>(recipeJsons.size());
-				for (final Map<String, Object> recipeJson : recipeJsons) {
-					final RecipeDetailResponse recipe = new RecipeDetailResponse();
-					readFoodilyRecipe(recipeJson, recipe);
-					recipes.add(recipe);
+					@SuppressWarnings("unchecked")
+					final List<Map<String, Object>> recipeJsons = (List<Map<String, Object>>) res.get("recipes");
+					final List<RecipeDetailResponse> recipes = new ArrayList<RecipeDetailResponse>(recipeJsons.size());
+					for (final Map<String, Object> recipeJson : recipeJsons) {
+						final RecipeDetailResponse recipe = new RecipeDetailResponse();
+						readFoodilyRecipe(recipeJson, recipe);
+						recipes.add(recipe);
+					}
+
+					final RecipeListResponse response = new RecipeListResponse();
+					response.setRecipes(recipes);
+					setResponseMessage(model, response, user);
+				} finally {
+					get.releaseConnection();
 				}
-
-				final RecipeListResponse response = new RecipeListResponse();
-				response.setRecipes(recipes);
-				setResponseMessage(model, response, user);
 			}
 		} catch (final HttpException e) {
 			throw new RuntimeException(e);
@@ -465,17 +474,25 @@ public class RecipesController extends BaseController {
 			if (200 == auth.getStatusCode()) {
 				newToken = processsRequest(auth,previousToken);
 			}else{
-				final PostMethod authFood = new PostMethod(FOODILY_API + "/token");
+				PostMethod authFood = null ;
+				try{
+				authFood = new PostMethod(FOODILY_API + "/token");
 				authFood.addRequestHeader("Authorization", "Basic ZnJlc2hkaXJlY3Q6SjNJZ3A5T3ZHZm5qcWpu");
 				authFood.addParameter("grant_type", "client_credentials");			
 				http.executeMethod(authFood);
 				if (200 == authFood.getStatusCode()) 
 					newToken = processsRequest(authFood,previousToken);
+				} finally{
+					if(authFood!=null)
+					authFood.releaseConnection();
+				}
 			}
 		} catch (final HttpException e) {
 			throw new RuntimeException(e);
 		} catch (final IOException e) {
 			throw new RuntimeException(e);
+		} finally{
+			auth.releaseConnection();
 		}
 		return newToken;
 	}

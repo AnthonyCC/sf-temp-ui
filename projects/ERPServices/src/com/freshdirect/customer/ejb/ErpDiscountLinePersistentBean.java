@@ -16,6 +16,7 @@ import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.util.DaoUtil;
 
 /**
  * @author jng
@@ -76,19 +77,23 @@ public class ErpDiscountLinePersistentBean extends ErpReadOnlyPersistentBean {
 	 */
 	public static List findByParent(Connection conn, PrimaryKey parentPK) throws SQLException {
 		java.util.List lst = new java.util.LinkedList();
-		// need to have a constant order
-		PreparedStatement ps = conn.prepareStatement("SELECT ID FROM CUST.DISCOUNTLINE WHERE SALESACTION_ID=? ORDER BY ID");
-		ps.setString(1, parentPK.getId());
-		ResultSet rs = ps.executeQuery();
-		while (rs.next()) {
-			ErpDiscountLinePersistentBean bean = new ErpDiscountLinePersistentBean(new PrimaryKey(rs.getString(1)), conn);
-			bean.setParentPK(parentPK);
-			lst.add(bean);
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			// need to have a constant order
+			ps = conn.prepareStatement("SELECT ID FROM CUST.DISCOUNTLINE WHERE SALESACTION_ID=? ORDER BY ID");
+			ps.setString(1, parentPK.getId());
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				ErpDiscountLinePersistentBean bean = new ErpDiscountLinePersistentBean(new PrimaryKey(rs.getString(1)), conn);
+				bean.setParentPK(parentPK);
+				lst.add(bean);
+			}
+		} finally {
+			DaoUtil.close(rs);
+			DaoUtil.close(ps);
 		}
-		rs.close();
-		rs = null;
-		ps.close();
-		ps = null;
+
 		return lst;
 	}
 

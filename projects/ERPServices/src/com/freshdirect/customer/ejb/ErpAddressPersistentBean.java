@@ -26,6 +26,7 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.framework.core.DependentPersistentBeanSupport;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.NVL;
 
 /**
@@ -319,49 +320,55 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 		"ALT_CONTACT_EXT, ALT_CONTACT_TYPE, UNATTENDED_FLAG, UNATTENDED_INSTR, CUSTOMER_ID,EXT_SCRUBBED_ADDRESS FROM CUST.ADDRESS WHERE ID=?";
 		
 	public void load(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement(LOAD_ADDRESS_QUERY);
-		
-		ps.setString(1, this.getPK().getId());
-		ResultSet rs = ps.executeQuery();
-		if (rs.next()) {
-			this.firstName = rs.getString("FIRST_NAME");
-			this.lastName = rs.getString("LAST_NAME");
-			this.address1 = rs.getString("ADDRESS1");
-			this.address2 = NVL.apply(rs.getString("ADDRESS2"), "").trim();
-			this.apartment = NVL.apply(rs.getString("APARTMENT"), "").trim();
-			this.city = rs.getString("CITY");
-			this.state = rs.getString("STATE");
-			this.zipCode = rs.getString("ZIP");
-			this.country = rs.getString("COUNTRY");
-			this.phone = this.convertPhoneNumber( rs.getString("PHONE"), rs.getString("PHONE_EXT"), rs.getString("PHONE_TYPE") );
-			this.instructions = rs.getString("DELIVERY_INSTRUCTIONS");
-			if(this.addressInfo!=null){
-				this.addressInfo.setScrubbedStreet(rs.getString("SCRUBBED_ADDRESS"));
-				this.addressInfo.setSsScrubbedAddress(rs.getString("EXT_SCRUBBED_ADDRESS"));
-			}
-			this.altDeliverySetting = EnumDeliverySetting.getDeliverySetting(rs.getString("ALT_DEST"));
-			this.altFirstName = rs.getString("ALT_FIRST_NAME");
-			this.altLastName = rs.getString("ALT_LAST_NAME");
-			this.altApartment = rs.getString("ALT_APARTMENT");
-			this.altPhone = this.convertPhoneNumber( rs.getString("ALT_PHONE"), rs.getString("ALT_PHONE_EXT") );
-			if(this.addressInfo!=null)
-			this.addressInfo.setLongitude(Double.parseDouble((rs.getBigDecimal("LONGITUDE")!=null)?rs.getBigDecimal("LONGITUDE").toString():"0"));
-			if(this.addressInfo!=null)
-			this.addressInfo.setLatitude(Double.parseDouble((rs.getBigDecimal("LATITUDE")!=null)?rs.getBigDecimal("LATITUDE").toString():"0"));
-			this.serviceType = EnumServiceType.getEnum(rs.getString("SERVICE_TYPE"));
-			this.companyName = rs.getString("COMPANY_NAME");
-			this.altContactPhone = this.convertPhoneNumber(rs.getString("ALT_CONTACT_PHONE"), rs.getString("ALT_CONTACT_EXT"), rs.getString("ALT_CONTACT_TYPE"));
-			this.unattendedDeliveryFlag = EnumUnattendedDeliveryFlag.fromSQLValue(rs.getString("UNATTENDED_FLAG"));
-			this.unattendedDeliveryInstructions = rs.getString("UNATTENDED_INSTR");
-			this.customerId=rs.getString("CUSTOMER_ID");
-		} else {
-			throw new SQLException("No such ErpAddress PK: " + this.getPK());
-		}
-		rs.close();
-		rs = null;
-		ps.close();
-		ps = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(LOAD_ADDRESS_QUERY);
 
+			ps.setString(1, this.getPK().getId());
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				this.firstName = rs.getString("FIRST_NAME");
+				this.lastName = rs.getString("LAST_NAME");
+				this.address1 = rs.getString("ADDRESS1");
+				this.address2 = NVL.apply(rs.getString("ADDRESS2"), "").trim();
+				this.apartment = NVL.apply(rs.getString("APARTMENT"), "").trim();
+				this.city = rs.getString("CITY");
+				this.state = rs.getString("STATE");
+				this.zipCode = rs.getString("ZIP");
+				this.country = rs.getString("COUNTRY");
+				this.phone = this.convertPhoneNumber(rs.getString("PHONE"), rs.getString("PHONE_EXT"),
+						rs.getString("PHONE_TYPE"));
+				this.instructions = rs.getString("DELIVERY_INSTRUCTIONS");
+				if (this.addressInfo != null) {
+					this.addressInfo.setScrubbedStreet(rs.getString("SCRUBBED_ADDRESS"));
+					this.addressInfo.setSsScrubbedAddress(rs.getString("EXT_SCRUBBED_ADDRESS"));
+				}
+				this.altDeliverySetting = EnumDeliverySetting.getDeliverySetting(rs.getString("ALT_DEST"));
+				this.altFirstName = rs.getString("ALT_FIRST_NAME");
+				this.altLastName = rs.getString("ALT_LAST_NAME");
+				this.altApartment = rs.getString("ALT_APARTMENT");
+				this.altPhone = this.convertPhoneNumber(rs.getString("ALT_PHONE"), rs.getString("ALT_PHONE_EXT"));
+				if (this.addressInfo != null)
+					this.addressInfo.setLongitude(Double.parseDouble(
+							(rs.getBigDecimal("LONGITUDE") != null) ? rs.getBigDecimal("LONGITUDE").toString() : "0"));
+				if (this.addressInfo != null)
+					this.addressInfo.setLatitude(Double.parseDouble(
+							(rs.getBigDecimal("LATITUDE") != null) ? rs.getBigDecimal("LATITUDE").toString() : "0"));
+				this.serviceType = EnumServiceType.getEnum(rs.getString("SERVICE_TYPE"));
+				this.companyName = rs.getString("COMPANY_NAME");
+				this.altContactPhone = this.convertPhoneNumber(rs.getString("ALT_CONTACT_PHONE"),
+						rs.getString("ALT_CONTACT_EXT"), rs.getString("ALT_CONTACT_TYPE"));
+				this.unattendedDeliveryFlag = EnumUnattendedDeliveryFlag.fromSQLValue(rs.getString("UNATTENDED_FLAG"));
+				this.unattendedDeliveryInstructions = rs.getString("UNATTENDED_INSTR");
+				this.customerId = rs.getString("CUSTOMER_ID");
+			} else {
+				throw new SQLException("No such ErpAddress PK: " + this.getPK());
+			}
+		} finally {
+			DaoUtil.close(rs);
+			DaoUtil.close(ps);
+		}
 		// load children here
 
 		this.unsetModified();

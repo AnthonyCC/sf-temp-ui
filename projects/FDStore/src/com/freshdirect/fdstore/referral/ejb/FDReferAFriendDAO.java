@@ -932,6 +932,8 @@ public class FDReferAFriendDAO {
 			if(rset.next())
 				return false;
 		} finally {
+			if (rset != null)
+				rset.close();
 			if (ps != null)
 				ps.close();
 		}
