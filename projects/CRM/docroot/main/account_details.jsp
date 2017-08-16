@@ -29,6 +29,8 @@
 <%@ page import="com.freshdirect.framework.core.PrimaryKey"  %>
 <%@ page import="com.freshdirect.fdstore.referral.FDReferralManager" %>
 <%@ page import="com.freshdirect.webapp.crm.security.CrmSecurityManager" %>
+<%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature" %>
+<%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter" %>
 <%@ page import='java.util.*' %>
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -632,11 +634,17 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
 	            }
 	            
 	            %>
-            </logic:iterate>
-            <%String defaultPaymentId = null !=user.getFDCustomer()?user.getFDCustomer().getDefaultPaymentMethodPK():null; 
-              String paymentDefaultType = (null==user.getFDCustomer() || null==user.getFDCustomer().getDefaultPaymentType() || user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED))?
-            		  "undefined":user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.DEFAULT_CUST)?"Customer":"System";%>
-            <%
+            </logic:iterate>            
+            
+            <% user.refreshFdCustomer(); 
+            boolean isDebitCardSwitchEnabled = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user);
+            String defaultPaymentId = (null!=user && null != user.getFDCustomer())?user.getFDCustomer().getDefaultPaymentMethodPK():null; 
+            String paymentDefaultPaymentType = (null!=user && null != user.getFDCustomer())?user.getFDCustomer().getDefaultPaymentType().getName():null;
+            String paymentDefaultType = (null==paymentDefaultPaymentType || paymentDefaultPaymentType
+            		  .equals(EnumPaymentMethodDefaultType.UNDEFINED.getName()))?"UNDEFINED":paymentDefaultPaymentType
+            				  .equals(EnumPaymentMethodDefaultType.DEFAULT_CUST.getName())?"CUSTOMER":"SYSTEM";
+              %>
+            <%            
             if(FDStoreProperties.isPayPalEnabled()){
             %>
             <!--  PAYPAL START  -->
@@ -645,15 +653,13 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
             <%-- START:PAYMENT ENTRIES --%>
 	            <%
 	            if(isPayPalWalletPaired && payPalPaymentMethod != null){
-	            %>
+	            %>	             
 	                <div class="cust_inner_module" style="width: 32%;<%=ccNum < 3 ?"border-top: none;":""%>">
-	                     <div class="cust_module_content">
-	                     <table width="100%" cellpadding="0" cellspacing="0" class="cust_module_content_text">
-	                     <%if(null!=defaultPaymentId && payPalPaymentMethod.getPK().getId().equals(defaultPaymentId) && !paymentDefaultType.equals("undefined")) {%>
-	                     <tr>
-	                     <td align="center">Default Payment Method by + <%=paymentDefaultType %></td> 	                     
-	                     </tr>
+	                <%if(null!=defaultPaymentId && null != payPalPaymentMethod.getPK() && payPalPaymentMethod.getPK().getId().equals(defaultPaymentId) && !paymentDefaultType.equals("UNDEFINED")) {%>
+	                     <div align="center" style="color:red">Default Payment Method by <%=paymentDefaultType %></div> 	                     
 	                     <%} %>
+	                     <div class="cust_module_content">
+	                     <table width="100%" cellpadding="0" cellspacing="0" class="cust_module_content_text">	                     
 	                        <tr valign="top">
 	                        <td class="cust_module_content_note"></td>
 	                        <td>
@@ -684,15 +690,14 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
             <logic:iterate id="payment" collection="<%=customer.getPaymentMethods()%>" type="com.freshdirect.customer.ErpPaymentMethodI" indexId="idx">
             <%
             if(EnumPaymentMethodType.CREDITCARD.equals(payment.getPaymentMethodType()) && payment.geteWalletID() == null){
-            %>
+            %>            
                 <div class="cust_inner_module" style="width: 32%;<%=ccNum < 3 ?"border-top: none;":""%>">
+                 <%if(isDebitCardSwitchEnabled && null!=defaultPaymentId && null != payment.getPK() && payment.getPK().getId().equals(defaultPaymentId) && !paymentDefaultType.equals("UNDEFINED")) {%>	                     
+	                     <div align="center" style="color:red">Default Payment Method by <%=paymentDefaultType %></div>                     
+	                     <%} %>
                      <div class="cust_module_content">
                      <table width="100%" cellpadding="0" cellspacing="0" class="cust_module_content_text">
-                      <%if(null!=defaultPaymentId && payPalPaymentMethod.getPK().getId().equals(defaultPaymentId) && !paymentDefaultType.equals("undefined")) {%>
-	                     <tr>
-	                     <td align="center">Default Payment Method by + <%=paymentDefaultType %></td> 	                     
-	                     </tr>
-	                     <%} %>
+                       
                         <tr valign="top">
                         <td class="cust_module_content_note"><%=ccNum+1%></td>
                         <td>
@@ -783,14 +788,13 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
             <%
             if(EnumPaymentMethodType.ECHECK.equals(payment.getPaymentMethodType())){
             %>
+            
                 <div class="cust_inner_module" style="width: 32%;<%=ecNum < 3 ?"border-top: none;":""%>">
+                <%if(isDebitCardSwitchEnabled && null!=defaultPaymentId && null != payment.getPK() && payment.getPK().getId().equals(defaultPaymentId) && !paymentDefaultType.equals("UNDEFINED")) {%>	                     
+	                     <div align="center" style="color:red">Default Payment Method by <%=paymentDefaultType %></div>                     
+	                     <%} %> 
                      <div class="cust_module_content">
                      <table width="100%" cellpadding="0" cellspacing="0" class="cust_module_content_text">
-                      <%if(null!=defaultPaymentId && payPalPaymentMethod.getPK().getId().equals(defaultPaymentId) && !paymentDefaultType.equals("undefined")) {%>
-	                     <tr>
-	                     <td align="center">Default Payment Method by + <%=paymentDefaultType %></td> 	                     
-	                     </tr>
-	                     <%} %>
                         <tr valign="top">
                         <td class="cust_module_content_note"><%=ecNum+1%></td>
                         <td>
@@ -879,14 +883,12 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
             <%
             if(EnumPaymentMethodType.EBT.equals(payment.getPaymentMethodType())){
             %>
+            <%if(isDebitCardSwitchEnabled && null!=defaultPaymentId && null != payment.getPK() && payment.getPK().getId().equals(defaultPaymentId) && !paymentDefaultType.equals("UNDEFINED")) {%>	                     
+	                     <div align="center" style="color:red">Default Payment Method by <%=paymentDefaultType %></div>                     
+	                     <%} %> 
                 <div class="cust_inner_module" style="width: 32%;<%=ebtNum < 3 ?"border-top: none;":""%>">
                      <div class="cust_module_content">
                      <table width="100%" cellpadding="0" cellspacing="0" class="cust_module_content_text">
-                      <%if(null!=defaultPaymentId && payPalPaymentMethod.getPK().getId().equals(defaultPaymentId) && !paymentDefaultType.equals("undefined")) {%>
-	                     <tr>
-	                     <td align="center">Default Payment Method by + <%=paymentDefaultType %></td> 	                     
-	                     </tr>
-	                     <%} %>
                         <tr valign="top">
                         <td class="cust_module_content_note"><%=ebtNum+1%></td>
                         <td>
