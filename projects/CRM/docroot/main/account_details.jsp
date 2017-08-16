@@ -633,8 +633,8 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
 	            
 	            %>
             </logic:iterate>
-            <%String defaultPaymentId = user.getFDCustomer().getDefaultPaymentMethodPK(); 
-              String paymentDefaultType = (null==user.getFDCustomer().getDefaultPaymentType() || user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED))?
+            <%String defaultPaymentId = null !=user.getFDCustomer()?user.getFDCustomer().getDefaultPaymentMethodPK():null; 
+              String paymentDefaultType = (null==user.getFDCustomer() || null==user.getFDCustomer().getDefaultPaymentType() || user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED))?
             		  "undefined":user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.DEFAULT_CUST)?"Customer":"System";%>
             <%
             if(FDStoreProperties.isPayPalEnabled()){
@@ -649,7 +649,7 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
 	                <div class="cust_inner_module" style="width: 32%;<%=ccNum < 3 ?"border-top: none;":""%>">
 	                     <div class="cust_module_content">
 	                     <table width="100%" cellpadding="0" cellspacing="0" class="cust_module_content_text">
-	                     <%if(payPalPaymentMethod.getPK().getId().equals(defaultPaymentId) && !paymentDefaultType.equals("undefined")) {%>
+	                     <%if(null!=defaultPaymentId && payPalPaymentMethod.getPK().getId().equals(defaultPaymentId) && !paymentDefaultType.equals("undefined")) {%>
 	                     <tr>
 	                     <td align="center">Default Payment Method by + <%=paymentDefaultType %></td> 	                     
 	                     </tr>
@@ -688,7 +688,7 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
                 <div class="cust_inner_module" style="width: 32%;<%=ccNum < 3 ?"border-top: none;":""%>">
                      <div class="cust_module_content">
                      <table width="100%" cellpadding="0" cellspacing="0" class="cust_module_content_text">
-                      <%if(payPalPaymentMethod.getPK().getId().equals(defaultPaymentId) && !paymentDefaultType.equals("undefined")) {%>
+                      <%if(null!=defaultPaymentId && payPalPaymentMethod.getPK().getId().equals(defaultPaymentId) && !paymentDefaultType.equals("undefined")) {%>
 	                     <tr>
 	                     <td align="center">Default Payment Method by + <%=paymentDefaultType %></td> 	                     
 	                     </tr>
@@ -786,7 +786,7 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
                 <div class="cust_inner_module" style="width: 32%;<%=ecNum < 3 ?"border-top: none;":""%>">
                      <div class="cust_module_content">
                      <table width="100%" cellpadding="0" cellspacing="0" class="cust_module_content_text">
-                      <%if(payPalPaymentMethod.getPK().getId().equals(defaultPaymentId) && !paymentDefaultType.equals("undefined")) {%>
+                      <%if(null!=defaultPaymentId && payPalPaymentMethod.getPK().getId().equals(defaultPaymentId) && !paymentDefaultType.equals("undefined")) {%>
 	                     <tr>
 	                     <td align="center">Default Payment Method by + <%=paymentDefaultType %></td> 	                     
 	                     </tr>
@@ -882,7 +882,7 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
                 <div class="cust_inner_module" style="width: 32%;<%=ebtNum < 3 ?"border-top: none;":""%>">
                      <div class="cust_module_content">
                      <table width="100%" cellpadding="0" cellspacing="0" class="cust_module_content_text">
-                      <%if(payPalPaymentMethod.getPK().getId().equals(defaultPaymentId) && !paymentDefaultType.equals("undefined")) {%>
+                      <%if(null!=defaultPaymentId && payPalPaymentMethod.getPK().getId().equals(defaultPaymentId) && !paymentDefaultType.equals("undefined")) {%>
 	                     <tr>
 	                     <td align="center">Default Payment Method by + <%=paymentDefaultType %></td> 	                     
 	                     </tr>
