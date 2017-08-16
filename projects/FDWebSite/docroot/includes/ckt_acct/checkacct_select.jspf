@@ -1,3 +1,5 @@
+<%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
+<%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
 <%-- Dependencies
     Host page must :
         - bring in the common_javascript.js file 

@@ -1,4 +1,6 @@
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
+<%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
+<%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
 <% //expanded page dimensions
 final int W_CREDITCARD_SELECT_TOTAL = 970;
 final int W_CREDITCARD_SELECT_CARD = 270;
