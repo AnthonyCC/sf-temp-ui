@@ -103,7 +103,7 @@ public class SapOrderAdapter implements SapOrderI {
 
 		this.createOrderLines();
 	}
-
+	
 	/**
 	 * private method to create SapOrderLineAdapter from ErpOrderLines
 	 */
@@ -625,6 +625,13 @@ public class SapOrderAdapter implements SapOrderI {
 		
 		return  this.erpOrder.getPaymentMethod().getReferencedOrder();
 		
+	}
+// introduced for storefront2.0
+	/**
+	 * @return the erpOrder
+	 */
+	public ErpAbstractOrderModel getErpOrder() {
+		return erpOrder;
 	}
 	
 
