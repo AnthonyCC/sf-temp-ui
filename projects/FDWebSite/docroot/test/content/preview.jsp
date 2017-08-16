@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import='java.util.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
@@ -28,7 +29,7 @@ params.put("baseUrl", "");
 %>
 <html>
 	<head>
-	    
+
 	    <fd:css href="/assets/css/pc_ie.css"/>
 	</head>
 	<body>
