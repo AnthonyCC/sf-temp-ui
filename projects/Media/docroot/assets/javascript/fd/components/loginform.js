@@ -132,13 +132,9 @@ var FreshDirect = FreshDirect || {};
 		}).then(function(response) {
 			var responseJson = JSON.parse(response);
 			if (responseJson.success) { 
-				if (window.ga) {
-						ga('set', {
-							  page: '/social/login.jsp',
-							  title: 'Login Success',
-							  location: window.location.protocol + '//' + window.location.host + '/social/login.jsp'
-						});
-						ga('send', 'pageview');
+				if (fd.gtm && fd.gtm.data) {
+						fd.gtm.data.googleAnalyticsData.login.loginAttempt = 'success';
+						fd.gtm.updateDataLayer(fd.gtm.data.googleAnalyticsData);
 				}
 				parent.document.location = sucessTarget || parent.document.location;
 			} else {
@@ -160,14 +156,10 @@ var FreshDirect = FreshDirect || {};
 		$('#email').addClass('error');
 		$('#password_img').addClass('show_bg_arrow');
 		$('#password').addClass('error');
-		if (window.ga) {
-				ga('set', {
-					  page: '/social/login.jsp',
-					  title: 'Login Fail',
-					  location: window.location.protocol + '//' + window.location.host + '/social/login.jsp'
-				});
-				ga('send', 'pageview');
-			}
+		if (fd.gtm && fd.gtm.data) {
+            	fd.gtm.data.googleAnalyticsData.login.loginAttempt = 'fail';
+            	fd.gtm.updateDataLayer(fd.gtm.data.googleAnalyticsData);
+		}
 	}
 	// if component is not registered, register
 	if (!fd.components.loginForm) {
