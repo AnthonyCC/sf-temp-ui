@@ -256,6 +256,42 @@ public class FDUserDAO {
             + "FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci,CUST.FDUSER_ESTORE fde "
             + "WHERE fdu.FDCUSTOMER_ID=fdc.id and fdc.ERP_CUSTOMER_ID=erpc.ID and erpc.id=? " + "AND erpc.id = ci.customer_id AND  fdu.id= FDE.FDUSER_ID(+) and FDE.E_STORE(+)=?";
 
+
+    public static FDUser getFDUserZipCode(Connection conn, FDIdentity identity) throws SQLException {
+        
+        String query = "SELECT fdu.ADDRESS1, NVL(fde.ZIPCODE,fdu.ZIPCODE) ZIPCODE FROM CUST.FDUSER fdu, CUST.FDUSER_ESTORE fde WHERE fdu.FDCUSTOMER_ID=? AND  fdu.id= FDE.FDUSER_ID(+)";
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		FDUser user = null;
+        try {
+	        ps = conn.prepareStatement(query);
+	        ps.setString(1, identity.getFDCustomerPK());
+	        rs = ps.executeQuery();
+	        if (rs.next()) {
+	            user = new FDUser();
+	            user.setZipCode(rs.getString("ZIPCODE"));
+	        }
+        } finally {
+			if (null != rs) {
+				try {
+					rs.close();
+				} catch (Exception e) {
+	
+				}
+			}
+	
+			if (null != ps) {
+				try {
+					ps.close();
+				} catch (Exception e) {
+	
+				}
+			}
+		}
+
+        return user;
+    }
+
     /**
      * Recognize customer with given identity
      * 
