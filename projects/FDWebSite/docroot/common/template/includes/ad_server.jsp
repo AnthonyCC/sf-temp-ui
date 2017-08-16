@@ -103,21 +103,23 @@
 			String orderZone = user.getOrderHistory()
 					.getLastOrderZone();
 			String lastOrderZone = orderZone != null ? orderZone : "";
-
-			Date fdDlvDate = OrderHistoryService.defaultService().getLastOrderDateByDeliveryTypes(user.getOrderHistory(), EnumDeliveryType.HOME, EnumDeliveryType.PICKUP, EnumDeliveryType.DEPOT);
+			
+			Date fdDlvDate = OrderHistoryService.defaultService().getLastOrderDateByDeliveryTypeForCollectedFD(user.getOrderHistory());
 			String fdLastOrderDate = (fdDlvDate != null) ? fdDlvDate.toString() : "";
-			String fdOrderZone = OrderHistoryService.defaultService().getLastOrderDeliveryZoneByDeliveryTypes(user.getOrderHistory(), EnumDeliveryType.HOME, EnumDeliveryType.PICKUP, EnumDeliveryType.DEPOT);
+			String fdOrderZone = OrderHistoryService.defaultService().getLastOrderDeliveryZoneByDeliveryTypeForCollectedFD(user.getOrderHistory());
 			String fdLastOrderZone = fdOrderZone != null ? fdOrderZone : "";
-
-			Date fkDlvDate = OrderHistoryService.defaultService().getLastOrderDateByDeliveryTypes(user.getOrderHistory(), EnumDeliveryType.FDX);
+			
+			
+			Date fkDlvDate = OrderHistoryService.defaultService().getLastOrderDateByDeliveryType(user.getOrderHistory(), EnumDeliveryType.FDX);
 			String fkLastOrderDate = (fkDlvDate != null) ? fkDlvDate.toString() : "";
-			String fkOrderZone = OrderHistoryService.defaultService().getLastOrderDeliveryZoneByDeliveryTypes(user.getOrderHistory(),EnumDeliveryType.FDX);
+			String fkOrderZone = OrderHistoryService.defaultService().getLastOrderDeliveryZoneByDeliveryType(user.getOrderHistory(),EnumDeliveryType.FDX);
 			String fkLastOrderZone = fkOrderZone != null ? fkOrderZone : "";
-
-			Date cosDlvDate = OrderHistoryService.defaultService().getLastOrderDateByDeliveryTypes(user.getOrderHistory(), EnumDeliveryType.CORPORATE);
+			
+			Date cosDlvDate = OrderHistoryService.defaultService().getLastOrderDateByDeliveryType(user.getOrderHistory(), EnumDeliveryType.CORPORATE);
 			String cosLastOrderDate = (cosDlvDate != null) ? cosDlvDate.toString() : "";
-			String cosOrderZone = OrderHistoryService.defaultService().getLastOrderDeliveryZoneByDeliveryTypes(user.getOrderHistory(),EnumDeliveryType.CORPORATE);
+			String cosOrderZone = OrderHistoryService.defaultService().getLastOrderDeliveryZoneByDeliveryType(user.getOrderHistory(),EnumDeliveryType.CORPORATE);
 			String cosLastOrderZone = cosOrderZone != null ? cosOrderZone : "";
+			
 
 			// Set of String (product department Ids, "rec" for recipe items)
 			Set cartDeptIds = new HashSet();
