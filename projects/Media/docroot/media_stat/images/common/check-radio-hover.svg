@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="35px" height="35px" viewBox="0 0 35 35" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 46.1 (44463) - http://www.bohemiancoding.com/sketch -->
+    <title>check-radio-hover</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="check-radio-hover">
+            <circle id="Oval" stroke="#4FA157" cx="17.5" cy="17.5" r="17"></circle>
+            <path d="M14.771224,24.625 L8.61106771,18.4648438 C8.28945152,18.1184879 8.19049418,17.7226585 8.31419271,17.2773438 C8.43789125,16.832029 8.72239361,16.5475267 9.16770834,16.4238281 C9.63776277,16.3001296 10.0212225,16.4114566 10.318099,16.7578125 L14.771224,21.2109375 L25.1989583,10.7089844 C25.4463554,10.486327 25.7370426,10.375 26.0710286,10.375 C26.4050147,10.375 26.6833322,10.486327 26.9059896,10.7089844 C27.1533867,10.9563814 27.2770833,11.2470686 27.2770833,11.5810547 C27.2770833,11.9150407 27.1533867,12.1933583 26.9059896,12.4160156 L14.771224,24.625 Z" id="c" fill="#4FA157"></path>
+        </g>
+    </g>
+</svg>

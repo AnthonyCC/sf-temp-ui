@@ -8,10 +8,14 @@
 <%@ page import='com.freshdirect.payment.fraud.*' %>
 <%@ page import='com.freshdirect.common.customer.EnumServiceType' %>
 <%@ page import='com.freshdirect.common.context.MasqueradeContext' %>
+<%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
+<%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
+<%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 <% //expanded page dimensions
 final int W_YA_PAYMENT_INFO_TOTAL = 970;
 %>
@@ -122,7 +126,7 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
   						<img src='/media_stat/images/masterpass/mpwarning.png'> <span>Cannot Connect to PayPal at this time.</span>
   					</div>
               	</div>
-       				<a class="cssbutton green add-payment-methods-button" href="/your_account/add_creditcard.jsp">CREDIT / DEBIT CARD</a>
+       				<a class="cssbutton green add-payment-methods-button" href="/your_account/add_creditcard.jsp">DBEIT OR CREDIT CARD</a>
        					<div id="add-new-payment-method-checking-acc-disabled-master">
        						<a id="add-new-payment-method-checking-acc-disabled" class="cssbutton green add-payment-methods-button disabled" href="#" onclick="return false;">CHECKING ACCOUNT</a>
        						<div id="add-new-payment-method-checking-acc-disabled-indicator">Available after first order.</div>
@@ -192,7 +196,7 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
                   </td>
               </tr>
               <tr valign="middle">
-                     <td class="text11" style="padding-top: 5px; padding-bottom: 10px;">If you need to enter another checking account: <a href="/your_account/add_checkacct.jsp"><IMG src="/media_stat/images/buttons/add_new_acct.gif" width="108" height="16" ALT="Add New Checking Account" border="0" ALIGN="absmiddle"></a></td>
+                     <td class="text11" style="padding-top: 5px; padding-bottom: 10px;">If you need to enter another checking account: <a href="/your_account/add_checkacct.jsp" class="cssbutton green small">Add New Checking Account</a></td>
                      </tr>
                      <tr><td>
                            <form name=checkacct_form method="post">
@@ -214,19 +218,19 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
               <tr valign="top">
                   <td><!-- <img src="/media_stat/images/navigation/credit_card_details.gif"
 		WIDTH="152" HEIGHT="15" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<BR> -->
-		<span vspace="0" border="0" class="Container_Top_YourAccCCDetails">Credit / Debit Card Details</span><BR>
+		<span vspace="0" border="0" class="Container_Top_YourAccCCDetails">Card Details</span><BR>
 		    <IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 		    </td>
               </tr>
               <tr valign="middle">
-                     <td class="text11" style="padding-top: 5px; padding-bottom: 10px;">If you need to enter another credit / debit card: <a class="cssbutton green small" href="/your_account/add_creditcard.jsp">ADD A NEW CREDIT / DEBIT CARD</a>
+                     <td class="text11" style="padding-top: 5px; padding-bottom: 10px;">If you need to enter another card: <a class="cssbutton green small" href="/your_account/add_creditcard.jsp">ADD A NEW DEBIT OR CREDIT CARD</a>
                      </td>
                      </tr>
                      <tr><td>
-                           <form name=creditcard_form method="post">
-                           <input type="hidden" name="actionName" value="">
-                           <input type="hidden" name="deletePaymentId" value="">
-                           <%@ include file="/includes/ckt_acct/i_creditcard_select.jspf" %>
+                           <form name="creditcard_form" id="creditcard_form" method="post">
+                           	<input type="hidden" name="actionName" value="">
+                           	<input type="hidden" name="deletePaymentId" value="">
+                           	<%@ include file="/includes/ckt_acct/i_creditcard_select.jspf" %>
                            </form>
                      </td></tr>
               </table>
@@ -246,9 +250,9 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
                      <% } %>
                      <tr><td>
                            <form name=ebtcard_form method="post">
-                           <input type="hidden" name="actionName" value="">
-                           <input type="hidden" name="deletePaymentId" value="">
-                           <%@ include file="/includes/ckt_acct/i_ebtcard_select.jspf" %>
+                           	<input type="hidden" name="actionName" value="">
+                           	<input type="hidden" name="deletePaymentId" value="">
+                           	<%@ include file="/includes/ckt_acct/i_ebtcard_select.jspf" %>
                            </form>
                      </td></tr>
               </table>
@@ -269,104 +273,12 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
 </fd:PaymentMethodController>
 </tmpl:put>
 
-<script src="https://code.jquery.com/jquery-1.9.1.min.js" type="text/javascript"></script>
-<script type="text/javascript" language="Javascript">
-var checkout;
-jQuery(document).ready(function($) {
+<tmpl:put name="extraJsModules"><%-- use extraJsModules so the common modules load first --%>
+	<jwr:script src="/youraccount.js" useRandomParam="false" />
+</tmpl:put>
 
-    var isPayPalPaired = $('#isPayPalWalletConnected').val();
-    if (isPayPalPaired != 'true') {
-        // Brain Tree setup-- Start
-        brainTreeSetup($);
-    }
-    // Brain Trees setup -- END
-
-    if (document.querySelector('#PP-connect') != null) {
-        document.querySelector('#PP-connect').addEventListener('click', function(event) {
-            if (event.preventDefault) {
-                event.preventDefault();
-            } else {
-                event.returnValue = false;
-            }
-            if (checkout != null) {
-                checkout.paypal.initAuthFlow();
-            }
-            var isPayPalDown = $('#isPayPalDown').val();
-            if (isPayPalDown == 'true') {
-            	$('#PP_ERROR').css("display", "inline-block");
-            }else{
-            	$('#PP_ERROR').css("display", "none");
-            }
-        });
-    }
-
-    $('#deletePPWallet').click(function() {
-        $.ajax({
-            url: "/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"EPPDISC\",\"formdata\":{\"action\":\"PP_Disconnect_Wallet\",\"ewalletType\":\"PP\"}}",
-            type: 'post',
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function(result1) {
-                /* $('#pp_wallet_cards').css("display","none"); */
-                $('#pp_wallet_cards').empty();
-                $('#PP_logo').css("display", "none");
-                $('#PP-connect').css("display", "inline-block");
-                $("#isPayPalWalletConnected").val("false");
-                $('#PP_ERROR').css("display", "none");
-                brainTreeSetup($);
-            }
-        });
-    });
-});
-
-function brainTreeSetup($){
-	$.ajax({
-        url: "/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"PPSTART\",\"formdata\":{\"action\":\"PP_Connecting_Start\",\"ewalletType\":\"PP\"}}",
-        type: 'post',
-        contentType: "application/json; charset=utf-8",
-        dataType: "json",
-        success: function(result) {
-            if (result.submitForm.success) {
-                $('#PP_ERROR').css("display", "none");
-                $("#isPayPalDown").val("false");
-                //var x = document.getElementById("PP_button");
-                var deviceObj = "";
-                braintree.setup(result.submitForm.result.eWalletResponseData.token, "custom", {
-                    dataCollector: {
-                        paypal: true
-                    },
-                    onReady: function(integration) {
-                        // alert("integration.deviceData :"+integration.deviceData);
-                        checkout = integration;
-                        // 	                    	    		    checkout.paypal.initAuthFlow();
-                        deviceObj = JSON.parse(integration.deviceData);
-
-                    },
-                    // For saving the PayPal payment Method to FD
-                    onPaymentMethodReceived: function(payload) {
-
-                        $.ajax({
-                            url: "/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"PPEND\",\"formdata\":{\"action\":\"PP_Connecting_End\",\"ewalletType\":" +
-                                "\"PP\",\"origin\":\"your_account\",\"paymentMethodNonce\":\"" + payload.nonce + "\",\"email\":\"" + payload.details.email + "\",\"firstName\":\"" + payload.details.firstName + "\"," +
-                                "\"lastName\":\"" + payload.details.lastName + "\" ,\"deviceId\":\"" + deviceObj.correlation_id + "\"}}",
-                            type: 'post',
-                            success: function(id, result) {
-                                location.reload(true);
-                            }
-                        });
-                    },
-                    paypal: {
-                        singleUse: false,
-                        headless: true
-                    }
-                });
-            } else {
-            	$("#isPayPalDown").val("true");
-            }
-
-        }
-
-    });
-}
-</script>
+<tmpl:put name="extraCss" direct="true">
+	<jwr:style src="/assets/css/your_account/paymentinfo.css" media="all" />
+</tmpl:put>
+<tmpl:put name="soytemplates"><soy:import packageName="youraccount"/></tmpl:put>
 </tmpl:insert>

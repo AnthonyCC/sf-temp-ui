@@ -45,8 +45,8 @@
 [data-component="drawer"][data-drawer-columns="3"] [data-drawer-default] > li,
 [data-component="drawer"][data-drawer-columns="3"] .drawer-header > li {
   display: inline-block;
-  width: 300px;
-  margin-left: 35px;
+  width: 305px;
+  margin-left: 20px;
   padding: 0;
   vertical-align: top;
 }

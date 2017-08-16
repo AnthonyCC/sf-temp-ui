@@ -34,6 +34,10 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.webapp.ajax.BaseJsonServlet;
+import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
+import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
+import com.freshdirect.webapp.ajax.expresscheckout.service.FormDataService;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -131,6 +135,17 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 			result.addError( new ActionError( "paymentMethodList", "You must select a payment method." ) );
 			return;
 		}
+		boolean paymentSetAsDefault = false;
+		try {
+			paymentSetAsDefault = Boolean.parseBoolean(FormDataService.defaultService().get(BaseJsonServlet.parseRequestData(request, FormDataRequest.class), "paymentSetAsDefault"));
+		} catch (HttpErrorResponse e) {
+			LOGGER.error("Error parsing request for paymentSetAsDefault");
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        if (paymentSetAsDefault) {
+        	//set as default call
+        }
 
 		FDIdentity identity = user.getIdentity();
 
@@ -211,53 +226,53 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		}
 			
 		if (!FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), user) || result.isSuccess()) {
-		paymentMethod.setBillingRef( billingRef );
-		if(makeGoodOrder)
-			paymentMethod.setPaymentType(EnumPaymentType.MAKE_GOOD);
-		else if(addOnOrder)
-			paymentMethod.setPaymentType(EnumPaymentType.ADD_ON_ORDER);
-		else 
-			paymentMethod.setPaymentType(EnumPaymentType.REGULAR );
-		
-		paymentMethod.setReferencedOrder( referencedOrder );
-		cart.setPaymentMethod( paymentMethod );
-			setCart(cart, user, actionName, session);
-
-		//
-			// set default payment method and check for unique billing address,
-			// if
-		// required
-		//
-		FDActionInfo info = AccountActivityUtil.getActionInfo( session );
-		final PrimaryKey pmPK = ( (ErpPaymentMethodModel)paymentMethod ).getPK();
-		// Do not set MP Ewallet card as default Payment Method
+			paymentMethod.setBillingRef( billingRef );
+			if(makeGoodOrder)
+				paymentMethod.setPaymentType(EnumPaymentType.MAKE_GOOD);
+			else if(addOnOrder)
+				paymentMethod.setPaymentType(EnumPaymentType.ADD_ON_ORDER);
+			else 
+				paymentMethod.setPaymentType(EnumPaymentType.REGULAR );
+			
+			paymentMethod.setReferencedOrder( referencedOrder );
+			cart.setPaymentMethod( paymentMethod );
+				setCart(cart, user, actionName, session);
+	
+			//
+				// set default payment method and check for unique billing address,
+				// if
+			// required
+			//
+			FDActionInfo info = AccountActivityUtil.getActionInfo( session );
+			final PrimaryKey pmPK = ( (ErpPaymentMethodModel)paymentMethod ).getPK();
+			// Do not set MP Ewallet card as default Payment Method
 		
 		if(!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user) && (paymentMethod.geteWalletID() == null || paymentMethod.geteWalletID().equals(""+EnumEwalletType.PP.getValue()))){
-			FDCustomerManager.setDefaultPaymentMethod( info, pmPK, null, false );
-		}else{
+				FDCustomerManager.setDefaultPaymentMethod( info, pmPK, null, false );
+			}else{
 			if(null != isAccountLevel && isAccountLevel.equalsIgnoreCase("Y"))
-			FDCustomerManager.setDefaultPaymentMethod( info, pmPK, EnumPaymentMethodDefaultType.DEFAULT_CUST, true );
+				FDCustomerManager.setDefaultPaymentMethod( info, pmPK, EnumPaymentMethodDefaultType.DEFAULT_CUST, true );
 			user.refreshFdCustomer();
+			}
+			
+				/*
+				 * if ( user.isDepotUser() ) { if (
+				 * user.isEligibleForSignupPromotion() ) { if (
+				 * FDCustomerManager.checkBillToAddressFraud( info, paymentMethod )
+				 * ) {
+				 * 
+				 * session.setAttribute( SessionName.SIGNUP_WARNING,
+				 * MessageFormat.format( SystemMessageList.MSG_NOT_UNIQUE_INFO, new
+				 * Object[] { user.getCustomerServiceContact() } ) );
+				 * 
+				 * } } }
+				 */
+	
+				FDSessionUser currentUser = (FDSessionUser) user;
+			currentUser.setPostPromoConflictEnabled( true );
+			currentUser.updateUserState();
+			session.setAttribute( SessionName.USER, currentUser );
 		}
-		
-			/*
-			 * if ( user.isDepotUser() ) { if (
-			 * user.isEligibleForSignupPromotion() ) { if (
-			 * FDCustomerManager.checkBillToAddressFraud( info, paymentMethod )
-			 * ) {
-			 * 
-			 * session.setAttribute( SessionName.SIGNUP_WARNING,
-			 * MessageFormat.format( SystemMessageList.MSG_NOT_UNIQUE_INFO, new
-			 * Object[] { user.getCustomerServiceContact() } ) );
-			 * 
-			 * } } }
-			 */
-
-			FDSessionUser currentUser = (FDSessionUser) user;
-		currentUser.setPostPromoConflictEnabled( true );
-		currentUser.updateUserState();
-		session.setAttribute( SessionName.USER, currentUser );
-	}
 	}
 
 	public void performSetPaymentMethod() throws FDResourceException {

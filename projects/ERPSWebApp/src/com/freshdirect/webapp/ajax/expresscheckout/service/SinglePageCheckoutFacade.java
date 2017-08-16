@@ -618,10 +618,23 @@ public class SinglePageCheckoutFacade {
         } else {        	            
             List<PaymentData> userPaymentMethods = paymentService.loadUserPaymentMethods(user, request, paymentMethods);
             formPaymentData.setPayments(userPaymentMethods);
+            boolean readyToBreak = false;
             for (PaymentData data : userPaymentMethods) {
                 if (data.isSelected()) {
                     formPaymentData.setSelected(data.getId());
-                    break;
+                    if (readyToBreak) {
+                    	break;
+                    } else {
+                    	readyToBreak = true;
+                    }
+                }
+                if (data.isDefault()) {
+                    formPaymentData.setDefault(data.isDefault());
+                    if (readyToBreak) {
+                    	break;
+                    } else {
+                    	readyToBreak = true;
+                    }
                 }
             }
             if (StandingOrderHelper.isSO3StandingOrder(user)) {

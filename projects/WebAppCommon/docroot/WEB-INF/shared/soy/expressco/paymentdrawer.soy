@@ -189,10 +189,11 @@
  */
 {template .paymentmethodcontent autoescape="false"}
 {if $payments}
-  <form class='drawer__content' fdform="payment" fdform-endpoint-submit="/api/expresscheckout/payment" data-item-count="{length($payments)}">
+  <form class='drawer__content' fdform="payment" data-item-count="{length($payments)}">
     <input type="hidden" name="action" value="selectPaymentMethod" />
+    <input type="hidden" id="paymentSetAsDefault" name="paymentSetAsDefault" value="false" />
     <div class="drawer__header">
-      <button class="cssbutton orange" data-component="paymentchangebutton">Done<span class="offscreen"> with payment Payment Method</button>
+      <button class="cssbutton orange" fdform-default-button data-component="paymentchangebutton">Done<span class="offscreen"> with payment Payment Method</button>
     </div>
     <div fdform-error-container></div>
     {foreach $payment in $payments}
@@ -245,11 +246,13 @@
 * @param? paymentTypeDescription
 * @param? emailID
 * @param? canDelete
+* @param? default
+* @param? debit
 */
 {template .paymentmethod autoescape="false"}
 <div class='drawer__item'>
   <label class='drawer__item__label'>
-  <input id="payment_{$id}" value="{$id}" type='radio' class='drawer__itemleft customradio' name='id' {if $selected}checked{/if} />
+  <input id="payment_{$id}" value="{$id}" type='radio' class='drawer__itemleft customradio paymentmethod' name='id' {if $selected}checked{/if} data-type="{$type}" data-isdefault="{if $default}true{else}false{/if}" data-isdebit="{if $debit}true{else}false{/if}" />
   <div class='drawer__itemright'>
   {if $eWalletID == '1'}
      <p class='drawer__previewitem__title'><img src="{$mpLogoURL}"> </p>
@@ -525,4 +528,16 @@
   {/if}
  {/if}
 </div>
+{/template}
+
+/**
+*
+*/
+{template .defaultpaymentprompt}
+	<div class="defaultpaymentprompt_cont">
+		<div class="defaultpaymentprompt_question">Set this as your default payment method?</div>
+		<div class="defaultpaymentprompt_buttons">
+			<button data-makepaymentdefault="false" class="cssbutton transparent green">No</button><button data-makepaymentdefault="true" class="cssbutton green">Yes</button>
+		</div>
+	</div>
 {/template}
