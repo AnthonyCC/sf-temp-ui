@@ -583,6 +583,11 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 	public void setMaterialGroup(String materialGroup) {
 		this.materialGroup = materialGroup;
 	}
+
+	// Implemented only for StoreFront 2.0 Implementation.
+	public String getAffiliateCode() {
+		return affiliateCode;
+	}
 	
 }
 	
