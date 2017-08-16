@@ -26,7 +26,7 @@ import com.freshdirect.http.HttpService;
 public class GoogleAnalyticsReportingService {
 
     private static final GoogleAnalyticsReportingService INSTANCE = new GoogleAnalyticsReportingService();
-    private static final String GOOGLE_ANALYTICS_HOST = "http://www.google-analytics.com";
+    private static final String GOOGLE_ANALYTICS_HOST = "https://www.google-analytics.com/collect";
 
     private GoogleAnalyticsReportingService() {
     }
@@ -40,7 +40,7 @@ public class GoogleAnalyticsReportingService {
         HttpService.defaultService().postDataWithHttpEntity(GOOGLE_ANALYTICS_HOST, assembleTransactionPayloadForGA(order));
     }
 
-    private HttpEntity assembleTransactionPayloadForGA(FDOrderI order) throws UnsupportedEncodingException {
+    public HttpEntity assembleTransactionPayloadForGA(FDOrderI order) throws UnsupportedEncodingException {
         HttpEntity entity = null;
         List<NameValuePair> params = new ArrayList<NameValuePair>();
 
