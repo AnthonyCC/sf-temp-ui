@@ -126,7 +126,7 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
   						<img src='/media_stat/images/masterpass/mpwarning.png'> <span>Cannot Connect to PayPal at this time.</span>
   					</div>
               	</div>
-       				<a class="cssbutton green add-payment-methods-button" href="/your_account/add_creditcard.jsp">DBEIT OR CREDIT CARD</a>
+       				<a class="cssbutton green add-payment-methods-button" href="/your_account/add_creditcard.jsp">DEBIT OR CREDIT CARD</a>
        					<div id="add-new-payment-method-checking-acc-disabled-master">
        						<a id="add-new-payment-method-checking-acc-disabled" class="cssbutton green add-payment-methods-button disabled" href="#" onclick="return false;">CHECKING ACCOUNT</a>
        						<div id="add-new-payment-method-checking-acc-disabled-indicator">Available after first order.</div>
