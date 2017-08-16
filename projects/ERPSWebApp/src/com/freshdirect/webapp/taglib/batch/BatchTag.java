@@ -59,14 +59,8 @@ public class BatchTag extends com.freshdirect.framework.webapp.BodyTagSupport {
             //
             try {
                 int bn = Integer.parseInt(batchNumber);
-                //
-                if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.BatchManagerSB)){
-                	batch =LogisticsServiceLocator.getInstance().getCommerceService().getBatch(bn);
-				}else{
+
 					 batch = ErpFactory.getInstance().getBatch(bn);
-				}
-                
-               
                 
             } catch (FDResourceException fdre) {
                 throw new JspException(fdre.getMessage());

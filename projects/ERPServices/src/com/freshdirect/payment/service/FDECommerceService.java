@@ -22,6 +22,7 @@ import java.util.TreeMap;
 import javax.ejb.ObjectNotFoundException;
 
 import org.apache.log4j.Category;
+import org.apache.openjpa.lib.log.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
@@ -923,9 +924,17 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			Gson g = gSon.create();
 			Response<Collection<BatchModel>> jsons = g.fromJson(ss, Response.class);
 			Collection<BatchModel> bmlist = jsons.getData();
-		if(!jsons.getResponseCode().equals("OK"))
+		if(!jsons.getResponseCode().equals("OK")){
+			LOGGER.info("Error in FDEcommerceService :"+jsons.getMessage());
 			throw new FDResourceException(jsons.getMessage());
-			return bmlist.iterator().next();
+			
+		}
+		BatchModel batchModel = null;
+		for (BatchModel bmlistItem : bmlist) {
+			batchModel = (BatchModel)bmlistItem;
+		}
+		return batchModel;
+//			return bmlist.iterator().next();
 
 	}
 	@Override
