@@ -847,12 +847,23 @@ public class FDCustomerManager {
 			FDCustomerManagerSB sb = managerHome.create();
 			sb.addPaymentMethod(info, paymentMethod, paymentechEnabled);			
 			
-			if(isDebitCardSwitch && !getpaymentMethodDefaultType(info.getIdentity().getFDCustomerPK()).
-					getName().equals(EnumPaymentMethodDefaultType.DEFAULT_CUST.getName())){
-				Collection<ErpPaymentMethodI> paymentMethods = getPaymentMethods(info.getIdentity());
-				List<ErpPaymentMethodI> paymentMethodList = new ArrayList<ErpPaymentMethodI>(paymentMethods);
-				if(PaymentMethodUtil.isNewCardHigherPrioriy(paymentMethod, paymentMethodList)){
-				updatePaymentMethodDefaultCard(info, isDebitCardSwitch, false, paymentMethods);
+			
+			if (isDebitCardSwitch) {
+				String paymentMethodDefaultType = getpaymentMethodDefaultType(info.getIdentity().getFDCustomerPK()).getName();
+				if (!paymentMethodDefaultType.equals(EnumPaymentMethodDefaultType.DEFAULT_CUST.getName())) {
+					if (info.getSource().equals(EnumTransactionSource.CUSTOMER_REP)){
+							if(!paymentMethodDefaultType.equals(EnumPaymentMethodDefaultType.UNDEFINED.getName())) {
+								resetDefaultPaymentValueType(info.getIdentity().getFDCustomerPK());
+							}else{
+								return;
+							}
+					} else {
+						Collection<ErpPaymentMethodI> paymentMethods = getPaymentMethods(info.getIdentity());
+						List<ErpPaymentMethodI> paymentMethodList = new ArrayList<ErpPaymentMethodI>(paymentMethods);
+						if (PaymentMethodUtil.isNewCardHigherPrioriy(paymentMethod, paymentMethodList)) {
+							updatePaymentMethodDefaultCard(info, isDebitCardSwitch, false, paymentMethods);
+						}
+					}
 				}
 			}
 		} catch (CreateException ce) {
@@ -1057,8 +1068,20 @@ public class FDCustomerManager {
 			FDCustomerManagerSB sb = managerHome.create();
 			sb.removePaymentMethod(info, paymentMethod);
 			
-			if(isDebitCardSwitch && null != paymentMethod && FDCustomerManager.getDefaultPaymentMethodPK(info.getIdentity()).equals(paymentMethod.getPK().getId())){
+		
+			if(isDebitCardSwitch && null != paymentMethod){
+				if(info.getSource().equals(EnumTransactionSource.CUSTOMER_REP)){
+					String paymentMethodDefaultType =  getpaymentMethodDefaultType(info.getIdentity().getFDCustomerPK()).getName();
+					if(getDefaultPaymentMethodPK(info.getIdentity()).equals(paymentMethod.getPK().getId()) || 
+							(!getDefaultPaymentMethodPK(info.getIdentity()).equals(paymentMethod.getPK().getId()) && paymentMethodDefaultType.equals(EnumPaymentMethodDefaultType.DEFAULT_SYS.getName()))){
+						resetDefaultPaymentValueType(info.getIdentity().getFDCustomerPK());
+				}else{ 
+					return;
+				}
+			}					
+			else if(FDCustomerManager.getDefaultPaymentMethodPK(info.getIdentity()).equals(paymentMethod.getPK().getId())){
 				updatePaymentMethodDefaultCard(info, isDebitCardSwitch, true, getPaymentMethods(info.getIdentity()));
+				}
 			}	
 
 		} catch (CreateException ce) {
