@@ -51,7 +51,8 @@ String moduleContainerId = "ModuleContainer:"+request.getParameter("moduleContai
       var $jq = FreshDirect.libs.$;
     </script>
     <soy:import packageName="common"/>
-     <jwr:script src="/fdmodules.js"  useRandomParam="false" />
+    <jwr:script src="/commonjavascript.js" useRandomParam="false" />
+    <jwr:script src="/fdmodules.js"  useRandomParam="false" />
     <jwr:script src="/fdcomponents.js"  useRandomParam="false" />
     <jwr:script src="/fdmisc.js" useRandomParam="false" />
 
