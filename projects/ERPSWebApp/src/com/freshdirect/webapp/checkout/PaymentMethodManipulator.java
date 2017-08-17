@@ -11,11 +11,15 @@ import javax.servlet.jsp.PageContext;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.EnumPaymentType;
+import com.freshdirect.customer.ErpAuthorizationException;
+import com.freshdirect.customer.ErpAuthorizationModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
+import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -250,7 +254,22 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		if(!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user) && (paymentMethod.geteWalletID() == null || paymentMethod.geteWalletID().equals(""+EnumEwalletType.PP.getValue()))){
 				FDCustomerManager.setDefaultPaymentMethod( info, pmPK, null, false );
 			}else{
-			if(null != isAccountLevel && isAccountLevel.equalsIgnoreCase("Y"))
+			if(null != isAccountLevel && isAccountLevel.equalsIgnoreCase("Y")){
+				ErpAuthorizationModel auth = null;
+				if(paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.ECHECK)){
+					auth = FDCustomerManager.verifyCard(info, paymentMethod, true);
+				}else if(paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.CREDITCARD) || paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.DEBITCARD)){
+					try {
+						auth = FDCustomerManager.verify(info, paymentMethod);
+					} catch (ErpTransactionException e) {
+						LOGGER.error(e);
+					} catch (ErpAuthorizationException e) {
+						LOGGER.error(e);
+					}
+				}
+				if(null == auth || !auth.isApproved()){
+					result.addError(new ActionError("verificationFailed",SystemMessageList.MSG_DEFAULT_PAYMENT_VERIVICATION_FAILURE));
+				}
 				FDCustomerManager.setDefaultPaymentMethod( info, pmPK, EnumPaymentMethodDefaultType.DEFAULT_CUST, true );
 			user.refreshFdCustomer();
 			}
@@ -272,6 +291,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 			currentUser.setPostPromoConflictEnabled( true );
 			currentUser.updateUserState();
 			session.setAttribute( SessionName.USER, currentUser );
+		}
 		}
 	}
 
