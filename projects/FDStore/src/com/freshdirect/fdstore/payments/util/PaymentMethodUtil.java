@@ -81,7 +81,7 @@ public class PaymentMethodUtil {
 		return defaultPayment;
 	}
 
-	private static void sortPaymentMethodsByPriority(List<ErpPaymentMethodI> paymentMethods) {
+	public static void sortPaymentMethodsByPriority(List<ErpPaymentMethodI> paymentMethods) {
 		    	Collections.sort(paymentMethods, new PaymentMethodDefaultComparator());
 	}
 		
