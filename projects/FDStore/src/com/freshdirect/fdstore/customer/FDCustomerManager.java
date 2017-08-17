@@ -850,7 +850,11 @@ public class FDCustomerManager {
 			if(isDebitCardSwitch && !getpaymentMethodDefaultType(info.getIdentity().getFDCustomerPK()).
 					getName().equals(EnumPaymentMethodDefaultType.DEFAULT_CUST.getName())){
 				Collection<ErpPaymentMethodI> paymentMethods = getPaymentMethods(info.getIdentity());
+				List<ErpPaymentMethodI> paymentMethodList = new ArrayList<ErpPaymentMethodI>(paymentMethods);
+				PaymentMethodUtil.sortPaymentMethodsByPriority(paymentMethodList);
+				if(paymentMethodList.size() >0 && paymentMethod.getCardType().getPriority() <= paymentMethodList.get(0).getCardType().getPriority()){
 				updatePaymentMethodDefaultCard(info, isDebitCardSwitch, false, paymentMethods);
+				}
 			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
