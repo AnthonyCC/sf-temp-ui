@@ -37,6 +37,8 @@ import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.payments.util.PaymentMethodUtil;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -149,7 +151,8 @@ public class CrmMasqueradeUtil {
 				url += "&modifyOrderId=" + params.modifyOrderId;
 			}
 		}
-		if(null == user.getFDCustomer().getDefaultPaymentType() || user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName())){
+		if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user) && (null == user.getFDCustomer().getDefaultPaymentType() || 
+				user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName()))){
 			FDActionInfo actionInfo = new FDActionInfo(EnumTransactionSource.ADMINISTRATOR, user.getIdentity(), "", "Masquerading from CRM", null, user.getFDCustomer().getId());
 			ErpPaymentMethodI defaultPayment =  PaymentMethodUtil.getSystemDefaultPaymentMethod(actionInfo, user.getPaymentMethods(), true);
 			PaymentMethodUtil.updateDefaultPaymentMethod(actionInfo, user.getPaymentMethods(), defaultPayment.getPK().getId(), EnumPaymentMethodDefaultType.DEFAULT_SYS, false);
