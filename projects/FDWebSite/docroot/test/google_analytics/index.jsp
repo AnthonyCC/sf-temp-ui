@@ -5,6 +5,8 @@
 <%@ page import="org.apache.log4j.Logger" %>
 <%@ page import="com.freshdirect.framework.util.log.LoggerFactory" %>
 <%@ page import="org.apache.http.util.EntityUtils" %>
+<%@ page import="org.apache.http.HttpResponse" %>
+<%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
 
 <html>
 	<body>
@@ -21,11 +23,26 @@
 		
 	    try {
 		    FDOrderI fdOrder = FDCustomerManager.getOrder(saleId);
-	        GoogleAnalyticsReportingService.defaultService().postGAReporting(fdOrder);
+	        HttpResponse httpResponse = GoogleAnalyticsReportingService.defaultService().postGAReporting(fdOrder);
 	        LOGGER.debug("Order# :" + saleId + " parameters: " + EntityUtils.toString(GoogleAnalyticsReportingService.defaultService().assembleTransactionPayloadForGA(fdOrder)));
 %>
-	        Order data sent to GA for order#: <%=saleId%> 
+	        Order data sent to GA for order#: <%=saleId%>
+	        <c:if test="${not empty cookie['developer']}">
+      			<pre>
+  					<%= "Order# :" + saleId %>
+      			</pre>
+      			<pre>
+  					<%= "post url: " +  GoogleAnalyticsReportingService.defaultService().GOOGLE_ANALYTICS_HOST %>
+      			</pre>
+      			<pre>
+  					<%= "parameters: " + EntityUtils.toString(GoogleAnalyticsReportingService.defaultService().assembleTransactionPayloadForGA(fdOrder)) %>
+      			</pre>
+      			<pre>
+  					<%= "http response: " + httpResponse %>
+      			</pre>
+    		</c:if>
 <%
+
 	    } catch (Exception e) {
 	        LOGGER.error("Unexpected Exception in GoogleAnalyticsReportingService while reported to GA, for order#: "+ saleId, e);
 %>

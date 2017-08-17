@@ -82,14 +82,15 @@ public class HttpService {
         }
     }
 
-    public void postDataWithHttpEntity(String uri, HttpEntity entity) throws IOException {
+    public HttpResponse postDataWithHttpEntity(String uri, HttpEntity entity) throws IOException {
+        HttpResponse response = null;
         if (uri != null && entity != null) {
             HttpClient client = new DefaultHttpClient();
             HttpPost post = null;
             try {
                 post = new HttpPost(uri);
                 post.setEntity(entity);
-                client.execute(post);
+                response = client.execute(post);
             } finally {
                 try {
                     if (post != null) {
@@ -99,6 +100,7 @@ public class HttpService {
                 }
             }
         }
+        return response;
     }
 
 	public void postDataWithContentTypeJson(String uri, String data) throws IOException {

@@ -9,6 +9,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.message.BasicNameValuePair;
@@ -26,7 +27,7 @@ import com.freshdirect.http.HttpService;
 public class GoogleAnalyticsReportingService {
 
     private static final GoogleAnalyticsReportingService INSTANCE = new GoogleAnalyticsReportingService();
-    private static final String GOOGLE_ANALYTICS_HOST = "https://www.google-analytics.com/collect";
+    public static final String GOOGLE_ANALYTICS_HOST = "https://www.google-analytics.com/collect";
 
     private GoogleAnalyticsReportingService() {
     }
@@ -36,8 +37,8 @@ public class GoogleAnalyticsReportingService {
     }
 
 
-    public void postGAReporting(FDOrderI order) throws UnsupportedEncodingException, IOException {
-        HttpService.defaultService().postDataWithHttpEntity(GOOGLE_ANALYTICS_HOST, assembleTransactionPayloadForGA(order));
+    public HttpResponse postGAReporting(FDOrderI order) throws UnsupportedEncodingException, IOException {
+        return HttpService.defaultService().postDataWithHttpEntity(GOOGLE_ANALYTICS_HOST, assembleTransactionPayloadForGA(order));
     }
 
     public HttpEntity assembleTransactionPayloadForGA(FDOrderI order) throws UnsupportedEncodingException {
