@@ -81,8 +81,18 @@ public class PaymentMethodUtil {
 		return defaultPayment;
 	}
 
-	public static void sortPaymentMethodsByPriority(List<ErpPaymentMethodI> paymentMethods) {
+	private static void sortPaymentMethodsByPriority(List<ErpPaymentMethodI> paymentMethods) {
 		    	Collections.sort(paymentMethods, new PaymentMethodDefaultComparator());
+	}
+	
+	public static boolean isNewCardHigherPrioriy(ErpPaymentMethodI newPaymentMethod, List<ErpPaymentMethodI> paymentMethods){
+		if(paymentMethods.size() >0){
+		sortPaymentMethodsByPriority(paymentMethods);
+		if(newPaymentMethod.getCardType().getPriority() <= paymentMethods.get(0).getCardType().getPriority()){
+			return true;
+			}
+		}
+		return false;
 	}
 		
 	public static void updateDefaultPaymentMethod(FDActionInfo info, Collection<ErpPaymentMethodI> pMethods, String paymentId, EnumPaymentMethodDefaultType type, boolean isVerificationRequired) {		

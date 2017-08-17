@@ -851,8 +851,7 @@ public class FDCustomerManager {
 					getName().equals(EnumPaymentMethodDefaultType.DEFAULT_CUST.getName())){
 				Collection<ErpPaymentMethodI> paymentMethods = getPaymentMethods(info.getIdentity());
 				List<ErpPaymentMethodI> paymentMethodList = new ArrayList<ErpPaymentMethodI>(paymentMethods);
-				PaymentMethodUtil.sortPaymentMethodsByPriority(paymentMethodList);
-				if(paymentMethodList.size() >0 && paymentMethod.getCardType().getPriority() <= paymentMethodList.get(0).getCardType().getPriority()){
+				if(PaymentMethodUtil.isNewCardHigherPrioriy(paymentMethod, paymentMethodList)){
 				updatePaymentMethodDefaultCard(info, isDebitCardSwitch, false, paymentMethods);
 				}
 			}
