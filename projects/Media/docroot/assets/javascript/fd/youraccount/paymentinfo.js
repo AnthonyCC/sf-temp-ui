@@ -23,8 +23,12 @@ var checkout;
 		callback: {
 			value: function (data) {
 				var $fallback = $(SET_AS_DEFAULT_SELECTOR);
+				var $setAsDefault;
+
 				//clear all checked
 				$(DEFAULT_CHECKBOX_SELECTOR).prop('checked', '');
+				//clear all previous default (since PP is not returned in api call)
+				$(DEFAULT_CHECKBOX_SELECTOR).attr('data-isdefault', 'false');
 				//set the labels as default
 				$jq(DEFAULT_CHECKBOX_SELECTOR+' + label>.offscreen').html(paymentinfo.getNonDefaultLabel($(DEFAULT_CHECKBOX_SELECTOR)));
 
@@ -36,15 +40,20 @@ var checkout;
 					}
 				}
 
+				$setAsDefault = $(SET_AS_DEFAULT_SELECTOR);
+				//if we don't have a default selected now, then it's prob PP. try via id
+				if (!$setAsDefault.length) {
+					$setAsDefault = $(DEFAULT_CHECKBOX_SELECTOR+'[data-paymentid="'+paymentinfo.lastPostedPaymentId()+'"]');
+				}
 				//reset checked based on data attr
-				$(SET_AS_DEFAULT_SELECTOR).prop('checked', 'checked');
+				$setAsDefault.prop('checked', 'checked');
 				//check which label to put in
-				if ($fallback != $(SET_AS_DEFAULT_SELECTOR)) {
+				if ($fallback != $setAsDefault) {
 					//saved, use saved label
-					$(SET_AS_DEFAULT_SELECTOR+' + label>.offscreen').html(paymentinfo.getJustSavedLabel($(SET_AS_DEFAULT_SELECTOR)));
+					$setAsDefault.find('+ label>.offscreen').html(paymentinfo.getJustSavedLabel($(SET_AS_DEFAULT_SELECTOR)));
 				} else {
 					//failed to save, revert back to default
-					$(SET_AS_DEFAULT_SELECTOR+' + label>.offscreen').html(paymentinfo.getDefaultLabel($(SET_AS_DEFAULT_SELECTOR)));
+					$setAsDefault.find('+ label>.offscreen').html(paymentinfo.getDefaultLabel($(SET_AS_DEFAULT_SELECTOR)));
 				}
 			}
 		},
@@ -52,7 +61,8 @@ var checkout;
 			value: function($elem) {
 				var str = '';
 				if ($elem && $elem.attr('data-type') && $elem.attr('data-lastfour')) {
-					str += '' +$elem.attr('data-type') + ', ending in ' + ($elem.attr('data-lastfour')).replace(/X/g, '');
+					var last4 = ($elem.attr('data-lastfour')).replace(/X/g, '');
+					str += '' +$elem.attr('data-type') + ((last4 !== '') ? ', ending in '+last4 : '');
 				}
 				return str;
 			}
@@ -61,7 +71,8 @@ var checkout;
 			value: function($elem) {
 				var str = '';
 				if ($elem && $elem.attr('data-type') && $elem.attr('data-lastfour')) {
-					str += 'Default payment option. ' +$elem.attr('data-type') + ', ending in ' + ($elem.attr('data-lastfour')).replace(/X/g, '');
+					var last4 = ($elem.attr('data-lastfour')).replace(/X/g, '');
+					str += 'Default payment option. ' +$elem.attr('data-type') + ((last4 !== '') ? ', ending in '+last4 : '');
 				}
 				return str;
 			}
@@ -70,7 +81,8 @@ var checkout;
 			value: function($elem) {
 				var str = '';
 				if ($elem && $elem.attr('data-type') && $elem.attr('data-lastfour')) {
-					str += $elem.attr('data-type') + ' + ' + ($elem.attr('data-lastfour')).replace(/X/g, '') + ' is now your default payment option.';
+					var last4 = ($elem.attr('data-lastfour')).replace(/X/g, '');
+					str += $elem.attr('data-type') + ((last4 !== '') ? ' + '+last4 : '') + ' is now your default payment option.';
 				}
 				return str;
 			}
@@ -188,6 +200,11 @@ var checkout;
 			value: function (e, data) {
 				var $t = e && $(e.currentTarget) || $(document.body);
 				if (data) {
+					//if there's no edit button (like PP), remove the id before sending to the soy template
+					if (!$('[data-paymentidedit="'+data.id+'"]').length) {
+						delete data.paymentId;
+					}
+					console.log('open', data);
 					this.refreshBody(data, this.bodyTemplate);
 				}
 				this.popup.show($t);

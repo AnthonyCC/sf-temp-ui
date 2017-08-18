@@ -3,6 +3,7 @@ FreshDirect.standingorder.USQPopupOpen = false;
 FreshDirect.standingorder.isItSOAlcoholPopup = false;
 FreshDirect.standingorder.alcoholVerified = "N";
 FreshDirect.standingorder.healthWarningCookie = null;
+var $jq = $jq || FreshDirect.libs.$ || window.jQuery;
 /* refactor these addToSo calls to make them all one */
 function addToSoEvenBetter($clickedButton) {
 	var that = $clickedButton;

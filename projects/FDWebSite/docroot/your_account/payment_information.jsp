@@ -83,17 +83,17 @@ boolean isCheckEligible	= user.isCheckEligible();
 <!-- error message handling here -->
 <TABLE WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" BORDER="0" CELLPADDING="0" CELLSPACING="0">
     <TR>
-        <TD width="<%= W_YA_PAYMENT_INFO_TOTAL %>" class="text11"><font class="title18">Payment Options</font><br><span class="space2pix"><br></span>
-Update your payment information.<br>
+        <TD width="<%= W_YA_PAYMENT_INFO_TOTAL %>" class="text11"><font class="title18">Payment Options</font><br /><span class="space2pix"><br /></span>
+Update your payment information.<br />
 To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here</a>
-<br><fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+<br /><fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
         </td>
     </tr>
 </table>
 
-<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><br><br>
+<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><br />
+<IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0"><br />
+<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><br /><br />
 <!--  MP Use Case #4 -->
 <!-- <script type="text/javascript" src="https://sandbox.masterpass.com/lightbox/Switch/integration/MasterPass.client.js"></script> -->
 
@@ -153,36 +153,68 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
        				</td>
        			</tr>
               </table>
-              <% if (isPayPalWalletEnabled ) {%>
-	              <br>
-	              <table id="pp_wallet_cards" width="<%= W_YA_PAYMENT_INFO_TOTAL %>"  border="0" cellspacing="0" cellpadding="0">
-
-	               <%  if (paymentsPP!=null && paymentsPP.size() > 0){
-	            	   for(ErpPaymentMethodI paymentM1 : paymentsPP) {
-	            		   if(paymentM1 != null && paymentM1.geteWalletID()!= null && paymentM1.geteWalletID().equals(""+EnumEwalletType.PP.getValue())){
-	               %>
-
-		              <tr><td class=wallet-title-header>PayPal
-		              <% if (masqueradeContext == null) { %>
-		              	<div class="disconnectWallet" id=deletePPWallet ><img src=/media_stat/images/common/delete-white-icon.png><span id=deleteMPWallet class=disconnect-cssbutton-green>UNLINK</span></div>
-		              <% } %>
-		              </td></tr><tr><td colspan=9><img src=/media_stat/images/layout/999966.gif alt="" width=970 height=1 border=0 vspace=3></td></tr>
-
-		              <tr height=14></tr>
-		              <tr><td width=280 class=wallet-first-card>
-		              <font class=text12> <img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png">
-		              <br><%=paymentM1.getName() %>
-		              <br><%= paymentM1.getEmailID() %></font>
-		              <br></td>
-		              </tr>
-
-	               <%
-	               }
-	               }
-	               } %>
-	              </table>
-	            <% } %>
-              <br>
+				<%
+					/* this display code seriously needs a re-write, one card per paypal row? */
+					boolean hidePPDefaultSelectRadio = true;
+					if ((request.getRequestURI().toLowerCase().indexOf("your_account/payment_information.jsp")>-1)) { 
+						hidePPDefaultSelectRadio = false;
+					}
+				%>
+				<% if (isPayPalWalletEnabled) {%>
+					<br />
+					<table id="pp_wallet_cards" width="<%= W_YA_PAYMENT_INFO_TOTAL %>"  border="0" cellspacing="0" cellpadding="0">
+						<% if (paymentsPP!=null && paymentsPP.size() > 0){
+							for(ErpPaymentMethodI paymentM1 : paymentsPP) {
+								if(paymentM1 != null && paymentM1.geteWalletID()!= null && paymentM1.geteWalletID().equals(""+EnumEwalletType.PP.getValue())){
+									String paymentM1PKId = ((ErpPaymentMethodModel)paymentM1).getPK().getId();
+									 %>
+									<tr>
+										<td colspan="2" class="wallet-title-header">
+											PayPal
+										</td>
+									</tr>
+									<tr>
+										<td colspan="2"><img src=/media_stat/images/layout/999966.gif alt="" width="970" height="1" border="0" vspace="3" /></td>
+									</tr>
+									<tr>
+										<td width="20" class="chooser_radio">
+										<% if ( FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user) && !hidePPDefaultSelectRadio) { %>
+											<input
+												type="<%=hidePPDefaultSelectRadio?"hidden":"checkbox"%>"
+												id="paymentIsDefault_<%=paymentM1PKId%>"
+												name="paymentDef"
+												class="paymentDef"
+												<%= ( ((paymentM1PKId).equals(user.getFDCustomer().getDefaultPaymentMethodPK())) ? " checked" : "" ) %>
+												data-paymentid="<%= paymentM1PKId %>"
+												data-isdefault="<%= ((paymentM1PKId).equals(user.getFDCustomer().getDefaultPaymentMethodPK())) %>"
+												data-type="<%= paymentM1.getCardType().getDisplayName() %>"
+												data-isdebit="<%= paymentM1.isDebitCard() %>"
+												data-lastfour="XXXX"
+											>
+											<label for="paymentIsDefault_<%=paymentM1PKId%>"><span class="offscreen"></span></label>
+										<% } %>
+										</td>
+										<td width="" class="text14 wallet-first-card">
+											<img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png" alt="PayPal" /><br />
+											<%=paymentM1.getName() %><br />
+											<%= paymentM1.getEmailID() %><br />
+										</td>
+									</tr>
+									<tr>
+										<td width="20"></td>
+										<td class="wallet-title-footer">
+											<% if (masqueradeContext == null) { %>
+												<button class="cssbutton green small disconnectWallet disconnect-cssbutton-green" id="deletePPWallet"><img src="/media_stat/images/common/delete-white-icon.png" alt="unlink" />UNLINK</button>
+											<% } %>
+										</td>
+									</tr>
+							<%
+								}
+							}
+						} %>
+					</table>
+				<% } %>
+              <br />
               <table width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
               <% if (isCheckEligible && !isECheckRestricted) { %>
               	 <script>
@@ -191,8 +223,8 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
                	</script>
                      <% if (hasCheck) { %>
               <tr valign="top">
-                  <td><!-- <img src="/media_stat/images/headers/check_acct_details.gif" width="181" height="9" alt="CHECKING ACCOUNT DETAILS"> --><span class="Container_Top_ChkAcctDetails">Checking Account Details</span> &nbsp;&nbsp;&nbsp;<a href="javascript:popup('/registration/checkacct_terms.jsp','large')"><span class="Terms"> Terms of Use </span></a><br>
-                  <IMG src="/media_stat/images/layout/999966.gif" alt="" width="<%= W_YA_PAYMENT_INFO_TOTAL %>" height="1" border="0" VSPACE="3"><br>
+                  <td><!-- <img src="/media_stat/images/headers/check_acct_details.gif" width="181" height="9" alt="CHECKING ACCOUNT DETAILS"> --><span class="Container_Top_ChkAcctDetails">Checking Account Details</span> &nbsp;&nbsp;&nbsp;<a href="javascript:popup('/registration/checkacct_terms.jsp','large')"><span class="Terms"> Terms of Use </span></a><br />
+                  <IMG src="/media_stat/images/layout/999966.gif" alt="" width="<%= W_YA_PAYMENT_INFO_TOTAL %>" height="1" border="0" VSPACE="3"><br />
                   </td>
               </tr>
               <tr valign="middle">
@@ -210,16 +242,16 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
                     <%--  <% } else {%>
                            <%@ include file="/includes/your_account/add_checkacct.jspf"%>
                      <% } %> --%>
-                     <br><br>
+                     <br /><br />
               <% } %>
 			</table>
-			<br>
+			<br />
               <table width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
               <tr valign="top">
                   <td><!-- <img src="/media_stat/images/navigation/credit_card_details.gif"
-		WIDTH="152" HEIGHT="15" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<BR> -->
-		<span vspace="0" border="0" class="Container_Top_YourAccCCDetails">Card Details</span><BR>
-		    <IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+		WIDTH="152" HEIGHT="15" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<br /> -->
+		<span vspace="0" border="0" class="Container_Top_YourAccCCDetails">Card Details</span><br />
+		    <IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><br />
 		    </td>
               </tr>
               <tr valign="middle">
@@ -234,12 +266,12 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
                            </form>
                      </td></tr>
               </table>
-              <br>
+              <br />
               <% if(user.isEbtAccepted()|| hasEBT){ %>
               <table width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellspacing="0" cellpadding="0">
               <tr valign="top">
-                  <td><img src="/media_stat/images/navigation/ebt_card_details.gif" WIDTH="119" HEIGHT="11" border="0" alt="EBT CARD DETAILS">&nbsp;&nbsp;&nbsp;<BR>
-                  <IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+                  <td><img src="/media_stat/images/navigation/ebt_card_details.gif" WIDTH="119" HEIGHT="11" border="0" alt="EBT CARD DETAILS">&nbsp;&nbsp;&nbsp;<br />
+                  <IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><br />
                   </td>
               </tr>
               <%if(user.isEbtAccepted()){ %>
@@ -257,19 +289,19 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
                      </td></tr>
               </table>
               <% } %>
-              <br>
-              <IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0"><BR>
-              <FONT CLASS="space4pix"><BR><BR></FONT>
+              <br />
+              <IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" HEIGHT="1" BORDER="0"><br />
+              <FONT CLASS="space4pix"><br /><br /></FONT>
               <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>">
               <TR VALIGN="TOP">
               <TD WIDTH="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="CONTINUE SHOPPING" ALIGN="LEFT"></a></TD>
               <TD WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL - 35 %>"><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="CONTINUE SHOPPING"></a>
-              <BR>from <FONT CLASS="text11bold"><A HREF="/index.jsp">Home Page</A></FONT><BR><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="340" HEIGHT="1" BORDER="0"></TD>
+              <br />from <FONT CLASS="text11bold"><A HREF="/index.jsp">Home Page</A></FONT><br /><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="340" HEIGHT="1" BORDER="0"></TD>
               </TR>
               </TABLE>
        </fd:GetStandingOrderHelpInfo>
 </fd:GetStandingOrderDependencyIds>
-<BR>
+<br />
 </fd:PaymentMethodController>
 </tmpl:put>
 

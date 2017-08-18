@@ -219,6 +219,7 @@
 
 .drawer__previewitem__section .section__body p{
   margin:0;
+  word-wrap: break-word;
 }
 
 [data-drawer-content="timeslot"] [data-component="timeslotchangebutton"],

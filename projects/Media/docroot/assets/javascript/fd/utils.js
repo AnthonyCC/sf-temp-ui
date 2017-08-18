@@ -280,6 +280,30 @@ var FreshDirect = FreshDirect || {};
 		 window.location=window.location;
 	  };
 
+  /* throttle events helper */
+  utils.throttle = function (fn, threshold, scope) {
+	  threshold || (threshold = 250);
+	  	var last, deferTimer;
+
+	  	return function () {
+	  		var context = scope || this;
+
+	  		var now = +new Date,
+	  		args = arguments;
+	  		if (last && now < last + threshold) {
+	  			// hold on to it
+	  			clearTimeout(deferTimer);
+	  			deferTimer = setTimeout(function () {
+	  			last = now;
+	  			fn.apply(context, args);
+	  			}, threshold);
+	  		} else {
+	  			last = now;
+	  			fn.apply(context, args);
+	  		}
+	  	};
+  };
+
   // register utils under FreshDirect.modules.common.utils
   utils.register("modules.common", "utils", utils, fd);
 
