@@ -2,10 +2,8 @@ package com.freshdirect.dataloader.analytics;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import org.apache.http.HttpEntity;
@@ -103,9 +101,9 @@ public class GoogleAnalyticsReportingService {
         String deliveryCost = "";
 
         if (order.isDlvPassApplied() || order.isChargeWaived(EnumChargeType.DELIVERY) || order.isChargeWaived(EnumChargeType.DLVPREMIUM)) {
-            deliveryCost = "$0.00";
+            deliveryCost = "0.00";
         } else if (order.getChargeAmount(EnumChargeType.DELIVERY) > 0 || order.getChargeAmount(EnumChargeType.DLVPREMIUM) > 0) {
-            deliveryCost = NumberFormat.getCurrencyInstance(Locale.US).format(order.getChargeAmount(EnumChargeType.DELIVERY));
+            deliveryCost = Double.toString(order.getChargeAmount(EnumChargeType.DELIVERY));
         }
 
         return deliveryCost;
