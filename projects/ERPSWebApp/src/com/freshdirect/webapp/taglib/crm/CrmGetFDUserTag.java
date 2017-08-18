@@ -5,6 +5,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
 import com.freshdirect.crm.CrmStatus;
+import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -62,7 +63,8 @@ public class CrmGetFDUserTag extends AbstractGetterTag<FDUserI> {
 				user.isLoggedIn(true);
 			}
 			session.setAttribute(SessionName.USER, user);
-			if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)){
+			if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user) && 
+					!user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName())){
 				user.resetDefaultPaymentValueType();
 			}
 			// FIXME ksriram please fix this
