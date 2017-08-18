@@ -11,6 +11,8 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
@@ -60,6 +62,9 @@ public class CrmGetFDUserTag extends AbstractGetterTag<FDUserI> {
 				user.isLoggedIn(true);
 			}
 			session.setAttribute(SessionName.USER, user);
+			if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)){
+				user.resetDefaultPaymentValueType();
+			}
 			// FIXME ksriram please fix this
 			FDCustomerCouponUtil.initCustomerCoupons(session);
 		}else {
