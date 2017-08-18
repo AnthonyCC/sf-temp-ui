@@ -63,7 +63,7 @@ public class CrmGetFDUserTag extends AbstractGetterTag<FDUserI> {
 				user.isLoggedIn(true);
 			}
 			session.setAttribute(SessionName.USER, user);
-			if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user) && 
+			if(!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user) && 
 					!user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName())){
 				user.resetDefaultPaymentValueType();
 			}
