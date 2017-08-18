@@ -25,6 +25,15 @@
 	z-index: 2002;
 }
 
+.ec-popup.addaddresspopup {
+  position: static;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: left;
+  overflow: auto;
+	width: 650px;
+}
+
 .ec-popup.addpaymentmethodpopup {
     position: static;
     display: inline-block;
