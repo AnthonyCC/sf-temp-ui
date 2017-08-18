@@ -627,7 +627,7 @@ SESSIONSTORAGE:
 	// When OAS pushes a system message:
 	$(document).bind('OAS_DONE',function(event,id){
 		if (id == messageData.options.SystemMessage) {
-			$(document.getElementById("OAS_"+messageData.options.SystemMessage)).messages('add', messageData.options.SystemMessage);
+			$(document.getElementById("oas_"+messageData.options.SystemMessage)).messages('add', messageData.options.SystemMessage);
 		}
 	});
 

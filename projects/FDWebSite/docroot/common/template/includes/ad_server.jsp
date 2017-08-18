@@ -509,6 +509,7 @@
   		OAS_RICH(pos);
   	else
   		OAS_NORMAL(pos);
+  		if(typeof window.parent['OAS_DONE'] =='function') { OAS_DONE(pos); }
   }
   </script><%
   	}
