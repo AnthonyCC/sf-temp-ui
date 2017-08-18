@@ -385,6 +385,7 @@ var dataLayer = window.dataLayer || [];
         // GA related login data
         dataLayer.push({
           eventCategory: 'Signup',
+          eventAction: 'signup-success',
           user_id: customer.userId,
           user_status: customer.userStatus,
           login_type: customer.loginType
@@ -400,6 +401,7 @@ var dataLayer = window.dataLayer || [];
 
       dataLayer.push({
         eventCategory: 'Signup',
+        eventAction: 'signup-failure',
         login_type: customer && customer.loginType
       });
 
