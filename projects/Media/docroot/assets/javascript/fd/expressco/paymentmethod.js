@@ -101,6 +101,11 @@ var FreshDirect = FreshDirect || {};
 		popupId: {
 			value: 'defaultPaymentPrompt'
 		},
+		decorate: {
+			value: function () {
+				$(this.trigger).attr('role', 'alertdialog');
+			}
+		},
 		popupConfig: {
 			value: {
 				zIndex: 2000,

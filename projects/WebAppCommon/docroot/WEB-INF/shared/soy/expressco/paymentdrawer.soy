@@ -193,7 +193,7 @@
     <input type="hidden" name="action" value="selectPaymentMethod" />
     <input type="hidden" id="paymentSetAsDefault" name="paymentSetAsDefault" value="false" />
     <div class="drawer__header">
-      <button class="cssbutton orange" fdform-default-button data-component="paymentchangebutton">Done<span class="offscreen"> with payment Payment Method</button>
+      <button class="cssbutton orange" data-component="paymentchangebutton">Done<span class="offscreen"> with payment Payment Method</button>
     </div>
     <div fdform-error-container></div>
     {foreach $payment in $payments}
@@ -326,8 +326,8 @@
   </label>
   {if $eWalletID != '1' and $eWalletID != '2'}
   <div class="drawer__item__action">
-    {if $canDelete}<button type="button" role="alertdialog" data-action="deletePaymentMethod" data-confirm data-confirm-header="Are you sure you want to permanently delete this payment method?" data-confirm-button-delete="FreshDirect.confirmFunctions.payment_deletePaymentMethod_{$id}" data-confirm-template="common.deleteconfirmpopup" class="action cssbutton transparent white icon-trash-new-before">Delete <span class="offscreen">{$bankName or $type} {if $accountNumber}ending in {$accountNumber}{/if}</span></button>{/if}
-    <button type="button" aria-haspopup="true" data-action="loadPaymentMethod" class="action cssbutton transparent white icon-pencil-before">Edit <span class="offscreen">{$bankName or $type} {if $accountNumber}ending in {$accountNumber}{/if}</span></button>
+    {if $canDelete}<button type="button" role="alertdialog" fdform-endpoint-submit="/api/expresscheckout/payment" data-action="deletePaymentMethod" data-confirm data-confirm-header="Are you sure you want to permanently delete this payment method?" data-confirm-button-delete="FreshDirect.confirmFunctions.payment_deletePaymentMethod_{$id}" data-confirm-template="common.deleteconfirmpopup" class="action cssbutton transparent white icon-trash-new-before">Delete <span class="offscreen">{$bankName or $type} {if $accountNumber}ending in {$accountNumber}{/if}</span></button>{/if}
+    <button type="button" aria-haspopup="true" fdform-endpoint-submit="/api/expresscheckout/payment" data-action="loadPaymentMethod" class="action cssbutton transparent white icon-pencil-before">Edit <span class="offscreen">{$bankName or $type} {if $accountNumber}ending in {$accountNumber}{/if}</span></button>
   </div>
   {/if}
 </div><!--/ drawer__item -->

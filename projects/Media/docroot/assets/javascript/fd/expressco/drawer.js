@@ -115,7 +115,12 @@ var FreshDirect = FreshDirect || {};
 
     if ($form.size()) {
       formid = $form.attr('fdform');
-      endpoint = fd.modules.common.forms.getAjaxEndpoint(formid, 'submit');
+      /* override endpoint with button attr */
+      if ($ct.attr('fdform-endpoint-submit')) {
+        endpoint = $ct.attr('fdform-endpoint-submit');
+      } else {
+        endpoint = fd.modules.common.forms.getAjaxEndpoint(formid, 'submit');
+      }
       $el = $ct.parent().siblings('input');
 
       if ($el.size() === 0) {
