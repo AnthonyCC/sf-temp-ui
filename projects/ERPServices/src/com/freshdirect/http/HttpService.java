@@ -82,7 +82,7 @@ public class HttpService {
         }
     }
 
-    public HttpResponse postDataWithHttpEntity(String uri, HttpEntity entity) throws IOException {
+    public HttpResponse postDataWithHttpEntity(String uri, HttpEntity entity, String userAgent) throws IOException {
         HttpResponse response = null;
         if (uri != null && entity != null) {
             HttpClient client = new DefaultHttpClient();
@@ -90,6 +90,7 @@ public class HttpService {
             try {
                 post = new HttpPost(uri);
                 post.setEntity(entity);
+                post.setHeader("User-Agent", userAgent);
                 response = client.execute(post);
             } finally {
                 try {

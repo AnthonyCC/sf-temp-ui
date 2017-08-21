@@ -35,6 +35,9 @@
   					<%= "post url: " +  GoogleAnalyticsReportingService.defaultService().GOOGLE_ANALYTICS_HOST %>
       			</pre>
       			<pre>
+  					<%= "User-Agent: " +  GoogleAnalyticsReportingService.defaultService().USER_AGENT %>
+      			</pre>
+      			<pre>
   					<%= "parameters: " + EntityUtils.toString(GoogleAnalyticsReportingService.defaultService().assembleTransactionPayloadForGA(fdOrder)) %>
       			</pre>
       			<pre>

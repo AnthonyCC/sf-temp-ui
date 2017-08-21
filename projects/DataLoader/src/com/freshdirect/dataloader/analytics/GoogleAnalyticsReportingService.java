@@ -26,6 +26,7 @@ public class GoogleAnalyticsReportingService {
 
     private static final GoogleAnalyticsReportingService INSTANCE = new GoogleAnalyticsReportingService();
     public static final String GOOGLE_ANALYTICS_HOST = "https://www.google-analytics.com/collect";
+    public static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36";
 
     private GoogleAnalyticsReportingService() {
     }
@@ -36,7 +37,7 @@ public class GoogleAnalyticsReportingService {
 
 
     public HttpResponse postGAReporting(FDOrderI order) throws UnsupportedEncodingException, IOException {
-        return HttpService.defaultService().postDataWithHttpEntity(GOOGLE_ANALYTICS_HOST, assembleTransactionPayloadForGA(order));
+        return HttpService.defaultService().postDataWithHttpEntity(GOOGLE_ANALYTICS_HOST, assembleTransactionPayloadForGA(order), USER_AGENT);
     }
 
     public HttpEntity assembleTransactionPayloadForGA(FDOrderI order) throws UnsupportedEncodingException {
@@ -54,6 +55,8 @@ public class GoogleAnalyticsReportingService {
         params.add(new BasicNameValuePair("v", version));
         params.add(new BasicNameValuePair("tid", trackingId));
         params.add(new BasicNameValuePair("cid", customerId));
+        params.add(new BasicNameValuePair("ua", USER_AGENT));
+
         params.add(new BasicNameValuePair("t", hitType));
         params.add(new BasicNameValuePair("dh", documentHostname));
         params.add(new BasicNameValuePair("ti", transactionId));
