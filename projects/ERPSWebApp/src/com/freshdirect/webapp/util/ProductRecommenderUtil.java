@@ -46,8 +46,6 @@ import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class ProductRecommenderUtil {
-	
-	private static final String MERCHANT_RECOMMENDATION_VARIANT = "merch";
 
     private static final Category LOGGER = LoggerFactory.getInstance(ProductRecommenderUtil.class);
 
@@ -62,6 +60,9 @@ public class ProductRecommenderUtil {
 	public static final int MAX_UPSELL_PRODS = 12;
 	public static final int MAX_XSELL_PRODS = 12;
 	
+    private static final int CATEGORY_TOP_ITEM_CACHE_MAXIMAL_SIZE = FDStoreProperties.getCategoryTopItemCacheMaximalSize();
+    private static final String MERCHANT_RECOMMENDATION_VARIANT = "merch";
+
 	/**
 	 * 
 	 * @param user Actual user
@@ -475,21 +476,9 @@ public class ProductRecommenderUtil {
 	public static void initTopItemCategoriesCache() {
 		for (DepartmentModel departmentModel : ContentFactory.getInstance().getStore().getDepartments()) {
 			for (CategoryModel category : departmentModel.getCategories()) {
-				List<FilteringProductItem> cachedFiltereingProductItems = ProductItemFilterUtil.createFilteringProductItems(category.getProducts());
-				Comparator<FilteringProductItem> comparator = ProductItemSorterFactory.createComparator(SortStrategyType.POPULARITY, null, true);
-			
-				Collections.sort(cachedFiltereingProductItems, comparator);
-
-				int cachedFiltereingProductItemsSize = cachedFiltereingProductItems.size();
-				int categoryTopItemCacheMaximalSize = FDStoreProperties.getCategoryTopItemCacheMaximalSize();
-				int availableCategoryCacheMaximalSize = cachedFiltereingProductItemsSize >= categoryTopItemCacheMaximalSize ? categoryTopItemCacheMaximalSize : cachedFiltereingProductItemsSize;
-
-				List<ProductModel> categoryTopItems = new ArrayList<ProductModel>();
-				for (int i = 0; i < availableCategoryCacheMaximalSize; i++) {
-					categoryTopItems.add(cachedFiltereingProductItems.get(i).getProductModel());
-				}
-				
-				EhCacheUtil.putListToCache(EhCacheUtil.BR_CATEGORY_TOP_ITEM_CACHE_NAME, category.getContentKey().getId(), categoryTopItems);
+                List<ProductModel> products = ProductRecommenderUtil.sortProducts(null, category.getProducts(), SortStrategyType.POPULARITY, true,
+                        CATEGORY_TOP_ITEM_CACHE_MAXIMAL_SIZE);
+                EhCacheUtil.putListToCache(EhCacheUtil.BR_CATEGORY_TOP_ITEM_CACHE_NAME, category.getContentKey().getId(), products);
 			}
 		}
 	}
@@ -526,18 +515,18 @@ public class ProductRecommenderUtil {
         return variant;
     }
 
-    private static List<ProductModel> sortProducts(FDUserI user, List<ProductModel> products, SortStrategyType sortStrategy, boolean reverseOrder) {
+    public static List<ProductModel> sortProducts(FDUserI user, List<ProductModel> products, SortStrategyType sortStrategy, boolean reverseOrder) {
         return sortProducts(user, products, sortStrategy, reverseOrder, products.size());
     }
 
-    private static List<ProductModel> sortProducts(FDUserI user, List<ProductModel> products, SortStrategyType sortStrategy, boolean reverseOrder, int maxSize) {
+    public static List<ProductModel> sortProducts(FDUserI user, List<ProductModel> products, SortStrategyType sortStrategy, boolean reverseOrder, int maxProductSize) {
         Comparator<FilteringProductItem> comparator = ProductItemSorterFactory.createComparator(sortStrategy, user, reverseOrder);
         List<FilteringProductItem> filteringProducts = ProductItemFilterUtil.createFilteringProductItems(products);
 
         Collections.sort(filteringProducts, comparator);
 
         List<ProductModel> sortedProducts = new ArrayList<ProductModel>();
-        for (int i = 0; i < maxSize; i++) {
+        for (int i = 0; i < Math.min(products.size(), maxProductSize); i++) {
             sortedProducts.add(filteringProducts.get(i).getProductModel());
         }
         return sortedProducts;
