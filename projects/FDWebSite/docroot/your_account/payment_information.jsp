@@ -308,7 +308,7 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
 
 <tmpl:put name="extraJs">
 	<script>
-		$(document).ready(function($) {
+		$jq(document).ready(function($) {
 			var isPayPalPaired = $('#isPayPalWalletConnected').val();
 			if (isPayPalPaired != 'true') {
 				// Brain Tree setup-- Start
@@ -352,7 +352,7 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
 					}
 				});
 			});
-		});
+		})(jQuery);
 	
 		function brainTreeSetup($){
 			$.ajax({

@@ -8,7 +8,6 @@ var FreshDirect = FreshDirect || {};
 	var DRAWER_WIDGET = fd.modules.common.drawerWidget;
 	var POPUPWIDGET = fd.modules.common.popupWidget;
 	var DISPATCHER = fd.common.dispatcher;
-	var checkout;
 	var paymentMethod = Object.create(DRAWER_WIDGET,{
 		signal: {
 			value:'payment'
