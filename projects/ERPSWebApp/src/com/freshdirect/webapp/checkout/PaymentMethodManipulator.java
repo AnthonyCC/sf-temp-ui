@@ -256,6 +256,8 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 			}else{
 			if(null != isAccountLevel && isAccountLevel.equalsIgnoreCase("Y")){
 				ErpAuthorizationModel auth = null;
+				if(paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.ECHECK) || paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.CREDITCARD) 
+						|| paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.DEBITCARD)){
 				if(paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.ECHECK)){
 					auth = FDCustomerManager.verifyCard(info, paymentMethod, true);
 				}else if(paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.CREDITCARD) || paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.DEBITCARD)){
@@ -269,6 +271,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 				}
 				if(null == auth || !auth.isApproved()){
 					result.addError(new ActionError("verificationFailed",SystemMessageList.MSG_DEFAULT_PAYMENT_VERIVICATION_FAILURE));
+				}
 				}
 				FDCustomerManager.setDefaultPaymentMethod( info, pmPK, EnumPaymentMethodDefaultType.DEFAULT_CUST, true );
 			user.refreshFdCustomer();
