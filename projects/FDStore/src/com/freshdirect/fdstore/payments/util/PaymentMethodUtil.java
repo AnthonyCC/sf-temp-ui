@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.customer.EnumAlertType;
 import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpAuthorizationModel;
@@ -44,7 +45,7 @@ public class PaymentMethodUtil {
 						}
 							else{								
 						if(FDStoreProperties.isPaymentVerificationEnabled() && isVerificationRequired){
-							if(EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())){
+							if(EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType()) && !FDCustomerManager.isOnAlert(actionInfo.getIdentity().getErpCustomerPK(), EnumAlertType.ECHECK.getName())){
 								if(!FDCustomerManager.isECheckRestricted(actionInfo.getIdentity())){
 								authModel = FDCustomerManager.verifyCard(actionInfo, paymentMethod, FDStoreProperties.isPaymentechGatewayEnabled());
 								}else{
@@ -70,10 +71,14 @@ public class PaymentMethodUtil {
 					} catch (ErpAuthorizationException e) {
 						LOGGER.error(e);
 					}
-				}
-			else if(EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) || EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())){
-					defaultPayment = paymentMethod;
-					break;			
+				} else
+				try {
+					if(EnumPaymentMethodType.PAYPAL.equals(paymentMethod.getPaymentMethodType()) || (EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType()) && !FDCustomerManager.isOnAlert(actionInfo.getIdentity().getErpCustomerPK(), EnumAlertType.EBT.getName()))){
+							defaultPayment = paymentMethod;
+							break;			
+						}
+				}catch (FDResourceException e) {
+					LOGGER.error(e);
 				}
 			}	
 		}
