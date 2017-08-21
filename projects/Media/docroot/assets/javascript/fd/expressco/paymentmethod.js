@@ -15,6 +15,9 @@ var FreshDirect = FreshDirect || {};
 		},
 		callback: {
 			value: function (data) {
+				if (fd.utils.isDeveloper()) {
+					console.log('paymentMethod: callback', data);
+				}
 				DRAWER_WIDGET.callback.call(this, data);
 				this.check();
 				
