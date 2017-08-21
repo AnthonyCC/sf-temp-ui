@@ -151,11 +151,15 @@ public class CrmMasqueradeUtil {
 				url += "&modifyOrderId=" + params.modifyOrderId;
 			}
 		}
-		if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user) && (null == user.getFDCustomer().getDefaultPaymentType() || 
-				user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName()))){
-			FDActionInfo actionInfo = new FDActionInfo(EnumTransactionSource.ADMINISTRATOR, user.getIdentity(), "", "Masquerading from CRM", null, user.getFDCustomer().getId());
-			ErpPaymentMethodI defaultPayment =  PaymentMethodUtil.getSystemDefaultPaymentMethod(actionInfo, user.getPaymentMethods(), true);
-			PaymentMethodUtil.updateDefaultPaymentMethod(actionInfo, user.getPaymentMethods(), defaultPayment.getPK().getId(), EnumPaymentMethodDefaultType.DEFAULT_SYS, false);
+		if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)){
+				if(null == user.getFDCustomer().getDefaultPaymentType() || user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName())){
+					FDActionInfo actionInfo = new FDActionInfo(EnumTransactionSource.ADMINISTRATOR, user.getIdentity(), "", "Masquerading from CRM", null, user.getFDCustomer().getId());
+					ErpPaymentMethodI defaultPayment =  PaymentMethodUtil.getSystemDefaultPaymentMethod(actionInfo, user.getPaymentMethods(), true);
+					PaymentMethodUtil.updateDefaultPaymentMethod(actionInfo, user.getPaymentMethods(), defaultPayment.getPK().getId(), EnumPaymentMethodDefaultType.DEFAULT_SYS, false);
+			}
+		}else if(!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user) && 
+				!EnumPaymentMethodDefaultType.UNDEFINED.getName().equals(user.getFDCustomer().getDefaultPaymentType().getName())){
+			user.resetDefaultPaymentValueType();
 		}
 		return url;
 	}

@@ -14,6 +14,8 @@ import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.ewallet.EwalletConstants;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.data.PageAction;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
@@ -61,9 +63,14 @@ public class PaymentMethodServlet extends BaseJsonServlet {
                         validationResult.getErrors().addAll(validationErrors);
                         if (validationErrors.isEmpty()) {
                             List<ErpPaymentMethodI> paymentMethods = FDCustomerFactory.getErpCustomer(user.getIdentity()).getPaymentMethods();
+                            String paymentId = "";
                             if (!paymentMethods.isEmpty()) {
+                            	if(!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)){
                                 PaymentService.defaultService().sortPaymentMethodsByIdReserved(paymentMethods);
-                                String paymentId = paymentMethods.get(0).getPK().getId();
+                                paymentId = paymentMethods.get(0).getPK().getId();
+                            	}else{
+                            		paymentId = user.getFDCustomer().getDefaultPaymentMethodPK();
+                            	}
                                 validationErrors = PaymentService.defaultService().selectPaymentMethod(paymentId, pageAction.actionName, request);
                                 validationResult.getErrors().addAll(validationErrors);
                             }
@@ -82,6 +89,10 @@ public class PaymentMethodServlet extends BaseJsonServlet {
                         changed = true;
                         if(StandingOrderHelper.isSO3StandingOrder(user)){
                         	user.getCurrentStandingOrder().setPaymentMethodId(null);	
+                        }
+                        String defaultPayment = user.getFDCustomer().getDefaultPaymentMethodPK();
+                        if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user) && null !=defaultPayment && !"".equals(defaultPayment)){
+                        	PaymentService.defaultService().selectPaymentMethod(defaultPayment, pageAction.actionName, request);
                         }
                         break;
                     }
