@@ -458,15 +458,20 @@ public class FDUser extends ModelSupport implements FDUserI {
     public String getZipCode() {
         return this.address == null ? null : this.address.getZipCode();
     }
-
     @Override
     public void setZipCode(String zipCode) {
+    	setZipCode(zipCode, true);
+    }
+    
+    public void setZipCode(String zipCode, boolean populateUserContext) {
         AddressModel a = new AddressModel();
         a.setZipCode(zipCode);
         this.address = a;
         this.invalidateCache();
-        this.userContext = null;
-        this.userContext = getUserContext();
+        if (populateUserContext) {
+	        this.userContext = null;
+	        this.userContext = getUserContext();
+        }
     }
 
     @Override

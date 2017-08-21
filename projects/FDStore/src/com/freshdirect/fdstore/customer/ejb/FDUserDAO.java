@@ -212,6 +212,7 @@ public class FDUserDAO {
                 .getPlantId()), user.getUserContext().getPricingContext().getZoneInfo());
         delPlantInfo.setCatalogKey(catalogKey);
         cart.setDeliveryPlantInfo(delPlantInfo);
+        
         user.setShoppingCart(cart);
     }
 
@@ -292,6 +293,9 @@ public class FDUserDAO {
         return user;
     }
 
+    public static FDUser recognizeWithIdentity(Connection conn, FDIdentity identity, EnumEStoreId eStoreId, final boolean lazy) throws SQLException, FDResourceException {
+    	return recognizeWithIdentity(conn, identity, eStoreId, lazy, true);
+    }
     /**
      * Recognize customer with given identity
      * 
@@ -305,13 +309,13 @@ public class FDUserDAO {
      * @return
      * @throws SQLException
      */
-    public static FDUser recognizeWithIdentity(Connection conn, FDIdentity identity, EnumEStoreId eStoreId, final boolean lazy) throws SQLException, FDResourceException {
+    public static FDUser recognizeWithIdentity(Connection conn, FDIdentity identity, EnumEStoreId eStoreId, final boolean lazy, boolean populateDeliveryPlantInfo) throws SQLException, FDResourceException {
         LOGGER.debug("attempting to load FDUser from identity");
         PreparedStatement ps = conn.prepareStatement(LOAD_FROM_IDENTITY_QUERY);
         ps.setString(1, identity.getErpCustomerPK());
         ps.setString(2, null != eStoreId ? eStoreId.getContentId() : EnumEStoreId.FD.getContentId());
         ResultSet rs = ps.executeQuery();
-        FDUser user = loadUserFromResultSet(rs);
+        FDUser user = loadUserFromResultSet(rs, populateDeliveryPlantInfo);
 
         if (!user.isAnonymous()) {
             loadCart(conn, user, lazy);
@@ -342,7 +346,7 @@ public class FDUserDAO {
         ps.setString(1, email);
         ps.setString(2, null != eStoreId ? eStoreId.getContentId() : EnumEStoreId.FD.getContentId());
         ResultSet rs = ps.executeQuery();
-        FDUser user = loadUserFromResultSet(rs);
+        FDUser user = loadUserFromResultSet(rs, true);
 
         if (!user.isAnonymous()) {
             loadCart(conn, user, false);
@@ -391,7 +395,7 @@ public class FDUserDAO {
         ps.setString(1, cookie);
         ps.setString(2, null != eStoreId ? eStoreId.getContentId() : EnumEStoreId.FD.getContentId());
         ResultSet rs = ps.executeQuery();
-        FDUser user = loadUserFromResultSet(rs);
+        FDUser user = loadUserFromResultSet(rs, true);
 
         if (!user.isAnonymous()) {
             loadCart(conn, user, false);
@@ -410,13 +414,13 @@ public class FDUserDAO {
         return user;
     }
 
-    private static FDUser loadUserFromResultSet(ResultSet rs) throws SQLException {
+    private static FDUser loadUserFromResultSet(ResultSet rs, boolean populateUserContext) throws SQLException {
         FDUser user = null;
         if (rs.next()) {
             PrimaryKey pk = new PrimaryKey(rs.getString("FDUSER_ID"));
             user = new FDUser(pk);
             user.setCookie(rs.getString("COOKIE"));
-            user.setZipCode(rs.getString("ZIPCODE"));
+            user.setZipCode(rs.getString("ZIPCODE"), populateUserContext);
             user.setDepotCode(rs.getString("DEPOT_CODE"));
             user.setSelectedServiceType(EnumServiceType.getEnum(rs.getString("SERVICE_TYPE")));
             user.setLastRefTrackingCode(rs.getString("REF_TRACKING_CODE"));

@@ -456,12 +456,15 @@ public class UserUtil {
             }
                         
 //            LOGGER.info("loginUser is " + loginUser.getFirstName() + " Level = " + loginUser.getLevel());
-            LOGGER.info("currentUser is " + (currentUser==null?"null":currentUser.getFirstName()+currentUser.getLevel()));
+            // LOGGER.info("currentUser is " + (currentUser==null?"null":currentUser.getFirstName()+currentUser.getLevel()));
             String currentUserId=null;
 			//[OPT-45]
             if(currentUser == null || (loginCookie != null && !loginCookie.equals(currentUser.getCookie()))){
-            	FDUser loginUser = FDCustomerManager.recognize(identity);
-            	 LOGGER.info("loginUser is " + loginUser.getFirstName() + " Level = " + loginUser.getLevel());
+    			// Pass updateUserState as currentUser != null. 
+    			// If currentUser == null, createSessionUser will be called later which will invoke updateUserState.
+            	FDUser loginUser = FDCustomerManager.recognize(identity, currentUser != null);
+
+            	// LOGGER.info("loginUser is " + loginUser.getFirstName() + " Level = " + loginUser.getLevel());
             	// FDX-1873 - Show timeslots for anonymous address
                 if(currentUser!=null && currentUser.getAddress() != null && currentUser.getAddress().getAddress1() != null 
                 				&& currentUser.getAddress().getAddress1().trim().length() > 0 && currentUser.getAddress().isCustomerAnonymousAddress()) {        	

@@ -294,7 +294,7 @@ public class FDCustomerManager {
 			FDCustomerManagerSB sb = managerHome.create();
 			FDUser user = sb.recognize(cookie,eStoreId);
 			
-			populateShoppingCart(user);
+			populateShoppingCart(user, true);
 			
 			return user;
 
@@ -307,7 +307,7 @@ public class FDCustomerManager {
 		}
 	}
 
-	private static void populateShoppingCart(FDUser user)
+	private static void populateShoppingCart(FDUser user, boolean updateUserState)
 			throws FDResourceException {
 
 		assumeDeliveryAddress(user);
@@ -316,8 +316,8 @@ public class FDCustomerManager {
 
 		user.getShoppingCart().doCleanup();
 		classifyUser(user);
-
-		user.updateUserState();
+		if (updateUserState)
+			user.updateUserState();
 		//user.resetPricingContext();
 		updateZoneInfo(user);
 		restoreReservations(user);
@@ -327,10 +327,18 @@ public class FDCustomerManager {
 		//The method was changed as part of task PERF-22.
 		return recognize(identity, null, null,null);
 	}
+	public static FDUser recognize(FDIdentity identity, boolean updateUserState ) throws FDAuthenticationException, FDResourceException {
+		return recognize(identity, null, null,null, updateUserState);
+	}
 	
 	public static FDUser recognize(FDIdentity identity, MasqueradeContext ctx) throws FDAuthenticationException, FDResourceException {
 		
-		return recognize(identity, null, null, ctx);
+		return recognize(identity, ctx, true);
+	}
+
+	public static FDUser recognize(FDIdentity identity, MasqueradeContext ctx, boolean updateUserState) throws FDAuthenticationException, FDResourceException {
+		
+		return recognize(identity, null, null, ctx, updateUserState);
 	}
 	
 	public static FDUser recognize(FDIdentity identity, EnumEStoreId eStoreId) throws FDAuthenticationException, FDResourceException {
@@ -340,6 +348,10 @@ public class FDCustomerManager {
 	public static FDUser recognize(FDIdentity identity, EnumTransactionSource source) throws FDAuthenticationException, FDResourceException {
 		return recognize(identity, source, null,null);
 	}
+	
+	public static FDUser recognize(FDIdentity identity, EnumTransactionSource source, EnumEStoreId eStoreId,MasqueradeContext ctx) throws FDAuthenticationException, FDResourceException {
+		return recognize(identity, source, eStoreId, ctx, true);
+	}
 	/*
 	 * This new method was added as part of task PERF-22. This method
 	 * will be called directly from CrmGetFDUserTag to set the application
@@ -347,11 +359,11 @@ public class FDCustomerManager {
 	 * object should be loaded before the FDSessionUser object is created
 	 * where it is actually set.
 	 */
-	public static FDUser recognize(FDIdentity identity, EnumTransactionSource source, EnumEStoreId eStoreId,MasqueradeContext ctx) throws FDAuthenticationException, FDResourceException {
+	public static FDUser recognize(FDIdentity identity, EnumTransactionSource source, EnumEStoreId eStoreId,MasqueradeContext ctx, boolean updateUserState) throws FDAuthenticationException, FDResourceException {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
-			FDUser user = sb.recognize(identity, eStoreId);
+			FDUser user = sb.recognize(identity, eStoreId, false, false);
 			
 			user.setApplication(source);
 			user.setMasqueradeContext(ctx);
@@ -359,7 +371,7 @@ public class FDCustomerManager {
 			if(user.isVoucherHolder() && EnumEStoreId.FDX.equals( user.getUserContext().getStoreContext().getEStoreId() )){
 				throw new FDAuthenticationException("voucherredemption");
 			}
-			populateShoppingCart(user);
+			populateShoppingCart(user, updateUserState);
 
 			return user;
 
@@ -386,7 +398,7 @@ public class FDCustomerManager {
 			FDUser user = sb.recognize(identity, eStoreId, true);
 			user.setApplication(source);
 			user.setCrmMode(true);
-			populateShoppingCart(user);
+			populateShoppingCart(user, true);
 
 			return user;
 
@@ -444,9 +456,9 @@ public class FDCustomerManager {
     			ErpAddressModel address = null;
     			try {
     				if(partentOrderId!=null)
-    					address=sb.assumeDeliveryAddress(identity, partentOrderId);
+    					address = sb.assumeDeliveryAddress(identity, partentOrderId, null);
     				else
-    					address=sb.assumeDeliveryAddress(identity, user.getOrderHistory().getLastOrderId());
+    					address = sb.assumeDeliveryAddress(identity, null, user);
     			}catch(Exception e) {}
 
     			if(address != null && user.getShoppingCart() != null){
@@ -4701,7 +4713,7 @@ public class FDCustomerManager {
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
 			FDUser user = sb.getFDUserWithCart(identity,  eStoreId);
-			populateShoppingCart(user);
+			populateShoppingCart(user, true);
 
 			return user.getShoppingCart();
 

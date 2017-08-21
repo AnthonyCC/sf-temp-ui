@@ -60,6 +60,7 @@ import com.freshdirect.customer.EnumComplaintStatus;
 import com.freshdirect.customer.EnumDeliverySetting;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumFraudReason;
+import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
@@ -105,7 +106,6 @@ import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.OrderHistoryI;
-import com.freshdirect.customer.ejb.ActivityDAO;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpFraudPreventionSB;
@@ -148,7 +148,6 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.AddressDAO;
 import com.freshdirect.fdstore.customer.CustomerCreditModel;
-import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.fdstore.customer.EnumIPhoneCaptureType;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
@@ -541,13 +540,16 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 	
 	public FDUser recognize(FDIdentity identity, EnumEStoreId eStoreId, final boolean lazy) throws FDAuthenticationException, FDResourceException {
+		return recognize(identity, eStoreId, lazy, true);
+	}
+	public FDUser recognize(FDIdentity identity, EnumEStoreId eStoreId, final boolean lazy, boolean populateDeliveryPlantInfo) throws FDAuthenticationException, FDResourceException {
 
 		Connection conn = null;
 		FDUser user = null;
 		try {
 			conn = getConnection();
 
-			user = FDUserDAO.recognizeWithIdentity(conn, identity, eStoreId, lazy);
+			user = FDUserDAO.recognizeWithIdentity(conn, identity, eStoreId, lazy, populateDeliveryPlantInfo);
 
 			if (user.isAnonymous()) {
 				throw new FDAuthenticationException("Unrecognized user");
@@ -932,7 +934,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return assignedParams;
 	}
 
-	public ErpAddressModel assumeDeliveryAddress(FDIdentity identity, String lastOrderId) throws FDResourceException {
+	public ErpAddressModel assumeDeliveryAddress(FDIdentity identity, String lastOrderId, FDUser user) throws FDResourceException {
 		try {
 			FDCustomerEB eb = getFdCustomerHome().findByPrimaryKey(
 					new PrimaryKey(identity.getFDCustomerPK()));
@@ -945,6 +947,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			if (address == null) {
 				if (lastOrderId != null) {
  					address = this.getLastOrderAddress(lastOrderId);
+				} else if (user != null){
+					address = this.getLastOrderAddress(user.getOrderHistory().getLastOrderId());
 				}
 			}
 			if (address != null) {
