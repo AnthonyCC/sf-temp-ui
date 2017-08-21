@@ -154,7 +154,7 @@ public class BrowseDataBuilderFactory {
 
 			try { //session is null because saving SMART_STORE_PREV_RECOMMENDATIONS isn't necessary here
 				ValueHolder<Variant> out = new ValueHolder<Variant>();
-				List<ProductModel> recommendedItems = ProductRecommenderUtil.getAggregatedSuperDepartmentFeaturedRecommenderProducts(superDepartmentModel, null, out);
+                List<ProductModel> recommendedItems = ProductRecommenderUtil.getAggregatedSuperDepartmentFeaturedRecommenderProducts(superDepartmentModel, user, null, out);
                 data.getCarousels().setCarousel1(CarouselService.defaultService().createCarouselData(null, superDepartmentModel.getSdFeaturedRecommenderTitle(), recommendedItems,
                         user, EnumEventSource.SDFR.getName(), out.isSet() ? out.getValue().getId() : null));
 			} catch (FDResourceException e) {

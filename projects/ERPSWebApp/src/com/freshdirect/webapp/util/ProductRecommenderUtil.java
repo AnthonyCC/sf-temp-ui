@@ -25,6 +25,7 @@ import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.fdstore.content.SortOptionModel;
 import com.freshdirect.fdstore.content.SortStrategyType;
 import com.freshdirect.fdstore.content.SuperDepartmentModel;
 import com.freshdirect.fdstore.content.browse.sorter.ProductItemSorterFactory;
@@ -42,14 +43,13 @@ import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.filtering.ProductItemFilterUtil;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
-import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class ProductRecommenderUtil {
 	
 	private static final String MERCHANT_RECOMMENDATION_VARIANT = "merch";
 
-	private static Category LOGGER = LoggerFactory.getInstance(ProductRecommenderUtil.class);
+    private static final Category LOGGER = LoggerFactory.getInstance(ProductRecommenderUtil.class);
 
 	public static final int MAX_LIST_CONTENT_SIZE = 20;
 	
@@ -140,7 +140,8 @@ public class ProductRecommenderUtil {
 		}
     }    
 
-	public static List<ProductModel> getAggregatedSuperDepartmentFeaturedRecommenderProducts(SuperDepartmentModel superDeptModel, HttpSession session, ValueHolder<Variant> outVariant) throws FDResourceException {
+    public static List<ProductModel> getAggregatedSuperDepartmentFeaturedRecommenderProducts(SuperDepartmentModel superDeptModel, FDUserI user, HttpSession session,
+            ValueHolder<Variant> outVariant) throws FDResourceException {
 		List<ProductModel> products = new ArrayList<ProductModel>();
 		
 		CategoryModel sourceCat = superDeptModel.getSdFeaturedRecommenderSourceCategory();
@@ -152,9 +153,6 @@ public class ProductRecommenderUtil {
 				for (DepartmentModel deptModel : superDeptModel.getDepartments()) {
 
 					//TODO: hide department from this functionality
-					FDSessionUser user = null;
-					if(session!=null)
-							user=(FDSessionUser) session.getAttribute(SessionName.USER);
 					Recommendations results = doRecommend(user, session, siteFeat, MAX_DEPT_FEATURED_RECOMMENDER_COUNT, new HashSet<ContentKey>(), deptModel);
 					products.addAll(results.getAllProducts()); //TODO de we need to provide site feature id for CM?
 					cleanUpProducts(products, superDeptModel.isSdFeaturedRecommenderRandomizeProducts(), MAX_DEPT_FEATURED_RECOMMENDER_COUNT);
@@ -168,6 +166,10 @@ public class ProductRecommenderUtil {
 		} else {
 			products = sourceCat.getAllChildProductsAsList();
 			cleanUpProducts(products, superDeptModel.isSdFeaturedRecommenderRandomizeProducts(), MAX_DEPT_FEATURED_RECOMMENDER_COUNT);
+            List<SortOptionModel> sortOptions = sourceCat.getSortOptions();
+            if (!sortOptions.isEmpty()) {
+                products = sortProducts(user, products, sortOptions.get(0).getSortStrategyType(), false);
+            }
 		}
 		
 		return products;
@@ -195,6 +197,10 @@ public class ProductRecommenderUtil {
 		} else {
 			products = sourceCat.getAllChildProductsAsList();
 			cleanUpProducts(products, deptModel.isFeaturedRecommenderRandomizeProducts(), MAX_DEPT_FEATURED_RECOMMENDER_COUNT);
+            List<SortOptionModel> sortOptions = sourceCat.getSortOptions();
+            if (!sortOptions.isEmpty()) {
+                products = sortProducts(user, products, sortOptions.get(0).getSortStrategyType(), false);
+            }
 		}
 		
 		return products;
@@ -518,5 +524,22 @@ public class ProductRecommenderUtil {
         }
 
         return variant;
+    }
+
+    private static List<ProductModel> sortProducts(FDUserI user, List<ProductModel> products, SortStrategyType sortStrategy, boolean reverseOrder) {
+        return sortProducts(user, products, sortStrategy, reverseOrder, products.size());
+    }
+
+    private static List<ProductModel> sortProducts(FDUserI user, List<ProductModel> products, SortStrategyType sortStrategy, boolean reverseOrder, int maxSize) {
+        Comparator<FilteringProductItem> comparator = ProductItemSorterFactory.createComparator(sortStrategy, user, reverseOrder);
+        List<FilteringProductItem> filteringProducts = ProductItemFilterUtil.createFilteringProductItems(products);
+
+        Collections.sort(filteringProducts, comparator);
+
+        List<ProductModel> sortedProducts = new ArrayList<ProductModel>();
+        for (int i = 0; i < maxSize; i++) {
+            sortedProducts.add(filteringProducts.get(i).getProductModel());
+        }
+        return sortedProducts;
     }
 }
