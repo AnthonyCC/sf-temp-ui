@@ -39,8 +39,12 @@ var checkout;
 						$('[data-paymentid="'+data.payments[payment].id+'"]').attr('data-isdefault', data.payments[payment].default);
 					}
 				}
-
-				$setAsDefault = $(SET_AS_DEFAULT_SELECTOR);
+				//if we have an error, revert
+				if (data && data.error) {
+					$setAsDefault = $fallback;
+				} else {
+					$setAsDefault = $(SET_AS_DEFAULT_SELECTOR);
+				}
 				//if we don't have a default selected now, then it's prob PP. try via id
 				if (!$setAsDefault.length) {
 					$setAsDefault = $(DEFAULT_CHECKBOX_SELECTOR+'[data-paymentid="'+paymentinfo.lastPostedPaymentId()+'"]');
@@ -201,7 +205,7 @@ var checkout;
 				var $t = e && $(e.currentTarget) || $(document.body);
 				if (data) {
 					//if there's no edit button (like PP), remove the id before sending to the soy template
-					if (!$('[data-paymentidedit="'+data.id+'"]').length) {
+					if (!$('[data-paymentidedit="'+data.paymentId+'"]').length) {
 						delete data.paymentId;
 					}
 					console.log('open', data);
@@ -239,8 +243,9 @@ var checkout;
 		if (xhr && xhr.hasOwnProperty('responseJSON') && $.isPlainObject(xhr.responseJSON)) {
 			var data = $.extend({}, xhr.responseJSON);
 			if (data.submitForm && data.submitForm.fdform === 'payment' && data.submitForm.success === false && data.validationResult && data.validationResult.errors && data.validationResult.errors.length) {
-				paymentinfoerror.open(event, { error: data.validationResult.errors[0].error, 'paymentId': paymentinfo.lastPostedPaymentId()});
-				paymentinfo.callback({}); //pass in an empty object and let existing data sort itself out
+				data = $.extend(data, { error: data.validationResult.errors[0].error, 'paymentId': paymentinfo.lastPostedPaymentId()});
+				paymentinfoerror.open(event, data);
+				paymentinfo.callback(data);
 			}
 		}
 	});
