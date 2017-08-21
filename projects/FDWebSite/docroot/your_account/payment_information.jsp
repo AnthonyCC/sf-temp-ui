@@ -48,6 +48,7 @@ if(user!=null  && user.getIdentity()!=null) {
     identity = user.getIdentity();
     paymentMethods = FDCustomerManager.getPaymentMethods(identity);
     if(paymentMethods != null && !paymentMethods.isEmpty()){
+    	user.refreshFdCustomer();
     	List<ErpPaymentMethodI> paymentsNew = new ArrayList<ErpPaymentMethodI>();
 		Iterator payItr = paymentMethods.iterator();
 		while (payItr.hasNext()) {
