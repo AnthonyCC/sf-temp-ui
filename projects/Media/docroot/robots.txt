@@ -16,3 +16,4 @@ Disallow: *grpId=*
 Sitemap: https://www.freshdirect.com/sitemap/sitemap.xml.gz
 Sitemap: https://www.freshdirect.com/sitemap/sitemap_category_index.xml
 Sitemap: https://www.freshdirect.com/sitemap/sitemap_product_index.xml
+Noindex: /pdp.jsp?productId=fro_pid_3502938&catId=fro_icecr_ice_candy
