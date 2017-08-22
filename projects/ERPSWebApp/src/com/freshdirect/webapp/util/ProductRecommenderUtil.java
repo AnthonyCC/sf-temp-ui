@@ -521,6 +521,11 @@ public class ProductRecommenderUtil {
 
     public static List<ProductModel> sortProducts(FDUserI user, List<ProductModel> products, SortStrategyType sortStrategy, boolean reverseOrder, int maxProductSize) {
         Comparator<FilteringProductItem> comparator = ProductItemSorterFactory.createComparator(sortStrategy, user, reverseOrder);
+        if (comparator == null) {
+            comparator = ProductItemSorterFactory.createDefaultComparator();
+            LOGGER.debug("Comparator could not be created for sortStrategy: " + sortStrategy + ", use default comparator");
+        }
+
         List<FilteringProductItem> filteringProducts = ProductItemFilterUtil.createFilteringProductItems(products);
 
         Collections.sort(filteringProducts, comparator);
