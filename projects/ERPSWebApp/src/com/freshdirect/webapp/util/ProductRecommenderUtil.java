@@ -165,17 +165,12 @@ public class ProductRecommenderUtil {
 			}
 			
 		} else {
-			products = sourceCat.getAllChildProductsAsList();
-			cleanUpProducts(products, superDeptModel.isSdFeaturedRecommenderRandomizeProducts(), MAX_DEPT_FEATURED_RECOMMENDER_COUNT);
-            List<SortOptionModel> sortOptions = sourceCat.getSortOptions();
-            if (!sortOptions.isEmpty()) {
-                products = sortProducts(user, products, sortOptions.get(0).getSortStrategyType(), false);
-            }
+            products = fetchProductsFromCategory(user, sourceCat, superDeptModel.isSdFeaturedRecommenderRandomizeProducts());
 		}
 		
 		return products;
 	}
-	
+
 	// FIXME
     public static List<ProductModel> getFeaturedRecommenderProducts(DepartmentModel deptModel, FDUserI user, HttpSession session, ValueHolder<Variant> outVariant)
             throws FDResourceException {
@@ -196,16 +191,21 @@ public class ProductRecommenderUtil {
 			}
 			
 		} else {
-			products = sourceCat.getAllChildProductsAsList();
-			cleanUpProducts(products, deptModel.isFeaturedRecommenderRandomizeProducts(), MAX_DEPT_FEATURED_RECOMMENDER_COUNT);
-            List<SortOptionModel> sortOptions = sourceCat.getSortOptions();
-            if (!sortOptions.isEmpty()) {
-                products = sortProducts(user, products, sortOptions.get(0).getSortStrategyType(), false);
-            }
+            products = fetchProductsFromCategory(user, sourceCat, deptModel.isFeaturedRecommenderRandomizeProducts());
 		}
 		
 		return products;
 	}
+
+    private static List<ProductModel> fetchProductsFromCategory(FDUserI user, CategoryModel category, boolean isProductRandomize) {
+        List<ProductModel> products = category.getAllChildProductsAsList();
+        cleanUpProducts(products, isProductRandomize, MAX_DEPT_FEATURED_RECOMMENDER_COUNT);
+        List<SortOptionModel> sortOptions = category.getSortOptions();
+        if (!sortOptions.isEmpty()) {
+            products = sortProducts(user, products, sortOptions.get(0).getSortStrategyType(), false);
+        }
+        return products;
+    }
 
 	public static List<ProductModel> getSuperDepartmentMerchantRecommenderProducts (SuperDepartmentModel superDeptModel){
 		List<ProductModel> products = superDeptModel.getSdMerchantRecommenderProducts();
