@@ -8775,15 +8775,18 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 	
 	public static String INSERT_SILVER_POPUP = "insert into CUST.CUSTOMER_PUSHNOTIFICATION(CUSTOMER_ID,QUALIFIER,DESTINATION,CREATE_TIMESTAMP,UPDATE_TIMESTAMP,SEND_TIMESTAMP) values "
-			+ "(?,?,?,trunc(sysdate),trunc(sysdate),null)";
+			+ "(?,?,?,?,?,null)";
 	
 	public void insertSilverPopupDetails(SilverPopupDetails silverPopup, Connection conn)  throws FDResourceException {
-		PreparedStatement pstmt = null;		
+		PreparedStatement pstmt = null;	
+		java.sql.Timestamp  sqlDate = new java.sql.Timestamp(new java.util.Date().getTime());
 		try {
 			pstmt = conn.prepareStatement(INSERT_SILVER_POPUP);
 			pstmt.setString(1, silverPopup.getCustomerId());
 			pstmt.setString(2, silverPopup.getQualifier());
 			pstmt.setString(3, silverPopup.getDestination());
+			pstmt.setTimestamp(4, sqlDate);
+			pstmt.setTimestamp(5, sqlDate);
 			pstmt.execute();
 			LOGGER.debug("insertSilverPopupDetails in Process Successful Insert of Customer_id, Qualifier, Destination, Creat_Timestamp and Updated_Timestamp into our DataBase for Destination "+silverPopup.getDestination());
 		} catch (SQLException sqle) {
@@ -8792,7 +8795,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			close(pstmt);
 		}
 	}	
-	
+/*	
 	public static String UPDATE_SILVER_POPUP = "update CUST.CUSTOMER_PUSHNOTIFICATION set customer_id=?, QUALIFIER =?, UPDATE_TIMESTAMP=trunc(sysdate) where DESTINATION = ?";
 	
 	public void updateSilverPopupDetails(SilverPopupDetails silverPopup, Connection conn)  throws FDResourceException {
@@ -8810,7 +8813,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} finally {
 			close(pstmt);
 		}
-	}		
+	}		*/
 
 	public static String SELECT_SILVER_POPUP = "select count(*) as SP_COUNT from CUST.CUSTOMER_PUSHNOTIFICATION where DESTINATION = ?";
 	
@@ -8857,24 +8860,26 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		Connection conn = null;
 		try{
 			conn = getConnection();
+			LOGGER.info("getting to exicute method getSilverPopupDetails()..");
 			return FDCustomerOrderInfoDAO.getSilverPopupDetails(conn);
 		}catch (SQLException sqle) {
-			throw new FDResourceException(sqle, "Some problem in getting Silver popup from database");
+			throw new FDResourceException(sqle, "Some problem in getting Silver popup from database in method getSilverPopupDetails()");
 		} finally {
 			close(conn);
 		}
 	}	
 	
-	public static String UPDATE_SP_DETAILS = "update CUST.CUSTOMER_PUSHNOTIFICATION set SEND_TIMESTAMP=trunc(sysdate) where CUSTOMER_ID=? and QUALIFIER =? and DESTINATION =? ";
+	public static String UPDATE_SP_DETAILS = "update CUST.CUSTOMER_PUSHNOTIFICATION set SEND_TIMESTAMP=? where CUSTOMER_ID=? and DESTINATION =? ";
 	
 	public void updateSPSuccessDetails(SilverPopupDetails silverPopup)  throws FDResourceException {
 		Connection conn = null;
-		PreparedStatement pstmt = null;		
+		PreparedStatement pstmt = null;
+		java.sql.Timestamp  sqlDate = new java.sql.Timestamp(new java.util.Date().getTime());
 		try {
 			conn = getConnection();
 			pstmt = conn.prepareStatement(UPDATE_SP_DETAILS);
-			pstmt.setString(1, silverPopup.getCustomerId());
-			pstmt.setString(2, silverPopup.getQualifier());
+			pstmt.setTimestamp(1, sqlDate);
+			pstmt.setString(2, silverPopup.getCustomerId());
 			pstmt.setString(3, silverPopup.getDestination());
 			pstmt.execute();
 			LOGGER.info("updateSPSuccessDetails in Process Successful Push to IBM for "+silverPopup.getCustomerId());
