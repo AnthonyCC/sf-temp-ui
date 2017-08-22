@@ -660,7 +660,13 @@
   function OAS_DONE(oas_id) {
   	var e = document.getElementById('oas_'+oas_id);
   	if(window.jQuery && e) {
+  		jQuery(document).ready(function() {
+  			if (FreshDirect && FreshDirect.updateOAS && FreshDirect.updateOAS.done) {
+  	  			FreshDirect.updateOAS.done([oas_id]);
+  	  		}
+  		});
   		jQuery(e).trigger('OAS_DONE',[oas_id]);
+  		
   	}
   }
 
