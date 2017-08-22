@@ -1422,7 +1422,7 @@ public class FDStoreProperties {
         defaults.put(PROP_COUNTRY_INFO_REFRESH_INTERVAL, "5");
 
         // APPDEV-6030 Google Tag Manager
-        defaults.put(PROP_GOOGLE_TAG_MANAGER_KEY, "GTM-KFMTML");
+        defaults.put(PROP_GOOGLE_TAG_MANAGER_KEY, "GTM-TMBSNJH");//GTM-KFMTML");
         // APPDEV-6285 support multiple environments in GTM
         defaults.put(PROP_GOOGLE_TAG_MANAGER_AUTH_TOKEN, "");
         defaults.put(PROP_GOOGLE_TAG_MANAGER_PREVIEW_ID, "");
