@@ -308,34 +308,33 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
 
 <tmpl:put name="extraJs">
 	<script>
-		$jq(document).ready(function($) {
-			var isPayPalPaired = $('#isPayPalWalletConnected').val();
-			if (isPayPalPaired != 'true') {
-				// Brain Tree setup-- Start
-				brainTreeSetup($);
-				// Brain Trees setup -- END
-			}
+		var checkout;
+		(function($) { /* isolate for $ use */
+			$(document).ready(function() { /* this MUST be in doc ready (or after) */
+				if ($('#isPayPalWalletConnected').val() !== 'true') {
+					// Brain Tree setup-- Start
+					brainTreeSetup($);
+					// Brain Trees setup -- END
+				}
+			});
 	
-			if (document.querySelector('#PP-connect') != null) {
-				document.querySelector('#PP-connect').addEventListener('click', function(event) {
-					if (event.preventDefault) {
-						event.preventDefault();
-					} else {
-						event.returnValue = false;
-					}
-					if (checkout != null) {
-						checkout.paypal.initAuthFlow();
-					}
-					var isPayPalDown = $('#isPayPalDown').val();
-					if (isPayPalDown == 'true') {
-						$('#PP_ERROR').css("display", "inline-block");
-					}else{
-						$('#PP_ERROR').css("display", "none");
-					}
-				});
-			}
+			$(document).on('click', '#PP-connect', function(event) {
+				if (event.preventDefault) {
+					event.preventDefault();
+				} else {
+					event.returnValue = false;
+				}
+				if (checkout != null) {
+					checkout.paypal.initAuthFlow();
+				}
+				if ($('#isPayPalWalletConnected').val() === 'true') {
+					$('#PP_ERROR').css("display", "inline-block");
+				}else{
+					$('#PP_ERROR').css("display", "none");
+				}
+			});
 	
-			$('#deletePPWallet').click(function() {
+			$(document).on('click', '#deletePPWallet', function() {
 				$.ajax({
 					url: "/api/expresscheckout/addpayment/ewalletPayment?data={\"fdform\":\"EPPDISC\",\"formdata\":{\"action\":\"PP_Disconnect_Wallet\",\"ewalletType\":\"PP\"}}",
 					type: 'post',
@@ -349,10 +348,12 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
 						$("#isPayPalWalletConnected").val("false");
 						$('#PP_ERROR').css("display", "none");
 						brainTreeSetup($);
+						//reload page so default gets selected
+						location.reload(true);
 					}
 				});
 			});
-		})(jQuery);
+		}(jQuery));
 	
 		function brainTreeSetup($){
 			$.ajax({
