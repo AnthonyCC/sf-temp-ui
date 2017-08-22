@@ -78,6 +78,7 @@ import com.freshdirect.ecommerce.data.ecoupon.CouponOrderData;
 import com.freshdirect.ecommerce.data.ecoupon.CouponWalletRequestData;
 import com.freshdirect.ecommerce.data.ecoupon.ErpCouponTransactionModelData;
 import com.freshdirect.ecommerce.data.ecoupon.FDCouponActivityContextData;
+import com.freshdirect.ecommerce.data.ecoupon.FDCouponActivityLogData;
 import com.freshdirect.ecommerce.data.ecoupon.FDCouponCustomerData;
 import com.freshdirect.ecommerce.data.enums.BillingCountryInfoData;
 import com.freshdirect.ecommerce.data.enums.CrmCasePriorityData;
@@ -1633,8 +1634,10 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	public void logCouponActivity(FDCouponActivityLogModel log)throws FDResourceException,RemoteException{
 	
 		try {
-			Request<FDCouponActivityLogModel> couponActivityLogReq = new Request<FDCouponActivityLogModel>();
-			couponActivityLogReq.setData(log);
+			Request<FDCouponActivityLogData> couponActivityLogReq = new Request<FDCouponActivityLogData>();
+			
+			FDCouponActivityLogData fDCouActLogData = ModelConverter.buildCouponActivityData(log);
+			couponActivityLogReq.setData(fDCouActLogData);
 			String inputJson = buildRequest(couponActivityLogReq);
 			@SuppressWarnings("unchecked")
 			Response<String> response = this.postData(inputJson, getFdCommerceEndPoint(LOG_ECOUPON_ACTIVITY), Response.class);

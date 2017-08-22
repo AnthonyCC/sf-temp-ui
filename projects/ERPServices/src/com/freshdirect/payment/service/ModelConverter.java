@@ -78,6 +78,7 @@ import com.freshdirect.ecommerce.data.ecoupon.ErpCouponTransactionModelData;
 import com.freshdirect.ecommerce.data.ecoupon.ErpOrderLineModelData;
 import com.freshdirect.ecommerce.data.ecoupon.FDConfigurationData;
 import com.freshdirect.ecommerce.data.ecoupon.FDCouponActivityContextData;
+import com.freshdirect.ecommerce.data.ecoupon.FDCouponActivityLogData;
 import com.freshdirect.ecommerce.data.ecoupon.FDCouponCustomerData;
 import com.freshdirect.ecommerce.data.enums.BillingCountryInfoData;
 import com.freshdirect.ecommerce.data.enums.CrmCasePriorityData;
@@ -190,10 +191,12 @@ import com.freshdirect.fdstore.ZonePriceInfoListing;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.ZonePriceModel;
+import com.freshdirect.fdstore.ecoupon.EnumCouponTransactionType;
 import com.freshdirect.fdstore.ecoupon.model.CouponCart;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionDetailModel;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityContext;
+import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityLogModel;
 import com.freshdirect.framework.event.FDRecommendationEvent;
 import com.freshdirect.framework.mail.EmailI;
 import com.freshdirect.framework.mail.FTLEmailI;
@@ -2172,6 +2175,24 @@ public class ModelConverter {
 		data.setProfileValue(type.getProfileValue());
 		data.setUnlimited(type.isUnlimited());
 		return data;
+	}
+
+	public static FDCouponActivityLogData buildCouponActivityData(
+			FDCouponActivityLogModel log) {
+		FDCouponActivityLogData logData = new FDCouponActivityLogData();
+		
+		logData.setCouponId(log.getCouponId());
+		logData.setCustomerId(log.getCustomerId());
+		logData.setDetails(log.getDetails());
+		logData.setEndTime(log.getEndTime());
+		logData.setFdUserId(log.getFdUserId());
+		logData.setInitiator(log.getInitiator());
+		logData.setSaleId(log.getSaleId());
+		logData.setSource(log.getSource().getCode());
+		logData.setStartTime(log.getStartTime());
+		logData.setTransType(log.getTransType().getName());
+		
+		return logData;
 	}
 }
 
