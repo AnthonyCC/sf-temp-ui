@@ -74,8 +74,7 @@ public class CrmGetFDUserTag extends AbstractGetterTag<FDUserI> {
 			throw new JspException("Required Object user not found");
 		}
 		
-		if(!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user) && 
-				!user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName())){
+		if(!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)){
 			user.resetDefaultPaymentValueType();
 		}
 
