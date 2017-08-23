@@ -253,7 +253,7 @@ public class PaymentService {
         		selectedPaymentId= paymentMethods.get(0).getPK().getId();
         	}
         	else if (user.getShoppingCart().getPaymentMethod() == null || (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)
-        					&& null ==request.getAttribute("pageAction"))) {
+        					&& null ==request.getAttribute("pageAction")) && null== request.getSession().getAttribute("selectedPaymentId")) {
 //                selectedPaymentId = FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity());
         		 user.refreshFdCustomer();
         		selectedPaymentId = user.getFDCustomer().getDefaultPaymentMethodPK();
@@ -262,6 +262,7 @@ public class PaymentService {
                 PrimaryKey paymentMethodPrimaryKey = user.getShoppingCart().getPaymentMethod().getPK();
                 if (paymentMethodPrimaryKey != null) {
                     selectedPaymentId = paymentMethodPrimaryKey.getId();
+                    request.getSession().setAttribute("selectedPaymentId", selectedPaymentId);
                 }
             }
         }
