@@ -32,6 +32,8 @@ import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderAdapter;
 import com.freshdirect.framework.template.TemplateException;
@@ -452,9 +454,15 @@ public class SinglePageCheckoutFacade {
                 }
                 String billingReference = cart.getPaymentMethod().getBillingRef();
                 session.setAttribute(SessionName.PAYMENT_BILLING_REFERENCE, billingReference);
-                String paymentId = FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity());
+                String paymentId="";
+                if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)){
+                	paymentId = cart.getPaymentMethod().getPK().getId();
+                }else{
+                	paymentId = FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity());
+                }
                 if (paymentId != null)
                     PaymentMethodManipulator.setPaymentMethod(paymentId, null, request, session, actionResult, PageAction.SELECT_PAYMENT_METHOD.actionName,"N");
+                
                 for (ActionError error : actionResult.getErrors()) {
                     validationErrors.add(new ValidationError(error));
                 }

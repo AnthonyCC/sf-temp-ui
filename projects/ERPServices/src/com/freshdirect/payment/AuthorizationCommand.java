@@ -40,7 +40,6 @@ public class AuthorizationCommand {
 			for ( AuthorizationInfo info : authInfos ) {
 				saleId = info.getSaleId();
 				ErpAuthorizationModel auth = this.authorize(info);
-				if(null !=auth){
 				auth.setAffiliate(info.getAffiliate());
 				auth.setIsChargePayment(info.isAdditionalCharge());
 				LOGGER.info("Authorizing sale " + info.getSaleId() + " - response code " + auth.getResponseCode() + " - merchant " + info.getMerchantId()+", for $"+info.getAmount());
@@ -48,7 +47,6 @@ public class AuthorizationCommand {
 				if(!auth.isApproved()) {
 					break;
 				}
-			  }
 			}
 		} catch (ErpTransactionException te) {
 			LOGGER.warn("Placing order -ErpTransactionException encountered. saleId=" + saleId, te);
