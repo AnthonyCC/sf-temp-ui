@@ -157,8 +157,7 @@ public class CrmMasqueradeUtil {
 					ErpPaymentMethodI defaultPayment =  PaymentMethodUtil.getSystemDefaultPaymentMethod(actionInfo, user.getPaymentMethods(), true);
 					PaymentMethodUtil.updateDefaultPaymentMethod(actionInfo, user.getPaymentMethods(), defaultPayment.getPK().getId(), EnumPaymentMethodDefaultType.DEFAULT_SYS, false);
 			}
-		}else if(!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user) && 
-				!EnumPaymentMethodDefaultType.UNDEFINED.getName().equals(user.getFDCustomer().getDefaultPaymentType().getName())){
+		}else if(!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)){
 			user.resetDefaultPaymentValueType();
 		}
 		return url;
