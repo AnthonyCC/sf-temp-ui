@@ -132,6 +132,7 @@ public class SearchResultsUtil {
 	}
 	
 	
+	
 public static SearchResults getHLBrandProductAdProducts(SearchResults searchResults, CmsFilteringNavigator nav, FDSessionUser user) {
 		
 
@@ -142,16 +143,8 @@ public static SearchResults getHLBrandProductAdProducts(SearchResults searchResu
 		try {
 			if(user.getUser()!=null && user.getUser().getPK()!=null &&
 					user.getUser().getPK().getId()!=null) {
-				hLBrandProductAdRequest.setUserId(user.getUser().getPK().getId());	
 			 hLBrandProductAdRequest.setSearchKeyWord(searchResults.getSuggestedTerm()!=null?searchResults.getSuggestedTerm():nav.getSearchParams());
-					
-			if (user.getPlatForm() != null) {
-				hLBrandProductAdRequest.setPlatformSource(user.getPlatForm());
-				hLBrandProductAdRequest.setLat(user.getLat());
-				hLBrandProductAdRequest.setPdUserId(user.getPdUserId());
-			} else {
-				hLBrandProductAdRequest.setPlatformSource(user.isMobilePlatForm() ? MOBILE_PLATFORM : WEB_PLATFORM);
-			}
+			 setPlatFormValues(user, hLBrandProductAdRequest);
 
 			HLBrandProductAdResponse hlBrandProductAdResponse = FDBrandProductsAdManager.getHLBrandproducts(hLBrandProductAdRequest);
 			if(hlBrandProductAdResponse!=null){
@@ -196,6 +189,19 @@ public static SearchResults getHLBrandProductAdProducts(SearchResults searchResu
 		
 		return searchResults;
 	}
+
+public static void setPlatFormValues(FDSessionUser user,
+		HLBrandProductAdRequest hLBrandProductAdRequest) {
+	hLBrandProductAdRequest.setUserId(user.getUser().getPK().getId());	
+			
+	if (user.getPlatForm() != null) {
+		hLBrandProductAdRequest.setPlatformSource(user.getPlatForm());
+		hLBrandProductAdRequest.setLat(user.getLat());
+		hLBrandProductAdRequest.setPdUserId(user.getPdUserId());
+	} else {
+		hLBrandProductAdRequest.setPlatformSource(user.isMobilePlatForm() ? MOBILE_PLATFORM : WEB_PLATFORM);
+	}
+}
 	
 	
 	public static SearchResults getProductsWithCoupons(FDSessionUser user) {

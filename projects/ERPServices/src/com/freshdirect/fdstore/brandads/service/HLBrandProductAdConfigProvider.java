@@ -6,6 +6,8 @@ import com.freshdirect.ErpServicesProperties;
 
 public class HLBrandProductAdConfigProvider implements BrandProductAdConfigProvider, Serializable {
 
+	
+	private static final long serialVersionUID = 9063954495984648495L;
 	private static HLBrandProductAdConfigProvider configProvider = new HLBrandProductAdConfigProvider();
 	public String getBrandProductAdProviderURL() {
 		return ErpServicesProperties.getHLBrandProductAdvertiseURL();
@@ -100,6 +102,24 @@ public class HLBrandProductAdConfigProvider implements BrandProductAdConfigProvi
 	
 	public  String getBrandProductsBeacon(){
 		return ErpServicesProperties.getBrandProductsBeacon();
+	}
+	/*APPDEV-6204*/
+	public String getBrandProductAdProviderHomeHlpt() {
+		return ErpServicesProperties.getBrandProductAdProviderHomeHlpt();
+	}
+	
+	public  String getBrandProductAdProviderHomePageCreative(){
+		
+		return ErpServicesProperties.getBrandProductAdProviderHomePageCreative();
+	}
+	
+	public  String getBrandProductAdProviderPdpCreative(){
+		
+		return ErpServicesProperties.getBrandProductAdProviderPdpCreative();
+	}
+	
+	public String getBrandProductAdHomePageTaxonomy() {
+		return ErpServicesProperties.getBrandProductAdHomePageTaxonomy();
 	}
 	
 }

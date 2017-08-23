@@ -290,6 +290,12 @@ public class ErpServicesProperties {
 	private final static String PROP_STANDING_ORDER_SOFT_LIMIT ="erpservices.standingorder.softlimit";
 	private final static String PROP_STANDING_ORDER_HARD_LIMIT ="erpservices.standingorder.hardlimit";
 	private final static String PROP_SUFFOLK_COUNTY_MINIMUM_ORDER_AMOUNT="erpservices.suffolk.county.minimum.order.amount";
+
+	private static final String PROP_HL_HOMEPAGE = "fdstore.erp.hl.homepage.hlpt";
+	private static final String PROP_HL_PDPPAGE = "fdstore.erp.hl.pdppage.hlpt";
+	private static final String PROP_HL_HOMEPAGE_CREATIVE = "fdstore.erp.hl.homepage.creative";
+	private static final String PROP_HL_PDP_CREATIVE = "fdstore.erp.hl.pdp.creative";
+	private static final String PROP_HL_HOMEPAGE_TAXONOMY = "fdstore.erp.hl.homepage.taxonomy";
  
 	
 	
@@ -523,6 +529,13 @@ public class ErpServicesProperties {
 		defaults.put(PROP_STANDING_ORDER_SOFT_LIMIT, "50.0");
         defaults.put(PROP_STANDING_ORDER_HARD_LIMIT, "50.0");
         defaults.put(PROP_SUFFOLK_COUNTY_MINIMUM_ORDER_AMOUNT, "99.0");
+        
+        //APPDEV 6204 Nikhil Subramanian 
+		defaults.put(PROP_HL_HOMEPAGE_CREATIVE, "115x170_B-C-OG_TI_2-4_Homepage");
+		defaults.put(PROP_HL_PDP_CREATIVE, "115x170_B-C-OG_TI_2-4_PDP");
+        defaults.put(PROP_HL_HOMEPAGE, "H");
+        defaults.put(PROP_HL_PDPPAGE, "P");
+        defaults.put(PROP_HL_HOMEPAGE_TAXONOMY, "Homepage");
         
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration: "+config);
@@ -1152,32 +1165,32 @@ public class ErpServicesProperties {
 	}
 	
 	
-	public static   String getBrandProductAdProviderPlatform(){
+	public static String getBrandProductAdProviderPlatform(){
 		return config.getProperty(PROP_HOOK_LOGIC_PLATFORM);
 	}
 	
-	public static   String getBrandProductAdProviderCulture() {
+	public static String getBrandProductAdProviderCulture() {
 		return config.getProperty(PROP_HOOK_LOGIC_CULTURE);
 	}
-	public static   String getBrandProductAdProviderIc(){
+	public static String getBrandProductAdProviderIc(){
 		return config.getProperty(PROP_HOOK_LOGIC_IC);
 	}
 	
-	public static   String getBrandProductAdProviderMediaSource() {
+	public static String getBrandProductAdProviderMediaSource() {
 		return config.getProperty(PROP_HOOK_LOGIC_MEDIASOURCE);
 	}
 	
-	public static   String getBrandProductAdProviderHlpt(){
+	public static String getBrandProductAdProviderHlpt(){
 		return config.getProperty(PROP_HOOK_LOGIC_HLPT);
 	}
 	
-	public static   String getBrandProductAdProviderConformationHlpt(){
+	public static String getBrandProductAdProviderConformationHlpt(){
 		return config.getProperty(PROP_HOOK_LOGIC_CONFIRMAITON_HLPT);
 	}
 	
 	
 	
-	public static   String getBrandProductAdProviderStrategy() {
+	public static String getBrandProductAdProviderStrategy() {
 		return config.getProperty(PROP_HOOK_LOGIC_STRATEGY);	
 	}
 	
@@ -1213,6 +1226,10 @@ public class ErpServicesProperties {
 	public static  String getBrandProductAdProviderCreative(){
 		return config.getProperty(PROP_HOOK_LOGIC_CREATIVE);
 	}
+	
+	/*public static  String getBrandProductAdHomePageProviderCreative(){
+		return config.getProperty(PROP_HOOK_LOGIC_HOMEPAGE_CREATIVE);
+	}*/
 	
 	public static  String getBrandProductAdProviderAllowMarketplace(){
 		return config.getProperty(PROP_HOOK_LOGIC_ALLOW_MARKET_PLACE);
@@ -1282,5 +1299,18 @@ public class ErpServicesProperties {
 	public static double getSufFolkCountyMinimumOrderAmount() {
         return Double.parseDouble(config.getProperty(PROP_SUFFOLK_COUNTY_MINIMUM_ORDER_AMOUNT));
     }
+	/*APPDEV-6204 Nikhil Subramanian*/
+	public static String getBrandProductAdProviderHomeHlpt(){
+		return config.getProperty(PROP_HL_HOMEPAGE);
+	}
+	public static  String getBrandProductAdProviderHomePageCreative(){
+		return config.getProperty(PROP_HL_HOMEPAGE_CREATIVE);
+	}
+	public static  String getBrandProductAdProviderPdpCreative(){
+		return config.getProperty(PROP_HL_PDP_CREATIVE);
+	}
+	public static String getBrandProductAdHomePageTaxonomy(){
+		return config.getProperty(PROP_HL_HOMEPAGE_TAXONOMY);
+	}
 	
 }

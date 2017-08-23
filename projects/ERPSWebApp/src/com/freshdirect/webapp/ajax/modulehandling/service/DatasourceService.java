@@ -26,6 +26,7 @@ import com.freshdirect.webapp.ajax.modulehandling.data.IconData;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleConfig;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleData;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleEditorialContainer;
+import com.freshdirect.webapp.ajax.product.FeaturedProductsUtil;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.util.MediaUtils;
 
@@ -211,6 +212,9 @@ public class DatasourceService {
         switch (datasourceEnum) {
             case MOST_POPULAR_PRODUCTS:
                 products = ModuleContentService.getDefaultService().generateRecommendationProducts(session, user, MOST_POPULAR_PRODUCTS_SITE_FEATURE);
+                //moduleData.setCriteoHomeProducts(Criteo.getHomeAdProduct(u\er));
+                //moduleData.setAdProducts(Criteo.getHomeAdProduct(user));
+                //moduleData.setAdPrdPageBeacon();
                 break;
             case TOP_ITEMS:
                 products = ModuleContentService.getDefaultService().generateRecommendationProducts(session, user, TOP_ITEMS_SITE_FEATURE);
@@ -235,10 +239,12 @@ public class DatasourceService {
                 break;
             case BROWSE:
                 // Special view all for browse data source with product lists.
-                if (showAllProducts && ModuleSourceType.PRODUCT_LIST_MODULE.equals(moduleSourceType)) {
-                    sectionDataContainer = generateBrowseProductsForViewAll(module, user);
-                } else {
+            	if (showAllProducts && ModuleSourceType.PRODUCT_LIST_MODULE.equals(moduleSourceType)) {
+            		sectionDataContainer = generateBrowseProductsForViewAll(module, user);
+            	} 
+            	else {
                     products = generateBrowseProducts(module, user);
+                    FeaturedProductsUtil.addFeatureProductsToHomePage(user, moduleData);
                 }
                 break;
             case FEATURED_RECOMMENDER:

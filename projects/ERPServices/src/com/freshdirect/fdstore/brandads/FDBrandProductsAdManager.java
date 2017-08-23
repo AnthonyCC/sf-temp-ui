@@ -2,8 +2,6 @@ package com.freshdirect.fdstore.brandads;
 
 import java.rmi.RemoteException;
 import java.util.Date;
-import java.util.List;
-
 import javax.ejb.CreateException;
 import javax.naming.Context;
 import javax.naming.NamingException;
@@ -12,13 +10,11 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.brandads.model.HLBrandProductAdInfo;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
 import com.freshdirect.fdstore.brandads.service.BrandProductAdServiceException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.service.FDECommerceService;
-import com.freshdirect.payment.service.FDEcomServiceException;
 
 public class FDBrandProductsAdManager {
 
@@ -119,6 +115,57 @@ public class FDBrandProductsAdManager {
 			throw new FDResourceException(e, "Error creating session bean");
 		}
 		
+	}
+	
+	public static HLBrandProductAdResponse getHLadproductToHome(HLBrandProductAdRequest hLBrandProductAdRequest) throws FDResourceException {
+		lookupManagerHome();
+		
+		try {
+			HLBrandProductAdResponse result = null;
+			FDBrandProductsAdManagerSB sb = managerHome.create();
+			/*if(FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.brandads.FDBrandProductsAdManagerSB")){
+				result = FDECommerceService.getInstance().getCategoryProducts(hLBrandProductAdRequest);
+			}else{*/
+				result= sb.getHomeAdProduct(hLBrandProductAdRequest);
+//			}
+			return result;
+		} catch (RemoteException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		} catch (CreateException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		}catch (BrandProductAdServiceException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error while connecting api");
+		}
+	}
+
+	public static HLBrandProductAdResponse getHLadproductToPdp(HLBrandProductAdRequest hLBrandProductAdRequest) throws FDResourceException{
+		lookupManagerHome();
+		
+		try {
+			HLBrandProductAdResponse result = null;
+			FDBrandProductsAdManagerSB sb = managerHome.create();
+			/*if(FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.brandads.FDBrandProductsAdManagerSB")){
+				result = FDECommerceService.getInstance().getCategoryProducts(hLBrandProductAdRequest);
+			}else{*/
+				try {
+					result= sb.getPdpAdProduct(hLBrandProductAdRequest);
+				} 
+					catch (BrandProductAdServiceException e) {
+						invalidateManagerHome();
+						throw new FDResourceException(e, "Error while connecting api");
+				}
+//			}
+			return result;
+		} catch (RemoteException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		} catch (CreateException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		}
 	}
 
 }

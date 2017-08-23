@@ -1,7 +1,5 @@
 package com.freshdirect.fdstore.brandads.service;
 
-import com.freshdirect.ErpServicesProperties;
-
 public interface BrandProductAdConfigProvider {
 
 	public  String getBrandProductAdProviderURL() ;
@@ -45,7 +43,14 @@ public interface BrandProductAdConfigProvider {
 	public  String getBrandProductAdProviderPgn() ;
 	
 	public  String getBrandProductsBeacon() ;
+
+	public String getBrandProductAdProviderHomeHlpt();
+	
+	public String getBrandProductAdProviderHomePageCreative();
+	
+	public String getBrandProductAdProviderPdpCreative();
 	
 	
+	public String getBrandProductAdHomePageTaxonomy();
 	
 }

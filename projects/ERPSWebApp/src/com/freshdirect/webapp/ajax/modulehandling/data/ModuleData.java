@@ -1,8 +1,12 @@
 package com.freshdirect.webapp.ajax.modulehandling.data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
+import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData.SectionDataCointainer;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 
@@ -14,7 +18,11 @@ public class ModuleData implements Serializable {
     private List<ProductData> products;
     private List<IconData> icons;
     private List<IconData> imageGridData;
-    private SectionDataCointainer sectionDataContainer;
+    private List<ProductData> adProducts = new ArrayList<ProductData>();
+    private String AdHomePageBeacon;
+    
+
+	private SectionDataCointainer sectionDataContainer;
 
     public String getOpenHTMLEditorial() {
         return openHTMLEditorial;
@@ -55,5 +63,22 @@ public class ModuleData implements Serializable {
     public void setSectionDataContainer(SectionDataCointainer sectionDataContainer) {
         this.sectionDataContainer = sectionDataContainer;
     }
+
+	public List<ProductData> getAdProducts() {
+		return adProducts;
+	}
+
+
+	public void setAdProducts(List<ProductData> adProducts) {
+		this.adProducts = adProducts;
+	}
+
+	public String getAdHomePageBeacon() {
+		return AdHomePageBeacon;
+	}
+
+	public void setAdHomePageBeacon(String adHomePageBeacon) {
+		AdHomePageBeacon = adHomePageBeacon;
+	}
 
 }
