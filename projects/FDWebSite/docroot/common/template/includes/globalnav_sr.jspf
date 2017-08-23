@@ -20,11 +20,6 @@
     MasqueradeContext masqueradeContext_globalnav_sr = user.getMasqueradeContext();
 %>
 
-<%-- OAS --%>
-<jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
-<jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
-
-
 <!-- TOP TOOLBAR -->
 
 <script>
@@ -49,6 +44,9 @@
 
 <% } %>
 
+<%-- OAS --%>
+<jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
+<jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
 
 <!-- TOP TOOLBAR - secondary -->
 
