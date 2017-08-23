@@ -63,10 +63,7 @@ public class CrmGetFDUserTag extends AbstractGetterTag<FDUserI> {
 				user.isLoggedIn(true);
 			}
 			session.setAttribute(SessionName.USER, user);
-			if(!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user) && 
-					!user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName())){
-				user.resetDefaultPaymentValueType();
-			}
+			
 			// FIXME ksriram please fix this
 			FDCustomerCouponUtil.initCustomerCoupons(session);
 		}else {
@@ -75,6 +72,11 @@ public class CrmGetFDUserTag extends AbstractGetterTag<FDUserI> {
 		
 		if(user == null){
 			throw new JspException("Required Object user not found");
+		}
+		
+		if(!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user) && 
+				!user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName())){
+			user.resetDefaultPaymentValueType();
 		}
 
 		session.setAttribute(SessionName.USER, user);
