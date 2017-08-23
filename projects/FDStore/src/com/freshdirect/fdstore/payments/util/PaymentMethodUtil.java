@@ -45,8 +45,8 @@ public class PaymentMethodUtil {
 						}
 							else{								
 						if(FDStoreProperties.isPaymentVerificationEnabled() && isVerificationRequired){
-							if(EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType()) && !FDCustomerManager.isOnAlert(actionInfo.getIdentity().getErpCustomerPK(), EnumAlertType.ECHECK.getName())){
-								if(!FDCustomerManager.isECheckRestricted(actionInfo.getIdentity())){
+							if(EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())){
+								if(!FDCustomerManager.isECheckRestricted(actionInfo.getIdentity()) && !FDCustomerManager.isOnAlert(actionInfo.getIdentity().getErpCustomerPK(), EnumAlertType.ECHECK.getName())){
 								authModel = FDCustomerManager.verifyCard(actionInfo, paymentMethod, FDStoreProperties.isPaymentechGatewayEnabled());
 								}else{
 									continue;
@@ -153,7 +153,7 @@ public class PaymentMethodUtil {
 		}		
 	}
 
-	private static ErpPaymentMethodI getPaymentMethod(String paymentId, List<ErpPaymentMethodI> paymentMethods) {
+	public static ErpPaymentMethodI getPaymentMethod(String paymentId, List<ErpPaymentMethodI> paymentMethods) {
 		ErpPaymentMethodI pmethod = null;
 		for(ErpPaymentMethodI paymentMethod : paymentMethods){
 			if(paymentMethod.getPK().getId().equals(paymentId)){
