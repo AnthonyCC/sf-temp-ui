@@ -1163,6 +1163,11 @@ public class CheckoutController extends BaseController {
             HttpServletRequest request) throws FDException, JsonException {
         Checkout checkout = new Checkout(user);
         ResultBundle resultBundle = checkout.deletePaymentMethodEx(reqestMessage.getPaymentMethodId());
+        if(user!=null && user.getFDSessionUser()!=null && user.getFDSessionUser().getShoppingCart()!=null && 
+        		reqestMessage.getPaymentMethodId().equals(user.getFDSessionUser().getShoppingCart().getPaymentMethod().getPK().getId()) && 
+        		resultBundle.getActionResult().isSuccess()){
+        	user.getFDSessionUser().getShoppingCart().setPaymentMethod(null);
+        }
         ActionResult result = resultBundle.getActionResult();
 
         propogateSetSessionValues(request.getSession(), resultBundle);
