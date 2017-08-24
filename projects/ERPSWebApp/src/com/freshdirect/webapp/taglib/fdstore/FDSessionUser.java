@@ -2280,11 +2280,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     }
 
     public boolean isMobilePlatForm() {
-        return user.isMobilePlatForm();
+        return isMobilePlatForm;
     }
 
     public void setMobilePlatForm(boolean isMobilePlatForm) {
-    	user.setMobilePlatForm(isMobilePlatForm);
+        this.isMobilePlatForm = isMobilePlatForm;
     }
 
     @Override
