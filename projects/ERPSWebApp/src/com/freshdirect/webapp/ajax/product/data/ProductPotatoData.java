@@ -7,7 +7,7 @@ public class ProductPotatoData {
     private ProductData productData;
     private ProductExtraData productExtraData;
     private List<ProductData> adProducts = new ArrayList<ProductData>();
-    private String AdHomePageBeacon;
+    private String AdPdpPageBeacon;
 
     public ProductData getProductData() {
         return productData;
@@ -24,23 +24,20 @@ public class ProductPotatoData {
     public void setProductExtraData(ProductExtraData productExtraData) {
         this.productExtraData = productExtraData;
     }
-    
+
     public List<ProductData> getAdProducts() {
 		return adProducts;
 	}
-
 
 	public void setAdProducts(List<ProductData> adProducts) {
 		this.adProducts = adProducts;
 	}
 
-	public String getAdHomePageBeacon() {
-		return AdHomePageBeacon;
+	public String getAdPdpPageBeacon() {
+		return AdPdpPageBeacon;
 	}
 
-	public void setAdHomePageBeacon(String adHomePageBeacon) {
-		AdHomePageBeacon = adHomePageBeacon;
+	public void setAdPdpPageBeacon(String adPdpPageBeacon) {
+		AdPdpPageBeacon = adPdpPageBeacon;
 	}
-    
-
 }

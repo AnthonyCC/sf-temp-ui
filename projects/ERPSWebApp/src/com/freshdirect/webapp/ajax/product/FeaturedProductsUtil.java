@@ -69,7 +69,7 @@ public class FeaturedProductsUtil
 				addFeatureProducts(user, adPrducts, updatedPageBeacon, hlBrandAdProductsMeta);
 			}
 			productPotatoData.setAdProducts(adPrducts);
-			productPotatoData.setAdHomePageBeacon(updatedPageBeacon != null ? updatedPageBeacon.toString(): null);
+			productPotatoData.setAdPdpPageBeacon(updatedPageBeacon != null ? updatedPageBeacon.toString(): null);
 		} catch (Exception e) {
 			LOG.warn("Exception while populating HookLogic returned product: ", e);
 		}

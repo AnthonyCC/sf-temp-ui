@@ -752,4 +752,8 @@ public interface FDUserI extends java.io.Serializable {
 	
 	public void refreshFdCustomer() throws FDResourceException;
 
+	void setMobilePlatForm(boolean isMobilePlatForm);
+
+	boolean isMobilePlatForm();
+
 }

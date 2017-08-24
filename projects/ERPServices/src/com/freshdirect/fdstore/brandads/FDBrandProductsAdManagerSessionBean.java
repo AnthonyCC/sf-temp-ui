@@ -182,21 +182,17 @@ public class FDBrandProductsAdManagerSessionBean extends ERPSessionBeanSupport {
 			hlBrandProductAdResponse = FDBrandProductsAdGateway.getHomeAdProduct(hLBrandProductAdRequest);
 			return hlBrandProductAdResponse;
 		}
-		return hlBrandProductAdResponse;
-		
+		return hlBrandProductAdResponse;		
 	}
 
-	
 	public HLBrandProductAdResponse getPdpAdProduct(HLBrandProductAdRequest hLBrandProductAdRequest){
 		HLBrandProductAdResponse hlBrandProductAdResponse=null;
 		if(!FDStoreProperties.isHookLogicBlackHoleEnabled()){
 			hlBrandProductAdResponse = FDBrandProductsAdGateway.getPdpAdProduct(hLBrandProductAdRequest);
 			return hlBrandProductAdResponse;
 		}
-		return hlBrandProductAdResponse;
-		
+		return hlBrandProductAdResponse;	
 	}
-
 }
 	
 		

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/log4j.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/log4j.jar" sourcepath="SOURCE_ATTACHER/log4j-1.2.15-sources.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/commons-lang-2.3.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/commons-httpclient-2.0.2.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/commons-net-1.0.jar"/>

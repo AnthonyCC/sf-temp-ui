@@ -5,6 +5,6 @@
 	<classpathentry kind="con" path="com.bea.workshop.wls.syslib"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ERPSWebApp"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/jsch-0.1.44.jar"/>
 	<classpathentry kind="output" path="bin"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/jsch-0.1.44.jar"/>
 </classpath>

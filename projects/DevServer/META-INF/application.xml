@@ -24,7 +24,7 @@
 			<context-root>/</context-root>
 		</web>
 	</module>
-	<module>
+	<!-- <module>
 		<web>
 			<web-uri>../CRM/docroot</web-uri>
 			<context-root>crm</context-root>
@@ -35,15 +35,15 @@
 			<web-uri>../cms-gwt/target/docroot</web-uri>
 			<context-root>cms-gwt</context-root>
 		</web>
-	</module> 
+	</module>  -->
 	<module>
 		<web>
 			<web-uri>../FDIntegrationServices/docroot</web-uri>
 			<context-root>mobileapi</context-root>
 		</web>
 	</module>
-	<!-- 
-	<module>
+	
+	<!-- <module>
 		<web>
 			<web-uri>../ERPSAdmin/docroot</web-uri>
 			<context-root>ERPSAdmin</context-root>
@@ -54,6 +54,6 @@
 			<web-uri>../RulesAdmin/docroot</web-uri>
 			<context-root>RulesAdmin</context-root>
 		</web>
-	</module>
-	 -->
+	</module> -->
+	
 </application>
