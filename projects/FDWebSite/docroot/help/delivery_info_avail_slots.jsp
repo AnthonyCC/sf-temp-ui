@@ -53,5 +53,6 @@ final boolean abstractTimeslots = false;
 		</tmpl:put>
 		
   	<tmpl:put name="jsmodules">
-	</tmpl:put>
+<%--     	<%@ include file="/common/template/includes/i_jsmodules.jspf" %>
+ --%>	</tmpl:put>
 </tmpl:insert>

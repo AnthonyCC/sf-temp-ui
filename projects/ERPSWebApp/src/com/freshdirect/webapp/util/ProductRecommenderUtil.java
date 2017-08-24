@@ -528,7 +528,7 @@ public class ProductRecommenderUtil {
 
         List<FilteringProductItem> filteringProducts = ProductItemFilterUtil.createFilteringProductItems(products);
 
-       // Collections.sort(filteringProducts, comparator);
+        Collections.sort(filteringProducts, comparator);
 
         List<ProductModel> sortedProducts = new ArrayList<ProductModel>();
         for (int i = 0; i < Math.min(products.size(), maxProductSize); i++) {
