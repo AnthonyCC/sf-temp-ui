@@ -187,16 +187,13 @@ public class FDUser extends ModelSupport implements FDUserI {
     private transient List<FDCustomerListInfo> soListInfos;
 
     private String lastRefTrackingCode;
-    private boolean isMobilePlatForm;
 
     private String lastRefProgId = null;
     private String lastRefTrkDtls = null;
     private String lastRefProgInvtId = null;
 
     private String userId;
-    
-    
-    
+
     private boolean active = false;
     private boolean receiveFDemails = true;
 
@@ -3820,13 +3817,5 @@ public class FDUser extends ModelSupport implements FDUserI {
             throw new IllegalStateException("No identity");
         }
 		this.cachedFDCustomer = FDCustomerFactory.getFDCustomer(this.identity);
-	}
-	@Override
-	public void setMobilePlatForm(boolean isMobilePlatForm) {
-		this.isMobilePlatForm = isMobilePlatForm;		
-	}
-	@Override
-	public boolean isMobilePlatForm() {
-		return isMobilePlatForm;
 	}
 }
