@@ -49,6 +49,7 @@ public class EnumManager {
 		EnumManagerSB sb = this.getEnumManagerSB();
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EnumManagerSB)){
+			LOGGER.info("calling sf2.0 gateway " );
 			return	FDECommerceService.getInstance().loadEnum(daoClass.getSimpleName());
 			}else{
 			return sb.loadEnum(daoClass.getName());

@@ -959,6 +959,8 @@ public class FDStoreProperties {
 
     
     private static final String PROP_REFRESHZONE_ENABLED = "fdstore.refresh.zone.enabled";
+    
+    private static final String GLOBAL_SF2_0_ENABLED = "fdstore_sf20_global_enabled";
  
     public final static long TEN_DAYS_IN_MILLIS = 1000 * 60 * 60 * 24 * 10;    
     
@@ -1831,6 +1833,8 @@ public class FDStoreProperties {
         defaults.put(PAYMENT_TLSSHA_ENABLED,"false");
         defaults.put(GOOGLE_ANALYTICS_TRACKING_ID, "UA-20535945-18");
         defaults.put(PROP_PAYMENT_VERIFICATION_ENABLED, "false");
+        defaults.put(GLOBAL_SF2_0_ENABLED, "false");
+        
         refresh();
     }
 
@@ -4553,10 +4557,7 @@ public class FDStoreProperties {
     }
 
     public static boolean isSF2_0_AndServiceEnabled(String beanName) {
-        return ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue()&&FDEcommProperties.isServiceEnabled(beanName));
-    }
-    private static boolean isStorefront2_0Enabled() {
-        return (Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue();
+        return FDStoreProperties.isGlobalSF2_0PropertyEnabled() || ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue()&&FDEcommProperties.isServiceEnabled(beanName));
     }
 
     public static boolean isMealBundleCartonLinkEnabled() {
@@ -4700,4 +4701,8 @@ public class FDStoreProperties {
 	public static boolean isRefreshZoneInfoEnabled() {
 		return (Boolean.valueOf(get(PROP_REFRESHZONE_ENABLED))).booleanValue();
 	}
+
+	public static boolean isGlobalSF2_0PropertyEnabled() {
+		return (Boolean.valueOf(get(GLOBAL_SF2_0_ENABLED))).booleanValue();
+		}
 }
