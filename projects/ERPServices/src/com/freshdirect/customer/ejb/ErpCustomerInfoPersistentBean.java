@@ -35,6 +35,7 @@ import java.util.Map;
  */
 public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSupport {
 
+	private static final long serialVersionUID = 7384815695922255411L;
 	private String title;
 	private String firstName;
 
@@ -387,32 +388,6 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		this.soFeatureOverlay = m.getSoFeatureOverlay();
 		
 		this.setModified();
-	}
-
-	/**
-	 * Find ErpCustomerInfoPersistentBean objects for a given parent.
-	 *
-	 * @param conn the database connection to operate on
-	 * @param parentPK primary key of parent
-	 *
-	 * @return a List of ErpCustomerInfoPersistentBean objects (empty if found none).
-	 *
-	 * @throws SQLException if any problems occur talking to the database
-	 */
-	public static List findByParent(Connection conn, PrimaryKey parentPK) throws SQLException {
-		java.util.List lst = new java.util.LinkedList();
-		PreparedStatement ps = conn.prepareStatement("SELECT ID FROM CUST.CUSTOMERINFO WHERE CUSTOMER_ID=?");
-		ps.setString(1, parentPK.getId());
-		ResultSet rs = ps.executeQuery();
-		while (rs.next()) {
-			ErpCustomerInfoPersistentBean bean = new ErpCustomerInfoPersistentBean(new PrimaryKey(rs.getString(1)), conn);
-			bean.setParentPK(parentPK);
-		}
-		rs.close();
-		rs = null;
-		ps.close();
-		ps = null;
-		return lst;
 	}
 
 	private final String convertPhone(PhoneNumber phoneNumber) {
@@ -969,6 +944,9 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		this.unsetModified();
 	}	
 	
+	public void setPK(PrimaryKey pk) {
+		this.setParentPK(pk);
+	}
 	
 	public PrimaryKey getPK() {
 		return this.getParentPK();

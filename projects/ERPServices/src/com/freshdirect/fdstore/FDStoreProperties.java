@@ -65,6 +65,7 @@ public class FDStoreProperties {
     private final static String PROP_CONTENTMANAGER_HOME = "fdstore.ContentManager.home";
     private final static String PROP_FDCUSTOMER_HOME = "fdstore.fdcustomer.home";
     private final static String PROP_ERPCUSTOMER_HOME = "fdstore.erpcustomer.home";
+    private final static String PROP_ERPCUSTOMERINFO_HOME = "fdstore.erpcustomerinfo.home";
     private final static String PROP_CONTFACTORY_HOME = "fdstore.contentFactory.home";
     private final static String PROP_FDORDER_HOME = "fdstore.fdorder.home";
     private final static String PROP_DLV_INSTRUCTION_SPECIAL_CHAR = "fdstore.address.validation";
@@ -997,6 +998,7 @@ public class FDStoreProperties {
         defaults.put(PROP_FDCUSTOMER_HOME, "freshdirect.fdstore.Customer");
         defaults.put(PROP_EMAIL_PROMOTION, "PromotionNotification@freshdirect.com");
         defaults.put(PROP_ERPCUSTOMER_HOME, "freshdirect.erp.Customer");
+        defaults.put(PROP_ERPCUSTOMERINFO_HOME, "freshdirect.erp.CustomerInfo");
         defaults.put(PROP_CONTFACTORY_HOME, "freshdirect.content.ContentFactory");
         defaults.put(PROP_FDORDER_HOME, "freshdirect.fdstore.Order");
         // checks for all special characters
@@ -2017,6 +2019,10 @@ public class FDStoreProperties {
 
     public static String getErpCustomerHome() {
         return get(PROP_ERPCUSTOMER_HOME);
+    }
+
+    public static String getErpCustomerInfoHome() {
+        return get(PROP_ERPCUSTOMERINFO_HOME);
     }
 
     public static String getContentFactoryHome() {

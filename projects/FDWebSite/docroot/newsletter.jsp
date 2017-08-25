@@ -30,8 +30,6 @@ if(ContentFactory.getInstance().isEligibleForDDPP()){
 	user = (FDUserI)session.getAttribute(SessionName.USER);
 	String custFirstName = user.getFirstName();
 	int validOrderCount = user.getAdjustedValidOrderCount();
-	boolean mainPromo = user.getLevel() < FDUserI.RECOGNIZED && user.isEligibleForSignupPromotion();
-
 
 	/*
 	if we're on the email.jsp, set the product base urls to PROD

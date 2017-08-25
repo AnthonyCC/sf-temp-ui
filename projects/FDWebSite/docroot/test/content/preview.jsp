@@ -21,7 +21,6 @@
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 String custFirstName = user.getFirstName();
 int validOrderCount = user.getAdjustedValidOrderCount();
-boolean mainPromo = user.getLevel() < FDUserI.RECOGNIZED && user.isEligibleForSignupPromotion();
 String templatePath = request.getParameter("template");
 
 Map params = new HashMap();

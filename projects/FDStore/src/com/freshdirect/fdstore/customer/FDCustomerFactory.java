@@ -8,6 +8,7 @@ package com.freshdirect.fdstore.customer;
 import javax.naming.*;
 import javax.ejb.*;
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 
 import com.freshdirect.framework.core.PrimaryKey;
 
@@ -22,7 +23,8 @@ public class FDCustomerFactory {
 
 	private static FDCustomerHome fdCustomerHome = null;
 	private static ErpCustomerHome erpCustomerHome = null;
-
+	private static ErpCustomerInfoHome erpCustomerInfoHome = null;
+	
     private FDCustomerFactory () {
     }
 
@@ -119,21 +121,34 @@ public class FDCustomerFactory {
 	}
 
 	public static ErpCustomerInfoModel getErpCustomerInfo(String erpCustomerId) throws FDResourceException {
-		if (erpCustomerHome==null) {
-			lookupErpCustomerHome();
+		if (erpCustomerInfoHome == null) {
+			lookupErpCustomerInfoHome();
 		}
+		
 		try {
-			ErpCustomerEB eb = erpCustomerHome.findByPrimaryKey(new PrimaryKey( erpCustomerId ));
-			return eb.getCustomerInfo();
+			ErpCustomerInfoModel customerInfo = (ErpCustomerInfoModel) erpCustomerInfoHome.findByErpCustomerId(erpCustomerId).getModel();
+			return customerInfo;
 		} catch(FinderException fe) {
-			erpCustomerHome=null;
+			erpCustomerInfoHome = null;
 			throw new FDResourceException(fe);
 		} catch(RemoteException re) {
-			erpCustomerHome=null;
+			erpCustomerInfoHome = null;
 			throw new FDResourceException(re);
 		}
 	}
-
+	protected static void lookupErpCustomerInfoHome() throws FDResourceException {
+		Context ctx = null;
+		try {
+			ctx = FDStoreProperties.getInitialContext();
+			erpCustomerInfoHome = (ErpCustomerInfoHome) ctx.lookup( FDStoreProperties.getErpCustomerInfoHome());
+		} catch (NamingException ne) {
+			throw new FDResourceException(ne);
+		} finally {
+			try {
+				ctx.close();
+			} catch (NamingException e) {}
+		}
+	}
 	protected static void lookupFDCustomerHome() throws FDResourceException {
 		Context ctx = null;
 		try {

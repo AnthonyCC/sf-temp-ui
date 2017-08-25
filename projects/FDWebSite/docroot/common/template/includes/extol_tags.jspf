@@ -71,7 +71,6 @@
 			FDSessionUser sessionuser_e1 = (FDSessionUser)session.getAttribute(SessionName.USER);
 			boolean justSignedUp = sessionuser_e1.isRafFriendSignedUp(true);
 			
-			boolean exMainPromo = user_e1.getLevel() < FDUserI.RECOGNIZED && user_e1.isEligibleForSignupPromotion();
 
 			//if they have actually ordered something.  PASS 3 of 3
 			if(exValidOrderCount == true || justSignedUp || isSignupPage == true ){
@@ -85,8 +84,7 @@
 				"custEmail": "<%=custEmail%>",
 				"isSignedCustomer": <%=isSignedCustomer%>,
 				"validOrderCount": <%=exValidOrderCount%>,
-				"justSignedUp": <%=justSignedUp%>,
-				"mainPromo": <%=exMainPromo%>
+				"justSignedUp": <%=justSignedUp%>
 			};
 			</script>
 			<!-- <script src="//tags.extole.com/553175139/core.js"></script>

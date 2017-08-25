@@ -49,7 +49,6 @@ request.setAttribute("noyui", true);
 	FDSessionUser sessionUser = (FDSessionUser)session.getAttribute(SessionName.USER);
 	String custFirstName = user.getFirstName();
 	int validOrderCount = user.getAdjustedValidOrderCount();
-	boolean mainPromo = user.getLevel() < FDUserI.RECOGNIZED && user.isEligibleForSignupPromotion();
 	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
 	boolean isHomepageReturningUser = validOrderCount > 0;
 	String currentUserModuleContainerContentKey = FDStoreProperties.getHomepageRedesignCurrentUserContainerContentKey();
