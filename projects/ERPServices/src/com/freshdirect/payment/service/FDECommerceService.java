@@ -273,7 +273,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String CMS_FEED_API = "cms/feed/";
 	private static final String SAP_GROUP_PRICE_LOADER_LOAD_API ="dataloader/sapGrp/groupScalePrice";
 	
-	private static final String GET_COO_API ="/coo";
+	private static final String GET_COO_API ="coo";
 	
 	private static final String GET_EWALLET_BY_ID = "erp/ewallet/findbyid/";
 	private static final String GET_EWALLET_BY_TYPE = "erp/ewallet/findbytype/";
@@ -1371,7 +1371,12 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			Response<List<CountryOfOriginData>> response = new Response<List<CountryOfOriginData>>();
 
 				try {
-					response= httpGetDataTypeMap(getFdCommerceEndPoint(GET_COO_API),  new TypeReference<Response<List<CountryOfOriginData>>>() {});
+					String date1=null;
+					SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+					if(since!=null){
+					date1 = format1.format(since); 
+					}
+					response= httpGetDataTypeMap(getFdCommerceEndPoint(GET_COO_API+"/"+date1),  new TypeReference<Response<List<CountryOfOriginData>>>() {});
 
 				} catch (FDResourceException e) {
 					// TODO Auto-generated catch block
