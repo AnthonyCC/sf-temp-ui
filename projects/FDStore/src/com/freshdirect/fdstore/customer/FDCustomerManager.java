@@ -1082,6 +1082,10 @@ public class FDCustomerManager {
 			
 		
 			if(isDebitCardSwitch && null != paymentMethod){
+				Collection<ErpPaymentMethodI> paymentMethods = getPaymentMethods(info.getIdentity());
+				if(paymentMethods.size() == 0){
+					resetDefaultPaymentValueType(info.getIdentity().getFDCustomerPK());
+				}else{
 				if(info.getSource().equals(EnumTransactionSource.CUSTOMER_REP)){
 					String paymentMethodDefaultType =  getpaymentMethodDefaultType(info.getIdentity().getFDCustomerPK()).getName();
 					if(getDefaultPaymentMethodPK(info.getIdentity()).equals(paymentMethod.getPK().getId()) || 
@@ -1090,11 +1094,12 @@ public class FDCustomerManager {
 				}else{ 
 					return;
 				}
-			}					
+			}
 			else if(FDCustomerManager.getDefaultPaymentMethodPK(info.getIdentity()).equals(paymentMethod.getPK().getId())){
-				updatePaymentMethodDefaultCard(info, isDebitCardSwitch, true, getPaymentMethods(info.getIdentity()));
+				updatePaymentMethodDefaultCard(info, isDebitCardSwitch, true, paymentMethods);
 				}
 			}	
+			}
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();

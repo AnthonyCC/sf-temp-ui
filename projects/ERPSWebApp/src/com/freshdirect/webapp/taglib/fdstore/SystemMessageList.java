@@ -236,7 +236,7 @@ public interface SystemMessageList {
 	//PayPal
 	public final static String MSG_PAYPAL_AUTH_FAIL_ERR="PayPal Buyer Revoked Pre-Approved Payment Authorization. Please select a different payment method for this order and contact your card issuer for clarification.";	
 	public final static String MSG_PAYPAL_AUTH_FAIL_ERR_1="Paypal is unable to process your payment at this time.";
-	public final static String MSG_DEFAULT_PAYMENT_VERIVICATION_FAILURE="Verification failed for this payment method. Cannot make it as deault. Please choose some other method";
+	public final static String MSG_DEFAULT_PAYMENT_VERIVICATION_FAILURE="There is a problem with this payment method. Please update your payment information.";
 	
 /*	//APPDEV-5516 Cart Carousel - Grand Giving Donation Technology
 	public final static String MSG_CONTAINS_DONATION_PRODUCTS_ONLY = "We're sorry, you need to have one or more deliverable item(s) in the cart to make a charity donation.";*/

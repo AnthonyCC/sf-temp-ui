@@ -13,6 +13,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumAccountActivityType;
+import com.freshdirect.customer.EnumAlertType;
 import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.ErpAuthorizationException;
@@ -259,10 +260,20 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 				if(paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.ECHECK) || paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.CREDITCARD) 
 						|| paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.DEBITCARD)){
 				if(paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.ECHECK)){
+					if(!FDCustomerManager.isECheckRestricted(info.getIdentity()) && !FDCustomerManager.isOnAlert(info.getIdentity().getErpCustomerPK(), EnumAlertType.ECHECK.getName())){
+						result.addError(new ActionError("verificationFailed",SystemMessageList.MSG_DEFAULT_PAYMENT_VERIVICATION_FAILURE));
+					}else{
 					auth = FDCustomerManager.verifyCard(info, paymentMethod, true);
+					}
 				}else if(paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.CREDITCARD) || paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.DEBITCARD)){
 					try {
+						if(paymentMethod.isAvsCkeckFailed() && !paymentMethod.isBypassAVSCheck()){
+							result.addError(new ActionError("avsFailed",SystemMessageList.MSG_DEFAULT_PAYMENT_VERIVICATION_FAILURE));
+						}else if(null != paymentMethod.getExpirationDate() && paymentMethod.getExpirationDate().before(java.util.Calendar.getInstance().getTime())){
+							result.addError(new ActionError("cardExpired",SystemMessageList.MSG_CARD_EXPIRATION_DATE));
+						}else{
 						auth = FDCustomerManager.verify(info, paymentMethod);
+						}
 					} catch (ErpTransactionException e) {
 						LOGGER.error(e);
 					} catch (ErpAuthorizationException e) {
