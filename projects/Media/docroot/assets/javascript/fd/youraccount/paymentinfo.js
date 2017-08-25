@@ -13,8 +13,9 @@ var checkout;
 		SAVE_DEFAULT_FDFORM = 'payment', /* form we're faking */
 		DEFAULT_CHECKBOX_SELECTOR = '.paymentDef', /* find all checkmark elems */
 		NEEDS_SAVE_SELECTOR = '.paymentDef[data-isdefault="false"]:checked', /* if has length, needs saving */
-		SET_AS_DEFAULT_SELECTOR = '.paymentDef[data-isdefault="true"]'; /* currently selected default */
-	var _lastPostedPaymentId = '';
+		SET_AS_DEFAULT_SELECTOR = '.paymentDef[data-isdefault="true"]', /* currently selected default */
+		ERROR_NAMES_NOT_SHOWING_EDIT = ['ebtPaymentNotAllowed', 'bypassBadAccountCheck']; /* any error name here won't show an edit button */
+	var _lastPostedPaymentId = ''; /* temp to store id during ajax calls */
 
 	var paymentinfo = Object.create(WIDGET, {
 		signal: {
@@ -136,7 +137,7 @@ var checkout;
 			value: function (event) {
 				//clear all checked
 				$(DEFAULT_CHECKBOX_SELECTOR).prop('checked', '');
-				//FORCE as checked (instead of a toggle, since it's a checkbox
+				//FORCE as checked (instead of a toggle, since it's a checkbox)
 				$(event.target).prop('checked', 'checked');
 				paymentinfo.lastPostedPaymentId($(event.target).attr('data-paymentid'));
 				paymentinfo.selectAsDefault();
@@ -204,11 +205,14 @@ var checkout;
 			value: function (e, data) {
 				var $t = e && $(e.currentTarget) || $(document.body);
 				if (data) {
-					//if there's no edit button (like PP), remove the id before sending to the soy template
+					/* exceptions for not showing the edit button */
+					if (data && data.errorName && $.inArray(data.errorName, ERROR_NAMES_NOT_SHOWING_EDIT)!==-1) {
+						delete data.paymentId;
+					}
+					/* if there's no edit button (like PP), remove the id before sending to the soy template */
 					if (!$('[data-paymentidedit="'+data.paymentId+'"]').length) {
 						delete data.paymentId;
 					}
-					console.log('open', data);
 					this.refreshBody(data, this.bodyTemplate);
 				}
 				this.popup.show($t);
@@ -243,7 +247,11 @@ var checkout;
 		if (xhr && xhr.hasOwnProperty('responseJSON') && $.isPlainObject(xhr.responseJSON)) {
 			var data = $.extend({}, xhr.responseJSON);
 			if (data.submitForm && data.submitForm.fdform === 'payment' && data.submitForm.success === false && data.validationResult && data.validationResult.errors && data.validationResult.errors.length) {
-				data = $.extend(data, { error: data.validationResult.errors[0].error, 'paymentId': paymentinfo.lastPostedPaymentId()});
+				data = $.extend(data, { 
+					error: data.validationResult.errors[0].error,
+					errorName: data.validationResult.errors[0].name,
+					'paymentId': paymentinfo.lastPostedPaymentId()
+				});
 				paymentinfoerror.open(event, data);
 				paymentinfo.callback(data);
 			}
