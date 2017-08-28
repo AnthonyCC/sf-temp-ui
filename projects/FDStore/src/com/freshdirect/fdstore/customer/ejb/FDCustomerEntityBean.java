@@ -326,7 +326,8 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		ps.setString(8, this.depotCode);
 		ps.setString(9, this.rafClickId);
 		ps.setString(10, this.rafPromoCode);
-		ps.setString(11, null != this.defaultPaymentMethodType ? this.defaultPaymentMethodType.getName(): EnumPaymentMethodDefaultType.UNDEFINED.getName());
+		ps.setString(11, (null != this.defaultPaymentMethodType &&  !this.defaultPaymentMethodType.getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName()))? 
+				this.defaultPaymentMethodType.getName(): null);
 
 		try {
 			if (ps.executeUpdate() != 1) {
@@ -448,7 +449,8 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 			ps.setString(10, this.defaultDepotLocationPK);
 			ps.setString(11, this.depotCode);
 			ps.setInt(12, this.pymtVerifyAttempts );
-			ps.setString(13, (null != this.defaultPaymentMethodType)?this.defaultPaymentMethodType.getName():EnumPaymentMethodDefaultType.UNDEFINED.getName());
+			ps.setString(13, (null != this.defaultPaymentMethodType && !this.defaultPaymentMethodType.getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName()))?
+					this.defaultPaymentMethodType.getName():null);
 			ps.setString(14, this.getPK().getId() );
 			
 			if (ps.executeUpdate() != 1) {
