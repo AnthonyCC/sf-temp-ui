@@ -329,7 +329,7 @@
 {template .potatoTransactionalGridItem autoescape="false"}
 /* this line return must be here, or there will be tabs in output html, which cause whitespace */
 	{let $atcItemId: $itemId ? $itemId : 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) + ($listId ? '_'+$listId : '') + ($originalLineId ? '_'+$originalLineId : '') /}
-	{let $badge: ($freeSamplePromoProduct)?'free':($badge=='free'?'':$badge) /}
+	{let $badge: ($freeSamplePromoProduct and ($cmEventSource and (strContains($cmEventSource,'ps_caraousal') or strContains($cmEventSource,'ps_carousel'))))?'free':($badge=='free'?'':$badge) /}
 	{let $isEligibleForStandingOrders: ($soData and $soData.settingsData.soSettings and $soData.settingsData.soSettings.isEligibleForStandingOrders) ? true : false /}
 	<li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and $maxProductSampleQuantityReached ) ? 'unavailable' : ''} {$discontinued ? 'discontinued' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}{($isEligibleForStandingOrders) ? ' portrait-item-soPreShow' : ''}{($hookLogicBeaconClick) ? ' isHookLogicProduct' :''}" id="{$productId ? $productId : ''}"
 	data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}"
@@ -408,7 +408,7 @@
   	</div>
   {/if}
   {if not $moduleData or not $moduleData.hideProductPrice}
-  	{if $freeSamplePromoProduct and ($cmEventSource=='ps_caraousal' or $cmEventSource=='ps_carousel_view_cart')}
+  	{if $freeSamplePromoProduct and ($cmEventSource and (strContains($cmEventSource,'ps_caraousal') or strContains($cmEventSource,'ps_carousel')))}
   		<div class="portrait-item-price product-sample-free">FREE</div>
   	{else}
   		{if $pricePerDefaultSalesUnit and $dispDefaultSalesUnit}
