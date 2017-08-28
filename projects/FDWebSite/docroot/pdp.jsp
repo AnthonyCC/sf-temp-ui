@@ -44,9 +44,6 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
 
 <%
 ProductModel productNode = ProductPricingFactory.getInstance().getPricingAdapter( ContentFactory.getInstance().getProductByName( request.getParameter("catId"), request.getParameter("productId") ), user.getPricingContext() );
-boolean isWine = EnumTemplateType.WINE.equals( productNode.getTemplateType() );
-String title =  productNode.getPageTitle() != null && !productNode.getPageTitle().isEmpty() ? productNode.getPageTitle() : productNode.getFullName();
-title = title.replaceAll("<[^>]*>", "");
 
 // Handle no-product case
 if (productNode==null) {
@@ -54,6 +51,11 @@ if (productNode==null) {
 } else if (!PopulatorUtil.isProductNotArchived(productNode)) {
     response.sendError(HttpServletResponse.SC_NOT_FOUND);
 }
+
+boolean isWine = EnumTemplateType.WINE.equals( productNode.getTemplateType() );
+String title =  productNode.getPageTitle() != null && !productNode.getPageTitle().isEmpty() ? productNode.getPageTitle() : productNode.getFullName();
+title = title.replaceAll("<[^>]*>", "");
+
 %>
 
 <%-- OAS page variables --%>
