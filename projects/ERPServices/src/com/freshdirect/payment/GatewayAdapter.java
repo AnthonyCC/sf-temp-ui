@@ -871,7 +871,7 @@ public static PaymentGatewayRequest getPaymentGatewayRequest(Request request) {
 		 pgRequest.setMerchant(billingInfo.getMerchant().name());
 		 
 		 pgRequest.setTransactionId(billingInfo.getTransactionID());
-		 pgRequest.setTransactionIndex(billingInfo.getTransactionRef());
+		 pgRequest.setTransactionIndex(billingInfo.getTransactionRefIndex());
 		 pgRequest.setTransactionRef(billingInfo.getTransactionRef());
 		 
 		 if(billingInfo.getEStoreId()!=null)

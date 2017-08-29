@@ -74,7 +74,7 @@ public class PaymentechService extends AbstractService implements Gateway {
 			  String inputJson = buildRequest(GatewayAdapter.getPaymentGatewayRequest(request));
 			  serviceResponse =  getData(inputJson, getOrbitalEndPoint(REVERSE_AUTHORIZE_API), PaymentGatewayResponse.class);
 		} catch (FDPayPalServiceException e) {
-			 LOGGER.error("reverseAuthorize Method Exception: "+e.getMessage());
+			 LOGGER.error("reverseAuthorize Method Exception  : "+e.getMessage());
 				throw new ErpTransactionException(e);
 		}
 		  LOGGER.info("reverseAuthorize Method End ");
@@ -313,7 +313,7 @@ public class PaymentechService extends AbstractService implements Gateway {
 			}
 				
 		
-		  
+		  GatewayLogActivity.logActivity(GatewayType.PAYMENTECH, response);
 		return capture;
 		
 	}
