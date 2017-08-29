@@ -208,4 +208,10 @@ public class CyberSource implements Gateway{
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	public Response voidCapture(Request _request)
+			throws ErpTransactionException {
+		throw new ErpTransactionException("Operation not supported");
+	}
 }
