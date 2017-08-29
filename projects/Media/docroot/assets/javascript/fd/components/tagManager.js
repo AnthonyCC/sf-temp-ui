@@ -127,7 +127,7 @@ var dataLayer = window.dataLayer || [];
     },
     ATCData: function (ATCData) { // + cartLineChange
       var productData = ATCData.productData,
-          qty = +productData.quantity,
+          qty = Number(productData.quantity),
           addRemoveData = {
               products: [{
                 id: productData.id,
@@ -245,7 +245,7 @@ var dataLayer = window.dataLayer || [];
                 new_product: productData.newProduct,
                 sku: productData.sku,
                 in_stock: true,
-                quantity: productData.quantity
+                quantity: Number(productData.quantity)
               };
             })
           }
