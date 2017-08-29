@@ -26,7 +26,7 @@ import com.freshdirect.webapp.ajax.modulehandling.data.IconData;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleConfig;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleData;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleEditorialContainer;
-import com.freshdirect.webapp.ajax.product.FeaturedProductsUtil;
+import com.freshdirect.webapp.ajax.product.CriteoProductsUtil;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.util.MediaUtils;
 
@@ -241,10 +241,9 @@ public class DatasourceService {
                 // Special view all for browse data source with product lists.
             	if (showAllProducts && ModuleSourceType.PRODUCT_LIST_MODULE.equals(moduleSourceType)) {
             		sectionDataContainer = generateBrowseProductsForViewAll(module, user);
-            	} 
+            	}
             	else {
                     products = generateBrowseProducts(module, user);
-                    FeaturedProductsUtil.addFeatureProductsToHomePage(user, moduleData);
                 }
                 break;
             case FEATURED_RECOMMENDER:
@@ -256,6 +255,8 @@ public class DatasourceService {
             case STAFF_PICKS:
                 products = ModuleContentService.getDefaultService().loadStaffPicksProducts(user);
                 break;
+            case CRITEO:
+            	CriteoProductsUtil.addFeatureProductsToHomePage(user, moduleData);
             default:
                 break;
         }
