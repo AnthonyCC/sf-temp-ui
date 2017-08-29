@@ -260,7 +260,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 				if(paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.ECHECK) || paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.CREDITCARD) 
 						|| paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.DEBITCARD)){
 				if(paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.ECHECK)){
-					if(!FDCustomerManager.isECheckRestricted(info.getIdentity()) && !FDCustomerManager.isOnAlert(info.getIdentity().getErpCustomerPK(), EnumAlertType.ECHECK.getName())){
+					if(FDCustomerManager.isECheckRestricted(info.getIdentity()) || FDCustomerManager.isOnAlert(info.getIdentity().getErpCustomerPK(), EnumAlertType.ECHECK.getName())){
 						result.addError(new ActionError("verificationFailed",SystemMessageList.MSG_DEFAULT_PAYMENT_VERIVICATION_FAILURE));
 					}else{
 					auth = FDCustomerManager.verifyCard(info, paymentMethod, true);
