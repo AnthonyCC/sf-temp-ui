@@ -1145,6 +1145,8 @@ public class CheckoutController extends BaseController {
         Checkout checkout = new Checkout(user);
         ResultBundle resultBundle = checkout.deletePaymentMethod(reqestMessage.getPaymentMethodId());
         if(user!=null && user.getFDSessionUser()!=null && user.getFDSessionUser().getShoppingCart()!=null && 
+        		user.getFDSessionUser().getShoppingCart().getPaymentMethod()!= null &&
+        		user.getFDSessionUser().getShoppingCart().getPaymentMethod().getPK()!= null &&
         		reqestMessage.getPaymentMethodId().equals(user.getFDSessionUser().getShoppingCart().getPaymentMethod().getPK().getId())){
         	user.getFDSessionUser().getShoppingCart().setPaymentMethod(null);
         }
@@ -1168,6 +1170,8 @@ public class CheckoutController extends BaseController {
         Checkout checkout = new Checkout(user);
         ResultBundle resultBundle = checkout.deletePaymentMethodEx(reqestMessage.getPaymentMethodId());
         if(user!=null && user.getFDSessionUser()!=null && user.getFDSessionUser().getShoppingCart()!=null && 
+        		user.getFDSessionUser().getShoppingCart().getPaymentMethod()!= null &&
+        		user.getFDSessionUser().getShoppingCart().getPaymentMethod().getPK()!= null &&
         		reqestMessage.getPaymentMethodId().equals(user.getFDSessionUser().getShoppingCart().getPaymentMethod().getPK().getId())){
         	user.getFDSessionUser().getShoppingCart().setPaymentMethod(null);
         }
