@@ -956,7 +956,6 @@ public class FDStoreProperties {
     private final static String IBM_CLIENT_SECRET = "fdstore.ibm.client.secret";
     private final static String IBM_REFRESH_TOKEN = "fdstore.ibm.refresh.token";
 	private static final String PAYMENT_TLSSHA_ENABLED = "fdstore.payment.tls.sha.enabled";
-    private final static String GOOGLE_ANALYTICS_TRACKING_ID = "fdstore.ga.tracking.id";
 
     
     private static final String PROP_REFRESHZONE_ENABLED = "fdstore.refresh.zone.enabled";
@@ -1833,7 +1832,6 @@ public class FDStoreProperties {
         defaults.put(IBM_CLIENT_SECRET, "5f154ee0-bae6-4833-9ce2-e013b1b3c7d5");
         defaults.put(IBM_REFRESH_TOKEN, "r_3872jS_Gh7VmanX2TcazBB_MJ1C_RBqbJWY6gvh3koS1");
         defaults.put(PAYMENT_TLSSHA_ENABLED,"false");
-        defaults.put(GOOGLE_ANALYTICS_TRACKING_ID, "UA-20535945-18");
         defaults.put(PROP_PAYMENT_VERIFICATION_ENABLED, "false");
         defaults.put(GLOBAL_SF2_0_ENABLED, "false");
         
@@ -4698,11 +4696,6 @@ public class FDStoreProperties {
 	public static boolean isTLSSHAEnabledForPaymentGateway() {
 		return (Boolean.valueOf(get(PAYMENT_TLSSHA_ENABLED))).booleanValue();
 	}
-
-
-    public static String getGoogleAnalyticsTrackingId() {
-        return get(GOOGLE_ANALYTICS_TRACKING_ID);
-    }
 
 	public static boolean isRefreshZoneInfoEnabled() {
 		return (Boolean.valueOf(get(PROP_REFRESHZONE_ENABLED))).booleanValue();

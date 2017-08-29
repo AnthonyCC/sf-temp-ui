@@ -45,7 +45,7 @@ public class GoogleAnalyticsReportingService {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
 
         String version = "1";
-        String trackingId = FDStoreProperties.getGoogleAnalyticsTrackingId();
+        String trackingId = FDStoreProperties.getGoogleAnalyticsKey();
         String customerId = order.getCustomerId();
         String hitType = "transaction";
         String documentHostname = "freshdirect.com";
