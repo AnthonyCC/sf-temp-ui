@@ -7447,7 +7447,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}
 			if(auth!=null && !EnumTransactionSource.CUSTOMER_REP.equals(action.getSource())) {
 				FDCustomerEB fdCustomerEB=getFdCustomerHome().findByErpCustomerId(paymentMethod.getCustomerId());
-				if(!auth.isApproved() || !auth.hasAvsMatched()|| !auth.isCVVMatch()) {
+				if(!auth.isApproved() || !auth.hasAvsMatched()) {
 					int count=fdCustomerEB.incrementPymtVerifyAttempts();
 					auth.setVerifyFailCount(count);
 					if(count>=FDStoreProperties.getPaymentMethodVerificationLimit()) {
