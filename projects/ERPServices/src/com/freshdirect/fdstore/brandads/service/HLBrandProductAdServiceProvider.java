@@ -168,40 +168,41 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 	public HLBrandProductAdResponse getPdpAdProduct(HLBrandProductAdRequest hLBrandProductAdRequest)
 			throws BrandProductAdServiceException {
 		HLBrandProductAdResponse pageBeaconResponse =null;
-		LOGGER.info("while making a call to Hooklogic(PdpPage) from Hooklogic: "+hLBrandProductAdRequest.getProductId());
-		StringBuilder urlToCallStr=new StringBuilder(hlAdConfigProvider.getBrandProductAdProviderCategoryURL());
+		LOGGER.info("while making a call to Hooklogic(PdpPage) "+hLBrandProductAdRequest.getProductId());
+		StringBuilder urlToCallStr=new StringBuilder(hlAdConfigProvider.getBrandProductAdProviderPdpURL());
 		TreeMap<String,String> urlParameters = new TreeMap<String, String>();
 		urlParameters.put(HOOKLOGIC_APIKEY, hlAdConfigProvider.getBrandProductAdProviderAPIKey());
-		urlParameters.put(HOOKLOGIC_HLPT, hlAdConfigProvider.getBrandProductAdProviderCategoryHlpt());
+		urlParameters.put(HOOKLOGIC_HLPT, hlAdConfigProvider.getBrandProductAdProviderPdpHlpt());
 		urlParameters.put(HOOKLOGIC_PRODUCTID, hLBrandProductAdRequest.getProductId());
 		urlParameters.put(HOOKLOGIC_CREATIVE, hlAdConfigProvider.getBrandProductAdProviderPdpCreative());
 		urlParameters.put(HOOKLOGIC_PUSERID, hLBrandProductAdRequest.getUserId());
 		urlParameters.put(HOOKLOGIC_PLATFORM, hLBrandProductAdRequest.getPlatformSource());
 		urlParameters.put(HOOKLOGIC_PGN, hlAdConfigProvider.getBrandProductAdProviderPgn());
-		urlParameters.put(HOOKLOGIC_MAXMES, hlAdConfigProvider.getBrandProductAdProviderMaxmes());
-
+		urlParameters.put(HOOKLOGIC_MAXMES, hlAdConfigProvider.getHomeProductAdProviderMaxmes());
+		
 		StringBuilder urlToCall = getBaseUrl(urlToCallStr, urlParameters);
 		String jsonResponse = sendGetRequest(urlToCall);
 		HLBrandProductAdResponse response = parseResponse(jsonResponse, HLBrandProductAdResponse.class);
-		getPDPPageBeacon(pageBeaconResponse,hLBrandProductAdRequest);
+		pageBeaconResponse=getPDPPageBeacon(pageBeaconResponse,hLBrandProductAdRequest);
 		response.setPageBeacon((pageBeaconResponse!=null?pageBeaconResponse.getPageBeacon():null));
 		return response;
 	}
 
 	HLBrandProductAdResponse getPDPPageBeacon(HLBrandProductAdResponse response, HLBrandProductAdRequest hLBrandProductAdRequest) throws BrandProductAdServiceException
 	{
-		StringBuilder urlToCallStr=new StringBuilder(hlAdConfigProvider.getBrandProductAdProviderCategoryURL());
+		/*i.	http://www.hlserve.com/delivery/api/product?
+		apiKey=727e0b21-7ee6-4b10-a885-143805dd4fb8&hlpt=P&puserid=TestDemo&productId=12345&price=15.99&quantity=1
+	 */	
+		StringBuilder urlToCallStr=new StringBuilder(hlAdConfigProvider.getBrandProductAdProviderPdpUpdateURL());
 		TreeMap<String,String> urlParameters = new TreeMap<String, String>();
 		urlParameters.put(HOOKLOGIC_APIKEY, hlAdConfigProvider.getBrandProductAdProviderAPIKey());
 		urlParameters.put(HOOKLOGIC_PRODUCTID, hLBrandProductAdRequest.getProductId());
 		urlParameters.put(HOOKLOGIC_PUSERID, hLBrandProductAdRequest.getUserId());
-		/*i.	http://www.hlserve.com/delivery/api/product?
-			apiKey=727e0b21-7ee6-4b10-a885-143805dd4fb8&hlpt=P&puserid=TestDemo&productId=12345&price=15.99&quantity=1
-		 */	
+		urlParameters.put(HOOKLOGIC_HLPT, hlAdConfigProvider.getBrandProductAdProviderPdpHlpt());
 		StringBuilder urlToCall = getBaseUrl(urlToCallStr, urlParameters);
 		String jsonResponse = sendGetRequest(urlToCall);
-		HLBrandProductAdResponse response2 = parseResponse(jsonResponse, HLBrandProductAdResponse.class);
-		return response2;
+		HLBrandProductAdResponse pageBeaconResponse = parseResponse(jsonResponse, HLBrandProductAdResponse.class);
+		return pageBeaconResponse;
 	}
 
 

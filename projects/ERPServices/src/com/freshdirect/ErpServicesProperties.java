@@ -293,13 +293,15 @@ public class ErpServicesProperties {
 	private final static String PROP_SUFFOLK_COUNTY_MINIMUM_ORDER_AMOUNT="erpservices.suffolk.county.minimum.order.amount";
 
 	private static final String PROP_HL_HOMEPAGE = "fdstore.erp.hl.homepage.hlpt";
-	private static final String PROP_HL_PDPPAGE = "fdstore.erp.hl.pdppage.hlpt";
+	private static final String PROP_HL_PDPPAGE_HLPT = "fdstore.erp.hl.pdppage.hlpt";
 	private static final String PROP_HL_HOMEPAGE_CREATIVE = "fdstore.erp.hl.homepage.creative";
 	private static final String PROP_HL_PDP_CREATIVE = "fdstore.erp.hl.pdp.creative";
 	private static final String PROP_HL_HOMEPAGE_TAXONOMY = "fdstore.erp.hl.homepage.taxonomy";
 	private static final String PROP_HL_HOMEPAGE_MAXMES = "fdstore.erp.hl.homepage.maxmes";
 	private static final String PROP_HL_PDPPAGE_MAXMES = "fdstore.erp.hl.pdppage.maxmes";
-
+	private static final String PROP_HL_PDP_URL="fdstore.erp.hl.url";
+    private static final String PROP_HL_PDP_UPDATE_URL="fdstore.erp.hl.update.url";
+    
 
 
 
@@ -537,8 +539,10 @@ public class ErpServicesProperties {
 		defaults.put(PROP_HL_HOMEPAGE_CREATIVE, "115x170_B-C-OG_TI_2-4_Homepage");
 		defaults.put(PROP_HL_PDP_CREATIVE, "115x170_B-C-OG_TI_2-4_PDP");
         defaults.put(PROP_HL_HOMEPAGE, "H");
-        defaults.put(PROP_HL_PDPPAGE, "P");
+        defaults.put(PROP_HL_PDPPAGE_HLPT, "P");
         defaults.put(PROP_HL_HOMEPAGE_TAXONOMY, "Homepage");
+        defaults.put(PROP_HL_PDP_URL, "http://uat1.hlserve.com/delivery/api/relatedSkus?");
+        defaults.put(PROP_HL_PDP_UPDATE_URL, "http://uat1.hlserve.com/delivery/api/product?");
 
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration: "+config);
@@ -1320,6 +1324,17 @@ public class ErpServicesProperties {
 	}
 	public static String getPdpProductAdProviderMaxmes(){
 		return config.getProperty(PROP_HL_PDPPAGE_MAXMES);
+	}
+	
+	public static String getBrandProductAdProviderPdpURL() {
+		return config.getProperty(PROP_HL_PDP_URL);
+	}
+	public static String getBrandProductAdProviderPdpHlpt() {
+		return config.getProperty(PROP_HL_PDPPAGE_HLPT);
+	}
+	
+	public static String getBrandProductAdProviderPdpUpdateURL(){
+		return config.getProperty(PROP_HL_PDP_UPDATE_URL);
 	}
 
 }

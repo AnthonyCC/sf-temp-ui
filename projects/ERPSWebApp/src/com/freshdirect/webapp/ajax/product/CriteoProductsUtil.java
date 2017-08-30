@@ -12,10 +12,12 @@ import com.freshdirect.fdstore.brandads.model.HLBrandProductAdInfo;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
+import com.freshdirect.webapp.ajax.browse.data.BrowseData;
 import com.freshdirect.webapp.ajax.filtering.SearchResultsUtil;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleData;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
@@ -57,26 +59,6 @@ public class CriteoProductsUtil
 				? productData.getSkuCode() : "," + productData.getSkuCode()));
 	}
 
-
-	public static void setPdpProduct(FDUserI user, String productId, ProductPotatoData productPotatoData) {
-		HLBrandProductAdRequest hLBrandProductAdRequest = new HLBrandProductAdRequest();
-		List<ProductData> adPrducts = new ArrayList<ProductData>();
-		StringBuffer updatedPageBeacon = new StringBuffer(A_SHOWN);
-		try {
-			SearchResultsUtil.setPlatFormValues((FDSessionUser) user, hLBrandProductAdRequest);
-			HLBrandProductAdResponse response = FDBrandProductsAdManager.getHLadproductToPdp(hLBrandProductAdRequest);
-			if (response != null) {
-				List<HLBrandProductAdInfo> hlBrandAdProductsMeta = response.getProductAd();
-				if (hlBrandAdProductsMeta != null)
-				addFeatureProducts(user, adPrducts, updatedPageBeacon, hlBrandAdProductsMeta);
-			}
-			//productPotatoData.setAdProducts(adPrducts);
-			//productPotatoData.setAdPdpPageBeacon(updatedPageBeacon != null ? updatedPageBeacon.toString(): null);
-		} catch (Exception e) {
-			LOG.warn("Exception while populating Criteo returned product: ", e);
-		}
-	}
-
 	private static void addFeatureProducts(FDUserI user, List<ProductData> adPrducts, StringBuffer updatedPageBeacon,
 			List<HLBrandProductAdInfo> hlBrandAdProductsMeta) throws FDSkuNotFoundException {
 		for (Iterator<HLBrandProductAdInfo> iterator = hlBrandAdProductsMeta.iterator(); iterator.hasNext();) {
@@ -104,5 +86,32 @@ public class CriteoProductsUtil
 			}
 		}
 	}
+	
+	
+	public static void getPdpProduct(FDUserI user, BrowseData browseData) {
+		HLBrandProductAdRequest hLBrandProductAdRequest = new HLBrandProductAdRequest();
+		List<ProductData> adPrducts = new ArrayList<ProductData>();
+		StringBuffer updatedPageBeacon = new StringBuffer(A_SHOWN);
+		try {
+
+			ContentNodeModel product = ContentFactory.getInstance().getContentNode( browseData.getProductId() );
+			if ( product instanceof ProductModel) {
+				String skuCode=((ProductModel) product).getDefaultSkuCode();
+				hLBrandProductAdRequest.setProductId(skuCode);
+			}
+			SearchResultsUtil.setPlatFormValues((FDSessionUser) user, hLBrandProductAdRequest);
+			HLBrandProductAdResponse response = FDBrandProductsAdManager.getHLadproductToPdp(hLBrandProductAdRequest);
+			if (response != null) {
+				List<HLBrandProductAdInfo> hlBrandAdProductsMeta = response.getProductAd();
+				if (hlBrandAdProductsMeta != null)
+				addFeatureProducts(user, adPrducts, updatedPageBeacon, hlBrandAdProductsMeta);
+			}
+			browseData.getAdProducts().setProducts(adPrducts);
+			browseData.getAdProducts().setPageBeacon(updatedPageBeacon.toString());
+		} catch (Exception e) {
+			LOG.warn("Exception while populating Criteo PDP product: ", e);
+		}
+	}
+	
 
 }

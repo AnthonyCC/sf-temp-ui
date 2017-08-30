@@ -669,6 +669,7 @@ public class BrowseData implements Serializable {
 	private DDPPProducts ddppProducts = new DDPPProducts();
 	private AssortProducts assortProducts = new AssortProducts();
 	private HLBrandAdProducts adProducts = new HLBrandAdProducts();
+	private String productId;
     private String topMedia;
 
     private GoogleAnalyticsData googleAnalyticsData;
@@ -738,5 +739,11 @@ public class BrowseData implements Serializable {
     public void setGoogleAnalyticsData(GoogleAnalyticsData googleAnalyticsData) {
         this.googleAnalyticsData = googleAnalyticsData;
     }
+	public String getProductId() {
+		return productId;
+	}
+	public void setProductId(String productId) {
+		this.productId = productId;
+	}
 
 }

@@ -77,6 +77,7 @@ import com.freshdirect.webapp.ajax.cache.EhCacheUtilWrapper;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringServlet.BrowseEvent;
 import com.freshdirect.webapp.ajax.holidaymealbundle.service.HolidayMealBundleService;
 import com.freshdirect.webapp.ajax.mealkit.service.MealkitService;
+import com.freshdirect.webapp.ajax.product.CriteoProductsUtil;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.features.service.FeaturesService;
@@ -917,7 +918,10 @@ public class CmsFilteringFlow {
                 
             }           
         }
-
+		if(nav.isPdp()) {
+				browseDataContext.setProductId(nav.getProductId());
+		        CriteoProductsUtil.getPdpProduct(user, browseDataContext);
+		}
         // inject references
         browseDataContext.setNavigationModel(navigationModel);
         browseDataContext.setCurrentContainer(contentNodeModel);
