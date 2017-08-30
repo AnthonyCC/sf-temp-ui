@@ -224,6 +224,7 @@ public class DeliveryPassRenewalCron {
 				identity=getFDIdentity(erpCustomerID);
 				actionInfo=getFDActionInfo(identity);
 				user=FDCustomerManager.getFDUser(identity);
+				actionInfo.setIdentity(user.getIdentity());
 			} catch (FDAuthenticationException ae) {
 				LOGGER.warn("Unable to place deliveryPass autoRenewal order for customer :"+erpCustomerID);
 				StringWriter sw = new StringWriter();
@@ -236,13 +237,14 @@ public class DeliveryPassRenewalCron {
 					ErpPaymentMethodI defaultPmethod = PaymentMethodUtil.getSystemDefaultPaymentMethod(actionInfo, user.getPaymentMethods(), true);
 					if(null != defaultPmethod){
 						PaymentMethodUtil.updateDefaultPaymentMethod(actionInfo, user.getPaymentMethods(), defaultPmethod.getPK().getId(), EnumPaymentMethodDefaultType.DEFAULT_SYS, false);
+						pymtMethod = defaultPmethod;
 					}
 				}
 				else{
 					pymtMethod = getPaymentMethod(user.getFDCustomer().getDefaultPaymentMethodPK(), user.getPaymentMethods()) ;
 				}
 			}else{
-			pymtMethod=getMatchedPaymentMethod(lastOrder.getPaymentMethod(),getPaymentMethods(identity));
+			pymtMethod=getMatchedPaymentMethod(lastOrder.getPaymentMethod(),getPaymentMethods(user.getIdentity()));
 			}
 			if(pymtMethod!=null) {
 				if(!pymtMethod.getCardType().equals(EnumCardType.PAYPAL) && !pymtMethod.getCardType().equals(EnumCardType.ECP) && isExpiredCC(pymtMethod)) {
