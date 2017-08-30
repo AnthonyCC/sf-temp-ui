@@ -26,6 +26,7 @@ public class FDActionInfo implements Serializable {
     private EnumEStoreId eStore;
     private EnumNotificationType taxationType;
     private EnumPaymentMethodDefaultType paymentDefaultType;
+    private boolean isDebitCardSwitch;
     
     public FDActionInfo(  EnumTransactionSource source, FDIdentity identity, String initiator, String note, CrmAgentModel agent, String fdUserId) {
 		this(EnumEStoreId.FD, source, identity, initiator, note, agent, null,fdUserId );
@@ -174,4 +175,11 @@ public class FDActionInfo implements Serializable {
 			EnumPaymentMethodDefaultType paymentDefaultType) {
 		this.paymentDefaultType = paymentDefaultType;
 	}
+	public boolean isDebitCardSwitch() {
+		return isDebitCardSwitch;
+	}
+	public void setDebitCardSwitch(boolean isDebitCardSwitch) {
+		this.isDebitCardSwitch = isDebitCardSwitch;
+	}
+	
 }
