@@ -232,7 +232,7 @@ public class DeliveryPassRenewalCron {
 			}
 			
 			if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)){
-				if(null == user.getFDCustomer().getDefaultPaymentType() || user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED)){
+				if(null == user.getFDCustomer().getDefaultPaymentType() || user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName())){
 					ErpPaymentMethodI defaultPmethod = PaymentMethodUtil.getSystemDefaultPaymentMethod(actionInfo, user.getPaymentMethods(), true);
 					if(null != defaultPmethod){
 						PaymentMethodUtil.updateDefaultPaymentMethod(actionInfo, user.getPaymentMethods(), defaultPmethod.getPK().getId(), EnumPaymentMethodDefaultType.DEFAULT_SYS, false);
