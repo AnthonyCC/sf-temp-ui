@@ -3383,7 +3383,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
 		if (StringUtils.isEmpty(saleId))
 			return;
-		Paymentech gateway = (Paymentech) GatewayFactory.getGateway(GatewayType.PAYMENTECH);
+		Gateway gateway = (Gateway) GatewayFactory.getGateway(GatewayType.PAYMENTECH);
 		try {
 			ErpCustomerManagerSB customerManagerSB = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
 			ErpSaleModel _order = customerManagerSB.getOrder(new PrimaryKey(saleId));
