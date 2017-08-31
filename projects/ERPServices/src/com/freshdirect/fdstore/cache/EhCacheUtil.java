@@ -40,7 +40,13 @@ public class EhCacheUtil {
 
     // Product Family cache
     public static final String FD_FAMILY_PRODUCT_CACHE_NAME = "familyProductCache";
-
+    
+    //Media cache
+    public static final String MEDIA_CHECK_CACHE_NAME = "mediaCheckCache";
+    public static final String MEDIA_CONTENT_CACHE_NAME ="mediaContentCache";
+    
+    public static final String FD_ZONE_ID_CACHE_NAME = "fdZoneIdCache";
+    
     private static final Logger LOG = LoggerFactory.getInstance(EhCacheUtil.class);
 
     private static CacheManager manager;
@@ -163,6 +169,16 @@ public class EhCacheUtil {
 
     public static void clearCache(String cacheName) {
         getCache(cacheName).removeAll();
+    }
+    
+    public static boolean isKeyInCache(String cacheName, String key) {
+    	Ehcache cache = getCache(cacheName);
+		if (cache == null) {
+			LOG.error("No cache found with name: " + cacheName);
+			return false;
+		}
+		return cache.isKeyInCache(key);
+		
     }
 
 }

@@ -8,11 +8,12 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
 
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.content.Html;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.MediaI;
@@ -23,6 +24,7 @@ import com.freshdirect.framework.webapp.BodyTagSupport;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.MediaUtils;
+
 
 public class IncludeMediaTag extends BodyTagSupport {
 
@@ -37,6 +39,12 @@ public class IncludeMediaTag extends BodyTagSupport {
 	private Boolean withErrorReport;
 	
 	private MediaI media;
+	
+	private int mediaContentCacheSize;
+	
+	public IncludeMediaTag() {
+		mediaContentCacheSize = FDStoreProperties.getRefreshSecsProduct();
+	}
 	
 	public void setName(String file) {
 		this.name = file;
@@ -69,6 +77,18 @@ public class IncludeMediaTag extends BodyTagSupport {
 		    if ( media instanceof Html ) {
 		    	this.name = media.getPath();		    	
 		    } 
+		    
+		    if (mediaContentCacheSize != 0 && EhCacheUtil.isKeyInCache(EhCacheUtil.MEDIA_CONTENT_CACHE_NAME, this.name)) {
+		    	String cachedMediaContent = EhCacheUtil.getObjectFromCache(EhCacheUtil.MEDIA_CONTENT_CACHE_NAME, this.name);
+		    	if (cachedMediaContent != null) {
+					this.pageContext.getOut().write(cachedMediaContent);
+					
+					return SKIP_BODY;
+		    	} else {
+		    		return EVAL_BODY_INCLUDE;
+		    	}
+		    }
+		    
 			FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
 			//Pass the pricing context to the template context
 			if (this.parameters == null) {
@@ -91,13 +111,14 @@ public class IncludeMediaTag extends BodyTagSupport {
 			
 			//fix media if needed
 			out = MediaUtils.fixMedia(out);
-			
+			cacheMediaContent(this.name, out);
 			this.pageContext.getOut().write(out);
 			
 			return SKIP_BODY;
 			
 		} catch (FileNotFoundException e) {
 			LOGGER.warn("Media file not found " + name);
+			cacheMediaContent(this.name, null);
 			return EVAL_BODY_INCLUDE;
 		} catch (IOException e) {
 			LOGGER.warn("Failed to load resource", e);
@@ -106,6 +127,17 @@ public class IncludeMediaTag extends BodyTagSupport {
 			LOGGER.warn("Failed to process template", e);
 			throw new JspException(e);
 		} 
+	}
+	
+	private void cacheMediaContent(String key, String content) {
+		boolean isCacheEnabled = mediaContentCacheSize != 0;
+		if (key == null || key.isEmpty() || !isCacheEnabled){
+			return;
+		}
+		if (content == null || content.length() < mediaContentCacheSize) {
+			EhCacheUtil.putObjectToCache(EhCacheUtil.MEDIA_CONTENT_CACHE_NAME, key, content);
+		}
+		
 	}
 
 }

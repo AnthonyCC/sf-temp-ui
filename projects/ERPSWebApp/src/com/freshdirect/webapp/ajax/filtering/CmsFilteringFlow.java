@@ -108,7 +108,8 @@ public class CmsFilteringFlow {
 
     public CmsFilteringFlowResult doFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException, FDResourceException {
         BrowseData browseData = null;
-        BrowseDataContext browseDataContext = getBrowseDataContextFromCacheForPaging(nav, user);
+        String cacheKey = user.getUser().getPrimaryKey() + "," + nav.getId();
+        BrowseDataContext browseDataContext = getBrowseDataContextFromCacheForPaging(nav, user, cacheKey);
         if (nav.getPageType() == FilteringFlowType.BROWSE) {
 
             if (browseDataContext == null) {
@@ -116,7 +117,7 @@ public class CmsFilteringFlow {
             }
 
             if (!nav.isPdp()) {
-                EhCacheUtilWrapper.putObjectToCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, user.getUser().getPrimaryKey(), browseDataContext);
+                EhCacheUtilWrapper.putObjectToCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, cacheKey, browseDataContext);
             }
             
             // -- SORTING -- (not on pdp or super department page)
@@ -343,29 +344,25 @@ public class CmsFilteringFlow {
         }
     }
 
-    private BrowseDataContext getBrowseDataContextFromCacheForPaging(CmsFilteringNavigator nav, FDSessionUser user) {
+    private BrowseDataContext getBrowseDataContextFromCacheForPaging(CmsFilteringNavigator nav, FDSessionUser user, String cacheKey) {
         BrowseDataContext browseDataContext = null;
         BrowseEvent event = nav.getBrowseEvent() != null ? BrowseEvent.valueOf(nav.getBrowseEvent().toUpperCase()) : BrowseEvent.NOEVENT;
         // use userRefinementCache
-        String userPrimaryKey = user.getUser().getPrimaryKey();
-        if (event != BrowseEvent.PAGE) { // invalidate cache entry in every other case than paging
-            EhCacheUtilWrapper.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, userPrimaryKey);
+
+        browseDataContext = EhCacheUtilWrapper.getObjectFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, cacheKey);
+        if (!isRequestForTheSamePageType(nav, browseDataContext)) {
+            EhCacheUtilWrapper.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, cacheKey); // if cached has other page type
             browseDataContext = null;
         } else {
-            browseDataContext = EhCacheUtilWrapper.getObjectFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, userPrimaryKey);
-            if (!isRequestForTheSamePageType(nav, browseDataContext)) {
-                EhCacheUtilWrapper.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, userPrimaryKey); // if cached has other page type
+            if (FilteringFlowType.BROWSE.equals(nav.getPageType()) && !isBrowseRequestForTheSameId(nav, browseDataContext)) {
+                EhCacheUtilWrapper.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, cacheKey); // if cached has same page type(browse) but other id
                 browseDataContext = null;
-            } else {
-                if (FilteringFlowType.BROWSE.equals(nav.getPageType()) && !isBrowseRequestForTheSameId(nav, browseDataContext)) {
-                    EhCacheUtilWrapper.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, userPrimaryKey); // if cached has same page type(browse) but other id
-                    browseDataContext = null;
-                } else if (FilteringFlowType.SEARCH.equals(nav.getPageType()) && !isRequestForTheSameSearchParams(nav, browseDataContext)) {
-                    EhCacheUtilWrapper.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, userPrimaryKey); // if cached has same page type(search) but other search params
-                    browseDataContext = null;
-                }
+            } else if (FilteringFlowType.SEARCH.equals(nav.getPageType()) && !isRequestForTheSameSearchParams(nav, browseDataContext)) {
+                EhCacheUtilWrapper.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, cacheKey); // if cached has same page type(search) but other search params
+                browseDataContext = null;
             }
         }
+        
         return browseDataContext;
     }
 

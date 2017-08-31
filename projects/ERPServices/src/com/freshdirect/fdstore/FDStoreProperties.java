@@ -111,6 +111,7 @@ public class FDStoreProperties {
     private final static String PROP_PRODUCT_CACHE_SIZE = "fdstore.product.cache.size";
     private final static String PROP_ZONE_CACHE_SIZE = "fdstore.zone.cache.size";
     private final static String PROP_GRP_CACHE_SIZE = "fdstore.grp.cache.size";
+    private final static String PROP_MEDIACONTENT_CACHE_SIZE = "fdstore.mediaConent.cache.size";
     private final static String PROP_CMS_MOSTLY_READONLY = "fdstore.cms.readonly.optimization";
     private final static String PROP_PRELOAD_STORE = "fdstore.preLoad";
     private final static String PROP_PRELOAD_PROMOTIONS = "fdstore.preLoad.promotions";
@@ -1062,6 +1063,7 @@ public class FDStoreProperties {
         defaults.put(PROP_PRODUCT_CACHE_SIZE, "45000");
         defaults.put(PROP_ZONE_CACHE_SIZE, "10000");
         defaults.put(PROP_GRP_CACHE_SIZE, "10000");
+        defaults.put(PROP_MEDIACONTENT_CACHE_SIZE, "5000000");
         // mktadmin
         defaults.put(MKT_ADMIN_FILE_UPLOAD_SIZE, "2000");
 
@@ -2146,7 +2148,10 @@ public class FDStoreProperties {
     public static int getGrpCacheSize() {
         return Integer.parseInt(get(PROP_GRP_CACHE_SIZE));
     }
-
+    
+    public static int getMediaContentCacheSize() {
+    	return Integer.parseInt(get(PROP_MEDIACONTENT_CACHE_SIZE));
+    }
     public static String getProductEmail() {
         return get(PROP_EMAIL_PRODUCT);
     }
