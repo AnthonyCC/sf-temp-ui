@@ -920,7 +920,7 @@ public class CmsFilteringFlow {
         }
 		if(nav.isPdp()) {
 				browseDataContext.setProductId(nav.getProductId());
-		        CriteoProductsUtil.getPdpProduct(user, browseDataContext);
+		        CriteoProductsUtil.getHlBrandPdpProducts(user, browseDataContext);
 		}
         // inject references
         browseDataContext.setNavigationModel(navigationModel);

@@ -256,7 +256,7 @@ public class DatasourceService {
                 products = ModuleContentService.getDefaultService().loadStaffPicksProducts(user);
                 break;
             case CRITEO:
-            	CriteoProductsUtil.addFeatureProductsToHomePage(user, moduleData);
+            	CriteoProductsUtil.getHlHomePgBrandProducts(user, moduleData);
             default:
                 break;
         }
