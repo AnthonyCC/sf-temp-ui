@@ -57,6 +57,11 @@ public class EnumBatchStatus implements java.io.Serializable {
     private String code;
     private String description;
     
+    /*
+     * private constructor for jackson deserialization
+     */
+    protected EnumBatchStatus(){}
+    
     /** Creates new EnumBatchStatus */
     private EnumBatchStatus(String code, String description) {
         this.code = code;

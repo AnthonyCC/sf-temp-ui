@@ -84,6 +84,8 @@ public class FDEcommProperties {
 	public static final String EwalletServiceSB = "ewallet.ejb.EwalletServiceSB";
 	public static final String CoremetricsCdfServiceSB = "coremetrics.service.CoremetricsCdfServiceSB";
 	 public final static  String FDPromotionManagerNewSB = "fdstore.ejb.FDPromotionNewManagerSB";//story SF17-88
+	 public final static  String FDSFGatewayStatsLogging = "fdstore.promotion.FDSFGatewayStatsLogging";//introduced with story SF17-88
+	 
  
   
     
@@ -234,6 +236,18 @@ public class FDEcommProperties {
 		refresh();
 		if(config.containsKey(beanName))
     	return (Boolean.valueOf(config.getProperty(beanName))).booleanValue();
+		return false;
+	}
+	
+	/** similar to the mechanism for checking if a SB service is enabled <BR>
+	 * but instead is a general feature by feature name
+	 * @param featureName String 
+	 * @return
+	 */
+	public static boolean isFeatureEnabled(String featureName) {
+		refresh();
+		if(config.containsKey(featureName))
+    	return (Boolean.valueOf(config.getProperty(featureName))).booleanValue();
 		return false;
 	}
 

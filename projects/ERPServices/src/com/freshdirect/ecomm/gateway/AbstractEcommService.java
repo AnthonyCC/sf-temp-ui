@@ -7,7 +7,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -35,211 +34,242 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.freshdirect.ecommerce.data.common.Response;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.fdstore.FDEcommProperties;
 
 public abstract class AbstractEcommService {
-	
+
 	private static final String FDCOMMERCE_API_CONTEXT = "/fdcommerceapi/fd/v1/";
 
-	
 	private static final RestTemplate restTemplate;
 	private static final Category LOGGER = LoggerFactory.getInstance(AbstractEcommService.class);
 
 	static {
-	    
+
 		List<HttpMessageConverter<?>> converters = new ArrayList<HttpMessageConverter<?>>();
 		converters.add(new ByteArrayHttpMessageConverter());
 		converters.add(new StringHttpMessageConverter());
 		converters.add(new ResourceHttpMessageConverter());
 		converters.add(getMappingJackson2HttpMessageConverter());
 		restTemplate = new RestTemplate(converters);
-		
+
 		PoolingHttpClientConnectionManager cManager = new PoolingHttpClientConnectionManager();
 		cManager.setMaxTotal(FDStoreProperties.getLogisticsConnectionPool());
 		RequestConfig requestConfig = RequestConfig.custom()
-			       .setSocketTimeout(FDStoreProperties.getLogisticsConnectionTimeout()*1000)
-			       .setConnectTimeout(FDStoreProperties.getLogisticsConnectionTimeout()*1000)
-			       .setConnectionRequestTimeout(FDStoreProperties.getLogisticsConnectionRequestTimeout()*1000)
-			       .build();
-		CloseableHttpClient httpClient = HttpClients
-				.custom()
-				.setDefaultRequestConfig(requestConfig)
-				.setConnectionManager(cManager)
-			    .build();
+				.setSocketTimeout(FDStoreProperties.getLogisticsConnectionTimeout() * 1000)
+				.setConnectTimeout(FDStoreProperties.getLogisticsConnectionTimeout() * 1000)
+				.setConnectionRequestTimeout(FDStoreProperties.getLogisticsConnectionRequestTimeout() * 1000).build();
+		CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(requestConfig)
+				.setConnectionManager(cManager).build();
 		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
-		
-	 
-	    requestFactory.setReadTimeout(FDStoreProperties.getLogisticsConnectionReadTimeout()*1000);
-	    requestFactory.setConnectTimeout(FDStoreProperties.getLogisticsConnectionTimeout()*1000);
-	    restTemplate.setRequestFactory(requestFactory);
+
+		requestFactory.setReadTimeout(FDStoreProperties.getLogisticsConnectionReadTimeout() * 1000);
+		requestFactory.setConnectTimeout(FDStoreProperties.getLogisticsConnectionTimeout() * 1000);
+		restTemplate.setRequestFactory(requestFactory);
 
 	}
 
-public  <T> T postData(String inputJson, String url, Class<T> clazz) throws FDResourceException {
-		
+	public <T> T postData(String inputJson, String url, Class<T> clazz) throws FDResourceException {
+
 		try {
- 			HttpEntity<String> entity = getEntity(inputJson);
+			long starttime = System.currentTimeMillis();
+			HttpEntity<String> entity = getEntity(inputJson);
 			RestTemplate restTemplate = getRestTemplate();
-			ResponseEntity<T> response = restTemplate.postForEntity(new URI(url),
-					entity, clazz);
+			ResponseEntity<T> response = restTemplate.postForEntity(new URI(url), entity, clazz);
+			long endTime = System.currentTimeMillis() - starttime;
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDSFGatewayStatsLogging)) {
+				StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+				StackTraceElement stackElem = stackTraceElements[stackTraceElements.length
+						- (stackTraceElements.length - 2)];
+
+				LOGGER.info(String.format("classname: %s, method: %s elapsed time: %s ms", stackElem.getClassName(),
+						stackElem.getMethodName(), endTime));
+			}
 			return response.getBody();
 		} catch (RestClientException e) {
 			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:"+url);
-			LOGGER.info("input json:"+inputJson);
+			LOGGER.info("api url:" + url);
+			LOGGER.info("input json:" + inputJson);
 			throw new FDResourceException("EComm API connection failure");
 		} catch (URISyntaxException e) {
 			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:"+url);
+			LOGGER.info("api url:" + url);
 			throw new FDResourceException("API syntax error");
 		}
 	}
-	
+
 	/**
-	 *  This method implementation is to get data for the HTTP GET
+	 * This method implementation is to get data for the HTTP GET
+	 * 
 	 * @param url
 	 * @param clazz
 	 * @return
 	 * @throws FDResourceException
 	 */
-/*	protected <T> T getData( String url, Class<T> clazz) throws FDResourceException {
-		
-		try {
-			RestTemplate restTemplate = getRestTemplate();		
-			ResponseEntity<T> response = restTemplate.getForEntity(new URI(url),clazz);
-			return response.getBody();
-		} catch (RestClientException e) {
-			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:"+url);
-			throw new FDResourceException("EComm API connection failure");
-		} catch (URISyntaxException e) {
-			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:"+url);
-			throw new FDResourceException("API syntax error");
-		}
-	}*/
-	public <T,E> Response<T> httpGetDataTypeMap( String url, TypeReference<E> type) throws FDResourceException {
+	/*
+	 * protected <T> T getData( String url, Class<T> clazz) throws
+	 * FDResourceException {
+	 * 
+	 * try { RestTemplate restTemplate = getRestTemplate(); ResponseEntity<T>
+	 * response = restTemplate.getForEntity(new URI(url),clazz); return
+	 * response.getBody(); } catch (RestClientException e) {
+	 * LOGGER.info(e.getMessage()); LOGGER.info("api url:"+url); throw new
+	 * FDResourceException("EComm API connection failure"); } catch
+	 * (URISyntaxException e) { LOGGER.info(e.getMessage()); LOGGER.info(
+	 * "api url:"+url); throw new FDResourceException("API syntax error"); } }
+	 */
+	public <T, E> Response<T> httpGetDataTypeMap(String url, TypeReference<E> type) throws FDResourceException {
+		long starttime = System.currentTimeMillis();
 		Response<T> responseOfTypestring = null;
-		RestTemplate restTemplate = getRestTemplate();	
+		RestTemplate restTemplate = getRestTemplate();
 		ResponseEntity<String> response;
 		try {
-			response = restTemplate.getForEntity(new URI(url),String.class);
-			responseOfTypestring =getMapper().readValue(response.getBody(), type);
-		} catch (JsonParseException e) {
-			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:"+url);
-			throw new FDResourceException(e, "Json Parsing failure");
-		} catch (JsonMappingException e) {
-			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:"+url);
-			throw new FDResourceException(e, "Json Mapping failure");
-		} catch (IOException e) {
-			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:"+url);
-			throw new FDResourceException(e, "API connection failure");
-		} catch (RestClientException e) {
-			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:"+url);
-			throw new FDResourceException(e, "API connection failure");
-		} catch (URISyntaxException e) {
-			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:"+url);
-			throw new FDResourceException(e, "API Syntax failure");
-		}
-				
-	return responseOfTypestring;
-}
-	public <T,E> Response<T> postDataTypeMap(String inputJson, String url, TypeReference<E> type) throws FDResourceException {
-		Response<T> responseOfTypestring = null;
-		RestTemplate restTemplate = getRestTemplate();	
-		ResponseEntity<String> response;
-		
-		HttpEntity<String> entity = getEntity(inputJson);
-		try {
-			response = restTemplate.postForEntity(new URI(url),entity, String.class);
+			response = restTemplate.getForEntity(new URI(url), String.class);
 			responseOfTypestring = getMapper().readValue(response.getBody(), type);
 		} catch (JsonParseException e) {
 			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:"+url);
+			LOGGER.info("api url:" + url);
 			throw new FDResourceException(e, "Json Parsing failure");
 		} catch (JsonMappingException e) {
 			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:"+url);
+			LOGGER.info("api url:" + url);
 			throw new FDResourceException(e, "Json Mapping failure");
 		} catch (IOException e) {
 			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:"+url);
+			LOGGER.info("api url:" + url);
 			throw new FDResourceException(e, "API connection failure");
 		} catch (RestClientException e) {
 			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:"+url);
+			LOGGER.info("api url:" + url);
 			throw new FDResourceException(e, "API connection failure");
 		} catch (URISyntaxException e) {
 			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:"+url);
+			LOGGER.info("api url:" + url);
 			throw new FDResourceException(e, "API Syntax failure");
 		}
-				
-	return responseOfTypestring;
-}
+		long endTime = System.currentTimeMillis() - starttime;
+		if (FDEcommProperties.isFeatureEnabled(FDEcommProperties.FDSFGatewayStatsLogging)) {
+			StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+			StackTraceElement stackElem = stackTraceElements[stackTraceElements.length
+					- (stackTraceElements.length - 2)];
 
-/*	protected <T> T getData(String inputJson, String url, Class<T> clazz) throws FDEcommServiceException {
-		
+			LOGGER.info(String.format("WebserviceExternalCall classname=%s, method= %s elapsed time=%s ms",
+					stackElem.getClassName(), stackElem.getMethodName(), endTime));
+		}
+
+		return responseOfTypestring;
+	}
+
+	public <T, E> Response<T> postDataTypeMap(String inputJson, String url, TypeReference<E> type)
+			throws FDResourceException {
+		long starttime = System.currentTimeMillis();
+		Response<T> responseOfTypestring = null;
+		RestTemplate restTemplate = getRestTemplate();
+		ResponseEntity<String> response;
+
+		HttpEntity<String> entity = getEntity(inputJson);
 		try {
-			HttpEntity<String> entity = getEntity(inputJson);
-			RestTemplate restTemplate = getRestTemplate();
-			ResponseEntity<T> response = restTemplate.postForEntity(new URI(url),
-					entity, clazz);
-			return response.getBody();
+			response = restTemplate.postForEntity(new URI(url), entity, String.class);
+			responseOfTypestring = getMapper().readValue(response.getBody(), type);
+		} catch (JsonParseException e) {
+			LOGGER.info(e.getMessage());
+			LOGGER.info("api url:" + url);
+			throw new FDResourceException(e, "Json Parsing failure");
+		} catch (JsonMappingException e) {
+			LOGGER.info(e.getMessage());
+			LOGGER.info("api url:" + url);
+			throw new FDResourceException(e, "Json Mapping failure");
+		} catch (IOException e) {
+			LOGGER.info(e.getMessage());
+			LOGGER.info("api url:" + url);
+			throw new FDResourceException(e, "API connection failure");
 		} catch (RestClientException e) {
 			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:"+url);
-			LOGGER.info("input json:"+inputJson);
-			throw new FDEcommServiceException("PayPal API connection failure");
+			LOGGER.info("api url:" + url);
+			throw new FDResourceException(e, "API connection failure");
 		} catch (URISyntaxException e) {
 			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:"+url);
-			throw new FDEcommServiceException("API syntax error");
+			LOGGER.info("api url:" + url);
+			throw new FDResourceException(e, "API Syntax failure");
 		}
-	}*/
-	
+		long endTime = System.currentTimeMillis() - starttime;
+		if (FDEcommProperties.isFeatureEnabled(FDEcommProperties.FDSFGatewayStatsLogging)) {
+			StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+			StackTraceElement stackElem = stackTraceElements[stackTraceElements.length
+					- (stackTraceElements.length - 2)];
+
+			LOGGER.info(String.format("WebserviceExternalCall classname=%s, method= %s elapsed time=%s ms",
+					stackElem.getClassName(), stackElem.getMethodName(), endTime));
+		}
+
+		return responseOfTypestring;
+	}
+
+	/*
+	 * protected <T> T getData(String inputJson, String url, Class<T> clazz)
+	 * throws FDEcommServiceException {
+	 * 
+	 * try { HttpEntity<String> entity = getEntity(inputJson); RestTemplate
+	 * restTemplate = getRestTemplate(); ResponseEntity<T> response =
+	 * restTemplate.postForEntity(new URI(url), entity, clazz); return
+	 * response.getBody(); } catch (RestClientException e) {
+	 * LOGGER.info(e.getMessage()); LOGGER.info("api url:"+url); LOGGER.info(
+	 * "input json:"+inputJson); throw new FDEcommServiceException(
+	 * "PayPal API connection failure"); } catch (URISyntaxException e) {
+	 * LOGGER.info(e.getMessage()); LOGGER.info("api url:"+url); throw new
+	 * FDEcommServiceException("API syntax error"); } }
+	 */
+
 	/**
-	 *  This method implementation is to get data for the HTTP GET
+	 * This method implementation is to get data for the HTTP GET
+	 * 
 	 * @param url
 	 * @param clazz
 	 * @return
 	 * @throws FDLogisticsServiceException
 	 */
-	public <T> T httpGetData( String url, Class<T> clazz) throws FDResourceException {
-		
+	public <T> T httpGetData(String url, Class<T> clazz) throws FDResourceException {
+		long starttime = System.currentTimeMillis();
 		try {
-			RestTemplate restTemplate = getRestTemplate();		
-			ResponseEntity<T> response = restTemplate.getForEntity(new URI(url),clazz);
+			RestTemplate restTemplate = getRestTemplate();
+			ResponseEntity<T> response = restTemplate.getForEntity(new URI(url), clazz);
+
+			long endTime = System.currentTimeMillis() - starttime;
+			if (FDEcommProperties.isFeatureEnabled(FDEcommProperties.FDSFGatewayStatsLogging)) {
+				StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+				StackTraceElement stackElem = stackTraceElements[stackTraceElements.length
+						- (stackTraceElements.length - 2)];
+
+				LOGGER.info(String.format("WebserviceExternalCall classname=%s, method= %s elapsed time=%s ms",
+						stackElem.getClassName(), stackElem.getMethodName(), endTime));
+			}
+
 			return response.getBody();
 		} catch (RestClientException e) {
 			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:"+url);
+			LOGGER.info("api url:" + url);
 			throw new FDResourceException("API connection failure");
 		} catch (URISyntaxException e) {
 			LOGGER.info(e.getMessage());
-			LOGGER.info("api url:"+url);
+			LOGGER.info("api url:" + url);
 			throw new FDResourceException("API syntax error");
 		}
 	}
-	
-	protected RestTemplate getRestTemplate(){
+
+	protected RestTemplate getRestTemplate() {
 		return restTemplate;
 	}
-	
-	protected static MappingJackson2HttpMessageConverter getMappingJackson2HttpMessageConverter(){
-		MappingJackson2HttpMessageConverter converter =  new MappingJackson2HttpMessageConverter();
+
+	protected static MappingJackson2HttpMessageConverter getMappingJackson2HttpMessageConverter() {
+		MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
 		converter.setObjectMapper(getMapper());
 		return converter;
 	}
-	
+
 	public static ObjectMapper getMapper() {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ"));
@@ -248,26 +278,25 @@ public  <T> T postData(String inputJson, String url, Class<T> clazz) throws FDRe
 		return mapper;
 	}
 
-	protected HttpEntity<String> getEntity(String inputJson){
+	protected HttpEntity<String> getEntity(String inputJson) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		HttpEntity<String> entity = (inputJson != null)? new HttpEntity<String>(inputJson, headers): new HttpEntity<String>(headers);
+		HttpEntity<String> entity = (inputJson != null) ? new HttpEntity<String>(inputJson, headers)
+				: new HttpEntity<String>(headers);
 		return entity;
 	}
-	
-	protected String buildRequest(Object object) throws FDEcommServiceException{
+
+	protected String buildRequest(Object object) throws FDEcommServiceException {
 		try {
 			return getMapper().writeValueAsString(object);
 		} catch (JsonProcessingException e) {
 			LOGGER.info(e.getMessage());
 			throw new FDEcommServiceException("Unable to process the request.");
-		} 
+		}
 	}
 
-
-	public String getFdCommerceEndPoint(String path){
-		return FDStoreProperties.getFdCommerceApiUrl()	+ FDCOMMERCE_API_CONTEXT + 
-												 path;
+	public String getFdCommerceEndPoint(String path) {
+		return FDStoreProperties.getFdCommerceApiUrl() + FDCOMMERCE_API_CONTEXT + path;
 	}
 
 }
