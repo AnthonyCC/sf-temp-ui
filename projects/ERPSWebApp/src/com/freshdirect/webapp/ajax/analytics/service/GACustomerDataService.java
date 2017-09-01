@@ -34,16 +34,24 @@ public class GACustomerDataService {
 	        customer.setOrderCount(Integer.toString(user.getAdjustedValidOrderCount()));
 	        customer.setDeliveryPassStatus(user.getDlvPassInfo() != null && user.getDlvPassInfo().getStatus() != null ? user.getDlvPassInfo().getStatus().getDisplayName() : null);
 	        customer.setCustomerId(user.getIdentity() != null ? user.getIdentity().getErpCustomerPK() : null);
-	        String paymentDefaultType = user.getFDCustomer().getDefaultPaymentType().getName();
+	        
 	        String paymentType = "";
-	        if(null !=user.getShoppingCart() && null!=user.getShoppingCart().getPaymentMethod() && null !=user.getShoppingCart().getPaymentMethod().getPK() 
-	        		&& !user.getShoppingCart().getPaymentMethod().getPK().getId().equals(user.getFDCustomer().getDefaultPaymentMethodPK())){
-	        	paymentType = "custom_selection";
-	        }
-	        else if(paymentDefaultType.equals(EnumPaymentMethodDefaultType.DEFAULT_CUST)){
-	        	paymentType = "customer_default";
-	        }else if (paymentDefaultType.equals(EnumPaymentMethodDefaultType.DEFAULT_SYS)){
-	        	paymentType = "fd_default";
+	        if(null != user.getIdentity()){
+		        try {
+					String paymentDefaultType = null !=user.getFDCustomer().getDefaultPaymentType() ? user.getFDCustomer().getDefaultPaymentType().getName():"";
+					if(null !=user.getShoppingCart() && null!=user.getShoppingCart().getPaymentMethod() && null !=user.getShoppingCart().getPaymentMethod().getPK() 
+							&& !user.getShoppingCart().getPaymentMethod().getPK().getId().equals(user.getFDCustomer().getDefaultPaymentMethodPK())){
+						paymentType = "custom_selection";
+					}
+					else if(paymentDefaultType.equals(EnumPaymentMethodDefaultType.DEFAULT_CUST)){
+						paymentType = "customer_default";
+					}else if (paymentDefaultType.equals(EnumPaymentMethodDefaultType.DEFAULT_SYS)){
+						paymentType = "fd_default";
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 	        }
 	        customer.setDefaultPaymentType(paymentType);
         }
