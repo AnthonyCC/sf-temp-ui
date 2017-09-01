@@ -20,7 +20,7 @@ import com.freshdirect.ecommerce.data.promotion.management.FDPromoChangeData;
 import com.freshdirect.ecommerce.data.promotion.management.FDPromotionNewData;
 import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.ecomm.gateway.customconverters.modeltodata.FacadeFactoryPromotionDTO;
+
 import com.freshdirect.fdstore.ecomm.gateway.customconverters.promotion.PromotionDTOConverter;
 import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeModel;
@@ -705,8 +705,11 @@ public class FDPromotionManagerService extends AbstractEcommService implements F
 		Boolean answer;
 
 		Request<FDPromotionNewData> request = new Request<FDPromotionNewData>();
-		FDPromotionNewData data = FacadeFactoryPromotionDTO.getInstance().getPromotionNewModelToDataMapper()
-				.map(promotion, FDPromotionNewData.class);
+//		FDPromotionNewData data = FacadeFactoryPromotionDTO.getInstance().getPromotionNewModelToDataMapper()
+//				.map(promotion, FDPromotionNewData.class);
+		
+		PromotionDTOConverter dtoConverter = new PromotionDTOConverter();
+		FDPromotionNewData data = dtoConverter.convert(promotion);
 		request.setData(data);
 		String inputJson;
 		try {
