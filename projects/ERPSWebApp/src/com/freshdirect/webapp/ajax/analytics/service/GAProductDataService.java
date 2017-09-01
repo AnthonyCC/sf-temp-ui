@@ -39,10 +39,10 @@ public class GAProductDataService {
 
         if (doubleQuantity < 0) {
             doubleQuantity = Math.floor(doubleQuantity);
-            doubleQuantity = (doubleQuantity > 200) ? 200 : doubleQuantity;
+            doubleQuantity = (doubleQuantity < -200) ? -200 : doubleQuantity;
         } else if (doubleQuantity > 0) {
             doubleQuantity = Math.ceil(doubleQuantity);
-            doubleQuantity = (doubleQuantity < -200) ? -200 : doubleQuantity;
+            doubleQuantity = (doubleQuantity > 200) ? 200 : doubleQuantity;
         } else {
             doubleQuantity = (double) 1;
         }
