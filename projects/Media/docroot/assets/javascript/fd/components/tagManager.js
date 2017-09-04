@@ -127,7 +127,7 @@ var dataLayer = window.dataLayer || [];
     },
     ATCData: function (ATCData) { // + cartLineChange
       var productData = ATCData.productData,
-          qty = Number(productData.quantity),
+          qty = parseInt(productData.quantity, 10) || 0,
           addRemoveData = {
               products: [{
                 id: productData.id,
@@ -230,28 +230,6 @@ var dataLayer = window.dataLayer || [];
       var customer = fd.gtm && fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.customer,
           ts = coData.selectedTimeslotValue;
 
-      if (coData.products) {
-        dataLayer.push({
-          ecommerce: {
-            products: Object.keys(coData.products).map(function (k) {
-              var productData = coData.products[k];
-              return {
-                id: productData.id,
-                name: productData.name,
-                price: productData.price,
-                brand: productData.brand,
-                category: productData.category,
-                variant: productData.variant,
-                new_product: productData.newProduct,
-                sku: productData.sku,
-                in_stock: true,
-                quantity: Number(productData.quantity)
-              };
-            })
-          }
-        });
-      }
-
       if (coData.newOrder === 'true' || coData.modifyOrder === 'true') {
         dataLayer.push({
           ecommerce: {
@@ -265,29 +243,70 @@ var dataLayer = window.dataLayer || [];
                 coupon: coData.couponCode && coData.couponCode.join(','),
                 redemption_code: coData.redemptionCode && coData.redemptionCode.join(','),
                 etipping: coData.etipping || 0
-              }
+              },
+              products: coData.products && Object.keys(coData.products).map(function (k) {
+                var productData = coData.products[k];
+                return {
+                  id: productData.id,
+                  name: productData.name,
+                  price: productData.price,
+                  brand: productData.brand,
+                  category: productData.category,
+                  variant: productData.variant,
+                  new_product: productData.newProduct,
+                  sku: productData.sku,
+                  in_stock: true,
+                  quantity: parseInt(productData.quantity, 10) || 0 // quantity should be an integer
+                };
+              }),
+              delivery_type: coData.deliveryType || 'unknown',
+              available_timeslot_value: ts && ts.deliveryDate+' '+ts.displayString || 'unknown',
+              unavailable_timeslot_present: coData.unavailableTimeslotValue ? 'yes' : 'no'
             },
             delivery_type: coData.deliveryType || 'unknown',
             available_timeslot_value: ts && ts.deliveryDate+' '+ts.displayString || 'unknown',
             unavailable_timeslot_present: coData.unavailableTimeslotValue ? 'yes' : 'no'
           }
         });
-      }
 
-      dataLayer.push({
-        'co-subtotal': coData.revenue || 0,
-        'co-subtotal-nd': (+coData.revenue || 0) * 100,
-        'co-neworder': coData.newOrder,
-        'co-modifyorder': coData.modifyOrder,
-        'co-orderid': coData.orderId,
-        'co-totalcartitems': Object.keys(coData.products).map(function (k) { return +coData.products[k].quantity;}).reduce(function (p, c) { return p+c;}, 0),
-        'co-usercounty': customer && customer.county,
-        'co-discountamount': coData.discountAmount || 0,
-        'co-discountamount-nd': (+coData.discountAmount || 0) *100,
-        'co-productid': Object.keys(coData.products).map(function (k) { return coData.products[k].id;}).join(','),
-        'co-validorders': customer && customer.orderCount,
-        'co-promocode': coData.redemptionCode && coData.redemptionCode.join(',')
-      });
+        dataLayer.push({
+          'co-subtotal': coData.revenue || 0,
+          'co-subtotal-nd': (+coData.revenue || 0) * 100,
+          'co-neworder': coData.newOrder,
+          'co-modifyorder': coData.modifyOrder,
+          'co-orderid': coData.orderId,
+          'co-totalcartitems': Object.keys(coData.products).map(function (k) { return +coData.products[k].quantity;}).reduce(function (p, c) { return p+c;}, 0),
+          'co-usercounty': customer && customer.county,
+          'co-discountamount': coData.discountAmount || 0,
+          'co-discountamount-nd': (+coData.discountAmount || 0) *100,
+          'co-productid': Object.keys(coData.products).map(function (k) { return coData.products[k].id;}).join(','),
+          'co-validorders': customer && customer.orderCount,
+          'co-promocode': coData.redemptionCode && coData.redemptionCode.join(',')
+        });
+
+      } else if (coData.products) {
+        dataLayer.push({
+          ecommerce: {
+            checkout: {
+              products: coData.products && Object.keys(coData.products).map(function (k) {
+                var productData = coData.products[k];
+                return {
+                  id: productData.id,
+                  name: productData.name,
+                  price: productData.price,
+                  brand: productData.brand,
+                  category: productData.category,
+                  variant: productData.variant,
+                  new_product: productData.newProduct,
+                  sku: productData.sku,
+                  in_stock: true,
+                  quantity: parseInt(productData.quantity, 10) || 0 // quantity should be an integer
+                };
+              })
+            }
+          }
+        });
+      }
 
       if (coData.modifyOrder === 'true') {
         return {event: 'modify-order-success'};
