@@ -452,4 +452,33 @@ public class CrmCaseInfo extends ModelSupport implements CrmCaseI {
 	public void setPrivateCase(boolean isPrivateCase) {
 		this.isPrivateCase = isPrivateCase;
 	}
+
+	//  Used for Storefront 2.0 Implementation
+	/**
+	 * @return the originCode
+	 */
+	public String getOriginCode() {
+		return originCode;
+	}
+
+	/**
+	 * @return the priorityCode
+	 */
+	public String getPriorityCode() {
+		return priorityCode;
+	}
+
+	/**
+	 * @return the stateCode
+	 */
+	public String getStateCode() {
+		return stateCode;
+	}
+
+	/**
+	 * @return the subjectCode
+	 */
+	public String getSubjectCode() {
+		return subjectCode;
+	}
 }
