@@ -115,12 +115,14 @@ var dataLayer = window.dataLayer || [];
       });
     },
     product: function (productData) {
+      var product = productTransform(productData);
+
+      delete product.list;
+
       dataLayer.push({
         ecommerce: {
           detail: {
-            products: [productData].map(function (product) {
-              return productTransform(product);
-            })
+            products: [product]
           }
         }
       });
