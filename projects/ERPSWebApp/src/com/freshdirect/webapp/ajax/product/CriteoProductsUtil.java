@@ -99,17 +99,17 @@ public class CriteoProductsUtil
 			}
 		}
 	}
-	
-	
+
+
 	public static void getHlBrandPdpProducts(FDUserI user, BrowseData browseData) {
 		HLBrandProductAdRequest hLBrandProductAdRequest = new HLBrandProductAdRequest();
 		List<ProductData> adPrducts = new ArrayList<ProductData>();
 		StringBuffer updatedPageBeacon = new StringBuffer(A_SHOWN);
 		int productsCount = 0;
 		try {
+			SearchResultsUtil.setPlatFormValues((FDSessionUser) user, hLBrandProductAdRequest);
 			if (hLBrandProductAdRequest.getUserId() != null) {
 				setProductSkucode(browseData, hLBrandProductAdRequest);
-				SearchResultsUtil.setPlatFormValues((FDSessionUser) user, hLBrandProductAdRequest);
 				HLBrandProductAdResponse response = FDBrandProductsAdManager.getHLadproductToPdp(hLBrandProductAdRequest);
 				if (response != null) {
 					List<HLBrandProductAdInfo> hlBrandAdProductsMeta = response.getProductAd();
@@ -142,6 +142,6 @@ public class CriteoProductsUtil
 			LOG.warn("Exception while populating Criteo PDP product: ", e);
 		}
 	}
-	
+
 
 }
