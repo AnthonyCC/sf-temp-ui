@@ -7,7 +7,7 @@ var FreshDirect = FreshDirect || {};
   var $ = fd.libs.$,
       latestElem = null;
 
-  if (FreshDirect.homepage) {
+  if (fd && fd.homepage && fd.homepage.data && fd.homepage.data.isHomepage) {
     setTimeout(function() {
       var modules = $(document).find('.content-module'),
           triggerPositioning = [],

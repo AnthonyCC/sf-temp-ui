@@ -5,7 +5,7 @@
  * @param data
  */
 {template .productListModule}
-{if ($data.products and length($data.products) > 0) or ($data.sectionDataContainer)}
+{if ($data.products and length($data.products) > 0) or ($data.sectionDataContainer) or ($data.adProducts and length($data.adProducts)>0)}
   <div class="content-module product-list" id="{$moduleData.moduleId}">
   	{call common.moduleHeader}
   		{param content: $moduleData /}
@@ -14,14 +14,23 @@
   		{call common.contentHeader}
   			{param content: $moduleData /}
   		{/call}
-      {if $data.products}
+      {if ($data.products) or ($data.adProducts and length($data.adProducts)>0)}
   		<div class="transactional">
   			<ul>
   			{foreach $item in $data.products}
   				{call common.transactionalGridItem}
   					{param extraClass:'carouselTransactionalItem' /}
-            {param cmEventSource: $moduleData.cmEventSource /}
-            {param moduleData: $moduleData /}
+            		{param cmEventSource: $moduleData.cmEventSource /}
+            		{param moduleData: $moduleData /}
+  					{param item: $item /}
+  					{param itemIndex: index($item) /}
+  				{/call}
+  			{/foreach}
+  			{foreach $item in $data.adProducts}
+  				{call common.transactionalGridItem}
+  					{param extraClass:'carouselTransactionalItem' /}
+            		{param cmEventSource: $moduleData.cmEventSource /}
+            		{param moduleData: $moduleData /}
   					{param item: $item /}
   					{param itemIndex: index($item) /}
   				{/call}

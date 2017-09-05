@@ -36,6 +36,10 @@
 	color:white;
 }
 
+.contentModules .isHookLogicProduct.portrait-item:before {
+	content: "";
+}
+
 .portrait-item.isHookLogic-true .portrait-item-productimage{
 	/*max-height:105px;
 	max-width:105px;*/

@@ -25,6 +25,7 @@
 <%@ page import='java.text.*' %>
 <%@ page import='java.util.*' %>
 <%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
+<%@ page import="com.freshdirect.webapp.util.RequestUtil"%>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -269,7 +270,9 @@ request.setAttribute("noyui", true);
 
     <script>
       var FreshDirect = window.FreshDirect || {};
-      FreshDirect.homepage = true;
+      FreshDirect.homepage = window.FreshDirect.homepage || {};
+      FreshDirect.homepage.data = window.FreshDirect.homepage.data || {};
+      FreshDirect.homepage.data.isHomepage = true;
 
       var dataLayer = window.dataLayer || [];
 
@@ -277,8 +280,11 @@ request.setAttribute("noyui", true);
         'is-new-homepage': 'true',
         'homepage-type': 'residental',
         'module-container-id': '<%=moduleContainerId%>'
-      });
+      });      
     </script>
-
+    <% /* allow data to be output for debugging */
+    if ( "true".equalsIgnoreCase(RequestUtil.getValueFromCookie(request, "developer")) ) {
+    	%><script>FreshDirect.homepage.data = $jq.extend(FreshDirect.homepage.data,<fd:ToJSON object="${welcomepagePotato}" noHeaders="true"/>);</script><%
+    } %>
 </tmpl:put>
 </tmpl:insert>
