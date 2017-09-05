@@ -7,7 +7,7 @@ body[developer] *:focus {
 }
 /* exceptions for focus */
 
-div#skip_to_content,.locabar-tab-fdx-cont,body:focus,html:focus,div:focus,*:active,a.accessibleOutlineFF:focus,cssbutton:focus{
+div#skip_to_content,.locabar-tab-fdx-cont,body:focus,html:focus,div:focus,*:active,a.accessibleOutlineFF:focus,cssbutton:focus,tr:focus,td:focus,fieldset:focus{
 	outline:none;
 }
 .portrait-item-header-name{
