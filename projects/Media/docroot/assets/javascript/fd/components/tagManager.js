@@ -487,7 +487,7 @@ var dataLayer = window.dataLayer || [];
     productData.in_stock = productE.attr('data-in-stock');
     productData.new_product = productE.attr('data-new-product');
     productData.variant = productE.attr('data-variant');
-    productData.position = productE.attr('data-position');
+    productData.position = parseInt(productE.attr('data-position'), 10) || 0;
     productData.list = productE.attr('data-list') || productE.attr('data-virtual-category');
 
     if (!productData.position) {
@@ -527,7 +527,7 @@ var dataLayer = window.dataLayer || [];
         new_product: productData.new_product,
         sku: productData.skuCode,
         in_stock: productData.in_stock,
-        position: productData.position,
+        position: parseInt(productData.position, 10) || 0,
         list: productData.list
       }]);
     };
@@ -804,7 +804,7 @@ var dataLayer = window.dataLayer || [];
             new_product: productData.new_product,
             sku: productData.skuCode,
             in_stock: productData.in_stock,
-            position: productData.position
+            position: parseInt(productData.position, 10) || 0
           }]
         }
       }
