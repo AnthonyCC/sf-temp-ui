@@ -154,7 +154,7 @@ request.setAttribute("noyui", true);
 
 					<a href="<%= curCatLink %>">
 					    <div class="home-page-banner">
-						    <img data-src="<%= curCat.getTabletThumbnailImage().getPathWithPublishId() %>" alt="" />
+						    <img data-src="<%= (curCat.getTabletThumbnailImage() != null) ? curCat.getTabletThumbnailImage().getPathWithPublishId() : "" %>" alt="" />
 							<div class="home-page-banner-subtext-cont">
 								<div class="home-page-banner-subtext"><%= bannerText %></div>
 							</div>
