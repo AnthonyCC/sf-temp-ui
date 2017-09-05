@@ -13,6 +13,7 @@
     <jwr:style src="/oldglobal.css" media="all" />
     <jwr:style src="/global.css" media="all" />
     <jwr:style src="/expressco.css" media="all" />
+    <jwr:style src="/accessibility.css" media="all" />
     <tmpl:get name="extraCss"/>
     <tmpl:get name="extraJs"/>
     <%@ include file="/shared/template/includes/i_head_end.jspf" %>

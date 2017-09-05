@@ -41,6 +41,6 @@
  		<fd:css href="/assets/css/common/product_grid.css" media="all" />
 		<fd:css href="/assets/css/search.css" media="all" />
  	<% } %>
-	
+	<jwr:style src="/accessibility.css" media="all" />
 	<%-- Keep the media include last, so it can always override any css auto-loaded --%>
 	<fd:IncludeMedia name="/media/editorial/site_pages/stylesheet.html" />

@@ -164,7 +164,7 @@ if (request.getParameter("fldMessage") !=null) {
 		</td>
         <td rowspan="10" width="15"><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="1" border="0" /></td>
         <td colspan="2">
-			<input type="text" maxlength="55" tabIndex="1" size="21" class="text11" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>"  id="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>" required="true" value="<%=fldYourName %>" />
+			<input type="text" maxlength="55"  size="21" class="text11" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>"  id="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>" required="true" value="<%=fldYourName %>" />
 	</td>
         <td rowspan="10" width="350" align="center"><div id="gcDisplayContainer"><!--  --></div></td>
         <td rowspan="10" width="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1" border="0"></td>
@@ -176,7 +176,7 @@ if (request.getParameter("fldMessage") !=null) {
 			</span>
 		</td>
         <td colspan="2">
-			<input type="text" maxlength="80" tabIndex="2"  size="21" class="text11" name="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>"  id="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>" required="true" value="<%=fldYourEmail %>" />
+			<input type="text" maxlength="80"   size="21" class="text11" name="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>"  id="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>" required="true" value="<%=fldYourEmail %>" />
 	</td>
     </tr>
     <tr>
@@ -186,7 +186,7 @@ if (request.getParameter("fldMessage") !=null) {
 			</span>
         </td>
         <td colspan="2">
-			<input type="text" maxlength="55" tabIndex="3"  class="text11" size="21" name="<%= EnumUserInfoName.GC_RECIPIENT_NAME.getCode() %>" id="<%= EnumUserInfoName.GC_RECIPIENT_NAME.getCode() %>" value="<%= fldRecipientName%>" /> 
+			<input type="text" maxlength="55"   class="text11" size="21" name="<%= EnumUserInfoName.GC_RECIPIENT_NAME.getCode() %>" id="<%= EnumUserInfoName.GC_RECIPIENT_NAME.getCode() %>" value="<%= fldRecipientName%>" /> 
         </td>
     </tr>
     <tr>
@@ -199,11 +199,11 @@ if (request.getParameter("fldMessage") !=null) {
 			<table border="0" cellpadding="0" cellspacing="0" width="100%">
 				<tr>
 					<td width="15">
-						<input type="radio" tabIndex="4"  class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode() %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode() %>Email" value="<%=value1%>" <%= value1Selected %> onclick="$('gcRecipientEmail').disabled=false; $('recipEmailStar').innerHTML='*';" />
+						<input type="radio"   class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode() %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode() %>Email" value="<%=value1%>" <%= value1Selected %> onclick="$('gcRecipientEmail').disabled=false; $('recipEmailStar').innerHTML='*';" />
     				</td>
 					<td width="25%"><label for="<%= EnumUserInfoName.DLV_METHOD.getCode() %>Email">Email</label></td>
 					<td width="15">
-						<input type="radio" tabIndex="5"  class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>Pdf" value="<%=value2%>" <%= value2Selected %>  />
+						<input type="radio"   class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>Pdf" value="<%=value2%>" <%= value2Selected %>  />
 					</td>
 					<td width="70%"><label for="<%= EnumUserInfoName.DLV_METHOD.getCode()  %>Pdf">I'll Download a PDF and Print It.</label></td>
 				</tr>
@@ -217,7 +217,7 @@ if (request.getParameter("fldMessage") !=null) {
 			</span>
         </td>
         <td colspan="2">
-			<input type="text" maxlength="80" tabIndex="6"  size="21" class="text11" name="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" id="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" required="true" value="<%= fldRecipientEmail %>" />
+			<input type="text" maxlength="80"   size="21" class="text11" name="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" id="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" required="true" value="<%= fldRecipientEmail %>" />
 	</td>
 	</tr>
 	<tr>
@@ -226,7 +226,7 @@ if (request.getParameter("fldMessage") !=null) {
 			<table>
 				<tr>
 					<td width="65">
-						<select tabIndex="7"  class="text9" name="fldAmount" id="fldAmount" onChange="($('fldAmount').value!='OTHER')?$('fldAltAmount').value=$('fldAmount').value:$('fldAltAmount').value='<%=fldAltAmount%>';$('fldAltAmount').disabled=($('fldAmount').value=='OTHER')?false:true;">
+						<select   class="text9" name="fldAmount" id="fldAmount" onChange="($('fldAmount').value!='OTHER')?$('fldAltAmount').value=$('fldAmount').value:$('fldAltAmount').value='<%=fldAltAmount%>';$('fldAltAmount').disabled=($('fldAmount').value=='OTHER')?false:true;">
 						   <option value="" <%="".equalsIgnoreCase(fldAmount)?"selected":""%>> </option>
 						   <option value="OTHER" <%=!"".equalsIgnoreCase(fldAmount)?"selected":""%>>OTHER</option>
 						   <option value="20.00" <%="20.00".equalsIgnoreCase(fldAmount)?"selected":""%>>20.00</option>
@@ -237,7 +237,7 @@ if (request.getParameter("fldMessage") !=null) {
 						</select>
 					</td>
 					<td>
-						<input type="text" tabIndex="8"  maxlength="10" size="8" class="text9" name="fldAltAmount" id="fldAltAmount" value="<%=fldAltAmount%>" <%=!"".equalsIgnoreCase(fldAmount)?"":"disabled"%> onkeydown="$('fldAmount').value='OTHER';" />
+						<input type="text"   maxlength="10" size="8" class="text9" name="fldAltAmount" id="fldAltAmount" value="<%=fldAltAmount%>" <%=!"".equalsIgnoreCase(fldAmount)?"":"disabled"%> onkeydown="$('fldAmount').value='OTHER';" />
 					</td>
 					<td>
 						<span style="white-space: nowrap;"><label for="fldAltAmount">Enter amount<br>(min. $20.00)</label></span>
@@ -257,7 +257,7 @@ if (request.getParameter("fldMessage") !=null) {
 			150 character max.</label>
 		</td>
 		<td colspan="2">
-			<textarea rows="4" cols="30" maxlength="150" tabIndex="9"  class="text11" name="fldMessage" id="fldMessage" value="<%=(fldMessage!=null)?fldMessage.replaceAll("\"","&quot;"):"none"%>" onfocus="this.select();"><%=(fldMessage!=null)?fldMessage.replaceAll("\"","&quot;"):""%></textarea>
+			<textarea rows="4" cols="30" maxlength="150" class="text11" name="fldMessage" id="fldMessage" value="<%=(fldMessage!=null)?fldMessage.replaceAll("\"","&quot;"):"none"%>" onfocus="this.select();"><%=(fldMessage!=null)?fldMessage.replaceAll("\"","&quot;"):""%></textarea>
 		</td>
 	</tr>
 </table>

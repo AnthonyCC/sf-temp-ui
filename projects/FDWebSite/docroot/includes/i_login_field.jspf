@@ -157,7 +157,7 @@
 				<tr>
 					<td></td>
 					<td style="padding-top: 15px;">
-						<a onclick="document.fd_login.submit();" href="#" class="butText social-login-continue-button">
+						<a onclick="document.fd_login.submit();" href="#" tabindex="-1" class="butText social-login-continue-button">
 							<input type="submit" id="signinbtn" maxlength="25" size="19" value="Sign in">
 						</a>
 					</td>
@@ -275,7 +275,7 @@
 				_oneall.push([ 'social_login', 'set_providers',[ 'facebook', 'google' ] ]);					
 				_oneall.push([ 'social_login', 'set_force_re_authentication', true]);
 				_oneall.push([ 'social_login', 'set_grid_sizes', [ 1, 2 ] ]);
-				_oneall.push([ 'social_login', 'set_custom_css_uri', '//www.freshdirect.com/media/social_login/social_login_media.css']);
+				_oneall.push([ 'social_login', 'set_custom_css_uri', '//'+window.location.host+'/media/social_login/social_login_media.css']);
 				
 				<% if(FDStoreProperties.isLocalDeployment()){ %>
 					_oneall.push([ 'social_login', 'set_callback_uri', document.location.protocol + '<%= "//" + request.getServerName() + ":" + request.getServerPort()+"/social/social_login_success.jsp?isFromLogin=true"  %>' ]);

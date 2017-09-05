@@ -12,7 +12,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
-<jwr:style src="/your_account.css" media="all"/>
+
 
 <%
 String successPage = "/your_account/customer_profile_summary.jsp";
@@ -38,6 +38,7 @@ String redirectPage = "/login/login.jsp?successPage=" + successPage;
 		<fd:SEOMetaTag pageId="customer_profile"></fd:SEOMetaTag>
 	</tmpl:put>
 <tmpl:put name='content' direct='true'>
+<jwr:style src="/your_account.css" media="all"/>
   <script type="text/javascript">
     function clearCustomerProfileForm(p) {
         var x = p;

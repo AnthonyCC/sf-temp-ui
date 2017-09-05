@@ -86,7 +86,7 @@
  * @param? onOpenCoremetrics
  */
 {template .drawerheader autoescape="false"}
-<li id="{$id}-tab" role="tab" tabindex="0" aria-controls="{$id}-tab-content" data-drawer-id="{$id}">
+<li id="{$id}-tab" role="tab" aria-controls="{$id}-tab-content" data-drawer-id="{$id}">
   <h2>{$title}</h2>
   {if $enabled}
     <button class="change cssbutton green small" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Change<span class="offscreen">{$title}</span></button>

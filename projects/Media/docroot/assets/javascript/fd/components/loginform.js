@@ -12,12 +12,15 @@ var FreshDirect = FreshDirect || {};
 				'change keyup',
 				function() {
 					if ($jq(this).validate().checkForm()) { // form is valid
-						$jq('#signinbtn input').removeClass('button_disabled')
+						$jq('#signinbtn').removeClass('button_disabled')
 								.prop('disabled', false);
+						$jq('#signinbtn').attr("tabindex",3);
+						
 
 					} else { // form is invalid
-						$jq('#signinbtn input').addClass('button_disabled').prop(
+						$jq('#signinbtn').addClass('button_disabled').prop(
 								'disabled', true);
+						$jq('#signinbtn').attr("tabindex",-1);
 					}
 				});
 		$('#fd_login #signinbtn').click(login);
@@ -97,7 +100,7 @@ var FreshDirect = FreshDirect || {};
 			
 			window._oneall.push([ 'social_login', 'set_force_re_authentication', true]);
 			window._oneall.push([ 'social_login', 'set_grid_sizes', [ 1, 2 ] ]);
-			window._oneall.push([ 'social_login', 'set_custom_css_uri', '//www.freshdirect.com/media/social_login/social_login_media.css']);
+			window._oneall.push([ 'social_login', 'set_custom_css_uri', '//'+window.location.host+'/media/social_login/social_login_media.css']);
 			
 			window._oneall.push([ 'social_login', 'set_event', 'on_login_redirect', my_on_login_redirect ]);
 			window._oneall.push(['social_login', 'set_event', 'on_widget_loaded', onWidgetLoaded]);
@@ -170,5 +173,11 @@ var FreshDirect = FreshDirect || {};
 		fd.modules.common.utils.register("components", "loginForm", loginForm,
 				fd);
 	}
+//	$(window).on('resize', function() {
+//
+//        $jq('.login-ajax-overlay .fixedPopupContent').css({'height': 'auto'});
+//        $jq('.login-ajax-overlay .fixedPopupContent').css({'height': $jq(this).height() + 'px'});
+//        
+//    });
 	
 }(FreshDirect));

@@ -392,7 +392,7 @@
 							_oneall.push([ 'social_login', 'set_force_re_authentication', true]);
 					    	_oneall.push([ 'social_login', 'set_providers',[ 'facebook', 'google' ] ]);
 							_oneall.push([ 'social_login', 'set_grid_sizes', [ 1, 2 ] ]);
-							_oneall.push([ 'social_login', 'set_custom_css_uri', '//www.freshdirect.com/media/social_login/social_login_media.css']);
+							_oneall.push([ 'social_login', 'set_custom_css_uri', '//'+window.location.host+'/media/social_login/social_login_media.css']);
 							
 							<% if(FDStoreProperties.isLocalDeployment()){ %>
 								_oneall.push([ 'social_login', 'set_callback_uri', '<%= "http://" + request.getServerName()  + ":" + request.getServerPort() + "/social/social_login_success.jsp"%>' ]);

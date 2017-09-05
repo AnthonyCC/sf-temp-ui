@@ -68,6 +68,14 @@ request.setAttribute("listPos", "HPLeftTop");
 response.setHeader("Pragma", "no-cache");
 response.setHeader("Cache-Control", "no-cache");
 %>
+
+
+<tmpl:insert template='/common/template/dnav.jsp'>
+<tmpl:put name="seoMetaTag" direct="true">
+	<fd:SEOMetaTag pageId="customer_profile_summary"></fd:SEOMetaTag>
+</tmpl:put>
+<tmpl:put name='title' direct='true'>FreshDirect - Your Profile</tmpl:put>
+<tmpl:put name='content' direct='true'>
 <style>
 
 	/* default styles from website css */
@@ -125,14 +133,6 @@ response.setHeader("Cache-Control", "no-cache");
 	.ico { width: 16px; }
 
 </style>
-
-<tmpl:insert template='/common/template/dnav.jsp'>
-<tmpl:put name="seoMetaTag" direct="true">
-	<fd:SEOMetaTag pageId="customer_profile_summary"></fd:SEOMetaTag>
-</tmpl:put>
-<tmpl:put name='title' direct='true'>FreshDirect - Your Profile</tmpl:put>
-<tmpl:put name='content' direct='true'>
-
 <!-- * start the actual summary info * -->
 
 	<table cellpadding="0" cellspacing="0" border="0" width="100%">
