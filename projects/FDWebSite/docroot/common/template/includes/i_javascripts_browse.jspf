@@ -101,12 +101,13 @@
 
 			$.smartbanner({daysHidden: 0, daysReminder: 0,author:'FreshDirect',button: 'VIEW'});
 			if(!$jq('#smartbanner.shown').is(':visible')) { $jq('#smartbanner').show(); }
+			/* no longer needed
 			$.each($('a[href*="/default/empty.gif/"]'), function(i, e) {
                 $(e).attr("aria-hidden", "true");
                 $(e).attr("tabindex", "-1");
                 $(e).attr("role", "presentation");
                 //console.log('updateOAS', event,id);
-			 });
+			 }); */
 
 		});
 	})($jq);
