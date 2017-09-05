@@ -17,6 +17,8 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData.SectionDataCointainer;
 import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
@@ -256,7 +258,9 @@ public class DatasourceService {
                 products = ModuleContentService.getDefaultService().loadStaffPicksProducts(user);
                 break;
             case CRITEO:
+            	if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.hooklogic2016, user))
             	CriteoProductsUtil.getHlHomePgBrandProducts(user, moduleData);
+            		break;
             default:
                 break;
         }
