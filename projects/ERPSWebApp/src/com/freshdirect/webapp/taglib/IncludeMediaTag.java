@@ -43,7 +43,7 @@ public class IncludeMediaTag extends BodyTagSupport {
 	private int mediaContentCacheSize;
 	
 	public IncludeMediaTag() {
-		mediaContentCacheSize = FDStoreProperties.getRefreshSecsProduct();
+		mediaContentCacheSize = FDStoreProperties.getMediaContentCacheSize();
 	}
 	
 	public void setName(String file) {
