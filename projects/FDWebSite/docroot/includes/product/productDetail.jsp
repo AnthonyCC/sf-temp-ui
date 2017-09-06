@@ -238,7 +238,14 @@
 						<c:if test="${empty param.grpId}">
 							<soy:render template="pdp.familyProducts" data="${productExtraPotato}" />
 							<c:if test="${empty productExtraPotato.familyProducts}">
-								<soy:render template="pdp.evenBetter" data="${evenBetter}" />
+								<c:choose>
+									<c:when test="${not empty evenBetter.productList}"><%-- show even better --%>
+										<soy:render template="pdp.evenBetter" data="${evenBetter}" />
+									</c:when>
+									<c:otherwise><%-- show criteo --%>
+										<soy:render template="pdp.criteo" data="${browsePotato.adProducts.products}" />
+									</c:otherwise>
+								</c:choose>
 							</c:if>
 						</c:if>
 						<soy:render template="pdp.likethat" data="${xsell}" />
