@@ -16,6 +16,8 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
+import weblogic.wsee.util.StringUtil;
+
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.crm.ejb.CrmManagerHome;
 import com.freshdirect.crm.ejb.CrmManagerSB;
@@ -626,10 +628,38 @@ public class CrmManager {
 		}
 	}
 	
+	public boolean isCRMRestrictionEnabled() throws FDResourceException {
+		try {
+			return this.getCrmManagerSB().isCRMRestrictionEnabled();
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Error in CrmManagerSB for isCrmRestrictionEnabled().");
+		}
+	}
+	
+	public boolean isCRMRestrictedForAgent(String ldapId) throws FDResourceException {
+		if(StringUtil.isEmpty(ldapId))
+			return true;
+		
+		try {
+			if(ldapId.toLowerCase().indexOf("crmqa")!=-1) return false;
+			else {
+				String allowedUsers=this.getCrmManagerSB().getAllowedUsers();
+				if("ALL".equals(allowedUsers)) return false;
+				else  {
+					return allowedUsers.toLowerCase().indexOf(ldapId.toLowerCase())!=-1?false:true;
+				}
+			}
+			
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Error in CrmManagerSB for getAllowedUsers().");
+		}
+	}
+	
 	public static void main (String[] a) throws Exception {
 		CrmAuthSearchCriteria sc=new CrmAuthSearchCriteria();
 		sc.setFromDateStr("11-16-2011 00:00");
 		sc.setToDateStr("12-16-2011 00:00");
 		CrmManager.getInstance().getAuthorizations(null, sc);
 	}
+	
 }
