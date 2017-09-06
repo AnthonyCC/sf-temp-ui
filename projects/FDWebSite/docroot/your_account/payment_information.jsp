@@ -82,14 +82,16 @@ boolean isCheckEligible	= user.isCheckEligible();
 %>
 
 <!-- error message handling here -->
-<TABLE WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>" BORDER="0" CELLPADDING="0" CELLSPACING="0">
-    <TR>
-        <TD width="<%= W_YA_PAYMENT_INFO_TOTAL %>" class="text11"><font class="title18">Payment Options</font><br /><span class="space2pix"><br /></span>
-Update your payment information.<br />
-To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here</a>
-<br /><fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
-        </td>
-    </tr>
+<table width="<%= W_YA_PAYMENT_INFO_TOTAL %>" border="0" cellpadding="0" cellspacing="0">
+	<tr>
+		<td width="<%= W_YA_PAYMENT_INFO_TOTAL %>" class="text11">
+			<span class="title18">Payment Options</span><br /><span class="space2pix"><br /></span>
+			Update your payment information.<br />
+			<%@ include file="/includes/debitSwitchNotice.jsp" %>
+			<br />
+			<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+		</td>
+	</tr>
 </table>
 
 <IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><br />

@@ -962,6 +962,8 @@ public class FDStoreProperties {
     private static final String PROP_REFRESHZONE_ENABLED = "fdstore.refresh.zone.enabled";
     
     private static final String GLOBAL_SF2_0_ENABLED = "fdstore_sf20_global_enabled";
+    
+    private static final String PROP_DEBIT_SWITCH_NOTICE_ENABLED = "fdstore.debitCardSwitchNotice.enabled";
  
     public final static long TEN_DAYS_IN_MILLIS = 1000 * 60 * 60 * 24 * 10;    
     
@@ -1744,8 +1746,8 @@ public class FDStoreProperties {
 
         defaults.put(PROP_EDT_EST_TIMESLOT_CONVERSION_ENABLED, false);// It should be 'true' only for FDX.
 
-        defaults.put(PROP_EWALLET_PAYPAL_ENABLED, true);
-        defaults.put(PROP_EWALLET_MASTERPASS_ENABLED, true);
+        defaults.put(PROP_EWALLET_PAYPAL_ENABLED, "true");
+        defaults.put(PROP_EWALLET_MASTERPASS_ENABLED, "true");
         defaults.put(PROP_HOOK_LOGIC_BLACKHOLE_ENABLE, "false");
         defaults.put(PROP_HOOK_LOGIC_CATEGORY_ENABLE, "true");
         defaults.put(PROP_HOOK_LOGIC_ORDER_FEED_MINS, "15");// default is last 15 mins orders.
@@ -1836,6 +1838,9 @@ public class FDStoreProperties {
         defaults.put(PAYMENT_TLSSHA_ENABLED,"false");
         defaults.put(PROP_PAYMENT_VERIFICATION_ENABLED, "false");
         defaults.put(GLOBAL_SF2_0_ENABLED, "false");
+        
+        //DCS-23
+        defaults.put(PROP_DEBIT_SWITCH_NOTICE_ENABLED, "true");
         
         refresh();
     }
@@ -2148,7 +2153,7 @@ public class FDStoreProperties {
     public static int getGrpCacheSize() {
         return Integer.parseInt(get(PROP_GRP_CACHE_SIZE));
     }
-    
+
     public static int getMediaContentCacheSize() {
     	return Integer.parseInt(get(PROP_MEDIACONTENT_CACHE_SIZE));
     }
@@ -4709,4 +4714,8 @@ public class FDStoreProperties {
 	public static boolean isGlobalSF2_0PropertyEnabled() {
 		return (Boolean.valueOf(get(GLOBAL_SF2_0_ENABLED))).booleanValue();
 		}
+
+    public static boolean isDebitSwitchNoticeEnabled() {
+        return (Boolean.valueOf(get(PROP_DEBIT_SWITCH_NOTICE_ENABLED))).booleanValue();
+    }
 }

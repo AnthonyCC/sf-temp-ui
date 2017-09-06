@@ -343,3 +343,39 @@
 	overflow: hidden;
 	text-decoration: none;
 }
+
+.c-popup.debitswitchnotice {
+	position: static;
+	display: inline-block;
+	vertical-align: middle;
+	text-align: left;
+}
+.c-popup.debitswitchnotice .c-popup-content {
+	padding: 10px 20px;
+	max-width: 500px;
+}
+.c-popup.debitswitchnotice .debitswitchnotice-cont {
+	margin: 10px 0;
+}
+.c-popup.debitswitchnotice .debitswitchnotice-button {
+	margin: 10px 0;
+	text-align: right;
+}
+/* medium screens */
+@media screen and (min-width: 376px) and (max-width: 425px) {
+	[data-feature-mobweb] .c-popup.debitswitchnotice {
+		max-width: 330px;
+	}
+	[data-feature-mobweb] .c-popup.debitswitchnotice .c-popup-content {
+		max-width: 100%;
+	}
+}
+/* smaller screens */
+@media screen and (max-width: 375px) {
+	[data-feature-mobweb] .c-popup.debitswitchnotice {
+		max-width: 280px;
+	}
+	[data-feature-mobweb] .c-popup.debitswitchnotice .c-popup-content {
+		max-width: 100%;
+	}
+}

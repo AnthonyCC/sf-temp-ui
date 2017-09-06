@@ -28,6 +28,7 @@
     fd.properties = fd.properties || {};
     fd.properties.isLightSignupEnabled = <%= FDStoreProperties.isLightSignupEnabled() ? "true" : "false" %>;
     fd.properties.isSocialLoginEnabled = <%= FDStoreProperties.isSocialLoginEnabled() ? "true" : "false" %>;
+    fd.properties.isDebitSwitchNoticeEnabled = <%= FDStoreProperties.isDebitSwitchNoticeEnabled() ? "true" : "false" %>;
 
     <%
     FDSessionUser jsUser = (FDSessionUser)session.getAttribute(SessionName.USER);
@@ -50,6 +51,7 @@
     fd.user.isZipPopupUsed = <%= hideZipCheckPopup %>;
     fd.user.zipCode = '<%= zipCode %>';
     fd.user.cohortName = '<%= cohortName %>';
+    fd.user.sessionId = '<%=session.getId()%>';
       <% if (jsMasqueradeContext != null) {%>
         fd.user.masquerade = true;
       <% } %>

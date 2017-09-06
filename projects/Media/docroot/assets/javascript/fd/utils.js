@@ -304,6 +304,45 @@ var FreshDirect = FreshDirect || {};
 	  	};
   };
 
+  /* copy out util methods from USQ code */
+  //USQLegalWarning.setCookie -- use createCookie
+  //USQLegalWarning.getCookie -- use readCookie
+  //USQLegalWarning.getJSessionId -- uses new marker (fd.user.sessionId)
+  utils.getJSessionId = function () {
+    return (FreshDirect && FreshDirect.user && FreshDirect.user.sessionId) ? FreshDirect.user.sessionId : 'FD_NO_SESSION_ID';
+  }
+
+  //USQLegalWarning.getQueryParameterByName
+  /* alt code (from common_javascript.js):
+   * $jq.QueryString["PARAM_TO_GETVALUE_OF"]
+   * */
+  utils.getQueryParameterByName = function(name) {
+    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+    var regexS = "[\\?&]" + name + "=([^&#]*)";
+    var regex = new RegExp(regexS);
+    var results = regex.exec(window.location.search);
+    if (results == null) {
+      return "";
+    } else {
+      return decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+  };
+
+  //USQLegalWarning.containsElement
+  /* might be safer if this returned an empty array instead of null */
+  utils.containsElement = function(parentElement, childElementName) {
+    var children = [];
+    children = parentElement.getElementsByTagName('*');
+
+    for (var i = 0; i < children.length; i++) {
+      var child = children.item(i);
+      if (child.name == childElementName) {
+        return child;
+      }
+    }
+    return null;
+  };
+
   // register utils under FreshDirect.modules.common.utils
   utils.register("modules.common", "utils", utils, fd);
 
