@@ -147,7 +147,7 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 	public HLBrandProductAdResponse getHomeAdProduct(HLBrandProductAdRequest HLRequestData) throws BrandProductAdServiceException {
 
 		LOGGER.info("while making a call to Hooklogic(homepage)  Productslist from Hooklogic:");
-		StringBuilder urlToCallStr=new StringBuilder(hlAdConfigProvider.getBrandProductAdProviderCategoryURL());
+		StringBuilder urlToCallStr=new StringBuilder(hlAdConfigProvider.getBrandProductAdProviderHomePageURL());
 		TreeMap<String,String> urlParameters = new TreeMap<String, String>();
 		urlParameters.put(HOOKLOGIC_APIKEY, hlAdConfigProvider.getBrandProductAdProviderAPIKey());
 		urlParameters.put(HOOKLOGIC_HLPT, hlAdConfigProvider.getBrandProductAdProviderHomeHlpt());

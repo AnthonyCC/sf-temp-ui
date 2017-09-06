@@ -64,4 +64,6 @@ public interface BrandProductAdConfigProvider {
 	
 	public String getBrandProductAdProviderPdpUpdateURL();
 	
+	public String getBrandProductAdProviderHomePageURL();
+	
 }

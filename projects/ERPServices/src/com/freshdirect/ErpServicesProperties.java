@@ -292,6 +292,9 @@ public class ErpServicesProperties {
 	private final static String PROP_STANDING_ORDER_HARD_LIMIT ="erpservices.standingorder.hardlimit";
 	private final static String PROP_SUFFOLK_COUNTY_MINIMUM_ORDER_AMOUNT="erpservices.suffolk.county.minimum.order.amount";
 
+	
+	
+	public final static String  PROP_HL_HOMEPAGE_URL="fdstore.erp.hl.homepage.url";
 	private static final String PROP_HL_HOMEPAGE = "fdstore.erp.hl.homepage.hlpt";
 	private static final String PROP_HL_PDPPAGE_HLPT = "fdstore.erp.hl.pdppage.hlpt";
 	private static final String PROP_HL_HOMEPAGE_CREATIVE = "fdstore.erp.hl.homepage.creative";
@@ -299,8 +302,8 @@ public class ErpServicesProperties {
 	private static final String PROP_HL_HOMEPAGE_TAXONOMY = "fdstore.erp.hl.homepage.taxonomy";
 	private static final String PROP_HL_HOMEPAGE_MAXMES = "fdstore.erp.hl.homepage.maxmes";
 	private static final String PROP_HL_PDPPAGE_MAXMES = "fdstore.erp.hl.pdppage.maxmes";
-	private static final String PROP_HL_PDP_URL="fdstore.erp.hl.url";
-    private static final String PROP_HL_PDP_UPDATE_URL="fdstore.erp.hl.update.url";
+	private static final String PROP_HL_PDP_URL="fdstore.erp.hl.pdp.url";
+    private static final String PROP_HL_PDP_UPDATE_URL="fdstore.erp.hl.pdpupdate.url";
     
 
 
@@ -536,6 +539,7 @@ public class ErpServicesProperties {
         defaults.put(PROP_SUFFOLK_COUNTY_MINIMUM_ORDER_AMOUNT, "99.0");
 
         //APPDEV 6204 Nikhil Subramanian
+        defaults.put(PROP_HL_HOMEPAGE_URL, "http://uat1.hlserve.com/delivery/api/taxonomy?");
 		defaults.put(PROP_HL_HOMEPAGE_CREATIVE, "115x170_B-C-OG_TI_2-4_Homepage");
 		defaults.put(PROP_HL_PDP_CREATIVE, "115x170_B-C-OG_TI_2-4_PDP");
         defaults.put(PROP_HL_HOMEPAGE, "H");
@@ -1310,6 +1314,10 @@ public class ErpServicesProperties {
 	public static String getBrandProductAdProviderHomeHlpt(){
 		return config.getProperty(PROP_HL_HOMEPAGE);
 	}
+	public static String getBrandProductAdProviderHomePageURL() {
+		return config.getProperty(PROP_HL_HOMEPAGE_URL);
+	}
+	
 	public static  String getBrandProductAdProviderHomePageCreative(){
 		return config.getProperty(PROP_HL_HOMEPAGE_CREATIVE);
 	}

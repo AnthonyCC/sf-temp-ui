@@ -170,5 +170,9 @@ public class HLBrandProductAdConfigProvider implements BrandProductAdConfigProvi
 		return ErpServicesProperties.getBrandProductAdProviderPdpUpdateURL();
 	}
 	
+	@Override
+	public String getBrandProductAdProviderHomePageURL(){
+		return ErpServicesProperties.getBrandProductAdProviderHomePageURL();
+	}
 
 }
