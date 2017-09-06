@@ -9,6 +9,7 @@
  * @param? isIconCarousel
  * @param? moduleData
  * @param? siteFeature
+ * @param? extraClass
  */
 {template .simpleCarousel autoescape="false"}
 <div data-component="carousel" class="first" product-count="{length($items)}">
@@ -30,7 +31,8 @@
 						{param cmEventSource:$cmEventSource /}
 						{param mobWeb:$mobWeb /}
 						{param moduleData:$moduleData /}
-                                                {param itemIndex:index($item) /}
+                        {param itemIndex:index($item) /}
+                        {param extraClass}{if $extraClass}{$extraClass}{/if}{/param}
 					{/delcall}
 				{/if}
 			{/foreach}

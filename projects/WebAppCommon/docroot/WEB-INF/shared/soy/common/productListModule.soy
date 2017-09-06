@@ -28,7 +28,7 @@
   			{/foreach}
   			{foreach $item in $data.adProducts}
   				{call common.transactionalGridItem}
-  					{param extraClass:'carouselTransactionalItem' /}
+  					{param extraClass:'carouselTransactionalItem noFeaturedHeaderBanner' /}
             		{param cmEventSource: $moduleData.cmEventSource /}
             		{param moduleData: $moduleData /}
   					{param item: $item /}

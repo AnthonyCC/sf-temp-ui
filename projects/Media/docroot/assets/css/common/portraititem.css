@@ -36,7 +36,7 @@
 	color:white;
 }
 
-.contentModules .isHookLogicProduct.portrait-item:before {
+.noFeaturedHeaderBanner.isHookLogicProduct :before {
 	content: "";
 }
 
