@@ -69,6 +69,10 @@ public class CartSubTotalBoxService {
     private static final String ZERO_POINT_ZERO_ZERO_VALUE = "$0.00";
     private static final String VIEW_CART_TAX_AVALARA = "Added during Checkout";
     private static final String TIP = "Tip";
+    
+    private static final String DELIVERY_CHARGE_ID = "deliverycharge";
+    private static final String DELIVERY_PREMIUM_HAMPTONS_WAIVED_NAME = "Delivery Premium (Hamptons) (waived)";
+    private static final String DELIVERY_PREMIUM_HAMPTONS_NAME = "Delivery Premium (Hamptons)";
 
     private CartSubTotalBoxService() {
     }
@@ -151,6 +155,25 @@ public class CartSubTotalBoxService {
             } else {
                 deliveryPassValue = JspMethods.formatPrice(cart.getChargeAmount(EnumChargeType.DELIVERY));
                 deliveryPassPopupNeeded = true;
+            }
+        }
+        
+        if (cart.getChargeAmount(EnumChargeType.DLVPREMIUM)> 0) {
+            if (cart.isChargeWaived(EnumChargeType.DLVPREMIUM)) {
+                CartSubTotalFieldData data = new CartSubTotalFieldData();
+                data.setId(DELIVERY_CHARGE_ID);
+                data.setText(DELIVERY_PREMIUM_HAMPTONS_WAIVED_NAME);
+                data.setValue(ZERO_POINT_ZERO_ZERO_VALUE);
+                subTotalBox.add(data);
+            } else {
+                CartSubTotalFieldData data = new CartSubTotalFieldData();
+                data.setId(DELIVERY_CHARGE_ID);
+                data.setText(DELIVERY_PREMIUM_HAMPTONS_NAME);
+                data.setValue(JspMethods.formatPrice(cart.getChargeAmount(EnumChargeType.DLVPREMIUM)));
+                if (cart.isChargeTaxable(EnumChargeType.DLVPREMIUM)) {
+                    data.getOther().put(MARK_KEY, TAXABLE_ITEM_MARK);
+                }
+                subTotalBox.add(data);
             }
         }
         
