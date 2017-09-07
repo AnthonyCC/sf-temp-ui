@@ -4056,7 +4056,7 @@ public class FDStoreProperties {
         return get(PROP_PAYPAL_API_URL);
     }
     public static String getOrbitalAPIUrl() {
-        return get(PROP_PAYPAL_API_URL);
+        return get(PROP_ORBITAL_API_URL);
     }
     public static String getOMSAPIUrl() {
         return get(PROP_OMS_API_URL);
@@ -4575,7 +4575,7 @@ public class FDStoreProperties {
     }
 
     public static boolean isSF2_0_AndServiceEnabled(String beanName) {
-        return FDStoreProperties.isGlobalSF2_0PropertyEnabled() || ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue()&&FDEcommProperties.isServiceEnabled(beanName));
+    	return FDStoreProperties.isGlobalSF2_0PropertyEnabled() || ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue()&&FDEcommProperties.isServiceEnabled(beanName));
     }
 
     public static boolean isMealBundleCartonLinkEnabled() {
