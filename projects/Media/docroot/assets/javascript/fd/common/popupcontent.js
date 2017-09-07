@@ -102,7 +102,8 @@ var FreshDirect = FreshDirect || {};
 
       $(window).on('resize',$.proxy(function(e){
         var clicked;
-        if(this.shown){
+        /* exclude mobile web. Chrome will fire resize when showing the soft kb */
+        if(this.shown && !fd.mobWeb){
           clicked = this.clicked;
           this.hide(null, true);
           this.show();
