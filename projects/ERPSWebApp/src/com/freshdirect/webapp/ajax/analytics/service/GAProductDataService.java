@@ -24,7 +24,7 @@ public class GAProductDataService {
 
         data.setId(product.getContentName());
         data.setName(product.getFullName());
-        data.setPrice(Double.toString(cartLine.getPrice()));
+        data.setPrice(Double.toString(product.getPriceCalculator().getDefaultPriceValue()));
         data.setBrand(product.getPrimaryBrandName());
         data.setCategory(product.getCategory().getContentName());
         data.setVariant(cartLine.getVariantId());
