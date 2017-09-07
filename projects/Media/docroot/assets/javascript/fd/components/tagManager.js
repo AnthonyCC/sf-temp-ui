@@ -162,21 +162,6 @@ var dataLayer = window.dataLayer || [];
       return {event: event};
     },
     coStep: function (coStepData) {
-      if (coStepData.delivery_type) {
-        dataLayer.push({
-          ecommerce: {
-            delivery_type: coStepData.delivery_type
-          }
-        });
-      }
-      if (coStepData.available_timeslot_value) {
-        dataLayer.push({
-          ecommerce: {
-            available_timeslot_value: coStepData.available_timeslot_value,
-            unavailable_timeslot_present: coStepData.unavailable_timeslot_present
-          }
-        });
-      }
       dataLayer.push({
         ecommerce: {
           checkout: {
@@ -691,18 +676,65 @@ var dataLayer = window.dataLayer || [];
       coStepData.option = selectedPayment.type;
     } else if (step === 'timeslot') {
       // don't set the option field for timeslot
-      if (data) {
+      if (data && data.timePeriod) {
         coStepData.available_timeslot_value = data && data.timePeriod+' '+data.month+'/'+data.dayOfMonth+'/'+data.year || 'unknown';
         coStepData.unavailable_timeslot_present = data.unavailableTimeslotValue ? 'yes' : 'no';
+      } else {
+        return; // no timeslot selected
       }
     }
 
     fd.gtm.updateDataLayer({
       coStep: coStepData
-    }, {
-      event: 'checkoutStep'
     });
+
+    // send event only after user interaction
+    if (fd.gtm._coUserInteraction) {
+      fd.gtm._coUserInteraction = false;
+      fd.gtm.updateDataLayer(null, {
+        event: 'checkoutStep'
+      });
+    }
   };
+
+  // Checkout - user interaction - drawer reset
+  var coDrawerClick = Object.create(fd.common.signalTarget, {
+    signal: {
+      value: 'ec-drawer-reset'
+    },
+    callback: {
+      value: function (data) {
+        if (data.active) {
+          fd.gtm._coUserInteraction = true;
+        }
+      }
+    }
+  });
+
+  coDrawerClick.listen();
+
+  // Checkout - user interaction - drawer cancel
+  var coDrawerCancel = Object.create(fd.common.signalTarget, {
+    signal: {
+      value: 'ec-drawer-cancel'
+    },
+    callback: {
+      value: function (data) {
+        if (data.active) {
+          // send 'checkoutStep' event
+          fd.gtm.updateDataLayer({
+            coStep: {
+              step: data.active
+            }
+          }, {
+            event: 'checkoutStep'
+          });
+        }
+      }
+    }
+  });
+
+  coDrawerCancel.listen();
 
   // Checkout - address/payment/timeslot selection
   var coStep = Object.create(fd.common.signalTarget, {

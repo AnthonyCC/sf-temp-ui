@@ -37,8 +37,10 @@ var FreshDirect = FreshDirect || {};
       }
     },
     reset: {
-      value: function () {
+      value: function (config) {
         var active = $(document.body).attr('data-drawer-active');
+        config = config || {};
+
         if (active) {
           try {
             $('[data-drawer-id="'+active+'"]').focus();
@@ -46,12 +48,25 @@ var FreshDirect = FreshDirect || {};
         }
         $(document.body).attr('data-drawer-active', null);
         $("#ec-drawer").trigger("drawer-reset");
-      }	
+
+        if (!config.noEvent) {
+          DISPATCHER.signal('ec-drawer-reset', {active: active});
+        }
+      }
+    },
+    cancel: {
+      value: function () {
+        var active = $(document.body).attr('data-drawer-active');
+        this.reset({noEvent: true});
+        DISPATCHER.signal('ec-drawer-cancel', {active: active});
+      }
     },
     changeClick: {
       value: function (e) {
         var ct = $(e.currentTarget),
             target = ct.attr('data-drawer-activate') || ct.parent().attr('data-drawer-id');
+
+        DISPATCHER.signal('ec-drawer-click', {target: target});
 
         this.activate(target);
       }
@@ -92,7 +107,7 @@ var FreshDirect = FreshDirect || {};
   drawer.init();
 
   $(document).on('click', drawer.changeTrigger, drawer.changeClick.bind(drawer));
-  $(document).on('click', drawer.cancelTrigger, drawer.reset.bind(drawer));
+  $(document).on('click', drawer.cancelTrigger, drawer.cancel.bind(drawer));
   $(document).on('keydown', '[data-drawer-content]', function (e) {
     if (e.keyCode === fd.utils.keyCode.ESC) {
       drawer.reset();
