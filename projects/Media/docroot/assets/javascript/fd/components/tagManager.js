@@ -44,7 +44,7 @@ var dataLayer = window.dataLayer || [];
     };
 
     if (idx) {
-      productData.position = idx + 1;
+      productData.position = idx;
     }
 
     return productData;
@@ -100,7 +100,7 @@ var dataLayer = window.dataLayer || [];
       dataLayer.push({
         ecommerce: {
           impressions: products.map(function (product, idx) {
-            return productTransform(product, idx, 'browse');
+            return productTransform(product, idx+1, 'browse');
           })
         }
       });
@@ -109,7 +109,7 @@ var dataLayer = window.dataLayer || [];
       dataLayer.push({
         ecommerce: {
           impressions: reorderItems.map(function (product, idx) {
-            return productTransform(product, idx, 'reorder');
+            return productTransform(product, idx+1, 'reorder');
           })
         }
       });
