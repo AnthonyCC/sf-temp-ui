@@ -354,7 +354,8 @@ public class CmsFilteringFlow {
             EhCacheUtilWrapper.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, cacheKey); // if cached has other page type
             browseDataContext = null;
         } else {
-            if (FilteringFlowType.BROWSE.equals(nav.getPageType()) && !isBrowseRequestForTheSameId(nav, browseDataContext)) {
+            if (FilteringFlowType.BROWSE.equals(nav.getPageType()) && 
+            		(!isBrowseRequestForTheSameId(nav, browseDataContext) || !isBrowseRequestHasNoFilter(nav, browseDataContext))) {
                 EhCacheUtilWrapper.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, cacheKey); // if cached has same page type(browse) but other id
                 browseDataContext = null;
             } else if (FilteringFlowType.SEARCH.equals(nav.getPageType()) && !isRequestForTheSameSearchParams(nav, browseDataContext)) {
@@ -378,6 +379,10 @@ public class CmsFilteringFlow {
     private boolean isBrowseRequestForTheSameId(CmsFilteringNavigator navigator, BrowseDataContext browseDataContext) {
         return browseDataContext != null && browseDataContext.getCurrentContainer() != null && browseDataContext.getCurrentContainer().getContentName() != null
                 && browseDataContext.getCurrentContainer().getContentName().equalsIgnoreCase(navigator.getId());
+    }
+    
+    private boolean isBrowseRequestHasNoFilter(CmsFilteringNavigator navigator, BrowseDataContext browseDataContext) {
+        return browseDataContext != null && browseDataContext.getSections() != null && browseDataContext.getSections().getFilterLabels().getFilterLabels().size() == 0;
     }
 
     private void populateSearchCarouselProductLimit(int activePage, BrowseDataContext browseDataContext) {

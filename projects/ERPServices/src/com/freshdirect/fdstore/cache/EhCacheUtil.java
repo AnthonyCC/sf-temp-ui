@@ -171,14 +171,17 @@ public class EhCacheUtil {
         getCache(cacheName).removeAll();
     }
     
-    public static boolean isKeyInCache(String cacheName, String key) {
-    	Ehcache cache = getCache(cacheName);
-		if (cache == null) {
-			LOG.error("No cache found with name: " + cacheName);
-			return false;
-		}
-		return cache.isKeyInCache(key);
-		
+    public static boolean isObjectInCache(String cacheName, Object key) {
+
+        Ehcache cache = getCache(cacheName);
+        if (cache == null) {
+            LOG.error("No cache found with name: " + cacheName);
+            return false;
+        }
+
+        Element element = cache.get(key);
+        return element != null;
+
     }
 
 }

@@ -78,7 +78,7 @@ public class IncludeMediaTag extends BodyTagSupport {
 		    	this.name = media.getPath();		    	
 		    } 
 		    
-		    if (mediaContentCacheSize != 0 && EhCacheUtil.isKeyInCache(EhCacheUtil.MEDIA_CONTENT_CACHE_NAME, this.name)) {
+		    if (mediaContentCacheSize != 0 && EhCacheUtil.isObjectInCache(EhCacheUtil.MEDIA_CONTENT_CACHE_NAME, this.name)) {
 		    	String cachedMediaContent = EhCacheUtil.getObjectFromCache(EhCacheUtil.MEDIA_CONTENT_CACHE_NAME, this.name);
 		    	if (cachedMediaContent != null) {
 					this.pageContext.getOut().write(cachedMediaContent);
