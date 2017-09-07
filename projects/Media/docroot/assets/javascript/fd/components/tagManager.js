@@ -67,7 +67,8 @@ var dataLayer = window.dataLayer || [];
           chef_table: custData.chefsTable || false,
           deliverypass: custData.deliveryPass || '',
           delivery_type: custData.deliveryType || '',
-          cohort: custData.cohort || 'unknown'
+          cohort: custData.cohort || 'unknown',
+          default_payment: custData.defaultPaymentType || ''
         },
         // variables for "old" tags
         'user-customer-type': custData.deliveryType || '',
