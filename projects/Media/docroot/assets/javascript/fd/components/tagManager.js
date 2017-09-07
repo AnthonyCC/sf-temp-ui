@@ -68,7 +68,7 @@ var dataLayer = window.dataLayer || [];
           deliverypass: custData.deliveryPass || '',
           delivery_type: custData.deliveryType || '',
           cohort: custData.cohort || 'unknown',
-          default_payment: custData.defaultPaymentType || ''
+          default_payment_type: custData.defaultPaymentType || ''
         },
         // variables for "old" tags
         'user-customer-type': custData.deliveryType || '',
