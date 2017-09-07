@@ -1320,6 +1320,7 @@ public class CheckoutController extends BaseController {
         }*/
         else {
         	responseMessage.setSelectedId(new Checkout(user).getPreselectedPaymethodMethodId());
+        	responseMessage.setDefaultId(user.getFDSessionUser().getFDCustomer().getDefaultPaymentMethodPK());
         	responseMessage.setDefaultType(user.getFDSessionUser().getFDCustomer().getDefaultPaymentType());
         }
         responseMessage.getCheckoutHeader().setHeader(user.getShoppingCart());
