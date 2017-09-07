@@ -282,7 +282,7 @@ public class Checkout {
 
         Cart shoppingCart = sessionUser.getShoppingCart();
         FDCartI cart = shoppingCart.getCart();
-        if ((null != cart.getPaymentMethod()) && !(shoppingCart.isModifyCart())) {
+        if ((null != cart.getPaymentMethod())) {
             preselectedPaymethodMethodId = ((ErpPaymentMethodModel) cart.getPaymentMethod()).getPK().getId();
         }
         if (preselectedPaymethodMethodId == null) {
