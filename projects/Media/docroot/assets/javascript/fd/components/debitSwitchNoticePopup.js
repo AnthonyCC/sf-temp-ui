@@ -57,6 +57,7 @@ var checkout;
 			value: {
 				zIndex: 2000,
 				openonclick: true,
+				overlay: true,
 				overlayExtraClass: 'centerpopupoverlay',
 				align: false,
 				hidecallback: function (e) {
@@ -120,13 +121,13 @@ var checkout;
 
 		//check cookie
 		var cookieValue = fd.modules.common.utils.readCookie(COOKIENAME);
-		var sessionId = fd.modules.common.utils.getJSessionId();
-		if (cookieValue !== "seen@" + sessionId) {
+		//var sessionId = fd.modules.common.utils.getJSessionId();
+		if (cookieValue === null) {
 			//show
 			debitswitchnotice.open();
 			
 			//mark as seen
-			fd.modules.common.utils.createCookie(COOKIENAME,'seen@'+sessionId);
+			fd.modules.common.utils.createCookie(COOKIENAME,'seen@'+new Date());
 		}
 	}
 
