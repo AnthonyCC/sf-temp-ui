@@ -964,6 +964,8 @@ public class FDStoreProperties {
     private static final String GLOBAL_SF2_0_ENABLED = "fdstore_sf20_global_enabled";
     
     private static final String PROP_DEBIT_SWITCH_NOTICE_ENABLED = "fdstore.debitCardSwitchNotice.enabled";
+    
+    private static final String PROP_LOG_AKAMAI_HEADER_ENABLED = "fdstore.akamai.edgescape.header.logging.enabled";
  
     public final static long TEN_DAYS_IN_MILLIS = 1000 * 60 * 60 * 24 * 10;    
     
@@ -1841,6 +1843,8 @@ public class FDStoreProperties {
         
         //DCS-23
         defaults.put(PROP_DEBIT_SWITCH_NOTICE_ENABLED, "true");
+        
+        defaults.put(PROP_LOG_AKAMAI_HEADER_ENABLED,"true");
         
         refresh();
     }
@@ -4717,5 +4721,9 @@ public class FDStoreProperties {
 
     public static boolean isDebitSwitchNoticeEnabled() {
         return (Boolean.valueOf(get(PROP_DEBIT_SWITCH_NOTICE_ENABLED))).booleanValue();
+    }
+    
+    public static boolean isLoggingAkamaiEdgescapgeHeaderInfoEnabled() {
+        return (Boolean.valueOf(get(PROP_LOG_AKAMAI_HEADER_ENABLED))).booleanValue();
     }
 }

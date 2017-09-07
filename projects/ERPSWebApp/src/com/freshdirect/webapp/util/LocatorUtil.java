@@ -50,7 +50,9 @@ public class LocatorUtil {
 	    			//used mocked ip address parameter (for testing) if exists
 			    	String ip = NVL.apply(request.getParameter(IP_LOCATOR_MOCKED_IP_ADDRESS), RequestUtil.getClientIp(request)); 
 			    	
-			    	logAkamaiEdgescapeHeaderInfo(request);
+			    	if(FDStoreProperties.isLoggingAkamaiEdgescapgeHeaderInfoEnabled()){
+			    		logAkamaiEdgescapeHeaderInfo(request);
+			    	}
 		    		IpLocatorData ipLocatorData = IpLocatorClient.getInstance().getData(ip);
 		    		
 		    		IpLocatorEventDTO ipLocatorEventDTO = new IpLocatorEventDTO();
