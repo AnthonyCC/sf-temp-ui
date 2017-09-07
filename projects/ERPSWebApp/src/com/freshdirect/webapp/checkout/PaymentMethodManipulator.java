@@ -260,11 +260,11 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 				if(paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.ECHECK) || paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.CREDITCARD) 
 						|| paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.DEBITCARD)){
 				if(paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.ECHECK)){
-					if(FDCustomerManager.isECheckRestricted(info.getIdentity()) || FDCustomerManager.isOnAlert(info.getIdentity().getErpCustomerPK(), EnumAlertType.ECHECK.getName())){
+			/*		if(FDCustomerManager.isECheckRestricted(info.getIdentity()) || FDCustomerManager.isOnAlert(info.getIdentity().getErpCustomerPK(), EnumAlertType.ECHECK.getName())){
 						result.addError(new ActionError("verificationFailed",SystemMessageList.MSG_DEFAULT_PAYMENT_VERIVICATION_FAILURE));
-					}else{
+					}else{*/
 					auth = FDCustomerManager.verifyCard(info, paymentMethod, true);
-					}
+					//}
 				}else if(paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.CREDITCARD) || paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.DEBITCARD)){
 					try {
 						if(paymentMethod.isAvsCkeckFailed() && !paymentMethod.isBypassAVSCheck()){
@@ -276,15 +276,19 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 						}
 					} catch (ErpTransactionException e) {
 						LOGGER.error(e);
+						throw new FDResourceException(e);
 					} catch (ErpAuthorizationException e) {
 						LOGGER.error(e);
+						throw new FDResourceException(e);
 					}
 				}
 				if(null == auth || !auth.isApproved()){
 					result.addError(new ActionError("verificationFailed",SystemMessageList.MSG_DEFAULT_PAYMENT_VERIVICATION_FAILURE));
 				}
 				}
+				if(result.isSuccess()){
 				FDCustomerManager.setDefaultPaymentMethod( info, pmPK, EnumPaymentMethodDefaultType.DEFAULT_CUST, true );
+				}
 			user.refreshFdCustomer();
 			}
 			
