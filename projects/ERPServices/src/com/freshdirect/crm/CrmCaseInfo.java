@@ -481,4 +481,21 @@ public class CrmCaseInfo extends ModelSupport implements CrmCaseI {
 	public String getSubjectCode() {
 		return subjectCode;
 	}
+	//Implemented for Storefront 2.0 . Do not use for Storefront 1.0
+	 public void setOrigin(CrmCaseOrigin oldOrigin,CrmCaseOrigin newOrigin) {
+	        this.originCode = newOrigin == null ? null : newOrigin.getCode();
+	        this.firePropertyChange("origin", oldOrigin, newOrigin);
+	   }
+	 public void setSubject(CrmCaseSubject oldSubject , CrmCaseSubject newSubject) {
+	        this.subjectCode = newSubject == null ? null : newSubject.getCode();
+	        this.firePropertyChange("subject", oldSubject, newSubject);
+	    }
+	 public void setPriority(CrmCasePriority oldPriority , CrmCasePriority newPriority) {
+	        this.priorityCode = newPriority == null ? null : newPriority.getCode();
+	        this.firePropertyChange("priority", oldPriority, newPriority);
+	   }
+	 public void setState(CrmCaseState oldState,CrmCaseState newState) {
+	        this.stateCode = newState == null ? null : newState.getCode();
+	        this.firePropertyChange("state", oldState, newState);
+	    }
 }
