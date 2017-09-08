@@ -1131,3 +1131,7 @@ button.standing-orders-3-so-settings-item-name-change:focus,#quickshop .qs-tabs 
 /* a.header-logo:focus{ */
 /* 	outline: #5fb069 solid 2px !important; */
 /* } */
+a.lv-link:focus {
+    outline: 2px solid #5fb069;
+    display: inline-block;
+}
