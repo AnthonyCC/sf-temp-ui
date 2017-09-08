@@ -44,6 +44,12 @@ public class QuickShopRecommenderPotatoTag extends SimpleTagSupport {
             carousels = QuickShopCarouselService.defaultService().populateTabsRecommendationsAndCarousel(request, user, input);
 			carousels.getRecommendationTabs().add(0, new RecommendationTab(QuickShopCrazyQuickshopRecommendationService.defaultService().getTheCrazyQuickshopTitle(null),
                     QuickShopCrazyQuickshopRecommendationService.QUICKSHOP_VIRTUAL_SITE_FEATURE));
+			boolean isFirstTab = true;
+			for(RecommendationTab tab : carousels.getRecommendationTabs()){
+				tab.setSelected(isFirstTab);
+				isFirstTab = false;
+			}
+			
 		} catch (Exception e) {
 			LOGGER.error("recommendation failed", e);
 		}
