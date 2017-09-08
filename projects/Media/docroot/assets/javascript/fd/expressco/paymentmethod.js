@@ -30,13 +30,6 @@ var FreshDirect = FreshDirect || {};
 				if( ($("#cartcontent").length > 0) && (templateRendered.length > 1) ) {
 					$("#cartcontent").html( templateRendered );
 				}
-
-				// update oas
-				try {
-					fd.modules.common.updateOAS(OAS_url, 'www.freshdirect.com/XCpaymentpromo', OAS_rns, ['FirstECheckPromo'], OAS_query);
-				} catch (e) {
-					console.trace(e);
-				}
 			}
 		},
 		contentTemplate: {

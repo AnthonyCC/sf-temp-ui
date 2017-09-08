@@ -58,7 +58,9 @@
   	<div class="drawer__previewitem__button__section">
     {if $payments and length($payments) > 0}
     	<button class='cssbutton orange' data-component="pickmethodbutton">Pick a Method</button>
-    
+    	<div id="oas_b_FirstECheckPromo" class="oas-cnt" data-component="addpaymentmethodbutton" aria-haspopup="true" data-showechecktab='addpaymentmethod_bank'>
+			<script>fd.modules.common.updateOAS(OAS_url, 'www.freshdirect.com/XCpaymentpromo', OAS_rns, ['FirstECheckPromo'], OAS_query);</script>
+		</div>
     	{if $mpEwalletStatus or $ppEwalletStatus}
 			<div class="external-payments">
 				{call .externalpaymentsseparator /}
@@ -75,7 +77,9 @@
 		{/if}
     {else}
 		<button aria-haspopup="true" class='cssbutton orange' data-component="addpaymentmethodbutton" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Add a Method</button>
-
+		<div id="oas_b_FirstECheckPromo" class="oas-cnt" data-component="addpaymentmethodbutton" aria-haspopup="true" data-showechecktab='addpaymentmethod_bank'>
+			<script>fd.modules.common.updateOAS(OAS_url, 'www.freshdirect.com/XCpaymentpromo', OAS_rns, ['FirstECheckPromo'], OAS_query);</script>
+		</div>
 		{if $mpEwalletStatus or $ppEwalletStatus}
 			<div class="external-payments">
 				{call .externalpaymentsseparator /}
@@ -389,6 +393,7 @@
   {/if}
 </div>
 <div id="oas_b_FirstECheckPromo" class="oas-cnt" data-component="addpaymentmethodbutton" aria-haspopup="true" data-showechecktab='addpaymentmethod_bank'>
+	<script>fd.modules.common.updateOAS(OAS_url, 'www.freshdirect.com/XCpaymentpromo', OAS_rns, ['FirstECheckPromo'], OAS_query);</script>
 </div>
 {/template}
 
