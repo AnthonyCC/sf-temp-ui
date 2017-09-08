@@ -155,9 +155,11 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 
         @Override
         public int doCompare(SkuModel sku1, SkuModel sku2, FDProductInfo pi1, FDProductInfo pi2) {
-                if (pi1.getZonePriceInfo(zoneInfo).getDefaultPrice() > pi2.getZonePriceInfo(zoneInfo).getDefaultPrice()) {
+                if (pi1!=null && pi1.getZonePriceInfo(zoneInfo)!=null && pi2!=null && pi2.getZonePriceInfo(zoneInfo)!=null && 
+                		pi1.getZonePriceInfo(zoneInfo).getDefaultPrice() > pi2.getZonePriceInfo(zoneInfo).getDefaultPrice()) {
                     return 1;
-                } else if (pi1.getZonePriceInfo(zoneInfo).getDefaultPrice() < pi2.getZonePriceInfo(zoneInfo).getDefaultPrice()) {
+                } else if (pi1!=null && pi1.getZonePriceInfo(zoneInfo)!=null && pi2!=null && pi2.getZonePriceInfo(zoneInfo)!=null &&
+                		pi1.getZonePriceInfo(zoneInfo).getDefaultPrice() < pi2.getZonePriceInfo(zoneInfo).getDefaultPrice()) {
                     return -1;
                 } else {
                     return 0;
