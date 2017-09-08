@@ -97,7 +97,6 @@ var checkout;
 
 					this.popup.show($t);
 					this.popup.clicked = true;
-					$( ((this.popupConfig.overlayExtraClass).replace(/\s/g,'.')) +':first').show(); /* force ghost on */
 
 					this.noscroll(true);
 				}
@@ -117,19 +116,20 @@ var checkout;
 	debitswitchnotice.listen();
 	fd.modules.common.utils.register('common', 'debitswitchnotice', debitswitchnotice, fd);
 
-	//auto-open enabled and on checkout
-	if (fd.properties.isDebitSwitchNoticeEnabled && window.location.pathname.indexOf('/expressco/checkout.jsp') !== -1) {
-
-		//check cookie
-		var cookieValue = fd.modules.common.utils.readCookie(COOKIENAME);
-		//var sessionId = fd.modules.common.utils.getJSessionId();
-		if (cookieValue === null) {
-			//show
-			debitswitchnotice.open();
-			
-			//mark as seen
-			fd.modules.common.utils.createCookie(COOKIENAME,'seen@'+new Date());
+	$(document).ready(function() {
+		//auto-open enabled and on checkout
+		if (fd.properties.isDebitSwitchNoticeEnabled && window.location.pathname.indexOf('/expressco/checkout.jsp') !== -1) {
+			//check cookie
+			var cookieValue = fd.modules.common.utils.readCookie(COOKIENAME);
+			//var sessionId = fd.modules.common.utils.getJSessionId();
+			if (cookieValue === null) {
+				//show
+				fd.common.debitswitchnotice.open();
+				
+				//mark as seen
+				fd.modules.common.utils.createCookie(COOKIENAME,'seen@'+new Date());
+			}
 		}
-	}
+	});
 
 }(FreshDirect));
