@@ -6,14 +6,6 @@
 	<shortname>component</shortname>
 	<info>FreshDirect display components</info>
 	<tag-file>
-		<name>recommenderCarousel</name>
-		<path>/WEB-INF/shared/tags/recommenderCarousel.tag</path>
-	</tag-file>
-	<tag-file>
-		<name>recommenderCarouselLight</name>
-		<path>/WEB-INF/shared/tags/soyRecommenderCarousel.tag</path>
-	</tag-file>
-	<tag-file>
 		<name>gridCarousel</name>
 		<path>/WEB-INF/shared/tags/gridCarousel.tag</path>
 	</tag-file>
