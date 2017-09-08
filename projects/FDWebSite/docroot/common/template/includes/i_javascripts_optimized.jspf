@@ -3,6 +3,9 @@
 <%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
+<%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
+<%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods" %>
 <%@ page import='com.freshdirect.common.context.MasqueradeContext' %>
 <%@ page import='javax.servlet.http.Cookie' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -52,6 +55,7 @@
     fd.user = {};
     fd.user.recognized = <%= sessionUserLevel == FDUserI.RECOGNIZED %>;
     fd.user.guest = <%= sessionUserLevel == FDUserI.GUEST %>;
+    fd.mobWeb = <%= FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, jsUser) && JspMethods.isMobile(request.getHeader("User-Agent")) %>;
     fd.user.isZipPopupUsed = <%= hideZipCheckPopup %>;
     fd.user.zipCode = '<%= zipCode %>';
     fd.user.cohortName = '<%= cohortName %>';

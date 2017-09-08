@@ -67,6 +67,11 @@ input[type="checkbox"].paymentDef:hover + label::before {
 	background: transparent url('/media_stat/images/common/check-radio-hover.svg') center center no-repeat;
 	background-size: 125%;
 }
+/* Hover: force in mobweb, hover doesn't work */
+.mm-page input[type="checkbox"].paymentDef:hover + label::before {
+	background: transparent url('/media_stat/images/common/check-radio-selected.svg') center center no-repeat;
+	background-size: 125%;
+}
 
 
 /* Disabled */
