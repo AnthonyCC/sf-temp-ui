@@ -301,7 +301,7 @@ public class SapGatewayConverter {
 
 
 
-	private static ErpAbstractOrderModelData buildOrderData(ErpAbstractOrderModel abstractModel) {
+	public  static ErpAbstractOrderModelData buildOrderData(ErpAbstractOrderModel abstractModel) {
 		ErpAbstractOrderModelData abstractOrderModelData = new ErpAbstractOrderModelData();
 		if(abstractModel != null){
 		abstractOrderModelData.setOrderLines(buildOrderLineData(abstractModel.getOrderLines()));
@@ -578,7 +578,7 @@ public class SapGatewayConverter {
 		}
 		return s;
 	}
-	private static  ErpAddressData buildErpAddressData(ErpAddressModel erpAddressModel) {
+	public static  ErpAddressData buildErpAddressData(ErpAddressModel erpAddressModel) {
 		ErpAddressData erpAddressData = new ErpAddressData();
 		buildErpAddress(erpAddressModel, erpAddressData);
 		erpAddressData.setId(erpAddressModel.getId());
