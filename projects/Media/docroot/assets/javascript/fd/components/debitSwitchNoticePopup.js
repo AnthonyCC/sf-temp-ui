@@ -58,7 +58,7 @@ var checkout;
 				zIndex: 2000,
 				openonclick: true,
 				overlay: true,
-				overlayExtraClass: 'centerpopupoverlay',
+				overlayExtraClass: ' centerpopupoverlay debitswitchnotice',
 				align: false,
 				hidecallback: function (e) {
 					/* do nothing extra on overlay click */
@@ -97,6 +97,7 @@ var checkout;
 
 					this.popup.show($t);
 					this.popup.clicked = true;
+					$( ((this.popupConfig.overlayExtraClass).replace(/\s/g,'.')) +':first').show(); /* force ghost on */
 
 					this.noscroll(true);
 				}
