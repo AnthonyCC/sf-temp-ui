@@ -1,7 +1,6 @@
 package com.freshdirect.webapp.ajax.analytics.tag;
 
 import java.io.IOException;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -29,7 +28,6 @@ public class GoogleAnalyticsPotatoTag extends SimpleTagSupport {
     public void doTag() throws JspException, IOException {
         
         PageContext context = (PageContext) getJspContext();
-
         HttpServletRequest request = (HttpServletRequest) context.getRequest();
         HttpSession session = context.getSession();
         FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
@@ -45,15 +43,12 @@ public class GoogleAnalyticsPotatoTag extends SimpleTagSupport {
 
         Boolean socialLoginSuccess = (Boolean) session.getAttribute(SessionName.SOCIAL_LOGIN_SUCCESS);
 
-        @SuppressWarnings("unchecked")
-        Map<String, Object> breadCrumbs = (Map<String, Object>) context.getAttribute("breadCrumbs", PageContext.REQUEST_SCOPE);
 
         try {
             GAPageTypeDistinguisher distinguisher = parseParameters(request);
             context.setAttribute(name,
                     SoyTemplateEngine.convertToMap(
-                            GoogleAnalyticsDataService.defaultService().populateBasicGAData(user, loginType, loginSuccess, signupSuccess, socialLoginSuccess, distinguisher,
-                                    breadCrumbs)));
+                            GoogleAnalyticsDataService.defaultService().populateBasicGAData(user, loginType, loginSuccess, signupSuccess, socialLoginSuccess, distinguisher)));
 
         } catch (FDResourceException e) {
             LOGGER.error("this is the exception: ", e);
