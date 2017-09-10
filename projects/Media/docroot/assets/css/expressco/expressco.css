@@ -66,7 +66,6 @@
   background:#fff;
 }
 
-.checkout__header .header-logo,
 .checkout__header .header-needhelp{
   position:absolute;
 }
@@ -74,6 +73,7 @@
 .checkout__header .header-logo{
   top:5px;
   left:0;
+  margin-top:6px;
 }
 
 .checkout__header .header-needhelp{

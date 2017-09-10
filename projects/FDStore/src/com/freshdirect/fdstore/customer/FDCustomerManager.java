@@ -294,7 +294,7 @@ public class FDCustomerManager {
 			FDCustomerManagerSB sb = managerHome.create();
 			FDUser user = sb.recognize(cookie,eStoreId);
 			
-			populateShoppingCart(user);
+			populateShoppingCart(user, true);
 			
 			return user;
 
@@ -307,7 +307,7 @@ public class FDCustomerManager {
 		}
 	}
 
-	private static void populateShoppingCart(FDUser user)
+	private static void populateShoppingCart(FDUser user, boolean updateUserState)
 			throws FDResourceException {
 
 		assumeDeliveryAddress(user);
@@ -316,8 +316,8 @@ public class FDCustomerManager {
 
 		user.getShoppingCart().doCleanup();
 		classifyUser(user);
-
-		user.updateUserState();
+		if (updateUserState)
+			user.updateUserState();
 		//user.resetPricingContext();
 		updateZoneInfo(user);
 		restoreReservations(user);
@@ -327,10 +327,18 @@ public class FDCustomerManager {
 		//The method was changed as part of task PERF-22.
 		return recognize(identity, null, null,null);
 	}
+	public static FDUser recognize(FDIdentity identity, boolean updateUserState ) throws FDAuthenticationException, FDResourceException {
+		return recognize(identity, null, null,null, updateUserState);
+	}
 	
 	public static FDUser recognize(FDIdentity identity, MasqueradeContext ctx) throws FDAuthenticationException, FDResourceException {
 		
-		return recognize(identity, null, null, ctx);
+		return recognize(identity, ctx, true);
+	}
+
+	public static FDUser recognize(FDIdentity identity, MasqueradeContext ctx, boolean updateUserState) throws FDAuthenticationException, FDResourceException {
+		
+		return recognize(identity, null, null, ctx, updateUserState);
 	}
 	
 	public static FDUser recognize(FDIdentity identity, EnumEStoreId eStoreId) throws FDAuthenticationException, FDResourceException {
@@ -340,6 +348,10 @@ public class FDCustomerManager {
 	public static FDUser recognize(FDIdentity identity, EnumTransactionSource source) throws FDAuthenticationException, FDResourceException {
 		return recognize(identity, source, null,null);
 	}
+	
+	public static FDUser recognize(FDIdentity identity, EnumTransactionSource source, EnumEStoreId eStoreId,MasqueradeContext ctx) throws FDAuthenticationException, FDResourceException {
+		return recognize(identity, source, eStoreId, ctx, true);
+	}
 	/*
 	 * This new method was added as part of task PERF-22. This method
 	 * will be called directly from CrmGetFDUserTag to set the application
@@ -347,11 +359,11 @@ public class FDCustomerManager {
 	 * object should be loaded before the FDSessionUser object is created
 	 * where it is actually set.
 	 */
-	public static FDUser recognize(FDIdentity identity, EnumTransactionSource source, EnumEStoreId eStoreId,MasqueradeContext ctx) throws FDAuthenticationException, FDResourceException {
+	public static FDUser recognize(FDIdentity identity, EnumTransactionSource source, EnumEStoreId eStoreId,MasqueradeContext ctx, boolean updateUserState) throws FDAuthenticationException, FDResourceException {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
-			FDUser user = sb.recognize(identity, eStoreId);
+			FDUser user = sb.recognize(identity, eStoreId, false, false);
 			
 			user.setApplication(source);
 			user.setMasqueradeContext(ctx);
@@ -359,7 +371,7 @@ public class FDCustomerManager {
 			if(user.isVoucherHolder() && EnumEStoreId.FDX.equals( user.getUserContext().getStoreContext().getEStoreId() )){
 				throw new FDAuthenticationException("voucherredemption");
 			}
-			populateShoppingCart(user);
+			populateShoppingCart(user, updateUserState);
 
 			return user;
 
@@ -386,7 +398,7 @@ public class FDCustomerManager {
 			FDUser user = sb.recognize(identity, eStoreId, true);
 			user.setApplication(source);
 			user.setCrmMode(true);
-			populateShoppingCart(user);
+			populateShoppingCart(user, true);
 
 			return user;
 
@@ -444,9 +456,9 @@ public class FDCustomerManager {
     			ErpAddressModel address = null;
     			try {
     				if(partentOrderId!=null)
-    					address=sb.assumeDeliveryAddress(identity, partentOrderId);
+    					address = sb.assumeDeliveryAddress(identity, partentOrderId, null);
     				else
-    					address=sb.assumeDeliveryAddress(identity, user.getOrderHistory().getLastOrderId());
+    					address = sb.assumeDeliveryAddress(identity, null, user);
     			}catch(Exception e) {}
 
     			if(address != null && user.getShoppingCart() != null){
@@ -845,11 +857,26 @@ public class FDCustomerManager {
 
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
-			sb.addPaymentMethod(info, paymentMethod, paymentechEnabled);
+			sb.addPaymentMethod(info, paymentMethod, paymentechEnabled);			
 			
-			if(isDebitCardSwitch && !getpaymentMethodDefaultType(info.getIdentity().getFDCustomerPK()).
-					getName().equals(EnumPaymentMethodDefaultType.DEFAULT_CUST.getName())){
-				updatePaymentMethodDefaultCard(info, isDebitCardSwitch);
+			
+			if (isDebitCardSwitch) {
+				String paymentMethodDefaultType = getpaymentMethodDefaultType(info.getIdentity().getFDCustomerPK()).getName();
+				if (!paymentMethodDefaultType.equals(EnumPaymentMethodDefaultType.DEFAULT_CUST.getName())) {
+					if (info.getSource().equals(EnumTransactionSource.CUSTOMER_REP)){
+							if(!paymentMethodDefaultType.equals(EnumPaymentMethodDefaultType.UNDEFINED.getName())) {
+								resetDefaultPaymentValueType(info.getIdentity().getFDCustomerPK());
+							}else{
+								return;
+							}
+					} else {
+						Collection<ErpPaymentMethodI> paymentMethods = getPaymentMethods(info.getIdentity());
+						List<ErpPaymentMethodI> paymentMethodList = new ArrayList<ErpPaymentMethodI>(paymentMethods);
+						if (PaymentMethodUtil.isNewCardHigherPrioriy(paymentMethod, paymentMethodList)) {
+							updatePaymentMethodDefaultCard(info, isDebitCardSwitch, false, paymentMethods);
+						}
+					}
+				}
 			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -861,9 +888,8 @@ public class FDCustomerManager {
 	}
 
 
-	private static void updatePaymentMethodDefaultCard(FDActionInfo info, boolean isDebitCardSwitch) throws FDResourceException {
-		Collection<ErpPaymentMethodI> paymentMethods = getPaymentMethods(info.getIdentity());
-		ErpPaymentMethodI defaultPayment = PaymentMethodUtil.getSystemDefaultPaymentMethod(info, paymentMethods);
+	private static void updatePaymentMethodDefaultCard(FDActionInfo info, boolean isDebitCardSwitch, boolean isVerificationRequired, Collection<ErpPaymentMethodI> paymentMethods) throws FDResourceException {
+		ErpPaymentMethodI defaultPayment = PaymentMethodUtil.getSystemDefaultPaymentMethod(info, paymentMethods, isVerificationRequired);
 		setDefaultPaymentMethod(info, defaultPayment.getPK(), EnumPaymentMethodDefaultType.DEFAULT_SYS, isDebitCardSwitch);		
 	}
 
@@ -1054,9 +1080,26 @@ public class FDCustomerManager {
 			FDCustomerManagerSB sb = managerHome.create();
 			sb.removePaymentMethod(info, paymentMethod);
 			
-			if(isDebitCardSwitch && null != paymentMethod && FDCustomerManager.getDefaultPaymentMethodPK(info.getIdentity()).equals(paymentMethod.getPK().getId())){
-				updatePaymentMethodDefaultCard(info, isDebitCardSwitch);
+		
+			if(isDebitCardSwitch && null != paymentMethod){
+				Collection<ErpPaymentMethodI> paymentMethods = getPaymentMethods(info.getIdentity());
+				if(paymentMethods.size() == 0){
+					resetDefaultPaymentValueType(info.getIdentity().getFDCustomerPK());
+				}else{
+				if(info.getSource().equals(EnumTransactionSource.CUSTOMER_REP)){
+					String paymentMethodDefaultType =  getpaymentMethodDefaultType(info.getIdentity().getFDCustomerPK()).getName();
+					if(getDefaultPaymentMethodPK(info.getIdentity()).equals(paymentMethod.getPK().getId()) || 
+							(!getDefaultPaymentMethodPK(info.getIdentity()).equals(paymentMethod.getPK().getId()) && paymentMethodDefaultType.equals(EnumPaymentMethodDefaultType.DEFAULT_SYS.getName()))){
+						resetDefaultPaymentValueType(info.getIdentity().getFDCustomerPK());
+				}else{ 
+					return;
+				}
+			}
+			else if(FDCustomerManager.getDefaultPaymentMethodPK(info.getIdentity()).equals(paymentMethod.getPK().getId())){
+				updatePaymentMethodDefaultCard(info, isDebitCardSwitch, true, paymentMethods);
+				}
 			}	
+			}
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -4675,7 +4718,7 @@ public class FDCustomerManager {
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
 			FDUser user = sb.getFDUserWithCart(identity,  eStoreId);
-			populateShoppingCart(user);
+			populateShoppingCart(user, true);
 
 			return user.getShoppingCart();
 

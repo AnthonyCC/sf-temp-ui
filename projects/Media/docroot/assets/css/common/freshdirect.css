@@ -1,3 +1,18 @@
+body[developer] *:focus {
+   outline: #5fb069 solid 2px !important;
+  
+}
+:focus{
+	outline: #5fb069 solid 2px;
+}
+/* exceptions for focus */
+
+div#skip_to_content,.locabar-tab-fdx-cont,body:focus,html:focus,div:focus,*:active,a.accessibleOutlineFF:focus,cssbutton:focus,tr:focus,td:focus,fieldset:focus{
+	outline:none;
+}
+.portrait-item-header-name{
+	display:block;
+}
 /* disable ipad highlight */
 * {
   -webkit-tap-highlight-color: transparent;
@@ -930,6 +945,9 @@ section.main .leftnav .menuBox button.category.emptypopup {
     font-weight: bold;
     color: #333;
 }
+.wallet-title-footer {
+	padding-top: 20px;
+}
 .errorcontainer span.error em {
   font-style: normal;
   text-transform: lowercase;
@@ -990,7 +1008,6 @@ section.main .leftnav .menuBox li.selected:hover input[type="radio"] + span {
     left: 19px;
     cursor: pointer;
 }
-.wallet-first-card{ padding-left: 18px;}
 #PP-connect{
 	float: left;
     vertical-align: middle;
@@ -1095,4 +1112,26 @@ section.main .leftnav .menuBox li.selected:hover input[type="radio"] + span {
 	border:1px inset;
 	user-select:none;
 	width:60px;
+}
+button.quantity_minus:focus,button.quantity_plus:focus,a.quantity_minus:focus,a.quantity_plus:focus{
+    background-color: #5fb067 !important;
+    border-color: #306238 !important;
+    box-shadow: 0 0 1px #aaaaaa, 0 0 8px #aaaaaa;
+    outline:none !important;
+}
+a.menu-header.header-skin.reset-link:focus{
+	background-color: #5fb067 !important;
+    border-color: #306238 !important;
+    box-shadow: 0 0 1px #aaaaaa, 0 0 8px #aaaaaa;
+	
+}
+button.standing-orders-3-so-settings-item-name-change:focus,#quickshop .qs-tabs a:focus {
+    text-decoration:underline !important;
+}
+/* a.header-logo:focus{ */
+/* 	outline: #5fb069 solid 2px !important; */
+/* } */
+a.lv-link:focus {
+    outline: 2px solid #5fb069;
+    display: inline-block;
 }

@@ -5,6 +5,7 @@ import java.util.List;
 public class FormPaymentData {
 
 	private String selected;
+	private boolean isDefault = false;
 	private List<PaymentData> payments;
 	private boolean coveredByGiftCard;
 	private boolean backupPaymentRequiredForGiftCard;
@@ -129,5 +130,12 @@ public class FormPaymentData {
 		this.walletErrorMsg = walletErrorMsg;
 	}
 
+	public boolean isDefault() {
+		return isDefault;
+	}
+
+	public void setDefault(boolean isDefault) {
+		this.isDefault = isDefault;
+	}
     
 }

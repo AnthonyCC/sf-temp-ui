@@ -1,0 +1,98 @@
+.paymentMethod-cont{
+	display: inline-block;
+	word-wrap: break-word;
+	max-width: 270px;
+	min-height: 300px;
+	position: relative;
+}
+.paymentinfoerror-cont {
+	display: inline-block;
+	word-wrap: break-word;
+	max-width: 420px;
+	position: relative;
+	margin: 20px 30px;
+}
+.paymentMethod-buttons-cont {
+	position: absolute;
+	bottom: 0;
+}
+.paymentinfoerror-buttons-cont {
+	margin-top: 20px;
+	text-align: right;
+}
+.paymentinfoerror-buttons-cont .cssbutton {
+	min-width: 100px;
+}
+
+/* Default */
+input[type="checkbox"].paymentDef {
+	position: absolute;
+	left: -999em;
+}
+input[type="checkbox"].paymentDef + label{
+	font-weight: normal;
+	cursor: pointer;
+}
+input[type="checkbox"].paymentDef + label::before{
+	background: transparent url('/media_stat/images/common/check-radio-unselected.svg') center center no-repeat;
+	box-shadow: 0 0 0 1px #d4d4d4;
+	content: '\a0';
+	display: inline-block;
+	height: 17px;
+	width: 17px;
+	line-height: 14px;
+	margin-right: 10px;
+	vertical-align: 2px;
+	border-radius: 10px;
+	background-size: 125%;
+}
+
+
+/* Selected */
+input[type="checkbox"].paymentDef:checked + label::before {
+	background: #4fa157 url('/media_stat/images/common/check-radio-selected.svg') center center no-repeat;
+	box-shadow: 0 0 0 1px #4fa157;
+	background-size: 125%;
+}
+
+
+/* Focused */
+input[type="checkbox"].paymentDef:focus + label::before {
+	box-shadow: 0 0 0 1px #ffffff, 0 0 0 3px #4fa157;
+	background-size: 125%;
+}
+
+/* Hover */
+input[type="checkbox"].paymentDef:hover + label::before {
+	background: transparent url('/media_stat/images/common/check-radio-hover.svg') center center no-repeat;
+	background-size: 125%;
+}
+/* Hover: force in mobweb, hover doesn't work */
+.mm-page input[type="checkbox"].paymentDef:hover + label::before {
+	background: transparent url('/media_stat/images/common/check-radio-selected.svg') center center no-repeat;
+	background-size: 125%;
+}
+
+
+/* Disabled */
+input[type="checkbox"].paymentDef:disabled + label {
+	color: #858585;
+}
+input[type="checkbox"].paymentDef:disabled + label::before{
+	background-image: none;
+	background: #dddddd;
+	box-shadow: 0 0 0 1px #d4d4d4;
+	cursor: not-allowed;
+}
+
+.c-popup.paymentinfoerror {
+	position: static;
+	display: inline-block;
+	vertical-align: middle;
+	text-align: left;
+}
+/* don't use display none on the header, or the close button is hidden too */
+.c-popup.paymentinfoerror .c-popup-header {
+	height: 0px;
+	margin: 0;
+}

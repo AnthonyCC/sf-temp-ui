@@ -6,6 +6,7 @@ public class FDIdentity implements java.io.Serializable {
 	
 	private final String erpCustomerPK;
 	private final String fdCustomerPK;
+	private boolean active;
     
 	public FDIdentity(String erpCustomerPK, String fdCustomerPK) {
 		this.erpCustomerPK = erpCustomerPK;
@@ -23,7 +24,14 @@ public class FDIdentity implements java.io.Serializable {
 	public String getFDCustomerPK() {
 		return this.fdCustomerPK;
 	}
-
+	
+	public boolean isActive() {
+		return this.active;
+	}
+	
+	public void setActive(boolean active) {
+		this.active = active;
+	}
 	public String toString() {
 		return "FDIdentity[" + this.erpCustomerPK + "," + this.fdCustomerPK + "]";
 	}

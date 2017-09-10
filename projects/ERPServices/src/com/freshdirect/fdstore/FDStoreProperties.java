@@ -65,6 +65,7 @@ public class FDStoreProperties {
     private final static String PROP_CONTENTMANAGER_HOME = "fdstore.ContentManager.home";
     private final static String PROP_FDCUSTOMER_HOME = "fdstore.fdcustomer.home";
     private final static String PROP_ERPCUSTOMER_HOME = "fdstore.erpcustomer.home";
+    private final static String PROP_ERPCUSTOMERINFO_HOME = "fdstore.erpcustomerinfo.home";
     private final static String PROP_CONTFACTORY_HOME = "fdstore.contentFactory.home";
     private final static String PROP_FDORDER_HOME = "fdstore.fdorder.home";
     private final static String PROP_DLV_INSTRUCTION_SPECIAL_CHAR = "fdstore.address.validation";
@@ -110,6 +111,7 @@ public class FDStoreProperties {
     private final static String PROP_PRODUCT_CACHE_SIZE = "fdstore.product.cache.size";
     private final static String PROP_ZONE_CACHE_SIZE = "fdstore.zone.cache.size";
     private final static String PROP_GRP_CACHE_SIZE = "fdstore.grp.cache.size";
+    private final static String PROP_MEDIACONTENT_CACHE_SIZE = "fdstore.mediaConent.cache.size";
     private final static String PROP_CMS_MOSTLY_READONLY = "fdstore.cms.readonly.optimization";
     private final static String PROP_PRELOAD_STORE = "fdstore.preLoad";
     private final static String PROP_PRELOAD_PROMOTIONS = "fdstore.preLoad.promotions";
@@ -955,8 +957,15 @@ public class FDStoreProperties {
     private final static String IBM_CLIENT_SECRET = "fdstore.ibm.client.secret";
     private final static String IBM_REFRESH_TOKEN = "fdstore.ibm.refresh.token";
 	private static final String PAYMENT_TLSSHA_ENABLED = "fdstore.payment.tls.sha.enabled";
-    private final static String GOOGLE_ANALYTICS_TRACKING_ID = "fdstore.ga.tracking.id";
 
+    
+    private static final String PROP_REFRESHZONE_ENABLED = "fdstore.refresh.zone.enabled";
+    
+    private static final String GLOBAL_SF2_0_ENABLED = "fdstore_sf20_global_enabled";
+    
+    private static final String PROP_DEBIT_SWITCH_NOTICE_ENABLED = "fdstore.debitCardSwitchNotice.enabled";
+    
+    private static final String PROP_LOG_AKAMAI_HEADER_ENABLED = "fdstore.akamai.edgescape.header.logging.enabled";
  
     public final static long TEN_DAYS_IN_MILLIS = 1000 * 60 * 60 * 24 * 10;    
     
@@ -993,6 +1002,7 @@ public class FDStoreProperties {
         defaults.put(PROP_FDCUSTOMER_HOME, "freshdirect.fdstore.Customer");
         defaults.put(PROP_EMAIL_PROMOTION, "PromotionNotification@freshdirect.com");
         defaults.put(PROP_ERPCUSTOMER_HOME, "freshdirect.erp.Customer");
+        defaults.put(PROP_ERPCUSTOMERINFO_HOME, "freshdirect.erp.CustomerInfo");
         defaults.put(PROP_CONTFACTORY_HOME, "freshdirect.content.ContentFactory");
         defaults.put(PROP_FDORDER_HOME, "freshdirect.fdstore.Order");
         // checks for all special characters
@@ -1057,6 +1067,7 @@ public class FDStoreProperties {
         defaults.put(PROP_PRODUCT_CACHE_SIZE, "45000");
         defaults.put(PROP_ZONE_CACHE_SIZE, "10000");
         defaults.put(PROP_GRP_CACHE_SIZE, "10000");
+        defaults.put(PROP_MEDIACONTENT_CACHE_SIZE, "5000000");
         // mktadmin
         defaults.put(MKT_ADMIN_FILE_UPLOAD_SIZE, "2000");
 
@@ -1420,7 +1431,7 @@ public class FDStoreProperties {
         defaults.put(PROP_COUNTRY_INFO_REFRESH_INTERVAL, "5");
 
         // APPDEV-6030 Google Tag Manager
-        defaults.put(PROP_GOOGLE_TAG_MANAGER_KEY, "GTM-KFMTML");
+        defaults.put(PROP_GOOGLE_TAG_MANAGER_KEY, "GTM-TMBSNJH");//GTM-KFMTML");
         // APPDEV-6285 support multiple environments in GTM
         defaults.put(PROP_GOOGLE_TAG_MANAGER_AUTH_TOKEN, "");
         defaults.put(PROP_GOOGLE_TAG_MANAGER_PREVIEW_ID, "");
@@ -1737,8 +1748,8 @@ public class FDStoreProperties {
 
         defaults.put(PROP_EDT_EST_TIMESLOT_CONVERSION_ENABLED, false);// It should be 'true' only for FDX.
 
-        defaults.put(PROP_EWALLET_PAYPAL_ENABLED, true);
-        defaults.put(PROP_EWALLET_MASTERPASS_ENABLED, true);
+        defaults.put(PROP_EWALLET_PAYPAL_ENABLED, "true");
+        defaults.put(PROP_EWALLET_MASTERPASS_ENABLED, "true");
         defaults.put(PROP_HOOK_LOGIC_BLACKHOLE_ENABLE, "false");
         defaults.put(PROP_HOOK_LOGIC_CATEGORY_ENABLE, "true");
         defaults.put(PROP_HOOK_LOGIC_ORDER_FEED_MINS, "15");// default is last 15 mins orders.
@@ -1827,8 +1838,14 @@ public class FDStoreProperties {
         defaults.put(IBM_CLIENT_SECRET, "5f154ee0-bae6-4833-9ce2-e013b1b3c7d5");
         defaults.put(IBM_REFRESH_TOKEN, "r_3872jS_Gh7VmanX2TcazBB_MJ1C_RBqbJWY6gvh3koS1");
         defaults.put(PAYMENT_TLSSHA_ENABLED,"false");
-        defaults.put(GOOGLE_ANALYTICS_TRACKING_ID, "UA-20535945-18");
         defaults.put(PROP_PAYMENT_VERIFICATION_ENABLED, "false");
+        defaults.put(GLOBAL_SF2_0_ENABLED, "false");
+        
+        //DCS-23
+        defaults.put(PROP_DEBIT_SWITCH_NOTICE_ENABLED, "true");
+        
+        defaults.put(PROP_LOG_AKAMAI_HEADER_ENABLED,"true");
+        
         refresh();
     }
 
@@ -2013,6 +2030,10 @@ public class FDStoreProperties {
         return get(PROP_ERPCUSTOMER_HOME);
     }
 
+    public static String getErpCustomerInfoHome() {
+        return get(PROP_ERPCUSTOMERINFO_HOME);
+    }
+
     public static String getContentFactoryHome() {
         return get(PROP_CONTFACTORY_HOME);
     }
@@ -2137,6 +2158,9 @@ public class FDStoreProperties {
         return Integer.parseInt(get(PROP_GRP_CACHE_SIZE));
     }
 
+    public static int getMediaContentCacheSize() {
+    	return Integer.parseInt(get(PROP_MEDIACONTENT_CACHE_SIZE));
+    }
     public static String getProductEmail() {
         return get(PROP_EMAIL_PRODUCT);
     }
@@ -4032,7 +4056,7 @@ public class FDStoreProperties {
         return get(PROP_PAYPAL_API_URL);
     }
     public static String getOrbitalAPIUrl() {
-        return get(PROP_PAYPAL_API_URL);
+        return get(PROP_ORBITAL_API_URL);
     }
     public static String getOMSAPIUrl() {
         return get(PROP_OMS_API_URL);
@@ -4551,10 +4575,7 @@ public class FDStoreProperties {
     }
 
     public static boolean isSF2_0_AndServiceEnabled(String beanName) {
-        return ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue()&&FDEcommProperties.isServiceEnabled(beanName));
-    }
-    private static boolean isStorefront2_0Enabled() {
-        return (Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue();
+    	return FDStoreProperties.isGlobalSF2_0PropertyEnabled() || ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue()&&FDEcommProperties.isServiceEnabled(beanName));
     }
 
     public static boolean isMealBundleCartonLinkEnabled() {
@@ -4690,9 +4711,19 @@ public class FDStoreProperties {
 		return (Boolean.valueOf(get(PAYMENT_TLSSHA_ENABLED))).booleanValue();
 	}
 
+	public static boolean isRefreshZoneInfoEnabled() {
+		return (Boolean.valueOf(get(PROP_REFRESHZONE_ENABLED))).booleanValue();
+	}
 
-    public static String getGoogleAnalyticsTrackingId() {
-        return get(GOOGLE_ANALYTICS_TRACKING_ID);
+	public static boolean isGlobalSF2_0PropertyEnabled() {
+		return (Boolean.valueOf(get(GLOBAL_SF2_0_ENABLED))).booleanValue();
+		}
+
+    public static boolean isDebitSwitchNoticeEnabled() {
+        return (Boolean.valueOf(get(PROP_DEBIT_SWITCH_NOTICE_ENABLED))).booleanValue();
     }
-
+    
+    public static boolean isLoggingAkamaiEdgescapgeHeaderInfoEnabled() {
+        return (Boolean.valueOf(get(PROP_LOG_AKAMAI_HEADER_ENABLED))).booleanValue();
+    }
 }

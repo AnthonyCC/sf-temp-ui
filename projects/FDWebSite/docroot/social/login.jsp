@@ -103,11 +103,11 @@
 								<tr>
 									<td></td>
 									<td style="padding-top: 15px;">
-										<a href="#sign-in" id="signinbtn" tabindex="3">
+										
 											<input
 												type="submit" id="signinbtn" class="button_disabled"
-												maxlength="25" size="19" value="Sign in" disabled />
-										</a>
+												maxlength="25" size="19" value="Sign in" tabindex="3" disabled/>
+										
 									</td>
 								</tr>
 								<tr>
@@ -145,9 +145,16 @@
 				<div id="social_login_demo" class="social-login-social" tabindex="5">
 					<input type="hidden" id="social-login-callback-uri" 
 					value="<%=FDStoreProperties.isLocalDeployment()?"//" + request.getServerName() + ":" + request.getServerPort() + "/social/social_login_success.jsp" : "" %>" />
-					<script type="text/javascript" async
-						src="//<%=site_subdomain%><%=site_post_url%>/socialize/library.js"></script>
-
+					<script type="text/javascript">
+				    	/* The library is loaded asynchronously */
+					    var oa = document.createElement('script');
+					    oa.type = 'text/javascript'; oa.async = true;
+					    oa.src = '//<%=site_subdomain%><%=site_post_url%>/socialize/library.js';
+					    var s = document.getElementById('social_login_demo');
+					    s.appendChild(oa);
+				         
+				  	</script>
+					
 				</div>
 				<% }
 				%>

@@ -331,6 +331,7 @@ public class EwalletService {
 				requestData.setFdActionInfo(ewalletRequest.getFdActionInfo());
 				requestData.setEnumeWalletType(EnumEwalletType.getEnum(ewalletRequest.geteWalletType()));
 				requestData.setCustomerId(ewalletRequest.getCustomerId());
+				requestData.setDebitCardSwitch(ewalletRequest.getFdActionInfo().isDebitCardSwitch());
 				
 				EwalletResponseData ewalletResponseData = mobileRequestProcessor.disconnectWallet(requestData);
 				Map<String, String> result = ewalletResponseData.getResParam();

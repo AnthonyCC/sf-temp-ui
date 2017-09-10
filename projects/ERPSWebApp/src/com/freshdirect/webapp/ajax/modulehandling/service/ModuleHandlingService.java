@@ -191,7 +191,7 @@ public final class ModuleHandlingService {
             ModuleData moduleData = entry.getValue();
 
             if (moduleData.getImageGridData() == null && moduleData.getOpenHTMLEditorial() == null && moduleData.getIcons() == null) {
-                if (moduleData.getProducts().size() < 3) {
+                if (moduleData.getProducts().size() < 3 && moduleData.getAdProducts().size() == 0) {
                     for (ModuleConfig moduleConfig : moduleConfigs) {
                         if (moduleConfig.getModuleId() == key) {
                             filteredModuleConfigs.remove(moduleConfig);

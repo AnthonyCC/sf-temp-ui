@@ -5,6 +5,7 @@ import java.text.ParseException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.context.MasqueradeContext;
@@ -116,7 +117,13 @@ public class ChooseTimeslotAction extends WebActionSupport {
 					} else {
 				String addressId = "";
 				if (!(erpAddress instanceof ErpDepotAddressModel)) {
-					FDDeliveryZoneInfo zoneInfo = AddressUtil.getZoneInfo(user, erpAddress, actionResult, timeSlot.getStartDateTime(), user.getHistoricOrderSize(), timeSlot.getRegionSvcType());
+					FDDeliveryZoneInfo zoneInfo = timeSlot.getZoneInfo();
+					
+					if(zoneInfo == null 
+							|| StringUtils.isEmpty(zoneInfo.getZoneId()) 
+							|| FDStoreProperties.isRefreshZoneInfoEnabled()){
+						zoneInfo = AddressUtil.getZoneInfo(user, erpAddress, actionResult, timeSlot.getStartDateTime(), user.getHistoricOrderSize(), timeSlot.getRegionSvcType());
+					}
 					previousZone = cart.getZoneInfo();
 					cart.setZoneInfo(zoneInfo);
 					addressId = erpAddress.getPK().getId();

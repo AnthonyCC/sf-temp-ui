@@ -232,7 +232,7 @@
 		margin-top: 0;
 	}
 	.globalnav_top .topnavitem {
-		float: right;
+        /*float: right; */
 		margin: 9px 0 0 0px;
 		font-family: Verdana;
 		font-size: 14px;

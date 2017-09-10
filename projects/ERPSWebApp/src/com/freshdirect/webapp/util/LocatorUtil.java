@@ -1,5 +1,7 @@
 package com.freshdirect.webapp.util;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,6 +49,10 @@ public class LocatorUtil {
 		    	try {
 	    			//used mocked ip address parameter (for testing) if exists
 			    	String ip = NVL.apply(request.getParameter(IP_LOCATOR_MOCKED_IP_ADDRESS), RequestUtil.getClientIp(request)); 
+			    	
+			    	if(FDStoreProperties.isLoggingAkamaiEdgescapgeHeaderInfoEnabled()){
+			    		logAkamaiEdgescapeHeaderInfo(request);
+			    	}
 		    		IpLocatorData ipLocatorData = IpLocatorClient.getInstance().getData(ip);
 		    		
 		    		IpLocatorEventDTO ipLocatorEventDTO = new IpLocatorEventDTO();
@@ -70,6 +76,30 @@ public class LocatorUtil {
     	
    		return user;
     }
+
+	private static void logAkamaiEdgescapeHeaderInfo(HttpServletRequest request) {
+		try {
+			String akamaiEdgeHeader = request.getHeader("X-Akamai-Edgescape");
+			LOGGER.info("Akamai Edgescape Header: "+akamaiEdgeHeader);				
+			if(akamaiEdgeHeader !=null && akamaiEdgeHeader.length() >0){
+				String[] attributes = akamaiEdgeHeader.split("\\s*,\\s*");
+				if(null !=attributes){
+					for(String attr:attributes) {
+						if(null !=attr){
+							String[] kv = attr.split("=");
+							if("zip"==kv[0]){
+								LOGGER.info("zips from Akamai Edgescape Header: "+kv[1]);
+								break;
+							}
+						}
+					}
+				}
+				
+			}
+		} catch (Exception e) {
+			LOGGER.warn(e);
+		}
+	}
     
     /** based on SiteAccessControllerTag.doStartTag()*/
     private static FDSessionUser createUser(HttpSession session, HttpServletRequest request, HttpServletResponse response, AddressModel address

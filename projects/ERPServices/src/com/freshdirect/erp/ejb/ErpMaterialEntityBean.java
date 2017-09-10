@@ -35,6 +35,7 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.VersionedEntityBeanSupport;
 import com.freshdirect.framework.core.VersionedPrimaryKey;
+import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -275,12 +276,14 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 	public VersionedPrimaryKey ejbFindBySkuCode(String skuCode) throws FinderException {
 
 		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;	
 		try {
 			conn = getConnection();
-			PreparedStatement ps = conn.prepareStatement("select id, version, sap_id, skucode from erps.material where skucode=? and version=(select max(version) from erps.material where skucode=?)");
+			ps = conn.prepareStatement("select id, version, sap_id, skucode from erps.material where skucode=? and version=(select max(version) from erps.material where skucode=?)");
 			ps.setString(1, skuCode);
 			ps.setString(2, skuCode);
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 
 			if (!rs.next()) {
 				throw new ObjectNotFoundException("Unable to find a Material with an SAP ID = " + sapId);
@@ -288,21 +291,15 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 
 			VersionedPrimaryKey vpk = new VersionedPrimaryKey(rs.getString(1), rs.getInt(2), null);
 
-			rs.close();
-			ps.close();
-
 			return vpk;
 
 		} catch (SQLException sqle) {
 			throw new EJBException("Unable to find a Material by its Sku Code: " + sqle.getMessage());
 		} finally {
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException sqle) {
-				throw new EJBException(sqle);
+			DaoUtil.close(rs);
+			DaoUtil.close(ps);
+			DaoUtil.close(conn);
 			}
-		}
 
 	}
 	
@@ -314,12 +311,14 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 	public VersionedPrimaryKey ejbFindBySkuCodeAndVersion(String skuCode, int version) throws FinderException {
 
 		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
 			conn = getConnection();
-			PreparedStatement ps = conn.prepareStatement("select id, version, sap_id, skucode from erps.material where skucode=? and version=?");
+			ps = conn.prepareStatement("select id, version, sap_id, skucode from erps.material where skucode=? and version=?");
 			ps.setString(1, skuCode);
 			ps.setInt(2, version);
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 
 			if (!rs.next()) {
 				throw new ObjectNotFoundException("Unable to find a Material with an SAP ID = " + sapId);
@@ -327,20 +326,14 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 
 			VersionedPrimaryKey vpk = new VersionedPrimaryKey(rs.getString(1), rs.getInt(2), null);
 
-			rs.close();
-			ps.close();
-
 			return vpk;
 
 		} catch (SQLException sqle) {
 			throw new EJBException("Unable to find a Material by its Sku Code: " + sqle.getMessage());
 		} finally {
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException sqle) {
-				throw new EJBException(sqle);
-			}
+			DaoUtil.close(rs);
+			DaoUtil.close(ps);
+			DaoUtil.close(conn);
 		}
 
 	}

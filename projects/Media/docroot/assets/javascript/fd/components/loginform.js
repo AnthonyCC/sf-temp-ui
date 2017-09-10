@@ -12,12 +12,15 @@ var FreshDirect = FreshDirect || {};
 				'change keyup',
 				function() {
 					if ($jq(this).validate().checkForm()) { // form is valid
-						$jq('#signinbtn input').removeClass('button_disabled')
+						$jq('#signinbtn').removeClass('button_disabled')
 								.prop('disabled', false);
+						$jq('#signinbtn').attr("tabindex",3);
+						
 
 					} else { // form is invalid
-						$jq('#signinbtn input').addClass('button_disabled').prop(
+						$jq('#signinbtn').addClass('button_disabled').prop(
 								'disabled', true);
+						$jq('#signinbtn').attr("tabindex",-1);
 					}
 				});
 		$('#fd_login #signinbtn').click(login);
@@ -97,7 +100,7 @@ var FreshDirect = FreshDirect || {};
 			
 			window._oneall.push([ 'social_login', 'set_force_re_authentication', true]);
 			window._oneall.push([ 'social_login', 'set_grid_sizes', [ 1, 2 ] ]);
-			window._oneall.push([ 'social_login', 'set_custom_css_uri', '//www.freshdirect.com/media/social_login/social_login_media.css']);
+			window._oneall.push([ 'social_login', 'set_custom_css_uri', '//'+window.location.host+'/media/social_login/social_login_media.css']);
 			
 			window._oneall.push([ 'social_login', 'set_event', 'on_login_redirect', my_on_login_redirect ]);
 			window._oneall.push(['social_login', 'set_event', 'on_widget_loaded', onWidgetLoaded]);
@@ -109,6 +112,16 @@ var FreshDirect = FreshDirect || {};
 			
 
 		}	
+		// google analytics
+		if (window.ga && fd.gtm && fd.gtm.key) {
+			ga('create', fd.gtm.key, 'auto');
+			ga('set', {
+				  page: '/social/login.jsp',
+				  title: 'Login',
+				  location: window.location.protocol + '//' + window.location.host + '/social/login.jsp'
+			});
+			ga('send', 'pageview');
+		}
 	}
 	
 	function login(e) {
@@ -122,6 +135,10 @@ var FreshDirect = FreshDirect || {};
 		}).then(function(response) {
 			var responseJson = JSON.parse(response);
 			if (responseJson.success) { 
+				if (fd.gtm && fd.gtm.data) {
+						fd.gtm.data.googleAnalyticsData.login.loginAttempt = 'success';
+						fd.gtm.updateDataLayer(fd.gtm.data.googleAnalyticsData);
+				}
 				parent.document.location = sucessTarget || parent.document.location;
 			} else {
 				showError();
@@ -142,6 +159,10 @@ var FreshDirect = FreshDirect || {};
 		$('#email').addClass('error');
 		$('#password_img').addClass('show_bg_arrow');
 		$('#password').addClass('error');
+		if (fd.gtm && fd.gtm.data) {
+            	fd.gtm.data.googleAnalyticsData.login.loginAttempt = 'fail';
+            	fd.gtm.updateDataLayer(fd.gtm.data.googleAnalyticsData);
+		}
 	}
 	// if component is not registered, register
 	if (!fd.components.loginForm) {
@@ -152,5 +173,11 @@ var FreshDirect = FreshDirect || {};
 		fd.modules.common.utils.register("components", "loginForm", loginForm,
 				fd);
 	}
+//	$(window).on('resize', function() {
+//
+//        $jq('.login-ajax-overlay .fixedPopupContent').css({'height': 'auto'});
+//        $jq('.login-ajax-overlay .fixedPopupContent').css({'height': $jq(this).height() + 'px'});
+//        
+//    });
 	
 }(FreshDirect));

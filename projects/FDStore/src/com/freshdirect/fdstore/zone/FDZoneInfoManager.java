@@ -14,6 +14,7 @@ import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.fdstore.zone.ejb.FDZoneInfoHome;
@@ -59,39 +60,33 @@ public class FDZoneInfoManager {
         return zoneInfo;
     }
 
-    public static String findZoneId(String serviceType, String zipCode) throws FDResourceException {
-        String zoneId = null;
-        try {
+	public static String findZoneId(String serviceType, String zipCode) throws FDResourceException {
+		String zoneId = null;
+		try {
+			String cacheKey = serviceType + "," + zipCode;
+			String cachedZoneId = EhCacheUtil.getObjectFromCache(EhCacheUtil.FD_ZONE_ID_CACHE_NAME, cacheKey);
+			if (cachedZoneId != null) {
+				return cachedZoneId;
+			}
+			LOGGER.debug("Service Type:" + serviceType + " ZipCode is:" + zipCode);
+			if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDZoneInfoSB)) {
+				zoneId = FDECommerceService.getInstance().findZoneId(serviceType, zipCode);
+			} else {
+				zoneId = FDServiceLocator.getInstance().getFDZoneInfoSessionBean().findZoneId(serviceType, zipCode);
+			}
+			LOGGER.debug("zoneId found is :" + zoneId);
+			if (zoneId == null) {
+				throw new FDResourceException(
+						"Zone ID not found for serviceType:" + serviceType + ", zipCode:" + zipCode);
+			}
+			EhCacheUtil.putObjectToCache(EhCacheUtil.FD_ZONE_ID_CACHE_NAME, cacheKey, zoneId);
 
-            LOGGER.debug("Service Type:" + serviceType + " ZipCode is:" + zipCode);
-            if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDZoneInfoSB)){
-            	zoneId = FDECommerceService.getInstance().findZoneId(serviceType, zipCode);
-           	}else {
-            zoneId = FDServiceLocator.getInstance().getFDZoneInfoSessionBean().findZoneId(serviceType, zipCode);
-           	}
-            LOGGER.debug("zoneId found is :" + zoneId);
-            if (zoneId == null) {
-                throw new FDResourceException("Zone ID not found for serviceType:" + serviceType + ", zipCode:" + zipCode);
-            }
+		} catch (RemoteException re) {
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+		return zoneId;
 
-        	if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDZoneInfoSB)){
-        		IECommerceService service = FDECommerceService.getInstance();
-        		 LOGGER.debug("Service Type:" + serviceType + " ZipCode is:" + zipCode);
-        		zoneId = service.findZoneId(serviceType, zipCode);
-        	}else
-	            LOGGER.debug("Service Type:" + serviceType + " ZipCode is:" + zipCode);
-	            zoneId = FDServiceLocator.getInstance().getFDZoneInfoSessionBean().findZoneId(serviceType, zipCode);
-	            LOGGER.debug("zoneId found is :" + zoneId);
-	        if (zoneId == null) {
-	        	throw new FDResourceException("Zone ID not found for serviceType:" + serviceType + ", zipCode:" + zipCode);
-	        }
-
-        } catch (RemoteException re) {
-            throw new FDResourceException(re, "Error talking to session bean");
-        }
-        return zoneId;
-        
-    }
+	}
     
     public static String findZoneId(String serviceType, String zipCode, boolean isPickupOnlyORNotServiceble) throws FDResourceException {
         String zoneId = null;

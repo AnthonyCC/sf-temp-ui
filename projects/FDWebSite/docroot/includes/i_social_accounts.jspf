@@ -118,8 +118,9 @@
 						<div class="youraccount_left_2"><input type="image" id="disconnect_social_accounts_facebook" name="disconnect_social_accounts_facebook" src="/media_stat/images/navigation/social_accounts/Disconnect.png" width="62" height="12"  alt="DISCONNECT"></div>
 						<%	} %>		
 		<%	} else { %>														
-						<div class="youraccount_left_1"><img src="/media_stat/images/navigation/social_accounts/ConnectFacebook.png" width="200" height="36" border="0" alt="CONNECT WITH FACEBOOK"
-								onclick="var wf = 580, hf = 500, xf = (screen.width - wf) / 2, yf = (screen.height - hf) / 2; window.open('/social/social_link.jsp?forwardPage=<%=directConnectUrl %>/facebook/&callback_uri=<%=callback_uri%>&service=<%=service %>', '', 'width=' + wf + ', height=' + hf + ', left=' + xf + ',top=' + yf + ', resizable')" ></div>	
+						<a href="#" onclick="var wf = 580, hf = 500, xf = (screen.width - wf) / 2, yf = (screen.height - hf) / 2; window.open('/social/social_link.jsp?forwardPage=<%=directConnectUrl %>/facebook/&callback_uri=<%=callback_uri%>&service=<%=service %>', '', 'width=' + wf + ', height=' + hf + ', left=' + xf + ',top=' + yf + ', resizable')" class="youraccount_left_1">
+						<img src="/media/social_login/FacebookLoginButton.png" width="200" height="36" border="0" alt="CONNECT WITH FACEBOOK">
+								</a>	
 		<%	} 
 			
 			if(connectedWithGoogle){			
@@ -136,8 +137,8 @@
 						<div class="youraccount_left_2"><input type="image" id="disconnect_social_accounts_google" name="disconnect_social_accounts_google" src="/media_stat/images/navigation/social_accounts/Disconnect.png" width="62" height="12"  alt="DISCONNECT"></div>
 						<%	} %>
 		<%	} else { %>												 
-						<div class="youraccount_left_1"><img src="/media_stat/images/navigation/social_accounts/ConnectGoogle.png" width="200" height="36" border="0" alt="CONNECT WITH GOOGLE"
-								onclick="var wg = 580, hg = 500, xg = (screen.width - wg) / 2, yg = (screen.height - hg) / 2; window.open('/social/social_link.jsp?forwardPage=<%=directConnectUrl %>/google/&callback_uri=<%=callback_uri%>&service=<%=service %>', '', 'width=' + wg + ', height=' + hg + ', left=' + xg + ',top=' + yg + ', resizable')" ></div>
+						<a href=#" onclick="var wg = 580, hg = 500, xg = (screen.width - wg) / 2, yg = (screen.height - hg) / 2; window.open('/social/social_link.jsp?forwardPage=<%=directConnectUrl %>/google/&callback_uri=<%=callback_uri%>&service=<%=service %>', '', 'width=' + wg + ', height=' + hg + ', left=' + xg + ',top=' + yg + ', resizable')" class="youraccount_left_1">
+						<img src="/media/social_login/GoogleLoginButton.png" width="200" height="36" border="0" alt="CONNECT WITH GOOGLE" ></a>
 		<%	} %>		
 		
 		

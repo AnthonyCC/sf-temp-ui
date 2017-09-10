@@ -18,6 +18,7 @@ import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.attributes.cms.HtmlBuilder;
 import com.freshdirect.fdstore.attributes.cms.ImageBuilder;
+import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.content.Html;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -158,29 +159,44 @@ public class MediaUtils {
      * @return
      */
     public static boolean checkMedia(String mediaPath) {
+    	if (mediaPath == null)
+    		return false;
+    	
+    	Boolean cachedResult = EhCacheUtil.getObjectFromCache(EhCacheUtil.MEDIA_CHECK_CACHE_NAME, mediaPath);
+    	if (cachedResult != null) {
+    		return cachedResult;
+    	}
+    	boolean result = false;
+    	HttpURLConnection conn = null;
         try {
             URL url = MediaUtils.resolve(FDStoreProperties.getMediaPath(), mediaPath);
             if ("file".equalsIgnoreCase(url.getProtocol())) {
                 File f = new File(url.toURI());
-                return f.exists();
+                result = f.exists();
             } else if ("http".equalsIgnoreCase(url.getProtocol())) {
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("HEAD");
                 conn.connect();
                 int resp = conn.getResponseCode();
-                conn.disconnect();
-                return resp == HttpURLConnection.HTTP_OK;
+                
+                result = (resp == HttpURLConnection.HTTP_OK);
             } else {
                 LOGGER.warn("Unknown protocol " + url.getProtocol());
-                return false;
+                result = false;
             }
         } catch (IOException e) {
             LOGGER.error("Something broke while checking media: " + mediaPath, e);
-            return false;
+            result = false;
         } catch (URISyntaxException e) {
             LOGGER.error("Bad URL for media: " + mediaPath, e);
-            return false;
+            result = false;
+        } finally {
+        	if (conn != null) {
+        		conn.disconnect();
+        	}
         }
+        EhCacheUtil.putObjectToCache(EhCacheUtil.MEDIA_CHECK_CACHE_NAME, mediaPath, new Boolean(result));
+        return result;
     }
 
     public static String fixMedia(String media) {

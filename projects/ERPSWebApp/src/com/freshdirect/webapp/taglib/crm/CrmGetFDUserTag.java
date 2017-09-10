@@ -5,12 +5,15 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
 import com.freshdirect.crm.CrmStatus;
+import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
@@ -60,6 +63,7 @@ public class CrmGetFDUserTag extends AbstractGetterTag<FDUserI> {
 				user.isLoggedIn(true);
 			}
 			session.setAttribute(SessionName.USER, user);
+			
 			// FIXME ksriram please fix this
 			FDCustomerCouponUtil.initCustomerCoupons(session);
 		}else {
@@ -68,6 +72,11 @@ public class CrmGetFDUserTag extends AbstractGetterTag<FDUserI> {
 		
 		if(user == null){
 			throw new JspException("Required Object user not found");
+		}
+		
+		if(!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user) && null!=user.getFDCustomer().getDefaultPaymentType() 
+      		  && !user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName())){
+			user.resetDefaultPaymentValueType();
 		}
 
 		session.setAttribute(SessionName.USER, user);

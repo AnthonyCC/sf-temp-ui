@@ -31,6 +31,8 @@ final int W_DNAV_TOTAL = 970;
 		} else { %>
 			<%@ include file="/shared/template/includes/ccl.jspf" %>
 	<% } %>
+  <tmpl:get name='extraJs'/>
+  <tmpl:get name='extraCss'/>
 
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 	
@@ -72,7 +74,9 @@ final int W_DNAV_TOTAL = 970;
 </TABLE>
 </CENTER>
 <%@ include file="/common/template/includes/footer.jspf" %>
+<tmpl:get name="soytemplates" />
 <tmpl:get name='jsmodules'/>
 <%@ include file="/common/template/includes/i_jsmodules.jspf" %>
+<tmpl:get name='extraJsModules'/>
 </BODY>
 </HTML>

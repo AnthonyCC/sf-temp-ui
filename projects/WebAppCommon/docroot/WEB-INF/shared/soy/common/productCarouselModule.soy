@@ -5,7 +5,7 @@
  * @param data
  */
 {template .productCarouselModule}
-{if $data.products and length($data.products) > 2}
+{if ($data.products and length($data.products) > 2) or ($data.adProducts and length($data.adProducts)>0)}
   <div class="content-module product-carousel {if $moduleData.moduleTitle}single-module{/if}" id="{$moduleData.moduleId}">
   	{call common.moduleHeader}
   		{param content: $moduleData /}
@@ -16,10 +16,11 @@
   	<div class="content {if  not $moduleData.contentTitle and not $moduleData.contentTitleTextBanner and $moduleData.hideViewAllButton} border-top {/if}">
       <div class="carousel">
     		{call common.simpleCarousel}
-    			{param items: $data.products /}
+    			{param items: (length($data.adProducts)>0) ? $data.adProducts : $data.products /}
     			{param moduleData: $moduleData /}
-          {param cmEventSource: $moduleData.cmEventSource /}
+          		{param cmEventSource: $moduleData.cmEventSource /}
     			{param itemType:'grid' /}
+  				{param extraClass:'noFeaturedHeaderBanner' /}
     		{/call}
       </div>
   	</div>

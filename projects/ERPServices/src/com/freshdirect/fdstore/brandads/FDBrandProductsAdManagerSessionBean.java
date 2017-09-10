@@ -4,7 +4,6 @@ import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -14,7 +13,6 @@ import org.apache.log4j.Logger;
 import com.freshdirect.common.ERPSessionBeanSupport;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.brandads.model.HLBrandProductAdInfo;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
 import com.freshdirect.fdstore.brandads.service.BrandProductAdServiceException;
@@ -176,6 +174,24 @@ public class FDBrandProductsAdManagerSessionBean extends ERPSessionBeanSupport {
 			close(conn);
 		}
 		return lastSentFeedOrderTime;
+	}
+	
+	public HLBrandProductAdResponse getHomeAdProduct(HLBrandProductAdRequest hLBrandProductAdRequest){
+		HLBrandProductAdResponse hlBrandProductAdResponse=null;
+		if(!FDStoreProperties.isHookLogicBlackHoleEnabled()){
+			hlBrandProductAdResponse = FDBrandProductsAdGateway.getHomeAdProduct(hLBrandProductAdRequest);
+			return hlBrandProductAdResponse;
+		}
+		return hlBrandProductAdResponse;		
+	}
+
+	public HLBrandProductAdResponse getPdpAdProduct(HLBrandProductAdRequest hLBrandProductAdRequest){
+		HLBrandProductAdResponse hlBrandProductAdResponse=null;
+		if(!FDStoreProperties.isHookLogicBlackHoleEnabled()){
+			hlBrandProductAdResponse = FDBrandProductsAdGateway.getPdpAdProduct(hLBrandProductAdRequest);
+			return hlBrandProductAdResponse;
+		}
+		return hlBrandProductAdResponse;	
 	}
 }
 	

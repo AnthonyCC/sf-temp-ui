@@ -681,6 +681,31 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
       <jndi-name>freshdirect.erp.Customer</jndi-name>
     </weblogic-enterprise-bean>
     <weblogic-enterprise-bean>
+      <ejb-name>ErpCustomerInfo</ejb-name>
+      <entity-descriptor>
+        <pool>
+          <max-beans-in-free-pool>50</max-beans-in-free-pool>
+          <initial-beans-in-free-pool>
+          10</initial-beans-in-free-pool>
+        </pool>
+        <entity-cache>
+          <concurrency-strategy>Database</concurrency-strategy>
+        </entity-cache>
+        <persistence>
+          <delay-updates-until-end-of-tx>
+          true</delay-updates-until-end-of-tx>
+        </persistence>
+        <entity-clustering></entity-clustering>
+      </entity-descriptor>
+      <transaction-descriptor></transaction-descriptor>
+      <resource-description>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <jndi-name>fddatasource</jndi-name>
+      </resource-description>
+      <enable-call-by-reference>true</enable-call-by-reference>
+      <jndi-name>freshdirect.erp.CustomerInfo</jndi-name>
+    </weblogic-enterprise-bean>
+    <weblogic-enterprise-bean>
       <ejb-name>CrmAgent</ejb-name>
       <entity-descriptor>
         <pool>

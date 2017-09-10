@@ -42,5 +42,18 @@ public class PaymentMethodAdapter implements PaymentMethodI {
 	public EnumBankAccountType getBankAccountType() {
 		return this.erpPaymentMethod.getBankAccountType();
 	}
+	
+	
+	//Introduced for Storefront2.0
+	/**
+	 * @return the erpPaymentMethod
+	 */
+	public ErpPaymentMethodI getErpPaymentMethod() {
+		return erpPaymentMethod;
+	}
+	
+	
+	
+	
 }
 

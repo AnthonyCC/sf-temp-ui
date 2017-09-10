@@ -595,6 +595,7 @@ public abstract class BaseController extends AbstractController implements Messa
 		configuration.setSocialLoginEnabled(FDStoreProperties.isSocialLoginEnabled());
 		configuration.setMasterPassEnabled(MobileApiProperties.isMasterpassEnabled());
 		configuration.setPayPalEnabled(MobileApiProperties.isPayPalEnabled());
+		configuration.setDCSEnabled(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user.getFDSessionUser().getUser()));
 
 		return configuration;
 	}

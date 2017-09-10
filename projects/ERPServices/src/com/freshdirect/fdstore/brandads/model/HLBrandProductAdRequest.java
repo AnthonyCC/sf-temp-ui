@@ -15,6 +15,9 @@ public class HLBrandProductAdRequest implements Serializable {
     private String platformSource;
     private String lat;
     private String pdUserId;
+    private String productId;
+    
+    
 
     public String getSearchKeyWord() {
 		return searchKeyWord;
@@ -72,6 +75,15 @@ public class HLBrandProductAdRequest implements Serializable {
 		this.pdUserId = pdUserId;
 	}
 
+	public String getProductId() {
+		return productId;
+	}
+
+	public void setProductId(String productId) {
+		this.productId = productId;
+	}
+
+	
 	
 
 }

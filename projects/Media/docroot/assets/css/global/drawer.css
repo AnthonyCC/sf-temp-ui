@@ -45,8 +45,8 @@
 [data-component="drawer"][data-drawer-columns="3"] [data-drawer-default] > li,
 [data-component="drawer"][data-drawer-columns="3"] .drawer-header > li {
   display: inline-block;
-  width: 300px;
-  margin-left: 35px;
+  width: 305px;
+  margin-left: 20px;
   padding: 0;
   vertical-align: top;
 }
@@ -62,6 +62,8 @@
   transition: max-height .2s linear;
   margin-top: -1px;
   z-index: 1001;
+  visibility:hidden;
+  display:none
 }
 
 [data-component="drawer"] [data-drawer-content] > div,
@@ -146,8 +148,10 @@
 [data-drawer-active="address"]  [data-drawer-content="address"] ,
 [data-drawer-active="timeslot"] [data-drawer-content="timeslot"],
 [data-drawer-active="payment"]  [data-drawer-content="payment"]  {
-  max-height: 10000px;
+  max-height: unset;
   transition: max-height .2s linear .2s;
+  visibility:visible;
+  display:block;
 }
 
 [data-drawer-id],

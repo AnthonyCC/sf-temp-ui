@@ -20,10 +20,18 @@ public class CaptchaUtil {
 		boolean isCaptchaSuccess = false;
 		final PostMethod postMethod = new PostMethod();
 		postMethod.addParameter("remoteip", request.getRemoteAddr());
-		if(StringUtils.equals(request.getParameter("captchaVersion"), "1.0")){
-			isCaptchaSuccess = validateCaptchaV1(request,postMethod);
-		} else {
-			isCaptchaSuccess = validateCaptchaV2(request,postMethod);
+		try {
+			if (StringUtils.equals(request.getParameter("captchaVersion"), "1.0")) {
+				isCaptchaSuccess = validateCaptchaV1(request, postMethod);
+			} else {
+				isCaptchaSuccess = validateCaptchaV2(request, postMethod);
+			}
+		} finally {
+			try {
+				postMethod.releaseConnection();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return isCaptchaSuccess;
 	}
@@ -65,7 +73,7 @@ public class CaptchaUtil {
 			isCaptchaSuccess = "true".equals(a[0]);
 		} catch (Exception e) {
 			LOGGER.error("Error connecting to google captcha", e);
-		}
+		} 
 		return isCaptchaSuccess;
 	}
 }

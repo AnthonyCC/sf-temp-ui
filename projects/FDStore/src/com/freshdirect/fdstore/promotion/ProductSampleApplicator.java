@@ -1,17 +1,10 @@
 package com.freshdirect.fdstore.promotion;
 
-import java.util.List;
-
-import com.freshdirect.common.pricing.Discount;
-import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
-import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
-import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 
 public class ProductSampleApplicator implements PromotionApplicatorI {
 	
@@ -43,27 +36,7 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 				return isApplied;
 			}else{
 				FDCartModel cart= context.getShoppingCart();
-				List<FDCartLineI> orderLines=cart.getOrderLines();
-				if(null !=orderLines && !orderLines.isEmpty()){
-                    int eligibleQuantity = FDStoreProperties.getProductSamplesMaxQuantityLimit();
-                    if (!cart.isMaxSampleReached()) {
-                        int quantity = 0;
-						for (FDCartLineI orderLine : orderLines) {
-                            if (orderLine.getProductRef().getContentKey().equals(sampleProduct.getContentKey()) 
-                            		&& quantity < eligibleQuantity
-                                    && orderLine.getQuantity() <= eligibleQuantity) {
-                                orderLine.setDiscount(new Discount(promotionCode, EnumDiscountType.FREE, orderLine.getQuantity()));
-                                quantity += orderLine.getQuantity();
-                                isApplied = true;
-								try {
-									orderLine.refreshConfiguration();
-								} catch (FDInvalidConfigurationException ex) {
-									throw new FDResourceException(ex);
-								}
-							}
-						}
-					}
-				}
+                isApplied = cart.updateProductSampleDiscount(sampleProduct.getContentKey(), promotionCode);
 			}
 		} catch (FDResourceException e) {
 			throw new FDRuntimeException(e);
@@ -71,7 +44,6 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 		return isApplied;
 	}
 
-	
 	@Override
 	public void setZoneStrategy(DlvZoneStrategy zoneStrategy) {
 		this.zoneStrategy = zoneStrategy;		

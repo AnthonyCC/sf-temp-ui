@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import='java.util.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
@@ -20,7 +21,6 @@
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 String custFirstName = user.getFirstName();
 int validOrderCount = user.getAdjustedValidOrderCount();
-boolean mainPromo = user.getLevel() < FDUserI.RECOGNIZED && user.isEligibleForSignupPromotion();
 String templatePath = request.getParameter("template");
 
 Map params = new HashMap();
@@ -28,7 +28,7 @@ params.put("baseUrl", "");
 %>
 <html>
 	<head>
-	    
+
 	    <fd:css href="/assets/css/pc_ie.css"/>
 	</head>
 	<body>

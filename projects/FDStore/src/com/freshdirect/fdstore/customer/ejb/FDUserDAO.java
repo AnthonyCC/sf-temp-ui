@@ -212,6 +212,7 @@ public class FDUserDAO {
                 .getPlantId()), user.getUserContext().getPricingContext().getZoneInfo());
         delPlantInfo.setCatalogKey(catalogKey);
         cart.setDeliveryPlantInfo(delPlantInfo);
+        
         user.setShoppingCart(cart);
     }
 
@@ -256,6 +257,45 @@ public class FDUserDAO {
             + "FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci,CUST.FDUSER_ESTORE fde "
             + "WHERE fdu.FDCUSTOMER_ID=fdc.id and fdc.ERP_CUSTOMER_ID=erpc.ID and erpc.id=? " + "AND erpc.id = ci.customer_id AND  fdu.id= FDE.FDUSER_ID(+) and FDE.E_STORE(+)=?";
 
+
+    public static FDUser getFDUserZipCode(Connection conn, FDIdentity identity) throws SQLException {
+        
+        String query = "SELECT fdu.ADDRESS1, NVL(fde.ZIPCODE,fdu.ZIPCODE) ZIPCODE FROM CUST.FDUSER fdu, CUST.FDUSER_ESTORE fde WHERE fdu.FDCUSTOMER_ID=? AND  fdu.id= FDE.FDUSER_ID(+)";
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		FDUser user = null;
+        try {
+	        ps = conn.prepareStatement(query);
+	        ps.setString(1, identity.getFDCustomerPK());
+	        rs = ps.executeQuery();
+	        if (rs.next()) {
+	            user = new FDUser();
+	            user.setZipCode(rs.getString("ZIPCODE"));
+	        }
+        } finally {
+			if (null != rs) {
+				try {
+					rs.close();
+				} catch (Exception e) {
+	
+				}
+			}
+	
+			if (null != ps) {
+				try {
+					ps.close();
+				} catch (Exception e) {
+	
+				}
+			}
+		}
+
+        return user;
+    }
+
+    public static FDUser recognizeWithIdentity(Connection conn, FDIdentity identity, EnumEStoreId eStoreId, final boolean lazy) throws SQLException, FDResourceException {
+    	return recognizeWithIdentity(conn, identity, eStoreId, lazy, true);
+    }
     /**
      * Recognize customer with given identity
      * 
@@ -269,13 +309,13 @@ public class FDUserDAO {
      * @return
      * @throws SQLException
      */
-    public static FDUser recognizeWithIdentity(Connection conn, FDIdentity identity, EnumEStoreId eStoreId, final boolean lazy) throws SQLException, FDResourceException {
+    public static FDUser recognizeWithIdentity(Connection conn, FDIdentity identity, EnumEStoreId eStoreId, final boolean lazy, boolean populateDeliveryPlantInfo) throws SQLException, FDResourceException {
         LOGGER.debug("attempting to load FDUser from identity");
         PreparedStatement ps = conn.prepareStatement(LOAD_FROM_IDENTITY_QUERY);
         ps.setString(1, identity.getErpCustomerPK());
         ps.setString(2, null != eStoreId ? eStoreId.getContentId() : EnumEStoreId.FD.getContentId());
         ResultSet rs = ps.executeQuery();
-        FDUser user = loadUserFromResultSet(rs);
+        FDUser user = loadUserFromResultSet(rs, populateDeliveryPlantInfo);
 
         if (!user.isAnonymous()) {
             loadCart(conn, user, lazy);
@@ -306,7 +346,7 @@ public class FDUserDAO {
         ps.setString(1, email);
         ps.setString(2, null != eStoreId ? eStoreId.getContentId() : EnumEStoreId.FD.getContentId());
         ResultSet rs = ps.executeQuery();
-        FDUser user = loadUserFromResultSet(rs);
+        FDUser user = loadUserFromResultSet(rs, true);
 
         if (!user.isAnonymous()) {
             loadCart(conn, user, false);
@@ -355,7 +395,7 @@ public class FDUserDAO {
         ps.setString(1, cookie);
         ps.setString(2, null != eStoreId ? eStoreId.getContentId() : EnumEStoreId.FD.getContentId());
         ResultSet rs = ps.executeQuery();
-        FDUser user = loadUserFromResultSet(rs);
+        FDUser user = loadUserFromResultSet(rs, true);
 
         if (!user.isAnonymous()) {
             loadCart(conn, user, false);
@@ -374,13 +414,13 @@ public class FDUserDAO {
         return user;
     }
 
-    private static FDUser loadUserFromResultSet(ResultSet rs) throws SQLException {
+    private static FDUser loadUserFromResultSet(ResultSet rs, boolean populateUserContext) throws SQLException {
         FDUser user = null;
         if (rs.next()) {
             PrimaryKey pk = new PrimaryKey(rs.getString("FDUSER_ID"));
             user = new FDUser(pk);
             user.setCookie(rs.getString("COOKIE"));
-            user.setZipCode(rs.getString("ZIPCODE"));
+            user.setZipCode(rs.getString("ZIPCODE"), populateUserContext);
             user.setDepotCode(rs.getString("DEPOT_CODE"));
             user.setSelectedServiceType(EnumServiceType.getEnum(rs.getString("SERVICE_TYPE")));
             user.setLastRefTrackingCode(rs.getString("REF_TRACKING_CODE"));
@@ -1454,7 +1494,7 @@ public class FDUserDAO {
 
 	public static int resetDefaultPaymentValueType(Connection conn, String custId) {
         try {
-			return conn.createStatement().executeUpdate("update cust.fdcustomer set DEFAULT_PAYMENT_METHOD_TYPE='UD' where id="+custId);
+			return conn.createStatement().executeUpdate("update cust.fdcustomer set DEFAULT_PAYMENT='', DEFAULT_PAYMENT_METHOD_TYPE='' where id="+custId);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

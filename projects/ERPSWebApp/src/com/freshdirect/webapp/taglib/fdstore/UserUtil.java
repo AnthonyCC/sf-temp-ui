@@ -456,12 +456,15 @@ public class UserUtil {
             }
                         
 //            LOGGER.info("loginUser is " + loginUser.getFirstName() + " Level = " + loginUser.getLevel());
-            LOGGER.info("currentUser is " + (currentUser==null?"null":currentUser.getFirstName()+currentUser.getLevel()));
+            // LOGGER.info("currentUser is " + (currentUser==null?"null":currentUser.getFirstName()+currentUser.getLevel()));
             String currentUserId=null;
 			//[OPT-45]
             if(currentUser == null || (loginCookie != null && !loginCookie.equals(currentUser.getCookie()))){
-            	FDUser loginUser = FDCustomerManager.recognize(identity);
-            	 LOGGER.info("loginUser is " + loginUser.getFirstName() + " Level = " + loginUser.getLevel());
+    			// Pass updateUserState as currentUser != null. 
+    			// If currentUser == null, createSessionUser will be called later which will invoke updateUserState.
+            	FDUser loginUser = FDCustomerManager.recognize(identity, currentUser != null);
+
+            	// LOGGER.info("loginUser is " + loginUser.getFirstName() + " Level = " + loginUser.getLevel());
             	// FDX-1873 - Show timeslots for anonymous address
                 if(currentUser!=null && currentUser.getAddress() != null && currentUser.getAddress().getAddress1() != null 
                 				&& currentUser.getAddress().getAddress1().trim().length() > 0 && currentUser.getAddress().isCustomerAnonymousAddress()) {        	
@@ -651,14 +654,15 @@ public class UserUtil {
           if(user != null) {
         	user.setJustLoggedIn(true);
           }
-          if(!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)){
+          if(!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user) &&  null!=user.getFDCustomer().getDefaultPaymentType() 
+        		  && !user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName())){
         	 user.resetDefaultPaymentValueType();
           }else {
 				FDActionInfo info = AccountActivityUtil.getActionInfo(request.getSession());
 				boolean isDefaultPaymentMethodRegistered = false;
 				try {
-					isDefaultPaymentMethodRegistered = (null != user.getFDCustomer().getDefaultPaymentType() && 
-							!user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName()));
+					isDefaultPaymentMethodRegistered = !(null == user.getFDCustomer().getDefaultPaymentType() || 
+							user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName()));
 				} catch (FDResourceException e) {
 					LOGGER.error(e);
 				}

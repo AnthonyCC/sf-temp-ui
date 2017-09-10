@@ -3303,8 +3303,10 @@ div#i_viewcart td {
 }
 
 .oas-cnt .emptyOAS,
-.oas-cnt img[src*="empty.gif"] {
-  display: none;
+.oas-cnt a[href*="empty.gif"],
+[id*="oas_"] a[href*="empty.gif"] {
+ display: none;
+ visibility: hidden;
 }
 table.accessibilitySpacing td{
 	padding:1px 0;

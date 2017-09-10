@@ -19,3 +19,22 @@
     </div>
 
 {/template}
+
+/**
+ * @param popupId id
+ * @param customClass custom classname
+ * @param hasClose show close button
+ * @param headerContent popup content
+ * @param bodyContent popup content
+ */
+{template .centerpopup autoescape="false"}
+<div id="{$popupId}" class="centerpopup-helper{if $hasClose} qs-hasclose{/if}">
+	<div class="centerpopup-linehelper"></div>
+	<div class="c-popup {$customClass}">
+		<h2 class="c-popup-header"><span>{$headerContent}</span> <button class="c-popup-close-icon close">close</button></h2>
+		<div class="c-popup-content">
+			{$bodyContent}
+		</div>
+	</div>
+</div>
+{/template}

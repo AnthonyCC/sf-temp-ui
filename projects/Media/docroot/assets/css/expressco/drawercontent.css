@@ -61,6 +61,7 @@
   margin-bottom:30px;
   display: inline-block;
   max-width: 220px;
+  word-wrap: break-word;
 }
 
 .drawer__item__label  .fake-radio-wrapper {
@@ -218,6 +219,7 @@
 
 .drawer__previewitem__section .section__body p{
   margin:0;
+  word-wrap: break-word;
 }
 
 [data-drawer-content="timeslot"] [data-component="timeslotchangebutton"],

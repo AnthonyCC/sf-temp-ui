@@ -23,6 +23,7 @@ import com.freshdirect.customer.ErpDeliveryPlantInfoModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.NVL;
 
 /**
@@ -85,18 +86,22 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 	 */
 	public static List findByParent(Connection conn, PrimaryKey parentPK) throws SQLException {
 		java.util.List lst = new java.util.LinkedList();
-		PreparedStatement ps = conn.prepareStatement("SELECT * FROM CUST.DELIVERYINFO WHERE SALESACTION_ID=?");
-		ps.setString(1, parentPK.getId());
-		ResultSet rs = ps.executeQuery();
-		while (rs.next()) {
-			ErpDeliveryInfoPersistentBean bean = new ErpDeliveryInfoPersistentBean(new PrimaryKey(rs.getString("SALESACTION_ID")), rs);
-			bean.setParentPK(parentPK);
-			lst.add(bean);
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement("SELECT * FROM CUST.DELIVERYINFO WHERE SALESACTION_ID=?");
+			ps.setString(1, parentPK.getId());
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				ErpDeliveryInfoPersistentBean bean = new ErpDeliveryInfoPersistentBean(new PrimaryKey(rs.getString("SALESACTION_ID")), rs);
+				bean.setParentPK(parentPK);
+				lst.add(bean);
+			}
+		} finally {
+			DaoUtil.close(rs);
+			DaoUtil.close(ps);
 		}
-		rs.close();
-		rs = null;
-		ps.close();
-		ps = null;
+
 		return lst;
 	}
 
@@ -232,18 +237,21 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		"DELIVERY_TYPE, ALT_CONTACT_PHONE, ALT_CONTACT_EXT, UNATTENDED_INSTR, PHONE_TYPE, ALT_CONTACT_TYPE,COMPANY_NAME,  SALES_ORG, DISTRIBUTION_CHANNEL, PLANT_ID, DIVISION,HANDOFFTIME, DLVREGION_ID, MOD_START_X, MOD_CUTOFF_Y, MOBILE_NUMBER,SERVICE_TYPE,CATALOG_KEY FROM  CUST.DELIVERYINFO WHERE SALESACTION_ID=?";
 		
 	public void load(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement(LOAD_DELIVERY_INFO);
-		ps.setString(1, this.getPK().getId());
-		ResultSet rs = ps.executeQuery();
-		if (rs.next()) {
-			this.loadFromResultSet(rs);
-		} else {
-			throw new SQLException("No such ErpDeliveryInfo PK: " + this.getPK());
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(LOAD_DELIVERY_INFO);
+			ps.setString(1, this.getPK().getId());
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				this.loadFromResultSet(rs);
+			} else {
+				throw new SQLException("No such ErpDeliveryInfo PK: " + this.getPK());
+			}
+		} finally {
+			DaoUtil.close(rs);
+			DaoUtil.close(ps);
 		}
-		rs.close();
-		rs = null;
-		ps.close();
-		ps = null;
 	}
     
 	private final PhoneNumber convertPhoneNumber(String phone, String extension, String type) {

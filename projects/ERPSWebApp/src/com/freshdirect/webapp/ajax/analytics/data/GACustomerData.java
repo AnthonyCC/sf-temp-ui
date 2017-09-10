@@ -18,6 +18,7 @@ public class GACustomerData {
     private String orderCount;
     private String deliveryPassStatus;
     private String customerId;
+    private String defaultPaymentType;
 
     public GACustomerData(String zipCode, String userId, String userStatus, String userType, String loginType, String chefsTable, String deliveryPass, String deliveryType,
             String cohort) {
@@ -148,4 +149,11 @@ public class GACustomerData {
         this.customerId = customerId;
     }
 
+	public String getDefaultPaymentType() {
+		return defaultPaymentType;
+	}
+
+	public void setDefaultPaymentType(String defaultPaymentType) {
+		this.defaultPaymentType = defaultPaymentType;
+	}    
 }

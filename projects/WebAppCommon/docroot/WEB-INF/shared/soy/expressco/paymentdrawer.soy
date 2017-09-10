@@ -58,7 +58,9 @@
   	<div class="drawer__previewitem__button__section">
     {if $payments and length($payments) > 0}
     	<button class='cssbutton orange' data-component="pickmethodbutton">Pick a Method</button>
-    
+    	<div id="oas_b_FirstECheckPromo" class="oas-cnt" data-component="addpaymentmethodbutton" aria-haspopup="true" data-showechecktab='addpaymentmethod_bank'>
+			<script>fd.modules.common.updateOAS(OAS_url, 'www.freshdirect.com/XCpaymentpromo', OAS_rns, ['FirstECheckPromo'], OAS_query);</script>
+		</div>
     	{if $mpEwalletStatus or $ppEwalletStatus}
 			<div class="external-payments">
 				{call .externalpaymentsseparator /}
@@ -75,7 +77,9 @@
 		{/if}
     {else}
 		<button aria-haspopup="true" class='cssbutton orange' data-component="addpaymentmethodbutton" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Add a Method</button>
-
+		<div id="oas_b_FirstECheckPromo" class="oas-cnt" data-component="addpaymentmethodbutton" aria-haspopup="true" data-showechecktab='addpaymentmethod_bank'>
+			<script>fd.modules.common.updateOAS(OAS_url, 'www.freshdirect.com/XCpaymentpromo', OAS_rns, ['FirstECheckPromo'], OAS_query);</script>
+		</div>
 		{if $mpEwalletStatus or $ppEwalletStatus}
 			<div class="external-payments">
 				{call .externalpaymentsseparator /}
@@ -189,8 +193,9 @@
  */
 {template .paymentmethodcontent autoescape="false"}
 {if $payments}
-  <form class='drawer__content' fdform="payment" fdform-endpoint-submit="/api/expresscheckout/payment" data-item-count="{length($payments)}">
+  <form class='drawer__content' fdform="payment" data-item-count="{length($payments)}">
     <input type="hidden" name="action" value="selectPaymentMethod" />
+    <input type="hidden" id="paymentSetAsDefault" name="paymentSetAsDefault" value="false" />
     <div class="drawer__header">
       <button class="cssbutton orange" data-component="paymentchangebutton">Done<span class="offscreen"> with payment Payment Method</button>
     </div>
@@ -245,11 +250,13 @@
 * @param? paymentTypeDescription
 * @param? emailID
 * @param? canDelete
+* @param? default
+* @param? debit
 */
 {template .paymentmethod autoescape="false"}
 <div class='drawer__item'>
   <label class='drawer__item__label'>
-  <input id="payment_{$id}" value="{$id}" type='radio' class='drawer__itemleft customradio' name='id' {if $selected}checked{/if} />
+  <input id="payment_{$id}" value="{$id}" type='radio' class='drawer__itemleft customradio paymentmethod' name='id' {if $selected}checked{/if} data-type="{$type}" data-isdefault="{if $default}true{else}false{/if}" data-isdebit="{if $debit}true{else}false{/if}" />
   <div class='drawer__itemright'>
   {if $eWalletID == '1'}
      <p class='drawer__previewitem__title'><img src="{$mpLogoURL}"> </p>
@@ -323,8 +330,8 @@
   </label>
   {if $eWalletID != '1' and $eWalletID != '2'}
   <div class="drawer__item__action">
-    {if $canDelete}<button type="button" role="alertdialog" data-action="deletePaymentMethod" data-confirm data-confirm-header="Are you sure you want to permanently delete this payment method?" data-confirm-button-delete="FreshDirect.confirmFunctions.payment_deletePaymentMethod_{$id}" data-confirm-template="common.deleteconfirmpopup" class="action cssbutton transparent white icon-trash-new-before">Delete <span class="offscreen">{$bankName or $type} {if $accountNumber}ending in {$accountNumber}{/if}</span></button>{/if}
-    <button type="button" aria-haspopup="true" data-action="loadPaymentMethod" class="action cssbutton transparent white icon-pencil-before">Edit <span class="offscreen">{$bankName or $type} {if $accountNumber}ending in {$accountNumber}{/if}</span></button>
+    {if $canDelete}<button type="button" role="alertdialog" fdform-endpoint-submit="/api/expresscheckout/payment" data-action="deletePaymentMethod" data-confirm data-confirm-header="Are you sure you want to permanently delete this payment method?" data-confirm-button-delete="FreshDirect.confirmFunctions.payment_deletePaymentMethod_{$id}" data-confirm-template="common.deleteconfirmpopup" class="action cssbutton transparent white icon-trash-new-before">Delete <span class="offscreen">{$bankName or $type} {if $accountNumber}ending in {$accountNumber}{/if}</span></button>{/if}
+    <button type="button" aria-haspopup="true" fdform-endpoint-submit="/api/expresscheckout/payment" data-action="loadPaymentMethod" class="action cssbutton transparent white icon-pencil-before">Edit <span class="offscreen">{$bankName or $type} {if $accountNumber}ending in {$accountNumber}{/if}</span></button>
   </div>
   {/if}
 </div><!--/ drawer__item -->
@@ -386,6 +393,7 @@
   {/if}
 </div>
 <div id="oas_b_FirstECheckPromo" class="oas-cnt" data-component="addpaymentmethodbutton" aria-haspopup="true" data-showechecktab='addpaymentmethod_bank'>
+	<script>fd.modules.common.updateOAS(OAS_url, 'www.freshdirect.com/XCpaymentpromo', OAS_rns, ['FirstECheckPromo'], OAS_query);</script>
 </div>
 {/template}
 
@@ -525,4 +533,16 @@
   {/if}
  {/if}
 </div>
+{/template}
+
+/**
+*
+*/
+{template .defaultpaymentprompt}
+	<div class="defaultpaymentprompt_cont">
+		<div class="defaultpaymentprompt_question">Set this as your default payment method?</div>
+		<div class="defaultpaymentprompt_buttons">
+			<button data-makepaymentdefault="false" class="cssbutton transparent green">No</button><button data-makepaymentdefault="true" class="cssbutton green">Yes</button>
+		</div>
+	</div>
 {/template}

@@ -17,6 +17,8 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData.SectionDataCointainer;
 import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
@@ -26,13 +28,14 @@ import com.freshdirect.webapp.ajax.modulehandling.data.IconData;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleConfig;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleData;
 import com.freshdirect.webapp.ajax.modulehandling.data.ModuleEditorialContainer;
+import com.freshdirect.webapp.ajax.product.CriteoProductsUtil;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.util.MediaUtils;
 
 public class DatasourceService {
 
-    private static final DatasourceService INSTANCE = new DatasourceService();
     private static final Logger LOGGER = LoggerFactory.getInstance(DatasourceService.class);
+    private static final DatasourceService INSTANCE = new DatasourceService();
 
     private static final String INDEX_CM_EVENT_SOURCE = "BROWSE";
     private static final String TOP_ITEMS_SITE_FEATURE = "TOP_ITEMS_QS";
@@ -197,7 +200,6 @@ public class DatasourceService {
 
     }
 
-    @SuppressWarnings("unchecked")
     private ModuleData populateModuleData(ContentNodeI module, FDUserI user, HttpSession session, boolean showAllProducts) throws FDResourceException,
             InvalidFilteringArgumentException {
         ModuleData moduleData = new ModuleData();
@@ -212,6 +214,9 @@ public class DatasourceService {
         switch (datasourceEnum) {
             case MOST_POPULAR_PRODUCTS:
                 products = ModuleContentService.getDefaultService().generateRecommendationProducts(session, user, MOST_POPULAR_PRODUCTS_SITE_FEATURE);
+                //moduleData.setCriteoHomeProducts(Criteo.getHomeAdProduct(u\er));
+                //moduleData.setAdProducts(Criteo.getHomeAdProduct(user));
+                //moduleData.setAdPrdPageBeacon();
                 break;
             case TOP_ITEMS:
                 products = ModuleContentService.getDefaultService().generateRecommendationProducts(session, user, TOP_ITEMS_SITE_FEATURE);
@@ -236,9 +241,10 @@ public class DatasourceService {
                 break;
             case BROWSE:
                 // Special view all for browse data source with product lists.
-                if (showAllProducts && ModuleSourceType.PRODUCT_LIST_MODULE.equals(moduleSourceType)) {
-                    sectionDataContainer = generateBrowseProductsForViewAll(module, user);
-                } else {
+            	if (showAllProducts && ModuleSourceType.PRODUCT_LIST_MODULE.equals(moduleSourceType)) {
+            		sectionDataContainer = generateBrowseProductsForViewAll(module, user);
+            	}
+            	else {
                     products = generateBrowseProducts(module, user);
                 }
                 break;
@@ -251,6 +257,10 @@ public class DatasourceService {
             case STAFF_PICKS:
                 products = ModuleContentService.getDefaultService().loadStaffPicksProducts(user);
                 break;
+            case CRITEO:
+            	if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.hooklogic2016, user))
+            	CriteoProductsUtil.getHlHomePgBrandProducts(user, moduleData);
+            		break;
             default:
                 break;
         }

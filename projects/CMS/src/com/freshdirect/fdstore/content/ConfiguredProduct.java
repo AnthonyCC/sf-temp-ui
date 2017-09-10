@@ -353,6 +353,8 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 			fdp = getFDProduct();
 		} catch (FDRuntimeException e) {
 			fdp = null;
+		} catch (CmsRuntimeException e) {
+			fdp = null;
 		}
 		if (fdp == null) {
 			return null;

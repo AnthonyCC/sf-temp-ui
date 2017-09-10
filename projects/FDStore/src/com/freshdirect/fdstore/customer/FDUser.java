@@ -458,15 +458,20 @@ public class FDUser extends ModelSupport implements FDUserI {
     public String getZipCode() {
         return this.address == null ? null : this.address.getZipCode();
     }
-
     @Override
     public void setZipCode(String zipCode) {
+    	setZipCode(zipCode, true);
+    }
+    
+    public void setZipCode(String zipCode, boolean populateUserContext) {
         AddressModel a = new AddressModel();
         a.setZipCode(zipCode);
         this.address = a;
         this.invalidateCache();
-        this.userContext = null;
-        this.userContext = getUserContext();
+        if (populateUserContext) {
+	        this.userContext = null;
+	        this.userContext = getUserContext();
+        }
     }
 
     @Override
@@ -1261,23 +1266,29 @@ public class FDUser extends ModelSupport implements FDUserI {
     @Override
     public String getCustomerServiceContact() {
         try {
-            String state = "";
-            String contactNumber = "1-866-283-7374";// DEFAULT
-            if (this.isChefsTable()) {
-                contactNumber = "1-866-511-1240";
-            } else {
-                state = extractStateFromAddress();
-                if ("PA".equalsIgnoreCase(state)) {
-                    contactNumber = "1-215-825-5726";
-                }
-            }
-            return contactNumber;
-
+        	boolean isChefsTable = this.isChefsTable();
+        	return getCustomerServiceContact(isChefsTable, isChefsTable? null : extractStateFromAddress());
         } catch (FDResourceException e) {
             throw new FDRuntimeException(e);
         }
     }
 
+    public String getCustomerServiceContact(boolean isChefsTable, String state) {
+        
+//        String state = "";
+        String contactNumber = "1-866-283-7374";// DEFAULT
+        if (isChefsTable) {
+            contactNumber = "1-866-511-1240";
+        } else {
+//            state = extractStateFromAddress();
+            if ("PA".equalsIgnoreCase(state)) {
+                contactNumber = "1-215-825-5726";
+            }
+        }
+        return contactNumber;
+
+        
+    }
     private String extractStateFromAddress() {
         String state = "";
         if (this.getShoppingCart() != null && this.getShoppingCart().getDeliveryAddress() != null) {

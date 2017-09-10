@@ -96,10 +96,7 @@ function setAndAppendExtoleObject(section, id_placeafter){
 			if(section == "PURCHASE"){
 				//more parts for the main extole tag here
 				obj.params['tag:cart_value'] = globalExtoleVars.validOrderCount;
-				
-				//not currently used yet
-				//obj.params['tag:coupon_code'] = globalExtoleVars.mainPromo;
-				
+								
 				//override to always true for PURCHASE section.  Do not worry, login verification executed above.
 				test_condition = true;
 				

@@ -93,6 +93,7 @@ public class CmsFilteringNavigator {
     private String referer;
     private String requestUrl;
     private boolean aggregateCategories;
+    private String productId;
     
     /**
      * Creates a CmsFilteringNavigator instance out of request parameter map.
@@ -512,4 +513,12 @@ public class CmsFilteringNavigator {
     public void setAggregateCategories(boolean aggregateCategories) {
         this.aggregateCategories = aggregateCategories;
     }
+
+	public String getProductId() {
+		return productId;
+	}
+
+	public void setProductId(String productId) {
+		this.productId = productId;
+	}
 }
