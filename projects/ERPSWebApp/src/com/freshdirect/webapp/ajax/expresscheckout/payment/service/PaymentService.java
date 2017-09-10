@@ -38,6 +38,8 @@ import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.payment.EnumBankAccountType;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.PaymentManager;
+import com.freshdirect.webapp.ajax.BaseJsonServlet;
+import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.data.PageAction;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.payment.data.PaymentData;
@@ -99,10 +101,23 @@ public class PaymentService {
     public List<ValidationError> selectPaymentMethod(String paymentId, String actionName, HttpServletRequest request) throws FDResourceException {
         List<ValidationError> validationErrors = new ArrayList<ValidationError>();
         ActionResult result = new ActionResult();
+
+        FormDataRequest paymentRequestData;
+        boolean paymentSaveAsDefault = false;
+		try {
+			paymentRequestData = BaseJsonServlet.parseRequestData(request, FormDataRequest.class);
+			/* expects string */
+			paymentSaveAsDefault = Boolean.parseBoolean(FormDataService.defaultService().get(paymentRequestData, "paymentSetAsDefault"));
+		} catch (HttpErrorResponse e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
         String billingRef = null; // TODO: needed? CORPORATE with zero payment
         // method.
         HttpSession session = request.getSession();
-        PaymentMethodManipulator.setPaymentMethod(paymentId, billingRef, request, session, result, actionName,"N");
+        String test = "111";
+        PaymentMethodManipulator.setPaymentMethod(paymentId, billingRef, request, session, result, actionName, ((paymentSaveAsDefault)?"Y":"N"));
         for (ActionError error : result.getErrors()) {
             validationErrors.add(new ValidationError(error.getType(), error.getDescription()));
         }
@@ -238,7 +253,7 @@ public class PaymentService {
         		selectedPaymentId= paymentMethods.get(0).getPK().getId();
         	}
         	else if (user.getShoppingCart().getPaymentMethod() == null || (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)
-        					&& null ==request.getAttribute("pageAction"))) {
+        					&& null ==request.getAttribute("pageAction")) && null== request.getSession().getAttribute("selectedPaymentId")) {
 //                selectedPaymentId = FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity());
         		 user.refreshFdCustomer();
         		selectedPaymentId = user.getFDCustomer().getDefaultPaymentMethodPK();
@@ -247,6 +262,7 @@ public class PaymentService {
                 PrimaryKey paymentMethodPrimaryKey = user.getShoppingCart().getPaymentMethod().getPK();
                 if (paymentMethodPrimaryKey != null) {
                     selectedPaymentId = paymentMethodPrimaryKey.getId();
+                    request.getSession().setAttribute("selectedPaymentId", selectedPaymentId);
                 }
             }
         }
@@ -254,9 +270,18 @@ public class PaymentService {
         	ErpPaymentMethodI paymentMethod =paymentMethods.get(i);
         	if(!(paymentMethod instanceof ErpGiftCardModel)) {//exclude giftcards
 	            PaymentData paymentData = createPaymentData(paymentMethods.get(i));
+	            
+                //set as default
+                if (paymentData.getId().equals(user.getFDCustomer().getDefaultPaymentMethodPK())) {
+                	paymentData.setDefault(true);
+                } else {
+                	paymentData.setDefault(false);
+                }
+                
 	            if ((cartPaymentSelectionDisabled == null || !cartPaymentSelectionDisabled) && (paymentData.getId().equals(selectedPaymentId) || (selectedPaymentId == null && i == 0))
 	                    && selectionError.isEmpty()) {
 	                paymentData.setSelected(true);
+	                
 	            }
 	            paymentDatas.add(paymentData);
         	}
@@ -328,6 +353,7 @@ public class PaymentService {
         if (payment.getCardType() != null) {
             paymentData.setType(payment.getCardType().getDisplayName());
         }
+        paymentData.setDebit(payment.isDebitCard());
         if (!EnumCardType.GCP.equals(payment.getCardType())) {
             paymentData.setNameOnCard(payment.getName());
             String maskedAccountNumber = payment.getMaskedAccountNumber();

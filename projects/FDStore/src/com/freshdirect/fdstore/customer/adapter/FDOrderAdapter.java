@@ -1259,7 +1259,8 @@ public class FDOrderAdapter implements FDOrderI {
 	public List<FDCartLineI> getBundleShortItems(){
 		List<FDCartLineI> bundleShortItems = new ArrayList<FDCartLineI>();
 		for( FDCartLineI line : orderLines ){
-			if(!line.isPricedByLb() && line.getDeliveredQuantity() != null && !"".equals(line.getDeliveredQuantity())){
+			if(!line.isPricedByLb() && FDStoreProperties.getMealKitMaterialGroup().contains(line.getMaterialGroup()) 
+					&& line.getDeliveredQuantity() != null && !"".equals(line.getDeliveredQuantity())){
 				if (new Double(line.getDeliveredQuantity()).doubleValue() != 0 && new Double(line.getDeliveredQuantity()).doubleValue() == line.getQuantity() 
 						&& line.getInvoiceLine().getPrice()<line.getPrice()){
 					bundleShortItems.add(line);

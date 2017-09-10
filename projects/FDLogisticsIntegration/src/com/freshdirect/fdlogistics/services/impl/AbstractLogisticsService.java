@@ -99,7 +99,7 @@ public abstract class AbstractLogisticsService {
 			LOGGER.info(e.getMessage());
 			LOGGER.info("api url:"+url);
 			LOGGER.info("input json:"+inputJson);
-			throw new FDLogisticsServiceException("API connection failure");
+			throw new FDLogisticsServiceException(e,"API connection failure");
 		} catch (URISyntaxException e) {
 			LOGGER.info(e.getMessage());
 			LOGGER.info("api url:"+url);
@@ -123,7 +123,7 @@ public abstract class AbstractLogisticsService {
 		} catch (RestClientException e) {
 			LOGGER.info(e.getMessage());
 			LOGGER.info("api url:"+url);
-			throw new FDLogisticsServiceException("API connection failure");
+			throw new FDLogisticsServiceException(e, "API connection failure");
 		} catch (URISyntaxException e) {
 			LOGGER.info(e.getMessage());
 			LOGGER.info("api url:"+url);

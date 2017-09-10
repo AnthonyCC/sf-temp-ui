@@ -72,6 +72,7 @@ public class XmlContentService extends SimpleContentService implements ContentSe
         protected void init(CmsNodeHandler nodeHandler, String resourceFiles, ResourceInfoServiceI resourceInfoService) {
             nodeHandler.setContentService(this);
             nodeHandler.setResourceInfoService(resourceInfoService);
+            LOGGER.info("ResourceFiles : "+resourceFiles);
             StringTokenizer tok = new StringTokenizer(resourceFiles, ",");
             // Map allNodes = new HashMap();
             while (tok.hasMoreTokens()) {

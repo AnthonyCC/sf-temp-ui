@@ -184,9 +184,9 @@ public class CustomerStrategy implements PromotionStrategyI {
 		// Voucher redemption promotion :  should not allow promotion for new customer who has profile as 
 		// Voucher holder in or out delivery zone
 		try {
-			if(  (context.getAdjustedValidOrderCount() ==0)
-					&& (context.getUser().isVHInDelivery() || context.getUser().isVHOutOfDelivery())){
-				 return DENY;
+			if (((context.getUser().isVHInDelivery() || context.getUser().isVHOutOfDelivery())
+					&& context.getAdjustedValidOrderCount() == 0)) {
+				return DENY;
 			}
 		} catch (FDResourceException e) {
 			e.printStackTrace();

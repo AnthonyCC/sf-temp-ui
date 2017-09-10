@@ -1,7 +1,6 @@
 package com.freshdirect.webapp.ajax.modulehandling.service;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -18,13 +17,10 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.DepartmentModel;
-import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.SortOptionModel;
 import com.freshdirect.fdstore.content.SortStrategyType;
 import com.freshdirect.fdstore.content.StoreModel;
-import com.freshdirect.fdstore.content.browse.sorter.ProductItemSorterFactory;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.ValueHolder;
@@ -33,15 +29,12 @@ import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData.SectionDataCointainer;
-import com.freshdirect.webapp.ajax.browse.data.BrowseDataContext;
 import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
-import com.freshdirect.webapp.ajax.browse.data.SectionContext;
 import com.freshdirect.webapp.ajax.browse.data.SectionData;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringFlow;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
 import com.freshdirect.webapp.ajax.filtering.NavigationUtil;
-import com.freshdirect.webapp.ajax.filtering.ProductItemComparatorUtil;
 import com.freshdirect.webapp.ajax.modulehandling.data.IconData;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -186,9 +179,9 @@ public class ModuleContentService {
             promotionProducts = category.getProducts();
         }
 
-        List<ProductModel> featProds = ProductPromotionUtil.getFeaturedProducts(promotionProducts, false);
-        List<ProductModel> nonfeatProds = ProductPromotionUtil.getNonFeaturedProducts(promotionProducts, false);
-        List<ProductModel> filteredProductModels = sortPresidentsPicks(featProds, nonfeatProds, user);
+        List<ProductModel> filteredProductModels = new ArrayList<ProductModel>();
+        filteredProductModels.addAll(getAvailableProducts(ProductPromotionUtil.getFeaturedProducts(promotionProducts, false)));
+        filteredProductModels.addAll(ProductRecommenderUtil.sortProducts(user, getAvailableProducts(ProductPromotionUtil.getNonFeaturedProducts(promotionProducts, false)), getPresidentPicksSortStrategy(), false));
 
         return ProductRecommenderUtil.createProductData(user, filteredProductModels, variantId);
     }
@@ -230,8 +223,8 @@ public class ModuleContentService {
     }
 
     public List<ProductData> loadBrandFeaturedProducts(ContentNodeI brand, FDUserI user) {
-        List<ContentKey> featuredProductsContentKeys = (List<ContentKey>) brand.getAttributeValue("FEATURED_PRODUCTS");
         List<ProductModel> featuredProducts = new ArrayList<ProductModel>();
+        List<ContentKey> featuredProductsContentKeys = (List<ContentKey>) brand.getAttributeValue("FEATURED_PRODUCTS");
 
         for (ContentKey contentKey : featuredProductsContentKeys) {
             ProductModel productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(contentKey);
@@ -243,80 +236,16 @@ public class ModuleContentService {
         return ProductRecommenderUtil.createProductData(user, getAvailableProducts(featuredProducts), null);
     }
 
-    private List<ProductModel> sortPresidentsPicks(List<ProductModel> featProds, List<ProductModel> nonfeatProds, FDUserI user) {
-        List<ProductModel> availableFeaturedProducts = getAvailableProducts(featProds);
-        List<ProductModel> availableNonFeaturedProducts = getAvailableProducts(nonfeatProds);
-
-        // PRODUCTMODEL TO FILTERINGPRODUCT CONVERSION
-        List<FilteringProductItem> filteringProducts = new ArrayList<FilteringProductItem>();
-        if (null != nonfeatProds) {
-            for (ProductModel productModel : availableNonFeaturedProducts) {
-                FilteringProductItem item = new FilteringProductItem(productModel);
-                filteringProducts.add(item);
-            }
-        }
-
-        // SORTING PREPARATION
-        BrowseDataContext sortingBrowseDataContext = new BrowseDataContext();
-        SortOptionModel defaultSorter = null;
-        Comparator<FilteringProductItem> comparator = null;
-        SortStrategyType usedSortStrategy = null;
-        SectionContext sortingSectionContext = new SectionContext(filteringProducts);
-        List<SectionContext> sortingSectionContexts = new ArrayList<SectionContext>();
-        CmsFilteringNavigator nav = new CmsFilteringNavigator();
-
-        // SORTING SETUP
-        sortingSectionContexts.add(sortingSectionContext);
-        sortingBrowseDataContext.setSectionContexts(sortingSectionContexts);
-        
-        //defaultSorter = ContentFactory.getInstance().getStore().getPresidentsPicksPageSortOptions().get(0);
-        StoreModel storeModel=ContentFactory.getInstance().getStore();
-	        if(storeModel!=null && !storeModel.getPresidentsPicksPageSortOptions().isEmpty()) {
-	        	 defaultSorter = storeModel.getPresidentsPicksPageSortOptions().get(0);
-	        }
-        
-
-        if (defaultSorter != null) {
-            usedSortStrategy = defaultSorter.getSortStrategyType();
+    private SortStrategyType getPresidentPicksSortStrategy() {
+        SortStrategyType sortStrategy = null;
+        StoreModel storeModel = ContentFactory.getInstance().getStore();
+        if (storeModel != null && !storeModel.getPresidentsPicksPageSortOptions().isEmpty()) {
+            sortStrategy = storeModel.getPresidentsPicksPageSortOptions().get(0).getSortStrategyType();
         } else {
             LOGGER.info("No default sorter was present for president picks setting name sortation.");
-            usedSortStrategy = SortStrategyType.NAME;
+            sortStrategy = SortStrategyType.NAME;
         }
-
-        comparator = ProductItemSorterFactory.createComparator(usedSortStrategy, user, false);
-        nav.setPageTypeType(FilteringFlowType.PRES_PICKS);
-        nav.setOrderAscending(true);
-
-        // SORTING
-        if (comparator == null) {
-            comparator = ProductItemSorterFactory.createDefaultComparator();
-        }
-        ProductItemComparatorUtil.sortSectionDatas(sortingBrowseDataContext, comparator); // sort items/section
-        ProductItemComparatorUtil.postProcess(sortingBrowseDataContext, nav, usedSortStrategy, user);
-
-        // ADDING FEATURED PRODUCTS BEFORE ANYTHING ELSE
-        List<ProductModel> filteredProductModels = new ArrayList<ProductModel>();
-        filteredProductModels.addAll(availableFeaturedProducts);
-
-        // FILTERINGPRODUCT TO PRODUCT MODEL CONVERSION
-        List<SectionContext> sectionContextlist=sortingBrowseDataContext.getSectionContexts();
-        if(!sectionContextlist.isEmpty() && sectionContextlist.get(0)!=null) {
-	        for (FilteringProductItem filteringProduct : sectionContextlist.get(0).getProductItems()) {
-	            filteredProductModels.add(filteringProduct.getProductModel());
-	        }
-        }
-
-        return filteredProductModels;
-    }
-
-    private List<ProductModel> getAvailableProducts(List<ProductModel> products) {
-        List<ProductModel> availableProducts = new ArrayList<ProductModel>();
-        for (ProductModel product : products) {
-            if (product.isFullyAvailable() && !product.isDiscontinued()) {
-                availableProducts.add(product);
-            }
-        }
-        return availableProducts;
+        return sortStrategy;
     }
 
     private void loadProductsFromSections(SectionDataCointainer sectionDataContainer, List<SectionData> sections, int level, List<ProductData> products) {
@@ -348,5 +277,15 @@ public class ModuleContentService {
                 }
             }
         }
+    }
+
+    private List<ProductModel> getAvailableProducts(List<ProductModel> products) {
+        List<ProductModel> availableProducts = new ArrayList<ProductModel>();
+        for (ProductModel product : products) {
+            if (product.isFullyAvailable() && !product.isDiscontinued()) {
+                availableProducts.add(product);
+            }
+        }
+        return availableProducts;
     }
 }

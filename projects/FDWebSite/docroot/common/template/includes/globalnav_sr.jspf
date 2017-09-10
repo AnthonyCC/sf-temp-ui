@@ -20,11 +20,6 @@
     MasqueradeContext masqueradeContext_globalnav_sr = user.getMasqueradeContext();
 %>
 
-<%-- OAS --%>
-<jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
-<jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
-
-
 <!-- TOP TOOLBAR -->
 
 <script>
@@ -49,6 +44,9 @@
 
 <% } %>
 
+<%-- OAS --%>
+<jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
+<jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
 
 <!-- TOP TOOLBAR - secondary -->
 
@@ -109,7 +107,7 @@ if(user != null) {
 				%>
 				<div class="searchform-cont">
 					<form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="UTF-8">
-						<label for="topSearchField">Search</label>
+						<label class="offscreen" for="topSearchField">Search</label>
 						<%
 							{
 							    String searchParams = request.getParameter("searchParams")!=null ? request.getParameter("searchParams") : "";
@@ -123,25 +121,7 @@ if(user != null) {
 				</div>
 
 				<%-- nav links next to search field --%>
-		        <% if (user != null && user.getLevel() == FDUserI.GUEST) {  %>
-		        	<div class="topnavitem" id="topnavitem_signup">
-						<a href="/registration/signup.jsp" class="signUpButton cssbutton orange" data-component="signup">Create Account</a>
-					</div>
-		        <% } %>
-
-		        <% if (user != null && user.getLevel() != FDUserI.GUEST && user.isEligibleForStandingOrders() && user.isNewSO3Enabled()) {  %>
-					<div class="topnavitem" id="topnavitem_standingorders">
-		            	<a href="/quickshop/standing_orders.jsp" class="cssbutton cssbutton-flat purple nontransparent" fd-login-required>Standing Orders</a>
-		        	</div>
-		        <% } %>
-				<div class="topnavitem" id="topnavitem_reorder">
-          			<a href="/quickshop/index.jsp" fd-login-required class="icon-reorder-icon-before">Reorder</a>
-				</div>
-
-				<div class="topnavitem" id="topnavitem_help">
-			        <a href="/help/index.jsp?trk=gnav">Help</a>
-			    </div>
-		        <% if (user != null && user.getLevel() != FDUserI.GUEST && user.isEligibleForStandingOrders() && user.isNewSO3Enabled()) {  %>
+				<% if (user != null && user.getLevel() != FDUserI.GUEST && user.isEligibleForStandingOrders() && user.isNewSO3Enabled()) {  %>
 					<% /* nothing in this space */ %>
 		        <% } else { %>
 					<%
@@ -162,6 +142,25 @@ if(user != null) {
 					*/
 					%>
 				<% } %>
+				
+				<div class="topnavitem" id="topnavitem_help">
+			        <a href="/help/index.jsp?trk=gnav">Help</a>
+			    </div>
+		       
+				<div class="topnavitem" id="topnavitem_reorder">
+          			<a href="/quickshop/index.jsp" fd-login-required class="icon-reorder-icon-before">Reorder</a>
+				</div>
+				 <% if (user != null && user.getLevel() == FDUserI.GUEST) {  %>
+		        	<div class="topnavitem" id="topnavitem_signup" style="float:left;">
+						<a href="/registration/signup.jsp" class="signUpButton cssbutton orange" data-component="signup">Create Account</a>
+					</div>
+		        <% } %>
+
+		        <% if (user != null && user.getLevel() != FDUserI.GUEST && user.isEligibleForStandingOrders() && user.isNewSO3Enabled()) {  %>
+					<div class="topnavitem" id="topnavitem_standingorders">
+		            	<a href="/quickshop/standing_orders.jsp" class="cssbutton cssbutton-flat purple nontransparent" fd-login-required>Standing Orders</a>
+		        	</div>
+		        <% } %>
 
 			    <br style="clear: both;" />
 			</div>
@@ -177,7 +176,7 @@ if(user != null) {
 
 
 					<form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
-						<label for="topSearchField">Search</label>
+						<label class="offscreen" for="topSearchField">Search</label>
 						<%
 							{
 							    String searchParams = request.getParameter("searchParams")!=null ? request.getParameter("searchParams") : "";
@@ -216,7 +215,7 @@ if(user != null) {
 				        <a href="<%=dlvInfoLink%>.jsp">Delivery Info</a>
 				    </div>
 				    <div class="topnavitem" id="topnavitem_help">
-				        <a href="/help/index.jsp?trk=gnav">Help</a>test
+				        <a href="/help/index.jsp?trk=gnav">Help</a>
 				    </div>
 
 
@@ -288,4 +287,4 @@ if(user != null) {
 		</script>
 	<%}%>
 <!-- Changes for Skip to Content Fix -->
-<div tabindex="0" id="skip_to_content"></div>
+<div tabindex="-1" id="skip_to_content"></div>

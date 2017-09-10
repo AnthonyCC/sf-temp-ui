@@ -77,6 +77,7 @@ import com.freshdirect.webapp.ajax.cache.EhCacheUtilWrapper;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringServlet.BrowseEvent;
 import com.freshdirect.webapp.ajax.holidaymealbundle.service.HolidayMealBundleService;
 import com.freshdirect.webapp.ajax.mealkit.service.MealkitService;
+import com.freshdirect.webapp.ajax.product.CriteoProductsUtil;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.features.service.FeaturesService;
@@ -107,7 +108,8 @@ public class CmsFilteringFlow {
 
     public CmsFilteringFlowResult doFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException, FDResourceException {
         BrowseData browseData = null;
-        BrowseDataContext browseDataContext = getBrowseDataContextFromCacheForPaging(nav, user);
+        String cacheKey = user.getUser().getPrimaryKey() + "," + nav.getId();
+        BrowseDataContext browseDataContext = getBrowseDataContextFromCacheForPaging(nav, user, cacheKey);
         if (nav.getPageType() == FilteringFlowType.BROWSE) {
 
             if (browseDataContext == null) {
@@ -115,9 +117,9 @@ public class CmsFilteringFlow {
             }
 
             if (!nav.isPdp()) {
-                EhCacheUtilWrapper.putObjectToCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, user.getUser().getPrimaryKey(), browseDataContext);
+                EhCacheUtilWrapper.putObjectToCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, cacheKey, browseDataContext);
             }
-            
+
             // -- SORTING -- (not on pdp or super department page)
             if (!nav.isPdp() && !(browseDataContext.getCurrentContainer() instanceof SuperDepartmentModel)) {
                 // process sort options
@@ -141,8 +143,8 @@ public class CmsFilteringFlow {
                     SectionData section = (null !=browseData.getSections() && null !=browseData.getSections().getSections() && !browseData.getSections().getSections().isEmpty()) ? browseData.getSections().getSections().get(0): null;
                     if(null !=section){
                         insertHookLogicProductsIntoBrowseData(
-                                section.getProducts(), 
-                                browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId()), 
+                                section.getProducts(),
+                                browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId()),
                                 user,
                                 FDStoreProperties.getHookLogicAllowOwnRows()
                         );
@@ -157,29 +159,29 @@ public class CmsFilteringFlow {
                                 Iterator<SectionData> iterator = lSection.getSections().iterator();
                                 while (iterator.hasNext()) {
                                     SectionData section = iterator.next();
-                                    
+
                                     int curSectionSize = null !=section.getProducts()?section.getProducts().size():0;
-                                    
+
                                     int itemsPerRow = (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn5_0, user)) ? 5 :
                                         (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn4_0, user)) ? 4 : 5;
-                                    
+
                                     //calc how many HL will be inserted...
                                     double calcd = Math.min(
-                                            Math.ceil( ((double)curSectionSize / itemsPerRow)), 
+                                            Math.ceil( ((double)curSectionSize / itemsPerRow)),
                                             null !=browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId())?browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId()).size():0
                                     );
                                     //...and cover lower-end
                                     if (calcd > 0 && curSectionSize < itemsPerRow) {
                                         calcd = 1;
                                     }
-                                    
+
                                     //check if we have room, it's the first cat, or it's show all
                                     //nav.isAll() doesn't work here, it's always true for cats that display subcats
                                     //pageNum is 0, using that for 'all'
                                     if ((nav.getActivePage() == 1 || nav.getActivePage() == 0) && (nav.getActivePage() == 0 || runningTotal == 0 || (runningTotal + (curSectionSize+calcd)) <= nav.getPageSize())) {
                                         insertHookLogicProductsIntoBrowseData(
-                                                section.getProducts(), 
-                                                null !=browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId())?browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId()).subList(0, (int) calcd):null, 
+                                                section.getProducts(),
+                                                null !=browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId())?browseData.getAdProducts().getHlSelectionOfProductList().get(section.getCatId()).subList(0, (int) calcd):null,
                                                 user,
                                                 FDStoreProperties.getHookLogicAllowOwnRows()
                                         );
@@ -242,27 +244,27 @@ public class CmsFilteringFlow {
             /* Added this condition as part of APPDEV-5920 staff picks sort bar implementation
              * At this point we now have the the sorted section data object which preserves the sort strategy and order of the products
              * Here we are iterating through this sorted section data and adding them to the assort products map based upon the product id
-             * Thus the assort product map and section data sorted products are always in sync 
+             * Thus the assort product map and section data sorted products are always in sync
              * */
             if(!browseDataContext.getSectionContexts().isEmpty() && null !=browseDataContext.getSectionContexts().get(0).getProductItems()){
-            	
+
             	for(FilteringProductItem filteredProduct: browseDataContext.getSectionContexts().get(0).getProductItems()){
             		if(null !=browseDataContext.getAssortProducts() & null !=browseDataContext.getAssortProducts().getUnfilteredAssortedProducts()){
 	            		for(ProductData productData:browseDataContext.getAssortProducts().getUnfilteredAssortedProducts()){
 	            			if(productData.getProductId().equalsIgnoreCase(filteredProduct.getProductModel().getContentKey().getId())){
-	                			browseDataContext.getAssortProducts().addProdDataToCat(productData.getErpCategory(), productData);		
+	                			browseDataContext.getAssortProducts().addProdDataToCat(productData.getErpCategory(), productData);
 	                		}
 	            		}
             		}
-            		
+
             	}
             }
             browseData = browseDataContext.extractBrowseDataPrototype(user, nav);
 
             /* insert HL products into the correct spot(s) in the results */
             insertHookLogicProductsIntoBrowseData(
-                    (null !=browseData.getSections() && null !=browseData.getSections().getSections() && !browseData.getSections().getSections().isEmpty()) ? (null !=browseData.getSections().getSections().get(0) ? browseData.getSections().getSections().get(0).getProducts():null): null,/*browseData.getSections().getSections().get(0).getProducts(),*/ 
-                    browseData.getAdProducts().getProducts(), 
+                    (null !=browseData.getSections() && null !=browseData.getSections().getSections() && !browseData.getSections().getSections().isEmpty()) ? (null !=browseData.getSections().getSections().get(0) ? browseData.getSections().getSections().get(0).getProducts():null): null,/*browseData.getSections().getSections().get(0).getProducts(),*/
+                    browseData.getAdProducts().getProducts(),
                     user,
                     FDStoreProperties.getHookLogicAllowOwnRows()
             );
@@ -288,19 +290,19 @@ public class CmsFilteringFlow {
         return new CmsFilteringFlowResult(browseData, null !=browseDataContext ? browseDataContext.getNavigationModel() :null);
     }
 
-    
+
     /* call this BEFORE BrowseDataPagerHelper.createPagerContext(browseData, nav); */
     /* allowOnlyHLRows will toggle filling in empty rows to display the entire HL list */
     public void insertHookLogicProductsIntoBrowseData(List<ProductData> prodList, List<ProductData> hlProdList, FDSessionUser user, boolean allowOnlyHLRows) {
         /* skip out if hlProds passed in are invalid or empty */
         if (hlProdList == null || hlProdList.size() == 0 || prodList == null || prodList.size() == 0) { return; }
-        
+
         int itemsPerRow = (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn5_0, user)) ? 5 :
             (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.gridlayoutcolumn4_0, user)) ? 4 : 5;
         int hlIndex = itemsPerRow-1;
         ProductData pd = new ProductData();
         pd.setProductId("!_SPACER_!");
-        
+
         Iterator<ProductData> iterator = hlProdList.iterator();
         while (iterator.hasNext()) {
             ProductData result = iterator.next();
@@ -309,7 +311,7 @@ public class CmsFilteringFlow {
                     prodList.add(pd); //add spacer. These count as a "product" so that count needs modification elsewhere
                 }
                 prodList.add(result); //add to end
-                
+
                 /* break out if we don't want HL-only rows */
                 if (!allowOnlyHLRows) {
                     break;
@@ -318,7 +320,7 @@ public class CmsFilteringFlow {
                 prodList.add(hlIndex, result); //insert
             }
             hlIndex += itemsPerRow;
-        }        
+        }
     }
 
     private boolean isCarouselsBottomAndOnLastPage(BrowseData browseData, PagerData pagerData) {
@@ -332,7 +334,7 @@ public class CmsFilteringFlow {
     /**
      * Set page type value in {@code browseDataContext} for paging and sorting cache. This value is also available in {@code browseDataContext.searchParams.pageType} but
      * {@code browseDataContext.searchParams} is empty when we are on browse.
-     * 
+     *
      * @param nav
      * @param browseDataContext
      */
@@ -342,29 +344,29 @@ public class CmsFilteringFlow {
         }
     }
 
-    private BrowseDataContext getBrowseDataContextFromCacheForPaging(CmsFilteringNavigator nav, FDSessionUser user) {
+    private BrowseDataContext getBrowseDataContextFromCacheForPaging(CmsFilteringNavigator nav, FDSessionUser user, String cacheKey) {
         BrowseDataContext browseDataContext = null;
         BrowseEvent event = nav.getBrowseEvent() != null ? BrowseEvent.valueOf(nav.getBrowseEvent().toUpperCase()) : BrowseEvent.NOEVENT;
         // use userRefinementCache
-        String userPrimaryKey = user.getUser().getPrimaryKey();
-        if (event != BrowseEvent.PAGE) { // invalidate cache entry in every other case than paging
-            EhCacheUtilWrapper.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, userPrimaryKey);
+
+        browseDataContext = EhCacheUtilWrapper.getObjectFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, cacheKey);
+        if (browseDataContext == null) {
+        	return null;
+        }
+        if (!isRequestForTheSamePageType(nav, browseDataContext)) {
+            EhCacheUtilWrapper.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, cacheKey); // if cached has other page type
             browseDataContext = null;
         } else {
-            browseDataContext = EhCacheUtilWrapper.getObjectFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, userPrimaryKey);
-            if (!isRequestForTheSamePageType(nav, browseDataContext)) {
-                EhCacheUtilWrapper.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, userPrimaryKey); // if cached has other page type
+            if (FilteringFlowType.BROWSE.equals(nav.getPageType()) && 
+            		(!isBrowseRequestForTheSameId(nav, browseDataContext) || !isBrowseRequestForSameFilter(nav, browseDataContext))) {
+                EhCacheUtilWrapper.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, cacheKey); // if cached has same page type(browse) but other id
                 browseDataContext = null;
-            } else {
-                if (FilteringFlowType.BROWSE.equals(nav.getPageType()) && !isBrowseRequestForTheSameId(nav, browseDataContext)) {
-                    EhCacheUtilWrapper.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, userPrimaryKey); // if cached has same page type(browse) but other id
-                    browseDataContext = null;
-                } else if (FilteringFlowType.SEARCH.equals(nav.getPageType()) && !isRequestForTheSameSearchParams(nav, browseDataContext)) {
-                    EhCacheUtilWrapper.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, userPrimaryKey); // if cached has same page type(search) but other search params
-                    browseDataContext = null;
-                }
+            } else if (FilteringFlowType.SEARCH.equals(nav.getPageType()) && !isRequestForTheSameSearchParams(nav, browseDataContext)) {
+                EhCacheUtilWrapper.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, cacheKey); // if cached has same page type(search) but other search params
+                browseDataContext = null;
             }
         }
+
         return browseDataContext;
     }
 
@@ -380,6 +382,26 @@ public class CmsFilteringFlow {
     private boolean isBrowseRequestForTheSameId(CmsFilteringNavigator navigator, BrowseDataContext browseDataContext) {
         return browseDataContext != null && browseDataContext.getCurrentContainer() != null && browseDataContext.getCurrentContainer().getContentName() != null
                 && browseDataContext.getCurrentContainer().getContentName().equalsIgnoreCase(navigator.getId());
+    }
+    
+    private boolean isBrowseRequestForSameFilter(CmsFilteringNavigator navigator, BrowseDataContext browseDataContext) {
+    	Map<String, List<String>> navFilter = navigator.getRequestFilterParams();
+    	Map<String, List<String>> contextFilter = browseDataContext.getRequestFilterParams();
+    	
+    	if ( (navFilter == null && contextFilter != null) ||
+    			(navFilter != null && contextFilter == null)){
+    		return false;
+    	}
+    	
+    	if ( (navFilter == null && contextFilter == null) ||
+    			(navFilter.size() == 0 && contextFilter.size() == 0)){
+    		return true;
+    	}
+    	
+    	if(navFilter.size() != contextFilter.size()){
+    		return false;
+    	}
+        return navFilter.equals(contextFilter);
     }
 
     private void populateSearchCarouselProductLimit(int activePage, BrowseDataContext browseDataContext) {
@@ -416,7 +438,7 @@ public class CmsFilteringFlow {
 
                 searchResults = SearchService.getInstance().searchProducts(searchParams, nav.getRequestCookies(), user, nav.getRequestUrl(), nav.getReferer());
                 if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.hooklogic2016, user)){               //if(FDStoreProperties.isHookLogicEnabled()){
-                    SearchResultsUtil.getHLBrandProductAdProducts(searchResults, nav,  user);    
+                    SearchResultsUtil.getHLBrandProductAdProducts(searchResults, nav,  user);
                  }
                 collectSearchRelevancyScores(searchResults, nav.getRequestCookies(), user);
                 break;
@@ -589,7 +611,7 @@ public class CmsFilteringFlow {
        // for staff picks: group the products based on the erp_category column value in product_promotion_group table
         for (Map.Entry<String, List<ProductModel>> entry : searchResults.getAssortProducts().entrySet()) {
             for(ProductModel product:entry.getValue()){
-                        
+
         	try {
             	CategoryKey catKey= new CategoryKey();
                 ProductData productData = ProductDetailPopulator.createProductData(user, product);
@@ -613,15 +635,15 @@ public class CmsFilteringFlow {
                 browseDataContext.getAssortProducts().getUnfilteredAssortedProducts().add(productData);
                 browseDataContext.getAssortProducts().addCategoryKeys(catKey);
                /* if(!browseDataContext.getSectionContexts().isEmpty()){
-                	
+
                 	for(FilteringProductItem filteredProduct: browseDataContext.getSectionContexts().get(0).getProductItems()){
                 		if(productData.getProductId().equalsIgnoreCase(filteredProduct.getProductModel().getContentKey().getId())){
-                			browseDataContext.getAssortProducts().addProdDataToCat(catKey.getCategoryName(), productData);		
+                			browseDataContext.getAssortProducts().addProdDataToCat(catKey.getCategoryName(), productData);
                 		}
                 	}
                 }*/
              //   browseDataContext.getAssortProducts().addProdDataToCat(catKey.getCategoryName(), productData);
-                
+
             } catch (FDResourceException e) {
                 LOG.warn("Getting DDPP products failed!", e);
             } catch (FDSkuNotFoundException e) {
@@ -674,10 +696,10 @@ public class CmsFilteringFlow {
                         }
                     }
 
-                } 
+                }
                 if(null!=searchResults.getEmptyProductsPageBeacon())
                 	browseDataContext.getAdProducts().setHlEmptyProductsPagebeacon(searchResults.getEmptyProductsPageBeacon());
-                
+
                 if (null != searchResults.getPageBeacon()) {
                     StringBuffer PageBeacon = new StringBuffer(searchResults.getPageBeacon());
                     browseDataContext.getAdProducts().setPageBeacon(PageBeacon.append(updatedPageBeacon).toString());
@@ -901,7 +923,7 @@ public class CmsFilteringFlow {
         browseDataContext = BrowseDataBuilderFactory.createBuilder(navigationModel.getNavDepth(), navigationModel.isSuperDepartment(), null).buildBrowseData(navigationModel, user,
                 nav);
 
-        if(displayHookLogicProducts(nav, user, contentNodeModel) && !nav.isPdp()){         //if(FDStoreProperties.isHookLogicEnabled()){  
+        if(displayHookLogicProducts(nav, user, contentNodeModel) && !nav.isPdp()){         //if(FDStoreProperties.isHookLogicEnabled()){
             if(null != browseDataContext){
                 String catId = nav.getId();
                 Map<String, List<ProductData>> hlSelectionsofProductsList=new HashMap<String, List<ProductData>>();
@@ -914,12 +936,16 @@ public class CmsFilteringFlow {
                 browseDataContext.getAdProducts().setHlSelectionOfProductList(hlSelectionsofProductsList);
                 browseDataContext.getAdProducts().setHlSelectionsPageBeacons(hlSelectionsofPageBeacons);
                 browseDataContext.getAdProducts().setHlCatProductsCount(hlCatProductsCount);
-                
-            }           
-        }
 
+            }
+        }
+		if(nav.isPdp() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.hooklogic2016, user)) {
+				browseDataContext.setProductId(nav.getProductId());
+					CriteoProductsUtil.getHlBrandPdpProducts(user, browseDataContext);
+		}
         // inject references
         browseDataContext.setNavigationModel(navigationModel);
+        browseDataContext.setRequestFilterParams(nav.getRequestFilterParams());
         browseDataContext.setCurrentContainer(contentNodeModel);
 
         if (isCategoryAggregationApplicable(nav, user, contentNodeModel)) {
@@ -965,7 +991,7 @@ public class CmsFilteringFlow {
 
 	private boolean displayHookLogicProducts(CmsFilteringNavigator nav, FDSessionUser user,
 			ContentNodeModel contentNodeModel) {
-		return FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.hooklogic2016, user) && FDStoreProperties.isHookLogicForCategoriesEnabled() 
+		return FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.hooklogic2016, user) && FDStoreProperties.isHookLogicForCategoriesEnabled()
 				&& !isExcludedForHookLogicProducts(contentNodeModel, nav);
 	}
 
@@ -987,7 +1013,7 @@ public class CmsFilteringFlow {
 				}
 				contentNodeModel = contentNodeModel.getParentNode();
 			}
-			
+
 		}
 		return isExcluded;
 	}
@@ -1012,27 +1038,27 @@ public class CmsFilteringFlow {
         hLBrandProductAdRequest.setUserId(user.getUser().getPK().getId());
         hLBrandProductAdRequest.setCustomerId(user.getUser().getPK().getId());
         hLBrandProductAdRequest.setCategoryId(catId);
-      
+
         if(user.isMobilePlatForm())
-			hLBrandProductAdRequest.setPlatformSource("mobile");	
+			hLBrandProductAdRequest.setPlatformSource("mobile");
 	 	  else
 		 	 hLBrandProductAdRequest.setPlatformSource("web");
-        
+
         try {
-            HLBrandProductAdResponse hlBrandProductAdResponse = FDBrandProductsAdManager.getHLCategoryProducts(hLBrandProductAdRequest);    
+            HLBrandProductAdResponse hlBrandProductAdResponse = FDBrandProductsAdManager.getHLCategoryProducts(hLBrandProductAdRequest);
             List<ProductModel> adPrducts = new ArrayList<ProductModel>();
             if(null !=hlBrandProductAdResponse){
 	            List<HLBrandProductAdInfo> hlBrandAdProductsMeta = hlBrandProductAdResponse.getProductAd();
-	           
-	
+
+
 	            if (hlBrandAdProductsMeta != null) {
 					hlCatProductsCount.put(catId, hlBrandAdProductsMeta.size());
-	            	
+
 	                for (Iterator<HLBrandProductAdInfo> iterator = hlBrandAdProductsMeta.iterator(); iterator.hasNext();) {
 	                    HLBrandProductAdInfo hlBrandProductAdMetaInfo = iterator.next();
 	                    hlBrandProductAdMetaInfo.setPageBeacon(hlBrandProductAdResponse.getPageBeacon());
 	                    browseDataContext.getAdProducts().setPageBeacon(hlBrandProductAdResponse.getPageBeacon());
-	
+
 	                    try {
 	                        ProductModel productModel = ContentFactory.getInstance().getProduct(hlBrandProductAdMetaInfo.getProductSKU());
 	                        if (null != productModel) {
@@ -1040,17 +1066,17 @@ public class CmsFilteringFlow {
 	                                    hlBrandProductAdMetaInfo.getImpBeacon());
 	                            adPrducts.add(pm);
 	                        }
-	
+
 	                    } catch (FDSkuNotFoundException e) {
 	                        LOG.info("FDSkuNotFoundException while populating HookLogic product : ", e);
 	                    }
 	                }
 	            }
 	            else {
-	            	hlCatEmptyProductPageBeacon.put(catId,	hlBrandProductAdResponse.getPageBeacon());	
+	            	hlCatEmptyProductPageBeacon.put(catId,	hlBrandProductAdResponse.getPageBeacon());
 	            }
             }
-            
+
             List<FilteringSortingItem<ProductModel>> productResults = new ArrayList<FilteringSortingItem<ProductModel>>();
             if (null != adPrducts) {
                 for (ProductModel productModel : adPrducts) {
@@ -1072,7 +1098,7 @@ public class CmsFilteringFlow {
 
     /**
      * Aggregate sub-category products into single section and remove sub-category titles
-     * 
+     *
      * @param sectionContexts
      */
     private void applyCategoryAggregation(CmsFilteringNavigator nav, List<SectionContext> sectionContexts) {
@@ -1215,7 +1241,7 @@ public class CmsFilteringFlow {
      * @param dept
      * @param user
      * @return
-     * 
+     *
      * if department has only one usable category then return with that categoryId
      */
     private String isSpecialRedirectConditionsApply(DepartmentModel dept, FDSessionUser user) {

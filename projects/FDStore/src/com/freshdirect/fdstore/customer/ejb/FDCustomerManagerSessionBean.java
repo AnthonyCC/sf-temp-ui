@@ -60,6 +60,7 @@ import com.freshdirect.customer.EnumComplaintStatus;
 import com.freshdirect.customer.EnumDeliverySetting;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumFraudReason;
+import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
@@ -105,7 +106,6 @@ import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.OrderHistoryI;
-import com.freshdirect.customer.ejb.ActivityDAO;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpFraudPreventionSB;
@@ -132,7 +132,6 @@ import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -149,7 +148,6 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.AddressDAO;
 import com.freshdirect.fdstore.customer.CustomerCreditModel;
-import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.fdstore.customer.EnumIPhoneCaptureType;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
@@ -258,7 +256,6 @@ import com.freshdirect.payment.gateway.GatewayType;
 import com.freshdirect.payment.gateway.Request;
 import com.freshdirect.payment.gateway.Response;
 import com.freshdirect.payment.gateway.impl.GatewayFactory;
-import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.referral.extole.RafUtil;
 import com.freshdirect.referral.extole.model.FDRafTransModel;
 import com.freshdirect.sap.command.SapCartonInfoForSale;
@@ -543,13 +540,16 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 	
 	public FDUser recognize(FDIdentity identity, EnumEStoreId eStoreId, final boolean lazy) throws FDAuthenticationException, FDResourceException {
+		return recognize(identity, eStoreId, lazy, true);
+	}
+	public FDUser recognize(FDIdentity identity, EnumEStoreId eStoreId, final boolean lazy, boolean populateDeliveryPlantInfo) throws FDAuthenticationException, FDResourceException {
 
 		Connection conn = null;
 		FDUser user = null;
 		try {
 			conn = getConnection();
 
-			user = FDUserDAO.recognizeWithIdentity(conn, identity, eStoreId, lazy);
+			user = FDUserDAO.recognizeWithIdentity(conn, identity, eStoreId, lazy, populateDeliveryPlantInfo);
 
 			if (user.isAnonymous()) {
 				throw new FDAuthenticationException("Unrecognized user");
@@ -583,6 +583,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
+	private static String getStateByZipCode(String zipCode) {
+		String state = null;
+		StateCounty stateCounty = FDDeliveryManager.getInstance().getStateCountyByZipcode(zipCode);
+		if (stateCounty != null) {
+			state = WordUtils.capitalizeFully(stateCounty.getState());
+		}
+		return state;
+	}
 	
 	public FDUser getFDUserWithCart(FDIdentity identity, EnumEStoreId eStoreId) throws FDAuthenticationException, FDResourceException {
 
@@ -926,7 +934,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return assignedParams;
 	}
 
-	public ErpAddressModel assumeDeliveryAddress(FDIdentity identity, String lastOrderId) throws FDResourceException {
+	public ErpAddressModel assumeDeliveryAddress(FDIdentity identity, String lastOrderId, FDUser user) throws FDResourceException {
 		try {
 			FDCustomerEB eb = getFdCustomerHome().findByPrimaryKey(
 					new PrimaryKey(identity.getFDCustomerPK()));
@@ -939,6 +947,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			if (address == null) {
 				if (lastOrderId != null) {
  					address = this.getLastOrderAddress(lastOrderId);
+				} else if (user != null){
+					address = this.getLastOrderAddress(user.getOrderHistory().getLastOrderId());
 				}
 			}
 			if (address != null) {
@@ -1211,18 +1221,17 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public FDIdentity login(String userId, String password) throws FDAuthenticationException, FDResourceException {
 		try {
 			// find ERPCustomerEB by userid & password
-			ErpCustomerEB erpCustomerEB;
+			FDIdentity loginIdentity;
 			try {
-				erpCustomerEB = this.getErpCustomerHome()
-						.findByUserIdAndPasswordHash(userId,
-								MD5Hasher.hash(password));
+				String hashedPassword = MD5Hasher.hash(password);
+				loginIdentity = getLoginIdentity(userId, hashedPassword);
+				
 			} catch (ObjectNotFoundException ex) {
 				throw new FDAuthenticationException(
 						"Invalid username or password");
 			}
-			
 			// check the active flag
-			if (!erpCustomerEB.isActive()) {
+			if (!loginIdentity.isActive()) {
 				
 				/*FDCustomerEB fdCustomerEB=getFdCustomerHome().findByErpCustomerId(erpCustomerEB.getPK().getId());
 				if(fdCustomerEB!=null && fdCustomerEB.getPymtVerifyAttempts()>=FDStoreProperties.getPaymentMethodVerificationLimit()) {
@@ -1234,13 +1243,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				throw new FDAuthenticationException("Account disabled");
 			}
 			// find respective FDCustomerEB
-			String erpCustId = erpCustomerEB.getPK().getId();
+			String erpCustId = loginIdentity.getErpCustomerPK();
+			
 			FDCustomerEB fdCustomerEB = this.getFdCustomerHome()
-					.findByErpCustomerId(erpCustomerEB.getPK().getId());
+					.findByErpCustomerId(erpCustId);
 			fdCustomerEB.incrementLoginCount();
-
+			FDIdentity fdIdentity = new FDIdentity(erpCustId, fdCustomerEB.getPK().getId());
 			// String cookie = this.translate( erpCustomerEB.getUserId() );
-			return new FDIdentity(erpCustId, fdCustomerEB.getPK().getId());
+			return fdIdentity;
 
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
@@ -1251,11 +1261,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	
 	public FDIdentity login(String userId) throws FDAuthenticationException, FDResourceException {
 		try {
-			// find ERPCustomerEB by userid & password
-			ErpCustomerEB erpCustomerEB;
+			// find ERPCustomerEB by userid
+			FDIdentity loginIdentity;
 			try {
 				
-				erpCustomerEB = this.getErpCustomerHome().findByUserId(userId);
+				loginIdentity = getLoginIdentity(userId, null);
 				
 			} catch (ObjectNotFoundException ex) {
 				throw new FDAuthenticationException(
@@ -1263,7 +1273,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}
 			
 			// check the active flag
-			if (!erpCustomerEB.isActive()) {
+			if (!loginIdentity.isActive()) {
 				
 				/*FDCustomerEB fdCustomerEB=getFdCustomerHome().findByErpCustomerId(erpCustomerEB.getPK().getId());
 				if(fdCustomerEB!=null && fdCustomerEB.getPymtVerifyAttempts()>=FDStoreProperties.getPaymentMethodVerificationLimit()) {
@@ -1275,9 +1285,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				throw new FDAuthenticationException("Account disabled");
 			}
 			// find respective FDCustomerEB
-			String erpCustId = erpCustomerEB.getPK().getId();
+			String erpCustId = loginIdentity.getErpCustomerPK();
 			FDCustomerEB fdCustomerEB = this.getFdCustomerHome()
-					.findByErpCustomerId(erpCustomerEB.getPK().getId());
+					.findByErpCustomerId(erpCustId);
 			fdCustomerEB.incrementLoginCount();
 
 			// String cookie = this.translate( erpCustomerEB.getUserId() );
@@ -1290,8 +1300,71 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-
+	private FDIdentity getLoginIdentity(String username, String passwordHash) throws FinderException {
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		try {
+			con = this.getConnection();
+			if(passwordHash != null) {
+				ps = con.prepareStatement("SELECT ID, ACTIVE FROM CUST.CUSTOMER WHERE USER_ID = LOWER(?) and PASSWORDHASH = ? ");
 	
+				ps.setString(1, username.toLowerCase());
+				ps.setString(2, passwordHash);
+			} else {
+				ps = con.prepareStatement("SELECT ID, ACTIVE FROM CUST.CUSTOMER WHERE USER_ID = LOWER(?) ");
+
+				ps.setString(1, username.toLowerCase());
+			}
+			rs = ps.executeQuery();
+
+			if (!rs.next()) {
+				throw new ObjectNotFoundException(passwordHash != null? "No account with that username/password." : "No account with user ID: " + username);
+			}
+			
+			FDIdentity loginIdentity = new FDIdentity(rs.getString("ID"), null);
+			loginIdentity.setActive(("1".equals(rs.getString("ACTIVE")) ? true : false));
+			return loginIdentity;
+		} catch (SQLException se) {
+			throw new FinderException(se.getMessage());
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (ps != null)
+					ps.close();
+				if (con != null)
+					con.close();
+			} catch (SQLException ex) {
+				// eat it for the time being
+			}
+		}
+	}
+	
+	private String getFDUserCustomerServiceContact(FDIdentity identity, boolean isChefsTable) throws FDResourceException, FDAuthenticationException {
+		Connection conn = null;
+		FDUser user = null;
+		try {
+			conn = getConnection();
+
+			user = FDUserDAO.getFDUserZipCode(conn, identity);
+
+			if (user == null) {
+				throw new FDAuthenticationException("Unrecognized user");
+			}
+
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+
+		String state = getStateByZipCode(user.getZipCode());
+		return user.getCustomerServiceContact(isChefsTable, state);
+
+
+	}
 	
 	public FDCustomerInfo getCustomerInfo(FDIdentity identity) throws FDResourceException {
 		try {
@@ -1299,22 +1372,27 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			ErpCustomerEB eb = getErpCustomerHome().findByPrimaryKey(
 					new PrimaryKey(erpCustomerPK));
 
-			FDUser fduser = this.recognize(identity);
-
 			ErpCustomerInfoModel erpCustomerInfo = eb.getCustomerInfo();
 			FDCustomerInfo fdInfo = new FDCustomerInfo(erpCustomerInfo
 					.getFirstName(), erpCustomerInfo.getLastName());
 			fdInfo.setHtmlEmail(!erpCustomerInfo.isEmailPlaintext());
-			fdInfo.setEmailAddress(erpCustomerInfo.getEmail());			
-
-			if(identity.getFDCustomerPK() != null) {
-				String depotCode = this.getDepotCode(identity);
-				fdInfo.setDepotCode(depotCode);
-			}
-			fdInfo.setChefsTable(fduser.isChefsTable());
-			fdInfo.setCustomerServiceContact(fduser.getCustomerServiceContact());
+			fdInfo.setEmailAddress(erpCustomerInfo.getEmail());
 			
-			/*APPDEV-2114*/
+			
+			FDCustomerModel fdCustomer = null;
+			if(identity.getFDCustomerPK() !=null){
+				 fdCustomer = FDCustomerFactory.getFDCustomer(identity.getFDCustomerPK() );
+			} else{
+				fdCustomer = FDCustomerFactory.getFDCustomerFromErpId(erpCustomerPK);
+			}
+
+			boolean isChefsTable = fdCustomer.getProfile().isChefsTable();
+			
+			fdInfo.setDepotCode(fdCustomer.getDepotCode());
+			fdInfo.setChefsTable(isChefsTable);
+			fdInfo.setCustomerServiceContact(getFDUserCustomerServiceContact(identity, isChefsTable));
+			
+			/* APPDEV-2114 */
 			fdInfo.setGoGreen(erpCustomerInfo.isGoGreen());
 			
 			return fdInfo;
@@ -1830,7 +1908,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 							new PrimaryKey(info.getIdentity()
 									.getErpCustomerPK()));
 			erpCustomerEB.setCustomerInfo(customerInfo);
-			
+	
 			if (foundFraud) {
 				// !!! override tx source
 				this.logActivity(info.createActivity(
@@ -7369,7 +7447,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}
 			if(auth!=null && !EnumTransactionSource.CUSTOMER_REP.equals(action.getSource())) {
 				FDCustomerEB fdCustomerEB=getFdCustomerHome().findByErpCustomerId(paymentMethod.getCustomerId());
-				if(!auth.isApproved() || !auth.hasAvsMatched()|| !auth.isCVVMatch()) {
+				if(!auth.isApproved() || !auth.hasAvsMatched()) {
 					int count=fdCustomerEB.incrementPymtVerifyAttempts();
 					auth.setVerifyFailCount(count);
 					if(count>=FDStoreProperties.getPaymentMethodVerificationLimit()) {
@@ -8697,15 +8775,18 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 	
 	public static String INSERT_SILVER_POPUP = "insert into CUST.CUSTOMER_PUSHNOTIFICATION(CUSTOMER_ID,QUALIFIER,DESTINATION,CREATE_TIMESTAMP,UPDATE_TIMESTAMP,SEND_TIMESTAMP) values "
-			+ "(?,?,?,trunc(sysdate),trunc(sysdate),null)";
+			+ "(?,?,?,?,?,null)";
 	
 	public void insertSilverPopupDetails(SilverPopupDetails silverPopup, Connection conn)  throws FDResourceException {
-		PreparedStatement pstmt = null;		
+		PreparedStatement pstmt = null;	
+		java.sql.Timestamp  sqlDate = new java.sql.Timestamp(new java.util.Date().getTime());
 		try {
 			pstmt = conn.prepareStatement(INSERT_SILVER_POPUP);
 			pstmt.setString(1, silverPopup.getCustomerId());
 			pstmt.setString(2, silverPopup.getQualifier());
 			pstmt.setString(3, silverPopup.getDestination());
+			pstmt.setTimestamp(4, sqlDate);
+			pstmt.setTimestamp(5, sqlDate);
 			pstmt.execute();
 			LOGGER.debug("insertSilverPopupDetails in Process Successful Insert of Customer_id, Qualifier, Destination, Creat_Timestamp and Updated_Timestamp into our DataBase for Destination "+silverPopup.getDestination());
 		} catch (SQLException sqle) {
@@ -8714,7 +8795,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			close(pstmt);
 		}
 	}	
-	
+/*	
 	public static String UPDATE_SILVER_POPUP = "update CUST.CUSTOMER_PUSHNOTIFICATION set customer_id=?, QUALIFIER =?, UPDATE_TIMESTAMP=trunc(sysdate) where DESTINATION = ?";
 	
 	public void updateSilverPopupDetails(SilverPopupDetails silverPopup, Connection conn)  throws FDResourceException {
@@ -8732,7 +8813,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} finally {
 			close(pstmt);
 		}
-	}		
+	}		*/
 
 	public static String SELECT_SILVER_POPUP = "select count(*) as SP_COUNT from CUST.CUSTOMER_PUSHNOTIFICATION where DESTINATION = ?";
 	
@@ -8779,24 +8860,26 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		Connection conn = null;
 		try{
 			conn = getConnection();
+			LOGGER.info("getting to exicute method getSilverPopupDetails()..");
 			return FDCustomerOrderInfoDAO.getSilverPopupDetails(conn);
 		}catch (SQLException sqle) {
-			throw new FDResourceException(sqle, "Some problem in getting Silver popup from database");
+			throw new FDResourceException(sqle, "Some problem in getting Silver popup from database in method getSilverPopupDetails()");
 		} finally {
 			close(conn);
 		}
 	}	
 	
-	public static String UPDATE_SP_DETAILS = "update CUST.CUSTOMER_PUSHNOTIFICATION set SEND_TIMESTAMP=trunc(sysdate) where CUSTOMER_ID=? and QUALIFIER =? and DESTINATION =? ";
+	public static String UPDATE_SP_DETAILS = "update CUST.CUSTOMER_PUSHNOTIFICATION set SEND_TIMESTAMP=? where CUSTOMER_ID=? and DESTINATION =? ";
 	
 	public void updateSPSuccessDetails(SilverPopupDetails silverPopup)  throws FDResourceException {
 		Connection conn = null;
-		PreparedStatement pstmt = null;		
+		PreparedStatement pstmt = null;
+		java.sql.Timestamp  sqlDate = new java.sql.Timestamp(new java.util.Date().getTime());
 		try {
 			conn = getConnection();
 			pstmt = conn.prepareStatement(UPDATE_SP_DETAILS);
-			pstmt.setString(1, silverPopup.getCustomerId());
-			pstmt.setString(2, silverPopup.getQualifier());
+			pstmt.setTimestamp(1, sqlDate);
+			pstmt.setString(2, silverPopup.getCustomerId());
 			pstmt.setString(3, silverPopup.getDestination());
 			pstmt.execute();
 			LOGGER.info("updateSPSuccessDetails in Process Successful Push to IBM for "+silverPopup.getCustomerId());

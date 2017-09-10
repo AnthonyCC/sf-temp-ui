@@ -74,8 +74,17 @@ public class CrmLoginFilter implements Filter {
 				status = new CrmStatus(agent.getPK());
 			}
 			CrmSessionStatus sessStatus = new CrmSessionStatus(status, request.getSession());
-			CrmSession.setSessionStatus(request.getSession(), sessStatus);			
+			CrmSession.setSessionStatus(request.getSession(), sessStatus);	
 			String redirectUrl = sessStatus.getRedirectUrl();
+			try {
+				if(CrmManager.getInstance().isCRMRestrictionEnabled() && CrmManager.getInstance().isCRMRestrictedForAgent(agent.getLdapId())) {
+					redirectUrl = "/restricted.jsp";
+					response.sendRedirect(redirectUrl);
+					return;
+				}
+			} catch (FDResourceException e) {
+				throw new ServletException(e.getMessage());
+			}
 			request.getSession().setAttribute(SessionName.APPLICATION, "CALLCENTER");
 			if(null ==redirectUrl){
 				redirectUrl="/main/main_index.jsp";
@@ -97,7 +106,7 @@ public class CrmLoginFilter implements Filter {
 			LOGGER.info("**** No matching role found for the user:"+request.getRemoteUser()+ " to access:"+request.getRequestURI());			
 		}		
 		String rootUri =  request.getRequestURI().substring(request.getRequestURI().lastIndexOf("/")+1, request.getRequestURI().length());
-		if(!CrmSecurityManager.hasAccessToPage(request, rootUri) && !CrmSecurityManager.hasAccessToPage(request)){
+		if(!rootUri.equals("restricted.jsp")&&!CrmSecurityManager.hasAccessToPage(request, rootUri) && !CrmSecurityManager.hasAccessToPage(request)){
 			LOGGER.info("**** Role:"+ldapRole+" Access Denied Resource:"+request.getRequestURI());
 			response.sendRedirect(noAuthPage);
 			return;

@@ -30,6 +30,7 @@ import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.dataloader.analytics.GoogleAnalyticsReportingService;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -150,7 +151,9 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 			mailBean.enqueueEmail(FDEmailFactory.getInstance().createFinalAmountEmail(fdInfo, fdOrder));
 
             try {
-				GoogleAnalyticsReportingService.defaultService().postGAReporting(fdOrder);
+                if (saleModel.geteStoreId() == EnumEStoreId.FD) {
+                    GoogleAnalyticsReportingService.defaultService().postGAReporting(fdOrder);
+                }
 			} catch (Exception e) {
 				LOGGER.warn("Unexpected Exception in GoogleAnalyticsReportingService while reported to GA, for order#: "+saleId, e);
 			}

@@ -54,7 +54,6 @@ public class ProductPotatoServlet extends BaseJsonServlet {
             String groupVersion = request.getParameter("groupVersion");
             productPotatoData.setProductExtraData(ProductExtraDataPopulator.createExtraData(user, product, groupId, groupVersion, true));
             LOGGER.info("Product " + productId + " produce extra potatos");
-
             writeResponseData(response, productPotatoData);
         } catch (FDResourceException e) {
             LOGGER.error("Failed to get product potato.", e);

@@ -168,4 +168,4 @@ if(user != null) {
 <% } %>
 
 <!-- Changes for Skip to Content Fix -->
-<div tabindex="0" id="skip_to_content"></div>
+<div tabindex="-1" id="skip_to_content"></div>

@@ -22,6 +22,9 @@
  * @param data
  */
 {template .contentModuleSelector}
+	{if $data.adHomePageBeacon and $data.adHomePageBeacon != ''}
+		<img src="{$data.adHomePageBeacon}" style="display: none;" />
+	{/if}
   {delcall common.moduleSelector variant="$moduleConfig.sourceType"}
     {param moduleData: $moduleConfig /}
     {param data: $data /}

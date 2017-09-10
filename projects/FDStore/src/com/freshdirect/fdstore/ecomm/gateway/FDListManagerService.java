@@ -1,14 +1,13 @@
 package com.freshdirect.fdstore.ecomm.gateway;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Category;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.freshdirect.common.context.StoreContext;
-import com.freshdirect.ecomm.gateway.ExtTimeAbstractEcommService;
+import com.freshdirect.ecomm.gateway.AbstractEcommService;
 import com.freshdirect.ecommerce.data.common.Request;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.list.CopyCustomerListData;
@@ -16,18 +15,15 @@ import com.freshdirect.ecommerce.data.list.CustomerCreatedListData;
 import com.freshdirect.ecommerce.data.list.CustomerListRequest;
 import com.freshdirect.ecommerce.data.list.FDCustomerListData;
 import com.freshdirect.ecommerce.data.list.FDCustomerListInfoData;
-import com.freshdirect.ecommerce.data.list.FDCustomerListItemData;
+import com.freshdirect.ecommerce.data.list.FDProductSelectionData;
 import com.freshdirect.ecommerce.data.list.RenameCustomerListData;
 import com.freshdirect.ecommerce.data.list.RenameListData;
-import com.freshdirect.ecommerce.data.list.SaleStatisticsData;
 import com.freshdirect.fdstore.FDEcommServiceException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
-import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.ecomm.converter.ListConverter;
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
@@ -35,14 +31,12 @@ import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.lists.FDCustomerListExistsException;
 import com.freshdirect.fdstore.lists.FDCustomerListInfo;
 import com.freshdirect.fdstore.lists.FDCustomerProductList;
-import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
 import com.freshdirect.fdstore.lists.FDCustomerShoppingList;
-import com.freshdirect.fdstore.lists.FDQsProductListLineItem;
 import com.freshdirect.fdstore.lists.FDStandingOrderList;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
-public class FDListManagerService extends ExtTimeAbstractEcommService implements FDListManagerServiceI{
+public class FDListManagerService extends AbstractEcommService implements FDListManagerServiceI{
 	
 	private final static Category LOGGER = LoggerFactory.getInstance(FDReferralManagerService.class);
 	
@@ -263,7 +257,6 @@ public class FDListManagerService extends ExtTimeAbstractEcommService implements
 			throws FDResourceException, RemoteException {
 		Request<CustomerListRequest> request = new Request<CustomerListRequest>();
 		Response<FDCustomerListData> response = new Response<FDCustomerListData>();
-		FDCustomerList list = null;
 		try{
 			request.setData(ListConverter.buildCustomerListRequest( identity, type,  listName, null));
 			String inputJson = buildRequest(request);
@@ -271,7 +264,6 @@ public class FDListManagerService extends ExtTimeAbstractEcommService implements
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
-			list = ListConverter.buildFDCustomerList(response.getData());
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
@@ -279,7 +271,7 @@ public class FDListManagerService extends ExtTimeAbstractEcommService implements
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		return list;
+		return ListConverter.buildFDCustomerList(response.getData());
 	}
 
 	@Override
@@ -310,7 +302,6 @@ public class FDListManagerService extends ExtTimeAbstractEcommService implements
 		Request<CustomerCreatedListData> request = new Request<CustomerCreatedListData>();
 		Response<List<FDCustomerListData>> response = new Response<List<FDCustomerListData>>();
 		try{
-
 			request.setData(ListConverter.buildCustomerCreatedData(identity,storeContext,null));
 			String inputJson = buildRequest(request);
 			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(GET_CUSTOMER_CREATED_LISTS),new TypeReference<Response<List<FDCustomerListData>>>() {});
@@ -324,10 +315,7 @@ public class FDListManagerService extends ExtTimeAbstractEcommService implements
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		
-		List<FDCustomerCreatedList>  custList = ListConverter.buildFDCustomerCreatedList(response.getData());
-		OrderLineUtil.cleanProductLists(custList);
-		return custList;
+		return ListConverter.buildFDCustomerCreatedList(response.getData());
 	}
 
 	@Override
@@ -459,11 +447,7 @@ public class FDListManagerService extends ExtTimeAbstractEcommService implements
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		FDCustomerCreatedList finalList = (FDCustomerCreatedList) ListConverter.buildFDCustomerList(response.getData());
-		if(finalList!=null){
-			finalList.cleanList();
-		}
-		return  finalList;
+		return  (FDCustomerCreatedList) ListConverter.buildFDCustomerList(response.getData());
 	}
 
 	@Override
@@ -471,7 +455,6 @@ public class FDListManagerService extends ExtTimeAbstractEcommService implements
 		Response<FDCustomerListData> response = new Response<FDCustomerListData>();
 		Request<FDCustomerListData> request = new Request<FDCustomerListData>();
 		try{
-
 			request.setData(ListConverter.buildCustomerListData(list));
 			String inputJson = buildRequest(request);
 			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(STORE_CUSTOMER_LIST),new TypeReference<Response<FDCustomerListData>>() {});
@@ -494,11 +477,11 @@ public class FDListManagerService extends ExtTimeAbstractEcommService implements
 		try {
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GENEARATE_ITEM_EVER_ORDERED+identity.getErpCustomerPK()),  new TypeReference<Response<FDCustomerListData>>(){});
 			if(!response.getResponseCode().equals("OK")){
-				throw new FDResourceException(response.getMessage()+" for "+identity);
+				throw new FDResourceException(response.getMessage());
 			}
 		} catch (FDRuntimeException e){
 			LOGGER.error(e.getMessage());
-			throw new RemoteException(e.getMessage()+" for "+identity);
+			throw new RemoteException(e.getMessage());
 		}
 		return  (FDCustomerShoppingList) ListConverter.buildFDCustomerList(response.getData());
 	}
@@ -507,9 +490,9 @@ public class FDListManagerService extends ExtTimeAbstractEcommService implements
 	public List<FDProductSelectionI> getQsSpecificEveryItemEverOrderedList(
 			FDIdentity identity, StoreContext storeContext)
 			throws FDResourceException, RemoteException {
-		Response<List<SaleStatisticsData>> response = new Response<List<SaleStatisticsData>>();
+		Response<List<FDProductSelectionData>> response = new Response<List<FDProductSelectionData>>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_QS_SPECIFIC_ITEM+identity.getErpCustomerPK()+"/estoreId/"+storeContext.getEStoreId().getContentId()),  new TypeReference<Response<List<SaleStatisticsData>>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_QS_SPECIFIC_ITEM+identity.getErpCustomerPK()+"/estoreId/"+storeContext.getEStoreId().getContentId()),  new TypeReference<Response<List<FDProductSelectionData>>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
@@ -517,25 +500,15 @@ public class FDListManagerService extends ExtTimeAbstractEcommService implements
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		List<FDProductSelectionI> listResults = new ArrayList();
-		for(SaleStatisticsData item:response.getData()){
-			try {
-				listResults.add(((FDQsProductListLineItem)ListConverter.buildSaleStatisticsI(item)).convertToSelection());
-			} catch (FDSkuNotFoundException e) {
-				LOGGER.warn("Loaded an invalid sku - skipping", e);
-				e.printStackTrace();
-			}
-		}
-		
-		return   listResults;
+		return   ListConverter.buildFDProductSelectionI(response.getData());
 	}
 
 	@Override
 	public List<FDProductSelectionI> getQsSpecificEveryItemEverOrderedListTopItems(FDIdentity identity, StoreContext storeContext)
 			throws FDResourceException, RemoteException {
-		Response<List<SaleStatisticsData>> response = new Response<List<SaleStatisticsData>>();
+		Response<List<FDProductSelectionData>> response = new Response<List<FDProductSelectionData>>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_QS_SPECIFIC_TOP_ITEM+identity.getErpCustomerPK()+"/estoreId/"+storeContext.getEStoreId().getContentId()),  new TypeReference<Response<List<SaleStatisticsData>>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_QS_SPECIFIC_TOP_ITEM+identity.getErpCustomerPK()+"/estoreId/"+storeContext.getEStoreId().getContentId()),  new TypeReference<Response<List<FDProductSelectionData>>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
@@ -543,24 +516,14 @@ public class FDListManagerService extends ExtTimeAbstractEcommService implements
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		List<FDProductSelectionI> listResults = new ArrayList();
-		for(SaleStatisticsData item:response.getData()){
-			try {
-				listResults.add(((FDQsProductListLineItem)ListConverter.buildSaleStatisticsI(item)).convertToSelection());
-			} catch (FDSkuNotFoundException e) {
-				LOGGER.warn("Loaded an invalid sku - skipping", e);
-				e.printStackTrace();
-			}
-		}
-		
-		return   listResults;
+		return   ListConverter.buildFDProductSelectionI(response.getData());
 	}
 
 	@Override
 	public List<FDProductSelectionI> getEveryItemEverOrdered(FDIdentity identity)throws FDResourceException, RemoteException {
-		Response<List<FDCustomerListItemData>> response = new Response<List<FDCustomerListItemData>>();
+		Response<List<FDProductSelectionData>> response = new Response<List<FDProductSelectionData>>();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_EVERY_ITEM_EVER_ORDERED+identity.getErpCustomerPK()),  new TypeReference<Response<List<FDCustomerListItemData>>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_EVERY_ITEM_EVER_ORDERED+identity.getErpCustomerPK()),  new TypeReference<Response<List<FDProductSelectionData>>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
@@ -568,18 +531,7 @@ public class FDListManagerService extends ExtTimeAbstractEcommService implements
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		List<FDProductSelectionI> listResults = new ArrayList();
-		for(FDCustomerListItemData dataItem: response.getData()){
-			FDCustomerProductListLineItem com = (FDCustomerProductListLineItem)ListConverter.buildFDCustomerListItem(dataItem);
-			try {
-				listResults.add(com.convertToSelection());
-			} catch (FDSkuNotFoundException e) {
-				LOGGER.warn("Loaded an invalid sku - skipping", e);
-				e.printStackTrace();
-			} 
-		}
-		
-		return   listResults;
+		return   ListConverter.buildFDProductSelectionI(response.getData());
 	}
 
 }

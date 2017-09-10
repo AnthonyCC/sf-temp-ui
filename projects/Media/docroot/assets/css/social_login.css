@@ -59,13 +59,17 @@
   	border-radius: 5px;
   	font-family: Verdana;
 	font-size: 18px;
-	background: #6fa738;
-	background: -webkit-linear-gradient(90deg, #598b2a 0%, #6fa738 100%);
-	background: -moz-linear-gradient(90deg, #598b2a 0%, #6fa738 100%);
-	background: -o-linear-gradient(90deg, #598b2a 0%, #6fa738 100%);
-	background: -ms-linear-gradient(90deg, #598b2a 0%, #6fa738 100%);
-	background: linear-gradient(0deg, #598b2a 0%, #6fa738 100%);
+	background: #4fa157;
+/* 	background: -webkit-linear-gradient(90deg, #598b2a 0%, #6fa738 100%); */
+/* 	background: -moz-linear-gradient(90deg, #598b2a 0%, #6fa738 100%); */
+/* 	background: -o-linear-gradient(90deg, #598b2a 0%, #6fa738 100%); */
+/* 	background: -ms-linear-gradient(90deg, #598b2a 0%, #6fa738 100%); */
+/* 	background: linear-gradient(0deg, #598b2a 0%, #6fa738 100%); */
 	cursor: pointer;
+}
+input#signupbtn:hover,input#signinbtn:hover {
+    background-color: #458d4e;
+    border-color: #458d4e;
 }
 #sulCont a.social-login-continue-button:hover{
 	text-decoration: none;

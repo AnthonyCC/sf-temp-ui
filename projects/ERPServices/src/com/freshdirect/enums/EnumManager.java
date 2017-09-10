@@ -13,6 +13,7 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.enums.ejb.EnumManagerHome;
 import com.freshdirect.enums.ejb.EnumManagerSB;
 import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -46,16 +47,26 @@ public class EnumManager {
 	}
 
 	public List loadEnums(Class daoClass) {
-		EnumManagerSB sb = this.getEnumManagerSB();
-		try {
-			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.EnumManagerSB)){
-			return	FDECommerceService.getInstance().loadEnum(daoClass.getSimpleName());
-			}else{
-			return sb.loadEnum(daoClass.getName());
+
+		if (FDStoreProperties
+				.isSF2_0_AndServiceEnabled(FDEcommProperties.EnumManagerSB)) {
+
+			try {
+				LOGGER.info("calling sf2.0 gateway ");
+				return FDECommerceService.getInstance().loadEnum(
+						daoClass.getSimpleName());
+			} catch (Exception e) {
+				throw new FDRuntimeException(e);
 			}
-		} catch (RemoteException e) {
-			throw new EJBException(e);
+		} else {
+			try {
+				EnumManagerSB sb = this.getEnumManagerSB();
+				return sb.loadEnum(daoClass.getName());
+			} catch (RemoteException e) {
+				throw new EJBException(e);
+			}
 		}
+
 	}
 
 	private EnumManagerSB getEnumManagerSB() {

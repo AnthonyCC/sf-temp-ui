@@ -18,6 +18,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.affiliate.ErpAffiliate;
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.context.UserContext;
@@ -78,6 +79,8 @@ import com.freshdirect.fdstore.services.tax.TaxFactory;
 import com.freshdirect.fdstore.services.tax.TaxFactoryImpl;
 import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.core.ModelSupport;
+import com.freshdirect.framework.event.EnumEventSource;
+import com.freshdirect.framework.event.EventSourceUtil;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.FormatterUtil;
 import com.freshdirect.framework.util.MathUtil;
@@ -685,6 +688,30 @@ public class FDCartModel extends ModelSupport implements FDCartI {
             }
         }
         return sum >= eligibleQuantity;
+    }
+
+    public boolean updateProductSampleDiscount(ContentKey sampleProductKey, String promotionCode) throws FDResourceException {
+        boolean isUpdated = false;
+        int eligibleQuantity = FDStoreProperties.getProductSamplesMaxQuantityLimit();
+        if (!isMaxSampleReached()) {
+            int quantity = 0;
+            for (FDCartLineI orderLine : orderLines) {
+                if (orderLine.getProductRef().getContentKey().equals(sampleProductKey) && quantity < eligibleQuantity && orderLine.getQuantity() <= eligibleQuantity
+                        && (EventSourceUtil.isSourceProductSampleCarousel(orderLine.getSource())
+                                || EventSourceUtil.isSourceProductSampleCarousel(orderLine.getErpOrderLineSource()))) {
+                    orderLine.setDiscount(new Discount(promotionCode, EnumDiscountType.FREE, orderLine.getQuantity()));
+                    orderLine.setErpOrderLineSource(EnumEventSource.ps_caraousal);
+                    quantity += orderLine.getQuantity();
+                    isUpdated = true;
+                    try {
+                        orderLine.refreshConfiguration();
+                    } catch (FDInvalidConfigurationException ex) {
+                        throw new FDResourceException(ex);
+                    }
+                }
+            }
+        }
+        return isUpdated;
     }
 
 	/**

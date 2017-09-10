@@ -1,10 +1,8 @@
 package com.freshdirect.webapp.ajax.product;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringWriter;
 import java.math.BigDecimal;
-import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -108,7 +106,6 @@ import com.freshdirect.webapp.util.MediaUtils;
 import com.freshdirect.webapp.util.ProductRecommenderUtil;
 import com.freshdirect.webapp.util.RestrictionUtil;
 import com.freshdirect.webapp.util.StandingOrderHelper;
-
 public class ProductDetailPopulator {
 
 	private static final Logger LOG = LoggerFactory.getInstance( ProductDetailPopulator.class );
@@ -417,7 +414,6 @@ public class ProductDetailPopulator {
 		
 		//APPDEV-4034
 
-		String browseRecommenderType = product.getBrowseRecommenderType();
 		boolean isAllowedCohort = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.browseflyoutrecommenders, user);
 		if (!isAllowedCohort) {
 			return data;
@@ -1555,27 +1551,21 @@ public class ProductDetailPopulator {
 			var.setUnderLabel( fdVar.getUnderLabel() );
 			
 			// Bizarre help popup link generation, copied from i_product.jspf
-			try {
-	            String charFileName = "media/editorial/fd_defs/characteristics/"+varName.toLowerCase()+ ".html";
-		    	URL url = MediaUtils.resolve( FDStoreProperties.getMediaPath(), charFileName );
-				InputStream in = url.openStream();
-				if ( in != null ) {
-			  		in.close();
-			  		
-			  		// Media file for popup does exist, generate data 
-					StringBuilder popupUrl = new StringBuilder();			
-					popupUrl.append( "/shared/fd_def_popup.jsp?charName=" );
-					popupUrl.append( varName );
-					popupUrl.append( "&tmpl=" );
-					popupUrl.append( ( fdVar.getDescription().equalsIgnoreCase("MARINADE/RUB") ) ? "large_pop" : "small_pop" );
-					popupUrl.append( "&title=" );
-					popupUrl.append( fdVar.getDescription() );
-					
-					var.setDescrPopup( popupUrl.toString() );
-				}
-			} catch ( Exception ex ) {}
+			String charFileName = "media/editorial/fd_defs/characteristics/" + varName.toLowerCase() + ".html";
+			if (MediaUtils.checkMedia(charFileName)) {
 
+				// Media file for popup does exist, generate data
+				StringBuilder popupUrl = new StringBuilder();
+				popupUrl.append("/shared/fd_def_popup.jsp?charName=");
+				popupUrl.append(varName);
+				popupUrl.append("&tmpl=");
+				popupUrl.append((fdVar.getDescription().equalsIgnoreCase("MARINADE/RUB")) ? "large_pop" : "small_pop");
+				popupUrl.append("&title=");
+				popupUrl.append(fdVar.getDescription());
 
+				var.setDescrPopup(popupUrl.toString());
+			}
+			
 			Map<FDVariationOption, ProductModel> varOptProductModels = collectAvailableVariations(fdVar, ContentFactory.getInstance());
 
 			List<VarItem> varOpts = new ArrayList<VarItem>();

@@ -465,7 +465,7 @@ class FDCustomerOrderInfoDAO {
 		}
 	}
 	
-	private static final String retrieve_silverpopupdetails = "SELECT customer_id, qualifier, destination from cust.customer_pushnotification where trunc(UPDATE_TIMESTAMP) = trunc(sysdate) and DESTINATION IS NOT NULL";
+	private static final String retrieve_silverpopupdetails = "SELECT customer_id, qualifier, destination from cust.customer_pushnotification where SEND_TIMESTAMP IS NULL and DESTINATION IS NOT NULL";
 
 	public static List<SilverPopupDetails> getSilverPopupDetails(Connection conn) throws SQLException {
 		ResultSet rs =null;

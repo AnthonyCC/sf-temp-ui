@@ -1,7 +1,9 @@
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
+<%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
+<%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
 <% //expanded page dimensions
 final int W_CREDITCARD_SELECT_TOTAL = 970;
-final int W_CREDITCARD_SELECT_CARD = 280;
+final int W_CREDITCARD_SELECT_CARD = 270;
 %>
 <%-- Dependencies
     Host page must :
@@ -71,20 +73,20 @@ final int W_CREDITCARD_SELECT_CARD = 280;
 
 		for(ListIterator saItr=payMethodsList.listIterator();saItr.hasNext();) {
 			String checked = "";
-            boolean showDeleteButtons = numCreditCards > 1?true:false;            
-            ErpPaymentMethodI paymentM = (ErpPaymentMethodI)saItr.next();
-            // MP USe Case #4
-            //if(paymentM.geteWalletID() == null || !paymentM.geteWalletID().equals("1")){
-            if (!EnumPaymentMethodType.CREDITCARD.equals(paymentM.getPaymentMethodType())) {
-            	continue;
-            }
-            String paymentPKId = ((ErpPaymentMethodModel)paymentM).getPK().getId();
-            Calendar tmpDate =Calendar.getInstance();
-            tmpDate.setTime(paymentM.getExpirationDate());
-            
-            // rule is to select an ECheck account if possible.  Only select a credit card if eCheck is not available or 
-            // if it's a modified order where a credit card account was already selected
-            boolean isECheckOptionNotAvailable =  numEChecks == 0 || isECheckRestricted || !isCheckEligible;
+			boolean showDeleteButtons = numCreditCards > 1?true:false;
+			ErpPaymentMethodI paymentM = (ErpPaymentMethodI)saItr.next();
+			// MP USe Case #4
+			//if(paymentM.geteWalletID() == null || !paymentM.geteWalletID().equals("1")){
+			if (!EnumPaymentMethodType.CREDITCARD.equals(paymentM.getPaymentMethodType())) {
+				continue;
+			}
+			String paymentPKId = ((ErpPaymentMethodModel)paymentM).getPK().getId();
+			Calendar tmpDate =Calendar.getInstance();
+			tmpDate.setTime(paymentM.getExpirationDate());
+			
+			// rule is to select an ECheck account if possible.  Only select a credit card if eCheck is not available or 
+			// if it's a modified order where a credit card account was already selected
+			boolean isECheckOptionNotAvailable =  numEChecks == 0 || isECheckRestricted || !isCheckEligible;
 			if(!methodChecked) {
 				if (paymentPKId.equals(selectedPaymPKId) && (!isNewOrder || isECheckOptionNotAvailable)){
 					methodChecked = true;
@@ -99,56 +101,73 @@ final int W_CREDITCARD_SELECT_CARD = 280;
 				methodChecked = true;
 				checked = "checked";
 			}
-            if((itemCounter % 3)==0)  {
-                if(itemCounter!=0) {
-%>
-        </tr></table><br /><br />
-<%              } %>
-<fieldset><legend class="offscreen">Choose credit card</legend>
-<table border="0" cellpadding="0" cellspacing="0" width="<%= W_CREDITCARD_SELECT_TOTAL %>">
-	<tr valign="top">
-<%
-            itemCounter=0;
-          } %>
-	<td width="20" class="chooser_radio"><input type="<%=showRadioButtons?"radio":"hidden"%>" id="paymentMethodList_<%=paymentPKId%>" name="paymentMethodList" <%=checked%> value="<%=paymentPKId%>" ></TD>
-  <td width="<%= W_CREDITCARD_SELECT_CARD %>" class="text12"> <%--<font class="text10bold">Credit Card</font><br />  --%>
-		<%-- <font class="text10bold"><%=paymentM.getCardType().getFdName()%></font><br /> --%>
-		<label for="paymentMethodList_<%=paymentPKId%>"><%=paymentM.getName()%><br />
-		<b><%=paymentM.getCardType().getDisplayName()%></b></label> - <br /><%= paymentM.getMaskedAccountNumber() %><br />
-		Expires: <%=(tmpDate.get(Calendar.MONTH)+1)+"/"+tmpDate.get(Calendar.YEAR)%><br />
-		<br />
-		<!-- if we have a billing address -->
-		<b>Billing Address:</b><br />
-		<%=paymentM.getName()%><br />
-		<%=paymentM.getAddress1()%><% if(paymentM.getApartment()!=null && paymentM.getApartment().trim().length()>0) { %>, <% if(EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){ %>Floor/Suite <% }else{ %>Apt. <% } %><%=paymentM.getApartment()%><% } %>
-		<br />
-<%        if(paymentM.getAddress2()!=null && paymentM.getAddress2().trim().length()>0) { %>
-		<%=paymentM.getAddress2()%><br />
-<%        }%>
-		<%=paymentM.getCity()%>, <%=paymentM.getState()%> <br /><%=paymentM.getCountry()%> <%=paymentM.getZipCode()%><br />
-		<br /> 
-		<% if(editPage.indexOf("?")>-1) { %>
-			<a href="<%=editPage%>&paymentId=<%=paymentPKId%>">
-		<% } else { %>
-			<a href="<%=editPage%>?paymentId=<%=paymentPKId%>">
-		<% } %>
-		<img src="/media_stat/images/buttons/edit.gif" width="51" height="16" alt="Edit" border="0" /></a>&nbsp;
-<%      if (numCreditCards>1) { %>
-<input name="delete_cc" type="IMAGE" src="/media_stat/images/buttons/delete.gif" width="51" height="16" alt="Delete" border="0" onClick="javascript:return deletePaymentMethod(this,'<%=paymentPKId%>', <%=standingOrderDependencyIds%>, helpSoInfo)">
-<%      }%>
-	<!-- error message about card being expired goes here -->
-  <img src="/media_stat/images/layout/clear.gif" width="<%= W_CREDITCARD_SELECT_CARD %>" height="1" alt="" />
-	</td>
-<%          itemCounter++;
-			itemNum++;
-            if (itemNum < numCreditCards && (itemCounter % 3)!=0){     %>
-			<td width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" /></td>
-			<td width="1" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1" alt="" /></td>
-			<td width="14"><img src="/media_stat/images/layout/clear.gif" width="14" height="1" alt="" /></td>
-<%          }
-            // MP Use Case #4
+			if((itemCounter % 3)==0) {
+				if(itemCounter!=0) {
+					%></tr></table><br /><br /><%
+				} %>
+				<fieldset>
+					<legend class="offscreen">Choose card</legend>
+					<table border="0" cellpadding="0" cellspacing="0" width="<%= W_CREDITCARD_SELECT_TOTAL %>">
+						<tr valign="top">
+						<%
+							itemCounter=0;
+			} %>
+							<td width="20" class="chooser_radio">
+								<input type="<%=showRadioButtons?"radio":"hidden"%>" id="paymentMethodList_<%=paymentPKId%>" name="paymentMethodList" <%=checked%> value="<%=paymentPKId%>" >
+								<% if ( FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user) ) { %>
+									<input
+										type="<%=showRadioButtons?"hidden":"checkbox"%>"
+										id="paymentIsDefault_<%=paymentPKId%>"
+										name="paymentDef"
+										class="paymentDef"
+										<%= ( ((paymentPKId).equals(user.getFDCustomer().getDefaultPaymentMethodPK())) ? " checked" : "" ) %>
+										data-paymentid="<%= paymentPKId %>"
+										data-isdefault="<%= ((paymentPKId).equals(user.getFDCustomer().getDefaultPaymentMethodPK())) %>"
+										data-type="<%= paymentM.getCardType().getDisplayName() %>"
+										data-isdebit="<%= paymentM.isDebitCard() %>"
+										data-lastfour="<%= paymentM.getDisplayableAccountNumber() %>"
+									>
+									<label for="paymentIsDefault_<%=paymentPKId%>"><span class="offscreen"></span></label>
+								<% } %>
+							</td>
+							<td width="<%= W_CREDITCARD_SELECT_CARD %>" class="text14">
+								<div class="paymentMethod-cont">
+									<label for="paymentMethodList_<%=paymentPKId%>"><%=paymentM.getName()%><br />
+									<b><%=paymentM.getCardType().getDisplayName()%></b></label> - <br />
+									<%= paymentM.getMaskedAccountNumber() %><br />
+									Expires: <%=(tmpDate.get(Calendar.MONTH)+1)+"/"+tmpDate.get(Calendar.YEAR)%><br />
+									<br />
+									<!-- if we have a billing address -->
+									<b>Billing Address:</b><br />
+									<%=paymentM.getName()%><br />
+									<%=paymentM.getAddress1()%><% if(paymentM.getApartment()!=null && paymentM.getApartment().trim().length()>0) { %>, <% if(EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){ %>Floor/Suite <% }else{ %>Apt. <% } %><%=paymentM.getApartment()%><% } %>
+									<br />
+									<% if(paymentM.getAddress2()!=null && paymentM.getAddress2().trim().length()>0) { %>
+										<%=paymentM.getAddress2()%><br />
+									<% } %>
+									<%=paymentM.getCity()%>, <%=paymentM.getState()%> <br /><%=paymentM.getCountry()%> <%=paymentM.getZipCode()%><br />
+									<br />
+									<div class="paymentMethod-buttons-cont">
+										<a href="<%= editPage+( (editPage.indexOf("?")!=-1) ? "&" : "?" )+"paymentId="+paymentPKId %>" data-paymentidedit="<%= paymentPKId %>" class="cssbutton green small">EDIT<span class="offscreen"> Payment Option</span></a>&nbsp;
+										<% if (numCreditCards>1) { %>
+											<button class="cssbutton green small" name="delete_cc" onClick="javascript:return deletePaymentMethod(this,'<%=paymentPKId%>', <%=standingOrderDependencyIds%>, helpSoInfo)">DELETE <span class="offscreen"> Payment Option</span></button>
+										<% } %>
+										<!-- error message about card being expired goes here -->
+										<img src="/media_stat/images/layout/clear.gif" width="<%= W_CREDITCARD_SELECT_CARD %>" height="1" alt="" />
+									</div>
+								</div>
+							</td>
+			<%
+				itemCounter++;
+				itemNum++;
+				if (itemNum < numCreditCards && (itemCounter % 3)!=0){ %>
+					<td width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" /></td>
+					<td width="1" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1" alt="" /></td>
+					<td width="14"><img src="/media_stat/images/layout/clear.gif" width="14" height="1" alt="" /></td>
+				<% }
+			// MP Use Case #4
 			//}
-        } // end of loop
+		} // end of loop
 
         if (itemNum > 0) { // if table ever opened close it gracefully
             if (itemCounter==1) {

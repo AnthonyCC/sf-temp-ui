@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.util.QueryParameter;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.DataPotatoField;
 import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
@@ -51,7 +52,8 @@ public class BrowsePotatoTag extends SimpleTagSupport{
 			}else{
 				nav = new CmsFilteringNavigator();
 				if(pdp){
-					nav.setPdp(true);					
+					nav.setPdp(true);
+					nav.setProductId(request.getParameter(QueryParameter.PRODUCT_ID));
 				}else{
 					nav.setSpecialPage(true);
 				}

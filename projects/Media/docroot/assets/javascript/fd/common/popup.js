@@ -122,7 +122,7 @@ var FreshDirect = FreshDirect || {};
                 }
 
                 //add scroll event tracking
-            	$popupBody.on('scroll', throttle(function(e) {
+            	$popupBody.on('scroll', fd.utils.throttle(function(e) {
             		$(window).trigger('lazyLoad');
             	}, 500));
             }

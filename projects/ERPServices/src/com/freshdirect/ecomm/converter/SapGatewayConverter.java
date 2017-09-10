@@ -144,14 +144,14 @@ public class SapGatewayConverter {
 
 
 
-	public  static ErpPaymentMethodData buildPaymentMethodModel(PaymentMethodAdapter adapter) {
+	private static ErpPaymentMethodData buildPaymentMethodModel(PaymentMethodAdapter adapter) {
 		ErpPaymentMethodData erpPayment = new ErpPaymentMethodData();
 		erpPayment = buildPaymentMethodData(adapter.getErpPaymentMethod());
 		erpPayment.setAbaRouteNumber(adapter.getAbaRouteNumber());
 		if(adapter.getBankAccountType() != null)
 		erpPayment.setBankAccountType(adapter.getBankAccountType().getName());
 		erpPayment.setBankName(adapter.getBankName());
-		erpPayment.setExpirationDate(adapter.getExpiration().getTime());
+		erpPayment.setExpirationDate(adapter.getExpiration());
 		erpPayment.setName(adapter.getName());
 		erpPayment.setAccountNumber(adapter.getNumber());
 		if(adapter.getType() != null)
@@ -291,8 +291,6 @@ public class SapGatewayConverter {
 			invoiceLineData.setQuantity(erpInvoiceLineModel.getQuantity());
 			invoiceLineData.setTaxValue(erpInvoiceLineModel.getTaxValue());
 			invoiceLineData.setWeight(erpInvoiceLineModel.getWeight());
-			//invoiceLineData.setSubSkuStatus(erpInvoiceLineModel.getSubSkuStatus());
-			//invoiceLineData.setSubstitutedSkuCode(erpInvoiceLineModel.getSubstitutedSkuCode());
 			invoiceLineDataList.add(invoiceLineData);
 		}
 		}
@@ -306,8 +304,6 @@ public class SapGatewayConverter {
 	public  static ErpAbstractOrderModelData buildOrderData(ErpAbstractOrderModel abstractModel) {
 		ErpAbstractOrderModelData abstractOrderModelData = new ErpAbstractOrderModelData();
 		if(abstractModel != null){
-		if(abstractModel.getTransactionSource()!=null)
-		abstractOrderModelData.setTransactionSource(abstractModel.getTransactionSource().getCode());
 		abstractOrderModelData.setOrderLines(buildOrderLineData(abstractModel.getOrderLines()));
 		abstractOrderModelData.setRequestedDate(abstractModel.getRequestedDate());
 		abstractOrderModelData.setDiscounts(buildDiscountData(abstractModel.getDiscounts()));
@@ -338,7 +334,6 @@ public class SapGatewayConverter {
 		abstractOrderModelData.setSelectedGiftCards(buildSelectedGiftCardData(abstractModel.getSelectedGiftCards()));
 		abstractOrderModelData.setAppliedGiftcards(buildAppliedGiftCardData(abstractModel.getAppliedGiftcards()));
 		abstractOrderModelData.setRecipientsList(buildRecepientsListData(abstractModel.getRecipientsList()));
-		abstractOrderModelData.setCustomerId(abstractModel.getCustomerId());
 		}
 		
 		return  abstractOrderModelData;
@@ -410,13 +405,11 @@ public class SapGatewayConverter {
 			chargeLineData.setDiscount(buildDiscountData(erpChargeLine.getDiscount()));
 			chargeLineData.setId(erpChargeLine.getId());
 			chargeLineData.setReasonCode(erpChargeLine.getReasonCode());
-			if(erpChargeLine.getTaxationType() != null){
-				chargeLineData.setTaxationType(erpChargeLine.getTaxationType().getName());
-			}
+			if(erpChargeLine.getTaxationType() != null)
+			chargeLineData.setTaxationType(erpChargeLine.getTaxationType().getName());
 			chargeLineData.setTaxRate(erpChargeLine.getTaxRate());
-			if(erpChargeLine.getType() != null){
-				chargeLineData.setType(erpChargeLine.getType().getName());
-			}
+			if(erpChargeLine.getTaxationType() != null)
+			chargeLineData.setType(erpChargeLine.getType().getName());
 			erpChargeLineDataList.add(chargeLineData);
 		}
 		return erpChargeLineDataList;
@@ -478,68 +471,27 @@ public class SapGatewayConverter {
 	}
 	private static List<ErpGiftCardData> buildSelectedGiftCardData(List<ErpGiftCardModel> selectedGiftCards) {
 		List<ErpGiftCardData> erpGiftCardDataList = new ArrayList<ErpGiftCardData>();
-		if(selectedGiftCards!=null){
-			for (ErpGiftCardModel erpGiftCardModel : selectedGiftCards) {
-				ErpGiftCardData erpGiftCardData =  buildGiftcardData(erpGiftCardModel);
-				erpGiftCardDataList.add(erpGiftCardData);
-			}
+		for (ErpGiftCardModel erpGiftCardModel : selectedGiftCards) {
+			ErpGiftCardData erpGiftCardData = (ErpGiftCardData) buildPaymentMethodData(erpGiftCardModel);
+			erpGiftCardData.setBalance(erpGiftCardData.getBalance());
+			erpGiftCardData.setOriginalAmount(erpGiftCardData.getOriginalAmount());
+			erpGiftCardData.setPurchaseSaleId(erpGiftCardData.getPurchaseSaleId());
+			erpGiftCardData.setPurchaseDate(erpGiftCardData.getPurchaseDate());
+			erpGiftCardDataList.add(erpGiftCardData);
 		}
 		return erpGiftCardDataList;
 	}
 
-	private static ErpGiftCardData buildGiftcardData(ErpGiftCardModel paymentMethod) {
-		
-		ErpGiftCardData paymentData = null;
-		if(paymentMethod!=null){
-		paymentData = new ErpGiftCardData();
-		paymentData.setId(paymentMethod.getPK().getId());
-		paymentData.setCustomerId(paymentMethod.getCustomerId());
-		paymentData.setName(paymentMethod.getName());
-		paymentData.setAccountNumber(paymentMethod.getAccountNumber());
-		paymentData.setAddress(buildContactAddressData(paymentMethod.getAddress()));
-		paymentData.setBillingRef(paymentMethod.getBillingRef());
-		if(paymentMethod.getPaymentMethodType() != null)
-		paymentData.setPaymentType(paymentMethod.getPaymentMethodType().getName());
-		paymentData.setReferencedOrder(paymentMethod.getReferencedOrder());
-		paymentData.setCvv(paymentMethod.getCVV());
-		paymentData.setProfileID(paymentMethod.getProfileID());
-		paymentData.setAccountNumLast4(paymentMethod.getAccountNumLast4());
-		paymentData.setBestNumberForBillingInquiries(paymentMethod.getBestNumberForBillingInquiries());
-		paymentData.seteWalletID(paymentMethod.geteWalletID());
-		paymentData.setVendorEWalletID(paymentMethod.getVendorEWalletID());
-		paymentData.seteWalletTrxnId(paymentMethod.geteWalletTrxnId());
-		paymentData.setEmailID(paymentMethod.getEmailID());
-		paymentData.setDeviceId(paymentMethod.getDeviceId());
-		paymentData.setDebitCard(paymentMethod.isDebitCard());
-		if(paymentMethod.getPaymentType() != null){
-			paymentData.setPaymentType(paymentMethod.getPaymentType().getName());
-		}
-		paymentData.setBalance(paymentMethod.getBalance());
-		paymentData.setOriginalAmount(paymentMethod.getOriginalAmount());
-		paymentData.setPurchaseSaleId( paymentMethod.getPurchaseSaleId());
-		paymentData.setPurchaseDate( paymentMethod.getPurchaseDate().getTime());
-		}
-		return paymentData;
-	
-		
-	}
-
-
-
-
-
 	private static List<ErpAppliedGiftCardData> buildAppliedGiftCardData(List<ErpAppliedGiftCardModel> appliedGiftcards) {
 		List<ErpAppliedGiftCardData> giftCardListData = new ArrayList<ErpAppliedGiftCardData>();
-		if(appliedGiftcards!=null){
-			for (ErpAppliedGiftCardModel erpAppliedGiftCard : appliedGiftcards) {
-				ErpAppliedGiftCardData erpAppliedGiftCardData = new ErpAppliedGiftCardData();
-				erpAppliedGiftCardData.setAccountNumber(erpAppliedGiftCard.getAccountNumber());
-				erpAppliedGiftCardData.setAffiliate(buildErpAffiliateData(erpAppliedGiftCard.getAffiliate()));
-				erpAppliedGiftCardData.setAmount(erpAppliedGiftCard.getAmount());
-				erpAppliedGiftCardData.setCertificateNum(erpAppliedGiftCard.getCertificateNum());
-				erpAppliedGiftCardData.setId(erpAppliedGiftCard.getId());
-				giftCardListData.add(erpAppliedGiftCardData);
-			}
+		for (ErpAppliedGiftCardModel erpAppliedGiftCard : appliedGiftcards) {
+			ErpAppliedGiftCardData erpAppliedGiftCardData = new ErpAppliedGiftCardData();
+			erpAppliedGiftCardData.setAccountNumber(erpAppliedGiftCard.getAccountNumber());
+			erpAppliedGiftCardData.setAffiliate(buildErpAffiliateData(erpAppliedGiftCard.getAffiliate()));
+			erpAppliedGiftCardData.setAmount(erpAppliedGiftCard.getAmount());
+			erpAppliedGiftCardData.setCertificateNum(erpAppliedGiftCard.getCertificateNum());
+			erpAppliedGiftCardData.setId(erpAppliedGiftCard.getId());
+			giftCardListData.add(erpAppliedGiftCardData);
 		}
 		return giftCardListData;
 	}
@@ -581,9 +533,8 @@ public class SapGatewayConverter {
 		if(discount != null){
 			 discountData = new DiscountData();
 			discountData.setAmount(discount.getAmount());
-			if(discount.getDiscountType() != null){
-				discountData.setDiscountType(String.valueOf(discount.getDiscountType().getId()));
-			}
+			if(discount.getDiscountType() != null)
+			discountData.setDiscountType(String.valueOf(discount.getDiscountType().getId()));
 			discountData.setPromotionCode(discount.getPromotionCode());
 			discountData.setMaxPercentageDiscount(discount.getMaxPercentageDiscount());
 			discountData.setPromotionDescription(discount.getPromotionDescription());
@@ -613,7 +564,7 @@ public class SapGatewayConverter {
 		erpAffiliateData.setTaxConditionType(affiliate.getTaxConditionType());
 		erpAffiliateData.setDepositConditionType(affiliate.getDepositConditionType());
 		erpAffiliateData.setMerchants(affiliate.getMerchants());
-		erpAffiliateData.setPaymentechTxDivisions(getDivisions(affiliate.getPaymentechTxDivision()));
+		erpAffiliateData.setPaymentechTxDivisions(getDivisions(affiliate.getPayementechTxDivision()));
 		return erpAffiliateData;
 	}
 	
@@ -662,19 +613,6 @@ public class SapGatewayConverter {
 		erpAddressData.setWebServiceType(erpAddressModel.getWebServiceType().getName());
 		erpAddressData.setEbtAccepted(erpAddressModel.isEbtAccepted());
 		erpAddressData.setScrubbedStreet(erpAddressModel.getScrubbedStreet());
-		erpAddressData.setFirstName(erpAddressModel.getFirstName());
-		erpAddressData.setLastName(erpAddressModel.getLastName());
-		erpAddressData.setPhone(buildPhoneNumberData(erpAddressModel.getPhone()));
-		erpAddressData.setAddress1(erpAddressModel.getAddress1());
-		erpAddressData.setAddress2(erpAddressModel.getAddress2());
-		erpAddressData.setApartment(erpAddressModel.getApartment());
-		erpAddressData.setCity(erpAddressModel.getCity());
-		erpAddressData.setState(erpAddressModel.getState());
-		erpAddressData.setZipCode(erpAddressModel.getZipCode());
-		erpAddressData.setServiceType(erpAddressModel.getServiceType().getName());
-		erpAddressData.setCompanyName(erpAddressModel.getCompanyName());
-		erpAddressData.setAddressInfoData(buildAddressInfoData(erpAddressModel.getAddressInfo()));
-		
 	}
 
 	private static CatalogKeyData buildCatalogKeyData(CatalogKey catalogKey) {
@@ -699,7 +637,7 @@ public class SapGatewayConverter {
 			  zoneInfoData.setParent(buildZoneInfoData(pricingZone.getParentZone()));
 			  zoneInfoData.setSalesOrg( pricingZone.getSalesOrg());
 			  zoneInfoData.setZoneId(pricingZone.getPricingZoneId());
-			  zoneInfoData.setPricingIndicator(pricingZone.getPricingIndicator().name());
+			  zoneInfoData.setPricingIndicator(com.freshdirect.ecommerce.data.erp.pricing.ZoneInfoData.PricingIndicator.valueOf(pricingZone.getPricingIndicator().getValue()));
 			  zoneInfoData.setParent(buildZoneInfoData(pricingZone.getParentZone()));
 						
 			}
@@ -719,26 +657,23 @@ public class SapGatewayConverter {
 		}
 		return erpDeliveryPlantInfoData;
 	}
-	public static ErpDeliveryInfoData buildDeliveryInfoData(ErpDeliveryInfoModel deliveryInfo) {
+	private static ErpDeliveryInfoData buildDeliveryInfoData(ErpDeliveryInfoModel deliveryInfo) {
 		ErpDeliveryInfoData erpDeliveryInfoData = new ErpDeliveryInfoData();
-		if(deliveryInfo.getDeliveryAddress() != null)
 		erpDeliveryInfoData.setDeliveryAddress(buildErpAddressData(deliveryInfo.getDeliveryAddress()));
 		erpDeliveryInfoData.setDeliveryCutoffTime(deliveryInfo.getDeliveryCutoffTime());
 		erpDeliveryInfoData.setDeliveryEndTime(deliveryInfo.getDeliveryEndTime());
 		erpDeliveryInfoData.setDeliveryHandoffTime(deliveryInfo.getDeliveryHandoffTime());
-		if(deliveryInfo.getDeliveryPlantInfo() != null)
 		erpDeliveryInfoData.setDeliveryPlantInfo(buildErpDeliveryPlantInfoData(deliveryInfo.getDeliveryPlantInfo()));
 		erpDeliveryInfoData.setDeliveryRegionId(deliveryInfo.getDeliveryRegionId());
 		erpDeliveryInfoData.setDeliveryReservationId(deliveryInfo.getDeliveryReservationId());
 		erpDeliveryInfoData.setDeliveryStartTime(deliveryInfo.getDeliveryStartTime());
 		if(deliveryInfo.getDeliveryType() != null)
-		erpDeliveryInfoData.setDeliveryType(deliveryInfo.getDeliveryType().getCode());
+		erpDeliveryInfoData.setDeliveryType(deliveryInfo.getDeliveryType().getName());
 		erpDeliveryInfoData.setDeliveryZone(deliveryInfo.getDeliveryZone());
 		erpDeliveryInfoData.setDepotLocationId(deliveryInfo.getDepotLocationId());
 		erpDeliveryInfoData.setId(deliveryInfo.getId());
 		erpDeliveryInfoData.setMinDurationForModification(deliveryInfo.getMinDurationForModification());
 		erpDeliveryInfoData.setMinDurationForModStart(deliveryInfo.getMinDurationForModStart());
-		if(deliveryInfo.getDeliveryPlantInfo() != null)
 		erpDeliveryInfoData.setOrderMobileNumber(buildPhoneNumberData(deliveryInfo.getOrderMobileNumber()));
 		erpDeliveryInfoData.setOriginalCutoffTime(deliveryInfo.getOriginalCutoffTime());
 		if(deliveryInfo.getServiceType() != null)
@@ -788,9 +723,9 @@ public class SapGatewayConverter {
 			orderLineData.setCouponDiscount(buildErpCouponDiscountlineModelData(orderLine.getCouponDiscount()));
 			if(orderLine.getTaxationType() != null)
 			orderLineData.setTaxationType(orderLine.getTaxationType().getName());
-            orderLineData.setCoremetricsPageId(null); // all the coremetrics related fields were removed within the `coremetrics removal` project
-            orderLineData.setCoremetricsPageContentHierarchy(null); // all the coremetrics related fields were removed within the `coremetrics removal` project
-            orderLineData.setCoremetricsVirtualCategory(null); // all the coremetrics related fields were removed within the `coremetrics removal` project
+			orderLineData.setCoremetricsPageId(orderLine.getCoremetricsPageId());
+			orderLineData.setCoremetricsPageContentHierarchy(orderLine.getCoremetricsPageContentHierarchy());
+			orderLineData.setCoremetricsVirtualCategory(orderLine.getCoremetricsVirtualCategory());
 			if(orderLine.getExternalAgency() != null)
 			orderLineData.setExternalAgency(orderLine.getExternalAgency().toString());
 			orderLineData.setExternalSource(orderLine.getExternalSource());
@@ -809,7 +744,7 @@ public class SapGatewayConverter {
 			orderLineData.setBasePrice(orderLine.getBasePrice());
 			orderLineData.setBasePriceUnit(orderLine.getBasePriceUnit());
 			orderLineData.setSavingsId(orderLine.getSavingsId());
-			orderLineData.setUserContext(buildUserContextData(orderLine.getUserContext()));
+			orderLineData.setUserCtx(buildUserContextData(orderLine.getUserContext()));
 			orderLineData.setPricingZoneId(orderLine.getPricingZoneId());
 			orderLineData.setAffiliateData(buildErpAffiliateData(orderLine.getAffiliate()));
 			orderLineList.add(orderLineData);
@@ -823,21 +758,17 @@ public class SapGatewayConverter {
 		userContextData.setEstoreId(userContext.getStoreContext().getEStoreId().getContentId());
 		return userContextData;
 	}
-	public  static ErpPaymentMethodData buildPaymentMethodData(ErpPaymentMethodI payment) {
+	private static ErpPaymentMethodData buildPaymentMethodData(ErpPaymentMethodI payment) {
 		ErpPaymentMethodModel paymentMethod = (ErpPaymentMethodModel) payment;
-		ErpPaymentMethodData paymentData = null;
-		if(paymentMethod!=null){
-		paymentData = new ErpPaymentMethodData();
-		if(paymentMethod.getPK()!=null){
-			paymentData.setId(paymentMethod.getPK().getId());
-		}
+		ErpPaymentMethodData paymentData = new ErpPaymentMethodData();
+		paymentData.setId(paymentMethod.getPK().getId());
 		paymentData.setCustomerId(paymentMethod.getCustomerId());
 		paymentData.setName(paymentMethod.getName());
 		paymentData.setAccountNumber(paymentMethod.getAccountNumber());
 		paymentData.setAddress(buildContactAddressData(paymentMethod.getAddress()));
 		paymentData.setBillingRef(paymentMethod.getBillingRef());
 		if(paymentMethod.getPaymentMethodType() != null)
-		paymentData.setPaymentMethodType(paymentMethod.getPaymentMethodType().getName());
+		paymentData.setPaymentType(paymentMethod.getPaymentMethodType().getName());
 		paymentData.setReferencedOrder(paymentMethod.getReferencedOrder());
 		paymentData.setCvv(paymentMethod.getCVV());
 		paymentData.setProfileID(paymentMethod.getProfileID());
@@ -852,8 +783,7 @@ public class SapGatewayConverter {
 		if(paymentMethod.getPaymentType() != null)
 		paymentData.setPaymentType(paymentMethod.getPaymentType().getName());
 		if(paymentMethod instanceof ErpCreditCardModel){
-			if(paymentMethod.getExpirationDate() != null)
-			paymentData.setExpirationDate(paymentMethod.getExpirationDate().getTime());
+			paymentData.setExpirationDate(paymentMethod.getExpirationDate());
 			if(paymentMethod.getCardType() != null)
 			paymentData.setCardType(paymentMethod.getCardType().getName());
 			paymentData.setAvsCkeckFailed(paymentMethod.isAvsCkeckFailed());
@@ -864,7 +794,7 @@ public class SapGatewayConverter {
 		}
 		else if (paymentMethod instanceof ErpECheckModel){
 			if(paymentMethod.getPaymentMethodType() != null)
-			paymentData.setBankAccountType(paymentMethod.getBankAccountType().getName());
+			paymentData.setBankAccountType(paymentMethod.getPaymentMethodType().getName());
 			paymentData.setBankName(paymentMethod.getBankName());
 			paymentData.setAbaRouteNumber(paymentMethod.getAbaRouteNumber());
 			paymentData.setTermsAccepted(paymentMethod.getIsTermsAccepted());
@@ -873,10 +803,7 @@ public class SapGatewayConverter {
 			paymentData.setBalance(paymentMethod.getBalance());
 			paymentData.setOriginalAmount(((ErpGiftCardModel) paymentMethod).getOriginalAmount());
 			paymentData.setPurchaseSaleId(((ErpGiftCardModel) paymentMethod).getPurchaseSaleId());
-			if(((ErpGiftCardModel) paymentMethod).getPurchaseDate()!=null){
-				paymentData.setPurchaseDate(((ErpGiftCardModel) paymentMethod).getPurchaseDate().getTime());
-			}
-		}
+			paymentData.setPurchaseDate(((ErpGiftCardModel) paymentMethod).getPurchaseDate());
 		}
 		return paymentData;
 	}
@@ -1080,7 +1007,7 @@ public class SapGatewayConverter {
 		return abstractOrderModel;
 	}
 	
-	public static List<ErpOrderLineModel> buildOrderLine(List<ErpOrderLineModelData> orderLines) {
+	private static List<ErpOrderLineModel> buildOrderLine(List<ErpOrderLineModelData> orderLines) {
 		List<ErpOrderLineModel>  orderlineList = new ArrayList<ErpOrderLineModel>();
 		for (ErpOrderLineModelData orderLine : orderLines) {
 			ErpOrderLineModel orderLineModel = new ErpOrderLineModel();
@@ -1120,6 +1047,9 @@ public class SapGatewayConverter {
 			orderLineModel.setUpc(orderLine.getUpc());
 			orderLineModel.setCouponDiscount(buildErpCouponDiscountlineModel(orderLine.getCouponDiscount()));
 			orderLineModel.setTaxationType(EnumTaxationType.getEnum(orderLine.getTaxationType()));
+			orderLineModel.setCoremetricsPageId(orderLine.getCoremetricsPageId());
+			orderLineModel.setCoremetricsPageContentHierarchy(orderLine.getCoremetricsPageContentHierarchy());
+			orderLineModel.setCoremetricsVirtualCategory(orderLine.getCoremetricsVirtualCategory());
 			if(orderLine.getExternalAgency() != null)
 			orderLineModel.setExternalAgency(ExternalAgency.valueOf(orderLine.getExternalAgency()));
 			orderLineModel.setExternalSource(orderLine.getExternalSource());
@@ -1137,7 +1067,7 @@ public class SapGatewayConverter {
 			orderLineModel.setBasePrice(orderLine.getBasePrice());
 			orderLineModel.setBasePriceUnit(orderLine.getBasePriceUnit());
 			orderLineModel.setSavingsId(orderLine.getSavingsId());
-			orderLineModel.setUserContext(buildUserContext(orderLine.getUserContext()));
+			orderLineModel.setUserContext(buildUserContext(orderLine.getUserCtx()));
 			orderLineModel.setPricingZoneId(orderLine.getPricingZoneId());
 			orderlineList.add(orderLineModel);
 		}
@@ -1192,7 +1122,7 @@ public class SapGatewayConverter {
 	}
 
 
-	public static ErpPaymentMethodI buildPaymentMethodModel(ErpPaymentMethodData paymentData) {
+	private static ErpPaymentMethodI buildPaymentMethodModel(ErpPaymentMethodData paymentData) {
 
 		ErpPaymentMethodI model = null;
 		if(paymentData.getPaymentMethodType()==null){
@@ -1224,7 +1154,7 @@ public class SapGatewayConverter {
 	private static ErpPaymentMethodI createErpCreditCardModel(ErpPaymentMethodData source) {
 		ErpCreditCardModel model = new ErpCreditCardModel();
 		createErpPaymentMethod(model,source);
-		model.setExpirationDate(new java.sql.Date(source.getExpirationDate()));
+		model.setExpirationDate(source.getExpirationDate());
 		model.setCardType(EnumCardType.getCardType(source.getCardType()));
 		model.setAvsCkeckFailed(source.isAvsCkeckFailed());
 		model.setBypassAVSCheck(source.isBypassAVSCheck());
@@ -1272,7 +1202,7 @@ public class SapGatewayConverter {
 		}
 		model.setOriginalAmount(source.getOriginalAmount());
 		model.setPurchaseSaleId(source.getPurchaseSaleId());
-		model.setPurchaseDate(new java.sql.Date(source.getPurchaseDate()));
+		model.setPurchaseDate(source.getPurchaseDate());
 		return model;
 		
 	}
@@ -1300,7 +1230,7 @@ public class SapGatewayConverter {
 		
 	}
 
-	public static ContactAddressModel buildContactAddressModel(ContactAddressData address) {
+	private static ContactAddressModel buildContactAddressModel(ContactAddressData address) {
 		ContactAddressModel contactAddressModel = null;
 		if(address != null){
 		contactAddressModel = buildAddress(address);
@@ -1389,14 +1319,14 @@ public class SapGatewayConverter {
 			giftCardModel.setBalance(erpGiftCardData.getBalance());
 			giftCardModel.setOriginalAmount(erpGiftCardData.getOriginalAmount());
 			giftCardModel.setPurchaseSaleId(erpGiftCardData.getPurchaseSaleId());
-			giftCardModel.setPurchaseDate(new java.sql.Date(erpGiftCardData.getPurchaseDate()));
+			giftCardModel.setPurchaseDate(erpGiftCardData.getPurchaseDate());
 			giftCardModelList.add(giftCardModel);
 		}
 		}
 		return giftCardModelList;
 	}
 
-	public static FDRafTransModel buildRefTransModel(FDRafTransData rafTransModel) {
+	private static FDRafTransModel buildRefTransModel(FDRafTransData rafTransModel) {
 		FDRafTransModel fdRafTransModel = null;
 		if(rafTransModel != null){
 		fdRafTransModel = new FDRafTransModel();
@@ -1449,7 +1379,7 @@ public class SapGatewayConverter {
 	
 	}
 
-	public static List<ErpChargeLineModel> buildChargeLineModel(List<ErpChargeLineData> charges) {
+	private static List<ErpChargeLineModel> buildChargeLineModel(List<ErpChargeLineData> charges) {
 		List<ErpChargeLineModel> chargeLineModelData = new ArrayList<ErpChargeLineModel>();
 		if(charges != null){
 		for (ErpChargeLineData erpChargeLineData : charges) {
@@ -1467,7 +1397,7 @@ public class SapGatewayConverter {
 		return chargeLineModelData;
 	}
 
-	public static Discount buildDiscount(DiscountData discountData) {
+	private static Discount buildDiscount(DiscountData discountData) {
 		Discount discount =  null;
 		if(discountData != null){
 			discount = new Discount(discountData.getPromotionCode(), EnumDiscountType.getPromotionType(Integer.parseInt(discountData.getDiscountType())), discountData.getAmount());
@@ -1478,7 +1408,7 @@ public class SapGatewayConverter {
 		return discount;
 	}
 
-	public static  ErpDeliveryInfoModel buildDeliveryInfo(ErpDeliveryInfoData deliveryInfo) {
+	private static  ErpDeliveryInfoModel buildDeliveryInfo(ErpDeliveryInfoData deliveryInfo) {
 		ErpDeliveryInfoModel deliveryInfoModel = null;
 		if(deliveryInfo != null){
 			deliveryInfoModel = new ErpDeliveryInfoModel();
@@ -1587,7 +1517,7 @@ public class SapGatewayConverter {
 			  zoneInfo  = new ZoneInfo(pricingZone.getZoneId(), 
 					  pricingZone.getSalesOrg(), 
 					  pricingZone.getDistributionChanel(),
-					PricingIndicator.valueOf(pricingZone.getPricingIndicator()),
+					PricingIndicator.valueOf(pricingZone.getPricingIndicator().getValue()),
 					buildZoneInfo(pricingZone.getParent())
 					);
 		}
@@ -1602,7 +1532,7 @@ public class SapGatewayConverter {
 		return phoneNumber;
 	}
 	
-	public static List<ErpAppliedCreditModel> buildAppliedCredits(List<ErpAppliedCreditData> appliedCredits) {
+	private static List<ErpAppliedCreditModel> buildAppliedCredits(List<ErpAppliedCreditData> appliedCredits) {
 		 List<ErpAppliedCreditModel> appliedCreditModeList = new ArrayList<ErpAppliedCreditModel>();
 		 if(appliedCredits != null){
 		for (ErpAppliedCreditData erpAppliedCreditData : appliedCredits) {
@@ -1622,7 +1552,7 @@ public class SapGatewayConverter {
 		return appliedCreditModeList;
 	}
 
-	public static List<ErpDiscountLineModel> buildDiscountDataList(List<ErpDiscountLineData> discounts) {
+	private  static List<ErpDiscountLineModel> buildDiscountDataList(List<ErpDiscountLineData> discounts) {
 		List<ErpDiscountLineModel> discountLineModelList = new ArrayList<ErpDiscountLineModel>();
 		if(discounts != null){
 		for (ErpDiscountLineData discountData : discounts) {

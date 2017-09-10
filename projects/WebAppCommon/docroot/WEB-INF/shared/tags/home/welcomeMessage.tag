@@ -23,7 +23,7 @@
 		</div>
 		<div class="fl-right inline">
 			<span class="small-text">
-				Learn more <a href="/about/index.jsp">About Us</a>, or get <a href="/help/<% if(user.isDepotUser()){ %>delivery_info_depot.jsp<% } else { %>delivery_info.jsp<% } %>">Delivery & Pickup Info</a>.
+				Learn more <a href="/about/index.jsp">About Us</a>, or get <a href="/help/<% if(user.isDepotUser()){ %>delivery_info_depot.jsp<% } else { %>delivery_info.jsp<% } %>">Grocery Delivery & Pickup Info</a>.
 			</span>
 		</div>
 	<% } else if (validOrderCount == 0) { %>

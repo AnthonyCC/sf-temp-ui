@@ -123,10 +123,10 @@ public class ErpFraudPreventionConverter {
 		return orderFraud;
 	}
 
-	public static CrmAgentRoleData buildCrmAgentRoleData(CrmAgentRole agentRole) {
+	private static CrmAgentRoleData buildCrmAgentRoleData(CrmAgentRole agentRole) {
 		CrmAgentRoleData agentRoleData = new CrmAgentRoleData();
 		if(agentRole != null){
-		agentRoleData.setAgentRole(agentRole.getCode());
+		agentRoleData.setAgentRole(agentRole.getName());
 		agentRoleData.setLdapRoleName(agentRole.getLdapRoleName());
 		}
 		return agentRoleData;

@@ -80,8 +80,13 @@ public class FDEcommProperties {
 	public static final String DlvPassManagerSB = "deliverypass.ejb.DlvPassManagerSB";
 	public static final String SmartStoreServiceConfigurationSB = "smartstore.ejb.SmartStoreServiceConfigurationSB";
 	public static final String PaymentGatewaySB ="payment.ejb.PaymentGatewaySB";
+	public static final String FDListManagerSB = "fdstore.lists.ejb.FDListManagerSB";
 	public static final String EwalletServiceSB = "ewallet.ejb.EwalletServiceSB";
 	public static final String CoremetricsCdfServiceSB = "coremetrics.service.CoremetricsCdfServiceSB";
+	public static final String CrmManagerSB = "crm.ejb.CrmManagerSB";
+	public final static  String FDPromotionManagerNewSB = "fdstore.ejb.FDPromotionNewManagerSB";//story SF17-88
+	 public final static  String FDSFGatewayStatsLogging = "fdstore.promotion.FDSFGatewayStatsLogging";//introduced with story SF17-88
+	 
  
   
     
@@ -134,9 +139,11 @@ public class FDEcommProperties {
         defaults.put(DlvPassManagerSB, FALSE);
         defaults.put(SmartStoreServiceConfigurationSB, FALSE);
         defaults.put(PaymentGatewaySB, FALSE);
+        defaults.put(FDListManagerSB, FALSE);
         defaults.put(EwalletNotifyStatusSB, FALSE);
         defaults.put(EwalletServiceSB, FALSE);
         defaults.put(CoremetricsCdfServiceSB, FALSE);
+        defaults.put(CrmManagerSB, FALSE);
         refresh();
     }
 
@@ -231,6 +238,18 @@ public class FDEcommProperties {
 		refresh();
 		if(config.containsKey(beanName))
     	return (Boolean.valueOf(config.getProperty(beanName))).booleanValue();
+		return false;
+	}
+	
+	/** similar to the mechanism for checking if a SB service is enabled <BR>
+	 * but instead is a general feature by feature name
+	 * @param featureName String 
+	 * @return
+	 */
+	public static boolean isFeatureEnabled(String featureName) {
+		refresh();
+		if(config.containsKey(featureName))
+    	return (Boolean.valueOf(config.getProperty(featureName))).booleanValue();
 		return false;
 	}
 

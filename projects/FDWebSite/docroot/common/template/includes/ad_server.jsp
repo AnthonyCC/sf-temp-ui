@@ -105,7 +105,7 @@
 			String orderZone = user.getOrderHistory()
 					.getLastOrderZone();
 			String lastOrderZone = orderZone != null ? orderZone : "";
-
+			
 			Date fdDlvDate = OrderHistoryService.defaultService().getLastOrderDateByDeliveryTypes(user.getOrderHistory(), EnumDeliveryType.HOME, EnumDeliveryType.PICKUP, EnumDeliveryType.DEPOT);
 			String fdLastOrderDate = (fdDlvDate != null) ? fdDlvDate.toString() : "";
 			String fdOrderZone = OrderHistoryService.defaultService().getLastOrderDeliveryZoneByDeliveryTypes(user.getOrderHistory(), EnumDeliveryType.HOME, EnumDeliveryType.PICKUP, EnumDeliveryType.DEPOT);
@@ -115,11 +115,12 @@
 			String fkLastOrderDate = (fkDlvDate != null) ? fkDlvDate.toString() : "";
 			String fkOrderZone = OrderHistoryService.defaultService().getLastOrderDeliveryZoneByDeliveryTypes(user.getOrderHistory(),EnumDeliveryType.FDX);
 			String fkLastOrderZone = fkOrderZone != null ? fkOrderZone : "";
-
+			
 			Date cosDlvDate = OrderHistoryService.defaultService().getLastOrderDateByDeliveryTypes(user.getOrderHistory(), EnumDeliveryType.CORPORATE);
 			String cosLastOrderDate = (cosDlvDate != null) ? cosDlvDate.toString() : "";
 			String cosOrderZone = OrderHistoryService.defaultService().getLastOrderDeliveryZoneByDeliveryTypes(user.getOrderHistory(),EnumDeliveryType.CORPORATE);
 			String cosLastOrderZone = cosOrderZone != null ? cosOrderZone : "";
+			
 
 			// Set of String (product department Ids, "rec" for recipe items)
 			Set cartDeptIds = new HashSet();
@@ -509,6 +510,7 @@
   		OAS_RICH(pos);
   	else
   		OAS_NORMAL(pos);
+  		if(typeof window.parent['OAS_DONE'] =='function') { OAS_DONE(pos); }
   }
   </script><%
   	}
@@ -659,7 +661,13 @@
   function OAS_DONE(oas_id) {
   	var e = document.getElementById('oas_'+oas_id);
   	if(window.jQuery && e) {
+  		jQuery(document).ready(function() {
+  			if (FreshDirect && FreshDirect.updateOAS && FreshDirect.updateOAS.done) {
+  	  			FreshDirect.updateOAS.done([oas_id]);
+  	  		}
+  		});
   		jQuery(e).trigger('OAS_DONE',[oas_id]);
+  		
   	}
   }
 

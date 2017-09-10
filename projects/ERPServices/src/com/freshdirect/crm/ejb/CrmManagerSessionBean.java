@@ -1497,6 +1497,59 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		return false;
 	}
 	
+	
+	public boolean isCRMRestrictionEnabled() throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(CRM_RESTRICTION_ENABLED_CHECK);
+			String value="";
+			rset = pstmt.executeQuery();
+			if(rset.next()) {
+				value=rset.getString("NAME");
+				if(StringUtil.isEmpty(value)) return false;
+				if(value.toLowerCase().indexOf("true")!=-1) {	
+					return true;
+				}
+			}
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(rset);
+			close(pstmt);
+			close(conn);
+		}
+		return false;
+	}
+	
+	public  String getAllowedUsers() throws FDResourceException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(CRM_ALLOWED_USERS);
+			String value="";
+			rset = pstmt.executeQuery();
+			if(rset.next()) {
+				
+				value= rset.getString("DESCRIPTION");
+				if(StringUtil.isEmpty(value)) return "ALL";
+				return value;
+			}
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(rset);
+			close(pstmt);
+			close(conn);
+		}
+		return "ALL";
+	}
+	
+	
 	public static String DLV_PASS_CHECK = "SELECT reason FROM CUST.ACTIVITY_LOG where customer_id=? and sale_id=? and reason in (select comp_code from CUST.LATE_DLV_COMPLAINT_CODES)";
 	
 	public static String UPDATE_REJECT_FLAG = "update CUST.AUTO_LATE_DELIVERY_ORDERS set status = 'R' where AUTO_LATE_DELIVERY_ID=? and (status is null or status != 'A')";
@@ -1520,4 +1573,8 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 									"cust.fdcustomer f " +
 									"where sale_id = ? and AUTO_LATE_DELIVERY_ID=? " +
 									"and a.customer_id = f.erp_customer_id";
+	
+	public static String CRM_RESTRICTION_ENABLED_CHECK = "select NAME from cust.activity_type where code='CRM_OFF'";
+	
+	public static String CRM_ALLOWED_USERS = "select DESCRIPTION from cust.activity_type where code='CRM_AU'";
 }

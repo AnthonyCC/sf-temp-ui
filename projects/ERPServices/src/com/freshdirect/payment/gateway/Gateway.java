@@ -26,6 +26,7 @@ public interface Gateway  extends java.io.Serializable{
 	public Response getProfile(Request request) throws ErpTransactionException;
 	
 	public boolean isValidToken(String token, String customerId);
+	public Response voidCapture(Request _request)throws ErpTransactionException;
 	
 	
 }

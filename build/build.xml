@@ -2699,31 +2699,19 @@
 			<zipfileset src="${thirdparty.home}/lucene-core-${lucene.version}.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/lucene-queries-${lucene.version}.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/lucene-snowball-${lucene.version}.jar" excludes="META-INF/*"/>
-
-			<!-- zipfileset src="${thirdparty.home}/commons-fileupload-1.0.jar" excludes="META-INF/*"/ -->
 			<zipfileset src="${thirdparty.home}/commons-fileupload-1.1.1.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/dom4j-1.6.1.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/jaxen-1.1-beta-4.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/jakarta-oro-2.0.5.jar" excludes="META-INF/*"/>
-			<!--<zipfileset src="${thirdparty.home}/${log4j.jar}" excludes="META-INF/*"/>-->
 			<zipfileset src="${thirdparty.home}/givexclient.jar" excludes="META-INF/*"/>
 			<!-- hivemind -->
 			<zipfileset src="${thirdparty.home}/hivemind-1.1.1.jar"/>
 			<zipfileset src="${thirdparty.home}/hivemind-lib-1.1.1.jar" excludes="META-INF/*"/>
-			<zipfileset src="${thirdparty.home}/jsonrpc-1.0.jar" excludes="META-INF/*"/>
-			<zipfileset src="${thirdparty.home}/jawr-core-3.8.jar" excludes="META-INF/*"/>
-			<!-- <zipfileset src="${thirdparty.home}/soy-latest.jar" excludes="META-INF/*"/>-->
-			<zipfileset src="${thirdparty.home}/ehcache-2.10.0.jar" excludes="META-INF/*"/>
-			<!--<zipfileset src="${thirdparty.home}/slf4j-api-1.6.6.jar" excludes="META-INF/*"/>
-			<zipfileset src="${thirdparty.home}/slf4j-jdk14-1.6.6.jar" excludes="META-INF/*"/>-->
-			<zipfileset src="${thirdparty.home}/jsch-0.1.44.jar" excludes="META-INF/*"/>
-			<zipfileset src="${thirdparty.home}/commons-vfs2-2.0.jar" excludes="META-INF/*"/>
-			<zipfileset src="${thirdparty.home}/zip4j_1.3.2.jar" excludes="META-INF/*"/>
 
 			<zipfileset src="${thirdparty.home}/commons-codec-1.9.jar" excludes="META-INF/*"/>
 			
 			<!-- FD classes -->
-			<zipfileset src="${work.dir}/Framework.jar"/>
+			<zipfileset src="${work.dir}/Framework.jar" />
 			<zipfileset src="${work.dir}/ERPServicesEJB-WL.jar" excludes="META-INF/*"/>
 			<zipfileset src="${work.dir}/DeliveryEJB-WL.jar" excludes="META-INF/*"/>
 			<zipfileset src="${work.dir}/CMS.jar" excludes="META-INF/*"/>
@@ -2733,8 +2721,7 @@
             <zipfileset src="${work.dir}/StandingOrdersService.jar" excludes="META-INF/*"/>
             <zipfileset src="${work.dir}/CoremetricsService.jar" excludes="META-INF/*"/>
 
-			<!-- Tools -->
-			<zipfileset src="${work.dir}/Tools.jar" excludes="META-INF/*"/>
+			<zipfileset src="${work.dir}/Tools.jar" excludes="META-INF/*" />
 			
 		</jar>
 	</target>

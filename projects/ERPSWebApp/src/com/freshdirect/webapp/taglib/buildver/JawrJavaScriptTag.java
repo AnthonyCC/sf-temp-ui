@@ -12,7 +12,6 @@ public class JawrJavaScriptTag extends JavascriptBundleTag {
 
 	private static final long serialVersionUID = 1285075045931324055L;
 	
-	private String onload;
 	public int doStartTag() throws JspException {
 		
 		return super.doStartTag();
@@ -28,14 +27,8 @@ public class JawrJavaScriptTag extends JavascriptBundleTag {
 			deferFlag = Boolean.valueOf(defer);
 		}
 		JavaScriptBundleLinkRenderer renderer = new JavaScriptBundleLinkRenderer();
-		renderer.init(rsHandler, useRandomParam, asyncFlag, deferFlag, onload);
+		renderer.init(rsHandler, useRandomParam, asyncFlag, deferFlag);
 		return renderer;
-	}
-	public String getOnload() {
-		return onload;
-	}
-	public void setOnload(String onload) {
-		this.onload = onload;
 	}
 	
 }

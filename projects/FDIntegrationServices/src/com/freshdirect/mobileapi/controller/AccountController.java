@@ -13,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -54,6 +55,7 @@ public class AccountController extends BaseController implements Comparator <Ord
     private static final String ACTION_RESERVE_TIMESLOT = "reservetimeslot";
     private static final String PARAM_ADDRESS_ID = "addressId";
     private static final String ACTION_GET_ORDER_HISTORY = "getorders";
+    private static final String ACTION_GET_CREDITED_ORDER_HISTORY = "getcreditedorders";
     private static final String ACTION_ACCEPT_DP_TERMSANDCONDITIONS = "acceptDeliveryPassTermsAndConditions";
     private static final String ACTION_ADD_PROFILE = "addProfile";
 
@@ -89,6 +91,8 @@ public class AccountController extends BaseController implements Comparator <Ord
 	            model = makeReservation(model, user, addressId, defaultReservationType(requestMessage), request);
 	        } else if (ACTION_GET_ORDER_HISTORY.equals(action)) {
 	            model = getOrderHistory(model, user, request, response);
+	        } else if (ACTION_GET_CREDITED_ORDER_HISTORY.equals(action)) {
+	            model = getCreditedOrderHistory(model, user, request, response);
 	        } else if (ACTION_ACCEPT_DP_TERMSANDCONDITIONS.equals(action)) {
 	           // APPDEV-2567 Logging DP Terms acceptance - mobile API
 	            FDCustomerManager.storeDPTCAgreeDate(AccountActivityUtil.getActionInfo(request.getSession())
@@ -126,6 +130,55 @@ public class AccountController extends BaseController implements Comparator <Ord
         int resultMax = orders != null ? orders.size() : 0;
         responseMessage.setTotalResultCount(resultMax);
         LOGGER.debug("getOrderHistory:: PostData received: [" + postData + "]");
+        if (StringUtils.isNotEmpty(postData)) {
+            SearchQuery requestMessage = parseRequestObject(request, response, SearchQuery.class);
+            page = requestMessage.getPage();
+            resultMax = requestMessage.getMax();
+        }
+        ListPaginator<Order> paginator = new ListPaginator<Order>(orders, resultMax);
+        
+        if(orders != null && !orders.isEmpty()){
+        	java.util.Collections.sort(orders, new AccountController());
+        	String firstOrder = orders.get(0).getId();
+        	com.freshdirect.mobileapi.model.Order order = user.getOrder(firstOrder);
+        	final com.freshdirect.mobileapi.controller.data.response.Order orderDetail = order.getOrderDetail(user);
+            if (isCheckLoginStatusEnable(request)) {
+                ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderDetail.getCartDetail());
+            }
+            orders.get(0).setStatus(orderDetail.getStatus());
+
+        }
+        
+        responseMessage.setOrders(paginator.getPage(page));
+        
+        setResponseMessage(model, responseMessage, user);
+        return model;
+    }
+    
+ private ModelAndView getCreditedOrderHistory(ModelAndView model, SessionUser user, HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {
+        
+        List<OrderInfo> orderInfos = user.getCompleteOrderHistory();
+        List<OrderInfo> creditedorderInfos = new ArrayList<OrderInfo>();
+        for(OrderInfo orderinfo : orderInfos){
+        	try {
+				if(orderinfo.getPendingCreditAmount() > 0 || orderinfo.getApprovedCreditAmount() > 0){
+					creditedorderInfos.add(orderinfo);
+				}
+			} catch (PricingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+        orderInfos = creditedorderInfos;
+        
+        OrderHistory responseMessage = new OrderHistory();
+        List<Order> orders = OrderHistory.Order.createOrderList(orderInfos, user);
+        
+        String postData = getPostData(request, response);
+        int page = 1;
+        int resultMax = orders != null ? orders.size() : 0;
+        responseMessage.setTotalResultCount(resultMax);
+        LOGGER.debug("getCreditedOrderHistory:: PostData received: [" + postData + "]");
         if (StringUtils.isNotEmpty(postData)) {
             SearchQuery requestMessage = parseRequestObject(request, response, SearchQuery.class);
             page = requestMessage.getPage();

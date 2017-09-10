@@ -6,11 +6,12 @@
  * @param? mobWeb
  * @param? moduleData
  * @param? itemIndex
+ * @param? extraClass
  *
  */
 {deltemplate common.carouselItem variant="'grid'"}
 {call common.transactionalGridItem data="all"}
-	{param extraClass}carouselTransactionalItem{if $itemCount} item-count{$itemCount}{/if}{/param}
+	{param extraClass}carouselTransactionalItem{if $itemCount} item-count{$itemCount}{/if}{if $extraClass} {$extraClass}{/if}{/param}
 	{param cmEventSource:$cmEventSource /}
 	{param mobWeb:$mobWeb /}
 	{param moduleData:$moduleData /}
@@ -33,6 +34,7 @@
  * @param? mobWeb
  * @param? moduleData
  * @param? itemIndex
+ * @param? extraClass
  *
  */
 {deltemplate common.carouselItem variant="'grid_prodSample'"}
@@ -42,5 +44,6 @@
 	{param mobWeb:$mobWeb /}
 	{param moduleData:$moduleData /}
 	{param itemIndex:$itemIndex /}
+	{param extraClass}{if $extraClass}{$extraClass}{/if}{/param}
 {/call}
 {/deltemplate}

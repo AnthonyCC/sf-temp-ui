@@ -2,6 +2,7 @@ package com.freshdirect.webapp.ajax.browse.data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -28,6 +29,9 @@ public class BrowseDataContext extends BrowseData {
 	
 	@JsonIgnore
 	private FilteringFlowType pageType;
+	
+	@JsonIgnore
+	private Map<String, List<String>> requestFilterParams;
 
     public BrowseData extractBrowseDataPrototype(FDUserI user, CmsFilteringNavigator nav) {
 		List<SectionData> sections = new ArrayList<SectionData>();
@@ -77,4 +81,12 @@ public class BrowseDataContext extends BrowseData {
 	public void setPageType(FilteringFlowType pageType) {
 		this.pageType = pageType;
 	}
+	
+    public Map<String, List<String>> getRequestFilterParams() {
+        return requestFilterParams;
+    }
+
+    public void setRequestFilterParams(Map<String, List<String>> requestFilterParams) {
+        this.requestFilterParams = requestFilterParams;
+    }
 }

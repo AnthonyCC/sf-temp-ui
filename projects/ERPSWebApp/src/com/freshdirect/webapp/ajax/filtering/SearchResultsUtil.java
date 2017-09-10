@@ -132,27 +132,16 @@ public class SearchResultsUtil {
 	}
 	
 	
+	
 public static SearchResults getHLBrandProductAdProducts(SearchResults searchResults, CmsFilteringNavigator nav, FDSessionUser user) {
 		
 
 		List<ProductModel> adPrducts = new ArrayList<ProductModel>();
 		HLBrandProductAdRequest hLBrandProductAdRequest=new HLBrandProductAdRequest();
-		
-				
 		try {
-			if(user.getUser()!=null && user.getUser().getPK()!=null &&
-					user.getUser().getPK().getId()!=null) {
-				hLBrandProductAdRequest.setUserId(user.getUser().getPK().getId());	
 			 hLBrandProductAdRequest.setSearchKeyWord(searchResults.getSuggestedTerm()!=null?searchResults.getSuggestedTerm():nav.getSearchParams());
-					
-			if (user.getPlatForm() != null) {
-				hLBrandProductAdRequest.setPlatformSource(user.getPlatForm());
-				hLBrandProductAdRequest.setLat(user.getLat());
-				hLBrandProductAdRequest.setPdUserId(user.getPdUserId());
-			} else {
-				hLBrandProductAdRequest.setPlatformSource(user.isMobilePlatForm() ? MOBILE_PLATFORM : WEB_PLATFORM);
-			}
-
+			 setPlatFormValues(user, hLBrandProductAdRequest);
+			if(hLBrandProductAdRequest.getUserId()!=null) {
 			HLBrandProductAdResponse hlBrandProductAdResponse = FDBrandProductsAdManager.getHLBrandproducts(hLBrandProductAdRequest);
 			if(hlBrandProductAdResponse!=null){
 			List<HLBrandProductAdInfo> hlBrandAdProductsMeta =hlBrandProductAdResponse.getSearchProductAd();
@@ -180,7 +169,7 @@ public static SearchResults getHLBrandProductAdProducts(SearchResults searchResu
 			}
 			
 		  }
-	     }
+		 }
 	    }
       catch (Exception e) {
 			LOG.info("Exception while populating HookLogicproduct: ", e);
@@ -195,6 +184,20 @@ public static SearchResults getHLBrandProductAdProducts(SearchResults searchResu
 		searchResults.setAdProducts(searchProductResults);
 		
 		return searchResults;
+	}
+
+	public static void setPlatFormValues(FDSessionUser user, HLBrandProductAdRequest hLBrandProductAdRequest) {
+		if (user.getUser() != null && user.getUser().getPK() != null && user.getUser().getPK().getId() != null) {
+			hLBrandProductAdRequest.setUserId(user.getUser().getPK().getId());
+			if (user.getPlatForm() != null) {
+				hLBrandProductAdRequest.setPlatformSource(user.getPlatForm());
+				hLBrandProductAdRequest.setLat(user.getLat());
+				hLBrandProductAdRequest.setPdUserId(user.getPdUserId());
+			} else {
+				hLBrandProductAdRequest.setPlatformSource(user
+						.isMobilePlatForm() ? MOBILE_PLATFORM : WEB_PLATFORM);
+			}
+		}
 	}
 	
 	

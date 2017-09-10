@@ -2,13 +2,12 @@ package com.freshdirect.dataloader.analytics;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.message.BasicNameValuePair;
@@ -26,7 +25,8 @@ import com.freshdirect.http.HttpService;
 public class GoogleAnalyticsReportingService {
 
     private static final GoogleAnalyticsReportingService INSTANCE = new GoogleAnalyticsReportingService();
-    private static final String GOOGLE_ANALYTICS_HOST = "http://www.google-analytics.com";
+    public static final String GOOGLE_ANALYTICS_HOST = "https://www.google-analytics.com/collect";
+    public static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36";
 
     private GoogleAnalyticsReportingService() {
     }
@@ -36,16 +36,16 @@ public class GoogleAnalyticsReportingService {
     }
 
 
-    public void postGAReporting(FDOrderI order) throws UnsupportedEncodingException, IOException {
-        HttpService.defaultService().postDataWithHttpEntity(GOOGLE_ANALYTICS_HOST, assembleTransactionPayloadForGA(order));
+    public HttpResponse postGAReporting(FDOrderI order) throws UnsupportedEncodingException, IOException {
+        return HttpService.defaultService().postDataWithHttpEntity(GOOGLE_ANALYTICS_HOST, assembleTransactionPayloadForGA(order), USER_AGENT);
     }
 
-    private HttpEntity assembleTransactionPayloadForGA(FDOrderI order) throws UnsupportedEncodingException {
+    public HttpEntity assembleTransactionPayloadForGA(FDOrderI order) throws UnsupportedEncodingException {
         HttpEntity entity = null;
         List<NameValuePair> params = new ArrayList<NameValuePair>();
 
         String version = "1";
-        String trackingId = FDStoreProperties.getGoogleAnalyticsTrackingId();
+        String trackingId = FDStoreProperties.getGoogleAnalyticsKey();
         String customerId = order.getCustomerId();
         String hitType = "transaction";
         String documentHostname = "freshdirect.com";
@@ -55,6 +55,8 @@ public class GoogleAnalyticsReportingService {
         params.add(new BasicNameValuePair("v", version));
         params.add(new BasicNameValuePair("tid", trackingId));
         params.add(new BasicNameValuePair("cid", customerId));
+        params.add(new BasicNameValuePair("ua", USER_AGENT));
+
         params.add(new BasicNameValuePair("t", hitType));
         params.add(new BasicNameValuePair("dh", documentHostname));
         params.add(new BasicNameValuePair("ti", transactionId));
@@ -102,9 +104,9 @@ public class GoogleAnalyticsReportingService {
         String deliveryCost = "";
 
         if (order.isDlvPassApplied() || order.isChargeWaived(EnumChargeType.DELIVERY) || order.isChargeWaived(EnumChargeType.DLVPREMIUM)) {
-            deliveryCost = "$0.00";
+            deliveryCost = "0.00";
         } else if (order.getChargeAmount(EnumChargeType.DELIVERY) > 0 || order.getChargeAmount(EnumChargeType.DLVPREMIUM) > 0) {
-            deliveryCost = NumberFormat.getCurrencyInstance(Locale.US).format(order.getChargeAmount(EnumChargeType.DELIVERY));
+            deliveryCost = Double.toString(order.getChargeAmount(EnumChargeType.DELIVERY));
         }
 
         return deliveryCost;

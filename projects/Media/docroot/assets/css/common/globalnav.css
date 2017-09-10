@@ -135,9 +135,11 @@ body{
 }
 .globalnav_top #topnavitem_help a{
 	margin-right: 26px;
+	margin-left:0px;
 }
 .globalnav_top #topnavitem_dlvType a {
 	margin-right: 26px;
+	margin-left:9px;
 }
 .globalnav_top #topnavitem_standingorders a{
 	margin-right: 0;

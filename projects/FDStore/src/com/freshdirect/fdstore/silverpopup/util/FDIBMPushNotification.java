@@ -43,13 +43,11 @@ public class FDIBMPushNotification {
 			putMethod.addRequestHeader("Authorization","Bearer "+accessToken);
 			putMethod.addRequestHeader("Content-Type", "application/json");
 			mapper.setSerializationInclusion(Include.NON_NULL);  //Tells the serializer to only include those parameters that are not null
-			String response = null;
 			final HttpClient client = new HttpClient();
 			client.setTimeout(6000);
 			try{
 				if(request != null){
 					LOGGER.info("Full Query Request to IBM is "+url+request);
-					//putMethod.setQueryString(request);
 					Identity ident = new Identity();
 					ident.setName("customer_ID");
 					ident.setValue(details.getCustomerId());

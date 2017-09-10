@@ -10,6 +10,7 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.context.StoreContext;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -17,6 +18,7 @@ import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
+import com.freshdirect.fdstore.ecomm.gateway.FDListManagerService;
 import com.freshdirect.fdstore.lists.ejb.FDListManagerHome;
 import com.freshdirect.fdstore.lists.ejb.FDListManagerSB;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -34,8 +36,13 @@ public class FDListManager {
 			throws FDResourceException {
 		lookupManagerHome();
 		try {
-			FDListManagerSB sb = managerHome.create();
-			return sb.getEveryItemEverOrdered(identity);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
+				return FDListManagerService.getInstance().getEveryItemEverOrdered(identity);
+			}
+			else{
+				FDListManagerSB sb = managerHome.create();
+				return sb.getEveryItemEverOrdered(identity);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -56,8 +63,13 @@ public class FDListManager {
 			FDIdentity identity) throws FDResourceException {
 		lookupManagerHome();
 		try {
-			FDListManagerSB sb = managerHome.create();
-			return sb.generateEveryItemEverOrderedList(identity);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
+				return FDListManagerService.getInstance().generateEveryItemEverOrderedList(identity);
+			}
+			else{
+				FDListManagerSB sb = managerHome.create();
+				return sb.generateEveryItemEverOrderedList(identity);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -70,8 +82,13 @@ public class FDListManager {
 	public static List<FDProductSelectionI> getQsSpecificEveryItemEverOrderedList(FDIdentity identity, StoreContext storeContext) throws FDResourceException {
 		lookupManagerHome();
 		try {
-			FDListManagerSB sb = managerHome.create();
-			return sb.getQsSpecificEveryItemEverOrderedList(identity, storeContext);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
+				return FDListManagerService.getInstance().getQsSpecificEveryItemEverOrderedList(identity, storeContext);
+			}
+			else{
+				FDListManagerSB sb = managerHome.create();
+				return sb.getQsSpecificEveryItemEverOrderedList(identity, storeContext);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -85,8 +102,13 @@ public class FDListManager {
 	public static List<FDProductSelectionI> getQsSpecificEveryItemEverOrderedListTopItems(FDIdentity identity, StoreContext storeContext) throws FDResourceException {
 		lookupManagerHome();
 		try {
-			FDListManagerSB sb = managerHome.create();
-			return sb.getQsSpecificEveryItemEverOrderedListTopItems(identity,storeContext);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
+				return FDListManagerService.getInstance().getQsSpecificEveryItemEverOrderedListTopItems(identity, storeContext);
+			}
+			else{
+				FDListManagerSB sb = managerHome.create();
+				return sb.getQsSpecificEveryItemEverOrderedListTopItems(identity,storeContext);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -101,8 +123,13 @@ public class FDListManager {
 			throws FDResourceException {
 		lookupManagerHome();
 		try {
-			FDListManagerSB sb = managerHome.create();
-			return sb.getCustomerList(identity, type, listName);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
+				return FDListManagerService.getInstance().getCustomerList(identity, type, listName);
+			}
+			else{
+				FDListManagerSB sb = managerHome.create();
+				return sb.getCustomerList(identity, type, listName);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -117,8 +144,13 @@ public class FDListManager {
 			throws FDResourceException {
 		lookupManagerHome();
 		try {
-			FDListManagerSB sb = managerHome.create();
-			return sb.getCustomerListById(identity, type, listId);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
+				return FDListManagerService.getInstance().getCustomerListById(identity, type, listId);
+			}
+			else{
+				FDListManagerSB sb = managerHome.create();
+				return sb.getCustomerListById(identity, type, listId);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -131,8 +163,13 @@ public class FDListManager {
 	public static FDCustomerList storeCustomerList(FDCustomerList list) throws FDResourceException {
 		lookupManagerHome();
 		try {
-			FDListManagerSB sb = managerHome.create();
-			return sb.storeCustomerList(list);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
+				return FDListManagerService.getInstance().storeCustomerList(list);
+			}
+			else{
+				FDListManagerSB sb = managerHome.create();
+				return sb.storeCustomerList(list);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -147,8 +184,13 @@ public class FDListManager {
 			throws FDResourceException {
 		lookupManagerHome();
 		try {
-			FDListManagerSB sb = managerHome.create();
-			sb.removeCustomerListItem(user.getIdentity(), id);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
+				FDListManagerService.getInstance().removeCustomerListItem(user.getIdentity(), id);
+			}
+			else{
+				FDListManagerSB sb = managerHome.create();
+				sb.removeCustomerListItem(user.getIdentity(), id);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -165,9 +207,13 @@ public class FDListManager {
 			throws FDResourceException, FDCustomerListExistsException {
 		lookupManagerHome();
 		try {
-
-			FDListManagerSB sb = managerHome.create();
-			return sb.createCustomerCreatedList(user.getIdentity(), user.getUserContext().getStoreContext(), listName);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
+				return FDListManagerService.getInstance().createCustomerCreatedList(user.getIdentity(), user.getUserContext().getStoreContext(), listName);
+			}
+			else{
+				FDListManagerSB sb = managerHome.create();
+				return sb.createCustomerCreatedList(user.getIdentity(), user.getUserContext().getStoreContext(), listName);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -186,8 +232,13 @@ public class FDListManager {
 			throws FDResourceException {
 		lookupManagerHome();
 		try {
-			FDListManagerSB sb = managerHome.create();
-			sb.deleteCustomerCreatedList(user.getIdentity(), listName, user.getUserContext().getStoreContext());
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
+				 FDListManagerService.getInstance().deleteCustomerCreatedList(user.getIdentity(), listName, user.getUserContext().getStoreContext());
+			}
+			else{
+				FDListManagerSB sb = managerHome.create();
+				sb.deleteCustomerCreatedList(user.getIdentity(), listName, user.getUserContext().getStoreContext());
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -200,8 +251,13 @@ public class FDListManager {
 	public static void deleteShoppingList(String listId) throws FDResourceException {
 		lookupManagerHome();
 		try {
-			FDListManagerSB sb = managerHome.create();
-			sb.deleteShoppingList( listId );
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
+				 FDListManagerService.getInstance().deleteShoppingList( listId );
+			}
+			else{
+				FDListManagerSB sb = managerHome.create();
+				sb.deleteShoppingList( listId );
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -217,8 +273,13 @@ public class FDListManager {
 			throws FDResourceException {
 		lookupManagerHome();
 		try {
-			FDListManagerSB sb = managerHome.create();
-			return sb.getCustomerCreatedLists(user.getIdentity(), user.getUserContext().getStoreContext());
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
+				 return FDListManagerService.getInstance().getCustomerCreatedLists(user.getIdentity(), user.getUserContext().getStoreContext());
+			}
+			else{
+				FDListManagerSB sb = managerHome.create();
+				return sb.getCustomerCreatedLists(user.getIdentity(), user.getUserContext().getStoreContext());
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -234,8 +295,13 @@ public class FDListManager {
 			throws FDResourceException {
 		lookupManagerHome();
 		try {
-			FDListManagerSB sb = managerHome.create();
-			return sb.getCustomerCreatedListInfos(user.getIdentity(), user.getUserContext().getStoreContext());
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
+				 return FDListManagerService.getInstance().getCustomerCreatedListInfos(user.getIdentity(), user.getUserContext().getStoreContext());
+			}
+			else{
+				FDListManagerSB sb = managerHome.create();
+				return sb.getCustomerCreatedListInfos(user.getIdentity(), user.getUserContext().getStoreContext());
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -251,8 +317,13 @@ public class FDListManager {
 			throws FDResourceException {
 		lookupManagerHome();
 		try {
-			FDListManagerSB sb = managerHome.create();
-			return sb.getStandingOrderListInfos(user.getIdentity());
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
+				 return FDListManagerService.getInstance().getStandingOrderListInfos(user.getIdentity());
+			}
+			else{
+				FDListManagerSB sb = managerHome.create();
+				return sb.getStandingOrderListInfos(user.getIdentity());
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -267,8 +338,13 @@ public class FDListManager {
 			throws FDResourceException {
 		lookupManagerHome();
 		try {
-			FDListManagerSB sb = managerHome.create();
-			sb.modifyCustomerCreatedList(list);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
+				FDListManagerService.getInstance().modifyCustomerCreatedList(list);
+			}
+			else{
+				FDListManagerSB sb = managerHome.create();
+				sb.modifyCustomerCreatedList(list);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -297,8 +373,13 @@ public class FDListManager {
 			throws FDResourceException {
 		lookupManagerHome();
 		try {
-			FDListManagerSB sb = managerHome.create();
-			return sb.isCustomerList(user.getIdentity(), type != null ? type : EnumCustomerListType.CC_LIST, listName);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
+				return FDListManagerService.getInstance().isCustomerList(user.getIdentity(), type != null ? type : EnumCustomerListType.CC_LIST, listName);
+			}
+			else{
+				FDListManagerSB sb = managerHome.create();
+				return sb.isCustomerList(user.getIdentity(), type != null ? type : EnumCustomerListType.CC_LIST, listName);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -318,8 +399,13 @@ public class FDListManager {
 			FDCustomerListExistsException {
 		lookupManagerHome();
 		try {
-			FDListManagerSB sb = managerHome.create();
-			sb.copyCustomerCreatedList(oldList, newList);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
+				 FDListManagerService.getInstance().copyCustomerCreatedList(oldList, newList);
+			}
+			else{
+				FDListManagerSB sb = managerHome.create();
+				sb.copyCustomerCreatedList(oldList, newList);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -339,8 +425,13 @@ public class FDListManager {
 			FDIdentity identity, String ccListId) throws FDResourceException {
 		lookupManagerHome();
 		try {
-			FDListManagerSB sb = managerHome.create();
-			return sb.getCustomerCreatedList(identity, ccListId);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
+				return FDListManagerService.getInstance().getCustomerCreatedList(identity, ccListId);
+			}
+			else{
+				FDListManagerSB sb = managerHome.create();
+				return sb.getCustomerCreatedList(identity, ccListId);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -353,8 +444,13 @@ public class FDListManager {
 	public static String getListName( FDIdentity identity, String ccListId ) throws FDResourceException {
 		lookupManagerHome();
 		try {
-			FDListManagerSB sb = managerHome.create();
-			return sb.getListName( identity, ccListId );
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
+				return FDListManagerService.getInstance().getListName( identity, ccListId );
+			}
+			else{
+				FDListManagerSB sb = managerHome.create();
+				return sb.getListName( identity, ccListId );
+			}
 		} catch ( CreateException ce ) {
 			invalidateManagerHome();
 			throw new FDResourceException( ce, "Error creating session bean" );
@@ -372,8 +468,13 @@ public class FDListManager {
 			throws FDCustomerListExistsException, FDResourceException {
 		lookupManagerHome();
 		try {
-			FDListManagerSB sb = managerHome.create();
-			sb.renameCustomerCreatedList(identity, oldName, newName);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
+				 FDListManagerService.getInstance().renameCustomerCreatedList(identity, oldName, newName);
+			}
+			else{
+				FDListManagerSB sb = managerHome.create();
+				sb.renameCustomerCreatedList(identity, oldName, newName);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -391,8 +492,13 @@ public class FDListManager {
 			throws FDCustomerListExistsException, FDResourceException {
 		lookupManagerHome();
 		try {
-			FDListManagerSB sb = managerHome.create();
-			sb.renameCustomerList(info, type, oldName, newName);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
+				 FDListManagerService.getInstance().renameCustomerList(info, type, oldName, newName);
+			}
+			else{
+				FDListManagerSB sb = managerHome.create();
+				sb.renameCustomerList(info, type, oldName, newName);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -408,8 +514,13 @@ public class FDListManager {
 	public static void renameShoppingList(String listId, String newName) throws FDResourceException {
 		lookupManagerHome();
 		try {
-			FDListManagerSB sb = managerHome.create();
-			sb.renameShoppingList(listId, newName);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
+				 FDListManagerService.getInstance().renameShoppingList(listId, newName);
+			}
+			else{
+				FDListManagerSB sb = managerHome.create();
+				sb.renameShoppingList(listId, newName);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -452,8 +563,13 @@ public class FDListManager {
 	public static FDCustomerProductList getOrderDetails(String erpCustomerId,List<String> skus) throws FDResourceException {
 		lookupManagerHome();
 		try {
-			FDListManagerSB sb = managerHome.create();
-			return sb.getOrderDetails(erpCustomerId, skus);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
+				 return FDListManagerService.getInstance().getOrderDetails(erpCustomerId, skus);
+			}
+			else{
+				FDListManagerSB sb = managerHome.create();
+				return sb.getOrderDetails(erpCustomerId, skus);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -481,8 +597,13 @@ public class FDListManager {
 	public static FDStandingOrderList getStandingOrderList(	FDIdentity identity, String soListId ) throws FDResourceException {
 		lookupManagerHome();
 		try {
-			FDListManagerSB sb = managerHome.create();
-			return sb.getStandingOrderList(identity, soListId);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDListManagerSB)){
+				 return FDListManagerService.getInstance().getStandingOrderList(identity, soListId);
+			}
+			else{
+				FDListManagerSB sb = managerHome.create();
+				return sb.getStandingOrderList(identity, soListId);
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

@@ -48,7 +48,6 @@ public class OrderHistoryService {
 
     public Date getLastOrderDateByDeliveryTypes(OrderHistoryI orderHistory, EnumDeliveryType... deliveryTypes) {
         Date requestedDate = null;
-
         ErpSaleInfo latestErpSaleInfo = getLatestErpSaleInfo(orderHistory, deliveryTypes);
 
         if (latestErpSaleInfo != null) {
@@ -60,12 +59,12 @@ public class OrderHistoryService {
 
     public String getLastOrderDeliveryZoneByDeliveryTypes(OrderHistoryI orderHistory, EnumDeliveryType... deliveryTypes) {
         String lastZone = null;
-
         ErpSaleInfo latestErpSaleInfo = getLatestErpSaleInfo(orderHistory, deliveryTypes);
 
         if (latestErpSaleInfo != null) {
             lastZone = latestErpSaleInfo.getZone();
         }
+
         return lastZone;
     }
 

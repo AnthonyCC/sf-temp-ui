@@ -15,6 +15,7 @@ public class Configuration implements Serializable {
 	private boolean socialLoginEnabled;
 	private boolean masterPassEnabled;
 	private boolean payPalEnabled;
+	private boolean DCSEnabled;
 	
 
 	public boolean isAkamaiImageConvertorEnabled() {
@@ -82,7 +83,13 @@ public class Configuration implements Serializable {
 	}
 	public void setPayPalEnabled(boolean payPalEnabled) {
 		this.payPalEnabled = payPalEnabled;
-	}	
+	}
+	public boolean isDCSEnabled() {
+		return DCSEnabled;
+	}
+	public void setDCSEnabled(boolean DCSEnabled) {
+		this.DCSEnabled = DCSEnabled;
+	}
 	
 	
 }

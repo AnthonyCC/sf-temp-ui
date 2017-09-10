@@ -74,7 +74,8 @@
 	<!-- TODO fine tune cache size, max: 35 calls/minute on category.jsp-->
 	<cache name="userRefinementCache"
            maxEntriesLocalHeap="50"
-           timeToIdleSeconds="180"
+		   timeToIdleSeconds="180"
+           timeToLiveSeconds="300"
            memoryStoreEvictionPolicy="LFU">
     </cache>
 
@@ -118,5 +119,20 @@
                 timeToLiveSeconds="3600"
                 memoryStoreEvictionPolicy="LFU"
                 transactionalMode="off">
+     </cache>
+     <cache name="mediaCheckCache"
+                maxEntriesLocalHeap="200"
+                timeToLiveSeconds="300"
+                memoryStoreEvictionPolicy="LRU">
+     </cache>
+     <cache name="mediaContentCache"
+                maxEntriesLocalHeap="50"
+                timeToLiveSeconds="300"
+                memoryStoreEvictionPolicy="LFU">
+     </cache>
+     <cache name="fdZoneIdCache"
+                maxEntriesLocalHeap="200"
+                timeToLiveSeconds="900"
+                memoryStoreEvictionPolicy="LRU">
      </cache>
 </ehcache>

@@ -201,18 +201,19 @@ public class PayPalServiceSessionBean extends SessionBeanSupport{
 				
 				
 				if(paymentMethods != null && !paymentMethods.isEmpty()){
-					if (!ewalletRequestData.isDebitCardSwitch()) {
+					
 					if (paymentMethods.size() > 1) {
 						sortPaymentMethodsByIdReserved(paymentMethods);
 					}
 			        if (!origin.equals(EwalletConstants.PAYPAL_ORIGIN_YOUR_ACCOUNT)) {
 			    		final PrimaryKey pmPK = ( (ErpPaymentMethodModel)paymentMethods.get(0)).getPK();
+			    		if (!ewalletRequestData.isDebitCardSwitch()) {
 			    		FDCustomerManager.setDefaultPaymentMethod( ewalletRequestData.getFdActionInfo(), pmPK, null, false);
-			    		
+			    		}
 			        }
 					ewalletResponseData.setPaymentMethod(paymentMethods.get(0));
 				}
-				}
+				
 			} catch (Exception exception) {
 				LOGGER.error("Error While adding PayPal account details : "+exception.getMessage());
 			}	

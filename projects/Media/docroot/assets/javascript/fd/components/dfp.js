@@ -49,7 +49,7 @@ var googletag = window.googletag || {};
           size = [+slot.getAttribute('ad-size-width'), +slot.getAttribute('ad-size-height')];
         }
         googletag.defineSlot('/'+ dfpId +'/'+ getDfpSlotNameFromOasName(slot), size, slot.id).addService(googletag.pubads())
-        .setCollapseEmptyDiv(true);
+        .setCollapseEmptyDiv(true,true);
         googletag.display(slot.id);
       });
     });

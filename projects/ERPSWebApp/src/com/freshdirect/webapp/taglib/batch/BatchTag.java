@@ -14,7 +14,10 @@ import javax.servlet.jsp.JspException;
 
 import com.freshdirect.erp.ErpFactory;
 import com.freshdirect.erp.model.BatchModel;
+import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 
 /**
  *
@@ -56,7 +59,8 @@ public class BatchTag extends com.freshdirect.framework.webapp.BodyTagSupport {
             //
             try {
                 int bn = Integer.parseInt(batchNumber);
-                batch = ErpFactory.getInstance().getBatch(bn);
+
+					 batch = ErpFactory.getInstance().getBatch(bn);
                 
             } catch (FDResourceException fdre) {
                 throw new JspException(fdre.getMessage());

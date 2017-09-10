@@ -24,14 +24,30 @@ public class GAProductDataService {
 
         data.setId(product.getContentName());
         data.setName(product.getFullName());
-        data.setPrice(Double.toString(cartLine.getPrice()));
+        data.setPrice(Double.toString(product.getPriceCalculator().getDefaultPriceValue()));
         data.setBrand(product.getPrimaryBrandName());
         data.setCategory(product.getCategory().getContentName());
         data.setVariant(cartLine.getVariantId());
         data.setNewProduct(Boolean.toString(product.isNew()));
         data.setSku(product.getDefaultSkuCode());
-        data.setQuantity(quantity);
+        data.setQuantity(roundQuantity(quantity));
         return data;
+    }
+
+    private String roundQuantity(String quantity) {
+        Double doubleQuantity = Double.parseDouble(quantity);
+
+        if (doubleQuantity < 0) {
+            doubleQuantity = Math.floor(doubleQuantity);
+            doubleQuantity = (doubleQuantity < -200) ? -200 : doubleQuantity;
+        } else if (doubleQuantity > 0) {
+            doubleQuantity = Math.ceil(doubleQuantity);
+            doubleQuantity = (doubleQuantity > 200) ? 200 : doubleQuantity;
+        } else {
+            doubleQuantity = (double) 1;
+        }
+
+        return String.valueOf(doubleQuantity.intValue());
     }
 
 }

@@ -44,7 +44,7 @@ var dataLayer = window.dataLayer || [];
     };
 
     if (idx) {
-      productData.position = idx + 1;
+      productData.position = idx;
     }
 
     return productData;
@@ -67,7 +67,8 @@ var dataLayer = window.dataLayer || [];
           chef_table: custData.chefsTable || false,
           deliverypass: custData.deliveryPass || '',
           delivery_type: custData.deliveryType || '',
-          cohort: custData.cohort || 'unknown'
+          cohort: custData.cohort || 'unknown',
+          default_payment_type: custData.defaultPaymentType || ''
         },
         // variables for "old" tags
         'user-customer-type': custData.deliveryType || '',
@@ -100,7 +101,7 @@ var dataLayer = window.dataLayer || [];
       dataLayer.push({
         ecommerce: {
           impressions: products.map(function (product, idx) {
-            return productTransform(product, idx, 'browse');
+            return productTransform(product, idx+1, 'browse');
           })
         }
       });
@@ -109,25 +110,27 @@ var dataLayer = window.dataLayer || [];
       dataLayer.push({
         ecommerce: {
           impressions: reorderItems.map(function (product, idx) {
-            return productTransform(product, idx, 'reorder');
+            return productTransform(product, idx+1, 'reorder');
           })
         }
       });
     },
     product: function (productData) {
+      var product = productTransform(productData);
+
+      delete product.list;
+
       dataLayer.push({
         ecommerce: {
           detail: {
-            products: [productData].map(function (product) {
-              return productTransform(product);
-            })
+            products: [product]
           }
         }
       });
     },
     ATCData: function (ATCData) { // + cartLineChange
       var productData = ATCData.productData,
-          qty = +productData.quantity,
+          qty = parseInt(productData.quantity, 10) || 0,
           addRemoveData = {
               products: [{
                 id: productData.id,
@@ -160,21 +163,6 @@ var dataLayer = window.dataLayer || [];
       return {event: event};
     },
     coStep: function (coStepData) {
-      if (coStepData.delivery_type) {
-        dataLayer.push({
-          ecommerce: {
-            delivery_type: coStepData.delivery_type
-          }
-        });
-      }
-      if (coStepData.available_timeslot_value) {
-        dataLayer.push({
-          ecommerce: {
-            available_timeslot_value: coStepData.available_timeslot_value,
-            unavailable_timeslot_present: coStepData.unavailable_timeslot_present
-          }
-        });
-      }
       dataLayer.push({
         ecommerce: {
           checkout: {
@@ -230,28 +218,6 @@ var dataLayer = window.dataLayer || [];
       var customer = fd.gtm && fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.customer,
           ts = coData.selectedTimeslotValue;
 
-      if (coData.products) {
-        dataLayer.push({
-          ecommerce: {
-            products: Object.keys(coData.products).map(function (k) {
-              var productData = coData.products[k];
-              return {
-                id: productData.id,
-                name: productData.name,
-                price: productData.price,
-                brand: productData.brand,
-                category: productData.category,
-                variant: productData.variant,
-                new_product: productData.newProduct,
-                sku: productData.sku,
-                in_stock: true,
-                quantity: productData.quantity
-              };
-            })
-          }
-        });
-      }
-
       if (coData.newOrder === 'true' || coData.modifyOrder === 'true') {
         dataLayer.push({
           ecommerce: {
@@ -265,29 +231,70 @@ var dataLayer = window.dataLayer || [];
                 coupon: coData.couponCode && coData.couponCode.join(','),
                 redemption_code: coData.redemptionCode && coData.redemptionCode.join(','),
                 etipping: coData.etipping || 0
-              }
+              },
+              products: coData.products && Object.keys(coData.products).map(function (k) {
+                var productData = coData.products[k];
+                return {
+                  id: productData.id,
+                  name: productData.name,
+                  price: productData.price,
+                  brand: productData.brand,
+                  category: productData.category,
+                  variant: productData.variant,
+                  new_product: productData.newProduct,
+                  sku: productData.sku,
+                  in_stock: true,
+                  quantity: parseInt(productData.quantity, 10) || 0 // quantity should be an integer
+                };
+              }),
+              delivery_type: coData.deliveryType || 'unknown',
+              available_timeslot_value: ts && ts.deliveryDate+' '+ts.displayString || 'unknown',
+              unavailable_timeslot_present: coData.unavailableTimeslotValue ? 'yes' : 'no'
             },
             delivery_type: coData.deliveryType || 'unknown',
             available_timeslot_value: ts && ts.deliveryDate+' '+ts.displayString || 'unknown',
             unavailable_timeslot_present: coData.unavailableTimeslotValue ? 'yes' : 'no'
           }
         });
-      }
 
-      dataLayer.push({
-        'co-subtotal': coData.revenue || 0,
-        'co-subtotal-nd': (+coData.revenue || 0) * 100,
-        'co-neworder': coData.newOrder,
-        'co-modifyorder': coData.modifyOrder,
-        'co-orderid': coData.orderId,
-        'co-totalcartitems': Object.keys(coData.products).map(function (k) { return +coData.products[k].quantity;}).reduce(function (p, c) { return p+c;}, 0),
-        'co-usercounty': customer && customer.county,
-        'co-discountamount': coData.discountAmount || 0,
-        'co-discountamount-nd': (+coData.discountAmount || 0) *100,
-        'co-productid': Object.keys(coData.products).map(function (k) { return coData.products[k].id;}).join(','),
-        'co-validorders': customer && customer.orderCount,
-        'co-promocode': coData.redemptionCode && coData.redemptionCode.join(',')
-      });
+        dataLayer.push({
+          'co-subtotal': coData.revenue || 0,
+          'co-subtotal-nd': (+coData.revenue || 0) * 100,
+          'co-neworder': coData.newOrder,
+          'co-modifyorder': coData.modifyOrder,
+          'co-orderid': coData.orderId,
+          'co-totalcartitems': Object.keys(coData.products).map(function (k) { return +coData.products[k].quantity;}).reduce(function (p, c) { return p+c;}, 0),
+          'co-usercounty': customer && customer.county,
+          'co-discountamount': coData.discountAmount || 0,
+          'co-discountamount-nd': (+coData.discountAmount || 0) *100,
+          'co-productid': Object.keys(coData.products).map(function (k) { return coData.products[k].id;}).join(','),
+          'co-validorders': customer && customer.orderCount,
+          'co-promocode': coData.redemptionCode && coData.redemptionCode.join(',')
+        });
+
+      } else if (coData.products) {
+        dataLayer.push({
+          ecommerce: {
+            checkout: {
+              products: coData.products && Object.keys(coData.products).map(function (k) {
+                var productData = coData.products[k];
+                return {
+                  id: productData.id,
+                  name: productData.name,
+                  price: productData.price,
+                  brand: productData.brand,
+                  category: productData.category,
+                  variant: productData.variant,
+                  new_product: productData.newProduct,
+                  sku: productData.sku,
+                  in_stock: true,
+                  quantity: parseInt(productData.quantity, 10) || 0 // quantity should be an integer
+                };
+              })
+            }
+          }
+        });
+      }
 
       if (coData.modifyOrder === 'true') {
         return {event: 'modify-order-success'};
@@ -385,6 +392,7 @@ var dataLayer = window.dataLayer || [];
         // GA related login data
         dataLayer.push({
           eventCategory: 'Signup',
+          eventAction: 'signup-success',
           user_id: customer.userId,
           user_status: customer.userStatus,
           login_type: customer.loginType
@@ -400,6 +408,7 @@ var dataLayer = window.dataLayer || [];
 
       dataLayer.push({
         eventCategory: 'Signup',
+        eventAction: 'signup-failure',
         login_type: customer && customer.loginType
       });
 
@@ -464,7 +473,7 @@ var dataLayer = window.dataLayer || [];
     productData.in_stock = productE.attr('data-in-stock');
     productData.new_product = productE.attr('data-new-product');
     productData.variant = productE.attr('data-variant');
-    productData.position = productE.attr('data-position');
+    productData.position = parseInt(productE.attr('data-position'), 10) || 0;
     productData.list = productE.attr('data-list') || productE.attr('data-virtual-category');
 
     if (!productData.position) {
@@ -504,7 +513,7 @@ var dataLayer = window.dataLayer || [];
         new_product: productData.new_product,
         sku: productData.skuCode,
         in_stock: productData.in_stock,
-        position: productData.position,
+        position: parseInt(productData.position, 10) || 0,
         list: productData.list
       }]);
     };
@@ -668,18 +677,65 @@ var dataLayer = window.dataLayer || [];
       coStepData.option = selectedPayment.type;
     } else if (step === 'timeslot') {
       // don't set the option field for timeslot
-      if (data) {
+      if (data && data.timePeriod) {
         coStepData.available_timeslot_value = data && data.timePeriod+' '+data.month+'/'+data.dayOfMonth+'/'+data.year || 'unknown';
         coStepData.unavailable_timeslot_present = data.unavailableTimeslotValue ? 'yes' : 'no';
+      } else {
+        return; // no timeslot selected
       }
     }
 
     fd.gtm.updateDataLayer({
       coStep: coStepData
-    }, {
-      event: 'checkoutStep'
     });
+
+    // send event only after user interaction
+    if (fd.gtm._coUserInteraction) {
+      fd.gtm._coUserInteraction = false;
+      fd.gtm.updateDataLayer(null, {
+        event: 'checkoutStep'
+      });
+    }
   };
+
+  // Checkout - user interaction - drawer reset
+  var coDrawerClick = Object.create(fd.common.signalTarget, {
+    signal: {
+      value: 'ec-drawer-reset'
+    },
+    callback: {
+      value: function (data) {
+        if (data.active) {
+          fd.gtm._coUserInteraction = true;
+        }
+      }
+    }
+  });
+
+  coDrawerClick.listen();
+
+  // Checkout - user interaction - drawer cancel
+  var coDrawerCancel = Object.create(fd.common.signalTarget, {
+    signal: {
+      value: 'ec-drawer-cancel'
+    },
+    callback: {
+      value: function (data) {
+        if (data.active) {
+          // send 'checkoutStep' event
+          fd.gtm.updateDataLayer({
+            coStep: {
+              step: data.active
+            }
+          }, {
+            event: 'checkoutStep'
+          });
+        }
+      }
+    }
+  });
+
+  coDrawerCancel.listen();
 
   // Checkout - address/payment/timeslot selection
   var coStep = Object.create(fd.common.signalTarget, {
@@ -781,7 +837,7 @@ var dataLayer = window.dataLayer || [];
             new_product: productData.new_product,
             sku: productData.skuCode,
             in_stock: productData.in_stock,
-            position: productData.position
+            position: parseInt(productData.position, 10) || 0
           }]
         }
       }

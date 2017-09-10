@@ -17,6 +17,7 @@ public class PaymentMethods extends CheckoutResponse {
     private List<EBTCard> ebtCards = new ArrayList<EBTCard>();
 
     private String selectedId;
+    private String defaultId;
 
     private boolean isCheckEligible;
     
@@ -93,6 +94,14 @@ public class PaymentMethods extends CheckoutResponse {
 
     public void setSelectedId(String selectedId) {
         this.selectedId = selectedId;
+    }
+    
+    public String getDefaultId() {
+        return defaultId;
+    }
+
+    public void setDefaultId(String defaultId) {
+        this.defaultId = defaultId;
     }
 
 	public boolean isEbtAccepted() {

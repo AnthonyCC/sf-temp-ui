@@ -11,11 +11,16 @@ import javax.servlet.jsp.PageContext;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumAccountActivityType;
+import com.freshdirect.customer.EnumAlertType;
 import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.EnumPaymentType;
+import com.freshdirect.customer.ErpAuthorizationException;
+import com.freshdirect.customer.ErpAuthorizationModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
+import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -34,6 +39,10 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.webapp.ajax.BaseJsonServlet;
+import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
+import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
+import com.freshdirect.webapp.ajax.expresscheckout.service.FormDataService;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -131,6 +140,17 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 			result.addError( new ActionError( "paymentMethodList", "You must select a payment method." ) );
 			return;
 		}
+		boolean paymentSetAsDefault = false;
+		try {
+			paymentSetAsDefault = Boolean.parseBoolean(FormDataService.defaultService().get(BaseJsonServlet.parseRequestData(request, FormDataRequest.class), "paymentSetAsDefault"));
+		} catch (HttpErrorResponse e) {
+			LOGGER.error("Error parsing request for paymentSetAsDefault");
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        if (paymentSetAsDefault) {
+        	//set as default call
+        }
 
 		FDIdentity identity = user.getIdentity();
 
@@ -211,53 +231,86 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		}
 			
 		if (!FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), user) || result.isSuccess()) {
-		paymentMethod.setBillingRef( billingRef );
-		if(makeGoodOrder)
-			paymentMethod.setPaymentType(EnumPaymentType.MAKE_GOOD);
-		else if(addOnOrder)
-			paymentMethod.setPaymentType(EnumPaymentType.ADD_ON_ORDER);
-		else 
-			paymentMethod.setPaymentType(EnumPaymentType.REGULAR );
-		
-		paymentMethod.setReferencedOrder( referencedOrder );
-		cart.setPaymentMethod( paymentMethod );
-			setCart(cart, user, actionName, session);
-
-		//
-			// set default payment method and check for unique billing address,
-			// if
-		// required
-		//
-		FDActionInfo info = AccountActivityUtil.getActionInfo( session );
-		final PrimaryKey pmPK = ( (ErpPaymentMethodModel)paymentMethod ).getPK();
-		// Do not set MP Ewallet card as default Payment Method
+			paymentMethod.setBillingRef( billingRef );
+			if(makeGoodOrder)
+				paymentMethod.setPaymentType(EnumPaymentType.MAKE_GOOD);
+			else if(addOnOrder)
+				paymentMethod.setPaymentType(EnumPaymentType.ADD_ON_ORDER);
+			else 
+				paymentMethod.setPaymentType(EnumPaymentType.REGULAR );
+			
+			paymentMethod.setReferencedOrder( referencedOrder );
+			cart.setPaymentMethod( paymentMethod );
+				setCart(cart, user, actionName, session);
+	
+			//
+				// set default payment method and check for unique billing address,
+				// if
+			// required
+			//
+			FDActionInfo info = AccountActivityUtil.getActionInfo( session );
+			final PrimaryKey pmPK = ( (ErpPaymentMethodModel)paymentMethod ).getPK();
+			// Do not set MP Ewallet card as default Payment Method
 		
 		if(!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user) && (paymentMethod.geteWalletID() == null || paymentMethod.geteWalletID().equals(""+EnumEwalletType.PP.getValue()))){
-			FDCustomerManager.setDefaultPaymentMethod( info, pmPK, null, false );
-		}else{
-			if(null != isAccountLevel && isAccountLevel.equalsIgnoreCase("Y"))
-			FDCustomerManager.setDefaultPaymentMethod( info, pmPK, EnumPaymentMethodDefaultType.DEFAULT_CUST, true );
+				FDCustomerManager.setDefaultPaymentMethod( info, pmPK, null, false );
+			}else{
+			if(null != isAccountLevel && isAccountLevel.equalsIgnoreCase("Y")){
+				ErpAuthorizationModel auth = null;
+				if(paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.ECHECK) || paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.CREDITCARD) 
+						|| paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.DEBITCARD)){
+				if(paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.ECHECK)){
+			/*		if(FDCustomerManager.isECheckRestricted(info.getIdentity()) || FDCustomerManager.isOnAlert(info.getIdentity().getErpCustomerPK(), EnumAlertType.ECHECK.getName())){
+						result.addError(new ActionError("verificationFailed",SystemMessageList.MSG_DEFAULT_PAYMENT_VERIVICATION_FAILURE));
+					}else{*/
+					auth = FDCustomerManager.verifyCard(info, paymentMethod, true);
+					//}
+				}else if(paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.CREDITCARD) || paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.DEBITCARD)){
+					try {
+						if(paymentMethod.isAvsCkeckFailed() && !paymentMethod.isBypassAVSCheck()){
+							result.addError(new ActionError("avsFailed",SystemMessageList.MSG_DEFAULT_PAYMENT_VERIVICATION_FAILURE));
+						}else if(null != paymentMethod.getExpirationDate() && paymentMethod.getExpirationDate().before(java.util.Calendar.getInstance().getTime())){
+							result.addError(new ActionError("cardExpired",SystemMessageList.MSG_CARD_EXPIRATION_DATE));
+						}else{
+						auth = FDCustomerManager.verify(info, paymentMethod);
+						}
+					} catch (ErpTransactionException e) {
+						LOGGER.error(e);
+						throw new FDResourceException(e);
+					} catch (ErpAuthorizationException e) {
+						LOGGER.error(e);
+						throw new FDResourceException(e);
+					}
+				}
+				if(null == auth || !auth.isApproved()){
+					result.addError(new ActionError("verificationFailed",SystemMessageList.MSG_DEFAULT_PAYMENT_VERIVICATION_FAILURE));
+				}
+				}
+				if(result.isSuccess()){
+				FDCustomerManager.setDefaultPaymentMethod( info, pmPK, EnumPaymentMethodDefaultType.DEFAULT_CUST, true );
+				}
 			user.refreshFdCustomer();
+			}
+			
+				/*
+				 * if ( user.isDepotUser() ) { if (
+				 * user.isEligibleForSignupPromotion() ) { if (
+				 * FDCustomerManager.checkBillToAddressFraud( info, paymentMethod )
+				 * ) {
+				 * 
+				 * session.setAttribute( SessionName.SIGNUP_WARNING,
+				 * MessageFormat.format( SystemMessageList.MSG_NOT_UNIQUE_INFO, new
+				 * Object[] { user.getCustomerServiceContact() } ) );
+				 * 
+				 * } } }
+				 */
+	
+				FDSessionUser currentUser = (FDSessionUser) user;
+			currentUser.setPostPromoConflictEnabled( true );
+			currentUser.updateUserState();
+			session.setAttribute( SessionName.USER, currentUser );
 		}
-		
-			/*
-			 * if ( user.isDepotUser() ) { if (
-			 * user.isEligibleForSignupPromotion() ) { if (
-			 * FDCustomerManager.checkBillToAddressFraud( info, paymentMethod )
-			 * ) {
-			 * 
-			 * session.setAttribute( SessionName.SIGNUP_WARNING,
-			 * MessageFormat.format( SystemMessageList.MSG_NOT_UNIQUE_INFO, new
-			 * Object[] { user.getCustomerServiceContact() } ) );
-			 * 
-			 * } } }
-			 */
-
-			FDSessionUser currentUser = (FDSessionUser) user;
-		currentUser.setPostPromoConflictEnabled( true );
-		currentUser.updateUserState();
-		session.setAttribute( SessionName.USER, currentUser );
-	}
+		}
 	}
 
 	public void performSetPaymentMethod() throws FDResourceException {
