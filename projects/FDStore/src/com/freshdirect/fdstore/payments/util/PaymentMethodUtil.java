@@ -91,7 +91,10 @@ public class PaymentMethodUtil {
 	}
 	
 	public static boolean isNewCardHigherPrioriy(ErpPaymentMethodI newPaymentMethod, List<ErpPaymentMethodI> paymentMethods){
-		if(paymentMethods.size() >0){
+		if(paymentMethods.size() == 1){
+			return true;
+		}
+		if(paymentMethods.size() >1){
 		sortPaymentMethodsByPriority(paymentMethods);
 		if(newPaymentMethod.getCardType().getPriority() <= paymentMethods.get(0).getCardType().getPriority()){
 			return true;
