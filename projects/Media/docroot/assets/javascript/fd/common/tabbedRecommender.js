@@ -49,7 +49,7 @@ var FreshDirect = FreshDirect || {};
     selectTab:{
       value:function(tabPanelElement, tabName, clickedTab) {
         var proto = Object.getPrototypeOf(this),
-            siteFeature = clickedTab.data('sitefeature'),
+            siteFeature = clickedTab.data('sitefeature')||'',
             impressionId = clickedTab.data('impressionid'),
             parentImpressionId = clickedTab.data('parentimpressionid'),
             parentVariantId = clickedTab.data('parentvariantid'),

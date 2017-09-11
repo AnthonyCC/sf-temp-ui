@@ -2,7 +2,8 @@
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {
-	
+
+	var $ = fd.libs.$;
 	var OAS_UPDATER = "OAS_UPDATER";
 	
 	function getIfr(){
@@ -35,7 +36,7 @@ var FreshDirect = FreshDirect || {};
 	}
 
 	var done = function(pos,s) {	
-		document.getElementById(pos).innerHTML=s;
+		$('#'+pos).html(s);
 	};
 	
 	Object.create(fd.common.signalTarget,{

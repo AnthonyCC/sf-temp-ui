@@ -65,6 +65,8 @@ var FreshDirect = FreshDirect || {};
     },
     open: {
       value: function (config) {
+        /* close previous one, fixes timing error issue APPDEV-6437 */
+        fd.common[this.popupId].close();
         var target = config.element,
             width = $(target).width(),
             popupId=this.popupId,
