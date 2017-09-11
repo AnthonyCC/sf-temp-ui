@@ -654,9 +654,10 @@ public class UserUtil {
           if(user != null) {
         	user.setJustLoggedIn(true);
           }
-          if(!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user) &&  null!=user.getFDCustomer().getDefaultPaymentType() 
-        		  && !user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName())){
+          if(!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)){
+        	  if(null!=user.getFDCustomer().getDefaultPaymentType() && !user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName())){
         	 user.resetDefaultPaymentValueType();
+        	  }
           }else {
 				FDActionInfo info = AccountActivityUtil.getActionInfo(request.getSession());
 				boolean isDefaultPaymentMethodRegistered = false;
