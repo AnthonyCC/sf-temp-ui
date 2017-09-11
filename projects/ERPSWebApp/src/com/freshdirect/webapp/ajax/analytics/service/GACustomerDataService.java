@@ -43,9 +43,9 @@ public class GACustomerDataService {
 							&& !user.getShoppingCart().getPaymentMethod().getPK().getId().equals(user.getFDCustomer().getDefaultPaymentMethodPK())){
 						paymentType = "custom_selection";
 					}
-					else if(paymentDefaultType.equals(EnumPaymentMethodDefaultType.DEFAULT_CUST)){
+					else if(paymentDefaultType.equals(EnumPaymentMethodDefaultType.DEFAULT_CUST.getName())){
 						paymentType = "customer_default";
-					}else if (paymentDefaultType.equals(EnumPaymentMethodDefaultType.DEFAULT_SYS)){
+					}else if (paymentDefaultType.equals(EnumPaymentMethodDefaultType.DEFAULT_SYS.getName())){
 						paymentType = "fd_default";
 					}
 				} catch (Exception e) {
