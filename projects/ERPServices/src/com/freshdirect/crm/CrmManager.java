@@ -799,7 +799,11 @@ public class CrmManager {
 	
 	public boolean isCRMRestrictionEnabled() throws FDResourceException {
 		try {
-			return this.getCrmManagerSB().isCRMRestrictionEnabled();
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
+				  return  CrmManagerService.getInstance().isCRMRestrictionEnabled();
+			}else{
+				return this.getCrmManagerSB().isCRMRestrictionEnabled();
+			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB for isCrmRestrictionEnabled().");
 		}
@@ -812,7 +816,13 @@ public class CrmManager {
 		try {
 			if(ldapId.toLowerCase().indexOf("crmqa")!=-1) return false;
 			else {
-				String allowedUsers=this.getCrmManagerSB().getAllowedUsers();
+				String allowedUsers = null;
+				if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.CrmManagerSB)){
+					allowedUsers=  CrmManagerService.getInstance().getAllowedUsers();
+				}else{
+					 allowedUsers=this.getCrmManagerSB().getAllowedUsers();
+					
+				}
 				if("ALL".equals(allowedUsers)) return false;
 				else  {
 					return allowedUsers.toLowerCase().indexOf(ldapId.toLowerCase())!=-1?false:true;

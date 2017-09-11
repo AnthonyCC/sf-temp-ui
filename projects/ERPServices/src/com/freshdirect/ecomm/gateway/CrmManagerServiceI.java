@@ -162,4 +162,8 @@ public interface CrmManagerServiceI {
 	public void updateLateCreditsRejected(String autoId, String agent) throws FDResourceException, RemoteException;
 	
 	public boolean isDlvPassAlreadyExtended(String orderId, String customerId) throws FDResourceException, RemoteException;
+	
+	public String getAllowedUsers() throws FDResourceException, RemoteException;
+
+	public boolean isCRMRestrictionEnabled() throws FDResourceException, RemoteException;
 }
