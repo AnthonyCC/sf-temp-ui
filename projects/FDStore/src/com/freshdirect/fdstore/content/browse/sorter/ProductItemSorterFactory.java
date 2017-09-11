@@ -85,7 +85,10 @@ public class ProductItemSorterFactory {
 	}
 
 	public static Comparator<FilteringProductItem> createComparator(SortStrategyType sortStrategy, FDUserI user, boolean reverseOrder){
-		switch (sortStrategy){
+        if (sortStrategy == null) {
+            return createDefaultComparator();
+        }
+        switch (sortStrategy) {
 			case SEARCH_RELEVANCY:
 				return createSearchRelevancyComparator(user, reverseOrder);
 
