@@ -199,11 +199,16 @@ public class ProductRecommenderUtil {
     private static List<ProductModel> fetchProductsFromCategory(FDUserI user, CategoryModel category, boolean isProductRandomize) {
         List<ProductModel> products = category.getAllChildProductsAsList();
         cleanUpProducts(products, isProductRandomize, MAX_DEPT_FEATURED_RECOMMENDER_COUNT);
+        return sortProducts(user, products, getSortStrategy(category), false);
+    }
+
+    private static SortStrategyType getSortStrategy(CategoryModel category) {
+        SortStrategyType strategy = null;
         List<SortOptionModel> sortOptions = category.getSortOptions();
         if (!sortOptions.isEmpty()) {
-            products = sortProducts(user, products, sortOptions.get(0).getSortStrategyType(), false);
+            strategy = sortOptions.get(0).getSortStrategyType();
         }
-        return products;
+        return strategy;
     }
 
 	public static List<ProductModel> getSuperDepartmentMerchantRecommenderProducts (SuperDepartmentModel superDeptModel){
@@ -539,10 +544,6 @@ public class ProductRecommenderUtil {
 
     public static List<ProductModel> sortProducts(FDUserI user, List<ProductModel> products, SortStrategyType sortStrategy, boolean reverseOrder, int maxProductSize) {
         Comparator<FilteringProductItem> comparator = ProductItemSorterFactory.createComparator(sortStrategy, user, reverseOrder);
-        if (comparator == null) {
-            comparator = ProductItemSorterFactory.createDefaultComparator();
-            LOGGER.debug("Comparator could not be created for sortStrategy: " + sortStrategy + ", use default comparator");
-        }
 
         List<FilteringProductItem> filteringProducts = ProductItemFilterUtil.createFilteringProductItems(products);
 

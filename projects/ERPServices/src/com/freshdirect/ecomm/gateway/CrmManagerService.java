@@ -3,14 +3,12 @@ package com.freshdirect.ecomm.gateway;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.ejb.FinderException;
 
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.log4j.Category;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -112,6 +110,8 @@ public class CrmManagerService extends AbstractEcommService implements CrmManage
 	private static final String GET_ACTIVE_DP = "crm/dlvpass/active/customerId/";
 	private static final String UPDATE_LATE_CREDITS_REJECTED = "crm/lateCredit/rejected/agent/";
 	private static final String IS_DELIVERY_PASS_EXTENDED = "crm/dlvPass/extended/orderId/";
+	private static final String CRM_RESTRICTION_ENABLED = "crm/restriction/enabled";
+	private static final String GET_ALLOWED_USERS = "crm/allowedUsers";
 	
 	public static CrmManagerServiceI getInstance() {
 		if (INSTANCE == null)
@@ -964,6 +964,43 @@ public class CrmManagerService extends AbstractEcommService implements CrmManage
 		Response<Boolean> response = new Response<Boolean>();
 		try {
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(IS_DELIVERY_PASS_EXTENDED+orderId+"/customerId/"+customerId),  new TypeReference<Response<Boolean>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDRuntimeException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+
+	@Override
+	public String getAllowedUsers() throws FDResourceException, RemoteException {
+		Response<String> response = new Response<String>();
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_ALLOWED_USERS),  new TypeReference<Response<String>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDRuntimeException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return response.getData();
+	}
+
+	@Override
+	public boolean isCRMRestrictionEnabled() throws FDResourceException,
+			RemoteException {
+		Response<Boolean> response = new Response<Boolean>();
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(CRM_RESTRICTION_ENABLED),  new TypeReference<Response<Boolean>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}

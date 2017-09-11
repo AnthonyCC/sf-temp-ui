@@ -660,11 +660,12 @@ var dataLayer = window.dataLayer || [];
 
   var coStepUpdate = function (step, data) {
     var coStepData = {
-      step: step
     };
 
     if (step === 'address') {
       var selectedAddress = data.addresses.filter(function (address) { return address.selected; })[0];
+
+      coStepData.step = 1;
 
       if (selectedAddress) {
         coStepData.delivery_type = selectedAddress.service_type;
@@ -674,8 +675,12 @@ var dataLayer = window.dataLayer || [];
 
       if (!selectedPayment) { return; }
 
+      coStepData.step = 3;
       coStepData.option = selectedPayment.type;
     } else if (step === 'timeslot') {
+
+      coStepData.step = 2;
+
       // don't set the option field for timeslot
       if (data && data.timePeriod) {
         coStepData.available_timeslot_value = data && data.timePeriod+' '+data.month+'/'+data.dayOfMonth+'/'+data.year || 'unknown';
@@ -722,10 +727,20 @@ var dataLayer = window.dataLayer || [];
     callback: {
       value: function (data) {
         if (data.active) {
+          var step;
+
+          if (data.active === "address") {
+            step = 1;
+          } else if (data.active === "timeslot") {
+            step = 2;
+          } else if (data.active === "payment") {
+            step = 3;
+          }
+
           // send 'checkoutStep' event
           fd.gtm.updateDataLayer({
             coStep: {
-              step: data.active
+              step: step
             }
           }, {
             event: 'checkoutStep'
