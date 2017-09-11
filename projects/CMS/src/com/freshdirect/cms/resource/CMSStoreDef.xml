@@ -2794,6 +2794,7 @@
 				<EnumValue value="MOST_POPULAR_PRODUCTS" label="MOST_POPULAR_PRODUCTS"/>
 				<EnumValue value="BRAND_FEATURED_PRODUCTS" label="BRAND_FEATURED_PRODUCTS"/>
 				<EnumValue value="STAFF_PICKS" label="STAFF_PICKS"/>
+				<EnumValue value="CRITEO" label="CRITEO"/>
 			</EnumDef>			
 			<EnumDef type="S" name="displayType"  label="Display Type" required="true">
 				<EnumValue value="PRODUCT_CAROUSEL_MODULE" label="PRODUCT_CAROUSEL_MODULE"/>
