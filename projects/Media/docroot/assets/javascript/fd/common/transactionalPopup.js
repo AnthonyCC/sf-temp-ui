@@ -264,6 +264,10 @@ var FreshDirect = FreshDirect || {};
                   $(relatedHolder).find('[data-component="addToListButton"]').trigger("focus");
                 }
 
+                if (!related.attr('data-impression-reported')) {
+                  related.attr('data-impression-reported', true);
+                  fd.common.dispatcher.signal('productImpressions', { el: related, type: 'impressionsPushed'});
+                }
               }, this), 500);
             }
 

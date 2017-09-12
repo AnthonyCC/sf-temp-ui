@@ -50,6 +50,11 @@ var dataLayer = window.dataLayer || [];
     return productData;
   };
 
+  var resetImpressions = function () {
+    FreshDirect.gtm.setValue('ecommerce.impressions', null);
+    FreshDirect.gtm.setValue('ecommerce.impressions', []);
+  };
+
   fd.gtm.PROCESSORS = {
     customer: function (custData) {
       dataLayer.push({
@@ -96,24 +101,18 @@ var dataLayer = window.dataLayer || [];
       });
     },
     sections: function (sectionData) {
-      var products = sectionProducts(sectionData);
-
-      dataLayer.push({
-        ecommerce: {
-          impressions: products.map(function (product, idx) {
-            return productTransform(product, idx+1, 'browse');
-          })
-        }
+      var products = sectionProducts(sectionData).map(function (product, idx) {
+        return productTransform(product, idx+1, 'browse');
       });
+
+      fd.gtm.reportImpressions(products);
     },
     items: function (reorderItems) {
-      dataLayer.push({
-        ecommerce: {
-          impressions: reorderItems.map(function (product, idx) {
-            return productTransform(product, idx+1, 'reorder');
-          })
-        }
+      var products = reorderItems.map(function (product, idx) {
+        return productTransform(product, idx+1, 'reorder');
       });
+
+      fd.gtm.reportImpressions(products);
     },
     product: function (productData) {
       var product = productTransform(productData);
@@ -127,6 +126,10 @@ var dataLayer = window.dataLayer || [];
           }
         }
       });
+
+      return {
+        event: 'impressionsPushed'
+      };
     },
     ATCData: function (ATCData) { // + cartLineChange
       var productData = ATCData.productData,
@@ -497,13 +500,16 @@ var dataLayer = window.dataLayer || [];
   };
 
   // report product impressions for a DOM element
-  fd.gtm.reportImpressions = function (el) {
-    var $el = $(el);
+  fd.gtm.reportImpressionsEl = function (el, type) {
+    var $el = $(el),
+        products = [];
 
-    var report = function (elm) {
+    type = type || 'impressionsPushed';
+
+    var reportProduct = function (elm) {
       var productData = fd.gtm.getProductData(elm);
 
-      dataLayer.push(['ecommerce.impressions.push', {
+      return {
         id: productData.productId,
         name: productData.name,
         price: productData.price,
@@ -514,24 +520,62 @@ var dataLayer = window.dataLayer || [];
         sku: productData.skuCode,
         in_stock: productData.in_stock,
         position: parseInt(productData.position, 10) || 0,
-        list: productData.list
-      }]);
+        list: productData.list // TODO #AN-66
+      };
     };
 
     $el.each(function (i, elm) {
       if ($(elm).is('[data-component="product"]')) {
-        report(elm);
+        products.push(reportProduct(elm));
       }
     });
 
     $el.find('[data-component="product"]').each(function (i, elm) {
-      report(elm);
+      if ($(elm).closest('[data-component="relateditem"]').length === 0) {
+        products.push(reportProduct(elm));
+      }
     });
+
+    fd.gtm.reportImpressions(products, type);
+  };
+
+  // report product impressions
+  fd.gtm.reportImpressions = function (products, type) {
+    type = type || 'impressionsPushed';
+    var checkAndReport = function () {
+      if (fd.gtm.check()) {
+        resetImpressions();
+        dataLayer.push({
+          ecommerce: {
+            impressions: products
+          },
+          event: type
+        });
+
+        if (fd.utils.isDeveloper()) {
+          console.info('[gtm] impressions reported: ', type, products);
+        }
+      } else {
+        setTimeout(checkAndReport, 100);
+      }
+    };
+
+    checkAndReport();
   };
 
   // get actual dataLayer value (for verification)
   fd.gtm.getValue = function (query) {
     return window.google_tag_manager[GTMID].dataLayer.get(query);
+  };
+
+  // set actual dataLayer value (for impressions reset)
+  fd.gtm.setValue = function (prop, value) {
+    return window.google_tag_manager[GTMID].dataLayer.set(prop, value);
+  };
+
+  // check if GTM is loaded
+  fd.gtm.check = function () {
+    return window.google_tag_manager && window.google_tag_manager[GTMID];
   };
 }(FreshDirect));
 
@@ -541,11 +585,6 @@ var dataLayer = window.dataLayer || [];
   var gtmData = fd.gtm && fd.gtm.data && fd.gtm.data.googleAnalyticsData;
   var browseData = fd.browse && fd.browse.data;
   var productData = fd.pdp && fd.pdp.data;
-
-  // put empty product list into dataLayer, to be able to append to it
-  dataLayer.push({
-    'ecommerce.impressions': []
-  });
 
   if (gtmData) {
     fd.gtm.updateDataLayer(gtmData);
@@ -572,7 +611,7 @@ var dataLayer = window.dataLayer || [];
 
   // collect impressions from content modules
   $('.content-module.product-list').each(function (i, el) {
-    fd.gtm.reportImpressions(el);
+    fd.gtm.reportImpressionsEl(el);
   });
 
 }(FreshDirect));
@@ -601,8 +640,12 @@ var dataLayer = window.dataLayer || [];
       value: 'productImpressions'
     },
     callback: {
-      value: function (el) {
-        fd.gtm.reportImpressions(el);
+      value: function (data) {
+        if (data.el) {
+          fd.gtm.reportImpressionsEl(data.el, data.type);
+        } else if (data.products) {
+          fd.gtm.reportImpressions(data.products, data.type);
+        }
       }
     }
   });
