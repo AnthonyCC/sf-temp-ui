@@ -7,11 +7,14 @@ body[developer] *:focus {
 }
 /* exceptions for focus */
 
-div#skip_to_content,.locabar-tab-fdx-cont,body:focus,html:focus,div:focus,*:active,a.accessibleOutlineFF:focus,cssbutton:focus,tr:focus,td:focus,fieldset:focus{
+div#skip_to_content,.locabar-tab-fdx-cont,body:focus,html:focus,div:focus,*:active,a.accessibleOutlineFF:focus,cssbutton:focus,tr:focus,td:focus,fieldset:focus,.tabbed-carousel .tabs li:focus,#quickshop .qs-tabs a:focus,a.portrait-item-header-name:focus{
 	outline:none;
 }
 .portrait-item-header-name{
 	display:block;
+}
+a.portrait-item-header-name:focus{
+	text-decoration:underline !important;
 }
 /* disable ipad highlight */
 * {
