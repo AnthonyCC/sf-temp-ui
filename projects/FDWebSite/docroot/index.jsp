@@ -60,7 +60,11 @@ request.setAttribute("noyui", true);
 
 	String pageTemplate = "/common/template/no_shell_optimized.jsp"; //default
 	if (mobWeb) {
-		pageTemplate = "/common/template/mobileWeb.jsp"; //mobWeb template
+		if ( "true".equalsIgnoreCase(request.getParameter("opt")) ) { //allow opt for live testing
+			pageTemplate = "/common/template/mobileWeb_index_optimized.jsp"; //mobWeb template (20170913 batchley - only index should use optimized for now)
+		} else {
+			pageTemplate = "/common/template/mobileWeb.jsp"; //default
+		}
 		request.setAttribute("sitePage", "www.freshdirect.com/mobileweb/index.jsp"); //change for OAS
 	}
 %>

@@ -556,6 +556,9 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 				</div>
 			</div>
 		</div><script>
+
+				window.FreshDirect = window.FreshDirect || {};
+				FreshDirect.locabar = FreshDirect.locabar || {};
 				FreshDirect.locabar.hasFdServices = <%=hasFdServices %>;
 				FreshDirect.locabar.hasFdxServices = <%=hasFdxServices %>;
 				FreshDirect.locabar.selectedAddress = {
@@ -755,6 +758,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 	%>
 	
 	<script>
+		window.FreshDirect = window.FreshDirect || {};
 		FreshDirect.standingorder = FreshDirect.standingorder || {};
 		FreshDirect.standingorder.isSoCartOverlayFirstTime = <%= user_locationbar_fdx.isSoCartOverlayFirstTime() %>;
 	</script>
