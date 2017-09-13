@@ -116,6 +116,7 @@ import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -125,6 +126,7 @@ import com.freshdirect.logistics.analytics.model.SessionEvent;
 import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.logistics.delivery.model.EnumRegionServiceType;
+import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.FulfillmentInfo;
 import com.freshdirect.logistics.delivery.model.SalesArea;
 import com.freshdirect.smartstore.fdstore.CohortSelector;
@@ -2401,8 +2403,36 @@ public class FDUser extends ModelSupport implements FDUserI {
     private FulfillmentInfo getFulfillmentInfo(ErpAddressModel address, Date deliveryDate) {
 
         try {
-            FDDeliveryZoneInfo deliveryZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, (deliveryDate!=null)?deliveryDate: today(), getHistoricOrderSize(), this.getRegionSvcType(address.getId()),
-                    address.getCustomerId());
+        	
+        	 FDDeliveryZoneInfo deliveryZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, (deliveryDate!=null)?deliveryDate: today(), getHistoricOrderSize(), this.getRegionSvcType(address.getId()),
+                     address.getCustomerId());          
+
+        	 FDDeliveryZoneInfo reservationDeliveryZoneInfo=getReservationDeliveryZoneInfo(); 
+            
+            //Case 1: If the user has a reservation, we are setting the fulfillment information from the user's reservation as the user context at the time of login
+            
+            if(null!=reservationDeliveryZoneInfo){
+            	return reservationDeliveryZoneInfo.getFulfillmentInfo();
+            }
+            
+            //Case 2: If the user does not have any reservation (delivery date is null ), we are using the look ahead days strategy to set the user context at the time of login
+            // The lookAheadDays property value is provided and maintained by SAP. If the value is 0, we shall not execute the code
+            
+            if(null==reservationDeliveryZoneInfo) {
+            	int lookAheadDays = FDStoreProperties.getFdcTransitionLookAheadDays();
+            	if(lookAheadDays > 0){
+				Date day = DateUtil.truncate(DateUtil.addDays(new Date(), lookAheadDays));
+            
+            	FDDeliveryZoneInfo fdcDeliveryZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, day, getHistoricOrderSize(), this.getRegionSvcType(address.getId()),
+                        address.getCustomerId());
+
+            	if (fdcFuturePlantLogin( deliveryZoneInfo, fdcDeliveryZoneInfo))
+                    return fdcDeliveryZoneInfo.getFulfillmentInfo();
+            	}
+            }
+            
+            //Case 3: If the user does not have a reservation and does not fall under the look ahead days - return the original fulfillment call
+            
             if (deliveryZoneInfo != null)
                 return deliveryZoneInfo.getFulfillmentInfo();
 
@@ -2416,7 +2446,96 @@ public class FDUser extends ModelSupport implements FDUserI {
         return null;
     }
 
-    private UserContext setFulfillmentAndPricingContext(UserContext userContext, ErpAddressModel address) throws FDResourceException {
+	private boolean fdcFuturePlantLogin(FDDeliveryZoneInfo deliveryZoneInfo,
+			FDDeliveryZoneInfo fdcDeliveryZoneInfo) {
+
+		boolean isDifferentPlant = false;
+		if (fdcDeliveryZoneInfo != null & deliveryZoneInfo != null) {
+
+			String oldPlant = null, newPlant = null;
+
+			oldPlant = deliveryZoneInfo.getFulfillmentInfo().getPlantCode();
+			newPlant = fdcDeliveryZoneInfo.getFulfillmentInfo().getPlantCode();
+
+			if (!oldPlant.equals(newPlant)) {
+				isDifferentPlant = true;
+			}
+		}
+		return isDifferentPlant;
+
+	}
+	
+	private FDDeliveryZoneInfo getReservationDeliveryZoneInfo() {
+
+		FDDeliveryZoneInfo reservationDeliveryZoneInfo = null;
+		Date standardReservationDeliveryDate = null;
+		Date weeklyOrOneTimeReservationDeliveryDate = null;
+		ErpAddressModel standardReservationAddress = null;
+		ErpAddressModel weeklyOrOneTimeReservationAddress = null;
+
+		if (null != this.getShoppingCart()
+				& null != this.getShoppingCart().getDeliveryReservation()) {
+			standardReservationDeliveryDate = this.getShoppingCart()
+					.getDeliveryReservation().getDeliveryDate();
+			standardReservationAddress = this.getShoppingCart()
+					.getDeliveryAddress();
+		}
+		if (null != this.getReservation()) {
+			weeklyOrOneTimeReservationDeliveryDate = this.getReservation()
+					.getDeliveryDate();
+			weeklyOrOneTimeReservationAddress = this.getReservation()
+					.getAddress();
+		}
+
+		// Weekly or One time reservation has higher precedence than Standard reservation
+		if (null != weeklyOrOneTimeReservationDeliveryDate
+				& null != weeklyOrOneTimeReservationAddress) {
+			try {
+				reservationDeliveryZoneInfo = FDDeliveryManager
+						.getInstance()
+						.getZoneInfo(
+								weeklyOrOneTimeReservationAddress,
+								weeklyOrOneTimeReservationDeliveryDate,
+								getHistoricOrderSize(),
+								this.getRegionSvcType(weeklyOrOneTimeReservationAddress
+										.getId()),
+								weeklyOrOneTimeReservationAddress
+										.getCustomerId());
+			} catch (FDResourceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (FDInvalidAddressException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		if (null != reservationDeliveryZoneInfo
+				& null != standardReservationDeliveryDate
+				& null != standardReservationAddress) {
+			try {
+				reservationDeliveryZoneInfo = FDDeliveryManager
+						.getInstance()
+						.getZoneInfo(
+								standardReservationAddress,
+								standardReservationDeliveryDate,
+								getHistoricOrderSize(),
+								this.getRegionSvcType(standardReservationAddress
+										.getId()),
+								standardReservationAddress.getCustomerId());
+			} catch (FDResourceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (FDInvalidAddressException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		return reservationDeliveryZoneInfo;
+	}
+	
+	private UserContext setFulfillmentAndPricingContext(UserContext userContext, ErpAddressModel address) throws FDResourceException {
 
         FulfillmentContext fulfillmentContext = new FulfillmentContext();
         if (this.getZipCode() != null && FDStoreProperties.isAlcoholRestrictionByContextEnabled()) {

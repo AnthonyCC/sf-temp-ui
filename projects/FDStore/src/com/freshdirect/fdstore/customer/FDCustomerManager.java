@@ -309,7 +309,7 @@ public class FDCustomerManager {
 
 	private static void populateShoppingCart(FDUser user, boolean updateUserState)
 			throws FDResourceException {
-
+		restoreReservations(user);
 		assumeDeliveryAddress(user);
 		//Set user Pricing context at this point before recalcualting the price during cleanup.
 		user.getShoppingCart().setUserContextToOrderLines(user.getUserContext());
@@ -320,7 +320,7 @@ public class FDCustomerManager {
 			user.updateUserState();
 		//user.resetPricingContext();
 		updateZoneInfo(user);
-		restoreReservations(user);
+		//restoreReservations(user);
 	}
 
 	public static FDUser recognize(FDIdentity identity) throws FDAuthenticationException, FDResourceException {

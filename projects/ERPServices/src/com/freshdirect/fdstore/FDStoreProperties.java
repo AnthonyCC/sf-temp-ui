@@ -969,7 +969,12 @@ public class FDStoreProperties {
  
     public final static long TEN_DAYS_IN_MILLIS = 1000 * 60 * 60 * 24 * 10;    
     
-   static {
+    //APPDEV 6442 FDC Transition
+    
+    public final static String PROP_FDC_TRANSITION_LOOK_AHEAD_DAYS = "fdstore.fdctransition.lookAheadDays";
+    
+
+static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_INIT_CTX_FACTORY, "weblogic.jndi.WLInitialContextFactory");
         defaults.put(PROP_CRM_GEOCODELINK,
@@ -1845,6 +1850,9 @@ public class FDStoreProperties {
         defaults.put(PROP_DEBIT_SWITCH_NOTICE_ENABLED, "true");
         
         defaults.put(PROP_LOG_AKAMAI_HEADER_ENABLED,"true");
+        
+        //APPDEV-6442
+        defaults.put(PROP_FDC_TRANSITION_LOOK_AHEAD_DAYS, "3");
         
         refresh();
     }
@@ -4726,4 +4734,10 @@ public class FDStoreProperties {
     public static boolean isLoggingAkamaiEdgescapgeHeaderInfoEnabled() {
         return (Boolean.valueOf(get(PROP_LOG_AKAMAI_HEADER_ENABLED))).booleanValue();
     }
+	
+	
+	 public static int getFdcTransitionLookAheadDays() {
+			return Integer.parseInt(get(PROP_FDC_TRANSITION_LOOK_AHEAD_DAYS));
+		}
+	
 }
