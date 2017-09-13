@@ -154,25 +154,28 @@ public class HLBrandProductAdConfigProvider implements BrandProductAdConfigProvi
 	public String getPdpProductAdProviderMaxmes() {
 		return ErpServicesProperties.getPdpProductAdProviderMaxmes();
 	}
-	
+
 	@Override
 	public String getBrandProductAdProviderPdpHlpt() {
 		return ErpServicesProperties.getBrandProductAdProviderPdpHlpt();
 	}
-	
+
 	@Override
 	public String getBrandProductAdProviderPdpURL() {
 		return ErpServicesProperties.getBrandProductAdProviderPdpURL();
 	}
-	
+
 	@Override
 	public String getBrandProductAdProviderPdpUpdateURL() {
 		return ErpServicesProperties.getBrandProductAdProviderPdpUpdateURL();
 	}
-	
+
 	@Override
 	public String getBrandProductAdProviderHomePageURL(){
 		return ErpServicesProperties.getBrandProductAdProviderHomePageURL();
 	}
 
+	public int getPropHlPdppageMaxmesCount(){
+		return ErpServicesProperties.getPropHlPdppageMaxmesCount();
+	}
 }

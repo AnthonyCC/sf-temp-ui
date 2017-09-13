@@ -12,14 +12,14 @@ import java.net.URLEncoder;
 import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import com.freshdirect.fdstore.brandads.HLOrderFeedDataModel;
-import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
+import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class HLBrandProductAdServiceProvider implements BrandProductAdService {
@@ -58,6 +58,8 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 	private BrandProductAdConfigProvider hlAdConfigProvider = HLBrandProductAdConfigProvider.getInstance();
 
 
+
+	
 	public HLBrandProductAdResponse getSearchbykeyword(HLBrandProductAdRequest hLRequestData) throws BrandProductAdServiceException {
 
 
@@ -88,6 +90,8 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 
 	}
 
+
+	
 	public HLBrandProductAdResponse getCategoryProducts(HLBrandProductAdRequest hLRequestData) throws BrandProductAdServiceException {
 
 		LOGGER.info("while making a call to Hook Logic Category Productslist from Hook Loogic: "+hLRequestData.getCategoryId());
@@ -115,6 +119,8 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 	}
 
 
+
+	
 	public void submittedOrderdDetailsToHL(HLOrderFeedDataModel hLOrderFeedDataModel) throws BrandProductAdServiceException {
 
 
@@ -139,11 +145,13 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 		if(null!=pageBeanconResponse && pageBeanconResponse.getPageBeacon()!=null)
 			sendGetRequest(pageBeancon.append("http:"+pageBeanconResponse.getPageBeacon()));
 
-		LOGGER.info("Succesfully submitted Orderd details to HL");	
+		LOGGER.info("Succesfully submitted Orderd details to HL");
 	}
 
 	/*APPDEV- 6204 Implementation of Criteo(New Hooklogic) for index.jsp and pdp.jsp */
 
+
+	
 	public HLBrandProductAdResponse getHomeAdProduct(HLBrandProductAdRequest HLRequestData) throws BrandProductAdServiceException {
 
 		LOGGER.info("while making a call to Hooklogic(homepage)  Productslist from Hooklogic:");
@@ -165,6 +173,7 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 	}
 
 
+	
 	public HLBrandProductAdResponse getPdpAdProduct(HLBrandProductAdRequest hLBrandProductAdRequest)
 			throws BrandProductAdServiceException {
 		HLBrandProductAdResponse pageBeaconResponse =null;
@@ -178,8 +187,8 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 		urlParameters.put(HOOKLOGIC_PUSERID, hLBrandProductAdRequest.getUserId());
 		urlParameters.put(HOOKLOGIC_PLATFORM, hLBrandProductAdRequest.getPlatformSource());
 		urlParameters.put(HOOKLOGIC_PGN, hlAdConfigProvider.getBrandProductAdProviderPgn());
-		urlParameters.put(HOOKLOGIC_MAXMES, hlAdConfigProvider.getHomeProductAdProviderMaxmes());
-		
+		urlParameters.put(HOOKLOGIC_MAXMES, hlAdConfigProvider.getPdpProductAdProviderMaxmes());
+
 		StringBuilder urlToCall = getBaseUrl(urlToCallStr, urlParameters);
 		String jsonResponse = sendGetRequest(urlToCall);
 		HLBrandProductAdResponse response = parseResponse(jsonResponse, HLBrandProductAdResponse.class);
@@ -192,7 +201,7 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 	{
 		/*i.	http://www.hlserve.com/delivery/api/product?
 		apiKey=727e0b21-7ee6-4b10-a885-143805dd4fb8&hlpt=P&puserid=TestDemo&productId=12345&price=15.99&quantity=1
-	 */	
+	 */
 		StringBuilder urlToCallStr=new StringBuilder(hlAdConfigProvider.getBrandProductAdProviderPdpUpdateURL());
 		TreeMap<String,String> urlParameters = new TreeMap<String, String>();
 		urlParameters.put(HOOKLOGIC_APIKEY, hlAdConfigProvider.getBrandProductAdProviderAPIKey());
@@ -208,7 +217,7 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 
 	private String sendGetRequest(StringBuilder urlToCall)  throws BrandProductAdServiceException  {
 		String returnString=null;
-		HttpURLConnection connection = null;		
+		HttpURLConnection connection = null;
 		try {
 			connection = (HttpURLConnection) new URL(urlToCall.toString()).openConnection();
 			connection.setRequestProperty("Accept-Charset",charSet);
@@ -336,7 +345,7 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 		}
 		return response;
 	}
-		
+
 	private static  HLBrandProductAdResponse parseResponseHLPdpPage(String responseStr, Class _class){
 
 		HLBrandProductAdResponse response=null;
@@ -364,7 +373,9 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 	}
 
 
+
+	
 	public void close() {
-		// TODO Auto-generated method stub		
+		// TODO Auto-generated method stub
 	}
 }
