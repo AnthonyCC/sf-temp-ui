@@ -47,7 +47,7 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 	// START HANDOFF QUERIES
 	private static String GET_ORDERSBY_DATE_CUTOFF = "SELECT /*+ USE_NL(s, sa) */ c.id customer_id, fdc.id fdc_id, ci.first_name, ci.last_name, c.user_id, ci.home_phone, ci.business_phone, "
 			+ "ci.cell_phone, fde.mobile_number, s.id weborder_id, s.sap_number erporder_id, sa.requested_date, s.status, sa.amount, di.starttime, di.endtime, "
-			+ "di.cutofftime, di.zone ZONE, di.address1, di.address2, di.apartment, di.city, di.state, di.zip, di.country, di.delivery_type, di.reservation_id, handofftime "
+			+ "di.cutofftime, di.zone ZONE, di.address1, di.address2, di.scrubbed_address, di.apartment, di.city, di.state, di.zip, di.country, di.delivery_type, di.reservation_id, handofftime "
 			+ "from cust.customer c, cust.fdcustomer fdc, cust.fdcustomer_estore fde  "
 			+ ", cust.customerinfo ci "
 			+ ", cust.sale s, cust.salesaction sa "
@@ -268,6 +268,7 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 					address.setZipCode(rs.getString("ZIP"));
 					address.setCountry(rs.getString("COUNTRY"));
 					address.setApartment(rs.getString("APARTMENT"));
+					address.setScrubbedStreet(rs.getString("SCRUBBED_ADDRESS"));
 
 					// setting the service type in address
 					address.setServiceType(rs.getString("DELIVERY_TYPE"));
