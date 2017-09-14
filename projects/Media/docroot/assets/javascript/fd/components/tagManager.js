@@ -37,7 +37,7 @@ var dataLayer = window.dataLayer || [];
       brand: product.brandName,
       category: product.catId,
       variant: product.variantId || 'default variant',
-      list: list || '',
+      list: list || fd.gtm.getList(),
       new_product: product.newProduct,
       sku: product.skuCode,
       in_stock: product.available
@@ -48,6 +48,15 @@ var dataLayer = window.dataLayer || [];
     }
 
     return productData;
+  };
+
+  var safeName = function (text) {
+    return text.toString().toLowerCase()
+      .replace(/\s+/g, '_')         // Replace spaces with _
+      .replace(/[^\w\-]+/g, '')     // Remove all non-word chars
+      .replace(/__+/g, '_')         // Replace multiple _ with single _
+      .replace(/^_+/, '')           // Trim _ from start of text
+      .replace(/_+$/, '');          // Trim _ from the end of text
   };
 
   var resetImpressions = function () {
@@ -101,16 +110,18 @@ var dataLayer = window.dataLayer || [];
       });
     },
     sections: function (sectionData) {
-      var products = sectionProducts(sectionData).map(function (product, idx) {
-        return productTransform(product, idx+1, 'browse');
-      });
+      var list = fd.gtm.getList(),
+          products = sectionProducts(sectionData).map(function (product, idx) {
+            return productTransform(product, idx+1, list);
+          });
 
       fd.gtm.reportImpressions(products);
     },
     items: function (reorderItems) {
-      var products = reorderItems.map(function (product, idx) {
-        return productTransform(product, idx+1, 'reorder');
-      });
+      var list = fd.gtm.getList(),
+          products = reorderItems.map(function (product, idx) {
+            return productTransform(product, idx+1, list);
+          });
 
       fd.gtm.reportImpressions(products);
     },
@@ -253,10 +264,7 @@ var dataLayer = window.dataLayer || [];
               delivery_type: coData.deliveryType || 'unknown',
               available_timeslot_value: ts && ts.deliveryDate+' '+ts.displayString || 'unknown',
               unavailable_timeslot_present: coData.unavailableTimeslotValue ? 'yes' : 'no'
-            },
-            delivery_type: coData.deliveryType || 'unknown',
-            available_timeslot_value: ts && ts.deliveryDate+' '+ts.displayString || 'unknown',
-            unavailable_timeslot_present: coData.unavailableTimeslotValue ? 'yes' : 'no'
+            }
           }
         });
 
@@ -496,6 +504,21 @@ var dataLayer = window.dataLayer || [];
       productData.position = 1;
     }
 
+    if (productE.hasClass('carouselTransactionalItem') && !productData.list) {
+      var carouselE = productE.closest('[data-component="tabbedRecommender"]');
+
+      if (carouselE.length) {
+        productData.list = safeName(carouselE.find('.tabs li.selected').text());
+      } else {
+        carouselE = productE.closest('.carousels');
+        if (carouselE.length) {
+          productData.list = safeName(carouselE.find('.header').text());
+        }
+      }
+    }
+
+    productData.list = fd.gtm.getList() + (productData.list ? '_'+productData.list : '');
+
     return productData;
   };
 
@@ -520,7 +543,7 @@ var dataLayer = window.dataLayer || [];
         sku: productData.skuCode,
         in_stock: productData.in_stock,
         position: parseInt(productData.position, 10) || 0,
-        list: productData.list // TODO #AN-66
+        list: productData.list
       };
     };
 
@@ -576,6 +599,26 @@ var dataLayer = window.dataLayer || [];
   // check if GTM is loaded
   fd.gtm.check = function () {
     return window.google_tag_manager && window.google_tag_manager[GTMID];
+  };
+
+  // get list parameter for products
+  fd.gtm.getList = function () {
+    var listName = fd.utils.getParameterByName('id'),
+        urlPageType = fd.utils.getParameterByName('pageType'),
+        pageType = fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.pageType && fd.gtm.data.googleAnalyticsData.pageType.pageType,
+        searchParams = fd.utils.getParameterByName('searchParams');
+
+    // pageName for PLP pages => last breadcrumb
+    if ($('ul.breadcrumbs li').length) {
+      listName = safeName($('ul.breadcrumbs li').last().text());
+    } else if (searchParams) {
+      listName = searchParams.replace(/\s+/g, '+');
+    } else if ($('ul.qs-tabs li .selected').length) {
+      pageType = 'reorder';
+      listName = safeName($('ul.qs-tabs li .selected').text());
+    }
+
+    return ((urlPageType || pageType || 'browse')+(listName ? '_'+listName : '')).toLowerCase();
   };
 }(FreshDirect));
 
@@ -883,7 +926,7 @@ var dataLayer = window.dataLayer || [];
       ecommerce: {
         click: {
           actionField: {
-            list: productData.list || 'main'
+            list: productData.list || fd.gtm.getList()
           },
           products: [{
             id: productData.productId,
