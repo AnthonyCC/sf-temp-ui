@@ -42,7 +42,6 @@ public class ModuleHandlingPotatoTag extends SimpleTagSupport {
 
     @Override
     public void doTag() throws JspException {
-
         LOGGER.info("Creating data potato: " + name);
 
         PageContext ctx = (PageContext) getJspContext();
@@ -56,16 +55,15 @@ public class ModuleHandlingPotatoTag extends SimpleTagSupport {
 
         LOGGER.info("Loading module container: " + moduleContainerId + " for user: " + user.getUserId() + " with cookie: " + user.getCookie());
 
-        ModuleContainerData result = new ModuleContainerData();
         try {
-            result = ModuleHandlingService.getDefaultService().loadModuleContainer(moduleContainerId, user, session);
+            ModuleContainerData result = ModuleHandlingService.getDefaultService().loadModuleContainer(moduleContainerId, user, session);
+            ctx.setAttribute("moduleContainerId", moduleContainerId);
+            ctx.setAttribute(name, SoyTemplateEngine.convertToMap(result));
         } catch (FDResourceException e) {
             throw new JspException(e);
         } catch (InvalidFilteringArgumentException e) {
             throw new JspException(e);
         }
-
-        ctx.setAttribute(name, SoyTemplateEngine.convertToMap(result));
 
     }
 

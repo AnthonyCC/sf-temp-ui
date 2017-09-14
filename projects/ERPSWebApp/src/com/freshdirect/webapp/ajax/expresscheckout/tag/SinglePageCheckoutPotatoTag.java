@@ -15,8 +15,6 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
-import com.freshdirect.fdstore.ewallet.EwalletConstants;
-import com.freshdirect.fdstore.services.tax.AvalaraContext;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.webapp.ajax.expresscheckout.checkout.service.CheckoutService;
 import com.freshdirect.webapp.ajax.expresscheckout.data.SinglePageCheckoutData;
@@ -62,7 +60,7 @@ public class SinglePageCheckoutPotatoTag extends SimpleTagSupport {
 		HttpSession session = request.getSession();
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 		try {
-	        StandingOrderHelper.clearSO3Context(user, request, standingOrder);
+            StandingOrderHelper.clearSO3Context(user, request.getParameter("isSO"), standingOrder);
 
 			SinglePageCheckoutData result = SinglePageCheckoutFacade.defaultFacade().load(user, request);
 			if(FDStoreProperties.getAvalaraTaxEnabled() && null != user.getShoppingCart().getDeliveryAddress()){

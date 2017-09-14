@@ -9,7 +9,7 @@ var FreshDirect = FreshDirect || {};
       zipCheckPopup = Object.create(fd.modules.common.overlayWidget, {
     bodyTemplate: {
       value: function(data) {
-        return common.zipcheck({data: data.data});
+        return common.zipcheck({data: data.data, isCorporateUser: fd.user.isCorporateUser});
       }
     },
     headerTemplate: {
@@ -46,8 +46,6 @@ var FreshDirect = FreshDirect || {};
         var $t = e && $(e.currentTarget) || $(document.body);
 
         this.refresh(FreshDirect.user);
-        // this.popup.show($t);
-        // this.popup.clicked = true;
 
         // set close callback
         $('#'+this.overlayId).attr('data-close-cb', 'FreshDirect.components.zipCheckPopup.closeCB');
@@ -66,7 +64,6 @@ var FreshDirect = FreshDirect || {};
   });
 
   $(document).on('click', '[data-zipcheck-again]', zipCheckPopup.zipchekRetry.bind(zipCheckPopup));
-  // $(document).on('click', zipCheckPopup.closeTrigger, zipCheckPopup.close.bind(zipCheckPopup));
 
   fd.modules.common.utils.register("components", "zipCheckPopup", zipCheckPopup, fd);
 }(FreshDirect));

@@ -9,11 +9,10 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.customer.EnumStandingOrderActiveType;
-import com.freshdirect.customer.EnumStandingOrderType;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
@@ -23,7 +22,7 @@ import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
-import com.freshdirect.webapp.util.StandingOrderUtil;
+import com.freshdirect.webapp.util.FDURLUtil;
 
 public class CreateStandingOrderTag extends BodyTagSupport {
 	
@@ -131,7 +130,7 @@ public class CreateStandingOrderTag extends BodyTagSupport {
 					if(u.isNewSO3Enabled()){
 						response.sendRedirect(response.encodeRedirectURL("/quickshop/new_standing_order.jsp")) ;
 					}else{
-						response.sendRedirect(response.encodeRedirectURL("/department.jsp?deptId=COS")) ;
+                        response.sendRedirect(response.encodeRedirectURL(FDURLUtil.getLandingPageUrl(EnumServiceType.CORPORATE)));
 					}
 
 					return SKIP_BODY;

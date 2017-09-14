@@ -23,7 +23,6 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class CmPageViewTag extends AbstractCmTag {
 
-    @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getInstance(CmPageViewTag.class);
     private static final String INIT_TRACKING_JS_PBJECT = "FreshDirect.Coremetrics.populateTrackingObject";
 
@@ -43,6 +42,7 @@ public class CmPageViewTag extends AbstractCmTag {
 
         CoremetricsExtraData cmExtraData = new CoremetricsExtraData();
         cmExtraData.setCustomerType(CoremetricsUtil.defaultService().getCustomerTypeByOrderCount(user));
+        cmExtraData.setCorporateUser(user.isCorporateUser());
         tagModelBuilder.setCoremetricsExtraData(cmExtraData);
 
         tagModelBuilder.setInput(PageViewTagInput.populateFromRequest(getRequest()));

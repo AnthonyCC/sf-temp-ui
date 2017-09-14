@@ -17,8 +17,11 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.CatalogKey;
+import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumExternalLoginSource;
 import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.ErpAddressModel;
@@ -69,12 +72,99 @@ import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.EnumZipCheckResponses;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag;
+import com.freshdirect.webapp.util.FDURLUtil;
 import com.freshdirect.webapp.util.RequestUtil;
+import com.freshdirect.webapp.util.StoreContextUtil;
 
 public class UserUtil {
-	
-	private static Category LOGGER = LoggerFactory.getInstance( UserUtil.class );
-	
+
+    private static final Category LOGGER = LoggerFactory.getInstance(UserUtil.class);
+
+    public static void newSession(HttpSession session, HttpServletResponse response) {
+        // clear session
+        // [segabor]: instead of wiping out all session entries delete just the 'customer'
+        session.removeAttribute(SessionName.USER);
+        // remove cookie
+        CookieMonster.clearCookie(response);
+    }
+
+    public static FDSessionUser getSessionUser(HttpServletRequest request) throws FDResourceException {
+        return getSessionUser(request.getSession(), CookieMonster.getCookie(request));
+    }
+
+    public static FDSessionUser getSessionUser(HttpSession session, String cookie) throws FDResourceException {
+        FDSessionUser sessionUser = null;
+        try {
+            StoreContext storeContext = StoreContextUtil.getStoreContext(session);
+            FDUser user = FDCustomerManager.recognize(cookie, storeContext.getEStoreId());
+            sessionUser = new FDSessionUser(user, session);
+        } catch (FDAuthenticationException e) {
+            LOGGER.warn(e);
+        }
+        return sessionUser;
+    }
+
+    public static FDSessionUser createSessionUser(EnumServiceType serviceType, Set<EnumServiceType> availableServices, HttpSession session, HttpServletResponse response,
+            AddressModel address) throws FDResourceException {
+
+        FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+
+        if ((user == null) || ((user.getZipCode() == null) && (user.getDepotCode() == null))) {
+            //
+            // if there is no user object or a dummy user object created in
+            // CallCenter, make a new using this zipcode
+            // make sure to hang on to the cart that might be in progress in
+            // CallCenter
+            //
+            FDCartModel oldCart = null;
+
+            if (user != null) {
+                oldCart = user.getShoppingCart();
+            }
+            StoreContext storeContext = StoreContextUtil.getStoreContext(session);
+            user = new FDSessionUser(FDCustomerManager.createNewUser(address, serviceType, storeContext.getEStoreId()), session);
+            user.setUserCreatedInThisSession(true);
+            user.setSelectedServiceType(serviceType);
+            // Added the following line for zone pricing to keep user service type up-to-date.
+            user.setZPServiceType(serviceType);
+            user.setAvailableServices(availableServices);
+
+            if (oldCart != null) {
+                user.setShoppingCart(oldCart);
+            }
+
+            CookieMonster.storeCookie(user, response);
+            session.setAttribute(SessionName.USER, user);
+        } else {
+            //
+            // otherwise, just update the zipcode in their existing object if
+            // they haven't yet registered
+            //
+            if (user.getLevel() < FDUser.RECOGNIZED) {
+                user.setAddress(address);
+                user.setSelectedServiceType(serviceType);
+                // Added the following line for zone pricing to keep user service type up-to-date.
+                user.setZPServiceType(serviceType);
+                user.setAvailableServices(availableServices);
+
+                CookieMonster.storeCookie(user, response);
+                FDCustomerManager.storeUser(user.getUser());
+                session.setAttribute(SessionName.USER, user);
+            }
+        }
+
+        // To fetch and set customer's coupons.
+        if (user != null) {
+            FDCustomerCouponUtil.initCustomerCoupons(session);
+        }
+
+        // The previous recommendations of the current session need to be removed.
+        session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
+        session.removeAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE);
+        session.removeAttribute(SessionName.PREV_SAVINGS_VARIANT);
+        return user;
+    }
+
 	public static void createSessionUser(HttpServletRequest request, HttpServletResponse response, FDUser loginUser)
 		throws FDResourceException {
 		HttpSession session = request.getSession();
@@ -631,10 +721,21 @@ public class UserUtil {
           if (user!=null && EnumServiceType.CORPORATE.equals(user.getUserServiceType()) && user.getUserContext() != null 
         		  	&& user.getUserContext().getStoreContext() != null && !EnumEStoreId.FDX.equals(user.getUserContext().getStoreContext().getEStoreId())) {
         	  if(request.getRequestURI().indexOf("index.jsp")!=-1 || (successPage != null && successPage.indexOf("/login/index.jsp")!=-1)){        	  
-        		  updatedSuccessPage = "/department.jsp?deptId=COS";
+                    updatedSuccessPage = FDURLUtil.getLandingPageUrl(EnumServiceType.CORPORATE);
         	  }
           }
-          
+
+            try {
+                EnumDeliveryType lastOrderType = user.getOrderHistory().getLastOrderType();
+                if (EnumDeliveryType.CORPORATE.equals(lastOrderType)) {
+                    updatedSuccessPage = FDURLUtil.getLandingPageUrl(EnumServiceType.CORPORATE);
+                } else if (EnumDeliveryType.HOME.equals(lastOrderType)) {
+                    updatedSuccessPage = FDURLUtil.getLandingPageUrl(EnumServiceType.HOME);
+                }
+            } catch (FDResourceException e) {
+                LOGGER.error("Error during getting order history", e);
+            }
+
           //tick and tie for refer a friend program
           if(session.getAttribute("TICK_TIE_CUSTOMER") != null) {
         	  String ticktie = (String) session.getAttribute("TICK_TIE_CUSTOMER");

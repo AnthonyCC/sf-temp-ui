@@ -1,6 +1,5 @@
 package com.freshdirect.webapp.util;
 
-import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -12,8 +11,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Logger;
+
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.ErpAddressModel;
@@ -30,7 +30,6 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
-import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDOrderHistory;
@@ -769,9 +768,9 @@ public class StandingOrderHelper {
 				&& user.getCurrentStandingOrder().isNewSo()? true : false;
 	}
 	
-	public static void clearSO3Context(FDUserI user,HttpServletRequest request, String standingOrder){
+    public static void clearSO3Context(FDUserI user, Object isSo, String standingOrder) {
 		
-		if(null == request.getParameter("isSO") && standingOrder==null){
+        if (null == isSo && standingOrder == null) {
         	FDSessionUser fdSessionUser=(FDSessionUser) user;
         	if(null!=user.getCurrentStandingOrder() && user.getCurrentStandingOrder().isNewSo()){
             	fdSessionUser.setCheckoutMode(EnumCheckoutMode.NORMAL);

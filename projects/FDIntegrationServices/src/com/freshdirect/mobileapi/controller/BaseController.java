@@ -707,7 +707,7 @@ public abstract class BaseController extends AbstractController implements Messa
         FDSessionUser fdSessionUser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
         if (fdSessionUser == null) {
             try {
-                fdSessionUser = CookieMonster.loadCookie(request);
+                fdSessionUser = UserUtil.getSessionUser(request);
             } catch (FDResourceException ex) {
                 LOGGER.warn(ex);
             }

@@ -11,9 +11,9 @@
 
 <% 
 	int sessionUserLevel_footer = 0;
-	FDSessionUser fdSessionUser1 = (FDSessionUser) session.getAttribute(SessionName.USER);	
-	if(fdSessionUser1 != null) {
-		sessionUserLevel_footer = fdSessionUser1.getLevel();
+	FDSessionUser sessionUser = (FDSessionUser) session.getAttribute(SessionName.USER);	
+	if(sessionUser != null) {
+		sessionUserLevel_footer = sessionUser.getLevel();
 	}	
     String bottomUri = request.getRequestURI();
 	String deptId = request.getParameter("deptId") != null ? request.getParameter("deptId") : "";
@@ -34,7 +34,7 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
         botNav = "giftcards";
     } else if (bottomUri.indexOf("/newproducts.jsp") > -1 || bottomUri.indexOf("/newproducts_dfgs.jsp") > -1) {
         botNav = "newprod";
-    } else if(bottomUri.indexOf("/cos.jsp") > -1) {
+    } else if(sessionUser.isCorporateUser()) {
         botNav = "office";
     } else {
         botNav = "off";
@@ -54,7 +54,7 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
         botNav = "community";
     } else if(!catId.equals("") && catId.equalsIgnoreCase("about_billrights")) {
         botNav = "billorrights";
-    } else if(!deptId.equals("") && deptId.equalsIgnoreCase("COS")) {
+    } else if(sessionUser.isCorporateUser()) {
         botNav = "office";
     } else {
         botNav = "off";
@@ -189,14 +189,14 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
 			</div>
 			<div style="float:left; width:1px; height:40px; margin: 0px 12px" class="dotted_separator_v"></div>
 			<div style="float:left">
-				<a href="/department.jsp?deptId=COS&trk=bnav">
+				<a href="index.jsp?serviceType=CORPORATE&trk=bnav">
           <div class="spritediv sprite-nav-at_the_office" style="float: left;">At The Office</div>
         </a>
-				<a href="/department.jsp?deptId=COS&trk=bnav" style="padding: 10px 5px 0px 5px; float: left">At The Office</a>
+				<a href="index.jsp?serviceType=CORPORATE&trk=bnav" style="padding: 10px 5px 0px 5px; float: left">At The Office</a>
 			</div>
 			<div style="float:left; width:1px; height:40px; margin: 0px 10px" class="dotted_separator_v"></div>
 			<div style="float:right; padding: 10px 5px 0px 5px">
-				<a href="/index.jsp">Home</a>
+				<a href="/index.jsp?serviceType=HOME">Home</a>
 				&nbsp;&nbsp;<font color="#999999"><b>|</b></font>
         &nbsp;&nbsp;<a href="/your_account/manage_account.jsp" fd-login-required>Your Account</a>
 				

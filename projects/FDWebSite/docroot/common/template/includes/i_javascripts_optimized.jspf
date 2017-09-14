@@ -59,6 +59,7 @@
     fd.user.isZipPopupUsed = <%= hideZipCheckPopup %>;
     fd.user.zipCode = '<%= zipCode %>';
     fd.user.cohortName = '<%= cohortName %>';
+    fd.user.isCorporateUser = <%= sessionUser.isCorporateUser() %>;
     fd.user.sessionId = '<%=session.getId()%>';
       <% if (jsMasqueradeContext != null) {%>
         fd.user.masquerade = true;

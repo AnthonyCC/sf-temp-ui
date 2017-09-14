@@ -28,7 +28,7 @@ public class PendingExternalAtcItemPotatoTag extends SimpleTagSupport{
 		PageContext ctx = (PageContext) getJspContext();
 		HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
 		FDSessionUser user = (FDSessionUser) ctx.getSession().getAttribute(SessionName.USER);
-        StandingOrderHelper.clearSO3Context(user,request,standingOrder);
+        StandingOrderHelper.clearSO3Context(user, request.getParameter("isSO"), standingOrder);
 
 		ctx.setAttribute(name, SoyTemplateEngine.convertToMap(PendingExternalAtcItemsPopulator.createPendingExternalAtcItemsData(user,request)));
 	}

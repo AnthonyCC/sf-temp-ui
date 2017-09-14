@@ -145,9 +145,9 @@ MasqueradeContext masqueradeContext = user.getMasqueradeContext();
 
 	if(Boolean.TRUE == pageContext.getAttribute(LocationHandlerTag.SERVICE_TYPE_MODIFICATION_ENABLED)){
 		if(user.isCorporateUser()){
-			%><tmpl:put name="hoicon"><a class="home green" href="/index.jsp">Home delivery?</a></tmpl:put><%			
+			%><tmpl:put name="hoicon"><a class="home green" href="/index.jsp?serviceType=HOME">Home delivery?</a></tmpl:put><%
 		}else {
-			%><tmpl:put name="hoicon"><a class="office green" href="/department.jsp?deptId=COS">Office delivery?</a></tmpl:put><%			
+			%><tmpl:put name="hoicon"><a class="office green" href="/index.jsp?serviceType=CORPORATE">Office delivery?</a></tmpl:put><%	
 		}
 	}
 %>

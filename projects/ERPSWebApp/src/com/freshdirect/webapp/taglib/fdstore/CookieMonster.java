@@ -1,66 +1,20 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.webapp.taglib.fdstore;
 
-import javax.servlet.http.*;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import com.freshdirect.common.context.StoreContext;
+import org.apache.log4j.Category;
+
 import com.freshdirect.framework.util.log.LoggerFactory;
-import org.apache.log4j.*;
 
-import com.freshdirect.fdstore.*;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.customer.*;
-
-/**
- *
- *
- * @version $Revision$
- * @author $Author$
- */
 public class CookieMonster {
 
-	private static Category LOGGER = LoggerFactory.getInstance(CookieMonster.class);
+    private static final Category LOGGER = LoggerFactory.getInstance(CookieMonster.class);
 
-	private final static String COOKIE_NAME = "FDUser";
-	private final static int COOKIE_MAXAGE = 365 * 24 * 60 * 60;
+    private static final String COOKIE_NAME = "FDUser";
+    private static final int COOKIE_MAXAGE = 365 * 24 * 60 * 60;
 
-	public static FDSessionUser loadCookie(HttpServletRequest request) throws FDResourceException {
-		Cookie[] cookies = request.getCookies();
-		if (cookies == null) {
-			return null;
-		}
-		Cookie cookie = null;
-		for (int i = 0; i < cookies.length; i++) {
-			if (COOKIE_NAME.equals(cookies[i].getName())) {
-				cookie = cookies[i];
-				break;
-			}
-		}
-		if (cookie == null) {
-			return null;
-		}
-		String val = cookie.getValue();
-		LOGGER.debug("Found cookie " + COOKIE_NAME + " = " + val);
-
-		try {
-			StoreContext storeContext = StoreContext.createStoreContext(EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId())));
-			com.freshdirect.fdstore.customer.FDUser user = FDCustomerManager.recognize(val,storeContext.getEStoreId());
-			return new FDSessionUser(user, request.getSession());
-
-		} catch (FDAuthenticationException ex) {
-			LOGGER.warn(ex);
-			return null;
-		}
-
-	}
-	
 	public static String getCookie(HttpServletRequest request){
 		Cookie[] cookies = request.getCookies();
 		if (cookies == null) {
@@ -96,5 +50,5 @@ public class CookieMonster {
 		response.addCookie(c);
 		LOGGER.debug("Cleared cookie " + COOKIE_NAME);
 	}
-			
+
 }

@@ -916,8 +916,12 @@ public class FDStoreProperties {
     // APPDEV-5893
     private static final String PROP_USER_CART_SAVE_INTERVAL = "fdstore.user.cart.save.interval";
 
+    private static final String PROP_HOMEPAGE_REDESIGN_CURRENTCOS_USER_CONTAINER_CONTENT_KEY = "fdstore.homepageredesign.currentCOSUserModuleContainerContentKey";
+    private static final String PROP_HOMEPAGE_REDESIGN_NEWCOS_USER_CONTAINER_CONTENT_KEY = "fdstore.homepageredesign.newCOSUserModuleContainerContentKey";
+
     private static final String PROP_HOMEPAGE_REDESIGN_CURRENT_USER_CONTAINER_CONTENT_KEY = "fdstore.homepageredesign.currentUserModuleContainerContentKey";
     private static final String PROP_HOMEPAGE_REDESIGN_NEW_USER_CONTAINER_CONTENT_KEY = "fdstore.homepageredesign.newUserModuleContainerContentKey";
+
     private static final String PROP_HOMEPAGE_REDESIGN_MODULE_PRODUCT_LIMIT_MAX = "fdstore.homepageredesign.moduleProductLimitMax";
     private static final String PROP_HOMEPAGE_REDESIGN_PRESPICKS_CATEGORY_ID = "fdstore.homepageredesign.presPicksCategoryId";
     private static final String PROP_HOMEPAGE_REDESIGN_STAFFPICKS_CATEGORY_ID = "fdstore.homepageredesign.staffPicksCategoryId";
@@ -937,19 +941,19 @@ public class FDStoreProperties {
     private final static String PROP_ZIP_CHECK_OVER_LAY_ENABLED = "fdstore.zipcheck.overlay.enabled";
     /* APPDEV-5781 */
     private final static String PROP_OBSOLETE_MERGECARTPAGE_ENABLED = "fdstore.obsolete.mergecartpage.enabled";
-    
+
     private static final String PROP_DFP_ENABLED = "fdstore.dfp.enabled";
     private static final String PROP_DFP_ID = "fdstore.dfp.id";
 
 	private final static String PROP_CLUSTER_NAME = "fdsystem.cluster.name";
 	private final static String PROP_NODE_NAME = "fdsystem.node.name";
-    
+
     private final static String PROP_PRODUCT_CACHE_OPTIMIZATION_ENABLED = "fdstore.product.cache.optimization.enabled";
-    
+
     private final static String PROP_REQUEST_SCHEME_FOR_REDIRECT_URL = "fdstore.request.scheme.redirecturl";
 	private static final String PROP_PAYMENT_VERIFICATION_ENABLED = "payment.verification.enabled";
 
-    /* APPDEV 6174 
+    /* APPDEV 6174
      * IBM SilverPopup urls, tokens*/
     private final static String IBM_ACCESSTOKEN_URL = "fdstore.ibm.accesstoken.url";
     private final static String IBM_PUSHNOTIFICATION_URL = "fdstore.ibm.pushnotification.url";
@@ -957,8 +961,6 @@ public class FDStoreProperties {
     private final static String IBM_CLIENT_SECRET = "fdstore.ibm.client.secret";
     private final static String IBM_REFRESH_TOKEN = "fdstore.ibm.refresh.token";
 	private static final String PAYMENT_TLSSHA_ENABLED = "fdstore.payment.tls.sha.enabled";
-
-    
     private static final String PROP_REFRESHZONE_ENABLED = "fdstore.refresh.zone.enabled";
     
     private static final String GLOBAL_SF2_0_ENABLED = "fdstore_sf20_global_enabled";
@@ -967,8 +969,8 @@ public class FDStoreProperties {
     
     private static final String PROP_LOG_AKAMAI_HEADER_ENABLED = "fdstore.akamai.edgescape.header.logging.enabled";
  
-    public final static long TEN_DAYS_IN_MILLIS = 1000 * 60 * 60 * 24 * 10;    
-    
+    public final static long TEN_DAYS_IN_MILLIS = 1000 * 60 * 60 * 24 * 10;
+
     //APPDEV 6442 FDC Transition
     
     public final static String PROP_FDC_TRANSITION_LOOK_AHEAD_DAYS = "fdstore.fdctransition.lookAheadDays";
@@ -1590,7 +1592,6 @@ static {
 
         /* APPDEV-5916 */
         defaults.put("feature.rollout.carttabcars", "GLOBAL:ENABLED,true;");
-
         defaults.put("feature.rollout.standingorder3_0", "GLOBAL:ENABLED,false;");
         defaults.put("feature.rollout.browseaggregatedcategories1_0", "GLOBAL:ENABLED,false;");
         defaults.put("feature.rollout.debitCardSwitch", "GLOBAL:ENABLED,true;");
@@ -1802,6 +1803,9 @@ static {
 
         defaults.put(PROP_USER_CART_SAVE_INTERVAL, "0");
 
+        defaults.put(PROP_HOMEPAGE_REDESIGN_CURRENTCOS_USER_CONTAINER_CONTENT_KEY, "ModuleContainer:currentCOSUser");
+        defaults.put(PROP_HOMEPAGE_REDESIGN_NEWCOS_USER_CONTAINER_CONTENT_KEY, "ModuleContainer:newCOSUser");
+
         defaults.put(PROP_HOMEPAGE_REDESIGN_CURRENT_USER_CONTAINER_CONTENT_KEY, "ModuleContainer:mc_hp_exist_cust");
         defaults.put(PROP_HOMEPAGE_REDESIGN_NEW_USER_CONTAINER_CONTENT_KEY, "ModuleContainer:mc_hp_new_cust");
         defaults.put(PROP_HOMEPAGE_REDESIGN_MODULE_PRODUCT_LIMIT_MAX, "12");
@@ -1819,24 +1823,24 @@ static {
 
         defaults.put(PROP_QS_TOP_ITEMS_PERF_OPT_ENABLED, "true");
         defaults.put(PROP_ZIP_CHECK_OVER_LAY_ENABLED, "true");
-        
+
         /* APPDEV-5781 */
         defaults.put(PROP_OBSOLETE_MERGECARTPAGE_ENABLED, "true");
-        
+
         defaults.put(PROP_DFP_ENABLED, "false");
         defaults.put(PROP_DFP_ID, "1072054678");
 
         defaults.put(PROP_CLUSTER_NAME, "localhost");
         defaults.put(PROP_NODE_NAME, "localhost");
-    	
+
 
         defaults.put(PROP_PRODUCT_CACHE_OPTIMIZATION_ENABLED, "true");
-        
+
         /* IBM silverpopup */
         defaults.put(IBM_ACCESSTOKEN_URL, "https://api3.ibmmarketingcloud.com/oauth/token");
         // for Dev DB
         defaults.put(IBM_PUSHNOTIFICATION_URL, "https://api3.silverpop.com:443/rest/databases/5979940/establishidentity/");
-        									 // https://api3.silverpop.com:443/rest/databases/{databaseid}/establishidentity/ 
+        									 // https://api3.silverpop.com:443/rest/databases/{databaseid}/establishidentity/
         // for Prod DB
         //defaults.put(IBM_PUSHNOTIFICATION_URL, "https://api3.silverpop.com:443/rest/databases/3745165/establishidentity/");
         defaults.put(IBM_CLIENT_ID, "42c3eede-b1b2-43d2-b503-55682f190c2d");
@@ -2754,7 +2758,7 @@ static {
 
     /**
      * Used for testing, do not call from the App.
-     * 
+     *
      * @param lastRefresh
      */
     public static void setLastRefresh(long lastRefresh) {
@@ -2933,7 +2937,7 @@ static {
 
     /**
      * OSCACHE should be disabled when we are in some development environment. ( = annotation or preview mode ) Jsp-s can refer to this when deciding to use oscache or not.
-     * 
+     *
      * @return true if we are in production mode (use oscache), false if we are in development mode (disable oscache)
      */
     public static boolean useOscache() {
@@ -3100,7 +3104,7 @@ static {
 
     /**
      * Global switch to turn on/off wine ratings display. Defaulted to on.
-     * 
+     *
      * @return
      */
     public static boolean isWineShowRatings() {
@@ -3497,7 +3501,7 @@ static {
 
     /**
      * Used at store-front GUI. Sum of prices in the cart must be higher than this value in order to be able to submit order.
-     * 
+     *
      * @return Soft limit. Default is $50.
      */
     /*
@@ -3506,7 +3510,7 @@ static {
 
     /**
      * Used at processing Standing Orders. After removing discontinued products from the cart, sum must be higher than this value.
-     * 
+     *
      * @return Hard limit. Default is $50.
      */
     /*
@@ -4375,7 +4379,7 @@ static {
 
     /**
      * If true, CSR agents are allowed to use new XC pages in masquerade mode. Defaulted to true
-     * 
+     *
      * @ticket APPDEV-4660
      * @return
      */
@@ -4398,7 +4402,7 @@ static {
     public static String getAvalaraBaseURL() {
         return StringUtils.defaultString(get(PROP_AVALARA_BASE_URL));
     }
-    
+
     public static String getAvalaraAccountNumber() {
         return StringUtils.defaultString(get(PROP_AVALARA_ACCOUNT_NUMBER));
     }
@@ -4418,29 +4422,29 @@ static {
     public static int getAvalaraCronThreadCount() {
         return Integer.parseInt(get(PROP_AVALARA_CRON_THREAD_COUNT) != null ? get(PROP_AVALARA_CRON_THREAD_COUNT) : "10");
     }
-    
+
     //@ IBM silverpopup chnages
     public static String getIBMAccessTokenURL(){
     	return get(IBM_ACCESSTOKEN_URL);
     }
- 
+
     public static String getIBMPushNotificationURL() {
         return get(IBM_PUSHNOTIFICATION_URL);
     }
-    
+
     public static String getIBMClientID() {
 		return get(IBM_CLIENT_ID);
 	}
-    
+
     public static String getIBMClientSecret() {
 		return get(IBM_CLIENT_SECRET);
 	}
-    
+
     public static String getIBMRefreshToken() {
 		return get(IBM_REFRESH_TOKEN);
-	} 
+	}
     //end IBM silverpopup end
-    
+
     public static int getSO3ActivateCutoffTime() {
         return Integer.parseInt(get(PROP_SO3_ACTIVATE_CUTOFF_TIME));
     }
@@ -4622,7 +4626,15 @@ static {
         return get(PROP_HOMEPAGE_REDESIGN_NEW_USER_CONTAINER_CONTENT_KEY);
     }
 
-    public static int getHomepageRedesignProductLimitMax() {
+    public static String getPropHomepageRedesignCurrentCosUserContainerContentKey() {
+		return get(PROP_HOMEPAGE_REDESIGN_CURRENTCOS_USER_CONTAINER_CONTENT_KEY);
+	}
+
+    public static String getPropHomepageRedesignNewCosUserContainerContentKey() {
+		return get(PROP_HOMEPAGE_REDESIGN_NEWCOS_USER_CONTAINER_CONTENT_KEY);
+	}
+
+	public static int getHomepageRedesignProductLimitMax() {
         return Integer.parseInt(get(PROP_HOMEPAGE_REDESIGN_MODULE_PRODUCT_LIMIT_MAX));
     }
 
@@ -4677,7 +4689,7 @@ static {
     public static boolean isQSTopItemsPerfOptimizationEnabled(){
     	return (Boolean.valueOf(get(PROP_QS_TOP_ITEMS_PERF_OPT_ENABLED))).booleanValue();
     }
-    
+
     public static boolean isZipCheckOverLayEnabled(){
     	return (Boolean.valueOf(get(PROP_ZIP_CHECK_OVER_LAY_ENABLED))).booleanValue();
     }
@@ -4697,7 +4709,7 @@ static {
 	public static boolean isProductCacheOptimizationEnabled(){
         return (Boolean.valueOf(get(PROP_PRODUCT_CACHE_OPTIMIZATION_ENABLED))).booleanValue();
 	}
-	
+
 	public static String getRequestSchemeForRedirectUrl(){
 		return get(PROP_REQUEST_SCHEME_FOR_REDIRECT_URL);
 	}
@@ -4709,7 +4721,7 @@ static {
 	public static boolean isDfpEnabled() {
 		return (Boolean.valueOf(get(PROP_DFP_ENABLED))).booleanValue();
 	}
-	
+
 	public static String getDfpId() {
 		return get(PROP_DFP_ID);
 	}

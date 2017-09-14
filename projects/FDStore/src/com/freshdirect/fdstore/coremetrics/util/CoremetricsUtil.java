@@ -10,6 +10,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class CoremetricsUtil {
 
     private static final Logger LOGGER = LoggerFactory.getInstance(CoremetricsUtil.class);
+
     private static final CoremetricsUtil INSTANCE = new CoremetricsUtil();
 
     private CoremetricsUtil() {
@@ -20,14 +21,28 @@ public class CoremetricsUtil {
     }
 
     public String getCustomerTypeByOrderCount(FDUserI user) {
-        String result = FDStoreProperties.getHomepageRedesignNewUserContainerContentKey();
+        return (user.isCorporateUser()) ? getCorporateCustomerTypeByOrderCount(user) : getResidentalCustomerTypeByOrderCount(user);
+    }
+
+    public String getResidentalCustomerTypeByOrderCount(FDUserI user) {
+        return (isUserAlreadyOrdered(user)) ? FDStoreProperties.getHomepageRedesignCurrentUserContainerContentKey()
+                : FDStoreProperties.getHomepageRedesignNewUserContainerContentKey();
+    }
+
+    public String getCorporateCustomerTypeByOrderCount(FDUserI user) {
+        return (isUserAlreadyOrdered(user)) ? FDStoreProperties.getPropHomepageRedesignCurrentCosUserContainerContentKey()
+                : FDStoreProperties.getPropHomepageRedesignNewCosUserContainerContentKey();
+    }
+
+    public boolean isUserAlreadyOrdered(FDUserI user) {
+        boolean currentUser = false;
         try {
-            if (user.getAdjustedValidOrderCount() > 0) {
-                result = FDStoreProperties.getHomepageRedesignCurrentUserContainerContentKey();
-            }
+            currentUser = user.getAdjustedValidOrderCount() > 0;
         } catch (FDResourceException e) {
             LOGGER.error("User[" + user.getUserId() + "] order count evaluation failed", e);
+            currentUser = false;
         }
-        return result;
+        return currentUser;
     }
+
 }

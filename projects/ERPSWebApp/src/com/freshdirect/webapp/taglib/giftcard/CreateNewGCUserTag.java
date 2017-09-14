@@ -37,7 +37,8 @@ public class CreateNewGCUserTag  extends com.freshdirect.framework.webapp.BodyTa
 		this.resultName = resultName;
 	}
 	
-	public int doStartTag() throws JspException {
+	@Override
+    public int doStartTag() throws JspException {
 		
 	  ActionResult result=null;	
 	 try{
@@ -111,18 +112,7 @@ public class CreateNewGCUserTag  extends com.freshdirect.framework.webapp.BodyTa
 		user.setAvailableServices(result.getAvailableServices());					
 		CookieMonster.storeCookie(user, response);				
      		
-     	//newSession();
 		request.getSession().setAttribute(SessionName.USER, user);								
 	}
-	
-	
-//	private void newSession() {
-//		HttpSession session = pageContext.getSession();
-//		// clear session
-//		// [segabor]: instead of wiping out all session entrise delete just the 'customer'
-//		session.removeAttribute(SessionName.USER);
-//		// remove cookie
-//		//CookieMonster.clearCookie((HttpServletResponse)pageContext.getResponse());
-//	}
 
 }

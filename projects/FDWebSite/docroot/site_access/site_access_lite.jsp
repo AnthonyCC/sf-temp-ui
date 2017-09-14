@@ -26,7 +26,7 @@
     
     
     if (successPage.startsWith("/index.jsp") && EnumServiceType.CORPORATE.getName().equalsIgnoreCase(serviceType))  {
-		successPage = "/department.jsp?deptId=COS";
+		successPage = "/index.jsp?serviceType=CORPORATE";
 	}
  
 	if (successPage.startsWith("/index.jsp") && isBestCellars) {

@@ -1,14 +1,16 @@
-<%@ page import="java.text.SimpleDateFormat"
-%><%@ page import='java.util.*'
-%><%@ page import='com.freshdirect.fdstore.content.*'
-%><%@ page import='com.freshdirect.fdstore.customer.*'
-%><%@ page import='com.freshdirect.fdstore.FDStoreProperties'
-%><%@ page import='com.freshdirect.webapp.taglib.fdstore.*'
-%><%@ page import='com.freshdirect.webapp.util.*'
-%><%@ page import='com.freshdirect.fdstore.*'
-%><%@ page import="org.apache.commons.lang.StringEscapeUtils"
-%><%@ taglib prefix="fd" uri="freshdirect"
-%><%@ taglib prefix="logic" uri="logic" %>
+<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import='java.util.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
+<%@ page import='com.freshdirect.fdstore.customer.*'%>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
+<%@ page import='com.freshdirect.webapp.util.*'%>
+<%@ page import='com.freshdirect.fdstore.*'%>
+<%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
+<%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
+
+<%@ taglib prefix="fd" uri="freshdirect"%>
+<%@ taglib prefix="logic" uri="logic" %>
 
 <% //expanded page dimensions
 final int W_GLOBAL_NAV_TOP_TOTAL = 970;
@@ -74,9 +76,9 @@ if(user != null) {
   <div class="container globalnav_top <%= (uri.contains("/checkout/") || uri.contains("view_cart.jsp") || uri.contains("merge_cart.jsp")) ? "disableCart" : "" %>">
   <%
     if(user.isDepotUser()){%>
-        <a class="logo" href="/index.jsp"><img src="/media_stat/images/logos/<%=user.getDepotCode()%>_depot_logo.gif"  alt="" border="0"></a>
+        <a class="logo" href="<%= FDURLUtil.getLandingPageUrl(user)%>"><img src="/media_stat/images/logos/<%=user.getDepotCode()%>_depot_logo.gif"  alt="" border="0"></a>
     <% } else { %>
-      <a class="logo" href="/index.jsp" ><img src="/media/images/navigation/global_nav/fd_logo_on.gif" border="0" alt="FreshDirect" name="FD_LOGO"></a>
+      <a class="logo" href="<%= FDURLUtil.getLandingPageUrl(user)%>" ><img src="/media/images/navigation/global_nav/fd_logo_on.gif" border="0" alt="FreshDirect" name="FD_LOGO"></a>
     <% } %>
     <%
         String hasEcouponsClass="";
@@ -161,7 +163,7 @@ if(user != null) {
     <tr>
         <td width="182" ROWSPAN="3" valign="BOTTOM">
 
-        <a href="/index.jsp" onMouseover="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_on.gif')" onMouseout="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_off.gif')"><img src="/media/images/navigation/global_nav/fd_logo_off.gif" width="195" height="81" border="0" alt="FreshDirect" name="FD_LOGO"></a>
+        <a href="<%= FDURLUtil.getLandingPageUrl(user)%>" onMouseover="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_on.gif')" onMouseout="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_off.gif')"><img src="/media/images/navigation/global_nav/fd_logo_off.gif" width="195" height="81" border="0" alt="FreshDirect" name="FD_LOGO"></a>
         </td>
     </tr>
     <tr>

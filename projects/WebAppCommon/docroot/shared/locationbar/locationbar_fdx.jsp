@@ -193,7 +193,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 
 
 <%-- COS tab --%>
-	<tmpl:put name="tab_cos"><!-- --><%-- PLACEHOLDER, NOT LAUNCHING 20151109 -- <a href="/cos.jsp" class="locabar-tab"><div class="locabar-tab-cos"></div></a>	--%></tmpl:put>
+	<tmpl:put name="tab_cos"><!-- --><%-- PLACEHOLDER, NOT LAUNCHING 20151109 -- <a href="/index.jsp?serviceType=CORPORATE" class="locabar-tab"><div class="locabar-tab-cos"></div></a>	--%></tmpl:put>
 
 <%-- ZIP/ADDRESS area --%>
 	<%

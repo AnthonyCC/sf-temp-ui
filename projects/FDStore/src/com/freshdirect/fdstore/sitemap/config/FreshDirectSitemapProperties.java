@@ -33,7 +33,7 @@ public class FreshDirectSitemapProperties {
 
     static {
         DEFAULTS.put(MAIN_CONTEXT_PATHS,
-                "/,/index.jsp,/cos.jsp,/srch.jsp?pageType=ecoupon,/srch.jsp?pageType=newproducts,/gift_card/purchase/landing.jsp,/gift_card/purchase/add_giftcard.jsp,/gift_card/purchase/tac.jsp,/about/index.jsp,"
+                "/,/index.jsp,/index.jsp?serviceType=HOME,/index.jsp?serviceType=CORPORATE,/srch.jsp?pageType=ecoupon,/srch.jsp?pageType=newproducts,/gift_card/purchase/landing.jsp,/gift_card/purchase/add_giftcard.jsp,/gift_card/purchase/tac.jsp,/about/index.jsp,"
                         + "/help/index.jsp,/help/privacy_policy.jsp,/help/terms_of_service.jsp,/help/platform_agreement.jsp,/help/delivery_info.jsp,/help/delivery_info_check_slots.jsp,/help/delivery_zones.jsp,"
                         + "/help/faq_home.jsp?page=faqHome,/help/faq_home.jsp?page=accessibility,/help/faq_home.jsp?page=acct_info,/help/faq_home.jsp?page=cos,/faq_home.jsp?page=chef_table,/faq_home.jsp?page=delivery_feedback,"
                         + "/help/faq_home.jsp?page=delivery_pass,/help/faq_home.jsp?page=cpns,/help/faq_home.jsp?page=gen_feedback,/help/faq_home.jsp?page=home_delivery,/help/faq_home.jsp?page=inside,/help/faq_home.jsp?page=order_change,"

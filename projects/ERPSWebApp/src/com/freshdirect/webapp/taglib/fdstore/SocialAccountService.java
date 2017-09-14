@@ -36,11 +36,12 @@ import com.freshdirect.webapp.action.HttpContext;
 import com.freshdirect.webapp.action.fdstore.RegistrationAction;
 import com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag;
 import com.freshdirect.webapp.util.AccountUtil;
+import com.freshdirect.webapp.util.FDURLUtil;
 import com.freshdirect.webapp.util.StoreContextUtil;
 
 public class SocialAccountService implements AccountService {
 
-    private static Category LOGGER = LoggerFactory.getInstance(SocialAccountService.class);
+    private static final Category LOGGER = LoggerFactory.getInstance(SocialAccountService.class);
 
     private String socialLoginRecognized = "/social/social_login_recognized.jsp";
     private String termsConditions = "/registration/tcaccept_lite.jsp";
@@ -48,13 +49,16 @@ public class SocialAccountService implements AccountService {
     private String signinUnmatched = "/social/social_login_not_recognized.jsp";
     private String socialAccountAlreadyConnected = "/social/social_login_social_account_already_connected.jsp";
     private String socialCustomMessage = "/social/social_custom_message.jsp";
-    String updatedSuccessPage = "/index.jsp";
+    private String updatedSuccessPage = "/index.jsp";
 
     @Override
     public String login(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
 
         // Retrieve sessionUser
         final FDSessionUser fdSessionUser = (FDSessionUser) session.getAttribute(SessionName.USER);
+        String serviceType = (fdSessionUser.isCorporateUser()) ? "CORPORATE" : "HOME";
+        updatedSuccessPage = updatedSuccessPage + FDURLUtil.safeURLEncode("?serviceType=" + serviceType);
+
         String sessionUserId = "";
         int sessionUserLevel = 0;
 
@@ -167,18 +171,19 @@ public class SocialAccountService implements AccountService {
                             } else {
                                 session.setAttribute("nextSuccesspage", updatedSuccessPage);
                                 // return newURL + "/social/success.jsp?successPage="+updatedSuccessPage.substring(1,this.updatedSuccessPage.length());
-                                response.sendRedirect(newURL + "/social/success.jsp?successPage=" + updatedSuccessPage.substring(1, this.updatedSuccessPage.length()));
+                                response.sendRedirect(
+                                        newURL + "/social/success.jsp?successPage=" + FDURLUtil.safeURLEncode(updatedSuccessPage.substring(1, updatedSuccessPage.length())));
                             }
 
                         } else {
-                            LOGGER.info("successPage:" + updatedSuccessPage.substring(1, this.updatedSuccessPage.length()));
+                            LOGGER.info("successPage:" + updatedSuccessPage.substring(1, updatedSuccessPage.length()));
                             // determine whether socialsignin is trigger from workflow
                             String preSuccessPage = (String) session.getAttribute(SessionName.PREV_SUCCESS_PAGE);
                             if (preSuccessPage != null) {
                                 session.removeAttribute(SessionName.PREV_SUCCESS_PAGE);
                                 return newURL + "/social/success.jsp?successPage=" + preSuccessPage.substring(1, preSuccessPage.length());
                             } else {
-                                return newURL + "/social/success.jsp?successPage=" + updatedSuccessPage.substring(1, this.updatedSuccessPage.length());
+                                return newURL + "/social/success.jsp?successPage=" + FDURLUtil.safeURLEncode(updatedSuccessPage.substring(1, updatedSuccessPage.length()));
                             }
                         }
                     } catch (IOException e) {
@@ -326,7 +331,7 @@ public class SocialAccountService implements AccountService {
                                 session.removeAttribute(SessionName.PREV_SUCCESS_PAGE);
                                 return newURL + "/social/success.jsp?successPage=" + preSuccessPage.substring(1, preSuccessPage.length());
                             } else {
-                                return newURL + "/social/success.jsp?successPage=" + updatedSuccessPage.substring(1, this.updatedSuccessPage.length());
+                                return newURL + "/social/success.jsp?successPage=" + updatedSuccessPage.substring(1, updatedSuccessPage.length());
                             }
                         }
                     } catch (Exception ex) {

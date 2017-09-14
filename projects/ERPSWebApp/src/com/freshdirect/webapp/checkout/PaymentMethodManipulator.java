@@ -6,8 +6,8 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.jsp.PageContext;
 
 import org.apache.log4j.Category;
 
@@ -59,8 +59,8 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 	private static final String EWALLET_SESSION_ATTRIBUTE_NAME="EWALLET_CARD_TYPE";
 	private static final String MP_EWALLET_CARD="MP_CARD";
 	
-	public PaymentMethodManipulator(PageContext context, ActionResult result, String actionName) {
-		super(context, result, actionName);
+    public PaymentMethodManipulator(HttpServletRequest request, HttpServletResponse response, ActionResult result, String actionName) {
+        super(request, response, result, actionName);
 	}
 
 	public void setPaymentMethod() throws FDResourceException {

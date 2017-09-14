@@ -3,7 +3,6 @@ package com.freshdirect.webapp.checkout;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.jsp.PageContext;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -21,17 +20,13 @@ public abstract class CheckoutManipulator {
 	HttpServletRequest	request;
 	HttpSession 		session;
 	HttpServletResponse	response;
-
 	ActionResult		result;
-	
 	String 				actionName;
 	
-	
-	public CheckoutManipulator(PageContext context, ActionResult result, String actionName) {
-		this.request = (HttpServletRequest) context.getRequest();
-		this.session = context.getSession();
-		this.response = (HttpServletResponse) context.getResponse();
-
+    public CheckoutManipulator(HttpServletRequest request, HttpServletResponse response, ActionResult result, String actionName) {
+        this.request = request;
+        this.session = request.getSession();
+        this.response = response;
 		this.result = result != null ? result : new ActionResult();
 		this.actionName = actionName;
 	}

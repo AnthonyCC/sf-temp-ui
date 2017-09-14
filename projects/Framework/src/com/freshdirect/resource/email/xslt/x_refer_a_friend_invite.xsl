@@ -79,7 +79,7 @@
 	<table align="center" border="0" width="640" cellpadding="0" cellspacing="0">
 	<tbody>
 	<tr>
-	<td><a href="http://www.freshdirect.com/index.jsp"><img style="DISPLAY: block" alt="Go to FreshDirect" src="https://www.freshdirect.com/media/images/profile/raf_email/ftr_nav_go_to_freshdirect.gif" usemap="#Map" border="0" height="34" width="150" /></a></td>
+	<td><a href="http://www.freshdirect.com/index.jsp?serviceType=HOME"><img style="DISPLAY: block" alt="Go to FreshDirect" src="https://www.freshdirect.com/media/images/profile/raf_email/ftr_nav_go_to_freshdirect.gif" usemap="#Map" border="0" height="34" width="150" /></a></td>
 	<td><a href="http://www.freshdirect.com/category.jsp?catId=picks_love"><img style="DISPLAY: block" alt="President's Picks" src="https://www.freshdirect.com/media/images/profile/raf_email/ftr_nav_presidents_picks.gif" usemap="#Map" border="0" height="34" width="130" /></a></td>
 	<td><a href="https://www.freshdirect.com/newproducts.jsp"><img style="DISPLAY: block" alt="New Products" src="https://www.freshdirect.com/media/images/profile/raf_email/ftr_nav_new_products.gif" usemap="#Map" border="0" height="34" width="116" /></a></td>
 	<td><a href="https://www.freshdirect.com/your_account/manage_account.jsp"><img style="DISPLAY: block" alt="Your Account" src="https://www.freshdirect.com/media/images/profile/raf_email/ftr_nav_your-account.gif" usemap="#Map" border="0" height="34" width="116" /></a></td>

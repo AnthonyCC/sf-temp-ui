@@ -42,6 +42,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
+import com.freshdirect.webapp.ajax.location.LocationHandlerService;
+import com.freshdirect.webapp.util.FDURLUtil;
 import com.freshdirect.webapp.util.LocatorUtil;
 import com.freshdirect.webapp.util.RequestUtil;
 import com.freshdirect.webapp.util.RobotRecognizer;
@@ -52,8 +54,11 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
 
     private static final long serialVersionUID = -5813651711727931409L;
 
-    private static Category LOGGER = LoggerFactory.getInstance(CheckLoginStatusTag.class);
-    
+    private static final Category LOGGER = LoggerFactory.getInstance(CheckLoginStatusTag.class);
+
+    private static final String EMPTY = "";
+    private static final String USER_AGENT = "User-Agent";
+
     private String id;
     private String redirectPage;
     private boolean guestAllowed = true;
@@ -61,13 +66,9 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
     private boolean noRedirect = false;
     private boolean redirected = false;
     private boolean ddppPreview = false;
-    private String semZipCode = "";
-    private String pixelNames = "";
+    private String semZipCode = EMPTY;
+    private String pixelNames = EMPTY;
     private AddressModel address;
-    private EnumServiceType serviceType;
-    private static final String EMPTY = "";
-	private static final String USER_AGENT = "User-Agent";
-    
 
     @Override
     public void setId(String id) {
@@ -110,10 +111,6 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         return pixelNames;
     }
 
-    private EnumServiceType getServiceType() {
-        return serviceType;
-    }
-
     @Override
     public int doStartTag() throws JspException {
         HttpSession session = pageContext.getSession();
@@ -129,7 +126,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
             session.setAttribute(SessionName.TSA_PROMO, request.getParameter("TSAPROMO"));
         }
 
-        if (RobotRecognizer.isHostileRobot((HttpServletRequest) pageContext.getRequest())) {
+        if (RobotRecognizer.isHostileRobot(request)) {
             doRedirect(true);
 
             return SKIP_BODY;
@@ -140,11 +137,10 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         }
 
         if (user == null) {
-            StoreContextUtil.getStoreContext(session);
             // try to figure out user identity based on persistent cookie
             try {
                 // LOGGER.debug("attempting to load user from cookie");
-                user = CookieMonster.loadCookie((HttpServletRequest) pageContext.getRequest());
+                user = UserUtil.getSessionUser((HttpServletRequest) pageContext.getRequest());
             } catch (FDResourceException ex) {
                 LOGGER.warn(ex);
             }
@@ -169,7 +165,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
                     && !EnumEStoreId.FDX.equals(user.getUserContext().getStoreContext().getEStoreId())) {
                 // only index page request will be redirected to corporate page
                 if (request.getRequestURI().indexOf("index.jsp") != -1) {
-                    this.redirectPage = "/department.jsp?deptId=COS";
+                    this.redirectPage = FDURLUtil.getLandingPageUrl(EnumServiceType.CORPORATE);
                     doRedirect(true);
 
                     return SKIP_BODY;
@@ -218,7 +214,9 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
                     return SKIP_BODY;
                 }
 
-                if ((user = LocatorUtil.useIpLocator(request.getSession(), request, (HttpServletResponse) pageContext.getResponse(), this.address)) == null) {
+                user = LocatorUtil.useIpLocator(request.getSession(), request, (HttpServletResponse) pageContext.getResponse(), this.address);
+
+                if (user == null) {
                     StringBuffer redirBuf = new StringBuffer();
                     LOGGER.debug("redirecting to: /site_access/site_access.jsp?successPage=" + request.getRequestURI());
                     redirBuf.append("/site_access/site_access.jsp?successPage=" + request.getRequestURI());
@@ -310,10 +308,11 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
             doRedirect(true);
         }
 
+        EnumServiceType serviceType = EnumServiceType.getEnum(request.getParameter("serviceType"));
+        LocationHandlerService.getDefaultService().updateServiceType(user, serviceType);
+
         return EVAL_BODY_INCLUDE;
     }
-
-
 
     private void doRedirect(boolean firstRequest) throws JspException {
         if (noRedirect) {
@@ -381,13 +380,13 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         }
 
         if (result.isSuccess() && (serviceResult != null)) {
-            LocatorUtil.newSession(request.getSession(), request, (HttpServletResponse) pageContext.getResponse());
+            UserUtil.newSession(request.getSession(), (HttpServletResponse) pageContext.getResponse());
 
             EnumDeliveryStatus dlvStatus = serviceResult.getServiceStatus(EnumServiceType.HOME);
 
             if (EnumDeliveryStatus.DELIVER.equals(dlvStatus) || EnumDeliveryStatus.PARTIALLY_DELIVER.equals(dlvStatus)) {
                 try {
-                    LocatorUtil.createUser(EnumServiceType.HOME, serviceResult.getAvailableServices(), request.getSession(), (HttpServletResponse) pageContext.getResponse(),
+                    UserUtil.createSessionUser(EnumServiceType.HOME, serviceResult.getAvailableServices(), request.getSession(), (HttpServletResponse) pageContext.getResponse(),
                             this.address);
                 } catch (FDResourceException e) {
                     LOGGER.error(e);
@@ -397,7 +396,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
                 return EVAL_BODY_INCLUDE;
             } else {
                 try {
-                    LocatorUtil.createUser(EnumServiceType.PICKUP, serviceResult.getAvailableServices(), request.getSession(), (HttpServletResponse) pageContext.getResponse(),
+                    UserUtil.createSessionUser(EnumServiceType.PICKUP, serviceResult.getAvailableServices(), request.getSession(), (HttpServletResponse) pageContext.getResponse(),
                             this.address);
                 } catch (FDResourceException e) {
                     e.printStackTrace();
@@ -522,7 +521,6 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
 
         if (!"".equals(homeZipcode)) {
             this.address.setZipCode(homeZipcode);
-            this.serviceType = getServiceType();
         }
 
         this.address.setAddress1(NVL.apply(request.getParameter(EnumUserInfoName.DLV_ADDRESS_1.getCode()), "").trim());

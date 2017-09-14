@@ -31,7 +31,7 @@
     
     //EnumServiceType.CORPORATE.getName().equalsIgnoreCase(corpServiceType)
     if (successPage.startsWith("/index.jsp") && corpZipcode!=null && corpZipcode.length()==5)  {
-		successPage = "/department.jsp?deptId=COS";
+		successPage = "/index.jsp?serviceType=CORPORATE";
 	}
  
 

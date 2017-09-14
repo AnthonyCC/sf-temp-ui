@@ -24,13 +24,13 @@ final int W_SIGNUP_TOTAL = 970;
 
 	if(userx.isCorporateUser()){
 		regType = AccountUtil.CORP_USER;
-		regContSuccessPage += "/department.jsp?deptId=COS";
+		regContSuccessPage += "/index.jsp?serviceType=CORPORATE";
 	}else if (userx.isDepotUser()){
 		regType = AccountUtil.DEPOT_USER;
-		regContSuccessPage += "/index.jsp";
+		regContSuccessPage += "/index.jsp?serviceType=DEPOT";
 	}else{
 		regType = AccountUtil.HOME_USER;
-		regContSuccessPage += "/index.jsp";
+		regContSuccessPage += "/index.jsp?serviceType=HOME";
 	}
 	/* note here that statusChangePage is obsolete -batchley 2011.01.27_09.28.58.PM */
 	

@@ -1219,12 +1219,11 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     @Override
     public EnumServiceType getSelectedServiceType() {
-        AddressModel address = this.shoppingCart.getDeliveryAddress();
         // FDX-2029 API - COS Delivery fee and order minimum used instead of FK
         if (userContext != null && userContext.getStoreContext() != null && EnumEStoreId.FDX.equals(userContext.getStoreContext().getEStoreId())) {
             return EnumServiceType.HOME;
         } else {
-            return address != null ? address.getServiceType() : this.selectedServiceType;
+            return selectedServiceType == null ? EnumServiceType.HOME : this.selectedServiceType;
         }
     }
 
@@ -1766,6 +1765,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         this.lastRefProgInvtId = progInvtId;
     }
 
+    @Override
     public ErpCustomerInfoModel getCustomerInfoModel() throws FDResourceException {
         if (identity == null) {
             return null;

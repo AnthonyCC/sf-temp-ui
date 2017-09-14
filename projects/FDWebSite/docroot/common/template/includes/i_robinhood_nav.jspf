@@ -6,6 +6,8 @@
 <%@ page import='com.freshdirect.webapp.util.*'%>
 <%@ page import='com.freshdirect.fdstore.*'%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
+
 <%@ taglib prefix="fd" uri="freshdirect"%>
 <%@ taglib prefix="logic" uri="logic" %>
 
@@ -54,12 +56,12 @@ final int W_ROBINHOOD_NAV_TOTAL = 970;
 			<% if (user != null) { %>
 
 				<% if (user.isDepotUser()) { %>
-					<a href="/index.jsp"><img src="/media_stat/images/logos/<%=user.getDepotCode()%>_depot_logo.gif" alt="" border="0" /></a>
+					<a href="<%= FDURLUtil.getLandingPageUrl(user)%>"><img src="/media_stat/images/logos/<%=user.getDepotCode()%>_depot_logo.gif" alt="" border="0" /></a>
 				 <% } else { %>
-					<a href="/index.jsp" onMouseover="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_on.gif')" onMouseout="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_off.gif')"><img src="/media/images/navigation/global_nav/fd_logo_off.gif" width="195" height="81" border="0" alt="FreshDirect" name="FD_LOGO" /></a>
+					<a href="<%= FDURLUtil.getLandingPageUrl(user)%>" onMouseover="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_on.gif')" onMouseout="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_off.gif')"><img src="/media/images/navigation/global_nav/fd_logo_off.gif" width="195" height="81" border="0" alt="FreshDirect" name="FD_LOGO" /></a>
 				 <% } %>
 			<% } else { %>
-				<a href="/index.jsp" onMouseover="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_on.gif')" onMouseout="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_off.gif')"><img src="/media/images/navigation/global_nav/fd_logo_off.gif" width="195" height="81" border="0" alt="FreshDirect" name="FD_LOGO" /></a>
+				<a href="<%= FDURLUtil.getLandingPageUrl(user)%>" onMouseover="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_on.gif')" onMouseout="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_off.gif')"><img src="/media/images/navigation/global_nav/fd_logo_off.gif" width="195" height="81" border="0" alt="FreshDirect" name="FD_LOGO" /></a>
 			<% } %>
 	    </td>
 		<td valign="bottom" align="right">
