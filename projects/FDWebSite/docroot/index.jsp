@@ -51,7 +51,8 @@ request.setAttribute("noyui", true);
 	if (user.isCorporateUser()){
       serviceType = "CORPORATE";
     }
-	response.sendRedirect("/index.jsp?serviceType=" + serviceType);
+	//The below redirect is not required, and causing performance issues due to additional redirect.
+	//response.sendRedirect("/index.jsp?serviceType=" + serviceType);
   }
 
   boolean isCorpotateUser = user.isCorporateUser();
