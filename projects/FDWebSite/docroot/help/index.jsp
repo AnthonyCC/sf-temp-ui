@@ -295,10 +295,10 @@
       "url" : "https://www.freshdirect.com/",
       "contactPoint" : [
         { "@type" : "ContactPoint",
-          "telephone" : "+1 (866) 283-7374",
+          "telephone" : <%=StringUtil.quote(user.getCustomerServiceContact())%>,
           "contactType" : "customer service"
-        } 
-      ] 
+        }
+      ]
     }
     </script>
 
