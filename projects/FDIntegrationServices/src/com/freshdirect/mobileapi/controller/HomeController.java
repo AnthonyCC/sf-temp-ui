@@ -63,6 +63,7 @@ public class HomeController extends BaseController {
 	private static final String ACTION_GET_FEATURED_CATEGORIES = "getFeaturedCategories";
 	private static final String ACTION_GET_All_DETAILS = "getAllDetails";
 	private static final String ACTION_GET_CMS_PAGE = "getPage";
+	private static final String ACTION_GET_CMS_PAGE_COMPONENT = "getPageComponent";
     private static final String ACTION_GET_MODULE = "getModule";
 	private static final Integer DEFAULT_PAGE = 1;
 	private static final Integer DEFAULT_MAX = 998;
@@ -84,11 +85,13 @@ public class HomeController extends BaseController {
 		} else if(ACTION_GET_All_DETAILS.equals(action)){
             message = getAllDetails(user, request);
         } else if (ACTION_GET_CMS_PAGE.equals(action)) {
-            if (isCheckLoginStatusEnable(request)) {
+            if (isExtraResponseRequested(request)) {
                 message = getCMSPages(user, request, response);
             } else {
                 message = getCMSPage(user, request, response);
             }
+        } else if (ACTION_GET_CMS_PAGE_COMPONENT.equals(action)) {
+        	message = getCMSPageComponents(user, request, response);
         } else if (ACTION_GET_MODULE.equals(action)) {
             message = getModule(user, request, response);
         } else {
@@ -256,6 +259,18 @@ public class HomeController extends BaseController {
 
         PageMessageResponse pageResponse = new PageMessageResponse();
         populateHomePages(user, pageRequest, pageResponse, request);
+        return pageResponse;
+    }
+
+    private PageMessageResponse getCMSPageComponents(SessionUser user, HttpServletRequest request, HttpServletResponse response) throws JsonException, FDException {
+        CMSPageRequest pageRequest = parseRequestObject(request, response, CMSPageRequest.class);
+
+        if (!pageRequest.isPreview() && pageRequest.getPlantId() == null) {
+            pageRequest.setPlantId(BrowseUtil.getPlantId(user));
+        }
+
+        PageMessageResponse pageResponse = new PageMessageResponse();
+        populatePageComponents(user, pageRequest, pageResponse, request);
         return pageResponse;
     }
 

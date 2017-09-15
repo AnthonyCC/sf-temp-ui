@@ -122,6 +122,14 @@ public abstract class BaseController extends AbstractController implements Messa
     private static final String FEED_PAGE_TYPE = "Feed";
     private static final String TODAYS_PICK_PAGE_TYPE = "TodaysPick";
 
+    //new page types below only available in the new getPageComponent endpoint, not the legacy getPage endpoint
+    private static final String CAROUSEL_BANNER_PAGE_TYPE = "CarouselBanner";
+    private static final String TODAYS_PICK_HEAD_PAGE_TYPE = "TodaysPickHead";
+    private static final String TODAYS_PICK_BODY_PAGE_TYPE = "TodaysPickBody";
+    private static final String FEED_HEAD_PAGE_TYPE = "FeedHead";
+    private static final String FEED_BODY_PAGE_TYPE = "FeedBody";
+    
+
     public static OasService oasService = new Oas247Service();
 
     protected static Map<String, String> configParams = new HashMap<String, String>();
@@ -291,7 +299,7 @@ public abstract class BaseController extends AbstractController implements Messa
                 }
 
                 try {
-                    if (isCheckLoginStatusEnable(request)) {
+                    if (isExtraResponseRequested(request)) {
                         user = getUser(request, response);
                     } else {
                         user = getUserFromSession(request, response);
@@ -347,15 +355,20 @@ public abstract class BaseController extends AbstractController implements Messa
         return model;
     }
 
-    protected boolean isCheckLoginStatusEnable(HttpServletRequest request) {
-        String foodkickHeader = request.getHeader(CORSFilter.X_FD_EXTRA_RESPONSE_HEADER);
+    protected boolean isExtraResponseRequested(HttpServletRequest request) {
+        String foodkickHeader = getExtraResponseRequests(request);
         return foodkickHeader != null && !foodkickHeader.isEmpty();
+    }
+
+    protected String getExtraResponseRequests(HttpServletRequest request) {
+        String foodkickHeader = request.getHeader(CORSFilter.X_FD_EXTRA_RESPONSE_HEADER);
+        return foodkickHeader;
     }
 
     protected boolean isResponseAdditionalEnable(HttpServletRequest request, EnumResponseAdditional responseAdditional) {
         boolean isResponseEnable = false;
-        if (isCheckLoginStatusEnable(request)) {
-            String foodkickHeader = request.getHeader(CORSFilter.X_FD_EXTRA_RESPONSE_HEADER);
+        if (isExtraResponseRequested(request)) {
+            String foodkickHeader = getExtraResponseRequests(request);
             for (String additional : StringUtils.commaDelimitedListToStringArray(foodkickHeader)) {
                 if (responseAdditional.toString().equalsIgnoreCase(additional.trim())) {
                     isResponseEnable = true;
@@ -365,6 +378,29 @@ public abstract class BaseController extends AbstractController implements Messa
         }
         return isResponseEnable;
     }
+    
+//    protected EnumSet<EnumResponseAdditional> getAllResponseAdditionalEnables(HttpServletRequest request) {
+//    	EnumSet<EnumResponseAdditional> answer = null;
+//    	if (isExtraResponseRequested(request)) {
+//            String foodkickHeader = getExtraResponseRequests(request);
+//            answer = parseResponseAdditionalEnables(foodkickHeader);
+//        } else {
+//            answer = parseResponseAdditionalEnables("");        	
+//        }
+//        return answer;
+//    }
+
+//    public static EnumSet<EnumResponseAdditional> parseResponseAdditionalEnables(String foodkickHeader) {
+//    	EnumSet<EnumResponseAdditional> answer = EnumSet.noneOf(EnumResponseAdditional.class);
+//        for (String additional : StringUtils.commaDelimitedListToStringArray(foodkickHeader)) {
+//        	EnumResponseAdditional era = EnumResponseAdditional.fromString(additional);
+//        	if(era != null) {
+//        		answer.addAll(era.getImpliedSet());
+//            }
+//        }
+//        return answer;
+//    }
+
 
 	protected String traceFor(Throwable e) {
 		if (e == null) return "No Exception";
@@ -382,7 +418,7 @@ public abstract class BaseController extends AbstractController implements Messa
         try {
             String data = getPostData(request, response);
             if (data != null){
-                return getMapper().readValue(getPostData(request, response), valueType);
+                return getMapper().readValue(data, valueType);
             } else {
                 return null;
             }
@@ -430,15 +466,15 @@ public abstract class BaseController extends AbstractController implements Messa
     
     protected void setResponseMessage(ModelAndView model, Message responseMessage, SessionUser user) throws JsonException {
         try {
-            try {
-            	if (user != null && user.isLoggedIn() && !isFakeUser()) {
-            		responseMessage.addNoticeMessages(oasService.getMessages(user));
-            	} else {
-                    responseMessage.addNoticeMessages(oasService.getMessages());
-            	}
-            } catch (ServiceException e) {
-                LOGGER.warn("ServiceException whi/le trying to get oas messages. not stopping execution.", e);
-            }
+//            try {
+//            	if (user != null && user.isLoggedIn() && !isFakeUser()) {
+//            		responseMessage.addNoticeMessages(oasService.getMessages(user));
+//            	} else {
+//                    responseMessage.addNoticeMessages(oasService.getMessages());
+//            	}
+//            } catch (ServiceException e) {
+//                LOGGER.warn("ServiceException whi/le trying to get oas messages. not stopping execution.", e);
+//            }
             model.addObject("data", getJsonString(responseMessage));
 
         } catch (JsonGenerationException e) {
@@ -478,7 +514,7 @@ public abstract class BaseController extends AbstractController implements Messa
         if (source != null && source.trim().length() > 0 && EnumTransactionSource.getTransactionSource(source) != null) {
             srcEnum = EnumTransactionSource.getTransactionSource(source);
         } else {
-            if (isCheckLoginStatusEnable(request)) {
+            if (isExtraResponseRequested(request)) {
                 srcEnum = EnumTransactionSource.FOODKICK_WEBSITE;
             } else {
                 srcEnum = EnumTransactionSource.IPHONE_WEBSITE;
@@ -744,7 +780,7 @@ public abstract class BaseController extends AbstractController implements Messa
         }
         
         // populate welcome carousel image banners
-        if (isCheckLoginStatusEnable(request)) {
+        if (isExtraResponseRequested(request)) {
             final StoreModel store = ContentFactory.getInstance().getStore();
             List<CMSImageBannerModel> cmsImageBanners = new ArrayList<CMSImageBannerModel>();
             List<ImageBanner> imageBanners = store.getWelcomeCarouselImageBanners();
@@ -760,6 +796,56 @@ public abstract class BaseController extends AbstractController implements Messa
         }
     }
 
+    protected void populatePageComponents(SessionUser user, CMSPageRequest pageRequest, PageMessageResponse pageResponse, HttpServletRequest request) throws FDException {
+    	String originalPageType = pageRequest.getPageType();
+    	
+    	if(TODAYS_PICK_HEAD_PAGE_TYPE.equals(originalPageType)) {
+    		pageRequest.setPageType(TODAYS_PICK_PAGE_TYPE);
+    		pageRequest.setHeadSectionIndexes();
+    	} else if(TODAYS_PICK_BODY_PAGE_TYPE.equals(originalPageType)) {
+    		pageRequest.setPageType(TODAYS_PICK_PAGE_TYPE);
+    		pageRequest.setBodySectionIndexes();
+    	} else if(FEED_HEAD_PAGE_TYPE.equals(originalPageType)) {
+    		pageRequest.setPageType(FEED_PAGE_TYPE);
+    		pageRequest.setHeadSectionIndexes();
+    	} else if(FEED_BODY_PAGE_TYPE.equals(originalPageType)) {
+    		pageRequest.setPageType(FEED_PAGE_TYPE);
+    		pageRequest.setBodySectionIndexes();
+    	}
+    	
+    	
+        if (CAROUSEL_BANNER_PAGE_TYPE.equals(pageRequest.getPageType())) {
+            final StoreModel store = ContentFactory.getInstance().getStore();
+            List<CMSImageBannerModel> cmsImageBanners = new ArrayList<CMSImageBannerModel>();
+            List<ImageBanner> imageBanners = store.getWelcomeCarouselImageBanners();
+            if (imageBanners != null) {
+                for (ImageBanner imageBanner : imageBanners) {
+                    CMSImageBannerModel cmsImageBanner = convertImageBanner(imageBanner);
+                    if (cmsImageBanner != null){
+                        cmsImageBanners.add(cmsImageBanner);
+                    }
+                }
+            }
+            pageResponse.setWelcomeCarouselBanners(cmsImageBanners);
+        } else if (TODAYS_PICK_PAGE_TYPE.equals(pageRequest.getPageType())){
+        	List<CMSWebPageModel> pgs = getPages(user, pageRequest);
+            for (CMSWebPageModel page : pgs) {
+                if (pageRequest.getPageType().equals(page.getType())) {
+                    pageResponse.setPick(page);                    
+                }
+            }        	
+        } else if (FEED_PAGE_TYPE.equals(pageRequest.getPageType())){
+        	List<CMSWebPageModel> pgs = getPages(user, pageRequest);
+            for (CMSWebPageModel page : pgs) {
+                if (pageRequest.getPageType().equals(page.getType())) {
+                    pageResponse.setPage(page);
+                }
+            }        	
+        }
+        
+        pageRequest.setPageType(originalPageType);
+    }
+    
     protected CMSImageBannerModel convertImageBanner(ImageBanner imageBanner) {
         CMSImageBannerModel cmsImageBanner = null;
         if (imageBanner != null){
@@ -836,13 +922,16 @@ public abstract class BaseController extends AbstractController implements Messa
             }
         }
         for (CMSWebPageModel page : pages) {
+//            if(pageRequest.getStartSectionIndex() != null && pageRequest.getHowManySections() != null) {
+//            	pageRequest.limitSections(page);
+//            }
             addProductsToSection(user, page);
         }
         return pages;
     }
 
     private boolean isCachedPagesInvalid(CMSPageRequest pageRequest, List<CMSWebPageModel> cachedPages) {
-        boolean invalid = cachedPages.isEmpty();
+        boolean invalid = cachedPages == null || cachedPages.isEmpty();
 
         if (!invalid) {
             List<CMSWebPageModel> pages = CMSContentFactory.getInstance().getCMSPages(pageRequest);
@@ -856,7 +945,9 @@ public abstract class BaseController extends AbstractController implements Messa
 
     private List<CMSWebPageModel> getCachedPages(CMSPageRequest pageRequest) {
         List<CMSWebPageModel> pages = new ArrayList<CMSWebPageModel>();
-        List<String> webPageTypes = (pageRequest.getPageType() != null) ? Arrays.asList(pageRequest.getPageType()) : Arrays.asList(FEED_PAGE_TYPE, TODAYS_PICK_PAGE_TYPE);
+        List<String> webPageTypes = (pageRequest.getPageType() != null) 
+        		? Arrays.asList(pageRequest.getCacheKey()) 
+        		: Arrays.asList(pageRequest.asCacheKey(FEED_PAGE_TYPE), pageRequest.asCacheKey(TODAYS_PICK_PAGE_TYPE));
         for (String type : webPageTypes) {
             CMSWebPageModel cachedFeedPage = CMSContentFactory.getInstance().getCMSPageByName(type);
             if (cachedFeedPage != null) {
@@ -864,8 +955,8 @@ public abstract class BaseController extends AbstractController implements Messa
             }
         }
         return pages;
-    }
-
+    }    
+    
     private void addProductsToSection(SessionUser user, CMSWebPageModel page) {
         if (page != null) {
             List<CMSSectionModel> sectionWithProducts = new ArrayList<CMSSectionModel>();

@@ -270,7 +270,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
             responseMessage = getErrorMessage(ERR_AUTHENTICATION, MessageCodes.MSG_ACCEPT_FD_TERMSANDCONDITIONS_FAILED);
         } else {
             user.setTcAcknowledge(true);
-            if (isCheckLoginStatusEnable(request)) {
+            if (isExtraResponseRequested(request)) {
                 MessageResponse messageResponse = new MessageResponse();
                 populateResponseWithEnabledAdditionsForWebClient(user, messageResponse, request, null);
                 responseMessage = messageResponse;
@@ -354,7 +354,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
     private Message ping(HttpServletRequest request, HttpServletResponse response) throws NoSessionException, FDException {
         Message responseMessage = null;
         SessionUser user = getUserFromSession(request, response);
-        if (isCheckLoginStatusEnable(request)) {
+        if (isExtraResponseRequested(request)) {
             MessageResponse messageResponse = new MessageResponse();
             populateResponseWithEnabledAdditionsForWebClient(user, messageResponse, request, null);
             responseMessage = messageResponse;
@@ -444,7 +444,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 				user.getFDSessionUser().insertOrUpdateSilverPopup(details);
 			}
 			//Silver popup changes End
-            if (isCheckLoginStatusEnable(request)) {
+            if (isExtraResponseRequested(request)) {
                 CMSPageRequest pageRequest = new CMSPageRequest();
                 pageRequest.setRequestedDate(new Date());
                 pageRequest.setPlantId(BrowseUtil.getPlantId(user));

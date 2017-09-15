@@ -76,7 +76,7 @@ public class HelpController extends BaseController {
         } else if (FOOD_SAFETY_ACTION.equalsIgnoreCase(action)) {
             try {
                 String recallContent = ProductUtil.readContent(PRODUCT_RECALLS_PATH);
-                if(!isCheckLoginStatusEnable(request)){
+                if(!isExtraResponseRequested(request)){
                 	StringBuilder sb = new StringBuilder(recallContent);
                 	recallContent = sb.substring(sb.indexOf("<table") - 1, sb.indexOf("</table")) + "</table>";
                 }
@@ -98,7 +98,7 @@ public class HelpController extends BaseController {
                 data = "";
             }
         } else {
-            if (isCheckLoginStatusEnable(request)) {
+            if (isExtraResponseRequested(request)) {
                 data = ProductUtil.readContent(FDX_WEB_HELP_PATH);
             } else {
                 if (EnumEStoreId.FDX.equals(CmsManager.getInstance().getEStoreEnum())) {

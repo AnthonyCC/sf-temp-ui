@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TimerTask;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -86,7 +85,7 @@ public class CMSContentFactory {
 		//pickListTimer.scheduleAtFixedRate(instance.new PickListLoaderTask(), calendar.getTime(), 15 * 60 *1000);
 	}
 	
-	
+	/*
 	public class PageLoaderTask extends TimerTask{
 
 		@Override
@@ -98,6 +97,7 @@ public class CMSContentFactory {
 			}
 		}
 	}
+	*/
 	
 	public void cacheAllPages(){
 	    CMSPageRequest pageRequest = new CMSPageRequest();
@@ -108,14 +108,18 @@ public class CMSContentFactory {
 	public void cacheAllPages(CMSPageRequest pageRequest){
 		LOG.debug("Loading all pages in cache "+ new Date());
 		List<CMSWebPageModel> pages = getCMSPageByParameters(pageRequest);
-		EhCacheUtil.clearCache(FEED_CACHE);
-		for(CMSWebPageModel page: pages){
-			if(page != null){
-				EhCacheUtil.putObjectToCache(FEED_CACHE, page.getType(),page);
+		if(pages.size() == 0) {
+			EhCacheUtil.clearCache(FEED_CACHE);
+		} else {
+			for(CMSWebPageModel page: pages){
+				if(page != null){
+					EhCacheUtil.putObjectToCache(FEED_CACHE, pageRequest.getCacheKey(page),page);
+				}
 			}
 		}
 	}
 	
+	/*
 	public class PickListLoaderTask extends TimerTask {
 
 		@Override
@@ -133,6 +137,7 @@ public class CMSContentFactory {
 		}
 		
 	}
+	*/
 	
 	public final List<CMSPickListItemModel> getPickListByParameter(CMSPageRequest request){
 		List<CMSPickListItemModel> pickLists = new ArrayList<CMSPickListItemModel>();
@@ -346,7 +351,7 @@ public class CMSContentFactory {
 				}
 			}
 		}
-		return sections;
+		return request.limitSections(sections);
 	}
 
 	private List<CMSComponentModel> getSectionComponents(ContentNodeI sectionNode, CMSPageRequest request) {
