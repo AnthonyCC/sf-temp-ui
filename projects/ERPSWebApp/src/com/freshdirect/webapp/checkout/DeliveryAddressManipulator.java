@@ -53,6 +53,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
+import com.freshdirect.logistics.delivery.model.FulfillmentInfo;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.AddressForm;
 import com.freshdirect.webapp.taglib.fdstore.AddressUtil;
@@ -224,6 +225,15 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		date.add( Calendar.DATE, 7 );
 		
 		FDDeliveryZoneInfo zoneInfo = AddressUtil.getZoneInfo( user, erpAddress, result, date.getTime(), user.getHistoricOrderSize(), null);
+		//APPDEV 6442 FDC Transition - We will validate the zone information again when address change happens
+		try {
+			FDDeliveryZoneInfo deliveryZoneInfo = user.overrideZoneInfo(erpAddress, zoneInfo);
+			if(deliveryZoneInfo!=null && deliveryZoneInfo.getFulfillmentInfo()!=null){
+				zoneInfo = deliveryZoneInfo;
+			}
+		} catch (FDInvalidAddressException e) {
+			e.printStackTrace();
+		}
 
 		try {
 			boolean foundFraud = FDCustomerManager.addShipToAddress(AccountActivityUtil.getActionInfo(session), !user.isDepotUser(), erpAddress);
@@ -524,6 +534,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 	 */
 	public void performEditAndSetDeliveryAddress() throws FDResourceException {
 
+		FDSessionUser user = (FDSessionUser)session.getAttribute( SessionName.USER );	
 		String addressId = request.getParameter( "updateShipToAddressId" );
 
 		AddressForm addressForm = new AddressForm();
@@ -542,6 +553,16 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		Calendar date = new GregorianCalendar();
 		date.add( Calendar.DATE, 7 );
 		FDDeliveryZoneInfo zoneInfo = AddressUtil.getZoneInfo( request, dlvAddress, result, date.getTime(), this.getUser().getHistoricOrderSize(), this.getUser().getRegionSvcType(addressId) );
+		//APPDEV 6442 FDC Transition - We will validate the zone information again when address switch happens 
+		try {
+			FDDeliveryZoneInfo deliveryZoneInfo = user.overrideZoneInfo(new ErpAddressModel(dlvAddress), zoneInfo);
+			if(deliveryZoneInfo!=null && deliveryZoneInfo.getFulfillmentInfo()!=null){
+				zoneInfo = deliveryZoneInfo;
+			}
+		} catch (FDInvalidAddressException e) {
+			e.printStackTrace();
+		}		
+		
 		if ( !result.isSuccess() )
 			return;
 
@@ -563,7 +584,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		ErpAddressModel thisAddress = FDCustomerManager.getAddress( getIdentity(), addressId );
 
 		FDDeliveryServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(thisAddress.getZipCode());		
-		FDSessionUser user = (FDSessionUser)session.getAttribute( SessionName.USER );
+		
 		boolean isEBTAccepted = null !=serviceResult ? serviceResult.isEbtAccepted():false;
 		isEBTAccepted = isEBTAccepted && (user.getOrderHistory().getUnSettledEBTOrderCount()<=0)&&!user.hasEBTAlert();
 		if (EnumCheckoutMode.NORMAL == user.getCheckoutMode()) {
@@ -713,6 +734,15 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		}
 		
 		FDDeliveryZoneInfo dlvResponse = AddressUtil.getZoneInfo( user, address, result, startDateTime, user.getHistoricOrderSize(),  user.getRegionSvcType(address.getId()));
+		//APPDEV 6442 FDC Transition - We will validate the zone information again when address change happens
+		try {
+			FDDeliveryZoneInfo deliveryZoneInfo = user.overrideZoneInfo(shippingAddress, dlvResponse);
+			if(deliveryZoneInfo!=null && deliveryZoneInfo.getFulfillmentInfo()!=null){
+				dlvResponse = deliveryZoneInfo;
+			}
+		} catch (FDInvalidAddressException e) {
+			e.printStackTrace();
+		}
 		if ( !result.isSuccess() ) {
 			LOGGER.debug("setRegularDeliveryAddress[getZoneInfo:FAILED] :"+result);
 			return;

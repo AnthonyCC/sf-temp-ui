@@ -2401,59 +2401,52 @@ public class FDUser extends ModelSupport implements FDUserI {
     }
 
     private FulfillmentInfo getFulfillmentInfo(ErpAddressModel address, Date deliveryDate) {
-
-        try {
-        	
-        	 FDDeliveryZoneInfo deliveryZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, (deliveryDate!=null)?deliveryDate: today(), getHistoricOrderSize(), this.getRegionSvcType(address.getId()),
-                     address.getCustomerId());          
-
-        	 FDDeliveryZoneInfo reservationDeliveryZoneInfo=getReservationDeliveryZoneInfo(); 
-            
-            //Case 1: If the user has a reservation, we are setting the fulfillment information from the user's reservation as the user context at the time of login
-            
-            if(null!=reservationDeliveryZoneInfo){
-            	return reservationDeliveryZoneInfo.getFulfillmentInfo();
+        try {      	
+        	FDDeliveryZoneInfo deliveryZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, (deliveryDate!=null)?deliveryDate: getNextDay(), getHistoricOrderSize(), this.getRegionSvcType(address.getId()),
+                     address.getCustomerId());    
+        	//APPDEV 6442 FDC transition changes
+        	FDDeliveryZoneInfo f = overrideZoneInfo(address, deliveryZoneInfo);       	 
+            if (f!=null && f.getFulfillmentInfo()!=null){
+            	return f.getFulfillmentInfo();
             }
-            
-            //Case 2: If the user does not have any reservation (delivery date is null ), we are using the look ahead days strategy to set the user context at the time of login
-            // The lookAheadDays property value is provided and maintained by SAP. If the value is 0, we shall not execute the code
-            
-            if(null==reservationDeliveryZoneInfo) {
-            	int lookAheadDays = FDStoreProperties.getFdcTransitionLookAheadDays();
-            	if(lookAheadDays > 0){
-				Date day = DateUtil.truncate(DateUtil.addDays(new Date(), lookAheadDays));
-            
-            	FDDeliveryZoneInfo fdcDeliveryZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, day, getHistoricOrderSize(), this.getRegionSvcType(address.getId()),
-                        address.getCustomerId());
-
-            	if (fdcFuturePlantLogin( deliveryZoneInfo, fdcDeliveryZoneInfo))
-                    return fdcDeliveryZoneInfo.getFulfillmentInfo();
-            	}
-            }
-            
-            //Case 3: If the user does not have a reservation and does not fall under the look ahead days - return the original fulfillment call
-            
-            if (deliveryZoneInfo != null)
-                return deliveryZoneInfo.getFulfillmentInfo();
-
+            //If the user does not have a reservation and does not fall under the look ahead days (as determined by overrideZoneInfo() ) - return the original fulfillment call
+            return deliveryZoneInfo.getFulfillmentInfo();
         } catch (FDInvalidAddressException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (FDResourceException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;
     }
 
-	private boolean fdcFuturePlantLogin(FDDeliveryZoneInfo deliveryZoneInfo,
-			FDDeliveryZoneInfo fdcDeliveryZoneInfo) {
+	public  FDDeliveryZoneInfo overrideZoneInfo(ErpAddressModel address,
+			FDDeliveryZoneInfo deliveryZoneInfo) throws FDResourceException,FDInvalidAddressException {
+		FDDeliveryZoneInfo reservationDeliveryZoneInfo=getReservationDeliveryZoneInfo(); 
+		//Case 1: If the user has a reservation, we will be using the fulfillment information associated with user's reservation as the user context at the time of login
+		if(null!=reservationDeliveryZoneInfo){
+			return reservationDeliveryZoneInfo;
+		}
+		//Case 2: If the user does not have any reservation, we will follow the look ahead days strategy to set the user context at the time of login
+		// The lookAheadDays property value is provided and maintained by SAP. If the value is 0, the code shall not be executed
+		if(null==reservationDeliveryZoneInfo) {
+			int lookAheadDays = FDStoreProperties.getFdcTransitionLookAheadDays();
+			if(lookAheadDays > 0){
+			Date day = DateUtil.truncate(DateUtil.addDays(today(), lookAheadDays));
+			FDDeliveryZoneInfo fdcDeliveryZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, day, getHistoricOrderSize(), this.getRegionSvcType(address.getId()),
+		            address.getCustomerId());
+			if (futurePlantLogin( deliveryZoneInfo, fdcDeliveryZoneInfo))
+		        return fdcDeliveryZoneInfo;
+			}
+		}
+		return null;
+	}
 
+	private boolean futurePlantLogin(FDDeliveryZoneInfo deliveryZoneInfo,
+			FDDeliveryZoneInfo fdcDeliveryZoneInfo) {
 		boolean isDifferentPlant = false;
 		if (fdcDeliveryZoneInfo != null & deliveryZoneInfo != null) {
-
-			String oldPlant = null, newPlant = null;
-
+			String oldPlant = null;
+			String newPlant = null;
 			oldPlant = deliveryZoneInfo.getFulfillmentInfo().getPlantCode();
 			newPlant = fdcDeliveryZoneInfo.getFulfillmentInfo().getPlantCode();
 
@@ -2472,67 +2465,48 @@ public class FDUser extends ModelSupport implements FDUserI {
 		Date weeklyOrOneTimeReservationDeliveryDate = null;
 		ErpAddressModel standardReservationAddress = null;
 		ErpAddressModel weeklyOrOneTimeReservationAddress = null;
-
-		if (null != this.getShoppingCart()
-				& null != this.getShoppingCart().getDeliveryReservation()) {
-			standardReservationDeliveryDate = this.getShoppingCart()
-					.getDeliveryReservation().getDeliveryDate();
-			standardReservationAddress = this.getShoppingCart()
-					.getDeliveryAddress();
+		//Extract the delivery date and address from the user's standard reservation which is set to user's shopping cart
+		if (null != this.getShoppingCart() & null != this.getShoppingCart().getDeliveryReservation()) {
+			standardReservationDeliveryDate = this.getShoppingCart().getDeliveryReservation().getDeliveryDate();
+			standardReservationAddress = this.getShoppingCart().getDeliveryAddress();
 		}
+		// Extract the delivery date and address from the user's weekly or one time reservation which is set to user's object
 		if (null != this.getReservation()) {
-			weeklyOrOneTimeReservationDeliveryDate = this.getReservation()
-					.getDeliveryDate();
-			weeklyOrOneTimeReservationAddress = this.getReservation()
-					.getAddress();
+			weeklyOrOneTimeReservationDeliveryDate = this.getReservation().getDeliveryDate();
+			weeklyOrOneTimeReservationAddress = this.getReservation().getAddress();
 		}
 
 		// Weekly or One time reservation has higher precedence than Standard reservation
-		if (null != weeklyOrOneTimeReservationDeliveryDate
-				& null != weeklyOrOneTimeReservationAddress) {
+		if (null != reservationDeliveryZoneInfo	& null != weeklyOrOneTimeReservationDeliveryDate & null != weeklyOrOneTimeReservationAddress) {
 			try {
-				reservationDeliveryZoneInfo = FDDeliveryManager
-						.getInstance()
-						.getZoneInfo(
+				return FDDeliveryManager.getInstance().getZoneInfo(
 								weeklyOrOneTimeReservationAddress,
 								weeklyOrOneTimeReservationDeliveryDate,
 								getHistoricOrderSize(),
-								this.getRegionSvcType(weeklyOrOneTimeReservationAddress
-										.getId()),
-								weeklyOrOneTimeReservationAddress
-										.getCustomerId());
+								this.getRegionSvcType(weeklyOrOneTimeReservationAddress.getId()),
+								weeklyOrOneTimeReservationAddress.getCustomerId());
 			} catch (FDResourceException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (FDInvalidAddressException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-
-		if (null != reservationDeliveryZoneInfo
-				& null != standardReservationDeliveryDate
-				& null != standardReservationAddress) {
+		//checking if the user has any standard reservation
+		if (null != reservationDeliveryZoneInfo	& null != standardReservationDeliveryDate & null != standardReservationAddress) {
 			try {
-				reservationDeliveryZoneInfo = FDDeliveryManager
-						.getInstance()
-						.getZoneInfo(
+				return FDDeliveryManager.getInstance().getZoneInfo(
 								standardReservationAddress,
 								standardReservationDeliveryDate,
 								getHistoricOrderSize(),
-								this.getRegionSvcType(standardReservationAddress
-										.getId()),
+								this.getRegionSvcType(standardReservationAddress.getId()),
 								standardReservationAddress.getCustomerId());
 			} catch (FDResourceException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (FDInvalidAddressException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-
-		return reservationDeliveryZoneInfo;
+		return null;
 	}
 	
 	private UserContext setFulfillmentAndPricingContext(UserContext userContext, ErpAddressModel address) throws FDResourceException {
@@ -3633,6 +3607,18 @@ public class FDUser extends ModelSupport implements FDUserI {
             d = new Date();
         }
         return d;
+    }
+    
+    private Date getNextDay() {
+        Date today=today();
+        if (EnumEStoreId.FDX.equals(getUserContext().getStoreContext().getEStoreId())){
+        	return today;
+        } else {
+        Calendar cal=Calendar.getInstance();
+        cal.setTime(today);
+        cal.add(Calendar.DATE, 1);
+        return cal.getTime();
+        }
     }
 
     private static ZoneInfo getZoneInfo(String pricingZone, SalesArea salesArea) {

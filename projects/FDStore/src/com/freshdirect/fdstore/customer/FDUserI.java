@@ -22,6 +22,8 @@ import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassProfileType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.EnumEStoreId;
@@ -47,6 +49,7 @@ import com.freshdirect.logistics.analytics.model.SessionEvent;
 import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.logistics.delivery.model.EnumRegionServiceType;
+import com.freshdirect.logistics.delivery.model.FulfillmentInfo;
 
 public interface FDUserI extends java.io.Serializable {
 
@@ -751,5 +754,8 @@ public interface FDUserI extends java.io.Serializable {
 	public ErpCustomerInfoModel getCustomerInfoModel() throws FDResourceException ;
 	
 	public void refreshFdCustomer() throws FDResourceException;
+
+    public  FDDeliveryZoneInfo overrideZoneInfo(ErpAddressModel address,FDDeliveryZoneInfo deliveryZoneInfo) throws FDResourceException,FDInvalidAddressException;
+
 
 }
