@@ -135,4 +135,9 @@
                 timeToLiveSeconds="900"
                 memoryStoreEvictionPolicy="LRU">
      </cache>
+     <cache name="recommCheckCache"
+                maxEntriesLocalHeap="200"
+                timeToLiveSeconds="300"
+                memoryStoreEvictionPolicy="LRU">
+     </cache>
 </ehcache>

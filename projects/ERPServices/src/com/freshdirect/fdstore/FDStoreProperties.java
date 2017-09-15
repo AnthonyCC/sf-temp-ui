@@ -132,7 +132,7 @@ public class FDStoreProperties {
     private final static String PROP_USE_MULTIPLE_PROMOTIONS = "fdstore.useMultiplePromotions";
     private final static String PROP_DATA_COLLECTION_ENABLED = "fdstore.dataCollectionEnabled";
     private final static String PROP_PRODUCT_RECOMMEND_ENABLED = "fdstore.productRecommendEnabled";
-
+    private final static String PROP_PRODUCT_RECOMMEND_CHECK_CACHE_ENABLED = "fdstore.productRecommendCheckCacheEnabled";
     // Delivery Pass Store properties.
     private final static String BSGS_SIGNUP_URL = "fdstore.bsgsSignupUrl";
     private final static String UNLIMITED_SIGNUP_URL = "fdstore.unlimitedSignupUrl";
@@ -1115,6 +1115,8 @@ static {
 
         defaults.put(PROP_PRODUCT_RECOMMEND_ENABLED, "false");
 
+        defaults.put(PROP_PRODUCT_RECOMMEND_CHECK_CACHE_ENABLED, "true");
+        
         defaults.put(BSGS_SIGNUP_URL, "/product.jsp?productId=mkt_fd_dlvpss_b10g5f&catId=gro_gear_dlvpass");
         defaults.put(UNLIMITED_SIGNUP_URL, "/product.jsp?productId=mkt_fd_dlvpss_unl6m&catId=gro_gear_dlvpass");
         defaults.put(UNLIMITED_PROMOTIONAL_SIGNUP_URL, "/product.jsp?productId=mkt_fd_dlvpss_unl6m&catId=gro_gear_dlvpass");
@@ -2280,7 +2282,9 @@ static {
     public static boolean isProductRecommendEnabled() {
         return Boolean.valueOf(get(PROP_PRODUCT_RECOMMEND_ENABLED)).booleanValue();
     }
-
+    public static boolean isProductRecommendCheckCacheEnabled() {
+        return Boolean.valueOf(get(PROP_PRODUCT_RECOMMEND_CHECK_CACHE_ENABLED)).booleanValue();
+    }
     public static String getBSGSSignUpUrl(boolean isCallCenter) {
         if (isCallCenter) {
             return get(CRM_BSGS_SIGNUP_URL);

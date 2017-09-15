@@ -32,7 +32,7 @@ public class CartDataPotatoTag extends SimpleTagSupport {
 		try {
             StandingOrderHelper.clearSO3Context(user, request.getParameter("isSO"), standingOrder);
 	        
-			CartData result = CartDataService.defaultService().loadCartData(request, user);
+			CartData result = CartDataService.defaultService().loadCartData(request, user, false);
 			Map<String, ?> potato = SoyTemplateEngine.convertToMap(result);
 			context.setAttribute(name, potato);
 		} catch (FDResourceException e) {

@@ -43,7 +43,7 @@ import com.freshdirect.webapp.taglib.smartstore.Impression;
 import com.freshdirect.webapp.util.FDEventUtil;
 import com.freshdirect.webapp.util.ProductRecommenderUtil;
 import com.freshdirect.webapp.util.RecommendationsCache;
-
+import com.freshdirect.fdstore.cache.EhCacheUtil;
 public abstract class AbstractCarouselService {
 
     private static final Logger LOGGER = LoggerFactory.getInstance(AbstractCarouselService.class);
@@ -126,16 +126,7 @@ public abstract class AbstractCarouselService {
     public CarouselData getCarouselData(HttpSession session, HttpServletRequest request, FDSessionUser user, Variant variant, String parentImpressionId,
             String parentVariantId, Recommendations recommendations) throws FDResourceException {
 
-        if (recommendations == null || recommendations.getProducts().isEmpty()) {
-            if (FDStoreProperties.isLogRecommenderResults()) {
-                LOGGER.debug("Return empty result");
-            }
-        }
-
-        if (recommendations != null && !recommendations.isLogged()) {
-            logImpressions(recommendations, user, request, parentImpressionId, parentVariantId);
-            logRecommenderResults(recommendations.getProducts());
-        }
+    	logCarouselData(request, user, variant, parentImpressionId, parentVariantId, recommendations);
 
         EnumSiteFeature siteFeature = variant.getSiteFeature();
         CarouselData carousel = null;
@@ -148,6 +139,20 @@ public abstract class AbstractCarouselService {
         }
         return carousel;
 	}
+
+    private void logCarouselData( HttpServletRequest request, FDSessionUser user, Variant variant, String parentImpressionId,
+            String parentVariantId, Recommendations recommendations) {
+        if (recommendations == null || recommendations.getProducts().isEmpty()) {
+            if (FDStoreProperties.isLogRecommenderResults()) {
+                LOGGER.debug("Return empty result");
+            }
+        }
+
+        if (recommendations != null && !recommendations.isLogged()) {
+            logImpressions(recommendations, user, request, parentImpressionId, parentVariantId);
+            logRecommenderResults(recommendations.getProducts());
+        }    	
+    }
 
     public RecommendationTab getRecommendationTab(HttpServletRequest request, FDUserI user, RecommendationRequestObject requestData)
             throws FDResourceException {
@@ -184,6 +189,12 @@ public abstract class AbstractCarouselService {
      * @throws FDResourceException
      */
     public ViewCartCarouselData populateTabsRecommendationsAndCarousel(HttpServletRequest request, FDSessionUser user, SessionInput input) throws FDResourceException {
+    	return populateTabs(request, user, input, true);
+    }
+    public ViewCartCarouselData populateTabsRecommendations(HttpServletRequest request, FDSessionUser user, SessionInput input) throws FDResourceException {
+    	return populateTabs(request, user, input, false);
+    }
+    private ViewCartCarouselData populateTabs(HttpServletRequest request, FDSessionUser user, SessionInput input, boolean getCarouselData) throws FDResourceException {
         final int maxTabs = getMaxTabs();
         ViewCartCarouselData result = new ViewCartCarouselData();
         HttpSession session = request.getSession();
@@ -221,27 +232,32 @@ public abstract class AbstractCarouselService {
                 Variant variant = tabRecommendation.get(tabIndex);
                 String tabTitle = WordUtils.capitalizeFully(getTitleForVariant(variant));
                 String siteFeatureName = variant.getSiteFeature().getName();
-                Recommendations recommendations = getRecommendations(variant, request, request.getSession(), parentImpressionId, user);
+                Boolean hasRecommendation = hasRecommendation(variant, request, request.getSession(), parentImpressionId + parentVariantId + tabTitle, user);
                 boolean selected = tabIndex == selectedTab;
-                RecommendationTab tab = new RecommendationTab(tabTitle, siteFeatureName).setParentImpressionId(parentImpressionId)
-                        .setImpressionId(tabRecommendation.getFeatureImpressionId(tabIndex)).setParentVariantId(parentVariantId).setDescription(getDescription(variant))
-                        .setProductSamplesReacedMaximumItemQuantity(user.getShoppingCart().isMaxSampleReached()).setSelected(selected)
-                        .setUpdateContent(!input.isOnlyTabHeader() || !updatedSiteFeature.equals(selectedSiteFeature) || isSample(siteFeatureName));
-                    tab.setCarouselData(getCarouselData(session, request, user, variant, parentImpressionId, parentVariantId, recommendations));
-                result.addRecommendationTab(tab);
+                if (hasRecommendation) {
+	                RecommendationTab tab = new RecommendationTab(tabTitle, siteFeatureName).setParentImpressionId(parentImpressionId)
+	                        .setImpressionId(tabRecommendation.getFeatureImpressionId(tabIndex)).setParentVariantId(parentVariantId).setDescription(getDescription(variant))
+	                        .setProductSamplesReacedMaximumItemQuantity(user.getShoppingCart().isMaxSampleReached()).setSelected(selected)
+	                        .setUpdateContent(!input.isOnlyTabHeader() || isSample(siteFeatureName));
+	                if (getCarouselData) {
+	                	Recommendations recommendations = getRecommendations(variant, request, request.getSession(), parentImpressionId, user);
+	                	tab.setCarouselData(getCarouselData(session, request, user, variant, parentImpressionId, parentVariantId, recommendations));
+	                }
+	                result.addRecommendationTab(tab);
+                }
             }
         }
-
-        List<RecommendationTab> tabs = result.getRecommendationTabs();
-        if (!isTabSelected(tabs)) {
-            selectedFirstAvailableTab(tabs);
+        if (getCarouselData) {
+	        List<RecommendationTab> tabs = result.getRecommendationTabs();
+	        if (!isTabSelected(tabs)) {
+	        	selectFirstAvailableTab(tabs);
+	        }
+	        removeEmptyTabs(tabs);
         }
-        removeEmptyTabs(tabs);
-
         return result;
     }
 
-    private void selectedFirstAvailableTab(List<RecommendationTab> tabs) {
+    private void selectFirstAvailableTab(List<RecommendationTab> tabs) {
         for (RecommendationTab tab : tabs) {
             if (tab.getCarouselData() != null && !tab.getCarouselData().getProducts().isEmpty()) {
                 tab.setSelected(true);
@@ -340,16 +356,19 @@ public abstract class AbstractCarouselService {
 
 	// recommendation methods
     public SessionInput createSessionInput(FDUserI user, HttpServletRequest request) {
+    	return createSessionInput(user, request, 0);
+    }
+    public SessionInput createSessionInput(FDUserI user, HttpServletRequest request, int sizeLimit) {
 		SessionInput sessionInput = new SessionInput(user);
         sessionInput.setPreviousRecommendations((Map) request.getSession().getAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS));
 		FDStoreRecommender.initYmalSource(sessionInput, user, request);
 		sessionInput.setCurrentNode(sessionInput.getYmalSource());
-		sessionInput.setMaxRecommendations(getMaxRecommendations());
+		sessionInput.setMaxRecommendations(sizeLimit == 0? getMaxRecommendations() : sizeLimit);
 		return sessionInput;
 	}
 
-    private Recommendations extractRecommendations(HttpSession session, HttpServletRequest request, EnumSiteFeature siteFeature, FDUserI user) throws FDResourceException {
-        SessionInput sessionInput = createSessionInput(user, request);
+    private Recommendations extractRecommendations(HttpSession session, HttpServletRequest request, EnumSiteFeature siteFeature, FDUserI user, int sizeLimit) throws FDResourceException {
+        SessionInput sessionInput = createSessionInput(user, request, sizeLimit);
 		Recommendations recommendations = ProductRecommenderUtil.doRecommend(user, siteFeature, sessionInput);
 		collectRequestId(request, recommendations, user);
 		return recommendations;
@@ -359,7 +378,7 @@ public abstract class AbstractCarouselService {
         RecommendationsCache cache = RecommendationsCache.getCache(session);
         Recommendations r = cache.get(cacheId, oVariant);
         if (r == null) {
-            r = extractRecommendations(session, request, oVariant.getSiteFeature(), user);
+            r = extractRecommendations(session, request, oVariant.getSiteFeature(), user, 20);
             if (cacheId != null){
               cache.store(cacheId, oVariant, r);
             }
@@ -367,6 +386,31 @@ public abstract class AbstractCarouselService {
 		return r;
 	}
 
+    private Boolean hasRecommendation(Variant variant, HttpServletRequest request, HttpSession session, String cacheId, FDUserI user) throws FDResourceException {
+    	if (variant == null) {
+			return false;
+		}
+    	boolean useCache = FDStoreProperties.isProductRecommendCheckCacheEnabled() && null != cacheId && !cacheId.isEmpty() && user.getPrimaryKey() != null;
+    	
+    	if (useCache) {
+	    	cacheId = cacheId + user.getPrimaryKey();
+			Boolean cachedValue = EhCacheUtil.getObjectFromCache(EhCacheUtil.RECOMMENDATION_CHECK_CACHE_NAME, cacheId);
+			if (null != cachedValue) {
+				return cachedValue;
+			}
+    	}
+    	
+        SessionInput sessionInput = createSessionInput(user, request, 1);
+        sessionInput.setOnlyTabHeader(true);
+		Recommendations recommendations = ProductRecommenderUtil.doRecommend(user, variant.getSiteFeature(), sessionInput);
+    	
+    	boolean hasProduct = recommendations.getAllProducts().size() > 0;
+    	if (useCache) {
+    		EhCacheUtil.putObjectToCache(EhCacheUtil.RECOMMENDATION_CHECK_CACHE_NAME, cacheId, new Boolean(hasProduct));
+    	}
+        return hasProduct;
+	}
+    
     private Recommendations getRecommendations(Variant variant, HttpServletRequest request, HttpSession session, String cacheId, FDUserI user) throws FDResourceException {
 		if (variant == null) {
 			return null;

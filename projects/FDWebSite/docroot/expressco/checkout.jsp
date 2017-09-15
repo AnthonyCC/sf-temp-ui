@@ -142,6 +142,11 @@ if (mobWeb) {
         <% if (!mobWeb) { /* no mobWeb for now */  %>
           <% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user)) { %>
             <div id="cartCarousels">
+     			<script>
+		          	$jq.ajax('/carousel/carousel.jsp?type=cart').then(function(page) {
+		          		$jq('#expresscheckout #cartCarousels').html(page);
+		          	});
+		        </script>
               <soy:render template="common.checkoutTabbedCarousel" data="${singlePageCheckoutPotato.carouselData}" />
             </div>
           <% } %>
