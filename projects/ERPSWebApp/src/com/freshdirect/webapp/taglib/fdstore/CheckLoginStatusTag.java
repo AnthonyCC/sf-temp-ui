@@ -150,27 +150,8 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
                 user.setFutureZoneNotificationEmailSentForCurrentAddress(true);
                 LOGGER.debug("user was found!  placing in session");
                 session.setAttribute(SessionName.USER, user);
-            }
-
-            // // new COS changes redirect corporate user to corporate page
-            if (user != null) {
-                LOGGER.debug("entering the corporate check" + user.getUserServiceType());
-            }
-
-            if (user != null) {
                 FDCustomerCouponUtil.initCustomerCoupons(session);
-            }
-
-            if ((user != null) && EnumServiceType.CORPORATE.equals(user.getUserServiceType()) && user.getUserContext() != null && user.getUserContext().getStoreContext() != null
-                    && !EnumEStoreId.FDX.equals(user.getUserContext().getStoreContext().getEStoreId())) {
-                // only index page request will be redirected to corporate page
-                if (request.getRequestURI().indexOf("index.jsp") != -1) {
-                    this.redirectPage = FDURLUtil.getLandingPageUrl(EnumServiceType.CORPORATE);
-                    doRedirect(true);
-
-                    return SKIP_BODY;
-                }
-            }
+            }     
         }
 
         // APPDEV-3197 try to identify friendly robot on every page before using IP Locator

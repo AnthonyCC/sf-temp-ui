@@ -122,27 +122,25 @@ if(user != null) {
 				</div>
 
 				<%-- nav links next to search field --%>
-				<% if (user != null && user.getLevel() != FDUserI.GUEST && user.isEligibleForStandingOrders() && user.isNewSO3Enabled()) {  %>
-					<% /* nothing in this space */ %>
-		        <% } else { %>
-					<%
-					//if(Boolean.TRUE == pageContext.getAttribute(LocationHandlerTag.SERVICE_TYPE_MODIFICATION_ENABLED)){
-						%><div class="topnavitem" id="topnavitem_dlvType"><%
-						if(user.isCorporateUser()){
-							%><a href="/index.jsp?serviceType=HOME">Home delivery?</a><%
-						}else {
-							%><a href="/index.jsp?serviceType=CORPORATE">Office delivery?</a><%
-						}
-						%></div><%
-					//}
-					/*
-					we are currently having this always show here,
-					because the parent conditional seems to always be false on pages which use this file,
-					regardless of user status, even if incognito.
-					the mockups imply that one or the other should always show
-					*/
-					%>
-				<% } %>
+			
+				<%
+				//if(Boolean.TRUE == pageContext.getAttribute(LocationHandlerTag.SERVICE_TYPE_MODIFICATION_ENABLED)){
+					%><div class="topnavitem" id="topnavitem_dlvType"><%
+					if(user.isCorporateUser()){
+						%><a href="/index.jsp?serviceType=HOME">Home delivery?</a><%
+					}else {
+						%><a href="/index.jsp?serviceType=CORPORATE">Office delivery?</a><%
+					}
+					%></div><%
+				//}
+				/*
+				we are currently having this always show here,
+				because the parent conditional seems to always be false on pages which use this file,
+				regardless of user status, even if incognito.
+				the mockups imply that one or the other should always show
+				*/
+				%>
+			
 				
 				<div class="topnavitem" id="topnavitem_help">
 			        <a href="/help/index.jsp?trk=gnav">Help</a>
