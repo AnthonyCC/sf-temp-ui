@@ -679,18 +679,18 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 	<tmpl:put name="cartTotal"><div class="locabar-section locabar-popupcart-section" style="margin-right: 0;">
 			<div id="locabar_popupcart_trigger" class="locabar_triggers" role="menuitem" tabindex="0">
 				<div class="bold cursor-pointer locabar_triggers_menuitem">
-          			<a href="/view_cart.jsp">
-						<span class="offscreen">View Cart</span>
+          			<a href="/view_cart.jsp" tabindex="-1" nofocus>
+						<span class="offscreen">ViewCart menu</span>
 						<div style="display: inline-block;">
 							<div class="locabar-cart-count-cont">
 								<div class="locabar-cart"></div>
-								<div class="locabar-circle-cont locabar-popupcart-count">0</div>
+								<div class="locabar-circle-cont locabar-popupcart-count"> 0</div>
 							</div>
 						</div>
 						<div style="display: inline-block;">
 							<div class="locabar-cart-total">
 								<!-- <div>&nbsp;</div> -->
-								<div class="locabar-popupcart-total">$0.00</div>
+								<div class="locabar-popupcart-total"> $0.00 </div>
 							</div>
 							<div class="locabar-popupcart-label">
 								Cart

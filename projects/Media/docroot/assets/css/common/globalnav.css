@@ -94,7 +94,7 @@ body{
 }
 
 .globalnav_top .topnavitem a:focus {
-  outline: 2px solid rgba(136,167,92,.4);
+  outline: #5fb069 solid 2px;
 }
 
 .globalnav_top #topnavitem_reorder a{
