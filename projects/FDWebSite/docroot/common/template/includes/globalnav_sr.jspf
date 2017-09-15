@@ -98,16 +98,15 @@ if(user != null) {
 			<div class="nav<%= " "+hasEcouponsClass %>">
 				<a class="logo" href="<%= FDURLUtil.getLandingPageUrl(user)%>"><img src="/media/layout/nav/globalnav/fdx/logo.png" alt="FreshDirect" border="0" /></a>
 				<%
-					int searchBaseWidth = 535;
-					//uncomment this to make search resize when the sign up button isn't shown
-					/*
+					String searchFormClass = "searchform";
 					if (user != null && user.getLevel() != FDUserI.GUEST) {
-						searchBaseWidth += 71; //width of "sign up" button
+						if ( !(user.isEligibleForStandingOrders() && user.isNewSO3Enabled()) ) {
+							searchFormClass += " widen";
+						}
 					}
-					*/
 				%>
 				<div class="searchform-cont">
-					<form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
+					<form class="<%= searchFormClass %>" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
 						<label class="offscreen" for="topSearchField">Search</label>
 						<%
 							{
@@ -172,9 +171,15 @@ if(user != null) {
 
 			<div class="nav<%= " "+hasEcouponsClass %>">
 				<%-- nav links next to search field --%>
-
-
-					<form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
+					<%
+						String searchFormClass = "searchform";
+						if (user != null && user.getLevel() != FDUserI.GUEST) {
+							if ( !(user.isEligibleForStandingOrders() && user.isNewSO3Enabled()) ) {
+								searchFormClass += " widen";
+							}
+						}
+					%>
+					<form class="searchform<%= searchFormClass %>" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
 						<label class="offscreen" for="topSearchField">Search</label>
 						<%
 							{

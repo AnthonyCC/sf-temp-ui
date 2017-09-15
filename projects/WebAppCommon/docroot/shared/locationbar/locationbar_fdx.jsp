@@ -341,14 +341,6 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 			} else { //no addresses
 				//do nothing i guess	
 			}
-			%>
-			<style>
-			/* APPBUG-4173 fix */
-			.globalnav_top .nav .searchform { 
-				width: 425px!important; 
-			}
-			</style>
-			<%
 		} else { //non-signed in user
 			%><tmpl:put name="address_change_zip">
 				<div class="locabar_addresses-change-zip-cont">
