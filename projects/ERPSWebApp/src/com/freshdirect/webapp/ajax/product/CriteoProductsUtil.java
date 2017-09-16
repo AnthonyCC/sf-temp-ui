@@ -118,9 +118,10 @@ public class CriteoProductsUtil
 				HLBrandProductAdResponse response = FDBrandProductsAdManager.getHLadproductToPdp(hLBrandProductAdRequest);
 				if (response != null) {
 					List<HLBrandProductAdInfo> hlBrandAdProductsMeta = response.getProductAd();
-					productsCount = hlBrandAdProductsMeta.size();
-					if (hlBrandAdProductsMeta != null)
+					if (hlBrandAdProductsMeta != null){
+						productsCount = hlBrandAdProductsMeta.size();
 						addHlBrandProducts(user, adPrducts, updatedPageBeacon, hlBrandAdProductsMeta,pdpPage);
+					}
 					browseData.getAdProducts().setProducts(adPrducts);
 					if (productsCount == adPrducts.size()) {
 						browseData.getAdProducts().setPageBeacon(response.getPageBeacon() + A_SHOWN_ALL);

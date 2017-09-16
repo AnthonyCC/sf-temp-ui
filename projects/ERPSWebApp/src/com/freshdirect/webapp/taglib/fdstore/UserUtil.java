@@ -725,16 +725,18 @@ public class UserUtil {
         	  }
           }
 
-            try {
-                EnumDeliveryType lastOrderType = user.getOrderHistory().getLastOrderType();
-                if (EnumDeliveryType.CORPORATE.equals(lastOrderType)) {
-                    updatedSuccessPage = FDURLUtil.getLandingPageUrl(EnumServiceType.CORPORATE);
-                } else if (EnumDeliveryType.HOME.equals(lastOrderType)) {
-                    updatedSuccessPage = FDURLUtil.getLandingPageUrl(EnumServiceType.HOME);
-                }
-            } catch (FDResourceException e) {
-                LOGGER.error("Error during getting order history", e);
-            }
+          if(null !=updatedSuccessPage && updatedSuccessPage.indexOf("/index.jsp")!=-1){
+				try {
+				    EnumDeliveryType lastOrderType = user.getOrderHistory().getLastOrderType();
+				    if (EnumDeliveryType.CORPORATE.equals(lastOrderType)) {
+				        updatedSuccessPage = FDURLUtil.getLandingPageUrl(EnumServiceType.CORPORATE);
+				    } else if (EnumDeliveryType.HOME.equals(lastOrderType)) {
+				        updatedSuccessPage = FDURLUtil.getLandingPageUrl(EnumServiceType.HOME);
+				    }
+				} catch (FDResourceException e) {
+				    LOGGER.error("Error during getting order history", e);
+				}
+          }
 
           //tick and tie for refer a friend program
           if(session.getAttribute("TICK_TIE_CUSTOMER") != null) {
