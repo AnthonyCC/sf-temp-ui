@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
@@ -23,7 +23,6 @@ import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.StringUtil;
@@ -31,8 +30,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.webapp.ajax.location.LocationHandlerService;
-import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
-import com.freshdirect.webapp.checkout.RedirectToPage;
 import com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag;
 import com.freshdirect.webapp.taglib.fdstore.AddressUtil;
 import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
@@ -40,7 +37,6 @@ import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
-import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class LocationHandlerTag extends SimpleTagSupport {
 
@@ -68,6 +64,7 @@ public class LocationHandlerTag extends SimpleTagSupport {
         ActionResult result = new ActionResult();
         PageContext ctx = (PageContext) getJspContext();
         HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
+        HttpServletResponse response = (HttpServletResponse) ctx.getResponse();
         FDSessionUser user = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
 
         String zipCodeName = EnumUserInfoName.DLV_ZIPCODE.getCode();
@@ -84,7 +81,7 @@ public class LocationHandlerTag extends SimpleTagSupport {
                 String url = request.getRequestURI().toLowerCase();
 
                 if ("selectAddress".equalsIgnoreCase(action)) {
-                    doSelectAddressAction(user, result, ctx, request);
+                    LocationHandlerService.getDefaultService().doSelectAddressAction(user, result, request, response);
                 } else if ("setZipCode".equalsIgnoreCase(action)) {
                     LocationHandlerService.getDefaultService().doSetZipCodeAction(user, result, zipCodeName, zipCodeValue, false);
                 } else if ("setMoreInfo".equalsIgnoreCase(action)) {
@@ -102,8 +99,6 @@ public class LocationHandlerTag extends SimpleTagSupport {
                 } else if ("futureZoneNotificationFdx".equalsIgnoreCase(action)) {
                     String email = request.getParameter("email");
                     doFutureZoneNotificationActionFdx(email, zipCodeName, zipCodeValue, user, result);
-                } else { // no action parameter
-                    doSetServiceTypeAction(url, user);
                 }
                 doExportAttributes(url, user, ctx);
             }
@@ -114,29 +109,6 @@ public class LocationHandlerTag extends SimpleTagSupport {
         }
 
         ctx.setAttribute(ACTION_RESULT_ATTR, result);
-    }
-
-    /**
-     * based on step_1_choose.jsp
-     * 
-     * @param user
-     * @param result
-     * @param ctx
-     * @param request
-     */
-    private void doSelectAddressAction(FDSessionUser user, ActionResult result, PageContext ctx, HttpServletRequest request) throws JspException, FDResourceException {
-        // Clear Standing Order Session
-        StandingOrderHelper.clearSO3Context(user, request, null);
-        DeliveryAddressManipulator m = new DeliveryAddressManipulator(ctx, result, "setDeliveryAddress");
-        m.setLocationHandlerMode(true);
-        try {
-            if (!(user.isVoucherHolder() && user.getMasqueradeContext() == null))
-                m.performSetDeliveryAddress("");
-        } catch (RedirectToPage e) {
-            LOGGER.debug(e); // do not do redirect, determine success based on result instead
-        }
-        handleNewAddressSet(user);
-        CmRegistrationTag.setPendingAddressChangeEvent(ctx.getSession());
     }
 
     public static boolean hasFdService(String zipCode) {
@@ -291,25 +263,6 @@ public class LocationHandlerTag extends SimpleTagSupport {
         }
 
         return false;
-    }
-
-    private void doSetServiceTypeAction(String url, FDSessionUser user) throws FDResourceException {
-        if (isServiceTypeModificationEnabled(user)) {
-            EnumServiceType enumServiceType = null;
-
-            if (url.startsWith("/cos.jsp")) { // if user lands on the Corporate Home Page - for header consistency
-                enumServiceType = EnumServiceType.CORPORATE;
-
-            } else if (url.startsWith("/index.jsp") || url.startsWith("/welcome.jsp")) { // if user lands on the Residential Home Pages
-                enumServiceType = EnumServiceType.HOME;
-
-            }
-
-            if (enumServiceType != null && handleNewServiceType(enumServiceType, user)) {
-                user.updateUserState(); // for robustness only
-                FDCustomerManager.storeUser(user.getUser());
-            }
-        }
     }
 
     private void doExportAttributes(String uri, FDSessionUser user, PageContext ctx) throws FDResourceException {

@@ -116,6 +116,7 @@ import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -125,6 +126,7 @@ import com.freshdirect.logistics.analytics.model.SessionEvent;
 import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.logistics.delivery.model.EnumRegionServiceType;
+import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.FulfillmentInfo;
 import com.freshdirect.logistics.delivery.model.SalesArea;
 import com.freshdirect.smartstore.fdstore.CohortSelector;
@@ -585,7 +587,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     @Override
     public SignupDiscountRule getSignupDiscountRule() {
         if (this.promotionEligibility == null) {
-            updateUserState();
+            updateUserState(false);
         }
         return this.signupDiscountRule;
     }
@@ -634,7 +636,24 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     @Override
     public void updateUserState() {
-        try {
+    	this.updateUserState(true);        
+    }
+    
+    @Override
+    public void updateUserState(boolean syncServiceType){
+    	try {
+	    	if(syncServiceType){
+	    		//sync the selected service type with the address's service type from the cart.
+	        	if(null !=this.getShoppingCart().getDeliveryAddress()){
+	        		ErpAddressModel address = this.getShoppingCart().getDeliveryAddress();
+	        		if(!this.getSelectedServiceType().equals(address.getServiceType())){
+	        			this.setSelectedServiceType(address.getServiceType());
+	        			this.setZPServiceType(address.getServiceType());
+	        		}
+	        	}
+	    	}
+    	
+        	
             this.getShoppingCart().recalculateTaxAndBottleDeposit(getZipCode());
             this.getShoppingCart().updateSurcharges(new FDRulesContextImpl(this));
             /* APPDEV-1888 */
@@ -646,6 +665,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         } catch (FDResourceException e) {
             throw new FDRuntimeException(e.getMessage());
         }
+    	
     }
 
     @Override
@@ -964,7 +984,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     @Override
     public FDPromotionEligibility getPromotionEligibility() {
         if (this.promotionEligibility == null) {
-            this.updateUserState();
+            this.updateUserState(false);
         }
 
         return this.promotionEligibility;
@@ -1217,12 +1237,11 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     @Override
     public EnumServiceType getSelectedServiceType() {
-        AddressModel address = this.shoppingCart.getDeliveryAddress();
         // FDX-2029 API - COS Delivery fee and order minimum used instead of FK
         if (userContext != null && userContext.getStoreContext() != null && EnumEStoreId.FDX.equals(userContext.getStoreContext().getEStoreId())) {
             return EnumServiceType.HOME;
         } else {
-            return address != null ? address.getServiceType() : this.selectedServiceType;
+            return selectedServiceType == null ? EnumServiceType.HOME : this.selectedServiceType;
         }
     }
 
@@ -1266,23 +1285,42 @@ public class FDUser extends ModelSupport implements FDUserI {
     @Override
     public String getCustomerServiceContact() {
         try {
+        	// ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId();
         	boolean isChefsTable = this.isChefsTable();
-        	return getCustomerServiceContact(isChefsTable, isChefsTable? null : extractStateFromAddress());
+        	return getCustomerServiceContact(isChefsTable, isChefsTable? null : extractStateFromAddress(), 
+        			 ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId());
         } catch (FDResourceException e) {
             throw new FDRuntimeException(e);
         }
     }
+    /**
+     * 
+     * @param isChefsTable boolean, obvious
+     * @param state String state, two digit state, we are looking for PA use case
+     * @param eStoreId  EnumEStoreId, logic is either FK or FDX
+     * @return the proper contact phone number from FDStoreProperties.java
+     */
+    public String getCustomerServiceContact(boolean isChefsTable, String state, EnumEStoreId  eStoreId ) {
+    	if(EnumEStoreId.FD.equals(eStoreId))
+    		return getCustomerServiceContact(isChefsTable,state);
+    	else {
+    		return  FDStoreProperties.FOODKICK_SERVICE_CONTACT;
+    	}
+ 
+  }
+    
+
 
     public String getCustomerServiceContact(boolean isChefsTable, String state) {
         
 //        String state = "";
-        String contactNumber = "1-866-283-7374";// DEFAULT
+        String contactNumber =   FDStoreProperties.getDefaultCustomerServiceContact() ; //1-866-283-7374";// DEFAULT
         if (isChefsTable) {
-            contactNumber = "1-866-511-1240";
+            contactNumber = FDStoreProperties.getChefsTableCustomerServiceContact();// "1-866-511-1240";
         } else {
 //            state = extractStateFromAddress();
             if ("PA".equalsIgnoreCase(state)) {
-                contactNumber = "1-215-825-5726";
+                contactNumber = FDStoreProperties.getPennsylvaniaCustomerServiceContact() ;// "1-215-825-5726";
             }
         }
         return contactNumber;
@@ -1764,6 +1802,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         this.lastRefProgInvtId = progInvtId;
     }
 
+    @Override
     public ErpCustomerInfoModel getCustomerInfoModel() throws FDResourceException {
         if (identity == null) {
             return null;
@@ -1998,7 +2037,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     @Override
     public Map getPromoVariantMap() {
         if (this.promoVariantMap == null) {
-            this.updateUserState();
+            this.updateUserState(false);
         }
         return this.promoVariantMap;
     }
@@ -2399,24 +2438,115 @@ public class FDUser extends ModelSupport implements FDUserI {
     }
 
     private FulfillmentInfo getFulfillmentInfo(ErpAddressModel address, Date deliveryDate) {
-
-        try {
-            FDDeliveryZoneInfo deliveryZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, (deliveryDate!=null)?deliveryDate: today(), getHistoricOrderSize(), this.getRegionSvcType(address.getId()),
-                    address.getCustomerId());
-            if (deliveryZoneInfo != null)
-                return deliveryZoneInfo.getFulfillmentInfo();
-
+        try {      	
+        	FDDeliveryZoneInfo deliveryZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, (deliveryDate!=null)?deliveryDate: getNextDay(), getHistoricOrderSize(), this.getRegionSvcType(address.getId()),
+                     address.getCustomerId());    
+        	//APPDEV 6442 FDC transition changes
+        	FDDeliveryZoneInfo f = overrideZoneInfo(address, deliveryZoneInfo);       	 
+            if (f!=null && f.getFulfillmentInfo()!=null){
+            	return f.getFulfillmentInfo();
+            }
+            //If the user does not have a reservation and does not fall under the look ahead days (as determined by overrideZoneInfo() ) - return the original fulfillment call
+            return deliveryZoneInfo.getFulfillmentInfo();
         } catch (FDInvalidAddressException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (FDResourceException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;
     }
 
-    private UserContext setFulfillmentAndPricingContext(UserContext userContext, ErpAddressModel address) throws FDResourceException {
+	public  FDDeliveryZoneInfo overrideZoneInfo(ErpAddressModel address,
+			FDDeliveryZoneInfo deliveryZoneInfo) throws FDResourceException,FDInvalidAddressException {
+		FDDeliveryZoneInfo reservationDeliveryZoneInfo=getReservationDeliveryZoneInfo(); 
+		//Case 1: If the user has a reservation, we will be using the fulfillment information associated with user's reservation as the user context at the time of login
+		if(null!=reservationDeliveryZoneInfo){
+			return reservationDeliveryZoneInfo;
+		}
+		//Case 2: If the user does not have any reservation, we will follow the look ahead days strategy to set the user context at the time of login
+		// The lookAheadDays property value is provided and maintained by SAP. If the value is 0, the code shall not be executed
+		if(null==reservationDeliveryZoneInfo) {
+			int lookAheadDays = FDStoreProperties.getFdcTransitionLookAheadDays();
+			if(lookAheadDays > 0){
+			Date day = DateUtil.truncate(DateUtil.addDays(today(), lookAheadDays));
+			FDDeliveryZoneInfo fdcDeliveryZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, day, getHistoricOrderSize(), this.getRegionSvcType(address.getId()),
+		            address.getCustomerId());
+			if (futurePlantLogin( deliveryZoneInfo, fdcDeliveryZoneInfo))
+		        return fdcDeliveryZoneInfo;
+			}
+		}
+		return null;
+	}
+
+	private boolean futurePlantLogin(FDDeliveryZoneInfo deliveryZoneInfo,
+			FDDeliveryZoneInfo fdcDeliveryZoneInfo) {
+		boolean isDifferentPlant = false;
+		if (fdcDeliveryZoneInfo != null & deliveryZoneInfo != null) {
+			String oldPlant = null;
+			String newPlant = null;
+			oldPlant = deliveryZoneInfo.getFulfillmentInfo().getPlantCode();
+			newPlant = fdcDeliveryZoneInfo.getFulfillmentInfo().getPlantCode();
+
+			if (!oldPlant.equals(newPlant)) {
+				isDifferentPlant = true;
+			}
+		}
+		return isDifferentPlant;
+
+	}
+	
+	private FDDeliveryZoneInfo getReservationDeliveryZoneInfo() {
+
+		FDDeliveryZoneInfo reservationDeliveryZoneInfo = null;
+		Date standardReservationDeliveryDate = null;
+		Date weeklyOrOneTimeReservationDeliveryDate = null;
+		ErpAddressModel standardReservationAddress = null;
+		ErpAddressModel weeklyOrOneTimeReservationAddress = null;
+		//Extract the delivery date and address from the user's standard reservation which is set to user's shopping cart
+		if (null != this.getShoppingCart() & null != this.getShoppingCart().getDeliveryReservation()) {
+			standardReservationDeliveryDate = this.getShoppingCart().getDeliveryReservation().getDeliveryDate();
+			standardReservationAddress = this.getShoppingCart().getDeliveryAddress();
+		}
+		// Extract the delivery date and address from the user's weekly or one time reservation which is set to user's object
+		if (null != this.getReservation()) {
+			weeklyOrOneTimeReservationDeliveryDate = this.getReservation().getDeliveryDate();
+			weeklyOrOneTimeReservationAddress = this.getReservation().getAddress();
+		}
+
+		// Weekly or One time reservation has higher precedence than Standard reservation
+		if (null != reservationDeliveryZoneInfo	& null != weeklyOrOneTimeReservationDeliveryDate & null != weeklyOrOneTimeReservationAddress) {
+			try {
+				return FDDeliveryManager.getInstance().getZoneInfo(
+								weeklyOrOneTimeReservationAddress,
+								weeklyOrOneTimeReservationDeliveryDate,
+								getHistoricOrderSize(),
+								this.getRegionSvcType(weeklyOrOneTimeReservationAddress.getId()),
+								weeklyOrOneTimeReservationAddress.getCustomerId());
+			} catch (FDResourceException e) {
+				e.printStackTrace();
+			} catch (FDInvalidAddressException e) {
+				e.printStackTrace();
+			}
+		}
+		//checking if the user has any standard reservation
+		if (null != reservationDeliveryZoneInfo	& null != standardReservationDeliveryDate & null != standardReservationAddress) {
+			try {
+				return FDDeliveryManager.getInstance().getZoneInfo(
+								standardReservationAddress,
+								standardReservationDeliveryDate,
+								getHistoricOrderSize(),
+								this.getRegionSvcType(standardReservationAddress.getId()),
+								standardReservationAddress.getCustomerId());
+			} catch (FDResourceException e) {
+				e.printStackTrace();
+			} catch (FDInvalidAddressException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
+	private UserContext setFulfillmentAndPricingContext(UserContext userContext, ErpAddressModel address) throws FDResourceException {
 
         FulfillmentContext fulfillmentContext = new FulfillmentContext();
         if (this.getZipCode() != null && FDStoreProperties.isAlcoholRestrictionByContextEnabled()) {
@@ -3514,6 +3644,18 @@ public class FDUser extends ModelSupport implements FDUserI {
             d = new Date();
         }
         return d;
+    }
+    
+    private Date getNextDay() {
+        Date today=today();
+        if (EnumEStoreId.FDX.equals(getUserContext().getStoreContext().getEStoreId())){
+        	return today;
+        } else {
+        Calendar cal=Calendar.getInstance();
+        cal.setTime(today);
+        cal.add(Calendar.DATE, 1);
+        return cal.getTime();
+        }
     }
 
     private static ZoneInfo getZoneInfo(String pricingZone, SalesArea salesArea) {

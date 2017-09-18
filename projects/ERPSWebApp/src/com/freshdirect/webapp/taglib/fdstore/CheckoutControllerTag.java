@@ -16,7 +16,6 @@ import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
 import com.freshdirect.customer.ErpAddressModel;
-import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
@@ -24,8 +23,8 @@ import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
@@ -152,6 +151,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 	protected boolean performAction( HttpServletRequest request, ActionResult result ) throws JspException {
 		String action = this.getActionName();
 		final HttpSession session = request.getSession();
+        final HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 		boolean saveCart = false;
 
 		final String app = (String)pageContext.getSession().getAttribute( SessionName.APPLICATION );
@@ -176,7 +176,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 					}
 					
 					LOGGER.debug("setDeliveryAddress[START] :");
-					DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, result, action);
+                    DeliveryAddressManipulator m = new DeliveryAddressManipulator(request, response, result, action);
 					m.performSetDeliveryAddress(noContactPhonePage);
 				} catch (RedirectToPage e) {
 					LOGGER.debug("setDeliveryAddress[RedirectToPage] :"+ e);
@@ -198,13 +198,13 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				
 				LOGGER.debug("setDeliveryAddress[END] :");
 			}  else if ( "addAndSetDeliveryAddress".equalsIgnoreCase( action ) ) { //Added IPhone functionality APPDEV-1565
-				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, result, "addDeliveryAddressEx");
+                DeliveryAddressManipulator m = new DeliveryAddressManipulator(request, response, result, "addDeliveryAddressEx");
 				m.performAddAndSetDeliveryAddress();
 								
 			//APPDEV-4177 : Code changes to trigger email while editing the delivery address : Start
 				
 			}  else if ( "editAndSetDeliveryAddress".equalsIgnoreCase( action ) ) {
-				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, result, getActionName());
+                DeliveryAddressManipulator m = new DeliveryAddressManipulator(request, response, result, getActionName());
 				m.performEditAndSetDeliveryAddress();
 				FDIdentity identity = getIdentity();
 				FDCustomerInfo customerInfo = FDCustomerManager.getCustomerInfo(identity);
@@ -220,11 +220,11 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 			//APPDEV-4177 : Code changes to trigger email while editing the delivery address : End
 				
 			} else if ( "deleteDeliveryAddress".equalsIgnoreCase( action ) ) {
-				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, result, getActionName());
+                DeliveryAddressManipulator m = new DeliveryAddressManipulator(request, response, result, getActionName());
 				m.performDeleteDeliveryAddress(event); //m.performDeleteDeliveryAddress() method was refactored to check for any existing reservations.
 
 			} else if ( "reserveDeliveryTimeSlot".equalsIgnoreCase( action ) ) {
-				TimeslotManipulator m = new TimeslotManipulator(this.pageContext, result, action);
+                TimeslotManipulator m = new TimeslotManipulator(request, response, result, action);
 				String outcome = m.performReserveDeliveryTimeSlot();
 				
 				if ( outcome.equals( Action.NONE ) ) {
@@ -325,7 +325,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 					}
 				}
 			} else if ( "setPaymentMethod".equalsIgnoreCase( action ) ) {
-				PaymentMethodManipulator m = new PaymentMethodManipulator(pageContext, result, action);
+                PaymentMethodManipulator m = new PaymentMethodManipulator(request, response, result, action);
 				m.performSetPaymentMethod();
 				
 				if ( result.isSuccess() ) {
@@ -337,7 +337,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				}
 
 			} else if ( "setNoPaymentMethod".equalsIgnoreCase( action ) ) {
-				PaymentMethodManipulator m = new PaymentMethodManipulator(pageContext, result, action);
+                PaymentMethodManipulator m = new PaymentMethodManipulator(request, response, result, action);
 				m.performSetNoPaymentMethod();
 
 				if ( result.isSuccess() ) {
@@ -348,7 +348,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				}
 
 			} else if ( "addAndSetPaymentMethod".equalsIgnoreCase( action ) ) {
-				PaymentMethodManipulator m = new PaymentMethodManipulator(pageContext, result, action);
+                PaymentMethodManipulator m = new PaymentMethodManipulator(request, response, result, action);
 				m.performAddAndSetPaymentMethod();
 				if ( result.isSuccess() ) {
 					UserValidationUtil.validateOrderMinimum( session, result );
@@ -356,11 +356,11 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				}
 
 			} else if ( "addPaymentMethod".equalsIgnoreCase( action ) || "gc_addPaymentMethod".equalsIgnoreCase( action ) ) {
-				PaymentMethodManipulator m = new PaymentMethodManipulator(pageContext, result, action);
+                PaymentMethodManipulator m = new PaymentMethodManipulator(request, response, result, action);
 				m.performAddPaymentMethod();
 
 			}else if ( "editPaymentMethod".equalsIgnoreCase( action )) {//Added IPhone functionality APPDEV-1565
-				PaymentMethodManipulator m = new PaymentMethodManipulator(pageContext, result, action);
+                PaymentMethodManipulator m = new PaymentMethodManipulator(request, response, result, action);
 				m.performEditPaymentMethod();
 
 			} else if ( "setPaymentAndSubmit".equalsIgnoreCase( action ) ) {
@@ -373,7 +373,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				}
 
 			} else if ( "deletePaymentMethod".equalsIgnoreCase( action ) ) {
-				PaymentMethodManipulator m = new PaymentMethodManipulator(pageContext, result, getActionName());
+                PaymentMethodManipulator m = new PaymentMethodManipulator(request, response, result, getActionName());
 				m.performDeletePaymentMethod();
 
 				if ( ( request.getRequestURI().toLowerCase().indexOf( "gift_card" ) > -1 ) ) {
@@ -384,14 +384,14 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 
 			} else if ( "setDeliveryAddressAndPayment".equalsIgnoreCase( action ) ) {
 				try {
-					DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, result, getActionName());
+                    DeliveryAddressManipulator m = new DeliveryAddressManipulator(request, response, result, getActionName());
 					m.performSetDeliveryAddress(noContactPhonePage);
 				} catch (RedirectToPage e) {
 					this.redirectTo(e.getPage());
 				}
 
 				if ( result.isSuccess() ) {
-					PaymentMethodManipulator m = new PaymentMethodManipulator(this.pageContext, result, getActionName());
+                    PaymentMethodManipulator m = new PaymentMethodManipulator(request, response, result, getActionName());
 					m.setPaymentMethod();
 
 					if ( result.isSuccess() ) {
@@ -408,7 +408,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				try {
 					
 					LOGGER.debug("setOrderMobileNumber[START] :");
-					DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, result, action);
+                    DeliveryAddressManipulator m = new DeliveryAddressManipulator(request, response, result, action);
 					m.performSetOrderMobileNumber();
 				} catch (RedirectToPage e) {
 					LOGGER.debug("setOrderMobileNumber[RedirectToPage] :"+ e);
@@ -579,12 +579,13 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 		// allane: added this b/c we skip confirm order page in gc checkout. payment needs to be set at the same
 		// time as checkout.
 		FDSessionUser currentUser = (FDSessionUser) getUser();
+        final HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 		
 		if ( "gc_onestep_submitGiftCardOrder".equalsIgnoreCase( action ) ) {
 
 			if ( result.isSuccess() ) {
 				
-				PaymentMethodManipulator m = new PaymentMethodManipulator(pageContext, result, action);
+                PaymentMethodManipulator m = new PaymentMethodManipulator(request, response, result, action);
 				m.performAddAndSetPaymentMethod();
 
 				if ( result.getError( "payment_method_fraud" ) != null ) {
@@ -607,7 +608,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				if ( optinInd == null || optinInd.equals( "" ) ) {
 					result.addError( new ActionError( "Opt_in_required", SystemMessageList.MSG_RH_OPTIN_REQUIRED ) );
 				}
-				PaymentMethodManipulator m = new PaymentMethodManipulator(pageContext, result, action);
+                PaymentMethodManipulator m = new PaymentMethodManipulator(request, response, result, action);
 				m.performAddAndSetPaymentMethod();
 
 				if ( result.getError( "payment_method_fraud" ) != null ) {
@@ -616,7 +617,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				}
 			}
 		} else {
-			PaymentMethodManipulator m = new PaymentMethodManipulator(pageContext, result, action);
+            PaymentMethodManipulator m = new PaymentMethodManipulator(request, response, result, action);
 			m.performSetPaymentMethod();
 		}
 	}
@@ -625,7 +626,8 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 
 
 	protected String performSetPaymentAndSubmit( HttpServletRequest request, ActionResult result ) throws Exception {
-		PaymentMethodManipulator m = new PaymentMethodManipulator(pageContext, result, getActionName());
+        final HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+        PaymentMethodManipulator m = new PaymentMethodManipulator(request, response, result, getActionName());
 		m.setPaymentMethod();
 		
 		if ( result.isSuccess() ) {

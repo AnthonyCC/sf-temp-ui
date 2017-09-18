@@ -69,7 +69,7 @@ public class SiteAccessController extends BaseController {
         propogateSetSessionValues(request.getSession(), resultBundle);
 
         Message responseMessage = null;
-        if (isCheckLoginStatusEnable(request)) {
+        if (isExtraResponseRequested(request)) {
             if (result.isSuccess()) {
                 AddressModel address = new AddressModel();
                 address.setZipCode(requestMessage.getZipCode());

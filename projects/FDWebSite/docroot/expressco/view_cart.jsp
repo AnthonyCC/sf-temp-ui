@@ -26,7 +26,7 @@ if (mobWeb) {
 %>
 
 <potato:cartData/>
-<potato:viewCart/>
+
 <potato:pendingExternalAtcItem/>
 
 <tmpl:insert template='<%=template %>'>
@@ -75,17 +75,23 @@ if (mobWeb) {
 		
 			<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user_view_cart)) { %>
 				<div id="cartCarousels">
-					<soy:render template="common.viewCartTabbedCarousel" data="${viewCartPotato}" />
+					<script>
+			          	$jq.ajax('/carousel/carousel.jsp?type=cart').then(function(page) {
+			          		$jq('#cartCarousels').html(page);
+			          	});
+			        </script>
 				</div>
 	        <% } else { 
 				//APPDEV-5516 : Cart Carousel - Grand Giving Donation Technology
 				// If the donationProductSampleCarousel is not enabled, the fallback div is productsamplecarousel
 			    if(FDStoreProperties.isPropDonationProductSamplesEnabled()){ %>
 			     <div id="donationProductSampleCarousel" class="donation-product-sample-carousel">
+			     	<potato:viewCart/>
 			        <soy:render template="expressco.donationProductSampleCarouselWrapper" data="${viewCartPotato}" />
 			      </div>     
 				<% } else { %>
 				  <div id="productsamplecarousel" class="product-sample-carousel">
+				  	<potato:viewCart/>
 			        <soy:render template="expressco.productSampleCarouselWrapper" data="${viewCartPotato}" />
 			      </div>
 				<% }

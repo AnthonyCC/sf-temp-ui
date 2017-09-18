@@ -286,8 +286,8 @@ if (request.getParameter("fldMessage") !=null) {
 <table border="0" cellspacing="0" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>">
 	<tr>
 		<td width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>" align="right">
-			<a href="/gift_card/purchase/add_giftcard.jsp"><img src="/media_stat/images/giftcards/purchase/clear_btn.gif" width="50" height="25" alt="CLEAR" border="0" /></a>
-			<input type="image" name="gcPreview" src="/media_stat/images/giftcards/purchase/preview_btn.gif" width="61" height="25" alt="PREVIEW" border="0" onclick="window['<%=gcDisplayId%>'].emailPreview(); return false;" />
+			<a href="/gift_card/purchase/add_giftcard.jsp"><img src="/media_stat/images/giftcards/purchase/clear_btn.gif" width="50" height="25" alt="CLEAR the form (entities)" border="0" /></a>
+			<input type="image" name="gcPreview" src="/media_stat/images/giftcards/purchase/preview_btn.gif" width="61" height="25" alt="PREVIEW the form" border="0" onclick="window['<%=gcDisplayId%>'].emailPreview(); return false;" />
 			<%= addEditButton %>
 		</td>
 	</tr>

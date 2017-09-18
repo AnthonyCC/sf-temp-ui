@@ -287,5 +287,20 @@
 				</div>
 			</div>
 		<% } %>
+
+    <script type="application/ld+json">
+    { 
+      "@context" : "http://schema.org",
+      "@type" : "Organization",
+      "url" : "https://www.freshdirect.com/",
+      "contactPoint" : [
+        { "@type" : "ContactPoint",
+          "telephone" : <%=StringUtil.quote(user.getCustomerServiceContact())%>,
+          "contactType" : "customer service"
+        }
+      ]
+    }
+    </script>
+
 	</tmpl:put>
 </tmpl:insert>

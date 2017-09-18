@@ -264,11 +264,17 @@ var FreshDirect = FreshDirect || {};
 
       $tiel.attr('tabindex', lastEl);
     });
-
-    if ($el.find('.qs-popup-close-icon').size() > 0 ) {
-      var close = $el.find('.qs-popup-close-icon')[0];
-      $(close).attr('tabindex', lastEl+1);
-    }
+  //tabindex order for overlays and popup
+    $el.find('.qs-popup-close-icon,.qs-popup-help-icon').each(function(i,e) {
+        if (!$(e).is(':hidden')) {
+              $(e).attr('tabindex', lastEl+=1);
+        }
+});
+    
+//    if ($el.find('.qs-popup-close-icon').size() > 0 ) {
+//        var close = $el.find('.qs-popup-close-icon')[0];
+//        $(close).attr('tabindex', lastEl+1);
+//      }
 
     // focus first element
     if ($el.find('.portrait-item[data-component="product"]').attr('data-dontfocusform') !== 'true' && $el.find('form').size() > 0) {
@@ -293,7 +299,7 @@ var FreshDirect = FreshDirect || {};
     var $el = this.$el, rect;
 
     // remove -1 tabindices from document
-    $('[tabindex="-1"]').each(function (i, tiel) {
+    $('[tabindex="-1"]').not('[nofocus]').each(function (i, tiel) {
       var $tiel = $(tiel);
 
       $tiel.attr('tabindex', null);

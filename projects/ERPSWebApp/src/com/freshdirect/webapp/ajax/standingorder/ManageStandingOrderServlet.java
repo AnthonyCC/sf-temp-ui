@@ -62,7 +62,7 @@ public class ManageStandingOrderServlet extends HttpServlet {
 	private static final long serialVersionUID = -3650318272577031376L;
 	private String spName = "singlePageCheckoutPotato";
 	private static final Logger LOG = LoggerFactory.getInstance(ManageStandingOrderServlet.class);
-	public static final String INITIATOR_NAME = "Standing Order Service";
+	public static final String INITIATOR_NAME = "CUSTOMER";
 	
 	public static final String CANCEL_ALL_DELIVERIES="Cancel all deliveries";
 
@@ -149,11 +149,12 @@ public class ManageStandingOrderServlet extends HttpServlet {
 						if (!so.isDeleted()) {
 							u.setRefreshSO3(true);
 							FDActionInfo info = AccountActivityUtil.getActionInfo(pageContext.getSession());
-							if ("Y".equalsIgnoreCase(so.getActivate()) && !"null".equalsIgnoreCase(deleteDate)) {
+							if ("Y".equalsIgnoreCase(so.getActivate()) && !"null".equalsIgnoreCase(deleteDate) && !"".equalsIgnoreCase(deleteDate)) {
 								if (!CANCEL_ALL_DELIVERIES.equalsIgnoreCase(deleteDate))
 									FDStandingOrdersManager.getInstance().deleteActivatedSO(info, so,deleteDate);
-								else
+								else if(CANCEL_ALL_DELIVERIES.equalsIgnoreCase(deleteDate)){
 									cancelNextDelivery(so);
+								}
 							} else {
 								FDStandingOrdersManager.getInstance().delete(info, so);
 							}
@@ -448,7 +449,7 @@ public class ManageStandingOrderServlet extends HttpServlet {
 		try {
 			StandingOrderHelper.setUpcomingStandingOrder(so);
 			FDActionInfo info = new FDActionInfo(
-					EnumTransactionSource.STANDING_ORDER,
+					EnumTransactionSource.WEBSITE,
 					so.getCustomerIdentity(), INITIATOR_NAME,
 					"Cancel the standing order based on template criteria ",
 					null, null);

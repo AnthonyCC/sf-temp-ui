@@ -77,7 +77,7 @@ var FreshDirect = FreshDirect || {};
       value:function( data ) {
         this.refreshBody(data);
 
-        fd.common.dispatcher.signal('productImpressions', $('#'+this.popupId));
+        fd.common.dispatcher.signal('productImpressions', { el: $('#'+this.popupId), type: 'impressionsViewAll'});
       }
     }
   });

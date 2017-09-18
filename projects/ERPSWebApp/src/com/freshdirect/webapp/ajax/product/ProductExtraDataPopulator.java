@@ -651,91 +651,7 @@ public class ProductExtraDataPopulator {
 		//if (department != null && (WineUtil.getWineAssociateId()).equalsIgnoreCase( department.getContentKey().getId() )) {
 		
 		if (department != null){
-			WineData wd = new WineData();
-
-			/** code snipped from  WineRegionLabel#doStart method */
-			DomainValue wineCountry = productNode.getWineCountry();
-			List<DomainValue> wineRegion = productNode.getNewWineRegion();
-			String wineCity = productNode.getWineCity();
-			if (wineCity.trim().length() == 0)
-				wineCity = null;
-			List<DomainValue> wineVintageList = productNode.getWineVintage();
-			DomainValue wineVintage = wineVintageList.size() > 0 ? wineVintageList.get(0) : null;
-			if (wineVintage != null && "vintage_nv".equals(wineVintage.getContentKey().getId())) {
-				wineVintage = null;
-			}
-
-			List<DomainValue> wTypes = productNode.getNewWineType();
-			List<String> typesList = new ArrayList<String>();
-			List<String> wTypeIconPaths = new ArrayList<String>();
-			for (DomainValue wtv : wTypes) {
-				final String type = wtv.getValue();
-				typesList.add(type);
-				wTypeIconPaths.add("/media/editorial/win_"+WineUtil.getWineAssociateId().toLowerCase()+"/icons/"+wtv.getContentName().toLowerCase()+".gif");
-			}
-			wd.types = typesList;
-			wd.typeIconPaths = wTypeIconPaths;
-			
-			List<String> varietals = new ArrayList<String>();
-			for (DomainValue wvv : productNode.getWineVarietal()) {
-				varietals.add(wvv.getValue());
-			}
-			wd.varietals = varietals;
-			
-			if (wineCountry != null) {
-				wd.country = wineCountry.getValue();
-			}
-			if (!wineRegion.isEmpty()) {
-				wd.region = wineRegion.get(0).getLabel();
-			}
-			if (wineCity != null) {
-				wd.city = wineCity;
-			}
-			if (wineVintage != null) {
-				wd.vintage = wineVintage.getValue();
-			}
-
-			wd.classification = productNode.getWineClassification();
-
-			// grape type / blending
-			wd.grape = productNode.getWineType();
-
-			wd.importer = productNode.getWineImporter();
-			
-			wd.agingNotes = productNode.getWineAging();
-			
-			wd.alcoholGrade = productNode.getWineAlchoholContent();
-
-			// reviews
-			List<WineRating> ratings = new ArrayList<WineRating>();
-			if (productNode.getWineRating1() != null && productNode.getWineRating1().size() > 0) {
-				WineRating r = processWineRating(productNode.getWineRating1(), user, productNode.getWineReview1());
-				if (r != null) {
-					ratings.add(r);
-				}
-			}
-			if (productNode.getWineRating2() != null && productNode.getWineRating2().size() > 0) {
-				WineRating r = processWineRating(productNode.getWineRating2(), user, productNode.getWineReview2());
-				if (r != null) {
-					ratings.add(r);
-				}
-			}
-			if (productNode.getWineRating3() != null && productNode.getWineRating3().size() > 0) {
-				WineRating r = processWineRating(productNode.getWineRating3(), user, productNode.getWineReview3());
-				if (r != null) {
-					ratings.add(r);
-				}
-			}
-
-			if (ratings.size() > 0) {
-				wd.ratings = ratings;
-			}
-
-			if (productNode.hasWineOtherRatings()) {
-				// ??
-			}
-			
-			data.setWineData(wd);
+			populateWineData(data, user, productNode);
 		}
 		
 		// Storage guides
@@ -1124,6 +1040,96 @@ public class ProductExtraDataPopulator {
             data.setSeoMetaDescription(productNode.getSEOMetaDescription());
         }
 
+	}
+
+	public static ProductExtraData populateWineData(ProductExtraData data, FDUserI user,
+			ProductModel productNode) {
+		WineData wd = new WineData();
+
+		/** code snipped from  WineRegionLabel#doStart method */
+		DomainValue wineCountry = productNode.getWineCountry();
+		List<DomainValue> wineRegion = productNode.getNewWineRegion();
+		String wineCity = productNode.getWineCity();
+		if (wineCity.trim().length() == 0)
+			wineCity = null;
+		List<DomainValue> wineVintageList = productNode.getWineVintage();
+		DomainValue wineVintage = wineVintageList.size() > 0 ? wineVintageList.get(0) : null;
+		if (wineVintage != null && "vintage_nv".equals(wineVintage.getContentKey().getId())) {
+			wineVintage = null;
+		}
+
+		List<DomainValue> wTypes = productNode.getNewWineType();
+		List<String> typesList = new ArrayList<String>();
+		List<String> wTypeIconPaths = new ArrayList<String>();
+		for (DomainValue wtv : wTypes) {
+			final String type = wtv.getValue();
+			typesList.add(type);
+			wTypeIconPaths.add("/media/editorial/win_"+WineUtil.getWineAssociateId().toLowerCase()+"/icons/"+wtv.getContentName().toLowerCase()+".gif");
+		}
+		wd.types = typesList;
+		wd.typeIconPaths = wTypeIconPaths;
+		
+		List<String> varietals = new ArrayList<String>();
+		for (DomainValue wvv : productNode.getWineVarietal()) {
+			varietals.add(wvv.getValue());
+		}
+		wd.varietals = varietals;
+		
+		if (wineCountry != null) {
+			wd.country = wineCountry.getValue();
+		}
+		if (!wineRegion.isEmpty()) {
+			wd.region = wineRegion.get(0).getLabel();
+		}
+		if (wineCity != null) {
+			wd.city = wineCity;
+		}
+		if (wineVintage != null) {
+			wd.vintage = wineVintage.getValue();
+		}
+
+		wd.classification = productNode.getWineClassification();
+
+		// grape type / blending
+		wd.grape = productNode.getWineType();
+
+		wd.importer = productNode.getWineImporter();
+		
+		wd.agingNotes = productNode.getWineAging();
+		
+		wd.alcoholGrade = productNode.getWineAlchoholContent();
+
+		// reviews
+		List<WineRating> ratings = new ArrayList<WineRating>();
+		if (productNode.getWineRating1() != null && productNode.getWineRating1().size() > 0) {
+			WineRating r = processWineRating(productNode.getWineRating1(), user, productNode.getWineReview1());
+			if (r != null) {
+				ratings.add(r);
+			}
+		}
+		if (productNode.getWineRating2() != null && productNode.getWineRating2().size() > 0) {
+			WineRating r = processWineRating(productNode.getWineRating2(), user, productNode.getWineReview2());
+			if (r != null) {
+				ratings.add(r);
+			}
+		}
+		if (productNode.getWineRating3() != null && productNode.getWineRating3().size() > 0) {
+			WineRating r = processWineRating(productNode.getWineRating3(), user, productNode.getWineReview3());
+			if (r != null) {
+				ratings.add(r);
+			}
+		}
+
+		if (ratings.size() > 0) {
+			wd.ratings = ratings;
+		}
+
+		if (productNode.hasWineOtherRatings()) {
+			// ??
+		}
+		
+		data.setWineData(wd);
+		return data;
 	}
 
     private static String populateProductDescription(FDUserI user, MediaI media) {

@@ -160,10 +160,6 @@ public class SinglePageCheckoutFacade {
             result.setRedirectUrl(RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL,
                     availabilityService.selectWarningType(user)));
         }
-
-        SessionInput input = QuickShopCarouselService.defaultService().createSessionInput(user, request);
-        result.setCarouselData(CheckoutCarouselService.getDefaultService().populateTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));
-
         return result;
     }
 

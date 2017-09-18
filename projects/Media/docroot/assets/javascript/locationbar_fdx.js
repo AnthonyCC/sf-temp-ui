@@ -135,16 +135,25 @@ $jq('#selectAddressList').iconselectmenu({
 		var key = ui.item.value;
 		
 		$jq.ajax({
-			url: '/api/locationhandler.jsp',
+			type: 'POST',
+			dataType: 'json',
+			url: '/api/locationhandler',
 			data: {
-				action: 'selectAddress',
-				selectAddressList: key
-			},
+		      data: JSON.stringify({
+		        fdform: 'selectAddress',
+		        formdata: {
+		        	action: 'selectAddress',
+					selectAddressList: key
+				}
+		      })
+		    },
 			success: function(data){
 				var $refIcon = $jq(event.currentTarget).find('.address-icon:first');
 				
 				if (window.location.pathname === '/your_account/reserve_timeslot.jsp' && !$refIcon.hasClass('address-type-home')) {
 					window.location = '/your_account/delivery_info_avail_slots.jsp';
+				} else if (data.submitForm.result.redirectUrl){
+					window.location = data.submitForm.result.redirectUrl;
 				} else { //just reload the page
 					window.location.reload();
 				}

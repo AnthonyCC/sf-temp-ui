@@ -238,7 +238,7 @@ public class CartController extends BaseController {
         }
         
         // populate potatoes
-        if (isCheckLoginStatusEnable(request)) {
+        if (isExtraResponseRequested(request)) {
             ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), cartDetail);
         }
 
@@ -255,7 +255,7 @@ public class CartController extends BaseController {
         responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
         ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
         
-        if (isCheckLoginStatusEnable(request)) {
+        if (isExtraResponseRequested(request)) {
             ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), cartDetail);
         }
         
@@ -291,7 +291,7 @@ public class CartController extends BaseController {
                         ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
                         ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setRecentlyAddedItems(recentItems);
 
-                        if (isCheckLoginStatusEnable(request)) {
+                        if (isExtraResponseRequested(request)) {
                             ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), cartDetail);
                         }
 
@@ -316,7 +316,7 @@ public class CartController extends BaseController {
         boolean isLoggedOutUserZipCheck = !user.isLoggedIn() && user.getAddress() != null && !user.getAddress().isCustomerAnonymousAddress();
         boolean isLoggedInUserZipCheck = user.isLoggedIn() && user.getShoppingCart() != null && user.getShoppingCart().getDeliveryAddress() == null 
         								  && user.getAddress() != null && !user.getAddress().isCustomerAnonymousAddress();
-        return isCheckLoginStatusEnable(request) && (isLoggedOutUserZipCheck || isLoggedInUserZipCheck);
+        return isExtraResponseRequested(request) && (isLoggedOutUserZipCheck || isLoggedInUserZipCheck);
     }
 
     private ModelAndView removeItemInCart(ModelAndView model, SessionUser user, String cartLineId, boolean isRemoveAll,
@@ -341,7 +341,7 @@ public class CartController extends BaseController {
             responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
             ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
             
-            if (isCheckLoginStatusEnable(request)) {
+            if (isExtraResponseRequested(request)) {
                 ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), cartDetail);
             }
             
@@ -364,7 +364,7 @@ public class CartController extends BaseController {
         CartDetail cartDetail = cart.getCartDetail(user, null);
         responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
         ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
-        boolean checkLoginStatusEnable = isCheckLoginStatusEnable(request);
+        boolean checkLoginStatusEnable = isExtraResponseRequested(request);
         if (checkLoginStatusEnable) {
             ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), cartDetail);
         }
@@ -495,7 +495,7 @@ public class CartController extends BaseController {
             ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
             ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setRecentlyAddedItems(recentItems);
             
-            if (isCheckLoginStatusEnable(request)) {
+            if (isExtraResponseRequested(request)) {
                 ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), cartDetail);
             }
 
@@ -521,7 +521,7 @@ public class CartController extends BaseController {
         CartDetail cartDetail = cart.getCartDetail(user, null);
         responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
         ((com.freshdirect.mobileapi.controller.data.response.Cart) responseMessage).setCartDetail(cartDetail);
-        boolean checkLoginStatusEnable = isCheckLoginStatusEnable(request);
+        boolean checkLoginStatusEnable = isExtraResponseRequested(request);
         if (checkLoginStatusEnable) {
             ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), cartDetail);
         }

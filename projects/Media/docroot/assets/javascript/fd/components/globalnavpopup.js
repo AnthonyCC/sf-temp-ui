@@ -18,11 +18,12 @@ var FreshDirect = FreshDirect || {};
           arialabelvalue = 'globalnav-popup-body-' + id,
           center, width;
       
-      $menuitem.attr({
-    	  'aria-haspopup': true,
-    	  'aria-labelledby': arialabelvalue,
-    	  'tabIndex': 0
-      });
+      if( $('[data-component="globalnav-popup-body"][data-id="'+id+'"]').length ) {
+          $menuitem.find('.top-item-link a,.submenuitem-link a').attr({
+        	  
+              'aria-haspopup': true
+          });
+      }
       
       if (left > $container.width() / 2) {
         $menuitem.addClass('alignPopupRight');

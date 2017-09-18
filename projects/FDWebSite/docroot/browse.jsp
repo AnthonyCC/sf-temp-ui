@@ -29,6 +29,7 @@
 <%-- OAS variables --%>
 <c:set var="sitePage" scope="request" value="${browsePotato.descriptiveContent.oasSitePage}" />
 <c:set var="listPos" scope="request" value="SystemMessage,CategoryNote,BrowseTop1,BrowseTop2,BrowseTop3,BrowseBottom1,BrowseBottom2" />
+<c:set var="breadCrumbs" scope="request" value="${browsePotato.breadCrumbs}" />
 <%
 String template = "/common/template/browse_template.jsp";
 

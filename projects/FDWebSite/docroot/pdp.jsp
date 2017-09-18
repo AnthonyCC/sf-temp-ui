@@ -61,6 +61,7 @@ title = title.replaceAll("<[^>]*>", "");
 <%-- OAS page variables --%>
 <c:set var="sitePage" scope="request" value="productNode.getPath()" />
 <c:set var="listPos" scope="request" value="SystemMessage,ProductNote" />
+<c:set var="breadCrumbs" scope="request" value="${browsePotato.breadCrumbs}" />
 
 <%
 //REDIRECT to the redirect-url IF there is any
@@ -243,13 +244,7 @@ if (mobWeb) {
 		    	</div>
 			<% } %>
 		<% } %>
-		<jsp:include page="/includes/product/productDetail.jsp" >
-			<jsp:param name="catId" value="${ param.catId }"/>
-			<jsp:param name="productId" value="${ param.productId }"/>
-			<jsp:param name="variantId" value="${ param.variantId }"/>
-			<jsp:param name="grpId" value="${ param.grpId }"/>
-			<jsp:param name="version" value="${ param.version }"/>
-		</jsp:include>
+		<%@ include file="/includes/product/productDetail.jspf" %>
 	    <script>
 			window.FreshDirect = window.FreshDirect || {};
 			window.FreshDirect.browse = window.FreshDirect.browse || {};

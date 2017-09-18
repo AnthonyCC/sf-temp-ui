@@ -172,7 +172,7 @@ public class OrderController extends BaseController {
         } else if (ACTION_GET_QUICK_SHOP_EVERYITEMEVERORDERED.equals(action)) {
             // Every item ever ordered similar to storefront quickshop every item ever ordered
             // Retrieving any possible payload
-            if (isCheckLoginStatusEnable(request)) {
+            if (isExtraResponseRequested(request)) {
                 try {
                     FDUserI fdUser = user.getFDSessionUser();
                     QuickShopListRequestObject requestMessage;
@@ -281,7 +281,7 @@ public class OrderController extends BaseController {
     private Message loadOrder(SessionUser user, String orderId, HttpServletRequest request) throws FDException,
             JsonException {
     	com.freshdirect.mobileapi.controller.data.response.Order order = user.getOrder(orderId).getOrderDetail(user);
-        if (isCheckLoginStatusEnable(request)) {
+        if (isExtraResponseRequested(request)) {
             ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), order.getCartDetail());
         }
         ResultBundle resultBundle = Order.loadOrderToCartForUpdate(orderId, user);
@@ -325,7 +325,7 @@ public class OrderController extends BaseController {
     private Message getOrderDetail(SessionUser user, String orderId, HttpServletRequest request) throws FDException, JsonException {
         Order order = user.getOrder(orderId);
         com.freshdirect.mobileapi.controller.data.response.Order orderDetail = order.getOrderDetail(user);
-        if (isCheckLoginStatusEnable(request)) {
+        if (isExtraResponseRequested(request)) {
             ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderDetail.getCartDetail());
         }
         return orderDetail;
@@ -583,7 +583,7 @@ public class OrderController extends BaseController {
     	Orders orders = new Orders();
     	
     	//For each id Create OrderDetail and add to orders responseObject
-        final boolean isWebRequest = isCheckLoginStatusEnable(request);
+        final boolean isWebRequest = isExtraResponseRequested(request);
     	for(String orderId : orderIds){
     		 Order order = user.getOrder(orderId);
     		//wrap each order and add to orders list in response object

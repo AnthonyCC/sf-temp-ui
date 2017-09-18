@@ -1001,6 +1001,10 @@
 		<from>^/v/([0-9]+)/home/getPage/(.*)</from>
 		<to last="true">/home.do?action=getPage&amp;ver=$1</to>
 	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/home/getPageComponent/(.*)</from>
+		<to last="true">/home.do?action=getPageComponent&amp;ver=$1</to>
+	</rule>
 
 	<!-- Home -->
 	<rule>

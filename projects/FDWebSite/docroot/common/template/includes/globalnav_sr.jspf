@@ -1,13 +1,14 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"
-%><%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy"
-%><%@ taglib uri="fd-data-potatoes" prefix="potato"
-%><%@ page import="org.apache.commons.lang.StringEscapeUtils"
-%><%@ page import='com.freshdirect.webapp.util.JspMethods'
-%><%@page import="com.freshdirect.common.context.MasqueradeContext"
-%>
-<%@page import="com.freshdirect.webapp.taglib.location.LocationHandlerTag"%>
+<%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
+<%@ page import='com.freshdirect.webapp.util.JspMethods'%>
+<%@ page import="com.freshdirect.common.context.MasqueradeContext"%>
+<%@ page import="com.freshdirect.webapp.taglib.location.LocationHandlerTag"%>
+<%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
+
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy"%>
+<%@ taglib uri="fd-data-potatoes" prefix="potato"%>
 <%
 	boolean useFdxGlobalNav = FDStoreProperties.isFdxLocationbarEnabled();
 	Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
@@ -95,18 +96,17 @@ if(user != null) {
 		<% if (useFdxGlobalNav) { %>
 
 			<div class="nav<%= " "+hasEcouponsClass %>">
-				<a class="logo" href="/index.jsp"><img src="/media/layout/nav/globalnav/fdx/logo.png" alt="FreshDirect" border="0" /></a>
+				<a class="logo" href="<%= FDURLUtil.getLandingPageUrl(user)%>"><img src="/media/layout/nav/globalnav/fdx/logo.png" alt="FreshDirect" border="0" /></a>
 				<%
-					int searchBaseWidth = 535;
-					//uncomment this to make search resize when the sign up button isn't shown
-					/*
+					String searchFormClass = "searchform";
 					if (user != null && user.getLevel() != FDUserI.GUEST) {
-						searchBaseWidth += 71; //width of "sign up" button
+						if ( !(user.isEligibleForStandingOrders() && user.isNewSO3Enabled()) ) {
+							searchFormClass += " widen";
+						}
 					}
-					*/
 				%>
 				<div class="searchform-cont">
-					<form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="UTF-8">
+					<form class="<%= searchFormClass %>" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
 						<label class="offscreen" for="topSearchField">Search</label>
 						<%
 							{
@@ -121,27 +121,25 @@ if(user != null) {
 				</div>
 
 				<%-- nav links next to search field --%>
-				<% if (user != null && user.getLevel() != FDUserI.GUEST && user.isEligibleForStandingOrders() && user.isNewSO3Enabled()) {  %>
-					<% /* nothing in this space */ %>
-		        <% } else { %>
-					<%
-					//if(Boolean.TRUE == pageContext.getAttribute(LocationHandlerTag.SERVICE_TYPE_MODIFICATION_ENABLED)){
-						%><div class="topnavitem" id="topnavitem_dlvType"><%
-						if(user.isCorporateUser()){
-							%><a href="/index.jsp">Home delivery?</a><%
-						}else {
-							%><a href="/cos.jsp">Office delivery?</a><%
-						}
-						%></div><%
-					//}
-					/*
-					we are currently having this always show here,
-					because the parent conditional seems to always be false on pages which use this file,
-					regardless of user status, even if incognito.
-					the mockups imply that one or the other should always show
-					*/
-					%>
-				<% } %>
+			
+				<%
+				//if(Boolean.TRUE == pageContext.getAttribute(LocationHandlerTag.SERVICE_TYPE_MODIFICATION_ENABLED)){
+					%><div class="topnavitem" id="topnavitem_dlvType"><%
+					if(user.isCorporateUser()){
+						%><a href="/index.jsp?serviceType=HOME">Home delivery?</a><%
+					}else {
+						%><a href="/index.jsp?serviceType=CORPORATE">Office delivery?</a><%
+					}
+					%></div><%
+				//}
+				/*
+				we are currently having this always show here,
+				because the parent conditional seems to always be false on pages which use this file,
+				regardless of user status, even if incognito.
+				the mockups imply that one or the other should always show
+				*/
+				%>
+			
 				
 				<div class="topnavitem" id="topnavitem_help">
 			        <a href="/help/index.jsp?trk=gnav">Help</a>
@@ -166,16 +164,22 @@ if(user != null) {
 			</div>
 		<% } else { %>
 			<% if(user.isDepotUser()){ %>
-	        	<a class="logo" href="/index.jsp"><img src="/media_stat/images/logos/<%=user.getDepotCode()%>_depot_logo.gif"  alt="" border="0"></a>
+	        	<a class="logo" href="<%= FDURLUtil.getLandingPageUrl(user)%>"><img src="/media_stat/images/logos/<%=user.getDepotCode()%>_depot_logo.gif"  alt="" border="0"></a>
 	    	<% } else { %>
-				<a class="logo" href="/index.jsp" ><img src="/media/images/navigation/global_nav/fd_logo_on.png" border="0" alt="FreshDirect" name="FD_LOGO"></a>
+				<a class="logo" href="<%= FDURLUtil.getLandingPageUrl(user)%>" ><img src="/media/images/navigation/global_nav/fd_logo_on.png" border="0" alt="FreshDirect" name="FD_LOGO"></a>
 			<% } %>
 
 			<div class="nav<%= " "+hasEcouponsClass %>">
 				<%-- nav links next to search field --%>
-
-
-					<form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
+					<%
+						String searchFormClass = "searchform";
+						if (user != null && user.getLevel() != FDUserI.GUEST) {
+							if ( !(user.isEligibleForStandingOrders() && user.isNewSO3Enabled()) ) {
+								searchFormClass += " widen";
+							}
+						}
+					%>
+					<form class="searchform<%= searchFormClass %>" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
 						<label class="offscreen" for="topSearchField">Search</label>
 						<%
 							{
@@ -254,9 +258,9 @@ if(user != null) {
 <% } else { %>
 	<div class="container">
 		<% if (useFdxGlobalNav) { %>
-			<a class="logo" href="/index.jsp"><img src="/media/layout/nav/globalnav/fdx/logo.png" alt="FreshDirect" border="0" /></a>
+			<a class="logo" href="<%= FDURLUtil.getLandingPageUrl(user)%>"><img src="/media/layout/nav/globalnav/fdx/logo.png" alt="FreshDirect" border="0" /></a>
 	    <% } else { %>
-	    	<a href="/index.jsp" data-swapimage="/media/images/navigation/global_nav/fd_logo_on.png" border="0" data-swapimagename="FD_LOGO"><img src="/media/images/navigation/global_nav/fd_logo_off.gif" border="0" alt="FreshDirect" name="FD_LOGO"></a>
+	    	<a href="<%= FDURLUtil.getLandingPageUrl(user)%>" data-swapimage="/media/images/navigation/global_nav/fd_logo_on.png" border="0" data-swapimagename="FD_LOGO"><img src="/media/images/navigation/global_nav/fd_logo_off.gif" border="0" alt="FreshDirect" name="FD_LOGO"></a>
 	    <% } %>
 	</div>
 <% } %>

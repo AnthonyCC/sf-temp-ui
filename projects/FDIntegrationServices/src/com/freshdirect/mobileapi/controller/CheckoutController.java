@@ -413,7 +413,7 @@ public class CheckoutController extends BaseController {
      * @throws JsonException
      */
     private ModelAndView reviewOrder(ModelAndView model, SessionUser user, HttpServletRequest request, EnumCouponContext ctx) throws FDException, JsonException, NoSessionException {
-        final boolean isWebRequest = isCheckLoginStatusEnable(request);
+        final boolean isWebRequest = isExtraResponseRequested(request);
 
         Checkout checkout = new Checkout(user);
         Message responseMessage = checkout.getCurrentOrderDetails(ctx);
@@ -564,7 +564,7 @@ public class CheckoutController extends BaseController {
     	    	
     	Checkout checkout = new Checkout(user);
     	ResultBundle resultBundle = null;
-    	 if (isCheckLoginStatusEnable(request)) {
+    	 if (isExtraResponseRequested(request)) {
     	     resultBundle = checkout.setCheckoutDeliveryAddressEx(reqestMessage.getId(), DeliveryAddressType.valueOf(reqestMessage.getType()));
     	 } else {
     	     resultBundle = checkout.setCheckoutDeliveryAddress(reqestMessage.getId(), DeliveryAddressType.valueOf(reqestMessage.getType()));
@@ -581,7 +581,7 @@ public class CheckoutController extends BaseController {
                     timeSlotResult);
             slotResponse.getCheckoutHeader().setHeader(user.getShoppingCart());
 
-            if (isCheckLoginStatusEnable(request)) {
+            if (isExtraResponseRequested(request)) {
                 user.setUserContext();
                 CMSPageRequest pageRequest = new CMSPageRequest();
                 pageRequest.setPlantId(BrowseUtil.getPlantId(user));
@@ -720,7 +720,7 @@ public class CheckoutController extends BaseController {
 	            
 	            orderReceipt.setOrderNumber(orderId);
 
-	            if (isCheckLoginStatusEnable(request)) {
+	            if (isExtraResponseRequested(request)) {
 	                ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderReceipt.getCartDetail());
 	            }
 	            
@@ -780,7 +780,7 @@ public class CheckoutController extends BaseController {
 	            
 	            orderReceipt.setOrderNumber(orderId);
 	            
-                if (isCheckLoginStatusEnable(request)) {
+                if (isExtraResponseRequested(request)) {
                     ProductPotatoUtil.populateCartDetailWithPotatoes(user.getFDSessionUser(), orderReceipt.getCartDetail());
                 }
 	            
@@ -1366,7 +1366,7 @@ public class CheckoutController extends BaseController {
         
         // === FKMW - validate form fields before submitting them to the app layer ===
         
-        final boolean isWebRequest = isCheckLoginStatusEnable(request);
+        final boolean isWebRequest = isExtraResponseRequested(request);
         if (isWebRequest) {
             result = DeliveryAddressValidatorUtil.validateDeliveryAddress(requestMessage);
 
@@ -1386,7 +1386,7 @@ public class CheckoutController extends BaseController {
             }
 
             if (result.isSuccess()) {
-                if (isCheckLoginStatusEnable(request)) {
+                if (isExtraResponseRequested(request)) {
                     user.setUserContext();
                     DeliveryAddress deliveryAddress = DeliveryAddress.wrap(user.getShoppingCart().getDeliveryAddress());
                     TimeSlotCalculationResult timeSlotResult = deliveryAddress.getDeliveryTimeslot(user, false, isCheckoutAuthenticated(request));
@@ -1473,7 +1473,7 @@ public class CheckoutController extends BaseController {
      * @throws JsonException
      */
     private ModelAndView submitOrderFDX(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException, JsonException {
-        final boolean isWebRequest = isCheckLoginStatusEnable(request);
+        final boolean isWebRequest = isExtraResponseRequested(request);
         final Checkout checkout = new Checkout(user);
         SubmitOrderExResult message = new SubmitOrderExResult();
         final FDUserI fdUser = user.getFDSessionUser();

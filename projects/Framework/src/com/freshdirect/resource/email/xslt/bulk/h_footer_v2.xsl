@@ -14,7 +14,7 @@
 			<font color="336600"><b>Go to FreshDirect</b></font> | <font color="336600"><b>Contact Us</b></font> | <font color="336600"><b>Frequently Asked Questions</b></font>
 		</xsl:when>
 		<xsl:otherwise>
-			<b><a href="http://www.freshdirect.com/index.jsp" style="color:#336600;" class="fdFooter"><font color="#336600"><u>Go to FreshDirect</u></font></a></b> | <b><a href="http://www.freshdirect.com/help/contact_fd.jsp" style="color:#336600;" class="fdFooter"><font color="#336600"><u>Contact Us</u></font></a></b> | <b><a href="http://www.freshdirect.com/help/faq_home.jsp?page=faqHome" style="color:#336600;" class="fdFooter"><font color="#336600"><u>Frequently Asked Questions</u></font></a></b>
+			<b><a href="http://www.freshdirect.com/index.jsp?serviceType=HOME" style="color:#336600;" class="fdFooter"><font color="#336600"><u>Go to FreshDirect</u></font></a></b> | <b><a href="http://www.freshdirect.com/help/contact_fd.jsp" style="color:#336600;" class="fdFooter"><font color="#336600"><u>Contact Us</u></font></a></b> | <b><a href="http://www.freshdirect.com/help/faq_home.jsp?page=faqHome" style="color:#336600;" class="fdFooter"><font color="#336600"><u>Frequently Asked Questions</u></font></a></b>
 		</xsl:otherwise>
 	</xsl:choose>
 	<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"/><br/>FoodKick 23-30 Borden Ave. Long Island City, NY 11101<br/><img src="http://www.freshdirect.com/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"/><br/>

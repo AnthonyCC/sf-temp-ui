@@ -130,6 +130,9 @@ public class CartDataService {
      * @throws JspException
      */
     public CartData loadCartData(HttpServletRequest request, FDUserI user) throws HttpErrorResponse, FDResourceException, JspException {
+    	return loadCartData(request, user, true);
+    }
+    public CartData loadCartData(HttpServletRequest request, FDUserI user, boolean loadCarousel) throws HttpErrorResponse, FDResourceException, JspException {
         String userId = loadUser(user);
         updateUserAndCart(request, user);
         FDCartModel cart = loadUserShoppingCart(user, userId);
@@ -143,7 +146,7 @@ public class CartDataService {
         }
         CartData cartData = new CartData();
         synchronized (cart) {
-            populateCartData(user, request, userId, cart, cartData);
+            populateCartData(user, request, userId, cart, cartData, loadCarousel);
         }
         return cartData;
     }
@@ -182,7 +185,7 @@ public class CartDataService {
         synchronized (cart) {
             updateCart(request, user, userId, cart, cartData);
             updateUserAndCart(request, user);
-            populateCartData(user, request, userId, cart, cartData);
+            populateCartData(user, request, userId, cart, cartData, true);
             if (StandingOrderHelper.isSO3StandingOrder(user)) {
                 final HttpSession session = request.getSession();
                 FDActionInfo info = AccountActivityUtil.getActionInfo(session);
@@ -331,10 +334,28 @@ public class CartDataService {
         return cart;
     }
 
-    private void populateCartData(FDUserI user, HttpServletRequest request, String userId, FDCartModel cart, CartData cartData) throws HttpErrorResponse {
+    private void populateCartData(FDUserI user, HttpServletRequest request, String userId, FDCartModel cart, CartData cartData, boolean loadCarousel) throws HttpErrorResponse {
         populateCartOrderData(user, request, userId, cart, cartData, populateRecentIds(cart));
+        if (loadCarousel) {
+        	populateCarousel(user, request, userId, cartData);
+        }
     }
-
+    private void populateCarousel(FDUserI user, HttpServletRequest request, String userId, CartData cartData) throws HttpErrorResponse{
+    	try {
+	        CartRequestData reqData = BaseJsonServlet.parseRequestData(request, CartRequestData.class, true);
+	        SessionInput input = QuickShopCarouselService.defaultService().createSessionInput(user, request);
+	        input.setOnlyTabHeader(true);
+	        if (reqData != null && reqData.getPage() != null && reqData.getPage().contains("checkout")) {
+	            cartData.setCarouselData(CheckoutCarouselService.getDefaultService().populateTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));
+	        } else {
+	            cartData.setCarouselData(ViewCartCarouselService.getDefaultService().populateTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));
+	        }
+    	}
+        catch (Exception e) {
+            LOG.error("Error while processing cart for user " + userId, e);
+            BaseJsonServlet.returnHttpError(500, "Error while processing cart for user " + userId, e);
+        }
+    }
     public CartData.Item populateCartDataItem(FDCartLineI cartLine, FDProduct fdProduct, ItemCount itemCount, FDCartI cart, Set<Integer> recentIds, ProductModel productNode,
             FDUserI user) {
 
@@ -580,14 +601,7 @@ public class CartDataService {
                 cartData.setDeliveryBegins(StandingOrderHelper.getDeliveryBeginsInfo(user));
             }
 
-            CartRequestData reqData = BaseJsonServlet.parseRequestData(request, CartRequestData.class, true);
-            SessionInput input = QuickShopCarouselService.defaultService().createSessionInput(user, request);
-            input.setOnlyTabHeader(true);
-            if (reqData != null && reqData.getPage() != null && reqData.getPage().contains("checkout")) {
-                cartData.setCarouselData(CheckoutCarouselService.getDefaultService().populateTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));
-            } else {
-                cartData.setCarouselData(ViewCartCarouselService.getDefaultService().populateTabsRecommendationsAndCarousel(request, (FDSessionUser) user, input));
-            }
+
             cartData.setCustomerServiceRepresentative(CustomerServiceRepresentativeService.defaultService().loadCustomerServiceRepresentativeInfo(user));
             cartData.setAvalaraEnabled(FDStoreProperties.getAvalaraTaxEnabled());
             if (FDStoreProperties.isETippingEnabled()) {

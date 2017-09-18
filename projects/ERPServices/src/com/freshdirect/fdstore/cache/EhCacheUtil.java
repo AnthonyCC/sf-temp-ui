@@ -41,11 +41,14 @@ public class EhCacheUtil {
     // Product Family cache
     public static final String FD_FAMILY_PRODUCT_CACHE_NAME = "familyProductCache";
     
-    //Media cache
+    // Media cache
     public static final String MEDIA_CHECK_CACHE_NAME = "mediaCheckCache";
     public static final String MEDIA_CONTENT_CACHE_NAME ="mediaContentCache";
     
     public static final String FD_ZONE_ID_CACHE_NAME = "fdZoneIdCache";
+    
+    // Recommendation cache
+    public static final String RECOMMENDATION_CHECK_CACHE_NAME = "recommCheckCache";
     
     private static final Logger LOG = LoggerFactory.getInstance(EhCacheUtil.class);
 

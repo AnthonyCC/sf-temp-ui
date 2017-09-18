@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
@@ -48,7 +49,8 @@ import com.freshdirect.webapp.taglib.smartstore.Impression;
  *
  */
 public class FDURLUtil {
-	private static final Logger LOGGER = LoggerFactory.getInstance(FDURLUtil.class);
+
+    private static final Logger LOGGER = LoggerFactory.getInstance(FDURLUtil.class);
 	
 	public static final String RECIPE_PAGE_BASE			= "/recipe.jsp";
 	public static final String RECIPE_PAGE_BASE_CRM		= "/order/recipe.jsp";
@@ -59,6 +61,9 @@ public class FDURLUtil {
 	public static final String STANDING_ORDER_DETAIL_PAGE_NEW	= "/quickshop/qs_so_details.jsp";
 	public static final String STANDING_ORDER_MAIN_PAGE_NEW	= "/quickshop/qs_standing_orders.jsp";
 	
+    public static final String LANDING_PAGE = "/index.jsp";
+    public static final String LANDING_PAGE_WITH_SERVICE_TYPE = LANDING_PAGE + "?serviceType=";
+
 	public static String safeURLEncode(String str) {
 		try {
 			return URLEncoder.encode(str, "UTF-8");
@@ -68,6 +73,24 @@ public class FDURLUtil {
 		}
 	}
 
+    public static String getLandingPageUrl(FDUserI user) {
+        if (user == null) {
+            return getLandingPageUrl(EnumServiceType.HOME);
+        }
+        return getLandingPageUrl(user.isCorporateUser());
+    }
+
+    public static String getLandingPageUrl(boolean isCorporate) {
+        return getLandingPageUrl(isCorporate ? EnumServiceType.CORPORATE : EnumServiceType.HOME);
+    }
+
+    public static String getLandingPageUrl(EnumServiceType serviceType) {
+        return getLandingPageUrl(serviceType.getName());
+    }
+
+    public static String getLandingPageUrl(String serviceType) {
+        return LANDING_PAGE_WITH_SERVICE_TYPE + serviceType;
+    }
 
 	/**
 	 * [APPDEV-2910] Return product link to the redesigned product page (a.k.a. PDP)

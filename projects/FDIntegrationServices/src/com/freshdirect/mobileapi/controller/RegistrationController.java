@@ -214,7 +214,7 @@ public class RegistrationController extends BaseController implements SystemMess
 		if(user == null)
 			 throw new NoSessionException("No session");
 		
-	    final boolean isWebRequest = isCheckLoginStatusEnable(request);
+	    final boolean isWebRequest = isExtraResponseRequested(request);
 
 		
 		RegistrationControllerTagWrapper tagWrapper = new RegistrationControllerTagWrapper(user.getFDSessionUser());		
@@ -539,7 +539,7 @@ public class RegistrationController extends BaseController implements SystemMess
 
             // === FKMW - validate form fields before submitting them to the app layer ===
             
-            final boolean isWebRequest = isCheckLoginStatusEnable(request);
+            final boolean isWebRequest = isExtraResponseRequested(request);
             if (isWebRequest) {
                 result = DeliveryAddressValidatorUtil.validateDeliveryAddress(requestMessage);
 
@@ -604,7 +604,7 @@ public class RegistrationController extends BaseController implements SystemMess
 
             // === FKMW - validate form fields before submitting them to the app layer ===
             
-            final boolean isWebRequest = isCheckLoginStatusEnable(request);
+            final boolean isWebRequest = isExtraResponseRequested(request);
             if (isWebRequest) {
                 result = DeliveryAddressValidatorUtil.validateDeliveryAddress(requestMessage);
 

@@ -1,7 +1,8 @@
 package com.freshdirect.webapp.checkout;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.jsp.PageContext;
 
 import org.apache.log4j.Category;
 
@@ -18,8 +19,8 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 public class TimeslotManipulator extends CheckoutManipulator {
 	private static Category		LOGGER	= LoggerFactory.getInstance( TimeslotManipulator.class );
 
-	public TimeslotManipulator(PageContext context, ActionResult result, String actionName) {
-		super(context, result, actionName);
+    public TimeslotManipulator(HttpServletRequest request, HttpServletResponse response, ActionResult result, String actionName) {
+        super(request, response, result, actionName);
 	}
 
 	public String performReserveDeliveryTimeSlot() throws Exception {

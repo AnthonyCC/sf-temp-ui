@@ -35,7 +35,6 @@ public class PageViewTagModelBuilder {
     }
 
     private static final String INDEX_FILE = "index.jsp";
-    private static final int INDEX_FILE_SUFFIX_LENGTH = INDEX_FILE.length();
     private static final String HOLIDAY_MEAL_BUNDLE_DIRECTORY_PATH_NAME = "hmb";
     private static final String RECIPE_MEALKITS_DIRECTORY_PATH_NAME = "handpick";
 
@@ -194,11 +193,14 @@ public class PageViewTagModelBuilder {
             } else if (uriAfterSlash.contains(INDEX_FILE)) {
                 tagModel.setCategoryId(CustomCategory.HOMEPAGE.toString());
 
-                int uriPathLen = uriAfterSlash.length() - INDEX_FILE_SUFFIX_LENGTH - 1; // remove slash as well
-                if (uriPathLen > 0) {
-                    tagModel.setPageId(uriAfterSlash.substring(0, uriPathLen)); // use path without file name as page name
+                if (coremetricsExtraData.isCorporateUser()) {
+                    tagModel.setPageId("corporate");
+                } else {
+                    int uriPathLen = uriAfterSlash.length() - INDEX_FILE.length() - 1;
+                    if (uriPathLen > 0) {
+                        tagModel.setPageId(uriAfterSlash.substring(0, uriPathLen));
+                    }
                 }
-
             } else if (uriAfterSlash.contains("error.jsp") || uriAfterSlash.contains("unsupported.jsp")) {
                 tagModel.setCategoryId(CustomCategory.ERROR.toString());
 
@@ -228,10 +230,6 @@ public class PageViewTagModelBuilder {
             } else if (uriAfterSlash.contains("ecoupon.jsp") || uriAfterSlash.contains("srch.jsp") && "ECOUPON".equalsIgnoreCase(input.page)) {
                 tagModel.setCategoryId(CustomCategory.ECOUPON.toString());
                 tagModel.setPageId("ecoupons");
-
-            } else if (uriAfterSlash.contains("cos.jsp")) {
-                tagModel.setCategoryId(CustomCategory.HOMEPAGE.toString());
-                tagModel.setPageId("cos.jsp");
 
             } else if (uriAfterSlash.contains("welcome.jsp")) {
                 tagModel.setCategoryId(CustomCategory.ABOUT.toString());

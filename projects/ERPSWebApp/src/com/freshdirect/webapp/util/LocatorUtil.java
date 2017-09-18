@@ -11,16 +11,12 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.customer.ServiceTypeUtil;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
-import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.iplocator.IpLocatorClient;
 import com.freshdirect.fdstore.iplocator.IpLocatorData;
 import com.freshdirect.fdstore.iplocator.IpLocatorEventDTO;
@@ -28,15 +24,14 @@ import com.freshdirect.fdstore.iplocator.IpLocatorException;
 import com.freshdirect.fdstore.iplocator.IpLocatorUtil;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
-import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
-import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 
 public class LocatorUtil {
 	
-	private static String IP_LOCATOR_MOCKED_IP_ADDRESS = "iplocator_mocked_ip_address";
-	private static Category LOGGER = LoggerFactory.getInstance(LocatorUtil.class);
+    private static final Category LOGGER = LoggerFactory.getInstance(LocatorUtil.class);
+
+    private static final String IP_LOCATOR_MOCKED_IP_ADDRESS = "iplocator_mocked_ip_address";
 	
 	public static FDSessionUser useIpLocator(HttpSession session, HttpServletRequest request, HttpServletResponse response, AddressModel address) {
     	FDSessionUser user = null;
@@ -114,14 +109,14 @@ public class LocatorUtil {
     		    zipCode = ipLocatorData.getZipCode();
     		}
 
-	    	newSession(session, request, response);
+            UserUtil.newSession(session, response);
 	    	address = new AddressModel(); // was this. from CheckLoginStatusTag
 	    	address.setZipCode(zipCode);
             Set<EnumServiceType> availableServices = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode, eStoreId).getAvailableServices();
 	    	
 	    	//FDCustomerManager.createNewUser() inside createUser() will only use zipCode and resolve location based on that.
 	    	//City and State information will be appended to user.address.
-	    	user = createUser(ServiceTypeUtil.getPreferedServiceType(availableServices), availableServices, session, response, address);
+            user = UserUtil.createSessionUser(ServiceTypeUtil.getPreferedServiceType(availableServices), availableServices, session, response, address);
 	    	
 	    	ipLocatorEventDTO.setFdUserId(user.getPrimaryKey());
 	    	AddressModel _address = user.getAddress();
@@ -152,76 +147,6 @@ public class LocatorUtil {
 		}
     	
     	return user;
-    }
-    
-    public static FDSessionUser createUser(EnumServiceType serviceType,
-            Set<EnumServiceType> availableServices, HttpSession session, HttpServletResponse response, AddressModel address) throws FDResourceException {
-            
-            FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
-
-            if ((user == null) ||
-                    ((user.getZipCode() == null) && (user.getDepotCode() == null))) {
-                //
-                // if there is no user object or a dummy user object created in
-                // CallCenter, make a new using this zipcode
-                // make sure to hang on to the cart that might be in progress in
-                // CallCenter
-                //
-                FDCartModel oldCart = null;
-
-                if (user != null) {
-                    oldCart = user.getShoppingCart();
-                }
-                StoreContext storeContext =StoreContextUtil.getStoreContext(session);
-                user = new FDSessionUser(FDCustomerManager.createNewUser(address, serviceType, storeContext.getEStoreId()), session);
-                user.setUserCreatedInThisSession(true);
-                user.setSelectedServiceType(serviceType);
-                //Added the following line for zone pricing to keep user service type up-to-date.
-                user.setZPServiceType(serviceType);
-                user.setAvailableServices(availableServices);
-
-                if (oldCart != null) {
-                    user.setShoppingCart(oldCart);
-                }
-
-                CookieMonster.storeCookie(user, response);
-                session.setAttribute(SessionName.USER, user);
-            } else {
-                //
-                // otherwise, just update the zipcode in their existing object if
-                // they haven't yet registered
-                //
-                if (user.getLevel() < FDUser.RECOGNIZED) {
-                    user.setAddress(address);
-                    user.setSelectedServiceType(serviceType);
-                    //Added the following line for zone pricing to keep user service type up-to-date.
-                    user.setZPServiceType(serviceType);
-                    user.setAvailableServices(availableServices);
-
-                    CookieMonster.storeCookie(user, response);
-                    FDCustomerManager.storeUser(user.getUser());
-                    session.setAttribute(SessionName.USER, user);
-                }
-            }
-
-            //To fetch and set customer's coupons.
-    		if(user != null){
-    			FDCustomerCouponUtil.initCustomerCoupons(session);
-    		}
-            
-            //The previous recommendations of the current session need to be removed.
-            session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
-            session.removeAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE);
-            session.removeAttribute(SessionName.PREV_SAVINGS_VARIANT);
-            return user;
-    }
-
-    public static void newSession(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
-        // clear session
-        // [segabor]: instead of wiping out all session entries delete just the 'customer'
-        session.removeAttribute(SessionName.USER);
-        // remove cookie
-        CookieMonster.clearCookie(response);
     }
 
 }

@@ -41,7 +41,10 @@ public enum PageAction {
     PAYPAL_START_CONNECTING(Module.EXPRESS_CHECKOUT, "PP_Connecting_Start"),
     PAYPAL_END_CONNECTING(Module.EXPRESS_CHECKOUT, "PP_Connecting_End"),
     PAYPAL_WALLET_DISCONNECT(Module.EXPRESS_CHECKOUT, "PP_Disconnect_Wallet"),
-    GET_PP_DEVICE_DATA(Module.EXPRESS_CHECKOUT, "get_pp_device_data");
+    GET_PP_DEVICE_DATA(Module.EXPRESS_CHECKOUT, "get_pp_device_data"),
+    SET_ZIP_CODE(Module.LOCATION, "setZipCode"),
+    FUTURE_ZONE_NOTIFICATION(Module.LOCATION, "futureZoneNotification"),
+    SELECT_ADDRESS(Module.LOCATION, "selectAddress");
 
     public final Module module;
     public final String actionName;
@@ -63,6 +66,7 @@ public enum PageAction {
     }
 
     public enum Module {
-        EXPRESS_CHECKOUT;
+        EXPRESS_CHECKOUT,
+        LOCATION;
     }
 }

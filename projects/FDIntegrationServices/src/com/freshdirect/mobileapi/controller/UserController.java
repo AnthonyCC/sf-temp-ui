@@ -85,7 +85,7 @@ public class UserController extends BaseController {
 		//JIRA FD-iPad FDIP-1062
         else if (ACTION_UPDATE_USER_ACCOUNT.equals(action)) {
             UserAccountUpdateRequest uau = parseRequestObject(request, response, UserAccountUpdateRequest.class);
-            if (isCheckLoginStatusEnable(request)) {
+            if (isExtraResponseRequested(request)) {
                 MessageResponse messageResponse = new MessageResponse();
                 if ((uau.getNewPassword() == null || uau.getNewPassword().isEmpty()) && (uau.getNewUserName() == null || uau.getNewUserName().isEmpty())) {
                     messageResponse.setFailureMessage(USER_ID_AND_PASSWORD_BOTH_EMPTY_ERROR_MESSAGE);

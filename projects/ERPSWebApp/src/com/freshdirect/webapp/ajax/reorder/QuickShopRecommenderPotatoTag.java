@@ -41,7 +41,7 @@ public class QuickShopRecommenderPotatoTag extends SimpleTagSupport {
             HttpSession session = request.getSession();
             FDSessionUser user = (FDSessionUser) QuickShopHelper.getUserFromSession(session);
             SessionInput input = QuickShopCarouselService.defaultService().createSessionInput(user, request);
-            carousels = QuickShopCarouselService.defaultService().populateTabsRecommendationsAndCarousel(request, user, input);
+            carousels = QuickShopCarouselService.defaultService().populateTabsRecommendations(request, user, input);
 			carousels.getRecommendationTabs().add(0, new RecommendationTab(QuickShopCrazyQuickshopRecommendationService.defaultService().getTheCrazyQuickshopTitle(null),
                     QuickShopCrazyQuickshopRecommendationService.QUICKSHOP_VIRTUAL_SITE_FEATURE));
 			boolean isFirstTab = true;

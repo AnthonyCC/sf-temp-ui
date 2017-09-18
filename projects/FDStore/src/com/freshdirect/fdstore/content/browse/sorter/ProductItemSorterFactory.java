@@ -84,28 +84,34 @@ public class ProductItemSorterFactory {
 		};
 	}
 
-	public static Comparator<FilteringProductItem> createComparator(SortStrategyType sortStrategy, FDUserI user, boolean reverseOrder){
+    public static Comparator<FilteringProductItem> createComparator(SortStrategyType sortStrategy, FDUserI user, boolean reverseOrder) {
+        Comparator<FilteringProductItem> comparator = null;
         if (sortStrategy == null) {
-            return createDefaultComparator();
+            comparator = createDefaultComparator();
+        } else {
+            switch (sortStrategy) {
+                case SEARCH_RELEVANCY:
+                    comparator = createSearchRelevancyComparator(user, reverseOrder);
+
+                case E_COUPON_PERCENT_DISCOUNT:
+                    comparator = createPricingAdapterComparator(FilteringComparatorUtil.COUPON_PERCENT_OFF_COMPARATOR, user, reverseOrder);
+
+                case E_COUPON_DOLLAR_DISCOUNT:
+                    comparator = createPricingAdapterComparator(FilteringComparatorUtil.COUPON_DOLLAR_OFF_COMPARATOR, user, reverseOrder);
+
+                case POPULARITY:
+                    Comparator<FilteringProductItem> popularityInner = adapterForProductModel(ScriptedContentNodeComparator.createGlobalComparator(null, null));
+                    comparator = reverseOrder ? wrapAvailAndName(Collections.reverseOrder(popularityInner)) : wrapAvailAndName(popularityInner);
+
+                default:
+                    comparator = reverseOrder ? reverseComparatorMap.get(sortStrategy) : comparatorMap.get(sortStrategy);
+            }
+            if (comparator == null) {
+                comparator = createDefaultComparator();
+            }
         }
-        switch (sortStrategy) {
-			case SEARCH_RELEVANCY:
-				return createSearchRelevancyComparator(user, reverseOrder);
-
-			case E_COUPON_PERCENT_DISCOUNT:
-				return createPricingAdapterComparator (FilteringComparatorUtil.COUPON_PERCENT_OFF_COMPARATOR, user, reverseOrder);
-
-			case E_COUPON_DOLLAR_DISCOUNT:
-				return createPricingAdapterComparator (FilteringComparatorUtil.COUPON_DOLLAR_OFF_COMPARATOR, user, reverseOrder);
-				
-			case POPULARITY:
-				Comparator<FilteringProductItem> popularityInner = adapterForProductModel(ScriptedContentNodeComparator.createGlobalComparator(null, null));
-				return reverseOrder ? wrapAvailAndName(Collections.reverseOrder(popularityInner)) : wrapAvailAndName(popularityInner);
-				
-			default:
-				return reverseOrder ? reverseComparatorMap.get(sortStrategy) : comparatorMap.get(sortStrategy);
-		}
-	}
+        return comparator;
+    }
 	
 	private static Comparator<FilteringSortingItem<ProductModel>> getFavoritesComparator(FDUserI user){
 		FDIdentity identity = user.getIdentity();

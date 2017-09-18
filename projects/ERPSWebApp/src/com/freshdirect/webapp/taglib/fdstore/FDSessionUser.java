@@ -36,6 +36,8 @@ import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassProfileType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.EnumEStoreId;
@@ -608,6 +610,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         this.user.updateUserState();
     }
 
+    @Override
+    public void updateUserState(boolean syncServiceType) {
+        this.user.updateUserState(syncServiceType);
+    }
+    
     public void resetCachedCustomerInfo() throws FDResourceException {
         this.user.resetCustomerInfoModel();
     }
@@ -2413,5 +2420,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		user.refreshFdCustomer();
 	}
 
-	 
+	@Override
+	public FDDeliveryZoneInfo overrideZoneInfo(ErpAddressModel address,
+			FDDeliveryZoneInfo deliveryZoneInfo) throws FDResourceException,
+			FDInvalidAddressException {
+		return user.overrideZoneInfo(address, deliveryZoneInfo);
+	}
+
 }

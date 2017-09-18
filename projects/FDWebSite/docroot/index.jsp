@@ -43,24 +43,30 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 // no YUI required for index.jsp
 request.setAttribute("noyui", true);
 
-%><fd:CheckLoginStatus guestAllowed='true' pixelNames="TheSearchAgency" />
+%><fd:CheckLoginStatus pixelNames="TheSearchAgency" id="user" />
 <%-- fd:WelcomeExperience / --%><%
 
-	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
-	FDSessionUser sessionUser = (FDSessionUser)session.getAttribute(SessionName.USER);
-	String custFirstName = user.getFirstName();
-	int validOrderCount = user.getAdjustedValidOrderCount();
-	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
-	boolean isHomepageReturningUser = validOrderCount > 0;
-	String currentUserModuleContainerContentKey = FDStoreProperties.getHomepageRedesignCurrentUserContainerContentKey();
-	String newUserModuleContainerContentKey = FDStoreProperties.getHomepageRedesignNewUserContainerContentKey();
-  String moduleContainerId = isHomepageReturningUser ? currentUserModuleContainerContentKey : newUserModuleContainerContentKey;
+  if (request.getParameter("serviceType") == null) {
+	String serviceType = "HOME";
+	if (user.isCorporateUser()){
+      serviceType = "CORPORATE";
+    }
+	//The below redirect is not required, and causing performance issues due to additional redirect.
+	//response.sendRedirect("/index.jsp?serviceType=" + serviceType);
+  }
+
+  boolean isCorpotateUser = user.isCorporateUser();
+  boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
 
 	request.setAttribute("sitePage", "www.freshdirect.com/index.jsp");
 
 	String pageTemplate = "/common/template/no_shell_optimized.jsp"; //default
 	if (mobWeb) {
-		pageTemplate = "/common/template/mobileWeb.jsp"; //mobWeb template
+		if ( "true".equalsIgnoreCase(request.getParameter("opt")) ) { //allow opt for live testing
+			pageTemplate = "/common/template/mobileWeb_index_optimized.jsp"; //mobWeb template (20170913 batchley - only index should use optimized for now)
+		} else {
+			pageTemplate = "/common/template/mobileWeb.jsp"; //default
+		}
 		request.setAttribute("sitePage", "www.freshdirect.com/mobileweb/index.jsp"); //change for OAS
 	}
 %>
@@ -208,8 +214,8 @@ request.setAttribute("noyui", true);
 					showAltHome = true;
 
 				//Coupons disabled warning msg
-				if (!user.isCouponsSystemAvailable() && !sessionUser.isCouponWarningAcknowledged() && FDCouponProperties.isDisplayMessageCouponsNotAvailable()) {
-			        sessionUser.setCouponWarningAcknowledged(true);
+				if (!user.isCouponsSystemAvailable() && !user.isCouponWarningAcknowledged() && FDCouponProperties.isDisplayMessageCouponsNotAvailable()) {
+			        user.setCouponWarningAcknowledged(true);
 			%>
 			        <div style="display: none;" id="fdCoupon_indexAlert">
 			                <div style="text-align: center;"><img src="/media/images/ecoupon/logo-purpler_old.png" alt="fdCoupon" height="85" width="222" /></div>
@@ -232,10 +238,10 @@ request.setAttribute("noyui", true);
 			<% if (showAltHome && !location2Media) {
 				%><comp:homePageLetter user="<%= user %>" />
 			<%} else if (!showAltHome && location2Media) {
-				%><comp:welcomeMessage user="<%= user %>" segmentMessage="<%= segmentMessage %>" isCosPage="<%=false%>"/>
+				%><comp:welcomeMessage user="<%= user %>" segmentMessage="<%= segmentMessage %>" isCosPage="<%=isCorpotateUser%>"/>
 			<%
 			} else if (!showAltHome && !location2Media) {
-				%><comp:welcomeMessage user="<%= user %>" segmentMessage="<%= segmentMessage %>" isCosPage="<%=false%>"/>
+				%><comp:welcomeMessage user="<%= user %>" segmentMessage="<%= segmentMessage %>" isCosPage="<%=isCorpotateUser%>"/>
 			<%
 			}
 			%>
@@ -256,8 +262,8 @@ request.setAttribute("noyui", true);
             			mainTopBar="HPMainTopBar"
 					/>
 
-						<potato:modulehandling name="welcomepagePotato" moduleContainerId="<%=moduleContainerId%>" />
-						<soy:render template="common.contentModules" data="${welcomepagePotato}" />
+            <potato:modulehandling name="welcomepagePotato" />
+            <soy:render template="common.contentModules" data="${welcomepagePotato}" />
 
 					</div>
 					<%-- Removed the learn more for marketing change. --%>
@@ -274,12 +280,14 @@ request.setAttribute("noyui", true);
       FreshDirect.homepage.data = window.FreshDirect.homepage.data || {};
       FreshDirect.homepage.data.isHomepage = true;
 
+      var homepageType = <%=isCorpotateUser%> ? 'corporate' : 'residental';
+
       var dataLayer = window.dataLayer || [];
 
       dataLayer.push({
         'is-new-homepage': 'true',
-        'homepage-type': 'residental',
-        'module-container-id': '<%=moduleContainerId%>'
+        'homepage-type': homepageType,
+        'module-container-id': '${moduleContainerId}'
       });      
     </script>
     <% /* allow data to be output for debugging */

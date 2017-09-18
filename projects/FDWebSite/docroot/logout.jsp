@@ -44,17 +44,12 @@ if(request.getParameter("logoutPage")!= null){
 
 
 if (toSiteAccess) {
-	//response.sendRedirect(response.encodeRedirectURL("/site_access/site_access.jsp?successPage=/index.jsp"));
 	response.sendRedirect(response.encodeRedirectURL("/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp"));
 }
 
-//else just go on to welcome, nothing here down is used.
-//copied blog iframe to welcome.jsp so it gets called still
-//response.sendRedirect("/welcome.jsp");
-/* APPBUG-4674 */
-response.sendRedirect("/index.jsp");
+String serviceType = user.isCorporateUser() ? "CORPORATE" : "HOME";
+response.sendRedirect("/index.jsp?serviceType=" + serviceType);
 %>
-
 
 <%-- <tmpl:insert template='/common/template/no_site_nav.jsp'>
     <tmpl:put name="seoMetaTag" direct='true'>
