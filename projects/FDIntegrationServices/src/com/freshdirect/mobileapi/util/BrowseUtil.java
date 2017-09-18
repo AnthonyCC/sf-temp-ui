@@ -34,6 +34,7 @@ import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.common.pricing.ZoneInfo.PricingIndicator;
 import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.fdstore.EnumAvailabilityStatus;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDGroup;
@@ -333,7 +334,14 @@ public class BrowseUtil {
         } else {
             eliminateHolidayMealBundleUnavailableProducts(unavailableProducts);
             products.addAll(unavailableProducts);// add all unavailable to the end of the list
-
+            List<Product> discontinuedandoosproducts = new ArrayList<Product>();
+            for(Product product : products){
+            	if(product!=null && product.getProductData()!=null && (product.getProductData().isDiscontinued() || product.getProductData().isOutOfSeason()) && 
+            			user!=null && user.getUserContext() != null && user.getUserContext().getStoreContext() != null && user.getUserContext().getStoreContext().getEStoreId() == EnumEStoreId.FDX){
+            		discontinuedandoosproducts.add(product);
+            	}
+            }
+            products.removeAll(discontinuedandoosproducts);
             ListPaginator<com.freshdirect.mobileapi.model.Product> paginator = new ListPaginator<com.freshdirect.mobileapi.model.Product>(products, requestMessage.getMax());
 
             // send subcategories with products
