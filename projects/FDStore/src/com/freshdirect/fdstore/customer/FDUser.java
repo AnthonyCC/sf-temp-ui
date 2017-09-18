@@ -587,7 +587,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     @Override
     public SignupDiscountRule getSignupDiscountRule() {
         if (this.promotionEligibility == null) {
-            updateUserState();
+            updateUserState(false);
         }
         return this.signupDiscountRule;
     }
@@ -984,7 +984,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     @Override
     public FDPromotionEligibility getPromotionEligibility() {
         if (this.promotionEligibility == null) {
-            this.updateUserState();
+            this.updateUserState(false);
         }
 
         return this.promotionEligibility;
@@ -2018,7 +2018,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     @Override
     public Map getPromoVariantMap() {
         if (this.promoVariantMap == null) {
-            this.updateUserState();
+            this.updateUserState(false);
         }
         return this.promoVariantMap;
     }

@@ -317,7 +317,7 @@ public class FDCustomerManager {
 		user.getShoppingCart().doCleanup();
 		classifyUser(user);
 		if (updateUserState)
-			user.updateUserState();
+			user.updateUserState(false);
 		//user.resetPricingContext();
 		updateZoneInfo(user);
 		//restoreReservations(user);

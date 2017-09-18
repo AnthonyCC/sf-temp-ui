@@ -265,7 +265,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 			user.invalidateCache();
 
 			// Update user
-			user.updateUserState();
+			user.updateUserState(false);
 			
 			// Save user
 			try {

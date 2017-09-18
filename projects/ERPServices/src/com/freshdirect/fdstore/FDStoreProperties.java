@@ -1827,7 +1827,7 @@ static {
         defaults.put(PROP_ZIP_CHECK_OVER_LAY_ENABLED, "true");
 
         /* APPDEV-5781 */
-        defaults.put(PROP_OBSOLETE_MERGECARTPAGE_ENABLED, "true");
+        defaults.put(PROP_OBSOLETE_MERGECARTPAGE_ENABLED, "false");
 
         defaults.put(PROP_DFP_ENABLED, "false");
         defaults.put(PROP_DFP_ID, "1072054678");

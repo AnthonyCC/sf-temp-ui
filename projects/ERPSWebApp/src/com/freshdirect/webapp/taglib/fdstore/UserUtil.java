@@ -624,7 +624,7 @@ public class UserUtil {
 			                        //Check for multiple savings. 
 			                        checkForMultipleSavings(cartCurrent, cartSaved, cartMerged);
 			    					// invalidate promotion and recalc
-			                        loginUser.updateUserState();
+			                        loginUser.updateUserState(false);
 			                        session.setAttribute(SessionName.USER, currentUser);
 		
 		        				if(null == loginUser.getShoppingCart().getDeliveryPlantInfo()){
