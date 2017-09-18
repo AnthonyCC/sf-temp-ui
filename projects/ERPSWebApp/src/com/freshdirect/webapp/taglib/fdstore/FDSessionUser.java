@@ -610,6 +610,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         this.user.updateUserState();
     }
 
+    @Override
+    public void updateUserState(boolean syncServiceType) {
+        this.user.updateUserState(syncServiceType);
+    }
+    
     public void resetCachedCustomerInfo() throws FDResourceException {
         this.user.resetCustomerInfoModel();
     }

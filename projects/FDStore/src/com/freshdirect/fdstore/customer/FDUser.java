@@ -636,7 +636,24 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     @Override
     public void updateUserState() {
-        try {
+    	this.updateUserState(true);        
+    }
+    
+    @Override
+    public void updateUserState(boolean syncServiceType){
+    	try {
+	    	if(syncServiceType){
+	    		//sync the selected service type with the address's service type from the cart.
+	        	if(null !=this.getShoppingCart().getDeliveryAddress()){
+	        		ErpAddressModel address = this.getShoppingCart().getDeliveryAddress();
+	        		if(!this.getSelectedServiceType().equals(address.getServiceType())){
+	        			this.setSelectedServiceType(address.getServiceType());
+	        			this.setZPServiceType(address.getServiceType());
+	        		}
+	        	}
+	    	}
+    	
+        	
             this.getShoppingCart().recalculateTaxAndBottleDeposit(getZipCode());
             this.getShoppingCart().updateSurcharges(new FDRulesContextImpl(this));
             /* APPDEV-1888 */
@@ -648,6 +665,7 @@ public class FDUser extends ModelSupport implements FDUserI {
         } catch (FDResourceException e) {
             throw new FDRuntimeException(e.getMessage());
         }
+    	
     }
 
     @Override

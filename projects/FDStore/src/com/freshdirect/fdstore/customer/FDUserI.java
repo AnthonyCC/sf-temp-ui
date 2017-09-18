@@ -127,6 +127,8 @@ public interface FDUserI extends java.io.Serializable {
     public PromotionI getRedeemedPromotion();
 
     public void updateUserState();
+    
+    public void updateUserState(boolean syncServiceType);
 
     public String getFirstName() throws FDResourceException;
 
