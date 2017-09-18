@@ -618,6 +618,11 @@ var dataLayer = window.dataLayer || [];
       listName = safeName($('ul.qs-tabs li .selected').text());
     }
 
+    // change pageType to 'browse' for product and category list pages
+    if ('product_list|category_list'.indexOf(pageType.toLowerCase()) > -1) {
+      pageType = 'browse';
+    }
+
     return ((urlPageType || pageType || 'browse')+(listName ? '_'+listName : '')).toLowerCase();
   };
 }(FreshDirect));
@@ -684,11 +689,13 @@ var dataLayer = window.dataLayer || [];
     },
     callback: {
       value: function (data) {
-        if (data.el) {
-          fd.gtm.reportImpressionsEl(data.el, data.type);
-        } else if (data.products) {
-          fd.gtm.reportImpressions(data.products, data.type);
-        }
+        setTimeout(function () {
+          if (data.el) {
+            fd.gtm.reportImpressionsEl(data.el, data.type);
+          } else if (data.products) {
+            fd.gtm.reportImpressions(data.products, data.type);
+          }
+        }, 10);
       }
     }
   });
@@ -702,7 +709,9 @@ var dataLayer = window.dataLayer || [];
     },
     callback: {
       value: function (data) {
-        fd.gtm.updateDataLayer({sections: data});
+        setTimeout(function () {
+          fd.gtm.updateDataLayer({sections: data});
+        }, 10);
       }
     }
   });
@@ -716,7 +725,9 @@ var dataLayer = window.dataLayer || [];
     },
     callback: {
       value: function (data) {
-        fd.gtm.updateDataLayer({items: data.data});
+        setTimeout(function () {
+          fd.gtm.updateDataLayer({items: data.data});
+        }, 10);
       }
     }
   });
