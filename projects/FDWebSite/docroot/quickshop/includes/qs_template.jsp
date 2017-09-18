@@ -146,7 +146,7 @@
         	<div id="qs-carousel">
         	</div>
           <script>
-          	$jq.ajax('/quickshop/qs_carousel.jsp').then(function(page) {
+          	$jq.ajax('/carousel/carousel.jsp').then(function(page) {
           		$jq('#qs-carousel').html(page);
           		var firstTab = $jq('#qs-carousel [data-component="tabbedRecommender"] [data-tabname]:first-child');
 				fd.common.tabbedRecommender.selectTab($('#qs-carousel [data-component="tabbedRecommender"]'),firstTab.data('tabname'),firstTab);

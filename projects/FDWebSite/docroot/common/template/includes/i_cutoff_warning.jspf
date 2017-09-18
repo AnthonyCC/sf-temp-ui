@@ -47,7 +47,7 @@ if (cutoffInfo.displayWarning()) {
 				<% } %>
 				<br>
 				<% if ((isHomeAddr && !isUnknown) || isCorporateAddr) { %><a href="<% if (_user.getAdjustedValidOrderCount() >= 1) { %>/your_account/delivery_info_avail_slots<% } else { %>/help/delivery_info<%= EnumServiceType.CORPORATE.equals(_user.getSelectedServiceType()) ? "_cos" : ""%><% } %>.jsp"><b>Click here</b></a> to see all available time slots<% if (!isCorporateAddr) { %> for your address<% if (cutoffInfo.getZipCode() != null) { %> in <%=cutoffInfo.getZipCode()%><% } %><% } %>.
-				<% } else if (isPickupAddr || isUnknown) {%><a href="/help/delivery_lic_pickup.jsp"><b>Click here</b></a> to see all available time slots.
+				<% } else if (isPickupAddr || isUnknown) {%><a href="/help/delivery_lic_pickup.jsp"><b>Click here<span class="offscreen">to see all available time slots</span></b></a> to see all available time slots.
 				<% } %>
 </div><%
 } else if (cutoffInfo.isHourPastCutoff()) {

@@ -15,7 +15,6 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.EnumAddressType;
-import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
@@ -25,9 +24,7 @@ import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
-import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.referral.FDReferralManager;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -146,16 +143,6 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		this.failureCorporatePageCRM = failureCorporatePageCRM;
 	}
 	
-	
-	private void newSession() {
-		HttpSession session = pageContext.getSession();
-		// clear session
-		// [segabor]: instead of wiping out all session entries delete just the 'customer'
-		session.removeAttribute(SessionName.USER);
-		// remove cookie
-		CookieMonster.clearCookie((HttpServletResponse)pageContext.getResponse());
-	}
-
 	/** keep in sync with CheckLoginStatusTag.createUser(String zipCode)*/
 	@Override
     public int doStartTag() throws JspException {
@@ -216,7 +203,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					        return EVAL_BODY_BUFFERED;
 					    }
 					    
-						newSession();
+                        UserUtil.newSession(request.getSession(), (HttpServletResponse) pageContext.getResponse());
 						
 						if("WEB".equals(this.serviceType.getName())){
 							EnumDeliveryStatus homeDlvStatus = serviceResult.getServiceStatus(EnumServiceType.HOME);
@@ -358,7 +345,6 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 						setRequestedServiceTypeDlvStatus(serviceResult.getServiceStatus(this.serviceType));
 					
 					if (result.isSuccess()) {
-						//newSession();
 						
 						EnumDeliveryStatus dlvStatus = serviceResult.getServiceStatus(this.serviceType);
 							
@@ -531,7 +517,6 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 						setRequestedServiceTypeDlvStatus(serviceResult.getServiceStatus(this.serviceType));
 					
 					if (result.isSuccess()) {
-						//newSession();						
 						
 						String failedAddresspage = "/social/FailedAddrPage.jsp?successPage=index.jsp&referrer_page=slite&" +
 								"serviceType=" + this.serviceType +  
@@ -1205,76 +1190,19 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		}
 	}
 
-	private void createUser(EnumServiceType serviceType, Set availableServices) throws FDResourceException {
-		HttpSession session = pageContext.getSession();
-		HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+    private void createUser(EnumServiceType serviceType, Set<EnumServiceType> availableServices) throws FDResourceException {
+        HttpSession session = pageContext.getSession();
+        HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+        FDSessionUser user = UserUtil.createSessionUser(serviceType, availableServices, session, response, address);
 
-		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);		
+        if (this.address != null && user.getAddress() != null && "".equalsIgnoreCase(this.address.getState()) && this.address.getZipCode().equals(user.getAddress().getZipCode())) {
+            this.address.setState(user.getAddress().getState());
+        }
+        user.setAddress(this.address);
 
-			if ((user == null) || ((user.getZipCode() == null) && (user.getDepotCode() == null) && (user.getIdentity() == null))) {
-				//
-				// if there is no user object or a dummy user object created in
-				// CallCenter, make a new using this zipcode
-				// make sure to hang on to the cart that might be in progress in
-				// CallCenter
-				//
-				FDCartModel oldCart = null;
-				if (user != null) {
-					oldCart = user.getShoppingCart();
-				}
-				StoreContext storeContext =StoreContextUtil.getStoreContext(session);
-				user = new FDSessionUser(FDCustomerManager.createNewUser(this.address, serviceType, storeContext.getEStoreId()), session);
-				user.setUserCreatedInThisSession(true);
-				
-				if(this.address!=null && user.getAddress()!=null && 
-						"".equalsIgnoreCase(this.address.getState())&& this.address.getZipCode().equals(user.getAddress().getZipCode())){
-					this.address.setState(user.getAddress().getState());
-				}
-				user.setAddress(this.address);
-				user.setSelectedServiceType(serviceType);
-				//Added the following line for zone pricing to keep user service type up-to-date.
-				user.setZPServiceType(serviceType);
-				user.setAvailableServices(availableServices);			
-				
-				if (oldCart != null) {
-					user.setShoppingCart(oldCart);
-				}
-	
-				CookieMonster.storeCookie(user, response);
-				session.setAttribute(SessionName.USER, user);
-	
-			} else {	
-				//
-				// otherwise, just update the zipcode in their existing object if
-				// they haven't yet registered
-				//
-				if (user.getLevel() < FDUser.RECOGNIZED) {
-					user.setAddress(this.address);
-					user.setSelectedServiceType(serviceType);
-					//Added the following line for zone pricing to keep user service type up-to-date.
-					user.setZPServiceType(serviceType);
-					user.setAvailableServices(availableServices);
-					//Need to reset the pricing context so the pricing context can be recalculated.
-					//user.resetPricingContext();
-					//user.setP
-					CookieMonster.storeCookie(user, response);
-					FDCustomerManager.storeUser(user.getUser());
-					session.setAttribute(SessionName.USER, user);
-				}
-							
-			}		
-			
-		//To fetch and set customer's coupons.
-		if(user != null){
-			FDCustomerCouponUtil.initCustomerCoupons(session);
-			user.setNewUserWelcomePageShown(true); //do not redirect to welcome.jsp 
-		}
-		
-        //The previous recommendations of the current session need to be removed.
-        session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
-        session.removeAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE);
-        session.removeAttribute(SessionName.PREV_SAVINGS_VARIANT);
-		
-	}	
+        if (user != null) {
+            user.setNewUserWelcomePageShown(true); // do not redirect to welcome.jsp
+        }
+    }
 
 }

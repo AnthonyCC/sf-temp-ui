@@ -93,7 +93,7 @@ public class SearchController extends BaseController {
     private ModelAndView search(HttpServletRequest request, HttpServletResponse response, ModelAndView model, SessionUser user)
             throws FDException, ServiceException, NoSessionException, JsonException {
 
-        if (isCheckLoginStatusEnable(request)) {
+        if (isExtraResponseRequested(request)) {
             BrowsePageResponse data = BrowseUtil.getBrowseResponse(user, request);
             populateResponseWithEnabledAdditionsForWebClient(user, data, request, null);
             setResponseMessage(model, data, user);

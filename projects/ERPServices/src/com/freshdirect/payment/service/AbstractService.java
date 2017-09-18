@@ -164,7 +164,7 @@ public abstract class AbstractService {
 												 path;
 	}
 	public String getOrbitalEndPoint(String path){
-		return FDStoreProperties.getPayPalAPIUrl()	+ ORBITAL_API_CONTEXT 
+		return FDStoreProperties.getOrbitalAPIUrl()	+ ORBITAL_API_CONTEXT 
 														+ path;
 	}
 	

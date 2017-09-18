@@ -13,8 +13,9 @@ var FreshDirect = FreshDirect || {};
     id: 'zipcheck',
     submit: function (e) {
       data = zipCheck.serialize(e.form.id);
+      data.action = 'setZipCode';
       DISPATCHER.signal('server', {
-        url: '/api/locationhandling/user/ziphandling',
+        url: '/api/locationhandler',
         method: 'POST',
         data: {
           data: JSON.stringify({

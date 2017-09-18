@@ -10,11 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Category;
-import org.joda.time.DateTime;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.FDCouponProperties;
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpInvalidPasswordException;
@@ -67,7 +69,6 @@ import com.freshdirect.mobileapi.model.tagwrapper.MergeCartControllerTagWrapper;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.BrowseUtil;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
-import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -77,7 +78,7 @@ import com.freshdirect.webapp.util.LocatorUtil;
 
 public class LoginController extends BaseController  implements SystemMessageList {
 
-    private static Category LOGGER = LoggerFactory.getInstance(LoginController.class);
+    private static final Category LOGGER = LoggerFactory.getInstance(LoginController.class);
 
     private static final String ACTION_LOGIN = "login";
     private static final String ACTION_LOGOUT = "logout";
@@ -269,7 +270,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
             responseMessage = getErrorMessage(ERR_AUTHENTICATION, MessageCodes.MSG_ACCEPT_FD_TERMSANDCONDITIONS_FAILED);
         } else {
             user.setTcAcknowledge(true);
-            if (isCheckLoginStatusEnable(request)) {
+            if (isExtraResponseRequested(request)) {
                 MessageResponse messageResponse = new MessageResponse();
                 populateResponseWithEnabledAdditionsForWebClient(user, messageResponse, request, null);
                 responseMessage = messageResponse;
@@ -326,7 +327,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 			if (user == null) {
 				FDSessionUser fdSessionUser = null;
 				try {
-					fdSessionUser = CookieMonster.loadCookie(request);
+                    fdSessionUser = UserUtil.getSessionUser(request);
 				} catch (FDResourceException ex) {
 					LOGGER.warn(ex);
 				}
@@ -353,7 +354,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
     private Message ping(HttpServletRequest request, HttpServletResponse response) throws NoSessionException, FDException {
         Message responseMessage = null;
         SessionUser user = getUserFromSession(request, response);
-        if (isCheckLoginStatusEnable(request)) {
+        if (isExtraResponseRequested(request)) {
             MessageResponse messageResponse = new MessageResponse();
             populateResponseWithEnabledAdditionsForWebClient(user, messageResponse, request, null);
             responseMessage = messageResponse;
@@ -443,7 +444,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 				user.getFDSessionUser().insertOrUpdateSilverPopup(details);
 			}
 			//Silver popup changes End
-            if (isCheckLoginStatusEnable(request)) {
+            if (isExtraResponseRequested(request)) {
                 CMSPageRequest pageRequest = new CMSPageRequest();
                 pageRequest.setRequestedDate(new Date());
                 pageRequest.setPlantId(BrowseUtil.getPlantId(user));
@@ -526,7 +527,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
             if (user == null) {
                 FDSessionUser fdSessionUser = null;
                 try {
-                    fdSessionUser = CookieMonster.loadCookie(request);
+                    fdSessionUser = UserUtil.getSessionUser(request);
                 } catch (FDResourceException ex) {
                     LOGGER.warn(ex);
                 }

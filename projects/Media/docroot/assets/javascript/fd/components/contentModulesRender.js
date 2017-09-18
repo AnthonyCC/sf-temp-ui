@@ -31,7 +31,7 @@ var FreshDirect = FreshDirect || {};
             fd.modules.common.Elements.decorate($ph);
             fd.modules.common.aria.decorate();
 
-            fd.common.dispatcher.signal('productImpressions', $ph);
+            fd.common.dispatcher.signal('productImpressions', {el: $ph});
           }
 
         }.bind(this));

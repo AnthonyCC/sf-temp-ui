@@ -123,13 +123,13 @@ public class ProductController extends BaseController {
             	model = getRecommendedProducts(model, request, response, user);
             } else if(MULTIPLE_PRODUCT_DETAIL.equals(action)){
             	MultipleRequest reqestMessage = parseRequestObject(request, response, MultipleRequest.class);
-            	if (isCheckLoginStatusEnable(request)) {
+            	if (isExtraResponseRequested(request)) {
             	    model = getMultipleProductDetailPotatoes(model, reqestMessage, response, user);
             	} else {
             	    model = getMultipleProductDetail(model, reqestMessage, response, user);
             	}
             }else {
-                if (isCheckLoginStatusEnable(request)) {
+                if (isExtraResponseRequested(request)) {
                     model = getPotatoProduct(model, request, response, user);
                 } else {
                     model = getProduct(model, request, response, user);

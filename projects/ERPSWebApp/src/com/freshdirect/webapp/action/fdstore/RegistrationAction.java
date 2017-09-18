@@ -3,7 +3,6 @@ package com.freshdirect.webapp.action.fdstore;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -48,7 +47,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
-import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.webapp.action.WebActionSupport;
@@ -68,7 +66,7 @@ import com.freshdirect.webapp.util.AccountUtil;
 
 public class RegistrationAction extends WebActionSupport {
 
-	private static Category LOGGER = LoggerFactory.getInstance(RegistrationAction.class);
+    private static final Category LOGGER = LoggerFactory.getInstance(RegistrationAction.class);
 
 	private static boolean ALLOW_ALL = false;
 	private final int regType;
@@ -111,7 +109,8 @@ public class RegistrationAction extends WebActionSupport {
 		return referralId;
 	}
 
-	public String execute() throws Exception {
+	@Override
+    public String execute() throws Exception {
 	    //ALLOW_ALL = true;
 		HttpSession session = this.getWebActionContext().getSession();
 		HttpServletRequest request = this.getWebActionContext().getRequest();
@@ -210,9 +209,9 @@ public class RegistrationAction extends WebActionSupport {
 					user.invalidateCache();
 					user.isLoggedIn(true);
 					user.setZipCode(erpAddress.getZipCode());
-					user.setSelectedServiceType(AddressUtil.getDeliveryServiceType(erpAddress));
+                    user.setSelectedServiceType(serviceType);
 					//Added the following line for zone pricing to keep user service type up-to-date.
-					user.setZPServiceType(AddressUtil.getDeliveryServiceType(erpAddress));
+                    user.setZPServiceType(serviceType);
 					user.updateUserState();
 					user.setTcAcknowledge(true);
 					//Set the Default Delivery pass status.
@@ -739,7 +738,7 @@ public class RegistrationAction extends WebActionSupport {
 					erpAddress.setCountry("US");
 					erpAddress.setZipCode(addInfo.getZipCode());*/
 					
-					erpAddress.setServiceType(serviceType);
+                erpAddress.setServiceType(serviceType);
 					erpCustomer.setSapBillToAddress(erpAddress);
 				}
 	
@@ -769,17 +768,9 @@ public class RegistrationAction extends WebActionSupport {
 						//update user's zip only if a valid address is supplied. Without this check user's zip will be updated to default zip 11101
 						user.setZipCode(erpAddress.getZipCode());
 					}
-					if(address != null) {
-						EnumServiceType userServiceType = AddressUtil.getDeliveryServiceType(erpAddress);
-						//This is from partial zip check page from where we will have a valid address.
-						user.setSelectedServiceType(userServiceType);
-						//Added the following line for zone pricing to keep user service type up-to-date.
-						user.setZPServiceType(userServiceType);
-					} else {
 						//This is from regular zip Check oage.
 						user.setSelectedServiceType(serviceType);
 						user.setZPServiceType(serviceType);
-					}
 					user.updateUserState();
 					//Set the Default Delivery pass status.
 					FDUserDlvPassInfo dlvpassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null,0,0,0,false,0,null,0,null);
@@ -1690,7 +1681,7 @@ public class RegistrationAction extends WebActionSupport {
 		}
 
 		private void initialize(HttpServletRequest request) {
-			this.serviceType = (EnumServiceType) NVL.apply(EnumServiceType.getEnum(request
+			this.serviceType = NVL.apply(EnumServiceType.getEnum(request
 				.getParameter(EnumUserInfoName.DLV_SERVICE_TYPE.getCode())), EnumServiceType.HOME);
 			this.companyName = NVL.apply(request.getParameter(EnumUserInfoName.DLV_COMPANY_NAME.getCode()), "");
 			this.street1 = NVL.apply(request.getParameter(EnumUserInfoName.DLV_ADDRESS_1.getCode()), "").trim();

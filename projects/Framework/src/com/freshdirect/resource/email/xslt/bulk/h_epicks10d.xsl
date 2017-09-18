@@ -166,7 +166,7 @@
 
 
 <MAP NAME="departmentNav">
-<AREA SHAPE="RECT" COORDS="0,0,30,39" HREF="http://www.freshdirect.com/index.jsp?trk=epicks10d" ALT="Home"/>
+<AREA SHAPE="RECT" COORDS="0,0,30,39" HREF="http://www.freshdirect.com/index.jsp?serviceType=HOME&trk=epicks10d" ALT="Home"/>
 <AREA SHAPE="RECT" COORDS="31,1,70,21" HREF="http://www.freshdirect.com/department.jsp?deptId=fru&amp;trk=epicks10d" ALT="Fruit"/>
 <AREA SHAPE="RECT" COORDS="71,1,139,21" HREF="http://www.freshdirect.com/department.jsp?deptId=veg&amp;trk=epicks10d" ALT="Vegetables"/>
 <AREA SHAPE="RECT" COORDS="140,1,176,21" HREF="http://www.freshdirect.com/department.jsp?deptId=mea&amp;trk=epicks10d" ALT="Meat"/>

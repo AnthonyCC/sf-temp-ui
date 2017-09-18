@@ -37,7 +37,7 @@ var dataLayer = window.dataLayer || [];
       brand: product.brandName,
       category: product.catId,
       variant: product.variantId || 'default variant',
-      list: list || '',
+      list: list || fd.gtm.getList(),
       new_product: product.newProduct,
       sku: product.skuCode,
       in_stock: product.available
@@ -48,6 +48,20 @@ var dataLayer = window.dataLayer || [];
     }
 
     return productData;
+  };
+
+  var safeName = function (text) {
+    return text.toString().toLowerCase()
+      .replace(/\s+/g, '_')         // Replace spaces with _
+      .replace(/[^\w\-]+/g, '')     // Remove all non-word chars
+      .replace(/__+/g, '_')         // Replace multiple _ with single _
+      .replace(/^_+/, '')           // Trim _ from start of text
+      .replace(/_+$/, '');          // Trim _ from the end of text
+  };
+
+  var resetImpressions = function () {
+    FreshDirect.gtm.setValue('ecommerce.impressions', null);
+    FreshDirect.gtm.setValue('ecommerce.impressions', []);
   };
 
   fd.gtm.PROCESSORS = {
@@ -96,24 +110,20 @@ var dataLayer = window.dataLayer || [];
       });
     },
     sections: function (sectionData) {
-      var products = sectionProducts(sectionData);
+      var list = fd.gtm.getList(),
+          products = sectionProducts(sectionData).map(function (product, idx) {
+            return productTransform(product, idx+1, list);
+          });
 
-      dataLayer.push({
-        ecommerce: {
-          impressions: products.map(function (product, idx) {
-            return productTransform(product, idx+1, 'browse');
-          })
-        }
-      });
+      fd.gtm.reportImpressions(products);
     },
     items: function (reorderItems) {
-      dataLayer.push({
-        ecommerce: {
-          impressions: reorderItems.map(function (product, idx) {
-            return productTransform(product, idx+1, 'reorder');
-          })
-        }
-      });
+      var list = fd.gtm.getList(),
+          products = reorderItems.map(function (product, idx) {
+            return productTransform(product, idx+1, list);
+          });
+
+      fd.gtm.reportImpressions(products);
     },
     product: function (productData) {
       var product = productTransform(productData);
@@ -127,6 +137,10 @@ var dataLayer = window.dataLayer || [];
           }
         }
       });
+
+      return {
+        event: 'impressionsPushed'
+      };
     },
     ATCData: function (ATCData) { // + cartLineChange
       var productData = ATCData.productData,
@@ -250,10 +264,7 @@ var dataLayer = window.dataLayer || [];
               delivery_type: coData.deliveryType || 'unknown',
               available_timeslot_value: ts && ts.deliveryDate+' '+ts.displayString || 'unknown',
               unavailable_timeslot_present: coData.unavailableTimeslotValue ? 'yes' : 'no'
-            },
-            delivery_type: coData.deliveryType || 'unknown',
-            available_timeslot_value: ts && ts.deliveryDate+' '+ts.displayString || 'unknown',
-            unavailable_timeslot_present: coData.unavailableTimeslotValue ? 'yes' : 'no'
+            }
           }
         });
 
@@ -493,17 +504,35 @@ var dataLayer = window.dataLayer || [];
       productData.position = 1;
     }
 
+    if (productE.hasClass('carouselTransactionalItem') && !productData.list) {
+      var carouselE = productE.closest('[data-component="tabbedRecommender"]');
+
+      if (carouselE.length) {
+        productData.list = safeName(carouselE.find('.tabs li.selected').text());
+      } else {
+        carouselE = productE.closest('.carousels');
+        if (carouselE.length) {
+          productData.list = safeName(carouselE.find('.header').text());
+        }
+      }
+    }
+
+    productData.list = fd.gtm.getList() + (productData.list ? '_'+productData.list : '');
+
     return productData;
   };
 
   // report product impressions for a DOM element
-  fd.gtm.reportImpressions = function (el) {
-    var $el = $(el);
+  fd.gtm.reportImpressionsEl = function (el, type) {
+    var $el = $(el),
+        products = [];
 
-    var report = function (elm) {
+    type = type || 'impressionsPushed';
+
+    var reportProduct = function (elm) {
       var productData = fd.gtm.getProductData(elm);
 
-      dataLayer.push(['ecommerce.impressions.push', {
+      return {
         id: productData.productId,
         name: productData.name,
         price: productData.price,
@@ -515,23 +544,86 @@ var dataLayer = window.dataLayer || [];
         in_stock: productData.in_stock,
         position: parseInt(productData.position, 10) || 0,
         list: productData.list
-      }]);
+      };
     };
 
     $el.each(function (i, elm) {
       if ($(elm).is('[data-component="product"]')) {
-        report(elm);
+        products.push(reportProduct(elm));
       }
     });
 
     $el.find('[data-component="product"]').each(function (i, elm) {
-      report(elm);
+      if ($(elm).closest('[data-component="relateditem"]').length === 0) {
+        products.push(reportProduct(elm));
+      }
     });
+
+    fd.gtm.reportImpressions(products, type);
+  };
+
+  // report product impressions
+  fd.gtm.reportImpressions = function (products, type) {
+    type = type || 'impressionsPushed';
+    var checkAndReport = function () {
+      if (fd.gtm.check()) {
+        resetImpressions();
+        dataLayer.push({
+          ecommerce: {
+            impressions: products
+          },
+          event: type
+        });
+
+        if (fd.utils.isDeveloper()) {
+          console.info('[gtm] impressions reported: ', type, products);
+        }
+      } else {
+        setTimeout(checkAndReport, 100);
+      }
+    };
+
+    checkAndReport();
   };
 
   // get actual dataLayer value (for verification)
   fd.gtm.getValue = function (query) {
     return window.google_tag_manager[GTMID].dataLayer.get(query);
+  };
+
+  // set actual dataLayer value (for impressions reset)
+  fd.gtm.setValue = function (prop, value) {
+    return window.google_tag_manager[GTMID].dataLayer.set(prop, value);
+  };
+
+  // check if GTM is loaded
+  fd.gtm.check = function () {
+    return window.google_tag_manager && window.google_tag_manager[GTMID];
+  };
+
+  // get list parameter for products
+  fd.gtm.getList = function () {
+    var listName = fd.utils.getParameterByName('id'),
+        urlPageType = fd.utils.getParameterByName('pageType'),
+        pageType = fd.gtm.data && fd.gtm.data.googleAnalyticsData && fd.gtm.data.googleAnalyticsData.pageType && fd.gtm.data.googleAnalyticsData.pageType.pageType,
+        searchParams = fd.utils.getParameterByName('searchParams');
+
+    // pageName for PLP pages => last breadcrumb
+    if ($('ul.breadcrumbs li').length) {
+      listName = safeName($('ul.breadcrumbs li').last().text());
+    } else if (searchParams) {
+      listName = searchParams.replace(/\s+/g, '+');
+    } else if ($('ul.qs-tabs li .selected').length) {
+      pageType = 'reorder';
+      listName = safeName($('ul.qs-tabs li .selected').text());
+    }
+
+    // change pageType to 'browse' for product and category list pages
+    if ('product_list|category_list'.indexOf(pageType.toLowerCase()) > -1) {
+      pageType = 'browse';
+    }
+
+    return ((urlPageType || pageType || 'browse')+(listName ? '_'+listName : '')).toLowerCase();
   };
 }(FreshDirect));
 
@@ -541,11 +633,6 @@ var dataLayer = window.dataLayer || [];
   var gtmData = fd.gtm && fd.gtm.data && fd.gtm.data.googleAnalyticsData;
   var browseData = fd.browse && fd.browse.data;
   var productData = fd.pdp && fd.pdp.data;
-
-  // put empty product list into dataLayer, to be able to append to it
-  dataLayer.push({
-    'ecommerce.impressions': []
-  });
 
   if (gtmData) {
     fd.gtm.updateDataLayer(gtmData);
@@ -572,7 +659,7 @@ var dataLayer = window.dataLayer || [];
 
   // collect impressions from content modules
   $('.content-module.product-list').each(function (i, el) {
-    fd.gtm.reportImpressions(el);
+    fd.gtm.reportImpressionsEl(el);
   });
 
 }(FreshDirect));
@@ -601,8 +688,14 @@ var dataLayer = window.dataLayer || [];
       value: 'productImpressions'
     },
     callback: {
-      value: function (el) {
-        fd.gtm.reportImpressions(el);
+      value: function (data) {
+        setTimeout(function () {
+          if (data.el) {
+            fd.gtm.reportImpressionsEl(data.el, data.type);
+          } else if (data.products) {
+            fd.gtm.reportImpressions(data.products, data.type);
+          }
+        }, 10);
       }
     }
   });
@@ -616,7 +709,9 @@ var dataLayer = window.dataLayer || [];
     },
     callback: {
       value: function (data) {
-        fd.gtm.updateDataLayer({sections: data});
+        setTimeout(function () {
+          fd.gtm.updateDataLayer({sections: data});
+        }, 10);
       }
     }
   });
@@ -630,7 +725,9 @@ var dataLayer = window.dataLayer || [];
     },
     callback: {
       value: function (data) {
-        fd.gtm.updateDataLayer({items: data.data});
+        setTimeout(function () {
+          fd.gtm.updateDataLayer({items: data.data});
+        }, 10);
       }
     }
   });
@@ -840,7 +937,7 @@ var dataLayer = window.dataLayer || [];
       ecommerce: {
         click: {
           actionField: {
-            list: productData.list || 'main'
+            list: productData.list || fd.gtm.getList()
           },
           products: [{
             id: productData.productId,

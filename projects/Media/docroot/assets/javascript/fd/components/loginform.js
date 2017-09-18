@@ -139,7 +139,7 @@ var FreshDirect = FreshDirect || {};
 						fd.gtm.data.googleAnalyticsData.login.loginAttempt = 'success';
 						fd.gtm.updateDataLayer(fd.gtm.data.googleAnalyticsData);
 				}
-				parent.document.location = sucessTarget || parent.document.location;
+				parent.document.location = responseJson.successPage || sucessTarget || parent.document.location;
 			} else {
 				showError();
 			}

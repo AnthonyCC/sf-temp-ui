@@ -68,19 +68,18 @@ var FreshDirect = FreshDirect || {};
     }
 
     // product impression reporting based on pages
-    var vislibleProducts = elements.slice(newPage * itemPerPage, (newPage+1) * itemPerPage);
+    var reportType = elements.filter('[data-impression-reported]').length ? 'impressionsPagination' : 'impressionsPushedCarousel';
+    var vislibleProducts = elements.slice(newPage * itemPerPage, (newPage+1) * itemPerPage).filter(':not([data-impression-reported])');
     vislibleProducts.each(function (i, pEl) {
-      var $pEl = $(pEl);
-
-      if (!$pEl.attr('data-impression-reported')) {
-        $pEl.attr('data-impression-reported', 'true');
-
-        // give some time for the GTM module to load
-        setTimeout(function () {
-          fd.common.dispatcher.signal('productImpressions', $pEl);
-        }, 100);
-      }
+      pEl.setAttribute('data-impression-reported', 'true');
     });
+
+    if (vislibleProducts.length) {
+      // give some time to the GTM module to initialize
+      setTimeout(function () {
+        fd.common.dispatcher.signal('productImpressions', {el: vislibleProducts, type: reportType});
+      }, 10);
+    }
 
     carousel.data('carousel-page', newPage);
     carousel.data('carousel-nrpages', nrPages);

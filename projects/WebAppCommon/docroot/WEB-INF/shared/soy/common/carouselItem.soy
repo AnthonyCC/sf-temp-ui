@@ -39,11 +39,10 @@
  */
 {deltemplate common.carouselItem variant="'grid_prodSample'"}
 {call common.transactionalGridItem data="all"}
-	{param extraClass}carouselTransactionalItem productSamplingItem {if $itemCount and $itemCount != ''} item-count{$itemCount}{/if}{/param}
+    {param extraClass}carouselTransactionalItem productSamplingItem{if $itemCount} item-count{$itemCount}{/if}{if $extraClass} {$extraClass}{/if}{/param}
 	{param cmEventSource:$cmEventSource /}
 	{param mobWeb:$mobWeb /}
 	{param moduleData:$moduleData /}
 	{param itemIndex:$itemIndex /}
-	{param extraClass}{if $extraClass}{$extraClass}{/if}{/param}
 {/call}
 {/deltemplate}

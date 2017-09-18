@@ -72,7 +72,7 @@ public class BrowseController extends BaseController {
     	long startTime=System.currentTimeMillis();
     	LOG.debug("BrowseController PostData received: [" + postData + "]");
 
-        if (isCheckLoginStatusEnable(request)) {
+        if (isExtraResponseRequested(request)) {
             if (ACTION_GET_CATEGORIES.equals(action)) {
                 BrowsePageResponse res = BrowseUtil.getBrowseResponse(user, request);
                 populateResponseWithEnabledAdditionsForWebClient(user, res, request, null);
@@ -107,7 +107,7 @@ public class BrowseController extends BaseController {
         if (ACTION_NAVIGATION.equals(action)) {
             GlobalNavResult res = new GlobalNavResult();
             StoreModel store = ContentFactory.getInstance().getStore();
-            boolean isExtraResponse = isCheckLoginStatusEnable(request);
+            boolean isExtraResponse = isExtraResponseRequested(request);
             List<Department> departments = new ArrayList<Department>();
             for (DepartmentModel storeDepartment : store.getDepartments()) {
                 if (storeDepartment.getContentKey() != null && !storeDepartment.isHidden() && !storeDepartment.isHideIphone()) {
@@ -170,7 +170,7 @@ public class BrowseController extends BaseController {
                 LOG.debug(((endTime - startTime) / 1000) + " seconds");
                 return model;
 	        } else if (ACTION_GET_GROUP_PRODUCTS.equals(action)) {
-	            final boolean isWebRequest = isCheckLoginStatusEnable(request);
+	            final boolean isWebRequest = isExtraResponseRequested(request);
 	        	List<Product> products = FDGroup.getGroupScaleProducts(requestMessage.getGroupId(), requestMessage.getGroupVersion(), user, isWebRequest);
 	        	result.setProductsFromModel(products);
 	        }else if(ACTION_GET_CATALOG_FOR_ADDRESS.equals(action)){

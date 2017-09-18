@@ -65,6 +65,12 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
 		// generate content node list based on the 'generator' expression.
 		List<? extends ContentNodeModel> result = generator.generate(input, dataAccess);
 
+		int max = input.getMaxRecommendations();
+		// if isOnlyTabHeader is true, we can do the sublist here because we only need to check if there is any recommended products
+		if (input.isOnlyTabHeader() &&  max != 0 && max < result.size()) {
+			result = result.subList(0 , max);
+		} 
+		
 		String userId = input.getCustomerId();
                 PricingContext pricingCtx = input.getPricingContext();
 		List<RankedContent.Single> rankedContents;
@@ -128,6 +134,9 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
 		finalList.addAll(sample);
 		finalList.addAll(deprioritized);
 		
+		if (max != 0 && max < finalList.size()) {
+			return finalList.subList(0 , max);
+		} 
 		return finalList;
 	}
 

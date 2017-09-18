@@ -2,28 +2,22 @@
 <%@ page import="com.freshdirect.webapp.taglib.location.LocationHandlerTag"%>
 <%@ page import='com.freshdirect.common.address.AddressModel' %>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
-<%@ page import="com.freshdirect.fdstore.customer.FDUserUtil" %>
+<%@ page import="com.freshdirect.webapp.soy.SoyTemplateEngine"%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
 <%@page import="com.freshdirect.webapp.ajax.quickshop.QuickShopHelper"%>
-<%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
-<%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
+<%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 <%@ taglib uri="fd-features" prefix="features" %>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 <%@ taglib uri="/WEB-INF/shared/tld/components.tld" prefix='comp' %>
 <%@ taglib uri='logic' prefix='logic' %>
-<%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 <%
 	/* ================================================================================
 	 *	THIS IS A WIP VERSION FOR OPTIMIZATION TESTS
 	 * 	DO NOT USE ON PAGES BESIDES INDEX WITHOUT TESTING
 	 *	20170913 batchley
-	 *
-	 *	This template removes a large amount of unused (on index) code. This includes
-	 *	shared support libraries. Things that will not work (there may be more):
-	 *		Search Autocomplete, overlays that use ifrPopup, cart prod count (init'd)
 	 * ================================================================================ */
 
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
@@ -34,188 +28,101 @@
 	boolean isReorderOrders = (mobweb_uri.indexOf("/qs_past_orders.jsp") != -1) ? true : false;
 	boolean isCheckout = (mobweb_uri.indexOf("/expressco/") != -1) ? true : false;
 	boolean isHelp = (mobweb_uri.indexOf("/help/") != -1) ? true : false;
-	boolean isModifyOrder = FDUserUtil.getModifyingOrder(user) != null;
-	
+
 	Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 	boolean useFdxGlobalNav = FDStoreProperties.isFdxLocationbarEnabled();
 
 	request.setAttribute("inMobWebTemplate", true);
-	request.setAttribute("inMobWebTemplateOptimized", true); //used in menu includes
-
-	boolean isChat = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.livechat, user);
+	request.setAttribute("inMobWebTemplateOptimized", true); //jic
 %>
+<%
+	if (isReorder) {
+		%><features:isActive name="isQS20" featureName="quickshop2_0" /><%
+	}
 
-<html lang="en-US" xml:lang="en-US">
+%>
+<html>
   <head>
-  <% if (isModifyOrder) { %>
-  		<jwr:style src="/global.css" media="all" />
-  <% } %>
-  
-<%--   	<title><tmpl:get name="title"/></title> --%>
-  	
-	<style>
-		@charset "UTF-8";
-		<%--
-			All CSS should be inline, no bundle or external files 
-			Include them directly, otherwise it affects performance
-		--%>
-		<% if (isChat) { %>
-			#bc-chat-container {
-				left: auto !important;
-				top: auto !important;
-			}
-			<%@ include file="/assets/css/dialog-base.css" %>
-			<%@ include file="/assets/css/common/cssbuttons.css" %>
-			<%@ include file="/assets/css/global/ui-dialog.css" %>
-			<%@ include file="/assets/css/common/jquery-ui_base/jquery-ui.css" %>
-	  	<% } %>
-		<%@ include file="/assets/css/mobileweb_index_optimized/mobileweb_index_optimized.css" %>
-	</style>
-    <jwr:style src="/accessibility.css" media="all" />
-    
-	<%-- Keep the media include last, so it can always override any css auto-loaded --%>
-	<fd:IncludeMedia name="/media/editorial/site_pages/stylesheet.html" />
+  	<title><tmpl:get name="title"/></title>
+	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+    <jwr:style src="/grid.css" media="all" />
+    <jwr:style src="/oldglobal.css" media="all" />
+    <jwr:style src="/global.css" media="all" />
+	<fd:css href="/assets/css/common/locationbar_fdx.css" />
+	<% if(request.getRequestURI().indexOf("/your_account/")>-1) { %>
+			<jwr:style src="/assets/css/common/styles.css" media="all" />
+			<jwr:style src="/assets/css/alerts_examples.css" media="all" />
+			<jwr:script src="/assets/javascript/scripts.js" useRandomParam="false" />
+			<jwr:script src="/assets/javascript/jquery.hint.js" useRandomParam="false" />
+			<jwr:script src="/assets/javascript/jquery.pwstrength.js" useRandomParam="false" />
+			<script>jQuery(function($jq) { $jq('#password1').pwstrength(); });</script>
+	<% } %>
+
+    <%
+		if (isReorder) {
+			%><jwr:style src="/quickshop.css" media="all" /><%
+		}
+	%>
+    <%
+		if (isCheckout) {
+			%><jwr:style src="/expressco.css" media="all" /><%
+		}
+	%>
+    <jwr:style src="/mobileweb.css" media="all" /><%-- mobileweb should be last, for overriding --%>
 	
   	<tmpl:get name="seoMetaTag"/><%-- if title is used, overrides previous tag --%>
 
     <meta name="HandheldFriendly" content="True">
     <meta name="MobileOptimized" content="320">
-  	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  	<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
 	<meta name="fragment" content="!">
 
   	<tmpl:get name='facebookmeta'/>
 
-    <fd:CanonicalPageLink/>
-
     <tmpl:get name="extraCss" />
-    <tmpl:get name='nutritionCss'/>
-	<% if (isModifyOrder) { %>
-			<jwr:style src="/modifyorder.css" media="all" />
-	<%} %>
-		<%-- Feature version switcher --%>
-		<features:potato />
-		<%-- LOAD JS --%>
-		<%@ include file="/common/template/includes/i_jsFreshDirect.jspf" %>
-		<jwr:script src="/mobileweb_index_optimized_jquerylibs.js" useRandomParam="false" />
-		<script type="text/javascript">
-			
-			fd.libs = fd.libs || {};
-			fd.libs.$ = jQuery;
-	
-			$jq.fn.messages = function( method ) {};
-			
-			
-			<%-- copied from utils.js for dfp.js --%>
-			fd.utils = fd.utils || {};
-			fd.utils.getParameters = function (source) {
-			  source = source || window.location.search.slice(1);
-			
-			  if (!source) {
-			    return null;
-			  }
-			
-			  var vars = {}, hash,
-			      hashes = source.split('&');
-			
-			  hashes.forEach(function (h) {
-			    hash = h.split('=');
-			    vars[hash[0]] = window.decodeURIComponent(hash[1]);
-			  });
-			
-			  return vars;
-			};
-			<%-- for debugging --%>
-			fd.utils.readCookie = function(name) {
-				var nameEQ = name + "=",
-					ca = document.cookie.split(';'),
-					i, c;
-	
-				for (i=0; i < ca.length; i++) {
-					c = ca[i];
-					while (c.charAt(0) === ' ') {
-						c = c.substring(1, c.length);
-					}
-					if (c.indexOf(nameEQ) === 0) {
-						return c.substring(nameEQ.length, c.length);
-					}
+    <jwr:script src="/assets/javascript/jquery/1.11.3/jquery.js" useRandomParam="false" />
+    <script>
+	    var $jq;
+		var jqInit = false;
+		function initJQuery() {
+			if (typeof(jQuery) == 'undefined') {
+				if (!jqInit) {
+					jqInit = true;
 				}
-					return null;
-			};
-			fd.utils.isDeveloper = function () {
-				return fd.utils.readCookie('developer');
-			};
-			
-			if (fd.utils.isDeveloper()) {
-				console.log('===== [ mobWeb optimized ] =====');
+				setTimeout("initJQuery()", 100);
+			} else {
+				$jq = jQuery.noConflict();
 			}
-			
-			(function () {
-					
-				<%-- updateOAS code --%>
-					function OAS_SCRIPT_URL(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos, OAS_query) {
-						return OAS_url + 'adstream_mjx.ads/' +
-								OAS_sitepage + '/1' + OAS_rns + '@' +
-								OAS_listpos + '?' + OAS_query;
-					}
-	
-					function done(listPos) {
-						var $ = $jq;
-						listPos.forEach(function (pos) {
-							var selector = "#oas_"+pos+",#oas_b_"+pos;
-							$(selector).each(function(i,e){
-								if (FreshDirect.utils.isDeveloper()) {
-									console.log('updateOAS: done', 'clearing elem html', pos, $(e));
-								}
-								$(e).html('');
-								postscribe($(e), '<sc'+'ript>OAS_RICH("'+pos+'");</scr'+'ipt>', {
-									error: function () {},
-									done: function (pos) {
-										$.each($('a[href*="/default/empty.gif/"]'), function(ii, ee) {
-											$(ee).attr("tabindex", "-1");
-											$(ee).attr("role", "presentation");
-											$(ee).attr("aria-hidden", "true");
-											if (fd.utils.isDeveloper()) {
-												console.log('updateOAS: done', 'hiding "empty" oas pos', $(ee));
-											}
-										});
-										
-										if (fd.utils.isDeveloper()) {
-											console.log('updateOAS: done', 'updated', $(e));
-										}
-									}
-								});
-							});
-						});
-					}
-	
-					function updateOAS(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos, OAS_query) {
-						var scriptUrl = OAS_SCRIPT_URL(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos.join(','), OAS_query);
-	
-						postscribe(document.body, '<sc'+'ript src="'+scriptUrl+'"></scr'+'ipt>', {
-							done: function () {
-							  done(OAS_listpos);
-							}, error: function () {}
-						});
-					}
-					FreshDirect.updateOAS = {};
-					FreshDirect.updateOAS.done = done;
-			}());
-    	$jq(function(){
-    		var assistiveMode = localStorage.getItem("assistive-enabled");
-    		if(assistiveMode === "true") {
-    			$jq(".assistiveWrapper .switch :checkbox").prop("checked", true);
-				$jq('body').addClass("assistive-mode");
-    		}
-    		});
-		</script>
-		<jwr:script src="/mobileweb_index_optimized_everythingelse.js" useRandomParam="false" />
-    	<jsp:include page="/common/template/includes/ad_server.jsp" flush="false" />
+		}
+		initJQuery();
+    </script>
+    <jsp:include page="/common/template/includes/ad_server.jsp" flush="false" />
+    <tmpl:get name="extraJs" />
+    <tmpl:get name='nutritionCss'/>
 
-    	<tmpl:get name="extraJs" />
-	</head>
-<!--[if lt IE 9]><body class="ie8" data-ismobweb="true" <%= (isCheckout) ? "data-ec-page=" : "data-not-ec=" %>"<tmpl:get name="ecpage" />" data-printdata="<tmpl:get name='printdata'/>" data-eventsource="<tmpl:get name='eventsource'/>" data-pagetype="<tmpl:get name='pageType'/>" <% if (isReorder) {%> data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"<% } %>><![endif]-->
-<!--[if gt IE 8]><body data-ismobweb="true" <%= (isCheckout) ? "data-ec-page=" : "data-not-ec=" %>"<tmpl:get name="ecpage" />" data-printdata="<tmpl:get name='printdata'/>" data-eventsource="<tmpl:get name='eventsource'/>" data-pagetype="<tmpl:get name='pageType'/>" <% if (isReorder) {%> data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"<% } %>><![endif]-->
-<!--[if !IE]><!--><body data-ismobweb="true" <%= (isCheckout) ? "data-ec-page=" : "data-not-ec=" %>"<tmpl:get name="ecpage" />" data-printdata="<tmpl:get name='printdata'/>" data-eventsource="<tmpl:get name='eventsource'/>" data-pagetype="<tmpl:get name='pageType'/>" <% if (isReorder) {%> data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"<% } %>><!--<![endif]-->
+    <%
+		if ( (request.getRequestURI().indexOf("/your_account/giftcards.jsp")>-1) || (request.getRequestURI().indexOf("/your_account/gc_order_details.jsp")>-1) ) {
+			//do nothing
+		} else if(request.getRequestURI().indexOf("/your_account/")>-1) { %>
+			<%@ include file="/shared/template/includes/ccl.jspf" %>
+	<% } %>
+
+    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+
+    <%
+		if (isReorder) {
+			%><script type="text/javascript">
+	        	function showStandardAds(){
+	        		$jq('#QSTop').show();
+	        	}
+        	</script><%
+		}
+	%>
+  </head>
+<!--[if lt IE 9]><body class="ie8" data-ismobweb="true" <%= (isCheckout) ? "data-ec-page=" : "data-not-ec=" %>"<tmpl:get name="ecpage" />" data-printdata="<tmpl:get name='printdata'/>" data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>" <% if (isReorder) {%> data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"<% } %>><![endif]-->
+<!--[if gt IE 8]><body data-ismobweb="true" <%= (isCheckout) ? "data-ec-page=" : "data-not-ec=" %>"<tmpl:get name="ecpage" />" data-printdata="<tmpl:get name='printdata'/>" data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>" <% if (isReorder) {%> data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"<% } %>><![endif]-->
+<!--[if !IE]><!--><body data-ismobweb="true" <%= (isCheckout) ? "data-ec-page=" : "data-not-ec=" %>"<tmpl:get name="ecpage" />" data-printdata="<tmpl:get name='printdata'/>" data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>" <% if (isReorder) {%> data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"<% } %>><!--<![endif]-->
     
     <div class="container-fluid" id="page-content"><!-- body cont s -->
 
@@ -234,33 +141,9 @@
 			<div id="messages" class="visHidden">
 				<ul class="content"></ul>
 				<hr class="shadow">
-				<a href="#" class="handler close-handler" onclick="event.preventDefault();" id="locabar-messages-close"><span class="offscreen">close</span></a>
+				<a href="#" class="handler close-handler" id="locabar-messages-close"><span class="offscreen">close</span></a>
 				<br class="NOMOBWEB" />
 			</div>
-			
-			<% if (isChat) { %>
-				<!-- BoldChat Live Chat Button HTML v5.00 (Type=HTML,ChatWindow=iOS v.01 9/10/2015 - Brooklyn,Department=- None -,Website=FreshDirect) -->
-				<div id="open_live_chat">
-				<script>
-				  var bccbId = Math.random(); document.write(unescape('%3Cdiv id=' + bccbId + '%3E%3C/div%3E'));
-				  window._bcvma = window._bcvma || [];
-				  _bcvma.push(["setAccountID", "447701025416363034"]);
-				  _bcvma.push(["setParameter", "WebsiteID", "2853440196463415121"]);
-				  _bcvma.push(["addText", {type: "chat", window: "781368249134851385", available: "", unavailable: "", id: bccbId}]);
-				  var bcLoad = function(){
-				    if(window.bcLoaded) return; window.bcLoaded = true;
-				    var vms = document.createElement("script"); vms.type = "text/javascript"; vms.async = true;
-				    vms.src = ('https:'==document.location.protocol?'https://':'http://') + "vmss.boldchat.com/aid/447701025416363034/bc.vms4/vms.js";
-				    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(vms, s);
-				  };
-				  if(window.pageViewer && pageViewer.load) pageViewer.load();
-				  else if(document.readyState=="complete") bcLoad();
-				  else if(window.addEventListener) window.addEventListener('load', bcLoad, false);
-				  else window.attachEvent('onload', bcLoad);
-				</script>
-				</div>
-				<!-- /BoldChat Live Chat Button HTML v5.00 -->
-			<% } %>
 
 		  	<% if (FDStoreProperties.isAdServerEnabled()) {
 				%><div id="oas_SystemMessage">
@@ -282,9 +165,20 @@
 			    </logic:iterate></fd:GetSiteAnnouncements></div><%
 			} %>
 
+			<%@ include file="/common/template/includes/i_cutoff_warning.jspf"%>
+
     		<div class="message invisible" id="deliveryetawarning" data-type="deliveryetawarning"><%@ include file="/common/template/includes/i_delivery_eta_info.jspf"%></div>
 
 		   	<!-- messages e -->
+
+		   	<!-- modorder s -->
+		   	<%-- THIS IS HIDDEN FROM DISPLAY FOR NOW --%>
+		   	<div id="modifyorderalert_cont" class="">
+			   	<div id="modifyorderalert" class="alerts invisible" data-type="modifyorderalert">
+					<comp:modifyOrderBar user="<%= user %>" modifyOrderAlert="true" htmlId="test_modifyorderalert" />
+				</div>
+		   	</div>
+		   	<!-- modorder e -->
 
 			<section class="tabs">
     			<!-- start : tabs -->
@@ -296,8 +190,49 @@
 		      <tmpl:get name='leftnav'/>
 		      <!-- end : leftnav -->
 		    </nav>
-		   
+		    <%
+				if (isReorder) {
+					%>
+					<div id="quickshop"  class="container text10 <tmpl:get name='containerClass' />">
+		                <div class="header">
+		                  <h1 class='qs-title icon-reorder-icon-before notext'>Reorder</h1><span class="qs-subtitle"><strong>Smart shopping</strong> from <strong>past orders &amp; lists</strong></span>
+		                </div>
+		                <% if(false){ //Remove if check when other pages done. This nav is hidden only because only Items page was optimized for mobile %>
+		                <div id="mm-reorder-nav">
+							<ul>
+								<li><a href="/quickshop/qs_top_items.jsp" class="cssbutton purple <% if(isReorderItems){ %>non<% }%>transparent">Items</a></li>
+								<li><a href="/quickshop/qs_past_orders.jsp" class="cssbutton purple <% if(isReorderOrders){ %>non<% }%>transparent">Orders</a></li>
+								<li><a href="/quickshop/qs_shop_from_list.jsp" class="cssbutton purple <% if(isReorderLists){ %>non<% }%>transparent">Lists</a></li>
+							</ul>
+							<% if (user.isEligibleForStandingOrders()) { %>
+								<div id="mm-reorder-nav-so"><a href="/quickshop/qs_standing_orders.jsp" class="cssbutton purple transparent">Standing Orders</a></div>
+							<%} %>
+				    	</div>
+				    	<%} %>
+
+
+	                <% if (isReorderItems) { %>
+	                	<h2>Your Top Items</h2>
+	                <% } %>
+	               <% if (isReorderLists) { %>
+	               		<h2>Your Shopping Lists</h2>
+	               <% } %>
+	               <% if (isReorderOrders) { %>
+	               		<h2>Your Last Order</h2>
+	               <% } %>
+	                 <tmpl:get name="pagination" />
+	                <%
+				}
+			%>
+			<% if (isReorder) { %>
+				<%-- container with qs-container is required --%>
+				<div class="qs-container"><tmpl:get name="menu" /></div>
+			<% } %>
 			<tmpl:get name="content" />
+		    <% if (isReorder) { %>
+				<tmpl:get name="pagination" />
+				</div>
+			<% } %>
 	    </div><!-- content ends above here-->
 
 	    <!-- bottom nav s -->
@@ -307,60 +242,47 @@
 	<!-- body cont dialogs start -->
 	<!-- body cont dialogs end -->
 
+    <%@ include file="/common/template/includes/i_javascripts_browse.jspf" %>
 
-			
-			<%@ include file="/common/template/includes/extol_tags.jspf" %>
-			
-			<%-- GTM initialization --%>
-			<%@include file="/common/template/includes/i_gtm_datalayer.jsp" %>
-			
-			<fd:IncludeMedia name="/media/editorial/site_pages/javascript.html"/>
-		
-			
-			<% 
-			//System.out.println("DELIVERYADDRESS_COMPLETE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>:"+session.getAttribute("DELIVERYADDRESS_COMPLETE")); 
-			if (session.getAttribute("DELIVERYADDRESS_COMPLETE") != null) {%>	
-					
-			<script>
-			$jq(document).ready(function() {
-				if(FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { 
-					FreshDirect.components.ifrPopup.open({ 
-						url: '/social/delivery_address_create_success.jsp'}); 
-				} else {
-					pop('/social/delivery_address_create_success.jsp');
-				}
-			});
-			</script>
-			
-		<% 
-			session.setAttribute("DELIVERYADDRESS_COMPLETE",null);
-			} 
-		%>
-		
-		<% 
-			if (session.getAttribute("SOCIAL_LOGIN_EXIST") != null) {%>	
-					
-			<script>
-			$jq(document).ready(function() {
-				if(FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { 
-					FreshDirect.components.ifrPopup.open({ 
-						url: '/social/social_account_exist.jsp'}); 
-				} else {
-					pop('/social/social_account_exist.jsp');
-				}
-			});
-			</script>
-			
-		<% 
-			session.setAttribute("SOCIAL_LOGIN_EXIST",null);
-			} 
-		%>
+    <%-- THIS SETUP NEEDS TO BE BEFORE THE LOCABAR JS --%>
+	<script>
+		FreshDirect = FreshDirect || {};
+		FreshDirect.locabar = FreshDirect.locabar || {};
+		FreshDirect.locabar.isFdx = <%= useFdxGlobalNav %>;
+		$jq.fn.messages = function( method ) {};
+	</script>
+	<%
+		//any page that has timeslots needs prototype
+		if (isCheckout || (mobweb_uri.indexOf("/your_account/reserve_timeslot.jsp") != -1) || (mobweb_uri.indexOf("/your_account/delivery_info_avail_slots.jsp") != -1)) {
+			%><jwr:script src="/fdproto.js" useRandomParam="false" /><%
+		}
+	%>
 
-    <%-- tmpl:get name="jsmodules" / --%>
+	<fd:javascript src="/assets/javascript/locationbar.js" />
+	<fd:javascript src="/assets/javascript/locationbar_fdx.js" />
+	<fd:javascript src="/assets/javascript/messages.js"/>
+
+
+    <tmpl:get name="soytemplates" />
+	<tmpl:get name='soypackage'/>
+
+	<%
+		if (isReorder) { /* right place for this? */
+			%><div id="ModifyBRDContainer"></div><%
+		}
+	%>
+
+    <%@ include file="/common/template/includes/i_jsmodules.jspf" %>
+
+    <tmpl:get name="jsmodules" />
 	<tmpl:get name='extraJsModules'/>
 
+	<jwr:script src="/mobileweb.js" useRandomParam="false" />
     <tmpl:get name="extraJsFooter" />
 
+	<script><%-- manually fire this for now, this will need changing --%>
+		OAS_DONE('SystemMessage');
+	</script>
 	<% if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){ %>
 		<script>
 			$jq(document).on('ready',  function() {
@@ -368,33 +290,7 @@
 			});
 		</script>
 	<% } %>
-    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-	<script>
-		(function ($) {
-			$(function () {
-				$.smartbanner({daysHidden: 0, daysReminder: 0,author:'FreshDirect',button: 'VIEW'});
-				if(!$jq('#smartbanner.shown').is(':visible')) { $jq('#smartbanner').show(); }
-			});
-		})($jq);
-	</script>
-  <jwr:script src="/fdlibs.js" useRandomParam="false" />
-  <jwr:script src="/fdgtm.js" useRandomParam="false" />
-   	<%-- //
-   		we can't bundle dfp.js because it needs the global DFP_query (set in ad_server.jsp) before it's loaded
-   		it also needs to be after all the ad positions, since it fires on parse and selects all spots
-   		added to a footer bundle to minimize impact
-   	// --%>
-   	<% if (FDStoreProperties.isDfpEnabled()) { /* only load if needed */ %>
-		<jwr:script src="/mobileweb_index_optimized_footer.js" useRandomParam="false" defer="true" async="true" />
-	<% } %>
-	<% if (isModifyOrder) { %>
-		<%--
-			Load soy.common and fd libs. When the users is in modify order mode, they must have landed in the view cart page already
-			so this shouldn't cause any performance issue as these files have been cached by the browser.
-		--%>
-    <soy:import packageName="common"/>
-		<jwr:script src="/modifyorderdeps.js" useRandomParam="false" />
-		<jwr:script src="/modifyorder.js" useRandomParam="false" async="true" defer="true" />
-	<% } %>
+	<%-- this should just be called "coremetrics include" --%>
+	<%@ include file="/shared/template/includes/i_body_start.jspf" %>
   </body>
 </html>

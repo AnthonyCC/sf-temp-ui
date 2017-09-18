@@ -2,6 +2,10 @@ package com.freshdirect.webapp.ajax.location;
 
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspException;
+
 import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Logger;
 
@@ -20,10 +24,14 @@ import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.webapp.ajax.modulehandling.service.ModuleHandlingService;
+import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
+import com.freshdirect.webapp.checkout.RedirectToPage;
+import com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag;
 import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.location.LocationHandlerTag;
+import com.freshdirect.webapp.util.StandingOrderHelper;
 
 public class LocationHandlerService {
 
@@ -122,7 +130,7 @@ public class LocationHandlerService {
         user.setAvailableServices(availableServices);
 
         if (user.getSelectedServiceType() == EnumServiceType.PICKUP) {
-            handleNewServiceType(ServiceTypeUtil.getPreferedServiceType(availableServices), user);
+            updateServiceType(user, ServiceTypeUtil.getPreferedServiceType(availableServices));
         }
     }
 
@@ -131,12 +139,26 @@ public class LocationHandlerService {
         user.setFutureZoneNotificationEmailSentForCurrentAddress(false);
     }
 
-    private boolean handleNewServiceType(EnumServiceType serviceType, FDUserI user) {
-        boolean needToUpdate = (serviceType != user.getSelectedServiceType());
-        if (needToUpdate) {
+    public void updateServiceType(FDUserI user, EnumServiceType serviceType) {
+        if (user != null && serviceType != null) {
             user.setSelectedServiceType(serviceType);
             user.setZPServiceType(serviceType); // added as part of APPDEV-6036. We are updating the zone pricing service type to be in sync with user selected service type
         }
-        return needToUpdate;
     }
+
+    public void doSelectAddressAction(FDSessionUser user, ActionResult result, HttpServletRequest request, HttpServletResponse response) throws JspException, FDResourceException {
+        // Clear Standing Order Session
+        StandingOrderHelper.clearSO3Context(user, request.getParameter("isSO"), null);
+        DeliveryAddressManipulator m = new DeliveryAddressManipulator(request, response, result, "setDeliveryAddress");
+        m.setLocationHandlerMode(true);
+        try {
+            if (!(user.isVoucherHolder() && user.getMasqueradeContext() == null))
+                m.performSetDeliveryAddress("");
+        } catch (RedirectToPage e) {
+            LOGGER.debug(e); // do not do redirect, determine success based on result instead
+        }
+        handleNewAddressSet(user);
+        CmRegistrationTag.setPendingAddressChangeEvent(request.getSession());
+    }
+
 }

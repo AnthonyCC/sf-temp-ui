@@ -254,7 +254,7 @@
 
 .promotion-item{
   display:inline-block;
-  max-width: 200px;
+  width: 294px;
   vertical-align: top;
 }
 /*
@@ -269,7 +269,7 @@
 
 .promotion-input{
   margin: 0 -63px 0 0;
-  width:11em;
+  width: 100%;
 }
 
 .promotion-item .promotion-input ~ button,

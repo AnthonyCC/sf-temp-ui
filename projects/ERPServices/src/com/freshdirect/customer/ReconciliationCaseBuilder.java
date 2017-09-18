@@ -12,7 +12,7 @@ import com.freshdirect.customer.ErpInvoiceLineModel;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.framework.core.PrimaryKey;
 
-class ReconciliationCaseBuilder {
+public class ReconciliationCaseBuilder {
 
 	private final PrimaryKey customerPk;
 	private final PrimaryKey salePk;

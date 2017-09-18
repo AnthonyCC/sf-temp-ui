@@ -42,7 +42,6 @@ user.setSoTemplateCart(new FDCartModel());
 
 <potato:pendingExternalAtcItem standingOrder="true"/>
 <potato:singlePageCheckout standingOrder="true"/>
-<potato:cartData standingOrder="true"/>
 
 <%
 String pageTemplate = "/expressco/includes/standing_order.jsp";

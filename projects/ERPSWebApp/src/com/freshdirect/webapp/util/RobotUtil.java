@@ -27,6 +27,7 @@ public class RobotUtil {
         
         Set<EnumServiceType> availableServices = new HashSet<EnumServiceType>();
         availableServices.add(EnumServiceType.HOME);
+        availableServices.add(EnumServiceType.CORPORATE);
         
         robotUser.setSelectedServiceType(EnumServiceType.HOME);
         robotUser.setAvailableServices(availableServices);

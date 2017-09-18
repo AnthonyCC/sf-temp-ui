@@ -22,7 +22,7 @@
     if (fd) {
 
       try {
-        successPage = fd.utils.getParameters().successPage;
+        successPage = window.decodeURIComponent(fd.utils.getParameters().successPage);
       } catch (e) {}
 
       successPage = '/' + (successPage || '') + window.top.location.hash;

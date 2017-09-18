@@ -14,3 +14,7 @@ input#signupbtn:focus,input#signinbtn:focus{
     border-color: #306238 !important;
     box-shadow: 0 0 1px #aaaaaa, 0 0 8px #aaaaaa;
 }
+.icon-image a:focus {
+    outline: none;
+    text-decoration: underline;
+}

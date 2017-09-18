@@ -543,7 +543,7 @@ public class CartOperations {
             }
 
             cart.sortOrderLines();
-            user.updateUserState();
+            user.updateUserState(false);
 
             if (user.getIdentity() != null && user.getIdentity().getErpCustomerPK() != null) {
                 QuickShopHelper.emptyQuickShopCaches(user.getIdentity().getErpCustomerPK());

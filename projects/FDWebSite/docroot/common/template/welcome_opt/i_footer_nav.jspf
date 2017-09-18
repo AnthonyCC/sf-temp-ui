@@ -33,6 +33,7 @@
 	<div class="container footer-nav">
 		<img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /><br />
 		<% 
+		    FDSessionUser sessionUser = (FDSessionUser) session.getAttribute(SessionName.USER);
 			String bottomUri = request.getRequestURI();
 			String deptId = request.getParameter("deptId") != null ? request.getParameter("deptId") : "";
 			String catId = request.getParameter("catId") != null ? request.getParameter("catId") : "";
@@ -53,7 +54,7 @@
 			    botNav = "community";
 			} else if(!catId.equals("") && catId.equalsIgnoreCase("about_billrights")) {
 			    botNav = "billorrights";
-			} else if(!deptId.equals("") && deptId.equalsIgnoreCase("COS")) {
+			} else if(sessionUser.isCorporateUser()) {
 			    botNav = "office";
 			} else {
 			    botNav = "off";
@@ -125,8 +126,8 @@
 			</div>
 			<div style="float:left; width:1px; height:40px; margin: 0px 12px" class="dotted_separator_v"></div>
 			<div style="float:left"  class="text11bold">
-				<a href="/department.jsp?deptId=COS&amp;trk=bnav"><img style="float: left" src="/media_stat/images/navigation/footer_parts_w/at_the_office.gif" width="22" height="36" alt="At The Office" /></a>
-				<a href="/department.jsp?deptId=COS&amp;trk=bnav" style="padding: 10px 5px 0px 5px; float: left">At The Office</a>
+				<a href="index.jsp?serviceType=CORPORATE&amp;trk=bnav"><img style="float: left" src="/media_stat/images/navigation/footer_parts_w/at_the_office.gif" width="22" height="36" alt="At The Office" /></a>
+				<a href="index.jsp?serviceType=CORPORATE&amp;trk=bnav" style="padding: 10px 5px 0px 5px; float: left">At The Office</a>
 			</div>
 			<div style="float: left; width: 1px; height: 40px; margin: 0px 10px" class="dotted_separator_v"></div>
 			<div style="float: right; padding: 10px 5px 0px 5px"  class="text11bold">

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.brandads.FDBrandProductsAdManager;
@@ -46,7 +47,7 @@ public class CriteoProductsUtil
 					List<HLBrandProductAdInfo> hlBrandAdProductsMeta = response.getProductAd();
 					productsCount = hlBrandAdProductsMeta.size();
 					if (hlBrandAdProductsMeta != null)
-						addHlBrandProducts(user, adPrducts, updatedPageBeacon, hlBrandAdProductsMeta);
+						addHlBrandProducts(user, adPrducts, updatedPageBeacon, hlBrandAdProductsMeta,false);
 					moduleData.setAdProducts(adPrducts);
 					if (productsCount == adPrducts.size()) {
 						moduleData.setAdHomePageBeacon(response.getPageBeacon()	+ A_SHOWN_ALL);
@@ -73,7 +74,7 @@ public class CriteoProductsUtil
 	}
 
 	private static void addHlBrandProducts(FDUserI user, List<ProductData> adPrducts, StringBuffer updatedPageBeacon,
-			List<HLBrandProductAdInfo> hlBrandAdProductsMeta) throws FDSkuNotFoundException {
+			List<HLBrandProductAdInfo> hlBrandAdProductsMeta, boolean pdpPage) throws FDSkuNotFoundException {
 		for (Iterator<HLBrandProductAdInfo> iterator = hlBrandAdProductsMeta.iterator(); iterator.hasNext();) {
 			HLBrandProductAdInfo hlBrandProductAdMetaInfo = iterator.next();
 			ProductModel productModel = ContentFactory.getInstance()
@@ -85,6 +86,9 @@ public class CriteoProductsUtil
 					productData = ProductDetailPopulator.createProductData(user, productModel);
 					if (null != productData && null != productData.getSkuCode()) {
 						populateHlBrandPrdData(adPrducts, updatedPageBeacon, hlBrandProductAdMetaInfo, productData);
+						if(pdpPage && adPrducts.size()==ErpServicesProperties.getPropHlPdppageMaxmesCount())
+							break;
+
 					}
 
 				} catch (HttpErrorResponse e) {
@@ -106,6 +110,7 @@ public class CriteoProductsUtil
 		List<ProductData> adPrducts = new ArrayList<ProductData>();
 		StringBuffer updatedPageBeacon = new StringBuffer(A_SHOWN);
 		int productsCount = 0;
+		boolean pdpPage=true;
 		try {
 			SearchResultsUtil.setPlatFormValues((FDSessionUser) user, hLBrandProductAdRequest);
 			if (hLBrandProductAdRequest.getUserId() != null) {
@@ -113,9 +118,10 @@ public class CriteoProductsUtil
 				HLBrandProductAdResponse response = FDBrandProductsAdManager.getHLadproductToPdp(hLBrandProductAdRequest);
 				if (response != null) {
 					List<HLBrandProductAdInfo> hlBrandAdProductsMeta = response.getProductAd();
-					productsCount = hlBrandAdProductsMeta.size();
-					if (hlBrandAdProductsMeta != null)
-						addHlBrandProducts(user, adPrducts, updatedPageBeacon, hlBrandAdProductsMeta);
+					if (hlBrandAdProductsMeta != null){
+						productsCount = hlBrandAdProductsMeta.size();
+						addHlBrandProducts(user, adPrducts, updatedPageBeacon, hlBrandAdProductsMeta,pdpPage);
+					}
 					browseData.getAdProducts().setProducts(adPrducts);
 					if (productsCount == adPrducts.size()) {
 						browseData.getAdProducts().setPageBeacon(response.getPageBeacon() + A_SHOWN_ALL);

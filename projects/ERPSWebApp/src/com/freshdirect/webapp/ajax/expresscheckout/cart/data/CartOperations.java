@@ -558,7 +558,7 @@ public class CartOperations {
             }
 
             cart.sortOrderLines();
-            user.updateUserState();
+            user.updateUserState(false);
 
             if (!(cart instanceof FDModifyCartModel)) {
                 try {

@@ -50,7 +50,6 @@ user.setSoTemplateCart(new FDCartModel());
 
 <potato:pendingExternalAtcItem standingOrder="true"/>
 <potato:singlePageCheckout standingOrder="true"/>
-<potato:cartData standingOrder="true"/>
 <%	
 	//Collection<FDStandingOrder> sos=FDStandingOrdersManager.getInstance().loadCustomerNewStandingOrders( user.getIdentity());
 	Collection<Map<String,Object>> soList= null;// StandingOrderHelper.convertStandingOrderToSoy(

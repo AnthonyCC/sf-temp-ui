@@ -506,25 +506,15 @@
 		<url-pattern>/api/modulehandling/imageproduct</url-pattern>
 	</servlet-mapping>
 	
-	<servlet>
-		<servlet-name>LocationHandlerServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.location.LocationHandlerServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>LocationHandlerServlet</servlet-name>
-		<url-pattern>/api/locationhandling/user/ziphandling</url-pattern>
-	</servlet-mapping>
+  <servlet>
+    <servlet-name>LocationHandlerServlet</servlet-name>
+    <servlet-class>com.freshdirect.webapp.ajax.location.LocationHandlerServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>LocationHandlerServlet</servlet-name>
+    <url-pattern>/api/locationhandler</url-pattern>
+  </servlet-mapping>
 	
-	<servlet>
-		<servlet-name>LocationAvailabilityNotificationServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.location.LocationAvailabilityNotificationServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>LocationAvailabilityNotificationServlet</servlet-name>
-		<url-pattern>/api/locationhandling/user/zipnotification</url-pattern>
-	</servlet-mapping>
-  
-  
   <!-- Dev Tools -->
   <servlet>
     <servlet-name>StorePropertiesServlet</servlet-name>

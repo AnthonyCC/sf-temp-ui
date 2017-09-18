@@ -59,7 +59,7 @@
     {if $payments and length($payments) > 0}
     	<button class='cssbutton orange' data-component="pickmethodbutton">Pick a Method</button>
     	<div id="oas_b_FirstECheckPromo" class="oas-cnt" data-component="addpaymentmethodbutton" aria-haspopup="true" data-showechecktab='addpaymentmethod_bank'>
-			<script>fd.modules.common.updateOAS(OAS_url, 'www.freshdirect.com/XCpaymentpromo', OAS_rns, ['FirstECheckPromo'], OAS_query);</script>
+			<script>try {lb} fd.modules.common.updateOAS(OAS_url, 'www.freshdirect.com/XCpaymentpromo', OAS_rns, ['FirstECheckPromo'], OAS_query);	{rb} catch (e) {lb} console.trace(e); {rb}</script>
 		</div>
     	{if $mpEwalletStatus or $ppEwalletStatus}
 			<div class="external-payments">
@@ -78,7 +78,7 @@
     {else}
 		<button aria-haspopup="true" class='cssbutton orange' data-component="addpaymentmethodbutton" {if $onOpenCoremetrics}cm-click="{$onOpenCoremetrics}"{/if}>Add a Method</button>
 		<div id="oas_b_FirstECheckPromo" class="oas-cnt" data-component="addpaymentmethodbutton" aria-haspopup="true" data-showechecktab='addpaymentmethod_bank'>
-			<script>fd.modules.common.updateOAS(OAS_url, 'www.freshdirect.com/XCpaymentpromo', OAS_rns, ['FirstECheckPromo'], OAS_query);</script>
+			<script>try {lb} fd.modules.common.updateOAS(OAS_url, 'www.freshdirect.com/XCpaymentpromo', OAS_rns, ['FirstECheckPromo'], OAS_query);	{rb} catch (e) {lb} console.trace(e); {rb}</script>
 		</div>
 		{if $mpEwalletStatus or $ppEwalletStatus}
 			<div class="external-payments">
@@ -179,7 +179,7 @@
 				{/if}
 	
 				<input type="image" id="MP_button" src="{$mpButtonImgURL}" alt="Buy With MasterPass">
-				<div style="padding-left: 10px;"><a href="https://www.mastercard.com/mc_us/wallet/learnmore/en/US/" target="_blank">Learn More</a></div>
+				<div style="padding-left: 10px;"><a href="https://www.mastercard.com/mc_us/wallet/learnmore/en/US/" target="_blank">Learn More<span class="offscreen">about master pass</span></a></div>
 			</form>
 		</div>
 	{/if}
@@ -393,7 +393,7 @@
   {/if}
 </div>
 <div id="oas_b_FirstECheckPromo" class="oas-cnt" data-component="addpaymentmethodbutton" aria-haspopup="true" data-showechecktab='addpaymentmethod_bank'>
-	<script>fd.modules.common.updateOAS(OAS_url, 'www.freshdirect.com/XCpaymentpromo', OAS_rns, ['FirstECheckPromo'], OAS_query);</script>
+	<script>try {lb} fd.modules.common.updateOAS(OAS_url, 'www.freshdirect.com/XCpaymentpromo', OAS_rns, ['FirstECheckPromo'], OAS_query);	{rb} catch (e) {lb} console.trace(e); {rb}</script>
 </div>
 {/template}
 

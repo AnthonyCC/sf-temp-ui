@@ -11,11 +11,11 @@
 	String successPage = "/index.jsp";
 
 	if(userx.isCorporateUser()){
-		successPage = "/department.jsp?deptId=COS";
+		successPage = "/index.jsp?serviceType=CORPORATE";
 	}else if (userx.isDepotUser()){
-		successPage = "/index.jsp";
+		successPage = "/index.jsp?serviceType=DEPOT";
 	}else{
-		successPage = "/index.jsp";
+		successPage = "/index.jsp?serviceType=HOME";
 	}
 %>
 <tmpl:insert template='/common/template/no_nav.jsp'>

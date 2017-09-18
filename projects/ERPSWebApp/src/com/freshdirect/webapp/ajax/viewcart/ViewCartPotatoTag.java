@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
+import com.freshdirect.webapp.ajax.reorder.service.QuickShopCarouselService;
 import com.freshdirect.webapp.ajax.viewcart.data.ViewCartCarouselData;
 import com.freshdirect.webapp.ajax.viewcart.service.ViewCartCarouselService;
 import com.freshdirect.webapp.soy.SoyTemplateEngine;
@@ -22,7 +23,13 @@ public class ViewCartPotatoTag extends SimpleTagSupport {
     private static final Logger LOGGER = LoggerFactory.getInstance(ViewCartPotatoTag.class);
 
     private static final String VIEW_CART_POTATO_NAME = "viewCartPotato";
-
+    private String name;
+	public String getName() {
+		return name == null? VIEW_CART_POTATO_NAME: name;
+	}	
+	public void setName( String name ) {
+		this.name = name;
+	}
     @Override
     public void doTag() throws JspException, IOException {
         ViewCartCarouselData carousels = null;
@@ -30,13 +37,18 @@ public class ViewCartPotatoTag extends SimpleTagSupport {
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         FDSessionUser user = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
         try {
-            SessionInput input = ViewCartCarouselService.getDefaultService().createSessionInput(user, request);
+        	SessionInput input;
+        	if( VIEW_CART_POTATO_NAME.equals(getName()) ) {
+        		input = ViewCartCarouselService.getDefaultService().createSessionInput(user, request);
+        	} else {
+        		input = QuickShopCarouselService.defaultService().createSessionInput(user, request);
+        	}
             input.setError(request.getParameter("warning_message") != null);
             carousels = ViewCartCarouselService.getDefaultService().populateTabsRecommendationsAndCarousel(request, user, input);
         } catch (Exception e) {
             LOGGER.error("recommendation failed", e);
         }
-        pageContext.setAttribute(VIEW_CART_POTATO_NAME, SoyTemplateEngine.convertToMap(carousels));
+        pageContext.setAttribute(getName(), SoyTemplateEngine.convertToMap(carousels));
     }
 
 }

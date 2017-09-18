@@ -51,7 +51,7 @@ cmCreatePageviewTag("<?php echo $page?>", "blog", <?php echo $searchTermJsVar ?>
 <table width="970" border="0" cellpadding="0" cellspacing="0">
 	<tr>
 		<td width="182" ROWSPAN="3" valign="BOTTOM" style="height: 80px">
-		    <a href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/index.jsp"><img style="padding-bottom: 2px;" src="<?php bloginfo('template_url'); ?>/media_stat/images/logos/fd_logo_sm_gl_nv.gif" width="195" height="38" border="0" alt="FreshDirect" name="FD_LOGO"></a>
+		    <a href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/index.jsp?serviceType=HOME"><img style="padding-bottom: 2px;" src="<?php bloginfo('template_url'); ?>/media_stat/images/logos/fd_logo_sm_gl_nv.gif" width="195" height="38" border="0" alt="FreshDirect" name="FD_LOGO"></a>
  		</td>
 		<td colspan="13" align="right" valign="bottom" class="reglog">
 			<?php if(is_user_logged_in()){?>

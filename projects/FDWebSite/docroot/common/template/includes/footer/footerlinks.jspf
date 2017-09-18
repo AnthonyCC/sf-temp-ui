@@ -17,7 +17,7 @@
     </div>
     <div class="column span-8 last">
       <a href="/gift_card/purchase/landing.jsp?trk=footer">gift cards</a>
-      <a href="/department.jsp?deptId=COS&trk=footer">at the office</a>
+      <a href="index.jsp?serviceType=CORPORATE&trk=footer">at the office</a>
     </div>
   </div>
 </div>

@@ -292,7 +292,11 @@
 
 	.globalnav_top .nav .searchform {
 		margin-top: 0;
-		width:290px;
+		width: 280px;
+	}
+	/* no create account/standing order button */
+	.globalnav_top .nav .searchform.widen {
+    	width: 450px;
 	}
 
 	.globalnav_top .topnavitem .signUpButton{

@@ -36,7 +36,7 @@ public class CartDataServlet extends BaseJsonServlet {
 			Map<String, Object> responseData;
 			String actionName = request.getParameter("action");
 			if ("startCheckout".equals(actionName)) {
-				StandingOrderHelper.clearSO3Context(user, request, null);
+                StandingOrderHelper.clearSO3Context(user, request.getParameter("isSO"), null);
 				final FormDataRequest startCheckoutData = BaseJsonServlet.parseRequestData(request, FormDataRequest.class);
 				ValidationResult validationResult = new ValidationResult();
 	            FormDataResponse result = FormDataService.defaultService().prepareFormDataResponse(startCheckoutData, validationResult);

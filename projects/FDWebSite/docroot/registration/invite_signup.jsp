@@ -59,7 +59,7 @@
 		 	}
 		    //EnumServiceType.CORPORATE.getName().equalsIgnoreCase(corpServiceType)
 		if (successPage.startsWith("/index.jsp") && corpZipcode!=null && corpZipcode.length()==5)  {
-				successPage = "/department.jsp?deptId=COS";
+				successPage = "/index.jsp?serviceType=CORPORATE";
 			}
 
 			/* moreInfo, redirect back to the same page, and pass in the overlayType */

@@ -17,16 +17,22 @@
 </c:if>
 
 <c:set var="potatoes" value='${cartConfirmPotatoes["cartConfirmPotatoes"]}'/>
-<potato:recommender siteFeature="DEALS_QS" name="deals" maxItems="15"  cmEventSource="cc_tabbedRecommender" />
-<potato:recommender siteFeature="YMAL" name="ymal" maxItems="25" currentNodeKey="${potatoes[0].cartLine.cmskey}" cmEventSource="CC_YMAL"  sendVariant="<%= true %>"/>
-<c:set target="${deals}" property="selected" value="deals" />
+
 <div class="pdp pdp-cc">
   <soy:render template="pdp.cartConfirmIterator" data="${cartConfirmPotatoes}" />
 	<div class="span-16 first cc-ymalCarousel">
-		<soy:render template="common.ymalCarousel" data="${ymal}" />
+		<script>
+          	$jq.ajax('/carousel/carousel.jsp?type=ymal&currentNodeKey=${potatoes[0].cartLine.cmskey}').then(function(page) {
+          		$jq('.pdp-cc .cc-ymalCarousel').html(page);
+          	});
+        </script>
 	</div>
 	<div class="span-16 first cc-tabbedCarousel">
-		<soy:render template="common.tabbedCarousel" data="${deals}" />
+		<script>
+          	$jq.ajax('/carousel/carousel.jsp?type=deals').then(function(page) {
+          		$jq('.pdp-cc .cc-tabbedCarousel').html(page);
+          	});
+        </script>
 	</div>
 </div>
 <script>cartConfirm=<fd:ToJSON object="${cartConfirmPotatoes}" noHeaders="true"/></script>
