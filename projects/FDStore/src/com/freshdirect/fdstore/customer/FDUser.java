@@ -1285,23 +1285,42 @@ public class FDUser extends ModelSupport implements FDUserI {
     @Override
     public String getCustomerServiceContact() {
         try {
+        	// ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId();
         	boolean isChefsTable = this.isChefsTable();
-        	return getCustomerServiceContact(isChefsTable, isChefsTable? null : extractStateFromAddress());
+        	return getCustomerServiceContact(isChefsTable, isChefsTable? null : extractStateFromAddress(), 
+        			 ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId());
         } catch (FDResourceException e) {
             throw new FDRuntimeException(e);
         }
     }
+    /**
+     * 
+     * @param isChefsTable boolean, obvious
+     * @param state String state, two digit state, we are looking for PA use case
+     * @param eStoreId  EnumEStoreId, logic is either FK or FDX
+     * @return the proper contact phone number from FDStoreProperties.java
+     */
+    public String getCustomerServiceContact(boolean isChefsTable, String state, EnumEStoreId  eStoreId ) {
+    	if(EnumEStoreId.FD.equals(eStoreId))
+    		return getCustomerServiceContact(isChefsTable,state);
+    	else {
+    		return  FDStoreProperties.FOODKICK_SERVICE_CONTACT;
+    	}
+ 
+  }
+    
+
 
     public String getCustomerServiceContact(boolean isChefsTable, String state) {
         
 //        String state = "";
-        String contactNumber = "1-866-283-7374";// DEFAULT
+        String contactNumber =   FDStoreProperties.getDefaultCustomerServiceContact() ; //1-866-283-7374";// DEFAULT
         if (isChefsTable) {
-            contactNumber = "1-866-511-1240";
+            contactNumber = FDStoreProperties.getChefsTableCustomerServiceContact();// "1-866-511-1240";
         } else {
 //            state = extractStateFromAddress();
             if ("PA".equalsIgnoreCase(state)) {
-                contactNumber = "1-215-825-5726";
+                contactNumber = FDStoreProperties.getPennsylvaniaCustomerServiceContact() ;// "1-215-825-5726";
             }
         }
         return contactNumber;
