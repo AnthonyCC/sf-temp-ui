@@ -61,6 +61,7 @@ title = title.replaceAll("<[^>]*>", "");
 <%-- OAS page variables --%>
 <c:set var="sitePage" scope="request" value="productNode.getPath()" />
 <c:set var="listPos" scope="request" value="SystemMessage,ProductNote" />
+<c:set var="breadCrumbs" scope="request" value="${browsePotato.breadCrumbs}" />
 
 <%
 //REDIRECT to the redirect-url IF there is any
