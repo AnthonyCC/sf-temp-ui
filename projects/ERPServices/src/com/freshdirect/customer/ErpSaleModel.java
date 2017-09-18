@@ -1850,7 +1850,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return standingOrderId;
 	}
 	
-	private boolean isEBTOrder(){
+	public boolean isEBTOrder(){
 		ErpAbstractOrderModel orderModel = getCurrentOrder();
 		ErpPaymentMethodI paymentMethod = orderModel.getPaymentMethod();
 		boolean isEBTOrder = (null !=paymentMethod && EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType()));
