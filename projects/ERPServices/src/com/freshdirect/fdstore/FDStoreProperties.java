@@ -974,6 +974,11 @@ public class FDStoreProperties {
     //APPDEV 6442 FDC Transition
     
     public final static String PROP_FDC_TRANSITION_LOOK_AHEAD_DAYS = "fdstore.fdctransition.lookAheadDays";
+    public final static String CUSTOMER_SERVICE_CONTACT	= "default.customer.service.contact";
+ 	public final static String CHEFSTABLE_CONTACT_NUMBER = "chefstable.contact.number";
+ 	public final static String FOODKICK_SERVICE_CONTACT	=	"foodkick.service.contact";
+ 	public final static String PENNSYLVANIA_SERVICE_CONTACT	= "pennsylvania.service.contact";
+
     
 
 static {
@@ -1859,6 +1864,13 @@ static {
         
         //APPDEV-6442
         defaults.put(PROP_FDC_TRANSITION_LOOK_AHEAD_DAYS, "3");
+        
+        //CUSTOMER CONTACT NUMBERS
+ 	   	defaults.put(CUSTOMER_SERVICE_CONTACT, "1-866-283-7374");
+ 	   	defaults.put(CHEFSTABLE_CONTACT_NUMBER, "1-866-511-1240");
+ 	   	defaults.put(FOODKICK_SERVICE_CONTACT, "1-718-513-2785");
+ 	   	defaults.put(PENNSYLVANIA_SERVICE_CONTACT, "1-215-825-5726");
+
         
         refresh();
     }
@@ -4754,6 +4766,20 @@ static {
 	
 	 public static int getFdcTransitionLookAheadDays() {
 			return Integer.parseInt(get(PROP_FDC_TRANSITION_LOOK_AHEAD_DAYS));
+		}
+	 
+
+		public static String getDefaultCustomerServiceContact(){
+			return get(CUSTOMER_SERVICE_CONTACT);
+		}
+		public static String getChefsTableCustomerServiceContact(){
+			return get(CHEFSTABLE_CONTACT_NUMBER);
+		}
+		public static String getFoodKickCustomerServiceContact(){
+			return get(FOODKICK_SERVICE_CONTACT);
+		}
+		public static String getPennsylvaniaCustomerServiceContact(){
+			return get(PENNSYLVANIA_SERVICE_CONTACT);
 		}
 	
 }
