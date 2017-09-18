@@ -843,6 +843,8 @@ public class BrowseDataBuilderFactory {
 			ProductItemComparatorUtil.sortSectionDatas(data, comparator); // sort items/section
 			ProductItemComparatorUtil.postProcess(data, nav, usedSortStrategy, user);
 			//logSortResult(data, user);
+        } else {
+            ProductItemComparatorUtil.sortSectionDatas(data, ProductItemSorterFactory.createDefaultComparator()); // sort items/section
 		}
 	}
 
