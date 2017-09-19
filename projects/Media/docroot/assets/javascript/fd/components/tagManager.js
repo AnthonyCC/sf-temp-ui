@@ -964,15 +964,17 @@ var dataLayer = window.dataLayer || [];
 
   // product click
   $(document).on('click', '[data-component="product"] a[href]', function (e) {
-    e.preventDefault();
-    var target = $(e.target).closest('a').prop('href'),
-        productData = fd.gtm.getProductData(e.target),
-        goToProduct = function () {
-          window.location.assign(target);
-        };
-
-    // failsafe
-    var goTimeout = setTimeout(goToProduct, 300);
+	if(!(e.ctrlKey || e.shiftKey || e.target.target == "_blank" || e.target.target == "_top")){
+	    e.preventDefault();
+	    var target = $(e.target).closest('a').prop('href'),
+	        productData = fd.gtm.getProductData(e.target),
+	        goToProduct = function () {
+	          window.location.assign(target);
+	        };
+	
+	    // failsafe
+	    var goTimeout = setTimeout(goToProduct, 300);
+	}
 
     fd.gtm.updateDataLayer({
       ecommerce: {
@@ -997,11 +999,13 @@ var dataLayer = window.dataLayer || [];
     }, {
       event: 'productClick',
       callback: function () {
-        if (goTimeout) {
-          clearTimeout(goTimeout);
-          goTimeout = null;
-        }
-        goToProduct();
+    	if(!(e.ctrlKey || e.shiftKey || e.target.target == "_blank" || e.target.target == "_top")){
+	        if (goTimeout) {
+	          clearTimeout(goTimeout);
+	          goTimeout = null;
+	        }
+	        goToProduct();
+    	}
       }
     });
 
@@ -1009,16 +1013,18 @@ var dataLayer = window.dataLayer || [];
 
   // top nav click
   $(document).on('click', '[data-component="globalnav-menu"] a, .bottom-nav a', function (e) {
-    e.preventDefault();
-    var target = $(e.target).closest('a').prop('href'),
-        title = $(e.target).closest('a').text(),
-        goToTarget = function () {
-          window.location.assign(target);
-        };
-
-    // failsafe
-    var goTimeout = setTimeout(goToTarget, 300);
-
+	if(!(e.ctrlKey || e.shiftKey || e.target.target == "_blank" || e.target.target == "_top")){
+		e.preventDefault();
+	    var target = $(e.target).closest('a').prop('href'),
+	        title = $(e.target).closest('a').text(),
+	        goToTarget = function () {
+	          window.location.assign(target);
+	        };
+	
+	    // failsafe
+	    var goTimeout = setTimeout(goToTarget, 300);
+	}
+	
     fd.gtm.updateDataLayer({
       topNavClick: {
         title: title
@@ -1026,11 +1032,13 @@ var dataLayer = window.dataLayer || [];
     }, {
       event: 'top-menu-clicked',
       callback: function () {
-        if (goTimeout) {
-          clearTimeout(goTimeout);
-          goTimeout = null;
-        }
-        goToTarget();
+    	if(!(e.ctrlKey || e.shiftKey || e.target.target == "_blank" || e.target.target == "_top")){
+	        if (goTimeout) {
+	          clearTimeout(goTimeout);
+	          goTimeout = null;
+	        }
+	        goToTarget();
+    	}
       }
     });
 
