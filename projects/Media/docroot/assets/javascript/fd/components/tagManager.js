@@ -468,7 +468,7 @@ var dataLayer = window.dataLayer || [];
   fd.gtm.getProductData = function (productEl) {
     var productE = $(productEl).closest('[data-component="product"]'),
         productId = productE.attr('data-product-id'),
-        productData,
+        productData, vcat,
         moduleE;
 
     if (productId) {
@@ -485,7 +485,8 @@ var dataLayer = window.dataLayer || [];
     productData.new_product = productE.attr('data-new-product');
     productData.variant = productE.attr('data-variant');
     productData.position = parseInt(productE.attr('data-position'), 10) || 0;
-    productData.list = productE.attr('data-list') || productE.attr('data-virtual-category');
+    productData.list = productE.attr('data-list');
+    vcat = productE.attr('data-virtual-category');
 
     if (!productData.position) {
       $('[data-component="product"]').each(function (i, el) {
@@ -515,6 +516,10 @@ var dataLayer = window.dataLayer || [];
           productData.list = safeName(carouselE.find('.header').text());
         }
       }
+    }
+
+    if (vcat) {
+      productData.list = vcat.replace(/:POSITION\s(\d+).*/, '_$1_') + safeName($(moduleE).find('.content-header .content-title').text() || moduleE.id);
     }
 
     productData.list = fd.gtm.getList() + (productData.list ? '_'+productData.list : '');
