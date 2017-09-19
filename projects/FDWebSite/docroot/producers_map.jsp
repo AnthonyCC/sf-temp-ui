@@ -10,7 +10,7 @@
 <%@page import="com.freshdirect.fdstore.content.TitledMedia"%>
 <%@page import="com.freshdirect.fdstore.content.Image"%>
 <%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
-<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.PopulatorUtil"%>
 <%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
 <%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@page import="com.freshdirect.webapp.taglib.fdstore.BrowserInfo"%>
@@ -31,9 +31,7 @@ String catId = request.getParameter("catId");
 if (catId == null)
 	throw new JspException("Missing category identifier.");
 
-CategoryModel cat = (CategoryModel) ContentFactory.getInstance().getContentNode(catId);
-if (cat == null)
-	throw new JspException("Missing category " + catId);
+CategoryModel cat = (CategoryModel) PopulatorUtil.getContentNode(catId);
 
 %><fd:ProducerList id="prodz" needsValidGeolocation="<%= true %>" skipBodyOnEmptyResult="<%= false %>">
 <tmpl:insert template='/common/template/gmap_nav.jsp'>

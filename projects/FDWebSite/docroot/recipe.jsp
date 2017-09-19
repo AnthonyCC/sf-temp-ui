@@ -26,11 +26,11 @@ String jspTemplate ="/common/template/recipe_DLnavs.jsp";
 
 
 if (variantId != null) {
-	variant = (RecipeVariant) ContentFactory.getInstance().getContentNode(variantId);
+	variant = (RecipeVariant) PopulatorUtil.getContentNode(variantId);
 	recipe = (Recipe) variant.getParentNode();
 
 } else if (recipeId !=null) {
-	recipe = (Recipe) ContentFactory.getInstance().getContentNode(recipeId);
+	recipe = (Recipe) PopulatorUtil.getContentNode(recipeId);
 	variant = recipe.getDefaultVariant();
 
 } else {
@@ -74,7 +74,7 @@ if (!variant.isAvailable()) {
 
 if (catIdParam!=null && !"".equals(catIdParam)) {
   ContentNodeModel catNode = null;
-  catNode = ContentFactory.getInstance().getContentNode(catIdParam);
+  catNode = PopulatorUtil.getContentNode(catIdParam);
   if (catNode instanceof CategoryModel) {
 	jspTemplate = "/common/template/left_dnav.jsp";
   } 

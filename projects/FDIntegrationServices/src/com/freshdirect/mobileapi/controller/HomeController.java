@@ -18,6 +18,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDNotFoundException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.BannerModel;
@@ -382,6 +383,10 @@ public class HomeController extends BaseController {
             messageResponse.setFailureMessage(errorMessage);
             LOGGER.error(errorMessage, e);
         } catch (FDResourceException e) {
+            String errorMessage = MessageFormat.format(MODULE_CONTAINER_ERROR_MESSAGE, moduleContainerId);
+            messageResponse.setFailureMessage(errorMessage);
+            LOGGER.error(errorMessage, e);
+        } catch (FDNotFoundException e) {
             String errorMessage = MessageFormat.format(MODULE_CONTAINER_ERROR_MESSAGE, moduleContainerId);
             messageResponse.setFailureMessage(errorMessage);
             LOGGER.error(errorMessage, e);

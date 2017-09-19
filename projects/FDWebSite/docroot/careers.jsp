@@ -21,7 +21,7 @@ final int W_CAREERS_TOTAL = 970;
 <%
 String catId = request.getParameter("catId");
 
-ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(catId);
+ContentNodeModel currentFolder = PopulatorUtil.getContentNode(catId);
 
 Html introCopyHtml = currentFolder.getEditorial();
 String introCopy = introCopyHtml==null?"":introCopyHtml.getPath();

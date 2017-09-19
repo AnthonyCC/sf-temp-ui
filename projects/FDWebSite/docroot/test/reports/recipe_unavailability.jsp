@@ -123,7 +123,7 @@
         %>
 		<logic:iterate id="contentKey" indexId="i" collection="<%= allRecipeKeys %>" type="com.freshdirect.cms.ContentKey">
             <%
-                Recipe recipe = (Recipe) ContentFactory.getInstance().getContentNode(contentKey.getId());
+                Recipe recipe = (Recipe) PopulatorUtil.getContentNode(contentKey.getId());
                 recipes.add(recipe);
             %>
         </logic:iterate>

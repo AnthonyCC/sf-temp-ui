@@ -27,9 +27,8 @@ String skuCode  = request.getParameter("skuCode");
 
 
 int maxWidth=320;
-ContentFactory cf = ContentFactory.getInstance();
 List skus = new ArrayList();
-ProductModel product =  ContentFactory.getInstance().getProductByName(mcatId,mproductId);
+ProductModel product =  PopulatorUtil.getProductByName(mcatId,mproductId);
 
 if (null !=product && !product.getComponentGroups().isEmpty()) {
     String redirectURL = "/cg_meal_item_detail.jsp?" + request.getQueryString();
@@ -41,7 +40,6 @@ if (null !=product && !product.getComponentGroups().isEmpty()) {
 ProductModel productNode = product;
 CategoryModel parentCat = (CategoryModel) productNode.getParentNode();
 String prodNameAttribute = JspMethods.getProductNameToUse(parentCat);
-ContentFactory contentFactory= ContentFactory.getInstance();
 SkuModel defaultSku = product.getDefaultSku();
 Image productImage = product.getDetailImage();
 
@@ -84,7 +82,7 @@ for (int cvIdx = 0; cvIdx < variations.length && !aVariationUnavailable; cvIdx++
 			continue;
 		}
 		try {
-			ProductModel pm =cf.getProduct(optSkuCode);
+			ProductModel pm =ContentFactory.getInstance().getProduct(optSkuCode);
 			if (pm!=null ) {
 			   if ( !pm.isUnavailable()   && availOptSkuMap.get(optSkuCode)==null) {
 				availOptSkuMap.put(optSkuCode,pm);
@@ -187,7 +185,7 @@ int prodCount = 0;%>
 		Image prodImg = null;
 		String prodDescription = null;
 
-		compProduct =  ContentFactory.getInstance().getProduct(skuCode);
+		compProduct =  PopulatorUtil.getProductByName(skuCode);
 		prodImg = compProduct.getDetailImage();
 		prodDescription = ((Html)compProduct.getProductDescription()).getPath();	
         SkuModel selectSku = (SkuModel)compProduct.getSku(skuCode);

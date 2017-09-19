@@ -5,8 +5,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
 <%
-ContentFactory cf = ContentFactory.getInstance();
-ProductModel pm = cf.getProductByName(request.getParameter("catId"), request.getParameter("prodId"));
+ProductModel pm = PopulatorUtil.getProductByName(request.getParameter("catId"), request.getParameter("prodId"));
 Image prodImage = (Image)pm.getCategoryImage();
 SkuModel sku = pm.getDefaultSku();
 String prodPrice = null;

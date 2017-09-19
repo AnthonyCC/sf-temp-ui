@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.fdstore.FDNotFoundException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -65,6 +66,8 @@ public class ModuleHandlingServlet extends BaseJsonServlet {
             returnHttpError(500, "Unable to load Module", e);
         } catch (FDResourceException e) {
             returnHttpError(500, "Unable to load Module", e);
+        } catch (FDNotFoundException e) {
+            returnHttpError(404, "Unable to load Module", e);
         }
     }
 }

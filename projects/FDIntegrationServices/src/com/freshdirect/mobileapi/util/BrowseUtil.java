@@ -38,6 +38,7 @@ import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDGroup;
+import com.freshdirect.fdstore.FDNotFoundException;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -138,6 +139,9 @@ public class BrowseUtil {
             result.addErrorMessage(e.getMessage());
             LOG.error(e.getMessage());
         } catch (UnbxdServiceUnavailableException e){
+            result.addErrorMessage(e.getMessage());
+            LOG.error(e.getMessage());
+        } catch (FDNotFoundException e) {
             result.addErrorMessage(e.getMessage());
             LOG.error(e.getMessage());
         }

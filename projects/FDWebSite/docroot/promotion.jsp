@@ -37,15 +37,13 @@ final int W_PROMOTION_RIGHT = 100;
 			if ("kosher_temp".equalsIgnoreCase(deptId)) {
 				deptName = "Kosher";
 			} else {
-                ContentFactory contentFactory = ContentFactory.getInstance();
-                ContentNodeModel currentNode = contentFactory.getContentNode(deptId);
+                ContentNodeModel currentNode = PopulatorUtil.getContentNode(deptId);
                 deptName = ((DepartmentModel)currentNode).getFullName();
             }    
         }
         else if (catId != null) {
                 hasDepartment = true;
-                ContentFactory contentFactory = ContentFactory.getInstance();
-                ContentNodeModel currentNode = contentFactory.getContentNode(catId);
+                ContentNodeModel currentNode = PopulatorUtil.getContentNode(catId);
 				deptId = ((CategoryModel)currentNode).getDepartment().getContentName();
                 continueShoppingLink = response.encodeURL(deptLink+deptId+"&");
                 deptName = ((CategoryModel)currentNode).getDepartment().getFullName();

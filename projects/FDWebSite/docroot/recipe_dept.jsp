@@ -16,7 +16,7 @@
 <%@ taglib uri='oscache' prefix='oscache' %>
 <fd:CheckLoginStatus guestAllowed="true" />
 <%
-RecipeDepartment recipeDepartment = (RecipeDepartment) ContentFactory.getInstance().getContentNode(request.getParameter("deptId"));
+RecipeDepartment recipeDepartment = (RecipeDepartment) PopulatorUtil.getContentNode(request.getParameter("deptId"));
 //transfer to the regular department page if this is  not a recipe department
 if (! (recipeDepartment instanceof RecipeDepartment)) {  %>
 <jsp:forward page="/department.jsp" />

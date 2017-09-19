@@ -29,7 +29,7 @@
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 <fd:CheckLoginStatus id="user"/>
 <%
-ProductModel productNode = ProductPricingFactory.getInstance().getPricingAdapter( ContentFactory.getInstance().getProductByName( request.getParameter("catId"), request.getParameter("productId") ), user.getPricingContext() );
+ProductModel productNode = ProductPricingFactory.getInstance().getPricingAdapter( PopulatorUtil.getProductByName( request.getParameter("catId"), request.getParameter("productId") ), user.getPricingContext() );
 
 boolean isWine = false;
 if(productNode!=null){

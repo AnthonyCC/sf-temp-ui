@@ -631,6 +631,11 @@
         <error-code>404</error-code>
         <location>/notfound.jsp</location>
     </error-page>
+    <error-page>
+        <!-- Missing resource -->
+        <exception-type>com.freshdirect.fdstore.FDNotFoundException</exception-type>
+        <location>/notfound.jsp</location>
+    </error-page>
 	<error-page>
 		<error-code>500</error-code>
 		<location>/error.jsp</location>
