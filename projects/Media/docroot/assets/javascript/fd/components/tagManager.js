@@ -588,12 +588,12 @@ var dataLayer = window.dataLayer || [];
 
   // get actual dataLayer value (for verification)
   fd.gtm.getValue = function (query) {
-    return window.google_tag_manager[GTMID].dataLayer.get(query);
+    return fd.gtm.check() && window.google_tag_manager[GTMID].dataLayer.get(query);
   };
 
   // set actual dataLayer value (for impressions reset)
   fd.gtm.setValue = function (prop, value) {
-    return window.google_tag_manager[GTMID].dataLayer.set(prop, value);
+    return fd.gtm.check() && window.google_tag_manager[GTMID].dataLayer.set(prop, value);
   };
 
   // check if GTM is loaded
@@ -767,6 +767,24 @@ var dataLayer = window.dataLayer || [];
       if (selectedAddress) {
         coStepData.delivery_type = selectedAddress.service_type;
       }
+
+      if (!fd.gtm._coDefaultAddressReported && !fd.gtm._coUserInteraction) {
+        fd.gtm._coDefaultAddressReported = true;
+
+        var daReporter = function () {
+          if (fd.gtm.getValue('ecommerce.checkout.products')) {
+            fd.gtm.updateDataLayer({
+              coStep: coStepData
+            }, {
+              event: 'checkoutStep'
+            });
+          } else {
+            setTimeout(daReporter, 100);
+          }
+        };
+
+        daReporter();
+      }
     } else if (step === 'payment') {
       var selectedPayment = !data.payments ? null : data.payments.filter(function (payment) { return payment.selected; })[0];
 
@@ -774,6 +792,24 @@ var dataLayer = window.dataLayer || [];
 
       coStepData.step = 3;
       coStepData.option = selectedPayment.type;
+
+      if (!fd.gtm._coDefaultPaymentReported && !fd.gtm._coUserInteraction) {
+        fd.gtm._coDefaultPaymentReported = true;
+
+        var dpReporter = function () {
+          if (fd.gtm.getValue('ecommerce.checkout.products')) {
+            fd.gtm.updateDataLayer({
+              coStep: coStepData
+            }, {
+              event: 'checkoutStep'
+            });
+          } else {
+            setTimeout(dpReporter, 100);
+          }
+        };
+
+        dpReporter();
+      }
     } else if (step === 'timeslot') {
 
       coStepData.step = 2;
