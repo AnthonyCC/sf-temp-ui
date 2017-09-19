@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDOrderI;
@@ -41,7 +42,7 @@ public class GACheckoutDataService {
         data.setPaymentType(order.getPaymentMethod().getPaymentMethodType().getDescription());
         data.setRevenue(Double.toString(order.getTotal()));
         data.setTax(Double.toString(order.getTaxValue()));
-        data.setShippingCost(formatShippingCost(cartData.getDeliveryCharge()));
+        data.setShippingCost(order.getChargeAmount(EnumChargeType.DELIVERY));
         data.setCouponCode(populateCouponCodes(cartData));
         data.setRedemptionCode(SemPixelService.defaultService().populateRedeemedPromotionCodes(order));
         data.setTipping(Double.toString(order.getTip()));
@@ -104,17 +105,6 @@ public class GACheckoutDataService {
             session.removeAttribute(SessionName.ORDER_SUBMITTED_FLAG_FOR_SEM_PIXEL);
         }
         return Boolean.toString(isNewOrder);
-    }
-
-    private double formatShippingCost(String deliveryCharge) {
-        Double shippingCost = null;
-        try {
-            shippingCost = Double.parseDouble(deliveryCharge.substring(1));
-
-        } catch (NumberFormatException e) {
-            LOGGER.error("Quantity is not a number: ", e);
-        }
-        return shippingCost;
     }
 
 }
