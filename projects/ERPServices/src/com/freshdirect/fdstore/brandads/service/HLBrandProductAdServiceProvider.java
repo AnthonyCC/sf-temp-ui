@@ -193,7 +193,8 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 		String jsonResponse = sendGetRequest(urlToCall);
 		HLBrandProductAdResponse response = parseResponse(jsonResponse, HLBrandProductAdResponse.class);
 		pageBeaconResponse=getPDPPageBeacon(pageBeaconResponse,hLBrandProductAdRequest);
-		response.setPageBeacon((pageBeaconResponse!=null?pageBeaconResponse.getPageBeacon():null));
+		if(response!=null)
+			response.setPageBeacon((pageBeaconResponse!=null?pageBeaconResponse.getPageBeacon():null));
 		return response;
 	}
 
