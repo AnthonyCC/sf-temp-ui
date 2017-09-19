@@ -90,6 +90,7 @@ public class EwalletPaymentServlet extends BaseJsonServlet {
 			PageAction pageAction = getPageAction(request, ewalletRequestData,
 					requestData);
 
+			boolean isPaypalDisconnected =false;
 			if (pageAction != null) {
 				switch (pageAction) {
 				/* uncomment for Masrterpass Express Checkout
@@ -162,6 +163,7 @@ public class EwalletPaymentServlet extends BaseJsonServlet {
     			}
     			case PAYPAL_WALLET_DISCONNECT: {
     				ewalletRequestData.seteWalletAction(EwalletConstants.EWALLET_PP_DISCONNECT);
+    					isPaypalDisconnected = true;
     				break;
     			}
     			case GET_PP_DEVICE_DATA: {
@@ -184,6 +186,9 @@ public class EwalletPaymentServlet extends BaseJsonServlet {
 			if(ewalletRequestData.geteWalletAction() != null && ewalletRequestData.geteWalletAction().equals(EwalletConstants.EWALLET_PP_END_PAIRING)){
 				user.getShoppingCart().setPaymentMethod(ewalletResponseData.getPaymentMethod());
 				request.getSession().removeAttribute(EwalletConstants.EWALLET_SESSION_ATTRIBUTE_NAME);
+			}
+			if(isPaypalDisconnected){
+				user.getShoppingCart().setPaymentMethod(null);
 			}
 			
 			ValidationResult validationResult = convertValidationResult(ewalletResponseData,request,ewalletRequestData);
