@@ -3163,7 +3163,7 @@ static {
                 defaultValue = 40.0;
             }
 
-            LOGGER.warn("cannot parse " + WINE_PRICE_BUCKET_BOUND_PREFIX + index + ", using default value " + defaultValue, e);
+            //LOGGER.warn("cannot parse " + WINE_PRICE_BUCKET_BOUND_PREFIX + index + ", using default value " + defaultValue, e);
 
             return defaultValue;
         }

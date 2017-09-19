@@ -94,12 +94,14 @@ public class UserUtil {
 
     public static FDSessionUser getSessionUser(HttpSession session, String cookie) throws FDResourceException {
         FDSessionUser sessionUser = null;
-        try {
-            StoreContext storeContext = StoreContextUtil.getStoreContext(session);
-            FDUser user = FDCustomerManager.recognize(cookie, storeContext.getEStoreId());
-            sessionUser = new FDSessionUser(user, session);
-        } catch (FDAuthenticationException e) {
-            LOGGER.warn(e);
+        if(null !=cookie){
+	        try {
+	            StoreContext storeContext = StoreContextUtil.getStoreContext(session);
+	            FDUser user = FDCustomerManager.recognize(cookie, storeContext.getEStoreId());
+	            sessionUser = new FDSessionUser(user, session);
+	        } catch (FDAuthenticationException e) {
+	            LOGGER.warn(e);
+	        }
         }
         return sessionUser;
     }
