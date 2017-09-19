@@ -39,8 +39,8 @@ public class GAProductDataService {
         return data;
     }
 
-    private String roundQuantity(String quantity) {
-        String result = null;
+    private double roundQuantity(String quantity) {
+        double result = 0;
         try {
             Double doubleQuantity = Double.parseDouble(quantity);
 
@@ -54,7 +54,7 @@ public class GAProductDataService {
                 doubleQuantity = 1d;
             }
 
-            result = String.valueOf(doubleQuantity.intValue());
+            result = doubleQuantity.intValue();
 
         } catch (NumberFormatException e) {
             LOGGER.error("Quantity is not a number: ", e);
