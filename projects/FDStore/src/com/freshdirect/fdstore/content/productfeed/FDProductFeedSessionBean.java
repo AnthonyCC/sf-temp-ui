@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -42,12 +43,18 @@ import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.content.attributes.EnumAttributeName;
 import com.freshdirect.content.attributes.EnumAttributeType;
+import com.freshdirect.content.nutrition.EnumClaimValue;
+import com.freshdirect.content.nutrition.EnumKosherTypeValue;
+import com.freshdirect.content.nutrition.EnumOrganicValue;
+import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDGroupNotFoundException;
+import com.freshdirect.fdstore.FDKosherInfo;
 import com.freshdirect.fdstore.FDNutrition;
+import com.freshdirect.fdstore.FDNutritionCache;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -65,12 +72,15 @@ import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.productfeed.Attributes.ProdAttribute;
 import com.freshdirect.fdstore.content.productfeed.Brands.Brand;
+import com.freshdirect.fdstore.content.productfeed.Claims.Claim;
 import com.freshdirect.fdstore.content.productfeed.Configurations.Configuration;
 import com.freshdirect.fdstore.content.productfeed.Configurations.Configuration.VariationOption;
 import com.freshdirect.fdstore.content.productfeed.GroupPrices.GroupPrice;
 import com.freshdirect.fdstore.content.productfeed.Images.Image;
 import com.freshdirect.fdstore.content.productfeed.Inventories.Inventory;
+import com.freshdirect.fdstore.content.productfeed.Ktyps.Ktyp;
 import com.freshdirect.fdstore.content.productfeed.NutritionInfo.Nutrition;
+import com.freshdirect.fdstore.content.productfeed.Orgns.Orgn;
 import com.freshdirect.fdstore.content.productfeed.Prices.Price;
 import com.freshdirect.fdstore.content.productfeed.Products.Product;
 import com.freshdirect.fdstore.content.productfeed.Ratings.Rating;
@@ -148,7 +158,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
                 ProductModel productModel = null;
                 FDProductInfo fdProductInfo = null;
                 FDProduct fdProduct = null;
-                try {
+                	try {
                     productModel = ContentFactory.getInstance().getProduct(skucode);
                     if (productModel != null && !productModel.isOrphan() && !"Archive".equalsIgnoreCase(productModel.getDepartment().getContentName())) {
                         fdProductInfo = FDCachedFactory.getProductInfo(skucode);
@@ -171,8 +181,11 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
                     populateInventoryInfo(fdProductInfo, product);
                     populateImages(productModel, product);
                     populateBrands(productModel, product);
+                    populateClaims(fdProduct, product);				//claims of product
+                    populateKtyps(fdProduct, product,"1000");		//KosherTypes of product
+                    populateOrgns(product, fdProductInfo);			//OragnicTypes of product
                 }
-            }
+           }
         }
         return xmlProducts;
     }
@@ -428,9 +441,106 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
             }
         }
     }
-
     // End:: Add Brand info for Hook logic
+    
+    private final static HashMap<EnumClaimValue,String> feedClaimTypes = new HashMap<EnumClaimValue,String>();
+   	static {
+   		feedClaimTypes.put(EnumClaimValue.getValueForCode("FR_DAIR"),"dairy free");
+   		feedClaimTypes.put(EnumClaimValue.getValueForCode("FR_FAT"),"fat free");
+   		feedClaimTypes.put(EnumClaimValue.getValueForCode("FR_GLUT"),"gluten free");
+   		feedClaimTypes.put(EnumClaimValue.getValueForCode("GRASS_FED"),"grass fed");
+   		feedClaimTypes.put(EnumClaimValue.getValueForCode("KOS_PAS"),"kosher for passover");
+   		feedClaimTypes.put(EnumClaimValue.getValueForCode("FR_LACT"),"lactose free");
+   		feedClaimTypes.put(EnumClaimValue.getValueForCode("LO_CALR"),"low calorie");
+   		feedClaimTypes.put(EnumClaimValue.getValueForCode("LO_FAT"),"low fat");
+   		feedClaimTypes.put(EnumClaimValue.getValueForCode("LO_SALT"),"low salt");
+   		feedClaimTypes.put(EnumClaimValue.getValueForCode("LO_SODM"),"low sodium");
+   		feedClaimTypes.put(EnumClaimValue.getValueForCode("VE_GAN"),"vegan");
+   		feedClaimTypes.put(EnumClaimValue.getValueForCode("VEGGY"),"vegitarian");
+   	}
 
+    //Start:: populating claims of every product for search results sent to UNBXD APPDEV-6412
+	private void populateClaims(FDProduct fdProduct, Product product) {
+		Claims claims = new Claims();
+		product.setClaims(claims);
+		List<EnumClaimValue> claimValues = fdProduct.getClaims();
+		if (null != claimValues && !claimValues.isEmpty()) {
+			for (EnumClaimValue claimValue : claimValues) {
+				for (EnumClaimValue code : feedClaimTypes.keySet()) {
+					if (null != code) {
+						if (claimValue.getCode().equals(code.getCode())) {
+							Claim claim = new Claim();
+							claims.getClaim().add(claim);
+							claim.setCode(claimValue.getCode());
+							claim.setName(claimValue.getName());
+							claim.setPriority(claimValue.getPriority());
+							claim.setKeyword(feedClaimTypes.get(code));
+						}
+					}
+				}
+			}
+		}
+	}
+	//End
+	private final static HashMap<EnumKosherTypeValue,String> feedKosherTypes = new HashMap<EnumKosherTypeValue,String>();
+   	static {
+   		feedKosherTypes.put(EnumKosherTypeValue.getValueForCode("NONE"), "Kosher");
+   		feedKosherTypes.put(EnumKosherTypeValue.getValueForCode("DAIRY"),"Kosher");
+   		feedKosherTypes.put(EnumKosherTypeValue.getValueForCode("PARVE"),"Kosher");
+   		feedKosherTypes.put(EnumKosherTypeValue.getValueForCode("FISH"),"Kosher");
+   		feedKosherTypes.put(EnumKosherTypeValue.getValueForCode("MEAT"),"Kosher");
+   		feedKosherTypes.put(EnumKosherTypeValue.getValueForCode("DAIRY_EQ"),"Kosher");
+   		feedKosherTypes.put(EnumKosherTypeValue.getValueForCode("GLATT"),"Kosher");
+   	}
+	//Start:: populating Kosher Type of every product for search results sent to UNBXD APPDEV-6412
+	private void populateKtyps(FDProduct fdProduct, Product product, String plantID) {
+		Ktyps ktyps = new Ktyps();
+		product.setKtyps(ktyps);
+		FDKosherInfo fdKosherInfo = fdProduct.getKosherInfo(plantID);
+		if (null != fdKosherInfo && null != fdKosherInfo.getKosherType()) {
+			EnumKosherTypeValue EnumKosherTypeValue = fdKosherInfo.getKosherType();
+			for (EnumKosherTypeValue code : feedKosherTypes.keySet()) {
+				if ((EnumKosherTypeValue.getCode()).equals(code.getCode())) {
+					Ktyp ktyp = new Ktyp();
+					ktyps.getKtyp().add(ktyp);
+					ktyp.setCode(EnumKosherTypeValue.getCode());
+					ktyp.setName(EnumKosherTypeValue.getName());
+					ktyp.setKeyword(feedKosherTypes.get(code));
+				}
+			}
+		}
+	}
+
+	private final static HashMap<EnumOrganicValue,String> feedOrganicTypes = new HashMap<EnumOrganicValue,String>();
+	static {
+		feedOrganicTypes.put(EnumOrganicValue.getValueForCode("CERT_ORGN"), "organic");
+		feedOrganicTypes.put(EnumOrganicValue.getValueForCode("ORGN"), "organic");
+	}
+    
+	//Start:: populating organic of every product for search results sent to UNBXD APPDEV-6412
+	private void populateOrgns(Product product, FDProductInfo fdProductInfo) {
+		Orgns orgns = new Orgns();
+		product.setOrgns(orgns);
+		List<EnumOrganicValue> nutritionIfo = FDNutritionCache.getInstance().getNutrition(fdProductInfo.getSkuCode()).getNutritionInfoList(ErpNutritionInfoType.ORGANIC);
+		if (null != nutritionIfo && !nutritionIfo.isEmpty()) {
+			for (EnumOrganicValue nutrition : nutritionIfo) {
+				for (EnumOrganicValue code : feedOrganicTypes.keySet()) {
+					if(null != code){
+						if ((nutrition.getCode()).equals(code.getCode())) {
+							Orgn orgn = new Orgn();
+							orgns.getOrgn().add(orgn);
+							orgn.setCode(nutrition.getCode());
+							orgn.setName(nutrition.getName());
+							orgn.setPriority(nutrition.getPriority());
+							orgn.setKeyword(feedOrganicTypes.get(code));
+						}
+					}
+				}
+			}
+		}
+	}
+	//end
+		
     private void populateAttributes(FDProductInfo fdProductInfo, FDProduct fdProduct, Product product, ProductModel productModel) {
         Attributes attributes = new Attributes();
         product.setAttributes(attributes);
