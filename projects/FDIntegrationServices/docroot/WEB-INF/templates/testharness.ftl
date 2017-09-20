@@ -587,6 +587,11 @@ function loadStuff() {
   	$("#header").val('');
   	$("#payload").val("");
 
+  } else if (loaddata == "GetCreditHistory") {
+  	$("#url").val("/saptest12@freshdirect.com/account/credits/");
+  	$("#header").val('');
+  	$("#payload").val("");
+
   } else if (loaddata == "GetCreditedOrderHistory") {
   	$("#url").val("/saptest12@freshdirect.com/account/creditedorders/");
   	$("#header").val('');
@@ -1687,6 +1692,7 @@ function doStuff() {
 
   <option value=""> ========== ORDERS ========== </option>
   <option value="GetOrderHistory">ORDERS - Order History</option>
+  <option value="GetCreditHistory">ORDERS - Credit History</option>
   <option value="GetCreditedOrderHistory">ORDERS - Credited Order History</option>
   <option value="GetExistingOrder">ORDERS - Existing Order Detail</option>
   <option value="GetExistingOrders">ORDERS - List Of Existing Orders Detail</option>
