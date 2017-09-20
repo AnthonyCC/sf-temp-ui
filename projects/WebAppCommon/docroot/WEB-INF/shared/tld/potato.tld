@@ -298,6 +298,11 @@
         <name>viewCart</name>
         <tagclass>com.freshdirect.webapp.ajax.viewcart.ViewCartPotatoTag</tagclass>
         <body-content>empty</body-content>
+        <attribute>
+		<name>name</name>
+		<required>false</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
     </tag>
 	<!-- APPDEV-3901 -->
     <tag>
