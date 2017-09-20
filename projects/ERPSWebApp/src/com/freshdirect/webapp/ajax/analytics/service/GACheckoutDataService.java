@@ -45,7 +45,7 @@ public class GACheckoutDataService {
         data.setShippingCost(order.getChargeAmount(EnumChargeType.DELIVERY));
         data.setCouponCode(populateCouponCodes(cartData));
         data.setRedemptionCode(SemPixelService.defaultService().populateRedeemedPromotionCodes(order));
-        data.setTipping(Double.toString(order.getTip()));
+        data.setEtipping(Double.toString(order.getTip()));
         data.setNewOrder(getNewOrderStatus(session));
         data.setModifyOrder(Boolean.toString(order.isModifiedOrder()));
         data.setDiscountAmount(Double.toString(order.getTotalDiscountValue()));

@@ -15,7 +15,7 @@ public class GACheckoutData {
     private double shippingCost;
     private List<String> couponCode;
     private List<String> redemptionCode;
-    private String tipping;
+    private String etipping;
     private String newOrder;
     private String modifyOrder;
     private String discountAmount;
@@ -88,12 +88,12 @@ public class GACheckoutData {
         this.redemptionCode = redemptionCode;
     }
 
-    public String getTipping() {
-        return tipping;
+    public String getEtipping() {
+        return etipping;
     }
 
-    public void setTipping(String tipping) {
-        this.tipping = tipping;
+    public void setEtipping(String etipping) {
+        this.etipping = etipping;
     }
 
     public String getNewOrder() {
