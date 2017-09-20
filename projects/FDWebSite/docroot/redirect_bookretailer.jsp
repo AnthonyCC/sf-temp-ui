@@ -6,10 +6,10 @@
 <fd:CheckLoginStatus />
 <%
 String bookRetailerId = request.getParameter("bookRetailerId");
-BookRetailer bookRetailer = (BookRetailer) ContentFactory.getInstance().getContentNode(bookRetailerId);
+BookRetailer bookRetailer = (BookRetailer) PopulatorUtil.getContentNode(bookRetailerId);
 
 String recipeSourceId = request.getParameter("recipeSourceId");
-RecipeSource recipeSource = (RecipeSource) ContentFactory.getInstance().getContentNode(recipeSourceId);
+RecipeSource recipeSource = (RecipeSource) PopulatorUtil.getContentNode(recipeSourceId);
 
 if (bookRetailer != null && recipeSource != null) {
 	String link = bookRetailer.createIsbnLink(recipeSource.getIsbn());

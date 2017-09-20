@@ -1,4 +1,4 @@
-<%@page import="com.freshdirect.webapp.ajax.filtering.CmsFilteringFlow"%>
+<%@ page import="com.freshdirect.webapp.ajax.filtering.CmsFilteringFlow"%>
 <%@ page import='com.freshdirect.fdstore.*,com.freshdirect.webapp.util.*' %>
 <%@ page import='java.io.*'%>
 <%@ page import="java.util.*"%>
@@ -24,7 +24,6 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
-
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
 <%@ taglib uri="unbxd" prefix="unbxd" %>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
@@ -42,20 +41,12 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
 <potato:product name="productPotato" extraName="productExtraPotato" productId='${param.productId}' categoryId='${param.catId}' variantId='${param.variantId}' grpId='${param.grpId}' version='${param.version}' />
 <potato:browse name="browsePotato" pdp="true" nodeId='${param.catId}'/>
 
+<fd:ProductGroup id='productNode' categoryId='${param.catId}' productId='${param.productId}' >
+
 <%
-ProductModel productNode = ProductPricingFactory.getInstance().getPricingAdapter( ContentFactory.getInstance().getProductByName( request.getParameter("catId"), request.getParameter("productId") ), user.getPricingContext() );
-
-// Handle no-product case
-if (productNode==null) {
-    throw new JspException("Product not found in Content Management System");
-} else if (!PopulatorUtil.isProductNotArchived(productNode)) {
-    response.sendError(HttpServletResponse.SC_NOT_FOUND);
-}
-
 boolean isWine = EnumTemplateType.WINE.equals( productNode.getTemplateType() );
 String title =  productNode.getPageTitle() != null && !productNode.getPageTitle().isEmpty() ? productNode.getPageTitle() : productNode.getFullName();
 title = title.replaceAll("<[^>]*>", "");
-
 %>
 
 <%-- OAS page variables --%>
@@ -350,3 +341,4 @@ if (mobWeb) {
 	</tmpl:put>
 </tmpl:insert>
 <unbxd:clickThruEvent product="<%= productNode %>"/>
+</fd:ProductGroup>

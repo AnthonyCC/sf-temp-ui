@@ -19,11 +19,11 @@ String variantId = request.getParameter("variantId");
 String recipeId = request.getParameter("recipeId");
 
 if (variantId != null) {
-	variant = (RecipeVariant) ContentFactory.getInstance().getContentNode(variantId);
+	variant = (RecipeVariant) PopulatorUtil.getContentNode(variantId);
 	recipe = (Recipe) variant.getParentNode();
 
 } else if (recipeId !=null) {
-	recipe = (Recipe) ContentFactory.getInstance().getContentNode(recipeId);
+	recipe = (Recipe) PopulatorUtil.getContentNode(recipeId);
 	variant = recipe.getDefaultVariant();
 
 } else {
@@ -47,7 +47,7 @@ FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 
 if (recipeId != null) {
 
-recipe = (Recipe) ContentFactory.getInstance().getContentNode(recipeId);
+recipe = (Recipe) PopulatorUtil.getContentNode(recipeId);
 RecipeSource source          = recipe.getSource();
 String       sourceName      = "";
 

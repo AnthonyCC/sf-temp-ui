@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 import com.freshdirect.WineUtil;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDNotFoundException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -40,6 +41,7 @@ import com.freshdirect.fdstore.content.EnumSortingValue;
 import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.Html;
+import com.freshdirect.fdstore.content.PopulatorUtil;
 import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.fdstore.content.ProductItemFilterI;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -106,7 +108,7 @@ public class CmsFilteringFlow {
     private CmsFilteringFlow() {
     }
 
-    public CmsFilteringFlowResult doFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException, FDResourceException {
+    public CmsFilteringFlowResult doFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException, FDResourceException, FDNotFoundException {
         BrowseData browseData = null;
         String cacheKey = user.getUser().getPrimaryKey() + "," + nav.getId();
         BrowseDataContext browseDataContext = getBrowseDataContextFromCacheForPaging(nav, user, cacheKey);
@@ -900,12 +902,12 @@ public class CmsFilteringFlow {
         }
     }
 
-    public BrowseDataContext doBrowseFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException, FDResourceException {
+    public BrowseDataContext doBrowseFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException, FDResourceException, FDNotFoundException {
 
         BrowseDataContext browseDataContext = null;
 
         String id = nav.getId();
-        ContentNodeModel contentNodeModel = ContentFactory.getInstance().getContentNode(id);
+        ContentNodeModel contentNodeModel = PopulatorUtil.getContentNode(id);
 
         // validation
         validateNode(nav, contentNodeModel, id, user);

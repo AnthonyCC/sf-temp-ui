@@ -1,26 +1,25 @@
-<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*'
-%><%@ page import='com.freshdirect.fdstore.content.*'
-%><%@ page import='com.freshdirect.fdstore.promotion.*'
-%><%@ page import='com.freshdirect.webapp.taglib.fdstore.*'
-%><%@ page import='com.freshdirect.fdstore.attributes.*'
-%><%@ page import='java.net.URLEncoder'
-%><%@ page import="com.freshdirect.fdstore.util.RatingUtil"
-%><%@ page import="com.freshdirect.fdstore.rollout.*"
-%><%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'
-%><%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'
-%><%@ page import='com.freshdirect.webapp.util.JspMethods'
-%><%@ taglib uri='template' prefix='tmpl'
-%><%@ taglib uri='logic' prefix='logic'
-%><%@ taglib uri='freshdirect' prefix='fd'
-%><%@ taglib uri='oscache' prefix='oscache'
-%>
+<%@ page import='com.freshdirect.webapp.util.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
+<%@ page import='com.freshdirect.fdstore.promotion.*'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
+<%@ page import='com.freshdirect.fdstore.attributes.*'%>
+<%@ page import='java.net.URLEncoder'%>
+<%@ page import="com.freshdirect.fdstore.util.RatingUtil"%>
+<%@ page import="com.freshdirect.fdstore.rollout.*"%>
+<%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
+<%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
+<%@ page import='com.freshdirect.webapp.util.JspMethods'%>
+<%@ taglib uri='template' prefix='tmpl'%>
+<%@ taglib uri='logic' prefix='logic'%>
+<%@ taglib uri='freshdirect' prefix='fd'%>
+<%@ taglib uri='oscache' prefix='oscache'%>
+
 <fd:CheckLoginStatus id = "user"/>
 <fd:CheckDraftContextTag/>
 <fd:PDPRedirector user="<%=user %>"/>
 <fd:BrowsePartialRolloutRedirector user="<%=user%>" oldToNewDirection="true" id="${param.catId}"/>
 
 <%
-
 //expanded page dimensions
 final int W_CATEGORY_WITH_LEFT_NAV = 601;
 final int W_CATEGORY_NO_LEFT_NAV = 765;
@@ -58,14 +57,17 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 	boolean isWineLayout = false;
 	String deptId = null;
 	// it should be CategoryModel ...
-	ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(catId);
+	ContentNodeModel currentFolder = PopulatorUtil.getContentNode(catId);
 	final ProductContainer productContainer = (currentFolder instanceof ProductContainer) ? (ProductContainer) currentFolder : null;
 	final CategoryModel categoryModel = (currentFolder instanceof CategoryModel) ? (CategoryModel) currentFolder : null;
 	if (categoryModel != null) {
 		deptId = (((CategoryModel)currentFolder).getDepartment() != null) ? ((CategoryModel)currentFolder).getDepartment().getContentName() : "";
 	}
 
-	ProductModel prodModel = ContentFactory.getInstance().getProductByName(request.getParameter("prodCatId"), request.getParameter("productId"));
+    ProductModel prodModel = null;
+    if (request.getParameter("prodCatId") != null && request.getParameter("productId") != null){
+        prodModel = PopulatorUtil.getProductByName(request.getParameter("prodCatId"), request.getParameter("productId"));
+    }
 
 	//--------OAS Page Variables-----------------------
 	request.setAttribute("sitePage", prodModel == null ? currentFolder.getPath() : prodModel.getPath());

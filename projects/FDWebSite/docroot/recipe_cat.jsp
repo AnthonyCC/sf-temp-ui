@@ -14,10 +14,9 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
 <fd:CheckLoginStatus />
-<%
-ContentFactory contentFactory = ContentFactory.getInstance();
-ContentNodeModel recipeCategory = contentFactory.getContentNode(request.getParameter("catId"));
 
+<%
+ContentNodeModel recipeCategory = PopulatorUtil.getContentNode(request.getParameter("catId"));
 
 String filterParam= request.getParameter("filter")!=null ?  request.getParameter("filter") : "";
 //--------OAS Page Variables-----------------------
@@ -25,7 +24,7 @@ request.setAttribute("sitePage", recipeCategory.getPath());
 request.setAttribute("listPos", "LittleRandy,SystemMessage,CategoryNote,ProductNote,SideCartBottom");
 
 String hideUrl=recipeCategory.getHideUrl();
-if (!contentFactory.getPreviewMode()) {
+if (!ContentFactory.getInstance().getPreviewMode()) {
     if (hideUrl!=null) {
         String redirectURL = response.encodeRedirectURL(hideUrl);
 	   if (redirectURL.toUpperCase().indexOf("/RECIPE_CAT.JSP?")==-1) {

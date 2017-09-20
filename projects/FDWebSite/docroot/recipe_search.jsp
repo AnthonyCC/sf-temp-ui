@@ -176,12 +176,12 @@ boolean searchPerformed = false;
 			if (aParam.length() == aParam.indexOf("=")+1) continue;  //param has no value
 			
 			if (aParam.startsWith("recipeSource") && aParam.length() > "recipeSource=".length()) {
-			    RecipeSource rs = (RecipeSource)ContentFactory.getInstance().getContentNode(request.getParameter("recipeSource"));
+			    RecipeSource rs = (RecipeSource) PopulatorUtil.getContentNode(request.getParameter("recipeSource"));
 			    resultHeading="RECIPES FROM \""+rs.getName()+"\"";
 			}
 			
 			if (aParam.startsWith("recipeAuthor") && aParam.length() > "recipeAuthor=".length()) {
-			    RecipeAuthor ra = (RecipeAuthor)ContentFactory.getInstance().getContentNode(request.getParameter("recipeAuthor"));
+			    RecipeAuthor ra = (RecipeAuthor) PopulatorUtil.getContentNode(request.getParameter("recipeAuthor"));
 			    resultHeading="RECIPES BY "+ra.getName();
 			}
 			

@@ -369,7 +369,7 @@ public class ProductDetailPopulator {
 			product = ProductPricingFactory.getInstance().getPricingAdapter( product, user.getUserContext().getPricingContext() );
 		}
 		
-		if (enableProductIncomplete && PopulatorUtil.isProductIncomplete(product) && PopulatorUtil.isProductNotArchived(product)) {
+        if (enableProductIncomplete && PopulatorUtil.isProductIncomplete(product) && !PopulatorUtil.isNodeArchived(product)) {
 			return createProductDataLight(user, product);
 		}
 		
@@ -393,7 +393,7 @@ public class ProductDetailPopulator {
 			product = ProductPricingFactory.getInstance().getPricingAdapter( product, user.getUserContext().getPricingContext() );
 		}
 		
-		if (FDStoreProperties.getPreviewMode() && PopulatorUtil.isProductIncomplete(product) && PopulatorUtil.isProductNotArchived(product)) {
+        if (FDStoreProperties.getPreviewMode() && PopulatorUtil.isProductIncomplete(product) && !PopulatorUtil.isNodeArchived(product)) {
 			return createProductDataLight(user, product);
 		}
 		

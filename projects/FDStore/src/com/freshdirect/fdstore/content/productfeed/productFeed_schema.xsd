@@ -23,6 +23,9 @@ printMethod="javax.xml.bind.DatatypeConverter.printDate"/></jaxb:globalBindings>
 				<xs:element name="inventories" type="inventories"  maxOccurs="1" minOccurs="0"/>
 				<xs:element name="images" type="images"  maxOccurs="1" minOccurs="0"/>
 				<xs:element name="brands" type="brands"  maxOccurs="1" minOccurs="0"/>
+				<xs:element name="claims" type="claims"  maxOccurs="1" minOccurs="0"/>
+				<xs:element name="ktyps" type="ktyps"  maxOccurs="1" minOccurs="0"/>
+				<xs:element name="orgns" type="orgns"  maxOccurs="1" minOccurs="0"/>
 			</xs:sequence>
 
 			<xs:attribute name="skuCode" type="xs:string" use="required"/> 
@@ -210,6 +213,47 @@ printMethod="javax.xml.bind.DatatypeConverter.printDate"/></jaxb:globalBindings>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="claims" >
+<xs:sequence>
+	<xs:element name="claim" maxOccurs="unbounded" minOccurs="0">
+		<xs:complexType>
+			<xs:sequence>				
+				<xs:element type="xs:string" name="code" />									
+				<xs:element type="xs:string" name="name" />
+				<xs:element type="xs:int" name="priority" />
+				<xs:element type="xs:string" name="keyword" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>	
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="ktyps" >
+<xs:sequence>
+	<xs:element name="ktyp" maxOccurs="unbounded" minOccurs="0">
+		<xs:complexType>
+			<xs:sequence>				
+				<xs:element type="xs:string" name="code" />									
+				<xs:element type="xs:string" name="name" />
+				<xs:element type="xs:string" name="keyword" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>	
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="orgns" >
+<xs:sequence>
+	<xs:element name="orgn" maxOccurs="unbounded" minOccurs="0">
+		<xs:complexType>
+			<xs:sequence>				
+				<xs:element type="xs:string" name="code" />									
+				<xs:element type="xs:string" name="name" />
+				<xs:element type="xs:int" name="priority" />
+				<xs:element type="xs:string" name="keyword" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>	
 </xs:sequence>
 </xs:complexType>
 <xs:complexType name="images">

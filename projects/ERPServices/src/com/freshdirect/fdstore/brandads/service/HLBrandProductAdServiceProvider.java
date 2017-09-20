@@ -193,7 +193,8 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 		String jsonResponse = sendGetRequest(urlToCall);
 		HLBrandProductAdResponse response = parseResponse(jsonResponse, HLBrandProductAdResponse.class);
 		pageBeaconResponse=getPDPPageBeacon(pageBeaconResponse,hLBrandProductAdRequest);
-		response.setPageBeacon((pageBeaconResponse!=null?pageBeaconResponse.getPageBeacon():null));
+		if(response!=null)
+			response.setPageBeacon((pageBeaconResponse!=null?pageBeaconResponse.getPageBeacon():null));
 		return response;
 	}
 
@@ -251,9 +252,10 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 			throws IOException, UnsupportedEncodingException {
 		String returnString="";
 		InputStream response = null;
+		BufferedReader reader=null;
 		try {
 			response = connection.getInputStream();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(response,charSet));
+			 reader = new BufferedReader(new InputStreamReader(response,charSet));
 			StringBuilder responseString = new StringBuilder();
 			for ( String oneLine; (oneLine = reader.readLine()) != null; ) {
 				responseString.append(oneLine);
@@ -263,6 +265,10 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 			// handle an exception
 		} finally { //  finally blocks are guaranteed to be executed
 			try {
+				if (reader != null) {
+					reader.close();
+				}
+
 				if (response != null) {
 					response.close();
 				}

@@ -16,7 +16,7 @@ String catId = request.getParameter("catId");
 boolean isGroceryVirtual=false;
 boolean isWineLayout = false;
 String deptId = null;
-ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(catId);
+ContentNodeModel currentFolder = PopulatorUtil.getContentNode(catId);
 /*if(currentFolder instanceof CategoryModel) {
      deptId=((CategoryModel)currentFolder).getDepartment().getContentName();
 }*/

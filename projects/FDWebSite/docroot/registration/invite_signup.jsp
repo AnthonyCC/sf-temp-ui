@@ -11,6 +11,7 @@
 <%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
 <%@ page import="com.freshdirect.fdstore.referral.FDReferralManager"%>
 <%@ page import="com.freshdirect.fdstore.referral.ReferralPromotionModel"%>
+<%@ page import="com.freshdirect.fdstore.FDNotFoundException"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
 <%@ page buffer="16kb" %>
@@ -70,6 +71,9 @@
 		String url = request.getRequestURI();
 		System.out.println("[******moreInfoPage*****]" + moreInfoPage);
 
+    if(clickId == null) { 
+        throw new FDNotFoundException("xtl_click_id parameter is not found.");
+    }
 	
 %>
 <fd:CheckLoginStatus guestAllowed='true' />
@@ -97,11 +101,6 @@
 			request.setAttribute("listPos", "SystemMessage,DeliveryFees,RAFLandingTop,RAFLandingTerms");
 		%>
 		<jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
-		
-		<% if(clickId != null) { %>
-			<%
-			
-			%>
 		
 		<fd:SiteAccessController action='checkByZipCode' successPage='<%= successPage %>' moreInfoPage='<%= moreInfoPage %>' failureHomePage='<%= failurePage %>' result='result'>
 				<%--
@@ -198,10 +197,5 @@
 <%-- 			<fd:IncludeMedia name="/media/editorial/site_access/referral_site_access.html" /> --%>
 			<fd:IncludeMedia name="/media/editorial/site_access/referral_extole_site_access.html" />			
 			</fd:SiteAccessController>
-		<% }  else { 
-			response.sendRedirect("/index.jsp");
-			}
-		%>
-		
 	</body>
 </html>

@@ -468,7 +468,7 @@ var dataLayer = window.dataLayer || [];
   fd.gtm.getProductData = function (productEl) {
     var productE = $(productEl).closest('[data-component="product"]'),
         productId = productE.attr('data-product-id'),
-        productData,
+        productData, vcat,
         moduleE;
 
     if (productId) {
@@ -485,7 +485,8 @@ var dataLayer = window.dataLayer || [];
     productData.new_product = productE.attr('data-new-product');
     productData.variant = productE.attr('data-variant');
     productData.position = parseInt(productE.attr('data-position'), 10) || 0;
-    productData.list = productE.attr('data-list') || productE.attr('data-virtual-category');
+    productData.list = productE.attr('data-list');
+    vcat = productE.attr('data-virtual-category');
 
     if (!productData.position) {
       $('[data-component="product"]').each(function (i, el) {
@@ -515,6 +516,10 @@ var dataLayer = window.dataLayer || [];
           productData.list = safeName(carouselE.find('.header').text());
         }
       }
+    }
+
+    if (vcat) {
+      productData.list = vcat.replace(/:POSITION\s(\d+).*/, '_$1_') + safeName($(moduleE).find('.content-header .content-title').text() || moduleE.id);
     }
 
     productData.list = fd.gtm.getList() + (productData.list ? '_'+productData.list : '');
@@ -588,12 +593,12 @@ var dataLayer = window.dataLayer || [];
 
   // get actual dataLayer value (for verification)
   fd.gtm.getValue = function (query) {
-    return window.google_tag_manager[GTMID].dataLayer.get(query);
+    return fd.gtm.check() && window.google_tag_manager[GTMID].dataLayer.get(query);
   };
 
   // set actual dataLayer value (for impressions reset)
   fd.gtm.setValue = function (prop, value) {
-    return window.google_tag_manager[GTMID].dataLayer.set(prop, value);
+    return fd.gtm.check() && window.google_tag_manager[GTMID].dataLayer.set(prop, value);
   };
 
   // check if GTM is loaded
@@ -767,6 +772,24 @@ var dataLayer = window.dataLayer || [];
       if (selectedAddress) {
         coStepData.delivery_type = selectedAddress.service_type;
       }
+
+      if (!fd.gtm._coDefaultAddressReported && !fd.gtm._coUserInteraction) {
+        fd.gtm._coDefaultAddressReported = true;
+
+        var daReporter = function () {
+          if (fd.gtm.getValue('ecommerce.checkout.products')) {
+            fd.gtm.updateDataLayer({
+              coStep: coStepData
+            }, {
+              event: 'checkoutStep'
+            });
+          } else {
+            setTimeout(daReporter, 100);
+          }
+        };
+
+        daReporter();
+      }
     } else if (step === 'payment') {
       var selectedPayment = !data.payments ? null : data.payments.filter(function (payment) { return payment.selected; })[0];
 
@@ -774,6 +797,24 @@ var dataLayer = window.dataLayer || [];
 
       coStepData.step = 3;
       coStepData.option = selectedPayment.type;
+
+      if (!fd.gtm._coDefaultPaymentReported && !fd.gtm._coUserInteraction) {
+        fd.gtm._coDefaultPaymentReported = true;
+
+        var dpReporter = function () {
+          if (fd.gtm.getValue('ecommerce.checkout.products')) {
+            fd.gtm.updateDataLayer({
+              coStep: coStepData
+            }, {
+              event: 'checkoutStep'
+            });
+          } else {
+            setTimeout(dpReporter, 100);
+          }
+        };
+
+        dpReporter();
+      }
     } else if (step === 'timeslot') {
 
       coStepData.step = 2;
@@ -923,15 +964,17 @@ var dataLayer = window.dataLayer || [];
 
   // product click
   $(document).on('click', '[data-component="product"] a[href]', function (e) {
-    e.preventDefault();
-    var target = $(e.target).closest('a').prop('href'),
-        productData = fd.gtm.getProductData(e.target),
-        goToProduct = function () {
-          window.location.assign(target);
-        };
-
-    // failsafe
-    var goTimeout = setTimeout(goToProduct, 300);
+	if(!(e.ctrlKey || e.shiftKey || e.target.target == "_blank" || e.target.target == "_top")){
+	    e.preventDefault();
+	    var target = $(e.target).closest('a').prop('href'),
+	        productData = fd.gtm.getProductData(e.target),
+	        goToProduct = function () {
+	          window.location.assign(target);
+	        };
+	
+	    // failsafe
+	    var goTimeout = setTimeout(goToProduct, 300);
+	}
 
     fd.gtm.updateDataLayer({
       ecommerce: {
@@ -956,11 +999,13 @@ var dataLayer = window.dataLayer || [];
     }, {
       event: 'productClick',
       callback: function () {
-        if (goTimeout) {
-          clearTimeout(goTimeout);
-          goTimeout = null;
-        }
-        goToProduct();
+    	if(!(e.ctrlKey || e.shiftKey || e.target.target == "_blank" || e.target.target == "_top")){
+	        if (goTimeout) {
+	          clearTimeout(goTimeout);
+	          goTimeout = null;
+	        }
+	        goToProduct();
+    	}
       }
     });
 
@@ -968,16 +1013,18 @@ var dataLayer = window.dataLayer || [];
 
   // top nav click
   $(document).on('click', '[data-component="globalnav-menu"] a, .bottom-nav a', function (e) {
-    e.preventDefault();
-    var target = $(e.target).closest('a').prop('href'),
-        title = $(e.target).closest('a').text(),
-        goToTarget = function () {
-          window.location.assign(target);
-        };
-
-    // failsafe
-    var goTimeout = setTimeout(goToTarget, 300);
-
+	if(!(e.ctrlKey || e.shiftKey || e.target.target == "_blank" || e.target.target == "_top")){
+		e.preventDefault();
+	    var target = $(e.target).closest('a').prop('href'),
+	        title = $(e.target).closest('a').text(),
+	        goToTarget = function () {
+	          window.location.assign(target);
+	        };
+	
+	    // failsafe
+	    var goTimeout = setTimeout(goToTarget, 300);
+	}
+	
     fd.gtm.updateDataLayer({
       topNavClick: {
         title: title
@@ -985,11 +1032,13 @@ var dataLayer = window.dataLayer || [];
     }, {
       event: 'top-menu-clicked',
       callback: function () {
-        if (goTimeout) {
-          clearTimeout(goTimeout);
-          goTimeout = null;
-        }
-        goToTarget();
+    	if(!(e.ctrlKey || e.shiftKey || e.target.target == "_blank" || e.target.target == "_top")){
+	        if (goTimeout) {
+	          clearTimeout(goTimeout);
+	          goTimeout = null;
+	        }
+	        goToTarget();
+    	}
       }
     });
 

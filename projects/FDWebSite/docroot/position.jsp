@@ -20,7 +20,7 @@ final int W_POSITION_TOTAL = 806;
 <%
 String catId = request.getParameter("catId");
 
-ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(catId);
+ContentNodeModel currentFolder = PopulatorUtil.getContentNode(catId);
 
 Html introCopyAttribute = currentFolder.getEditorial();
 String introCopy = introCopyAttribute==null ? "": introCopyAttribute.getPath();

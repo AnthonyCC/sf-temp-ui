@@ -16,7 +16,7 @@ String recipeId = request.getParameter("recipeId");
 
 if (recipeId != null) {
 
-recipe = (Recipe) ContentFactory.getInstance().getContentNode(recipeId);
+recipe = (Recipe) PopulatorUtil.getContentNode(recipeId);
 RecipeSource source = recipe.getSource();
 List featuredRecipes = source.getFeaturedRecipes();
 String sourceName =source !=null ? source.getName() : "";

@@ -12,6 +12,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.cms.util.ProductPromotionUtil;
+import com.freshdirect.fdstore.FDNotFoundException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.CategoryModel;
@@ -55,7 +56,7 @@ public class ModuleContentService {
     private ModuleContentService() {
     }
 
-    public List<ProductData> generateBrowseProductData(CmsFilteringNavigator nav, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException {
+    public List<ProductData> generateBrowseProductData(CmsFilteringNavigator nav, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException, FDNotFoundException {
 
         List<ProductData> products = new ArrayList<ProductData>();
         final CmsFilteringFlowResult result = CmsFilteringFlow.getInstance().doFlow(nav, (FDSessionUser) user);
@@ -94,7 +95,8 @@ public class ModuleContentService {
         return ProductRecommenderUtil.createProductData(user, products, variantId);
     }
 
-    public SectionDataCointainer loadBrowseSectionDataContainer(String categoryId, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException {
+    public SectionDataCointainer loadBrowseSectionDataContainer(String categoryId, FDUserI user)
+            throws FDResourceException, InvalidFilteringArgumentException, FDNotFoundException {
         SectionDataCointainer sectionDataContainer = new SectionDataCointainer();
         CategoryModel categoryModel = (CategoryModel) ContentFactory.getInstance().getContentNode(categoryId);
         boolean isForbidden = NavigationUtil.isCategoryForbiddenInContext(user, categoryModel);
@@ -120,7 +122,7 @@ public class ModuleContentService {
         return sectionDataContainer;
     }
 
-    public List<ProductData> loadBrowseProducts(String categoryId, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException {
+    public List<ProductData> loadBrowseProducts(String categoryId, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException, FDNotFoundException {
         List<ProductData> availableProducts = new ArrayList<ProductData>();
 
         CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNode(categoryId);

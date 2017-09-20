@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -71,6 +72,10 @@ public class SectionContext extends SectionData {
 					}
 
 					productDatas.add(productData);
+					if(product!=null && (product.isDiscontinued() || product.isOutOfSeason()) && user!=null && user.getUserContext() != null && 
+							user.getUserContext().getStoreContext() != null && user.getUserContext().getStoreContext().getEStoreId() == EnumEStoreId.FDX){
+						productDatas.remove(productData);
+					}
 				} catch (Exception e){
 					LOGGER.error("Failed to create product data for " + product==null ? "null": product.getContentName()+ " (" + e.getMessage() + ")");
 				}

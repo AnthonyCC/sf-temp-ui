@@ -17,6 +17,9 @@
 <%@ taglib uri='oscache' prefix='oscache' %>
 <fd:CheckLoginStatus />
 <%
+String catId = request.getParameter("catId");
+PopulatorUtil.getContentNode(catId);
+
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 String custFirstName = user.getFirstName();
 int validOrderCount = user.getAdjustedValidOrderCount();

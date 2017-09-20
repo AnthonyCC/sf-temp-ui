@@ -4,7 +4,7 @@
 <%
 String productId = request.getParameter("productId");
 String catId = request.getParameter("catId");
-ProductModel product =  ContentFactory.getInstance().getProductByName(catId,productId);
+ProductModel product =  PopulatorUtil.getProductByName(catId,productId);
 Image prodImg = product.getCategoryImage();
 %>
 <tmpl:insert template='/shared/template/small_pop.jsp'>

@@ -12,7 +12,6 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.PopulatorUtil;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
@@ -65,7 +64,7 @@ public class ProductPotatoUtil {
                 data.setProductData( ProductDetailPopulator.createProductData(user, product, enableProductIncomplete) );
                 if (requiresExtraFields) {
                     ProductExtraData extraData = null;
-                    if (enableProductIncomplete && PopulatorUtil.isProductIncomplete(product) && PopulatorUtil.isProductNotArchived(product)){
+                    if (enableProductIncomplete && PopulatorUtil.isProductIncomplete(product) && !PopulatorUtil.isNodeArchived(product)) {
                         extraData = ProductExtraDataPopulator.createLightExtraData(user, product);
                     } else {
                         extraData = ProductExtraDataPopulator.createExtraData(user, product, null, null, false);

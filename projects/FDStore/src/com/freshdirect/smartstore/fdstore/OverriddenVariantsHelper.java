@@ -102,7 +102,7 @@ public class OverriddenVariantsHelper {
 	
 	public static List<String> getOverriddenVariantIds(FDUserI user) {
 		
-		if(!AllowAnonymousUsers && (user.getPrimaryKey() == null || user.getPrimaryKey().length() == 0))
+		if(!AllowAnonymousUsers && (user == null || user.getPrimaryKey() == null || user.getPrimaryKey().length() == 0))
 			throw new IllegalArgumentException("user must not be anonymous");
 		
 		List<String> list = new ArrayList<String>();

@@ -10,6 +10,7 @@
 <%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
 <%@ page import="com.freshdirect.fdstore.referral.FDReferralManager"%>
 <%@ page import="com.freshdirect.fdstore.referral.ReferralPromotionModel"%>
+<%@ page import="com.freshdirect.fdstore.FDNotFoundException"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
 <%@ page buffer="16kb" %>
@@ -40,12 +41,17 @@
 	String email = NVL.apply(request.getParameter("email"), "");
 	String email_error = NVL.apply(request.getParameter("email_error"), "");
 
-    
+    ReferralPromotionModel rpModel = null;
+    if(refname != null) { 
+        rpModel = FDReferralManager.getReferralPromotionDetailsByRefName(referral);
+    }  else {
+        throw new FDNotFoundException("Referral promotion detail model is not found by referral: " + referral);
+    }
+
     if (successPage == null || successPage == "") {
   		// null, default to index.jsp
   		successPage = "/index.jsp";
  	}
-    
     
     //EnumServiceType.CORPORATE.getName().equalsIgnoreCase(corpServiceType)
     if (successPage.startsWith("/index.jsp") && corpZipcode!=null && corpZipcode.length()==5)  {
@@ -86,11 +92,6 @@
 		%>
 		<jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
 		
-		<% if(refname != null) { %>
-			<%
-				ReferralPromotionModel rpModel = FDReferralManager.getReferralPromotionDetailsByRefName(referral);
-			%>
-		
 		<fd:SiteAccessController action='checkByZipCode' successPage='<%= successPage %>' moreInfoPage='<%= moreInfoPage %>' failureHomePage='<%= failurePage %>' result='result'>
 			<%--
 				Put any java-related variables needed by the page into the _page_options object. 
@@ -125,8 +126,8 @@
 						serviceType: '',
 						corpServiceType: ''
 					},
-					rafTerms: "<%= rpModel.getReferralPageLegal() %>",
-					rafImage: '<%= rpModel.getSiteAccessImageFile() %>'
+					rafTerms: '<%= (rpModel != null) ? rpModel.getReferralPageLegal() : "" %>',
+					rafImage: '<%= (rpModel != null) ? rpModel.getSiteAccessImageFile() : "" %>'
 				};
 				<% if ( !"WEB".equals(serviceType) ) { %>
 					<% if ( result.hasError("technicalDifficulty") ) { %>
@@ -187,10 +188,6 @@
 			
 
 		</fd:SiteAccessController>
-		<% }  else { 
-			response.sendRedirect("/index.jsp");
-			}
-		%>
 		
 	</body>
 </html>
