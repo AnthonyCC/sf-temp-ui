@@ -17,37 +17,37 @@
     <tmpl:put name='content' direct='true'>
 <img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="12"><br>
 <div align="right">
-	<% if (aboutSection.equals("about_fdstory_promise")){
+	<% if ("about_fdstory_promise".equals(aboutSection)){
 	%>
 		<%@ include file="/about/includes/ourPromise.jspf" %>
 	<%
 	}
-	else if(aboutSection.equals("about_fdstory_selection")){%>
+	else if("about_fdstory_selection".equals(aboutSection)){%>
 
 		<%@ include file="/about/includes/selection.jspf" %>
 	
 	<%} 
-	else if(aboutSection.equals("about_fdstory_facility")){%>
+	else if("about_fdstory_facility".equals(aboutSection)){%>
 	
 		<%@ include file="/about/includes/ourFacility.jspf" %>
 	
 	<%} 
-	else if(aboutSection.equals("about_fdstory_experts")){%>
+	else if("about_fdstory_experts".equals(aboutSection)){%>
 	
 		<%@ include file="/about/includes/ourExperts.jspf" %>
 	
 	<%} 
-	else if(aboutSection.equals("about_fdstory_delivery")){%>
+	else if("about_fdstory_delivery".equals(aboutSection)){%>
 	
 		<%@ include file="/about/includes/delivery.jspf" %>
 	
 	<%} 
-	else if(aboutSection.equals("about_fdstory_guarantee")){%>
+	else if("about_fdstory_guarantee".equals(aboutSection)){%>
 	
 		<%@ include file="/about/includes/freshness.jspf" %>
 	
 	<%} 
-	else if(aboutSection.equals("about_fdstory_store")){%>
+	else if("about_fdstory_store".equals(aboutSection)){%>
 	
 		<%@ include file="/about/includes/onlineStore.jspf" %>
 	

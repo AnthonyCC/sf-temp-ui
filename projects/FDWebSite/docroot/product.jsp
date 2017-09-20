@@ -30,18 +30,7 @@
 	java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 %>
 <fd:ProductGroup id='productNode' categoryId='<%= request.getParameter("catId") %>' productId='<%= request.getParameter("productId") %>'>
-<%
-// Handle no-product case
-if (productNode==null) {
-    throw new JspException("Product not found in Content Management System");
-} else if (productNode.isDiscontinued()) {
-    throw new JspException("Product Discontinued :"+request.getParameter("productId"));
-}
 
-
-
-
-%>
 <fd:ClickThru product="<%= productNode %>"/>
 <%
 //--------OAS Page Variables-----------------------

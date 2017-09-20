@@ -26,8 +26,8 @@
 		String catIdToUse = FDStoreProperties.getGiftCardCatId();
 		String prodNameToUse = FDStoreProperties.getGiftCardProdName();
 
-		ContentNodeModel categoryRef = ContentFactory.getInstance().getContentNode(catIdToUse);
-		ProductModel prodRef = ContentFactory.getInstance().getProductByName(catIdToUse, prodNameToUse);
+		ContentNodeModel categoryRef = PopulatorUtil.getContentNode(catIdToUse);
+		ProductModel prodRef = PopulatorUtil.getProductByName(catIdToUse, prodNameToUse);
 		List gcList = null;
 		if (prodRef != null) {
 			gcList = prodRef.getGiftcardType();

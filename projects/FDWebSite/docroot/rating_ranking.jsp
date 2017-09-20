@@ -34,10 +34,10 @@ if (deptId!=null) isDept = true;
 boolean isGroceryVirtual=false;
 ContentNodeModel currentFolder = null;
 if(isDept) {
- currentFolder = ContentFactory.getInstance().getContentNode(deptId);
+ currentFolder = PopulatorUtil.getContentNode(deptId);
  unSortLink = response.encodeURL("/department.jsp?deptId="+deptId+"&trk=rate");
 } else {
- currentFolder = ContentFactory.getInstance().getContentNode(catId);
+ currentFolder = PopulatorUtil.getContentNode(catId);
  unSortLink = response.encodeURL("/category.jsp?catId="+catId+"&trk=rate");
 }
 final ProductContainer productContainer = (currentFolder instanceof ProductContainer) ? (ProductContainer) currentFolder : null; 

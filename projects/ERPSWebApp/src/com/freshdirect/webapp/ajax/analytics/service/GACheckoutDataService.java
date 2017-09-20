@@ -7,10 +7,14 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
+
+import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.analytics.data.GACheckoutData;
 import com.freshdirect.webapp.ajax.analytics.data.GAProductData;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData;
@@ -22,6 +26,7 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 public class GACheckoutDataService {
 
     private static final GACheckoutDataService INSTANCE = new GACheckoutDataService();
+    private static final Logger LOGGER = LoggerFactory.getInstance(GACheckoutDataService.class);
 
     private GACheckoutDataService() {
 
@@ -37,10 +42,10 @@ public class GACheckoutDataService {
         data.setPaymentType(order.getPaymentMethod().getPaymentMethodType().getDescription());
         data.setRevenue(Double.toString(order.getTotal()));
         data.setTax(Double.toString(order.getTaxValue()));
-        data.setShippingCost(cartData.getDeliveryCharge());
+        data.setShippingCost(order.getChargeAmount(EnumChargeType.DELIVERY));
         data.setCouponCode(populateCouponCodes(cartData));
         data.setRedemptionCode(SemPixelService.defaultService().populateRedeemedPromotionCodes(order));
-        data.setTipping(Double.toString(order.getTip()));
+        data.setEtipping(Double.toString(order.getTip()));
         data.setNewOrder(getNewOrderStatus(session));
         data.setModifyOrder(Boolean.toString(order.isModifiedOrder()));
         data.setDiscountAmount(Double.toString(order.getTotalDiscountValue()));

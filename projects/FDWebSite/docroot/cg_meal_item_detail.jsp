@@ -1,5 +1,5 @@
 <%@ page import='java.util.*' %>
-<%@page import="com.freshdirect.framework.util.StringUtil"%>
+<%@ page import="com.freshdirect.framework.util.StringUtil"%>
 <%@ page import='com.freshdirect.fdstore.content.*'  %>
 <%@ page import='com.freshdirect.fdstore.attributes.*'  %>
 <%@ page import='com.freshdirect.fdstore.customer.*'  %>
@@ -37,18 +37,17 @@ Recipe        recipe  = null;
 
 
 int            maxWidth = 320;
-ContentFactory cf       = ContentFactory.getInstance();
 List           skus     = new ArrayList();
 
 if (mcatId != null && mproductId != null) {
-    product =  ContentFactory.getInstance().getProductByName(mcatId,mproductId);
+    product =  PopulatorUtil.getProductByName(mcatId,mproductId);
 
 } else if (variantId != null && variantId.length() != 0) {
-	variant = (RecipeVariant) ContentFactory.getInstance().getContentNode(variantId);
+	variant = (RecipeVariant) PopulatorUtil.getContentNode(variantId);
 	recipe = (Recipe) variant.getParentNode();
 
 } else if (recipeId !=null) {
-	recipe = (Recipe) ContentFactory.getInstance().getContentNode(recipeId);
+	recipe = (Recipe) PopulatorUtil.getContentNode(recipeId);
 	variant = recipe.getDefaultVariant();
 }
 // TODO: handle lack of mproductId or recipeId
@@ -58,7 +57,6 @@ if (mcatId != null && mproductId != null) {
 ProductModel    productNode        = null;
 CategoryModel   parentCat          = null;
 String          prodNameAttribute  = null;
-ContentFactory  contentFactory     = null;
 SkuModel        defaultSku         = null;
 Image           productImage       = null;
 List            prodSkus           = null;
@@ -74,7 +72,6 @@ if (product != null) {
     productNode       = product;
     parentCat         = (CategoryModel) productNode.getParentNode();
     prodNameAttribute = JspMethods.getProductNameToUse(parentCat);
-    contentFactory    = ContentFactory.getInstance();
     defaultSku        = product.getDefaultSku();
     productImage      = product.getDetailImage();
     prodSkus          = productNode.getSkus();
@@ -134,7 +131,7 @@ if (productNode != null) {
                 continue;
             }
             try {
-                ProductModel pm =cf.getProduct(optSkuCode);
+                ProductModel pm = PopulatorUtil.getProductByName(optSkuCode);
                 if (pm!=null ) {
                    if ( !pm.isUnavailable()   && availOptSkuMap.get(optSkuCode)==null) {
                     availOptSkuMap.put(optSkuCode,pm);
@@ -211,7 +208,7 @@ int prodCount = 0;%>
 					    continue;
 					}
 
-					ProductModel pm =(ProductModel)cf.getProduct(optSkuCode);
+					ProductModel pm =(ProductModel) PopulatorUtil.getProductByName(optSkuCode);
 					if (pm.getSku(optSkuCode).isUnavailable()) continue;
 					if (pm!=null && !prodList.contains(pm)) {
 						prodList.add(pm);
@@ -288,7 +285,7 @@ int prodCount = 0;%>
 		Image prodImg = null;
 		String prodDescription = null;
 
-		compProduct =  ContentFactory.getInstance().getProduct(skuCode);
+		compProduct =  PopulatorUtil.getProductByName(skuCode);
         productNode = productNode == null ? compProduct : productNode;
 		prodImg = compProduct.getDetailImage();
 		prodDescription = ((Html)compProduct.getProductDescription()).getPath();

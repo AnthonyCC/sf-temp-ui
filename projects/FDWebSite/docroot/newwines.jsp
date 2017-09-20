@@ -102,7 +102,7 @@ String catId = request.getParameter("catId");
 String deptId = request.getParameter("deptId"); 
 Integer daysInt = (Integer)DAYS.get( request.getParameter("days") );
 int days = daysInt==null ? DEFAULT_DAYS : daysInt.intValue();
-ContentNodeModel currentFolder=ContentFactory.getInstance().getContentNode(catId);
+ContentNodeModel currentFolder=PopulatorUtil.getContentNode(catId);
 final CategoryModel categoryModel = (currentFolder instanceof CategoryModel) ? (CategoryModel) currentFolder : null;
 String daysIndx=null;
 

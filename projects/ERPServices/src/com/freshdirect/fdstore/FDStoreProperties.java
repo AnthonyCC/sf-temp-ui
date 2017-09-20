@@ -1863,7 +1863,7 @@ static {
         defaults.put(PROP_LOG_AKAMAI_HEADER_ENABLED,"true");
         
         //APPDEV-6442
-        defaults.put(PROP_FDC_TRANSITION_LOOK_AHEAD_DAYS, "3");
+        defaults.put(PROP_FDC_TRANSITION_LOOK_AHEAD_DAYS, "0");
         
         //CUSTOMER CONTACT NUMBERS
  	   	defaults.put(CUSTOMER_SERVICE_CONTACT, "1-866-283-7374");
@@ -3163,7 +3163,7 @@ static {
                 defaultValue = 40.0;
             }
 
-            LOGGER.warn("cannot parse " + WINE_PRICE_BUCKET_BOUND_PREFIX + index + ", using default value " + defaultValue, e);
+            //LOGGER.warn("cannot parse " + WINE_PRICE_BUCKET_BOUND_PREFIX + index + ", using default value " + defaultValue, e);
 
             return defaultValue;
         }

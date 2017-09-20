@@ -12,10 +12,10 @@ public class GACheckoutData {
     private String paymentType;
     private String revenue;
     private String tax;
-    private String shippingCost;
+    private double shippingCost;
     private List<String> couponCode;
     private List<String> redemptionCode;
-    private String tipping;
+    private String etipping;
     private String newOrder;
     private String modifyOrder;
     private String discountAmount;
@@ -64,11 +64,11 @@ public class GACheckoutData {
         this.tax = tax;
     }
 
-    public String getShippingCost() {
+    public double getShippingCost() {
         return shippingCost;
     }
 
-    public void setShippingCost(String shippingCost) {
+    public void setShippingCost(double shippingCost) {
         this.shippingCost = shippingCost;
     }
 
@@ -88,12 +88,12 @@ public class GACheckoutData {
         this.redemptionCode = redemptionCode;
     }
 
-    public String getTipping() {
-        return tipping;
+    public String getEtipping() {
+        return etipping;
     }
 
-    public void setTipping(String tipping) {
-        this.tipping = tipping;
+    public void setEtipping(String etipping) {
+        this.etipping = etipping;
     }
 
     public String getNewOrder() {

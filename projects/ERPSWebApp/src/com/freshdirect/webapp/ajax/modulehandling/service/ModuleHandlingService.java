@@ -16,6 +16,7 @@ import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.node.ContentNodeUtil;
+import com.freshdirect.fdstore.FDNotFoundException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -46,7 +47,8 @@ public final class ModuleHandlingService {
     }
 
     @SuppressWarnings("unchecked")
-    public ModuleContainerData loadModuleContainer(String moduleContainerId, FDUserI user, HttpSession session) throws FDResourceException, InvalidFilteringArgumentException {
+    public ModuleContainerData loadModuleContainer(String moduleContainerId, FDUserI user, HttpSession session)
+            throws FDResourceException, InvalidFilteringArgumentException, FDNotFoundException {
 
         ModuleContainerData result = new ModuleContainerData();
         List<ModuleConfig> configs = new ArrayList<ModuleConfig>();
@@ -121,7 +123,8 @@ public final class ModuleHandlingService {
         return result;
     }
 
-    public ModuleContainerData loadModuleforViewAll(String moduleId, FDUserI user, HttpSession session) throws FDResourceException, InvalidFilteringArgumentException {
+    public ModuleContainerData loadModuleforViewAll(String moduleId, FDUserI user, HttpSession session)
+            throws FDResourceException, InvalidFilteringArgumentException, FDNotFoundException {
         ModuleContainerData result = new ModuleContainerData();
         List<ModuleConfig> configs = new ArrayList<ModuleConfig>();
         Map<String, ModuleData> datas = new HashMap<String, ModuleData>();
@@ -158,7 +161,7 @@ public final class ModuleHandlingService {
     }
 
     private ModuleData loadModuleData(ContentKey moduleContentKey, FDUserI user, HttpSession session, boolean showAllProducts) throws FDResourceException,
-            InvalidFilteringArgumentException {
+            InvalidFilteringArgumentException, FDNotFoundException {
         LOGGER.info("Loading module with id: " + moduleContentKey.getId());
         DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
         ContentNodeI module = CmsManager.getInstance().getContentNode(moduleContentKey, currentDraftContext);
@@ -230,7 +233,7 @@ public final class ModuleHandlingService {
     }
 
     public ModuleContainerData loadModuleContainerForImageBanners(String imageBannerContentKey, FDUserI user, String moduleVirtualCategory) throws FDResourceException,
-            InvalidFilteringArgumentException {
+            InvalidFilteringArgumentException, FDNotFoundException {
         ModuleContainerData result = new ModuleContainerData();
         List<ModuleConfig> configs = new ArrayList<ModuleConfig>();
         Map<String, ModuleData> datas = new HashMap<String, ModuleData>();

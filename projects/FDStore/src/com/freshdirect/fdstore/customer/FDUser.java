@@ -2481,7 +2481,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	private boolean futurePlantLogin(FDDeliveryZoneInfo deliveryZoneInfo,
 			FDDeliveryZoneInfo fdcDeliveryZoneInfo) {
 		boolean isDifferentPlant = false;
-		if (fdcDeliveryZoneInfo != null & deliveryZoneInfo != null) {
+		if (fdcDeliveryZoneInfo != null && fdcDeliveryZoneInfo.getFulfillmentInfo() !=null && deliveryZoneInfo != null && deliveryZoneInfo.getFulfillmentInfo() !=null ) {
 			String oldPlant = null;
 			String newPlant = null;
 			oldPlant = deliveryZoneInfo.getFulfillmentInfo().getPlantCode();

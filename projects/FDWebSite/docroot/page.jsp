@@ -17,18 +17,10 @@
 	
 	String pageId = request.getParameter("pageId");
 	
-	if ( pageId == null || pageId.length() == 0 || pageId.trim().length() == 0 ) {
-		throw new JspException("pageId parameter is missing from URL");
-	}
-	
 	String layout = "/common/template/page_template.jsp";
 	
-	PageModel pageModel = (PageModel)ContentFactory.getInstance().getContentNodeByKey( ContentKey.getContentKey(ContentType.get("Page"), pageId) );
+	PageModel pageModel = (PageModel) PopulatorUtil.getContentNodeByKey( ContentKey.getContentKey(ContentType.get("Page"), pageId) );
 	
-	if ( pageModel == null ) {
-		throw new JspException("No page found with id: " + pageId );
-	}
-
 	String title = "FreshDirect - " + pageModel.getTitle();
 %>
 

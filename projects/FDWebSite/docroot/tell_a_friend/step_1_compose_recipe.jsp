@@ -24,7 +24,7 @@ response.setHeader("Pragma", "no-cache");
 response.setHeader("Cache-Control", "no-cache");
 
 String recipeId = (String) request.getParameter("recipeId");
-Recipe recipe   = (Recipe) ContentFactory.getInstance().getContentNode(recipeId);
+Recipe recipe   = (Recipe) PopulatorUtil.getContentNode(recipeId);
 
 %>
 <script language="JavaScript">

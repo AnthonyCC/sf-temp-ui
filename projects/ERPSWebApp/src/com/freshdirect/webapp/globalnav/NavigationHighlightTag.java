@@ -16,12 +16,14 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDNotFoundException;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentKeyFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.GlobalNavigationModel;
+import com.freshdirect.fdstore.content.PopulatorUtil;
 import com.freshdirect.fdstore.content.RecipeCategory;
 import com.freshdirect.fdstore.content.RecipeDepartment;
 import com.freshdirect.fdstore.content.SuperDepartmentModel;
@@ -41,8 +43,8 @@ public class NavigationHighlightTag extends SimpleTagSupport {
 		HttpServletRequest request = (HttpServletRequest)ctx.getRequest();
 		FDSessionUser user = (FDSessionUser) ((PageContext) getJspContext()).getSession().getAttribute(SessionName.USER);
 		
-		try {
-		
+        try {
+
 			String deptId = request.getParameter("deptId");
 			String catId = request.getParameter("catId");
 			String browseId = request.getParameter("id");
@@ -85,7 +87,7 @@ public class NavigationHighlightTag extends SimpleTagSupport {
 				List<String> bottomTopNavCategories = new ArrayList<String>(Arrays.asList(ppicksId, "wgd_produce", "wgd_seafood", "wgd_butchers", "wgd_kitchendeals", "wgd_deals"));
 	
 				if (browseId != null) {
-					ContentNodeModel thisObj = findContentNode(browseId);
+                    ContentNodeModel thisObj = ContentFactory.getInstance().getContentNode(browseId);
 					if (bottomTopNavCategories.contains(browseId)) {
 							thisDept = browseId;
 						
@@ -110,7 +112,7 @@ public class NavigationHighlightTag extends SimpleTagSupport {
 						}
 					}
 				} else if (catId != null){
-					ContentNodeModel thisObj = findContentNode(catId);
+                    ContentNodeModel thisObj = ContentFactory.getInstance().getContentNode(catId);
 					ContentNodeModel thisDeptObj = findParentOfCategory (catId);
 					String sdRelation = "";
 					if (bottomTopNavCategories.contains(thisObj.getParentNode().getContentName())) {
@@ -124,7 +126,7 @@ public class NavigationHighlightTag extends SimpleTagSupport {
 					if ("kosher_temp".equalsIgnoreCase(deptId)){
 						thisDept = "kos";
 					} else {
-						ContentNodeModel thisDeptObj = findContentNode(deptId);
+                        ContentNodeModel thisDeptObj = PopulatorUtil.getContentNode(deptId);
 						String sdRelation = "";
 						if (thisDeptObj!= null && !"".equals(sdRelation = checkSuperDepartmentRelation(thisDeptObj, relatedDepartmentIds))) {
 							thisDept = sdRelation;
@@ -152,7 +154,7 @@ public class NavigationHighlightTag extends SimpleTagSupport {
 					if ("kosher_temp".equalsIgnoreCase(deptId)){
 						thisDept = "kos";
 					} else {
-						ContentNodeModel thisDeptObj = findContentNode(deptId);
+                        ContentNodeModel thisDeptObj = ContentFactory.getInstance().getContentNode(deptId);
 						thisDept = thisDeptObj.getContentName();
 					}
 		
@@ -196,18 +198,14 @@ public class NavigationHighlightTag extends SimpleTagSupport {
 				navigation = thisDept;
 			}
 			ctx.setAttribute("navigation", navigation);
-		} catch (Exception e) {
-			LOGGER.error(e);
-		}
+        } catch (FDResourceException e) {
+            LOGGER.error(e);
+        }
 
 	}
 
-	private ContentNodeModel findContentNode (String deptId) throws FDResourceException {
-		return ContentFactory.getInstance().getContentNode(deptId);
-	}
-
-	private ContentNodeModel findParentOfCategory (String catId) throws FDResourceException {
-		ContentNodeModel categoryNode = (ContentNodeModel)ContentFactory.getInstance().getContentNode(catId);
+    private ContentNodeModel findParentOfCategory(String catId) throws FDNotFoundException {
+        ContentNodeModel categoryNode = ContentFactory.getInstance().getContentNode(catId);
 		ContentNodeModel dept = null;
 		if (categoryNode instanceof RecipeCategory) {
 			dept = RecipeDepartment.getDefault();

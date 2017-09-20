@@ -6,7 +6,7 @@
 <fd:CheckLoginStatus />
 <% 
 String catId = request.getParameter("catId");
-CategoryModel press = (CategoryModel)ContentFactory.getInstance().getContentNode(catId);
+CategoryModel press = (CategoryModel) PopulatorUtil.getContentNode(catId);
 
 List ra = press.getArticles();
 

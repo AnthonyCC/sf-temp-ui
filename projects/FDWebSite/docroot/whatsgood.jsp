@@ -9,7 +9,7 @@
 	mediaPathTempBase="/media/editorial/whats_good/";
 
 	// set deptId default
-	deptId = request.getParameter("deptid");
+	deptId = request.getParameter("deptId");
 
 	//set deptId default
 	if (deptId==null || "".equals(deptId)) { deptId="wgd"; }
@@ -37,7 +37,8 @@
 	log(myDebug, "PAGE email mode: "+emailPage);
 	params.put("baseUrl", baseUrl);
 		log(myDebug, "PAGE baseUrl set: "+baseUrl);
-	
+		
+	ContentNodeModel node = PopulatorUtil.getContentNode(deptId);
 %>
 
 <tmpl:insert template='<%= templatePath %>'>
@@ -46,7 +47,7 @@
     </tmpl:put>
 	<tmpl:put name='title' direct='true'>FreshDirect - What's Good</tmpl:put>
 	<tmpl:put name='content' direct='true'>
-	<fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=ContentFactory.getInstance().getContentNode(deptId)%>"/>
+	<fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=node%>"/>
 	
 	<%
 		//--------OAS Page Variables-----------------------

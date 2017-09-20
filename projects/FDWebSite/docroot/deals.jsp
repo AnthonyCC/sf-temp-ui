@@ -19,8 +19,8 @@
 	boolean isGroceryVirtual=false;
 	boolean isWineLayout = false;
 	String deptId = null;
-	ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(catId);	
-	ProductModel prodModel = ContentFactory.getInstance().getProductByName(request.getParameter("prodCatId"), request.getParameter("productId")); 
+	ContentNodeModel currentFolder = PopulatorUtil.getContentNode(catId);	
+	ProductModel prodModel = PopulatorUtil.getProductByName(request.getParameter("prodCatId"), request.getParameter("productId")); 
 	
 	//--------OAS Page Variables-----------------------
 	request.setAttribute("sitePage", prodModel == null ? currentFolder.getPath() : prodModel.getPath());

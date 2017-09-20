@@ -842,11 +842,12 @@ public class FDDeliveryManager {
 									checkPremium));
 			FDTimeslot ts =  LogisticsDataDecoder.decodeTimeslot(response);
 			DeliveryZone zone = response.getDeliveryZone();
-			
-			ts.setZoneInfo(new FDDeliveryZoneInfo(zone.getZoneCode(), zone.getZoneId(), 
-					zone.getRegionId(), EnumZipCheckResponses.getEnum(zone.getResponse()), zone.isUnattended(), 
-					zone.isCosEnabled(), zone.isCtActive(), EnumRegionServiceType.getEnum(zone.getRegionServiceType()), 
-					zone.getFulfillmentInfo()));
+			if(zone!=null) {
+				ts.setZoneInfo(new FDDeliveryZoneInfo(zone.getZoneCode(), zone.getZoneId(), 
+				zone.getRegionId(), EnumZipCheckResponses.getEnum(zone.getResponse()), zone.isUnattended(), 
+				zone.isCosEnabled(), zone.isCtActive(), EnumRegionServiceType.getEnum(zone.getRegionServiceType()), 
+				zone.getFulfillmentInfo()));
+			}
 			return ts;
 		} catch (FDLogisticsServiceException ex) {
 			throw new FDResourceException(ex);

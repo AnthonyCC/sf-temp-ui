@@ -44,7 +44,7 @@ final int W_RECIPE_DL_NAVS_RIGHT = 820;
 
 	if (!s.isEmpty()) {
  	   ContentKey cKey = (ContentKey) s.iterator().next();
-           rcpDept = (RecipeDepartment) ContentFactory.getInstance().getContentNode(cKey.getId());
+           rcpDept = (RecipeDepartment) PopulatorUtil.getContentNode(cKey.getId());
 	}
 	//
 	// annotation mode, add overlib stuff

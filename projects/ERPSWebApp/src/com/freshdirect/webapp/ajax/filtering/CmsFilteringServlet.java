@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.freshdirect.fdstore.FDNotFoundException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -55,6 +56,8 @@ public class CmsFilteringServlet extends BaseJsonServlet {
             writeResponseData(response, result);
         } catch (InvalidFilteringArgumentException e) {
             returnHttpError(400, "JSON contains invalid arguments", e); // 400 Bad Request
+        } catch (FDNotFoundException e) {
+            returnHttpError(404, "Node is not found in CMS", e); // 404 Bad Request
         } catch (FDResourceException e) {
             returnHttpError(500, "Unable to load Global Navigation", e);
         }
@@ -151,6 +154,8 @@ public class CmsFilteringServlet extends BaseJsonServlet {
 
         } catch (FDResourceException e) {
             returnHttpError(400, "Cannot read JSON", e); // 400 Bad Request
+        } catch (FDNotFoundException e) {
+            returnHttpError(404, "Node is not found in CMS", e); // 404 Bad Request
         } catch (InvalidFilteringArgumentException e) {
 
             switch (e.getType()) {

@@ -220,8 +220,6 @@
 .content-module.editorial-module.product-carousel.learn-more .editorial-content,
 .content-module.editorial-module.product-carousel.learn-more .editorial-content .right-side .editorial-header {
   display: flex;
-  max-width: 100%;
-  max-height: 100%;
 }
 
 .content-module.editorial-module.product-carousel.learn-more .learn-more.show-less {

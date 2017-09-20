@@ -12,9 +12,9 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.PopulatorUtil;
 import com.freshdirect.fdstore.content.RecipeDepartment;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
@@ -50,7 +50,7 @@ public class BrowsePartialRolloutRedirectorTag extends SimpleTagSupport {
             if (shouldBeOnNew && oldToNewDirection) {
                 redirectUrl = String.format(BROWSE_PAGE_FS, id);
             } else if (!shouldBeOnNew && !oldToNewDirection) {
-                ContentNodeModel node = ContentFactory.getInstance().getContentNode(id);
+                ContentNodeModel node = PopulatorUtil.getContentNode(id);
 
                 if (node instanceof DepartmentModel || node instanceof RecipeDepartment) {
                     redirectUrl = String.format(OLD_DEPARTMENT_PAGE_FS, id);

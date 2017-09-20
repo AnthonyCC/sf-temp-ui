@@ -12,7 +12,7 @@ public class GAProductData {
     private String list;
     private String newProduct;
     private String sku;
-    private String quantity;
+    private double quantity;
 
     public String getName() {
         return name;
@@ -86,11 +86,11 @@ public class GAProductData {
         this.sku = sku;
     }
 
-    public String getQuantity() {
+    public double getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(String quantity) {
+    public void setQuantity(double quantity) {
         this.quantity = quantity;
     }
 

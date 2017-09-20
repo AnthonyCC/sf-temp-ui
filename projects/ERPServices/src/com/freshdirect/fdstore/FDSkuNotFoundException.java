@@ -1,21 +1,12 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.fdstore;
 
 /**
  * Exception when a SKU is not found.
- *
- * @version $Revision$
- * @author $Author$
  */ 
 public class FDSkuNotFoundException extends FDException {
     
+    private static final long serialVersionUID = 3615117801812236583L;
+
     /**
      * Default constructor.
      */    

@@ -16,9 +16,8 @@
 
 <fd:CheckLoginStatus />
 <%
-ContentFactory contentFactory = ContentFactory.getInstance();
-RecipeCategory recipeCategory = (RecipeCategory)contentFactory.getContentNode(request.getParameter("catId"));
-RecipeSubcategory recipeSubCat = (RecipeSubcategory)contentFactory.getContentNode(request.getParameter("subCatId"));
+RecipeCategory recipeCategory = (RecipeCategory) PopulatorUtil.getContentNode(request.getParameter("catId"));
+RecipeSubcategory recipeSubCat = (RecipeSubcategory) PopulatorUtil.getContentNode(request.getParameter("subCatId"));
 
 // go get first subcat if subcat was null
 if (recipeSubCat==null) {
@@ -31,7 +30,7 @@ request.setAttribute("sitePage", recipeCategory.getPath());
 request.setAttribute("listPos", "LittleRandy,SystemMessage,CategoryNote,ProductNote,SideCartBottom");
 
 String hideUrl=recipeCategory.getHideUrl();
-if (!contentFactory.getPreviewMode()) {
+if (!ContentFactory.getInstance().getPreviewMode()) {
     if (hideUrl!=null) {
         String redirectURL = response.encodeRedirectURL(hideUrl);
 	   if (redirectURL.toUpperCase().indexOf("/RECIPE_SUBCAT.JSP?")==-1) {

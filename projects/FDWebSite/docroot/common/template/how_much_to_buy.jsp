@@ -12,7 +12,7 @@
 String prodId = request.getParameter("prodId");
 String catId = request.getParameter("catId");
 
-ProductModel product =  ContentFactory.getInstance().getProductByName(catId,prodId);
+ProductModel product =  PopulatorUtil.getProductByName(catId,prodId);
 Image prodImg = product.getCategoryImage();
 String recTable = product.getRecommendTable().getPath();
 %>

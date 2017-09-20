@@ -13,6 +13,7 @@ import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.node.ContentNodeUtil;
+import com.freshdirect.fdstore.FDNotFoundException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.Image;
@@ -55,7 +56,8 @@ public class DatasourceService {
         return ModuleContentService.getDefaultService().loadBrandFeaturedProducts(brand, user);
     }
 
-    private SectionDataCointainer generateBrowseProductsForViewAll(ContentNodeI module, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException {
+    private SectionDataCointainer generateBrowseProductsForViewAll(ContentNodeI module, FDUserI user)
+            throws FDResourceException, InvalidFilteringArgumentException, FDNotFoundException {
         DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
         ContentNodeI category = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"), currentDraftContext);
         String categoryId=null;
@@ -64,7 +66,7 @@ public class DatasourceService {
         return ModuleContentService.getDefaultService().loadBrowseSectionDataContainer(categoryId, user);
     }
 
-    private List<ProductData> generateBrowseProducts(ContentNodeI module, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException {
+    private List<ProductData> generateBrowseProducts(ContentNodeI module, FDUserI user) throws FDResourceException, InvalidFilteringArgumentException, FDNotFoundException {
         DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
         ContentNodeI category = CmsManager.getInstance().getContentNode((ContentKey) module.getAttributeValue("sourceNode"), currentDraftContext);
         String categoryId=null;
@@ -114,7 +116,8 @@ public class DatasourceService {
         return populateModuleConfig(module, user);
     }
 
-    public ModuleData loadModuleData(ContentNodeI module, FDUserI user, HttpSession session, boolean showAllProducts) throws FDResourceException, InvalidFilteringArgumentException {
+    public ModuleData loadModuleData(ContentNodeI module, FDUserI user, HttpSession session, boolean showAllProducts)
+            throws FDResourceException, InvalidFilteringArgumentException, FDNotFoundException {
         return populateModuleData(module, user, session, showAllProducts);
     }
 
@@ -201,7 +204,7 @@ public class DatasourceService {
     }
 
     private ModuleData populateModuleData(ContentNodeI module, FDUserI user, HttpSession session, boolean showAllProducts) throws FDResourceException,
-            InvalidFilteringArgumentException {
+            InvalidFilteringArgumentException, FDNotFoundException {
         ModuleData moduleData = new ModuleData();
         DatasourceType datasourceEnum = DatasourceType.convertAttributeValueToDatasourceType((String) module.getAttributeValue("productSourceType"));
         ModuleSourceType moduleSourceType = ModuleSourceType.convertAttributeValueToModuleSourceType(ContentNodeUtil.getStringAttribute(module, "displayType"));
