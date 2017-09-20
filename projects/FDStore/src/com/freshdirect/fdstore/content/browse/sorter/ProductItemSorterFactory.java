@@ -92,17 +92,17 @@ public class ProductItemSorterFactory {
             switch (sortStrategy) {
                 case SEARCH_RELEVANCY:
                     comparator = createSearchRelevancyComparator(user, reverseOrder);
-
+                    break;
                 case E_COUPON_PERCENT_DISCOUNT:
                     comparator = createPricingAdapterComparator(FilteringComparatorUtil.COUPON_PERCENT_OFF_COMPARATOR, user, reverseOrder);
-
+                    break;
                 case E_COUPON_DOLLAR_DISCOUNT:
                     comparator = createPricingAdapterComparator(FilteringComparatorUtil.COUPON_DOLLAR_OFF_COMPARATOR, user, reverseOrder);
-
+                    break;
                 case POPULARITY:
                     Comparator<FilteringProductItem> popularityInner = adapterForProductModel(ScriptedContentNodeComparator.createGlobalComparator(null, null));
                     comparator = reverseOrder ? wrapAvailAndName(Collections.reverseOrder(popularityInner)) : wrapAvailAndName(popularityInner);
-
+                    break;
                 default:
                     comparator = reverseOrder ? reverseComparatorMap.get(sortStrategy) : comparatorMap.get(sortStrategy);
             }
