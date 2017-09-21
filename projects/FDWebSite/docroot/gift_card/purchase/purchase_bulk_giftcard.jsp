@@ -31,7 +31,7 @@
 	<table width="100%" cellspacing="0" cellpadding="0" border="0" class="gc_tableBody">
 		<tr>
 			<td class="text11" width="675">
-				<span class="title18"><img src="/media_stat/images/giftcards/purchase/purchase_gift_cards.gif" /></span><br />
+				<span class="title18"><img src="/media_stat/images/giftcards/purchase/purchase_gift_cards.gif" alt="purchase gift cards" /></span><br />
 				Please enter your credit card information below.
 			</td>
 			<td width="99">

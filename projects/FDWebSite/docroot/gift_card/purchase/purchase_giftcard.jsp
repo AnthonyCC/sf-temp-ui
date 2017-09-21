@@ -217,7 +217,7 @@ UserUtil.initializeGiftCart(user);
 <table width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 	<tr>
 		<td class="text11" width="<%=W_PURCHASE_GIFTCARD_TOTAL-99%>">
-			<span class="title18"><img src="/media_stat/images/giftcards/purchase/purchase_gift_cards.gif" /></span><br />
+			<span class="title18"><img src="/media_stat/images/giftcards/purchase/purchase_gift_cards.gif" alt="purchase gift cards"  /></span><br />
 			Please enter your credit card information below.
 		</td>
 		<td width="99">

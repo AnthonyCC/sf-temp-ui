@@ -202,7 +202,7 @@ if (EnumProductLayout.MULTI_ITEM_MEAL.equals(prodLayout)) {
   	}
 	%>
 	<tr>
-	<td valign="top"><%	if (imgMedia!=null) {   %> <img src="<%=imgMedia.getPath()%>" border="0" width="<%=imgMedia.getWidth()%>" height="<%=imgMedia.getHeight()%>"> <%  } %></td>
+	<td valign="top"><%	if (imgMedia!=null) {   %> <img src="<%=imgMedia.getPath()%>" border="0" alt="" width="<%=imgMedia.getWidth()%>" height="<%=imgMedia.getHeight()%>"> <%  } %></td>
 	<td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="1"></td>
 	<%
 	String prodDescr = "";

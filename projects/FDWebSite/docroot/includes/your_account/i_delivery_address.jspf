@@ -75,7 +75,7 @@ for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
 	<%
 	if (!(user.isVoucherHolder() && user.getMasqueradeContext() == null)) {
 	%>
-	<A HREF="<%=linkURL + "?addressId=" + addrPKId %>"><IMG src="/media_stat/images/buttons/edit.gif" WIDTH="51" HEIGHT="16" ALT="EDIT" BORDER="0"></A>&nbsp;
+	<A class="cssbutton green transparent small" HREF="<%=linkURL + "?addressId=" + addrPKId %>">EDIT<span class="offscreen"><%=shipAddress.getFirstName()%> <%=shipAddress.getLastName()%> address</span></A>&nbsp;
 	
 	<%} %>
 	
@@ -84,7 +84,7 @@ for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
 			<%
 				if (!(user.isVoucherHolder() && user.getMasqueradeContext() == null)) {
 			%>		
-			<input type="image" src="/media_stat/images/buttons/delete.gif" WIDTH="51" HEIGHT="16" onClick="return deleteDeliveryAddress(this,'<%=addrPKId%>', <%=standingOrderDependencyIds%>, helpSoInfo);" ALT="DELETE" BORDER="0">
+			<button class="cssbutton ghost red small" onClick="return deleteDeliveryAddress(this,'<%=addrPKId%>', <%=standingOrderDependencyIds%>, helpSoInfo);">DELETE<span class="offscreen"><%=shipAddress.getFirstName()%> <%=shipAddress.getLastName()%> address</span></button>
 		<% } %> <%} %>
 		<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="185" HEIGHT="1">
 		</div>

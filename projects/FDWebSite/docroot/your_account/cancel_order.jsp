@@ -99,9 +99,9 @@
 						<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"><br />
 						You are about to cancel this order. If you cancel it, you will not receive a delivery and your account will not be charged. We will save the items from this order in "Reorder."<br />
 						<br />
-						If you would like to change this order instead, <a href="/your_account/modify_order.jsp?orderId=<%= orderId %>">click here</a>.<br />
+						If you would like to change this order instead, <a href="/your_account/modify_order.jsp?orderId=<%= orderId %>">click here<span class="offscreen">If you would like to change this order instead</span></a>.<br />
 						<br />
-						For full details of our cancellation policy, <a href="javascript:popup('/help/faq_index.jsp?show=shopping#question7','large')">click here</a>.<br />
+						For full details of our cancellation policy, <a href="javascript:popup('/help/faq_index.jsp?show=shopping#question7','large')">click here<span class="offscreen">For full details of our cancellation policy</span></a>.<br />
 						<img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" />
 						<div align="center">
 							<form name="cancel_order" method="POST" action="/your_account/cancel_order.jsp">

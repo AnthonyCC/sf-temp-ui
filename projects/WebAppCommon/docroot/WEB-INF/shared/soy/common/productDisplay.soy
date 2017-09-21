@@ -19,8 +19,11 @@
 				{/if}
 		{/if}
 		<div class="leftColumn">
-			<a href="{$data.productPageUrl}{if $data.moduleVirtualCategory}&cm_vc={$data.moduleVirtualCategory}{/if}" class="learnmore">Learn more</a>
-			<img src="{if $data.productDetailImage and $data.productDetailImage != 'undefined'}{$data.productDetailImage}{/if}">
+			
+			<img src="{if $data.productDetailImage and $data.productDetailImage != 'undefined'}{$data.productDetailImage}{/if}" 
+			alt=" {if $data.productName}{$data.productName}{/if}
+			{if $data.akaName}{$data.akaName}{/if}
+			{if $data.packageDescription}{$data.packageDescription}{/if}">
 		</div>
 		<div class="rightColumn">
 			<h1>{if $data.productName}{$data.productName}{/if}
