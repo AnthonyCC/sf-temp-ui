@@ -141,12 +141,14 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 			return;
 		}
 		boolean paymentSetAsDefault = false;
-		try {
-			paymentSetAsDefault = Boolean.parseBoolean(FormDataService.defaultService().get(BaseJsonServlet.parseRequestData(request, FormDataRequest.class), "paymentSetAsDefault"));
-		} catch (HttpErrorResponse e) {
-			LOGGER.error("Error parsing request for paymentSetAsDefault");
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (null != request.getSession().getAttribute("selectedPaymentId")) {
+			try {
+				paymentSetAsDefault = Boolean.parseBoolean(FormDataService.defaultService().get(BaseJsonServlet.parseRequestData(request, FormDataRequest.class), "paymentSetAsDefault"));
+			} catch (HttpErrorResponse e) {
+				LOGGER.error("Error parsing request for paymentSetAsDefault");
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
         if (paymentSetAsDefault) {
         	//set as default call
