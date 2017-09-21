@@ -341,7 +341,8 @@ public class BrowseDataBuilderFactory {
 				}
 			}
 			
-			appendCatDepthFields(data, cat, sections, user, nav, (nav.isAll() || subCats.size()==0));
+            data.setSectionContexts(checkEmpty(sections));
+            appendCatDepthFields(data, cat, user, (nav.isAll() || subCats.size() == 0));
 			
 			if(!nav.isPdp()){			
 				filterProducts(navigationModel, data);				
@@ -371,14 +372,28 @@ public class BrowseDataBuilderFactory {
 				sections.add(createSectionTree(subCat, navigationModel.getNavDepth().getLevel(), user));
 			}
 
-			appendCatDepthFields(data, subCat, sections, user, nav, true);
+            logSectionProduct(sections);
+
+            data.setSectionContexts(checkEmpty(sections));
+            appendCatDepthFields(data, subCat, user, true);
 			
 			if(!nav.isPdp()){			
 				filterProducts(navigationModel, data);
 			}
-			
+
+            logSectionProduct(sections);
+
 			return data;
-		}		
+		}
+
+        private void logSectionProduct(List<SectionContext> sections) {
+            for (SectionContext sectionContext : sections) {
+                for (FilteringProductItem product : sectionContext.getProductItems()) {
+                    LOG.info("product id: " + product.getProductModel().getContentName());
+                }
+                LOG.info("************************");
+            }
+        }
 	}
 	
 	public class SubSubCategoryDataBuilder implements BrowseDataBuilderI {
@@ -407,7 +422,8 @@ public class BrowseDataBuilderFactory {
 			// populate data
 			sections.add(superSection);
 			
-			appendCatDepthFields(data, subSubCat, sections, user, nav, true);	
+            data.setSectionContexts(checkEmpty(sections));
+            appendCatDepthFields(data, subSubCat, user, true);
 			
 			if(!nav.isPdp()){				
 				filterProducts(navigationModel, data);
@@ -705,9 +721,8 @@ public class BrowseDataBuilderFactory {
 		}
 	}
 
-    public void appendCatDepthFields(BrowseDataContext data, CategoryModel cat, List<SectionContext> sections, FDSessionUser user, CmsFilteringNavigator nav,
+    private void appendCatDepthFields(BrowseDataContext data, CategoryModel cat, FDSessionUser user,
             boolean productListing) {
-		data.setSectionContexts(checkEmpty(sections));
 		appendHtml(data.getDescriptiveContent(), cat.getCategoryBanner(), cat.getBrowseMiddleMedia(), user);
 		appendTitle(data, cat.getDepartment().getTitleBar());
 		
