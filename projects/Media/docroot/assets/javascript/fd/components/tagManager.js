@@ -109,6 +109,14 @@ var dataLayer = window.dataLayer || [];
         search_results: searchData.searchResults
       });
     },
+    ddpp: function (ddppproducts) {
+      var list = fd.gtm.getList(),
+          products = ddppproducts.map(function (product, idx) {
+            return productTransform(product, idx+1, list+'_ddpp');
+          });
+
+      fd.gtm.reportImpressions(products);
+    },
     sections: function (sectionData) {
       var list = fd.gtm.getList(),
           products = sectionProducts(sectionData).map(function (product, idx) {
@@ -654,6 +662,11 @@ var dataLayer = window.dataLayer || [];
     // product list
     if (!productData && browseData.sections) {
       fd.gtm.updateDataLayer({sections: browseData.sections});
+    }
+
+    // ddpp
+    if (!productData && browseData.ddppproducts && browseData.ddppproducts.products) {
+      fd.gtm.updateDataLayer({ddpp: browseData.ddppproducts.products});
     }
   }
 
