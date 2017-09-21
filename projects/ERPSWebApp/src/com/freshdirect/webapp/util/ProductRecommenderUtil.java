@@ -208,6 +208,8 @@ public class ProductRecommenderUtil {
         List<SortOptionModel> sortOptions = category.getSortOptions();
         if (!sortOptions.isEmpty()) {
             strategy = sortOptions.get(0).getSortStrategyType();
+        } else {
+            // strategy = SortStrategyType.NAME;
         }
         return strategy;
     }
@@ -532,7 +534,7 @@ public class ProductRecommenderUtil {
         Collections.sort(filteringProducts, comparator);
 
         List<ProductModel> sortedProducts = new ArrayList<ProductModel>();
-        for (int i = 0; i < Math.min(products.size(), maxProductSize); i++) {
+        for (int i = 0; i < Math.min(filteringProducts.size(), maxProductSize); i++) {
             sortedProducts.add(filteringProducts.get(i).getProductModel());
         }
         return sortedProducts;

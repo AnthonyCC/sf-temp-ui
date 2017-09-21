@@ -705,7 +705,8 @@ public class BrowseDataBuilderFactory {
 		}
 	}
 
-	private void appendCatDepthFields(BrowseDataContext data, CategoryModel cat, List<SectionContext> sections, FDSessionUser user, CmsFilteringNavigator nav, boolean productListing){
+    public void appendCatDepthFields(BrowseDataContext data, CategoryModel cat, List<SectionContext> sections, FDSessionUser user, CmsFilteringNavigator nav,
+            boolean productListing) {
 		data.setSectionContexts(checkEmpty(sections));
 		appendHtml(data.getDescriptiveContent(), cat.getCategoryBanner(), cat.getBrowseMiddleMedia(), user);
 		appendTitle(data, cat.getDepartment().getTitleBar());
