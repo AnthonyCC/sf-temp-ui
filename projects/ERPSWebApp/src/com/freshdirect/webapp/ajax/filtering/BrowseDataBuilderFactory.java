@@ -372,8 +372,6 @@ public class BrowseDataBuilderFactory {
 				sections.add(createSectionTree(subCat, navigationModel.getNavDepth().getLevel(), user));
 			}
 
-            logSectionProduct(sections);
-
             data.setSectionContexts(checkEmpty(sections));
             appendCatDepthFields(data, subCat, user, true);
 			
@@ -381,19 +379,9 @@ public class BrowseDataBuilderFactory {
 				filterProducts(navigationModel, data);
 			}
 
-            logSectionProduct(sections);
-
 			return data;
 		}
 
-        private void logSectionProduct(List<SectionContext> sections) {
-            for (SectionContext sectionContext : sections) {
-                for (FilteringProductItem product : sectionContext.getProductItems()) {
-                    LOG.info("product id: " + product.getProductModel().getContentName());
-                }
-                LOG.info("************************");
-            }
-        }
 	}
 	
 	public class SubSubCategoryDataBuilder implements BrowseDataBuilderI {

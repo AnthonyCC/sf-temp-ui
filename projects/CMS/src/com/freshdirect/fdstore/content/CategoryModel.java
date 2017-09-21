@@ -652,8 +652,8 @@ public class CategoryModel extends ProductContainer {
 			}
 		}
 
-    	
-    	
+        LOGGER.debug("product ids for" + getContentKey() + " key: " + prodList.toString());
+
         return prodList;
     }
 
