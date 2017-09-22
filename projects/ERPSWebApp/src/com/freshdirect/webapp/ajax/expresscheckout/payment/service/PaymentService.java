@@ -104,15 +104,13 @@ public class PaymentService {
 
         FormDataRequest paymentRequestData;
         boolean paymentSaveAsDefault = false;
-		if (null != request.getSession().getAttribute("selectedPaymentId")) {
-			try {
-				paymentRequestData = BaseJsonServlet.parseRequestData(request, FormDataRequest.class);
-				/* expects string */
-				paymentSaveAsDefault = Boolean.parseBoolean(FormDataService.defaultService().get(paymentRequestData, "paymentSetAsDefault"));
-			} catch (HttpErrorResponse e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		try {
+			paymentRequestData = BaseJsonServlet.parseRequestData(request, FormDataRequest.class);
+			/* expects string */
+			paymentSaveAsDefault = Boolean.parseBoolean(FormDataService.defaultService().get(paymentRequestData, "paymentSetAsDefault"));
+		} catch (HttpErrorResponse e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
         String billingRef = null; // TODO: needed? CORPORATE with zero payment
         // method.
