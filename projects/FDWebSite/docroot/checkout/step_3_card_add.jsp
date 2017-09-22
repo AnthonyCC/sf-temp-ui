@@ -12,16 +12,19 @@
 <%@ page import="com.freshdirect.dataloader.autoorder.create.util.DateUtil" %>
 <%@ page import="com.freshdirect.common.pricing.Discount" %>
 <%@ page import='java.util.List' %>
+<%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"%>
+<%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
 <% //expanded page dimensions
 final int W_CHECKOUT_STEP_3_CARD_ADD_TOTAL = 970;
 %>
 
 <%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
-<fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
 
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
   <tmpl:put name="seoMetaTag" direct='true'>
@@ -31,6 +34,8 @@ final int W_CHECKOUT_STEP_3_CARD_ADD_TOTAL = 970;
 <tmpl:put name='content' direct='true'>
 <%	
 FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
+boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+
 double cartTotal = user.getShoppingCart().getTotal();
 	boolean proceedThruCheckout = false;
 	if ( "true".equals( request.getParameter("proceed") ) )

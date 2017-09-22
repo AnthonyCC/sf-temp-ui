@@ -2535,3 +2535,13 @@ li.cleanli .gen-arrow {
 .locabar-cart {
     background-image: url('/media/layout/nav/globalnav/fdx/locabar-cart.png');
 }
+
+/* /your_account/add_creditcard.jsp */
+[fdform="addCC"] {
+	margin: 10px;
+}
+[fdform="addCC"] td {
+	display: block;
+	width: 100%;
+	text-align: left;
+}
