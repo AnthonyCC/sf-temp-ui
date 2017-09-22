@@ -3,8 +3,8 @@ package com.freshdirect.webapp.ajax.filtering;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -524,7 +524,7 @@ public class BrowseDataBuilderFactory {
 		SectionContext section = createSection(cat, user);
 		
 		// collect all products (make sure there are no duplicates)
-		Set<ProductModel> prods = new HashSet<ProductModel>();
+        Set<ProductModel> prods = new LinkedHashSet<ProductModel>();
 		collectAllProducts(cat, navModel.getNavDepth().getLevel(), user, prods);
 		section.setProductItems(ProductItemFilterUtil.createFilteringProductItems(new ArrayList<ProductModel>(prods)));
 		
