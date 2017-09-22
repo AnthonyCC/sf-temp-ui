@@ -1,15 +1,18 @@
 {namespace pdp}
 
 /**
- * @param products
+ * @param adProducts
  * @param? mobWeb
  */
 {template .criteo}
-    {if $products and length($products) > 0}
+	{if $adProducts.pageBeacon and $adProducts.pageBeacon != ''}
+		<img src="{$adProducts.pageBeacon}" style="display: none;" />
+	{/if}
+    {if $adProducts.products and length($adProducts.products) > 0}
 		<div class="pdp-evenbetter">
-			<h2 class="criteoProducts {if $mobWeb}gen-accord-toggler{/if}">Featured Product{if length($products) > 1}s{/if}</h2>
+			<h2 class="criteoProducts {if $mobWeb}gen-accord-toggler{/if}">Featured Product{if length($adProducts.products) > 1}s{/if}</h2>
 			<div class="{if $mobWeb} gen-accord-content{/if}" {if $mobWeb}style="display: none;"{/if}>
-				{foreach $criteoProd in $products}
+				{foreach $criteoProd in $adProducts.products}
 					{if not isFirst($criteoProd)} <hr/> {/if}
 					{call .criteoProd data="$criteoProd"/}
 				{/foreach}
