@@ -5293,7 +5293,7 @@ public class FDCustomerManager {
 			}	
 		}
 		
-		public static ErpAuthorizationModel verifyCard(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled) throws FDResourceException{
+		public static ErpAuthorizationModel verifyCard(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled) throws FDResourceException,ErpPaymentMethodException{
 			try{
 				lookupManagerHome();
 				FDCustomerManagerSB sb = managerHome.create();

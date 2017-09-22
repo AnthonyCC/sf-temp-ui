@@ -18,6 +18,7 @@ import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpAuthorizationModel;
+import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.customer.ErpTransactionException;
@@ -265,7 +266,12 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 			/*		if(FDCustomerManager.isECheckRestricted(info.getIdentity()) || FDCustomerManager.isOnAlert(info.getIdentity().getErpCustomerPK(), EnumAlertType.ECHECK.getName())){
 						result.addError(new ActionError("verificationFailed",SystemMessageList.MSG_DEFAULT_PAYMENT_VERIVICATION_FAILURE));
 					}else{*/
-					auth = FDCustomerManager.verifyCard(info, paymentMethod, true);
+					try {
+						auth = FDCustomerManager.verifyCard(info, paymentMethod, true);
+					} catch (ErpPaymentMethodException e) {
+						LOGGER.error(e);
+						throw new FDResourceException(e);
+					}
 					//}
 				}else if(paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.CREDITCARD) || paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.DEBITCARD)){
 					try {
