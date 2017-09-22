@@ -519,10 +519,7 @@ var dataLayer = window.dataLayer || [];
       if (carouselE.length) {
         productData.list = safeName(carouselE.find('.tabs li.selected').text());
       } else {
-        carouselE = productE.closest('.carousels');
-        if (carouselE.length) {
-          productData.list = safeName(carouselE.find('.header').text());
-        }
+        productData.list = safeName(productE.closest('.carousel, .carousels').find('.carousel-header, .header').text());
       }
     }
 
