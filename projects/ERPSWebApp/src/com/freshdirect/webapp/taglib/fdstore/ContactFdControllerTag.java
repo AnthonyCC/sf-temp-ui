@@ -197,7 +197,8 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 			new Selection(CrmCaseSubject.CODE_GENERAL_INFO, "General Feedback"),
 			new Selection(CrmCaseSubject.CODE_IPHONE_INFO , "Help with my Account"),
 			new Selection(CrmCaseSubject.CODE_PROBLEM, "Problem with an order I received"),
-			new Selection(CrmCaseSubject.CODE_PRODUCT, "Product Request"),
+			new Selection(CrmCaseSubject.CODE_ORDER_LOCATION_HELP, "Where is my order"),
+			new Selection(CrmCaseSubject.CODE_ORDER_PLACEMENT_HELP, "Help with order placement"),
 			new Selection(CrmCaseSubject.CODE_WEBSITE_PROBLEM, "Technical Support")
 		};
 
