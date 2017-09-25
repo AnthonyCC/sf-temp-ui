@@ -2458,7 +2458,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	public  FDDeliveryZoneInfo overrideZoneInfo(ErpAddressModel address,
 			FDDeliveryZoneInfo deliveryZoneInfo) throws FDResourceException,FDInvalidAddressException {
-		FDDeliveryZoneInfo reservationDeliveryZoneInfo=getReservationDeliveryZoneInfo(); 
+		FDDeliveryZoneInfo reservationDeliveryZoneInfo = getReservationDeliveryZoneInfo(); 
 		//Case 1: If the user has a reservation, we will be using the fulfillment information associated with user's reservation as the user context at the time of login
 		if(null!=reservationDeliveryZoneInfo){
 			return reservationDeliveryZoneInfo;
@@ -2497,7 +2497,6 @@ public class FDUser extends ModelSupport implements FDUserI {
 	
 	private FDDeliveryZoneInfo getReservationDeliveryZoneInfo() {
 
-		FDDeliveryZoneInfo reservationDeliveryZoneInfo = null;
 		Date standardReservationDeliveryDate = null;
 		Date weeklyOrOneTimeReservationDeliveryDate = null;
 		ErpAddressModel standardReservationAddress = null;
@@ -2514,7 +2513,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		}
 
 		// Weekly or One time reservation has higher precedence than Standard reservation
-		if (null != reservationDeliveryZoneInfo	& null != weeklyOrOneTimeReservationDeliveryDate & null != weeklyOrOneTimeReservationAddress) {
+		if (null != weeklyOrOneTimeReservationDeliveryDate & null != weeklyOrOneTimeReservationAddress) {
 			try {
 				return FDDeliveryManager.getInstance().getZoneInfo(
 								weeklyOrOneTimeReservationAddress,
@@ -2529,7 +2528,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 			}
 		}
 		//checking if the user has any standard reservation
-		if (null != reservationDeliveryZoneInfo	& null != standardReservationDeliveryDate & null != standardReservationAddress) {
+		if (null != standardReservationDeliveryDate & null != standardReservationAddress) {
 			try {
 				return FDDeliveryManager.getInstance().getZoneInfo(
 								standardReservationAddress,
