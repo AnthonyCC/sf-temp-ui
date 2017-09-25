@@ -1349,6 +1349,12 @@ function loadStuff() {
     var postData = '{"moduleContainerId":"ModuleContainer:currentUserModuleContainer"}';
     $("#payload").val(postData);
 
+  } else if ( loaddata == "getPageComponent"){
+    $("#url").val("/home/getPageComponent/");
+    $("#header").val('{ "X-FD-Extra-Response" : "INCLUDE_USERINFO,INCLUDE_CART,INCLUDE_FEEDS,INCLUDE_PAYMENT,EXCLUDE_ADDRESS" }');
+    var postData = '{"requestedDate":"2017-09-25T08:32:59.001Z","pageType":"FeedHead"}';
+    $("#payload").val(postData);
+
   }  else if (  loaddata == "sociallogin") {
   	$("#url").val("/social/login/");
   	$("#header").val(''); 
@@ -1814,6 +1820,7 @@ function doStuff() {
   <option value="getPage"> Home - Get Page </option>
   <option value="getPageWeb">Home - Get Page Web</option>
   <option value="getModule">Home - Get Module</option>
+  <option value="getPageComponent">Home - Get Page Component</option>
 
   <option value=""> ========== External Login ========== </option>
   <option value="sociallogin"> External - Login</option>
