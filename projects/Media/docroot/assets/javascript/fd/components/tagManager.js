@@ -974,7 +974,7 @@ var dataLayer = window.dataLayer || [];
 
   // product click
   $(document).on('click', '[data-component="product"] a[href]', function (e) {
-	if(!(e.ctrlKey || e.shiftKey || e.target.target == "_blank" || e.target.target == "_top")){
+	if(!(e.ctrlKey || e.shiftKey || e.metaKey || e.target.target == "_blank" || e.target.target == "_top")){
 	    e.preventDefault();
 	    var target = $(e.target).closest('a').prop('href'),
 	        productData = fd.gtm.getProductData(e.target),
@@ -1009,7 +1009,7 @@ var dataLayer = window.dataLayer || [];
     }, {
       event: 'productClick',
       callback: function () {
-    	if(!(e.ctrlKey || e.shiftKey || e.target.target == "_blank" || e.target.target == "_top")){
+    	if(!(e.ctrlKey || e.shiftKey || e.metaKey || e.target.target == "_blank" || e.target.target == "_top")){
 	        if (goTimeout) {
 	          clearTimeout(goTimeout);
 	          goTimeout = null;
@@ -1023,7 +1023,7 @@ var dataLayer = window.dataLayer || [];
 
   // top nav click
   $(document).on('click', '[data-component="globalnav-menu"] a, .bottom-nav a', function (e) {
-	if(!(e.ctrlKey || e.shiftKey || e.target.target == "_blank" || e.target.target == "_top")){
+	if(!(e.ctrlKey || e.shiftKey || e.metaKey || e.target.target == "_blank" || e.target.target == "_top")){
 		e.preventDefault();
 	    var target = $(e.target).closest('a').prop('href'),
 	        title = $(e.target).closest('a').text(),
@@ -1042,7 +1042,7 @@ var dataLayer = window.dataLayer || [];
     }, {
       event: 'top-menu-clicked',
       callback: function () {
-    	if(!(e.ctrlKey || e.shiftKey || e.target.target == "_blank" || e.target.target == "_top")){
+    	if(!(e.ctrlKey || e.shiftKey || e.metaKey || e.target.target == "_blank" || e.target.target == "_top")){
 	        if (goTimeout) {
 	          clearTimeout(goTimeout);
 	          goTimeout = null;
