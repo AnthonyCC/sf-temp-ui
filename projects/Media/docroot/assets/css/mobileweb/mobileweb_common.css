@@ -2545,3 +2545,8 @@ li.cleanli .gen-arrow {
 	width: 100%;
 	text-align: left;
 }
+
+/* checkout drawers */
+.drawer__content {
+	width: 100% !important;
+}
