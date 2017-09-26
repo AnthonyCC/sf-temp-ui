@@ -126,7 +126,6 @@ import com.freshdirect.logistics.analytics.model.SessionEvent;
 import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.logistics.delivery.model.EnumRegionServiceType;
-import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.FulfillmentInfo;
 import com.freshdirect.logistics.delivery.model.SalesArea;
 import com.freshdirect.smartstore.fdstore.CohortSelector;
@@ -135,8 +134,7 @@ import com.freshdirect.smartstore.fdstore.DatabaseScoreFactorProvider;
 public class FDUser extends ModelSupport implements FDUserI {
 
     private final static Category LOGGER = LoggerFactory.getInstance(FDUser.class);
-    public static final String ROBOT_USER_NAME = "robot";
-    
+
 	private static final long serialVersionUID = 8492744405934393676L;
 
     public static final String SERVICE_EMAIL = "service@freshdirect.com";
@@ -2456,7 +2454,8 @@ public class FDUser extends ModelSupport implements FDUserI {
         return null;
     }
 
-	public  FDDeliveryZoneInfo overrideZoneInfo(ErpAddressModel address,
+	@Override
+    public  FDDeliveryZoneInfo overrideZoneInfo(ErpAddressModel address,
 			FDDeliveryZoneInfo deliveryZoneInfo) throws FDResourceException,FDInvalidAddressException {
 		FDDeliveryZoneInfo reservationDeliveryZoneInfo = getReservationDeliveryZoneInfo(); 
 		//Case 1: If the user has a reservation, we will be using the fulfillment information associated with user's reservation as the user context at the time of login
@@ -3440,12 +3439,6 @@ public class FDUser extends ModelSupport implements FDUserI {
             e.printStackTrace();
         }
         return false;
-    }
-
-    public static FDUser createRobotUser() {
-        FDUser robotUser = new FDUser(new PrimaryKey(ROBOT_USER_NAME));
-        robotUser.setRobot(true);
-        return robotUser;
     }
 
     @Override

@@ -327,7 +327,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 			if (user == null) {
 				FDSessionUser fdSessionUser = null;
 				try {
-                    fdSessionUser = UserUtil.getSessionUser(request);
+                    fdSessionUser = UserUtil.getSessionUserByCookie(request);
 				} catch (FDResourceException ex) {
 					LOGGER.warn(ex);
 				}
@@ -337,7 +337,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 					((SessionResponse) responseMessage).setSessionExpired(true); 
 				} else {
 					fdSessionUser = LocatorUtil.useIpLocator(
-							request.getSession(), request, response, null);
+                            request.getSession(), request, response);
 				}
 				((SessionResponse) responseMessage).setSessionIsNew(true); 
 				request.getSession().setAttribute(SessionName.USER,fdSessionUser);
@@ -527,7 +527,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
             if (user == null) {
                 FDSessionUser fdSessionUser = null;
                 try {
-                    fdSessionUser = UserUtil.getSessionUser(request);
+                    fdSessionUser = UserUtil.getSessionUserByCookie(request);
                 } catch (FDResourceException ex) {
                     LOGGER.warn(ex);
                 }
@@ -535,7 +535,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
                     FDCustomerCouponUtil.initCustomerCoupons(request.getSession());
                     ((SessionResponse) responseMessage).setSessionExpired(true); // had cookie with no session object so assume session expired
                 } else {
-                    fdSessionUser = LocatorUtil.useIpLocator(request.getSession(), request, response, null);
+                    fdSessionUser = LocatorUtil.useIpLocator(request.getSession(), request, response);
                 }
                 ((SessionResponse) responseMessage).setSessionIsNew(true); // Cookie recognized or new cookie created, it is still a new session
                 request.getSession().setAttribute(SessionName.USER, fdSessionUser);
