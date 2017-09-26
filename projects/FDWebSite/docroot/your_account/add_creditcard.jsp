@@ -49,7 +49,7 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 
 <%} %>
 
-<form method="post" <%= (mobWeb) ? "fdform=\"addCC\"" :"" %>><%-- don't use fdform without additional styling updates --%>
+<form method="post" fdform><%-- intentionally using JUST the fdform attribute, since css is tied to that --%>
 	<table width="<%= (mobWeb) ? "100%" : W_YA_ADD_CREDITCARD %>" cellspacing="0" cellpadding="0" border="0">
 		<tr>
 			<td class="text11" WIDTH="<%= W_YA_ADD_CREDITCARD %>">

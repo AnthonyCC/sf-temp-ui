@@ -2537,10 +2537,10 @@ li.cleanli .gen-arrow {
 }
 
 /* /your_account/add_creditcard.jsp */
-[fdform="addCC"] {
+[fdform] {
 	margin: 10px;
 }
-[fdform="addCC"] td {
+[fdform] td {
 	display: block;
 	width: 100%;
 	text-align: left;

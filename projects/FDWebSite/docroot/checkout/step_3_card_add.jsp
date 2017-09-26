@@ -56,7 +56,7 @@ double cartTotal = user.getShoppingCart().getTotal();
 	<%@ include file="/includes/i_error_messages.jspf" %>
 </fd:ErrorHandler>
 
-<form method="post">
+<form method="post" fdform><%-- intentionally using JUST the fdform attribute, since css is tied to that --%>
 
 <%	if (proceedThruCheckout) { %>
 <TABLE WIDTH="<%=W_CHECKOUT_STEP_3_CARD_ADD_TOTAL%>" cellspacing="0" cellpadding="0" border="0">	
