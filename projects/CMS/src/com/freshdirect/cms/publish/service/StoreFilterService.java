@@ -121,7 +121,7 @@ public final class StoreFilterService {
 
         @SuppressWarnings("unchecked")
         List<ContentKey> homes = (List<ContentKey>) node.getAttributeValue("PRIMARY_HOME");
-        final boolean isHomesChanged = !fixedHomes.containsAll(homes) || !homes.containsAll(fixedHomes);
+        final boolean isHomesChanged = (homes == null) || !fixedHomes.containsAll(homes) || !homes.containsAll(fixedHomes);
 
         if (isHomesChanged) {
             // make the change
