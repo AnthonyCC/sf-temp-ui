@@ -2457,6 +2457,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 	@Override
     public  FDDeliveryZoneInfo overrideZoneInfo(ErpAddressModel address,
 			FDDeliveryZoneInfo deliveryZoneInfo) throws FDResourceException,FDInvalidAddressException {
+		int lookAheadDays = FDStoreProperties.getFdcTransitionLookAheadDays();
+		if(lookAheadDays > 0){
 		FDDeliveryZoneInfo reservationDeliveryZoneInfo = getReservationDeliveryZoneInfo(); 
 		//Case 1: If the user has a reservation, we will be using the fulfillment information associated with user's reservation as the user context at the time of login
 		if(null!=reservationDeliveryZoneInfo){
@@ -2465,8 +2467,6 @@ public class FDUser extends ModelSupport implements FDUserI {
 		//Case 2: If the user does not have any reservation, we will follow the look ahead days strategy to set the user context at the time of login
 		// The lookAheadDays property value is provided and maintained by SAP. If the value is 0, the code shall not be executed
 		if(null==reservationDeliveryZoneInfo) {
-			int lookAheadDays = FDStoreProperties.getFdcTransitionLookAheadDays();
-			if(lookAheadDays > 0){
 			Date day = DateUtil.truncate(DateUtil.addDays(today(), lookAheadDays));
 			FDDeliveryZoneInfo fdcDeliveryZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, day, getHistoricOrderSize(), this.getRegionSvcType(address.getId()),
 		            address.getCustomerId());
