@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.pricing.Discount;
@@ -74,6 +75,9 @@ public class PromotionHelper {
 		 
 		 Set<String> eligiblePromoCodes = user.getPromotionEligibility().getEligiblePromotionCodes();
 		 if(null == eligiblePromoCodes || eligiblePromoCodes.isEmpty()) return null;
+		 
+		 eligiblePromoCodes = new CopyOnWriteArraySet<String>(eligiblePromoCodes );//To fix the 'ConcurrentModificationException' issue.
+		 
 		 Discount applied = null;
 		 SteeringDiscount steeringDisc = null;
 		 for(Iterator<String> it=eligiblePromoCodes.iterator(); it.hasNext();){
