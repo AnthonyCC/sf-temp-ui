@@ -508,4 +508,26 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		}
 		return paymentMethods;
 	}
+	
+	//if E-check alert is ON for customer, at checkout page his Echecks are removed here
+	public static List<ErpPaymentMethodI> removeEcheckAccounts(List<ErpPaymentMethodI> paymentMethods) {
+		LOGGER.info("inside removeEcheckAccounts() as E-Check Alert is ON for the customer ");
+		if (paymentMethods != null && !paymentMethods.isEmpty()) {
+			List<ErpPaymentMethodI> erpPaymentMethodIs = new ArrayList<ErpPaymentMethodI>();
+			for (ErpPaymentMethodI paymentMethod : paymentMethods) {
+				if(!EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())){
+				try {
+						erpPaymentMethodIs.add(paymentMethod);
+						LOGGER.debug("payment method is sucessfully added to list");
+				} catch (Exception e1) {
+					LOGGER.info("Exception occured at removeEcheckAccounts(), returning payments while checkout" +e1);
+					return paymentMethods;
+				}
+			}
+		}
+			LOGGER.debug("exiting removeEcheckAccounts()");
+			return erpPaymentMethodIs;
+		}
+		return paymentMethods;
+	}	
 }
