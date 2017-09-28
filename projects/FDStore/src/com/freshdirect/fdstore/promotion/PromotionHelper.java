@@ -8,7 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
+
+import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.pricing.Discount;
@@ -25,9 +26,11 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter;
 import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.util.TimeOfDay;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class PromotionHelper {
 	
+	private static Category LOGGER = LoggerFactory.getInstance(PromotionHelper.class);
 	/**
 	 * This method returns a set of eligible windows steering promotion codes for the given zone.
 	 * @param zoneId
@@ -76,35 +79,39 @@ public class PromotionHelper {
 		 Set<String> eligiblePromoCodes = user.getPromotionEligibility().getEligiblePromotionCodes();
 		 if(null == eligiblePromoCodes || eligiblePromoCodes.isEmpty()) return null;
 		 
-		 eligiblePromoCodes = new CopyOnWriteArraySet<String>(eligiblePromoCodes );//To fix the 'ConcurrentModificationException' issue.
+//		 eligiblePromoCodes = new CopyOnWriteArraySet<String>(eligiblePromoCodes );//To fix the 'ConcurrentModificationException' issue.
 		 
 		 Discount applied = null;
 		 SteeringDiscount steeringDisc = null;
-		 for(Iterator<String> it=eligiblePromoCodes.iterator(); it.hasNext();){
-				String promoId = it.next();
-				Promotion p = (Promotion) PromotionFactory.getInstance().getPromotion(promoId);
-				if(p !=  null && p.getOfferType() != null && p.getOfferType().equals(EnumOfferType.WINDOW_STEERING)){
-					/*APPDEV-2850 - combinable offers. every offer will have zonestrategy attached if it is set on promotion. So just get the first applicator */
-					//PromotionApplicatorI app = p.getApplicator();
-					PromotionApplicatorI app = null;
-					if(p.getApplicatorList() != null && p.getApplicatorList().size() > 0)
-						app = (PromotionApplicatorI) p.getApplicatorList().get(0);
-					DlvZoneStrategy zoneStrategy = app != null ? app.getDlvZoneStrategy() : null;
-					if(zoneStrategy != null && zoneStrategy.isZonePresent(timeSlot.getZoneCode()) 
-							&& zoneStrategy.isTimeSlotEligible(timeSlot, tsWindowMap, user, promoId)){
-						double promoAmt = p.getHeaderDiscountTotal();
-						boolean isWaiveCharge = p.isWaiveCharge();
-						if(isWaiveCharge){
-							steeringDisc = new SteeringDiscount(true, 0.0);
-							break; //Free delivery steering discount has higher priority than any other $value steering discount.
-						}
-						else if(isMaxDiscountAmount(promoAmt, p.getPriority(), applied)){
-							applied = new Discount(promoId, EnumDiscountType.DOLLAR_OFF, promoAmt);
-							steeringDisc = new SteeringDiscount(false,applied.getAmount());
+		 try {
+			for(Iterator<String> it=eligiblePromoCodes.iterator(); it.hasNext();){
+					String promoId = it.next();
+					Promotion p = (Promotion) PromotionFactory.getInstance().getPromotion(promoId);
+					if(p !=  null && p.getOfferType() != null && p.getOfferType().equals(EnumOfferType.WINDOW_STEERING)){
+						/*APPDEV-2850 - combinable offers. every offer will have zonestrategy attached if it is set on promotion. So just get the first applicator */
+						//PromotionApplicatorI app = p.getApplicator();
+						PromotionApplicatorI app = null;
+						if(p.getApplicatorList() != null && p.getApplicatorList().size() > 0)
+							app = (PromotionApplicatorI) p.getApplicatorList().get(0);
+						DlvZoneStrategy zoneStrategy = app != null ? app.getDlvZoneStrategy() : null;
+						if(zoneStrategy != null && zoneStrategy.isZonePresent(timeSlot.getZoneCode()) 
+								&& zoneStrategy.isTimeSlotEligible(timeSlot, tsWindowMap, user, promoId)){
+							double promoAmt = p.getHeaderDiscountTotal();
+							boolean isWaiveCharge = p.isWaiveCharge();
+							if(isWaiveCharge){
+								steeringDisc = new SteeringDiscount(true, 0.0);
+								break; //Free delivery steering discount has higher priority than any other $value steering discount.
+							}
+							else if(isMaxDiscountAmount(promoAmt, p.getPriority(), applied)){
+								applied = new Discount(promoId, EnumDiscountType.DOLLAR_OFF, promoAmt);
+								steeringDisc = new SteeringDiscount(false,applied.getAmount());
+							}
 						}
 					}
-				}
-		 }
+			 }
+		} catch (Exception e) {
+			LOGGER.warn("Error while getting WindowSteering discount: ",e);
+		}
 //		 return applied != null ? applied.getAmount() :  0.0;
 		 return steeringDisc;
 	 }
