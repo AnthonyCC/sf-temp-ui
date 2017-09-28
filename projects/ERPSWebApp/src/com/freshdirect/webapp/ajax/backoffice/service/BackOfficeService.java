@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
+import org.json.JSONObject;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.application.CmsManager;
@@ -40,6 +41,7 @@ import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.SuperDepartmentModel;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.DYFUtil;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
@@ -168,13 +170,40 @@ public class BackOfficeService {
             	String skuProdCatInfo = getCatProdInfoBySku(request,skuCodeDetails); 
             	result.setSkuInfo(skuProdCatInfo);
         		break;
+            case GET_RESEND_INVOICE_MAIL:
+            	String orderIdDetails= getActionData(actionDataRequest, "orderID");
+            	String reSendInvoiceMailStatus = reSendInvoiceMail(orderIdDetails); 
+            	result.setReSendInvoiceMailStatus(reSendInvoiceMailStatus);
+            	break;
             default:
                 break;
         }
         return result;
     }
     
-    private static final String PATH = "/test/freemarker_testing/all_info.jsp?sku2url=true&sku=";
+    private String reSendInvoiceMail(String orderId) {
+    	String reSendInvoiceMailStatus = null;
+		boolean ReSendEmailConfirmation=false;
+		try {
+			 ReSendEmailConfirmation= FDCustomerManager.reSendInvoiceEmail(orderId);
+			 			
+			 if(ReSendEmailConfirmation)
+			 {
+				 reSendInvoiceMailStatus = "Y";
+			 }
+			 else
+			 {
+				 reSendInvoiceMailStatus = "N";
+			 }
+				
+			} catch (Exception e) {
+		}
+		
+		return reSendInvoiceMailStatus;
+	
+	}
+
+	private static final String PATH = "/test/freemarker_testing/all_info.jsp?sku2url=true&sku=";
     private String getCatProdInfoBySku(HttpServletRequest  request, String skuCodeDetails) throws FDResourceException {
     	
     	String basePath = "";//request.getScheme()+"://"+request.getServerName();
