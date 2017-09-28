@@ -69,6 +69,7 @@ import com.freshdirect.logistics.delivery.model.GeoLocation;
 import com.freshdirect.logistics.delivery.model.RouteStopInfo;
 import com.freshdirect.logistics.delivery.model.ShippingDetail;
 import com.freshdirect.logistics.fdstore.StateCounty;
+import com.freshdirect.logistics.fdstore.ZipCodeAttributes;
 import com.freshdirect.logistics.fdx.controller.data.request.CreateOrderRequest;
 import com.freshdirect.logistics.fdx.controller.data.request.DeliveryConfirmationRequest;
 
@@ -93,6 +94,7 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 
 	private static final String DATE_CUTOFF_API ="/delivery/date/cutoffs";
 	private static final String STATECOUNTY_BYZIP_API ="/address/county/";
+	private static final String ZIP_ATTRIBUTES ="/address/zipattributes/";
 	private static final String STATECOUNTY__API ="/address/county";
 	
 	private static final String GEOCODEEXCEPTION_ADD_API ="/address/geocode/exception/add";
@@ -515,6 +517,17 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 		return response;
 	
 	}
+	
+	//OPT-44 start
+	@Override
+	public ZipCodeAttributes lookupZipCodeAttributes(String zipcode)
+			throws FDLogisticsServiceException {
+		
+		ZipCodeAttributes response =  getData(null, getEndPoint(ZIP_ATTRIBUTES+zipcode), ZipCodeAttributes.class);
+		return response;
+	
+	}
+	//OPT-44 end
 
 	@Override
 	public Map<String, Set<StateCounty>> getCountiesByState()

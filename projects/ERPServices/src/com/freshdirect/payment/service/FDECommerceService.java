@@ -186,6 +186,7 @@ import com.freshdirect.logistics.delivery.model.DeliveryException;
 import com.freshdirect.logistics.delivery.model.OrderContext;
 import com.freshdirect.logistics.delivery.model.SiteAnnouncement;
 import com.freshdirect.logistics.fdstore.StateCounty;
+import com.freshdirect.logistics.fdstore.ZipCodeAttributes;
 import com.freshdirect.payment.BINInfo;
 import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
 import com.freshdirect.payment.fraud.EnumRestrictedPaymentMethodStatus;
@@ -2033,6 +2034,20 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			throw new FDResourceException(response.getMessage());
 		return stateCounty;
 	}
+	
+	//OPT-44 start
+	@Override
+	public ZipCodeAttributes lookupZipCodeAttributes(String zip) throws FDResourceException {
+		String inputJson=null;
+		Response<StateCountyData> response = this.httpGetDataTypeMap((getFdCommerceEndPoint(DLV_MANAGER_COUNTIES_BY_ZIP+"/"+zip)), new TypeReference<Response<StateCountyData>>() {});
+		StateCountyData stateCountyData = response.getData();
+		ZipCodeAttributes zipAttributes = new ZipCodeAttributes(stateCountyData.getState(), stateCountyData.getCounty(),
+				stateCountyData.getCity(), false, zip );																		//check
+		if(!response.getResponseCode().equals("OK"))
+			throw new FDResourceException(response.getMessage());
+		return zipAttributes;
+	}
+	//OPT-44 end
 	
 	@Override
 	public int unlockInModifyOrders() throws FDResourceException {

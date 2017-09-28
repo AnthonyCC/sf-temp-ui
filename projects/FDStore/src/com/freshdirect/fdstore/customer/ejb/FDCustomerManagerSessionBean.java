@@ -240,6 +240,7 @@ import com.freshdirect.logistics.delivery.model.OrderContext;
 import com.freshdirect.logistics.delivery.model.RouteStopInfo;
 import com.freshdirect.logistics.delivery.model.ShippingDetail;
 import com.freshdirect.logistics.fdstore.StateCounty;
+import com.freshdirect.logistics.fdstore.ZipCodeAttributes;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.mail.EnumEmailType;
 import com.freshdirect.mail.EnumTranEmailType;
@@ -567,7 +568,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		
 		if(user!=null){
 			setAddressbyZipCode(user.getZipCode(),user);
-			user.setEbtAccepted(FDDeliveryManager.getInstance().isZipCodeEbtAccepted(user.getZipCode()));
+		//	user.setEbtAccepted(FDDeliveryManager.getInstance().isZipCodeEbtAccepted(user.getZipCode()));
 		}
 		return user;
 
@@ -575,10 +576,16 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	
 	private static void setAddressbyZipCode(String zipCode, FDUser user) {
 		if(user.getAddress()!=null){
-			StateCounty stateCounty= FDDeliveryManager.getInstance().getStateCountyByZipcode(zipCode);
+			/*StateCounty stateCounty= FDDeliveryManager.getInstance().getStateCountyByZipcode(zipCode);
 			if (stateCounty!=null) {
 				user.getAddress().setState(WordUtils.capitalizeFully(stateCounty.getState()));
 				user.getAddress().setCity(WordUtils.capitalizeFully(stateCounty.getCity()));
+				*/
+			ZipCodeAttributes zipAttributes= FDDeliveryManager.getInstance().getZipCodeAttribute(zipCode);
+			if (zipAttributes!=null) {
+				user.getAddress().setState(WordUtils.capitalizeFully(zipAttributes.getState()));
+				user.getAddress().setCity(WordUtils.capitalizeFully(zipAttributes.getCity()));
+				user.setEbtAccepted(zipAttributes.isZipCodeEBTAccepeted());	//vamsi change
 			}
 		}
 	}
@@ -614,7 +621,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 		if(user!=null){
 			setAddressbyZipCode(user.getZipCode(),user);
-			user.setEbtAccepted(FDDeliveryManager.getInstance().isZipCodeEbtAccepted(user.getZipCode()));
+			//user.setEbtAccepted(FDDeliveryManager.getInstance().isZipCodeEbtAccepted(user.getZipCode()));
 		}
 		return user;
 	}
@@ -645,7 +652,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 		if(user!=null){
 			setAddressbyZipCode(user.getZipCode(),user);
-			user.setEbtAccepted(FDDeliveryManager.getInstance().isZipCodeEbtAccepted(user.getZipCode()));
+			//user.setEbtAccepted(FDDeliveryManager.getInstance().isZipCodeEbtAccepted(user.getZipCode()));
 		}
 		return user;
 	}
@@ -897,7 +904,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 		if(user!=null){
 			setAddressbyZipCode(user.getZipCode(),user);
-			user.setEbtAccepted(FDDeliveryManager.getInstance().isZipCodeEbtAccepted(user.getZipCode()));
+			//user.setEbtAccepted(FDDeliveryManager.getInstance().isZipCodeEbtAccepted(user.getZipCode()));
 		}
 		return user;
 	}

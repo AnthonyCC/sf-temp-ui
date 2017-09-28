@@ -57,6 +57,7 @@ import com.freshdirect.logistics.delivery.model.GeoLocation;
 import com.freshdirect.logistics.delivery.model.RouteStopInfo;
 import com.freshdirect.logistics.delivery.model.ShippingDetail;
 import com.freshdirect.logistics.fdstore.StateCounty;
+import com.freshdirect.logistics.fdstore.ZipCodeAttributes;
 import com.freshdirect.logistics.fdx.controller.data.request.CreateOrderRequest;
 import com.freshdirect.logistics.fdx.controller.data.request.DeliveryConfirmationRequest;
 
@@ -116,7 +117,9 @@ public interface ILogisticsService {
 	Result removeOrdersfromLogistics(RemoveStandingOrderRequest removeStandingOrderRequest) throws FDLogisticsServiceException;
 	
 	StateCounty lookupStateCountyByZip(String zipcode) throws FDLogisticsServiceException;
-
+	
+	ZipCodeAttributes lookupZipCodeAttributes(String zipcode) throws FDLogisticsServiceException;
+	
 	public Map<String, Set<StateCounty>> getCountiesByState() throws FDLogisticsServiceException;
 	
 	public Depots getPickupLocations(PickupLocationsRequest pkupRequest) throws FDLogisticsServiceException;
