@@ -2516,9 +2516,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				LOGGER.warn("Error Sending email for Order Confirmantion: "+ pk.getId(), e);
 			}
 			try {
-				FDOrderI order = getOrder(pk.getId());
+//				FDOrderI order = getOrder(pk.getId());
 				if(FDStoreProperties.getSmsOrderConfirmation() && "S".equalsIgnoreCase(customerSmsPreferenceModel.getFdxOrderNotices()))
-				 isSent = SMSAlertManager.getInstance().smsOrderConfirmation(info.getFdUserId(), orderMobileNumber, order.getErpSalesId(), EnumEStoreId.FDX.name());
+				 isSent = SMSAlertManager.getInstance().smsOrderConfirmation(info.getFdUserId(), orderMobileNumber, pk.getId()/*order.getErpSalesId()*/, EnumEStoreId.FDX.name());
 				
 			} catch (FDResourceException e) {
 				// TODO Auto-generated catch block
