@@ -40,7 +40,7 @@
 <%@page import="java.util.Iterator"%>
 <%@page import="com.freshdirect.fdstore.content.util.SmartSearchUtils"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <fd:CheckLoginStatus id="user" noRedirect="true"/>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" lang="en-US">

@@ -7,7 +7,7 @@
 <%@page import="com.freshdirect.cms.search.ContentSearchServiceI"%>
 <%@page import="com.freshdirect.cms.index.IndexerService"%>
 <%@page import="com.freshdirect.cms.index.configuration.IndexerConfiguration"%>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
 	lang="en-US">

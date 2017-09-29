@@ -18,7 +18,7 @@
 <%@ include file="/shared/template/includes/yui.jspf" %>
 
 <fd:CheckLoginStatus guestAllowed='true' />
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 	<title>FDCoupon Test Page</title>
 	

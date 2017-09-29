@@ -11,7 +11,7 @@
   request.setAttribute("sitePage", "www.freshdirect.com/quickshop/");
 	request.setAttribute("listPos", "SystemMessage,QSTop");
 %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 	<head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" lang="en-US"/>
         <title>Live Recommender Test Page</title>

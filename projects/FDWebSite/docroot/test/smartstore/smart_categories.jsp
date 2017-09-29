@@ -12,7 +12,7 @@
 <%@ taglib uri="freshdirect" prefix="fd"%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
-<html>
+<html lang="en-US" xml:lang="en-US">
 	<head>
 		<title>Smart Categories test page</title>
 		<style type="text/css">

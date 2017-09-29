@@ -9,7 +9,7 @@
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
 
-<html>
+<html lang="en-US" xml:lang="en-US">
 	<head>
         <BASE href="http://www.freshdirect.com" />
 		<title>FreshDirect expands delivery to DUMBO and Brooklyn Heights!</title>

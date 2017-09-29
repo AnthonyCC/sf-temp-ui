@@ -74,7 +74,7 @@ public void debugObject(Set visitedObjects, JspWriter out, String title, Object 
 	out.println("</table>");
 }
 %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <body bgcolor=#ffffff>
 <h2>Debug session objects</h2>
 

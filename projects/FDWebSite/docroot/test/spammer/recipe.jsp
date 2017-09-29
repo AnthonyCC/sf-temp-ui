@@ -13,7 +13,7 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
-<html>
+<html lang="en-US" xml:lang="en-US">
 <body>
 <%!
 

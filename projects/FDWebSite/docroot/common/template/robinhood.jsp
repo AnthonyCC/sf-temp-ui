@@ -26,7 +26,7 @@ final int W_ROBINHOOD_TOTAL = 970;
 	 */
 %><!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
     <title><tmpl:get name='title'/></title>
 	<%@ include file="/common/template/includes/metatags.jspf" %>

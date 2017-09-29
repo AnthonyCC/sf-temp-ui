@@ -41,7 +41,7 @@
 	}
 
 %>
-<html>
+<html lang="en-US" xml:lang="en-US">
   <head>
   	<title><tmpl:get name="title"/></title>
 	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>

@@ -29,7 +29,7 @@ try {
       JspLogger.GENERIC.error("Got an error page", exception);
       %>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US" xml:lang="en-US">
 <head>
   <meta charset="UTF-8">
   <title>FreshDirect - Something went wrong...</title>

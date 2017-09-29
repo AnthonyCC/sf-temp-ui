@@ -10,7 +10,7 @@
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
 
-<html>
+<html lang="en-US" xml:lang="en-US">
 	<head>
         <BASE href="http://www.freshdirect.com" /> 
 		<title>$50 Free Fresh Food Offer - Expires September 1, 2003!!</title>

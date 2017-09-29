@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-US" xml:lang="en-US">
   <head>
     <title>Reviews</title>
     <%@ include file="/common/template/includes/metatags.jspf" %>

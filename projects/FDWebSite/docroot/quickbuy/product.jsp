@@ -81,7 +81,7 @@
 	// tell i_product.jspf it's quickbuy
 	request.setAttribute("i_product_inner", Boolean.TRUE);
 %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 

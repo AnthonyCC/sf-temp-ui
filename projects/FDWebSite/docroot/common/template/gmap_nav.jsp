@@ -11,7 +11,7 @@ final int W_GMAP_NAV_TOTAL = 970;
 <%
 	final String gmap_api_key = FDStoreProperties.getGoogleMapsAPIKey();
 %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
     <title><tmpl:get name='title'/></title>
 

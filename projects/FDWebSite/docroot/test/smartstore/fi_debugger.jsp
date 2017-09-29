@@ -108,7 +108,7 @@
 		response.sendRedirect(StringEscapeUtils.unescapeHtml(newURL));
 	}
 %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 	<title>FEATURED ITEMS DEBUGGER - <%=categoryName%></title>

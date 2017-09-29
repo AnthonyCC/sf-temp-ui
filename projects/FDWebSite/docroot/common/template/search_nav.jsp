@@ -10,7 +10,7 @@ final int W_SEARCH_NAV_LEFT = 150;
 final int W_SEARCH_NAV_RIGHT = 820;
 //EXPANDED_PAGE_VERIFY - adjust sizes 
 %>
-<html>  
+<html lang="en-US" xml:lang="en-US">  
 <head>
     <title><tmpl:get name='title'/></title>
 	<%@ include file="/common/template/includes/metatags.jspf" %>

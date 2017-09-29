@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <%@page import="com.freshdirect.content.nutrition.EnumClaimValue"%>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 	<meta charset="utf-8"/>
 	<title>ERPS Claim Codes</title>

@@ -23,7 +23,7 @@
 <%@page import="org.apache.lucene.queryParser.QueryParser"%>
 <%@page import="org.apache.lucene.analysis.TokenStream"%>
 <%@page import="org.apache.lucene.analysis.tokenattributes.TermAttribute"%>
-<%@page import="java.io.StringReader"%><html>
+<%@page import="java.io.StringReader"%><html lang="en-US" xml:lang="en-US">
 <%
 String contentKey = request.getParameter("contentKey");
 %>

@@ -135,7 +135,7 @@
 	}
 %>
 <%@page import="com.freshdirect.smartstore.TabRecommendation"%>
-<%@page import="java.util.Set"%><html>
+<%@page import="java.util.Set"%><html lang="en-US" xml:lang="en-US">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 	<title>CART TABS TEST PAGE</title>

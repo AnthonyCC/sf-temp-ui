@@ -16,7 +16,7 @@
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="display" uri="/WEB-INF/shared/tld/fd-display.tld" %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 	<meta charset="utf-8"/>
 	<title>Deep categories</title>

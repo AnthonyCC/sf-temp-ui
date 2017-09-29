@@ -534,7 +534,7 @@
 
   	// Inject IFRAME content
   	idoc.open();
-  	idoc.writeln("<html><body>");
+  	idoc.writeln("<html lang="en-US" xml:lang="en-US"><body>");
 
   	// modified document.write function
   	idoc.writeln("<scr" + "ipt type='text/javascript'>");

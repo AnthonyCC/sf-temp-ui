@@ -9,7 +9,7 @@ final int W_NEW_PRODUCTS_NAV_TOTAL = 970;
 %>
 
 
-<html>  
+<html lang="en-US" xml:lang="en-US">  
 <head>
     <title><tmpl:get name='title'/></title>
 	<%@ include file="/common/template/includes/metatags.jspf" %>

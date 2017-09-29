@@ -6,7 +6,7 @@
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
 
-<html>
+<html lang="en-US" xml:lang="en-US">
 	<head>
 	    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 	    <title>Welcome to FreshDirect</title>

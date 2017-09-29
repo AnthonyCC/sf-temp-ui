@@ -7,7 +7,7 @@
 	<xsl:output method="html"/>
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 	<title>Credit Card Authorization Failure For Your Order</title>
 	<link rel="stylesheet" href="http://www.freshdirect.com/assets/css/emails.css"/>

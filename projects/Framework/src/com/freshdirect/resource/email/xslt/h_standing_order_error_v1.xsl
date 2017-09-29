@@ -10,7 +10,7 @@
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
 
-<html>
+<html lang="en-US" xml:lang="en-US">
 	<head>
 		<title>A problem with your standing order for <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="standingOrder/nextDeliveryDate" /></xsl:call-template></title>
 		<link rel="stylesheet" href="http://www.freshdirect.com/assets/css/emails.css"/>

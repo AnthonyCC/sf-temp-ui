@@ -1,5 +1,5 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
   <title>FreshDirect</title>
   <%@ include file="/common/template/includes/metatags.jspf" %>

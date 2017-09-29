@@ -12,7 +12,7 @@
 <%@page import="com.freshdirect.fdstore.content.Domain"%>
 <%@page import="com.freshdirect.fdstore.content.DomainValue"%>
 <%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
-<%@page import="java.util.HashSet"%><html>
+<%@page import="java.util.HashSet"%><html lang="en-US" xml:lang="en-US">
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">

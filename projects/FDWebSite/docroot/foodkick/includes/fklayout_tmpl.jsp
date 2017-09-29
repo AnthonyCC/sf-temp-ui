@@ -4,7 +4,7 @@
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ include file="password_flow_vars.jspf" %>
 <!DOCTYPE html>
-<html>
+<html lang="en-US" xml:lang="en-US">
 	<head>
 		<title> <tmpl:get name='title'/> </title>
         <%@ include file="/common/template/includes/metatags.jspf" %>

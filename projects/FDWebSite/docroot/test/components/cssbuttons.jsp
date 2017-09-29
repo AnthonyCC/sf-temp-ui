@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 	<head>
 	<jwr:style src="/global.css"></jwr:style>
 	<style>

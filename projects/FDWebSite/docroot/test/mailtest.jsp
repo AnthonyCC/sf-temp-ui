@@ -7,7 +7,7 @@
 <%@page import="javax.mail.Folder"%>
 <%@page import="javax.mail.Store"%>
 <%@page import="javax.mail.Message"%>
-<%@page import="javax.mail.Provider"%><html>
+<%@page import="javax.mail.Provider"%><html lang="en-US" xml:lang="en-US">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 <title>Java Mail Test Page</title>

@@ -7,7 +7,7 @@
 <%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
 <%@ page import="java.io.*" %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 <title>Layout Browser</title>
     <%@ include file="/common/template/includes/i_javascripts_browse.jspf" %>

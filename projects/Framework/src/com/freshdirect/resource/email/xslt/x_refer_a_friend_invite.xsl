@@ -8,7 +8,7 @@
 	<xsl:output method="html"/>
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
-<html xmlns:v="urn:schemas-microsoft-com:vml">
+<html lang="en-US" xml:lang="en-US" xmlns:v="urn:schemas-microsoft-com:vml">
 <head>
 	<title>Refer A Friend Invitation</title>
 	<link rel="stylesheet" href="https://www.freshdirect.com/media/images/profile/raf_email/emails.css"/>

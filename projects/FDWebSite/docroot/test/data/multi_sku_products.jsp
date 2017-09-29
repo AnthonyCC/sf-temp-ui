@@ -12,7 +12,7 @@
 <%@page import="com.freshdirect.fdstore.content.SkuModel"%>
 <%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@page import="java.util.TreeMap"%>
-<%@page import="java.util.SortedMap"%><html>
+<%@page import="java.util.SortedMap"%><html lang="en-US" xml:lang="en-US">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" lang="en-US">
 <title>Available Multi-SKU Products</title>

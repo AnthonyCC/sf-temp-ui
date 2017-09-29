@@ -4,7 +4,7 @@
 <%@ taglib uri='/WEB-INF/shared/tld/freshdirect.tld' prefix='fd' %>
 <fd:CheckLoginStatus id="user"/>
 <fd:FDShoppingCart id='cart' result='result'>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
   <%@ include file="/common/template/includes/metatags.jspf" %>
   <%@ include file="/shared/template/includes/i_head_end.jspf" %>

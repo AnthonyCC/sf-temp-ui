@@ -12,7 +12,7 @@
 <%@page import="java.util.ArrayList"%>
 <%@page import="com.freshdirect.fdstore.content.DepartmentModel"%>
 <%@page import="java.util.List"%>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 	<meta charset="utf-8"/>
 	<title>Wide Report</title>

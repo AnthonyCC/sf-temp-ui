@@ -6,7 +6,7 @@
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 boolean isDepotUser = user==null?false:user.isDepotUser();
 %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
   <title>FreshDirect</title>
   <%@ include file="/common/template/includes/metatags.jspf" %>

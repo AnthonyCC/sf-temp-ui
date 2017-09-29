@@ -9,7 +9,7 @@
 
 <%
 BrowserInfo bi = new BrowserInfo(request);
-%><html>
+%><html lang="en-US" xml:lang="en-US">
 <head>
 	<title>Transparent Box Test</title>
 	<style type="text/css">

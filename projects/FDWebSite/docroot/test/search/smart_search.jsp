@@ -69,7 +69,7 @@
 	}
 	
 %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 <title>SmartSearch Test Page</title>
 <style>

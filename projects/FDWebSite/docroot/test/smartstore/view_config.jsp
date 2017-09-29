@@ -74,7 +74,7 @@ VariantSelection helper = VariantSelection.getInstance();
 Map<String, Integer> cohorts = helper.getCohorts();
 
 %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 	<title>VARIANT CONFIGURATIONS PAGE</title>

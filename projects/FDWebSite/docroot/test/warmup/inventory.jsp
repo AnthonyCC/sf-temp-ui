@@ -1,6 +1,6 @@
 <%@page contentType="text/html"%>
 <%@page import="com.freshdirect.fdstore.warmup.*" %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head><title>Inventory Check</title></head>
 <body>
 

@@ -23,7 +23,7 @@
         response.sendRedirect("/view_cart.jsp");
     }
 %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head><title>Order Maker</title></head>
 <body>
 

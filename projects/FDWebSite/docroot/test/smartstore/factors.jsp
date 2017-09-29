@@ -117,7 +117,7 @@ if (ServletFileUpload.isMultipartContent(request)) {
 	
 		if (html) {	
 %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 <title>Factors</title>
 <style>
@@ -197,7 +197,7 @@ li span {
 } else {
 %>
 
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 <style>
 body {

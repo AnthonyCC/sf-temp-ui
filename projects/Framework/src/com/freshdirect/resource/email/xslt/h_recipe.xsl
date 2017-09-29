@@ -11,7 +11,7 @@
 
 <xsl:template match="fdemail">
 <xsl:if test="not(preview) or preview = 'false'"> 
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 	<base href="http://www.freshdirect.com/"/>
 	<link rel="stylesheet" href="http://www.freshdirect.com/assets/css/emails.css"/>

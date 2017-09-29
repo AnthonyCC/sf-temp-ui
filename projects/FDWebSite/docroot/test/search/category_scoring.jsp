@@ -11,7 +11,7 @@
 <%@page import="com.freshdirect.fdstore.content.FilteringSortingItem"%>
 <%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@page import="com.freshdirect.fdstore.content.EnumSortingValue"%>
-<%@page import="com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator"%><html>
+<%@page import="com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator"%><html lang="en-US" xml:lang="en-US">
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
