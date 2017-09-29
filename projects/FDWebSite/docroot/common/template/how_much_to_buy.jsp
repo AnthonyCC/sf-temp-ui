@@ -53,7 +53,7 @@ String recTable = product.getRecommendTable().getPath();
 	<TD WIDTH="430">
 		<FONT CLASS="title14"><%=product.getFullName()%></FONT> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="/media_stat/images/layout/star.gif" width="6" height="6" hspace="2" vspace="4" border="0" alt="most popular"><FONT CLASS="text9">Most popular thickness for this steak</FONT><BR>
 		<FONT CLASS="space2pix"></BR></FONT>
-		<IMG src="/media_stat/images/layout/669933.gif" WIDTH="430" HEIGHT="1" HSPACE="0" VSPACE="0"><BR>
+		<IMG src="/media_stat/images/layout/669933.gif" alt="" WIDTH="430" HEIGHT="1" HSPACE="0" VSPACE="0"><BR>
 		<FONT CLASS="space4pix"></BR></FONT>
 		<fd:IncludeMedia name='<%=recTable%>'/>	
 	</td>

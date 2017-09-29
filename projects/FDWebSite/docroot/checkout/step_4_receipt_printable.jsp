@@ -55,7 +55,7 @@ final int W_CHECKOUT_STEP_4_RECEIPT_TOTAL = 970;
 </TR>
 <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"></td></tr>
 <tr>
-  <td colspan="2"><IMG src="/media_stat/images/layout/669933.gif" HEIGHT="4" WIDTH="<%=W_CHECKOUT_STEP_4_RECEIPT_TOTAL%>"></td>
+  <td colspan="2"><IMG src="/media_stat/images/layout/669933.gif" alt="" HEIGHT="4" WIDTH="<%=W_CHECKOUT_STEP_4_RECEIPT_TOTAL%>"></td>
 </tr>
 </TABLE>
 <%

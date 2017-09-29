@@ -226,7 +226,7 @@ if (isValidPaymentId) {
 		<tr>	
 			<td width="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" CLASS="text12">
 				To learn more about our <font class="text11bold">Security Policies</font>, 
-				<a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here</a>.
+				<a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here<span class="offscreen">To learn more about our Security Policies</span></a>.
 			</td>
 		</tr>
 	</TABLE>
@@ -245,7 +245,7 @@ boolean fromCheckout1 = currentPage.indexOf("checkout") > -1;
 String addCCPage = fromCheckout1 ? "/checkout/step_3_card_add.jsp" : "/your_account/add_creditcard.jsp";%>
 <tr>
 <%-- if new to check --%>
-<td class="text11" style="padding-top: 5px; padding-bottom: 10px;">If you need to enter a credit card: <a href="/your_account/add_creditcard.jsp"><IMG src="/media_stat/images/buttons/add_new_credit_card.jpg" WIDTH="137" HEIGHT="16" ALT="Add New Credit Card" BORDER="0" ALIGN="absmiddle"></a>
+<td class="text11" style="padding-top: 5px; padding-bottom: 10px;">If you need to enter a credit card: <a class="cssbutton green small" href="/your_account/add_creditcard.jsp">ADD NEW CREDIT CARD</a>
 			</td>
 </tr>
 </table>

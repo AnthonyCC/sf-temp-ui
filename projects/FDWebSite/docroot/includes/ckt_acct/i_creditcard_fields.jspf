@@ -214,7 +214,7 @@ if (isValidPaymentId) {
 
 %>
 	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" alt="" HEIGHT="1" BORDER="0"><BR>
 	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
     <%-- error system messages happen here --%>
     <fd:ErrorHandler result='<%=result%>' name='matching_addresses' id='errorMsg'>
@@ -234,7 +234,7 @@ if (isValidPaymentId) {
 		<tr>	
 			<td width="<%= (mobWeb) ? "100%" : W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL %>" CLASS="text12">
 				To learn more about our <font class="text11bold">Security Policies</font>, 
-				<a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here</a>.
+				<a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here<span class="offscreen">To learn more about our Security Policies</span></a>.
 			</td>
 		</tr>
 	</TABLE>
@@ -254,7 +254,7 @@ if (isValidPaymentId) {
 	String addEBTPage = fromCheckout1 ? "/checkout/step_3_ebt_add.jsp" : "/your_account/add_ebt_card.jsp";%>
 	<tr>
 	<%-- if new to check --%>
-	<td><span CLASS="text12">If you need to enter an EBT card: </span><a href="<%=addEBTPage%>"><img ALT="Add New Card" src="/media_stat/images/buttons/add_new_ebt_card.jpg" WIDTH="137" HEIGHT="16" border="0" VSPACE="3" HSPACE="5" ALIGN="middle"></a></TD>
+	<td><span CLASS="text12">If you need to enter an EBT card: </span><a class="cssbutton green small" href="<%=addEBTPage%>">ADD NEW EBT CARD</a></TD>
 	</tr>
 	</table>
 	<br/>
@@ -289,7 +289,7 @@ if (isValidPaymentId) {
 	</TR>
 	</TABLE>
 <% } %>
-<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%= (mobWeb) ? "100%" : W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL %>" HEIGHT="1" BORDER="0" VSPACE="3"><BR><BR>
+<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%= (mobWeb) ? "100%" : W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL %>" alt="" HEIGHT="1" BORDER="0" VSPACE="3"><BR><BR>
 
 <TABLE BORDER="0" CELLSPACING="1" CELLPADDING="0" WIDTH="100%">
 <TR VALIGN="MIDDLE">
@@ -386,7 +386,7 @@ if (isValidPaymentId) {
 <TR VALIGN="TOP">
 	<TD WIDTH="<%= (mobWeb) ? "100%" : W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL %>" class="title14">
 		<!-- <img src="/media_stat/images/navigation/billing_address_for_card.gif" WIDTH="229" HEIGHT="15" border="0" alt="BILLING ADDRESS"> -->BILLING ADDRESS FOR THIS CARD <span class="text12" style="margin-left: 3em;">*&nbsp;Required&nbsp;information</span><BR>
-		<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%= (mobWeb) ? "100%" : W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL %>" HEIGHT="1" BORDER="0" vspace="3"><BR>
+		<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%= (mobWeb) ? "100%" : W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL %>" alt="" HEIGHT="1" BORDER="0" vspace="3"><BR>
 <%
 		if (yuzer.isEligibleForSignupPromotion()) {
 			%><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="2"><br><b>NOTE</b>: <font class="text11orbold">On your first home delivery order, to receive the free food promotion, your billing and delivery address must match.</font><% } else { %><font class="text12">Please enter billing address as it appears on your credit / debit card statement.</font><%

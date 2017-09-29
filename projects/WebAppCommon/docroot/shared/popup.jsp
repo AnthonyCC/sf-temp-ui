@@ -163,7 +163,7 @@ title = "FreshDirect - " + title;
                 <td><font class="title14"><%=prod.getFullName()%></font></td>
                                 <td align="right"><img src="/media_stat/images/layout/star.gif" width="6" height="6" hspace="2" vspace="4" border="0" alt="most popular"><font class="text9">Most popular thickness</font></td>
             </tr>
-                        <tr><td colspan="2"><img src="/media_stat/images/layout/669933.gif" width="435" height="1" hspace="0" vspace="6"><br><fd:IncludeMedia name="<%=recTable%>" /></td></tr>
+                        <tr><td colspan="2"><img src="/media_stat/images/layout/669933.gif" alt="" width="435" height="1" hspace="0" vspace="6"><br><fd:IncludeMedia name="<%=recTable%>" /></td></tr>
             </table>
                         <% } else { //small popup %>
                                 <table border="0" cellpadding="0" cellspacing="0" width="315">
@@ -173,7 +173,7 @@ title = "FreshDirect - " + title;
                             <tr>
                                 <tr><td><img src="/media_stat/images/layout/clear.gif" alt="" width="230" height="10"></td><td><img src="/media_stat/images/layout/clear.gif" alt="" width="85" height="10"></td></tr>
                                 <tr valign="top">
-                                <td colspan="2"><font class="title14"><%=prod.getFullName()%></font><br><img src="/media_stat/images/layout/669933.gif" width="315" height="1" hspace="0" vspace="3"><br><fd:IncludeMedia name="<%=recTable%>" /></td>
+                                <td colspan="2"><font class="title14"><%=prod.getFullName()%></font><br><img src="/media_stat/images/layout/669933.gif" alt="" width="315" height="1" hspace="0" vspace="3"><br><fd:IncludeMedia name="<%=recTable%>" /></td>
                                 </tr>
                                 </table>
                         <% 

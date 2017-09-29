@@ -118,7 +118,7 @@
 					<td colspan="3"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8"><br />
 						<table cellspacing="0" cellpadding="0" border="0">
 							<tr>
-							    <td rowspan="2"><a href="order_details.jsp?orderId=<%= orderId %>"><img src="/media_stat/images/template/youraccount/cross.gif" border="0"></a></td>
+							    <td rowspan="2"><a href="order_details.jsp?orderId=<%= orderId %>"><img src="/media_stat/images/template/youraccount/cross.gif" alt="do not cancel the order" border="0"></a></td>
 							    <td><a href="order_details.jsp?orderId=<%= orderId %>"><img src="/media_stat/images/template/youraccount/do_not_cancel_order.gif" border="0" alt="Do not Cancel Order"></a></td>
 							</tr>
 							<tr><td>and deliver as originally specified</td></tr>

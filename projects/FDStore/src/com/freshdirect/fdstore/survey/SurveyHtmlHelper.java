@@ -261,7 +261,7 @@ public class SurveyHtmlHelper {
 			StringBuffer temp=new StringBuffer(200);
             String input = getInputTag(FDSurveyConstants.SINGLE_SELECT_INPUT, question.getName(), "", answer.getName(), previousAnswers.contains(answer.getName()), false, "");
 			temp.append("<td width=\"16%\" align=\"center\">\n");
-			temp.append(getDivTag(getImageTag(answer.getDescription())));
+			temp.append(getDivTag(getImageTag(answer.getDescription(),answer.getName())));
             temp.append(wrapLabel(input + wrapOffscreen(answer.getName())));
 			temp.append("</td>");
 			colCount++;
@@ -286,8 +286,8 @@ public class SurveyHtmlHelper {
         return "<label>" + content + "</label>";
     }
 
-    private static String getImageTag(String path) {
-    	return "<img src=\""+path+"\"/>";
+    private static String getImageTag(String path,String content) {
+    	return "<img src=\""+path+"\" alt=\"" + content + "\" />";
     }
 	private static String getGroupedSelection(FDSurveyQuestion question, List previousAnswers) {
 		StringBuffer response=new StringBuffer(200);

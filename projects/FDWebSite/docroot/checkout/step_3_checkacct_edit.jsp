@@ -56,7 +56,7 @@ boolean proceedThruCheckout = false;
 		<TD class="text11" WIDTH="395">
 <font class="title18">Edit Checking Account</font><br>
 Learn more about how this service works.
-			To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here</a><BR>
+			To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here<span class="offscreen">To learn more about our Security Policies</span></a><BR>
 		</TD>
 		<TD WIDTH="<%=W_CHECKOUT_STEP_3_CHECKACCT_EDIT_TOTAL-430%>" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10bold"><FONT CLASS="space2pix"><BR></FONT>
 			<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="265" HEIGHT="1" BORDER="0"><BR>

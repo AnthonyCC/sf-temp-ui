@@ -259,7 +259,7 @@ if (isValidPaymentId) {
 		<tr>	
 			<td width="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" CLASS="text12">
 				To learn more about our <font class="text11bold">Security Policies</font>, 
-				<a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here</a>.
+				<a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here<span class="offscreen">To learn more about our Security Policies</span></a>.
 			</td>
 		</tr>
 	</TABLE>

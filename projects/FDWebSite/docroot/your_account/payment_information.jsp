@@ -293,8 +293,7 @@
 		              </tr>
 		              <%if(user.isEbtAccepted()){ %>
 		              <tr valign="middle">
-		                     <td class="text11" style="padding-top: 5px; padding-bottom: 10px;">If you need to enter another EBT card: <a href="/your_account/add_ebt_card.jsp"><IMG src="/media_stat/images/buttons/add_new_ebt_card.jpg" WIDTH="117" HEIGHT="16" ALT="Add New Credit Card" BORDER="0" ALIGN="absmiddle"></a>
-		                     </td>
+		                     <td class="text11" style="padding-top: 5px; padding-bottom: 10px;">If you need to enter another EBT card: <a class="cssbutton green small" href="/your_account/add_ebt_card.jsp">ADD NEW EBT CARD</a>
 		                     </tr>
 		                     <% } %>
 		                     <tr><td>

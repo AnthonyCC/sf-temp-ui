@@ -77,7 +77,7 @@ if ("true".equalsIgnoreCase(overlay)) {
 		</tr>
 		<tr class="NOMOBWEB">
 		    <td style="width: <%= (mobWeb) ? "100%" : "675px" %>" align="center">
-				<br><a href="/index.jsp"<%= (("true".equalsIgnoreCase(overlay)) ? " onclick=\"FreshDirect.components.ifrPopup.close()\"" : "") %> onmouseover="swapImage('home_img','/media_stat/images/template/help/help_home_r.gif')" onmouseout="swapImage('home_img','/media_stat/images/template/help/help_home.gif')"><img src="/media_stat/images/template/help/help_home.gif" name="home_img" width="71" height="26" alt="back home" border="0"></a>
+				<br><a href="/index.jsp"<%= (("true".equalsIgnoreCase(overlay)) ? " onclick=\"FreshDirect.components.ifrPopup.close()\"" : "") %> onmouseover="swapImage('home_img','/media_stat/images/template/help/help_home_r.gif')" onmouseout="swapImage('home_img','/media_stat/images/template/help/help_home.gif')"><img src="/media_stat/images/template/help/help_home.gif" name="home_img" width="71" height="26" alt="return to home page" border="0"></a>
 			</td>		
 		</tr>
 	</table><br><br>

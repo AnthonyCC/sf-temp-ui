@@ -154,8 +154,8 @@
 							</tr>
 
 							<tr valign="middle">
-								<td class="text11">If you need to enter another credit card: <a href="/gift_card/purchase/includes/gc_add_creditcard.jsp?pageName=bulkPurchase">
-									<IMG src="/media_stat/images/buttons/add_new_card.gif" width="96" height="16" alt="Add New Credit Card" border="0" /></a>
+								<td class="text11">If you need to enter another credit card: <a class="cssbutton green small" href="/gift_card/purchase/includes/gc_add_creditcard.jsp?pageName=bulkPurchase">
+									ADD NEW CARD</a>
 								</td>
 							</tr>
 							<tr>
