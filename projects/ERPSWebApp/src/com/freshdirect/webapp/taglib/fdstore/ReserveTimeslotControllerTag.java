@@ -148,21 +148,7 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 	}
 
 	private void reserveTimeslot(FDUserI user, String timeslotId, FDActionInfo aInfo, TimeslotEvent event) throws FDResourceException, ReservationException {
-		FDReservation rsv = FDCustomerManager.makeReservation(user, timeslotId, this.rsvType, this.addressId, aInfo, chefstable, event, false);
-		//TimeslotLogic.applyOrderMinimum(user, rsv.getTimeslot());
-		if(user.getShoppingCart()!=null 
-				&& !(user.getShoppingCart() instanceof FDModifyCartModel)
-				&& user.getShoppingCart().getDeliveryReservation() !=null 
-				&& user.getShoppingCart().getDeliveryReservation().getType()!=null
-				&& rsv!=null
-				&& rsv.getType() !=null
-				&& (user.getShoppingCart().getDeliveryReservation().getType().getName().equalsIgnoreCase(EnumReservationType.ONETIME_RESERVATION.getName())
-						|| user.getShoppingCart().getDeliveryReservation().getType().getName().equalsIgnoreCase(EnumReservationType.RECURRING_RESERVATION.getName()))
-				&& (rsv.getType().getName().equalsIgnoreCase(EnumReservationType.ONETIME_RESERVATION.getName())
-						|| rsv.getType().getName().equalsIgnoreCase(EnumReservationType.RECURRING_RESERVATION.getName())))
-				
-			user.getShoppingCart().setDeliveryReservation(null);
-		user.setReservation(rsv);
+		FDCustomerManager.makeReservation(user, timeslotId, this.rsvType, this.addressId, aInfo, chefstable, event, false);
 	}
 	
 	

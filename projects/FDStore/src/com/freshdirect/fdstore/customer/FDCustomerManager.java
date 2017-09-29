@@ -1181,7 +1181,39 @@ public class FDCustomerManager {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
-			return sb.makeReservation(user, timeslotId, rsvType, addressId, aInfo, chefsTable, event, isForced);
+			FDReservation rsv = sb.makeReservation(user, timeslotId, rsvType, addressId, aInfo, chefsTable, event, isForced);
+			if(user.getShoppingCart()!=null 
+					&& !(user.getShoppingCart() instanceof FDModifyCartModel)
+					&& user.getShoppingCart().getDeliveryReservation() !=null 
+					&& user.getShoppingCart().getDeliveryReservation().getType()!=null
+					&& rsv!=null
+					&& rsv.getType() !=null
+					&& (user.getShoppingCart().getDeliveryReservation().getType().getName().equalsIgnoreCase(EnumReservationType.ONETIME_RESERVATION.getName())
+							|| user.getShoppingCart().getDeliveryReservation().getType().getName().equalsIgnoreCase(EnumReservationType.RECURRING_RESERVATION.getName()))
+					&& (rsv.getType().getName().equalsIgnoreCase(EnumReservationType.ONETIME_RESERVATION.getName())
+							|| rsv.getType().getName().equalsIgnoreCase(EnumReservationType.RECURRING_RESERVATION.getName())))
+					
+				user.getShoppingCart().setDeliveryReservation(null);
+			user.setReservation(rsv);
+			
+			user.resetUserContext();
+			user.getShoppingCart().setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
+
+			if (!user.getShoppingCart().isEmpty()) {
+				for (FDCartLineI cartLine : user.getShoppingCart().getOrderLines()) {
+					cartLine.setUserContext(user.getUserContext());
+					cartLine.setFDGroup(null);//clear the group
+				}
+			}
+			try {
+				user.getShoppingCart().refreshAll(true);
+			} catch (FDInvalidConfigurationException e) {
+				e.printStackTrace();
+			}
+			
+			
+			
+			return rsv;
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error talking to session bean");

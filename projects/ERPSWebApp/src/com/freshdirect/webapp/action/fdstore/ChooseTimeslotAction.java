@@ -229,10 +229,11 @@ public class ChooseTimeslotAction extends WebActionSupport {
 		
 		if ((isZoneInfoNotMatched)|| (null == cart.getDeliveryAddress() && erpAddress != null)) {
 			cart.setDeliveryAddress(erpAddress);
-			user.setAddress(erpAddress);
 			user.setZPServiceType(erpAddress.getServiceType());
 			user.resetUserContext();
-			cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
+			user.setAddress(erpAddress, false);
+			
+			cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user.getUserContext(false)));
 			if (!cart.isEmpty()) {
 				for (FDCartLineI cartLine : cart.getOrderLines()) {
 					cartLine.setUserContext(user.getUserContext());

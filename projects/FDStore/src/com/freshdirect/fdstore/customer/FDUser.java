@@ -483,6 +483,17 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     }
 
+    public void setAddress(AddressModel a, boolean populateUserContext) {
+        this.address = a;
+        this.invalidateCache();
+        if(populateUserContext){
+        	this.userContext = null;
+        	this.userContext = getUserContext();
+        }
+
+    }
+
+    
     @Override
     public AddressModel getAddress() {
         return this.address;
@@ -2421,7 +2432,36 @@ public class FDUser extends ModelSupport implements FDUserI {
                     address = new ErpAddressModel(this.getAddress());
                 }
 
-                userContext = setFulfillmentAndPricingContext(userContext, address);
+                userContext = setFulfillmentAndPricingContext(userContext, address, true);
+            }
+        } catch (FDResourceException e) {
+            throw new FDRuntimeException(e, e.getMessage());
+        }
+
+        return userContext;
+    }
+    
+    public UserContext getUserContext(boolean override) {
+        try {
+
+            if (userContext == null) {
+                userContext = new UserContext();
+
+                StoreContext storeContext = StoreContext.createStoreContext(EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId())));
+                userContext.setStoreContext(storeContext); // TODO this should be changed once FDX_CMS is merged!!! also check StoreContext.createDefault()
+
+                userContext.setFdIdentity(getIdentity()); // TODO maybe FDIdentity should be removed from FDUser
+                userContext.setCustSapId(getCustSapId()); // Avalara needs customer's SAP Id.
+                ErpAddressModel address = null;
+                if (this.getAddress() != null && this.getAddress().isCustomerAnonymousAddress()) {
+                    address = new ErpAddressModel(this.getAddress());
+                } else if (identity != null) {
+                    address = getFulfillmentAddress(identity, storeContext.getEStoreId());
+                } else if (this.getAddress() != null) {
+                    address = new ErpAddressModel(this.getAddress());
+                }
+
+                userContext = setFulfillmentAndPricingContext(userContext, address, override);
             }
         } catch (FDResourceException e) {
             throw new FDRuntimeException(e, e.getMessage());
@@ -2435,15 +2475,17 @@ public class FDUser extends ModelSupport implements FDUserI {
         return (address != null && !StringUtil.isEmpty(address.getZipCode())) ? true : false;
     }
 
-    private FulfillmentInfo getFulfillmentInfo(ErpAddressModel address, Date deliveryDate) {
+    private FulfillmentInfo getFulfillmentInfo(ErpAddressModel address, Date deliveryDate, boolean override) {
         try {      	
         	FDDeliveryZoneInfo deliveryZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, (deliveryDate!=null)?deliveryDate: getNextDay(), getHistoricOrderSize(), this.getRegionSvcType(address.getId()),
-                     address.getCustomerId());    
-        	//APPDEV 6442 FDC transition changes
-        	FDDeliveryZoneInfo f = overrideZoneInfo(address, deliveryZoneInfo);       	 
-            if (f!=null && f.getFulfillmentInfo()!=null){
-            	return f.getFulfillmentInfo();
-            }
+                     address.getCustomerId());  
+        	if(override){
+	        	//APPDEV 6442 FDC transition changes
+	        	FDDeliveryZoneInfo f = overrideZoneInfo(address, deliveryZoneInfo);       	 
+	            if (f!=null && f.getFulfillmentInfo()!=null){
+	            	return f.getFulfillmentInfo();
+	            }
+        	}
             //If the user does not have a reservation and does not fall under the look ahead days (as determined by overrideZoneInfo() ) - return the original fulfillment call
             return deliveryZoneInfo.getFulfillmentInfo();
         } catch (FDInvalidAddressException e) {
@@ -2544,7 +2586,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		return null;
 	}
 	
-	private UserContext setFulfillmentAndPricingContext(UserContext userContext, ErpAddressModel address) throws FDResourceException {
+	private UserContext setFulfillmentAndPricingContext(UserContext userContext, ErpAddressModel address, boolean override) throws FDResourceException {
 
         FulfillmentContext fulfillmentContext = new FulfillmentContext();
         if (this.getZipCode() != null && FDStoreProperties.isAlcoholRestrictionByContextEnabled()) {
@@ -2565,14 +2607,15 @@ public class FDUser extends ModelSupport implements FDUserI {
         ZoneInfo zoneInfo = null;
 
         if (isAddressValidForFulfillmentCheck(address)) {
-            fulfillmentInfo = getFulfillmentInfo(address, (this.getShoppingCart()!=null && this.getShoppingCart().getDeliveryReservation()!=null 
+            fulfillmentInfo = getFulfillmentInfo(address, (this.getShoppingCart() instanceof FDModifyCartModel)? this.getShoppingCart().getDeliveryReservation().getTimeslot().getDeliveryDate():
+            		(this.getShoppingCart()!=null && this.getShoppingCart().getDeliveryReservation()!=null 
             		&& this.getShoppingCart().getDeliveryReservation().getTimeslot()!=null 
             		&& this.getShoppingCart().getDeliveryReservation().getTimeslot().getDeliveryDate()!=null
             		&& address!=null && address.getPK()!=null 
             		&& this.getShoppingCart().getDeliveryReservation().getAddressId()!=null
             		&& this.getShoppingCart().getDeliveryReservation().getAddressId().equals(address.getId())
             		&& !this.getShoppingCart().getDeliveryReservation().getTimeslot().getDeliveryDate().before(today()))?
-            				this.getShoppingCart().getDeliveryReservation().getTimeslot().getDeliveryDate():null);
+            				this.getShoppingCart().getDeliveryReservation().getTimeslot().getDeliveryDate():null, override);
         }
 
         if (fulfillmentInfo == null) {
