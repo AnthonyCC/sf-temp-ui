@@ -166,11 +166,32 @@
 
 				<div class="bottom-contents">
 					<div class="bottom-links">
-						New to FreshDirect? <a
-							href="/social/signup_lite.jsp"
-							tabindex="6"
-							onclick="event.preventDefault();window.FreshDirect.components.ajaxPopup.close(); window.FreshDirect.components.ifrPopup.open({ url: '/social/signup_lite.jsp?successPage=<%=successPage%>', height: 590, width:560, opacity: .5});">
-							Create Account </a>
+						New to FreshDirect? <a id="social_login_signup_link" href="/social/signup_lite.jsp" tabindex="6" data-hasevent="false">Create Account</a>
+							<script>
+								if ($jq('#social_login_signup_link[data-hasevent="false"]').length) {
+									$jq('#social_login_signup_link').on('click', function(event){									
+										event.preventDefault();
+										$jq(this).attr('data-hasevent', 'true');
+										var fd = window.FreshDirect;
+										fd.components.ajaxPopup.close();
+										
+										//if we're on the signup page already, exit here
+										if (window.location.pathname === '/social/signup_lite.jsp') { return; }
+										
+										if (fd.mobWeb) { /* send user to page instead of popup */
+											  var API = $jq("#nav-menu").data("mmenu");
+												window.top.location = '/social/signup_lite.jsp?successPage=' + window.location.pathname + window.location.search + window.location.hash;
+												if (API) {
+													API.close();
+												}
+										  } else {
+											    if (fd.components && fd.components.ifrPopup) {
+											      fd.components.ifrPopup.open({ url: '/social/signup_lite.jsp?successPage=<%=successPage%>', height: 590, width:560, opacity: .5});
+											    }
+										  }
+									});
+								}
+							</script>
 					</div>
 				</div>
 
