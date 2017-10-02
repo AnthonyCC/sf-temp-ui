@@ -50,6 +50,9 @@
 	<fileset dir="${uilib}">
 		<include name="*.jar"/>
 	</fileset>
+	<fileset dir="${thirdparty.home}">
+		<include name="FDClient.jar"/>
+	</fileset>
 	</path>
 
 	<!-- UI configurations ends -->
@@ -3236,6 +3239,9 @@
 			<copy todir="${work.dir}/@{project}/WEB-INF/lib">
 					<fileset dir="${uilib}">
 						<include name="*.jar"/>
+					</fileset>
+					<fileset dir="${thirdparty.home}">
+						<include name="FDClient.jar"/>
 					</fileset>
 			</copy>
 			<mkdir dir="${work.dir}/@{project}/WEB-INF/classes" />
