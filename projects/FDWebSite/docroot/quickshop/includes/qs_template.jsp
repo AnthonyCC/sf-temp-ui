@@ -17,7 +17,7 @@
 %>
 <features:isActive name="isQS20" featureName="quickshop2_0" />
 
-<html>
+<html lang="en-US" xml:lang="en-US">
 	<head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" lang="en-US"/>
 

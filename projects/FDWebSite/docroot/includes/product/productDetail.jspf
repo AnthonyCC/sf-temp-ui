@@ -127,7 +127,7 @@
 								<soy:render template="pdp.evenBetter" data="${evenBetter}" />
 							</c:when>
 							<c:otherwise><%-- show criteo --%>
-								<soy:render template="pdp.criteo" data="${browsePotato.adProducts}" />
+								<soy:render template="pdp.criteo" data="${browsePotato}" />
 							</c:otherwise>
 						</c:choose>
 					</c:if>
@@ -238,7 +238,7 @@
 										<soy:render template="pdp.evenBetter" data="${evenBetter}" />
 									</c:when>
 									<c:otherwise><%-- show criteo --%>
-										<soy:render template="pdp.criteo" data="${browsePotato.adProducts}" />
+										<soy:render template="pdp.criteo" data="${browsePotato}" />
 									</c:otherwise>
 								</c:choose>
 							</c:if>

@@ -20,7 +20,7 @@ int count = 0;
 %>
 
 <!DOCTYPE html>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 <title>Query for non-Archive items with more than one Web Id</title>
 <style type="text/css">

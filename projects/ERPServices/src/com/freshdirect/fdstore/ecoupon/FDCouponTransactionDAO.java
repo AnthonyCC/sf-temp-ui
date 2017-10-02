@@ -110,8 +110,9 @@ public class FDCouponTransactionDAO implements Serializable {
     public static List<ErpCouponTransactionModel> getSubmitPendingCouponTransactions(Connection conn) throws SQLException{
     	List<ErpCouponTransactionModel> list = new ArrayList<ErpCouponTransactionModel>();
 		PreparedStatement ps =conn.prepareStatement(SELECT_SUBMIT_PENDING_COUPON_TRANS_);
+		ResultSet rs = null;
 		try {
-			ResultSet rs =ps.executeQuery();
+			rs =ps.executeQuery();
 			while(rs.next()){
 				ErpCouponTransactionModel transModel = new ErpCouponTransactionModel();
 				transModel.setId(rs.getString("TRANS_ID"));
@@ -124,8 +125,8 @@ public class FDCouponTransactionDAO implements Serializable {
 			ps.close();
 			
 		} finally {
-			if (ps != null)
-				ps.close();
+			DaoUtil.close(rs);
+			DaoUtil.close(ps);
 		}		
 		return list;
 	}
@@ -138,10 +139,11 @@ public class FDCouponTransactionDAO implements Serializable {
     public static ErpCouponTransactionModel getSubmitPendingCouponTransaction(Connection conn,String saleId) throws SQLException{
     	ErpCouponTransactionModel transModel =null;
 		PreparedStatement ps =conn.prepareStatement(SELECT_SUBMIT_PENDING_COUPON_TRANS_SALE);
+		ResultSet rs = null;
 		if(null !=saleId){
 			ps.setString(1, saleId);
 			try {
-				ResultSet rs =ps.executeQuery();
+				rs =ps.executeQuery();
 				if(rs.next()){
 					transModel = new ErpCouponTransactionModel();
 					transModel.setId(rs.getString("TRANS_ID"));
@@ -153,8 +155,8 @@ public class FDCouponTransactionDAO implements Serializable {
 				ps.close();
 				
 			} finally {
-				if (ps != null)
-					ps.close();
+				DaoUtil.close(rs);
+				DaoUtil.close(ps);
 			}		
 		}
 		return transModel;
@@ -168,16 +170,17 @@ public class FDCouponTransactionDAO implements Serializable {
     public static List<String> getSubmitPendingCouponSales(Connection conn) throws SQLException{
     	List<String> list = new ArrayList<String>();
 		PreparedStatement ps =conn.prepareStatement(SELECT_SUBMIT_PENDING_COUPON_SALES);
+		ResultSet rs = null;
 		try {
-			ResultSet rs =ps.executeQuery();
+			rs =ps.executeQuery();
 			while(rs.next()){
 				list.add(rs.getString("SALE_ID"));			
 			}
 			ps.close();
 			
 		} finally {
-			if (ps != null)
-				ps.close();
+			DaoUtil.close(rs);
+			DaoUtil.close(ps);
 		}		
 		return list;
 	}
@@ -244,16 +247,17 @@ public class FDCouponTransactionDAO implements Serializable {
     public static List<String> getConfirmPendingCouponSales(Connection conn) throws SQLException{
     	List<String> list = new ArrayList<String>();
 		PreparedStatement ps =conn.prepareStatement(SELECT_CONFIRM_PENDING_COUPON_SALES);
+		ResultSet rs = null;
 		try {
-			ResultSet rs =ps.executeQuery();
+			rs =ps.executeQuery();
 			while(rs.next()){
 				list.add(rs.getString("SALE_ID"));			
 			}
 			ps.close();
 			
 		} finally {
-			if (ps != null)
-				ps.close();
+			DaoUtil.close(rs);
+			DaoUtil.close(ps);
 		}		
 		return list;
 	} 

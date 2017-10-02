@@ -1,4 +1,4 @@
-<html>
+<html lang="en-US" xml:lang="en-US">
 <body bgcolor=#ffffff>
 
 <h2>Debug pages</h2>

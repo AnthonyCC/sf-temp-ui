@@ -31,7 +31,7 @@
 	<table width="100%" cellspacing="0" cellpadding="0" border="0" class="gc_tableBody">
 		<tr>
 			<td class="text11" width="675">
-				<span class="title18"><img src="/media_stat/images/giftcards/purchase/purchase_gift_cards.gif" /></span><br />
+				<span class="title18"><img src="/media_stat/images/giftcards/purchase/purchase_gift_cards.gif" alt="purchase gift cards" /></span><br />
 				Please enter your credit card information below.
 			</td>
 			<td width="99">
@@ -154,8 +154,8 @@
 							</tr>
 
 							<tr valign="middle">
-								<td class="text11">If you need to enter another credit card: <a href="/gift_card/purchase/includes/gc_add_creditcard.jsp?pageName=bulkPurchase">
-									<IMG src="/media_stat/images/buttons/add_new_card.gif" width="96" height="16" alt="Add New Credit Card" border="0" /></a>
+								<td class="text11">If you need to enter another credit card: <a class="cssbutton green small" href="/gift_card/purchase/includes/gc_add_creditcard.jsp?pageName=bulkPurchase">
+									ADD NEW CARD</a>
 								</td>
 							</tr>
 							<tr>

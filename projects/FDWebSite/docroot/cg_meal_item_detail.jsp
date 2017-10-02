@@ -49,9 +49,9 @@ if (mcatId != null && mproductId != null) {
 } else if (recipeId !=null) {
 	recipe = (Recipe) PopulatorUtil.getContentNode(recipeId);
 	variant = recipe.getDefaultVariant();
+} else {
+    throw new FDNotFoundException("No variantId or recipeId or mproductId supplied");
 }
-// TODO: handle lack of mproductId or recipeId
-
 
 //accomodate claims include
 ProductModel    productNode        = null;

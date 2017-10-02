@@ -5,7 +5,7 @@
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
 <fd:CheckLoginStatus id="user" guestAllowed='false' recognizedAllowed='true' />
 <potato:productExtra name="productExtra" productId='${param.productId}' categoryId='${param.catId}'/>
-<html>
+<html lang="en-US" xml:lang="en-US">
 	<head>
 		<meta charset="utf-8">
 		<title>Product Extra Data Test Page</title>

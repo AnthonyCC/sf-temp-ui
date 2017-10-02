@@ -100,7 +100,7 @@ if (!origURL.equals(newURL)) {
 	response.sendRedirect(StringEscapeUtils.unescapeHtml(newURL));	
 }
 
-%><html>
+%><html lang="en-US" xml:lang="en-US">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 	<title>YMAL PERFORMANCE TEST PAGE</title>

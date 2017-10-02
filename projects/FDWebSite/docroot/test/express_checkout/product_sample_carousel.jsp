@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr"%>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
   <jwr:style src="/grid.css" media="all" />
   <jwr:style src="/oldglobal.css" media="all" />

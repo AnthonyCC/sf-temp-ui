@@ -11,7 +11,7 @@
 <%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="com.freshdirect.webapp.util.ProductImpression"%>
 <%@page import="java.util.Collections"%>
-<%@page import="com.freshdirect.webapp.util.TransactionalProductImpression"%><html>
+<%@page import="com.freshdirect.webapp.util.TransactionalProductImpression"%><html lang="en-US" xml:lang="en-US">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 <title>Add to Cart w/o Page Reload Test Page</title>

@@ -221,9 +221,9 @@ for (FDOrderInfoI orderInfo : orderHistoryInfo) {
 <FONT CLASS="space4pix NOMOBWEB"><BR><BR></FONT>
 <TABLE class="NOMOBWEB" BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= (mobWeb)? "100%" : W_YA_ORDER_HISTORY_TOTAL %>">
 	<tr VALIGN="TOP">
-		<td WIDTH="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="CONTINUE SHOPPING" ALIGN="LEFT"></a></td>
-    <td WIDTH="<%= W_YA_ORDER_HISTORY_TOTAL - 35 %>"><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="CONTINUE SHOPPING"></a><BR>
-			from <FONT CLASS="text11bold"><A HREF="/index.jsp">Home Page</A></FONT><BR><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="340" HEIGHT="1" BORDER="0">
+		<td WIDTH="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="" ALIGN="LEFT">
+          CONTINUE SHOPPING<BR>
+			from <FONT CLASS="text11bold">Home Page</a></FONT><BR><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="340" HEIGHT="1" BORDER="0">
 		</td>
 	</tr>
 </TABLE>

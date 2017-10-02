@@ -144,7 +144,7 @@ response.setHeader("Cache-Control", "no-cache");
 				<tr>
 				<%if(!"".equals(profileImagePath)){%>
 					<td class="rb_image" style="padding-right:5px;">
-						<img src=<%="/media_stat/images/profile/"+profileImagePath+".jpg"%>><br />
+						<img src=<%="/media_stat/images/profile/"+profileImagePath+".jpg"%> alt=""><br />
 					</td>
 				<%}%>
 				</tr>
@@ -183,7 +183,7 @@ response.setHeader("Cache-Control", "no-cache");
 			<!-- CHEF'S TABLE member -->
             <% if(user.isChefsTable()) { %>
 	        <table class="col100per noBorder tLeft">
-	         <tr><td width="15" style="padding-top:12px;"><img src="/media_stat/images/template/youraccount/ct_star.gif" width="15" height="15"></td><td class="t11px bolded" style="padding-top:12px;">CHEF'S TABLE MEMBER</td></tr>
+	         <tr><td width="15" style="padding-top:12px;"><img src="/media_stat/images/template/youraccount/ct_star.gif" alt="" width="15" height="15"></td><td class="t11px bolded" style="padding-top:12px;">CHEF'S TABLE MEMBER</td></tr>
 	        </table>
 	        <% } %>
 
@@ -191,9 +191,9 @@ response.setHeader("Cache-Control", "no-cache");
 						<table cellpadding="0" cellspacing="0" border="0">
 							<tr><td colspan="3" style="padding-top:12px;"><img height="1" width="1" alt="" src="/media_stat/images/layout/clear.gif"/></td></tr>
 							<tr valign="top">
-								<td><img height="6" width="6" src="/media_stat/images/layout/top_left_curve.gif"/></td>
+								<td><img height="6" width="6" alt="" src="/media_stat/images/layout/top_left_curve.gif"/></td>
 								<td style="border-top: 1px solid #996;"><img height="1" width="204" alt="" src="/media_stat/images/layout/clear.gif"/></td>
-								<td><img height="6" width="6" src="/media_stat/images/layout/top_right_curve.gif"/></td>
+								<td><img height="6" alt="" width="6" src="/media_stat/images/layout/top_right_curve.gif"/></td>
 							</tr>
 							<tr>
 								<td align="center" style="border-left: 1px solid #996; border-right: 1px solid #996;" colspan="3">
@@ -211,9 +211,9 @@ response.setHeader("Cache-Control", "no-cache");
 								</td>
 							  </tr>
 							<tr valign="top">
-								<td><img height="6" width="6" vspace="0" src="/media_stat/images/layout/bottom_left_curve.gif"/></td>
+								<td><img height="6" width="6" vspace="0" alt="" src="/media_stat/images/layout/bottom_left_curve.gif"/></td>
 								<td style="border-bottom: 1px solid #996;"><img height="1" width="1" alt="" src="/media_stat/images/layout/clear.gif"/></td>
-								<td><img height="6" width="6" vspace="0" src="/media_stat/images/layout/bottom_right_curve.gif"/></td>
+								<td><img height="6" alt="" width="6" vspace="0" src="/media_stat/images/layout/bottom_right_curve.gif"/></td>
 							</tr>
 						</table>
 				<!-- OAS ad position goes here -->
@@ -280,9 +280,9 @@ response.setHeader("Cache-Control", "no-cache");
 <FONT CLASS="space4pix"><BR><BR></FONT>
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL %>">
 <tr VALIGN="TOP">
-<td WIDTH="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="CONTINUE SHOPPING" ALIGN="LEFT"></a></td>
-<td WIDTH="<%= W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL - 35 %>"><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="CONTINUE SHOPPING"></a>
-<BR>from <FONT CLASS="text11bold"><A HREF="/index.jsp">Home Page</A></FONT><BR><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="340" HEIGHT="1" BORDER="0"></td>
+<TD WIDTH="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="" ALIGN="LEFT">
+CONTINUE SHOPPING
+<BR>from <FONT CLASS="text11bold">Home Page</A></FONT><BR><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="340" HEIGHT="1" BORDER="0"></TD>
 </tr>
 
 </TABLE>

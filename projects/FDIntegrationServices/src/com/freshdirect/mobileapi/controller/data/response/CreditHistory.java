@@ -35,19 +35,9 @@ public class CreditHistory extends Message {
 	    private String order;
 	    
 	    private String amount;
-	    
-	    private String estore;
 	
 	    
-	    public String getEstore() {
-			return estore;
-		}
-
-		public void setEstore(String estore) {
-			this.estore = estore;
-		}
-
-		public String getDate() {
+	    public String getDate() {
 	        return date;
 	    }
 	

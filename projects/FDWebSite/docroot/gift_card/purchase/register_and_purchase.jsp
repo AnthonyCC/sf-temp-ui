@@ -64,7 +64,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 <table width="<%=W_REGISTER_AND_PURCHASE_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 	<tr>
 		<td class="text11" width="<%=W_REGISTER_AND_PURCHASE_TOTAL-99%>">
-			<span class="title18"><img src="/media_stat/images/giftcards/purchase/purchase_gift_cards.gif" /></span><br />
+			<span class="title18"><img src="/media_stat/images/giftcards/purchase/purchase_gift_cards.gif" alt="purchase gift cards" /></span><br />
 			<b>(Already a FreshDirect customer? <a href="/login/login.jsp?successPage=/gift_card/purchase/purchase_giftcard.jsp">Click here log in.)</b>
 		</td>
 		<td width="99">
@@ -73,7 +73,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 	</tr>
 	<tr>
 		<td colspan="2" style="padding: 4px 0px;">
-            <img style="margin: 2px 0;" src="/media_stat/images/layout/ff9900.gif" width="<%=W_REGISTER_AND_PURCHASE_TOTAL%>" height="2" border="0" /><br /><br/>
+            <img style="margin: 2px 0;" src="/media_stat/images/layout/ff9900.gif" alt="" width="<%=W_REGISTER_AND_PURCHASE_TOTAL%>" height="2" border="0" /><br /><br/>
 		</td>
 	</tr>
 </table>

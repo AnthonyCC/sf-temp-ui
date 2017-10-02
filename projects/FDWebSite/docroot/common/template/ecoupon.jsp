@@ -10,7 +10,7 @@
 	//Boolean.parseBoolean(NVL.apply(request.getParameter("refinement"), "true"));
 
 %>
-<html lang="en">
+<html lang="en-US" xml:lang="en-US">
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" lang="en-US"/>
 		<title><tmpl:get name='title'/></title>

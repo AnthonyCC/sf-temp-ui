@@ -3,7 +3,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 <fd:CheckLoginStatus id="user" guestAllowed='true' recognizedAllowed='true' />
-<html>
+<html lang="en-US" xml:lang="en-US">
 	<head>
 		<jwr:style src="/oldglobal.css"/>
 		<jwr:style src="/global.css"/>

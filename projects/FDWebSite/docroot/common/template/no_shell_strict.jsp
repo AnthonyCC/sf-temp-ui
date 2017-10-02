@@ -10,7 +10,7 @@
 		}*/
 %>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title><tmpl:get name='title'/></title>
 		<%@ include file="/common/template/includes/metatags.jspf" %>

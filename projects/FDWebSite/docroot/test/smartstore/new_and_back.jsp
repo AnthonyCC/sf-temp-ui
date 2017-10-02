@@ -193,7 +193,7 @@ List<ProductEntry> calcProductEntries(Map<ProductModel, Date> products, Date now
 <%@page import="com.freshdirect.erp.model.ErpMaterialInfoModel"%>
 <%@page import="com.freshdirect.erp.model.ErpProductInfoModel"%>
 <%@page import="java.util.Iterator"%>
-<%@page import="com.freshdirect.fdstore.FDStoreProperties"%><html>
+<%@page import="com.freshdirect.fdstore.FDStoreProperties"%><html lang="en-US" xml:lang="en-US">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 <title>NEW AND BACK IN STOCK PRODUCTS TEST PAGE</title>

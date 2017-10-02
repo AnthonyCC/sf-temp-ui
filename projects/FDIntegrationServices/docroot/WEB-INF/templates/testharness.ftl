@@ -587,6 +587,11 @@ function loadStuff() {
   	$("#header").val('');
   	$("#payload").val("");
 
+  } else if (loaddata == "GetCreditHistory") {
+  	$("#url").val("/saptest12@freshdirect.com/account/credits/");
+  	$("#header").val('');
+  	$("#payload").val("");
+
   } else if (loaddata == "GetCreditedOrderHistory") {
   	$("#url").val("/saptest12@freshdirect.com/account/creditedorders/");
   	$("#header").val('');
@@ -1344,6 +1349,12 @@ function loadStuff() {
     var postData = '{"moduleContainerId":"ModuleContainer:currentUserModuleContainer"}';
     $("#payload").val(postData);
 
+  } else if ( loaddata == "getPageComponent"){
+    $("#url").val("/home/getPageComponent/");
+    $("#header").val('{ "X-FD-Extra-Response" : "INCLUDE_USERINFO,INCLUDE_CART,INCLUDE_FEEDS,INCLUDE_PAYMENT,EXCLUDE_ADDRESS" }');
+    var postData = '{"requestedDate":"2017-09-25T08:32:59.001Z","pageType":"FeedHead"}';
+    $("#payload").val(postData);
+
   }  else if (  loaddata == "sociallogin") {
   	$("#url").val("/social/login/");
   	$("#header").val(''); 
@@ -1516,19 +1527,30 @@ function doStuff() {
        postData = "data=" + $.URLEncode(payload);
   }
   
-   $.ajax({
+	$.ajax({
 	      type: 'POST',
 	      url: strURL,
 	      headers: header,
 	      data: postData,
 	      dataType: dType,
-          contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-	      success: function(msg) {
-	        $("#result").JSONView(msg, { collapsed: true, nl2br: true, recursive_collapser: true });
+	      contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+	      success: function(msg, status, xhr) {
+		
+		var ct = xhr.getResponseHeader("content-type") || "";		
+		if (ct.indexOf('html') > -1) {
+	             var iframe = document.getElementById('htmlresponse');
+		     iframe = iframe.contentWindow || ( iframe.contentDocument.document || iframe.contentDocument);
+		     
+		     iframe.document.open();
+		     iframe.document.write(msg);
+		     iframe.document.close();
+		} else {
+		     $("#result").JSONView(msg, { collapsed: true, nl2br: true, recursive_collapser: true });
+		}
 	      },
 	      error:function(msg){
-            $("#result").JSONView(msg.responseText, { collapsed: true, nl2br: true, recursive_collapser: true });
-        }
+		$("#result").JSONView(msg.responseText, { collapsed: true, nl2br: true, recursive_collapser: true });
+	     }
 	});	
 }	
 </script>
@@ -1687,6 +1709,7 @@ function doStuff() {
 
   <option value=""> ========== ORDERS ========== </option>
   <option value="GetOrderHistory">ORDERS - Order History</option>
+  <option value="GetCreditHistory">ORDERS - Credit History</option>
   <option value="GetCreditedOrderHistory">ORDERS - Credited Order History</option>
   <option value="GetExistingOrder">ORDERS - Existing Order Detail</option>
   <option value="GetExistingOrders">ORDERS - List Of Existing Orders Detail</option>
@@ -1808,6 +1831,7 @@ function doStuff() {
   <option value="getPage"> Home - Get Page </option>
   <option value="getPageWeb">Home - Get Page Web</option>
   <option value="getModule">Home - Get Module</option>
+  <option value="getPageComponent">Home - Get Page Component</option>
 
   <option value=""> ========== External Login ========== </option>
   <option value="sociallogin"> External - Login</option>
@@ -1836,5 +1860,7 @@ function doStuff() {
   <button id="toggle-level1-btn">Toggle level1</button>
   <button id="toggle-level2-btn">Toggle level2</button>
   <div  style="border: solid 2px #ff0000;width: 1000px;height: 500px;overflow: scroll;" id="result"></div>
+  <br/>
+  <iframe id="htmlresponse" style="width:1000px; height:200px;" />
 </body>
 </html>

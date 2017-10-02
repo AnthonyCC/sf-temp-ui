@@ -597,6 +597,7 @@ span.cssbutton.annotation:hover {
 	border-bottom-right-radius:10px;
 	font-weight:normal;
 	text-shadow:none;
+	display:none;
 }
 
 #evenBetterPopup .pdp-evenbetter-learnmore:hover {

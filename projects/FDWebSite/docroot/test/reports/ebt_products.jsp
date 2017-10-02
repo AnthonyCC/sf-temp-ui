@@ -21,7 +21,7 @@ Collection<ContentKey> categories = CmsManager.getInstance().getContentKeysByTyp
 <fd:CheckLoginStatus id="user"/>
 
 <!DOCTYPE html>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 <title>EBT Excluded Items</title>
 <style type="text/css">

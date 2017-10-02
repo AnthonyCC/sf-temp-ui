@@ -14,7 +14,7 @@ request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);
 <!--[if IE 7]>    <html class="no-js lt-ie10 lt-ie9 lt-ie8" lang="en"> <![endif]-->
 <!--[if IE 8]>    <html class="no-js lt-ie10 lt-ie9" lang="en"> <![endif]-->
 <!--[if IE 9]>    <html class="no-js lt-ie10" lang="en"> <![endif]-->
-<!--[if gt IE 9]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<!--[if gt IE 9]><!--> <html lang="en-US" xml:lang="en-US" class="no-js" lang="en"> <!--<![endif]-->
 <head>
     <tmpl:get name="seoMetaTag"/>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>

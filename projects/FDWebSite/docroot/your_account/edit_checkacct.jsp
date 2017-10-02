@@ -28,7 +28,7 @@ final int W_YA_EDIT_CHECKACCT = 970;
 <td class="text11" WIDTH="<%= W_YA_EDIT_CHECKACCT %>">
 <font class="title18">Edit Checking Account</font><br>
 Learn more about how this service works.
-To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here</a>
+To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here<span class="offscreen">To learn more about our Security Policies</span></a>
 </td>
 </tr>
 </table>

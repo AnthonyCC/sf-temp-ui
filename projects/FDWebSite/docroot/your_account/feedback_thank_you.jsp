@@ -17,7 +17,7 @@
 		</TR>
 		<tr>
 		    <TD WIDTH="675" align="center">
-				<a href="/index.jsp" onmouseover="swapImage('home_img','/media_stat/images/template/help/help_home_r.gif')" onmouseout="swapImage('home_img','/media_stat/images/template/help/help_home.gif')"><img src="/media_stat/images/template/help/help_home.gif" name="home_img" width="71" height="26" alt="back home" border="0"></a>
+				<a href="/index.jsp" onmouseover="swapImage('home_img','/media_stat/images/template/help/help_home_r.gif')" onmouseout="swapImage('home_img','/media_stat/images/template/help/help_home.gif')"><img src="/media_stat/images/template/help/help_home.gif" name="home_img" width="71" height="26" alt="return to home page" border="0"></a>
 			<br><br><br><br><br><br><br>
 			</TD>		
 		</tr>

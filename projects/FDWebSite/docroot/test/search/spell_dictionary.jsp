@@ -14,7 +14,7 @@
 <%@page import="org.apache.lucene.index.Term"%>
 <%@page import="org.apache.lucene.index.TermPositions"%>
 <%@page import="org.apache.lucene.document.Document"%>
-<%@page import="org.apache.lucene.index.TermEnum"%><html>
+<%@page import="org.apache.lucene.index.TermEnum"%><html lang="en-US" xml:lang="en-US">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" lang="en-US">
 <title>Spelling Dictionary</title>

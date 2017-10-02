@@ -10,7 +10,7 @@
 <%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@page import="com.freshdirect.webapp.util.MediaUtils"%>
 
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" lang="en-US">
 <title>Available Multi-SKU Products</title>

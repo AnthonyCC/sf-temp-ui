@@ -21,7 +21,7 @@ String specialtyDeptLink = "/department.jsp?deptId=spe&trk=promo";
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 boolean isDepotUser = user==null?false:user.isDepotUser();
 %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 
 <SCRIPT LANGUAGE="Javascript1.1">

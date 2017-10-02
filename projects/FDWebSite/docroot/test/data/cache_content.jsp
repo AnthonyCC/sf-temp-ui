@@ -84,7 +84,7 @@
     EnumOrderLineRating oldRating = productInfo != null ? productInfo.getRating(pickingPlantId) : null;
     String oldFreshness = productInfo != null ? productInfo.getFreshness(pickingPlantId) : null;
 %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 <fd:css href="/test/search/config.css" />
 <title>Cache Content</title>

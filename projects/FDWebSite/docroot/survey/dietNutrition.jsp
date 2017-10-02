@@ -55,7 +55,7 @@ response.setDateHeader ("Expires", 0);
 <tr>
 	<td colspan="11" class="text12" align="center"><br>
 	<span class="title18">Thank you for your feedback.</span><br><%= hasTaken?"Your information has been submitted.<br>":""%>We greatly appreciate your time and interest.<br>
-<br><a href="/index.jsp"><img src="/media_stat/images/template/help/help_home.gif" width="71" height="26" border="" alt="BACK HOME"></a><br>Go to <a href="/index.jsp">Home Page</a><br><br></td></tr>
+<br><a href="/index.jsp"><img src="/media_stat/images/template/help/help_home.gif" width="71" height="26" border="" alt="return to home page"></a><br>Go to <a href="/index.jsp">Home Page</a><br><br></td></tr>
 <% } else { %>
 <fd:ReceiptSurvey actionName="submitSurvey" result="result" successPage="/survey/dietNutrition.jsp?info=thankyou" survey="<%=DietNutrition%>">
 <form name="dietNutritionSurvey" method="POST">

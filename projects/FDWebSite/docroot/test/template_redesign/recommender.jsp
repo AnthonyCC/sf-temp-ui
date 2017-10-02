@@ -18,7 +18,7 @@
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <fd:CheckLoginStatus id="user" guestAllowed='true' recognizedAllowed='true' />
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>

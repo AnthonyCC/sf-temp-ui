@@ -652,8 +652,6 @@ public class CategoryModel extends ProductContainer {
 			}
 		}
 
-    	
-    	
         return prodList;
     }
 

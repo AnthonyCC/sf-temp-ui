@@ -254,7 +254,7 @@ double defaultQuantity = templateLine.getQuantity();
 			<span class="space8pix"><br></span>
 		</td></tr>
 		<tr>
-			<td valign="top"><%	if (imgMedia!=null) {   %> <img src="<%=imgMedia.getPath()%>" border="0" width="<%=imgMedia.getWidth()%>" height="<%=imgMedia.getHeight()%>"> <%  } %></td>
+			<td valign="top"><%	if (imgMedia!=null) {   %> <img src="<%=imgMedia.getPath()%>" border="0" alt="<%=productNode.getFullName()%>" width="<%=imgMedia.getWidth()%>" height="<%=imgMedia.getHeight()%>"> <%  } %></td>
 			<td><img src="/media_stat/images/layout/clear.gif" alt="" width="20" height="1"></td>
 			<td valign="top" width="90%"><% if (prodDescr!=null && prodDescr.indexOf("blank_file.txt") < 0) { %><fd:IncludeMedia name='<%=prodDescr %>'/><span class="space8pix"><br><br></span><%  }  %>
 				<a href="javascript:popup('<%=prodPopup%>catId=<%=parentCat%>&prodId=<%=productNode%>&skuCode=<%=defaultSku%>','<%=prodPopUpSize%>')"><b>Click here for details.</b></a>

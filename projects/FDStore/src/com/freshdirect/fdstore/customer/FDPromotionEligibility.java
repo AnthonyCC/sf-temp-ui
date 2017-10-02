@@ -9,6 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
@@ -21,9 +22,10 @@ import com.freshdirect.fdstore.promotion.PromotionI;
 public class FDPromotionEligibility implements Serializable {
 
 	private static final long	serialVersionUID	= 3747005615570612091L;
-
+	//private final Object eligiblePromosLock = new Object();
+	
 	/** Set of String (promotionCode) */
-	private final Set<String> eligibilePromos = new LinkedHashSet<String>();
+	private final Set<String> eligibilePromos = new CopyOnWriteArraySet<String>();
 
 	/** Set of String (promotionCode) */
 	private final Set<String> appliedPromos = new LinkedHashSet<String>();

@@ -8,7 +8,7 @@
 	<xsl:output method="html"/>
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
-<html>
+<html lang="en-US" xml:lang="en-US">
 	<head>
 		<xsl:choose>
 			<xsl:when test="count(order/shortedItems/shortedItems) + count(order/bundleShortItems/bundleShortItems) + count(order/bundleCompleteShort/bundleCompleteShort) = 1">

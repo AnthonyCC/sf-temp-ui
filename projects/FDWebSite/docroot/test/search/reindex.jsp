@@ -13,7 +13,7 @@
 
 	DateFormat fmt = new SimpleDateFormat();
 %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 	<meta charset="UTF-8"/>
 	<title>Search Re-Index Page</title>

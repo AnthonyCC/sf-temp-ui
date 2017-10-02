@@ -29,7 +29,6 @@ import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.FDCachedFactory;
-import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -240,7 +239,7 @@ public class ContentFactory {
             model = getContentNodeFromCache(id);
 
             if (model == null) {
-                model = ContentNodeModelUtil.constructModel(id, isAllowToUseContentCache());
+                model = ContentNodeModelUtil.constructModel(id, isAllowToUseContentCache(id));
             }
 
             if (model == null) {
@@ -454,7 +453,7 @@ public class ContentFactory {
         Set<ContentKey> parentContentKeys = parentKeysByKeyCache.get(key);
         if (parentContentKeys == null){
             parentContentKeys = cmsManager.getParentKeys(key, getCurrentDraftContext());
-            if (isAllowToUseContentCache()){
+            if (isAllowToUseContentCache(key.getId())) {
                 parentKeysByKeyCache.put(key, parentContentKeys);
             }
         }
@@ -1036,14 +1035,14 @@ public class ContentFactory {
     }
 
     public void updateContentNodeCaches(String nodeId, ContentNodeModel nodeModel) {
-        if (isAllowToUseContentCache()) {
+        if (isAllowToUseContentCache(nodeId)) {
             nodesByIdCache.put(nodeId, nodeModel);
             nodesByKeyCache.put(nodeModel.getContentKey(), nodeModel);
         }
     }
 
     public void removeContentNodeCaches(ContentKey key) {
-        if (isAllowToUseContentCache()) {
+        if (isAllowToUseContentCache(key.getId())) {
             nodesByIdCache.remove(key.getId());
             nodesByKeyCache.remove(key);
         }

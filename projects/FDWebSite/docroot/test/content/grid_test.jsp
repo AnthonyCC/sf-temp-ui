@@ -10,7 +10,7 @@
 <%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
 <%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
 <%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
-<%@page import="com.freshdirect.fdstore.content.ContentFactory"%><html>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%><html lang="en-US" xml:lang="en-US">
 <%@ page import='com.freshdirect.webapp.util.*'%>
 <%@ page import="com.freshdirect.webapp.util.prodconf.DefaultProductConfigurationStrategy"%>
 <fd:CheckLoginStatus guestAllowed='true' pixelNames="TheSearchAgency" id="user" />

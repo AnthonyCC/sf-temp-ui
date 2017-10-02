@@ -1,4 +1,4 @@
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 <script type="text/javascript" src="https://www.plaxo.com/ab_chooser/abc_comm.jsdyn"></script>
     <title>FreshDirect</title>

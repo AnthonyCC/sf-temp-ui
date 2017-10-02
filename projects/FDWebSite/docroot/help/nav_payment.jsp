@@ -5,7 +5,7 @@
 
 <%FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);%>
 
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 	<title>FreshDirect - Help</title>
 

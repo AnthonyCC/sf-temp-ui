@@ -5,7 +5,7 @@
 <xsl:output method="html"/>
 
 <xsl:template match="fdemail">
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 	<link rel="stylesheet" href="http://www.freshdirect.com/assets/css/emails.css"/>
 </head>

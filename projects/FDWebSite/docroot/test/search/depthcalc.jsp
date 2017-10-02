@@ -7,7 +7,7 @@
 <%@page import="com.freshdirect.cms.ContentKey"%>
 <%@page import="com.freshdirect.fdstore.content.DepartmentModel"%>
 <%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
-<%@page import="com.freshdirect.fdstore.content.CategoryModel"%><html>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%><html lang="en-US" xml:lang="en-US">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" lang="en-US">
 <title>Depth Calculator Test</title>

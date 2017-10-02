@@ -10,7 +10,7 @@
 AddressModel selectedAddress = (AddressModel)pageContext.getAttribute(LocationHandlerTag.SELECTED_ADDRESS_ATTR);
 FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
 %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 	<head>
 	    <%@ include file="/common/template/includes/metatags.jspf" %>
 		<%@ include file="/shared/template/includes/i_stylesheets_optimized.jspf" %>

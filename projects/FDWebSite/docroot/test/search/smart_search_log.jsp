@@ -12,7 +12,7 @@
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 <title>Smart Search Snapshot Generator log</title>
 <meta http-equiv="refresh" content="5" lang="en-US">

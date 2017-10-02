@@ -9,7 +9,7 @@
 <%@page import="java.util.TreeSet"%>
 <%@page import="java.util.Comparator"%>
 <%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
-<%@page import="com.freshdirect.fdstore.content.SkuModel"%><html>
+<%@page import="com.freshdirect.fdstore.content.SkuModel"%><html lang="en-US" xml:lang="en-US">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" lang="en-US">
 <title>Available SKUs</title>

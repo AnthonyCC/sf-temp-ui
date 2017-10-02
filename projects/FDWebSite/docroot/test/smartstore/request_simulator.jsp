@@ -207,7 +207,7 @@ if (!origURL.equals(newURL)) {
 
 %>
 <%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 	<title>REQUEST SIMULATOR PAGE - <%= siteFeature.getName() %><%=

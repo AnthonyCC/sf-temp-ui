@@ -77,6 +77,7 @@ import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.OrderContext;
 import com.freshdirect.logistics.delivery.model.SystemMessageList;
 import com.freshdirect.logistics.fdstore.StateCounty;
+import com.freshdirect.logistics.fdstore.ZipCodeAttributes;
 import com.freshdirect.logistics.fdx.controller.data.request.CreateOrderRequest;
 
 public class DlvManagerSessionBean extends SessionBeanSupport {
@@ -549,6 +550,19 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			throw new FDResourceException(ex);
 		}
 	}
+	
+	//OPT-44 start
+	public ZipCodeAttributes lookupZipCodeAttributes(String zipcode) throws FDResourceException{
+
+		try {
+			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
+			ZipCodeAttributes sc = logisticsService.lookupZipCodeAttributes(zipcode);
+			return sc;
+		}catch (FDLogisticsServiceException ex) {
+			throw new FDResourceException(ex);
+		}
+	}
+	//OPT-44 end
 	
 	public Map<String, DeliveryException> getCartonScanInfo()
 			throws FDResourceException {

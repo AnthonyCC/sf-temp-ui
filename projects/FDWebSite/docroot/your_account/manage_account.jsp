@@ -318,15 +318,9 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 </tr>
 </table>
 <div class="continue-shopping text-left">
-  <a class="no-decor" href="/index.jsp">
-    <div class="col-left">
-      <button class="cssbutton green icon-arrow-left-before notext round"></button>
-    </div>
-    <div class="col-right">
-      <p><span class="continue-shopping-label">Continue Shopping</span></p>
-      <p>from <strong>Home Page</strong></p>
-    </div>
-  </a>
+  <a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="" ALIGN="LEFT">
+             CONTINUE SHOPPING
+            <BR>from <FONT CLASS="text11bold">Home Page</A></FONT>
 </div>
 </div>
  </tmpl:put>

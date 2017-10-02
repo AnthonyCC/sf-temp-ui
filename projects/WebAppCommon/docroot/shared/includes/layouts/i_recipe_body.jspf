@@ -137,7 +137,7 @@ final int W_RECIPE_BODY_TOTAL = 806;
 	 			<span class="recipe_author"><%=recipe.getDisplayableSource(true)%></span>
 	 			<% if(recipeDesc!=null){ %><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"><br><fd:IncludeMedia name='<%= recipeDesc.getPath() %>' /><% } %>
 				</td>
-				<td width="10%" align="right"><% if (source != null) { %><a href="javascript:popup('/recipe_source.jsp?recipeId=<%=recipe%>&trk=rec','large_long')"><% } %><% if(recipePhoto!=null){ %><img src=<%=recipePhoto.getPath()%> width="<%=recipePhoto.getWidth()%>" height="<%=recipePhoto.getHeight()%>" border="0" alt=""><% } %><% if (source != null) { %></a><% } %></td></tr>
+				<td width="10%" align="right"><% if (source != null) { %><a href="javascript:popup('/recipe_source.jsp?recipeId=<%=recipe%>&trk=rec','large_long')"><% } %><% if(recipePhoto!=null){ %><img src=<%=recipePhoto.getPath()%> width="<%=recipePhoto.getWidth()%>" height="<%=recipePhoto.getHeight()%>" border="0" alt=" <%=source.getName()%>" <% } %><% if (source != null) { %></a><% } %></td></tr>
 			</table>
 	 	</td>
 	</tr>

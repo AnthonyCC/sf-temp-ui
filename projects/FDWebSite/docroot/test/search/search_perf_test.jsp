@@ -12,7 +12,7 @@
 <%@page import="java.util.List"%>
 <%@page import="com.freshdirect.fdstore.content.Recipe"%>
 <%@page import="java.text.NumberFormat"%>
-<%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%><html>
+<%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%><html lang="en-US" xml:lang="en-US">
 <fd:CheckLoginStatus id="user" noRedirect="true"/>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" lang="en-US">

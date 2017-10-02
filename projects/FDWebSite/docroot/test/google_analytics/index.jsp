@@ -8,7 +8,7 @@
 <%@ page import="org.apache.http.HttpResponse" %>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
 
-<html>
+<html lang="en-US" xml:lang="en-US">
 	<body>
 		<form method="get" action="/test/google_analytics/index.jsp">
     		Enter Sale ID: <input type="text" name="saleId" value=""/>

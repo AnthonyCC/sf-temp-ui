@@ -17,7 +17,7 @@
 <%@ taglib uri='oscache' prefix='oscache' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ include file="/includes/i_dynamicRows_required.jspf" %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 <title>FreshDirect - Fresh Deals</title>
 <fd:css href="/assets/css/pc_ie.css"/>

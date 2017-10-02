@@ -16,7 +16,7 @@ final int W_CHECKOUT_NAV_TOTAL = 970;
 %>
 
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
 	<head>
     	<tmpl:get name="seoMetaTag"/>
 		<%@ include file="/common/template/includes/i_javascripts.jspf" %>

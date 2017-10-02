@@ -9,10 +9,19 @@ var FreshDirect = FreshDirect || {};
   fd.user = fd.user || {};
   
   var loginSignupPopup = function (target, popupUrl) {
-	    if (fd.components && fd.components.ifrPopup) {
-	      fd.components.ifrPopup.open({ url: popupUrl + '?successPage=' + target, height: 590, width: 560, opacity: .5});
-	    }
-	  };
+	  if (fd.mobWeb) { /* send user to page instead of popup */
+		  var API = $("#nav-menu").data("mmenu");
+			window.top.location = '/social/signup_lite.jsp?successPage=' + window.location.pathname + window.location.search + window.location.hash;
+			if (API) {
+				API.close();
+			}
+	  } else {
+
+		    if (fd.components && fd.components.ifrPopup) {
+		      fd.components.ifrPopup.open({ url: popupUrl + '?successPage=' + target, height: 590, width: 560, opacity: .5});
+		    }
+	  }
+	};
 	  
   var showLoginAjaxPopup = function (target, popupUrl) {
     if (fd.components && fd.components.ajaxPopup) {

@@ -11,7 +11,7 @@ String moduleContainerId = "ModuleContainer:"+request.getParameter("moduleContai
 <fd:CheckDraftContextTag/>
 
 
-<html>
+<html lang="en-US" xml:lang="en-US">
 	<head>
 		<%@ include file="/shared/template/includes/i_stylesheets_optimized.jspf" %>
 </head>

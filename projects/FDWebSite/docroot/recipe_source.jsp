@@ -11,12 +11,13 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
 <%
-Recipe recipe;
 String recipeId = request.getParameter("recipeId");
 
-if (recipeId != null) {
+if (recipeId == null) {
+    throw new FDNotFoundException("No recipeId supplied");
+}
 
-recipe = (Recipe) PopulatorUtil.getContentNode(recipeId);
+Recipe recipe = (Recipe) PopulatorUtil.getContentNode(recipeId);
 RecipeSource source = recipe.getSource();
 List featuredRecipes = source.getFeaturedRecipes();
 String sourceName =source !=null ? source.getName() : "";
@@ -75,4 +76,3 @@ title = "FreshDirect - " + title;
 		</table>
     </tmpl:put>
 </tmpl:insert>
-<% } %>

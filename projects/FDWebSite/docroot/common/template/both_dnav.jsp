@@ -17,7 +17,7 @@ final int W_BOTH_DNAV_CENTER = 601;
 final int W_BOTH_DNAV_RIGHT = 191;
 %>
 
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 		<tmpl:get name="seoMetaTag"/>
 		<%@ include file="/common/template/includes/i_javascripts.jspf" %>

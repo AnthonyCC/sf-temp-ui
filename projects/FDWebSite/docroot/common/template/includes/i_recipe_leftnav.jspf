@@ -42,7 +42,7 @@ final int W_RECIPE_LEFTNAV_TOTAL = 150;
    if (catImage!=null) {
 	%>
 	<tr><td width="10"></td><td><a href="<%=response.encodeURL("recipe_cat.jsp?catId="+rcpCategory+"&trk=snav")%>">
-	<img src="<%=catImage.getPath()%>" width="<%=catImage.getWidth()%>" height="<%=catImage.getHeight()%>" border="0"></a><br/>&nbsp;
+	<img alt="<%=rcpCategory.getFullName()%>" src="<%=catImage.getPath()%>" width="<%=catImage.getWidth()%>" height="<%=catImage.getHeight()%>" border="0"></a><br/>&nbsp;
 	</td><td width="5"></td></tr>
 <% 
    }   %>

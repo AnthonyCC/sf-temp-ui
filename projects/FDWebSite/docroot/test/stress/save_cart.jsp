@@ -8,7 +8,7 @@
 <%@page import="com.freshdirect.fdstore.customer.FDUser"%>
 <%@page import="com.freshdirect.fdstore.customer.FDCustomerManager"%>
 
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 <title>SAVE CART</title>
 </head>

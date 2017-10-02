@@ -95,7 +95,7 @@
 	Set         allRecipeKeys = CmsManager.getInstance().getContentKeysByType(recipeType);
 
 %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 <title>/ FD Product Unavailability Report /</title>
 </head>

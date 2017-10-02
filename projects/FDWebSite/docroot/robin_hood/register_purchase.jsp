@@ -82,9 +82,9 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 	<table width="100%" cellspacing="0" cellpadding="0" border="0">
 	<tr>
     <td rowspan="5" width="20" ><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
-    <td rowspan="2" bgcolor="#996699"><img src="/media_stat/images/template/system_msgs/996699_tp_lft_crnr.gif" width="18" height="5" border="0"></td>
-    <td colspan="2" bgcolor="#996699"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
-    <td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/996699_tp_rt_crnr.gif" width="6" height="5" border="0"></td>
+    <td rowspan="2" bgcolor="#996699"><img src="/media_stat/images/template/system_msgs/996699_tp_lft_crnr.gif" alt="" width="18" height="5" border="0"></td>
+    <td colspan="2" bgcolor="#996699"><img src="/media_stat/images/layout/cc3300.gif" alt="" width="1" height="1"></td>
+    <td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/996699_tp_rt_crnr.gif" alt="" width="6" height="5" border="0"></td>
     <td rowspan="5"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
 </tr>
 <tr>
@@ -99,15 +99,15 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 		<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
 	</td>
     <td bgcolor="#FFFFFF"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
-    <td bgcolor="#996699"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
+    <td bgcolor="#996699"><img src="/media_stat/images/layout/cc3300.gif" alt="" width="1" height="1"></td>
 </tr>
 <tr>
-    <td rowspan="2"><img src="/media_stat/images/template/system_msgs/996699_bt_lft_crnr.gif" width="18" height="5" border="0"></td>
+    <td rowspan="2"><img src="/media_stat/images/template/system_msgs/996699_bt_lft_crnr.gif" alt="" width="18" height="5" border="0"></td>
     <td bgcolor="#ffffff"><img height="4" border="0" width="1" alt="" src="/media_stat/images/layout/clear.gif"/></td>
-    <td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/996699_bt_rt_crnr.gif" width="6" height="5" border="0"></td>
+    <td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/996699_bt_rt_crnr.gif" alt="" width="6" height="5" border="0"></td>
 </tr>
 <tr>
-    <td colspan="2" bgcolor="#996699"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
+    <td colspan="2" bgcolor="#996699"><img src="/media_stat/images/layout/cc3300.gif" alt="" width="1" height="1"></td>
 </tr>
 </table>
 <br/>

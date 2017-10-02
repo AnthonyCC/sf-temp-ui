@@ -332,7 +332,7 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 
 	}
 
-	private static  HLBrandProductAdResponse parseResponse(String responseStr, Class _class){
+	private static  HLBrandProductAdResponse parseResponse(String responseStr, Class<HLBrandProductAdResponse> _class){
 
 		HLBrandProductAdResponse response=null;
 		try {

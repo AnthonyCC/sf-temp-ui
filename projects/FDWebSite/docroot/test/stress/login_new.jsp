@@ -8,7 +8,7 @@
 <%@page import="com.freshdirect.webapp.taglib.fdstore.CookieMonster"%>
 <%@page import="com.freshdirect.fdstore.customer.FDAuthenticationException"%>
 
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 <title>LOGIN</title>
 </head>

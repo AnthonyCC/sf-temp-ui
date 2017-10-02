@@ -67,6 +67,7 @@ import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
@@ -529,6 +530,9 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		
 		FDCustomerManager.updateOrderInModifyState(order);
         
+		currentUser.resetUserContext();
+		currentUser.getShoppingCart().setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(currentUser.getUserContext(false)));
+
         return cart;
 	}
 	

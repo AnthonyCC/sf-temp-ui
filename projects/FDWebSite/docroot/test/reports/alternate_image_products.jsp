@@ -20,7 +20,7 @@ int count = 0;
 %>
 
 <!DOCTYPE html>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 <title>Query for non-Archive products with ALTERNATE_IMAGE</title>
 <style type="text/css">

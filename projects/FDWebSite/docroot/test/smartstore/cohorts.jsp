@@ -15,7 +15,7 @@
 
 <%@page import="java.io.PrintWriter"%>
 
-<html>
+<html lang="en-US" xml:lang="en-US">
 
 <%
 if (ServletFileUpload.isMultipartContent(request)) {

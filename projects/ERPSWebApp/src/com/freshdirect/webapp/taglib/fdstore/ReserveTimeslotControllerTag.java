@@ -6,18 +6,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
-import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.fdlogistics.model.FDReservation;
-import com.freshdirect.fdlogistics.model.FDTimeslot;
-import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.Util;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -151,9 +148,7 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 	}
 
 	private void reserveTimeslot(FDUserI user, String timeslotId, FDActionInfo aInfo, TimeslotEvent event) throws FDResourceException, ReservationException {
-		FDReservation rsv = FDCustomerManager.makeReservation(user, timeslotId, this.rsvType, this.addressId, aInfo, chefstable, event, false);
-		//TimeslotLogic.applyOrderMinimum(user, rsv.getTimeslot());
-		user.setReservation(rsv);
+		FDCustomerManager.makeReservation(user, timeslotId, this.rsvType, this.addressId, aInfo, chefstable, event, false);
 	}
 	
 	

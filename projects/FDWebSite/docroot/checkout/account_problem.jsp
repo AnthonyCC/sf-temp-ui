@@ -3,7 +3,7 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:CheckLoginStatus id="user" /> 
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
     <title>FreshDirect - Account problem</title>
 

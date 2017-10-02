@@ -16,7 +16,7 @@ public class BrowseDataContext extends BrowseData {
 	private static final long serialVersionUID = 3281468863959645884L;
 	
 	@JsonIgnore
-	private List<SectionContext> sectionContexts;
+    private List<SectionContext> sectionContexts = new ArrayList<SectionContext>();
 	
 	@JsonIgnore
 	private List<FilteringProductItem> unfilteredItems = new ArrayList<FilteringProductItem>();

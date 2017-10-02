@@ -20,7 +20,7 @@
 %><%@page import="com.freshdirect.mail.EmailUtil"
 %><%@page import="org.apache.commons.lang.math.NumberUtils"%>
 <%@page import="com.freshdirect.fdstore.FDException"%>
-<%@page import="com.freshdirect.smartstore.fdstore.CohortSelector"%><html lang="en">
+<%@page import="com.freshdirect.smartstore.fdstore.CohortSelector"%><html lang="en-US" xml:lang="en-US">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" lang="en-US">
 	<title>VARIANT LOOKUP</title>

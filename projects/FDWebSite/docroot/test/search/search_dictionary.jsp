@@ -32,7 +32,7 @@
 <%@page import="com.freshdirect.cms.search.term.Synonym"%>
 <%@page import="com.freshdirect.cms.search.term.SynonymSearchTermNormalizerFactory"%>
 <%@page import="com.freshdirect.cms.search.term.SynonymSpellingTermNormalizerFactory"%>
-<%@page import="com.freshdirect.fdstore.FDStoreProperties"%><html>
+<%@page import="com.freshdirect.fdstore.FDStoreProperties"%><html lang="en-US" xml:lang="en-US">
 <%!
 Logger LOG = LoggerFactory.getInstance("search_dictionary.jsp");
 class MySynonymDictionary extends SynonymDictionary {

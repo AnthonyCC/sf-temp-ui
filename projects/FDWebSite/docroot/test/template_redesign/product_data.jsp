@@ -6,7 +6,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:CheckLoginStatus id="user" guestAllowed='true' recognizedAllowed='true' />
 
-<html lang="en">
+<html lang="en-US" xml:lang="en-US">
 <head>
   <meta charset="UTF-8">
   <title>Product Data Potato</title>

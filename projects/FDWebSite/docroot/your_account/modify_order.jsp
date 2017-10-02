@@ -115,7 +115,7 @@
 				</form></div><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10"></td></tr>
 			<tr class="NOMOBWEB"><td bgcolor="#CCCCCC" colspan="3"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%= W_YA_MODIFY_ORDER %>" height="1" border="0"></td></tr>
 			<tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8"><br><table cellspacing="0" cellpadding="0" border="0">
-					<tr><td rowspan="2"><a href="/your_account/order_details.jsp?orderId=<%= request.getParameter("orderId") %>"><img src="/media_stat/images/template/youraccount/cross.gif" border="0"></a></td>
+					<tr><td rowspan="2"><a href="/your_account/order_details.jsp?orderId=<%= request.getParameter("orderId") %>"><img src="/media_stat/images/template/youraccount/cross.gif" alt="do not change order" border="0"></a></td>
 					    <td><a href="/your_account/order_details.jsp?orderId=<%= request.getParameter("orderId") %>"><img src="/media_stat/images/template/youraccount/do_not_change_order.gif" width="122" height="8" border="0" alt="DO NOT CHANGE ORDER"></a></td>
 					</tr>
 					<tr><td>and deliver as originally specified</td></tr>

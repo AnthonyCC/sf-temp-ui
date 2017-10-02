@@ -25,7 +25,8 @@ a.portrait-item-header-name:focus,
 div#topnavitem_signup a,
 div#topnavitem_standingorders a,
 .dropdown-column li a:focus,
-.subdepartments > li > span > a:link{
+.subdepartments > li > span > a:link,
+.pdp-evenbetter-productinfo a{
 	outline:none;
 }
 .portrait-item-header-name{

@@ -4,7 +4,7 @@ if(request.getParameter("qNumber") != null){
 	qNumber = request.getParameter("qNumber");
 }
 %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 	<title>FreshDirect - Help - Signing Up</title>
 

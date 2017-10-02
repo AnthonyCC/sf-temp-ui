@@ -2,7 +2,7 @@
  * $Workfile$
  *
  * $Date$
- * 
+ *
  * Copyright (c) 2001 FreshDirect, Inc.
  *
  */
@@ -48,10 +48,10 @@ class SalesOrderHelper {
 	protected final static String FAKE_SAP_PROMO_CODE = "FAKE_SAP_PROMO_CODE";
 
 	private final BapiOrder bapi;
-	
+
 	/**
 	 * Get the fake the base for the fake lines.
-	 * 
+	 *
 	 * The fake lines are calculated from from the cart line limit (set in erpservices.properties)
 	 * and rounded to the next hundred. e.g. 200 -> 200, but 201 -> 300
 	 * @return fake line base
@@ -129,10 +129,10 @@ class SalesOrderHelper {
 				buf.append(";ZZPRIORITY=").append(cm.getPriority());
 
 				this.bapi.addExtension("ZBAPI_CREDIT_MEMO_ALLOCATE", buf.toString());
-			}			
+			}
 		}
 	}
-	
+
 	protected void markAsFreeOrder(){
 		StringBuffer buf = new StringBuffer();
 		buf.append("ZZBMREF=").append("123456");
@@ -155,11 +155,11 @@ class SalesOrderHelper {
 		if (sapOrder.getDiscounts() != null && sapOrder.getDiscounts().size() > 0) {
 			for (Iterator iter = sapOrder.getDiscounts().iterator(); iter.hasNext();) {
 				ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
-				
-				
+
+
 				//if(discountLine.getDiscount() instanceof ZonePromoDiscount)
 				//if("WINDOW_STEERING".equals(discountLine.getDiscount().getPromotionCode())/* && isCreateOrder*/)
-				if( discountLine!=null && discountLine.getDiscount()!=null 
+				if( discountLine!=null && discountLine.getDiscount()!=null
 				   && discountLine.getDiscount().getPromotionCode().startsWith(FDStoreProperties.getWindowSteeringPromoPrefix()))
 				{
 					if (EnumDiscountType.DOLLAR_OFF.equals(discountLine.getDiscount().getDiscountType())) {
@@ -196,16 +196,16 @@ class SalesOrderHelper {
 				}
 			}
 		}
-		
+
 		// line item level
 		for (int i = 0; i < sapOrder.numberOfOrderLines(); i++) {
 			SapOrderLineI orderLine = sapOrder.getOrderLine(i);
 
 			// pricing condition (PR00)
 			MaterialPrice mp = orderLine.getPricingCondition();
-			if (orderLine.isZeroBasePrice()) {
+			if (mp.getPrice()<=0) {
 				// 1 cent per 100 units
-				this.bapi.addCondition(PosexUtil.getPosexInt(i), "PR00", 0.01, "USD", 100.0, mp.getPricingUnit());
+				this.bapi.addCondition(PosexUtil.getPosexInt(i), "PR00", 0.01, "USD", 1.0, mp.getPricingUnit());
 			} else {
 				if(orderLine.getFixedPrice()>0){
 					System.out.println("Setting 50$ fixed price giftcard charges "+orderLine.getFixedPrice());
@@ -259,9 +259,9 @@ class SalesOrderHelper {
 				int pos = fakePosition++;
 				SapChargeLineI c = charges[i];
 				this.addFakeLine(sapOrder, pos, c.getMaterialNumber(), isCreateOrder);
-				
+
 				passVBAP(sapOrder, PosexUtil.getPosex(pos), false, isCreateOrder, null,null,null);
-	
+
 				if (c.getTaxRate() > 0) {
 					this.bapi.addCondition(
 						PosexUtil.getPosexInt(pos),
@@ -269,11 +269,11 @@ class SalesOrderHelper {
 						c.getTaxRate() * 100,
 						"");
 				}
-				
+
 				this.bapi.addCondition(PosexUtil.getPosexInt(pos), "PB00", c.getAmount(), "USD");
 				Discount promo = c.getDiscount();
 				if (promo!= null && promo.getAmount() != 0.0) {
-						this.addPromotionCondition(pos, promo, null);				
+						this.addPromotionCondition(pos, promo, null);
 				}
 		}
 
@@ -291,30 +291,32 @@ class SalesOrderHelper {
 					double discountableQuantity = orderLine.getQuantity() > discount.getSkuLimit() ?discount.getSkuLimit():orderLine.getQuantity();
 					double finalDiscountAmount = (discountableQuantity*pricePerQuantity)*discount.getAmount();
 					this.bapi.addCondition(posex, "ZDFA", finalDiscountAmount, "USD");
-				}else{				
+				}else{
 					this.bapi.addCondition(posex, "ZD11", discount.getAmount() * 100, "");
 				}
-	
+
 			} else if (EnumDiscountType.DOLLAR_OFF.equals(pt)) {
 				if(discount.getSkuLimit() >0){//For Dollar-off line item promotions with Sku Limit.
-					this.bapi.addCondition(posex, "ZDFA", discount.getSkuLimit()*discount.getAmount(), "USD");	
+					this.bapi.addCondition(posex, "ZDFA", discount.getSkuLimit()*discount.getAmount(), "USD");
 				}else{
 					this.bapi.addCondition(posex, "ZD10", discount.getAmount(), "USD");
 				}
-	
+
 			} else if (EnumDiscountType.FREE.equals(pt)) {
 				this.bapi.addCondition(posex, "ZD11", 100.0, ""); // base price
 				if(null == orderLine){//no surcharge discount for orderlines
 					this.bapi.addCondition(posex, "ZVD0", 100.0, ""); // surcharge
 				}
-	
+
 			} else if (EnumDiscountType.SAMPLE.equals(pt)) {
 				this.bapi.addCondition(posex, "ZF11", 100.0, "");
-	
+
+			} else if (null != orderLine && orderLine.getPricingCondition().getPrice() <=0.0){
+				this.bapi.addCondition(posex, "ZD11", 100.0, ""); // base price
 			}
 		}
 	}
-	
+
 	private void addCouponCondition(int pos, ErpCouponDiscountLineModel couponDiscount,EnumTaxationType taxationType) {
 		int posex = PosexUtil.getPosexInt(pos);
 		if(null !=taxationType){
@@ -330,46 +332,60 @@ class SalesOrderHelper {
 		final int posex = PosexUtil.getPosexInt(pos);
 
 		BapiOrder.OrderItemIn item = new BapiOrder.OrderItemIn() {
+			@Override
 			public String getMaterialNo() {
 				return matNo;
 			}
+			@Override
 			public String getPurchNo() {
 				return sapOrder.getWebOrderNumber();
 			}
+			@Override
 			public String getPoItemNo() {
 				return PosexUtil.getPosex(pos);
 			}
+			@Override
 			public int getItemNumber() {
 				return posex;
 			}
+			@Override
 			public Date getPurchDate() {
 				return currDate;
 			}
+			@Override
 			public Date getPriceDate() {
 				return currDate;
 			}
+			@Override
 			public Double getReqQty() {
 				return null;
 			}
+			@Override
 			public String getSalesUnit() {
 				return "EA";
 			}
+			@Override
 			public int getDeliveryGroup() {
 				return 0;
 			}
+			@Override
 			public int getMaxPartialDlv() {
 				return 0;
 			}
+			@Override
 			public int getPoItemNoS() {
 				return 0;
 			}
+			@Override
 			public String getCustMat35() {
 				return "";
 			}
+			@Override
 			public String getSalesDist() {
 				return "100000";
 			}
-			
+
+			@Override
 			public String getPickingPlantId(){
 				return sapOrder.getPlant();
 			}
@@ -378,15 +394,22 @@ class SalesOrderHelper {
 		bapi.addOrderItemIn(item);
 
 		BapiOrder.ScheduleIn schedule = new BapiOrder.ScheduleIn() {
+			@Override
 			public int getItemNumber() { return posex; }
+			@Override
 			public double getReqQty() { return 1.0; }
+			@Override
 			public Date getReqDate() { return sapOrder.getRequestedDate(); }
+			@Override
 			public Date getTPDate() { return null; }
+			@Override
 			public Date getMSDate() { return null; }
+			@Override
 			public Date getLoadDate() { return null; }
+			@Override
 			public Date getGIDate() { return null; }
 		};
-		
+
 		bapi.addSchedule(schedule);
 	}
 
@@ -456,50 +479,50 @@ class SalesOrderHelper {
 		}
 		return orderLines;
 	}
-	
+
 	private void passVBAP(SapOrderI sapOrder, String posex, boolean isRecipeItem, boolean isCreateOrder, String promoCode,String zoneId,String couponCode){
 		String recipeFlag = StringUtils.rightPad(isRecipeItem ? "1" : " ", 5);
 		String glCode = StringUtils.rightPad(NVL.apply(sapOrder.getGlCode(), "").trim(), 10);
 		String promoField = StringUtils.rightPad(NVL.apply(promoCode, "").trim(), 20);
 		String zoneField = "";
-		if(zoneId==null){			
+		if(zoneId==null){
 			zoneField=StringUtils.rightPad(NVL.apply(zoneId, "").trim(), 10);
 		}else{
 			zoneField=zoneId;
-		}	
+		}
 		String couponField = StringUtils.rightPad(NVL.apply(couponCode, "").trim(), 20);
-		
+
 		bapi.addExtension("BAPE_VBAP", StringUtils.repeat(" ", 10) + posex //0-16
 			+ recipeFlag //17-21
-			+ StringUtils.repeat(" ", 20) + glCode //22-51			
-			+ zoneField //52-61			
+			+ StringUtils.repeat(" ", 20) + glCode //22-51
+			+ zoneField //52-61
 			+ StringUtils.repeat(" ", 30) + promoField // 62 - 111
 			+ couponField); //112-131
 
-			
+
 		if (!isCreateOrder) {
-			
-				
-			bapi.addExtension("BAPE_VBAPX", StringUtils.repeat(" ", 10) + posex // 0-16 
-					+ "X" // 17, recipe change flag				
+
+
+			bapi.addExtension("BAPE_VBAPX", StringUtils.repeat(" ", 10) + posex // 0-16
+					+ "X" // 17, recipe change flag
 					+ StringUtils.repeat(" ", 4) + "XX" // 22, tax chg
-					+ StringUtils.repeat(" ", 3) + "X" // 27, promo code chg	
+					+ StringUtils.repeat(" ", 3) + "X" // 27, promo code chg
 					+ "X"); //28 ecoupon code chg
-		}			
-		
+		}
+
 	}
 
 	/**
-	 *   APPDEV-5314 : get unatteded delivery flg to send to SAP 
+	 *   APPDEV-5314 : get unatteded delivery flg to send to SAP
 	 *   pass "X" character along with 4 spaces when unatteded delivery flg is opted in otherwise pass 5 spaces
 	 */
 	public static String populateUnattendedDlvFlg(EnumUnattendedDeliveryFlag unattendedDeliveryFlg) {
-		
+
 		//if(ErpServicesProperties.isSAPUnattendedDelivery()) {
 		    if(EnumUnattendedDeliveryFlag.OPT_IN.equals(unattendedDeliveryFlg)){
 			   return StringUtils.rightPad("X", 5, " ");
 		   } else {return StringUtils.rightPad(" ", 5);}
 	   // } return "";
-		
+
 	}
 }

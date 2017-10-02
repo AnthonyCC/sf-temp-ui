@@ -1,6 +1,6 @@
 <%@ page import="com.freshdirect.fdstore.content.YoutubeVideoModel"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <%
 String videoId=(String)request.getParameter("id");
 String title=(String)request.getParameter("title");

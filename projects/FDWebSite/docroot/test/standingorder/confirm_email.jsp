@@ -29,7 +29,7 @@
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@ taglib uri='logic' prefix='logic'%>
 <fd:CheckLoginStatus id="fduser" guestAllowed='false' recognizedAllowed='false'  />
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 	<title>Confirmation Email Send Test page</title>
 </head>

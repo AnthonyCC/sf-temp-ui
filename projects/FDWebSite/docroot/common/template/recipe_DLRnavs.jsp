@@ -20,7 +20,7 @@ final int W_RECIPE_DLR_NAVS_RIGHT = 191;
 %>
 
 
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
     <title><tmpl:get name='title'/></title>
 

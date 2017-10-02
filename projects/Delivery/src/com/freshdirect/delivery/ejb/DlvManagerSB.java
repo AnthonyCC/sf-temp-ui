@@ -24,6 +24,7 @@ import com.freshdirect.logistics.delivery.model.DeliveryException;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.OrderContext;
 import com.freshdirect.logistics.fdstore.StateCounty;
+import com.freshdirect.logistics.fdstore.ZipCodeAttributes;
 
 public interface DlvManagerSB extends EJBObject {
 
@@ -42,6 +43,7 @@ public interface DlvManagerSB extends EJBObject {
 			TimeslotEvent event) throws RemoteException, ReservationException, FDResourceException;
 	public Set<StateCounty> getCountiesByState(String state) throws RemoteException, FDResourceException;
 	public StateCounty lookupStateCountyByZip(String zipcode) throws RemoteException, FDResourceException;
+	public ZipCodeAttributes lookupZipCodeAttributes(String zipcode) throws RemoteException, FDResourceException;
 	public Map<String, DeliveryException> getCartonScanInfo() throws RemoteException, FDResourceException;
 	public void queryForMissingFdxOrders() throws RemoteException;
 
