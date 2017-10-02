@@ -763,7 +763,8 @@ public class FDReferAFriendDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = conn.prepareStatement("select sale_id from cust.salesaction where action_type = 'STL' and customer_id = ? order by action_Date desc");
+//			ps = conn.prepareStatement("select sale_id from cust.salesaction where action_type = 'STL' and customer_id = ? order by action_Date desc");
+			ps = conn.prepareStatement("select id from cust.sale where status = 'STL' and customer_id = ? order by cromod_date desc");
 			ps.setString(1, customerId);
 			rs = ps.executeQuery();
 			if(rs.next()) {
