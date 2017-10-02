@@ -31,43 +31,45 @@ public class ActivityDAO implements java.io.Serializable {
 	private static final String INSERT = "INSERT INTO CUST.ACTIVITY_LOG (ACTIVITY_ID, CUSTOMER_ID, NOTE, TIMESTAMP, SOURCE, INITIATOR, DLV_PASS_ID, SALE_ID, REASON, STANDINGORDER_ID, MASQUERADE_AGENT) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
 	
 	public void logActivity( Connection conn, ErpActivityRecord rec ) throws SQLException {
+        PreparedStatement ps = null; 
 
-		PreparedStatement ps = conn.prepareStatement( INSERT );
-		
-		ps.setString( 1, rec.getActivityType().getCode() );
-		ps.setString( 2, rec.getCustomerId() );
-		String _note=rec.getNote()+rec.getSourceInfo();
-		ps.setString( 3,_note.substring( 0, Math.min(1000, _note.length()))  );
-		ps.setTimestamp( 4, new java.sql.Timestamp( new java.util.Date().getTime() ) );
-		ps.setString( 5, rec.getSource().getCode() );
-		ps.setString( 6, rec.getInitiator() );
-		if ( rec.getDeliveryPassId() != null ) {
-			ps.setString( 7, rec.getDeliveryPassId() );
-		} else {
-			ps.setNull( 7, Types.VARCHAR );
-		}
-		if ( rec.getChangeOrderId() != null ) {
-			ps.setString( 8, rec.getChangeOrderId() );
-		} else {
-			ps.setNull( 8, Types.VARCHAR );
-		}
-		if ( rec.getReason() != null ) {
-			ps.setString( 9, rec.getReason() );
-		} else {
-			ps.setNull( 9, Types.VARCHAR );
-		}
-		if ( rec.getStandingOrderId() != null ) {
-			ps.setString( 10, rec.getStandingOrderId() );
-		} else {
-			ps.setNull( 10, Types.VARCHAR );
-		}
-		if ( rec.getMasqueradeAgent() != null ) {
-			ps.setString( 11, rec.getMasqueradeAgent() );
-		} else {
-			ps.setNull( 11, Types.VARCHAR );
-		}
+        try {
 
-		try {
+			ps = conn.prepareStatement( INSERT );
+			
+			ps.setString( 1, rec.getActivityType().getCode() );
+			ps.setString( 2, rec.getCustomerId() );
+			String _note=rec.getNote()+rec.getSourceInfo();
+			ps.setString( 3,_note.substring( 0, Math.min(1000, _note.length()))  );
+			ps.setTimestamp( 4, new java.sql.Timestamp( new java.util.Date().getTime() ) );
+			ps.setString( 5, rec.getSource().getCode() );
+			ps.setString( 6, rec.getInitiator() );
+			if ( rec.getDeliveryPassId() != null ) {
+				ps.setString( 7, rec.getDeliveryPassId() );
+			} else {
+				ps.setNull( 7, Types.VARCHAR );
+			}
+			if ( rec.getChangeOrderId() != null ) {
+				ps.setString( 8, rec.getChangeOrderId() );
+			} else {
+				ps.setNull( 8, Types.VARCHAR );
+			}
+			if ( rec.getReason() != null ) {
+				ps.setString( 9, rec.getReason() );
+			} else {
+				ps.setNull( 9, Types.VARCHAR );
+			}
+			if ( rec.getStandingOrderId() != null ) {
+				ps.setString( 10, rec.getStandingOrderId() );
+			} else {
+				ps.setNull( 10, Types.VARCHAR );
+			}
+			if ( rec.getMasqueradeAgent() != null ) {
+				ps.setString( 11, rec.getMasqueradeAgent() );
+			} else {
+				ps.setNull( 11, Types.VARCHAR );
+			}
+
 			if ( ps.executeUpdate() != 1 ) {
 				throw new SQLException( "Row not created" );
 			}

@@ -617,13 +617,16 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		      }
         	}
 	} finally{
+		try {
 			if (ps1 != null){
 				ps1.close();
 			}
+		} finally {
 			if(ps!=null){
 				ps.close();
 			}
 		}
+	}
 		
 	}
 

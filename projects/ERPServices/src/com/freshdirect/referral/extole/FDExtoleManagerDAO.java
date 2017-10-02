@@ -3,11 +3,9 @@ package com.freshdirect.referral.extole;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.Date;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.DateFormat;
@@ -18,7 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Category;
-import org.apache.openjpa.lib.log.Log;
 
 import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -83,10 +80,7 @@ public class FDExtoleManagerDAO implements Serializable {
 			}
 
 		} finally {
-			if (ps != null)
-				ps.close();
-			if (rs != null)
-				rs.close();
+			DaoUtil.close(rs, ps);
 		}
 		return list;
 	}
@@ -147,9 +141,10 @@ public class FDExtoleManagerDAO implements Serializable {
 			Connection conn) throws SQLException {
 		List<ExtoleConversionRequest> list = new ArrayList<ExtoleConversionRequest>();
 		ResultSet rs = null;
-		PreparedStatement ps = conn
-				.prepareStatement(SELECT_EXTOLE_APPROVE_CONVERSION_TRANSACTION);
+		PreparedStatement ps = null;
 		try {
+			ps = conn
+					.prepareStatement(SELECT_EXTOLE_APPROVE_CONVERSION_TRANSACTION);
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				ExtoleConversionRequest requestModel = new ExtoleConversionRequest();
@@ -163,17 +158,16 @@ public class FDExtoleManagerDAO implements Serializable {
 				list.add(requestModel);
 			}
 		} finally {
-			DaoUtil.close(rs);
-			DaoUtil.close(ps);
+			DaoUtil.close(rs,ps);
 		}
 		return list;
 	}
 
 	public static void saveExtoleRewards(Connection conn,
-			List<FDRafCreditModel> rewards) throws SQLException {
+		List<FDRafCreditModel> rewards) throws SQLException {
+		PreparedStatement ps = null;
 
 		try {
-			PreparedStatement ps = null;
 			
 			ps = conn
 					.prepareStatement("INSERT INTO CUST.RAF_CREDIT "
@@ -223,18 +217,21 @@ public class FDExtoleManagerDAO implements Serializable {
 					}
 				}
 			}
-			ps.close();
 		} catch (SQLException e) {
 			throw e;
+		} finally {
+			DaoUtil.close(ps);
 		}
 	}
 
 	public static int getNextId(Connection conn) throws SQLException {
 		int batchNumber = -1;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
-			PreparedStatement ps = conn
+			ps = conn
 					.prepareStatement("SELECT CUST.RAF_SEQ.nextval FROM DUAL");
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			if (rs.next()) {
 				batchNumber = rs.getInt(1);
 			} else {
@@ -242,12 +239,12 @@ public class FDExtoleManagerDAO implements Serializable {
 				throw new SQLException(
 						"Unable to get next id from RAF Credit Table.");
 			}
-			rs.close();
-			ps.close();
 			return batchNumber;
 			// return tempSeq++;
 		} catch (SQLException e) {
 			throw e;
+		} finally {
+			DaoUtil.close(rs,ps);
 		}
 	}
 

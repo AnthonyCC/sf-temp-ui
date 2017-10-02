@@ -8,7 +8,6 @@
  */
 package com.freshdirect.fdstore.customer.ejb;
 
-import java.io.IOException;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -95,7 +94,6 @@ import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.meal.MealModel;
@@ -122,6 +120,7 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
+import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.GenericSearchCriteria;
 import com.freshdirect.framework.util.NVL;
@@ -141,9 +140,7 @@ import com.freshdirect.payment.gateway.TransactionType;
 import com.freshdirect.payment.gateway.impl.BillingInfoFactory;
 import com.freshdirect.payment.gateway.impl.GatewayFactory;
 import com.freshdirect.payment.gateway.impl.PaymentMethodFactory;
-import com.freshdirect.payment.gateway.impl.Paymentech;
 import com.freshdirect.payment.gateway.impl.RequestFactory;
-import com.freshdirect.payment.service.FDECommerceService;
 
 import oracle.sql.ARRAY;
 import oracle.sql.ArrayDescriptor;
@@ -1801,8 +1798,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle, "Could not update Order modified status.");
 		} finally {
-			close(ps);
-			close(conn);
+			DaoUtil.close(null, ps, conn);
 		}
 	}
 
@@ -1955,8 +1951,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			close(ps);
-			close(conn);
+			DaoUtil.close(null, ps, conn);
 		}
 	}
 
@@ -2000,11 +1995,14 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			close(rs1);
-			close(ps1);
-			close(rs);
-			close(ps);
-			close(conn);
+			try {
+				close(rs1);
+				close(ps1);
+				close(rs);
+				close(ps);
+			} finally {
+				close(conn);
+			}
 		}
 
 		return click2callModel;
@@ -2051,9 +2049,12 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			close(ps1);
-			close(ps);
-			close(conn);
+			try {
+				close(ps1);
+				close(ps);
+			} finally {
+				close(conn);
+			}
 		}
 	}
 
@@ -2077,8 +2078,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			close(ps);
-			close(conn);
+			DaoUtil.close(null,ps,conn);
 		}
 	}
 
@@ -2110,9 +2110,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			close(rs);
-			close(ps);
-			close(conn);
+			DaoUtil.close(rs,ps,conn);
 		}
 		return cList;
 	}
@@ -2149,13 +2147,18 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		try {
 			conn = this.getConnection();
 			Enumeration enumer = model.getRouteList().keys();
+			if(enumer.hasMoreElements()) {
+				ps = conn.prepareStatement(
+						"INSERT INTO CUST.LATEISSUE(ID, ROUTE, STOPSTEXT, DELIVERY_DATE, AGENT_USER_ID, REPORTED_AT, REPORTED_BY,DELAY_MINUTES,DELIVERY_WINDOW,COMMENTS,ACTUAL_STOPSTEXT,ACTUAL_STOPSCOUNT) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
+				ps1 = conn.prepareStatement("INSERT INTO CUST.VOICESHOT_LATEISSUE(VS_ID, LATEISSUE_ID) VALUES(?,?)");
+				ps2 = conn.prepareStatement(
+						"insert into cust.lateissue_orders columns(lateissue_id,stop_number,sale_id) values(?,?,?)");
+			}
 			while (enumer.hasMoreElements()) {
 				String key = (String) enumer.nextElement();
 				List phones = (List) model.getRouteList().get(key);
 
 				id = SequenceGenerator.getNextId(conn, "CUST");
-				ps = conn.prepareStatement(
-						"INSERT INTO CUST.LATEISSUE(ID, ROUTE, STOPSTEXT, DELIVERY_DATE, AGENT_USER_ID, REPORTED_AT, REPORTED_BY,DELAY_MINUTES,DELIVERY_WINDOW,COMMENTS,ACTUAL_STOPSTEXT,ACTUAL_STOPSCOUNT) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
 				ps.setString(1, id);
 				ps.setString(2, key);
 				ps.setString(3, getStops(phones));
@@ -2169,13 +2172,11 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				ps.setString(11, "");
 				ps.setInt(12, phones.size());
 				ps.executeUpdate();
-				ps1 = conn.prepareStatement("INSERT INTO CUST.VOICESHOT_LATEISSUE(VS_ID, LATEISSUE_ID) VALUES(?,?)");
+
 				ps1.setLong(1, vsId);
 				ps1.setString(2, id);
 				ps1.execute();
 
-				ps2 = conn.prepareStatement(
-						"insert into cust.lateissue_orders columns(lateissue_id,stop_number,sale_id) values(?,?,?)");
 				for (int i = 0; i < phones.size(); i++) {
 					String pStr = (String) phones.get(i);
 					System.out.println(pStr + "-lateid" + id);
@@ -2194,10 +2195,13 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		} catch (Exception e) {
 			LOGGER.error("LateIssue row not created for: Route:" + model.getRoute(), e);
 		} finally {
-			close(ps2);
-			close(ps1);
-			close(ps);
-			close(conn);
+			try {
+				close(ps2);
+				close(ps1);
+				close(ps);
+			} finally {
+				close(conn);
+			}
 		}
 	}
 
@@ -2233,8 +2237,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			close(ps);
-			close(conn);
+			DaoUtil.close(null,ps,conn);
 		}
 
 		// Create lateissue_orders rows
@@ -2276,8 +2279,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			close(ps);
-			close(conn);
+			DaoUtil.close(null,ps,conn);
 		}
 		// record the call activity
 		updateActivity(model);
@@ -2388,9 +2390,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			close(rs);
-			close(ps);
-			close(conn);
+			DaoUtil.close(rs,ps,conn);
 		}
 		return cList;
 	}
@@ -2426,9 +2426,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			close(rs);
-			close(ps);
-			close(conn);
+			DaoUtil.close(rs,ps,conn);
 		}
 		return "";
 	}
@@ -2468,9 +2466,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			close(rs);
-			close(ps);
-			close(conn);
+			DaoUtil.close(rs,ps,conn);
 		}
 
 	}
@@ -2501,8 +2497,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			close(ps);
-			close(conn);
+			DaoUtil.close(null,ps,conn);
 		}
 	}
 
@@ -2518,37 +2513,48 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			close(ps);
-			close(conn);
+			DaoUtil.close(null,ps,conn);
 		}
 	}
 
 	private VoiceShotResponseParser getCallData(String xmlPost) {
 		java.io.BufferedReader br = null;
+		java.net.URL programUrl = null;
+		java.net.HttpURLConnection connection = null;
+		java.io.PrintWriter output = null;
 		try {
 
-			java.net.URL programUrl = new java.net.URL(FDStoreProperties.getVSURL());
-			java.net.HttpURLConnection connection = (java.net.HttpURLConnection) programUrl.openConnection();
+			programUrl = new java.net.URL(FDStoreProperties.getVSURL());
+			connection = (java.net.HttpURLConnection) programUrl.openConnection();
 			connection.setRequestMethod("POST");
 			connection.setDoOutput(true);
 			connection.setUseCaches(false);
 			connection.setRequestProperty("Content-Type", "text/xml");
-			java.io.PrintWriter output = new java.io.PrintWriter(
-					new java.io.OutputStreamWriter(connection.getOutputStream()));
-			output.println(xmlPost);
-			output.close();
-			connection.connect();
-			java.io.InputStream is = connection.getInputStream();
-			java.io.InputStreamReader isr = new java.io.InputStreamReader(is);
-			br = new java.io.BufferedReader(isr);
-
+			try {
+				output = new java.io.PrintWriter(
+						new java.io.OutputStreamWriter(connection.getOutputStream()));
+				output.println(xmlPost);
+			} finally {
+				output.close();
+			}
+			
 			String line = null;
 			String firstresult = "";
-
-			while ((line = br.readLine()) != null) {
-				firstresult += "\n" + line;
+			try {
+				connection.connect();
+				java.io.InputStream is = connection.getInputStream();
+				java.io.InputStreamReader isr = new java.io.InputStreamReader(is);
+				br = new java.io.BufferedReader(isr);
+	
+	
+				while ((line = br.readLine()) != null) {
+					firstresult += "\n" + line;
+				}
+			} finally {
+				if (br != null) {
+					br.close();
+				}
 			}
-
 			System.out.println(firstresult);
 
 			// String firstresult = "<?xml version=\"1.0\"?><campaign
@@ -2580,15 +2586,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			}
 		} catch (Exception e) {
 			LOGGER.error("", e);
-		} finally {
-			if (br != null) {
-				try {
-					br.close();
-				} catch (IOException ioe) {
-					// intentionally do nothing here
-				}
-			}
-		}
+		} 
 		return null;
 	}
 
@@ -2630,9 +2628,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			close(rset);
-			close(ps);
-			close(conn);
+			DaoUtil.close(rset,ps,conn);
 		}
 		return cList;
 	}
@@ -2690,9 +2686,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			close(rset);
-			close(ps);
-			close(conn);
+			DaoUtil.close(rset,ps,conn);
 		}
 		return cList;
 	}
@@ -2753,10 +2747,13 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			close(ps2);
-			close(ps1);
-			close(ps);
-			close(conn);
+			try {
+				close(ps2);
+				close(ps1);
+				close(ps);
+			} finally {
+				close(conn);
+			}
 		}
 		updateActivity(model);
 		return call_id;
@@ -2784,8 +2781,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			close(ps);
-			close(conn);
+			DaoUtil.close(null,ps,conn);
 		}
 	}
 
@@ -2832,8 +2828,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			close(ps);
-			close(conn);
+			DaoUtil.close(null,ps,conn);
 		}
 	}
 
@@ -2864,9 +2859,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			close(rs);
-			close(ps);
-			close(conn);
+			DaoUtil.close(null,ps,conn);
 		}
 		return model;
 	}
@@ -2891,9 +2884,8 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			close(ps);
-			close(conn);
-			}
+			DaoUtil.close(null,ps,conn);
+		}
 	}
 
 	public void deleteCampaign(String id) throws FDResourceException {
@@ -2908,8 +2900,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			close(ps);
-			close(conn);
+			DaoUtil.close(null,ps,conn);
 		}
 	}
 
@@ -2948,9 +2939,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			close(rset);
-			close(ps);
-			close(conn);
+			DaoUtil.close(rset,ps,conn);
 		}
 		return vsMsg;
 	}
@@ -2973,9 +2962,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			close(rset);
-			close(ps);
-			close(conn);
+			DaoUtil.close(rset,ps,conn);
 		}
 		return lst;
 	}
@@ -2996,9 +2983,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			close(rset);
-			close(ps);
-			close(conn);
+			DaoUtil.close(rset,ps,conn);
 		}
 		return vsMsg;
 	}
@@ -3025,9 +3010,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			close(rset);
-			close(ps);
-			close(conn);
+			DaoUtil.close(rset,ps,conn);
 		}
 		return ccmList;
 	}
@@ -3067,9 +3050,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			close(rset);
-			close(ps);
-			close(conn);
+			DaoUtil.close(rset,ps,conn);
 		}
 		return ccmList;
 	}
@@ -3109,9 +3090,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			close(rset);
-			close(ps);
-			close(conn);
+			DaoUtil.close(rset,ps,conn);
 		}
 		return ccmList;
 	}
@@ -3152,8 +3131,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);
 		} finally {
-			close(ps);
-			close(conn);
+			DaoUtil.close(null,ps,conn);
 		}
 
 	}
@@ -3222,9 +3200,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			close(rs);
-			close(ps);
-			close(conn);
+			DaoUtil.close(rs,ps,conn);
 		}
 	}
 
@@ -3270,9 +3246,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			close(rs);
-			close(ps);
-			close(conn);
+			DaoUtil.close(rs,ps,conn);
 		}
 	}
 
@@ -3356,9 +3330,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 					LOGGER.error(sqle.getMessage());
 					throw new FDResourceException(sqle);
 				} finally {
-					close(rs);
-					close(ps);
-					close(conn);
+					DaoUtil.close(rs,ps,conn);
 				}
 
 			}

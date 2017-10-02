@@ -1,16 +1,20 @@
 package com.freshdirect.fdstore.content.meal.ejb;
 
-/**
- * 
- * @author knadeem
- */
-import java.rmi.RemoteException;
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Iterator;
+import java.util.List;
 
-import com.freshdirect.framework.core.*;
+import com.freshdirect.fdstore.content.meal.EnumMealItemType;
+import com.freshdirect.fdstore.content.meal.EnumMealStatus;
+import com.freshdirect.fdstore.content.meal.MealItemModel;
+import com.freshdirect.fdstore.content.meal.MealModel;
+import com.freshdirect.framework.core.DependentPersistentBeanSupport;
+import com.freshdirect.framework.core.ModelI;
+import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.DaoUtil;
-import com.freshdirect.fdstore.content.meal.*;
 
 public class MealPersistentBean extends DependentPersistentBeanSupport {
 	
@@ -84,20 +88,23 @@ public class MealPersistentBean extends DependentPersistentBeanSupport {
 	 * @throws SQLException if any problems occur talking to the database
 	 */
 	public static List findByParent(Connection conn, PrimaryKey parentPK) throws SQLException {
-		java.util.List lst = new java.util.LinkedList();
-		PreparedStatement ps = conn.prepareStatement("SELECT ID FROM CUST.HOLIDAYMEAL WHERE CUSTOMER_ID=?");
-		ps.setString(1, parentPK.getId());
-		ResultSet rs = ps.executeQuery();
-		while (rs.next()) {
-			MealPersistentBean bean = new MealPersistentBean(new PrimaryKey(rs.getString(1)), conn);
-			bean.setParentPK(parentPK);
-			lst.add(bean);
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		try {
+			java.util.List lst = new java.util.LinkedList();
+			ps = conn.prepareStatement("SELECT ID FROM CUST.HOLIDAYMEAL WHERE CUSTOMER_ID=?");
+			ps.setString(1, parentPK.getId());
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				MealPersistentBean bean = new MealPersistentBean(new PrimaryKey(rs.getString(1)), conn);
+				bean.setParentPK(parentPK);
+				lst.add(bean);
+			}
+			return lst;
+		} finally {
+			DaoUtil.closePreserveException(rs, ps, null);
 		}
-		rs.close();
-		rs = null;
-		ps.close();
-		ps = null;
-		return lst;
 	}
 	
 	public PrimaryKey create(Connection conn) throws SQLException {
@@ -143,41 +150,45 @@ public class MealPersistentBean extends DependentPersistentBeanSupport {
 	}
 	
 	public void load(Connection conn) throws SQLException {
-		
-		PreparedStatement ps = conn.prepareStatement("SELECT NAME, DELIVERY, DATE_CREATED, AGENT, DATE_LASTMODIFIED, STATUS, PRICE FROM CUST.HOLIDAYMEAL WHERE ID = ?");
-		ps.setString(1, this.getPK().getId());
-		ResultSet rs = ps.executeQuery();
-		if (!rs.next()) {
-            rs.close();
-            ps.close();
-            throw new SQLException("No such Meal PK: " + this.getPK());
-            
-        }
-        this.meal = new MealModel();
-        super.decorateModel(this.meal);
-		this.meal.setDelivery(new java.util.Date(rs.getTimestamp("DELIVERY").getTime()));
-        this.meal.setName(rs.getString("NAME"));
-        this.setAgent(rs.getString("AGENT"));
-        this.meal.setStatus(EnumMealStatus.getType(rs.getString("STATUS")));
-        this.meal.setPrice(rs.getDouble("PRICE"));
-        rs.close();
-        ps.close();
-		
-        ps = conn.prepareStatement("SELECT TYPE, NAME, QUANTITY FROM CUST.HOLIDAYMEAL_ITEMS WHERE HMEAL_ID=?");
-        ps.setString(1, this.getPK().getId());
-        rs = ps.executeQuery();
-        while (rs.next()) {
-            MealItemModel item = new MealItemModel();
-            item.setType(EnumMealItemType.getType(rs.getString("TYPE")));
-            item.setName(rs.getString("NAME"));
-            item.setQuantity(rs.getInt("QUANTITY"));
-            meal.addItem(item);
-        }
-		rs.close();
-		ps.close();
-        
-        this.unsetModified();
-		
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			ps = conn.prepareStatement("SELECT NAME, DELIVERY, DATE_CREATED, AGENT, DATE_LASTMODIFIED, STATUS, PRICE FROM CUST.HOLIDAYMEAL WHERE ID = ?");
+			ps.setString(1, this.getPK().getId());
+			rs = ps.executeQuery();
+			if (!rs.next()) {
+	            rs.close();
+	            ps.close();
+	            throw new SQLException("No such Meal PK: " + this.getPK());
+	            
+	        }
+	        this.meal = new MealModel();
+	        super.decorateModel(this.meal);
+			this.meal.setDelivery(new java.util.Date(rs.getTimestamp("DELIVERY").getTime()));
+	        this.meal.setName(rs.getString("NAME"));
+	        this.setAgent(rs.getString("AGENT"));
+	        this.meal.setStatus(EnumMealStatus.getType(rs.getString("STATUS")));
+	        this.meal.setPrice(rs.getDouble("PRICE"));
+	        rs.close();
+	        ps.close();
+			
+	        ps = conn.prepareStatement("SELECT TYPE, NAME, QUANTITY FROM CUST.HOLIDAYMEAL_ITEMS WHERE HMEAL_ID=?");
+	        ps.setString(1, this.getPK().getId());
+	        rs = ps.executeQuery();
+	        while (rs.next()) {
+	            MealItemModel item = new MealItemModel();
+	            item.setType(EnumMealItemType.getType(rs.getString("TYPE")));
+	            item.setName(rs.getString("NAME"));
+	            item.setQuantity(rs.getInt("QUANTITY"));
+	            meal.addItem(item);
+	        }
+	        
+	        this.unsetModified();
+		} finally {
+			DaoUtil.closePreserveException(rs, ps, null);
+		}
     }
     
     public void store(Connection conn) throws SQLException {
@@ -223,19 +234,23 @@ public class MealPersistentBean extends DependentPersistentBeanSupport {
 
 	public void remove(Connection conn) throws SQLException {
 		// remove self
-		PreparedStatement ps = conn.prepareStatement("DELETE FROM CUST.HOLIDAYMEAL WHERE ID = ?");
-		ps.setString(1, this.getPK().getId());
-		if (ps.executeUpdate() != 1) {
-			throw new SQLException("Row not deleted");
+		PreparedStatement ps = null;
+		try {
+			ps = conn.prepareStatement("DELETE FROM CUST.HOLIDAYMEAL WHERE ID = ?");
+			ps.setString(1, this.getPK().getId());
+			if (ps.executeUpdate() != 1) {
+				throw new SQLException("Row not deleted");
+			}
+			ps.close();
+	        
+	        ps = conn.prepareStatement("DELETE FROM CUST.HOLIDAYMEAL_ITEMS WHERE HMEAL_ID=?");
+	        ps.setString(1, this.getPK().getId());
+	        ps.executeUpdate();
+	
+			this.setPK(null); // make it anonymous
+		} finally {
+			DaoUtil.closePreserveException(null, ps, null);
 		}
-		ps.close();
-        
-        ps = conn.prepareStatement("DELETE FROM CUST.HOLIDAYMEAL_ITEMS WHERE HMEAL_ID=?");
-        ps.setString(1, this.getPK().getId());
-        ps.executeUpdate();
-        ps.close();
-
-		this.setPK(null); // make it anonymous
 	}
     
 

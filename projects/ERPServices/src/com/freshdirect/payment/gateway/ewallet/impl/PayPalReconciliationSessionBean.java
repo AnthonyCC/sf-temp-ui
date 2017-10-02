@@ -35,6 +35,7 @@ import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.fdstore.ewallet.ErpPPSettlementInfo;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.core.SessionBeanSupport;
+import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.Money;
@@ -654,12 +655,7 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 	
 	private void resetConnection(PreparedStatement ps, ResultSet rs, Connection conn) {
 		try {
-			if (rs != null)
-				rs.close();
-			if (ps != null)
-				ps.close();
-			if (conn != null)
-				conn.close();
+			DaoUtil.close(rs, ps, conn);
 		} catch (SQLException e) {
 			LOGGER.warn("[PayPal Batch]", e);
 		}
