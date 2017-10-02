@@ -1152,7 +1152,7 @@ public class FDCustomerManager {
 
 
 	public static void cancelReservation(
-		FDIdentity identity,
+		FDUserI user,
 		FDReservation reservation,
 		EnumReservationType rsvType,
 		FDActionInfo aInfo, TimeslotEvent event)
@@ -1161,7 +1161,9 @@ public class FDCustomerManager {
 
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
-			sb.cancelReservation(identity, reservation, rsvType, aInfo, event);
+			sb.cancelReservation(user.getIdentity(), reservation, rsvType, aInfo, event);
+			user.setReservation(null);
+			resetUserContext(user);
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error talking to session bean");
@@ -1196,20 +1198,7 @@ public class FDCustomerManager {
 				user.getShoppingCart().setDeliveryReservation(null);
 			user.setReservation(rsv);
 			
-			user.resetUserContext();
-			user.getShoppingCart().setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
-
-			if (!user.getShoppingCart().isEmpty()) {
-				for (FDCartLineI cartLine : user.getShoppingCart().getOrderLines()) {
-					cartLine.setUserContext(user.getUserContext());
-					cartLine.setFDGroup(null);//clear the group
-				}
-			}
-			try {
-				user.getShoppingCart().refreshAll(true);
-			} catch (FDInvalidConfigurationException e) {
-				e.printStackTrace();
-			}
+			resetUserContext(user);
 			
 			
 			
@@ -1220,6 +1209,24 @@ public class FDCustomerManager {
 		} catch (CreateException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
+		}
+	}
+
+	private static void resetUserContext(FDUserI user)
+			throws FDResourceException {
+		user.resetUserContext();
+		user.getShoppingCart().setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
+
+		if (!user.getShoppingCart().isEmpty()) {
+			for (FDCartLineI cartLine : user.getShoppingCart().getOrderLines()) {
+				cartLine.setUserContext(user.getUserContext());
+				cartLine.setFDGroup(null);//clear the group
+			}
+		}
+		try {
+			user.getShoppingCart().refreshAll(true);
+		} catch (FDInvalidConfigurationException e) {
+			e.printStackTrace();
 		}
 	}
 
