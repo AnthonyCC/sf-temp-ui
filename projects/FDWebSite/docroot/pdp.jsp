@@ -158,14 +158,14 @@ if (mobWeb) {
 	    <tmpl:put name='leftnav' direct='true'>	    	
 	    	<td width="150" BGCOLOR="#E0E3D0" class="lNavTableConttd">		
 			<!-- start : leftnav -->
-			<% try { %><%@ include file="/common/template/includes/left_side_nav.jspf" %><% } catch (Exception ex) {ex.printStackTrace();} %>
+			<% try { %><%@ include file="/common/template/includes/left_side_nav.jspf" %><% } catch (Exception ex) {/* ex.printStackTrace(); */} %>
 			<!-- end : leftnav -->			
 			</td>
 	    </tmpl:put>
     	<tmpl:put name="extraJs">
     	</tmpl:put>
 	    <tmpl:put name='deptnav' direct='true'>
-		    <% try { %><%@ include file="/common/template/includes/deptnav.jspf" %><% } catch (Exception ex) {ex.printStackTrace();} %>
+		    <% try { %><%@ include file="/common/template/includes/deptnav.jspf" %><% } catch (Exception ex) {/* ex.printStackTrace(); */} %>
 			<hr class="deptnav-separator">
 	    </tmpl:put>
   <% } else { %>
@@ -178,7 +178,7 @@ if (mobWeb) {
     	<tmpl:put name="leftnav">
     		<% String wineAssId = JspMethods.getWineAssociateId().toLowerCase(); %>
 			<td class="wine-sidenav" bgcolor="#e2dfcc" style="z-index: 0;" width="150"><div align="center"><a href="/department.jsp?deptId=<%= wineAssId %>&trk=snav"><img src="/media/editorial/win_<%= wineAssId %>/<%= wineAssId %>_logo_sidenav_bottom.gif" width="150" height="109" border="0"></a><br></div>
-			<% try { %><%@ include file="/common/template/includes/left_side_nav_usq.jspf" %><% } catch (Exception ex) {ex.printStackTrace();} %>
+			<% try { %><%@ include file="/common/template/includes/left_side_nav_usq.jspf" %><% } catch (Exception ex) {/* ex.printStackTrace(); */} %>
 			</td>    	
 		</tmpl:put>
      <% } %>
