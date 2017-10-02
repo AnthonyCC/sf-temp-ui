@@ -655,7 +655,7 @@ public class PayPalReconciliationSessionBean extends SessionBeanSupport {
 	
 	private void resetConnection(PreparedStatement ps, ResultSet rs, Connection conn) {
 		try {
-			DaoUtil.close(rs, ps, conn);
+			DaoUtil.closePreserveException(rs, ps, conn);
 		} catch (SQLException e) {
 			LOGGER.warn("[PayPal Batch]", e);
 		}
