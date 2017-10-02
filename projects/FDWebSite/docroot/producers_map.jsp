@@ -15,6 +15,7 @@
 <%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@page import="com.freshdirect.webapp.taglib.fdstore.BrowserInfo"%>
 <%@page import="org.apache.commons.lang.StringEscapeUtils"%>
+<%@page import="com.freshdirect.fdstore.FDNotFoundException"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
@@ -28,8 +29,9 @@ BrowserInfo bi = new BrowserInfo(request);
 
 String catId = request.getParameter("catId");
 
-if (catId == null)
-	throw new JspException("Missing category identifier.");
+if (catId == null){
+	throw new FDNotFoundException("Missing category identifier.");
+}
 
 CategoryModel cat = (CategoryModel) PopulatorUtil.getContentNode(catId);
 
