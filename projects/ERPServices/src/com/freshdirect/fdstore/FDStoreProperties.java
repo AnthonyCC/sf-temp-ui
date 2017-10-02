@@ -980,7 +980,7 @@ public class FDStoreProperties {
  	public final static String PENNSYLVANIA_SERVICE_CONTACT	= "pennsylvania.service.contact";
 
  	//Setting the product as free as SAP cannot get the value of a product as zero
- 	public final static String PROP_ENABLE_FREE_PRODUCT = "enable.free.product";
+ 	public final static String PROP_ENABLE_FREE_PRODUCT = "fdstore.enable.free.product";
 
 
 
