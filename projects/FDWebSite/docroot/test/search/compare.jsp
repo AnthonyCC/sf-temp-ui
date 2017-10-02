@@ -13,7 +13,7 @@
 <%@page import="com.freshdirect.cms.search.ContentSearchServiceI"%>
 <%@page import="java.util.HashMap"%>
 <%@ taglib uri='freshdirect' prefix='fd'%>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 	<title>Search Compare Page</title>
 	<fd:css href="/assets/css/test/search/config.css" />

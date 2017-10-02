@@ -14,7 +14,7 @@ response.setContentType(contentType);
 %>
 
 
-<%@page import="com.freshdirect.webapp.util.JspMethods"%><html>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%><html lang="en-US" xml:lang="en-US">
 <head><title>Feature Report</title>
 
 <!-- css for PC IE -->

@@ -83,9 +83,9 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 				<table width="100%" cellspacing="0" cellpadding="0" border="0">
 				<tr>
 					<td rowspan="5" width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
-					<td rowspan="2"><img src="/media_stat/images/template/system_msgs/FF9900_tp_lft_crnr.gif" width="18" height="5" border="0"></td>
-					<td colspan="2" bgcolor="#FF9900"><img src="/media_stat/images/layout/ff9900.gif" width="1" height="1"></td>
-					<td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/FF9900_tp_rt_crnr.gif" width="6" height="5" border="0"></td>
+					<td rowspan="2"><img src="/media_stat/images/template/system_msgs/FF9900_tp_lft_crnr.gif" alt="" width="18" height="5" border="0"></td>
+					<td colspan="2" bgcolor="#FF9900"><img src="/media_stat/images/layout/ff9900.gif" width="1" alt="" height="1"></td>
+					<td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/FF9900_tp_rt_crnr.gif" alt="" width="6" height="5" border="0"></td>
 					<td rowspan="5"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
 				</tr>
 				<tr>
@@ -99,15 +99,15 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 								<%=infoMsg%><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
 					</td>
 					<td bgcolor="#ffffff"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
-					<td bgcolor="#ff9900"><img src="/media_stat/images/layout/ff9900.gif" width="1" height="1"></td>
+					<td bgcolor="#ff9900"><img src="/media_stat/images/layout/ff9900.gif" alt="" width="1" height="1"></td>
 				</tr>
 				<tr>
-					<td rowspan="2"><img src="/media_stat/images/template/system_msgs/FF9900_bt_lft_crnr.gif" width="18" height="5" border="0"></td>
+					<td rowspan="2"><img src="/media_stat/images/template/system_msgs/FF9900_bt_lft_crnr.gif" alt="" width="18" height="5" border="0"></td>
 					<td bgcolor="#ffffff"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"></td>
-					<td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/FF9900_bt_rt_crnr.gif" width="6" height="5" border="0"></td>
+					<td rowspan="2" colspan="2"><img src="/media_stat/images/template/system_msgs/FF9900_bt_rt_crnr.gif" alt="" width="6" height="5" border="0"></td>
 				</tr>
 				<tr>
-					<td colspan="2" bgcolor="#FF9900"><img src="/media_stat/images/layout/ff9900.gif" width="1" height="1"></td>
+					<td colspan="2" bgcolor="#FF9900"><img src="/media_stat/images/layout/ff9900.gif" alt="" width="1" height="1"></td>
 				</tr>
 				</table>
 				<br />
@@ -146,7 +146,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 							<%@ include file="/gift_card/purchase/includes/i_donation_giftcard_fields.jspf" %>
 						</td>
 						<td bgcolor="#cccccc" width="1">
-							<img src="/media_stat/images/layout/dotted_line_w.gif" width="1" height="1" border="0" />
+							<img src="/media_stat/images/layout/dotted_line_w.gif" alt="" width="1" height="1" border="0" />
 						</td>
 						<td valign="top" width="489">
 							<%

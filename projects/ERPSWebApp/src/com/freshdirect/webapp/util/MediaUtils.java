@@ -162,9 +162,11 @@ public class MediaUtils {
     	if (mediaPath == null)
     		return false;
     	
-    	Boolean cachedResult = EhCacheUtil.getObjectFromCache(EhCacheUtil.MEDIA_CHECK_CACHE_NAME, mediaPath);
-    	if (cachedResult != null) {
-    		return cachedResult;
+    	if(!FDStoreProperties.getPreviewMode()){//Fetch from cache only in non-preview mode
+	    	Boolean cachedResult = EhCacheUtil.getObjectFromCache(EhCacheUtil.MEDIA_CHECK_CACHE_NAME, mediaPath);
+	    	if (cachedResult != null) {
+	    		return cachedResult;
+	    	}
     	}
     	boolean result = false;
     	HttpURLConnection conn = null;
@@ -195,7 +197,9 @@ public class MediaUtils {
         		conn.disconnect();
         	}
         }
-        EhCacheUtil.putObjectToCache(EhCacheUtil.MEDIA_CHECK_CACHE_NAME, mediaPath, new Boolean(result));
+        if(!FDStoreProperties.getPreviewMode()){ //Cache it only in non-preview mode
+        	EhCacheUtil.putObjectToCache(EhCacheUtil.MEDIA_CHECK_CACHE_NAME, mediaPath, new Boolean(result));
+        }
         return result;
     }
 

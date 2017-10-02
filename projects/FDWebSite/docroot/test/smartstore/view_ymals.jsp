@@ -105,7 +105,7 @@ if (!origURL.equals(newURL)) {
 
 %><%@page import="org.apache.log4j.Logger"%>
 <%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 	<title>VIEW SMART YMALS PAGE</title>

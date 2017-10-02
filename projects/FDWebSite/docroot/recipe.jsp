@@ -23,8 +23,6 @@ String catIdParam       = request.getParameter("catId");
 
 String jspTemplate ="/common/template/recipe_DLnavs.jsp";
 
-
-
 if (variantId != null) {
 	variant = (RecipeVariant) PopulatorUtil.getContentNode(variantId);
 	recipe = (Recipe) variant.getParentNode();
@@ -34,11 +32,11 @@ if (variantId != null) {
 	variant = recipe.getDefaultVariant();
 
 } else {
-	throw new IllegalArgumentException("No variantId or recipeId supplied");
+	throw new FDNotFoundException("No variantId or recipeId supplied");
 }
 
 if (recipe == null) {
-	throw new IllegalArgumentException("No recipe found");
+	throw new FDNotFoundException("No recipe found");
 }
 
 if (!recipe.isAvailable()) {

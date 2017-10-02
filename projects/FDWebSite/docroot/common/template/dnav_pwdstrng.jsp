@@ -10,7 +10,7 @@ final int W_DNAV_TOTAL = 970;
 %>
 
 <!DOCTYPE html>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 	<tmpl:get name="seoMetaTag"/>
 	<tmpl:get name='customhead'/>

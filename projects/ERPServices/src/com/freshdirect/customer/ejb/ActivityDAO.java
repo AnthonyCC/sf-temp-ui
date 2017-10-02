@@ -125,8 +125,8 @@ public class ActivityDAO implements java.io.Serializable {
 				l.add(this.loadFromResultSet(rs));
 			}
 		} finally {
-			DaoUtil.close(ps);
 			DaoUtil.close(rs);
+			DaoUtil.close(ps);
 		}
 		return l;
 	}
@@ -176,8 +176,8 @@ public class ActivityDAO implements java.io.Serializable {
 				l.add(this.loadFromResultSet2(rs));
 			}
 		} finally {
-			DaoUtil.close(ps);
 			DaoUtil.close(rs);
+			DaoUtil.close(ps);
 		}
 		return l;
 	}
@@ -252,8 +252,8 @@ public class ActivityDAO implements java.io.Serializable {
 			}
 		}
 		finally {
-			DaoUtil.close(ps);
 			DaoUtil.close(rs);
+			DaoUtil.close(ps);
 		}
 		return list;
 	}
@@ -263,21 +263,25 @@ public class ActivityDAO implements java.io.Serializable {
 	public Map<Date,String> getPaymentMethodsTimeStamp(Connection conn, String customerId) throws SQLException {
 		String last4CardNum = "";
 		Map<Date,String> paymentMethodsTimeStamp = new HashMap<Date, String>();
-		PreparedStatement ps = conn.prepareStatement(paymentMethodsTimeStampQuery);
-				ps.setString(1, customerId);
-				ps.setString(2, "A Pymt Mthd");
-				
-			ResultSet rs = ps.executeQuery();
-			
-			while(rs.next()){
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(paymentMethodsTimeStampQuery);
+			ps.setString(1, customerId);
+			ps.setString(2, "A Pymt Mthd");
+			rs = ps.executeQuery();
+			while (rs.next()) {
 				Date date = new java.util.Date(rs.getTimestamp("TIMESTAMP").getTime());
 				String note = rs.getString("NOTE");
-				if(null != note && note.toCharArray().length>=10){
+				if (null != note && note.toCharArray().length >= 10) {
 					last4CardNum = note.substring(9).substring(6, 9);
 				}
 				paymentMethodsTimeStamp.put(date, last4CardNum);
-			}
-			
+			} 
+		} finally {
+			DaoUtil.close(rs);
+			DaoUtil.close(ps);
+		}
 		return null;
 	}
 }

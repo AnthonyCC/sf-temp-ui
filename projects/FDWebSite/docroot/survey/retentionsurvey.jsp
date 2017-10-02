@@ -44,7 +44,7 @@ final int W_SURVEY_RETENTION_SURVEY_TOTAL = 970;
 	                               String errorMsg=errMsgBuff.toString(); %>    
 	                                <%@ include file="/includes/i_error_messages.jspf" %>                               
 	                    <%  	} %>
-		                        <br><a href="/index.jsp"><img src="/media_stat/images/template/help/help_home.gif" width="71" height="26" border="" alt="BACK HOME"></a>
+		                        <br><a href="/index.jsp"><img src="/media_stat/images/template/help/help_home.gif" width="71" height="26" border="" alt="return to home page"></a>
 		                        <br>Go to <a href="/index.jsp">Home Page</a><br><br> 
 		                    </td>
 	            		</tr>

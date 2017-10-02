@@ -26,7 +26,7 @@ String templatePath = request.getParameter("template");
 Map params = new HashMap();
 params.put("baseUrl", "");
 %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 	<head>
 
 	    <fd:css href="/assets/css/pc_ie.css"/>

@@ -1,6 +1,6 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
 <!DOCTYPE html>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
   <title>FreshDirect</title>
   <%@ include file="/common/template/includes/i_javascripts_browse.jspf" %>

@@ -8,7 +8,7 @@
 <%@page import="java.text.SimpleDateFormat"%>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 	<head><title>Feed</title></head>
 	<body>
 		

@@ -192,7 +192,7 @@
       int total = bundle.countElems(caches);
       if (html) {
 %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head><title><%=type.toUpperCase()%> DATA</title>
 </head>
 <body>
@@ -212,7 +212,7 @@
 %>
 
 <% if (html) { %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head><title><%=type.toUpperCase()%> DATA</title>
 </head>
 
@@ -272,7 +272,7 @@
 </fd:GetContentBundle>
 <% } else { // SHOW DISPLAY %>
 
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 <title>CMS - TEST DATA GENERATOR</title>
 

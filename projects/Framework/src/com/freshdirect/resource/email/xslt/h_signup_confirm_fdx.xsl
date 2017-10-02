@@ -28,7 +28,7 @@
 	<xsl:variable name="cell_style" select="concat( $fontfamily, 'text-align:left; white-space:nowrap;')" />
 	
 	<xsl:template match="fdemail">
-	<html>
+	<html lang="en-US" xml:lang="en-US">
 		<head>
 			<title>Congrats! You're In!</title>
 			<link rel="stylesheet" href="{$site}/assets/css/emails.css" />

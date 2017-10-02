@@ -1,7 +1,7 @@
 <%@ page autoFlush='false' %>
 <%@ page import='com.freshdirect.fdstore.warmup.*' %>
 <%@ page import='com.freshdirect.fdstore.content.*' %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 <title>Warmup</title>
 </head>

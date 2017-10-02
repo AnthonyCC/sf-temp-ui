@@ -18,6 +18,7 @@ import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpAuthorizationModel;
+import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.customer.ErpTransactionException;
@@ -263,7 +264,12 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 			/*		if(FDCustomerManager.isECheckRestricted(info.getIdentity()) || FDCustomerManager.isOnAlert(info.getIdentity().getErpCustomerPK(), EnumAlertType.ECHECK.getName())){
 						result.addError(new ActionError("verificationFailed",SystemMessageList.MSG_DEFAULT_PAYMENT_VERIVICATION_FAILURE));
 					}else{*/
-					auth = FDCustomerManager.verifyCard(info, paymentMethod, true);
+					try {
+						auth = FDCustomerManager.verifyCard(info, paymentMethod, true);
+					} catch (ErpPaymentMethodException e) {
+						LOGGER.error(e);
+						throw new FDResourceException(e);
+					}
 					//}
 				}else if(paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.CREDITCARD) || paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.DEBITCARD)){
 					try {
@@ -502,4 +508,26 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		}
 		return paymentMethods;
 	}
+	
+	//if E-check alert is ON for customer, at checkout page his Echecks are removed here
+	public static List<ErpPaymentMethodI> removeEcheckAccounts(List<ErpPaymentMethodI> paymentMethods) {
+		LOGGER.info("inside removeEcheckAccounts() as E-Check Alert is ON for the customer ");
+		if (paymentMethods != null && !paymentMethods.isEmpty()) {
+			List<ErpPaymentMethodI> erpPaymentMethodIs = new ArrayList<ErpPaymentMethodI>();
+			for (ErpPaymentMethodI paymentMethod : paymentMethods) {
+				if(!EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())){
+				try {
+						erpPaymentMethodIs.add(paymentMethod);
+						LOGGER.debug("payment method is sucessfully added to list");
+				} catch (Exception e1) {
+					LOGGER.info("Exception occured at removeEcheckAccounts(), returning payments while checkout" +e1);
+					return paymentMethods;
+				}
+			}
+		}
+			LOGGER.debug("exiting removeEcheckAccounts()");
+			return erpPaymentMethodIs;
+		}
+		return paymentMethods;
+	}	
 }

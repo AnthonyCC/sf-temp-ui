@@ -109,6 +109,14 @@ var dataLayer = window.dataLayer || [];
         search_results: searchData.searchResults
       });
     },
+    ddpp: function (ddppproducts) {
+      var list = fd.gtm.getList(),
+          products = ddppproducts.map(function (product, idx) {
+            return productTransform(product, idx+1, list+'_ddpp');
+          });
+
+      fd.gtm.reportImpressions(products);
+    },
     sections: function (sectionData) {
       var list = fd.gtm.getList(),
           products = sectionProducts(sectionData).map(function (product, idx) {
@@ -511,10 +519,7 @@ var dataLayer = window.dataLayer || [];
       if (carouselE.length) {
         productData.list = safeName(carouselE.find('.tabs li.selected').text());
       } else {
-        carouselE = productE.closest('.carousels');
-        if (carouselE.length) {
-          productData.list = safeName(carouselE.find('.header').text());
-        }
+        productData.list = safeName(productE.closest('.carousel, .carousels').find('.carousel-header, .header').text());
       }
     }
 
@@ -654,6 +659,11 @@ var dataLayer = window.dataLayer || [];
     // product list
     if (!productData && browseData.sections) {
       fd.gtm.updateDataLayer({sections: browseData.sections});
+    }
+
+    // ddpp
+    if (!productData && browseData.ddppproducts && browseData.ddppproducts.products) {
+      fd.gtm.updateDataLayer({ddpp: browseData.ddppproducts.products});
     }
   }
 
@@ -964,7 +974,7 @@ var dataLayer = window.dataLayer || [];
 
   // product click
   $(document).on('click', '[data-component="product"] a[href]', function (e) {
-	if(!(e.ctrlKey || e.shiftKey || e.target.target == "_blank" || e.target.target == "_top")){
+	if(!(e.ctrlKey || e.shiftKey || e.metaKey || e.target.target == "_blank" || e.target.target == "_top")){
 	    e.preventDefault();
 	    var target = $(e.target).closest('a').prop('href'),
 	        productData = fd.gtm.getProductData(e.target),
@@ -999,7 +1009,7 @@ var dataLayer = window.dataLayer || [];
     }, {
       event: 'productClick',
       callback: function () {
-    	if(!(e.ctrlKey || e.shiftKey || e.target.target == "_blank" || e.target.target == "_top")){
+    	if(!(e.ctrlKey || e.shiftKey || e.metaKey || e.target.target == "_blank" || e.target.target == "_top")){
 	        if (goTimeout) {
 	          clearTimeout(goTimeout);
 	          goTimeout = null;
@@ -1013,7 +1023,7 @@ var dataLayer = window.dataLayer || [];
 
   // top nav click
   $(document).on('click', '[data-component="globalnav-menu"] a, .bottom-nav a', function (e) {
-	if(!(e.ctrlKey || e.shiftKey || e.target.target == "_blank" || e.target.target == "_top")){
+	if(!(e.ctrlKey || e.shiftKey || e.metaKey || e.target.target == "_blank" || e.target.target == "_top")){
 		e.preventDefault();
 	    var target = $(e.target).closest('a').prop('href'),
 	        title = $(e.target).closest('a').text(),
@@ -1032,7 +1042,7 @@ var dataLayer = window.dataLayer || [];
     }, {
       event: 'top-menu-clicked',
       callback: function () {
-    	if(!(e.ctrlKey || e.shiftKey || e.target.target == "_blank" || e.target.target == "_top")){
+    	if(!(e.ctrlKey || e.shiftKey || e.metaKey || e.target.target == "_blank" || e.target.target == "_top")){
 	        if (goTimeout) {
 	          clearTimeout(goTimeout);
 	          goTimeout = null;

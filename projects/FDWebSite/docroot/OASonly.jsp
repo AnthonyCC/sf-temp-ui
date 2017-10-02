@@ -10,7 +10,7 @@ if (sp != null) {
 }
 %>
 <!DOCTYPE html>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
     <title>OAS</title>
     <%@ include file="/common/template/includes/metatags.jspf" %>
@@ -20,4 +20,4 @@ if (sp != null) {
 <body class="OASonly">
   <div id="oas_<%= lp %>"><script type="text/javascript">OAS_AD('<%= lp %>');</script></div>
 </body>
-<html>
+</html>

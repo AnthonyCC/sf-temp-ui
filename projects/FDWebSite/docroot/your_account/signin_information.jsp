@@ -928,9 +928,9 @@ else{  %>
 </div>--%>
 
 <div class="youraccount_continue">
-	<a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="CONTINUE SHOPPING" align="LEFT"></a>
-	<a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="CONTINUE SHOPPING"></a>
-	<br/>from <FONT class="text11bold"><a HREF="/index.jsp">Home Page</a></FONT>
+	<a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="" ALIGN="LEFT">
+    CONTINUE SHOPPING
+    <BR>from <FONT CLASS="text11bold">Home Page</A></FONT>
 </div>
 
 </div>

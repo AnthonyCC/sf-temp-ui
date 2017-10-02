@@ -962,24 +962,27 @@ public class FDStoreProperties {
     private final static String IBM_REFRESH_TOKEN = "fdstore.ibm.refresh.token";
 	private static final String PAYMENT_TLSSHA_ENABLED = "fdstore.payment.tls.sha.enabled";
     private static final String PROP_REFRESHZONE_ENABLED = "fdstore.refresh.zone.enabled";
-    
+
     private static final String GLOBAL_SF2_0_ENABLED = "fdstore_sf20_global_enabled";
-    
+
     private static final String PROP_DEBIT_SWITCH_NOTICE_ENABLED = "fdstore.debitCardSwitchNotice.enabled";
-    
+
     private static final String PROP_LOG_AKAMAI_HEADER_ENABLED = "fdstore.akamai.edgescape.header.logging.enabled";
- 
+
     public final static long TEN_DAYS_IN_MILLIS = 1000 * 60 * 60 * 24 * 10;
 
     //APPDEV 6442 FDC Transition
-    
+
     public final static String PROP_FDC_TRANSITION_LOOK_AHEAD_DAYS = "fdstore.fdctransition.lookAheadDays";
     public final static String CUSTOMER_SERVICE_CONTACT	= "default.customer.service.contact";
  	public final static String CHEFSTABLE_CONTACT_NUMBER = "chefstable.contact.number";
  	public final static String FOODKICK_SERVICE_CONTACT	=	"foodkick.service.contact";
  	public final static String PENNSYLVANIA_SERVICE_CONTACT	= "pennsylvania.service.contact";
 
-    
+ 	//Setting the product as free as SAP cannot get the value of a product as zero
+ 	public final static String PROP_ENABLE_FREE_PRODUCT = "fdstore.enable.free.product";
+
+
 
 static {
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1121,7 +1124,7 @@ static {
         defaults.put(PROP_PRODUCT_RECOMMEND_ENABLED, "false");
 
         defaults.put(PROP_PRODUCT_RECOMMEND_CHECK_CACHE_ENABLED, "true");
-        
+
         defaults.put(BSGS_SIGNUP_URL, "/product.jsp?productId=mkt_fd_dlvpss_b10g5f&catId=gro_gear_dlvpass");
         defaults.put(UNLIMITED_SIGNUP_URL, "/product.jsp?productId=mkt_fd_dlvpss_unl6m&catId=gro_gear_dlvpass");
         defaults.put(UNLIMITED_PROMOTIONAL_SIGNUP_URL, "/product.jsp?productId=mkt_fd_dlvpss_unl6m&catId=gro_gear_dlvpass");
@@ -1602,7 +1605,7 @@ static {
         defaults.put("feature.rollout.standingorder3_0", "GLOBAL:ENABLED,false;");
         defaults.put("feature.rollout.browseaggregatedcategories1_0", "GLOBAL:ENABLED,false;");
         defaults.put("feature.rollout.debitCardSwitch", "GLOBAL:ENABLED,true;");
-        
+
         defaults.put(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE, "true");
         defaults.put(PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING, "ISO-8859-1");
 
@@ -1856,22 +1859,24 @@ static {
         defaults.put(PAYMENT_TLSSHA_ENABLED,"false");
         defaults.put(PROP_PAYMENT_VERIFICATION_ENABLED, "false");
         defaults.put(GLOBAL_SF2_0_ENABLED, "false");
-        
+
         //DCS-23
         defaults.put(PROP_DEBIT_SWITCH_NOTICE_ENABLED, "true");
-        
+
         defaults.put(PROP_LOG_AKAMAI_HEADER_ENABLED,"true");
-        
+
         //APPDEV-6442
         defaults.put(PROP_FDC_TRANSITION_LOOK_AHEAD_DAYS, "0");
-        
+
         //CUSTOMER CONTACT NUMBERS
  	   	defaults.put(CUSTOMER_SERVICE_CONTACT, "1-866-283-7374");
  	   	defaults.put(CHEFSTABLE_CONTACT_NUMBER, "1-866-511-1240");
  	   	defaults.put(FOODKICK_SERVICE_CONTACT, "1-718-513-2785");
  	   	defaults.put(PENNSYLVANIA_SERVICE_CONTACT, "1-215-825-5726");
 
-        
+ 	   	//Delivery Pass sent as a free products for trail
+        defaults.put(PROP_ENABLE_FREE_PRODUCT,"false"); // Enable free product
+
         refresh();
     }
 
@@ -4758,16 +4763,16 @@ static {
     public static boolean isDebitSwitchNoticeEnabled() {
         return (Boolean.valueOf(get(PROP_DEBIT_SWITCH_NOTICE_ENABLED))).booleanValue();
     }
-    
+
     public static boolean isLoggingAkamaiEdgescapgeHeaderInfoEnabled() {
         return (Boolean.valueOf(get(PROP_LOG_AKAMAI_HEADER_ENABLED))).booleanValue();
     }
-	
-	
+
+
 	 public static int getFdcTransitionLookAheadDays() {
 			return Integer.parseInt(get(PROP_FDC_TRANSITION_LOOK_AHEAD_DAYS));
 		}
-	 
+
 
 		public static String getDefaultCustomerServiceContact(){
 			return get(CUSTOMER_SERVICE_CONTACT);
@@ -4781,5 +4786,10 @@ static {
 		public static String getPennsylvaniaCustomerServiceContact(){
 			return get(PENNSYLVANIA_SERVICE_CONTACT);
 		}
-	
+
+		//For SAP to get the Price of the Product as zero as it does not accept the Price to be zero we send as Free
+		public static boolean getEnableFreeProduct(){
+			return (Boolean.valueOf(get(PROP_ENABLE_FREE_PRODUCT))).booleanValue();
+		}
+
 }

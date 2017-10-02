@@ -514,6 +514,10 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     public void setAddress(AddressModel a) {
         this.user.setAddress(a);
     }
+    
+    public void setAddress(AddressModel a, boolean populateUserContext) {
+        this.user.setAddress(a, populateUserContext);
+    }
 
     @Override
     public AddressModel getAddress() {
@@ -1505,6 +1509,10 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     @Override
     public UserContext getUserContext() {
         return user.getUserContext();
+    }
+    
+    public UserContext getUserContext(boolean override) {
+        return user.getUserContext(override);
     }
 
     @Override

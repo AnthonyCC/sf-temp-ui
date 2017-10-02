@@ -150,7 +150,7 @@
 	Set         allRecipeKeys = CmsManager.getInstance().getContentKeysByType(recipeType);
 
 %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 <title>/ FD CLIG Unavailability Report /</title>
 </head>

@@ -10,7 +10,7 @@
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
 
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
   <tmpl:get name="seoMetaTag"/>
   <%@ include file="/common/template/includes/i_javascripts_browse.jspf" %>

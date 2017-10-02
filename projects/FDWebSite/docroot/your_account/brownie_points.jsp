@@ -270,7 +270,7 @@
 															<table>
 																<tr>
 																	<td><img src="/media_stat/images/profile/success.png"
-																		border="0" /></td>
+																		alt="success" border="0" /></td>
 																	<td><span style="color: #777777;" class="text12bold">Your
 																			email has been sent to your friends. </span><br /> <a
 																		href="/your_account/manage_invites.jsp"
@@ -639,12 +639,12 @@
 									alt="" border="0"></td>
 								<td rowspan="2"><img
 									src="/media_stat/images/template/system_msgs/CC3300_tp_lft_crnr.gif"
-									width="18" height="5" border="0"></td>
+									width="18" height="5" alt="" border="0"></td>
 								<td colspan="2" bgcolor="#CC3300"><img
-									src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
+									src="/media_stat/images/layout/cc3300.gif" alt="" width="1" height="1"></td>
 								<td rowspan="2" colspan="2"><img
 									src="/media_stat/images/template/system_msgs/CC3300_tp_rt_crnr.gif"
-									width="6" height="5" border="0"></td>
+									width="6" alt="" height="5" border="0"></td>
 								<td rowspan="5"><img
 									src="/media_stat/images/layout/clear.gif" width="10" height="1"
 									alt="" border="0"></td>
@@ -671,21 +671,21 @@
 								<td><img src="/media_stat/images/layout/clear.gif"
 									width="5" height="1" alt="" border="0"></td>
 								<td bgcolor="#CC3300"><img
-									src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
+									src="/media_stat/images/layout/cc3300.gif" alt="" width="1" height="1"></td>
 							</tr>
 							<tr>
 								<td rowspan="2"><img
 									src="/media_stat/images/template/system_msgs/CC3300_bt_lft_crnr.gif"
-									width="18" height="5" border="0"></td>
+									width="18" alt="" height="5" border="0"></td>
 								<td><img src="/media_stat/images/layout/clear.gif"
 									width="1" height="4" alt="" border="0"></td>
 								<td rowspan="2" colspan="2"><img
 									src="/media_stat/images/template/system_msgs/CC3300_bt_rt_crnr.gif"
-									width="6" height="5" border="0"></td>
+									width="6" alt="" height="5" border="0"></td>
 							</tr>
 							<tr>
 								<td colspan="2" bgcolor="#CC3300"><img
-									src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
+									src="/media_stat/images/layout/cc3300.gif" alt="" width="1" height="1"></td>
 							</tr>
 						</table> <br /> <br />
 					<br /></td>
@@ -711,16 +711,9 @@
 						<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0"
 							WIDTH="<%=W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL%>">
 							<tr VALIGN="TOP">
-								<td WIDTH="35"><a href="/index.jsp"><img
-										src="/media_stat/images/buttons/arrow_green_left.gif"
-										border="0" alt="CONTINUE SHOPPING" ALIGN="LEFT"></a></td>
-								<td WIDTH="<%=W_YA_CUSTOMER_PROFILE_SUMMARY_TOTAL - 35%>"><a
-									href="/index.jsp"><img
-										src="/media_stat/images/buttons/continue_shopping_text.gif"
-										border="0" alt="CONTINUE SHOPPING"></a><br />from <FONT
-									CLASS="text11bold"><A HREF="/index.jsp">Home Page</A></FONT><br />
-								<IMG src="/media_stat/images/layout/clear.gif" WIDTH="340"
-									alt="" HEIGHT="1" BORDER="0"></td>
+								<TD WIDTH="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="" ALIGN="LEFT">
+                                CONTINUE SHOPPING
+                                <BR>from <FONT CLASS="text11bold">Home Page</A></FONT><BR><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="340" HEIGHT="1" BORDER="0"></TD>
 							</tr>
 						</TABLE></td>
 				</tr>

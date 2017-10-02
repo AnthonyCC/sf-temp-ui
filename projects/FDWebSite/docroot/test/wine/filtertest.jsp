@@ -15,7 +15,7 @@
 <%@page import="com.freshdirect.fdstore.content.DomainValue"%>
 <%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
 <%@page import="com.freshdirect.fdstore.content.EnumWineRating"%>
-<%@ page import="com.freshdirect.common.pricing.ZoneInfo"%><html>
+<%@ page import="com.freshdirect.common.pricing.ZoneInfo"%><html lang="en-US" xml:lang="en-US">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 <title>Filter Test</title>

@@ -56,6 +56,10 @@ public class CrmCaseSubject extends EnumModel implements TerminableI {
 	
 	public static final String CODE_GC_ORDER_OVER_MAX = "ASQ-104";
 	
+	public static final String CODE_ORDER_LOCATION_HELP = "ASQ-108";
+	
+	public static final String CODE_ORDER_PLACEMENT_HELP = "ASQ-109";
+	
 	public static final String CODE_GIFT_CARD_INFO = "GCQ-010";
 	
 	public static final String CODE_IPHONE_INFO = "IPQ-010";

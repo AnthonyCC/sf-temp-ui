@@ -43,7 +43,7 @@
          }
      }
 %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 	<style>
 		<style type="text/css">

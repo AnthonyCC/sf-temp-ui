@@ -11,6 +11,7 @@ import com.freshdirect.customer.EnumAlertType;
 import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpAuthorizationModel;
+import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.fdstore.FDResourceException;
@@ -69,6 +70,8 @@ public class PaymentMethodUtil {
 					} catch (ErpTransactionException e) {
 						LOGGER.error(e);
 					} catch (ErpAuthorizationException e) {
+						LOGGER.error(e);
+					} catch (ErpPaymentMethodException e){
 						LOGGER.error(e);
 					}
 				} else
@@ -147,6 +150,8 @@ public class PaymentMethodUtil {
 					} catch (ErpTransactionException e) {
 						LOGGER.error(e);
 					} catch (ErpAuthorizationException e) {
+						LOGGER.error(e);
+					} catch (ErpPaymentMethodException e){
 						LOGGER.error(e);
 					}
 				}

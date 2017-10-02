@@ -3,7 +3,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <features:allFeaturesPotato />
 
-<html lang="en">
+<html lang="en-US" xml:lang="en-US">
 <head>
   <meta charset="UTF-8">
   <title>Feature test page</title>

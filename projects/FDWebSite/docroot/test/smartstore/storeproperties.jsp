@@ -1,7 +1,7 @@
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US" xml:lang="en-US">
 <head>
   <meta charset="UTF-8">
   <title>FD Store Properties Live!</title>

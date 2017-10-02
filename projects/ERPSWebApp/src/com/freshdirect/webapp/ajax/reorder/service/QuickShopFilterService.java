@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.EnumQuickShopFilteringValue;
@@ -89,6 +90,16 @@ public class QuickShopFilterService {
 			EnumQuickShopTab tab, QuickShopListRequestObject requestData) throws FDResourceException {
 		FilteringFlowResult<QuickShopLineItemWrapper> result = null;
 		List<QuickShopLineItemWrapper> items = QuickShopHelper.getWrappedOrderHistoryUsingCache(user, tab, cacheName);
+		
+		List<QuickShopLineItemWrapper> discontinuedandoosproducts = new ArrayList<QuickShopLineItemWrapper>();
+        for(QuickShopLineItemWrapper item : items){
+        	if(item!=null && item.getProduct()!=null && (item.getProduct().isDiscontinued() || item.getProduct().isOutOfSeason()) && 
+        			user!=null && user.getUserContext() != null && user.getUserContext().getStoreContext() != null && user.getUserContext().getStoreContext().getEStoreId() == EnumEStoreId.FDX){
+        		discontinuedandoosproducts.add(item);
+        	}
+        }
+        items.removeAll(discontinuedandoosproducts);
+			
 		if (EnumQuickShopTab.PAST_ORDERS.equals(tab)) {
 			String yourLastOrderId = getYourLastOrderId(items);
 			requestData.setYourLastOrderId(yourLastOrderId);

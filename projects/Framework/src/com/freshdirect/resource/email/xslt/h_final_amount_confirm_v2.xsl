@@ -8,7 +8,7 @@
 	<xsl:output method="html"/>
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 	<title>Your order for <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime"/></xsl:call-template> is on its way</title>
 	<link rel="stylesheet" href="http://www.freshdirect.com/assets/css/emails.css"/>

@@ -17,7 +17,7 @@
 		return;
 	}
 %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 	<title>SMART STORE TEST PAGES - INDEX</title>

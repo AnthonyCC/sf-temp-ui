@@ -21,7 +21,7 @@ int count = 0;
 %>
 
 <!DOCTYPE html>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 <title>Query for all usq products showing RECOMMENDED_ALTERNATIVES</title>
 <style type="text/css">

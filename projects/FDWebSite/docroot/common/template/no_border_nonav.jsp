@@ -18,7 +18,7 @@
 
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<html>
+<html lang="en-US" xml:lang="en-US">
 	<head>
 		<title><tmpl:get name='title'/></title>
 

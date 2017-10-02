@@ -91,14 +91,14 @@ public class GoogleAnalyticsReportingService {
         if (null != product) {
             params.add(new BasicNameValuePair(productNameKeyStarter + "id", product.getDefaultSkuCode()));
 		    params.add(new BasicNameValuePair(productNameKeyStarter + "nm", product.getFullName()));
-		    params.add(new BasicNameValuePair(productNameKeyStarter + "ca", product.getCategory().getContentName()));
+            params.add(new BasicNameValuePair(productNameKeyStarter + "ca", product.getCategory().getContentName()));
 		    params.add(new BasicNameValuePair(productNameKeyStarter + "br", product.getPrimaryBrandName()));
             params.add(new BasicNameValuePair(productNameKeyStarter + "va", product.getContentName()));
             params.add(new BasicNameValuePair(productNameKeyStarter + "pr", Double.toString(product.getPriceCalculator().getDefaultPriceValue())));
-            params.add(new BasicNameValuePair(productNameKeyStarter + "qt", null));
+            params.add(new BasicNameValuePair(productNameKeyStarter + "qt", Double.toString(cartLine.getQuantity())));
 		    params.add(new BasicNameValuePair(productNameKeyStarter + "ps", Integer.toString(productIndex)));
 		    params.add(new BasicNameValuePair(productNameKeyStarter + "cd3", Boolean.toString(product.isNew())));
-		    params.add(new BasicNameValuePair(productNameKeyStarter + "cd4", product.getDefaultSkuCode()));
+            params.add(new BasicNameValuePair(productNameKeyStarter + "cd6", Boolean.toString(true)));
         }
 
     }

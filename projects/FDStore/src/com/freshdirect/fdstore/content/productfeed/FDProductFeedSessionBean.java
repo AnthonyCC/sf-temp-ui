@@ -456,7 +456,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
    		feedClaimTypes.put(EnumClaimValue.getValueForCode("LO_SALT"),"low salt");
    		feedClaimTypes.put(EnumClaimValue.getValueForCode("LO_SODM"),"low sodium");
    		feedClaimTypes.put(EnumClaimValue.getValueForCode("VE_GAN"),"vegan");
-   		feedClaimTypes.put(EnumClaimValue.getValueForCode("VEGGY"),"vegitarian");
+   		feedClaimTypes.put(EnumClaimValue.getValueForCode("VEGGY"),"vegetarian");
    	}
 
     //Start:: populating claims of every product for search results sent to UNBXD APPDEV-6412

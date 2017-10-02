@@ -72,7 +72,7 @@ taglib prefix="display" uri="/WEB-INF/shared/tld/fd-display.tld" %><%
 	
 	request.setAttribute("cats", cats);	
 %><!DOCTYPE html>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 	<meta charset="utf-8"/>
 	<title>Categories having 'SHOWSELF' attribute set to false</title>

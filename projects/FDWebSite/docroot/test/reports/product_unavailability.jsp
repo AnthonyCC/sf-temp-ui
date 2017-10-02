@@ -118,7 +118,7 @@ if ((selectedDept != null || !"".equals(selectedDept )) && !"null".equals(select
 	selectedDeptInfo = (DepartmentInfo)deptInfos.get( selectedDept );
 }
 %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 <title>/ FD Product Unavailability Report /</title>
 <style type="text/css">

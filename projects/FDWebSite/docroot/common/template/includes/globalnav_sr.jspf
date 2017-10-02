@@ -107,7 +107,7 @@ if(user != null) {
 				%>
 				<div class="searchform-cont">
 					<form class="<%= searchFormClass %>" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
-						<label class="offscreen" for="topSearchField">Search</label>
+						<label for="topSearchField"><span class="offscreen">Search</span></label>
 						<%
 							{
 							    String searchParams = request.getParameter("searchParams")!=null ? request.getParameter("searchParams") : "";

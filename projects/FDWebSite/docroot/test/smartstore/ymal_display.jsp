@@ -39,7 +39,7 @@
 	s.add(mgr.getContentNode(ContentFactory.getInstance().getStoreKey())); // store
 	s.add(mgr.getContentNode(ContentKey.getContentKey("FDFolder:recipes"))); // recipes
 %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 	<title>YMAL Display Test Page</title>
 	<style type="text/css">

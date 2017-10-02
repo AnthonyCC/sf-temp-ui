@@ -11,31 +11,31 @@ public class ZonePriceInfoModel implements Serializable, Cloneable {
 	private final double sellingPrice;
 
 	private final double promoPrice;
-	
+
 	private final ZoneInfo zoneInfo;
-	
+
 	private final boolean itemOnSale;
-	
+
 	private final int dealPercentage;
-	
+
 	private final int tieredDealPercentage;
-	
+
 	private final int highestDealPercentage;
-	
+
 	private final String displayableDefaultPriceUnit;
-	
+
 	/** Default price unit of measure */
 	private final String defaultPriceUnit;
-	
-	private final boolean showBurstImage;
-	
 
-	public ZonePriceInfoModel(double sellingPrice, double promoPrice, String defaultPriceUnit,String displayableDefaultPriceUnit, 
+	private final boolean showBurstImage;
+
+
+	public ZonePriceInfoModel(double sellingPrice, double promoPrice, String defaultPriceUnit,String displayableDefaultPriceUnit,
 			boolean itemOnSale, int dealPercentage, int tieredDealPercentage, ZoneInfo zoneInfo) {
 		this( sellingPrice, promoPrice, defaultPriceUnit, displayableDefaultPriceUnit, itemOnSale, dealPercentage, tieredDealPercentage, zoneInfo, true );
 	}
-	
-	public ZonePriceInfoModel(double sellingPrice, double promoPrice, String defaultPriceUnit,String displayableDefaultPriceUnit, 
+
+	public ZonePriceInfoModel(double sellingPrice, double promoPrice, String defaultPriceUnit,String displayableDefaultPriceUnit,
 			boolean itemOnSale, int dealPercentage, int tieredDealPercentage, ZoneInfo zoneInfo, boolean showBurstImage) {
 		this.defaultPriceUnit = defaultPriceUnit != null ? defaultPriceUnit.intern() : null;
 		this.displayableDefaultPriceUnit = displayableDefaultPriceUnit != null ? displayableDefaultPriceUnit.intern() : null;
@@ -48,23 +48,34 @@ public class ZonePriceInfoModel implements Serializable, Cloneable {
         this.zoneInfo = zoneInfo;
         this.showBurstImage=showBurstImage;
 	}
-	
+
 	/**
 	 * Get the "default" price - this is usually the lowest price for the product.
 	 *
 	 * @return price in USD
 	 */
 	public double getDefaultPrice() {
-		//Check if item on sale then return promo price.
-		if(isItemOnSale()){
-				return this.promoPrice;
+		//Making the DeliveryPass Free, as SAP is not receiving the value as 0
+		if (FDStoreProperties.getEnableFreeProduct() && this.sellingPrice <= 0.01) {
+			return 0;
 		}
-		return this.sellingPrice;
+		else{
+			//Check if item on sale then return promo price.
+			if(isItemOnSale()){
+					return this.promoPrice;
+			}
+			return this.sellingPrice;
+		}
 	}
 
 	public double getSellingPrice() {
-
-		return this.sellingPrice;
+		//Making the DeliveryPass Free, as SAP is not receiving the value as 0
+		if (FDStoreProperties.getEnableFreeProduct() && this.sellingPrice <= 0.01) {
+			return 0;
+		}
+		else{
+			return this.sellingPrice;
+		}
 	}
 	/*
 	public double getPromoPrice() {
@@ -79,14 +90,14 @@ public class ZonePriceInfoModel implements Serializable, Cloneable {
 	public String getDefaultPriceUnit() {
 		return this.defaultPriceUnit;
 	}
-	
+
 	/**
 	 * Get the unit of measure for the "default" price.
 	 *
 	 * @return pricing unit attribute if one, else return the default Price unit
 	 */
 	public String getDisplayableDefaultPriceUnit() {
-		
+
 		return this.displayableDefaultPriceUnit == null || "".equals(this.displayableDefaultPriceUnit) ? this.defaultPriceUnit : this.displayableDefaultPriceUnit ;
 	}
 
@@ -94,7 +105,7 @@ public class ZonePriceInfoModel implements Serializable, Cloneable {
 	public int getDealPercentage() {
 		return dealPercentage;
 	}
-	
+
 	public int getTieredDealPercentage() {
 		return tieredDealPercentage;
 	}
@@ -114,7 +125,7 @@ public class ZonePriceInfoModel implements Serializable, Cloneable {
 	public boolean isShowBurstImage() {
 		return showBurstImage;
 	}
-	
+
 	 @Override
      public String toString() {
          return "ZonePriceInfoModel[" + zoneInfo + " sellingPrice:" + sellingPrice + " promoPrice:" + promoPrice + " itemOnSale:" + itemOnSale

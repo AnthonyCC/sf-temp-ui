@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
 <head>
@@ -9,4 +9,4 @@
 <fd:css href="/assets/css/dialog-base.css" />
 </head>
 <body><button onclick="FDModalDialog.openVideo('Youtube Video Test','youtube_video_player_cm.jsp')">Youtube Video Test</button></body>
-<html>
+</html>

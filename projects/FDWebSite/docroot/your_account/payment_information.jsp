@@ -293,8 +293,7 @@
 		              </tr>
 		              <%if(user.isEbtAccepted()){ %>
 		              <tr valign="middle">
-		                     <td class="text11" style="padding-top: 5px; padding-bottom: 10px;">If you need to enter another EBT card: <a href="/your_account/add_ebt_card.jsp"><IMG src="/media_stat/images/buttons/add_new_ebt_card.jpg" WIDTH="117" HEIGHT="16" ALT="Add New Credit Card" BORDER="0" ALIGN="absmiddle"></a>
-		                     </td>
+		                     <td class="text11" style="padding-top: 5px; padding-bottom: 10px;">If you need to enter another EBT card: <a class="cssbutton green small" href="/your_account/add_ebt_card.jsp">ADD NEW EBT CARD</a>
 		                     </tr>
 		                     <% } %>
 		                     <tr><td>
@@ -311,9 +310,9 @@
 		              <FONT CLASS="space4pix"><br /><br /></FONT>
 		              <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL %>">
 		              <TR VALIGN="TOP">
-		              <TD WIDTH="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="CONTINUE SHOPPING" ALIGN="LEFT"></a></TD>
-		              <TD WIDTH="<%= W_YA_PAYMENT_INFO_TOTAL - 35 %>"><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="CONTINUE SHOPPING"></a>
-		              <br />from <FONT CLASS="text11bold"><A HREF="/index.jsp">Home Page</A></FONT><br /><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="340" HEIGHT="1" BORDER="0"></TD>
+		              <TD WIDTH="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="" ALIGN="LEFT">
+                       CONTINUE SHOPPING
+                      <BR>from <FONT CLASS="text11bold">Home Page</A></FONT><BR><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="340" HEIGHT="1" BORDER="0"></TD>
 		              </TR>
 		              </TABLE>
 		       </fd:GetStandingOrderHelpInfo>

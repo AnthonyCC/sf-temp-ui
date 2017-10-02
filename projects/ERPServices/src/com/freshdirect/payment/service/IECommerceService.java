@@ -105,6 +105,7 @@ import com.freshdirect.logistics.delivery.model.DeliveryException;
 import com.freshdirect.logistics.delivery.model.OrderContext;
 import com.freshdirect.logistics.delivery.model.SiteAnnouncement;
 import com.freshdirect.logistics.fdstore.StateCounty;
+import com.freshdirect.logistics.fdstore.ZipCodeAttributes;
 import com.freshdirect.payment.BINInfo;
 import com.freshdirect.payment.ewallet.gateway.ejb.EwalletActivityLogModel;
 import com.freshdirect.payment.fraud.EnumRestrictedPaymentMethodStatus;
@@ -266,6 +267,8 @@ public interface IECommerceService {
 	public int unlockInModifyOrders() throws FDResourceException;
 
 	public StateCounty lookupStateCountyByZip(String zipcode) throws FDResourceException;
+	
+	public ZipCodeAttributes lookupZipCodeAttributes(String zipcode) throws FDResourceException;
 
 	public void commitReservation(String rsvId, String customerId,
 			OrderContext context, ContactAddressModel address, boolean pr1,

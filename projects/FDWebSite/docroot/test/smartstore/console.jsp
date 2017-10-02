@@ -5,7 +5,7 @@
 <%@page import="java.io.ByteArrayOutputStream"%>
 <%@page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 	<fd:css href="/test/search/config.css"/>
 	<title>Console</title>

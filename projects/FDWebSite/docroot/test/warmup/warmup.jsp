@@ -1,6 +1,6 @@
 <%@ page import='com.freshdirect.fdstore.warmup.*' %>
 <%! static boolean loaded; %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 <title>Warmup</title>
 </head>

@@ -12,6 +12,7 @@ public class BackOfficeResponse implements Serializable{
 	private List<SkuModelResponse> skuModelResponseList;
 	private Map<String, DomainValueModelResponse> domainValueModelResponse;
 	private String skuInfo;
+	private String reSendInvoiceMailStatus;;
 	
 	public SkuModelResponse getSkuModelResponse() {
 		return skuModelResponse;
@@ -59,6 +60,14 @@ public class BackOfficeResponse implements Serializable{
 
 	public void setSkuInfo(String skuInfo) {
 		this.skuInfo = skuInfo;
+	}
+
+	public String getReSendInvoiceMailStatus() {
+		return reSendInvoiceMailStatus;
+	}
+
+	public void setReSendInvoiceMailStatus(String reSendInvoiceMailStatus) {
+		this.reSendInvoiceMailStatus = reSendInvoiceMailStatus;
 	}
 
 

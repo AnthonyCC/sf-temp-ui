@@ -10,7 +10,7 @@
 <% //expanded page dimensions
 final int W_DNAV_TOTAL = 970;
 %>
-<html xmlns:fb="http://www.facebook.com/2008/fbml">
+<html lang="en-US" xml:lang="en-US" xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
     <tmpl:get name="seoMetaTag"/> 
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" lang="en-US"/>

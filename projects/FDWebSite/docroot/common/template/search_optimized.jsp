@@ -3,7 +3,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
-<html lang="en">
+<html lang="en-US" xml:lang="en-US">
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" lang="en-US"/>
 		<title><tmpl:get name='title'/></title>

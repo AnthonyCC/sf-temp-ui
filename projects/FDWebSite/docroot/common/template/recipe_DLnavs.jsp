@@ -21,7 +21,7 @@ final int W_RECIPE_DL_NAVS_RIGHT = 820;
 */%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
     <title><tmpl:get name='title'/></title>
 

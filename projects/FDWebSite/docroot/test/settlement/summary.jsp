@@ -6,7 +6,7 @@
 <%@ taglib uri='freshdirect' prefix='fd'%>
 
 
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 <style>
 <

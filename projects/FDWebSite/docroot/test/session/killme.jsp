@@ -1,4 +1,4 @@
-<html>
+<html lang="en-US" xml:lang="en-US">
 <body>
 	Session terminated.<% session.invalidate(); %>
 	<marquee direction="down" width="50%" height="50%" behavior="alternate" style="position: absolute; height: 50%; width: 50%; top: 25%; left: 25%;">

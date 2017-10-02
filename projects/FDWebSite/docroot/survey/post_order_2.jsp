@@ -140,7 +140,7 @@ Please note that this research will help us improve our service, however, we are
 	President, FreshDirect<br><br>
 	</td>
 </tr>
-<tr><td colspan="8" align="center"><br><a href="/index.jsp"><img src="/media_stat/images/template/help/help_home.gif" width="71" height="26" border="" alt="BACK HOME"></a><br>Go to <a href="/index.jsp">Home Page</a><br><br></td></tr>
+<tr><td colspan="8" align="center"><br><a href="/index.jsp"><img src="/media_stat/images/template/help/help_home.gif" width="71" height="26" border="" alt="return to home page"></a><br>Go to <a href="/index.jsp">Home Page</a><br><br></td></tr>
 <% } else { %>
 <form method="post" name="postOrderSurvey">
 	<tr>

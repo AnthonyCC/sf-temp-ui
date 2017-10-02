@@ -48,7 +48,7 @@ String[] checkSurveyForm = new String[questions.size()];
 
 <table width="<%=W_SURVEY_COS_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 <% if (submitted) { %>
-<tr><td colspan="7" class="text12" align="center"><br><br><span class="title18">THANK YOU</span><br>Your feedback is greatly appreciated.<br><br><a href="/index.jsp"><img src="/media_stat/images/template/help/help_home.gif" width="71" height="26" border="" alt="BACK HOME"></a><br>Go to <a href="/index.jsp">Home Page</a><br><br></td></tr>
+<tr><td colspan="7" class="text12" align="center"><br><br><span class="title18">THANK YOU</span><br>Your feedback is greatly appreciated.<br><br><a href="/index.jsp"><img src="/media_stat/images/template/help/help_home.gif" width="71" height="26" border="" alt="return to home page"></a><br>Go to <a href="/index.jsp">Home Page</a><br><br></td></tr>
 <% } else { %>
 <form method="post" name="cosFeedbackSurvey">
 	<tr>

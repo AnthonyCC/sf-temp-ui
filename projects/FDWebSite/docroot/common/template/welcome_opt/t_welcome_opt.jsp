@@ -1,6 +1,6 @@
 <%@ taglib uri='template' prefix='tmpl'
 %><!DOCTYPE html>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 	<tmpl:get name="head" />
 </head>

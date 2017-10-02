@@ -16,7 +16,7 @@ final int W_BDNML_LEFT = 150;
 final int W_BDNML_CENTER = 629;
 final int W_BDNML_RIGHT = 191;
 %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 	<title><tmpl:get name='title'/></title>
 	<%@ include file="/common/template/includes/metatags.jspf" %>

@@ -112,7 +112,6 @@ public class PaymentService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        
         String billingRef = null; // TODO: needed? CORPORATE with zero payment
         // method.
         HttpSession session = request.getSession();
@@ -241,6 +240,9 @@ public class PaymentService {
         	paymentMethods = (List<ErpPaymentMethodI>) user.getPaymentMethods();
         }       
         paymentMethods = PaymentMethodManipulator.disconnectInvalidPayPalWallet(paymentMethods, request);
+        if (user.isECheckRestricted()) {
+			paymentMethods = PaymentMethodManipulator.removeEcheckAccounts(paymentMethods);
+		}
         sortPaymentMethods(user, paymentMethods);
         String selectedPaymentId = null;
         Boolean cartPaymentSelectionDisabled = (Boolean) request.getSession().getAttribute(SessionName.CART_PAYMENT_SELECTION_DISABLED);

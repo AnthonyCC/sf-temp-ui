@@ -1,5 +1,5 @@
 <%@ page import='java.util.*' %>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 <title>Snoop Request</title>
 </head>

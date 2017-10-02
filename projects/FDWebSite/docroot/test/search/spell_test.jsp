@@ -27,7 +27,7 @@
 <%@page import="java.util.Collections"%>
 <%@page import="java.util.Comparator"%>
 <%@page import="com.freshdirect.cms.index.configuration.IndexerConfiguration"%>
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" lang="en-US">
 <title>Spell (aka Did you mean?) Test</title>

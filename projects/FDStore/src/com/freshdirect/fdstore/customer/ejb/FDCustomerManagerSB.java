@@ -918,6 +918,6 @@ public interface FDCustomerManagerSB extends EJBObject {
 
 	public int resetDefaultPaymentValueType(String custId) throws FDResourceException, RemoteException;
 
-	public ErpAuthorizationModel verifyCard(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled) throws FDResourceException, RemoteException;
+	public ErpAuthorizationModel verifyCard(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled) throws FDResourceException, RemoteException, ErpPaymentMethodException;
 }
 

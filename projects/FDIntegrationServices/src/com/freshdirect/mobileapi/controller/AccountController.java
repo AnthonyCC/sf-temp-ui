@@ -14,10 +14,16 @@ import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.common.pricing.PricingException;
+import com.freshdirect.customer.ErpCustomerCreditModel;
+import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.referral.FDReferralManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.EnumResponseAdditional;
@@ -26,6 +32,7 @@ import com.freshdirect.mobileapi.controller.data.request.AddProfileRequest;
 import com.freshdirect.mobileapi.controller.data.request.ReserveTimeslot;
 import com.freshdirect.mobileapi.controller.data.request.SearchQuery;
 import com.freshdirect.mobileapi.controller.data.request.Timezone;
+import com.freshdirect.mobileapi.controller.data.response.CreditHistory;
 import com.freshdirect.mobileapi.controller.data.response.DeliveryAddresses;
 import com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots;
 import com.freshdirect.mobileapi.controller.data.response.OrderHistory;
@@ -43,6 +50,7 @@ import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ListPaginator;
 import com.freshdirect.mobileapi.util.ProductPotatoUtil;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
+import com.freshdirect.webapp.util.JspMethods;
 
 public class AccountController extends BaseController implements Comparator <Order>{
 
@@ -56,6 +64,7 @@ public class AccountController extends BaseController implements Comparator <Ord
     private static final String PARAM_ADDRESS_ID = "addressId";
     private static final String ACTION_GET_ORDER_HISTORY = "getorders";
     private static final String ACTION_GET_CREDITED_ORDER_HISTORY = "getcreditedorders";
+    private static final String ACTION_GET_CREDIT_HISTORY = "getcredits";
     private static final String ACTION_ACCEPT_DP_TERMSANDCONDITIONS = "acceptDeliveryPassTermsAndConditions";
     private static final String ACTION_ADD_PROFILE = "addProfile";
 
@@ -93,6 +102,8 @@ public class AccountController extends BaseController implements Comparator <Ord
 	            model = getOrderHistory(model, user, request, response);
 	        } else if (ACTION_GET_CREDITED_ORDER_HISTORY.equals(action)) {
 	            model = getCreditedOrderHistory(model, user, request, response);
+	        } else if (ACTION_GET_CREDIT_HISTORY.equals(action)) {
+	            model = getCreditHistory(model, user, request, response);
 	        } else if (ACTION_ACCEPT_DP_TERMSANDCONDITIONS.equals(action)) {
 	           // APPDEV-2567 Logging DP Terms acceptance - mobile API
 	            FDCustomerManager.storeDPTCAgreeDate(AccountActivityUtil.getActionInfo(request.getSession())
@@ -151,6 +162,36 @@ public class AccountController extends BaseController implements Comparator <Ord
         
         responseMessage.setOrders(paginator.getPage(page));
         
+        setResponseMessage(model, responseMessage, user);
+        return model;
+    }
+    
+    private ModelAndView getCreditHistory(ModelAndView model, SessionUser user, HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {
+        
+    	CreditHistory responseMessage = new CreditHistory();
+        FDIdentity customerIdentity = user.getFDSessionUser().getIdentity();
+        
+        ErpCustomerModel erpCustomer = FDCustomerFactory.getErpCustomer(customerIdentity.getErpCustomerPK());
+		List<ErpCustomerCreditModel> customerCredits = new ArrayList(erpCustomer.getCustomerCredits());
+		Double remainingAmount = 0.0;
+		for(ErpCustomerCreditModel custcredit : customerCredits){
+			remainingAmount += custcredit.getRemainingAmount();
+		}
+		responseMessage.setRemainingAmount(remainingAmount);
+        
+        List<ErpCustomerCreditModel> mimList = FDReferralManager.getUserCredits(customerIdentity.getErpCustomerPK());
+        
+        responseMessage.setTotalResultCount(mimList.size());
+        List<CreditHistory.Credit> crlist = new ArrayList<CreditHistory.Credit>();
+        for(ErpCustomerCreditModel cm : mimList) {
+    		CreditHistory.Credit cr = new CreditHistory.Credit();
+    		cr.setDate(cm.getcDate());
+    		cr.setType(cm.getDepartment());
+    		cr.setOrder("Referral Credit".equals(cm.getDepartment())?"":cm.getSaleId());
+    		cr.setAmount("Redemption".equals(cm.getDepartment())?"(" + JspMethods.formatPrice(cm.getAmount()) + ")" :JspMethods.formatPrice(cm.getAmount()));
+    		crlist.add(cr);
+    	}
+        responseMessage.setCredits(crlist);
         setResponseMessage(model, responseMessage, user);
         return model;
     }

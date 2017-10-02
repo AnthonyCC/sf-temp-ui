@@ -34,8 +34,8 @@ boolean proceedThruCheckout = false;
 <tr>
 <td class="text11" WIDTH="<%= W_YA_ADD_CHECKACCT %>">
 <font class="title18">Add Checking Account</font><br><span class="space2pix"><br></span>
-<a href="javascript:popup('/pay_by_check.jsp','large')">Learn more</a> about how this service works.<br>
-To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here</a>
+<a href="javascript:popup('/pay_by_check.jsp','large')">Learn more<span class="offscreen">about how this service works</span></a> about how this service works.<br>
+To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here<span class="offscreen">To learn more about our Security Policies</span></a>
 </td>
 </tr>
 </table>

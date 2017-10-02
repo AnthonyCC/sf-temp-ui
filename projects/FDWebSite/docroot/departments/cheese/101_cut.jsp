@@ -1,5 +1,5 @@
 
-<html>
+<html lang="en-US" xml:lang="en-US">
 <head>
 <title>FreshDirect - Cheese 101</title>
 

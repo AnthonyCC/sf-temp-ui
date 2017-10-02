@@ -10,6 +10,7 @@
 <%@ page import="com.freshdirect.payment.BillingRegionInfo"%>
 <% //expanded page dimensions
 final int W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL = 970;
+
 %>
 
 <script language="javascript" type="text/javascript">  
@@ -213,27 +214,27 @@ if (isValidPaymentId) {
 
 %>
 	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" alt="" HEIGHT="1" BORDER="0"><BR>
 	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
     <%-- error system messages happen here --%>
     <fd:ErrorHandler result='<%=result%>' name='matching_addresses' id='errorMsg'>
 		<br><span class="text11rbold"><%= errorMsg %></span><br><br>
     </fd:ErrorHandler>
     <% if(FDStoreProperties.isPaymentMethodVerificationEnabled()) {%>
-	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>">
+	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= (mobWeb) ? "100%" : W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL %>">
 	<tr>	
-		<td width="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" CLASS="text12">
+		<td width="<%= (mobWeb) ? "100%" : W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL %>" CLASS="text12">
 			In order to better protect our customers' personal information, we require a $1 validation authorization each time you add or edit a credit / debit card. This charge may appear as a hold in your account information, but it will not be collected. The $1 charge will be returned as soon as is permitted by your issuing bank. To learn more about our <font class="text11bold">Customer Agreement</font>, 
 			<a href="javascript:popup('/help/terms_of_service.jsp','large')">click here</a>.
 		</td>
 	</tr>
 	</TABLE>
 <%} else { %>	
-	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>">
+	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= (mobWeb) ? "100%" : W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL %>">
 		<tr>	
-			<td width="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" CLASS="text12">
+			<td width="<%= (mobWeb) ? "100%" : W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL %>" CLASS="text12">
 				To learn more about our <font class="text11bold">Security Policies</font>, 
-				<a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here</a>.
+				<a href="javascript:popup('/help/faq_index.jsp?show=security','large')">click here<span class="offscreen">To learn more about our Security Policies</span></a>.
 			</td>
 		</tr>
 	</TABLE>
@@ -247,49 +248,63 @@ if (isValidPaymentId) {
 			<%@ include file="/includes/your_account/checkacct_promo.jspf"%><br><br>
 <% } %>
 <% if(((FDUserI)session.getAttribute(SessionName.USER)).isEbtAccepted()&& !"true".equals(request.getParameter("rh")) && !"true".equals(request.getParameter("gc"))){ %>
-<table width="970" border="0" cellpadding="0" cellspacing="0">
-<% String currentPage = request.getRequestURI(); 
-boolean fromCheckout1 = currentPage.indexOf("checkout") > -1;
-String addEBTPage = fromCheckout1 ? "/checkout/step_3_ebt_add.jsp" : "/your_account/add_ebt_card.jsp";%>
-<tr>
-<%-- if new to check --%>
-<td><span CLASS="text12">If you need to enter an EBT card: </span><a href="<%=addEBTPage%>"><img ALT="Add New Card" src="/media_stat/images/buttons/add_new_ebt_card.jpg" WIDTH="137" HEIGHT="16" border="0" VSPACE="3" HSPACE="5" ALIGN="middle"></a></TD>
-</tr>
-</table>
-<br/>
+	<table width="<%= (mobWeb) ? "100%" : W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL %>" border="0" cellpadding="0" cellspacing="0">
+	<% String currentPage = request.getRequestURI(); 
+	boolean fromCheckout1 = currentPage.indexOf("checkout") > -1;
+	String addEBTPage = fromCheckout1 ? "/checkout/step_3_ebt_add.jsp" : "/your_account/add_ebt_card.jsp";%>
+	<tr>
+	<%-- if new to check --%>
+	<td><span CLASS="text12">If you need to enter an EBT card: </span><a class="cssbutton green small" href="<%=addEBTPage%>">ADD NEW EBT CARD</a></TD>
+	</tr>
+	</table>
+	<br/>
 <% } %>
 <%-- IF NO PAYMENT METHOD YET, FIRST TIME, DEFAULTED HERE, SHOW CHECK PROMO--%>
-	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>">
-	<TR VALIGN="bottom">
-		<TD WIDTH="<%=proceedThruCheckout? W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL: W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL-200 %>" class="title14">
-<!-- 			<img src="/media_stat/images/navigation/credit_card_details.gif" WIDTH="152" HEIGHT="15" border="0" alt="CREDIT / DEBIT CARD DETAILS"> -->CREDIT / DEBIT CARD DETAILS&nbsp;&nbsp;&nbsp;
-			<FONT CLASS="text12">* Required information</FONT>
-		</TD>
-		<%if (!proceedThruCheckout) { %>
-		<TD WIDTH="300" ALIGN="RIGHT">
+
+<% if (mobWeb) { %>
+	<div class="title14">CREDIT / DEBIT CARD DETAILS
+		<span class="text12" style="margin-left: 3em;">*&nbsp;Required&nbsp;information</span>
+	</div>
+	
+	<%if (!proceedThruCheckout) { %>
+		<img src="/media_stat/images/layout/dotted_line_w.gif" width="100%" height="1" border="0" vspace="3" alt="" /><br />	
+		<div style="text-align: right;">
 			<a class="cssbutton green transparent small" href="<%=cancelPage%>">CANCEL</a>
 			<button class="cssbutton green small" name="checkout_credit_card_edit">SAVE CHANGES</button>
+		</div>
+	<%}%>
+<% } else { %>
+	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL %>">
+	<TR VALIGN="bottom">
+		<TD WIDTH="<%=proceedThruCheckout? W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL : W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL-200 %>" class="title14">
+<!-- 			<img src="/media_stat/images/navigation/credit_card_details.gif" WIDTH="152" HEIGHT="15" border="0" alt="CREDIT / DEBIT CARD DETAILS"> -->CREDIT / DEBIT CARD DETAILS&nbsp;&nbsp;&nbsp;
+			<FONT CLASS="text12">*&nbsp;Required&nbsp;information</FONT>
 		</TD>
+		<%if (!proceedThruCheckout) { %>
+			<TD WIDTH="300" ALIGN="RIGHT">
+				<a class="cssbutton green transparent small" href="<%=cancelPage%>">CANCEL</a>
+				<button class="cssbutton green small" name="checkout_credit_card_edit">SAVE CHANGES</button>
+			</TD>
 		<%}%>
 	</TR>
+	</TABLE>
+<% } %>
+<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%= (mobWeb) ? "100%" : W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL %>" alt="" HEIGHT="1" BORDER="0" VSPACE="3"><BR><BR>
 
-</TABLE>
-<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR><BR>
-
-<TABLE BORDER="0" CELLSPACING="1" CELLPADDING="0" WIDTH="675">
+<TABLE BORDER="0" CELLSPACING="1" CELLPADDING="0" WIDTH="100%">
 <TR VALIGN="MIDDLE">
 	<TD WIDTH="15" ROWSPAN="10"><IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="13" HEIGHT="1" BORDER="0"></TD>
-	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_HOLDER.getCode()%>"><span class="text11rbold"></fd:ErrorHandler><label for="<%=PaymentMethodName.ACCOUNT_HOLDER%>_field">*&nbsp;Name on Card&nbsp;&nbsp;</label><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_HOLDER.getCode()%>"></span></fd:ErrorHandler></TD>
-	<TD WIDTH="565"><input class="text11" maxlength="50" SIZE="21" type="text" id="<%=PaymentMethodName.ACCOUNT_HOLDER%>_field" name="<%=PaymentMethodName.ACCOUNT_HOLDER%>" required="true" value="<%=ccNameOnCard%>"> <fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ACCOUNT_HOLDER%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></TD>
+	<TD WIDTH="200" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_HOLDER.getCode()%>"><span class="text11rbold"></fd:ErrorHandler><label for="<%=PaymentMethodName.ACCOUNT_HOLDER%>_field">*&nbsp;Name on Card&nbsp;&nbsp;</label><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_HOLDER.getCode()%>"></span></fd:ErrorHandler></TD>
+	<TD WIDTH=""><input class="text11" maxlength="50" SIZE="21" type="text" id="<%=PaymentMethodName.ACCOUNT_HOLDER%>_field" name="<%=PaymentMethodName.ACCOUNT_HOLDER%>" required="true" value="<%=ccNameOnCard%>"> <fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ACCOUNT_HOLDER%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></TD>
 </TR>
 <TR VALIGN="MIDDLE">
-	<TD WIDTH="105"><BR></TD>
-	<TD WIDTH="565" CLASS="text12">Please enter name exactly as it appears on card.<BR><FONT CLASS="space4pix"><BR></FONT></TD>
+	<TD WIDTH="200"><BR></TD>
+	<TD WIDTH="" CLASS="text12">Please enter name exactly as it appears on card.<BR><FONT CLASS="space4pix"><BR></FONT></TD>
 </TR>
 <TR>
-	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_BRAND.getCode()%>"><span class="text11rbold"></fd:ErrorHandler><label for="<%=PaymentMethodName.CARD_BRAND%>_field">*&nbsp;Card Type&nbsp;&nbsp;</label><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_BRAND.getCode()%>"></span></fd:ErrorHandler></TD>
-	<TD WIDTH="565">
-		<SELECT class="text11" id="<%=PaymentMethodName.CARD_BRAND%>_field" name="<%=PaymentMethodName.CARD_BRAND%>" required="true">
+	<TD WIDTH="200" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_BRAND.getCode()%>"><span class="text11rbold"></fd:ErrorHandler><label for="<%=PaymentMethodName.CARD_BRAND%>_field">*&nbsp;Card Type&nbsp;&nbsp;</label><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.CARD_BRAND.getCode()%>"></span></fd:ErrorHandler></TD>
+	<TD WIDTH="">
+		<SELECT class="text11 customsimpleselect" id="<%=PaymentMethodName.CARD_BRAND%>_field" name="<%=PaymentMethodName.CARD_BRAND%>" required="true">
 		<OPTION value="">Choose a credit / debit card</OPTION>
 		<%
 		
@@ -303,23 +318,23 @@ String addEBTPage = fromCheckout1 ? "/checkout/step_3_ebt_add.jsp" : "/your_acco
 	</td>
 </tr>
 <TR>
-	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.ACCOUNT_NUMBER%>"><span class="text11rbold"></fd:ErrorHandler><label for="<%=PaymentMethodName.ACCOUNT_NUMBER%>_field">*&nbsp;Card Number&nbsp;&nbsp;</label><fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.ACCOUNT_NUMBER%>"></span></fd:ErrorHandler></TD>
-	<TD WIDTH="565" CLASS="text12">
+	<TD WIDTH="200" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.ACCOUNT_NUMBER%>"><span class="text11rbold"></fd:ErrorHandler><label for="<%=PaymentMethodName.ACCOUNT_NUMBER%>_field">*&nbsp;Card Number&nbsp;&nbsp;</label><fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.ACCOUNT_NUMBER%>"></span></fd:ErrorHandler></TD>
+	<TD WIDTH="" CLASS="text12">
 		<input class="text11" maxlength="25" SIZE="21" type="text" id="<%=PaymentMethodName.ACCOUNT_NUMBER%>_field" name="<%=PaymentMethodName.ACCOUNT_NUMBER%>" required="true" value="<%=ccAccountNumber%>"> 
 	</TD>
 </TR>
 
 <TR VALIGN="TOP">
-	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"></TD>
-	<TD WIDTH="565" CLASS="text12">
+	<TD WIDTH="200" ALIGN="RIGHT" CLASS="text12"></TD>
+	<TD WIDTH="" CLASS="text12">
 		 <fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ACCOUNT_NUMBER%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 		<BR><FONT CLASS="space4pix"><BR></FONT>
 	</TD>
 </TR>
 
 <tr>
-	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CARD_EXPIRATION.getCode()%>'><span class="text11rbold"></fd:ErrorHandler><label for="<%=PaymentMethodName.CARD_EXP_MONTH%>_field">*&nbsp;Expires&nbsp;&nbsp;</label><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CARD_EXPIRATION.getCode()%>' id='errorMsg'></span></fd:ErrorHandler></TD>
-	<TD WIDTH="565">
+	<TD WIDTH="200" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CARD_EXPIRATION.getCode()%>'><span class="text11rbold"></fd:ErrorHandler><label for="<%=PaymentMethodName.CARD_EXP_MONTH%>_field">*&nbsp;Expires&nbsp;&nbsp;</label><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CARD_EXPIRATION.getCode()%>' id='errorMsg'></span></fd:ErrorHandler></TD>
+	<TD WIDTH="">
 	<%
 	String tCcExpireMonth="";
 	if(ccExpireMonth.length() == 2){
@@ -329,13 +344,13 @@ String addEBTPage = fromCheckout1 ? "/checkout/step_3_ebt_add.jsp" : "/your_acco
 		tCcExpireMonth = "0"+ccExpireMonth;
 		}
 	%>
-	<SELECT class="text11" id="<%=PaymentMethodName.CARD_EXP_MONTH%>_field" name="<%=PaymentMethodName.CARD_EXP_MONTH%>" required="true">
+	<SELECT class="text11 customsimpleselect" id="<%=PaymentMethodName.CARD_EXP_MONTH%>_field" name="<%=PaymentMethodName.CARD_EXP_MONTH%>" required="true">
 	<OPTION value="">Choose a month</OPTION>
 	<% for (int mnth = 1;mnth<13;mnth++) { String strMonth = mnth<10?"0"+mnth:""+mnth; %>
 	<OPTION <%= (strMonth+"").equals(tCcExpireMonth)?"selected":"" %>  VALUE="<%=strMonth%>"><%=strMonth%></OPTION>
 	<% } %>
 	</SELECT>&nbsp;&nbsp;
-	<SELECT class="text11" aria-label="expires" name="<%=PaymentMethodName.CARD_EXP_YEAR%>" required="true">
+	<SELECT class="text11 customsimpleselect" aria-label="expires" name="<%=PaymentMethodName.CARD_EXP_YEAR%>" required="true">
 	<OPTION value="">Choose a year</OPTION>
 	<% int startYear = Calendar.getInstance().get(Calendar.YEAR);
 	   int endYear = startYear+15;
@@ -347,8 +362,8 @@ String addEBTPage = fromCheckout1 ? "/checkout/step_3_ebt_add.jsp" : "/your_acco
 </tr>
 <% if(FDStoreProperties.isPaymentMethodVerificationEnabled()) {%>
 <TR>
-	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.CSV%>"><span class="text11rbold"></fd:ErrorHandler><label for="<%=PaymentMethodName.CSV%>_field">*&nbsp;CVV&nbsp;&nbsp;</label><fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.CSV%>"></span></fd:ErrorHandler></TD>
-	<TD WIDTH="565" CLASS="text12">
+	<TD WIDTH="200" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.CSV%>"><span class="text11rbold"></fd:ErrorHandler><label for="<%=PaymentMethodName.CSV%>_field">*&nbsp;CVV&nbsp;&nbsp;</label><fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.CSV%>"></span></fd:ErrorHandler></TD>
+	<TD WIDTH="" CLASS="text12">
 		<input class="text11" maxlength="4" SIZE="4" type="text" id="<%=PaymentMethodName.CSV%>_field" name="<%=PaymentMethodName.CSV%>" required="true" > &nbsp;&nbsp;CVV code will not be stored and only used for validation purposes, <a href="javascript:popup('/shared/cvv.jsp','large')">locate this code</b></a>
 	</TD>
 	
@@ -356,8 +371,8 @@ String addEBTPage = fromCheckout1 ? "/checkout/step_3_ebt_add.jsp" : "/your_acco
 
 
 <TR VALIGN="TOP">
-	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"></TD>
-	<TD WIDTH="565" CLASS="text12">
+	<TD WIDTH="200" ALIGN="RIGHT" CLASS="text12"></TD>
+	<TD WIDTH="" CLASS="text12">
 		 <fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.CSV%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 		<BR><FONT CLASS="space4pix"><BR></FONT>
 	</TD>
@@ -367,11 +382,11 @@ String addEBTPage = fromCheckout1 ? "/checkout/step_3_ebt_add.jsp" : "/your_acco
 </TABLE>
 
 <br><br>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%= (mobWeb) ? "100%" : W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL %>">
 <TR VALIGN="TOP">
-	<TD WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" class="title14">
-		<!-- <img src="/media_stat/images/navigation/billing_address_for_card.gif" WIDTH="229" HEIGHT="15" border="0" alt="BILLING ADDRESS"> -->BILLING ADDRESS FOR THIS CARD&nbsp;&nbsp;&nbsp;<FONT CLASS="text12">* Required information</FONT><BR>
-		<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL%>" HEIGHT="1" BORDER="0" vspace="3"><BR>
+	<TD WIDTH="<%= (mobWeb) ? "100%" : W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL %>" class="title14">
+		<!-- <img src="/media_stat/images/navigation/billing_address_for_card.gif" WIDTH="229" HEIGHT="15" border="0" alt="BILLING ADDRESS"> -->BILLING ADDRESS FOR THIS CARD <span class="text12" style="margin-left: 3em;">*&nbsp;Required&nbsp;information</span><BR>
+		<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%= (mobWeb) ? "100%" : W_CKT_ACCT_CREDITCARD_FIELDS_TOTAL %>" alt="" HEIGHT="1" BORDER="0" vspace="3"><BR>
 <%
 		if (yuzer.isEligibleForSignupPromotion()) {
 			%><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="2"><br><b>NOTE</b>: <font class="text11orbold">On your first home delivery order, to receive the free food promotion, your billing and delivery address must match.</font><% } else { %><font class="text12">Please enter billing address as it appears on your credit / debit card statement.</font><%
@@ -381,29 +396,29 @@ String addEBTPage = fromCheckout1 ? "/checkout/step_3_ebt_add.jsp" : "/your_acco
 </TABLE>
 <font class="space4pix"><br></font>
 
-<TABLE BORDER="0" CELLSPACING="1" CELLPADDING="0" WIDTH="675">
+<TABLE BORDER="0" CELLSPACING="1" CELLPADDING="0" WIDTH="100%">
 	
 
 	<TR VALIGN="MIDDLE">
-	    <TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>"><span class="text11rbold"></fd:ErrorHandler><label for="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>_field">*Street Address&nbsp;&nbsp;</label><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>"></span></fd:ErrorHandler></TD>
-		<TD WIDTH="565"><input type="text" maxlength="50" SIZE="21" class="text11" id="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>_field" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>" required="true" value = "<%=ccAddress1%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
-		&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>"><span class="text11rbold"></fd:ErrorHandler><% if(EnumServiceType.CORPORATE.equals(yuzer.getSelectedServiceType())){ %>Floor/Suite #<% }else{ %>Apt. #<% } %>&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>"></span></fd:ErrorHandler><input type="text" maxlength="10" size="4" class="text11" aria-label="apt/suite number" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>" value ="<%=ccApartment%>">
+	    <TD WIDTH="200" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>"><span class="text11rbold"></fd:ErrorHandler><label for="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>_field">*Street Address&nbsp;&nbsp;</label><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>"></span></fd:ErrorHandler></TD>
+		<TD WIDTH=""><input type="text" maxlength="50" SIZE="21" class="text11" id="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>_field" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>" required="true" value = "<%=ccAddress1%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+		<span class="NOMOBWEB">&nbsp;&nbsp;</span><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>"><span class="text11rbold"></fd:ErrorHandler><label for="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>_field"><% if(EnumServiceType.CORPORATE.equals(yuzer.getSelectedServiceType())){ %>Floor/Suite #<% }else{ %>Apt. #<% } %></label>&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>"></span></fd:ErrorHandler><input type="text" maxlength="10" size="4" class="text11" aria-label="apt/suite number" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>" id="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>_field" value ="<%=ccApartment%>">
 		</TD>
 	</TR>
 	<TR VALIGN="MIDDLE">
-	    <TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><label for="<%=EnumUserInfoName.BIL_ADDRESS_2.getCode()%>_field">Address Line 2&nbsp;&nbsp;</label></TD>
-		<TD WIDTH="565"><input type="text" maxlength="50" SIZE="21" class="text11" id="<%=EnumUserInfoName.BIL_ADDRESS_2.getCode()%>_field" name="<%=EnumUserInfoName.BIL_ADDRESS_2.getCode()%>"  value = "<%=ccAddress2%>">&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ADDRESS_2.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+	    <TD WIDTH="200" ALIGN="RIGHT" CLASS="text12"><label for="<%=EnumUserInfoName.BIL_ADDRESS_2.getCode()%>_field">Address Line 2&nbsp;&nbsp;</label></TD>
+		<TD WIDTH=""><input type="text" maxlength="50" SIZE="21" class="text11" id="<%=EnumUserInfoName.BIL_ADDRESS_2.getCode()%>_field" name="<%=EnumUserInfoName.BIL_ADDRESS_2.getCode()%>"  value = "<%=ccAddress2%>">&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ADDRESS_2.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 		</TD>
 	</TR>
 	<TR VALIGN="MIDDLE">
-	    <TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_CITY.getCode()%>"><span class="text11rbold"></fd:ErrorHandler><label for="<%=EnumUserInfoName.BIL_CITY.getCode()%>_field">*City&nbsp;&nbsp;</label><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_CITY.getCode()%>"></span></fd:ErrorHandler></TD>
-		<TD WIDTH="565"><input type="text" class="text11" SIZE="21" id="<%=EnumUserInfoName.BIL_CITY.getCode()%>_field" name="<%=EnumUserInfoName.BIL_CITY.getCode()%>" required="true" value = "<%=ccCity%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_CITY.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></TD>
+	    <TD WIDTH="200" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_CITY.getCode()%>"><span class="text11rbold"></fd:ErrorHandler><label for="<%=EnumUserInfoName.BIL_CITY.getCode()%>_field">*City&nbsp;&nbsp;</label><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_CITY.getCode()%>"></span></fd:ErrorHandler></TD>
+		<TD WIDTH=""><input type="text" class="text11" SIZE="21" id="<%=EnumUserInfoName.BIL_CITY.getCode()%>_field" name="<%=EnumUserInfoName.BIL_CITY.getCode()%>" required="true" value = "<%=ccCity%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_CITY.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></TD>
 	</TR>
 	<TR VALIGN="MIDDLE">
-	    <TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_STATE.getCode()%>"><span class="text11rbold"></fd:ErrorHandler><label for="<%=AddressName.BIL_STATE%>">*State&nbsp;&nbsp;</label><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_STATE.getCode()%>"></span></fd:ErrorHandler></TD>
-		<TD WIDTH="565">
+	    <TD WIDTH="200" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_STATE.getCode()%>"><span class="text11rbold"></fd:ErrorHandler><label for="<%=AddressName.BIL_STATE%>">*State&nbsp;&nbsp;</label><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_STATE.getCode()%>"></span></fd:ErrorHandler></TD>
+		<TD WIDTH="">
  	    		  
-					<select class="pulldown" name="<%=AddressName.BIL_STATE%>"  id="<%=AddressName.BIL_STATE%>"  required="true">
+					<select class="pulldown customsimpleselect" name="<%=AddressName.BIL_STATE%>"  id="<%=AddressName.BIL_STATE%>"  required="true">
 						<option value="">State</option>
 					<%	
 					String countryCode="".equals(ccCountry)? "US":ccCountry;
@@ -424,14 +439,14 @@ String addEBTPage = fromCheckout1 ? "/checkout/step_3_ebt_add.jsp" : "/your_acco
  		 &nbsp;&nbsp;&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_STATE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></TD>
 	</TR>
 	<TR VALIGN="MIDDLE">
-	    <TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>"><span class="text11rbold"></fd:ErrorHandler><label for="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>_field">*Zip/Postal Code&nbsp;&nbsp;</label><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>"></span></fd:ErrorHandler></TD>
-	    <TD WIDTH="565"><input type="text" class="text11"  maxlength="10" SIZE="10" id="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>_field" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>" required="true" value = "<%=ccZipCode%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></TD>
+	    <TD WIDTH="200" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>"><span class="text11rbold"></fd:ErrorHandler><label for="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>_field">*Zip/Postal Code&nbsp;&nbsp;</label><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>"></span></fd:ErrorHandler></TD>
+	    <TD WIDTH=""><input type="text" class="text11"  maxlength="10" SIZE="10" id="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>_field" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>" required="true" value = "<%=ccZipCode%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></TD>
 	</TR>
 	<TR VALIGN="MIDDLE">
-	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_COUNTRY.getCode()%>"><span class="text11rbold"></fd:ErrorHandler><label for="<%=AddressName.BIL_COUNTRY%>_field">*Country&nbsp;&nbsp;</label><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_COUNTRY.getCode()%>"></span></fd:ErrorHandler></TD>
-	<TD WIDTH="565">
+	<TD WIDTH="200" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_COUNTRY.getCode()%>"><span class="text11rbold"></fd:ErrorHandler><label for="<%=AddressName.BIL_COUNTRY%>_field">*Country&nbsp;&nbsp;</label><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_COUNTRY.getCode()%>"></span></fd:ErrorHandler></TD>
+	<TD WIDTH="">
  	    		 
-					<select class="pulldown" id="<%=AddressName.BIL_COUNTRY%>_field" name="<%=AddressName.BIL_COUNTRY%>" onchange="javascript:showState(this.value)">
+					<select class="pulldown customsimpleselect" id="<%=AddressName.BIL_COUNTRY%>_field" name="<%=AddressName.BIL_COUNTRY%>" onchange="javascript:showState(this.value)">
 						<option value="">Country</option>
 					<%	List<BillingCountryInfo> list=BillingCountryInfo.getEnumList();
 					         
@@ -445,7 +460,7 @@ String addEBTPage = fromCheckout1 ? "/checkout/step_3_ebt_add.jsp" : "/your_acco
 		 </TD>
 	</TR>
 	<TR VALIGN="MIDDLE">
-	    <TD WIDTH="660" ALIGN="RIGHT" colspan="2" CLASS="text12"> <fd:ErrorHandler result='<%=result%>' name='address' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></TD>
+	    <TD WIDTH="" ALIGN="RIGHT" colspan="2" CLASS="text12"> <fd:ErrorHandler result='<%=result%>' name='address' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></TD>
 	</TR>
 
 </TABLE>

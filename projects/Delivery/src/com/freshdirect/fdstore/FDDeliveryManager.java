@@ -116,6 +116,7 @@ import com.freshdirect.logistics.delivery.model.RouteStopInfo;
 import com.freshdirect.logistics.delivery.model.ShippingDetail;
 import com.freshdirect.logistics.delivery.model.TimeslotContext;
 import com.freshdirect.logistics.fdstore.StateCounty;
+import com.freshdirect.logistics.fdstore.ZipCodeAttributes;
 import com.freshdirect.payment.service.FDECommerceService;
 
 /**
@@ -169,6 +170,10 @@ public class FDDeliveryManager {
 	/* State County by Zip cache */
 	private static TimedLruCache<String, StateCounty> stateCountyByZip = new TimedLruCache<String, StateCounty>(
 			100, 60 * 60 * 60 * 1000);
+	
+	/* OPT-44 State county and EBT by Zip cache */
+	private static TimedLruCache<String, ZipCodeAttributes> zipCodeAttributes = new TimedLruCache<String, ZipCodeAttributes>(
+			100, 60 * 60 * 60 * 1000);	
 
 	private DlvRestrictionsList dlvRestrictions = null;
 	private long REFRESH_PERIOD = 1000 * 60 * 5; // 5 minutes
@@ -1299,7 +1304,37 @@ public class FDDeliveryManager {
 		}
 		return null;
 	}
-
+	
+	//OPT-44 start
+	public ZipCodeAttributes lookupZipCodeAttributes(String zipcode)
+			throws FDResourceException {
+		if (zipcode != null) {
+			try {
+				ZipCodeAttributes sc = zipCodeAttributes.get(zipcode);
+				if (sc == null) {
+					DlvManagerSB sb = getDlvManagerHome().create();
+					if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.DlvManagerSB)){
+						sc = FDECommerceService.getInstance().lookupZipCodeAttributes(zipcode);
+					}else{
+						sc = sb.lookupZipCodeAttributes(zipcode);
+					}
+					if (sc != null) {
+						zipCodeAttributes.put(zipcode, sc);
+					}
+				}
+				
+				return sc;
+			} catch (CreateException e) {
+				throw new FDResourceException(e, "Cannot create SessionBean");
+			} catch (RemoteException e) {
+				throw new FDResourceException(e,
+						"Cannot talk to the SessionBean");
+			}
+		}
+		return null;
+	}
+	//OPT-44 end
+	
 	public String lookupStateByZip(String zipcode) throws FDResourceException {
 		StateCounty sc = lookupStateCountyByZip(zipcode);
 		if (sc != null) {
@@ -1496,6 +1531,17 @@ public class FDDeliveryManager {
 		return null;
 	}
 
+	// OPT-44 start
+	public ZipCodeAttributes getZipCodeAttribute(String zipCode) {
+		try {
+			return lookupZipCodeAttributes(zipCode);
+		} catch (FDResourceException e) {
+			LOGGER.info("StateCounty abd EBT information not found for zipcode:" + zipCode);
+		}
+		return null;
+	}
+	//OPT-44 end
+	
 	public int cancelReservations(GenericSearchCriteria resvCriteria,
 			String initiator, String notes) throws FDResourceException {
 
