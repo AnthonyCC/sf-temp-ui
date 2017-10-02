@@ -12,6 +12,7 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdstore.FDNotFoundException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.util.QueryParameter;
@@ -87,7 +88,12 @@ public class BrowsePotatoTag extends SimpleTagSupport{
 					
 				default:
 					LOGGER.error("Invalid arguments on page " + request.getRequestURL() + " redirecting to " + e.getRedirectUrl() + ". Message: " +e.getMessage());
-					((HttpServletResponse)ctx.getResponse()).sendRedirect(e.getRedirectUrl());
+					if(null !=e.getRedirectUrl() && !"".equals(e.getRedirectUrl().trim())){
+						((HttpServletResponse)ctx.getResponse()).sendRedirect(e.getRedirectUrl());
+					} else {
+						LOGGER.warn("Redirect URL not specified for : "+request.getRequestURL()+ ". Agent: "+request.getHeader("User-Agent")+". Referrer: "+request.getHeader("referer"));
+						throw new FDNotFoundException("Redirect URL not specified. "+e.getMessage());
+					}
 					break;
 			}
      
