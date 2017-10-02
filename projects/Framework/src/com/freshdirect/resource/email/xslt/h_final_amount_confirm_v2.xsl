@@ -370,6 +370,8 @@
 					</xsl:otherwise>
 				</xsl:choose>
 		
+				<p><a target="_blank" href="https://refer.freshdirect.com/orderreceiptemail2525"><img src="https://www.freshdirect.com/media/images/promotions/raf/RAF_email_216x42.jpg" alt="Refer A Friend" /></a></p>
+				
 				<p><xsl:call-template name="h_invoice_info_v1"/></p>
 		
 				<p>NOTE: If this email does not print out clearly, please go to <xsl:element name = "a"><xsl:attribute name = "href"><xsl:text>https://www.freshdirect.com/your_account/order_details.jsp?orderId=</xsl:text><xsl:value-of select="order/erpSalesId"/></xsl:attribute><xsl:text>https://www.freshdirect.com/your_account/order_details.jsp?orderId=</xsl:text><xsl:value-of select="order/erpSalesId"/></xsl:element> for a printer-friendly version of your order details.</p>

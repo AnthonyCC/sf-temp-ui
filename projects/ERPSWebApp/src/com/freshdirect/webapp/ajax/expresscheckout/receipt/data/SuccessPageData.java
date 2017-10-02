@@ -9,10 +9,11 @@ public class SuccessPageData {
     private String soName;
     private String soOrderDate;
     private boolean isOrderModifiable;
+    private boolean hasSettledOrder=false;
 
     // START SO 3.1 ACTIVATION SUCCESS PAGE
-    
-    private boolean soActivate=false;
+
+	private boolean soActivate=false;
     
     private String soFrequency;
    
@@ -58,6 +59,14 @@ public class SuccessPageData {
         this.receipt = receipt;
     }
 
+    public boolean isHasSettledOrder() {
+		return hasSettledOrder;
+	}
+
+	public void setHasSettledOrder(boolean hasSettledOrder) {
+		this.hasSettledOrder = hasSettledOrder;
+	}
+    
     /**
      * @return the soName
      */

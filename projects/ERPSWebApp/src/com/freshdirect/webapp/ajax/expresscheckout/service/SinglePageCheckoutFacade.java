@@ -578,6 +578,11 @@ public class SinglePageCheckoutFacade {
         successPageData.setSoName(order.getStandingOrderName());
         successPageData.setSoOrderDate(order.getSODeliveryDate());
         successPageData.setOrderModifiable(CheckOrderStatusTag.isOrderModifiable(order));
+        try {
+			successPageData.setHasSettledOrder(user.getOrderHistory().getSettledOrderCount()>0);
+		} catch (FDResourceException e) {
+			e.printStackTrace();
+		}
         if(StandingOrderHelper.isSO3StandingOrder(user)){
         	populateSOActivationSuccess(successPageData,user);
         }

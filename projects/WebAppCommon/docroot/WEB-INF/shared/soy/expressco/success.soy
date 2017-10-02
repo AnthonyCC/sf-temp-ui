@@ -8,6 +8,7 @@
 * @param? soName
 * @param? soOrderDate
 * @param? orderModifiable
+* @param? hasSettledOrder
 * @param? soActivate
 * @param? soFrequency
 * @param? soEstimatedTotal
@@ -27,6 +28,7 @@
     {param soName: $soName /}
     {param soOrderDate: $soOrderDate /}
     {param orderModifiable: $orderModifiable /}
+    {param hasSettledOrder: $hasSettledOrder /}
   {/call}
 {elseif  $soActivate}
 	<h1 class="so-success-h1">Your Standing Order has been placed!</h1>
@@ -47,6 +49,7 @@
 	    {param soOrderDate: $soOrderDate /}
 	    {param orderModifiable: $orderModifiable /}
 	    {param soActivate: $soActivate /}
+	    {param hasSettledOrder: $hasSettledOrder /}
  	{/call}
 {/if}
 {/template}
@@ -67,6 +70,7 @@
  * @param? soName
  * @param? soOrderDate
  * @param? orderModifiable
+ * @param? hasSettledOrder
  * @param? soActivate
  */
 {template .successtotal autoescape="false"}
@@ -93,6 +97,7 @@
       {param orderModifiable: $orderModifiable /}
       {param soActivate: $soActivate /}
     {/call}
+    {if $hasSettledOrder}<div class="raf-success"><a target="_blank" href="//refer.freshdirect.com/orderconfirmpage2525"><img src="/media/images/promotions/raf/RAF_success_450x89.jpg" alt="Refer-A-Friend" /></a></div>{/if}
   </div>
   <div class="successtotal-right">
     <div class="tips">
