@@ -182,6 +182,50 @@
   {/if}
 {/template}
 
+
+/**
+* @param nutritionPanel
+* @param oldNutritionPanel
+*/
+{template .panelMobilApi}
+  {let $hasNewPanel: $nutritionPanel and $nutritionPanel.sections and length($nutritionPanel.sections) > 0 /}
+
+  {if $hasNewPanel or $oldNutritionPanel}
+   
+          <div id="drugpanel" class="display {if $oldNutritionPanel}CLASSIC{else}{$nutritionPanel.type}{/if}">
+            {call .panelContent data="all"}{/call}
+          </div>
+  {/if}
+{/template}
+
+/**
+* @param nutritionPanel
+* @param oldNutritionPanel
+*/
+{template .panelMobilApiProductDetail}
+<html>
+
+<head><link type="text/css" rel="stylesheet" href="/assets/css/{$nutritionPanel.lowercasetype}_nutrition_display.css"  title="Product Info WebKit View Stylesheet" media="all"/>
+
+
+</head>
+<body>
+
+
+<div class="detail">
+			<h3>Nutrition Facts</h3>
+			<div class="nutrition">
+  
+            {call .panelMobilApi data="all"}{/call}
+            
+        </div>
+		</div>
+	
+</body>
+</html>
+{/template}
+
+
 /**
 * @param nutritionPanel
 * @param oldNutritionPanel
