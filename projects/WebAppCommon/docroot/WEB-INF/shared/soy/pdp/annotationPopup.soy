@@ -5,8 +5,8 @@
  * @param? erpsyLink
  */
 {template .annotationPopup}
-	{let $erpsyMaterialLink: $erpsyLink + '/attribute/material/material_view.jsp?sapId=' + $data.material /}
-	{let $erpsySkuLink: $erpsyLink + '/product/product_view.jsp?skuCode=' + $data.skuCode /}
+	{let $erpsyMaterialLink: $erpsyLink + 'index.html#/material/sap/' + $data.material /}
+	{let $erpsySkuLink: $erpsyLink + 'index.html#/product/' + $data.skuCode /}
 	{let $erpsySkuSearchLink: $erpsyLink + '/attribute/material/material_search.jsp?searchterm=' + $data.skuCode + '&searchtype=WEBID' /}
 	{let $cmsLink: 'http://cms.freshdirect.com/cms-gwt/cmsgwt.html#Category:' + $data.categoryId + '$Product:' + $data.productId /}
 
