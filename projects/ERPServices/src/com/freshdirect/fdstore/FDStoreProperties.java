@@ -981,6 +981,8 @@ public class FDStoreProperties {
 
  	//Setting the product as free as SAP cannot get the value of a product as zero
  	public final static String PROP_ENABLE_FREE_PRODUCT = "fdstore.enable.free.product";
+ 	//appdev-6259
+ 	public final static String PROP_ENABLE_WEBSITE_MOBILE_SAME_NUTRITION_SOY = "enable.website.mobile.same.nutrition.soy";
 
 
 
@@ -1876,6 +1878,9 @@ static {
 
  	   	//Delivery Pass sent as a free products for trail
         defaults.put(PROP_ENABLE_FREE_PRODUCT,"false"); // Enable free product
+        
+        defaults.put(PROP_ENABLE_WEBSITE_MOBILE_SAME_NUTRITION_SOY,"false");
+        
 
         refresh();
     }
@@ -4790,6 +4795,15 @@ static {
 		//For SAP to get the Price of the Product as zero as it does not accept the Price to be zero we send as Free
 		public static boolean getEnableFreeProduct(){
 			return (Boolean.valueOf(get(PROP_ENABLE_FREE_PRODUCT))).booleanValue();
+		}
+		/**
+		 * Website toggle to determine if we have turned on the feature for both website and mobile api <BR>
+		 * to pull nutrition information from the same soy template.
+		 * @return defaults to off, overide by an entry enable.website.mobile.same.nutrition.soy in fdstore.properties
+		 */
+		public static boolean getEnableWebsiteMobileSameNutritionSoy(){
+			
+			return (Boolean.valueOf(get(PROP_ENABLE_WEBSITE_MOBILE_SAME_NUTRITION_SOY))).booleanValue();
 		}
 
 }
