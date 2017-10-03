@@ -203,7 +203,7 @@ class SalesOrderHelper {
 
 			// pricing condition (PR00)
 			MaterialPrice mp = orderLine.getPricingCondition();
-			if (mp.getPrice()<=0) {
+			if (mp.getPrice()<=0 && FDStoreProperties.getEnableFreeProduct()) {
 				// 1 cent per 100 units
 				this.bapi.addCondition(PosexUtil.getPosexInt(i), "PR00", 0.01, "USD", 1.0, mp.getPricingUnit());
 			} else {
@@ -236,6 +236,10 @@ class SalesOrderHelper {
 			}
 
 			// promotion
+			if (mp.getPrice()<=0 && FDStoreProperties.getEnableFreeProduct()){
+				this.addPromotionCondition(i, null, orderLine);
+			}
+
 			Discount disc = orderLine.getDiscount();
 			ErpCouponDiscountLineModel couponDiscount = orderLine.getCouponDiscount();
 			if (disc != null || couponDiscount!=null) {
@@ -281,38 +285,42 @@ class SalesOrderHelper {
 
 	private void addPromotionCondition(int pos, Discount discount,SapOrderLineI orderLine) {
 		int posex = PosexUtil.getPosexInt(pos);
-		EnumDiscountType pt = discount.getDiscountType();
-		if(null == orderLine && discount.getPromotionCode().startsWith(FDStoreProperties.getWindowSteeringPromoPrefix())){//For chargelines, Window Steering 'Free Delivery' promotion for FDX.
-			this.bapi.addCondition(posex, "ZFSH", discount.getAmount() * 100, "");
-		}else{
-			if (EnumDiscountType.PERCENT_OFF.equals(pt)) {
-				if(discount.getSkuLimit() > 0 && orderLine != null && !"LB".equalsIgnoreCase(orderLine.getPricingCondition().getPricingUnit())){//For Percent-off line item promotions with Sku Limit and for non-weight(lb) based items.
-					double pricePerQuantity = orderLine.getPricingCondition().getPrice();
-					double discountableQuantity = orderLine.getQuantity() > discount.getSkuLimit() ?discount.getSkuLimit():orderLine.getQuantity();
-					double finalDiscountAmount = (discountableQuantity*pricePerQuantity)*discount.getAmount();
-					this.bapi.addCondition(posex, "ZDFA", finalDiscountAmount, "USD");
-				}else{
-					this.bapi.addCondition(posex, "ZD11", discount.getAmount() * 100, "");
+		if(null != discount){
+			EnumDiscountType pt = discount.getDiscountType();
+			if(null == orderLine && discount.getPromotionCode().startsWith(FDStoreProperties.getWindowSteeringPromoPrefix())){//For chargelines, Window Steering 'Free Delivery' promotion for FDX.
+				this.bapi.addCondition(posex, "ZFSH", discount.getAmount() * 100, "");
+			}else{
+				if (EnumDiscountType.PERCENT_OFF.equals(pt)) {
+					if(discount.getSkuLimit() > 0 && orderLine != null && !"LB".equalsIgnoreCase(orderLine.getPricingCondition().getPricingUnit())){//For Percent-off line item promotions with Sku Limit and for non-weight(lb) based items.
+						double pricePerQuantity = orderLine.getPricingCondition().getPrice();
+						double discountableQuantity = orderLine.getQuantity() > discount.getSkuLimit() ?discount.getSkuLimit():orderLine.getQuantity();
+						double finalDiscountAmount = (discountableQuantity*pricePerQuantity)*discount.getAmount();
+						this.bapi.addCondition(posex, "ZDFA", finalDiscountAmount, "USD");
+					}else{
+						this.bapi.addCondition(posex, "ZD11", discount.getAmount() * 100, "");
+					}
+
+				} else if (EnumDiscountType.DOLLAR_OFF.equals(pt)) {
+					if(discount.getSkuLimit() >0){//For Dollar-off line item promotions with Sku Limit.
+						this.bapi.addCondition(posex, "ZDFA", discount.getSkuLimit()*discount.getAmount(), "USD");
+					}else{
+						this.bapi.addCondition(posex, "ZD10", discount.getAmount(), "USD");
+					}
+
+				} else if (EnumDiscountType.FREE.equals(pt)) {
+					this.bapi.addCondition(posex, "ZD11", 100.0, ""); // base price
+					if(null == orderLine){//no surcharge discount for orderlines
+						this.bapi.addCondition(posex, "ZVD0", 100.0, ""); // surcharge
+					}
+
+				} else if (EnumDiscountType.SAMPLE.equals(pt)) {
+					this.bapi.addCondition(posex, "ZF11", 100.0, "");
+
 				}
-
-			} else if (EnumDiscountType.DOLLAR_OFF.equals(pt)) {
-				if(discount.getSkuLimit() >0){//For Dollar-off line item promotions with Sku Limit.
-					this.bapi.addCondition(posex, "ZDFA", discount.getSkuLimit()*discount.getAmount(), "USD");
-				}else{
-					this.bapi.addCondition(posex, "ZD10", discount.getAmount(), "USD");
-				}
-
-			} else if (EnumDiscountType.FREE.equals(pt)) {
-				this.bapi.addCondition(posex, "ZD11", 100.0, ""); // base price
-				if(null == orderLine){//no surcharge discount for orderlines
-					this.bapi.addCondition(posex, "ZVD0", 100.0, ""); // surcharge
-				}
-
-			} else if (EnumDiscountType.SAMPLE.equals(pt)) {
-				this.bapi.addCondition(posex, "ZF11", 100.0, "");
-
-			} else if (null != orderLine && orderLine.getPricingCondition().getPrice() <=0.0){
-				this.bapi.addCondition(posex, "ZD11", 100.0, ""); // base price
+			}
+		} else{
+			 if (null != orderLine && orderLine.getPricingCondition().getPrice() <=0){
+					this.bapi.addCondition(posex, "ZD11", 100.0, ""); // base price
 			}
 		}
 	}
