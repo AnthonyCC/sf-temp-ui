@@ -3287,7 +3287,13 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		
 		Response<Map<String,ErpInventoryData>> response = null;
 		Map<String,ErpInventoryModel> erpInventoryModelMap = null;
+
 		try {
+			SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+			String date1 = null;
+			if(date!=null){
+			date1 = format1.format(date); 
+			}
 			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_LOAD_INVENTORY_INFO)+"/"+date,  new TypeReference<Response<Map<String,ErpInventoryData>>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());

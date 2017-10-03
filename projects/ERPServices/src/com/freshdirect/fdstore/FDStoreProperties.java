@@ -4608,7 +4608,7 @@ static {
     }
 
     public static boolean isSF2_0_AndServiceEnabled(String beanName) {
-    	return FDStoreProperties.isGlobalSF2_0PropertyEnabled() || ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue()&&FDEcommProperties.isServiceEnabled(beanName));
+    	return ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue()&&FDEcommProperties.isServiceEnabled(beanName));
     }
 
     public static boolean isMealBundleCartonLinkEnabled() {
