@@ -23,6 +23,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpSaleInfo;
@@ -506,7 +507,8 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 			FDOrderHistory h = (FDOrderHistory) user.getOrderHistory();
 			if (null != h.getErpSaleInfos() && !h.getErpSaleInfos().isEmpty()) {
 				for (ErpSaleInfo fdOrderInfo : h.getErpSaleInfos()) {
-					if (so.getId().equals(fdOrderInfo.getStandingOrderId()) && so.getFrequency() > 0 ) {
+					if (so.getId().equals(fdOrderInfo.getStandingOrderId()) && so.getFrequency() > 0 &&
+							!EnumSaleStatus.CANCELED.getStatusCode().equals(fdOrderInfo.getStatus().getStatusCode()) ) {
 						flg = true;
 						break;
 					}
