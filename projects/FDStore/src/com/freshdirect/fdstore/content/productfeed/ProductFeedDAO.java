@@ -10,6 +10,7 @@ import java.util.List;
 import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class ProductFeedDAO {
@@ -35,12 +36,7 @@ public class ProductFeedDAO {
         } catch (SQLException exc) {
             throw exc;
         } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (ps != null) {
-                ps.close();
-            }
+           DaoUtil.close(rs, ps);
         }
         return productFeedSubscribers;
     }
