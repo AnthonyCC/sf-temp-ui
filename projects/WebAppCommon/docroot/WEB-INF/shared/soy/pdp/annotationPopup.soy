@@ -12,7 +12,7 @@
 
   <ul>
     <li>Availability: {$data.availability}</li>
-	<li>Material: {call .newTabLinkedText}{param url:$data.materialLink /}{param target:'_erpsy' /}{param text:$data.material /}{/call}</li>
+	<li>Material: {call .newTabLinkedText}{param url:$erpsyMaterialLink /}{param target:'_erpsy' /}{param text:$data.material /}{/call}</li>
     <li>Sku: {call .newTabLinkedText}{param url:$erpsySkuLink /}{param target:'_erpsy' /}{param text:$data.skuCode /}{/call}</li>
     <li>{call .newTabLinkedText}{param url:$erpsySkuSearchLink /}{param target:'_erpsy' /}{param text:'Erpsy' /}{/call}</li>
 	<li>{call .newTabLinkedText}{param url:$cmsLink /}{param target:'_cms' /}{param text:'CMS' /}{/call}</li>
