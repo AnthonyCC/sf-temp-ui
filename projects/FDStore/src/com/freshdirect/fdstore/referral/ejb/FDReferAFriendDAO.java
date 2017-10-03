@@ -363,15 +363,16 @@ public class FDReferAFriendDAO {
 	private static final String GET_CREDIT_LIST = 
 							"select cc.create_date, to_char(CC.CREATE_DATE, 'MM/DD/YYYY') formatted_create_date, " + 
 							    "decode(CC.DEPARTMENT, 'RAF', 'Referral Credit', 'Store Credit') type, " + 
-                                "C.SALE_ID as SALE_ID, CC.ORIGINAL_AMOUNT as Amount " +
+                                "C.SALE_ID as SALE_ID, CC.ORIGINAL_AMOUNT as Amount, decode(s.e_store, 'FDX', 'FDX','FreshDirect') estore " +
                                 "from CUST.CUSTOMERCREDIT cc, " +
-                                "CUST.COMPLAINT c " +
+                                "CUST.COMPLAINT c, CUST.SALE s " +
                                 "where CC.COMPLAINT_ID = C.ID " +   
                                 "and     cc.CUSTOMER_ID = ? " +
+                                " and C.SALE_ID=s.id "+
                             "UNION ALL " +
                             "select SA.ACTION_DATE, to_char(SA.ACTION_DATE, 'MM/DD/YYYY') as formatted_create_date, " +
                                 "'Redemption' as type, " +
-                                "s.id as SALE_ID, AC.AMOUNT as Amount from " + 
+                                "s.id as SALE_ID, AC.AMOUNT as Amount, decode(s.e_store, 'FDX', 'FDX','FreshDirect') estore from " + 
                                 "cust.customercredit cc, " +
                                 "CUST.APPLIEDCREDIT ac, " +
                                 "CUST.SALESACTION sa, " +
@@ -402,6 +403,7 @@ public class FDReferAFriendDAO {
 				cm.setDepartment(rs.getString("TYPE"));
 				cm.setAmount(rs.getDouble("AMOUNT"));
 				cm.setSaleId(rs.getString("SALE_ID"));
+				cm.seteStore(rs.getString("ESTORE"));
 				cmList.add(cm);
 			}
 		} finally {
