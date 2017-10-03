@@ -1,10 +1,15 @@
 package com.freshdirect.mobileapi.controller;
 
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,6 +24,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDProduct;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -54,6 +61,7 @@ import com.freshdirect.mobileapi.util.ProductPotatoUtil;
 import com.freshdirect.mobileapi.util.SortType;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.ajax.product.data.ProductPotatoData;
+import com.freshdirect.webapp.util.NutritionInfoPanelRendererUtil;
 import com.freshdirect.webapp.util.ProductRecommenderUtil;
 import com.freshdirect.webapp.util.RequestUtil;
 
@@ -61,6 +69,7 @@ import freemarker.template.TemplateException;
 
 public class ProductController extends BaseController {
     private static Category LOGGER = LoggerFactory.getInstance(ProductController.class);
+    private static String  CSS_STRING = null;
 
     public enum WhatsGoodType {
         PRESIDEN_PICKS, BRAND_NAME_DEALS, BUTCHERS_BLOCK, PEAK_PRODUCE
@@ -107,7 +116,7 @@ public class ProductController extends BaseController {
 
         try {
             if (MORE_INFO_ACTION.equalsIgnoreCase(action)) {
-                model = getProductMoreInfo(model, request, response);
+                model = getProductMoreInfo(model, request, response, user);
             } else if (GET_PRICE_ACTION.equalsIgnoreCase(action)) {
                 model = getPrice(model, request, response, user);
             } else if (ACKNOWLEDGE_HEALTH_WARNING.equals(action)) {
@@ -399,52 +408,72 @@ public class ProductController extends BaseController {
      * @throws ModelException 
      * @throws Exception
      */
-    private ModelAndView getProduct(ModelAndView model, HttpServletRequest request, HttpServletResponse response, SessionUser user)
-            throws ServiceException, FDException, JsonException, NoSessionException, ModelException {
+	private ModelAndView getProduct(ModelAndView model, HttpServletRequest request, HttpServletResponse response,
+			SessionUser user) throws ServiceException, FDException, JsonException, NoSessionException, ModelException {
 
-        com.freshdirect.mobileapi.model.Product product = getProduct(request, response);
+		com.freshdirect.mobileapi.model.Product product = getProduct(request, response);
 
-        Message responseMessage;
-        if(product == null){
-        	responseMessage = Message.createFailureMessage("Could not find product");
-            setResponseMessage(model, responseMessage, user);
-            return model;
-        }
-        
-        if (!user.isHealthWarningAcknowledged() && product.isAlcoholProduct()) {
-            responseMessage = new Message();
-            
-            //APPDEV-4300 - Alcohol Products - No Details Returned if User Not Logged In 
-     		responseMessage = new Product(product);
+		Message responseMessage;
+		if (product == null) {
+			responseMessage = Message.createFailureMessage("Could not find product");
+			setResponseMessage(model, responseMessage, user);
+			return model;
+		}
+
+		if (!user.isHealthWarningAcknowledged() && product.isAlcoholProduct()) {
+			responseMessage = new Message();
+
+			// APPDEV-4300 - Alcohol Products - No Details Returned if User Not
+			// Logged In
+			responseMessage = new Product(product);
+
+			// HtmlResponse data;
+
+		
+
 			if (null != ((Product) responseMessage).getProductTerms()) {
 				try {
-					((Product) responseMessage).setProductTerms(getProductWrappedTerms(((Product) responseMessage).getProductTerms()));
+					((Product) responseMessage)
+							.setProductTerms(getProductWrappedTerms(((Product) responseMessage).getProductTerms()));
 				} catch (IOException e) {
 					throw new FDException(e);
 				} catch (TemplateException e) {
 					throw new FDException(e);
 				}
 			}
-            responseMessage.setStatus(Message.STATUS_FAILED);
-            responseMessage.addErrorMessage(ERR_HEALTH_WARNING, MobileApiProperties.getMediaPath() + MobileApiProperties.getAlcoholHealthWarningMediaPath());
-        } else {
-            try {
-                responseMessage = new Product(product);
-                if (null != ((Product) responseMessage).getProductTerms()) {
-                    ((Product) responseMessage).setProductTerms(getProductWrappedTerms(((Product) responseMessage).getProductTerms()));
-                }
-            } catch (ModelException e) {
-                throw new FDException(e);
-            } catch (IOException e) {
-                throw new FDException(e);
-            } catch (TemplateException e) {
-                throw new FDException(e);
-            }
-        }
-        setResponseMessage(model, responseMessage, user);
-        return model;
+			responseMessage.setStatus(Message.STATUS_FAILED);
+			responseMessage.addErrorMessage(ERR_HEALTH_WARNING,
+					MobileApiProperties.getMediaPath() + MobileApiProperties.getAlcoholHealthWarningMediaPath());
+		} else {
+			try {
+				responseMessage = new Product(product);
+				if (null != ((Product) responseMessage).getProductTerms()) {
+					((Product) responseMessage)
+							.setProductTerms(getProductWrappedTerms(((Product) responseMessage).getProductTerms()));
+				}
+			} catch (ModelException e) {
+				throw new FDException(e);
+			} catch (IOException e) {
+				throw new FDException(e);
+			} catch (TemplateException e) {
+				throw new FDException(e);
+			}
+		}
+		
+		// STORYappdev-6259 im setting the nutrition information from the
+		// same place as the website, the soy templates.
+		if (FDStoreProperties.getEnableWebsiteMobileSameNutritionSoy()) {
+			ProductModel productModel = ContentFactory.getInstance().getProductByName(product.getCategoryId(),
+					product.getProductId());
+			((Product) responseMessage).setNutrition(NutritionInfoPanelRendererUtil.getSkuNutritionHtmlwithSoy(
+					user.getFDSessionUser(), product.getDefaultSku().getOriginalSku().getProduct(), productModel,
+					getServletContext(), NutritionInfoPanelRendererUtil.PanelNameEnum.PANELMOBIL_API_PRODUCT_DETAIL, 
+					 getCSSasString()));
+		}
+		setResponseMessage(model, responseMessage, user);
+		return model;
 
-    }
+	}
 
     /**
      * 
@@ -535,6 +564,40 @@ public class ProductController extends BaseController {
     	setResponseMessage(model, pl, user);
     	return model;
     }
+    
+	private String getCSSFromFile() {
+		
+		String fullPath = getServletContext().getRealPath("/assets/css/all_nutrition_display.css");
+		// you have to update the path swapping out the project we are in for
+		// the project with the css.
+		String updatedPath = fullPath.replace("FDIntegrationServices", "FDWebSite");
+
+		String line;
+		StringBuffer buf = new StringBuffer();
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(updatedPath));
+
+			while ((line = reader.readLine()) != null) {
+				buf.append(line);
+			}
+			reader.close();
+		} catch (FileNotFoundException ex) {
+			  LOGGER.error("FileNotFoundException WHILE trying to retrieve css file for nutritionpanel "+ ex);		
+			} catch (IOException e) {
+				  LOGGER.error("IOException WHILE trying to retrieve css file for nutritionpanel "+ e);	
+		}
+
+		return buf.toString();
+	}
+    private String getCSSasString( ) {
+    	if (!  FDStoreProperties.getEnableWebsiteMobileSameNutritionSoy()) {
+    	return "";
+    	}
+    	
+    	if (null==CSS_STRING || CSS_STRING.isEmpty()) CSS_STRING=getCSSFromFile();
+    	return CSS_STRING;
+
+    }
 
     /**
      * @param model
@@ -553,22 +616,28 @@ public class ProductController extends BaseController {
      * @throws IOException 
      * @throws Exception
      */
-    private ModelAndView getProductMoreInfo(ModelAndView model, HttpServletRequest request, HttpServletResponse response)
+    private ModelAndView getProductMoreInfo(ModelAndView model, HttpServletRequest request, HttpServletResponse response,  SessionUser user)
             throws ServiceException, FDException, JsonException, NoSessionException, ModelException {
         com.freshdirect.mobileapi.model.Product product = getProduct(request, response);
         //HtmlResponse data;
 
+        ProductModel productModel = ContentFactory.getInstance().getProductByName(product.getCategoryId(), product.getProductId() );
+        final FDUserI uzer = user.getFDSessionUser();
         model = getModelAndView(PRODUCT_MORE_INFO_TEMPLATE);
         try {
             //data = new HtmlResponse();
             response.setContentType("text/html");
-            ProductMoreInfo productMoreInfo = new ProductMoreInfo(product);
+            ServletContext context = getServletContext();
+            ProductMoreInfo productMoreInfo = new ProductMoreInfo(product, productModel, uzer, context );
 
             model.addObject("moreInfo", productMoreInfo);
             model.addObject("product", product);
             model.addObject("productImage", product.getImage(ImageType.DETAIL));
             model.addObject("mediaPath", MobileApiProperties.getMediaPath());
             model.addObject("request", request);
+            model.addObject("cssSource", getCSSasString() ) ;
+            model.addObject("isFromMobile","true");
+            
 
         } catch (ModelException e) {
             throw new FDException(e);

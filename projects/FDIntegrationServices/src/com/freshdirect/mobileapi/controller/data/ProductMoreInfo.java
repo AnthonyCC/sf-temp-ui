@@ -8,11 +8,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.servlet.ServletContext;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.Brand;
 import com.freshdirect.mobileapi.model.ComponentGroup;
@@ -82,8 +85,19 @@ public class ProductMoreInfo {
     private Image productImage;
 
     private String partiallyFrozen;
+    private  com.freshdirect.fdstore.content.ProductModel productModel;
+    private   FDUserI fduser;
+    private ServletContext servletContext= null;
+   
+    public  ProductMoreInfo(com.freshdirect.mobileapi.model.Product product) 
+    		 throws ModelException, FDResourceException,
+             FDSkuNotFoundException{
+    	this(product, null, null, null);
+   
+    
+    }
 
-    public ProductMoreInfo(com.freshdirect.mobileapi.model.Product product) throws ModelException, FDResourceException,
+    public ProductMoreInfo(com.freshdirect.mobileapi.model.Product product, final com.freshdirect.fdstore.content.ProductModel productModel,final FDUserI uzer, ServletContext context) throws ModelException, FDResourceException,
             FDSkuNotFoundException {
         LOG.debug("Creating ProductMoreInfo for product: " + product.getProductId());
         id = product.getProductId();
@@ -95,6 +109,10 @@ public class ProductMoreInfo {
         fdFrenching = product.getFdDefFrenching();
         fdRipeness = product.getFdDefRipeness();
         fullName = product.getProductTitle();
+        this.fduser=uzer;
+        this.servletContext= context;
+        this.productModel= productModel;
+        
         for (Brand brand : product.getBrands()) {
             brands = new HashMap<String, String>();
             brands.put(brand.getName(), brand.getDescription());
@@ -135,7 +153,9 @@ public class ProductMoreInfo {
                         ingredients.put(sku.getSkuCode(), product.getSkuIngredients(sku));
                     }
                     if (product.getDefaultProduct().hasNutritionFacts()) {
-                        nutritionFacts.put(sku.getSkuCode(), product.getSkuNutrition(sku));
+               
+                      //  nutritionFacts.put(sku.getSkuCode(), product.getSkuNutrition(sku)); 
+                    	nutritionFacts.put(sku.getSkuCode(), product.getSkuNutrition(sku, this.productModel, this.fduser, servletContext)); 
                     }
                     if (sku.hasSecondaryDomain()) {
                         skuNames.put(sku.getSkuCode(), sku.getDomainLabel());
@@ -152,9 +172,12 @@ public class ProductMoreInfo {
                     if (product.getDefaultProduct().hasIngredients()) {
                         ingredients.put(sku.getSkuCode(), product.getSkuIngredients(sku));
                     }
-                    if (product.getDefaultProduct().hasNutritionFacts()) {
-                        nutritionFacts.put(sku.getSkuCode(), product.getSkuNutrition(sku));
-                    }
+                    //dh IM TEMPORARILY COMMENTING OUT hasNutritionFacts() UNTIL WE FIGURE OUT A BETTER WAY OF DOING THIS.
+                 //   if (product.getDefaultProduct().hasNutritionFacts()) {
+
+                       // nutritionFacts.put(sku.getSkuCode(), product.getSkuNutrition(sku));
+                        nutritionFacts.put(sku.getSkuCode(), product.getSkuNutrition(sku, this.productModel, this.fduser, this.servletContext)); 
+                  //  }
                 }
             }
         }

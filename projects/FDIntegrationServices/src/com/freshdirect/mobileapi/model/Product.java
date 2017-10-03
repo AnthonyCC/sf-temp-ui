@@ -2,6 +2,7 @@ package com.freshdirect.mobileapi.model;
 
 import static java.util.Collections.emptySet;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
@@ -20,7 +21,9 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -104,12 +107,23 @@ import com.freshdirect.webapp.ajax.product.ProductExtraDataPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.ajax.product.data.ProductExtraData;
 import com.freshdirect.webapp.features.service.FeaturesService;
+import com.freshdirect.webapp.soy.SoyTemplateEngine;
 import com.freshdirect.webapp.taglib.unbxd.ClickThruEventTag;
 import com.freshdirect.webapp.util.CCFormatter;
 import com.freshdirect.webapp.util.MediaUtils;
 import com.freshdirect.webapp.util.NutritionInfoPanelRendererUtil;
 import com.freshdirect.webapp.util.ProductImpression;
 import com.freshdirect.webapp.util.RestrictionUtil;
+
+
+import com.google.template.soy.SoyFileSet;
+import com.google.template.soy.data.SoyMapData;
+import com.google.template.soy.data.SoyListData;
+
+import com.google.template.soy.tofu.SoyTofu;
+
+import com.freshdirect.webapp.ajax.DataPotatoField;
+
 
 /**
  * Wrapper class for ProductModel and ProductImpression classe. The Idea is to
@@ -1663,6 +1677,36 @@ public class Product {
         return result;
 
     }
+    //sku, this.productModel, this.fduser
+    
+	public String getSkuNutrition(Sku sku, ProductModel productModel, FDUserI user, ServletContext context)
+			throws FDResourceException, FDSkuNotFoundException {
+		String result = "";
+		// productId = product.getProductId();
+		// categoryId = product.getCategoryId();
+		FDProduct fdProduct = sku.getOriginalSku().getProduct();
+		if (isAvailable()) {
+		/*story appdev6259 temporarily skipped here.
+			if (FDStoreProperties.getEnableWebsiteMobileSameNutritionSoy()) {
+				String htmlStringfromSoyTemplate = NutritionInfoPanelRendererUtil.getSkuNutritionHtmlwithSoy(user,
+						fdProduct, productModel, context, NutritionInfoPanelRendererUtil.PanelNameEnum.PANELMOBIL_API , null);
+
+				result = htmlStringfromSoyTemplate;
+
+			} else {
+			*/
+				StringWriter st = new StringWriter();
+				NutritionInfoPanelRendererUtil.renderPanelWithNutritionList(fdProduct.getNutrition(), st);
+				result = st.toString();
+	
+			//} see above temp skip of 6259
+		}
+		return result;
+
+	}
+    
+    
+
 
     public boolean isInProductInCart() {
         boolean inProductInCart = false;
