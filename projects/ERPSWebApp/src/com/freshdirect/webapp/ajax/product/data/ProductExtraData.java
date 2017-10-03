@@ -33,6 +33,7 @@ public class ProductExtraData implements Serializable {
 		public int logoWidth;
 		
 		public String name;
+		
 	}
 
 	public static class GroupScaleData implements Serializable {
@@ -402,6 +403,7 @@ public class ProductExtraData implements Serializable {
 	private List<ProductData> optionalProducts;
 	
 	private String pageTitle;
+	private String nutritionCss;
 	
 	private String seoMetaDescription;
 	
@@ -806,6 +808,15 @@ public class ProductExtraData implements Serializable {
     public void setPageTitle(String pageTitle) {
         this.pageTitle = pageTitle;
     }
+    
+    public String getNutritionCss() {
+        return nutritionCss;
+    }
+
+    public void setNutritionCss(String nutritionCssp) {
+        this.nutritionCss = nutritionCssp;
+    }
+    
 
     public String getSeoMetaDescription() {
         return seoMetaDescription;
