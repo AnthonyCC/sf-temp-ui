@@ -1905,8 +1905,8 @@ static {
 
     public static String get(String key) {
         refresh();
-
-        return config.getProperty(key);
+        String value = config.getProperty(key);
+        return null !=value ? value.trim() : value;
     }
 
     /**
