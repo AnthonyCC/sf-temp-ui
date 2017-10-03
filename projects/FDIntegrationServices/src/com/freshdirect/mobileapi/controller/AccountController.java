@@ -188,6 +188,7 @@ public class AccountController extends BaseController implements Comparator <Ord
     		cr.setDate(cm.getcDate());
     		cr.setType(cm.getDepartment());
     		cr.setOrder("Referral Credit".equals(cm.getDepartment())?"":cm.getSaleId());
+    		cr.setEstore(cm.geteStore());
     		cr.setAmount("Redemption".equals(cm.getDepartment())?"(" + JspMethods.formatPrice(cm.getAmount()) + ")" :JspMethods.formatPrice(cm.getAmount()));
     		crlist.add(cr);
     	}
