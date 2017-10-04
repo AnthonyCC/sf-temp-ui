@@ -127,8 +127,9 @@
   margin:0;
 }
 
-.cartsection__cartline .cartline-price-value.product-sample-free {
+.cartsection__cartline .cartline-price-value.cartline-price-value-free {
   color: #c00;
+  padding-top: 7px;
 }
 
 .cartsection__cartline .cartline-unitprice{

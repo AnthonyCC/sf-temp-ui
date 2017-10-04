@@ -312,7 +312,8 @@ h2.centerline span {
    	cursor: default;
 }
 
-#popupcart .content .cartline[data-freeproduct='true'] .price.product-sample-free{
+#popupcart .content .cartline[data-freeproduct='true'] .price,
+#popupcart .content .cartline .price.product-price-free{
 	color: #c00;
 	font-weight: bold;
 }

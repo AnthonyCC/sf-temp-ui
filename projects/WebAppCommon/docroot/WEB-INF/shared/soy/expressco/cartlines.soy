@@ -748,7 +748,7 @@
 			</a>
 		</div>
 		<div class='cartline-quantity cartline-box'>
-			{if $freeSamplePromoProduct}
+			{if $freeSamplePromoProduct or $price == '$0.00'}
 				{if $su}
 					{foreach $option in $su}
 						{if $option.selected}<span class="free-sample-quantity">{$option.name}</span>{/if}
@@ -767,8 +767,8 @@
 		</div>
 		<div class='cartline-price cartline-box'>
 			<div class='cartline-pricewrapper'>
-				{if $freeSamplePromoProduct}
-					<p class='cartline-price-value product-sample-free'>FREE</p>
+				{if $freeSamplePromoProduct or $price == '$0.00'}
+					<p class='cartline-price-value cartline-price-value-free'>FREE</p>
 				{else}
 					<p class='cartline-price-value'>{$price}</p>
 					{if $unitPrice}<p class='cartline-unitprice'>({$unitPrice}/{$unitScale})</p>{/if}
@@ -901,8 +901,8 @@
 		</div>
 		<div class='cartline-price cartline-box'>
 			<div class='cartline-pricewrapper'>
-				{if $freeSamplePromoProduct}
-					<p class='cartline-price-value product-sample-free'>FREE</p>
+				{if $freeSamplePromoProduct or $price == '$0.00'}
+					<p class='cartline-price-value cartline-price-value-free'>FREE</p>
 				{else}
 					<p class='cartline-price-value'>{$price}</p>
 					{if $unitPrice}<p class='cartline-unitprice'>({$unitPrice}/{$unitScale})</p>{/if}
