@@ -107,7 +107,7 @@ import com.freshdirect.webapp.ajax.product.ProductExtraDataPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.ajax.product.data.ProductExtraData;
 import com.freshdirect.webapp.features.service.FeaturesService;
-import com.freshdirect.webapp.soy.SoyTemplateEngine;
+//import com.freshdirect.webapp.soy.SoyTemplateEngine;
 import com.freshdirect.webapp.taglib.unbxd.ClickThruEventTag;
 import com.freshdirect.webapp.util.CCFormatter;
 import com.freshdirect.webapp.util.MediaUtils;
@@ -116,13 +116,13 @@ import com.freshdirect.webapp.util.ProductImpression;
 import com.freshdirect.webapp.util.RestrictionUtil;
 
 
-import com.google.template.soy.SoyFileSet;
-import com.google.template.soy.data.SoyMapData;
-import com.google.template.soy.data.SoyListData;
-
-import com.google.template.soy.tofu.SoyTofu;
-
-import com.freshdirect.webapp.ajax.DataPotatoField;
+//import com.google.template.soy.SoyFileSet;
+//import com.google.template.soy.data.SoyMapData;
+//import com.google.template.soy.data.SoyListData;
+//
+//import com.google.template.soy.tofu.SoyTofu;
+//
+//import com.freshdirect.webapp.ajax.DataPotatoField;
 
 
 /**
