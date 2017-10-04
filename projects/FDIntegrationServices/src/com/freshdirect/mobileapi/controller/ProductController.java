@@ -468,7 +468,7 @@ public class ProductController extends BaseController {
 			((Product) responseMessage).setNutrition(NutritionInfoPanelRendererUtil.getSkuNutritionHtmlwithSoy(
 					user.getFDSessionUser(), product.getDefaultSku().getOriginalSku().getProduct(), productModel,
 					getServletContext(), NutritionInfoPanelRendererUtil.PanelNameEnum.PANELMOBIL_API_PRODUCT_DETAIL, 
-					 getCSSasString()));
+					 ""));
 		}
 		setResponseMessage(model, responseMessage, user);
 		return model;
@@ -590,9 +590,9 @@ public class ProductController extends BaseController {
 		return buf.toString();
 	}
     private String getCSSasString( ) {
-    	if (!  FDStoreProperties.getEnableWebsiteMobileSameNutritionSoy()) {
-    	return "";
-    	}
+//    	if (!  FDStoreProperties.getEnableWebsiteMobileSameNutritionSoy()) {
+//    	return "";
+//    	}
     	return "";
     	
     	/*
