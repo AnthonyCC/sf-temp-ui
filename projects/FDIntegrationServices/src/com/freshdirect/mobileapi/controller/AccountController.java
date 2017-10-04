@@ -19,6 +19,7 @@ import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.FDCustomerCreditHistoryModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -171,13 +172,8 @@ public class AccountController extends BaseController implements Comparator <Ord
     	CreditHistory responseMessage = new CreditHistory();
         FDIdentity customerIdentity = user.getFDSessionUser().getIdentity();
         
-        ErpCustomerModel erpCustomer = FDCustomerFactory.getErpCustomer(customerIdentity.getErpCustomerPK());
-		List<ErpCustomerCreditModel> customerCredits = new ArrayList(erpCustomer.getCustomerCredits());
-		Double remainingAmount = 0.0;
-		for(ErpCustomerCreditModel custcredit : customerCredits){
-			remainingAmount += custcredit.getRemainingAmount();
-		}
-		responseMessage.setRemainingAmount(remainingAmount);
+        FDCustomerCreditHistoryModel creditHistory = FDCustomerManager.getCreditHistory(customerIdentity);
+		responseMessage.setRemainingAmount(creditHistory.getRemainingAmount());
         
         List<ErpCustomerCreditModel> mimList = FDReferralManager.getUserCredits(customerIdentity.getErpCustomerPK());
         
