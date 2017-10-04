@@ -111,7 +111,7 @@ if (mobWeb) {
 		<%//Reservation stuff%>
 		<table style="width: <%= (mobWeb) ? "100%": W_RESERVE_TIMESLOTS_TOTAL+"px" %>;" cellpadding="0" cellspacing="0" border="0">
 			<%-- <tr>
-				<td colspan="7"><img src="/media_stat/images/layout/dotted_line_w.gif" style="width: <%= (mobWeb) ? "100%": W_RESERVE_TIMESLOTS_TOTAL+"px" %>;" height="1"></td>
+				<td colspan="7"><img src="/media_stat/images/layout/dotted_line_w.gif" alt="" style="width: <%= (mobWeb) ? "100%": W_RESERVE_TIMESLOTS_TOTAL+"px" %>;" height="1"></td>
 			</tr> --%>
 			<tr>
 				<td colspan="7"><!-- <img src="/media_stat/images/template/youraccount/choose_reservation_type.gif" width="256" height="10" vspace="10" alt="Please Choose a Reservation Type"></td> -->

@@ -251,7 +251,7 @@ function linkTo(url){
 			<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="<%=tableWidth%>" class="bodyCopy">
 				<TR VALIGN="TOP">
 					<TD WIDTH="15"><img src="/media/images/layout/clear.gif" width="15" height="1" alt="" border="0"></TD>
-					<TD WIDTH="<%=tableWidth%>" class="bodyCopy"><A HREF="#top"><img src="/media_stat/images/template/help/up_arrow.gif" width="17" height="9" hspace="0" vspace="4" border="0" align="left"><img src="/media/images/layout/clear.gif" width="6" height="1" border="0">top of page</A>
+					<TD WIDTH="<%=tableWidth%>" class="bodyCopy"><A HREF="#top"><img src="/media_stat/images/template/help/up_arrow.gif" alt="" width="17" height="9" hspace="0" vspace="4" border="0" align="left"><img src="/media/images/layout/clear.gif" alt="" width="6" height="1" border="0">top of page</A>
 						<br><br><br>			
 				   </TD>
 				</TR>

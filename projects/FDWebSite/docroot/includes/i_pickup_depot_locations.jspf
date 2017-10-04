@@ -42,7 +42,7 @@ if(pickups.size() > 0){  %>
 		</tr>
 		<tr>
 			<td><img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
-				<img src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_PICKUP_DEPOT_LOCATIONS_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+				<img src="/media_stat/images/layout/dotted_line_w.gif" alt="" WIDTH="<%=W_PICKUP_DEPOT_LOCATIONS_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 			</td>
 		</tr>
 

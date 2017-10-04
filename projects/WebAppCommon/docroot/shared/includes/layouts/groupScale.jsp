@@ -762,9 +762,9 @@ final int W_GROUPSCALE_TOTAL = 601;
 									<td colspan="3"><img src="/media_stat/images/layout/clear.gif" alt=""  width="140" height="9"></td>
 								</tr>
 								<tr>
-									<td height="5"><img src="/media_stat/images/layout/top_left_curve.gif" width="6" height="6"></td>
+									<td height="5"><img src="/media_stat/images/layout/top_left_curve.gif" alt="" width="6" height="6"></td>
 									<td height="5" style="border-top: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" alt="" width="160" height="1"></td>
-									<td height="5"><img src="/media_stat/images/layout/top_right_curve.gif" width="6" height="6"></td>
+									<td height="5"><img src="/media_stat/images/layout/top_right_curve.gif" alt="" width="6" height="6"></td>
 								</tr>
 
 
@@ -790,9 +790,9 @@ final int W_GROUPSCALE_TOTAL = 601;
 									</td>
 								</tr>
 								<tr>
-									<td height="5"><img src="/media_stat/images/layout/bottom_left_curve.gif" width="6" height="6"></td>
+									<td height="5"><img src="/media_stat/images/layout/bottom_left_curve.gif" alt="" width="6" height="6"></td>
 									<td height="5" style="border-bottom: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
-									<td height="5"><img src="/media_stat/images/layout/bottom_right_curve.gif" width="6" height="6"></td>
+									<td height="5"><img src="/media_stat/images/layout/bottom_right_curve.gif" alt="" width="6" height="6"></td>
 								</tr>
 
 							</table>

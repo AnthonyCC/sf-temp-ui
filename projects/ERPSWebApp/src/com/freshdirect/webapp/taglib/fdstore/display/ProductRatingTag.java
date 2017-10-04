@@ -311,7 +311,9 @@ public class ProductRatingTag extends BodyTagSupport {
 								+ (leftAlign ? "left_" : "") + rating + ".gif\"");
 		
 						buf.append(" name=\"" + rating + "\"");
-		
+		                
+						buf.append(" alt=\" rating " + rating + " \" "); 
+						
 						buf.append(" width=\"59\"");
 		
 						buf.append(" height=\"11\"");

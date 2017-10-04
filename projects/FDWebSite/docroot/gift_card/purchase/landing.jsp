@@ -84,7 +84,7 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 		<% if(FDStoreProperties.isGiftCardDonationEnabled() && donationOrgList != null && donationOrgList.size() > 0) { %>
 				<td>&nbsp;</td>
 				<td bgcolor="#cccccc">
-					<img src="/media_stat/images/layout/dotted_line_w.gif" width="1" height="1" border="0" />
+					<img src="/media_stat/images/layout/dotted_line_w.gif" width="1" alt="" height="1" border="0" />
 				</td>
 				<td>&nbsp;&nbsp;</td>
 				<td valign="top">

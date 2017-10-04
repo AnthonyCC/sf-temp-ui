@@ -236,7 +236,7 @@ final int W_CHECKOUT_STEP_3_CHOOSE_TOTAL = 970;
 			</table>
 
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
-			<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" height="3" border="0" alt="" /><br />
+			<img src="/media_stat/images/layout/dotted_line_w.gif" alt="" width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" height="3" border="0" alt="" /><br />
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
 
 		    <div style="width: <%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>px; text-align: left;"><span style="color: #FF9933;font-size: 17px;">NO PAYMENT NECESSARY... YOUR TOTAL IS COVERED BY YOUR GIFT CARD.</span>
@@ -246,7 +246,7 @@ final int W_CHECKOUT_STEP_3_CHOOSE_TOTAL = 970;
 
 
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
-	        <img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" height="1" border="0" alt="" /><br />
+	        <img src="/media_stat/images/layout/dotted_line_w.gif" alt="" width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" height="1" border="0" alt="" /><br />
             <img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
 
 		    <table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>">
@@ -385,7 +385,7 @@ if (isPaymentRequired) {
 	</table>
 
 	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
-	<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" height="3" border="0" alt="" /><br />
+	<img src="/media_stat/images/layout/dotted_line_w.gif" alt="" width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" height="3" border="0" alt="" /><br />
 	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
 	<%
 		JspMethods.dumpErrors(result);
@@ -563,7 +563,7 @@ if (isPaymentRequired) {
 </fd:GetStandingOrderDependencyIds>
 
 	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
-	<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" height="1" border="0" alt="" /><br />
+	<img src="/media_stat/images/layout/dotted_line_w.gif" alt="" width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" height="1" border="0" alt="" /><br />
 	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
 
 	<div style="margin-bottom: 10px;">
@@ -591,7 +591,7 @@ if (isPaymentRequired) {
 	</form>
 
 	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
-	<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" height="1" border="0" alt="" /><br />
+	<img src="/media_stat/images/layout/dotted_line_w.gif" alt="" width="<%=W_CHECKOUT_STEP_3_CHOOSE_TOTAL%>" height="1" border="0" alt="" /><br />
 	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
 
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>

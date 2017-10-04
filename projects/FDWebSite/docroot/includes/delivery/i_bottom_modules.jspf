@@ -41,7 +41,7 @@ double currentTime = h1+m1;
 			<%}%>
 		</td>
 		<td bgcolor="#cccccc" width="1" rowspan="4">
-			<img height="1" border="0" width="1" src="/media_stat/images/layout/dotted_line_w.gif"><br>
+			<img height="1" border="0" width="1" alt="" src="/media_stat/images/layout/dotted_line_w.gif"><br>
 		</td>
 		<td width="15" rowspan="2"><img height="1" border="0" width="15" alt="" src="/media_stat/images/layout/clear.gif"></td>
 		
@@ -61,7 +61,7 @@ double currentTime = h1+m1;
 		</td>
 
 		<td bgcolor="#cccccc" width="1" rowspan="4">
-			<img height="1" border="0" width="1" src="/media_stat/images/layout/dotted_line_w.gif"><br>
+			<img height="1" border="0" alt="" width="1" src="/media_stat/images/layout/dotted_line_w.gif"><br>
 		</td>
 		<td width="15" rowspan="2"><img height="1" border="0" width="15" alt="" src="/media_stat/images/layout/clear.gif"></td>
 		
@@ -75,7 +75,7 @@ double currentTime = h1+m1;
           <fd:IncludeMedia name="/media/editorial/timeslots/bottom_modules/click-to-call_bottom_module.html"/>
         </td>
         <td bgcolor="#cccccc" width="1" rowspan="4">
-          <img height="1" border="0" width="1" src="/media_stat/images/layout/dotted_line_w.gif"><br>
+          <img height="1" border="0" width="1" alt="" src="/media_stat/images/layout/dotted_line_w.gif"><br>
         </td>
         <td width="15" rowspan="2"><img height="1" border="0" width="15" alt="" src="/media_stat/images/layout/clear.gif"></td>	
 			<%}%>

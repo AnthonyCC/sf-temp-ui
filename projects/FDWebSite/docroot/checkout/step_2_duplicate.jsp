@@ -86,7 +86,7 @@ int incNextButtonCount = 0;
 	</tr>
 	<tr><td>
 		<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br>
-		<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_2_DUPLICATE_TOTAL%>" height="1" border="0"><br>
+		<img src="/media_stat/images/layout/dotted_line_w.gif" alt="" width="<%=W_CHECKOUT_STEP_2_DUPLICATE_TOTAL%>" height="1" border="0"><br>
 		<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br>
 		<div style="margin-bottom: 10px;">
 		    <div style="float: left;">
@@ -108,7 +108,7 @@ int incNextButtonCount = 0;
 
 	<%@ include file="/checkout/includes/i_footer_text.jspf" %></td></tr>
 </table>
-	<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_2_DUPLICATE_TOTAL%>" height="1" border="0"><br/>
+	<img src="/media_stat/images/layout/dotted_line_w.gif" alt="" width="<%=W_CHECKOUT_STEP_2_DUPLICATE_TOTAL%>" height="1" border="0"><br/>
 	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>

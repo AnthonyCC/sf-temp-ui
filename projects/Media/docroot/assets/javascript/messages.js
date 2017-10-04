@@ -478,7 +478,7 @@ SESSIONSTORAGE:
 						var closerCurAlert = messageData.alerts[e];
 
 						if ($(closerCurAlert.closeHandlerAddTo).find('.'+messageData.options.alertsCloseHandlerClass).length === 0) {
-							$(closerCurAlert.closeHandlerAddTo).append('<a href="#" class="'+messageData.options.alertsCloseHandlerClass+'" data-alertcloseids="'+curAlertCont.alertIds.join(',')+'" data-parentselector="'+messageData.options.alertsContainerClass+'"><span class="offscreen">close</span></a>');
+							$(closerCurAlert.closeHandlerAddTo).append('<a href="#" onclick="return false;" class="'+messageData.options.alertsCloseHandlerClass+'" data-alertcloseids="'+curAlertCont.alertIds.join(',')+'" data-parentselector="'+messageData.options.alertsContainerClass+'"><span class="offscreen">close</span></a>');
 
 							$(closerCurAlert.closeHandlerAddTo).find('.'+messageData.options.alertsCloseHandlerClass).on('click', messageData.options.alertsCloseHandler);
 

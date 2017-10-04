@@ -116,9 +116,9 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 							<img src="/media_stat/images/layout/clear.gif" width="<%=W_PERISHABLE_PRODUCT_CENTER_PADDING%>" alt="" height="10" border="0" hspace="0" vspace="0">
 							<table border="0" cellspacing="0" cellpadding="0" style="clear: both;">
 								<tr>
-									<td height="5"><img src="/media_stat/images/layout/top_left_curve.gif" width="6" height="6"></td>
+									<td height="5"><img src="/media_stat/images/layout/top_left_curve.gif" alt="" width="6" height="6"></td>
 									<td height="5" style="border-top: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_PERISHABLE_PRODUCT_LEFT-12 %>" height="1"></td>
-									<td height="5"><img src="/media_stat/images/layout/top_right_curve.gif" width="6" height="6"></td>
+									<td height="5"><img src="/media_stat/images/layout/top_right_curve.gif" alt="" width="6" height="6"></td>
 								</tr>
 								<tr>
 									<td colspan="3" align="center" valign="top">
@@ -128,9 +128,9 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 											<%if(shelfLifeList.isEmpty() && skuSize == 1) { %>
 												<tr valign="top">
 													<td><img src="/media_stat/images/layout/clear.gif" alt="" width="9" height="1"></td>
-													<td width="27"><img src="/media/images/site_pages/shelflife/days_<%=shelfLife%>.gif" width="27" height="27" border="0"></td>
+													<td width="27"><img src="/media/images/site_pages/shelflife/days_<%=shelfLife%>.gif" alt="" width="27" height="27" border="0"></td>
 													<td><img src="/media_stat/images/layout/clear.gif" alt="" width="9" height="1"></td>
-													<td  valign="top"><img src="/media/images/site_pages/shelflife/guarant_fresh_hdr_lg.gif" width="129" height="10"><br />
+													<td  valign="top"><img src="/media/images/site_pages/shelflife/guarant_fresh_hdr_lg.gif" alt="gaurenteed fresh" width="129" height="10"><br />
 													<span class="text12">at least </span><span class="title12"><%=shelfLife%> day<%= (Integer.parseInt(shelfLife) > 1) ? "s": ""%></span><span class="text12"><br/> from delivery</span></td>
 													<td><img src="/media_stat/images/layout/clear.gif" alt="" width="9" height="1"></td>
 												</tr>
@@ -160,9 +160,9 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 														<tr valign="top">
 														<% if(printHeader) { %>
 															<td><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="0"></td>
-															<td width="27"><img src="/media/images/site_pages/shelflife/days_<%=leastShelfDays%>.gif" width="27" height="27" border="0"></td>
+															<td width="27"><img src="/media/images/site_pages/shelflife/days_<%=leastShelfDays%>.gif" alt="" width="27" height="27" border="0"></td>
 															<td><img src="/media_stat/images/layout/clear.gif" alt="" width="9" height="0"></td>
-															<td  valign="top"><img src="/media/images/site_pages/shelflife/guarant_fresh_hdr_lg.gif" width="129" height="10">
+															<td  valign="top"><img src="/media/images/site_pages/shelflife/guarant_fresh_hdr_lg.gif" alt="guaranteed fresh" width="129" height="10">
 															<img src="/media_stat/images/layout/clear.gif" alt="" width="9" height="10">
 														<%
 															 printHeader = false;
@@ -191,9 +191,9 @@ final int W_PERISHABLE_PRODUCT_RIGHT = 369;
 									</td>
 								</tr>
 								<tr>
-									<td height="5"><img src="/media_stat/images/layout/bottom_left_curve.gif" width="6" height="6"></td>
+									<td height="5"><img src="/media_stat/images/layout/bottom_left_curve.gif" alt="" width="6" height="6"></td>
 									<td height="5" style="border-bottom: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
-									<td height="5"><img src="/media_stat/images/layout/bottom_right_curve.gif" width="6" height="6"></td>
+									<td height="5"><img src="/media_stat/images/layout/bottom_right_curve.gif" alt="" width="6" height="6"></td>
 								</tr>
 							</table>
 							<table width="<%=W_PERISHABLE_PRODUCT_LEFT%>">

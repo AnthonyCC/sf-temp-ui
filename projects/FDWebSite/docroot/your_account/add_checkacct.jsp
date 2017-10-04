@@ -41,7 +41,7 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
 </table>
 <%@ include file="/includes/ckt_acct/checkacct_fields.jspf" %>
 <br><br>
-	<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%= W_YA_ADD_CHECKACCT %>" HEIGHT="1" BORDER="0" VSPACE="6"><BR>
+	<IMG src="/media_stat/images/layout/dotted_line_w.gif" alt="" WIDTH="<%= W_YA_ADD_CHECKACCT %>" HEIGHT="1" BORDER="0" VSPACE="6"><BR>
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%= W_YA_ADD_CHECKACCT %>">
 	<TR VALIGN="TOP">
 				<TD WIDTH="<%= W_YA_ADD_CHECKACCT %>" ALIGN="RIGHT">
