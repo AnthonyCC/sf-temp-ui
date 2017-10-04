@@ -9,6 +9,7 @@ import javax.ejb.CreateException;
 
 import com.freshdirect.customer.ejb.ActivityLogHome;
 import com.freshdirect.customer.ejb.ErpCustomerHome;
+import com.freshdirect.customer.ejb.ErpCustomerInfoHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpFraudPreventionHome;
 import com.freshdirect.customer.ejb.ErpSaleHome;
@@ -20,6 +21,7 @@ import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.monitor.ejb.ErpMonitorHome;
 import com.freshdirect.monitor.ejb.ErpMonitorSB;
 import com.freshdirect.payment.ejb.PaymentManagerHome;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.temails.ejb.TEmailInfoHome;
 import com.freshdirect.fdstore.temails.ejb.TEmailInfoSB;
 
@@ -144,5 +146,13 @@ public class FDSessionBeanSupport extends SessionBeanSupport {
      */
     protected TEmailInfoHome getTMailerHome() {
         return LOCATOR.getTMailerHome();
+    }
+    
+    /**
+     * @see com.freshdirect.fdstore.customer.ejb.FDServiceLocator#getErpCustomerInfoHome()
+     * @return
+     */
+    protected ErpCustomerInfoHome getErpCustomerInfoHome(){
+    	return LOCATOR.getErpCustomerInfoHome();
     }
 }

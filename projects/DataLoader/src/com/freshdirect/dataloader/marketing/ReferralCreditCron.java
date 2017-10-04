@@ -42,6 +42,7 @@ import com.freshdirect.customer.ejb.ActivityLogHome;
 import com.freshdirect.customer.ejb.ActivityLogSB;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpCustomerHome;
+import com.freshdirect.customer.ejb.ErpCustomerInfoHome;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
@@ -318,6 +319,7 @@ public class ReferralCreditCron {
 
 	        MailerGatewayHome mHome = (MailerGatewayHome) ctx.lookup("freshdirect.mail.MailerGateway");
 	        ErpCustomerHome ecHome = (ErpCustomerHome) ctx.lookup( FDStoreProperties.getErpCustomerHome() );
+	        ErpCustomerInfoHome ecInfoHome = (ErpCustomerInfoHome) ctx.lookup( FDStoreProperties.getErpCustomerInfoHome() );
 	        LOGGER.info("Starting up now");
 			ReferralCreditCron cron = new ReferralCreditCron();
 			List<ReferralPromotionModel> sales  = null;
@@ -395,10 +397,12 @@ public class ReferralCreditCron {
 					    //send email to referral
 					    String subject = model.getReferralCreditEmailSubject();
 					    String message = model.getReferralCreditEmailText();
-					    ErpCustomerEB eb = ecHome.findByPrimaryKey(new PrimaryKey( referral_customer_id ));
-					    ErpCustomerInfoModel referralCm = eb.getCustomerInfo();
-					    ErpCustomerEB eb1 = ecHome.findByPrimaryKey(new PrimaryKey( model.getCustomerId() ));
-					    ErpCustomerInfoModel refereeCm = eb1.getCustomerInfo();
+					    /*ErpCustomerEB eb = ecHome.findByPrimaryKey(new PrimaryKey( referral_customer_id ));
+					    ErpCustomerInfoModel referralCm = eb.getCustomerInfo();*/
+					    ErpCustomerInfoModel referralCm = (ErpCustomerInfoModel)ecInfoHome.findByErpCustomerId(referral_customer_id).getModel();
+/*					    ErpCustomerEB eb1 = ecHome.findByPrimaryKey(new PrimaryKey( model.getCustomerId() ));
+					    ErpCustomerInfoModel refereeCm = eb1.getCustomerInfo();*/
+					    ErpCustomerInfoModel refereeCm = (ErpCustomerInfoModel)ecInfoHome.findByErpCustomerId(model.getCustomerId()).getModel();
 
 					    message = message.replace("<first name>", refereeCm.getFirstName());
 					    message = message.replace("<last name>", refereeCm.getLastName());

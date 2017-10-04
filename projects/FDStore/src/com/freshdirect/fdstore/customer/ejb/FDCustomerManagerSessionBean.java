@@ -1382,10 +1382,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public FDCustomerInfo getCustomerInfo(FDIdentity identity) throws FDResourceException {
 		try {
 			String erpCustomerPK = identity.getErpCustomerPK();
-			ErpCustomerEB eb = getErpCustomerHome().findByPrimaryKey(
+			/*ErpCustomerEB eb = getErpCustomerHome().findByPrimaryKey(
 					new PrimaryKey(erpCustomerPK));
 
-			ErpCustomerInfoModel erpCustomerInfo = eb.getCustomerInfo();
+			ErpCustomerInfoModel erpCustomerInfo = eb.getCustomerInfo();*/
+			ErpCustomerInfoModel erpCustomerInfo =(ErpCustomerInfoModel) getErpCustomerInfoHome().findByErpCustomerId(erpCustomerPK).getModel();
 			FDCustomerInfo fdInfo = new FDCustomerInfo(erpCustomerInfo
 					.getFirstName(), erpCustomerInfo.getLastName());
 			fdInfo.setHtmlEmail(!erpCustomerInfo.isEmailPlaintext());
@@ -1423,10 +1424,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public FDCustomerInfo getSOCustomerInfo(FDIdentity identity) throws FDResourceException {
 		try {
 			String erpCustomerPK = identity.getErpCustomerPK();
-			ErpCustomerEB eb = getErpCustomerHome().findByPrimaryKey(
+			/*ErpCustomerEB eb = getErpCustomerHome().findByPrimaryKey(
 					new PrimaryKey(erpCustomerPK));
 
-			ErpCustomerInfoModel erpCustomerInfo = eb.getCustomerInfo();
+			ErpCustomerInfoModel erpCustomerInfo = eb.getCustomerInfo();*/
+			ErpCustomerInfoModel erpCustomerInfo =(ErpCustomerInfoModel) getErpCustomerInfoHome().findByErpCustomerId(erpCustomerPK).getModel();
 			FDCustomerInfo fdInfo = new FDCustomerInfo(erpCustomerInfo
 					.getFirstName(), erpCustomerInfo.getLastName());
 			fdInfo.setHtmlEmail(!erpCustomerInfo.isEmailPlaintext());
