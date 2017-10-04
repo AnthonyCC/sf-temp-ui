@@ -593,9 +593,14 @@ public class ProductController extends BaseController {
     	if (!  FDStoreProperties.getEnableWebsiteMobileSameNutritionSoy()) {
     	return "";
     	}
+    	return "";
     	
-    	if (null==CSS_STRING || CSS_STRING.isEmpty()) CSS_STRING=getCSSFromFile();
-    	return CSS_STRING;
+    	/*
+    	 *Commenting this out as we are no longer inlining the css file directly into the call. 
+    	 */
+    	
+//    	if (null==CSS_STRING || CSS_STRING.isEmpty()) CSS_STRING=getCSSFromFile();
+//    	return CSS_STRING;
 
     }
 
@@ -635,7 +640,7 @@ public class ProductController extends BaseController {
             model.addObject("productImage", product.getImage(ImageType.DETAIL));
             model.addObject("mediaPath", MobileApiProperties.getMediaPath());
             model.addObject("request", request);
-            model.addObject("cssSource", getCSSasString() ) ;
+           // model.addObject("cssSource", getCSSasString() ) ;
             model.addObject("isFromMobile","true");
             
 
