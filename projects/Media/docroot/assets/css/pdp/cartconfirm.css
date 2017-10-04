@@ -71,6 +71,11 @@
 	font-weight: bold;
 }
 
+.pdp-cc .product-info-free{
+	font-weight: bold;
+	color: #CC0000;
+}
+
 .pdp-cc .cc-product-actions {
 	margin:0;
 }

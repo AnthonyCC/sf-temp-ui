@@ -81,6 +81,7 @@ A.list		    { line-height: 12px; }
 .groceryProductLinePrice 	{ font-size: 12px; font-weight: bold; color:#555; font-family: Arial, sans-serif;}
 .favoritePrice  			{ font-size: 11px; font-weight: bold; color:#333; line-height: 16px; font-family: Tahoma, Arial, sans-serif;}
 .productPageSinglePrice  	{ font-size: 17px; font-weight: bold; font-family: Verdana, Arial, sans-serif;}
+.productPageSinglePrice-free { font-size: 17px; font-weight: bold; font-family: Verdana, Arial, sans-serif; color: #CC0000;}
 .productPagePrimaryVarPrice { font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif;}
 .productPageSecondaryVarPrice 	  { font-size: 12px; font-weight: bold; font-family: Verdana, Arial, sans-serif;}
 .productPageSinglePriceUnit  	  { font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif;}

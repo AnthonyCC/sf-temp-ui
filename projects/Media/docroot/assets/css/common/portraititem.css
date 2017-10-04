@@ -80,6 +80,11 @@
   font-weight: bold;
 }
 
+.portrait-item-price .free-price,
+.pdp-price .free-price{
+	color: #CC0000;
+}
+
 .portrait-item-unit-price {
   display: block;
   font-size: 10px;
