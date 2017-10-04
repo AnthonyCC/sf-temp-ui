@@ -62,8 +62,8 @@ public class ErpAffiliateDAO implements EnumDAOI {
 		ResultSet rs = null;
 		Map m;
 		try {
-			ps.setString(1, affiliateCode);
 			ps = conn.prepareStatement(MERCHANT_QUERY);
+			ps.setString(1, affiliateCode);
 			rs = ps.executeQuery();
 			m = new HashMap();
 			while (rs.next()) {
