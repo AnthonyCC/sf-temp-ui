@@ -1084,7 +1084,7 @@ static {
         defaults.put(PROP_PRODUCT_CACHE_SIZE, "45000");
         defaults.put(PROP_ZONE_CACHE_SIZE, "10000");
         defaults.put(PROP_GRP_CACHE_SIZE, "10000");
-        defaults.put(PROP_MEDIACONTENT_CACHE_SIZE, "5000000");
+        defaults.put(PROP_MEDIACONTENT_CACHE_SIZE, "0");
         // mktadmin
         defaults.put(MKT_ADMIN_FILE_UPLOAD_SIZE, "2000");
 
@@ -1834,7 +1834,7 @@ static {
         defaults.put(PROP_MEALBUNDLE_CARTONVIEW_ENABLED, "true");
 
         defaults.put(PROP_QS_TOP_ITEMS_PERF_OPT_ENABLED, "true");
-        defaults.put(PROP_ZIP_CHECK_OVER_LAY_ENABLED, "true");
+        defaults.put(PROP_ZIP_CHECK_OVER_LAY_ENABLED, "false");
 
         /* APPDEV-5781 */
         defaults.put(PROP_OBSOLETE_MERGECARTPAGE_ENABLED, "false");
