@@ -21,7 +21,7 @@
  */
 {template .price autoescape="false"}
 	{if $price == 0}
-		<span class="free-price">Free</span>
+		<span class="free-price">FREE</span>
 	{elseif $wasPrice}
 		<span class="save-price">{call common.formatDecimalPrice}{param price:$price /}{/call}/{$scaleUnit}</span> <s>${$wasPrice}</s>
 	{else}
