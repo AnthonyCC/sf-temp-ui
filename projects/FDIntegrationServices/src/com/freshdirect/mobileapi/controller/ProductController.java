@@ -1,23 +1,15 @@
 package com.freshdirect.mobileapi.controller;
 
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpHeaders;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -27,8 +19,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.FDProduct;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -79,6 +69,8 @@ public class ProductController extends BaseController {
     }
 
     public static final String MORE_INFO_ACTION = "moreInfo";
+    
+    public static final String GET_PRODUCT_DETAIL = "getproductdetail";
     
     public static final String MULTIPLE_PRODUCT_DETAIL = "multipleproductdetail";
 
@@ -144,7 +136,7 @@ public class ProductController extends BaseController {
                 if (isExtraResponseRequested(request)) {
                     model = getPotatoProduct(model, request, response, user);
                 } else {
-                    model = getProduct(model, request, response, user);
+                    model = getProduct(model, request, response, user, GET_PRODUCT_DETAIL.equalsIgnoreCase(action));
                 }
             }
         } catch (ModelException e) {
@@ -412,7 +404,7 @@ public class ProductController extends BaseController {
      * @throws Exception
      */
 	private ModelAndView getProduct(ModelAndView model, HttpServletRequest request, HttpServletResponse response,
-			SessionUser user) throws ServiceException, FDException, JsonException, NoSessionException, ModelException {
+			SessionUser user, boolean isNewVersionForProductDetail) throws ServiceException, FDException, JsonException, NoSessionException, ModelException {
 		test1();
 		com.freshdirect.mobileapi.model.Product product = getProduct(request, response);
 
@@ -465,7 +457,7 @@ public class ProductController extends BaseController {
 		
 		// STORYappdev-6259 im setting the nutrition information from the
 		// same place as the website, the soy templates.
-		if (FDStoreProperties.getEnableWebsiteMobileSameNutritionSoy()) {
+		if (isNewVersionForProductDetail) {
 			ProductModel productModel = ContentFactory.getInstance().getProductByName(product.getCategoryId(),
 					product.getProductId());
 			((Product) responseMessage).setNutrition(NutritionInfoPanelRendererUtil.getSkuNutritionHtmlwithSoy(
@@ -578,45 +570,6 @@ public class ProductController extends BaseController {
     	
   
     
-	private String getCSSFromFile() {
-		
-		String fullPath = getServletContext().getRealPath("/assets/css/all_nutrition_display.css");
-		// you have to update the path swapping out the project we are in for
-		// the project with the css.
-		String updatedPath = fullPath.replace("FDIntegrationServices", "FDWebSite");
-
-		String line;
-		StringBuffer buf = new StringBuffer();
-		try {
-			BufferedReader reader = new BufferedReader(new FileReader(updatedPath));
-
-			while ((line = reader.readLine()) != null) {
-				buf.append(line);
-			}
-			reader.close();
-		} catch (FileNotFoundException ex) {
-			  LOGGER.error("FileNotFoundException WHILE trying to retrieve css file for nutritionpanel "+ ex);		
-			} catch (IOException e) {
-				  LOGGER.error("IOException WHILE trying to retrieve css file for nutritionpanel "+ e);	
-		}
-
-		return buf.toString();
-	}
-    private String getCSSasString( ) {
-    	if (!  FDStoreProperties.getEnableWebsiteMobileSameNutritionSoy()) {
-    	return "";
-    	}
-    	//return "";
-    	
-    	/*
-    	 *Commenting this out as we are no longer inlining the css file directly into the call. 
-    	 */
-    	
-    	if (null==cssString || cssString.isEmpty()) cssString=getCSSFromFile();
-    	return cssString;
-
-    }
-
     /**
      * @param model
      * @param request

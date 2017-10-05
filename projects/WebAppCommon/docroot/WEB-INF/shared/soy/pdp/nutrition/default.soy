@@ -204,21 +204,19 @@
 */
 {template .panelMobilApiProductDetail}
 <html>
-
 <head>
-
-
+	<link type="text/css" rel="stylesheet" href="https://www.freshdirect.com/assets/css/{$nutritionPanel.lowercasetype}_nutrition_display.css"  title="Product Info WebKit View Stylesheet" media="all"/>
 </head>
 <body>
 
 
-<div class="detail">
+	  <div class="detail">
 			<h3>Nutrition Facts</h3>
 			<div class="nutrition">
   
-            {call .panelMobilApi data="all"}{/call}
+            	{call .panelMobilApi data="all"}{/call}
             
-        </div>
+        	</div>
 		</div>
 	
 </body>
