@@ -6,8 +6,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -69,7 +72,7 @@ import freemarker.template.TemplateException;
 
 public class ProductController extends BaseController {
     private static Category LOGGER = LoggerFactory.getInstance(ProductController.class);
-    private static String  CSS_STRING = null;
+    private static String cssString=null;
 
     public enum WhatsGoodType {
         PRESIDEN_PICKS, BRAND_NAME_DEALS, BUTCHERS_BLOCK, PEAK_PRODUCE
@@ -410,7 +413,7 @@ public class ProductController extends BaseController {
      */
 	private ModelAndView getProduct(ModelAndView model, HttpServletRequest request, HttpServletResponse response,
 			SessionUser user) throws ServiceException, FDException, JsonException, NoSessionException, ModelException {
-
+		test1();
 		com.freshdirect.mobileapi.model.Product product = getProduct(request, response);
 
 		Message responseMessage;
@@ -565,6 +568,16 @@ public class ProductController extends BaseController {
     	return model;
     }
     
+    private void test1(){
+    	//getResourceAsStream("all_nutrition_display.css")
+    	System.err.println("test1");
+    	String foo = getServletContext().getRealPath("/");
+    	 System.out.println(  "SERVLET CONTEXT PATH SERVLET CONTEXT PAT SERVLET CONTEXT PAT SERVLET CONTEXT PAT " + foo);
+      	
+    	}
+    	
+  
+    
 	private String getCSSFromFile() {
 		
 		String fullPath = getServletContext().getRealPath("/assets/css/all_nutrition_display.css");
@@ -590,17 +603,17 @@ public class ProductController extends BaseController {
 		return buf.toString();
 	}
     private String getCSSasString( ) {
-//    	if (!  FDStoreProperties.getEnableWebsiteMobileSameNutritionSoy()) {
-//    	return "";
-//    	}
+    	if (!  FDStoreProperties.getEnableWebsiteMobileSameNutritionSoy()) {
     	return "";
+    	}
+    	//return "";
     	
     	/*
     	 *Commenting this out as we are no longer inlining the css file directly into the call. 
     	 */
     	
-//    	if (null==CSS_STRING || CSS_STRING.isEmpty()) CSS_STRING=getCSSFromFile();
-//    	return CSS_STRING;
+    	if (null==cssString || cssString.isEmpty()) cssString=getCSSFromFile();
+    	return cssString;
 
     }
 
@@ -633,7 +646,8 @@ public class ProductController extends BaseController {
             //data = new HtmlResponse();
             response.setContentType("text/html");
             ServletContext context = getServletContext();
-            ProductMoreInfo productMoreInfo = new ProductMoreInfo(product, productModel, uzer, context );
+           // ProductMoreInfo productMoreInfo = new ProductMoreInfo(product, productModel, uzer, context );
+            ProductMoreInfo productMoreInfo = new ProductMoreInfo(product);
 
             model.addObject("moreInfo", productMoreInfo);
             model.addObject("product", product);
