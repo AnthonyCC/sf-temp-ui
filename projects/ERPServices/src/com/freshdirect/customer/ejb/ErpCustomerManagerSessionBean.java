@@ -108,6 +108,7 @@ import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
+import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
@@ -320,8 +321,10 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			//
 			// Prevent deactivated customers from placing orders
 			//
-			ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(erpCustomerPk);
-			if (!customerEB.isActive()) {
+/*			ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(erpCustomerPk);
+			if (!customerEB.isActive()) {*/
+			//[OPT-81] -Optimize whether a customer is active or not check. 
+			if(!isCustomerActive(erpCustomerPk.getId())) {
 				SessionContext ctx = this.getSessionContext();
 				ctx.setRollbackOnly();
 				throw new ErpFraudException(EnumFraudReason.DEACTIVATED_ACCOUNT);
@@ -371,9 +374,9 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			return salePK;
 		} catch (CreateException ce) {
 			throw new EJBException(ce);
-		} catch (FinderException fe) {
+		} /*catch (FinderException fe) {
 			throw new EJBException(fe);
-		} catch (RemoteException re) {
+		} */catch (RemoteException re) {
 			throw new EJBException(re);
 		}
 	}
@@ -2183,7 +2186,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	
 	
 	public boolean isCustomerActive(PrimaryKey pk) {
-		try {
+		/*try {
 			// find relevant customer
 			ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(pk);
 			return customerEB.isActive();						
@@ -2193,7 +2196,8 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (FinderException ex) {
 			LOGGER.warn(ex);
 			throw new EJBException(ex);
-		}
+		}*/
+		return null !=pk ? isCustomerActive(pk.getId()) : false;
 	}
 	
 	/**
@@ -3256,5 +3260,18 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				LOGGER.warn("SQLException while cleaning up", se);
 			}
 		}
+	}
+	
+	private boolean isCustomerActive(String erpCustomerId) {
+		Connection conn = null;
+		try {
+			conn = this.getConnection();
+			return ErpCustomerDAO.isCustomerActive(conn, erpCustomerId);
+		} catch (SQLException se) {
+			LOGGER.warn("SQLException in isCustomerActive: "+erpCustomerId, se);
+		} finally {
+			DaoUtil.close(conn);
+		}
+		return false;
 	}
 }
