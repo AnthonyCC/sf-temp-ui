@@ -95,6 +95,7 @@ import com.freshdirect.ecommerce.data.erp.inventory.RestrictedInfoParam;
 import com.freshdirect.ecommerce.data.erp.material.ErpCharacteristicValuePriceData;
 import com.freshdirect.ecommerce.data.erp.material.ErpClassData;
 import com.freshdirect.ecommerce.data.erp.material.ErpMaterialData;
+import com.freshdirect.ecommerce.data.erp.material.ErpMaterialInfoModelData;
 import com.freshdirect.ecommerce.data.erp.material.ErpMaterialSalesAreaData;
 import com.freshdirect.ecommerce.data.erp.material.ErpPlantMaterialData;
 import com.freshdirect.ecommerce.data.erp.material.ErpSalesUnitData;
@@ -144,6 +145,7 @@ import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
 import com.freshdirect.erp.model.ErpClassModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.erp.model.ErpMaterialBatchHistoryModel;
+import com.freshdirect.erp.model.ErpMaterialInfoModel;
 import com.freshdirect.erp.model.ErpMaterialModel;
 import com.freshdirect.erp.model.ErpMaterialPriceModel;
 import com.freshdirect.erp.model.ErpMaterialSalesAreaModel;
@@ -3039,64 +3041,82 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	
 	@Override
 	public Collection findMaterialsByBatch(int batchNum) throws RemoteException {
-		Response<Collection> response = null;
+		Response<Collection<ErpMaterialInfoModelData>> response = null;
+		Collection<ErpMaterialInfoModel> erpModelList = new ArrayList();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_MATERIALINFO_VERSION)+"/"+batchNum, new TypeReference<Response<Collection>>() {});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_MATERIALINFO_VERSION)+"/"+batchNum, new TypeReference<Response<Collection<ErpMaterialInfoModelData>>>() {});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
-			
+			for(ErpMaterialInfoModelData data: response.getData()){
+				ErpMaterialInfoModel model = ModelConverter.convertErpMaterialInfoDataToModel(data);
+				erpModelList.add(model);
+			}
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		return response.getData();
+		return erpModelList;
 	}
 	@Override
 	public Collection findMaterialsBySapId(String sapId) throws RemoteException {
-		Response<Collection> response = null;
+		Response<Collection<ErpMaterialInfoModelData>> response = null;
+		Collection<ErpMaterialInfoModel> erpModelList = new ArrayList();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_MATERIALINFO_SAPID)+"/"+sapId, new TypeReference<Response<Collection>>() {});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_MATERIALINFO_SAPID)+"/"+sapId, new TypeReference<Response<Collection<ErpMaterialInfoModelData>>>() {});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
+			}
+			for(ErpMaterialInfoModelData data: response.getData()){
+				ErpMaterialInfoModel model = ModelConverter.convertErpMaterialInfoDataToModel(data);
+				erpModelList.add(model);
 			}
 			
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		return response.getData();
+		return erpModelList;
 	}
 	@Override
 	public Collection findMaterialsBySku(String skuCode) throws RemoteException {
-		Response<Collection> response = null;
+		Response<Collection<ErpMaterialInfoModelData>> response = null;
+		Collection<ErpMaterialInfoModel> erpModelList = new ArrayList();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_MATERIALINFO_SKUCODE)+"/"+skuCode, new TypeReference<Response<Collection>>() {});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_MATERIALINFO_SKUCODE)+"/"+skuCode, new TypeReference<Response<Collection<ErpMaterialInfoModelData>>>() {});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
-			
+			for(ErpMaterialInfoModelData data: response.getData()){
+				ErpMaterialInfoModel model = ModelConverter.convertErpMaterialInfoDataToModel(data);
+				erpModelList.add(model);
+			}
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		return response.getData();
+		return erpModelList;
 	}
 	@Override
 	public Collection findMaterialsByDescription(String description) throws RemoteException {
-		Response<Collection> response = null;
+		Response<Collection<ErpMaterialInfoModelData>> response = null;
+		Collection<ErpMaterialInfoModel> erpModelList = new ArrayList();
 		try {
 			
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_MATERIALINFO_DESCRIPTION)+"/"+URLEncoder.encode(description), new TypeReference<Response<Collection>>() {});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_MATERIALINFO_DESCRIPTION)+"/"+URLEncoder.encode(description), new TypeReference<Response<Collection<ErpMaterialInfoModelData>>>() {});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
+			}
+			for(ErpMaterialInfoModelData data: response.getData()){
+				ErpMaterialInfoModel model = ModelConverter.convertErpMaterialInfoDataToModel(data);
+				erpModelList.add(model);
 			}
 			
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		return response.getData();
+		return erpModelList;
 	}
 	@Override
 	public Collection findMaterialsByCharacteristic(String characteristic) throws RemoteException {
@@ -3118,19 +3138,23 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 
 	@Override
 	public Collection findMaterialsByClass(String className) throws RemoteException {
-		Response<Collection> response = null;
-		Collection erpMaterialInfoModels;
+		Response<Collection<ErpMaterialInfoModelData>> response = null;
+		Collection<ErpMaterialInfoModel> erpModelList = new ArrayList();
 		try {
 			className = className.replace('_', '-');
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_MATERIALSINFO_CLASS)+"/"+className,  new TypeReference<Response<Collection>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_MATERIALSINFO_CLASS)+"/"+className,  new TypeReference<Response<Collection<ErpMaterialInfoModelData>>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
+			}
+			for(ErpMaterialInfoModelData data: response.getData()){
+				ErpMaterialInfoModel model = ModelConverter.convertErpMaterialInfoDataToModel(data);
+				erpModelList.add(model);
 			}
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		return response.getData();
+		return erpModelList;
 	}
 	
 	@Override

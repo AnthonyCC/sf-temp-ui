@@ -91,11 +91,13 @@ import com.freshdirect.ecommerce.data.enums.ErpAffiliateData;
 import com.freshdirect.ecommerce.data.erp.coo.CountryOfOriginData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpInventoryData;
 import com.freshdirect.ecommerce.data.erp.inventory.ErpInventoryEntryData;
+import com.freshdirect.ecommerce.data.erp.material.AttributeCollectionData;
 import com.freshdirect.ecommerce.data.erp.material.ErpCharacteristicData;
 import com.freshdirect.ecommerce.data.erp.material.ErpCharacteristicValueData;
 import com.freshdirect.ecommerce.data.erp.material.ErpCharacteristicValuePriceData;
 import com.freshdirect.ecommerce.data.erp.material.ErpClassData;
 import com.freshdirect.ecommerce.data.erp.material.ErpMaterialData;
+import com.freshdirect.ecommerce.data.erp.material.ErpMaterialInfoModelData;
 import com.freshdirect.ecommerce.data.erp.material.ErpMaterialSalesAreaData;
 import com.freshdirect.ecommerce.data.erp.material.ErpPlantMaterialData;
 import com.freshdirect.ecommerce.data.erp.material.ErpSalesUnitData;
@@ -158,6 +160,7 @@ import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
 import com.freshdirect.erp.model.ErpClassModel;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
+import com.freshdirect.erp.model.ErpMaterialInfoModel;
 import com.freshdirect.erp.model.ErpMaterialModel;
 import com.freshdirect.erp.model.ErpMaterialPriceModel;
 import com.freshdirect.erp.model.ErpMaterialSalesAreaModel;
@@ -197,6 +200,7 @@ import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionDetailModel;
 import com.freshdirect.fdstore.ecoupon.model.ErpCouponTransactionModel;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityContext;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityLogModel;
+import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.event.FDRecommendationEvent;
 import com.freshdirect.framework.mail.EmailI;
 import com.freshdirect.framework.mail.FTLEmailI;
@@ -2193,6 +2197,25 @@ public class ModelConverter {
 		logData.setTransType(log.getTransType().getName());
 		
 		return logData;
+	}
+
+	public static ErpMaterialInfoModel convertErpMaterialInfoDataToModel(
+			ErpMaterialInfoModelData data) {
+		ErpMaterialInfoModel model = new ErpMaterialInfoModel();
+		model.setAttributes(buildAttributes(data.getAttributes()));
+		model.setDescription(data.getDescription());
+		model.setPK(new PrimaryKey(data.getPk()));
+		model.setId(data.getSapId());
+		model.setSapId(data.getSapId());
+		return model;
+	}
+
+	public  static AttributeCollection buildAttributes(
+			AttributeCollectionData attribute) {
+		if(attribute==null)
+			return null;
+		AttributeCollection attributes = new AttributeCollection(attribute.getAttributes());
+		return attributes;
 	}
 }
 
