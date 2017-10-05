@@ -1,3 +1,4 @@
+<%@tag import="com.freshdirect.fdstore.EnumEStoreId"%>
 <%@tag import="com.freshdirect.webapp.util.StandingOrderHelper"
 	import="com.freshdirect.fdstore.promotion.SignupDiscountRule"
 	import="com.freshdirect.fdstore.customer.FDUserI"
@@ -31,11 +32,13 @@ attribute name="modifyOrderAlert" required="true" rtexprvalue="true" type="java.
 							}
 							validPendingOrders.addAll(user.getPendingOrders());
 							Map<String,String> soUpcomingDelivery = new HashMap<String,String>();
-							
-							Collection<FDStandingOrder> sos = FDStandingOrdersManager.getInstance().loadCustomerNewStandingOrders( user.getIdentity());
-							sos = FDStandingOrdersManager.getInstance().getAllSOUpcomingOrders( user, sos);
-							for(FDStandingOrder fd:sos){
-								soUpcomingDelivery.put(fd.getUpcomingDelivery().getErpSalesId(), fd.getCustomerListName());
+							//Only for FD.
+							if(null!=user.getUserContext() && EnumEStoreId.FD.equals(user.getUserContext().getStoreContext().getEStoreId())) {
+								Collection<FDStandingOrder> sos = FDStandingOrdersManager.getInstance().loadCustomerNewStandingOrders( user.getIdentity());
+								sos = FDStandingOrdersManager.getInstance().getAllSOUpcomingOrders( user, sos);
+								for(FDStandingOrder fd:sos){
+									soUpcomingDelivery.put(fd.getUpcomingDelivery().getErpSalesId(), fd.getCustomerListName());
+								}
 							}
 							//sort pending orders based on delivery date (the closer date goes first)
 							Collections.sort(validPendingOrders, new DeliveryDateComparator());							
