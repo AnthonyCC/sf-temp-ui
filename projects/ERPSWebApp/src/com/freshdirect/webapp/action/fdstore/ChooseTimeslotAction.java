@@ -1,9 +1,11 @@
 package com.freshdirect.webapp.action.fdstore;
 
 import java.text.ParseException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.servlet.jsp.JspException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
@@ -26,7 +28,6 @@ import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
-import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.FDUserUtil;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
@@ -39,8 +40,10 @@ import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.webapp.action.WebActionSupport;
+import com.freshdirect.webapp.ajax.expresscheckout.cart.service.FDShoppingCartService;
 import com.freshdirect.webapp.taglib.fdstore.AddressUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
+import com.freshdirect.webapp.taglib.fdstore.FDShoppingCartControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.util.StandingOrderHelper;
@@ -188,7 +191,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 					}
 					}
 					
-					call_zoneswitch_logic( previousZone, cart, user, erpAddress);
+					call_zoneswitch_logic( previousZone, cart, user, erpAddress, session);
 					
 				}catch (ReservationUnavailableException re) {
 							actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_CHECKOUT_TIMESLOT_NA));
@@ -213,7 +216,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 	 * @throws FDResourceException
 	 */
 	private static void call_zoneswitch_logic(FDDeliveryZoneInfo previousZone,
-			FDCartModel cart, FDSessionUser user, ErpAddressModel erpAddress)
+			FDCartModel cart, FDSessionUser user, ErpAddressModel erpAddress, HttpSession session)
 			throws FDResourceException {
 		boolean isZoneInfoNotMatched = ((previousZone != null
 				&& cart.getZoneInfo() != null && !previousZone.getZoneCode()
@@ -245,6 +248,16 @@ public class ChooseTimeslotAction extends WebActionSupport {
 			} catch (FDInvalidConfigurationException e) {
 				e.printStackTrace();
 			}
+		}
+		
+		try {
+			List<Integer> removeIds = FDShoppingCartControllerTag.doCartCleanup(user, cart);
+			if(removeIds!=null && removeIds.size()>0){
+				FDShoppingCartService.defaultService().updateShoppingCart(user, session);
+			}
+		} catch (JspException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
