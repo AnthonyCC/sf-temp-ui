@@ -291,7 +291,7 @@ request.setAttribute("noyui", true);
       });      
     </script>
     <% /* allow data to be output for debugging */
-    if ( "true".equalsIgnoreCase(RequestUtil.getValueFromCookie(request, "developer")) ) {
+    if ( !mobWeb && "true".equalsIgnoreCase(RequestUtil.getValueFromCookie(request, "developer")) ) {
     	%><script>FreshDirect.homepage.data = $jq.extend(FreshDirect.homepage.data,<fd:ToJSON object="${welcomepagePotato}" noHeaders="true"/>);</script><%
     } %>
 </tmpl:put>

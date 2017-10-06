@@ -1,3 +1,4 @@
+/* requires jquery, jquery.mmenu */
 var API;
 (function ($) {
 	$(document).ready(function() {

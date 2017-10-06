@@ -1461,7 +1461,7 @@ function doOverlayWindow(olURL, titleVar) {
 
 	var dialogWindowResizeTimer;
 	var dialogDocReady = false;
-	if (window['$jq']) { //make sure jQuery is available
+	if (window['$jq'] && $jq.ui) { //make sure jQuery is available, and ui (for dialog)
 		$jq(document).ready(function () { dialogDocReady = true });
 		$jq(window).resize(function() {
 			clearTimeout(dialogWindowResizeTimer);
@@ -1530,7 +1530,7 @@ function checkBatch() {
 	}
 
 /* add coupon tooltips */
-if ($jq) {
+if ($jq && $jq.ui) { /* requires jquery ui */
 	$jq(function() {
 		var currentlyPositionning;
 		$jq.ui.position.ttFlipCustom = {

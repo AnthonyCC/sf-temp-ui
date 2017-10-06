@@ -2307,10 +2307,6 @@ li.cleanli .gen-arrow {
 		word-wrap: break-word;
 		word-break: break-word;
 	}
-/* fix smart banner */
-	#smartbanner.android {
-		background: #3d3d3d url('/assets/css/common/jquery-ui_base/images/ui-bg_diagonals-thick_20_666666_40x40.png');
-	}
 	
 	.mm-page .manage-account-container{
 		background: #F2F0EF;

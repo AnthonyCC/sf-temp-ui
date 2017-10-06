@@ -762,7 +762,10 @@ SESSIONSTORAGE:
       return $('body').messages('add', id, isAlert, alertOpts);
     }
 
-    fd.modules.common.utils.register("messages", "add", addMessage, fd);
+    /* removed requirement to register for mobweb index optimization testing */
+    if (fd && fd.modules && fd.modules.common && fd.modules.common.utils) {
+    	fd.modules.common.utils.register("messages", "add", addMessage, fd);
+    }
 
 	});
 })(FreshDirect);
