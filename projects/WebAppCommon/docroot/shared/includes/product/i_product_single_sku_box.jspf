@@ -88,7 +88,7 @@
 	                	<% if (_defPrice.equals("$0.00")){ %>
 	                		<span class="productPageSinglePrice-free">FREE</span>
 	                	<% } else { %>
-	                		<span class="productPageSinglePrice" style="<%= _isOnSale ? "color: #C94747" : "" %>">xxx<%= _defPrice %>xxx</span><span class="productPageSinglePriceUnit" style="<%= _isOnSale ? "color: #C94747" : "" %>">/<%=productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></span>
+	                		<span class="productPageSinglePrice" style="<%= _isOnSale ? "color: #C94747" : "" %>"><%= _defPrice %></span><span class="productPageSinglePriceUnit" style="<%= _isOnSale ? "color: #C94747" : "" %>">/<%=productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></span>
 	                	<% } %>
 					<% if ( _isOnSale ) { %>
                         <div class="text11nb" style="padding-bottom: 1em">(<font class="text11nb lineThrough"><%= currencyFormatter.format(_uZoneId.getSellingPrice()) %></font>)</div>
