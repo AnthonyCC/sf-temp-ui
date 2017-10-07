@@ -60,8 +60,6 @@
   	<tmpl:get name='facebookmeta'/>
 
     <tmpl:get name="extraCss" />
-    <jsp:include page="/common/template/includes/ad_server.jsp" flush="false" />
-    <tmpl:get name="extraJs" />
     <tmpl:get name='nutritionCss'/>
 
 		<%-- Feature version switcher --%>
@@ -124,10 +122,55 @@
 							fd.user.masquerade = true;
 						<% } %>
 					<% } %>
+					
+				<%-- updateOAS code --%>
+					function OAS_SCRIPT_URL(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos, OAS_query) {
+						return OAS_url + 'adstream_mjx.ads/' +
+								OAS_sitepage + '/1' + OAS_rns + '@' +
+								OAS_listpos + '?' + OAS_query;
+					}
+	
+					function done(listPos) {
+						var $ = $jq;
+						listPos.forEach(function (pos) {
+							var selector = "#oas_"+pos+",#oas_b_"+pos;
+							$(selector).each(function(i,e){
+								$(e).html('');
+								postscribe($(e), '<sc'+'ript>OAS_RICH("'+pos+'");</scr'+'ipt>', {
+									error: function () {},
+									done: function (pos) {
+										$.each($('a[href*="/default/empty.gif/"]'), function(ii, ee) {
+											$(ee).attr("tabindex", "-1");
+											$(ee).attr("role", "presentation");
+											$(ee).attr("aria-hidden", "true");
+	
+											if (fd.utils.isDeveloper()) {
+												console.log('updateOAS: done', pos, $(ee));
+											}
+										});
+									}
+								});
+							});
+						});
+					}
+	
+					function updateOAS(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos, OAS_query) {
+						var scriptUrl = OAS_SCRIPT_URL(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos.join(','), OAS_query);
+	
+						postscribe(document.body, '<sc'+'ript src="'+scriptUrl+'"></scr'+'ipt>', {
+							done: function () {
+							  done(OAS_listpos);
+							}, error: function () {}
+						});
+					}
+					FreshDirect.updateOAS = {};
+					FreshDirect.updateOAS.done = done;
 			}());
 		</script>
 		<jwr:script src="/mobileweb_index_optimized_everythingelse.js" useRandomParam="false" />
+    	<jsp:include page="/common/template/includes/ad_server.jsp" flush="false" />
 
+    	<tmpl:get name="extraJs" />
 	</head>
 <!--[if lt IE 9]><body class="ie8" data-ismobweb="true" <%= (isCheckout) ? "data-ec-page=" : "data-not-ec=" %>"<tmpl:get name="ecpage" />" data-printdata="<tmpl:get name='printdata'/>" data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>" <% if (isReorder) {%> data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"<% } %>><![endif]-->
 <!--[if gt IE 8]><body data-ismobweb="true" <%= (isCheckout) ? "data-ec-page=" : "data-not-ec=" %>"<tmpl:get name="ecpage" />" data-printdata="<tmpl:get name='printdata'/>" data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>" <% if (isReorder) {%> data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"<% } %>><![endif]-->
