@@ -165,6 +165,27 @@
 					}
 					FreshDirect.updateOAS = {};
 					FreshDirect.updateOAS.done = done;
+					
+					<%-- copied from utils.js for dfp.js --%>
+					fd.utils = fd.utils || {};
+					fd.utils.getParameters = function (source) {
+					  source = source || window.location.search.slice(1);
+					
+					  if (!source) {
+					    return null;
+					  }
+					
+					  var vars = {}, hash,
+					      hashes = source.split('&');
+					
+					  hashes.forEach(function (h) {
+					    hash = h.split('=');
+					    vars[hash[0]] = window.decodeURIComponent(hash[1]);
+					  });
+					
+					  return vars;
+					};
+					
 			}());
 		</script>
 		<jwr:script src="/mobileweb_index_optimized_everythingelse.js" useRandomParam="false" />
@@ -323,9 +344,6 @@
 
     <tmpl:get name="extraJsFooter" />
 
-	<script><%-- manually fire this for now, this will need changing --%>
-		OAS_DONE('SystemMessage');
-	</script>
 	<% if(fdTcAgree!=null&&!fdTcAgree.booleanValue()){ %>
 		<script>
 			$jq(document).on('ready',  function() {
@@ -344,5 +362,13 @@
 			});
 		})($jq);
 	</script>
+   	<%-- //
+   		we can't bundle dfp.js because it needs the global DFP_query (set in ad_server.jsp) before it's loaded
+   		it also needs to be after all the ad positions, since it fires on parse and selects all spots
+   		added to a footer bundle to minimize impact
+   	// --%>
+   	<% if (FDStoreProperties.isDfpEnabled()) { /* only load if needed */ %>
+		<jwr:script src="/mobileweb_index_optimized_footer.js" useRandomParam="false" defer="true" async="true" />
+	<% } %>
   </body>
 </html>
