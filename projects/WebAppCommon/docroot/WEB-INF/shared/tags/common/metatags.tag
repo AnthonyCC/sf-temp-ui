@@ -105,7 +105,6 @@
 <link rel="dns-prefetch" href="//youtube.com" />
 <link rel="dns-prefetch" href="//4394129.fls.doubleclick.net" />
 <link rel="dns-prefetch" href="//insight.adsrvr.org" />
-<link rel="stylesheet" href="/assets/css/jquery.smartbanner.css" type="text/css" media="screen">
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="apple-touch-icon-precomposed" href="https://freshdirect.com/media/mobile/mobile_web/images/App-Icon.jpg" />
 <link rel="apple-touch-icon" sizes="57x57" href="https://freshdirect.com/media/mobile/mobile_web/images/App-Icon.jpg" />
