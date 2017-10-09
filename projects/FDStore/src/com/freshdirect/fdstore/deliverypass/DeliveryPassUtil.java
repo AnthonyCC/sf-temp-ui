@@ -181,7 +181,8 @@ public class DeliveryPassUtil {
 				
 				//Order lines were cleared from the cart after submission. So pull
 				//it out from dlvpass info in user object.
-				isUnlimited = user.getDlvPassInfo().isUnlimited();
+				if(user!=null&&user.getDlvPassInfo()!=null)
+					isUnlimited = user.getDlvPassInfo().isUnlimited();
 			} else {
 				Iterator iter = orderLines.iterator();
 				while(iter.hasNext()){
