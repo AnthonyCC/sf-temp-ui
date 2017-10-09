@@ -164,8 +164,8 @@
 							FreshDirect<br/>
 							<xsl:choose><xsl:when test="order/deliveryType != 'C'">Customer Service Group</xsl:when><xsl:otherwise>Corporate Services Group</xsl:otherwise></xsl:choose></p>
 							
-							<xsl:if test="customer/numberOfOrders &gt; 1">
-									<p><a target="_blank" href="https://refer.freshdirect.com/orderconfirmemail2525"><img src="https://www.freshdirect.com/media/images/promotions/raf/RAF_email_216x42.jpg" alt="Refer-A-Friend" /></a></p>
+							<xsl:if test="order/deliveryType == 'H' and customer/numberOfOrders &gt; 1">
+									<p><a target="_blank" href="https://refer.freshdirect.com/orderconfirmemail2525"><img src="https://www.freshdirect.com/media/images/promotions/raf/RAF_email_216x42.jpg" alt="Refer A Friend" /></a></p>
 							</xsl:if>
 
 							<p><xsl:call-template name="h_order_info_v1"/></p>

@@ -370,7 +370,9 @@
 					</xsl:otherwise>
 				</xsl:choose>
 		
-				<p><a target="_blank" href="https://refer.freshdirect.com/orderreceiptemail2525"><img src="https://www.freshdirect.com/media/images/promotions/raf/RAF_email_216x42.jpg" alt="Refer A Friend" /></a></p>
+				<xsl:if test="order/deliveryType == 'H'">
+					<p><a target="_blank" href="https://refer.freshdirect.com/orderreceiptemail2525"><img src="https://www.freshdirect.com/media/images/promotions/raf/RAF_email_216x42.jpg" alt="Refer A Friend" /></a></p>
+				</xsl:if>
 				
 				<p><xsl:call-template name="h_invoice_info_v1"/></p>
 		
