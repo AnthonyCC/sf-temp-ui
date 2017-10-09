@@ -57,12 +57,13 @@ request.setAttribute("noyui", true);
 
   boolean isCorpotateUser = user.isCorporateUser();
   boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+  boolean mobWebOptimizedIndex = ( FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobwebindexopt, user) || "true".equalsIgnoreCase(request.getParameter("mobwebindexopt")) ) ? true : false;
 
 	request.setAttribute("sitePage", "www.freshdirect.com/index.jsp");
 
 	String pageTemplate = "/common/template/no_shell_optimized.jsp"; //default
 	if (mobWeb) {
-		if ( "true".equalsIgnoreCase(request.getParameter("opt")) ) { //allow opt for live testing
+		if ( mobWebOptimizedIndex ) { //allow opt for live testing
 			pageTemplate = "/common/template/mobileWeb_index_optimized.jsp"; //mobWeb template (20170913 batchley - only index should use optimized for now)
 		} else {
 			pageTemplate = "/common/template/mobileWeb.jsp"; //default

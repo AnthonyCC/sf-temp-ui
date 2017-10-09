@@ -1599,6 +1599,7 @@ static {
         defaults.put("feature.rollout.browseflyoutrecommenders", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.quickshop2_2", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.mobweb", "GLOBAL:ENABLED,true;");
+        defaults.put("feature.rollout.mobwebindexopt", "GLOBAL:ENABLED,true;");
         // defaults.put("feature.rollout.sociallogin", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.printinvoice", "GLOBAL:ENABLED,true;");
 
