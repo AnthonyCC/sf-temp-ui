@@ -11,6 +11,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -20,6 +21,7 @@ import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.http.HttpService;
 
 public class GoogleAnalyticsReportingService {
@@ -27,6 +29,8 @@ public class GoogleAnalyticsReportingService {
     private static final GoogleAnalyticsReportingService INSTANCE = new GoogleAnalyticsReportingService();
     public static final String GOOGLE_ANALYTICS_HOST = "https://www.google-analytics.com/collect";
     public static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36";
+    private static final Logger LOGGER = LoggerFactory.getInstance(GoogleAnalyticsReportingService.class);
+    private static final Integer GA_QUANTITY_LIMIT = 200;
 
     private GoogleAnalyticsReportingService() {
     }
@@ -95,7 +99,7 @@ public class GoogleAnalyticsReportingService {
 		    params.add(new BasicNameValuePair(productNameKeyStarter + "br", product.getPrimaryBrandName()));
             params.add(new BasicNameValuePair(productNameKeyStarter + "va", product.getContentName()));
             params.add(new BasicNameValuePair(productNameKeyStarter + "pr", Double.toString(product.getPriceCalculator().getDefaultPriceValue())));
-            params.add(new BasicNameValuePair(productNameKeyStarter + "qt", Double.toString(cartLine.getQuantity())));
+            params.add(new BasicNameValuePair(productNameKeyStarter + "qt", roundQuantity(cartLine.getQuantity())));
 		    params.add(new BasicNameValuePair(productNameKeyStarter + "ps", Integer.toString(productIndex)));
 		    params.add(new BasicNameValuePair(productNameKeyStarter + "cd3", Boolean.toString(product.isNew())));
             params.add(new BasicNameValuePair(productNameKeyStarter + "cd6", Boolean.toString(true)));
@@ -130,6 +134,21 @@ public class GoogleAnalyticsReportingService {
             }
         }
         return result;
+    }
+
+    private String roundQuantity(double quantity) {
+
+        if (quantity < 0) {
+            quantity = Math.floor(quantity);
+            quantity = (quantity < -GA_QUANTITY_LIMIT) ? -GA_QUANTITY_LIMIT : quantity;
+        } else if (quantity > 0) {
+            quantity = Math.ceil(quantity);
+            quantity = (quantity > GA_QUANTITY_LIMIT) ? GA_QUANTITY_LIMIT : quantity;
+            } else {
+            quantity = 1d;
+            }
+
+        return Integer.toString((int) quantity);
     }
 
 }
