@@ -583,6 +583,7 @@ public class SinglePageCheckoutFacade {
 		} catch (FDResourceException e) {
 			e.printStackTrace();
 		}
+        successPageData.setDeliveryType(order.getDeliveryType().getCode());
         if(StandingOrderHelper.isSO3StandingOrder(user)){
         	populateSOActivationSuccess(successPageData,user);
         }

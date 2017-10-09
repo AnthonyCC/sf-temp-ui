@@ -10,6 +10,7 @@ public class SuccessPageData {
     private String soOrderDate;
     private boolean isOrderModifiable;
     private boolean hasSettledOrder=false;
+    private String deliveryType;
 
     // START SO 3.1 ACTIVATION SUCCESS PAGE
 
@@ -67,6 +68,15 @@ public class SuccessPageData {
 		this.hasSettledOrder = hasSettledOrder;
 	}
     
+	public String getDeliveryType() {
+		return deliveryType;
+	}
+
+	public void setDeliveryType(String deliveryType) {
+		this.deliveryType = deliveryType;
+	}
+
+	
     /**
      * @return the soName
      */
@@ -184,6 +194,5 @@ public class SuccessPageData {
 	public void setSoDeliveryDay(String soDeliveryDay) {
 		this.soDeliveryDay = soDeliveryDay;
 	}
-
     
 }
