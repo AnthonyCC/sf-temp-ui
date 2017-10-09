@@ -107,7 +107,7 @@ public class FDEmailFactory {
 				}
 			} else {
 				//no shorts, regular subject
-				email.setSubject("Your FoodKick Order Is on Its Way");
+				email.setSubject("Your FoodKick Receipt");
 			}
 		} else {
 			email = new FDTransactionalEmail(customer, order);
