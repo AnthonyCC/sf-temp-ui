@@ -33,6 +33,8 @@
 	String preSuccessPage = (String) request.getParameter("preSuccessPage");
 	if (preSuccessPage != null && preSuccessPage.length() > 0)
 		session.setAttribute(SessionName.PREV_SUCCESS_PAGE, preSuccessPage);
+	boolean mobWeb = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user) && JspMethods.isMobile(request.getHeader("User-Agent"));
+
 %>
 
 <fd:LoginController successPage="<%=successPage%>"
@@ -44,6 +46,10 @@
 
 	</fd:ErrorHandler>
 
+	<% if (mobWeb) { %>
+		<%-- TEMP FIX FOR IOS 11 --%>
+		<style>.mm-page-ifr.login-ajax-overlay { position:absolute; }</style>
+	<% } %>
 
 
 	<div class="social_login_jsp">
