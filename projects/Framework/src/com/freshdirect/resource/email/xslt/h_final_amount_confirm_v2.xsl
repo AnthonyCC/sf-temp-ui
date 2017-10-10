@@ -41,7 +41,7 @@
 			    <xsl:variable name="bundleCompleteShort" select="order/bundleCompleteShort/bundleCompleteShort"/>
 				<xsl:choose>
 					<xsl:when test="count(order/shortedItems/shortedItems) > 0 or count($bundleShortItems) > 0 or count(bundleCompleteShort) > 0">
-						<p><b>Hello <xsl:value-of select="customer/firstName"/>,</b> and thank you for shopping with FreshDirect!</p>
+						<p><b>Hello <xsl:value-of select="customer/firstName"/>,</b> thank you for shopping with FreshDirect!</p>
 						
 						<xsl:choose>
 							<xsl:when test="count(order/shortedItems/shortedItems) > 0 and count($bundleShortItems) = 0 and count($bundleCompleteShort) = 0">
@@ -312,8 +312,7 @@
 							</xsl:when>
 			   			
 							<xsl:when test="order/deliveryReservation/deliveryETA/emailETAenabled = 'true'">
-								<p>Hello again! Your order <b>(#<xsl:value-of select="order/erpSalesId"/>)</b> 
-								is on its way to you. Its ETA is between 
+								<p>We're busy picking and packing your order, and it's looking fresh and delicious. Its ETA is between 
 								<b><xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/deliveryETA/startTime"/></xsl:call-template> 
 								and <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="order/deliveryReservation/deliveryETA/endTime"/></xsl:call-template></b> 
 								on <b><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime"/></xsl:call-template></b>. 
@@ -321,8 +320,7 @@
 							</xsl:when>
 							
 							<xsl:otherwise>
-								<p>Hello again! Your order <b>(#<xsl:value-of select="order/erpSalesId"/>)</b> 
-								is on its way to you. It will be delivered between 
+								<p>We're busy picking and packing your order, and it's looking fresh and delicious. It will be delivered between 
 								<b><xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime"/></xsl:call-template> 
 								and <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="order/deliveryReservation/endTime"/></xsl:call-template></b> 
 								on <b><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime"/></xsl:call-template></b>. 

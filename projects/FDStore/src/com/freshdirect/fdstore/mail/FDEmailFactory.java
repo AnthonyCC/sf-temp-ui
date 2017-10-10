@@ -117,13 +117,13 @@ public class FDEmailFactory {
 			 
 			if(order.getShortedItems().size() > 0 || order.getBundleShortItems().size() > 0 || order.getBundleCompleteShort().size() > 0) {
 				if(order.getShortedItems().size() == 1)
-					email.setSubject("Your Receipt from FreshDirect | Order Is Missing Item(s)");	
+					email.setSubject("Your receipt from FreshDirect | Order is missing item(s)");	
 				else
 					if(order.getBundleShortItems().size() > 0 || order.getBundleCompleteShort().size() > 0){
-						email.setSubject("Your Receipt from FreshDirect | Order Is Missing Bundle Item(s)");
+						email.setSubject("Your receipt from FreshDirect | Order is missing bundle item(s)");
 					}
 					else
-						email.setSubject("Your Receipt from FreshDirect | Order Is Missing" + order.getShortedItems().size() + " Item(s)");
+						email.setSubject("Your receipt from FreshDirect | Order is missing" + order.getShortedItems().size() + " item(s)");
 			} else if (EnumDeliveryType.PICKUP.equals(order.getDeliveryType())) {
 				email.setSubject("Your order for " + df.format(order.getRequestedDate()) + " is being prepared for pick-up.");
 			} else if(order.getDeliveryReservation() != null && order.getDeliveryReservation().getDeliveryETA() != null
@@ -132,7 +132,7 @@ public class FDEmailFactory {
 				email.setSubject("Your order ETA is between " + serverTimeFormat.format(order.getDeliveryReservation().getDeliveryETA().getStartTime()) +"  to "
 						+ serverTimeFormat.format(order.getDeliveryReservation().getDeliveryETA().getEndTime()));
 			} else {
-				email.setSubject("Your FreshDirect order is on its way! Receipt inside");
+				email.setSubject("Your order is in the works! Here's your receipt");
 			}
 		}
 
