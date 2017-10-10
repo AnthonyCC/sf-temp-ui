@@ -110,7 +110,6 @@
 <link rel="apple-touch-icon" sizes="57x57" href="https://freshdirect.com/media/mobile/mobile_web/images/App-Icon.jpg" />
 <link rel="apple-touch-icon" sizes="114x114" href="https://freshdirect.com/media/mobile/mobile_web/images/App-Icon.jpg" />
  
-<script src="//cdn.optimizely.com/js/325803703.js" type="text/javascript"></script>
 
 <fd:IncludeMedia name="/media/editorial/site_pages/metadata.html" />
 
