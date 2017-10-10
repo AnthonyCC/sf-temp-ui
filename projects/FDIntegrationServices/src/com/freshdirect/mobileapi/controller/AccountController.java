@@ -86,10 +86,11 @@ public class AccountController extends BaseController implements Comparator <Ord
 	            String addressId = request.getParameter(PARAM_ADDRESS_ID);
 	            Timezone requestMessage = parseRequestObject(request, response, Timezone.class);
 	            String timezone = requestMessage.getTimezone();
+	            boolean excludeaddr = requestMessage.getExcludeaddr();
 	            if (addressId == null || addressId.isEmpty()) {
-	            	model = getDeliveryTimeslotByTimezone(model, user, timezone);
+	            	model = getDeliveryTimeslotByTimezone(model, user, timezone,excludeaddr);
 	            } else {
-	            	model = getDeliveryTimeslotByTimezone(model, user, addressId, timezone);
+	            	model = getDeliveryTimeslotByTimezone(model, user, addressId, timezone,excludeaddr);
 	            }
 	        } else if (ACTION_CANCEL_RESERVATION.equals(action)) {
 	            String addressId = request.getParameter(PARAM_ADDRESS_ID);
@@ -354,7 +355,7 @@ public class AccountController extends BaseController implements Comparator <Ord
         
     }
     
-    private ModelAndView getDeliveryTimeslotByTimezone(ModelAndView model, SessionUser user, String timezone) throws FDException, JsonException, ServiceException {
+    private ModelAndView getDeliveryTimeslotByTimezone(ModelAndView model, SessionUser user, String timezone, boolean excludeaddr) throws FDException, JsonException, ServiceException {
         String addressId = null;
         
         //FDX-1873 - Show timeslots for anonymous address
@@ -394,7 +395,7 @@ public class AccountController extends BaseController implements Comparator <Ord
     		return model;
         } else {
     		
-    		return getDeliveryTimeslotByTimezone(model, user, addressId, timezone);
+    		return getDeliveryTimeslotByTimezone(model, user, addressId, timezone, excludeaddr);
     	}
         
     }
@@ -440,11 +441,14 @@ public class AccountController extends BaseController implements Comparator <Ord
         return deliveryTimeslots;
     }
    
-   private ModelAndView getDeliveryTimeslotByTimezone(ModelAndView model, SessionUser user, String addressId, String timezone) throws FDException, JsonException,
+   private ModelAndView getDeliveryTimeslotByTimezone(ModelAndView model, SessionUser user, String addressId, String timezone, boolean excludeaddr) throws FDException, JsonException,
 		   ServiceException {
 		
-		DeliveryAddresses deliveryAddresses = getDeliveryAddresses(user);
-		deliveryAddresses.setPreSelectedId(addressId);
+		DeliveryAddresses deliveryAddresses = null;
+		if(excludeaddr!=true){
+			deliveryAddresses = getDeliveryAddresses(user);
+			deliveryAddresses.setPreSelectedId(addressId);
+		}
 		TimeSlotCalculationResult timeSlotResult = getTimeSlotCalculationResult(user, addressId);
 		DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(timeSlotResult);
 		
