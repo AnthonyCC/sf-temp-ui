@@ -250,7 +250,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 			}
 		}
 		
-		try {
+	/*	try {
 			List<Integer> removeIds = FDShoppingCartControllerTag.doCartCleanup(user, cart);
 			if(removeIds!=null && removeIds.size()>0){
 				FDShoppingCartService.defaultService().updateShoppingCart(user, session);
@@ -258,7 +258,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 		} catch (JspException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	private static void reserveTimeslot(FDSessionUser user,
