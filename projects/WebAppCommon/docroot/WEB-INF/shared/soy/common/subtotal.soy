@@ -30,6 +30,13 @@
 {/if}
 {if $soldBySalesUnit} data-bysalesunit="true"{/if}
 ></div>
+
+/* APPDEV-6353 */
+{let $pricingUnit:$availMatPrices?.0.pricingUnit /}
+{if $pricingUnit == 'LB' }
+	<div class="text12 subtotal-price-estimated-additional">Actual weight will vary from estimate due to seasonality, source, and country of origin.</div>
+{/if}
+
 {/template}
 
 /**

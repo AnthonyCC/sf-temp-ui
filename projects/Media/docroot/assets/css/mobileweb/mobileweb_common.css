@@ -883,6 +883,18 @@ li.cleanli .gen-arrow {
 		text-align: center;
 		clear: both;
 	}
+	.prodDetail-atc .subtotal .subtotal-price-estimated {
+		display: block;
+		float: none;
+		padding-left: 0;
+	}
+	.mm-page .subtotal-price-estimated-additional {
+		float: none;
+		width: auto;
+		text-align: center;
+		padding: 15px 0;
+		margin-left: 0;
+	}
 	.pdp-atc-buttons-cont {
 	}
 	.prodDetail-atc .quantity_plus, .prodDetail-atc .quantity_minus {
@@ -2021,7 +2033,6 @@ li.cleanli .gen-arrow {
     			border-right: none !important;
 			}
 			#legendCheckout {
-			    position: absolute;
 			    bottom: 0px;
 			    right: 0px;
 			    background-color: #fff;
