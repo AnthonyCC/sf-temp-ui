@@ -70,7 +70,7 @@
 			</div>
 		</div>
 		<div class="pdp-evenbetter-productinfo">
-			<h3 data-evenbetteritem-trigger><a href="/pdp.jsp?productId={$productId}&catId={$catId}">{if (isNonnull($brandName))}<b>{$brandName}</b> {/if} {$productNameNoBrand}</a></h3>{if $configDescr}<i>{$configDescr}</i>{/if}
+			<h3 data-evenbetteritem-trigger><a href="/pdp.jsp?productId={$productId}&catId={$catId}" class="portrait-item-header-name">{if (isNonnull($brandName))}<b>{$brandName}</b> {/if} {$productNameNoBrand}</a></h3>{if $configDescr}<i>{$configDescr}</i>{/if}
 			<div class="pdp-evenbetter-price">{call common.price data="all" /}</div>
 			<div class="pdp-evenbetter-savestring">{call .dealinfo data="all" /}{call .savestring data="all" /}</div>
 			<div class="pdp-evenbetter-ratings">
