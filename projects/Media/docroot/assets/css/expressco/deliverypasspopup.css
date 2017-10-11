@@ -56,7 +56,7 @@ body.ie .deliverypasspopup__option {
 
 .deliverypasspopup__option span.saving {
   font-weight: bold;
-  color: #c00;
+  color: red;
 }
 
 .deliverypasspopup__option .save{
