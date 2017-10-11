@@ -22,7 +22,11 @@ public class CrmSystemCaseInfo implements Serializable {
     private List cartonNumbers;
     
     private CrmAgentModel loginAgent;
-	
+    
+    public CrmSystemCaseInfo(){
+    	
+    }
+    
 	public CrmSystemCaseInfo(CrmCaseSubject subject, String summary){
 		this(null, null, subject, summary);
 	}
@@ -41,6 +45,7 @@ public class CrmSystemCaseInfo implements Serializable {
 		this.origin = CrmCaseOrigin.getEnum(CrmCaseOrigin.CODE_SYS);
 		this.state = CrmCaseState.getEnum(CrmCaseState.CODE_OPEN);
 	}
+	
 	
 	public CrmSystemCaseInfo(PrimaryKey customerPK, PrimaryKey salePK, CrmCaseSubject subject, String summary
 			, String note, List cartonNumbers, CrmAgentModel loginAgent, String crmCaseMedia){
@@ -125,5 +130,28 @@ public class CrmSystemCaseInfo implements Serializable {
 	public void setCrmCaseMedia(String crmCaseMedia) {
 		this.crmCaseMedia = crmCaseMedia;
 	}
+
+	
+	//Introduced Only for Storefront 2.0.
+	
+	public void setCustomerPK(PrimaryKey customerPK) {
+		this.customerPK = customerPK;
+	}
+
+	public void setSalePK(PrimaryKey salePK) {
+		this.salePK = salePK;
+	}
+
+	public void setSubject(CrmCaseSubject subject) {
+		this.subject = subject;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+	
+	
+	
+	
 	
 }
