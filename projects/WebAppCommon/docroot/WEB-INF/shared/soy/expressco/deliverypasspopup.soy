@@ -47,11 +47,7 @@
 <label class="deliverypasspopup__option deliverypasspopup__label" data-component="deliverypasspopup-option" for="{$id}">
   <input id="{$id}" type="radio" name="deliverypass-option" value="{$id}" class="deliverypasspopup__radio customradio" {if $selected}checked="checked"{/if} />
     <p class="deliverypasspopup__option-title">{$title}
-      &nbsp;<span class="deliverypasspopup__total">
-      ${id}
-      {if not $id == 'REGULAR_DELIVERY_FEE'}
-      	({if $totalPrice}${$totalPrice} total</span>{else}<span class="product-price-free">FREE</span>{/if})</p>
-      {/if}
+      &nbsp;{if $totalPrice}<span class="deliverypasspopup__total">(${$totalPrice} total)</span>{/if}</p>
     {if $pricePerMonth}
     <div><b>{$pricePerMonth}</b> {if $saving}<span class="saving">{$saving}</span>{/if}</div>
     {/if}
