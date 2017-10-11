@@ -252,6 +252,8 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String LOAD_ENUMS = "enums/all";
 	private static final String BRAND_SEARCH_BY_KEY ="brand/products/search";
 	private static final String BRAND_SEARCH_BY_PRODUCT ="brand/products/products";
+	private static final String BRAND_SEARCH_BY_HOME_PRODUCT ="brand/products/homeAdProd";
+	private static final String BRAND_SEARCH_BY_PDP_PRODUCT ="brand/products/pdpAdProduct";
 	private static final String BRAND_LAST_SENT_FEED ="brand/products/ordertime";
 	private static final String BRAND_ORDER_SUBMIT_BYDATE ="brand/products/orderdetailsbydate";
 	private static final String BRAND_ORDER_SUBMIT_SALEIDS ="brand/products/orderdetailsbysaleids";
@@ -5237,6 +5239,49 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		
 		}
 		
+	}
+	@Override
+	public HLBrandProductAdResponse getHomeAdProduct(
+			HLBrandProductAdRequest hLBrandProductAdRequest) throws RemoteException {
+		try {
+			Request<HLBrandProductAdRequest> request = new Request<HLBrandProductAdRequest>();
+			request.setData(hLBrandProductAdRequest);
+			String inputJson = buildRequest(request);
+			@SuppressWarnings("unchecked")
+			Response<HLBrandProductAdResponse> response = this.postData(inputJson, getFdCommerceEndPoint(BRAND_SEARCH_BY_HOME_PRODUCT), Response.class);
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			return response.getData();
+		} catch (FDEcommServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	@Override
+	public HLBrandProductAdResponse getPdpAdProduct(
+			HLBrandProductAdRequest hLBrandProductAdRequest)
+			throws RemoteException {
+		try {
+			Request<HLBrandProductAdRequest> request = new Request<HLBrandProductAdRequest>();
+			request.setData(hLBrandProductAdRequest);
+			String inputJson = buildRequest(request);
+			@SuppressWarnings("unchecked")
+			Response<HLBrandProductAdResponse> response = this.postData(inputJson, getFdCommerceEndPoint(BRAND_SEARCH_BY_PDP_PRODUCT), Response.class);
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			return response.getData();
+		} catch (FDEcommServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
 	}
 
 }

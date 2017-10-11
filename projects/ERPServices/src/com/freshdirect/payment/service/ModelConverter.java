@@ -2204,8 +2204,8 @@ public class ModelConverter {
 		ErpMaterialInfoModel model = new ErpMaterialInfoModel();
 		model.setAttributes(buildAttributes(data.getAttributes()));
 		model.setDescription(data.getDescription());
-		model.setPK(new PrimaryKey(data.getPk()));
-		model.setId(data.getSapId());
+//		model.setPK(new PrimaryKey(data.getPk()));
+		model.setId(data.getPk());
 		model.setSapId(data.getSapId());
 		return model;
 	}
