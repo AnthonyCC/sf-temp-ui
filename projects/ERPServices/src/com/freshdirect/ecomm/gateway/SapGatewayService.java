@@ -27,7 +27,7 @@ public class SapGatewayService extends AbstractEcommService implements SapGatewa
 	
 	private static SapGatewayService INSTANCE;
 	
-	private final static Category LOGGER = LoggerFactory.getInstance(DlvPassManagerService.class);
+	private final static Category LOGGER = LoggerFactory.getInstance(SapGatewayService.class);
 
 	private static final String CANCEL_SALES_ORDER = "sapgateway/cancelSalesOrder/webOrderNumber/";
 	private static final String SEND_CREATE_CUSTOMER = "sapgateway/createCustomer/erpCustomerNumber/";

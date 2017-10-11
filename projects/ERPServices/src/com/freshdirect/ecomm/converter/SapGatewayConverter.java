@@ -144,7 +144,7 @@ public class SapGatewayConverter {
 
 
 
-	private static ErpPaymentMethodData buildPaymentMethodModel(PaymentMethodAdapter adapter) {
+	public  static ErpPaymentMethodData buildPaymentMethodModel(PaymentMethodAdapter adapter) {
 		ErpPaymentMethodData erpPayment = new ErpPaymentMethodData();
 		erpPayment = buildPaymentMethodData(adapter.getErpPaymentMethod());
 		erpPayment.setAbaRouteNumber(adapter.getAbaRouteNumber());
@@ -758,7 +758,7 @@ public class SapGatewayConverter {
 		userContextData.setEstoreId(userContext.getStoreContext().getEStoreId().getContentId());
 		return userContextData;
 	}
-	private static ErpPaymentMethodData buildPaymentMethodData(ErpPaymentMethodI payment) {
+	public  static ErpPaymentMethodData buildPaymentMethodData(ErpPaymentMethodI payment) {
 		ErpPaymentMethodModel paymentMethod = (ErpPaymentMethodModel) payment;
 		ErpPaymentMethodData paymentData = new ErpPaymentMethodData();
 		paymentData.setId(paymentMethod.getPK().getId());
