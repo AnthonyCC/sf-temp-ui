@@ -402,6 +402,7 @@ List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocati
 								<div class=""><label class="n">Notify me when service comes to my area.</label></div>
 								<div>
 									<input type="text" aria-label="Notify me through email when service comes to my area." id="location-email" class="placeholder" placeholder="Enter your e-mail" aria-describedby="email_error" /><button id="location-submit"  class="cssbutton fdxgreen cssbutton-flat">Send</button>
+									<div class="clear"></div>
 									<span class="error-msg" id="email_error" aria-live="assertive">E-mail address is invalid</span>
 								</div>
 							</form>
