@@ -2544,10 +2544,10 @@ li.cleanli .gen-arrow {
 }
 
 /* /your_account/add_creditcard.jsp */
-[fdform] {
+form.top-margin10 { /* space away from edge of screen */
 	margin: 10px;
 }
-[fdform] td {
+form.dispblock-fields td { /* force the tds to block so the label and field are on their own rows */
 	display: block;
 	width: 100%;
 	text-align: left;
