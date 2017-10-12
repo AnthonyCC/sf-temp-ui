@@ -524,7 +524,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
         } else {
             request.getSession().setAttribute(SessionName.APPLICATION, transactionSource.getCode());
             responseMessage = new SessionResponse();
-            if (user == null || (isExtraResponseRequested(request) && user!=null && user.getFDSessionUser()!=null && user.getFDSessionUser().getIdentity()==null)) {
+            if (user == null) {
                 FDSessionUser fdSessionUser = null;
                 try {
                     fdSessionUser = UserUtil.getSessionUserByCookie(request);

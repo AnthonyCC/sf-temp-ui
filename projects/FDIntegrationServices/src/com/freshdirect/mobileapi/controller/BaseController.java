@@ -299,13 +299,10 @@ public abstract class BaseController extends AbstractController implements Messa
                 }
 
                 try {
-                    if (isExtraResponseRequested(request)) {
-                        user = getUser(request, response);
-                    } else {
-                        user = getUserFromSession(request, response);
-                        user.setUserContext();
-                        user.setEligibleForDDPP();
-                    }
+	                user = getUserFromSession(request, response);
+	                user.setUserContext();
+	                user.setEligibleForDDPP();
+                    
                 } catch (NoSessionException e) {
                     if (validateUser()) {
                         throw e;
