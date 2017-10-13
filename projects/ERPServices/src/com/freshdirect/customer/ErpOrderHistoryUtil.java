@@ -303,4 +303,15 @@ public class ErpOrderHistoryUtil {
 		}
 		return ret;
 	}
+    
+    public static boolean hasSettledOrders(Collection<ErpSaleInfo> erpSaleInfos) {
+		boolean hasSettledOrder = false;
+        for (ErpSaleInfo saleInfo : erpSaleInfos) {
+			if (saleInfo.isSettled()) {
+				hasSettledOrder =true;
+				break;
+			}
+		}
+		return hasSettledOrder;
+	}
 }

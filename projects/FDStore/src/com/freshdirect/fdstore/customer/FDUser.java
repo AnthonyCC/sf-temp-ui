@@ -3096,7 +3096,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     public void setReferralPromoAvailable() {
         try {
-            referralFlag = FDReferralManager.getReferralDisplayFlag(this.getIdentity().getErpCustomerPK());
+            referralFlag = getOrderHistory().hasSettledOrders();//FDReferralManager.getReferralDisplayFlag(this.getIdentity().getErpCustomerPK());
             LOGGER.debug("Getting ref display for :" + this.getIdentity().getErpCustomerPK() + "-and flag is:" + referralFlag);
         } catch (FDResourceException e) {
             LOGGER.error("Exception getting totalCredit", e);

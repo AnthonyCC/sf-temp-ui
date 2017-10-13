@@ -177,4 +177,9 @@ public class ErpOrderHistory implements OrderHistoryI {
 		return ErpOrderHistoryUtil.getValidMasterPassOrderCount(erpRegSaleInfos);
 	}
 
+	@Override
+	public boolean hasSettledOrders() {
+		return ErpOrderHistoryUtil.hasSettledOrders(erpRegSaleInfos);
+	}
+
 }
