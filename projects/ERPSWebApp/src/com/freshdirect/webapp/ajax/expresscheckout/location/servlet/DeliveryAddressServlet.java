@@ -75,17 +75,16 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
                         List<ValidationError> validationErrors = DeliveryAddressService.defaultService().addDeliveryAddressMethod(deliveryAddressRequest, request.getSession(),
                                 user);
                         validationResult.getErrors().addAll(validationErrors);
-                        LOGGER.debug("Delivery address added sucessfully " + user.getCurrentStandingOrder().getAddressId() + " . initial addressID: "+ user.getCurrentStandingOrder().getOldAddressId());
                         break;
                     }
                     case EDIT_DELIVERY_ADDRESS_METHOD: {
-                    	if (StandingOrderHelper.isSO3StandingOrder(user)) {
-                        	save = false;
-                        }
                     	List<ValidationError> validationErrors = DeliveryAddressService.defaultService().editDeliveryAddressMethod(deliveryAddressRequest, request.getSession(),
                                 user);
                         validationResult.getErrors().addAll(validationErrors);
-                        LOGGER.debug("Delivery address edited sucessfully " + user.getCurrentStandingOrder().getAddressId() + " . initial addressID: "+ user.getCurrentStandingOrder().getOldAddressId());
+                        if (StandingOrderHelper.isSO3StandingOrder(user)) {
+                        	save = false;
+                        	LOGGER.debug("Delivery address edited sucessfully " + user.getCurrentStandingOrder().getAddressId() + " . initial addressID: "+ user.getCurrentStandingOrder().getOldAddressId());
+                        }
                         break;
                     }
                     case DELETE_DELIVERY_ADDRESS_METHOD: {
@@ -95,7 +94,6 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
                     		save = false;
                     	}
                         DeliveryAddressService.defaultService().deleteDeliveryAddressMethod(deliveryAddressRequest, request.getSession(), user);
-                        LOGGER.debug("Delivery address Deleted sucessfully " + deliveryAddressRequest + " . initial addressID: "+ user.getCurrentStandingOrder().getOldAddressId());
                         break;
                     }
                     case SELECT_DELIVERY_ADDRESS_METHOD: {
