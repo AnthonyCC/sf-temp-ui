@@ -1893,14 +1893,18 @@ static {
         refresh(false);
     }
 
-    private synchronized static void refresh(boolean force) {
+    private static void refresh(boolean force) {
         long t = System.currentTimeMillis();
 
         if (force || ((t - lastRefresh) > REFRESH_PERIOD)) {
-            config = ConfigHelper.getPropertiesFromClassLoader("fdstore.properties", defaults);
-            lastRefresh = t;
-            LOGGER.info("Loaded configuration from fdstore.properties: " + config);
-            fireEvent();
+        	synchronized (FDStoreProperties.class){
+        		 if (force || ((t - lastRefresh) > REFRESH_PERIOD)) {//double check
+		            config = ConfigHelper.getPropertiesFromClassLoader("fdstore.properties", defaults);
+		            lastRefresh = t;
+		            LOGGER.info("Loaded configuration from fdstore.properties: " + config);
+		            fireEvent();
+        		 }
+        	}
         }
     }
 
@@ -1911,8 +1915,7 @@ static {
 
     public static String get(String key) {
         refresh();
-        String value = config.getProperty(key);
-        return null !=value ? value.trim() : value;
+        return config.getProperty(key);        
     }
 
     /**
