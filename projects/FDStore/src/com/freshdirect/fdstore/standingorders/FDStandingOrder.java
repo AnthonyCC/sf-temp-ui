@@ -83,6 +83,8 @@ public class FDStandingOrder extends ModelSupport {
 	
 	Date deleteDate; 		
 
+	String oldAddressId;	
+	
 	public FDStandingOrder() {
 		super();
 	}
@@ -662,5 +664,13 @@ public class FDStandingOrder extends ModelSupport {
 
 	public void setDeleteDate(Date deleteDate) {
 		this.deleteDate = deleteDate;
+	}
+
+	public String getOldAddressId() {
+		return oldAddressId;
+	}
+
+	public void setOldAddressId(String oldAddressId) {
+		this.oldAddressId = oldAddressId;
 	}
 }
