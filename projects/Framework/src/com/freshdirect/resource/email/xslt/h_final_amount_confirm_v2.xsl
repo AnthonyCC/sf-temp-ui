@@ -316,7 +316,7 @@
 								<b><xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/deliveryETA/startTime"/></xsl:call-template> 
 								and <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="order/deliveryReservation/deliveryETA/endTime"/></xsl:call-template></b> 
 								on <b><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime"/></xsl:call-template></b>. 
-								<xsl:if test="order/paymentMethod/paymentMethodType = 'EBT'">When your order arrives, please make sure you have your EBT card ready to complete the purchase. If you need more information on the EBT purchase process, <a href="http://www.freshdirect.com/category.jsp?catId=about_ebt">click here</a> to see our EBT Info Page. </xsl:if>We hope you find everything absolutely fresh and delicious.</p>
+								<xsl:if test="order/paymentMethod/paymentMethodType = 'EBT'">When your order arrives, please make sure you have your EBT card ready to complete the purchase. If you need more information on the EBT purchase process, <a href="http://www.freshdirect.com/category.jsp?catId=about_ebt">click here</a> to see our EBT Info Page. </xsl:if></p>
 							</xsl:when>
 							
 							<xsl:otherwise>
@@ -324,7 +324,7 @@
 								<b><xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime"/></xsl:call-template> 
 								and <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="order/deliveryReservation/endTime"/></xsl:call-template></b> 
 								on <b><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime"/></xsl:call-template></b>. 
-								<xsl:if test="order/paymentMethod/paymentMethodType = 'EBT'">When your order arrives, please make sure you have your EBT card ready to complete the purchase. If you need more information on the EBT purchase process, <a href="http://www.freshdirect.com/category.jsp?catId=about_ebt">click here</a> to see our EBT Info Page. </xsl:if>We hope you find everything absolutely fresh and delicious.</p>
+								<xsl:if test="order/paymentMethod/paymentMethodType = 'EBT'">When your order arrives, please make sure you have your EBT card ready to complete the purchase. If you need more information on the EBT purchase process, <a href="http://www.freshdirect.com/category.jsp?catId=about_ebt">click here</a> to see our EBT Info Page. </xsl:if></p>
 							</xsl:otherwise>
 						</xsl:choose>
 				
