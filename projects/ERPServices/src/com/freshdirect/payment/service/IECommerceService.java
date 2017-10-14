@@ -487,12 +487,12 @@ public interface IECommerceService {
 	public void sendReservationUpdateRequest(String  reservationId, ContactAddressModel address, String sapOrderNumber) throws RemoteException;
 	
     public void sendSubmitOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
-			String unattendedInstr,String orderMobileNumber,String erpOrderId) throws RemoteException;
+			String unattendedInstr,String orderMobileNumber,String erpOrderId,boolean containsAlcohol) throws RemoteException;
 	
     public void sendCancelOrderRequest(String saleId) throws RemoteException;
 	
     public void sendModifyOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
-			String unattendedInstr,String orderMobileNumber,String erpOrderId) throws RemoteException;
+			String unattendedInstr,String orderMobileNumber,String erpOrderId,boolean containsAlcohol) throws RemoteException;
 
     
 
