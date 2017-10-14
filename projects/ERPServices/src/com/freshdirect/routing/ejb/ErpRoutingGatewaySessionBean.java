@@ -40,7 +40,7 @@ public class ErpRoutingGatewaySessionBean extends GatewaySessionBeanSupport {
 	}
 	
 	public void sendSubmitOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,
-			String firstName,String lastName,String deliveryInstructions,String serviceType, String unattendedInstr,String orderMobileNumber,String erpOrderId){
+			String firstName,String lastName,String deliveryInstructions,String serviceType, String unattendedInstr,String orderMobileNumber,String erpOrderId,boolean containsAlcohol){
 		
 		OrderCreateCommand command=new OrderCreateCommand();
 		command.setReservationId(reservationId);
@@ -54,6 +54,7 @@ public class ErpRoutingGatewaySessionBean extends GatewaySessionBeanSupport {
 		command.setUnattendedInstr(unattendedInstr);
 		command.setOrderMobileNumber(orderMobileNumber);
 		command.setErpOrderId(erpOrderId);
+		command.setContainsAlcohol(containsAlcohol);
 		
 		this.enqueue(command);
 		
@@ -66,7 +67,7 @@ public class ErpRoutingGatewaySessionBean extends GatewaySessionBeanSupport {
 	}
 	
 	public void sendModifyOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
-			String unattendedInstr,String orderMobileNumber,String erpOrderId){
+			String unattendedInstr,String orderMobileNumber,String erpOrderId,boolean containsAlcohol){
 		OrderModifyCommand command=new OrderModifyCommand();
 		command.setReservationId(reservationId);
 		command.setSaleId(saleId);
@@ -79,6 +80,7 @@ public class ErpRoutingGatewaySessionBean extends GatewaySessionBeanSupport {
 		command.setUnattendedInstr(unattendedInstr);
 		command.setOrderMobileNumber(orderMobileNumber);
 		command.setErpOrderId(erpOrderId);
+		command.setContainsAlcohol(containsAlcohol);
 		this.enqueue(command);
 	}
 	

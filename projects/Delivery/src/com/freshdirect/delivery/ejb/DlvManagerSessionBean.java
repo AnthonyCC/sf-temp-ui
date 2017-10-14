@@ -612,7 +612,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 					command.getReservationId(), command.getFirstName(),
 					command.getLastName(), command.getDeliveryInstructions(),
 					command.getServiceType(), command.getUnattendedInstr(),
-					command.getOrderMobileNumber(), command.getErpOrderId());
+					command.getOrderMobileNumber(), command.getErpOrderId(),command.isAlcohol());
 			updateStatusOfOrder(command);
 		}
 	}

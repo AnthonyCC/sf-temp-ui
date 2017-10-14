@@ -1648,7 +1648,7 @@ public class FDDeliveryManager {
 	public void submitOrder(String orderId, String parentOrderId, double tip,
 			String reservationId, String firstName, String lastName,
 			String deliveryInstructions, String serviceType,
-			String unattendedInstr, String orderMobileNumber, String erpOrderId)
+			String unattendedInstr, String orderMobileNumber, String erpOrderId,boolean containsAlcohol)
 			throws FDResourceException {
 
 		try {
@@ -1658,7 +1658,7 @@ public class FDDeliveryManager {
 					.encodeUpdateOrderRequest(orderId, parentOrderId, tip,
 							reservationId, firstName, lastName,
 							deliveryInstructions, serviceType, unattendedInstr,
-							orderMobileNumber, erpOrderId));
+							orderMobileNumber, erpOrderId,containsAlcohol));
 
 			LogisticsDataDecoder.decodeResult(result);
 		} catch (FDLogisticsServiceException e) {
@@ -1753,7 +1753,7 @@ public class FDDeliveryManager {
 	public void modifyOrder(String orderId, String parentOrderId, double tip,
 			String reservationId, String firstName, String lastName,
 			String deliveryInstructions, String serviceType,
-			String unattendedInstr, String orderMobileNumber, String erpOrderId)
+			String unattendedInstr, String orderMobileNumber, String erpOrderId,boolean containsAlcohol)
 			throws FDResourceException {
 
 		try {
@@ -1763,7 +1763,7 @@ public class FDDeliveryManager {
 					.encodeUpdateOrderRequest(orderId, parentOrderId, tip,
 							reservationId, firstName, lastName,
 							deliveryInstructions, serviceType, unattendedInstr,
-							orderMobileNumber, erpOrderId));
+							orderMobileNumber, erpOrderId,containsAlcohol));
 			LogisticsDataDecoder.decodeResult(result);
 		} catch (FDLogisticsServiceException e) {
 			throw new FDResourceException(e);
