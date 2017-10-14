@@ -3995,11 +3995,11 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	}
 	@Override
 	public void sendModifyOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
-			String unattendedInstr,String orderMobileNumber,String erpOrderId) throws RemoteException {
+			String unattendedInstr,String orderMobileNumber,String erpOrderId,boolean containsAlcohol) throws RemoteException {
 		
 		SubmitOrderRequestData submitOrderRequestData = new SubmitOrderRequestData();
 		submitOrderRequestData = buildOrderRequestData(saleId, parentOrderId, tip, reservationId, firstName, lastName, deliveryInstructions, serviceType, 
-				 unattendedInstr, orderMobileNumber,erpOrderId);
+				 unattendedInstr, orderMobileNumber,erpOrderId,containsAlcohol);
 		Request<SubmitOrderRequestData> request = new Request<SubmitOrderRequestData>();
 		try {
 			request.setData(submitOrderRequestData);
@@ -4031,10 +4031,10 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	}
 	@Override
 	public void sendSubmitOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
-			String unattendedInstr,String orderMobileNumber,String erpOrderId) throws RemoteException {
+			String unattendedInstr,String orderMobileNumber,String erpOrderId,boolean containsAlcohol) throws RemoteException {
 		SubmitOrderRequestData submitOrderRequestData = new SubmitOrderRequestData();
 		submitOrderRequestData = buildOrderRequestData(saleId, parentOrderId, tip, reservationId, firstName, lastName, deliveryInstructions, serviceType, 
-				 unattendedInstr, orderMobileNumber,erpOrderId);
+				 unattendedInstr, orderMobileNumber,erpOrderId,containsAlcohol);
 		Request<SubmitOrderRequestData> request = new Request<SubmitOrderRequestData>();
 		try {
 			request.setData(submitOrderRequestData);
@@ -4051,7 +4051,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	}
 	
 	private SubmitOrderRequestData buildOrderRequestData(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
-			String unattendedInstr,String orderMobileNumber,String erpOrderId){
+			String unattendedInstr,String orderMobileNumber,String erpOrderId,boolean containsAlcohol){
 		SubmitOrderRequestData submitOrderRequestData = new SubmitOrderRequestData();
 		submitOrderRequestData.setSaleId(saleId);
 		submitOrderRequestData.setParentOrderId(parentOrderId);
@@ -4064,6 +4064,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		submitOrderRequestData.setUnattendedInstr(unattendedInstr);
 		submitOrderRequestData.setOrderMobileNumber(orderMobileNumber);
 		submitOrderRequestData.setErpOrderId(erpOrderId);
+		
 		return submitOrderRequestData;
 	}
 
