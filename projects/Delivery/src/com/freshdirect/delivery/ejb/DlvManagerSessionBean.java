@@ -675,7 +675,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 								.getOrderMobileNumber() != null ? order
 								.getRecentOrderTransaction().getDeliveryInfo()
 								.getOrderMobileNumber().getPhone() : null,
-						order.getSapOrderNumber());
+						order.getSapOrderNumber(),order.getCurrentOrder().containsAlcohol());
 				ordersList.add(c);
 			}
 		} catch (SQLException e) {
