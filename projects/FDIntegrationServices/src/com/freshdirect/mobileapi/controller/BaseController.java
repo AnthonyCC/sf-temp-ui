@@ -743,14 +743,14 @@ public abstract class BaseController extends AbstractController implements Messa
         FDSessionUser fdSessionUser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
         if (fdSessionUser == null) {
             try {
-                fdSessionUser = UserUtil.getSessionUserByCookie(request);
+                fdSessionUser = UserUtil.getSessionUser(request);
             } catch (FDResourceException ex) {
                 LOGGER.warn(ex);
             }
             if (fdSessionUser != null) {
                 FDCustomerCouponUtil.initCustomerCoupons(request.getSession());
             } else {
-                fdSessionUser = LocatorUtil.useIpLocator(request.getSession(), request, response);
+                fdSessionUser = LocatorUtil.useIpLocator(request.getSession(), request, response, null);
             }
             EnumTransactionSource src = getTransactionSourceEnum(request, null);
             fdSessionUser.getUser().setApplication(src);
