@@ -55,7 +55,6 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
             FormDataResponse deliveryAddressResponse = FormDataService.defaultService().prepareFormDataResponse(deliveryAddressRequest, validationResult);
             boolean canBeSaved= true;
             boolean save = true;
-            FDStandingOrder currentStandingOrder = user.getCurrentStandingOrder();
             if (pageAction != null) {
                 switch (pageAction) {
                     case GET_DELIVERY_ADDRESS_METHOD: {
@@ -86,12 +85,12 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
                         validationResult.getErrors().addAll(validationErrors);
                         if (StandingOrderHelper.isSO3StandingOrder(user)) {
                         	save = false;
-                        	LOGGER.debug("Delivery address edited sucessfully " + currentStandingOrder.getAddressId() + " . initial addressID: "+ currentStandingOrder.getOldAddressId());
                         }
                         break;
                     }
                     case DELETE_DELIVERY_ADDRESS_METHOD: {
-                    	if (StandingOrderHelper.isSO3StandingOrder(user) && null != currentStandingOrder) {
+                    	if (StandingOrderHelper.isSO3StandingOrder(user) && null != user.getCurrentStandingOrder()) {
+                    		FDStandingOrder currentStandingOrder = user.getCurrentStandingOrder();
                     		currentStandingOrder.setOldAddressId(currentStandingOrder.getAddressId());
                     		currentStandingOrder.setNextDeliveryDate(null);
                     		save = false;
@@ -102,6 +101,7 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
                     case SELECT_DELIVERY_ADDRESS_METHOD: {
                         String deliveryAddressId = FormDataService.defaultService().get(deliveryAddressRequest, "id");
                         if(StandingOrderHelper.isSO3StandingOrder(user)){
+                        	FDStandingOrder currentStandingOrder = user.getCurrentStandingOrder();
                         	if (currentStandingOrder != null && currentStandingOrder.getNextDeliveryDate() != null 
                         			|| currentStandingOrder.getOldAddressId() == null) {
                         		currentStandingOrder.setOldAddressId(currentStandingOrder.getAddressId());
