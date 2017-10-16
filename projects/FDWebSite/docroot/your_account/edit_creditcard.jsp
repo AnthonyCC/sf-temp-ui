@@ -62,9 +62,9 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 	</fd:ErrorHandler>
 
 <%} %>
-
+<FORM fdform class="top-margin10 dispblock-fields" fdform-displayerrorafter name='ccEdit' method='POST'>
 <table WIDTH="<%= W_YA_EDIT_CREDITCARD %>" cellspacing="0" cellpadding="0" border="0">
-<FORM name='ccEdit' method='POST'>
+
 
 <tr>
 <td class="text11" WIDTH="<%= W_YA_EDIT_CREDITCARD %>">
@@ -77,7 +77,7 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 <br><br>
 
 <IMG src="/media_stat/images/layout/ff9933.gif" ALT="" WIDTH="<%= W_YA_EDIT_CREDITCARD %>" HEIGHT="1" BORDER="0"><BR>
-<FONT CLASS="space4pix"><BR><BR></FONT>
+<FONT  CLASS="space4pix"><BR><BR></FONT>
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%= W_YA_EDIT_CREDITCARD %>">
 	<TR VALIGN="TOP">
 		<TD WIDTH="<%= W_YA_EDIT_CREDITCARD %>" ALIGN="RIGHT">

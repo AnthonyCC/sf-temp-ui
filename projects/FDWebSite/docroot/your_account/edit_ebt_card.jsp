@@ -77,7 +77,7 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 <%} %>
 
 
-<FORM name='ccEdit' method='POST'>
+<FORM fdform class="top-margin10 dispblock-fields" fdform-displayerrorafter name='ccEdit' method='POST'>
 <table WIDTH="<%= W_YA_EDIT_CREDITCARD %>" cellspacing="0" cellpadding="0" border="0">
 <tr>
 <td class="text11" WIDTH="<%= W_YA_EDIT_CREDITCARD %>">

@@ -170,9 +170,9 @@ if (isValidPaymentId) {
 
 	<table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_3_CHECKACCT_FIELDS_TOTAL%>">
 	<tr valign="bottom">
-		<TD WIDTH="<%=proceedThruCheckout? W_CHECKOUT_STEP_3_CHECKACCT_FIELDS_TOTAL : W_CHECKOUT_STEP_3_CHECKACCT_FIELDS_TOTAL-200 %>">
-			<img src="/media_stat/images/headers/check_acct_details.gif" width="181" height="9" border="0" alt="CHECKING ACCOUNT DETAILS">
-			&nbsp;&nbsp;&nbsp;<FONT CLASS="text12">* Required information</FONT>
+		<TD class="title18" WIDTH="<%=proceedThruCheckout? W_CHECKOUT_STEP_3_CHECKACCT_FIELDS_TOTAL : W_CHECKOUT_STEP_3_CHECKACCT_FIELDS_TOTAL-200 %>">
+			CHECKING ACCOUNT DETAILS
+			<FONT CLASS="text12">* Required information</FONT>
 		</TD>
 		<%if (!proceedThruCheckout) { %>
 		<TD WIDTH="300" ALIGN="RIGHT">
@@ -186,65 +186,65 @@ if (isValidPaymentId) {
 <img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_CHECKOUT_STEP_3_CHECKACCT_FIELDS_TOTAL%>" height="1" border="0" VSPACE="3"><BR><BR>
 
 <input type="hidden" name="<%=PaymentMethodName.PAYMENT_METHOD_TYPE%>" value="<%=paymentMethodType%>">
-<table border="0" cellspacing="1" cellpadding="0" width="693">
+<table class="accessibilitySpacing" border="0" cellspacing="1" cellpadding="0" width="800">
 <tr valign="top" >
-	<td width="150" align="right" class="text12">*&nbsp;Name&nbsp;&nbsp;</td>
-	<td width="160"><input class="text11" maxlength="50" SIZE="21" type="text" name="<%=PaymentMethodName.ACCOUNT_HOLDER%>" required="true" value="<%=ccNameOnCard%>"><fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ACCOUNT_HOLDER%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
-	<td rowspan="6" width="379" align="right"><img src="/media_stat/images/template/youraccount/check.gif" width="375" height="120" border="0"></td>
+	<td width="" align="right" class="text12"><label for="<%=PaymentMethodName.ACCOUNT_HOLDER%>_editchkfield">*&nbsp;Name&nbsp;&nbsp;</label></td>
+	<td width=""><input class="text11" maxlength="50" SIZE="21" type="text" id="<%=PaymentMethodName.ACCOUNT_HOLDER%>_editchkfield" name="<%=PaymentMethodName.ACCOUNT_HOLDER%>" required="true" value="<%=ccNameOnCard%>"><fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ACCOUNT_HOLDER%>' id='errorMsg'><div class="text11rbold"><%=errorMsg%></div></fd:ErrorHandler></td>
+	<td rowspan="6" width="" align="right"><img src="/media_stat/images/template/youraccount/check.gif" width="375" height="120" border="0"></td>
 </tr>
 <tr valign="top">
-	<td align="right" class="text12">*&nbsp;Account Type&nbsp;&nbsp;</td>
-	<td class="text12">
+	<td align="right" class="text12"><label>*&nbsp;Account Type&nbsp;&nbsp;</label></td>
+	<td class="text12"><table><fieldset><legend class="offscreen" >*&nbsp;Account Type&nbsp;&nbsp;</legend>
 <%
 		Iterator iter = EnumBankAccountType.iterator();
 		while (iter.hasNext()) {
 			EnumBankAccountType bankAccountType = (EnumBankAccountType) iter.next();
 %>
-		<input type="radio" name="<%=PaymentMethodName.BANK_ACCOUNT_TYPE%>" value="<%=bankAccountType.getName()%>" <%=(bankAccountType.getName().equals(ccBankAccountType)) ? "CHECKED" : ""%>><%=bankAccountType.getDescription()%><br>
+		<input type="radio" id="<%=PaymentMethodName.BANK_ACCOUNT_TYPE%>_<%=bankAccountType.getName()%>_editchkfield" name="<%=PaymentMethodName.BANK_ACCOUNT_TYPE%>" value="<%=bankAccountType.getName()%>" <%=(bankAccountType.getName().equals(ccBankAccountType)) ? "CHECKED" : ""%>><label for="<%=PaymentMethodName.BANK_ACCOUNT_TYPE%>_<%=bankAccountType.getName()%>_editchkfield"><%=bankAccountType.getDescription()%></label><br>
 <% 		
 		} 
 %>
-	<fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.BANK_ACCOUNT_TYPE%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler><span class="space2pix"><br></span></td>
+	<fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.BANK_ACCOUNT_TYPE%>' id='errorMsg'><div class="text11rbold"><%=errorMsg%></div></fd:ErrorHandler><span class="space2pix"><br></span></td>
+</fieldset></table></tr>
+<tr valign="middle">
+	<td align="right" class="text12"><label for="<%=PaymentMethodName.ABA_ROUTE_NUMBER%>_editchkfield">*&nbsp;Routing #&nbsp;&nbsp;</label></td>
+	<td><input class="text11" maxlength="50" SIZE="21" type="text" id="<%=PaymentMethodName.ABA_ROUTE_NUMBER%>_editchkfield" name="<%=PaymentMethodName.ABA_ROUTE_NUMBER%>" required="true" value="<%=ccAbaRouteNumber%>" readOnly="readOnly"><fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ABA_ROUTE_NUMBER%>' id='errorMsg'><div class="text11rbold"><%=errorMsg%></div></fd:ErrorHandler></td>
 </tr>
 <tr valign="middle">
-	<td align="right" class="text12">*&nbsp;Routing #&nbsp;&nbsp;</td>
-	<td><input class="text11" maxlength="50" SIZE="21" type="text" name="<%=PaymentMethodName.ABA_ROUTE_NUMBER%>" required="true" value="<%=ccAbaRouteNumber%>" readOnly="readOnly"><fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ABA_ROUTE_NUMBER%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
-</tr>
-<tr valign="middle">
-	<td align="right" class="text12">*&nbsp;Account #&nbsp;&nbsp;</td>
-	<td><input class="text11" maxlength="25" SIZE="21" type="text" name="<%=PaymentMethodName.ACCOUNT_NUMBER%>" required="true" value="<%=ccAccountNumber%>" readOnly="readOnly"><fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ACCOUNT_NUMBER%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+	<td align="right" class="text12"><label for="<%=PaymentMethodName.ACCOUNT_NUMBER%>_editchkfield">*&nbsp;Account #&nbsp;&nbsp;</label></td>
+	<td><input class="text11" maxlength="25" SIZE="21" type="text" id="<%=PaymentMethodName.ACCOUNT_NUMBER%>_editchkfield" name="<%=PaymentMethodName.ACCOUNT_NUMBER%>" required="true" value="<%=ccAccountNumber%>" readOnly="readOnly"><fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ACCOUNT_NUMBER%>' id='errorMsg'><div class="text11rbold"><%=errorMsg%></div></fd:ErrorHandler></td>
 </tr>
 
 <tr valign="middle">
-	<td align="right" class="text12">*&nbsp;Bank Name&nbsp;&nbsp;</td>
-	<td><input class="text11" maxlength="100" SIZE="21" type="text" name="<%=PaymentMethodName.BANK_NAME%>" required="true" value="<%=ccBankName%>"><fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.BANK_NAME%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+	<td align="right" class="text12"><label for="<%=PaymentMethodName.BANK_NAME%>_editchkfield">*&nbsp;Bank Name&nbsp;&nbsp;</label></td>
+	<td><input class="text11" maxlength="100" SIZE="21" type="text" id="<%=PaymentMethodName.BANK_NAME%>_editchkfield" name="<%=PaymentMethodName.BANK_NAME%>" required="true" value="<%=ccBankName%>"><fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.BANK_NAME%>' id='errorMsg'><div class="text11rbold"><%=errorMsg%></div></fd:ErrorHandler></td>
 </tr>
 </table>
 
 <br><br>
 <table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_3_CHECKACCT_FIELDS_TOTAL%>">
 <tr valign="top">
-	<td width="693" class="text12"><img src="/media_stat/images/headers/address_for_acct.gif" width="179" height="9" border="0" alt="ADDRESS FOR THIS ACCOUNT">&nbsp;&nbsp;&nbsp;* Required information<BR>
+	<td width="693" class="text12"><span class="title18"> ADDRESS FOR THIS ACCOUNT</span>&nbsp;&nbsp;&nbsp;<span class="text12bold"> * Required information</span><BR>
 		<img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_CHECKOUT_STEP_3_CHECKACCT_FIELDS_TOTAL%>" height="1" border="0" vspace="3"><br>
 		<br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br></td></tr>
 </table>
-<table border="0" cellspacing="1" cellpadding="0" width="693">
+<table class="accessibilitySpacing" border="0" cellspacing="1" cellpadding="0" width="800">
 	<tr valign="middle">
-	    <td width="150" align="right" class="text12">*&nbsp;Street Address&nbsp;&nbsp;</td>
-		<td width="542"  class="text12"><input type="text" maxlength="50" SIZE="21" class="text11" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>" required="true" value ="<%=ccAddress1%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
-		&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>"><span class="text11rbold"></fd:ErrorHandler><% if(EnumServiceType.CORPORATE.equals(yuzer.getSelectedServiceType())){ %>Floor/Suite #<% }else{ %>Apt. #<% } %>&nbsp;&nbsp;<input type="text" maxlength="10" size="4" class="text11" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>" value ="<%=ccApartment%>"></td>
+	    <td width="150" align="right" class="text12"><label for="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>_editchkactfield">*&nbsp;Street Address&nbsp;&nbsp;</label></td>
+		<td width="542"  class="text12"><div style="display:inline-block;vertical-align:top;"><input type="text" maxlength="50" SIZE="21" class="text11" id="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>_editchkactfield" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>" required="true" value ="<%=ccAddress1%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>' id='errorMsg'><div class="text11rbold"><%=errorMsg%></div></fd:ErrorHandler>
+		&nbsp;&nbsp;</div><div style="display:inline-block;vertical-align:top;"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>"><span class="text11rbold"></fd:ErrorHandler><label for="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>_editchkfield"><% if(EnumServiceType.CORPORATE.equals(yuzer.getSelectedServiceType())){ %>Floor/Suite #<% }else{ %>Apt. #<% } %>&nbsp;&nbsp;</label><input type="text" maxlength="10" size="4" class="text11" id="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>_editchkfield"  name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>" value ="<%=ccApartment%>"></div></td>
 	</tr>
 	<tr valign="middle">
-	    <td align="right" class="text12">&nbsp;Address Line 2&nbsp;&nbsp;</td>
-		<td><input type="text" maxlength="50" SIZE="21" class="text11" name="<%=EnumUserInfoName.BIL_ADDRESS_2.getCode()%>"  value="<%=ccAddress2%>">&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ADDRESS_2.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+	    <td align="right" class="text12"><label for="<%=EnumUserInfoName.BIL_ADDRESS_2.getCode()%>_editchkfield">&nbsp;Address Line 2&nbsp;&nbsp;</label></td>
+		<td><input type="text" maxlength="50" SIZE="21" class="text11" id="<%=EnumUserInfoName.BIL_ADDRESS_2.getCode()%>_editchkfield" name="<%=EnumUserInfoName.BIL_ADDRESS_2.getCode()%>"  value="<%=ccAddress2%>">&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ADDRESS_2.getCode()%>' id='errorMsg'><div class="text11rbold"><%=errorMsg%></div></fd:ErrorHandler></td>
 	</tr>
 	<tr valign="middle">
-	    <td align="right" class="text12">*&nbsp;City&nbsp;&nbsp;</td>
-		<td><input type="text" class="text11" SIZE="21" name="<%=EnumUserInfoName.BIL_CITY.getCode()%>" required="true" value="<%=ccCity%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_CITY.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+	    <td align="right" class="text12"><label for="<%=EnumUserInfoName.BIL_CITY.getCode()%>_editchkfield">*&nbsp;City&nbsp;&nbsp;</label></td>
+		<td><input type="text" class="text11" SIZE="21" id="<%=EnumUserInfoName.BIL_CITY.getCode()%>_editchkfield" name="<%=EnumUserInfoName.BIL_CITY.getCode()%>" required="true" value="<%=ccCity%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_CITY.getCode()%>' id='errorMsg'><div class="text11rbold"><%=errorMsg%></div></fd:ErrorHandler></td>
 	</tr>
 	<tr valign="middle">
-	    <td align="right" class="text12">*&nbsp;State&nbsp;&nbsp;</td>
-		<td  class="text12"><input size="3" class="text11" name="<%=EnumUserInfoName.BIL_STATE.getCode()%>" required="true" value="<%=ccState%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_STATE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;&nbsp;&nbsp;*&nbsp;Zip/Postal Code&nbsp;&nbsp;<input type="text" maxlength="5" class="text11" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>" required="true" size="6"  value = "<%=ccZipCode%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+	    <td align="right" class="text12"><label for="<%=EnumUserInfoName.BIL_STATE.getCode()%>_editchkfield">*&nbsp;State&nbsp;&nbsp;</label></td>
+		<td  class="text12"><div style="display:inline-block;vertical-align:top;"><input size="3" class="text11" id="<%=EnumUserInfoName.BIL_STATE.getCode()%>_editchkfield" name="<%=EnumUserInfoName.BIL_STATE.getCode()%>" required="true" value="<%=ccState%>"></div><div style="display:inline-block;vertical-align:top;"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_STATE.getCode()%>' id='errorMsg'><div class="text11rbold"><%=errorMsg%></div></fd:ErrorHandler><label for="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>_editchkfield">&nbsp;&nbsp;&nbsp;*&nbsp;Zip/Postal Code&nbsp;&nbsp;</label><input type="text" maxlength="5" class="text11" id="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>_editchkfield" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>" required="true" size="6"  value = "<%=ccZipCode%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>' id='errorMsg'><div class="text11rbold"><%=errorMsg%></div></fd:ErrorHandler></div></td>
 	</tr>
 </table>
 
@@ -252,23 +252,23 @@ if (isValidPaymentId) {
 <%-- if first time, need to agree to terms --%><br><br>
 <table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_3_CHECKACCT_FIELDS_TOTAL%>">
 <tr valign="top">
-<td width="693" class="text12"><img src="/media_stat/images/headers/terms_of_use.gif" width="86" height="9" border="0" alt="TERMS OF USE">&nbsp;&nbsp;&nbsp;* Required information<BR>
+<td width="693" class="text12"><span class="title18"><label class="tos_editchkfield">TERMS OF USE</label></span><span class="text12bold"> * Required information</span><BR>
 <IMG src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_CHECKOUT_STEP_3_CHECKACCT_FIELDS_TOTAL%>" height="1" border="0" VSPACE="3"><br>
 <span class="text11">These terms form part of the FreshDirect <a href="javascript:popup('/registration/user_agreement.jsp?show=terms','large')">Customer Agreement</a>.</span>
 </td>
 </tr></table><br>
-<textarea cols="90" rows="7" readonly xname="tos">
+<textarea cols="90" rows="7" id="tos_editchkfield" readonly xname="tos">
 	<%@ include file="/includes/registration/checkacct_terms.txt" %>
 </textarea><br><br>
 <table cellpadding="0" cellspacing="0" border="0">
 <tr valign="top">
-	<td width="45" align="right">*&nbsp;<input type="checkbox" value="yes" name="<%=PaymentMethodName.TERMS%>" required="true"></td>
+	<td width="45" align="right"><span class="title18">*&nbsp;</span><input type="checkbox" value="yes" id="<%=PaymentMethodName.TERMS%>_editchkfield" name="<%=PaymentMethodName.TERMS%>" required="true"></td>
 	<td>
-		<FONT class="space4pix"><br></FONT><FONT class="text12bold">I have read and agree to the Customer Agreement</FONT><br><span class="space2pix"><br></span>
+		<FONT class="space4pix"><br></FONT><FONT class="text12bold"><label for="<%=PaymentMethodName.TERMS%>_editchkfield">I have read and agree to the Customer Agreement</label></FONT><br><span class="space2pix"><br></span>
 		<a href="javascript:popup('/registration/checkacct_terms.jsp','large')"><FONT class="text12">Click here for a printable version</FONT></a><br><br>
 	</td>
 </tr>
-<fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.TERMS%>' id='errorMsg'><tr valign="top"><td colspan="2"><span class="text11rbold"><%=errorMsg%></span></td></tr></fd:ErrorHandler>
+<fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.TERMS%>' id='errorMsg'><tr valign="top"><td colspan="2"><div class="text11rbold"><%=errorMsg%></div></td></tr></fd:ErrorHandler>
 </table>
 <% } else { %>
 <input type="hidden" name="<%=PaymentMethodName.TERMS%>" value="yes">

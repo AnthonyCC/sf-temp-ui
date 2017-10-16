@@ -29,8 +29,9 @@ final int W_YA_ADD_CHECKACCT = 970;
 <%
 boolean proceedThruCheckout = false;
 %>
+<form fdform class="top-margin10 dispblock-fields" fdform-displayerrorafter method="post">
 <table WIDTH="<%= W_YA_ADD_CHECKACCT %>" cellspacing="0" cellpadding="0" border="0">
-<form method="post">
+
 <tr>
 <td class="text11" WIDTH="<%= W_YA_ADD_CHECKACCT %>">
 <font class="title18">Add Checking Account</font><br><span class="space2pix"><br></span>
@@ -50,6 +51,7 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
 				</TD>
 </TR>
 </TABLE>
+</form>
 <br>
 </fd:PaymentMethodController>
 </tmpl:put>

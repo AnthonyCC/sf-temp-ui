@@ -34,9 +34,9 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 	</fd:ErrorHandler>
 
 <%} %>
-
+<form fdform class="top-margin10 dispblock-fields" fdform-displayerrorafter method="post">
 <table WIDTH="<%= W_YA_ADD_CREDITCARD %>" cellspacing="0" cellpadding="0" border="0">
-<form method="post">
+
 <tr>
 <td><IMG src="/media_stat/images/snapIcon.jpg" WIDTH="29" HEIGHT="33" BORDER="0"></td>
 <td>&nbsp;</td>
@@ -62,6 +62,7 @@ Please enter new EBT card information.
 				</TD>
 </TR>
 </TABLE>
+</form>
 <br>
 <%--<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="675">
 <TR VALIGN="TOP"><TD WIDTH="640"><%@ include file="/includes/i_footer_account.jspf"%></TD></TR>

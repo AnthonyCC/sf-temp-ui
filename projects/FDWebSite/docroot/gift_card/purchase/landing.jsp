@@ -141,12 +141,12 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 				<td align="center" colspan="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="16" border="0" /></td>
 			</tr>
 			<tr>
-				<td colspan="3" align="center"><a href="">
-					<input type="image" src="/media_stat/images/giftcards/landing/shop_giftcard_btn.jpg" alt="Customize Your Gift Card" name="gcLand_shopNow" id="gcLand_shopNow" border="0" onclick="$('giftcard_form').submit();return false;" />
+				<td colspan="3" align="center">
+					<button class="cssbutton orange" name="gcLand_shopNow" id="gcLand_shopNow" border="0" onclick="$('giftcard_form').submit();return false;" >CUSTOMIZE YOUR GIFT CARD</button>
 				</td>
-			<%if(FDStoreProperties.isGiftCardDonationEnabled() && donationOrgList != null && donationOrgList.size() > 0) { %>
+			<%if(FDStoreProperties.isGiftCardDonationEnabled() && donationOrgList != null && donationOrgList.size() > 0 || true) { %>
 				<td align="center" colspan="2">
-					<input type="image" src="/media_stat/images/giftcards/landing/donate_giftcard_btn.jpg" alt="Donate Giftcard" name="gcDonateLand_shopNow" id="gcLand_shopNow" border="0" onClick="return pendGC();return false;" />
+					<button class="cssbutton orange" name="gcDonateLand_shopNow" id="gcLand_shopNow" onClick="return pendGC();return false;" >Donate Gift Card</button>
 				</td>
 			<% } %>
 			</tr>

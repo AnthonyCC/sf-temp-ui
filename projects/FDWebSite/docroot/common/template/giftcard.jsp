@@ -1,9 +1,10 @@
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
 <% //expanded page dimensions
 final int W_GIFTCARD_TOTAL = 970;
+boolean useFdxGlobalNav = FDStoreProperties.isFdxLocationbarEnabled();
 %>
 
 <%
@@ -51,10 +52,9 @@ final int W_GIFTCARD_TOTAL = 970;
        } // if
     } // local block
 %>
-
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
-<body onload="<%= request.getAttribute("bodyOnLoad")%>" onunload="<%= request.getAttribute("bodyOnUnload")%>" >	
+<body onload="<%= request.getAttribute("bodyOnLoad")%>" onunload="<%= request.getAttribute("bodyOnUnload")%>" data-gc-page >	
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>      
 	<center>
 	<%
@@ -112,37 +112,9 @@ final int W_GIFTCARD_TOTAL = 970;
 			<td width="<%=W_GIFTCARD_TOTAL%>" bgcolor="#<%=color%>" valign="bottom"><img src="/media_stat/images/layout/clear.gif" alt="" width="<%=W_GIFTCARD_TOTAL%>" height="1" border="0"></td>
 		</tr>
 	</table>
-
-	<table width="<%=W_GIFTCARD_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
-		<tr>
-			<td align="center" class="text11bold">
-				<img src="/media_stat/images/layout/clear.gif" width="1" height="14" alt="" />
-				<br /><a href="/index.jsp">Home</a>
-				&nbsp;&nbsp;<font color="#999999"><b>|</b></font>
-				&nbsp;&nbsp;<a href="/your_account/manage_account.jsp">Your Account</a>
-				&nbsp;&nbsp;<font color="#999999"><b>|</b></font>
-				&nbsp;&nbsp;<a href="/search.jsp">Search</a>
-				&nbsp;&nbsp;<font color="#999999"><b>|</b></font>
-				&nbsp;&nbsp;<a href="/help/index.jsp">Help/FAQ</a>
-				&nbsp;&nbsp;<font color="#999999"><b>|</b></font>
-				&nbsp;&nbsp;<a href="/help/index.jsp">Contact Us</a>
-				<br /><img src="/media_stat/images/layout/clear.gif" width="1" height="20" alt="" />
-			</td>
-		</tr>
-		<tr>
-			<td align="center" class="text11">
-				<%@ include file="/shared/template/includes/copyright.jspf" %>
-				<fd:IncludeMedia name="/media/layout/nav/globalnav/footer/after_copyright_footer.ftl">
-					<br /><img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" />
-					<br /><a href="/help/privacy_policy.jsp">Privacy Policy</a>
-					&nbsp;<font color="#999999">|</font>
-					&nbsp;<a href="/help/terms_of_service.jsp">Customer Agreement</a>
-					&nbsp;<font color="#999999">|</font>
-					&nbsp;<a href="/help/aol_note.jsp">A note on images for AOL users</a>
-				</fd:IncludeMedia>
-			</td>
-		</tr>
-	</table>
+	<%@ include file="/common/template/includes/footer.jspf" %>
+    <%@ include file="/common/template/includes/i_jsmodules.jspf" %>
+	<tmpl:get name='customJsBottom'/>
 </center>
 
 </body>

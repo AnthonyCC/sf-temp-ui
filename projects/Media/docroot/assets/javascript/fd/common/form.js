@@ -177,13 +177,28 @@ var FreshDirect = FreshDirect || {};
     }
 
     setTimeout(function () {
-      var hashName = utils.createHash(name + error);
-      if ($el.attr('invalid')) {
-        if ((!errorid || $('['+pfx+'-errorid="'+errorid+'"]').length === 0) && $('['+pfx+'-errorhash="'+hashName+'"]').length === 0) {
-          $parent.prepend('<span '+pfx+'-error="'+name+'" '+(errorid ? pfx+'-errorid="'+errorid+'"': '') +pfx+'-errorhash="'+hashName+'" '+'>'+error+'</span>');
+        var hashName = utils.createHash(name + error);
+        if ($el.attr('invalid')) {
+          if ((!errorid || $('['+pfx+'-errorid="'+errorid+'"]').length === 0) && $('['+pfx+'-errorhash="'+hashName+'"]').length === 0) {
+              if ($el.closest('form').attr(pfx+'-displayerrorafter') !== undefined || $el.attr(pfx+'-displayerrorafter') !== undefined) {
+                  var $temp = $parent;
+                  if ($el.attr(pfx+'-displayerrorafterselector') !== undefined ) {
+                      $temp = $($el.attr(pfx+'-displayerrorafterselector'));
+                      if (!$temp.length) {
+                          $temp = $parent;
+                      }
+                  }
+                  if ($temp.hasClass('select-wrapper')) { /* use after because selects use ::after pseudo-element */
+                      $temp.after('<span '+pfx+'-error="'+name+'" '+(errorid ? pfx+'-errorid="'+errorid+'"': '') +pfx+'-errorhash="'+hashName+'" '+'>'+error+'</span>');
+                  } else { /* default append, not safe for elems that user ::after */
+                      $temp.append('<span '+pfx+'-error="'+name+'" '+(errorid ? pfx+'-errorid="'+errorid+'"': '') +pfx+'-errorhash="'+hashName+'" '+'>'+error+'</span>');
+                  }
+              } else {
+                  $parent.prepend('<span '+pfx+'-error="'+name+'" '+(errorid ? pfx+'-errorid="'+errorid+'"': '') +pfx+'-errorhash="'+hashName+'" '+'>'+error+'</span>');
+              }
+          }
         }
-      }
-    }, 100);
+      }, 100);
 
     $el.attr('invalid', true);
   };

@@ -22,8 +22,9 @@ final int W_YA_EDIT_CHECKACCT = 970;
 	<%@ include file="/includes/i_error_messages.jspf" %>
 </fd:ErrorHandler>
 <%boolean proceedThruCheckout=false;%>
+<form fdform class="top-margin10 dispblock-fields" fdform-displayerrorafter method="post">
 <table WIDTH="<%= W_YA_EDIT_CHECKACCT %>" cellspacing="0" cellpadding="0" border="0">
-<form method="post">
+
 <tr>
 <td class="text11" WIDTH="<%= W_YA_EDIT_CHECKACCT %>">
 <font class="title18">Edit Checking Account</font><br>

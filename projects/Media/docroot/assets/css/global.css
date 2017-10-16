@@ -3382,3 +3382,9 @@ td .qtyinput input[type="text"].qty:hover{
 .tableFooterGroup{ 
 	display:table-footer-group !important;
 }
+/* focus style for sign in button in overlay and signin page*/
+
+input#signupbtn:focus, input#signinbtn:focus{
+    border-style: solid;
+    border-width: 1px !important;
+}

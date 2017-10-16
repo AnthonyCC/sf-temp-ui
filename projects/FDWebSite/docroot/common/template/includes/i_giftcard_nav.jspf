@@ -20,10 +20,20 @@ final int W_GIFTCARD_NAV_TOTAL = 970;
 
 <jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
 <jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
-<div id="toptoolbar">
-<jsp:include page="/shared/locationbar/locationbar.jsp" />
-<jsp:include page="/shared/messages/messages.jsp" />
-</div>
+<% if (useFdxGlobalNav) { %>
+	<div id="toptoolbar">
+		<jsp:include page="/shared/locationbar/locationbar_fdx.jsp" />
+		<jsp:include page="/shared/messages/messages_fdx.jsp" />
+	</div>
+
+<% } else { %>
+
+	<div id="toptoolbar">
+	  <jsp:include page="/shared/locationbar/locationbar.jsp" />
+	  <jsp:include page="/shared/messages/messages.jsp" />
+	</div>
+
+<% } %>
 
 <%
 	//giftcard top nav

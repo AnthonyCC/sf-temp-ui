@@ -162,7 +162,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 
 							if(recipListContinue != null && recipListContinue.size() > 0) {
 						%>
-							<input type="image" onClick="return pendGC();" name="form_action_name" src="/media_stat/images/giftcards/purchase/btn_continue.gif" width="80" height="25"  hspace="4" vspace="4" alt="continue" border="0">
+							<button onClick="return pendGC();" name="form_action_name" class="cssbutton small orange">CONTINUE</button>
 						<% } %>
 					</td>
 				</tr>
@@ -173,7 +173,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 				</tr>
 			</table>
 			
-			<form name="giftcard_form" id="giftcard_form" method="post">
+			<form fdform class="top-margin10 dispblock-fields" fdform-displayerrorafter name="giftcard_form" id="giftcard_form" method="post">
 				<input type="hidden" name="actionName" value="">
 				<input type="hidden" id="deleteId" name="deleteId" value="">
                 <input type="hidden" id="checkout" name="checkout" value="">
@@ -207,7 +207,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 						if(recipListContinue != null && recipListContinue.size() > 0) {
 					%>
 						<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
-						<input type="image" onClick="return pendGC();" name="form_action_name" src="/media_stat/images/giftcards/purchase/btn_continue.gif" width="80" height="25"  hspace="4" vspace="4" alt="continue" border="0">
+                        <button onClick="return pendGC();" name="form_action_name" class="cssbutton small orange">CONTINUE</button>
 					<% } %>
 				</td>
 			</tr>
