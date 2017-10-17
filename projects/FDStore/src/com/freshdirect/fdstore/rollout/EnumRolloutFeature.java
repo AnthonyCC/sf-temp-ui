@@ -24,7 +24,8 @@ public enum EnumRolloutFeature {
     mobwebindexopt("mobwebindexopt", "2017"), /* optimized index template */
     printinvoice("printinvoice", "2016"), // has print invoice button
     carttabcars("carttabcars", "2017"),
-    debitCardSwitch("debitCardSwitch", "2017");
+    debitCardSwitch("debitCardSwitch", "2017"),
+    cosRedesign2017("cosRedesign2017", "2017");
 
     private final EnumRolloutFeature child;
     private final String cookieName;

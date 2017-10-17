@@ -1881,7 +1881,7 @@ static {
         defaults.put(PROP_ENABLE_FREE_PRODUCT,"false"); // Enable free product
         
         defaults.put(PROP_ENABLE_WEBSITE_MOBILE_SAME_NUTRITION_SOY,"false");
-        
+        defaults.put("feature.rollout.cosRedesign2017", "GLOBAL:ENABLED,false;");
 
         refresh();
     }
