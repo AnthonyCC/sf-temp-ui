@@ -45,10 +45,15 @@ public class ContactUs {
 						&& !EnumEStoreId.FD.equals(ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId()) 
 								? ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId().getContentId().toLowerCase() : null;
         
-        if(storeKey!=null)
-        selections = tagWrapper.getSubjectsFdx();
-        else
-        selections = tagWrapper.getSubjects();
+        if(storeKey!=null){
+        	if(this.sessionUser.isLoggedIn()){
+        		selections = tagWrapper.getSubjectsFdx();
+        	}else{
+        		selections = tagWrapper.getSubjectsFdxAnonymous();
+        	}
+        }else{
+        	selections = tagWrapper.getSubjects();
+        }
         int index = 0;
         for (Selection selection : selections) {
             values.put(Integer.toString(index), selection.getDescription());
