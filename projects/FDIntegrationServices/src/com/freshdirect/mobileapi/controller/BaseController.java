@@ -729,7 +729,7 @@ public abstract class BaseController extends AbstractController implements Messa
 	
     protected LoggedIn createLoginResponseMessage(SessionUser user) throws FDException {
         LoggedIn responseMessage = null;
-        if (user.isLoggedIn()) {
+        if (user!=null && user.isLoggedIn()) {
             responseMessage = formatLoginMessage(user);
         } else {
             responseMessage = new LoggedIn();
