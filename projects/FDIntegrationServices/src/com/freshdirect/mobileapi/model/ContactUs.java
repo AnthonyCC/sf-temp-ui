@@ -46,7 +46,11 @@ public class ContactUs {
 								? ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId().getContentId().toLowerCase() : null;
         
         if(storeKey!=null){
-        	selections = tagWrapper.getSubjectsFdx();
+        	if(this.sessionUser!=null&&this.sessionUser.isLoggedIn()){
+        		selections = tagWrapper.getSubjectsFdx();
+        	}else{
+        		selections = tagWrapper.getSubjectsFdxAnonymous();
+        	}
         }else{
         	selections = tagWrapper.getSubjects();
         }
