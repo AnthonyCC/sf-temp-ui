@@ -260,6 +260,11 @@
 				<EnumValue value="TWO_TWO" label="2/2"/>
 				<EnumValue value="THREE_ONE" label="3/1"/>
 			</EnumDef>
+			<EnumDef type="S" name="catalog"  label="Catalog" required="true">
+				<EnumValue value="ALL" label="ALL"/>
+				<EnumValue value="RESIDENTAL" label="RESIDENTAL"/>
+				<EnumValue value="CORPORATE" label="CORPORATE"/>				
+			</EnumDef>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="departments" label="Departments" cardinality="Many">
@@ -414,6 +419,11 @@
 			<AttributeDef name="SEO_META_DESC_FDX" type="S" label="SEO Meta Description FDX" inheritable="false"/>
 			<AttributeDef name="PAGE_TITLE_FDX" type="S" label="Page Title FDX" inheritable="false"/>
 			<AttributeDef name="SKIP_SITEMAP" type="B" label="Skip Sitemap" inheritable="false"/>
+			<EnumDef type="S" name="catalog"  label="Catalog" required="true">
+				<EnumValue value="ALL" label="ALL"/>
+				<EnumValue value="RESIDENTAL" label="RESIDENTAL"/>
+				<EnumValue value="CORPORATE" label="CORPORATE"/>				
+			</EnumDef>			
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="categories" navigable="true" cardinality="Many">

@@ -39,6 +39,7 @@ import com.freshdirect.cms.changecontrol.ContentNodeChange;
 import com.freshdirect.cms.context.Context;
 import com.freshdirect.cms.context.ContextService;
 import com.freshdirect.cms.context.ContextualContentNodeI;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.fdstore.PreviewLinkProvider;
 import com.freshdirect.cms.meta.EnumDef;
 import com.freshdirect.cms.node.ContentNodeUtil;
@@ -629,6 +630,10 @@ public class TranslatorToGwt {
 
     private static void prepareModel(ContentNodeI node, ContentNodeModel result) {
         if (node != null) {
+            if (FDContentTypes.DEPARTMENT.equals(node.getKey().getType()) || FDContentTypes.SUPER_DEPARTMENT.equals(node.getKey().getType())) {
+                decorateIconOverride(node, result);
+            }
+
             if (result instanceof TreeContentNodeModel) {
                 ((TreeContentNodeModel) result).setHasChildren(node.getChildKeys().size() > 0);
             }
@@ -960,5 +965,20 @@ public class TranslatorToGwt {
         target.setChangedValue(draftChange.getValue());
 
         return target;
+    }
+
+    private static void decorateIconOverride(ContentNodeI node, ContentNodeModel model) {
+
+        String catalogValue = (String) node.getAttributeValue("catalog");
+
+        if (catalogValue != null && catalogValue != "") {
+            if ("ALL".equals(catalogValue)) {
+                model.setIconOverride("OverrideRed");
+            } else if ("CORPORATE".equals(catalogValue)) {
+                model.setIconOverride("OverrideGreen");
+            }
+
+        }
+
     }
 }

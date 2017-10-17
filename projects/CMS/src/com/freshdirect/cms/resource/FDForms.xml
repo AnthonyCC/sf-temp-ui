@@ -50,6 +50,12 @@
 						</fields>
 					</CmsSection>
 					<CmsSection>
+						<title>CATALOG</title>
+						<fields>
+							<CmsField><attribute>catalog</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
 						<title>LAYOUT</title>
 						<fields>
 							<CmsField><attribute>LAYOUT</attribute></CmsField>
@@ -1953,6 +1959,12 @@
 						<fields>
 							<CmsField><attribute>name</attribute></CmsField>
 							<CmsField><attribute>browseName</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>CATALOG</title>
+						<fields>
+							<CmsField><attribute>catalog</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>

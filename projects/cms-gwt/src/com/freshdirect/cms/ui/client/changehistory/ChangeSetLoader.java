@@ -1,7 +1,9 @@
 package com.freshdirect.cms.ui.client.changehistory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
@@ -91,6 +93,8 @@ public class ChangeSetLoader implements DataProxy<PagingLoadResult<? extends Mod
 
     void convertToRows(ChangeSetQueryResponse response) {
 
+        Map<String, String> catalogChangesAndValues = new HashMap<String, String>();
+
         for (GwtChangeSet changeSet : response.getChanges()) {
             for (GwtNodeChange nodeChange : changeSet.getNodeChanges()) {
                 if (nodeChange.getChangeDetails().size() == 0) {
@@ -128,11 +132,26 @@ public class ChangeSetLoader implements DataProxy<PagingLoadResult<? extends Mod
 
                         b.set("previewLink", nodeChange.getPreviewLink());
 
+                        if ("catalog".equals(detail.getAttributeName())) {
+                            catalogChangesAndValues.put(nodeChange.getKey(), detail.getNewValue());
+                        }
+
                         alreadyLoaded.add(b);
                     }
                 }
             }
         }
+
+        for (ContentNodeModel contentNodeModel : alreadyLoaded) {
+            if (catalogChangesAndValues.containsKey(contentNodeModel.getKey())) {
+                if ("ALL".equals(catalogChangesAndValues.get(contentNodeModel.getKey()))) {
+                    contentNodeModel.setIconOverride("OverrideRed");
+                } else if ("CORPORATE".equals(catalogChangesAndValues.get(contentNodeModel.getKey()))) {
+                    contentNodeModel.setIconOverride("OverrideGreen");
+                }
+            }
+        }
+
         loadedPosition += response.getChanges().size();
     }
 

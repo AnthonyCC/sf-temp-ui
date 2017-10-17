@@ -19,7 +19,8 @@ public class ContentNodeModel extends BaseModel implements Comparable<ContentNod
 
     private String previewUrl = null;
     private int width = 0;    
-    private int height = 0; 
+    private int height = 0;
+    private String iconOverride = "";
     
 	protected ContentNodeModel() {		
 	}
@@ -93,9 +94,14 @@ public class ContentNodeModel extends BaseModel implements Comparable<ContentNod
 		this.height = height;
 	}
 
-	
-	
-	
+    public String getIconOverride() {
+        return iconOverride;
+    }
+
+    public void setIconOverride(String iconOverride) {
+        this.iconOverride = iconOverride;
+    }
+
 	public boolean isMediaType() {
 		String type = getType();
 		return type != null && ( type.equals( "Image" ) || type.equals( "Html" ) );
@@ -164,6 +170,7 @@ public class ContentNodeModel extends BaseModel implements Comparable<ContentNod
         }
         sb.append( "<td><img src=\"img/icons/" );
         sb.append(getType());
+        sb.append(getIconOverride());
         sb.append(".gif\"></td>");
         sb.append("<td><a href=\"#");
         sb.append(getKey());
@@ -223,6 +230,7 @@ public class ContentNodeModel extends BaseModel implements Comparable<ContentNod
         sb.append("\">");
         sb.append("<img src=\"img/icons/");
         sb.append(getType());
+        sb.append(getIconOverride());
         sb.append(".gif\">");
         sb.append("</a></td></tr></table>");
         return sb.toString();
