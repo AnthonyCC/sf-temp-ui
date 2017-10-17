@@ -32,6 +32,7 @@ import weblogic.auddi.util.Logger;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.freshdirect.common.address.ContactAddressModel;
+import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.EnumTaxationType;
@@ -2190,7 +2191,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	public boolean smsOptIn(String customerId, String mobileNumber,String eStoreId) throws FDResourceException {
 		Response<Boolean> response = null;
 		try {
-		response = this.httpGetDataTypeMap((getFdCommerceEndPoint(SMS_ALERT_OPTIN +"?customerId="+customerId+"&mobileNumber="+mobileNumber+"&eStoreId="+eStoreId)), new TypeReference<Response<Boolean>>() {});
+		response = this.httpGetDataTypeMap((getFdCommerceEndPoint(SMS_ALERT_OPTIN +"?customerId="+customerId+"&mobileNumber="+PhoneNumber.normalize(mobileNumber)+"&eStoreId="+eStoreId)), new TypeReference<Response<Boolean>>() {});
 		if(!response.getResponseCode().equals("OK"))
 			throw new FDResourceException(response.getMessage());
 		} catch (FDResourceException e) {
@@ -2203,7 +2204,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	public boolean smsOptInNonMarketing(String customerId, String mobileNumber,String eStoreId) throws FDResourceException  {
 		Response<Boolean> response = null;
 		try {
-		response = this.httpGetDataTypeMap((getFdCommerceEndPoint(SMS_ALERT_OPTIN_NONMARKETING +"?customerId="+customerId+"&mobileNumber="+mobileNumber+"&eStoreId="+eStoreId)), new TypeReference<Response<Boolean>>() {});
+		response = this.httpGetDataTypeMap((getFdCommerceEndPoint(SMS_ALERT_OPTIN_NONMARKETING +"?customerId="+customerId+"&mobileNumber="+PhoneNumber.normalize(mobileNumber)+"&eStoreId="+eStoreId)), new TypeReference<Response<Boolean>>() {});
 		if(!response.getResponseCode().equals("OK"))
 			throw new FDResourceException(response.getMessage());
 		} catch (FDResourceException e) {
@@ -2216,7 +2217,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	public boolean smsOptInMarketing(String customerId, String mobileNumber,String eStoreId) throws FDResourceException {
 		Response<Boolean> response = null;
 		try {
-		response = this.httpGetDataTypeMap((getFdCommerceEndPoint(SMS_ALERT_OPTIN_MARKETING +"?customerId="+customerId+"&mobileNumber="+mobileNumber+"&eStoreId="+eStoreId)), new TypeReference<Response<Boolean>>() {});
+		response = this.httpGetDataTypeMap((getFdCommerceEndPoint(SMS_ALERT_OPTIN_MARKETING +"?customerId="+customerId+"&mobileNumber="+PhoneNumber.normalize(mobileNumber)+"&eStoreId="+eStoreId)), new TypeReference<Response<Boolean>>() {});
 		if(!response.getResponseCode().equals("OK"))
 			throw new FDResourceException(response.getMessage());
 		} catch (FDResourceException e) {
@@ -2241,7 +2242,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		try {
 			String inputJson;
 			Request<RecievedSmsData> recieveSmsData = ModelConverter.buildSmsDataRequest(
-					mobileNumber, shortCode, carrierName, receivedDate,
+					 PhoneNumber.normalize(mobileNumber), shortCode, carrierName, receivedDate,
 					message, eStoreId);
 			inputJson = buildRequest(recieveSmsData);
 			postDataTypeMap(inputJson, getFdCommerceEndPoint(SMS_MESSAGE_UPDATE), new TypeReference<Response<Void>>() {});
@@ -2276,7 +2277,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	public boolean smsOrderCancel(String customerId, String mobileNumber,String orderId, String eStoreId) throws  FDResourceException {
 		Response<Boolean> response = null;
 		try {
-			Request<SmsOrderData> request = ModelConverter.buildSmsOrderDataRequest(customerId, mobileNumber, orderId, eStoreId);
+			Request<SmsOrderData> request = ModelConverter.buildSmsOrderDataRequest(customerId, PhoneNumber.normalize(mobileNumber), orderId, eStoreId);
 			String inputJson = buildRequest(request);
 			response = this.postData(inputJson, getFdCommerceEndPoint(SMS_ALERT_ORDER_CANCEL),Response.class);
 			if(!response.getResponseCode().equals("OK")){
@@ -2295,7 +2296,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	public boolean smsOrderConfirmation(String customerId, String mobileNumber,String orderId, String eStoreId) throws FDResourceException {
 		Response<Boolean> response = null;
 		try {
-			Request<SmsOrderData> request = ModelConverter.buildSmsOrderDataRequest(customerId, mobileNumber, orderId, eStoreId);
+			Request<SmsOrderData> request = ModelConverter.buildSmsOrderDataRequest(customerId, PhoneNumber.normalize(mobileNumber), orderId, eStoreId);
 			String inputJson = buildRequest(request);
 			response = this.postData(inputJson, getFdCommerceEndPoint(SMS_ALERT_ORDER_CONFIRM), Response.class);
 			if(!response.getResponseCode().equals("OK")){
@@ -2314,7 +2315,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	public boolean smsOrderModification(String customerId, String mobileNumber,String orderId, String eStoreId) throws FDResourceException {
 		Response<Boolean> response = null;
 		try {
-			Request<SmsOrderData> request = ModelConverter.buildSmsOrderDataRequest(customerId, mobileNumber, orderId, eStoreId);
+			Request<SmsOrderData> request = ModelConverter.buildSmsOrderDataRequest(customerId, PhoneNumber.normalize(mobileNumber), orderId, eStoreId);
 			String inputJson = buildRequest(request);
 			response = this.postData(inputJson, getFdCommerceEndPoint(SMS_ALERT_ORDER_MODIFY),Response.class);
 			if(!response.getResponseCode().equals("OK")){
@@ -3999,7 +4000,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		
 		SubmitOrderRequestData submitOrderRequestData = new SubmitOrderRequestData();
 		submitOrderRequestData = buildOrderRequestData(saleId, parentOrderId, tip, reservationId, firstName, lastName, deliveryInstructions, serviceType, 
-				 unattendedInstr, orderMobileNumber,erpOrderId,containsAlcohol);
+				 unattendedInstr, PhoneNumber.normalize(orderMobileNumber),erpOrderId,containsAlcohol);
 		Request<SubmitOrderRequestData> request = new Request<SubmitOrderRequestData>();
 		try {
 			request.setData(submitOrderRequestData);
@@ -4034,7 +4035,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			String unattendedInstr,String orderMobileNumber,String erpOrderId,boolean containsAlcohol) throws RemoteException {
 		SubmitOrderRequestData submitOrderRequestData = new SubmitOrderRequestData();
 		submitOrderRequestData = buildOrderRequestData(saleId, parentOrderId, tip, reservationId, firstName, lastName, deliveryInstructions, serviceType, 
-				 unattendedInstr, orderMobileNumber,erpOrderId,containsAlcohol);
+				 unattendedInstr, PhoneNumber.normalize(orderMobileNumber),erpOrderId,containsAlcohol);
 		Request<SubmitOrderRequestData> request = new Request<SubmitOrderRequestData>();
 		try {
 			request.setData(submitOrderRequestData);
