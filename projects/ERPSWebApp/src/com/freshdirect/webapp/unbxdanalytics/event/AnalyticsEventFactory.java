@@ -93,7 +93,7 @@ public final class AnalyticsEventFactory {
         if (event != null && AnalyticsEventType.VISITOR != event.getType() && event.isVisitorEventRequired()) {
             final Visitor visitor = ((AbstractAnalyticsEvent)event).getVisitor();
             final LocationInfo loc = ((AbstractAnalyticsEvent)event).getLocationInfo();
-            final boolean cosAction = ((AbstractAnalyticsEvent) event).isCosAction();
+            final boolean cosAction = event.isCosAction();
             
             visitorEvent = AnalyticsEventFactory.createEvent(AnalyticsEventType.VISITOR, visitor, loc, null, null, null, cosAction);
         }
