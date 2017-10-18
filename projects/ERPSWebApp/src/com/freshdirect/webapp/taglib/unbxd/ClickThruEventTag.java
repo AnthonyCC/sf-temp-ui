@@ -12,6 +12,7 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.cos.util.CosFeatureUtil;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventFactory;
@@ -49,7 +50,7 @@ public class ClickThruEventTag extends SimpleTagSupport {
     }
     
     public static void doSendEvent(FDUserI user, HttpServletRequest request, ProductModel model) {
-    		final boolean cosAction = false; // TODO
+    		final boolean cosAction = CosFeatureUtil.isUnbxdCosAction(user, request.getCookies());
     		doSendEvent(user, RequestUtil.getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER), model, cosAction);
     }
     
