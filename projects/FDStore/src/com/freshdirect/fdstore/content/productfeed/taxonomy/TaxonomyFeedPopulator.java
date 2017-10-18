@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.content.productfeed.taxonomy;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,6 +13,10 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ProductGrabberModel;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.grabber.GrabberServiceI;
 
 public class TaxonomyFeedPopulator {
 
@@ -72,6 +77,18 @@ public class TaxonomyFeedPopulator {
                 } else if (child.getType().equals(FDContentTypes.CATEGORY)) {
                     CategoryTaxonomyFeedElement subCategoryElement = populateCategoryTaxonomyFeedElementTaxonomyInfo(allNodes, allNodes.get(child));
                     categoryElement.getSubcategory().add(subCategoryElement);
+                } else if (child.getType().equals(FDContentTypes.PRODUCTGRABBER)) {
+                    GrabberServiceI grabber = ContentFactory.getInstance().getProductGrabberService();
+                    if (grabber != null) {
+                        ProductGrabberModel grabberModel = (ProductGrabberModel) ContentFactory.getInstance().getContentNodeByKey(child);
+                        Collection<ProductModel> grabbedProducts = grabber.getProducts(grabberModel);
+                        for (ProductModel productModel : grabbedProducts) {
+                            ProductTaxonomyFeedElement childProductElement = populateProductTaxonomyFeedElementTaxonomyInfo(allNodes, allNodes.get(productModel.getContentKey()),
+                                    categoryNode);
+                            categoryElement.getProduct().add(childProductElement);
+                        }
+                    }
+
                 }
             }
 

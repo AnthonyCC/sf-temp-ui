@@ -77,6 +77,7 @@ public class FDContentTypes {
     public final static ContentType MODULECONTAINER = ContentType.get("ModuleContainer");
     public final static ContentType MODULE_GROUP = ContentType.get("ModuleGroup");
     public final static ContentType MODULE = ContentType.get("Module");
+    public final static ContentType PRODUCTGRABBER = ContentType.get("ProductGrabber");
 
     private FDContentTypes() {
     }
