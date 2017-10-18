@@ -900,6 +900,7 @@ public class FDStoreProperties {
     // UNBXD integration
     private static final String PROP_UNBXD_API_KEY = "fdstore.unbxd.apikey";
     private static final String PROP_UNBXD_SITE_KEY = "fdstore.unbxd.sitekey";
+    private static final String PROP_UNBXD_COS_SITE_KEY = "fdstore.unbxd.cos.sitekey";
     private static final String PROP_UNBXD_BASE_URL = "fdstore.unbxd.baseurl";
     private static final String PROP_UNBXD_FALLBACK_ON_ERROR = "fdstore.unbxd.fallback.on.error";
     private static final String PROP_UNBXD_TRACKING_BASE_URL = "fdstore.unbxd.tracking.base_url";
@@ -1794,6 +1795,7 @@ static {
 
         defaults.put(PROP_UNBXD_API_KEY, "91a4d42b07d3346afbae9ee63134c5d2");
         defaults.put(PROP_UNBXD_SITE_KEY, "freshdirect_dev-u1469033821585");
+        defaults.put(PROP_UNBXD_COS_SITE_KEY, "freshdirect_dev-u1469033821585");
         defaults.put(PROP_UNBXD_BASE_URL, "http://search.unbxdapi.com/");
         defaults.put(PROP_UNBXD_FALLBACK_ON_ERROR, "false");
         defaults.put(PROP_UNBXD_TRACKING_BASE_URL, "http://tracker.unbxdapi.com/v2/1p.jpg");
@@ -4594,6 +4596,10 @@ static {
 
     public static String getUnbxdSiteKey() {
         return get(PROP_UNBXD_SITE_KEY);
+    }
+
+    public static String getUnbxdCosSiteKey() {
+        return get(PROP_UNBXD_COS_SITE_KEY);
     }
 
     public static String getUnbxdBaseUrl() {

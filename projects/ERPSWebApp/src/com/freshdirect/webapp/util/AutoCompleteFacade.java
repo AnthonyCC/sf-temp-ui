@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Category;
@@ -17,6 +18,7 @@ import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.search.unbxd.UnbxdIntegrationService;
+import com.freshdirect.webapp.search.unbxd.UnbxdSearchProperties;
 import com.freshdirect.webapp.search.unbxd.UnbxdServiceUnavailableException;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
@@ -48,10 +50,16 @@ public class AutoCompleteFacade implements Serializable {
     public List<String> getTerms(String prefix, HttpServletRequest request) {
         LOGGER.info("autocomplete for " + prefix);
         List<String> results;
-        if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, request.getCookies(),
-                (FDUserI) request.getSession().getAttribute(SessionName.USER))) {
+        FDUserI user = (FDUserI) request.getSession().getAttribute(SessionName.USER);
+        Cookie[] cookies = request.getCookies();
+
+        if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, cookies, user)) {
             try {
-                results = UnbxdIntegrationService.getDefaultService().suggestProducts(prefix);
+                UnbxdSearchProperties searchProperties = new UnbxdSearchProperties();
+                boolean corporateSearch = FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.cosRedesign2017, cookies, user) && user.isCorporateUser();
+                searchProperties.setCorporateSearch(corporateSearch);
+
+                results = UnbxdIntegrationService.getDefaultService().suggestProducts(prefix, searchProperties);
             } catch (IOException e) {
                 if (FDStoreProperties.getUnbxdFallbackOnError()) {
                     LOGGER.error("Error while calling UNBXD autocomplete, fallback to internal autocomplete");
