@@ -39,40 +39,41 @@ final int W_YA_GC_ORDER_DETAILS = 970;
     ErpCustomerInfoModel customerModel = FDCustomerFactory.getErpCustomerInfo(identity);
 %>
 	<div class="gcResendBox">
-		<div style="text-align: left;" class="gcResendBoxContent" id="gcResendBox">
-			<img src="/media_stat/images/giftcards/your_account/resend_hdr.gif" width="169" height="16" alt="Resend Gift Card" />
+		<div style="text-align: left;" class="gcResendBoxContent" id="gcResendBox"><form fdform class="top-margin10 dispblock-fields" fdform-displayerrorafter>
+			<span class="title18">Resend Gift Card</span>
 			<a href="#" onclick="Modalbox.hide(); return false;"><img src="/media_stat/images/giftcards/your_account/close.gif" width="50" height="11" alt="close" border="0" style="float: right;" /></a>
 			<br />If your Recipient never received their Gift Card, you may resend it by clicking Resend Now. If there was an error in the Recipient's email address, or to use a new one, edit the email field.
 			<br /><br /><img src="/media_stat/images/layout/cccccc.gif" alt="" width="390" height="1" border="0" /><br /><br />
 			<input type="hidden" id="gcSaleId" value="" />
 			<input type="hidden" id="gcCertNum" value="" />
 			<input type="hidden" id="gcType" value="" />
-			<table border="0" cellspacing="0" cellpadding="4" width="100%">
+			<table border="0" class="accessibilitySpacing" cellspacing="0" cellpadding="4" width="100%">
 				<tr>
-					<td width="130" align="right">Recipient Name:</td>
+					<td width="130" align="right"><label for=""gcResendRecipName"" >Recipient Name:</label></td>
 					<td><input id="gcResendRecipName" value="" /></td>
 				</tr>
 				<tr valign="middle">
-					<td width="130" align="right">Recipient Email (edit):</td>
+					<td width="130" align="right"><label for="gcResendRecipEmail">Recipient Email (edit):</label></td>
 					<td><input id="gcResendRecipEmail" value="" /></td>
 				</tr>
 				<tr>
-					<td width="130" align="right">Amount:</td>
-					<td><span id="gcResendRecipAmount"><!--  --></span></td>
+					<td width="130" align="right"><label for="gcResendRecipAmount">Amount:</label></td>
+					<td><span class="text14" id="gcResendRecipAmount"><!--  --></span></td>
 				</tr>
 				<tr>
-					<td width="130" align="right">Personal Message:</td>
+					<td width="130" align="right"><label for="gcResendRecipMsg">Personal Message:</label></td>
 					<td><textarea id="gcResendRecipMsg"></textarea></td>
 				</tr>
+				<tr><td colspan="2">&nbsp;&nbsp;</td></tr>
 				<tr>
-					<td width="150" align="right"><a href="#" onclick="Modalbox.hide(); return false;"><img src="/media_stat/images/giftcards/your_account/clear_btn.gif" width="60" height="25" alt="CANCEL" border="0" /></a></td>
-					<td><a href="#" onclick="recipResendEmail(); return false;"><img src="/media_stat/images/giftcards/your_account/resend_now_btn.gif" width="85" height="25" alt="RESEND" border="0" /></a></td>
+					<td width="150" align="right"><button class="cssbutton transparent small green" onclick="Modalbox.hide(); return false;">CANCEL</button></td>
+					<td><button class="cssbutton small green space"  onclick="recipResendEmail(); return false;">RESEND</button></td>
 				</tr>
 			</table>
 			<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
 			PLEASE NOTE: You will NOT receive a confirmation email for resent email Gift Cards.<br /><br />
 			<div id="gcResendErr">&nbsp;</div>
-		</div>
+		</form></div>
 	</div>
 <fd:GetOrder id='cart' saleId='<%= orderId %>'>
 <%

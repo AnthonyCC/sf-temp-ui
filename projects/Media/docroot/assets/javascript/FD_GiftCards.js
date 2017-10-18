@@ -907,7 +907,7 @@ function showDialogs() {
 				title: '',
 				overlayOpacity: .85,
 				overlayClose: false,
-				width: 425,
+				width: 450,
 				transitions: false,
 				autoFocusing: false,
 				centered: true,

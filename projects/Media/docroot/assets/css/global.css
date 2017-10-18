@@ -3388,3 +3388,7 @@ input#signupbtn:focus, input#signinbtn:focus{
     border-style: solid;
     border-width: 1px !important;
 }
+
+button.space {
+    margin-left: 10px;
+}

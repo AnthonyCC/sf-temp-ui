@@ -99,7 +99,7 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 						</tr>
 						<tr>
 							<td>
-								<form name="giftcard_donation_form" id="giftcard_donation_form" method="get" action="add_donation_giftcard.jsp">	
+								<form fdform class="top-margin10 dispblock-fields" fdform-displayerrorafter name="giftcard_donation_form" id="giftcard_donation_form" method="get" action="add_donation_giftcard.jsp">	
 									<div style="overflow-y:scroll;overflow-x:hidden;height:300px;border:1px solid #cccccc;padding-top: 10px;">			
 									<table border="0" cellspacing="0" cellpadding="2" width="278" >
 										<logic:iterate id="donId" collection="<%= donationOrgList %>" type="com.freshdirect.fdstore.content.DonationOrganization">
@@ -109,11 +109,12 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 													</div>
 												</td>
 												<td width="65" valign="top">											
+													<label for="gcDonId_<%= donId.getContentName() %>">
 													<%
 														String addDefaultOrgLogo = "<input type=\"image\" name=\"default_org_logo\" src=\"/media/editorial/giftcards/org_logo_blank.gif\" width=\"61\" height=\"61\" alt=\"\" border=\"0\" />";
 													%>		
-													<%= (donId.getLogoSmall() != null) ? donId.getLogoSmall().toHtml() : addDefaultOrgLogo %>
-													&nbsp;
+													<%= (donId.getLogoSmall() != null) ? donId.getLogoSmall().toHtml(donId.getOrganizationName()) : addDefaultOrgLogo %>
+													</label>&nbsp;
 												</td>
 												<td valign="top" width="255">
 													<%
@@ -144,7 +145,7 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 				<td colspan="3" align="center">
 					<button class="cssbutton orange" name="gcLand_shopNow" id="gcLand_shopNow" border="0" onclick="$('giftcard_form').submit();return false;" >CUSTOMIZE YOUR GIFT CARD</button>
 				</td>
-			<%if(FDStoreProperties.isGiftCardDonationEnabled() && donationOrgList != null && donationOrgList.size() > 0 || true) { %>
+			<%if(FDStoreProperties.isGiftCardDonationEnabled() && donationOrgList != null && donationOrgList.size() > 0) { %>
 				<td align="center" colspan="2">
 					<button class="cssbutton orange" name="gcDonateLand_shopNow" id="gcLand_shopNow" onClick="return pendGC();return false;" >Donate Gift Card</button>
 				</td>
