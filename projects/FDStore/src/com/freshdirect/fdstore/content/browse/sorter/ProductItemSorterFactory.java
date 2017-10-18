@@ -47,7 +47,7 @@ public class ProductItemSorterFactory {
 
 	private static void initAvailName(SortStrategyType sortStrategy, Comparator<FilteringProductItem> comparator){
 		comparatorMap.put(sortStrategy, wrapAvailAndName(comparator));
-		reverseComparatorMap.put(sortStrategy, wrapAvailAndName(Collections.reverseOrder(comparator)));
+        reverseComparatorMap.put(sortStrategy, wrapReverseAvailAndName(comparator));
 	}
 	
 	private static void initAvailOnly(SortStrategyType sortStrategy, Comparator<FilteringProductItem> comparator){
@@ -58,6 +58,10 @@ public class ProductItemSorterFactory {
 	private static Comparator<FilteringProductItem> wrapAvailAndName(Comparator<FilteringProductItem> comparator){
 		return ComparatorChain.create(ProductItemSorterFactory.AVAILABILITY_COMPARATOR).chain(comparator).chain(ProductItemSorterFactory.NAME_COMPARATOR); 
 	}
+
+    private static Comparator<FilteringProductItem> wrapReverseAvailAndName(Comparator<FilteringProductItem> comparator) {
+        return wrapAvailAndName(Collections.reverseOrder(comparator));
+    }
 
 	private static Comparator<FilteringProductItem> adapterForProductModel(final Comparator<ProductModel> comparator){
 		return new Comparator<FilteringProductItem>(){
@@ -101,7 +105,11 @@ public class ProductItemSorterFactory {
                     break;
                 case POPULARITY:
                     Comparator<FilteringProductItem> popularityInner = adapterForProductModel(ScriptedContentNodeComparator.createGlobalComparator(null, null));
-                    comparator = reverseOrder ? wrapAvailAndName(Collections.reverseOrder(popularityInner)) : wrapAvailAndName(popularityInner);
+                    comparator = reverseOrder ? wrapReverseAvailAndName(popularityInner) : wrapAvailAndName(popularityInner);
+                    break;
+                case FAVS_FIRST:
+                    Comparator<FilteringProductItem> favoritesComparatorAdapter = adapterForProductModel(getFavoritesComparator(user));
+                    comparator = reverseOrder ? wrapReverseAvailAndName(favoritesComparatorAdapter) : wrapAvailAndName(favoritesComparatorAdapter);
                     break;
                 default:
                     comparator = reverseOrder ? reverseComparatorMap.get(sortStrategy) : comparatorMap.get(sortStrategy);
@@ -112,38 +120,36 @@ public class ProductItemSorterFactory {
         }
         return comparator;
     }
-	
-	private static Comparator<FilteringSortingItem<ProductModel>> getFavoritesComparator(FDUserI user){
-		FDIdentity identity = user.getIdentity();
-		return FilteringSortingItem.wrap(ScriptedContentNodeComparator.createUserComparator(identity == null ? null : identity.getErpCustomerPK(), user.getPricingContext()));
-	}
-	
-	private static Comparator<FilteringSortingItem<ProductModel>> getGlobalComparator(FDUserI user){
-		FDIdentity identity = user.getIdentity();
-		return FilteringSortingItem.wrap(ScriptedContentNodeComparator.createGlobalComparator(identity == null ? null : identity.getErpCustomerPK(), user.getPricingContext()));
-	}
-	
+
+    private static Comparator<ProductModel> getFavoritesComparator(FDUserI user) {
+        FDIdentity identity = user.getIdentity();
+        return ScriptedContentNodeComparator.createUserComparator(identity == null ? null : identity.getErpCustomerPK(), user.getUserContext().getPricingContext());
+    }
+
+    private static Comparator<ProductModel> getGlobalComparator(FDUserI user) {
+        FDIdentity identity = user.getIdentity();
+        return ScriptedContentNodeComparator.createGlobalComparator(identity == null ? null : identity.getErpCustomerPK(), user.getUserContext().getPricingContext());
+    }
 	
 	/**based on ProductsFilterImpl.createComparator() and FilteringComparatorUtil.createProductComparator()*/
 	private static Comparator<FilteringProductItem> createSearchRelevancyComparator(FDUserI user, boolean reverseOrder){
 
 		ComparatorChain<FilteringSortingItem<ProductModel>> comparator = ComparatorChain.create(new SortValueComparator<ProductModel>(EnumSortingValue.PHRASE));
 		if (!FDStoreProperties.isFavouritesTopNumberFilterSwitchedOn()){
-			comparator.chain(getFavoritesComparator(user)); //APPDEV-2725
+            comparator.chain(FilteringSortingItem.wrap(getFavoritesComparator(user))); // APPDEV-2725
 		}
 		comparator.chain(new SortIntValueComparator<ProductModel>(EnumSortingValue.ORIGINAL_TERM));
 		comparator.chain(new SortValueComparator<ProductModel>(EnumSortingValue.CATEGORY_RELEVANCY));
 		comparator.chain(new SortLongValueComparator<ProductModel>(EnumSortingValue.TERM_SCORE));
-		comparator.chain(getGlobalComparator(user));
+        comparator.chain(FilteringSortingItem.wrap(getGlobalComparator(user)));
 	
 		Comparator<FilteringProductItem> searchInner = adapterForSearchResult(comparator);
-		return reverseOrder ? wrapAvailAndName(Collections.reverseOrder(searchInner)) : wrapAvailAndName(searchInner);
+        return reverseOrder ? wrapReverseAvailAndName(searchInner) : wrapAvailAndName(searchInner);
 	}
 	
 	/** based on FilteringComparatorUtil.reOrganizeFavourites()*/
 	public static Comparator<FilteringProductItem> createSearchRelevancyComparatorForFavorites(FDUserI user){
-		
-		ComparatorChain<FilteringSortingItem<ProductModel>> comparator = ComparatorChain.create(getFavoritesComparator(user));
+        ComparatorChain<FilteringSortingItem<ProductModel>> comparator = ComparatorChain.create(FilteringSortingItem.wrap(getFavoritesComparator(user)));
 		comparator.chain(new SortValueComparator<ProductModel>(EnumSortingValue.CATEGORY_RELEVANCY));
 		comparator.chain(new SortLongValueComparator<ProductModel>(EnumSortingValue.TERM_SCORE));
 		return adapterForSearchResult(comparator); //no respect for reverse order
@@ -158,18 +164,18 @@ public class ProductItemSorterFactory {
 				ProductModel p2 = o2.getProductModel();
 				
 				if(!(p1 instanceof ProductModelPricingAdapter)){
-					p1 = ProductPricingFactory.getInstance().getPricingAdapter( p1, user.getPricingContext() );
+                    p1 = ProductPricingFactory.getInstance().getPricingAdapter(p1, user.getUserContext().getPricingContext());
 				}
 
 				if(!(p2 instanceof ProductModelPricingAdapter)){
-					p2 = ProductPricingFactory.getInstance().getPricingAdapter( p2, user.getPricingContext() );
+                    p2 = ProductPricingFactory.getInstance().getPricingAdapter(p2, user.getUserContext().getPricingContext());
 				}
 
 				return comparator.compare(p1, p2);
 			}
 		};
 		
-		return reverseOrder ? wrapAvailAndName(Collections.reverseOrder(adapterComparator)) : wrapAvailAndName(adapterComparator);
+        return reverseOrder ? wrapReverseAvailAndName(adapterComparator) : wrapAvailAndName(adapterComparator);
 	}
 	
 	public static Comparator<FilteringProductItem> createNutritionComparator(ErpNutritionType.Type erpNutritionTypeType){
