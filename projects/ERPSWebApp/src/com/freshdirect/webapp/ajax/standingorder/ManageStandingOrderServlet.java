@@ -132,7 +132,7 @@ public class ManageStandingOrderServlet extends HttpServlet {
 						SinglePageCheckoutData result = SinglePageCheckoutFacade.defaultFacade().load(u, request);
 						Map<String, ?> potato = SoyTemplateEngine.convertToMap(result);
 						
-						if(so.getAddressId()!=null){
+						if(null != so.getDeliveryAddress()){
 							ErpAddressModel erpAddressModel=so.getDeliveryAddress();
 							u.getSoTemplateCart().setDeliveryAddress(erpAddressModel);
 							u.getSoTemplateCart().recalculateTaxAndBottleDeposit(erpAddressModel.getZipCode());
