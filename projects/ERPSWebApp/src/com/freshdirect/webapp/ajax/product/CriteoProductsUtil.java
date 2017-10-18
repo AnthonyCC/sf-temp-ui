@@ -123,7 +123,7 @@ public class CriteoProductsUtil
 						addHlBrandProducts(user, adPrducts, updatedPageBeacon, hlBrandAdProductsMeta,pdpPage);
 					}
 					browseData.getAdProducts().setProducts(adPrducts);
-					if (productsCount == adPrducts.size()) {
+					if (productsCount!=0 && productsCount == adPrducts.size()) {
 						browseData.getAdProducts().setPageBeacon(response.getPageBeacon() + A_SHOWN_ALL);
 					} else if (productsCount > 0 && adPrducts.size() == 0) {
 						browseData.getAdProducts().setPageBeacon(response.getPageBeacon() + A_SHOWN_NONE);
