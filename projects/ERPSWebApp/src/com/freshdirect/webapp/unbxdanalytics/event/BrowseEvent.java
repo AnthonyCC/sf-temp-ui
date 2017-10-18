@@ -14,8 +14,8 @@ public final class BrowseEvent extends AbstractAnalyticsEvent {
      */
     private String query;
 
-    public BrowseEvent(Visitor visitor, LocationInfo location, String query) {
-        super(visitor, location);
+    public BrowseEvent(Visitor visitor, LocationInfo location, String query, boolean cosAction) {
+        super(visitor, location, cosAction);
 
         this.query = query;
     }

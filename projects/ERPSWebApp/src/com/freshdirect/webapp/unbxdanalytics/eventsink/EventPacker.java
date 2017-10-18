@@ -52,7 +52,7 @@ public final class EventPacker {
             }
         }
 
-        queryComponents.put("UnbxdKey", FDStoreProperties.getUnbxdSiteKey());
+        queryComponents.put("UnbxdKey", event.isCosAction() ? FDStoreProperties.getUnbxdCosSiteKey() : FDStoreProperties.getUnbxdSiteKey());
         queryComponents.put("action", event.getType().getAction());
         queryComponents.put("uid", event.getUid());
         queryComponents.put("t", String.valueOf(event.getTimestamp()));

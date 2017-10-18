@@ -37,87 +37,66 @@ public final class AnalyticsEventFactory {
      * @see Visitor
      * @see LocationInfo
      */
-    public static AnalyticsEventI createEvent(AnalyticsEventType type, Visitor visitor, LocationInfo loc, String searchQuery, ContentNodeModel model, FDCartLineI cartline) {
+    public static AnalyticsEventI createEvent(AnalyticsEventType type, Visitor visitor, LocationInfo loc, String searchQuery, ContentNodeModel model, FDCartLineI cartline, boolean cosAction) {
         if (type == null && visitor == null || loc == null) {
             throw new IllegalArgumentException("Missing event type, visitor and/or location info");
         }
-
         AnalyticsEventI event = null;
 
         switch (type) {
             case VISITOR:
-
-                event = new VisitorEvent(visitor, loc);
-
+                event = new VisitorEvent(visitor, loc, cosAction);
                 break;
             case BROWSE:
-
                 if (model instanceof ProductContainer) {
                     final String breadcrumb = createBreadCrumb((ProductContainer) model);
-                    event = new BrowseEvent(visitor, loc, breadcrumb);
+                    event = new BrowseEvent(visitor, loc, breadcrumb, cosAction);
                 } else {
                     throw new IllegalArgumentException("Content Node parameter is either missing or not a dept/category");
                 }
-
                 break;
             case SEARCH:
-
                 if (searchQuery != null) {
-                    event = new SearchEvent(visitor, loc, searchQuery);
+                    event = new SearchEvent(visitor, loc, searchQuery, cosAction);
                 } else {
                     throw new IllegalArgumentException("Missing search term parameter");
                 }
-
                 break;
             case CLICK_THRU:
-
                 if (model instanceof ProductModel) {
                     final ProductModel product = (ProductModel) model;
-
-                    event = new ClickThruEvent(visitor, loc, product.getContentName(), product.getCategory().getContentName());
+                    event = new ClickThruEvent(visitor, loc, product.getContentName(), product.getCategory().getContentName(), cosAction);
                 } else {
                     throw new IllegalArgumentException("Content Node parameter is either null or not a product");
                 }
-
                 break;
             case ATC:
-
                 if (cartline != null) {
-
-                    event = new AddToCartEvent(visitor, loc, cartline.getProductRef().getProductId(), cartline.getQuantity());
-
+                    event = new AddToCartEvent(visitor, loc, cartline.getProductRef().getProductId(), cartline.getQuantity(), cosAction);
                 } else {
                     throw new IllegalArgumentException("Missing cartline parameter");
                 }
-
                 break;
             case ORDER:
-
                 if (cartline != null) {
-
-                    event = new OrderEvent(visitor, loc, cartline.getProductRef().getProductId(), cartline.getPrice(), cartline.getQuantity());
-
+                    event = new OrderEvent(visitor, loc, cartline.getProductRef().getProductId(), cartline.getPrice(), cartline.getQuantity(), cosAction);
                 } else {
                     throw new IllegalArgumentException("Missing cartline parameter");
                 }
                 break;
         }
-
         return event;
     }
 
-
     public static AnalyticsEventI createVisitorEventFor(AnalyticsEventI event) {
-        
         AnalyticsEventI visitorEvent = null;
-        
         if (event != null && AnalyticsEventType.VISITOR != event.getType() && event.isVisitorEventRequired()) {
             final Visitor visitor = ((AbstractAnalyticsEvent)event).getVisitor();
             final LocationInfo loc = ((AbstractAnalyticsEvent)event).getLocationInfo();
-
-            visitorEvent = AnalyticsEventFactory.createEvent(AnalyticsEventType.VISITOR, visitor, loc, null, null, null);
+            final boolean cosAction = ((AbstractAnalyticsEvent) event).isCosAction();
+            
+            visitorEvent = AnalyticsEventFactory.createEvent(AnalyticsEventType.VISITOR, visitor, loc, null, null, null, cosAction);
         }
-
         return visitorEvent;
     }
 

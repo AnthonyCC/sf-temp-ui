@@ -16,6 +16,7 @@ import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.cos.util.CosFeatureUtil;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.search.unbxd.UnbxdIntegrationService;
 import com.freshdirect.webapp.search.unbxd.UnbxdSearchProperties;
@@ -56,7 +57,7 @@ public class AutoCompleteFacade implements Serializable {
         if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, cookies, user)) {
             try {
                 UnbxdSearchProperties searchProperties = new UnbxdSearchProperties();
-                boolean corporateSearch = FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.cosRedesign2017, cookies, user) && user.isCorporateUser();
+                boolean corporateSearch = CosFeatureUtil.isUnbxdCosAction(user, cookies);
                 searchProperties.setCorporateSearch(corporateSearch);
 
                 results = UnbxdIntegrationService.getDefaultService().suggestProducts(prefix, searchProperties);

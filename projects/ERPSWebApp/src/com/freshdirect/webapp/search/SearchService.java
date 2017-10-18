@@ -22,6 +22,7 @@ import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.cos.util.CosFeatureUtil;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.search.unbxd.UnbxdIntegrationService;
 import com.freshdirect.webapp.search.unbxd.UnbxdSearchProperties;
@@ -164,10 +165,11 @@ public class SearchService {
         if(searchTerm != null && searchTerm.trim().length() > 0){
             // get search results from Lucene service
             searchResults = ContentSearch.getInstance().searchProducts(searchTerm);
+            final boolean cosAction = CosFeatureUtil.isUnbxdCosAction(user, cookies);
             
-            if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, cookies, user)){
+            if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, cookies, user)) {
                 // notify UNBXD analytics
-                SearchEventTag.doSendEvent(user, requestUrl, referer, searchTerm);
+                SearchEventTag.doSendEvent(user, requestUrl, referer, searchTerm, cosAction);
             }
     
             if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, cookies, user)) {
@@ -175,9 +177,7 @@ public class SearchService {
                 try {
                     // perform search with UNBXD as well
                     UnbxdSearchProperties searchProperties = new UnbxdSearchProperties();
-                    boolean corporateSearch = FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.cosRedesign2017, cookies, user) && user.isCorporateUser();
-
-                    searchProperties.setCorporateSearch(corporateSearch);
+                    searchProperties.setCorporateSearch(cosAction);
 
                     final UnbxdSearchResult internalResult = searchUnbxd(searchTerm, searchProperties);
     
@@ -191,9 +191,7 @@ public class SearchService {
                     } else {
                         LOGGER.error("Error while calling unbxd search, fallback to internal search", e);
                     }
-    
                 }
-    
             }
         }
         return searchResults;

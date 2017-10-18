@@ -11,8 +11,8 @@ public final class OrderEvent extends AbstractAnalyticsEvent {
 
     private Double quantity;
 
-    public OrderEvent(Visitor visitor, LocationInfo location, String productId, Double price, Double quantity) {
-        super(visitor, location);
+    public OrderEvent(Visitor visitor, LocationInfo location, String productId, Double price, Double quantity, boolean cosAction) {
+        super(visitor, location, cosAction);
 
         this.productId = productId;
         this.price = price;

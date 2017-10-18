@@ -15,6 +15,7 @@ import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.cos.util.CosFeatureUtil;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.unbxdanalytics.event.AnalyticsEventFactory;
@@ -31,21 +32,18 @@ public class BrowseEventTag extends SimpleTagSupport {
 
     @Override
     public void doTag() throws JspException {
-
         final PageContext pageContext = (PageContext) getJspContext();
-
         final HttpSession session = pageContext.getSession();
         final HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
         final FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
+        
         if (user != null) {
             final String contentId = req.getParameter("id");
-
             if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, req.getCookies(), user)) {
                 // check input
                 if (contentId == null) {
                     throw new JspException("Parameter error: Null content ID was given");
                 }
-
                 doSendEvent(contentId, user, req);
             } else {
                 LOGGER.debug("UNBXD feature is off, not sending event ...");
@@ -55,12 +53,13 @@ public class BrowseEventTag extends SimpleTagSupport {
 
     public static void doSendEvent(String containerId, FDUserI user, HttpServletRequest request) {
         final ContentNodeModel model = ContentFactory.getInstance().getContentNode(containerId);
+        final boolean cosAction = CosFeatureUtil.isUnbxdCosAction(user, request.getCookies());
+        
         if (model instanceof ProductContainer) {
-
             final Visitor visitor = Visitor.withUser(user);
             final LocationInfo loc = LocationInfo.withUrlAndReferer(RequestUtil.getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER));
 
-            AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.BROWSE, visitor, loc, null, model, null);
+            AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.BROWSE, visitor, loc, null, model, null, cosAction);
 
             LOGGER.debug("Sending browse event for content ID " + containerId);
 

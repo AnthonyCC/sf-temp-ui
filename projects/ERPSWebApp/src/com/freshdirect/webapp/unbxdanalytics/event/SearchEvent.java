@@ -9,8 +9,8 @@ public final class SearchEvent extends AbstractAnalyticsEvent {
      */
     private String query = null;
 
-    public SearchEvent(Visitor visitor, LocationInfo location, String query) {
-        super(visitor, location);
+    public SearchEvent(Visitor visitor, LocationInfo location, String query, boolean cosAction) {
+        super(visitor, location, cosAction);
 
         this.query = query;
     }
