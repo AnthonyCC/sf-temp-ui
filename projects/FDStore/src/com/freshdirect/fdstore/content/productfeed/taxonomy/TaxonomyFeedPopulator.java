@@ -74,9 +74,37 @@ public class TaxonomyFeedPopulator {
                     categoryElement.getSubcategory().add(subCategoryElement);
                 }
             }
+
+            populateProductTaxonomyFeedElementTaxanomyInfoFromVirtualGroup(allNodes, categoryNode, categoryElement);
         }
 
         return categoryElement;
+    }
+
+    private void populateProductTaxonomyFeedElementTaxanomyInfoFromVirtualGroup(Map<ContentKey, ContentNodeI> allNodes, ContentNodeI categoryNode,
+            CategoryTaxonomyFeedElement categoryElement) {
+        Object virtualCategories = categoryNode.getAttributeValue("VIRTUAL_GROUP");
+        if (virtualCategories != null && (virtualCategories instanceof List<?>)) {
+            List<ContentKey> referedCategories = (List<ContentKey>) virtualCategories;
+            for (ContentKey referedCategory : referedCategories) {
+                ContentNodeI virtualCategoryContentNode = CmsManager.getInstance().getContentNode(referedCategory);
+
+                if (virtualCategoryContentNode != null) {
+                    Object referedCategoryProducts = virtualCategoryContentNode.getAttributeValue("products");
+
+                    if (referedCategoryProducts instanceof List<?>) {
+                        for (ContentKey productContentKey : (List<ContentKey>) referedCategoryProducts) {
+                            ProductTaxonomyFeedElement childProductElement = populateProductTaxonomyFeedElementTaxonomyInfo(allNodes, allNodes.get(productContentKey), categoryNode);
+                            categoryElement.getProduct().add(childProductElement);
+                        }
+                    }
+
+                    if (virtualCategoryContentNode.getAttributeValue("VIRTUAL_GROUP") instanceof List<?>) {
+                        populateProductTaxonomyFeedElementTaxanomyInfoFromVirtualGroup(allNodes, virtualCategoryContentNode, categoryElement);
+                    }
+                }
+            }
+        }
     }
 
     private ProductTaxonomyFeedElement populateProductTaxonomyFeedElementTaxonomyInfo(Map<ContentKey, ContentNodeI> allNodes, ContentNodeI productNode,
