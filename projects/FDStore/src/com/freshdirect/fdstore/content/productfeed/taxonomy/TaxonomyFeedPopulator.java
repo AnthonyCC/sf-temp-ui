@@ -44,10 +44,12 @@ public class TaxonomyFeedPopulator {
 
         for (ContentKey department : departments) {
             String departmentName = allNodes.get(department).getAttributeValue("FULL_NAME") == null ? "" : allNodes.get(department).getAttributeValue("FULL_NAME").toString();
+            String departmentCatalog = allNodes.get(department).getAttributeValue("catalog") == null ? "" : allNodes.get(department).getAttributeValue("catalog").toString();
 
             DepartmentTaxonomyFeedElement actualDepartmentElement = new DepartmentTaxonomyFeedElement();
             actualDepartmentElement.setDepartmentId(allNodes.get(department).getKey().getId());
             actualDepartmentElement.setDepartmentName(StringEscapeUtils.unescapeHtml(departmentName));
+            actualDepartmentElement.setDepartmentCatalog(departmentCatalog);
 
             for (ContentKey child : allNodes.get(department).getChildKeys()) {
                 CategoryTaxonomyFeedElement childCategoryElement = populateCategoryTaxonomyFeedElementTaxonomyInfo(allNodes, allNodes.get(child));
