@@ -185,6 +185,8 @@ public class DlvRestrictionManager {
 	
 	private static RestrictedAddressModel buildRestrictedAddressModel(RestrictedAddressModelData addressRestriction) {
 		RestrictedAddressModel restrictedAddress = new RestrictedAddressModel();
+		if(addressRestriction==null)
+			return null;
 		restrictedAddress.setLastModified(addressRestriction.getLastModified());
 		restrictedAddress.setModifiedBy(addressRestriction.getModifiedBy());
 		restrictedAddress.setReason(EnumRestrictedAddressReason.getRestrictionReason(addressRestriction.getReason()));
@@ -557,7 +559,7 @@ public class DlvRestrictionManager {
 			addressInfoData.setLongitude(restriction.getAddressInfo().getLongitude());
 			addressInfoData.setLatitude(restriction.getAddressInfo().getLatitude());
 			addressInfoData.setScrubbedStreet(restriction.getAddressInfo().getScrubbedStreet());
-			addressInfoData.setAddressType(restriction.getAddressInfo().getAddressType().getName());
+			addressInfoData.setAddressType(restriction.getAddressInfo().getAddressType()==null?null:restriction.getAddressInfo().getAddressType().getName());
 			addressInfoData.setCounty(restriction.getAddressInfo().getCounty());
 			addressInfoData.setGeocodeException(restriction.getAddressInfo().isGeocodeException());
 			addressInfoData.setBuildingId(restriction.getAddressInfo().getBuildingId());
