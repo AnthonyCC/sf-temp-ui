@@ -43,14 +43,11 @@ user.setSoTemplateCart(new FDCartModel());
 <potato:pendingExternalAtcItem standingOrder="true"/>
 <potato:singlePageCheckout standingOrder="true"/>
 
-<%
-String pageTemplate = "/expressco/includes/standing_order.jsp";
-if (true) {
-	pageTemplate = "/expressco/includes/ec_template.jsp";
-}
-%>
+<tmpl:insert template='/expressco/includes/ec_template.jsp'>
 
-<tmpl:insert template='<%= pageTemplate %>'>
+	<tmpl:put name="seoMetaTag" direct="true">
+		<fd:SEOMetaTag pageId="standing_orders_new"></fd:SEOMetaTag>
+	</tmpl:put>
 
 	<tmpl:put name="globalnav">
   	<%-- MASQUERADE HEADER STARTS HERE --%>

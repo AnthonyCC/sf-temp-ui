@@ -100,7 +100,9 @@ if (mobWeb) {
 
   <tmpl:put name="ecpage">checkout</tmpl:put>
 
-  <tmpl:put name="title">Checkout</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct="true">
+    <fd:SEOMetaTag pageId="ec_checkout"></fd:SEOMetaTag>
+  </tmpl:put>
 
   <tmpl:put name='content' direct='true'>
     <div id="expresscheckout">

@@ -51,7 +51,9 @@
 
   <tmpl:put name="ecpage">success</tmpl:put>
 
-  <tmpl:put name="title">Success</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct="true">
+    <fd:SEOMetaTag pageId="ec_success"></fd:SEOMetaTag>
+  </tmpl:put>
 
   <tmpl:put name='content' direct='true'>
 	<% //based on step_4_receipt.jsp
