@@ -1,7 +1,5 @@
 package com.freshdirect.webapp.util;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,7 +31,7 @@ public class LocatorUtil {
 
     private static final String IP_LOCATOR_MOCKED_IP_ADDRESS = "iplocator_mocked_ip_address";
 	
-	public static FDSessionUser useIpLocator(HttpSession session, HttpServletRequest request, HttpServletResponse response, AddressModel address) {
+    public static FDSessionUser useIpLocator(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
     	FDSessionUser user = null;
     	
     	if (FDStoreProperties.isIpLocatorEnabled()) {
@@ -60,7 +58,7 @@ public class LocatorUtil {
 		    		ipLocatorEventDTO.setUaHashPercent(requestClassifier.getHashPercent());
 		    		ipLocatorEventDTO.setIplocRolloutPercent(rolloutPercent);
 		    		
-		    		user = createUser(session, request, response, address, ipLocatorData, ipLocatorEventDTO);
+                    user = createUser(session, response, ipLocatorData, ipLocatorEventDTO);
 	
 		    	} catch (Exception e) {
 					LOGGER.error("IP Locator failed: ", e);
@@ -97,8 +95,8 @@ public class LocatorUtil {
 	}
     
     /** based on SiteAccessControllerTag.doStartTag()*/
-    private static FDSessionUser createUser(HttpSession session, HttpServletRequest request, HttpServletResponse response, AddressModel address
-    												, IpLocatorData ipLocatorData, IpLocatorEventDTO ipLocatorEventDTO) throws IpLocatorException{
+    private static FDSessionUser createUser(HttpSession session, HttpServletResponse response, IpLocatorData ipLocatorData, IpLocatorEventDTO ipLocatorEventDTO)
+            throws IpLocatorException {
     	FDSessionUser user = null;
     	
     	try {
@@ -110,7 +108,7 @@ public class LocatorUtil {
     		}
 
             UserUtil.newSession(session, response);
-	    	address = new AddressModel(); // was this. from CheckLoginStatusTag
+            AddressModel address = new AddressModel(); // was this. from CheckLoginStatusTag
 	    	address.setZipCode(zipCode);
             Set<EnumServiceType> availableServices = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode, eStoreId).getAvailableServices();
 	    	

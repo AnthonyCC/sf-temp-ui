@@ -26,7 +26,9 @@ import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
+import com.freshdirect.webapp.taglib.fdstore.InvalidUserException;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.util.AjaxErrorHandlingService;
 import com.freshdirect.webapp.util.DraftUtil;
 
@@ -39,7 +41,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 	@Override
 	protected final void doGet( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException {
 		try {
-			FDUserI user = authenticate( request );
+            FDUserI user = authenticate(request, response);
 			DraftUtil.draft(request, response);
 			if ( synchronizeOnUser() ) {
 				synchronized ( user ) {
@@ -60,7 +62,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 	@Override
 	protected final void doPut( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException {
 		try {
-			FDUserI user = authenticate( request );
+            FDUserI user = authenticate(request, response);
 			if ( synchronizeOnUser() ) {
 				synchronized ( user ) {
 					fixPutRequestParams(request);
@@ -82,7 +84,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 	@Override
 	protected final void doDelete( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException {
 		try {
-			FDUserI user = authenticate( request );
+            FDUserI user = authenticate(request, response);
 			if ( synchronizeOnUser() ) {
 				synchronized ( user ) {
 					doDelete( request, response, user );
@@ -103,7 +105,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 	protected final void doPost( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException {		
         FDUserI user = null;
         try {
-            user = authenticate(request);
+            user = authenticate(request, response);
 			if ( synchronizeOnUser() ) {
 				synchronized ( user ) {
 					doPost( request, response, user );
@@ -206,40 +208,48 @@ public abstract class BaseJsonServlet extends HttpServlet {
 	}
 
 	/**
-	 * Does the authentication, checks user auth level, returns the user object. 
-	 * 
-	 * Sends HTTP 401 Unauthorized if user is not found in session, or auth level is insufficient.
-	 * 
-	 * @param request
-	 * @return the user object from the session
-	 * @throws HttpErrorResponse
-	 */
-	protected final FDUserI authenticate( HttpServletRequest request ) throws HttpErrorResponse {
+     * Does the authentication, checks user auth level, returns the user object.
+     * 
+     * Sends HTTP 401 Unauthorized if user is not found in session, or auth level is insufficient.
+     * 
+     * @param request
+     * @param response
+     * @return the user object from the session
+     * @throws HttpErrorResponse
+     */
+    protected final FDUserI authenticate(HttpServletRequest request, HttpServletResponse response) throws HttpErrorResponse {
         HttpSession session = request.getSession();
-    	
-        FDUserI user = ((FDUserI)session.getAttribute(SessionName.USER));
-        if ( user == null ) {
-        	// There is no user data in the session. Serious problem, should not happen.
-        	returnHttpError( 401, "No user in session!" ); // 401 Unauthorized
+        FDUserI user = (FDSessionUser) session.getAttribute(SessionName.USER);
+
+        if (user == null) {
+            try {
+                user = UserUtil.updateUserRelatedContexts(request, UserUtil.createSessionUser(request, response, FDUserI.GUEST == getRequiredUserLevel()));
+                session.setAttribute(SessionName.USER, user);
+            } catch (InvalidUserException e) {
+                returnHttpError(401, "Invalid user!"); // 401 Unauthorized
+            }
         }
-        
-		if ( user.getLevel() < getRequiredUserLevel() ) {
-        	// User level not sufficient. 
-        	returnHttpError( 401, "User auth level not sufficient!" ); // 401 Unauthorized
-		}
-        
-		// set current pricing context
-		ContentFactory.getInstance().setCurrentUserContext(user.getUserContext());
-		
-		return user;		
-	}
+
+        if (user == null) {
+            returnHttpError(401, "Invalid user!"); // 401 Unauthorized
+        }
+
+        if (user.getLevel() < getRequiredUserLevel()) {
+            // User level not sufficient.
+            returnHttpError(401, "User auth level not sufficient!"); // 401 Unauthorized
+        }
+
+        // set current pricing context
+        ContentFactory.getInstance().setCurrentUserContext(user.getUserContext());
+
+        return user;
+    }
 	
 	/**
 	 * Override to set a required user auth level.
 	 * 
 	 * @return the required user level (use GUEST,RECOGNIZED,SIGNED_IN constants from FDUserI)
 	 */
-	@SuppressWarnings( "static-method" )
 	protected int getRequiredUserLevel() {		
 		return FDUserI.RECOGNIZED;
 	}
