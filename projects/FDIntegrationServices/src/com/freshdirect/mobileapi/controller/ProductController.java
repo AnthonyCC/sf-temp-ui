@@ -405,7 +405,7 @@ public class ProductController extends BaseController {
      */
 	private ModelAndView getProduct(ModelAndView model, HttpServletRequest request, HttpServletResponse response,
 			SessionUser user, boolean isNewVersionForProductDetail) throws ServiceException, FDException, JsonException, NoSessionException, ModelException {
-		test1();
+		
 		com.freshdirect.mobileapi.model.Product product = getProduct(request, response);
 
 		Message responseMessage;
@@ -560,13 +560,7 @@ public class ProductController extends BaseController {
     	return model;
     }
     
-    private void test1(){
-    	//getResourceAsStream("all_nutrition_display.css")
-    	System.err.println("test1");
-    	String foo = getServletContext().getRealPath("/");
-    	 System.out.println(  "SERVLET CONTEXT PATH SERVLET CONTEXT PAT SERVLET CONTEXT PAT SERVLET CONTEXT PAT " + foo);
-      	
-    	}
+
     	
   
     
