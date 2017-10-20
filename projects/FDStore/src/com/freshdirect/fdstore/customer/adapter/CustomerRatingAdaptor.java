@@ -59,4 +59,23 @@ public class CustomerRatingAdaptor implements CustomerRatingI, Serializable {
 		return this.profile.isPhonePrivate();
 	}
 
+	//Intoduced for Storefront 2.0 Implementation.
+	
+	public ProfileModel getProfile() {
+		return profile;
+	}
+
+	public int getValidOrderCount() {
+		return validOrderCount;
+	}
+
+	public boolean isCosCustomer() {
+		return cosCustomer;
+	}
+	
+	
+	
+	
+	
+
 }

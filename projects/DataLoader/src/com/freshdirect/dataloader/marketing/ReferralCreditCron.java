@@ -55,6 +55,7 @@ import com.freshdirect.fdstore.customer.ejb.CallCenterManagerSB;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
 import com.freshdirect.fdstore.ecomm.converter.ReferralConverter;
+import com.freshdirect.fdstore.ecomm.gateway.CallCenterManagerService;
 import com.freshdirect.fdstore.ecomm.gateway.FDReferralManagerService;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.mail.FDReferAFriendCreditEmail;
@@ -105,8 +106,14 @@ public class ReferralCreditCron {
 		ctx = getInitialContext();
 		CallCenterManagerHome csManagerHome = (CallCenterManagerHome) ctx
 				.lookup(FDStoreProperties.getCallCenterManagerHome());
-		CallCenterManagerSB csb = csManagerHome.create();
-		complaintReasons = csb.getComplaintReasons(false);
+		if (FDStoreProperties
+				.isSF2_0_AndServiceEnabled(FDEcommProperties.CallCenterManagerSB)) {
+			complaintReasons = CallCenterManagerService.getInstance()
+					.getComplaintReasons(false);
+		} else {
+			CallCenterManagerSB csb = csManagerHome.create();
+			complaintReasons = csb.getComplaintReasons(false);
+		}
 		FDReferralManagerHome managerHome = (FDReferralManagerHome) ctx
 				.lookup(FDStoreProperties.getFDReferralManagerHome());
 		FDReferralManagerSB sb = managerHome.create();
