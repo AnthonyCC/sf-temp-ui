@@ -45,6 +45,8 @@ import com.freshdirect.ecommerce.data.delivery.OneTimeRestrictionData;
 import com.freshdirect.ecommerce.data.delivery.OneTimeReverseRestrictionData;
 import com.freshdirect.ecommerce.data.delivery.RecurringRestrictionData;
 import com.freshdirect.ecommerce.data.delivery.RestrictionData;
+import com.freshdirect.ecommerce.data.dlv.AddressData;
+import com.freshdirect.ecommerce.data.dlv.AddressInfoData;
 import com.freshdirect.erp.EnumStateCodes;
 import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdlogistics.model.DuplicateKeyException;
@@ -535,15 +537,52 @@ public class FDDeliveryManager {
 
 	public EnumRestrictedAddressReason checkAddressForRestrictions(
 			AddressModel address) throws FDResourceException {
+		EnumRestrictedAddressReason eRestrictReason = null;
 		try {
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvRestrictionManagerSB")){
+				return EnumRestrictedAddressReason.getRestrictionReason(FDECommerceService.getInstance().checkAddressForRestrictions(buildAddressData(address)));
+			}else{
 			DlvRestrictionManagerSB sb = getDlvRestrictionManagerHome()
 					.create();
 			return sb.checkAddressForRestrictions(address);
+			}
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		}
+	}
+
+	private AddressData buildAddressData(AddressModel address) {
+		AddressData addressData = new AddressData();
+		addressData.setAddress1(address.getAddress1());
+		addressData.setAddress2(address.getAddress2());
+		addressData.setApartment(address.getApartment()==null?null:address.getApartment());
+		addressData.setCity(address.getCity());
+		addressData.setCompanyName(address.getCompanyName()==null?null:address.getCompanyName());
+		addressData.setCountry(address.getCountry()==null?null:address.getCountry());
+		addressData.setId(address.getId()==null?null:address.getId());
+		addressData.setServiceType(address.getServiceType()==null?null:address.getServiceType().getName());
+		addressData.setState(address.getState()==null?null:address.getState());
+		addressData.setZipCode(address.getZipCode()==null?null:address.getZipCode());
+		addressData.setAddressInfoData(buildAddressData(address.getAddressInfo()));
+		return addressData;
+	}
+
+	private AddressInfoData buildAddressData(AddressInfo addressInfo) {
+		AddressInfoData data = new AddressInfoData();
+		data.setAddressType(addressInfo.getAddressType()==null?null:addressInfo.getAddressType().getName());
+		data.setBuildingId(addressInfo.getBuildingId()==null?null:addressInfo.getBuildingId());
+		data.setCounty(addressInfo.getCounty()==null?null:addressInfo.getCounty());
+		data.setGeocodeException(addressInfo.isGeocodeException());
+		data.setLatitude(addressInfo.getLatitude());
+		data.setLocationId(addressInfo.getLocationId()==null?null:addressInfo.getLocationId());
+		data.setLongitude(addressInfo.getLongitude());
+		data.setScrubbedStreet(addressInfo.getScrubbedStreet()==null?null:addressInfo.getScrubbedStreet());
+		data.setSsScrubbedAddress(addressInfo.getSsScrubbedAddress()==null?null:addressInfo.getSsScrubbedAddress());
+		data.setZoneCode(addressInfo.getZoneCode()==null?null:addressInfo.getZoneCode());
+		data.setZoneId(addressInfo.getZoneId()==null?null:addressInfo.getZoneId());
+		return data;
 	}
 
 	public FDDeliveryAddressGeocodeResponse geocodeAddress(
@@ -749,7 +788,12 @@ public class FDDeliveryManager {
 
 			DlvRestrictionManagerSB sb = getDlvRestrictionManagerHome()
 					.create();
-			result.setRestrictionReason(sb.checkAddressForRestrictions(address));
+			
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("delivery.ejb.DlvRestrictionManagerSB")){
+				result.setRestrictionReason(EnumRestrictedAddressReason.getRestrictionReason(FDECommerceService.getInstance().checkAddressForRestrictions(buildAddressData(address))));
+			}else{
+				result.setRestrictionReason(sb.checkAddressForRestrictions(address));
+			}
 			return result;
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
