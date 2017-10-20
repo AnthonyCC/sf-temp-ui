@@ -1,4 +1,5 @@
 <%@ taglib uri='template' prefix='tmpl' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <tmpl:insert template='/shared/template/small_pop.jsp'>
     <tmpl:put name="seoMetaTag" direct='true'>
         <fd:SEOMetaTag title="FreshDirect - Our Honest Pricing Policy"/>
