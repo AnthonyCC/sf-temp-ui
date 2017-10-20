@@ -37,6 +37,8 @@ import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.delivery.DlvProperties;
+import com.freshdirect.ecomm.gateway.PaymentsService;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -1261,8 +1263,13 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		try {
 			PaymentSB psb = this.getPaymentSB();
 			utx = this.getSessionContext().getUserTransaction();
-			utx.begin();				
-			psb.captureAuthEBTSale(saleId);
+			utx.begin();
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentSB)){
+				PaymentsService.getInstance().captureAuthEBTSale(saleId);
+			}
+			else{
+				psb.captureAuthEBTSale(saleId);
+			}
 			LOGGER.info("*******do capture transaction for order:"+saleId);
 			utx.commit();
 		} catch (Exception e) {

@@ -21,6 +21,9 @@ import com.freshdirect.customer.ErpPayPalCardModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.ecomm.gateway.PaymentsService;
+import com.freshdirect.fdstore.FDEcommProperties;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.StringUtil;
@@ -106,8 +109,14 @@ public class PaymentManager {
 			getPaymentHome();
 		}
 		try {
-			PaymentSB paymentSB = paymentHome.create();
-			paymentSB.captureAuthorization(saleId);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentSB)){
+				PaymentsService.getInstance().captureAuthorization(saleId);
+			}
+			else{
+				PaymentSB paymentSB = paymentHome.create();
+				paymentSB.captureAuthorization(saleId);
+			}
+			
 		} catch (Exception e) {
 			throw new ErpTransactionException(e.getMessage());
 		}
@@ -118,8 +127,13 @@ public class PaymentManager {
 			getPaymentHome();
 		}
 		try {
-			PaymentSB paymentSB = paymentHome.create();
-			paymentSB.deliveryConfirm(saleId);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentSB)){
+				PaymentsService.getInstance().deliveryConfirm(saleId);
+			}
+			else{
+				PaymentSB paymentSB = paymentHome.create();
+				paymentSB.deliveryConfirm(saleId);
+			}
 		} catch (Exception e) {
 			throw new ErpTransactionException(e.getMessage());
 		}
@@ -130,8 +144,13 @@ public class PaymentManager {
 			getPaymentHome();
 		}
 		try {
-			PaymentSB paymentSB = paymentHome.create();
-			paymentSB.unconfirm(saleId);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentSB)){
+				PaymentsService.getInstance().unconfirm(saleId);
+			}
+			else{
+				PaymentSB paymentSB = paymentHome.create();
+				paymentSB.unconfirm(saleId);
+			}
 		} catch (Exception e) {
 			throw new ErpTransactionException(e.getMessage());
 		}
@@ -142,8 +161,13 @@ public class PaymentManager {
 			getPaymentHome();
 		}
 		try {
-			PaymentSB paymentSB = paymentHome.create();
-			paymentSB.voidCaptures(saleId);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentSB)){
+				PaymentsService.getInstance().voidCaptures(saleId);
+			}
+			else{
+				PaymentSB paymentSB = paymentHome.create();
+				paymentSB.voidCaptures(saleId);
+			}
 		} catch (Exception e) {
 			throw new ErpTransactionException(e.getMessage());
 		}

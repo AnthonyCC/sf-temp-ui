@@ -7,12 +7,31 @@ import java.util.SortedMap;
 
 import weblogic.utils.collections.TreeMap;
 
+import com.freshdirect.common.address.AddressInfo;
+import com.freshdirect.common.address.EnumAddressType;
+import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.delivery.model.RestrictedAddressModel;
+import com.freshdirect.delivery.restriction.AlcoholRestriction;
+import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
+import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
+import com.freshdirect.delivery.restriction.EnumDlvRestrictionType;
+import com.freshdirect.delivery.restriction.OneTimeRestriction;
+import com.freshdirect.delivery.restriction.OneTimeReverseRestriction;
+import com.freshdirect.delivery.restriction.RecurringRestriction;
+import com.freshdirect.delivery.restriction.RestrictionI;
+import com.freshdirect.ecommerce.data.delivery.AlcoholRestrictionData;
+import com.freshdirect.ecommerce.data.delivery.OneTimeRestrictionData;
+import com.freshdirect.ecommerce.data.delivery.OneTimeReverseRestrictionData;
+import com.freshdirect.ecommerce.data.delivery.RecurringRestrictionData;
+import com.freshdirect.ecommerce.data.delivery.RestrictedAddressModelData;
 import com.freshdirect.ecommerce.data.smartstore.CartTabStrategyPriorityData;
 import com.freshdirect.ecommerce.data.smartstore.ConfigurationStatusData;
 import com.freshdirect.ecommerce.data.smartstore.DynamicSiteFeatureData;
 import com.freshdirect.ecommerce.data.smartstore.RecommendationServiceConfigData;
 import com.freshdirect.ecommerce.data.smartstore.VariantData;
+import com.freshdirect.fdlogistics.model.EnumRestrictedAddressReason;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
+import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.smartstore.CartTabStrategyPriority;
 import com.freshdirect.smartstore.ConfigurationStatus;
 import com.freshdirect.smartstore.EnumConfigurationState;
@@ -120,6 +139,71 @@ public class ModelConverter {
 			featureList.add(dynamicSiteFeature);
 		}
 		return featureList;
+	}
+	
+	public static RestrictedAddressModel buildRestrictedAddressModel(RestrictedAddressModelData data) {
+		RestrictedAddressModel restrictedAddress = new RestrictedAddressModel();
+		restrictedAddress.setLastModified(data.getLastModified());
+		restrictedAddress.setModifiedBy(data.getModifiedBy());
+		restrictedAddress.setReason(EnumRestrictedAddressReason.getRestrictionReason(data.getReason()));
+		restrictedAddress.setServiceType(EnumServiceType.getEnum(data.getServiceType()));
+		restrictedAddress.setCompanyName(data.getCompanyName());
+		restrictedAddress.setAddress1(data.getAddress1());
+		restrictedAddress.setAddress2(data.getAddress2());
+		restrictedAddress.setApartment(data.getApartment());
+		restrictedAddress.setCity(data.getCity());
+		restrictedAddress.setState(data.getState());
+		restrictedAddress.setZipCode(data.getZipCode());
+		if(data.getAddressInfoData() != null){
+		AddressInfo addressinfo = new AddressInfo(data.getAddressInfoData().getZoneCode(), data.getAddressInfoData().getLongitude(),
+				data.getAddressInfoData().getLatitude(), data.getAddressInfoData().getScrubbedStreet(), EnumAddressType.getEnum(data.getAddressInfoData().getAddressType()), data.getAddressInfoData().getCounty(),
+				data.getAddressInfoData().getBuildingId(), data.getAddressInfoData().getLocationId());
+		addressinfo.setZoneId(data.getAddressInfoData().getZoneId());
+		addressinfo.setGeocodeException(data.getAddressInfoData().isGeocodeException());
+		addressinfo.setSsScrubbedAddress(data.getAddressInfoData().getSsScrubbedAddress());
+		restrictedAddress.setAddressInfo(addressinfo);
+		}
+		return restrictedAddress;
+	}
+	private final static TimeOfDay JUST_BEFORE_MIDNIGHT = new TimeOfDay("11:59 PM");
+	public  static RestrictionI buildRestriction(Object dlvRestriction) {
+		if (dlvRestriction == null) {
+			return null;
+		}
+		if (dlvRestriction instanceof RecurringRestrictionData) {
+			RecurringRestrictionData recurringRestrictionData = (RecurringRestrictionData) dlvRestriction;
+			TimeOfDay startDate = new TimeOfDay(recurringRestrictionData.getTimeOfDayRange().getStartDate().getNormalDate());
+			TimeOfDay endDate = new TimeOfDay(recurringRestrictionData.getTimeOfDayRange().getEndDate().getNormalDate());
+			if (JUST_BEFORE_MIDNIGHT.equals(endDate)) {
+				endDate = TimeOfDay.NEXT_MIDNIGHT;
+			}
+			RecurringRestriction recurringRestriction = new RecurringRestriction(recurringRestrictionData.getId(), EnumDlvRestrictionCriterion.getEnum(recurringRestrictionData.getCriterion()),
+					EnumDlvRestrictionReason.getEnum(recurringRestrictionData.getReason()), recurringRestrictionData.getName(), recurringRestrictionData.getMessage(),  recurringRestrictionData.getDayOfWeek(),  
+					startDate, endDate, recurringRestrictionData.getPath());
+			return recurringRestriction;
+		} else if (dlvRestriction instanceof OneTimeReverseRestrictionData) {
+			OneTimeReverseRestrictionData oneTimeReverseRestrictionData = (OneTimeReverseRestrictionData) dlvRestriction;
+			OneTimeReverseRestriction oneTimeReverseRestriction = new OneTimeReverseRestriction(oneTimeReverseRestrictionData.getId(), EnumDlvRestrictionCriterion.getEnum(oneTimeReverseRestrictionData.getCriterion()), 
+					EnumDlvRestrictionReason.getEnum(oneTimeReverseRestrictionData.getReason()),oneTimeReverseRestrictionData.getName(), oneTimeReverseRestrictionData.getMessage(),
+					oneTimeReverseRestrictionData.getRange().getStartdate(), oneTimeReverseRestrictionData.getRange().getEndDate(), oneTimeReverseRestrictionData.getPath());
+			return oneTimeReverseRestriction;
+		} else if (dlvRestriction instanceof OneTimeRestrictionData) {
+			OneTimeRestrictionData oneTimeRestrictionData = (OneTimeRestrictionData) dlvRestriction;
+			OneTimeRestriction oneTimeRestriction = new OneTimeRestriction(oneTimeRestrictionData.getId(), EnumDlvRestrictionCriterion.getEnum(oneTimeRestrictionData.getCriterion()), 
+					EnumDlvRestrictionReason.getEnum(oneTimeRestrictionData.getReason()),oneTimeRestrictionData.getName(), oneTimeRestrictionData.getMessage(),
+					oneTimeRestrictionData.getRange().getStartdate(), oneTimeRestrictionData.getRange().getEndDate(), oneTimeRestrictionData.getPath());
+			return oneTimeRestriction;
+
+		} else if (dlvRestriction instanceof AlcoholRestrictionData) {
+			AlcoholRestrictionData alcoholRestrictionData = (AlcoholRestrictionData) dlvRestriction;
+			AlcoholRestriction alcoholRestriction = new AlcoholRestriction(alcoholRestrictionData.getId(), EnumDlvRestrictionCriterion.getEnum(alcoholRestrictionData.getCriterion()), 
+					EnumDlvRestrictionReason.getEnum(alcoholRestrictionData.getReason()),alcoholRestrictionData.getName(), alcoholRestrictionData.getMessage(),
+					alcoholRestrictionData.getDateRange().getStartdate(), alcoholRestrictionData.getDateRange().getEndDate(), EnumDlvRestrictionType.getEnum(alcoholRestrictionData.getType()),
+					alcoholRestrictionData.getPath(), alcoholRestrictionData.getState(), alcoholRestrictionData.getCounty(),
+					alcoholRestrictionData.getCity(), alcoholRestrictionData.getMunicipalityId(), alcoholRestrictionData.isAlcoholRestricted());
+			return alcoholRestriction;
+			}
+		return null;
 	}
 	
 }

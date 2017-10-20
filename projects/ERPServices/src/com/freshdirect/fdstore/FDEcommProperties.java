@@ -85,8 +85,9 @@ public class FDEcommProperties {
 	public static final String CoremetricsCdfServiceSB = "coremetrics.service.CoremetricsCdfServiceSB";
 	public static final String CrmManagerSB = "crm.ejb.CrmManagerSB";
 	public final static  String FDPromotionManagerNewSB = "fdstore.ejb.FDPromotionNewManagerSB";//story SF17-88
-	 public final static  String FDSFGatewayStatsLogging = "fdstore.promotion.FDSFGatewayStatsLogging";//introduced with story SF17-88
-	 
+	public final static  String FDSFGatewayStatsLogging = "fdstore.promotion.FDSFGatewayStatsLogging";//introduced with story SF17-88
+	public static final String CallCenterManagerSB = "com.freshdirect.fdstore.customer.CallCenterManagerSB"; 
+	public static final String PaymentSB = "com.freshdirect.payment.PaymentSB"; 
  
   
     
@@ -144,6 +145,8 @@ public class FDEcommProperties {
         defaults.put(EwalletServiceSB, FALSE);
         defaults.put(CoremetricsCdfServiceSB, FALSE);
         defaults.put(CrmManagerSB, FALSE);
+        defaults.put(CallCenterManagerSB, FALSE);
+        defaults.put(PaymentSB, FALSE);
         refresh();
     }
 
