@@ -9,6 +9,7 @@
 <%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature' %>
 <%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter' %>
 <%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
 
 <%@ taglib prefix="fd" uri="freshdirect"%>
 <%@ taglib prefix="logic" uri="logic" %>
@@ -18,75 +19,11 @@ final int W_GIFTCARD_NAV_TOTAL = 970;
 %>
 
 
-<jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
-<jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
-<% if (useFdxGlobalNav) { %>
-	<div id="toptoolbar">
-		<jsp:include page="/shared/locationbar/locationbar_fdx.jsp" />
-		<jsp:include page="/shared/messages/messages_fdx.jsp" />
-	</div>
-
-<% } else { %>
-
-	<div id="toptoolbar">
-	  <jsp:include page="/shared/locationbar/locationbar.jsp" />
-	  <jsp:include page="/shared/messages/messages.jsp" />
-	</div>
-
-<% } %>
-
 <%
 	//giftcard top nav
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 %>
-<% if (user != null) {
-				// ads are enabled
-				if (FDStoreProperties.isAdServerEnabled()) {
-					request.setAttribute("listPos", "SystemMessage");
-					%><div id="oas_SystemMessage">
-						  <script type="text/javascript">OAS_AD('SystemMessage');</script>
-  					</div><%
-  				} else { %>
-					<div class="message" data-type="system"><fd:GetSiteAnnouncements id="announcments" user="<%=user%>">
-						<logic:iterate id="ann" collection="<%=announcments%>" type="com.freshdirect.fdstore.FDSiteAnnouncementI">
-							<table width="<%=W_GIFTCARD_NAV_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
-								<tr align="center">
-									<td>
-										<font class="text12rbold"><%=ann.getHeader()%></font><br />
-										<%=ann.getCopy()%><br />
-										<img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" />
-									</td>
-								</tr>
-								<tr bgcolor="#999966"><td><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td></tr>
-							</table><br />
-						</logic:iterate>
-					</fd:GetSiteAnnouncements></div>
-				<% } %>
-
-			<% } %>
-<table width="<%=W_GIFTCARD_NAV_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
-	<tr>
-		<td valign="bottom" width="182">
-			<% if (user != null) {%>
-				<% if (user.isDepotUser()) { %>
-					<a href="<%= FDURLUtil.getLandingPageUrl(user)%>"><img src="/media_stat/images/logos/<%=user.getDepotCode()%>_depot_logo.gif" alt="" border="0" /></a>
-				 <% } else { %>
-	    		<a href="<%= FDURLUtil.getLandingPageUrl(user)%>"><img src="/media/images/navigation/global_nav/fd_logo_on.gif" border="0" alt="FreshDirect" name="FD_LOGO"></a>
-				 <% } %>
-			<% } else { %>
-	    	<a href="<%= FDURLUtil.getLandingPageUrl(user)%>"><img src="/media/images/navigation/global_nav/fd_logo_on.gif" border="0" alt="FreshDirect" name="FD_LOGO"></a>
-			<% } %>
-	    </td>
-		<td valign="bottom" align="right">
-			<% if(user.isChefsTable() && !user.getChefsTableInduction().equals("0") && user.getChefsTableInduction().length() == 8) { %>
-				<a href="/your_account/manage_account.jsp"><img src='<%= "/media_stat/images/navigation/global_nav/global_hdr_ct_"+user.getChefsTableInduction().substring(0,4)+".gif"%>' width="256" height="10" alt="CLICK HERE FOR EXCLUSIVE CHEF'S TABLE OFFERS" vspace="0" border="0"></a><br>
-			<% } else if (user.isDlvPassActive()) { %>
-				<a href="/your_account/delivery_pass.jsp"><img src="/media_stat/images/navigation/global_nav/global_hdr_dp.gif" width="217" height="10" alt="CLICK HERE FOR DETAILS ABOUT UNLIMITED DELIVERY PASS MEMBER"  vspace="0" border="0"></a><br>
-			<% } %>
-
-		</td>
-	</tr>
-</table>
+<%@ include file="/common/template/includes/globalnav_sr.jspf"%>
 
 <%
 

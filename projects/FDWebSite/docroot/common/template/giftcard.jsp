@@ -4,7 +4,6 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <% //expanded page dimensions
 final int W_GIFTCARD_TOTAL = 970;
-boolean useFdxGlobalNav = FDStoreProperties.isFdxLocationbarEnabled();
 %>
 
 <%
