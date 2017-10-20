@@ -158,7 +158,7 @@ if (_donOrganization != null && request.getParameter("gcDonId") != null) {
 		</td>
         <td rowspan="10" width="15"><img src="/media_stat/images/layout/clear.gif" alt="" width="10" height="1" border="0" /></td>
         <td colspan="2">
-			<input type="text" maxlength="55" tabIndex="1" size="40" class="text11" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>"  id="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>" required="true" value="<%=fldYourName %>" />
+			<input type="text" maxlength="55" size="40" class="text11" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>"  id="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>" required="true" value="<%=fldYourName %>" />
 		</td>       
         <td rowspan="10" width="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1" border="0"></td>
     </tr>
@@ -169,7 +169,7 @@ if (_donOrganization != null && request.getParameter("gcDonId") != null) {
 			</span>
 		</td>
         <td colspan="2">
-			<input type="text" maxlength="55" tabIndex="2"  size="40" class="text11" name="<%=EnumUserInfoName.GC_DONOR_ORGANIZATION_NAME.getCode()%>"  id="<%=EnumUserInfoName.GC_DONOR_ORGANIZATION_NAME.getCode()%>" required="false" value="<%= fldDonorOrgName %>" />
+			<input type="text" maxlength="55"   size="40" class="text11" name="<%=EnumUserInfoName.GC_DONOR_ORGANIZATION_NAME.getCode()%>"  id="<%=EnumUserInfoName.GC_DONOR_ORGANIZATION_NAME.getCode()%>" required="false" value="<%= fldDonorOrgName %>" />
 	</td>
     </tr>
     <tr>
@@ -179,7 +179,7 @@ if (_donOrganization != null && request.getParameter("gcDonId") != null) {
 			</span>
 		</td>
         <td colspan="2">
-			<input type="text" maxlength="80" tabIndex="2"  size="40" class="text11" name="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>"  id="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>" required="true" value="<%=fldYourEmail %>" />
+			<input type="text" maxlength="80"   size="40" class="text11" name="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>"  id="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>" required="true" value="<%=fldYourEmail %>" />
 	</td>
     </tr>
     <tr>
@@ -189,10 +189,10 @@ if (_donOrganization != null && request.getParameter("gcDonId") != null) {
 			</span>
         </td>
         <td colspan="2">
-			<input type="hidden" maxlength="55" tabIndex="3"  class="text11" size="40" name="<%= EnumUserInfoName.GC_RECIPIENT_NAME.getCode() %>" id="<%= EnumUserInfoName.GC_RECIPIENT_NAME.getCode() %>" value="<%= fldRecipientName%>" />
-			<input type="hidden" maxlength="80" tabIndex="6"  size="40" class="text11" name="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" id="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" required="true" value="<%= fldRecipientEmail %>"  />
+			<input type="hidden" maxlength="55" class="text11" size="40" name="<%= EnumUserInfoName.GC_RECIPIENT_NAME.getCode() %>" id="<%= EnumUserInfoName.GC_RECIPIENT_NAME.getCode() %>" value="<%= fldRecipientName%>" />
+			<input type="hidden" maxlength="80" size="40" class="text11" name="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" id="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" required="true" value="<%= fldRecipientEmail %>"  />
 			<span class="text14"><%= fldRecipientName %></span>
-			<input  type="hidden" type="radio" tabIndex="4"  class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode() %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode() %>Email" value="<%=value1%>" <%= "checked" %> onclick="$('gcRecipientEmail').disabled=false; $('recipEmailStar').innerHTML='*';" />
+			<input  type="hidden" type="radio" class="text11" name="<%= EnumUserInfoName.DLV_METHOD.getCode() %>" id="<%= EnumUserInfoName.DLV_METHOD.getCode() %>Email" value="<%=value1%>" <%= "checked" %> onclick="$('gcRecipientEmail').disabled=false; $('recipEmailStar').innerHTML='*';" />
         </td>
     </tr>
 
@@ -204,7 +204,7 @@ if (_donOrganization != null && request.getParameter("gcDonId") != null) {
 			<table>
 				<tr>
 					<td width="65">
-						<select tabIndex="7"  class="text9 customsimpleselect" name="fldAmount" id="fldAmount" onChange="($('fldAmount').value!='OTHER')?$('fldAltAmount').value=$('fldAmount').value:$('fldAltAmount').value='<%=fldAltAmount%>';$('fldAltAmount').disabled=($('fldAmount').value=='OTHER')?false:true;">
+						<select class="text9 customsimpleselect" name="fldAmount" id="fldAmount" onChange="($('fldAmount').value!='OTHER')?$('fldAltAmount').value=$('fldAmount').value:$('fldAltAmount').value='<%=fldAltAmount%>';$('fldAltAmount').disabled=($('fldAmount').value=='OTHER')?false:true;">
 						   <option value="" <%="".equalsIgnoreCase(fldAmount)?"selected":""%>> </option>
 						   <option value="OTHER" <%=!"".equalsIgnoreCase(fldAmount)?"selected":""%>>OTHER</option>
 						   <option value="20.00" <%="20.00".equalsIgnoreCase(fldAmount)?"selected":""%>>20.00</option>
@@ -215,7 +215,7 @@ if (_donOrganization != null && request.getParameter("gcDonId") != null) {
 						</select>
 					</td>
 					<td>
-						<input type="text" tabIndex="8"  style="margin-left:10px;" maxlength="10" size="8" class="text9" name="fldAltAmount" id="fldAltAmount" value="<%=fldAltAmount%>" <%=!"".equalsIgnoreCase(fldAmount)?"":"disabled"%> onkeydown="$('fldAmount').value='OTHER';" />
+						<input type="text" style="margin-left:10px;" maxlength="10" size="8" class="text9" name="fldAltAmount" id="fldAltAmount" value="<%=fldAltAmount%>" <%=!"".equalsIgnoreCase(fldAmount)?"":"disabled"%> onkeydown="$('fldAmount').value='OTHER';" />
 					</td>
 					<td>
 						<span style="white-space: nowrap;"><label>Enter amount<br>(min. $20.00)</label></span>
