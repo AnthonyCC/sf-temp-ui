@@ -68,7 +68,7 @@ public class CriteoProductsUtil
 		productData.setFeatured(true);
 		productData.setClickBeacon(hlBrandProductAdMetaInfo.getClickBeacon());
 		productData.setImageBeacon(hlBrandProductAdMetaInfo.getImpBeacon());
-		productData.setImageBeacon("//uat-beam.hlserve.com/beacon?fid=258&hl_qs=JPrhL9T5mOV3wMt8nUd3R1%2fnaUJD4%2b%2fQjx7QrFzy8Xgh1DPl" +
+		/*productData.setImageBeacon("//uat-beam.hlserve.com/beacon?fid=258&hl_qs=JPrhL9T5mOV3wMt8nUd3R1%2fnaUJD4%2b%2fQjx7QrFzy8Xgh1DPl" +
 		"Fiu6X3mUcwYc49GV9BIQ55Dq52qgUXByfVYHAkBakkF2RZ32A%2bCtBq87FY05gZbkiyAb7vbHZmOPKN7ZXhkH6KgZW%2fO33Fr7DUD2RROiEUpVZNzs" +
 		"jNijiqy1PKGEchrGwEJOazg1k9bLZX7nZyNn9ORUpN8lNfiUQ%2fxv%2bRF3RSxz%2fS8EHy8DeTbkUaOkn4MFxz%2fwjJ%2fnnYEz24hnAB%2bZEw2QZ9yKMDbCWEL" +
 		"bPfTpTnZgj0BOVNrQfPiesoffrTBTB%2btWafwZWB666oQYov%2bZSfRKuZht38TE3FCf3QxkkoYpEQE6bJ2PjGT75kHXG7whvjEzRnAiXAR03lfUzd%2b0KWP7NauuC1JTndp1q" +
@@ -77,7 +77,7 @@ public class CriteoProductsUtil
 		"8MQzVsKAtK9%2fefxMY%2f0WiG7HoCtEEQMitz0Jp5k%2bvSfOQTcT9syxcGbv2y411F1DNafBBuNT9T1G7i1482jNmBLwIOwt9yKFV0ky9zBRHNcFD52TnvrB0HzbuOUtvdCom85K16159%2b2Qpm" +
 		"viQvhEWK%2fYlgD3TB%2beZcOJzq0%2blnxcMaq54lYGhRxdvWwkYYOR5tOrW9vF01auVQf9Pfmv%2b3Qx7rQV4OYHYqvbEoObrAcfCWZKPDhnldhcyxcQrKG19nSciYPzE0asVRwrwdiDTxCuuwSkFO8a" +
 		"h4HueKQ95EJfa0mUPIkwDevYttm1yZsPJlZ1XD8wz1vB1ATmMgwHcONkQ%2bTlVF2twkBnb5p7O%2fp61usnxyCdxwN2fPKNrH9NAenwMKrjvWngtb2YWDmZ%2bGp6N%2fZ9ShP6v&ev=1&action=imp&p" +
-		"ageguid=867097b1-2968-4fa2-b0cf-f4b76c797614&pid=d82fd515-8f6c-4646-8a4c-66a69c1fbd49&rn=228163497&hmguid=543386f2-8556-4787-becd-f149f84e4e04");
+		"ageguid=867097b1-2968-4fa2-b0cf-f4b76c797614&pid=d82fd515-8f6c-4646-8a4c-66a69c1fbd49&rn=228163497&hmguid=543386f2-8556-4787-becd-f149f84e4e04");*/
 		adPrducts.add(productData);
 		updatedPageBeacon.append(((A_SHOWN.equals(updatedPageBeacon.toString()))
 				? productData.getSkuCode() : "," + productData.getSkuCode()));
