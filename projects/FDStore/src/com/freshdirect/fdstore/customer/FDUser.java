@@ -2607,7 +2607,11 @@ public class FDUser extends ModelSupport implements FDUserI {
         ZoneInfo zoneInfo = null;
 
         if (isAddressValidForFulfillmentCheck(address)) {
-            fulfillmentInfo = getFulfillmentInfo(address, (this.getShoppingCart() instanceof FDModifyCartModel)? this.getShoppingCart().getDeliveryReservation().getTimeslot().getDeliveryDate():
+            fulfillmentInfo = getFulfillmentInfo(address, (this.getShoppingCart() instanceof FDModifyCartModel)? 
+            		(this.getShoppingCart()!=null && this.getShoppingCart().getDeliveryReservation()!=null 
+            		&& this.getShoppingCart().getDeliveryReservation().getTimeslot()!=null 
+            		&& this.getShoppingCart().getDeliveryReservation().getTimeslot().getDeliveryDate()!=null ? 
+            		this.getShoppingCart().getDeliveryReservation().getTimeslot().getDeliveryDate() : null):
             		(this.getShoppingCart()!=null && this.getShoppingCart().getDeliveryReservation()!=null 
             		&& this.getShoppingCart().getDeliveryReservation().getTimeslot()!=null 
             		&& this.getShoppingCart().getDeliveryReservation().getTimeslot().getDeliveryDate()!=null
