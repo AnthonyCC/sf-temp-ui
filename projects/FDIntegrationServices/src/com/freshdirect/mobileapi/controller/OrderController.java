@@ -43,6 +43,7 @@ import com.freshdirect.mobileapi.controller.data.response.Orders;
 import com.freshdirect.mobileapi.controller.data.response.QuickShop;
 import com.freshdirect.mobileapi.controller.data.response.QuickShopLists;
 import com.freshdirect.mobileapi.controller.data.response.QuickShopResponse;
+import com.freshdirect.mobileapi.controller.data.response.Timeslot;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.Cart;
@@ -268,6 +269,10 @@ public class OrderController extends BaseController {
             modifiedOrder.setModificationCutoffTime(modifiableOrder.getDeliveryCutoffTime());
             modifiedOrder.setDeliveryStartTime(modifiableOrder.getDeliveryStartTime());
             modifiedOrder.setDeliveryEndTime(modifiableOrder.getDeliveryEndTime());
+            Timeslot deliveryTimeslot = new Timeslot(modifiableOrder.getDeliveryStartTime(), modifiableOrder.getDeliveryEndTime(), modifiableOrder
+                    .getDeliveryCutoffTime());
+            modifiedOrder.setStart(deliveryTimeslot.getStart());
+            modifiedOrder.setEnd(deliveryTimeslot.getEnd());
             modifiedOrders.add(modifiedOrder);
         }
 
