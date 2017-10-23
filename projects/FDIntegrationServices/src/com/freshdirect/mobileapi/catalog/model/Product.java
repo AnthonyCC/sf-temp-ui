@@ -26,6 +26,8 @@ public class Product {
 	private final List<Image> images;
 	private final float minQty;
 	private final float maxQty;
+	private  float availableQuantity=0;
+
 	private final float incrementQty;
 	private final String quantityText;
 	private final String primaryBrand;
@@ -96,6 +98,16 @@ public class Product {
 	public String getQuantityText() {
 		return quantityText;
 	}
+	
+	public float getAvailableQuantity() {
+		return availableQuantity;
+	}
+	/* TODO MAKE THIS PART OF BUILDER*/
+	public void setAvailableQuantity(float availableQuantity) {
+		this.availableQuantity = availableQuantity;
+	}
+	
+
 
 	public SkuInfo getSkuInfo() {
 		return skuInfo;
