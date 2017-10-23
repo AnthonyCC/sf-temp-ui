@@ -90,6 +90,8 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
                     }
                     case DELETE_DELIVERY_ADDRESS_METHOD: {
                     	if (StandingOrderHelper.isSO3StandingOrder(user) && null != user.getCurrentStandingOrder()) {
+                    		String deliveryAddressId = FormDataService.defaultService().get(deliveryAddressRequest, "id");
+                    		StandingOrderHelper.evaluteSoAddressId(request.getSession(), user, deliveryAddressId);
                     		FDStandingOrder currentStandingOrder = user.getCurrentStandingOrder();
                     		currentStandingOrder.setOldAddressId(currentStandingOrder.getAddressId());
                     		currentStandingOrder.setNextDeliveryDate(null);

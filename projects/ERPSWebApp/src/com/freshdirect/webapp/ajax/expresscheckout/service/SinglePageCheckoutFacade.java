@@ -329,7 +329,8 @@ public class SinglePageCheckoutFacade {
             if (null != user.getCurrentStandingOrder().getAddressId()) {
                 formLocation.setSelected(user.getCurrentStandingOrder().getAddressId());
             } else {
-                user.getCurrentStandingOrder().setAddressId(formLocation.getSelected());
+//                user.getCurrentStandingOrder().setAddressId(formLocation.getSelected());
+            	formLocation.setSelected(null);
             }
         }
         formLocation.setOnOpenCoremetrics(CoremetricsService.defaultService().getCoremetricsData("address"));

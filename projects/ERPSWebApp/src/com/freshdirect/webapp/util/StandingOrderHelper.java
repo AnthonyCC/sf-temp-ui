@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
@@ -27,6 +29,7 @@ import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
@@ -49,6 +52,7 @@ import com.freshdirect.webapp.ajax.expresscheckout.payment.data.FormPaymentData;
 import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFacade;
 import com.freshdirect.webapp.ajax.expresscheckout.timeslot.data.FormTimeslotData;
 import com.freshdirect.webapp.ajax.standingorder.StandingOrderResponseData;
+import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 
 /**
@@ -1310,4 +1314,29 @@ private static String convert(Date time) {
 		
 		return DateUtil.formatMonthAndDate(so.getDeleteDate());
 	}
+	
+	//SO user if deletes address which is default in another template, we are here deleting that specific SO template SO AddressID
+	public static void evaluteSoAddressId(HttpSession session, FDUserI user, String deliveryAddressId) {
+		Collection<FDStandingOrder> soValidList = user.getValidSO3();
+		try {
+			for (FDStandingOrder soValidtemplate : soValidList) {
+				if (deliveryAddressId != null && deliveryAddressId.equals(soValidtemplate.getAddressId())) {
+					soValidtemplate.setAddressId(null);
+					soValidtemplate.setStartTime(null);
+					soValidtemplate.setEndTime(null);
+					soValidtemplate.setNextDeliveryDate(null);
+					soValidtemplate.setLastError("NO_ADDRESS",
+							"The address you set up for this standing order no longer exists in the system.",
+							"Use the link below to modify this standing order and choose a different address.");
+					if (session != null) {
+						FDActionInfo info = AccountActivityUtil.getActionInfo(session);
+						FDStandingOrdersManager.getInstance().save(info, soValidtemplate);
+						user.setRefreshSO3(true);
+					}
+				}
+			} 
+		}catch (FDResourceException e1) {
+				LOGGER.error("for user: "+user.getUserId()+" Exception occurred in evaluteSoAddressId : "+e1);
+			}
+		}
 }
