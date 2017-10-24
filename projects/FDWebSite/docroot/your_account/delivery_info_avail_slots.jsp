@@ -84,9 +84,11 @@ if (mobWeb) {
 	</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 		
+		<% if(mobWeb) { %>
 		<div class="delivery_info_mobweb_nav" <%= mobWeb ? "" : "style='display: none;'" %>>
 			<%@ include file="/help/delivery_info_nav.jspf" %>
 		</div>
+		<% } %>
 		
 		<%//Finds the address%>
 		<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>

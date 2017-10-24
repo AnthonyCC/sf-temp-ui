@@ -52,9 +52,11 @@ if (mobWeb) {
 		<fd:SEOMetaTag pageId="delivery_info_cos"></fd:SEOMetaTag>
 	</tmpl:put>
 	<tmpl:put name='content' direct='true'>
+		<% if(mobWeb) { %>
 		<div class="delivery_info_mobweb_nav" <%= mobWeb ? "" : "style='display: none;'" %>>
 			<%@ include file="/help/delivery_info_nav.jspf" %>
 		</div>
+		<% } %>
 		<fd:IncludeMedia name="/media/editorial/site_pages/delivery_info/corp/main.ftl" parameters="<%=params%>" withErrorReport="true"/>		
 		<%@ include file="/survey/includes/cos.jsp" %>
     </tmpl:put>

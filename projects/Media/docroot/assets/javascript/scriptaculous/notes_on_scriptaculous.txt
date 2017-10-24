@@ -1,7 +1,0 @@
-Jul 14, 2011
-
-This feature is not under the control of build versioning. This means that no ?buildver=<build-id> query string is appended after the references to scriptaculous scripts.
-
-If you consider upgrading this feature then please add the updated files to the folder named accordingly to the new version.
-
-Csongor Somogyi <csongor@euedge.com>

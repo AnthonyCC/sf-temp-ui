@@ -51,9 +51,11 @@ request.setAttribute("listPos", "SystemMessage,ZDeliveryRight,DeliveryFees");
 	</tmpl:put>
 	
     <tmpl:put name='content' direct='true'>
-    	<div class="delivery_info_mobweb_nav" <%= mobWeb ? "" : "style='display: none;'" %>>
-    		<%@ include file="/help/delivery_info_nav.jspf" %>
-    	</div>
+    	<% if(mobWeb) { %>
+		<div class="delivery_info_mobweb_nav" <%= mobWeb ? "" : "style='display: none;'" %>>
+			<%@ include file="/help/delivery_info_nav.jspf" %>
+		</div>
+		<% } %>
 		<%if(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("delivery")){%>
 			<fd:IncludeMedia name="/media/editorial/site_pages/delivery_info.html" parameters="<%=params%>" withErrorReport="true"/>
 		<%}else{ %>

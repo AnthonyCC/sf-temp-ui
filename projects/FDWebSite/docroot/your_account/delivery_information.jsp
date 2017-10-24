@@ -9,11 +9,13 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <% //expanded page dimensions
 final int W_YA_DELIVERY_INFORMATION = 970;
+long pageStart = System.currentTimeMillis();
 %>
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 
 <% //check unattended %>
 <%@ include file="/includes/i_check_unattended_delivery.jspf" %>
+
 
 <tmpl:insert template='/common/template/dnav.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Delivery Addresses</tmpl:put>
@@ -68,3 +70,7 @@ CONTINUE SHOPPING
 </fd:RegistrationController>
 </tmpl:put>
 </tmpl:insert>
+<%
+long pageEnd = System.currentTimeMillis();
+%>
+<div> Page rendered in <%=(pageEnd-pageStart) %> ms</div>

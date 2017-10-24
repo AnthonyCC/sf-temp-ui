@@ -80,10 +80,11 @@ if (mobWeb) {
 	
     <tmpl:put name='content' direct='true'>
     
+		<% if(mobWeb) { %>
     	<div class="delivery_info_mobweb_nav" <%= mobWeb ? "" : "style='display: none;'" %>>
 			<%@ include file="/help/delivery_info_nav.jspf" %>
 		</div>
-    
+		<% } %>
 	<fd:ReserveTimeslotController actionName="<%=actionName%>" result="result">
 	
 	<%	

@@ -12,10 +12,6 @@
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri="fd-features" prefix="features" %>
 <%-- this file will be included in the <head> tag --%>
-	<%--
-		using the same /directory/version/ system as scriptaculous for jquery
-		also to avoid conflicts, jQuery's $ will always be set to $jq
-	--%>
 
   <%-- Feature version switcher --%>
   <features:potato />
@@ -68,7 +64,6 @@
   <%@include file="/common/template/includes/i_gtm_datalayer.jsp" %>
 
 	<jwr:script src="/fdlibs.js" useRandomParam="false" />
-	<script src="/assets/javascript/jquery/corner/jquery.corner.js" type="text/javascript" language="javascript"></script>
 	<fd:javascript src="/assets/javascript/dialog-base.js" />
 	<fd:javascript src="/assets/javascript/atcPendingOrder.js"/>
 	<fd:javascript src="/assets/javascript/popupLogicDispatcher.js"/>
@@ -126,11 +121,6 @@
 
 	<% if (request.getRequestURI().indexOf("/checkout/step_1_choose.jsp") == -1)  { %>
 		<fd:javascript src="/assets/javascript/prototype.js"/>
-		
-		<% if (request.getRequestURI().indexOf("/registration/invite_signup2.jsp") == -1)  { %>
-			<%-- when upgrading scriptaculous please create a new directory for the version --%>
-			<script src="/assets/javascript/scriptaculous/1.9.0/scriptaculous.js?load=effects,builder" type="text/javascript" language="javascript"></script>
-		<% } %>
 		<fd:javascript src="/assets/javascript/modalbox.js"/>
 	<% } %>
 	<% if (request.getRequestURI().indexOf("brownie_points.jsp") == -1)  { %>
