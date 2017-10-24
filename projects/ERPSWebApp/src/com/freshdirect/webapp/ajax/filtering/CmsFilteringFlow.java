@@ -118,7 +118,7 @@ public class CmsFilteringFlow {
                 browseDataContext = doBrowseFlow(nav, user);
             }
 
-            if (!nav.isPdp()) {
+            if (!nav.isPdp() && !nav.isSpecialPage()) { //TODO quick fix for TKG meals (special layouts)
                 EhCacheUtilWrapper.putObjectToCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, cacheKey, browseDataContext);
             }
 
