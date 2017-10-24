@@ -2557,3 +2557,7 @@ form.dispblock-fields td { /* force the tds to block so the label and field are 
 .drawer__content {
 	width: 100% !important;
 }
+/* apt,suite field for mobile web */
+.aptfields{
+	display:block;
+}

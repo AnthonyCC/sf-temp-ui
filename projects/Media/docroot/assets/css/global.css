@@ -3392,3 +3392,8 @@ input#signupbtn:focus, input#signinbtn:focus{
 button.space {
     margin-left: 10px;
 }
+
+.aptfields{
+	display:inline-block;
+	vertical-align:top;
+}
