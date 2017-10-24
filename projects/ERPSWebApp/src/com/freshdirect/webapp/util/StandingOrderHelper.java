@@ -44,6 +44,7 @@ import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.standingorders.DeliveryInterval;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
+import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.util.FDTimeslotUtil;
 import com.freshdirect.framework.util.DateUtil;
@@ -1321,13 +1322,13 @@ private static String convert(Date time) {
 		try {
 			for (FDStandingOrder soValidtemplate : soValidList) {
 				if (deliveryAddressId != null && deliveryAddressId.equals(soValidtemplate.getAddressId())) {
+					LOGGER.debug("indside evaluteSoAddressId(), action by user: "+user.getIdentity().getErpCustomerPK()+", "
+							+ "deleting addressId: "+soValidtemplate.getAddressId()+", for SO3 template: "+soValidtemplate.getId());
 					soValidtemplate.setAddressId(null);
 					soValidtemplate.setStartTime(null);
 					soValidtemplate.setEndTime(null);
 					soValidtemplate.setNextDeliveryDate(null);
-					soValidtemplate.setLastError("NO_ADDRESS",
-							"The address you set up for this standing order no longer exists in the system.",
-							"Use the link below to modify this standing order and choose a different address.");
+					soValidtemplate.setLastError(ErrorCode.NO_ADDRESS.name(), ErrorCode.NO_ADDRESS.getErrorHeader(), ErrorCode.NO_ADDRESS.getErrorDetail(null));
 					if (session != null) {
 						FDActionInfo info = AccountActivityUtil.getActionInfo(session);
 						FDStandingOrdersManager.getInstance().save(info, soValidtemplate);
@@ -1336,7 +1337,7 @@ private static String convert(Date time) {
 				}
 			} 
 		}catch (FDResourceException e1) {
-				LOGGER.error("for user: "+user.getUserId()+" Exception occurred in evaluteSoAddressId : "+e1);
+				LOGGER.error("for user: "+user.getUserId()+" Exception occurred in evaluteSoAddressId() : "+e1);
 			}
 		}
 }
