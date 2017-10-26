@@ -669,10 +669,12 @@ public class BrowseDataBuilderFactory {
 				it.remove();
 				
 				//make sure there are no active menu items pointing to this section
-				for(MenuBoxData box : menu){
-					for(MenuItemData item : box.getItems()){
-						if(!item.isActive() && section.getCatId() != null && section.getCatId().equals(item.getId())){
-							item.setActive(false);
+				if(menu != null){
+					for(MenuBoxData box : menu){
+						for(MenuItemData item : box.getItems()){
+							if(!item.isActive() && section.getCatId() != null && section.getCatId().equals(item.getId())){
+								item.setActive(false);
+							}
 						}
 					}
 				}

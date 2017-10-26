@@ -47,7 +47,7 @@ public class SectionContext extends SectionData {
 	
     public SectionData extractDataFromContext(FDUserI user, CmsFilteringNavigator nav) {
 		
-		if(sectionContexts!=null){
+		if (sectionContexts!=null) {
 			List<SectionData> sections = new ArrayList<SectionData>();
 			for(SectionContext context : sectionContexts){
                 sections.add(context.extractDataFromContext(user, nav));
@@ -55,27 +55,33 @@ public class SectionContext extends SectionData {
 			this.setSections(sections);			
 		}
 		
-		if(productItems!=null){
+		if (productItems!=null) {
 			List<ProductData> productDatas = new ArrayList<ProductData>();
 			for (FilteringProductItem productItem : productItems) {
 				ProductModel product = productItem.getProductModel();
+				if (product !=null && 
+						(product.isDiscontinued() || product.isOutOfSeason()) && 
+						user!=null && 
+						user.getUserContext() != null && 
+						user.getUserContext().getStoreContext() != null &&
+						user.getUserContext().getStoreContext().getEStoreId() == EnumEStoreId.FDX){
+					continue;
+				}
 				try{
 					ProductData productData = ProductDetailPopulator.createProductData(user, product, (nav.isPdp() || FDStoreProperties.getPreviewMode()));
-					productData = ProductDetailPopulator.populateBrowseRecommendation(user, productData, product);
-					if (!productData.isIncomplete()) {
-						productData = ProductDetailPopulator.populateSelectedNutritionFields(user, productData, productItem.getFdProduct(), nav.getErpNutritionTypeType());
+					if (!nav.populateSectionsOnly()) {
+						productData = ProductDetailPopulator.populateBrowseRecommendation(user, productData, product);
+						if (!productData.isIncomplete()) {
+							productData = ProductDetailPopulator.populateSelectedNutritionFields(user, productData, productItem.getFdProduct(), nav.getErpNutritionTypeType());
+						}
 					}
-
 					FilteringFlowType pageType = nav.getPageType();
 					if (pageType!=null){
 						productData.setPageType(pageType.toString());
 					}
 
 					productDatas.add(productData);
-					if(product!=null && (product.isDiscontinued() || product.isOutOfSeason()) && user!=null && user.getUserContext() != null && 
-							user.getUserContext().getStoreContext() != null && user.getUserContext().getStoreContext().getEStoreId() == EnumEStoreId.FDX){
-						productDatas.remove(productData);
-					}
+					
 				} catch (Exception e){
 					LOGGER.error("Failed to create product data for " + product==null ? "null": product.getContentName()+ " (" + e.getMessage() + ")");
 				}
@@ -83,7 +89,7 @@ public class SectionContext extends SectionData {
 			this.setProducts(productDatas);			
 		}
 		
-		if (recipeItems != null) {
+		if (recipeItems != null && !nav.populateSectionsOnly()) {
 			List<RecipeData> recipesData = new ArrayList<RecipeData>();
 			for (FilteringProductItem recipeItem : recipeItems) {
 				Recipe recipe = recipeItem.getRecipe();

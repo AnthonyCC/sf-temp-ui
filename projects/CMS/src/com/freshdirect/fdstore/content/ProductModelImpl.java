@@ -1635,7 +1635,7 @@ inner:
             // remove the unavailable sku's
             for (ListIterator<SkuModel> li = skus.listIterator(); li.hasNext();) {
                 sku = li.next();
-                if (sku.isUnavailable()) {
+                if (sku == null || sku.isUnavailable()) {
                     li.remove();
                 }
             }

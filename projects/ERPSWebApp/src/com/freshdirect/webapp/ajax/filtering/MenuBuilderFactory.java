@@ -1125,7 +1125,9 @@ public class MenuBuilderFactory {
 	}
 	
 	public void checkNullSelection(List<MenuBoxData> menu){
-		
+		if (null == menu) {
+			return;
+		}
 		Iterator<MenuBoxData> it = menu.iterator();
 
 		while(it.hasNext()){

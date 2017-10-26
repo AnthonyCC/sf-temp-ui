@@ -105,6 +105,7 @@ import com.freshdirect.mobileapi.model.tagwrapper.ItemGrabberTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.ItemSorterTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.LayoutManagerWrapper;
 import com.freshdirect.webapp.ajax.DataPotatoField;
+import com.freshdirect.webapp.ajax.browse.data.BrowseData;
 import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringFlow;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
@@ -113,6 +114,7 @@ import com.freshdirect.webapp.ajax.filtering.NavigationUtil;
 import com.freshdirect.webapp.ajax.filtering.ProductItemFilterUtil;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.search.unbxd.UnbxdServiceUnavailableException;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings;
 import com.freshdirect.webapp.taglib.unbxd.BrowseEventTag;
 
@@ -126,12 +128,20 @@ public class BrowseUtil {
     private BrowseUtil() {
     }
     
+    
     public static BrowsePageResponse getBrowseResponse(SessionUser user, HttpServletRequest request) {
         final BrowsePageResponse result = new BrowsePageResponse();
         try {
-            final CmsFilteringNavigator navigator = CmsFilteringNavigator.createInstance(request, user.getFDSessionUser());
-            final CmsFilteringFlowResult flow = CmsFilteringFlow.getInstance().doFlow(navigator, user.getFDSessionUser());
-            result.setBrowse(DataPotatoField.digBrowse(flow));
+        	FDSessionUser sessionUser = user.getFDSessionUser();
+            final CmsFilteringNavigator navigator = CmsFilteringNavigator.createInstance(request, sessionUser);
+            if (navigator.populateSectionsOnly()) {
+            	BrowseData browseData = CmsFilteringFlow.getInstance().doBrowseSectionsFlow(navigator, sessionUser);
+            	result.setBrowse(DataPotatoField.digBrowse(browseData));
+            } else {
+            	final CmsFilteringFlowResult flow = CmsFilteringFlow.getInstance().doFlow(navigator, sessionUser);
+            	result.setBrowse(DataPotatoField.digBrowse(flow));
+            }
+            
         } catch (FDResourceException e) {
             result.addErrorMessage(e.getMessage());
             LOG.error(e.getMessage());
