@@ -34,7 +34,7 @@
 /* APPDEV-6353 customTemplate is set in pdp.subtotal */
 {let $pricingUnit:$availMatPrices?.0.pricingUnit /}
 {if $customTemplate and $customTemplate == 'pdp.subtotalInnerPricingUnit' }
-	<p class="text12 subtotal-price-estimated-additional" tabindex="0">Actual weight will vary from estimate due to seasonality, source, and country of origin.</p>
+	<p class="text12 subtotal-price-estimated-additional" tabindex="0">Actual weight will vary from estimate due to seasonality, source, and/or country of origin.</p>
 {/if}
 
 {/template}
