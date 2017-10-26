@@ -2,7 +2,6 @@ package com.freshdirect.webapp.ajax.expresscheckout.location.servlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,8 +12,6 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
@@ -103,30 +100,40 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
                     case SELECT_DELIVERY_ADDRESS_METHOD: {
                         String deliveryAddressId = FormDataService.defaultService().get(deliveryAddressRequest, "id");
                         if(StandingOrderHelper.isSO3StandingOrder(user)){
-                        	FDStandingOrder currentStandingOrder = user.getCurrentStandingOrder();
-                        	if (currentStandingOrder != null && currentStandingOrder.getNextDeliveryDate() != null 
-                        			|| currentStandingOrder.getOldAddressId() == null) {
-                        		currentStandingOrder.setOldAddressId(currentStandingOrder.getAddressId());
-                        		LOGGER.debug("user selected addressID from UI: " + deliveryAddressId + " . initial addressID: "+ currentStandingOrder.getOldAddressId());
-                        	}
-                        	if(user != null && currentStandingOrder != null){
-                        		canBeSaved = currentStandingOrder.getOldAddressId() != null	&& currentStandingOrder.getOldAddressId().equals(deliveryAddressId);
-                        	}
-                        	if(canBeSaved){
-								FDStandingOrder so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(currentStandingOrder.getId()));
-								currentStandingOrder.setNextDeliveryDate(so.getNextDeliveryDate());
-								currentStandingOrder.setStartTime(so.getStartTime());
-								currentStandingOrder.setEndTime(so.getEndTime());
-								LOGGER.debug("restoring address timeslot for customer:"+user.getIdentity().getErpCustomerPK()+ " StandingOrder ID: "+ currentStandingOrder.getId());
-								canBeSaved = false;
-							}
-							else {
-								currentStandingOrder.setNextDeliveryDate(null);
-								currentStandingOrder.setStartTime(null);
-								currentStandingOrder.setEndTime(null);
-								canBeSaved = false;
-								LOGGER.debug("customer:"+user.getIdentity().getErpCustomerPK()+ " trying to modify address for StandingOrder ID: "+ currentStandingOrder.getId());
-							}
+                        		FDStandingOrder currentStandingOrder = user.getCurrentStandingOrder();
+                        	
+                        		if (currentStandingOrder != null && !"".equalsIgnoreCase(currentStandingOrder.getId()) 
+                        				&& null != currentStandingOrder.getId() &&
+                        				(currentStandingOrder.getNextDeliveryDate() != null || currentStandingOrder.getOldAddressId() == null) ) {
+                        			
+                        			currentStandingOrder.setOldAddressId(currentStandingOrder.getAddressId());
+                        			LOGGER.debug("user selected addressID from UI: " + deliveryAddressId + " . initial addressID: "+ currentStandingOrder.getOldAddressId());
+                        		}
+                        		if(user != null && currentStandingOrder != null){
+                        			canBeSaved = currentStandingOrder.getOldAddressId() != null	&& currentStandingOrder.getOldAddressId().equals(deliveryAddressId);
+                        		}
+                        		if(canBeSaved){
+									FDStandingOrder so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(currentStandingOrder.getId()));
+									currentStandingOrder.setNextDeliveryDate(so.getNextDeliveryDate());
+									currentStandingOrder.setStartTime(so.getStartTime());
+									currentStandingOrder.setEndTime(so.getEndTime());
+									LOGGER.debug("restoring address timeslot for customer:"+user.getIdentity().getErpCustomerPK()+ " StandingOrder ID: "+ currentStandingOrder.getId());
+									canBeSaved = false;
+									}
+								else {
+									currentStandingOrder.setNextDeliveryDate(null);
+									currentStandingOrder.setStartTime(null);
+									currentStandingOrder.setEndTime(null);
+									canBeSaved = false;
+									if(!"".equalsIgnoreCase(currentStandingOrder.getId()) 
+	                        				&& null != currentStandingOrder.getId()){
+										LOGGER.debug("customer:"+user.getIdentity().getErpCustomerPK()+ " trying to modify address for StandingOrder ID: "+ currentStandingOrder.getId());
+									} else{
+										LOGGER.debug("customer:"+user.getIdentity().getErpCustomerPK()+ " is creating new SO");
+										
+									}
+								}
+                        	
                         }
 						String ebtPaymentRemovalApproved = FormDataService.defaultService().get(deliveryAddressRequest, "ebtPaymentRemovalApproved");
 						List<ValidationError> validationErrors = new ArrayList<ValidationError>();
