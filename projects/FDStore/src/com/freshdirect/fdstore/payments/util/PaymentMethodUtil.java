@@ -120,7 +120,7 @@ public class PaymentMethodUtil {
 		}
 	}
 
-	public static ErpPaymentMethodI getPaymentMethod(String paymentId, List<ErpPaymentMethodI> paymentMethods) {
+    public static ErpPaymentMethodI getPaymentMethod(String paymentId, Collection<ErpPaymentMethodI> paymentMethods) {
 		ErpPaymentMethodI pmethod = null;
 		for(ErpPaymentMethodI paymentMethod : paymentMethods){
 			if(paymentMethod.getPK().getId().equals(paymentId)){

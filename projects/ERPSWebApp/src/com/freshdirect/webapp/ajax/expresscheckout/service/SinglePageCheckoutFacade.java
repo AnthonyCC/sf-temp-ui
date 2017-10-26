@@ -33,8 +33,6 @@ import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ewallet.EnumEwalletType;
 import com.freshdirect.fdstore.payments.util.PaymentMethodUtil;
-import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
-import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderAdapter;
 import com.freshdirect.framework.template.TemplateException;
@@ -42,7 +40,6 @@ import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
-import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.checkout.UnavailabilityPopulator;
 import com.freshdirect.webapp.ajax.checkout.data.UnavailabilityData;
@@ -73,8 +70,6 @@ import com.freshdirect.webapp.ajax.expresscheckout.textmessagealert.service.Text
 import com.freshdirect.webapp.ajax.expresscheckout.timeslot.service.TimeslotService;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationError;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationResult;
-import com.freshdirect.webapp.ajax.reorder.service.QuickShopCarouselService;
-import com.freshdirect.webapp.ajax.viewcart.service.CheckoutCarouselService;
 import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
 import com.freshdirect.webapp.checkout.PaymentMethodManipulator;
 import com.freshdirect.webapp.checkout.RedirectToPage;
@@ -422,7 +417,6 @@ public class SinglePageCheckoutFacade {
     }
 
     private List<ValidationError> handleModifyCartPreSelections(FDUserI user, HttpServletRequest request) throws FDResourceException, JspException, RedirectToPage {
-
         FDCartModel cart = StandingOrderHelper.isSO3StandingOrder(user) ? user.getSoTemplateCart() : user.getShoppingCart();
 
         List<ValidationError> validationErrors = new ArrayList<ValidationError>();
@@ -452,18 +446,13 @@ public class SinglePageCheckoutFacade {
                 }
                 String billingReference = cart.getPaymentMethod().getBillingRef();
                 session.setAttribute(SessionName.PAYMENT_BILLING_REFERENCE, billingReference);
-                String paymentId="";
-                if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)){                	
-                	paymentId = cart.getPaymentMethod().getPK().getId();
-                	if(null == PaymentMethodUtil.getPaymentMethod(paymentId, new ArrayList<ErpPaymentMethodI>(user.getPaymentMethods()))){
-                		paymentId = FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity());
-                	}
-                }else{
-                	paymentId = FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity());
+                String paymentId = cart.getPaymentMethod().getPK().getId();
+                ErpPaymentMethodI paymentMethod = PaymentMethodUtil.getPaymentMethod(paymentId, user.getPaymentMethods());
+                if (paymentMethod != null) {
+                    PaymentMethodManipulator.setPaymentMethod(paymentId, null, request, session, actionResult, PageAction.SELECT_PAYMENT_METHOD.actionName, "N");
+                } else {
+                    session.setAttribute(SessionName.CART_PAYMENT_SELECTION_DISABLED, Boolean.TRUE);
                 }
-                if (paymentId != null)
-                    PaymentMethodManipulator.setPaymentMethod(paymentId, null, request, session, actionResult, PageAction.SELECT_PAYMENT_METHOD.actionName,"N");
-                
                 for (ActionError error : actionResult.getErrors()) {
                     validationErrors.add(new ValidationError(error));
                 }
