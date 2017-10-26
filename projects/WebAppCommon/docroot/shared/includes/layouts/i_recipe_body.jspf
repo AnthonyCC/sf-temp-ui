@@ -493,7 +493,7 @@ int prodIdx = 0;
                 } else {
                     %>
                     <input type="hidden" name="salesUnit_<%=prodIdx%>" value="<%= orderLine.getSalesUnit() %>">
-                    <td colspan="3">
+                    <td colspan="3" style="min-width:152px;">
                       <% String quant = quantityFormatter.format(orderLine.getQuantity()); %>	
                       <div class="qtyinput">
                         <a href="javascript:chgQty<%=prodIdx%>(<%= -_productNode.getQuantityIncrement() %>);" class="quantity_minus">-<div class="vahidden">Decrease quantity</div></a>
