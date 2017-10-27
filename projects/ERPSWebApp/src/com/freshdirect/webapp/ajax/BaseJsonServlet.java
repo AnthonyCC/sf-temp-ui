@@ -219,12 +219,13 @@ public abstract class BaseJsonServlet extends HttpServlet {
      */
     protected final FDUserI authenticate(HttpServletRequest request, HttpServletResponse response) throws HttpErrorResponse {
         HttpSession session = request.getSession();
-        FDUserI user = (FDSessionUser) session.getAttribute(SessionName.USER);
+        FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 
         if (user == null) {
             try {
-                user = UserUtil.updateUserRelatedContexts(request, UserUtil.createSessionUser(request, response, FDUserI.GUEST == getRequiredUserLevel()));
-                session.setAttribute(SessionName.USER, user);
+                user = UserUtil.createSessionUser(request, response, FDUserI.GUEST == getRequiredUserLevel());
+                UserUtil.touchUser(request, user);
+                UserUtil.updateUserRelatedContexts(user);
             } catch (InvalidUserException e) {
                 returnHttpError(401, "Invalid user!"); // 401 Unauthorized
             }
