@@ -137,6 +137,7 @@ public class BrowseUtil {
             if (navigator.populateSectionsOnly()) {
             	BrowseData browseData = CmsFilteringFlow.getInstance().doBrowseSectionsFlow(navigator, sessionUser);
             	result.setBrowse(DataPotatoField.digBrowse(browseData));
+            	result.setIncludeNullValue(false);
             } else {
             	final CmsFilteringFlowResult flow = CmsFilteringFlow.getInstance().doFlow(navigator, sessionUser);
             	result.setBrowse(DataPotatoField.digBrowse(flow));

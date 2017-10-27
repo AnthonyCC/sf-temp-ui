@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionWarning;
 import com.freshdirect.mobileapi.controller.data.response.Configuration;
@@ -183,5 +184,10 @@ public class Message implements DateFormat, Cloneable {
 	public void setUnavaialabilityData(AtpErrorData unavaialabilityData) {
 		this.unavaialabilityData = unavaialabilityData;
 	}
+	
+    @JsonIgnore
+    public boolean includeNullValue() {
+    	return true;
+    }
     
 }
