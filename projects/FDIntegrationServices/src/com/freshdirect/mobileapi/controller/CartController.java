@@ -169,7 +169,7 @@ public class CartController extends BaseController {
     	else{
     		Message responseMessage = new Message();
             responseMessage.setStatus(Message.STATUS_FAILED);
-            responseMessage = Message.createFailureMessage("USER_NULL");
+            responseMessage = getErrorMessage(ERR_SESSION_EXPIRED, "Session does not exist in the server.");
             setResponseMessage(model, responseMessage, user);
     	}
         return model;
