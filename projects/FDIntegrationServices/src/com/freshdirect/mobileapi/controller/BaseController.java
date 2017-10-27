@@ -616,7 +616,7 @@ public abstract class BaseController extends AbstractController implements Messa
 		com.freshdirect.mobileapi.controller.data.response.Configuration configuration = new com.freshdirect.mobileapi.controller.data.response.Configuration();
 		configuration.setAkamaiImageConvertorEnabled(FeatureRolloutArbiter
 				.isFeatureRolledOut(EnumRolloutFeature.akamaiimageconvertor,
-						user.getFDSessionUser().getUser()));
+										user!=null && user.getFDSessionUser()!=null ? user.getFDSessionUser().getUser() : null));
 		configuration.setApiCodeVersion(Buildver.getInstance().getBuildver());
 		configuration.setStoreVersion(PublishId.getInstance().getPublishId());
 
@@ -631,7 +631,8 @@ public abstract class BaseController extends AbstractController implements Messa
 		configuration.setSocialLoginEnabled(FDStoreProperties.isSocialLoginEnabled());
 		configuration.setMasterPassEnabled(MobileApiProperties.isMasterpassEnabled());
 		configuration.setPayPalEnabled(MobileApiProperties.isPayPalEnabled());
-		configuration.setDCSEnabled(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user.getFDSessionUser().getUser()));
+		configuration.setDCSEnabled(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, 
+																				user!=null && user.getFDSessionUser()!=null ? user.getFDSessionUser().getUser() : null));
 
 		return configuration;
 	}
