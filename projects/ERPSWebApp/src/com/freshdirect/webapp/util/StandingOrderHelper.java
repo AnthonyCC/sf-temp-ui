@@ -47,6 +47,7 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.util.FDTimeslotUtil;
+import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.webapp.ajax.expresscheckout.location.data.FormLocationData;
 import com.freshdirect.webapp.ajax.expresscheckout.payment.data.FormPaymentData;
@@ -1340,4 +1341,41 @@ private static String convert(Date time) {
 				LOGGER.error("for user: "+user.getUserId()+" Exception occurred in evaluteSoAddressId() : "+e1);
 			}
 		}
+	
+	public static boolean userCanBeSaved(FDUserI user, boolean canBeSaved, String deliveryAddressId) throws FDResourceException {
+		FDStandingOrder currentStandingOrder = user.getCurrentStandingOrder();
+                 	
+		if (currentStandingOrder != null && !"".equalsIgnoreCase(currentStandingOrder.getId()) 
+				&& null != currentStandingOrder.getId() &&
+				(currentStandingOrder.getNextDeliveryDate() != null || currentStandingOrder.getOldAddressId() == null) ) {
+			
+			currentStandingOrder.setOldAddressId(currentStandingOrder.getAddressId());
+			LOGGER.debug("user selected addressID from UI: " + deliveryAddressId + " . initial addressID: "+ currentStandingOrder.getOldAddressId());
+		}
+		if(user != null && currentStandingOrder != null){
+			canBeSaved = currentStandingOrder.getOldAddressId() != null	&& currentStandingOrder.getOldAddressId().equals(deliveryAddressId);
+		}
+		if(canBeSaved){
+			FDStandingOrder so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(currentStandingOrder.getId()));
+			currentStandingOrder.setNextDeliveryDate(so.getNextDeliveryDate());
+			currentStandingOrder.setStartTime(so.getStartTime());
+			currentStandingOrder.setEndTime(so.getEndTime());
+			LOGGER.debug("restoring address timeslot for customer:"+user.getIdentity().getErpCustomerPK()+ " StandingOrder ID: "+ currentStandingOrder.getId());
+			canBeSaved = false;
+			}
+		else {
+			currentStandingOrder.setNextDeliveryDate(null);
+			currentStandingOrder.setStartTime(null);
+			currentStandingOrder.setEndTime(null);
+			canBeSaved = false;
+			if(!"".equalsIgnoreCase(currentStandingOrder.getId()) 
+					&& null != currentStandingOrder.getId()){
+				LOGGER.debug("customer:"+user.getIdentity().getErpCustomerPK()+ " trying to modify address for StandingOrder ID: "+ currentStandingOrder.getId());
+			} else{
+				LOGGER.debug("customer:"+user.getIdentity().getErpCustomerPK()+ " is creating new SO");
+				
+			}
+		}
+		return canBeSaved;
+	}
 }
