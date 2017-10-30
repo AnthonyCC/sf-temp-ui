@@ -39,8 +39,15 @@ public class ProductData extends BasicProductData implements SkuData {
      * Is product available for sale?
      */
     protected boolean available;
-
+    
     /**
+     * Available qty in inventory, adjusted for FK/FD
+     */
+    protected double availableQty;
+
+
+
+	/**
      * Is product discontinued for sale?
      */
     protected boolean isDiscontinued;
@@ -330,6 +337,14 @@ public class ProductData extends BasicProductData implements SkuData {
     public void setAvailable(boolean available) {
         this.available = available;
     }
+    
+    public double getAvailableQty() {
+		return availableQty;
+	}
+
+	public void setAvailableQty(double availableQty) {
+		this.availableQty = availableQty;
+	}
 
     public boolean isDiscontinued() {
         return isDiscontinued;

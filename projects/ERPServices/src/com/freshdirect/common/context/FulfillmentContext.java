@@ -2,13 +2,15 @@ package com.freshdirect.common.context;
 
 import java.io.Serializable;
 
+import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.StringUtil;
 
 public class FulfillmentContext implements Serializable {
 	
 	private static final long serialVersionUID = -5918599113189069637L;
 
-	private static final String DEFAULT_PLANT="1000";
+
 
 	private boolean alcoholRestricted;
 	private String plantId;
@@ -16,7 +18,7 @@ public class FulfillmentContext implements Serializable {
 	private String distChannel;
 	
 	public String getPlantId() {
-		return StringUtil.isEmpty(plantId)?DEFAULT_PLANT:plantId;
+		return StringUtil.isEmpty(plantId)?FDStoreProperties.getDefaultFdPlantID() :plantId;
 	}
 
 	public void setPlantId(String plantId) {
@@ -25,6 +27,13 @@ public class FulfillmentContext implements Serializable {
 
 	public static FulfillmentContext createDefault() {
 		return new FulfillmentContext();
+	}
+	public static FulfillmentContext createDefault(EnumEStoreId eStoreId) {
+		FulfillmentContext ctx = new FulfillmentContext();
+		if (eStoreId.equals(EnumEStoreId.FDX)){
+			ctx.setPlantId(FDStoreProperties.getDefaultFdxPlantID());}
+		return ctx;
+	
 	}
 	
 	public boolean isAlcoholRestricted() {

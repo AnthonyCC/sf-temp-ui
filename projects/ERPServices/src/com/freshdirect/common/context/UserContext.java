@@ -19,9 +19,10 @@ public class UserContext implements Serializable {
     @Deprecated
 	public static UserContext createDefault(EnumEStoreId eStore){
 		UserContext userContext = new UserContext();
-		userContext.setPricingContext(PricingContext.DEFAULT);
-		userContext.setStoreContext(StoreContext.createStoreContext(eStore));
-		userContext.setFulfillmentContext(FulfillmentContext.createDefault());
+
+        userContext.setPricingContext(PricingContext.createPricingContext(eStore));
+        userContext.setStoreContext(StoreContext.createStoreContext(eStore));
+		userContext.setFulfillmentContext(FulfillmentContext.createDefault(eStore));
 		//default FDIdentity is null
 		return userContext;
 	}

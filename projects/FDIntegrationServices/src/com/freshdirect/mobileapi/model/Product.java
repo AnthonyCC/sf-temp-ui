@@ -1899,6 +1899,7 @@ public class Product {
         Product result = null;
 
         productModel = ContentFactory.getInstance().getProductByName(categoryId, id);
+      
  //       productModel = ProductExtraDataPopulator.createExtraData(user, product, ctx, grpId, grpVersion);
         if (productModel == null) {
             LOG.info("Unable to get product, trying with content node key");
@@ -2181,6 +2182,10 @@ public class Product {
 	}
 	public void setProductData(ProductData productData) {
 		this.productData = productData;
+	}
+	
+	public SkuModel getDefaultsku(){
+		return this.product.getProductModel().getDefaultSku();
 	}
 	
 	

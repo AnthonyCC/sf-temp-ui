@@ -452,6 +452,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	@Override
     public Date getEarliestAvailability() {
 		List<SkuModel> skus = getPrimarySkus();
+		
 		Date ea = null;
 		for ( SkuModel sku  : skus ) {
 			Date     earliestAvailability = sku.getEarliestAvailability();
@@ -2168,5 +2169,19 @@ inner:
     @Override
 	public void setParentNode(ContentNodeModel parentNode) {
 	    super.setParentNode(parentNode);
+	}
+
+	@Override
+	public double getAvailabileQtyForDate(Date targetDate) {
+		double qty=0;
+		SkuModel sku =  getPreferredSku();
+		if (null!=sku){
+			AvailabilityI  availability = sku.getAvailability();
+			if (availability!=null){
+				qty = availability . getAvailabileQtyForDate(targetDate);
+			}
+		}
+		return qty;
+	//	return super.getAvailableQtyForDate(targetDate);
 	}
 }

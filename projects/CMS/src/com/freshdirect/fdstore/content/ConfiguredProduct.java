@@ -588,4 +588,10 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	public int getTimeToComplete() {
 	    return getProduct().getTimeToComplete();
 	}
+
+	@Override
+	public double getAvailabileQtyForDate(Date targetDate) {
+		 return this.getProduct().getAvailabileQtyForDate(targetDate);
+		
+	}
 }

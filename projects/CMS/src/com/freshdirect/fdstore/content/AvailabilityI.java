@@ -35,6 +35,15 @@ public interface AvailabilityI {
      * @return  */    
     public Date getEarliestAvailability();
     
+    
+	/**
+	 * 
+	 * @param targetDate date to check for inventory qty, if NULL will default to Today.
+	 * @return qty avail for targetDate, if FDX and qty 0 for  Target date, includes next date. 
+	 */
+	 public double getAvailabileQtyForDate(java.util.Date targetDate);
+
+    
    
     
     

@@ -188,31 +188,47 @@ public class FDProductInfo extends FDSku  {
         return FDInventoryCache.getInstance().getInventory(materialNumber);
     }
 
-	/**
-	 * Get inventory (short term availability) information.
-	 */
+
+    
+    /**
+     *  Get inventory (short term availability) information.
+     *  Will return an  ErpInventoryModel for that plantId ONLY.
+     * @param plantId,
+     * @return
+     */
 	public ErpInventoryModel getInventory(String plantId) {
 
-        if (null == materialNumber) {// To prevent NPEs
-            return null;
-        }
-        if (this.inventory != null) {
+		if (null == materialNumber) {// To prevent NPEs
+			return null;
+		}
+		if (this.inventory != null) {
 
-            return this.inventory.getInventory(materialNumber);
-        }
-        ErpInventoryModel inventoryModel = FDInventoryCache.getInstance().getInventory(materialNumber);
-        if (StringUtil.isEmpty(plantId) || inventoryModel == null) {
-            return inventoryModel;
-        }
-        List<ErpInventoryEntryModel> invEntries = inventoryModel.getEntries();
-        List<ErpInventoryEntryModel> plantEntries = new ArrayList<ErpInventoryEntryModel>(invEntries.size());
-        for (ErpInventoryEntryModel entry : invEntries) {
-            if (plantId.equals(entry.getPlantId()))
-                plantEntries.add(entry);
-        }
+			return this.inventory.getInventory(materialNumber);
+		}
+		ErpInventoryModel inventoryModel = FDInventoryCache.getInstance().getInventory(materialNumber);
+		if (StringUtil.isEmpty(plantId) || inventoryModel == null) {
+			return inventoryModel;
+		}
 
-        return (plantEntries.size() == 0) ? null : new ErpInventoryModel(inventoryModel.getSapId(), inventoryModel.getLastUpdated(), plantEntries);
-    }
+		List<ErpInventoryEntryModel> plantEntries = new ArrayList<ErpInventoryEntryModel>();
+		if (FDStoreProperties.getEnableFDXDistinctAvailability()) {
+			plantEntries = inventoryModel.getInventoryPositionsforPlantid(plantId);
+		} else {
+			List<ErpInventoryEntryModel> invEntries = inventoryModel.getEntries();
+			/*
+			 * List<ErpInventoryEntryModel> plantEntries = new
+			 * ArrayList<ErpInventoryEntryModel>();
+			 */
+			for (ErpInventoryEntryModel entry : invEntries) {
+				if (plantId.equals(entry.getPlantId()))
+					plantEntries.add(entry);
+			}
+		}
+		//as part of appdev 6184 i added the plantentries.isempty() test to be shure as it could be >0 and still be empty because constructor.
+		return (plantEntries.size() == 0 || plantEntries.isEmpty()) ? null
+				: new ErpInventoryModel(inventoryModel.getSapId(), inventoryModel.getLastUpdated(), plantEntries);
+
+	}
 
 
 	public EnumATPRule getATPRule(String plantID) {

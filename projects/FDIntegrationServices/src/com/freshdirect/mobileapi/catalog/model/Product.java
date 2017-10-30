@@ -26,7 +26,7 @@ public class Product {
 	private final List<Image> images;
 	private final float minQty;
 	private final float maxQty;
-	private  float availableQuantity=0;
+
 
 	private final float incrementQty;
 	private final String quantityText;
@@ -36,6 +36,7 @@ public class Product {
 	private final WineAttributes wineAttributes;
 	private final List<String> keywords;
 	private final int productLayout;
+	private  double availableQty;
 
 	private Product(ProductBuilder builder) {
 		id=builder.id;
@@ -53,6 +54,7 @@ public class Product {
 		wineAttributes = builder.wineAttributes;
 		keywords = builder.keywords;
 		productLayout=builder.productLayout;
+		this.availableQty=builder.availableQty;
 	}
 	
 	public String getId() {
@@ -99,13 +101,10 @@ public class Product {
 		return quantityText;
 	}
 	
-	public float getAvailableQuantity() {
-		return availableQuantity;
+	public double getAvailableQty() {
+		return availableQty;
 	}
-	/* TODO MAKE THIS PART OF BUILDER*/
-	public void setAvailableQuantity(float availableQuantity) {
-		this.availableQuantity = availableQuantity;
-	}
+
 	
 
 
@@ -230,6 +229,7 @@ public class Product {
 		private SkuInfo skuInfo;
 		private WineAttributes wineAttributes;
 		private int productLayout;
+		private double availableQty;
 		
 		private static final List<String> EMPTY=Collections.<String>emptyList();
 		
@@ -356,6 +356,12 @@ public class Product {
             
         	return this;
         }
+        
+        
+        public ProductBuilder availableQty(double val) {
+            availableQty = val;
+            return this;
+       }
         
         public ProductBuilder minQty(float val) {
              minQty = val;

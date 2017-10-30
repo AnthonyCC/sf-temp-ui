@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.atp;
 
 import java.util.Date;
+import java.util.Iterator;
 
 import com.freshdirect.fdstore.EnumAvailabilityStatus;
 import com.freshdirect.framework.util.DateRange;
@@ -40,5 +41,16 @@ public class FDStatusAvailability implements FDAvailabilityI {
 			return availability.getFirstAvailableDate(requestedRange);
 		}
 		return null;
+	}
+	
+	@Override
+	public double getAvailabileQtyForDate(java.util.Date targetDate) {
+		/*
+		 * Since this is a wrapper for an(many)  AvailablityInterface, we can call that one(s)
+		 */
+
+
+		return  this.availability. getAvailabileQtyForDate(targetDate);
+
 	}
 }

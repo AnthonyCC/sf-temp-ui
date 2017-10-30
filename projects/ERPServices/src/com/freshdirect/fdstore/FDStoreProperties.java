@@ -984,6 +984,9 @@ public class FDStoreProperties {
  	public final static String PROP_ENABLE_FREE_PRODUCT = "fdstore.enable.free.product";
  	//appdev-6259
  	public final static String PROP_ENABLE_WEBSITE_MOBILE_SAME_NUTRITION_SOY = "enable.website.mobile.same.nutrition.soy";
+ 	
+ 	//appdev-6184
+ 	 	public final static String PROP_ENABLE_FDX_DISTINCT_AVAILABILITY = "enable.fdx.distinct.availability";
 
 
 
@@ -1883,7 +1886,12 @@ static {
         defaults.put(PROP_ENABLE_FREE_PRODUCT,"false"); // Enable free product
         
         defaults.put(PROP_ENABLE_WEBSITE_MOBILE_SAME_NUTRITION_SOY,"false");
+
+        defaults.put(PROP_ENABLE_FDX_DISTINCT_AVAILABILITY,"false");
+        
+
         defaults.put("feature.rollout.cosRedesign2017", "GLOBAL:ENABLED,false;");
+
 
         refresh();
     }
@@ -4815,5 +4823,12 @@ static {
 			
 			return (Boolean.valueOf(get(PROP_ENABLE_WEBSITE_MOBILE_SAME_NUTRITION_SOY))).booleanValue();
 		}
+		
+
+		public static boolean getEnableFDXDistinctAvailability(){
+			
+			return (Boolean.valueOf(get(PROP_ENABLE_FDX_DISTINCT_AVAILABILITY))).booleanValue();
+		}
+		
 
 }

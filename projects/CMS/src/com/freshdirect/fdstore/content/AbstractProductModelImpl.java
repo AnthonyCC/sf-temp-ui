@@ -193,6 +193,9 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
     public boolean isFullyAvailable() {
         return !(isHidden() || isUnavailable() || isOrphan() || isInvisible());
     }
+    public double getAvailableQtyForDate(java.util.Date targetDate){
+    	return getAvailabileQtyForDate(targetDate);
+    }
 
 	/**
 	 * Better name would be : 'IsAvailable'.

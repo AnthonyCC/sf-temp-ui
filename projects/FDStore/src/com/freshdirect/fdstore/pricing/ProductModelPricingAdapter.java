@@ -1569,4 +1569,11 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	public void setParentNode(ContentNodeModel parentNode) {
 	    prodModel.setParentNode(parentNode);
 	}
+
+	@Override
+	public double getAvailabileQtyForDate(Date targetDate) {
+		return this.getDefaultSku().getAvailabileQtyForDate(targetDate);
+		// return prodModel.getAvailabileQtyForDate(targetDate);
+		
+	}
 }

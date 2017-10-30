@@ -1493,4 +1493,10 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
     public void setParentNode(ContentNodeModel parentNode) {
         productModel.setParentNode(parentNode);
     }
+
+	@Override
+	public double getAvailabileQtyForDate(Date targetDate) {
+		return getProductModel().getAvailabileQtyForDate(targetDate);
+		
+	}
 }

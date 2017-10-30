@@ -31,4 +31,10 @@ public class FDMuniAvailability implements FDAvailabilityI{
 				.getStartDate() : null;
 	}
 
+	@Override
+	public double getAvailabileQtyForDate(Date targetDate) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

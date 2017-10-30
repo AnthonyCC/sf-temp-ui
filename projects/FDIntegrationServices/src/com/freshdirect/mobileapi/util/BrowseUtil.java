@@ -1226,6 +1226,7 @@ public class BrowseUtil {
 		    					.generateAdditionTagsFromProduct(p)
 		    					//.setAvailability(p)
 		    					.skuInfo(getSkuInfo(p,plantId,pc ))
+		    					.availableQty(p.getAvailabileQtyForDate(null))
 		    					.productLayout(p.getProductLayout().getId());		    				
 		    				com.freshdirect.mobileapi.catalog.model.Product product=prodBuilder.build();
 		    				productSet.add(p.getContentName());
@@ -1274,6 +1275,7 @@ public class BrowseUtil {
 	                        .addKeyWords(productModel.getKeywords())
 	                        .generateAdditionTagsFromProduct(productModel)
 	                        .skuInfo(BrowseUtil.getSkuInfo(productModel, plantId, pricingContext))
+	                        .availableQty(productModel.getAvailabileQtyForDate(null))
 	                        .productLayout(productModel.getProductLayout().getId());
 	                        products.add(productBuilder.build());
 	                    } else {
@@ -1327,6 +1329,7 @@ public class BrowseUtil {
 	    					.addKeyWords(p.getKeywords())
 	    					.generateAdditionTagsFromProduct(p)
 	    					.skuInfo(getSkuInfo(p,plantId,pc ))
+	    					 .availableQty(p.getAvailabileQtyForDate(null))
 	    					.productLayout(p.getProductLayout().getId());
 	    				com.freshdirect.mobileapi.catalog.model.Product product=prodBuilder.build();
 	    				productSet.add(p.getContentName());
