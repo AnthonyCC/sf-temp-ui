@@ -320,12 +320,6 @@ public class ManageStandingOrderServlet extends HttpServlet {
 				} catch (FDResourceException e1) {
 					LOG.error("SO:Unable to set PaymentMethodId:"+ e1);
 				}
-
-				try {
-					so.setAddressId(FDCustomerManager.getDefaultShipToAddressPK(u.getIdentity()));
-				} catch (FDResourceException e) {
-					LOG.error("SO:Unable to set AddressId:"+ e);
-				}
 				u.setCurrentStandingOrder(so);
 				u.setCheckoutMode( EnumCheckoutMode.CREATE_SO );
 				returnMessage = so.getId();
