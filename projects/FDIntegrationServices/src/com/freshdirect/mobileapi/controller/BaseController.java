@@ -308,7 +308,7 @@ public abstract class BaseController extends AbstractController implements Messa
                         user.setEligibleForDDPP();
                     }
                 } catch (NoSessionException e) {
-                    if (!isExtraResponseRequested(request) || validateUser()) {
+                    if (validateUser()) {
                         throw e;
                     }
                 }
