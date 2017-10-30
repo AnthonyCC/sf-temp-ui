@@ -79,7 +79,7 @@ public class CartController extends BaseController {
     @Override
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
             SessionUser user) throws FDException, ServiceException, JsonException, NoSessionException {
-    	//if(UserExists(user)){
+    	if(UserExists(user)){
 	        if (ACTION_ADD_ITEM_TO_CART.equals(action)) {
 	            AddItemToCart reqestMessage = parseRequestObject(request, response, AddItemToCart.class);
 	            model = addItemInCart(model, user, reqestMessage, request);
@@ -165,13 +165,13 @@ public class CartController extends BaseController {
 	        	Message responseMessage = Message.createSuccessMessage("Cart Saved successfully");
 				setResponseMessage(model, responseMessage, user);
 	        }
-//    	}
-//    	else{
-//    		Message responseMessage = new Message();
-//            responseMessage.setStatus(Message.STATUS_FAILED);
-//            responseMessage =  getErrorMessage(ERR_SESSION_EXPIRED, "Session does not exist in the server.");
-//            setResponseMessage(model, responseMessage, user);
-//    	}
+    	}
+    	else{
+    		Message responseMessage = new Message();
+            responseMessage.setStatus(Message.STATUS_FAILED);
+            responseMessage =  getErrorMessage(ERR_SESSION_EXPIRED, "Session does not exist in the server.");
+            setResponseMessage(model, responseMessage, user);
+    	}
         return model;
     }
     

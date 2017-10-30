@@ -153,7 +153,7 @@ public class CheckoutController extends BaseController {
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
             SessionUser user) throws FDException, ServiceException, JsonException, NoSessionException {
     	
-    	//if(UserExists(user)){
+    	if(UserExists(user)){
 
 	        if (ACTION_INIT_CHECKOUT.equals(action) || ACTION_AUTH_CHECKOUT.equals(action)) {
 	            //Validate pre-req. If pass, go directly to get payment method
@@ -267,12 +267,12 @@ public class CheckoutController extends BaseController {
 	        	OrderMobileNumberRequest requestMessage = parseRequestObject(request, response, OrderMobileNumberRequest.class);
 	            model = setOrderMobileNumberEx(model, user, request, requestMessage.getMobile_number());
 	        }
-//    	}else{
-//    		Message responseMessage = new Message();
-//            responseMessage.setStatus(Message.STATUS_FAILED);
-//            responseMessage =  getErrorMessage(ERR_SESSION_EXPIRED, "Session does not exist in the server.");
-//            setResponseMessage(model, responseMessage, user);
-//    	}
+    	}else{
+    		Message responseMessage = new Message();
+            responseMessage.setStatus(Message.STATUS_FAILED);
+            responseMessage =  getErrorMessage(ERR_SESSION_EXPIRED, "Session does not exist in the server.");
+            setResponseMessage(model, responseMessage, user);
+    	}
     	
         return model;
     }

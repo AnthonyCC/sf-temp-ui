@@ -72,7 +72,7 @@ public class AccountController extends BaseController implements Comparator <Ord
     @Override
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
             SessionUser user) throws FDException, ServiceException, JsonException {
-    	//if(UserExists(user)){
+    	if(UserExists(user)){
 	        if (ACTION_GET_ADDRESSES.equals(action)) {
 	            model = getDeliveryAddresses(model, user);
 	        } else if (ACTION_GET_TIMESLOTS.equals(action)) {
@@ -118,12 +118,12 @@ public class AccountController extends BaseController implements Comparator <Ord
 				FDCustomerManager.setProfileAttribute(user.getFDSessionUser().getIdentity(),requestMessage.getName(), requestMessage.getValue(), info);
 				setResponseMessage(model, Message.createSuccessMessage(MSG_ACCEPT_DP_TERMSANDCONDITIONS), user);
 	        }
-//        }else{
-//    		Message responseMessage = new Message();
-//            responseMessage.setStatus(Message.STATUS_FAILED);
-//            responseMessage =  getErrorMessage(ERR_SESSION_EXPIRED, "Session does not exist in the server.");
-//            setResponseMessage(model, responseMessage, user);
-//    	}
+        }else{
+    		Message responseMessage = new Message();
+            responseMessage.setStatus(Message.STATUS_FAILED);
+            responseMessage =  getErrorMessage(ERR_SESSION_EXPIRED, "Session does not exist in the server.");
+            setResponseMessage(model, responseMessage, user);
+    	}
         return model;
     }
     
