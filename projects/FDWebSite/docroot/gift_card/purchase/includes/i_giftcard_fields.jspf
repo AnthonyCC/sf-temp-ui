@@ -192,7 +192,7 @@ if (request.getParameter("fldMessage") !=null) {
     <tr>
     	<td align="right" class="text12">
 			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_METHOD.getCode()%>">  class="text11rbold"</fd:ErrorHandler>>
-				<label>*&nbsp;Delivery&nbsp;Method</label>
+				<span class="text14bold">*&nbsp;Delivery&nbsp;Method</span>
 			</span>
     	</td>
     	<td colspan="2"><fieldset><legend class="offscreen">Delivery Method</legend>

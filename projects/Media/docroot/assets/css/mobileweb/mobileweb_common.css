@@ -1358,12 +1358,21 @@ li.cleanli .gen-arrow {
 		display: block;
 	}
 	.mm-page .portrait-item-controls .qtyinput,
-	.mm-page .portrait-item-controls .addtocart .message,
 	.mm-page .atc .atc-info,
 	.mm-page .portrait-item .relatedItem,
 	.mm-page .portrait-item .subtotal,
 	.mm-page .carousels{
 		display: none;
+	}
+	.mm-page .portrait-item-controls .addtocart .message{
+	       position: absolute; 
+	       width: 1px; 
+	       height: 1px; 
+	       padding: 0; 
+	       margin: -1px; 
+	       overflow: hidden; 
+	       clip: rect(0, 0, 0, 0); 
+	       border: 0;
 	}
 	.mm-page .portrait-item-controls .addtocart,
 	.mm-page .portrait-item-controls .customize{
@@ -2560,4 +2569,14 @@ form.dispblock-fields td { /* force the tds to block so the label and field are 
 /* apt,suite field for mobile web */
 .aptfields{
 	display:block;
+}
+.accessibleCSS{
+	 position: absolute; 
+	 width: 1px; 
+	 height: 1px; 
+	 padding: 0; 
+	 margin: -1px; 
+	 overflow: hidden; 
+	 clip: rect(0, 0, 0, 0); 
+	 border: 0;
 }

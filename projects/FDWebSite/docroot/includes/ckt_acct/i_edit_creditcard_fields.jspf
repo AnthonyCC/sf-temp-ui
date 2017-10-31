@@ -328,7 +328,7 @@ String addEBTPage = fromCheckout1 ? "/checkout/step_3_ebt_add.jsp" : "/your_acco
 		tCcExpireMonth = "0"+ccExpireMonth;
 		}
 	%>
-	<div style="display:inline-block;vertical-align:top;">
+	<div class="aptfields">
 	<SELECT class="text11 customsimpleselect" id="<%=PaymentMethodName.CARD_EXP_MONTH%>_creditfield" name="<%=PaymentMethodName.CARD_EXP_MONTH%>" required="true">
 	<OPTION value="">Choose a month</OPTION>
 	<% for (int mnth = 1;mnth<13;mnth++) { String strMonth = mnth<10?"0"+mnth:""+mnth; %>
@@ -336,7 +336,7 @@ String addEBTPage = fromCheckout1 ? "/checkout/step_3_ebt_add.jsp" : "/your_acco
 	<% } %>
 	</SELECT>&nbsp;&nbsp;
 	</div>
-	<div style="display:inline-block;vertical-align:top;">
+	<div class="aptfields">
 	<SELECT class="text11 customsimpleselect" aria-label="expiration year" name="<%=PaymentMethodName.CARD_EXP_YEAR%>" required="true">
 	<OPTION value="">Choose a year</OPTION>
 	<% int startYear = Calendar.getInstance().get(Calendar.YEAR);
@@ -389,8 +389,8 @@ String addEBTPage = fromCheckout1 ? "/checkout/step_3_ebt_add.jsp" : "/your_acco
 
 	<TR VALIGN="MIDDLE">
 	    <TD WIDTH="200" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>"><span class="text11rbold"></fd:ErrorHandler><label for="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>_creditfield">*Street Address&nbsp;&nbsp;</label><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>"></span></fd:ErrorHandler></TD>
-		<TD WIDTH=""><div style="display:inline-block;vertical-align:top;"><input type="text" maxlength="50" SIZE="21" class="text11" id="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>_creditfield" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>" required="true" value = "<%=ccAddress1%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>' id='errorMsg'><div class="text11rbold"><%=errorMsg%></div></fd:ErrorHandler>
-		&nbsp;&nbsp;</div><div style="display:inline-block;vertical-align:top;"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>"><span class="text11rbold"></fd:ErrorHandler><label for="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>_field"><% if(EnumServiceType.CORPORATE.equals(yuzer.getSelectedServiceType())){ %>Floor/Suite #<% }else{ %>Apt. #<% } %>&nbsp;&nbsp;</label><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>"></span></fd:ErrorHandler><input type="text" maxlength="10" size="4" class="text11" id="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>_field" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>" value ="<%=ccApartment%>">
+		<TD WIDTH=""><div class="aptfields"><input type="text" maxlength="50" SIZE="21" class="text11" id="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>_creditfield" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>" required="true" value = "<%=ccAddress1%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>' id='errorMsg'><div class="text11rbold"><%=errorMsg%></div></fd:ErrorHandler>
+		&nbsp;&nbsp;</div><div class="aptfields"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>"><span class="text11rbold"></fd:ErrorHandler><label for="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>_field"><% if(EnumServiceType.CORPORATE.equals(yuzer.getSelectedServiceType())){ %>Floor/Suite #<% }else{ %>Apt. #<% } %>&nbsp;&nbsp;</label><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>"></span></fd:ErrorHandler><input type="text" maxlength="10" size="4" class="text11" id="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>_field" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>" value ="<%=ccApartment%>">
 		</div></TD>
 	</TR>
 	<TR VALIGN="MIDDLE">

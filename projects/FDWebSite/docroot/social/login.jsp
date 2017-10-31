@@ -90,7 +90,7 @@
 										class="error_img" id="email_img"></span>
 									</td>
 									<%-- This field is named as 'userid' to be consistent with naming rule in LoginControllerTag. The email validation rule is applied to this field as shown below.  --%>
-									<td><input id="email" name="userid"
+									<td><input id="email" name="userid" aria-label="enter your email"
 										class="padding-input-box text11ref inputDef required"
 										type="email" maxlength="128" size="23" value="<%=userid%>"
 										placeholder="E-mail" autofocus autocomplete="email" tabindex="1" /></td>
@@ -101,7 +101,7 @@
 										class="error_img" id="password_img"></span>
 									</td>
 									<td style="padding-top: 15px;"><input id="password"
-										name="password"
+										name="password" aria-label="enter your password"
 										class="padding-input-box text11ref inputDef required"
 										type="password" size="23" placeholder="Password"
 										autocomplete="email" tabindex="2" /></td>

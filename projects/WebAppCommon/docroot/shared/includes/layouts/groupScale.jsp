@@ -778,9 +778,9 @@ final int W_GROUPSCALE_TOTAL = 601;
 
 												<tr valign="top">
 													<td><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1"></td>
-													<td width="27"><img src="/media/images/site_pages/shelflife/days_<%=shelfLife%>.gif" width="27" height="27" border="0"></td>
+													<td width="27"><img src="/media/images/site_pages/shelflife/days_<%=shelfLife%>.gif" alt="" width="27" height="27" border="0"></td>
 													<td><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1"></td>
-													<td  valign="top"><img src="/media/images/site_pages/shelflife/guarant_fresh_hdr_lg.gif" width="129" height="10"><br />
+													<td  valign="top"><img src="/media/images/site_pages/shelflife/guarant_fresh_hdr_lg.gif" alt="guaranteed fresh" width="129" height="10"><br />
 													<span class="text12">at least </span><span class="title12"><%=shelfLife%> days</span><span class="text12"><br /> from delivery</span></td>
 													<td><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1"></td>
 												</tr>

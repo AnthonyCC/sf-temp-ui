@@ -103,7 +103,7 @@ user.setSoTemplateCart(new FDCartModel());
 					</div>
 				-->
 			</div>
-			<div class="standing-orders-3-set-form-header">Name</div>
+			<div class="standing-orders-3-set-form-header"><label for="soName">Name<span class="offscreen">your Standing Order (e.g. "Weekly Meeting")</span></label></div>
 			<div class="standing-orders-3-set-form">
 					<input type="hidden" name="action" value="create">
 					<% if(null!=user.getCurrentStandingOrder() && null!=user.getCurrentStandingOrder().getCustomerListName()) {

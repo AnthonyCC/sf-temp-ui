@@ -6,7 +6,7 @@
 {template .searchParams autoescape="false"}
   {if $pageType == 'SEARCH'}
   <section class="tabcontent">
-    <input class="searchinput" type="text" placeholder="Search the store" data-component="autocomplete" autocomplete="off" value="{if $searchParams}{$searchParams}{/if}"/>
+    <input class="searchinput" type="text" placeholder="Search the store" aria-label="search {$searchParams}" data-component="autocomplete" autocomplete="off" value="{if $searchParams}{$searchParams}{/if}"/>
     <button class="cssbutton khaki searchbutton">search</button>
   </section>
   {/if}

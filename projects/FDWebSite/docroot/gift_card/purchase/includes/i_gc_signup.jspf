@@ -88,8 +88,8 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 		<label for="<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>_gcField">*&nbsp;Home Phone #</label>
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_HOME_PHONE.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td width="" colspan="2" class="text12">&nbsp;&nbsp;<div style="display:inline-block;vertical-align:top;"><input type="text" maxlength="14" size="21" class="text11" id="<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>_gcField" name="<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>" required="true" value="<%=fldHomePhone%>"> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>' id='errorMsg'><div class="text11rbold"><%=errorMsg%></div></fd:ErrorHandler>
-	</div><div style="display:inline-block;vertical-align:top;"><label for="homephoneext_gcField">&nbsp;&nbsp;Ext.&nbsp;&nbsp;</label><input type="text" maxlength="6" size="4" class="text11" id="homephoneext_gcField" name="homephoneext" value="<%=request.getParameter("homephoneext")%>">
+	<td width="" colspan="2" class="text12">&nbsp;&nbsp;<div class="aptfields"><input type="text" maxlength="14" size="21" class="text11" id="<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>_gcField" name="<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>" required="true" value="<%=fldHomePhone%>"> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>' id='errorMsg'><div class="text11rbold"><%=errorMsg%></div></fd:ErrorHandler>
+	</div><div class="aptfields"><label for="homephoneext_gcField">&nbsp;&nbsp;Ext.&nbsp;&nbsp;</label><input type="text" maxlength="6" size="4" class="text11" id="homephoneext_gcField" name="homephoneext" value="<%=request.getParameter("homephoneext")%>">
 	</div></td>
 	</tr>
 	<tr valign="top">
@@ -103,8 +103,8 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_WORK_PHONE.getCode()%>'></span></fd:ErrorHandler>
 	</td>
 	<td width="" colspan="2">
-		&nbsp;&nbsp;<div style="display:inline-block;vertical-align:top;"><input type="text" maxlength="14" size="21" class="text11" id="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>_gcField" name="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>" required="true" value="<%=fldBusinessPhone%>"> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>' id='errorMsg'><div class="text11rbold"><%=errorMsg%></div></fd:ErrorHandler>
-		</div><div style="display:inline-block;vertical-align:top;">&nbsp;&nbsp;<FONT class="text12"><label for="busphoneext_gcField">Ext.</label></FONT>&nbsp;&nbsp;<input type="text" maxlength="6" size="4" class="text11" id="busphoneext_gcField" name="busphoneext" value="<%=fldBusinessPhoneExt%>">
+		&nbsp;&nbsp;<div class="aptfields"><input type="text" maxlength="14" size="21" class="text11" id="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>_gcField" name="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>" required="true" value="<%=fldBusinessPhone%>"> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>' id='errorMsg'><div class="text11rbold"><%=errorMsg%></div></fd:ErrorHandler>
+		</div><div class="aptfields">&nbsp;&nbsp;<FONT class="text12"><label for="busphoneext_gcField">Ext.</label></FONT>&nbsp;&nbsp;<input type="text" maxlength="6" size="4" class="text11" id="busphoneext_gcField" name="busphoneext" value="<%=fldBusinessPhoneExt%>">
 	</div></td>
 	</tr>
 	<tr valign="middle">
@@ -114,8 +114,8 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ALT_PHONE.getCode()%>'></span></fd:ErrorHandler>
 	</td>
 	<td width="" colspan="2">
-		&nbsp;&nbsp;<div style="display:inline-block;vertical-align:top;"><input type="text" maxlength="14" size="21" class="text11" id="cellphone_gcField" name="cellphone" required="true" value="<%=fldCellPhone%>"> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ALT_PHONE.getCode() %>' id='errorMsg'><div class="text11rbold"><%=errorMsg%></div></fd:ErrorHandler>
-		</div><div style="display:inline-block;vertical-align:top;">&nbsp;&nbsp;<FONT class="text12"><label for="cellphoneext_gcField">Ext.</label></FONT>&nbsp;&nbsp;<input type="text" maxlength="6" size="4" class="text11" id="cellphoneext_gcField" name="cellphoneext" value="<%=fldCellPhoneExt%>">
+		&nbsp;&nbsp;<div class="aptfields"><input type="text" maxlength="14" size="21" class="text11" id="cellphone_gcField" name="cellphone" required="true" value="<%=fldCellPhone%>"> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ALT_PHONE.getCode() %>' id='errorMsg'><div class="text11rbold"><%=errorMsg%></div></fd:ErrorHandler>
+		</div><div class="aptfields">&nbsp;&nbsp;<FONT class="text12"><label for="cellphoneext_gcField">Ext.</label></FONT>&nbsp;&nbsp;<input type="text" maxlength="6" size="4" class="text11" id="cellphoneext_gcField" name="cellphoneext" value="<%=fldCellPhoneExt%>">
 	</div></td>
 	</tr>
 <%

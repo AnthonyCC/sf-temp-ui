@@ -744,7 +744,7 @@
 		</div>
 		<div class='cartline-delete cartline-box'>
 			<a class='cartline-link' href='/expressco/view_cart.jsp?remove=1&cartLine={$id}'>
-				<img src="/media_stat/images/icon-trash.png" alt="" class='cartline-delete-image' /><span class="NOMOBWEB">Delete</span><span class="offscreen"> {$descr}</span>
+				<img src="/media_stat/images/icon-trash.png" alt="" class='cartline-delete-image' /><span class="accessibleCSS">Delete</span><span class="offscreen"> {$descr}</span>
 			</a>
 		</div>
 		<div class='cartline-quantity cartline-box'>
@@ -945,9 +945,8 @@
 		<div class='total__promotion'>
 			<div class='promotion-item' {if $promotionApplied}style="display: none;" aria-hidden="true"{/if} fdform-container="promotion" fdform-container-promotionremove>
 				<form fdform="promotion" action="#" fdform-endpoint-submit="/api/expresscheckout/promotion" fdform-success="FreshDirect.modules.common.forms.successFns.hideOnSuccess">
-					<p class='promotion-text'><span class="NOMOBWEB">Have a </span><span class="capital">p</span>romotional code<span class="NOMOBWEB">?</span></p>
-					<div>
-						<label for="promotional-code"><span class="offscreen">have a promotional code?</span></label>  
+					<label for="promotional-code"><p class='promotion-text'><span class="NOMOBWEB">Have a </span><span class="capital">p</span>romotional code<span class="NOMOBWEB">?</span></p></label>
+					<div>  
 						<input type="text" class="promotion-input" id="promotional-code" name="promotionCode" placeholder="Enter here" />
 						<input type="hidden" name="action" value="applyPromotion" />
 						<button id="promotional-code-applybtn" disabled="disabled" class="disabled cssbutton green small">apply<span class="offscreen">promotion code</span></button>
@@ -958,9 +957,8 @@
 			{if $userRecognized}
 				<div class='promotion-item' fdform-container="giftcard">
 					<form fdform="giftcard" action="#" fdform-endpoint-submit="/api/expresscheckout/giftcard" fdform-success="FreshDirect.modules.common.forms.successFns.reset">
-						<p class='promotion-text'><span class="NOMOBWEB">Have a new </span>Gift Card<span class="NOMOBWEB">?</span></p>
-						<div>
-							<label for="apply-gift-card"><span class="offscreen">have a new gift card?</span></label>  
+						<label for="apply-gift-card"><p class='promotion-text'><span class="NOMOBWEB">Have a new </span>Gift Card<span class="NOMOBWEB">?</span></p></label> 
+						<div> 
 							<input type="text" class="promotion-input" id="apply-gift-card" name="givexNum" placeholder="Enter here" />
 							<input type="hidden" name="action" value="applyGiftCard" />
 							<button id="apply-gift-card-applybtn" disabled="disabled" class="disabled cssbutton green small">apply<span class="offscreen">new gift card</span></button>
