@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.ecomm.gateway;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.SortedMap;
 
@@ -24,14 +25,23 @@ import com.freshdirect.ecommerce.data.delivery.OneTimeRestrictionData;
 import com.freshdirect.ecommerce.data.delivery.OneTimeReverseRestrictionData;
 import com.freshdirect.ecommerce.data.delivery.RecurringRestrictionData;
 import com.freshdirect.ecommerce.data.delivery.RestrictedAddressModelData;
+import com.freshdirect.ecommerce.data.mail.EmailAddressData;
+import com.freshdirect.ecommerce.data.mail.TransEmailInfoData;
 import com.freshdirect.ecommerce.data.smartstore.CartTabStrategyPriorityData;
 import com.freshdirect.ecommerce.data.smartstore.ConfigurationStatusData;
 import com.freshdirect.ecommerce.data.smartstore.DynamicSiteFeatureData;
 import com.freshdirect.ecommerce.data.smartstore.RecommendationServiceConfigData;
 import com.freshdirect.ecommerce.data.smartstore.VariantData;
 import com.freshdirect.fdlogistics.model.EnumRestrictedAddressReason;
+import com.freshdirect.fdstore.temails.TransEmailInfoModel;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
+import com.freshdirect.framework.mail.EmailAddress;
+import com.freshdirect.framework.mail.TEmailI;
 import com.freshdirect.framework.util.TimeOfDay;
+import com.freshdirect.mail.EnumEmailType;
+import com.freshdirect.mail.EnumTEmailProviderType;
+import com.freshdirect.mail.EnumTEmailStatus;
+import com.freshdirect.mail.EnumTranEmailType;
 import com.freshdirect.smartstore.CartTabStrategyPriority;
 import com.freshdirect.smartstore.ConfigurationStatus;
 import com.freshdirect.smartstore.EnumConfigurationState;
@@ -204,6 +214,46 @@ public class ModelConverter {
 			return alcoholRestriction;
 			}
 		return null;
+	}
+	
+	public static TEmailI buildTransMail(TransEmailInfoData data) {
+		TransEmailInfoModel transEmailInfoModel = new TransEmailInfoModel();
+		transEmailInfoModel.setBCCList(data.getBccList());
+		transEmailInfoModel.setCCList(data.getCcList());
+		transEmailInfoModel.setCroModDate(data.getCroModDate());
+		transEmailInfoModel.setCustomerId(data.getCustomerId());
+		transEmailInfoModel.setEmailContent(data.getEmailContent());
+		transEmailInfoModel.setEmailStatus(EnumTEmailStatus.getEnum(data.getEmailStatus()));
+		transEmailInfoModel.setEmailTransactionType(EnumTranEmailType.getEnum(data.getEmailTransactionType()));
+		transEmailInfoModel.setEmailType(EnumEmailType.getEnum(data.getEmailType()));
+		transEmailInfoModel.setFromAddress(buildEmailAddress(data.getFrom()));
+		transEmailInfoModel.setId(data.getId());
+		transEmailInfoModel.setOasQueryString(data.getOasQueryString());
+		transEmailInfoModel.setOrderId(data.getOrderId());
+		transEmailInfoModel.setProductionReady(data.isProductionReady());
+		transEmailInfoModel.setProvider(EnumTEmailProviderType.getEnum(data.getProvider()));
+		transEmailInfoModel.setRecipient(data.getRecipient());
+		transEmailInfoModel.setSubject(data.getSubject());
+		transEmailInfoModel.setTargetProgId(data.getTargetProgId());
+		transEmailInfoModel.setTemplateId(data.getTemplateId());
+		return transEmailInfoModel;
+	}
+
+
+	private static  EmailAddress buildEmailAddress(EmailAddressData from) {
+		if(from != null) {
+		EmailAddress emailAddress = new EmailAddress(from.getName(), from.getAddress());
+		return emailAddress;
+		}
+		return null;
+	}
+
+	public static List buildTransMail(List<TransEmailInfoData> data) {
+		List transMailList = new ArrayList();
+		for (TransEmailInfoData transEmailInfoData : data) {
+			transMailList.add(buildTransMail(transEmailInfoData));
+		}
+		return transMailList;
 	}
 	
 }

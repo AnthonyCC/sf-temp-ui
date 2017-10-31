@@ -14,6 +14,10 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.mail.EmailAddress;
 import com.freshdirect.framework.mail.TEmailI;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.mail.EnumEmailType;
+import com.freshdirect.mail.EnumTEmailProviderType;
+import com.freshdirect.mail.EnumTEmailStatus;
+import com.freshdirect.mail.EnumTranEmailType;
 
 public class TMailerGatewayService extends AbstractEcommService implements TMailerGatewayServiceI{
 	
@@ -51,7 +55,7 @@ public class TMailerGatewayService extends AbstractEcommService implements TMail
 		
 	}
 
-	private TransEmailInfoData buildTransMailInfoData(TEmailI email) {
+	public TransEmailInfoData buildTransMailInfoData(TEmailI email) {
 		TransEmailInfoData transEmailInfoData = new TransEmailInfoData();
 		transEmailInfoData.setBccList(email.getBCCList());
 		transEmailInfoData.setCcList(email.getCCList());
@@ -104,5 +108,7 @@ public class TMailerGatewayService extends AbstractEcommService implements TMail
 		}
 		
 	}
+	
+	
 
 }

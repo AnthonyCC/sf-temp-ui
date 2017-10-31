@@ -26,9 +26,12 @@ import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionType;
 import com.freshdirect.fdlogistics.model.EnumRestrictedAddressReason;
 import com.freshdirect.fdstore.CallCenterServices;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.BulkModifyOrderInfo;
 import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
+import com.freshdirect.fdstore.ecomm.gateway.TEmailInfoService;
 import com.freshdirect.fdstore.temails.ejb.TEmailInfoHome;
 import com.freshdirect.fdstore.temails.ejb.TEmailInfoSB;
 import com.freshdirect.framework.core.ServiceLocator;
@@ -144,10 +147,21 @@ public class GenericLocatorTag extends AbstractControllerTag {
 				
 				try {
 					TEmailInfoHome home= getTMailerHome();
-					TEmailInfoSB remote= home.create();			
+					TEmailInfoSB remote= home.create();
+					if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.TEmailInfoSB)){
+						TEmailInfoService.getInstance().getFailedTransactionList(100,false);
+					}
+					else{
+								
 					searchResults=remote.getFailedTransactionList(100,false);
+					}
 					if(searchResults!=null && searchResults.size()>0){
+						if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.TEmailInfoSB)){
+							request.setAttribute("trans_error", TEmailInfoService.getInstance().getFailedTransactionStats());
+						}
+						else{
 						request.setAttribute("trans_error", remote.getFailedTransactionStats());
+						}
 					}
 				} catch (CreateException ce) {
 					//throw new FDResourceException(ce, "Cannot create MailerGatewayBean");

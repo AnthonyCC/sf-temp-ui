@@ -60,6 +60,7 @@ import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -81,6 +82,7 @@ import com.freshdirect.fdstore.customer.FDModifyCartLineI;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
+import com.freshdirect.fdstore.ecomm.gateway.TEmailInfoService;
 import com.freshdirect.fdstore.promotion.ExtendDeliveryPassApplicator;
 import com.freshdirect.fdstore.promotion.Promotion;
 import com.freshdirect.fdstore.promotion.PromotionApplicatorI;
@@ -310,9 +312,14 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 				
 
 				try {
-					TEmailInfoHome home= getTMailerHome();
-					TEmailInfoSB remote= home.create();			
-					remote.sendFailedTransactions(5*60*1000);
+					if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.TEmailInfoSB)){
+						TEmailInfoService.getInstance().sendFailedTransactions(5*60*1000);
+					}
+					else{
+						TEmailInfoHome home= getTMailerHome();
+						TEmailInfoSB remote= home.create();			
+						remote.sendFailedTransactions(5*60*1000);
+					}
 					
 					LOGGER.info(" tran emais batch(s) were successfully sent.");
 					actionResult.addWarning(true, "fixsuccess", "  tran emais batch(s) were successfully sent.");
