@@ -2173,7 +2173,7 @@ inner:
 
 	@Override
 	public double getAvailabileQtyForDate(Date targetDate) {
-		double qty=0;
+		double qty=-2;
 		SkuModel sku =  getPreferredSku();
 		if (null!=sku){
 			AvailabilityI  availability = sku.getAvailability();

@@ -38,6 +38,6 @@ public class NullAvailability implements FDAvailabilityI {
 	@Override
 	public double getAvailabileQtyForDate(Date targetDate) {
 		// TODO Auto-generated method stub
-		return 0;
+		return -1;
 	}
 }
