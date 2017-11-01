@@ -2174,7 +2174,19 @@ inner:
 	@Override
 	public double getAvailabileQtyForDate(Date targetDate) {
 		double qty=-2;
+		List<SkuModel>backupSkuLst=null;
 		SkuModel sku =  getPreferredSku();
+		if (sku==null){
+			qty*=2;
+			backupSkuLst= getPrimarySkus();
+		}
+		if (backupSkuLst==null){
+			qty*=2;
+			backupSkuLst= getSkus();
+		}
+		if (backupSkuLst!=null && ! backupSkuLst.isEmpty()){
+			sku=backupSkuLst.get(0);
+		}
 		if (null!=sku){
 			AvailabilityI  availability = sku.getAvailability();
 			if (availability!=null){

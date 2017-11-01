@@ -35,29 +35,7 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 
 	private EnumEStoreId estoreId = EnumEStoreId.FD;// defaulting to FD.
 
-	// private boolean unavailable;
-	// private long lastRefresh = 0;
-	// private static final long AVAILABILITY_REFRESH = 1000 *
-	// FDStoreProperties.getSkuAvailabilityRefreshPeriod();
 
-	private AvailabilityI localAvailability = null;
-	private static long lastRefresh = 0;
-	private final static long REFRESH_PERIOD = 15 * 60 * 1000; // thats 5
-																// minutes
-
-	private AvailabilityI getAvailabilityThruCache() {
-		long timeNow = System.currentTimeMillis();
-
-		if (this.localAvailability == null || (timeNow - lastRefresh) > REFRESH_PERIOD) {// double
-																							// check
-
-			lastRefresh = timeNow;
-			this.localAvailability = getAvailabilityForCaching();
-
-		}
-		return this.localAvailability;
-
-	}
 
 	public EnumEStoreId getEstoreId() {
 		return estoreId;
@@ -119,12 +97,9 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 
 	@Override
 	public Date getEarliestAvailability() {
-		// if (FDStoreProperties.getEnableFDXDistinctAvailability() ) {
-		// return this.getAvailability2().getEarliestAvailability();
-		// }
-		// else{
+	
 		return this.getAvailability().getEarliestAvailability();
-		// }
+		
 
 	}
 
@@ -171,47 +146,9 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 		return (ProductModel) getParentNode();
 	}
 
-	public AvailabilityI getAvailability() {
-		if (FDStoreProperties.getEnableFDXDistinctAvailability()) {
-			return getAvailabilityThruCache();
-		} else {
-			return getAvailabilityLegacy();
-		}
-	}
 
-	private AvailabilityI getAvailabilityLegacy() {
-		if (FDStoreProperties.isDeveloperDisableAvailabilityLookup()) {
-			return DUMMY_AVAILABLE;
-		}
-		try {
 
-			FDProductInfo fdpi = this.getProductInfo();
-			// String
-			// plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
-			// FDAvailabilityI av = AvailabilityFactory.createAvailability(this,
-			// fdpi,plantID);
-			String salesOrg = ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo()
-					.getSalesOrg();
-			String distChannel = ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo()
-					.getDistributionChanel();
-			String pickingPlantId = fdpi.getPickingPlantId(salesOrg, distChannel);
-			if (null == pickingPlantId || "".equals(pickingPlantId.trim())) {
-				pickingPlantId = ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext()
-						.getPlantId();
-			}
-			FDAvailabilityI av = AvailabilityFactory.createAvailability(this, fdpi, pickingPlantId);
-			AvailabilityAdapter answer = new AvailabilityAdapter(fdpi, av, salesOrg, distChannel, pickingPlantId);
-			return answer;
-
-		} catch (FDSkuNotFoundException fdsnfe) {
-			return UNAVAILABLE;
-		} catch (FDResourceException fdre) {
-			throw new FDRuntimeException(fdre);
-		}
-	}
-
-	// this is your try at it
-	private AvailabilityI getAvailabilityForCaching() {
+	private AvailabilityI getAvailability() {
 		if (FDStoreProperties.isDeveloperDisableAvailabilityLookup()) {
 			return DUMMY_AVAILABLE;
 		}
@@ -238,6 +175,8 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 			throw new FDRuntimeException(fdre);
 		}
 	}
+
+
 
 	public List<BrandModel> getBrands() {
 		List<BrandModel> brandModels = new ArrayList<BrandModel>();
