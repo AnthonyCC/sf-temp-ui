@@ -138,7 +138,7 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
     	return (ProductModel)getParentNode();
     }
     
-    private AvailabilityI getAvailability() {
+    public AvailabilityI getAvailability() {
     	if(FDStoreProperties.isDeveloperDisableAvailabilityLookup()) {
     		return DUMMY_AVAILABLE;
     	}
