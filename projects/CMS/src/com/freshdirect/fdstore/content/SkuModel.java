@@ -316,6 +316,11 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 			return FDAvailabilityHelper.getFirstAvailableDate(this.availability, days) != null;
 		}
 		
+		@Override
+		public double getAvailabileQtyForDate(java.util.Date targetDate) {
+			return this.availability.getAvailabileQtyForDate(targetDate);
+		}	
+		
 		
 	}
 
