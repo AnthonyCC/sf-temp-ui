@@ -1572,8 +1572,8 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 
 	@Override
 	public double getAvailabileQtyForDate(Date targetDate) {
-		return this.getDefaultSku().getAvailabileQtyForDate(targetDate);
-		// return prodModel.getAvailabileQtyForDate(targetDate);
+		//return this.getDefaultSku().getAvailabileQtyForDate(targetDate);
+		return prodModel.getAvailabileQtyForDate(targetDate);
 		
 	}
 }
