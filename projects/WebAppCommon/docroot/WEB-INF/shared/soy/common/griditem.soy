@@ -345,6 +345,8 @@
   {if $moduleData and $moduleData.moduleVirtualCategory}data-virtual-category="{$moduleData.moduleVirtualCategory}"{/if}
   {if $moduleData and $moduleData.dontFocusForm} data-dontfocusform="true"{/if}
 >
+	/* with modules (homepage), we can just use lazy loading */
+	{if $moduleData and $hookLogicBeaconImpression}<img data-src="{$hookLogicBeaconImpression}" style="visibility: hidden;" />{/if}
 	<div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
 	{if not $discontinued}
 	  <a href="{$productPageUrl}{if $moduleData and $moduleData.moduleVirtualCategory}&cm_vc={$moduleData.moduleVirtualCategory}{/if}" class="portrait-item-image-link" {if $moduleData}data-cm-click="

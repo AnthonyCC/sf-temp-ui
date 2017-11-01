@@ -24,6 +24,9 @@
     		{/call}
       </div>
   	</div>
+	{if $data.adHomePageBeacon and $data.adHomePageBeacon != ''}
+		<img src="{$data.adHomePageBeacon}" style="display: none;" />
+	{/if}
   </div>
 {/if}
 {/template}
