@@ -8,7 +8,7 @@
 //
 
 //  this is a manually modified version for FD
-//  The UI effects (options.transitions) has been manually removed in order to remove the scriptaculous library. 
+
 if (Object.isUndefined(Prototype.Browser.IE6)) {
 	Prototype.Browser.IE6 = (navigator.appName.indexOf("Microsoft Internet Explorer") != -1 && navigator.appVersion.indexOf("MSIE 6.0") != -1 && !window.XMLHttpRequest);
 }
@@ -138,10 +138,12 @@ Modalbox.Methods = {
 			if (options && !Object.isFunction(options.element))
 				Object.extend(this.options, options);
 			this.event("beforeHide"); // Passing beforeHide callback
-			
-			this.MBwindow.hide();
-			this._deinit();
-			
+			if (this.options.transitions) {
+				Effect.SlideUp(this.MBwindow, { duration: this.options.slideUpDuration, transition: Effect.Transitions.sinoidal, afterFinish: this._deinit.bind(this) });
+			} else {
+				this.MBwindow.hide();
+				this._deinit();
+			}
 			Event.stopObserving(window, 'scroll');
 		} else {
 			throw("Modalbox is not initialized.");
@@ -167,11 +169,25 @@ Modalbox.Methods = {
 			this._prepareIESelects("hidden");
 		}
 		this._setWidth();
-		
-		this.MBoverlay.setOpacity(this.options.overlayOpacity);
-		this.MBwindow.show();
-		this.loadContent();
-		
+		if(this.options.transitions) {
+			this.MBoverlay.setOpacity(0);
+			new Effect.Fade(this.MBoverlay, {
+				from: 0,
+				to: this.options.overlayOpacity,
+				duration: this.options.overlayDuration,
+				afterFinish: (function() {
+					new Effect.SlideDown(this.MBwindow, {
+						duration: this.options.slideDownDuration,
+						transition: Effect.Transitions.sinoidal,
+						afterFinish: this.loadContent.bind(this)
+					});
+				}).bind(this)
+			});
+		} else {
+			this.MBoverlay.setOpacity(this.options.overlayOpacity);
+			this.MBwindow.show();
+			this.loadContent();
+		}
 		Event.observe(window, "resize", this.resizeObserver);
 	},
 
@@ -206,13 +222,28 @@ Modalbox.Methods = {
 		var newStyle = {width: newWidth + "px", height: newHeight + "px"};
 		this.options.width = newWidth;
 		if (options) this.setOptions(options); // Passing callbacks
-		
-		this.MBwindow.setStyle(newStyle);
-		(function() {
-			this.event("_afterResize"); // Passing internal callback
-			this.event("afterResize"); // Passing callback
-		}).bind(this).defer();
-		
+		if (this.options.transitions && !Modalbox.animating) {
+			Modalbox.animating = true;
+			new Effect.Morph(this.MBwindow, {
+				style: newStyle,
+				duration: this.options.resizeDuration,
+				beforeStart: function(fx){
+					fx.element.setStyle({overflow: "hidden"}); // Fix for MSIE 6 to resize correctly
+				},
+				afterFinish: (function(fx) {
+					fx.element.setStyle({overflow: "visible"});
+					this.event("_afterResize"); // Passing internal callback
+					this.event("afterResize"); // Passing callback
+					Modalbox.animating = false;
+				}).bind(this)
+			});
+		} else {
+			this.MBwindow.setStyle(newStyle);
+			(function() {
+				this.event("_afterResize"); // Passing internal callback
+				this.event("afterResize"); // Passing callback
+			}).bind(this).defer();
+		}
 	},
 
 	resizeToContent: function(options){
@@ -373,6 +404,8 @@ Modalbox.Methods = {
 		if (this.options.overlayClose)
 			this.MBoverlay.observe("click", this.hideObserver);
 		this.MBclose.observe("click", this.hideObserver).show();
+		if (this.options.transitions && this.options.inactiveFade)
+			new Effect.Appear(this.MBwindow, {duration: this.options.slideUpDuration});
 	},
 
 	deactivate: function(options) {
@@ -381,7 +414,8 @@ Modalbox.Methods = {
 		if (this.options.overlayClose)
 			this.MBoverlay.stopObserving("click", this.hideObserver);
 		this.MBclose.stopObserving("click", this.hideObserver).hide();
-		
+		if (this.options.transitions && this.options.inactiveFade)
+			new Effect.Fade(this.MBwindow, {duration: this.options.slideUpDuration, to: 0.75});
 	},
 
 	_initObservers: function() {
@@ -488,10 +522,12 @@ Modalbox.Methods = {
 	_deinit: function() {
 		this._removeObservers();
 		Event.stopObserving(window, "resize", this.resizeObserver);
-		
-		this.MBoverlay.hide();
-		this._removeElements();
-	
+		if (this.options.transitions) {
+			Effect.toggle(this.MBoverlay, 'appear', {duration: this.options.overlayDuration, afterFinish: this._removeElements.bind(this) });
+		} else {
+			this.MBoverlay.hide();
+			this._removeElements();
+		}
 		this.MBcontent.setStyle({overflow: '', height: ''});
 	},
 

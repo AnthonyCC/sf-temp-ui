@@ -13,6 +13,10 @@
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri="fd-features" prefix="features" %>
 <%-- this file will be included in the <head> tag --%>
+	<%--
+		using the same /directory/version/ system as scriptaculous for jquery
+		also to avoid conflicts, jQuery's $ will always be set to $jq
+	--%>
 
   <%-- Feature version switcher --%>
   <features:potato />

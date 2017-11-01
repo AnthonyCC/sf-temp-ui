@@ -67,11 +67,9 @@ final int W_YA_DELIVERY_INFO_CHKSLOTS = 970;
 	<tmpl:put name='title' direct='true'>Delivery Information</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 		
-		<% if(mobWeb) { %>
 		<div class="delivery_info_mobweb_nav" <%= mobWeb ? "" : "style='display: none;'" %>>
 			<%@ include file="/help/delivery_info_nav.jspf" %>
 		</div>
-		<% } %>
 		
 <table style="width: <%= (mobWeb) ? "100%" : W_YA_DELIVERY_INFO_CHKSLOTS+"px" %>;" cellpadding="0" cellspacing="0" border="0">
 <tr><td colspan="2" class="title16"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="18"><br>Check Available Delivery TimeSlots<br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3"></td></tr>

@@ -4,6 +4,16 @@
  *
  *	--------------------------------------------------------------------------*/
 
+
+/* Test : Debug Functions ----------------------------------------------------*/
+
+var global_gcDebug = false;
+var global_gcLog = false;
+var lastEdit = '2013.07.31_01.58.32.PM';
+var lastLog;
+
+gcLog('Last Edit: '+lastEdit);
+
 function formatCurrency(num) {
 	num = num.toString().replace(/\$|\,/g, '');
 	if (isNaN(num))
@@ -41,6 +51,16 @@ function ranSTR(length, charset) {
 		randomstring += charset.substring(rnum,rnum+1);
 	}
 	return randomstring;
+}
+
+function gcLog(logMsg) {
+	lastLog = logMsg;
+	var time = new Date();
+	var timeNow = time.getHours() + ":" + time.getMinutes() + ":"
+			+ time.getSeconds() + "." + time.getMilliseconds();
+	if ((global_gcDebug || global_gcLog) && window.console) {
+		//console.log(timeNow + ' Log: ' + this.lastLog);
+	}
 }
 
 function sI(l, u) {
@@ -87,6 +107,9 @@ function showDialogs() {
 		x.style.width = 'auto';
 	});
 }
+
+/*---------------------------------------------------- Test : Debug Functions */
+
 
 /*	DISPLAY
  *	---------------------------------*/
@@ -183,6 +206,35 @@ function showDialogs() {
 		// current card container's ID
 			this.curCard_containerId = this.refId+'card_controls_curCard';
 
+		/* Scriptaculous Effects */
+			// check for scriptaculous and turn on effects
+				this.useEffects = (typeof Effect=="object") ? true : false;
+			//set the options for fade out-in Effect
+			/*
+			 *	this.eff_OpacityStart
+			 *		The opacity the element starts at (FLOAT)
+			 *	this.eff_OpacityMid
+			 *		The opacity the element 'fades out' to (FLOAT)
+			 *	this.eff_OpacityFinish
+			 *		The opacity the element finishes at (FLOAT)
+			 *	this.eff_OpacityDuration_FadeOut
+			 *		How long it takes to fade out (FLOAT)
+			 *	this.eff_OpacityDuration_FadeIn
+			 *		How long it takes to fade out (FLOAT)
+			 *	this.eff_OpacityDelay_FadeOut
+			 *		How long to wait before fading out (FLOAT)
+			 *	this.eff_OpacityDelay_FadeIn
+			 *		How long to wait before fading in (FLOAT)
+			 */
+				this.eff_OpacityStart = 1;
+				this.eff_OpacityMid = .25;
+				this.eff_OpacityFinish = 1;
+				this.eff_OpacityDuration_FadeOut = .3;
+				this.eff_OpacityDuration_FadeIn = this.eff_OpacityDuration_FadeOut;
+				this.eff_OpacityDelay_FadeOut = 0;
+				this.eff_OpacityDelay_FadeIn = this.eff_OpacityDuration_FadeOut;
+
+
 		// pre load images
 			this.preLoadArr= []; // uninitialized
 
@@ -197,46 +249,72 @@ function showDialogs() {
 
 		/* addCardsArray as ARRAY */
 			this.addCardsArray = function (cardsArray) {
+				this.log('addCardsArray called.');
 				
 				for (var n = 0; n < cardsArray.length; n++) {
 					this.cards[this.cards.length] = new fdCard(cardsArray[n]);
 					if (!this.preLoadArr.length) { this.preLoadArr[0] = 'PRELOADER'; }
 
 					var PL = this.preLoadArr.length-1;
+						this.log('\tpreLoadArr.length INIT: '+PL);
 
 					if (this.cards[this.cards.length-1].preLoad) {
 						
+						this.log('\t\tpreLoading card images: '+(n));
 
 						PL++;
 						this.preLoadArr[PL] = new Image();
 						this.preLoadArr[PL].src = this.mediaRoot+this.cards[this.cards.length-1].id+this.left_img_suffix;
+							this.log('\t\tpreLoadArr.length: '+PL);
+							this.log('\t\tthis.preLoadArr['+PL+']: '+this.preLoadArr[PL]);
+							this.log('\t\tthis.preLoadArr['+PL+'].src: '+this.preLoadArr[PL].src);
 						PL++;
 						this.preLoadArr[PL] = new Image();
 						this.preLoadArr[PL].src = this.mediaRoot+this.cards[this.cards.length-1].id+this.center_img_suffix;
+							this.log('\t\tpreLoadArr.length: '+PL);
+							this.log('\t\tthis.preLoadArr['+PL+']: '+this.preLoadArr[PL]);
+							this.log('\t\tthis.preLoadArr['+PL+'].src: '+this.preLoadArr[PL].src);
 						PL++;
 						this.preLoadArr[PL] = new Image();
 						this.preLoadArr[PL].src = this.mediaRoot+this.cards[this.cards.length-1].id+this.right_img_suffix;
+							this.log('\t\tpreLoadArr.length: '+PL);
+							this.log('\t\tthis.preLoadArr['+PL+']: '+this.preLoadArr[PL]);
+							this.log('\t\tthis.preLoadArr['+PL+'].src: '+this.preLoadArr[PL].src);
+
 						PL--;
 
 					}
 				}
+
+				this.log(' ');
+				this.log('\taddCardsArray pre-loads: '+(this.preLoadArr.length-1));
+
 				this.checkDisplay();
+
+				this.log('\tcurrent cards: '+this.cards);
 			}
 
 		/* verify display and update it */
 			this.checkDisplay = function (initialCardIndex) {
+				this.log('checkDisplay called.');
 
 				var initCardIndex=0;
 
 				if (typeof(initialcardIndex) != 'undefined') {
 					//initialCardIndex++;
 					this.display[1] = -1;
+					this.log('\twith initialCardIndex '+initialCardIndex);
+					this.log('\tthis.cards.length '+this.cards.length);
 					if (initialCardIndex <= this.cards.length) {
+						this.log('\t\tcheckDisplay initialCardIndex <= this.cards.length == '+(initialCardIndex <= this.cards.length));
 						initCardIndex = initialCardIndex
 					}else{
+						this.log('\t\tcheckDisplay initialCardIndex <= this.cards.length == '+(initialCardIndex <= this.cards.length));
 						initCardIndex = 0;
 					}
+					this.log('\tcheckDisplay final initCardIndex '+initCardIndex);
 				}else{
+					this.log('\tcheckDisplay called with no initialCardIndex. (Setting to 0)');
 					initCardIndex = 0;
 				}
 				
@@ -246,20 +324,25 @@ function showDialogs() {
 					if (this.cards.length >= 1) {
 						//we have at least one card to show
 						this.display[1] = initCardIndex;
+
+						this.log('\tinitCardIndex: '+initCardIndex);
 						if (this.cards.length > 1) {
 							//we have two or more cards
 							if (initCardIndex == this.cards.length-1) {
+								this.log('\t\tinitCardIndex == this.cards.length');
 								// init card == last card in array
 								this.display[0] = initCardIndex-1;
 								this.display[2] = 0;
 							}else{
+								this.log('\t\tinitCardIndex != this.cards.length');
 								// check if init is 0
 								if (initCardIndex == 0) {
+									this.log('\t\t\tinitCardIndex: == 0 ('+initCardIndex+')');
 									//first card
 									this.display[0] = this.cards.length-1;
 									this.display[2] = initCardIndex+1;
 								}else{
-									
+									this.log('\t\t\tinitCardIndex: != 0 ('+initCardIndex+')');
 									//somewhere in-between
 									this.display[0] = initCardIndex-1;
 									this.display[2] = initCardIndex+1;
@@ -274,6 +357,7 @@ function showDialogs() {
 				}
 
 				if (this.gcId_containerId === '' || $(this.gcId_containerId)) {
+					this.log('\tgcId_containerId ('+this.gcId_containerId+') empty or not in DOM yet, skipping updateDisplay.');
 					return;
 				}
 
@@ -282,15 +366,20 @@ function showDialogs() {
 
 		/* choose the initial card shown */
 			this.chooseInitialCard = function(cardIndex) {
+				this.log('chooseInitialCard called. cardIndex: '+cardIndex);
 				this.selectCard(cardIndex);
 				this.checkDisplay(cardIndex);
 			}
 
 		/* rotate card display */
 			this.rotate = function (directionVar) {
+				this.log('rotate called');
+
 				if (this.display[1] != -1 && this.cards.length > 1) {
 					//this means we have items displayed
 					//we only need to rotate is we have > 1 cards to show
+					this.log('\tdirection: '+directionVar);
+
 					var direction = directionVar.split(',');
 
 					switch (direction[0])
@@ -299,8 +388,10 @@ function showDialogs() {
 							this.display[0] = this.display[1];
 							this.display[1] = this.display[2];
 							if (this.display[2] == this.cards.length-1) {
+								this.log('\t\tleft display[2]: equals cards length');
 								this.display[2] = 0;
 							}else{
+								this.log('\t\tleft display[2]: does not equal cards length');
 								this.display[2] = this.display[2]+1;
 							}
 
@@ -309,14 +400,18 @@ function showDialogs() {
 							this.display[2] = this.display[1];
 							this.display[1] = this.display[0];
 							if (this.display[0] == 0) {
+								this.log('\t\tright display[0]: equals cards length');
 								this.display[0] = this.cards.length-1;
 							}else{
+								this.log('\t\tright display[0]: does not equal cards length');
 								this.display[0] = this.display[0]-1;
 							}
 
 							break;
 						/* send display to specified index while maintaining internal data preoperly */
 						case 'TOINDEX':
+							this.log('\t\tsending display to specified index');
+							this.log('\t\tthis.cards.length:'+this.cards.length);
 
 							var intIndex = parseInt(direction[1]);
 
@@ -331,35 +426,63 @@ function showDialogs() {
 								this.display[2] = 0;
 							}
 
+							this.log('\tthis.display[0] '+this.display[0]);
+							this.log('\tthis.display[1] '+this.display[1]);
+							this.log('\tthis.display[2] '+this.display[2]);
+
 
 							break;
 					}
 
-					if ($jq.fn.fadeOut) {
-						$jq('#' + this.center_img_containerId)
-						.fadeOut(300, window[this.refId].updateDisplay.bind(this))
-						.fadeIn(300);
+					this.log('\tchecking effects');
+					if (this.useEffects) {
+						this.log('\t\Effects in effect!');
+						// effects in effect
+						new Effect.Opacity(this.center_img_containerId, { 
+							from: this.eff_OpacityStart,
+							to: this.eff_OpacityMid,
+							duration: this.eff_OpacityDuration_FadeOut,
+							delay: this.eff_OpacityDelay_FadeOut
+						});
+						new Effect.Opacity(this.center_img_containerId, { 
+							from: this.eff_OpacityMid,
+							to: this.eff_OpacityFinish,
+							duration: this.eff_OpacityDuration_FadeIn,
+							delay: this.eff_OpacityDelay_FadeIn,
+							refId: this.refId, //pass a ref to object
+							afterSetup: 
+								function (effect) { 
+									window[effect.options.refId].updateDisplay();
+								}
+						});
 					}else{
+						this.log('\t\Effects NOT in effect!');
 						// effects are not being used, call update
 						this.updateDisplay();
 					}
+				}else{
+					this.err('\tCannot rotate ('+direction+'), no display item');
 				}
 			}
 
 		/* This function does the actual display update */
 			this.updateDisplay = function () {
+				this.log('updateDisplay called.');
 
+				this.log('\tthis.display[0] '+this.display[0]);
+				this.log('\tthis.display[1] '+this.display[1]);
+				this.log('\tthis.display[2] '+this.display[2]);
 
 				if ($(this.left_img_containerId)) {
 					if (typeof(this.display[0]) === 'number' && this.cards[this.display[0]]) {
 						$(this.left_img_containerId).src = this.mediaRoot+this.cards[this.display[0]].id+this.left_img_suffix;
 						$(this.left_img_containerId).alt = this.cards[this.display[0]].displayName;
 					}else{
-						
+						this.err('\tCannot get display, left: '+this.display[0]+', '+this.cards[this.display[0]]);
 					}
-					
+					this.log('\tupdateDisplay: '+this.display[0]+' '+this.mediaRoot+this.cards[this.display[0]].id+this.left_img_suffix);
 				}else{
-					
+					this.err('\tCannot get left_img_containerId ('+this.left_img_containerId+'), '+$(this.left_img_containerId)+', '+this.display[0]+', '+this.cards[this.display[0]]);
 				}
 
 				if ($(this.center_img_containerId)) {
@@ -367,18 +490,18 @@ function showDialogs() {
 						$(this.center_img_containerId).src = this.mediaRoot+this.cards[this.display[1]].id+this.center_img_suffix;
 						$(this.center_img_containerId).alt = this.cards[this.display[1]].displayName;
 					}else{
-						
+						this.err('\tCannot get display, center: '+this.display[1]+', '+this.cards[this.display[1]]);
 					}
 
 					if ($(this.curCard_containerId)) {
 						$(this.curCard_containerId).innerHTML = this.cards[this.display[1]].displayName; 
-						
+						this.log('\t\tupdateDisplay innerHTML check OK! index: '+this.display[1]+' type: '+$(this.curCard_containerId).innerHTML);
 					}else{
-						
+						this.err('\t\tupdateDisplay innerHTML check ERR! '+this.curCard_containerId);
 					}
-					
+					this.log('\tupdateDisplay: '+this.display[1]+' '+this.mediaRoot+this.cards[this.display[1]].id+this.center_img_suffix);
 				}else{
-					
+					this.err('\tCannot get center_img_containerId ('+this.center_img_containerId+'), '+$(this.center_img_containerId)+', '+this.display[1]+', '+this.cards[this.display[1]]);
 				}
 
 				if ($(this.right_img_containerId)) {
@@ -386,20 +509,20 @@ function showDialogs() {
 						$(this.right_img_containerId).src = this.mediaRoot+this.cards[this.display[2]].id+this.right_img_suffix;
 						$(this.right_img_containerId).alt = this.cards[this.display[2]].displayName;
 					}else{
-						
+						this.err('\tCannot get display, right: '+this.display[2]+', '+this.cards[this.display[2]]);
 					}
-					
+					this.log('\tupdateDisplay: '+this.display[2]+' '+this.mediaRoot+this.cards[this.display[2]].id+this.right_img_suffix);
 				}else{
-					
+					this.err('\tCannot get right_img_containerId ('+this.right_img_containerId+'), '+$(this.right_img_containerId)+', '+this.display[2]+', '+this.cards[this.display[2]]);
 				}
 
 					if($(this.dotSelectionContainer)){
 						var gcObject = this.display;
 						var that = this;
 						$(this.dotSelectionContainer).select('img').each(function(e, i) {
-							
-							
-							
+							that.log('\tTestIndex: '+i);
+							that.log('\tTestIndex element: '+e);
+							that.log('\tTestIndex element: '+gcObject[1]);
 							if(i === gcObject[1]){
 								$(e).show();
 							} else {
@@ -414,7 +537,7 @@ function showDialogs() {
 
 		/* selct a card action */
 			this.selectCard = function (selIndex) {
-				
+				this.log('selectCard called. selIndex: '+selIndex);
 
 				//make sure we skip out if not using a select box
 				if (!$(this.selectBoxId)) { 
@@ -423,18 +546,18 @@ function showDialogs() {
 					if (typeof(this.gcId_containerId) != 'undefined' && this.gcId_containerId != '' && $(this.gcId_containerId)) {
 						if ( typeof(this.display[1] === 'number') && this.cards[this.display[1]]) {
 							$(this.gcId_containerId).value = this.cards[this.display[1]].id;
-							
+							this.log('\tgcId_containerId ('+this.gcId_containerId+') = ('+this.cards[this.display[1]].id+')');
 						}
 					}else{
-						
+						this.log('\tgcId_containerId ('+this.gcId_containerId+') empty or not in DOM yet, skipping selectCard.');
 					}
 					
 					return false;
 				}
 
-				
+				this.log('\tselectCard curSelectedIndex: '+this.curSelectedIndex);
 				var imgContainerId = this.refId+this.center_img_containerId;
-				
+				this.log((this.loaded>1)?'\tis loaded: true':'\tis loaded: false');
 
 				// see if we have a value passed (and it's a valid value)
 				if (typeof(selIndex) != 'undefined' && selIndex <= this.cards.length) { $(this.selectBoxId).selectedIndex = selIndex; }
@@ -442,7 +565,7 @@ function showDialogs() {
 				// this fixes the loaded choice not matching the intended src
 				if (($(this.selectBoxId).selectedIndex != this.curSelectedIndex) || this.loaded <= 1) {
 					this.curSelectedIndex = $(this.selectBoxId).selectedIndex;
-						
+						this.log('\tselected card changed, or not loaded yet. changing to index: '+this.curSelectedIndex);
 					// change src to match selection
 					if ($(imgContainerId) && $(this.selectBoxId)[this.curSelectedIndex]) {
 						$(imgContainerId).src = this.mediaRoot+$(this.selectBoxId)[this.curSelectedIndex].value+this.center_img_suffix;
@@ -457,17 +580,27 @@ function showDialogs() {
 					if ($(this.selectBoxId)[this.curSelectedIndex]) {
 						$(this.gcId_containerId).value = $(this.selectBoxId)[this.curSelectedIndex].value;
 					}
+					if (this.curSelectedIndex && $(this.selectBoxId)[this.curSelectedIndex]) {
+						this.log('\t[Select] gcId_containerId ('+this.gcId_containerId+') = ('+$(this.selectBoxId)[this.curSelectedIndex].value+')');
+					}
+				}else{
+					this.err('\t2 Cannot set gcId_containerId ('+this.gcId_containerId+')');
+					if (this.curSelectedIndex && $(this.selectBoxId)[this.curSelectedIndex]) {
+						this.err('\t[Select] Cannot set gcId_containerId to value ('+$(this.selectBoxId)[this.curSelectedIndex].value+')');
+					}
 				}
 				return true;
 			}
 
 		/* set display type and build HTML */
 			this.setDisplayObjType = function(type) {
-				
+				this.log('setDisplayObjType called. type: '+type);
 
 				if (typeof(type) != 'undefined' && !isNaN(type)) {
 					this.displayObjType = type; // if type = 0 (or not passed), this.displayObjType overrides
 				}
+
+				this.log('\tsetDisplayObjType: Type = '+this.displayObjType);
 
 				/* 
 				 *	to allow direct appending, make sure this.displayObjType is always an object to be returned (it is by default)
@@ -476,50 +609,130 @@ function showDialogs() {
 					case 1: // Card Example with dropdown
 
 						var optionArray = new Array;
-						
-						this.displayObj = $jq('<div class="card_display">'+
-								'<div class="card_center"><img src="" alt="c" id="' + this.refId + this.center_img_containerId + '"/></div>'+
-								'<div class="card_controls"><div class="card_controls_header"><span class="ChooseCardDesign">Choose Card Design<span></div></div>'+
-								'<div class="card_controls_select">'+
-									'<select aria-label="choose card design" class="customsimpleselect" id="' + this.selectBoxId + '" onChange="window[\'' + this.refId + '\'].selectCard();" onKeyUp="window[\''+this.refId+'\'].selectCard();">'+
-									'</select>'+
-								'</div>'+
-								'<p></p>'+
-								'</div>')[0];
-						var customSimpleSelect = $jq(this.displayObj).find('#' + this.selectBoxId);
-						for (var i=0;i < this.cards.length;i++) {
-							customSimpleSelect.append('<option value="' + this.cards[i].id + '">' + this.cards[i].displayName + '</option>');
+						for (var i=this.cards.length-1; i>=0; i--) {
+							optionArray[i] = Builder.node( 'option', { value: this.cards[i].id }, [ this.cards[i].displayName ]);
 						}
+
+						this.displayObj = Builder.node( 'div', { className: 'card_display' }, [
+							Builder.node( 'div', { className: 'card_center' }, [
+								Builder.node( 'img', { src: '', alt: 'c', id: this.refId+this.center_img_containerId } )
+							]),
+							Builder.node( 'div', { className: 'card_controls' }, [
+								Builder.node( 'div', { className: 'card_controls_header' }, [
+								      Builder.node( 'span', { className: 'ChooseCardDesign' }, ['Choose Card Design']),
+									/*Builder.node( 'img', { src: this.mediaStaticRoot+'purchase/choose_design.gif', alt: 'Choose Design', id: 'gcChooseDesign_img' } )*/
+								]),
+								Builder.node( 'div', { className: 'card_controls_select' }, [
+									Builder.node( 'select', { 'aria-label':'choose card design',class:'customsimpleselect',id: this.selectBoxId, onChange: 'window[\''+this.refId+'\'].selectCard();', onKeyUp: 'window[\''+this.refId+'\'].selectCard();' }, [
+										optionArray
+									])
+								])
+							]),
+							Builder.node( 'p', [ ] )
+						]);
+
 						break;
-					case 3: /* card display with left text-selectable listing */				
-						this.displayObj = $jq('<table class="card_options width="100">' + 
-								'<tbody><tr>'+
-								'<td>'+
-									'<div class="card_controls_header"><span class="card_controls_text">Gift Card options include</span><br></div>'+
-									'<div class="card_controls_select" id="' + this.dotSelectionContainer +'">'+
-								'</td>' +
-								'<td align="right" width="358"><table class="card_options_img"><tbody><tr>'+
-								'<td><a href="#" onclick="window[\'' + this.refId +'\'].rotate(\'RIGHT\'); return false;" id="' + this.refId + 'card_control_left">'+
-									'<img src="' + this.mediaStaticRoot + 'landing/arrow_left_on.gif" alt="scroll left"></a></td>'+
-								'<td><a href="#" onclick="$(\'' + this.partOfForm + '\').submit();return false;"><img src="" alt="c" id="' + this.center_img_containerId + '"></a>'+
-									'<div class="card_controls_msg">Click arrows to scroll &amp; preview card designs.</div></td>'+
-								'<td><a href="#" onclick="window[\'' + this.refId +'\'].rotate(\'LEFT\'); return false;" id="' + this.refId + 'card_control_right">'+
-									'<img src="' + this.mediaStaticRoot + 'landing/arrow_right_on.gif" alt="scroll right"></a></td>'+
-								'</tr></tbody></table><p></p></td>'+
-								'</tr></tbody></table>')[0];
-						var dotSelectionContainerElement = $jq(this.displayObj).find('#' + this.dotSelectionContainer);
+					case 2: // Card Example with Carousel
+						this.displayObj = Builder.node( 'div', { className: 'card_display' }, [
+							Builder.node( 'div', { className: 'card_left' }, [
+								Builder.node( 'img', { src: '', alt: 'l', id: this.left_img_containerId } )
+							]), 
+							Builder.node( 'div', { className: 'card_center' }, [
+								Builder.node( 'a', { href: '#', onClick: '$(\''+this.partOfForm+'\').submit();return false;' }, [
+									Builder.node( 'img', { src: '', alt: 'c', id: this.center_img_containerId } )
+								])
+							]), 
+							Builder.node( 'div', { className: 'card_right' }, [
+								Builder.node( 'img', { src: '', alt: 'r', id: this.right_img_containerId } )
+							]),
+
+							Builder.node( 'div', { className: 'card_controls' }, [
+
+								Builder.node('div', { className: 'card_controls_msg_type' }, [
+									'Gift Card design: ', Builder.node( 'span', { id: this.curCard_containerId } )
+								]),
+
+								Builder.node( 'a', { href: '#', onClick: 'window[\''+this.refId+'\'].rotate(\'LEFT\'); return false;', id: this.refId+'card_control_left' }, [
+									Builder.node('img', { src: this.mediaStaticRoot+'landing/control_arrow_l.gif', alt: 'scroll left' } )
+								]),
+
+								Builder.node( 'a', { href: '#', onClick: 'window[\''+this.refId+'\'].rotate(\'RIGHT\'); return false;', id: this.refId+'card_control_right' }, [
+									Builder.node('img', { src: this.mediaStaticRoot+'landing/control_arrow_r.gif', alt: 'scroll right' } )
+								]),
+
+								Builder.node( 'div', { className: 'card_controls_msg' }, [
+									'Click arrows to scroll & preview card designs.'
+								]),
+							]),
+							Builder.node( 'p', [ ] )
+						]);
+
+						break;
+					case 3: /* card display with left text-selectable listing */
+						var optionArray = [];
 						for (var i=0;i < this.cards.length;i++) {
-							dotSelectionContainerElement.append('<div>'+
-									'<div class="dot_selection_controls"><img src="'+this.mediaStaticRoot+'landing/dot_img.gif" alt="Choose Design" id="bullotImg' + i + '" /></div>'+
-									'<div class="link_selection_controls"><a href="#" onclick="window[\'' + this.refId + '\'].rotate(\'TOINDEX,'+i+'\');return false;">'+this.cards[i].displayName+'</a><br></div>'+
-									'</div>');
+							optionArray[i] = Builder.node( 'div', [
+								Builder.node( 'div', { className: "dot_selection_controls" }, [
+									Builder.node( 'img', { src: this.mediaStaticRoot+'landing/dot_img.gif', alt: 'Choose Design', id: 'bullotImg'+i })
+								]),
+								Builder.node( 'div', { className: "link_selection_controls" }, [
+									Builder.node( 'a', { href: '#', onClick: 'window[\''+this.refId+'\'].rotate(\'TOINDEX,'+i+'\');return false;' }, [
+										this.cards[i].displayName
+									]),
+									Builder.node( 'br', [ ] )
+								])
+	                        ]);
 						}
+						
+						this.displayObj = Builder.node('table', { className: 'card_options', width: '100%' }, [ 
+							Builder.node('tbody', [
+								Builder.node('tr', [ 
+									Builder.node('td',{ }, [
+										Builder.node( 'div', { className: 'card_controls_header' }, [
+										     Builder.node( 'span', { className: 'card_controls_text' }, ['Gift Card options include']), 
+											/*Builder.node( 'img', { src: this.mediaStaticRoot + 'landing/giftcard_options.gif', alt: 'Choose Design', id: 'gcChooseDesign_img' } ),*/
+											Builder.node( 'br', [ ] )
+										]),
+										Builder.node( 'div', { className: 'card_controls_select', id: this.dotSelectionContainer }, [ optionArray ])
+									]),
+									Builder.node('td',{align:'right', width: '358'}, [
+										Builder.node('table', { className: 'card_options_img'}, [
+											Builder.node('tbody', [
+												Builder.node('tr', [
+													Builder.node('td', [
+														Builder.node('a', { href : '#',	onClick : 'window[\'' + this.refId + '\'].rotate(\'RIGHT\'); return false;', id : this.refId + 'card_control_left' }, [
+															Builder.node('img', { src : this.mediaStaticRoot + 'landing/arrow_left_on.gif', alt : 'scroll left'	})
+														])
+													]),
+													Builder.node('td', [
+														Builder.node('a', {	href : '#', onClick : '$(\'' + this.partOfForm + '\').submit();return false;' }, [
+															Builder.node('img',	{ src : '', alt : 'c', id : this.center_img_containerId })
+														]),
+														Builder.node('div', { className: 'card_controls_msg' }, [
+															'Click arrows to scroll & preview card designs.'
+														]) 
+													]),
+													Builder.node('td', [
+														Builder.node('a', { href : '#',	onClick : 'window[\'' + this.refId + '\'].rotate(\'LEFT\'); return false;',	id : this.refId	+ 'card_control_right' }, [
+															Builder.node('img',	{ src : this.mediaStaticRoot + 'landing/arrow_right_on.gif', alt : 'scroll right'})
+														])
+													])
+												])
+											])
+										]),
+										Builder.node( 'p', [ ] )
+									])
+								])
+							])
+						]);
 						break;
 						
 					default:
-						this.displayObj = $jq('<div class="card_display"><div class="card_center">'+
-								'<img src="" alt="c" id="' + this.center_img_containerId + '" />'+
-								'</div></div>')[0];
+						this.displayObj = Builder.node( 'div', { className: 'card_display' }, [
+							Builder.node( 'div', { className: 'card_center' }, [
+								Builder.node( 'img', { src: '', alt: 'c', id: this.center_img_containerId } )
+							])
+						]);
 				}
 
 
@@ -527,10 +740,36 @@ function showDialogs() {
 
 			}
 		
+		/* log a non-error msg */
+			this.log = function (logMsg) {
+				this.lastLog = logMsg;
+				if ((global_gcDebug || global_gcLog) || this.debug) {
+					if (window.console) {
+						//console.log(new Date().toLocaleTimeString()+' Log: '+this.lastLog);
+					}
+				}
+			}
+
+		/* log an error msg */
+			this.err = function (errMsg) {
+				this.lastErr = errMsg;
+				if ((global_gcDebug || global_gcLog) || this.debug) {
+					if ( (global_gcDebug || global_gcLog) || ( this.debug_PreloadErrLog) ) {
+						if (window.console) {
+							console.log(new Date().toLocaleTimeString()+' Err: '+this.lastErr);
+						}
+						if (this.debug_alert) { alert(new Date().toLocaleTimeString()+' Err: '+this.lastErr); }
+					}
+				}
+			}
+
+		this.log(this.refId + ' is using effects?: '+this.useEffects);
+
 		/* controls values sent to trigger an email preview */
 			this.emailPreview = function() {
 				var titleString = ' ';
 
+				if (this.debug) { titleString = 'debug: '+$('gcTemplateId').value; }
 				var tempAmount = formatCurrency($('fldAltAmount').value);
 				tempAmount=(tempAmount).replace(/\$/g, '');
 
@@ -621,6 +860,7 @@ function showDialogs() {
 			var tempAmount = formatCurrency(params.gcAmount);
 			tempAmount=(tempAmount).replace(/\$/g, '');
 
+			if (global_gcDebug) { titleString = 'debug: '+params.gcId; }
 			var gcRedempCodeTemp = 'xxxxx';
 
 			var tempHeight = getHeight()*.90; //also change in emailPreview
@@ -871,6 +1111,8 @@ function showDialogs() {
 	function recipResendFetchCRM(saleId, certNum) {
 		var titleString = '';
 
+		gcLog('recipResendFetchCRM '+saleId+' '+certNum);
+
 		new Ajax.Request('/gift_card/postbacks/resend.jsp', {
 			parameters: {
 				isResendFetch: true,
@@ -1110,6 +1352,17 @@ function showDialogs() {
 		this.typeStatusLogic = function(JSONstring) {
 			var params = JSONstring.evalJSON(true);
 			var stat = params.stat;
+			/* tests */
+				if(global_gcDebug) { stat = ranSTR(1,'NACUE'); }
+				//stat = 'N';
+				//stat = 'A';
+				//stat = 'C';
+				//stat = 'U';
+				//stat = 'E';
+					gcLog('debug status logic ');
+					gcLog('baln '+params.baln);
+					gcLog('stat '+stat);
+					gcLog('code '+params.code);
 
 			/* we should never get N in return, but jic */
 			if (stat == 'N') { $(this.targetId).innerHTML = this.repMsg('No Status, retry'); }
@@ -1132,6 +1385,18 @@ function showDialogs() {
 		this.typeEmailLogic = function(JSONstring) {
 			var params = JSONstring.evalJSON(true);
 			var stat = params.stat;
+			/* tests */
+				if(global_gcDebug) { stat = ranSTR(1,'NACUE'); }
+				//stat = 'N';
+				//stat = 'A';
+				//stat = 'C';
+				//stat = 'U';
+				//stat = 'E';
+					gcLog('debug email logic ');
+					gcLog('baln '+params.baln);
+					gcLog('stat '+stat);
+					gcLog('code '+params.code);
+
 
 			/* we should never get N in return, but jic */
 			if (stat == 'N') { $(this.targetId).innerHTML = this.repMsg('No Status, retry'); }
@@ -1208,8 +1473,11 @@ function showDialogs() {
 		scObjArr.each(function(arrObj){
 			if (arrObj) {
 				if (arrObj.status == 'done') {
+					gcLog('removing '+arrObj.id);
 					scObjArr.splice(scObjArr.indexOf(arrObj.id), 1);
+					gcLog('scObjArr '+scObjArr.length);
 				}else if (arrObj.status == 'init') {
+					gcLog('checked '+arrObj.id+' : '+arrObj.status);
 					//kick off stat check
 					arrObj.kickOff();
 				} else if (arrObj.status == 'pending') {
@@ -1218,6 +1486,8 @@ function showDialogs() {
 						:($(arrObj.targetId).innerHTML == 'checking.')
 							?$(arrObj.targetId).innerHTML = 'checking..'
 							:$(arrObj.targetId).innerHTML = 'checking...';
+				} else {
+					gcLog('checked '+arrObj.id+' : '+arrObj.status);
 				}
 			}
 		});

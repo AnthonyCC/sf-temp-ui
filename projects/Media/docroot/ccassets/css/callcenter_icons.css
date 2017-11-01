@@ -1,0 +1,24 @@
+.ui-icon-cc {
+	height: 32px;
+	width: 32px;
+	background-image: url('/media_stat/crm/images/icons_sprite.png');
+	display: inline-block;
+	margin: 0;
+	padding: 0 0 0 0;
+}
+.ui-icon-cc:hover {
+	padding: 0 0 0 0;
+}
+.ui-icon-cc span { display: none; }
+.ui-icon-cc-logoff { background-position: 0 0; }
+.ui-icon-cc-logoff:hover { background-position: 0 -32px; }
+.ui-icon-cc-help { background-position: -32px 0; }
+.ui-icon-cc-help:hover { background-position: -32px -32px; }
+.ui-icon-cc-home { background-position: -64px 0; }
+.ui-icon-cc-home:hover { background-position: -64px -32px; }
+.ui-icon-cc-fd { background-position: -96px 0; }
+.ui-icon-cc-fd:hover { background-position: -96px -32px; }
+.ui-icon-cc-fdx { background-position: -128px 0; }
+.ui-icon-cc-fdx:hover { background-position: -128px -32px; }
+.ui-icon-cc-gmap { background-position: -160px 0; }
+.ui-icon-cc-gmap:hover { background-position: -160px -32px; }

@@ -20,6 +20,7 @@
 		
 
 	<fd:javascript src="/assets/javascript/prototype.js"/>
+	<script type="text/javascript" src="/assets/javascript/scriptaculous/1.9.0/scriptaculous.js?load=effects,builder"></script>
 	<fd:javascript src="/assets/javascript/modalbox.js"/>
 	<fd:javascript src="/assets/javascript/FD_GiftCards.js"/>
 

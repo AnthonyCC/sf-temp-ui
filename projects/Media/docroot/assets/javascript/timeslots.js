@@ -42,8 +42,8 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 		expandedDayId: null, //holds the currently expanded day's id
 		hC_beforeContractWidth: '221px', //an expanded ts is set tp this width before contract animation
 		beforeExpandWidth: '107px', //hidden content is set to this width before expand animation
-		cssRefStyleAttributes: ['width', 'border-right'], //array holding attributes to use in cssRefObject
-		cssRefObject: {}, //object that holds cssObject refs (refId.cssObject)
+		cssRefStyleAttributes: ['width', 'border-right'], //array holding attributes to use in cssRefString
+		cssRefString: {}, //object that holds cssString refs (refId.cssString)
 		radioCheckedCur: null, //currently checked radio  (not checked -> cur ?(OnlyRow) -> last)
 		radioCheckedLast: null, //last checked radio (for re check on ao hide)
 		radioCheckedLastUndo: null, //last checked radio to undo color for
@@ -128,11 +128,11 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 				if (this.rowObjs[rowId]) {
 					this.getReorgData(rowId);
 
-					//set keyIds and then set cssRefObject
+					//set keyIds and then set cssRefString
 					this.rowObjs[rowId].eRefId = rowId+'_ERef';
 					this.rowObjs[rowId].cRefId = rowId+'_CRef';
-					this.setCssRefObject(this.rowObjs[rowId].eRefId);
-					this.setCssRefObject(this.rowObjs[rowId].cRefId);
+					this.setCssRefString(this.rowObjs[rowId].eRefId);
+					this.setCssRefString(this.rowObjs[rowId].cRefId);
 					
 					//check extend queue
 					this.checkQueue(rowId);
@@ -156,11 +156,11 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 				if (this.rowObjs[rowId]) {
 					this.getReorgData(rowId);
 
-					//set keyIds and then set cssRefObject
+					//set keyIds and then set cssRefString
 					this.rowObjs[rowId].eRefId = rowId+'_ERef';
 					this.rowObjs[rowId].cRefId = rowId+'_CRef';
-					this.setCssRefObject(this.rowObjs[rowId].eRefId);
-					this.setCssRefObject(this.rowObjs[rowId].cRefId);
+					this.setCssRefString(this.rowObjs[rowId].eRefId);
+					this.setCssRefString(this.rowObjs[rowId].cRefId);
 
 					//check extend queue
 					this.checkQueue(rowId);
@@ -179,11 +179,11 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 				if (this.rowObjs[rowId]) {
 					this.getReorgData(rowId);
 
-					//set keyIds and then set cssRefObject
+					//set keyIds and then set cssRefString
 					this.rowObjs[rowId].eRefId = rowId+'_ERef';
 					this.rowObjs[rowId].cRefId = rowId+'_CRef';
-					this.setCssRefObject(this.rowObjs[rowId].eRefId);
-					this.setCssRefObject(this.rowObjs[rowId].cRefId);
+					this.setCssRefString(this.rowObjs[rowId].eRefId);
+					this.setCssRefString(this.rowObjs[rowId].cRefId);
 
 					//check extend queue
 					this.checkQueue(rowId);
@@ -1423,13 +1423,13 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 
 	/* CSS ref functions */
 		/* set CSS string by refElemId */
-			this.setCssRefObject = function (refElemIdArg) {
+			this.setCssRefString = function (refElemIdArg) {
 				var refElemId = refElemIdArg || '';
 
 				//see if it's already set
-				if (this.opts.cssRefObject[refElemId]) { return; }
+				if (this.opts.cssRefString[refElemId]) { return; }
 
-				var cssObject = {};
+				var cssString = '';
 				//it's not, set already, do so now
 				var refElemExt = $(refElemId);
 				if (refElemExt) {
@@ -1438,38 +1438,41 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 							if (
 								refElemExt.getStyle(this.opts.cssRefStyleAttributes[i]) !== null && refElemExt.getStyle(this.opts.cssRefStyleAttributes[i]) !== ''
 							) {
+								cssString += this.opts.cssRefStyleAttributes[i];
+								cssString += ':';
 								var tempCSS = refElemExt.getStyle(this.opts.cssRefStyleAttributes[i]);
 
 								/* Opera 10.x returns 0px width for display: none elements, fallback to getWidth */
 								if (this.opts.cssRefStyleAttributes[i] === 'width' && tempCSS === '0px') {
-									cssObject[this.opts.cssRefStyleAttributes[i]] = Element.getWidth(refElemId)+'px';
+									cssString += Element.getWidth(refElemId)+'px';
 								}else{
-									cssObject[this.opts.cssRefStyleAttributes[i]] = refElemExt.getStyle(this.opts.cssRefStyleAttributes[i]);
+									cssString += refElemExt.getStyle(this.opts.cssRefStyleAttributes[i]);
 								}
+								cssString += ';';
 							}
 						}
 					}
 				}
 
 				//set it, even if it's an empty string
-				this.opts.cssRefObject[refElemId] = cssObject;
+				this.opts.cssRefString[refElemId] = cssString;
 			}
 		/* get CSS string by refElemId
 		 *	if it doesn't already exist, set it and then return it
 		 *	a bad refElemId will always return an empty string
 		 */
-			this.getCssRefObject = function (refElemIdArg) {
+			this.getCssRefString = function (refElemIdArg) {
 				var refElemId = refElemIdArg || '';
 				if (refElemId === '') { return ''; }
 
 				//see if it's already set, return it if so
-				if (this.opts.cssRefObject[refElemId]) { return this.opts.cssRefObject[refElemId]; }
+				if (this.opts.cssRefString[refElemId]) { return this.opts.cssRefString[refElemId]; }
 
 				//it's not, set it
-				this.setCssRefObject(refElemId);
+				this.setCssRefString(refElemId);
 
 				//and now return it
-				return this.opts.cssRefObject[refElemId];
+				return this.opts.cssRefString[refElemId];
 			}
 
 	/* return a css style height size based on arguments
@@ -2031,35 +2034,45 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 
 					var fdTSDisplay = this; //ref to fdTSDisplay
 					var rowRefId = this.rowObjs[this.convertId(dayId, 'rowId')];
-					var cssObject = this.getCssRefObject(rowRefId.eRefId);
+					var cssString = this.getCssRefString(rowRefId.eRefId);
 					var expandDuration = this.opts.expandDuration / 1000;
 					var appearDuration = this.opts.appearDuration / 1000;
 
 					var beforeStartFunc = function () {
 
-						$jq(fdTSDisplay.dayObjs[dayId].ext).animate(cssObject,expandDuration).hide();
+						fdTSDisplay.dayObjs[dayId].ext.morph(cssString, { duration: expandDuration });
+						fdTSDisplay.dayObjs[dayId].ext.hide();
 						fdTSDisplay.reorganizeDay(dayId);
 						fdTSDisplay.dayObjs[dayId].ext.style.width = fdTSDisplay.opts.beforeExpandWidth;
 						
-						$jq(fdTSDisplay.dayObjs[dayId].hCext).fadeOut(appearDuration/10);
+						fdTSDisplay.dayObjs[dayId].hCext.fade({duration: appearDuration/10});
+						fdTSDisplay.dayObjs[dayId].hCext.hide();
 
 						fdTSDisplay.dayObjs[dayId].hEext.style.width = fdTSDisplay.opts.beforeExpandWidth;
-						$jq(fdTSDisplay.dayObjs[dayId].hEext).show(appearDuration).animate(cssObject, expandDuration);
+						fdTSDisplay.dayObjs[dayId].hEext.appear({duration: appearDuration});
+						fdTSDisplay.dayObjs[dayId].hEext.morph(cssString, { duration: (expandDuration) });
 						
 						fdTSDisplay.dayObjs[dayId].fEext.style.width = fdTSDisplay.opts.beforeExpandWidth;
-						return $jq(fdTSDisplay.dayObjs[dayId].fEext).animate(cssObject, expandDuration).show(appearDuration).promise();
+						fdTSDisplay.dayObjs[dayId].fEext.morph(cssString, { duration: (expandDuration) });
+						fdTSDisplay.dayObjs[dayId].fEext.appear({duration: appearDuration});
 					}
 					var afterFinishFunc = function () {
-						$jq(fdTSDisplay.dayObjs[dayId].hEext.down('.tsHeadE')).show(appearDuration);
-						$jq(fdTSDisplay.dayObjs[dayId].ext).show(appearDuration, function() {
+						fdTSDisplay.dayObjs[dayId].hEext.down('.tsHeadE').appear({duration: (appearDuration)});
+						fdTSDisplay.dayObjs[dayId].ext.appear({duration: appearDuration,
+						afterFinish:function(){
 							  if (!$jq('#'+dayId).hasClass('mouse')){
-								  $jq('#'+dayId+' input[type="button"]:first').focus();
+							$jq('#'+dayId+' input[type="button"]:first').focus();
 							 }
+							}
 						});
+						//setTimeout(function(){$jq('#'+fdTSDisplay.getID('dayId', dayId, 0)+' input[type="button"]:first').focus();},appearDuration);
 					}
-					beforeStartFunc().done( function() {
-						$jq(this.dayObjs[dayId].ext.up(0)).animate(cssObject, expandDuration).promise().done(afterFinishFunc);
-					}.bind(this));
+
+					this.dayObjs[dayId].ext.up(0).morph(cssString, {
+						duration: (expandDuration),
+						beforeStart: beforeStartFunc,
+						afterFinish: afterFinishFunc
+					});
 				}
 
 				//unset previous as expanded
@@ -2089,7 +2102,7 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 
 					var fdTSDisplay = this; //ref to fdTSDisplay
 					var rowRefId = this.rowObjs[this.convertId(dayId, 'rowId')];
-					var cssObject = this.getCssRefObject(rowRefId.cRefId);
+					var cssString = this.getCssRefString(rowRefId.cRefId);
 					var contractDuration = this.opts.contractDuration / 1000;
 					var appearDuration = this.opts.appearDuration / 1000;
 
@@ -2102,25 +2115,32 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 						fdTSDisplay.reorganizeDay(dayId);
                         $jq('#'+dayId).removeClass('mouse');
 
-						$jq(fdTSDisplay.dayObjs[dayId].hEext).hide();
+						fdTSDisplay.dayObjs[dayId].hEext.hide();
 						fdTSDisplay.dayObjs[dayId].hCext.style.width = fdTSDisplay.opts.hC_beforeContractWidth;
-						$jq(fdTSDisplay.dayObjs[dayId].hCext).show().animate(cssObject,contractDuration);
-						$jq(fdTSDisplay.dayObjs[dayId].hEext.down('.tsHeadE')).hide();
-						$jq(fdTSDisplay.dayObjs[dayId].fEext).hide();
-						
-						return $jq(fdTSDisplay.dayObjs[dayId].ext).animate(cssObject, contractDuration).promise();
+						fdTSDisplay.dayObjs[dayId].hCext.show();
+						//fdTSDisplay.hEext.morph(cssString, { duration: (appearDuration) });
+						fdTSDisplay.dayObjs[dayId].hEext.down('.tsHeadE').hide();
+						fdTSDisplay.dayObjs[dayId].fEext.hide();
+						fdTSDisplay.dayObjs[dayId].hCext.morph(cssString, {
+							duration: (contractDuration)
+						});
+						fdTSDisplay.dayObjs[dayId].ext.morph(cssString, {
+							duration: (contractDuration)
+						});
 					}
 
 					var afterFinishFunc = function () {
-						$jq(fdTSDisplay.dayObjs[dayId].hEext).hide();
-						$jq(fdTSDisplay.dayObjs[dayId].hCext).show();
+						fdTSDisplay.dayObjs[dayId].hEext.hide();
+						fdTSDisplay.dayObjs[dayId].hCext.show();
 					}
 
 
 					//this is the main contract visual
-					beforeStartFunc().done(function() {
-						$jq(this.dayObjs[dayId].ext.up(0)).animate(cssObject, contractDuration).promise().done(afterFinishFunc);
-					}.bind(this));
+					this.dayObjs[dayId].ext.up().morph(cssString, {
+						duration: (contractDuration),
+						beforeStart: beforeStartFunc,
+						afterFinish: afterFinishFunc
+					});
 					
 				}
 

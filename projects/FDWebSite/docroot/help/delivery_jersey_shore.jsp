@@ -34,11 +34,9 @@ if (mobWeb) {
 		<fd:SEOMetaTag pageId="delivery_jersey_shore"></fd:SEOMetaTag>
 	</tmpl:put>
 	<tmpl:put name='content' direct='true'>
-		<% if(mobWeb) { %>
 		<div class="delivery_info_mobweb_nav" <%= mobWeb ? "" : "style='display: none;'" %>>
 			<%@ include file="/help/delivery_info_nav.jspf" %>
 		</div>
-		<% } %>
 		<fd:IncludeMedia name="/media/editorial/summer_services/jersey_shore/jersey_shore_service.html" />
 	</tmpl:put>
 </tmpl:insert>
