@@ -27,6 +27,7 @@ import com.freshdirect.framework.util.ConfigHelper;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
 
 public class FDStoreProperties {
 
@@ -1709,7 +1710,7 @@ static {
         defaults.put("feature.rollout.checkout1_0", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.checkout2_0", "GLOBAL:ENABLED,false;");
 
-//        defaults.put(PROP_LOGISTICS_COMPANY_CODE, EnumCompanyCode.fd.name());
+        defaults.put(PROP_LOGISTICS_COMPANY_CODE, EnumCompanyCode.fd.name());
         defaults.put(PROP_LOGISTICS_CONNECTION_TIMEOUT, 120);
         defaults.put(PROP_LOGISTICS_CONNECTION_POOL, 15);
         defaults.put(PROP_LOGISTICS_CONN_READ_TIMEOUT, 120);

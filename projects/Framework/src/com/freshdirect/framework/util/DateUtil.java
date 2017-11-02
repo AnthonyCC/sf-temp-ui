@@ -63,6 +63,8 @@ public class DateUtil {
 	public static final DateFormat HOUR_AMPM_FORMATTER = new SimpleDateFormat("ha");
 	public static final DateFormat HOUR_MMAMPM_FORMATTER = new SimpleDateFormat("h:mma");
 	
+    public static final String STANDARDIZED_DATE_PATTERN = "yyyy-MM-dd'T'HH:mmZ";
+
 	private DateUtil() {
 	}
 
@@ -455,11 +457,14 @@ public class DateUtil {
 		return formatter.format(date);
 	}
 	
+    public static DateFormat getStandardizedDateFormatter() {
+        return new SimpleDateFormat(STANDARDIZED_DATE_PATTERN);
+    }
 
 	public static Date getServerTime(Date clientDate) {
 		try {
 			if(clientDate != null) {
-				return (Date)serverTimeFormat.parse(serverTimeFormat.format(clientDate));
+				return serverTimeFormat.parse(serverTimeFormat.format(clientDate));
 			} 
 		}catch(ParseException pe){
 			

@@ -1,0 +1,62 @@
+{namespace common}
+
+/**
+ * @param days
+ * @param times
+ * @param? selectedDay
+ * @param? zonePromoAmount
+ */
+{template .timeslotSelector autoescape="false"}
+<div class="select-day" selectDay>
+  <select class="customsimpleselect">
+    {foreach $key in $days}
+      <option value="{$key}" {if $times[$key].selected == true} selected="selected"{/if}>{$times[$key].title}</option>
+    {/foreach}
+  </select>
+</div>
+<input id="deliveryTimeslotId" name="deliveryTimeslotId" type="hidden" value="">
+{if $selectedDay}
+  <div class="select-time" selectTimeslot>
+    {foreach $timeslots in $times[$selectedDay].times}
+      {if index($timeslots) == 1 and $timeslots.length > 0 and $times[$selectedDay].times[0].length > 0}<div>Order by 5pm</div>{/if}
+      {if index($timeslots) == 2 and $timeslots.length > 0}<div>Order by 11pm</div>{/if}
+      <ul>
+        {foreach $time in $timeslots}
+        <li class="{if $time.selected}selected {/if}{if $time.ecoFriendly}eco-friendly {/if}{if $zonePromoAmount and $time.steeringDiscount > 0}steering-discount {/if}{if $time.alcoholRestricted}alcohol-restricted {/if}{if $time.isEarlyAM}early {/if}{if $time.reserved}reserved {/if}{if $time.chefsTable}chefs-table {/if}{if $time.full}soldout{/if}">
+          <span class="label">
+            <input type="radio" name="timeslot" id="{$time.id}" value="{$time.id}" {if $time.selected} checked="checked"{/if}>
+            <label for="{$time.id}" {if $time.selected} checked="checked"{/if}>{$time.timePeriod}</label>
+          </span>
+          <span class="icons">
+            {if $time.alcoholRestricted}
+            <span class="alcohol-restricted"><span class="offscreen">Alcohol Restricted</span></span>
+            {/if}
+            {if $time.ecoFriendly}
+            <span class="eco-friendly"><span class="offscreen">Eco-friendly</span></span>
+            {/if}
+            {if $zonePromoAmount and $time.steeringDiscount > 0}
+              <span class="steering-discount"> SAVE ${$time.steeringDiscount}</span>
+            {/if}
+            {if $time.chefsTable}
+              <span class="chefs-table">Chef's tabel</span>
+            {/if}
+            {if $time.isEarlyAM}
+              <span class="early">Erly AM</span>
+            {/if}
+            {if $time.reserved}
+              <span class="reserved">Reserved</span>
+            {/if}
+            {if $time.full}
+              <span class="soldout">Sold out</span>
+            {/if}
+            {if $time.selected}
+              <span class="selected"><span class="offscreen">Selected</span></span>
+            {/if}
+          </span>
+        </li>
+        {/foreach}
+      </ul>
+    {/foreach}
+  </div>
+{/if}
+{/template}
