@@ -1088,7 +1088,7 @@ td.noTopBorder {
     box-shadow: none;
     outline: none;
 }
-#tsContainer input[type="button"]:checked + label::before {
+#tsContainer input[type="button"][checked] + label::before {
     background: #4fa157;
     box-shadow: 0 0 0 1px #4fa157;
 }
@@ -1106,12 +1106,6 @@ td.noTopBorder {
     line-height: 14px;
     margin-right: 10px;
     vertical-align: 2px;
-}
-#tsContainer .tcSelectionBGC input[type="button"] + label::before {
-    background-color: #4fa157;
-}
-#tsContainer .tsContentResE input[type="button"] + label::before {
-    background-color: #4fa157;
 }
 .tsWrapper{
 	padding: 10px;
