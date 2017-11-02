@@ -16,9 +16,8 @@
 	<center>
 		<div id="sulCont" class="signup-style-social signin-social-login-not-recognized">
 			<%
-				//HashMap socialUser = (HashMap)session.getAttribute(SessionName.SOCIAL_USER);
-				//String provider = (String)socialUser.get("provider");
-				String provider = "facebook";
+				HashMap socialUser = (HashMap)session.getAttribute(SessionName.SOCIAL_USER);
+				String provider = (String)socialUser.get("provider");
 			%>
     			
     		<div class="form-side-social-header">Oops!</div>
