@@ -70,7 +70,8 @@ public class FDCachedFactory {
 	/**
 	 * Thread that reloads expired productInfos, every 10 seconds.
 	 */
-	private final static Thread gRefreshThread = new LazyTimedCache.RefreshThread(grpCache, 10000) {
+	//[OPT-90] - Eliminate redundant GroupCache refresh from FDCachedFactory 
+	/*private final static Thread gRefreshThread = new LazyTimedCache.RefreshThread(grpCache, 10000) {
 		protected void refresh(List expiredKeys) {
 			try {
 				LOGGER.debug("FDGrpRefresh reloading "+expiredKeys.size()+" grpInfos");
@@ -87,7 +88,7 @@ public class FDCachedFactory {
 				LOGGER.warn("Error occured in FDGrpInfoRefresh", ex);
 			}
 		}
-	};
+	};*/
 
 	
 	
@@ -198,7 +199,7 @@ public class FDCachedFactory {
 		} catch (InterruptedException e) {
 			//Do nothing.
 		}
-		gRefreshThread.start();
+//		gRefreshThread.start();
 	}
 
 	public static FDProductInfo getProductInfo(String sku, int version) throws FDResourceException, FDSkuNotFoundException {
