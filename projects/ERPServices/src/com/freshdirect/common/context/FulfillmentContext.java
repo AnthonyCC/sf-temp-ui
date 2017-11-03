@@ -28,13 +28,7 @@ public class FulfillmentContext implements Serializable {
 	public static FulfillmentContext createDefault() {
 		return new FulfillmentContext();
 	}
-	public static FulfillmentContext createDefault(EnumEStoreId eStoreId) {
-		FulfillmentContext ctx = new FulfillmentContext();
-		if (eStoreId.equals(EnumEStoreId.FDX)){
-			ctx.setPlantId(FDStoreProperties.getDefaultFdxPlantID());}
-		return ctx;
-	
-	}
+		
 	
 	public boolean isAlcoholRestricted() {
 		return alcoholRestricted;
