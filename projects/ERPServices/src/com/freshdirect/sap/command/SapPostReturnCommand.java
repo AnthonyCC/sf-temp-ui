@@ -76,6 +76,32 @@ public class SapPostReturnCommand extends SapCommandSupport {
 	public void addPromotion(String sapPromoCode, double promotionAmount) {		
 		this.sapPromotions.add(new SapPromotion(sapPromoCode, promotionAmount));
 	}
+	
+	//Used for Storefont 2.0
+
+	public List getAffiliateCharges() {
+		return affiliateCharges;
+	}
+
+	public List getSapPromotions() {
+		return sapPromotions;
+	}
+
+	public double getDeliveryCharge() {
+		return deliveryCharge;
+	}
+
+	public double getPhoneCharge() {
+		return phoneCharge;
+	}
+
+	public List getCouponDiscounts() {
+		return couponDiscounts;
+	}
+
+	public double getTipAmount() {
+		return tipAmount;
+	}
 
 	public void addCharges(
 		ErpAffiliate affiliate,
