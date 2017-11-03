@@ -116,6 +116,7 @@ public class ErpCustomerDAO implements Serializable {
 				while (rs.next()) {
 					ErpCustomerCreditModel customerCredit = new ErpCustomerCreditModel();
 					customerCredit.setId(rs.getString("ID"));
+					customerCredit.setCustomerId(erpCustomerId);
 					customerCredit.setComplaintPk(new PrimaryKey(rs.getString("COMPLAINT_ID")));
 					customerCredit.setRemainingAmount(rs.getDouble("AMOUNT"));
 					customerCredit.setOriginalAmount(rs.getDouble("ORIGINAL_AMOUNT"));
