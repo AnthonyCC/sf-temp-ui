@@ -1007,7 +1007,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			cart.setDeliveryAddress( address );
 			user.setAddress(address);
 			user.setZPServiceType(address.getServiceType());// added as part of APPDEV-6036. We are updating the zone pricing service type to be in sync with ErpAddressModel address object
-			user.resetUserContext();
+			//user.resetUserContext();
 			cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
 			if (!cart.isEmpty()) {
 				for (FDCartLineI cartLine : cart.getOrderLines()) {

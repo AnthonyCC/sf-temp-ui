@@ -383,7 +383,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     private FDCartModel initializeCart() {
         if (this.shoppingCart == null) {
             this.shoppingCart = new FDCartModel();
-            this.shoppingCart.setEStoreId(this.getUserContext().getStoreContext().getEStoreId());
+           // this.shoppingCart.setEStoreId(this.getUserContext().getStoreContext().getEStoreId());
         }
         return this.shoppingCart;
     }
@@ -2500,8 +2500,9 @@ public class FDUser extends ModelSupport implements FDUserI {
     public  FDDeliveryZoneInfo overrideZoneInfo(ErpAddressModel address,
 			FDDeliveryZoneInfo deliveryZoneInfo) throws FDResourceException,FDInvalidAddressException {
 		int lookAheadDays = FDStoreProperties.getFdcTransitionLookAheadDays();
+		
 		if(lookAheadDays > 0){
-		FDDeliveryZoneInfo reservationDeliveryZoneInfo = getReservationDeliveryZoneInfo(); 
+		FDDeliveryZoneInfo reservationDeliveryZoneInfo = getReservationDeliveryZoneInfo(address); 
 		//Case 1: If the user has a reservation, we will be using the fulfillment information associated with user's reservation as the user context at the time of login
 		if(null!=reservationDeliveryZoneInfo){
 			return reservationDeliveryZoneInfo;
@@ -2536,7 +2537,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	}
 	
-	private FDDeliveryZoneInfo getReservationDeliveryZoneInfo() {
+	private FDDeliveryZoneInfo getReservationDeliveryZoneInfo(ErpAddressModel address) {
 
 		Date standardReservationDeliveryDate = null;
 		Date weeklyOrOneTimeReservationDeliveryDate = null;
@@ -2554,7 +2555,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		}
 
 		// Weekly or One time reservation has higher precedence than Standard reservation
-		if (null != weeklyOrOneTimeReservationDeliveryDate & null != weeklyOrOneTimeReservationAddress) {
+		if (null != weeklyOrOneTimeReservationDeliveryDate & null != weeklyOrOneTimeReservationAddress && this.getReservation().getAddressId().equalsIgnoreCase(address.getId())) {
 			try {
 				return FDDeliveryManager.getInstance().getZoneInfo(
 								weeklyOrOneTimeReservationAddress,
@@ -2569,7 +2570,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 			}
 		}
 		//checking if the user has any standard reservation
-		if (null != standardReservationDeliveryDate & null != standardReservationAddress) {
+		if (null != standardReservationDeliveryDate & null != standardReservationAddress  && this.getShoppingCart().getDeliveryReservation().getAddressId().equalsIgnoreCase(address.getId())) {
 			try {
 				return FDDeliveryManager.getInstance().getZoneInfo(
 								standardReservationAddress,

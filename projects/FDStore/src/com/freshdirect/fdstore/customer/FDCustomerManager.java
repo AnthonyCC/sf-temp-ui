@@ -294,7 +294,7 @@ public class FDCustomerManager {
 			FDCustomerManagerSB sb = managerHome.create();
 			FDUser user = sb.recognize(cookie,eStoreId);
 			
-			populateShoppingCart(user, true);
+			populateShoppingCart(user, true, false);
 			
 			return user;
 
@@ -307,10 +307,10 @@ public class FDCustomerManager {
 		}
 	}
 
-	private static void populateShoppingCart(FDUser user, boolean updateUserState)
+	private static void populateShoppingCart(FDUser user, boolean updateUserState, boolean userCtx)
 			throws FDResourceException {
 		restoreReservations(user);
-		assumeDeliveryAddress(user);
+		assumeDeliveryAddress(user, userCtx);
 		//Set user Pricing context at this point before recalcualting the price during cleanup.
 		user.getShoppingCart().setUserContextToOrderLines(user.getUserContext());
 
@@ -371,7 +371,7 @@ public class FDCustomerManager {
 			if(user.isVoucherHolder() && EnumEStoreId.FDX.equals( user.getUserContext().getStoreContext().getEStoreId() )){
 				throw new FDAuthenticationException("voucherredemption");
 			}
-			populateShoppingCart(user, updateUserState);
+			populateShoppingCart(user, updateUserState, false);
 
 			return user;
 
@@ -398,7 +398,7 @@ public class FDCustomerManager {
 			FDUser user = sb.recognize(identity, eStoreId, true);
 			user.setApplication(source);
 			user.setCrmMode(true);
-			populateShoppingCart(user, true);
+			populateShoppingCart(user, true, false);
 
 			return user;
 
@@ -433,7 +433,7 @@ public class FDCustomerManager {
 		}
 	}
 
-    private static void assumeDeliveryAddress(FDUser user) throws FDResourceException {
+    private static void assumeDeliveryAddress(FDUser user, boolean userCtx) throws FDResourceException {
 		FDIdentity identity = user.getIdentity();
 		
 		String partentOrderId=null;
@@ -463,7 +463,7 @@ public class FDCustomerManager {
 
     			if(address != null && user.getShoppingCart() != null){
    					user.getShoppingCart().setDeliveryAddress(address);
-   					user.resetUserContext();
+   					if(userCtx)user.resetUserContext();
    					user.getShoppingCart().setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
 
 
@@ -4757,7 +4757,7 @@ public class FDCustomerManager {
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
 			FDUser user = sb.getFDUserWithCart(identity,  eStoreId);
-			populateShoppingCart(user, true);
+			populateShoppingCart(user, true, false);
 
 			return user.getShoppingCart();
 
