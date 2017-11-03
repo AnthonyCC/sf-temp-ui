@@ -1124,6 +1124,8 @@
 						data-ifrpopup-width='585' data-ifrpopup-height='400' class="strl_text">
 							{$box.text}
 						</a>
+					{elseif $box.id == 'fuelsurcharge'}
+						<a href="javascript:popup('/shared/fee_info.jsp?type=fuel','large');"><span class="strl_text">{$box.text}</span></a>
 					{else}
 						{if $box.other and $box.other.promoCode}
 							<a href='/shared/promotion_popup.jsp?promoCode={$box.other.promoCode}'
@@ -1189,6 +1191,8 @@
 									data-ifrpopup-width='585' data-ifrpopup-height='400'>
 										{$box.text}
 								</a>
+							{elseif $box.id == 'fuelsurcharge'}
+								<a href="javascript:popup('/shared/fee_info.jsp?type=fuel','large');"><span class="strl_text">{$box.text}</span></a>
 							{else}
 								{if $box.other and $box.other.promoCode}
 									<a href='/shared/promotion_popup.jsp?promoCode={$box.other.promoCode}'
