@@ -15,6 +15,9 @@ import org.apache.log4j.Logger;
 import com.freshdirect.fdstore.FDNotFoundException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.util.QueryParameter;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.DataPotatoField;
@@ -60,7 +63,27 @@ public class BrowsePotatoTag extends SimpleTagSupport{
 				}
 				nav.setId(nodeId);
 				nav.parseFilteringFlowType(request);
-				nav.setPageSize(FDStoreProperties.getBrowsePageSize());
+				
+				/* TEMP FIX for SUPPORT-8657 */
+                ContentNodeModel node = ContentFactory.getInstance().getContentNode(nodeId);
+                if (node != null 
+                		&& (node instanceof CategoryModel && ((CategoryModel) node).getLayout(0).getId() == 301) /* meal kits */
+                ) {
+					String pageSizeStr = request.getParameter("pageSize"); //allow override
+					int pageSizeInt = 999; //default
+					if (pageSizeStr != null) {
+						try {
+							pageSizeInt = Integer.parseInt(pageSizeStr);
+						} catch (NumberFormatException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					nav.setPageSize(pageSizeInt); //set
+				} else {
+					nav.setPageSize(FDStoreProperties.getBrowsePageSize());
+				}
+                
 			}
 			
 			final CmsFilteringFlowResult result = CmsFilteringFlow.getInstance().doFlow(nav, user);
