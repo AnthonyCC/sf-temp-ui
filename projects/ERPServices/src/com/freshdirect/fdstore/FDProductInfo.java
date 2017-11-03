@@ -249,7 +249,7 @@ public class FDProductInfo extends FDSku  {
 	 * @return true if product is discontinued
 	 */
 	public EnumAvailabilityStatus getAvailabilityStatus(String salesOrg, String distributionChannel) {
-		FDMaterialSalesArea sa= this.materialAvailability.get(new String(salesOrg+distributionChannel).intern());
+		FDMaterialSalesArea sa= this.materialAvailability.get(new String(salesOrg+distributionChannel));
 		if(sa!=null)
 			return EnumAvailabilityStatus.getEnumByStatusCode( sa.getUnavailabilityStatus());
 		return EnumAvailabilityStatus.DISCONTINUED;//::FDX::-> Handle this in a better way.
@@ -262,14 +262,14 @@ public class FDProductInfo extends FDSku  {
 	 * @return the availability date, as returned by SAP.
 	 */
 	public Date getAvailabilityDate(String salesOrg, String distributionChannel) {
-		FDMaterialSalesArea sa= this.materialAvailability.get(new String(salesOrg+distributionChannel).intern());
+		FDMaterialSalesArea sa= this.materialAvailability.get(new String(salesOrg+distributionChannel));
 		if(sa!=null)
 			return sa.getUnavailabilityDate();
 		return null;//::FDX::-> Handle this in a better way.
 	}
 
     public boolean isAvailable(String salesOrg, String distributionChannel) {
-    	FDMaterialSalesArea sa= this.materialAvailability.get(new String(salesOrg+distributionChannel).intern());
+    	FDMaterialSalesArea sa= this.materialAvailability.get(new String(salesOrg+distributionChannel));
 		if(sa!=null) {
 			
 			EnumAvailabilityStatus availability=EnumAvailabilityStatus.getEnumByStatusCode( sa.getUnavailabilityStatus());
@@ -281,7 +281,7 @@ public class FDProductInfo extends FDSku  {
 
     public boolean isDiscontinued(String salesOrg, String distributionChannel) {
     	
-    	FDMaterialSalesArea sa= this.materialAvailability.get(new String(salesOrg+distributionChannel).intern());
+    	FDMaterialSalesArea sa= this.materialAvailability.get(new String(salesOrg+distributionChannel));
 		if(sa!=null)
 			return EnumAvailabilityStatus.DISCONTINUED.equals(EnumAvailabilityStatus.getEnumByStatusCode( sa.getUnavailabilityStatus()))
 					|| "TEST".equalsIgnoreCase(sa.getUnavailabilityStatus());
@@ -289,14 +289,14 @@ public class FDProductInfo extends FDSku  {
     }
 
     public boolean isOutOfSeason(String salesOrg, String distributionChannel) {
-    	FDMaterialSalesArea sa= this.materialAvailability.get(new String(salesOrg+distributionChannel).intern());
+    	FDMaterialSalesArea sa= this.materialAvailability.get(new String(salesOrg+distributionChannel));
 		if(sa!=null)
 			return EnumAvailabilityStatus.OUT_OF_SEASON.equals(EnumAvailabilityStatus.getEnumByStatusCode( sa.getUnavailabilityStatus()));
 		return false;//::FDX::-> Handle this in a better way.
     }
 
     public boolean isTempUnavailable(String salesOrg, String distributionChannel) {
-    	FDMaterialSalesArea sa= this.materialAvailability.get(new String(salesOrg+distributionChannel).intern());
+    	FDMaterialSalesArea sa= this.materialAvailability.get(new String(salesOrg+distributionChannel));
 		if(sa!=null)
 			return EnumAvailabilityStatus.TEMP_UNAV.equals(EnumAvailabilityStatus.getEnumByStatusCode( sa.getUnavailabilityStatus()));
 		return true;//::FDX::-> Handle this in a better way.
@@ -516,12 +516,12 @@ public class FDProductInfo extends FDSku  {
 	}
 
 	public FDMaterialSalesArea getFDMaterialSalesArea(String salesOrg, String distributionChannel) {
-		return materialAvailability.get(new String(salesOrg+distributionChannel).intern());
+		return materialAvailability.get(new String(salesOrg+distributionChannel));
 	}
 	
 	public String getPickingPlantId(String salesOrg, String distributionChannel) {
 		String pickingPlantId = null;
-		FDMaterialSalesArea matSalesArea = materialAvailability.get(new String(salesOrg+distributionChannel).intern());
+		FDMaterialSalesArea matSalesArea = materialAvailability.get(new String(salesOrg+distributionChannel));
 		if(null != matSalesArea){
 			pickingPlantId = matSalesArea.getPickingPlantId();
 		}
@@ -544,7 +544,7 @@ public class FDProductInfo extends FDSku  {
 	}
 
     public EnumDayPartValueType getDayPartValueType(String salesOrg, String distributionChannel) {
-        FDMaterialSalesArea sa = this.materialAvailability.get(new String(salesOrg + distributionChannel).intern());
+        FDMaterialSalesArea sa = this.materialAvailability.get(new String(salesOrg + distributionChannel));
         if (sa != null)
             return sa.getDayPartValueType();
         return null;

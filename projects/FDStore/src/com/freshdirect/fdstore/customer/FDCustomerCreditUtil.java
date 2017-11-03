@@ -47,8 +47,11 @@ public class FDCustomerCreditUtil {
 //		ErpCustomerModel erpCustomer = FDCustomerFactory.getErpCustomer(identity.getErpCustomerPK());
 //		List customerCredits = new ArrayList(erpCustomer.getCustomerCredits());
 		if(null == customerCredits){
-			ErpCustomerModel erpCustomer = FDCustomerFactory.getErpCustomer(identity.getErpCustomerPK());
-			customerCredits = new ArrayList(erpCustomer.getCustomerCredits());
+			/*ErpCustomerModel erpCustomer = FDCustomerFactory.getErpCustomer(identity.getErpCustomerPK());
+			customerCredits = new ArrayList(erpCustomer.getCustomerCredits());*/
+			//[OPT-91]- Optimize fetching customer credits
+			customerCredits = FDCustomerFactory.getCustomerCreditsByErpCustId(identity.getErpCustomerPK());
+			if(null == customerCredits ) customerCredits = new ArrayList();
 		}
 
 		LOGGER.debug("Customer Credit size: " + customerCredits.size());

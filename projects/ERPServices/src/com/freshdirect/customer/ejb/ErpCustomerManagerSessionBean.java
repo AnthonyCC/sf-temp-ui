@@ -2158,13 +2158,12 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	}
 	
 	public boolean isOnAlert(PrimaryKey pk, String alertType) {
-		try {
+		/*try {
 			// find relevant customer
 			ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(pk);
-			List<ErpCustomerAlertModel> alerts = customerEB.getCustomerAlerts();
-			
+			List<ErpCustomerAlertModel> alerts = customerEB.getCustomerAlerts();			
 			if (alertType == null) {  // if there are any alerts
-				return alerts.size() > 0;
+				return null != alerts &&  alerts.size() > 0;
 			}
 			
 			for ( ErpCustomerAlertModel alert : alerts ) {
@@ -2179,7 +2178,19 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (FinderException ex) {
 			LOGGER.warn(ex);
 			throw new EJBException(ex);
+		}*/
+		
+		List<ErpCustomerAlertModel> alerts = getCustomerAlertsByErpCustId(pk.getId());
+		if (alertType == null) {  // if there are any alerts
+			return null != alerts &&  alerts.size() > 0;
 		}
+		
+		for ( ErpCustomerAlertModel alert : alerts ) {
+			if (alertType.equalsIgnoreCase(alert.getAlertType())) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	
@@ -3273,5 +3284,31 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			DaoUtil.close(conn);
 		}
 		return false;
+	}
+	
+	private List<ErpCustomerAlertModel> getCustomerAlertsByErpCustId(String erpCustomerId) {
+		Connection conn = null;
+		try {
+			conn = this.getConnection();
+			return ErpCustomerDAO.getCustomerAlertsByErpCustId(conn, erpCustomerId);
+		} catch (SQLException se) {
+			LOGGER.warn("SQLException in getCustomerAlertsByErpCustId: "+erpCustomerId, se);
+		} finally {
+			DaoUtil.close(conn);
+		}
+		return null;
+	}
+	
+	public List<ErpCustomerCreditModel> getCustomerCreditsByErpCustId(String erpCustomerId) {
+		Connection conn = null;
+		try {
+			conn = this.getConnection();
+			return ErpCustomerDAO.getCustomerCreditsByErpCustId(conn, erpCustomerId);
+		} catch (SQLException se) {
+			LOGGER.warn("SQLException in getCustomerCreditsByErpCustId: "+erpCustomerId, se);
+		} finally {
+			DaoUtil.close(conn);
+		}
+		return null;
 	}
 }

@@ -28,6 +28,7 @@ import com.freshdirect.customer.ErpComplaintInfoModel;
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.customer.ErpCreateOrderModel;
 import com.freshdirect.customer.ErpCustomerAlertModel;
+import com.freshdirect.customer.ErpCustomerCreditModel;
 import com.freshdirect.customer.ErpCustomerEmailModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDeliveryInfoModel;
@@ -299,4 +300,7 @@ public interface ErpCustomerManagerSB extends EJBObject {
     public String getLastOrderID(PrimaryKey erpCustomerPk, EnumEStoreId eStore) throws RemoteException;
     
     public boolean updateSalesShippingInfo(Map<String,ErpShippingInfo> erpShippingMap) throws ErpTransactionException ,RemoteException;
+    
+    public List<ErpCustomerCreditModel> getCustomerCreditsByErpCustId(String erpCustomerId) throws RemoteException;
+    
 }
