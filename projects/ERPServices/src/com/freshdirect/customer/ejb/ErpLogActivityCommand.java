@@ -38,19 +38,12 @@ public class ErpLogActivityCommand {
 			ActivityLogSB logSB = getActivityLogHome().create();
 			
 			if (newTx) {
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled("customer.ejb.ActivityLogSB")){
-					FDECommerceService.getInstance().logActivityNewTX(record);
-				}
-				else{
+
 					logSB.logActivityNewTX(record);
-				}
+
 			} else {
-				if(FDStoreProperties.isSF2_0_AndServiceEnabled("customer.ejb.ActivityLogSB")){
-					FDECommerceService.getInstance().logActivity(record);
-				}
-				else{
+
 					logSB.logActivity(record);
-				}
 			}
 			
 		} catch (RemoteException e) {
