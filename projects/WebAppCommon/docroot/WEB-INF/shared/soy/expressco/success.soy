@@ -198,7 +198,13 @@
     <ul class="ordertotal">
       {foreach $receipt in $receiptLines}
         <li data-receipt-id="{$receipt.id}">
-          <span class="receipt-text">{$receipt.text}</span>
+          <span class="receipt-text">
+          	{if $receipt.id == 'fuelsurcharge'}
+          		<a href="javascript:popup('/shared/fee_info.jsp?type=fuel','large');">{$receipt.text}</a>
+          	{else}
+          		{$receipt.text}
+          	{/if}
+          </span>
           <span class="receipt-price">{$receipt.value}{if $receipt.other and $receipt.other.mark}{$receipt.other.mark}{/if}</span>
         </li>
       {/foreach}
