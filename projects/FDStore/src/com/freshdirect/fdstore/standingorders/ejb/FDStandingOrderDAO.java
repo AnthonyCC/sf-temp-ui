@@ -45,6 +45,7 @@ import com.freshdirect.fdstore.standingorders.UnAvailabilityDetails;
 import com.freshdirect.fdstore.standingorders.UnavDetailsReportingBean;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.util.DaoUtil;
+import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class FDStandingOrderDAO {
@@ -87,14 +88,23 @@ public class FDStandingOrderDAO {
 		"from CUST.STANDING_ORDER SO " +
 		"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
 		"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
-		"where SO.DELETED<>1 AND SO.IS_ACTIVATED IS NULL order by CCL.NAME";
+		"where SO.DELETED<>1 AND SO.IS_ACTIVATED IS NULL and NEXT_DATE between SYSDATE-1 and SYSDATE+6 "
+		+ " order by CCL.NAME";
 
 	private static final String LOAD_NEW_SO_ACTIVE_STANDING_ORDERS =
 			"select " + FIELDZ_ALL + " " +
 			"from CUST.STANDING_ORDER SO " +
 			"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
 			"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
-			"where SO.DELETED<>1  and SO.IS_ACTIVATED='Y' " +
+			"where SO.DELETED<>1  and SO.IS_ACTIVATED='Y' and NEXT_DATE between SYSDATE-1 and SYSDATE+6 " +
+			"order by CCL.NAME";
+	
+	private static final String LOAD_ALL_STANDING_ORDERS =
+			"select " + FIELDZ_ALL + " " +
+			"from CUST.STANDING_ORDER SO " +
+			"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
+			"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
+			"where SO.DELETED<>1  and SO.IS_ACTIVATED='Y' and NEXT_DATE IS NOT NULL " +
 			"order by CCL.NAME";
 	
 	private static final String CREATE_EMPTY_STANDING_ORDER = "INSERT INTO CUST.STANDING_ORDER(ID, CUSTOMER_ID, CUSTOMERLIST_ID) VALUES(?,?,?)";
@@ -271,7 +281,32 @@ public class FDStandingOrderDAO {
 	}
 
 
-	
+public Collection<FDStandingOrder> loadSOFor2DayNotification(Connection conn) throws SQLException {
+		
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		List<FDStandingOrder> sorders = new ArrayList<FDStandingOrder>();
+
+		try {
+				ps = conn.prepareStatement(LOAD_ALL_STANDING_ORDERS);
+				rs = ps.executeQuery();
+			
+			while (rs.next()) {
+				FDStandingOrder so = new FDStandingOrder();
+				so = populate(rs, so);
+				//loadStandingOrderAlternateDateForSO(conn, so);
+				sorders.add( so );
+			}
+		} catch (SQLException exc) {
+			throw exc;
+		} finally {
+			DaoUtil.close(rs);
+			DaoUtil.close(ps);
+		}
+		
+		return sorders;
+	}
 	/**
 	 * Returns customer's active standing orders
 	 * 
