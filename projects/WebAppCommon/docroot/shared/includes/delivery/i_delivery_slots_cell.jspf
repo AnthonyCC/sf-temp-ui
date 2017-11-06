@@ -119,40 +119,7 @@
 								/* do nothing? */
 							}
 						
-							stringBuffer.append("<input type=\"button\" aria-label=\""
-									+((soldOut||slot.isUnavailable())
-											? "sold out" :
-												(slot.isPremiumSlot() && slot.getPremiumAmount()>0
-														?" "+slot.getPremiumAmountFmt()+"":
-													slot.getDisplayString(true))+((isSelectedSlotId)
-															?" selected":
-														((isPreReservedSlotId && hasPreReserved)
-																?" reserved":
-															(request.getAttribute("SHOW_WINDOWS_STEERING")!=null && "true".equals(request.getAttribute("SHOW_WINDOWS_STEERING")) && slot.getSteeringDiscount() > 0
-															        ?"Save&nbsp;$"+CCFormatter.formatQuantity(slot.getSteeringDiscount())+"":
-															    (slot.isEarlyAM()
-																	   ?" early unattended":
-																   (slot.isEcoFriendly() && slot.isDepot() && !(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity())
-																		  ?"Delivery&nbsp;Helper":
-																	 (slot.isEcoFriendly() && !(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity())
-																			 ?" eco friendly":
-																				   ((!soldOut||!slot.isUnavailable()) && deliveryModel.isAlcoholDelivery() && slot.isAlcoholRestricted()
-																						   ?" alcohol restricted":
-																						(slot.isMinOrderSlot() && !slot.isMinOrderMet()
-																							  ?"" + slot.getMinOrderMsg() +"":
-																						   (slot.isMinOrderSlot() && slot.isMinOrderMet()
-																							    ?" " + slot.getMinOrderMsg() +"":
-																							  (slot.isFdxSlot() && slot.getDeliveryFee()>0
-																								   ?" "+slot.getPromoDeliveryFee()+"":
-																								 (!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()
-																									  ?" &nbsp;CHEF'S&nbsp;TABLE":
-																							                ""))))))))))))+ 
-																							                (StandingOrderHelper.isSO3StandingOrder(user) && "N".equals(user.getCurrentStandingOrder().getActivate())
-																													?" "+soFirstNextTextCell+" "+slot.getFormattedSoFirstDeliveryDate()+"":
-																														(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentStandingOrder().getActivate())
-																																?" "+soFirstNextTextCell+""+slot.getFormattedSoFirstDeliveryDate()+"":
-																															(StandingOrderHelper.isSO3StandingOrder(user) && !soFirstDeliv
-																																	?" "+soFirstNextTextCell+""+slot.getFormattedSoFirstDeliveryDate()+"":"")))+" \" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\" ");
+							stringBuffer.append("<input type=\"button\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\" ");
 							stringBuffer.append(
 									( isSelectedSlotId || ("".equals(selectedSlotId) && isPreReservedSlotId && hasPreReserved) ) 
 									? "checked" : ""
@@ -169,48 +136,53 @@
 					}
 
 					/* removing the slot times for now, until accessibility is ready
-						<label for=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\">"+((soldOut||slot.isUnavailable()) ? "" : slot.getDisplayString(true))+"</label></div>
-						code before accessibility is added
-						<label for=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\"></label></div>\n
-					*/
-					stringBuffer.append("<label for=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\"><span class=\"offscreen\">"
-							+((soldOut||slot.isUnavailable())
-									? "sold out" :
-										(slot.isPremiumSlot() && slot.getPremiumAmount()>0
-												?" "+slot.getPremiumAmountFmt()+"":
-											slot.getDisplayString(true))+((isSelectedSlotId)
-													?" selected":
-												((isPreReservedSlotId && hasPreReserved)
-														?" reserved":
-													(request.getAttribute("SHOW_WINDOWS_STEERING")!=null && "true".equals(request.getAttribute("SHOW_WINDOWS_STEERING")) && slot.getSteeringDiscount() > 0
-													        ?"Save&nbsp;$"+CCFormatter.formatQuantity(slot.getSteeringDiscount())+"":
-													    (slot.isEarlyAM()
-															   ?" early unattended":
-														   (slot.isEcoFriendly() && slot.isDepot() && !(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity())
-																  ?"Delivery&nbsp;Helper":
-															 (slot.isEcoFriendly() && !(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity())
-																	 ?" eco friendly":
-																		   ((!soldOut||!slot.isUnavailable()) && deliveryModel.isAlcoholDelivery() && slot.isAlcoholRestricted()
-																				   ?" alcohol restricted":
-																				(slot.isMinOrderSlot() && !slot.isMinOrderMet()
-																					  ?"" + slot.getMinOrderMsg() +"":
-																				   (slot.isMinOrderSlot() && slot.isMinOrderMet()
-																					    ?" " + slot.getMinOrderMsg() +"":
-																					  (slot.isFdxSlot() && slot.getDeliveryFee()>0
-																						   ?" "+slot.getPromoDeliveryFee()+"":
-																						 (!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()
-																							  ?" &nbsp;CHEF'S&nbsp;TABLE":
-																					                ""))))))))))))+ 
-																					                (StandingOrderHelper.isSO3StandingOrder(user) && "N".equals(user.getCurrentStandingOrder().getActivate())
-																											?" "+soFirstNextTextCell+" "+slot.getFormattedSoFirstDeliveryDate()+"":
-																												(StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentStandingOrder().getActivate())
-																														?" "+soFirstNextTextCell+""+slot.getFormattedSoFirstDeliveryDate()+"":
-																													(StandingOrderHelper.isSO3StandingOrder(user) && !soFirstDeliv
-																															?" "+soFirstNextTextCell+""+slot.getFormattedSoFirstDeliveryDate()+"":"")))+"</span></label></div>");
-
-	stringBuffer.append("									<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_time\" class=\"fleft tsCont ")
-				.append(
-					(
+                    <label for=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\">"+((soldOut||slot.isUnavailable()) ? "" : slot.getDisplayString(true))+"</label></div>
+                    code before accessibility is added
+                    <label for=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\"></label></div>\n
+                */
+                String labelText = "";
+                labelText = ((soldOut||slot.isUnavailable())
+                    ? "" :
+                        (slot.isPremiumSlot() && slot.getPremiumAmount()>0
+                                ?" "+slot.getPremiumAmountFmt()+"":
+                            slot.getDisplayString(true))+((isSelectedSlotId)
+                                    ?" selected":
+                                ((isPreReservedSlotId && hasPreReserved)
+                                        ?" reserved":
+                                    (request.getAttribute("SHOW_WINDOWS_STEERING")!=null && "true".equals(request.getAttribute("SHOW_WINDOWS_STEERING")) && slot.getSteeringDiscount() > 0
+                                            ?"Save&nbsp;$"+CCFormatter.formatQuantity(slot.getSteeringDiscount())+"":
+                                        (slot.isEarlyAM()
+                                               ?" early unattended":
+                                           (slot.isEcoFriendly() && slot.isDepot() && !(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity())
+                                                  ?"Delivery&nbsp;Helper":
+                                             (slot.isEcoFriendly() && !(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity())
+                                                     ?" eco friendly":
+                                                           ((!soldOut||!slot.isUnavailable()) && deliveryModel.isAlcoholDelivery() && slot.isAlcoholRestricted()
+                                                                   ?" alcohol restricted":
+                                                                (slot.isMinOrderSlot() && !slot.isMinOrderMet()
+                                                                      ?"" + slot.getMinOrderMsg() +"":
+                                                                   (slot.isMinOrderSlot() && slot.isMinOrderMet()
+                                                                        ?" " + slot.getMinOrderMsg() +"":
+                                                                      (slot.isFdxSlot() && slot.getDeliveryFee()>0
+                                                                           ?" "+slot.getPromoDeliveryFee()+"":
+                                                                         (!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()
+                                                                              ?" &nbsp;CHEF'S&nbsp;TABLE":
+                                                                                    ""))))))))))))+ 
+                                                                                    (StandingOrderHelper.isSO3StandingOrder(user) && "N".equals(user.getCurrentStandingOrder().getActivate())
+                                                                                            ?" "+soFirstNextTextCell+" "+slot.getFormattedSoFirstDeliveryDate()+"":
+                                                                                                (StandingOrderHelper.isSO3StandingOrder(user) && "Y".equals(user.getCurrentStandingOrder().getActivate())
+                                                                                                        ?" "+soFirstNextTextCell+""+slot.getFormattedSoFirstDeliveryDate()+"":
+                                                                                                    (StandingOrderHelper.isSO3StandingOrder(user) && !soFirstDeliv
+                                                                                                            ?" "+soFirstNextTextCell+""+slot.getFormattedSoFirstDeliveryDate()+""
+                                                                                                                    :"")));
+                if (!isStaticSlot && !"".trim().equals(labelText)&& !(labelText).contains("null"))  { 
+                    stringBuffer.append("<label for=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\"><span class=\"offscreen\">"+labelText+"</span></label>");
+                }
+                stringBuffer.append("</div>"); /* closing tag for id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rbCont\" */
+                
+stringBuffer.append("                                    <div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_time\" class=\"fleft tsCont ")
+            .append(
+                (
 						(soldOut||slot.isUnavailable())
 							? "tsSoldoutC"
 							: (slot.isPremiumSlot() && slot.getPremiumAmount()>0)

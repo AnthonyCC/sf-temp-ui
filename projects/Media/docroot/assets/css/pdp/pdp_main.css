@@ -1109,3 +1109,7 @@ border-bottom-left-radius: 6px;
 	font-size: 12px;
 	line-height: 15px;
 }
+/*links in the pdp-accordion in pdp page */
+.pdp-accordion>li>div[aria-hidden="true"] {
+    visibility: hidden;
+}

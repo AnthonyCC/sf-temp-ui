@@ -7,7 +7,7 @@
 {template .groupProducts autoescape="false"}    
     {if $groupScaleData.groupProducts and length($groupScaleData.groupProducts) > 0}
 	<div class="pdp-evenbetter">
-		<h2 class="groupProducts {($mobWeb) ? ' gen-accord-toggler' : ''}">Buy More & Save: {$groupScaleData.grpQty} for {$groupScaleData.grpTotalPrice}</h2>
+		<h2 {if $mobWeb}tabindex="0"{/if} class="groupProducts {($mobWeb) ? ' gen-accord-toggler' : ''}">Buy More & Save: {$groupScaleData.grpQty} for {$groupScaleData.grpTotalPrice}</h2>
 		{($mobWeb) ? '<div class="gen-accord-content" style="display: none;">' : ''}
 			{foreach $gProd in $groupScaleData.groupProducts} /* gProd is the full product item like common.griditem takes */
 				{if index($gProd) > 0}

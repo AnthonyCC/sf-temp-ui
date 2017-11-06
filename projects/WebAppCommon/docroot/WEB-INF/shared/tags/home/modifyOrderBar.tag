@@ -78,7 +78,7 @@ attribute name="modifyOrderAlert" required="true" rtexprvalue="true" type="java.
 													</div>
 												</div>
 												<div class="modify-order-alert-table-actions">
-													<div class="modify-order-alert-table-delails"><a href="/your_account/order_details.jsp?orderId=<%= item.getErpSalesId() %>">See Details</a></div>
+													<div class="modify-order-alert-table-delails"><a href="/your_account/order_details.jsp?orderId=<%= item.getErpSalesId() %>">See Details <span class="offscreen">of order number <%= orderName %></span></a></div>
 													<div class="modify-order-alert-table-modify"><button class="modify-order-alert-button cssbutton cssbutton-flat orange" onclick="$jq('#modifyorderalert').find('.alert-closeHandler').click(); window.location.href='/your_account/modify_order.jsp?orderId=<%= item.getErpSalesId() %>&action=modify';">Modify Order</button></div>
 												</div>
 											</div>
@@ -114,7 +114,7 @@ attribute name="modifyOrderAlert" required="true" rtexprvalue="true" type="java.
 												    <%= orderName %>
 												    </div>
 												</td>
-												<td width="10%" class="modify-order-alert-table-delails"><a href="/your_account/order_details.jsp?orderId=<%= item.getErpSalesId() %>">See Details</a></td>
+												<td width="10%" class="modify-order-alert-table-delails"><a href="/your_account/order_details.jsp?orderId=<%= item.getErpSalesId() %>">See Details<span class="offscreen">of order number <%= orderName %></span></a></td>
 												<td width="16%" class="modify-order-alert-table-modify"><button class="modify-order-alert-button cssbutton cssbutton-flat orange" onclick="$jq('#modifyorderalert').find('.alert-closeHandler').click(); window.location.href='/your_account/modify_order.jsp?orderId=<%= item.getErpSalesId() %>&action=modify'"">Modify Order</button></td>
 											</tr>
 											<% } %>
@@ -143,7 +143,7 @@ attribute name="modifyOrderAlert" required="true" rtexprvalue="true" type="java.
 													</div>
 													<div class="locabar-modify-order-dropdown-container-date-and-time"><span class="locabar-modify-order-alert-table-date"><%= new SimpleDateFormat("EEEEE, MMM d").format(item.getRequestedDate()) %></span><%=  DateUtil.formatHourAMPMRange(item.getDeliveryStartTime(),item.getDeliveryEndTime()) %></div>
 													<div class="locabar-modify-order-dropdown-container-buttons">
-														<div class="locabar-modify-order-dropdown-container-delails"><a href="/your_account/order_details.jsp?orderId=<%= item.getErpSalesId() %>">See Details</a></div>
+														<div class="locabar-modify-order-dropdown-container-delails"><a href="/your_account/order_details.jsp?orderId=<%= item.getErpSalesId() %>">See Details <span class="offscreen">of order number <%= orderName %></span></a></div>
 														<div class="locabar-modify-order-dropdown-container-modify"><button class="modify-order-alert-button cssbutton cssbutton-flat green transparent" onclick="window.location.href='/your_account/modify_order.jsp?orderId=<%= item.getErpSalesId() %>&action=modify'"">Modify Order</button></div>
 														<div class="clear"></div>
 													</div>												

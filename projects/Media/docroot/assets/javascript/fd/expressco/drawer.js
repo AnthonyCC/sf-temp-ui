@@ -167,6 +167,10 @@ var FreshDirect = FreshDirect || {};
       }
     }
   });
+  
+  $(document).on('click', '.clickable,.fake-radio', function(e) {
+	    $jq(this).closest('.drawer__item').find('[type="radio"]').click().focus();
+	});
 
   $(document).on('keydown', "[data-drawer-id]", function(e){
     // make drawer open by enter key

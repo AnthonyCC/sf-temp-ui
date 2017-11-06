@@ -3397,3 +3397,7 @@ button.space {
 	display:inline-block;
 	vertical-align:top;
 }
+
+.clickable,.fake-radio{
+	cursor: pointer;
+}
