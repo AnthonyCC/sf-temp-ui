@@ -136,24 +136,24 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
-	public Collection<FDStandingOrder> loadSOFor2DayNotification() throws FDResourceException {
+	public Collection<FDStandingOrder> loadActiveStandingOrdersForAWeek(boolean isNewSo) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			FDStandingOrderDAO dao = new FDStandingOrderDAO();
 			
-			Collection<FDStandingOrder> ret = dao.loadSOFor2DayNotification(conn);
+			Collection<FDStandingOrder> ret = dao.loadActiveStandingOrdersForAWeek(conn,isNewSo);
 			
 			return ret;
 		} catch (SQLException e) {
-			LOGGER.error( "SQL ERROR in loadSOFor2DayNotification() : " + e.getMessage(), e );
+			LOGGER.error( "SQL ERROR in loadActiveStandingOrdersForAWeek() : " + e.getMessage(), e );
 			e.printStackTrace();
 			throw new FDResourceException(e);
 		} finally {
 			close(conn);
 		}
 	}
-
+	
 	public Collection<FDStandingOrder> loadCustomerStandingOrders(FDIdentity identity) throws FDResourceException, FDInvalidConfigurationException {
 		Connection conn = null;
 		try {

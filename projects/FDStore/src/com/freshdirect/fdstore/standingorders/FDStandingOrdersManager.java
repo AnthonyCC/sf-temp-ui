@@ -114,6 +114,7 @@ public class FDStandingOrdersManager {
 		}
 	}
 
+	//old SO cron flow and 2 days notification
 	public Collection<FDStandingOrder> loadActiveStandingOrders(boolean isNewSo) throws FDResourceException {
 		lookupManagerHome();
 		try {
@@ -129,12 +130,13 @@ public class FDStandingOrdersManager {
 		}
 	}
 	
-	public Collection<FDStandingOrder> loadSOFor2DayNotification() throws FDResourceException {
+	//new SO cron flow
+	public Collection<FDStandingOrder> loadActiveStandingOrdersForAWeek(boolean isNewSo) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDStandingOrdersSB sb = soHome.create();
 			
-			return sb.loadSOFor2DayNotification();
+			return sb.loadActiveStandingOrdersForAWeek(isNewSo);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

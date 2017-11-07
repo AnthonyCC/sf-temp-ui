@@ -101,9 +101,9 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 				// true :: New Standing Orders3.0  with active flag is Y
 				// false: existing standing Orders with active flag as null
 				
-				soList = soManager.loadActiveStandingOrders(false);	
+				soList = soManager.loadActiveStandingOrdersForAWeek(false);	 				//soList = soManager.loadActiveStandingOrders(false);	
 				
-				soList.addAll(soManager.loadActiveStandingOrders(true));
+				soList.addAll(soManager.loadActiveStandingOrdersForAWeek(true));			//soList.addAll(soManager.loadActiveStandingOrders(true));
 				
 				if ( soList.isEmpty()  ) {
 					LOGGER.error( "Empty list retrieved for standing orders list! - loadActiveStandingOrders() returned empty list" );
@@ -222,7 +222,8 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			if (soIdList == null) {
 				try {
 					LOGGER.info("Loading all active standing orders for 2days email notification.");
-					soListEmailNotification = soManager.loadSOFor2DayNotification();
+					soListEmailNotification = soManager.loadActiveStandingOrders(true);
+					soListEmailNotification.addAll(soManager.loadActiveStandingOrders(false));
 					if (soListEmailNotification.isEmpty()) {
 						LOGGER.error("Could not retrieve standing orders list! - loadSOFor2DayNotification() returned null");
 						sendTechnicalMail("Could not retrieve standing orders list! - loadSOFor2DayNotification() returned null");
@@ -235,7 +236,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 					return null;
 				}
 			}
-			if (!soListEmailNotification.isEmpty()) {
+			if (null !=soListEmailNotification && !soListEmailNotification.isEmpty()) {
 				for (FDStandingOrder so : soListEmailNotification) {
 					try {
 						// The main processing occurs here.
@@ -247,6 +248,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 					} finally {
 						invalidateMailerHome();
 					}
+					LOGGER.info("2days email notification has been exicuted.");
 				}
 			}
 		}

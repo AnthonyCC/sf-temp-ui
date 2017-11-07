@@ -83,28 +83,37 @@ public class FDStandingOrderDAO {
 			" and SO.START_TIME IS NOT NULL and SO.END_TIME is not null and SO.NEXT_DATE IS NOT NULL and SO.FREQUENCY IS NOT NULL "+
 			"order by SO.CREATED_TIME DESC ";
 	
-	private static final String LOAD_ACTIVE_STANDING_ORDERS =
-		"select " + FIELDZ_ALL + " " +
-		"from CUST.STANDING_ORDER SO " +
-		"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
-		"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
-		"where SO.DELETED<>1 AND SO.IS_ACTIVATED IS NULL and NEXT_DATE between SYSDATE-1 and SYSDATE+6 "
-		+ " order by CCL.NAME";
-
+	//query used at 2 places, old SO cron flow and 2days notification in SO cron  
 	private static final String LOAD_NEW_SO_ACTIVE_STANDING_ORDERS =
 			"select " + FIELDZ_ALL + " " +
 			"from CUST.STANDING_ORDER SO " +
 			"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
 			"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
-			"where SO.DELETED<>1  and SO.IS_ACTIVATED='Y' and NEXT_DATE between SYSDATE-1 and SYSDATE+6 " +
+			"where SO.DELETED<>1  and SO.IS_ACTIVATED='Y' " +
 			"order by CCL.NAME";
 	
-	private static final String LOAD_ALL_STANDING_ORDERS =
+	private static final String LOAD_ACTIVE_STANDING_ORDERS =
 			"select " + FIELDZ_ALL + " " +
 			"from CUST.STANDING_ORDER SO " +
 			"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
 			"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
-			"where SO.DELETED<>1  and SO.IS_ACTIVATED='Y' and NEXT_DATE IS NOT NULL " +
+			"where SO.DELETED<>1 AND SO.IS_ACTIVATED IS NULL " +
+			"order by CCL.NAME";
+	
+	private static final String LOAD_NEW_SO_ACTIVE_STANDING_ORDERS_FOR_WEEK =
+			"select " + FIELDZ_ALL + " " +
+			"from CUST.STANDING_ORDER SO " +
+			"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
+			"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
+			"where SO.DELETED<>1  and SO.IS_ACTIVATED='Y' and  NEXT_DATE between trunc(SYSDATE) and trunc(SYSDATE+6) " +
+			"order by CCL.NAME";
+	
+	private static final String LOAD_ACTIVE_STANDING_ORDERS_FOR_WEEK =
+			"select " + FIELDZ_ALL + " " +
+			"from CUST.STANDING_ORDER SO " +
+			"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
+			"left join CUST.CUSTOMER c on (C.ID = SO.CUSTOMER_ID) " +
+			"where SO.DELETED<>1  and SO.IS_ACTIVATED IS NULL and  NEXT_DATE between trunc(SYSDATE) and trunc(SYSDATE+6)" +
 			"order by CCL.NAME";
 	
 	private static final String CREATE_EMPTY_STANDING_ORDER = "INSERT INTO CUST.STANDING_ORDER(ID, CUSTOMER_ID, CUSTOMERLIST_ID) VALUES(?,?,?)";
@@ -263,41 +272,6 @@ public class FDStandingOrderDAO {
 				loadStandingOrderAlternateDateForSO(conn, so);
 				sorders.add( so );
 			}
-
-			rs.close();
-			ps.close();
-		} catch (SQLException exc) {
-			throw exc;
-		} finally {
-			if(rs != null){
-				rs.close();
-			}
-			if(ps != null) {
-				ps.close();
-			}
-		}
-		
-		return sorders;
-	}
-
-
-public Collection<FDStandingOrder> loadSOFor2DayNotification(Connection conn) throws SQLException {
-		
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		List<FDStandingOrder> sorders = new ArrayList<FDStandingOrder>();
-
-		try {
-				ps = conn.prepareStatement(LOAD_ALL_STANDING_ORDERS);
-				rs = ps.executeQuery();
-			
-			while (rs.next()) {
-				FDStandingOrder so = new FDStandingOrder();
-				so = populate(rs, so);
-				//loadStandingOrderAlternateDateForSO(conn, so);
-				sorders.add( so );
-			}
 		} catch (SQLException exc) {
 			throw exc;
 		} finally {
@@ -307,6 +281,40 @@ public Collection<FDStandingOrder> loadSOFor2DayNotification(Connection conn) th
 		
 		return sorders;
 	}
+
+	public Collection<FDStandingOrder> loadActiveStandingOrdersForAWeek(Connection conn, boolean isNewSo) throws SQLException {
+		
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		List<FDStandingOrder> sorders = new ArrayList<FDStandingOrder>();
+
+		try {
+			
+			if (isNewSo) {
+				ps = conn.prepareStatement(LOAD_NEW_SO_ACTIVE_STANDING_ORDERS_FOR_WEEK);
+			} else {
+				ps = conn.prepareStatement(LOAD_ACTIVE_STANDING_ORDERS_FOR_WEEK);
+			}
+			rs = ps.executeQuery();
+			
+			while (rs.next()) {
+				FDStandingOrder so = new FDStandingOrder();
+				so = populate(rs, so);
+				loadStandingOrderAlternateDateForSO(conn, so);
+				sorders.add( so );
+			}
+		} catch (SQLException exc) {
+			throw exc;
+		} finally {
+			DaoUtil.close(rs);
+			DaoUtil.close(ps);
+
+		}
+		
+		return sorders;
+	}
+
 	/**
 	 * Returns customer's active standing orders
 	 * 
