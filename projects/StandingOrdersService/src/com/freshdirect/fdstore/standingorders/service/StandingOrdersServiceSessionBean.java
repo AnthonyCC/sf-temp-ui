@@ -248,8 +248,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 					} finally {
 						invalidateMailerHome();
 					}
-					LOGGER.info("2days email notification has been exicuted.");
-				}
+				}LOGGER.info("2days email notification has been exicuted.");
 			}
 		}
 		
