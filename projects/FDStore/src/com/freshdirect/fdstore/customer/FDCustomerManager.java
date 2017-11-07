@@ -4305,8 +4305,7 @@ public class FDCustomerManager {
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("customer.ejb.ActivityLogSB")){
 				FDECommerceService.getInstance().logActivity(record);
-			}
-			else{
+			}else{
 				ActivityLogSB logSB = home.create();
 				logSB.logActivity(record);
 			}
@@ -4566,7 +4565,16 @@ public class FDCustomerManager {
 	}
 
 	private static void logActivity(ErpActivityRecord record) {
+		if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ActivityLogSB)) {
+			try {
+				FDECommerceService.getInstance().logActivity(record);
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else {
 		new ErpLogActivityCommand(LOCATOR, record).execute();
+		}
 	}
 
 

@@ -1,6 +1,7 @@
 package com.freshdirect.fdlogistics.controller;
 
 import java.net.UnknownHostException;
+import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -76,6 +77,7 @@ import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
 import com.freshdirect.logistics.delivery.model.SystemMessageList;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
+import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.webapp.util.StandingOrderUtil;
 
 
@@ -643,8 +645,16 @@ private static MailerGatewayHome mailerHome	= null;
 		} /*else if ( status == SOResult.Status.FORCED_SKIPPED ) {
 			activityRecord.setActivityType( EnumAccountActivityType.STANDINGORDER_FORCED_SKIPPED );					
 		}*/
-		
-		new ErpLogActivityCommand( activityRecord ).execute();		
+		if(FDStoreProperties.isSF2_0_AndServiceEnabled("customer.ejb.ActivityLogSB")){
+			try {
+				FDECommerceService.getInstance().logActivity(activityRecord);
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else{
+		new ErpLogActivityCommand( activityRecord ).execute();	
+		}
 	}
 	
 	private void sendTechnicalMail ( String msg ) {

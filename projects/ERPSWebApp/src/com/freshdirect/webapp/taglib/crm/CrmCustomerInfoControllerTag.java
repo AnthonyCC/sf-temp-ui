@@ -1,5 +1,6 @@
 package com.freshdirect.webapp.taglib.crm;
 
+import java.rmi.RemoteException;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +20,9 @@ import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.delivery.sms.SMSAlertManager;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -27,10 +30,12 @@ import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ejb.CallCenterManagerSessionBean;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerEStoreModel;
+import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mail.EmailUtil;
+import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.sms.EnumSMSAlertStatus;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
@@ -611,8 +616,8 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 			if(goGreenChanged) {
 				rec.setActivityType( EnumAccountActivityType.GO_GREEN );
 				rec.setNote("Flag updated to " + (this.customerInfo.isGoGreen()?"Y":"N"));
-				ErpLogActivityCommand command = new ErpLogActivityCommand(rec);
-				command.execute();
+				logActivity(rec);
+
 			}
 			
 			/*if(delNotifChanged) {
@@ -632,20 +637,32 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 			if(orderNotificationChanged || orderExceptionsChanged || offersChanged){
 				rec.setActivityType( EnumAccountActivityType.SMS_ALERT);
 				rec.setNote("Updated FD SMS Flags- Order Notif:" + customerSmsPreferenceModel.getOrderNotices() + ", OrderExp Notif:"+ customerSmsPreferenceModel.getOrderExceptions()+ ", MrkOffers:"+ customerSmsPreferenceModel.getOffers());
-				ErpLogActivityCommand command = new ErpLogActivityCommand(rec);
-				command.execute();
+				logActivity(rec);
 			}
 			// FDX SMS For Activity Log
 			if(fddOrderNotificationChanged || fdxOrderExceptionsChanged || FdxOffersChanged){
 				rec.setActivityType( EnumAccountActivityType.SMS_ALERT);
 				rec.setNote("Updated FDX SMS Flags- Delivery Updates:" + customerSmsPreferenceModel.getFdxOrderNotices() + ", Order Status:"+ customerSmsPreferenceModel.getFdxOrderExceptions()+ ", Offers:"+ customerSmsPreferenceModel.getFdxOffers());
-				ErpLogActivityCommand command = new ErpLogActivityCommand(rec);
-				command.execute();
+				logActivity(rec);
 			}
 			
 		}
 	}
 	
+	private void logActivity(ErpActivityRecord rec) {
+		if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ActivityLogSB)) {
+			try {
+				FDECommerceService.getInstance().logActivity(rec);
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else {
+			new ErpLogActivityCommand(rec).execute();
+		}
+		
+	}
+
 	private FDUserI getUser() {
 		HttpSession session = pageContext.getSession();
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
