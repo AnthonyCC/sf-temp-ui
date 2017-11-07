@@ -59,17 +59,17 @@ request.setAttribute("listPos", "CategoryNote");
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xml:lang="en-US">
-	<head>
-		<meta name="verify-v1" content="2MXiorvt33Hqj6QEBylmr/TwpVMfiUQArG0etUIxV2c=" />
-		<meta name="description" content="Online grocer providing high quality fresh foods and popular grocery and household items at incredible prices delivered to the New York area.">
-		<meta name="keywords" content="FreshDirect, Fresh Direct, Online Groceries, Online food, Grocery delivery, Food delivery, New York food delivery, New York food, New York grocer, Online grocery shopping">
-		<title><%= isBestCellars ? "Best Cellars" : "FreshDirect"%></title>
-
-	<%@ include file="/common/template/includes/metatags.jspf" %>
-	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
-</head>
+  <head>
+    <meta name="verify-v1" content="2MXiorvt33Hqj6QEBylmr/TwpVMfiUQArG0etUIxV2c=" />
+    <meta name="description" content="Online grocer providing high quality fresh foods and popular grocery and household items at incredible prices delivered to the New York area.">
+    <meta name="keywords" content="FreshDirect, Fresh Direct, Online Groceries, Online food, Grocery delivery, Food delivery, New York food delivery, New York food, New York grocer, Online grocery shopping">
+    <title><%= isBestCellars ? "Best Cellars" : "FreshDirect"%></title>
+    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
+    <%@ include file="/common/template/includes/metatags.jspf" %>
+    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
+    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+  </head>
 	<script language='javascript'>
 		function validate(){
 			var zipcode = document.forms[0].zipcode.value;

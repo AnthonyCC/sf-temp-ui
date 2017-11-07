@@ -6,6 +6,7 @@
   <head>
     <meta charset="utf-8">
     <title>Timeslot Selector Test</title>
+    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
   </head>
   <body>
     <jwr:script src="/fdlibs_opt.js" useRandomParam="false" />

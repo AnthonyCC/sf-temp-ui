@@ -18,27 +18,25 @@
 <features:isActive name="isQS20" featureName="quickshop2_0" />
 
 <html lang="en-US" xml:lang="en-US">
-	<head>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" lang="en-US"/>
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" lang="en-US"/>
+    <tmpl:get name="seoMetaTag"/>
+    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
+    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
+    <jwr:style src="/grid.css" media="all" />
+    <jwr:style src="/global.css" media="all" />
+    <jwr:style src="/oldglobal.css" media="all" />
+    <jwr:style src="/quickshop.css" media="all" />
+    <tmpl:get name="extraJs"/>
+    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 
-	<%-- 	<%@ include file="/common/template/includes/metatags.jspf" %> --%>
-		<tmpl:get name="seoMetaTag"/>
-        <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-	  	<jwr:style src="/grid.css" media="all" />
-		<jwr:style src="/global.css" media="all" />
-        <jwr:style src="/oldglobal.css" media="all" />
-        <jwr:style src="/quickshop.css" media="all" />
-        <tmpl:get name="extraJs"/>
-        <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+    <script type="text/javascript">
+      function showStandardAds(){
+        $jq('#QSTop').show();
+      }
+    </script>
 
-        <script type="text/javascript">
-        	function showStandardAds(){
-        		$jq('#QSTop').show();
-        	}
-
-        </script>
-
-    </head>
+  </head>
     <body data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"  >
     <%@ include file="/shared/template/includes/i_body_start.jspf" %>
     <%@ include file="/common/template/includes/globalnav.jspf" %>

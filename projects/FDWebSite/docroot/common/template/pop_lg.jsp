@@ -5,14 +5,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xml:lang="en-US">
-<head>
-<title><tmpl:get name='title'/></title>
-
-	<%@ include file="/common/template/includes/metatags.jspf" %>
-	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-<%@ include file="/shared/template/includes/i_head_end.jspf" %>
-</head>
+  <head>
+    <title><tmpl:get name='title'/></title>
+    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
+    <%@ include file="/common/template/includes/metatags.jspf" %>
+    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
+    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+  </head>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333"  MARGINHEIGHT="0" MARGINWIDTH="0" TOPMARGIN="0" LEFTMARGIN="0" onLoad="window.focus()">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="550">

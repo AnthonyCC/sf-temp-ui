@@ -11,29 +11,28 @@
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
 
 <html lang="en-US" xml:lang="en-US">
-<head>
-  <tmpl:get name="seoMetaTag"/>
-  <%@ include file="/common/template/includes/seo_canonical.jspf" %>
-  <%@ include file="/common/template/includes/i_javascripts_browse.jspf" %>
-  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
-  <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-  
-  <tmpl:get name='facebookmeta'/>
+  <head>
+    <tmpl:get name="seoMetaTag"/>
+    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
+    <%@ include file="/common/template/includes/i_javascripts_browse.jspf" %>
+    <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 
-  <jwr:style src="/grid.css"/>
-  <jwr:style src="/global.css"/>
-  <jwr:style src="/oldglobal.css"/>
+   <tmpl:get name='facebookmeta'/>
 
-  <tmpl:get name='extraCss'/>
+    <jwr:style src="/grid.css"/>
+    <jwr:style src="/global.css"/>
+    <jwr:style src="/oldglobal.css"/>
 
-  <jwr:script src="/fdlibs.js" useRandomParam="false" />
+    <tmpl:get name='extraCss'/>
 
-  <tmpl:get name='extraJs'/>
-  <tmpl:get name='nutritionCss'/>
-  
-  <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-  
-</head>
+    <jwr:script src="/fdlibs.js" useRandomParam="false" />
+
+    <tmpl:get name='extraJs'/>
+    <tmpl:get name='nutritionCss'/>
+
+    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+  </head>
 
 <!--[if lt IE 9]><body class="ie8" data-cmeventsource="<tmpl:get name='cmeventsource'/>"><![endif]-->
 <!--[if gt IE 8]><body data-cmeventsource="<tmpl:get name='cmeventsource'/>"><![endif]-->

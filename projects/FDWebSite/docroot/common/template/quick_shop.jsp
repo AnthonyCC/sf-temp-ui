@@ -5,27 +5,28 @@
 <!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
 <!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en-US" xml:lang="en-US"> <!--<![endif]-->
-<head>
-<%@ taglib uri='template' prefix='tmpl' %>
-<%@ taglib uri='logic' prefix='logic' %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
-<%@ taglib uri="/WEB-INF/shared/tld/components.tld" prefix='comp' %>
-<% //expanded page dimensions
-final int W_QUICK_SHOP_TOTAL = 970;
-final int W_QUICK_SHOP_CONTENT = 765;
-final int W_QUICK_SHOP_CART = 191;
-final int W_QUICK_SHOP_DELIMITER = 14;
-%>
-<%
-request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);%>
-<title><tmpl:get name='title'/></title>
-	<%@ include file="/common/template/includes/metatags.jspf" %>
-	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
-	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-	<%@ include file="/shared/template/includes/ccl.jspf" %>
+  <head>
+    <%@ taglib uri='template' prefix='tmpl' %>
+    <%@ taglib uri='logic' prefix='logic' %>
+    <%@ taglib uri='freshdirect' prefix='fd' %>
+    <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
+    <%@ taglib uri="/WEB-INF/shared/tld/components.tld" prefix='comp' %>
 
+<% //expanded page dimensions
+    final int W_QUICK_SHOP_TOTAL = 970;
+    final int W_QUICK_SHOP_CONTENT = 765;
+    final int W_QUICK_SHOP_CART = 191;
+    final int W_QUICK_SHOP_DELIMITER = 14;
+%>
+<%request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);%>
+
+    <title><tmpl:get name='title'/></title>
+    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
+    <%@ include file="/common/template/includes/metatags.jspf" %>
+    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
+    <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+    <%@ include file="/shared/template/includes/ccl.jspf" %>
 <%
     {
        String onbeforeunload = (String)request.getAttribute("windowOnBeforeUnload");
@@ -38,10 +39,10 @@ request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);%>
        } // if
     } // local block
 %>
-<tmpl:get name='head'/>
+    <tmpl:get name='head'/>
 
-<%@ include file="/shared/template/includes/i_head_end.jspf" %>
-</head>
+    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+  </head>
 
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333"
     onload="<%= request.getAttribute("bodyOnLoad")%>"
