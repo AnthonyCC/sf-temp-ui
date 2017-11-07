@@ -110,6 +110,10 @@ if (mobWeb) {
     <fd:SEOMetaTag metaDescription="<%= productNode.getSEOMetaDescription() %>" title="<%= title %>"/>
   </tmpl:put>
 
+  <tmpl:put name="seoCanonicalTag">
+    <link rel="canonical" href="${productPotato.productPagePrimaryHomeUrl}" />
+  </tmpl:put>
+
   <tmpl:put name='cmeventsource' direct='true'>pdp_main</tmpl:put>
 
   <tmpl:put name='soypackage' direct='true'>
@@ -222,6 +226,8 @@ if (mobWeb) {
 %>
 	<c:set value="${productPotato}" scope="request" var="productPotato" />
 	<c:set value="${productExtraPotato}" scope="request" var="productExtraPotato" />
+	<c:set value="${productPotato.productPagePrimaryHomeUrl}" scope="request" var="seoCanonicalUri" />
+
 <% if (productNode.getSpecialLayout()==null || forceProductLayout) { %>
 	
 	<tmpl:put name='content' direct='true'>

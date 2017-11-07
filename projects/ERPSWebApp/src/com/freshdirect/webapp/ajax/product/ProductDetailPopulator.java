@@ -551,6 +551,7 @@ public class ProductDetailPopulator {
         }
 			
 		data.setProductPageUrl( FDURLUtil.getNewProductURI( product ) );
+        data.setProductPagePrimaryHomeUrl(FDURLUtil.getNewProductURI(product.getPrimaryProductModel()));
 		
 		data.setQuantityText( product.getQuantityText() );
 		data.setPackageDescription( product.getPackageDescription() );

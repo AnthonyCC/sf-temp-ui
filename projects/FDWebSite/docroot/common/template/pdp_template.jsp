@@ -13,6 +13,7 @@
 <html lang="en-US" xml:lang="en-US">
 <head>
   <tmpl:get name="seoMetaTag"/>
+  <%@ include file="/common/template/includes/seo_canonical.jspf" %>
   <%@ include file="/common/template/includes/i_javascripts_browse.jspf" %>
   <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
   <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
