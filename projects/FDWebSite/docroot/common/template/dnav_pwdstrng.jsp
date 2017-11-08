@@ -31,9 +31,12 @@ final int W_DNAV_TOTAL = 970;
 			<%@ include file="/shared/template/includes/ccl.jspf" %>
 	<% } %>
 
-    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-    <script type="text/javascript" src="/assets/javascript/scripts.js"></script>
-    <script type="text/javascript">
+	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+
+	<fd:javascript src="/assets/javascript/jquery.hint.js"/>
+	<fd:javascript src="/assets/javascript/jquery.pwstrength.js"/>
+	<script type="text/javascript" src="/assets/javascript/scripts.js"></script>
+	<script type="text/javascript">
         jQuery(function($jq) { $jq('#password1').pwstrength(); });
     </script>
     <!--  Added for Password Strength Display -->

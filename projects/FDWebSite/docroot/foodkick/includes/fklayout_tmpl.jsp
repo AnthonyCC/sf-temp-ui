@@ -132,7 +132,6 @@
 	</body>
 	
 	<jwr:script src="/fdlibs.js" useRandomParam="false" /><%-- for jquery and other things --%>
-	<script src="/assets/javascript/jquery/jquery_validate/jquery.validate.js"></script>
 	<script src="<%=FK_CONFIG_DIRS.get("JS_DIR") %>/foodkick.js"></script>
 	<%-- <jwr:script src="/foodkick.js" useRandomParam="false" />--%>
 	

@@ -2,7 +2,7 @@
 <%@ page import="com.freshdirect.delivery.ejb.AirclicManager"%>
 <%@ page import="com.metaparadigm.jsonrpc.JSONRPCBridge"%>
 
-<script type="text/javascript" src="/assets/javascript/jsonrpc_airclic.js"></script>
+<script type="text/javascript" src="/ccassets/javascript/jsonrpc_airclic.js"></script>
 <script type="text/javascript" language="javascript">
 
 // loadPopup shows the overlay and dialogue box

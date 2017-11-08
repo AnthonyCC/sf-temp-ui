@@ -53,7 +53,7 @@ var FreshDirect = FreshDirect || {};
       crect = main[0].getBoundingClientRect();
 
       if (crect.top < 0) {
-        $.smoothScroll(crect.top + $('body').scrollTop());
+    	$jq('html').animate({scrollTop: crect.top + $('body').scrollTop()}, '500');
       }
     }
   }

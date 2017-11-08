@@ -60,19 +60,10 @@
 			folderMap.put("Shopping Lists","/quickshop/all_lists.jsp");
 		/* 1-6 */
 			try {
-			if(!FDStoreProperties.isExtoleRafEnabled() && user_youract !=null && user_youract.isReferralProgramAvailable()) {
-				FDIdentity customerIdentity = null;
-				if (user_youract!=null && user_youract.getLevel() == 2){
-					customerIdentity = user_youract.getIdentity();
-				}
-				ReferralPromotionModel rpModel = (customerIdentity != null ) ? FDReferralManager.getReferralPromotionDetails(customerIdentity.getErpCustomerPK()) : null;
-				if(rpModel != null) {
-					folderMap.put("Refer A Friend","/your_account/brownie_points.jsp");
-				}
-			}else if(FDStoreProperties.isExtoleRafEnabled() && user_youract.isReferralProgramAvailable()){
+				if(FDStoreProperties.isExtoleRafEnabled() && user_youract.isReferralProgramAvailable()){
 				//This is the default microsite url for RAF-- under My Account Refer a Friend Link
 				folderMap.put("Refer A Friend",FDStoreProperties.getPropExtoleMicrositeSubUrl());
-			}
+				}
 			} catch (Exception e) {
 				LOGGER.debug("Error in getting RAF link");
 				e.printStackTrace();

@@ -220,21 +220,8 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 				<span class="manage_account_desc">View your history of received and purchased FreshDirect Gift Cards.</span>
 				<br><br>
 		<% } %>
-		<% if(!FDStoreProperties.isExtoleRafEnabled() && user !=null && user.isReferralProgramAvailable()) { 
-			FDIdentity customerIdentity = null;
-			if (user!=null && user.getLevel() == 2){
-				customerIdentity = user.getIdentity();
-			}
-			ReferralPromotionModel rpModel = FDReferralManager.getReferralPromotionDetails(customerIdentity.getErpCustomerPK());
-			if(rpModel != null) {
-		%>
 		
-        <font class="text13bold">
-		<a href="<%=response.encodeURL("/your_account/brownie_points.jsp")%>">Refer A Friend</a> </font>  <font class="text13bold" color="#990000"></font>
-		<br>
-		<span class="manage_account_desc">Invite your friends and earn $$$ credits.</span>
-		<br><br>
-		<% } }else if(FDStoreProperties.isExtoleRafEnabled() && user.isReferralProgramAvailable()) { %>
+		<% if(FDStoreProperties.isExtoleRafEnabled() && user.isReferralProgramAvailable()) { %>
 		 <font class="text13bold">
 		<a href="<%=response.encodeURL(FDStoreProperties.getPropExtoleMicrositeUrl())%>" target="_blank">Refer A Friend</a> </font>  <font class="text13bold" color="#990000"></font>
 		<br>

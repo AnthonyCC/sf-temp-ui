@@ -547,13 +547,6 @@
 		<div class="link"><a href="/test/monitor/healthcheck.jsp">/test/monitor/healthcheck.jsp</a></div>
 		<div class="pageDesc">Display how long the Health Check takes.</div>
 	</div>
-
-	<div class="tag blog">
-		<div class="pageName"><span>/test/myfd/index.jsp</span></div>
-		<div class="link"><a href="/test/myfd/index.jsp">/test/myfd/index.jsp</a></div>
-		<div class="pageDesc">Display the myfd Blog</div>
-	</div>
-
 	<div class="tag order">
 		<div class="pageName"><span>/test/order/order_maker.jsp</span></div>
 		<div class="link"><a href="/test/order/order_maker.jsp">/test/order/order_maker.jsp</a></div>
@@ -941,12 +934,6 @@
 		<div class="pageName"><span>Test Gateway Transactions</span></div>
 		<div class="link"><a href="/test/gateway/index.jsp">/test/gateway/index.jsp</a></div>
 		<div class="pageDesc">Helps to test Gateway Transactions .</div>
-	</div>
-
-	<div class="tag oas">
-		<div class="pageName"><span>Test OAS ads</span></div>
-		<div class="link"><a href="/test/content/oas.jsp">/test/content/oas.jsp</a></div>
-		<div class="pageDesc">Test OAS calls using dynamic values.</div>
 	</div>
 
 	<div class="tag partialRollout partial rollout featureFlipping feature flipping A/B testing">

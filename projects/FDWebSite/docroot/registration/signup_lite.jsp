@@ -101,6 +101,8 @@
 	<!--<script type="text/javascript" src="/assets/javascript/jquery.hint.js"></script>
 	<script type="text/javascript" src="/assets/javascript/jquery.pwstrength.js"></script>-->
 	
+	<fd:javascript src="/assets/javascript/jquery.hint.js"/>
+	<fd:javascript src="/assets/javascript/jquery.pwstrength.js"/>
 	<script type="text/javascript" src="/assets/javascript/scripts.js"></script>
 	
 	<script type="text/javascript">

@@ -312,7 +312,6 @@ var FreshDirect = FreshDirect || {};
     return (FreshDirect && FreshDirect.user && FreshDirect.user.sessionId) ? FreshDirect.user.sessionId : 'FD_NO_SESSION_ID';
   }
 
-  //USQLegalWarning.getQueryParameterByName
   /* alt code (from common_javascript.js):
    * $jq.QueryString["PARAM_TO_GETVALUE_OF"]
    * */

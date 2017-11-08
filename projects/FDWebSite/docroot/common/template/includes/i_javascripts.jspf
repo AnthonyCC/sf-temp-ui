@@ -73,17 +73,10 @@
 	<fd:javascript src="/assets/javascript/atcPendingOrder.js"/>
 	<fd:javascript src="/assets/javascript/popupLogicDispatcher.js"/>
 	<fd:javascript src="/assets/javascript/coremetrics.js"/>
-	<fd:javascript src="/assets/javascript/USQLegalWarning.js"/>
-
-	<fd:javascript src="/assets/javascript/jquery.hint.js"/>
-	<fd:javascript src="/assets/javascript/jquery.pwstrength.js"/>
+	<fd:javascript src="/assets/javascript/fd/common/USQLegalWarning.js"/>
 
 <%@ include file="/common/template/includes/extol_tags.jspf" %>
 
-  <%-- HTML5 support for IE8 --%>
-  <!--[if lt IE 9]>
-    <fd:javascript src="/assets/javascript/html5.js"/>
-  <![endif]-->
 
 	<script type="text/javascript" language="javascript">
 
@@ -112,14 +105,6 @@
 
 			$.smartbanner({daysHidden: 0, daysReminder: 0,author:'FreshDirect',button: 'VIEW'});
 			if(!$jq('#smartbanner.shown').is(':visible')) { $jq('#smartbanner').show(); }
-			/* no longer needed
-			$.each($('a[href*="/default/empty.gif/"]'), function(i, e) {
-                 $(e).attr("aria-hidden", "true");
-                 $(e).attr("tabindex", "-1");
-                 $(e).attr("role", "presentation");
-                 //console.log('updateOAS', event,id);
-			 }); */
-
 		});
 	})($jq);
 	</script>
@@ -133,9 +118,8 @@
 		<% } %>
 		<fd:javascript src="/assets/javascript/modalbox.js"/>
 	<% } %>
-	<% if (request.getRequestURI().indexOf("brownie_points.jsp") == -1)  { %>
-		<fd:javascript src="/assets/javascript/common_javascript.js"/>
-	<% } %>
+
+	<fd:javascript src="/assets/javascript/common_javascript.js"/>
 	<fd:javascript src="/assets/javascript/rounded_corners.inc.js"/>
 	<fd:javascript src="/assets/javascript/FD_PromoEligibility.js"/>
 
@@ -145,7 +129,7 @@
 		FDUserI dpTcCheckUser = (FDUserI)session.getAttribute(SessionName.USER);
 		FDSessionUser dpTcCheckSessionUser = (FDSessionUser)session.getAttribute(SessionName.USER);
 
-		if (dpTcCheckUser != null && request.getRequestURI().indexOf("brownie_points.jsp") == -1 &&
+		if (dpTcCheckUser != null &&
 				(dpTcCheckUser.getLevel() == FDSessionUser.SIGNED_IN && Boolean.FALSE.equals(dpTcCheckSessionUser.hasSeenDpNewTc()) && dpTcCheckUser.isDpNewTcBlocking())
 			) {
 			%>
@@ -158,4 +142,3 @@
 		}
 	%>
 
-<script src="/assets/javascript/jquery/jquery_validate/jquery.validate.js"></script>

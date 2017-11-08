@@ -146,8 +146,10 @@
           <script>
           	$jq.ajax('/carousel/carousel.jsp').then(function(page) {
           		$jq('#qs-carousel').html(page);
-          		var firstTab = $jq('#qs-carousel [data-component="tabbedRecommender"] [data-tabname]:first-child');
-				fd.common.tabbedRecommender.selectTab($('#qs-carousel [data-component="tabbedRecommender"]'),firstTab.data('tabname'),firstTab);
+          		if (fd.common.tabbedRecommender) {
+	          		var firstTab = $jq('#qs-carousel [data-component="tabbedRecommender"] [data-tabname]:first-child');
+					fd.common.tabbedRecommender.selectTab($('#qs-carousel [data-component="tabbedRecommender"]'),firstTab.data('tabname'),firstTab);
+				}
           	});
           </script>
         </c:otherwise>

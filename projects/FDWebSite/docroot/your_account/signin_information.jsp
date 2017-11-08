@@ -39,30 +39,25 @@
 	</tmpl:put>
     <tmpl:put name='content' direct='true'>
 <fd:javascript src="/assets/javascript/phone_number.js"/>
-<script type="text/javascript" src="/assets/javascript/webpurify.jQuery.js"></script>
+<fd:javascript src="/assets/javascript/webpurify.jQuery.js" />
 
 	<script type="text/javascript">
-		jQuery.noConflict();
-		jQuery(document).ready(function() {
-			jQuery.webpurify.init("<%=FDStoreProperties.getProfanityCheckURL()%>","<%=FDStoreProperties.getProfanityCheckPass()%>");
-			
+		$jq(document).ready(function() {
+			$jq.webpurify.init("<%=FDStoreProperties.getProfanityCheckURL()%>","<%=FDStoreProperties.getProfanityCheckPass()%>");
 		});
 		
-		function checkForProfanity(){
-		if(jQuery("#displayName").val().length>0)
-			{
-			jQuery.webpurify.check( jQuery("#displayName").val(), function(isProfane){
-				if(!isProfane)
-					document.updateDisplayName.submit();
-				else
-					{
-					jQuery("#profaneText").html("That Display Name is invalid. Please enter a different Display Name.");
-					return false;
+		function checkForProfanity() {
+			if ($jq("#displayName").val().length > 0) {
+				$jq.webpurify.check( jQuery("#displayName").val(), function(isProfane) {
+					if(!isProfane) {
+						$jq("#profaneText").html("");
+						document.updateDisplayName.submit();
+					} else {
+						$jq("#profaneText").html("That Display Name is invalid. Please enter a different Display Name.");
+						return false;
 					}
-			});
-			}
-		else
-			{
+				});
+			} else {
 				document.updateDisplayName.submit();
 			}
 		}	
@@ -799,17 +794,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		<fd:ErrorHandler result='<%=result%>' name='mobile_number' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 		<fd:ErrorHandler result='<%=result%>' name='text_option' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 	</div>
-	<%-- <tr valign="top">
-		<td align="right" style="padding-top:5px; padding-right:5px;"><input class="radio" type="checkbox" name="text_delivery" value="Y" <%=text_delivery ? "checked":""%>></td>
-		<td colspan="4" style="padding-top:5px;" class="text12">Yes please notify me via text message with important information about my delivery.<br><br />
-		</td>
-		<td align="right"></td>
-	</tr>
-	<tr valign="top">
-		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="text_offers" value="Y" <%=text_offers ? "checked":""%>></td>
-		<td colspan="4" class="text12">Yes please notify me about <b>offers, discounts</b> and <b>promotions</b> from time to time.<br /><br /><br /></td>
-		<td></td>
-	</tr>--%>
+
 <%if("FD".equals(eStoreId))
 	{%>	<fieldset style="clear:both;"><legend class="offscreen">mobile preferences:</legend>
 		<div class="youraccount_left_1"><input class="radio" type="checkbox" id="order_notices_field" name="order_notices" value="Y" <%=order_notices ? "checked":""%>></div>
@@ -879,27 +864,7 @@ else{  %>
 	<% }%>
 	
 	<!--End: Added by Sathishkumar Merugu for SMS FDX alert. -->
-	
-	 <%-- <tr valign="top">
-		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="partner_messages" value="Y" <%=partner_messages ? "checked":""%>></td>
-		<td colspan="4" class="text12bold">FreshDirect Partner Messages</td>
-		<td></td>
-	</tr>
-	<tr valign="top">
-		<td  align="right" colspan="3" style="padding-left: 90px;">
-		<table  border="0" cellpadding="0" cellspacing="0" >
-			<tr valign="top" ><td  align="left" style="width: 100%">
-			<div class="accordion"><input type="checkbox" id="partner_messages"> 
-				<label for="partner_messages" class="text12bold">Description</label>
-				<div class="text12"   id="article3" align="left">
-					Get relevant exclusive promotions, news, discounts and information from FreshDirect trusted partners
-				<br /><br /><br />
-				</div>
-			</div>
-			</td></tr>
-			</table>
-		</td>
-	</tr>  --%>
+
 	<div class="youraccount_right">
 		<a class="cssbutton green small transparent border" href="/your_account/manage_account.jsp">Cancel</a>
 		<button class="cssbutton small orange">Save Changes</button>
@@ -910,23 +875,6 @@ else{  %>
 </form>
 </div>
 
-<%-- <div class="youraccount_user_go_green">
-	<form name="go_green" method="post">
-		<input type="hidden" name="actionName" value="otherpreferences">	
-		<div class="youraccount_go_green">
-			<h2>Other</h2>
-			<div class="youraccount_go_green_icon"><span class="title18">Go green!</span><img src="/media_stat/images/navigation/go_green_leaf.gif" border="0" alt="GO GREEN"></div>
-			<div class="youraccount_left_1"><input class="radio" type="checkbox" name="go_green" value="Y" <%=go_green ? "checked":""%>></div>
-			<div class="youraccount_left_2">I want to turn off paper statement delivery and receive my statements online.</div>			
-			<div class="youraccount_right">
-				<a class="cssbutton green small transparent border" href="/your_account/manage_account.jsp">Cancel</a>
-				<button class="cssbutton small orange">Save Changes</button>
-			</div>
-			<div class="clear"></div>
-		</div>
-	</form> 
-</div>--%>
-
 <div class="youraccount_continue">
 	<a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="" ALIGN="LEFT">
     CONTINUE SHOPPING
@@ -936,9 +884,9 @@ else{  %>
 </div>
 
 <script type="text/javascript">
-FreshDirect.PhoneValidator.register(document.getElementById("uci_homePhone"));
-FreshDirect.PhoneValidator.register(document.getElementById("uci_busPhone"));
-FreshDirect.PhoneValidator.register(document.getElementById("uci_cellPhone"));
+	FreshDirect.PhoneValidator.register(document.getElementById("uci_homePhone"));
+	FreshDirect.PhoneValidator.register(document.getElementById("uci_busPhone"));
+	FreshDirect.PhoneValidator.register(document.getElementById("uci_cellPhone"));
 </script>
 
 </fd:RegistrationController>

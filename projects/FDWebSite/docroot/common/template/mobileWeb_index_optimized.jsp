@@ -287,7 +287,7 @@
 				FDUserI dpTcCheckUser = (FDUserI)session.getAttribute(SessionName.USER);
 				FDSessionUser dpTcCheckSessionUser = (FDSessionUser)session.getAttribute(SessionName.USER);
 		
-				if (dpTcCheckUser != null && request.getRequestURI().indexOf("brownie_points.jsp") == -1 &&
+				if (dpTcCheckUser != null &&
 						(dpTcCheckUser.getLevel() == FDSessionUser.SIGNED_IN && Boolean.FALSE.equals(dpTcCheckSessionUser.hasSeenDpNewTc()) && dpTcCheckUser.isDpNewTcBlocking())
 					) {
 					%>

@@ -69,13 +69,7 @@
 		</script>
 		
 		<jwr:script src="/fdmisc.js" useRandomParam="false" />
-		
-		<% if (request.getRequestURI().indexOf("brownie_points.jsp") == -1)  { %>
-			<jwr:script src="/commonjavascript.js" useRandomParam="false" />
-		<% } else { %>
-			<%-- jwr:script src="/composite_common.js" useRandomParam="false" / --%>
-		<% } %>
-		
+		<jwr:script src="/commonjavascript.js" useRandomParam="false" />
 		<jwr:script src="/fdccl.js"  useRandomParam="false" />
 	
 		<fd:IncludeMedia name="/media/editorial/site_pages/javascript.html"/>
@@ -84,7 +78,7 @@
 			FDUserI dpTcCheckUser = (FDUserI)session.getAttribute(SessionName.USER);
 			FDSessionUser dpTcCheckSessionUser = (FDSessionUser)session.getAttribute(SessionName.USER);
 	
-			if (dpTcCheckUser != null && request.getRequestURI().indexOf("brownie_points.jsp") == -1 &&
+			if (dpTcCheckUser != null &&
 					(dpTcCheckUser.getLevel() == FDSessionUser.SIGNED_IN && Boolean.FALSE.equals(dpTcCheckSessionUser.hasSeenDpNewTc()) && dpTcCheckUser.isDpNewTcBlocking())
 				) {
 				%>

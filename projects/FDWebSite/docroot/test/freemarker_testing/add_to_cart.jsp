@@ -15,18 +15,6 @@
     <title>freemarker add to cart test page</title>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-	<% if (request.getRequestURI().contains("/myfd")) { %>
-	<fd:javascript src="/assets/javascript/cufon-yui.js"/>
-	<fd:javascript src="/assets/javascript/EagleCufon.font.js"/>
-	<fd:javascript src="/assets/javascript/EagleCufonBold.font.js"/>
-	<script type="text/javascript" language="javascript">
-		Cufon.replace('.myfd-header-text', { fontFamily: 'EagleCufonBold' });
-		Cufon.replace('.myfd-category a', { fontFamily: 'EagleCufon' });
-		Cufon.replace('.myfd-category a strong', { fontFamily: 'EagleCufonBold' });
-		Cufon.replace('.myfd-category a b', { fontFamily: 'EagleCufonBold' });
-		Cufon.replace('.eagle-bold', { fontFamily: 'EagleCufonBold' });
-	</script>
-	<% } %>
   <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<fd:css href="/assets/css/giftcards.css"/>

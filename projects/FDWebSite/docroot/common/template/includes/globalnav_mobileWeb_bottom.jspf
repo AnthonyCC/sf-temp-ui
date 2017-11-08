@@ -14,16 +14,7 @@
 	final Logger LOGGER_BOTNAV = LoggerFactory.getInstance("globalnav_mobileWeb_bottom.jspf");
 	try {
 		if (user != null && user.getLevel() != FDUserI.GUEST) {
-			if(!FDStoreProperties.isExtoleRafEnabled() && user.isReferralProgramAvailable()) {
-				FDIdentity customerIdentity = null;
-				if (user.getLevel() == 2){
-					customerIdentity = user.getIdentity();
-				}
-				ReferralPromotionModel rpModel = (customerIdentity != null ) ? FDReferralManager.getReferralPromotionDetails(customerIdentity.getErpCustomerPK()) : null;
-				if(rpModel != null) {
-					rafLink ="/your_account/brownie_points.jsp";
-				}
-			}else if(FDStoreProperties.isExtoleRafEnabled() && user.isReferralProgramAvailable()){
+			if(FDStoreProperties.isExtoleRafEnabled() && user.isReferralProgramAvailable()){
 				//This is the default microsite url for RAF-- under My Account Refer a Friend Link
 				rafLink = FDStoreProperties.getPropExtoleMicrositeSubUrl();
 			}
