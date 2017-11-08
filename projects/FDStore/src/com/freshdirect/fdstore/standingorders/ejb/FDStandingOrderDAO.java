@@ -643,16 +643,7 @@ public class FDStandingOrderDAO {
 			ps.setString(counter++, so.getLastError() == null ? null : so.getLastError().name());
 			ps.setString(counter++, so.getErrorHeader());
 			ps.setString(counter++, so.getErrorDetail());
-
-			// to deactivate standing order if there is an error so that customer can go and reactivate them by fixing the error 
-			if(so.getLastError() != null && so.getErrorHeader()!=null && so.getErrorDetail()!=null
-					&& "Y".equals(so.getActivate())){
-				ps.setString(counter++, "N");
-
-			}else{
-				ps.setString(counter++, so.getActivate());
-
-			}
+			ps.setString(counter++, so.getActivate());						//COS17-27
 			ps.setTimestamp(counter++, new Timestamp( currDate.getTime() ));//Modified Time
 			ps.setDate(counter++, so.getDeleteDate()!=null?(java.sql.Date) so.getDeleteDate():null);
 			ps.setDouble(counter++,so.getTipAmount());
