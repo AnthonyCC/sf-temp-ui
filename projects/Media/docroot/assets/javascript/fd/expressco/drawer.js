@@ -139,7 +139,7 @@ var FreshDirect = FreshDirect || {};
       $el = $ct.parent().siblings('input');
 
       if ($el.size() === 0) {
-        $el = $ct.parent().siblings('label').find('input');
+    	  $el = $ct.closest('.drawer__item').find('input[name="id"]');
       }
       id = $el.val();
 

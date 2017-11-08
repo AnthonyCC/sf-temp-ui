@@ -113,7 +113,7 @@
 
   <div class='drawer__itemright clickable'>
     <p class='drawer__item__title'>{$nick_name ? $nick_name : $street_address}</p>
-    <label class='drawer__item__label'><div class="drawer__item__section">
+    <label for="address_{$id}" class='drawer__item__label'><div class="drawer__item__section">
       <p class='section__title'>{$first_name ? $first_name : ''} {$last_name ? $last_name : ''}</p>
       <div class='section__body'>
         <p>{$street_address ? $street_address : ''} {if $apartment} Apt. {$apartment}{/if}</p>
@@ -188,7 +188,7 @@
 
   <div class='drawer__itemright clickable'>
     <p class='drawer__item__title'>{$company_name ? $company_name : $street_address}</p>
-      <label class='drawer__item__label'><div class="drawer__item__section">
+      <label for="address_{$id}" class='drawer__item__label'><div class="drawer__item__section">
       <p class='section__title'>{$first_name ? $first_name : ''} {$last_name ? $last_name : ''}</p>
       <div class='section__body'>
         <p>{$street_address ? $street_address : ''} {$floor ? $floor : ''}{if $floor and $room}/{/if}{$room ? $room : ''} {if $apartment} Apt. {$apartment}{/if}</p>
@@ -239,7 +239,7 @@
 
   <div class='drawer__itemright clickable'>
     <p class='drawer__item__title'>Pickup: {$name ? $name : ''}</p>
-     <label class='drawer__item__label'> <div class="drawer__item__section">
+     <label for="address_{$id}" class='drawer__item__label'> <div class="drawer__item__section">
       <div class='section__body'>
         <p>{$street_address ? $street_address : ''}</p>
         {if $street_address2}<p>{$street_address2}</p>{/if}
