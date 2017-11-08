@@ -108,6 +108,11 @@ var FreshDirect = FreshDirect || {};
       if (fd.components && fd.components.navigationHighlighter) {
         fd.components.navigationHighlighter.reset();
       }
+
+      var canonical = document.querySelector('link[rel=canonical]');
+      if (canonical) {
+        canonical.href = 'https://www.freshdirect.com'+window.location.pathname+'?'+params;
+      }
     }
   }
 
