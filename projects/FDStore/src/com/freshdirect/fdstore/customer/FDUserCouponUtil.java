@@ -152,7 +152,7 @@ public class FDUserCouponUtil implements Serializable {
 				}
 			}
 			
-			if(isCouponAvailable && !(EnumCouponContext.PRODUCT.equals(ctx)&& user.getCouponWallet().isExpired(couponId)) && (null !=couponDiscount || checkForPendingCoupons(user,couponId,ctx))){
+			if(isCouponAvailable && !(EnumCouponContext.PRODUCT.equals(ctx) && null !=user.getCouponWallet() && user.getCouponWallet().isExpired(couponId)) && (null !=couponDiscount || checkForPendingCoupons(user,couponId,ctx))){
 				// Check if the cartline has specific status, else fetch the current status for coupon & customer
 				if(cartLine != null && cartLine.getCouponStatus() != null) {
 					couponStatus = cartLine.getCouponStatus();
