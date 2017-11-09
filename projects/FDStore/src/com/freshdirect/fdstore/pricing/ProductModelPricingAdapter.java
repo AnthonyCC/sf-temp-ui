@@ -1576,4 +1576,11 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 		return prodModel.getAvailabileQtyForDate(targetDate);
 		
 	}
+	
+	//appdev 6709, fkw-1344
+	@Override
+    public String getEarliestAvailabilityMessage() {
+		return prodModel.getEarliestAvailabilityMessage();
+       
+    }
 }

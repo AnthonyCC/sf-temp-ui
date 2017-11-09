@@ -1112,4 +1112,6 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 
 	/* Time to Complete value for MealKit items */
 	public int getTimeToComplete();
+	
+	public String getEarliestAvailabilityMessage();
 }

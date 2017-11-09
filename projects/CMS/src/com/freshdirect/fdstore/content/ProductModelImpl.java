@@ -2196,4 +2196,16 @@ inner:
 		return qty;
 	//	return super.getAvailableQtyForDate(targetDate);
 	}
+	
+	
+	@Override
+    public String getEarliestAvailabilityMessage() {
+    	String msg = null;
+    	List<SkuModel> skus= getPrimarySkus();
+    			if (skus!=null && ! skus.isEmpty()){
+    				msg = skus.get(0).getEarliestAvailabilityMessage();
+    			}
+    	return msg;
+       
+    }
 }
