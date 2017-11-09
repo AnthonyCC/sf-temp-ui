@@ -548,16 +548,19 @@ public class StandingOrdersServiceCmd {
 					for (Iterator<FDStandingOrderInfo> iterator = soFailedInfoList.iterator(); iterator
 							.hasNext();) {
 						FDStandingOrderInfo soInfo = (FDStandingOrderInfo) iterator.next();
-						
 						buffer.append("<tr>")
 						.append("<td nowrap=\"nowrap\">").append(soInfo.getSoID()).append("</td>")
 						.append("<td nowrap=\"nowrap\">").append(soInfo.getSoName()).append("</td>")
 						.append("<td nowrap=\"nowrap\">").append(soInfo.getUserId()).append("</td>")
 						.append("<td nowrap=\"nowrap\">").append(soInfo.getCustomerId()).append("</td>")
 						.append("<td nowrap=\"nowrap\">").append(soInfo.getCompanyName()).append("</td>")
-						.append("<td nowrap=\"nowrap\">").append(soInfo.getNextDate()).append("</td>")
-						.append("<td nowrap=\"nowrap\">").append(FDTimeslot.getDisplayString(true,soInfo.getStartTime(),soInfo.getEndTime())).append("</td>")
-						.append("<td nowrap=\"nowrap\">").append(soInfo.getFrequency()).append("</td>")
+						.append("<td nowrap=\"nowrap\">").append(soInfo.getNextDate()).append("</td>");
+						if ( soInfo.getStartTime() != null && soInfo.getEndTime() !=null){
+							buffer.append("<td nowrap=\"nowrap\">").append(FDTimeslot.getDisplayString(true,soInfo.getStartTime(),soInfo.getEndTime())).append("</td>");
+						}else{
+							buffer.append("<td nowrap=\"nowrap\">").append("N/A&nbsp;").append("</td>");
+						}
+						buffer.append("<td nowrap=\"nowrap\">").append(soInfo.getFrequency()).append("</td>")
 						.append("<td nowrap=\"nowrap\">").append(soInfo.getErrorHeader()).append("</td>")
 						.append("<td nowrap=\"nowrap\">").append(soInfo.getFailedOn()).append("</td>")
 						.append("<td nowrap=\"nowrap\">").append(soInfo.getAddress()).append("</td>")
