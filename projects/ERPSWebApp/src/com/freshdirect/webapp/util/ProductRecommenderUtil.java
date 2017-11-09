@@ -23,6 +23,7 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.FilteringProductItem;
+import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.SortOptionModel;
@@ -172,17 +173,17 @@ public class ProductRecommenderUtil {
 	}
 
 	// FIXME
-    public static List<ProductModel> getFeaturedRecommenderProducts(DepartmentModel deptModel, FDUserI user, HttpSession session, ValueHolder<Variant> outVariant)
+    public static List<ProductModel> getFeaturedRecommenderProducts(ProductContainer productContainer, FDUserI user, HttpSession session, ValueHolder<Variant> outVariant)
             throws FDResourceException {
 		List<ProductModel> products = new ArrayList<ProductModel>();
 		
-		CategoryModel sourceCat = deptModel.getFeaturedRecommenderSourceCategory();
+		CategoryModel sourceCat = productContainer.getFeaturedRecommenderSourceCategory();
 		
 		if (sourceCat == null){
-			EnumSiteFeature siteFeat = EnumSiteFeature.getEnum(deptModel.getFeaturedRecommenderSiteFeature());
+			EnumSiteFeature siteFeat = EnumSiteFeature.getEnum(productContainer.getFeaturedRecommenderSiteFeature());
 			
 			if (siteFeat!=null) {
-				Recommendations results = doRecommend(user, session, siteFeat, MAX_DEPT_FEATURED_RECOMMENDER_COUNT, new HashSet<ContentKey>(), deptModel);
+				Recommendations results = doRecommend(user, session, siteFeat, MAX_DEPT_FEATURED_RECOMMENDER_COUNT, new HashSet<ContentKey>(), productContainer);
 				products = results.getAllProducts(); //TODO de we need to provide site feature id for CM?
 
 				if (outVariant != null) {
@@ -191,7 +192,7 @@ public class ProductRecommenderUtil {
 			}
 			
 		} else {
-            products = fetchProductsFromCategory(user, sourceCat, deptModel.isFeaturedRecommenderRandomizeProducts());
+            products = fetchProductsFromCategory(user, sourceCat, productContainer.isFeaturedRecommenderRandomizeProducts());
 		}
 		
 		return products;

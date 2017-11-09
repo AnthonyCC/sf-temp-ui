@@ -253,15 +253,7 @@ public class BrowseDataBuilderFactory {
 			data.getCarousels().setCarouselPosition(department.getCarouselPosition(CAROUSEL_POSITION_DEFAULT).toString());
 			data.getCarousels().setCarouselRatio(department.getCarouselRatio(DEPARTMENT_CAROUSEL_RATIO_DEFAULT).toString());
 			appendTitle(data, department.getTitleBar());
-
-			try {  //session is null because saving SMART_STORE_PREV_RECOMMENDATIONS isn't necessary here
-				ValueHolder<Variant> out = new ValueHolder<Variant>();
-				List<ProductModel> recommendedItems = ProductRecommenderUtil.getFeaturedRecommenderProducts(department, user, null, out);
-                data.getCarousels().setCarousel1(CarouselService.defaultService().createCarouselData(null, department.getFeaturedRecommenderTitle(), recommendedItems, user,
-                        EnumEventSource.DFR.getName(), out.isSet() ? out.getValue().getId() : null));
-			} catch (FDResourceException e) {
-				LOG.error("recommendation failed", e);
-			}
+            data.getCarousels().setCarousel1(populateProductContainerFeaturedRecommender(user, department, EnumEventSource.DFR));
 			data.getCarousels().setCarousel2(createCarouselData(null, department.getMerchantRecommenderTitle(), ProductRecommenderUtil.getMerchantRecommenderProducts(department), user, EnumEventSource.DMR.getName()));
 			
 			filterProducts(navigationModel, data);
@@ -347,10 +339,10 @@ public class BrowseDataBuilderFactory {
 			if(!nav.isPdp()){			
 				filterProducts(navigationModel, data);				
 			}
-			
+
 			return data;
-		}		
-	}
+		}
+    }
 	
 	public class SubCategoryDataBuilder implements BrowseDataBuilderI {
 
@@ -416,7 +408,7 @@ public class BrowseDataBuilderFactory {
 			if(!nav.isPdp()){				
 				filterProducts(navigationModel, data);
 			}
-			
+
 			return data;
 		}		
 	}
@@ -731,6 +723,19 @@ public class BrowseDataBuilderFactory {
 		return CarouselService.defaultService().createCarouselData(id, name, products, user, cmEventSource, null);
 	}
 
+    private CarouselData populateProductContainerFeaturedRecommender(FDUserI user, ProductContainer container, EnumEventSource eventSource) {
+        CarouselData carouselData = null;
+        try {
+            ValueHolder<Variant> out = new ValueHolder<Variant>();
+            List<ProductModel> recommendedItems = ProductRecommenderUtil.getFeaturedRecommenderProducts(container, user, null, out);
+            carouselData = CarouselService.defaultService().createCarouselData(null, container.getFeaturedRecommenderTitle(), recommendedItems, user, eventSource.getName(),
+                    out.isSet() ? out.getValue().getId() : null);
+        } catch (FDResourceException e) {
+            LOG.error("recommendation failed", e);
+        }
+        return carouselData;
+    }
+
 	private <T extends Collection<?>> T checkEmpty(T col){
 		return col.size()>0 ? col : null;
 	}
@@ -924,7 +929,12 @@ public class BrowseDataBuilderFactory {
 				categoryModel = (CategoryModel) browseDataContext.getNavigationModel().getNavigationHierarchy().get(NavDepth.CATEGORY);
 			}
 			if (categoryModel != null) {
-				browseData.getCarousels().setCarousel2(createCarouselData(null, categoryModel.getCatMerchantRecommenderTitle(), ProductRecommenderUtil.getMerchantRecommenderProducts(categoryModel), user, EnumEventSource.CMR.getName()));
+                CarouselData carousel = createCarouselData(null, categoryModel.getCatMerchantRecommenderTitle(),
+                        ProductRecommenderUtil.getMerchantRecommenderProducts(categoryModel), user, EnumEventSource.CMR.getName());
+                if (carousel == null) {
+                    carousel = populateProductContainerFeaturedRecommender(user, categoryModel, EnumEventSource.CFR);
+                }
+                browseData.getCarousels().setCarousel2(carousel);
 			}
 		}
 	}

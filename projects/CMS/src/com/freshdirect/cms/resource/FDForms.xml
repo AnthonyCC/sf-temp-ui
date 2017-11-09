@@ -564,6 +564,15 @@
                            <CmsField><attribute>disableCategoryYmalRecommender</attribute></CmsField>
                        </fields>
                     </CmsSection>
+                    <CmsSection>
+                        <title>FEATURED RECOMMENDER (see &lt;a target="_blank" href="http://home.freshdirect.com/confluence/display/web/Featured+recommer+setup"&gt;help&lt;/a&gt;)</title>
+                        <fields>
+                            <CmsField><attribute>featuredRecommenderTitle</attribute></CmsField>
+                            <CmsField><attribute>featuredRecommenderSourceCategory</attribute></CmsField>
+                            <CmsField><attribute>featuredRecommenderRandomizeProducts</attribute></CmsField>
+                            <CmsField><attribute>featuredRecommenderSiteFeature</attribute></CmsField>
+                        </fields>
+                    </CmsSection>
 					<CmsSection>
 						<title>MERCHANT RECOMMENDER</title>
 						<fields>
@@ -1982,7 +1991,7 @@
 						</fields>
 					</CmsSection>
 					<CmsSection>
-						<title>FEATURED RECOMMENDER</title>
+						<title>FEATURED RECOMMENDER (see &lt;a target="_blank" href="http://home.freshdirect.com/confluence/display/web/Featured+recommer+setup"&gt;help&lt;/a&gt;)</title>
 						<fields>
 							<CmsField><attribute>sdFeaturedRecommenderTitle</attribute></CmsField>
 							<CmsField><attribute>sdFeaturedRecommenderSourceCategory</attribute></CmsField>

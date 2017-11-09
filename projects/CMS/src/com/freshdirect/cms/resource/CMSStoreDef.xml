@@ -653,6 +653,9 @@
 				<EnumValue value="PDP_XSELL" label="Cross-sell (first item)"/>
 				<EnumValue value="PDP_UPSELL" label="Upsell (first item)"/>
 			</EnumDef>
+            <AttributeDef type="S" name="featuredRecommenderTitle" label="Title"/>
+            <AttributeDef type="B" name="featuredRecommenderRandomizeProducts" label="Randomize Products (only if Source Category is set)"/>
+            <AttributeDef type="S" name="featuredRecommenderSiteFeature" label="Site Feature (ignored if Source Category is set)"/>
 			<AttributeDef type="S" name="catMerchantRecommenderTitle" label="Title" inheritable="true"/>
 			<AttributeDef type="B" name="catMerchantRecommenderRandomizeProducts" label="Randomize Products" inheritable="true"/>
 			<AttributeDef type="B" name="hideIfFilteringIsSupported"  label="Hide If Filtering Is Supported"/>
@@ -871,6 +874,9 @@
 			<RelationshipDef name="middleMedia" label="Middle Media" cardinality="One">
 				<DestinationDef contentType="Html" />
 			</RelationshipDef>
+            <RelationshipDef name="featuredRecommenderSourceCategory" label="Source Category" cardinality="One">
+                <DestinationDef contentType="Category" />
+            </RelationshipDef>
 			<RelationshipDef name="catMerchantRecommenderProducts" label="Products" cardinality="Many" inheritable="true">
 				<DestinationDef contentType="Product" />
 			</RelationshipDef>

@@ -37,6 +37,7 @@ public enum EnumEventSource {
 	DFR("DFR"), //Browse - Department Featured Products Recommender
 	DMR("DMR"), //Browse - Department Merchant Recommender
 	CSR("CSR"), //Browse - Category Scarab Recommender
+    CFR("CFR"), // Browse - Category Featured Products Recommender
 	CMR("CMR"), //Browse - Category Merchant Recommender
 	TRY("TRY"), //Browse - TRY Recommender 
 	ATP("ATP"), //ATP Failure Recommender
