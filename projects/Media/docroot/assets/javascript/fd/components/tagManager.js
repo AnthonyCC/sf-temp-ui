@@ -474,7 +474,7 @@ var dataLayer = window.dataLayer || [];
 
   // sold out timeslot checker
   fd.gtm.isUnavailableTimeslotPresent = function () {
-    return document.querySelector('.tsSoldoutC');
+    return document.querySelector('#ts_d0_tsTable .tsSoldoutC');
   };
 
   // product tile serialization
