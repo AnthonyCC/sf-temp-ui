@@ -104,6 +104,7 @@ public class UserUtil {
         }
 
         if (user != null) {
+        	session.setAttribute(SessionName.USER, user);
             // prevent asking for e-mail address in case of returning customer
             user.setFutureZoneNotificationEmailSentForCurrentAddress(true);
             FDCustomerCouponUtil.initCustomerCoupons(session);
