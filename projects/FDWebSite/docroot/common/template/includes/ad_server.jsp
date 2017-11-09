@@ -534,7 +534,7 @@
 
   	// Inject IFRAME content
   	idoc.open();
-  	idoc.writeln("<html lang="en-US" xml:lang="en-US"><body>");
+  	idoc.writeln('<html lang="en-US" xml:lang="en-US"><body>');
 
   	// modified document.write function
   	idoc.writeln("<scr" + "ipt type='text/javascript'>");
@@ -550,6 +550,7 @@
 
       idoc.writeln("function copy_ad(oas_id) {");
       idoc.writeln("  var done=false; document._fragment='';");
+      idoc.writeln("  var OAS_RICH=OAS_RICH || function() {};");
       idoc.writeln("  document.write=document.fwrite;OAS_RICH(oas_id);document.write=document._write;");
       idoc.writeln("  document.getElementById(oas_id).innerHTML = document._fragment;");
       idoc.writeln("  var pdiv = window.parent.document.getElementById('OAS_' + oas_id);");
