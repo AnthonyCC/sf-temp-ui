@@ -36,9 +36,6 @@ if("true".equals(request.getParameter("chefstable"))) {
 	timeslot_page_type = TimeslotLogic.PAGE_CHEFSTABLE;
 }
 %>
-
-<fd:CheckLoginStatus />
-
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <%
 boolean isStaticSlot = true;
