@@ -9,6 +9,7 @@ import java.util.List;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
@@ -97,6 +98,11 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 	
 	/** @return null if sku is available */
 	public String getEarliestAvailabilityMessage() {
+		
+		 EnumEStoreId storeId = ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId();
+
+		Date today = OncePerRequestDateCache. getToday();
+		if (null==today)today = new java.util.Date();
 		DateRange dr = OncePerRequestDateCache.getAvailabilityHorizon();
 		Date tomorrow = null;
 		if(dr != null) {
@@ -104,8 +110,10 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 		}else{
 			tomorrow = DateUtil.truncate(DateUtil.addDays(new Date(), 1));
 		}
+	
 		
 		Date earliestAvailability = getEarliestAvailability();
+
 		
 	    // cheat: if no availability indication, show the horizon as the
 	    //        earliest availability
@@ -116,12 +124,22 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 				earliestAvailability = DateUtil.addDays(DateUtil.truncate(new Date()), ErpServicesProperties.getHorizonDays());
 			}
 		}		
+	
 		
 		if (earliestAvailability.after(tomorrow)) {
 			SimpleDateFormat sf = new SimpleDateFormat("EEE M/dd");
 			return sf.format(earliestAvailability);
 		}
 
+		/*appdev 6184, appdev 5672
+		 * Decided that for FDX, only need to be available  after today
+		 * to trigger availabilit5y message. Siva B. Monoj and kasi where
+		 * nearby eavesdropping but neither objected.
+		 */
+		if ( EnumEStoreId.FDX.equals(storeId) && earliestAvailability.after(today)){
+			SimpleDateFormat sf = new SimpleDateFormat("EEE M/dd");
+			return sf.format(earliestAvailability);
+		}
 		return null;
 	}
 
