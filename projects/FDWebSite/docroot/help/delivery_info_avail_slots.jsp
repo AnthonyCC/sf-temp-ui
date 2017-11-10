@@ -6,8 +6,6 @@
 <%@ page import='java.text.SimpleDateFormat' %>
 <%@ page import='com.freshdirect.fdlogistics.model.*' %>
 <%@ page import="com.freshdirect.logistics.delivery.model.TimeslotContext" %>
-<%@ page import="com.freshdirect.fdstore.util.AddressFinder" %>
-<%@ page import="com.freshdirect.fdstore.util.AddressFinder" %>
 <%@ page import='com.freshdirect.fdlogistics.model.*' %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import="com.freshdirect.logistics.delivery.model.EnumReservationType" %>
