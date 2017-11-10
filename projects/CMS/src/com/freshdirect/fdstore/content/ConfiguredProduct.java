@@ -598,7 +598,7 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	//appdev 6709, fkw-1344
 	@Override
     public String getEarliestAvailabilityMessage() {
-		return productModel.getEarliestAvailabilityMessage();
+        return getProduct().getEarliestAvailabilityMessage();
        
     }
 }
