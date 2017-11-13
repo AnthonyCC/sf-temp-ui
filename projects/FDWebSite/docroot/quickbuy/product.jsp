@@ -82,12 +82,13 @@
 	request.setAttribute("i_product_inner", Boolean.TRUE);
 %>
 <html lang="en-US" xml:lang="en-US">
-  <head>
-    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
-    <%@ include file="/common/template/includes/metatags.jspf" %>
-    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-    <%@ include file="/shared/template/includes/ccl.jspf" %>
+<head>
+	<%@ include file="/common/template/includes/metatags.jspf" %>
+
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+
+	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+	<%@ include file="/shared/template/includes/ccl.jspf" %>
 	<%
 	if (FDStoreProperties.isAnnotationMode()) {
 		%>
@@ -97,8 +98,8 @@
 		<%
 	}
 	%>
-    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-  </head>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+</head>
 <body class="qbBody">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <script type="text/javascript">

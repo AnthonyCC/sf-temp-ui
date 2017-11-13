@@ -3,16 +3,15 @@
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 <!DOCTYPE html>
 <html lang="en-US" xml:lang="en-US">
-  <head>
-    <meta charset="UTF-8">
-    <title>FreshDirect Sitemap</title>
-    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
+<head>
+<meta charset="UTF-8">
+<title>FreshDirect Sitemap</title>
     <%@ include file="/common/template/includes/metatags.jspf" %>
     <%@ include file="/common/template/includes/i_javascripts.jspf" %>
     <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
     <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-    <link rel="stylesheet" type="text/css" href="/assets/css/sitemap/sitemap.css">
-  </head>
+<link rel="stylesheet" type="text/css" href="/assets/css/sitemap/sitemap.css">
+</head>
 <body>
 	<header>
 		<img alt="freshdirect" src="/media_stat/images/template/quickshop/9managers_s.jpg">

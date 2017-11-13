@@ -17,19 +17,20 @@ final int W_CHECKOUT_NAV_TOTAL = 970;
 
 
 <html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <tmpl:get name="seoMetaTag"/>
-    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
-    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-    <fd:javascript src="/assets/javascript/timeslots.js"/>
-    <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-    <fd:css href="/assets/css/timeslots.css"/>
-    <%@ include file="/shared/template/includes/ccl.jspf" %>
-    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-    <jwr:style src="/atp.css"/>
-    <tmpl:get name="extraCSSjs"/>
-  </head>
+	<head>
+    	<tmpl:get name="seoMetaTag"/>
+		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+		<fd:javascript src="/assets/javascript/timeslots.js"/>
+		
+  	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+		<fd:css href="/assets/css/timeslots.css"/>
+		<%@ include file="/shared/template/includes/ccl.jspf" %>
+	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+	
+		<jwr:style src="/atp.css"/>
+		<tmpl:get name="extraCSSjs"/>
+</head>
 	
 	<!--[if lt IE 9]><body class="ie8"><![endif]-->
 	<!--[if gt IE 8]><body class="ie9"><![endif]-->

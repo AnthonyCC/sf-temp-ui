@@ -4,7 +4,6 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" lang="en-US"/>
 
 	<title>Youtube IBM Coremetrics Test Page</title>
-    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
 	<fd:CmInit/>
 	<!-- Load the swfobject library-->
 	<fd:javascript src="/assets/javascript/swfobject.js" />

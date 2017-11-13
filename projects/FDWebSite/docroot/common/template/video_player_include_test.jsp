@@ -1,9 +1,9 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" lang="en-US"/>
-    <title>Youtube Google Analytics Test Page</title>
-    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" lang="en-US"/>
+
+	<title>Youtube Google Analytics Test Page</title>
     <%@ include file="/common/template/includes/metatags.jspf" %>
     <%@ include file="/common/template/includes/i_javascripts.jspf" %>
     <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
@@ -31,7 +31,9 @@
 		<jsp:param name="height" value="350" />
 		<jsp:param name="container" value="video2-container" />
 	</jsp:include>
-  </head>
+	
+
+</head>
 
 <body>
 </body>

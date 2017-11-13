@@ -49,14 +49,13 @@ if(windowSize.equalsIgnoreCase("custom")){
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html lang="en-US" xml:lang="en-US">
-  <head>
-    <title> <%=name%></title>
-    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
-    <%@ include file="/common/template/includes/metatags.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-    <fd:javascript src="/assets/javascript/common_javascript.js"/>
-    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-  </head>
+<head>
+        <title> <%=name%></title>
+        <%@ include file="/common/template/includes/metatags.jspf" %>
+		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+		<fd:javascript src="/assets/javascript/common_javascript.js"/>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+</head>
 
 <body bgcolor="#ffffff" link="#336600" vlink="#336600" alink="#ff9900" text="#333333"  onLoad="window.focus()">
 

@@ -41,9 +41,9 @@
 %>
 <html lang="en-US" xml:lang="en-US">
   <head>
-    <title><tmpl:get name="title"/></title>
-    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
-    <style>
+  	<title><tmpl:get name="title"/></title>
+  	
+	<style>
 @charset "UTF-8"; 
 
 .offscreen, .ui-helper-hidden-accessible {
@@ -4084,18 +4084,18 @@ footer .copyright {
 	border-radius: 0
 }
 </style>
-
-    <%-- Keep the media include last, so it can always override any css auto-loaded --%>
-    <fd:IncludeMedia name="/media/editorial/site_pages/stylesheet.html" />
-
-    <tmpl:get name="seoMetaTag"/><%-- if title is used, overrides previous tag --%>
+    
+	<%-- Keep the media include last, so it can always override any css auto-loaded --%>
+	<fd:IncludeMedia name="/media/editorial/site_pages/stylesheet.html" />
+	
+  	<tmpl:get name="seoMetaTag"/><%-- if title is used, overrides previous tag --%>
 
     <meta name="HandheldFriendly" content="True">
     <meta name="MobileOptimized" content="320">
   	<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
 	<meta name="fragment" content="!">
 
-    <tmpl:get name='facebookmeta'/>
+  	<tmpl:get name='facebookmeta'/>
 
     <tmpl:get name="extraCss" />
     <tmpl:get name='nutritionCss'/>
@@ -4229,8 +4229,8 @@ footer .copyright {
 		<jwr:script src="/mobileweb_index_optimized_everythingelse.js" useRandomParam="false" />
     	<jsp:include page="/common/template/includes/ad_server.jsp" flush="false" />
 
-    <tmpl:get name="extraJs" />
-  </head>
+    	<tmpl:get name="extraJs" />
+	</head>
 <!--[if lt IE 9]><body class="ie8" data-ismobweb="true" <%= (isCheckout) ? "data-ec-page=" : "data-not-ec=" %>"<tmpl:get name="ecpage" />" data-printdata="<tmpl:get name='printdata'/>" data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>" <% if (isReorder) {%> data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"<% } %>><![endif]-->
 <!--[if gt IE 8]><body data-ismobweb="true" <%= (isCheckout) ? "data-ec-page=" : "data-not-ec=" %>"<tmpl:get name="ecpage" />" data-printdata="<tmpl:get name='printdata'/>" data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>" <% if (isReorder) {%> data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"<% } %>><![endif]-->
 <!--[if !IE]><!--><body data-ismobweb="true" <%= (isCheckout) ? "data-ec-page=" : "data-not-ec=" %>"<tmpl:get name="ecpage" />" data-printdata="<tmpl:get name='printdata'/>" data-cmeventsource="<tmpl:get name='cmeventsource'/>" data-pagetype="<tmpl:get name='pageType'/>" <% if (isReorder) {%> data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"<% } %>><!--<![endif]-->

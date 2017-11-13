@@ -11,12 +11,11 @@ AddressModel selectedAddress = (AddressModel)pageContext.getAttribute(LocationHa
 FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
 %>
 <html lang="en-US" xml:lang="en-US">
-  <head>
-    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
-    <%@ include file="/common/template/includes/metatags.jspf" %>
-    <%@ include file="/shared/template/includes/i_stylesheets_optimized.jspf" %>
-    <jwr:style src="/assets/css/common/more_info.css" />
-  </head>
+	<head>
+	    <%@ include file="/common/template/includes/metatags.jspf" %>
+		<%@ include file="/shared/template/includes/i_stylesheets_optimized.jspf" %>
+		<jwr:style src="/assets/css/common/more_info.css" />
+	</head>
 <% if(user.isCorporateUser()){  %>
 	<body class="cos">
 <% } else { %>

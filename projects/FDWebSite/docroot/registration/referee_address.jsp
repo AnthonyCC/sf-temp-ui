@@ -28,16 +28,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <title>FreshDirect Address Check</title><% /* if this title changes, you need to change the media JS as well */ %>
-    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
-    <% if("slite".equals(request.getParameter("referrer_page"))) { %>
-      <%@ include file="/common/template/includes/metatags.jspf" %>
-      <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-      <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-    <% } %>
-    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-  </head>
+<head>
+	<title>FreshDirect Address Check</title><% /* if this title changes, you need to change the media JS as well */ %>
+	<% if("slite".equals(request.getParameter("referrer_page"))) { %>
+		<%@ include file="/common/template/includes/metatags.jspf" %>
+		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+	<% } %>
+	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+</head>
 <body>
 	<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 	<fd:SiteAccessController action='checkByAddress' successPage='<%= successPage %>' moreInfoPage='<%= moreInfoPage %>' failureHomePage='<%= failurePage %>' failureCorporatePage='<%= failureCorporatePage %>' result='result'>

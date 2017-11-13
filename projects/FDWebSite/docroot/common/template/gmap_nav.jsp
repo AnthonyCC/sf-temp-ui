@@ -12,21 +12,22 @@ final int W_GMAP_NAV_TOTAL = 970;
 	final String gmap_api_key = FDStoreProperties.getGoogleMapsAPIKey();
 %>
 <html lang="en-US" xml:lang="en-US">
-  <head>
+<head>
     <title><tmpl:get name='title'/></title>
-    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
-    <%@ include file="/common/template/includes/metatags.jspf" %>
-    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+
+	<%@ include file="/common/template/includes/metatags.jspf" %>
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
     <%-- @ include file="/shared/template/includes/ccl.jspf" --%>
-    <script type="text/javascript" src="https://www.google.com/jsapi?key=<%= gmap_api_key %>"></script>
-    <script type="text/javascript">
-      google.load("maps", "3", {other_params: "sensor=false"});
-    </script>
-    <tmpl:get name='head_content'/>
-    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-  </head>
+	<script type="text/javascript" src="https://www.google.com/jsapi?key=<%= gmap_api_key %>"></script>
+	<script type="text/javascript">
+		google.load("maps", "3", {other_params: "sensor=false"});
+	</script>
+	
+	<tmpl:get name='head_content'/>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+</head>
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#ff9900" text="#333333"
       onload="initialize()">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>

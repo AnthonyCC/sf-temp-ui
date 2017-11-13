@@ -1,13 +1,13 @@
 
 <html lang="en-US" xml:lang="en-US">
-  <head>
-    <title>FreshDirect - Cheese 101</title>
-    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
-    <%@ include file="/common/template/includes/metatags.jspf" %>
-    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-  </head>
+<head>
+<title>FreshDirect - Cheese 101</title>
+
+	<%@ include file="/common/template/includes/metatags.jspf" %>
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+</head>
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#FF9900" text="#333333" onLoad="window.focus()">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <!--   <a name="top"></a> -->

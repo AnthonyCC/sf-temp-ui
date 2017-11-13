@@ -42,28 +42,11 @@ public class BrowsePartialRolloutRedirectorTag extends SimpleTagSupport {
         final HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
         final boolean disabledPartialRolloutRedirector = CmsFilteringNavigator.isDisabledPartialRolloutRedirector(request);
         if (!disabledPartialRolloutRedirector && FDStoreProperties.isBrowseRolloutRedirectEnabled()) {
-
-            String redirectUrl = null;
-            boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, user);
-
+            
             // figure out the redirect url
-            if (shouldBeOnNew && oldToNewDirection) {
-                redirectUrl = String.format(BROWSE_PAGE_FS, id);
-            } else if (!shouldBeOnNew && !oldToNewDirection) {
-                ContentNodeModel node = PopulatorUtil.getContentNode(id);
+            if (oldToNewDirection) {
+                String redirectUrl = String.format(BROWSE_PAGE_FS, id);
 
-                if (node instanceof DepartmentModel || node instanceof RecipeDepartment) {
-                    redirectUrl = String.format(OLD_DEPARTMENT_PAGE_FS, id);
-
-                } else if (node instanceof CategoryModel) {
-                    redirectUrl = String.format(OLD_CATEGORY_PAGE_FS, id);
-
-                } else { // null or other type due to error
-                    redirectUrl = FALLBACK_PAGE;
-                }
-            }
-
-            if (redirectUrl != null) {
                 final String originalUrl = request.getRequestURI();
 
                 redirectUrl = FDURLUtil.decorateRedirectUrl(redirectUrl, request);
