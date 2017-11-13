@@ -12,8 +12,6 @@
 	if (session.getAttribute("DELIVERYADDRESS_COMPLETE") != null) {%>	
 			
 	<script>
-	//the
-	//function setAndAppendExtoleObject() {}
 	$jq(document).ready(function() {
 		if(FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { 
 			FreshDirect.components.ifrPopup.open({ 

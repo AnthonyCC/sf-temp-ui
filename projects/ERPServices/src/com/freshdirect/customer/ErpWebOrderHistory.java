@@ -259,4 +259,9 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 		return ((Date)orderHistoryInfo.get(FIRST_ORDER_DATE));
 	}
 
+	@Override
+	public boolean hasSettledOrders() {
+		return getSettledOrderCount() > 0;
+	}
+
 }

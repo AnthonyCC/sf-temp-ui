@@ -87,6 +87,7 @@ import com.freshdirect.mobileapi.util.ProductPotatoUtil;
 import com.freshdirect.webapp.ajax.cart.CartOperations;
 import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
 import com.freshdirect.webapp.ajax.expresscheckout.timeslot.service.TimeslotService;
+import com.freshdirect.webapp.cos.util.CosFeatureUtil;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -269,7 +270,7 @@ public class CheckoutController extends BaseController {
     	}else{
     		Message responseMessage = new Message();
             responseMessage.setStatus(Message.STATUS_FAILED);
-            responseMessage = Message.createFailureMessage("USER_NULL");
+            responseMessage =  getErrorMessage(ERR_SESSION_EXPIRED, "Session does not exist in the server.");
             setResponseMessage(model, responseMessage, user);
     	}
     	
@@ -1635,11 +1636,12 @@ public class CheckoutController extends BaseController {
     
     private void createAndSendUnbxdAnalyticsEvent(FDUserI user, HttpServletRequest request, List<FDCartLineI> cartLines){
         if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, request.getCookies(), user)){
+        		final boolean cosAction = CosFeatureUtil.isUnbxdCosAction(user, request.getCookies());
             final Visitor visitor = Visitor.withUser(user);
             final LocationInfo location = LocationInfo.withUrlAndReferer(RequestUtil.getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER));
             LOGGER.debug("UNBXD Service active, cartline size: " + cartLines.size());
             for(FDCartLineI cartLine : cartLines){
-                AnalyticsEventI orderEvent = AnalyticsEventFactory.createEvent(AnalyticsEventType.ORDER, visitor, location, null, null, cartLine);
+                AnalyticsEventI orderEvent = AnalyticsEventFactory.createEvent(AnalyticsEventType.ORDER, visitor, location, null, null, cartLine, cosAction);
                 EventLoggerService.getInstance().log(orderEvent);
             }
         }

@@ -183,6 +183,7 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 		LOGGER.debug("SapOrderCommand");
 
 		String saleId = command.getWebOrderNumber();
+		
 		try {
 
 			ErpSaleEB saleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
@@ -300,6 +301,7 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 																	 * instead of
 																	 * a string
 																	 * "routing.ejb.ErpRoutingGatewaySB"
+													
 																	 */
 								FDECommerceService.getInstance().sendSubmitOrderRequest(saleId,
 										(((ErpSaleModel) saleEB.getModel()).getCurrentOrder() != null
@@ -327,7 +329,7 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 												? PhoneNumber.normalize(saleEB.getCurrentOrder().getDeliveryInfo()
 														.getOrderMobileNumber().getPhone())
 												: null,
-										((SapCreateSalesOrder) command).getSapOrderNumber());
+										((SapCreateSalesOrder) command).getSapOrderNumber(),saleEB.getCurrentOrder().containsAlcohol());
 							} else {
 								LOGGER.info("sending sendSubmitOrderRequest ..."
 										+ saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId());
@@ -357,7 +359,7 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 												? PhoneNumber.normalize(saleEB.getCurrentOrder().getDeliveryInfo()
 														.getOrderMobileNumber().getPhone())
 												: null,
-										((SapCreateSalesOrder) command).getSapOrderNumber());
+										((SapCreateSalesOrder) command).getSapOrderNumber(),saleEB.getCurrentOrder().containsAlcohol());
 
 							}
 						}
@@ -433,7 +435,7 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 											? PhoneNumber.normalize(saleEB.getCurrentOrder().getDeliveryInfo()
 													.getOrderMobileNumber().getPhone())
 											: null,
-									saleEB.getSapOrderNumber());
+									saleEB.getSapOrderNumber(),saleEB.getCurrentOrder().containsAlcohol());
 						} else {
 							LOGGER.info("sending sendModifyOrderRequest ..."
 									+ saleEB.getCurrentOrder().getDeliveryInfo().getDeliveryReservationId());
@@ -458,7 +460,7 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 											? PhoneNumber.normalize(saleEB.getCurrentOrder().getDeliveryInfo()
 													.getOrderMobileNumber().getPhone())
 											: null,
-									saleEB.getSapOrderNumber());
+									saleEB.getSapOrderNumber(),saleEB.getCurrentOrder().containsAlcohol());
 						}
 					}
 				}

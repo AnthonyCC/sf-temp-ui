@@ -374,6 +374,16 @@ public class QuickShopHelper {
 	 */
 	public static List<QuickShopLineItemWrapper> getWrappedOrderHistoryUsingCache(FDUserI user, EnumQuickShopTab tab, String cacheName) throws FDResourceException {
 		List<QuickShopLineItemWrapper> result = EhCacheUtil.getListFromCache(cacheName, user.getIdentity().getErpCustomerPK());
+		if(result!=null 
+				&& !result.isEmpty() 
+				&& result.get(0).getProduct()!=null 
+				&& result.get(0).getProduct().getUserContext()!=null 
+				&& result.get(0).getProduct().getUserContext().getFulfillmentContext()!=null 
+				&& result.get(0).getProduct().getUserContext().getFulfillmentContext().getPlantId()!=null
+				&& !result.get(0).getProduct().getUserContext().getFulfillmentContext().getPlantId().equals(user.getUserContext().getFulfillmentContext().getPlantId())){
+			EhCacheUtil.removeFromCache(cacheName, user.getIdentity().getErpCustomerPK());
+			result = EhCacheUtil.getListFromCache(cacheName, user.getIdentity().getErpCustomerPK());
+		}
 		if (result == null) {
 			LOG.info("Wrapping products");
 			result = QuickShopHelper.getWrappedOrderHistory(user, tab);

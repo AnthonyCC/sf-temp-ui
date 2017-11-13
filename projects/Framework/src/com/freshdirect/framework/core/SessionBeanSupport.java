@@ -20,6 +20,7 @@ import javax.ejb.SessionContext;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -119,35 +120,16 @@ public abstract class SessionBeanSupport implements SessionBean {
     }
 
     protected final void close(Connection conn) {
-        try {
-            if (conn != null) {
-                conn.close();
-            }
-        } catch (SQLException sqle) {
-            LOGGER.error("problem in closing connection : " + this.getClass().getName() + " err: " + sqle.getMessage(), sqle);
-        }
+    	DaoUtil.close(conn);
     }
     
     protected final void close(ResultSet rs) {
-        if (rs != null) {
-            try {
-                rs.close();
-            } catch (SQLException sqle) {
-                LOGGER.error("problem in closing result set: " + this.getClass().getName() + " err: " + sqle.getMessage(), sqle);
-            }
-        }
+    	DaoUtil.close(rs);
     }
 
     
-    protected final void close(PreparedStatement rs) {
-        if (rs != null) {
-            try {
-                rs.close();
-            } catch (SQLException sqle) {
-                LOGGER.error("problem in closing prepared statement: " + this.getClass().getName() + " err: " + sqle.getMessage(), sqle);
-            }
-        }
-    }
+    protected final void close(PreparedStatement ps) {
+    	DaoUtil.close(ps);
+    }    
     
-
 }

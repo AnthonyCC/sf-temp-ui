@@ -12,7 +12,10 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.ecomm.gateway.ProfileCreatorService;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.dataloader.payment.ejb.ProfileCreatorHome;
 import com.freshdirect.dataloader.payment.ejb.ProfileCreatorSB;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -38,7 +41,12 @@ public class GatewayProfileCreaterCron {
 		ProfileCreatorSB sb = pcHome.create();
 		
 		try {
-			sb.createProfiles(batchId);
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ProfileCreatorSB)){
+				ProfileCreatorService.getInstance().createProfiles(batchId);
+			}
+			else{
+				sb.createProfiles(batchId);
+			}
 		} catch (FDResourceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -132,7 +132,7 @@ public class ManageStandingOrderServlet extends HttpServlet {
 						SinglePageCheckoutData result = SinglePageCheckoutFacade.defaultFacade().load(u, request);
 						Map<String, ?> potato = SoyTemplateEngine.convertToMap(result);
 						
-						if(so.getAddressId()!=null){
+						if(null != so.getDeliveryAddress()){
 							ErpAddressModel erpAddressModel=so.getDeliveryAddress();
 							u.getSoTemplateCart().setDeliveryAddress(erpAddressModel);
 							u.getSoTemplateCart().recalculateTaxAndBottleDeposit(erpAddressModel.getZipCode());
@@ -319,12 +319,6 @@ public class ManageStandingOrderServlet extends HttpServlet {
 					so.setPaymentMethodId(FDCustomerManager.getDefaultPaymentMethodPK(u.getIdentity()));
 				} catch (FDResourceException e1) {
 					LOG.error("SO:Unable to set PaymentMethodId:"+ e1);
-				}
-
-				try {
-					so.setAddressId(FDCustomerManager.getDefaultShipToAddressPK(u.getIdentity()));
-				} catch (FDResourceException e) {
-					LOG.error("SO:Unable to set AddressId:"+ e);
 				}
 				u.setCurrentStandingOrder(so);
 				u.setCheckoutMode( EnumCheckoutMode.CREATE_SO );

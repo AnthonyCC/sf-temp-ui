@@ -73,6 +73,7 @@ import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseDataItem;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseDataItem.Status;
 import com.freshdirect.webapp.ajax.cart.data.CartData;
 import com.freshdirect.webapp.ajax.reorder.QuickShopHelper;
+import com.freshdirect.webapp.cos.util.CosFeatureUtil;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.coremetrics.AbstractCmShopTag;
 import com.freshdirect.webapp.taglib.coremetrics.CmShop5Tag;
@@ -149,6 +150,7 @@ public class CartOperations {
 
             // [APPDEV-5353] UNBXD analytics
             final boolean isUNBXDAnalyticsAvailable = FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, reqData.getCookies(), user);
+            final boolean cosAction = CosFeatureUtil.isUnbxdCosAction(user, reqData.getCookies());
             final Visitor visitor = Visitor.withUser(user);
             final LocationInfo loc = LocationInfo.withUrl(reqData.getRequestUrl());
 			
@@ -209,8 +211,7 @@ public class CartOperations {
                 }
                 // [APPDEV-5353] UNBXD Analytics Events
                 if (isUNBXDAnalyticsAvailable) {
-                    final AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.ATC, visitor, loc, null, null, cartLine);
-                    
+                    final AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.ATC, visitor, loc, null, null, cartLine, cosAction);
                     EventLoggerService.getInstance().log(event);
                 }
                 

@@ -18,16 +18,16 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
   </tmpl:put>
   <tmpl:put name='title' direct='true'>FreshDirect - Add Gift Card</tmpl:put>
 	<tmpl:put name='content' direct='true'>
-    <div class="gcCheckAddressBox">
-		<div style="text-align: left;" class="gcCheckAddressBoxContent" id="gcCheckAddressBox">
-			<img src="/media_stat/images/giftcards/your_account/check_address_hdr.gif" width="132" height="16" alt="Check An Address" style="float: left;" />
+    <div class="gcCheckAddressBox"> 
+		<div style="text-align: left;" class="gcCheckAddressBoxContent" id="gcCheckAddressBox"><form fdform class="top-margin10 dispblock-fields" fdform-displayerrorafter>
+			<span class="title18">Check An Address</span>
 			<a href="#" onclick="Modalbox.hide(); return false;"><img src="/media_stat/images/giftcards/your_account/close.gif" width="50" height="11" alt="close" border="0" style="float: right;" /></a><br style="clear: both;" />
 			<div id="gcCheckAddressBoxErr">
 				<span id="gcCheckAddressBoxMsg" class="gcCheckAddressBoxMsg">Sorry, we don't currently deliver to this address.<br />
 			If this is a New York address, may we suggest our Pickup Window in Long Island City?</span>
 			</div><br />
 			<img src="/media_stat/images/layout/cccccc.gif" alt="" width="390" height="1" border="0"><br /><br />
-			<table border="0" cellspacing="0" cellpadding="4" width="100%" class="accessibilitySpacing">
+			<table  class="accessibilitySpacing" border="0" cellspacing="0" cellpadding="4" width="100%" class="accessibilitySpacing">
 				<tr>
 					<th width="130" align="right"><label for="address1">Street Address 1:</label></th>
 					<td><input name="address1" id="address1" class="gcCheckAddress-address1" value="" /></td>
@@ -41,7 +41,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 					<td><input name="city" id="city" class="gcCheckAddress-city" value="" /></td>
 				</tr>
 				<tr>
-					<th width="130" align="right">State:</th>
+					<th width="130" align="right"><label>State:</label></th>
 					
 					<td><fieldset><legend class="offscreen">state:</legend><input type="radio" name="state" id="stateNY" value="NY" checked /> <label for="stateNY">New York </label><input type="radio" name="state" id="stateNJ" value="NJ"/> <label for="stateNJ">New Jersey</label><br />
 					<input type="radio" name="state" id="stateCT" value="CT" /><label for="stateCT"> Connecticut</label> <input type="radio" name="state" id="statePA" value="PA" /><label for="statePA"> Pennsylvania </label><br/>
@@ -51,12 +51,13 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 					<th width="130" align="right"><label for="zipcode">ZIP Code:</label></th>
 					<td><input name="zipcode" id="zipcode" class="gcCheckAddress-zipcode" value="" /></td>
 				</tr>
+				<tr><td colspan="2">&nbsp;&nbsp;</td></tr>
 				<tr>
-					<td width="150" align="right"><a href="#" onclick="Modalbox.hide(); return false;"><img src="/media_stat/images/giftcards/your_account/clear_btn.gif" width="60" height="25" alt="CANCEL" border="0" /></a></td>
-					<td><a href="#" onclick="checkAddress(); return false;"><img id="checkAddrBtnImg" class="checkAddrBtnImg" src="/media_stat/images/giftcards/your_account/chk_addr_btn.gif" width="102" height="25" alt="CHECK ADDRESS" border="0" /></a></td>
+					<td width="150" align="right"><button class="cssbutton transparent green small" onclick="Modalbox.hide(); return false;">CANCEL</button></td>
+					<td><button class="cssbutton small green space"  onclick="checkAddress(); return false;">CHECK ADDRESS</button></td>
 				</tr>
 			</table>
-		</div>
+		</form></div>
 	</div>
 
 <%
@@ -162,7 +163,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 
 							if(recipListContinue != null && recipListContinue.size() > 0) {
 						%>
-							<input type="image" onClick="return pendGC();" name="form_action_name" src="/media_stat/images/giftcards/purchase/btn_continue.gif" width="80" height="25"  hspace="4" vspace="4" alt="continue" border="0">
+							<button onClick="return pendGC();" name="form_action_name" class="cssbutton small orange">CONTINUE</button>
 						<% } %>
 					</td>
 				</tr>
@@ -173,7 +174,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 				</tr>
 			</table>
 			
-			<form name="giftcard_form" id="giftcard_form" method="post">
+			<form fdform class="top-margin10 dispblock-fields" fdform-displayerrorafter name="giftcard_form" id="giftcard_form" method="post">
 				<input type="hidden" name="actionName" value="">
 				<input type="hidden" id="deleteId" name="deleteId" value="">
                 <input type="hidden" id="checkout" name="checkout" value="">
@@ -207,7 +208,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 						if(recipListContinue != null && recipListContinue.size() > 0) {
 					%>
 						<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
-						<input type="image" onClick="return pendGC();" name="form_action_name" src="/media_stat/images/giftcards/purchase/btn_continue.gif" width="80" height="25"  hspace="4" vspace="4" alt="continue" border="0">
+                        <button onClick="return pendGC();" name="form_action_name" class="cssbutton small orange">CONTINUE</button>
 					<% } %>
 				</td>
 			</tr>

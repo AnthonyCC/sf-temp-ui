@@ -25,12 +25,14 @@ import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpCustomerHome;
+import com.freshdirect.customer.ejb.ErpCustomerInfoHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.dataloader.analytics.GoogleAnalyticsReportingService;
 import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -140,8 +142,9 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 			
 			PrimaryKey customerPK = eb.getCustomerPk();
 			
-			ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(customerPK);
-			ErpCustomerInfoModel erpInfo = ((ErpCustomerModel)customerEB.getModel()).getCustomerInfo();
+			/*ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(customerPK);
+			ErpCustomerInfoModel erpInfo = ((ErpCustomerModel)customerEB.getModel()).getCustomerInfo();*/
+			ErpCustomerInfoModel erpInfo = (ErpCustomerInfoModel) this.getErpCustomerInfoHome().findByErpCustomerId(customerPK.getId()).getModel();
 			FDCustomerInfo fdInfo = new FDCustomerInfo(erpInfo.getFirstName(), erpInfo.getLastName());
 			fdInfo.setHtmlEmail(!erpInfo.isEmailPlaintext());
 			fdInfo.setEmailAddress(erpInfo.getEmail());
@@ -215,4 +218,13 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 			throw new EJBException(e);
 		}
 	}
+	
+	private ErpCustomerInfoHome getErpCustomerInfoHome() {
+		try {
+			return (ErpCustomerInfoHome) LOCATOR.getRemoteHome(FDStoreProperties.getErpCustomerInfoHome());
+		} catch (NamingException e) {
+			throw new EJBException(e);
+		}
+	}
+	
 }

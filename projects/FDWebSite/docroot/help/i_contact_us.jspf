@@ -178,19 +178,19 @@
 			<div class="form-group">
 				<label for="home-phone-field" class="bold inline">Home Phone #:</label>
 				<input type="text" name="home_phone" id="home-phone-field" size="21" value="<%=homePhone%>" maxlength="15" />
-				<label for="home-phone-ext-field">Ext.</label>
+				<label for="home-phone-ext-field">Ext.<span class="offscreen">extension for home phone number</span></label>
 				<input type="text" name="home_phone_ext" id="home-phone-ext-field" size="4" value="<%=homePhoneExt%>" maxlength="6" />
 			</div>
 			<div class="form-group">
 				<label for="work-phone-field" class="bold inline">Work Phone #:</label>
 				<input type="text" name="work_phone" id="work-phone-field" size="21" value="<%=workPhone%>" maxlength="15" />
-				<label for="work-phone-ext-field">Ext.</label>
+				<label for="work-phone-ext-field">Ext.<span class="offscreen">extension for work phone number</span></label>
 				<input type="text" id="work-phone-ext-field" name="work-phone-ext-field" size="4" value="<%=workPhoneExt%>" maxlength="6" />
 			</div>
 			<div class="form-group">
 				<label for="other-phone-field" class="bold inline">Other Phone #:</label>
 				<input type="text" name="alt_phone" id="other-phone-field" size="21" value="<%=altPhone%>" maxlength="15" />
-				<label for="other-phone-ext-field">Ext.</label>
+				<label for="other-phone-ext-field">Ext.<span class="offscreen">extension for other phone number</span></label>
 				<input type="text" name="alt_phone_ext" id="other-phone-ext-field"  size="4" value="<%=altPhoneExt%>" maxlength="6" />
 			</div>
 		</div>

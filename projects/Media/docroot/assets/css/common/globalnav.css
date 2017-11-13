@@ -69,7 +69,7 @@ body{
 }
 
 .globalnav_top .nav .searchform label {
-  display: none;
+   /*   display: none; */
 }
 
 .globalnav_top .nav .searchform .searchinput {
@@ -883,7 +883,7 @@ ul.subdepartments {
 }
 
 .globalNavigation .green-skin{
-  background-color:#88a75c;
+  background-color:#6AAA6D;
 }
 
 .globalNavigation .blue-skin{

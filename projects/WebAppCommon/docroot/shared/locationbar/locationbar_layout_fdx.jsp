@@ -20,7 +20,7 @@
 <% } else {  %>
 	<tmpl:get name="topwarningbar" />
 	
-	<div id="locationbar" class="<%= (uri.contains("/checkout/") || uri.contains("view_cart.jsp") || uri.contains("merge_cart.jsp")) ? "disableCart" : "" %>">
+	<div id="locationbar" class="<%= (uri.contains("/checkout/") || uri.contains("view_cart.jsp") || uri.contains("merge_cart.jsp") || uri.contains("/gift_card/")) ? "disableCart" : "" %>">
 		<div id="location-tabs">
 			<div class="locabar-spacer"></div>
 			<tmpl:get name="tab_fd" />

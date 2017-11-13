@@ -19,6 +19,7 @@ import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.FDCustomerCreditHistoryModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -85,10 +86,11 @@ public class AccountController extends BaseController implements Comparator <Ord
 	            String addressId = request.getParameter(PARAM_ADDRESS_ID);
 	            Timezone requestMessage = parseRequestObject(request, response, Timezone.class);
 	            String timezone = requestMessage.getTimezone();
+	            boolean excludeaddr = requestMessage.getExcludeaddr();
 	            if (addressId == null || addressId.isEmpty()) {
-	            	model = getDeliveryTimeslotByTimezone(model, user, timezone);
+	            	model = getDeliveryTimeslotByTimezone(model, user, timezone,excludeaddr);
 	            } else {
-	            	model = getDeliveryTimeslotByTimezone(model, user, addressId, timezone);
+	            	model = getDeliveryTimeslotByTimezone(model, user, addressId, timezone,excludeaddr);
 	            }
 	        } else if (ACTION_CANCEL_RESERVATION.equals(action)) {
 	            String addressId = request.getParameter(PARAM_ADDRESS_ID);
@@ -119,7 +121,7 @@ public class AccountController extends BaseController implements Comparator <Ord
         }else{
     		Message responseMessage = new Message();
             responseMessage.setStatus(Message.STATUS_FAILED);
-            responseMessage = Message.createFailureMessage("USER_NULL");
+            responseMessage =  getErrorMessage(ERR_SESSION_EXPIRED, "Session does not exist in the server.");
             setResponseMessage(model, responseMessage, user);
     	}
         return model;
@@ -171,13 +173,8 @@ public class AccountController extends BaseController implements Comparator <Ord
     	CreditHistory responseMessage = new CreditHistory();
         FDIdentity customerIdentity = user.getFDSessionUser().getIdentity();
         
-        ErpCustomerModel erpCustomer = FDCustomerFactory.getErpCustomer(customerIdentity.getErpCustomerPK());
-		List<ErpCustomerCreditModel> customerCredits = new ArrayList(erpCustomer.getCustomerCredits());
-		Double remainingAmount = 0.0;
-		for(ErpCustomerCreditModel custcredit : customerCredits){
-			remainingAmount += custcredit.getRemainingAmount();
-		}
-		responseMessage.setRemainingAmount(remainingAmount);
+        FDCustomerCreditHistoryModel creditHistory = FDCustomerManager.getCreditHistory(customerIdentity);
+		responseMessage.setRemainingAmount(creditHistory.getRemainingAmount());
         
         List<ErpCustomerCreditModel> mimList = FDReferralManager.getUserCredits(customerIdentity.getErpCustomerPK());
         
@@ -188,6 +185,7 @@ public class AccountController extends BaseController implements Comparator <Ord
     		cr.setDate(cm.getcDate());
     		cr.setType(cm.getDepartment());
     		cr.setOrder("Referral Credit".equals(cm.getDepartment())?"":cm.getSaleId());
+    		cr.setEstore(cm.geteStore());
     		cr.setAmount("Redemption".equals(cm.getDepartment())?"(" + JspMethods.formatPrice(cm.getAmount()) + ")" :JspMethods.formatPrice(cm.getAmount()));
     		crlist.add(cr);
     	}
@@ -357,7 +355,7 @@ public class AccountController extends BaseController implements Comparator <Ord
         
     }
     
-    private ModelAndView getDeliveryTimeslotByTimezone(ModelAndView model, SessionUser user, String timezone) throws FDException, JsonException, ServiceException {
+    private ModelAndView getDeliveryTimeslotByTimezone(ModelAndView model, SessionUser user, String timezone, boolean excludeaddr) throws FDException, JsonException, ServiceException {
         String addressId = null;
         
         //FDX-1873 - Show timeslots for anonymous address
@@ -397,7 +395,7 @@ public class AccountController extends BaseController implements Comparator <Ord
     		return model;
         } else {
     		
-    		return getDeliveryTimeslotByTimezone(model, user, addressId, timezone);
+    		return getDeliveryTimeslotByTimezone(model, user, addressId, timezone, excludeaddr);
     	}
         
     }
@@ -443,11 +441,14 @@ public class AccountController extends BaseController implements Comparator <Ord
         return deliveryTimeslots;
     }
    
-   private ModelAndView getDeliveryTimeslotByTimezone(ModelAndView model, SessionUser user, String addressId, String timezone) throws FDException, JsonException,
+   private ModelAndView getDeliveryTimeslotByTimezone(ModelAndView model, SessionUser user, String addressId, String timezone, boolean excludeaddr) throws FDException, JsonException,
 		   ServiceException {
 		
-		DeliveryAddresses deliveryAddresses = getDeliveryAddresses(user);
-		deliveryAddresses.setPreSelectedId(addressId);
+		DeliveryAddresses deliveryAddresses = null;
+		if(excludeaddr!=true){
+			deliveryAddresses = getDeliveryAddresses(user);
+			deliveryAddresses.setPreSelectedId(addressId);
+		}
 		TimeSlotCalculationResult timeSlotResult = getTimeSlotCalculationResult(user, addressId);
 		DeliveryTimeslots deliveryTimeslots = new DeliveryTimeslots(timeSlotResult);
 		

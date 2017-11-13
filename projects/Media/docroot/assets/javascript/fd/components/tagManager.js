@@ -271,7 +271,7 @@ var dataLayer = window.dataLayer || [];
               }),
               delivery_type: coData.deliveryType || 'unknown',
               available_timeslot_value: ts && ts.deliveryDate+' '+ts.displayString || 'unknown',
-              unavailable_timeslot_present: coData.unavailableTimeslotValue ? 'yes' : 'no'
+              unavailable_timeslot_present: fd.gtm.isUnavailableTimeslotPresent() ? 'yes' : 'no'
             }
           }
         });
@@ -472,6 +472,11 @@ var dataLayer = window.dataLayer || [];
     }
   };
 
+  // sold out timeslot checker
+  fd.gtm.isUnavailableTimeslotPresent = function () {
+    return document.querySelector('#ts_d0_tsTable .tsSoldoutC');
+  };
+
   // product tile serialization
   fd.gtm.getProductData = function (productEl) {
     var productE = $(productEl).closest('[data-component="product"]'),
@@ -646,6 +651,14 @@ var dataLayer = window.dataLayer || [];
 
   if (gtmData) {
     fd.gtm.updateDataLayer(gtmData);
+  }
+
+  // check if there's a timeslot selector
+  var tsSelector = document.getElementById('timeslots_grid');
+  if (tsSelector) {
+    fd.gtm.updateDataLayer({
+      unavailable_timeslot_present: fd.gtm.isUnavailableTimeslotPresent() ? 'yes' : 'no'
+    });
   }
 
   // browse/search related update
@@ -832,7 +845,7 @@ var dataLayer = window.dataLayer || [];
       // don't set the option field for timeslot
       if (data && data.timePeriod) {
         coStepData.available_timeslot_value = data && data.timePeriod+' '+data.month+'/'+data.dayOfMonth+'/'+data.year || 'unknown';
-        coStepData.unavailable_timeslot_present = data.unavailableTimeslotValue ? 'yes' : 'no';
+        coStepData.unavailable_timeslot_present = fd.gtm.isUnavailableTimeslotPresent() ? 'yes' : 'no';
       } else {
         return; // no timeslot selected
       }

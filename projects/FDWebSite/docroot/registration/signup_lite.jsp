@@ -90,6 +90,7 @@
   
   <link rel="stylesheet" type="text/css" href="/assets/css/global.css">
   <link rel="stylesheet" type="text/css" href="/assets/css/pc_ie.css">
+    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
     <%@ include file="/common/template/includes/metatags.jspf" %>
     <%@ include file="/common/template/includes/i_javascripts.jspf" %>
     <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
@@ -100,6 +101,8 @@
 	<!--<script type="text/javascript" src="/assets/javascript/jquery.hint.js"></script>
 	<script type="text/javascript" src="/assets/javascript/jquery.pwstrength.js"></script>-->
 	
+	<fd:javascript src="/assets/javascript/jquery.hint.js"/>
+	<fd:javascript src="/assets/javascript/jquery.pwstrength.js"/>
 	<script type="text/javascript" src="/assets/javascript/scripts.js"></script>
 	
 	<script type="text/javascript">

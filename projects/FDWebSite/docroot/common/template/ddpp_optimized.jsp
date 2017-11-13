@@ -8,18 +8,20 @@
 	final int W_DNAV_NO_SPACE_TOTAL = 970;	
 %>
 <html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" lang="en-US"/>
-		<title><tmpl:get name='title'/></title>
-		<%@ include file="/common/template/includes/metatags.jspf" %>
-		<%@ include file="/common/template/includes/i_javascripts_optimized.jspf" %>
-		<%@ include file="/common/template/includes/ga_custom_vars.jspf" %>
-		<%@ include file="/shared/template/includes/i_stylesheets_optimized.jspf" %>
-	    
-	    <tmpl:get name='customCss'/>
-	    <tmpl:get name='customJs'/>
-		<%@ include file="/shared/template/includes/i_head_end.jspf" %>
-	</head>
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" lang="en-US"/>
+    <title><tmpl:get name='title'/></title>
+    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
+    <%@ include file="/common/template/includes/metatags.jspf" %>
+    <%@ include file="/common/template/includes/i_javascripts_optimized.jspf" %>
+    <%@ include file="/common/template/includes/ga_custom_vars.jspf" %>
+    <%@ include file="/shared/template/includes/i_stylesheets_optimized.jspf" %>
+
+    <tmpl:get name='customCss'/>
+    <tmpl:get name='customJs'/>
+
+    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+  </head>
 	<!--[if lt IE 7]><body class="ie ie6 searchpage <tmpl:get name="activeTab"/>-active <tmpl:get name="activeView"/>-view <tmpl:get name="noResult"/> <tmpl:get name="startPage"/>"><![endif]-->
 	<!--[if IE 7]><body class="ie ie7 searchpage <tmpl:get name="activeTab"/>-active <tmpl:get name="activeView"/>-view <tmpl:get name="noResult"/> <tmpl:get name="startPage"/>"> <![endif]-->
 	<!--[if IE 8]><body class="ie ie8 searchpage <tmpl:get name="activeTab"/>-active <tmpl:get name="activeView"/>-view <tmpl:get name="noResult"/> <tmpl:get name="startPage"/>"> <![endif]-->

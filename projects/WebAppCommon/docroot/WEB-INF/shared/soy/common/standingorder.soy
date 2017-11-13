@@ -131,7 +131,7 @@
 			<div class="so-content">
 				<div class="so-listadd-content">
 					<div class="select-wrapper">
-						<select class="so-select salesunit customsimpleselect">
+						<select aria-label="select a standing order" class="so-select salesunit customsimpleselect">
 							<option value="" disabled>Select a Standing Order</option>
 							{foreach $item in $soData}
 								<option value="{$item.id}:{$item.listId}:{$item.dayOfWeek}:{$item.deliveryDate}"{if $selectedSoId == $item.id or length($soData) == 1} selected="true"{/if}>{$item.soName}</option>

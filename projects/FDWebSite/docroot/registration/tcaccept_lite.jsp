@@ -48,26 +48,23 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xml:lang="en-US">
-<head>
-	<title>FreshDirect</title>
-	<script type="text/javascript" async>
-		function asyncPixelWithTimeout() {
-			var img = new Image(1, 1);
-			img.src = '//action.media6degrees.com/orbserv/hbpix?pixId=26206&pcv=46';
-			setTimeout(function () { if (!img.complete) img.src = ''; /*kill the request*/ }, 33);
-		};
-		asyncPixelWithTimeout();
-	</script>
+  <head>
+    <title>FreshDirect</title>
+    <script type="text/javascript" async>
+      function asyncPixelWithTimeout() {
+        var img = new Image(1, 1);
+        img.src = '//action.media6degrees.com/orbserv/hbpix?pixId=26206&pcv=46';
+        setTimeout(function () { if (!img.complete) img.src = ''; /*kill the request*/ }, 33);
+      };
+      asyncPixelWithTimeout();
+    </script>
+    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
     <%@ include file="/common/template/includes/metatags.jspf" %>
     <%@ include file="/common/template/includes/i_javascripts.jspf" %>
     <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
     <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-	
-	<script type="text/javascript" src="/assets/javascript/scripts.js"></script>
-	
-
-    
-</head>
+    <script type="text/javascript" src="/assets/javascript/scripts.js"></script>
+  </head>
 <body>
 	<center>
 	<% if (tcAgree!=null){ %>

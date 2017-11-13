@@ -108,19 +108,19 @@
 */
 {template .address_home autoescape="false"}
 <div class='drawer__item'>
-  <label class='drawer__item__label'>
+  
   <input id="address_{$id}" value="{$id}" type='radio' class='drawer__itemleft customradio' name='id' {if $selected}checked{/if}/>
 
-  <div class='drawer__itemright'>
+  <div class='drawer__itemright clickable'>
     <p class='drawer__item__title'>{$nick_name ? $nick_name : $street_address}</p>
-    <div class="drawer__item__section">
+    <label for="address_{$id}" class='drawer__item__label'><div class="drawer__item__section">
       <p class='section__title'>{$first_name ? $first_name : ''} {$last_name ? $last_name : ''}</p>
       <div class='section__body'>
         <p>{$street_address ? $street_address : ''} {if $apartment} Apt. {$apartment}{/if}</p>
         {if $street_address2}<p>{$street_address2}</p>{/if}
         <p>{$city ? $city : ''}, {$state ? $state : ''} {$zip ? $zip : ''}</p>
       </div>
-    </div>
+    </div></label>
     <div class="drawer__item__section">
       <p class='section__title'>Best # for this address:</p>
       <div class='section__body'>
@@ -153,7 +153,7 @@
     </div>
     {/if}
   </div><!--/ drawer__itemright -->
-  </label>
+ 
   <div class="drawer__item__action">
     {if $can_delete}<button type="button" aria-label="delete {$nick_name ? $nick_name : $street_address} {$first_name ? $first_name : ''} {$last_name ? $last_name : ''}" role="alertdialog" data-action="deleteDeliveryAddressMethod" data-confirm data-confirm-header="
     Are you sure you want to permanently delete this address?" data-confirm-button-delete="FreshDirect.confirmFunctions.address_deleteDeliveryAddressMethod_{$id}" data-confirm-template="common.deleteconfirmpopup" class="action cssbutton transparent white icon-trash-new-before">Delete <span class="offscreen">{$nick_name ? $nick_name : $street_address} {$first_name ? $first_name : ''} {$last_name ? $last_name : ''}</span></button>{/if}
@@ -183,19 +183,19 @@
 */
 {template .address_office autoescape="false"}
 <div class='drawer__item'>
-  <label class='drawer__item__label'>
+
   <input id="address_{$id}" value="{$id}" type='radio' class='drawer__itemleft customradio' name='id' {if $selected}checked{/if}/>
 
-  <div class='drawer__itemright'>
+  <div class='drawer__itemright clickable'>
     <p class='drawer__item__title'>{$company_name ? $company_name : $street_address}</p>
-    <div class="drawer__item__section">
+      <label for="address_{$id}" class='drawer__item__label'><div class="drawer__item__section">
       <p class='section__title'>{$first_name ? $first_name : ''} {$last_name ? $last_name : ''}</p>
       <div class='section__body'>
         <p>{$street_address ? $street_address : ''} {$floor ? $floor : ''}{if $floor and $room}/{/if}{$room ? $room : ''} {if $apartment} Apt. {$apartment}{/if}</p>
         {if $street_address2}<p>{$street_address2}</p>{/if}
         <p>{$city ? $city : ''}, {$state ? $state : ''} {$zip ? $zip : ''}</p>
       </div>
-    </div>
+    </div></label>
     <div class="drawer__item__section">
       <p class='section__title'>Best # for this address:</p>
       <div class='section__body'>
@@ -211,7 +211,7 @@
     </div>
     {/if}
   </div><!--/ drawer__itemright -->
-  </label>
+  
   <div class="drawer__item__action">
     {if $can_delete}<button type="button" tabindex="0" aria-label="delete {$company_name ? $company_name : $street_address} {$first_name ? $first_name : ''} {$last_name ? $last_name : ''}" role="alertdialog" data-action="deleteDeliveryAddressMethod" data-confirm data-confirm-header="Are you sure you want to permanently delete this address?" data-confirm-button-delete="FreshDirect.confirmFunctions.address_deleteDeliveryAddressMethod_{$id}" data-confirm-template="common.deleteconfirmpopup" class="action cssbutton transparent white icon-trash-new-before">Delete<span class="offscreen"> {$company_name ? $company_name : $street_address} {$first_name ? $first_name : ''} {$last_name ? $last_name : ''}</span></button>{/if}
     <button type="button" aria-haspopup="true" data-action="getDeliveryAddressMethod" class="action cssbutton transparent white icon-pencil-before">Edit<span class="offscreen"> {$company_name ? $company_name : $street_address} {$first_name ? $first_name : ''} {$last_name ? $last_name : ''}</button>
@@ -234,18 +234,18 @@
 */
 {template .address_pickup autoescape="false"}
 <div class='drawer__item'>
-  <label class='drawer__item__label'>
+
   <input id="address_{$id}" value="{$id}" type='radio' class='drawer__itemleft customradio' name='id' {if $selected}checked{/if}/>
 
-  <div class='drawer__itemright'>
+  <div class='drawer__itemright clickable'>
     <p class='drawer__item__title'>Pickup: {$name ? $name : ''}</p>
-    <div class="drawer__item__section">
+     <label for="address_{$id}" class='drawer__item__label'> <div class="drawer__item__section">
       <div class='section__body'>
         <p>{$street_address ? $street_address : ''}</p>
         {if $street_address2}<p>{$street_address2}</p>{/if}
         <p>{$city ? $city : ''}, {$state ? $state : ''} {$zip ? $zip : ''}</p>
       </div>
-    </div>
+    </div></label>
     {if $times and length($times)}
     <div class="drawer__item__section">
       <p class='section__title'>Pickup Times:</p>
@@ -265,11 +265,11 @@
     <div class="drawer__item__section phone">
       <p class='section__title'>Your Phone Number:</p>
       <div class='section__body'>
-        <input name="{$id}_phone" placeholder="(xxx) xxx xxxx" {if not $phone}fdform-formatter="phone"{/if} fdform-fieldname="Phone Number" value="{if $phone}{$phone}{/if}"/>
+        <input name="{$id}_phone" placeholder="(xxx) xxx xxxx" aria-label="enter your phone number" {if not $phone}fdform-formatter="phone"{/if} fdform-fieldname="Phone Number" value="{if $phone}{$phone}{/if}"/>
       </div>
     </div>
   </div><!--/ drawer__itemright -->
-  </label>
+
   {if $popupurl}
   <div class="drawer__item__action">
     <a href="{$popupurl}" class="pickuppopup icon-maps-before" data-ifrpopup="{$popupurl}">Get directions and details</a>

@@ -70,8 +70,8 @@ import com.freshdirect.mobileapi.model.tagwrapper.AgeVerificationControllerTagWr
 import com.freshdirect.mobileapi.model.tagwrapper.CheckoutControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.DlvPassAvailabilityControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.OrderHistoryInfoTagWrapper;
+import com.freshdirect.webapp.ajax.expresscheckout.timeslot.service.TimeslotService;
 import com.freshdirect.webapp.taglib.fdstore.AddressUtil;
-import com.freshdirect.webapp.taglib.fdstore.DeliveryTimeSlotTag;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class Checkout {
@@ -852,7 +852,7 @@ public class Checkout {
         /*
          * Using DeliveryTimeSlotTag to reuse alcoholRestrictionReasons & isTimeSlotAlcoholRestricted Functionality
          */
-        com.freshdirect.webapp.taglib.fdstore.DeliveryTimeSlotTag dlvTimeSlotTag = new DeliveryTimeSlotTag();
+        // com.freshdirect.webapp.taglib.fdstore.DeliveryTimeSlotTag dlvTimeSlotTag = new DeliveryTimeSlotTag();
         // get the baseRange - this is used while getting the restrictions for delivery
         DateRange baseRange = new DateRange(timeSlot.getDeliveryDate(), DateUtil.addDays(timeSlot.getDeliveryDate(), 1));
 
@@ -860,13 +860,14 @@ public class Checkout {
         DlvRestrictionsList restrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
 
         // filter and get if restriction apply to the given timeslot id
-        List<RestrictionI> r = restrictions.getRestrictions(EnumDlvRestrictionCriterion.DELIVERY, dlvTimeSlotTag.getAlcoholRestrictionReasons(user.getShoppingCart().getCart()),
+        List<RestrictionI> r = restrictions.getRestrictions(EnumDlvRestrictionCriterion.DELIVERY,
+                TimeslotService.defaultService().getAlcoholRestrictionReasons(user.getShoppingCart().getCart()),
                 baseRange);
         // Filter Alcohol restrictions by current State and county.
         final String county = FDDeliveryManager.getInstance().getCounty(address);
         List<RestrictionI> alcoholRestrictions = RestrictionUtil.filterAlcoholRestrictionsForStateCounty(address.getState(), county, r);
 
-        boolean isTimeslotRestrictedForAlcohol = com.freshdirect.webapp.taglib.fdstore.DeliveryTimeSlotTag.isTimeslotAlcoholRestricted(alcoholRestrictions, timeSlot);
+        boolean isTimeslotRestrictedForAlcohol = TimeslotService.defaultService().isTimeslotAlcoholRestricted(alcoholRestrictions, timeSlot);
 
         // Reason we flip the boolean value in below statement : we get if timeslot is restricted and are
         // setting timeslot validity.

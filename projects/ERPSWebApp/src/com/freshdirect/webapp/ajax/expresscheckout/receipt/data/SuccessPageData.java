@@ -9,10 +9,12 @@ public class SuccessPageData {
     private String soName;
     private String soOrderDate;
     private boolean isOrderModifiable;
+    private boolean hasSettledOrder=false;
+    private String deliveryType;
 
     // START SO 3.1 ACTIVATION SUCCESS PAGE
-    
-    private boolean soActivate=false;
+
+	private boolean soActivate=false;
     
     private String soFrequency;
    
@@ -58,6 +60,23 @@ public class SuccessPageData {
         this.receipt = receipt;
     }
 
+    public boolean isHasSettledOrder() {
+		return hasSettledOrder;
+	}
+
+	public void setHasSettledOrder(boolean hasSettledOrder) {
+		this.hasSettledOrder = hasSettledOrder;
+	}
+    
+	public String getDeliveryType() {
+		return deliveryType;
+	}
+
+	public void setDeliveryType(String deliveryType) {
+		this.deliveryType = deliveryType;
+	}
+
+	
     /**
      * @return the soName
      */
@@ -175,6 +194,5 @@ public class SuccessPageData {
 	public void setSoDeliveryDay(String soDeliveryDay) {
 		this.soDeliveryDay = soDeliveryDay;
 	}
-
     
 }

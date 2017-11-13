@@ -153,6 +153,10 @@
 				window['<%= gcDisplayIdToUse %>'].gcId_containerId = '<%= gcDisplayTemplateContainerIdToUse %>';
 
 			window['<%= gcDisplayIdToUse %>'].updateDisplay();
+			
+			if ($jq && $jq('#gcDisplayContainer').length && FreshDirect && FreshDirect.modules && FreshDirect.modules.common && FreshDirect.modules.common.Elements) {
+                FreshDirect.modules.common.Elements.decorate($jq('#gcDisplayContainer'));
+            }
 	}
 	Event.observe(window, 'load', initGC);
 	

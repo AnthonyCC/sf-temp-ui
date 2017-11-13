@@ -48,7 +48,7 @@
                 <input type="submit" value="search" />
               </c:when>
               <c:otherwise>
-                <input type="text" placeholder="Search Your Past Orders" id="searchTerm" />
+                <input type="text" aria-label="Search Your Past Orders" placeholder="Search Your Past Orders" id="searchTerm" />
                 <span class="reset-search"></span>
                 <button class="cssbutton purple searchbutton icon-magnifying-glass-before notext">search</button>
               </c:otherwise>

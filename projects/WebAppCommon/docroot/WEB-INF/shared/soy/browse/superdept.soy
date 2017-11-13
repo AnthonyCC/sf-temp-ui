@@ -38,56 +38,10 @@
 * @param popularCategories list of popular categories
 */
 {template .department autoescape="false"}
-{call .lvCategory}
+{call common.lvCategory}
   {param id:$id /}
   {param name:$name /}
   {param image:$deptPhoto /}
   {param popularCategories:$popularCategories /}
 {/call}
 {/template}
-
-/**
-* @param id category id
-* @param name category name
-* @param image category image
-* @param popularCategories list of popular categories
-*/
-{template .lvCategory autoescape="false"}
-{let $maxItems: 5 /}
-  <div class="lv-item">
-
-	<a class="lv-link" href="browse.jsp?id={$id}" data-component="categorylink" data-id="{$id}">
-		<div class="pic-container">
-		  {if $image}
-		    <img class="pic" src="{$image}" alt="" />
-		  {/if}
-		</div>
-		<h2 class="lv-item-title">{$name}</h2>
-	</a>
-    <hr class="lv-sep" />
-
-    <ul class="lv-sub-items">
-    {if $popularCategories and length($popularCategories) > 0}
-      {foreach $category in $popularCategories}
-        {if index($category) < $maxItems}
-        
-	        <li class="lv-sub-item">
-	          <a class="lv-sub-link" href="browse.jsp?id={$category.id}" 
-	             data-component="categorylink" 
-	             data-id="{$category.id}">{$category.name}</a>
-	        </li>
-        {/if}
-      {/foreach}
-    {/if}
-    </ul>
-    
-	<a class="lv-link" href="browse.jsp?id={$id}" data-component="categorylink" data-id="{$id}">
-		<ul class="lv-sub-items">
-			<li class="lv-sub-item">
-    			<span class="lv-sub-link lv-sub-link-padded lv-sub-link-bold">View All {$name}</span>
-       		</li>
-       	</ul>
-	</a>
-  </div>
-{/template}
-

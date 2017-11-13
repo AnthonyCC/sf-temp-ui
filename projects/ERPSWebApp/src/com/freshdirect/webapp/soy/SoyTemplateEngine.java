@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.List;
@@ -367,20 +368,22 @@ public class SoyTemplateEngine {
 		
 	}
 	
-	/**
-	 * Converts any bean that is serializable to JSON to a java Map.
-	 * To be used for server side Soy template rendering.
-	 * 
-	 * @param bean
-	 * @return
-	 */
-	@SuppressWarnings( "unchecked" )
-	public static Map<String,Object> convertToMap( Object bean ) {
-	  	ObjectMapper m = new ObjectMapper();
-	  	m.setDateFormat(new SimpleDateFormat("MM/dd/yyyy"));
-	  	Map<String,Object> map = m.convertValue( bean, Map.class );
-	  	return map;		
-	}
+    /**
+     * Converts any bean that is serializable to JSON to a java Map. To be used for server side Soy template rendering. default date formatter: MM/dd/yyyy
+     * 
+     * @param bean
+     * @return
+     */
+    public static Map<String, Object> convertToMap(Object bean) {
+        return convertToMap(bean, new SimpleDateFormat("MM/dd/yyyy"));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Map<String, Object> convertToMap(Object bean, DateFormat dateFormat) {
+        ObjectMapper m = new ObjectMapper();
+        m.setDateFormat(dateFormat);
+        Map<String,Object> map = m.convertValue( bean, Map.class );
+        return map;
+    }
 
 }
-

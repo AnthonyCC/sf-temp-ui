@@ -1,5 +1,8 @@
 <%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='java.util.*' %>
+<%
+	boolean inMobWebTemplateOptimized = (request.getAttribute("inMobWebTemplateOptimized") != null && ("true").equalsIgnoreCase(request.getAttribute("inMobWebTemplateOptimized").toString())) ? true : false;
+%>
 <div class="mobweb-topnav">
 	<div class="locationbar" style="display: none;">
 		<%@ include file="/shared/locationbar/locationbar_fdx.jsp" %>
@@ -11,7 +14,7 @@
 					<span class="icon-bar"></span>
 					<span class="offscreen">main menu</span>
 				</button>
-				<a class="navbar-brand" href="#"><img src="/media/mobileweb/images/topbar-fd-logo.png" alt="FreshDirect" class="img-responsive" /></a>
+				<a class="navbar-brand" href="#"><img data-src="/media/mobileweb/images/topbar-fd-logo.png" alt="go to FreshDirect homepage" class="img-responsive" /></a>
 			</div>
 			<div class="pull-right rightSide">
 				<div class="navbar-ecomvalue">
@@ -22,7 +25,7 @@
 				<div class="navbar-ecomvalue">
 				
 					<%
-					String temp_delivery_link = "/your_account/delivery_info_check_slots.jsp";
+						String temp_delivery_link = "/your_account/delivery_info_check_slots.jsp";
 					
 						if (user != null && user.getLevel() >= FDUserI.RECOGNIZED) {
 							List<ErpAddressModel> allHomeAddresses = user.getAllHomeAddresses();
@@ -50,23 +53,23 @@
 				</div>
 				<%-- TODO: CART is hard-coded, boo --%>
 				<div class="navbar-ecomvalue">
-					<div id="locabar_popupcart_trigger" class="locabar_triggers" role="menuitem" tabindex="0">
-						<div class="bold cursor-pointer locabar_triggers_menuitem">
-		          			<a href="/view_cart.jsp">
-								<span class="offscreen">View Cart</span>
-								<div style="display: inline-block;">
-									<div class="locabar-cart-count-cont">
-										<div class="locabar-cart"></div>
-										<div class="locabar-circle-cont locabar-popupcart-count">0</div>
+					<fd:GetCart id="cart">
+						<div id="locabar_popupcart_trigger" class="locabar_triggers" role="menuitem" tabindex="0">
+							<div class="bold cursor-pointer locabar_triggers_menuitem">
+			          			<a href="/view_cart.jsp">
+									<span class="offscreen">View Cart</span>
+									<div style="display: inline-block;">
+										<div class="locabar-cart-count-cont">
+											<div class="locabar-cart"></div>
+											<div class="locabar-circle-cont locabar-popupcart-count"><%= (inMobWebTemplateOptimized) ? cart.getItemCount() : "0" %></div>
+										</div>
 									</div>
-								</div>
-							</a>
-						</div>
-						<%-- GetCart is required for cart count, but no popup cart in mobweb. set display: none --%>
-						<div id="locabar_popupcart" class="locabar_triggers_menu posAbs" style="display:none;">
-							<div class="ui-arrow-buffer"></div>
-							<div class="ui-arrow ui-top"></div>
-							<fd:GetCart id="cart">
+								</a>
+							</div>
+							<%-- GetCart is required for cart count, but no popup cart in mobweb. set display: none --%>
+							<div id="locabar_popupcart" class="locabar_triggers_menu posAbs" style="display:none;">
+								<div class="ui-arrow-buffer"></div>
+								<div class="ui-arrow ui-top"></div>
 								<div id="sidecartbuttons">
 									<div class="buttons">
 										<a class="cart" href="/view_cart.jsp"><div class="vahidden">cart</div></a><a class="checkout" href="/checkout/view_cart.jsp"><div class="vahidden">checkout</div></a>
@@ -90,9 +93,9 @@
 										<a class="checkout cssbutton orange cssbutton-flat" href="/checkout/view_cart.jsp">Checkout</a>
 									</div>
 					    		</div>
-							</fd:GetCart>
+							</div>
 						</div>
-					</div>
+					</fd:GetCart>
 				</div>
 			</div>
 			<div class="clearfix"></div>

@@ -47,7 +47,7 @@ public class ModuleContentService {
     private static final ModuleContentService INSTANCE = new ModuleContentService();
     private static final Logger LOGGER = LoggerFactory.getInstance(ModuleContentService.class);
 
-    private static final int MAX_ITEMS = FDStoreProperties.getHomepageRedesignProductLimitMax();
+    private static final int HOMEPAGE_REDESIGN_RECOMMENDER_POPUP_PRODUCT_MAX_LIMIT = 48;
 
     public static ModuleContentService getDefaultService() {
         return INSTANCE;
@@ -70,8 +70,9 @@ public class ModuleContentService {
     }
 
     public List<ProductData> limitProductList(List<ProductData> products) {
-        if (products.size() > MAX_ITEMS) {
-            products = products.subList(0, MAX_ITEMS);
+        int homepageRedesignProductLimitMax = FDStoreProperties.getHomepageRedesignProductLimitMax();
+        if (products.size() > homepageRedesignProductLimitMax) {
+            products = products.subList(0, homepageRedesignProductLimitMax);
         }
         return products;
     }
@@ -85,7 +86,8 @@ public class ModuleContentService {
         String variantId = null;
 
         try {
-            Recommendations results = ProductRecommenderUtil.doRecommend(user, session, EnumSiteFeature.getEnum(siteFeature), MAX_ITEMS, null, null);
+            Recommendations results = ProductRecommenderUtil.doRecommend(user, session, EnumSiteFeature.getEnum(siteFeature), HOMEPAGE_REDESIGN_RECOMMENDER_POPUP_PRODUCT_MAX_LIMIT,
+                    null, null);
             products = results.getAllProducts();
             variantId = results.getVariant().getId();
         } catch (FDResourceException e) {

@@ -30,8 +30,7 @@ public class TMailerGatewayDAO {
 		}catch(SQLException e){
 	      	 throw e;
 	    } finally {
-	    	DaoUtil.close(rs);
-	    	DaoUtil.close(ps);
+	    	DaoUtil.close(rs,ps);
 	    }
 
 		return status;
@@ -119,7 +118,7 @@ public class TMailerGatewayDAO {
 	    try
 		{
    	       ps = conn.prepareStatement(RESET_TRAN_EMAIL_SQL);   	          	          	       
-   	        count=ps.executeUpdate();   	          	     
+   	       count=ps.executeUpdate();   	          	     
    	          	          	       
 		}catch(SQLException e){
 	      	 throw e;
@@ -147,8 +146,7 @@ public class TMailerGatewayDAO {
 		}catch(SQLException e){
 	      	 throw e;
 	    } finally{
-	    	DaoUtil.close(rs);
-	    	DaoUtil.close(ps);
+	    	DaoUtil.close(rs,ps);
 	    }
 	       
 		return count;

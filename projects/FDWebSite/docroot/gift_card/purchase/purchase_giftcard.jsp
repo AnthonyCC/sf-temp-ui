@@ -216,12 +216,12 @@ UserUtil.initializeGiftCart(user);
 <form method="post" id="form1" name="order_form">
 <table width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 	<tr>
-		<td class="text11" width="<%=W_PURCHASE_GIFTCARD_TOTAL-99%>">
-			<span class="title18"><img src="/media_stat/images/giftcards/purchase/purchase_gift_cards.gif" alt="purchase gift cards"  /></span><br />
+		<td class="text11" width="<%=W_PURCHASE_GIFTCARD_TOTAL-339%>">
+			<span class="title18">Purchase Gift Cards</span><br />
 			Please enter your credit card information below.
 		</td>
 		<td width="99">
-			<input type="image" id="submit_top" name="submit_top" src="/media_stat/images/giftcards/purchase/gc_submit_order.gif" width="90" height="25"  hspace="4" vspace="4" alt="submit order" border="0">
+			<button  id="submit_top" name="submit_top" class="cssbutton small orange">SUBMIT ORDER</button>
 		</td>
 	</tr>
 	<tr>
@@ -315,7 +315,7 @@ boolean isCheckEligible = false;
 
 	<table width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
 		<tr valign="top">
-			<td width="<%=W_PURCHASE_GIFTCARD_TOTAL%>"><img src="/media_stat/images/navigation/choose_credit_card.gif" width="135" height="9" border="0" alt="CHOOSE CREDIT CARD">&nbsp;&nbsp;&nbsp;<br />
+			<td width="<%=W_PURCHASE_GIFTCARD_TOTAL%>"><span class="title18">Choose Credit Card</span><br />
 					<img src="/media_stat/images/layout/999966.gif" alt="" width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" height="1" border="0" vspace="3"><br />
 				<font class="space2pix"><br /></font>
 			</td>
@@ -347,7 +347,7 @@ boolean isCheckEligible = false;
 		<table border="0" cellspacing="0" cellpadding="2" width="<%=W_PURCHASE_GIFTCARD_TOTAL%>">
 		<tr valign="top">
 			<td width="<%=W_PURCHASE_GIFTCARD_TOTAL%>" align="right">
-			<input type="image" name="submit_bot" id="submit_bot" src="/media_stat/images/giftcards/purchase/gc_submit_order.gif" width="90" height="25"  hspace="4" vspace="4" alt="submit order" border="0">
+			<BUTTON  name="submit_bot" id="submit_bot" class="cssbutton small orange">SUBMIT ORDER</BUTTON>
 			</td>
 		</tr>
 	</table>

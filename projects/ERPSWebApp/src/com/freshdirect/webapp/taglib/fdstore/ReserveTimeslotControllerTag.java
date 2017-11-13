@@ -98,8 +98,7 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 				if (actionResult.isFailure()) {
 					return true;
 				}
-				FDCustomerManager.cancelReservation(user.getIdentity(), reservation, this.rsvType, AccountActivityUtil.getActionInfo(session), event);
-				user.setReservation(null);
+				FDCustomerManager.cancelReservation(user, reservation, this.rsvType, AccountActivityUtil.getActionInfo(session), event);
 				session.setAttribute(SessionName.USER, user);
 			}
 		} catch (FDResourceException e) {

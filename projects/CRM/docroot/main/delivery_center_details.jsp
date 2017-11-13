@@ -26,7 +26,7 @@
 
 <tmpl:put name='content' direct='true'>
 
-	<script type="text/javascript" src="/assets/javascript/jsonrpc_airclic.js"></script>
+	<script type="text/javascript" src="/ccassets/javascript/jsonrpc_airclic.js"></script>
 
     <%@ include file="/includes/order_nav.jspf"%>
 

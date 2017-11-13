@@ -36,7 +36,6 @@ import com.freshdirect.fdstore.customer.FDBrokenAccountInfo;
 import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
 import com.freshdirect.fdstore.customer.FDCustomerReservationInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDUserCouponUtil;
 import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.EnumSearchType;
@@ -423,22 +422,28 @@ public class GenericSearchDAO extends DaoUtil{
 		+ " ) group by status )";
 	
 	public static List orderSummaryByDate(Connection conn, GenericSearchCriteria criteria) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement(EXEC_SUMMARY_QUERY);
-		Date startDate = new Date(((java.util.Date)criteria.getCriteriaMap().get("summaryDate")).getTime());
-		Date endDate = new Date(DateUtil.addDays(startDate, 1).getTime());
+        PreparedStatement ps = null; 
+        ResultSet rs = null;
 
-		ps.setDate(1, startDate);
-		ps.setDate(2, startDate);
-		ps.setDate(3, endDate);
-		ps.setDate(4, startDate);
-		ps.setDate(5, startDate);
-		ps.setDate(6, endDate);
-		
-		ResultSet rs = ps.executeQuery();
-		List lst = processOrderSummaryResultSet(rs);
-		rs.close();
-		ps.close();
-		return lst;
+        try {
+			ps = conn.prepareStatement(EXEC_SUMMARY_QUERY);
+			Date startDate = new Date(((java.util.Date)criteria.getCriteriaMap().get("summaryDate")).getTime());
+			Date endDate = new Date(DateUtil.addDays(startDate, 1).getTime());
+	
+			ps.setDate(1, startDate);
+			ps.setDate(2, startDate);
+			ps.setDate(3, endDate);
+			ps.setDate(4, startDate);
+			ps.setDate(5, startDate);
+			ps.setDate(6, endDate);
+			
+			rs = ps.executeQuery();
+			List lst = processOrderSummaryResultSet(rs);
+			return lst;
+        } finally {
+            DaoUtil.closePreserveException(rs,ps);
+        }
+
 		
 	}
 	
@@ -526,6 +531,9 @@ public class GenericSearchDAO extends DaoUtil{
 		+ "and rs.id in (";
 
 	public static List<FDCustomerReservationInfo> findReservationsById(Connection conn, Set<String> rsvIds) throws SQLException {
+        PreparedStatement ps = null; 
+        ResultSet rs = null;
+
 		StringBuffer updateQ = new StringBuffer();
 		if(rsvIds != null && rsvIds.size() > 0) {			
 			updateQ.append(RESERVATION_SEARCHBYID_QUERY);
@@ -539,12 +547,14 @@ public class GenericSearchDAO extends DaoUtil{
 			}
 			updateQ.append(")");
 		}
-		PreparedStatement ps = conn.prepareStatement(updateQ.toString());
-		ResultSet rs = ps.executeQuery();
-		List<FDCustomerReservationInfo> lst = processReservationResultSet(rs);
-		rs.close();
-		ps.close();
-		return lst;	
+        try {
+			ps = conn.prepareStatement(updateQ.toString());
+			rs = ps.executeQuery();
+			List<FDCustomerReservationInfo> lst = processReservationResultSet(rs);
+			return lst;	
+        } finally {
+            DaoUtil.closePreserveException(rs,ps);
+        }
 	}
 	
 	private static String ORDER_SEARCH_FOR_RESERVATION = 
@@ -572,8 +582,6 @@ public class GenericSearchDAO extends DaoUtil{
 			}
 			rs = ps.executeQuery();
 			List lst = processOrderForResvResultSet(rs);
-		//	rs.close();
-		//	ps.close();
 			return lst;
 		} finally {
 			close(rs);
@@ -684,8 +692,6 @@ public class GenericSearchDAO extends DaoUtil{
 			}
 			rs = ps.executeQuery();
 			List lst = processOrderForReturnsResultSet(rs);
-		//	rs.close();
-		//	ps.close();
 			return lst;
 		} finally {
 			close(rs);
@@ -755,13 +761,11 @@ public class GenericSearchDAO extends DaoUtil{
 			}
 			rs = ps.executeQuery();
 			List<FDCustomerOrderInfo> lst = processOrderBySkusResultSet(rs);
-		//	rs.close();
-		//	ps.close();
 			return lst;
 		}finally{
-		close(rs);
-		close(ps);
-	}
+			close(rs);
+			close(ps);
+		}
 	}
 	
 	private static List<FDCustomerOrderInfo> processOrderBySkusResultSet(ResultSet rs) throws SQLException {
@@ -1184,8 +1188,6 @@ public class GenericSearchDAO extends DaoUtil{
 			restrictions.add(restriction);
 		}
 		LOGGER.debug("restrictions size :"+restrictions.size());
-	//	rs.close();
-	//	ps.close();
 
 		return restrictions;
 	}finally{
@@ -1277,8 +1279,6 @@ public class GenericSearchDAO extends DaoUtil{
 			ps = conn.prepareStatement(SETTLEMENT_BATCH_QUERY);
 			rs = ps.executeQuery();
 			List lst = processSettlementBatchResultSet(rs);
-			rs.close();
-			ps.close();
 			return lst;
 		} finally {
 			close(rs);

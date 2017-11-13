@@ -527,7 +527,7 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 								<% if (titleBrandLogo!=null) { %>
 							        <td>
 										<% if (brandPopupLink!=null) { %>
-											<table cellpadding="0" cellspacing="0" border="0"><tr><td><a href="<%=brandPopupLink%>"><img src="<%=titleBrandLogo.getPath()%>" width="<%=titleBrandLogo.getWidth()%>" height="<%=titleBrandLogo.getHeight()%>" border="0"></a></td><td style="padding-left: 5px;"><a href="<%=brandPopupLink%>">Learn more about <%=thisProdBrandLabel%></a></td></tr></table>
+											<table cellpadding="0" cellspacing="0" border="0"><tr><td><a href="<%=brandPopupLink%>"><img src="<%=titleBrandLogo.getPath()%>" alt="" width="<%=titleBrandLogo.getWidth()%>" height="<%=titleBrandLogo.getHeight()%>" border="0"></a></td><td style="padding-left: 5px;"><a href="<%=brandPopupLink%>">Learn more about <%=thisProdBrandLabel%></a></td></tr></table>
 		        						<% } else { %>
 		                					<img src="<%=titleBrandLogo.getPath()%>" width="<%=titleBrandLogo.getWidth()%>" height="<%=titleBrandLogo.getHeight()%>" border="0" alt="" />
 		        						<% } %>
@@ -653,7 +653,7 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 
 							<fd:CCLCheck>
 								<div>
-									<a id="ccl-add-action" class="text12" href="/unsupported.jsp" onclick="return CCL.save_items('grocery_form',this,'action=CCL:AddMultipleToList&source=ccl_sidebar_big')"><img src="/media_stat/ccl/save_to_list_btn.gif" width="93" height="20" style="margin: 5px 2px;"></a>
+									<a id="ccl-add-action" class="text12" href="/unsupported.jsp" onclick="return CCL.save_items('grocery_form',this,'action=CCL:AddMultipleToList&source=ccl_sidebar_big')"><img src="/media_stat/ccl/save_to_list_btn.gif" alt="save to lists" width="93" height="20" style="margin: 5px 2px;"></a>
 								</div>
 								<div style="margin: 0 0 0 5px;"></div>
 							</fd:CCLCheck>
@@ -661,7 +661,7 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 							<%@ include file="/includes/product/i_delivery_note.jspf" %>
 							<%@ include file="/includes/product/i_cancellation_note.jspf" %>
 
-							<br /><img src="/media_stat/images/layout/999999.gif" width="220" height="1" border="0" vspace="5" /><br />
+							<br /><img src="/media_stat/images/layout/999999.gif"alt=""  width="220" height="1" border="0" vspace="5" /><br />
 							<% if (productNode.getProductDescription()!=null && productNode.getProductDescription().getPath()!=null && productNode.getProductDescription().getPath().indexOf("blank_file.txt") < 0) {
 								%><br /><fd:IncludeMedia name="<%=productNode.getProductDescription().getPath()%>" /><br />
 							<% } %>
@@ -729,9 +729,9 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 									    <td colspan="3"><img src="/media_stat/images/layout/clear.gif" alt="" width="240" height="9"></td>
 									</tr>
 									<tr>
-									    <td height="5"><img src="/media_stat/images/layout/top_left_curve.gif" width="6" height="6"></td>
+									    <td height="5"><img src="/media_stat/images/layout/top_left_curve.gif" alt="" width="6" height="6"></td>
 									    <td height="5" style="border-top: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" alt="" width="228" height="1"></td>
-									    <td height="5"><img src="/media_stat/images/layout/top_right_curve.gif" width="6" height="6"></td>
+									    <td height="5"><img src="/media_stat/images/layout/top_right_curve.gif" alt="" width="6" height="6"></td>
 									</tr>
 
 
@@ -745,9 +745,9 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 
 													<tr valign="top">
 													    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1"></td>
-													    <td width="27"><img src="/media/images/site_pages/shelflife/days_<%=shelfLife%>.gif" width="27" height="27" border="0"></td>
+													    <td width="27"><img src="/media/images/site_pages/shelflife/days_<%=shelfLife%>.gif" alt="" width="27" height="27" border="0"></td>
 													    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1"></td>
-													    <td  valign="top"><img src="/media/images/site_pages/shelflife/guarant_fresh_hdr_lg.gif" width="129" height="10"><br />
+													    <td  valign="top"><img src="/media/images/site_pages/shelflife/guarant_fresh_hdr_lg.gif" alt="guaranteed fresh" width="129" height="10"><br />
 													    <span class="text12">at least </span><span class="title12"><%=shelfLife%> days</span><span class="text12"><br> from delivery</span></td>
 													    <td><img src="/media_stat/images/layout/clear.gif" alt="" width="5" height="1"></td>
 													</tr>
@@ -759,9 +759,9 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 									    </td>
 									</tr>
 									<tr>
-									    <td height="5"><img src="/media_stat/images/layout/bottom_left_curve.gif" width="6" height="6"></td>
+									    <td height="5"><img src="/media_stat/images/layout/bottom_left_curve.gif" alt="" width="6" height="6"></td>
 									    <td height="5" style="border-bottom: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1"></td>
-									    <td height="5"><img src="/media_stat/images/layout/bottom_right_curve.gif" width="6" height="6"></td>
+									    <td height="5"><img src="/media_stat/images/layout/bottom_right_curve.gif" alt="" width="6" height="6"></td>
 									</tr>
 
 								</table>
@@ -1138,7 +1138,7 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 			        <%-- /fd:IsAlcoholic --%>
 	        		<br />
 			        <fd:CCLCheck>
-			            <div style="margin: 7px 4px 0 4px;"><a id="ccl-add-action" href="/unsupported.jsp" onclick="return CCL.save_items('grocery_form',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_link_selected_with_icon_dfgs.gif" width="151" height="15" style="border: 0; padding-right: 14px"></a></div>
+			            <div style="margin: 7px 4px 0 4px;"><a id="ccl-add-action" href="/unsupported.jsp" onclick="return CCL.save_items('grocery_form',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_link_selected_with_icon_dfgs.gif" alt="save to shopping list" width="151" height="15" style="border: 0; padding-right: 14px"></a></div>
 						<div style="margin: 0 0 1ex 4px;"></div>
 			        </fd:CCLCheck>
 	        	</td>

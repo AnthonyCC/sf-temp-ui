@@ -31,6 +31,11 @@ public class ContactUsController extends BaseController {
     private static String ACTION_GET_FORM_DATA = "getformdata";
 
     private static String ACTION_SUBMIT = "submit";
+    
+    @Override
+    protected boolean validateUser() {
+        return false;
+    }
 
     @Override
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,

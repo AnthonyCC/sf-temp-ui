@@ -23,7 +23,7 @@ final int W_CHECKOUT_STEP_2_VERIFY_AGE_TOTAL = 970;
 <% FDUserI user = (FDUserI)session.getAttribute(SessionName.USER); %>
 <fd:AgeVerificationController result="result" successPage="/checkout/step_2_select.jsp" blockedAddressPage="/checkout/no_alcohol_address.jsp">
 <table width="<%=W_CHECKOUT_STEP_2_VERIFY_AGE_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
-<tr><td class="title18" colspan="4"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6"><br><b>Age Verification for orders containing alcohol</b><br><img src="/media_stat/images/layout/dotted_line_w.gif" width="100%" height="1" vspace="6"></td></tr>
+<tr><td class="title18" colspan="4"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="6"><br><b>Age Verification for orders containing alcohol</b><br><img src="/media_stat/images/layout/dotted_line_w.gif" alt="" width="100%" height="1" vspace="6"></td></tr>
 <tr><td colspan="4" align="center"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8"><br>
 <% String[] checkErrorType = {"didnot_agree", "technical_difficulty"}; %>
 <fd:ErrorHandler result='<%=result%>' field='<%=checkErrorType%>' id='errorMsg'>
@@ -68,7 +68,7 @@ If your order contains alcoholic beverages, the person receiving your delivery m
 </tr>
 <tr>
 	<td colspan="4">
-		<img src="/media_stat/images/layout/dotted_line_w.gif" width="100%" height="1" vspace="8">
+		<img src="/media_stat/images/layout/dotted_line_w.gif" alt="" width="100%" height="1" vspace="8">
 	</td>
 </tr>
 <tr valign="TOP">

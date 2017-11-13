@@ -44,9 +44,11 @@
 
     	var $ = fd.libs.$;
     	
-    	fd.quickshop.common.tabMeta.update();	
-    	var firstTab = $('[data-component="tabbedRecommender"] [data-tabname]:first-child');
-    	fd.common.tabbedRecommender.selectTab($('[data-component="tabbedRecommender"]'),firstTab.data('tabname'),firstTab);
+    	fd.quickshop.common.tabMeta.update();
+    	if (fd.common.tabbedRecommender) {
+    		var firstTab = $('[data-component="tabbedRecommender"] [data-tabname]:first-child');
+    		fd.common.tabbedRecommender.selectTab($('[data-component="tabbedRecommender"]'),firstTab.data('tabname'),firstTab);
+    	}
     }(FreshDirect));
     
     //Show the OAS AD APPDEV-4294 

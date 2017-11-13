@@ -26,12 +26,16 @@ if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)|| timeSlotCtx.equals(Ti
 			<%} else { %>
 				You can use this page to place a standing weekly timeslot reservation or to reserve a time for just this week. Please note
 				that <b>delivery timeslot reservations expire <%= timeMsg %> prior to cutoff</b>, so be sure to complete checkout by that time
-				to guarantee your timeslot remains open. Timeslots unavailable for reservation now may become available at time of checkout.
+				to guarantee your timeslot remains open. Timeslots unavailable for reservation now may become available at time of checkout. 
+				
+			<% } %>
+			<%-- hasPreReserved or not, show this text  --%>
+			Note that this is subject to change during holidays where delivery timeslot reservations may expire earlier. Please refer to holiday specific FAQ for details.
 			
-			<%} if(user.isChefsTable()){ %>
+			<% if(user.isChefsTable()){ %>
 				<fd:IncludeMedia name="/media/editorial/site_pages/ct/preferred_access_timeslots.html" />
 			<%}%>	
-			<img height="1" border="0" style="width: <%= (mobWeb_i_timeslot_header) ? "100%": W_TIMESLOT_HEADER_TOTAL+"px" %>;" src="/media_stat/images/layout/dotted_line_w.gif"><br><br>	
+			<img height="1" border="0" alt="" style="width: <%= (mobWeb_i_timeslot_header) ? "100%": W_TIMESLOT_HEADER_TOTAL+"px" %>;" src="/media_stat/images/layout/dotted_line_w.gif"><br><br>	
 		</td>
 	</tr>
 </table>

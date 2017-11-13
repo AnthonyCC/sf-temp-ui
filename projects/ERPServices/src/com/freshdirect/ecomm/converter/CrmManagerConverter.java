@@ -4,16 +4,17 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.crm.CrmAgentInfo;
+import com.freshdirect.crm.CrmAgentList;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.crm.CrmAuthInfo;
 import com.freshdirect.crm.CrmAuthSearchCriteria;
+import com.freshdirect.crm.CrmCaseAction;
 import com.freshdirect.crm.CrmCaseActionType;
 import com.freshdirect.crm.CrmCaseInfo;
 import com.freshdirect.crm.CrmCaseModel;
@@ -28,6 +29,7 @@ import com.freshdirect.crm.CrmCustomerHeaderInfo;
 import com.freshdirect.crm.CrmLateIssueModel;
 import com.freshdirect.crm.CrmQueueInfo;
 import com.freshdirect.crm.CrmStatus;
+import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumCannedTextCategory;
 import com.freshdirect.customer.ErpCannedText;
@@ -36,8 +38,10 @@ import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.ecommerce.data.crm.AuthorisationData;
 import com.freshdirect.ecommerce.data.crm.CannedTextData;
 import com.freshdirect.ecommerce.data.crm.CrmAgentInfoData;
+import com.freshdirect.ecommerce.data.crm.CrmAgentListData;
 import com.freshdirect.ecommerce.data.crm.CrmAuthInfoData;
 import com.freshdirect.ecommerce.data.crm.CrmAuthSearchCriteriaData;
+import com.freshdirect.ecommerce.data.crm.CrmCaseActionData;
 import com.freshdirect.ecommerce.data.crm.CrmCaseData;
 import com.freshdirect.ecommerce.data.crm.CrmCaseInfoData;
 import com.freshdirect.ecommerce.data.crm.CrmCaseOperationData;
@@ -47,13 +51,18 @@ import com.freshdirect.ecommerce.data.crm.CrmDeliveryPassData;
 import com.freshdirect.ecommerce.data.crm.CrmLateIssueData;
 import com.freshdirect.ecommerce.data.crm.CrmQueueInfoData;
 import com.freshdirect.ecommerce.data.crm.CrmStatusData;
+import com.freshdirect.ecommerce.data.crm.CrmSystemCaseInfoData;
 import com.freshdirect.ecommerce.data.crm.DownloadCaseData;
 import com.freshdirect.ecommerce.data.crm.ErpTruckInfoData;
+import com.freshdirect.ecommerce.data.crm.IncrCountData;
+import com.freshdirect.ecommerce.data.crm.LoginAgentData;
+import com.freshdirect.ecommerce.data.crm.UpdateCaseData;
 import com.freshdirect.ecommerce.data.crm.ViewAccountData;
 import com.freshdirect.ecommerce.data.customer.CrmAgentRoleData;
 import com.freshdirect.ecommerce.data.dlv.PhoneNumberData;
 import com.freshdirect.ecommerce.data.dlvpass.DeliveryPassData;
 import com.freshdirect.ecommerce.data.ecoupon.CrmAgentModelData;
+import com.freshdirect.ecommerce.data.enums.CrmCaseSubjectData;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.payment.service.ModelConverter;
@@ -91,12 +100,16 @@ public class CrmManagerConverter {
 	public static List<CrmCaseModel> buildCrmCaseModelList(List<CrmCaseData> data) {
 		 List<CrmCaseModel> crmCaseModelList = new  ArrayList<CrmCaseModel>();
 		for (CrmCaseData crmCase : data) {
-			CrmCaseModel crmCaseModel = new CrmCaseModel();
-			crmCaseModel.setActions(crmCase.getActions());
-			crmCaseModel.setCaseInfo(buildCrmCaseInfo(crmCase.getCaseInfo()));
-			crmCaseModelList.add(crmCaseModel);
+			crmCaseModelList.add(buildCrmCaseModel( crmCase));
 		}
 		return crmCaseModelList;}
+
+	public  static CrmCaseModel buildCrmCaseModel(CrmCaseData crmCase) {
+		CrmCaseModel crmCaseModel = new CrmCaseModel();
+		crmCaseModel.setActions(crmCase.getActions());
+		crmCaseModel.setCaseInfo(buildCrmCaseInfo(crmCase.getCaseInfo()));
+		return crmCaseModel;
+	}
 
 	private static CrmCaseInfo buildCrmCaseInfo(CrmCaseInfoData caseInfo) {
 		CrmCaseInfo crmCaseInfoModel = new CrmCaseInfo();
@@ -401,6 +414,154 @@ public class CrmManagerConverter {
 
 	public static DeliveryPassModel buildDlvPassModel(DeliveryPassData data) {
 		return ModelConverter.buildDeliveryPassModel(data);
+	}
+
+	public static CrmAgentModel buildcrmAgentModel(CrmAgentModelData agentmodel) {
+		CrmAgentModel crmAgentModel = new CrmAgentModel();
+		crmAgentModel.setActive(agentmodel.isActive());
+		crmAgentModel.setAgentQueues(buildCrmCaseQueues(agentmodel.getAgentCaseQueues()));
+		crmAgentModel.setCreateDate(agentmodel.getCreateDate());
+		crmAgentModel.setCurFacilityContext(agentmodel.getCurFacilityContext());
+		crmAgentModel.setFirstName(agentmodel.getFirstName());
+		if(agentmodel.getCrmAgentId() != null)
+		crmAgentModel.setId(agentmodel.getCrmAgentId());
+		crmAgentModel.setLastName(agentmodel.getLastName());
+		crmAgentModel.setLdapId(agentmodel.getLdapId());
+		crmAgentModel.setMasqueradeAllowed(agentmodel.isMasqueradeAllowed());
+		crmAgentModel.setPassword(agentmodel.getPassword());
+		crmAgentModel.setRole(CrmAgentRole.getEnum(agentmodel.getRoleCode()));
+		crmAgentModel.setUserId(agentmodel.getUserId());
+		return crmAgentModel;
+		
+	}
+	
+	private static List<CrmCaseQueue> buildCrmCaseQueues(List<String> agentCaseQueues) {
+		List<CrmCaseQueue> crmCaseQueue = new ArrayList<CrmCaseQueue>();
+		for (String caseQueue : agentCaseQueues) {
+			crmCaseQueue.add(CrmCaseQueue.getEnum(caseQueue));
+		}
+		return crmCaseQueue;
+	}
+
+	public static CrmAgentList buildcrmAgentList(CrmAgentListData crmAgentListData) {
+		List<CrmAgentModel> agentModelDataList = new ArrayList<CrmAgentModel>();
+		
+		List<CrmAgentModelData> agentModelList = crmAgentListData.getAgents();
+		for (CrmAgentModelData crmAgentModel : agentModelList) {
+			agentModelDataList.add(buildcrmAgentModel(crmAgentModel));
+		}
+		CrmAgentList agentList = new CrmAgentList(agentModelDataList);
+		return agentList;
+	}
+
+	public static LoginAgentData buildLoginAgentData(String username,
+			String password) {
+		LoginAgentData loginAgent = new LoginAgentData();
+		loginAgent.setPassword(password);
+		loginAgent.setUsername(username);
+		return loginAgent;
+	}
+
+	public static CrmCaseData buildCrmCaseData(CrmCaseModel crmCase) {
+		CrmCaseData crmCaseData = new CrmCaseData();
+		crmCaseData.setActions(crmCase.getActions());
+		crmCaseData.setCaseInfo(buildCrmCaseInfoData(crmCase.getCaseInfo()));
+		return crmCaseData;
+		
+	}
+	
+	public static CrmCaseInfoData buildCrmCaseInfoData(CrmCaseInfo caseInfo) {
+		CrmCaseInfoData crmCaseInfoData = new CrmCaseInfoData();
+		crmCaseInfoData.setId(caseInfo.getId());
+		crmCaseInfoData.setActualQuantity(caseInfo.getActualQuantity());
+		crmCaseInfoData.setAssignedAgentPK(caseInfo.getAssignedAgentPK().getId());
+		crmCaseInfoData.setCartonNumbers(caseInfo.getCartonNumbers());
+		crmCaseInfoData.setCreateDate(caseInfo.getCreateDate() != null ?caseInfo.getCreateDate().getTime(): null);
+		crmCaseInfoData.setCrmCaseMedia(caseInfo.getCrmCaseMedia());
+		crmCaseInfoData.setCustomerFirstName(caseInfo.getCustomerFirstName());
+		crmCaseInfoData.setCustomerLastName(caseInfo.getCustomerLastName());
+		crmCaseInfoData.setCustomerPK(caseInfo.getCustomerPK().getId());
+		crmCaseInfoData.setCustomerTone(caseInfo.getCustomerTone());
+		crmCaseInfoData.setDepartmentCodes(caseInfo.getDepartments());
+		crmCaseInfoData.setFirstContactForIssue(caseInfo.getFirstContactForIssue());
+		crmCaseInfoData.setFirstContactResolved(caseInfo.getFirstContactResolved());
+		crmCaseInfoData.setLastModDate(caseInfo.getLastModDate() != null ? caseInfo.getLastModDate().getTime() : null);
+		if(caseInfo.getLockedAgentPK() != null)
+		crmCaseInfoData.setLockedAgentPK(caseInfo.getLockedAgentPK().getId());
+		crmCaseInfoData.setMoreThenOneIssue(caseInfo.getMoreThenOneIssue());
+		crmCaseInfoData.setOriginCode(caseInfo.getOriginCode());
+		crmCaseInfoData.setPriorityCode(caseInfo.getPriorityCode());
+		crmCaseInfoData.setPrivateCase(caseInfo.isPrivateCase());
+		crmCaseInfoData.setProjectedQuantity(caseInfo.getProjectedQuantity());
+		crmCaseInfoData.setResonForNotResolve(caseInfo.getResonForNotResolve());
+		if(caseInfo.getSalePK() != null)
+		crmCaseInfoData.setSalePK(caseInfo.getSalePK().getId());
+		crmCaseInfoData.setSatisfiedWithResolution(caseInfo.getSatisfiedWithResolution());
+		crmCaseInfoData.setStateCode(caseInfo.getStateCode());
+		crmCaseInfoData.setSubjectCode(caseInfo.getSubjectCode());
+		crmCaseInfoData.setSubjectName(caseInfo.getSubjectName());
+		crmCaseInfoData.setSummary(caseInfo.getSummary());
+		return crmCaseInfoData;
+	}
+
+	public static CrmSystemCaseInfoData buildCrmSystemCaseInfoData(
+			CrmSystemCaseInfo caseInfo) {
+		CrmSystemCaseInfoData crmSystemCaseInfoData = new CrmSystemCaseInfoData();
+		crmSystemCaseInfoData.setCartonNumbers(caseInfo.getCartonNumbers());
+		crmSystemCaseInfoData.setCrmCaseMedia(caseInfo.getCrmCaseMedia());
+		crmSystemCaseInfoData.setCustomerPK(caseInfo.getCustomerPK().getId());
+		crmSystemCaseInfoData.setLoginAgent(buildCrmAgentModelData(caseInfo.getLoginAgent()));
+		crmSystemCaseInfoData.setNote(caseInfo.getNote());
+		crmSystemCaseInfoData.setOrigin(caseInfo.getOrigin().getCode());
+		crmSystemCaseInfoData.setSalePK(caseInfo.getSalePK().getId());
+		crmSystemCaseInfoData.setState(caseInfo.getState().getCode());
+		crmSystemCaseInfoData.setSubject(buildCRmCaseSubjectData(caseInfo.getSubject()));
+		crmSystemCaseInfoData.setSummary(caseInfo.getSummary());
+		return crmSystemCaseInfoData;
+	}
+
+	private static CrmCaseSubjectData buildCRmCaseSubjectData(CrmCaseSubject subject) {
+		CrmCaseSubjectData crmCaseSubjectData = new CrmCaseSubjectData();
+		crmCaseSubjectData.setCartonsRequired(subject.isCartonsRequired());
+		crmCaseSubjectData.setCode(subject.getCode());
+		crmCaseSubjectData.setDescription(subject.getDescription());
+		crmCaseSubjectData.setName(subject.getName());
+		crmCaseSubjectData.setObsolete(subject.isObsolete());
+		crmCaseSubjectData.setPriorityCode(subject.getPriorityCode());
+		crmCaseSubjectData.setQueueCode(subject.getQueueCode());
+		return crmCaseSubjectData;
+	}
+
+	public static UpdateCaseData buildUpdateCaseData(CrmCaseInfo caseInfo, CrmCaseAction action, PrimaryKey agentPk) {
+		UpdateCaseData updateCase = new UpdateCaseData();
+		updateCase.setAction(buildCrmCaseActionData(action));
+		updateCase.setAgentPk(agentPk.getId());
+		updateCase.setCaseInfo(buildCrmCaseInfoData(caseInfo));
+		return updateCase;
+	}
+
+	private static CrmCaseActionData buildCrmCaseActionData(CrmCaseAction action) {
+		CrmCaseActionData caseAction =new CrmCaseActionData();
+		caseAction.setAgentPK(action.getAgentPK().getId());
+		caseAction.setNote(action.getNote());
+		caseAction.setId(action.getId());
+		caseAction.setTimestamp(action.getTimestamp().getTime());
+		caseAction.setCaseActionCode(action.getType().getCode());
+		return caseAction;
+		
+	}
+
+	public static IncrCountData buildIncrCountData(DeliveryPassModel model,CrmAgentModel agentmodel, int delta, String note,
+			String reasonCode, String saleId , int noOfDays) {
+		IncrCountData data = new IncrCountData();
+		data.setAgentmodel(buildCrmAgentModelData(agentmodel));
+		data.setDelta(delta);
+		data.setModel(buildDlvPassData(model));
+		data.setNoOfDays(noOfDays);
+		data.setNote(note);
+		data.setReasonCode(reasonCode);
+		data.setSaleId(saleId);
+		return data;
 	}
 
 }

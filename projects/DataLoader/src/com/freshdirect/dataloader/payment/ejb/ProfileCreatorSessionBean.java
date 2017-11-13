@@ -16,7 +16,6 @@ import javax.naming.NamingException;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.customer.ErpPaymentMethodI;
@@ -28,7 +27,6 @@ import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
-import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.StringUtil;
@@ -149,31 +147,40 @@ public class ProfileCreatorSessionBean extends SessionBeanSupport {
 						utx.begin();
 						if (conn == null)
 							conn = getConnection();
-						PreparedStatement ps = conn.prepareStatement(
-								"UPDATE CUST.PAYMENTMETHOD PM set PM.PROFILE_ID=?,PM.account_num_masked='XXXXXXXXXXXX'||substr( PM.ACCOUNT_NUMBER,LENGTH(PM.account_number)-3,4) WHERE PM.ID=?");
-						for (ProfileCreatorOutputDetail detail : outputDtlList) {
-							if (detail.getProfileId() != null) {
-								ps.setString(1, detail.getProfileId());
-								ps.setString(2, detail.getPaymentMethodId());
-								ps.addBatch();
-								rowsAffected++;
+						PreparedStatement ps = null;
+						
+						try {
+							ps = conn.prepareStatement(
+									"UPDATE CUST.PAYMENTMETHOD PM set PM.PROFILE_ID=?,PM.account_num_masked='XXXXXXXXXXXX'||substr( PM.ACCOUNT_NUMBER,LENGTH(PM.account_number)-3,4) WHERE PM.ID=?");
+							for (ProfileCreatorOutputDetail detail : outputDtlList) {
+								if (detail.getProfileId() != null) {
+									ps.setString(1, detail.getProfileId());
+									ps.setString(2, detail.getPaymentMethodId());
+									ps.addBatch();
+									rowsAffected++;
+								}
 							}
-						}
-						if (rowsAffected > 0) {
-							ps.executeBatch();
-							ps.close();
+							if (rowsAffected > 0) {
+								ps.executeBatch();
+							}
+						} finally {
+							if(ps != null) ps.close();
 						}
 
 						if (!error) {
-							ps = conn.prepareStatement(
-									"INSERT INTO CUST.PROFILE(CUSTOMER_ID, PROFILE_TYPE, PROFILE_NAME, PROFILE_VALUE, PRIORITY) VALUES (?,?,?,?,?)");
-							ps.setString(1, identity.getFDCustomerPK());
-							ps.setString(2, "S");
-							ps.setString(3, "siteFeature.Paymentech");
-							ps.setString(4, "true");
-							ps.setInt(5, -1);
-							ps.execute();
-							ps.close();
+							try {
+								ps = conn.prepareStatement(
+										"INSERT INTO CUST.PROFILE(CUSTOMER_ID, PROFILE_TYPE, PROFILE_NAME, PROFILE_VALUE, PRIORITY) VALUES (?,?,?,?,?)");
+								ps.setString(1, identity.getFDCustomerPK());
+								ps.setString(2, "S");
+								ps.setString(3, "siteFeature.Paymentech");
+								ps.setString(4, "true");
+								ps.setInt(5, -1);
+								ps.execute();
+								ps.close();
+							} finally {
+								if(ps != null) ps.close();
+							}
 						}
 
 						store(conn, output);
@@ -200,24 +207,35 @@ public class ProfileCreatorSessionBean extends SessionBeanSupport {
 		}
 	}
 	private void store(Connection conn, ProfileCreatorOutput output) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO MIS.PAYMENT_MIGRATION_OUTPUT(CUSTOMER_ID, INSERT_TIMESTAMP, PROFILE_CREATED) VALUES(?,?,?)");
-		ps.setString(1, output.getCustomerId());
-		ps.setTimestamp(2, new java.sql.Timestamp(output.getInsertTimestamp().getTime()));
-		ps.setString(3, output.isProfileCreated()?"X":"");
-		ps.execute();
-		ps.close();
+		PreparedStatement ps = null;
 		
-		ps = conn.prepareStatement("INSERT INTO MIS.PAYMENT_MIGRATION_OUTPUT_DTL(CUSTOMER_ID, INSERT_TIMESTAMP, PAYMENTMETHOD_ID, STATUS, EXCEPTION_MSG) VALUES(?,?,?,?,?)");
-		
-		for(ProfileCreatorOutputDetail detail: output.getDetails()){
-		ps.setString(1, detail.getCustomerId());
-		ps.setTimestamp(2, new java.sql.Timestamp(detail.getInsertTimestamp().getTime()));
-		ps.setString(3, detail.getPaymentMethodId());
-		ps.setString(4, detail.getStatus());
-		ps.setString(5, detail.getExceptionMsg());
-		ps.addBatch();
+		try {
+			ps = conn.prepareStatement("INSERT INTO MIS.PAYMENT_MIGRATION_OUTPUT(CUSTOMER_ID, INSERT_TIMESTAMP, PROFILE_CREATED) VALUES(?,?,?)");
+			ps.setString(1, output.getCustomerId());
+			ps.setTimestamp(2, new java.sql.Timestamp(output.getInsertTimestamp().getTime()));
+			ps.setString(3, output.isProfileCreated()?"X":"");
+			ps.execute();
+		} finally {
+			if(ps != null) ps.close();
 		}
-		if(output.getDetails().size()>0) { ps.executeBatch();ps.close();}
+		
+		try {
+			ps = conn.prepareStatement("INSERT INTO MIS.PAYMENT_MIGRATION_OUTPUT_DTL(CUSTOMER_ID, INSERT_TIMESTAMP, PAYMENTMETHOD_ID, STATUS, EXCEPTION_MSG) VALUES(?,?,?,?,?)");
+			
+			for(ProfileCreatorOutputDetail detail: output.getDetails()){
+				ps.setString(1, detail.getCustomerId());
+				ps.setTimestamp(2, new java.sql.Timestamp(detail.getInsertTimestamp().getTime()));
+				ps.setString(3, detail.getPaymentMethodId());
+				ps.setString(4, detail.getStatus());
+				ps.setString(5, detail.getExceptionMsg());
+				ps.addBatch();
+			}
+			if(output.getDetails().size()>0) { 
+				ps.executeBatch();
+			}
+		} finally {
+			ps.close();
+		}
 		
 	}
 	private FDIdentity getFDIdentity(String erpCustomerID) throws FDResourceException {

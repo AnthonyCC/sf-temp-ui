@@ -35,5 +35,9 @@
 <script type="text/javascript" src="/assets/yui-2.9.0/autocomplete/autocomplete.js"></script> 
 <fd:javascript src="/assets/javascript/smsearch_autocomplete.js"/>
 <script type="text/javascript">
-YAHOO.util.Event.onDOMReady(autoCompleteFunctionFactory("/api/brandautocompleteresults.jsp","brands","brandParams",false));
+<% if(request.getRequestURI().indexOf("/request_product.jsp")>-1) {
+	/* by default, autoCompleteFunctionFactory auto submits on use. see: smsearch_autocomplete.js */
+%>
+	YAHOO.util.Event.onDOMReady(autoCompleteFunctionFactory("/api/brandautocompleteresults.jsp","brands","brandParams",false));
+<% } %>
 </script>

@@ -64,10 +64,10 @@
   word-wrap: break-word;
 }
 
-.drawer__item__label  .fake-radio-wrapper {
-  margin-top: 8px;
-  display: inline-block;
-  vertical-align: top;
+.drawer__item .fake-radio-wrapper {
+    margin-top: 8px;
+    display: inline-block;
+    vertical-align: top;
 }
 
 .drawer__item__section{

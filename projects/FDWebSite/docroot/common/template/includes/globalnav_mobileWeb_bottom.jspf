@@ -14,16 +14,7 @@
 	final Logger LOGGER_BOTNAV = LoggerFactory.getInstance("globalnav_mobileWeb_bottom.jspf");
 	try {
 		if (user != null && user.getLevel() != FDUserI.GUEST) {
-			if(!FDStoreProperties.isExtoleRafEnabled() && user.isReferralProgramAvailable()) {
-				FDIdentity customerIdentity = null;
-				if (user.getLevel() == 2){
-					customerIdentity = user.getIdentity();
-				}
-				ReferralPromotionModel rpModel = (customerIdentity != null ) ? FDReferralManager.getReferralPromotionDetails(customerIdentity.getErpCustomerPK()) : null;
-				if(rpModel != null) {
-					rafLink ="/your_account/brownie_points.jsp";
-				}
-			}else if(FDStoreProperties.isExtoleRafEnabled() && user.isReferralProgramAvailable()){
+			if(FDStoreProperties.isExtoleRafEnabled() && user.isReferralProgramAvailable()){
 				//This is the default microsite url for RAF-- under My Account Refer a Friend Link
 				rafLink = FDStoreProperties.getPropExtoleMicrositeSubUrl();
 			}
@@ -57,15 +48,15 @@
 			</div>
 			<div class="socialmedia">
 				<a href="http://www.facebook.com/FreshDirect" target="_blank"><img
-					src="/media/mobileweb/images/facebook.png" border="0" alt="visit facebook freshdirect page"/></a> <a
+					src="/media/mobileweb/images/facebook.png" border="0" alt="freshdirect on facebook"/></a> <a
 					href="http://www.twitter.com/FreshDirect" target="_blank"><img
-					src="/media/mobileweb/images/twitter.png" border="0" alt="visit twitter freshdirect page"/></a> <a
+					src="/media/mobileweb/images/twitter.png" border="0" alt="freshdirect on twitter"/></a> <a
 					href="http://www.pinterest.com/FreshDirect" target="_blank"><img
-					src="/media/mobileweb/images/pinterest.png" border="0" alt="visit pinterest freshdirect page"/></a> <a
+					src="/media/mobileweb/images/pinterest.png" border="0" alt="freshdirect on pinterest"/></a> <a
 					href="https://plus.google.com/107881041343024996566" target="_blank"><img
-					src="/media/mobileweb/images/google.png" border="0" alt="visit google freshdirect page"/></a> <a
+					src="/media/mobileweb/images/google.png" border="0" alt="freshdirect on google"/></a> <a
 					href="http://www.youtube.com/FreshDirect" target="_blank"><img
-					src="/media/mobileweb/images/youtube.png" border="0" alt="visit youtube freshdirect page"/></a>
+					src="/media/mobileweb/images/youtube.png" border="0" alt="freshdirect on youtube"/></a>
 			</div>
 			<div class="storemedia">
 				<a href="https://itunes.apple.com/us/app/freshdirect/id346631494" target="_blank"><img src="/media/mobileweb/images/appstore.png" alt="download freshdirect iphone app" border="0" /></a>

@@ -43,49 +43,51 @@ public class AddressDAO {
 
 		public void create(Connection conn, ErpAddressModel addressModel, String customerId) throws SQLException {
 			String id = this.getNextId(conn, "CUST");
-			PreparedStatement ps = conn.prepareStatement(STORE_ADDRESS_QUERY);
-
-			ps.setString(1, id);
-			//ps.setString(2, this.getParentPK().getId());
-			ps.setString(2, customerId);
-			ps.setString(3, addressModel.getFirstName());
-			ps.setString(4, addressModel.getLastName());
-			ps.setString(5, addressModel.getAddress1());
-			ps.setString(6, ("".equals(addressModel.getAddress2()) ? " " : addressModel.getAddress2()));
-			ps.setString(7, ("".equals(addressModel.getApartment()) ? " " : addressModel.getApartment()));
-			ps.setString(8, addressModel.getCity());
-			ps.setString(9, addressModel.getState());
-			ps.setString(10, addressModel.getZipCode());
-			ps.setString(11, addressModel.getCountry());
-			ps.setString(12, this.convertPhone(addressModel.getPhone()));
-			ps.setString(13, this.convertExtension(addressModel.getPhone()));
-			ps.setString(14, this.convertType(addressModel.getPhone()));
-			ps.setString(15, addressModel.getInstructions());
-			ps.setString(16, addressModel.getAddressInfo()!=null ? addressModel.getAddressInfo().getScrubbedStreet() : addressModel.getAddress1());
-			ps.setString(17, addressModel.getAltDelivery()!=null ? addressModel.getAltDelivery().getDeliveryCode(): "");
-			ps.setString(18, addressModel.getAltFirstName());
-			ps.setString(19, addressModel.getAltLastName());				
-			ps.setString(20, addressModel.getAltApartment());
-			ps.setString(21, this.convertPhone(addressModel.getAltPhone()));
-			ps.setString(22, this.convertExtension(addressModel.getAltPhone()));
-			ps.setBigDecimal(23, addressModel.getAddressInfo()!=null ? new BigDecimal(String.valueOf(addressModel.getAddressInfo().getLongitude())) : null);
-			ps.setBigDecimal(24, addressModel.getAddressInfo()!=null ? new BigDecimal(String.valueOf(addressModel.getAddressInfo().getLatitude())) : null);
-			ps.setBigDecimal(25, addressModel.getAddressInfo()!=null ? new BigDecimal(String.valueOf(addressModel.getAddressInfo().getLongitude())) : null);
-			ps.setBigDecimal(26, addressModel.getAddressInfo()!=null ? new BigDecimal(String.valueOf(addressModel.getAddressInfo().getLatitude())) : null);
-			if(addressModel.getServiceType() == null){
-				ps.setNull(27, Types.VARCHAR);
-			} else {
-				ps.setString(27, addressModel.getServiceType().getName());
-			}
-			ps.setString(28, addressModel.getCompanyName());
-			ps.setString(29, this.convertPhone(addressModel.getAltContactPhone()));
-			ps.setString(30, this.convertExtension(addressModel.getAltContactPhone()));
-			ps.setString(31, this.convertType(addressModel.getAltContactPhone()));
-			
-			ps.setString(32, addressModel.getUnattendedDeliveryFlag() != null ? addressModel.getUnattendedDeliveryFlag().toSQLValue() : null);
-			ps.setString(33, addressModel.getUnattendedDeliveryInstructions());
-					
+			PreparedStatement ps = null;
 			try {
+				ps = conn.prepareStatement(STORE_ADDRESS_QUERY);
+	
+				ps.setString(1, id);
+				//ps.setString(2, this.getParentPK().getId());
+				ps.setString(2, customerId);
+				ps.setString(3, addressModel.getFirstName());
+				ps.setString(4, addressModel.getLastName());
+				ps.setString(5, addressModel.getAddress1());
+				ps.setString(6, ("".equals(addressModel.getAddress2()) ? " " : addressModel.getAddress2()));
+				ps.setString(7, ("".equals(addressModel.getApartment()) ? " " : addressModel.getApartment()));
+				ps.setString(8, addressModel.getCity());
+				ps.setString(9, addressModel.getState());
+				ps.setString(10, addressModel.getZipCode());
+				ps.setString(11, addressModel.getCountry());
+				ps.setString(12, this.convertPhone(addressModel.getPhone()));
+				ps.setString(13, this.convertExtension(addressModel.getPhone()));
+				ps.setString(14, this.convertType(addressModel.getPhone()));
+				ps.setString(15, addressModel.getInstructions());
+				ps.setString(16, addressModel.getAddressInfo()!=null ? addressModel.getAddressInfo().getScrubbedStreet() : addressModel.getAddress1());
+				ps.setString(17, addressModel.getAltDelivery()!=null ? addressModel.getAltDelivery().getDeliveryCode(): "");
+				ps.setString(18, addressModel.getAltFirstName());
+				ps.setString(19, addressModel.getAltLastName());				
+				ps.setString(20, addressModel.getAltApartment());
+				ps.setString(21, this.convertPhone(addressModel.getAltPhone()));
+				ps.setString(22, this.convertExtension(addressModel.getAltPhone()));
+				ps.setBigDecimal(23, addressModel.getAddressInfo()!=null ? new BigDecimal(String.valueOf(addressModel.getAddressInfo().getLongitude())) : null);
+				ps.setBigDecimal(24, addressModel.getAddressInfo()!=null ? new BigDecimal(String.valueOf(addressModel.getAddressInfo().getLatitude())) : null);
+				ps.setBigDecimal(25, addressModel.getAddressInfo()!=null ? new BigDecimal(String.valueOf(addressModel.getAddressInfo().getLongitude())) : null);
+				ps.setBigDecimal(26, addressModel.getAddressInfo()!=null ? new BigDecimal(String.valueOf(addressModel.getAddressInfo().getLatitude())) : null);
+				if(addressModel.getServiceType() == null){
+					ps.setNull(27, Types.VARCHAR);
+				} else {
+					ps.setString(27, addressModel.getServiceType().getName());
+				}
+				ps.setString(28, addressModel.getCompanyName());
+				ps.setString(29, this.convertPhone(addressModel.getAltContactPhone()));
+				ps.setString(30, this.convertExtension(addressModel.getAltContactPhone()));
+				ps.setString(31, this.convertType(addressModel.getAltContactPhone()));
+				
+				ps.setString(32, addressModel.getUnattendedDeliveryFlag() != null ? addressModel.getUnattendedDeliveryFlag().toSQLValue() : null);
+				ps.setString(33, addressModel.getUnattendedDeliveryInstructions());
+					
+			
 				if (ps.executeUpdate() != 1) {
 					throw new SQLException("Row not created");
 				}
@@ -93,7 +95,8 @@ public class AddressDAO {
 			} catch (SQLException sqle) {
 				throw sqle;
 			} finally {	
-				ps.close();
+				if(null !=ps)
+					ps.close();
 				ps = null;
 			}
 

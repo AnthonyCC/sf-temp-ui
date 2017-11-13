@@ -17,29 +17,28 @@
 <features:isActive name="isQS20" featureName="quickshop2_0" />
 
 <html lang="en-US" xml:lang="en-US">
-	<head>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" lang="en-US"/>
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" lang="en-US"/>
+    <title>FreshDirect - Standing Order</title>
+    <tmpl:get name="seoMetaTag"/>
+    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
+    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
+    <jwr:script src="/qsstandingorder.js" />
+    <jwr:style src="/grid.css" media="all" />
+    <jwr:style src="/global.css" media="all" />
+    <jwr:style src="/oldglobal.css" media="all" />
+    <jwr:style src="/quickshop.css" media="all" />
+    <tmpl:get name="extraCss"/>
+    <tmpl:get name="extraJs"/>
+    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 
-	<%-- 	<%@ include file="/common/template/includes/metatags.jspf" %> --%>
-		<tmpl:get name="seoMetaTag"/>
-        <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-        <jwr:script src="/qsstandingorder.js" />
-	  	<jwr:style src="/grid.css" media="all" />
-		<jwr:style src="/global.css" media="all" />
-        <jwr:style src="/oldglobal.css" media="all" />
-        <jwr:style src="/quickshop.css" media="all" />
-        <tmpl:get name="extraCss"/>
-        <tmpl:get name="extraJs"/>
-        <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+    <script type="text/javascript">
+      function showStandardAds(){
+        $jq('#as_QSTop').show();
+      }
+    </script>
 
-        <script type="text/javascript">
-        	function showStandardAds(){
-        		$jq('#as_QSTop').show();
-        	}
-
-        </script>
-
-    </head>
+  </head>
     <body data-ec-page="<tmpl:get name="ecpage" />" data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"  >
     <%@ include file="/shared/template/includes/i_body_start.jspf" %>
     <%@ include file="/common/template/includes/globalnav.jspf" %>

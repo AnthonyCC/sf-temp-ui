@@ -31,13 +31,14 @@ request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);
 <!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
 <!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en-US" xml:lang="en-US"> <!--<![endif]-->
-<head>
+  <head>
     <title><tmpl:get name='title'/></title>
-	<%@ include file="/common/template/includes/metatags.jspf" %>
-	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
-	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-	<%@ include file="/shared/template/includes/ccl.jspf" %>
+    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
+    <%@ include file="/common/template/includes/metatags.jspf" %>
+    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
+    <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+    <%@ include file="/shared/template/includes/ccl.jspf" %>
 <%
     {
        String onbeforeunload = (String)request.getAttribute("windowOnBeforeUnload");
@@ -54,8 +55,8 @@ request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);
     <tmpl:get name='head'/>
     <tmpl:get name='extrahead'/>
 
-<%@ include file="/shared/template/includes/i_head_end.jspf" %>
-</head>
+    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+  </head>
 
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333"
       onload="<%= request.getAttribute("bodyOnLoad")%>"

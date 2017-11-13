@@ -13,6 +13,7 @@ import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.fdstore.EnumDayPartValueType;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -94,13 +95,16 @@ public class AvailabilityFactory {
 
 	public static FDAvailabilityI createAvailability(SkuModel skuModel, FDProductInfo fdProductInfo,String plantID) {
 
-		FDAvailabilityI av = NullAvailability.AVAILABLE;
+		FDAvailabilityI fdAvailabilityInterface = NullAvailability.AVAILABLE;
 		if (EnumATPRule.JIT.equals(fdProductInfo.getATPRule(plantID)) || (FDStoreProperties.getPreviewMode() && null == fdProductInfo.getATPRule(plantID))) {
-			return av;
+			return fdAvailabilityInterface;
 		}
-
+		//appdev 6184 changed fdproductinfo.getInventory(plantid) to be  more efficient.
 		ErpInventoryModel inventory = fdProductInfo.getInventory(plantID);
-		
+//		EnumEStoreId eStore = ContentFactory.getInstance().getCurrentUserContext() != null &&
+//				ContentFactory.getInstance().getCurrentUserContext().getStoreContext() != null ?
+//								ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId()
+//                : EnumEStoreId.FD;
 		if (inventory != null) {
 			ProductModel productModel = skuModel.getProductModel();
 			if (productModel != null) {
@@ -108,7 +112,8 @@ public class AvailabilityFactory {
 			            inventory,
 			            productModel.getQuantityMinimum(),
 			            productModel.getQuantityMinimum(),
-			            productModel.getQuantityIncrement());
+			            productModel.getQuantityIncrement()
+			            );
 			} else {
 			    LOG.error("Product model for " + skuModel.getSkuCode() + " not found, however product info is available :" + fdProductInfo);
 			}
@@ -125,7 +130,9 @@ public class AvailabilityFactory {
 		}
 		*/
 
-		return av;
+		return fdAvailabilityInterface;
 	}
+	
+
 
 }

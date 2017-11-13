@@ -43,6 +43,7 @@ import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.crm.AuthorisationData;
 import com.freshdirect.ecommerce.data.crm.CannedTextData;
 import com.freshdirect.ecommerce.data.crm.CrmAgentInfoData;
+import com.freshdirect.ecommerce.data.crm.CrmAgentListData;
 import com.freshdirect.ecommerce.data.crm.CrmAuthInfoData;
 import com.freshdirect.ecommerce.data.crm.CrmCaseData;
 import com.freshdirect.ecommerce.data.crm.CrmCaseOperationData;
@@ -52,8 +53,12 @@ import com.freshdirect.ecommerce.data.crm.CrmDeliveryPassData;
 import com.freshdirect.ecommerce.data.crm.CrmLateIssueData;
 import com.freshdirect.ecommerce.data.crm.CrmQueueInfoData;
 import com.freshdirect.ecommerce.data.crm.CrmStatusData;
+import com.freshdirect.ecommerce.data.crm.CrmSystemCaseInfoData;
 import com.freshdirect.ecommerce.data.crm.DownloadCaseData;
 import com.freshdirect.ecommerce.data.crm.ErpTruckInfoData;
+import com.freshdirect.ecommerce.data.crm.IncrCountData;
+import com.freshdirect.ecommerce.data.crm.LoginAgentData;
+import com.freshdirect.ecommerce.data.crm.UpdateCaseData;
 import com.freshdirect.ecommerce.data.crm.ViewAccountData;
 import com.freshdirect.ecommerce.data.dlvpass.DeliveryPassData;
 import com.freshdirect.ecommerce.data.ecoupon.CrmAgentModelData;
@@ -112,6 +117,20 @@ public class CrmManagerService extends AbstractEcommService implements CrmManage
 	private static final String IS_DELIVERY_PASS_EXTENDED = "crm/dlvPass/extended/orderId/";
 	private static final String CRM_RESTRICTION_ENABLED = "crm/restriction/enabled";
 	private static final String GET_ALLOWED_USERS = "crm/allowedUsers";
+
+	private static final String CREATE_AGENT = "crm/agent/create/agentId/";
+	private static final String UPDATE_AGENT = "crm/agent/update/agentId/";
+	private static final String GET_AGENT_BY_PK = "crm/agent/agentId/";
+	private static final String GET_ALL_AGENTS = "crm/agent";
+	private static final String GET_CASE_BY_PK = "crm/case/id/";
+	private static final String LOGIN_AGENT = "crm/loginAgent";
+	private static final String CREATE_CASE = "crm/case/create";
+	private static final String CREATE_SYSTEM_CASE = "crm/systemCase/create";
+	private static final String CREATE_SYSTEM_CASE_IN_SINGLE_TXN = "crm/systemCase/create/singleTxn";
+	private static final String UPDATE_CASE = "crm/case/update";
+	private static final String INCR_DELIVERY_COUNT = "crm/deliveryCount/incr";
+	private static final String INCR_EXPIRATION_PERIOD = "crm/expirationPeriod/incr";
+	private static final String GET_AGENT_BY_LDAP_ID = "crm/agent/ldapId/";
 	
 	public static CrmManagerServiceI getInstance() {
 		if (INSTANCE == null)
@@ -123,30 +142,80 @@ public class CrmManagerService extends AbstractEcommService implements CrmManage
 	@Override
 	public PrimaryKey createAgent(CrmAgentModel agent, PrimaryKey userPk)throws FDResourceException, CrmAuthorizationException,
 			ErpDuplicateUserIdException, RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void updateAgent(CrmAgentModel agent, PrimaryKey userPk)
-			throws FDResourceException, CrmAuthorizationException,
-			RemoteException {
-		// TODO Auto-generated method stub
+		Request<CrmAgentModelData> request = new Request<CrmAgentModelData>();
+		String inputJson;
+		Response<String> response = null;
+		try{
+			request.setData(CrmManagerConverter.buildCrmAgentModelData(agent));
+			inputJson = buildRequest(request);
+			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(CREATE_AGENT+userPk.getId()), new TypeReference<Response<String>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			return new PrimaryKey(response.getData());
+		}  catch (FDEcommServiceException e) {
+			throw new RemoteException(e.getMessage());
+		} catch (FDResourceException e) {
+			throw new RemoteException(e.getMessage());
+		}
 		
 	}
 
 	@Override
-	public CrmAgentModel getAgentByPk(String agentPk)
-			throws FDResourceException, FinderException, RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+	public void updateAgent(CrmAgentModel agent, PrimaryKey userPk)throws FDResourceException, CrmAuthorizationException,
+			RemoteException {
+		Request<CrmAgentModelData> request = new Request<CrmAgentModelData>();
+		String inputJson;
+		Response<String> response = null;
+		try{
+			request.setData(CrmManagerConverter.buildCrmAgentModelData(agent));
+			inputJson = buildRequest(request);
+			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(UPDATE_AGENT+userPk.getId()), new TypeReference<Response<String>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		}  catch (FDEcommServiceException e) {
+			throw new RemoteException(e.getMessage());
+		} catch (FDResourceException e) {
+			throw new RemoteException(e.getMessage());
+		}
+		
 	}
 
 	@Override
-	public CrmAgentList getAllAgents() throws FDResourceException,
-			RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+	public CrmAgentModel getAgentByPk(String agentPk)throws FDResourceException, FinderException, RemoteException {
+		Response<CrmAgentModelData> response = new Response<CrmAgentModelData>();
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_AGENT_BY_PK+agentPk),  new TypeReference<Response<CrmAgentModelData>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDRuntimeException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return CrmManagerConverter.buildcrmAgentModel(response.getData());
+	}
+
+	@Override
+	public CrmAgentList getAllAgents() throws FDResourceException,RemoteException {
+		Response<CrmAgentListData> response = new Response<CrmAgentListData>();
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_ALL_AGENTS),  new TypeReference<Response<CrmAgentListData>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDRuntimeException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return CrmManagerConverter.buildcrmAgentList(response.getData());
 	}
 
 	@Override
@@ -171,18 +240,43 @@ public class CrmManagerService extends AbstractEcommService implements CrmManage
 	}
 
 	@Override
-	public CrmCaseModel getCaseByPk(String casePk) throws FDResourceException,
-			RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+	public CrmCaseModel getCaseByPk(String casePk) throws FDResourceException,RemoteException {
+		Response<CrmCaseData> response = new Response<CrmCaseData>();
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_CASE_BY_PK+casePk),  new TypeReference<Response<CrmCaseData>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDRuntimeException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return CrmManagerConverter.buildCrmCaseModel(response.getData());
 	}
 
 	@Override
-	public CrmAgentModel loginAgent(String username, String password)
-			throws FDResourceException, CrmAuthenticationException,
+	public CrmAgentModel loginAgent(String username, String password)throws FDResourceException, CrmAuthenticationException,
 			RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+		Request<LoginAgentData> request = new Request<LoginAgentData>();
+		String inputJson;
+		Response<CrmAgentModelData> response = null;
+		try{
+			request.setData(CrmManagerConverter.buildLoginAgentData(username,password));
+			inputJson = buildRequest(request);
+			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(LOGIN_AGENT), new TypeReference<Response<CrmAgentModelData>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			return CrmManagerConverter.buildcrmAgentModel(response.getData());
+		}  catch (FDEcommServiceException e) {
+			throw new RemoteException(e.getMessage());
+		} catch (FDResourceException e) {
+			throw new RemoteException(e.getMessage());
+		}
+		
 	}
 
 	@Override
@@ -239,32 +333,87 @@ public class CrmManagerService extends AbstractEcommService implements CrmManage
 	}
 
 	@Override
-	public PrimaryKey createCase(CrmCaseModel caseModel)
-			throws FDResourceException, RemoteException,
+	public PrimaryKey createCase(CrmCaseModel caseModel)throws FDResourceException, RemoteException,
 			CrmAuthorizationException {
-		// TODO Auto-generated method stub
-		return null;
+		Request<CrmCaseData> request = new Request<CrmCaseData>();
+		String inputJson;
+		Response<String> response = null;
+		try{
+			request.setData(CrmManagerConverter.buildCrmCaseData(caseModel));
+			inputJson = buildRequest(request);
+			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(CREATE_CASE), new TypeReference<Response<String>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			return new PrimaryKey(response.getData());
+		}  catch (FDEcommServiceException e) {
+			throw new RemoteException(e.getMessage());
+		} catch (FDResourceException e) {
+			throw new RemoteException(e.getMessage());
+		}
+		
 	}
 
 	@Override
-	public PrimaryKey createSystemCase(CrmSystemCaseInfo caseInfo)
-			throws FDResourceException, RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+	public PrimaryKey createSystemCase(CrmSystemCaseInfo caseInfo)throws FDResourceException, RemoteException {
+		Request<CrmSystemCaseInfoData> request = new Request<CrmSystemCaseInfoData>();
+		String inputJson;
+		Response<String> response = null;
+		try{
+			request.setData(CrmManagerConverter.buildCrmSystemCaseInfoData(caseInfo));
+			inputJson = buildRequest(request);
+			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(CREATE_SYSTEM_CASE), new TypeReference<Response<String>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			return new PrimaryKey(response.getData());
+		}  catch (FDEcommServiceException e) {
+			throw new RemoteException(e.getMessage());
+		} catch (FDResourceException e) {
+			throw new RemoteException(e.getMessage());
+		}
+		
 	}
 
 	@Override
-	public PrimaryKey createSystemCaseInSingleTx(CrmSystemCaseInfo caseInfo)
-			throws FDResourceException, RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+	public PrimaryKey createSystemCaseInSingleTx(CrmSystemCaseInfo caseInfo)throws FDResourceException, RemoteException {
+		Request<CrmSystemCaseInfoData> request = new Request<CrmSystemCaseInfoData>();
+		String inputJson;
+		Response<String> response = null;
+		try{
+			request.setData(CrmManagerConverter.buildCrmSystemCaseInfoData(caseInfo));
+			inputJson = buildRequest(request);
+			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(CREATE_SYSTEM_CASE_IN_SINGLE_TXN), new TypeReference<Response<String>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			return new PrimaryKey(response.getData());
+		}  catch (FDEcommServiceException e) {
+			throw new RemoteException(e.getMessage());
+		} catch (FDResourceException e) {
+			throw new RemoteException(e.getMessage());
+		}
+		
 	}
 
 	@Override
-	public void updateCase(CrmCaseInfo caseInfo, CrmCaseAction action,
-			PrimaryKey agentPk) throws FDResourceException,
+	public void updateCase(CrmCaseInfo caseInfo, CrmCaseAction action,PrimaryKey agentPk) throws FDResourceException,
 			CrmAuthorizationException, RemoteException {
-		// TODO Auto-generated method stub
+		Request<UpdateCaseData> request = new Request<UpdateCaseData>();
+		String inputJson;
+		Response<String> response = null;
+		try{
+			request.setData(CrmManagerConverter.buildUpdateCaseData(caseInfo,action,agentPk));
+			inputJson = buildRequest(request);
+			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(UPDATE_CASE), new TypeReference<Response<String>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		}  catch (FDEcommServiceException e) {
+			throw new RemoteException(e.getMessage());
+		} catch (FDResourceException e) {
+			throw new RemoteException(e.getMessage());
+		}
 		
 	}
 
@@ -531,21 +680,45 @@ public class CrmManagerService extends AbstractEcommService implements CrmManage
 	}
 
 	@Override
-	public void incrDeliveryCount(DeliveryPassModel model,
-			CrmAgentModel agentmodel, int delta, String note,
+	public void incrDeliveryCount(DeliveryPassModel model,CrmAgentModel agentmodel, int delta, String note,
 			String reasonCode, String saleId) throws FDResourceException,
 			CrmAuthorizationException, RemoteException {
-		// TODO Auto-generated method stub
-		
+		Request<IncrCountData> request = new Request<IncrCountData>();
+		String inputJson;
+		Response<String> response = null;
+		try{
+			request.setData(CrmManagerConverter.buildIncrCountData(model , agentmodel,delta,note,reasonCode,saleId,0));
+			inputJson = buildRequest(request);
+			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(INCR_DELIVERY_COUNT), new TypeReference<Response<String>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		}  catch (FDEcommServiceException e) {
+			throw new RemoteException(e.getMessage());
+		} catch (FDResourceException e) {
+			throw new RemoteException(e.getMessage());
+		}
 	}
 
 	@Override
-	public void incrExpirationPeriod(DeliveryPassModel model,
-			CrmAgentModel agentmodel, int noOfDays, String note,
+	public void incrExpirationPeriod(DeliveryPassModel model,CrmAgentModel agentmodel, int noOfDays, String note,
 			String reasonCode, String saleId) throws FDResourceException,
 			CrmAuthorizationException, RemoteException {
-		// TODO Auto-generated method stub
-		
+		Request<IncrCountData> request = new Request<IncrCountData>();
+		String inputJson;
+		Response<String> response = null;
+		try{
+			request.setData(CrmManagerConverter.buildIncrCountData(model , agentmodel,0,note,reasonCode,saleId , noOfDays));
+			inputJson = buildRequest(request);
+			response = postDataTypeMap(inputJson,getFdCommerceEndPoint(INCR_EXPIRATION_PERIOD), new TypeReference<Response<String>>() {});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		}  catch (FDEcommServiceException e) {
+			throw new RemoteException(e.getMessage());
+		} catch (FDResourceException e) {
+			throw new RemoteException(e.getMessage());
+		}
 	}
 
 	@Override
@@ -809,8 +982,20 @@ public class CrmManagerService extends AbstractEcommService implements CrmManage
 	@Override
 	public CrmAgentModel getAgentByLdapId(String agentLdapId)throws FDResourceException, CrmAuthenticationException,
 			RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+		Response<CrmAgentModelData> response = new Response<CrmAgentModelData>();
+		try {
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(GET_AGENT_BY_LDAP_ID+agentLdapId),  new TypeReference<Response<CrmAgentModelData>>(){});
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+		} catch (FDRuntimeException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		} catch (FDResourceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+		return CrmManagerConverter.buildcrmAgentModel(response.getData());
 	}
 
 	@Override

@@ -34,31 +34,28 @@ import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpCaptureModel;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpTransactionException;
-import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.delivery.DlvProperties;
-import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.ecomm.gateway.PaymentsService;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
-import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
+import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.ejb.GCGatewayHome;
 import com.freshdirect.giftcard.ejb.GCGatewaySB;
 import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
-import com.freshdirect.logistics.fdx.controller.data.request.CreateOrderRequest;
 import com.freshdirect.payment.command.Capture;
 import com.freshdirect.payment.command.PaymentCommandI;
 import com.freshdirect.payment.ejb.PaymentGatewayHome;
@@ -68,7 +65,6 @@ import com.freshdirect.payment.ejb.PaymentSB;
 import com.freshdirect.sap.SapEBTOrderSettlementInfo;
 import com.freshdirect.sap.SapOrderSettlementInfo;
 import com.freshdirect.sap.SapProperties;
-import com.freshdirect.sap.bapi.BapiInfo;
 import com.freshdirect.sap.command.SapSendEBTSettlementCommand;
 import com.freshdirect.sap.ejb.SapException;
 
@@ -567,58 +563,78 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 
 
 	private void lockAuthFaileSales(Connection conn, EnumSaleStatus from, EnumSaleStatus to) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement(LOCK_AUF_SALES);
-		ps.setString(1, to.getStatusCode());
-		ps.setString(2, from.getStatusCode());
-		ps.setInt(3, ErpServicesProperties.getCancelOrdersB4Cutoff());
-		ps.executeUpdate();
-		ps.close();
+		PreparedStatement ps = null;
+		try {
+			ps = conn.prepareStatement(LOCK_AUF_SALES);
+			ps.setString(1, to.getStatusCode());
+			ps.setString(2, from.getStatusCode());
+			ps.setInt(3, ErpServicesProperties.getCancelOrdersB4Cutoff());
+			ps.executeUpdate();
+		} finally {
+			if(ps != null) ps.close();
+		}
 	}
 
 	private int updateToProcessStatus(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement(UPDATE_TO_PROCESS_STATUS);
-		int affected = ps.executeUpdate();
-		ps.close();
-		return affected;
+		PreparedStatement ps = null;
+		try {
+			ps = conn.prepareStatement(UPDATE_TO_PROCESS_STATUS);
+			int affected = ps.executeUpdate();
+			return affected;
+		} finally {
+			if(ps != null) ps.close();
+		}
 	}
 
 	private List<String> querySalesInStatusCPG(Connection conn, EnumSaleStatus status) throws SQLException {
 		List<String> saleIds = new ArrayList<String>();
-		PreparedStatement ps = conn.prepareStatement(QUERY_SALE_IN_CPG_STATUS);
-		ps.setString(1, status.getStatusCode());
-		ps.setInt(2, ErpServicesProperties.getWaitingTimeAfterConfirm());
-		ps.setInt(3, ErpServicesProperties.getWaitingTimeAfterConfirm());
-		//LOGGER.info("waiting time after confirm:"+ErpServicesProperties.getWaitingTimeAfterConfirm());
-		ResultSet rs = ps.executeQuery();
-		while (rs.next()) {
-			saleIds.add(rs.getString(1));
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(QUERY_SALE_IN_CPG_STATUS);
+			ps.setString(1, status.getStatusCode());
+			ps.setInt(2, ErpServicesProperties.getWaitingTimeAfterConfirm());
+			ps.setInt(3, ErpServicesProperties.getWaitingTimeAfterConfirm());
+			//LOGGER.info("waiting time after confirm:"+ErpServicesProperties.getWaitingTimeAfterConfirm());
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				saleIds.add(rs.getString(1));
+			}
+			return saleIds;
+		} finally {
+			DaoUtil.closePreserveException(rs, ps, null);
 		}
-		rs.close();
-		ps.close();
-		return saleIds;
 	}
 	private List<String> querySalesInStatusCPG(Connection conn, String query) throws SQLException {
-		List<String> saleIds = new ArrayList<String>();
-		PreparedStatement ps = conn.prepareStatement(query);
-		ResultSet rs = ps.executeQuery();
-		while (rs.next()) {
-			saleIds.add(rs.getString(1));
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			List<String> saleIds = new ArrayList<String>();
+			ps = conn.prepareStatement(query);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				saleIds.add(rs.getString(1));
+			}
+			return saleIds;
+		} finally {
+			DaoUtil.closePreserveException(rs, ps, null);
 		}
-		rs.close();
-		ps.close();
-		return saleIds;
 	}
 	
 	private List<String> queryForSales(Connection conn, String query) throws SQLException {
-		List<String> saleIds = new ArrayList<String>();
-		PreparedStatement ps = conn.prepareStatement(query);
-		ResultSet rs = ps.executeQuery();
-		while (rs.next()) {
-			saleIds.add(rs.getString(1));
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			List<String> saleIds = new ArrayList<String>();
+			ps = conn.prepareStatement(query);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				saleIds.add(rs.getString(1));
+			}
+			return saleIds;
+		} finally {
+			DaoUtil.closePreserveException(rs, ps, null);
 		}
-		rs.close();
-		ps.close();
-		return saleIds;
 	}
 
 
@@ -745,16 +761,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		}
 		finally
 		{
-			try {
-			if(rs!=null)
-				rs.close();
-			if(ps!=null)
-				ps.close();
-			if (conn != null) 
-				conn.close();
-			}catch (SQLException se) {
-				LOGGER.warn("Exception while trying to cleanup", se);
-			}
+			DaoUtil.close(rs, ps, conn);
 		}
 		return dates;
 	}
@@ -1256,8 +1263,13 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		try {
 			PaymentSB psb = this.getPaymentSB();
 			utx = this.getSessionContext().getUserTransaction();
-			utx.begin();				
-			psb.captureAuthEBTSale(saleId);
+			utx.begin();
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.PaymentSB)){
+				PaymentsService.getInstance().captureAuthEBTSale(saleId);
+			}
+			else{
+				psb.captureAuthEBTSale(saleId);
+			}
 			LOGGER.info("*******do capture transaction for order:"+saleId);
 			utx.commit();
 		} catch (Exception e) {

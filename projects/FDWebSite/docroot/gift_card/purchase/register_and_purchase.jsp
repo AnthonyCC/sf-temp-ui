@@ -63,12 +63,12 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 
 <table width="<%=W_REGISTER_AND_PURCHASE_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 	<tr>
-		<td class="text11" width="<%=W_REGISTER_AND_PURCHASE_TOTAL-99%>">
-			<span class="title18"><img src="/media_stat/images/giftcards/purchase/purchase_gift_cards.gif" alt="purchase gift cards" /></span><br />
-			<b>(Already a FreshDirect customer? <a href="/login/login.jsp?successPage=/gift_card/purchase/purchase_giftcard.jsp">Click here log in.)</b>
+		<td class="text11" width="<%=W_REGISTER_AND_PURCHASE_TOTAL-135%>">
+			<span class="title18">purchase gift cards</span><br />
+			<b>(Already a FreshDirect customer? <a href="/login/login.jsp?successPage=/gift_card/purchase/purchase_giftcard.jsp">Click here log in</a>.)</b>
 		</td>
-		<td width="99">
-			<input type="image" id="submit_top" name="submit_top" src="/media_stat/images/giftcards/purchase/gc_submit_order.gif" width="90" height="25"  hspace="4" vspace="4" alt="submit order" border="0" onclick="$('address').submit();">
+		<td width="135">
+			<button class="cssbutton small orange" id="submit_top" name="submit_top" onclick="$('address').submit();">SUBMIT ORDER</button>
 		</td>
 	</tr>
 	<tr>
@@ -99,7 +99,7 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 		</td>
 	</tr>
     </table>
-<form name="address" id="address" method="post" >
+<form fdform class="top-margin10 dispblock-fields" fdform-displayerrorafter name="address" id="address" method="post" >
     <input type="hidden" name="firstTimeVisit" value="false">
 	<%@ include file="/gift_card/purchase/includes/i_gc_signup.jspf" %>
 </form>

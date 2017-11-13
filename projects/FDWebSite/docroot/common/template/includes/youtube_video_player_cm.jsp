@@ -15,8 +15,9 @@ if(videoWidth == null) videoWidth="100%";
 if(videoHeight == null) videoHeight="90%";
 
 %>
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" lang="en-US"/>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" lang="en-US"/>
+    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
     <%@ include file="/common/template/includes/metatags.jspf" %>
     <%@ include file="/common/template/includes/i_javascripts.jspf" %>
     <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
@@ -88,7 +89,7 @@ if(videoHeight == null) videoHeight="90%";
 
 	</script>
 
-</head>
+  </head>
 
 <body scrolling="no" style="margin:0;padding:0;overflow:hidden">
 <div id="<%= container %>">You need Flash player 8+ and JavaScript enabled to view this video.</div>

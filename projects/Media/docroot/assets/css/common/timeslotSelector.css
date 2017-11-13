@@ -1,0 +1,199 @@
+.timeslot-selector {
+  text-align: center;
+}
+
+.timeslot-selector .select-day {
+  box-sizing: border-box;
+  padding: 0 20px;
+  width: 100%
+}
+
+.timeslot-selector .select-day select {
+  background-color: #4fa157;
+  border: 1px solid #4fa157;
+  border-radius: 3px;
+  color: #fff;
+  height: 36px;
+  font-size: 14px;
+  font-weight: bold;
+  font-family: Verdana, sans-serif;
+  text-align-last: center;
+  margin-bottom: 10px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 100%;
+}
+
+.timeslot-selector .select-day .select-wrapper::after {
+  color: #fff;
+  font-weight: bold;
+}
+
+.timeslot-selector .select-time ul {
+  margin: 0;
+}
+
+.timeslot-selector .select-time li {
+  padding-right: 5px;
+}
+
+.timeslot-selector .select-time li:not(:first-child) {
+  border-top: 1px solid #ddd;
+}
+
+.timeslot-selector .select-time li,
+.timeslot-selector .select-time div {
+  font-size: 12px;
+  min-height: 36px;
+  line-height: 36px;
+  text-align: left;
+  padding-left: 5px;
+}
+
+.timeslot-selector .select-time label {
+  font-weight: normal;
+}
+
+.timeslot-selector .selected-timeslot label {
+  font-weight: bold;
+}
+
+.timeslot-selector .select-time div {
+  background-color: #f7f7f7;
+  font-weight: bold;
+}
+
+.timeslot-selector .select-time li {
+  list-style:none;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.timeslot-selector .select-time input {
+  display: none
+}
+
+.timeslot-selector .select-time li span.label {
+  display: inline;
+}
+
+.timeslot-selector .select-time li .icons {
+  align-items: center;
+  display: flex;
+  text-align: right;
+}
+
+.timeslot-selector .select-time li span.selected {
+  background-image: url('/media_stat/images/timeslots/check_mark.gif');
+  background-repeat: no-repeat;
+  height: 16px;
+  width: 16px;
+}
+
+.timeslot-selector .select-time li span.eco-friendly {
+  background-image: url('/media_stat/images/timeslots/ecofriendly_leaf.gif');
+  background-repeat: no-repeat;
+  height: 16px;
+  width: 16px;
+}
+
+.timeslot-selector .select-time li span.alcohol-restricted {
+  background-image: url('/media_stat/images/timeslots/no_alcohol.gif');
+  background-repeat: no-repeat;
+  height: 16px;
+  width: 16px;
+}
+
+.timeslot-selector .select-time li span.steering-discount {
+  color: #F93;
+}
+
+.timeslot-selector .select-time li span.early:before {
+  background-image: url('/media_stat/images/timeslots/early_delivery_icon_web.png');
+  background-repeat: no-repeat;
+  background-size: 16px 16px;
+  content: ' ';
+  height: 16px;
+  width: 16px;
+  display: inline-block;
+  vertical-align: sub;
+}
+
+.timeslot-selector .select-time li span.chefs-table {
+  color: #986798;
+}
+
+.timeslot-selector .select-time li span.chefs-table:before {
+  background-image: url('/media_stat/images/timeslots/star_large.gif');
+  background-repeat: no-repeat;
+  background-size: 16px 16px;
+  content: ' ';
+  height: 16px;
+  width: 16px;
+  display: inline-block;
+  vertical-align: sub;
+}
+
+.timeslot-selector .select-time li.eco-friendly span.eco-friendly,
+.timeslot-selector .select-time li.eco-friendly span.alcohol-restricted,
+.timeslot-selector .select-time li.eco-friendly span.steering-discount,
+.timeslot-selector .select-time li.steering-discount span.steering-discount,
+.timeslot-selector .select-time li.steering-discount span.alcohol-restricted,
+.timeslot-selector .select-time li.steering-discount span.eco-friendly,
+.timeslot-selector .select-time li.chefs-table span.chefs-table,
+.timeslot-selector .select-time li.chefs-table span.alcohol-restricted {
+  display: inline;
+  margin-left: 5px;
+}
+
+.timeslot-selector .select-time li.steering-discount.alcohol-restricted span.eco-friendly,
+.timeslot-selector .select-time li.early:not(.steering-discount) .icons span,
+.timeslot-selector .select-time li.early.chefs-table span.chefs-table,
+.timeslot-selector .select-time li.chefs-table:not(.early) span.steering-discount,
+.timeslot-selector .select-time li.chefs-table:not(.early) span.eco-friendly,
+.timeslot-selector .select-time li.reserved .icons span {
+  display: none;
+}
+
+.timeslot-selector .select-time li.selected span.selected,
+.timeslot-selector .select-time li.early:not(.steering-discount) span.early,
+.timeslot-selector .select-time li.early.alcohol-restricted span.alcohol-restricted,
+.timeslot-selector .select-time li.reserved span.alcohol-restricted,
+.timeslot-selector .select-time li.reserved span.reserved {
+  display: inline;
+  margin-left: 5px;
+}
+
+.timeslot-selector .select-time li.soldout .icons span {
+  display: none;
+}
+
+.timeslot-selector .select-time li.soldout .icons .soldout {
+  display: block;
+  margin-left: 5px;
+}
+
+.timeslot-selector .select-time li.soldout .label label {
+  text-decoration: line-through;
+}
+
+[data-drawer-content="timeslot"] .mob-web [data-component="timeselectorcontent"] {
+  border: none;
+}
+
+[data-component="drawer"] [data-drawer-content] .mob-web {
+  background-color: transparent;
+  padding: 0;
+  padding-top: 20px;
+}
+
+[data-component="drawer"] [data-drawer-content] .mob-web > div,
+[data-component="drawer"] [data-drawer-content] .mob-web .select-day .customsimpleselect {
+  width: 100%;
+}
+
+[data-component="drawer"] [data-drawer-content] .mob-web .select-day {
+  padding: 0 20px;
+}

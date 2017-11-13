@@ -73,11 +73,8 @@ import com.freshdirect.fdstore.OncePerRequestDateCache;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.EnumWinePrice;
-import com.freshdirect.fdstore.content.HolidayGreeting;
-import com.freshdirect.fdstore.content.MyFD;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
-import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
@@ -105,11 +102,6 @@ import com.freshdirect.fdstore.rules.EligibilityCalculator;
 import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
-import com.freshdirect.fdstore.survey.EnumSurveyType;
-import com.freshdirect.fdstore.survey.FDSurvey;
-import com.freshdirect.fdstore.survey.FDSurveyConstants;
-import com.freshdirect.fdstore.survey.FDSurveyFactory;
-import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
 import com.freshdirect.fdstore.util.TimeslotLogic;
@@ -383,7 +375,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     private FDCartModel initializeCart() {
         if (this.shoppingCart == null) {
             this.shoppingCart = new FDCartModel();
-            this.shoppingCart.setEStoreId(this.getUserContext().getStoreContext().getEStoreId());
+           // this.shoppingCart.setEStoreId(this.getUserContext().getStoreContext().getEStoreId());
         }
         return this.shoppingCart;
     }
@@ -2500,8 +2492,9 @@ public class FDUser extends ModelSupport implements FDUserI {
     public  FDDeliveryZoneInfo overrideZoneInfo(ErpAddressModel address,
 			FDDeliveryZoneInfo deliveryZoneInfo) throws FDResourceException,FDInvalidAddressException {
 		int lookAheadDays = FDStoreProperties.getFdcTransitionLookAheadDays();
+		
 		if(lookAheadDays > 0){
-		FDDeliveryZoneInfo reservationDeliveryZoneInfo = getReservationDeliveryZoneInfo(); 
+		FDDeliveryZoneInfo reservationDeliveryZoneInfo = getReservationDeliveryZoneInfo(address); 
 		//Case 1: If the user has a reservation, we will be using the fulfillment information associated with user's reservation as the user context at the time of login
 		if(null!=reservationDeliveryZoneInfo){
 			return reservationDeliveryZoneInfo;
@@ -2536,7 +2529,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	}
 	
-	private FDDeliveryZoneInfo getReservationDeliveryZoneInfo() {
+	private FDDeliveryZoneInfo getReservationDeliveryZoneInfo(ErpAddressModel address) {
 
 		Date standardReservationDeliveryDate = null;
 		Date weeklyOrOneTimeReservationDeliveryDate = null;
@@ -2554,7 +2547,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		}
 
 		// Weekly or One time reservation has higher precedence than Standard reservation
-		if (null != weeklyOrOneTimeReservationDeliveryDate & null != weeklyOrOneTimeReservationAddress) {
+		if (null != weeklyOrOneTimeReservationDeliveryDate & null != weeklyOrOneTimeReservationAddress && this.getReservation().getAddressId().equalsIgnoreCase(address.getId())) {
 			try {
 				return FDDeliveryManager.getInstance().getZoneInfo(
 								weeklyOrOneTimeReservationAddress,
@@ -2569,7 +2562,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 			}
 		}
 		//checking if the user has any standard reservation
-		if (null != standardReservationDeliveryDate & null != standardReservationAddress) {
+		if (null != standardReservationDeliveryDate & null != standardReservationAddress  && this.getShoppingCart().getDeliveryReservation().getAddressId().equalsIgnoreCase(address.getId())) {
 			try {
 				return FDDeliveryManager.getInstance().getZoneInfo(
 								standardReservationAddress,
@@ -2607,7 +2600,11 @@ public class FDUser extends ModelSupport implements FDUserI {
         ZoneInfo zoneInfo = null;
 
         if (isAddressValidForFulfillmentCheck(address)) {
-            fulfillmentInfo = getFulfillmentInfo(address, (this.getShoppingCart() instanceof FDModifyCartModel)? this.getShoppingCart().getDeliveryReservation().getTimeslot().getDeliveryDate():
+            fulfillmentInfo = getFulfillmentInfo(address, (this.getShoppingCart() instanceof FDModifyCartModel)? 
+            		(this.getShoppingCart()!=null && this.getShoppingCart().getDeliveryReservation()!=null 
+            		&& this.getShoppingCart().getDeliveryReservation().getTimeslot()!=null 
+            		&& this.getShoppingCart().getDeliveryReservation().getTimeslot().getDeliveryDate()!=null ? 
+            		this.getShoppingCart().getDeliveryReservation().getTimeslot().getDeliveryDate() : null):
             		(this.getShoppingCart()!=null && this.getShoppingCart().getDeliveryReservation()!=null 
             		&& this.getShoppingCart().getDeliveryReservation().getTimeslot()!=null 
             		&& this.getShoppingCart().getDeliveryReservation().getTimeslot().getDeliveryDate()!=null
@@ -2792,81 +2789,6 @@ public class FDUser extends ModelSupport implements FDUserI {
     @Override
     public void setPercSlotsSold(double percSlotsSold) {
         this.percSlotsSold = percSlotsSold;
-    }
-
-    @Override
-    public String getGreeting() throws FDResourceException {
-        StoreModel store = (StoreModel) ContentFactory.getInstance().getContentNode("Store", "FreshDirect");
-        FDSurvey customerProfileSurvey = FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.CUSTOMER_PROFILE_SURVEY, EnumServiceType.HOME);
-        FDSurveyResponse surveyResponse = FDSurveyFactory.getCustomerProfileSurveyInfo(getIdentity(), EnumServiceType.HOME);
-        if (customerProfileSurvey != null && surveyResponse != null) {
-            String[] answers = surveyResponse.getAnswer("Occasions_Events");
-            if (answers != null && answers.length != 0) {
-                boolean found = false;
-                for (String answer : answers)
-                    if ("birthdays".equals(answer)) {
-                        found = true;
-                        break;
-                    }
-                if (found) {
-                    String[] birthday = surveyResponse.getAnswer(FDSurveyConstants.BIRTHDAY);
-                    if (birthday != null && birthday.length == 2)
-                        try {
-                            String month = birthday[0];
-                            int day = Integer.parseInt(birthday[1]);
-                            Calendar cal = Calendar.getInstance();
-                            Date now = new Date();
-                            cal.setTime(now);
-                            String thisMonth = new SimpleDateFormat("MMM").format(now);
-                            if (thisMonth.equalsIgnoreCase(month) && cal.get(Calendar.DAY_OF_MONTH) == day)
-                                return "Happy birthday, " + getFirstName() + "!";
-                        } catch (NumberFormatException e) {
-                        }
-                }
-            }
-        }
-        MyFD myfd = null;
-        if (store != null) {
-            myfd = store.getMyFD();
-            if (myfd != null) {
-                List<HolidayGreeting> greetings = myfd.getHolidayGreetings();
-                Date now = new Date();
-                for (HolidayGreeting greeting : greetings) {
-                    Date start = greeting.getIntervalStartDate();
-                    Date end = greeting.getIntervalEndDate();
-                    if (start == null || end == null)
-                        continue;
-                    if (now.before(start) || now.after(end))
-                        continue;
-                    if (customerProfileSurvey == null || surveyResponse == null)
-                        continue;
-                    // SELECT a.name
-                    // FROM CUST.survey_qa qa
-                    // INNER JOIN CUST.survey_question q
-                    // ON qa.question = q.id
-                    // INNER JOIN cust.survey_answer a
-                    // ON qa.answer = a.id
-                    // WHERE q.name = 'Occasions_Events';
-                    String[] answers = surveyResponse.getAnswer("Occasions_Events");
-                    if (answers == null || answers.length == 0)
-                        continue;
-                    boolean found = false;
-                    String code = greeting.getCode();
-                    for (String a : answers)
-                        if (a != null && a.equals(code)) {
-                            found = true;
-                            break;
-                        }
-                    if (!found) {
-                        continue;
-                    }
-                    String text = greeting.getGreetingText();
-                    text = text.replace("%firstname", getFirstName());
-                    return text;
-                }
-            }
-        }
-        return "Hello " + getFirstName() + "!";
     }
 
     @Override
@@ -3096,7 +3018,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     public void setReferralPromoAvailable() {
         try {
-            referralFlag = FDReferralManager.getReferralDisplayFlag(this.getIdentity().getErpCustomerPK());
+            referralFlag = getOrderHistory().hasSettledOrders();//FDReferralManager.getReferralDisplayFlag(this.getIdentity().getErpCustomerPK());
             LOGGER.debug("Getting ref display for :" + this.getIdentity().getErpCustomerPK() + "-and flag is:" + referralFlag);
         } catch (FDResourceException e) {
             LOGGER.error("Exception getting totalCredit", e);

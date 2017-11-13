@@ -47,7 +47,7 @@ if (toSiteAccess) {
 	response.sendRedirect(response.encodeRedirectURL("/about/index.jsp?siteAccessPage=aboutus&successPage=/index.jsp"));
 }
 
-String serviceType = user.isCorporateUser() ? "CORPORATE" : "HOME";
+String serviceType = (null !=user && user.isCorporateUser()) ? "CORPORATE" : "HOME";
 response.sendRedirect("/index.jsp?serviceType=" + serviceType);
 %>
 

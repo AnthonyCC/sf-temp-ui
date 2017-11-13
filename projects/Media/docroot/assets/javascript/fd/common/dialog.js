@@ -77,13 +77,6 @@ var FreshDirect = FreshDirect || {};
 				title:title
 			});
 		}
-
-		var openVideo = function(title,page,titleText,width,height) {
-			var w = width || 450,
-				h = height || 350,
-				page = page || "youtube_video_player.jsp";
-			return openUrl('/common/template/includes/'+page+'?title='+title+'&ispopup=1',titleText,w,h,'fd-dialog-video');
-		};
 		
 		$(document).on('click','a.dialog',function(e){
 			var $this = $(this);
@@ -104,7 +97,6 @@ var FreshDirect = FreshDirect || {};
 		var dialog = {
 			open:open,
 			openUrl:openUrl,
-			openVideo:openVideo,
 			getCurrentNode:getCurrentNode
 		};
 	

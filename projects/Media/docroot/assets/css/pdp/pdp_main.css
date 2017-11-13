@@ -379,7 +379,7 @@ span.cssbutton.annotation:hover {
 .pdp-atc-button-wrapper {
 	display:block;
 	position:relative;
-	margin-top: 35px;
+	margin-top: 22px;
 }
 
 .pdp-atc-button-wrapper .atc-info {
@@ -1085,7 +1085,6 @@ border-bottom-left-radius: 6px;
 }
 .width100 {
 	width:100%;
-	float:left;
 }
 .width50 {
 	width:50%;
@@ -1101,4 +1100,16 @@ border-bottom-left-radius: 6px;
 
 .subtotal-price-estimated {
 	padding-left: 10px;
+}
+.subtotal-price-estimated-additional {
+	color: #717171;
+	margin: 8px 0 0 15px;
+	white-space: normal;
+	width: 190px;
+	font-size: 12px;
+	line-height: 15px;
+}
+/*links in the pdp-accordion in pdp page */
+.pdp-accordion>li>div[aria-hidden="true"] {
+    visibility: hidden;
 }

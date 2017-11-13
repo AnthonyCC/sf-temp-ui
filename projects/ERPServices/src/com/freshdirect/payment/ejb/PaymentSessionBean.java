@@ -70,7 +70,7 @@ import com.freshdirect.payment.gateway.TransactionType;
 import com.freshdirect.payment.gateway.impl.GatewayFactory;
 import com.freshdirect.referral.extole.RafUtil;
 ;
-
+// this Session bean has been migrated to 2.0 check with 2.0 team if nay changes required
 public class PaymentSessionBean extends SessionBeanSupport{
 	
 	private final static Category LOGGER = LoggerFactory.getInstance( PaymentSessionBean.class );

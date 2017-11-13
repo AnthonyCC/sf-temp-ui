@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
@@ -27,6 +29,7 @@ import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
@@ -41,14 +44,17 @@ import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.standingorders.DeliveryInterval;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
+import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.util.FDTimeslotUtil;
+import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.webapp.ajax.expresscheckout.location.data.FormLocationData;
 import com.freshdirect.webapp.ajax.expresscheckout.payment.data.FormPaymentData;
 import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFacade;
 import com.freshdirect.webapp.ajax.expresscheckout.timeslot.data.FormTimeslotData;
 import com.freshdirect.webapp.ajax.standingorder.StandingOrderResponseData;
+import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 
 /**
@@ -1309,5 +1315,67 @@ private static String convert(Date time) {
 	private static String getSODeleteDate(FDStandingOrder so) {
 		
 		return DateUtil.formatMonthAndDate(so.getDeleteDate());
+	}
+	
+	//SO user if deletes address which is default in another template, we are here deleting that specific SO template SO AddressID
+	public static void evaluteSoAddressId(HttpSession session, FDUserI user, String deliveryAddressId) {
+		Collection<FDStandingOrder> soValidList = user.getValidSO3();
+		try {
+			for (FDStandingOrder soValidtemplate : soValidList) {
+				if (deliveryAddressId != null && deliveryAddressId.equals(soValidtemplate.getAddressId())) {
+					LOGGER.debug("indside evaluteSoAddressId(), action by user: "+user.getIdentity().getErpCustomerPK()+", "
+							+ "deleting addressId: "+soValidtemplate.getAddressId()+", for SO3 template: "+soValidtemplate.getId());
+					soValidtemplate.setAddressId(null);
+					soValidtemplate.setStartTime(null);
+					soValidtemplate.setEndTime(null);
+					soValidtemplate.setNextDeliveryDate(null);
+					soValidtemplate.setLastError(ErrorCode.NO_ADDRESS.name(), ErrorCode.NO_ADDRESS.getErrorHeader(), ErrorCode.NO_ADDRESS.getErrorDetail(null));
+					if (session != null) {
+						FDActionInfo info = AccountActivityUtil.getActionInfo(session);
+						FDStandingOrdersManager.getInstance().save(info, soValidtemplate);
+						user.setRefreshSO3(true);
+					}
+				}
+			} 
+		}catch (FDResourceException e1) {
+				LOGGER.error("for user: "+user.getUserId()+" Exception occurred in evaluteSoAddressId() : "+e1);
+			}
+		}
+	
+	public static boolean userCanBeSaved(FDUserI user, boolean canBeSaved, String deliveryAddressId) throws FDResourceException {
+		FDStandingOrder currentStandingOrder = user.getCurrentStandingOrder();
+                 	
+		if (currentStandingOrder != null && !"".equalsIgnoreCase(currentStandingOrder.getId()) 
+				&& null != currentStandingOrder.getId() &&
+				(currentStandingOrder.getNextDeliveryDate() != null || currentStandingOrder.getOldAddressId() == null) ) {
+			
+			currentStandingOrder.setOldAddressId(currentStandingOrder.getAddressId());
+			LOGGER.debug("user selected addressID from UI: " + deliveryAddressId + " . initial addressID: "+ currentStandingOrder.getOldAddressId());
+		}
+		if(user != null && currentStandingOrder != null){
+			canBeSaved = currentStandingOrder.getOldAddressId() != null	&& currentStandingOrder.getOldAddressId().equals(deliveryAddressId);
+		}
+		if(canBeSaved){
+			FDStandingOrder so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(currentStandingOrder.getId()));
+			currentStandingOrder.setNextDeliveryDate(so.getNextDeliveryDate());
+			currentStandingOrder.setStartTime(so.getStartTime());
+			currentStandingOrder.setEndTime(so.getEndTime());
+			LOGGER.debug("restoring address timeslot for customer:"+user.getIdentity().getErpCustomerPK()+ " StandingOrder ID: "+ currentStandingOrder.getId());
+			canBeSaved = false;
+			}
+		else {
+			currentStandingOrder.setNextDeliveryDate(null);
+			currentStandingOrder.setStartTime(null);
+			currentStandingOrder.setEndTime(null);
+			canBeSaved = false;
+			if(!"".equalsIgnoreCase(currentStandingOrder.getId()) 
+					&& null != currentStandingOrder.getId()){
+				LOGGER.debug("customer:"+user.getIdentity().getErpCustomerPK()+ " trying to modify address for StandingOrder ID: "+ currentStandingOrder.getId());
+			} else{
+				LOGGER.debug("customer:"+user.getIdentity().getErpCustomerPK()+ " is creating new SO");
+				
+			}
+		}
+		return canBeSaved;
 	}
 }

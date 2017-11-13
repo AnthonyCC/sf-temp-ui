@@ -134,11 +134,11 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 
 
 
-	<form method="post" style="padding: 0px; margin: 0px;">
+	<form fdform class="top-margin10 dispblock-fields" fdform-displayerrorafter method="post" style="padding: 0px; margin: 0px;">
 	<table width="<%=W_GC_ADD_CREDITCARD_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 		<tr>
-			<td class="text11" WIDTH="<%=W_GC_ADD_CREDITCARD_TOTAL%>">
-				<img src="/media_stat/images/giftcards/payment_method/add_a_credit_card_hdr.gif" WIDTH="164" HEIGHT="21" border="0" alt="ADD CREDIT CARD"><br />
+			<td class="title18" WIDTH="<%=W_GC_ADD_CREDITCARD_TOTAL%>">
+				ADD CREDIT CARD<br />
 			</td>
 		</tr>
 	</table>
@@ -157,6 +157,7 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 	</TD>
 </TR>
 </TABLE>
+</form>
 <br>
 
 </fd:PaymentMethodController>

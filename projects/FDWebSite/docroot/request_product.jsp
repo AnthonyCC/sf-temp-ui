@@ -320,7 +320,7 @@
 					Remove all these java comments to re-enable brand autocomplete
 				--%>
 				depts.populateDeptsList("dept_prod<%= n %>");
-				YAHOO.util.Event.onDOMReady(autoCompleteFunctionFactory("/api/brandautocompleteresults.jsp","brands_prod<%= n %>","brandParams_prod<%= n %>",false));
+				YAHOO.util.Event.onDOMReady(autoCompleteFunctionFactory("/api/brandautocompleteresults.jsp","brands_prod<%= n %>","brandParams_prod<%= n %>",false, null, true));
 			<% } %>
 			
 			

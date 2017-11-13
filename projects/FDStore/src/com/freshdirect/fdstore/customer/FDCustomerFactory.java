@@ -9,6 +9,7 @@ import javax.naming.*;
 import javax.ejb.*;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.util.List;
 
 import com.freshdirect.framework.core.PrimaryKey;
 
@@ -23,6 +24,7 @@ public class FDCustomerFactory {
 
 	private static FDCustomerHome fdCustomerHome = null;
 	private static ErpCustomerHome erpCustomerHome = null;
+	private static ErpCustomerManagerHome erpCustomerManagerHome = null;
 	private static ErpCustomerInfoHome erpCustomerInfoHome = null;
 	
     private FDCustomerFactory () {
@@ -136,6 +138,24 @@ public class FDCustomerFactory {
 			throw new FDResourceException(re);
 		}
 	}
+	
+	public static List<ErpCustomerCreditModel> getCustomerCreditsByErpCustId (String erpCustomerId) throws FDResourceException{
+		if (erpCustomerManagerHome == null) {
+			lookupErpCustomerManagerHome();
+		}
+		
+		try {
+			ErpCustomerManagerSB erpCustMgrSb =  (ErpCustomerManagerSB)erpCustomerManagerHome.create();
+			return erpCustMgrSb.getCustomerCreditsByErpCustId(erpCustomerId);
+		} catch(CreateException fe) {
+			erpCustomerManagerHome = null;
+			throw new FDResourceException(fe);
+		} catch(RemoteException re) {
+			erpCustomerManagerHome = null;
+			throw new FDResourceException(re);
+		}
+		
+	}
 	protected static void lookupErpCustomerInfoHome() throws FDResourceException {
 		Context ctx = null;
 		try {
@@ -168,6 +188,20 @@ public class FDCustomerFactory {
 		try {
 			ctx = FDStoreProperties.getInitialContext();
 			erpCustomerHome = (ErpCustomerHome) ctx.lookup( FDStoreProperties.getErpCustomerHome() );
+		} catch (NamingException ne) {
+			throw new FDResourceException(ne);
+		} finally {
+			try {
+				ctx.close();
+			} catch (NamingException e) {}
+		}
+	}
+	
+	protected static void lookupErpCustomerManagerHome() throws FDResourceException {
+		Context ctx = null;
+		try {
+			ctx = FDStoreProperties.getInitialContext();
+			erpCustomerManagerHome =  (ErpCustomerManagerHome) ctx.lookup("freshdirect.erp.CustomerManager");
 		} catch (NamingException ne) {
 			throw new FDResourceException(ne);
 		} finally {

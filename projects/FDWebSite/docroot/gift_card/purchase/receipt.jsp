@@ -170,7 +170,7 @@ String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBE
     	 	<img src="/media_stat/images/layout/cccccc.gif" alt="" width="1" height="280"><br>
 	    </td>
     <TD WIDTH="300">
-        <img src="/media_stat/images/navigation/payment_info.gif" WIDTH="100" HEIGHT="15" border="0" alt="PAYMENT INFO"><BR>
+        <span class="title14">PAYMENT INFO</span><BR>
         <IMG src="/media_stat/images/layout/999966.gif" ALT="" WIDTH="<%=lineWidth%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
         <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="300">
         <TR VALIGN="TOP">

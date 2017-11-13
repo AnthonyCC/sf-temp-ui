@@ -1,8 +1,7 @@
 package com.freshdirect.webapp.ajax.expresscheckout.timeslot.data;
 
-import java.util.List;
-
 import java.util.Date;
+import java.util.List;
 
 public class FormTimeslotData {
 
@@ -15,15 +14,31 @@ public class FormTimeslotData {
     private List<String> onOpenCoremetrics;
     private boolean showForceOrder;
     private boolean forceOrderEnabled;
+    private boolean full;
 	private Date startDate;
 	private Date endDate;
 	private String soFreq;
-	private boolean isNewSO3=false;
+    private boolean isNewSO3;
 	private String soCutOffFormattedDeliveryDate;
 	private String soCutOffDeliveryTime;
-	private boolean soActivated=false;
+    private boolean soActivated;
 	private String shortDayOfWeek;
 	private String soDeliveryDate;
+    private Date cutoffDate;
+    private boolean isChefsTable;
+    private double steeringDiscount;
+    private boolean ecoFriendly;
+    private boolean isDepot;
+    private boolean alcoholRestricted;
+    private Boolean isEarlyAM;
+    private boolean unavailable;
+    private double premiumAmount;
+    private boolean premiumSlot;
+    private String minOrderMsg;
+    private double minOrderAmt;
+    private boolean minOrderMet;
+    private double deliveryFee;
+    private double promoDeliveryFee;
 	
     public String getId() {
         return id;
@@ -188,5 +203,133 @@ public class FormTimeslotData {
 	public void setSoDeliveryDate(String soDeliveryDate) {
 		this.soDeliveryDate = soDeliveryDate;
 	}
+
+    public boolean isFull() {
+        return full;
+    }
+
+    public void setFull(boolean full) {
+        this.full = full;
+    }
+
+    public Date getCutoffDate() {
+        return cutoffDate;
+    }
+
+    public void setCutoffDate(Date cutoffDate) {
+        this.cutoffDate = cutoffDate;
+    }
+
+    public boolean isChefsTable() {
+        return isChefsTable;
+    }
+
+    public void setChefsTable(boolean isChefsTable) {
+        this.isChefsTable = isChefsTable;
+    }
+
+    public double getSteeringDiscount() {
+        return steeringDiscount;
+    }
+
+    public void setSteeringDiscount(double steeringDiscount) {
+        this.steeringDiscount = steeringDiscount;
+    }
+
+    public boolean isEcoFriendly() {
+        return ecoFriendly;
+    }
+
+    public void setEcoFriendly(boolean ecoFriendly) {
+        this.ecoFriendly = ecoFriendly;
+    }
+
+    public boolean isDepot() {
+        return isDepot;
+    }
+
+    public void setDepot(boolean isDepot) {
+        this.isDepot = isDepot;
+    }
+
+    public boolean isAlcoholRestricted() {
+        return alcoholRestricted;
+    }
+
+    public void setAlcoholRestricted(boolean alcoholRestricted) {
+        this.alcoholRestricted = alcoholRestricted;
+    }
+
+    public Boolean getIsEarlyAM() {
+        return isEarlyAM;
+    }
+
+    public void setIsEarlyAM(Boolean isEarlyAM) {
+        this.isEarlyAM = isEarlyAM;
+    }
+
+    public boolean isUnavailable() {
+        return unavailable;
+    }
+
+    public void setUnavailable(boolean unavailable) {
+        this.unavailable = unavailable;
+    }
+
+    public double getPremiumAmount() {
+        return premiumAmount;
+    }
+
+    public void setPremiumAmount(double premiumAmount) {
+        this.premiumAmount = premiumAmount;
+    }
+
+    public boolean isPremiumSlot() {
+        return premiumSlot;
+    }
+
+    public void setPremiumSlot(boolean premiumSlot) {
+        this.premiumSlot = premiumSlot;
+    }
+
+    public String getMinOrderMsg() {
+        return minOrderMsg;
+    }
+
+    public void setMinOrderMsg(String minOrderMsg) {
+        this.minOrderMsg = minOrderMsg;
+    }
+
+    public double getMinOrderAmt() {
+        return minOrderAmt;
+    }
+
+    public void setMinOrderAmt(double minOrderAmt) {
+        this.minOrderAmt = minOrderAmt;
+    }
+
+    public boolean isMinOrderMet() {
+        return minOrderMet;
+    }
+
+    public void setMinOrderMet(boolean minOrderMet) {
+        this.minOrderMet = minOrderMet;
+    }
+
+    public double getDeliveryFee() {
+        return deliveryFee;
+    }
+
+    public void setDeliveryFee(double deliveryFee) {
+        this.deliveryFee = deliveryFee;
+    }
+
+    public double getPromoDeliveryFee() {
+        return promoDeliveryFee;
+    }
+
+    public void setPromoDeliveryFee(double promoDeliveryFee) {
+        this.promoDeliveryFee = promoDeliveryFee;
+    }
 
 }

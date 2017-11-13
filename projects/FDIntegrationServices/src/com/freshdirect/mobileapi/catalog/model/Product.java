@@ -26,6 +26,8 @@ public class Product {
 	private final List<Image> images;
 	private final float minQty;
 	private final float maxQty;
+
+
 	private final float incrementQty;
 	private final String quantityText;
 	private final String primaryBrand;
@@ -34,6 +36,7 @@ public class Product {
 	private final WineAttributes wineAttributes;
 	private final List<String> keywords;
 	private final int productLayout;
+	private  double availableQty;
 
 	private Product(ProductBuilder builder) {
 		id=builder.id;
@@ -51,6 +54,7 @@ public class Product {
 		wineAttributes = builder.wineAttributes;
 		keywords = builder.keywords;
 		productLayout=builder.productLayout;
+		this.availableQty=builder.availableQty;
 	}
 	
 	public String getId() {
@@ -96,6 +100,13 @@ public class Product {
 	public String getQuantityText() {
 		return quantityText;
 	}
+	
+	public double getAvailableQty() {
+		return availableQty;
+	}
+
+	
+
 
 	public SkuInfo getSkuInfo() {
 		return skuInfo;
@@ -218,6 +229,7 @@ public class Product {
 		private SkuInfo skuInfo;
 		private WineAttributes wineAttributes;
 		private int productLayout;
+		private double availableQty;
 		
 		private static final List<String> EMPTY=Collections.<String>emptyList();
 		
@@ -344,6 +356,12 @@ public class Product {
             
         	return this;
         }
+        
+        
+        public ProductBuilder availableQty(double val) {
+            availableQty = val;
+            return this;
+       }
         
         public ProductBuilder minQty(float val) {
              minQty = val;

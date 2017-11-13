@@ -270,7 +270,7 @@ public class CartSubTotalBoxService {
             }
         }
 
-        if (isRedemptionApplied) {
+        if (isRedemptionApplied && !removeLinkDisplayed) {
             if (redemptionPromo.isSampleItem()) {
                 CartSubTotalFieldData sampleRedemptionPromo = new CartSubTotalFieldData();
                 sampleRedemptionPromo.setId(REDEMPTION_PROMO_ID);
@@ -304,7 +304,7 @@ public class CartSubTotalBoxService {
             }
         }
 
-        if (redemptionPromo != null && redemptionPromo.isLineItemDiscount() && cart.isDiscountInCart(promoCode)) {
+        if (redemptionPromo != null && redemptionPromo.isLineItemDiscount() && cart.isDiscountInCart(promoCode) && !removeLinkDisplayed) {
             CartSubTotalFieldData lineItemRedemptionPromo = new CartSubTotalFieldData();
             lineItemRedemptionPromo.setId(REDEMPTION_PROMO_ID);
             lineItemRedemptionPromo.setText(redemptionPromo.getDescription());

@@ -28,6 +28,8 @@ public class ErpCustomerCreditModel extends ErpCreditModel {
 	private Date createDate;
 	private String cDate;
 	private String saleId;
+	private String eStore;
+	private String customerId;
 
 	public ErpCustomerCreditModel() {
 		super();
@@ -82,6 +84,22 @@ public class ErpCustomerCreditModel extends ErpCreditModel {
 
 	public String getSaleId() {
 		return saleId;
+	}
+
+	public String geteStore() {
+		return eStore;
+	}
+
+	public void seteStore(String eStore) {
+		this.eStore = eStore;
+	}
+
+	public String getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(String customerId) {
+		this.customerId = customerId;
 	}
 }
 

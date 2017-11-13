@@ -49,7 +49,9 @@ if (mobWeb) {
 	
   <tmpl:put name="ecpage">view_cart</tmpl:put>
   
-  <tmpl:put name="title">View Cart</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct="true">
+    <fd:SEOMetaTag pageId="ec_view_cart"></fd:SEOMetaTag>
+  </tmpl:put>
 
   <tmpl:put name='content' direct='true'>
     <div class="container <%= (mobWeb)? "mobweb-checkout" : "" %>">

@@ -41,7 +41,7 @@
 
     <tmpl:put name='searchbox'>
         <form action="#" class="qs-search" id="qs_search">
-            <input type="text" placeholder="Search Your Top Items" id="searchTerm" />
+            <input type="text" aria-label="Search Your Top Items" placeholder="Search Your Top Items" id="searchTerm" />
             <span class="reset-search"></span>
             <button class="cssbutton purple icon-magnifying-glass-before notext searchbutton">search</button>
         </form>

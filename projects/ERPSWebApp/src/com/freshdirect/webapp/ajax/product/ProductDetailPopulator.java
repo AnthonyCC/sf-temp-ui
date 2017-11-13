@@ -369,9 +369,9 @@ public class ProductDetailPopulator {
 			product = ProductPricingFactory.getInstance().getPricingAdapter( product, user.getUserContext().getPricingContext() );
 		}
 		
-        if (enableProductIncomplete && PopulatorUtil.isProductIncomplete(product) && !PopulatorUtil.isNodeArchived(product)) {
-			return createProductDataLight(user, product);
-		}
+	    if (enableProductIncomplete && PopulatorUtil.isProductIncomplete(product) && !PopulatorUtil.isNodeArchived(product)) {
+				return createProductDataLight(user, product);
+			}
 		
 		SkuModel sku = PopulatorUtil.getDefSku( product );
 		if ( sku == null ) {
@@ -551,6 +551,7 @@ public class ProductDetailPopulator {
         }
 			
 		data.setProductPageUrl( FDURLUtil.getNewProductURI( product ) );
+        data.setProductPagePrimaryHomeUrl(FDURLUtil.getNewProductURI(product.getPrimaryProductModel()));
 		
 		data.setQuantityText( product.getQuantityText() );
 		data.setPackageDescription( product.getPackageDescription() );
@@ -664,6 +665,11 @@ public class ProductDetailPopulator {
             }
         }
         item.setAvailable(available);
+        
+        item.setAvailableQty( productModel.getAvailabileQtyForDate(null));
+        if ( item.getAvailableQty() ==0 && item.isAvailable() ){
+        	LOG.warn( " INCONSISTENCY BETWEEN AVAILABILITY AND INVENTORY: productid:" + item.getProductId());
+        }
     }
 
 

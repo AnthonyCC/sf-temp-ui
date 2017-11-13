@@ -11,19 +11,12 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumAccountActivityType;
-import com.freshdirect.customer.EnumAlertType;
 import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.customer.EnumPaymentType;
-import com.freshdirect.customer.ErpAuthorizationException;
-import com.freshdirect.customer.ErpAuthorizationModel;
-import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
-import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerCreditUtil;
@@ -59,7 +52,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 
 	private static final String EWALLET_SESSION_ATTRIBUTE_NAME="EWALLET_CARD_TYPE";
 	private static final String MP_EWALLET_CARD="MP_CARD";
-	
+
     public PaymentMethodManipulator(HttpServletRequest request, HttpServletResponse response, ActionResult result, String actionName) {
         super(request, response, result, actionName);
 	}
@@ -71,9 +64,9 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		String isAccountLevel = request.getParameter( "isAccountLevel" );
 		setPaymentMethod(paymentId, billingRef, request, session, result, actionName, isAccountLevel);
 	}
-	
+
 	public static void setPaymentMethod(String paymentId, String billingRef, HttpServletRequest request, HttpSession session, ActionResult result, String actionName, String isAccountLevel) throws FDResourceException {
-		FDUserI user = (FDUserI) session.getAttribute( SessionName.USER );	
+		FDUserI user = (FDUserI) session.getAttribute( SessionName.USER );
 		boolean makeGoodOrder = false;
 		boolean addOnOrder = false;
 		String referencedOrder = "";
@@ -102,7 +95,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		String referencedOrder = "";
 		String app = (String) session.getAttribute( SessionName.APPLICATION );
 		FDUserI user = getUser();
-		
+
 		if ( "CALLCENTER".equalsIgnoreCase( app ) ) {
 			makeGoodOrder = request.getParameter( "makeGoodOrder" ) != null;
 			referencedOrder = NVL.apply( request.getParameter( "referencedOrder" ), "" ).trim();
@@ -132,7 +125,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		user.setPostPromoConflictEnabled(true);
 		user.updateUserState();
 	}
-	
+
 	private static void setPaymentMethod( HttpServletRequest request, HttpSession session, FDUserI user, ActionResult result, String actionName, String paymentId, String billingRef, boolean makeGoodOrder, boolean addOnOrder, String referencedOrder, String isAccountLevel ) throws FDResourceException {
 		//
 		// check for a valid payment ID
@@ -159,7 +152,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		// search for the payment method with the matching ID
 		//
 		Collection<ErpPaymentMethodI> paymentMethods = FDCustomerManager.getPaymentMethods( identity );
-		
+
 		ErpPaymentMethodI paymentMethod = null;
 
 		for ( ErpPaymentMethodI item : paymentMethods ) {
@@ -206,44 +199,44 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		}
 
 		FDCartModel cart = getCart(user, actionName);
-		// EPT payment is not allowed for Standing order 
+		// EPT payment is not allowed for Standing order
 		if(!StandingOrderHelper.isSO3StandingOrder(user)){
 			if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), user)){
 				// if user made a successful EBT order, isEbtAccepted flag did not populate at new cart creation correctly -> so making sure this is populated freshly
            		 if (user.getShoppingCart().getDeliveryAddress() != null) {
                	 DeliveryAddressManipulator.checkAndSetEbtAccepted(user.getShoppingCart().getDeliveryAddress().getZipCode(), user, user.getShoppingCart());
-            	}	
+            	}
 			}
-			
+
 			if(null !=paymentMethod && EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())&& !user.isEbtAccepted()/*!(cart.getDeliveryAddress() instanceof ErpDepotAddressModel)*/){
 				/*if(null ==getUser().getShoppingCart().getPaymentMethod() || !EnumPaymentMethodType.EBT.equals(getUser().getShoppingCart().getPaymentMethod().getPaymentMethodType()) ||
-						!(getUser().getShoppingCart() instanceof FDModifyCartModel)){*/	
-					
+						!(getUser().getShoppingCart() instanceof FDModifyCartModel)){*/
+
 					result.addError(new ActionError("ebtPaymentNotAllowed",SystemMessageList.MSG_EBT_NOT_ALLOWED));
-					if(null!= cart.getDeliveryAddress() && cart.getDeliveryAddress().isEbtAccepted()){ 
+					if(null!= cart.getDeliveryAddress() && cart.getDeliveryAddress().isEbtAccepted()){
 						result.addError(new ActionError("ebtPaymentNotAllowed",SystemMessageList.MSG_EBT_NOT_ALLOWED_UNSETTLED_ORDERS));
 					}
 					if(user.hasEBTAlert()){
-						result.addError(new ActionError("ebtPaymentNotAllowed",MessageFormat.format(SystemMessageList.MSG_EBT_NOT_ALLOWED_ON_ALERT, 
+						result.addError(new ActionError("ebtPaymentNotAllowed",MessageFormat.format(SystemMessageList.MSG_EBT_NOT_ALLOWED_ON_ALERT,
 			            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
 					}
 	//			}
 			 }
 		}
-			
+
 		if (!FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), user) || result.isSuccess()) {
 			paymentMethod.setBillingRef( billingRef );
 			if(makeGoodOrder)
 				paymentMethod.setPaymentType(EnumPaymentType.MAKE_GOOD);
 			else if(addOnOrder)
 				paymentMethod.setPaymentType(EnumPaymentType.ADD_ON_ORDER);
-			else 
+			else
 				paymentMethod.setPaymentType(EnumPaymentType.REGULAR );
-			
+
 			paymentMethod.setReferencedOrder( referencedOrder );
 			cart.setPaymentMethod( paymentMethod );
 				setCart(cart, user, actionName, session);
-	
+
 			//
 				// set default payment method and check for unique billing address,
 				// if
@@ -252,65 +245,45 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 			FDActionInfo info = AccountActivityUtil.getActionInfo( session );
 			final PrimaryKey pmPK = ( (ErpPaymentMethodModel)paymentMethod ).getPK();
 			// Do not set MP Ewallet card as default Payment Method
-		
+
 		if(!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user) && (paymentMethod.geteWalletID() == null || paymentMethod.geteWalletID().equals(""+EnumEwalletType.PP.getValue()))){
 				FDCustomerManager.setDefaultPaymentMethod( info, pmPK, null, false );
 			}else{
 			if(null != isAccountLevel && isAccountLevel.equalsIgnoreCase("Y")){
-				ErpAuthorizationModel auth = null;
-				if(paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.ECHECK) || paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.CREDITCARD) 
+
+
+				if(paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.ECHECK) || paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.CREDITCARD)
 						|| paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.DEBITCARD)){
-				if(paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.ECHECK)){
-			/*		if(FDCustomerManager.isECheckRestricted(info.getIdentity()) || FDCustomerManager.isOnAlert(info.getIdentity().getErpCustomerPK(), EnumAlertType.ECHECK.getName())){
-						result.addError(new ActionError("verificationFailed",SystemMessageList.MSG_DEFAULT_PAYMENT_VERIVICATION_FAILURE));
-					}else{*/
-					try {
-						auth = FDCustomerManager.verifyCard(info, paymentMethod, true);
-					} catch (ErpPaymentMethodException e) {
-						LOGGER.error(e);
-						throw new FDResourceException(e);
-					}
-					//}
-				}else if(paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.CREDITCARD) || paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.DEBITCARD)){
-					try {
+				 if(paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.CREDITCARD) || paymentMethod.getPaymentMethodType().equals(EnumPaymentMethodType.DEBITCARD)){
+
 						if(paymentMethod.isAvsCkeckFailed() && !paymentMethod.isBypassAVSCheck()){
 							result.addError(new ActionError("avsFailed",SystemMessageList.MSG_DEFAULT_PAYMENT_VERIVICATION_FAILURE));
 						}else if(null != paymentMethod.getExpirationDate() && paymentMethod.getExpirationDate().before(java.util.Calendar.getInstance().getTime())){
 							result.addError(new ActionError("cardExpired",SystemMessageList.MSG_CARD_EXPIRATION_DATE));
-						}else{
-						auth = FDCustomerManager.verify(info, paymentMethod);
 						}
-					} catch (ErpTransactionException e) {
-						LOGGER.error(e);
-						throw new FDResourceException(e);
-					} catch (ErpAuthorizationException e) {
-						LOGGER.error(e);
-						throw new FDResourceException(e);
-					}
 				}
-				if(null == auth || !auth.isApproved()){
-					result.addError(new ActionError("verificationFailed",SystemMessageList.MSG_DEFAULT_PAYMENT_VERIVICATION_FAILURE));
-				}
+				} else {
+					result.addError(new ActionError("wrongAccount",SystemMessageList.MSG_DEFAULT_PAYMENT_VERIVICATION_FAILURE));
 				}
 				if(result.isSuccess()){
 				FDCustomerManager.setDefaultPaymentMethod( info, pmPK, EnumPaymentMethodDefaultType.DEFAULT_CUST, true );
 				}
 			user.refreshFdCustomer();
 			}
-			
+
 				/*
 				 * if ( user.isDepotUser() ) { if (
 				 * user.isEligibleForSignupPromotion() ) { if (
 				 * FDCustomerManager.checkBillToAddressFraud( info, paymentMethod )
 				 * ) {
-				 * 
+				 *
 				 * session.setAttribute( SessionName.SIGNUP_WARNING,
 				 * MessageFormat.format( SystemMessageList.MSG_NOT_UNIQUE_INFO, new
 				 * Object[] { user.getCustomerServiceContact() } ) );
-				 * 
+				 *
 				 * } } }
 				 */
-	
+
 				FDSessionUser currentUser = (FDSessionUser) user;
 			currentUser.setPostPromoConflictEnabled( true );
 			currentUser.updateUserState();
@@ -347,8 +320,6 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		if ( result.isSuccess() ) {
             performAddAndSetPaymentMethod(request, session, getUser(), result, paymentMethod, actionName);
 		}
-
-
 	}
 
     public static void performAddAndSetPaymentMethod(HttpServletRequest request, HttpSession session, FDUserI user, ActionResult result, ErpPaymentMethodI paymentMethod,
@@ -376,9 +347,9 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
             }
             if ( result.isSuccess() ) {
                 applyCustomerCredits(actionName, user, session);
-            }               
+            }
         }
-        
+
 	}
 	public void performAddPaymentMethod() throws FDResourceException {
 		ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processForm( request, result, getIdentity() );
@@ -390,12 +361,12 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 	/**
 	 * This method is called by the old code
 	 * performing some checks before adding valid payment method
-	 * 
+	 *
 	 * @param paymentMethod
 	 * @param result
 	 * @param request
 	 * @param user
-	 * 
+	 *
 	 * @throws FDResourceException
 	 */
     public static void performAddPaymentMethod(ErpPaymentMethodI paymentMethod, ActionResult result, HttpServletRequest request, FDUserI user) throws FDResourceException {
@@ -415,20 +386,20 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 
     /**
      * Call this with valid payment method!
-     * 
+     *
      * @see {@link #performAddPaymentMethod() }
-     * 
+     *
      * @param paymentMethod
      * @param result
      * @param request
-     * 
+     *
      * @throws FDResourceException
      */
     public static void performAddPaymentMethodInternal(ErpPaymentMethodI paymentMethod, ActionResult result, HttpServletRequest request) throws FDResourceException {
         PaymentMethodUtil.addPaymentMethod(request, result, paymentMethod);
     }
-    
-    
+
+
     public void performEditPaymentMethod() throws FDResourceException {
         ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processEditForm(request, result, getIdentity());
         if(result.isSuccess()){
@@ -461,7 +432,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 	/**
 	 * Apply customer credits One exception: store credits should not be applied
 	 * for Robin Hood
-	 * 
+	 *
 	 * @throws FDResourceException
 	 */
 	public void applyCustomerCredits() throws FDResourceException {
@@ -477,7 +448,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		FDCustomerCreditUtil.applyCustomerCredit(cart, user.getIdentity());
 		setCart(cart, user, actionName, session);
 	}
-	
+
 	/**
 	 * @param paymentMethods
 	 * @param request
@@ -508,7 +479,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		}
 		return paymentMethods;
 	}
-	
+
 	//if E-check alert is ON for customer, at checkout page his Echecks are removed here
 	public static List<ErpPaymentMethodI> removeEcheckAccounts(List<ErpPaymentMethodI> paymentMethods) {
 		LOGGER.info("inside removeEcheckAccounts() as E-Check Alert is ON for the customer ");
@@ -529,5 +500,5 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 			return erpPaymentMethodIs;
 		}
 		return paymentMethods;
-	}	
+	}
 }

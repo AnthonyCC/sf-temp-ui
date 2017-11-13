@@ -13,12 +13,12 @@ String loginlink = "/login/login_main.jsp";
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xml:lang="en-US">
-	<head>
-		<title>FreshDirect</title>
-
-		<%@ include file="/common/template/includes/metatags.jspf" %>
-		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+  <head>
+    <title>FreshDirect</title>
+    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
+    <%@ include file="/common/template/includes/metatags.jspf" %>
+    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
+    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 		
 		<%
 	if("slite".equals(request.getParameter("referrer_page"))) {
@@ -39,8 +39,8 @@ String loginlink = "/login/login_main.jsp";
 	}
 	%>
 	
-	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
-</head>
+    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+  </head>
 	<body bgcolor="#ffffff" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">
 	<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 			<div align="center"><br />

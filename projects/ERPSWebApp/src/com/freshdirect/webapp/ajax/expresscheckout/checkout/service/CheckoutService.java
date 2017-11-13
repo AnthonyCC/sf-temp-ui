@@ -49,6 +49,7 @@ import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFac
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationError;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationResult;
 import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
+import com.freshdirect.webapp.cos.util.CosFeatureUtil;
 import com.freshdirect.webapp.crm.util.MakeGoodOrderUtility;
 import com.freshdirect.webapp.crm.util.MakeGoodOrderUtility.PostAction;
 import com.freshdirect.webapp.crm.util.MakeGoodOrderUtility.SessionParamGetter;
@@ -210,9 +211,10 @@ public class CheckoutService {
 				        if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, request.getCookies(), user)) {
 				            final Visitor visitor = Visitor.withUser(user);
 				            final LocationInfo loc = LocationInfo.withUrlAndReferer(RequestUtil.getFullRequestUrl(request), request.getHeader(HttpHeaders.REFERER));
-
+				            final boolean cosAction = CosFeatureUtil.isUnbxdCosAction(user, request.getCookies());
+				            
 				            for (FDCartLineI cartline : cart.getOrderLines()) {
-				                AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.ORDER, visitor, loc, null, null, cartline);
+				                AnalyticsEventI event = AnalyticsEventFactory.createEvent(AnalyticsEventType.ORDER, visitor, loc, null, null, cartline, cosAction);
 				                EventLoggerService.getInstance().log(event);
 				            }
 				        }
@@ -307,18 +309,22 @@ public class CheckoutService {
 			if(request.getSession().getAttribute(WALLET_SESSION_CARD_ID) != null ){
 				selectedWalletCardId = request.getSession().getAttribute(WALLET_SESSION_CARD_ID).toString();
 			}
-			for (PaymentData data : payments) {
-				if(data.geteWalletID() == null){
-					paymentsNew.add(data);
-				}else{
-					int ewalletId = EnumEwalletType.getEnum("MP").getValue();
-					if(data.geteWalletID()!=null && data.geteWalletID().equals(""+ewalletId) && selectedWalletCardId.equals(data.getId())){
-						paymentsNew.add(data);
+			if(null != payments){
+				for (PaymentData data : payments) {
+					if(null != data){
+						if(data.geteWalletID() == null){
+							paymentsNew.add(data);
+						}else{
+							int ewalletId = EnumEwalletType.getEnum("MP").getValue();
+							if(data.geteWalletID()!=null && data.geteWalletID().equals(""+ewalletId) && selectedWalletCardId.equals(data.getId())){
+								paymentsNew.add(data);
+							}
+						}
+						//PayPal Changes
+						if(data.geteWalletID()!=null && data.geteWalletID().equals(""+ EnumEwalletType.PP.getValue())){
+							paymentsNew.add(data);
+						}
 					}
-				}
-				//PayPal Changes
-				if(data.geteWalletID()!=null && data.geteWalletID().equals(""+ EnumEwalletType.PP.getValue())){
-					paymentsNew.add(data);
 				}
 			}
 			formpaymentData.setPayments(paymentsNew);

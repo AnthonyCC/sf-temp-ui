@@ -76,7 +76,6 @@ import com.freshdirect.webapp.ajax.browse.data.SectionData;
 import com.freshdirect.webapp.ajax.browse.paging.BrowseDataPagerHelper;
 import com.freshdirect.webapp.ajax.browse.service.ProductService;
 import com.freshdirect.webapp.ajax.cache.EhCacheUtilWrapper;
-import com.freshdirect.webapp.ajax.filtering.CmsFilteringServlet.BrowseEvent;
 import com.freshdirect.webapp.ajax.holidaymealbundle.service.HolidayMealBundleService;
 import com.freshdirect.webapp.ajax.mealkit.service.MealkitService;
 import com.freshdirect.webapp.ajax.product.CriteoProductsUtil;
@@ -108,6 +107,48 @@ public class CmsFilteringFlow {
     private CmsFilteringFlow() {
     }
 
+	public BrowseData doBrowseSectionsFlow(CmsFilteringNavigator nav, FDSessionUser user)
+			throws InvalidFilteringArgumentException, FDResourceException, FDNotFoundException {
+		String cacheKey = user.getUser().getPrimaryKey() + "," + nav.getId() + ",sec" + nav.getActivePage() + "_" + nav.getPageSize();
+		BrowseData browseData = EhCacheUtilWrapper.getObjectFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME,
+				cacheKey);
+		if (browseData != null) {
+			return browseData;
+		}
+
+		BrowseDataContext browseDataContext = doBrowseFlow(nav, user);
+
+		if (!nav.isPdp() && !(browseDataContext.getCurrentContainer() instanceof SuperDepartmentModel)) {
+			// process sort options
+			BrowseDataBuilderFactory.getInstance().processSorting(browseDataContext, nav, user);
+		}
+
+		// -- REMOVE EMPTY SECTIONS --
+		browseData = browseDataContext.extractBrowseDataPrototype(user, nav);
+		if (!browseDataContext.getNavigationModel().isSuperDepartment() && !FDStoreProperties.getPreviewMode()) {
+			BrowseDataBuilderFactory.getInstance().removeEmptySections(browseData.getSections().getSections(), null);
+		}
+
+		// pagination
+		BrowseDataPagerHelper.createPagerContext(browseData, nav);
+
+		if (!nav.isPdp()) {
+			browseData.getSortOptions().setCurrentOrderAsc(nav.isOrderAscending());
+		}
+
+		// remove unused data
+		browseData.setMenuBoxes(null);
+		browseData.setAdProducts(null);
+		browseData.setAssortProducts(null);
+		browseData.setCarousels(null);
+		browseData.setDescriptiveContent(null);
+		browseData.setSearchParams(null);
+		browseData.setPager(null);
+
+		EhCacheUtilWrapper.putObjectToCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, cacheKey, browseData);
+		return browseData;
+	}
+	
     public CmsFilteringFlowResult doFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException, FDResourceException, FDNotFoundException {
         BrowseData browseData = null;
         String cacheKey = user.getUser().getPrimaryKey() + "," + nav.getId();
@@ -118,7 +159,7 @@ public class CmsFilteringFlow {
                 browseDataContext = doBrowseFlow(nav, user);
             }
 
-            if (!nav.isPdp()) {
+            if (!nav.isPdp() && !nav.isSpecialPage()) { //TODO quick fix for TKG meals (special layouts)
                 EhCacheUtilWrapper.putObjectToCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, cacheKey, browseDataContext);
             }
 
@@ -348,7 +389,6 @@ public class CmsFilteringFlow {
 
     private BrowseDataContext getBrowseDataContextFromCacheForPaging(CmsFilteringNavigator nav, FDSessionUser user, String cacheKey) {
         BrowseDataContext browseDataContext = null;
-        BrowseEvent event = nav.getBrowseEvent() != null ? BrowseEvent.valueOf(nav.getBrowseEvent().toUpperCase()) : BrowseEvent.NOEVENT;
         // use userRefinementCache
 
         browseDataContext = EhCacheUtilWrapper.getObjectFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, cacheKey);
@@ -925,21 +965,22 @@ public class CmsFilteringFlow {
         browseDataContext = BrowseDataBuilderFactory.createBuilder(navigationModel.getNavDepth(), navigationModel.isSuperDepartment(), null).buildBrowseData(navigationModel, user,
                 nav);
 
-        if(displayHookLogicProducts(nav, user, contentNodeModel) && !nav.isPdp()){         //if(FDStoreProperties.isHookLogicEnabled()){
-            if(null != browseDataContext){
-                String catId = nav.getId();
-                Map<String, List<ProductData>> hlSelectionsofProductsList=new HashMap<String, List<ProductData>>();
-                Map<String, String> hlSelectionsofPageBeacons=new HashMap<String, String>();
-                Map<String, Integer> hlCatProductsCount=new HashMap<String, Integer>();
-                Map<String, String> hlCatEmptyProductPageBeacon=new HashMap<String, String>();
-                List<SectionContext> sectionContexts = browseDataContext.getSectionContexts();
-                getAdProductsByCategory(user, navigationModel, catId, hlSelectionsofProductsList, hlSelectionsofPageBeacons, sectionContexts,
-                		browseDataContext, hlCatProductsCount, hlCatEmptyProductPageBeacon);
-                browseDataContext.getAdProducts().setHlSelectionOfProductList(hlSelectionsofProductsList);
-                browseDataContext.getAdProducts().setHlSelectionsPageBeacons(hlSelectionsofPageBeacons);
-                browseDataContext.getAdProducts().setHlCatProductsCount(hlCatProductsCount);
+        if (!nav.isPdp() && 
+        		!nav.populateSectionsOnly() &&
+        		null != browseDataContext &&
+        		displayHookLogicProducts(nav, user, contentNodeModel)) {         //if(FDStoreProperties.isHookLogicEnabled()){
+            String catId = nav.getId();
+            Map<String, List<ProductData>> hlSelectionsofProductsList=new HashMap<String, List<ProductData>>();
+            Map<String, String> hlSelectionsofPageBeacons=new HashMap<String, String>();
+            Map<String, Integer> hlCatProductsCount=new HashMap<String, Integer>();
+            Map<String, String> hlCatEmptyProductPageBeacon=new HashMap<String, String>();
+            List<SectionContext> sectionContexts = browseDataContext.getSectionContexts();
+            getAdProductsByCategory(user, navigationModel, catId, hlSelectionsofProductsList, hlSelectionsofPageBeacons, sectionContexts,
+            		browseDataContext, hlCatProductsCount, hlCatEmptyProductPageBeacon);
+            browseDataContext.getAdProducts().setHlSelectionOfProductList(hlSelectionsofProductsList);
+            browseDataContext.getAdProducts().setHlSelectionsPageBeacons(hlSelectionsofPageBeacons);
+            browseDataContext.getAdProducts().setHlCatProductsCount(hlCatProductsCount);
 
-            }
         }
 		if(nav.isPdp() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.hooklogic2016, user)) {
 				browseDataContext.setProductId(nav.getProductId());
@@ -956,38 +997,39 @@ public class CmsFilteringFlow {
 
         savePageTypeForCaching(nav.getPageType(), browseDataContext);
 
-        if (!navigationModel.isSuperDepartment()) { // don't do these in case of super department page
+        if (!navigationModel.isSuperDepartment() && !nav.populateSectionsOnly()) { // don't do these in case of super department page
             // menu availability check
             MenuBuilderFactory.getInstance().checkMenuStatus(browseDataContext, navigationModel, user);
         }
 
-        // populate browseData with the menu
-        browseDataContext.getMenuBoxes().setMenuBoxes(navigationModel.getLeftNav());
-        final ContentNodeModel departmentorSuperDepartment = getDepartmentOrSuperDepartment(contentNodeModel, navigationModel);
-        browseDataContext.getMenuBoxes().setMenuName(departmentorSuperDepartment.getFullName());
-        browseDataContext.getMenuBoxes().setMenuId(departmentorSuperDepartment.getContentKey().getId());
+        
+        if (!nav.populateSectionsOnly()) {
+        	// populate browseData with the menu
+	        browseDataContext.getMenuBoxes().setMenuBoxes(navigationModel.getLeftNav());
+	        final ContentNodeModel departmentorSuperDepartment = getDepartmentOrSuperDepartment(contentNodeModel, navigationModel);
+	        browseDataContext.getMenuBoxes().setMenuName(departmentorSuperDepartment.getFullName());
+	        browseDataContext.getMenuBoxes().setMenuId(departmentorSuperDepartment.getContentKey().getId());
+	        // -- POPULATE EXTRA DATA --
+	
+	        // populate browseData with breadcrumbs
+        	BrowseDataBuilderFactory.getInstance().populateWithBreadCrumbAndDesciptiveContent(browseDataContext, navigationModel);
+        	relocateBrandFilterBasedOnCmsSetting(browseDataContext);
+        
 
-        // -- POPULATE EXTRA DATA --
-
-        // populate browseData with breadcrumbs
-        BrowseDataBuilderFactory.getInstance().populateWithBreadCrumbAndDesciptiveContent(browseDataContext, navigationModel);
-
-        relocateBrandFilterBasedOnCmsSetting(browseDataContext);
-
-        // populate browseData with filterLabels
-        BrowseDataBuilderFactory.getInstance().populateWithFilterLabels(browseDataContext, navigationModel);
-
-        boolean isWineDepartment = checkWineDepartment(navigationModel);
-        browseDataContext.getDescriptiveContent().setWineDepartment(isWineDepartment);
-
-        if (contentNodeModel instanceof CategoryModel && ((CategoryModel) contentNodeModel).getSpecialLayout() != null) {
-            if (EnumLayoutType.HOLIDAY_MEAL_BUNDLE_CATEGORY.equals(((CategoryModel) contentNodeModel).getSpecialLayout())) {
-                browseDataContext.setTopMedia(HolidayMealBundleService.defaultService().populateHolidayMealCategoryMedia(navigationModel));
-            } else if (EnumLayoutType.RECIPE_MEALKIT_CATEGORY.equals(((CategoryModel) contentNodeModel).getSpecialLayout())) {
-                browseDataContext.setTopMedia(MealkitService.defaultService().populateMealkitCategoryMedia(navigationModel));
-            }
+	        // populate browseData with filterLabels
+	        BrowseDataBuilderFactory.getInstance().populateWithFilterLabels(browseDataContext, navigationModel);
+	
+	        boolean isWineDepartment = checkWineDepartment(navigationModel);
+	        browseDataContext.getDescriptiveContent().setWineDepartment(isWineDepartment);
+	
+	        if (contentNodeModel instanceof CategoryModel && ((CategoryModel) contentNodeModel).getSpecialLayout() != null) {
+	            if (EnumLayoutType.HOLIDAY_MEAL_BUNDLE_CATEGORY.equals(((CategoryModel) contentNodeModel).getSpecialLayout())) {
+	                browseDataContext.setTopMedia(HolidayMealBundleService.defaultService().populateHolidayMealCategoryMedia(navigationModel));
+	            } else if (EnumLayoutType.RECIPE_MEALKIT_CATEGORY.equals(((CategoryModel) contentNodeModel).getSpecialLayout())) {
+	                browseDataContext.setTopMedia(MealkitService.defaultService().populateMealkitCategoryMedia(navigationModel));
+	            }
+	        }
         }
-
         return browseDataContext;
     }
 

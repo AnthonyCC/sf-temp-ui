@@ -63,6 +63,7 @@
 <html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <fd:SEOMetaTag pageId="index" includeSiteSearchLink="true" title="Welcome to FreshDirect"></fd:SEOMetaTag>
+    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
     <fd:IncludeMedia name="/media/editorial/site_pages/javascript.html" />
     <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 
@@ -330,8 +331,6 @@
     <features:potato />
     <%-- TODO !!! --%>
     <script type="text/javascript">
-    	//test
-  	//function setAndAppendExtoleObject() {}
     (function () {
       window.FreshDirect = window.FreshDirect || {};
       var fd = window.FreshDirect;
@@ -398,7 +397,7 @@
   		FDUserI dpTcCheckUser = (FDUserI)session.getAttribute(SessionName.USER);
   		FDSessionUser dpTcCheckSessionUser = (FDSessionUser)session.getAttribute(SessionName.USER);
 
-  		if (dpTcCheckUser != null && request.getRequestURI().indexOf("brownie_points.jsp") == -1 &&
+  		if (dpTcCheckUser != null &&
   				(dpTcCheckUser.getLevel() == FDSessionUser.SIGNED_IN && Boolean.FALSE.equals(dpTcCheckSessionUser.hasSeenDpNewTc()) && dpTcCheckUser.isDpNewTcBlocking())
   			) {
   			%>
@@ -411,7 +410,6 @@
   		}
   	%>
 
-  <script src="/assets/javascript/jquery/jquery_validate/jquery.validate.js"></script>
 <!-- i_javascript_opt end-->
 
     <%@ include file="/common/template/includes/footer.jspf" %>

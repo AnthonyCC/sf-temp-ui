@@ -3,9 +3,10 @@
 /**
  * @param? newSO3
  * @param? soFreq
+ * @param? mobWeb
 */
 {template .timeselectorcontent autoescape="false"}
-<div class="drawer__content displayTable">
+<div class="drawer__content {if $mobWeb}mob-web{else}displayTable{/if}">
   <div class="tableFooterGroup">
   {if $newSO3}
   		<div class="standing-orders-3-select-freq-header">
@@ -24,12 +25,14 @@
   <div data-component="timeselectorcontent">
   </div>
   </div>
-  <div class="drawer__header tableHeaderGroup" >
-    <p class="timeslot_pattern_notification">
-      <iframe width="800" height="45" src="/OASonly.jsp?listPos=CheckoutTS&sitePage=www.freshdirect.com/XCpaymentpromo"></iframe>
-    </p>
-    <button class="cssbutton orange" data-component="timeslotchangebutton">Done <span class="offscreen">with Delivery Time</span></button>
-  </div>
+  {if not $mobWeb}
+    <div class="drawer__header tableHeaderGroup" >
+      <p class="timeslot_pattern_notification">
+        <iframe width="800" height="45" src="/OASonly.jsp?listPos=CheckoutTS&sitePage=www.freshdirect.com/XCpaymentpromo"></iframe>
+      </p>
+      <button class="cssbutton orange" data-component="timeslotchangebutton">Done <span class="offscreen">with Delivery Time</span></button>
+    </div>
+  {/if}
 
 </div>
 {/template}
@@ -56,7 +59,7 @@
 	    {param dayOfMonth: $dayOfMonth /}
 	    {param dayOfWeek: $dayOfWeek /}
 	    {param timePeriod: $timePeriod /}
-	    {param soFreq: $soFreq /} 
+	    {param soFreq: $soFreq /}
 	  {/call}
 	  {if $showForceOrder}<label class='timeslot-force-order'>Force Order: <input data-component="forceorder" type="checkbox" {if $forceOrderEnabled}checked{/if}></label>{/if}
 	</div>

@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,6 +21,7 @@ import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
+import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -31,6 +33,7 @@ import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.webapp.action.Action;
 import com.freshdirect.webapp.action.HttpContext;
 import com.freshdirect.webapp.action.fdstore.RegistrationAction;
@@ -425,7 +428,8 @@ public class SocialAccountService implements AccountService {
                     rec.setDate(new Date());
                     rec.setNote("<a href=\"/main/summary.jsp?erpCustId=" + customerId + "\">" + user.getUserId() + "</a> <a href=\"/main/summary.jsp?erpCustId=" + customerId
                             + "\">ID #" + customerId + "</a>");
-                    new ErpLogActivityCommand(FDServiceLocator.getInstance(), rec).execute();
+
+                    logActivity(rec);
                     // this.pageContext.getSession().removeAttribute("EXISTING_CUSTOMERID");
                     // this.setSuccessPage("/registration/referee_signup2.jsp");
                     successPage = "/registration/referee_signup2.jsp";
@@ -452,7 +456,21 @@ public class SocialAccountService implements AccountService {
         return successPage;
     }
 
-    private boolean isUserIdExistForUserToken(String userToken) {
+    private void logActivity(ErpActivityRecord rec) {
+		if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ActivityLogSB)) {
+			try {
+				FDECommerceService.getInstance().logActivity(rec);
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else {
+			new ErpLogActivityCommand(FDServiceLocator.getInstance(), rec).execute();
+		}
+		
+	}
+
+	private boolean isUserIdExistForUserToken(String userToken) {
 
         String userId = "";
 

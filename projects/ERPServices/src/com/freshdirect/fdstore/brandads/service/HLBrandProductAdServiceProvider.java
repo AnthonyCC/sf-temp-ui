@@ -164,6 +164,7 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 		urlParameters.put(HOOKLOGIC_PUSERID, HLRequestData.getUserId());
 		urlParameters.put(HOOKLOGIC_PLATFORM, HLRequestData.getPlatformSource());
 		urlParameters.put(HOOKLOGIC_MAXMES, hlAdConfigProvider.getBrandProductAdProviderMaxmes());
+		urlParameters.put(HOOKLOGIC_BEACON, hlAdConfigProvider.getBrandProductsBeacon());
 
 		StringBuilder urlToCall = getBaseUrl(urlToCallStr, urlParameters);
 		String jsonResponse = sendGetRequest(urlToCall);
@@ -188,6 +189,7 @@ public class HLBrandProductAdServiceProvider implements BrandProductAdService {
 		urlParameters.put(HOOKLOGIC_PLATFORM, hLBrandProductAdRequest.getPlatformSource());
 		urlParameters.put(HOOKLOGIC_PGN, hlAdConfigProvider.getBrandProductAdProviderPgn());
 		urlParameters.put(HOOKLOGIC_MAXMES, hlAdConfigProvider.getPdpProductAdProviderMaxmes());
+		urlParameters.put(HOOKLOGIC_BEACON, hlAdConfigProvider.getBrandProductsBeacon());
 
 		StringBuilder urlToCall = getBaseUrl(urlToCallStr, urlParameters);
 		String jsonResponse = sendGetRequest(urlToCall);

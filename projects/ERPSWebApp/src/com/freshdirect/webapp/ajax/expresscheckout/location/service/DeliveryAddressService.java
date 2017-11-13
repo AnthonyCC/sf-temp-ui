@@ -131,7 +131,7 @@ public class DeliveryAddressService {
         List<ValidationError> validationErrors = new ArrayList<ValidationError>();
         ErpAddressModel deliveryAddress = user.getShoppingCart().getDeliveryAddress();
         if (deliveryAddress == null || ((deliveryAddress instanceof ErpDepotAddressModel) && ((ErpDepotAddressModel) deliveryAddress).getZoneCode() == null)
-                || deliveryAddress.getId() == null || user.getShoppingCart().getZoneInfo() == null || !deliveryAddress.getId().equals(deliveryAddressId)) {
+                || deliveryAddress.getId() == null || user.getShoppingCart().getZoneInfo() == null || !deliveryAddress.getId().equals(deliveryAddressId) || StandingOrderHelper.isSO3StandingOrder(user)) {
             ActionResult actionResult = new ActionResult();
             if(deliveryAddress!=null){
             	LOGGER.info("address Id: "+deliveryAddress.getId()+ " " +deliveryAddressId);

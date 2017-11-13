@@ -22,8 +22,9 @@ final int W_YA_EDIT_CHECKACCT = 970;
 	<%@ include file="/includes/i_error_messages.jspf" %>
 </fd:ErrorHandler>
 <%boolean proceedThruCheckout=false;%>
+<form fdform class="top-margin10 dispblock-fields" fdform-displayerrorafter method="post">
 <table WIDTH="<%= W_YA_EDIT_CHECKACCT %>" cellspacing="0" cellpadding="0" border="0">
-<form method="post">
+
 <tr>
 <td class="text11" WIDTH="<%= W_YA_EDIT_CHECKACCT %>">
 <font class="title18">Edit Checking Account</font><br>
@@ -36,7 +37,7 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
 <%@ include file="/includes/ckt_acct/edit_checkacct_fields.jspf"%>
 <br><br>
 
-<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%= W_YA_EDIT_CHECKACCT %>" HEIGHT="1" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/dotted_line_w.gif" alt="" WIDTH="<%= W_YA_EDIT_CHECKACCT %>" HEIGHT="1" BORDER="0"><BR>
 <FONT CLASS="space4pix"><BR><BR></FONT>
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%= W_YA_EDIT_CHECKACCT %>">
 	<TR VALIGN="TOP">

@@ -93,8 +93,14 @@ public class ProductExtraDataPopulator {
 	private static final Logger LOG = LoggerFactory.getInstance( ProductExtraDataPopulator.class );
 	private static final java.text.DecimalFormat QTY_FORMATTER = new java.text.DecimalFormat("0");
 	private static final java.text.DecimalFormat TOTAL_FORMATTER = new java.text.DecimalFormat("0.00");
+	
+	public static ProductExtraData createExtraData( FDUserI user, ProductModel product, String grpId, String grpVersion, boolean includeProductAboutMedia)
+			throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
+	return  createExtraData( user,  product, grpId, grpVersion, includeProductAboutMedia, null);
+	}
+	//appdev 6259 nutrition panel from soy required including a css to go with it to build the page/viewport.
 
-	public static ProductExtraData createExtraData( FDUserI user, ProductModel product, String grpId, String grpVersion, boolean includeProductAboutMedia) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
+	public static ProductExtraData createExtraData( FDUserI user, ProductModel product, String grpId, String grpVersion, boolean includeProductAboutMedia, String cssValue) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
 		
 		if ( product == null ) {
 			BaseJsonServlet.returnHttpError( 500, "product not found" );
@@ -104,7 +110,7 @@ public class ProductExtraDataPopulator {
 		ProductExtraData data = new ProductExtraData();
 		
 		// First populate product-level data
-		populateData( data, user, product, grpId, grpVersion, includeProductAboutMedia );
+		populateData( data, user, product, grpId, grpVersion, includeProductAboutMedia, cssValue );
 		
 		return data;
 	}
@@ -118,7 +124,7 @@ public class ProductExtraDataPopulator {
 		// Get the ProductModel
 		ProductModel product = PopulatorUtil.getProduct( productId, categoryId );
 		
-		return createExtraData( user, product, grpId, grpVersion, true );
+		return createExtraData( user, product, grpId, grpVersion, true, null );
 	}
 
     public static ProductExtraData createLightExtraData(FDUserI user, ProductModel product) throws HttpErrorResponse {
@@ -141,7 +147,8 @@ public class ProductExtraDataPopulator {
     }
 	
 	private static void populateData(ProductExtraData data, FDUserI user,
-			ProductModel productNode, String grpId, String grpVersion, boolean incProductAboutMedia) throws FDResourceException, FDSkuNotFoundException {
+			ProductModel productNode, String grpId, String grpVersion, 
+			boolean incProductAboutMedia, String cssValue) throws FDResourceException, FDSkuNotFoundException {
 
 		final String popupPage = "/shared/popup.jsp";
 
@@ -463,19 +470,22 @@ public class ProductExtraDataPopulator {
 			final boolean useCache = true;
 			final String skuCode = defaultSku.getSkuCode();
 			
-			NutritionPanel panel = null;
+			NutritionPanel nutritionPanel = null;
 
 			if ( useCache ) {
 				// For storefront get panel from cache
-				panel = FDNutritionPanelCache.getInstance().getNutritionPanel( skuCode );
+				nutritionPanel = FDNutritionPanelCache.getInstance().getNutritionPanel( skuCode );
 			} else {
 				// No caching for erpsadmin, just get the real stuff directly
-				panel = ErpFactory.getInstance().getNutritionPanel( skuCode );
+				nutritionPanel = ErpFactory.getInstance().getNutritionPanel( skuCode );
+			}
+			if (cssValue!=null && ! cssValue.isEmpty()){
+				nutritionPanel.setViewportCss(cssValue);
 			}
 
-			if (panel != null) {
+			if (nutritionPanel != null) {
 				// nutritionMap.put(skuCode, panel);
-				data.setNutritionPanel(panel);
+				data.setNutritionPanel(nutritionPanel);
 			} else if (fdprd != null && fdprd.hasNutritionFacts()) {
 				// old style
 				

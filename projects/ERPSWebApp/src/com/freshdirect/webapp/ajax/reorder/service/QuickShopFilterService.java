@@ -92,13 +92,14 @@ public class QuickShopFilterService {
 		List<QuickShopLineItemWrapper> items = QuickShopHelper.getWrappedOrderHistoryUsingCache(user, tab, cacheName);
 		
 		List<QuickShopLineItemWrapper> discontinuedandoosproducts = new ArrayList<QuickShopLineItemWrapper>();
-        for(QuickShopLineItemWrapper item : items){
-        	if(item!=null && item.getProduct()!=null && (item.getProduct().isDiscontinued() || item.getProduct().isOutOfSeason()) && 
-        			user!=null && user.getUserContext() != null && user.getUserContext().getStoreContext() != null && user.getUserContext().getStoreContext().getEStoreId() == EnumEStoreId.FDX){
-        		discontinuedandoosproducts.add(item);
-        	}
-        }
-        items.removeAll(discontinuedandoosproducts);
+		if(user!=null && user.getUserContext() != null && user.getUserContext().getStoreContext() != null && user.getUserContext().getStoreContext().getEStoreId() == EnumEStoreId.FDX){    			
+	        for(QuickShopLineItemWrapper item : items){
+	        	if(item!=null && item.getProduct()!=null && (item.getProduct().isDiscontinued() || item.getProduct().isOutOfSeason())){
+	        		discontinuedandoosproducts.add(item);
+	        	}
+	        }
+	        items.removeAll(discontinuedandoosproducts);
+		}      
 			
 		if (EnumQuickShopTab.PAST_ORDERS.equals(tab)) {
 			String yourLastOrderId = getYourLastOrderId(items);

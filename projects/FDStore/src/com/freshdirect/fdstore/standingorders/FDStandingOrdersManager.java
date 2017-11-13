@@ -114,12 +114,29 @@ public class FDStandingOrdersManager {
 		}
 	}
 
+	//old SO cron flow and 2 days notification
 	public Collection<FDStandingOrder> loadActiveStandingOrders(boolean isNewSo) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDStandingOrdersSB sb = soHome.create();
 			
 			return sb.loadActiveStandingOrders(isNewSo);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	//new SO cron flow
+	public Collection<FDStandingOrder> loadActiveStandingOrdersForAWeek(boolean isNewSo) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();
+			
+			return sb.loadActiveStandingOrdersForAWeek(isNewSo);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

@@ -241,13 +241,13 @@ function submitFormManageSO(id,action,name,freq, deleteDate){
       				minimumResultsForSearch: Infinity
         		});
       			// Catches all updates
-      			$jq("#cartcontent").on( "cartcontent-update", function(){ soItemTriggerUpdate(id, data, false); });
-      			$jq("#cartcontent").on( "quantity-change", function(){ soItemTriggerUpdate(id, data, true); });
-      			$jq("#cartcontent").on( "cartline-delete", function(){ soItemTriggerUpdate(id, data, true); $jq(soID).addClass("cartline-deleted"); });
-      			$jq("#cartcontent").on( "click", "#tipApply", function(){ soItemTriggerUpdate(id, data, true); });
-      			$jq("#ec-drawer").on( "address-update", function(){ soItemTriggerUpdate(id, data, false); });
-      			$jq("#ec-drawer").on( "timeselector-update", function(){ soItemTriggerUpdate(id, data, false); });
-      			$jq("#ec-drawer").on( "paymentmethod-update", function(){ soItemTriggerUpdate(id, data, false); });
+      			$jq("#cartcontent").on( "cartcontent-update", function(){ soItemTriggerUpdate(id, data, false, false); });
+      			$jq("#cartcontent").on( "quantity-change", function(){ soItemTriggerUpdate(id, data, true, false); });
+      			$jq("#cartcontent").on( "cartline-delete", function(){ soItemTriggerUpdate(id, data, true, false); $jq(soID).addClass("cartline-deleted"); });
+      			$jq("#cartcontent").on( "click", "#tipApply", function(){ soItemTriggerUpdate(id, data, true, false); });
+      			$jq("#ec-drawer").on( "address-update", function(){ soItemTriggerUpdate(id, data, false, true); });
+      			$jq("#ec-drawer").on( "timeselector-update", function(){ soItemTriggerUpdate(id, data, false, false); });
+      			$jq("#ec-drawer").on( "paymentmethod-update", function(){ soItemTriggerUpdate(id, data, false, false); });
             }
             if('selectFreq'==action || 'selectFreq2'==action){
             	if('selectFreq'==action){
@@ -310,7 +310,7 @@ function populateDrawer(id){
 	}
 }
 
-function soItemTriggerUpdate(id, data, isCartUpdate){
+function soItemTriggerUpdate(id, data, isCartUpdate, isAddressUpdate){
 	var soID = "#soid_" + id;
 	if(isCartUpdate){
 		//$jq(soID).addClass("cart-saved");
@@ -323,7 +323,11 @@ function soItemTriggerUpdate(id, data, isCartUpdate){
 		}, 5000);
 	} else {
 		$jq(soID).addClass("drawer-saved");
-		getSOData(id, "soItemUpdateDrawer");
+		if(isAddressUpdate){
+			getSOData(id, "soItemUpdateAddress");
+		} else{
+			getSOData(id, "soItemUpdateDrawer");
+		}
 		if(data.standingOrderResponseData.activate){
 			$jq(soID + " .standing-orders-3-so-settings-activate").addClass("open");
       	}
@@ -370,7 +374,7 @@ function getSOData(id, action){
         		soSaved(id, activatedAndHasAddress, false);
         		updateSOItem(id, data);
         	}
-        	if('soItemUpdateDrawer'==action){
+        	if('soItemUpdateDrawer'==action || 'soItemUpdateAddress'==action){
         		if(data.activated && data.deliveryDate !=  null){
         			activatedAndHasAddress = true;
         		} else {
@@ -384,7 +388,7 @@ function getSOData(id, action){
         			drawerSuccessConformation +='<div class="so-drawer-success-text">This change will not affect your next delivery.</div>';
         		}
         		drawerSuccessConformation += '<hr class="so-drawer-success-hr" /><div class="so-drawer-success-info">Change will take effect: <span class="so-drawer-success-date">';
-        		if(data.deliveryDate == null){
+        		if('soItemUpdateAddress'==action && $jq(".successtimeslot").length == 0){
         			drawerSuccessConformation += '<a href="javascript:closeDrawerSuccessOverlayDialog(true)">Select a delivery time</a></span></div><button class="so-drawer-success-ok cssbutton cssbutton-flat green nontransparent" onclick="closeDrawerSuccessOverlayDialog(true)">OK</button></div>';
         		} else {
         			drawerSuccessConformation += data.dayOfWeek + ', ' + data.deliveryDate + ', ' + data.deliveryTime + '</span></div><button class="so-drawer-success-ok cssbutton cssbutton-flat green nontransparent" onclick="closeDrawerSuccessOverlayDialog(false)">OK</button></div>';

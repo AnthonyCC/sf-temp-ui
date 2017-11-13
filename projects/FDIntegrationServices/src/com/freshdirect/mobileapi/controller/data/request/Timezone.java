@@ -10,8 +10,18 @@ import com.freshdirect.mobileapi.controller.data.Message;
 public class Timezone extends Message {
 
     private String timezone;
+    
+    private boolean excludeaddr;
 
-    public String getTimezone() {
+    public boolean getExcludeaddr() {
+		return excludeaddr;
+	}
+
+	public void setExcludeaddr(boolean excludeaddr) {
+		this.excludeaddr = excludeaddr;
+	}
+
+	public String getTimezone() {
         return timezone;
     }
 

@@ -148,11 +148,23 @@ public class RequestUtil {
      * @return the request url with the query parameters
      */
     public static String getFullRequestUrl(HttpServletRequest request) {
-        StringBuffer urlBuilder = request.getRequestURL();
-        if (request.getQueryString() != null && !request.getQueryString().isEmpty()) {
-            urlBuilder.append("?").append(request.getQueryString());
+        return getFullRequestUrl(request.getRequestURL().toString(), request.getQueryString());
+    }
+
+    public static String getFullRequestUrl(String baseUrl, String queryString) {
+        StringBuilder urlBuilder = new StringBuilder(baseUrl);
+        if (queryString != null && !queryString.isEmpty()) {
+            urlBuilder.append("?").append(queryString);
         }
         return urlBuilder.toString();
+    }
+
+    public static String getFullRequestUrl(String baseUrl, String uri, String queryString) {
+        StringBuilder urlBuilder = new StringBuilder(baseUrl);
+        if (uri != null) {
+            urlBuilder.append(uri);
+        }
+        return getFullRequestUrl(urlBuilder.toString(), queryString);
     }
 
     public static String getValueFromCookie(HttpServletRequest request, String cookieKey) {

@@ -14,6 +14,7 @@
 	Boolean fdTcAgree = (Boolean)session.getAttribute("fdTcAgree");
 	String uri = request.getRequestURI().toLowerCase();
     boolean onCartPage = (uri.contains("/checkout/") && !uri.contains("view_cart.jsp") /*|| uri.contains("view_cart.jsp")|| uri.contains("merge_cart.jsp")*/ );
+    boolean inGiftcard = uri.contains("/gift_card/") || (null != request.getParameter("successPage") && request.getParameter("successPage").toLowerCase().indexOf("/gift_card/") != -1);
 
 	final int W_GLOBAL_NAV_TOP_TOTAL = 970;
 	String hasEcouponsClass="";
@@ -97,68 +98,71 @@ if(user != null) {
 
 			<div class="nav<%= " "+hasEcouponsClass %>">
 				<a class="logo" href="<%= FDURLUtil.getLandingPageUrl(user)%>"><img src="/media/layout/nav/globalnav/fdx/logo.png" alt="FreshDirect" border="0" /></a>
-				<%
-					String searchFormClass = "searchform";
-					if (user != null && user.getLevel() != FDUserI.GUEST) {
-						if ( !(user.isEligibleForStandingOrders() && user.isNewSO3Enabled()) ) {
-							searchFormClass += " widen";
-						}
-					}
-				%>
-				<div class="searchform-cont">
-					<form class="<%= searchFormClass %>" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
-						<label for="topSearchField"><span class="offscreen">Search</span></label>
-						<%
-							{
-							    String searchParams = request.getParameter("searchParams")!=null ? request.getParameter("searchParams") : "";
-							%>
-								<input type="text" id="topSearchField" placeholder="Search" data-component="autocomplete" class="search" name="searchParams" value="<%= StringEscapeUtils.escapeHtml(searchParams) %>" />
-							<%
+				<% if (!inGiftcard) { %>
+					<%
+						String searchFormClass = "searchform";
+						if (user != null && user.getLevel() != FDUserI.GUEST) {
+							if ( !(user.isEligibleForStandingOrders() && user.isNewSO3Enabled()) ) {
+								searchFormClass += " widen";
 							}
-						%>
-						<button id="topInputFindButton_fdx" class="locabar-search cssbutton fdxgreen cssbutton-flat"><span class="offscreen">search</span></button>
-					</form>
-				</div>
-
-				<%-- nav links next to search field --%>
-			
-				<%
-				//if(Boolean.TRUE == pageContext.getAttribute(LocationHandlerTag.SERVICE_TYPE_MODIFICATION_ENABLED)){
-					%><div class="topnavitem" id="topnavitem_dlvType"><%
-					if(user.isCorporateUser()){
-						%><a href="/index.jsp?serviceType=HOME">Home delivery?</a><%
-					}else {
-						%><a href="/index.jsp?serviceType=CORPORATE">Office delivery?</a><%
-					}
-					%></div><%
-				//}
-				/*
-				we are currently having this always show here,
-				because the parent conditional seems to always be false on pages which use this file,
-				regardless of user status, even if incognito.
-				the mockups imply that one or the other should always show
-				*/
-				%>
-			
-				
-				<div class="topnavitem" id="topnavitem_help">
-			        <a href="/help/index.jsp?trk=gnav">Help</a>
-			    </div>
-		       
-				<div class="topnavitem" id="topnavitem_reorder">
-          			<a href="/quickshop/index.jsp" fd-login-required class="icon-reorder-icon-before">Reorder</a>
-				</div>
-				 <% if (user != null && user.getLevel() == FDUserI.GUEST) {  %>
-		        	<div class="topnavitem" id="topnavitem_signup" style="float:left;">
-						<a href="/registration/signup.jsp" class="signUpButton cssbutton orange" data-component="signup">Create Account</a>
+						}
+					%>
+					<div class="searchform-cont">
+						<form class="<%= searchFormClass %>" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
+							<label for="topSearchField"><span class="offscreen">Search</span></label>
+							<%
+								{
+								    String searchParams = request.getParameter("searchParams")!=null ? request.getParameter("searchParams") : "";
+								%>
+									<input type="text" id="topSearchField" placeholder="Search" data-component="autocomplete" class="search" name="searchParams" value="<%= StringEscapeUtils.escapeHtml(searchParams) %>" />
+								<%
+								}
+							%>
+							<button id="topInputFindButton_fdx" class="locabar-search cssbutton fdxgreen cssbutton-flat"><span class="offscreen">search</span></button>
+						</form>
 					</div>
-		        <% } %>
-
-		        <% if (user != null && user.getLevel() != FDUserI.GUEST && user.isEligibleForStandingOrders() && user.isNewSO3Enabled()) {  %>
-					<div class="topnavitem" id="topnavitem_standingorders">
-		            	<a href="/quickshop/standing_orders.jsp" class="cssbutton cssbutton-flat purple nontransparent" fd-login-required>Standing Orders</a>
-		        	</div>
-		        <% } %>
+	
+					<%-- nav links next to search field --%>
+				
+					<%
+					//if(Boolean.TRUE == pageContext.getAttribute(LocationHandlerTag.SERVICE_TYPE_MODIFICATION_ENABLED)){
+						%><div class="topnavitem" id="topnavitem_dlvType"><%
+						if(user.isCorporateUser()){
+							%><a href="/index.jsp?serviceType=HOME">Home delivery?</a><%
+						}else {
+							%><a href="/index.jsp?serviceType=CORPORATE">Office delivery?</a><%
+						}
+						%></div><%
+					//}
+					/*
+					we are currently having this always show here,
+					because the parent conditional seems to always be false on pages which use this file,
+					regardless of user status, even if incognito.
+					the mockups imply that one or the other should always show
+					*/
+					%>
+				
+					
+					<div class="topnavitem" id="topnavitem_help">
+				        <a href="/help/index.jsp?trk=gnav">Help</a>
+				    </div>
+			       
+					<div class="topnavitem" id="topnavitem_reorder">
+	          			<a href="/quickshop/index.jsp" fd-login-required class="icon-reorder-icon-before">Reorder</a>
+					</div>
+					 <% if (user != null && user.getLevel() == FDUserI.GUEST) {  %>
+			        	<div class="topnavitem" id="topnavitem_signup" style="float:left;">
+							<a href="/registration/signup.jsp" class="signUpButton cssbutton orange" data-component="signup">Create Account</a>
+						</div>
+			        <% } %>
+	
+			        <% if (user != null && user.getLevel() != FDUserI.GUEST && user.isEligibleForStandingOrders() && user.isNewSO3Enabled()) {  %>
+						<div class="topnavitem" id="topnavitem_standingorders">
+			            	<a href="/quickshop/standing_orders.jsp" class="cssbutton cssbutton-flat purple nontransparent" fd-login-required>Standing Orders</a>
+			        	</div>
+			        <% } %>
+			    <% } %>
+			       
 
 			    <br style="clear: both;" />
 			</div>
@@ -265,7 +269,7 @@ if(user != null) {
 	</div>
 <% } %>
 
-<% if (!onCartPage) { %>
+<% if (!onCartPage && !inGiftcard) { %>
 	<!-- GLOBALNAV -->
 	<potato:globalnav/>
 

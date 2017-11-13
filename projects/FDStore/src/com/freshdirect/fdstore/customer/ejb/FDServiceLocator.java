@@ -10,6 +10,7 @@ import javax.naming.NamingException;
 import com.freshdirect.common.ERPServiceLocator;
 import com.freshdirect.customer.ejb.ActivityLogHome;
 import com.freshdirect.customer.ejb.ErpCustomerHome;
+import com.freshdirect.customer.ejb.ErpCustomerInfoHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpFraudPreventionHome;
 import com.freshdirect.customer.ejb.ErpSaleHome;
@@ -364,5 +365,12 @@ public class FDServiceLocator extends ERPServiceLocator {
         }
     }
     
+    public ErpCustomerInfoHome getErpCustomerInfoHome() {
+        try {
+            return (ErpCustomerInfoHome) getRemoteHome(FDStoreProperties.getErpCustomerInfoHome());//freshdirect.fdstore.TEmailInfoManager");
+        } catch (NamingException e) {
+            throw new EJBException(e);
+        }
+    }
 
 }

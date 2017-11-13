@@ -156,7 +156,24 @@ public class DlvRestrictionManager {
 				alcoholRestrictionData.getDateRange().getStartdate(), alcoholRestrictionData.getDateRange().getEndDate(), EnumDlvRestrictionType.getEnum(alcoholRestrictionData.getType()),
 				alcoholRestrictionData.getPath(), alcoholRestrictionData.getState(), alcoholRestrictionData.getCounty(),
 				alcoholRestrictionData.getCity(), alcoholRestrictionData.getMunicipalityId(), alcoholRestrictionData.isAlcoholRestricted());
+		alcoholRestriction.setTimeRangeMap(buildTimeRangeMap(alcoholRestrictionData.getTimeRangeMap()));
 		return alcoholRestriction;
+	}
+
+	private static Map<Integer, List<TimeOfDayRange>> buildTimeRangeMap(
+			Map<Integer, List<TimeOfDayRangeData>> timeRangeMap) {
+		Map<Integer, List<TimeOfDayRange>> timeRangeMaptemp = new HashMap<Integer, List<TimeOfDayRange>>();
+		for (Map.Entry<Integer, List<TimeOfDayRangeData>> pair : timeRangeMap.entrySet()) {
+			Integer tempInt = pair.getKey();
+			List<TimeOfDayRangeData> tODRangeData = pair.getValue();
+			List<TimeOfDayRange> tODRange = new ArrayList<TimeOfDayRange>();
+			for(TimeOfDayRangeData data: tODRangeData){
+				tODRange.add(new TimeOfDayRange(new TimeOfDay(data.getStartDate().getNormalDate()), new TimeOfDay(data.getEndDate().getNormalDate())));
+			}
+			timeRangeMaptemp.put(tempInt, tODRange);
+		}
+		
+		return timeRangeMaptemp;
 	}
 
 	public static RestrictedAddressModel getAddressRestriction(String address1,String apartment,String zipCode) throws FDResourceException
@@ -185,6 +202,8 @@ public class DlvRestrictionManager {
 	
 	private static RestrictedAddressModel buildRestrictedAddressModel(RestrictedAddressModelData addressRestriction) {
 		RestrictedAddressModel restrictedAddress = new RestrictedAddressModel();
+		if(addressRestriction==null)
+			return null;
 		restrictedAddress.setLastModified(addressRestriction.getLastModified());
 		restrictedAddress.setModifiedBy(addressRestriction.getModifiedBy());
 		restrictedAddress.setReason(EnumRestrictedAddressReason.getRestrictionReason(addressRestriction.getReason()));
@@ -557,7 +576,7 @@ public class DlvRestrictionManager {
 			addressInfoData.setLongitude(restriction.getAddressInfo().getLongitude());
 			addressInfoData.setLatitude(restriction.getAddressInfo().getLatitude());
 			addressInfoData.setScrubbedStreet(restriction.getAddressInfo().getScrubbedStreet());
-			addressInfoData.setAddressType(restriction.getAddressInfo().getAddressType().getName());
+			addressInfoData.setAddressType(restriction.getAddressInfo().getAddressType()==null?null:restriction.getAddressInfo().getAddressType().getName());
 			addressInfoData.setCounty(restriction.getAddressInfo().getCounty());
 			addressInfoData.setGeocodeException(restriction.getAddressInfo().isGeocodeException());
 			addressInfoData.setBuildingId(restriction.getAddressInfo().getBuildingId());
