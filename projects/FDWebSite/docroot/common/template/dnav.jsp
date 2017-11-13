@@ -12,28 +12,31 @@ final int W_DNAV_TOTAL = 970;
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xml:lang="en-US">
-  <head>
+<head>
     <tmpl:get name="seoMetaTag"/>
 	<tmpl:get name='customhead'/>
-    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
-    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-    <fd:javascript src="/assets/javascript/timeslots.js" />
-    <fd:javascript src="/assets/javascript/FD_GiftCards.js" />
-    <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-    <%@ include file="/includes/sms_alerts/examples_layout.jspf" %>
-    <fd:css href="/assets/css/giftcards.css"/>
+
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+	<fd:javascript src="/assets/javascript/timeslots.js" />
+	<fd:javascript src="/assets/javascript/FD_GiftCards.js" />
+  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+  <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+  <%@ include file="/includes/sms_alerts/examples_layout.jspf" %>
+	<fd:css href="/assets/css/giftcards.css"/>
     <fd:css href="/assets/css/timeslots.css"/>
+
 	 <%
 		if ( (request.getRequestURI().indexOf("/your_account/giftcards.jsp")>-1) || (request.getRequestURI().indexOf("/your_account/gc_order_details.jsp")>-1) ) {
 			//do nothing
 		} else { %>
 			<%@ include file="/shared/template/includes/ccl.jspf" %>
 	<% } %>
-    <tmpl:get name='extraJs'/>
-    <tmpl:get name='extraCss'/>
-    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-  </head>
+  <tmpl:get name='extraJs'/>
+  <tmpl:get name='extraCss'/>
+
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+	
+</head>
 <BODY data-printdata="<tmpl:get name='printdata'/>" BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <%@ include file="/common/template/includes/globalnav.jspf" %> 

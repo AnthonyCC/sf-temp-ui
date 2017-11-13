@@ -105,7 +105,6 @@ request.setAttribute("listPos", "CategoryNote,SiteAccess,DeliveryFees");
 	
 			<%-- <%@ include file="/common/template/includes/metatags.jspf" %> --%>
 			<tmpl:get name="seoMetaTag"/>
-			<%@ include file="/common/template/includes/seo_canonical.jspf" %>
 			<meta name="msvalidate.01" content="2E163086C8383686A98EE1B694357FE7" />
 	
 			<%@ include file="/common/template/includes/i_javascripts.jspf" %>

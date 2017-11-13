@@ -36,9 +36,8 @@
 %>
 <html lang="en-US" xml:lang="en-US">
   <head>
-    <title><tmpl:get name="title"/></title>
-    <tmpl:get name="seoMetaTag"/><%-- if title is used, overrides previous tag --%>
-    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
+  	<title><tmpl:get name="title"/></title>
+  	<tmpl:get name="seoMetaTag"/><%-- if title is used, overrides previous tag --%>
 
     <meta name="HandheldFriendly" content="True">
     <meta name="MobileOptimized" content="320">

@@ -5,14 +5,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xml:lang="en-US">
-  <head>
+<head>
     <title><tmpl:get name='title'/></title>
-    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
     <%@ include file="/common/template/includes/metatags.jspf" %>
-    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-  </head>
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+</head>
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#FF9900" text="#333333" onLoad="window.resizeTo(445,335); window.focus();" topmargin="8" marginheight="8">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <%-- don't resize onLoad, tmpl used for plant tour --%>

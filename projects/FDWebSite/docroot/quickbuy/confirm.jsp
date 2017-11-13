@@ -16,14 +16,13 @@
 <fd:CheckLoginStatus id="user"/>
 <fd:FDShoppingCart id='cart' result='result'>
 <html lang="en-US" xml:lang="en-US">
-  <head>
-    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
-    <%@ include file="/common/template/includes/metatags.jspf" %>
-    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-    <%@ include file="/shared/template/includes/ccl.jspf" %>
-    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-  </head>
+<head>
+	<%@ include file="/common/template/includes/metatags.jspf" %>
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+	<%@ include file="/shared/template/includes/ccl.jspf" %>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+</head>
 <body class="qbBody">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <%

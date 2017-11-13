@@ -5,14 +5,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xml:lang="en-US">
-  <head>
+<head>
     <title><tmpl:get name='title'/></title>
-    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
     <%@ include file="/common/template/includes/metatags.jspf" %>
     <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
     <fd:javascript src="/assets/javascript/common_javascript.js"/>
     <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-  </head>
+</head>
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#FF9900" text="#333333" onLoad="window.focus();" topmargin="0" marginheight="0">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <table border="0" cellpadding="0" cellspacing="0" width="330">

@@ -10,23 +10,24 @@ final int W_NEW_PRODUCTS_NAV_TOTAL = 970;
 
 
 <html lang="en-US" xml:lang="en-US">  
-  <head>
+<head>
     <title><tmpl:get name='title'/></title>
-    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
-    <%@ include file="/common/template/includes/metatags.jspf" %>
-    <meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' lang="en-US">
-    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-    <fd:css href="/assets/css/ccl.css"/>
+	<%@ include file="/common/template/includes/metatags.jspf" %>
+	<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' lang="en-US">
+
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+	<fd:css href="/assets/css/ccl.css"/>
+
 <%
 final String trk = "srch"; // tracking code
 String criteria = request.getParameter("searchParams");
 
 %>
-    <fd:javascript src="/assets/javascript/rounded_corners.inc.js"/>
-    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-  </head>
+<fd:javascript src="/assets/javascript/rounded_corners.inc.js"/>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+</head>
 <body bgcolor="#ffffff" link="#336600" vlink="#336600" alink="#ff9900" text="#333333">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <%@ include file="/common/template/includes/globalnav.jspf" %>
