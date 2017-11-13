@@ -12,6 +12,7 @@
 <%@ page import="com.freshdirect.customer.ErpCustomerInfoModel"%>
 <%@ page import="com.freshdirect.framework.webapp.ActionResult"%>
 
+<%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -52,6 +53,7 @@ final boolean abstractTimeslots = false;
 		</tmpl:put>
 		
   	<tmpl:put name="jsmodules">
+      <soy:import packageName="common"/>
       <jwr:script src="/fdmodules.js"  useRandomParam="false" />
       <jwr:script src="/fdcomponents.js"  useRandomParam="false" />
   	</tmpl:put>
