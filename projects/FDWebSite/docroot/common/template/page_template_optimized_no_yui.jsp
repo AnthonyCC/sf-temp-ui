@@ -10,22 +10,22 @@
 <!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en-US" xml:lang="en-US"> <!--<![endif]-->
 
-  <head>
-    <title><tmpl:get name='title'/></title>
-    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
-    <%@ include file="/common/template/includes/metatags.jspf" %>
-    <%-- skip i_javascripts_optimized.jspf and load all code in here --%>
-    <%-- @ include file="/common/template/includes/i_javascripts_optimized.jspf" --%>
-
-    <%-- START i_javascripts_optimized.jspf --%>
-    <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
-    <%@ page import='com.freshdirect.fdstore.sempixel.FDSemPixelCache' %>
-    <%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
-    <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
-    <%@ page import='com.freshdirect.fdstore.customer.*' %>
-    <%@ taglib uri='freshdirect' prefix='fd' %>
-    <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
-    <%-- this file will be included in the <head> tag --%>
+<head>
+  <title><tmpl:get name='title'/></title>
+    
+  <%@ include file="/common/template/includes/metatags.jspf" %>
+  <%-- skip i_javascripts_optimized.jspf and load all code in here --%>
+  <%-- @ include file="/common/template/includes/i_javascripts_optimized.jspf" --%>
+  
+  <%-- START i_javascripts_optimized.jspf --%>
+	<%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
+	<%@ page import='com.freshdirect.fdstore.sempixel.FDSemPixelCache' %>
+	<%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
+	<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+	<%@ page import='com.freshdirect.fdstore.customer.*' %>
+	<%@ taglib uri='freshdirect' prefix='fd' %>
+	<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
+	<%-- this file will be included in the <head> tag --%>
 		<%
 			/* Google Analytics Pixel */
 			SemPixelModel semPixel_GA = FDSemPixelCache.getInstance().getSemPixel("GoogleAnalytics");
@@ -93,10 +93,11 @@
 	  
   <%-- END i_javascripts_optimized.jspf --%>
   
-    <%@ include file="/shared/template/includes/i_stylesheets_optimized.jspf" %>
-    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-    <tmpl:get name='extraHead'/>
-  </head>
+  <%@ include file="/shared/template/includes/i_stylesheets_optimized.jspf" %>
+  <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+  <tmpl:get name='extraHead'/>
+  
+</head>
 
 <body>
       

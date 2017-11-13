@@ -5,12 +5,11 @@
 <fd:CheckLoginStatus id="user"/>
 <fd:FDShoppingCart id='cart' result='result'>
 <html lang="en-US" xml:lang="en-US">
-  <head>
-    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
-    <%@ include file="/common/template/includes/metatags.jspf" %>
-    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-    <fd:javascript src="/assets/javascript/coremetrics.js"/>
-  </head>
+<head>
+  <%@ include file="/common/template/includes/metatags.jspf" %>
+  <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+<fd:javascript src="/assets/javascript/coremetrics.js"/>
+</head>
 <body>
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <fd:CmShop5 wrapIntoScriptTag="true" cart="<%=cart%>"/>

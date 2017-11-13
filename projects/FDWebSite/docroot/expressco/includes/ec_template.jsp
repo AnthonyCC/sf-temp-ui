@@ -7,7 +7,6 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <tmpl:get name="seoMetaTag"/>
-    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
     <%@ include file="/common/template/includes/i_javascripts.jspf" %>
     <jwr:style src="/grid.css" media="all" />
     <jwr:style src="/oldglobal.css" media="all" />

@@ -1,2 +1,0 @@
-<%@ page import="com.freshdirect.webapp.util.RequestUtil"%>
-<link rel="canonical" href="<%= "https://www.freshdirect.com" + (request.getAttribute("seoCanonicalUri") == null ? RequestUtil.getFullRequestUrl(request.getRequestURI(), request.getQueryString()) : (String) request.getAttribute("seoCanonicalUri")) %>" />

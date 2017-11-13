@@ -17,14 +17,13 @@ final int W_BDNML_CENTER = 629;
 final int W_BDNML_RIGHT = 191;
 %>
 <html lang="en-US" xml:lang="en-US">
-  <head>
-    <title><tmpl:get name='title'/></title>
-    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
-    <%@ include file="/common/template/includes/metatags.jspf" %>
-    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-    <%@ include file="/shared/template/includes/ccl.jspf" %>
+<head>
+	<title><tmpl:get name='title'/></title>
+	<%@ include file="/common/template/includes/metatags.jspf" %>
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+	<%@ include file="/shared/template/includes/ccl.jspf" %>
 <%
 	{
 		String onbeforeunload = (String)request.getAttribute("windowOnBeforeUnload");
@@ -38,8 +37,8 @@ final int W_BDNML_RIGHT = 191;
 	} // local block
 %>
 
-    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-  </head>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+</head>
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#FF9900" text="#333333" 
 	onload="<%= request.getAttribute("bodyOnLoad")%>" 
 	onunload="<%= request.getAttribute("bodyOnUnload")%>" >

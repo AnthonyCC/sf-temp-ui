@@ -18,13 +18,12 @@ final int W_BOTH_DNAV_RIGHT = 191;
 %>
 
 <html lang="en-US" xml:lang="en-US">
-  <head>
-    <tmpl:get name="seoMetaTag"/>
-    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
-    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
+<head>
+		<tmpl:get name="seoMetaTag"/>
+		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
     <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-    <%@ include file="/shared/template/includes/ccl.jspf" %>
+		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+		<%@ include file="/shared/template/includes/ccl.jspf" %>
     <% 
     if(FDStoreProperties.isBazaarvoiceEnabled()){
       String bvapiUrl = FDStoreProperties.getBazaarvoiceBvapiUrl(); %>
@@ -42,9 +41,9 @@ final int W_BOTH_DNAV_RIGHT = 191;
        } // if
     } // local block
 %>
-    <tmpl:get name='facebookmeta'/>
-    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-  </head>
+	<tmpl:get name='facebookmeta'/>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+</head>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333" 
      onload="<%= request.getAttribute("bodyOnLoad")%>" 
      onunload="<%= request.getAttribute("bodyOnUnload")%>" >

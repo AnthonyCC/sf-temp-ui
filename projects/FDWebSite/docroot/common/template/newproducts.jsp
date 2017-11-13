@@ -4,26 +4,25 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
 <html lang="en" lang="en-US" xml:lang="en-US">
-  <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" lang="en-US"/>
-    <title><tmpl:get name='title'/></title>
-    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
-    <%@ include file="/common/template/includes/metatags.jspf" %>
-    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-    <%@ include file="/common/template/includes/ga_custom_vars.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-    <%@ include file="/shared/template/includes/ccl.jspf" %>
-    <tmpl:get name='customCss'/>
-    <tmpl:get name='customJs'/>
-    <script>
-      FD_QuickBuy.style = {
-        closeButton:'quickbuy-noheader-close',
-        header:'quickbuy-noheader'
-      };
-    </script>
-    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-  </head>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" lang="en-US"/>
+		<title><tmpl:get name='title'/></title>
+		<%@ include file="/common/template/includes/metatags.jspf" %>
+		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+		<%@ include file="/common/template/includes/ga_custom_vars.jspf" %>
+	    <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+	    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+	    <%@ include file="/shared/template/includes/ccl.jspf" %>
+	    <tmpl:get name='customCss'/>
+	    <tmpl:get name='customJs'/>
+		<script>
+		FD_QuickBuy.style = {
+				closeButton:'quickbuy-noheader-close',
+				header:'quickbuy-noheader'
+		};
+		</script>
+		<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+	</head>
 <!--[if lt IE 7]><body class="ie ie6 newproducts <tmpl:get name="noResult"/> <tmpl:get name="startPage"/> <tmpl:get name='dfgs-container-class'/>"><![endif]-->
 <!--[if IE 7]><body class="ie ie7 newproducts <tmpl:get name="noResult"/> <tmpl:get name="startPage"/> <tmpl:get name='dfgs-container-class'/>"> <![endif]-->
 <!--[if IE 8]><body class="ie ie8 newproducts <tmpl:get name="noResult"/> <tmpl:get name="startPage"/> <tmpl:get name='dfgs-container-class'/>"> <![endif]-->

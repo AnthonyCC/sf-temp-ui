@@ -11,11 +11,10 @@
 <%@page import="com.freshdirect.webapp.util.MediaUtils"%>
 
 <html lang="en-US" xml:lang="en-US">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" lang="en-US">
-    <title>Available Multi-SKU Products</title>
-    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
-  </head>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" lang="en-US">
+<title>Available Multi-SKU Products</title>
+</head>
 <body>
 <%
 CharSequence keyword = "About our microwave-only, BPA-free container";

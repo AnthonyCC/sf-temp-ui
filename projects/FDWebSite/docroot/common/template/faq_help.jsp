@@ -24,16 +24,16 @@ String faqSections = FDStoreProperties.getFaqSections();
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en-US" xml:lang="en-US">
-  <head>
+<head>
     <tmpl:get name="seoMetaTag"/>
-    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
-    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-    <%@ include file="/shared/template/includes/ccl.jspf" %>
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+	<%@ include file="/shared/template/includes/ccl.jspf" %>
+	
     <tmpl:get name="extraCss" />
-    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-  </head>
+<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+</head>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <%

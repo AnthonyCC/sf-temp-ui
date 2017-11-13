@@ -10,17 +10,18 @@
 <!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en-US" xml:lang="en-US"> <!--<![endif]-->
 
-  <head>
-    <title><tmpl:get name='title'/></title>
-    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
-    <%@ include file="/common/template/includes/metatags.jspf" %>
-    <%@ include file="/common/template/includes/i_javascripts.jspf" %>  
-    <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %> 
-    <%@ include file="/shared/template/includes/ccl.jspf" %>  
-    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-    <tmpl:get name='extraHead'/>
-  </head>
+<head>
+  <title><tmpl:get name='title'/></title>
+    
+  <%@ include file="/common/template/includes/metatags.jspf" %>
+  <%@ include file="/common/template/includes/i_javascripts.jspf" %>  
+  <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+  <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %> 
+  <%@ include file="/shared/template/includes/ccl.jspf" %>  
+  <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+  <tmpl:get name='extraHead'/>
+  
+</head>
 
 <body>
       

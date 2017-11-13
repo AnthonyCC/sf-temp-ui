@@ -401,10 +401,11 @@ public class CmsFilteringFlow {
         } else {
             if (FilteringFlowType.BROWSE.equals(nav.getPageType()) && 
             		(!isBrowseRequestForTheSameId(nav, browseDataContext) || !isBrowseRequestForSameFilter(nav, browseDataContext))) {
-                EhCacheUtilWrapper.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, cacheKey); // if cached has same page type(browse) but other id
+                EhCacheUtilWrapper.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, cacheKey); // if cached has same page type(browse) but other id or filter
                 browseDataContext = null;
-            } else if (FilteringFlowType.SEARCH.equals(nav.getPageType()) && !isRequestForTheSameSearchParams(nav, browseDataContext)) {
-                EhCacheUtilWrapper.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, cacheKey); // if cached has same page type(search) but other search params
+            } else if (FilteringFlowType.SEARCH.equals(nav.getPageType()) && 
+            		(!isRequestForTheSameSearchParams(nav, browseDataContext) || !isBrowseRequestForSameFilter(nav, browseDataContext))) {
+                EhCacheUtilWrapper.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, cacheKey); // if cached has same page type(search) but other search params or filter
                 browseDataContext = null;
             }
         }
