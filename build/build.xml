@@ -441,6 +441,8 @@
     <target name= "copy_shared_dirs"
             description = "copy directories that are shared among projects">
 
+		<delete dir="${basedir}/projects/FDIntegrationServices/docroot/WEB-INF/shared"/>
+
         <delete dir="${basedir}/projects/FDWebSite/docroot/WEB-INF/shared"/>
         <delete dir="${basedir}/projects/CRM/docroot/WEB-INF/shared"/>
         <delete dir="${basedir}/projects/ERPSAdmin/docroot/WEB-INF/shared"/>
@@ -461,6 +463,11 @@
         <delete dir="${basedir}/projects/CRM/docroot/ccassets"/>
         <delete dir="${basedir}/projects/CRM/docroot/media_stat"/>
 		  <delete dir="${basedir}/projects/ERPSAdmin/docroot/assets"/>
+
+
+		<copy todir="${basedir}/projects/FDIntegrationServices/docroot/WEB-INF/shared">
+            <fileset dir="${basedir}/projects/WebAppCommon/docroot/WEB-INF/shared"/>
+        </copy>
 
 
         <copy todir="${basedir}/projects/FDWebSite/docroot/WEB-INF/shared">

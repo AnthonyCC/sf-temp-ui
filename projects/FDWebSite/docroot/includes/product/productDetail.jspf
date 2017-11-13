@@ -214,7 +214,7 @@
 							<soy:render template="pdp.ecoupon" data="${productPotato}" />
 							<div class="pdp-atc<%= (StandingOrderHelper.isEligibleForSo3_0(user)) ? " soShow" : "" %>">
 								<div class="pdp-atc-buttons">
-									<div style="display: inline-block;"><soy:render template="common.skuControlQuantity" data="${productPotato}" /></div>
+									<div style="display: inline-block; vertical-align: top;"><soy:render template="common.skuControlQuantity" data="${productPotato}" /></div>
 									<div style="display: inline-block;"><soy:render template="pdp.subtotal" data="${productPotato}"/></div>
 								</div>
 

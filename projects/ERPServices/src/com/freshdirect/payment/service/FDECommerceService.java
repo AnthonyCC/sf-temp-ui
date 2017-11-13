@@ -32,6 +32,7 @@ import weblogic.auddi.util.Logger;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.freshdirect.common.address.ContactAddressModel;
+import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.EnumTaxationType;
@@ -95,6 +96,7 @@ import com.freshdirect.ecommerce.data.erp.inventory.RestrictedInfoParam;
 import com.freshdirect.ecommerce.data.erp.material.ErpCharacteristicValuePriceData;
 import com.freshdirect.ecommerce.data.erp.material.ErpClassData;
 import com.freshdirect.ecommerce.data.erp.material.ErpMaterialData;
+import com.freshdirect.ecommerce.data.erp.material.ErpMaterialInfoModelData;
 import com.freshdirect.ecommerce.data.erp.material.ErpMaterialSalesAreaData;
 import com.freshdirect.ecommerce.data.erp.material.ErpPlantMaterialData;
 import com.freshdirect.ecommerce.data.erp.material.ErpSalesUnitData;
@@ -144,6 +146,7 @@ import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
 import com.freshdirect.erp.model.ErpClassModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.erp.model.ErpMaterialBatchHistoryModel;
+import com.freshdirect.erp.model.ErpMaterialInfoModel;
 import com.freshdirect.erp.model.ErpMaterialModel;
 import com.freshdirect.erp.model.ErpMaterialPriceModel;
 import com.freshdirect.erp.model.ErpMaterialSalesAreaModel;
@@ -250,6 +253,8 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	private static final String LOAD_ENUMS = "enums/all";
 	private static final String BRAND_SEARCH_BY_KEY ="brand/products/search";
 	private static final String BRAND_SEARCH_BY_PRODUCT ="brand/products/products";
+	private static final String BRAND_SEARCH_BY_HOME_PRODUCT ="brand/products/homeAdProd";
+	private static final String BRAND_SEARCH_BY_PDP_PRODUCT ="brand/products/pdpAdProduct";
 	private static final String BRAND_LAST_SENT_FEED ="brand/products/ordertime";
 	private static final String BRAND_ORDER_SUBMIT_BYDATE ="brand/products/orderdetailsbydate";
 	private static final String BRAND_ORDER_SUBMIT_SALEIDS ="brand/products/orderdetailsbysaleids";
@@ -1411,16 +1416,18 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	@Override
 	public HLBrandProductAdResponse getSearchbykeyword(
 			HLBrandProductAdRequest hLRequestData) throws RemoteException {
+		Response<HLBrandProductAdResponse> responses = null;
 		try {
 			Request<HLBrandProductAdRequest> request = new Request<HLBrandProductAdRequest>();
 			request.setData(hLRequestData);
 			String inputJson = buildRequest(request);
 			@SuppressWarnings("unchecked")
 			Response<HLBrandProductAdResponse> response = this.postData(inputJson, getFdCommerceEndPoint(BRAND_SEARCH_BY_KEY), Response.class);
+			responses =  this.postDataTypeMap(inputJson, getFdCommerceEndPoint(BRAND_SEARCH_BY_KEY), new TypeReference<Response<HLBrandProductAdResponse>>() {});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
-			return response.getData();
+			return responses.getData();
 		} catch (FDEcommServiceException e) {
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
@@ -1437,7 +1444,8 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			request.setData(hLRequestData);
 			String inputJson = buildRequest(request);
 			@SuppressWarnings("unchecked")
-			Response<HLBrandProductAdResponse> response = this.postData(inputJson, getFdCommerceEndPoint(BRAND_SEARCH_BY_PRODUCT), Response.class);
+//			Response<HLBrandProductAdResponse> response = this.postData(inputJson, getFdCommerceEndPoint(BRAND_SEARCH_BY_PRODUCT), Response.class);
+			Response<HLBrandProductAdResponse> response=this.postDataTypeMap(inputJson, getFdCommerceEndPoint(BRAND_SEARCH_BY_PRODUCT), new TypeReference<Response<HLBrandProductAdResponse>>() {});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
@@ -1473,7 +1481,8 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			request.setData(orderFeedDateFrom);
 			String inputJson = buildRequest(request);
 			@SuppressWarnings("unchecked")
-			Response<HLBrandProductAdResponse> response = this.postData(inputJson, getFdCommerceEndPoint(BRAND_ORDER_SUBMIT_BYDATE), Response.class);
+//			Response<HLBrandProductAdResponse> response = this.postData(inputJson, getFdCommerceEndPoint(BRAND_ORDER_SUBMIT_BYDATE), Response.class);
+			Response<HLBrandProductAdResponse> response=this.postDataTypeMap(inputJson, getFdCommerceEndPoint(BRAND_ORDER_SUBMIT_BYDATE), new TypeReference<Response<HLBrandProductAdResponse>>() {});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
@@ -1494,7 +1503,8 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 			request.setData(ordersList);
 			String inputJson = buildRequest(request);
 			@SuppressWarnings("unchecked")
-			Response<HLBrandProductAdResponse> response = this.postData(inputJson, getFdCommerceEndPoint(BRAND_ORDER_SUBMIT_SALEIDS), Response.class);
+//			Response<HLBrandProductAdResponse> response = this.postData(inputJson, getFdCommerceEndPoint(BRAND_ORDER_SUBMIT_SALEIDS), Response.class);
+			Response<HLBrandProductAdResponse> response=this.postDataTypeMap(inputJson, getFdCommerceEndPoint(BRAND_ORDER_SUBMIT_SALEIDS), new TypeReference<Response<HLBrandProductAdResponse>>() {});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
@@ -1546,7 +1556,8 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		String inputJson;
 		try {
 			inputJson = buildRequest(request.getData());
-			response = this.postData(inputJson, getFdCommerceEndPoint(EXTOLE_MANAGER_UPDATE), Response.class);
+//			response = this.postData(inputJson, getFdCommerceEndPoint(EXTOLE_MANAGER_UPDATE), Response.class);
+			response=this.postDataTypeMap(inputJson, getFdCommerceEndPoint(EXTOLE_MANAGER_UPDATE), new TypeReference<Response<HLBrandProductAdResponse>>() {});
 			if(!response.getResponseCode().equals("CREATED")){
 				throw new FDResourceException(response.getMessage());
 			}
@@ -1563,7 +1574,8 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		String inputJson;
 		try {
 			inputJson = buildRequest(request.getData());
-			response = this.postData(inputJson, getFdCommerceEndPoint(EXTOLE_MANAGER_SAVE), Response.class);
+//			response = this.postData(inputJson, getFdCommerceEndPoint(EXTOLE_MANAGER_SAVE), Response.class);
+			response=this.postDataTypeMap(inputJson, getFdCommerceEndPoint(EXTOLE_MANAGER_SAVE), new TypeReference<Response<HLBrandProductAdResponse>>() {});
 			if(!response.getResponseCode().equals("CREATED")){
 				throw new FDResourceException(response.getMessage());
 			}
@@ -2179,7 +2191,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	public boolean smsOptIn(String customerId, String mobileNumber,String eStoreId) throws FDResourceException {
 		Response<Boolean> response = null;
 		try {
-		response = this.httpGetDataTypeMap((getFdCommerceEndPoint(SMS_ALERT_OPTIN +"?customerId="+customerId+"&mobileNumber="+mobileNumber+"&eStoreId="+eStoreId)), new TypeReference<Response<Boolean>>() {});
+		response = this.httpGetDataTypeMap((getFdCommerceEndPoint(SMS_ALERT_OPTIN +"?customerId="+customerId+"&mobileNumber="+PhoneNumber.normalize(mobileNumber)+"&eStoreId="+eStoreId)), new TypeReference<Response<Boolean>>() {});
 		if(!response.getResponseCode().equals("OK"))
 			throw new FDResourceException(response.getMessage());
 		} catch (FDResourceException e) {
@@ -2192,7 +2204,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	public boolean smsOptInNonMarketing(String customerId, String mobileNumber,String eStoreId) throws FDResourceException  {
 		Response<Boolean> response = null;
 		try {
-		response = this.httpGetDataTypeMap((getFdCommerceEndPoint(SMS_ALERT_OPTIN_NONMARKETING +"?customerId="+customerId+"&mobileNumber="+mobileNumber+"&eStoreId="+eStoreId)), new TypeReference<Response<Boolean>>() {});
+		response = this.httpGetDataTypeMap((getFdCommerceEndPoint(SMS_ALERT_OPTIN_NONMARKETING +"?customerId="+customerId+"&mobileNumber="+PhoneNumber.normalize(mobileNumber)+"&eStoreId="+eStoreId)), new TypeReference<Response<Boolean>>() {});
 		if(!response.getResponseCode().equals("OK"))
 			throw new FDResourceException(response.getMessage());
 		} catch (FDResourceException e) {
@@ -2205,7 +2217,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	public boolean smsOptInMarketing(String customerId, String mobileNumber,String eStoreId) throws FDResourceException {
 		Response<Boolean> response = null;
 		try {
-		response = this.httpGetDataTypeMap((getFdCommerceEndPoint(SMS_ALERT_OPTIN_MARKETING +"?customerId="+customerId+"&mobileNumber="+mobileNumber+"&eStoreId="+eStoreId)), new TypeReference<Response<Boolean>>() {});
+		response = this.httpGetDataTypeMap((getFdCommerceEndPoint(SMS_ALERT_OPTIN_MARKETING +"?customerId="+customerId+"&mobileNumber="+PhoneNumber.normalize(mobileNumber)+"&eStoreId="+eStoreId)), new TypeReference<Response<Boolean>>() {});
 		if(!response.getResponseCode().equals("OK"))
 			throw new FDResourceException(response.getMessage());
 		} catch (FDResourceException e) {
@@ -2230,7 +2242,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		try {
 			String inputJson;
 			Request<RecievedSmsData> recieveSmsData = ModelConverter.buildSmsDataRequest(
-					mobileNumber, shortCode, carrierName, receivedDate,
+					 PhoneNumber.normalize(mobileNumber), shortCode, carrierName, receivedDate,
 					message, eStoreId);
 			inputJson = buildRequest(recieveSmsData);
 			postDataTypeMap(inputJson, getFdCommerceEndPoint(SMS_MESSAGE_UPDATE), new TypeReference<Response<Void>>() {});
@@ -2265,7 +2277,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	public boolean smsOrderCancel(String customerId, String mobileNumber,String orderId, String eStoreId) throws  FDResourceException {
 		Response<Boolean> response = null;
 		try {
-			Request<SmsOrderData> request = ModelConverter.buildSmsOrderDataRequest(customerId, mobileNumber, orderId, eStoreId);
+			Request<SmsOrderData> request = ModelConverter.buildSmsOrderDataRequest(customerId, PhoneNumber.normalize(mobileNumber), orderId, eStoreId);
 			String inputJson = buildRequest(request);
 			response = this.postData(inputJson, getFdCommerceEndPoint(SMS_ALERT_ORDER_CANCEL),Response.class);
 			if(!response.getResponseCode().equals("OK")){
@@ -2284,7 +2296,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	public boolean smsOrderConfirmation(String customerId, String mobileNumber,String orderId, String eStoreId) throws FDResourceException {
 		Response<Boolean> response = null;
 		try {
-			Request<SmsOrderData> request = ModelConverter.buildSmsOrderDataRequest(customerId, mobileNumber, orderId, eStoreId);
+			Request<SmsOrderData> request = ModelConverter.buildSmsOrderDataRequest(customerId, PhoneNumber.normalize(mobileNumber), orderId, eStoreId);
 			String inputJson = buildRequest(request);
 			response = this.postData(inputJson, getFdCommerceEndPoint(SMS_ALERT_ORDER_CONFIRM), Response.class);
 			if(!response.getResponseCode().equals("OK")){
@@ -2303,7 +2315,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	public boolean smsOrderModification(String customerId, String mobileNumber,String orderId, String eStoreId) throws FDResourceException {
 		Response<Boolean> response = null;
 		try {
-			Request<SmsOrderData> request = ModelConverter.buildSmsOrderDataRequest(customerId, mobileNumber, orderId, eStoreId);
+			Request<SmsOrderData> request = ModelConverter.buildSmsOrderDataRequest(customerId, PhoneNumber.normalize(mobileNumber), orderId, eStoreId);
 			String inputJson = buildRequest(request);
 			response = this.postData(inputJson, getFdCommerceEndPoint(SMS_ALERT_ORDER_MODIFY),Response.class);
 			if(!response.getResponseCode().equals("OK")){
@@ -3039,64 +3051,82 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	
 	@Override
 	public Collection findMaterialsByBatch(int batchNum) throws RemoteException {
-		Response<Collection> response = null;
+		Response<Collection<ErpMaterialInfoModelData>> response = null;
+		Collection<ErpMaterialInfoModel> erpModelList = new ArrayList();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_MATERIALINFO_VERSION)+"/"+batchNum, new TypeReference<Response<Collection>>() {});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_MATERIALINFO_VERSION)+"/"+batchNum, new TypeReference<Response<Collection<ErpMaterialInfoModelData>>>() {});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
-			
+			for(ErpMaterialInfoModelData data: response.getData()){
+				ErpMaterialInfoModel model = ModelConverter.convertErpMaterialInfoDataToModel(data);
+				erpModelList.add(model);
+			}
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		return response.getData();
+		return erpModelList;
 	}
 	@Override
 	public Collection findMaterialsBySapId(String sapId) throws RemoteException {
-		Response<Collection> response = null;
+		Response<Collection<ErpMaterialInfoModelData>> response = null;
+		Collection<ErpMaterialInfoModel> erpModelList = new ArrayList();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_MATERIALINFO_SAPID)+"/"+sapId, new TypeReference<Response<Collection>>() {});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_MATERIALINFO_SAPID)+"/"+sapId, new TypeReference<Response<Collection<ErpMaterialInfoModelData>>>() {});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
+			}
+			for(ErpMaterialInfoModelData data: response.getData()){
+				ErpMaterialInfoModel model = ModelConverter.convertErpMaterialInfoDataToModel(data);
+				erpModelList.add(model);
 			}
 			
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		return response.getData();
+		return erpModelList;
 	}
 	@Override
 	public Collection findMaterialsBySku(String skuCode) throws RemoteException {
-		Response<Collection> response = null;
+		Response<Collection<ErpMaterialInfoModelData>> response = null;
+		Collection<ErpMaterialInfoModel> erpModelList = new ArrayList();
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_MATERIALINFO_SKUCODE)+"/"+skuCode, new TypeReference<Response<Collection>>() {});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_MATERIALINFO_SKUCODE)+"/"+skuCode, new TypeReference<Response<Collection<ErpMaterialInfoModelData>>>() {});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
-			
+			for(ErpMaterialInfoModelData data: response.getData()){
+				ErpMaterialInfoModel model = ModelConverter.convertErpMaterialInfoDataToModel(data);
+				erpModelList.add(model);
+			}
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		return response.getData();
+		return erpModelList;
 	}
 	@Override
 	public Collection findMaterialsByDescription(String description) throws RemoteException {
-		Response<Collection> response = null;
+		Response<Collection<ErpMaterialInfoModelData>> response = null;
+		Collection<ErpMaterialInfoModel> erpModelList = new ArrayList();
 		try {
 			
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_MATERIALINFO_DESCRIPTION)+"/"+URLEncoder.encode(description), new TypeReference<Response<Collection>>() {});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_MATERIALINFO_DESCRIPTION)+"/"+URLEncoder.encode(description), new TypeReference<Response<Collection<ErpMaterialInfoModelData>>>() {});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
+			}
+			for(ErpMaterialInfoModelData data: response.getData()){
+				ErpMaterialInfoModel model = ModelConverter.convertErpMaterialInfoDataToModel(data);
+				erpModelList.add(model);
 			}
 			
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		return response.getData();
+		return erpModelList;
 	}
 	@Override
 	public Collection findMaterialsByCharacteristic(String characteristic) throws RemoteException {
@@ -3118,19 +3148,23 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 
 	@Override
 	public Collection findMaterialsByClass(String className) throws RemoteException {
-		Response<Collection> response = null;
-		Collection erpMaterialInfoModels;
+		Response<Collection<ErpMaterialInfoModelData>> response = null;
+		Collection<ErpMaterialInfoModel> erpModelList = new ArrayList();
 		try {
 			className = className.replace('_', '-');
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_MATERIALSINFO_CLASS)+"/"+className,  new TypeReference<Response<Collection>>(){});
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_MATERIALSINFO_CLASS)+"/"+className,  new TypeReference<Response<Collection<ErpMaterialInfoModelData>>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
+			}
+			for(ErpMaterialInfoModelData data: response.getData()){
+				ErpMaterialInfoModel model = ModelConverter.convertErpMaterialInfoDataToModel(data);
+				erpModelList.add(model);
 			}
 		} catch (FDResourceException e){
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		return response.getData();
+		return erpModelList;
 	}
 	
 	@Override
@@ -3287,8 +3321,14 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		
 		Response<Map<String,ErpInventoryData>> response = null;
 		Map<String,ErpInventoryModel> erpInventoryModelMap = null;
+
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_LOAD_INVENTORY_INFO)+"/"+date,  new TypeReference<Response<Map<String,ErpInventoryData>>>(){});
+			SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+			String date1 = null;
+			if(date!=null){
+			date1 = format1.format(date); 
+			}
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(ERP_LOAD_INVENTORY_INFO)+"/"+date1,  new TypeReference<Response<Map<String,ErpInventoryData>>>(){});
 			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
@@ -3956,11 +3996,11 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	}
 	@Override
 	public void sendModifyOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
-			String unattendedInstr,String orderMobileNumber,String erpOrderId) throws RemoteException {
+			String unattendedInstr,String orderMobileNumber,String erpOrderId,boolean containsAlcohol) throws RemoteException {
 		
 		SubmitOrderRequestData submitOrderRequestData = new SubmitOrderRequestData();
 		submitOrderRequestData = buildOrderRequestData(saleId, parentOrderId, tip, reservationId, firstName, lastName, deliveryInstructions, serviceType, 
-				 unattendedInstr, orderMobileNumber,erpOrderId);
+				 unattendedInstr, PhoneNumber.normalize(orderMobileNumber),erpOrderId,containsAlcohol);
 		Request<SubmitOrderRequestData> request = new Request<SubmitOrderRequestData>();
 		try {
 			request.setData(submitOrderRequestData);
@@ -3992,10 +4032,10 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	}
 	@Override
 	public void sendSubmitOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
-			String unattendedInstr,String orderMobileNumber,String erpOrderId) throws RemoteException {
+			String unattendedInstr,String orderMobileNumber,String erpOrderId,boolean containsAlcohol) throws RemoteException {
 		SubmitOrderRequestData submitOrderRequestData = new SubmitOrderRequestData();
 		submitOrderRequestData = buildOrderRequestData(saleId, parentOrderId, tip, reservationId, firstName, lastName, deliveryInstructions, serviceType, 
-				 unattendedInstr, orderMobileNumber,erpOrderId);
+				 unattendedInstr, PhoneNumber.normalize(orderMobileNumber),erpOrderId,containsAlcohol);
 		Request<SubmitOrderRequestData> request = new Request<SubmitOrderRequestData>();
 		try {
 			request.setData(submitOrderRequestData);
@@ -4012,7 +4052,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 	}
 	
 	private SubmitOrderRequestData buildOrderRequestData(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
-			String unattendedInstr,String orderMobileNumber,String erpOrderId){
+			String unattendedInstr,String orderMobileNumber,String erpOrderId,boolean containsAlcohol){
 		SubmitOrderRequestData submitOrderRequestData = new SubmitOrderRequestData();
 		submitOrderRequestData.setSaleId(saleId);
 		submitOrderRequestData.setParentOrderId(parentOrderId);
@@ -4025,6 +4065,7 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		submitOrderRequestData.setUnattendedInstr(unattendedInstr);
 		submitOrderRequestData.setOrderMobileNumber(orderMobileNumber);
 		submitOrderRequestData.setErpOrderId(erpOrderId);
+		
 		return submitOrderRequestData;
 	}
 
@@ -5207,6 +5248,53 @@ public class FDECommerceService extends AbstractEcommService implements IECommer
 		
 		}
 		
+	}
+	@Override
+	public HLBrandProductAdResponse getHomeAdProduct(
+			HLBrandProductAdRequest hLBrandProductAdRequest) throws RemoteException {
+		try {
+			Request<HLBrandProductAdRequest> request = new Request<HLBrandProductAdRequest>();
+			request.setData(hLBrandProductAdRequest);
+			String inputJson = buildRequest(request);
+			@SuppressWarnings("unchecked")
+//			Response<HLBrandProductAdResponse> response = this.postData(inputJson, getFdCommerceEndPoint(BRAND_SEARCH_BY_HOME_PRODUCT), Response.class);
+			Response<HLBrandProductAdResponse> response=this.postDataTypeMap(inputJson, getFdCommerceEndPoint(BRAND_SEARCH_BY_HOME_PRODUCT), new TypeReference<Response<HLBrandProductAdResponse>>() {});
+			
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			return response.getData();
+		} catch (FDEcommServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
+	}
+	@Override
+	public HLBrandProductAdResponse getPdpAdProduct(
+			HLBrandProductAdRequest hLBrandProductAdRequest)
+			throws RemoteException {
+		try {
+			Request<HLBrandProductAdRequest> request = new Request<HLBrandProductAdRequest>();
+			request.setData(hLBrandProductAdRequest);
+			String inputJson = buildRequest(request);
+			@SuppressWarnings("unchecked")
+//			Response<HLBrandProductAdResponse> response = this.postData(inputJson, getFdCommerceEndPoint(BRAND_SEARCH_BY_PDP_PRODUCT), Response.class);
+			Response<HLBrandProductAdResponse> response=this.postDataTypeMap(inputJson, getFdCommerceEndPoint(BRAND_SEARCH_BY_PDP_PRODUCT), new TypeReference<Response<HLBrandProductAdResponse>>() {});
+			
+			if(!response.getResponseCode().equals("OK")){
+				throw new FDResourceException(response.getMessage());
+			}
+			return response.getData();
+		} catch (FDEcommServiceException e) {
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
+			throw new RemoteException(e.getMessage());
+		}
 	}
 
 }

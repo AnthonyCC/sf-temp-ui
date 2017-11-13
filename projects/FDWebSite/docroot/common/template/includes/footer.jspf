@@ -26,8 +26,6 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
     	botNav = deptId;
     } else if (!"".equals(catId)) {
         botNav = catId;
-    } else if (bottomUri.indexOf("/myfd") > -1 || request.getParameter("successPage") != null && request.getParameter("successPage").indexOf("/myfd") > -1) {
-        botNav = "myfd";
     } else if (bottomUri.indexOf("/jobs/intro") > -1) {
         botNav = "careers";
     } else if (bottomUri.indexOf("/gift_card/purchase/landing.jsp") > -1) {
@@ -42,8 +40,6 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
 } else {
     if (bottomUri.indexOf("/about/index.jsp") > -1) {
         botNav = "aboutus";
-    } else if (bottomUri.indexOf("/myfd") > -1) {
-        botNav = "myfd";
     } else if (bottomUri.indexOf("/jobs/intro") > -1) {
         botNav = "careers";
     } else if (bottomUri.indexOf("/gift_card/purchase/landing.jsp") > -1) {

@@ -62,7 +62,7 @@ if(null != _user.getLastSenderEmail()) {
 }
 
 // Add to recipient list button image
-String addEditButton = "<input type=\"image\" name=\"checkout_credit_card_edit\" src=\"/media_stat/images/giftcards/purchase/add_to_recip_list_btn.gif\" width=\"130\" height=\"25\" alt=\"ADD TO RECIPIENT LIST\" border=\"0\" />";
+String addEditButton = "<button class=\"cssbutton small green\" name=\"checkout_credit_card_edit\"/>ADD TO RECIPIENT LIST</button>";
 
 if (request.getParameter("gcTempId") !=null) {
 	fdTemplateId = request.getParameter("gcTempId");
@@ -192,7 +192,7 @@ if (request.getParameter("fldMessage") !=null) {
     <tr>
     	<td align="right" class="text12">
 			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_METHOD.getCode()%>">  class="text11rbold"</fd:ErrorHandler>>
-				<label>*&nbsp;Delivery&nbsp;Method</label>
+				<span class="text14bold">*&nbsp;Delivery&nbsp;Method</span>
 			</span>
     	</td>
     	<td colspan="2"><fieldset><legend class="offscreen">Delivery Method</legend>
@@ -226,7 +226,7 @@ if (request.getParameter("fldMessage") !=null) {
 			<table>
 				<tr>
 					<td width="65">
-						<select   class="text9" name="fldAmount" id="fldAmount" onChange="($('fldAmount').value!='OTHER')?$('fldAltAmount').value=$('fldAmount').value:$('fldAltAmount').value='<%=fldAltAmount%>';$('fldAltAmount').disabled=($('fldAmount').value=='OTHER')?false:true;">
+						<select   class="customsimpleselect text9" name="fldAmount" id="fldAmount" onChange="($('fldAmount').value!='OTHER')?$('fldAltAmount').value=$('fldAmount').value:$('fldAltAmount').value='<%=fldAltAmount%>';$('fldAltAmount').disabled=($('fldAmount').value=='OTHER')?false:true;">
 						   <option value="" <%="".equalsIgnoreCase(fldAmount)?"selected":""%>> </option>
 						   <option value="OTHER" <%=!"".equalsIgnoreCase(fldAmount)?"selected":""%>>OTHER</option>
 						   <option value="20.00" <%="20.00".equalsIgnoreCase(fldAmount)?"selected":""%>>20.00</option>
@@ -237,7 +237,7 @@ if (request.getParameter("fldMessage") !=null) {
 						</select>
 					</td>
 					<td>
-						<input type="text"   maxlength="10" size="8" class="text9" name="fldAltAmount" id="fldAltAmount" value="<%=fldAltAmount%>" <%=!"".equalsIgnoreCase(fldAmount)?"":"disabled"%> onkeydown="$('fldAmount').value='OTHER';" />
+						<input type="text" style="margin-left:10px;"  maxlength="10" size="8" class="text9" name="fldAltAmount" id="fldAltAmount" value="<%=fldAltAmount%>" <%=!"".equalsIgnoreCase(fldAmount)?"":"disabled"%> onkeydown="$('fldAmount').value='OTHER';" />
 					</td>
 					<td>
 						<span style="white-space: nowrap;"><label for="fldAltAmount">Enter amount<br>(min. $20.00)</label></span>
@@ -253,17 +253,19 @@ if (request.getParameter("fldMessage") !=null) {
 		<td align="right" class="text12" width="150">
 			<label for="fldMessage">*&nbsp;Message<br />
 			Type a personalized message over the default.<br />
-			<br />
 			150 character max.</label>
 		</td>
 		<td colspan="2">
-			<textarea rows="4" cols="30" maxlength="150" class="text11" name="fldMessage" id="fldMessage" value="<%=(fldMessage!=null)?fldMessage.replaceAll("\"","&quot;"):"none"%>" onfocus="this.select();"><%=(fldMessage!=null)?fldMessage.replaceAll("\"","&quot;"):""%></textarea>
+			<textarea rows="4" cols="30" maxlength="150" class="text11" name="fldMessage" id="fldMessage" value="<%=(fldMessage!=null)?fldMessage.replaceAll("\"","&quot;"):"none"%>" onfocus="this.select();"><%=(fldMessage!=null)?fldMessage.replaceAll("\"","&quot;"):""%></textarea><br />
+			<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="text14bold" href="/gift_card/purchase/add_giftcard.jsp">Clear the Form</a>
 		</td>
 	</tr>
 </table>
 
 
 <img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" /><br />
+<br/>
+<br/>
 
 <table border="0" cellspacing="0" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>">
     <tr valign="top">
@@ -286,8 +288,7 @@ if (request.getParameter("fldMessage") !=null) {
 <table border="0" cellspacing="0" cellpadding="0" width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>">
 	<tr>
 		<td width="<%=W_ADD_GIFTCARD_FIELDS_TOTAL%>" align="right">
-			<a href="/gift_card/purchase/add_giftcard.jsp"><img src="/media_stat/images/giftcards/purchase/clear_btn.gif" width="50" height="25" alt="CLEAR the form (entities)" border="0" /></a>
-			<input type="image" name="gcPreview" src="/media_stat/images/giftcards/purchase/preview_btn.gif" width="61" height="25" alt="PREVIEW the form" border="0" onclick="window['<%=gcDisplayId%>'].emailPreview(); return false;" />
+			<button class="cssbutton transparent green small" name="gcPreview" onclick="window['<%=gcDisplayId%>'].emailPreview(); return false;" />PREVIEW</button>
 			<%= addEditButton %>
 		</td>
 	</tr>

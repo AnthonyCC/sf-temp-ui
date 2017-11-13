@@ -122,7 +122,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 					</td>
 					<td width="99">
 						&nbsp;
-							<input type="image" onClick="return setCheckOut();" name="form_action_name" src="/media_stat/images/giftcards/purchase/btn_continue.gif" width="80" height="25"  hspace="4" vspace="4" alt="continue" border="0">
+							<button class="cssbutton small orange" onClick="return setCheckOut();" name="form_action_name" >CONTINUE</button>
 					</td>
 				</tr>
 				<tr>
@@ -132,7 +132,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 				</tr>
 			</table>
 
-			<form name="giftcard_donation_form" id="giftcard_donation_form" method="post">
+			<form fdform class="top-margin10 dispblock-fields" fdform-displayerrorafter name="giftcard_donation_form" id="giftcard_donation_form" method="post">
 				<input type="hidden" name="actionName" value="">
 				<input type="hidden" id="deleteId" name="deleteId" value="">
                 <input type="hidden" id="checkout" name="checkout" value="">
@@ -201,7 +201,7 @@ final int W_ADD_GIFTCARD_TOTAL = 970;
 				<td align="right" colspan="2">
 					&nbsp;
 					<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0" />
-					<input type="image" onClick="return setCheckOut();" name="form_action_name" src="/media_stat/images/giftcards/purchase/btn_continue.gif" width="80" height="25"  hspace="4" vspace="4" alt="continue" border="0">
+					<button class="cssbutton small orange" onClick="return setCheckOut();" name="form_action_name" >CONTINUE</button>
 				</td>
 			</tr>
 		</table>

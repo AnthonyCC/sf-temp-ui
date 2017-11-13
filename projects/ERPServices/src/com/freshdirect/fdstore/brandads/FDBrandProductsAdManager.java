@@ -123,11 +123,11 @@ public class FDBrandProductsAdManager {
 		try {
 			HLBrandProductAdResponse result = null;
 			FDBrandProductsAdManagerSB sb = managerHome.create();
-			/*if(FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.brandads.FDBrandProductsAdManagerSB")){
-				result = FDECommerceService.getInstance().getCategoryProducts(hLBrandProductAdRequest);
-			}else{*/
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.brandads.FDBrandProductsAdManagerSB")){
+				result = FDECommerceService.getInstance().getHomeAdProduct(hLBrandProductAdRequest);
+			}else{
 				result= sb.getHomeAdProduct(hLBrandProductAdRequest);
-//			}
+		}
 			return result;
 		} catch (RemoteException e) {
 			invalidateManagerHome();
@@ -147,9 +147,9 @@ public class FDBrandProductsAdManager {
 		try {
 			HLBrandProductAdResponse result = null;
 			FDBrandProductsAdManagerSB sb = managerHome.create();
-			/*if(FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.brandads.FDBrandProductsAdManagerSB")){
-				result = FDECommerceService.getInstance().getCategoryProducts(hLBrandProductAdRequest);
-			}else{*/
+			if(FDStoreProperties.isSF2_0_AndServiceEnabled("fdstore.brandads.FDBrandProductsAdManagerSB")){
+				result = FDECommerceService.getInstance().getPdpAdProduct(hLBrandProductAdRequest);
+			}else{
 				try {
 					result= sb.getPdpAdProduct(hLBrandProductAdRequest);
 				} 
@@ -157,7 +157,7 @@ public class FDBrandProductsAdManager {
 						invalidateManagerHome();
 						throw new FDResourceException(e, "Error while connecting api");
 				}
-//			}
+			}
 			return result;
 		} catch (RemoteException e) {
 			invalidateManagerHome();

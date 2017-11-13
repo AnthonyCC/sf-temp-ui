@@ -49,7 +49,24 @@ var FreshDirect = FreshDirect || {};
         }
         cmevent = 'noevent';
 			}
-		}
+		},
+    sendTimeslotSelectingInfo: {
+      value: function(timeslot) {
+        var startTime = getHoursFromDateSting(timeslot.startDate),
+            endTime = getHoursFromDateSting(timeslot.endDate),
+            day = timeslot.dayOfWeek.substring(0,3),
+            timeslotWindow = Math.floor((Number(endTime) - Number(startTime))/100),
+            sendCmEvent = function () {
+              if(cmCreateElementTag) {
+                cmCreateElementTag(day + '_' + startTime + '_' + endTime, "FDW_timeslot_chooser", day + '|'+ timeslotWindow + ' h window-_-' + startTime + '|' + endTime + '-_-regular-_--_--_-' + fd.user.cohortName);
+              } else {
+                setTimeout(sendCmEvent, 100);
+              }
+            };
+
+        sendCmEvent();
+      }
+    }
 	});
 
 	coremetrics.listen();
@@ -62,6 +79,12 @@ var FreshDirect = FreshDirect || {};
 
   if (fd.coremetricsData) {
     fd.coremetricsData.each(coremetrics.playOneItem, coremetrics);
+  }
+
+  function getHoursFromDateSting(date) {
+    var time = date.split('T');
+    time = time[1].split('+');
+    return time[0].replace(/:/g, '');
   }
 
 	function addCmData(propertyName,value,event){

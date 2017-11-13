@@ -204,8 +204,9 @@ if(weRecommendImgProds.size() > 0) {
 <% } else { %>
 	<comp:recommenderBox siteFeature="RIGHT_NAV_PERS" />
 <% } %>
-
-<p class="product-request"><a href="javascript:pop('/request_product.jsp?department=<%= deptName %>', 400, 585);">Product Request? Click here.</a></p>
+<% if (params.getUser() != null && params.getUser().getLevel() == FDUserI.SIGNED_IN) { %>
+	<p class="product-request"><a href="javascript:pop('/request_product.jsp?department=<%= deptName %>', 400, 585);">Product Request? Click here.</a></p>
+<% } %>
 
 	 <% if (FDStoreProperties.isAdServerEnabled()) { %>
     <div id='oas_SideCartBottom'>

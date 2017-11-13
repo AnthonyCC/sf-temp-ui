@@ -5,30 +5,32 @@
 <%@ include file="password_flow_vars.jspf" %>
 <!DOCTYPE html>
 <html lang="en-US" xml:lang="en-US">
-	<head>
-		<title> <tmpl:get name='title'/> </title>
-        <%@ include file="/common/template/includes/metatags.jspf" %>
-		<meta charset="UTF-8" />
-		<link rel="icon" type="image/x-icon" href="<%=IMAGES_DIR %>/favicon2.ico" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta name="apple-mobile-web-app-capable" content="yes" />
-		
-		<meta property="og:image" content="https://foodkick.freshdirect.com/media/images/email/foodkick/header_logo.png" />
-		<meta property="og:title" content="FoodKick | Same-Day Food Delivery NYC" />
-		<meta property="og:description" content="Get what you need in an hour. 30 days FREE delivery. Customizable meals; farm fresh produce, meat, fish and dairy; perfect food and booze pairings from our experts."/>
-		<meta property="og:url" content="http://foodkick.com" />  
-		
-		<!--[if lt IE 9]>
-		   <script src="<%=FK_CONFIG_DIRS.get("JS_DIR") %>/modernizr-custom.js"></script>
-		   <script src="<%=FK_CONFIG_DIRS.get("JS_DIR") %>/fk_ie8.js"></script>
-		<![endif]-->
-		<link href="<%=FK_CONFIG_DIRS.get("BOOTSTRAP_DIR") %>/css/bootstrap.min.css" rel="stylesheet" />
-		<link href="<%=FK_CONFIG_DIRS.get("CSS_DIR") %>/foodkick.css" rel="stylesheet" type="text/css" />
-		<script src="ad_server_opt.js.jsp"></script>
-		<script type="text/javascript" src="//libs.coremetrics.com/eluminate.js"></script>
-		<script type="text/javascript">cmSetClientID("51640000|33000004",true,"data.coremetrics.com","freshdirect.com");</script>
-		<tmpl:get name='header'/>
-	</head>
+  <head>
+    <title> <tmpl:get name='title'/> </title>
+    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
+    <%@ include file="/common/template/includes/metatags.jspf" %>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="<%=IMAGES_DIR %>/favicon2.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <meta property="og:image" content="https://foodkick.freshdirect.com/media/images/email/foodkick/header_logo.png" />
+    <meta property="og:title" content="FoodKick | Same-Day Food Delivery NYC" />
+    <meta property="og:description" content="Get what you need in an hour. 30 days FREE delivery. Customizable meals; farm fresh produce, meat, fish and dairy; perfect food and booze pairings from our experts."/>
+    <meta property="og:url" content="http://foodkick.com" />  
+
+    <!--[if lt IE 9]>
+       <script src="<%=FK_CONFIG_DIRS.get("JS_DIR") %>/modernizr-custom.js"></script>
+       <script src="<%=FK_CONFIG_DIRS.get("JS_DIR") %>/fk_ie8.js"></script>
+    <![endif]-->
+
+    <link href="<%=FK_CONFIG_DIRS.get("BOOTSTRAP_DIR") %>/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="<%=FK_CONFIG_DIRS.get("CSS_DIR") %>/foodkick.css" rel="stylesheet" type="text/css" />
+    <script src="ad_server_opt.js.jsp"></script>
+    <script type="text/javascript" src="//libs.coremetrics.com/eluminate.js"></script>
+    <script type="text/javascript">cmSetClientID("51640000|33000004",true,"data.coremetrics.com","freshdirect.com");</script>
+    <tmpl:get name='header'/>
+  </head>
 	<body>
 		<header></header>
 		<nav>
@@ -130,7 +132,6 @@
 	</body>
 	
 	<jwr:script src="/fdlibs.js" useRandomParam="false" /><%-- for jquery and other things --%>
-	<script src="/assets/javascript/jquery/jquery_validate/jquery.validate.js"></script>
 	<script src="<%=FK_CONFIG_DIRS.get("JS_DIR") %>/foodkick.js"></script>
 	<%-- <jwr:script src="/foodkick.js" useRandomParam="false" />--%>
 	

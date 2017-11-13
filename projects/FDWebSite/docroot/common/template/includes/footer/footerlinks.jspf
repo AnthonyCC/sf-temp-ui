@@ -4,10 +4,6 @@
       <h3>let's be <span>friends!</span></h3>
     </div>
     <div class="column span-4 dottedborder">
-      <h3>fresh <span>inspiration</span></h3>
-      <a class="loginrequired" href="/myfd/index.jsp?trk=footer">go to MyFD</a>
-    </div>
-    <div class="column span-4 dottedborder">
       <h3>new to <span>freshdirect?</span></h3>
       <a href="/about/plant_tour/index.jsp?catId=about_tour">take a tour</a>
     </div>

@@ -62,9 +62,7 @@ public class AddToCartPendingTag extends BodyTagSupportEx {
 			if (action != null) {
 				buf.append("<input type=\"hidden\" name=\"atc_pending_action\" value=\"" + action + "\" />\r\n");
 			}
-/*			beginJavaScriptFrame(buf, ajax);
-			handlePending(buf, ajax, rebindSubmit);
-			endJavaScriptFrame(buf, ajax);*/
+
 		}
 
 		if (buf.length() != 0) {
@@ -81,39 +79,6 @@ public class AddToCartPendingTag extends BodyTagSupportEx {
 	private boolean isCallcenterApplication(HttpSession session) {
 		return "CALLCENTER".equalsIgnoreCase((String) session.getAttribute(SessionName.APPLICATION));
 	}
-
-	private void handlePending(StringBuffer buf, boolean ajax, boolean rebindSubmit) {
-		buf.append("    if (typeof FreshDirect != \"undefined\" && typeof FreshDirect.ATC_Pending != \"undefined\") {\r\n");
-		buf.append("    	FreshDirect.ATC_Pending.attachForm(product_form, location.href");
-		if (ajax)
-			buf.append(", 1");
-		if (rebindSubmit) {
-			if (!ajax)
-				buf.append(", 0");
-			buf.append(", 1");
-		}
-		buf.append(");\r\n");
-		buf.append("    }\r\n");
-	}
-
-	private void beginJavaScriptFrame(StringBuffer buf, boolean ajax) {
-		buf.append("<script type=\"text/javascript\">\r\n");
-		if (!ajax)
-			buf.append("YAHOO.util.Event.onDOMReady(function() {\r\n");
-		if (getId() != null) {
-			buf.append("    var product_form = document.getElementById('" + getId() + "');\r\n");
-			buf.append("    if (product_form) { // AddToCartPending\r\n");
-		} else
-			buf.append("    if (false) { // inproper use AddToCartPending\r\n");
-	}
-
-	private void endJavaScriptFrame(StringBuffer buf, boolean ajax) {
-		buf.append("    }\r\n");
-		if (!ajax)
-			buf.append("});\r\n");
-		buf.append("</script>\r\n");
-	}
-
 	/**
 	 * TODO Think about refactoring this into a Strategy pattern so that we can
 	 * inject multiple interceptors

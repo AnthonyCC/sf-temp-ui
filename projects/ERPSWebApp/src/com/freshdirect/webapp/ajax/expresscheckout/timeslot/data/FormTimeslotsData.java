@@ -9,7 +9,6 @@ public class FormTimeslotsData {
     private String reservedTimeslotId;
     private String zonePromoAmount;
     private List<FormTimeslotData> timeSlots = new ArrayList<FormTimeslotData>();
-    private List<String> warningMessages = new ArrayList<String>(); /* may need re-factoring with holiday msgs */
 
     public String getSelectedTimeslotId() {
         return selectedTimeslotId;
@@ -47,15 +46,4 @@ public class FormTimeslotsData {
         this.zonePromoAmount = zonePromoAmount;
     }
 
-    public List<String> getWarningMessages() {
-		return warningMessages;
-	}
-
-	public void setWarningMessages(List<String> warningMessages) {
-		this.warningMessages = warningMessages;
-	}
-	
-	public void addWarningMessage(String warningMessage) {
-		this.getWarningMessages().add(warningMessage);
-	}
 }

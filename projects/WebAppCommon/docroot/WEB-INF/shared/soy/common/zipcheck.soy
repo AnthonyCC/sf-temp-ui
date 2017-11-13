@@ -24,13 +24,12 @@
       <label><input type="radio" class="customradio" name="addressType" value="HOME" fdform-v-onerequired="addressType" {if not $isCorporateUser}checked{/if}>Home</label>
       <label><input type="radio" class="customradio" name="addressType" value="CORPORATE" fdform-v-onerequired="addressType" {if $isCorporateUser}checked{/if}>Business or School</label>
     </div>
-      <label for="zipCode">ZIP Code
+      <label for="zipCode">ZIP Code</label>
         <input id="zipCode" type="text" name="zipCode" placeholder="Enter ZIP Code" onClick="this.select();" {if $data.zipCode}value="{$data.zipCode}"{/if}>
         <button type="button" clear-zip-code>
           <span class="offscreen">Clear Zip Code</span>
         </button>
         <div fdform-error-for="zipCode"></div>
-      </label>
     <div>
     </div>
     <div class='zipcode-submit'>

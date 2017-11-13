@@ -30,6 +30,13 @@
 {/if}
 {if $soldBySalesUnit} data-bysalesunit="true"{/if}
 ></div>
+
+/* APPDEV-6353 customTemplate is set in pdp.subtotal */
+{let $pricingUnit:$availMatPrices?.0.pricingUnit /}
+{if $customTemplate and $customTemplate == 'pdp.subtotalInnerPricingUnit' }
+	<p class="text12 subtotal-price-estimated-additional" tabindex="0">Actual weight may vary from estimate due to seasonality and/or sourcing.</p>
+{/if}
+
 {/template}
 
 /**

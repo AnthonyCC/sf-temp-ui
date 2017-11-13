@@ -7,7 +7,7 @@
 {template .groupProducts autoescape="false"}    
     {if $groupScaleData.groupProducts and length($groupScaleData.groupProducts) > 0}
 	<div class="pdp-evenbetter">
-		<h2 class="groupProducts {($mobWeb) ? ' gen-accord-toggler' : ''}">Buy More & Save: {$groupScaleData.grpQty} for {$groupScaleData.grpTotalPrice}</h2>
+		<h2 {if $mobWeb}tabindex="0"{/if} class="groupProducts {($mobWeb) ? ' gen-accord-toggler' : ''}">Buy More & Save: {$groupScaleData.grpQty} for {$groupScaleData.grpTotalPrice}</h2>
 		{($mobWeb) ? '<div class="gen-accord-content" style="display: none;">' : ''}
 			{foreach $gProd in $groupScaleData.groupProducts} /* gProd is the full product item like common.griditem takes */
 				{if index($gProd) > 0}
@@ -71,7 +71,7 @@
 			</div>
 		</div>
 		<div class="pdp-evenbetter-productinfo">
-			<h3 data-evenbetteritem-trigger><a href="{$grpLink}">{if (isNonnull($brandName))}<b>{$brandName}</b> {/if}{$productNameNoBrand}</a></h3>{if $configDescr}<i>{$configDescr}</i>{/if}
+			<h3 data-evenbetteritem-trigger><a href="{$grpLink}" class="portrait-item-header-name">{if (isNonnull($brandName))}<b>{$brandName}</b> {/if}{$productNameNoBrand}</a></h3>{if $configDescr}<i>{$configDescr}</i>{/if}
 			<div class="pdp-evenbetter-price">{call common.price data="all" /}</div>
 			<!-- <div class="pdp-evenbetter-savestring">{call .dealinfo data="all" /}{call .savestring data="all" /}</div> -->
 			<div class="pdp-evenbetter-ratings">

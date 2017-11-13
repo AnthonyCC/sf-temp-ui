@@ -1,3 +1,4 @@
+/* requires jquery, jquery.mmenu */
 var API;
 (function ($) {
 	$(document).ready(function() {
@@ -172,6 +173,12 @@ var API;
 			}
 			$jq(this).find('.gen-accord-toggler-arrow').toggleClass('gen-accord-toggler-arrow_n');
 			$jq(this).toggleClass('open');
+		});
+		$jq('.gen-accord-toggler').keydown(function(event){
+			var keycode = (event.keyCode ? event.keyCode : event.which);
+			if(keycode == '13'){
+				$jq(this).trigger("click");
+			}
 		});
 		
 		/* timeslots */

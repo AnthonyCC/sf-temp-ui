@@ -236,7 +236,7 @@ StringBuffer buffer = new StringBuffer(
 </table>
 
 <img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
-<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%= W_CHECKOUT_VIEW_CART_TOTAL-2 %>" height="1" border="0" alt="" /><br />
+<img src="/media_stat/images/layout/dotted_line_w.gif" alt="" width="<%= W_CHECKOUT_VIEW_CART_TOTAL-2 %>" height="1" border="0" alt="" /><br />
 <img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
 
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>

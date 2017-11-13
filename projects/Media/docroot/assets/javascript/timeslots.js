@@ -528,6 +528,9 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 
 				fdTSDisplay.log('You clicked:', slotObj.id);
 				fdTSDisplay.log('Click Info Before:', fdTSDisplay.opts.radioCheckedCur, fdTSDisplay.opts.radioCheckedLast, fdTSDisplay.opts.radioCheckedLastUndo);
+				
+				//clear previously checked
+				$jq('#'+fdTSDisplay.opts.radioCheckedCur).attr('checked', null);
 
 				if (srcElem && srcElem.id === slotObj.radio) {
 					//we already have the radio
@@ -632,6 +635,9 @@ FreshDirect.fdTSDisplay = function(refIdArg) {
 						return;
 					}
 				}
+				
+				//mark newly checked
+				$jq('#'+fdTSDisplay.opts.radioCheckedCur).attr('checked', 'true');
 
 				if (!fdTSDisplay.dayObjs[dayId].isExpanded) {
 					while(!fdTSDisplay.setDayAsExpanded(dayId)){};

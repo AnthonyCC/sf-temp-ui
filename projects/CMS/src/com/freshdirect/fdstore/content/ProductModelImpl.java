@@ -452,6 +452,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	@Override
     public Date getEarliestAvailability() {
 		List<SkuModel> skus = getPrimarySkus();
+		
 		Date ea = null;
 		for ( SkuModel sku  : skus ) {
 			Date     earliestAvailability = sku.getEarliestAvailability();
@@ -1635,7 +1636,7 @@ inner:
             // remove the unavailable sku's
             for (ListIterator<SkuModel> li = skus.listIterator(); li.hasNext();) {
                 sku = li.next();
-                if (sku.isUnavailable()) {
+                if (sku == null || sku.isUnavailable()) {
                     li.remove();
                 }
             }
@@ -2169,4 +2170,42 @@ inner:
 	public void setParentNode(ContentNodeModel parentNode) {
 	    super.setParentNode(parentNode);
 	}
+
+	@Override
+	public double getAvailabileQtyForDate(Date targetDate) {
+		double qty=-2;
+		List<SkuModel>backupSkuLst=null;
+		SkuModel sku =  getPreferredSku();
+		if (sku==null){
+			qty*=2;
+			backupSkuLst= getPrimarySkus();
+		}
+		if (backupSkuLst==null){
+			qty*=2;
+			backupSkuLst= getSkus();
+		}
+		if (backupSkuLst!=null && ! backupSkuLst.isEmpty()){
+			sku=backupSkuLst.get(0);
+		}
+		if (null!=sku){
+			AvailabilityI  availability = sku.getAvailability();
+			if (availability!=null){
+				qty = availability . getAvailabileQtyForDate(targetDate);
+			}
+		}
+		return qty;
+	//	return super.getAvailableQtyForDate(targetDate);
+	}
+	
+	
+	@Override
+    public String getEarliestAvailabilityMessage() {
+    	String msg = null;
+    	List<SkuModel> skus= getPrimarySkus();
+    			if (skus!=null && ! skus.isEmpty()){
+    				msg = skus.get(0).getEarliestAvailabilityMessage();
+    			}
+    	return msg;
+       
+    }
 }

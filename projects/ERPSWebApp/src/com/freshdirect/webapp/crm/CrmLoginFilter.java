@@ -46,6 +46,18 @@ public class CrmLoginFilter implements Filter {
 		CrmAgentRole agentRole = CrmAgentRole.getEnumByLDAPRole(ldapRole);
 		CrmAgentModel agent = CrmSession.getCurrentAgent(request.getSession());
 		FDSessionUser user = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
+		
+		try {
+			if(agent!=null && CrmManager.getInstance().isCRMRestrictionEnabled() && CrmManager.getInstance().isCRMRestrictedForAgent(agent.getLdapId()) && !request.getRequestURI().contains("restricted.jsp")) {
+				String _redirectUrl = "/restricted.jsp";
+				response.sendRedirect(_redirectUrl);
+				return;
+			}
+		} catch (FDResourceException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		if(user !=null){
 			ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || user.isEligibleForDDPP());
 		}

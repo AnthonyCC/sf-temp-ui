@@ -43,8 +43,6 @@ if(productNode!=null){
 	
 }
 
-//should we show the new leftnav
-boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, user);
 %>
 <potato:browse name="browsePotato" pdp="true" nodeId='${param.catId}'/>
 
@@ -67,9 +65,7 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
   	</tmpl:put>
 
     <tmpl:put name='title' direct='true'>FreshDirect - Confirmation</tmpl:put>
-    
-<% if(shouldBeOnNew) { // new leftnav, TODO: remove this after full rollout %>
-   
+      
     <tmpl:put name='deptnav' direct='true'>
     	<div class="browse-titlebar">
       		<soy:render template="browse.titleBar" data="${browsePotato.descriptiveContent}" />
@@ -106,47 +102,6 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
 	      window.FreshDirect.activeDraftDirectLink = "${activeDraftDirectLink}"
 	    </script>
 	</tmpl:put>
-	
-<% } else { // old leftnav %>  
-    
-    <% if ( !isWine ) { // Wine template has no deptnav, and special leftnav, so only put these for regular layouts %>
-	    <tmpl:put name='leftnav' direct='true'>	    	
-	    	<td width="150" BGCOLOR="#E0E3D0" class="lNavTableConttd">		
-			<!-- start : leftnav -->
-			<% try { %><%@ include file="/common/template/includes/left_side_nav.jspf" %><% } catch (Exception ex) {ex.printStackTrace();} %>
-			<!-- end : leftnav -->			
-			</td>
-	    </tmpl:put>
-    	<tmpl:put name="extraJs">
-    	</tmpl:put>
-	    <tmpl:put name='deptnav' direct='true'>
-		    <% try { %><%@ include file="/common/template/includes/deptnav.jspf" %><% } catch (Exception ex) {ex.printStackTrace();} %>
-			<hr class="deptnav-separator">
-	    </tmpl:put>
-    <% } else { %>
-    	<tmpl:put name="extraJs">
-			<fd:javascript src="/assets/javascript/wine.js"/>
-			<fd:javascript src="/assets/javascript/wine-nav.js"/>	
-    	</tmpl:put>
-    	<tmpl:put name="deptnav" direct="true">	
-    	</tmpl:put>
-    	<tmpl:put name="leftnav">
-    		<% String wineAssId = JspMethods.getWineAssociateId().toLowerCase(); %>
-			<td class="wine-sidenav" bgcolor="#e2dfcc" style="z-index: 0;" width="150"><div align="center"><a href="/department.jsp?deptId=<%= wineAssId %>&trk=snav"><img src="/media/editorial/win_<%= wineAssId %>/<%= wineAssId %>_logo_sidenav_bottom.gif" width="150" height="109" border="0"></a><br></div>
-			<% try { %><%@ include file="/common/template/includes/left_side_nav_usq.jspf" %><% } catch (Exception ex) {ex.printStackTrace();} %>
-			</td>    	
-		</tmpl:put>
-    <% } %>
-    
-	<tmpl:put name='content' direct='true'>		
-		<c:if test="${isSpecialLayout}"><fd:GetCart id='cart'><fd:CmShop5 wrapIntoScriptTag="true" cart="<%=cart%>"/></fd:GetCart></c:if>
-		<jsp:include page="/includes/product/cartConfirm.jsp" >
-			<jsp:param name="catId" value="${ param.catId }"/>
-			<jsp:param name="productId" value="${ param.productId }"/>
-			<jsp:param name="cartlineId" value="${ param.cartlineId }"/>
-		</jsp:include>
-	</tmpl:put>
-<% } %>
 
 	<tmpl:put name="jsmodules">
 		<%@ include file="/common/template/includes/i_jsmodules.jspf" %>

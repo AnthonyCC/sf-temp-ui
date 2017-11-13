@@ -48,18 +48,24 @@ public class AdminToolsDAO {
 	private static final String CREATE_ACITIVITY_LOG = "INSERT INTO CUST.ACTIVITY_LOG(TIMESTAMP, CUSTOMER_ID, ACTIVITY_ID,SOURCE,INITIATOR,NOTE)VALUES(sysdate,?,?,?,?,? )";
 
 	public static int logCancelledReservations( Connection conn, List<FDCustomerReservationInfo> resvs, String initiator, String notes ) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement( CREATE_ACITIVITY_LOG );
+        PreparedStatement ps = null; 
 
-		for ( FDCustomerReservationInfo info : resvs ) {
-			ps.setString( 1, info.getIdentity().getErpCustomerPK() );
-			ps.setString( 2, EnumAccountActivityType.CANCEL_PRE_RESERVATION.getCode() );
-			ps.setString( 3, "CSR" );
-			ps.setString( 4, initiator );
-			ps.setString( 5, getReservationActivityNotes( info ) + " " + notes );
-			ps.addBatch();
-		}
-		ps.executeBatch();
-		return 0;
+        try {
+			ps = conn.prepareStatement( CREATE_ACITIVITY_LOG );
+	
+			for ( FDCustomerReservationInfo info : resvs ) {
+				ps.setString( 1, info.getIdentity().getErpCustomerPK() );
+				ps.setString( 2, EnumAccountActivityType.CANCEL_PRE_RESERVATION.getCode() );
+				ps.setString( 3, "CSR" );
+				ps.setString( 4, initiator );
+				ps.setString( 5, getReservationActivityNotes( info ) + " " + notes );
+				ps.addBatch();
+			}
+			ps.executeBatch();
+			return 0;
+        } finally {
+            DaoUtil.closePreserveException(null,ps);
+        }
 	}
 	
 	private static final String FIX_SETTLEMENT_BATCH_QUERY = "update paylinx.cc_settlement set batch_status ='00', batch_response_msg='BATCH COMPLETE' where batch_id =?";

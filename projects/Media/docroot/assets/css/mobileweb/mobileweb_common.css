@@ -883,6 +883,18 @@ li.cleanli .gen-arrow {
 		text-align: center;
 		clear: both;
 	}
+	.prodDetail-atc .subtotal .subtotal-price-estimated {
+		display: block;
+		float: none;
+		padding-left: 0;
+	}
+	.mm-page .subtotal-price-estimated-additional {
+		float: none;
+		width: auto;
+		text-align: center;
+		padding: 15px 0;
+		margin-left: 0;
+	}
 	.pdp-atc-buttons-cont {
 	}
 	.prodDetail-atc .quantity_plus, .prodDetail-atc .quantity_minus {
@@ -1346,12 +1358,21 @@ li.cleanli .gen-arrow {
 		display: block;
 	}
 	.mm-page .portrait-item-controls .qtyinput,
-	.mm-page .portrait-item-controls .addtocart .message,
 	.mm-page .atc .atc-info,
 	.mm-page .portrait-item .relatedItem,
 	.mm-page .portrait-item .subtotal,
 	.mm-page .carousels{
 		display: none;
+	}
+	.mm-page .portrait-item-controls .addtocart .message{
+	       position: absolute; 
+	       width: 1px; 
+	       height: 1px; 
+	       padding: 0; 
+	       margin: -1px; 
+	       overflow: hidden; 
+	       clip: rect(0, 0, 0, 0); 
+	       border: 0;
 	}
 	.mm-page .portrait-item-controls .addtocart,
 	.mm-page .portrait-item-controls .customize{
@@ -2021,7 +2042,6 @@ li.cleanli .gen-arrow {
     			border-right: none !important;
 			}
 			#legendCheckout {
-			    position: absolute;
 			    bottom: 0px;
 			    right: 0px;
 			    background-color: #fff;
@@ -2307,10 +2327,6 @@ li.cleanli .gen-arrow {
 		word-wrap: break-word;
 		word-break: break-word;
 	}
-/* fix smart banner */
-	#smartbanner.android {
-		background: #3d3d3d url('/assets/css/common/jquery-ui_base/images/ui-bg_diagonals-thick_20_666666_40x40.png');
-	}
 	
 	.mm-page .manage-account-container{
 		background: #F2F0EF;
@@ -2537,10 +2553,10 @@ li.cleanli .gen-arrow {
 }
 
 /* /your_account/add_creditcard.jsp */
-[fdform] {
+form.top-margin10 { /* space away from edge of screen */
 	margin: 10px;
 }
-[fdform] td {
+form.dispblock-fields td { /* force the tds to block so the label and field are on their own rows */
 	display: block;
 	width: 100%;
 	text-align: left;
@@ -2549,4 +2565,18 @@ li.cleanli .gen-arrow {
 /* checkout drawers */
 .drawer__content {
 	width: 100% !important;
+}
+/* apt,suite field for mobile web */
+.aptfields{
+	display:block;
+}
+.accessibleCSS{
+	 position: absolute; 
+	 width: 1px; 
+	 height: 1px; 
+	 padding: 0; 
+	 margin: -1px; 
+	 overflow: hidden; 
+	 clip: rect(0, 0, 0, 0); 
+	 border: 0;
 }

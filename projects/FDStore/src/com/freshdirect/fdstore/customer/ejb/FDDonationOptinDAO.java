@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.freshdirect.cms.util.DaoUtil;
 import com.freshdirect.framework.core.PrimaryKey;
 
 public class FDDonationOptinDAO {
@@ -25,46 +24,45 @@ public class FDDonationOptinDAO {
 			}
 			ps.executeQuery();
 		} finally {
-			if (ps != null) {
-				try {
-					ps.close();
-				} catch (SQLException sqle) {
-					//
-				}
-			}
+			com.freshdirect.framework.util.DaoUtil.close(ps);
 		}
 	}
 	
 	public static void update(Connection conn, String custId, String saleId, boolean optIn) throws SQLException {	
 		
-		PreparedStatement ps =	conn.prepareStatement("UPDATE CUST.DONATION_OPT_IND SET OPTIN_IND= ? WHERE CUSTOMER_ID=? AND SALE_ID =? ");
-		if(optIn){			
-			ps.setString(1, "Y");
-		}else{
-			ps.setString(1, "N");
+		PreparedStatement ps =	null;
+		try {
+			ps = conn.prepareStatement("UPDATE CUST.DONATION_OPT_IND SET OPTIN_IND= ? WHERE CUSTOMER_ID=? AND SALE_ID =? ");
+			if(optIn){			
+				ps.setString(1, "Y");
+			}else{
+				ps.setString(1, "N");
+			}
+			ps.setString(2, custId);
+			ps.setString(3, saleId);
+				
+			ps.executeQuery();
+		} finally {
+			com.freshdirect.framework.util.DaoUtil.close(ps);			
 		}
-		ps.setString(2, custId);
-		ps.setString(3, saleId);
-			
-		ps.executeQuery();
-		ps.close();
 	}
 
 	public static Set select(Connection conn, PrimaryKey salePk) throws SQLException {
-		PreparedStatement ps =
-			conn.prepareStatement(
-				"SELECT P.CODE FROM CUST.PROMOTION_NEW P, CUST.PROMOTION_PARTICIPATION PP WHERE P.ID=PP.PROMOTION_ID AND PP.SALE_ID=?");
-		ps.setString(1, salePk.getId());
-
-		Set promotionCodes = new HashSet();
-		ResultSet rs = ps.executeQuery();
-		while (rs.next()) {
-			promotionCodes.add(rs.getString(1));
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(
+					"SELECT P.CODE FROM CUST.PROMOTION_NEW P, CUST.PROMOTION_PARTICIPATION PP WHERE P.ID=PP.PROMOTION_ID AND PP.SALE_ID=?");
+			ps.setString(1, salePk.getId());
+	
+			Set promotionCodes = new HashSet();
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				promotionCodes.add(rs.getString(1));
+			}
+			return promotionCodes;
+		} finally {
+			com.freshdirect.framework.util.DaoUtil.close(rs, ps);
 		}
-
-		rs.close();
-		ps.close();
-
-		return promotionCodes;
 	}
 }

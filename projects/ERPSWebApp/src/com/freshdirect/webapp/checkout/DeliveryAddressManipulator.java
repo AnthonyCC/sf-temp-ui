@@ -62,6 +62,7 @@ import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
+import com.freshdirect.webapp.util.StandingOrderHelper;
 
 /** keep in sync with LocationHandlerTag*/
 public class DeliveryAddressManipulator extends CheckoutManipulator {
@@ -943,6 +944,9 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 	}
 
 	public static void performDeleteDeliveryAddress(FDUserI user, HttpSession session, String shipToAddressId, ActionResult result, TimeslotEvent event) throws FDResourceException {
+		if(StandingOrderHelper.isEligibleForSo3_0(user)){
+			StandingOrderHelper.evaluteSoAddressId(session, user, shipToAddressId);
+		}
 		AddressUtil.deleteShipToAddress(user.getIdentity(), shipToAddressId, result, session);
 		//check that if this address had any outstanding reservations.
 		FDReservation reservation = user.getReservation();
@@ -1003,7 +1007,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			cart.setDeliveryAddress( address );
 			user.setAddress(address);
 			user.setZPServiceType(address.getServiceType());// added as part of APPDEV-6036. We are updating the zone pricing service type to be in sync with ErpAddressModel address object
-			user.resetUserContext();
+			//user.resetUserContext();
 			cart.setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
 			if (!cart.isEmpty()) {
 				for (FDCartLineI cartLine : cart.getOrderLines()) {

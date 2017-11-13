@@ -255,9 +255,9 @@
 */
 {template .paymentmethod autoescape="false"}
 <div class='drawer__item'>
-  <label class='drawer__item__label'>
+ 
   <input id="payment_{$id}" value="{$id}" type='radio' class='drawer__itemleft customradio paymentmethod' name='id' {if $selected}checked{/if} data-type="{$type}" data-isdefault="{if $default}true{else}false{/if}" data-isdebit="{if $debit}true{else}false{/if}" />
-  <div class='drawer__itemright'>
+  <div class='drawer__itemright clickable'>
   {if $eWalletID == '1'}
      <p class='drawer__previewitem__title'><img src="{$mpLogoURL}"> </p>
   {else}	
@@ -267,8 +267,10 @@
     	<p class='drawer__item__title'>{$bankName or $type}</p>
     {/if}
     {/if}
+     <label for="payment_{$id}" class='drawer__item__label'>
     {if $accountNumber or $expiration or $bankAccountType}
-    <div class="drawer__item__section">
+  
+     <div class="drawer__item__section">
       <div class='section__body'>
         {if $bankAccountType}
           <p>{$bankAccountType}</p>
@@ -297,7 +299,7 @@
       </div>
       {/if}
     </div>
-    {/if}
+    {/if} </label>
     {if $eWalletID != '1' and $eWalletID != '2'}
 	  {if $address1 or $address2}
 	  <div class="drawer__item__section">
@@ -327,7 +329,7 @@
       {/if}
 	{/if}
   </div><!--/ drawer__itemright -->
-  </label>
+
   {if $eWalletID != '1' and $eWalletID != '2'}
   <div class="drawer__item__action">
     {if $canDelete}<button type="button" role="alertdialog" fdform-endpoint-submit="/api/expresscheckout/payment" data-action="deletePaymentMethod" data-confirm data-confirm-header="Are you sure you want to permanently delete this payment method?" data-confirm-button-delete="FreshDirect.confirmFunctions.payment_deletePaymentMethod_{$id}" data-confirm-template="common.deleteconfirmpopup" class="action cssbutton transparent white icon-trash-new-before">Delete <span class="offscreen">{$bankName or $type} {if $accountNumber}ending in {$accountNumber}{/if}</span></button>{/if}
@@ -352,7 +354,7 @@
 {template .paymentmethodpreviewitem autoescape="false"}
 <div class='drawer__previewitem'>
 	{if $eWalletID == '2'}
-		<p class='drawer__previewitem__title'><img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png"> </p>
+		<p class='drawer__previewitem__title'><img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png" alt="paypal"> </p>
 	{else}		
 		{if $eWalletID == '1'}
      		<p class='drawer__previewitem__title'><img src="{$mpLogoURL}"> </p>
@@ -463,7 +465,7 @@
 {template .paymentmethodpreviewitemNew autoescape="false"}
 <div class='drawer__previewitem'>
 {if $eWalletID == '2'}
-		<p class='drawer__previewitem__title'><img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png"> </p>
+		<p class='drawer__previewitem__title'><img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png" alt="paypal"> </p>
 {else}
 	{if $eWalletID == '1'}
 	

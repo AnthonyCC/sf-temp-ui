@@ -11,16 +11,18 @@ final int W_DNAV_TOTAL = 970;
 
 <!DOCTYPE html>
 <html lang="en-US" xml:lang="en-US">
-<head>
-	<tmpl:get name="seoMetaTag"/>
-	<tmpl:get name='customhead'/>
-	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-	<fd:javascript src="/assets/javascript/timeslots.js" />
-	<fd:javascript src="/assets/javascript/FD_GiftCards.js" />
-  	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
-  	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-  	<%@ include file="/includes/sms_alerts/examples_layout.jspf" %>
-	<fd:css href="/assets/css/giftcards.css"/>
+  <head>
+    <tmpl:get name="seoMetaTag"/>
+    <tmpl:get name='customhead'/>
+    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
+    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
+    <fd:javascript src="/assets/javascript/timeslots.js" />
+    <fd:javascript src="/assets/javascript/FD_GiftCards.js" />
+    <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+    <%@ include file="/includes/sms_alerts/examples_layout.jspf" %>
+
+    <fd:css href="/assets/css/giftcards.css"/>
     <fd:css href="/assets/css/timeslots.css"/>
 	<%
 		if ( (request.getRequestURI().indexOf("/your_account/giftcards.jsp")>-1) || (request.getRequestURI().indexOf("/your_account/gc_order_details.jsp")>-1) ) {
@@ -29,15 +31,18 @@ final int W_DNAV_TOTAL = 970;
 			<%@ include file="/shared/template/includes/ccl.jspf" %>
 	<% } %>
 
-<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+
+	<fd:javascript src="/assets/javascript/jquery.hint.js"/>
+	<fd:javascript src="/assets/javascript/jquery.pwstrength.js"/>
 	<script type="text/javascript" src="/assets/javascript/scripts.js"></script>
 	<script type="text/javascript">
         jQuery(function($jq) { $jq('#password1').pwstrength(); });
-  	 </script>
+    </script>
     <!--  Added for Password Strength Display -->
     <link rel="stylesheet" type="text/css" href="/assets/css/common/reset1.css"/>
-	<link rel="stylesheet" type="text/css" href="/assets/css/common/styles.css"/>
-</head>
+    <link rel="stylesheet" type="text/css" href="/assets/css/common/styles.css"/>
+  </head>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <%@ include file="/common/template/includes/globalnav.jspf" %> 

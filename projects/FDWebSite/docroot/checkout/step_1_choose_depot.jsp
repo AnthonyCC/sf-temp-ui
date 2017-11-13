@@ -77,7 +77,7 @@ final int W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL = 970;
 </TABLE>
 		
 	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/dotted_line_w.gif" alt="" WIDTH="<%=W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
 	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="4" BORDER="0"><BR>
 
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL%>">
@@ -123,7 +123,7 @@ final int W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL = 970;
 	
 
 	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/dotted_line_w.gif" alt="" WIDTH="<%=W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
 	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 	<div style="margin-bottom: 10px;">
 	    <div style="float: left;">
@@ -143,7 +143,7 @@ final int W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL = 970;
 	<%@ include file="/checkout/includes/i_footer_text.jspf" %>
 
 	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
-	<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL%>" height="1" border="0"><br/>
+	<img src="/media_stat/images/layout/dotted_line_w.gif" alt="" width="<%=W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL%>" height="1" border="0"><br/>
 	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>

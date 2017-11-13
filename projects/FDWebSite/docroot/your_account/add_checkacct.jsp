@@ -29,8 +29,9 @@ final int W_YA_ADD_CHECKACCT = 970;
 <%
 boolean proceedThruCheckout = false;
 %>
+<form fdform class="top-margin10 dispblock-fields" fdform-displayerrorafter method="post">
 <table WIDTH="<%= W_YA_ADD_CHECKACCT %>" cellspacing="0" cellpadding="0" border="0">
-<form method="post">
+
 <tr>
 <td class="text11" WIDTH="<%= W_YA_ADD_CHECKACCT %>">
 <font class="title18">Add Checking Account</font><br><span class="space2pix"><br></span>
@@ -41,7 +42,7 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
 </table>
 <%@ include file="/includes/ckt_acct/checkacct_fields.jspf" %>
 <br><br>
-	<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%= W_YA_ADD_CHECKACCT %>" HEIGHT="1" BORDER="0" VSPACE="6"><BR>
+	<IMG src="/media_stat/images/layout/dotted_line_w.gif" alt="" WIDTH="<%= W_YA_ADD_CHECKACCT %>" HEIGHT="1" BORDER="0" VSPACE="6"><BR>
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%= W_YA_ADD_CHECKACCT %>">
 	<TR VALIGN="TOP">
 				<TD WIDTH="<%= W_YA_ADD_CHECKACCT %>" ALIGN="RIGHT">
@@ -50,6 +51,7 @@ To learn more about our <b>Security Policies</b>, <a href="javascript:popup('/he
 				</TD>
 </TR>
 </TABLE>
+</form>
 <br>
 </fd:PaymentMethodController>
 </tmpl:put>

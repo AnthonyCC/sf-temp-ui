@@ -10,22 +10,22 @@
 <!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en-US" xml:lang="en-US"> <!--<![endif]-->
 
-<head>
-  <title><tmpl:get name='title'/></title>
-    
-  <%@ include file="/common/template/includes/metatags.jspf" %>
-  <%-- skip i_javascripts_optimized.jspf and load all code in here --%>
-  <%-- @ include file="/common/template/includes/i_javascripts_optimized.jspf" --%>
-  
-  <%-- START i_javascripts_optimized.jspf --%>
-	<%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
-	<%@ page import='com.freshdirect.fdstore.sempixel.FDSemPixelCache' %>
-	<%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
-	<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
-	<%@ page import='com.freshdirect.fdstore.customer.*' %>
-	<%@ taglib uri='freshdirect' prefix='fd' %>
-	<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
-	<%-- this file will be included in the <head> tag --%>
+  <head>
+    <title><tmpl:get name='title'/></title>
+    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
+    <%@ include file="/common/template/includes/metatags.jspf" %>
+    <%-- skip i_javascripts_optimized.jspf and load all code in here --%>
+    <%-- @ include file="/common/template/includes/i_javascripts_optimized.jspf" --%>
+
+    <%-- START i_javascripts_optimized.jspf --%>
+    <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
+    <%@ page import='com.freshdirect.fdstore.sempixel.FDSemPixelCache' %>
+    <%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
+    <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+    <%@ page import='com.freshdirect.fdstore.customer.*' %>
+    <%@ taglib uri='freshdirect' prefix='fd' %>
+    <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
+    <%-- this file will be included in the <head> tag --%>
 		<%
 			/* Google Analytics Pixel */
 			SemPixelModel semPixel_GA = FDSemPixelCache.getInstance().getSemPixel("GoogleAnalytics");
@@ -69,13 +69,7 @@
 		</script>
 		
 		<jwr:script src="/fdmisc.js" useRandomParam="false" />
-		
-		<% if (request.getRequestURI().indexOf("brownie_points.jsp") == -1)  { %>
-			<jwr:script src="/commonjavascript.js" useRandomParam="false" />
-		<% } else { %>
-			<%-- jwr:script src="/composite_common.js" useRandomParam="false" / --%>
-		<% } %>
-		
+		<jwr:script src="/commonjavascript.js" useRandomParam="false" />
 		<jwr:script src="/fdccl.js"  useRandomParam="false" />
 	
 		<fd:IncludeMedia name="/media/editorial/site_pages/javascript.html"/>
@@ -84,7 +78,7 @@
 			FDUserI dpTcCheckUser = (FDUserI)session.getAttribute(SessionName.USER);
 			FDSessionUser dpTcCheckSessionUser = (FDSessionUser)session.getAttribute(SessionName.USER);
 	
-			if (dpTcCheckUser != null && request.getRequestURI().indexOf("brownie_points.jsp") == -1 &&
+			if (dpTcCheckUser != null &&
 					(dpTcCheckUser.getLevel() == FDSessionUser.SIGNED_IN && Boolean.FALSE.equals(dpTcCheckSessionUser.hasSeenDpNewTc()) && dpTcCheckUser.isDpNewTcBlocking())
 				) {
 				%>
@@ -99,11 +93,10 @@
 	  
   <%-- END i_javascripts_optimized.jspf --%>
   
-  <%@ include file="/shared/template/includes/i_stylesheets_optimized.jspf" %>
-  <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-  <tmpl:get name='extraHead'/>
-  
-</head>
+    <%@ include file="/shared/template/includes/i_stylesheets_optimized.jspf" %>
+    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+    <tmpl:get name='extraHead'/>
+  </head>
 
 <body>
       

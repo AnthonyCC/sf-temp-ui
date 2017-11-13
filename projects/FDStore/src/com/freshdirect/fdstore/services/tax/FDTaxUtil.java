@@ -50,7 +50,7 @@ public class FDTaxUtil {
 			if(request != null){
 				final String content = mapper.writeValueAsString(request);
 				LOGGER.info("Avalara Request is "+content);
-				System.out.println("Avalara Request is "+content);
+//				System.out.println("Avalara Request is "+content);
 				postMethod.setRequestBody(content);
 			}
 			

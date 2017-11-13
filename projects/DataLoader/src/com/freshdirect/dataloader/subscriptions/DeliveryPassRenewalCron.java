@@ -77,7 +77,6 @@ import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.fdstore.services.tax.AvalaraContext;
 import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.StringUtil;
@@ -85,15 +84,14 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.EnumZipCheckResponses;
 import com.freshdirect.mail.ErpMailSender;
-import com.freshdirect.smartstore.fdstore.CohortSelector;
 
 public class DeliveryPassRenewalCron {
 
 	private final static Category LOGGER = LoggerFactory.getInstance(DeliveryPassRenewalCron.class);
 
-	private final static String CLASS_NAME=DeliveryPassRenewalCron.CLASS_NAME;
+	private final static String CLASS_NAME=DeliveryPassRenewalCron.class.getSimpleName();
 
-	private static final ServiceLocator LOCATOR=new ServiceLocator();
+//	private static final ServiceLocator LOCATOR=new ServiceLocator();
 
 	public static void main(String[] args) {
 

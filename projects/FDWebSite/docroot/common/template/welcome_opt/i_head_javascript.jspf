@@ -18,13 +18,6 @@
 <%-- optimizely --%>
 	<script src="//cdn.optimizely.com/js/325803703.js" type="text/javascript" async="async"></script>
 
-<%
-	//html5shiv to add html5 elements to IE < 9. Includes print support. NO DEFER, NO ASYNC
-	if (welcomepageBI.isInternetExplorer() && welcomepageBI_ver < 9.0) {
-		%><jwr:script src="/assets/javascript/html5shiv.js" useRandomParam="false" /><%
-	}
-%>
-
 <%-- FreshDirect global object - REQUIRED in most modules, NO DEFER, NO ASYNC --%>
 	<script type="text/javascript">
 		var FreshDirect = FreshDirect || {};

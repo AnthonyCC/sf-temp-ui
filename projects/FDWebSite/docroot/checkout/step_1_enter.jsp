@@ -104,7 +104,7 @@ if (requestQryString !=null && requestQryString.trim().length() > 0 ) {
 	</TR>
 	</TABLE>
 	
-	<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+	<IMG src="/media_stat/images/layout/dotted_line_w.gif" alt="" WIDTH="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 	
 	<%@ include file="/includes/ckt_acct/i_delivery_address_field.jspf" %><br><br>
 	
@@ -120,7 +120,7 @@ if (requestQryString !=null && requestQryString.trim().length() > 0 ) {
 </TR>
 </TABLE>
 
-	<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>" height="1" border="0"><br/>
+	<img src="/media_stat/images/layout/dotted_line_w.gif" alt="" width="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>" height="1" border="0"><br/>
 	<img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="8" border="0"><br/>
 	
 	<table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>">
@@ -142,7 +142,7 @@ if (requestQryString !=null && requestQryString.trim().length() > 0 ) {
 
 
 	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
-	<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>" height="1" border="0"><br/>
+	<img src="/media_stat/images/layout/dotted_line_w.gif" alt="" width="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>" height="1" border="0"><br/>
 	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>

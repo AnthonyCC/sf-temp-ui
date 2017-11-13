@@ -294,7 +294,7 @@ public class FDCustomerManager {
 			FDCustomerManagerSB sb = managerHome.create();
 			FDUser user = sb.recognize(cookie,eStoreId);
 			
-			populateShoppingCart(user, true);
+			populateShoppingCart(user, true, false);
 			
 			return user;
 
@@ -307,10 +307,10 @@ public class FDCustomerManager {
 		}
 	}
 
-	private static void populateShoppingCart(FDUser user, boolean updateUserState)
+	private static void populateShoppingCart(FDUser user, boolean updateUserState, boolean userCtx)
 			throws FDResourceException {
 		restoreReservations(user);
-		assumeDeliveryAddress(user);
+		assumeDeliveryAddress(user, userCtx);
 		//Set user Pricing context at this point before recalcualting the price during cleanup.
 		user.getShoppingCart().setUserContextToOrderLines(user.getUserContext());
 
@@ -371,7 +371,7 @@ public class FDCustomerManager {
 			if(user.isVoucherHolder() && EnumEStoreId.FDX.equals( user.getUserContext().getStoreContext().getEStoreId() )){
 				throw new FDAuthenticationException("voucherredemption");
 			}
-			populateShoppingCart(user, updateUserState);
+			populateShoppingCart(user, updateUserState, false);
 
 			return user;
 
@@ -398,7 +398,7 @@ public class FDCustomerManager {
 			FDUser user = sb.recognize(identity, eStoreId, true);
 			user.setApplication(source);
 			user.setCrmMode(true);
-			populateShoppingCart(user, true);
+			populateShoppingCart(user, true, false);
 
 			return user;
 
@@ -433,7 +433,7 @@ public class FDCustomerManager {
 		}
 	}
 
-    private static void assumeDeliveryAddress(FDUser user) throws FDResourceException {
+    private static void assumeDeliveryAddress(FDUser user, boolean userCtx) throws FDResourceException {
 		FDIdentity identity = user.getIdentity();
 		
 		String partentOrderId=null;
@@ -463,7 +463,7 @@ public class FDCustomerManager {
 
     			if(address != null && user.getShoppingCart() != null){
    					user.getShoppingCart().setDeliveryAddress(address);
-   					user.resetUserContext();
+   					if(userCtx)user.resetUserContext();
    					user.getShoppingCart().setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
 
 
@@ -1152,7 +1152,7 @@ public class FDCustomerManager {
 
 
 	public static void cancelReservation(
-		FDIdentity identity,
+		FDUserI user,
 		FDReservation reservation,
 		EnumReservationType rsvType,
 		FDActionInfo aInfo, TimeslotEvent event)
@@ -1161,7 +1161,9 @@ public class FDCustomerManager {
 
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
-			sb.cancelReservation(identity, reservation, rsvType, aInfo, event);
+			sb.cancelReservation(user.getIdentity(), reservation, rsvType, aInfo, event);
+			user.setReservation(null);
+			resetUserContext(user);
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error talking to session bean");
@@ -1196,20 +1198,7 @@ public class FDCustomerManager {
 				user.getShoppingCart().setDeliveryReservation(null);
 			user.setReservation(rsv);
 			
-			user.resetUserContext();
-			user.getShoppingCart().setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
-
-			if (!user.getShoppingCart().isEmpty()) {
-				for (FDCartLineI cartLine : user.getShoppingCart().getOrderLines()) {
-					cartLine.setUserContext(user.getUserContext());
-					cartLine.setFDGroup(null);//clear the group
-				}
-			}
-			try {
-				user.getShoppingCart().refreshAll(true);
-			} catch (FDInvalidConfigurationException e) {
-				e.printStackTrace();
-			}
+			resetUserContext(user);
 			
 			
 			
@@ -1220,6 +1209,24 @@ public class FDCustomerManager {
 		} catch (CreateException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
+		}
+	}
+
+	private static void resetUserContext(FDUserI user)
+			throws FDResourceException {
+		user.resetUserContext();
+		user.getShoppingCart().setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(user));
+
+		if (!user.getShoppingCart().isEmpty()) {
+			for (FDCartLineI cartLine : user.getShoppingCart().getOrderLines()) {
+				cartLine.setUserContext(user.getUserContext());
+				cartLine.setFDGroup(null);//clear the group
+			}
+		}
+		try {
+			user.getShoppingCart().refreshAll(true);
+		} catch (FDInvalidConfigurationException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -4298,8 +4305,7 @@ public class FDCustomerManager {
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled("customer.ejb.ActivityLogSB")){
 				FDECommerceService.getInstance().logActivity(record);
-			}
-			else{
+			}else{
 				ActivityLogSB logSB = home.create();
 				logSB.logActivity(record);
 			}
@@ -4559,7 +4565,16 @@ public class FDCustomerManager {
 	}
 
 	private static void logActivity(ErpActivityRecord record) {
+		if (FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ActivityLogSB)) {
+			try {
+				FDECommerceService.getInstance().logActivity(record);
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else {
 		new ErpLogActivityCommand(LOCATOR, record).execute();
+		}
 	}
 
 
@@ -4750,7 +4765,7 @@ public class FDCustomerManager {
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
 			FDUser user = sb.getFDUserWithCart(identity,  eStoreId);
-			populateShoppingCart(user, true);
+			populateShoppingCart(user, true, false);
 
 			return user.getShoppingCart();
 

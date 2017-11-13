@@ -108,11 +108,11 @@
 					</p>
 				</xsl:when>
 				<xsl:when test="count(order/shortedItems/shortedItems) + count(order/bundleShortItems/bundleShortItems) + count(order/bundleCompleteShort/bundleCompleteShort) = 0">
-					<div style="color: #732484; font-size: 36px; font-weight: bold; margin: 15px 0;">Your FoodKick Order Is on Its Way.</div>
+					<div style="color: #732484; font-size: 36px; font-weight: bold; margin: 15px 0;">Hey <xsl:value-of select="customer/firstName"/>,</div>
 					<div style="margin: 15px 0; font-size: 16px;">
-						(Is there any better phrase in the English language?) Expect our Kickers to arrive between <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime"/></xsl:call-template> - <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="order/deliveryReservation/endTime" /></xsl:call-template>.<br />
+						Picking, packing, it's all happening! Expect your FoodKick order to arrive between <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime"/></xsl:call-template> - <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="order/deliveryReservation/endTime" /></xsl:call-template>.<br />
 						<br />
-						Your final total is <xsl:choose><xsl:when test="order/invoicedTotal &lt;= order/total">$<xsl:value-of select='format-number(order/invoicedTotal, "###,##0.00", "USD")'/></xsl:when><xsl:otherwise>$<xsl:value-of select='format-number(order/invoicedTotal, "###,##0.00", "USD")'/></xsl:otherwise></xsl:choose>. Hope everything is absolutely Instagram-worthy.
+						Your final total is <xsl:choose><xsl:when test="order/invoicedTotal &lt;= order/total">$<xsl:value-of select='format-number(order/invoicedTotal, "###,##0.00", "USD")'/></xsl:when><xsl:otherwise>$<xsl:value-of select='format-number(order/invoicedTotal, "###,##0.00", "USD")'/></xsl:otherwise></xsl:choose> and your order info is below.
 						
 						<br /><br />
 						See ya soon,<br />

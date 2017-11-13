@@ -208,8 +208,6 @@ if (request.getAttribute("__fd_load_clicode_edit__") != null && fdUser.isEligibl
 <fd:javascript src="/assets/javascript/fcu.js"/>
 <fd:javascript src="/assets/javascript/quickbuy.js"/>
 <fd:javascript src="/assets/javascript/pricing.js"/>
-<fd:javascript src="/assets/javascript/wine.js"/>
-<fd:javascript src="/assets/javascript/wine-nav.js"/>
 <fd:css href="/assets/css/ccl.css" media="all" />
 
 <!--[if IE]>

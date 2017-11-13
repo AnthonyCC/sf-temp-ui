@@ -84,6 +84,11 @@
 		<from>^/v/([0-9]+)/product/catid/(.*)/id/(.*)</from>
 		<to last="true">/product.do?productId=$3&amp;categoryId=$2&amp;ver=$1</to>
 	</rule>
+	
+	<rule>
+		<from>^/v/([0-9]+)/productx/catid/(.*)/id/(.*)</from>
+		<to last="true">/product.do?productId=$3&amp;categoryId=$2&amp;action=getproductdetail&amp;ver=$1</to>
+	</rule>
 
 	<!-- View More Info -->
 	<rule>

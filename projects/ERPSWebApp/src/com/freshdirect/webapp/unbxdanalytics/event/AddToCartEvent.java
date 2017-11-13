@@ -9,8 +9,8 @@ public final class AddToCartEvent extends AbstractAnalyticsEvent {
 
     private Double quantity;
 
-    public AddToCartEvent(Visitor visitor, LocationInfo location, String productId, Double quantity) {
-        super(visitor, location);
+    public AddToCartEvent(Visitor visitor, LocationInfo location, String productId, Double quantity, boolean cosAction) {
+        super(visitor, location, cosAction);
 
         this.productId = productId;
         this.quantity = quantity;

@@ -30,6 +30,7 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.freshdirect.FDCouponProperties;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
@@ -463,19 +464,9 @@ public abstract class BaseController extends AbstractController implements Messa
         responseMessage.addWarningMessage(code, message);
         return responseMessage;
     }
-    
     protected void setResponseMessage(ModelAndView model, Message responseMessage, SessionUser user) throws JsonException {
         try {
-//            try {
-//            	if (user != null && user.isLoggedIn() && !isFakeUser()) {
-//            		responseMessage.addNoticeMessages(oasService.getMessages(user));
-//            	} else {
-//                    responseMessage.addNoticeMessages(oasService.getMessages());
-//            	}
-//            } catch (ServiceException e) {
-//                LOGGER.warn("ServiceException whi/le trying to get oas messages. not stopping execution.", e);
-//            }
-            model.addObject("data", getJsonString(responseMessage));
+            model.addObject("data", getJsonString(responseMessage, responseMessage.includeNullValue()));
 
         } catch (JsonGenerationException e) {
             throw new JsonException(e);
@@ -561,11 +552,17 @@ public abstract class BaseController extends AbstractController implements Messa
     }
 
     protected String getJsonString(Object obj) throws JsonGenerationException, JsonMappingException, IOException {
-        StringWriter writer = new StringWriter();
-        getMapper().writeValue(writer, obj);
+        return getJsonString(obj, true);
+    }
+    protected String getJsonString(Object obj, boolean includeNullValue) throws JsonGenerationException, JsonMappingException, IOException{
+    	StringWriter writer = new StringWriter();
+    	ObjectMapper mapper = getMapper();
+    	if (!includeNullValue) {
+    		mapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
+    	}
+    	mapper.writeValue(writer, obj);
         return writer.toString();
     }
-    
     protected String getSessionUserId(SessionUser user) {
     	if(user != null && user.getFDSessionUser() != null && user.getFDSessionUser().getIdentity() != null) {
     		return user.getFDSessionUser().getIdentity().getErpCustomerPK();
@@ -616,7 +613,7 @@ public abstract class BaseController extends AbstractController implements Messa
 		com.freshdirect.mobileapi.controller.data.response.Configuration configuration = new com.freshdirect.mobileapi.controller.data.response.Configuration();
 		configuration.setAkamaiImageConvertorEnabled(FeatureRolloutArbiter
 				.isFeatureRolledOut(EnumRolloutFeature.akamaiimageconvertor,
-						user.getFDSessionUser().getUser()));
+										user!=null && user.getFDSessionUser()!=null ? user.getFDSessionUser().getUser() : null));
 		configuration.setApiCodeVersion(Buildver.getInstance().getBuildver());
 		configuration.setStoreVersion(PublishId.getInstance().getPublishId());
 
@@ -631,7 +628,8 @@ public abstract class BaseController extends AbstractController implements Messa
 		configuration.setSocialLoginEnabled(FDStoreProperties.isSocialLoginEnabled());
 		configuration.setMasterPassEnabled(MobileApiProperties.isMasterpassEnabled());
 		configuration.setPayPalEnabled(MobileApiProperties.isPayPalEnabled());
-		configuration.setDCSEnabled(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user.getFDSessionUser().getUser()));
+		configuration.setDCSEnabled(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, 
+																				user!=null && user.getFDSessionUser()!=null ? user.getFDSessionUser().getUser() : null));
 
 		return configuration;
 	}
@@ -729,7 +727,7 @@ public abstract class BaseController extends AbstractController implements Messa
 	
     protected LoggedIn createLoginResponseMessage(SessionUser user) throws FDException {
         LoggedIn responseMessage = null;
-        if (user.isLoggedIn()) {
+        if (user!=null && user.isLoggedIn()) {
             responseMessage = formatLoginMessage(user);
         } else {
             responseMessage = new LoggedIn();

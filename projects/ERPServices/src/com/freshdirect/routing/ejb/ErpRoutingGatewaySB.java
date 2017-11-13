@@ -26,12 +26,12 @@ public interface ErpRoutingGatewaySB extends EJBObject {
 	void sendReservationUpdateRequest(String  reservationId, ContactAddressModel address, String sapOrderNumber) throws RemoteException;
 	
 	void sendSubmitOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
-			String unattendedInstr,String orderMobileNumber,String erpOrderId) throws RemoteException;
+			String unattendedInstr,String orderMobileNumber,String erpOrderId,boolean containsAlcohol) throws RemoteException;
 	
 	void sendCancelOrderRequest(String saleId) throws RemoteException;
 	
 	void sendModifyOrderRequest(String saleId, String parentOrderId, Double tip, String reservationId,String firstName,String lastName,String deliveryInstructions,String serviceType, 
-			String unattendedInstr,String orderMobileNumber,String erpOrderId) throws RemoteException;
+			String unattendedInstr,String orderMobileNumber,String erpOrderId,boolean containsAlcohol) throws RemoteException;
 	
 
 }

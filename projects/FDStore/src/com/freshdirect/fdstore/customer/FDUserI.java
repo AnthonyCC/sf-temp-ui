@@ -496,8 +496,6 @@ public interface FDUserI extends java.io.Serializable {
     @Deprecated
     public EnumWinePrice getPreferredWinePrice();
 
-    public String getGreeting() throws FDResourceException;
-
     public Date getRegistrationDate();
 
     public int getTotalCTSlots();

@@ -11,11 +11,11 @@
 final int W_DNAV_TOTAL = 970;
 %>
 <html lang="en-US" xml:lang="en-US" xmlns:fb="http://www.facebook.com/2008/fbml">
-<head>
-    <tmpl:get name="seoMetaTag"/> 
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" lang="en-US"/>
-	
-	<%@ include file="/common/template/includes/i_javascripts_optimized.jspf" %>
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" lang="en-US"/>
+    <tmpl:get name="seoMetaTag"/>
+    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
+    <%@ include file="/common/template/includes/i_javascripts_optimized.jspf" %>
 	
 	<% if(!"fb".equals(request.getParameter("current"))) { %>	
 	
@@ -96,7 +96,7 @@ final int W_DNAV_TOTAL = 970;
 	<jwr:style src="/assets/css/TextboxList.css" media="all" />
 
 	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
-</head>
+  </head>
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#ff9900" text="#333333">
 	<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 	<%@ include file="/common/template/includes/globalnav_optimized.jspf" %> 		

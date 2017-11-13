@@ -72,6 +72,11 @@ public abstract class BasicProductData implements Serializable {
     protected String productPageUrl;
 
     /**
+     * Link to product page with primary home category id (FDURLUtil.getProductURI)
+     */
+    protected String productPagePrimaryHomeUrl;
+
+    /**
      * Is alcoholic content? Requires alcohol warning popup?
      */
     protected boolean alcoholic = false;
@@ -353,6 +358,14 @@ public abstract class BasicProductData implements Serializable {
 
     public void setProductPageUrl(String productPageUrl) {
         this.productPageUrl = productPageUrl;
+    }
+
+    public String getProductPagePrimaryHomeUrl() {
+        return productPagePrimaryHomeUrl;
+    }
+
+    public void setProductPagePrimaryHomeUrl(String productPagePrimaryHomeUrl) {
+        this.productPagePrimaryHomeUrl = productPagePrimaryHomeUrl;
     }
 
     public String getAkaName() {

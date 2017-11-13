@@ -14,21 +14,28 @@ import com.freshdirect.framework.util.DaoUtil;
 public class FDProductRequestDAO {
 
 	public static void storeRequest(Connection conn, List<FDProductRequest> request) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PRODUCT_REQ(ID,CUSTOMER_ID,DEPT,CATEGORY,SUB_CATEGORY,PRODUCT_NAME,STATUS,CREATE_DATE) VALUES(?, ?, ?, ?, ?, ?, 'NEW', SYSDATE)");
-		
-		FDProductRequest prodReq=null;
-		for(int i=0;i<request.size();i++) {
-			prodReq=request.get(i);
-			ps.setString(1, prodReq.getId());
-			ps.setString(2, prodReq.getCustomerId());
-			setField(ps,3,prodReq.getDept());
-			setField(ps,4,prodReq.getCategory());
-			setField(ps,5,prodReq.getSubCategory());
-			setField(ps,6,prodReq.getProductName());
-			ps.addBatch();
-		}
-		ps.executeBatch();
-		ps.close();
+        PreparedStatement ps = null; 
+        ResultSet rs = null;
+
+        try {
+    		ps = conn.prepareStatement("INSERT INTO CUST.PRODUCT_REQ(ID,CUSTOMER_ID,DEPT,CATEGORY,SUB_CATEGORY,PRODUCT_NAME,STATUS,CREATE_DATE) VALUES(?, ?, ?, ?, ?, ?, 'NEW', SYSDATE)");
+    		
+    		FDProductRequest prodReq=null;
+    		for(int i=0;i<request.size();i++) {
+    			prodReq=request.get(i);
+    			ps.setString(1, prodReq.getId());
+    			ps.setString(2, prodReq.getCustomerId());
+    			setField(ps,3,prodReq.getDept());
+    			setField(ps,4,prodReq.getCategory());
+    			setField(ps,5,prodReq.getSubCategory());
+    			setField(ps,6,prodReq.getProductName());
+    			ps.addBatch();
+    		}
+    		ps.executeBatch();
+        } finally {
+            DaoUtil.closePreserveException(rs,ps);
+        }
+
 	}
 	
 	private static void setField(PreparedStatement ps, int index, String value) throws SQLException {
@@ -61,8 +68,7 @@ public class FDProductRequestDAO {
 			return mapList;
 
 		} finally {
-			DaoUtil.close(rs);
-			DaoUtil.close(ps);
+			DaoUtil.close(rs,ps);
 		}
 	}
 
@@ -89,8 +95,7 @@ public class FDProductRequestDAO {
 			return catList;
 
 		} finally {
-			DaoUtil.close(rs);
-			DaoUtil.close(ps);
+			DaoUtil.close(rs,ps);
 		}
 	}
 
@@ -115,8 +120,7 @@ public class FDProductRequestDAO {
 
 			return deptList;
 		} finally {
-			DaoUtil.close(rs);
-			DaoUtil.close(ps);
+			DaoUtil.close(rs,ps);
 		}
 	}
 

@@ -35,6 +35,7 @@ import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.framework.core.EntityBeanSupport;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -383,32 +384,38 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 	}
 
 	public void load(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("SELECT ERP_CUSTOMER_ID, LOGIN_COUNT, LAST_LOGIN, DEFAULT_SHIPTO, DEFAULT_PAYMENT, PASSREQ_EXPIRATION, PASSREQ_ID, PASSREQ_ATTEMPTS, PASSWORD_HINT, DEFAULT_DEPOT_LOCATION, DEPOT_CODE, PYMT_VERIFY_ATTEMPTS, DEFAULT_PAYMENT_METHOD_TYPE FROM CUST.FDCUSTOMER WHERE ID = ? ");
-		ps.setString(1, this.getPK().getId());
-		ResultSet rs = ps.executeQuery();
-		if (!rs.next()) {
-			throw new SQLException("No such FDCustomer PK: " + this.getPK());
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(
+					"SELECT ERP_CUSTOMER_ID, LOGIN_COUNT, LAST_LOGIN, DEFAULT_SHIPTO, DEFAULT_PAYMENT, PASSREQ_EXPIRATION, PASSREQ_ID, PASSREQ_ATTEMPTS, PASSWORD_HINT, DEFAULT_DEPOT_LOCATION, DEPOT_CODE, PYMT_VERIFY_ATTEMPTS, DEFAULT_PAYMENT_METHOD_TYPE FROM CUST.FDCUSTOMER WHERE ID = ? ");
+			ps.setString(1, this.getPK().getId());
+			rs = ps.executeQuery();
+			if (!rs.next()) {
+				throw new SQLException("No such FDCustomer PK: " + this.getPK());
+			}
+			// load properties from result set
+			this.erpCustomerPK = rs.getString("ERP_CUSTOMER_ID");
+			this.loginCount = rs.getInt("LOGIN_COUNT");
+			this.lastLogin = rs.getDate("LAST_LOGIN");
+			this.defaultShipToAddressPK = rs.getString("DEFAULT_SHIPTO");
+			this.defaultPaymentMethodPK = rs.getString("DEFAULT_PAYMENT");
+			this.passwordRequestExpiration = rs.getTimestamp("PASSREQ_EXPIRATION");
+			// rs.wasNull()
+			this.passwordRequestId = rs.getString("PASSREQ_ID");
+			this.passwordRequestAttempts = rs.getInt("PASSREQ_ATTEMPTS");
+			//this.passwordHint = rs.getString("PASSWORD_HINT");
+			this.defaultDepotLocationPK = rs.getString("DEFAULT_DEPOT_LOCATION");
+			this.depotCode = rs.getString("DEPOT_CODE");
+			this.setPymtVerifyAttempts(rs.getInt("PYMT_VERIFY_ATTEMPTS"));
+			String defaultPaymentMethodType = rs.getString("DEFAULT_PAYMENT_METHOD_TYPE");
+			this.setDefaultPaymentMethodType((null != defaultPaymentMethodType && !"".equals(defaultPaymentMethodType))
+					? EnumPaymentMethodDefaultType.getByName(defaultPaymentMethodType)
+					: EnumPaymentMethodDefaultType.UNDEFINED);
+		} finally {
+			DaoUtil.close(rs, ps);
 		}
-		// load properties from result set
-
-		this.erpCustomerPK = rs.getString("ERP_CUSTOMER_ID");
-		this.loginCount = rs.getInt("LOGIN_COUNT");
-		this.lastLogin = rs.getDate("LAST_LOGIN");
-		this.defaultShipToAddressPK = rs.getString("DEFAULT_SHIPTO");
-		this.defaultPaymentMethodPK = rs.getString("DEFAULT_PAYMENT");
-		this.passwordRequestExpiration = rs.getTimestamp("PASSREQ_EXPIRATION");
-		// rs.wasNull()
-		this.passwordRequestId = rs.getString("PASSREQ_ID");
-		this.passwordRequestAttempts = rs.getInt("PASSREQ_ATTEMPTS");
-		//this.passwordHint = rs.getString("PASSWORD_HINT");
-		this.defaultDepotLocationPK = rs.getString("DEFAULT_DEPOT_LOCATION");
-		this.depotCode = rs.getString("DEPOT_CODE");
-		this.setPymtVerifyAttempts(rs.getInt("PYMT_VERIFY_ATTEMPTS"));
-		String defaultPaymentMethodType = rs.getString("DEFAULT_PAYMENT_METHOD_TYPE");
-		this.setDefaultPaymentMethodType((null != defaultPaymentMethodType && !"".equals(defaultPaymentMethodType))?
-				EnumPaymentMethodDefaultType.getByName(defaultPaymentMethodType):EnumPaymentMethodDefaultType.UNDEFINED);
-		rs.close();
-		ps.close();
+		
 
 		// load children
 		this.profile.setParentPK(this.getPK());
@@ -431,35 +438,41 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 	}
 
 	public void store(Connection conn) throws SQLException {
-		if (super.isModified()) {
-			PreparedStatement ps = conn.prepareStatement("UPDATE CUST.FDCUSTOMER SET ERP_CUSTOMER_ID = ?, LOGIN_COUNT = ?, LAST_LOGIN =?, DEFAULT_SHIPTO = ?, DEFAULT_PAYMENT =?, PASSREQ_EXPIRATION =?, PASSREQ_ID =?, PASSREQ_ATTEMPTS =?, PASSWORD_HINT =?, DEFAULT_DEPOT_LOCATION = ?, DEPOT_CODE = ?, PYMT_VERIFY_ATTEMPTS=?, DEFAULT_PAYMENT_METHOD_TYPE=? WHERE ID = ?");
-			ps.setString(1, this.erpCustomerPK);
-			ps.setInt(2, this.loginCount);
-			ps.setDate(3, new java.sql.Date(this.lastLogin.getTime()));
-			ps.setString(4, this.defaultShipToAddressPK);
-			ps.setString(5, this.defaultPaymentMethodPK);
-			if (this.passwordRequestExpiration==null) {
-				ps.setNull(6, Types.TIMESTAMP);
-			} else {
-				ps.setTimestamp(6, new java.sql.Timestamp(this.passwordRequestExpiration.getTime()) );
-			}
-			ps.setString(7, this.passwordRequestId );
-			ps.setInt(8, this.passwordRequestAttempts );
-			ps.setString(9, this.passwordHint );
-			ps.setString(10, this.defaultDepotLocationPK);
-			ps.setString(11, this.depotCode);
-			ps.setInt(12, this.pymtVerifyAttempts );
-			ps.setString(13, (null != this.defaultPaymentMethodType && !this.defaultPaymentMethodType.getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName()))?
-					this.defaultPaymentMethodType.getName():null);
-			ps.setString(14, this.getPK().getId() );
-			
-			if (ps.executeUpdate() != 1) {
-				throw new SQLException("Row not updated");
-			}
-			ps.close();
-			ps = null;
-		}
+		PreparedStatement ps =null;
+		try {
+			if (super.isModified()) {
+				ps = conn.prepareStatement(
+						"UPDATE CUST.FDCUSTOMER SET ERP_CUSTOMER_ID = ?, LOGIN_COUNT = ?, LAST_LOGIN =?, DEFAULT_SHIPTO = ?, DEFAULT_PAYMENT =?, PASSREQ_EXPIRATION =?, PASSREQ_ID =?, PASSREQ_ATTEMPTS =?, PASSWORD_HINT =?, DEFAULT_DEPOT_LOCATION = ?, DEPOT_CODE = ?, PYMT_VERIFY_ATTEMPTS=?, DEFAULT_PAYMENT_METHOD_TYPE=? WHERE ID = ?");
+				ps.setString(1, this.erpCustomerPK);
+				ps.setInt(2, this.loginCount);
+				ps.setDate(3, new java.sql.Date(this.lastLogin.getTime()));
+				ps.setString(4, this.defaultShipToAddressPK);
+				ps.setString(5, this.defaultPaymentMethodPK);
+				if (this.passwordRequestExpiration == null) {
+					ps.setNull(6, Types.TIMESTAMP);
+				} else {
+					ps.setTimestamp(6, new java.sql.Timestamp(this.passwordRequestExpiration.getTime()));
+				}
+				ps.setString(7, this.passwordRequestId);
+				ps.setInt(8, this.passwordRequestAttempts);
+				ps.setString(9, this.passwordHint);
+				ps.setString(10, this.defaultDepotLocationPK);
+				ps.setString(11, this.depotCode);
+				ps.setInt(12, this.pymtVerifyAttempts);
+				ps.setString(13,
+						(null != this.defaultPaymentMethodType && !this.defaultPaymentMethodType.getName()
+								.equals(EnumPaymentMethodDefaultType.UNDEFINED.getName()))
+										? this.defaultPaymentMethodType.getName() : null);
+				ps.setString(14, this.getPK().getId());
 
+				if (ps.executeUpdate() != 1) {
+					throw new SQLException("Row not updated");
+				}
+				
+			} 
+		} finally {
+			DaoUtil.close(ps);
+		}
 		// store children
 		if(this.profile.isModified()){
 			this.profile.store(conn);
@@ -475,13 +488,16 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		this.profile.remove(conn);
 
 		// remove self
-		PreparedStatement ps = conn.prepareStatement("DELETE FROM CUST.FDCUSTOMER WHERE ID = ?");
-		ps.setString(1, this.getPK().getId());
-		if (ps.executeUpdate() != 1) {
-			throw new SQLException("Row not deleted");
+		PreparedStatement ps = null;
+		try {
+			ps = conn.prepareStatement("DELETE FROM CUST.FDCUSTOMER WHERE ID = ?");
+			ps.setString(1, this.getPK().getId());
+			if (ps.executeUpdate() != 1) {
+				throw new SQLException("Row not deleted");
+			} 
+		} finally {
+			DaoUtil.close(ps);
 		}
-		ps.close();
-		ps = null;
 	}
 
 

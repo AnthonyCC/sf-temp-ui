@@ -12,6 +12,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
@@ -26,6 +27,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.InvalidUserException;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.util.AjaxErrorHandlingService;
 import com.freshdirect.webapp.util.DraftUtil;
@@ -216,12 +218,17 @@ public abstract class BaseJsonServlet extends HttpServlet {
      * @throws HttpErrorResponse
      */
     protected final FDUserI authenticate(HttpServletRequest request, HttpServletResponse response) throws HttpErrorResponse {
-        FDUserI user = null;
+        HttpSession session = request.getSession();
+        FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 
-        try {
-            user = UserUtil.updateUserRelatedContexts(request, UserUtil.getSessionUser(request, response, FDUserI.GUEST == getRequiredUserLevel()));
-        } catch (InvalidUserException e) {
-            returnHttpError(401, "Invalid user!"); // 401 Unauthorized
+        if (user == null) {
+            try {
+                user = UserUtil.createSessionUser(request, response, FDUserI.GUEST == getRequiredUserLevel());
+                UserUtil.touchUser(request, user);
+                UserUtil.updateUserRelatedContexts(user);
+            } catch (InvalidUserException e) {
+                returnHttpError(401, "Invalid user!"); // 401 Unauthorized
+            }
         }
 
         if (user == null) {

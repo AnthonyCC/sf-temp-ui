@@ -25,6 +25,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.browse.BrowsePopulator;
+import com.freshdirect.webapp.ajax.browse.data.BrowseData;
 import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
 import com.freshdirect.webapp.ajax.cart.data.CartConfirmData;
 import com.freshdirect.webapp.ajax.product.ProductAnnotationDataPopulator;
@@ -257,9 +258,13 @@ public class DataPotatoField {
 		return null;
 	}
 	
+	public static Map<String,?> digBrowse(BrowseData browseData) {
+		return SoyTemplateEngine.convertToMap(browseData);
+	}
+	
 	public static Map<String,?> digBrowse(CmsFilteringFlowResult result) {
 		try {
-			return SoyTemplateEngine.convertToMap(BrowsePopulator.createBrowseData(result));
+			return digBrowse(BrowsePopulator.createBrowseData(result));
 
 		} catch ( HttpErrorResponse e ) {
 			LOG.error( "Failed to get browse info.", e );

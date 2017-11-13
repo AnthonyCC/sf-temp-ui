@@ -77,7 +77,7 @@
 {if $ratings and length($ratings)}
 <strong>{$ratingLabel}</strong>
 {foreach $rating in $ratings}
-<div class="pdp-accordion-webratingscale-item"><img src="/media_stat/images/template/rating3_05_0{$rating.rating}.gif"> {$rating.ratingName}</div>
+<div class="pdp-accordion-webratingscale-item"><img src="/media_stat/images/template/rating3_05_0{$rating.rating}.gif" alt=" rating {$rating.rating} out of 5, {$rating.ratingName}"> {$rating.ratingName}</div>
 {/foreach}
 {/if}
 {/template}

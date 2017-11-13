@@ -26,7 +26,7 @@
 
 <tmpl:insert template='/template/large_pop.jsp'>
 
-	<script type="text/javascript" src="/assets/javascript/jsonrpc_airclic.js"></script>
+	<script type="text/javascript" src="/ccassets/javascript/jsonrpc_airclic.js"></script>
 	
 	<tmpl:put name='title' direct='true'>Carton Exceptions View</tmpl:put>
 		<tmpl:put name='content' direct='true'>

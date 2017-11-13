@@ -13,12 +13,13 @@
 		%><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><%
 	} %>
 <html lang="en-US" xml:lang="en-US">
-<head>
+  <head>
     <tmpl:get name="seoMetaTag"/>
-	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
- 	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
-	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-	<%@ include file="/shared/template/includes/ccl.jspf" %>
+    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
+    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
+    <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
+    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+    <%@ include file="/shared/template/includes/ccl.jspf" %>
 <%		
     {
        String onbeforeunload = (String)request.getAttribute("windowOnBeforeUnload");
@@ -31,9 +32,9 @@
        } // if
     } // local block
 %>
-	<tmpl:get name='facebookmeta'/>
-<%@ include file="/shared/template/includes/i_head_end.jspf" %>
-</head>
+    <tmpl:get name='facebookmeta'/>
+    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+  </head>
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#ff9900" text="#333333"
       onload="<%= request.getAttribute("bodyOnLoad")%>" 
       onunload="<%= request.getAttribute("bodyOnUnload")%>" >

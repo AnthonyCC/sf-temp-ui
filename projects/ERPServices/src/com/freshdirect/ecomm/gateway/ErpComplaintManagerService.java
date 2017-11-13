@@ -19,6 +19,17 @@ public class ErpComplaintManagerService extends AbstractEcommService implements 
 
 	private final static Category LOGGER = LoggerFactory
 			.getInstance(ErpComplaintManagerService.class);
+	
+	private static ErpComplaintManagerService INSTANCE;
+	
+	
+	public static ErpComplaintManagerServiceI getInstance() {
+		if (INSTANCE == null)
+			INSTANCE = new ErpComplaintManagerService();
+
+		return INSTANCE;
+	}
+
 
 	private static final String GET_COMPLAINT_REASONS = "complaint/reason/excludeCartonReq/";
 	private static final String GET_COMPLAINT_CODES = "complaint/code";

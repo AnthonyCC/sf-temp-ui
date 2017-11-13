@@ -17,6 +17,11 @@
   font-size: 12px;
 }
 
+[fdform-displayerrorafter] span[fdform-error],
+[fdform-displayerrorafter]+span[fdform-error] {
+    text-align: left;
+}
+
 [fdform] [fdform-warning] {
   display: block;
   color: #cb2929;

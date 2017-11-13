@@ -186,7 +186,7 @@ final int W_CHECKOUT_STEP_1_EDIT_TOTAL = 970;
 	</TABLE>
 
 	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CHECKOUT_STEP_1_EDIT_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/dotted_line_w.gif" alt="" WIDTH="<%=W_CHECKOUT_STEP_1_EDIT_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
 <IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>	<BR>
 
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%=W_CHECKOUT_STEP_1_EDIT_TOTAL%>">
@@ -205,12 +205,12 @@ final int W_CHECKOUT_STEP_1_EDIT_TOTAL = 970;
 	</TR>
 	</TABLE>
 	
-	<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CHECKOUT_STEP_1_EDIT_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+	<IMG src="/media_stat/images/layout/dotted_line_w.gif" alt="" WIDTH="<%=W_CHECKOUT_STEP_1_EDIT_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 
 	<%@ include file="/includes/ckt_acct/i_delivery_address_field.jspf" %><br><br>
 	
 	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_CHECKOUT_STEP_1_EDIT_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/dotted_line_w.gif" alt="" WIDTH="<%=W_CHECKOUT_STEP_1_EDIT_TOTAL%>" HEIGHT="1" BORDER="0"><BR>
 
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="<%=W_CHECKOUT_STEP_1_EDIT_TOTAL%>">
 		<TR VALIGN="TOP">
@@ -260,7 +260,7 @@ final int W_CHECKOUT_STEP_1_EDIT_TOTAL = 970;
 <%@ include file="/checkout/includes/i_footer_text.jspf" %>
 
 <IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
-<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_CHECKOUT_STEP_1_EDIT_TOTAL%>" height="1" border="0"><br/>
+<img src="/media_stat/images/layout/dotted_line_w.gif" alt="" width="<%=W_CHECKOUT_STEP_1_EDIT_TOTAL%>" height="1" border="0"><br/>
 <IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>

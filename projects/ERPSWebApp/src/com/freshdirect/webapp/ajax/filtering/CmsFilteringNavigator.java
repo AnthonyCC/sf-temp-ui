@@ -95,6 +95,8 @@ public class CmsFilteringNavigator {
     private boolean aggregateCategories;
     private String productId;
     
+    private boolean populateSectionsOnly;
+    
     /**
      * Creates a CmsFilteringNavigator instance out of request parameter map.
      * 
@@ -520,5 +522,12 @@ public class CmsFilteringNavigator {
 
 	public void setProductId(String productId) {
 		this.productId = productId;
+	}
+	
+	public boolean populateSectionsOnly(){
+		return populateSectionsOnly;
+	}
+	public void setPopulateSectionsOnly(boolean b){
+		populateSectionsOnly = b;
 	}
 }

@@ -15,8 +15,6 @@ import java.util.Map;
 
 import org.apache.log4j.Category;
 
-import oracle.jdbc.OraclePreparedStatement;
-
 import com.freshdirect.fdstore.temails.TEmailTemplateInfo;
 import com.freshdirect.fdstore.temails.TransEmailInfoModel;
 import com.freshdirect.framework.core.SequenceGenerator;
@@ -27,6 +25,8 @@ import com.freshdirect.mail.EnumEmailType;
 import com.freshdirect.mail.EnumTEmailProviderType;
 import com.freshdirect.mail.EnumTEmailStatus;
 import com.freshdirect.mail.EnumTranEmailType;
+
+import oracle.jdbc.OraclePreparedStatement;
 
 public class TEmailInfoDAO {
 
@@ -39,20 +39,23 @@ public class TEmailInfoDAO {
 		  Connection conn = con;
 		   	
 		   int count=0;
+	       PreparedStatement ps = null; 
+	       ResultSet rs = null;
 		   
 	       try {
-	    	   PreparedStatement ps = conn.prepareStatement(TEMPLATE_COUNT_SQL);
+	    	   ps = conn.prepareStatement(TEMPLATE_COUNT_SQL);
 	    	   ps.setString(1,tranType.getName());
 	    	   ps.setString(2,emailType.getName());
-	    	   ResultSet rs = ps.executeQuery();
+	    	   rs = ps.executeQuery();
 	           if (rs.next()) {
 	                count=rs.getInt("COUNT"); 
 	           }
-	           if(rs!=null) rs.close();
-	           if(ps!=null) ps.close();
 	       }catch(SQLException e){
 	      	 throw e;
-	       }
+	       } finally {
+	            DaoUtil.close(rs,ps);
+	        }
+
 	       LOGGER.info("TEmailTemplateInfo tranType "+tranType+" count is :"+count);
 		   return count; 				
 	}
@@ -105,6 +108,9 @@ public class TEmailInfoDAO {
 												   " VALUES(?,?,?,?,?,?,?,?,SYSDATE)"; 
 	
 	public static void storeTransactionEmailInfo(Connection conn,TransEmailInfoModel model) throws SQLException {
+        PreparedStatement ps = null; 
+        ResultSet rs = null;
+
 		try
 		{
 			
@@ -112,7 +118,7 @@ public class TEmailInfoDAO {
 			
 		   String id = getNextId(conn, "CUST");
 		   model.setId(id);		  
-   	       PreparedStatement ps = conn.prepareStatement(INSERT_TRANS_EMAIL_MASTER);
+   	       ps = conn.prepareStatement(INSERT_TRANS_EMAIL_MASTER);
    	       ps.setString(1, model.getId());
    	       ps.setString(2, model.getTargetProgId());
    	       if(model.getOrderId()!=null && model.getOrderId().trim().length()>0)
@@ -138,7 +144,9 @@ public class TEmailInfoDAO {
    	       
 		}catch(SQLException e){
 	      	 throw e;
-	    }
+	    } finally {
+            DaoUtil.closePreserveException(rs,ps);
+        }
 	    
 		    
 	}
@@ -151,11 +159,15 @@ public class TEmailInfoDAO {
 
 	
 	public static void storeTransactionEmailDetails(Connection conn,TransEmailInfoModel model) throws SQLException {
+		OraclePreparedStatement ps = null; 
+        ResultSet rs = null;
+
+
 		try
 		{
 		   //String id = getNextId(conn, "CUST");
 		   //model.setId(id);		  
-			OraclePreparedStatement ps = (OraclePreparedStatement)conn.prepareStatement(INSERT_TRANS_EMAIL_DETAIL);
+		   ps = (OraclePreparedStatement)conn.prepareStatement(INSERT_TRANS_EMAIL_DETAIL);
    	       ps.setString(1, model.getId());
    	       
    	       ps.setString(2, model.getFromAddress().getAddress());
@@ -179,7 +191,6 @@ public class TEmailInfoDAO {
 	    	   throw new SQLException("could not create TransactionEmailInfo Master ");
 	       }
 	       
-	       ps.close();
 	    
 	     /*  
 	       
@@ -212,7 +223,9 @@ public class TEmailInfoDAO {
 	      	       
 		}catch(SQLException e){
 	      	 throw e;
-	    }
+	    } finally {
+            DaoUtil.closePreserveException(rs,ps);
+        }
 	       
 		    
 	}
@@ -315,12 +328,12 @@ public class TEmailInfoDAO {
 
 
 	public static Map getFailedTransactionsDetails(Connection conn) throws SQLException{
-				PreparedStatement ps= null;
-				ResultSet rs = null;
-				
-				Map transMap=new HashMap();
-				int totalCount=0;
-				try {
+			PreparedStatement ps= null;
+			ResultSet rs = null;
+			
+			Map transMap=new HashMap();
+			int totalCount=0;
+			try {
 				ps = conn.prepareStatement(GET_FAILED_TRANS_MAIL_SQL);
 							
 				rs = ps.executeQuery();
@@ -333,13 +346,13 @@ public class TEmailInfoDAO {
 				}
 				transMap.put("total_count",""+totalCount);
 
-				}catch(SQLException e){
-					throw e;
-				} finally{
-					DaoUtil.close(rs);
-					DaoUtil.close(ps);
-				}
-				LOGGER.info("failedTransList size is :"+transMap.size());
+			}catch(SQLException e){
+				throw e;
+			} finally{
+				DaoUtil.close(rs);
+				DaoUtil.close(ps);
+			}
+			LOGGER.info("failedTransList size is :"+transMap.size());
 			return transMap; 				
 				
 		}

@@ -40,7 +40,8 @@
 		<xs:annotation>
 			<xs:appinfo>
 				<jaxb:class name="DepartmentTaxonomyFeedElement">
-					<jaxb:javadoc>JAXB-Generated class for taxonomy feed
+					<jaxb:javadoc>
+						JAXB-Generated class for taxonomy feed
 					</jaxb:javadoc>
 				</jaxb:class>
 			</xs:appinfo>
@@ -51,6 +52,7 @@
 		</xs:sequence>
 		<xs:attribute name="departmentId" type="xs:string" />
 		<xs:attribute name="departmentName" type="xs:string" />
+		<xs:attribute name="departmentCatalog" type="xs:string"></xs:attribute>
 	</xs:complexType>
 
 

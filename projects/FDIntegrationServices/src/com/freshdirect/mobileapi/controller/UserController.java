@@ -7,6 +7,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpInvalidPasswordException;
 import com.freshdirect.fdstore.FDActionNotAllowedException;
@@ -14,8 +16,11 @@ import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
+import com.freshdirect.fdstore.customer.FDCustomerFactory;
+import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
@@ -38,7 +43,7 @@ import com.freshdirect.webapp.taglib.location.LocationHandlerTag;
 
 public class UserController extends BaseController {
 
-    private static Category LOGGER = LoggerFactory.getInstance(SiteAccessController.class);
+    private static final Category LOGGER = LoggerFactory.getInstance(UserController.class);
 
 	private static final String ACTION_UPDATE_USER = "updateUser";
 	private static final String ACTION_UPDATE_USER_EX = "updateUserEx";
@@ -50,7 +55,8 @@ public class UserController extends BaseController {
 	private static final String ACTION_USER_SET_NAME = "setUserName";
 	private static final String USER_ID_AND_PASSWORD_BOTH_EMPTY_ERROR_MESSAGE = "UserId and Password both empty nothing is to change";
 
-	protected boolean validateUser() {
+	@Override
+    protected boolean validateUser() {
 		return false;
 	}
 
@@ -246,6 +252,11 @@ public class UserController extends BaseController {
 				throw new FDActionNotAllowedException("This account is not enabled to change username.");
 			}
 			FDCustomerManager.updateUserId(aInfo, newUserID);
+            FDCustomerInfo customerInfo = FDCustomerManager.getCustomerInfo(identity);
+            ErpCustomerInfoModel cim = FDCustomerFactory.getErpCustomerInfo(identity);
+            cim.setEmail(newUserID);
+            FDCustomerManager.updateCustomerInfo(aInfo, cim);
+            FDCustomerManager.sendEmail(FDEmailFactory.getInstance().createUserIdChangeEmail(customerInfo, oldUserID, newUserID, CmsManager.getInstance().getEStoreEnum()));
 		} else {
 			LOGGER.info("UserId not being Changed ");
 		}

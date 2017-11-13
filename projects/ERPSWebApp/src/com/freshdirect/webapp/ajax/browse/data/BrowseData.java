@@ -689,12 +689,22 @@ public class BrowseData implements Serializable {
 	public CarouselDataCointainer getCarousels() {
 		return carousels;
 	}
+	public void setCarousels(CarouselDataCointainer c) {
+		carousels = c;
+	}
 	public DescriptiveDataCointainer getDescriptiveContent() {
 		return descriptiveContent;
+	}
+	public void setDescriptiveContent(DescriptiveDataCointainer d) {
+		descriptiveContent = d;
 	}
 	public MenuDataCointainer getMenuBoxes() {
 		return menuBoxes;
 	}
+	public void setMenuBoxes(MenuDataCointainer m) {
+		menuBoxes = m;
+	}
+	
 	public SortDataCointainer getSortOptions() {
 		return sortOptions;
 	}

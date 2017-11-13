@@ -27,7 +27,7 @@
 	} else if(cardStatus.equalsIgnoreCase("new")){
 		selectedPaymPKId = "new";
 	} else if (selectedPaymPKId==null ) {
-		if(_cart.getPaymentMethod() != null && !(_cart instanceof FDModifyCartModel)) {
+		if(_cart.getPaymentMethod() != null && !(_cart instanceof FDModifyCartModel) && null != ((ErpPaymentMethodModel)_cart.getPaymentMethod()).getPK()) {
 			selectedPaymPKId = ((ErpPaymentMethodModel)_cart.getPaymentMethod()).getPK().getId();
 		} else {
 			selectedPaymPKId = FDCustomerManager.getDefaultPaymentMethodPK(_user.getIdentity());

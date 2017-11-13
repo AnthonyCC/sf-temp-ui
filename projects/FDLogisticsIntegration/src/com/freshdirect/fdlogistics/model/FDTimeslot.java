@@ -170,7 +170,7 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 			Calendar endCal) {
 		StringBuffer sb = new StringBuffer();
 
-		formatCal(startCal, false, sb);
+		formatCal(startCal, true, sb);
 		sb.append("-");
 		formatCal(endCal, true, sb);
 

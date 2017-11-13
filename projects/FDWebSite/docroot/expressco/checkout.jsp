@@ -24,7 +24,7 @@ if (mobWeb) {
 	pageTemplate = "/common/template/mobileWeb.jsp"; //mobWeb template
 	String oasSitePage = request.getAttribute("sitePage").toString();
 	if (oasSitePage.startsWith("www.freshdirect.com/") && !oasSitePage.startsWith("www.freshdirect.com/mobileweb/")) {
-		request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS	
+		request.setAttribute("sitePage", oasSitePage.replace("www.freshdirect.com/", "www.freshdirect.com/mobileweb/")); //change for OAS
 	}
 }
 %>
@@ -56,7 +56,7 @@ if (mobWeb) {
  <!-- <script type="text/javascript" src="https://js.braintreegateway.com/v2/braintree.js"></script> -->
  	<script type="text/javascript" src="https://js.braintreegateway.com/js/braintree-2.21.0.min.js"></script>
 	<script src="<%= FDStoreProperties.getMasterpassLightBoxURL() %>" type="text/javascript"></script>
-	
+
 
 <script src="<%= FDStoreProperties.getMasterpassLightBoxURL() %>" type="text/javascript"></script>
 
@@ -67,11 +67,11 @@ if (mobWeb) {
 		</script>
 	<%}%>
   </tmpl:put>
-  
+
   <tmpl:put name="globalnav">
   	<%-- we need the ad_server.jsp include here because it's in the globalnav (which is not used on this page) --%>
     <jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
-    
+
   	<%-- MASQUERADE HEADER STARTS HERE --%>
   	<% if (masqueradeContext != null) {
   		String makeGoodFromOrderId = masqueradeContext.getMakeGoodFromOrderId();
@@ -100,12 +100,14 @@ if (mobWeb) {
 
   <tmpl:put name="ecpage">checkout</tmpl:put>
 
-  <tmpl:put name="title">Checkout</tmpl:put>
+  <tmpl:put name="seoMetaTag" direct="true">
+    <fd:SEOMetaTag pageId="ec_checkout"></fd:SEOMetaTag>
+  </tmpl:put>
 
   <tmpl:put name='content' direct='true'>
     <div id="expresscheckout">
       <div class="container">
-        
+
       	<div id="cartheader_co">
 	      	<div class="header cartheader">
 	          <% if (!mobWeb) { %>
@@ -122,8 +124,8 @@ if (mobWeb) {
 	        <%-- this needs to be AFTER the main header in mobweb (but still IN the header) --%>
 			<% if (mobWeb) { %><div fdform-error-container="checkout"></div><% } %>
         </div>
-		
-		
+
+
          <% if (mobWeb) { %>
          <div class="cartheader__text">
            <h1 class="checkout icon-cart_fast-before">Checkout</h1>
@@ -137,7 +139,7 @@ if (mobWeb) {
         <%-- TODO: render soy here --%>
         <div id="ec-drawer">
         </div>
-        
+
 
         <% if (!mobWeb) { /* no mobWeb for now */  %>
           <% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.carttabcars, user)) { %>
@@ -173,7 +175,7 @@ if (mobWeb) {
       window.FreshDirect.pendingCustomizations = <fd:ToJSON object="${pendingExternalAtcItemPotato}" noHeaders="true"/>
     </script>
   </tmpl:put>
-  
+
   <tmpl:put name="extraCss">
     <jwr:style src="/expressco.css" media="all" />
   	<% if (user.isVoucherHolder() && null == masqueradeContext) { %>
@@ -189,7 +191,7 @@ if (mobWeb) {
 
   <tmpl:put name="extraJs">
     <fd:javascript src="/assets/javascript/timeslots.js" />
-	
+
 	<script>
 	var checkout;
 		//While loading the screen get the Device ID from braintress
@@ -246,7 +248,7 @@ if (mobWeb) {
 		  			$("#isPayPalDown").val("true");
 		  		}
 			 });
-		       
+
 		       if (document.querySelector('#PP_button') != null) {
 		           document.querySelector('#PP_button').addEventListener('click', function(event) {
 		               if (event.preventDefault) {
@@ -258,7 +260,7 @@ if (mobWeb) {
 		               if (checkout != null) {
 		                   checkout.paypal.initAuthFlow();
 		               }
-		               
+
 		               var isPayPalDown = $('#isPayPalDown').val();
 		               if (isPayPalDown == 'true') {
 		               	$('#PP_ERROR').css("display", "inline-block");
@@ -267,8 +269,8 @@ if (mobWeb) {
 		               }
 		           });
 		       }
-	
-		});		
+
+		});
 	</script>
   </tmpl:put>
 </tmpl:insert>

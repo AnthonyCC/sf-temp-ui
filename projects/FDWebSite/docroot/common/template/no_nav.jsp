@@ -15,21 +15,10 @@ request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);
 <!--[if IE 8]>    <html class="no-js lt-ie10 lt-ie9" lang="en"> <![endif]-->
 <!--[if IE 9]>    <html class="no-js lt-ie10" lang="en"> <![endif]-->
 <!--[if gt IE 9]><!--> <html lang="en-US" xml:lang="en-US" class="no-js" lang="en"> <!--<![endif]-->
-<head>
+  <head>
     <tmpl:get name="seoMetaTag"/>
+<%@ include file="/common/template/includes/seo_canonical.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-	<% if (request.getRequestURI().contains("/myfd")) { %>
-	<fd:javascript src="/assets/javascript/cufon-yui.js"/>
-	<fd:javascript src="/assets/javascript/EagleCufon.font.js"/>
-	<fd:javascript src="/assets/javascript/EagleCufonBold.font.js"/>
-	<script type="text/javascript" language="javascript">
-		Cufon.replace('.myfd-header-text', { fontFamily: 'EagleCufonBold' });
-		Cufon.replace('.myfd-category a', { fontFamily: 'EagleCufon' });
-		Cufon.replace('.myfd-category a strong', { fontFamily: 'EagleCufonBold' });
-		Cufon.replace('.myfd-category a b', { fontFamily: 'EagleCufonBold' });
-		Cufon.replace('.eagle-bold', { fontFamily: 'EagleCufonBold' });
-	</script>
-	<% } %>
   <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<fd:css href="/assets/css/giftcards.css" media="all" />
@@ -49,8 +38,8 @@ request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);
     } // local block
 %>
 
-<%@ include file="/shared/template/includes/i_head_end.jspf" %>
-</head>
+    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+  </head>
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#ff9900" text="#333333" 
       onload="<%= request.getAttribute("bodyOnLoad")%>" 
       onunload="<%= request.getAttribute("bodyOnUnload")%>" >

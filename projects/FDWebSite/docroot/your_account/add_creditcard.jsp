@@ -49,7 +49,7 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 
 <%} %>
 
-<form method="post" fdform><%-- intentionally using JUST the fdform attribute, since css is tied to that --%>
+<form method="post" fdform class="top-margin10 dispblock-fields" fdform-displayerrorafter><%-- intentionally using JUST the fdform attribute, since css is tied to that --%>
 	<table width="<%= (mobWeb) ? "100%" : W_YA_ADD_CREDITCARD %>" cellspacing="0" cellpadding="0" border="0">
 		<tr>
 			<td class="text11" WIDTH="<%= W_YA_ADD_CREDITCARD %>">
@@ -62,7 +62,7 @@ if (!result.hasError("payment_method_fraud") && !result.hasError("technical_diff
 	<br><br>
 	
 	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<img src="/media_stat/images/layout/dotted_line_w.gif" width="<%= (mobWeb) ? "100%" : W_YA_ADD_CREDITCARD %>" height="1" border="0"><br/>
+	<img src="/media_stat/images/layout/dotted_line_w.gif" alt="" width="<%= (mobWeb) ? "100%" : W_YA_ADD_CREDITCARD %>" height="1" border="0"><br/>
 	<IMG src="/media_stat/images/layout/clear.gif" alt="" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 		
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" width="<%= (mobWeb) ? "100%" : W_YA_ADD_CREDITCARD %>">

@@ -20,8 +20,17 @@ public class Order extends Message implements HasCartDetailField {
     private String deliveryZone;
     private String orderNumber;
     private boolean modifiable;
+    private Integer modifycount;
     
-    public String getDeliveryZone() {
+    public Integer getModifycount() {
+		return modifycount;
+	}
+
+	public void setModifycount(Integer modifycount) {
+		this.modifycount = modifycount;
+	}
+
+	public String getDeliveryZone() {
 		return deliveryZone;
 	}
 

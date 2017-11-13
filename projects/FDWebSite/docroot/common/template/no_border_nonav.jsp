@@ -19,14 +19,14 @@
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <html lang="en-US" xml:lang="en-US">
-	<head>
-		<title><tmpl:get name='title'/></title>
-
-		<%@ include file="/common/template/includes/metatags.jspf" %>
-		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
-</head>
+  <head>
+    <title><tmpl:get name='title'/></title>
+    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
+    <%@ include file="/common/template/includes/metatags.jspf" %>
+    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
+    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+  </head>
 
 	<body bgcolor="white" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">
 

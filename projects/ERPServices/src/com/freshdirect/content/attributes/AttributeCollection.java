@@ -40,7 +40,7 @@ public class AttributeCollection implements AttributesI {
         this.attributes = new HashMap(attrColl.attributes);
     }
     
-    Map getMap() {
+    public Map getMap() {
         return this.attributes;
     }
 

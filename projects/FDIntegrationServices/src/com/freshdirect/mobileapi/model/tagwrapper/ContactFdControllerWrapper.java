@@ -24,6 +24,10 @@ public class ContactFdControllerWrapper extends ControllerTagWrapper implements 
     public Selection[] getSubjectsFdx() {
         return ContactFdControllerTag.selectionsFdx;
     }
+    
+    public Selection[] getSubjectsFdxAnonymous() {
+        return ContactFdControllerTag.selectionsFdxAnonymous;
+    }
 
     public ResultBundle submitRequest(String subject, String orderId, String message, ContactUsData contactUsData) throws FDException {
 

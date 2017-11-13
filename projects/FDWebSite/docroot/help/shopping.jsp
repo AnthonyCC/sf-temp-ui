@@ -230,7 +230,7 @@ We take pride in the high quality of our fresh food and packaged goods. That's w
 	<tr valign="top">
 		<td width="15"><img src="/media/images/layout/clear.gif" width="15" height="1" alt="" border="0"></td>
 		<td width="<%=tableWidth%>" class="bodyCopy">
-			<A HREF="#top"><img src="/media_stat/images/template/help/up_arrow.gif" width="17" height="9" hspace="0" vspace="4" border="0" align="left"><img src="/media/images/layout/clear.gif" width="6" height="1" border="0">top of page</A>
+			<A HREF="#top"><img src="/media_stat/images/template/help/up_arrow.gif" alt="" width="17" height="9" hspace="0" vspace="4" border="0" align="left"><img src="/media/images/layout/clear.gif" alt="" width="6" height="1" border="0">top of page</A>
 			<br><br><br>			
 	   </td>
 	</tr>

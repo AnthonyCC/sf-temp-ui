@@ -144,7 +144,7 @@ public class SapGatewayConverter {
 
 
 
-	private static ErpPaymentMethodData buildPaymentMethodModel(PaymentMethodAdapter adapter) {
+	public  static ErpPaymentMethodData buildPaymentMethodModel(PaymentMethodAdapter adapter) {
 		ErpPaymentMethodData erpPayment = new ErpPaymentMethodData();
 		erpPayment = buildPaymentMethodData(adapter.getErpPaymentMethod());
 		erpPayment.setAbaRouteNumber(adapter.getAbaRouteNumber());
@@ -657,23 +657,26 @@ public class SapGatewayConverter {
 		}
 		return erpDeliveryPlantInfoData;
 	}
-	private static ErpDeliveryInfoData buildDeliveryInfoData(ErpDeliveryInfoModel deliveryInfo) {
+	public static ErpDeliveryInfoData buildDeliveryInfoData(ErpDeliveryInfoModel deliveryInfo) {
 		ErpDeliveryInfoData erpDeliveryInfoData = new ErpDeliveryInfoData();
+		if(deliveryInfo.getDeliveryAddress() != null)
 		erpDeliveryInfoData.setDeliveryAddress(buildErpAddressData(deliveryInfo.getDeliveryAddress()));
 		erpDeliveryInfoData.setDeliveryCutoffTime(deliveryInfo.getDeliveryCutoffTime());
 		erpDeliveryInfoData.setDeliveryEndTime(deliveryInfo.getDeliveryEndTime());
 		erpDeliveryInfoData.setDeliveryHandoffTime(deliveryInfo.getDeliveryHandoffTime());
+		if(deliveryInfo.getDeliveryPlantInfo() != null)
 		erpDeliveryInfoData.setDeliveryPlantInfo(buildErpDeliveryPlantInfoData(deliveryInfo.getDeliveryPlantInfo()));
 		erpDeliveryInfoData.setDeliveryRegionId(deliveryInfo.getDeliveryRegionId());
 		erpDeliveryInfoData.setDeliveryReservationId(deliveryInfo.getDeliveryReservationId());
 		erpDeliveryInfoData.setDeliveryStartTime(deliveryInfo.getDeliveryStartTime());
 		if(deliveryInfo.getDeliveryType() != null)
-		erpDeliveryInfoData.setDeliveryType(deliveryInfo.getDeliveryType().getName());
+		erpDeliveryInfoData.setDeliveryType(deliveryInfo.getDeliveryType().getCode());
 		erpDeliveryInfoData.setDeliveryZone(deliveryInfo.getDeliveryZone());
 		erpDeliveryInfoData.setDepotLocationId(deliveryInfo.getDepotLocationId());
 		erpDeliveryInfoData.setId(deliveryInfo.getId());
 		erpDeliveryInfoData.setMinDurationForModification(deliveryInfo.getMinDurationForModification());
 		erpDeliveryInfoData.setMinDurationForModStart(deliveryInfo.getMinDurationForModStart());
+		if(deliveryInfo.getDeliveryPlantInfo() != null)
 		erpDeliveryInfoData.setOrderMobileNumber(buildPhoneNumberData(deliveryInfo.getOrderMobileNumber()));
 		erpDeliveryInfoData.setOriginalCutoffTime(deliveryInfo.getOriginalCutoffTime());
 		if(deliveryInfo.getServiceType() != null)
@@ -758,7 +761,7 @@ public class SapGatewayConverter {
 		userContextData.setEstoreId(userContext.getStoreContext().getEStoreId().getContentId());
 		return userContextData;
 	}
-	private static ErpPaymentMethodData buildPaymentMethodData(ErpPaymentMethodI payment) {
+	public  static ErpPaymentMethodData buildPaymentMethodData(ErpPaymentMethodI payment) {
 		ErpPaymentMethodModel paymentMethod = (ErpPaymentMethodModel) payment;
 		ErpPaymentMethodData paymentData = new ErpPaymentMethodData();
 		paymentData.setId(paymentMethod.getPK().getId());
@@ -1230,7 +1233,7 @@ public class SapGatewayConverter {
 		
 	}
 
-	private static ContactAddressModel buildContactAddressModel(ContactAddressData address) {
+	public static ContactAddressModel buildContactAddressModel(ContactAddressData address) {
 		ContactAddressModel contactAddressModel = null;
 		if(address != null){
 		contactAddressModel = buildAddress(address);

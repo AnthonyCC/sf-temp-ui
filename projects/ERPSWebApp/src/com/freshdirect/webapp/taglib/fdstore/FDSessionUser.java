@@ -1572,11 +1572,6 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     }
 
     @Override
-    public String getGreeting() throws FDResourceException {
-        return user.getGreeting();
-    }
-
-    @Override
     public Date getRegistrationDate() {
         return user.getRegistrationDate();
     }

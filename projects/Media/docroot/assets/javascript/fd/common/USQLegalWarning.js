@@ -2,8 +2,7 @@ if (typeof FreshDirect === "undefined" || !FreshDirect) {
     var FreshDirect = {};
 }
 
-if (window.YAHOO) {
-(function ($, YAHOO) {
+(function ($) {
 	var USQLegalWarning = FreshDirect.USQLegalWarning || {};
 	
 	FreshDirect.USQLegalWarning = USQLegalWarning;
@@ -87,57 +86,13 @@ if (window.YAHOO) {
 			uri += '&atc=true';
 		} 
 
-    if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) {
-      FreshDirect.components.ifrPopup.open({
-        url: uri,
-        borderRadius: "10px",
-        opacity: 0.5
-      });
-    } else {
-      if (!data.panel) {
-        data.panel = new YAHOO.widget.Panel('wine_legal_warning_choice_' + id, {
-          fixedcenter: true, 
-          constraintoviewport: true, 
-          underlay: "matte", 
-          close: true, 
-          visible: true,
-          modal: true,
-          zIndex: 10000,
-          draggable: false}
-        );
-        
-        data.panel.setHeader( "&nbsp;" );
-        
-        data.panel.hideEvent.subscribe(function() {
-          if (data.reload) {
-            FreshDirect.USQLegalWarning.rootWindow.location.reload();
-            return;
-          }
-          // during hide we delete iframe to avoid nasty flicker
-          data.panel.setBody('');
-        });
-
-        // we always stick the modal overlay to the root window
-        var body = rootWindow.document.body;
-        data.panel.render(body);
-
-        YAHOO.util.Dom.addClass('wine_legal_warning_choice_' + id + '_c', 'wine_legal_warning_choice_c');
-        YAHOO.util.Dom.addClass('wine_legal_warning_choice_' + id, 'wine_legal_warning_choice');
-      }
-
-      var content = "";
-      content += '<div id="wine_legal_warning_choice_content_' + id + '" class="wine_legal_warning_choice_content">\n';
-      content += '<div id="wine_legal_warning_choice_progress_' + id + '" class="wine_legal_warning_choice_progress">\n';
-      content += 'Please wait... <img src="/media_stat/images/navigation/spinner.gif" width="50" height="50">\n';
-      content += '</div>\n';
-      content += '  <iframe id="wine_legal_warning_choice_frame_' + id + '" class="wine_legal_warning_choice_frame" style="z-index:150" frameborder="0" src="' + uri + '"></iframe>';
-      content += '</div>\n';
-      
-      data.panel.setBody(content);
-      
-      data.panel.center();
-      data.panel.show();	
-    }
+		if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) {
+		  FreshDirect.components.ifrPopup.open({
+			url: uri,
+			borderRadius: "10px",
+			opacity: 0.5
+		  });
+		} 
 	};	
 	
 	USQLegalWarning.refreshPanelInner = function(query) {
@@ -148,10 +103,6 @@ if (window.YAHOO) {
 				progress.style.display = 'none';
 			FreshDirect.PopupDispatcher.forms[id].panel.center();
 		}
-	};
-
-	USQLegalWarning.refreshPanel = function(query) {
-		return rootWindow.FreshDirect.USQLegalWarning.refreshPanelInner(query);
 	};
 	
 	USQLegalWarning.submitWithAtc = function(data) {
@@ -197,15 +148,6 @@ if (window.YAHOO) {
 		return rootWindow.FreshDirect.USQLegalWarning.blockSubmitInner(query, atc);
 	};	
 
-	USQLegalWarning.hidePanelByIdInner = function(id) {
-		if (id && FreshDirect.PopupDispatcher.forms[id] && FreshDirect.PopupDispatcher.forms[id].panel)
-			FreshDirect.PopupDispatcher.forms[id].panel.hide();
-	};
-
-	USQLegalWarning.hidePanelById = function(id) {
-		return rootWindow.FreshDirect.USQLegalWarning.hidePanelByIdInner(id);
-	};
-	
 	USQLegalWarning.setCookie = function(name, value)
 	{
 		var cookieValue = escape(value)+"@"+rootWindow.FreshDirect.USQLegalWarning.getJSessionId();
@@ -265,5 +207,4 @@ if (window.YAHOO) {
 			   
 		return null;	
 	};
-})(jQuery, window.YAHOO);
-}
+})(jQuery);

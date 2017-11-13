@@ -12,6 +12,7 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.framework.core.DependentPersistentBeanSupport;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.util.DaoUtil;
 
 /**
  * 
@@ -93,61 +94,76 @@ public class FDCustomerEStorePersistentBean extends DependentPersistentBeanSuppo
 	public void load(Connection conn) throws SQLException {
 		EnumEStoreId eStoreId =getCustomerEStoreId();
 
-		PreparedStatement ps = conn.prepareStatement("SELECT DEFAULT_SHIPTO, DEFAULT_PAYMENT, DEFAULT_DEPOT_LOC,TC_AGREE,EMAIL_OPTIN FROM CUST.FDCUSTOMER_ESTORE WHERE FDCUSTOMER_ID=? AND E_STORE=?");
-
-		ps.setString(1, this.getParentPK().getId());
-		ps.setString(2, eStoreId.getContentId());
-		ResultSet rs = ps.executeQuery();
-		if (rs.next()) {
-			model.setPK(getPK());
-			model.seteStoreId(eStoreId);
-			model.setDefaultShipToAddressPK(rs.getString("DEFAULT_SHIPTO"));
-			model.setDefaultPaymentMethodPK(rs.getString("DEFAULT_PAYMENT"));
-			model.setDefaultDepotLocationPK(rs.getString("DEFAULT_DEPOT_LOC"));		
-			model.setTcAcknowledge("X".equalsIgnoreCase(rs.getString("TC_AGREE")) ? true : false);
-			model.setEmailOptIn("X".equalsIgnoreCase(rs.getString("EMAIL_OPTIN"))?true:false);
-			if(EnumEStoreId.FDX.equals(eStoreId)){
-				model.setFdxEmailOptIn("X".equalsIgnoreCase(rs.getString("EMAIL_OPTIN"))?true:false);
-			}else{
-				ps = conn.prepareStatement("SELECT EMAIL_OPTIN FROM CUST.FDCUSTOMER_ESTORE WHERE FDCUSTOMER_ID=? AND E_STORE=?");
-				ps.setString(1, this.getParentPK().getId());
-				ps.setString(2, EnumEStoreId.FDX.getContentId());
-				rs = ps.executeQuery();
-				if(rs.next()){
-					model.setFdxEmailOptIn("X".equalsIgnoreCase(rs.getString("EMAIL_OPTIN"))?true:false);
+		PreparedStatement ps = null;
+		
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(
+					"SELECT DEFAULT_SHIPTO, DEFAULT_PAYMENT, DEFAULT_DEPOT_LOC,TC_AGREE,EMAIL_OPTIN FROM CUST.FDCUSTOMER_ESTORE WHERE FDCUSTOMER_ID=? AND E_STORE=?");
+			ps.setString(1, this.getParentPK().getId());
+			ps.setString(2, eStoreId.getContentId());
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				model.setPK(getPK());
+				model.seteStoreId(eStoreId);
+				model.setDefaultShipToAddressPK(rs.getString("DEFAULT_SHIPTO"));
+				model.setDefaultPaymentMethodPK(rs.getString("DEFAULT_PAYMENT"));
+				model.setDefaultDepotLocationPK(rs.getString("DEFAULT_DEPOT_LOC"));
+				model.setTcAcknowledge("X".equalsIgnoreCase(rs.getString("TC_AGREE")) ? true : false);
+				model.setEmailOptIn("X".equalsIgnoreCase(rs.getString("EMAIL_OPTIN")) ? true : false);
+				if (EnumEStoreId.FDX.equals(eStoreId)) {
+					model.setFdxEmailOptIn("X".equalsIgnoreCase(rs.getString("EMAIL_OPTIN")) ? true : false);
+				} else {
+					ps = conn.prepareStatement(
+							"SELECT EMAIL_OPTIN FROM CUST.FDCUSTOMER_ESTORE WHERE FDCUSTOMER_ID=? AND E_STORE=?");
+					ps.setString(1, this.getParentPK().getId());
+					ps.setString(2, EnumEStoreId.FDX.getContentId());
+					rs = ps.executeQuery();
+					if (rs.next()) {
+						model.setFdxEmailOptIn("X".equalsIgnoreCase(rs.getString("EMAIL_OPTIN")) ? true : false);
+					}
 				}
-			}
+			} 
+		} finally {
+			DaoUtil.close(rs, ps);
 		}
-		rs.close();
-		ps.close();
 		
 	}
 
 	@Override
 	public void store(Connection conn) throws SQLException {
 		EnumEStoreId eStoreId = getCustomerEStoreId();
-		PreparedStatement ps = conn.prepareStatement("UPDATE CUST.FDCUSTOMER_ESTORE SET DEFAULT_SHIPTO=?, DEFAULT_PAYMENT=?, DEFAULT_DEPOT_LOC=? WHERE FDCUSTOMER_ID=? AND E_STORE=?");
-		ps.setString(1, model.getDefaultShipToAddressPK());
-		ps.setString(2, model.getDefaultPaymentMethodPK());
-		ps.setString(3, model.getDefaultDepotLocationPK());
-		ps.setString(4, this.getParentPK().getId());
-		ps.setString(5, eStoreId.getContentId());
-		if(ps.executeUpdate() < 1){
-			create(conn);
+		PreparedStatement ps = null;
+		try {
+			ps = conn.prepareStatement(
+					"UPDATE CUST.FDCUSTOMER_ESTORE SET DEFAULT_SHIPTO=?, DEFAULT_PAYMENT=?, DEFAULT_DEPOT_LOC=? WHERE FDCUSTOMER_ID=? AND E_STORE=?");
+			ps.setString(1, model.getDefaultShipToAddressPK());
+			ps.setString(2, model.getDefaultPaymentMethodPK());
+			ps.setString(3, model.getDefaultDepotLocationPK());
+			ps.setString(4, this.getParentPK().getId());
+			ps.setString(5, eStoreId.getContentId());
+			if (ps.executeUpdate() < 1) {
+				create(conn);
+			} 
+		} finally {
+			DaoUtil.close(ps);
 		}
-		ps.close();
 		this.unsetModified();
 		
 	}
 
 	@Override
 	public void remove(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("DELETE FROM CUST.FDCUSTOMER_ESTORE WHERE FDCUSTOMER_ID= ?");
-		ps.setString(1, this.getPK().getId());
-		if (ps.executeUpdate() != 1) {
-			throw new SQLException("Row not deleted");
-		}
-		ps.close();		
+		PreparedStatement ps = null;
+		try {
+			ps = conn.prepareStatement("DELETE FROM CUST.FDCUSTOMER_ESTORE WHERE FDCUSTOMER_ID= ?");
+			ps.setString(1, this.getPK().getId());
+			if (ps.executeUpdate() != 1) {
+				throw new SQLException("Row not deleted");
+			} 
+		} finally {
+			DaoUtil.close(ps);
+		}	
 	}
 
 	@Override

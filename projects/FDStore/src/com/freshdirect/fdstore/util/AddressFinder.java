@@ -25,7 +25,7 @@ public class AddressFinder {
 		ErpAddressModel address = null;
 			addressId = request.getParameter("addressId");
 			if(addressId != null && !"".equals(addressId)){
-				address = FDCustomerManager.getShipToAddress(user.getIdentity(), addressId);
+                address = FDCustomerManager.getAddress(user.getIdentity(), addressId);
 				return address;
 			}else{
 				if(user!=null&&!timeslotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)&&!timeslotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)&& !timeslotCtx.equals(TimeslotContext.CHECKOUT_TIMESLOTS))
@@ -44,13 +44,10 @@ public class AddressFinder {
 						}else{
 							if(user.getShoppingCart()!=null) {
 								address=user.getShoppingCart().getDeliveryAddress();
-								user.getShoppingCart().setDeliveryAddress(null);
-								user.getShoppingCart().setDeliveryPlantInfo(null);
-								
 							}					
 						}
 						if(address==null) {
-							address = (ErpAddressModel)shipToAddresses.iterator().next();
+							address = shipToAddresses.iterator().next();
 						}
 					}
 			}

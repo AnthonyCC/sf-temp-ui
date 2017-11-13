@@ -5,18 +5,9 @@
 	<%@ include file="/shared/template/includes/yui.jspf" %>
 
 	<script src="/assets/javascript/prototype.js" type="text/javascript" language="javascript"></script>
-	<script src="/assets/javascript/scriptaculous/1.9.0/scriptaculous.js?load=effects,builder" type="text/javascript" language="javascript"></script>
 	<script src="/assets/javascript/modalbox.js" type="text/javascript" language="javascript"></script>
-	
-	<%--
-		using the same /directory/version/ system as scriptaculous for jquery
-		also to avoid conflicts, jQuery's $ will always be set to $jq
-		
-		load BEFORE common_javascript.js
-	--%>
-	<script src="/assets/javascript/jquery/1.8.3/jquery.js" type="text/javascript" language="javascript"></script>
-	<script src="/assets/javascript/jquery/ui/1.9.2/jquery-ui.min.js" type="text/javascript" language="javascript"></script>
-	<script src="/assets/javascript/jquery/corner/jquery.corner.js" type="text/javascript" language="javascript"></script>
+	<script src="/assets/javascript/jquery/1.11.3/jquery.js" type="text/javascript" language="javascript"></script>
+	<script src="/assets/javascript/jquery/ui/1.11.4/jquery-ui.min.js" type="text/javascript" language="javascript"></script>
 
 	<script type="text/javascript" language="javascript" src="/assets/javascript/FD_GiftCards.js"></script>
 

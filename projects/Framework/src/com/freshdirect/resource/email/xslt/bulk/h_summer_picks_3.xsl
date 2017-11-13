@@ -50,9 +50,9 @@
 	<tr><td colspan="5"><img src="/media_stat/images/template/email/seasonal/summer_email_nav.gif" width="668" height="98" border="0" usemap="#summer_email" alt="We've also added a Summer Picks section to our website!" /></td></tr>
 	<tr><td colspan="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0" /></td></tr>
 	<tr>
-		<td colspan="2" rowspan="2"><img src="/media_stat/images/layout/top_left_curve.gif" width="6" height="6" border="0"/></td>
+		<td colspan="2" rowspan="2"><img src="/media_stat/images/layout/top_left_curve.gif" alt="" width="6" height="6" border="0"/></td>
 		<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1" border="0" /></td>
-		<td colspan="2" rowspan="2"><img src="/media_stat/images/layout/top_right_curve.gif" width="6" height="6" border="0"/></td>
+		<td colspan="2" rowspan="2"><img src="/media_stat/images/layout/top_right_curve.gif" alt="" width="6" height="6" border="0"/></td>
 	</tr>
 	<tr>
 		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0" /></td>
@@ -66,43 +66,43 @@
 				<tr><td colspan="5" align="center" class="bodyCopy"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="12" border="0" /><br/><img src="/media_stat/images/template/email/seasonal/laborday_picks.gif" width="441" height="16" alt="LABOR DAY PICKS"/><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="20" border="0" /></td></tr>
 				<tr valign="top">
 				
-					<td width="20%" align="center" class="bodyCopySmall"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10" border="0" /><br/><a href="/product.jsp?productId=bstk_skirt&amp;catId=bfry&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/meat/beef/steaks/bstk_skirt_c.jpg" width="70" height="70" border="0" /><br/>Skirt Steak</a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$8.99/lb</b></td>
+					<td width="20%" align="center" class="bodyCopySmall"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10" border="0" /><br/><a href="/product.jsp?productId=bstk_skirt&amp;catId=bfry&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/meat/beef/steaks/bstk_skirt_c.jpg" alt="" width="70" height="70" border="0" /><br/>Skirt Steak</a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$8.99/lb</b></td>
 
-					<td width="20%" align="center" class="bodyCopySmall"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="20" border="0" /><br/><a href="/product.jsp?productId=ssrmp_shmp_col&amp;catId=sshrmp_shlon&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/seafood/shrimp/ssrmp_shmp_col_c.jpg" width="80" height="60" border="0" /><br/>Shell-On Colossal Shrimp</a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$13.49/lb</b></td>
+					<td width="20%" align="center" class="bodyCopySmall"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="20" border="0" /><br/><a href="/product.jsp?productId=ssrmp_shmp_col&amp;catId=sshrmp_shlon&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/seafood/shrimp/ssrmp_shmp_col_c.jpg" alt="" width="80" height="60" border="0" /><br/>Shell-On Colossal Shrimp</a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$13.49/lb</b></td>
 
-					<td width="20%" align="center" class="bodyCopySmall"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10" border="0" /><br/><a href="/product.jsp?productId=corn_bi&amp;catId=corn&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/vegetables/corn/corn_bi_c.jpg" width="70" height="70" border="0" /><br/>Bicolor Corn</a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$0.49/ea</b></td>
+					<td width="20%" align="center" class="bodyCopySmall"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10" border="0" /><br/><a href="/product.jsp?productId=corn_bi&amp;catId=corn&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/vegetables/corn/corn_bi_c.jpg" alt="" width="70" height="70" border="0" /><br/>Bicolor Corn</a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$0.49/ea</b></td>
 
-					<td width="20%" align="center" class="bodyCopySmall"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10" border="0" /><br/><a href="/product.jsp?productId=bgrnd_ptty_frzn&amp;catId=ground_beef_patties&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/meat/beef/groundbeef/bgrnd_ptty_frzn_c.jpg" width="70" height="70" border="0" /><br/>100% Beef<br/>Frozen Patties</a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$5.99/ea</b></td>
+					<td width="20%" align="center" class="bodyCopySmall"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10" border="0" /><br/><a href="/product.jsp?productId=bgrnd_ptty_frzn&amp;catId=ground_beef_patties&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/meat/beef/groundbeef/bgrnd_ptty_frzn_c.jpg" alt="" width="70" height="70" border="0" /><br/>100% Beef<br/>Frozen Patties</a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$5.99/ea</b></td>
 
-					<td align="center" class="bodyCopySmall"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10" border="0" /><br/><a href="/product.jsp?productId=fra_crot_gtpl&amp;catId=chevre&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/cheese/france/fra_crot_gtpl_c.jpg" width="70" height="70" border="0" /><br/>Aged French Crottin Goat Cheese</a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$3.99/ea</b></td>
-
-				</tr>
-				<tr><td colspan="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="20" border="0" /></td></tr>
-				<tr valign="top">
-				
-					<td align="center" class="bodyCopySmall"><a href="/category.jsp?catId=gro_beer_impor&amp;prodCatId=gro_beer_impor&amp;productId=beer_stella_sxbt&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/grocery_two/beer_stella_sxbt_c.jpg" width="80" height="80" border="0" /><br/><b>Stella Artois</b></a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$7.99/ea</b></td>
-
-					<td align="center" class="bodyCopySmall"><a href="/category.jsp?catId=gro_condi_hot&amp;prodCatId=gro_condi_hot&amp;productId=spe_roland_pickpep_01&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/specialty/spe_roland_pickpep_01_c.jpg" width="80" height="80" border="0" /><br/><b>Pickapeppa</b><br/>Hot Sauce</a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$2.19/ea</b></td>
-
-					<td align="center" class="bodyCopySmall"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10" border="0" /><br/><a href="/product.jsp?productId=mln_ctlp&amp;catId=mln&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/fruit/melons/mln_ctlp_c.jpg" width="70" height="70" border="0" /><br/>Cantaloupe</a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$2.49/ea</b></td>
-
-					<td align="center" class="bodyCopySmall"><a href="/category.jsp?catId=gro_beer_impor&amp;prodCatId=gro_beer_impor&amp;productId=beer_modelo_esp_sxbt&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/grocery_two/beer_modelo_esp_sxbt_c.jpg" width="80" height="80" border="0" /><br/><b>Modelo Especial</b></a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$7.99/ea</b></td>
-
-					<td align="center" class="bodyCopySmall"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10" border="0" /><br/><a href="/product.jsp?productId=plum_pluot&amp;catId=plum&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/fruit/stonefruit/plum_pluot_c.jpg" width="70" height="70" border="0" /><br/>Pluot</a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$2.99/lb</b></td> 
+					<td align="center" class="bodyCopySmall"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10" border="0" /><br/><a href="/product.jsp?productId=fra_crot_gtpl&amp;catId=chevre&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/cheese/france/fra_crot_gtpl_c.jpg" alt="" width="70" height="70" border="0" /><br/>Aged French Crottin Goat Cheese</a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$3.99/ea</b></td>
 
 				</tr>
 				<tr><td colspan="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="20" border="0" /></td></tr>
 				<tr valign="top">
 				
-					<td align="center" class="bodyCopySmall"><a href="/product.jsp?productId=dai_sabrett_skinless_01&amp;catId=mea_bacon_bhotdog&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/dairy/dai_sabrett_skinless_01_c.jpg" width="80" height="80" border="0" /><br/><b>Sabrett</b><br/>Skinless Beef Franks</a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$2.99/ea</b></td>
+					<td align="center" class="bodyCopySmall"><a href="/category.jsp?catId=gro_beer_impor&amp;prodCatId=gro_beer_impor&amp;productId=beer_stella_sxbt&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/grocery_two/beer_stella_sxbt_c.jpg" alt="" width="80" height="80" border="0" /><br/><b>Stella Artois</b></a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$7.99/ea</b></td>
 
-					<td align="center" class="bodyCopySmall"><a href="/category.jsp?catId=gro_condi_musta&amp;prodCatId=gro_condi_musta&amp;productId=gro_nathan_deli_mus_01&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/grocery/gro_nathan_deli_mus_01_c.jpg" width="80" height="80" border="0" /><br/><b>Nathan's</b><br/>Famous Deli Style Mustard </a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$1.49/ea</b></td>
+					<td align="center" class="bodyCopySmall"><a href="/category.jsp?catId=gro_condi_hot&amp;prodCatId=gro_condi_hot&amp;productId=spe_roland_pickpep_01&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/specialty/spe_roland_pickpep_01_c.jpg" alt="" width="80" height="80" border="0" /><br/><b>Pickapeppa</b><br/>Hot Sauce</a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$2.19/ea</b></td>
 
-					<td align="center" class="bodyCopySmall"><a href="/category.jsp?catId=gro_bever_water_sprin&amp;prodCatId=gro_bever_water_sprin&amp;productId=spe_volvic_sprngltr&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/grocery_two/spe_volvic_sprngltr_c.jpg" width="80" height="80" border="0" /><br/><b>Volvic</b><br/>Natural Spring Water</a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$1.49/ea</b></td>
+					<td align="center" class="bodyCopySmall"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10" border="0" /><br/><a href="/product.jsp?productId=mln_ctlp&amp;catId=mln&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/fruit/melons/mln_ctlp_c.jpg" width="70" alt="" height="70" border="0" /><br/>Cantaloupe</a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$2.49/ea</b></td>
 
-					<td align="center" class="bodyCopySmall"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="9" border="0" /><br/><a href="/product.jsp?productId=hmrfish_swordlemcap&amp;catId=hmr_entreesnew&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/meals/seafood_entree/hmrfish_swordlemcap_c.jpg" width="90" height="71" border="0" /><br/>Swordfish with<br/>Lemon &amp; Capers<br/>(char-marked &amp; ready-to-cook)</a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$7.99/ea</b></td>
+					<td align="center" class="bodyCopySmall"><a href="/category.jsp?catId=gro_beer_impor&amp;prodCatId=gro_beer_impor&amp;productId=beer_modelo_esp_sxbt&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/grocery_two/beer_modelo_esp_sxbt_c.jpg" alt="" width="80" height="80" border="0" /><br/><b>Modelo Especial</b></a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$7.99/ea</b></td>
 
-					<td width="20%" align="center" class="bodyCopySmall"><a href="/product.jsp?productId=sschik_apl&amp;catId=saus_links&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/meat/sausage/sschik_apl_c.jpg" width="80" height="80" border="0" /><br/><b>FreshDirect</b><br/>Fresh Chicken &amp; Apple Sausage</a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$4.99/lb</b></td>
+					<td align="center" class="bodyCopySmall"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10" border="0" /><br/><a href="/product.jsp?productId=plum_pluot&amp;catId=plum&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/fruit/stonefruit/plum_pluot_c.jpg" alt="" width="70" height="70" border="0" /><br/>Pluot</a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$2.99/lb</b></td> 
+
+				</tr>
+				<tr><td colspan="5"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="20" border="0" /></td></tr>
+				<tr valign="top">
+				
+					<td align="center" class="bodyCopySmall"><a href="/product.jsp?productId=dai_sabrett_skinless_01&amp;catId=mea_bacon_bhotdog&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/dairy/dai_sabrett_skinless_01_c.jpg" alt="" width="80" height="80" border="0" /><br/><b>Sabrett</b><br/>Skinless Beef Franks</a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$2.99/ea</b></td>
+
+					<td align="center" class="bodyCopySmall"><a href="/category.jsp?catId=gro_condi_musta&amp;prodCatId=gro_condi_musta&amp;productId=gro_nathan_deli_mus_01&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/grocery/gro_nathan_deli_mus_01_c.jpg" alt="" width="80" height="80" border="0" /><br/><b>Nathan's</b><br/>Famous Deli Style Mustard </a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$1.49/ea</b></td>
+
+					<td align="center" class="bodyCopySmall"><a href="/category.jsp?catId=gro_bever_water_sprin&amp;prodCatId=gro_bever_water_sprin&amp;productId=spe_volvic_sprngltr&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/grocery_two/spe_volvic_sprngltr_c.jpg" alt="" width="80" height="80" border="0" /><br/><b>Volvic</b><br/>Natural Spring Water</a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$1.49/ea</b></td>
+
+					<td align="center" class="bodyCopySmall"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="9" border="0" /><br/><a href="/product.jsp?productId=hmrfish_swordlemcap&amp;catId=hmr_entreesnew&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/meals/seafood_entree/hmrfish_swordlemcap_c.jpg" alt="" width="90" height="71" border="0" /><br/>Swordfish with<br/>Lemon &amp; Capers<br/>(char-marked &amp; ready-to-cook)</a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$7.99/ea</b></td>
+
+					<td width="20%" align="center" class="bodyCopySmall"><a href="/product.jsp?productId=sschik_apl&amp;catId=saus_links&amp;trk=epicks03" class="promoProduct"><img src="/media/images/product/meat/sausage/sschik_apl_c.jpg" width="80" alt="" height="80" border="0" /><br/><b>FreshDirect</b><br/>Fresh Chicken &amp; Apple Sausage</a><br/><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="3" border="0" /><br/><b>$4.99/lb</b></td>
 					
 				</tr>
 			</table>
@@ -155,9 +155,9 @@
 		<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1" border="0" /></td>
 	</tr>
 	<tr>
-		<td colspan="2" rowspan="2"><img src="/media_stat/images/layout/bottom_left_curve.gif" width="6" height="6" border="0"/></td>
+		<td colspan="2" rowspan="2"><img src="/media_stat/images/layout/bottom_left_curve.gif" alt="" width="6" height="6" border="0"/></td>
 		<td><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0" /></td>
-		<td colspan="2" rowspan="2"><img src="/media_stat/images/layout/bottom_right_curve.gif" width="6" height="6" border="0"/></td>
+		<td colspan="2" rowspan="2"><img src="/media_stat/images/layout/bottom_right_curve.gif" alt="" width="6" height="6" border="0"/></td>
 	</tr>
 	<tr>
 		<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="1" border="0" /></td>

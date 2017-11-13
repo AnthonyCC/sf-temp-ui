@@ -22,8 +22,10 @@ import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.cos.util.CosFeatureUtil;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.search.unbxd.UnbxdIntegrationService;
+import com.freshdirect.webapp.search.unbxd.UnbxdSearchProperties;
 import com.freshdirect.webapp.search.unbxd.UnbxdServiceUnavailableException;
 import com.freshdirect.webapp.search.unbxd.dto.UnbxdSearchDidYouMean;
 import com.freshdirect.webapp.search.unbxd.dto.UnbxdSearchResponseProduct;
@@ -59,13 +61,13 @@ public class SearchService {
      * @throws IOException
      *             search request failed
      */
-    private static UnbxdSearchResult searchUnbxd(final String searchTerm) throws IOException {
+    private static UnbxdSearchResult searchUnbxd(final String searchTerm, UnbxdSearchProperties searchProperties) throws IOException {
         final UnbxdIntegrationService unbxdService = UnbxdIntegrationService.getDefaultService();
 
         final UnbxdSearchResult result;
 
         // do the search
-        UnbxdSearchResponseRoot searchResult = unbxdService.searchProducts(searchTerm);
+        UnbxdSearchResponseRoot searchResult = unbxdService.searchProducts(searchTerm, searchProperties);
 
         // No products found, repeat the search with suggestion if any
         if (searchResult.getDidYouMeans() != null && !searchResult.getDidYouMeans().isEmpty()) {
@@ -81,7 +83,7 @@ public class SearchService {
             if (searchResult.getResponse().getProducts() == null || searchResult.getResponse().getProducts().isEmpty()) {
                 LOGGER.debug("No product found for term '" + searchTerm + "'; look for suggested products using suggestion '" + suggestedTerm + "'");
                 // repeat search with first suggested term
-                searchResult = unbxdService.searchProducts(suggestedTerm);
+                searchResult = unbxdService.searchProducts(suggestedTerm, searchProperties);
                 result = new UnbxdSearchResult(suggestedTerm, suggestions, searchResult.getResponse().getProducts());
             } else {
                 result = new UnbxdSearchResult(null, suggestions, searchResult.getResponse().getProducts());
@@ -163,17 +165,21 @@ public class SearchService {
         if(searchTerm != null && searchTerm.trim().length() > 0){
             // get search results from Lucene service
             searchResults = ContentSearch.getInstance().searchProducts(searchTerm);
+            final boolean cosAction = CosFeatureUtil.isUnbxdCosAction(user, cookies);
             
-            if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, cookies, user)){
+            if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdanalytics2016, cookies, user)) {
                 // notify UNBXD analytics
-                SearchEventTag.doSendEvent(user, requestUrl, referer, searchTerm);
+                SearchEventTag.doSendEvent(user, requestUrl, referer, searchTerm, cosAction);
             }
     
             if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.unbxdintegrationblackhole2016, cookies, user)) {
                 // when UNBXD service is turned on ...
                 try {
                     // perform search with UNBXD as well
-                    final UnbxdSearchResult internalResult = searchUnbxd(searchTerm);
+                    UnbxdSearchProperties searchProperties = new UnbxdSearchProperties();
+                    searchProperties.setCorporateSearch(cosAction);
+
+                    final UnbxdSearchResult internalResult = searchUnbxd(searchTerm, searchProperties);
     
                     // join results in a new one
                     searchResults = composeSearchResults(searchTerm, searchResults, internalResult);
@@ -185,9 +191,7 @@ public class SearchService {
                     } else {
                         LOGGER.error("Error while calling unbxd search, fallback to internal search", e);
                     }
-    
                 }
-    
             }
         }
         return searchResults;

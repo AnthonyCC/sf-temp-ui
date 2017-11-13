@@ -100,9 +100,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         HttpSession session = pageContext.getSession();
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
-        String userAgent = request.getHeader("User-Agent");
-        String serverName = request.getServerName();
-        FDSessionUser user = null;
+        FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
         this.redirected=false;
 
         /* APPDEV-2024 */
@@ -115,7 +113,9 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         }
 
         try {
-            user = UserUtil.getSessionUser(request, response, guestAllowed);
+            if (user == null) {
+                user = UserUtil.createSessionUser(request, response, guestAllowed);
+            }
 
         //
         //
@@ -185,7 +185,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
             // to let in
             //
 
-                if (guestAllowed && RobotRecognizer.isFriendlyRobot(userAgent, serverName)) {
+                if (guestAllowed && RobotRecognizer.isFriendlyRobot(request.getHeader("User-Agent"), request.getServerName())) {
                 //
                 // make sure the robot has a user in it's session so that pages
                 // won't blow up for it
@@ -217,7 +217,8 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
             doRedirect(true);
         }
 
-            UserUtil.updateUserRelatedContexts(request, user);
+            UserUtil.touchUser(request, user);
+            UserUtil.updateUserRelatedContexts(user);
 
             EnumServiceType serviceType = EnumServiceType.getEnum(request.getParameter("serviceType"));
             LocationHandlerService.getDefaultService().updateServiceType(user, serviceType);

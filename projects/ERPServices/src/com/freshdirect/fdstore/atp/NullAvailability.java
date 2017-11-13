@@ -34,4 +34,10 @@ public class NullAvailability implements FDAvailabilityI {
 		return this.availabilityInfo.isAvailable() ? requestedRange
 				.getStartDate() : null;
 	}
+
+	@Override
+	public double getAvailabileQtyForDate(Date targetDate) {
+		// TODO Auto-generated method stub
+		return -1;
+	}
 }

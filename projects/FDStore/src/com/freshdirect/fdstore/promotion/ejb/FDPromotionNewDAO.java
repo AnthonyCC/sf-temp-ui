@@ -735,12 +735,18 @@ public class FDPromotionNewDAO {
 		String productName = rs.getString("product_name");
 		wasNull |= rs.wasNull();
 		if(!wasNull){
-			if ("SAMPLE".equals(rs.getString("CAMPAIGN_CODE"))) {
+			/*if ("SAMPLE".equals(rs.getString("CAMPAIGN_CODE"))) {
 				promo.addApplicator( new SampleLineApplicator(new ProductReferenceImpl(categoryName, productName), minSubtotal));
 			}else
 			if("PRODUCT_SAMPLE".equals(rs.getString("CAMPAIGN_CODE"))){
 				loadMinSubtotalStrategy(rs, promo);
 				promo.addApplicator(new ProductSampleApplicator(new ProductReferenceImpl(categoryName, productName), minSubtotal));
+			}*/
+			if("PRODUCT_SAMPLE".equals(rs.getString("CAMPAIGN_CODE"))){
+				loadMinSubtotalStrategy(rs, promo);
+				promo.addApplicator(new ProductSampleApplicator(new ProductReferenceImpl(categoryName, productName), minSubtotal));
+			} else {
+				promo.addApplicator( new SampleLineApplicator(new ProductReferenceImpl(categoryName, productName), minSubtotal));
 			}
 		}
 		

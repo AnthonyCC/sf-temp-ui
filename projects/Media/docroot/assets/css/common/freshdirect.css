@@ -25,8 +25,7 @@ a.portrait-item-header-name:focus,
 div#topnavitem_signup a,
 div#topnavitem_standingorders a,
 .dropdown-column li a:focus,
-.subdepartments > li > span > a:link,
-.pdp-evenbetter-productinfo a{
+.subdepartments > li > span > a:link{
 	outline:none;
 }
 .portrait-item-header-name{
@@ -312,7 +311,8 @@ h2.centerline span {
    	cursor: default;
 }
 
-#popupcart .content .cartline[data-freeproduct='true'] .price.product-sample-free{
+#popupcart .content .cartline[data-freeproduct='true'] .price,
+#popupcart .content .cartline .price.product-price-free{
 	color: #c00;
 	font-weight: bold;
 }

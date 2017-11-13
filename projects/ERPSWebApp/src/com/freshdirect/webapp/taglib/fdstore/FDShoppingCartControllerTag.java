@@ -688,7 +688,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
         if (cleanupCart) {
             List<Integer> removeIds = Collections.emptyList();
             try {
-                removeIds = doCartCleanup(cart);
+                removeIds = doCartCleanup(user, cart);
             } catch (FDResourceException ex) {
                 LOGGER.warn("FDResourceException during cleanup", ex);
                 throw new JspException(ex);
@@ -752,12 +752,15 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
         }
     }
 
-    protected static List<Integer> doCartCleanup(FDCartModel cart) throws FDResourceException {
+    public static List<Integer> doCartCleanup(FDUserI user, FDCartModel cart) throws FDResourceException {
         List<Integer> result = new ArrayList<Integer>();
         /*
          * HttpSession session = this.pageContext.getSession(); FDUserI user = (FDUserI) session.getAttribute(USER);
          */
-        UserContext userContext = ContentFactory.getInstance().getCurrentUserContext();
+        UserContext userContext = user.getUserContext();
+        if(null ==userContext){
+        	userContext = ContentFactory.getInstance().getCurrentUserContext();
+        }
         String salesOrg = userContext.getPricingContext().getZoneInfo().getSalesOrg();
         String distrChannel = userContext.getPricingContext().getZoneInfo().getDistributionChanel();
         for (int i = 0; i < cart.numberOfOrderLines(); i++) {

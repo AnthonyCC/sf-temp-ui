@@ -1,44 +1,31 @@
 {namespace common}
+
 /**
- * THESE VARIABLES COME FROM timeslotSelector.js : timeslotsFormating()
  * @param days
  * @param times
  * @param? selectedDay
- * @param? selectedTimeslot
  * @param? zonePromoAmount
- * @param warningMessages
  */
 {template .timeslotSelector autoescape="false"}
 <div class="select-day" selectDay>
   <select class="customsimpleselect">
     {foreach $key in $days}
-      <option value="{$key}" {if $times[$key].selected == true} selected="selected"{/if} data-class="{if $times[$key].midWeekDlvPassApplicable == true}midweek{/if}">{$times[$key].title}</option>
+      <option value="{$key}" {if $times[$key].selected == true} selected="selected"{/if}>{$times[$key].title}</option>
     {/foreach}
   </select>
 </div>
-{if length($warningMessages) > 0}
-	<div class="select-warningmessages">
-		<div class="select-warningmessages-icon icon-info2-after"></div>
-		<div class="select-warningmessages-cont">
-			{foreach $msg in $warningMessages}
-				<div class="select-warningmessage">{$msg}</div>
-		    {/foreach}
-		</div>
-	</div>
-{/if}
-<input id="deliveryTimeslotId" name="deliveryTimeslotId" type="hidden" value="{if $selectedTimeslot}{$selectedTimeslot}{/if}">
+<input id="deliveryTimeslotId" name="deliveryTimeslotId" type="hidden" value="">
 {if $selectedDay}
-  {if $times[$selectedDay].midWeekDlvPassApplicable == true}<div class="selected-day-midweek-dp"><img src="/media/editorial/site_pages/deliverypass/images/group-2.svg"/></div>{/if}
   <div class="select-time" selectTimeslot>
     {foreach $timeslots in $times[$selectedDay].times}
-      <div class="cutoff">Order by {$timeslots[0]}</div>
+      {if index($timeslots) == 1 and $timeslots.length > 0 and $times[$selectedDay].times[0].length > 0}<div>Order by 5pm</div>{/if}
+      {if index($timeslots) == 2 and $timeslots.length > 0}<div>Order by 11pm</div>{/if}
       <ul>
         {foreach $time in $timeslots}
-        {if not isFirst($time)}
         <li class="{if $time.selected}selected {/if}{if $time.ecoFriendly}eco-friendly {/if}{if $zonePromoAmount and $time.steeringDiscount > 0}steering-discount {/if}{if $time.alcoholRestricted}alcohol-restricted {/if}{if $time.isEarlyAM}early {/if}{if $time.reserved}reserved {/if}{if $time.chefsTable}chefs-table {/if}{if $time.full}soldout{/if}">
           <span class="label">
-            <input type="radio" name="timeslot" id="{$time.id}" value="{$time.id}" {if (not $times[$selectedDay].showReserved and $time.selected) or ($times[$selectedDay].showReserved and $time.reserved)} checked{/if}>
-            <label for="{$time.id}">{$time.timePeriod}</label>
+            <input type="radio" name="timeslot" id="{$time.id}" value="{$time.id}" {if $time.selected} checked="checked"{/if}>
+            <label for="{$time.id}" {if $time.selected} checked="checked"{/if}>{$time.timePeriod}</label>
           </span>
           <span class="icons">
             {if $time.alcoholRestricted}
@@ -54,7 +41,7 @@
               <span class="chefs-table">Chef's tabel</span>
             {/if}
             {if $time.isEarlyAM}
-              <span class="early">Early AM</span>
+              <span class="early">Erly AM</span>
             {/if}
             {if $time.reserved}
               <span class="reserved">Reserved</span>
@@ -67,7 +54,6 @@
             {/if}
           </span>
         </li>
-        {/if}
         {/foreach}
       </ul>
     {/foreach}

@@ -135,7 +135,25 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 	}
-
+	
+	public Collection<FDStandingOrder> loadActiveStandingOrdersForAWeek(boolean isNewSo) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO dao = new FDStandingOrderDAO();
+			
+			Collection<FDStandingOrder> ret = dao.loadActiveStandingOrdersForAWeek(conn,isNewSo);
+			
+			return ret;
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in loadActiveStandingOrdersForAWeek() : " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+	}
+	
 	public Collection<FDStandingOrder> loadCustomerStandingOrders(FDIdentity identity) throws FDResourceException, FDInvalidConfigurationException {
 		Connection conn = null;
 		try {

@@ -108,7 +108,8 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
     	LOGGER.info("receiving createOrderStatus from queue..."+ command.getSaleId());
     	
     	FDDeliveryManager.getInstance().submitOrder(command.getSaleId(), command.getParentOrderId(),command.getTip(), command.getReservationId(),
-		command.getFirstName(),command.getLastName(),command.getDeliveryInstructions(),command.getServiceType(),command.getUnattendedInstr(),command.getOrderMobileNumber(),command.getErpOrderId());
+		command.getFirstName(),command.getLastName(),command.getDeliveryInstructions(),command.getServiceType(),command.getUnattendedInstr(),command.getOrderMobileNumber(),command.getErpOrderId()
+		,command.isContainsAlcohol());
     	
     	
 	}	
@@ -122,7 +123,7 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
     	LOGGER.info("receiving modifyOrderStatus from queue..."+ command.getSaleId());
 		FDDeliveryManager.getInstance().modifyOrder(command.getSaleId(), command.getParentOrderId(),command.getTip(), command.getReservationId(),
 				command.getFirstName(),command.getLastName(),command.getDeliveryInstructions(),command.getServiceType(),command.getUnattendedInstr(),command.getOrderMobileNumber()
-				,command.getErpOrderId());
+				,command.getErpOrderId(),command.isContainsAlcohol());
 	}	
     
 }

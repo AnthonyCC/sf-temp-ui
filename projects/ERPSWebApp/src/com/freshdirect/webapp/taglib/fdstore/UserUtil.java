@@ -87,16 +87,6 @@ public class UserUtil {
 
     private static final Category LOGGER = LoggerFactory.getInstance(UserUtil.class);
 
-    public static FDSessionUser getSessionUser(HttpServletRequest request, HttpServletResponse response, boolean guestAllowed) throws InvalidUserException {
-        HttpSession session = request.getSession();
-        FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
-        if (user == null) {
-            user = createSessionUser(request, response, guestAllowed);
-            session.setAttribute(SessionName.USER, user);
-        }
-        return user;
-    }
-
     public static FDSessionUser createSessionUser(HttpServletRequest request, HttpServletResponse response, boolean guestAllowed) throws InvalidUserException {
         HttpSession session = request.getSession();
         String userAgent = request.getHeader("User-Agent");
@@ -114,8 +104,10 @@ public class UserUtil {
         }
 
         if (user != null) {
+        	session.setAttribute(SessionName.USER, user);
             // prevent asking for e-mail address in case of returning customer
             user.setFutureZoneNotificationEmailSentForCurrentAddress(true);
+            FDCustomerCouponUtil.initCustomerCoupons(session);
         }
 
         if (user == null && guestAllowed && RobotRecognizer.isFriendlyRobot(serverName, userAgent)) {
@@ -126,26 +118,33 @@ public class UserUtil {
             user = LocatorUtil.useIpLocator(session, request, response);
         }
 
+        session.setAttribute(SessionName.USER, user);
+
         return user;
     }
 
-    public static FDSessionUser updateUserRelatedContexts(HttpServletRequest request, FDSessionUser user) {
-        UserContext userContext = null;
-        Boolean isEligible = null;
-        MasqueradeContext masqueradeContext = null;
-
+    public static void touchUser(HttpServletRequest request, FDSessionUser user) {
         if (user != null) {
             LOGGER.debug("user was found! user id:" + user.getUserId());
             user.touch();
             user.setClientIp(RequestUtil.getClientIp(request));
             user.setServerName(RequestUtil.getServerName());
             user.setMobilePlatForm(isMobile(request.getHeader("User-Agent")) && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.mobweb, user));
+        } else {
+            LOGGER.debug("user was not found!");
+        }
+    }
+
+    public static void updateUserRelatedContexts(FDSessionUser user) {
+        UserContext userContext = null;
+        boolean isEligible;
+        MasqueradeContext masqueradeContext = null;
+
+        if (user != null) {
             userContext = user.getUserContext();
             isEligible = user.isEligibleForDDPP();
             masqueradeContext = user.getMasqueradeContext();
-            FDCustomerCouponUtil.initCustomerCoupons(request.getSession());
         } else {
-            LOGGER.debug("user was not found!");
             userContext = UserContext.createUserContext(CmsManager.getInstance().getEStoreEnum());
             isEligible = FDStoreProperties.isDDPPEnabled();
         }
@@ -154,8 +153,6 @@ public class UserUtil {
         WineFilter.clearAvailabilityCache(userContext.getPricingContext());
         ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || isEligible);
         FDActionInfo.setMasqueradeAgentTL(masqueradeContext == null ? null : masqueradeContext.getAgentId());
-
-        return user;
     }
 
     public static boolean isMobile(String userAgent) {

@@ -27,6 +27,7 @@ import com.freshdirect.framework.util.ConfigHelper;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
 
 public class FDStoreProperties {
 
@@ -900,6 +901,7 @@ public class FDStoreProperties {
     // UNBXD integration
     private static final String PROP_UNBXD_API_KEY = "fdstore.unbxd.apikey";
     private static final String PROP_UNBXD_SITE_KEY = "fdstore.unbxd.sitekey";
+    private static final String PROP_UNBXD_COS_SITE_KEY = "fdstore.unbxd.cos.sitekey";
     private static final String PROP_UNBXD_BASE_URL = "fdstore.unbxd.baseurl";
     private static final String PROP_UNBXD_FALLBACK_ON_ERROR = "fdstore.unbxd.fallback.on.error";
     private static final String PROP_UNBXD_TRACKING_BASE_URL = "fdstore.unbxd.tracking.base_url";
@@ -981,6 +983,11 @@ public class FDStoreProperties {
 
  	//Setting the product as free as SAP cannot get the value of a product as zero
  	public final static String PROP_ENABLE_FREE_PRODUCT = "fdstore.enable.free.product";
+ 	//appdev-6259
+ 	public final static String PROP_ENABLE_WEBSITE_MOBILE_SAME_NUTRITION_SOY = "enable.website.mobile.same.nutrition.soy";
+ 	
+ 	//appdev-6184
+ 	 	public final static String PROP_ENABLE_FDX_DISTINCT_AVAILABILITY = "enable.fdx.distinct.availability";
 
 
 
@@ -1082,7 +1089,7 @@ static {
         defaults.put(PROP_PRODUCT_CACHE_SIZE, "45000");
         defaults.put(PROP_ZONE_CACHE_SIZE, "10000");
         defaults.put(PROP_GRP_CACHE_SIZE, "10000");
-        defaults.put(PROP_MEDIACONTENT_CACHE_SIZE, "5000000");
+        defaults.put(PROP_MEDIACONTENT_CACHE_SIZE, "0");
         // mktadmin
         defaults.put(MKT_ADMIN_FILE_UPLOAD_SIZE, "2000");
 
@@ -1597,6 +1604,7 @@ static {
         defaults.put("feature.rollout.browseflyoutrecommenders", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.quickshop2_2", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.mobweb", "GLOBAL:ENABLED,true;");
+        defaults.put("feature.rollout.mobwebindexopt", "GLOBAL:ENABLED,true;");
         // defaults.put("feature.rollout.sociallogin", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.printinvoice", "GLOBAL:ENABLED,true;");
 
@@ -1702,7 +1710,7 @@ static {
         defaults.put("feature.rollout.checkout1_0", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.checkout2_0", "GLOBAL:ENABLED,false;");
 
-//        defaults.put(PROP_LOGISTICS_COMPANY_CODE, EnumCompanyCode.fd.name());
+        defaults.put(PROP_LOGISTICS_COMPANY_CODE, EnumCompanyCode.fd.name());
         defaults.put(PROP_LOGISTICS_CONNECTION_TIMEOUT, 120);
         defaults.put(PROP_LOGISTICS_CONNECTION_POOL, 15);
         defaults.put(PROP_LOGISTICS_CONN_READ_TIMEOUT, 120);
@@ -1791,6 +1799,7 @@ static {
 
         defaults.put(PROP_UNBXD_API_KEY, "91a4d42b07d3346afbae9ee63134c5d2");
         defaults.put(PROP_UNBXD_SITE_KEY, "freshdirect_dev-u1469033821585");
+        defaults.put(PROP_UNBXD_COS_SITE_KEY, "freshdirect_dev-u1469033821585");
         defaults.put(PROP_UNBXD_BASE_URL, "http://search.unbxdapi.com/");
         defaults.put(PROP_UNBXD_FALLBACK_ON_ERROR, "false");
         defaults.put(PROP_UNBXD_TRACKING_BASE_URL, "http://tracker.unbxdapi.com/v2/1p.jpg");
@@ -1832,7 +1841,7 @@ static {
         defaults.put(PROP_MEALBUNDLE_CARTONVIEW_ENABLED, "true");
 
         defaults.put(PROP_QS_TOP_ITEMS_PERF_OPT_ENABLED, "true");
-        defaults.put(PROP_ZIP_CHECK_OVER_LAY_ENABLED, "true");
+        defaults.put(PROP_ZIP_CHECK_OVER_LAY_ENABLED, "false");
 
         /* APPDEV-5781 */
         defaults.put(PROP_OBSOLETE_MERGECARTPAGE_ENABLED, "false");
@@ -1876,6 +1885,14 @@ static {
 
  	   	//Delivery Pass sent as a free products for trail
         defaults.put(PROP_ENABLE_FREE_PRODUCT,"false"); // Enable free product
+        
+        defaults.put(PROP_ENABLE_WEBSITE_MOBILE_SAME_NUTRITION_SOY,"false");
+
+        defaults.put(PROP_ENABLE_FDX_DISTINCT_AVAILABILITY,"false");
+        
+
+        defaults.put("feature.rollout.cosRedesign2017", "GLOBAL:ENABLED,false;");
+
 
         refresh();
     }
@@ -1887,14 +1904,18 @@ static {
         refresh(false);
     }
 
-    private synchronized static void refresh(boolean force) {
+    private static void refresh(boolean force) {
         long t = System.currentTimeMillis();
 
         if (force || ((t - lastRefresh) > REFRESH_PERIOD)) {
-            config = ConfigHelper.getPropertiesFromClassLoader("fdstore.properties", defaults);
-            lastRefresh = t;
-            LOGGER.info("Loaded configuration from fdstore.properties: " + config);
-            fireEvent();
+        	synchronized (FDStoreProperties.class){
+        		 if (force || ((t - lastRefresh) > REFRESH_PERIOD)) {//double check
+		            config = ConfigHelper.getPropertiesFromClassLoader("fdstore.properties", defaults);
+		            lastRefresh = t;
+		            LOGGER.info("Loaded configuration from fdstore.properties: " + config);
+		            fireEvent();
+        		 }
+        	}
         }
     }
 
@@ -1905,8 +1926,7 @@ static {
 
     public static String get(String key) {
         refresh();
-
-        return config.getProperty(key);
+        return config.getProperty(key);        
     }
 
     /**
@@ -4587,6 +4607,10 @@ static {
         return get(PROP_UNBXD_SITE_KEY);
     }
 
+    public static String getUnbxdCosSiteKey() {
+        return get(PROP_UNBXD_COS_SITE_KEY);
+    }
+
     public static String getUnbxdBaseUrl() {
         return get(PROP_UNBXD_BASE_URL);
     }
@@ -4608,7 +4632,7 @@ static {
     }
 
     public static boolean isSF2_0_AndServiceEnabled(String beanName) {
-    	return FDStoreProperties.isGlobalSF2_0PropertyEnabled() || ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue()&&FDEcommProperties.isServiceEnabled(beanName));
+    	return ((Boolean.valueOf(get(PROP_SF_2_0_ENABLED))).booleanValue()&&FDEcommProperties.isServiceEnabled(beanName));
     }
 
     public static boolean isMealBundleCartonLinkEnabled() {
@@ -4791,5 +4815,21 @@ static {
 		public static boolean getEnableFreeProduct(){
 			return (Boolean.valueOf(get(PROP_ENABLE_FREE_PRODUCT))).booleanValue();
 		}
+		/**
+		 * Website toggle to determine if we have turned on the feature for both website and mobile api <BR>
+		 * to pull nutrition information from the same soy template.
+		 * @return defaults to off, overide by an entry enable.website.mobile.same.nutrition.soy in fdstore.properties
+		 */
+		public static boolean getEnableWebsiteMobileSameNutritionSoy(){
+			
+			return (Boolean.valueOf(get(PROP_ENABLE_WEBSITE_MOBILE_SAME_NUTRITION_SOY))).booleanValue();
+		}
+		
+
+		public static boolean getEnableFDXDistinctAvailability(){
+			
+			return (Boolean.valueOf(get(PROP_ENABLE_FDX_DISTINCT_AVAILABILITY))).booleanValue();
+		}
+		
 
 }

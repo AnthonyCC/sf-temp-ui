@@ -598,9 +598,7 @@ public class FDURLUtil {
 	@SuppressWarnings( "unchecked" )
 	public static String getCartConfirmPageURI(HttpServletRequest request) {
 		StringBuilder uri = new StringBuilder();
-		
-		// "/grocery_cart_confirm.jsp?catId="+request.getParameter("catId")+"&trk="+ptrk;
-		
+				
 		uri.append(ProductDisplayUtil.GR_CART_CONFIRM_PAGE_BASE + "?catId=" + request.getParameter("catId"));
 
 		appendCommonParameters(uri, request.getParameterMap());
@@ -613,8 +611,6 @@ public class FDURLUtil {
 	@SuppressWarnings( "unchecked" )
 	public static String getCartConfirmPageURI(HttpServletRequest request, ProductModel productNode) {
 		StringBuilder uri = new StringBuilder();
-		
-		// "/cart_confirm.jsp?catId="+productNode.getParentNode().getContentName()+"&productId="+productNode.getContentName()+"&trk="+ptrk;		
 		
 		uri.append(ProductDisplayUtil.CART_CONFIRM_PAGE_BASE + "?catId=" + productNode.getParentNode().getContentName());
 		uri.append(ProductDisplayUtil.URL_PARAM_SEP + "productId=" + productNode.getContentName());
@@ -630,9 +626,7 @@ public class FDURLUtil {
 	public static String getRecipeCartConfirmPageURI(HttpServletRequest request, String catId) {
 		StringBuilder uri = new StringBuilder();
 		
-		// "/grocery_cart_confirm.jsp?catId="+catIdParam+"&recipeId="+recipeId;
 		String recipeId	= request.getParameter("recipeId");
-		/// String catId	= request.getParameter("catId");
 
 		uri.append(ProductDisplayUtil.GR_CART_CONFIRM_PAGE_BASE + "?catId=" + catId);
 		uri.append(ProductDisplayUtil.URL_PARAM_SEP + "recipeId=" + recipeId);

@@ -2029,6 +2029,7 @@ option.address-icon {
 		height: 40px;
 	}
 	/* hide all down arrows until submenus are shown */
-	[data-ec-page] .disableCart .locabar-arrow {
+	[data-ec-page] .disableCart .locabar-arrow,
+	 [data-gc-page] .disableCart .locabar-arrow{
 		display: none;
 	}

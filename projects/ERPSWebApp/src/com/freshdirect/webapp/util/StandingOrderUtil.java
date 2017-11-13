@@ -252,9 +252,9 @@ public class StandingOrderUtil {
 		// =====================
 		//  2days notification 
 		// =====================
-		if(isSendReminderNotificationEmail) {
+		/*if(isSendReminderNotificationEmail) {
 			sendNotification( so, mailerHome );
-		}
+		}*/
 		
 		// ============================
 		//    Validate delivery date
@@ -380,7 +380,7 @@ public class StandingOrderUtil {
 			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.ADDRESS );
 		}
 		
-		LOGGER.info( "Delivery address is valid: " + deliveryAddressModel );
+		LOGGER.info("Delivery address is valid. Address ID: " + deliveryAddressModel.getId());
 		
 		
 		
@@ -421,7 +421,7 @@ public class StandingOrderUtil {
 			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.PAYMENT );
 		}
 		
-		LOGGER.info( "Payment method is valid: " + paymentMethod );
+		LOGGER.info( "Payment method is valid, payment ID: "+paymentMethod.getPK().getId()+". Account num: "+ paymentMethod.getMaskedAccountNumber()+". Type: "+ paymentMethod.getCardType());
 
 
 		
@@ -479,7 +479,7 @@ public class StandingOrderUtil {
 		for ( FDTimeslot timeslot : timeslots ) {		
 			if ( deliveryTimes.checkTimeslot( timeslot ) ) {
 				// this time slot matches to SO template window, and is within the cutoff time
-				LOGGER.info( "Found matched timeslot: " + timeslot.toString() );
+				LOGGER.info( "Found matched timeslot, Timeslot ID: " + timeslot.getId() );
 				_tmpTimeslot = timeslot;
 				
 				_windowInfo = new TimeslotReservationInfo(timeslot, deliveryTimes,
@@ -532,8 +532,8 @@ public class StandingOrderUtil {
 			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.TIMESLOT );
 		}
 		
-		LOGGER.info( "Selected timeslot = " + selectedTimeslot.toString() );
-		LOGGER.info( "Timesot reservation = " + reservation.toString() );
+		LOGGER.info( "Selected timeslot : " + selectedTimeslot.getDlvStartTime()+" to "+ selectedTimeslot.getDlvEndTime());
+		LOGGER.info( "Reservation ID: " + reservation.getId()+" [DLV.RESERVATION], Timeslot ID: "+reservation.getTimeslotId()+" [DLV.TIMESLOT]");
 
 		// ==========================
 		//    Extra validations
@@ -1089,7 +1089,7 @@ public class StandingOrderUtil {
 		return contentKey;
 	}
 
-	private static void sendNotification( FDStandingOrder so, MailerGatewayHome mailerHome ) throws FDResourceException {		
+	public static void sendNotification( FDStandingOrder so, MailerGatewayHome mailerHome ) throws FDResourceException {		
 		try {
 			List<FDOrderInfoI> orders = so.getAllOrders();
 			for ( FDOrderInfoI order : orders ) {
@@ -1312,13 +1312,13 @@ class TimeslotReservationInfo {
 		}	
 		deliveryAddress = FDCustomerManager.getAddress(customer, deliveryAddressId);
 		try { 
-			LOGGER.info( "Trying to make reservation for timeslot: " + timeslot.toString() );
+			LOGGER.info( "Trying to make reservation for timeslot: " + timeslot.getDlvStartTime()+" to "+ timeslot.getDlvEndTime());
 			reservation = FDDeliveryManager.getInstance().reserveTimeslot(timeslot.getId(), customer.getErpCustomerPK(), EnumReservationType.STANDARD_RESERVATION, 
 					TimeslotLogic.encodeCustomer(deliveryAddress, customerUser), false,
 					null, false, event, false, null);
 			
 			selectedTimeslot = timeslot;
-			LOGGER.info( "Timeslot reserved successfully: " + timeslot.toString() );
+			LOGGER.info( "Timeslot reserved successfully: " + timeslot.getId()+" for time: "+timeslot.getDlvStartTime()+" to "+timeslot.getDlvEndTime() );
 		} catch ( ReservationException e ) {
 			if(forceCapacity){
 				try {

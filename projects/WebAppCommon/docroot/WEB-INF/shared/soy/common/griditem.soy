@@ -331,7 +331,7 @@
 	{let $atcItemId: $itemId ? $itemId : 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) + ($listId ? '_'+$listId : '') + ($originalLineId ? '_'+$originalLineId : '') /}
 	{let $badge: ($freeSamplePromoProduct and ($cmEventSource and (strContains($cmEventSource,'ps_caraousal') or strContains($cmEventSource,'ps_carousel'))))?'free':($badge=='free'?'':$badge) /}
 	{let $isEligibleForStandingOrders: ($soData and $soData.settingsData.soSettings and $soData.settingsData.soSettings.isEligibleForStandingOrders) ? true : false /}
-	<li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and $maxProductSampleQuantityReached ) ? 'unavailable' : ''} {$discontinued ? 'discontinued' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}{($isEligibleForStandingOrders) ? ' portrait-item-soPreShow' : ''}{($hookLogicBeaconClick) ? ' isHookLogicProduct' :''}" id="{$productId ? $productId : ''}"
+	<li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and $maxProductSampleQuantityReached and ($cmEventSource and (strContains($cmEventSource,'ps_caraousal') or strContains($cmEventSource,'ps_carousel')))) ? 'unavailable' : ''} {$discontinued ? 'discontinued' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}{($isEligibleForStandingOrders) ? ' portrait-item-soPreShow' : ''}{($hookLogicBeaconClick) ? ' isHookLogicProduct' :''}" id="{$productId ? $productId : ''}"
 	data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}"
 	data-cat-id="{$catId ? $catId : ''}" {$replacement ? 'data-replacement-id="'+$replacement.productId+'"': ''}
   data-in-stock="{$available}"
@@ -345,6 +345,8 @@
   {if $moduleData and $moduleData.moduleVirtualCategory}data-virtual-category="{$moduleData.moduleVirtualCategory}"{/if}
   {if $moduleData and $moduleData.dontFocusForm} data-dontfocusform="true"{/if}
 >
+	/* with modules (homepage), we can just use lazy loading */
+	{if $moduleData and $hookLogicBeaconImpression}<img data-src="{$hookLogicBeaconImpression}" style="visibility: hidden;" />{/if}
 	<div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
 	{if not $discontinued}
 	  <a href="{$productPageUrl}{if $moduleData and $moduleData.moduleVirtualCategory}&cm_vc={$moduleData.moduleVirtualCategory}{/if}" class="portrait-item-image-link" {if $moduleData}data-cm-click="
@@ -629,6 +631,7 @@
           {param soldBySalesUnit:$soldBySalesUnit /}
           {param salesUnit:$salesUnit /}
           {param quantity:$quantity /}
+          {param cmEventSource:$cmEventSource /}
         {/call}
       {/if}
       <div class="portrait-item-addtocart" {if $cmEventSource}data-cmeventsource="{$cmEventSource}"{/if}>
@@ -709,6 +712,7 @@
           {param freeSamplePromoProduct:$freeSamplePromoProduct /}
           {param uid: $catId+'_'+$productId /}
           {param cssbuttons: true /}
+          {param cmEventSource:$cmEventSource /}
         {/call}
       {/if}
       <div class="portrait-item-addtocart" {if $cmEventSource}data-cmeventsource="{$cmEventSource}"{/if}>

@@ -101,13 +101,13 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 				// true :: New Standing Orders3.0  with active flag is Y
 				// false: existing standing Orders with active flag as null
 				
-				soList = soManager.loadActiveStandingOrders(false);	
+				soList = soManager.loadActiveStandingOrdersForAWeek(false);	 				//soList = soManager.loadActiveStandingOrders(false);	
 				
-				soList.addAll(soManager.loadActiveStandingOrders(true));
+				soList.addAll(soManager.loadActiveStandingOrdersForAWeek(true));			//soList.addAll(soManager.loadActiveStandingOrders(true));
 				
 				if ( soList.isEmpty()  ) {
-					LOGGER.error( "Could not retrieve standing orders list! - loadActiveStandingOrders() returned null" );
-					sendTechnicalMail( "Could not retrieve standing orders list! - loadActiveStandingOrders() returned null" );
+					LOGGER.error( "Empty list retrieved for standing orders list! - loadActiveStandingOrders() returned empty list" );
+					sendTechnicalMail( "Empty list retrieved for standing orders list! - loadActiveStandingOrders() returned empty list" );
 					return null;
 				}
 			} catch (FDResourceException re) {
@@ -212,6 +212,44 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 								
 				logActivity( so, result );				
 			}			
+		}
+		
+		// =====================
+		//  2days notification 
+		// =====================
+		if (jobConfig.isSendReminderNotificationEmail()) {
+			Collection<FDStandingOrder> soListEmailNotification = null;
+			if (soIdList == null) {
+				try {
+					LOGGER.info("Loading all active standing orders for 2days email notification.");
+					soListEmailNotification = soManager.loadActiveStandingOrders(true);
+					soListEmailNotification.addAll(soManager.loadActiveStandingOrders(false));
+					if (soListEmailNotification.isEmpty()) {
+						LOGGER.error("Could not retrieve standing orders list! - loadSOFor2DayNotification() returned null");
+						sendTechnicalMail("Could not retrieve standing orders list! - loadSOFor2DayNotification() returned null");
+						return null;
+					}
+				} catch (FDResourceException re) {
+					invalidateMailerHome();
+					LOGGER.error("Could not retrieve standing orders list! - FDResourceException", re);
+					sendTechnicalMail("Could not retrieve standing orders list! - FDResourceException");
+					return null;
+				}
+			}
+			if (null !=soListEmailNotification && !soListEmailNotification.isEmpty()) {
+				for (FDStandingOrder so : soListEmailNotification) {
+					try {
+						// The main processing occurs here.
+						lookupMailerHome();
+						StandingOrderUtil.sendNotification(so, mailerHome);
+					} catch (FDResourceException re) {
+						LOGGER.error("2days notification for SO failed with FDResourceException!", re);
+						SOResult.createTechnicalError(so, "2days notification for SO failed with FDResourceException!");
+					} finally {
+						invalidateMailerHome();
+					}
+				}LOGGER.info("2days email notification has been exicuted.");
+			}
 		}
 		
 		return resultCounter;			

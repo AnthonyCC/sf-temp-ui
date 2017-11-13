@@ -11,16 +11,17 @@
 %>
 <!DOCTYPE html>
 <html lang="en-US" xml:lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title><tmpl:get name='title'/></title>
-		<%@ include file="/common/template/includes/metatags.jspf" %>
-		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+  <head>
+    <title><tmpl:get name='title'/></title>
+    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
+    <%@ include file="/common/template/includes/metatags.jspf" %>
+    <%@ include file="/common/template/includes/i_javascripts.jspf" %>
     <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
     <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
     <%@ include file="/shared/template/includes/ccl.jspf" %>
-	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
-		<tmpl:get name='customCss'/>
-</head>
+    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+    <tmpl:get name='customCss'/>
+  </head>
 	<body>
 	<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 			<%@ include file="/common/template/includes/globalnav.jspf" %> 

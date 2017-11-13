@@ -25,7 +25,7 @@ import com.freshdirect.mail.EnumTranEmailType;
 
 public class TEmailInfoService extends AbstractEcommService implements TEmailInfoServiceI{
 	
-	private static final Category LOGGER = LoggerFactory.getInstance(FDReferralManagerService.class);
+	private final static Category LOGGER = LoggerFactory.getInstance(FDReferralManagerService.class);
 	private static final String SEND_EMAIL = "temailInfo/sendEmail";
 	private static final String SEND_FAILED_TRANSACTION = "temailInfo/failedTransactions/send/timeout/";
 	private static final String GET_FAILED_TRANSACTIOn_LIST = "temailInfo/failedTransactions/maxCount/";
@@ -69,9 +69,16 @@ public class TEmailInfoService extends AbstractEcommService implements TEmailInf
 					FDCustomerInfo customerInfo = (FDCustomerInfo) input.get(key);
 					FDCustomerInfoData customerInfoData = buildFDcustomerInfoData(customerInfo);
 					response.put(key, customerInfoData);
-				} else {
-					response.put(key, input.get(key));
 				}
+				else if(TEmailConstants.EMAIL_TYPE.equals(key) || "oasQuery".equals(key)){
+					 String type =  (String) input.get(key);
+					 response.put(key, type);
+				}
+				/*else if (TEmailConstants.ORDER_INP_KEY.equals(key)){
+					FDOrderI order = (FDOrderI) input.get(key);
+					
+				}*/
+				
 		}
 		return response;
 	}
@@ -109,19 +116,15 @@ public class TEmailInfoService extends AbstractEcommService implements TEmailInf
 	}
 
 	@Override
-	public int sendFailedTransactions(int timeout) throws RemoteException {
-		Response<Integer> response = null;
+	public void sendFailedTransactions(int timeout) throws RemoteException {
+		Response<String> response = null;
 		try {
-			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(SEND_FAILED_TRANSACTION + timeout),
-					new TypeReference<Response<Integer>>() {
-					});
-			if (!response.getResponseCode().equals("OK")) {
-				LOGGER.error("Error occured in sendFailedTransactions:" + response.getMessage());
+			response = this.httpGetDataTypeMap(getFdCommerceEndPoint(SEND_FAILED_TRANSACTION +timeout),  new TypeReference<Response<String>>(){});
+			if(!response.getResponseCode().equals("OK")){
 				throw new FDResourceException(response.getMessage());
 			}
-			return response.getData();
-		} catch (FDResourceException e) {
-			LOGGER.error("Error occured in sendFailedTransactions:", e);
+		} catch (FDResourceException e){
+			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
 	}
@@ -138,7 +141,7 @@ public class TEmailInfoService extends AbstractEcommService implements TEmailInf
 			LOGGER.error(e.getMessage());
 			throw new RemoteException(e.getMessage());
 		}
-		return FDStoreModelConverter.buildTransMail(response.getData());
+		return ModelConverter.buildTransMail(response.getData());
 	}
 
 	@Override

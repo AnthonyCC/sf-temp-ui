@@ -203,6 +203,14 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 			new Selection(CrmCaseSubject.CODE_ORDER_PLACEMENT_HELP, "Help with order placement"),
 			new Selection(CrmCaseSubject.CODE_WEBSITE_PROBLEM, "Technical Support")
 		};
+	
+	public final static Selection[] selectionsFdxAnonymous =
+		{
+			new Selection(CrmCaseSubject.CODE_SERVICE_AVAILABILITY, "Delivery Areas"),
+			new Selection(CrmCaseSubject.CODE_GENERAL_INFO, "General Feedback"),
+			new Selection(CrmCaseSubject.CODE_ORDER_PLACEMENT_HELP, "Help with order placement"),
+			new Selection(CrmCaseSubject.CODE_WEBSITE_PROBLEM, "Technical Support")
+		};
 
 	private static class ContactForm implements WebFormI {
 

@@ -10,15 +10,14 @@
 <!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en-US" xml:lang="en-US"> <!--<![endif]-->
 
-<head>
-  <tmpl:get name="seoMetaTag"/>
-    
-  <%@ include file="/common/template/includes/i_javascripts_optimized.jspf" %>
-  <%@ include file="/shared/template/includes/i_stylesheets_optimized.jspf" %>
-  <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-  <tmpl:get name='extraHead'/>
-   
-</head>
+  <head>
+    <tmpl:get name="seoMetaTag"/>
+    <%@ include file="/common/template/includes/seo_canonical.jspf" %>
+    <%@ include file="/common/template/includes/i_javascripts_optimized.jspf" %>
+    <%@ include file="/shared/template/includes/i_stylesheets_optimized.jspf" %>
+    <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+    <tmpl:get name='extraHead'/>
+  </head>
 
 <body>
       

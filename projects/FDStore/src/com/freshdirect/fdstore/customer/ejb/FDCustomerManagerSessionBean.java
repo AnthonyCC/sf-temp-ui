@@ -340,16 +340,18 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			FDCustomerEB fdCustomerEB = getFdCustomerHome().create(fdCustomer);
 
 			conn = getConnection();
-			java.sql.PreparedStatement ps = conn
-					.prepareStatement("update cust.fduser set fdcustomer_id=? where cookie=?");
-			ps.setString(1, fdCustomerEB.getPK().getId());
-			ps.setString(2, cookie);
-			if (ps.executeUpdate() != 1) {
-				throw new FDResourceException(
-						"There was trouble updating a previously anonymous user with a registered id.");
+			java.sql.PreparedStatement ps = null;
+			ps = conn.prepareStatement("update cust.fduser set fdcustomer_id=? where cookie=?");
+			try {
+				ps.setString(1, fdCustomerEB.getPK().getId());
+				ps.setString(2, cookie);
+				if (ps.executeUpdate() != 1) {
+					throw new FDResourceException(
+							"There was trouble updating a previously anonymous user with a registered id.");
+				} 
+			} finally {
+				DaoUtil.close(ps);
 			}
-			ps.close();
-			ps = null;
 			
 			//System.out.println("FDCustomerManagerSessionBean: All set and ready to send email.");
 
@@ -383,16 +385,20 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			        	String zipCode = "";
 			        	String cohort = "";
 			        	conn = getConnection();
-						java.sql.PreparedStatement ps1 = conn
-								.prepareStatement("select zipcode, cohort_id from cust.fduser where fdcustomer_id=?");
-						ps1.setString(1, fdCustomerEB.getPK().getId());
-						ResultSet rs = ps1.executeQuery();						
-						if (rs.next()) {
-							zipCode = rs.getString("zipcode");
-							cohort = rs.getString("cohort_id");
+						java.sql.PreparedStatement ps1 = null;
+						ResultSet rs = null;
+						try {
+							ps1 = conn.prepareStatement(
+									"select zipcode, cohort_id from cust.fduser where fdcustomer_id=?");
+							ps1.setString(1, fdCustomerEB.getPK().getId());
+							rs = ps1.executeQuery();
+							if (rs.next()) {
+								zipCode = rs.getString("zipcode");
+								cohort = rs.getString("cohort_id");
+							} 
+						} finally {
+							DaoUtil.close(rs, ps1);
 						}
-						ps1.close();
-						rs.close();
 			        	String oasQuery = getOASQueryString(serviceType, fdCustomer.getDepotCode(), zipCode, cohort);
 			        	input.put("oasQuery", oasQuery);
 			        }
@@ -1376,10 +1382,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public FDCustomerInfo getCustomerInfo(FDIdentity identity) throws FDResourceException {
 		try {
 			String erpCustomerPK = identity.getErpCustomerPK();
-			ErpCustomerEB eb = getErpCustomerHome().findByPrimaryKey(
+			/*ErpCustomerEB eb = getErpCustomerHome().findByPrimaryKey(
 					new PrimaryKey(erpCustomerPK));
 
-			ErpCustomerInfoModel erpCustomerInfo = eb.getCustomerInfo();
+			ErpCustomerInfoModel erpCustomerInfo = eb.getCustomerInfo();*/
+			ErpCustomerInfoModel erpCustomerInfo =(ErpCustomerInfoModel) getErpCustomerInfoHome().findByErpCustomerId(erpCustomerPK).getModel();
 			FDCustomerInfo fdInfo = new FDCustomerInfo(erpCustomerInfo
 					.getFirstName(), erpCustomerInfo.getLastName());
 			fdInfo.setHtmlEmail(!erpCustomerInfo.isEmailPlaintext());
@@ -1417,10 +1424,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public FDCustomerInfo getSOCustomerInfo(FDIdentity identity) throws FDResourceException {
 		try {
 			String erpCustomerPK = identity.getErpCustomerPK();
-			ErpCustomerEB eb = getErpCustomerHome().findByPrimaryKey(
+			/*ErpCustomerEB eb = getErpCustomerHome().findByPrimaryKey(
 					new PrimaryKey(erpCustomerPK));
 
-			ErpCustomerInfoModel erpCustomerInfo = eb.getCustomerInfo();
+			ErpCustomerInfoModel erpCustomerInfo = eb.getCustomerInfo();*/
+			ErpCustomerInfoModel erpCustomerInfo =(ErpCustomerInfoModel) getErpCustomerInfoHome().findByErpCustomerId(erpCustomerPK).getModel();
 			FDCustomerInfo fdInfo = new FDCustomerInfo(erpCustomerInfo
 					.getFirstName(), erpCustomerInfo.getLastName());
 			fdInfo.setHtmlEmail(!erpCustomerInfo.isEmailPlaintext());
@@ -4131,29 +4139,27 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public List<String> getUsedReservations(String customerId) throws FDResourceException{
 
 		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
 			conn = getConnection();
 
-			PreparedStatement ps = conn
-					.prepareStatement("SELECT DI.RESERVATION_ID  FROM CUST.SALE S, CUST.SALESACTION SA, CUST.DELIVERYINFO DI WHERE S.ID = SA.SALE_ID AND " +
+			ps = conn.prepareStatement("SELECT DI.RESERVATION_ID  FROM CUST.SALE S, CUST.SALESACTION SA, CUST.DELIVERYINFO DI WHERE S.ID = SA.SALE_ID AND " +
 							" S.CROMOD_DATE = SA.ACTION_DATE AND SA.ACTION_TYPE IN ('CRO','MOD') AND SA.REQUESTED_DATE > SYSDATE " +
 							" AND S.TYPE ='REG' AND S.STATUS <> 'CAN'  AND DI.SALESACTION_ID = SA.ID AND S.CUSTOMER_ID = ?");
 			ps.setString(1, customerId);
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 
 			Set<String> rsvIds = new HashSet<String>();
 			while (rs.next()) {
 				rsvIds.add(rs.getString("RESERVATION_ID"));
 			}
 
-			rs.close();
-			ps.close();
-
 			return new ArrayList<String>(rsvIds);
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			close(conn);
+			DaoUtil.close(rs, ps, conn);
 		}
 	
 	}
@@ -4202,26 +4208,25 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 */
 	public Map<String, Integer> getProductPopularity() throws FDResourceException {
 		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
 			conn = getConnection();
 
-			PreparedStatement ps = conn
+			ps = conn
 					.prepareStatement("select substr(content_key, instr(content_key, ':')+1) as product_id, score from cust.popularity where content_key like 'Product:%'");
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 
 			Map<String, Integer> m = new HashMap<String, Integer>();
 			while (rs.next()) {
 				m.put(rs.getString("product_id"), new Integer(rs.getInt("score")));
 			}
 
-			rs.close();
-			ps.close();
-
 			return m;
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			close(conn);
+			DaoUtil.close(rs, ps, conn);
 		}
 	}
 
@@ -5345,12 +5350,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public List<URLRewriteRule> loadRewriteRules() throws FDResourceException {
 		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 
 		try {
 			conn = this.getConnection();
-			PreparedStatement ps = conn
+			ps = conn
 					.prepareStatement("SELECT ID, NAME, DISABLED, FROM_URL, REDIRECT, COMMENTS, OPTIONS, PRIORITY FROM CUST.URL_REWRITE_RULES ORDER BY PRIORITY");
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			List<URLRewriteRule> lst = new ArrayList<URLRewriteRule>();
 			while (rs.next()) {
 				URLRewriteRule rule = new URLRewriteRule();
@@ -5369,15 +5376,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					lst.add(rule);
 				}
 			}
-
-			rs.close();
-			ps.close();
-
+			
 			return lst;
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-			close(conn);
+			DaoUtil.close(rs, ps, conn);
 		}
 	}
 
@@ -7139,11 +7143,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	private static final String CLICK2CALL_QUERY = "select * from CUST.CLICK2CALL where cro_mod_date = (select max(cro_mod_date) from CUST.CLICK2CALL)";
 	public CrmClick2CallModel getClick2CallInfo() throws FDResourceException{
 		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		CrmClick2CallModel click2callModel = new CrmClick2CallModel();
 		try{
 			conn = this.getConnection();
-			PreparedStatement ps = conn.prepareStatement(CLICK2CALL_QUERY);
-			ResultSet rs = ps.executeQuery();
+			ps = conn.prepareStatement(CLICK2CALL_QUERY);
+			rs = ps.executeQuery();
 			
 			if(rs.next()){
 				click2callModel.setId(rs.getString(1));
@@ -7172,13 +7178,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle) {
-					LOGGER.debug("Error while cleaning:", sqle);
-				}
-			}
+			DaoUtil.close(rs, ps, conn);
 		}
 		
 		return click2callModel;
@@ -7190,12 +7190,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	public List<ErpClientCodeReport> findClientCodesBySale(String saleId)
 			throws FDResourceException {
 		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		List<ErpClientCodeReport> ccs = new ArrayList<ErpClientCodeReport>();
 		try {
 			conn = getConnection();
-			PreparedStatement ps = conn.prepareStatement(CC_BY_SALE_QUERY);
+			ps = conn.prepareStatement(CC_BY_SALE_QUERY);
 			ps.setString(1, saleId);
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			while(rs.next()) {
 				ErpClientCodeReport item = new ErpClientCodeReport();
 				item.setClientCode(rs.getString(1));
@@ -7207,19 +7209,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				item.setDeliveryDate(rs.getDate(7));
 				ccs.add(item);
 			}
-			rs.close();
-			ps.close();
+			
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle) {
-					LOGGER.debug("Error while cleaning:", sqle);
-				}
-			}
+			DaoUtil.close(rs, ps, conn);
 		}
 		return ccs;
 	}
@@ -7233,6 +7228,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	
 	public List<ErpClientCodeReport> findClientCodesByDateRange(FDIdentity customerId, Date start, Date end) throws FDResourceException {
 		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		List<ErpClientCodeReport> ccs = new ArrayList<ErpClientCodeReport>();
 		try {
 			conn = getConnection();
@@ -7244,13 +7241,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			else
 				query = CC_BY_DATE_RANGE_QUERY_2;
 			
-			PreparedStatement ps = conn.prepareStatement(query);
+			ps = conn.prepareStatement(query);
 			ps.setString(1, customerId.getErpCustomerPK());
 			ps.setDate(2, new java.sql.Date(start.getTime()));
 			if (end != null)
 				ps.setDate(3, new java.sql.Date(end.getTime()));
 
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			while(rs.next()) {
 				ErpClientCodeReport item = new ErpClientCodeReport();
 				item.setClientCode(rs.getString(1));
@@ -7262,47 +7259,35 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				item.setDeliveryDate(rs.getDate(7));
 				ccs.add(item);
 			}
-			rs.close();
-			ps.close();
+			
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle) {
-					LOGGER.debug("Error while cleaning:", sqle);
-				}
-			}
+			DaoUtil.close(rs, ps, conn);
 		}
 		return ccs;
 	}
 
 	public SortedSet<IgnoreCaseString> getOrderClientCodesForUser(FDIdentity identity) throws FDResourceException {
 		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 		SortedSet<IgnoreCaseString> ccs = new TreeSet<IgnoreCaseString>();
 		try {
 			conn = getConnection();
-			PreparedStatement ps = conn.prepareStatement("SELECT DISTINCT CLIENT_CODE FROM CUST.ORDERLINE_CLIENTCODE WHERE CUSTOMER_ID = ?");
+			ps = conn.prepareStatement("SELECT DISTINCT CLIENT_CODE FROM CUST.ORDERLINE_CLIENTCODE WHERE CUSTOMER_ID = ?");
 			ps.setString(1, identity.getErpCustomerPK());
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			while(rs.next()) {
 				ccs.add(new IgnoreCaseString(rs.getString(1)));
 			}
-			rs.close();
-			ps.close();
+			
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage());
 			throw new FDResourceException(sqle);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle) {
-					LOGGER.debug("Error while cleaning:", sqle);
-				}
-			}
+			DaoUtil.close(rs, ps, conn);
 		}
 		return ccs;
 	}

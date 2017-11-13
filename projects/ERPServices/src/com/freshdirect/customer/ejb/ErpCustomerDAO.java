@@ -21,7 +21,6 @@ import com.freshdirect.customer.ErpCustomerCreditModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.customer.ErpSaleInfo;
-import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.NVL;
@@ -132,27 +131,5 @@ public class ErpCustomerDAO implements Serializable {
 			}
 		}
 		return customerCredits;
-	}
-	
-	//new columns in estore table from fdcustomer table
-	public static void updateDpAutoRenewOptinDetails(Connection conn, boolean isAutoRenewDp, String custId, String dpType, EnumEStoreId eStore) {
-		PreparedStatement ps = null;
-		try {
-			if(null == eStore) eStore = EnumEStoreId.FD;
-			
-			String value = isAutoRenewDp ? "Y" : "N";
-			ps = conn.prepareStatement(
-					"update cust.fdcustomer_estore set HAS_AUTORENEW_DP = ?, AUTORENEW_DP_TYPE = ? where fdcustomer_id=? and e_store=?");
-			ps.setString(1, value);
-			ps.setString(2, dpType);
-			ps.setString(3, custId);
-			ps.setString(4, eStore.getContentId());
-			ps.executeUpdate();
-
-		} catch (SQLException e) {
-			LOGGER.error("Exception occured while updating Delivery Pass Optin Details, " + e);
-		} finally {
-			DaoUtil.close(ps);
-		}
 	}
 }

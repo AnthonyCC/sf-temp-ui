@@ -31,7 +31,7 @@ var FreshDirect = FreshDirect || {};
     },
     expandDefaultColumn: {
       value: function(timeSlot){
-        if(!timeSlot){
+        if(!timeSlot || !timeSlot.getID){
           return;
         }
 
@@ -101,6 +101,9 @@ var FreshDirect = FreshDirect || {};
     },
     renderPreview:{
       value:function(data){
+        if (fd.mobWeb) {
+          data.mobWeb = true;
+        }
         $(timeslot.previewHolder()).html(timeslot.previewTemplate(data));
       }
     },
@@ -111,20 +114,25 @@ var FreshDirect = FreshDirect || {};
         timeslot.getActualTimeSlotJsp(timeslot.createRequestConfig({ forceorder: !!value.forceOrderEnabled }));
         if($("#soFreq2").length > 0){
         	$("#soFreq2").select2({
-				minimumResultsForSearch: Infinity 
+				minimumResultsForSearch: Infinity
         	});
         };
       }
     },
     serialize:{
-      value:function(){
-    	  var ser = {}, deliveryId = $("[fdform='timeslot'] #deliveryTimeslotId").val();
+      value:function(timeslotId){
+        var ser = {};
+        if (timeslotId && fd.mobWeb) {
+          ser['deliveryTimeslotId'] = timeslotId
+        } else {
+          var deliveryId = $("[fdform='timeslot'] #deliveryTimeslotId").val();
 
           $(timeslot.contentHolder() + " form").serializeArray().map(function(k){
             ser[k.name] = k.value;
           });
           ser['soFirstDate'] = $(timeslot.contentHolder() + ' form input[type="button"][value="'+deliveryId+'"]').data('sofirstdate')||'';
-        
+        }
+
         DISPATCHER.signal('server', {
           url: '/api/expresscheckout/timeslot',
           method: 'POST',
@@ -136,9 +144,24 @@ var FreshDirect = FreshDirect || {};
           }
         });
       }
+    },
+    selectedTimeslot:{
+      value: function() {
+        return Object.create(FreshDirect.common.signalTarget,{
+          signal: {
+            value: 'selectedTimeslotId'
+          },
+          callback:{
+            value:function( selectedTimeslotId ) {
+              timeslot.serialize(selectedTimeslotId);
+            }
+          }
+        });
+      }
     }
   });
 
+  timeslot.selectedTimeslot().listen();
   timeslot.listen();
 
   $(document).on('click', timeslot.contentHolder() + " [data-component='timeslotchangebutton']", timeslot.serialize.bind(timeslot));

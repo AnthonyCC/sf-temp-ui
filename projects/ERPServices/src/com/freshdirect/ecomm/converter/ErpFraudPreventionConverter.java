@@ -126,7 +126,7 @@ public class ErpFraudPreventionConverter {
 	private static CrmAgentRoleData buildCrmAgentRoleData(CrmAgentRole agentRole) {
 		CrmAgentRoleData agentRoleData = new CrmAgentRoleData();
 		if(agentRole != null){
-		agentRoleData.setAgentRole(agentRole.getName());
+		agentRoleData.setAgentRole(agentRole.getCode());
 		agentRoleData.setLdapRoleName(agentRole.getLdapRoleName());
 		}
 		return agentRoleData;
