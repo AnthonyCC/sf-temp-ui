@@ -14,5 +14,10 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/sapjco3.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/logistics-data-0.0.1-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/fdcommerce-data.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Delivery"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ERPServices"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/FDLogisticsIntegration"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/StoreAPI"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/cmseue"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
