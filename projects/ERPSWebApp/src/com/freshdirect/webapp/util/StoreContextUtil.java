@@ -6,7 +6,7 @@ import javax.servlet.http.HttpSession;
 
 import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.fdstore.EnumEStoreId;
-import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 /**

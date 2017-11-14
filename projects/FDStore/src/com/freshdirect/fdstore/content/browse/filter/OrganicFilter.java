@@ -1,8 +1,8 @@
 package com.freshdirect.fdstore.content.browse.filter;
 
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
-import com.freshdirect.fdstore.content.FilterCacheStrategy;
-import com.freshdirect.fdstore.content.ProductFilterModel;
+import com.freshdirect.storeapi.content.FilterCacheStrategy;
+import com.freshdirect.storeapi.content.ProductFilterModel;
 
 public class OrganicFilter extends NutritionInfoFilter {
 

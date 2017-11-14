@@ -7,14 +7,14 @@ import java.util.Map;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.smartstore.sampling.ImpressionSampler;
 import com.freshdirect.smartstore.sampling.RankedContent;
+import com.freshdirect.storeapi.content.ContentNodeModel;
 
 /**
  * A SmartStore variant that offers the most frequently bought items.

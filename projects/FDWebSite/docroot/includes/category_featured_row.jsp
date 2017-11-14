@@ -1,6 +1,6 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings' %>
 <%@ page import='com.freshdirect.fdstore.content.util.SortStrategyElement' %>
-<%@ page import='com.freshdirect.fdstore.content.*' %>
+<%@ page import='com.freshdirect.storeapi.content.*' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='java.util.StringTokenizer' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>

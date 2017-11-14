@@ -1,7 +1,7 @@
 package com.freshdirect.mobileapi.controller.data.response;
 
-import com.freshdirect.fdstore.content.CMSWebPageModel;
 import com.freshdirect.mobileapi.controller.data.Message;
+import com.freshdirect.storeapi.content.CMSWebPageModel;
 
 /**
  * @author Nakkeeran Annamalai

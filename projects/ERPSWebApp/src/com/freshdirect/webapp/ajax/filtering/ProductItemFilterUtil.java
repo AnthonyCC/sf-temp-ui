@@ -10,13 +10,13 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.FilteringProductItem;
-import com.freshdirect.fdstore.content.FilteringSortingItem;
-import com.freshdirect.fdstore.content.ProductFilterGroupI;
-import com.freshdirect.fdstore.content.ProductItemFilterI;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.FilteringProductItem;
+import com.freshdirect.storeapi.content.FilteringSortingItem;
+import com.freshdirect.storeapi.content.ProductFilterGroupI;
+import com.freshdirect.storeapi.content.ProductItemFilterI;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.Recipe;
 import com.freshdirect.webapp.ajax.browse.data.NavigationModel;
 import com.freshdirect.webapp.ajax.browse.data.SectionContext;
 

@@ -12,7 +12,6 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.affiliate.ExternalAgency;
-import com.freshdirect.cms.util.ProductInfoUtil;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
@@ -45,17 +44,18 @@ import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ZonePriceModel;
-import com.freshdirect.fdstore.content.BrandModel;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.ProductReference;
-import com.freshdirect.fdstore.content.ProductReferenceImpl;
-import com.freshdirect.fdstore.content.ProxyProduct;
-import com.freshdirect.fdstore.content.SkuReference;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.BrandModel;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.ProductReference;
+import com.freshdirect.storeapi.content.ProductReferenceImpl;
+import com.freshdirect.storeapi.content.ProxyProduct;
+import com.freshdirect.storeapi.content.SkuReference;
+import com.freshdirect.storeapi.util.ProductInfoUtil;
 
 public class FDProductSelection implements FDProductSelectionI {
 

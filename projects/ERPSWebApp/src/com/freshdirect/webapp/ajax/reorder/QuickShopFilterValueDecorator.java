@@ -1,6 +1,21 @@
 package com.freshdirect.webapp.ajax.reorder;
 
-import static com.freshdirect.fdstore.content.EnumQuickShopFilteringValue.*;
+import static com.freshdirect.storeapi.content.EnumQuickShopFilteringValue.BRAND;
+import static com.freshdirect.storeapi.content.EnumQuickShopFilteringValue.DEPT;
+import static com.freshdirect.storeapi.content.EnumQuickShopFilteringValue.GLUTEN_FREE;
+import static com.freshdirect.storeapi.content.EnumQuickShopFilteringValue.KOSHER;
+import static com.freshdirect.storeapi.content.EnumQuickShopFilteringValue.LOCAL;
+import static com.freshdirect.storeapi.content.EnumQuickShopFilteringValue.ON_SALE;
+import static com.freshdirect.storeapi.content.EnumQuickShopFilteringValue.ORDERS_BY_DATE;
+import static com.freshdirect.storeapi.content.EnumQuickShopFilteringValue.ORGANIC;
+import static com.freshdirect.storeapi.content.EnumQuickShopFilteringValue.STARTER_LISTS;
+import static com.freshdirect.storeapi.content.EnumQuickShopFilteringValue.TIME_FRAME_180;
+import static com.freshdirect.storeapi.content.EnumQuickShopFilteringValue.TIME_FRAME_30;
+import static com.freshdirect.storeapi.content.EnumQuickShopFilteringValue.TIME_FRAME_60;
+import static com.freshdirect.storeapi.content.EnumQuickShopFilteringValue.TIME_FRAME_90;
+import static com.freshdirect.storeapi.content.EnumQuickShopFilteringValue.TIME_FRAME_ALL;
+import static com.freshdirect.storeapi.content.EnumQuickShopFilteringValue.TIME_FRAME_LAST;
+import static com.freshdirect.storeapi.content.EnumQuickShopFilteringValue.YOUR_LISTS;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -13,25 +28,27 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.content.nutrition.EnumClaimValue;
 import com.freshdirect.content.nutrition.EnumOrganicValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.content.BrandModel;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.EnumQuickShopFilteringValue;
-import com.freshdirect.fdstore.content.EnumSearchFilteringValue;
-import com.freshdirect.fdstore.content.FilteringMenuItem;
-import com.freshdirect.fdstore.content.FilteringSortingItem;
-import com.freshdirect.fdstore.content.FilteringValue;
 import com.freshdirect.fdstore.content.GenericFilterDecorator;
-import com.freshdirect.fdstore.content.PriceCalculator;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.BrandModel;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.DepartmentModel;
+import com.freshdirect.storeapi.content.EnumQuickShopFilteringValue;
+import com.freshdirect.storeapi.content.EnumSearchFilteringValue;
+import com.freshdirect.storeapi.content.FilteringMenuItem;
+import com.freshdirect.storeapi.content.FilteringSortingItem;
+import com.freshdirect.storeapi.content.FilteringValue;
+import com.freshdirect.storeapi.content.PriceCalculator;
+import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
 
 public class QuickShopFilterValueDecorator extends GenericFilterDecorator<FilteringSortingItem<QuickShopLineItemWrapper>> {
@@ -192,14 +209,22 @@ public class QuickShopFilterValueDecorator extends GenericFilterDecorator<Filter
 
 				case DEPT: {
 
-					// prepare the menus
-					menu.setName(product.getPrimaryHome().getDepartment().getFullName());
+				    final CategoryModel primaryHome = product.getPrimaryHome();
+				    if (primaryHome == null)
+				        break;
 
-					menu.setFilteringUrlValue(product.getPrimaryHome().getDepartment().getContentKey().getId());
+				    final DepartmentModel department = primaryHome.getDepartment();
+				    if (department == null)
+				        break;
+
+				    // prepare the menus
+					menu.setName(department.getFullName());
+
+					menu.setFilteringUrlValue(department.getContentKey().getId());
 					menu.setFilter(filter);
 					menus.add(menu);
 
-					item.putFilteringValue(DEPT, product.getPrimaryHome().getDepartment().getContentKey().getId());
+					item.putFilteringValue(DEPT, department.getContentKey().getId());
 					item.putMenuValue(DEPT, menus);
 
 					break;
@@ -260,7 +285,11 @@ public class QuickShopFilterValueDecorator extends GenericFilterDecorator<Filter
 				case LOCAL: {
 
 					for (ProductModel parent : parents) {
-						if ("local".equalsIgnoreCase(parent.getDepartment().getContentKey().getId())) {
+					    final DepartmentModel department = parent.getDepartment();
+					    if (department == null)
+					        continue;
+
+						if ("local".equalsIgnoreCase(department.getContentKey().getId())) {
 
 							menu.setName(LOCAL.getDisplayName());
 							menu.setFilteringUrlValue(LOCAL.getName());
@@ -278,7 +307,11 @@ public class QuickShopFilterValueDecorator extends GenericFilterDecorator<Filter
 				case ORGANIC: {
 
 					for (ProductModel parent : parents) {
-						if ("orgnat".equalsIgnoreCase(parent.getDepartment().getContentKey().getId())) {
+						final DepartmentModel department = parent.getDepartment();
+						if (department == null)
+						    continue;
+
+						if ("orgnat".equalsIgnoreCase(department.getContentKey().getId())) {
 
 							menu.setName(ORGANIC.getDisplayName());
 							menu.setFilteringUrlValue(ORGANIC.getName());
@@ -327,7 +360,7 @@ public class QuickShopFilterValueDecorator extends GenericFilterDecorator<Filter
 						item.putMenuValue(STARTER_LISTS, menus);
 						item.putFilteringValue(STARTER_LISTS, item.getNode().getStarterList().getContentKey().getId());
 					}
-					
+
 					break;
 				}
 
@@ -346,10 +379,10 @@ public class QuickShopFilterValueDecorator extends GenericFilterDecorator<Filter
 						item.putMenuValue(YOUR_LISTS, menus);
 						item.putFilteringValue(YOUR_LISTS, item.getNode().getCclId());
 					}
-					
+
 					break;
 				}
-				
+
                     case BRAND: {
                         for (BrandModel brand : product.getBrands()) {
                             menu.setName(brand.getFullName());
@@ -374,7 +407,7 @@ public class QuickShopFilterValueDecorator extends GenericFilterDecorator<Filter
 	private List<ProductModel> collectParents(ProductModelPricingAdapter node) {
 		List<ProductModel> parentNodes = new ArrayList<ProductModel>();
 
-		Collection<ContentKey> parents = node.getParentKeys();
+		Collection<ContentKey> parents = ContentFactory.getInstance().getParentKeys(node.getContentKey());
 		if (parents != null) {
 			for (ContentKey parentKey : parents) {
 				ProductModel nodeByKey = ContentFactory.getInstance().getProductByName(parentKey.getId(), node.getContentKey().getId());

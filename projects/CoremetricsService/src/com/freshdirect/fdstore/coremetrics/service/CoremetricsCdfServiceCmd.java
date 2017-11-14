@@ -17,8 +17,6 @@ import javax.naming.NamingException;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.cms.application.CmsManager;
-import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -28,6 +26,8 @@ import com.freshdirect.fdstore.coremetrics.CmInstance;
 import com.freshdirect.fdstore.ecomm.gateway.CoreMetricsCdfService;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
+import com.freshdirect.storeapi.application.CmsManager;
+import com.freshdirect.storeapi.fdstore.FDContentTypes;
 
 /**
  * <p>This class is used for processing coremetrics cdf upload from cron job.</p>

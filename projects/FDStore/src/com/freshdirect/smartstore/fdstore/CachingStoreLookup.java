@@ -4,7 +4,7 @@
 package com.freshdirect.smartstore.fdstore;
 
 import com.freshdirect.common.pricing.PricingContext;
-import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.ContentNodeModel;
 
 public abstract class CachingStoreLookup implements StoreLookup {
     StoreLookup cache;

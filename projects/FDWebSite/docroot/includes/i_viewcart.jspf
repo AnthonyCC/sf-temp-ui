@@ -1,6 +1,6 @@
 <%@page import="com.freshdirect.common.context.MasqueradeContext"%>
 <%@page import="com.freshdirect.webapp.taglib.callcenter.ComplaintUtil"%>
-<%@ page import='com.freshdirect.fdstore.*,com.freshdirect.fdstore.customer.*,com.freshdirect.fdstore.content.*' %>
+<%@ page import='com.freshdirect.fdstore.*,com.freshdirect.fdstore.customer.*,com.freshdirect.storeapi.content.*' %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import="com.freshdirect.fdstore.promotion.PromotionI" %>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
@@ -37,7 +37,7 @@
 <%@ page import="java.util.HashMap"%>
 <%@ page import="java.util.Iterator"%>
 <%@ page import="java.lang.Math"%>
-<%@ page import='com.freshdirect.cms.util.ProductInfoUtil'%>
+<%@ page import='com.freshdirect.storeapi.util.ProductInfoUtil'%>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>

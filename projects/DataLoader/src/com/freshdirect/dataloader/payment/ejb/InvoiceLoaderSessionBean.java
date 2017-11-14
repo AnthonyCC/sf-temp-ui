@@ -17,13 +17,11 @@ import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
-import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpInvoiceModel;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
-import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpCustomerHome;
 import com.freshdirect.customer.ejb.ErpCustomerInfoHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
@@ -33,8 +31,6 @@ import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.dataloader.analytics.GoogleAnalyticsReportingService;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
@@ -46,11 +42,13 @@ import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.Recipe;
 
 public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 
 	/**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     private static Category LOGGER = LoggerFactory.getInstance(InvoiceLoaderSessionBean.class);
@@ -58,15 +56,15 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 
 	public void addAndReconcileInvoice(String saleId, ErpInvoiceModel invoice, ErpShippingInfo shippingInfo)
 		throws ErpTransactionException {
-		
+
 		try {
 			Boolean isShorted = false;
 			ErpSaleEB eb = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
-			
+
 			ErpSaleModel saleModel = (ErpSaleModel)eb.getModel();
-			
+
 			EnumSaleStatus status = saleModel.getStatus();
-            
+
             if (status.equals(EnumSaleStatus.ENROUTE) || status.equals(EnumSaleStatus.PAYMENT_PENDING) || status.equals(EnumSaleStatus.REFUSED_ORDER)
                 || status.equals(EnumSaleStatus.PENDING) || status.equals(EnumSaleStatus.RETURNED) || status.equals(EnumSaleStatus.REDELIVERY)
                 || status.equals(EnumSaleStatus.CAPTURE_PENDING))
@@ -79,18 +77,18 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 					throw new EJBException("Got another different invoice for sale#: " + saleId);
 				}
 
-			} 
-			
+			}
+
 			if (!status.equals(EnumSaleStatus.INPROCESS)) {
 				throw new EJBException("Sale#: " + saleId + "["+status.getStatusCode()+"] is not in correct status[PRC] to add invoice");
 			}
-			
+
 			// FIXME fix Discount promotionCode, since parser cannot provide it
-			
+
 			List invDiscountLines = invoice.getDiscounts();
 			List oldDiscountLines = saleModel.getRecentOrderTransaction().getDiscounts();
 			if (invDiscountLines != null && !invDiscountLines.isEmpty() && oldDiscountLines != null && !oldDiscountLines.isEmpty()) {
-				
+
 				if (oldDiscountLines.size() != invDiscountLines.size()) {
 					throw new EJBException("Discount line count mismatch, expected "
 						+ oldDiscountLines.size()
@@ -101,13 +99,13 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 				// FIXME furhter validation should be performed to ensure discount lines match up (no can do, w/o promo codes)
 
 				List<ErpDiscountLineModel> pList = new ArrayList<ErpDiscountLineModel>();
-				for (Iterator invPromosIter = invDiscountLines.iterator(), oldPromosIter = oldDiscountLines.iterator(); 
+				for (Iterator invPromosIter = invDiscountLines.iterator(), oldPromosIter = oldDiscountLines.iterator();
 					invPromosIter.hasNext() && oldPromosIter.hasNext(); ) {
 					ErpDiscountLineModel  invDiscountLine = (ErpDiscountLineModel) invPromosIter.next();
 					ErpDiscountLineModel  oldDiscountLine = (ErpDiscountLineModel) oldPromosIter.next();
 					Discount invDisc = invDiscountLine.getDiscount();
 					Discount oldDisc = oldDiscountLine.getDiscount();
-					pList.add(new ErpDiscountLineModel(new Discount(oldDisc.getPromotionCode(), oldDisc.getDiscountType(), invDisc.getAmount())));																	
+					pList.add(new ErpDiscountLineModel(new Discount(oldDisc.getPromotionCode(), oldDisc.getDiscountType(), invDisc.getAmount())));
 				}
 				invoice.setDiscounts(pList);
 			}
@@ -119,19 +117,19 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 				for (Object element : invoice.getCharges()) {
 					ErpChargeLineModel invCharge = (ErpChargeLineModel) element;
 					ErpChargeLineModel orderCharge = order.getCharge(invCharge.getType());
-					
+
 					if(orderCharge != null) {
 						invCharge.setTaxRate(orderCharge.getTaxRate());
 					}
 				}
 			}
-			
-			
+
+
 			ErpCustomerManagerSB managerSB = this.getErpCustomerManagerHome().create();
 			managerSB.addInvoice(invoice, saleId, shippingInfo);
 			managerSB.reconcileSale(saleId, isShorted);
-			
-			// get salemodel w/ invoice	
+
+			// get salemodel w/ invoice
 			saleModel = (ErpSaleModel)eb.getModel();
 			FDOrderAdapter fdOrder = new FDOrderAdapter(saleModel);
 	/*		if(isShorted && FDStoreProperties.getAvalaraTaxEnabled() && saleModel.getFirstOrderTransaction().getTaxationType().equals(EnumNotificationType.AVALARA)){
@@ -139,9 +137,9 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 				fdOrder.getAvalaraTaxValue(avalaraContext);
 			}*/
 			Collections.sort(fdOrder.getOrderLines(), FDCartModel.PRODUCT_SAMPLE_COMPARATOR);
-			
+
 			PrimaryKey customerPK = eb.getCustomerPk();
-			
+
 			/*ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(customerPK);
 			ErpCustomerInfoModel erpInfo = ((ErpCustomerModel)customerEB.getModel()).getCustomerInfo();*/
 			ErpCustomerInfoModel erpInfo = (ErpCustomerInfoModel) this.getErpCustomerInfoHome().findByErpCustomerId(customerPK.getId()).getModel();
@@ -167,18 +165,18 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 			for (Iterator it = orderLines.iterator(); it.hasNext();) {
 				FDCartLineI cartLine = (FDCartLineI) it.next();
 				String		recipeId = cartLine.getRecipeSourceId();
-				
+
 				if (recipeId != null && cartLine.isRequestNotification()) {
 					Recipe recipe = (Recipe) ContentFactory.getInstance().getContentNode(recipeId);
 					recipes.add(recipe);
 				}
 			}
-			
+
 			// send recipe e-mails on delivery for those which were requested
 			for (Recipe recipe : recipes) {
 				mailBean.enqueueEmail(FDEmailFactory.getInstance().createRecipeEmail(fdInfo, recipe));
 			}
-				
+
 		} catch (ErpTransactionException e) {
 			throw e;
 		} catch (Exception e) {
@@ -186,7 +184,7 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 			throw new EJBException("Unexpected Exception while trying to process invoice for order#: "+saleId, e);
 		}
 	}
-	
+
 	private ErpSaleHome getErpSaleHome() {
 		try {
 			return (ErpSaleHome) LOCATOR.getRemoteHome("freshdirect.erp.Sale");
@@ -194,7 +192,7 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 			throw new EJBException(e);
 		}
 	}
-	
+
 	private ErpCustomerManagerHome getErpCustomerManagerHome() {
 		try {
 			return (ErpCustomerManagerHome) LOCATOR.getRemoteHome("freshdirect.erp.CustomerManager");
@@ -202,7 +200,7 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 			throw new EJBException(e);
 		}
 	}
-	
+
 	private ErpCustomerHome getErpCustomerHome() {
 		try {
 			return (ErpCustomerHome) LOCATOR.getRemoteHome("freshdirect.erp.Customer");
@@ -218,7 +216,7 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 			throw new EJBException(e);
 		}
 	}
-	
+
 	private ErpCustomerInfoHome getErpCustomerInfoHome() {
 		try {
 			return (ErpCustomerInfoHome) LOCATOR.getRemoteHome(FDStoreProperties.getErpCustomerInfoHome());
@@ -226,5 +224,5 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 			throw new EJBException(e);
 		}
 	}
-	
+
 }

@@ -4,6 +4,8 @@
 %><%@ page import='java.util.*'
 %><%@ page import='java.net.*'
 %><%@ page import='java.io.UnsupportedEncodingException'
+%><%@ page import='com.freshdirect.cms.CmsServiceLocator'
+%><%@ page import='com.freshdirect.cms.contentio.xml.XmlContentMetadataService'
 %><%@ page import='com.freshdirect.customer.ErpSaleInfo'
 %><%@ page import='com.freshdirect.customer.EnumDeliveryType'
 %><%@ page import='com.freshdirect.fdstore.FDStoreProperties'
@@ -15,10 +17,8 @@
 %><%@ page import='com.freshdirect.fdstore.customer.FDCustomerManager'
 %><%@ page import='com.freshdirect.fdstore.customer.FDProductSelectionI'
 %><%@ page import='com.freshdirect.fdstore.customer.FDProductCollectionI'
-%><%@ page import='com.freshdirect.fdstore.content.ContentFactory'
+%><%@ page import='com.freshdirect.storeapi.content.ContentFactory'
 %><%@ page import='com.freshdirect.common.customer.EnumServiceType'
-%><%@ page import='com.freshdirect.framework.conf.FDRegistry'
-%><%@ page import='com.freshdirect.cms.application.service.*'
 %><%@ page import='com.freshdirect.webapp.taglib.fdstore.SessionName'
 %><%@ page import='com.freshdirect.deliverypass.EnumDlvPassStatus'
 %><%@ page import='com.freshdirect.deliverypass.EnumDlvPassProfileType'
@@ -59,10 +59,8 @@
 		QueryStringBuilder queryString = new QueryStringBuilder();
 		if (user != null) {
 
-			ResourceInfoServiceI resourceService = (ResourceInfoServiceI) FDRegistry
-					.getInstance().getService(
-							ResourceInfoServiceI.class);
-			String storeVersion = resourceService.getPublishId();
+		    XmlContentMetadataService metadataService = CmsServiceLocator.xmlContentMetadataService();
+            String storeVersion = metadataService != null ? metadataService.calculatePublishId().toString() : null;
 
 			String metalRating = "";
 			int vip = 0;

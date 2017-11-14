@@ -2,7 +2,7 @@ package com.freshdirect.mobileapi.controller.data;
 
 import java.util.List;
 
-import com.freshdirect.fdstore.content.CMSSectionModel;
+import com.freshdirect.storeapi.content.CMSSectionModel;
 import com.freshdirect.webapp.ajax.product.data.ProductPotatoData;
 
 

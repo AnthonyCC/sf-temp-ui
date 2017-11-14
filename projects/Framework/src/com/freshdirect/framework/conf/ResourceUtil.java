@@ -3,17 +3,13 @@
  */
 package com.freshdirect.framework.conf;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.net.MalformedURLException;
 import java.net.URL;
-
-import org.apache.hivemind.ClassResolver;
-import org.apache.hivemind.Resource;
-import org.apache.hivemind.impl.DefaultClassResolver;
-import org.apache.hivemind.util.ClasspathResource;
-import org.apache.hivemind.util.URLResource;
 
 /**
  * @author vszathmary
@@ -21,63 +17,96 @@ import org.apache.hivemind.util.URLResource;
 public class ResourceUtil {
 
 	private final static String PREFIX_CLASSPATH = "classpath:";
+    private final static String PREFIX_CLASSPATH_SLASH = PREFIX_CLASSPATH + "/";
 
-	private ResourceUtil() {
-	}
+    private ResourceUtil() {
+    }
 
-	/**
-	 * Construct a Resource from location.
-	 * 
-	 * Prefix "classpath:" is processed as a ClasspathResource.
-	 * Any other location is processed as URLResource.
-	 * 
-	 * @return Resource based on location  
-	 */
-	public static Resource getResource(String location) {
-		if (location == null) {
-			throw new IllegalArgumentException("Location cannot be null");
-		}
+    /**
+     * Read a resource, and return its contents as a String.
+     * 
+     * @param location
+     *            the URL of the resource.
+     * @return the contents of the resource, as a string.
+     * @throws IOException
+     *             in case of I/O errors.
+     */
+    public static String readResource(String location) throws IOException {
+        InputStream is = openResource(location);
+        LineNumberReader reader = new LineNumberReader(new InputStreamReader(is));
+        StringBuffer strbuf = new StringBuffer();
+        String line;
 
-		if (location.startsWith(PREFIX_CLASSPATH)) {
-			ClassResolver resolver = new DefaultClassResolver();
-			String path = location.substring(PREFIX_CLASSPATH.length() + 1);
-			return new ClasspathResource(resolver, path);
-		}
+        while ((line = reader.readLine()) != null) {
+            strbuf.append(line);
+            strbuf.append('\n');
+        }
 
-		return new URLResource(location);
-	}
+        return strbuf.toString();
+    }
 
-	public static InputStream openResource(String location) throws IOException {
-		Resource res = getResource(location);
+    public static URL getResource(String location) {
+        URL resource = null;
+        if (location.startsWith(PREFIX_CLASSPATH)) {
+            final String cpLocation = extractResourceLocation(location);
 
-		URL url = res.getResourceURL();
-		if (url == null) {
-			throw new IOException("Unknown resource: " + location);
-		}
+            // WebLogic supports this way of loading resources from EAR
+            resource = Thread.currentThread().getContextClassLoader().getResource(cpLocation);
 
-		InputStream stream = url.openStream();
+            // fall back to basic class loader in order to support exploded classpath config
+            if (resource == null) {
+                resource = ClassLoader.class.getResource(cpLocation);
+            }
 
-		return stream;
-	}
+        } else {
+            try {
+                resource = new URL(location);
+            } catch (MalformedURLException e) {
+                resource = null;
+            }
+        }
+        return resource;
+    }
 
-	/**
-	 * Read a resource, and return its contents as a String.
-	 *  
-	 * @param location the URL of the resource.
-	 * @return the contents of the resource, as a string.
-	 * @throws IOException in case of I/O errors.
-	 */
-	public static String readResource(String location) throws IOException {
-		InputStream      is     = openResource(location);
-		LineNumberReader reader = new LineNumberReader(new InputStreamReader(is));
-		StringBuffer		 strbuf = new StringBuffer();
-		String			 line;
-		
-		while ((line = reader.readLine()) != null) {
-			strbuf.append(line);
-			strbuf.append('\n');
-		}
-		
-		return strbuf.toString();
-	}
+    public static InputStream openResource(String location) throws IOException {
+        InputStream stream = null;
+
+        if (location.startsWith(PREFIX_CLASSPATH)) {
+            final String cpLocation = extractResourceLocation(location);
+
+            // WebLogic supports this way of loading resources from EAR
+            stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(cpLocation);
+
+            // fall back to basic class loader in order to support exploded classpath config
+            if (stream == null) {
+                stream = ClassLoader.class.getResourceAsStream(cpLocation);
+            }
+
+        } else if (location.indexOf(":") > -1) {
+            URL url = new URL(location);
+            stream = url.openStream();
+        } else {
+            stream = new FileInputStream(location);
+        }
+
+        return stream;
+    }
+
+    /**
+     * Create internal resource location from classpath location by removing classpath prefix and the leading slash separator
+     *
+     * @param location
+     *            resource location prefixed with "classpath:"
+     * @return
+     */
+    private static String extractResourceLocation(String location) {
+        String classPathLocation = null;
+        if (location.startsWith(PREFIX_CLASSPATH_SLASH)) {
+            // leading slash has to be removed
+            classPathLocation = location.substring(PREFIX_CLASSPATH_SLASH.length());
+        } else {
+            classPathLocation = location.substring(PREFIX_CLASSPATH.length());
+        }
+        return classPathLocation;
+    }
 }

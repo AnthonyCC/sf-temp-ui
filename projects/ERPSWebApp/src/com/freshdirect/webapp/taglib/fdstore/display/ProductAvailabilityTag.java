@@ -1,6 +1,6 @@
 package com.freshdirect.webapp.taglib.fdstore.display;
 
-import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
 public class ProductAvailabilityTag extends AbstractGetterTag<ProductAvailabilityTag> {

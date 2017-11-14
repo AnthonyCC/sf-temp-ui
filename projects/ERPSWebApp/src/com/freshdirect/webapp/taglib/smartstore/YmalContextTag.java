@@ -1,8 +1,8 @@
 package com.freshdirect.webapp.taglib.smartstore;
 
-import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.smartstore.ymal.YmalUtil;
+import com.freshdirect.storeapi.content.YmalSource;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
@@ -24,7 +24,7 @@ public class YmalContextTag extends AbstractGetterTag<YmalSource> implements Ses
 
 	public static class TagEI extends AbstractGetterTag.TagEI {
         protected String getResultType() {
-            return "com.freshdirect.fdstore.content.YmalSource";
+            return "com.freshdirect.storeapi.content.YmalSource";
         }
     }
 }

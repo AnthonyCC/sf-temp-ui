@@ -1,4 +1,4 @@
-<%-- KOSHER --%><%@page import="com.freshdirect.fdstore.content.PriceCalculator"%><%
+<%-- KOSHER --%><%@page import="com.freshdirect.storeapi.content.PriceCalculator"%><%
 				PriceCalculator _pc = productNode.getPriceCalculator();
 				String kosherType = _pc.getKosherType();
                 String kosherSymbol = _pc.getKosherSymbol();

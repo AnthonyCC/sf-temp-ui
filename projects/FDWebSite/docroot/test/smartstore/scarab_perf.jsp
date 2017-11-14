@@ -13,17 +13,15 @@
 <%@page import="java.util.Set"%>
 <%@page import="java.util.HashSet"%>
 <%@page import="java.util.StringTokenizer"%>
-<%@page import="com.freshdirect.cms.ContentKey"%>
-<%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
-<%@page
-	import="com.freshdirect.cms.ContentKey.InvalidContentKeyException"%>
+<%@page import="com.freshdirect.cms.core.domain.ContentKey"%>
+<%@page import="com.freshdirect.storeapi.fdstore.FDContentTypes"%>
 <%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
-<%@page import="com.freshdirect.fdstore.content.BrandModel"%>
-<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
-<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
-<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
-<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
-<%@page import="com.freshdirect.fdstore.content.YmalSource"%>
+<%@page import="com.freshdirect.storeapi.content.BrandModel"%>
+<%@page import="com.freshdirect.storeapi.content.CategoryModel"%>
+<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@page import="com.freshdirect.storeapi.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
+<%@page import="com.freshdirect.storeapi.content.YmalSource"%>
 <%@page import="com.freshdirect.fdstore.customer.FDCartLineModel"%>
 <%@page import="com.freshdirect.fdstore.customer.FDCustomerManager"%>
 <%@page import="com.freshdirect.fdstore.customer.FDIdentity"%>

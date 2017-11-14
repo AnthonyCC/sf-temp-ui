@@ -1,11 +1,11 @@
 package com.freshdirect.webapp.ajax.reorder.data;
 
-import com.freshdirect.fdstore.cache.EhCacheUtil;
+import com.freshdirect.cms.cache.CmsCaches;
 
 public enum EnumQuickShopTab {
-	TOP_ITEMS(EhCacheUtil.QS_TOP_ITEMS_CACHE_NAME),
-	PAST_ORDERS(EhCacheUtil.QS_PAST_ORDERS_CACHE_NAME),
-	CUSTOMER_LISTS(EhCacheUtil.QS_SHOP_FROM_LISTS_CACHE_NAME),
+    TOP_ITEMS(CmsCaches.QS_TOP_ITEMS_CACHE.cacheName),
+    PAST_ORDERS(CmsCaches.QS_PAST_ORDERS_CACHE.cacheName),
+    CUSTOMER_LISTS(CmsCaches.QS_SHOP_FROM_LISTS_CACHE.cacheName),
 	FD_LISTS(null);
 
 	public String cacheName;

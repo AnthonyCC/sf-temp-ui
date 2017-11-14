@@ -26,7 +26,7 @@ final int W_DEPARTMENT_BOTTOM_FEATURED_TOTAL = 683;
 %>
 
 <%-- Featured Products column --%>
-<logic:iterate id='contentNode' collection="<%=favorites%>" type="com.freshdirect.fdstore.content.ProductModel">
+<logic:iterate id='contentNode' collection="<%=favorites%>" type="com.freshdirect.storeapi.content.ProductModel">
 	<% 
 		ProductModel product = contentNode; //(ProductModel)contentFactory.getProduct(contentRef.getCategoryId(),contentRef.getProductId());
 		if (product==null) continue;

@@ -26,129 +26,134 @@ import com.freshdirect.cms.ui.service.BaseCallback;
  * 
  */
 public class FeedPublishView extends LayoutContainer implements PublishListener {
-	ListStore<GwtPublishData> store;
 
-	private static FeedPublishView instance = new FeedPublishView();
+    ListStore<GwtPublishData> store;
 
-	public static FeedPublishView getInstance() {
-		return instance;
-	}
+    private static FeedPublishView instance = new FeedPublishView();
 
-	private PublishXList publishList;
-	private LayoutContainer detailPanel;
+    public static FeedPublishView getInstance() {
+        return instance;
+    }
 
-	public FeedPublishView() {
-		super();
-		setLayout(new BorderLayout());
+    private PublishXList publishList;
+    private LayoutContainer detailPanel;
 
-		setBorders(false);
+    public FeedPublishView() {
+        super();
+        setLayout(new BorderLayout());
 
-		detailPanel = new LayoutContainer();
-		detailPanel.setLayout(new CardLayout());
+        setBorders(false);
 
-		publishList = new PublishXList();
-		
+        detailPanel = new LayoutContainer();
+        detailPanel.setLayout(new CardLayout());
 
-		BorderLayoutData borderLayoutData = new BorderLayoutData(LayoutRegion.WEST);
-		borderLayoutData.setCollapsible(true);
-		borderLayoutData.setSplit(false);
-		borderLayoutData.setSize(220);
-		borderLayoutData.setMargins(new Margins(0, 5, 0, 0));
+        publishList = new PublishXList();
 
-		publishList.addPublishListener(this);
+        BorderLayoutData borderLayoutData = new BorderLayoutData(LayoutRegion.WEST);
+        borderLayoutData.setCollapsible(true);
+        borderLayoutData.setSplit(false);
+        borderLayoutData.setSize(220);
+        borderLayoutData.setMargins(new Margins(0, 5, 0, 0));
 
-		FeedPublishOverview.getInstance().addPublishListener(this);
+        publishList.addPublishListener(this);
 
-		add(publishList, borderLayoutData);
-		add(detailPanel, new BorderLayoutData(LayoutRegion.CENTER));
-		load();
-	}
+        FeedPublishOverview.getInstance().addPublishListener(this);
 
-	private void load() {
-		CmsGwt.getContentService().getPublishHistoryByType(new BasePagingLoadConfig(0, GwtPublishData.FETCH_SIZE), "FEED",new BaseCallback<List<GwtPublishData>>() {
-			@Override
-			public void onSuccess(List<GwtPublishData> result) {
-				loadData(result);
-			}
-		});
-	}
+        add(publishList, borderLayoutData);
+        add(detailPanel, new BorderLayoutData(LayoutRegion.CENTER));
+        load();
+    }
 
-	private void loadData(List<GwtPublishData> publishDataList) {
-		final GwtPublishData latestPublishData = publishDataList != null
-				&& publishDataList.size() > 0 ? publishDataList.get(0) : null;
-		if (latestPublishData != null && latestPublishData.isInProgress()) {
-			onPublishClicked(latestPublishData.getId());
-		} else {
-			onPublishClicked("latest");
-		}
-		publishList.loadData(publishDataList, false);
-	}
+    private void load() {
+        CmsGwt.getContentService().getPublishHistoryByType(new BasePagingLoadConfig(0, GwtPublishData.FETCH_SIZE), "FEED", new BaseCallback<List<GwtPublishData>>() {
 
-	/* (non-Javadoc)
-	 * @see com.freshdirect.cms.ui.client.publish.PublishListener#onPublishClicked(java.lang.String)
-	 */
-	@Override
-	public void onPublishClicked(String publishId) {
-		ChangeSetQuery query = new ChangeSetQuery();
-		query.setPublishId(publishId);
-		query.setPublishType("X");
-		CmsGwt.getContentService().getPublishDataX(query, new BaseCallback<GwtPublishData>() {
-			@Override
-			public void onSuccess(GwtPublishData result) {
-				setOverview(result);
-			}
-		});
+            @Override
+            public void onSuccess(List<GwtPublishData> result) {
+                loadData(result);
+            }
+        });
+    }
 
-	}
+    private void loadData(List<GwtPublishData> publishDataList) {
+        final GwtPublishData latestPublishData = publishDataList != null && publishDataList.size() > 0 ? publishDataList.get(0) : null;
+        if (latestPublishData != null && latestPublishData.isInProgress()) {
+            onPublishClicked(latestPublishData.getId());
+        } else {
+            onPublishClicked("latest");
+        }
+        publishList.loadData(publishDataList, false);
+    }
 
-	@Override
-	public void onPublishStarted(String publishId) {
-		ChangeSetQuery query = new ChangeSetQuery();
-		query.setPublishId(publishId);
-		query.setPublishType("X");
-		CmsGwt.getContentService().getPublishDataX(query, new BaseCallback<GwtPublishData>() {
-			@Override
-			public void onSuccess(GwtPublishData result) {
-				if (result.isInProgress()) {
-					publishList.loadProgress(result);
-				} else {
-					publishList.moveProgressToList(result);
-				}
-				setOverview(result);
-			}
-		});
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.freshdirect.cms.ui.client.publish.PublishListener#onPublishClicked(java.lang.String)
+     */
+    @Override
+    public void onPublishClicked(String publishId) {
+        ChangeSetQuery query = new ChangeSetQuery();
+        query.setPublishId(publishId);
+        query.setPublishType("X");
+        CmsGwt.getContentService().getPublishDataX(query, new BaseCallback<GwtPublishData>() {
 
-	public void setOverview(GwtPublishData publishData) {
-		if (publishData.isInProgress()) {
-			switchOverview(PublishProgress.getInstance());
-			FeedPublishOverview.getInstance().loadData(publishData);
-		} else {
-			switchOverview(FeedPublishOverview.getInstance());
-			FeedPublishOverview.getInstance().loadData(publishData);
-		}
-	}
+            @Override
+            public void onSuccess(GwtPublishData result) {
+                setOverview(result);
+            }
+        });
 
-	public void switchOverview(DetailPanel panel) {
-		if (!detailPanel.getItems().contains(panel)) {
-			detailPanel.add(panel);
-		}
-		((CardLayout) detailPanel.getLayout()).setActiveItem(panel);
-	}
-	
-	@Override
-	protected void onHide() {
-		super.onHide();
-		publishList.stopProgressTimer();
-	}
+    }
 
-	@Override
-	protected void onShow() {
-		super.onShow();
-		publishList.resumeProgressTimer();
-	}
+    @Override
+    public void onPublishStarted(String publishId) {
+        ChangeSetQuery query = new ChangeSetQuery();
+        query.setPublishId(publishId);
+        query.setPublishType("X");
+        CmsGwt.consoleLog("onPublishStarted query: " + query);
+        CmsGwt.getContentService().getPublishDataX(query, new BaseCallback<GwtPublishData>() {
 
-	@Override
-	public void onDetailRequest(ChangeSetQuery query) {		
-	}
+            @Override
+            public void onSuccess(GwtPublishData result) {
+                if (result.isInProgress()) {
+                    publishList.loadProgress(result);
+                } else {
+                    publishList.moveProgressToList(result);
+                }
+                setOverview(result);
+            }
+        });
+    }
+
+    public void setOverview(GwtPublishData publishData) {
+        if (publishData.isInProgress()) {
+            switchOverview(PublishProgress.getInstance());
+            FeedPublishOverview.getInstance().loadData(publishData);
+        } else {
+            switchOverview(FeedPublishOverview.getInstance());
+            FeedPublishOverview.getInstance().loadData(publishData);
+        }
+    }
+
+    public void switchOverview(DetailPanel panel) {
+        if (!detailPanel.getItems().contains(panel)) {
+            detailPanel.add(panel);
+        }
+        ((CardLayout) detailPanel.getLayout()).setActiveItem(panel);
+    }
+
+    @Override
+    protected void onHide() {
+        super.onHide();
+        publishList.stopProgressTimer();
+    }
+
+    @Override
+    protected void onShow() {
+        super.onShow();
+        publishList.resumeProgressTimer();
+    }
+
+    @Override
+    public void onDetailRequest(ChangeSetQuery query) {
+    }
 }

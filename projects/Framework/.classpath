@@ -8,8 +8,6 @@
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/commons-logging-1.1.1.jar"/>
 	<classpathentry exported="true" kind="var" path="WL_HOME/lib/weblogic.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/jakarta-oro-2.0.5.jar"/>
-	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/hivemind-1.1.1.jar"/>
-	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/hivemind-lib-1.1.1.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/ognl-2.6.7.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/commons-collections-3.1.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/commons-beanutils-1.6.1.jar"/>

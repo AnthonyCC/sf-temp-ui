@@ -32,12 +32,6 @@ import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.BookRetailer;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.Image;
-import com.freshdirect.fdstore.content.MediaI;
-import com.freshdirect.fdstore.content.Recipe;
-import com.freshdirect.fdstore.content.RecipeSource;
 import com.freshdirect.fdstore.customer.FDCSContactHours;
 import com.freshdirect.fdstore.customer.FDCSContactHoursUtil;
 import com.freshdirect.fdstore.customer.FDCartI;
@@ -51,6 +45,12 @@ import com.freshdirect.framework.mail.EmailAddress;
 import com.freshdirect.framework.mail.EmailSupport;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.BookRetailer;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.Image;
+import com.freshdirect.storeapi.content.MediaI;
+import com.freshdirect.storeapi.content.Recipe;
+import com.freshdirect.storeapi.content.RecipeSource;
 
 public class FDEmailFactory {
 	

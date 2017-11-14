@@ -54,7 +54,7 @@ public class ContentFactory {
     /** Map of String (IDs) -> ContentNodeModel */
     private final Map<String, ContentNodeModel> nodesByIdCache;
 
-    /** Map of {@link ContentKey} (IDs) -> {@link com.freshdirect.fdstore.content.ContentNodeModel} */
+    /** Map of {@link ContentKey} (IDs) -> {@link com.freshdirect.storeapi.content.ContentNodeModel} */
     private final Map<ContentKey, ContentNodeModel> nodesByKeyCache;
 
     /** Map of sku codes / content keys */

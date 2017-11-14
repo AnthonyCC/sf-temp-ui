@@ -10,8 +10,8 @@ import net.sf.tacos.model.ITreeContentProvider;
 
 import com.freshdirect.rules.ConditionI;
 import com.freshdirect.rules.Rule;
-import com.freshdirect.rules.RuleRef;
-import com.freshdirect.rules.RulesEngineI;
+import com.freshdirect.storeapi.rules.RuleRef;
+import com.freshdirect.storeapi.rules.RulesEngineI;
 
 /**
  * @author knadeem Date Mar 28, 2005

@@ -1,6 +1,6 @@
 <%@ page import='java.util.*' %>
 <%@ page import="com.freshdirect.fdstore.util.FilteringNavigator"%>
-<%@ page import="com.freshdirect.fdstore.content.*"%>
+<%@ page import="com.freshdirect.storeapi.content.*"%>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@ taglib uri='template' prefix='tmpl'%>
 <%@ taglib uri='bean' prefix='bean'%>

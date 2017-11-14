@@ -8,10 +8,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executor;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
@@ -19,14 +15,14 @@ import javax.servlet.jsp.JspWriter;
 import org.apache.commons.lang.StringEscapeUtils;
 
 import com.freshdirect.common.pricing.PricingContext;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.EnumWineFilterDomain;
 import com.freshdirect.fdstore.content.WineFilter;
-import com.freshdirect.fdstore.content.WineFilterValue;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.BalkingExpiringReference;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.WineFilterValue;
 
 public class WineHomenavTag extends BodyTagSupportEx {
 	private static final long serialVersionUID = -5877276624288513988L;
@@ -47,14 +43,12 @@ public class WineHomenavTag extends BodyTagSupportEx {
 	}
 
 	private static class WineFilterValueListLoader extends BalkingExpiringReference<List<WineFilterMenuItem>> {
-		private static Executor threadPool = new ThreadPoolExecutor(1, 1, 60, TimeUnit.SECONDS,
-				new LinkedBlockingQueue<Runnable>(), new ThreadPoolExecutor.DiscardPolicy());
 
 		private EnumWineFilterDomain domain;
 		private PricingContext pricingContext;
 
 		private WineFilterValueListLoader(long refreshPeriod, EnumWineFilterDomain domain, PricingContext pricingContext) {
-			super(refreshPeriod, threadPool);
+            super(refreshPeriod);
 			this.domain = domain;
 			this.pricingContext = pricingContext;
 			// synchronous load
@@ -110,7 +104,8 @@ public class WineHomenavTag extends BodyTagSupportEx {
 						it.remove();
 				}
 				Collections.sort(subcategories, new Comparator<CategoryModel>() {
-					public int compare(CategoryModel o1, CategoryModel o2) {
+					@Override
+                    public int compare(CategoryModel o1, CategoryModel o2) {
 						if (o1.getFullName() == null) {
 							if (o2.getFullName() == null)
 								return o1.getContentName().compareTo(o2.getContentName());
@@ -164,4 +159,8 @@ public class WineHomenavTag extends BodyTagSupportEx {
 	public void setRefreshPeriod(long refreshPeriod) {
 		this.refreshPeriod = refreshPeriod;
 	}
+
+    public static void evictWarmupRelatedCache() {
+        cache.clear();
+    }
 }

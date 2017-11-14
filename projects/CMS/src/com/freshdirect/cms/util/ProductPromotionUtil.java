@@ -28,7 +28,7 @@ import com.freshdirect.fdstore.ZonePriceInfoListing;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentUtil;
-import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductPromotionData;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.framework.util.NVL;

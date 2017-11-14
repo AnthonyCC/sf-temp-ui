@@ -11,11 +11,11 @@ import com.freshdirect.content.nutrition.EnumClaimValue;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.content.BrandModel;
-import com.freshdirect.fdstore.content.DomainValue;
-import com.freshdirect.fdstore.content.PriceCalculator;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.TagModel;
+import com.freshdirect.storeapi.content.BrandModel;
+import com.freshdirect.storeapi.content.DomainValue;
+import com.freshdirect.storeapi.content.PriceCalculator;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.TagModel;
 
 public class Product {
 	
@@ -259,12 +259,12 @@ public class Product {
             return this;
         }
         
-        public ProductBuilder images(List<com.freshdirect.fdstore.content.Image> images) {
+        public ProductBuilder images(List<com.freshdirect.storeapi.content.Image> images) {
         	if(isEmpty(images))
         		this.images=EMPTY_IMAGE;
         	this.images=new ArrayList<com.freshdirect.mobileapi.catalog.model.Image>(images.size());
         	
-        	for(com.freshdirect.fdstore.content.Image image:images) {
+        	for(com.freshdirect.storeapi.content.Image image:images) {
         		this.images.add(new com.freshdirect.mobileapi.catalog.model.Image(image));
         		
         	}

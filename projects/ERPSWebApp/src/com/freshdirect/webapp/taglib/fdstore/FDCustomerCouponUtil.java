@@ -16,21 +16,12 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
+import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.customer.ErpCouponDiscountLineModel;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentKeyFactory;
-import com.freshdirect.fdstore.content.EnumSortingValue;
-import com.freshdirect.fdstore.content.FilteringSortingItem;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.Recipe;
-import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -57,17 +48,25 @@ import com.freshdirect.fdstore.ecoupon.service.CouponServiceException;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ContentKeyFactory;
+import com.freshdirect.storeapi.content.EnumSortingValue;
+import com.freshdirect.storeapi.content.FilteringSortingItem;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.Recipe;
+import com.freshdirect.storeapi.content.SearchResults;
 
 public class FDCustomerCouponUtil implements Serializable {
-	
+
 	private static final long	serialVersionUID	= 7258375070671798676L;
-	
+
 	private static final Logger LOGGER = LoggerFactory.getInstance(FDCustomerCouponUtil.class);
 
 	public static void initCustomerCoupons(HttpSession session){
 		initCustomerCoupons(session,null);
 	}
-	
+
 	public static void initCustomerCoupons(HttpSession session,String oldUserId){
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 		if(null !=user && user.isEligibleForCoupons()){
@@ -77,7 +76,7 @@ public class FDCustomerCouponUtil implements Serializable {
 			FDCustomerCouponUtil.evaluateCartAndCoupons(session);
 		}
 	}
-	
+
 	public static FDCustomerCouponWallet getCustomerCoupons(HttpSession session,String oldUserId){
 		FDCustomerCouponWallet couponWallet =new FDCustomerCouponWallet();
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
@@ -97,25 +96,25 @@ public class FDCustomerCouponUtil implements Serializable {
 				LOGGER.info("getCustomerCoupons failed:"+cse);
 			}
 		}
-		return couponWallet;		
+		return couponWallet;
 	}
-	
+
 	public static FDCustomerCouponWallet getCustomerCoupons(HttpSession session){
-		return 	getCustomerCoupons(session,null);	
+		return 	getCustomerCoupons(session,null);
 	}
 
 	private static FDCouponCustomer createCouponCustomerRequest(
 			FDUserI user) throws FDResourceException {
 		return createCouponCustomerRequest(user,null);
 	}
-	
+
 	private static FDCouponCustomer createCouponCustomerRequest(
 			FDUserI user,String oldUserId) throws FDResourceException {
 		FDCouponCustomer request = new FDCouponCustomer();
 		if(user.getIdentity() != null && null != user.getFDCustomer()){
 			request.setCouponCustomerId(user.getFDCustomer().getErpCustomerPK());
 		}else{
-			request.setZipCode(user.getZipCode());	
+			request.setZipCode(user.getZipCode());
 		}
 		if(null !=oldUserId){
 			request.setCouponUserId(oldUserId);
@@ -124,13 +123,13 @@ public class FDCustomerCouponUtil implements Serializable {
 		}
 		return request;
 	}
-			
-	public static boolean clipCoupon(HttpSession session,String couponId){		
+
+	public static boolean clipCoupon(HttpSession session,String couponId){
 		boolean isSuccess = false;
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 		try {
 			if(null !=user && user.isEligibleForCoupons()){
-				FDCouponCustomer request = createCouponCustomerRequest(user);	
+				FDCouponCustomer request = createCouponCustomerRequest(user);
 				FDCouponActivityContext couponActivityContext =AccountActivityUtil.getCouponActivityContext(session);
 				isSuccess =FDCouponManager.doClipCoupon(couponId, request,couponActivityContext);
 				if(isSuccess){
@@ -145,7 +144,7 @@ public class FDCustomerCouponUtil implements Serializable {
 		}
 		return isSuccess;
 	}
-		
+
 	public static boolean evaluateCartAndCoupons(HttpSession session,boolean filterCoupons){
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 		boolean isCouponEvaluationNeeded = false;
@@ -155,11 +154,11 @@ public class FDCustomerCouponUtil implements Serializable {
 				if(user.isRefreshCouponWalletRequired()){
 					getCustomerCoupons(session);
 				}
-				
+
 				clearAndRefreshCouponCartlines(user);
-				
+
 				FDCustomerCouponWallet custCoupons =user.getCouponWallet();
-				
+
 				if(null ==custCoupons){
 					//LOGGER.debug("isCouponWalletEmpty:"+true);
 					return true;//Nothing to evaluate
@@ -168,41 +167,41 @@ public class FDCustomerCouponUtil implements Serializable {
 					custCoupons.getClippedMinQtyNotMetIds().clear();
 					custCoupons.getClippedFdFilteredIds().clear();
 				}
-				
+
 				Set<String> appliedCoupons = new HashSet<String>();
 				//Nothing to evaluate, if the cart is empty OR if the customer doesn't have clipped coupons OR if the cart doesn't have at least one line-item which has a customer clipped coupon.
 				boolean isClippedOrderLinesAvailable=checkClippedOrderLines(custCoupons, user.getShoppingCart());
 				//LOGGER.debug("isClippedOrderLinesAvailable:"+isClippedOrderLinesAvailable);
 				if(isClippedOrderLinesAvailable){
-					
+
 					List<ErpOrderLineModel> orderLines = new ArrayList<ErpOrderLineModel>();
-					FDOrderTranslator.translateOrderLines(user.getShoppingCart(), false, false, orderLines);						
+					FDOrderTranslator.translateOrderLines(user.getShoppingCart(), false, false, orderLines);
 					FDCouponCustomer couponCustomer = createCouponCustomerRequest(user);
 					FDCouponActivityContext couponActivityContext =AccountActivityUtil.getCouponActivityContext(session);
-									
+
 					Set<String> originalOrderCoupons = null;
 					if(user.getShoppingCart() instanceof FDModifyCartModel){
 						 FDModifyCartModel cart =(FDModifyCartModel)user.getShoppingCart() ;
 						 originalOrderCoupons = cart.getOriginalOrderCoupons();
 					}
-					
+
 					CouponCart couponCart = prepareCouponCart(user, orderLines,couponCustomer);
-					
-					Map<String, Double> couponDiscAmtMap = new HashMap<String,Double>(); 
+
+					Map<String, Double> couponDiscAmtMap = new HashMap<String,Double>();
 					//LOGGER.debug("Before the evaluateCartAndCoupons call:");
 					Map<String, FDCouponEligibleInfo> eligibleCouponsInfo =FDCouponManager.evaluateCartAndCoupons(couponCart,couponActivityContext);
 					//LOGGER.debug("After the evaluateCartAndCoupons call:"+(null !=eligibleCouponsInfo?eligibleCouponsInfo.toString():eligibleCouponsInfo));
-					if(null != eligibleCouponsInfo){						
+					if(null != eligibleCouponsInfo){
 						List<FDCartLineI> fdSortedOrderlines = new ArrayList<FDCartLineI>(user.getShoppingCart().getOrderLines());
 						Collections.sort(fdSortedOrderlines, new PriceComparator());
 						for (Iterator<FDCartLineI> iterator = fdSortedOrderlines.iterator(); iterator.hasNext();) {
-							FDCartLineI fdCartLine = (FDCartLineI) iterator.next();								
+							FDCartLineI fdCartLine = iterator.next();
 							String cartLineUpc= fdCartLine.getUpc();
 							FDCouponInfo couponInfo =  getCouponInfo(custCoupons, fdCartLine);
 							if(null !=couponInfo){
 								if((custCoupons.isClipped(couponInfo.getCouponId())||(null !=originalOrderCoupons && originalOrderCoupons.contains(couponInfo.getCouponId()))) && !eligibleCouponsInfo.containsKey(couponInfo.getCouponId())){
 									//Coupon is not applied to this line item because-either min.qty was not met Or coupon is expired recently.
-									
+
 									if(custCoupons.isExpired(couponInfo.getCouponId())){
 										fdCartLine.setCouponStatus(EnumCouponStatus.COUPON_CLIPPED_EXPIRED);
 									} else {
@@ -227,21 +226,21 @@ public class FDCustomerCouponUtil implements Serializable {
 									}
 								}
 							}
-						}							
+						}
 					}
-					
+
 					//set the lowest possible delivery date to get all the coupons in the cart.
 					if(filterCoupons && !custCoupons.getClippedFdFilteredIds().isEmpty()){
 						setExpCouponMaxDeliveryDate(user, custCoupons);
 					}
 				}
-				
+
 				//Clear and update the latest applied coupons.
 				custCoupons.getClippedAppliedIds().clear();
 				custCoupons.getClippedAppliedIds().addAll(appliedCoupons);
 
-			}				
-			
+			}
+
 		} catch (FDResourceException e) {
 			LOGGER.info("Exception in evaluateCartAndCoupons() "+e);
 			return false;
@@ -255,7 +254,7 @@ public class FDCustomerCouponUtil implements Serializable {
 			}
 		}
 		return true;
-				
+
 	}
 
 	private static void setExpCouponMaxDeliveryDate(FDSessionUser user,
@@ -263,10 +262,10 @@ public class FDCustomerCouponUtil implements Serializable {
 		Set<String> filteredCouponIds =custCoupons.getClippedFdFilteredIds();
 		Date expCouponMaxDeliveryDate = null;
 		for (Iterator<String> iterator = filteredCouponIds.iterator(); iterator.hasNext();) {
-			String coupId = (String) iterator.next();
+			String coupId = iterator.next();
 			FDCouponInfo coupon = FDCouponFactory.getInstance().getCoupon(coupId);
-			if(null !=coupon){				
-				if(null == expCouponMaxDeliveryDate || coupon.getFdExpirationDate().before(expCouponMaxDeliveryDate)){			
+			if(null !=coupon){
+				if(null == expCouponMaxDeliveryDate || coupon.getFdExpirationDate().before(expCouponMaxDeliveryDate)){
 					expCouponMaxDeliveryDate = coupon.getFdExpirationDate();
 				}
 			}
@@ -284,7 +283,7 @@ public class FDCustomerCouponUtil implements Serializable {
 		if(user.getShoppingCart() instanceof FDModifyCartModel){
 			EnumCouponTransactionType transType= EnumCouponTransactionType.PREVIEW_MODIFY_ORDER;
 			FDModifyCartModel cart =(FDModifyCartModel)user.getShoppingCart() ;
-			couponCart =new CouponCart(couponCustomer,orderLines,cart.getOriginalOrder().getErpSalesId() , transType);						 
+			couponCart =new CouponCart(couponCustomer,orderLines,cart.getOriginalOrder().getErpSalesId() , transType);
 		}else{
 			EnumCouponTransactionType transType= EnumCouponTransactionType.PREVIEW_CREATE_ORDER;
 			couponCart =new CouponCart(couponCustomer,orderLines,transType);
@@ -293,14 +292,14 @@ public class FDCustomerCouponUtil implements Serializable {
 	}
 
 	private static FDCouponInfo getCouponInfo(
-			FDCustomerCouponWallet custCoupons, FDCartLineI fdCartLine) {		
-		FDCouponInfo couponInfo =FDCouponFactory.getInstance().getCouponByUpc(fdCartLine.getUpc());	
-		if(fdCartLine instanceof FDModifyCartLineI){									
-			FDCartLineI originalOrderLine = ((FDModifyCartLineI)fdCartLine).getOriginalOrderLine();	
+			FDCustomerCouponWallet custCoupons, FDCartLineI fdCartLine) {
+		FDCouponInfo couponInfo =FDCouponFactory.getInstance().getCouponByUpc(fdCartLine.getUpc());
+		if(fdCartLine instanceof FDModifyCartLineI){
+			FDCartLineI originalOrderLine = ((FDModifyCartLineI)fdCartLine).getOriginalOrderLine();
 			ErpCouponDiscountLineModel couponDiscount =originalOrderLine.getCouponDiscount();
 			if(null!=couponDiscount && fdCartLine.getUpc().equalsIgnoreCase(originalOrderLine.getUpc()) && (!custCoupons.isExpired(couponDiscount.getCouponId())||(custCoupons.isExpired(couponDiscount.getCouponId()) && null ==couponInfo))){
 				couponInfo = FDCouponFactory.getInstance().getCoupon(originalOrderLine.getCouponDiscount().getCouponId());
-			}								
+			}
 		}
 		return couponInfo;
 	}
@@ -309,9 +308,9 @@ public class FDCustomerCouponUtil implements Serializable {
 			Map<String, Double> couponDiscAmtMap, FDCartLineI fdCartLine,
 			FDCouponInfo couponInfo, FDCouponEligibleInfo fdCouponEligibleInfo,FDCartModel cart,Set<String> appliedCoupons)
 			throws FDResourceException {
-		
+
 		//1. For buy any, if multiple line items independently eligible for the coupon,
-		//            if the price matches for multiple line items, apply to first line item, otherwise, apply coupon to the highest priced item.								
+		//            if the price matches for multiple line items, apply to first line item, otherwise, apply coupon to the highest priced item.
 		//2. For buy 2 more, if combined line items together meets the coupon quantity, split the coupon discount across all those eligible line items.
 //		fdCartLine.setCouponApplied(true);
 		if(!custCoupons.getClippedAppliedIds().contains(couponInfo.getCouponId())){
@@ -353,7 +352,7 @@ public class FDCustomerCouponUtil implements Serializable {
 		user.getShoppingCart().setExpCouponDeliveryDate(null);
 		user.getShoppingCart().getRecentlyAppliedCoupons().clear();
 		for (Iterator<FDCartLineI> iterator = fdOrderLines.iterator(); iterator.hasNext();) {
-			FDCartLineI fdCartLine = (FDCartLineI) iterator.next();
+			FDCartLineI fdCartLine = iterator.next();
 			fdCartLine.setCouponStatus(null);//clear 'minimum qty not met'/expired message.
 			fdCartLine.setCouponApplied(false);
 			if(null !=fdCartLine.getCouponDiscount()){
@@ -369,7 +368,7 @@ public class FDCustomerCouponUtil implements Serializable {
 
 	/**
 	 * Method to check whether the cart has at least one line-item which has a customer clipped coupon.
-	 * 
+	 *
 	 * @param custCoupons
 	 * @param fdOrderLines
 	 * @return
@@ -384,25 +383,25 @@ public class FDCustomerCouponUtil implements Serializable {
 		}
 		if(null!= fdOrderLines && !fdOrderLines.isEmpty() && null!=custCoupons ){
 			for (Iterator<FDCartLineI> iterator = fdOrderLines.iterator(); iterator.hasNext();) {
-				FDCartLineI fdCartLineI = (FDCartLineI) iterator.next();
+				FDCartLineI fdCartLineI = iterator.next();
 				FDCouponInfo coupon = getCouponInfo(custCoupons, fdCartLineI);
-				
+
 				if(null !=coupon && (custCoupons.getClippedActiveIds().contains(coupon.getCouponId()) || custCoupons.getClippedPendingIds().contains(coupon.getCouponId()) ||(null !=originalOrderCoupons && originalOrderCoupons.contains(coupon.getCouponId())))){
 					isClippedOrderLinesAvailable= true;
 					break;
 				}
-				
+
 				}
 			}
-		
+
 		return isClippedOrderLinesAvailable;
 	}
-	
+
 	public static List<FDCartLineI> getOrderLinesByUpcs(List<FDCartLineI> fdOrderLines, List<String> upcs){
 		List<FDCartLineI> upcOrderLines=new ArrayList<FDCartLineI>();
 		if(null !=fdOrderLines && null !=upcs){
 			for (Iterator<FDCartLineI> iterator = fdOrderLines.iterator(); iterator.hasNext();) {
-				FDCartLineI fdCartLine = (FDCartLineI) iterator.next();
+				FDCartLineI fdCartLine = iterator.next();
 				if(upcs.contains(fdCartLine.getUpc())){
 					upcOrderLines.add(fdCartLine);
 				}
@@ -410,7 +409,7 @@ public class FDCustomerCouponUtil implements Serializable {
 		}
 		return upcOrderLines;
 	}
-	
+
 	public static SearchResults getCouponsAsSearchResults(FDUserI user, boolean filterMobile) {
 
 
@@ -424,20 +423,14 @@ public class FDCustomerCouponUtil implements Serializable {
 			}
 		}
 		return new SearchResults(searchProductResults, Collections.<FilteringSortingItem<Recipe>> emptyList(), Collections
-				.<FilteringSortingItem<CategoryModel>> emptyList(), "", true); 
+				.<FilteringSortingItem<CategoryModel>> emptyList(), "", true);
 	}
 
 	public static List<ProductModel> getCouponProducts(FDUserI user,
 			boolean filterMobile) {
 		List<ProductModel> products = new ArrayList<ProductModel>();
-		
-		ContentKey key = null;
-		try {
-			key = ContentKeyFactory.getIntance().getECouponsCategoryKey();
-		} catch (InvalidContentKeyException e1) {
-			LOGGER.error("Failed to acquire key for e_coupons category", e1);
-			return Collections.emptyList();
-		}
+
+		ContentKey key = ContentKeyFactory.getECouponsCategoryKey();
 
 		CategoryModel currentFolder = (CategoryModel) ContentFactory.getInstance().getContentNodeByKey( key );
 		if(null !=currentFolder){
@@ -472,24 +465,26 @@ public class FDCustomerCouponUtil implements Serializable {
 		}
 		return products;
 	}
-	
+
 	private static class PriceComparator implements Comparator<FDCartLineI> {
-		public int compare(FDCartLineI line1, FDCartLineI line2) {
-		
-			if (line1.getPrice() >	line2.getPrice()) {					
+		@Override
+        public int compare(FDCartLineI line1, FDCartLineI line2) {
+
+			if (line1.getPrice() >	line2.getPrice()) {
 				return -1;
 			} else if (line1.getPrice() <	line2.getPrice()) {
 				return 1;
 			} else {
 				return 0;
-			}		
+			}
 		}
 	}
-	
-	
+
+
 	public final static Comparator<FilteringSortingItem<ProductModel>> COUPON_POPULARITY_COMPARATOR = new Comparator<FilteringSortingItem<ProductModel>>() {
 
-		public int compare(FilteringSortingItem<ProductModel> fp1, FilteringSortingItem<ProductModel> fp2) {			
+		@Override
+        public int compare(FilteringSortingItem<ProductModel> fp1, FilteringSortingItem<ProductModel> fp2) {
 			try {
 				ProductModel p1 = fp1.getModel();
 				ProductModel p2 = fp2.getModel();
@@ -510,10 +505,10 @@ public class FDCustomerCouponUtil implements Serializable {
 			} catch (Exception e) {
 				LOGGER.debug("Exception in COUPON_POPULARITY_COMPARATOR:"+e);
 			}
-			return 0;			
+			return 0;
 		}
 	};
-	
+
 	private static boolean isCouponValidForTimeslot(FDCouponInfo couponInfo,FDUserI user){
 		boolean isValid= true;
 		FDReservation reservation =user.getShoppingCart().getDeliveryReservation();
@@ -522,8 +517,8 @@ public class FDCustomerCouponUtil implements Serializable {
 				isValid = false;
 			}
 		}
-		
+
 		return isValid;
 	}
-	
+
 }

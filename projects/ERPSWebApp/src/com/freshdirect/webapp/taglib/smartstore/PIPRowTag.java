@@ -9,9 +9,9 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.fdstore.content.Image;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.Image;
+import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 import com.freshdirect.webapp.util.ProductImpression;
 
@@ -33,7 +33,7 @@ import com.freshdirect.webapp.util.ProductImpression;
  * id                     (OUT, ProductImpression)    - ProductImpression instance.
  * shouldRenderBlankCells (IN, boolean, default=true) - if true the tag will iterate over empty cells
  * isBlankCell            (OUT, Boolean, optional)    - signals current cell is empty, no ProductImpression assigned to 'id'
- * productImage           (OUT, Image, optional)      - Product image <{@link com.freshdirect.fdstore.content.Image}>. Not set if cell is empty.
+ * productImage           (OUT, Image, optional)      - Product image <{@link com.freshdirect.storeapi.content.Image}>. Not set if cell is empty.
  * 
  */
 public class PIPRowTag extends AbstractGetterTag {

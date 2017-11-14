@@ -13,9 +13,7 @@ import javax.jms.ObjectMessage;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.application.CmsManager;
-import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.ZonePromoDiscount;
 import com.freshdirect.common.pricing.util.GroupScaleUtil;
@@ -30,12 +28,14 @@ import com.freshdirect.fdstore.GrpZonePriceListing;
 import com.freshdirect.fdstore.GrpZonePriceModel;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.ZonePriceModel;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.grp.FDGrpInfoManager;
 import com.freshdirect.framework.core.GatewaySessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.application.CmsManager;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.SkuModel;
+import com.freshdirect.storeapi.fdstore.FDContentTypes;
 
 /**@author ekracoff on May 25, 2004*/
 public class AdServerGatewaySessionBean extends GatewaySessionBeanSupport {

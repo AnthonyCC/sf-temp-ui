@@ -23,7 +23,7 @@ import com.freshdirect.cms.search.ContentIndex;
 import com.freshdirect.cms.search.SearchTestUtils;
 import com.freshdirect.event.RecommendationEventLogger;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.FavoriteList;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.RecommendationService;

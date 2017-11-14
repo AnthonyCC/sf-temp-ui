@@ -8,13 +8,13 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.content.BrandModel;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.WrapperRecommendationService;
+import com.freshdirect.storeapi.content.BrandModel;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.ProductModel;
 
 public class BrandUniquenessSorter extends WrapperRecommendationService {
 	private static final Logger LOGGER = LoggerFactory.getInstance(BrandUniquenessSorter.class);

@@ -6,7 +6,7 @@
 <%@ page import="com.freshdirect.webapp.util.MediaHelper" %>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
 <%@ page import="com.freshdirect.webapp.util.FDFaqUtil" %>
-<%@ page import='com.freshdirect.fdstore.content.*' %>
+<%@ page import='com.freshdirect.storeapi.content.*' %>
 <fd:CheckLoginStatus guestAllowed="true" />
 <%
 	String faqPage = FDFaqUtil.getFaqHomeId();

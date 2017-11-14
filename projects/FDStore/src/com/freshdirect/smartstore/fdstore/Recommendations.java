@@ -6,21 +6,21 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.ZonePriceListing;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ContentNodeModelReference;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.ProductReference;
-import com.freshdirect.fdstore.content.ProductReferenceImpl;
-import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.VariantReference;
 import com.freshdirect.smartstore.impl.AbstractRecommendationService;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.ContentNodeModelReference;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.ProductReference;
+import com.freshdirect.storeapi.content.ProductReferenceImpl;
+import com.freshdirect.storeapi.content.YmalSource;
 
 /**
  * A list of recommended contents tagged with a variant.

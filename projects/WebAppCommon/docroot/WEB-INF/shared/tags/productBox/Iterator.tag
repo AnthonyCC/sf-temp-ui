@@ -3,7 +3,7 @@
 <%@ tag import="com.freshdirect.webapp.util.ConfigurationContext" %>
 <%@ tag import="com.freshdirect.webapp.util.ConfigurationStrategy" %>
 <%@ tag import="com.freshdirect.webapp.util.prodconf.DefaultProductConfigurationStrategy" %>
-<%@ tag import="com.freshdirect.fdstore.content.ProductModel" %>
+<%@ tag import="com.freshdirect.storeapi.content.ProductModel" %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@ attribute name="products" required="true" rtexprvalue="true" type="java.util.List" %>

@@ -2,10 +2,10 @@ package com.freshdirect.fdstore.content.sort;
 
 import java.util.Comparator;
 
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.SkuModel;
 
 /**
  * Compares content nodes by their short-term-popularity value.

@@ -11,14 +11,14 @@
 <%@ page import="com.freshdirect.fdstore.customer.OrderLineUtil"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDInvalidConfigurationException"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDCartLineI"%>
-<%@ page import="com.freshdirect.fdstore.content.RecipeSection"%>
-<%@ page import="com.freshdirect.fdstore.content.ConfiguredProduct"%>
-<%@ page import="com.freshdirect.fdstore.content.ContentFactory"%>
-<%@ page import="com.freshdirect.fdstore.content.ProductModel"%>
-<%@ page import="com.freshdirect.fdstore.content.MediaI"%>
-<%@ page import="com.freshdirect.fdstore.content.Image"%>
-<%@ page import="com.freshdirect.fdstore.content.RecipeSource"%>
-<%@ page import="com.freshdirect.fdstore.content.RecipeAuthor"%>
+<%@ page import="com.freshdirect.storeapi.content.RecipeSection"%>
+<%@ page import="com.freshdirect.storeapi.content.ConfiguredProduct"%>
+<%@ page import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@ page import="com.freshdirect.storeapi.content.ProductModel"%>
+<%@ page import="com.freshdirect.storeapi.content.MediaI"%>
+<%@ page import="com.freshdirect.storeapi.content.Image"%>
+<%@ page import="com.freshdirect.storeapi.content.RecipeSource"%>
+<%@ page import="com.freshdirect.storeapi.content.RecipeAuthor"%>
 <%@ page import="com.freshdirect.fdstore.FDProductInfo"%>
 <%@ page import="com.freshdirect.fdstore.FDSkuNotFoundException"%>
 <%@ page import="com.freshdirect.fdstore.FDResourceException"%>
@@ -261,7 +261,7 @@ span.selectedRecipeVariant {
 			  	int numTabs = 0; 
 			  	boolean lastTabOn = false;
 			  %>
-			  	<logic:iterate id="currVariant" collection="<%= recipe.getAvailableVariants() %>" type="com.freshdirect.fdstore.content.RecipeVariant">
+			  	<logic:iterate id="currVariant" collection="<%= recipe.getAvailableVariants() %>" type="com.freshdirect.storeapi.content.RecipeVariant">
 					<%
 					if (variant.equals(currVariant)) { //this tab is on
 						if (numTabs == 0 || (numTabs == 0 && ("default").equalsIgnoreCase(currVariant.getName()))) { %>
@@ -418,7 +418,7 @@ if (!result.getErrors().isEmpty()) {
 int idx     = 0;
 int prodIdx = 0;
 %>
-<logic:iterate id="currSection" collection="<%= variant.getSections() %>" type="com.freshdirect.fdstore.content.RecipeSection">
+<logic:iterate id="currSection" collection="<%= variant.getSections() %>" type="com.freshdirect.storeapi.content.RecipeSection">
 	<%
 	if (! "main".equals(currSection.getName())) { 
 		%>
@@ -429,7 +429,7 @@ int prodIdx = 0;
 	}
 	%>
 	
-	<logic:iterate id="configuredProduct" collection="<%= currSection.getIngredients() %>" type="com.freshdirect.fdstore.content.ConfiguredProduct">
+	<logic:iterate id="configuredProduct" collection="<%= currSection.getIngredients() %>" type="com.freshdirect.storeapi.content.ConfiguredProduct">
 		<%
 		
 		FDProductSelectionI orderLine    = null;

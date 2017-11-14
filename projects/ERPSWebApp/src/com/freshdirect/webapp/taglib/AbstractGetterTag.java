@@ -9,8 +9,8 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.CategoryModel;
 
 public abstract class AbstractGetterTag<X> extends com.freshdirect.framework.webapp.BodyTagSupport {
 

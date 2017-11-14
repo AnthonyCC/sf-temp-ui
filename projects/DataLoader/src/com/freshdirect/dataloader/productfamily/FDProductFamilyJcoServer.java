@@ -1,7 +1,6 @@
 package com.freshdirect.dataloader.productfamily;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -14,10 +13,11 @@ import javax.naming.NamingException;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.cms.CmsServiceLocator;
+import com.freshdirect.cms.cache.CmsCaches;
 import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.dataloader.LoaderException;
 import com.freshdirect.dataloader.response.FDJcoServerResult;
-import com.freshdirect.dataloader.sap.ejb.SAPProductFamilyLoaderDAO;
 import com.freshdirect.dataloader.sap.ejb.SAPProductFamilyLoaderHome;
 import com.freshdirect.dataloader.sap.ejb.SAPProductFamilyLoaderSB;
 import com.freshdirect.dataloader.sap.jco.server.FDSapFunctionHandler;
@@ -25,7 +25,6 @@ import com.freshdirect.dataloader.sap.jco.server.FdSapServer;
 import com.freshdirect.dataloader.sap.jco.server.param.ProductFamilyParameter;
 import com.freshdirect.dataloader.util.FDSapHelperUtils;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.payment.service.IECommerceService;
 import com.sap.conn.jco.JCo;
@@ -209,7 +208,7 @@ public class FDProductFamilyJcoServer extends FdSapServer
 					if(familySkucodeMap != null && familySkucodeMap.size() > 0 ){
 						for(String familyId: familySkucodeMap.keySet()){
 							List<String> skuCodes = familySkucodeMap.get(familyId);
-		                    EhCacheUtil.putListToCache(EhCacheUtil.FD_FAMILY_PRODUCT_CACHE_NAME,familyId, skuCodes);
+                            CmsServiceLocator.ehCacheUtil().putListToCache(CmsCaches.FD_FAMILY_PRODUCT_CACHE.cacheName, familyId, skuCodes);
 		                   }
 					}
 				}else{

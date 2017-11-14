@@ -1,4 +1,4 @@
-<%@page import="com.freshdirect.fdstore.FDProductInfo"%><%@page import="com.freshdirect.fdstore.content.PriceCalculator"%><%@ page import="java.text.NumberFormat" %>
+<%@page import="com.freshdirect.fdstore.FDProductInfo"%><%@page import="com.freshdirect.storeapi.content.PriceCalculator"%><%@ page import="java.text.NumberFormat" %>
 <fd:PendingOrderChecker/>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 

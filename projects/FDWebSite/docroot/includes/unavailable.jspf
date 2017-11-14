@@ -1,4 +1,4 @@
-<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@page import="com.freshdirect.webapp.util.DisplayObject"%>
 <%@ page import='java.util.*' %>
@@ -43,7 +43,7 @@ if (unAvailableList.size() > 0) {
 	<TR><TD WIDTH="<%=W_UNAVAILABLE%>"><IMG src="/media_stat/images/layout/clear.gif" ALT="" WIDTH="1" HEIGHT="1"><br></td></tr>
 	<TR><TD WIDTH="<%=W_UNAVAILABLE%>" align="Left"><br><br><img src="<%=unAvailableHdrImg%>" border="0" alt=""><br><br></td></tr>
 	<fd:ItemSorter nodes='<%= unAvailableList %>' strategy='<%= unAvailSortStrategy %>'/>
-	<logic:iterate id="displayThing" collection="<%= unAvailableList %>" type="com.freshdirect.fdstore.content.ContentNodeModel">
+	<logic:iterate id="displayThing" collection="<%= unAvailableList %>" type="com.freshdirect.storeapi.content.ContentNodeModel">
     	<fd:FDProductInfo id="productInfo" skuCode="<%=((ProductModel)displayThing).getSku(0).getSkuCode()%>">
 <%
     	displayObj = JspMethods.loadLayoutDisplayStrings(response,displayThing.getParentNode().getContentName(),displayThing,prodNameAttribute);

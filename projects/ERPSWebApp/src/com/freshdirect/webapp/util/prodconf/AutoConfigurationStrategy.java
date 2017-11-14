@@ -3,8 +3,8 @@ package com.freshdirect.webapp.util.prodconf;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDConfigurableI;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.util.ConfigurationContext;
 import com.freshdirect.webapp.util.ProductImpression;
 import com.freshdirect.webapp.util.TransactionalProductImpression;

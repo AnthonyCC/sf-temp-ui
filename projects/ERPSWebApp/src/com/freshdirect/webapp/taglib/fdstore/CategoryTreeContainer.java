@@ -1,6 +1,6 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
-import com.freshdirect.fdstore.content.CategoryNodeTree;
+import com.freshdirect.storeapi.content.CategoryNodeTree;
 
 public interface CategoryTreeContainer {
 	public CategoryNodeTree getCategoryTree();

@@ -1,11 +1,11 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings' %>
 <%@ page import='com.freshdirect.fdstore.content.util.SortStrategyElement' %>
-<%@ page import='com.freshdirect.fdstore.content.CategoryModel' %>
-<%@ page import='com.freshdirect.fdstore.attributes.*' %>
+<%@ page import='com.freshdirect.storeapi.content.CategoryModel' %>
+<%@ page import='com.freshdirect.storeapi.attributes.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.display.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.webapp.util.*'%>
-<%@ page import='com.freshdirect.fdstore.content.*'%>
+<%@ page import='com.freshdirect.storeapi.content.*'%>
 <%@ page import="java.util.*"%>
 
 <%@ taglib uri='logic' prefix='logic' %>

@@ -8,23 +8,23 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.AbstractProductItemFilter;
-import com.freshdirect.fdstore.content.AndFilter;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.FilterCacheStrategy;
-import com.freshdirect.fdstore.content.FilteringProductItem;
-import com.freshdirect.fdstore.content.OrFilter;
-import com.freshdirect.fdstore.content.ProductContainer;
-import com.freshdirect.fdstore.content.ProductFilterGroupI;
-import com.freshdirect.fdstore.content.ProductFilterGroupImpl;
-import com.freshdirect.fdstore.content.ProductFilterGroupModel;
-import com.freshdirect.fdstore.content.ProductFilterModel;
-import com.freshdirect.fdstore.content.ProductFilterMultiGroupModel;
-import com.freshdirect.fdstore.content.ProductFilterType;
-import com.freshdirect.fdstore.content.ProductItemFilterI;
-import com.freshdirect.fdstore.content.TagModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.AbstractProductItemFilter;
+import com.freshdirect.storeapi.content.AndFilter;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.FilterCacheStrategy;
+import com.freshdirect.storeapi.content.FilteringProductItem;
+import com.freshdirect.storeapi.content.OrFilter;
+import com.freshdirect.storeapi.content.ProductContainer;
+import com.freshdirect.storeapi.content.ProductFilterGroupI;
+import com.freshdirect.storeapi.content.ProductFilterGroupImpl;
+import com.freshdirect.storeapi.content.ProductFilterGroupModel;
+import com.freshdirect.storeapi.content.ProductFilterModel;
+import com.freshdirect.storeapi.content.ProductFilterMultiGroupModel;
+import com.freshdirect.storeapi.content.ProductFilterType;
+import com.freshdirect.storeapi.content.ProductItemFilterI;
+import com.freshdirect.storeapi.content.TagModel;
 
 public class ProductItemFilterFactory {
 	

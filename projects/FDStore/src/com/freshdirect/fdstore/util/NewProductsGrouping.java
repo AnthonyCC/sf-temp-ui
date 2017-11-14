@@ -14,9 +14,9 @@ import java.util.TreeMap;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.EnumSortingValue;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.FilteringSortingItem;
+import com.freshdirect.storeapi.content.EnumSortingValue;
+import com.freshdirect.storeapi.content.FilteringSortingItem;
+import com.freshdirect.storeapi.content.ProductModel;
 
 /**
  * @author skrishnasamy

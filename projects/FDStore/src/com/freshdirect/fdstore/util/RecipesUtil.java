@@ -11,14 +11,14 @@ import java.util.Set;
 
 import javax.servlet.ServletRequest;
 
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.ContentType;
-import com.freshdirect.cms.application.CmsManager;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.Domain;
-import com.freshdirect.fdstore.content.DomainValue;
-import com.freshdirect.fdstore.content.Recipe;
-import com.freshdirect.fdstore.content.RecipeSubcategory;
+import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.storeapi.application.CmsManager;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.Domain;
+import com.freshdirect.storeapi.content.DomainValue;
+import com.freshdirect.storeapi.content.Recipe;
+import com.freshdirect.storeapi.content.RecipeSubcategory;
 
 /**
  * Utilities for recipes filtering. (Refactoring)
@@ -70,7 +70,7 @@ public class RecipesUtil {
 		Map<Object,List<Recipe>> groupByMap = new HashMap<Object,List<Recipe>>();
 
 		// go get all the recipes
-		ContentType cType = ContentType.get("Recipe");
+		ContentType cType = ContentType.Recipe;
 		Set<ContentKey> allRecipeKeys = CmsManager.getInstance().getContentKeysByType(cType);
 
 		List<DomainValue> groupBy = recipeSubCat.getGroupBy();

@@ -6,11 +6,11 @@ package com.freshdirect.smartstore.impl;
 import java.util.Collections;
 import java.util.List;
 
-import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.sampling.ImpressionSampler;
 import com.freshdirect.smartstore.scoring.HelperFunctions;
+import com.freshdirect.storeapi.content.ContentNodeModel;
 
 /**
  * 

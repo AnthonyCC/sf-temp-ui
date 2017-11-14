@@ -5735,6 +5735,14 @@
  			<rtexprvalue>false</rtexprvalue>
  		</attribute>
  	</tag>
+
+ 	<tag>
+ 	  <name>WarmupPage</name>
+ 	  <tagclass>com.freshdirect.webapp.taglib.warmup.WarmupPageTag</tagclass>
+ 	  <bodycontent>EMPTY</bodycontent>
+ 	  <info>Populate warmup page data</info>
+ 	</tag>
+
  	<tag>
 		<name>ProductSalesInfoController</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.ProductSalesInfoControllerTag</tagclass>
@@ -5756,6 +5764,7 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+
 	<tag-file>
        <name>SEOMetaTag</name>
        <path>/WEB-INF/shared/tags/common/metatags.tag</path>

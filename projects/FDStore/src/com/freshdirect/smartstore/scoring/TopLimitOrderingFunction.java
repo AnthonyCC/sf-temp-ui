@@ -3,8 +3,8 @@ package com.freshdirect.smartstore.scoring;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.smartstore.sampling.RankedContent;
+import com.freshdirect.storeapi.content.ContentNodeModel;
 
 /**
  * Implement sorting functionality which support zeroing out all non-maximum values.

@@ -15,12 +15,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.DepartmentModel;
-import com.freshdirect.fdstore.content.EnumLayoutType;
-import com.freshdirect.fdstore.content.ProductContainer;
-import com.freshdirect.fdstore.content.StoreModel;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.DepartmentModel;
+import com.freshdirect.storeapi.content.EnumLayoutType;
+import com.freshdirect.storeapi.content.ProductContainer;
+import com.freshdirect.storeapi.content.StoreModel;
 
 public class CategoryLayoutCollectorTag extends com.freshdirect.framework.webapp.TagSupport {
 

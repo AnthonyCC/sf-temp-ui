@@ -10,20 +10,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.cms.CmsServiceLocator;
+import com.freshdirect.cms.cache.CmsCaches;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.cache.EhCacheUtil;
-import com.freshdirect.fdstore.content.EnumQuickShopFilteringValue;
 import com.freshdirect.fdstore.content.FilteringFlowResult;
-import com.freshdirect.fdstore.content.FilteringSortingItem;
-import com.freshdirect.fdstore.content.FilteringValue;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
@@ -36,6 +33,9 @@ import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
 import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.EnumQuickShopFilteringValue;
+import com.freshdirect.storeapi.content.FilteringSortingItem;
+import com.freshdirect.storeapi.content.FilteringValue;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartItem;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.quickshop.data.EnumQuickShopTab;
@@ -84,12 +84,14 @@ public class QSFromListFilterServlet extends QuickShopServlet {
 
 		try {
 			
-			List<QuickShopLineItemWrapper> items = EhCacheUtil.getListFromCache(EhCacheUtil.QS_SHOP_FROM_LISTS_CACHE_NAME, user.getIdentity().getErpCustomerPK());
+            List<QuickShopLineItemWrapper> items = CmsServiceLocator.ehCacheUtil().getListFromCache(CmsCaches.QS_SHOP_FROM_LISTS_CACHE.cacheName,
+                    user.getIdentity().getErpCustomerPK());
 			
 			if(items==null){
 				items = QuickShopHelper.getWrappedCustomerCreatedLists(user, EnumQuickShopTab.CUSTOMER_LISTS);
 				if(!items.isEmpty()){
-					EhCacheUtil.putListToCache(EhCacheUtil.QS_SHOP_FROM_LISTS_CACHE_NAME, user.getIdentity().getErpCustomerPK(), new ArrayList<QuickShopLineItemWrapper>(items));					
+                    CmsServiceLocator.ehCacheUtil().putListToCache(CmsCaches.QS_SHOP_FROM_LISTS_CACHE.cacheName, user.getIdentity().getErpCustomerPK(),
+                            new ArrayList<QuickShopLineItemWrapper>(items));
 				}
 			}else{
 				items = new ArrayList<QuickShopLineItemWrapper>(items);
@@ -241,7 +243,7 @@ public class QSFromListFilterServlet extends QuickShopServlet {
 		}
 		
 		//invalidate cache entry TODO: maybe enough to reload the actual list
-		EhCacheUtil.removeFromCache(EhCacheUtil.QS_SHOP_FROM_LISTS_CACHE_NAME, userId);
+        CmsServiceLocator.ehCacheUtil().removeFromCache(CmsCaches.QS_SHOP_FROM_LISTS_CACHE.cacheName, userId);
 		
 	}
 	

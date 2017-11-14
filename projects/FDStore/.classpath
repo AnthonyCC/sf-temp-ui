@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="src" path="/CMS"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/jsonrpc-1.0.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/jxl.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
@@ -17,9 +16,11 @@
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/ehcache-2.10.0.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/masterpassExpressSdk.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/braintree-java-2.53.0.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-web-4.0.1.RELEASE.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/fdcommerce-data.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-core-4.0.1.RELEASE.jar"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/storeapi"/>
+        <classpathentry kind="var" path="FD_LIBS/thirdparty/spring-web-4.0.1.RELEASE.jar"/>^M
+        <classpathentry kind="var" path="FD_LIBS/thirdparty/fdcommerce-data.jar"/>^M
+        <classpathentry kind="var" path="FD_LIBS/thirdparty/spring-core-4.0.1.RELEASE.jar"/>^M
         <classpathentry kind="var" path="FD_LIBS/thirdparty/sitemapgen4j-1.0.6.jar" sourcepath="FD_LIBS/thirdparty/sitemapgen4j-1.0.6-src.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
+

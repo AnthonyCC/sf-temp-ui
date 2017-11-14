@@ -14,7 +14,6 @@ import javassist.CtMethod;
 import javassist.CtNewMethod;
 import javassist.NotFoundException;
 
-import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.smartstore.dsl.BinaryExpression;
 import com.freshdirect.smartstore.dsl.BlockExpression;
 import com.freshdirect.smartstore.dsl.ClassCompileException;
@@ -30,6 +29,7 @@ import com.freshdirect.smartstore.dsl.VariableExpression;
 import com.freshdirect.smartstore.dsl.VisitException;
 import com.freshdirect.smartstore.external.ExternalRecommenderRegistry;
 import com.freshdirect.smartstore.external.ExternalRecommenderType;
+import com.freshdirect.storeapi.content.ContentNodeModel;
 
 /**
  * This class is used to generate DataGenerator classes based on simple expressions.

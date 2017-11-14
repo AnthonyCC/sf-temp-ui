@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Content xmlns:dc="http://purl.org/dc/elements/1.1">
+	
+	<Product id="spe_fd_rub_moroccan">
+		<SHOW_TOP_TEN_IMAGE>false</SHOW_TOP_TEN_IMAGE>
+		<PROD_IMAGE>
+			<Image ref="4928790"/>
+		</PROD_IMAGE>
+		<PERISHABLE>false</PERISHABLE>
+		<FROZEN>false</FROZEN>
+		<skus>
+			<Sku ref="SPE0070672"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_freshdirect"/>
+		</brands>
+		<SHOW_SALES_UNIT_IMAGE>false</SHOW_SALES_UNIT_IMAGE>
+		<PROD_IMAGE_FEATURE>
+			<Image ref="4928803"/>
+		</PROD_IMAGE_FEATURE>
+		<FULL_NAME>FreshDirect Rockin' Moroccan Rub, Jar</FULL_NAME>
+		<NAV_NAME>FreshDirect Rockin' Moroccan Rub</NAV_NAME>
+		<INVISIBLE>false</INVISIBLE>
+		<ymalSets>
+			<YmalSet ref="ymals_FDseasoning"/>
+		</ymalSets>
+		<GROCERY>false</GROCERY>
+		<PROD_IMAGE_ZOOM>
+			<Image ref="4928832"/>
+		</PROD_IMAGE_ZOOM>
+		<PROD_IMAGE_DETAIL>
+			<Image ref="4928817"/>
+		</PROD_IMAGE_DETAIL>
+		<GLANCE_NAME>Rockin Moroccan Rub</GLANCE_NAME>
+		<NUTRITION_MULTIPLE>false</NUTRITION_MULTIPLE>
+		<PROD_DESCR>
+			<Html ref="4920987"/>
+		</PROD_DESCR>
+		<PRIMARY_HOME>
+			<Category ref="archive_skus_2016_1"/>
+		</PRIMARY_HOME>
+	</Product>
+	
+	<Brand id="bd_lifestyle_foods">
+		<FULL_NAME>Lifestyle Foods</FULL_NAME>
+		<BRAND_LOGO_SMALL>
+			<Image ref="4949510"/>
+		</BRAND_LOGO_SMALL>
+	</Brand>
+	
+	<Product id="gro_goya_stuffed_01">
+		<PROD_IMAGE>
+			<Image ref="26046395"/>
+		</PROD_IMAGE>
+		<PERISHABLE>false</PERISHABLE>
+		<FROZEN>false</FROZEN>
+		<skus>
+			<Sku ref="GRO001733"/>
+		</skus>
+		<RATING>
+			<DomainValue ref="organic_false"/>
+		</RATING>
+		<brands>
+			<Brand ref="bd_goya"/>
+		</brands>
+		<PROD_IMAGE_FEATURE>
+			<Image ref="/media/images/product/grocery/gro_goya_stuffed_01_f.jpg"/>
+		</PROD_IMAGE_FEATURE>
+		<FULL_NAME>Goya Stuffed Spanish Olives</FULL_NAME>
+		<INVISIBLE>false</INVISIBLE>
+		<QUANTITY_INCREMENT>1.0</QUANTITY_INCREMENT>
+		<GROCERY>true</GROCERY>
+		<PROD_IMAGE_ZOOM>
+			<Image ref="26046405"/>
+		</PROD_IMAGE_ZOOM>
+		<QUANTITY_TEXT>Quantity</QUANTITY_TEXT>
+		<PROD_IMAGE_DETAIL>
+			<Image ref="26046402"/>
+		</PROD_IMAGE_DETAIL>
+		<PROD_IMAGE_CONFIRM>
+			<Image ref="/media/images/layout/clear.gif"/>
+		</PROD_IMAGE_CONFIRM>
+		<GLANCE_NAME>Stuffed Olives</GLANCE_NAME>
+		<QUANTITY_MINIMUM>1.0</QUANTITY_MINIMUM>
+		<QUANTITY_MAXIMUM>99.99</QUANTITY_MAXIMUM>
+		<NUTRITION_MULTIPLE>false</NUTRITION_MULTIPLE>
+		<PROD_DESCR>
+			<Html ref="/media/editorial/blank_file.txt"/>
+		</PROD_DESCR>
+		<PRIMARY_HOME>
+			<Category ref="gro_condi_olive"/>
+		</PRIMARY_HOME>
+	</Product>
+	
+	<Category id="picks_halloween_candy">
+		<REDIRECT_URL>nm</REDIRECT_URL>
+		<disableCategoryYmalRecommender>true</disableCategoryYmalRecommender>
+		<SHOWSELF>false</SHOWSELF>
+		<FAKE_ALL_FOLDER>false</FAKE_ALL_FOLDER>
+		<FULL_NAME>spare</FULL_NAME>
+		<SHOWCHILDREN>1</SHOWCHILDREN>
+		<NOT_SEARCHABLE>true</NOT_SEARCHABLE>
+		<showAllByDefault>true</showAllByDefault>
+		<SIDENAV_BOLD>false</SIDENAV_BOLD>
+		<SECONDARY_CATEGORY>false</SECONDARY_CATEGORY>
+		<showPopularCategories>false</showPopularCategories>
+		<FEATURED>false</FEATURED>
+		<LAYOUT>111</LAYOUT>
+		<EDITORIAL_TITLE>nm</EDITORIAL_TITLE>
+		<CONTAINS_BEER>false</CONTAINS_BEER>
+		<preferenceCategory>false</preferenceCategory>
+		<hideIfFilteringIsSupported>false</hideIfFilteringIsSupported>
+		<KEYWORDS>halloween</KEYWORDS>
+		<SS_LEVEL_AGGREGATION>false</SS_LEVEL_AGGREGATION>
+	</Category>
+	
+	<ConfiguredProductGroup id="clig_fish_turbt_1lb">
+		<items>
+			<ConfiguredProduct ref="turbt_1lb"/>
+			<ConfiguredProduct ref="turbot_kshr_1lb"/>
+		</items>
+		<required>true</required>
+	</ConfiguredProductGroup>
+	
+	<Recommender id="reco_cat_newprods">
+		<FULL_NAME>New Products Recommender</FULL_NAME>
+		<strategy>
+			<RecommenderStrategy ref="strat_cat_new"/>
+		</strategy>
+	</Recommender>
+	
+	<!-- Contents without body -->
+	<Html id="14841697"/>
+	<Sku id="GRO0069855"/>
+</Content>

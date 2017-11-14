@@ -22,15 +22,9 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.ContentType;
-import com.freshdirect.cms.application.CmsManager;
-import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.content.BannerModel;
-import com.freshdirect.fdstore.content.BrandModel;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ProducerModel;
 import com.freshdirect.mobileapi.controller.data.Image;
 import com.freshdirect.mobileapi.controller.data.response.Idea;
 import com.freshdirect.mobileapi.controller.data.response.ProducerDetailResponse;
@@ -41,6 +35,12 @@ import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.mobileapi.util.StringUtil;
+import com.freshdirect.storeapi.application.CmsManager;
+import com.freshdirect.storeapi.content.BannerModel;
+import com.freshdirect.storeapi.content.BrandModel;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ProducerModel;
+import com.freshdirect.storeapi.fdstore.FDContentTypes;
 
 public class ProducersController extends BaseController {
 
@@ -101,21 +101,21 @@ public class ProducersController extends BaseController {
 		}
 //*********************************************************************************************************
 		
-		final com.freshdirect.fdstore.content.Image tabletHeader = brand.getTabletHeader();
+		final com.freshdirect.storeapi.content.Image tabletHeader = brand.getTabletHeader();
 		if (tabletHeader != null)
 			response.setProducerBanner(new Image(tabletHeader));
 		List<Image> producerImages = new ArrayList<Image>();
-		for (com.freshdirect.fdstore.content.Image image : new ArrayList<com.freshdirect.fdstore.content.Image>(brand.getTabletImages())) {
+		for (com.freshdirect.storeapi.content.Image image : new ArrayList<com.freshdirect.storeapi.content.Image>(brand.getTabletImages())) {
 			producerImages.add(new Image(image));
 		}
 
 		// temporary put all brand images into a response
-        final com.freshdirect.fdstore.content.Image chefImage = brand.getChefImage();
-        final com.freshdirect.fdstore.content.Image logoLarge = brand.getLogoLarge();
-        final com.freshdirect.fdstore.content.Image logoMedium = brand.getLogoMedium();
-        final com.freshdirect.fdstore.content.Image logoSmall = brand.getLogoSmall();
-        final com.freshdirect.fdstore.content.Image sideNavImage = brand.getSideNavImage();
-        final com.freshdirect.fdstore.content.Image tabletThumbnailImage = brand.getTabletThumbnailImage();
+        final com.freshdirect.storeapi.content.Image chefImage = brand.getChefImage();
+        final com.freshdirect.storeapi.content.Image logoLarge = brand.getLogoLarge();
+        final com.freshdirect.storeapi.content.Image logoMedium = brand.getLogoMedium();
+        final com.freshdirect.storeapi.content.Image logoSmall = brand.getLogoSmall();
+        final com.freshdirect.storeapi.content.Image sideNavImage = brand.getSideNavImage();
+        final com.freshdirect.storeapi.content.Image tabletThumbnailImage = brand.getTabletThumbnailImage();
         Map<String, Image> otherImages = new LinkedHashMap<String, Image>();
         otherImages.put("chefImage", chefImage == null ? null : new Image(chefImage));
         otherImages.put("logoLarge", logoLarge == null ? null : new Image(logoLarge));
@@ -124,7 +124,7 @@ public class ProducersController extends BaseController {
         otherImages.put("sideNavImage", sideNavImage == null ? null : new Image(sideNavImage));
         otherImages.put("tabletThumbnailImage", tabletThumbnailImage == null ? null : new Image(tabletThumbnailImage));
 
-        Set<ContentKey> contentKeysByType = CmsManager.getInstance().getContentKeysByType(ContentType.get("Banner"));
+        Set<ContentKey> contentKeysByType = CmsManager.getInstance().getContentKeysByType(ContentType.Banner);
         for (ContentKey key : contentKeysByType) {
             BannerModel banner = (BannerModel) ContentFactory.getInstance().getContentNodeByKey(key);
             if (banner.getLink() != null && StringUtils.equals(banner.getLink().getContentName(), brand.getContentName())) {
