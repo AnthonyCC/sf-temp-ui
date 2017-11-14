@@ -784,8 +784,6 @@ public class FDStoreProperties {
     private static final String PROP_PRODUCT_SAMPLES_MAX_BUY_PRODUCTS_LIMIT = "fdstore.product.samples.max.buy.products.limit";
     private static final String PROP_PRODUCT_SAMPLES_MAX_BUY_QUANTITY_LIMIT = "fdstore.product.samples.max.buy.quantity.limit";
     private static final String PROP_FEED_PUBLISH_URL = "fdstore.feed.publish.url";
-    private static final String PROP_FEED_PUBLISH_FROM_BKOFFICE = "fdstore.feed.publish.bkoffice";
-    private static final String PROP_FEED_PUBLISH_BKOFFICE_URL = "fdstore.feed.publish.bkoffice.url";
     private static final String CTCAPACITY_ELIGIBLE_PROFILES = "fdstore.ctcapacity.eligibleprofiles";
     private static final String PROP_CORE_NON_CORE_GLOBAL_NAV_SWITCH_ENABLED = "fdstore.corenoncore.globalnav.switch.enabled";
     private static final String PROP_MIDDLETIER_PROVIDER_URL = "fdstore.middletier.providerURL";
@@ -1397,9 +1395,7 @@ static {
         // APPDEV-1215 Sustainable Seafood
         defaults.put(PROP_SEAFOODSUSTAIN_ENABLED, "false");
         defaults.put(PROP_FEED_PUBLISH_URL, "http://localhost:7001/crm/feed_publish");
-        defaults.put(PROP_FEED_PUBLISH_FROM_BKOFFICE, "true");
-        defaults.put(PROP_FEED_PUBLISH_BKOFFICE_URL, "http://bsl.stdev14.nj01/FDService/service/v0/createfeed");
-        
+
         // SEM Project (APPDEV-1598)
         defaults.put(PROP_SEM_PIXELS, "");
         defaults.put(PROP_SEM_CONFIGS, "");
@@ -4248,14 +4244,6 @@ static {
 
     public static String getFeedPublishURL() {
         return get(PROP_FEED_PUBLISH_URL);
-    }
-    
-    public static String getFeedPublishCheck() {
-        return get(PROP_FEED_PUBLISH_FROM_BKOFFICE);
-    }
-    
-    public static String getFeedPublishBackofficeURL() {
-        return get(PROP_FEED_PUBLISH_BKOFFICE_URL);
     }
 
     public static String getCtCapacityEligibleProfiles() {
