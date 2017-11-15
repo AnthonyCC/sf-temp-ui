@@ -11,6 +11,5 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/xstream-1.1.1.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/bsh-2.0b4.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/StandingOrdersService"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ERPSWebApp"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
