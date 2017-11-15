@@ -289,7 +289,7 @@ public class XmlContentProvider implements ContentProvider {
     private InputStream setupInputStream(String fileName) throws IOException {
         InputStream resourceInputStream = null;
         if (resourceBasePath.startsWith("file:")) {
-            resourceInputStream = new FileInputStream(new File(resourceBasePath.split(":", 2)[1] + File.separator + fileName));
+            resourceInputStream = new FileInputStream(new File(resourceBasePath.split(":")[1] + File.separator + fileName));
         } else if (resourceBasePath.startsWith("classpath:")) {
             Resource resource = new ClassPathResource(resourceBasePath.split(":")[1] + File.separator + fileName);
             resourceInputStream = resource.getInputStream();

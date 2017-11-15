@@ -14,13 +14,5 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-core-4.0.1.RELEASE.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/logistics-data-0.0.1-SNAPSHOT.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/gson-1.7.1.jar"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Delivery"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/ERPServices"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/FDLogisticsIntegration"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Framework"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/StoreAPI"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/cmseue"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/servlet-api.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/slf4j-api-1.7.13.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
