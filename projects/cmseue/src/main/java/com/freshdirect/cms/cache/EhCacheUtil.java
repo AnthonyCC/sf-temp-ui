@@ -3,6 +3,7 @@ package com.freshdirect.cms.cache;
 import java.lang.management.ManagementFactory;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.management.MBeanServer;
 
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
+import net.sf.ehcache.ObjectExistsException;
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.config.CacheConfiguration.CacheDecoratorFactoryConfiguration;
 import net.sf.ehcache.config.CacheConfiguration.CacheLoaderFactoryConfiguration;
@@ -35,16 +37,18 @@ public class EhCacheUtil {
     @Value("${ehcache.management.enabled:false}")
     private boolean ehCacheManagementEnabled;
 
-    public EhCacheUtil() {
-        CacheConfiguration cmsPageCacheConfiguration = setupCmsPageCache();
+    @PostConstruct
+    private void configureCacheManager() {
+        CacheConfiguration cmsPageCacheConfiguration = createCmsPageCacheConfiguration();
         createCache(cmsPageCacheConfiguration);
+
         if (ehCacheManagementEnabled) {
             MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
             ManagementService.registerMBeans(manager, mBeanServer, false, false, false, true);
         }
     }
 
-    private static CacheConfiguration setupCmsPageCache() {
+    private static CacheConfiguration createCmsPageCacheConfiguration() {
         CacheConfiguration cmsPageCacheConfiguration = new CacheConfiguration("cmsPageCache", 50);
         cmsPageCacheConfiguration.setEternal(true);
         cmsPageCacheConfiguration.setMemoryStoreEvictionPolicy(MemoryStoreEvictionPolicyEnum.LFU.name());
@@ -59,17 +63,25 @@ public class EhCacheUtil {
         return cmsPageCacheConfiguration;
     }
 
-    public CacheConfiguration createCacheConfiguration(String cacheName, int maxEntries, long ttl) {
-        CacheConfiguration cacheConfiguration = new CacheConfiguration(cacheName, maxEntries);
-        cacheConfiguration.setTimeToLiveSeconds(ttl);
-        return cacheConfiguration;
-    }
-
     public void createCache(CacheConfiguration cacheConfiguration) {
-        Ehcache result = null;
-        if (manager != null) {
-            result = new Cache(cacheConfiguration);
-            manager.addCache(result);
+        if (cacheConfiguration == null) {
+            return;
+        }
+
+        final String cacheName = cacheConfiguration.getName();
+        if (manager == null) {
+            LOG.error("Cache manager is not created, yet, cache with name " + cacheName + " is not created");
+            return;
+        } else if (manager.cacheExists(cacheConfiguration.getName())) {
+            LOG.debug("Cache with name " + cacheName + " already exists, skip creating another instance");
+            return;
+        }
+
+        try {
+            Ehcache instance = new Cache(cacheConfiguration);
+            manager.addCache(instance);
+        } catch (ObjectExistsException exc) {
+            LOG.error("Failed to create cache with name " + cacheName + " (possible duplication)", exc);
         }
     }
 
