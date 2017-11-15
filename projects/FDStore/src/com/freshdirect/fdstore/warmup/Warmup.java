@@ -16,6 +16,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.application.CmsManager;
 import com.freshdirect.storeapi.content.ContentFactory;
@@ -53,8 +54,12 @@ public class Warmup {
         }
 
         LOGGER.info(skuCodes.size() + " SKUs found");
-
-        CacheWarmupUtil.warmupFDCaches();
+        
+        if(FDStoreProperties.isLocalDeployment()) {
+        	LOGGER.info("Skipping Nutrition, Attribute, Inventory, NutirtionPanel cache for local deployment");
+        } else {
+        	CacheWarmupUtil.warmupFDCaches();
+        }
 
         LOGGER.info("[WARMUP]Main warmup in " + (System.currentTimeMillis() - time) + " ms");
 

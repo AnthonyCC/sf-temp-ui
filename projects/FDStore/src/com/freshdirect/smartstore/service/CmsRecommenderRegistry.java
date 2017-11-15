@@ -62,7 +62,7 @@ public class CmsRecommenderRegistry {
 		}
 		
 		if (!forceReload) {
-			LOGGER.debug("reload not forced");
+			//LOGGER.debug("reload not forced");
 			return;
 		}
 
@@ -85,9 +85,9 @@ public class CmsRecommenderRegistry {
 			tmpSmartCatVariants.put(strat.getContentName(), rs);
 		}
 
-		LOGGER.info("needed factors :" + factors);
+		//LOGGER.info("needed factors :" + factors);
 		ScoreProvider.getInstance().acquireFactors(factors);
-		LOGGER.info("configured CMS recommenders:" + tmpSmartCatVariants.keySet());
+		//LOGGER.info("configured CMS recommenders:" + tmpSmartCatVariants.keySet());
 
 		smartCatVariants = tmpSmartCatVariants;
 		lastReload = System.currentTimeMillis();

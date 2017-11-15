@@ -96,7 +96,7 @@ public class AttributeValueToMediaConverter {
             try {
                 media.setLastModified(DATE_FORMAT.parseDateTime(lastModifiedValue.toString()).toDate());
             } catch (IllegalArgumentException exc) {
-                LOGGER.debug("Failed to parse lastModified date " + lastModifiedValue.toString() + " of media " + media.getContentKey());
+                //LOGGER.debug("Failed to parse lastModified date " + lastModifiedValue.toString() + " of media " + media.getContentKey());
             }
         }
     }

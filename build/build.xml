@@ -71,7 +71,7 @@
 		<pathelement location="${thirdparty.home}/quartz.jar"/>
 		<pathelement location="${thirdparty.home}/asm.jar"/>
 		<pathelement location="${thirdparty.home}/cglib-2.1.jar"/>
-		<pathelement location="${thirdparty.home}/ehcache-2.10.0.jar"/>
+		<pathelement location="${thirdparty.home}/ehcache-2.10.1.jar"/>
 		<pathelement location="${thirdparty.home}/slf4j-api-1.6.6.jar"/>
 		<pathelement location="${thirdparty.home}/slf4j-jdk14-1.6.6.jar"/>
 		<pathelement location="${thirdparty.home}/jug-lgpl-2.0.0.jar"/>
@@ -91,10 +91,6 @@
 		<pathelement location="${thirdparty.home}/jsch-0.1.44.jar"/>
 		<pathelement location="${thirdparty.home}/antlr.jar"/>
 		<pathelement location="${thirdparty.home}/antlr-runtime.jar"/>
-		<pathelement location="${thirdparty.home}/drools-api.jar"/>
-		<pathelement location="${thirdparty.home}/drools-compiler.jar"/>
-		<pathelement location="${thirdparty.home}/drools-core.jar"/>
-		<pathelement location="${thirdparty.home}/drools-jsr94.jar"/>
 		<pathelement location="${thirdparty.home}/jsr94.jar"/>
 		<pathelement location="${thirdparty.home}/mvel2.jar"/>
 		<pathelement location="${thirdparty.home}/org.eclipse.jdt.core_3.6.1.v_A68_R36x.jar"/>
@@ -296,7 +292,7 @@
 		<!-- Standing Orders background service -->
 		<checkoutLabeled dir="projects/CoremetricsService"/>
 		<!-- Coremetrics background service -->
-		<checkoutLabeled dir="projects/Athena"/>
+		
 		<checkoutLabeled dir="applications"/>
 		<!--	<checkoutLabeled dir="release"/> -->
 	</target>
@@ -351,7 +347,7 @@
 		<!-- Added: Schematic rsung -->
 		<checkoutLatest dir="projects/StandingOrdersService"/>
 		<checkoutLatest dir="projects/CoremetricsService"/>
-		<checkoutLatest dir="projects/Athena"/>
+		
 		<checkoutLatest dir="applications"/>
 		<!--	<checkoutLatest dir="release"/> -->
 
@@ -436,7 +432,7 @@
 		<mkdir dir="${work.dir}/cms-gwt"/>
 		<mkdir dir="${work.dir}/StandingOrdersService"/>
 		<mkdir dir="${work.dir}/CoremetricsService"/>
-		<mkdir dir="${work.dir}/Athena"/>
+		
 	</target>
 
 	<target name= "copy_shared_dirs"
@@ -536,7 +532,7 @@
 		</copy>
 	</target>
 
-	<target name="build" depends="framework,cmseue,erpservices,storeApi,FDLogisticsIntegration,delivery,fdstore,dataloader,erpswebapp,tools,StandingOrdersService,CoremetricsService,Athena,fdstorefront-domain" description="Build everything">
+	<target name="build" depends="framework,cmseue,erpservices,storeApi,FDLogisticsIntegration,delivery,fdstore,dataloader,erpswebapp,tools,StandingOrdersService,CoremetricsService,fdstorefront-domain" description="Build everything">
 	</target>
 
 	<target name="test" depends="tests_compile" description="Run unit tests">
@@ -1344,7 +1340,7 @@
 					<include name="asm.jar"/>
 					<include name="asm-attrs.jar"/>
 					<include name="cglib-2.1.jar"/>
-					<include name="ehcache-2.10.0.jar"/>
+					<include name="ehcache-2.10.1.jar"/>
 					<include name="slf4j-api-1.6.6.jar"/>
 					<include name="slf4j-jdk14-1.6.6.jar"/>
 					<include name="jug-lgpl-2.0.0.jar"/>
@@ -1389,10 +1385,6 @@
 					<include name="jsch-0.1.44.jar"/>
 					<include name="antlr.jar"/>
 					<include name="antlr-runtime.jar"/>
-					<include name="drools-api.jar"/>
-					<include name="drools-compiler.jar"/>
-					<include name="drools-core.jar"/>
-					<include name="drools-jsr94.jar"/>
 					<include name="jsr94.jar"/>
 					<include name="mvel2.jar"/>
 					<include name="org.eclipse.jdt.core_3.6.1.v_A68_R36x.jar"/>
@@ -1480,7 +1472,7 @@
 					<include name="hivemind-lib-1.1.1.jar"/>
 					<include name="aopalliance-1.0.jar"/>
 					<include name="hibernate3.jar"/>
-					<include name="ehcache-2.10.0.jar"/>
+					<include name="ehcache-2.10.1.jar"/>
 					<include name="slf4j-api-1.6.6.jar"/>
 					<include name="slf4j-jdk14-1.6.6.jar"/>
 					<include name="batik-1.5-fop-0.20-5.jar"/>
@@ -1519,10 +1511,6 @@
 					<include name="jsch-0.1.44.jar"/>
 					<include name="antlr.jar"/>
 					<include name="antlr-runtime.jar"/>
-					<include name="drools-api.jar"/>
-					<include name="drools-compiler.jar"/>
-					<include name="drools-core.jar"/>
-					<include name="drools-jsr94.jar"/>
 					<include name="jsr94.jar"/>
 					<include name="mvel2.jar"/>
 					<include name="org.eclipse.jdt.core_3.6.1.v_A68_R36x.jar"/>
@@ -1632,10 +1620,6 @@
 			<pathelement location="${thirdparty.home}/givexclient.jar"/>
 			<pathelement location="${thirdparty.home}/antlr.jar"/>
 			<pathelement location="${thirdparty.home}/antlr-runtime.jar"/>
-			<pathelement location="${thirdparty.home}/drools-api.jar"/>
-			<pathelement location="${thirdparty.home}/drools-compiler.jar"/>
-			<pathelement location="${thirdparty.home}/drools-core.jar"/>
-			<pathelement location="${thirdparty.home}/drools-jsr94.jar"/>
 			<pathelement location="${thirdparty.home}/jsr94.jar"/>
 			<pathelement location="${thirdparty.home}/mvel2.jar"/>
 			<pathelement location="${thirdparty.home}/org.eclipse.jdt.core_3.6.1.v_A68_R36x.jar"/>
@@ -1702,8 +1686,8 @@
 			<pathelement location="${thirdparty.home}/spring-context-4.0.1.RELEASE.jar"/>
 			<pathelement location="${thirdparty.home}/spring-core-4.0.1.RELEASE.jar"/>
 			<pathelement location="${thirdparty.home}/spring-expression-4.0.1.RELEASE.jar"/>
-			<pathelement location="${thirdparty.home}/spring-jdbc-4.0.0.RELEASE.jar"/>
-			<pathelement location="${thirdparty.home}/spring-tx-4.0.0.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-jdbc-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-tx-4.0.1.RELEASE.jar"/>
 			<pathelement location="${thirdparty.home}/spring-web-4.0.1.RELEASE.jar"/>
 			<pathelement location="${thirdparty.home}/spring-webmvc-4.0.1.RELEASE.jar"/>
 			<pathelement location="${thirdparty.home}/logistics-data-0.0.1-SNAPSHOT.jar"/>
@@ -1793,8 +1777,8 @@
 			<pathelement location="${thirdparty.home}/spring-context-4.0.1.RELEASE.jar"/>
 			<pathelement location="${thirdparty.home}/spring-core-4.0.1.RELEASE.jar"/>
 			<pathelement location="${thirdparty.home}/spring-expression-4.0.1.RELEASE.jar"/>
-			<pathelement location="${thirdparty.home}/spring-jdbc-4.0.0.RELEASE.jar"/>
-			<pathelement location="${thirdparty.home}/spring-tx-4.0.0.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-jdbc-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-tx-4.0.1.RELEASE.jar"/>
 			<pathelement location="${thirdparty.home}/spring-web-4.0.1.RELEASE.jar"/>
 			<pathelement location="${thirdparty.home}/spring-webmvc-4.0.1.RELEASE.jar"/>
 			<pathelement location="${thirdparty.home}/gson-1.7.1.jar"/>
@@ -1965,8 +1949,8 @@
 			<pathelement location="${thirdparty.home}/spring-context-4.0.1.RELEASE.jar"/>
 			<pathelement location="${thirdparty.home}/spring-core-4.0.1.RELEASE.jar"/>
 			<pathelement location="${thirdparty.home}/spring-expression-4.0.1.RELEASE.jar"/>
-			<pathelement location="${thirdparty.home}/spring-jdbc-4.0.0.RELEASE.jar"/>
-			<pathelement location="${thirdparty.home}/spring-tx-4.0.0.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-jdbc-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-tx-4.0.1.RELEASE.jar"/>
 			<pathelement location="${thirdparty.home}/spring-web-4.0.1.RELEASE.jar"/>
 			<pathelement location="${thirdparty.home}/spring-webmvc-4.0.1.RELEASE.jar"/>
 			<path refid="j2ee.classpath"/>
@@ -2030,7 +2014,7 @@
 			<pathelement location="${thirdparty.home}/spring-web-4.0.1.RELEASE.jar" />
 			<pathelement location="${thirdparty.home}/spring-data-commons-1.11.1.RELEASE.jar" />
 			<pathelement location="${thirdparty.home}/spring-data-jpa-1.9.1.RELEASE.jar" />
-			<pathelement location="${thirdparty.home}/spring-jdbc-4.0.0.RELEASE.jar" />
+			<pathelement location="${thirdparty.home}/spring-jdbc-4.0.1.RELEASE.jar" />
 			<pathelement location="${thirdparty.home}/spring-tx-4.0.1.RELEASE.jar" />
 			<pathelement location="${thirdparty.home}/spring-webmvc-4.0.1.RELEASE.jar" />
 			<pathelement location="${thirdparty.home}/spring-context-support.4.0.1.RELEASE.jar" />
@@ -2233,97 +2217,7 @@
 			project="CoremetricsService"
 			classpathref="CoremetricsService.classpath"/>
 	</target>
-
-
-	<target name="Athena" description="Build Athena">
-		<!-- directory for compiled stuff -->
-		<mkdir dir="${work.dir}/Athena/WEB-INF/classes" />
-
-		<path id="athena.classpath">
-			<path refid="j2ee.classpath"/>
-			<path refid="common.classpath"/>
-			<path refid="oracle.classpath"/>
-
-			<pathelement location="${thirdparty.home}/log4j.jar"/>
-			<pathelement location="${thirdparty.home}/servlet-api.jar"/>
-			<pathelement location="${thirdparty.home}/simple-xml-2.6.6.jar"/>
-			<pathelement location="${thirdparty.home}/guava-12.0.jar"/>
-			<pathelement location="${thirdparty.home}/c3p0-0.9.2-pre4.jar"/>
-			<pathelement location="${thirdparty.home}/c3p0-oracle-thin-extras-0.9.2-pre4.jar"/>
-			<pathelement location="${thirdparty.home}/mchange-commons-java-0.2.2.jar"/>
-			<pathelement location="${thirdparty.home}/sapjco3.jar"/>
-			<pathelement location="${thirdparty.home}/ojdbc6.jar"/>
-			<pathelement location="${thirdparty.home}/vaadin-6.8.2.jar"/>
-		</path>
-		<trycatch>
-			<try>
-				<record name="${work.dir}/logs/log.txt" action="start" append="yes" loglevel="info"/>
-				<tstamp>
-					<format property="compileStart" pattern="MM/dd/yyyy HH:mm" />
-				</tstamp>
-				<echo message="Started Compiling Athena at:${compileStart}"/>
-				<javac
-				srcdir="${projects.dir}/Athena/src"
-				destdir="${work.dir}/Athena/WEB-INF/classes"
-	  			deprecation="${javac.deprecation}"
-				optimize="${javac.optimize}"
-				debug="${javac.debug}"
-	  			source="${javac.source}">
-					<classpath>
-						<path refid="athena.classpath"/>
-					</classpath>
-				</javac>
-				<record name="${work.dir}/logs/log.txt" action="stop"/>
-			</try>
-			<catch>
-				<record name="${work.dir}/logs/log.txt" action="stop"/>
-				<!-- send email...compilation failed -->
-				<emailCompilationError projectName="Athena"/>
-				<fail/>
-			</catch>
-		</trycatch>
-
-		<!-- copy non-java resources -->
-		<copy todir="${work.dir}/Athena/WEB-INF/classes">
-			<fileset dir="${projects.dir}/Athena/src" excludes="**/*.java"/>
-		</copy>
-
-		<!-- copy JSPs, html, etc... -->
-		<copy todir="${work.dir}/Athena/">
-			<fileset dir="${projects.dir}/Athena/docroot">
-			</fileset>
-		</copy>
-
-		<!-- copy dependent jar files -->
-		<copy todir="${work.dir}/Athena/WEB-INF/lib">
-			<fileset dir="${thirdparty.home}" includes="log4j.jar"/>
-			<!-- <fileset dir="${thirdparty.home}" includes="servlet-api.jar"/> -->
-			<fileset dir="${thirdparty.home}" includes="simple-xml-2.6.6.jar"/>
-			<fileset dir="${thirdparty.home}" includes="guava-12.0.jar"/>
-			<fileset dir="${thirdparty.home}" includes="c3p0-0.9.2-pre4.jar"/>
-			<fileset dir="${thirdparty.home}" includes="c3p0-oracle-thin-extras-0.9.2-pre4.jar"/>
-			<fileset dir="${thirdparty.home}" includes="mchange-commons-java-0.2.2.jar"/>
-			<fileset dir="${thirdparty.home}" includes="sapjco3.jar"/>
-			<!-- <fileset dir="${thirdparty.home}" includes="ojdbc6.jar"/> -->
-			<fileset dir="${thirdparty.home}" includes="vaadin-6.8.2.jar"/>
-		</copy>
-
-		<!-- create .war file -->
-		<jar destfile="${work.dir}/athena.war">
-			<manifest>
-				<attribute name="Specification-Version" value="${build.counter}"/>
-				<attribute name="Specification-Vendor" value="FreshDirect LLC"/>
-				<attribute name="Implementation-Title" value="Athena"/>
-				<attribute name="Implementation-Version" value="${build.counter}"/>
-				<attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
-				<attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
-			</manifest>
-			<fileset dir="${work.dir}/Athena">
-			</fileset>
-		</jar>
-
-	</target>
-
+	
 	<target name="tools" description="Build Tools" depends="framework,cmseue,fdstore,erpservices">
 		<path id="tools.classpath">
 			<pathelement location="${work.dir}/Framework.jar"/>
@@ -2568,8 +2462,8 @@
 				<include name="spring-context-4.0.1.RELEASE.jar"/>
 				<include name="spring-core-4.0.1.RELEASE.jar"/>
 				<include name="spring-expression-4.0.1.RELEASE.jar"/>
-				<include name="spring-jdbc-4.0.0.RELEASE.jar"/>
-				<include name="spring-tx-4.0.0.RELEASE.jar"/>
+				<include name="spring-jdbc-4.0.1.RELEASE.jar"/>
+				<include name="spring-tx-4.0.1.RELEASE.jar"/>
 				<include name="spring-web-4.0.1.RELEASE.jar"/>
 				<include name="spring-webmvc-4.0.1.RELEASE.jar"/>
 				<include name="gson-1.7.1.jar"/>
@@ -2630,8 +2524,8 @@
 				<include name="spring-context-4.0.1.RELEASE.jar"/>
 				<include name="spring-core-4.0.1.RELEASE.jar"/>
 				<include name="spring-expression-4.0.1.RELEASE.jar"/>
-				<include name="spring-jdbc-4.0.0.RELEASE.jar"/>
-				<include name="spring-tx-4.0.0.RELEASE.jar"/>
+				<include name="spring-jdbc-4.0.1.RELEASE.jar"/>
+				<include name="spring-tx-4.0.1.RELEASE.jar"/>
 				<include name="spring-web-4.0.1.RELEASE.jar"/>
 				<include name="spring-webmvc-4.0.1.RELEASE.jar"/>
 				<include name="gson-1.7.1.jar"/>
@@ -2666,8 +2560,8 @@
 				<include name="spring-context-4.0.1.RELEASE.jar"/>
 				<include name="spring-core-4.0.1.RELEASE.jar"/>
 				<include name="spring-expression-4.0.1.RELEASE.jar"/>
-				<include name="spring-jdbc-4.0.0.RELEASE.jar"/>
-				<include name="spring-tx-4.0.0.RELEASE.jar"/>
+				<include name="spring-jdbc-4.0.1.RELEASE.jar"/>
+				<include name="spring-tx-4.0.1.RELEASE.jar"/>
 				<include name="spring-web-4.0.1.RELEASE.jar"/>
 				<include name="spring-webmvc-4.0.1.RELEASE.jar"/>
 				<include name="gson-1.7.1.jar"/>
@@ -2947,7 +2841,7 @@
 			<zipfileset src="${thirdparty.home}/jsonrpc-1.0.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/jawr-core-3.8.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/soy-latest.jar" excludes="META-INF/*"/>
-			<zipfileset src="${thirdparty.home}/ehcache-2.10.0.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/ehcache-2.10.1.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/slf4j-api-1.6.6.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/slf4j-jdk14-1.6.6.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/jsch-0.1.44.jar" excludes="META-INF/*"/>
@@ -3280,8 +3174,8 @@
 		<pathelement location="${thirdparty.home}/spring-context-4.0.1.RELEASE.jar"/>
 		<pathelement location="${thirdparty.home}/spring-core-4.0.1.RELEASE.jar"/>
 		<pathelement location="${thirdparty.home}/spring-expression-4.0.1.RELEASE.jar"/>
-		<pathelement location="${thirdparty.home}/spring-jdbc-4.0.0.RELEASE.jar"/>
-		<pathelement location="${thirdparty.home}/spring-tx-4.0.0.RELEASE.jar"/>
+		<pathelement location="${thirdparty.home}/spring-jdbc-4.0.1.RELEASE.jar"/>
+		<pathelement location="${thirdparty.home}/spring-tx-4.0.1.RELEASE.jar"/>
 		<pathelement location="${thirdparty.home}/spring-web-4.0.1.RELEASE.jar"/>
 		<pathelement location="${thirdparty.home}/spring-webmvc-4.0.1.RELEASE.jar"/>
 		<pathelement location="${thirdparty.home}/spring-context-support-4.0.1.RELEASE.jar"/>
@@ -3386,8 +3280,8 @@
 			<include name="spring-context-4.0.1.RELEASE.jar"/>
 			<include name="spring-core-4.0.1.RELEASE.jar"/>
 			<include name="spring-expression-4.0.1.RELEASE.jar"/>
-			<include name="spring-jdbc-4.0.0.RELEASE.jar"/>
-			<include name="spring-tx-4.0.0.RELEASE.jar"/>
+			<include name="spring-jdbc-4.0.1.RELEASE.jar"/>
+			<include name="spring-tx-4.0.1.RELEASE.jar"/>
 			<include name="spring-web-4.0.1.RELEASE.jar"/>
 			<include name="spring-webmvc-4.0.1.RELEASE.jar"/>
 			<include name="spring-context-support-4.0.1.RELEASE.jar"/>

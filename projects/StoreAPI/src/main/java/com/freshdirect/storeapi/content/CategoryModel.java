@@ -90,7 +90,7 @@ public class CategoryModel extends ProductContainer {
 				if ( product instanceof ProductModel && !products.contains( product ) )
 					products.add( (ProductModel)product );
 			}
-			LOGGER.debug( "found " + products.size() + " products for category " + categoryId + ", zone " + pricingZone);
+			//LOGGER.debug( "found " + products.size() + " products for category " + categoryId + ", zone " + pricingZone);
 			return products;
 		}
 

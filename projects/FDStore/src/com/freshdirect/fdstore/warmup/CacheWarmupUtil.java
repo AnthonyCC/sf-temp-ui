@@ -47,8 +47,8 @@ public class CacheWarmupUtil {
 
     private static Logger LOGGER = LoggerFactory.getInstance(CacheWarmupUtil.class.getSimpleName());
 
-    private final static int MAX_THREADS = 2;
-    private final static int GRAB_SIZE = 100;
+    private final static int MAX_THREADS = 5;
+    private final static int GRAB_SIZE = 1000;
 
     /**
      * Trigger various FD caches
@@ -233,7 +233,7 @@ public class CacheWarmupUtil {
                 if (node instanceof CategoryModel) {
                     CategoryModel category = (CategoryModel) node;
                     if (category.getRecommender() != null || category.getProductPromotionType() != null) {
-                        LOGGER.info("category " + category.getContentName() + " is smart or promo, pre-loading child products for " + zones.size() + " zones");
+                        //LOGGER.info("category " + category.getContentName() + " is smart or promo, pre-loading child products for " + zones.size() + " zones");
                         category.getProducts();
                     }
                 }
