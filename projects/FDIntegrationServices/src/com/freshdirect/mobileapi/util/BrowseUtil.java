@@ -1227,6 +1227,9 @@ public class BrowseUtil {
 					            .generateWineAttributes(p)
 		    					.addKeyWords(p.getKeywords())
 		    					.generateAdditionTagsFromProduct(p)
+		    					.availableQty(p.getAvailabileQtyForDate(null))
+		    					.setAvailabilityMessage(p.getEarliestAvailabilityMessage())
+
 		    					//.setAvailability(p)
 		    					.skuInfo(getSkuInfo(p,plantId,pc ))
 		    					.productLayout(p.getProductLayout().getId())
