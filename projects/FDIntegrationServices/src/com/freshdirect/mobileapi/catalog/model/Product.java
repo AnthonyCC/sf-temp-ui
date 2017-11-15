@@ -37,6 +37,7 @@ public class Product {
 	private final List<String> keywords;
 	private final int productLayout;
 	private  double availableQty;
+	private  final String availabilityMsg;
 
 	private Product(ProductBuilder builder) {
 		id=builder.id;
@@ -55,6 +56,7 @@ public class Product {
 		keywords = builder.keywords;
 		productLayout=builder.productLayout;
 		this.availableQty=builder.availableQty;
+		this.availabilityMsg= builder.availabilityMessage;
 	}
 	
 	public String getId() {
@@ -102,7 +104,7 @@ public class Product {
 	}
 	
 	public double getAvailableQty() {
-		return availableQty;
+		return Math.floor(availableQty);
 	}
 
 	
@@ -121,6 +123,10 @@ public class Product {
 	}
 	public int getProductLayout() {
 		return productLayout;
+	}
+	
+	public String getAvailabilityMessage() {
+		return this.availabilityMsg;
 	}
 
 	public static final class WineAttributes {
@@ -230,7 +236,13 @@ public class Product {
 		private WineAttributes wineAttributes;
 		private int productLayout;
 		private double availableQty;
+		private String availabilityMessage;
 		
+		public ProductBuilder setAvailabilityMessage(String availabilityMessage) {
+			this.availabilityMessage = availabilityMessage;
+			return this;
+		}
+
 		private static final List<String> EMPTY=Collections.<String>emptyList();
 		
 		private static final List<com.freshdirect.mobileapi.catalog.model.Image> EMPTY_IMAGE=Collections.<com.freshdirect.mobileapi.catalog.model.Image>emptyList();
