@@ -22,7 +22,7 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-core-4.0.1.RELEASE.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-beans-4.0.1.RELEASE.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-web-4.0.1.RELEASE.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-jdbc-4.0.0.RELEASE.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-jdbc-4.0.1.RELEASE.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-tx-4.0.1.RELEASE.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-data-jpa-1.9.1.RELEASE.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-data-commons-1.11.1.RELEASE.jar"/>

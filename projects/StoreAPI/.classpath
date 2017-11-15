@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry including="**/*.java" kind="src" path="src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="src" path="/cmseue"/>
+	<classpathentry exported="true" kind="src" path="/cmseue"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-context-4.0.1.RELEASE.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-aop-4.0.1.RELEASE.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/aopalliance-1.0.jar"/>
@@ -49,7 +49,7 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/jta-1.1.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/javax.servlet-api-3.0.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ERPServices"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Delivery"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Delivery"/>
 	<classpathentry kind="lib" path="/cmseue/src/main/resources/lib/ojdbc6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
