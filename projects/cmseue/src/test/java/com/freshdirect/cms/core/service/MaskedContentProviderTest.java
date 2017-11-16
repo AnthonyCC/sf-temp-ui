@@ -33,10 +33,14 @@ public class MaskedContentProviderTest {
     @Mock
     ContextualContentProvider maskProvider;
 
+    @Mock
+    ContentKeyParentsCollectorService contentKeyParentsCollectorService;
+
     private MaskedContentProvider testService;
 
     @Before
     public void setUp() {
+        maskProvider.contentKeyParentsCollectorService = contentKeyParentsCollectorService;
         testService = new MaskedContentProvider(baseProvider, maskProvider);
     }
 
