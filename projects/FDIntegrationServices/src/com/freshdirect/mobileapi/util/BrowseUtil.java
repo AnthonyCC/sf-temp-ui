@@ -1233,7 +1233,7 @@ public class BrowseUtil {
 		    					//.setAvailability(p)
 		    					.skuInfo(getSkuInfo(p,plantId,pc ))
 		    					.productLayout(p.getProductLayout().getId())
-		    					.availableQty(p.getAvailabileQtyForDate(null))
+		    					//.availableQty(p.getAvailabileQtyForDate(null))
 		    					.productLayout(p.getProductLayout().getId());
 		    				com.freshdirect.mobileapi.catalog.model.Product product=prodBuilder.build();
 		    				productSet.add(p.getContentName());
