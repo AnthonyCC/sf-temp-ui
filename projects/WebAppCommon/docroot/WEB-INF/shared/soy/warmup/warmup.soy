@@ -4,6 +4,7 @@
 * @param notTriggered
 * @param inProgress
 * @param repeatedWarmupCanHappen
+* @param manualWarmupAllowed
 */
 {template .main}
 <html>
@@ -13,10 +14,12 @@
   </title>
   </head>
   <body>
-  {if $notTriggered}
-    {call .nottriggered}{/call}
-  {elseif $inProgress}
+  {if $inProgress}
     {call .inprogress}{/call}
+  {elseif not $manualWarmupAllowed}
+    {call .unavailable data="all"}{/call}
+  {elseif $notTriggered}
+    {call .nottriggered}{/call}
   {else}
     {call .finished data="all"}{/call}
   {/if}
@@ -63,6 +66,31 @@
     </form>
   </div>
   {/if}
+  <div>
+    <p><a href="/index.jsp">Go to home page</a></p>
+    <p><a href="/test/smartstore/index.jsp">Go to SmartStore test pages index</a></p>
+    <p><a href="/test/search/index.jsp">Go to Search test pages index</a></p>
+  </div>
+{/template}
+
+/**
+* @param notTriggered
+* @param inProgress
+*/
+{template .unavailable}
+  {if not $inProgress and not $notTriggered}
+  <div>
+    <p>Warmup done</p>
+  </div>
+  {/if}
+  {if $notTriggered}
+  <div>
+    <p>Warmup has not been triggered!</p>
+  </div>
+  {/if}
+  <div>
+    <p>Manual warmup is not allowed</p>
+  </div>
   <div>
     <p><a href="/index.jsp">Go to home page</a></p>
     <p><a href="/test/smartstore/index.jsp">Go to SmartStore test pages index</a></p>

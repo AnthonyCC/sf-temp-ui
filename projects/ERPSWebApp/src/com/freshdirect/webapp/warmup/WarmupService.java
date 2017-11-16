@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.CmsServiceLocator;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.warmup.Warmup;
 import com.freshdirect.fdstore.warmup.WarmupState;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -34,10 +35,14 @@ public class WarmupService {
         if (WarmupState.FINISHED.equals(Warmup.WARMUP_STATE.get())) {
             result.setRepeatedWarmupCanHappen(CmsServiceLocator.contentProviderService().isReadOnlyContent());
         }
+        result.setManualWarmupAllowed(isManualWarmupAllowed());
         return result;
     }
 
     public void repeatWarmup() {
+        if (!isManualWarmupAllowed()) {
+            return;
+        }
         if (Warmup.WARMUP_STATE.compareAndSet(WarmupState.NOT_TRIGGERED, WarmupState.IN_PROGRESS)) {
             new Thread("warmup-thread") {
 
@@ -74,5 +79,9 @@ public class WarmupService {
 
     public boolean isWarmupFinished() {
         return WarmupState.FINISHED.equals(Warmup.WARMUP_STATE.get());
+    }
+
+    private static final boolean isManualWarmupAllowed() {
+        return FDStoreProperties.isLocalDeployment() || !FDStoreProperties.performStorePreLoad();
     }
 }
