@@ -213,7 +213,6 @@ public final class AttributeLabels {
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Department, ContentTypes.Department.DEPARTMENT_BOTTOM), "Dept Bottom");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Department, ContentTypes.Department.tile_list), "Assigned Tiles");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Department, ContentTypes.Department.productFilterGroups), "Product Filter Groups");
-        ATTRIBUTE_LABELS.put(keyOf(ContentType.Department, ContentTypes.Department.sortOptions), "Sort Options");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Department, ContentTypes.Department.popularCategories), "Popular Categories");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Department, ContentTypes.Department.titleBar), "Title Bar");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Department, ContentTypes.Department.productTags), "Tags For Products");

@@ -438,8 +438,6 @@ public final class ContentTypes {
         public static final Attribute productFilterGroups = linkManyOf(ProductFilterGroup, ProductFilterMultiGroup).toName("productFilterGroups")
             .inheritable()
             .build();
-        public static final Attribute sortOptions = linkManyOf(SortOption).toName("sortOptions")
-            .build();
         public static final Attribute popularCategories = linkManyOf(Category).toName("popularCategories")
             .build();
         public static final Attribute titleBar = linkOneOf(Image).toName("titleBar")
