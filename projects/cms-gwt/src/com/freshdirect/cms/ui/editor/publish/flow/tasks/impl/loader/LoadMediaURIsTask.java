@@ -11,6 +11,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.media.domain.Media;
 import com.freshdirect.cms.media.service.MediaService;
 import com.freshdirect.cms.ui.editor.publish.domain.StorePublishMessageSeverity;
@@ -48,7 +49,9 @@ public final class LoadMediaURIsTask extends PublishTask implements Callable<Lis
             if (!deltaMedia.isEmpty()) {
                 mediaUris = new ArrayList<String>();
                 for (final Media mediaItem : deltaMedia) {
-                    mediaUris.add(mediaItem.getUri());
+                    if(mediaItem.getContentKey().type != ContentType.MediaFolder){
+                        mediaUris.add(mediaItem.getUri());
+                    }
                 }
             }
         }
