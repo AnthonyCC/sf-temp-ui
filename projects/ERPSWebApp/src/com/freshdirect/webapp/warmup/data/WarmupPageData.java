@@ -6,6 +6,7 @@ public class WarmupPageData {
     private boolean notTriggered;
     private boolean inProgress;
     private boolean repeatedWarmupCanHappen;
+    private boolean manualWarmupAllowed;
 
     public WarmupPageData() {
     }
@@ -32,6 +33,14 @@ public class WarmupPageData {
 
     public void setRepeatedWarmupCanHappen(boolean repeatedWarmupCanHappen) {
         this.repeatedWarmupCanHappen = repeatedWarmupCanHappen;
+    }
+
+    public boolean isManualWarmupAllowed() {
+        return manualWarmupAllowed;
+    }
+
+    public void setManualWarmupAllowed(boolean manualWarmupAllowed) {
+        this.manualWarmupAllowed = manualWarmupAllowed;
     }
 
 }
