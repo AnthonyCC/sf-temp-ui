@@ -33,7 +33,8 @@ public class Warmup {
     private static Category LOGGER = LoggerFactory.getInstance(Warmup.class);
     public static final AtomicReference<WarmupState> WARMUP_STATE = new AtomicReference<WarmupState>(WarmupState.NOT_TRIGGERED);
     protected Set<String> skuCodes = new HashSet<String>(8000);
-
+    private final int LOCAL_DEVELOPER_WARMUP_PRODUCT_COUNT = 1000;
+    
     public Warmup() {
     }
 
@@ -49,8 +50,16 @@ public class Warmup {
         LOGGER.info("[WARMUP]Store warmup in " + (System.currentTimeMillis() - time) + " ms");
 
         Set<ContentKey> skuContentKeys = CmsManager.getInstance().getContentKeysByType(FDContentTypes.SKU);
+        int skuCount = 0;
         for (final ContentKey key : skuContentKeys) {
-            skuCodes.add(key.getId());
+        	skuCodes.add(key.getId());
+        	
+        	if(FDStoreProperties.isLocalDeployment() && !CmsManager.getInstance().isNodeOrphan(key)) {
+        		skuCount++;
+        	}
+        	if(FDStoreProperties.isLocalDeployment() && skuCount == LOCAL_DEVELOPER_WARMUP_PRODUCT_COUNT) {
+        		break;
+        	}
         }
 
         LOGGER.info(skuCodes.size() + " SKUs found");

@@ -47,7 +47,7 @@ public class CacheWarmupUtil {
 
     private static Logger LOGGER = LoggerFactory.getInstance(CacheWarmupUtil.class.getSimpleName());
 
-    private final static int MAX_THREADS = 5;
+    private final static int MAX_THREADS = 4;
     private final static int GRAB_SIZE = 1000;
 
     /**
