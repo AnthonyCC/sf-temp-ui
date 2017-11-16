@@ -54,6 +54,8 @@ public class MediaToAttributeConverter {
     private void convertMediaFolderToAttributes(Media media, Map<Attribute, Object> attributes) {
         putAttribute(ContentTypes.MediaFolder.lastmodified, media.getLastModified(), attributes);
         putAttribute(ContentTypes.MediaFolder.path, media.getUri(), attributes);
+        putAttribute(ContentTypes.MediaFolder.files, media.getFiles(), attributes);
+        putAttribute(ContentTypes.MediaFolder.subFolders, media.getSubFolders(), attributes);
     }
 
     private void convertTemplateToAttributes(Media media, Map<Attribute, Object> attributes) {

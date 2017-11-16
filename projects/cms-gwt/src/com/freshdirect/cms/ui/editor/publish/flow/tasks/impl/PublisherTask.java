@@ -93,7 +93,7 @@ public abstract class PublisherTask extends ConsumerTask<Map<ContentKey, Map<Att
             } else {
                 publishMessageLoggerService.log(publishId, new StorePublishMessage(StorePublishMessageSeverity.ERROR, "Unrecognized output file format of " + targetXmlFileName,
                         storeId.getContentId(), getClass().getSimpleName()));
-                // throw new CmsRuntimeException("Unrecognized output file format!");
+
                 throw new RuntimeException("Unrecognized output file format!");
             }
 

@@ -61,7 +61,7 @@ public class ContentValidationTask extends TransformerTask<Input, ValidationResu
 
             final ContentKey contentKey = entry.getKey();
             if (!UnmodifiableContent.isModifiable(contentKey)) {
-                LOGGER.warn("Skip validating unmodifiable content " + contentKey);
+                LOGGER.debug("Skip validating unmodifiable content " + contentKey);
                 continue;
             }
 
