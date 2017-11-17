@@ -25,6 +25,7 @@ public class FormTimeslotData {
 	private String shortDayOfWeek;
 	private String soDeliveryDate;
     private Date cutoffDate;
+    private String cutoffTime;
     private boolean isChefsTable;
     private double steeringDiscount;
     private boolean ecoFriendly;
@@ -218,6 +219,14 @@ public class FormTimeslotData {
 
     public void setCutoffDate(Date cutoffDate) {
         this.cutoffDate = cutoffDate;
+    }
+    
+    public String getCutoffTime() {
+        return cutoffTime;
+    }
+
+    public void setCutoffTime(String cutoffTime) {
+        this.cutoffTime = cutoffTime;
     }
 
     public boolean isChefsTable() {
