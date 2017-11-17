@@ -127,7 +127,7 @@ var checkout;
 				fd.common.debitswitchnotice.open();
 				
 				//mark as seen
-				fd.modules.common.utils.createCookie(COOKIENAME,'seen@'+new Date());
+				fd.modules.common.utils.createCookie(COOKIENAME,'seen@'+new Date(), 10000);
 			}
 		}
 	});
