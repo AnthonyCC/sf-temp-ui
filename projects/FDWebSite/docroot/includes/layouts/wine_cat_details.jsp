@@ -3,11 +3,11 @@
 <%@page import="java.util.Collection"%>
 <%@page import="com.freshdirect.common.pricing.PricingContext"%>
 <%@page import="com.freshdirect.fdstore.content.ProductRatingGroup"%>
-<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
-<%@page import="com.freshdirect.storeapi.content.CategoryModel"%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
-<%@page import="com.freshdirect.storeapi.content.Html"%>
-<%@page import="com.freshdirect.storeapi.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.Html"%>
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
 <%@page import="com.freshdirect.fdstore.content.util.EnumWineViewType"%>
 <%@page import="com.freshdirect.fdstore.content.util.WineSorter"%>
 <%@page import="com.freshdirect.fdstore.content.util.EnumWinePageSize"%>
@@ -17,8 +17,8 @@
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@page import="java.util.Collection"%>
-<%@page import="com.freshdirect.storeapi.content.ContentNodeModel"%>
-<%@page import="com.freshdirect.storeapi.content.Html"%>
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.fdstore.content.Html"%>
 <%@page import="com.freshdirect.fdstore.content.EnumWineFilterDomain"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>

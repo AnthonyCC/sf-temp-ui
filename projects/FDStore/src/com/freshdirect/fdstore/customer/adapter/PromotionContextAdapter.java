@@ -9,7 +9,7 @@ import java.util.Set;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumServiceType;
@@ -26,6 +26,7 @@ import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.DCPDPromoProductCache;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -44,7 +45,6 @@ import com.freshdirect.fdstore.promotion.SignupDiscountRule;
 import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.controller.data.PickupData;
-import com.freshdirect.storeapi.content.ProductModel;
 
 public class PromotionContextAdapter implements PromotionContextI {
 

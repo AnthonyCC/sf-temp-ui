@@ -11,13 +11,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
 import com.freshdirect.fdstore.promotion.FDMinDCPDTotalPromoData;
 import com.freshdirect.fdstore.promotion.ProductSampleApplicator;
 import com.freshdirect.fdstore.promotion.PromotionApplicatorI;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
-import com.freshdirect.storeapi.content.ProductReference;
 
 public class FDPromotionEligibility implements Serializable {
 

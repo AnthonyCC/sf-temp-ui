@@ -2,8 +2,8 @@ package com.freshdirect.webapp.util;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.storeapi.content.ContentNodeModelUtil;
-import com.freshdirect.storeapi.content.SkuModel;
+import com.freshdirect.fdstore.content.ContentNodeModelUtil;
+import com.freshdirect.fdstore.content.SkuModel;
 
 /**
  * Used for displaying Categories or products in the jsp's 

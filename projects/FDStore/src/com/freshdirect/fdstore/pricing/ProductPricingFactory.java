@@ -6,8 +6,8 @@ import java.util.List;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.ProductModel;
 
 /**
  * @version $Revision:18$

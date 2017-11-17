@@ -1,4 +1,4 @@
-<%@ page import="com.freshdirect.storeapi.content.YoutubeVideoModel"%>
+<%@ page import="com.freshdirect.fdstore.content.YoutubeVideoModel"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <%

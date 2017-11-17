@@ -6,20 +6,20 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.event.FDAddToCartEvent;
 import com.freshdirect.event.FDCartLineEvent;
 import com.freshdirect.event.FDEditCartEvent;
 import com.freshdirect.event.FDRemoveCartEvent;
+import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.lists.CclUtils;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.event.FDRecommendationEvent;
-import com.freshdirect.storeapi.application.CmsManager;
-import com.freshdirect.storeapi.content.DepartmentModel;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 /**

@@ -11,11 +11,11 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.webapp.BodyTagSupport;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.ProductModel;
 
 public class MultiCategoryLayoutTag extends BodyTagSupport {
 	private static final long serialVersionUID = -32807021341062812L;
@@ -225,13 +225,13 @@ public class MultiCategoryLayoutTag extends BodyTagSupport {
 		            ),
 		            new VariableInfo(
 		            		ATTR_NODES,
-		            		"java.util.List<com.freshdirect.storeapi.content.ContentNodeModel>",
+		            		"java.util.List<com.freshdirect.fdstore.content.ContentNodeModel>",
 		            		true, 
 		            		VariableInfo.NESTED
 		            ),
 		            new VariableInfo(
 		            		ATTR_CATEGORY,
-		            		"com.freshdirect.storeapi.content.CategoryModel",
+		            		"com.freshdirect.fdstore.content.CategoryModel",
 		            		true, 
 		            		VariableInfo.NESTED
 		            )

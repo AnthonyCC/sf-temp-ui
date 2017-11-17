@@ -40,7 +40,7 @@ public class GwtSaveResponse implements Serializable {
     }
 
     public boolean isOk() {
-        return validationMessages == null && errorMessage == null;
+        return validationMessages == null;
     }
 
     public GwtChangeSet getChangeSet() {

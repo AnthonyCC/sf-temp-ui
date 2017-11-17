@@ -3,9 +3,9 @@
 %><%@ taglib uri='freshdirect' prefix='fd'
 %><%@page import="com.freshdirect.framework.util.log.LoggerFactory"
 %><%@page import="com.freshdirect.framework.webapp.ActionError"
-%><%@page import="com.freshdirect.storeapi.content.ContentFactory"
-%><%@page import="com.freshdirect.storeapi.content.ContentNodeModel"
-%><%@page import="com.freshdirect.storeapi.content.ProductModel"
+%><%@page import="com.freshdirect.fdstore.content.ContentFactory"
+%><%@page import="com.freshdirect.fdstore.content.ContentNodeModel"
+%><%@page import="com.freshdirect.fdstore.content.ProductModel"
 %><%@page import="java.util.List"
 %><%@page import="com.freshdirect.fdstore.customer.FDCartLineI"
 %><%@page import="org.apache.log4j.Logger"

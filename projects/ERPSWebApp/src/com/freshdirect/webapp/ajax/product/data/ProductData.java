@@ -339,8 +339,7 @@ public class ProductData extends BasicProductData implements SkuData {
     }
     
     public double getAvailableQty() {
-    	return Math.floor(availableQty);
-		
+		return availableQty;
 	}
 
 	public void setAvailableQty(double availableQty) {

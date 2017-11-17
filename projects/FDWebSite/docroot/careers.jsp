@@ -1,11 +1,11 @@
 <%@ page import="java.util.*"%>
-<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.storeapi.content.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='java.net.URLEncoder'%>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.*, com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -49,7 +49,7 @@ String title = "FreshDirect - " + currentFolder.getFullName();
 <% 
 Collection itemsColl = rtnColl;  
 %>
-<logic:iterate id="job" collection="<%= itemsColl %>" type="com.freshdirect.storeapi.content.ContentNodeModel">
+<logic:iterate id="job" collection="<%= itemsColl %>" type="com.freshdirect.fdstore.content.ContentNodeModel">
 <% 
 boolean mainHeader = (job instanceof CategoryModel) ? ((CategoryModel)job).getSideNavBold() : false;
 if (mainHeader) {

@@ -136,21 +136,21 @@ public class ProductSearchResult {
         this.departmentId=product.getDepartmentId();
         this.available = product.isAvailable();
 
-        com.freshdirect.storeapi.content.Image prodImage = product.getImage(ImageType.PRODUCT);
+        com.freshdirect.fdstore.content.Image prodImage = product.getImage(ImageType.PRODUCT);
         if (prodImage != null) {
             this.image.setSource(prodImage.getPath());
             this.image.setHeight(prodImage.getHeight());
             this.image.setWidth(prodImage.getWidth());
         }
 
-        com.freshdirect.storeapi.content.Image rollImage = product.getImage(ImageType.ROLLOVER);
+        com.freshdirect.fdstore.content.Image rollImage = product.getImage(ImageType.ROLLOVER);
         if (rollImage != null) {
             this.rollOverImage.setSource(rollImage.getPath());
             this.rollOverImage.setHeight(rollImage.getHeight());
             this.rollOverImage.setWidth(rollImage.getWidth());
         }
 
-        com.freshdirect.storeapi.content.Image thumbImage = product.getImage(ImageType.THUMBNAIL);
+        com.freshdirect.fdstore.content.Image thumbImage = product.getImage(ImageType.THUMBNAIL);
         if (thumbImage != null) {
             this.thumbnail.setSource(thumbImage.getPath());
             this.thumbnail.setHeight(thumbImage.getHeight());
@@ -158,7 +158,7 @@ public class ProductSearchResult {
         }
         
 
-        com.freshdirect.storeapi.content.Image detailImage = product.getImage(ImageType.DETAIL);
+        com.freshdirect.fdstore.content.Image detailImage = product.getImage(ImageType.DETAIL);
         
         if (detailImage != null) {
 	        this.detailImage.setHeight(detailImage.getHeight());
@@ -166,7 +166,7 @@ public class ProductSearchResult {
 	        this.detailImage.setSource(detailImage.getPath());
         }        
         
-        com.freshdirect.storeapi.content.Image zoomImg = product.getImage(ImageType.ZOOM);
+        com.freshdirect.fdstore.content.Image zoomImg = product.getImage(ImageType.ZOOM);
         if(zoomImg != null) {
         this.zoomImage.setHeight(zoomImg.getHeight());
         this.zoomImage.setWidth(zoomImg.getWidth());
@@ -190,12 +190,12 @@ public class ProductSearchResult {
             this.highestDealPercentage = product.getHighestDealPercentage();
         }
 
-        com.freshdirect.storeapi.content.Image thumbBurstImage = product.getImage(ImageType.THUMB_BURST);
+        com.freshdirect.fdstore.content.Image thumbBurstImage = product.getImage(ImageType.THUMB_BURST);
         if (thumbBurstImage != null) {
             this.thumbBurst = new Image(thumbBurstImage.getPath(), thumbBurstImage.getHeight(), thumbBurstImage.getWidth());
         }
 
-        com.freshdirect.storeapi.content.Image largeBurstImage = product.getImage(ImageType.LARGE_BURST);
+        com.freshdirect.fdstore.content.Image largeBurstImage = product.getImage(ImageType.LARGE_BURST);
         if (largeBurstImage != null) {
             this.largeBurst = new Image(largeBurstImage.getPath(), largeBurstImage.getHeight(), largeBurstImage.getWidth());
         }

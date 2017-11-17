@@ -7,13 +7,13 @@ import java.util.StringTokenizer;
 import javax.servlet.http.HttpServletResponse;
 
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.Domain;
+import com.freshdirect.fdstore.content.DomainValue;
+import com.freshdirect.fdstore.content.ProductContainer;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.view.ProductRating;
 import com.freshdirect.fdstore.content.view.WebProductRating;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.Domain;
-import com.freshdirect.storeapi.content.DomainValue;
-import com.freshdirect.storeapi.content.ProductContainer;
-import com.freshdirect.storeapi.content.ProductModel;
 
 public class RatingUtil {
 	

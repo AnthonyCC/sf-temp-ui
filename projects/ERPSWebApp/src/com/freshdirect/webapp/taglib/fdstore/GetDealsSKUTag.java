@@ -16,9 +16,9 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.SkuModel;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
 public class GetDealsSKUTag extends AbstractGetterTag<List<SkuModel>> {

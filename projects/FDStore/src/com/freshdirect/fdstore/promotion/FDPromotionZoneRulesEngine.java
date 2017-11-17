@@ -21,19 +21,19 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.rules.Rule;
-import com.freshdirect.storeapi.StoreServiceLocator;
-import com.freshdirect.storeapi.rules.RulesEngineI;
-import com.freshdirect.storeapi.rules.ZoneCondition;
+import com.freshdirect.rules.RulesEngineI;
+import com.freshdirect.rules.RulesRegistry;
+import com.freshdirect.rules.ZoneCondition;
 
 /**
  * @author knadeem Date Jun 1, 2005
  */
 public class FDPromotionZoneRulesEngine implements Serializable {
-
+	
 	private static Category LOGGER = LoggerFactory.getInstance(FDPromotionZoneRulesEngine.class);
 	private static SimpleDateFormat format=new SimpleDateFormat("EEE");
 	private static DecimalFormat dFormat=new DecimalFormat("#.00");
-
+	
 	public static boolean isEligible(PromotionContextI ctx)
 	{
 		//deny windows steering to iPhone users
@@ -46,14 +46,14 @@ public class FDPromotionZoneRulesEngine implements Serializable {
 		}
 		return result;
 	}
-
+	
 	private static boolean isSameDiscountedSlot(PromotionContextI ctx) {
-
+		
 		FDModifyCartModel cart = null;
 		if(ctx.getUser() != null && ctx.getUser().getShoppingCart() instanceof FDModifyCartModel) {
 			cart = (FDModifyCartModel)ctx.getUser().getShoppingCart();
 			for (Iterator i = cart.getOriginalOrder().getDiscounts().iterator(); i.hasNext();) {
-				Discount d =  ((ErpDiscountLineModel)i.next()).getDiscount();
+				Discount d =  ((ErpDiscountLineModel)i.next()).getDiscount();				
 				PromotionI _promo = PromotionFactory.getInstance().getAutomaticPromotion(d.getPromotionCode());
 				if(_promo != null && EnumPromotionType.WINDOW_STEERING.equals(_promo.getPromotionType())
 						&& cart.getOriginalOrder().getDeliveryReservation() != null
@@ -63,20 +63,20 @@ public class FDPromotionZoneRulesEngine implements Serializable {
 					return true;
 				}
 			}
-		}
+		} 
 		return false;
 	}
-
+	
 	public static List getEligiblePromotions(PromotionContextI ctx) {
 		RulesEngineI ruleEngine=getRulesEngine();
 		if(ruleEngine==null)return Collections.EMPTY_LIST;
-
+		
 		Map firedRules = ruleEngine.evaluateRules(ctx);
 		Map rules=ruleEngine.getRules();
 		if(firedRules.isEmpty()) {
 			return Collections.EMPTY_LIST;
 		}
-
+		
 		List promoCodes = new ArrayList();
 		for(Iterator i = firedRules.values().iterator(); i.hasNext(); ){
 			Rule r = (Rule) i.next();
@@ -84,17 +84,17 @@ public class FDPromotionZoneRulesEngine implements Serializable {
 				promoCodes.add(r);
 			}
 		}
-
+		
 		return promoCodes;
-	}
-
+	}	
+	
 	private static RulesEngineI getRulesEngine() {
-		return StoreServiceLocator.rulesRegistry().getRulesEngine("ZONE-PROMOTION");
+		return RulesRegistry.getRulesEngine("ZONE-PROMOTION");
 	}
-
-
+	
+	
    public static String getPromoCode(PromotionContextI ctx)
-   {
+   {	   
 	    String promo=null;
 	    try
 	    {
@@ -103,7 +103,7 @@ public class FDPromotionZoneRulesEngine implements Serializable {
    		FDCartModel cart = user.getShoppingCart();
 		FDReservation reservation = cart.getDeliveryReservation();
 		if(reservation!=null)
-		{
+		{	
 			FDTimeslot timeSlot=reservation.getTimeslot();
 		    for(int i=0,n=rules.size();i<n;i++)
 		    {
@@ -112,7 +112,7 @@ public class FDPromotionZoneRulesEngine implements Serializable {
 		        if(c!=null&&c.size()>0)
 		        {
 		        	ZoneCondition con=(ZoneCondition)c.get(0);
-
+		       
 		        	if(con.getZones()!=null&&con.getZones().contains(timeSlot.getZoneCode())
 			    	   &&con.getStartTimeDay()!=null&&con.getStartTimeDay().equals(timeSlot.getDlvStartTime())
 			    	   &&con.getEndTimeDay()!=null&&con.getEndTimeDay().equals(timeSlot.getDlvEndTime())
@@ -131,16 +131,16 @@ public class FDPromotionZoneRulesEngine implements Serializable {
 	   }
 		return promo;
    }
-
+   
    public static double getDiscount(FDUserI user,FDTimeslot timeSlot)
    {
 	   double result=0;
 	   try
 	   {
 	    PromotionContextI ctx=new PromotionContextAdapter(user);
-	    List rules= getEligiblePromotions(ctx);
+	    List rules= getEligiblePromotions(ctx);	
 		if(timeSlot!=null)
-		{
+		{				
 		    for(int i=0,n=rules.size();i<n;i++)
 		    {
 		    	Rule r=(Rule)rules.get(i);
@@ -148,7 +148,7 @@ public class FDPromotionZoneRulesEngine implements Serializable {
 		        if(c!=null&&c.size()>0)
 		        {
 		        	ZoneCondition con=(ZoneCondition)c.get(0);
-
+		       
 			    	if(con.getZones()!=null&&con.getZones().contains(timeSlot.getZoneCode())
 			    	   &&con.getStartTimeDay()!=null&&con.getStartTimeDay().equals(timeSlot.getDlvStartTime())
 			    	   &&con.getEndTimeDay()!=null&&con.getEndTimeDay().equals(timeSlot.getDlvEndTime())
@@ -169,16 +169,16 @@ public class FDPromotionZoneRulesEngine implements Serializable {
 	   }
 		return result;
    }
-
+   
    public static double getDiscount(FDUserI user,String zoneCode)
    {
 	   double result=0;
 	   try
 	   {
 	    PromotionContextI ctx=new PromotionContextAdapter(user);
-	    List rules= getEligiblePromotions(ctx);
+	    List rules= getEligiblePromotions(ctx);	
 		if(zoneCode!=null)
-		{
+		{				
 		    for(int i=0,n=rules.size();i<n;i++)
 		    {
 		    	Rule r=(Rule)rules.get(i);
@@ -186,8 +186,8 @@ public class FDPromotionZoneRulesEngine implements Serializable {
 		        if(c!=null&&c.size()>0)
 		        {
 		        	ZoneCondition con=(ZoneCondition)c.get(0);
-
-			    	if(con.getZones()!=null&&con.getZones().contains(zoneCode)
+		       
+			    	if(con.getZones()!=null&&con.getZones().contains(zoneCode)			    	   
 			    	  )
 			    	{
 			    		String promoCode=(String)r.getOutcome();
@@ -206,17 +206,17 @@ public class FDPromotionZoneRulesEngine implements Serializable {
 	   }
 		return result;
    }
-
+   
    public static String getDiscountFormatted(double amount)
    {
 	   String result=null;
 	   try
 	   {
-
+		   
 		   result=dFormat.format(amount);
 	   }catch(Exception e)
 	   {
-
+		   
 	   }
 	   return result;
    }

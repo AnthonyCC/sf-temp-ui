@@ -7,21 +7,21 @@ import java.util.Map;
 
 import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ComparatorChain;
+import com.freshdirect.fdstore.content.EnumSortingValue;
 import com.freshdirect.fdstore.content.FilteringComparatorUtil;
+import com.freshdirect.fdstore.content.FilteringProductItem;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SortIntValueComparator;
+import com.freshdirect.fdstore.content.SortLongValueComparator;
+import com.freshdirect.fdstore.content.SortStrategyType;
+import com.freshdirect.fdstore.content.SortValueComparator;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator;
-import com.freshdirect.storeapi.content.ComparatorChain;
-import com.freshdirect.storeapi.content.EnumSortingValue;
-import com.freshdirect.storeapi.content.FilteringProductItem;
-import com.freshdirect.storeapi.content.FilteringSortingItem;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.SortIntValueComparator;
-import com.freshdirect.storeapi.content.SortLongValueComparator;
-import com.freshdirect.storeapi.content.SortStrategyType;
-import com.freshdirect.storeapi.content.SortValueComparator;
 
 public class ProductItemSorterFactory {
 

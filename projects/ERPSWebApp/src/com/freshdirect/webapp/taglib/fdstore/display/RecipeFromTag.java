@@ -1,7 +1,7 @@
 package com.freshdirect.webapp.taglib.fdstore.display;
 
-import com.freshdirect.storeapi.content.Recipe;
-import com.freshdirect.storeapi.content.RecipeSource;
+import com.freshdirect.fdstore.content.Recipe;
+import com.freshdirect.fdstore.content.RecipeSource;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
 public class RecipeFromTag extends AbstractGetterTag<String> {

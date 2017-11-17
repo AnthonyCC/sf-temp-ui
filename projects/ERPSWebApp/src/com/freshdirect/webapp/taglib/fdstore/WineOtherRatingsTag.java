@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.freshdirect.WineUtil;
-import com.freshdirect.storeapi.content.DomainValue;
-import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.fdstore.content.DomainValue;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
 public class WineOtherRatingsTag extends AbstractGetterTag<List<String>> {

@@ -5,6 +5,8 @@ import java.util.Collection;
 
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ProductFilterI;
 import com.freshdirect.fdstore.content.SearchSortType;
 import com.freshdirect.fdstore.util.SearchNavigator;
 import com.freshdirect.mobileapi.model.ResultBundle;
@@ -12,8 +14,6 @@ import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.filter.AvailableFilter;
 import com.freshdirect.mobileapi.model.filter.DiscontinuityFilter;
 import com.freshdirect.mobileapi.model.filter.IphoneFilter;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ProductFilterI;
 import com.freshdirect.webapp.taglib.fdstore.SmartSearchTag;
 
 public class SmartSearchTagWrapper extends NonStandardControllerTagWrapper implements RequestParamName {

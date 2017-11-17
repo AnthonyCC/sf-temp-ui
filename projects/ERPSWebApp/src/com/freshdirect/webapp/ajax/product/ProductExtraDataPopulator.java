@@ -15,8 +15,8 @@ import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
 import com.freshdirect.WineUtil;
-import com.freshdirect.cms.CmsServiceLocator;
-import com.freshdirect.cms.cache.CmsCaches;
+import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.util.ProductInfoUtil;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.util.GroupScaleUtil;
@@ -42,6 +42,29 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.GroupScalePricing;
+import com.freshdirect.fdstore.cache.EhCacheUtil;
+import com.freshdirect.fdstore.content.AbstractProductModelImpl;
+import com.freshdirect.fdstore.content.BrandModel;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ComponentGroupModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.Domain;
+import com.freshdirect.fdstore.content.DomainValue;
+import com.freshdirect.fdstore.content.EnumProductLayout;
+import com.freshdirect.fdstore.content.FilteringProductItem;
+import com.freshdirect.fdstore.content.Html;
+import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.MediaI;
+import com.freshdirect.fdstore.content.MediaModel;
+import com.freshdirect.fdstore.content.PopulatorUtil;
+import com.freshdirect.fdstore.content.PriceCalculator;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.Recipe;
+import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.fdstore.content.SortStrategyType;
+import com.freshdirect.fdstore.content.TitledMedia;
 import com.freshdirect.fdstore.content.browse.sorter.ProductItemSorterFactory;
 import com.freshdirect.fdstore.content.view.WebHowToCookIt;
 import com.freshdirect.fdstore.content.view.WebProductRating;
@@ -52,30 +75,6 @@ import com.freshdirect.fdstore.util.HowToCookItUtil;
 import com.freshdirect.fdstore.util.RatingUtil;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.application.CmsManager;
-import com.freshdirect.storeapi.content.AbstractProductModelImpl;
-import com.freshdirect.storeapi.content.BrandModel;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ComponentGroupModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.Domain;
-import com.freshdirect.storeapi.content.DomainValue;
-import com.freshdirect.storeapi.content.EnumProductLayout;
-import com.freshdirect.storeapi.content.FilteringProductItem;
-import com.freshdirect.storeapi.content.Html;
-import com.freshdirect.storeapi.content.Image;
-import com.freshdirect.storeapi.content.MediaI;
-import com.freshdirect.storeapi.content.MediaModel;
-import com.freshdirect.storeapi.content.PopulatorUtil;
-import com.freshdirect.storeapi.content.PriceCalculator;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.Recipe;
-import com.freshdirect.storeapi.content.SkuModel;
-import com.freshdirect.storeapi.content.SortStrategyType;
-import com.freshdirect.storeapi.content.TitledMedia;
-import com.freshdirect.storeapi.util.ProductInfoUtil;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
@@ -944,11 +943,11 @@ public class ProductExtraDataPopulator {
 				//skuCodes = products.getSkuList();
 				familyID = products.getFamilyId();
 				if(familyID!=null){
-                    CmsServiceLocator.ehCacheUtil().putListToCache(CmsCaches.FD_FAMILY_PRODUCT_CACHE.cacheName, familyID, products.getSkuList());
+				EhCacheUtil.putListToCache(EhCacheUtil.FD_FAMILY_PRODUCT_CACHE_NAME,familyID, products.getSkuList());
 				}
 			}
 			if(null != familyID){
-                skuCodes = CmsServiceLocator.ehCacheUtil().getListFromCache(CmsCaches.FD_FAMILY_PRODUCT_CACHE.cacheName, familyID);
+				skuCodes = EhCacheUtil.getListFromCache(EhCacheUtil.FD_FAMILY_PRODUCT_CACHE_NAME, familyID);
 			}
 			
 			if(skuCodes == null&&familyID!=null){
@@ -959,7 +958,7 @@ public class ProductExtraDataPopulator {
 					LOG.warn("No product family group exists for material: "+productInfo, e);
 				}
 				skuCodes = products.getSkuList();
-                CmsServiceLocator.ehCacheUtil().putListToCache(CmsCaches.FD_FAMILY_PRODUCT_CACHE.cacheName, familyID, products.getSkuList());
+				EhCacheUtil.putListToCache(EhCacheUtil.FD_FAMILY_PRODUCT_CACHE_NAME,familyID, products.getSkuList());
 			}
 			
 				

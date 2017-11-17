@@ -1,4 +1,4 @@
-<%@ page import='com.freshdirect.storeapi.content.ContentFactory' %>
+<%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
 <script language="JavaScript">
 	var annotation = "<B>SKUs</B><BR>";
 	var detailAnnotation = annotation;

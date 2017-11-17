@@ -1,7 +1,7 @@
 <%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@page import="com.freshdirect.fdstore.FDSkuNotFoundException"%>
-<%@ page import='com.freshdirect.storeapi.content.ContentFactory' %>
-<%@ page import='com.freshdirect.storeapi.util.ProductInfoUtil'%>
+<%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
+<%@ page import='com.freshdirect.cms.util.ProductInfoUtil'%>
 <%@ taglib uri="logic" prefix="logic" %>
 <%
 /* This include paints the: description/nutrition/ratings/tell a friend items for the product page 

@@ -1,4 +1,4 @@
-<%@ page import='com.freshdirect.storeapi.content.*, com.freshdirect.fdstore.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*, com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.content.nutrition.*'%>
 <%@ page import='java.util.*' %>
 <%@ taglib uri='template' prefix='tmpl' %>

@@ -8,10 +8,10 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 import org.apache.http.HttpHeaders;
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.cos.util.CosFeatureUtil;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;

@@ -8,9 +8,9 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.Image;
-import com.freshdirect.storeapi.content.ProductContainer;
 
 /**
  * Displays product container image for Global Menu Item.

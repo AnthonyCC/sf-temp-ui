@@ -4,18 +4,18 @@
 <%@ page import='java.io.*'%>
 <%@ page import='java.text.SimpleDateFormat'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
-<%@ page import='com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.content.view.*' %>
 <%@ page import='com.freshdirect.fdstore.util.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.content.nutrition.*'%>
 <%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
 <%@ page import='java.net.URLEncoder'%>
 <%@page import="java.util.Locale"%>
-<%@ page import='com.freshdirect.storeapi.util.ProductInfoUtil'%>
+<%@ page import='com.freshdirect.cms.util.ProductInfoUtil'%>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='bean' prefix='bean' %>

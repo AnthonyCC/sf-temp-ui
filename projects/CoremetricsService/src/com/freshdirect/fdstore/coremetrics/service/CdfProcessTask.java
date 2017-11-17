@@ -18,11 +18,22 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.affiliate.ExternalAgency;
-import com.freshdirect.cms.core.domain.ContentKey;
-import com.freshdirect.cms.core.domain.ContentKeyFactory;
-import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.ContentType;
+import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.DraftContext;
+import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.ProductContainer;
+import com.freshdirect.fdstore.content.SuperDepartmentModel;
 import com.freshdirect.fdstore.coremetrics.CmContext;
 import com.freshdirect.fdstore.coremetrics.CmFacade;
 import com.freshdirect.fdstore.coremetrics.CmInstance;
@@ -32,16 +43,6 @@ import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.RuntimeServiceUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.ContentNodeI;
-import com.freshdirect.storeapi.application.CmsManager;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.ProductContainer;
-import com.freshdirect.storeapi.content.SuperDepartmentModel;
-import com.freshdirect.storeapi.fdstore.FDContentTypes;
-import com.freshdirect.storeapi.node.ContentNodeUtil;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -91,7 +92,7 @@ public class CdfProcessTask {
         return new CdfProcessResult(true, null);
     }
 
-	private void mapCatToParentCat() {
+    private void mapCatToParentCat() {
         catToParentCatMapping.put(EnumEventSource.QUICKSHOP.toString(), EnumEventSource.REORDER.toString());
         catToParentCatMapping.put(EnumEventSource.qs_pastOrders.toString(), EnumEventSource.REORDER.toString());
         catToParentCatMapping.put(EnumEventSource.qs_customerLists.toString(), EnumEventSource.REORDER.toString());
@@ -145,7 +146,7 @@ public class CdfProcessTask {
         if (CmInstance.GLOBAL == context.getInstance()) {
 
             // Get available stores
-            final Set<ContentKey> storeKeys = svc.getContentKeysByType(ContentType.Store);
+            final Set<ContentKey> storeKeys = svc.getContentKeysByType(FDContentTypes.STORE);
 
             for (final ContentKey theStoreKey : storeKeys) {
                 Set<ContentKey> processedDeptKeys = new HashSet<ContentKey>();
@@ -167,7 +168,7 @@ public class CdfProcessTask {
                         if (deptKeys != null) {
                             for (final ContentKey deptKey : deptKeys) {
                                 if (processedDeptKeys.add(deptKey)) {
-                                    processCmsNode(deptKey, superDeptKey);
+                                    processCmsNode(deptKey, superDeptKey, svc);
                                 }
                             }
                         }
@@ -176,14 +177,14 @@ public class CdfProcessTask {
                         List<ContentKey> deptKeysRem = (List<ContentKey>) store.getAttributeValue("departments");
                         deptKeysRem.removeAll(processedDeptKeys);
                         for (final ContentKey deptKey : deptKeysRem) {
-                            processCmsNode(deptKey, null);
+                            processCmsNode(deptKey, null, svc);
                         }
                     }
                 } else {
                     // no super departmens, just walk down the old path
                     List<ContentKey> deptKeysRem = (List<ContentKey>) store.getAttributeValue("departments");
                     for (final ContentKey deptKey : deptKeysRem) {
-                        processCmsNode(deptKey, null);
+                        processCmsNode(deptKey, null, svc);
                     }
                 }
 
@@ -193,7 +194,7 @@ public class CdfProcessTask {
             // super department flow
             Set<DepartmentModel> processedDepartments = new HashSet<DepartmentModel>();
 
-            for (ContentKey superDeptKey : svc.getContentKeysByType(ContentType.SuperDepartment)) {
+            for (ContentKey superDeptKey : svc.getContentKeysByType(ContentType.get("SuperDepartment"))) {
                 ContentNodeModel superDeptNode = ContentFactory.getInstance().getContentNodeByKey(superDeptKey);
 
                 if (superDeptNode instanceof SuperDepartmentModel) {
@@ -239,7 +240,7 @@ public class CdfProcessTask {
 
             // Generate CDF row models for ModuleContainers
             for (String moduleContainerContentKey : homepageModuleContainerContentKeys) {
-                ContentNodeI moduleContainer = cmsManager.getContentNode(ContentKeyFactory.get(moduleContainerContentKey));
+                ContentNodeI moduleContainer = cmsManager.getContentNode(ContentKey.getContentKey(moduleContainerContentKey), DraftContext.MAIN);
                 String moduleContainerName = ContentNodeUtil.getStringAttribute(moduleContainer, "name");
 
                 List<ContentKey> moduleContentKeysWithPossibleDuplicates = generateModuleContentKeys(moduleContainer);
@@ -259,10 +260,10 @@ public class CdfProcessTask {
         if (moduleContainer != null) {
             List<ContentKey> modulesAndGroups = (List<ContentKey>) moduleContainer.getAttributeValue("modulesAndGroups");
             for (ContentKey contentKey : modulesAndGroups) {
-                if (ContentType.Module == contentKey.type) {
+                if (FDContentTypes.MODULE.equals(contentKey.getType())) {
                     contentKeys.add(contentKey);
-                } else if (ContentType.ModuleGroup == contentKey.type) {
-                    ContentNodeI moduleGroup = cmsManager.getContentNode(contentKey);
+                } else if (FDContentTypes.MODULE_GROUP.equals(contentKey.getType())) {
+                    ContentNodeI moduleGroup = cmsManager.getContentNode(contentKey, DraftContext.MAIN);
                     List<ContentKey> moduleContentKeys = (List<ContentKey>) moduleGroup.getAttributeValue("modules");
                     for (ContentKey moduleContentKey : moduleContentKeys) {
                         contentKeys.add(moduleContentKey);
@@ -281,7 +282,7 @@ public class CdfProcessTask {
 
         for (ContentKey contentKey : contentkeys) {
             if (moduleContentKeysWithoutDuplication.add(contentKey)) {
-                ContentNodeI module = cmsManager.getContentNode(contentKey);
+                ContentNodeI module = cmsManager.getContentNode(contentKey, DraftContext.MAIN);
                 String moduleName = ContentNodeUtil.getStringAttribute(module, "name");
                 String moduleContentKeyId = contentKey.getId();
                 for (int i = 1; i < originalModuleCount + 1; i++) {
@@ -337,10 +338,8 @@ public class CdfProcessTask {
         }
     }
 
-    private void processCmsNode(ContentKey aKey, ContentKey parentKey) {
-        final CmsManager svc = CmsManager.getInstance();
-
-        ContentNodeI node = svc.getContentNode(aKey);
+    private void processCmsNode(ContentKey aKey, ContentKey parentKey, ContentServiceI svc) {
+        ContentNodeI node = svc.getContentNode(aKey, DraftContext.MAIN);
         if (node == null)
             return;
 
@@ -358,7 +357,7 @@ public class CdfProcessTask {
 
         if (subKeys != null) {
             for (ContentKey subKey : subKeys) {
-                processCmsNode(subKey, aKey);
+                processCmsNode(subKey, aKey, svc);
             }
         }
 

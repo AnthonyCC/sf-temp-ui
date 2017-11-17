@@ -5,9 +5,9 @@
 <%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@ page import="com.freshdirect.webapp.util.ProductImpression"%>
 <%@ page import="com.freshdirect.fdstore.*"%>
-<%@ page import="com.freshdirect.storeapi.content.SkuModel"%>
-<%@ page import="com.freshdirect.storeapi.content.ProductModel"%>
-<%@ page import="com.freshdirect.storeapi.content.ContentNodeModel"%>
+<%@ page import="com.freshdirect.fdstore.content.SkuModel"%>
+<%@ page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@ page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
 <%@ page import="com.freshdirect.fdstore.lists.*"%>
 <%@ page import="com.freshdirect.content.attributes.EnumAttributeName" %>
 <%@ page import="com.freshdirect.framework.util.StringUtil" %> 
@@ -22,11 +22,11 @@
 <%@ page import="com.freshdirect.fdstore.customer.FDCartLineI"%>
 <%@ page import="com.freshdirect.fdstore.customer.QuickCart"%>
 <%@ page import="com.freshdirect.fdstore.customer.OrderLineUtil"%>
-<%@ page import="com.freshdirect.storeapi.content.RecipeDepartment"%>
+<%@ page import="com.freshdirect.fdstore.content.RecipeDepartment"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDProductSelectionI"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.CartName"%>
-<%@ page import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@ page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
 <%@ page import="com.freshdirect.framework.util.NVL"%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>

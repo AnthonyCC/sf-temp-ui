@@ -27,7 +27,7 @@ public class CustomerRatingsContext extends BalkingExpiringReference<Map<String,
 	}
 	
 	private CustomerRatingsContext(long refreshPeriod) {
-        super(refreshPeriod, false);
+		super(refreshPeriod);
 		this.referent = new HashMap<String,CustomerRatingsDTO>();
 	}
 
@@ -53,8 +53,7 @@ public class CustomerRatingsContext extends BalkingExpiringReference<Map<String,
 		return null;
 	}
 	
-	@Override
-    protected Map<String,CustomerRatingsDTO> load() {
+	protected Map<String,CustomerRatingsDTO> load() {
 		return Collections.emptyMap();
 	}
 }

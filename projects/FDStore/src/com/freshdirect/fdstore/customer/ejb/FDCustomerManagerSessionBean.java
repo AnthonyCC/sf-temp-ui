@@ -144,6 +144,8 @@ import com.freshdirect.fdstore.atp.FDCompositeAvailability;
 import com.freshdirect.fdstore.atp.FDStockAvailability;
 import com.freshdirect.fdstore.atp.FDStockAvailabilityInfo;
 import com.freshdirect.fdstore.atp.NullAvailability;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.AddressDAO;
 import com.freshdirect.fdstore.customer.CustomerCreditModel;
 import com.freshdirect.fdstore.customer.EnumIPhoneCaptureType;
@@ -260,8 +262,6 @@ import com.freshdirect.referral.extole.model.FDRafTransModel;
 import com.freshdirect.sap.command.SapCartonInfoForSale;
 import com.freshdirect.sap.ejb.SapException;
 import com.freshdirect.sms.SmsPrefereceFlag;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.temails.TEmailRuntimeException;
 
 

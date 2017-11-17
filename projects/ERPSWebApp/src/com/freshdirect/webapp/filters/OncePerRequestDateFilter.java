@@ -11,33 +11,31 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.OncePerRequestDateCache;
-import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentFactory;
 
 public class OncePerRequestDateFilter extends AbstractFilter {
-
+	
 	private final String filterName = this.getClass().getName();
 
-	@Override
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain) throws IOException, ServletException {
+	public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain) throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) res;
-
+		
 		EnumEStoreId storeId = ContentFactory.getInstance().getCurrentUserContext().getStoreContext().getEStoreId();
-
+		
 		if (!this.isFilterApplied(request)) {
 			OncePerRequestDateCache.init(storeId);
 		}
-
+		
 		filterChain.doFilter(request, response);
-
+		
 		if (!this.isFilterApplied(request)) {
 			OncePerRequestDateCache.clear();
 		}
 	}
-
-
-	@Override
-    public String getFilterName(){
+	
+	
+	public String getFilterName(){
 		return this.filterName;
 	}
 

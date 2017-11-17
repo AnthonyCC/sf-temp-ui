@@ -1,7 +1,4 @@
-<%@ page contentType='text/plain' import='com.freshdirect.erp.model.*,com.freshdirect.storeapi.content.*,com.freshdirect.storeapi.*,com.freshdirect.fdstore.*' %>
-<%@ taglib uri='template' prefix='tmpl' %>
-<%@ taglib uri='logic' prefix='logic' %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ page contentType='text/plain' import='com.freshdirect.erp.model.*,com.freshdirect.fdstore.*,com.freshdirect.fdstore.content.*' %><%@ taglib uri='template' prefix='tmpl' %><%@ taglib uri='logic' prefix='logic' %><%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:ProductSearch results='searchResults' searchtype='<%= request.getParameter("searchtype") %>' searchterm='<%= request.getParameter("searchterm") %>'>
 <logic:iterate id="productInfo" collection="<%= searchResults %>" type="com.freshdirect.erp.model.ErpProductInfoModel"><fd:Nutrition id="nutrition" skuCode='<%= productInfo.getSkuCode() %>'><%
 

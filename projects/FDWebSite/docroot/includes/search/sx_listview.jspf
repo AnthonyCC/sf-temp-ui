@@ -3,8 +3,8 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.content.attributes.*'%>
 <%@ page import="com.freshdirect.fdstore.*" %>
-<%@ page import="com.freshdirect.storeapi.content.*" %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import="com.freshdirect.fdstore.content.*" %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import="com.freshdirect.webapp.util.FDURLUtil" %>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
 <%@ page import='com.freshdirect.common.pricing.util.GroupScaleUtil' %>
@@ -45,7 +45,7 @@ int row_cnt = 0;
 
 int rank = nav.getPageOffset()+1;
 
-%><logic:iterate id="productNode" collection="<%= search.getPageProducts() %>" type="com.freshdirect.storeapi.content.ProductModel">
+%><logic:iterate id="productNode" collection="<%= search.getPageProducts() %>" type="com.freshdirect.fdstore.content.ProductModel">
 <%
 	ProductImpression pi = new ProductImpression(productNode);
 	Image prodImage = pi.getProductModel().getSourceProduct().getCategoryImage();

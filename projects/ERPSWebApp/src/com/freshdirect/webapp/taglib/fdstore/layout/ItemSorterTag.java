@@ -9,13 +9,13 @@ import javax.servlet.jsp.JspWriter;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.PrioritizedI;
+import com.freshdirect.fdstore.content.ProductModelImpl;
 import com.freshdirect.fdstore.content.util.ContentNodeComparator;
 import com.freshdirect.fdstore.content.util.SortStrategyElement;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.TagSupport;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.PrioritizedI;
-import com.freshdirect.storeapi.content.ProductModelImpl;
 
 /**@author ekracoff*/
 public class ItemSorterTag extends TagSupport {

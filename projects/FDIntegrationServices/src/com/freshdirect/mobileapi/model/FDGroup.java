@@ -7,10 +7,10 @@ import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.mobileapi.model.tagwrapper.GetGSProductsTagWrapper;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.SkuModel;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 
 public class FDGroup {

@@ -8,7 +8,7 @@
 <%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
 <%@page import="com.freshdirect.webapp.crm.CrmMasqueradeUtil"%>
 <%@page import="com.freshdirect.security.ticket.MasqueradeParams"%>
-<%@page import="com.freshdirect.cms.core.domain.ContentKey"%>
+<%@page import="com.freshdirect.cms.ContentKey"%>
 <%@page import="java.util.Set"%>
 <%@page import="java.util.HashSet"%>
 <%@page import="com.freshdirect.fdstore.customer.FDCartLineI"%>

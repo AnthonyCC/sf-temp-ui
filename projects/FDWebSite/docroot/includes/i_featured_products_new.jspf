@@ -1,14 +1,14 @@
 <%@page import="com.freshdirect.fdstore.pricing.ProductModelPricingAdapter"%>
 <%@page import="java.util.List"%>
-<%@page import="com.freshdirect.storeapi.content.ContentNodeModel"%>
-<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@page import="com.freshdirect.webapp.util.DisplayObject"%>
 <%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
-<%@page import="com.freshdirect.storeapi.content.BrandModel"%>
-<%@page import="com.freshdirect.storeapi.content.Image"%>
+<%@page import="com.freshdirect.fdstore.content.BrandModel"%>
+<%@page import="com.freshdirect.fdstore.content.Image"%>
 <%@page import="com.freshdirect.webapp.util.ProductImpression"%>
-<%@page import="com.freshdirect.storeapi.content.ContentUtil"%>
+<%@page import="com.freshdirect.fdstore.content.ContentUtil"%>
 <%@page import="java.util.Iterator"%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@ taglib uri='logic' prefix='logic' %>

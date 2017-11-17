@@ -1,7 +1,7 @@
 package com.freshdirect.webapp.ajax.product.data;
 
-import com.freshdirect.storeapi.content.Image;
-import com.freshdirect.storeapi.content.RecipeSource;
+import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.RecipeSource;
 
 
 public class RecipeData {

@@ -4,7 +4,7 @@
 <%@ taglib uri='logic' prefix='logic'%>
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@page import="com.freshdirect.fdstore.util.NewProductsNavigator"%>
-<%@page import="com.freshdirect.storeapi.content.BrandModel"%>
+<%@page import="com.freshdirect.fdstore.content.BrandModel"%>
 
 <% //expanded page dimensions
 final int W_NEWPRODUCTS_TOTAL = 970;

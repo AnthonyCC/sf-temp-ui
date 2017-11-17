@@ -6,9 +6,9 @@
 <%@ page import="com.freshdirect.webapp.util.ProductImpression"%>
 <%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@ page import="com.freshdirect.fdstore.util.DYFUtil"%>
-<%@ page import="com.freshdirect.storeapi.content.ContentNodeModel"%>
-<%@ page import="com.freshdirect.storeapi.content.ProductModel"%>
-<%@ page import="com.freshdirect.storeapi.content.DepartmentModel"%>
+<%@ page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
+<%@ page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@ page import="com.freshdirect.fdstore.content.DepartmentModel"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@ page import="java.text.SimpleDateFormat"%>

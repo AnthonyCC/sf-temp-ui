@@ -1,15 +1,15 @@
 <%@   page import='com.freshdirect.webapp.util.*'%><%@ page
-	import="com.freshdirect.storeapi.content.DomainValue"%><%@ page
+	import="com.freshdirect.fdstore.content.DomainValue"%><%@ page
 	import='com.freshdirect.framework.webapp.*'%><%@ page
 	import='com.freshdirect.webapp.taglib.fdstore.*'%><%@ page
 	import='com.freshdirect.content.attributes.*'%><%@ page
 	import="com.freshdirect.fdstore.util.URLGenerator"%><%@ page
 	import="com.freshdirect.fdstore.util.NewProductsNavigator"%><%@ page
 	import="com.freshdirect.fdstore.*"%><%@ page
-	import="com.freshdirect.storeapi.*%><%@ page
-	import="com.freshdirect.storeapi.fdstore.FDContentTypes"%><%@ page
-	import="com.freshdirect.storeapi.content.*"%><%@ page
-	import='com.freshdirect.storeapi.attributes.*'%><%@ page
+	import="com.freshdirect.cms.*"%><%@ page
+	import="com.freshdirect.cms.fdstore.FDContentTypes"%><%@ page
+	import="com.freshdirect.fdstore.content.*"%><%@ page
+	import='com.freshdirect.fdstore.attributes.*'%><%@ page
 	import='com.freshdirect.webapp.taglib.fdstore.SessionName'%><%@ page
 	import="java.util.*"%><%@ page import="java.net.URLEncoder"%><%@ page
 	import="java.text.DecimalFormat"%><%@ page

@@ -3,11 +3,11 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import="java.net.URLEncoder"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDCartLineI"%>
-<%@ page import="com.freshdirect.storeapi.content.ProductModel"%>
+<%@ page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@ page import="com.freshdirect.webapp.util.JspMethods"%>
-<%@ page import="com.freshdirect.storeapi.content.EnumProductLayout"%>
+<%@ page import="com.freshdirect.fdstore.content.EnumProductLayout"%>
 <%@ page import="com.freshdirect.fdstore.customer.EnumQuickbuyStatus"%>
-<%@page import="com.freshdirect.storeapi.content.Image"%>
+<%@page import="com.freshdirect.fdstore.content.Image"%>
 <%@ page import="com.freshdirect.fdstore.ecoupon.*" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.display.FDCouponTag" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>

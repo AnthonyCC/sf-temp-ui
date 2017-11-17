@@ -11,8 +11,7 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.cms.core.domain.ContentKey;
-import com.freshdirect.cms.core.domain.ContentKeyFactory;
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdlogistics.services.ICommerceService;
 
 import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
@@ -169,7 +168,7 @@ public class ProductStatisticsProvider {
 
 		Set<String> keys = intermediarymap.keySet();
 		for (String individualkey : keys) {
-			mapToReturn.put(ContentKeyFactory.get(com.freshdirect.storeapi.fdstore.FDContentTypes.PRODUCT, individualkey),
+			mapToReturn.put(ContentKey.getContentKey(com.freshdirect.cms.fdstore.FDContentTypes.PRODUCT, individualkey),
 					intermediarymap.get(individualkey));
 		}
 		return mapToReturn;
@@ -181,7 +180,7 @@ public class ProductStatisticsProvider {
 		Set<ContentKey> retset = new HashSet<ContentKey>();
 		for (String contentkeyProduct : setofconentkeys) {
 
-			retset.add(ContentKeyFactory.get(com.freshdirect.storeapi.fdstore.FDContentTypes.PRODUCT,
+			retset.add(ContentKey.getContentKey(com.freshdirect.cms.fdstore.FDContentTypes.PRODUCT,
 					contentkeyProduct));
 		}
 		return retset;

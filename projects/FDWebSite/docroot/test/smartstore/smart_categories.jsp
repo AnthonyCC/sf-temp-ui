@@ -2,13 +2,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <%@page import="java.util.*"%>
 <%@page import="com.freshdirect.webapp.util.ProductImpression"%>
-<%@page import="com.freshdirect.storeapi.content.Recommender"%>
-<%@page import="com.freshdirect.cms.core.domain.ContentKey"%>
-<%@page import="com.freshdirect.cms.core.domain.ContentType"%>
-<%@page import="com.freshdirect.cms.core.domain.ContentKeyFactory"%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
-<%@page import="com.freshdirect.storeapi.content.CategoryModel"%>
-<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.Recommender"%>
+<%@page import="com.freshdirect.cms.ContentKey"%>
+<%@page import="com.freshdirect.cms.ContentType"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="freshdirect" prefix="fd"%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
@@ -26,7 +25,7 @@
 		<div style="width: auto; float: left;">
 			<%
 				String catId = request.getParameter( "catId" );
-				ContentKey catKey = catId == null ? null : ContentKeyFactory.get( ContentType.Category, catId );
+				ContentKey catKey = catId == null ? null : ContentKey.getContentKey( ContentType.get("Category"), catId );
 				CategoryModel category = catKey == null ? null : (CategoryModel)ContentFactory.getInstance().getContentNodeByKey( catKey );
 			%>				
 		

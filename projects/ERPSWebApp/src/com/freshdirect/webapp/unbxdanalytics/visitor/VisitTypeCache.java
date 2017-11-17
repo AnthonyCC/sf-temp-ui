@@ -1,6 +1,6 @@
 package com.freshdirect.webapp.unbxdanalytics.visitor;
 
-import com.freshdirect.cms.CmsServiceLocator;
+import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.webapp.unbxdanalytics.event.VisitorEvent;
 
 /**
@@ -59,12 +59,12 @@ public final class VisitTypeCache {
         final String cacheKey = uid;
         
         final long now = System.currentTimeMillis();
-        final Long lastCheck = CmsServiceLocator.ehCacheUtil().getObjectFromCache(CACHE_NAME, cacheKey);
+        final Long lastCheck = EhCacheUtil.getObjectFromCache(CACHE_NAME, cacheKey);
 
         VisitType visitTypeInfo = createInternal(now, lastCheck);
 
         // update cache entry with current time
-        CmsServiceLocator.ehCacheUtil().putObjectToCache(CACHE_NAME, cacheKey, Long.valueOf(now));
+        EhCacheUtil.putObjectToCache(CACHE_NAME, cacheKey, Long.valueOf(now));
 
         return visitTypeInfo;
     }

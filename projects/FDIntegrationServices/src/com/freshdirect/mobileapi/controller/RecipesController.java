@@ -33,6 +33,10 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.RecipeTagModel;
+import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.mobileapi.controller.data.Image;
 import com.freshdirect.mobileapi.controller.data.Product;
@@ -48,10 +52,6 @@ import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.service.ServiceException;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.RecipeTagModel;
-import com.freshdirect.storeapi.content.SkuModel;
 
 public class RecipesController extends BaseController {
 
@@ -446,7 +446,7 @@ public class RecipesController extends BaseController {
 	}
 
 	private ModelAndView getTags(final ModelAndView model, final SessionUser user) throws JsonException {
-//		final Set<ContentKey> contentKeysByType = CmsManager.getInstance().getContentKeysByType(ContentType.RecipeTag);
+//		final Set<ContentKey> contentKeysByType = CmsManager.getInstance().getContentKeysByType(ContentType.get("RecipeTag"));
 		List <RecipeTagModel> recipeTags = ContentFactory.getInstance().getStore().getTabletIdeasRecipeTags();
 		final RecipeTagsResponse response = new RecipeTagsResponse();
 		final List<Idea> ideas = new ArrayList<Idea>();

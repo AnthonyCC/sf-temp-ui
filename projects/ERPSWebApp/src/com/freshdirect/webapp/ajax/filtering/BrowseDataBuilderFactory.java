@@ -11,10 +11,24 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.core.domain.ContentKey;
-import com.freshdirect.cms.core.domain.ContentKeyFactory;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.CategorySectionModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.FilteringProductItem;
+import com.freshdirect.fdstore.content.Html;
+import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.ProductContainer;
+import com.freshdirect.fdstore.content.ProductItemFilterI;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SortOptionModel;
+import com.freshdirect.fdstore.content.SortStrategyType;
+import com.freshdirect.fdstore.content.SuperDepartmentModel;
 import com.freshdirect.fdstore.content.browse.sorter.ProductItemSorterFactory;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
@@ -26,21 +40,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.Recommendations;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.CategorySectionModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.FilteringProductItem;
-import com.freshdirect.storeapi.content.Html;
-import com.freshdirect.storeapi.content.Image;
-import com.freshdirect.storeapi.content.ProductContainer;
-import com.freshdirect.storeapi.content.ProductItemFilterI;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.SortOptionModel;
-import com.freshdirect.storeapi.content.SortStrategyType;
-import com.freshdirect.storeapi.content.SuperDepartmentModel;
-import com.freshdirect.storeapi.fdstore.FDContentTypes;
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.ajax.browse.SearchPageType;
 import com.freshdirect.webapp.ajax.browse.data.BasicData;
@@ -1020,7 +1019,7 @@ public class BrowseDataBuilderFactory {
 				if(section.getProducts()!=null){
 					for(ProductData data : section.getProducts()){
 						if (shownProductKeysForRecommender.size() < ProductRecommenderUtil.MAX_LIST_CONTENT_SIZE){
-                            shownProductKeysForRecommender.add(ContentKeyFactory.get(FDContentTypes.PRODUCT, data.getProductId()));
+							shownProductKeysForRecommender.add(ContentKey.getContentKey(FDContentTypes.PRODUCT, data.getProductId()));
 						} else {
 							return;
 						}

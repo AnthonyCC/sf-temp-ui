@@ -312,7 +312,7 @@ public class NodeTree extends ContentPanel {
     	
     	public void initTokens(String path) {    		
     		nodes = mainStore.getRootItems();
-    		tokens = new StringTokenizer( path, TreeContentNodeModel.PATH_SEPARATOR );
+    		tokens = new StringTokenizer( path, TreeContentNodeModel.pathSeparator );
     		eatToken();
     		TreePanel<TreeContentNodeModel>.TreeNode tn = null;
     		while ( ( tn = tree.findNode( currentNode ) ) != null && tn.isExpanded() ) {
@@ -659,7 +659,7 @@ public class NodeTree extends ContentPanel {
 		TreeContentNodeModel parent = mainStore.getParent( node );
 		if ( parent != null )
 			getSelectedPathRecursive( parent, sb );		
-		sb.append( TreeContentNodeModel.PATH_SEPARATOR );
+		sb.append( TreeContentNodeModel.pathSeparator );
 		sb.append( node.getKey() );
 	}
 	

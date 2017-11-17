@@ -10,7 +10,7 @@ public class GwtPublishMessage extends ContentNodeModel {
 	public GwtPublishMessage() {
 		super();
 	}
-
+    
     public GwtPublishMessage( String type, String key ) {
     	super( type, "", key );
     }
@@ -18,27 +18,27 @@ public class GwtPublishMessage extends ContentNodeModel {
     public void setSeverity( String severity ) {
     	set( "severity", severity );
     }
-
+    
     public String getSeverity() {
-		return get( "severity" );
+		return get( "severity" );    	
     }
-
+    
     public void setMessage( String message ) {
-    	set( "message", message );
+    	set( "message", message );    	
     }
-
+    
     public String getMessage() {
-		return get( "message" );
+		return get( "message" );    	
     }
-
+    
     public void setTimestamp( Date timestamp ) {
-    	set( "timestamp", timestamp );
+    	set( "timestamp", timestamp );    	
     }
-
+    
     public Date getTimestamp() {
-		return get( "timestamp" );
+		return get( "timestamp" );    	
     }
-
+    
     public String getTask(){
         return get("task");
     }
@@ -46,7 +46,7 @@ public class GwtPublishMessage extends ContentNodeModel {
     public void setTask(String task){
         set("task", task);
     }
-
+    
     public String getStoreId(){
         return get("storeId");
     }

@@ -8,7 +8,10 @@ import java.util.List;
 
 import javax.servlet.jsp.JspWriter;
 
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.util.ProductInfoUtil;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.EnumOrderLineRating;
@@ -16,20 +19,17 @@ import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.ZonePriceListing;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ConfiguredProduct;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.Recipe;
+import com.freshdirect.fdstore.content.RecipeSection;
+import com.freshdirect.fdstore.content.RecipeVariant;
+import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.adapter.OrderPromotionHelper;
-import com.freshdirect.storeapi.ContentNodeI;
-import com.freshdirect.storeapi.application.CmsManager;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ConfiguredProduct;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.Recipe;
-import com.freshdirect.storeapi.content.RecipeSection;
-import com.freshdirect.storeapi.content.RecipeVariant;
-import com.freshdirect.storeapi.content.SkuModel;
-import com.freshdirect.storeapi.util.ProductInfoUtil;
 
 
 /**

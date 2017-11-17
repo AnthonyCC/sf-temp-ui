@@ -6,8 +6,8 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
-import com.freshdirect.storeapi.content.PriceCalculator;
 import com.freshdirect.webapp.util.ConfigurationUtil;
 import com.freshdirect.webapp.util.ProductImpression;
 import com.freshdirect.webapp.util.TransactionalProductImpression;

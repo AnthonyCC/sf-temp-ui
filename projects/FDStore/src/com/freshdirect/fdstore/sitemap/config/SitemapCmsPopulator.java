@@ -8,11 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.freshdirect.cms.core.domain.ContentKey;
-import com.freshdirect.cms.core.domain.ContentType;
-import com.freshdirect.storeapi.ContentNodeI;
-import com.freshdirect.storeapi.application.CmsManager;
-import com.freshdirect.storeapi.fdstore.FDContentTypes;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.ContentType;
+import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.application.DraftContext;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 
 public class SitemapCmsPopulator {
 
@@ -106,25 +107,25 @@ public class SitemapCmsPopulator {
     }
 
     private Boolean isSitemapValid(ContentNodeI node) {
-        return !Boolean.TRUE.equals(node.getAttributeValue("SKIP_SITEMAP")) && !isKeyOrphan(node.getKey());
+        return !Boolean.TRUE.equals((Boolean) node.getAttributeValue("SKIP_SITEMAP")) && !isKeyOrphan(node.getKey());
     }
 
     private Collection<ContentNodeI> getNodesByType(ContentType type) {
-        return getContentNodes(CmsManager.getInstance().getContentKeysByType(type));
+        return getContentNodes(CmsManager.getInstance().getContentKeysByType(type, DraftContext.MAIN));
     }
 
     private Collection<ContentNodeI> getContentNodes(Set<ContentKey> keys) {
-        return CmsManager.getInstance().getContentNodes(keys).values();
+        return CmsManager.getInstance().getContentNodes(keys, DraftContext.MAIN).values();
     }
 
     public ContentKey getPrimaryHomeKey(ContentKey key) {
-        return CmsManager.getInstance().getPrimaryHomeKey(key);
+        return CmsManager.getInstance().getPrimaryHomeKey(key, DraftContext.MAIN);
     }
 
     private boolean isKeyOrphan(ContentKey key) {
         boolean isOrphan = false;
         if (doesContentTypeProducts(key) || doesContentTypeContainProducts(key)) {
-            Set<ContentKey> parentKeys = CmsManager.getInstance().getParentKeys(key);
+            Set<ContentKey> parentKeys = CmsManager.getInstance().getParentKeys(key, DraftContext.MAIN);
             if (parentKeys.isEmpty()) {
                 isOrphan = true;
             } else {

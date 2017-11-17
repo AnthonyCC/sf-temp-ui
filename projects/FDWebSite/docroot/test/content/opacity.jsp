@@ -1,8 +1,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.BrowserInfo"%>
-<%@ page import="com.freshdirect.storeapi.content.ProductModel" %>
-<%@ page import="com.freshdirect.storeapi.content.ContentFactory" %>
+<%@ page import="com.freshdirect.fdstore.content.ProductModel" %>
+<%@ page import="com.freshdirect.fdstore.content.ContentFactory" %>
 
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>

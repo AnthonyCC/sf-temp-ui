@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.util.ProductInfoUtil;
 import com.freshdirect.content.nutrition.EnumKosherSymbolValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.content.nutrition.NutritionValueEnum;
@@ -12,16 +13,15 @@ import com.freshdirect.fdstore.FDKosherInfo;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.storeapi.content.BrandModel;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModelUtil;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.PopulatorUtil;
-import com.freshdirect.storeapi.content.PriceCalculator;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.SkuModel;
-import com.freshdirect.storeapi.util.ProductInfoUtil;
+import com.freshdirect.fdstore.content.BrandModel;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModelUtil;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.PopulatorUtil;
+import com.freshdirect.fdstore.content.PriceCalculator;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.webapp.ajax.browse.data.NavigationModel;
 
 public class FilterCollector {
@@ -52,7 +52,7 @@ public class FilterCollector {
 			FDProduct fdProduct = defSku.getProduct();
 			if (fdProduct != null) {
 				String plantID=ProductInfoUtil.getPickingPlantId(defSku.getProductInfo());;
-
+	            
 				collectShowMeOnlyKosherFilter(showMeOnlyOfSearchResults, fdProduct.getKosherInfo(plantID));
 				collectShowMeOnlyOrganicFilter(showMeOnlyOfSearchResults, fdProduct.getNutritionInfoList(ErpNutritionInfoType.ORGANIC));
 				collectShowMeOnlyOnSaleFilter(product, showMeOnlyOfSearchResults);
@@ -66,9 +66,9 @@ public class FilterCollector {
 		Set<ContentKey> parentKeys = ContentNodeModelUtil.getAllParentKeys(product.getContentKey(), true);
 
 		for (ContentKey contentKey : parentKeys) {
-			if ("Department".equals(contentKey.getType().name())) {
+			if ("Department".equals(contentKey.getType().getName())) {
 				collectDepartmentFilter(navigationModel, contentKey);
-			} else if ("Category".equals(contentKey.getType().name())) {
+			} else if ("Category".equals(contentKey.getType().getName())) {
 				collectCategoryFilters(navigationModel, contentKey);
 			}
 		}
@@ -81,7 +81,7 @@ public class FilterCollector {
 	public void setShowMeOnlyNewDisabled(boolean showMeOnlyNewDisabled) {
 		this.showMeOnlyNewDisabled = showMeOnlyNewDisabled;
 	}
-
+	
 	private void collectBrandFilters(NavigationModel navigationModel, ProductModel product) {
 		for (BrandModel brandModel : product.getBrands()) {
 			navigationModel.getBrandsOfSearchResults().put(brandModel.getContentName(), brandModel);
@@ -121,7 +121,7 @@ public class FilterCollector {
 			showMeOnlyOfSearchResults.add("kosher");
 		}
 	}
-
+	
 	private void collectShowMeOnlyNewFilter(ProductModel product, Set<String> showMeOnlyOfSearchResults) {
 		if (!showMeOnlyNewDisabled && product.isNew()) {
 			showMeOnlyOfSearchResults.add("new");

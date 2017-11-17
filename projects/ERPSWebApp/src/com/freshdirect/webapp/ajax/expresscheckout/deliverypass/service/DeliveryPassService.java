@@ -9,10 +9,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.cms.ContentType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -21,9 +24,6 @@ import com.freshdirect.fdstore.rules.FeeCalculator;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.payment.EnumPaymentMethodType;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.expresscheckout.deliverypass.data.DeliveryPassData;
 import com.freshdirect.webapp.ajax.expresscheckout.deliverypass.data.DeliveryPassProductData;
@@ -92,7 +92,7 @@ public class DeliveryPassService {
 	}
 
 	private List<ProductModel> collectDeliveryPassProducts(FDUserI user) {
-		CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNode(ContentType.Category, "gro_gear_dlvpass");
+		CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNode(ContentType.get("Category"), "gro_gear_dlvpass");
 		List<ProductModel> availableProducts = new ArrayList<ProductModel>();
 
 		for (ProductModel product : ContentFactory.getInstance().getProducts(category)) {

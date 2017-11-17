@@ -3,12 +3,12 @@ package com.freshdirect.mobileapi.controller.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.freshdirect.fdstore.content.FilteringSortingItem;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.mobileapi.controller.data.response.FilterOption;
 import com.freshdirect.mobileapi.model.AdProducts;
 import com.freshdirect.mobileapi.util.SortType;
-import com.freshdirect.storeapi.content.FilteringSortingItem;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.SearchResults;
 
 public class SearchResult extends Message {
     private String didYouMean;

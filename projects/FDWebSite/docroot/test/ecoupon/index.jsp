@@ -3,7 +3,7 @@
 <%@ page import="com.freshdirect.fdstore.ecoupon.*" %>
 <%@ page import="com.freshdirect.fdstore.ecoupon.model.*" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
-<%@ page import="com.freshdirect.storeapi.content.*" %>
+<%@ page import="com.freshdirect.fdstore.content.*" %>
 <%@ page import="com.freshdirect.fdstore.FDProductInfo" %>
 <%@ page import="com.freshdirect.fdstore.FDCachedFactory" %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>

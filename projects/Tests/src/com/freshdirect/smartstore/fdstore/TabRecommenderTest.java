@@ -11,7 +11,7 @@ import java.util.TreeMap;
 
 import com.freshdirect.TestUtils;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.CartTabRecommender;

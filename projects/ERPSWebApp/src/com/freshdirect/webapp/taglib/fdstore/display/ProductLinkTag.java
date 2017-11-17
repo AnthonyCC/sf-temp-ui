@@ -5,8 +5,8 @@ import java.util.Map;
 
 import javax.servlet.jsp.JspException;
 
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
-import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.util.FDURLUtil;
 
 public class ProductLinkTag extends BodyTagSupportEx {

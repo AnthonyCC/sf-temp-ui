@@ -1,6 +1,6 @@
 <%@ page import='java.util.*' %>
 <%@ page import="com.freshdirect.fdstore.mail.*"%>
-<%@ page import='com.freshdirect.storeapi.content.*'  %>
+<%@ page import='com.freshdirect.fdstore.content.*'  %>
 <%@ page import='com.freshdirect.fdstore.referral.FDReferralManager'  %>
 <%@ page import='com.freshdirect.fdstore.customer.*'  %>
 <%@ page import='com.freshdirect.fdstore.*' %>

@@ -23,14 +23,6 @@ import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator;
-import com.freshdirect.storeapi.content.ComparatorChain;
-import com.freshdirect.storeapi.content.EnumSortingValue;
-import com.freshdirect.storeapi.content.FilteringSortingItem;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.Recipe;
-import com.freshdirect.storeapi.content.SortIntValueComparator;
-import com.freshdirect.storeapi.content.SortLongValueComparator;
-import com.freshdirect.storeapi.content.SortValueComparator;
 
 public class FilteringComparatorUtil {
 	private static final Logger LOGGER = LoggerFactory.getInstance(FilteringComparatorUtil.class);

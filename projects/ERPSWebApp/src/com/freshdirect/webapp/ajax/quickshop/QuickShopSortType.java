@@ -1,6 +1,6 @@
 package com.freshdirect.webapp.ajax.quickshop;
 
-import com.freshdirect.storeapi.content.SortTypeI;
+import com.freshdirect.fdstore.content.SortTypeI;
 
 public enum QuickShopSortType implements SortTypeI {
 

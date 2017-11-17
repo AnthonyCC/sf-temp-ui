@@ -12,6 +12,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.content.CMSImageBannerModel;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ImageBanner;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.mobileapi.controller.data.Image;
 import com.freshdirect.mobileapi.controller.data.Product;
 import com.freshdirect.mobileapi.controller.data.response.Idea;
@@ -22,13 +29,6 @@ import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.service.ServiceException;
-import com.freshdirect.storeapi.content.CMSImageBannerModel;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.ImageBanner;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.StoreModel;
 
 public class PickslistController extends BaseController {
 

@@ -17,15 +17,15 @@ import com.freshdirect.fdstore.rules.ServiceTypeCondition;
 import com.freshdirect.fdstore.rules.TierCondition;
 import com.freshdirect.rules.ConditionI;
 import com.freshdirect.rules.Rule;
-import com.freshdirect.storeapi.StoreServiceLocator;
-import com.freshdirect.storeapi.rules.RuleRef;
+import com.freshdirect.rules.RuleRef;
+import com.freshdirect.rules.RulesRegistry;
 
 
 public abstract class ConditionEditor extends BaseComponent {
-
+	
 	public IPropertySelectionModel getRuleRefSelectionModel() {
 		RulesAdminVisit visit = (RulesAdminVisit) this.getPage().getVisit();
-		List rules = new ArrayList(StoreServiceLocator.rulesRegistry().getRulesEngine(visit.getSubsystem()).getRules().values());
+		List rules = new ArrayList(RulesRegistry.getRulesEngine(visit.getSubsystem()).getRules().values());
 		Collections.sort(rules, RulesComparator.INSTANCE);
 		Map types = new LinkedHashMap();
 		for (Iterator i = rules.iterator(); i.hasNext();) {
@@ -36,7 +36,7 @@ public abstract class ConditionEditor extends BaseComponent {
 		}
 		return new LabelPropertySelectionModel(types, true);
 	}
-
+	
     public IPropertySelectionModel getServiceTypeSelectionModel() {
         Map types = new HashMap();
         for (EnumServiceType st : EnumServiceType.values()) {
@@ -44,7 +44,7 @@ public abstract class ConditionEditor extends BaseComponent {
         }
         return new LabelPropertySelectionModel(types, true);
     }
-
+    
     public IPropertySelectionModel getTierSelectionModel() {
         Map types = new HashMap();
         for (EnumDeliveryFeeTier st : EnumDeliveryFeeTier.values()) {
@@ -52,30 +52,30 @@ public abstract class ConditionEditor extends BaseComponent {
         }
         return new LabelPropertySelectionModel(types, true);
     }
-
+	
 	public String getCurrServiceType() {
 		ServiceTypeCondition st = (ServiceTypeCondition) getCondition();
 		return st.getType() ;
 	}
-
+	
 	public void setCurrServiceType (String serviceType) {
 		ServiceTypeCondition st = (ServiceTypeCondition) getCondition();
 		st.setType(serviceType);
 		this.setCondition(st);
 	}
 
-
+	
 	public String getCurrTier() {
 		TierCondition st = (TierCondition) getCondition();
 		return st.getValue() ;
 	}
-
+	
 	public void setCurrTier(String value) {
 		TierCondition st = (TierCondition) getCondition();
 		st.setValue(value);
 		this.setCondition(st);
 	}
-
+	
 	public String getCurrRuleRefId() {
 		RuleRef rr = (RuleRef) getCondition();
 		return rr.getId();
@@ -85,11 +85,11 @@ public abstract class ConditionEditor extends BaseComponent {
 		RuleRef rr = (RuleRef) getCondition();
 		rr.setId(id);
 	}
-
+	
 	public abstract ConditionI getCondition();
-
+	
 	public abstract void setCondition(ConditionI condition);
-
+	
 	public abstract Rule getSelectedRule();
 
 }

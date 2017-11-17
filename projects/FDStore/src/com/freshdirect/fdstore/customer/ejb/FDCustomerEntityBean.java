@@ -9,6 +9,7 @@
 
 package com.freshdirect.fdstore.customer.ejb;
 
+import java.rmi.RemoteException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.sql.Connection;
@@ -24,8 +25,10 @@ import javax.ejb.ObjectNotFoundException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.customer.EnumPaymentMethodDefaultType;
 import com.freshdirect.fdstore.customer.FDCustomerI;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.ProfileModel;
@@ -34,7 +37,6 @@ import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.DaoUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.ContentFactory;
 
 /**
  * FDCustomer entity bean implementation.
@@ -75,8 +77,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 	 *
 	 * @return FDCustomerModel object.
 	 */
-	@Override
-    public ModelI getModel() {
+	public ModelI getModel() {
 		FDCustomerModel model = new FDCustomerModel();
 		super.decorateModel(model);
 		model.setLastLogin(this.lastLogin);
@@ -100,8 +101,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 	/**
 	 * Copy from model.
 	 */
-	@Override
-    public void setFromModel(ModelI model) {
+	public void setFromModel(ModelI model) {
 		// copy properties from model
 		FDCustomerModel m = (FDCustomerModel)model;
 		this.erpCustomerPK = m.getErpCustomerPK();
@@ -125,7 +125,6 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
      *
      * @return the bean's home interface name
      */
-    @Override
     protected String getResourceCacheKey() {
         return "com.freshdirect.fdstore.customer.ejb.FDCustomerHome";
     }
@@ -310,8 +309,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 	}
 
 
-	@Override
-    public PrimaryKey create(Connection conn) throws SQLException {
+	public PrimaryKey create(Connection conn) throws SQLException {
 		this.setPK(new PrimaryKey(this.getNextId(conn, "CUST")));
 		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.FDCUSTOMER (ID, ERP_CUSTOMER_ID, LOGIN_COUNT, LAST_LOGIN, DEFAULT_SHIPTO, DEFAULT_PAYMENT, DEFAULT_DEPOT_LOCATION, DEPOT_CODE, RAF_CLICK_ID, RAF_PROMO_CODE, DEFAULT_PAYMENT_METHOD_TYPE) values (?,?,?,?,?,?,?,?,?,?,?)");
 		ps.setString(1, this.getPK().getId());
@@ -329,7 +327,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		ps.setString(8, this.depotCode);
 		ps.setString(9, this.rafClickId);
 		ps.setString(10, this.rafPromoCode);
-		ps.setString(11, (null != this.defaultPaymentMethodType &&  !this.defaultPaymentMethodType.getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName()))?
+		ps.setString(11, (null != this.defaultPaymentMethodType &&  !this.defaultPaymentMethodType.getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName()))? 
 				this.defaultPaymentMethodType.getName(): null);
 
 		try {
@@ -346,32 +344,32 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		//create children
 		this.profile.setParentPK(this.getPK());
 		this.profile.create(conn);
-
+		
 		this.customerEStore.setParentPK(this.getPK());
 		replaceCustomerEStoreModel();
 		setEmailPreferenceFlag(true);//[APPDEV-4574]-Default 'emil optin' is true for the store the customer is registering from.
 		this.customerEStore.create(conn);
 		this.customerSmsPreferences.setParentPK(this.getPK());
 		this.customerSmsPreferences.load(conn);
-
+		
 
 		return this.getPK();
 	}
 
 	/**
-	 *
+	 * 
 	 */
 	private void replaceCustomerEStoreModel() {
 		FDCustomerEStoreModel customerEStoreModel  =(FDCustomerEStoreModel)customerEStore.getModel();
 		if(customerEStoreModel.geteStoreId()==null)
 			customerEStoreModel.seteStoreId(EnumEStoreId.valueOfContentId((ContentFactory.getInstance().getStoreKey().getId())));
-
+		
 		customerEStoreModel.setDefaultShipToAddressPK(this.getDefaultShipToAddressPK());
 		customerEStoreModel.setDefaultPaymentMethodPK(this.getDefaultPaymentMethodPK());
 		customerEStoreModel.setDefaultDepotLocationPK(this.getDefaultDepotLocationPK());
 		customerEStore.setFromModel(customerEStoreModel);
 	}
-
+	
 	private void setEmailPreferenceFlag(boolean emailOptIn){
 		FDCustomerEStoreModel customerEStoreModel  =(FDCustomerEStoreModel)customerEStore.getModel();
 		if(customerEStoreModel.geteStoreId()==null)
@@ -379,14 +377,13 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		customerEStoreModel.setEmailOptIn(emailOptIn);
 		customerEStore.setFromModel(customerEStoreModel);
 	}
-
+	
 	public void setFDCustomerEStore(FDCustomerEStoreModel fdCustomerEStoreModel){
 		customerEStore.setFromModel(fdCustomerEStoreModel);
 		this.setModified();
 	}
 
-	@Override
-    public void load(Connection conn) throws SQLException {
+	public void load(Connection conn) throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
@@ -418,18 +415,18 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		} finally {
 			DaoUtil.close(rs, ps);
 		}
-
+		
 
 		// load children
 		this.profile.setParentPK(this.getPK());
 		this.profile.load(conn);
-
+		
 		this.customerEStore.setParentPK(this.getPK());
 		this.customerEStore.load(conn);
 		this.customerSmsPreferences.setParentPK(this.getPK());
 		this.customerSmsPreferences.load(conn);
-
-		//Assigning the Estore specific values.
+		
+		//Assigning the Estore specific values. 
 		if(null !=this.customerEStore.getModel() && null !=((FDCustomerEStoreModel)this.customerEStore.getModel()).geteStoreId()){
 			this.defaultShipToAddressPK = ((FDCustomerEStoreModel)this.customerEStore.getModel()).getDefaultShipToAddressPK();
 			if(getDefaultPaymentMethodType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName())){
@@ -440,8 +437,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		}
 	}
 
-	@Override
-    public void store(Connection conn) throws SQLException {
+	public void store(Connection conn) throws SQLException {
 		PreparedStatement ps =null;
 		try {
 			if (super.isModified()) {
@@ -472,8 +468,8 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 				if (ps.executeUpdate() != 1) {
 					throw new SQLException("Row not updated");
 				}
-
-			}
+				
+			} 
 		} finally {
 			DaoUtil.close(ps);
 		}
@@ -481,14 +477,13 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		if(this.profile.isModified()){
 			this.profile.store(conn);
 		}
-
+		
 			replaceCustomerEStoreModel();
 			customerEStore.store(conn);
 			customerSmsPreferences.store(conn);
 	}
 
-	@Override
-    public void remove(Connection conn) throws SQLException {
+	public void remove(Connection conn) throws SQLException {
 		// remove children
 		this.profile.remove(conn);
 
@@ -499,7 +494,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 			ps.setString(1, this.getPK().getId());
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not deleted");
-			}
+			} 
 		} finally {
 			DaoUtil.close(ps);
 		}
@@ -509,14 +504,12 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 	/**
 	 * Overriden isModified.
 	 */
-	@Override
-    public boolean isModified() {
+	public boolean isModified() {
 		// check children too
 		return super.isModified() || this.profile.isModified();
 	}
 
-	@Override
-    public void initialize(){
+	public void initialize(){
 		profile = new FDProfilePersistentBean();
 		this.erpCustomerPK = null;
 		this.loginCount = 0;
@@ -534,13 +527,11 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		customerSmsPreferences = new FDCustomerSmsPreferencePersistentBean();
 	}
 
-	@Override
-    public String getErpCustomerPK() {
+	public String getErpCustomerPK() {
 		return this.erpCustomerPK;
 	}
 
-	@Override
-    public void setErpCustomerPK(String erpCustomerPK) {
+	public void setErpCustomerPK(String erpCustomerPK) {
 		this.erpCustomerPK = erpCustomerPK;
 		this.setModified();
 	}
@@ -553,52 +544,43 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		this.profile.removeAttribute(name);
 	}
 
-	@Override
-    public void incrementLoginCount() {
+	public void incrementLoginCount() {
 		this.loginCount++;
 		this.lastLogin = new java.util.Date();
 		this.setModified();
 	}
 
-	@Override
-    public int getLoginCount() {
+	public int getLoginCount() {
 		return this.loginCount;
 	}
 
-	@Override
-    public java.util.Date getLastLogin() {
+	public java.util.Date getLastLogin() {
 		return this.lastLogin;
 	}
 
-	@Override
-    public String getDefaultShipToAddressPK() {
+	public String getDefaultShipToAddressPK() {
 		return this.defaultShipToAddressPK;
 	}
 
-	@Override
-    public void setDefaultShipToAddressPK(String addressPK) {
+	public void setDefaultShipToAddressPK(String addressPK) {
 		this.defaultShipToAddressPK = addressPK;
 		this.setModified();
 	}
 
-	@Override
-    public String getDefaultPaymentMethodPK() {
+	public String getDefaultPaymentMethodPK() {
 		return this.defaultPaymentMethodPK;
 	}
 
-	@Override
-    public void setDefaultPaymentMethodPK(String pmPK) {
+	public void setDefaultPaymentMethodPK(String pmPK) {
 		this.defaultPaymentMethodPK = pmPK;
 		this.setModified();
 	}
 
-	@Override
-    public String getDefaultDepotLocationPK(){
+	public String getDefaultDepotLocationPK(){
 		return this.defaultDepotLocationPK;
 	}
 
-	@Override
-    public void setDefaultDepotLocationPK(String locationId){
+	public void setDefaultDepotLocationPK(String locationId){
 		this.defaultDepotLocationPK = locationId;
 		this.setModified();
 	}
@@ -687,8 +669,7 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 		this.setModified();
 	}
 
-	@Override
-    public int incrementPymtVerifyAttempts() {
+	public int incrementPymtVerifyAttempts() {
 		this.pymtVerifyAttempts++;
 		this.setModified();
 		return this.pymtVerifyAttempts;
@@ -697,22 +678,19 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 	/**
 	 * @param pymtVerifyAttempts the pymtVerifyAttempts to set
 	 */
-	@Override
-    public void setPymtVerifyAttempts(int pymtVerifyAttempts) {
+	public void setPymtVerifyAttempts(int pymtVerifyAttempts) {
 		this.pymtVerifyAttempts = pymtVerifyAttempts;
 	}
 
 	/**
 	 * @return the pymtVerifyAttempts
 	 */
-	@Override
-    public int getPymtVerifyAttempts() {
+	public int getPymtVerifyAttempts() {
 		return pymtVerifyAttempts;
 	}
-
-	@Override
-    public void resetPymtVerifyAttempts() {
-
+	
+	public void resetPymtVerifyAttempts() {
+		 
 		this.pymtVerifyAttempts=0;
 		this.setModified();
 	}
@@ -752,6 +730,6 @@ public class FDCustomerEntityBean extends EntityBeanSupport implements FDCustome
 	public void setDefaultPaymentMethodType(EnumPaymentMethodDefaultType defaultPaymentMethodType) {
 		this.defaultPaymentMethodType = defaultPaymentMethodType;
 		this.setModified();
-	}
+	}	
 
 }

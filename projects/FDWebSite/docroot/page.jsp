@@ -1,7 +1,6 @@
-<%@ page import="com.freshdirect.storeapi.content.*"%>
-<%@ page import="com.freshdirect.cms.core.domain.ContentType"%>
-<%@ page import="com.freshdirect.cms.core.domain.ContentKey"%>
-<%@ page import="com.freshdirect.cms.core.domain.ContentKeyFactory"%>
+<%@ page import="com.freshdirect.fdstore.content.*"%>
+<%@ page import="com.freshdirect.cms.ContentType"%>
+<%@ page import="com.freshdirect.cms.ContentKey"%>
 <%@ page import='com.freshdirect.fdstore.*'%>
 <%@ page import='com.freshdirect.webapp.util.*'%>
 <%@ page import='java.net.*'%>
@@ -20,8 +19,8 @@
 	
 	String layout = "/common/template/page_template.jsp";
 	
-	PageModel pageModel = (PageModel) PopulatorUtil.getContentNodeByKey( ContentKeyFactory.get(ContentType.Page, pageId) );
-
+	PageModel pageModel = (PageModel) PopulatorUtil.getContentNodeByKey( ContentKey.getContentKey(ContentType.get("Page"), pageId) );
+	
 	String title = "FreshDirect - " + pageModel.getTitle();
 %>
 

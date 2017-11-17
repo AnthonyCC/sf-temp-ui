@@ -3,8 +3,8 @@ package com.freshdirect.mobileapi.model.comparator;
 import java.util.Comparator;
 import java.util.List;
 
-import com.freshdirect.storeapi.content.DomainValue;
-import com.freshdirect.storeapi.content.SkuModel;
+import com.freshdirect.fdstore.content.DomainValue;
+import com.freshdirect.fdstore.content.SkuModel;
 
 
 /**

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <%@page import="com.freshdirect.fdstore.customer.FDCustomerManager"%>
-<%@page import="com.freshdirect.cms.core.domain.ContentType"%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@page import="com.freshdirect.cms.ContentType"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="java.util.List"%>
 <%@page import="com.freshdirect.webapp.util.ProductImpression"%>
-<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
-<%@page import="com.freshdirect.storeapi.content.DepartmentModel"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.DepartmentModel"%>
 <%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
-<%@page import="com.freshdirect.storeapi.content.CategoryModel"%>
-<%@page import="com.freshdirect.storeapi.content.BrandModel"%>
-<%@page import="com.freshdirect.storeapi.content.ContentNodeModel"%>
-<%@page import="com.freshdirect.storeapi.content.BrandModel"%>
-<%@page import="com.freshdirect.storeapi.content.MediaI"%>
-<%@page import="com.freshdirect.storeapi.content.Html"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.fdstore.content.BrandModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.fdstore.content.BrandModel"%>
+<%@page import="com.freshdirect.fdstore.content.MediaI"%>
+<%@page import="com.freshdirect.fdstore.content.Html"%>
 
 <%@ taglib uri="/WEB-INF/shared/tld/freshdirect.tld" prefix='fd'%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>

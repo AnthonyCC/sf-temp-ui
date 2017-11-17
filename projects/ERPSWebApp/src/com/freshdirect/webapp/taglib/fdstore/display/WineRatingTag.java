@@ -8,8 +8,8 @@ import javax.servlet.jsp.JspWriter;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.EnumWineRating;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.webapp.BodyTagSupport;
-import com.freshdirect.storeapi.content.ProductModel;
 
 /**
  * Product Rating Tag

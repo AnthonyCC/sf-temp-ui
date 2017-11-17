@@ -10,12 +10,11 @@
 <%@page import="java.util.Map"%>
 <%@page import="java.util.Set"%>
 <%@page import="java.util.StringTokenizer"%>
-<%@page import="com.freshdirect.cms.core.domain.ContentKey"%>
-<%@page import="com.freshdirect.cms.core.domain.ContentKeyFactory"%>
-<%@page import="com.freshdirect.storeapi.fdstore.FDContentTypes"%>
+<%@page import="com.freshdirect.cms.ContentKey"%>
+<%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
 <%@page import="com.freshdirect.fdstore.FDException"%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
-<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@page import="com.freshdirect.fdstore.customer.FDCustomerManager"%>
 <%@page import="com.freshdirect.fdstore.customer.FDIdentity"%>
 <%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
@@ -69,7 +68,7 @@ static class TestPair {
 				user = FDCustomerManager.getFDUser(new FDIdentity(customerId));
 				if (user != null) {
 					ProductModel product = (ProductModel) ContentFactory.getInstance().
-							getContentNodeByKey(ContentKeyFactory.get(FDContentTypes.PRODUCT, product_id));
+							getContentNodeByKey(ContentKey.create(FDContentTypes.PRODUCT, product_id));
 					if (product != null)
 						return new TestPair(user, product);
 				}

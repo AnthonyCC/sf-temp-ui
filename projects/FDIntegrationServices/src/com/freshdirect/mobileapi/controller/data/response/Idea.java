@@ -8,18 +8,18 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.freshdirect.cms.core.domain.ContentKey;
-import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentType;
+import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.fdstore.content.BannerModel;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.Recipe;
+import com.freshdirect.fdstore.content.RecipeTagModel;
 import com.freshdirect.mobileapi.controller.data.Image;
 import com.freshdirect.mobileapi.model.Category;
-import com.freshdirect.storeapi.application.CmsManager;
-import com.freshdirect.storeapi.content.BannerModel;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.Recipe;
-import com.freshdirect.storeapi.content.RecipeTagModel;
 
 public class Idea {
 	public static enum ThumbnailType { TabletThumbnail, Banner }
@@ -98,7 +98,7 @@ public class Idea {
         otherImages.put("TabletThumbnailImage", Image.wrap(categoryModel.getTabletThumbnailImage()));
 		
 		// 2. banners
-        Set<ContentKey> contentKeysByType = CmsManager.getInstance().getContentKeysByType(ContentType.Banner);
+        Set<ContentKey> contentKeysByType = CmsManager.getInstance().getContentKeysByType(ContentType.get("Banner"));
         for (ContentKey key : contentKeysByType) {
             BannerModel banner = (BannerModel) ContentFactory.getInstance().getContentNodeByKey(key);
             if (banner.getLink() != null && StringUtils.equals(banner.getLink().getContentName(), categoryModel.getContentName())) {
@@ -154,7 +154,7 @@ public class Idea {
 		Idea idea = new Idea();
 		idea.setDestinationId(recipeTagModel.getContentName());
 		idea.setDestinationSection("recipe");
-		com.freshdirect.storeapi.content.Image tabletImage = recipeTagModel.getTabletImage();
+		com.freshdirect.fdstore.content.Image tabletImage = recipeTagModel.getTabletImage();
 		Image image = new Image(tabletImage.getPath(), tabletImage.getHeight(), tabletImage.getWidth());
 		idea.setFeatureImage(image);
 		return idea;
@@ -171,7 +171,7 @@ public class Idea {
         }
 		idea.setDestinationSection("recipe");
 		idea.setFeatureText(recipeTagModel.getFullName());
-		com.freshdirect.storeapi.content.Image tabletImage = recipeTagModel.getTabletImage();
+		com.freshdirect.fdstore.content.Image tabletImage = recipeTagModel.getTabletImage();
 		Image image = new Image(tabletImage.getPath(), tabletImage.getHeight(), tabletImage.getWidth());
 		idea.setFeatureImage(image);
 		return idea;
@@ -181,7 +181,7 @@ public class Idea {
 		Idea idea = new Idea();
 		idea.setDestinationId(recipe.getContentName());
 		idea.setDestinationSection("recipe");
-		com.freshdirect.storeapi.content.Image tabletImage = recipe.getTabletThumbnailImage();
+		com.freshdirect.fdstore.content.Image tabletImage = recipe.getTabletThumbnailImage();
 		Image image = new Image(tabletImage.getPath(), tabletImage.getHeight(), tabletImage.getWidth());
 		idea.setFeatureImage(image);
 		return idea;

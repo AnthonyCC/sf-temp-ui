@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.ecomm.gateway.AbstractEcommService;
 import com.freshdirect.ecommerce.data.common.Response;
 import com.freshdirect.ecommerce.data.smartstore.DynamicSiteFeatureData;
@@ -14,7 +15,6 @@ import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.ejb.DynamicSiteFeature;
-import com.freshdirect.storeapi.application.CmsManager;
 
 public class SmartStoreConfigurationService extends AbstractEcommService implements
 		SmartStoreConfigurationServiceI {

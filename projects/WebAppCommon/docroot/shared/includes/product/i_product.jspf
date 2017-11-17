@@ -19,19 +19,19 @@ This include expects the following:
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import="com.freshdirect.delivery.restriction.EnumDlvRestrictionReason" %>
 <%@ page import='com.freshdirect.framework.util.DayOfWeekSet' %>
-<%@ page import="com.freshdirect.storeapi.content.MediaI"%>
-<%@ page import="com.freshdirect.storeapi.content.BrandModel"%>
-<%@ page import="com.freshdirect.storeapi.content.SkuModel"%>
-<%@ page import="com.freshdirect.storeapi.content.Domain"%>
-<%@ page import="com.freshdirect.storeapi.content.DomainValue"%>
-<%@ page import="com.freshdirect.storeapi.content.ProductModel"%>
+<%@ page import="com.freshdirect.fdstore.content.MediaI"%>
+<%@ page import="com.freshdirect.fdstore.content.BrandModel"%>
+<%@ page import="com.freshdirect.fdstore.content.SkuModel"%>
+<%@ page import="com.freshdirect.fdstore.content.Domain"%>
+<%@ page import="com.freshdirect.fdstore.content.DomainValue"%>
+<%@ page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDCartLineI" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.display.WineRegionLabelTag"%>
 <%@ page import="com.freshdirect.common.pricing.CharacteristicValuePrice"%>
 <%@ page import="com.freshdirect.common.pricing.Pricing"%>
 <%@ page import='com.freshdirect.framework.util.log.LoggerFactory' %>
 <%@ page import="com.freshdirect.common.pricing.ZoneInfo"%>
-<%@ page import='com.freshdirect.storeapi.util.ProductInfoUtil'%>
+<%@ page import='com.freshdirect.cms.util.ProductInfoUtil'%>
 <%@ page import='org.apache.log4j.Category' %>
 
 <%@ taglib uri="logic" prefix="logic" %>

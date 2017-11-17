@@ -1,6 +1,6 @@
 <%@ page import='java.util.*' %>
-<%@ page import='com.freshdirect.storeapi.content.*'  %>
-<%@ page import='com.freshdirect.storeapi.attributes.*'  %>
+<%@ page import='com.freshdirect.fdstore.content.*'  %>
+<%@ page import='com.freshdirect.fdstore.attributes.*'  %>
 <%@ page import='com.freshdirect.fdstore.content.util.*' %>
 
 <%@ page import='com.freshdirect.fdstore.customer.*'  %>
@@ -64,7 +64,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                 
                 <fd:ItemSorter nodes='<%=(List)seafoodCollection%>' strategy='<%=strategy%>'/>
             
-                    <logic:iterate id="fish" collection="<%= seafoodCollection %>" type="com.freshdirect.storeapi.content.ContentNodeModel" indexId="idx">
+                    <logic:iterate id="fish" collection="<%= seafoodCollection %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="idx">
                         <%      
                                 if(!fish.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) continue;
                                     
@@ -164,7 +164,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                                 <img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="40">
                             </td>
                             <td class='bodycells'>
-                                <logic:iterate id="fish" collection="<%= delicateMild %>" type="com.freshdirect.storeapi.content.ContentNodeModel" indexId="idx">
+                                <logic:iterate id="fish" collection="<%= delicateMild %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="idx">
                                     <%
 	                                    String phName = getParentId(fish);
                                     %>
@@ -173,7 +173,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                             </td>
                             <td WIDTH="1" BGCOLOR="<%=green%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="1"></td>
                             <td class='bodycells'>
-                                <logic:iterate id="fish" collection="<%= delicateModerate %>" type="com.freshdirect.storeapi.content.ContentNodeModel" indexId="idx">
+                                <logic:iterate id="fish" collection="<%= delicateModerate %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="idx">
                                     <%
 	                                    String phName = getParentId(fish);
                                     %>
@@ -182,7 +182,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                             </td>
                             <td WIDTH="1" BGCOLOR="<%=green%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="1"></td>
                             <td class='bodycells'>
-                                <logic:iterate id="fish" collection="<%= delicateFull %>" type="com.freshdirect.storeapi.content.ContentNodeModel" indexId="idx">
+                                <logic:iterate id="fish" collection="<%= delicateFull %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="idx">
                                     <%
 	                                    String phName = getParentId(fish);
                                     %>
@@ -206,7 +206,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                                 <img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="40">
                             </td>
                             <td class='bodycells'>
-                                <logic:iterate id="fish" collection="<%= flakyMild %>" type="com.freshdirect.storeapi.content.ContentNodeModel" indexId="idx">
+                                <logic:iterate id="fish" collection="<%= flakyMild %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="idx">
                                     <%
 	                                    String phName = getParentId(fish);
                                     %>
@@ -215,7 +215,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                             </td>
                             <td WIDTH="1" BGCOLOR="<%=green%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="1"></td>
                             <td class='bodycells'>
-                                <logic:iterate id="fish" collection="<%= flakyModerate %>" type="com.freshdirect.storeapi.content.ContentNodeModel" indexId="idx">
+                                <logic:iterate id="fish" collection="<%= flakyModerate %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="idx">
                                     <%
 	                                    String phName = getParentId(fish);
                                     %>
@@ -224,7 +224,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                             </td>
                             <td WIDTH="1" BGCOLOR="<%=green%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="1"></td>
                             <td class='bodycells'>
-                                <logic:iterate id="fish" collection="<%= flakyFull %>" type="com.freshdirect.storeapi.content.ContentNodeModel" indexId="idx">
+                                <logic:iterate id="fish" collection="<%= flakyFull %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="idx">
                                     <%
 	                                    String phName = getParentId(fish);
                                     %>
@@ -248,7 +248,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                                 <img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="40">
                             </td>
                             <td class='bodycells'>
-                                <logic:iterate id="fish" collection="<%= meatyMild %>" type="com.freshdirect.storeapi.content.ContentNodeModel" indexId="idx">
+                                <logic:iterate id="fish" collection="<%= meatyMild %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="idx">
                                     <%
                                     String phName = getParentId(fish);
                                     %>
@@ -257,7 +257,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                             </td>
                             <td WIDTH="1" BGCOLOR="<%=green%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="1"></td>
                             <td class='bodycells'> 
-                                <logic:iterate id="fish" collection="<%= meatyModerate %>" type="com.freshdirect.storeapi.content.ContentNodeModel" indexId="idx">
+                                <logic:iterate id="fish" collection="<%= meatyModerate %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="idx">
                                     <%
                                     String phName = getParentId(fish);
                                     %>
@@ -266,7 +266,7 @@ TD.textureLabels{padding-left:25px; padding-top:4px; padding-right:4px}
                             </td>
                             <td WIDTH="1" BGCOLOR="<%=green%>"><img src="/media_stat/images/layout/clear.gif" alt="" width="1"></td>
                             <td class='bodycells'>
-                                <logic:iterate id="fish" collection="<%= meatyFull %>" type="com.freshdirect.storeapi.content.ContentNodeModel" indexId="idx">
+                                <logic:iterate id="fish" collection="<%= meatyFull %>" type="com.freshdirect.fdstore.content.ContentNodeModel" indexId="idx">
                                     <%
                                     String phName = getParentId(fish);
                                     %>

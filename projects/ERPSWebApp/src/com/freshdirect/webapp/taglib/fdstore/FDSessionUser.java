@@ -18,7 +18,7 @@ import javax.servlet.http.HttpSessionBindingListener;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.context.MasqueradeContext;
 import com.freshdirect.common.context.UserContext;
@@ -47,6 +47,8 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.EnumWinePrice;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.customer.DCPDPromoProductCache;
 import com.freshdirect.fdstore.customer.ExternalCampaign;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -83,8 +85,6 @@ import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.logistics.delivery.model.EnumRegionServiceType;
 import com.freshdirect.smartstore.SessionImpressionLogEntry;
 import com.freshdirect.smartstore.fdstore.SessionImpressionLog;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.ProductReference;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartItem;
 
 public class FDSessionUser implements FDUserI, HttpSessionBindingListener {

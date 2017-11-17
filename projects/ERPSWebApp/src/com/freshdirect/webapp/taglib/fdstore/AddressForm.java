@@ -10,6 +10,7 @@ package com.freshdirect.webapp.taglib.fdstore;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
@@ -22,7 +23,6 @@ import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.webapp.WebFormI;
-import com.freshdirect.storeapi.application.CmsManager;
 
 /**
  *

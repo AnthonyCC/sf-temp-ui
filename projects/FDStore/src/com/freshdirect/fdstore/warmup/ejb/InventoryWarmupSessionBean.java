@@ -21,10 +21,10 @@ import com.freshdirect.fdstore.*;
 import com.freshdirect.fdstore.customer.*;
 import com.freshdirect.fdstore.util.CartFactory;
 import com.freshdirect.fdstore.util.CartLineFactory;
+import com.freshdirect.fdstore.content.*;
 
 import org.apache.log4j.*;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.*;
 
 /**
  * performs inventory checks on skus to sync inventory on the site with inventory levels in the plant.

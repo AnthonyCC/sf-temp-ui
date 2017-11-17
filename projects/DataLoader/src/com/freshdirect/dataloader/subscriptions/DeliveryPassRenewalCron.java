@@ -55,6 +55,8 @@ import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -82,9 +84,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.EnumZipCheckResponses;
 import com.freshdirect.mail.ErpMailSender;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.smartstore.fdstore.CohortSelector;
 
 public class DeliveryPassRenewalCron {
 
@@ -220,7 +219,7 @@ public class DeliveryPassRenewalCron {
 		String orderID="";
 		if(lastOrder!=null) {
 			try {
-			identity=getFDIdentity(erpCustomerID);
+				identity=getFDIdentity(erpCustomerID);
 				actionInfo=getFDActionInfo(identity);
 				user=FDCustomerManager.getFDUser(identity);
 				actionInfo.setIdentity(user.getIdentity());
@@ -230,7 +229,7 @@ public class DeliveryPassRenewalCron {
 				ae.printStackTrace(new PrintWriter(sw));	
 				email(erpCustomerID,sw.getBuffer().toString());
 			}
-
+			
 			if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.debitCardSwitch, user)){
 				if(null==user.getFDCustomer().getDefaultPaymentMethodPK() || null == user.getFDCustomer().getDefaultPaymentType() || 
 						user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName())){
@@ -246,7 +245,6 @@ public class DeliveryPassRenewalCron {
 			}else{
 			pymtMethod=getMatchedPaymentMethod(lastOrder.getPaymentMethod(),getPaymentMethods(user.getIdentity()));
 			}
-			
 			if(pymtMethod!=null) {
 				if(!pymtMethod.getCardType().equals(EnumCardType.PAYPAL) && !pymtMethod.getCardType().equals(EnumCardType.ECP) && isExpiredCC(pymtMethod)) {
 					LOGGER.warn("Autorenewal order payment method is expired for customer :"+erpCustomerID);
@@ -613,7 +611,7 @@ public class DeliveryPassRenewalCron {
 		buf.append("</table>");
 		return buf.toString();
     }
-   
+	
 	private static ErpPaymentMethodI getPaymentMethod(String paymentMethodPk, Collection<ErpPaymentMethodI> paymentMethods){
 		for(Iterator<ErpPaymentMethodI> i=paymentMethods.iterator(); i.hasNext();){
 			ErpPaymentMethodI pmethod = i.next();

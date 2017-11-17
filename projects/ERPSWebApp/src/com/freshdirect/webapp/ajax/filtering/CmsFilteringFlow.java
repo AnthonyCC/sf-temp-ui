@@ -17,18 +17,39 @@ import org.apache.commons.lang.CharEncoding;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.WineUtil;
-import com.freshdirect.cms.cache.CmsCaches;
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDNotFoundException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.ProductModelPromotionAdapter;
 import com.freshdirect.fdstore.brandads.FDBrandProductsAdManager;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdInfo;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdRequest;
 import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
 import com.freshdirect.fdstore.brandads.service.BrandProductAdServiceException;
+import com.freshdirect.fdstore.cache.EhCacheUtil;
+import com.freshdirect.fdstore.content.AbstractProductItemFilter;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.EnumBrandFilterLocation;
+import com.freshdirect.fdstore.content.EnumLayoutType;
+import com.freshdirect.fdstore.content.EnumSortingValue;
+import com.freshdirect.fdstore.content.FilteringProductItem;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
+import com.freshdirect.fdstore.content.Html;
+import com.freshdirect.fdstore.content.PopulatorUtil;
+import com.freshdirect.fdstore.content.ProductContainer;
+import com.freshdirect.fdstore.content.ProductItemFilterI;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductModelBrandAdsAdapter;
+import com.freshdirect.fdstore.content.Recipe;
+import com.freshdirect.fdstore.content.RecipeDepartment;
+import com.freshdirect.fdstore.content.SearchResults;
+import com.freshdirect.fdstore.content.SuperDepartmentModel;
 import com.freshdirect.fdstore.content.browse.filter.BrandFilter;
 import com.freshdirect.fdstore.content.browse.filter.ContentNodeFilter;
 import com.freshdirect.fdstore.content.util.SmartSearchUtils;
@@ -36,27 +57,6 @@ import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.ProductModelPromotionAdapter;
-import com.freshdirect.storeapi.content.AbstractProductItemFilter;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.EnumBrandFilterLocation;
-import com.freshdirect.storeapi.content.EnumLayoutType;
-import com.freshdirect.storeapi.content.EnumSortingValue;
-import com.freshdirect.storeapi.content.FilteringProductItem;
-import com.freshdirect.storeapi.content.FilteringSortingItem;
-import com.freshdirect.storeapi.content.Html;
-import com.freshdirect.storeapi.content.PopulatorUtil;
-import com.freshdirect.storeapi.content.ProductContainer;
-import com.freshdirect.storeapi.content.ProductItemFilterI;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.ProductModelBrandAdsAdapter;
-import com.freshdirect.storeapi.content.Recipe;
-import com.freshdirect.storeapi.content.RecipeDepartment;
-import com.freshdirect.storeapi.content.SearchResults;
-import com.freshdirect.storeapi.content.SuperDepartmentModel;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.analytics.service.GoogleAnalyticsDataService;
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
@@ -110,7 +110,8 @@ public class CmsFilteringFlow {
 	public BrowseData doBrowseSectionsFlow(CmsFilteringNavigator nav, FDSessionUser user)
 			throws InvalidFilteringArgumentException, FDResourceException, FDNotFoundException {
 		String cacheKey = user.getUser().getPrimaryKey() + "," + nav.getId() + ",sec" + nav.getActivePage() + "_" + nav.getPageSize();
-		BrowseData browseData = EhCacheUtilWrapper.getObjectFromCache(CmsCaches.BR_USER_REFINEMENT_CACHE.cacheName, cacheKey);
+		BrowseData browseData = EhCacheUtilWrapper.getObjectFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME,
+				cacheKey);
 		if (browseData != null) {
 			return browseData;
 		}
@@ -144,10 +145,10 @@ public class CmsFilteringFlow {
 		browseData.setSearchParams(null);
 		browseData.setPager(null);
 
-		EhCacheUtilWrapper.putObjectToCache(CmsCaches.BR_USER_REFINEMENT_CACHE.cacheName, cacheKey, browseData);
+		EhCacheUtilWrapper.putObjectToCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, cacheKey, browseData);
 		return browseData;
 	}
-
+	
     public CmsFilteringFlowResult doFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException, FDResourceException, FDNotFoundException {
         BrowseData browseData = null;
         String cacheKey = user.getUser().getPrimaryKey() + "," + nav.getId();
@@ -159,7 +160,7 @@ public class CmsFilteringFlow {
             }
 
             if (!nav.isPdp() && !nav.isSpecialPage()) { //TODO quick fix for TKG meals (special layouts)
-                EhCacheUtilWrapper.putObjectToCache(CmsCaches.BR_USER_REFINEMENT_CACHE.cacheName, cacheKey, browseDataContext);
+                EhCacheUtilWrapper.putObjectToCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, cacheKey, browseDataContext);
             }
 
             // -- SORTING -- (not on pdp or super department page)
@@ -279,7 +280,7 @@ public class CmsFilteringFlow {
             if (browseDataContext == null) {
                 browseDataContext = doSearchLikeFlow(nav, user);
             }
-            EhCacheUtilWrapper.putObjectToCache(CmsCaches.BR_USER_REFINEMENT_CACHE.cacheName, user.getUser().getPrimaryKey(), browseDataContext);
+            EhCacheUtilWrapper.putObjectToCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, user.getUser().getPrimaryKey(), browseDataContext);
 
             BrowseDataBuilderFactory.getInstance().processSorting(browseDataContext, nav, user);
 
@@ -390,21 +391,21 @@ public class CmsFilteringFlow {
         BrowseDataContext browseDataContext = null;
         // use userRefinementCache
 
-        browseDataContext = EhCacheUtilWrapper.getObjectFromCache(CmsCaches.BR_USER_REFINEMENT_CACHE.cacheName, cacheKey);
+        browseDataContext = EhCacheUtilWrapper.getObjectFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, cacheKey);
         if (browseDataContext == null) {
         	return null;
         }
         if (!isRequestForTheSamePageType(nav, browseDataContext)) {
-            EhCacheUtilWrapper.removeFromCache(CmsCaches.BR_USER_REFINEMENT_CACHE.cacheName, cacheKey); // if cached has other page type
+            EhCacheUtilWrapper.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, cacheKey); // if cached has other page type
             browseDataContext = null;
         } else {
-            if (FilteringFlowType.BROWSE.equals(nav.getPageType()) &&
+            if (FilteringFlowType.BROWSE.equals(nav.getPageType()) && 
             		(!isBrowseRequestForTheSameId(nav, browseDataContext) || !isBrowseRequestForSameFilter(nav, browseDataContext))) {
-                EhCacheUtilWrapper.removeFromCache(CmsCaches.BR_USER_REFINEMENT_CACHE.cacheName, cacheKey); // if cached has same page type(browse) but other id or filter
+                EhCacheUtilWrapper.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, cacheKey); // if cached has same page type(browse) but other id or filter
                 browseDataContext = null;
-            } else if (FilteringFlowType.SEARCH.equals(nav.getPageType()) &&
-                	(!isRequestForTheSameSearchParams(nav, browseDataContext) || !isBrowseRequestForSameFilter(nav, browseDataContext))) {
-                EhCacheUtilWrapper.removeFromCache(CmsCaches.BR_USER_REFINEMENT_CACHE.cacheName, cacheKey); // if cached has same page type(search) but other search params or filter
+            } else if (FilteringFlowType.SEARCH.equals(nav.getPageType()) && 
+            		(!isRequestForTheSameSearchParams(nav, browseDataContext) || !isBrowseRequestForSameFilter(nav, browseDataContext))) {
+                EhCacheUtilWrapper.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, cacheKey); // if cached has same page type(search) but other search params or filter
                 browseDataContext = null;
             }
         }
@@ -425,21 +426,21 @@ public class CmsFilteringFlow {
         return browseDataContext != null && browseDataContext.getCurrentContainer() != null && browseDataContext.getCurrentContainer().getContentName() != null
                 && browseDataContext.getCurrentContainer().getContentName().equalsIgnoreCase(navigator.getId());
     }
-
+    
     private boolean isBrowseRequestForSameFilter(CmsFilteringNavigator navigator, BrowseDataContext browseDataContext) {
     	Map<String, List<String>> navFilter = navigator.getRequestFilterParams();
     	Map<String, List<String>> contextFilter = browseDataContext.getRequestFilterParams();
-
+    	
     	if ( (navFilter == null && contextFilter != null) ||
     			(navFilter != null && contextFilter == null)){
     		return false;
     	}
-
+    	
     	if ( (navFilter == null && contextFilter == null) ||
     			(navFilter.size() == 0 && contextFilter.size() == 0)){
     		return true;
     	}
-
+    	
     	if(navFilter.size() != contextFilter.size()){
     		return false;
     	}
@@ -965,7 +966,7 @@ public class CmsFilteringFlow {
         browseDataContext = BrowseDataBuilderFactory.createBuilder(navigationModel.getNavDepth(), navigationModel.isSuperDepartment(), null).buildBrowseData(navigationModel, user,
                 nav);
 
-        if (!nav.isPdp() &&
+        if (!nav.isPdp() && 
         		!nav.populateSectionsOnly() &&
         		null != browseDataContext &&
         		displayHookLogicProducts(nav, user, contentNodeModel)) {         //if(FDStoreProperties.isHookLogicEnabled()){
@@ -1002,7 +1003,7 @@ public class CmsFilteringFlow {
             MenuBuilderFactory.getInstance().checkMenuStatus(browseDataContext, navigationModel, user);
         }
 
-
+        
         if (!nav.populateSectionsOnly()) {
         	// populate browseData with the menu
 	        browseDataContext.getMenuBoxes().setMenuBoxes(navigationModel.getLeftNav());
@@ -1010,18 +1011,18 @@ public class CmsFilteringFlow {
 	        browseDataContext.getMenuBoxes().setMenuName(departmentorSuperDepartment.getFullName());
 	        browseDataContext.getMenuBoxes().setMenuId(departmentorSuperDepartment.getContentKey().getId());
 	        // -- POPULATE EXTRA DATA --
-
+	
 	        // populate browseData with breadcrumbs
         	BrowseDataBuilderFactory.getInstance().populateWithBreadCrumbAndDesciptiveContent(browseDataContext, navigationModel);
         	relocateBrandFilterBasedOnCmsSetting(browseDataContext);
-
+        
 
 	        // populate browseData with filterLabels
 	        BrowseDataBuilderFactory.getInstance().populateWithFilterLabels(browseDataContext, navigationModel);
-
+	
 	        boolean isWineDepartment = checkWineDepartment(navigationModel);
 	        browseDataContext.getDescriptiveContent().setWineDepartment(isWineDepartment);
-
+	
 	        if (contentNodeModel instanceof CategoryModel && ((CategoryModel) contentNodeModel).getSpecialLayout() != null) {
 	            if (EnumLayoutType.HOLIDAY_MEAL_BUNDLE_CATEGORY.equals(((CategoryModel) contentNodeModel).getSpecialLayout())) {
 	                browseDataContext.setTopMedia(HolidayMealBundleService.defaultService().populateHolidayMealCategoryMedia(navigationModel));

@@ -9,10 +9,10 @@
 <%@page import="java.util.List"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.Set"%>
-<%@page import="com.freshdirect.storeapi.content.CategoryModel"%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
-<%@page import="com.freshdirect.storeapi.content.ContentNodeModel"%>
-<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
 <%@page import="com.freshdirect.fdstore.util.EnumSiteFeature"%>
 <%@page import="com.freshdirect.fdstore.util.URLGenerator"%>
@@ -28,7 +28,7 @@
 <%@page import="org.apache.commons.lang.math.NumberUtils"%>
 <%@page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil"%>
 <%@page import="com.freshdirect.fdstore.customer.FDCartLineI"%>
-<%@page import="com.freshdirect.storeapi.ContentNodeI"%>
+<%@page import="com.freshdirect.cms.ContentNodeI"%>
 <%@page import="com.freshdirect.smartstore.fdstore.CohortSelector"%>
 <%@page import="com.freshdirect.smartstore.fdstore.VariantSelectorFactory"%>
 <%@page import="com.freshdirect.common.pricing.ZoneInfo"%>
@@ -356,7 +356,7 @@ p.fi{margin:20px 0px;}
 			</tr>
 			<tr valign="bottom">
 				<logic:iterate id='contentNode' collection="<%=products%>"
-						type="com.freshdirect.storeapi.content.ProductModel">
+						type="com.freshdirect.fdstore.content.ProductModel">
 					<%
 						ProductModel productNode = contentNode;
 						String fiRating = "";
@@ -381,7 +381,7 @@ p.fi{margin:20px 0px;}
 			</tr>
 			<tr valign="top">
 				<logic:iterate id='contentNode' collection="<%=products%>"
-						type="com.freshdirect.storeapi.content.ProductModel">
+						type="com.freshdirect.fdstore.content.ProductModel">
 					<%
 						ProductModel productNode = contentNode;
 									String fiRating = "";

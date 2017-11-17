@@ -9,19 +9,18 @@ import java.util.Map.Entry;
 import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.VariableInfo;
 
-import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.EnumSearchFilteringValue;
+import com.freshdirect.fdstore.content.EnumSortingValue;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.Recipe;
+import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.framework.util.DateUtil;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.EnumSearchFilteringValue;
-import com.freshdirect.storeapi.content.EnumSortingValue;
-import com.freshdirect.storeapi.content.FilteringSortingItem;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.Recipe;
-import com.freshdirect.storeapi.content.SearchResults;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
 public class GetNewProductSimpleTag extends AbstractGetterTag<SearchResults> {
@@ -66,28 +65,22 @@ public class GetNewProductSimpleTag extends AbstractGetterTag<SearchResults> {
 	protected SearchResults getResult() throws Exception {
 		Date now = new Date();
 		List<FilteringSortingItem<ProductModel>> items = new ArrayList<FilteringSortingItem<ProductModel>>(1000);
-        Map<ContentKey, Map<String, Date>> newProducts = ContentFactory.getInstance().getNewProducts();
+		Map<ProductModel, Map<String,Date>> newProducts = ContentFactory.getInstance().getNewProducts();
 		ZoneInfo zone=ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo();
 		String productNewnessKey="";
 		if(zone!=null) {
 			productNewnessKey=new StringBuilder(5).append(zone.getSalesOrg()).append(zone.getDistributionChanel()).toString();
 		}
-        for (Entry<ContentKey, Map<String, Date>> entry : newProducts.entrySet()) {
+		for (Entry<ProductModel, Map<String,Date>> entry : newProducts.entrySet()) {
 			Map<String,Date> newProductsBySalesArea=entry.getValue();
-            if (newProductsBySalesArea.containsKey(productNewnessKey)) {
-                ProductModel product = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(entry.getKey());
-                items.add(new FilteringSortingItem<ProductModel>(product).putSortingValue(EnumSortingValue.NEWNESS,
-                        DateUtil.diffInDays(now, entry.getValue().get(productNewnessKey))));
-            }
+			if(newProductsBySalesArea.containsKey(productNewnessKey))
+				items.add(new FilteringSortingItem<ProductModel>(entry.getKey()).putSortingValue(EnumSortingValue.NEWNESS, DateUtil.diffInDays(now, entry.getValue().get(productNewnessKey))));
 		}
 		newProducts = ContentFactory.getInstance().getBackInStockProducts();
-        for (Entry<ContentKey, Map<String, Date>> entry : newProducts.entrySet()) {
+		for (Entry<ProductModel, Map<String,Date>> entry : newProducts.entrySet()) {
 			Map<String,Date> newProductsBySalesArea=entry.getValue();
-            if (newProductsBySalesArea.containsKey(productNewnessKey)) {
-                ProductModel product = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(entry.getKey());
-                items.add(new FilteringSortingItem<ProductModel>(product).putSortingValue(EnumSortingValue.NEWNESS,
-                        DateUtil.diffInDays(now, entry.getValue().get(productNewnessKey))));
-            }
+			if(newProductsBySalesArea.containsKey(productNewnessKey))
+				items.add(new FilteringSortingItem<ProductModel>(entry.getKey()).putSortingValue(EnumSortingValue.NEWNESS, DateUtil.diffInDays(now, entry.getValue().get(productNewnessKey))));
 		}
 		SearchResults results = new SearchResults(items, FilteringSortingItem.<Recipe> emptyList(),
 				FilteringSortingItem.<CategoryModel> emptyList(), null, false);

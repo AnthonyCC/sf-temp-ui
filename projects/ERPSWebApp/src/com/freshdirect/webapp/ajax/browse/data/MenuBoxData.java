@@ -2,7 +2,7 @@ package com.freshdirect.webapp.ajax.browse.data;
 
 import java.util.List;
 
-import com.freshdirect.storeapi.content.ProductFilterGroupType;
+import com.freshdirect.fdstore.content.ProductFilterGroupType;
 
 public class MenuBoxData extends BasicData {
 	

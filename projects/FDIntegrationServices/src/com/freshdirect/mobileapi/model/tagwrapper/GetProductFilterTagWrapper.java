@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.content.FilteringValue;
+import com.freshdirect.fdstore.content.FilteringMenuItem;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
-import com.freshdirect.storeapi.content.FilteringMenuItem;
-import com.freshdirect.storeapi.content.FilteringSortingItem;
-import com.freshdirect.storeapi.content.FilteringValue;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.SearchResults;
 import com.freshdirect.webapp.taglib.content.ProductsFilterTag;
 
 /**

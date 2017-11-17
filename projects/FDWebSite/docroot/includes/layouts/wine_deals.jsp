@@ -4,18 +4,18 @@
 <%@page import="java.util.Collection"%>
 <%@page import="java.util.Collections"%>
 <%@page import="com.freshdirect.fdstore.content.util.SmartSearchUtils"%>
-<%@page import="com.freshdirect.storeapi.content.PriceCalculator"%>
+<%@page import="com.freshdirect.fdstore.content.PriceCalculator"%>
 <%@page import="com.freshdirect.fdstore.content.EnumWineRating"%>
-<%@page import="com.freshdirect.storeapi.content.CategoryModel"%>
-<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
 <%@page import="com.freshdirect.fdstore.pricing.ProductPricingFactory"%>
 <%@page import="com.freshdirect.common.pricing.PricingContext"%>
 <%@page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
-<%@page import="com.freshdirect.storeapi.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
 <%@page import="com.freshdirect.webapp.util.ProductImpression"%>
-<%@page import="com.freshdirect.storeapi.content.Image"%>
+<%@page import="com.freshdirect.fdstore.content.Image"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>

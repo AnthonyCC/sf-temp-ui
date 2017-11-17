@@ -8,104 +8,88 @@ import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.storeapi.content.BrandModel;
-import com.freshdirect.storeapi.content.DomainValue;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.SkuModel;
+import com.freshdirect.fdstore.content.BrandModel;
+import com.freshdirect.fdstore.content.DomainValue;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SkuModel;
 
 public class SkuModelPricingAdapter extends SkuModel {
 	private PricingContext pricingCtx;
 	private SkuModel innerSku;
-
+	
 	public SkuModelPricingAdapter(SkuModel sku, PricingContext pCtx) {
-        super(sku.getContentKey(), sku.getParentKey());
+		super(sku.getContentKey());
 		this.innerSku = sku;
 		this.pricingCtx = pCtx;
 
 	}
-	@Override
-    public Object clone() {
+	public Object clone() {
 		return innerSku.clone();
 	}
 
-	@Override
-    public String getSkuCode(){
+	public String getSkuCode(){
 	    return innerSku.getSkuCode();
 	}
-
-	@Override
-    public List<DomainValue> getVariationMatrix() {
+	
+	public List<DomainValue> getVariationMatrix() {
 		return innerSku.getVariationMatrix();
 	}
-
-	@Override
-    public List<DomainValue> getVariationOptions() {
+	
+	public List<DomainValue> getVariationOptions() {
 		return innerSku.getVariationOptions();
 	}
-
-	@Override
-    public boolean isDiscontinued() {
+	
+	public boolean isDiscontinued() {
 		return innerSku.isDiscontinued();
 	}
-
-	@Override
-    public boolean isTempUnavailable() {
+	
+	public boolean isTempUnavailable() {
 		return innerSku.isTempUnavailable();
 	}
 
-	@Override
-    public boolean isOutOfSeason() {
+	public boolean isOutOfSeason() {
 		return innerSku.isOutOfSeason();
 	}
-
-	@Override
-    public boolean isUnavailable() {
+	
+	public boolean isUnavailable() {
 		return innerSku.isUnavailable();
 	}
-
-
-	@Override
-    public boolean isAvailableWithin(int days) {
+		
+	
+	public boolean isAvailableWithin(int days) {
 		return innerSku.isAvailableWithin(days);
 	}
-
-	@Override
-    public Date getEarliestAvailability() {
+	
+	public Date getEarliestAvailability() {
 		return innerSku.getEarliestAvailability();
 	}
-
+	
 	/** @return null if sku is available */
-	@Override
-    public String getEarliestAvailabilityMessage() {
+	public String getEarliestAvailabilityMessage() {
 		return innerSku.getEarliestAvailabilityMessage();
 	}
 
-
-	@Override
-    public FDProductInfo getProductInfo() throws FDResourceException, FDSkuNotFoundException {
+	
+	public FDProductInfo getProductInfo() throws FDResourceException, FDSkuNotFoundException {
 		return innerSku.getProductInfo();
 	}
-
-    @Override
+    
     public FDProduct getProduct() throws FDResourceException, FDSkuNotFoundException {
     	return innerSku.getProduct();
 	}
 
-    @Override
     public ProductModel getProductModel() {
     	return ProductPricingFactory.getInstance().getPricingAdapter(innerSku.getProductModel(),pricingCtx);
     }
-
-	@Override
-    public List<BrandModel> getBrands() {
+    
+	public List<BrandModel> getBrands() {
 		return innerSku.getBrands();
 	}
-
-	@Override
-    public PricingContext getPricingContext() {
+	
+	public PricingContext getPricingContext() {
 		return this.pricingCtx;
 	}
-
+	
 	public SkuModel getRealSku() {
 		return innerSku;
 	}

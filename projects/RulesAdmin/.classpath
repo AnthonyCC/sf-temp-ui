@@ -2,6 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="src" path="/FDStore"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/tapestry-4.0.2.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/tapestry-contrib-4.0.2.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-digester-1.5.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-fileupload-1.1.1.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/bsf-2.3.0.jar"/>
@@ -11,10 +13,5 @@
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.syslib"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/tapestry-4.0.2.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/tapestry-contrib-4.0.2.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/hivemind-1.1.1.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/hivemind-lib-1.1.1.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/StoreAPI"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

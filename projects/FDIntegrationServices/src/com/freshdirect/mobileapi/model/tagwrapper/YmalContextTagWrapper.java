@@ -1,8 +1,8 @@
 package com.freshdirect.mobileapi.model.tagwrapper;
 
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.mobileapi.model.SessionUser;
-import com.freshdirect.storeapi.content.YmalSource;
 import com.freshdirect.webapp.taglib.smartstore.YmalContextTag;
 
 /**

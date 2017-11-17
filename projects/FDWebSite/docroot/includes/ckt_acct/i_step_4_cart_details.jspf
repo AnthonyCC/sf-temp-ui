@@ -1,6 +1,6 @@
 <%@page import="com.freshdirect.common.pricing.EnumDiscountType"%>
 <%@page import="com.freshdirect.common.context.MasqueradeContext"%>
-<%@ page import='com.freshdirect.fdstore.*,com.freshdirect.fdstore.customer.*,com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.fdstore.*,com.freshdirect.fdstore.customer.*,com.freshdirect.fdstore.content.*' %>
 <%@ page import="com.freshdirect.fdstore.promotion.PromotionI" %>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import="com.freshdirect.common.pricing.Discount" %>

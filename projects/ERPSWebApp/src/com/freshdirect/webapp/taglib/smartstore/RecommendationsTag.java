@@ -9,21 +9,22 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.event.ImpressionLogger;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.fdstore.Recommendations;
-import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.FDEventUtil;
 
 public abstract class RecommendationsTag extends AbstractGetterTag<Recommendations> {
-
+	
 	private static final Logger LOGGER = LoggerFactory.getInstance( RecommendationsTag.class );
 
 	private static final long serialVersionUID = -7592561069328056899L;
@@ -35,29 +36,29 @@ public abstract class RecommendationsTag extends AbstractGetterTag<Recommendatio
      * Product window size property.
      */
     protected int windowSize = 0;
-
-
+    
+    
 
     // if this set true tag should not recommend new. Instead, return the
     // previous if any
     protected boolean errorOccurred = false;
-
+    
     protected String parentFeatureImpressionId;
-
+    
     protected String parentVariantId;
-
+    
     protected String facility;
-
-    protected abstract Recommendations getRecommendations() throws FDResourceException;
+    
+    protected abstract Recommendations getRecommendations() throws FDResourceException, InvalidContentKeyException;
 
     public void setItemCount(int cnt) {
         this.itemCount = cnt;
     }
-
+    
 	public void setWindowSize(int windowSize) {
 		this.windowSize = windowSize;
 	}
-
+    
     public void setParentFeatureImpressionId(String id) {
         this.parentFeatureImpressionId = id;
     }
@@ -65,22 +66,22 @@ public abstract class RecommendationsTag extends AbstractGetterTag<Recommendatio
     public void setParentVariantId(String parentVariantId) {
         this.parentVariantId = parentVariantId;
     }
-
+    
     public void setErrorOccurred(boolean flag) {
         this.errorOccurred = flag;
     }
-
+    
     public void setFacility(String facility) {
 		this.facility = facility;
 	}
-
+    
     protected void persistToSession(Recommendations r) {
         Map<String, List<ContentKey>> previousRecommendations = r.getPreviousRecommendations();
         if (previousRecommendations!=null) {
             pageContext.getSession().setAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS, previousRecommendations);
         }
     }
-
+    
     @SuppressWarnings( "unchecked" )
 	protected void initFromSession(SessionInput input) {
         HttpSession session = pageContext.getSession();
@@ -89,7 +90,7 @@ public abstract class RecommendationsTag extends AbstractGetterTag<Recommendatio
 
     /**
      * Generate event for impression logging
-     *
+     * 
      * @param r
      *            Recommendation to log
      * @author segabor
@@ -110,7 +111,7 @@ public abstract class RecommendationsTag extends AbstractGetterTag<Recommendatio
 
     	if (ImpressionLogger.isGlobalEnabled()) {
             Impression imp = Impression.get(user, (HttpServletRequest) pageContext.getRequest(), facility);
-
+            
             int rank = 1;
             Map<ContentKey,String> map = new HashMap<ContentKey,String>();
             String featureImpId = imp.logFeatureImpression(parentFeatureImpressionId, parentVariantId, r);
@@ -128,13 +129,13 @@ public abstract class RecommendationsTag extends AbstractGetterTag<Recommendatio
 
     /**
      * Heart of tag can be found here.
-     *
+     * 
      * @return List of <{@link Recommendation}>
      */
     @Override
     protected Recommendations getResult() throws Exception {
         Recommendations results = getRecommendations();
-
+        
 		if (results == null || results.getProducts().isEmpty()) {
         	//LOGGER.debug("Return empty result");
         	results = null;
@@ -144,7 +145,7 @@ public abstract class RecommendationsTag extends AbstractGetterTag<Recommendatio
             final List<ProductModel> products = results.getProducts();
             // do impression logging
             logImpressions(results);
-
+            
             // DEBUG --> print out recommended products
             //
             StringBuilder buf = new StringBuilder();
@@ -175,7 +176,6 @@ public abstract class RecommendationsTag extends AbstractGetterTag<Recommendatio
 
 
     public static class TagEI extends AbstractGetterTag.TagEI {
-        @Override
         protected String getResultType() {
             return "com.freshdirect.smartstore.fdstore.Recommendations";
         }

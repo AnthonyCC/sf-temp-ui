@@ -1,8 +1,8 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
 <%@ page import='java.net.URLEncoder'%>
-<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
@@ -11,7 +11,7 @@
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.framework.util.*' %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
-<%@ page import='com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -28,29 +28,29 @@
 </head>
 <body class="ddpp">
 <display:InitLayout/>
-getProductPromotionType: <%=((com.freshdirect.storeapi.content.CategoryModel)currentFolder).getProductPromotionType()%><br />
-getProducts: <%=((com.freshdirect.storeapi.content.CategoryModel)currentFolder).getProducts()%><br />
-getFDProductPromotion: <%--=((com.freshdirect.storeapi.content.CategoryModel)currentFolder).getFDProductPromotion()--%><br />
+getProductPromotionType: <%=((com.freshdirect.fdstore.content.CategoryModel)currentFolder).getProductPromotionType()%><br />
+getProducts: <%=((com.freshdirect.fdstore.content.CategoryModel)currentFolder).getProducts()%><br />
+getFDProductPromotion: <%--=((com.freshdirect.fdstore.content.CategoryModel)currentFolder).getFDProductPromotion()--%><br />
 <%
 	ProductModel pm = null;
-	//pm = ((com.freshdirect.storeapi.content.CategoryModel)currentFolder).getPromotionPageProductForSku("MEA0064908");
+	//pm = ((com.freshdirect.fdstore.content.CategoryModel)currentFolder).getPromotionPageProductForSku("MEA0064908");
 %>
 getPromotionPageProductForSku("MEA0064908"): <% out.println((pm !=null) ? pm.toString() : "pm is null"); %><br />
 <%
-	//pm = ((com.freshdirect.storeapi.content.CategoryModel)currentFolder).getPromotionPageProductForSku("FRO0060591");
+	//pm = ((com.freshdirect.fdstore.content.CategoryModel)currentFolder).getPromotionPageProductForSku("FRO0060591");
 %>
 getPromotionPageProductForSku("FRO0060591"): <% out.println((pm !=null) ? pm.toString() : "pm is null"); %><br />
 <%
-	//pm = ((com.freshdirect.storeapi.content.CategoryModel)currentFolder).getPromotionPageProductForSku("DAI0068808");
+	//pm = ((com.freshdirect.fdstore.content.CategoryModel)currentFolder).getPromotionPageProductForSku("DAI0068808");
 %>
 getPromotionPageProductForSku("DAI0068808"): <% out.println((pm !=null) ? pm.toString() : "pm is null"); %><br />
 <%
 
 	/*
 		if (currentFolder != null && currentFolder instanceof CategoryModel) {
-			if ( ((com.freshdirect.storeapi.content.CategoryModel)currentFolder).getFDProductPromotion() != null) {
+			if ( ((com.freshdirect.fdstore.content.CategoryModel)currentFolder).getFDProductPromotion() != null) {
 				out.println("FDProductPromotion for catId: " + categoryId);
-				out.println(((com.freshdirect.storeapi.content.CategoryModel)currentFolder).getProducts());
+				out.println(((com.freshdirect.fdstore.content.CategoryModel)currentFolder).getProducts());
 			} else {
 				out.println("No FDProductPromotion for catId: " + categoryId);
 			}

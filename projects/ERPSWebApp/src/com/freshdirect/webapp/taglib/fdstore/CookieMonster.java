@@ -14,7 +14,7 @@ public class CookieMonster {
 
     private static final String COOKIE_NAME = "FDUser";
     private static final int COOKIE_MAXAGE = 365 * 24 * 60 * 60;
-	
+
 	public static String getCookie(HttpServletRequest request){
 		Cookie[] cookies = request.getCookies();
 		if (cookies == null) {
@@ -50,5 +50,5 @@ public class CookieMonster {
 		response.addCookie(c);
 		LOGGER.debug("Cleared cookie " + COOKIE_NAME);
 	}
-			
+
 }

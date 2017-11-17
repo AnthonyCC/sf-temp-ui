@@ -34,6 +34,7 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/jsse.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/regexp.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/sunrsasign.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/ehcache-2.10.0.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/logistics-data-0.0.1-SNAPSHOT.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/httpclient-4.5.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/httpcore-4.4.1.jar"/>
@@ -46,6 +47,5 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-core-4.0.1.RELEASE.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-beans-4.0.1.RELEASE.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/fdcommerce-data.jar"/>
-	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/ehcache-2.10.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

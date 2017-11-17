@@ -3,8 +3,6 @@ package com.freshdirect.fdstore.content;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.freshdirect.storeapi.content.ProductModel;
-
 /**
  * Recommended alternative with parameters.
  * 

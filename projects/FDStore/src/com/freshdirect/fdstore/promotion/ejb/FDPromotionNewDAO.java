@@ -28,6 +28,7 @@ import com.freshdirect.delivery.EnumDeliveryOption;
 import com.freshdirect.delivery.EnumPromoFDXTierType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ProductReferenceImpl;
 import com.freshdirect.fdstore.promotion.ActiveInactiveStrategy;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
 import com.freshdirect.fdstore.promotion.AudienceStrategy;
@@ -81,7 +82,6 @@ import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.ProductReferenceImpl;
 
 public class FDPromotionNewDAO {
 	private static final int DEFAULT_ASSIGNED_CUSTOMER_PARAMS_QUERY_ID=1;

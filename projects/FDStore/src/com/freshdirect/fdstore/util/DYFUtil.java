@@ -1,9 +1,9 @@
 package com.freshdirect.fdstore.util;
 
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
-import com.freshdirect.storeapi.content.ProductModel;
 
 public class DYFUtil {
 	/**

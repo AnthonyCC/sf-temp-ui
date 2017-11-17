@@ -11,9 +11,9 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.framework.webapp.BodyTagSupport;
-import com.freshdirect.storeapi.content.ContentNodeModel;
 
 public class UniqueFilterTag extends BodyTagSupport {
 	private static final long serialVersionUID = -7851244467799232366L;
@@ -94,7 +94,7 @@ public class UniqueFilterTag extends BodyTagSupport {
 		@Override
 		public VariableInfo[] getVariableInfo(TagData data) {
 			return new VariableInfo[] { new VariableInfo(data.getAttributeString("out"),
-					"java.util.List<com.freshdirect.storeapi.content.ContentNodeModel>", true, VariableInfo.NESTED) };
+					"java.util.List<com.freshdirect.fdstore.content.ContentNodeModel>", true, VariableInfo.NESTED) };
 		}
 	}
 }

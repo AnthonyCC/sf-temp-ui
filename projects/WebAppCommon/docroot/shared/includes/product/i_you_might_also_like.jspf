@@ -1,4 +1,4 @@
-<%@page import="com.freshdirect.storeapi.content.ProductModel"%><%
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%><%
     ProductModel pm = ContentFactory.getInstance().getProductByName("sea_finder", productNode.getContentName());
     
     if(pm == null){

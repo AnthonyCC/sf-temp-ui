@@ -7,17 +7,17 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ArticleMedia;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.EnumShowChildrenType;
+import com.freshdirect.fdstore.content.Html;
+import com.freshdirect.fdstore.content.ProductContainer;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.util.CartesianProduct.TupleIterator;
 import com.freshdirect.framework.webapp.BodyTagSupport;
-import com.freshdirect.storeapi.content.ArticleMedia;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.EnumShowChildrenType;
-import com.freshdirect.storeapi.content.Html;
-import com.freshdirect.storeapi.content.ProductContainer;
-import com.freshdirect.storeapi.content.ProductModel;
 
 public abstract class BaseSideNav extends BodyTagSupport {
 

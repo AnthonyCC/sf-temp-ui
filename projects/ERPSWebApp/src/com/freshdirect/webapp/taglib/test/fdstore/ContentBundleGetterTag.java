@@ -1,27 +1,27 @@
 package com.freshdirect.webapp.taglib.test.fdstore;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import com.freshdirect.cms.ContentType;
+import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.fdstore.content.test.ContentBundle;
+import com.freshdirect.fdstore.content.test.ContentNodeSampler;
+import com.freshdirect.fdstore.content.test.ContentNodeSamplerImpl;
+import com.freshdirect.framework.util.UniqueRandomSequence;
+import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.taglib.AbstractGetterTag;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.functors.TruePredicate;
 import org.apache.log4j.Category;
 
-import com.freshdirect.cms.core.domain.ContentType;
-import com.freshdirect.framework.util.UniqueRandomSequence;
-import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.test.ContentBundle;
-import com.freshdirect.storeapi.content.test.ContentNodeSampler;
-import com.freshdirect.storeapi.content.test.ContentNodeSamplerImpl;
-import com.freshdirect.storeapi.fdstore.FDContentTypes;
-import com.freshdirect.webapp.taglib.AbstractGetterTag;
-import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Random;
 
 
 public class ContentBundleGetterTag extends AbstractGetterTag implements SessionName {
@@ -135,8 +135,7 @@ public class ContentBundleGetterTag extends AbstractGetterTag implements Session
 		
 	}
 	
-	@Override
-    protected Object getResult() throws IOException {
+	protected Object getResult() throws IOException {
 		
 		ContentBundle bundle = null;
 				
@@ -168,9 +167,8 @@ public class ContentBundleGetterTag extends AbstractGetterTag implements Session
 
 	
 	public static class TagEI extends AbstractGetterTag.TagEI {
-		@Override
-        protected String getResultType() {
-            return "com.freshdirect.storeapi.content.test.ContentBundle";
+		protected String getResultType() {
+			return "com.freshdirect.fdstore.content.test.ContentBundle";
 		}
 	}
 }

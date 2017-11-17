@@ -2,7 +2,7 @@ package com.freshdirect.webapp.taglib.fdstore.display;
 
 import java.util.Map;
 
-import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 import com.freshdirect.webapp.util.FDURLUtil;
 

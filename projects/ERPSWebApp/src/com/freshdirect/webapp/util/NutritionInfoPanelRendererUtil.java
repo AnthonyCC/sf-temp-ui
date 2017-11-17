@@ -1,9 +1,11 @@
 package com.freshdirect.webapp.util;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -30,15 +32,17 @@ import com.freshdirect.fdstore.FDNutrition;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.xml.XMLSerializer;
-import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.product.ProductExtraDataPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductExtraData;
 import com.freshdirect.webapp.soy.SoyTemplateEngine;
+import com.google.template.soy.SoyFileSet;
 import com.google.template.soy.data.SoyMapData;
+import com.google.template.soy.tofu.SoyTofu;
 
 public class NutritionInfoPanelRendererUtil {
 
@@ -46,7 +50,7 @@ public class NutritionInfoPanelRendererUtil {
 	private static Transformer transformer = null;
 //	public static final String  PANELMOBILAPI= ".panelMobilApi";
 //	public static final String  PANELMOBILAPIPRODUCTDETAIL= ".panelMobilApiProductDetail";
-//
+//	
 
 	static {
 		try {
@@ -61,7 +65,7 @@ public class NutritionInfoPanelRendererUtil {
 
 	/**
 	 * Render nutrition panel into output stream, the classic one
-	 *
+	 * 
 	 * @param nutritionModel
 	 * @param showErpsExtra
 	 * @param out
@@ -84,16 +88,16 @@ public class NutritionInfoPanelRendererUtil {
 	}
 
 	/**
-	 *
+	 * 
 	 * Make some pre-rendering based on certain nutrition entries
-	 *
+	 * 
 	 * @param nutritionModel
 	 * @param showErpsExtra
 	 * @param out
 	 *            Render target
-	 *
+	 * 
 	 * @return List of Nutrition objects extracted from input model
-	 *
+	 * 
 	 * @throws IOException
 	 *             this exception may occur during writing to output stream
 	 */
@@ -127,7 +131,7 @@ public class NutritionInfoPanelRendererUtil {
 
 	/**
 	 * Extract Nutrition objects out of nutrition model
-	 *
+	 * 
 	 * @param nutritionModel
 	 * @return
 	 */
@@ -144,12 +148,12 @@ public class NutritionInfoPanelRendererUtil {
 
 	/**
 	 * Render classic nutrition panel based on input document
-	 *
+	 * 
 	 * @param xslTransformer
 	 * @param nutritionDoc
 	 * @param out
 	 *            output stream
-	 *
+	 * 
 	 * @return result of render operation
 	 */
 	private static boolean renderNutritionPanel(final Object nutritionDoc, final Writer out) {
@@ -173,7 +177,7 @@ public class NutritionInfoPanelRendererUtil {
 
 	/**
 	 * Performs rendering with a list of nutrition objects
-	 *
+	 * 
 	 * @param nutritions
 	 * @param out
 	 *            output stream
@@ -212,10 +216,10 @@ public class NutritionInfoPanelRendererUtil {
  */
 	public static String getSkuNutritionHtmlwithSoy(FDUserI user, FDProduct fdProduct, ProductModel productModel,
 			ServletContext context,  PanelNameEnum panelDomainName, String cssValue) throws FDResourceException, FDSkuNotFoundException {
-
+		
 
 		//SoyFileSet.Builder builder = new SoyFileSet.Builder();
-
+	 
 		if (context == null) {
 			throw new FDResourceException(
 					" null servlet context in NutritionInfoPanelRenerUtil.getSkuNutritionHtmlwithSoy(), cannot proceed with operation ");
@@ -251,7 +255,7 @@ public class NutritionInfoPanelRendererUtil {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
 		// THIS IS JUST FOR DEBUGGING IN DEVELOPMENT, REMOVE BEFORE YOU CHECK IT
 		// IN
 		/* TODO */
@@ -269,22 +273,22 @@ public class NutritionInfoPanelRendererUtil {
 		String fixedFullPath = fullPath.replace("FDIntegrationServices", "FDWebSite");
 		System.out.println("fixedFullPath=: " + fixedFullPath);
 	};
-
+	
 	public enum PanelNameEnum {
 		 PANELMOBIL_API_PRODUCT_DETAIL (".panelMobilApiProductDetail"),
 		 PANELMOBIL_API (".panelMobilApi");
 		private String panelName;
-
+		
 		PanelNameEnum(String actualPanelName) {
 	        this.panelName = actualPanelName;
 		}
 		public String getPanelName(){
 			return this.panelName;
 		}
-
-
-
-
+		
+	
+		
+		
 	}
 
 }

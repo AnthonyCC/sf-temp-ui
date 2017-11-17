@@ -60,7 +60,7 @@
 		<td colspan="5" align="center"><br>No holiday meal orders found for <b><%= erpCustomerInfo.getFirstName() %> <%= erpCustomerInfo.getLastName() %></b>.</td>
 	</TR>
 <% 	} %>
-<logic:iterate id="meal" collection="<%= meals %>" type="com.freshdirect.storeapi.content.meal.MealModel" indexId="counter">
+<logic:iterate id="meal" collection="<%= meals %>" type="com.freshdirect.fdstore.content.meal.MealModel" indexId="counter">
 	<TR VALIGN="BOTTOM" BGCOLOR="<%= counter.intValue() % 2 == 0 ? "#EEEEEE" : "#FFFFFF" %>">
         <TD width="20%">&nbsp;&nbsp;
         <%  if (meal.getStatus().equals(EnumMealStatus.CAN) || meal.getStatus().equals(EnumMealStatus.DEL)) { %>

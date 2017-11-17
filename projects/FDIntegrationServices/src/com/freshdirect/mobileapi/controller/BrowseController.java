@@ -10,6 +10,9 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.catalog.model.CatalogInfo;
 import com.freshdirect.mobileapi.catalog.model.CatalogInfo.CatalogId;
@@ -33,9 +36,6 @@ import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.BrowseUtil;
 import com.freshdirect.mobileapi.util.ListPaginator;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.StoreModel;
 
 public class BrowseController extends BaseController {
 

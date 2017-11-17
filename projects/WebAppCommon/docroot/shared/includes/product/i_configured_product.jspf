@@ -6,7 +6,7 @@ This include expects the following:
     - String cartMode (constant within com.freshdirect.webapp.taglib.fdstore.CartName)
 
 --%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@ page import='java.net.*'%>
 <%@ page import='java.text.SimpleDateFormat' %>
 <%@ page import='com.freshdirect.ErpServicesProperties' %>

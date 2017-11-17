@@ -1,6 +1,6 @@
 package com.freshdirect.mobileapi.model;
 
-import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.fdstore.content.CategoryModel;
 
 public class Content {
     String name;

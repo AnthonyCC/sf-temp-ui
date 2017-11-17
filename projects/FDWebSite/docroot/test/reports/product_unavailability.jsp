@@ -1,7 +1,7 @@
 <%@ page import="java.text.NumberFormat" %>
-<%@ page import="com.freshdirect.storeapi.content.*" %>
+<%@ page import="com.freshdirect.fdstore.content.*" %>
 <%@ page import="com.freshdirect.fdstore.*" %>
-<%@ page import="com.freshdirect.storeapi.attributes.*" %>
+<%@ page import="com.freshdirect.fdstore.attributes.*" %>
 <%@ page import='java.text.*, java.util.*' %>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -257,7 +257,7 @@ if ((selectedDept != null || !"".equals(selectedDept )) && !"null".equals(select
 		int total_unavailable = 0; 
 		int total_in_department = 0;
 		%>
-		<logic:iterate id="dept" indexId="i" collection="<%= ContentFactory.getInstance().getStore().getDepartments() %>" type="com.freshdirect.storeapi.content.DepartmentModel">
+		<logic:iterate id="dept" indexId="i" collection="<%= ContentFactory.getInstance().getStore().getDepartments() %>" type="com.freshdirect.fdstore.content.DepartmentModel">
 			<% DepartmentInfo di = (DepartmentInfo)deptInfos.get(dept.getContentName()); %>
 			<tr style="cursor: hand;" <%= di==selectedDeptInfo ? "class=\"selected\"" : "" %>
 			onClick="document.location='?dept=<%= dept.getContentName() %>'" align="right">
@@ -308,7 +308,7 @@ if ((selectedDept != null || !"".equals(selectedDept )) && !"null".equals(select
 		</table>
 		<% if (!printview) { %><div id="detail_list" style="width: 100%; height: 90%; overflow-y: scroll;"><% } %>
 			<table width="100%" cellpadding="0" cellspacing="2" class="detail">
-			<logic:iterate id="sku" collection="<%= selectedDeptInfo.getMatchingSkus() %>" type="com.freshdirect.storeapi.content.SkuModel">
+			<logic:iterate id="sku" collection="<%= selectedDeptInfo.getMatchingSkus() %>" type="com.freshdirect.fdstore.content.SkuModel">
 			<tr valign="top">
 				<td width="50%"><%= sku.getFullName() %></td>
 				<td width="22%"><%= sku.getProduct().getMaterial().getMaterialNumber() %></td>

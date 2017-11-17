@@ -3,11 +3,10 @@
 	<name>FDStore</name>
 	<comment></comment>
 	<projects>
-		<project>cmseue</project>
+		<project>CMS</project>
 		<project>Delivery</project>
 		<project>ERPServices</project>
 		<project>Framework</project>
-		<project>StoreAPI</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

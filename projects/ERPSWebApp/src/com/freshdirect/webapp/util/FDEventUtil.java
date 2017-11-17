@@ -2,7 +2,7 @@ package com.freshdirect.webapp.util;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.event.ClickThroughEventAggregator;
 import com.freshdirect.event.EventLogger;
 import com.freshdirect.event.ImpressionEventAggregator;

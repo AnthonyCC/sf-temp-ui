@@ -7,7 +7,7 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
-import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 
 /**
  * Pattern Row Tag <br/>
@@ -103,7 +103,7 @@ public class PatternRowTag extends com.freshdirect.framework.webapp.BodyTagSuppo
 	            		VariableInfo.NESTED ),
 	            new VariableInfo(
 	            		currentItemVariableName,
-	            		"com.freshdirect.storeapi.content.ContentNodeModel",
+	            		"com.freshdirect.fdstore.content.ContentNodeModel",
 	            		true, 
 	            		VariableInfo.NESTED ),
 	            new VariableInfo(

@@ -5,21 +5,6 @@
 
 <web-app>
 	<display-name>RulesAdmin</display-name>
-	
-	<context-param>
-        <param-name>contextClass</param-name>
-        <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
-    </context-param>
-
-    <context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>com.freshdirect.cms.configuration com.freshdirect.storeapi.configuration</param-value>
-    </context-param>
-    
-    <listener>
-        <listener-class> org.springframework.web.context.ContextLoaderListener</listener-class>
-    </listener>
-	
 	<filter>
 		<filter-name>redirect</filter-name>
 		<filter-class>org.apache.tapestry.RedirectFilter</filter-class>

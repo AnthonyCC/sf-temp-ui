@@ -1,12 +1,9 @@
 <%@ page import="java.text.NumberFormat" %>
-<%@ page import="com.freshdirect.storeapi.*" %>
-<%@ page import="com.freshdirect.cms.core.domain.ContentKey" %>
-<%@ page import="com.freshdirect.cms.core.domain.ContentKeyFactory" %>
-<%@ page import="com.freshdirect.cms.core.domain.ContentType" %>
-<%@ page import="com.freshdirect.storeapi.application.*" %>
-<%@ page import="com.freshdirect.storeapi.content.*" %>
+<%@ page import="com.freshdirect.cms.*" %>
+<%@ page import="com.freshdirect.cms.application.*" %>
+<%@ page import="com.freshdirect.fdstore.content.*" %>
 <%@ page import="com.freshdirect.fdstore.*" %>
-<%@ page import="com.freshdirect.storeapi.attributes.*" %>
+<%@ page import="com.freshdirect.fdstore.attributes.*" %>
 <%@ page import='java.text.*, java.util.*' %>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -94,7 +91,7 @@
     }
 %>
 <%
-	ContentType recipeType    = ContentType.Recipe;
+	ContentType recipeType    = ContentType.get("Recipe");
 	Set         allRecipeKeys = CmsManager.getInstance().getContentKeysByType(recipeType);
 
 %>
@@ -124,7 +121,7 @@
         <%
             Vector recipes = new Vector();
         %>
-		<logic:iterate id="contentKey" indexId="i" collection="<%= allRecipeKeys %>" type="com.freshdirect.cms.core.domain.ContentKey">
+		<logic:iterate id="contentKey" indexId="i" collection="<%= allRecipeKeys %>" type="com.freshdirect.cms.ContentKey">
             <%
                 Recipe recipe = (Recipe) PopulatorUtil.getContentNode(contentKey.getId());
                 recipes.add(recipe);
@@ -136,8 +133,8 @@
             Collections.sort(recipes, new RecipeProductionStatusComporator());
         %>
 
-        <logic:iterate id="recipe" indexId="i" collection="<%= recipes %>" type="com.freshdirect.storeapi.content.Recipe">
-            <logic:iterate id="variant" indexId="j" collection="<%= recipe.getVariants() %>" type="com.freshdirect.storeapi.content.RecipeVariant">
+        <logic:iterate id="recipe" indexId="i" collection="<%= recipes %>" type="com.freshdirect.fdstore.content.Recipe">
+            <logic:iterate id="variant" indexId="j" collection="<%= recipe.getVariants() %>" type="com.freshdirect.fdstore.content.RecipeVariant">
                 <tr>
                     <td><%= recipe.getFullName() %> &gt; <%= variant.getFullName() %></td>
                     <td><%= recipe.getContentName() %> &gt; <%= variant.getContentName() %></td>

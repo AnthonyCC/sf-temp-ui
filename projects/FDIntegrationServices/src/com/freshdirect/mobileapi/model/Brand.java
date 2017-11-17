@@ -2,10 +2,10 @@ package com.freshdirect.mobileapi.model;
 
 import java.io.IOException;
 
+import com.freshdirect.fdstore.content.BrandModel;
+import com.freshdirect.fdstore.content.Html;
+import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.mobileapi.util.ProductUtil;
-import com.freshdirect.storeapi.content.BrandModel;
-import com.freshdirect.storeapi.content.Html;
-import com.freshdirect.storeapi.content.Image;
 
 public class Brand {
     /**

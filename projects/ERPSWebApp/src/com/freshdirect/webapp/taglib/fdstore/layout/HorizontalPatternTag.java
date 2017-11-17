@@ -9,11 +9,11 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.Image;
-import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.ProductModel;
 
 
 public class HorizontalPatternTag extends com.freshdirect.framework.webapp.BodyTagSupport {
@@ -404,7 +404,7 @@ public class HorizontalPatternTag extends com.freshdirect.framework.webapp.BodyT
 	            		VariableInfo.AT_BEGIN ),
    	            new VariableInfo(
 	            		theOnlyProductVariableName,
-	            		"com.freshdirect.storeapi.content.ProductModel",
+	            		"com.freshdirect.fdstore.content.ProductModel",
 	            		true, 
 	            		VariableInfo.AT_BEGIN )
 	        };

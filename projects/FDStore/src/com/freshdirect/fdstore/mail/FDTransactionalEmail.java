@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.fdstore.EnumEStoreId;
+import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDOrderI;
-import com.freshdirect.storeapi.content.Image;
-import com.freshdirect.storeapi.content.ProductModel;
 
 public class FDTransactionalEmail extends FDInfoEmail {
 

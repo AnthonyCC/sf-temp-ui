@@ -36,7 +36,7 @@ import com.freshdirect.webapp.util.StandingOrderHelper;
 import com.freshdirect.webapp.util.StandingOrderUtil;
 
 public class DeliveryAddressServlet extends BaseJsonServlet {
-
+	
 	private final static Category LOGGER = LoggerFactory.getInstance(DeliveryAddressServlet.class);
 
     private static final String ADDRESS_BY_ID_KEY = "address_by_id";
@@ -117,7 +117,7 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
                             }
                         }
                         validationResult.getErrors().addAll(validationErrors);
-
+                        
                     }
                     default:
                         break;
@@ -139,7 +139,7 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
                     		StandingOrderUtil.createStandingOrder(request.getSession(), user.getSoTemplateCart(), user.getCurrentStandingOrder(), null);
                     	}
                     }
-
+					 
 				} catch (FDResourceException e) {
 					BaseJsonServlet.returnHttpError(500, "Error while selecting delivery address for user " + user.getUserId(), e);  				}
 			}

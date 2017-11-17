@@ -6,11 +6,11 @@ import com.freshdirect.content.nutrition.EnumClaimValue;
 import com.freshdirect.content.nutrition.NutritionValueEnum;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.AbstractProductItemFilter;
+import com.freshdirect.fdstore.content.FilterCacheStrategy;
+import com.freshdirect.fdstore.content.FilteringProductItem;
+import com.freshdirect.fdstore.content.ProductFilterModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.AbstractProductItemFilter;
-import com.freshdirect.storeapi.content.FilterCacheStrategy;
-import com.freshdirect.storeapi.content.FilteringProductItem;
-import com.freshdirect.storeapi.content.ProductFilterModel;
 
 @Deprecated
 public class ClaimBasedFilter extends AbstractProductItemFilter {

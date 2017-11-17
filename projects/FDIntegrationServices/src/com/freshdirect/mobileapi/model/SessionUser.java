@@ -22,6 +22,7 @@ import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
@@ -48,7 +49,6 @@ import com.freshdirect.mobileapi.model.tagwrapper.ReserveTimeslotControllerTagWr
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.smartstore.ymal.YmalUtil;
-import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.webapp.taglib.fdstore.CutoffInfo;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;

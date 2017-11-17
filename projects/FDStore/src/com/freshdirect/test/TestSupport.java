@@ -14,22 +14,21 @@ import javax.ejb.CreateException;
 import javax.naming.NamingException;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.cms.core.domain.ContentKey;
-import com.freshdirect.cms.core.domain.ContentKeyFactory;
-import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentType;
+import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
 import com.freshdirect.fdstore.FDEcommProperties;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.Html;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.TagModel;
 import com.freshdirect.framework.core.ServiceLocator;
-import com.freshdirect.storeapi.application.CmsManager;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.Html;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.TagModel;
-import com.freshdirect.storeapi.fdstore.FDContentTypes;
 import com.freshdirect.test.ejb.TestSupportHome;
 import com.freshdirect.test.ejb.TestSupportSB;
 
@@ -37,7 +36,7 @@ import com.freshdirect.test.ejb.TestSupportSB;
 
 /**
  * Test supporter class
- *
+ * 
  * @author segabor
  *
  */
@@ -73,8 +72,8 @@ public class TestSupport {
 		}
 		return sharedInstance;
 	}
-
-
+	
+	
 	/**
 	 * Dummy method. Ignore.
 	 */
@@ -94,17 +93,17 @@ public class TestSupport {
 			e.printStackTrace();
 		}
 	}
-
+	
 
 
 
 	public List<Long> getDYFEligibleCustomerIDs() {
 		List<Long> customersIds = null;
 		try {
-
+			
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.TestSupportSB)){
 				customersIds= LogisticsServiceLocator.getInstance().getCommerceService().getDYFEligibleCustomerIDs();
-
+			
 			}else {
 			TestSupportSB bean = this.getTestSupportHome().create();
 			customersIds= bean.getDYFEligibleCustomerIDs();
@@ -124,10 +123,10 @@ public class TestSupport {
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.TestSupportSB)){
 			return LogisticsServiceLocator.getInstance().getCommerceService().getErpCustomerIds();
-
+			
 			}else {
 			TestSupportSB bean = this.getTestSupportHome().create();
-
+			
 			return bean.getErpCustomerIds();
 			}
 		} catch (RemoteException e) {
@@ -138,14 +137,14 @@ public class TestSupport {
 			e.printStackTrace();
 		}
 		return Collections.emptyList();
-
+		
 	}
 
 	public String getFDCustomerIDForErpId(String erp_id) {
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.TestSupportSB)){
 				return LogisticsServiceLocator.getInstance().getCommerceService().getFDCustomerIDForErpId(erp_id);
-
+				
 				}else {
 			TestSupportSB bean = this.getTestSupportHome().create();
 			return bean.getFDCustomerIDForErpId(erp_id);
@@ -177,20 +176,20 @@ public class TestSupport {
 		}
 		return null;
 	}
+	
 
 
 
-
-	final static ContentType tagType = ContentType.Tag;
+	final static ContentType tagType = ContentType.get("Tag");
 	public Collection<TagModel> getTags() {
 		final Collection<ContentKey> tagKeys = CmsManager.getInstance().getContentKeysByType(tagType);
 
 		final Map<ContentKey,TagModel> parentMap = new HashMap<ContentKey,TagModel>();
-
+		
 		final List<TagModel> tags = new ArrayList<TagModel>();
 		for (ContentKey aKey : tagKeys) {
 			final TagModel tm = (TagModel) ContentFactory.getInstance().getContentNodeByKey(aKey);
-
+			
 			for (TagModel ctm : tm.getChildren()) {
 				parentMap.put(ctm.getContentKey(), tm);
 			}
@@ -224,34 +223,34 @@ public class TestSupport {
 				return parentOrd;
 			}
 		});
-
+		
 		return tags;
 	}
-
+	
 	public Collection<ProductModel> getTaggedProducts(String tagKey) {
 		if (tagKey == null)
 			return Collections.emptyList();
 
 		// may throw IllegalArgumentException !
-		ContentKey tKey = ContentKeyFactory.get(tagKey);
-
+		ContentKey tKey = ContentKey.getContentKey(tagKey);
+		
 		List<ProductModel> taggedProducts = new ArrayList<ProductModel>();
-
+		
 		final List<ContentKey> categoryKeys = new ArrayList<ContentKey>(CmsManager.getInstance().getContentKeysByType(FDContentTypes.CATEGORY));
-
+		
 		Collections.sort(categoryKeys, new Comparator<ContentKey>() {
 			@Override
 			public int compare(ContentKey o1, ContentKey o2) {
 				return o1.toString().compareTo(o2.toString());
 			}
 		});
-
+		
 		for (ContentKey categoryKey: categoryKeys) {
 			ContentNodeModel m = ContentFactory.getInstance().getContentNodeByKey(categoryKey);
 
 			if (!m.isOrphan() && m instanceof CategoryModel) {
 				CategoryModel cat = (CategoryModel) m;
-
+				
 				for (ProductModel prd : cat.getStaticProducts()){
 					for (TagModel tag : prd.getAllTags()) {
 						if (tKey.equals(tag.getContentKey())) {
@@ -266,16 +265,16 @@ public class TestSupport {
 	}
 
 	public List<CategoryModel> getCategories() {
-
+		
 		final List<ContentKey> categoryKeys = new ArrayList<ContentKey>(CmsManager.getInstance().getContentKeysByType(FDContentTypes.CATEGORY));
 		List<CategoryModel> categories = new ArrayList<CategoryModel>();
-
+		
 		for (ContentKey categoryKey: categoryKeys) {
 			ContentNodeModel m = ContentFactory.getInstance().getContentNodeByKey(categoryKey);
 			if (m instanceof CategoryModel) {
 				categories.add((CategoryModel)m);
 			}
-
+			
 		}
 
 		Collections.sort(categories, new Comparator<CategoryModel>() {
@@ -291,28 +290,28 @@ public class TestSupport {
 	}
 
 	public List<Method> getMediaMethods() {
-
+		
 		Method[] methods = CategoryModel.class.getMethods();
 		List<Method> mediaMethodNames = new ArrayList<Method>();
-
+		
 		for (Method method : methods) {
 			if (method.getReturnType().equals(Html.class)) {
 				mediaMethodNames.add(method);
 			}
 		}
-
+		
 		Collections.sort(mediaMethodNames, new Comparator<Method>() {
 			@Override
 			public int compare(Method o1, Method o2) {
 				return o1.getName().compareTo(o2.getName());
 			}
 		});
-
+		
 		return mediaMethodNames;
 
 	}
-
-
+	
+	
 	public Collection<String> getSkuCodes() {
 		try {
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.TestSupportSB)){
@@ -330,6 +329,6 @@ public class TestSupport {
 		}
 		return null;
 	}
-
-
+	
+	
 }

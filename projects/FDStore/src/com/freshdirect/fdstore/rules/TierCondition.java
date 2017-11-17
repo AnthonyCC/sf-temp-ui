@@ -3,7 +3,7 @@ package com.freshdirect.fdstore.rules;
 import com.freshdirect.fdlogistics.model.EnumDeliveryFeeTier;
 import com.freshdirect.rules.ConditionI;
 import com.freshdirect.rules.RuleRuntimeI;
-import com.freshdirect.storeapi.rules.RulesRuntimeException;
+import com.freshdirect.rules.RulesRuntimeException;
 
 
 public class TierCondition implements ConditionI {

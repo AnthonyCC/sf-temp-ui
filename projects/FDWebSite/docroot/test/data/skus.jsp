@@ -1,15 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
-<%@page import="com.freshdirect.storeapi.application.CmsManager"%>
-<%@page import="com.freshdirect.storeapi.fdstore.FDContentTypes"%>
+<%@page import="com.freshdirect.cms.application.CmsManager"%>
+<%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
 <%@page import="java.util.Set"%>
-<%@page import="com.freshdirect.cms.core.domain.ContentKey"%>
+<%@page import="com.freshdirect.cms.ContentKey"%>
 <%@page import="java.util.SortedSet"%>
 <%@page import="java.util.TreeSet"%>
 <%@page import="java.util.Comparator"%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
-<%@page import="com.freshdirect.storeapi.content.SkuModel"%><html lang="en-US" xml:lang="en-US">
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.SkuModel"%><html lang="en-US" xml:lang="en-US">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" lang="en-US">
 <title>Available SKUs</title>

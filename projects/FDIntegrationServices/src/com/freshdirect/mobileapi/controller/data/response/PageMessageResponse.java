@@ -2,8 +2,8 @@ package com.freshdirect.mobileapi.controller.data.response;
 
 import java.util.List;
 
-import com.freshdirect.storeapi.content.CMSImageBannerModel;
-import com.freshdirect.storeapi.content.CMSWebPageModel;
+import com.freshdirect.fdstore.content.CMSImageBannerModel;
+import com.freshdirect.fdstore.content.CMSWebPageModel;
 
 public class PageMessageResponse extends MessageResponse {
 

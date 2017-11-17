@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -17,7 +18,6 @@ import com.freshdirect.mobileapi.model.data.HelpTopic;
 import com.freshdirect.mobileapi.model.data.HelpTopics;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ProductUtil;
-import com.freshdirect.storeapi.application.CmsManager;
 
 public class HelpController extends BaseController {
     private static Category LOGGER = LoggerFactory.getInstance(HelpController.class);

@@ -9,7 +9,7 @@
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import='com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import="com.freshdirect.fdstore.promotion.PromotionI" %>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import="com.freshdirect.common.pricing.Discount" %>
@@ -25,13 +25,10 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-<%@ page import='com.freshdirect.storeapi.*'%>
-<%@ page import='com.freshdirect.cms.core.domain.ContentKey'%>
-<%@ page import='com.freshdirect.cms.core.domain.ContentKeyFactory'%>
-<%@ page import='com.freshdirect.cms.core.domain.ContentType'%>
-<%@ page import='com.freshdirect.storeapi.application.CmsManager'%>
-<%@ page import='com.freshdirect.storeapi.fdstore.FDContentTypes'%>
-<%@ page import='com.freshdirect.storeapi.content.*'%>
+<%@ page import='com.freshdirect.cms.*'%>
+<%@ page import='com.freshdirect.cms.application.CmsManager'%>
+<%@ page import='com.freshdirect.cms.fdstore.FDContentTypes'%>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
 
 <% //expanded page dimensions
 final int W_GIFTCARD_RECEIPT_TOTAL = 970;
@@ -81,9 +78,9 @@ String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBE
 	if(gcType != null && EnumGiftCardType.DONATION_GIFTCARD.equals(gcType)) {
 		List<DonationOrganization> donationOrgList = new ArrayList<DonationOrganization>();
 		CmsManager manager = CmsManager.getInstance();
-		ContentKey contentKey = ContentKeyFactory.get(FDContentTypes.FDFOLDER, "donationOrganizationList");
+		ContentKey contentKey = ContentKey.getContentKey(FDContentTypes.FDFOLDER, "donationOrganizationList");
 		ContentNodeI contentNode = manager.getContentNode(contentKey);
-		
+
 		if(null != contentNode){
 			Set subNodes = contentNode.getChildKeys();
 			for (Object object : subNodes) {

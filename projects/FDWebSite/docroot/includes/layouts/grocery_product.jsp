@@ -3,8 +3,8 @@
 <%@ page import='java.net.URLEncoder'%>
 <%@ page import='org.apache.commons.lang.StringUtils' %>
 <%@ page import='com.freshdirect.ErpServicesProperties' %>
-<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.webapp.util.JspMethods'%>
