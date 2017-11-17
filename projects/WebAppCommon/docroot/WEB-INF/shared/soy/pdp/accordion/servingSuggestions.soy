@@ -6,8 +6,7 @@
 {template .servingSuggestions autoescape="false"}
 {if $servingSuggestions}
 <li class="pdp-accordion-servingsuggestions pdp-accordion-item">
-<input type="checkbox" id="pdp-servingsuggestions">
-<label for="pdp-servingsuggestions"><span class="pdp-accordion-item-carrot"></span>Serving Suggestion</label>
+<a href="#" onclick="return false;" class="pdp-item-description-toggle" id="pdp-servingsuggestions"><span class="pdp-accordion-item-carrot"></span>Serving Suggestion</a>
 <div>
 /*
  * table element is added to ensure that broken media don't break the site

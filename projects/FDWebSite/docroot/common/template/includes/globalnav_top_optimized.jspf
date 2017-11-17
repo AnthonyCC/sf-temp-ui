@@ -137,7 +137,7 @@ if(user != null) {
     </div>
     <div>
     <form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
-                <label>
+                <label for="topSearchField">
           <a href="/search.jsp">
             <div class="spritediv sprite-nav-nav_button_search" style="margin: 1px 4px">Search</div>
           </a>

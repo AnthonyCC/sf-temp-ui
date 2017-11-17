@@ -53,7 +53,7 @@
 <div class="pagination-pager" data-component="pager" data-activepage="{$activePage}" data-itemcount="{$itemCount}" data-pagesize="{$pageSize}">
 {if $pageSize > 0}
 {if $pageCount > 1}
-<button data-component="pager-prev" class="pagination-pager-prev {print 0==$activePage ? 'hidden' : ''}"><div style="display:none;"> Previous Page</div> &lt;</button>
+<button data-component="pager-prev" class="pagination-pager-prev {print 0==$activePage ? 'hidden' : ''}"><div class="offscreen"> Previous Page</div> &lt;</button>
 {/if}
 {if $pageCount <= 7 and $pageCount >1}
 	{for $i in range($pageCount)}
@@ -107,7 +107,7 @@
 	{/if}
 {/if}
 {if $pageCount > 1 }
-<button data-component="pager-next" class="pagination-pager-next {print ($pageCount-1)==$activePage ? 'hidden' : ''}"><div style="display:none;"> Next Page </div>&gt;</button>
+<button data-component="pager-next" class="pagination-pager-next {print ($pageCount-1)==$activePage ? 'hidden' : ''}"><div class="offscreen"> Next Page </div>&gt;</button>
 {/if}
 {/if}
 {if $pageSize > 0}
@@ -131,7 +131,7 @@
 <div class="pagination-pager" data-component="pager" data-activepage="{$activePage}" data-itemcount="{$itemCount}" data-pagesize="{$pageSize}">
 {if $pageSize > 0}
 {if $pageCount > 1}
-<button data-component="pager-prev" class="cssbutton {if $hasBackButton}green{else}disabled{/if}" {if not $hasBackButton}disabled{/if}>&lt;</button>
+<button data-component="pager-prev" class="cssbutton {if $hasBackButton}green{else}disabled{/if}" {if not $hasBackButton}disabled{/if}><span class="offscreen">previous page</span>&lt;</button>
 {/if}
 {if $pageCount <= 7 and $pageCount >1}
 	{for $i in range($pageCount)}
@@ -185,7 +185,7 @@
 	{/if}
 {/if}
 {if $pageCount > 1 }
-<button data-component="pager-next" class="cssbutton {if $hasNextButton}green{else}disabled{/if}" {if not $hasNextButton}disabled{/if}>&gt;</button>
+<button data-component="pager-next" class="cssbutton {if $hasNextButton}green{else}disabled{/if}" {if not $hasNextButton}disabled{/if}><span class="offscreen">next page</span>&gt;</button>
 {/if}
 {/if}
 {if $pageSize > 0}

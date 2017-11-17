@@ -7,7 +7,7 @@
 {template .simpleItem autoescape="false"}
 <li class="itemlist-item itemlist-item-simple" data-component="product" {if $item.itemId}data-productid="{$item.itemId}"{/if}>
 	{if $type=='simpleToggle'}
-		<input type="checkbox" data-component="productToggle" checked="checked" />
+		<input type="checkbox" aria-label="{$item.productName}" data-component="productToggle" checked="checked" />
 	{/if}
 	<div class="itemlist-item-productimage_wrapper">
 		<div class="itemlist-item-burst_wrapper">

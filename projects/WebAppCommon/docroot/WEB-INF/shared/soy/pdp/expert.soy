@@ -7,7 +7,8 @@
 {if $ratingValue>0}
   <a href="#explanatory" data-component="accordion-opener" data-accordion-target="pdp-explanatory">
     <b class="expertrating smallrating rating-{$ratingValue*1}">
-     Rating {$ratingValue}/10
+    {let $ratingFormatted: ( strContains(''+round($ratingValue/2, 1), '.0') ) ? round($ratingValue/2) : round($ratingValue/2, 1) /}
+     Rating {$ratingFormatted} out of 5
     </b>
   </a>
 {/if}

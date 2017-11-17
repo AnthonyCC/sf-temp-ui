@@ -52,7 +52,7 @@
 						<table BORDER="0" CELLSPACING="0" CELLPADDING="2">
 							<td><tr VALIGN="top"><td class="text9" align="center">
 								<font class="title18">Ingredients:</font><br />
-								<img src="media_stat/images/layout/330000.gif" height="4" width="220" vspace="4">
+								<img src="media_stat/images/layout/330000.gif" alt="" height="4" width="220" vspace="4">
 							</td></tr>
 							<tr><td><%= fdprd.getIngredients() %></td></tr>
 						</table>
