@@ -14,7 +14,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.logistics.controller.data.PickupData;
 import com.freshdirect.logistics.delivery.model.Pickup;
-import com.freshdirect.rules.RulesRuntimeException;
+import com.freshdirect.storeapi.rules.RulesRuntimeException;
 
 /**
  * @author knadeem Date Apr 12, 2005

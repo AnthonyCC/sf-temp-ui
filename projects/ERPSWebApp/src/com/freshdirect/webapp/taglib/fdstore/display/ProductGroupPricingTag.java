@@ -7,9 +7,9 @@ import javax.servlet.jsp.JspWriter;
 
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.PriceCalculator;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
+import com.freshdirect.storeapi.content.PriceCalculator;
+import com.freshdirect.storeapi.content.ProductModel;
 
 public class ProductGroupPricingTag extends BodyTagSupportEx {
 	private static final long serialVersionUID = 5597527713397681158L;

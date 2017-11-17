@@ -1,6 +1,6 @@
 package com.freshdirect.smartstore.filter;
 
-import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.ContentNodeModel;
 
 
 /**

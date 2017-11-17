@@ -19,17 +19,14 @@ public class ProductInfoUtil {
                      String salesOrg=userContext.getPricingContext().getZoneInfo().getSalesOrg();
                      String distChannel=userContext.getPricingContext().getZoneInfo().getDistributionChanel();
                      pickingPlantId = fdpi.getPickingPlantId(salesOrg, distChannel);    
-                     /*if(null == pickingPlantId){
+                     if(null == pickingPlantId){
                     	 LOGGER.info("PickingPlantId is not found for this product: "+fdpi.getSkuCode()+", for customer:"+userContext.getFdIdentity());
-                     }*/
+                     }
              }
              if(null == pickingPlantId && null !=userContext.getFulfillmentContext()){
 //            	 LOGGER.info("PickingPlantId is not found for this product: "+fdpi.getSkuCode());
                  pickingPlantId = userContext.getFulfillmentContext().getPlantId();
              }
-        }
-        if("1000".equalsIgnoreCase(pickingPlantId)){//TODO: Needs to be cleaned up, as part of LIC sunset proj
-        	pickingPlantId ="1400";
         }
         return pickingPlantId;
 	}

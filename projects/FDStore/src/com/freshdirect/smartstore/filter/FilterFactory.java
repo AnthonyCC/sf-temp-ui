@@ -2,7 +2,7 @@ package com.freshdirect.smartstore.filter;
 
 import java.util.Collection;
 
-import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.core.domain.ContentKey;
 
 public class FilterFactory {
     private final static ContentFilter AVAILABLE_ITEMS_W_ALTS = new ProductAvailabilityFilterEx(false);

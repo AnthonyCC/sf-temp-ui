@@ -48,16 +48,6 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
         return this.getContentKey().id;
     }
 
-    /**
-     * FULL_NAME is no longer supported on Sku models
-     */
-    @Override
-    @Deprecated
-    public String getFullName() {
-        ProductModel productModel = getProductModel();
-        return productModel != null ? productModel.getFullName() : "";
-    }
-
     public List<DomainValue> getVariationMatrix() {
         ContentNodeModelUtil.refreshModels(this, "VARIATION_MATRIX", variationMatrix, false);
         return Collections.unmodifiableList(variationMatrix);
@@ -164,7 +154,7 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
     }
 
     public AvailabilityI getAvailability() {
-        if (FDStoreProperties.isDeveloperDisableAvailabilityLookup() || FDStoreProperties.getPreviewMode()) {
+        if (FDStoreProperties.isDeveloperDisableAvailabilityLookup()) {
             return DUMMY_AVAILABLE;
         }
         try {
@@ -172,21 +162,12 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
             FDProductInfo fdpi = this.getProductInfo();
             // String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
             // FDAvailabilityI av = AvailabilityFactory.createAvailability(this, fdpi,plantID);
-            String salesOrg = ContentFactory.getInstance()!=null&&ContentFactory.getInstance().getCurrentUserContext()!=null&&
-            					ContentFactory.getInstance().getCurrentUserContext().getPricingContext()!=null&&
-            						ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo()!=null?
-            							ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getSalesOrg():null;
-            String distChannel = ContentFactory.getInstance()!=null&&ContentFactory.getInstance().getCurrentUserContext()!=null&&
-            						ContentFactory.getInstance().getCurrentUserContext().getPricingContext()!=null&&
-            							ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo()!=null?
-            								ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getDistributionChanel():null;
+            String salesOrg = ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getSalesOrg();
+            String distChannel = ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo().getDistributionChanel();
             String pickingPlantId = fdpi.getPickingPlantId(salesOrg, distChannel);
             if (null == pickingPlantId || "".equals(pickingPlantId.trim())) {
-                pickingPlantId = ContentFactory.getInstance()!=null&&ContentFactory.getInstance().getCurrentUserContext()!=null&&
-                					ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext()!=null?
-                						ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId():null;
+                pickingPlantId = ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
             }
-            //System.out.println(this.getClass().getName() + String.format("  salesOrg %s, distChannel %s, pickingPlantId %s" , salesOrg, distChannel, pickingPlantId));
             FDAvailabilityI av = AvailabilityFactory.createAvailability(this, fdpi, pickingPlantId);
             AvailabilityAdapter answer = new AvailabilityAdapter(fdpi, av, salesOrg, distChannel, pickingPlantId);
             return answer;
@@ -232,8 +213,7 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 
         @Override
         public double getAvailabileQtyForDate(java.util.Date targetDate) {
-        	//this should never happen!
-            return -5;
+            return 0;
         }
 
     };
@@ -287,7 +267,6 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 
         @Override
         public double getAvailabileQtyForDate(Date targetDate) {
-        	//this should nerver happen here
             return 0;
         }
     };

@@ -19,9 +19,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.extjs.gxt.ui.client.widget.form.Time;
+import com.freshdirect.cms.contentvalidation.correction.PrimaryHomeCorrectionService;
 import com.freshdirect.cms.contentvalidation.validator.UniqueContentKeyValidator;
 import com.freshdirect.cms.contentvalidation.validator.WhitespaceValidator;
-import com.freshdirect.cms.core.converter.ScalarValueConverter;
+import com.freshdirect.cms.core.converter.ScalarValueToSerializedValueConverter;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
@@ -43,10 +44,10 @@ import com.freshdirect.cms.persistence.service.ERPSDataService;
 import com.freshdirect.cms.ui.editor.UnmodifiableContent;
 import com.freshdirect.cms.ui.editor.domain.AttributeValueSource;
 import com.freshdirect.cms.ui.editor.domain.VirtualAttributes;
-import com.freshdirect.cms.ui.editor.reports.repository.VirtualAttributeRepository;
 import com.freshdirect.cms.ui.editor.reports.service.ReportingService;
 import com.freshdirect.cms.ui.model.ContentNodeModel;
 import com.freshdirect.cms.ui.model.CustomFieldDefinition;
+import com.freshdirect.cms.ui.model.CustomFieldDefinition.Type;
 import com.freshdirect.cms.ui.model.EnumModel;
 import com.freshdirect.cms.ui.model.GwtContentNode;
 import com.freshdirect.cms.ui.model.GwtNodeContext;
@@ -72,9 +73,7 @@ import com.google.common.base.Optional;
 @Service
 public class ContentLoaderService {
 
-
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(ContentLoaderService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ContentLoaderService.class);
 
     @Autowired
     private ContextualContentProvider contentProviderService;
@@ -101,7 +100,13 @@ public class ContentLoaderService {
     private PreviewLinkProvider previewLinkService;
 
     @Autowired
+    private PrimaryHomeCorrectionService primaryHomeCorrectionService;
+
+    @Autowired
     private ReportingService reportingService;
+
+    @Autowired
+    private ScalarValueToSerializedValueConverter scalarValueToSerializedValueConverter;
 
     @Autowired
     private StoreContextService storeContextService;
@@ -111,9 +116,6 @@ public class ContentLoaderService {
 
     @Autowired
     private WhitespaceValidator whitespaceValidator;
-
-    @Autowired
-    private VirtualAttributeRepository virtualAttributeRepository;
 
     public void decorateModel(ContentKey key, ContentNodeModel model) {
 
@@ -139,28 +141,6 @@ public class ContentLoaderService {
         }
 
     }
-
-	public String decorateContextOverride(ContentKey key,boolean useDefault) {
-        String contextStyle = "";
-
-        if (useDefault) {
-            contextStyle = GwtNodeContext.COS_CONTEXTOVERRIDE_COLOR_NOOVERRIDE;
-        }
-
-        Optional<Attribute> catalogAttribute = contentTypeInfoService.findAttributeByName(key.type, "catalog");
-        Optional<Object> catalogAttributeValue = contentProviderService.getAttributeValue(key, catalogAttribute.get());
-
-        if (catalogAttribute.isPresent() && catalogAttributeValue.isPresent()) {
-            String catalogValue = catalogAttributeValue.get().toString();
-
-            if ("ALL".equals(catalogValue)) {
-                contextStyle = GwtNodeContext.COS_CONTEXTOVERRIDE_COLOR_RED;
-            } else if ("CORPORATE".equals(catalogValue)) {
-                contextStyle = GwtNodeContext.COS_CONTEXTOVERRIDE_COLOR_GREEN;
-            }
-        }
-        return contextStyle;
-	}
 
     public Map<Attribute, Object> getAllAttributesForVirtualNode(ContentKey contentKey) {
         Map<Attribute, Object> values = new HashMap<Attribute, Object>();
@@ -207,31 +187,168 @@ public class ContentLoaderService {
                 gwtNode.setOriginalAttribute(key, gwtAttr);
             }
 
-            if (Media.isMediaType(contentKey)) {
-                populateMediaTypeData(contentKey, gwtNode);
-            } else {
+            // Handle mixed types
+            if (ContentType.Sku == contentKey.type) {
 
-                switch (contentKey.type) {
-                    case Sku:
-                        populateSkuData(contentKey, gwtNode);
-                        break;
-                    case ErpMaterial:
-                        populateErpMaterialData(contentKey, gwtNode);
-                        break;
-                    case ErpClass:
-                        populateErpClassData(contentKey, gwtNode);
-                        break;
-                    case ErpCharacteristic:
-                        populateErpCharacteristicData(contentKey, gwtNode);
-                        break;
-                    case ErpCharacteristicValue:
-                        populateErpCharacteristicValueData(contentKey, gwtNode);
-                        break;
-                    case Category:
-                        populateCategoryData(contentKey, gwtNode);
-                        break;
-                    default:
-                        break;
+                String materialId = erpsDataService.fetchSkuMaterialAssociations().get(contentKey.id);
+
+                MaterialData materialData = erpsDataService.fetchMaterialData().get(materialId);
+
+                List<ContentKey> materialKeys = new ArrayList<ContentKey>();
+                if (materialId != null) {
+                    materialKeys.add(ContentKeyFactory.get(ContentType.ErpMaterial, materialId));
+                }
+
+                if (materialData != null) {
+                    populateScalarAttribute(contentKey, VirtualAttributes.Sku.promoPrice, materialData.getPromoPrice(), gwtNode);
+                    final MaterialAvailabilityStatus availabilityStatus = materialData.getAvailabilityStatus();
+                    populateScalarAttribute(contentKey, VirtualAttributes.Sku.UNAVAILABILITY_STATUS, (availabilityStatus != null ? availabilityStatus.toString() : ""), gwtNode);
+                    populateScalarAttribute(contentKey, VirtualAttributes.Sku.materialVersion, materialData.getLatestMaterialVersion(), gwtNode);
+                }
+
+                populateRelationshipAttribute(contentKey, (Relationship) ContentTypes.Sku.materials, materialKeys, gwtNode);
+
+            } else if (ContentType.ErpMaterial == contentKey.type) {
+                Map<String, String> su = erpsDataService.fetchSalesUnits().get(contentKey.id);
+
+                MaterialData materialData = erpsDataService.fetchMaterialData().get(contentKey.id);
+                if (materialData != null) {
+                    populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.UPC, materialData.getUpc(), gwtNode);
+                    populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.DESCRIPTION, WordUtils.capitalizeFully(materialData.getDescription()), gwtNode);
+                    populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.NAME, materialData.getName(), gwtNode);
+
+                    populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.atpRule, materialData.getAtpRule(), gwtNode);
+                    populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.leadTime, materialData.getLeadTime(), gwtNode);
+                    populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.alcoholicContent, materialData.isAlcoholicContent(), gwtNode);
+                    populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.taxable, materialData.isTaxable(), gwtNode);
+                    populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.kosher, materialData.isKosher(), gwtNode);
+                    populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.platter, materialData.isPlatter(), gwtNode);
+                    populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.blockedDays, materialData.getBlockedDays(), gwtNode);
+                }
+
+                // erp classes
+                List<ContentKey> erpClassKeys = new ArrayList<ContentKey>();
+                List<String> classes = erpsDataService.fetchClasses(contentKey.id);
+                for (String erpClass : classes) {
+                    erpClassKeys.add(ContentKeyFactory.get(ContentType.ErpClass, erpClass));
+                }
+
+                populateRelationshipAttribute(contentKey, VirtualAttributes.ErpMaterial.classes, erpClassKeys, gwtNode);
+
+
+                // sales units
+                List<ContentKey> salesUnitKeys = new ArrayList<ContentKey>();
+                for (String salesUnitId : su.keySet()) {
+                    salesUnitKeys.add(ContentKeyFactory.get(ContentType.ErpSalesUnit, su.get(salesUnitId)));
+                }
+
+                populateRelationshipAttribute(contentKey, VirtualAttributes.ErpMaterial.salesUnits, salesUnitKeys, gwtNode);
+
+            } else if (ContentType.ErpClass == contentKey.type) {
+                // show characteristics
+                String classId = contentKey.id;
+                List<ContentKey> characteristicKeys = new ArrayList<ContentKey>();
+                List<String> charsOfClass = erpsDataService.fetchCharacteristics(classId);
+                for (String erpChar : charsOfClass) {
+                    characteristicKeys.add(ContentKeyFactory.get(ContentType.ErpCharacteristic, classId + "/" + erpChar));
+                }
+
+                populateRelationshipAttribute(contentKey, VirtualAttributes.ErpClass.characteristics, characteristicKeys, gwtNode);
+
+            } else if (ContentType.ErpCharacteristic == contentKey.type) {
+                ErpCharacteristicKey erpKey = new ErpCharacteristicKey(contentKey);
+
+                gwtNode.setLabel(erpKey.getCharacteristicName());
+
+                List<ContentKey> erpValueKeys = new ArrayList<ContentKey>();
+                Map<String, String> erpValues = erpsDataService.fetchCharacteristicValues(erpKey);
+                for (String erpValueName : erpValues.keySet()) {
+                    ContentKey key = ContentKeyFactory.get(ContentType.ErpCharacteristicValue, erpKey.createValueKey(erpValueName).toString());
+                    erpValueKeys.add(key);
+                }
+
+                populateScalarAttribute(contentKey, VirtualAttributes.ErpCharacteristic.name, erpKey.getCharacteristicName(), gwtNode);
+                populateRelationshipAttribute(contentKey, VirtualAttributes.ErpCharacteristic.values, erpValueKeys, gwtNode);
+
+            } else if (ContentType.ErpCharacteristicValue == contentKey.type) {
+                ErpCharacteristicValueKey erpKey = new ErpCharacteristicValueKey(contentKey);
+
+                gwtNode.setLabel(erpKey.getCharacteristicValueName());
+
+                Map<String, String> erpValues = erpsDataService.fetchCharacteristicValues(erpKey.getCharacteristicKey());
+
+                String erpValueDesc = erpValues.get(erpKey.getCharacteristicValueName());
+
+                populateScalarAttribute(contentKey, VirtualAttributes.ErpCharacteristicValue.FULL_NAME, erpValueDesc, gwtNode);
+                populateScalarAttribute(contentKey, VirtualAttributes.ErpCharacteristicValue.name, erpKey.getCharacteristicValueName(), gwtNode);
+            } else if (Media.isMediaType(contentKey)) {
+                Optional<Media> associatedMedia = mediaService.getMediaByContentKey(contentKey);
+                if (associatedMedia.isPresent()) {
+                    final Media media = associatedMedia.get();
+
+                    populateScalarAttribute(contentKey, (Scalar) ContentTypes.Image.path, media.getUri(), gwtNode);
+                    populateScalarAttribute(contentKey, (Scalar) ContentTypes.Image.lastmodified, media.getLastModified(), gwtNode);
+
+                    if (ContentType.Image == contentKey.type) {
+                        populateScalarAttribute(contentKey, (Scalar) ContentTypes.Image.width, media.getWidth(), gwtNode);
+                        populateScalarAttribute(contentKey, (Scalar) ContentTypes.Image.height, media.getHeight(), gwtNode);
+                    } else if (ContentType.Html == contentKey.type) {
+                        Map<Attribute, Object> htmlValues = contentProviderService.getAttributeValues(contentKey,
+                                Arrays.asList(new Attribute[] { ContentTypes.Html.popupSize, ContentTypes.Html.title }));
+
+                        populateScalarAttribute(contentKey, (Scalar) ContentTypes.Html.popupSize, htmlValues.get(ContentTypes.Html.popupSize), gwtNode);
+                        populateScalarAttribute(contentKey, (Scalar) ContentTypes.Html.title, htmlValues.get(ContentTypes.Html.title), gwtNode);
+                    } else if (ContentType.MediaFolder == contentKey.type) {
+                        Set<ContentKey> childKeys = mediaService.getChildMediaKeys(contentKey);
+
+                        List<ContentKey> mediaItemKeys = new ArrayList<ContentKey>();
+                        List<ContentKey> subFolderKeys = new ArrayList<ContentKey>();
+
+                        for (ContentKey mediaKey : childKeys) {
+                            if (ContentType.MediaFolder == mediaKey.type) {
+                                subFolderKeys.add(mediaKey);
+                            } else {
+                                mediaItemKeys.add(mediaKey);
+                            }
+                        }
+
+                        populateRelationshipAttribute(contentKey, (Relationship) ContentTypes.MediaFolder.files, mediaItemKeys, gwtNode);
+                        populateRelationshipAttribute(contentKey, (Relationship) ContentTypes.MediaFolder.subFolders, subFolderKeys, gwtNode);
+                    }
+                }
+            }
+
+            // check if primary homes are ok when new product is being loaded or a product with missing primary home relationship value
+            if (ContentType.Product == contentKey.type) {
+                // build buckets containing home categories per store
+                Map<ContentKey, Set<ContentKey>> homeCategoriesPerStore = contentProviderService.collectParentsPerStore(contentKey);
+
+                // fetch current primary home config (if exists)
+                List<ContentKey> originalPrimaryHomes = Collections.emptyList();
+                Optional<Object> optionalPrimaryHomes = contentProviderService.getAttributeValue(contentKey, ContentTypes.Product.PRIMARY_HOME);
+                if (optionalPrimaryHomes.isPresent()) {
+                    originalPrimaryHomes = new ArrayList<ContentKey>((List<ContentKey>) optionalPrimaryHomes.get());
+                }
+
+                // check if primary homes needs a fix
+                Set<ContentKey> storeKeysWithoutPrimaryHome = findStoreKeysForWhichProductDoesNotHavePrimaryHomeSetYet(originalPrimaryHomes, homeCategoriesPerStore);
+                Set<ContentKey> invalidButSetPrimaryHomes = findInvalidButSetPrimaryHomes(originalPrimaryHomes, homeCategoriesPerStore);
+
+                // fix primary homes for store keys
+                if (!storeKeysWithoutPrimaryHome.isEmpty()) {
+                    LOGGER.debug("Product " + contentKey + " lack primary home in stores " + storeKeysWithoutPrimaryHome);
+
+                    List<ContentKey> fixedPrimaryHomes = buildFixedPrimaryHomeList(contentKey, originalPrimaryHomes, storeKeysWithoutPrimaryHome);
+                    fixedPrimaryHomes.removeAll(invalidButSetPrimaryHomes);
+
+                    // debug result
+                    LOGGER.debug(".. Current list: " + originalPrimaryHomes);
+                    LOGGER.debug(".. Fixed list: " + fixedPrimaryHomes);
+
+                    // set PRIMARY_HOME as modified value
+                    final CustomFieldDefinition customFieldDef = new CustomFieldDefinition(Type.PrimaryHomeSelection);
+                    ModifiableAttributeI gwtFixedAttr = translateRelationshipWithManyCardinality(contentKey.type, (Relationship) ContentTypes.Product.PRIMARY_HOME, customFieldDef, fixedPrimaryHomes, AttributeValueSource.MODEL);
+                    gwtNode.changeValue(ContentTypes.Product.PRIMARY_HOME.getName(), gwtFixedAttr.getValue());
                 }
 
             }
@@ -244,7 +361,7 @@ public class ContentLoaderService {
         TabDefinition tabDef = editorService.gwtTabDefinition(key);
         GwtContentNode gwtNode = getGwtNode(key, tabDef);
         GwtNodeContext ctx = storeContextService.contextsOf(key);
-        String previewLink = previewLinkService.getLink(key, null);
+        String previewLink = previewLinkService.getLink(key);
 
         final GwtNodeData gwtNodeData = new GwtNodeData(gwtNode, tabDef, permission, ctx, previewLink);
         gwtNodeData.setParentMap(collectParentsPerStore(key));
@@ -364,6 +481,21 @@ public class ContentLoaderService {
         return attr;
     }
 
+    private List<ContentKey> buildFixedPrimaryHomeList(ContentKey contentKey, List<ContentKey> originalPrimaryHomes, Set<ContentKey> storeKeysWithoutPrimaryHome) {
+        List<ContentKey> fixedPrimaryHomes = new ArrayList<ContentKey>();
+
+        // fill up with original parent categories
+        fixedPrimaryHomes.addAll(originalPrimaryHomes);
+
+        // add missing primary home values
+        Map<ContentKey, ContentKey> primaryHomesPerStore = primaryHomeCorrectionService.pickPrimaryHomes(contentKey, contentProviderService);
+        for (ContentKey storeKey : storeKeysWithoutPrimaryHome) {
+            fixedPrimaryHomes.add(primaryHomesPerStore.get(storeKey));
+        }
+
+        return fixedPrimaryHomes;
+    }
+
     private Map<String, Set<String>> collectParentsPerStore(ContentKey contentKey) {
         Map<String, Set<String>> parentCategoriesPerStore = new HashMap<String, Set<String>>();
 
@@ -393,6 +525,43 @@ public class ContentLoaderService {
             decorateModel(key, result);
         }
         return result;
+    }
+
+    private Set<ContentKey> findStoreKeysForWhichProductDoesNotHavePrimaryHomeSetYet(List<ContentKey> originalPrimaryHomes,
+            Map<ContentKey, Set<ContentKey>> homeCategoriesPerStore) {
+        Set<ContentKey> storeKeysWithoutHome = new HashSet<ContentKey>();
+        for (Map.Entry<ContentKey, Set<ContentKey>> entry : homeCategoriesPerStore.entrySet()) {
+            final ContentKey storeKey = entry.getKey();
+
+            // intersect parent homes and parent categories belonging to the given store
+            Set<ContentKey> testSet = new HashSet<ContentKey>();
+            testSet.addAll(originalPrimaryHomes);
+            testSet.retainAll(entry.getValue());
+
+            // no primary home found for the given store, record it
+            if (testSet.isEmpty()) {
+                storeKeysWithoutHome.add(storeKey);
+            }
+        }
+
+        return storeKeysWithoutHome;
+    }
+
+    private Set<ContentKey> findInvalidButSetPrimaryHomes(List<ContentKey> originalPrimaryHomes, Map<ContentKey, Set<ContentKey>> homeCategoriesPerStore) {
+        Set<ContentKey> invalidPrimaryHomes = new HashSet<ContentKey>();
+        for(ContentKey primaryHome : originalPrimaryHomes){
+            boolean found = false;
+            for (ContentKey storeKey : homeCategoriesPerStore.keySet()) {
+                if (homeCategoriesPerStore.get(storeKey).contains(primaryHome)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                invalidPrimaryHomes.add(primaryHome);
+            }
+        }
+        return invalidPrimaryHomes;
     }
 
     private Object getContentKeyAttributeValue(ContentKey key, String childColumnName) {
@@ -490,7 +659,6 @@ public class ContentLoaderService {
         gwtNode.setOriginalAttribute(scalar.getName(), gwtAttr);
     }
 
-    @SuppressWarnings("unchecked")
     private Serializable toClientValues(Object value) {
         if (value instanceof List) {
             List<Object> result = new ArrayList<Object>();
@@ -532,16 +700,18 @@ public class ContentLoaderService {
         }
 
         Optional<Attribute> optionalAttribute = contentTypeInfoService.findAttributeByName(contentKey.type, col);
+
         if (optionalAttribute.isPresent()) {
             Attribute attribute = optionalAttribute.get();
+
             Optional<Object> optionalValue = contentProviderService.getAttributeValue(contentKey, attribute);
 
             if (optionalValue.isPresent()) {
+
                 attrValue = optionalValue.get();
 
                 if (attribute instanceof Scalar) {
-                    // FIXME: this is weird: we are converting Objects to Objects by serialize() and casting the resulting String back to Object
-                    attrValue = ScalarValueConverter.serializeToString((Scalar) attribute, attrValue);
+                    attrValue = scalarValueToSerializedValueConverter.convert((Scalar) attribute, attrValue);
                 } else if (attrValue instanceof ContentKey) {
                     attrValue = getContentKeyAttributeValue((ContentKey) attrValue, childColumnName);
                 }
@@ -615,7 +785,6 @@ public class ContentLoaderService {
     }
 
     private OneToManyAttribute translateRelationshipWithManyCardinality(ContentType type, Relationship relationship, CustomFieldDefinition customFieldDefinition, Object value, AttributeValueSource valueSource) {
-        @SuppressWarnings("unchecked")
         List<ContentKey> contentKeyList = (List<ContentKey>) value;
 
         final boolean isVariationMatrix = customFieldDefinition != null && customFieldDefinition.getType() == CustomFieldDefinition.Type.VariationMatrix;
@@ -736,156 +905,18 @@ public class ContentLoaderService {
     }
 
     private void decorateIconOverride(ContentKey key, ContentNodeModel model) {
-        String iconOverride = decorateContextOverride(key, false);
-        model.setIconOverride(iconOverride);
-    }
 
-    private void populateSkuData(ContentKey contentKey, GwtContentNode gwtNode) {
-        String materialId = erpsDataService.fetchSkuMaterialAssociations().get(contentKey.id);
+        Optional<Attribute> catalogAttribute = contentTypeInfoService.findAttributeByName(key.type, "catalog");
+        Optional<Object> catalogAttributeValue = contentProviderService.getAttributeValue(key, catalogAttribute.get());
 
-        MaterialData materialData = erpsDataService.fetchMaterialData().get(materialId);
+        if (catalogAttribute.isPresent() && catalogAttributeValue.isPresent()) {
+            String catalogValue = catalogAttributeValue.get().toString();
 
-        List<ContentKey> materialKeys = new ArrayList<ContentKey>();
-        if (materialId != null) {
-            materialKeys.add(ContentKeyFactory.get(ContentType.ErpMaterial, materialId));
-        }
-
-        if (materialData != null) {
-            populateScalarAttribute(contentKey, VirtualAttributes.Sku.promoPrice, materialData.getPromoPrice(), gwtNode);
-            final MaterialAvailabilityStatus availabilityStatus = materialData.getAvailabilityStatus();
-            populateScalarAttribute(contentKey, VirtualAttributes.Sku.UNAVAILABILITY_STATUS, (availabilityStatus != null ? availabilityStatus.toString() : ""), gwtNode);
-            populateScalarAttribute(contentKey, VirtualAttributes.Sku.materialVersion, materialData.getLatestMaterialVersion(), gwtNode);
-        }
-
-        populateRelationshipAttribute(contentKey, (Relationship) ContentTypes.Sku.materials, materialKeys, gwtNode);
-    }
-
-    private void populateErpMaterialData(ContentKey contentKey, GwtContentNode gwtNode) {
-        Map<String, String> su = erpsDataService.fetchSalesUnits().get(contentKey.id);
-
-        MaterialData materialData = erpsDataService.fetchMaterialData().get(contentKey.id);
-        if (materialData != null) {
-            populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.UPC, materialData.getUpc(), gwtNode);
-            populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.DESCRIPTION, WordUtils.capitalizeFully(materialData.getDescription()), gwtNode);
-            populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.NAME, materialData.getName(), gwtNode);
-
-            populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.atpRule, materialData.getAtpRule(), gwtNode);
-            populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.leadTime, materialData.getLeadTime(), gwtNode);
-            populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.alcoholicContent, materialData.isAlcoholicContent(), gwtNode);
-            populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.taxable, materialData.isTaxable(), gwtNode);
-            populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.kosher, materialData.isKosher(), gwtNode);
-            populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.platter, materialData.isPlatter(), gwtNode);
-            populateScalarAttribute(contentKey, VirtualAttributes.ErpMaterial.blockedDays, materialData.getBlockedDays(), gwtNode);
-        }
-
-        // erp classes
-        List<ContentKey> erpClassKeys = new ArrayList<ContentKey>();
-        List<String> classes = erpsDataService.fetchClasses(contentKey.id);
-        for (String erpClass : classes) {
-            erpClassKeys.add(ContentKeyFactory.get(ContentType.ErpClass, erpClass));
-        }
-
-        populateRelationshipAttribute(contentKey, VirtualAttributes.ErpMaterial.classes, erpClassKeys, gwtNode);
-
-        // sales units
-        List<ContentKey> salesUnitKeys = new ArrayList<ContentKey>();
-        for (String salesUnitId : su.keySet()) {
-            salesUnitKeys.add(ContentKeyFactory.get(ContentType.ErpSalesUnit, su.get(salesUnitId)));
-        }
-
-        populateRelationshipAttribute(contentKey, VirtualAttributes.ErpMaterial.salesUnits, salesUnitKeys, gwtNode);
-    }
-
-    private void populateErpClassData(ContentKey contentKey, GwtContentNode gwtNode) {
-        String classId = contentKey.id;
-        List<ContentKey> characteristicKeys = new ArrayList<ContentKey>();
-        List<String> charsOfClass = erpsDataService.fetchCharacteristics(classId);
-        for (String erpChar : charsOfClass) {
-            characteristicKeys.add(ContentKeyFactory.get(ContentType.ErpCharacteristic, classId + "/" + erpChar));
-        }
-
-        populateRelationshipAttribute(contentKey, VirtualAttributes.ErpClass.characteristics, characteristicKeys, gwtNode);
-    }
-
-    private void populateErpCharacteristicData(ContentKey contentKey, GwtContentNode gwtNode) {
-        ErpCharacteristicKey erpKey = new ErpCharacteristicKey(contentKey);
-
-        gwtNode.setLabel(erpKey.getCharacteristicName());
-
-        List<ContentKey> erpValueKeys = new ArrayList<ContentKey>();
-        Map<String, String> erpValues = erpsDataService.fetchCharacteristicValues(erpKey);
-        for (String erpValueName : erpValues.keySet()) {
-            ContentKey key = ContentKeyFactory.get(ContentType.ErpCharacteristicValue, erpKey.createValueKey(erpValueName).toString());
-            erpValueKeys.add(key);
-        }
-
-        populateScalarAttribute(contentKey, VirtualAttributes.ErpCharacteristic.name, erpKey.getCharacteristicName(), gwtNode);
-        populateRelationshipAttribute(contentKey, VirtualAttributes.ErpCharacteristic.values, erpValueKeys, gwtNode);
-    }
-
-    private void populateErpCharacteristicValueData(ContentKey contentKey, GwtContentNode gwtNode) {
-        ErpCharacteristicValueKey erpKey = new ErpCharacteristicValueKey(contentKey);
-        gwtNode.setLabel(erpKey.getCharacteristicValueName());
-        Map<String, String> erpValues = erpsDataService.fetchCharacteristicValues(erpKey.getCharacteristicKey());
-        String erpValueDesc = erpValues.get(erpKey.getCharacteristicValueName());
-
-        populateScalarAttribute(contentKey, VirtualAttributes.ErpCharacteristicValue.FULL_NAME, erpValueDesc, gwtNode);
-        populateScalarAttribute(contentKey, VirtualAttributes.ErpCharacteristicValue.name, erpKey.getCharacteristicValueName(), gwtNode);
-    }
-
-    private void populateMediaTypeData(ContentKey contentKey, GwtContentNode gwtNode) {
-        Optional<Media> associatedMedia = mediaService.getMediaByContentKey(contentKey);
-        if (associatedMedia.isPresent()) {
-            final Media media = associatedMedia.get();
-
-            populateScalarAttribute(contentKey, (Scalar) ContentTypes.Image.path, media.getUri(), gwtNode);
-            populateScalarAttribute(contentKey, (Scalar) ContentTypes.Image.lastmodified, media.getLastModified(), gwtNode);
-
-            if (ContentType.Image == contentKey.type) {
-                populateScalarAttribute(contentKey, (Scalar) ContentTypes.Image.width, media.getWidth(), gwtNode);
-                populateScalarAttribute(contentKey, (Scalar) ContentTypes.Image.height, media.getHeight(), gwtNode);
-            } else if (ContentType.Html == contentKey.type) {
-                Map<Attribute, Object> htmlValues = contentProviderService.getAttributeValues(contentKey,
-                        Arrays.asList(new Attribute[] { ContentTypes.Html.popupSize, ContentTypes.Html.title }));
-
-                populateScalarAttribute(contentKey, (Scalar) ContentTypes.Html.popupSize, htmlValues.get(ContentTypes.Html.popupSize), gwtNode);
-                populateScalarAttribute(contentKey, (Scalar) ContentTypes.Html.title, htmlValues.get(ContentTypes.Html.title), gwtNode);
-            } else if (ContentType.MediaFolder == contentKey.type) {
-                Set<ContentKey> childKeys = mediaService.getChildMediaKeys(contentKey);
-
-                List<ContentKey> mediaItemKeys = new ArrayList<ContentKey>();
-                List<ContentKey> subFolderKeys = new ArrayList<ContentKey>();
-
-                for (ContentKey mediaKey : childKeys) {
-                    if (ContentType.MediaFolder == mediaKey.type) {
-                        subFolderKeys.add(mediaKey);
-                    } else {
-                        mediaItemKeys.add(mediaKey);
-                    }
-                }
-
-                populateRelationshipAttribute(contentKey, (Relationship) ContentTypes.MediaFolder.files, mediaItemKeys, gwtNode);
-                populateRelationshipAttribute(contentKey, (Relationship) ContentTypes.MediaFolder.subFolders, subFolderKeys, gwtNode);
+            if ("ALL".equals(catalogValue)) {
+                model.setIconOverride("OverrideRed");
+            } else if ("CORPORATE".equals(catalogValue)) {
+                model.setIconOverride("OverrideGreen");
             }
         }
-    }
-
-    private void populateCategoryData(ContentKey contentKey, GwtContentNode gwtNode) {
-        populateRelationshipAttribute(contentKey, VirtualAttributes.Category.consumedByCategoryCarousel, virtualAttributeRepository.queryConsumedByCategoryCarousel(contentKey),
-                gwtNode);
-        populateRelationshipAttribute(contentKey, VirtualAttributes.Category.consumedByDepartmentCarousel, virtualAttributeRepository.queryConsumedByDepartmentCarousel(contentKey),
-                gwtNode);
-        populateRelationshipAttribute(contentKey, VirtualAttributes.Category.consumedByVirtualCategory, virtualAttributeRepository.queryConsumedByVirtualCategory(contentKey),
-                gwtNode);
-        populateRelationshipAttribute(contentKey, VirtualAttributes.Category.consumedByStoreCarousel, virtualAttributeRepository.queryConsumedByStoreCarousel(contentKey), gwtNode);
-        populateRelationshipAttribute(contentKey, VirtualAttributes.Category.consumedBySection, virtualAttributeRepository.queryConsumedBySection(contentKey),
-                gwtNode);
-        populateRelationshipAttribute(contentKey, VirtualAttributes.Category.consumedByImageBanner, virtualAttributeRepository.queryConsumedByImageBanner(contentKey),
-                gwtNode);
-        populateRelationshipAttribute(contentKey, VirtualAttributes.Category.consumedByTabletFeaturedCategories, virtualAttributeRepository.queryConsumedByTabletFeaturedCategories(contentKey),
-                gwtNode);
-        populateRelationshipAttribute(contentKey, VirtualAttributes.Category.consumedByModule, virtualAttributeRepository.queryConsumedByModule(contentKey),
-                gwtNode);
-        populateRelationshipAttribute(contentKey, VirtualAttributes.Category.consumedByBanner, virtualAttributeRepository.queryConsumedByBanner(contentKey), gwtNode);
     }
 }

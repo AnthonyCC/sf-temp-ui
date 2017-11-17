@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -21,14 +22,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
+import com.freshdirect.cms.core.domain.Relationship;
+import com.freshdirect.cms.core.service.ContentTypeInfoService;
 import com.freshdirect.cms.draft.domain.Draft;
 import com.freshdirect.cms.draft.domain.DraftChange;
 import com.freshdirect.cms.draft.domain.DraftContext;
 import com.freshdirect.cms.draft.domain.DraftStatus;
 
-import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
@@ -44,6 +47,7 @@ public class DraftService {
     public static final Long CMS_DRAFT_DEFAULT_ID = 0L;
 
     public static final Comparator<DraftChange> ORDER_BY_CREATION_DATE_ASC = new Comparator<DraftChange>() {
+
         @Override
         public int compare(DraftChange o1, DraftChange o2) {
             return Long.valueOf(o1.getCreatedAt()).compareTo(Long.valueOf(o2.getCreatedAt()));
@@ -51,6 +55,7 @@ public class DraftService {
     };
 
     public static final Comparator<DraftChange> ORDER_BY_CREATION_DATE_DESC = new Comparator<DraftChange>() {
+
         @Override
         public int compare(DraftChange o1, DraftChange o2) {
             return Long.valueOf(o2.getCreatedAt()).compareTo(Long.valueOf(o1.getCreatedAt()));
@@ -62,10 +67,14 @@ public class DraftService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DraftService.class);
 
-    private static final RestTemplate REST_TEMPLATE = new RestTemplate();
-    
     @Autowired
     private CacheManager cacheManager;
+
+    @Autowired
+    private ContentTypeInfoService contentTypeInfoService;
+
+    @Autowired
+    private DraftChangeToContentNodeApplicator applicator;
 
     @Value("${cms.adminapp.path}")
     private String cmsAdminAppUri;
@@ -85,7 +94,8 @@ public class DraftService {
         List<Draft> drafts;
         String uri = cmsAdminAppUri + CMS_DRAFT_PATH;
         LOGGER.info(MessageFormat.format("Load all drafts from uri[{0}]", uri));
-        drafts = Arrays.asList(REST_TEMPLATE.getForObject(uri, Draft[].class));
+        RestTemplate getDraftsRestTemplate = new RestTemplate();
+        drafts = Arrays.asList(getDraftsRestTemplate.getForObject(uri, Draft[].class));
         return drafts;
     }
 
@@ -101,8 +111,34 @@ public class DraftService {
     public void updateDraftStatusForDraft(Long draftId, DraftStatus status) {
         final String uri = cmsAdminAppUri + CMS_DRAFT_ACTION_PATH.replace("{id}", draftId.toString());
         LOGGER.info(MessageFormat.format("Updating draftStatus for draftId: {0} to {1}", draftId, status));
-        REST_TEMPLATE.postForLocation(uri, status, draftId.toString());
+        RestTemplate updateDraftStatusTemplate = new RestTemplate();
+        updateDraftStatusTemplate.postForLocation(uri, status, draftId.toString());
         invalidateDraftChangesCache(draftId);
+    }
+
+    public Set<ContentKey> getAllChangedContentKeys(Long draftId) {
+        final Set<ContentKey> keySet = new HashSet<ContentKey>();
+        for (final DraftChange change : getDraftChanges(draftId)) {
+            keySet.add(ContentKeyFactory.get(change.getContentKey()));
+        }
+        return keySet;
+    }
+
+    public Set<ContentKey> collectChildKeys(Long draftId) {
+        final Set<ContentKey> keySet = new HashSet<ContentKey>();
+        for (final DraftChange change : getDraftChanges(draftId)) {
+            ContentKey draftContentKey = ContentKeyFactory.get(change.getContentKey());
+
+            Attribute attr = contentTypeInfoService.findAttributeByName(draftContentKey.type, change.getAttributeName()).orNull();
+
+            if (attr instanceof Relationship) {
+                final Relationship relationship = (Relationship) attr;
+                List<ContentKey> clientKeys = applicator.getContentKeysFromRelationshipValue( relationship, change.getValue());
+
+                keySet.addAll(clientKeys);
+            }
+        }
+        return keySet;
     }
 
     public List<DraftChange> getFilteredDraftChanges(Long draftId, Date changedSince, final String userName, Set<ContentKey> contentKeys) {
@@ -133,25 +169,61 @@ public class DraftService {
 
     @SuppressWarnings("unchecked")
     public List<DraftChange> getDraftChanges(Long draftId) {
-        Cache cache = cacheManager.getCache(CMS_DRAFT_CHANGES_CACHE_NAME);
-        Element cacheElement = cache.get(draftId);
-        if (cacheElement != null) {
-            List<DraftChange> cachedDraftChanges = (List<DraftChange>) cacheElement.getObjectValue();
-            if (cachedDraftChanges != null) {
-                return Collections.unmodifiableList(cachedDraftChanges);
+        List<DraftChange> draftChanges = (List<DraftChange>) (cacheManager.getCache(CMS_DRAFT_CHANGES_CACHE_NAME).get(draftId) == null ? null
+                : cacheManager.getCache(CMS_DRAFT_CHANGES_CACHE_NAME).get(draftId).getObjectValue());
+        if (draftChanges == null) {
+            final String uri = cmsAdminAppUri + CMS_DRAFT_CHANGE_ACTION_PATH;
+            RestTemplate getDraftChangesRestTemplate = new RestTemplate();
+            DraftChange[] allDraftChange = getDraftChangesRestTemplate.getForObject(uri, DraftChange[].class, Long.toString(draftId));
+            draftChanges = new ArrayList<DraftChange>();
+            for (DraftChange draftChange : allDraftChange) {
+                draftChanges.add(draftChange);
             }
+            Collections.sort(draftChanges, ORDER_BY_CREATION_DATE_ASC);
+            cacheManager.getCache(CMS_DRAFT_CHANGES_CACHE_NAME).put(new Element(draftId, draftChanges));
         }
-
-        final String uri = cmsAdminAppUri + CMS_DRAFT_CHANGE_ACTION_PATH;
-        DraftChange[] allDraftChanges = REST_TEMPLATE.getForObject(uri, DraftChange[].class, Long.toString(draftId));
-        return Collections.unmodifiableList(updateDraftChangesCache(draftId, Arrays.asList(allDraftChanges)));
+        return Collections.unmodifiableList(draftChanges);
     }
 
-    public void saveDraftChange(final DraftContext draftContext, final Collection<DraftChange> draftChangesToSave) {
+    public boolean isContentKeyChanged(Long draftId, String nodeId) {
+        boolean isKeyChangedOnDraft = false;
+        for (final DraftChange change : getDraftChanges(draftId)) {
+            if (nodeId.equals(ContentKeyFactory.get(change.getContentKey()).id)) {
+                isKeyChangedOnDraft = true;
+                break;
+            }
+        }
+        return isKeyChangedOnDraft;
+    }
+
+    public boolean isContentKeyChanged(Long draftId, ContentKey contentKey) {
+        boolean isKeyChangedOnDraft = false;
+        for (final DraftChange change : getDraftChanges(draftId)) {
+            if (contentKey.equals(ContentKeyFactory.get(change.getContentKey()))) {
+                isKeyChangedOnDraft = true;
+                break;
+            }
+        }
+        return isKeyChangedOnDraft;
+    }
+
+    public void saveDraftChange(final Collection<DraftChange> draftChanges) {
         final String uri = cmsAdminAppUri + CMS_DRAFT_CHANGE_PATH;
-        if (draftChangesToSave != null && !draftChangesToSave.isEmpty()) {
-            DraftChange[] allDraftChanges = REST_TEMPLATE.postForObject(uri, draftChangesToSave, DraftChange[].class);
-            updateDraftChangesCache(draftContext.getDraftId(), Arrays.asList(allDraftChanges));
+
+        if (draftChanges != null && !draftChanges.isEmpty()) {
+            RestTemplate saveDraftChangeRestTemplate = new RestTemplate();
+            DraftChange[] savedDraftChanges = saveDraftChangeRestTemplate.postForObject(uri, draftChanges, DraftChange[].class);
+            Draft draftOfChanges = draftChanges.iterator().next().getDraft();
+            List<DraftChange> cachedDraftChanges = getDraftChanges(draftOfChanges.getId());
+            List<DraftChange> notCachedDraftChanges = new ArrayList<DraftChange>();
+            for (DraftChange draftChange : savedDraftChanges) {
+                if (draftChange.getDraft().equals(draftOfChanges)) {
+                    if (cachedDraftChanges == null || !cachedDraftChanges.contains(draftChange)) {
+                        notCachedDraftChanges.add(draftChange);
+                    }
+                }
+            }
+            updateDraftChangesCache(notCachedDraftChanges);
         }
     }
 
@@ -159,16 +231,22 @@ public class DraftService {
         cacheManager.getCache(CMS_DRAFT_CHANGES_CACHE_NAME).remove(draftId);
     }
 
-    private List<DraftChange> updateDraftChangesCache(final Long draftId, final Collection<DraftChange> allDraftChanges) {
-        List<DraftChange> changeList = new ArrayList<DraftChange>();
-        for (DraftChange dc : allDraftChanges) {
-            if (draftId.equals(dc.getDraft().getId())) {
-                changeList.add(dc);
+    @SuppressWarnings("unchecked")
+    private void updateDraftChangesCache(Collection<DraftChange> draftChanges) {
+        for (DraftChange draftChange : draftChanges) {
+            Long draftId = draftChange.getDraft().getId();
+            List<DraftChange> cachedDraftChanges = (List<DraftChange>) cacheManager.getCache(CMS_DRAFT_CHANGES_CACHE_NAME).get(draftId).getObjectValue();
+            if (cachedDraftChanges == null) {
+                List<DraftChange> changesOfNewDraft = new ArrayList<DraftChange>();
+                changesOfNewDraft.add(draftChange);
+                cacheManager.getCache(CMS_DRAFT_CHANGES_CACHE_NAME).put(new Element(draftId, changesOfNewDraft));
+            } else {
+                synchronized (cachedDraftChanges) {
+                    cachedDraftChanges.add(draftChange);
+                    Collections.sort(cachedDraftChanges, ORDER_BY_CREATION_DATE_ASC);
+                }
             }
         }
-        Collections.sort(changeList, ORDER_BY_CREATION_DATE_ASC);
-        cacheManager.getCache(CMS_DRAFT_CHANGES_CACHE_NAME).put(new Element(draftId, changeList));
-        return changeList;
     }
 
     public String decorateUrlWithDraft(String baseUrl, String draftId, String draftName) {
@@ -234,4 +312,5 @@ public class DraftService {
             return "";
         }
     }
+
 }

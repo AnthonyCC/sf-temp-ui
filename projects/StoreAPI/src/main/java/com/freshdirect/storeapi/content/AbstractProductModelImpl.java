@@ -13,8 +13,6 @@ import java.util.Set;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.ZoneInfo;
-import com.freshdirect.fdstore.EnumAvailabilityStatus;
-import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -272,7 +270,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 
 	private String getProductNewnessKey() {
 		String key="";
-		ZoneInfo zone=this!=null&&this.getUserContext()!=null&&this.getUserContext().getPricingContext()!=null?this.getUserContext().getPricingContext().getZoneInfo():null;
+		ZoneInfo zone=this.getUserContext().getPricingContext().getZoneInfo();
 		if(zone!=null) {
 			key=new StringBuilder(5).append(zone.getSalesOrg()).append(zone.getDistributionChanel()).toString();
 		}
@@ -280,7 +278,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	}
 	@Override
 	public boolean isBackInStock() {
-		return ContentFactory.getInstance().getBackInStockProducts().containsKey(getContentKey());
+		return ContentFactory.getInstance().getBackInStockProducts().containsKey(this);
 	}
 
 	@Override
@@ -297,22 +295,6 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 			return null;
 		}
 	}
-
-    @Override
-    public boolean isGoingOutOfStock() {
-    	boolean isToBeDiscontinuedSoon;
-        try {
-            FDProductInfo productInfo = FDCachedFactory.getProductInfo(getDefaultSkuCode());
-            ZoneInfo zone = getUserContext().getPricingContext().getZoneInfo();
-            EnumAvailabilityStatus availabilityStatus = productInfo.getAvailabilityStatus(zone.getSalesOrg(), zone.getDistributionChanel());
-            isToBeDiscontinuedSoon = EnumAvailabilityStatus.TO_BE_DISCONTINUED_SOON == availabilityStatus;
-        } catch (FDSkuNotFoundException e) {
-            isToBeDiscontinuedSoon = false;
-        } catch (FDResourceException e) {
-            isToBeDiscontinuedSoon = false;
-        }
-        return isToBeDiscontinuedSoon;
-    }
 
 	@Override
 	public double getAge() {
@@ -703,5 +685,4 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	public String getFdxSEOMetaDescription(){
 	    return getAttribute("SEO_META_DESC_FDX", "FoodKick has just what you need for today and tomorrow. Order now for same-day delivery!");
 	}
-	
 }

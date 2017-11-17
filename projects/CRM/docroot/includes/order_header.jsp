@@ -1,9 +1,9 @@
 <%@ page import='java.util.*' %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
-<%@ page import="com.freshdirect.fdstore.content.ProductModel" %>
+<%@ page import="com.freshdirect.storeapi.content.ProductModel" %>
 <%@ page import="com.freshdirect.fdlogistics.model.FDReservation" %>
 <%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession" %>
-<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
 <%@ page import="com.freshdirect.FDCouponProperties"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 

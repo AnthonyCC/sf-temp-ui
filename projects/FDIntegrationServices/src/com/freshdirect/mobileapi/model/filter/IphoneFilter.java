@@ -1,8 +1,8 @@
 package com.freshdirect.mobileapi.model.filter;
 
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.AbstractProductFilter;
-import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.storeapi.content.AbstractProductFilter;
+import com.freshdirect.storeapi.content.ProductModel;
 
 /**
  * Mobile specific Filter

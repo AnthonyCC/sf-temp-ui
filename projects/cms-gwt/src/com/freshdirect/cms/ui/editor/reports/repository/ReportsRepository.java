@@ -18,8 +18,9 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.DataSourceUtils;
@@ -29,14 +30,20 @@ import org.springframework.util.Assert;
 
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.core.domain.ContentKeyFactory;
+import com.freshdirect.cms.core.domain.RootContentKey;
 import com.freshdirect.cms.core.domain.builder.AttributeBuilder;
-import com.freshdirect.cms.ui.editor.reports.service.ContentKeyRowMapper;
 import com.freshdirect.cms.ui.model.attributes.TableAttribute;
 
 @Repository
 public class ReportsRepository {
 
-    // TODO : remove remaining navtree references
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReportsRepository.class);
+
+    private static final String QUERY_ORPHANS = "select id from cms_contentnode cn "
+            + "where contenttype_id not in (''Html'',''Image'',''Store'',''ErpCharacteristic'') "
+            + "and id not in (''{0}'',''{1}'') "
+            + "and not exists (select child_contentnode_id from cms_navtree where child_contentnode_id=cn.id)";
 
     private static final String QUERY_UNREACHABLE = "select id from cms_contentnode cn "
             + "where contenttype_id not in ('Html','Image','Store','ErpCharacteristic') "
@@ -201,10 +208,6 @@ public class ReportsRepository {
             + " "
             + "on product=product_scope";
 
-    private static final String QUERY_BROKEN_MEDIA_LINKS = "select r.PARENT_CONTENTNODE_ID  as parent_key$, r.DEF_NAME as attribute, r.CHILD_CONTENTNODE_ID as media from RELATIONSHIP r "
-            + " left join (select concat(type,concat(':',id)) as mediaids from MEDIA) m on r.CHILD_CONTENTNODE_ID = m.mediaids "
-            + " where r.DEF_CONTENTTYPE in ('Html', 'Image', 'Template', 'MediaFolder') and m.mediaids is null";
-
     // -- SMART STORE REPORTS --
 
     private static final String QUERY_SCARAB_MERCHANDISING_RULES = "select parent_contentnode_id as parent_key$, def_name as group$, child_contentnode_id as child_key$ "
@@ -222,35 +225,12 @@ public class ReportsRepository {
             + "where def_name = 'recommender' "
             + "order by parent_contentnode_id, ordinal";
 
-    private static final String QUERY_PAIR_IT_AND_COMPLETED_BY_MEAL = "select key.productKey as product_key$, hd.pairItHeading as PAIR_IT_HEADING_ATTRIBUTE$, txt.pairItText as PAIR_IT_TEXT_ATTRIBUTE$, ctm.mealProductKey as completeTheMeal_key$ " +
-            "from ( " +
-            "    select distinct(productKey) from ( " +
-            "        select contentnode_id as productKey from cms.attribute where def_name='PAIR_IT_HEADING' or def_name='PAIR_IT_TEXT' " +
-            "        union " +
-            "        select parent_contentnode_id as productKey from CMS.relationship where def_name='completeTheMeal' " +
-            "    ) " +
-            ") key " +
-            "join ( " +
-            "    select contentnode_id as productKey, value as pairItHeading " +
-            "    from CMS.attribute " +
-            "    where def_name='PAIR_IT_HEADING' " +
-            ") hd on(key.productKey = hd.productKey) " +
-            "join ( " +
-            "    select contentnode_id as productKey, value as pairItText " +
-            "    from CMS.attribute " +
-            "    where def_name='PAIR_IT_TEXT' " +
-            ") txt on (key.productKey = txt.productKey) " +
-            "join ( " +
-            "    select parent_contentnode_id as productKey, child_contentnode_id as mealProductKey " +
-            "    from CMS.relationship " +
-            "    where def_name='completeTheMeal' " +
-            ") ctm on (key.productKey = ctm.productKey) " +
-            "order by hd.productKey";
-
-    private static final String QUERY_RECIPES = "select parent_contentnode_id as node_key$, DEF_NAME as relationship, child_contentnode_id as recipe_key$ "
-            + "from cms.relationship "
-            + "where def_contenttype='Recipe' "
-            + "order by parent_contentnode_id, DEF_NAME";
+    private static final RowMapper<ContentKey> CONTENT_KEY_MAPPER = new RowMapper<ContentKey>() {
+        @Override
+        public ContentKey mapRow(ResultSet resultSet, int pos) throws SQLException {
+            return ContentKeyFactory.get(resultSet.getString(1));
+        }
+    };
 
     private static final class ReportMapper implements RowMapper<Map<Attribute,Object>> {
 
@@ -273,21 +253,28 @@ public class ReportsRepository {
         }
     };
 
-    @Autowired
-    private ContentKeyRowMapper contentKeyRowMapper;
-
-    @Autowired
-    @Qualifier("cmsJdbcTemplate")
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private void setDataSource(DataSource dataSource) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
+    public List<ContentKey> fetchOrphanObjects() {
+        String query = MessageFormat.format(QUERY_ORPHANS, RootContentKey.RECIPES.contentKey.toString(), RootContentKey.SHARED_RESOURCES.contentKey.toString());
+        List<ContentKey> result = jdbcTemplate.query(query, CONTENT_KEY_MAPPER);
+
+        return result;
+    }
+
     public List<ContentKey> fetchUnreachableStoreObjects() {
-        List<ContentKey> result = jdbcTemplate.query(QUERY_UNREACHABLE, contentKeyRowMapper);
+        List<ContentKey> result = jdbcTemplate.query(QUERY_UNREACHABLE, CONTENT_KEY_MAPPER);
 
         return result;
     }
 
     public List<ContentKey> fetchRecentlyModifiedObjects() {
-        List<ContentKey> result = jdbcTemplate.query(QUERY_RECENTLY_MODIFIED, contentKeyRowMapper);
+        List<ContentKey> result = jdbcTemplate.query(QUERY_RECENTLY_MODIFIED, CONTENT_KEY_MAPPER);
 
         return result;
     }
@@ -392,15 +379,4 @@ public class ReportsRepository {
         return fetchReport(QUERY_SMART_CATEGORY_RECOMMENDERS);
     }
 
-    public List<Map<Attribute, Object>> fetchBrokenMediaLinks() {
-        return fetchReport(QUERY_BROKEN_MEDIA_LINKS);
-    }
-
-    public List<Map<Attribute, Object>> fetchPairItAndCompletedByMealProducts() {
-        return fetchReport(QUERY_PAIR_IT_AND_COMPLETED_BY_MEAL);
-    }
-
-    public List<Map<Attribute, Object>> fetchRecipes() {
-        return fetchReport(QUERY_RECIPES);
-    }
 }

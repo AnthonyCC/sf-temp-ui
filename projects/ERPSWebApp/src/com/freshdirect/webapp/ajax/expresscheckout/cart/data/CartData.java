@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.customer.ErpComplaintReason;
-import com.freshdirect.fdstore.content.ComparatorChain;
 import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
+import com.freshdirect.storeapi.content.ComparatorChain;
 import com.freshdirect.webapp.ajax.AbstractCoremetricsResponse;
 import com.freshdirect.webapp.ajax.analytics.data.GoogleAnalyticsData;
 import com.freshdirect.webapp.ajax.expresscheckout.csr.data.CustomerServiceRepresentativeData;

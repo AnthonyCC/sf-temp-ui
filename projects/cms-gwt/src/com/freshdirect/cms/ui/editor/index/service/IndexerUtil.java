@@ -30,7 +30,6 @@ import com.freshdirect.cms.ui.editor.index.domain.FreshDirectDictionary;
 import com.freshdirect.cms.ui.editor.index.domain.SynonymDictionary;
 import com.freshdirect.cms.ui.editor.search.service.SearchTermNormalizer;
 import com.freshdirect.cms.ui.editor.term.service.TermNormalizer;
-import com.google.common.base.Optional;
 
 @Service
 public class IndexerUtil {
@@ -46,7 +45,6 @@ public class IndexerUtil {
      *
      */
     public void collectPermutations(SynonymDictionary permutations, ContentKey nodeKey, Map<Attribute, Object> nodeAttributesWithValues, IndexerConfiguration indexerConfiguration,
-
             ContentKey storeKey) {
         SearchTermNormalizer searchTermNormalizer = new SearchTermNormalizer(false);
         List<AttributeIndex> attributeIndexes = indexConfiguration.getAllIndexConfigurationsByContentType().get(nodeKey.type);
@@ -158,30 +156,34 @@ public class IndexerUtil {
         if (attribute instanceof Relationship && relationshipAttributeName != null) {
             if (((Relationship) attribute).getCardinality().equals(RelationshipCardinality.ONE)) {
                 ContentKey key = (ContentKey) attributeValue;
-                Optional<Object> relNode = storeContentSource.getAttributeValue(key, attribute);
-                Object relValue = relNode.orNull();
-                if (relValue != null) {
-                    addValues(values, relValue.toString(), isKeyword);
-                }
-                if (parentRecursionEnabled && index.isRecurseParent()) {
-                    collectParentValues(values, key, relationshipAttributeName, isKeyword, storeContentSource, storeKey);
+                Map<Attribute, Object> relNode = storeContentSource.getAllAttributesForContentKey(key);
+                if (relNode != null) {
+                    Object relValue = getAttributeValueWithName(relationshipAttributeName, relNode);
+                    if (relValue != null) {
+                        addValues(values, relValue.toString(), isKeyword);
+                    }
+                    if (parentRecursionEnabled && index.isRecurseParent()) {
+                        collectParentValues(values, key, relNode, relationshipAttributeName, isKeyword, storeContentSource, storeKey);
+                    }
                 }
             } else { // EnumCardinality.MANY
                 @SuppressWarnings("unchecked")
                 List<ContentKey> relNodes = (List<ContentKey>) attributeValue;
 
                 for (ContentKey key : relNodes) {
-                    Optional<Object> relNode = storeContentSource.getAttributeValue(key, attribute);
-                    Object relValue = relNode.orNull();
-                    if (relValue != null) {
-                        addValues(values, relValue.toString(), isKeyword);
+                    Map<Attribute, Object> relNode = storeContentSource.getAllAttributesForContentKey(key);
+                    if (relNode != null) {
+                        Object relValue = getAttributeValueWithName(relationshipAttributeName, relNode);
+                        if (relValue != null) {
+                            addValues(values, relValue.toString(), isKeyword);
+                        }
                     }
                 }
             }
         } else {
             addValues(values, attributeValue.toString(), isKeyword);
             if (parentRecursionEnabled && index.isRecurseParent()) {
-                collectParentValues(values, nodeKey, attributeName, isKeyword, storeContentSource, storeKey);
+                collectParentValues(values, nodeKey, nodeAttributesWithValues, attributeName, isKeyword, storeContentSource, storeKey);
             }
         }
         return values;
@@ -221,7 +223,7 @@ public class IndexerUtil {
         return keywords;
     }
 
-    private static void collectParentValues(List<String> values, ContentKey nodeKey, String attributeName, boolean isKeyword,
+    private static void collectParentValues(List<String> values, ContentKey nodeKey, Map<Attribute, Object> nodeAttributesWithValues, String attributeName, boolean isKeyword,
             ContextualContentProvider storeContentSource, ContentKey storeKey) {
         ContentKey key = nodeKey;
         ContentKey parentKey = null;

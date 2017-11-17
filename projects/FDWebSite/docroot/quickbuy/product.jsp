@@ -4,10 +4,10 @@
 <%@ page import="java.net.URL"%>
 <%@page import="java.net.MalformedURLException"%>
 <%@page import="java.net.URLEncoder"%>
-<%@page import="com.freshdirect.fdstore.content.EnumProductLayout"%>
+<%@page import="com.freshdirect.storeapi.content.EnumProductLayout"%>
 <%@page import="com.freshdirect.fdstore.customer.FDCartLineI"%>
 <%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
-<%@ page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@ page import="com.freshdirect.storeapi.content.ContentFactory"%>
 <%@ page import="com.freshdirect.framework.webapp.ActionResult"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.CartName" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>

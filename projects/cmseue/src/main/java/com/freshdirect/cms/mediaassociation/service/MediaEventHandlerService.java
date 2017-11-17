@@ -1,6 +1,5 @@
 package com.freshdirect.cms.mediaassociation.service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -8,7 +7,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -78,20 +76,20 @@ public class MediaEventHandlerService {
     }
 
     public void deleteMedia(String mediaUri, String userId) {
-        List<Media> mediasByPrefix = getMediasByUriOrFolderPrefix(mediaUri);
+        List<Media> mediasByPrefix = mediaService.getMediasByUriStartsWith(mediaUri);
         for (Media media : mediasByPrefix) {
             mediaService.deleteMedia(media);
             logChange(media.getContentKey(), ContentChangeType.DEL, "Deleted media", userId);
         }
     }
 
-    public void moveMedia(String source, String destination, String userId) {
-        List<Media> mediasByPrefix = getMediasByUriOrFolderPrefix(source);
+    public void moveMedia(String source, String destionation, String userId) {
+        List<Media> mediasByPrefix = mediaService.getMediasByUriStartsWith(source);
         for (Media media : mediasByPrefix) {
             String originalMediaUri = media.getUri();
-            media.setUri(StringUtils.replace(originalMediaUri, source, destination, 1));
+            media.setUri(originalMediaUri.replaceFirst(source, destionation));
             mediaService.saveMedia(media);
-            logChange(media.getContentKey(), ContentChangeType.MOD, "Moved media to " + destination, userId);
+            logChange(media.getContentKey(), ContentChangeType.MOD, "Moved media to " + destionation, userId);
         }
     }
 
@@ -100,16 +98,6 @@ public class MediaEventHandlerService {
         logChange(mediaToUpdate.getContentKey(), ContentChangeType.MOD, "Updated media", userId);
     }
 
-    private final List<Media> getMediasByUriOrFolderPrefix(String mediaUri) {
-        List<Media> mediasByPrefix = new ArrayList<Media>();
-        Optional<Media> media = mediaService.getMediaByUri(mediaUri);
-        if (media.isPresent()) {
-            mediasByPrefix.add(media.get());
-        }
-        mediasByPrefix.addAll(mediaService.getMediasByUriStartsWith(mediaUri + "/"));
-        return mediasByPrefix;
-    }
-    
     private void logChange(ContentKey contentKey, ContentChangeType changeType, String note, String userId) {
         ContentChangeSetEntity changeSet = new ContentChangeSetEntity();
         ContentChangeEntity contentChangeEntity = new ContentChangeEntity();

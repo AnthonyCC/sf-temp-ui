@@ -1,6 +1,6 @@
 <%@ page import='java.util.*' %>
-<%@ page import='com.freshdirect.fdstore.content.*'  %>
-<%@ page import='com.freshdirect.fdstore.attributes.*'  %>
+<%@ page import='com.freshdirect.storeapi.content.*'  %>
+<%@ page import='com.freshdirect.storeapi.attributes.*'  %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*'  %>
 <%@ page import='com.freshdirect.fdstore.*' %>
@@ -51,7 +51,7 @@
                 <td width="130" align="right" rowspan="2"><a href="<%=request.getRequestURI()%>?catId=<%=catId%><%=parent != null?"&parent="+parent:""%>&title=<%=title%>"><img src="<%=catImg%>" alt="" border="0"></a><br>
                     <br>
                     <%if(products.size() > 1){%>
-                    <logic:iterate id='item' collection="<%=products%>" type='com.freshdirect.fdstore.content.ProductModel' indexId="idx">
+                    <logic:iterate id='item' collection="<%=products%>" type='com.freshdirect.storeapi.content.ProductModel' indexId="idx">
                         <%if(parent != null){
                             catId = item.getParentNode().getContentName(); 
                         }%>
@@ -80,7 +80,7 @@ if (level.equalsIgnoreCase("home")){
                             <br><br>
                             </td>
                         </tr>
-                        <logic:iterate id='item' collection="<%=products%>" type='com.freshdirect.fdstore.content.ProductModel' indexId="idx">
+                        <logic:iterate id='item' collection="<%=products%>" type='com.freshdirect.storeapi.content.ProductModel' indexId="idx">
                                     <tr>
 					<td>
 						<% Image prodImg = item.getProdImage();

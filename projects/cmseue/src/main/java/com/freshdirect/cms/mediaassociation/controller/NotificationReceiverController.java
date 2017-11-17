@@ -8,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -28,7 +27,6 @@ import com.freshdirect.cms.validation.ValidationResult;
 import com.freshdirect.cms.validation.exception.ValidationFailedException;
 import com.google.common.base.Optional;
 
-@Profile("database")
 @RestController
 @RequestMapping("/notification")
 public class NotificationReceiverController {
@@ -47,6 +45,7 @@ public class NotificationReceiverController {
     public void receiveNotification(@RequestParam("cmd") String commandValue, @RequestParam("user") String user, @RequestParam("src") String source,
             @RequestParam(value = "mime", required = false) String mimeType, @RequestParam(value = "dim", required = false) String dimensions,
             @RequestParam(value = "dst", required = false) String destination) {
+
         NotificationCommand command = NotificationCommand.getEnumFromString(commandValue);
         switch (command) {
             case CREATE:

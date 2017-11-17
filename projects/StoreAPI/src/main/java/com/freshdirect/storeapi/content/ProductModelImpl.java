@@ -1,6 +1,5 @@
 package com.freshdirect.storeapi.content;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -16,6 +15,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
+
+import org.apache.log4j.Logger;
 
 import com.freshdirect.WineUtil;
 import com.freshdirect.cms.core.domain.ContentKey;
@@ -36,13 +37,15 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.DayOfWeekSet;
 import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.storeapi.attributes.FDAttributeFactory;
-import com.freshdirect.storeapi.util.ProductInfoUtil;
 
 
 public class ProductModelImpl extends AbstractProductModelImpl {
 
 	private static final long serialVersionUID = 2103318183933323914L;
+
+	private static final Logger LOGGER = LoggerFactory.getInstance(ProductModelImpl.class);
 
 	private static ThreadLocal<Map<String, YmalSet>> activeYmalSets = new ThreadLocal<Map<String, YmalSet>>() {
 		@Override
@@ -132,9 +135,9 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 
     private List<ProductModel> includeProducts = new ArrayList<ProductModel>();
 
-	public ProductModelImpl(ContentKey cKey) {
-		super(cKey);
-	}
+    public ProductModelImpl(ContentKey key) {
+        super(key);
+    }
 
 	@Override
     public DepartmentModel getDepartment() {
@@ -296,7 +299,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 		List<BrandModel> newList = new ArrayList<BrandModel>();
 		for (int i = 0; i < brandModels.size(); i++) {
 			BrandModel b = brandModels.get(i);
-			String str = b!=null?b.getFullName():null;
+			String str = b.getFullName();
 			if ((str != null) && !str.equals("")) {
 				newList.add(b);
 			}
@@ -348,7 +351,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
     public boolean isDiscontinued() {
 		List<SkuModel> skus = getPrimarySkus();
 		for ( SkuModel sku  : skus ) {
-			if (null != sku && !sku.isDiscontinued())
+			if (!sku.isDiscontinued())
 				return false;
 		}
 		return true;
@@ -399,12 +402,12 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 */
 	@Override
     public boolean isPlatter() {
-		//String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+		String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 		List<SkuModel> skus = getPrimarySkus();
 		for ( SkuModel sku  : skus ) {
 			try {
 				FDProduct product = sku.getProduct();
-				if (product.getMaterial().isPlatter(ProductInfoUtil.getPickingPlantId(sku.getProductInfo())))
+				if (product.getMaterial().isPlatter(plantID))
 					return true;
 			} catch (FDSkuNotFoundException ignore) {
 			} catch (FDResourceException ex) {
@@ -416,13 +419,13 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 
 	@Override
     public DayOfWeekSet getBlockedDays() {
-		//String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+		String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
 		List<SkuModel> skus = getPrimarySkus();
 		DayOfWeekSet allBlockedDays = DayOfWeekSet.EMPTY;
 		for ( SkuModel sku  : skus ) {
 			try {
 				FDProduct product = sku.getProduct();
-				allBlockedDays = allBlockedDays.union(product.getMaterial().getBlockedDays(ProductInfoUtil.getPickingPlantId(sku.getProductInfo())));
+				allBlockedDays = allBlockedDays.union(product.getMaterial().getBlockedDays(plantID));
 			} catch (FDSkuNotFoundException ignore) {
 			} catch (FDResourceException ex) {
 				throw new FDRuntimeException(ex);
@@ -451,7 +454,6 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	@Override
     public Date getEarliestAvailability() {
 		List<SkuModel> skus = getPrimarySkus();
-
 		Date ea = null;
 		for ( SkuModel sku  : skus ) {
 			Date     earliestAvailability = sku.getEarliestAvailability();
@@ -495,12 +497,10 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 
         for (ListIterator<SkuModel> li = skus.listIterator(); li.hasNext();) {
             SkuModel sku = li.next();
-            if (null != sku){
-	            if (sku.isUnavailable()) {
-	                li.remove();
-	            } else if (sku.getContentKey().equals(preferredSku)) {
-	                return sku;
-	            }
+            if (sku.isUnavailable()) {
+                li.remove();
+            } else if (sku.getContentKey().equals(preferredSku)) {
+                return sku;
             }
         }
         if (skus.size() == 0)
@@ -569,6 +569,9 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 		Set common = null;
 		boolean first = true;
 		for ( SkuModel sku : skus ) {
+			if (sku.isUnavailable()) {
+				continue;
+			}
 
 			try {
 				List values = sku.getProduct().getNutritionInfoList(type);
@@ -679,14 +682,31 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 		return theFullName;
 	}
 
-    /**
-     * @return the brand that begins with the specified name, empty string otherwise
-     */
-    @Override
+	/**
+	 * @return the brand that begins with the specified name, empty string otherwise
+	 */
+	@Override
     public String getPrimaryBrandName(String productName) {
-        List<BrandModel> brands = this.getBrands();
-        return (brands.isEmpty()) ? "" : brands.get(0).getFullName();
-    }
+		// get the first brand name, if any.
+		List<BrandModel> myBrands = this.getBrands();
+
+		String prodNameLower = productName.toLowerCase();
+
+		if (myBrands != null && myBrands.size() > 0) {
+
+			// find the brand that begins with the full name
+			for (int bx = 0; bx < myBrands.size(); bx++) {
+				BrandModel bm = myBrands.get(bx);
+				if (bm.getFullName() != null) {
+					if (prodNameLower.startsWith(bm.getFullName().toLowerCase())) {
+						return bm.getFullName();
+					}
+				}
+			}
+
+		}
+		return "";
+	}
 
 	/**
 	 * @return list of brands that can be displayed on the product page
@@ -913,7 +933,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 */
 	@Override
     public List<ContentNodeModel> getYmals() {
-		ContentNodeModelUtil.refreshModels(this, "RELATED_PRODUCTS", ymals, false);
+		ContentNodeModelUtil.refreshModels(this, "RELATED_PRODUCTS", ymals, false, true);
 		return Collections.unmodifiableList(ymals);
 	}
 
@@ -949,11 +969,11 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 */
 	@Override
     public YmalSet getActiveYmalSet() {
-		YmalSet current = getCurrentActiveYmalSet(this.getContentKey().getId());
+		YmalSet current = getCurrentActiveYmalSet(this.getContentKey().id);
 		if (current == null) {
 			YmalSet newSet = YmalSetSourceUtil.findActiveYmalSet(this);
 			if (newSet != null) {
-				setCurrentActiveYmalSet(this.getContentKey().getId(), newSet);
+				setCurrentActiveYmalSet(this.getContentKey().id, newSet);
 			}
 			return newSet;
 		}
@@ -1056,7 +1076,7 @@ inner:
 	 */
 	@Override
     public List<ContentNodeModel> getRecommendedAlternatives() {
-		ContentNodeModelUtil.refreshModels(this, "RECOMMENDED_ALTERNATIVES", recommendedAlternatives, false);
+		ContentNodeModelUtil.refreshModels(this, "RECOMMENDED_ALTERNATIVES", recommendedAlternatives, false, true);
 		return Collections.unmodifiableList(recommendedAlternatives);
 	}
 
@@ -1231,7 +1251,7 @@ inner:
 
 	@Override
     public List<Recipe> getRelatedRecipes() {
-		ContentNodeModelUtil.refreshModels(this, "RELATED_RECIPES", relatedRecipes, false);
+		ContentNodeModelUtil.refreshModels(this, "RELATED_RECIPES", relatedRecipes, false, true);
 		return Collections.unmodifiableList(relatedRecipes);
 	}
 
@@ -1615,7 +1635,7 @@ inner:
             // remove the unavailable sku's
             for (ListIterator<SkuModel> li = skus.listIterator(); li.hasNext();) {
                 sku = li.next();
-                if (sku == null || sku.isUnavailable()) {
+                if (sku.isUnavailable()) {
                     li.remove();
                 }
             }
@@ -1654,8 +1674,7 @@ inner:
                 // grab sku prefixes that should show ratings
                 String _skuPrefixes = FDStoreProperties.getRatingsSkuPrefixes();
                 // LOG.debug("* getRatingsSkuPrefixes :"+_skuPrefixes);
-                //String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
-
+                String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
                 // if we have prefixes then check them
                 if (_skuPrefixes != null && !"".equals(_skuPrefixes)) {
                     StringTokenizer st = new StringTokenizer(_skuPrefixes, ","); // setup for splitting property
@@ -1673,11 +1692,7 @@ inner:
                         if (skuCode.startsWith(curPrefix)) {
                             productInfo = FDCachedFactory.getProductInfo(skuCode);
                             // LOG.debug(" Rating productInfo :"+productInfo);
-                            String pickingPlantId = ProductInfoUtil.getPickingPlantId(productInfo);
-                            if("1000".equalsIgnoreCase(pickingPlantId)){
-                            	pickingPlantId ="1400";
-                            }
-                            EnumOrderLineRating enumRating = productInfo.getRating(pickingPlantId);//ProductInfoUtil.getPickingPlantId(productInfo));
+                            EnumOrderLineRating enumRating = productInfo.getRating(plantID);
 
                             if (enumRating != null) {
                                 if (enumRating.isEligibleToDisplay()) {
@@ -1757,7 +1772,7 @@ inner:
                         // if prefix matches get product info
                         if (sku.getSkuCode().startsWith(curPrefix)) {
                             productInfo = FDCachedFactory.getProductInfo(sku.getSkuCode());
-                            String plantID=ProductInfoUtil.getPickingPlantId(productInfo);
+                            String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
                             freshness = productInfo.getFreshness(plantID);
                             if ((freshness != null && freshness.trim().length() > 0)
                             		&& !"000".equalsIgnoreCase(freshness.trim())
@@ -1808,7 +1823,7 @@ inner:
 	public String getReverseParentPath(boolean fullname) {
 	    StringBuilder sb = new StringBuilder();
 	    ContentNodeModel model = this;
-	    while (model != null && !"Store".equals(model.getContentKey().type.name())) {
+	    while (model != null && ContentType.Store != model.getContentKey().type) {
 	        if (fullname) {
 	            sb.append(model.getFullName());
 	        }
@@ -1955,12 +1970,8 @@ inner:
                 }
                 */
                 productInfo = FDCachedFactory.getProductInfo(skuCode);
-               // String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
-                String pickingPlantId = ProductInfoUtil.getPickingPlantId(productInfo);
-                if("1000".equalsIgnoreCase(pickingPlantId)){
-                	pickingPlantId ="1400";
-                }
-                EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(pickingPlantId);
+                String plantID=ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+                EnumSustainabilityRating enumRating = productInfo.getSustainabilityRating(plantID);
                 if (enumRating != null && enumRating.isEligibleToDisplay()) {
                 	if (enumRating.getId() == 0) { /* check against CMS */
                 		if (this.showDefaultSustainabilityRating()) {
@@ -2120,7 +2131,7 @@ inner:
 
     @Override
 	public String getPageTitle() {
-		return getAttribute("PAGE_TITLE", MessageFormat.format("Order {0} | Fast Delivery", getFullName()));
+		return getAttribute("PAGE_TITLE", "");
 	}
 
     @Override
@@ -2130,7 +2141,7 @@ inner:
 
 	@Override
 	public String getSEOMetaDescription() {
-		return getAttribute("SEO_META_DESC", MessageFormat.format("Looking for {0}? Order from FreshDirect now for fast delivery. 100% happiness guarantee!", getFullName()));
+		return getAttribute("SEO_META_DESC", "");
 	}
 
 	@Override
@@ -2154,63 +2165,42 @@ inner:
     }
 
     @Override
-	public void setParentNode(ContentNodeModel parentNode) {
-	    super.setParentNode(parentNode);
-	}
-
-	@Override
-	public double getAvailabileQtyForDate(Date targetDate) {
-		double qty=-2;
-		List<SkuModel>backupSkuLst=null;
-		SkuModel sku =  getPreferredSku();
-		if (sku==null){
-			qty*=2;
-			backupSkuLst= getPrimarySkus();
-		}
-		if (backupSkuLst==null){
-			qty*=2;
-			backupSkuLst= getSkus();
-		}
-		if (backupSkuLst!=null && ! backupSkuLst.isEmpty()){
-			sku=backupSkuLst.get(0);
-		}
-		if (null!=sku){
-			AvailabilityI  availability = sku.getAvailability();
-			if (availability!=null){
-				qty = availability . getAvailabileQtyForDate(targetDate);
-			}
-		}
-		return qty;
-	//	return super.getAvailableQtyForDate(targetDate);
-	}
-
-
-	@Override
-    public String getEarliestAvailabilityMessage() {
-    	String msg = null;
-    	List<SkuModel> skus= getPrimarySkus();
-    			if (skus!=null && ! skus.isEmpty()){
-    				msg = skus.get(0).getEarliestAvailabilityMessage();
-    			}
-    	return msg;
-
+    public void setParentNode(ContentNodeModel parentNode) {
+        super.setParentNode(parentNode);
     }
-	
+
     @Override
-    public boolean isAlcoholProduct() throws FDResourceException, FDSkuNotFoundException {
-        // Either CMS Flag or SAP Flag is enabled for alcohol indicator
-        boolean result = false;
-        CategoryModel cat = (CategoryModel) this.getParentNode();
-        if (cat != null) {
-            result = cat.isHavingBeer();
+    public double getAvailabileQtyForDate(Date targetDate) {
+        double qty = -2;
+        List<SkuModel> backupSkuLst = null;
+        SkuModel sku = getPreferredSku();
+        if (sku == null) {
+            qty *= 2;
+            backupSkuLst = getPrimarySkus();
         }
-        SkuModel sku = getDefaultSku();
-        if (!result && sku != null) {
-            FDProduct fdProduct = sku.getProduct();
-            if (fdProduct != null) {
-                result = fdProduct.isAlcohol();
+        if (backupSkuLst == null) {
+            qty *= 2;
+            backupSkuLst = getSkus();
+        }
+        if (backupSkuLst != null && !backupSkuLst.isEmpty()) {
+            sku = backupSkuLst.get(0);
+        }
+        if (null != sku) {
+            AvailabilityI availability = sku.getAvailability();
+            if (availability != null) {
+                qty = availability.getAvailabileQtyForDate(targetDate);
             }
         }
-        return result;
+        return qty;
+    }
+
+    @Override
+    public String getEarliestAvailabilityMessage() {
+        String msg = null;
+        List<SkuModel> skus = getPrimarySkus();
+        if (skus != null && !skus.isEmpty()) {
+            msg = skus.get(0).getEarliestAvailabilityMessage();
+        }
+        return msg;
     }
 }

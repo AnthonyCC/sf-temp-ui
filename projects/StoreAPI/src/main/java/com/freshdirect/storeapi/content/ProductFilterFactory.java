@@ -14,31 +14,46 @@ import java.util.Map;
 
 import com.freshdirect.storeapi.CmsLegacy;
 
+
+/**
+ * @author rgayle
+ *
+ * To change the template for this generated type comment go to
+ * Window>Preferences>Java>Code Generation>Code and Comments
+ */
 @CmsLegacy
 public class ProductFilterFactory {
+	private static Map<String, ProductFilterI> prodFilterMap = new HashMap<String, ProductFilterI>();
 
-	private static final Map<String, ProductFilterI> PRODUCT_FILTER_MAP = new HashMap<String, ProductFilterI>();
-    private static final ProductFilterI AVAILABLE_ITEMS_CONTEXTFILTER = new ProductAvailabilityByContextFilter();
+	private static ProductFilterFactory instance = new ProductFilterFactory();
 
-    private static final ProductFilterFactory INSTANCE = new ProductFilterFactory();
+    private final static ProductFilterI AVAILABLE_ITEMS_CONTEXTFILTER = new ProductAvailabilityByContextFilter();
 
 	public static ProductFilterFactory getInstance() {
-		return INSTANCE;
+		return instance;
 	}
 
 	private ProductFilterFactory() {
 		// load map with the various product filters.
-	    PRODUCT_FILTER_MAP.put("ORGANIC",new OrganicFilter());
-	    PRODUCT_FILTER_MAP.put("KFP",new KosherForPassoverFilter());
+		prodFilterMap.put("ORGANIC",new OrganicFilter());
+		prodFilterMap.put("KFP",new KosherForPassoverFilter());
+
 		/** add additional filters here **/
 	}
 
+
+
+	/**
+	 * @return list of ProductFilterI
+	 *
+	 */
     public List<ProductFilterI> getFilters(List<String> filterNames) {
+
         List<ProductFilterI> prodFilters = new ArrayList<ProductFilterI>();
 
         if (filterNames != null && !filterNames.isEmpty()) {
             for (Iterator<String> iFNames = filterNames.iterator(); iFNames.hasNext();) {
-                ProductFilterI prodFilter = PRODUCT_FILTER_MAP.get(iFNames.next().toUpperCase());
+                ProductFilterI prodFilter = prodFilterMap.get(iFNames.next().toUpperCase());
                 if (prodFilter != null) {
                     prodFilters.add(prodFilter);
                 }

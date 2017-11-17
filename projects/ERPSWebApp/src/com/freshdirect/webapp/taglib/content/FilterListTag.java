@@ -13,11 +13,11 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.content.EnumSearchFilteringValue;
-import com.freshdirect.fdstore.content.FilteringMenuItem;
-import com.freshdirect.fdstore.content.FilteringValue;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
+import com.freshdirect.storeapi.content.EnumSearchFilteringValue;
+import com.freshdirect.storeapi.content.FilteringMenuItem;
+import com.freshdirect.storeapi.content.FilteringValue;
 
 public class FilterListTag extends BodyTagSupportEx {
 	

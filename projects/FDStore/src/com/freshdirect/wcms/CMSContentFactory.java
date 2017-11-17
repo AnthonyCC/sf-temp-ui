@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -22,69 +23,64 @@ import org.joda.time.DateTime.Property;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.freshdirect.cms.CmsRuntimeException;
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.ContentNodeI;
-import com.freshdirect.cms.ContentType;
-import com.freshdirect.cms.application.CmsManager;
-import com.freshdirect.cms.application.ContentServiceI;
-import com.freshdirect.cms.application.DraftContext;
-import com.freshdirect.cms.application.service.xml.CmsNodeHandler;
-import com.freshdirect.cms.application.service.xml.FlexContentHandler;
+import com.freshdirect.cms.CmsServiceLocator;
+import com.freshdirect.cms.contentio.xml.FlexContentHandler;
+import com.freshdirect.cms.core.converter.SerializedScalarValueToObjectConverter;
+import com.freshdirect.cms.core.domain.Attribute;
+import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.cms.core.domain.Scalar;
+import com.freshdirect.cms.core.service.ContentTypeInfoService;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.cms.CMSPublishManager;
-import com.freshdirect.fdstore.content.CMSAnchorModel;
-import com.freshdirect.fdstore.content.CMSComponentModel;
-import com.freshdirect.fdstore.content.CMSComponentType;
-import com.freshdirect.fdstore.content.CMSImageBannerModel;
-import com.freshdirect.fdstore.content.CMSImageModel;
-import com.freshdirect.fdstore.content.CMSPageRequest;
-import com.freshdirect.fdstore.content.CMSPickListItemModel;
-import com.freshdirect.fdstore.content.CMSPickListModel;
-import com.freshdirect.fdstore.content.CMSScheduleModel;
-import com.freshdirect.fdstore.content.CMSSectionModel;
-import com.freshdirect.fdstore.content.CMSTextComponentModel;
-import com.freshdirect.fdstore.content.CMSWebPageModel;
-import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.framework.util.BeanUtil;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.ContentNode;
+import com.freshdirect.storeapi.ContentNodeI;
+import com.freshdirect.storeapi.application.CmsManager;
+import com.freshdirect.storeapi.content.CMSAnchorModel;
+import com.freshdirect.storeapi.content.CMSComponentModel;
+import com.freshdirect.storeapi.content.CMSComponentType;
+import com.freshdirect.storeapi.content.CMSImageBannerModel;
+import com.freshdirect.storeapi.content.CMSImageModel;
+import com.freshdirect.storeapi.content.CMSPageRequest;
+import com.freshdirect.storeapi.content.CMSPickListItemModel;
+import com.freshdirect.storeapi.content.CMSPickListModel;
+import com.freshdirect.storeapi.content.CMSScheduleModel;
+import com.freshdirect.storeapi.content.CMSSectionModel;
+import com.freshdirect.storeapi.content.CMSTextComponentModel;
+import com.freshdirect.storeapi.content.CMSWebPageModel;
+import com.freshdirect.storeapi.content.ContentFactory;
 
 public class CMSContentFactory {
-	
+
 	private static final String FEED_CACHE = "cmsPageCache";
 	private static final Category LOG = LoggerFactory.getInstance(CMSContentFactory.class);
 	private static CMSContentFactory instance = null;
-	
+
 	private Map<ContentKey,ContentNodeI> contentNodesMap = new HashMap<ContentKey,ContentNodeI>();
-	private DraftContext draftContext = DraftContext.MAIN;
-	
+
+	private ContentTypeInfoService contentTypeInfoService = CmsServiceLocator.contentTypeInfoService();
+
 	public static CMSContentFactory getInstance(){
 		if(instance == null){
 			init();
 		}
 		return instance;
 	}
-	
+
 	public static void init(){
 		instance = new CMSContentFactory();
-		//pageTimer = new Timer();
-		//pickListTimer = new Timer();
-		//Run first time during initialization
 		instance.cacheAllPages();
-		
-		//Schedule the task after every 15 mins.
-        //Calendar calendar = Calendar.getInstance();
-        //calendar.set(Calendar.HOUR, 0);
-        //calendar.set(Calendar.MINUTE, 0);
-        //calendar.set(Calendar.MINUTE, 0);
-		//pageTimer.scheduleAtFixedRate(instance.new PageLoaderTask(), calendar.getTime(), 15 * 60 *1000);
-		//pickListTimer.scheduleAtFixedRate(instance.new PickListLoaderTask(), calendar.getTime(), 15 * 60 *1000);
 	}
-	
+
+    public static void evictPageCache() {
+        instance = null;
+    }
+
 	/*
 	public class PageLoaderTask extends TimerTask{
 
@@ -98,27 +94,27 @@ public class CMSContentFactory {
 		}
 	}
 	*/
-	
+
 	public void cacheAllPages(){
 	    CMSPageRequest pageRequest = new CMSPageRequest();
         pageRequest.setPlantId(ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId());
 	    cacheAllPages(pageRequest);
 	}
-	
+
 	public void cacheAllPages(CMSPageRequest pageRequest){
 		LOG.debug("Loading all pages in cache "+ new Date());
 		List<CMSWebPageModel> pages = getCMSPageByParameters(pageRequest);
 		if(pages.size() == 0) {
-			EhCacheUtil.clearCache(FEED_CACHE);
+        CmsServiceLocator.ehCacheUtil().clearCache(FEED_CACHE);
 		} else {
-			for(CMSWebPageModel page: pages){
-				if(page != null){
-					EhCacheUtil.putObjectToCache(FEED_CACHE, pageRequest.getCacheKey(page),page);
+		for(CMSWebPageModel page: pages){
+			if(page != null){
+                    CmsServiceLocator.ehCacheUtil().putObjectToCache(FEED_CACHE, pageRequest.getCacheKey(page), page);
 				}
 			}
 		}
 	}
-	
+
 	/*
 	public class PickListLoaderTask extends TimerTask {
 
@@ -130,19 +126,19 @@ public class CMSContentFactory {
 			if(items != null){
 				for(CMSPickListItemModel pickList: items){
 					if(pickList != null){
-						EhCacheUtil.putObjectToCache(FEED_CACHE, pickList.getName(),pickList);
+                        CmsServiceLocator.ehCacheUtil().putObjectToCache(FEED_CACHE, pickList.getName(), pickList);
 					}
 				}
 			}
 		}
-		
+
 	}
 	*/
-	
+
 	public final List<CMSPickListItemModel> getPickListByParameter(CMSPageRequest request){
 		List<CMSPickListItemModel> pickLists = new ArrayList<CMSPickListItemModel>();
-		Set<ContentKey> contentKeys = getContentService().getContentKeysByType(ContentType.get("PickList"), draftContext);
-		Map<ContentKey,ContentNodeI> contentNodes = getContentService().getContentNodes(contentKeys, draftContext);
+        Set<ContentKey> contentKeys = CmsManager.getInstance().getContentKeysByType(ContentType.PickList);
+        Map<ContentKey, ContentNodeI> contentNodes = CmsManager.getInstance().getContentNodes(contentKeys);
 		for(Entry<ContentKey, ContentNodeI> contentNodeEntry: contentNodes.entrySet()){
 			ContentNodeI contentNode = contentNodeEntry.getValue();
 			CMSPickListItemModel pickList = createPickList(contentNode, request);
@@ -150,7 +146,7 @@ public class CMSContentFactory {
 		}
 		return pickLists;
 	}
-	
+
 	public final List<CMSWebPageModel> getCMSPageByParameters(CMSPageRequest pageRequest){
 		loadFeedNodes(pageRequest);
 		return getCMSPages(pageRequest);
@@ -161,8 +157,8 @@ public class CMSContentFactory {
 		if(contentNodesMap != null && !contentNodesMap.isEmpty()){
 			for(Entry<ContentKey, ContentNodeI> contentNodeEntry: contentNodesMap.entrySet()){
 				ContentNodeI contentNode = contentNodeEntry.getValue();
-				
-				CMSWebPageModel page = null;				
+
+				CMSWebPageModel page = null;
 				if(pageRequest.isPreview() && pageRequest.getFeedId()!=null) {
 					// if it is for preview and feed id is not null, check the id first and the get the relevant feed page
 					pageRequest.setIgnoreSchedule(true);
@@ -193,20 +189,21 @@ public class CMSContentFactory {
     private void loadFeedNodes(CMSPageRequest pageRequest) {
         //if preview load from cms db, else read from erps feed table.
 		if(pageRequest.isPreview()){
-			Set<ContentKey> keys = getContentService().getContentKeysByType(ContentType.get("WebPage"), draftContext);
-			contentNodesMap = getContentService().getContentNodes(keys, draftContext);
+			final CmsManager manager = CmsManager.getInstance();
+            Set<ContentKey> keys = manager.getContentKeysByType(ContentType.WebPage);
+            contentNodesMap = manager.getContentNodes(keys);
 		} else {
 			String data = getFeedContent();
 			if(StringUtils.isNotBlank(data)){
-				contentNodesMap = loadNodesFromXMLString(data);				
-			} 
+				contentNodesMap = loadNodesFromXMLString(data);
+			}
 		}
     }
-	
+
 	public final CMSWebPageModel getCMSPageByName(String pageName){
-		return (CMSWebPageModel) EhCacheUtil.getObjectFromCache(CMSContentFactory.FEED_CACHE, pageName);
+        return (CMSWebPageModel) CmsServiceLocator.ehCacheUtil().getObjectFromCache(CMSContentFactory.FEED_CACHE, pageName);
 	}
-	
+
 	public final CMSWebPageModel getCMSPage(ContentNodeI contentNode, CMSPageRequest request){
 		CMSWebPageModel webPage = null;
 		if(contentNode != null){
@@ -221,13 +218,13 @@ public class CMSContentFactory {
 			webPage.setType((String)contentNode.getAttributeValue("WebPageType"));
 			List<CMSScheduleModel> schedules = createSchedule(contentNode,"WebPageSchedule", request);
 			webPage.setSchedule(schedules);
-			
+
 			boolean matchingSchedule = isSchedulesMatches(schedules, request, true);
 			if(!matchingSchedule){
 				LOG.debug("Schedule is not matching for :"+ contentNode.getKey());
 				return null;
 			}
-			
+
 			List<ContentKey> darkStoreContentkey = (List<ContentKey>) contentNode
 					.getAttributeValue("WebPageDarkStore");
 			ArrayList<String> darkStoreFromCMS = new ArrayList<String>();
@@ -255,12 +252,12 @@ public class CMSContentFactory {
 			return null;
 		}
 	}
-		
+
 	public final List<CMSSectionModel> getPageSections(ContentNodeI pageNode, CMSPageRequest request){
 		List<CMSSectionModel> sections = new ArrayList<CMSSectionModel>();
 		List<CMSScheduleModel> schedules = null;
-		if(pageNode != null){			
-			List<ContentKey> sectionKeys = getContentKeysList(pageNode, "WebPageSection");		
+		if(pageNode != null){
+			List<ContentKey> sectionKeys = getContentKeysList(pageNode, "WebPageSection");
 			if(BeanUtil.isNotEmpty(sectionKeys)){
 				for(ContentKey sectionKey: sectionKeys){
 					ContentNodeI sectionNode = getContentNodeByKey(sectionKey, request);
@@ -268,7 +265,7 @@ public class CMSContentFactory {
 					if(sectionNode!=null){
 					 schedules = createSchedule(getContentKeysList(sectionNode,"SectionSchedule"), request);
 					}
-					
+
 				List<ContentKey> darkStoreContentkey = (List<ContentKey>) sectionNode
 						.getAttributeValue("SectionDarkStore");
 				ArrayList<String> darkStoreFromCMS = new ArrayList<String>();
@@ -284,7 +281,7 @@ public class CMSContentFactory {
 				}
 
 				if (isSchedulesMatches(schedules, request, false) && sectionNode != null) {
-					if (darkStoreFromCMS.isEmpty() || darkStoreFromCMS.contains(request.getPlantId())) { 
+					if (darkStoreFromCMS.isEmpty() || darkStoreFromCMS.contains(request.getPlantId())) {
 						section.setName((String)sectionNode.getAttributeValue("name"));
 						section.setType((String)sectionNode.getAttributeValue("Type"));
 						section.setCaptionText((String)sectionNode.getAttributeValue("captionText"));
@@ -297,7 +294,7 @@ public class CMSContentFactory {
 						section.setLinkType((String)sectionNode.getAttributeValue("linkType"));
 						section.setLinkURL((String)sectionNode.getAttributeValue("linkURL"));
 						if(sectionNode.getAttributeValue("imageBanner")!=null)
-						section.setImageBanner(createImageBanner((ContentNodeI)getContentNodeByKey((ContentKey)sectionNode.getAttributeValue("imageBanner"), request), request));						
+						section.setImageBanner(createImageBanner(getContentNodeByKey((ContentKey)sectionNode.getAttributeValue("imageBanner"), request), request));
 						List<ContentKey> prodKeys = getContentKeysList(sectionNode, "product");
 						List<ContentKey> musthaveprodKeys = getContentKeysList(sectionNode, "mustHaveProduct");
 						List<ContentKey> categoryKeys = getContentKeysList(sectionNode, "category");
@@ -326,26 +323,26 @@ public class CMSContentFactory {
 							}
 							if(categoryList!=null && categoryList.size()>0)
 							section.setCategoryList(categoryList);
-						}	
+						}
 						if(pickListKeys != null){
 							for(ContentKey key:pickListKeys){
-								pickListList.add((CMSPickListModel) createPickList((ContentNodeI)getContentNodeByKey(key, request), request));
+								pickListList.add((CMSPickListModel) createPickList(getContentNodeByKey(key, request), request));
 							}
 							if(pickListList!=null && pickListList.size()>0)
 							section.setPickList(pickListList);
-						}					
+						}
 						List<CMSComponentModel> components = getSectionComponents(sectionNode, request);
 						if(components != null && !components.isEmpty()){
-							section.setComponents(components);						
+							section.setComponents(components);
 						}
 						section.setSchedules(schedules);
 						sections.add(section);
-					} 
+					}
 				}else {
 						LOG.debug("Schedule is not matching for :"+ pageNode.getKey());
 					}
 				}
-				
+
 				if(sections.isEmpty()){
 					sections = null;
 				}
@@ -361,18 +358,18 @@ public class CMSContentFactory {
 			if(BeanUtil.isNotEmpty(componentKeys)){
 				for(ContentKey componentKey: componentKeys){
 					ContentNodeI componentNode = getContentNodeByKey(componentKey, request);
-					if("Anchor".equals(componentKey.getType().getName())){
+					if("Anchor".equals(componentKey.getType().name())){
 						addComponentsToSection(components,createAnchor(componentNode));
-					} else if("TextComponent".equals(componentKey.getType().getName())){
+					} else if("TextComponent".equals(componentKey.getType().name())){
 						CMSTextComponentModel text = new CMSTextComponentModel();
 						text.setComponentType(CMSComponentType.TEXT);
 						text.setText((String)componentNode.getAttributeValue("Text"));
 						text.setType((String)componentNode.getAttributeValue("Type"));
 						addComponentsToSection(components,text);
-					} else if("PickList".equals(componentKey.getType().getName())){
+					} else if("PickList".equals(componentKey.getType().name())){
 						CMSPickListModel pickList = (CMSPickListModel) createPickList(componentNode, request);
 						addComponentsToSection(components,pickList);
-					} else if("ImageBanner".equals(componentKey.getType().getName())){
+					} else if("ImageBanner".equals(componentKey.getType().name())){
 						addComponentsToSection(components,createImageBanner(componentNode, request));
 					} else {
 						//Send as raw component with id.
@@ -383,21 +380,21 @@ public class CMSContentFactory {
 		}
 		return components;
 	}
-	
+
 	public CMSComponentModel createGenericComponent(ContentKey componentKey){
-		String componentType = componentKey.getType().getName();
+		String componentType = componentKey.getType().name();
 		CMSComponentModel component = new CMSComponentModel();
 		component.setId(componentKey.getId());
 		component.setComponentType(CMSComponentType.valueOf(componentType.toUpperCase()));
 		return component;
 	}
-	
+
 	private void addComponentsToSection(List<CMSComponentModel> components, CMSComponentModel component){
 		if(component != null){
 			components.add(component);
 		}
 	}
-			
+
 	/*public List<CMSAnchorModel> createAnchor(List<ContentKey> keys){
 		List<CMSAnchorModel> anchors = null;
 		if(keys != null){
@@ -408,7 +405,7 @@ public class CMSContentFactory {
 		}
 		return anchors;
 	}*/
-	
+
 	public CMSAnchorModel createAnchor(ContentNodeI componentNode){
 		CMSAnchorModel anchor = new CMSAnchorModel();
 		anchor.setUrl((String)componentNode.getAttributeValue("Url"));
@@ -421,7 +418,7 @@ public class CMSContentFactory {
 		}
 		return anchor;
 	}
-	
+
 	private CMSImageBannerModel createImageBanner(ContentNodeI componentNode, CMSPageRequest request) {
 		CMSImageBannerModel banner = null;
 		if(componentNode != null){
@@ -444,11 +441,6 @@ public class CMSContentFactory {
 		return banner;
 	}
 
-	public CMSPickListItemModel createPickList(String pickListName, CMSPageRequest request){
-		ContentKey contentKey = ContentKey.getContentKey(ContentType.get("CMSPickList"), pickListName);
-		return createPickList(getContentNodeByKey(contentKey, request), request);
-	}
-	
 	public CMSImageModel createImage(ContentKey key, CMSPageRequest request){
 		CMSImageModel image = new CMSImageModel();
 		if(key!=null){
@@ -467,10 +459,10 @@ public class CMSContentFactory {
 		}
 		return image;
 	}
-	
-	private CMSPickListItemModel createPickList(ContentNodeI contentNode, CMSPageRequest request){	
+
+	private CMSPickListItemModel createPickList(ContentNodeI contentNode, CMSPageRequest request){
 		if(contentNode != null){
-			if("PickList".equals(contentNode.getKey().getType().getName())){
+			if("PickList".equals(contentNode.getKey().getType().name())){
 				CMSPickListModel pickList = null;
 				List<CMSScheduleModel> schedule = createSchedule(getContentKeysList(contentNode,"PickListSchedule"), request);
 				if(isSchedulesMatches(schedule, request, false)){
@@ -502,20 +494,20 @@ public class CMSContentFactory {
 						pickList.setImage(createImageBanner(getContentNodeByKey(pickListMedia, request), request));
 					}
 					pickList.setItems(createPickList(getContentKeysList(contentNode,"PickListPickListItem"), request));
-				} 
+				}
 				return pickList;
-			} else if ("PickListItem".equals(contentNode.getKey().getType().getName())) {
+			} else if ("PickListItem".equals(contentNode.getKey().getType().name())) {
 				CMSPickListItemModel pickListItem = new CMSPickListItemModel();
 				ContentKey key = (ContentKey)contentNode.getAttributeValue("PickListItemProduct");
 				String fullName = key.getId();
 				pickListItem.setProduct(fullName);
 				return pickListItem;
-			} 
+			}
 		}
 		return null;
 	}
-	
-	private List<CMSPickListItemModel> createPickList(List<ContentKey> keys, CMSPageRequest request){	
+
+	private List<CMSPickListItemModel> createPickList(List<ContentKey> keys, CMSPageRequest request){
 		List<CMSPickListItemModel> pickListItems = null;
 		if(BeanUtil.isNotEmpty(keys)){
 			pickListItems = new ArrayList<CMSPickListItemModel>();
@@ -535,14 +527,14 @@ public class CMSContentFactory {
 		}
 		return schedules;
 	}
-	
+
 	private List<CMSScheduleModel> createSchedule(List<ContentKey> contentKeys, CMSPageRequest request) {
 		List<CMSScheduleModel> schedules = null;
 		if(BeanUtil.isNotEmpty(contentKeys)){
 			schedules = new ArrayList<CMSScheduleModel>();
 			for(ContentKey contentKey: contentKeys){
 				try{
-					if(contentKey.getType().equals(ContentType.get("Schedule"))){
+					if(contentKey.getType().equals(ContentType.Schedule)){
 						ContentNodeI scheduleNode = getContentNodeByKey(contentKey, request);
 						CMSScheduleModel schedule = new CMSScheduleModel();
 						schedule.setDay((String)scheduleNode.getAttributeValue("Day"));
@@ -553,26 +545,21 @@ public class CMSContentFactory {
 						schedules.add(schedule);
 					}
 				}catch(Exception e){
-					LOG.error(e);
+                    LOG.error("Exception happened while creating schedule (" + contentKey + ") : ", e);
 				}
 			}
 		}
 		return schedules;
 	}
-	
+
 	public ContentNodeI getContentNodeByKey(ContentKey key, CMSPageRequest request){
 		ContentNodeI contentNodeI = null;
 		try {
 			if (request.isPreview() || (key!=null && key.getType()!=null && key.getType().toString().equals("Image"))) {
-				contentNodeI = getContentService().getContentNode(key, draftContext);
+                contentNodeI = CmsManager.getInstance().getContentNode(key);
 			} else {
-				if (contentNodesMap != null && !contentNodesMap.isEmpty()) {
-					for (Entry<ContentKey, ContentNodeI> contentNodeEntry : contentNodesMap
-							.entrySet()) {
-						if (contentNodeEntry.getKey().equals(key)) {
-							contentNodeI = contentNodeEntry.getValue();
-						}
-					}
+                if (contentNodesMap != null && contentNodesMap.containsKey(key)) {
+                    contentNodeI = contentNodesMap.get(key);
 				}
 			}
 		} catch(Exception e){
@@ -580,7 +567,7 @@ public class CMSContentFactory {
 		}
 		return contentNodeI;
 	}
-	
+
 	public boolean isSchedulesMatches(List<CMSScheduleModel> schedules, CMSPageRequest request, boolean isFeedLevel){
 		boolean isMatchingSchedule = false;
 		if(BeanUtil.isNotEmpty(schedules)){
@@ -602,7 +589,7 @@ public class CMSContentFactory {
 		}
 		return isMatchingSchedule;
 	}
-	
+
 	public boolean isScheduleMatches(CMSScheduleModel schedule, CMSPageRequest request, boolean isFeedLevel){
 		boolean isMatchingSchedule = false;
 		if(!request.isIgnoreSchedule()){
@@ -612,7 +599,7 @@ public class CMSContentFactory {
 				currentTime = new TimeOfDay(request.getRequestedDate());
 				currentDate.setTime(request.getRequestedDate());
 			}
-			
+
 			if("AllDay".equalsIgnoreCase(schedule.getDay()) || getCurrentDay(currentDate).equalsIgnoreCase(schedule.getDay())){
 				Calendar endDateCalendar = getCalendar(schedule.getEndDate(),1);
 				Calendar startDateCalendar = getCalendar(schedule.getStartDate(),0);
@@ -630,9 +617,9 @@ public class CMSContentFactory {
 						isMatchingSchedule = true;
 						}
 					}
-					
+
 				}
-			} 
+			}
 		} else {
 			if(isFeedLevel && (!request.isPreview())) {
 				isMatchingSchedule = false;
@@ -642,7 +629,7 @@ public class CMSContentFactory {
 		}
 		return isMatchingSchedule;
 	}
-	
+
 	public final Calendar getCalendar(Date date, int plusDay){
 		Calendar calendar = Calendar.getInstance();
 		if(date != null){
@@ -652,15 +639,15 @@ public class CMSContentFactory {
 		calendar.set(Calendar.HOUR_OF_DAY, 0);
 		calendar.set(Calendar.MINUTE,0);
 		calendar.set(Calendar.SECOND,0);
-		return calendar; 
+		return calendar;
 	}
-	
+
 	public final String getCurrentDay(Calendar day){
 		DateTime now = new DateTime(day.getTimeInMillis());
 		Property property = now.dayOfWeek();
 		return property.getAsText();
 	}
-	
+
 	private String getFeedContent(){
 		String response = null;
 		try {
@@ -670,32 +657,56 @@ public class CMSContentFactory {
 		}
 		return response;
 	}
-	
+
 	public Map<ContentKey, ContentNodeI> loadNodesFromXMLString(String content) {
 		StringReader reader = new StringReader(content);
 		try {
-			CmsNodeHandler handler = new FlexContentHandler(true);
+		    FlexContentHandler handler = CmsServiceLocator.flexContentHandler();
 			SAXParserFactory factory = SAXParserFactory.newInstance();
 			factory.setNamespaceAware(true);
 			factory.setValidating(false);
 			SAXParser parser = factory.newSAXParser();
-			handler.setContentService(getContentService());
+			// handler.setContentService(CmsManager.getInstance());
 			InputSource dataInputSource = new InputSource(reader);
 			dataInputSource.setEncoding("UTF-8");
 			parser.parse(dataInputSource, handler);
-			return handler.getContentNodes();
+
+            SerializedScalarValueToObjectConverter serializedScalarValueToObjectConverter = CmsServiceLocator.serializedScalarValueToObjectConverter();
+
+			final Map<ContentKey, Map<Attribute, Object>> contentNodes = handler.getContentNodes();
+
+			Map<ContentKey, ContentNodeI> result = new HashMap<ContentKey, ContentNodeI>();
+			for (Map.Entry<ContentKey, Map<Attribute, Object>> entry : contentNodes.entrySet()) {
+                Map<Attribute, Object> payload = Collections.emptyMap();
+                if (!entry.getValue().isEmpty()) {
+                    payload = new HashMap<Attribute, Object>(entry.getValue().size());
+                    for (Map.Entry<Attribute, Object> rawEntry : entry.getValue().entrySet()) {
+                        Attribute attribute = rawEntry.getKey();
+                        Object value = rawEntry.getValue();
+
+                        if (attribute instanceof Scalar && value != null) {
+                            value = serializedScalarValueToObjectConverter.convert(attribute, value.toString());
+                        }
+
+                        payload.put(attribute, value);
+                    }
+                }
+                result.put(entry.getKey(), new ContentNode(entry.getKey(), payload, null, contentTypeInfoService));
+			}
+
+            return result;
 		} catch (IOException ioe) {
-			throw new CmsRuntimeException(ioe);
+			throw new RuntimeException(ioe);
 		} catch (SAXException se) {
-			throw new CmsRuntimeException(se);
+			throw new RuntimeException(se);
 		} catch (ParserConfigurationException e) {
-			throw new CmsRuntimeException(e);
+			throw new RuntimeException(e);
 		} finally {
 			if (reader != null)
 				reader.close();
 		}
 	}
-	
+
 	public String getEncodedContentKey(ContentNodeI contentNode, String attributeName){
 		String encodedKey = null;
 		ContentKey key = (ContentKey)contentNode.getAttributeValue(attributeName);
@@ -706,18 +717,14 @@ public class CMSContentFactory {
 	}
 
 	private List<ContentKey> getContentKeysList(ContentNodeI contentNode,String attributeName){
-		return  (List<ContentKey>)contentNode.getAttributeValue(attributeName);	
+		return  (List<ContentKey>)contentNode.getAttributeValue(attributeName);
 	}
-	
+
 	public String getMediaPath(String url){
-		String fullUrl = null; 
+		String fullUrl = null;
 		if(url != null){
 			fullUrl = FDStoreProperties.getMediaPath() != null ? FDStoreProperties.getMediaPath() + url : url;
 		}
 		return fullUrl;
-	}
-	
-	private ContentServiceI getContentService(){
-		return CmsManager.getInstance();
 	}
 }

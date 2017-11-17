@@ -10,12 +10,13 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.freshdirect.cms.contentvalidation.service.ValidatorService;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.cms.core.service.ContentKeyParentsCollectorService;
 import com.freshdirect.cms.core.service.ContentTypeInfoService;
 import com.freshdirect.cms.core.service.ContextService;
-import com.freshdirect.cms.core.service.NodeCollectionContentProvider;
+import com.freshdirect.cms.core.service.NodeCollectionContentProviderService;
 import com.freshdirect.cms.ui.editor.UnmodifiableContent;
 import com.freshdirect.cms.ui.editor.publish.flow.domain.Input;
 import com.freshdirect.cms.ui.editor.publish.flow.tasks.TransformerTask;
@@ -23,6 +24,7 @@ import com.freshdirect.cms.validation.ValidationResult;
 import com.freshdirect.cms.validation.ValidationResultLevel;
 import com.freshdirect.cms.validation.ValidationResults;
 import com.freshdirect.cms.validation.exception.ValidationFailedException;
+import com.freshdirect.cms.validation.service.ValidatorService;
 
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -33,22 +35,30 @@ public class ContentValidationTask extends TransformerTask<Input, ValidationResu
     private static final ValidationResultLevel SEVERITY_IN_PUBLISH = ValidationResultLevel.WARNING;
 
     @Autowired
-    private ValidatorService validatorService;
+    private ValidatorService typeSystemValidator;
+
+    @Autowired
+    private com.freshdirect.cms.contentvalidation.service.ValidatorService businessValidator;
 
     @Autowired
     private ContentTypeInfoService contentTypeInfoService;
+
+    @Autowired
+    private ContentKeyParentsCollectorService contentKeyParentsCollectorService;
 
     @Autowired
     private ContextService contextService;
 
     @Override
     public ValidationResults call() throws Exception {
+
         ValidationResults totalValidationResult = new ValidationResults();
 
-        NodeCollectionContentProvider nodeCollectionContentProviderService =
-                new NodeCollectionContentProvider(contentTypeInfoService, contextService, input.getContentNodes());
+        NodeCollectionContentProviderService nodeCollectionContentProviderService = new NodeCollectionContentProviderService(contentTypeInfoService,
+                contentKeyParentsCollectorService, contextService, input.getContentNodes());
 
         for (final Map.Entry<ContentKey, Map<Attribute, Object>> entry : input.getContentNodes().entrySet()) {
+
             final ContentKey contentKey = entry.getKey();
             if (!UnmodifiableContent.isModifiable(contentKey)) {
                 LOGGER.debug("Skip validating unmodifiable content " + contentKey);
@@ -56,16 +66,41 @@ public class ContentValidationTask extends TransformerTask<Input, ValidationResu
             }
 
             try {
-                totalValidationResult.addAll(validatorService.validate(contentKey, entry.getValue(), nodeCollectionContentProviderService));
+                ValidationResults result = typeSystemValidator.validate(contentKey, entry.getValue());
+                totalValidationResult.addAll(result);
+                if (contentKey.type == ContentType.Product) {
+                    LOGGER.debug(contentKey + " ~ PH (before validation) ~> " + nodeCollectionContentProviderService.findPrimaryHomes(contentKey));
+                }
+                result = businessValidator.validate(contentKey, entry.getValue(), nodeCollectionContentProviderService);
+                totalValidationResult.addAll(result);
+                if (contentKey.type == ContentType.Product) {
+                    LOGGER.debug(contentKey + " ~ PH (after validation) ~> " + nodeCollectionContentProviderService.findPrimaryHomes(contentKey) + "\n");
+                }
             } catch (ValidationFailedException e) {
                 if (e.getValidationResults() == null || e.getValidationResults().isEmpty()) {
                     totalValidationResult.addValidationResult(new ValidationResult(contentKey, e.getMessage(), SEVERITY_IN_PUBLISH, null));
                 } else {
                     // extract validation result from the exception
                     for (ValidationResult validationDetail : e.getValidationResults()) {
-                        totalValidationResult.addValidationResult(new ValidationResult(validationDetail.getValidatedObject(),
-                                validationDetail.getMessage(), SEVERITY_IN_PUBLISH, validationDetail.getValidatorClass()));
+                        Object detailKey = validationDetail.getValidatedObject();
+
+                        String detailMessage = validationDetail.getMessage();
+
+                        // prepend message with the name of validated object if other than content key
+                        if (detailKey != null && !(detailKey instanceof ContentKey)) {
+                            if (detailKey instanceof Attribute) {
+                                detailMessage = ((Attribute)detailKey).getName() + ": " + detailMessage;
+                            } else {
+                                detailMessage = detailKey.toString() + ": " + detailMessage;
+                            }
+                        }
+
+                        ValidationResult extractedResult = new ValidationResult(contentKey, detailMessage,
+                                SEVERITY_IN_PUBLISH, validationDetail.getValidatorClass());
+
+                        totalValidationResult.addValidationResult(extractedResult);
                     }
+
                 }
             }
         }
@@ -84,11 +119,12 @@ public class ContentValidationTask extends TransformerTask<Input, ValidationResu
         return "Validate content nodes";
     }
 
-    private void putFixedContentIntoInput(NodeCollectionContentProvider nodeCollectionContentProviderService) {
+    private void putFixedContentIntoInput(NodeCollectionContentProviderService nodeCollectionContentProviderService) {
         Map<ContentKey, Map<Attribute, Object>> allNodes = new HashMap<ContentKey, Map<Attribute, Object>>();
         for (ContentKey key : nodeCollectionContentProviderService.getContentKeys()) {
             allNodes.put(key, nodeCollectionContentProviderService.getAllAttributesForContentKey(key));
         }
         input.setContentNodes(allNodes);
     }
+
 }

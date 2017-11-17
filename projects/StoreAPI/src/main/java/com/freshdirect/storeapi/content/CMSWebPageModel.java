@@ -9,8 +9,6 @@ public class CMSWebPageModel{
 	private String type;
 	private List<CMSSectionModel> sections;
 	private List<CMSScheduleModel> schedule;
-	
-	private String id;
 
 	public List<CMSSectionModel> getSections() {
 		return sections;
@@ -51,16 +49,8 @@ public class CMSWebPageModel{
 	public void setType(String type) {
 		this.type = type;
 	}
-		
-    public String getId() {
-		return id;
-	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	@Override
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -69,7 +59,6 @@ public class CMSWebPageModel{
         result = prime * result + ((seoMetaDescription == null) ? 0 : seoMetaDescription.hashCode());
         result = prime * result + ((title == null) ? 0 : title.hashCode());
         result = prime * result + ((type == null) ? 0 : type.hashCode());
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
     }
 
@@ -106,11 +95,6 @@ public class CMSWebPageModel{
             if (other.type != null)
                 return false;
         } else if (!type.equals(other.type))
-            return false;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
             return false;
         return true;
     }

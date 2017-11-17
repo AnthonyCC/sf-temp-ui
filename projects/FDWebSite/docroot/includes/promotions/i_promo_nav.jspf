@@ -6,7 +6,7 @@
 <%@ page import="com.freshdirect.common.customer.EnumCardType" %>
 <%@ page import="com.freshdirect.deliverypass.EnumDlvPassStatus"%>
 <%@ page import="com.freshdirect.fdstore.promotion.*" %>
-<%@ page import='com.freshdirect.fdstore.content.*'%>
+<%@ page import='com.freshdirect.storeapi.content.*'%>
 <%@ page import="com.freshdirect.fdstore.promotion.management.*" %>
 <%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionStatus"%>
 <%@ page import="com.freshdirect.deliverypass.EnumDlvPassStatus"%>

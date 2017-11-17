@@ -12,10 +12,11 @@ import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.domain.EStoreId;
+import com.freshdirect.cms.core.service.ContentKeyParentsCollectorService;
 import com.freshdirect.cms.core.service.ContentTypeInfoService;
 import com.freshdirect.cms.core.service.ContextService;
 import com.freshdirect.cms.core.service.ContextualContentProvider;
-import com.freshdirect.cms.core.service.NodeCollectionContentProvider;
+import com.freshdirect.cms.core.service.NodeCollectionContentProviderService;
 import com.freshdirect.cms.lucene.domain.IndexerConfiguration;
 import com.freshdirect.cms.ui.editor.index.service.IndexerService;
 import com.freshdirect.cms.ui.editor.publish.domain.StorePublishMessageSeverity;
@@ -44,6 +45,9 @@ public class IndexingTask extends ConsumerTask<Map<ContentKey, Map<Attribute, Ob
     private ContentTypeInfoService contentTypeInfoService;
 
     @Autowired
+    private ContentKeyParentsCollectorService contentKeyParentsCollectorService;
+
+    @Autowired
     private ContextService contextService;
 
     public void setStoreId(EStoreId storeId) {
@@ -62,7 +66,7 @@ public class IndexingTask extends ConsumerTask<Map<ContentKey, Map<Attribute, Ob
         ContentKey storeKey = ContentKeyFactory.get(ContentType.Store, storeId.getContentId());
 
         // TODO: consider using nodecollection as input
-        NodeCollectionContentProvider objectsToIndex = new NodeCollectionContentProvider(contentTypeInfoService, contextService, input);
+        NodeCollectionContentProviderService objectsToIndex = new NodeCollectionContentProviderService(contentTypeInfoService, contentKeyParentsCollectorService, contextService, input);
 
         IndexerConfiguration indexerConfiguration = createIndexerConfiguration(objectsToIndex, storePublishPath);
         indexerService.fullIndex(input, indexerConfiguration, storeKey);

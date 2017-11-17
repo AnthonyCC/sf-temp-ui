@@ -9,15 +9,20 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 @Configuration
-@EnableJpaRepositories(entityManagerFactoryRef = "cmsEntityManagerFactory", transactionManagerRef = "cmsTransactionManager", basePackages = {
-        "com.freshdirect.cms.ui.editor.reports.repository", "com.freshdirect.cms.ui.editor.publish.repository",
+@EnableJpaRepositories({ "com.freshdirect.cms.ui.editor.reports.repository", "com.freshdirect.cms.ui.editor.publish.repository",
         "com.freshdirect.cms.ui.editor.publish.feed.repository" })
 @ComponentScan({ "com.freshdirect.cms.ui.serviceimpl", "com.freshdirect.cms.ui.editor" })
 @EnableAsync
 public class CmsGwtConfiguration {
+
+    @Bean
+    public MappingJackson2HttpMessageConverter converter() {
+        return new MappingJackson2HttpMessageConverter();
+    }
 
     @Bean
     public TaskExecutor taskExecutor() {

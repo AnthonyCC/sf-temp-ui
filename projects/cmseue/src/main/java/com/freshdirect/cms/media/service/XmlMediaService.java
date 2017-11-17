@@ -23,12 +23,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 import org.xml.sax.SAXException;
 
 import com.freshdirect.cms.contentio.xml.FlexContentHandler;
@@ -45,7 +43,7 @@ public class XmlMediaService implements MediaService {
     private static final Logger LOGGER = LoggerFactory.getLogger(XmlMediaService.class);
 
     @Autowired
-    private ApplicationContext applicationContext;
+    private FlexContentHandler flexContentHandler;
 
     @Value("${cms.resource.basePath}")
     private String resourceBasePath;
@@ -54,46 +52,28 @@ public class XmlMediaService implements MediaService {
     private AttributeValueToMediaConverter attributeValueToMediaConverter;
 
     @Value("${cms.resource.mediaxml.name:Media.xml.gz}")
-    private String mediaXmlName;
+    private String storeXmlName;
 
     private Map<ContentKey, Media> mediaNodes;
 
     @PostConstruct
-    public void init() {
-        loadAll();
-    }
+    public void init() throws ParserConfigurationException, SAXException, FileNotFoundException, IOException {
+        loadXmlContent(storeXmlName);
 
-    @Override
-    public List<Media> loadAll() {
-        try {
-            loadXmlContent(mediaXmlName);
-        } catch (FileNotFoundException e) {
-            LOGGER.error("Loading " + mediaXmlName + " failed", e);
-            throw new RuntimeException("Loading " + mediaXmlName + " failed", e);
-        } catch (ParserConfigurationException e) {
-            LOGGER.error("Loading " + mediaXmlName + " failed", e);
-            throw new RuntimeException("Loading " + mediaXmlName + " failed", e);
-        } catch (SAXException e) {
-            LOGGER.error("Loading " + mediaXmlName + " failed", e);
-            throw new RuntimeException("Loading " + mediaXmlName + " failed", e);
-        } catch (IOException e) {
-            LOGGER.error("Loading " + mediaXmlName + " failed", e);
-            throw new RuntimeException("Loading " + mediaXmlName + " failed", e);
-        }
-        
-        return new ArrayList<Media>(mediaNodes.values());
-    }
-
-    void buildAll(FlexContentHandler flexContentHandler) {
         mediaNodes = new HashMap<ContentKey, Media>();
 
         Map<ContentKey, Map<Attribute, Object>> mediaEntities = flexContentHandler.getContentNodes();
         for (final Map.Entry<ContentKey, Map<Attribute, Object>> entry : mediaEntities.entrySet()) {
             final ContentKey mediaKey = entry.getKey();
             mediaNodes.put(mediaKey, attributeValueToMediaConverter.convert(mediaKey, entry.getValue()));
-        }        
+        }
     }
-    
+
+    @Override
+    public List<Media> loadAll() {
+        return new ArrayList<Media>(mediaNodes.values());
+    }
+
     @Override
     public Optional<Media> getMediaByContentKey(ContentKey mediaContentKey) {
         return Optional.fromNullable(mediaNodes.get(mediaContentKey));
@@ -150,17 +130,12 @@ public class XmlMediaService implements MediaService {
     }
 
     public void loadXmlContent(String xmlFileName) throws ParserConfigurationException, SAXException, FileNotFoundException, IOException {
-        Assert.notNull(xmlFileName, "XML File Name parameter can't be null!");
-
         LOGGER.info("Loading content from " + xmlFileName);
 
-        FlexContentHandler flexContentHandler = applicationContext.getBean(FlexContentHandler.class);
         InputStream resourceInputStream = setupInputStream(xmlFileName);
         SAXParser saxParser = setupSaxParser();
 
         saxParser.parse(resourceInputStream, flexContentHandler);
-        
-        buildAll(flexContentHandler);
     }
 
     @Override

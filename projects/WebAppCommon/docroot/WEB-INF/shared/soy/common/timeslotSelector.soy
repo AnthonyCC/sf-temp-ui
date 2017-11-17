@@ -1,5 +1,4 @@
 {namespace common}
-
 /**
  * @param days
  * @param times
@@ -18,10 +17,10 @@
 {if $selectedDay}
   <div class="select-time" selectTimeslot>
     {foreach $timeslots in $times[$selectedDay].times}
-      {if index($timeslots) == 1 and $timeslots.length > 0 and $times[$selectedDay].times[0].length > 0}<div>Order by 5pm</div>{/if}
-      {if index($timeslots) == 2 and $timeslots.length > 0}<div>Order by 11pm</div>{/if}
+      <div>Order by {$timeslots[0]}</div>
       <ul>
         {foreach $time in $timeslots}
+        {if not isFirst($time)}
         <li class="{if $time.selected}selected {/if}{if $time.ecoFriendly}eco-friendly {/if}{if $zonePromoAmount and $time.steeringDiscount > 0}steering-discount {/if}{if $time.alcoholRestricted}alcohol-restricted {/if}{if $time.isEarlyAM}early {/if}{if $time.reserved}reserved {/if}{if $time.chefsTable}chefs-table {/if}{if $time.full}soldout{/if}">
           <span class="label">
             <input type="radio" name="timeslot" id="{$time.id}" value="{$time.id}" {if $time.selected} checked="checked"{/if}>
@@ -41,7 +40,7 @@
               <span class="chefs-table">Chef's tabel</span>
             {/if}
             {if $time.isEarlyAM}
-              <span class="early">Erly AM</span>
+              <span class="early">Early AM</span>
             {/if}
             {if $time.reserved}
               <span class="reserved">Reserved</span>
@@ -54,6 +53,7 @@
             {/if}
           </span>
         </li>
+        {/if}
         {/foreach}
       </ul>
     {/foreach}

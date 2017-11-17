@@ -3,15 +3,13 @@ package com.freshdirect.temails;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.freshdirect.rules.ClassDescriptor;
-
 public class TEmailsConfig {
 
 	private String subsystem;
 
 	private String serviceName;
 
-	/** List of ClassDescriptors */
+    /** List of ClassDescriptors */
 	private List parserTypes = new ArrayList();
 
 	

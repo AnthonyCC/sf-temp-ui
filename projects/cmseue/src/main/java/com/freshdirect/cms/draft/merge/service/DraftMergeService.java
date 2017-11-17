@@ -8,25 +8,22 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import com.freshdirect.cms.changecontrol.domain.ContentUpdateContext;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
+import com.freshdirect.cms.core.service.ContextualContentProvider;
 import com.freshdirect.cms.draft.domain.DraftChange;
 import com.freshdirect.cms.draft.domain.DraftContext;
 import com.freshdirect.cms.draft.domain.DraftStatus;
-import com.freshdirect.cms.draft.domain.NullValueBehavior;
-import com.freshdirect.cms.draft.service.DraftContentProviderService;
 import com.freshdirect.cms.draft.service.DraftContextHolder;
 import com.freshdirect.cms.draft.service.DraftService;
 import com.freshdirect.cms.draft.validation.service.DraftValidatorService;
 import com.freshdirect.cms.validation.ValidationResults;
 import com.freshdirect.cms.validation.exception.ValidationFailedException;
 
-@Profile("database")
 @Service
 public class DraftMergeService {
 
@@ -37,7 +34,7 @@ public class DraftMergeService {
     private DraftValidatorService draftValidatorService;
 
     @Autowired
-    private DraftContentProviderService draftContentProviderService;
+    private ContextualContentProvider draftContentProviderService;
 
     @Autowired
     private DraftService draftService;
@@ -57,7 +54,7 @@ public class DraftMergeService {
             LinkedHashMap<ContentKey, Map<Attribute, Object>> allNodesToSave = new LinkedHashMap<ContentKey, Map<Attribute, Object>>();
             for (DraftChange draftChange : draftService.getDraftChanges(draftContext.getDraftId())) {
                 ContentKey keyOfNode = ContentKeyFactory.get(draftChange.getContentKey());
-                allNodesToSave.put(keyOfNode, draftContentProviderService.getAllAttributesForContentKey(keyOfNode, NullValueBehavior.INCLUDE_NULLS));
+                allNodesToSave.put(keyOfNode, draftContentProviderService.getAllAttributesForContentKey(keyOfNode));
             }
             Date updatedAt = new Date();
             ContentUpdateContext contentUpdateContext = new ContentUpdateContext(userName, updatedAt,

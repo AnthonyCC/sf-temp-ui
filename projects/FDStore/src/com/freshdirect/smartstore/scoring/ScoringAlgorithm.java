@@ -3,7 +3,7 @@ package com.freshdirect.smartstore.scoring;
 import java.util.Map;
 
 import com.freshdirect.common.pricing.PricingContext;
-import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.ContentNodeModel;
 
 /**
  * Base class for the scoring algorithm implementation. Subclasses overrides the getScores and the getVariableNames methods.

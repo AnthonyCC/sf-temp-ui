@@ -9,7 +9,7 @@
 <%@ page import='com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo' %>
 <%@ page import='com.freshdirect.deliverypass.DeliveryPassModel' %>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
-<%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
+<%@ page import='com.freshdirect.storeapi.content.ContentFactory' %>
 <%@ page import="java.util.Calendar" %>
 <%@ page import='java.util.Date' %>
 <%@ taglib uri="template" prefix="tmpl" %>

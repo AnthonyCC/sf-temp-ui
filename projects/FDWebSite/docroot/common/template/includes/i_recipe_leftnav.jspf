@@ -1,15 +1,15 @@
 <%@ taglib uri='logic' prefix='logic' %>
 
 <%@ page import='com.freshdirect.fdstore.util.RecipesUtil' %>
-<%@ page import="com.freshdirect.fdstore.content.RecipeCategory"%>
-<%@ page import="com.freshdirect.fdstore.content.Recipe"%>
-<%@ page import="com.freshdirect.fdstore.content.RecipeSubcategory"%>
-<%@ page import="com.freshdirect.fdstore.content.Image"%>
+<%@ page import="com.freshdirect.storeapi.content.RecipeCategory"%>
+<%@ page import="com.freshdirect.storeapi.content.Recipe"%>
+<%@ page import="com.freshdirect.storeapi.content.RecipeSubcategory"%>
+<%@ page import="com.freshdirect.storeapi.content.Image"%>
 <%@ page import="java.util.Collections"%>
 <%@ page import="java.util.ArrayList"%>
 <%@ page import="java.util.List"%>
-<%@ page import="com.freshdirect.fdstore.content.ContentFactory"%>
-<%@ page import="com.freshdirect.fdstore.content.DomainValue"%>
+<%@ page import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@ page import="com.freshdirect.storeapi.content.DomainValue"%>
 
 <% //expanded page dimensions
 final int W_RECIPE_LEFTNAV_TOTAL = 150;
@@ -46,7 +46,7 @@ final int W_RECIPE_LEFTNAV_TOTAL = 150;
 	</td><td width="5"></td></tr>
 <% 
    }   %>
-<logic:iterate id="recipeSubcategory" collection="<%= rcpCategory.getSubcategories() %>" type="com.freshdirect.fdstore.content.RecipeSubcategory">
+<logic:iterate id="recipeSubcategory" collection="<%= rcpCategory.getSubcategories() %>" type="com.freshdirect.storeapi.content.RecipeSubcategory">
      <tr><td width="10"></td><td width="<%=W_RECIPE_LEFTNAV_TOTAL-15%>">
        <div style="margin-left: 8px; text-indent: -8px; font-weight: bold; ">
       <a href="<%=response.encodeURL("/recipe_subcat.jsp?catId="+rcpCategory+"&subCatId="+recipeSubcategory+"&trk=snav")%>"><%=recipeSubcategory.getName()%></a>
@@ -56,7 +56,7 @@ final int W_RECIPE_LEFTNAV_TOTAL = 150;
       	    	filterByKeys = filterByKeys == null ? Collections.<DomainValue>emptyList() : new ArrayList<DomainValue>(filterByKeys);
       	      	//Map groupByMap = RecipesUtil.findRecipes(recipeSubcategory, RecipesUtil.getFilter(filterByKeys, request), filterByKeys, request);
       			%>
-      			<logic:iterate id="filter" collection="<%= filterByKeys %>" type="com.freshdirect.fdstore.content.DomainValue">
+      			<logic:iterate id="filter" collection="<%= filterByKeys %>" type="com.freshdirect.storeapi.content.DomainValue">
       			<div style="margin-left:8px; text-indent: -8px; font-weight: normal">
 	      				<a href="<%=response.encodeURL("/recipe_subcat.jsp?catId="+rcpCategory+"&subCatId="+recipeSubcategory+"&trk=snav&filter="+filter.getContentName())%>">
 	      					<%= filter.getLabel() %>

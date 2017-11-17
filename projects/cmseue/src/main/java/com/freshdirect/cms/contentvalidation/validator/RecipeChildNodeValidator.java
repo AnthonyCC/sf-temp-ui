@@ -13,6 +13,7 @@ import com.freshdirect.cms.core.domain.ContentTypes;
 import com.freshdirect.cms.core.service.ContextualContentProvider;
 import com.freshdirect.cms.validation.ValidationResultLevel;
 import com.freshdirect.cms.validation.ValidationResults;
+import com.freshdirect.cms.validation.validator.Validator;
 import com.google.common.base.Optional;
 
 /**

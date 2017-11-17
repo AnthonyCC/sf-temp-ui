@@ -33,12 +33,12 @@ import org.xml.sax.SAXException;
 
 import com.freshdirect.cms.contentio.xml.FlexContentHandler;
 import com.freshdirect.cms.contentio.xml.XmlContentMetadataService;
-import com.freshdirect.cms.core.converter.ScalarValueConverter;
+import com.freshdirect.cms.core.converter.SerializedScalarValueToObjectConverter;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.domain.Scalar;
-import com.freshdirect.cms.core.service.ParentIndexBuilder;
+import com.freshdirect.cms.core.service.ContentKeyParentsCollectorService;
 import com.freshdirect.cms.core.service.ContentProvider;
 import com.freshdirect.cms.core.service.ContentSource;
 import com.google.common.base.Optional;
@@ -60,7 +60,13 @@ public class XmlContentProvider implements ContentProvider {
     private String storeXmlName;
 
     @Autowired
+    private SerializedScalarValueToObjectConverter serializedScalarValueToObjectConverter;
+
+    @Autowired
     private XmlContentMetadataService xmlContentMetadataService;
+
+    @Autowired
+    private ContentKeyParentsCollectorService contentKeyParentsCollectorService;
 
     private Map<ContentKey, Map<Attribute, Object>> contentNodes;
 
@@ -109,15 +115,18 @@ public class XmlContentProvider implements ContentProvider {
         Assert.notNull(contentKey, "ContentKey parameter can't be null!");
         Assert.notNull(attributes, "Attributes parameter can't be null!");
 
+
         Map<Attribute, Object> payload = contentNodes.get(contentKey);
         if (payload == null) {
             return Collections.emptyMap();
         }
 
         Map<Attribute, Object> results = new HashMap<Attribute, Object>();
-        for (Attribute attribute : attributes) {
-            if (payload.containsKey(attribute)) {
-                results.put(attribute, payload.get(attribute));
+        for (Map.Entry<Attribute, Object> entry : payload.entrySet()) {
+            Attribute attribute = entry.getKey();
+            Object value = entry.getValue();
+            if (attributes.contains(attribute)) {
+                results.put(attribute, value);
             }
         }
         return results;
@@ -159,12 +168,14 @@ public class XmlContentProvider implements ContentProvider {
                 }
             }
         }
+
         return result;
     }
 
     @Override
     public void saveAttribute(ContentKey contentKey, Attribute attribute, Object attributeValue) {
         throw new UnsupportedOperationException("saveAttribute it not supported!");
+
     }
 
     @Override
@@ -236,7 +247,7 @@ public class XmlContentProvider implements ContentProvider {
                     Object value = rawEntry.getValue();
 
                     if (attribute instanceof Scalar && value != null) {
-                        value = ScalarValueConverter.deserializeToObject((Scalar) attribute, value.toString());
+                        value = serializedScalarValueToObjectConverter.convert(attribute, value.toString());
                     }
 
                     payload.put(attribute, value);
@@ -260,7 +271,7 @@ public class XmlContentProvider implements ContentProvider {
         }
 
         // process parent keys
-        parentKeys = ParentIndexBuilder.createParentKeysMap(contentNodes);
+        parentKeys = contentKeyParentsCollectorService.createParentKeysMap(contentNodes);
     }
 
     private void buildMetadata(FlexContentHandler flexContentHandler) {
@@ -272,7 +283,7 @@ public class XmlContentProvider implements ContentProvider {
 
     @Override
     public Map<ContentKey, Set<ContentKey>> generateParentKeysMap() {
-        return parentKeys;
+        return contentKeyParentsCollectorService.createParentKeysMap();
     }
 
     private InputStream setupInputStream(String fileName) throws IOException {

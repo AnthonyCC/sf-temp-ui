@@ -13,13 +13,13 @@
 <%@ page import="com.freshdirect.logistics.delivery.model.TimeslotContext" %>
 <%@ page import='com.freshdirect.fdlogistics.model.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
-<%@ page import='com.freshdirect.fdstore.content.CategoryModel' %>
-<%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
+<%@ page import='com.freshdirect.storeapi.content.CategoryModel' %>
+<%@ page import='com.freshdirect.storeapi.content.ContentFactory' %>
 <%@ page import='com.freshdirect.fdstore.promotion.FDPromotionZoneRulesEngine' %>
 <%@ page import="com.freshdirect.customer.ErpCustomerInfoModel"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDCustomerFactory"%>
 <%@ page import="com.freshdirect.framework.webapp.ActionResult"%>
-<%@ page import='com.freshdirect.fdstore.attributes.*'%>
+<%@ page import='com.freshdirect.storeapi.attributes.*'%>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
 <%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>

@@ -105,9 +105,9 @@ public class MaskedContentProvider extends ContextualContentProvider {
             nodes.put(contentKey, getAllAttributesForContentKey(contentKey));
         }
 
-        Map<ContentKey, Set<ContentKey>> calculatedParents = ParentIndexBuilder.createParentKeysMap(nodes);
+        Map<ContentKey, Set<ContentKey>> calculatedParents = maskProvider.contentKeyParentsCollectorService.createParentKeysMap(nodes);
 
-        return calculatedParents.containsKey(key) ? calculatedParents.get(key) : Collections.<ContentKey>emptySet();
+        return calculatedParents.containsKey(key) ? calculatedParents.get(key) : Collections.<ContentKey> emptySet();
     }
 
     @Override
@@ -129,6 +129,7 @@ public class MaskedContentProvider extends ContextualContentProvider {
         } else {
             result = Optional.absent();
         }
+
         return result;
     }
 
@@ -156,4 +157,5 @@ public class MaskedContentProvider extends ContextualContentProvider {
 
         return orphan;
     }
+
 }

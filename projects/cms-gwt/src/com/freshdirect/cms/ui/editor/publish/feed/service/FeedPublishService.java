@@ -84,15 +84,10 @@ public class FeedPublishService {
 
     @Async
     public void publishFeed(FeedPublish publish, List<ContentKey> storeKeys, String userId, String comment) {
-    	
-        LOGGER.debug("Feed publish Stores size ======= "+(storeKeys!=null?storeKeys.size():storeKeys));
-
 
         for (ContentKey storeKey : storeKeys) {
 
             publish.setStoreKey(storeKey);
-            
-            LOGGER.debug("Feed publish starts for the store ======= "+ (storeKey!=null ? storeKey.getId() : storeKey) + "-->" + propertyResolverService.getFeedPublishUri());
 
             FeedPublishMessage message = new FeedPublishMessage(FeedPublishMessageLevel.INFO, "Starting feed publish", publish.getStoreKey().id);
             feedPublishMessagingService.addMessage(publish, message);
@@ -160,7 +155,6 @@ public class FeedPublishService {
                 feedPublishMessagingService.addMessage(publish, new FeedPublishMessage(FeedPublishMessageLevel.INFO, "FeedPublish succesfully finished"));
                 feedPublishMessagingService.modifyFeedPublishStatus(publish, PublishStatus.COMPLETE);
             } catch (Exception e) {
-            	LOGGER.error("Exception during feed publish ===== "+e.getMessage(), e);
                 feedPublishMessagingService.addMessage(publish,
                         new FeedPublishMessage(FeedPublishMessageLevel.FAILURE, "Exception happened: " + e.getMessage(), publish.getStoreKey().id));
                 feedPublishMessagingService.modifyFeedPublishStatus(publish, PublishStatus.FAILED);
@@ -286,12 +280,10 @@ public class FeedPublishService {
     public Optional<FeedPublish> findFeedPublish(String id) {
         FeedPublishEntity publish = null;
 
-        if (id != null) {
-            if ("latest".equals(id)) {
-                publish = repository.findFirstByOrderByCreationDateDesc();
-            } else {
-                publish = repository.findById(Long.parseLong(id));
-            }
+        if ("latest".equals(id)) {
+            publish = repository.findFirstByOrderByCreationDateDesc();
+        } else {
+            publish = repository.findById(Long.parseLong(id));
         }
 
         FeedPublish feedPublish = null;
@@ -331,17 +323,5 @@ public class FeedPublishService {
 
     public List<FeedPublish> loadAll() {
         return entityToDomainConverter.convert(repository.findAll());
-    }
-
-    public boolean isFeedRelatedChange(String type) {
-        boolean feedRelatedChange = false;
-
-        for (ContentType contentType : typesToPublish) {
-            if (contentType.toString().equalsIgnoreCase(type)) {
-                feedRelatedChange = true;
-            }
-        }
-
-        return feedRelatedChange;
     }
 }

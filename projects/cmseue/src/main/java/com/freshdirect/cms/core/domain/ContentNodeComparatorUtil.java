@@ -9,7 +9,7 @@ public final class ContentNodeComparatorUtil {
     private ContentNodeComparatorUtil() {
     }
 
-    public static boolean isValueChanged(Object originalValue, Object changedValue) {
+    public static boolean isValueChanged(Attribute attribute, Object originalValue, Object changedValue) {
         if (originalValue == null && changedValue == null) {
             return false;
         } else if (originalValue != null && changedValue != null) {
@@ -33,25 +33,10 @@ public final class ContentNodeComparatorUtil {
 
         // test content
         for (Attribute attribute : incoming.keySet()) {
-            if (ContentNodeComparatorUtil.isValueChanged(original.get(attribute), incoming.get(attribute))) {
+            if (ContentNodeComparatorUtil.isValueChanged(attribute, original.get(attribute), incoming.get(attribute))) {
                 return true;
             }
         }
-        return false;
-    }
-    
-    public static boolean isChanged(Map<ContentKey, Map<Attribute, Object>> incoming, Map<ContentKey, Map<Attribute, Object>> original) {
-        Assert.notNull(incoming);
-        Assert.notNull(original);
-        
-        for (ContentKey nodeKey : incoming.keySet()) {
-            if (!original.containsKey(nodeKey)) {
-                return true;
-            }
-            if (isNodeChanged(incoming.get(nodeKey), original.get(nodeKey))) {
-                return true;
-            }
-        }        
         return false;
     }
 }

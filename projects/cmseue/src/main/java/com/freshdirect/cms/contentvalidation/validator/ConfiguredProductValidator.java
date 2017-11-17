@@ -22,6 +22,7 @@ import com.freshdirect.cms.persistence.service.ERPSDataService;
 import com.freshdirect.cms.validation.ValidationResult;
 import com.freshdirect.cms.validation.ValidationResultLevel;
 import com.freshdirect.cms.validation.ValidationResults;
+import com.freshdirect.cms.validation.validator.Validator;
 import com.google.common.base.Optional;
 
 /**

@@ -45,11 +45,16 @@ public class CorrectionManager {
             List<CorrectionService> correctionServices = getCorrectionServices();
 
             for (ValidationResult validationResult : errorResults) {
-                for (CorrectionService correctionService : correctionServices) {
-                    if (correctionService.getSupportedValidator().equals(validationResult.getValidatorClass())) {
-                        correctionService.correct(contentKey, attributesWithValues, contentSource);
-                    }
-                }
+                applyCorrectionServices(contentKey, attributesWithValues, validationResult, correctionServices, contentSource);
+            }
+        }
+    }
+
+    private void applyCorrectionServices(ContentKey contentKey, Map<Attribute, Object> attributesWithValues, ValidationResult validationResult,
+            List<CorrectionService> correctionServices, ContextualContentProvider contentSource) {
+        for (CorrectionService correctionService : correctionServices) {
+            if (correctionService.getSupportedValidator().equals(validationResult.getValidatorClass())) {
+                correctionService.correct(contentKey, attributesWithValues, contentSource);
             }
         }
     }

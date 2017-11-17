@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.Discount;

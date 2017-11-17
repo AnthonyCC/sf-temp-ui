@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,7 +29,6 @@ public class BatchSavingRepository {
     private final static String INSERT_ATTRIBUTE = "insert into attribute(id, contentnode_id, def_name, def_contenttype, value, ordinal) values (cms_system_seq.nextVal, ?, ?, ?, ?, ?)";
 
     @Autowired
-    @Qualifier("cmsJdbcTemplate")
     private JdbcTemplate jdbcTemplate;
     
     public void batchSaveContentNodes(final List<ContentNodeEntity> contentNodeEntities) {

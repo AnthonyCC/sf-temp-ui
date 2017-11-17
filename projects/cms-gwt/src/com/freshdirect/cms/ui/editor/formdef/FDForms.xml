@@ -434,20 +434,6 @@
 							<CmsField><attribute>HOW_TO_COOK_IT_PRODUCTS</attribute></CmsField>
 						</fields>
 					</CmsSection>
-					<CmsSection>
-						<title>CONSUMED BY</title>
-						<fields>
-							<CmsField><attribute>consumedByVirtualCategory</attribute></CmsField>
-							<CmsField><attribute>consumedByDepartmentCarousel</attribute></CmsField>
-							<CmsField><attribute>consumedByCategoryCarousel</attribute></CmsField>
-							<CmsField><attribute>consumedByStoreCarousel</attribute></CmsField>
-							<CmsField><attribute>consumedBySection</attribute></CmsField>
-							<CmsField><attribute>consumedByImageBanner</attribute></CmsField>
-							<CmsField><attribute>consumedByModule</attribute></CmsField>
-							<CmsField><attribute>consumedByTabletFeaturedCategories</attribute></CmsField>
-							<CmsField><attribute>consumedByBanner</attribute></CmsField>
-						</fields>
-					</CmsSection>
 				</sections>
 			</CmsPage>
 			<CmsPage id="ratings">
@@ -1924,14 +1910,6 @@
 							<CmsField><attribute>productFilters</attribute></CmsField>
 						</fields>
 					</CmsSection>
-					<CmsSection>
-						<title>Exclude</title>
-						<fields>
-							<CmsField><attribute>excludeResidentalSearch</attribute></CmsField>
-							<CmsField><attribute>excludeCorporateSearch</attribute></CmsField>
-							<CmsField><attribute>excludeFoodKickSearch</attribute></CmsField>
-						</fields>
-					</CmsSection>
 				</sections>
 			</CmsPage>
 		</pages>
@@ -1963,14 +1941,6 @@
 							<CmsField><attribute>level2Name</attribute></CmsField>
 							<CmsField><attribute>level2Type</attribute></CmsField>
 							<CmsField><attribute>level2AllSelectedLabel</attribute></CmsField>
-						</fields>
-					</CmsSection>
-					<CmsSection>
-						<title>Exclude</title>
-						<fields>
-							<CmsField><attribute>excludeResidentalSearch</attribute></CmsField>
-							<CmsField><attribute>excludeCorporateSearch</attribute></CmsField>
-							<CmsField><attribute>excludeFoodKickSearch</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>
@@ -2283,8 +2253,6 @@
 							<CmsField><attribute>pickList</attribute></CmsField>		
 							<CmsField><attribute>category</attribute></CmsField>		
 							<CmsField><attribute>displayType</attribute></CmsField>
-							<CmsField><attribute>minimumProductLimit</attribute></CmsField>
-							<CmsField><attribute>maximumProductLimit</attribute></CmsField>
 							<CmsField><attribute>drawer</attribute></CmsField>																							
 						</fields>
 					</CmsSection>
@@ -2499,13 +2467,11 @@
 						    <CmsField><attribute>showViewAllOverlayOnImages</attribute></CmsField>	
 							<CmsField><attribute>productSourceType</attribute></CmsField>
 							<CmsField><attribute>sourceNode</attribute></CmsField>
-							<CmsField><attribute>randomizeProductOrder</attribute></CmsField>
 						    <CmsField><attribute>displayType</attribute></CmsField>
 						    <CmsField><attribute>imageGrid</attribute></CmsField>
 						    <CmsField><attribute>openHTML</attribute></CmsField>
 						    <CmsField><attribute>iconList</attribute></CmsField>
 						    <CmsField><attribute>productListRowMax</attribute></CmsField>
-						    <CmsField><attribute>productMaxLimit</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>

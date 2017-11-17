@@ -28,7 +28,7 @@ public class MiscRulesConfiguration extends RuleConfiguration {
 
     @PostConstruct
     private void init() {
-        //System.out.println("  --->>> xmlFilePath = " + xmlFilePath);
+        System.out.println("  --->>> xmlFilePath = " + xmlFilePath);
     }
 
     @Value("${com.freshdirect.fdstore.rules.misc.location}")

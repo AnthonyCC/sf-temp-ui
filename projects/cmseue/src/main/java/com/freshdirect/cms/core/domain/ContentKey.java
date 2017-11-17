@@ -2,8 +2,6 @@ package com.freshdirect.cms.core.domain;
 
 import java.io.Serializable;
 
-import org.springframework.util.Assert;
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.freshdirect.cms.core.converter.ContentKeyJsonDeserializer;
 
@@ -25,10 +23,6 @@ public final class ContentKey implements Serializable {
      * @param id
      */
     ContentKey(ContentType type, String id) {
-        Assert.notNull(type, "ContentType cannot be null");
-        Assert.notNull(id, "ID cannot be null");
-        Assert.isTrue(!id.isEmpty(), "ID cannot be the empty string");
-
         this.type = type;
         this.id = id;
     }

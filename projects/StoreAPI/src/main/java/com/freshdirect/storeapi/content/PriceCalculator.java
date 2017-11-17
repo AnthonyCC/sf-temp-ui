@@ -19,32 +19,35 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.ZonePriceModel;
-import com.freshdirect.storeapi.util.ProductInfoUtil;
 
 /**
  * This class is encapsulates a product with a sku and a pricing context, which is essential most of the price calculations happening on the site.
  * This object is intended to shared for a request, as it cache the FDProduct and FDProductInfo objects, so passing this around ensures that
  * unneeded cache lookup doesn't happens.
+ *
+ * @author zsombor
+ *
  */
 public class PriceCalculator {
+	private final static java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 
-    private static final java.text.NumberFormat US_CURRENCY_FORMATTER = java.text.NumberFormat.getCurrencyInstance(Locale.US);
-    private static final DecimalFormat FORMAT_QUANTITY = new java.text.DecimalFormat("0.##");
+	private final static DecimalFormat FORMAT_QUANTITY = new java.text.DecimalFormat("0.##");
 
-    private final PricingContext ctx;
-    private final SkuModel skuModel;
-    private final ProductModel product;
-    private final GroupPricingInfo groupPricingInfo;
+    final PricingContext ctx;
+    final SkuModel skuModel;
+    final ProductModel product;
 
-    protected transient FDProductInfo productInfo;
-    protected transient FDProduct fdProduct;
-    protected transient ZonePriceInfoModel zonePriceInfoModel;
+    transient FDProductInfo productInfo;
+    transient FDProduct fdProduct;
+    transient ZonePriceInfoModel zonePriceInfoModel;
+    final GroupPricingInfo groupPricingInfo;
 
     public PriceCalculator(PricingContext ctx, ProductModel product, SkuModel sku) {
         this.ctx = ctx;
         this.product = product;
         this.skuModel = sku;
         this.groupPricingInfo = this.initGroupPricingInfo();
+
     }
 
     public PriceCalculator(PricingContext ctx, ProductModel product) {
@@ -58,6 +61,12 @@ public class PriceCalculator {
         return product;
     }
 
+
+    /**
+     * @return
+     * @throws FDResourceException
+     * @throws FDSkuNotFoundException
+     */
     public FDProductInfo getProductInfo() throws FDResourceException, FDSkuNotFoundException {
         if (skuModel != null) {
             if (productInfo == null) {
@@ -66,6 +75,7 @@ public class PriceCalculator {
         }
         return productInfo;
     }
+
 
     public FDProduct getProduct() throws FDResourceException, FDSkuNotFoundException {
         if (fdProduct == null && skuModel != null) {
@@ -76,8 +86,7 @@ public class PriceCalculator {
 
     public FDGroup getFDGroup() {
         try {
-//            return skuModel != null ? getProductInfo().getGroup(this.getPricingContext().getZoneInfo().getSalesOrg(),this.getPricingContext().getZoneInfo().getDistributionChanel()) : null;
-        	return skuModel != null ? getProductInfo().getGroup(this.getPricingContext().getZoneInfo()) : null;
+            return skuModel != null ? getProductInfo().getGroup(this.getPricingContext().getZoneInfo()) : null;
         } catch (FDResourceException e) {
             return null;
         } catch (FDSkuNotFoundException e) {
@@ -86,7 +95,7 @@ public class PriceCalculator {
     }
 
     public FDGroup getProductGroup() throws FDResourceException, FDSkuNotFoundException{
-         return skuModel != null && getProductInfo()!=null ? getProductInfo().getGroup(this.getPricingContext()!=null?this.getPricingContext().getZoneInfo():null) : null;
+         return skuModel != null && getProductInfo()!=null ? getProductInfo().getGroup(this.getPricingContext().getZoneInfo()) : null;
     }
 
     public double getDefaultPriceValue() {
@@ -96,8 +105,6 @@ public class PriceCalculator {
             FDProductInfo productInfo = getProductInfo();
             if (productInfo == null)
                 return 0.0;
-            if(null == getZonePriceInfoModel())
-            	return 0.0;
             return getZonePriceInfoModel().getDefaultPrice();
         } catch (FDResourceException e) {
             throw new RuntimeException(e);
@@ -113,7 +120,7 @@ public class PriceCalculator {
             FDProductInfo productInfo = getProductInfo();
             if (productInfo == null)
                 return "";
-            return US_CURRENCY_FORMATTER.format(getZonePriceInfoModel().getDefaultPrice()) + "/" + productInfo.getDefaultPriceUnit();
+            return currencyFormatter.format(getZonePriceInfoModel().getDefaultPrice()) + "/" + productInfo.getDefaultPriceUnit();
         } catch (FDResourceException e) {
             throw new RuntimeException(e);
         } catch (FDSkuNotFoundException e) {
@@ -128,13 +135,14 @@ public class PriceCalculator {
             FDProductInfo productInfo = getProductInfo();
             if (productInfo == null)
                 return "";
-            return US_CURRENCY_FORMATTER.format(getZonePriceInfoModel().getDefaultPrice());
+            return currencyFormatter.format(getZonePriceInfoModel().getDefaultPrice());
         } catch (FDResourceException e) {
             throw new RuntimeException(e);
         } catch (FDSkuNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
+
 
     public String getSellingPriceOnly() {
         try {
@@ -143,7 +151,7 @@ public class PriceCalculator {
             FDProductInfo productInfo = getProductInfo();
             if (productInfo == null)
                 return "";
-            return US_CURRENCY_FORMATTER.format(getZonePriceInfoModel().getSellingPrice());
+            return currencyFormatter.format(getZonePriceInfoModel().getSellingPrice());
         } catch (FDResourceException e) {
             throw new RuntimeException(e);
         } catch (FDSkuNotFoundException e) {
@@ -154,7 +162,11 @@ public class PriceCalculator {
 	/**
 	 * This method has been modified to return only regular deals percentage if this sku
 	 * is part of a group scale else returns sku's highest deals percentage.
+	 * @param productInfo
+	 * @param user
+	 * @return
 	 */
+
     public String getDefaultUnitOnly() {
         try {
             if (skuModel == null)
@@ -184,10 +196,16 @@ public class PriceCalculator {
         return 0;
     }
 
+
+
+
     /**
      * This method returns only regular deals percentage if product's default
      * sku is part of a group scale else returns product's highest deals
      * percentage.
+     *
+     * @param calculator
+     * @return
      */
     public int getBurstDealsPercentage(double[] exception) {
         int tieredPercentage = getTieredDealPercentage(exception);
@@ -261,16 +279,16 @@ public class PriceCalculator {
     							//return priceModel.getDealPercentage();
     							double sellingPrice = priceModel.getSellingPrice();
     							int val = (int) ((sellingPrice - gsPrice.getPrice()) * 100.0 / sellingPrice + 0.2);
-    							//if( ((val%5)==0)||((val%2)==0)) {
+    							if( ((val%5)==0)||((val%2)==0)) {
     								return val;
-    							//}
-    							//return val-1;
+    							}
+    							return val-1;
     						}
     					}
     				}
-    				//At this point there is no gs price defined for default sku.
-        			return priceModel.getHighestDealPercentage();
     			}
+    			//At this point there is no gs price defined for default sku.
+    			return priceModel.getHighestDealPercentage();
             } catch (FDSkuNotFoundException ex) {
             } catch (FDResourceException e) {
             }
@@ -290,10 +308,10 @@ public class PriceCalculator {
    						if(gsPrice != null) {
    							double sellingPrice = priceModel.getSellingPrice();
    							int val = (int) ((sellingPrice - gsPrice.getPrice()) * 100.0 / sellingPrice + 0.2);
-   							//if( ((val%5)==0)||((val%2)==0)) {
+   							if( ((val%5)==0)||((val%2)==0)) {
    								return val;
-   							//}
-   							//return val-1;
+   							}
+   							return val-1;
    						}
    					}
    				}
@@ -304,26 +322,13 @@ public class PriceCalculator {
         return 0;
     }
 
-    public int getHighestGroupDealPercentage() {
-        boolean showBurstImage = true;
-
-        try {
-            ZonePriceInfoModel model = getZonePriceInfoModel();
-            if (model != null) {
-                showBurstImage = model.isShowBurstImage();
-            }
-        } catch (FDResourceException ignore) {
-        } catch (FDSkuNotFoundException ignore) {
-        }
-
-        return showBurstImage ? getHighestDealPercentage() : getGroupDealPercentage();
-    }
-
     public String getTieredPrice(double savingsPercentage) {
     	return getTieredPrice(savingsPercentage, null);
     }
 
+
     public String getTieredPrice(double savingsPercentage, double exclusion[]) {
+
         if (skuModel != null) {
             try {
                 FDProduct product = getProduct();
@@ -464,28 +469,36 @@ public class PriceCalculator {
         return null;
     }
 
+    /**
+     * @param productInfo
+     * @return
+     * @throws FDSkuNotFoundException
+     * @throws FDResourceException
+     * @throws FDSkuNotFoundException
+     * @throws FDResourceException
+     */
     public ZonePriceInfoModel getZonePriceInfoModel() throws FDResourceException, FDSkuNotFoundException {
        /* if (zonePriceInfoModel == null) {
             FDProductInfo info = getProductInfo();
             zonePriceInfoModel = info != null ? info.getZonePriceInfo(ctx.getZoneInfo()) : null;
         }
         */
-    	if (ctx != null) {
-	        ZoneInfo zone=ctx.getZoneInfo();
-	        if (zonePriceInfoModel == null) {
-	        	FDProductInfo info = getProductInfo();
-	        	if(info!=null) {
-	        		zonePriceInfoModel=info.getZonePriceInfo(zone);
-	        		/*while(zonePriceInfoModel==null && zone!=null) {
-	        			zone=zone.getParentZone();
-	        			zonePriceInfoModel=info.getZonePriceInfo(zone);
-	        		}*/
-	        	}
-	        }
+
+        ZoneInfo zone=ctx.getZoneInfo();
+        if (zonePriceInfoModel == null) {
+        	FDProductInfo info = getProductInfo();
+        	if(info!=null) {
+        		zonePriceInfoModel=info.getZonePriceInfo(zone);
+        		/*while(zonePriceInfoModel==null && zone!=null) {
+        			zone=zone.getParentZone();
+        			zonePriceInfoModel=info.getZonePriceInfo(zone);
+        		}*/
+        	}
         }
         return zonePriceInfoModel;
 
     }
+
 
     public ZonePriceModel getZonePriceModel() throws FDResourceException, FDSkuNotFoundException {
     	ZoneInfo zone=ctx.getZoneInfo();
@@ -493,6 +506,8 @@ public class PriceCalculator {
     	ZonePriceModel zpm=getProduct().getPricing().getZonePrice(zone);
     	return zpm;
     }
+
+
 
     public String getSizeDescription() throws FDResourceException {
         try {
@@ -530,8 +545,7 @@ public class PriceCalculator {
                 return "";
 
             FDProduct pr = getProduct();
-        	//String plantID=getPlantID();
-            String plantID=ProductInfoUtil.getPickingPlantId(getProductInfo());
+        	String plantID=getPlantID();
             FDKosherInfo ki = pr.getKosherInfo(plantID);
             if (ki.hasKosherSymbol() && ki.getKosherSymbol().display()) {
                 return ki.getKosherSymbol().getCode();
@@ -543,14 +557,18 @@ public class PriceCalculator {
         return "";
     }
 
+	private String getPlantID() {
+		return ContentFactory.getInstance().getCurrentUserContext().getFulfillmentContext().getPlantId();
+	}
+
     public String getKosherType() throws FDResourceException {
         try {
             if (skuModel == null)
                 return "";
 
             FDProduct pr = getProduct();
-        	//String plantID=getPlantID();
-            FDKosherInfo ki = pr.getKosherInfo(ProductInfoUtil.getPickingPlantId(getProductInfo()));
+        	String plantID=getPlantID();
+            FDKosherInfo ki = pr.getKosherInfo(plantID);
             if (ki.hasKosherType() && ki.getKosherType().display()) {
                 return ki.getKosherType().getName();
             } else {
@@ -567,7 +585,7 @@ public class PriceCalculator {
                 return false;
 
             FDProduct pr = getProduct();
-            String plantID=ProductInfoUtil.getPickingPlantId(getProductInfo());
+            String plantID=getPlantID();
             return pr.isKosherProduction(plantID);
         } catch (FDSkuNotFoundException fdsnfe) {
         }
@@ -579,7 +597,7 @@ public class PriceCalculator {
             if (skuModel == null)
                 return 999;
             FDProduct pr = getProduct();
-        	String plantID=ProductInfoUtil.getPickingPlantId(getProductInfo());
+        	String plantID=getPlantID();
             FDKosherInfo ki = pr.getKosherInfo(plantID);
             return ki.getPriority();
         } catch (FDSkuNotFoundException fdsnfe) {
@@ -590,6 +608,8 @@ public class PriceCalculator {
     public SkuModel getSkuModel() {
         return skuModel;
     }
+
+
 
 	public boolean isOnSale() {
 		try {
@@ -795,7 +815,7 @@ public class PriceCalculator {
 																	, FORMAT_QUANTITY.format( matPrice.getScaleLowerBound() )
 																	, matPrice.getScaleUnit().toLowerCase()
 																	, matPrice.getScaleUnit().equals("LB")
-																	, US_CURRENCY_FORMATTER.format(displayPrice )
+																	, currencyFormatter.format(displayPrice )
 																	, matPrice.getPricingUnit().toLowerCase()
 																	, isSaleUnitDiff);
 				}

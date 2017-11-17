@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.AbstractProductItemFilter;
-import com.freshdirect.fdstore.content.FilterCacheStrategy;
-import com.freshdirect.fdstore.content.FilteringProductItem;
-import com.freshdirect.fdstore.content.ProductFilterModel;
-import com.freshdirect.fdstore.content.TagModel;
+import com.freshdirect.storeapi.content.AbstractProductItemFilter;
+import com.freshdirect.storeapi.content.FilterCacheStrategy;
+import com.freshdirect.storeapi.content.FilteringProductItem;
+import com.freshdirect.storeapi.content.ProductFilterModel;
+import com.freshdirect.storeapi.content.TagModel;
 
 public class TagFilter extends AbstractProductItemFilter {
 	

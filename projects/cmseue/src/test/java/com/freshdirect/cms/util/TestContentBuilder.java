@@ -134,7 +134,7 @@ public final class TestContentBuilder {
                     relationship = (Relationship) ContentTypes.Department.categories;
                 }
                 else if (ContentType.Category == parentKey.type) {
-                    relationship = (Relationship) ContentTypes.Category.subcategories;
+                    relationship =(Relationship) ContentTypes.Category.subcategories;
                 }
                 break;
             case Product:
@@ -171,7 +171,6 @@ public final class TestContentBuilder {
         return connectedTo(lastKey);
     }
 
-    @SuppressWarnings("unchecked")
     private void connect(ContentKey childKey, Relationship relationship, ContentKey targetKey) {
         Assert.isTrue(relationship.isNavigable());
 

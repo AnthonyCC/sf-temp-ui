@@ -3,7 +3,7 @@ package com.freshdirect.mobileapi.controller.data;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.storeapi.content.ProductModel;
 
 public class VariationOption {
     /** SAP characteristic value name */

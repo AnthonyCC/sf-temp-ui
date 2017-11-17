@@ -1,12 +1,12 @@
 package com.freshdirect.fdstore.content.browse.filter;
 
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.AbstractProductItemFilter;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.FilterCacheStrategy;
-import com.freshdirect.fdstore.content.FilteringProductItem;
-import com.freshdirect.fdstore.content.PriceCalculator;
-import com.freshdirect.fdstore.content.ProductFilterModel;
+import com.freshdirect.storeapi.content.AbstractProductItemFilter;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.FilterCacheStrategy;
+import com.freshdirect.storeapi.content.FilteringProductItem;
+import com.freshdirect.storeapi.content.PriceCalculator;
+import com.freshdirect.storeapi.content.ProductFilterModel;
 
 public class OnSaleFilter extends AbstractProductItemFilter {
 	public OnSaleFilter(ProductFilterModel model, String parentId) {

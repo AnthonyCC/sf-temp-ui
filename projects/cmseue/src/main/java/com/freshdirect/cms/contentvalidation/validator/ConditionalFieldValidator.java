@@ -16,6 +16,7 @@ import com.freshdirect.cms.core.domain.ContentTypes;
 import com.freshdirect.cms.core.service.ContextualContentProvider;
 import com.freshdirect.cms.validation.ValidationResultLevel;
 import com.freshdirect.cms.validation.ValidationResults;
+import com.freshdirect.cms.validation.validator.Validator;
 
 @Component
 public class ConditionalFieldValidator implements Validator {
@@ -40,8 +41,6 @@ public class ConditionalFieldValidator implements Validator {
                         break;
 
                     case BACK_IN_STOCK:
-                        //$FALL-THROUGH$
-                    case GOING_OUT_OF_STOCK:
                         //$FALL-THROUGH$
                     case NEW:
                         //$FALL-THROUGH$

@@ -2,7 +2,7 @@ package com.freshdirect.webapp.util;
 
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDSalesUnit;
-import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.storeapi.content.ProductModel;
 
 /**
  * A product with configuration and selected sku.

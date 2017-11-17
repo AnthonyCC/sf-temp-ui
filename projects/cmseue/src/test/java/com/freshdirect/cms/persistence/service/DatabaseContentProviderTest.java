@@ -17,7 +17,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -30,12 +29,9 @@ import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.domain.ContentTypes;
-import com.freshdirect.cms.core.domain.Relationship;
-import com.freshdirect.cms.core.domain.RelationshipCardinality;
 import com.freshdirect.cms.core.service.ContentTypeInfoService;
 import com.freshdirect.cms.persistence.entity.AttributeEntity;
 import com.freshdirect.cms.persistence.entity.ContentNodeEntity;
-import com.freshdirect.cms.persistence.entity.RelationshipEntity;
 import com.freshdirect.cms.persistence.entity.converter.AttributeEntityToValueConverter;
 import com.freshdirect.cms.persistence.entity.converter.ContentKeyToContentNodeEntityConverter;
 import com.freshdirect.cms.persistence.entity.converter.ContentNodeEntityToContentKeyConverter;
@@ -47,9 +43,8 @@ import com.freshdirect.cms.persistence.repository.ContentNodeEntityRepository;
 import com.freshdirect.cms.persistence.repository.NavigationTreeRepository;
 import com.freshdirect.cms.persistence.repository.RelationshipEntityRepository;
 import com.freshdirect.cms.util.EntityFactory;
+import com.freshdirect.cms.validation.service.ValidatorService;
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 
 @RunWith(MockitoJUnitRunner.class)
 @Category(UnitTest.class)
@@ -70,8 +65,8 @@ public class DatabaseContentProviderTest {
     @Mock
     private ContentNodeEntityRepository contentNodeEntityRepository;
 
-    @Spy
-    private ContentNodeEntityToContentKeyConverter contentNodeEntityToContentKeyConverter = new ContentNodeEntityToContentKeyConverter();
+    @Mock
+    private ContentNodeEntityToContentKeyConverter contentNodeEntityToContentKeyConverter;
 
     @Mock
     private RelationshipToRelationshipEntityConverter relationshipToRelationshipEntityConverter;
@@ -81,6 +76,9 @@ public class DatabaseContentProviderTest {
 
     @Mock
     private AttributeEntityToValueConverter attributeEntityToValueConverter;
+
+    @Mock
+    private ValidatorService validatorService;
 
     @Mock
     private ContentKeyToContentNodeEntityConverter converter;
@@ -112,9 +110,9 @@ public class DatabaseContentProviderTest {
 
     @Test
     public void testGetContentKeys() {
-        List<ContentNodeEntity> contentNodeEntities = ImmutableList.of(EntityFactory.createContentNode());
+        List<ContentNodeEntity> contentNodeEntities = Arrays.asList(EntityFactory.createContentNode());
         Mockito.when(contentNodeEntityRepository.findAll()).thenReturn(contentNodeEntities);
-        underTest.loadAll();
+        Mockito.when(contentNodeEntityToContentKeyConverter.convert(contentNodeEntities)).thenReturn(Arrays.asList(EntityFactory.createContentKey()));
 
         Set<ContentKey> loadedContentKeys = underTest.getContentKeys();
 
@@ -124,21 +122,21 @@ public class DatabaseContentProviderTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testGetContentKeysByTypeWithNullType() {
+    public void testGetContenKeysByTypeWithNullType() {
         underTest.getContentKeysByType(null);
     }
 
     @Test
     public void testGetContentKeysByType() {
-        Mockito.when(contentNodeEntityRepository.findAll()).thenReturn(
-                ImmutableList.of(new ContentNodeEntity("Product:prd1", "Product"), new ContentNodeEntity("Product:prd2", "Product")));
-        underTest.loadAll();
+        List<ContentNodeEntity> contentNodeEntities = Arrays.asList(EntityFactory.createContentNode());
+        Mockito.when(contentNodeEntityRepository.findByContentType(EntityFactory.CONTENT_TYPE)).thenReturn(contentNodeEntities);
+        Mockito.when(contentNodeEntityToContentKeyConverter.convert(contentNodeEntities)).thenReturn(Arrays.asList(EntityFactory.createContentKey()));
 
         Set<ContentKey> loadedContentKeys = underTest.getContentKeysByType(EntityFactory.CONTENT_TYPE_ENUM);
 
         Assert.assertNotNull(loadedContentKeys);
-        Assert.assertEquals(2, loadedContentKeys.size());
-        Assert.assertEquals(ImmutableSet.of(ContentKeyFactory.get(ContentType.Product, "prd1"), ContentKeyFactory.get(ContentType.Product, "prd2")), loadedContentKeys);
+        Assert.assertEquals(contentNodeEntities.size(), loadedContentKeys.size());
+        Assert.assertEquals(contentNodeEntities.get(0).getContentKey(), loadedContentKeys.iterator().next().toString());
     }
 
     @Test
@@ -161,7 +159,9 @@ public class DatabaseContentProviderTest {
     @Test
     public void testGetAttributeValueWithNotExistingAttribute() {
         Mockito.when(attributeEntityRepository.findByContentKeyAndName(EntityFactory.CONTENT_KEY, EntityFactory.NAME)).thenReturn(null);
+
         Optional<Object> loadedValue = underTest.getAttributeValue(EntityFactory.createContentKey(), EntityFactory.createScalarAttribute());
+
         Assert.assertFalse(loadedValue.isPresent());
     }
 
@@ -271,7 +271,7 @@ public class DatabaseContentProviderTest {
 
     @Test
     public void testCacheEvict() {
-        Mockito.when(navigationTreeRepository.queryChildrenOfContentKey(Mockito.anySetOf(ContentKey.class))).thenReturn(new HashSet<ContentKey>());
+        Mockito.when(navigationTreeRepository.queryChildrenOfContentKey(Mockito.anySet())).thenReturn(new HashSet<ContentKey>());
         underTest.cacheEvict(ContentKeyFactory.get(ContentType.Category, "Testing_Category"));
     }
 
@@ -452,106 +452,5 @@ public class DatabaseContentProviderTest {
         ContentKey product = ContentKeyFactory.get(ContentType.Product, "notExistingProduct");
         ContentKey category = ContentKeyFactory.get(ContentType.Category, "notExisting");
         underTest.getAttributesForContentKeys(Arrays.asList(product, category), null);
-    }
-
-    @Test
-    public void testGetAllAttributesForContentKeysWithCorrectOrdering(){
-        final ContentKey category1 = ContentKeyFactory.get("Category:parent1");
-
-        final RelationshipEntity product1 = EntityFactory.createRelationship(1, 0, "Category:parent1", "Product", "Product:prod1", "children");
-        final RelationshipEntity product2 = EntityFactory.createRelationship(2, 1, "Category:parent1", "Product", "Product:prod2", "children");
-        final RelationshipEntity product3 = EntityFactory.createRelationship(3, 2, "Category:parent1", "Product", "Product:prod3", "children");
-        final RelationshipEntity product4 = EntityFactory.createRelationship(4, 3, "Category:parent1", "Product", "Product:prod4", "children");
-        final RelationshipEntity product5 = EntityFactory.createRelationship(5, 4, "Category:parent1", "Product", "Product:prod5", "children");
-
-        final Relationship relationshipAttribute = new Relationship("children", AttributeFlags.NONE, false, RelationshipCardinality.MANY, true, ContentType.Product);
-
-        Mockito.when(attributeEntityRepository.findByContentKeyIn(Mockito.anyList())).thenReturn(Collections.<AttributeEntity>emptyList());
-        Mockito.when(relationshipEntityRepository.findByRelationshipSourceIn(Mockito.anyList())).thenReturn(new ArrayList<RelationshipEntity>() {{
-            add(product1);
-            add(product2);
-            add(product3);
-            add(product4);
-            add(product5);
-        }});
-
-        Mockito.when(attributeEntityToValueConverter.convert(relationshipAttribute, product1)).thenReturn(ContentKeyFactory.get("Product:prod1"));
-        Mockito.when(attributeEntityToValueConverter.convert(relationshipAttribute, product2)).thenReturn(ContentKeyFactory.get("Product:prod2"));
-        Mockito.when(attributeEntityToValueConverter.convert(relationshipAttribute, product3)).thenReturn(ContentKeyFactory.get("Product:prod3"));
-        Mockito.when(attributeEntityToValueConverter.convert(relationshipAttribute, product4)).thenReturn(ContentKeyFactory.get("Product:prod4"));
-        Mockito.when(attributeEntityToValueConverter.convert(relationshipAttribute, product5)).thenReturn(ContentKeyFactory.get("Product:prod5"));
-        Mockito.when(contentTypeInfoService.findAttributeByName(ContentType.Category, "children")).thenReturn(Optional.of((Attribute) relationshipAttribute));
-
-        Map<ContentKey, Map<Attribute, Object>> result = underTest.getAllAttributesForContentKeys(new HashSet<ContentKey>() {{
-            add(category1);
-        }});
-
-        Map<Attribute, Object> expectedRelationshipTargets = new HashMap<Attribute, Object>();
-        expectedRelationshipTargets.put(relationshipAttribute, new ArrayList<ContentKey>() {{
-            add(ContentKeyFactory.get("Product:prod1"));
-            add(ContentKeyFactory.get("Product:prod2"));
-            add(ContentKeyFactory.get("Product:prod3"));
-            add(ContentKeyFactory.get("Product:prod4"));
-            add(ContentKeyFactory.get("Product:prod5"));
-        }});
-
-        Assert.assertEquals(1, result.size());
-        Assert.assertTrue(result.containsKey(category1));
-        Assert.assertTrue(!result.get(category1).isEmpty());
-        Assert.assertEquals(expectedRelationshipTargets, result.get(category1));
-    }
-
-    /**
-     * Although this test is testing the getAllAttributesForContentKeys method, this is just because that's the public method. The target of this test is the
-     * processFetchedRelationships private method by the means of visiting it.
-     * If this test fails, most possibly the cause is: If the relationship entities are not returned in the correct ordinal,
-     * the processFetchedRelationships method failes to order them correctly.
-     */
-    @Test
-    public void testGetAllAttributesForContentKeysWithNotCorrectOrdering(){
-        final ContentKey category1 = ContentKeyFactory.get("Category:parent1");
-
-        final RelationshipEntity product1 = EntityFactory.createRelationship(1, 0, "Category:parent1", "Product", "Product:prod1", "children");
-        final RelationshipEntity product2 = EntityFactory.createRelationship(2, 1, "Category:parent1", "Product", "Product:prod2", "children");
-        final RelationshipEntity product3 = EntityFactory.createRelationship(3, 2, "Category:parent1", "Product", "Product:prod3", "children");
-        final RelationshipEntity product4 = EntityFactory.createRelationship(4, 3, "Category:parent1", "Product", "Product:prod4", "children");
-        final RelationshipEntity product5 = EntityFactory.createRelationship(5, 4, "Category:parent1", "Product", "Product:prod5", "children");
-
-        final Relationship relationshipAttribute = new Relationship("children", AttributeFlags.NONE, false, RelationshipCardinality.MANY, true, ContentType.Product);
-
-        Mockito.when(attributeEntityRepository.findByContentKeyIn(Mockito.anyList())).thenReturn(Collections.<AttributeEntity>emptyList());
-        Mockito.when(relationshipEntityRepository.findByRelationshipSourceIn(Mockito.anyList())).thenReturn(new ArrayList<RelationshipEntity>() {{
-            add(product5);
-            add(product2);
-            add(product4);
-            add(product3);
-            add(product1);
-        }});
-
-
-        Mockito.when(attributeEntityToValueConverter.convert(relationshipAttribute, product1)).thenReturn(ContentKeyFactory.get("Product:prod1"));
-        Mockito.when(attributeEntityToValueConverter.convert(relationshipAttribute, product2)).thenReturn(ContentKeyFactory.get("Product:prod2"));
-        Mockito.when(attributeEntityToValueConverter.convert(relationshipAttribute, product3)).thenReturn(ContentKeyFactory.get("Product:prod3"));
-        Mockito.when(attributeEntityToValueConverter.convert(relationshipAttribute, product4)).thenReturn(ContentKeyFactory.get("Product:prod4"));
-        Mockito.when(attributeEntityToValueConverter.convert(relationshipAttribute, product5)).thenReturn(ContentKeyFactory.get("Product:prod5"));
-        Mockito.when(contentTypeInfoService.findAttributeByName(ContentType.Category, "children")).thenReturn(Optional.of((Attribute) relationshipAttribute));
-
-        Map<ContentKey, Map<Attribute, Object>> result = underTest.getAllAttributesForContentKeys(new HashSet<ContentKey>() {{
-            add(category1);
-        }});
-
-        Map<Attribute, Object> expectedRelationshipTargets = new HashMap<Attribute, Object>();
-        expectedRelationshipTargets.put(relationshipAttribute, new ArrayList<ContentKey>() {{
-            add(ContentKeyFactory.get("Product:prod1"));
-            add(ContentKeyFactory.get("Product:prod2"));
-            add(ContentKeyFactory.get("Product:prod3"));
-            add(ContentKeyFactory.get("Product:prod4"));
-            add(ContentKeyFactory.get("Product:prod5"));
-        }});
-
-        Assert.assertEquals(1, result.size());
-        Assert.assertTrue(result.containsKey(category1));
-        Assert.assertTrue(!result.get(category1).isEmpty());
-        Assert.assertEquals(expectedRelationshipTargets, result.get(category1)); // the important thing is the order of the products!
     }
 }

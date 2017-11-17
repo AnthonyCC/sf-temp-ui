@@ -1,15 +1,17 @@
 package com.freshdirect.webapp.warmup.web;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.warmup.WarmupService;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.filters.WarmupMonitorFilter;
+import com.freshdirect.webapp.warmup.WarmupService;
 
 public class WarmupServlet extends BaseJsonServlet {
 
@@ -32,7 +34,7 @@ public class WarmupServlet extends BaseJsonServlet {
         WarmupService.defaultService().repeatWarmup();
         try {
             response.sendRedirect(WarmupMonitorFilter.WARMUP_PAGE_PATH);
-        } catch (Exception e) { //Tomcat throws IllegalStateException and not IOException
+        } catch (IOException e) {
             LOGGER.error("Redirect failed to warmup page.", e);
         }
     }

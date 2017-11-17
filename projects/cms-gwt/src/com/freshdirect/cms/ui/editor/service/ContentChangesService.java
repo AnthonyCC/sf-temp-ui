@@ -2,16 +2,13 @@ package com.freshdirect.cms.ui.editor.service;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,19 +20,14 @@ import com.freshdirect.cms.changecontrol.entity.ContentChangeDetailEntity;
 import com.freshdirect.cms.changecontrol.entity.ContentChangeEntity;
 import com.freshdirect.cms.changecontrol.entity.ContentChangeSetEntity;
 import com.freshdirect.cms.changecontrol.service.ContentChangeControlService;
-import com.freshdirect.cms.changecontrol.service.ContentKeyChangeCalculator;
-import com.freshdirect.cms.core.converter.ScalarValueConverter;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.ContentType;
-import com.freshdirect.cms.core.domain.Relationship;
-import com.freshdirect.cms.core.domain.RelationshipCardinality;
 import com.freshdirect.cms.core.domain.Scalar;
 import com.freshdirect.cms.core.service.ContentTypeInfoService;
 import com.freshdirect.cms.draft.domain.DraftChange;
 import com.freshdirect.cms.draft.domain.DraftContext;
-import com.freshdirect.cms.ui.editor.domain.ContentAttributeKey;
 import com.freshdirect.cms.ui.editor.publish.domain.StorePublishMessageSeverity;
 import com.freshdirect.cms.ui.editor.publish.entity.StorePublish;
 import com.freshdirect.cms.ui.editor.publish.entity.StorePublishMessage;
@@ -60,8 +52,6 @@ public class ContentChangesService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ContentChangesService.class);
 
-    private static final String DRAFT_NULL_VALUE_DESCRIPTION = "(removed)";
-
     public static final ChangeSetQuery EMPTY_CHANGESET_QUERY = new ChangeSetQuery();
 
     @Autowired
@@ -81,12 +71,21 @@ public class ContentChangesService {
 
     @Autowired
     private FeedPublishMessageToGwtPublishMessageConverter feedPublishMessageToGwtConverter;
-
+    
     @Autowired
     private ContentTypeInfoService contentTypeInfoService;
 
-    @Autowired
-    private ContentKeyChangeCalculator contentKeyChangeCalculator;
+    /**
+     * Record a {@link GwtChangeSet}.
+     *
+     * @param changeSet
+     *            change set to store (never null)
+     *
+     * @return primary key of stored change set (never null)
+     */
+    public String storeChangeSet(GwtChangeSet changeSet) {
+        throw new UnsupportedOperationException("Feature not implemented yet");
+    }
 
     /**
      * Get change sets affecting a given content object. Note, that the retrieved change sets will only have the {@link ContentNodeChange} records affecting the given content node.
@@ -254,9 +253,6 @@ public class ContentChangesService {
 
             Set<ContentChangeSetEntity> changeSetEntities = prevTimestamp != null ? contentChangeControlService.queryChangeSetEntities(null, null, prevTimestamp, timestamp)
                     : Collections.<ContentChangeSetEntity> emptySet();
-
-            filterForFeedContentChanges(changeSetEntities);
-
             List<GwtChangeSet> result = toGwtChangeSetList(changeSetEntities, query);
 
             LOGGER.info("returning " + result.size() + " changeset" + ", query:" + query);
@@ -350,7 +346,7 @@ public class ContentChangesService {
         return gwtChangeSet;
     }
 
-    public GwtChangeSet toGwtChangeSet(String id, Collection<DraftChange> draftChanges, Map<ContentAttributeKey, Object> shadowedFields, Map<ContentKey, Map<Attribute, Object>> payloadBeforeUpdate, DraftContext draftContext) {
+    public GwtChangeSet toGwtChangeSet(String id, Collection<DraftChange> draftChanges, DraftContext draftContext) {
         String username = null;
         long modifiedDate = 0l;
 
@@ -358,17 +354,7 @@ public class ContentChangesService {
         for (final DraftChange draftChange : draftChanges) {
             username = draftChange.getUserName();
             modifiedDate = draftChange.getCreatedAt();
-
-            final ContentKey key = ContentKeyFactory.get(draftChange.getContentKey());
-            final String attributeName = draftChange.getAttributeName();
-            final ContentAttributeKey attributeKey = new ContentAttributeKey(key, attributeName);
-            final Attribute attributeDef = contentTypeInfoService.findAttributeByName(key.type, attributeName).get();
-
-            final boolean isFieldShadowed = shadowedFields.keySet().contains(attributeKey);
-            final Object oldValue = payloadBeforeUpdate.get(key).get(attributeDef);
-            final String draftValue = draftChange.getValue();
-
-            nodeChanges.add(toGwtNodeChange(key, attributeDef, isFieldShadowed, oldValue, draftValue));
+            nodeChanges.add(toGwtNodeChange(draftChange));
         }
 
         GwtChangeSet gwtChangeSet = new GwtChangeSet(id, username, new Date(modifiedDate), null);
@@ -388,11 +374,10 @@ public class ContentChangesService {
             String label = labelProviderService.labelOfContentKey(contentKey);
             String previewLink = previewLinkService.getLink(contentKey);
 
-            final String changeType = changeEntity.getChangeType().description;
-            gwtNodeChange = new GwtNodeChange(contentKey.type.name(), label, contentKey.toString(), changeType, previewLink);
+            gwtNodeChange = new GwtNodeChange(contentKey.type.name(), label, contentKey.toString(), changeEntity.getChangeType().description, previewLink);
 
             for (ContentChangeDetailEntity detail : changeEntity.getDetails()) {
-                GwtChangeDetail gwtChangeDetail = toGwtChangeDetail(changeType, contentKey.getType(), detail);
+                GwtChangeDetail gwtChangeDetail = toGwtChangeDetail(contentKey.getType(), detail);
                 gwtNodeChange.addDetail(gwtChangeDetail);
             }
         }
@@ -400,103 +385,32 @@ public class ContentChangesService {
         return Optional.fromNullable(gwtNodeChange);
     }
 
-    private GwtNodeChange toGwtNodeChange(ContentKey key, Attribute attributeDef, boolean isFieldShadowed, Object valueBefore, String valueOnDraft) {
-        final String[] describedValues = describeValueChange(key, attributeDef, valueBefore, valueOnDraft);
+    private GwtNodeChange toGwtNodeChange(DraftChange draftChange) {
+        ContentKey key = ContentKeyFactory.get(draftChange.getContentKey());
+        String label = labelProviderService.labelOfContentKey(key);
 
-        GwtNodeChange gwtNodeChange = createGwtNodeChangePrototype(key, isFieldShadowed);
-        String oldValue = calculateLabelAwareChangeValue(key.type, attributeDef, describedValues[0]);
-        String newValue = calculateLabelAwareChangeValue(key.type, attributeDef, describedValues[1]);
-        String mergeValue = calculateLabelAwareChangeValue(key.type, attributeDef, valueOnDraft);
+        GwtNodeChange gwtNodeChange = new GwtNodeChange(key.type.name(), label, key.getEncoded(), null, null);
 
-        gwtNodeChange.addDetail(new GwtChangeDetail(gwtNodeChange.getChangeType(), attributeDef.getName(), oldValue, newValue, mergeValue));
+        gwtNodeChange.addDetail(new GwtChangeDetail(draftChange.getAttributeName(), null, draftChange.getValue()));
 
         return gwtNodeChange;
     }
 
-    private GwtNodeChange createGwtNodeChangePrototype(ContentKey key, boolean isFieldShadowed) {
-        String label = labelProviderService.labelOfContentKey(key);
-        final String draftChangeKind = isFieldShadowed ? "Override" : "Create";
-        return new GwtNodeChange(key.type.name(), label, key.getEncoded(), draftChangeKind, null);
-    }
-
-    private String[] describeValueChange(ContentKey key, Attribute attributeDef, Object valueBefore, String valueOnDraft) {
-        String[] describedValues = null;
-
-        if (valueBefore != null) {
-
-            if (attributeDef instanceof Scalar) {
-                describedValues = new String[] { ScalarValueConverter.serializeToString((Scalar) attributeDef, valueBefore),
-                        valueOnDraft != null ? valueOnDraft : DRAFT_NULL_VALUE_DESCRIPTION };
-            } else if (attributeDef instanceof Relationship) {
-                Relationship relationshipDef = (Relationship) attributeDef;
-
-                if (relationshipDef.getCardinality() == RelationshipCardinality.ONE) {
-                    describedValues = new String[] { ((ContentKey) valueBefore).getEncoded(), valueOnDraft != null ? valueOnDraft : DRAFT_NULL_VALUE_DESCRIPTION };
-                } else {
-                    if (valueOnDraft != null) {
-                        describedValues = contentKeyChangeCalculator.describeContentKeysChange(decodeListOfContentKeys((List<ContentKey>) valueBefore),
-                                decodedListOfContentKeysFromDraftValue(valueOnDraft));
-                    } else {
-                        List<ContentKey> oldKeys = (List<ContentKey>) valueBefore;
-                        describedValues = new String[] { joinWithComma("Deleted: ", oldKeys), DRAFT_NULL_VALUE_DESCRIPTION };
-                    }
-                }
-            }
-        } else {
-            if (attributeDef instanceof Relationship && RelationshipCardinality.MANY == ((Relationship) attributeDef).getCardinality()) {
-                List<String> newKeys = decodedListOfContentKeysFromDraftValue(valueOnDraft);
-                return new String[] { null, joinWithComma("Added: ", newKeys) };
-            } else {
-                describedValues = new String[] {null, valueOnDraft};
-            }
-        }
-
-        return describedValues;
-    }
-
-    private <T> String joinWithComma(String prefix, List<T> values) {
-        StringBuilder newValueBuilder = new StringBuilder(prefix);
-        if (values.isEmpty()) {
-            newValueBuilder.append("(empty list)");
-        } else {
-            newValueBuilder.append(StringUtils.join(values, ", "));
-        }
-        return newValueBuilder.toString();
-    }
-
-    private List<String> decodeListOfContentKeys(List<ContentKey> contentKeys) {
-        List<String> decoded = new ArrayList<String>();
-        for (ContentKey key : contentKeys) {
-            decoded.add(key.toString());
-        }
-        return decoded;
-    }
-
-    private List<String> decodedListOfContentKeysFromDraftValue(String draftValue) {
-        if ("[]".equals(draftValue)) {
-            return Collections.emptyList();
-        }
-        return Arrays.asList(draftValue.split("\\|"));
-    }
-
-    private GwtChangeDetail toGwtChangeDetail(String nodeChangeType, ContentType type, ContentChangeDetailEntity detail) {
-        String changeType = null;
-
-        // if the whole node was added, attributes also must
-        if ("ADD".equalsIgnoreCase(nodeChangeType)) {
-            changeType = "ADD";
-        } else {
-            changeType = detail.getChangeType() != null ? detail.getChangeType().name() : nodeChangeType;
-        }
-
+    private GwtChangeDetail toGwtChangeDetail(ContentType type, ContentChangeDetailEntity detail) {
+        String oldValue = detail.getOldValue();
+        String newValue = detail.getNewValue();
         Attribute attr = contentTypeInfoService.findAttributeByName(type, detail.getAttributeName()).orNull();
-        String oldValue = calculateLabelAwareChangeValue(type, attr, detail.getOldValue());
-        String newValue = calculateLabelAwareChangeValue(type, attr, detail.getNewValue());
-
-        return new GwtChangeDetail(changeType, detail.getAttributeName(), oldValue, newValue);
+        if (attr != null && attr instanceof Scalar && ((Scalar) attr).isEnumerated()) {
+            Map<String, String> labels = labelProviderService.getEnumLabels(type, attr);
+            if (labels != null) {
+                oldValue = enumToString(oldValue, labels);
+                newValue = enumToString(newValue, labels);
+            }
+        }
+        return new GwtChangeDetail(detail.getAttributeName(), oldValue, newValue);
     }
 
-    private final String enumToString(String enumValue, Map<String, String> enumLabels) {
+    private static final String enumToString(String enumValue, Map<String, String> enumLabels) {
         String label = enumLabels.get(enumValue);
         return label != null ? label + " [" + enumValue + "]" : enumValue;
     }
@@ -589,27 +503,6 @@ public class ContentChangesService {
         return filteredMessages.size();
     }
 
-    private void filterForFeedContentChanges(Set<ContentChangeSetEntity> changeSetEntities) {
-        Iterator<ContentChangeSetEntity> contentChangeSetIter = changeSetEntities.iterator();
-        while (contentChangeSetIter.hasNext()) {
-
-            ContentChangeSetEntity changeSetEntity = contentChangeSetIter.next();
-            Iterator<ContentChangeEntity> changeSetIter = changeSetEntity.getChanges().iterator();
-
-            while (changeSetIter.hasNext()) {
-                ContentChangeEntity contentChangeEntity = changeSetIter.next();
-                if (!feedPublishService.isFeedRelatedChange(contentChangeEntity.getContentType().name())) {
-                    changeSetIter.remove();
-                }
-            }
-
-            if (changeSetEntity.getChanges().isEmpty()) {
-                contentChangeSetIter.remove();
-            }
-
-        }
-    }
-
     /**
      * @param query
      * @return publish Id or null meaning latest publish
@@ -617,16 +510,5 @@ public class ContentChangesService {
     public Long parsePublishId(ChangeSetQuery query) {
         Long parshedPublishId = "latest".equals(query.getPublishId()) ? null : Long.parseLong(query.getPublishId(), 10);
         return parshedPublishId;
-    }
-
-    private String calculateLabelAwareChangeValue(ContentType type, Attribute attribute, String value) {
-        String labelAwareValue = value;
-        if (attribute != null && attribute instanceof Scalar && ((Scalar) attribute).isEnumerated()) {
-            Map<String, String> labels = labelProviderService.getEnumLabels(type, attribute);
-            if (labels != null) {
-                labelAwareValue = enumToString(value, labels);
-            }
-        }
-        return labelAwareValue != null ? labelAwareValue.replaceAll("\\|", " | ") : null;
     }
 }

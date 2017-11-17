@@ -10,7 +10,6 @@ import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -19,13 +18,13 @@ import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.jndi.JndiTemplate;
@@ -36,28 +35,20 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import com.freshdirect.cms.changecontrol.controller.ChangePropagatorController;
 import com.freshdirect.cms.changecontrol.service.ContentNodeChangeResultSetExtractor;
-import com.freshdirect.cms.draft.controller.DraftPopulatorController;
-import com.freshdirect.cms.mediaassociation.controller.NotificationReceiverController;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
 @Profile("database")
+@EnableWebMvc
 @EnableCaching
 @EnableAsync
-@EnableJpaRepositories(entityManagerFactoryRef = "cmsEntityManagerFactory", transactionManagerRef = "cmsTransactionManager", basePackages = {
-        "com.freshdirect.cms.persistence.repository",
-        "com.freshdirect.cms.changecontrol.repository", "com.freshdirect.cms.media.repository" })
+@EnableJpaRepositories({ "com.freshdirect.cms.persistence.repository", "com.freshdirect.cms.changecontrol.repository", "com.freshdirect.cms.media.repository" })
 @EnableTransactionManagement(proxyTargetClass = true)
-@ComponentScan(basePackages = {"com.freshdirect.cms"},
-    excludeFilters = {
-    @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = DraftPopulatorController.class),
-    @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = NotificationReceiverController.class),
-    @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = ChangePropagatorController.class)
-})
+@ComponentScan("com.freshdirect.cms")
 public class DatabaseProfileConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseProfileConfiguration.class);
@@ -70,7 +61,7 @@ public class DatabaseProfileConfiguration {
         return new EhCacheCacheManager(ehCacheCacheManager().getObject());
     }
 
-    @Bean(name = "cmsDataSource")
+    @Bean
     @Primary
     public DataSource dataSource(@Value("${spring.datasource.driverClassName}") String driverClassName, @Value("${spring.datasource.url}") String url,
             @Value("${spring.datasource.user}") String user, @Value("${spring.datasource.password}") String password, @Value("${spring.datasource.pool}") String pool,
@@ -136,7 +127,7 @@ public class DatabaseProfileConfiguration {
      *
      * @return entityManagerFactory
      */
-    @Bean(name = "cmsEntityManagerFactory")
+    @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource, Properties jpaProperties) {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
@@ -267,7 +258,7 @@ public class DatabaseProfileConfiguration {
 
     private JndiTemplate jndiTempate(@Value("${jndi.provider.url}") String providerUrl) {
         JndiTemplate template = new JndiTemplate();
-        
+
         Properties environment = new Properties();
 
         environment.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
@@ -285,8 +276,8 @@ public class DatabaseProfileConfiguration {
      *            EntityManagerFactory entityManagerFactory
      * @return transactionManager
      */
-    @Bean(name = "cmsTransactionManager")
-    public PlatformTransactionManager transactionManager(@Qualifier("cmsEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
+    @Bean
+    public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(entityManagerFactory);
         return transactionManager;
@@ -305,8 +296,13 @@ public class DatabaseProfileConfiguration {
         return configurer;
     }
 
-    @Bean(name = "cmsJdbcTemplate")
-    public JdbcTemplate getJdbcTemplate(@Qualifier("cmsDataSource") DataSource dataSource) {
+    @Bean
+    public MappingJackson2HttpMessageConverter converter() {
+        return new MappingJackson2HttpMessageConverter();
+    }
+
+    @Bean
+    public JdbcTemplate getJdbcTemplate(DataSource dataSource) {
         return new JdbcTemplate(dataSource);
     }
 

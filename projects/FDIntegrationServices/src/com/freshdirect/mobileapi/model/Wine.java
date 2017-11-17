@@ -11,8 +11,6 @@ import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.content.DomainValue;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
@@ -21,6 +19,8 @@ import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.mobileapi.util.ProductUtil;
 import com.freshdirect.mobileapi.util.StringUtil;
 import com.freshdirect.smartstore.Variant;
+import com.freshdirect.storeapi.content.DomainValue;
+import com.freshdirect.storeapi.content.ProductModel;
 
 public class Wine extends Product {
     private static final Logger LOG = Logger.getLogger(Wine.class);

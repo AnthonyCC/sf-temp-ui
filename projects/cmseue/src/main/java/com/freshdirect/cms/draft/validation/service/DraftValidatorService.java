@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import com.freshdirect.cms.core.domain.Attribute;
@@ -14,11 +13,10 @@ import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.Relationship;
 import com.freshdirect.cms.core.service.ContentTypeInfoService;
+import com.freshdirect.cms.core.service.ContextualContentProvider;
 import com.freshdirect.cms.draft.domain.Draft;
 import com.freshdirect.cms.draft.domain.DraftChange;
-import com.freshdirect.cms.draft.domain.NullValueBehavior;
-import com.freshdirect.cms.draft.service.DraftApplicatorService;
-import com.freshdirect.cms.draft.service.DraftContentProviderService;
+import com.freshdirect.cms.draft.service.DraftChangeToContentNodeApplicator;
 import com.freshdirect.cms.draft.service.DraftContextHolder;
 import com.freshdirect.cms.draft.service.DraftService;
 import com.freshdirect.cms.validation.ValidationResult;
@@ -27,7 +25,6 @@ import com.freshdirect.cms.validation.ValidationResults;
 import com.freshdirect.cms.validation.exception.ValidationFailedException;
 import com.google.common.base.Optional;
 
-@Profile("database")
 @Service
 public class DraftValidatorService {
 
@@ -38,18 +35,24 @@ public class DraftValidatorService {
     private DraftService draftService;
 
     @Autowired
-    private DraftContentProviderService draftContentProviderService;
+    private ContextualContentProvider draftContentProviderService;
 
     @Autowired
     private ContentTypeInfoService contentTypeInfoService;
 
+    @Autowired
+    private DraftChangeToContentNodeApplicator draftChangeToContentNodeApplicator;
+
     public Map<DraftChange, ValidationResults> validate() {
+
+        Map<DraftChange, ValidationResults> validationResultsByDraftChange = new HashMap<DraftChange, ValidationResults>();
+
         List<DraftChange> draftChanges = draftService.getDraftChanges(draftContextHolder.getDraftContext().getDraftId());
         Map<ContentKey, Map<Attribute, Object>> payloadToValidate = new HashMap<ContentKey, Map<Attribute, Object>>();
 
         for (DraftChange draftChange : draftChanges) {
             ContentKey key = ContentKeyFactory.get(draftChange.getContentKey());
-            payloadToValidate.put(key, draftContentProviderService.getAllAttributesForContentKey(key, NullValueBehavior.INCLUDE_NULLS));
+            payloadToValidate.put(key, draftContentProviderService.getAllAttributesForContentKey(key));
         }
 
         ValidationResults validationResults = new ValidationResults();
@@ -59,7 +62,9 @@ public class DraftValidatorService {
             validationResults.addAll(validationFailedException.getValidationResults());
         }
 
-        return collectValidationResultsForDraftChanges(validationResults, draftChanges);
+        validationResultsByDraftChange = collectValidationResultsForDraftChanges(validationResults, draftChanges);
+
+        return validationResultsByDraftChange;
     }
 
     public Map<DraftChange, ValidationResults> collectValidationResultsForDraftChanges(ValidationResults validationResults, List<DraftChange> draftChanges) {
@@ -76,9 +81,9 @@ public class DraftValidatorService {
                 }
             }
             if (!draftChangeFound) {
-                DraftChange draftChangeThatCausedTheIssue = findDraftChangeThatCausedTheIssue(draftChanges, validationResult.getValidatedObject());
+                DraftChange draftChangeThatCausedTheIssue = findDraftChangeThatCausedTheIssue(draftChanges, (ContentKey) validationResult.getValidatedObject());
 
-                DraftChange virtualDraftChange = createVirtualDraftChange(draftChanges.get(0).getDraft(), validationResult.getValidatedObject(),
+                DraftChange virtualDraftChange = createVirtualDraftChange(draftChanges.get(0).getDraft(), (ContentKey) validationResult.getValidatedObject(),
                         draftChangeThatCausedTheIssue);
 
                 ValidationResults validationResultsForVirtualDraft = new ValidationResults();
@@ -111,8 +116,7 @@ public class DraftValidatorService {
             ContentKey key = ContentKeyFactory.get(draftChange.getContentKey());
             Optional<Attribute> changedAttribute = contentTypeInfoService.findAttributeByName(key.type, draftChange.getAttributeName());
             if (changedAttribute.isPresent() && changedAttribute.get() instanceof Relationship
-                    && draftChange.getValue() != null
-                    && DraftApplicatorService.getContentKeysFromRelationshipValue(draftChange.getValue()).contains(keyInError)) {
+                    && draftChangeToContentNodeApplicator.getContentKeysFromRelationshipValue((Relationship) changedAttribute.get(), draftChange.getValue()).contains(keyInError)) {
                 draftChangeThatCausedTheIssue = new DraftChange();
                 draftChangeThatCausedTheIssue.setAttributeName(draftChange.getAttributeName());
                 draftChangeThatCausedTheIssue.setContentKey(draftChange.getContentKey());

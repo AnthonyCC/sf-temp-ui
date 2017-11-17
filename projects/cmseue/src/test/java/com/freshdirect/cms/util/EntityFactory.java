@@ -104,18 +104,6 @@ public final class EntityFactory {
 
         return relationshipEntity;
     }
-    
-    public static RelationshipEntity createRelationship(int id, Integer ordinal,  String relationshipSource, String contentType, String relationshipDestination, String relationshipName) {
-        RelationshipEntity relationshipEntity = new RelationshipEntity();
-        relationshipEntity.setId(id);
-        relationshipEntity.setOrdinal(ordinal);
-        relationshipEntity.setRelationshipSource(relationshipSource);
-        relationshipEntity.setRelationshipDestination(relationshipDestination);
-        relationshipEntity.setRelationshipDestinationType(contentType);
-        relationshipEntity.setRelationshipName(relationshipName);
-
-        return relationshipEntity;
-    }
 
     public static com.freshdirect.cms.core.domain.Relationship createRelationshipAttribute() {
         com.freshdirect.cms.core.domain.Relationship relationship = new com.freshdirect.cms.core.domain.Relationship(RELATIONSHIP_NAME, ATTRIBUTE_FLAG_NONE,

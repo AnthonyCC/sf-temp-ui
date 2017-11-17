@@ -7,15 +7,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.fdstore.EnumEStoreId;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.Domain;
 import com.freshdirect.mobileapi.controller.data.Image;
 import com.freshdirect.mobileapi.controller.data.Image.ImageSizeType;
 import com.freshdirect.mobileapi.controller.data.ImageBanner;
 import com.freshdirect.mobileapi.controller.data.response.FilterOption;
 import com.freshdirect.mobileapi.model.comparator.FilterOptionLabelComparator;
+import com.freshdirect.storeapi.application.CmsManager;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.Domain;
 
 public class Category extends ProductContainer {
 
@@ -24,21 +24,21 @@ public class Category extends ProductContainer {
     private String id;
 
     private String topText;
-    
+
     private String bottomText;
-    
+
     private String sectionHeader;
-    
+
     private List<Image> images = new ArrayList<Image>();
-    
+
     private boolean healthWarning = false;
-    
+
     private boolean isBottomLevel = false;
-    
+
     private Map<String, Set<FilterOption>> filterOptions = new LinkedHashMap<String, Set<FilterOption>>();
-    
+
     private List<Category> categories = new ArrayList<Category>();
-    
+
     private List<ImageBanner> heroCarousel = new ArrayList<ImageBanner>();
 
     private String pageTitle;
@@ -48,22 +48,22 @@ public class Category extends ProductContainer {
     public static Category wrap(CategoryModel model) {
         return wrapCategory(model, 0);
     }
-    
+
     public static Category wrap(CategoryModel model, long noOfProducts) {
         return wrapCategory(model, noOfProducts);
     }
-    
+
     private static Category wrapCategory(CategoryModel model, long noOfProducts) {
         Category result = new Category();
         result.name = model.getFullName();
         result.id = model.getContentKey().getId();
         result.topText = model.getTopText();
         result.bottomText = model.getBottomText();
-        
+
         List<Image> images = new ArrayList<Image>();
         result.setImages(images);
-        
-        com.freshdirect.fdstore.content.Image smallImage = model.getCategoryPhoto();
+
+        com.freshdirect.storeapi.content.Image smallImage = model.getCategoryPhoto();
         if(smallImage != null) {
         	Image detailImage = new Image();
         	detailImage.setHeight(smallImage.getHeight());
@@ -83,20 +83,20 @@ public class Category extends ProductContainer {
 			wineFilters.add(filterOption);
 		}
         result.filterOptions.put("wine", wineFilters);
-        
+
         // health warning
         final boolean hasAlcohol = model.isHavingBeer();
         result.setHealthWarning(hasAlcohol);
-        
-        List<com.freshdirect.fdstore.content.ImageBanner> heroCarouselList = model.getHeroCarousel();
+
+        List<com.freshdirect.storeapi.content.ImageBanner> heroCarouselList = model.getHeroCarousel();
         List<ImageBanner> heroCarouselImgBannerList = new ArrayList<ImageBanner>();
-       
-        for(com.freshdirect.fdstore.content.ImageBanner heroCarousel: heroCarouselList){
-     	   
+
+        for(com.freshdirect.storeapi.content.ImageBanner heroCarousel: heroCarouselList){
+
  		if (heroCarousel != null) {
- 			
+
  			ImageBanner heroCarouselImgBanner = new ImageBanner();
- 			
+
  			heroCarouselImgBanner.setFlagColor(heroCarousel.getFlagColor());
  			heroCarouselImgBanner.setFlagText(heroCarousel.getFlagText());
  			if (heroCarousel.getImageBannerImage() != null) {
@@ -116,11 +116,11 @@ public class Category extends ProductContainer {
  			}
 
  		}
- 		
+
  		if(heroCarouselImgBannerList!=null && heroCarouselImgBannerList.size()!= 0) {
  		result.setHeroCarousel(heroCarouselImgBannerList);
  		}
- 		
+
         }
 
         if (EnumEStoreId.FDX == CmsManager.getInstance().getEStoreEnum()) {
@@ -141,7 +141,7 @@ public class Category extends ProductContainer {
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public String getTopText() {
         return topText;
     }
@@ -149,7 +149,7 @@ public class Category extends ProductContainer {
     public void setTopText(String topText) {
         this.topText = topText;
     }
-    
+
     public String getBottomText() {
         return bottomText;
     }
@@ -197,11 +197,11 @@ public class Category extends ProductContainer {
     public void setHealthWarning(boolean healthWarning) {
         this.healthWarning = healthWarning;
     }
-    
+
     public boolean isBottomLevel() {
     	return isBottomLevel;
     }
-    
+
     public void setBottomLevel(boolean bottomLevel) {
         this.isBottomLevel = bottomLevel;
     }
@@ -213,7 +213,7 @@ public class Category extends ProductContainer {
 	public void setCategories(List<Category> categories) {
 		this.categories = categories;
 	}
-	
+
 	public void addCategories(Category cat){
 		this.categories.add(cat);
 	}

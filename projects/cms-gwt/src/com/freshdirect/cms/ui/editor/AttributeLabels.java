@@ -448,15 +448,6 @@ public final class AttributeLabels {
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Category, ContentTypes.Category.featuredRecommenderRandomizeProducts), "Randomize Products (only if Source Category is set)");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Category, ContentTypes.Category.featuredRecommenderSiteFeature), "Site Feature (ignored if Source Category is set)");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Category, ContentTypes.Category.featuredRecommenderSourceCategory), "Source Category");
-        ATTRIBUTE_LABELS.put(keyOf(ContentType.Category, VirtualAttributes.Category.consumedByVirtualCategory), "Consumed by Virtual Category");
-        ATTRIBUTE_LABELS.put(keyOf(ContentType.Category, VirtualAttributes.Category.consumedByDepartmentCarousel), "Consumed by Department Carousel");
-        ATTRIBUTE_LABELS.put(keyOf(ContentType.Category, VirtualAttributes.Category.consumedByCategoryCarousel), "Consumed by Category Carousel");
-        ATTRIBUTE_LABELS.put(keyOf(ContentType.Category, VirtualAttributes.Category.consumedByStoreCarousel), "Consumed by Store Carousel");
-        ATTRIBUTE_LABELS.put(keyOf(ContentType.Category, VirtualAttributes.Category.consumedBySection), "Consumed by Section");
-        ATTRIBUTE_LABELS.put(keyOf(ContentType.Category, VirtualAttributes.Category.consumedByImageBanner), "Consumed by Image Banner");
-        ATTRIBUTE_LABELS.put(keyOf(ContentType.Category, VirtualAttributes.Category.consumedByTabletFeaturedCategories), "Consumed by Tablet Featured Catgories");
-        ATTRIBUTE_LABELS.put(keyOf(ContentType.Category, VirtualAttributes.Category.consumedByModule), "Consumed by Module");
-        ATTRIBUTE_LABELS.put(keyOf(ContentType.Category, VirtualAttributes.Category.consumedByBanner), "Consumed by Banner");
 
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Product, ContentTypes.Product.FULL_NAME), "Full Name");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Product, ContentTypes.Product.GLANCE_NAME), "Glance Name");
@@ -500,7 +491,7 @@ public final class AttributeLabels {
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Product, ContentTypes.Product.RATING_PROD_NAME), "Prod Page Rating Name");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Product, ContentTypes.Product.DEFAULT_SUSTAINABILITY_RATING), "Show Default Sustainability Rating");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Product, ContentTypes.Product.EXCLUDED_EBT_PAYMENT), "Exclude for EBT Payment");
-        ATTRIBUTE_LABELS.put(keyOf(ContentType.Product, ContentTypes.Product.HIDE_IPHONE), "Hide from Navigation");
+        ATTRIBUTE_LABELS.put(keyOf(ContentType.Product, ContentTypes.Product.HIDE_IPHONE), "Hide from IPhone");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Product, ContentTypes.Product.WINE_CLASSIFICATION), "Wine Classification Text");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Product, ContentTypes.Product.WINE_IMPORTER), "Wine Importer");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Product, ContentTypes.Product.WINE_ALCH_CONTENT), "Wine Alchohol Content");
@@ -1053,9 +1044,6 @@ public final class AttributeLabels {
             put("MULTI", "Multi-select (additive)");
         }});
         ATTRIBUTE_LABELS.put(keyOf(ContentType.ProductFilterGroup, ContentTypes.ProductFilterGroup.productFilters), "Product Filters");
-        ATTRIBUTE_LABELS.put(keyOf(ContentType.ProductFilterGroup, ContentTypes.ProductFilterGroup.excludeResidentalSearch), "Exclude Residental Search");
-        ATTRIBUTE_LABELS.put(keyOf(ContentType.ProductFilterGroup, ContentTypes.ProductFilterGroup.excludeCorporateSearch), "Exclude Corporate Search");
-        ATTRIBUTE_LABELS.put(keyOf(ContentType.ProductFilterGroup, ContentTypes.ProductFilterGroup.excludeFoodKickSearch), "Exclude FoodKick Search");
 
         ATTRIBUTE_LABELS.put(keyOf(ContentType.ProductFilter, ContentTypes.ProductFilter.name), "Name");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.ProductFilter, ContentTypes.ProductFilter.invert), "Invert");
@@ -1069,7 +1057,6 @@ public final class AttributeLabels {
             put("OR", "OR (Filter Combination)");
             put("ALLERGEN", "Allergen (ERPSy Flag)");
             put("BACK_IN_STOCK", "Back In Stock");
-            put("GOING_OUT_OF_STOCK", "Going Out Of Stock");
             put("BRAND", "Brand");
             put("CLAIM", "Claim (ERPSy Flag)");
             put("CUSTOMER_RATING", "Customer Rating (Range)");
@@ -1108,9 +1095,6 @@ public final class AttributeLabels {
             put("POPUP", "Popup");
         }});
         ATTRIBUTE_LABELS.put(keyOf(ContentType.ProductFilterMultiGroup, ContentTypes.ProductFilterMultiGroup.rootTag), "Root Tag");
-        ATTRIBUTE_LABELS.put(keyOf(ContentType.ProductFilterMultiGroup, ContentTypes.ProductFilterMultiGroup.excludeResidentalSearch), "Exclude Residental Search");
-        ATTRIBUTE_LABELS.put(keyOf(ContentType.ProductFilterMultiGroup, ContentTypes.ProductFilterMultiGroup.excludeCorporateSearch), "Exclude Corporate Search");
-        ATTRIBUTE_LABELS.put(keyOf(ContentType.ProductFilterMultiGroup, ContentTypes.ProductFilterMultiGroup.excludeFoodKickSearch), "Exclude FoodKick Search");
 
         ATTRIBUTE_LABELS.put(keyOf(ContentType.SortOption, ContentTypes.SortOption.label), "Label");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.SortOption, ContentTypes.SortOption.selectedLabel), "Selected Label");
@@ -1133,8 +1117,6 @@ public final class AttributeLabels {
             put("RECENCY", "Recency");
             put("SEARCH_RELEVANCY", "Search Relevancy");
             put("FAVS_FIRST", "Favs First");
-            put("CUSTOMER_POPULARITY", "Customer Popularity");
-            put("STAFF_PICKS_OUR_FAVS", "Staff Picks");
         }});
 
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Banner, ContentTypes.Banner.location), "Location");
@@ -1335,12 +1317,6 @@ public final class AttributeLabels {
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Module, ContentTypes.Module.headerGraphic), "Header Graphic");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Module, ContentTypes.Module.editorialContent), "Editorial Content");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Module, ContentTypes.Module.sourceNode), "Source Node");
-        ATTRIBUTE_LABELS.put(keyOf(ContentType.Module, ContentTypes.Module.randomizeProductOrder), "Randomize Product Order");
-        ATTRIBUTE_LABELS.put(keyOf(ContentType.Module, ContentTypes.Module.productMaxLimit), "Product Maximum Limit");
-        ENUM_LABELS.put(keyOf(ContentType.Module, ContentTypes.Module.productMaxLimit), new HashMap<String, String>() {{
-                put("12", "12");
-                put("20", "20");
-        }});
 
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Image, ContentTypes.Image.height), "Height");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.Image, ContentTypes.Image.width), "Width");
@@ -1360,8 +1336,7 @@ public final class AttributeLabels {
         ATTRIBUTE_LABELS.put(keyOf(ContentType.MediaFolder, ContentTypes.MediaFolder.lastmodified), "Last Modified");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.MediaFolder, ContentTypes.MediaFolder.subFolders), "Sub Folders");
         ATTRIBUTE_LABELS.put(keyOf(ContentType.MediaFolder, ContentTypes.MediaFolder.files), "Files");
-        ATTRIBUTE_LABELS.put(keyOf(ContentType.Section, ContentTypes.Section.minimumProductLimit), "Minimum Product Limit");
-        ATTRIBUTE_LABELS.put(keyOf(ContentType.Section, ContentTypes.Section.maximumProductLimit), "Maximum Product Limit");
+
     }
 }
 

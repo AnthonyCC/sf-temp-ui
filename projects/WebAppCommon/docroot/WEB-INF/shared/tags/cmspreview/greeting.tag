@@ -1,8 +1,8 @@
 <%@ tag body-content="tagdependent" description="Greetings Tag" %>
 
-<%@ tag import="com.freshdirect.fdstore.content.CMSComponentType"%>
-<%@ tag import="com.freshdirect.fdstore.content.CMSSectionModel"%>
-<%@ attribute name="section" type="com.freshdirect.fdstore.content.CMSSectionModel" required="false" %>
+<%@ tag import="com.freshdirect.storeapi.content.CMSComponentType"%>
+<%@ tag import="com.freshdirect.storeapi.content.CMSSectionModel"%>
+<%@ attribute name="section" type="com.freshdirect.storeapi.content.CMSSectionModel" required="false" %>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 <div class="moduleGreeting">
 <%-- <c:forEach var="component" items="${section.components}">

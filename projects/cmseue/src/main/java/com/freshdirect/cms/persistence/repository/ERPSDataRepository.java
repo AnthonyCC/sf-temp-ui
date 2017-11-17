@@ -10,7 +10,6 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
@@ -45,7 +44,7 @@ public class ERPSDataRepository {
 
     private static final String ERP_MATERIAL_LABEL_QUERY = "select m.sap_id, ltrim(m.sap_id, '0') as material_name, m.description, m.upc, msa.UNAVAILABILITY_STATUS, pm.atp_rule, pm.lead_time, upc, alcoholic_content, taxable, pm.kosher_production, pm.platter, pm.blocked_days, DECODE(MP.PROMO_PRICE, 0, MP.PRICE, MP.PROMO_PRICE) AS price, m.version "
             + "from erps.material m, (select sap_id s, max(version) v from erps.material group  by sap_id) t, ERPS.PLANT_MATERIAL pm, erps.material_sales_area msa, erps.materialprice mp "
-            + "where pm.mat_id=m.id and PM.PLANT_ID='%d' and m.sap_id=T.s and m.version=T.v "
+            + "where pm.mat_id=m.id and PM.PLANT_ID='1000' and m.sap_id=T.s and m.version=T.v "
             + "and m.version=mp.version and mp.sap_zone_id = '0000100000' AND mp.scale_quantity<=1 and m.id=MP.MAT_ID "
             + "and msa.MAT_ID=m.id";
 
@@ -69,9 +68,6 @@ public class ERPSDataRepository {
             "and c.sap_id=?";
 
     private JdbcTemplate jdbcTemplate;
-
-    @Value("${erps.default.fd.plantId:1000}")
-    private int plantId = 1000;
 
     @Autowired
     @Qualifier("erpsDataSource")
@@ -120,7 +116,7 @@ public class ERPSDataRepository {
     }
 
     public List<MaterialData> findAllMaterialData() {
-        return jdbcTemplate.query(String.format(ERP_MATERIAL_LABEL_QUERY, plantId), new RowMapper<MaterialData>() {
+        return jdbcTemplate.query(ERP_MATERIAL_LABEL_QUERY, new RowMapper<MaterialData>() {
 
             @Override
             public MaterialData mapRow(ResultSet rs, int rowNum) throws SQLException {

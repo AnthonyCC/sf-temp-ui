@@ -202,6 +202,7 @@ public class TimeslotService {
         timeslotData.setEndDate(slot.getEndDateTime());
         timeslotData.setFull((user.isChefsTable() && !slot.hasAvailCTCapacity()) || (!user.isChefsTable() && !slot.hasNormalAvailCapacity()));
         timeslotData.setCutoffDate(slot.getCutoffDateTime());
+        timeslotData.setCutoffTime(format(slot.getCutoffDateTime()) + " " + dayNames[DateUtil.toCalendar(slot.getCutoffDateTime()).get(Calendar.DAY_OF_WEEK)]);
         timeslotData.setChefsTable(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity());
         timeslotData.setSteeringDiscount(slot.getSteeringDiscount());
         timeslotData.setEcoFriendly(slot.isEcoFriendly());
@@ -293,20 +294,14 @@ public class TimeslotService {
     }
 
     private String format(Date startDate, Date endDate) {
-        return format(DateUtil.toCalendar(startDate), DateUtil.toCalendar(endDate));
-    }
-
-    private String format(Calendar startCal, Calendar endCal) {
-        StringBuffer sb = new StringBuffer();
-
-        formatCal(startCal, sb);
-        sb.append(" - ");
-        formatCal(endCal, sb);
-
+    	StringBuffer sb = new StringBuffer();
+    	sb.append(format(startDate)).append(" - ").append(format(endDate));
         return sb.toString();
     }
 
-    private void formatCal(Calendar cal, StringBuffer sb) {
+    private String format(Date date) {
+    	StringBuffer sb = new StringBuffer();
+    	Calendar cal = DateUtil.toCalendar(date);
         int hour = cal.get(Calendar.HOUR_OF_DAY);
         int minute = cal.get(Calendar.MINUTE);
         int marker = cal.get(Calendar.AM_PM);
@@ -326,6 +321,7 @@ public class TimeslotService {
         } else {
             sb.append("PM");
         }
+        return sb.toString();
     }
 
     public Result getGenericTimeslots(ErpAddressModel address, FDUserI user, TimeslotContext timeSlotContext, boolean isEventLogged)

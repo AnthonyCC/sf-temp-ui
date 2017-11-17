@@ -11,13 +11,10 @@ import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.DayOfWeekSet;
 
 public abstract class ProxyProduct extends AbstractProductModelImpl {
-
-    private static final long serialVersionUID = 8795944143961727280L;
 
     public ProxyProduct(ContentKey key) {
         super(key);
@@ -853,8 +850,4 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 		return getProduct().getAllDomainValues();
 	}
 
-    @Override
-    public boolean isAlcoholProduct() throws FDResourceException, FDSkuNotFoundException {
-        return getProduct().isAlcoholProduct();
-    }
 }

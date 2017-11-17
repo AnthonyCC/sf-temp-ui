@@ -12,10 +12,12 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.BalkingExpiringReference;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ProductModel;
 
 public final class WineFilterRatingIndex extends BalkingExpiringReference<Map<EnumWineRating,Set<ContentKey>>> {
 	private static final Logger LOGGER = LoggerFactory.getInstance(WineFilterRatingIndex.class);

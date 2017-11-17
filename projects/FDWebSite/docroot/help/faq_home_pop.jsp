@@ -3,7 +3,7 @@
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
-<%@ page import='com.freshdirect.fdstore.content.*' %>
+<%@ page import='com.freshdirect.storeapi.content.*' %>
 <%@ page import="com.freshdirect.webapp.util.FDFaqUtil" %>
 <%
 String faqPage = FDFaqUtil.getFaqHomeId();

@@ -814,7 +814,7 @@ public class ContentBulkLoaderService {
                         updatedKeysList.remove(contentKey);
                     }
 
-                    if (ContentNodeComparatorUtil.isValueChanged(originalKeysList, updatedKeysList)) {
+                    if (ContentNodeComparatorUtil.isValueChanged(rrAttribute, originalKeysList, updatedKeysList)) {
                         modifyRelationshipValue(rrNodeKey, rrAttribute, rrNode, updatedKeysList);
                     }
 

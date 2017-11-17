@@ -3,7 +3,7 @@
 Partial that display various answers depending the result
 
 @input criteria @{ling java.lang.String} Search criteria
-@input results @{link com.freshdirect.fdstore.content.SearchResults} The results object
+@input results @{link com.freshdirect.storeapi.content.SearchResults} The results object
 
 --%><%@ page import="org.apache.commons.lang.StringEscapeUtils"
 %><%@ page import="com.freshdirect.framework.util.StringUtil"

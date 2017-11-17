@@ -16,6 +16,7 @@ import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.service.ContextualContentProvider;
 import com.freshdirect.cms.validation.ValidationResultLevel;
 import com.freshdirect.cms.validation.ValidationResults;
+import com.freshdirect.cms.validation.validator.Validator;
 
 /**
  * Ensures that the <code>RATING_GROUP_NAMES</code> attribute has valid value: comma separated list of RG_* attribute names (case insensitive).

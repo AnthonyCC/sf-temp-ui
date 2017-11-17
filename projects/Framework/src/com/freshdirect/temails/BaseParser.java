@@ -1,19 +1,16 @@
 package com.freshdirect.temails;
 
+import org.apache.log4j.Logger;
+
+import com.freshdirect.framework.util.log.LoggerFactory;
+
 import ognl.Ognl;
 import ognl.OgnlContext;
 import ognl.OgnlException;
 
-import org.apache.log4j.Category;
-import org.apache.log4j.Logger;
-
-import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.rules.OgnlCondition;
-import com.freshdirect.rules.RulesRuntimeException;
-
 public class BaseParser implements ParserI {
 
-	private final static Logger LOGGER = LoggerFactory.getInstance(OgnlCondition.class);
+    private final static Logger LOGGER = LoggerFactory.getInstance(BaseParser.class);
 	
 	private String expression;
 	private Object formattedObj;
@@ -55,7 +52,7 @@ public class BaseParser implements ParserI {
 			this.formattedObj = Ognl.parseExpression(expression);
 			return this.formattedObj;
 		} catch (OgnlException e) {
-			throw new RulesRuntimeException(e);
+            throw new RuntimeException(e);
 		}
 	}
 
@@ -71,7 +68,8 @@ public class BaseParser implements ParserI {
         this.order=order; 
 	}
 
-	public boolean validate() {
+	@Override
+    public boolean validate() {
 		try {
 			Ognl.parseExpression(this.expression);
 			return true;

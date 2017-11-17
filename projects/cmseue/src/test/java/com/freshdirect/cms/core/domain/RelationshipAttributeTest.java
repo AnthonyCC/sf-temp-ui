@@ -13,8 +13,11 @@ public class RelationshipAttributeTest {
 
     @Test
     public void testRelationshipWithNullName() {
+
         try {
-            new Relationship(null, AttributeFlags.NONE, true, RelationshipCardinality.ONE, false, new ContentType[] {});
+            @SuppressWarnings("unused")
+            Attribute rship = new Relationship(null, AttributeFlags.NONE, true, RelationshipCardinality.ONE, false, new ContentType[] {});
+
             fail("Creating relationship with null name should blow up the test");
         } catch (IllegalArgumentException exc) {
             assertTrue(exc.getMessage().contains("Missing name"));
@@ -24,13 +27,17 @@ public class RelationshipAttributeTest {
     @Test
     public void testRelationshipWithNullFlags() {
         Attribute scalar = new Relationship("nullFlags", null, true, RelationshipCardinality.ONE, false, new ContentType[] { ContentType.Category });
+
         assertTrue("Flags not specified in construction should fall back to NONE", AttributeFlags.NONE == scalar.getFlags());
     }
 
     @Test
     public void testRelationshipWithoutCardinality() {
+
         try {
-            new Relationship("noCardinality", AttributeFlags.NONE, true, null, false, new ContentType[] {});
+            @SuppressWarnings("unused")
+            Attribute rship = new Relationship("noCardinality", AttributeFlags.NONE, true, null, false, new ContentType[] {});
+
             fail("Creating relationship without cardinality should blow up the test");
         } catch (IllegalArgumentException exc) {
             assertTrue(exc.getMessage().contains("Missing cardinality"));
@@ -39,8 +46,11 @@ public class RelationshipAttributeTest {
 
     @Test
     public void testRelationshipWithoutDestinationTypes() {
+
         try {
-            new Relationship("noDestTypes", AttributeFlags.NONE, true, RelationshipCardinality.ONE, false, (ContentType[]) null);
+            @SuppressWarnings("unused")
+            Attribute rship = new Relationship("noDestTypes", AttributeFlags.NONE, true, RelationshipCardinality.ONE, false, null);
+
             fail("Creating relationship with null destination types should blow up the test");
         } catch (IllegalArgumentException exc) {
             assertTrue(exc.getMessage().contains("Missing destination types"));
@@ -59,4 +69,5 @@ public class RelationshipAttributeTest {
         assertTrue(relationship.getDestinationTypes() != null);
         assertTrue(relationship.getDestinationTypes().length == 1);
     }
+
 }

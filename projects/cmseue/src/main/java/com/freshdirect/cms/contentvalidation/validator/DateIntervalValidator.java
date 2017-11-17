@@ -11,6 +11,7 @@ import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.service.ContextualContentProvider;
 import com.freshdirect.cms.validation.ValidationResultLevel;
 import com.freshdirect.cms.validation.ValidationResults;
+import com.freshdirect.cms.validation.validator.Validator;
 
 @Component
 public class DateIntervalValidator implements Validator {
@@ -31,7 +32,7 @@ public class DateIntervalValidator implements Validator {
             Date endDate = (Date) attributesWithValues.get(getAttributeWithName(attributesWithValues.keySet(), END_DATE_ATTRIBUTE_NAME));
 
             if (startDate.after(endDate)) {
-                validationResults.addValidationResult(contentKey, "Start date is after the end date", ValidationResultLevel.ERROR, DateIntervalValidator.class);
+                validationResults.addValidationResult(contentKey, "Start date is after the end date", ValidationResultLevel.WARNING, DateIntervalValidator.class);
             }
         }
 

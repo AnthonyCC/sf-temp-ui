@@ -5,8 +5,6 @@ import com.freshdirect.storeapi.attributes.FDAttributeFactory;
 
 public class ProductFilterMultiGroupModel extends ContentNodeModelImpl {
 
-    private static final long serialVersionUID = -6292450037967281249L;
-
     public ProductFilterMultiGroupModel(ContentKey key) {
         super(key);
     }
@@ -38,16 +36,4 @@ public class ProductFilterMultiGroupModel extends ContentNodeModelImpl {
 	public String getLevel2AllSelectedLabel() {
 		return (String) getCmsAttributeValue("level2AllSelectedLabel");
 	}
-
-    public boolean isExcludeResidentalSearch() {
-        return getAttribute("excludeResidentalSearch", false);
-    }
-
-    public boolean isExcludeCorporateSearch() {
-        return getAttribute("excludeCorporateSearch", false);
-    }
-
-    public boolean isExcludeFoodKickSearch() {
-        return getAttribute("excludeFoodKickSearch", false);
-    }
 }

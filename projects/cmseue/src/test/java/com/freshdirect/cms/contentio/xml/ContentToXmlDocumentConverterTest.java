@@ -29,13 +29,14 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import com.freshdirect.cms.category.IntegrationTest;
 import com.freshdirect.cms.contentio.xml.ContentToXmlDocumentConverterTest.TestConfig;
-
+import com.freshdirect.cms.core.converter.ScalarValueToSerializedValueConverter;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.domain.ContentTypes;
 import com.freshdirect.cms.core.domain.Relationship;
 import com.freshdirect.cms.core.service.ContentTypeInfoService;
+
 
 @Category(IntegrationTest.class)
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -189,13 +190,18 @@ public class ContentToXmlDocumentConverterTest {
     @Configuration
     static class TestConfig {
         @Bean
-        public ContentToXmlDocumentConverter converter() {
+        public ContentToXmlDocumentConverter coverter() {
             return new ContentToXmlDocumentConverter();
         }
 
         @Bean
         public ContentTypeInfoService typeInfoService() {
             return new ContentTypeInfoService();
+        }
+
+        @Bean
+        public ScalarValueToSerializedValueConverter serializer() {
+            return new ScalarValueToSerializedValueConverter();
         }
     }
 }

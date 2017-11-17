@@ -5,9 +5,9 @@ import java.util.List;
 
 import javax.servlet.jsp.JspException;
 
-import com.freshdirect.fdstore.content.DomainValue;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.webapp.BodyTagSupport;
+import com.freshdirect.storeapi.content.DomainValue;
+import com.freshdirect.storeapi.content.ProductModel;
 
 /**
  * Displays wine region in "country >> region >> city" form

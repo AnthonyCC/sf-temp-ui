@@ -3,8 +3,6 @@ package com.freshdirect.storeapi.content;
 import java.util.Date;
 import java.util.List;
 
-import com.freshdirect.fdstore.FDStoreProperties;
-
 public class CMSPageRequest {
 	private String pageType;
 	private Date requestedDate;
@@ -40,7 +38,7 @@ public class CMSPageRequest {
 	}
 
 	public boolean isPreview() {
-        return preview || FDStoreProperties.getPreviewMode();
+		return preview;
 	}
 
 	public void setPreview(boolean preview) {
@@ -90,11 +88,11 @@ public class CMSPageRequest {
     }
 
     public String getCacheKey() {
-        return asCacheKey(this.getFeedId() != null && this.getFeedId().trim().length() > 0  ?  this.getFeedId() + "_" + getPageType() : getPageType());
+        return asCacheKey(getPageType());
     }
 
     public String getCacheKey(CMSWebPageModel page) {
-        return asCacheKey(page.getId() != null  && page.getId().trim().length() > 0 ?  page.getId() + "_" + page.getType() : page.getType());
+        return asCacheKey(page.getType());
     }
 
     public String asCacheKey(String key) {

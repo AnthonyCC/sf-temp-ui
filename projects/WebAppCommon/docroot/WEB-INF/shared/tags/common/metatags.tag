@@ -1,9 +1,10 @@
 <%@ tag body-content="scriptless" description="SEO Metatag file" %>
 
-<%@ tag import="com.freshdirect.cms.fdstore.FDContentTypes"%>
-<%@ tag import="com.freshdirect.cms.application.CmsManager" %>
-<%@ tag import="com.freshdirect.cms.ContentKey"%>
-<%@ tag import="com.freshdirect.cms.ContentNodeI"%>
+<%@ tag import="com.freshdirect.storeapi.fdstore.FDContentTypes"%>
+<%@ tag import="com.freshdirect.storeapi.application.CmsManager" %>
+<%@ tag import="com.freshdirect.cms.core.domain.ContentKey"%>
+<%@ tag import="com.freshdirect.cms.core.domain.ContentKeyFactory"%>
+<%@ tag import="com.freshdirect.storeapi.ContentNodeI"%>
 
 <%@ attribute name="metaDescription" type="java.lang.String" required="false" %>
 <%@ attribute name="pageId" type="java.lang.String" required="false" %>
@@ -24,7 +25,7 @@
 	<c:set var="metaDescription" value="FreshDirect is the leading online grocery shopping service. We provide fast grocery delivery to your home and office. Order today for delivery tomorrow!"/>
 	<c:if test="${not empty pageId}">
 	<%
-		ContentKey key = ContentKey.getContentKey(FDContentTypes.WEBPAGE, pageId); 
+		ContentKey key = ContentKeyFactory.get(FDContentTypes.WEBPAGE, pageId); 
 		ContentNodeI webPage = CmsManager.getInstance().getContentNode(key);
 		if(webPage != null){ 
 			String metaDescription = (String) webPage.getAttributeValue("SEO_META_DESC");

@@ -1,6 +1,5 @@
 package com.freshdirect.cms.core.service;
 
-import static org.springframework.util.Assert.isTrue;
 import static org.springframework.util.Assert.notNull;
 
 import java.util.ArrayList;
@@ -27,7 +26,6 @@ import com.freshdirect.cms.core.domain.ContentTypes;
 import com.freshdirect.cms.core.domain.ContextualAttributeFetchScope;
 import com.freshdirect.cms.core.domain.Relationship;
 import com.freshdirect.cms.core.domain.RelationshipCardinality;
-import com.freshdirect.cms.core.domain.RootContentKey;
 import com.freshdirect.cms.validation.ValidationResults;
 import com.freshdirect.cms.validation.exception.ValidationFailedException;
 import com.google.common.base.Optional;
@@ -39,6 +37,9 @@ public abstract class ContextualContentProvider {
 
     @Autowired
     protected ContextService contextService;
+
+    @Autowired
+    protected ContentKeyParentsCollectorService contentKeyParentsCollectorService;
 
     @Autowired
     private ValidatorService validatorService;
@@ -323,7 +324,7 @@ public abstract class ContextualContentProvider {
     public void validateContent(Map<ContentKey, Map<Attribute, Object>> payload) throws ValidationFailedException {
 
         MaskedContentProvider modifiedContent = new MaskedContentProvider(this,
-                new NodeCollectionContentProvider(contentTypeInfoService, contextService, payload));
+                new NodeCollectionContentProviderService(contentTypeInfoService, contentKeyParentsCollectorService, contextService, payload));
 
         // collect keys to be validated
         Set<ContentKey> keysToValidate = new HashSet<ContentKey>(payload.keySet());
@@ -341,7 +342,7 @@ public abstract class ContextualContentProvider {
             Map<Attribute, Object> originalAttrMap = getAllAttributesForContentKey(key);
             if (ContentNodeComparatorUtil.isNodeChanged(originalAttrMap, modifiedAttrMap)) {
                 for (Attribute attribute : modifiedAttrMap.keySet()) {
-                    if (ContentNodeComparatorUtil.isValueChanged(originalAttrMap.get(attribute), modifiedAttrMap.get(attribute))) {
+                    if (ContentNodeComparatorUtil.isValueChanged(attribute, originalAttrMap.get(attribute), modifiedAttrMap.get(attribute))) {
                         Map<Attribute, Object> attrs = payload.get(key);
                         if (attrs == null) {
                             attrs = new HashMap<Attribute, Object>();
@@ -351,6 +352,12 @@ public abstract class ContextualContentProvider {
                     }
                 }
             }
+        }
+
+        if (validationResults.hasError()) {
+            // FIXME: this is practically dead code, in case of error a ValidationFailedException was already thrown from inside validate(),
+            // which is not catched at this level, so we will never reach this point
+            throw new ValidationFailedException(validationResults);
         }
     }
 
@@ -401,18 +408,6 @@ public abstract class ContextualContentProvider {
         return childKeys;
     }
 
-    protected Set<ContentKey> collectChildKeysOf(Map<ContentKey, Map<Attribute, Object>> content) {
-        Set<ContentKey> childKeys = new HashSet<ContentKey>();
-
-        for (Map.Entry<ContentKey, Map<Attribute, Object>> entry : content.entrySet()) {
-            final ContentKey contentKey = entry.getKey();
-            final Map<Attribute, Object> originals = entry.getValue();
-
-            childKeys.addAll(getChildKeys(contentKey, originals, false));
-        }
-        return childKeys;
-    }
-
     protected Map<ContentKey, Set<ContentKey>> buildParentIndexFor(final ContentKey contentKey) {
         Set<ContentKey> actualParents = getParentKeys(contentKey);
         Map<ContentKey, Set<ContentKey>> parentIndex = new HashMap<ContentKey, Set<ContentKey>>();
@@ -424,36 +419,5 @@ public abstract class ContextualContentProvider {
         parentIndex.put(contentKey, actualParents);
 
         return parentIndex;
-    }
-
-    public Set<ContentKey> getOrphanKeys() {
-        Set<ContentKey> orphans = new HashSet<ContentKey>();
-        for (ContentKey key : getContentKeys()) {
-            if (!isIgnorableTypeForOrphans(key.type) && !RootContentKey.isRootKey(key) && getParentKeys(key).isEmpty()) {
-                orphans.add(key);
-            }
-        }
-        return orphans;
-    }
-
-    private boolean isIgnorableTypeForOrphans(ContentType type) {
-        return type == ContentType.Image || type == ContentType.Html || type == ContentType.ErpCharacteristic;
-    }
-
-    public ContentKey findSkuKeyForProductKey(ContentKey productKey) {
-        notNull(productKey, "productKey is mandatory parameter");
-        isTrue(productKey.type == ContentType.Product, "Key type must be Product");
-
-        Optional<Object> attributeValue = getAttributeValue(productKey, ContentTypes.Product.skus);
-        List<ContentKey> skuKeys = (List<ContentKey>) attributeValue.or(Collections.emptyList());
-        return skuKeys.isEmpty() ? null : skuKeys.get(0);
-    }
-
-    public ContentKey findProductKeyForSkuKey(ContentKey skuKey) {
-        notNull(skuKey, "skuKey is mandatory parameter");
-        isTrue(skuKey.type == ContentType.Sku, "Key type must be Sku");
-
-        Set<ContentKey> productKeys = getParentKeys(skuKey);
-        return productKeys.isEmpty() ? null : productKeys.iterator().next();
     }
 }

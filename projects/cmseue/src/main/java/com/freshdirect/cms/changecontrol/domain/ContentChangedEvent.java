@@ -27,11 +27,4 @@ public class ContentChangedEvent extends ApplicationEvent {
     public Set<ContentKey> getContentKeys() {
         return contentKeys;
     }
-    
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("ContentChangedEvent [source = ").append(getSource()).append(", draftContext = ").append(getDraftContext()).append(", contentKeys = ").append(getContentKeys()).append("]");
-        return stringBuilder.toString();
-    }
 }

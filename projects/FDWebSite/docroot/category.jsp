@@ -1,25 +1,26 @@
-<%@ page import='com.freshdirect.webapp.util.*'%>
-<%@ page import='com.freshdirect.fdstore.content.*'%>
-<%@ page import='com.freshdirect.fdstore.promotion.*'%>
-<%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
-<%@ page import='com.freshdirect.fdstore.attributes.*'%>
-<%@ page import='java.net.URLEncoder'%>
-<%@ page import="com.freshdirect.fdstore.util.RatingUtil"%>
-<%@ page import="com.freshdirect.fdstore.rollout.*"%>
-<%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
-<%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
-<%@ page import='com.freshdirect.webapp.util.JspMethods'%>
-<%@ taglib uri='template' prefix='tmpl'%>
-<%@ taglib uri='logic' prefix='logic'%>
-<%@ taglib uri='freshdirect' prefix='fd'%>
-<%@ taglib uri='oscache' prefix='oscache'%>
-
+<%@ page import='com.freshdirect.webapp.util.*' 
+%><%@ page import='com.freshdirect.storeapi.content.*'
+%><%@ page import='com.freshdirect.fdstore.promotion.*'
+%><%@ page import='com.freshdirect.webapp.taglib.fdstore.*' 
+%><%@ page import='com.freshdirect.storeapi.attributes.*' 
+%><%@ page import='java.net.URLEncoder'
+%><%@ page import="com.freshdirect.fdstore.util.RatingUtil"
+%><%@ page import="com.freshdirect.fdstore.rollout.*"
+%><%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'
+%><%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'
+%><%@ page import='com.freshdirect.webapp.util.JspMethods'
+%><%@ taglib uri='template' prefix='tmpl'
+%><%@ taglib uri='logic' prefix='logic'
+%><%@ taglib uri='freshdirect' prefix='fd'
+%><%@ taglib uri='oscache' prefix='oscache'
+%>
 <fd:CheckLoginStatus id = "user"/>
 <fd:CheckDraftContextTag/>
 <fd:PDPRedirector user="<%=user %>"/>
 <fd:BrowsePartialRolloutRedirector user="<%=user%>" oldToNewDirection="true" id="${param.catId}"/>
 
 <%
+
 //expanded page dimensions
 final int W_CATEGORY_WITH_LEFT_NAV = 601;
 final int W_CATEGORY_NO_LEFT_NAV = 765;

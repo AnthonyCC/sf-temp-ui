@@ -5,16 +5,16 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.common.pricing.PricingContext;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ContentNodeModelUtil;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.WineUtil;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.smartstore.filter.ContentFilter;
 import com.freshdirect.smartstore.filter.FilterFactory;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.ContentNodeModelUtil;
+import com.freshdirect.storeapi.content.ProductModel;
 
 public class PrioritizedDataAccess implements DataAccess {
 	/**

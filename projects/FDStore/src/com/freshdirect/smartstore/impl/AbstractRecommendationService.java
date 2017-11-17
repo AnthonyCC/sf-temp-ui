@@ -11,10 +11,7 @@ import java.util.Set;
 import org.apache.log4j.Category;
 
 import com.freshdirect.WineUtil;
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ContentNodeModelUtil;
+import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
@@ -23,6 +20,9 @@ import com.freshdirect.smartstore.sampling.ConfiguredImpressionSampler;
 import com.freshdirect.smartstore.sampling.ImpressionSampler;
 import com.freshdirect.smartstore.sampling.ListSampler;
 import com.freshdirect.smartstore.sampling.RankedContent;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.ContentNodeModelUtil;
 
 /**
  * Simple abstract implementation of recommendation service It does nothing but

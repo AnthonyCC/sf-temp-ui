@@ -3,14 +3,14 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
 
-<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.framework.util.*' %>
-<%@ page import='com.freshdirect.fdstore.content.*'%>
+<%@ page import='com.freshdirect.storeapi.content.*'%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
-<%@ page import='com.freshdirect.fdstore.attributes.*' %>
-<%@ page import='com.freshdirect.cms.*'%>
-<%@ page import='com.freshdirect.cms.application.*'%>
+<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.storeapi.*'%>
+<%@ page import='com.freshdirect.storeapi.application.*'%>
 <%@ page import='java.net.URLEncoder'%>
 <%@ page import="java.util.Collection"%>
 

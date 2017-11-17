@@ -5,12 +5,12 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -32,9 +32,12 @@ public class NavigationTreeRepository {
     private static final String PARENTS_OF_KEY = "select PARENT_CONTENTNODE_ID as parent_key from navtree where CHILD_CONTENTNODE_ID = :key";
     private static final String CHILDREN_OF_KEYS = "select CHILD_CONTENTNODE_ID as child_key from navtree where PARENT_CONTENTNODE_ID IN (:keys)";
 
-    @Autowired
-    @Qualifier("cmsJdbcTemplate")
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private void setDataSource(DataSource dataSource) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+    }
 
     public Map<ContentKey, Set<ContentKey>> fetchParentKeysMap() {
 
@@ -116,41 +119,28 @@ public class NavigationTreeRepository {
     }
 
     public Set<ContentKey> queryChildrenOfContentKey(Set<ContentKey> contentKeys) {
-        Iterator<ContentKey> keyIterator = contentKeys.iterator();
-        Set<ContentKey> childKeys = new HashSet<ContentKey>();
+        Set<String> contentKeyParams = new HashSet<String>();
+        for (ContentKey key : contentKeys) {
+            contentKeyParams.add(key.toString());
+        }
+        Map<String, Set<String>> keys = Collections.singletonMap("keys", contentKeyParams);
+        NamedParameterJdbcTemplate namedJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate.getDataSource());
+        return namedJdbcTemplate.query(CHILDREN_OF_KEYS, keys, new ResultSetExtractor<Set<ContentKey>>() {
 
-        // fetch child keys in batches to avoid ORA-01795 error
-        // which occurs when parameter limit is exceeded
-        while (keyIterator.hasNext()) {
-            int batchCounter = 900;
+            @Override
+            public Set<ContentKey> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
+                Set<ContentKey> results = new HashSet<ContentKey>();
 
-            Set<String> contentKeyParams = new HashSet<String>();
-            while (keyIterator.hasNext() && batchCounter >= 0) {
-                contentKeyParams.add(keyIterator.next().toString());
-                batchCounter--;
-            }
-
-            Map<String, Set<String>> keys = Collections.singletonMap("keys", contentKeyParams);
-            NamedParameterJdbcTemplate namedJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate.getDataSource());
-            childKeys.addAll(namedJdbcTemplate.query(CHILDREN_OF_KEYS, keys, new ResultSetExtractor<Set<ContentKey>>() {
-
-                @Override
-                public Set<ContentKey> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
-                    Set<ContentKey> results = new HashSet<ContentKey>();
-
-                    while (resultSet.next()) {
-                        String childKey = resultSet.getString(1);
-                        if (childKey != null) {
-                            results.add(ContentKeyFactory.get(childKey));
-                        }
+                while (resultSet.next()) {
+                    String childKey = resultSet.getString(1);
+                    if (childKey != null) {
+                        results.add(ContentKeyFactory.get(childKey));
                     }
-
-                    return results;
                 }
 
-            }));
-        }
+                return results;
+            }
 
-        return childKeys;
+        });
     }
 }

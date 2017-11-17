@@ -10,7 +10,6 @@ public enum ProductFilterType {
 	OR, 
 	ALLERGEN,
 	BACK_IN_STOCK,
-    GOING_OUT_OF_STOCK,
 	BRAND,
 	CLAIM,
 	CUSTOMER_RATING,

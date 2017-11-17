@@ -1,20 +1,14 @@
 package com.freshdirect.cms.ui.editor.reports.service;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -24,16 +18,8 @@ import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.domain.RootContentKey;
-import com.freshdirect.cms.core.domain.builder.AttributeBuilder;
-import com.freshdirect.cms.core.domain.builder.AttributeBuilderSupport;
-import com.freshdirect.cms.core.service.ContextualContentProvider;
-import com.freshdirect.cms.persistence.service.ERPSDataService;
 import com.freshdirect.cms.ui.editor.ReportAttributes;
-import com.freshdirect.cms.ui.editor.reports.data.HiddenProduct;
-import com.freshdirect.cms.ui.editor.reports.data.HiddenProductByChange;
-import com.freshdirect.cms.ui.editor.reports.data.HiddenProductReason;
 import com.freshdirect.cms.ui.editor.reports.repository.ReportsRepository;
-import com.freshdirect.cms.ui.model.attributes.TableAttribute.ColumnType;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.FluentIterable;
@@ -41,36 +27,10 @@ import com.google.common.collect.FluentIterable;
 @Service
 public class ReportingService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ReportingService.class);
-
-    private static final Attribute PAIR_IT_REPORT_SKU_COLUMN = AttributeBuilderSupport.stringAttribute("NORMAL|SKUCODE").build();
-    private static final Attribute PAIR_IT_REPORT_MATERIAL_COLUMN = AttributeBuilderSupport.stringAttribute("NORMAL|MATERIAL").build();
-
     // direct subfolders of CMSReports
     public static final ContentKey CMS_REPORTS_FOLDER_KEY = ContentKeyFactory.get(ContentType.FDFolder, "flex_1009");
     public static final ContentKey SMARTSTORE_REPORTS_FOLDER_KEY = ContentKeyFactory.get(ContentType.FDFolder, "flex_1010");
     public static final ContentKey CMS_QUERIES_FOLDER_KEY = ContentKeyFactory.get(ContentType.FDFolder, "flex_1008");
-
-    private static final Attribute NODE_KEY_SELECTOR = AttributeBuilder.attribute().name(ColumnType.KEY.name() + "|" + "NODE").type(String.class).build();
-
-    private static final Comparator<Map<Attribute, Object>> DEMOTE_FDFOLDER_NODES = new Comparator<Map<Attribute,Object>>() {
-        @Override
-        public int compare(Map<Attribute, Object> node1, Map<Attribute, Object> node2) {
-            String node1key = (String) node1.get(NODE_KEY_SELECTOR);
-            String node2key = (String) node2.get(NODE_KEY_SELECTOR);
-
-            boolean fdFolderOrNull1 = (node1key == null || "FDFolder".equals(node1key.split(":")[0]));
-            boolean fdFolderOrNull2 = (node2key == null || "FDFolder".equals(node2key.split(":")[0]));
-
-            if (fdFolderOrNull1) {
-                return fdFolderOrNull2 ? 0 : 1;
-            } else if (fdFolderOrNull2) {
-                return -1;
-            }
-
-            return 0;
-        }
-    };
 
     private static final Function<String, ContentKey> MAKE_REPORT_KEY = new Function<String, ContentKey>() {
 
@@ -91,23 +51,21 @@ public class ReportingService {
     // secondary label reports folders
     public static final List<ContentKey> CMS_REPORT_NODE_KEYS = FluentIterable
             .from(Arrays.asList("circularReferences", "hierarchyReport", "invisibleProducts", "multipleReferences", "primaryHomes", "multiHome", "recentChanges",
-                    "recipesSummary", "stackedSkus", "brokenMediaLinks", "hiddenProducts", "recentHiddenProducts", "pairItProducts", "nodesAssociatedWithRecipes"))
+            "recipesSummary", "stackedSkus"))
             .transform(MAKE_REPORT_KEY)
-            .toList();
+            .toImmutableList();
 
     public static final List<ContentKey> SMARTSTORE_REPORT_NODE_KEYS = FluentIterable
             .from(Arrays.asList("scarabRules", "smartCatRecs", "ymalSets"))
             .transform(MAKE_REPORT_KEY)
-            .toList();
+            .toImmutableList();
 
     public static final List<ContentKey> CMS_QUERY_NODE_KEYS = FluentIterable
             .from(Arrays.asList("orphans", "recent", "unreachable"))
             .transform(MAKE_QUERY_KEY)
-            .toList();
+            .toImmutableList();
 
     public static final Set<ContentKey> ALL_REPORTING_KEYS = new HashSet<ContentKey>() {
-        private static final long serialVersionUID = 1671795856320147621L;
-
         {
             this.add(CMS_REPORTS_FOLDER_KEY);
             this.add(SMARTSTORE_REPORTS_FOLDER_KEY);
@@ -121,15 +79,6 @@ public class ReportingService {
 
     @Autowired
     private ReportsRepository repository;
-
-    @Autowired
-    private ContextualContentProvider contentProviderService;
-
-    @Autowired
-    private ERPSDataService erpsDataService;
-
-    @Autowired
-    private HiddenProductsService hiddenProductsService;
 
     public List<ContentKey> reportNodesOfFolder(ContentKey reportFolder) {
 
@@ -163,11 +112,6 @@ public class ReportingService {
         LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "recentChanges"), "Recent changes");
         LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "recipesSummary"), "Recipes summary");
         LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "stackedSkus"), "Stacked Skus");
-        LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "brokenMediaLinks"), "Broken Media Links");
-        LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "hiddenProducts"), "Hidden Products");
-        LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "recentHiddenProducts"), "Recent Hidden Products");
-        LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "pairItProducts"), "Pair-It Products");
-        LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "nodesAssociatedWithRecipes"), "Content Nodes Associated With Recipes");
 
         LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "scarabRules"), "Scarab merchandising rules");
         LABELS.put(ContentKeyFactory.get(ContentType.CmsReport, "smartCatRecs"), "Smart categories");
@@ -253,15 +197,14 @@ public class ReportingService {
         List<ContentKey> keys = null;
 
         if ("orphans".equals(queryKey.id)) {
-            long t = System.currentTimeMillis();
-            keys = new ArrayList<ContentKey>(contentProviderService.getOrphanKeys());
-            LOGGER.info("Querying orphans: Found " + keys.size() + " orphan keys in " + (System.currentTimeMillis() - t) + "ms");
+            keys = repository.fetchOrphanObjects();
         } else if ("recent".equals(queryKey.id)) {
             keys = repository.fetchRecentlyModifiedObjects();
         } else if ("unreachable".equals(queryKey.id)) {
             keys = repository.fetchUnreachableStoreObjects();
         }
         return keys;
+
     }
 
     public void performCmsReport(ContentKey contentKey, Map<Attribute, Object> values) {
@@ -329,157 +272,21 @@ public class ReportingService {
             values.put(ReportAttributes.CmsReport.description, "Shows the active Scarab merchandising rules (include,exclude,promote,demote)");
             values.put(ReportAttributes.CmsReport.results, result);
         } else if ("ymalSets".equals(contentKey.id)) {
-            List<Map<Attribute,Object>> queryResult = repository.fetchYmalSets();
+            List<Map<Attribute,Object>> result = repository.fetchYmalSets();
 
-            values.put(ReportAttributes.CmsReport.name, "All YMAL sets");
+            values.put(ReportAttributes.CmsReport.name, "YMAL sets");
             values.put(ReportAttributes.CmsReport.description, "Smart YMAL sets");
-            values.put(ReportAttributes.CmsReport.results, queryResult);
+            values.put(ReportAttributes.CmsReport.results, result);
         } else if ("smartCatRecs".equals(contentKey.id)) {
-            List<Map<Attribute,Object>> queryResult = repository.fetchSmartCategoryRecommenders();
+            List<Map<Attribute,Object>> result = repository.fetchSmartCategoryRecommenders();
 
-            values.put(ReportAttributes.CmsReport.name, "All Smart categories");
+            values.put(ReportAttributes.CmsReport.name, "Smart categories");
             values.put(ReportAttributes.CmsReport.description, "Smart category recommenders");
-            values.put(ReportAttributes.CmsReport.results, queryResult);
-        } else if ("brokenMediaLinks".equals(contentKey.id)) {
-            List<Map<Attribute, Object>> result = repository.fetchBrokenMediaLinks();
-
-            values.put(ReportAttributes.CmsReport.name, "Broken Media Links");
-            values.put(ReportAttributes.CmsReport.description, "Shows the nodes and fields where an invalid media is linked");
-            values.put(ReportAttributes.CmsReport.results, result);
-        } else if ("hiddenProducts".equals(contentKey.id)) {
-            List<Map<Attribute, Object>> result = fetchHiddenProducts();
-
-            values.put(ReportAttributes.CmsReport.name, "Hidden Products");
-            values.put(ReportAttributes.CmsReport.description, "List of products hidden on storefront");
-            values.put(ReportAttributes.CmsReport.results, result);
-        } else if ("recentHiddenProducts".equals(contentKey.id)) {
-            List<Map<Attribute, Object>> result = fetchRecentlyHiddenProducts();
-
-            values.put(ReportAttributes.CmsReport.name, "Recent Hidden Products");
-            values.put(ReportAttributes.CmsReport.description, "List of products got hidden in the last week");
-            values.put(ReportAttributes.CmsReport.results, result);
-        } else if ("pairItProducts".equals(contentKey.id)) {
-            List<Map<Attribute, Object>> result = fetchPairItProducts();
-
-            values.put(ReportAttributes.CmsReport.name, "Pair-It Products");
-            values.put(ReportAttributes.CmsReport.description, "List of product having 'Pair It' and 'Complete The Meal' fields filled in");
-            values.put(ReportAttributes.CmsReport.results, result);
-        } else if ("nodesAssociatedWithRecipes".equals(contentKey.id)) {
-            List<Map<Attribute, Object>> result = repository.fetchRecipes();
-
-            Collections.sort(result, DEMOTE_FDFOLDER_NODES);
-
-            values.put(ReportAttributes.CmsReport.name, "Nodes associated with Recipes");
-            values.put(ReportAttributes.CmsReport.description, "List of content nodes associated with Recipes");
             values.put(ReportAttributes.CmsReport.results, result);
         } else {
             values.put(ReportAttributes.CmsReport.name, "Unknown report " + contentKey.id);
             values.put(ReportAttributes.CmsReport.description, "");
             values.put(ReportAttributes.CmsReport.results, Collections.emptyList());
         }
-    }
-
-    private List<Map<Attribute, Object>> fetchHiddenProducts() {
-        List<Map<Attribute, Object>> reportPayload = new ArrayList<Map<Attribute,Object>>();
-
-        Attribute storeKeyAttribute = AttributeBuilder.attribute().name(ColumnType.KEY.name() + "|" + "STORE_ID").type(String.class).build();
-        Attribute productKeyAttribute = AttributeBuilder.attribute().name(ColumnType.KEY.name() + "|" + "PRODUCT_ID").type(String.class).build();
-        Attribute primaryHomeAttribute = AttributeBuilder.attribute().name(ColumnType.KEY.name() + "|" + "PRIMARY_HOME").type(String.class).build();
-        Attribute reasonAttribute = AttributeBuilder.attribute().name(ColumnType.NORMAL.name() + "|" + "REASON").type(String.class).build();
-
-        List<HiddenProduct> hiddenProducts = hiddenProductsService.queryHiddenProducts();
-
-        int archivedProducts = 0;
-        for (HiddenProduct hiddenProduct : hiddenProducts) {
-            Map<Attribute, Object> row = new LinkedHashMap<Attribute, Object>();
-
-            if (HiddenProductReason.ARCHIVED != hiddenProduct.getReason()) {
-                row.put(storeKeyAttribute, hiddenProduct.getStoreKey().toString());
-                row.put(productKeyAttribute, hiddenProduct.getProductKey().toString());
-                row.put(primaryHomeAttribute, hiddenProduct.getPrimaryHomeKey().toString());
-                row.put(reasonAttribute, hiddenProduct.getReason().getDescription());
-
-                reportPayload.add(row);
-            } else {
-                archivedProducts++;
-            }
-        }
-
-        LOGGER.debug("Skipped " + archivedProducts + " archived products from the report");
-
-        return reportPayload;
-    }
-
-    private List<Map<Attribute, Object>> fetchRecentlyHiddenProducts() {
-        final DateFormat formatter = new SimpleDateFormat("EEE, MMM d, hh:mm a");
-
-        List<Map<Attribute, Object>> reportPayload = new ArrayList<Map<Attribute,Object>>();
-
-        Attribute changedByAttribute = AttributeBuilder.attribute().name(ColumnType.NORMAL.name() + "|" + "AUTHOR").type(String.class).build();
-        Attribute changeDateAttribute = AttributeBuilder.attribute().name(ColumnType.NORMAL.name() + "|" + "TIME").type(String.class).build();
-        Attribute productKeyAttribute = AttributeBuilder.attribute().name(ColumnType.KEY.name() + "|" + "PRODUCT_ID").type(String.class).build();
-        Attribute primaryHomeAttribute = AttributeBuilder.attribute().name(ColumnType.KEY.name() + "|" + "HOME").type(String.class).build();
-        Attribute reasonAttribute = AttributeBuilder.attribute().name(ColumnType.NORMAL.name() + "|" + "REASON").type(String.class).build();
-        Attribute changeNoteAttribute = AttributeBuilder.attribute().name(ColumnType.NORMAL.name() + "|" + "NOTE").type(String.class).build();
-
-        List<HiddenProductByChange> hiddenProducts = hiddenProductsService.queryHiddenProductsInChanges();
-
-        int archivedProducts = 0;
-        for (HiddenProductByChange hiddenProduct : hiddenProducts) {
-            Map<Attribute, Object> row = new LinkedHashMap<Attribute, Object>();
-
-            if (HiddenProductReason.ARCHIVED != hiddenProduct.getReason()) {
-                row.put(changedByAttribute, hiddenProduct.getAuthor());
-                row.put(changeDateAttribute, formatter.format(hiddenProduct.getChangeDate()));
-
-                row.put(productKeyAttribute, hiddenProduct.getProductKey().toString());
-                row.put(primaryHomeAttribute, hiddenProduct.getPrimaryHomeKey().toString());
-                row.put(reasonAttribute, hiddenProduct.getReason().getDescription());
-                row.put(changeNoteAttribute, hiddenProduct.getChangeNote());
-
-                reportPayload.add(row);
-            } else {
-                archivedProducts++;
-            }
-        }
-
-        LOGGER.debug("Skipped " + archivedProducts + " archived products from the report");
-
-        return reportPayload;
-    }
-
-    private List<Map<Attribute,Object>> fetchPairItProducts() {
-        List<Map<Attribute, Object>> result = repository.fetchPairItAndCompletedByMealProducts();
-
-        // decorate report with SKU and MATERIAL ID columns
-        for (Map<Attribute, Object> reportEntry: result) {
-            ContentKey productKey = null;
-            for (Map.Entry<Attribute, Object> columnEntry: reportEntry.entrySet()) {
-                final String columnName = columnEntry.getKey().getName();
-                if ("KEY|PRODUCT".equals(columnName)) {
-                    productKey = ContentKeyFactory.get((String) columnEntry.getValue());
-                    break;
-                }
-            }
-
-            if (productKey != null) {
-                // associate SKU CODE
-                ContentKey skuKey = contentProviderService.findSkuKeyForProductKey(productKey);
-                reportEntry.put(PAIR_IT_REPORT_SKU_COLUMN, skuKey.id);
-
-                // associate material ID
-                if (skuKey != null) {
-                    String matId = erpsDataService.fetchMaterialsBySku(skuKey);
-                    reportEntry.put(PAIR_IT_REPORT_MATERIAL_COLUMN, matId);
-                } else {
-                    reportEntry.put(PAIR_IT_REPORT_MATERIAL_COLUMN, "");
-                }
-            } else {
-                reportEntry.put(PAIR_IT_REPORT_SKU_COLUMN, "");
-                reportEntry.put(PAIR_IT_REPORT_MATERIAL_COLUMN, "");
-            }
-        }
-
-        return result;
     }
 }

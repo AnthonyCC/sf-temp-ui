@@ -177,8 +177,8 @@ public class ProductMoreInfo {
         kosherType = product.getKosherType();
 
         // from i_product_image.jspf
-        com.freshdirect.fdstore.content.Image detail = product.getImage(ImageType.DETAIL);
-        com.freshdirect.fdstore.content.Image zoom = product.getImage(ImageType.ZOOM);
+        com.freshdirect.storeapi.content.Image detail = product.getImage(ImageType.DETAIL);
+        com.freshdirect.storeapi.content.Image zoom = product.getImage(ImageType.ZOOM);
 
         if (zoom != null && zoom.getPath().indexOf("clear.gif") == -1) {
             productImage = new Image(zoom.getPath(), zoom.getHeight(), zoom.getWidth());

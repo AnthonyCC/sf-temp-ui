@@ -15,13 +15,13 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
+import com.freshdirect.cms.CmsServiceLocator;
+import com.freshdirect.cms.cache.CmsCaches;
+import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.event.ImpressionLogger;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -32,6 +32,7 @@ import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.smartstore.fdstore.VariantSelector;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
+import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.ajax.browse.data.CarouselData;
 import com.freshdirect.webapp.ajax.browse.service.CarouselService;
 import com.freshdirect.webapp.ajax.recommendation.RecommendationRequestObject;
@@ -43,7 +44,6 @@ import com.freshdirect.webapp.taglib.smartstore.Impression;
 import com.freshdirect.webapp.util.FDEventUtil;
 import com.freshdirect.webapp.util.ProductRecommenderUtil;
 import com.freshdirect.webapp.util.RecommendationsCache;
-import com.freshdirect.fdstore.cache.EhCacheUtil;
 public abstract class AbstractCarouselService {
 
     private static final Logger LOGGER = LoggerFactory.getInstance(AbstractCarouselService.class);
@@ -63,21 +63,21 @@ public abstract class AbstractCarouselService {
 
 	/**
 	 * Maximum number of tabs
-	 * 
+	 *
 	 * @return
 	 */
 	protected abstract int getMaxTabs();
 
 	/**
 	 * Maximum number of recommended items to show
-	 * 
+	 *
 	 * @return
 	 */
 	protected abstract int getMaxRecommendations();
 
 	/**
 	 * Name of facility (or sub-site feature name)
-	 * 
+	 *
 	 * @return
 	 */
 	protected abstract String getSmartStoreFacilityName();
@@ -341,6 +341,7 @@ public abstract class AbstractCarouselService {
     }
 
 	// Utility methods
+	// Utility methods
 
 	private Variant getOverriddenVariant(Variant v, FDUserI user) throws FDResourceException {
 		Variant v2 = VariantSelectorFactory.getSelector(v.getSiteFeature()).select(user);
@@ -394,7 +395,7 @@ public abstract class AbstractCarouselService {
     	
     	if (useCache) {
 	    	cacheId = cacheId + user.getPrimaryKey();
-			Boolean cachedValue = EhCacheUtil.getObjectFromCache(EhCacheUtil.RECOMMENDATION_CHECK_CACHE_NAME, cacheId);
+            Boolean cachedValue = CmsServiceLocator.ehCacheUtil().getObjectFromCache(CmsCaches.RECOMMENDATION_CHECK_CACHE_NAME.cacheName, cacheId);
 			if (null != cachedValue) {
 				return cachedValue;
 			}
@@ -406,7 +407,7 @@ public abstract class AbstractCarouselService {
     	
     	boolean hasProduct = recommendations.getAllProducts().size() > 0;
     	if (useCache) {
-    		EhCacheUtil.putObjectToCache(EhCacheUtil.RECOMMENDATION_CHECK_CACHE_NAME, cacheId, new Boolean(hasProduct));
+            CmsServiceLocator.ehCacheUtil().putObjectToCache(CmsCaches.RECOMMENDATION_CHECK_CACHE_NAME.cacheName, cacheId, new Boolean(hasProduct));
     	}
         return hasProduct;
 	}

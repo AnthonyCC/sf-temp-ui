@@ -17,7 +17,6 @@ import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
-import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.framework.util.DayOfWeekSet;
 import com.freshdirect.storeapi.content.BrandModel;
 import com.freshdirect.storeapi.content.CategoryModel;
@@ -63,6 +62,11 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 
 	public void setProductModel(ProductModel productModel) {
 		this.productModel = productModel;
+	}
+
+	@Override
+	public void setParentKey(ContentKey parentKey) {
+	    productModel.setParentKey(parentKey);
 	}
 
 	public boolean isFeatured() {
@@ -1019,11 +1023,6 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 		return productModel.isBackInStock();
 	}
 
-    @Override
-    public boolean isGoingOutOfStock() {
-        return productModel.isGoingOutOfStock();
-    }
-
 	@Override
 	public boolean isCharacteristicsComponentsAvailable(FDConfigurableI config) {
 		return productModel.isCharacteristicsComponentsAvailable(config);
@@ -1501,10 +1500,6 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
     @Override
     public String getEarliestAvailabilityMessage() {
         return productModel.getEarliestAvailabilityMessage();
-    }
 
-    @Override
-    public boolean isAlcoholProduct() throws FDResourceException, FDSkuNotFoundException {
-        return productModel.isAlcoholProduct();
     }
 }

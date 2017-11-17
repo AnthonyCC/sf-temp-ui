@@ -2,23 +2,18 @@
 <weblogic-web-app xmlns="http://xmlns.oracle.com/weblogic/weblogic-web-app" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.oracle.com/weblogic/weblogic-web-app http://xmlns.oracle.com/weblogic/weblogic-web-app/1.3/weblogic-web-app.xsd">
   <weblogic-version>10.3.6</weblogic-version>
   <security-role-assignment>
-    <role-name>cms_editor</role-name>
-    <externally-defined></externally-defined>
-  </security-role-assignment>
-  <security-role-assignment>
-    <role-name>cms_admin</role-name>
-    <externally-defined></externally-defined>
-  </security-role-assignment>
-  <security-role-assignment>
-    <role-name>cms_viewer</role-name>
-    <externally-defined></externally-defined>
+    <role-name>gwt-users</role-name>
+    <externally-defined/>
   </security-role-assignment>
   <context-root>cms-gwt</context-root>
-<!--
-    <wls:library-ref>
-        <wls:library-name>wls-commonslogging-bridge-war</wls:library-name>
-        <wls:specification-version>1.0</wls:specification-version>
-        <wls:exact-match>true</wls:exact-match>
-    </wls:library-ref>
--->
+  <container-descriptor>
+    <prefer-application-packages>
+      <package-name>antlr.*</package-name>
+      <package-name>org.slf4j.*</package-name>
+      <package-name>javax.inject.*</package-name>
+      <package-name>javax.persistence.*</package-name>
+      <package-name>org.hibernate.*</package-name>
+      <package-name>org.springframework.*</package-name>
+    </prefer-application-packages>
+  </container-descriptor>
 </weblogic-web-app>

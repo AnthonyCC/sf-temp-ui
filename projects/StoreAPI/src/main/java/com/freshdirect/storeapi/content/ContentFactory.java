@@ -26,7 +26,6 @@ import com.freshdirect.cms.cache.CmsCaches;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.ContentType;
-import com.freshdirect.cms.draft.domain.DraftContext;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.FDCachedFactory;
@@ -50,8 +49,8 @@ public class ContentFactory {
     private static final long NEW_AND_BACK_REFRESH_PERIOD = 1000 * 60 * 15; // 15 minutes
     private static final long DAY_IN_MILLISECONDS = 1000 * 3600 * 24;
 
-    private long newProductsLastUpdated;
-    private long backInStockProductsLastUpdated;
+    private long newProductsLastUpdated = Long.MIN_VALUE;
+    private long backInStockProductsLastUpdated = Long.MIN_VALUE;
 
     private StoreModel store;
 
@@ -303,10 +302,6 @@ public class ContentFactory {
                 productModel = category.getProductByName(prodName);
             }
         }
-        else if (prodName != null) {
-            productModel = (ProductModel) getContentNode(ContentType.Product, prodName);
-        }
-
         return productModel;
     }
 
@@ -472,7 +467,7 @@ public class ContentFactory {
                             ProductModel p = filterProduct(sku.getContentName());
                             // Origin : [APPDEV-2857] Blocking Alcohol for customers outside of Alcohol Delivery Area
                             if (p != null && ContentUtil.isAvailableByContext(p)) {
-                                Map<String, Date> productNewness = newCache.get(p.getContentKey());
+                                Map<String, Date> productNewness = newCache.get(p);
                                 for (Map.Entry<String, Date> valueEntry : entry.getValue().entrySet()) {
 
                                     Date prev = null;
@@ -603,7 +598,7 @@ public class ContentFactory {
                             ProductModel p = filterProduct(sku.getContentName());
                             // Origin : [APPDEV-2857] Blocking Alcohol for customers outside of Alcohol Delivery Area
                             if (p != null && ContentUtil.isAvailableByContext(p)) {
-                                Map<String, Date> productNewness = newCache.get(p.getContentKey());
+                                Map<String, Date> productNewness = newCache.get(p);
                                 for (Map.Entry<String, Date> valueEntry : entry.getValue().entrySet()) {
 
                                     Date prev = null;
@@ -727,13 +722,13 @@ public class ContentFactory {
         LOGGER.info("WINE INDEX: collecting all wine products...");
         CategoryModel byRegion = (CategoryModel) getContentNodeByKey(ContentKeyFactory.get(ContentType.Category, winePrefix + "_region"));
         if (byRegion != null)
-            newIndex.all.addAll(byRegion.getAllChildFromTwoLevelProductKeys());
+            newIndex.all.addAll(byRegion.getAllChildProductKeys());
         CategoryModel byType = (CategoryModel) getContentNodeByKey(ContentKeyFactory.get(ContentType.Category, winePrefix + "_type"));
         if (byType != null)
-            newIndex.all.addAll(byType.getAllChildFromTwoLevelProductKeys());
+            newIndex.all.addAll(byType.getAllChildProductKeys());
         CategoryModel more = (CategoryModel) getContentNodeByKey(ContentKeyFactory.get(ContentType.Category, winePrefix + "_more"));
         if (more != null)
-            newIndex.all.addAll(more.getAllChildFromTwoLevelProductKeys());
+            newIndex.all.addAll(more.getAllChildProductKeys());
         LOGGER.info("WINE INDEX: collected all " + newIndex.all.size() + " wine products");
 
         Set<DomainValue> regions = new HashSet<DomainValue>(1000);
@@ -769,7 +764,7 @@ public class ContentFactory {
             for (CategoryModel c : byRegion.getSubcategories()) {
                 Set<DomainValue> subDomains = new HashSet<DomainValue>();
                 Map<DomainValue, Integer> counters = new LinkedHashMap<DomainValue, Integer>();
-                for (ContentKey key : c.getAllChildFromTwoLevelProductKeys()) {
+                for (ContentKey key : c.getAllChildProductKeys()) {
                     ProductModel p = (ProductModel) getContentNodeByKey(key);
                     DomainValue country = p.getWineCountry();
                     if (!counters.containsKey(country))
@@ -807,7 +802,7 @@ public class ContentFactory {
             for (CategoryModel c : byType.getSubcategories()) {
                 Set<DomainValue> subDomains = new HashSet<DomainValue>();
                 Map<DomainValue, Integer> counters = new LinkedHashMap<DomainValue, Integer>();
-                for (ContentKey key : c.getAllChildFromTwoLevelProductKeys()) {
+                for (ContentKey key : c.getAllChildProductKeys()) {
                     ProductModel p = (ProductModel) getContentNodeByKey(key);
                     List<DomainValue> types = p.getNewWineType();
                     for (DomainValue type : types) {
@@ -858,7 +853,7 @@ public class ContentFactory {
             newIndex.categoryDomains.put(more.getContentKey(), domainValues);
             for (CategoryModel c : more.getSubcategories()) {
                 Map<DomainValue, Integer> counters = new LinkedHashMap<DomainValue, Integer>();
-                for (ContentKey key : c.getAllChildFromTwoLevelProductKeys()) {
+                for (ContentKey key : c.getAllChildProductKeys()) {
                     ProductModel p = (ProductModel) getContentNodeByKey(key);
                     List<DomainValue> types = p.getNewWineType();
                     for (DomainValue type : types) {
@@ -980,32 +975,38 @@ public class ContentFactory {
 
     public ContentNodeModel getContentNodeFromCache(ContentKey key) {
         ContentNodeModel model = null;
-        ValueWrapper valueWrapper = nodesByKeyCache.get(getNodeCacheKey(key.toString()));
-        if (valueWrapper != null) {
-            model = (ContentNodeModel) valueWrapper.get();
+        if (isAllowToUseContentCache(key.id)) {
+            ValueWrapper valueWrapper = nodesByKeyCache.get(key);
+            if (valueWrapper != null) {
+                model = (ContentNodeModel) valueWrapper.get();
+            }
         }
         return model;
     }
 
     public ContentNodeModel getContentNodeFromCache(String nodeId) {
         ContentNodeModel model = null;
-        ValueWrapper valueWrapper = nodesByIdCache.get(getNodeCacheKey(nodeId));
-        if (valueWrapper != null) {
-            model = (ContentNodeModel) valueWrapper.get();
+        if (isAllowToUseContentCache(nodeId)) {
+            ValueWrapper valueWrapper = nodesByIdCache.get(nodeId);
+            if (valueWrapper != null) {
+                model = (ContentNodeModel) valueWrapper.get();
+            }
         }
         return model;
     }
 
     public void updateContentNodeCaches(String nodeId, ContentNodeModel nodeModel) {
-        if (nodeModel != null) {
-            nodesByIdCache.put(getNodeCacheKey(nodeId), nodeModel);
-            nodesByKeyCache.put(getNodeCacheKey(nodeModel.getContentKey().toString()), nodeModel);
+        if (nodeModel != null && isAllowToUseContentCache()) {
+            nodesByIdCache.put(nodeId, nodeModel);
+            nodesByKeyCache.put(nodeModel.getContentKey(), nodeModel);
         }
     }
 
     public void removeContentNodeCaches(ContentKey key) {
-        nodesByIdCache.evict(getNodeCacheKey(key.id));
-        nodesByKeyCache.evict(getNodeCacheKey(key.toString()));
+        if (isAllowToUseContentCache()) {
+            nodesByIdCache.evict(key.id);
+            nodesByKeyCache.evict(key);
+        }
     }
 
     public void updateContentKeyCache(String skuCode, ContentKey key) {
@@ -1025,19 +1026,18 @@ public class ContentFactory {
     public boolean isAllowToUseContentCache() {
         return CmsServiceLocator.draftContextHolder().getDraftContext().isMainDraft();
     }
-    
+
+    public boolean isAllowToUseContentCache(String nodeId) {
+        boolean isAllowToUseContentCache = isAllowToUseContentCache();
+        if (!isAllowToUseContentCache){
+            isAllowToUseContentCache = !CmsServiceLocator.draftService().isContentKeyChanged(CmsServiceLocator.draftContextHolder().getDraftContext().getDraftId(), nodeId);
+        }
+        return isAllowToUseContentCache;
+    }
+
     public void evictNodesByCaches() {
         store = null;
         nodesByIdCache.clear();
         nodesByKeyCache.clear();
-    }
-
-    private String getNodeCacheKey(String key) {
-        DraftContext draftContext = CmsServiceLocator.draftContextHolder().getDraftContext();
-        if (draftContext.isMainDraft()) {
-            return key;
-        } else {
-            return Long.toString(draftContext.getDraftId()) + '|' + key;
-        }
     }
 }

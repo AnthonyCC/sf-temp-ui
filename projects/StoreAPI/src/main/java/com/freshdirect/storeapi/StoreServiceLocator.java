@@ -1,7 +1,5 @@
 package com.freshdirect.storeapi;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -16,31 +14,10 @@ import com.freshdirect.storeapi.smartstore.CmsRecommenderService;
 @Component
 public class StoreServiceLocator implements ApplicationContextAware {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StoreServiceLocator.class);
-
     private static ApplicationContext applicationContext;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-
-        if (applicationContext != null) {
-            LOGGER.info("== Setting application context ==");
-            LOGGER.info("  app name: " + applicationContext.getApplicationName() );
-            LOGGER.info("  ID: " + applicationContext.getId() );
-            LOGGER.info("  display name: " + applicationContext.getDisplayName() );
-
-            ApplicationContext parentContext = applicationContext.getParent();
-            LOGGER.info("  has parent context? " + Boolean.valueOf(parentContext != null) );
-            if (parentContext != null) {
-                LOGGER.info("  parent app name: " + parentContext.getApplicationName() );
-                LOGGER.info("  parent ID: " + parentContext.getId() );
-                LOGGER.info("  parent display name: " + parentContext.getDisplayName() );
-            }
-            LOGGER.info("== == == == == == == == == ==");
-        } else {
-            LOGGER.error("received null context, expect future crashes!");
-        }
-
         StoreServiceLocator.applicationContext = applicationContext;
     }
 

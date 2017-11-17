@@ -17,7 +17,8 @@ public class GlobalMenuItemModel extends ContentNodeModelImpl {
     }
 
 	public List<GlobalMenuSectionModel> getSubSections() {
-		ContentNodeModelUtil.refreshModels(this, "subSections", subSections, true);
+		ContentNodeModelUtil.refreshModels(this, "subSections", subSections,
+				true, true);
 		return new ArrayList<GlobalMenuSectionModel>(subSections);
 	}
 

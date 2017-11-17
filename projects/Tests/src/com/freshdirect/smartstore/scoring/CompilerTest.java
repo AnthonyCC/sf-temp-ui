@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 
 import com.freshdirect.cms.core.MockContentNodeModel;
 import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.ContentNodeModel;
 import com.freshdirect.smartstore.dsl.ClassCompileException;
 import com.freshdirect.smartstore.dsl.CompileException;
 import com.freshdirect.smartstore.dsl.Expression;

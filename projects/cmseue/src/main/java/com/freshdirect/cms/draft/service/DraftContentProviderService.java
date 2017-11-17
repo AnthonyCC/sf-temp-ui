@@ -1,6 +1,7 @@
 package com.freshdirect.cms.draft.service;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,19 +27,15 @@ import com.freshdirect.cms.changecontrol.domain.ContentUpdateContext;
 import com.freshdirect.cms.changecontrol.entity.ContentChangeSetEntity;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
-import com.freshdirect.cms.core.domain.ContentNodeComparatorUtil;
 import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.domain.Relationship;
-import com.freshdirect.cms.core.domain.RelationshipCardinality;
 import com.freshdirect.cms.core.domain.RootContentKey;
 import com.freshdirect.cms.core.service.ContentProviderService;
+import com.freshdirect.cms.core.service.ContextService;
 import com.freshdirect.cms.core.service.ContextualContentProvider;
-import com.freshdirect.cms.core.service.ParentIndexBuilder;
 import com.freshdirect.cms.draft.domain.DraftChange;
 import com.freshdirect.cms.draft.domain.DraftContext;
-import com.freshdirect.cms.draft.domain.NullValueBehavior;
 import com.google.common.base.Optional;
-import com.google.common.collect.Sets;
 
 @Profile("database")
 @Primary
@@ -50,9 +47,11 @@ public class DraftContentProviderService extends ContextualContentProvider {
     private static final String DRAFT_PARENT_CACHE = "draftParentCache";
     private static final String DRAFT_NODES_CACHE = "draftNodes";
 
-    // This represents the MAIN branch
     @Autowired
     private ContentProviderService contentProviderService;
+
+    @Autowired
+    private ContextService contextService;
 
     @Autowired
     private DraftApplicatorService draftApplicatorService;
@@ -72,112 +71,45 @@ public class DraftContentProviderService extends ContextualContentProvider {
     @Autowired
     private CacheManager cacheManager;
 
-
-    @Override
-    public void initializeContent() {
-        // Nothing to initialize
-    }
-
-    @Override
-    public boolean isReadOnlyContent() {
-        return contentProviderService.isReadOnlyContent();
-    }
-
-    /**
-     *  Performance optimized 'contains' check, same semantics as:
-     *  {@code contentProviderService.containsContentKey(key) || collectKeysCreatedOnDraft(draftId).contains(key) }
-     *  but returns early with the result if found, to avoid having to build up the whole expensive set every time
-     */
     @Override
     public boolean containsContentKey(ContentKey key) {
         Assert.notNull(key, "Content Key is mandatory parameter");
-
-        if (contentProviderService.containsContentKey(key)) {
-            // exists on MAIN branch, return early with the result
-            return true;
-        }
-
+        boolean existsOnMain = contentProviderService.containsContentKey(key);
+        boolean existsOnDraft = false;
         DraftContext currentDraftContext = draftContextHolder.getDraftContext();
         if (!currentDraftContext.isMainDraft()) {
-            Map<ContentKey, Map<Attribute, Object>> draftOverrides = getDraftNodes(currentDraftContext);
-
-            if (draftOverrides.containsKey(key)) {
-                // exists on current DRAFT branch, return early with the result
-                return true;
-            }
-
-            for (Map<Attribute, Object> draftOverride : draftOverrides.values()) {
-                for (Map.Entry<Attribute, Object> entry : draftOverride.entrySet()) {
-                    final Attribute attribute = entry.getKey();
-                    final Object value = entry.getValue();
-
-                    if (value == null) {
-                        continue;
-                    }
-
-                    if (attribute instanceof Relationship) {
-                        if (((Relationship) attribute).getCardinality() == RelationshipCardinality.ONE) {
-                            if (key.equals(value)) {
-                                // indirect child of a node that exists on current DRAFT branch, return with the result
-                                return true;
-                            }
-                        } else {
-                            if (((List<?>) value).contains(key)) {
-                                // indirect child of a node that exists on current DRAFT branch, return with the result
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
+            Set<ContentKey> changedKeysOnDraft = collectKeysCreatedOnDraft(draftContextHolder.getDraftContext().getDraftId());
+            existsOnDraft = changedKeysOnDraft.contains(key);
         }
-        // did not find it
-        return false;
+        return existsOnMain || existsOnDraft;
     }
 
     @Override
     public Map<Attribute, Object> getAllAttributesForContentKey(ContentKey contentKey) {
-        return getAllAttributesForContentKey(contentKey, NullValueBehavior.REMOVE_NULLS);
-    }
-
-    public Map<Attribute, Object> getAllAttributesForContentKey(ContentKey contentKey, NullValueBehavior nullValueBehavor) {
         Assert.notNull(contentKey, "ContentKey parameter can't be null!");
-        DraftContext draftContext = draftContextHolder.getDraftContext();
-        if (draftContext.isMainDraft()) {
-            return contentProviderService.getAllAttributesForContentKey(contentKey);
+        Optional<Map<ContentKey, Map<Attribute, Object>>> nodesOnDraft = getDraftNodesFromCache();
+        if (nodesOnDraft.isPresent() && nodesOnDraft.get().containsKey(contentKey)) {
+            return nodesOnDraft.get().get(contentKey);
         }
-
-        Map<Attribute, Object> resultNode = new HashMap<Attribute, Object>(contentProviderService.getAllAttributesForContentKey(contentKey));
-        Map<Attribute, Object> draftNode = getDraftNodes(draftContext).get(contentKey);
-        if (draftNode != null) {
-            for (Map.Entry<Attribute, Object> draftEntry : draftNode.entrySet()) {
-                final Attribute attributeDef = draftEntry.getKey();
-                if (NullValueBehavior.REMOVE_NULLS == nullValueBehavor && draftEntry.getValue() == null) {
-                    resultNode.remove(attributeDef);
-                } else {
-                    resultNode.put(attributeDef, draftEntry.getValue());
-                }
-            }
+        Map<Attribute, Object> mainNode = contentProviderService.getAllAttributesForContentKey(contentKey);
+        Map<ContentKey, Map<Attribute, Object>> resultNode = new HashMap<ContentKey, Map<Attribute, Object>>();
+        resultNode.put(contentKey, mainNode);
+        if (!draftContextHolder.getDraftContext().isMainDraft()) {
+            List<DraftChange> draftChanges = draftService.getDraftChanges(draftContextHolder.getDraftContext().getDraftId());
+            resultNode.putAll(draftApplicatorService.applyDraftChangesToContentNodes(draftChanges, resultNode));
+            putNodeIntoDraftCache(contentKey, resultNode.get(contentKey));
         }
-        return resultNode;
+        return resultNode.get(contentKey);
     }
 
     @Override
     public Optional<Object> getAttributeValue(ContentKey contentKey, Attribute attribute) {
-        if (draftContextHolder.getDraftContext().isMainDraft()) {
-            return contentProviderService.getAttributeValue(contentKey, attribute);
-        }
-
         Map<Attribute, Object> attributeWithValue = getAttributeValues(contentKey, Arrays.asList(attribute));
         return Optional.fromNullable(attributeWithValue.get(attribute));
     }
 
     @Override
     public Map<Attribute, Object> getAttributeValues(ContentKey contentKey, List<? extends Attribute> attributes) {
-        if (draftContextHolder.getDraftContext().isMainDraft()) {
-            return contentProviderService.getAttributeValues(contentKey, attributes);
-        }
-
         Map<Attribute, Object> nodeWithAllAttributes = getAllAttributesForContentKey(contentKey);
         Map<Attribute, Object> resultAttributes = new HashMap<Attribute, Object>();
         for (Attribute attributeInQuestion : attributes) {
@@ -192,15 +124,22 @@ public class DraftContentProviderService extends ContextualContentProvider {
     public Set<ContentKey> getContentKeys() {
         Set<ContentKey> allKeys = new HashSet<ContentKey>(contentProviderService.getContentKeys());
         if (!draftContextHolder.getDraftContext().equals(DraftContext.MAIN)) {
-            allKeys.addAll(collectKeysChangedOnDraft(draftContextHolder.getDraftContext()));
+            Set<ContentKey> changedKeysOnDraft = collectKeysCreatedOnDraft(draftContextHolder.getDraftContext().getDraftId());
+
+            for (ContentKey key : changedKeysOnDraft) {
+                if (!allKeys.contains(key)) {
+                    allKeys.add(key);
+                }
+            }
         }
-        return allKeys;
+        return Collections.unmodifiableSet(allKeys);
     }
 
     @Override
     public Set<ContentKey> getContentKeysByType(ContentType type) {
+        Set<ContentKey> allKeys = new HashSet<ContentKey>(getContentKeys());
         Set<ContentKey> contentKeysByType = new HashSet<ContentKey>();
-        for (ContentKey key : getContentKeys()) {
+        for (ContentKey key : allKeys) {
             if (key.type == type) {
                 contentKeysByType.add(key);
             }
@@ -209,46 +148,29 @@ public class DraftContentProviderService extends ContextualContentProvider {
     }
 
     @Override
-    public Set<ContentKey> getParentKeys(ContentKey childKey) {
-        DraftContext draftContext = draftContextHolder.getDraftContext();
-        if (draftContext.isMainDraft()) {
-            return contentProviderService.getParentKeys(childKey);
-        }
+    public Set<ContentKey> getParentKeys(ContentKey key) {
+        Set<ContentKey> parents = new HashSet<ContentKey>(contentProviderService.getParentKeys(key));
+        if (draftContextHolder.getDraftContext().isMainDraft()) {
+            return parents;
+        } else {
+            Set<ContentKey> changedKeysOnDraft = collectKeysCreatedOnDraft(draftContextHolder.getDraftContext().getDraftId());
 
-        Set<ContentKey> mainParents = contentProviderService.getParentKeys(childKey);
-        Set<ContentKey> draftParents = getDraftParents(draftContext).get(childKey);
-        if (draftParents == null) {
-            draftParents = Collections.emptySet();
-        }
-        Set<ContentKey> mergedParents = new HashSet<ContentKey>(draftParents);
-
-        for (ContentKey parentKey : mainParents) {
-            Map<Attribute, Object> parentFull = getAllAttributesForContentKey(parentKey);
-            if (isChildOf(parentFull, childKey)) {
-                mergedParents.add(parentKey);
-            }
-        }
-        return mergedParents;
-    }
-
-    @SuppressWarnings("unchecked")
-    private boolean isChildOf(Map<Attribute, Object> parentNode, ContentKey childKey) {
-        for (Map.Entry<Attribute, Object> entry : parentNode.entrySet()) {
-            Attribute attribute = entry.getKey();
-            Object value = entry.getValue();
-            if (value != null && attribute instanceof Relationship && ((Relationship) attribute).isNavigable()) {
-                if (RelationshipCardinality.ONE == ((Relationship) attribute).getCardinality()) {
-                    if (((ContentKey) value).equals(childKey)) {
-                        return true;
-                    }
-                } else {
-                    if (((List<ContentKey>) value).contains(childKey)) {
-                        return true;
-                    }
+            for (ContentKey changedKeyOnDraft : changedKeysOnDraft) {
+                Set<ContentKey> childrenOfKey = getChildKeys(changedKeyOnDraft, true);
+                // parent on main, but not a parent on draft
+                if (parents.contains(changedKeyOnDraft) && !childrenOfKey.contains(key)) {
+                    parents.remove(changedKeyOnDraft);
+                } else if (childrenOfKey.contains(key)) { // not a parent on main, but parent on draft
+                    parents.add(changedKeyOnDraft);
                 }
             }
         }
-        return false;
+        return parents;
+    }
+
+    @Override
+    public void initializeContent() {
+        // Nothing to initialize
     }
 
     @Override
@@ -260,50 +182,115 @@ public class DraftContentProviderService extends ContextualContentProvider {
         Assert.isTrue(storeKey == null || ContentType.Store == storeKey.type, "Bad store key type");
 
         final Set<ContentKey> rootKeySet = RootContentKey.selectRootContentKeys(storeKey);
+
+        boolean orphan = true;
+
         if (rootKeySet.contains(contentKey)) {
-            return false;
+            orphan = false;
+        } else {
+            Map<ContentKey, Set<ContentKey>> parents = buildParentIndexFor(contentKey);
+            List<List<ContentKey>> allContextsOf = findContextsOf(contentKey);
+            Set<ContentKey> topKeys = contextService.selectTopKeysOf(contentKey, allContextsOf);
+
+            topKeys.retainAll(rootKeySet);
+            orphan = topKeys.isEmpty();
         }
 
-        Set<ContentKey> topKeys = contextService.selectTopKeysOf(contentKey, findContextsOf(contentKey));
-        topKeys.retainAll(rootKeySet);
-        return topKeys.isEmpty();
+        return orphan;
+    }
+
+    @Override
+    public List<List<ContentKey>> findContextsOf(final ContentKey contentKey) {
+        if (draftContextHolder.getDraftContext().isMainDraft()) {
+            return contentProviderService.findContextsOf(contentKey);
+        }
+        Map<ContentKey, Set<ContentKey>> parents = buildParentIndexFor(contentKey);
+        return contextService.findContextsOf(contentKey, parents);
+    }
+
+    @Override
+    public boolean isReadOnlyContent() {
+        return contentProviderService.isReadOnlyContent();
     }
 
     @Override
     public Optional<ContentChangeSetEntity> updateContent(LinkedHashMap<ContentKey, Map<Attribute, Object>> payload, ContentUpdateContext context) {
         Optional<ContentChangeSetEntity> updateResult = Optional.absent();
-        DraftContext draftContext = draftContextHolder.getDraftContext();
 
-        if (draftContext.isMainDraft()) {
+        if (draftContextHolder.getDraftContext().isMainDraft()) {
             updateResult = contentProviderService.updateContent(payload, context);
-            sendContentChangedNotification(draftContext, payload.keySet());
+            cacheManager.getCache(DRAFT_NODES_CACHE).clear();
+            cacheManager.getCache(DRAFT_PARENT_CACHE).clear();
         } else {
-            if (ContentNodeComparatorUtil.isChanged(payload, collectOriginalNodes(payload))) {
-                // Note: validate changes the payload, so we have to recalculate anything dependent on it!
+            Map<ContentKey, Map<Attribute, Object>> originalNodes = collectOriginalNodes(payload);
+            List<DraftChange> draftChanges = draftChangeExtractorService.extractChangesFromRequest(payload, originalNodes, draftContextHolder.getDraftContext(),
+                    context.getAuthor());
+            if (!draftChanges.isEmpty()) {
                 validateContent(payload);
 
-                Map<ContentKey, Map<Attribute, Object>> originalNodes = collectOriginalNodes(payload);
-                Set<ContentKey> originalChildKeys = collectChildKeysOf(originalNodes);
-
-                invalidateDraftCaches(draftContext);
-                draftService.saveDraftChange(draftContext, draftChangeExtractorService.extractChangesFromRequest(payload, originalNodes, draftContext, context.getAuthor()));
-                sendContentChangedNotification(draftContext, Sets.union(payload.keySet(), originalChildKeys));
+                originalNodes = collectOriginalNodes(payload);
+                draftChanges = draftChangeExtractorService.extractChangesFromRequest(payload, originalNodes, draftContextHolder.getDraftContext(), context.getAuthor());
+                invalidateDraftNodesCacheEntry(draftContextHolder.getDraftContext());
+                draftService.saveDraftChange(draftChanges);
+                updateDraftParentCacheForKeys(payload.keySet());
             }
         }
+
+        try {
+            eventPublisher.publishEvent(new ContentChangedEvent(this, draftContextHolder.getDraftContext(), payload.keySet()));
+        } catch (Exception e) {
+            LOGGER.error("Failed to notify preview about draft change", e);
+        }
+
         return updateResult;
     }
 
-    private void sendContentChangedNotification(DraftContext draftContext, Set<ContentKey> contentKeys) {
-        try {
-            eventPublisher.publishEvent(new ContentChangedEvent(this, draftContext, contentKeys));
-        } catch (Exception e) {
-            LOGGER.error("Failed to notify preview about cms change", e);
+    public void updateDraftParentCacheForKeys(Set<ContentKey> contentKeys) {
+        Set<ContentKey> effectedKeys = collectKeysForCacheInvalidation(contentKeys, Collections.<ContentKey>emptySet());
+        invalidateDraftParentCacheForKeysOnDraft(effectedKeys);
+        for (ContentKey contentKey : effectedKeys) {
+            buildParentIndexFor(contentKey);
         }
     }
 
-    public void invalidateDraftCaches(DraftContext draftContext) {
-        cacheManager.getCache(DRAFT_NODES_CACHE).evict(draftContext);
-        cacheManager.getCache(DRAFT_PARENT_CACHE).evict(draftContext);
+    public void invalidateDraftNodesCacheEntry(DraftContext draftContext) {
+        Cache draftNodesCache = cacheManager.getCache(DRAFT_NODES_CACHE);
+        ValueWrapper nodesOfDraftContext = draftNodesCache.get(draftContext);
+        if (nodesOfDraftContext != null) {
+            draftNodesCache.evict(draftContextHolder.getDraftContext());
+        }
+    }
+
+    private void invalidateDraftParentCacheForKeysOnDraft(Set<ContentKey> contentKeys) {
+        Cache draftParentCache = cacheManager.getCache(DRAFT_PARENT_CACHE);
+        for (ContentKey contentKey : contentKeys) {
+            draftParentCache.evict(contentKey.toString() + draftContextHolder.getDraftContext().getDraftName());
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected Map<ContentKey, Set<ContentKey>> buildParentIndexFor(final ContentKey contentKey) {
+        Cache draftParentCache = cacheManager.getCache(DRAFT_PARENT_CACHE);
+        final String cacheKey = contentKey.toString() + draftContextHolder.getDraftContext().getDraftName();
+        ValueWrapper valueWrapper = draftParentCache.get(cacheKey);
+        if (valueWrapper != null) {
+            return (Map<ContentKey, Set<ContentKey>>) valueWrapper.get();
+        } else {
+            Set<ContentKey> actualParents = getParentKeys(contentKey);
+            Map<ContentKey, Set<ContentKey>> parentIndex = new HashMap<ContentKey, Set<ContentKey>>();
+            if (!actualParents.isEmpty()) {
+                for (ContentKey parent : actualParents) {
+                    parentIndex.putAll(buildParentIndexFor(parent));
+                }
+            }
+            parentIndex.put(contentKey, actualParents);
+
+            // cache parent index
+            draftParentCache.put(cacheKey, parentIndex);
+
+            return parentIndex;
+        }
     }
 
     private Map<ContentKey, Map<Attribute, Object>> collectOriginalNodes(Map<ContentKey, Map<Attribute, Object>> payload) {
@@ -315,31 +302,77 @@ public class DraftContentProviderService extends ContextualContentProvider {
         return originalNodes;
     }
 
-    @SuppressWarnings("unchecked")
-    private Map<ContentKey, Map<Attribute, Object>> getDraftNodes(final DraftContext draftContext) {
+    private Optional<Map<ContentKey, Map<Attribute, Object>>> getDraftNodesFromCache() {
         Cache draftNodesCache = cacheManager.getCache(DRAFT_NODES_CACHE);
-        ValueWrapper cacheValue = draftNodesCache.get(draftContext);
-        if (cacheValue != null) {
-            return (Map<ContentKey, Map<Attribute, Object>>) cacheValue.get();
+        ValueWrapper nodesOfDraftContext = draftNodesCache.get(draftContextHolder.getDraftContext());
+        if (nodesOfDraftContext != null) {
+            return Optional.fromNullable((Map<ContentKey, Map<Attribute, Object>>) nodesOfDraftContext.get());
         }
-
-        List<DraftChange> draftChanges = draftService.getDraftChanges(draftContext.getDraftId());
-        Map<ContentKey, Map<Attribute, Object>> draftOverrides = draftApplicatorService.convertDraftChanges(draftChanges);
-        draftNodesCache.put(draftContext, draftOverrides);
-        return draftOverrides;
+        return Optional.absent();
     }
 
-    @SuppressWarnings("unchecked")
-    private Map<ContentKey, Set<ContentKey>> getDraftParents(final DraftContext draftContext) {
-        Cache draftParentCache = cacheManager.getCache(DRAFT_PARENT_CACHE);
-        ValueWrapper cacheValue = draftParentCache.get(draftContext);
-        if (cacheValue != null) {
-            return (Map<ContentKey, Set<ContentKey>>) cacheValue.get();
+    private void putNodeIntoDraftCache(final ContentKey contentKey, final Map<Attribute, Object> nodeAttributes) {
+        Cache draftNodesCache = cacheManager.getCache(DRAFT_NODES_CACHE);
+        ValueWrapper nodesOfDraftContext = draftNodesCache.get(draftContextHolder.getDraftContext());
+        if (nodesOfDraftContext == null) {
+            draftNodesCache.put(draftContextHolder.getDraftContext(), new HashMap<ContentKey, Map<Attribute, Object>>() {
+
+                {
+                    put(contentKey, nodeAttributes);
+                }
+            });
+        } else {
+            Map<ContentKey, Map<Attribute, Object>> cachedNodesOnDraft = (Map<ContentKey, Map<Attribute, Object>>) nodesOfDraftContext.get();
+            cachedNodesOnDraft.put(contentKey, nodeAttributes);
+        }
+    }
+
+
+
+    private Set<ContentKey> collectKeysForCacheInvalidation(Set<ContentKey> contentKeys, Collection<ContentKey> additionalKeys) {
+        Set<ContentKey> keysToUpdate = new HashSet<ContentKey>();
+        keysToUpdate.addAll(contentKeys);
+
+        // extend scope with child keys recursively
+        collectReachableKeys(contentKeys, keysToUpdate);
+
+        // include additional keys if available
+        if (additionalKeys != null) {
+            keysToUpdate.addAll(additionalKeys);
         }
 
-        Map<ContentKey, Set<ContentKey>> draftParents = ParentIndexBuilder.createParentKeysMap(getDraftNodes(draftContext));
-        draftParentCache.put(draftContext, draftParents);
-        return draftParents;
+        return keysToUpdate;
+    }
+
+    /**
+     * Collect child keys of content nodes referenced by content keys
+     *
+     * @param contentKeys
+     * @return
+     */
+    private Set<ContentKey> collectChildKeysOf(Collection<ContentKey> contentKeys, boolean navigable) {
+        Set<ContentKey> result = new HashSet<ContentKey>();
+
+        for (ContentKey contentKey : contentKeys) {
+            Set<ContentKey> childKeys = getChildKeys(contentKey, navigable);
+            result.addAll(childKeys);
+        }
+
+        return result;
+    }
+
+    /**
+     * Collect child keys recursively into the reachableKeys parameter.
+     *
+     * @param rootKeys
+     * @param reachableKeys
+     */
+    private void collectReachableKeys(Collection<ContentKey> rootKeys, Set<ContentKey> reachableKeys) {
+        Set<ContentKey> childKeys = collectChildKeysOf(rootKeys, true);
+        if (childKeys != null && !childKeys.isEmpty()) {
+            reachableKeys.addAll(childKeys);
+            collectReachableKeys(childKeys, reachableKeys);
+        }
     }
 
     /**
@@ -353,6 +386,7 @@ public class DraftContentProviderService extends ContextualContentProvider {
     public Set<ContentKey> getChildKeys(ContentKey key, boolean navigableOnly) {
         List<Relationship> relationships = contentTypeInfoService.selectRelationships(key.type, navigableOnly);
         Map<Attribute, Object> valueMap = getAttributeValues(key, relationships);
+
         return getChildKeys(key, valueMap, navigableOnly);
     }
 
@@ -363,39 +397,16 @@ public class DraftContentProviderService extends ContextualContentProvider {
      * @param draftId
      * @return
      */
-    @SuppressWarnings("unchecked")
-    private Set<ContentKey> collectKeysChangedOnDraft(final DraftContext draftContext) {
-        final Set<ContentKey> keySet = new HashSet<ContentKey>();
+    private Set<ContentKey> collectKeysCreatedOnDraft(final long draftId) {
+        Set<ContentKey> changedKeysOnDraft = draftService.getAllChangedContentKeys(draftId);
 
-        for (Map.Entry<ContentKey, Map<Attribute, Object>> draftNodeEntry : getDraftNodes(draftContext).entrySet()) {
-            keySet.add(draftNodeEntry.getKey());
-
-            for (Map.Entry<Attribute, Object> attributeEntry : draftNodeEntry.getValue().entrySet()) {
-                final Attribute attribute = attributeEntry.getKey();
-                final Object value = attributeEntry.getValue();
-
-                if (value == null) {
-                    continue;
-                }
-
-                if (attribute instanceof Relationship) {
-                    Relationship relationship = (Relationship) attribute;
-                    if (relationship.getCardinality() == RelationshipCardinality.ONE) {
-                        ContentKey childKey = (ContentKey) value;
-                        if (childKey != null && !contentProviderService.containsContentKey(childKey)) {
-                            keySet.add(childKey);
-                        }
-                    } else {
-                        List<ContentKey> childKeys = (List<ContentKey>) value;
-                        for (ContentKey childKey : childKeys) {
-                            if (!contentProviderService.containsContentKey(childKey)) {
-                                keySet.add(childKey);
-                            }
-                        }
-                    }
-                }
+        Set<ContentKey> childKeys = draftService.collectChildKeys(draftId);
+        for (ContentKey childKey : childKeys) {
+            if (!contentProviderService.containsContentKey(childKey)) {
+                changedKeysOnDraft.add(childKey);
             }
         }
-        return keySet;
+        return changedKeysOnDraft;
     }
+
 }

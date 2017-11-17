@@ -2,9 +2,9 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
 <%@ page import='java.net.URLEncoder'%>
-<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.content.util.*' %>
-<%@ page import='com.freshdirect.fdstore.attributes.*' %>
+<%@ page import='com.freshdirect.storeapi.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
@@ -118,7 +118,7 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
 		<font class="space4pix"><BR></font>
 		<TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" WIDTH="<%= W_PRODUCT_SORT_TOTAL %>">
 			<TR VALIGN="TOP" ALIGN="CENTER">
-				<logic:iterate id='contentNode' collection="<%= recommendations.getProducts() %>" type="com.freshdirect.fdstore.content.ProductModel"><%
+				<logic:iterate id='contentNode' collection="<%= recommendations.getProducts() %>" type="com.freshdirect.storeapi.content.ProductModel"><%
 						
 						ProductModel productNode = contentNode;
 						ProductImpression pi = new ProductImpression(productNode);

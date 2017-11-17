@@ -1,6 +1,5 @@
 package com.freshdirect.storeapi.content;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,14 +8,12 @@ import com.freshdirect.storeapi.attributes.FDAttributeFactory;
 
 public class SuperDepartmentModel extends ContentNodeModelImpl {
 
-    private static final long serialVersionUID = 184983529548644938L;
-
-    private final List<DepartmentModel> departments = new ArrayList<DepartmentModel>();
+	private List<DepartmentModel> departments = new ArrayList<DepartmentModel>();
     private final List<ProductModel> sdMerchantRecommenderProducts = new ArrayList<ProductModel>();
 
-	public SuperDepartmentModel(ContentKey key) {
-		super(key);
-	}
+    public SuperDepartmentModel(ContentKey cKey) {
+        super(cKey);
+    }
 
 	public String getName() {
 		return (String) getCmsAttributeValue("name");
@@ -93,7 +90,7 @@ public class SuperDepartmentModel extends ContentNodeModelImpl {
 	}
 
     public String getPageTitle() {
-		return getAttribute("PAGE_TITLE", MessageFormat.format("FreshDirect - {0}", getFullName()));
+		return getAttribute("PAGE_TITLE", "");
 	}
 
     public String getFdxPageTitle() {
@@ -101,14 +98,10 @@ public class SuperDepartmentModel extends ContentNodeModelImpl {
     }
 
     public String getSEOMetaDescription() {
-		return getAttribute("SEO_META_DESC", "FreshDirect is the leading online grocery shopping service. We provide fast grocery delivery to your home and office. Order today for delivery tomorrow!");
+		return getAttribute("SEO_META_DESC", "");
 	}
 
     public String getFdxSEOMetaDescription() {
         return getAttribute("SEO_META_DESC_FDX", "");
-    }
-
-    public EnumCatalogType getCatalogType(String defaultValue) {
-        return EnumCatalogType.valueOf(getAttribute("catalog", defaultValue));
     }
 }

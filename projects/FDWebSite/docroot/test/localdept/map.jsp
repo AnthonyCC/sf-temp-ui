@@ -1,23 +1,19 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
 %><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<%@page import="com.freshdirect.cms.application.CmsManager"%>
+<html lang="en-US" xml:lang="en-US">
 <%@page import="java.util.Set"%>
-<%@page import="com.freshdirect.cms.ContentKey"%>
-<%@page import="com.freshdirect.cms.ContentType"%>
-<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
 <%@page import="java.util.HashSet"%>
-<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
-
-<%@page import="com.freshdirect.fdstore.content.ProducerModel"%>
 <%@page import="java.util.List"%>
-<%@page import="com.freshdirect.cms.application.ContentTypeServiceI"%>
 <%@page import="java.util.ArrayList"%>
-<%@page import="com.freshdirect.cms.application.service.xml.XmlTypeService"%>
-<%@page import="com.freshdirect.cms.application.service.CompositeTypeService"%>
-<%@page import="com.freshdirect.cms.application.service.xml.XmlContentService"%>
-<%@page import="com.freshdirect.cms.application.service.xml.FlexContentHandler"%>
-<%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
-<%@page import="com.freshdirect.cms.ContentNodeI"%><html lang="en-US" xml:lang="en-US">
+<%@page import="com.freshdirect.storeapi.ContentNodeI"%>
+<%@page import="com.freshdirect.storeapi.application.CmsManager"%>
+<%@page import="com.freshdirect.cms.core.domain.ContentKey"%>
+<%@page import="com.freshdirect.cms.core.domain.ContentKeyFactory"%>
+<%@page import="com.freshdirect.cms.core.domain.ContentType"%>
+<%@page import="com.freshdirect.storeapi.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@page import="com.freshdirect.storeapi.content.ProducerModel"%>
+<%@page import="com.freshdirect.storeapi.fdstore.FDContentTypes"%>
 <%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <head>
 	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8" lang="en-US">
@@ -100,7 +96,7 @@
 			// put markers
 <%
 	CmsManager mgr = CmsManager.getInstance();
-	final Set<ContentKey> keys = mgr.getContentKeysByType(ContentType.get("Producer"));
+	final Set<ContentKey> keys = mgr.getContentKeysByType(ContentType.Producer);
 
 	for (ContentKey k : keys) {
 		ProducerModel p = (ProducerModel) ContentFactory.getInstance().getContentNode(k.getType(), k.getId());

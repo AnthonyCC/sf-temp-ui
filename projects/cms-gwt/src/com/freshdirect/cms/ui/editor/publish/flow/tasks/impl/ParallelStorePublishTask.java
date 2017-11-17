@@ -22,9 +22,10 @@ import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.domain.EStoreId;
+import com.freshdirect.cms.core.service.ContentKeyParentsCollectorService;
 import com.freshdirect.cms.core.service.ContentTypeInfoService;
 import com.freshdirect.cms.core.service.ContextService;
-import com.freshdirect.cms.core.service.NodeCollectionContentProvider;
+import com.freshdirect.cms.core.service.NodeCollectionContentProviderService;
 import com.freshdirect.cms.media.converter.MediaToAttributeConverter;
 import com.freshdirect.cms.media.domain.Media;
 import com.freshdirect.cms.ui.editor.publish.domain.StorePublishMessageSeverity;
@@ -56,10 +57,14 @@ public class ParallelStorePublishTask extends TransformerTask<Input, Boolean> {
     private ContentTypeInfoService contentTypeInfoService;
 
     @Autowired
+    private ContentKeyParentsCollectorService contentKeyParentsCollectorService;
+
+    @Autowired
     private ContextService contextService;
 
     @Autowired
     private ApplicationContext applicationContext;
+
 
     private String publishBasePath;
 
@@ -230,6 +235,7 @@ public class ParallelStorePublishTask extends TransformerTask<Input, Boolean> {
      */
     private void performPublishStoreData(final ContentKey storeKey, final String storePublishPath, Map<ContentKey, Map<Attribute, Object>> singleStoreNodes) {
         try {
+
             StorePublisherTask storePublisherTask = applicationContext.getBean(StorePublisherTask.class); // scope prototype
 
             storePublisherTask.setPhase(Phase.WRITE_OUT);
@@ -257,8 +263,8 @@ public class ParallelStorePublishTask extends TransformerTask<Input, Boolean> {
      */
     private Map<ContentKey, Map<Attribute, Object>> getSingleStoreContent(final ContentKey storeKey) {
         // filter nodes down to single-store
-        NodeCollectionContentProvider nodeCollectionContentProviderService =
-                new NodeCollectionContentProvider(contentTypeInfoService, contextService, input.getContentNodes());
+        NodeCollectionContentProviderService nodeCollectionContentProviderService = new NodeCollectionContentProviderService(contentTypeInfoService, contentKeyParentsCollectorService, contextService,
+                input.getContentNodes());
 
         return nodeCollectionContentProviderService.filterNodesToStore(storeKey);
     }

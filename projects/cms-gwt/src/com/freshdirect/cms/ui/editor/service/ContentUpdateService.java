@@ -6,11 +6,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,11 +25,9 @@ import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.service.ContentTypeInfoService;
 import com.freshdirect.cms.core.service.ContextualContentProvider;
 import com.freshdirect.cms.draft.domain.DraftChange;
-import com.freshdirect.cms.draft.domain.DraftContext;
 import com.freshdirect.cms.draft.service.DraftContextHolder;
 import com.freshdirect.cms.draft.service.DraftService;
 import com.freshdirect.cms.ui.editor.UnmodifiableContent;
-import com.freshdirect.cms.ui.editor.domain.ContentAttributeKey;
 import com.freshdirect.cms.ui.editor.permission.ContentChangeSource;
 import com.freshdirect.cms.ui.editor.permission.service.PermissionService;
 import com.freshdirect.cms.ui.model.ContentNodeModel;
@@ -95,7 +91,7 @@ public class ContentUpdateService {
             LOGGER.error("No author");
             return new GwtSaveResponse("No author is provided");
         } else if (payload == null || payload.isEmpty()) {
-            LOGGER.warn("No or empty content to save");
+            LOGGER.error("No or empty content to save");
             return new GwtSaveResponse("No or empty content to save");
         }
 
@@ -106,26 +102,16 @@ public class ContentUpdateService {
 
             if (permissionService.isSaveAllowed(author, payload, changeOrigin)) {
 
-                // retrieve actual payload before updating it
-                Map<ContentKey, Map<Attribute, Object>> payloadBeforeUpdate = new HashMap<ContentKey, Map<Attribute, Object>>();
-                for (ContentKey key: payload.keySet()) {
-                    Map<Attribute, Object> valuesBeforeUpdate = contentProviderService.getAttributeValues(key, new ArrayList<Attribute>(payload.get(key).keySet()));
-                    if (valuesBeforeUpdate != null) {
-                        payloadBeforeUpdate.put(key, valuesBeforeUpdate);
-                    }
-                }
-
                 Optional<ContentChangeSetEntity> updateResult = contentProviderService.updateContent(payload, context);
 
                 if (draftContextHolder.getDraftContext().isMainDraft()) {
                     indexingService.indexChanged(payload);
                     response = createSuccessfulUpdateResponse(updateResult);
                 } else {
-                    response = createSuccessfulDraftUpdateResponse(context, payloadBeforeUpdate);
+                    response = createSuccessfulDraftUpdateResponse(context);
                 }
 
             } else {
-                LOGGER.error("Permission error while saving for " + author.getName() + "/" + author.getPersonaName() + " on " + author.getDraftName());
                 response = new GwtSaveResponse("You have no efficient rights to save");
             }
 
@@ -155,14 +141,12 @@ public class ContentUpdateService {
         return response;
     }
 
-    private GwtSaveResponse createSuccessfulDraftUpdateResponse(ContentUpdateContext updateContext, Map<ContentKey, Map<Attribute, Object>> payloadBeforeUpdate) {
+    private GwtSaveResponse createSuccessfulDraftUpdateResponse(ContentUpdateContext updateContext) {
         String id = "draft: " + updateContext.getDraftContext().getDraftId();
 
         List<DraftChange> latestChanges = draftService.getFilteredDraftChanges(updateContext.getDraftContext().getDraftId(), updateContext.getUpdatedAt(), updateContext.getAuthor(), updateContext.getChangedKeys());
 
-        Map<ContentAttributeKey, Object> shadowedFields = collectShadowedFields(latestChanges);
-
-        GwtChangeSet singleChangeset = contentChangesService.toGwtChangeSet(id, latestChanges, shadowedFields, payloadBeforeUpdate, updateContext.getDraftContext());
+        GwtChangeSet singleChangeset = contentChangesService.toGwtChangeSet(id, latestChanges, updateContext.getDraftContext());
 
         return new GwtSaveResponse(id, singleChangeset);
     }
@@ -282,47 +266,4 @@ public class ContentUpdateService {
         return (a == null && b == null) || (a != null && a.equals(b));
     }
 
-    private Map<ContentAttributeKey, Object> collectShadowedFields(Collection<DraftChange> draftChanges) {
-        if (draftChanges == null) {
-            return Collections.emptyMap();
-        }
-
-        Set<ContentKey> keys = new HashSet<ContentKey>(draftChanges.size());
-        for (DraftChange change : draftChanges) {
-            keys.add(ContentKeyFactory.get(change.getContentKey()));
-        }
-
-        Map<ContentKey, Map<Attribute, Object>> valuesOnMain = fetchMainValues(keys);
-
-        Map<ContentAttributeKey, Object> shadowedFields = new HashMap<ContentAttributeKey, Object>(draftChanges.size());
-        for (Map.Entry<ContentKey, Map<Attribute, Object>> payload : valuesOnMain.entrySet()) {
-            for (Map.Entry<Attribute, Object> valueEntry : payload.getValue().entrySet() ) {
-                final Attribute attributeDef = valueEntry.getKey();
-                final Object value = valueEntry.getValue();
-                shadowedFields.put(new ContentAttributeKey(payload.getKey(), attributeDef), value);
-            }
-        }
-
-        return shadowedFields;
-    }
-
-    private Map<ContentKey, Map<Attribute, Object>> fetchMainValues(Collection<ContentKey> contentKeys) {
-        final DraftContext currentContext = draftContextHolder.getDraftContext();
-
-        draftContextHolder.setDraftContext(DraftContext.MAIN);
-
-        Map<ContentKey, Map<Attribute, Object>> valuesOnMain = new HashMap<ContentKey, Map<Attribute, Object>>();
-        for (ContentKey key : contentKeys) {
-            Map<Attribute, Object> payload = contentProviderService.getAllAttributesForContentKey(key);
-            if (payload != null) {
-                valuesOnMain.put(key, payload);
-            } else {
-                valuesOnMain.put(key, Collections.<Attribute, Object> emptyMap());
-            }
-        }
-
-        draftContextHolder.setDraftContext(currentContext);
-
-        return valuesOnMain;
-    }
 }

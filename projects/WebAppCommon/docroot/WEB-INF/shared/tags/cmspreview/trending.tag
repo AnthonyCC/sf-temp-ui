@@ -1,31 +1,16 @@
 <%@ tag body-content="tagdependent" description="Trending Tag" %>
-<%@tag import="com.freshdirect.fdstore.content.ContentFactory"%>
-<%@tag import="com.freshdirect.fdstore.content.CategoryModel"%>
-<%@tag import="com.freshdirect.fdstore.content.ProductModel"%>
-<%@tag import="com.freshdirect.fdstore.content.CMSPickListItemModel"%>
-<%@tag import="com.freshdirect.cms.ContentKey"%>
-<%@tag import="com.freshdirect.cms.ContentNodeI"%>
-<%@tag import="com.freshdirect.cms.ContentType"%>
-<%@tag import="com.freshdirect.cms.application.CmsManager"%>
+<%@tag import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@tag import="com.freshdirect.storeapi.content.CategoryModel"%>
+<%@tag import="com.freshdirect.storeapi.content.ProductModel"%>
+<%@tag import="com.freshdirect.storeapi.content.CMSPickListItemModel"%>
+<%@tag import="com.freshdirect.cms.core.domain.ContentKey"%>
+<%@tag import="com.freshdirect.cms.core.domain.ContentKeyFactory"%>
+<%@tag import="com.freshdirect.storeapi.ContentNodeI"%>
+<%@tag import="com.freshdirect.cms.core.domain.ContentType"%>
+<%@tag import="com.freshdirect.storeapi.application.CmsManager"%>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
-<%@ attribute name="section" type="com.freshdirect.fdstore.content.CMSSectionModel" required="false" %>
+<%@ attribute name="section" type="com.freshdirect.storeapi.content.CMSSectionModel" required="false" %>
 <div class="moduleTrending">
-	<%-- <c:forEach var="component" items="${section.components}">
-		<c:if test="${component.componentType eq 'PICKLIST'}">
-		<h2>${component.name}</h2>
-		<ul>
-		<c:forEach var="item" items="${component.items}">
-			<% 
-				CMSPickListItemModel item = (CMSPickListItemModel) jspContext.getAttribute("item"); 
-				//String productName =  item.getProduct();
-				ContentNodeI productNode = CmsManager.getInstance().getContentNode(ContentKey.getContentKey(ContentType.get("Product"),item.getProduct())); 
-				String productName = (String) productNode.getAttributeValue("FULL_NAME");
-			%>
-			<li><%=productName%></li>
-		</c:forEach>
-		</ul>
-		</c:if>
-	</c:forEach> --%>
 	<div>
 		<h2>${section.headlineText}</h2>
 		${section.bodyText}
@@ -39,7 +24,7 @@
 				String item = (String) jspContext.getAttribute("item"); 
   				if(item!=null){
   				ProductModel productModel = (ProductModel) ContentFactory
-						.getInstance().getContentNodeByKey(ContentKey.getContentKey(ContentType.get(item.split(":")[0]), item.split(":")[1]));
+						.getInstance().getContentNodeByKey(ContentKeyFactory.get(ContentType.valueOf(item.split(":")[0]), item.split(":")[1]));
 				jspContext.setAttribute("product", productModel);
 			%>
 			<li class="portrait-item carouselTransactionalItem"> <img src="${product.categoryImage.path}">   <br/>  ${product.fullName}</li>
@@ -50,7 +35,7 @@
 			<% 
 				String item1 = (String) jspContext.getAttribute("item1"); 	
   				CategoryModel categoryModel = (CategoryModel) ContentFactory
-						.getInstance().getContentNodeByKey(ContentKey.getContentKey(ContentType.get(item1.split(":")[0]), item1.split(":")[1]));
+						.getInstance().getContentNodeByKey(ContentKeyFactory.get(ContentType.valueOf(item1.split(":")[0]), item1.split(":")[1]));
 				jspContext.setAttribute("category", categoryModel);
 			%>
 			<li class="portrait-item carouselTransactionalItem"> <img src="${category.photo.path}"><br/>${category.fullName}</li>			

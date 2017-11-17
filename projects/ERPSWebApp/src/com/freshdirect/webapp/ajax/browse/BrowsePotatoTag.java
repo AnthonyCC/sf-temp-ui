@@ -15,11 +15,11 @@ import org.apache.log4j.Logger;
 import com.freshdirect.fdstore.FDNotFoundException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.util.QueryParameter;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ContentNodeModel;
 import com.freshdirect.webapp.ajax.DataPotatoField;
 import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringFlow;
@@ -29,18 +29,18 @@ import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class BrowsePotatoTag extends SimpleTagSupport{
-	
+
 	private static final Logger LOGGER = LoggerFactory.getInstance( BrowsePotatoTag.class );
-	
+
 	private String name = "browsePotato";
-	
+
 	// PDP related
 	private boolean pdp = false;
 	private String nodeId;
-	
+
 	// Special layout related
 	private boolean specialLayout = false;
-	
+
 	@Override
 	public void doTag() throws JspException, IOException {
 
@@ -50,7 +50,7 @@ public class BrowsePotatoTag extends SimpleTagSupport{
 		try {
 			FDSessionUser user = (FDSessionUser) ((PageContext) getJspContext()).getSession().getAttribute(SessionName.USER);
 			CmsFilteringNavigator nav = null;
-			
+
 			if(!pdp && !specialLayout){
 				nav = CmsFilteringNavigator.createInstance((HttpServletRequest)ctx.getRequest(), user.getUser());
 			}else{
@@ -63,10 +63,10 @@ public class BrowsePotatoTag extends SimpleTagSupport{
 				}
 				nav.setId(nodeId);
 				nav.parseFilteringFlowType(request);
-				
+
 				/* TEMP FIX for SUPPORT-8657 */
                 ContentNodeModel node = ContentFactory.getInstance().getContentNode(nodeId);
-                if (node != null 
+                if (node != null
                 		&& (node instanceof CategoryModel && ((CategoryModel) node).getLayout(0).getId() == 301) /* meal kits */
                 ) {
 					String pageSizeStr = request.getParameter("pageSize"); //allow override
@@ -83,20 +83,20 @@ public class BrowsePotatoTag extends SimpleTagSupport{
 				} else {
 					nav.setPageSize(FDStoreProperties.getBrowsePageSize());
 				}
-                
+
 			}
-			
+
 			final CmsFilteringFlowResult result = CmsFilteringFlow.getInstance().doFlow(nav, user);
-			
+
 			ctx.setAttribute(name, DataPotatoField.digBrowse(result));
-		
+
 		} catch (InvalidFilteringArgumentException e) {
 			switch (e.getType()){
 				case NODE_IS_RECIPE_DEPARTMENT:
 				case SPECIAL_LAYOUT:{
 					String url = e.getRedirectUrl();
 					LOGGER.debug("Forwarding request to "+ url);
-					
+
 					try {
 						request.getRequestDispatcher(url).forward(request,ctx.getResponse());
 						throw new SkipPageException();
@@ -106,9 +106,9 @@ public class BrowsePotatoTag extends SimpleTagSupport{
 				}
 				case TERMINATE:{
 					LOGGER.error(e.getMessage());
-					break;					
+					break;
 				}
-					
+
 				default:
 					LOGGER.error("Invalid arguments on page " + request.getRequestURL() + " redirecting to " + e.getRedirectUrl() + ". Message: " +e.getMessage());
 					if(null !=e.getRedirectUrl() && !"".equals(e.getRedirectUrl().trim())){
@@ -119,7 +119,7 @@ public class BrowsePotatoTag extends SimpleTagSupport{
 					}
 					break;
 			}
-     
+
 		} catch (FDResourceException e){
 			throw new JspException(e);
 		}

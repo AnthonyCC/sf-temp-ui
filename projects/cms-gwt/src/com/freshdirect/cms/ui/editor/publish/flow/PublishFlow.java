@@ -12,6 +12,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.ui.editor.publish.domain.StorePublishMessageSeverity;
 import com.freshdirect.cms.ui.editor.publish.domain.StorePublishStatus;
 import com.freshdirect.cms.ui.editor.publish.entity.StorePublish;
@@ -182,6 +183,7 @@ public final class PublishFlow {
 
     private void executeValidateContent(Long publishId, Input inputData) {
         try {
+            // ContentValidationTask validationTask = new ContentValidationTask(publishId, Phase.VALIDATION, simpleContentService);
             validationTask.setPhase(Phase.VALIDATION);
             validationTask.setPublishId(publishId);
             validationTask.setInput(inputData);
@@ -204,8 +206,13 @@ public final class PublishFlow {
                             break;
                     }
 
+                    ContentKey targetKey = null;
+                    if (validationResult.getValidatedObject() instanceof ContentKey) {
+                        targetKey = (ContentKey) validationResult.getValidatedObject();
+                    }
+
                     publishMessageLogger.log(publishId,
-                            new StorePublishMessage(severity, validationResult.getMessage(), validationResult.getValidatedObject(), validationTask.getClass().getSimpleName()));
+                            new StorePublishMessage(severity, validationResult.getMessage(), targetKey, validationTask.getClass().getSimpleName()));
                 }
             }
 

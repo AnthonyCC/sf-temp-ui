@@ -1,8 +1,8 @@
 package com.freshdirect.webapp.ajax.expresscheckout.cms.service;
 
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.Html;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.Html;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.util.MediaUtils;
 

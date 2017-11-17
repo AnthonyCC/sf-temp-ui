@@ -5,12 +5,14 @@
 <%@ page import='java.net.*' %>
 <%@ page import='java.net.URLEncoder'%>
 <%@ page import='java.io.UnsupportedEncodingException'%>
-<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.fdstore.attributes.*' %>
+<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.storeapi.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.framework.util.*' %>
@@ -18,7 +20,7 @@
 <%@ page import="com.freshdirect.webapp.util.ConfigurationStrategy"%>
 <%@ page import="com.freshdirect.webapp.util.prodconf.DefaultProductConfigurationStrategy"%>
 <%@ page import="com.freshdirect.fdstore.customer.EnumQuickbuyStatus" %>
-<%@ page import='com.freshdirect.cms.util.*' %>
+<%@ page import='com.freshdirect.storeapi.util.*' %>
 <%@ page import="com.freshdirect.fdstore.content.util.QueryParameterCollection"%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>

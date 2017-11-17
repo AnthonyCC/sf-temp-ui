@@ -2,10 +2,10 @@ package com.freshdirect.fdstore.content.browse.sorter;
 
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.FilteringProductItem;
-import com.freshdirect.fdstore.content.PopulatorUtil;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.storeapi.content.FilteringProductItem;
+import com.freshdirect.storeapi.content.PopulatorUtil;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.SkuModel;
 
 public class ExpertRatingComparator extends OptionalObjectComparator<FilteringProductItem, Integer> {
 	private static int EXTREME_VALUE = 0;

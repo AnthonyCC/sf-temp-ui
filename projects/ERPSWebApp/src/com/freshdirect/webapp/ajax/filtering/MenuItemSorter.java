@@ -5,8 +5,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import com.freshdirect.fdstore.content.FilteringProductItem;
-import com.freshdirect.fdstore.content.ProductItemFilterI;
+import com.freshdirect.storeapi.content.FilteringProductItem;
+import com.freshdirect.storeapi.content.ProductItemFilterI;
 import com.freshdirect.webapp.ajax.browse.data.MenuBoxData;
 import com.freshdirect.webapp.ajax.browse.data.MenuItemData;
 

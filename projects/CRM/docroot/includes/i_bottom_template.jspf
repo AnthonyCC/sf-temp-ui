@@ -48,7 +48,7 @@ if (!isGroceryProdPage) {
             <table BORDER="0" CELLSPACING="0" CELLPADDING="0" width="<%=bottTblWidth%>">
                <tr valign="top">
                   <td align="center">
-					  <logic:iterate id='mediaRef' indexId='indexNo' collection="<%=catMidMedias%>" type="com.freshdirect.fdstore.content.MediaModel">
+					  <logic:iterate id='mediaRef' indexId='indexNo' collection="<%=catMidMedias%>" type="com.freshdirect.storeapi.content.MediaModel">
 						<% if (((Html)mediaRef).getPath()!=null  && ((Html)mediaRef).getPath().toLowerCase().indexOf("blank.")==-1) { 
 									   if(indexNo.intValue()!=0){ %>
 											 <img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
@@ -109,7 +109,7 @@ if (!isGroceryProdPage) {
 							<% } 
 							} // close dptBottAttrib !=null %>
 							 
-							<logic:iterate id='mediaRef' indexId='indexNo' collection="<%=catBottomMedias%>" type="com.freshdirect.fdstore.content.MediaModel">
+							<logic:iterate id='mediaRef' indexId='indexNo' collection="<%=catBottomMedias%>" type="com.freshdirect.storeapi.content.MediaModel">
 								<% if (((Html)mediaRef).getPath()!=null) { %>
 									<% if(indexNo.intValue()!=0){ %>
 										<img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>

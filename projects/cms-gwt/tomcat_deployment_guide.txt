@@ -39,7 +39,7 @@ Please obtain ehcache.xml configuration file from projects/cmseue/src/main/resou
 
 ### FD CMS Config
 
-Create fdcms-db.properties file under lib/ folder. Sample content:
+Create fdcms.properties file under lib/ folder. Sample content:
 
 ```properties
 cms.resource.basePath=file:/opt/fddata/storefront/docroot/storedata/FreshDirect
@@ -48,8 +48,7 @@ spring.datasource.driverClassName=oracle.jdbc.OracleDriver
 spring.datasource.url=jdbc:oracle:thin:@//devora12cscan.nj01:1521/cmstest
 spring.datasource.user=CMS
 spring.datasource.password=CMS
-spring.erps.datasource.user=erps
-spring.erps.datasource.password=erps
+
 spring.datasource.pool=cms-connection-pool
 
 hibernate.default_schema=CMS
@@ -118,7 +117,7 @@ To enable LDAP authentication please extend conf/server.xml with the following c
 
 ## Oracle Driver
 
-Please obtain ojdbc6.jar from lib/thirdparty and place it into lib/ folder.
+Please obtain ojdbc6.jar from projects/cmseue/src/main/resources/lib/  and place it into lib/ folder.
 
 # Deploy GWT
 

@@ -11,15 +11,15 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
 import com.freshdirect.content.nutrition.ErpNutritionType;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ContentNodeModelUtil;
-import com.freshdirect.fdstore.content.EnumLayoutType;
-import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.fdstore.content.util.SortStrategyElement;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.webapp.BodyTagSupport;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.ContentNodeModelUtil;
+import com.freshdirect.storeapi.content.EnumLayoutType;
+import com.freshdirect.storeapi.content.ProductContainer;
 
 public class LayoutManager extends BodyTagSupport {
 	

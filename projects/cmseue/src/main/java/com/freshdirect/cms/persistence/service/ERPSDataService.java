@@ -160,7 +160,7 @@ public class ERPSDataService {
         return repository.findCharacteristicsForClass(classId);
     }
 
-    public void populateMaterialCharacteristicsCache() {
+    private void populateMaterialCharacteristicsCache() {
         Map<String, Map<String, Map<String, String>>> materialCharacteristics = fetchMaterialCharacteristics();
         LOGGER.debug("populateMaterialCharacteristicsCache: loaded " + materialCharacteristics.size() + " entries");
         Cache cache = cacheManager.getCache("materialCharacteristicsCache");
@@ -170,7 +170,7 @@ public class ERPSDataService {
         cache.put(SimpleKey.EMPTY, materialCharacteristics);
     }
 
-    public void populateMaterialDataCache() {
+    private void populateMaterialDataCache() {
         Map<String, MaterialData> allMaterialData = fetchMaterialData();
         LOGGER.debug("populateMaterialDataCache: loaded " + allMaterialData.size() + " entries");
         Cache cache = cacheManager.getCache("materialDataCache");
@@ -180,7 +180,7 @@ public class ERPSDataService {
         cache.put(SimpleKey.EMPTY, allMaterialData);
     }
 
-    public void populateSkuMaterialsCache() {
+    private void populateSkuMaterialsCache() {
         Map<String, String> skuMaterialAssociations = fetchSkuMaterialAssociations();
         LOGGER.debug("populateSkuMaterialsCache: loaded " + skuMaterialAssociations.size() + " entries");
         Cache cache = cacheManager.getCache("skuMaterialsCache");
@@ -190,7 +190,7 @@ public class ERPSDataService {
         cache.put(SimpleKey.EMPTY, skuMaterialAssociations);
     }
 
-    public void populateMaterialSalesUnitsCache() {
+    private void populateMaterialSalesUnitsCache() {
         Map<String, Map<String, String>> materialSalesUnits = fetchSalesUnits();
         LOGGER.debug("populateMaterialSalesUnitsCache: loaded " + materialSalesUnits.size() + " entries");
         Map<String, String> salesUnitLabels = new HashMap<String, String>();

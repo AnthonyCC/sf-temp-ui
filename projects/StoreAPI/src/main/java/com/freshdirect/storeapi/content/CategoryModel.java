@@ -15,7 +15,6 @@ import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.ContentType;
@@ -227,16 +226,15 @@ public class CategoryModel extends ProductContainer {
 		if(null !=productPromoInfoMap){
 			List<FDProductPromotionInfo> fDProductPromotionSkus = productPromoInfoMap.get(pricingZone);
 			if(null ==fDProductPromotionSkus){
-				fDProductPromotionSkus = productPromoInfoMap.get(new ZoneInfo(ErpServicesProperties.getMasterDefaultZoneId(),FDStoreProperties.getDefaultFdSalesOrg(),FDStoreProperties.getDefaultFdDistributionChannel()));//ProductPromotionData.DEFAULT_ZONE);
+				fDProductPromotionSkus = productPromoInfoMap.get(new ZoneInfo("0000100000","0001","01"));//ProductPromotionData.DEFAULT_ZONE);
 				productPromoInfoMap.put(pricingZone,fDProductPromotionSkus);
 			}
 			if(null != fDProductPromotionSkus)
 			for (FDProductPromotionInfo fDProductPromotionSku : fDProductPromotionSkus){
 				String sku = fDProductPromotionSku.getSkuCode();
-                //No need to refresh the productnfo.
-                /*if(!isPreview){
-                        FDCachedFactory.refreshProductPromotionSku(sku);
-                }*/
+				if(!isPreview){
+					FDCachedFactory.refreshProductPromotionSku(sku);
+				}
 				ProductModel productModel = null;
 				ProductModel prodModel = null;
 				try {
@@ -480,12 +478,12 @@ public class CategoryModel extends ProductContainer {
 	}
 
 	public List getWineSortCriteria() {
-		ContentNodeModelUtil.refreshModels(this, "WINE_SORTING", wineSortCriteriaList, false);
+		ContentNodeModelUtil.refreshModels(this, "WINE_SORTING", wineSortCriteriaList, false,true);
 		return new ArrayList(wineSortCriteriaList);
 	}
 
 	public List getWineFilterCriteria() {
-		ContentNodeModelUtil.refreshModels(this, "WINE_FILTER", wineFilterCriteriaList, false);
+		ContentNodeModelUtil.refreshModels(this, "WINE_FILTER", wineFilterCriteriaList, false,true);
 		return new ArrayList(wineFilterCriteriaList);
 	}
 
@@ -523,13 +521,12 @@ public class CategoryModel extends ProductContainer {
     public List<ProductModel> getProducts() {
 
     	List<ProductModel> prodList = new ArrayList<ProductModel>();
-    	ZoneInfo pricingZone = ContentFactory.getInstance()!=null && ContentFactory.getInstance().getCurrentUserContext()!=null &&
-    								ContentFactory.getInstance().getCurrentUserContext().getPricingContext()!=null?
-    										ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo():null;
+    	ZoneInfo pricingZone = ContentFactory.getInstance().getCurrentUserContext().getPricingContext().getZoneInfo();
     	String currentProductPromotionType = getProductPromotionType();
 
     	if(!"E_COUPONS".equalsIgnoreCase(currentProductPromotionType) && (currentProductPromotionType == null || !ContentFactory.getInstance().isEligibleForDDPP())){
     		prodList =getStaticProducts();
+
 	        Recommender recommender = getRecommender();
 	        if ( recommender == null ) {
 	        	recommenderKey = null;
@@ -540,14 +537,14 @@ public class CategoryModel extends ProductContainer {
 	        	recommenderKey = recommender.getContentKey();
 
 	        	if ( recommenderChanged ) {
-	        		LOGGER.debug( this.getContentKey().toString() + ": recommender changed!" );
+	        		LOGGER.warn( this.getContentKey().toString() + ": recommender changed!" );
 	        	}
 
 	            //LOGGER.info("Category[id=\"" + this.getContentKey().getId() + "\"].getSmartProducts(\"" + zoneId + "\")");
                 if (!FDStoreProperties.isLocalDeployment()) { // refreshes this.productGrabbers
                     synchronized (CategoryModel.class) {
                         if (globalSmartCategoryVersion > smartCategoryVersion) {
-                            LOGGER.debug("forced smart category recalculation : " + smartCategoryVersion + " -> " + globalSmartCategoryVersion + " for category : "
+                            LOGGER.info("forced smart category recalculation : " + smartCategoryVersion + " -> " + globalSmartCategoryVersion + " for category : "
                                     + this.getContentKey().id);
                             smartCategoryVersion = globalSmartCategoryVersion;
                             recommendedProductsRefMap.clear();
@@ -564,7 +561,7 @@ public class CategoryModel extends ProductContainer {
 	//                List<ProductModel> recProds = recommendedProductsRefMap.get(zoneId).get();
 	                addDynamicProducts(recommendedProductsRefMap.get(pricingZone).get(), prodList,true);
 	            } catch (Exception e) {
-	                LOGGER.error("exception during smart category recommendation", e);
+	                LOGGER.warn("exception during smart category recommendation", e);
 	            }
 	        }
     	}else{
@@ -586,6 +583,7 @@ public class CategoryModel extends ProductContainer {
                 }
             }
 		}
+
         return prodList;
     }
 
@@ -604,7 +602,7 @@ public class CategoryModel extends ProductContainer {
 					}
 				}
 		    } catch (Exception e) {
-                LOGGER.error("exception during promo category product assignment", e);
+		        LOGGER.warn("exception during promo category product assignment", e);
 		    }
 		}
 		return prodList;
@@ -705,7 +703,7 @@ public class CategoryModel extends ProductContainer {
 	//** ContentFactory.getProductByName() is the main user..
 	public ProductModel getProductByName(String productId) {
 		for ( ProductModel pm : getProducts() ) {
-			if (pm != null && pm.getContentName().equals(productId)) {
+			if (pm.getContentName().equals(productId)) {
 				return pm;
 			}
 		}
@@ -897,7 +895,7 @@ public class CategoryModel extends ProductContainer {
 	private boolean isActive(boolean filterNonDisplayableProducts) {
 	    List<ProductModel> products = getProducts();
 
-	    if (filterNonDisplayableProducts&&products!=null&&!products.isEmpty()){
+	    if (filterNonDisplayableProducts){
 	    	Iterator<ProductModel> itr = products.iterator();
 	        while(itr.hasNext()) {
 	        	ProductModel prod = itr.next();
@@ -910,7 +908,7 @@ public class CategoryModel extends ProductContainer {
 	        }
 	    }
 
-		if (products!=null&&!products.isEmpty()) {
+		if (!products.isEmpty()) {
 	        return true;
 	    }
 	    for (CategoryModel subCat : getSubcategories()) {
@@ -976,49 +974,24 @@ public class CategoryModel extends ProductContainer {
         return FDAttributeFactory.constructHtml(this, "CAT_STORAGE_GUIDE_MEDIA");
     }
 
-    @Override
     public Set<ContentKey> getAllChildProductKeys() {
-        Set<ContentKey> keys = new HashSet<ContentKey>();
-        for (ProductModel p : getPrivateProducts()) {
-            keys.add(p.getContentKey());
-        }
-        for (CategoryModel subCategory : getSubcategories()) {
-            for (ProductModel p : subCategory.getPrivateProducts()) {
-                keys.add(p.getContentKey());
-            }
-            for (CategoryModel subSubCategory : subCategory.getSubcategories()) {
-                for (ProductModel p : subSubCategory.getPrivateProducts()) {
-                    keys.add(p.getContentKey());
-                }
-            }
-        }
-        return keys;
+    	Set<ContentKey> keys = new HashSet<ContentKey>();
+    	for (ProductModel p : getPrivateProducts())
+    		keys.add(p.getContentKey());
+    	for (CategoryModel c : getSubcategories())
+    		for (ProductModel p : c.getPrivateProducts())
+    			keys.add(p.getContentKey());
+    	return keys;
     }
 
-    public Set<ContentKey> getAllChildFromTwoLevelProductKeys() {
-        Set<ContentKey> keys = new HashSet<ContentKey>();
-        for (ProductModel p : getPrivateProducts()) {
-            keys.add(p.getContentKey());
-        }
-        for (CategoryModel c : getSubcategories()) {
-            for (ProductModel p : c.getPrivateProducts()) {
-                keys.add(p.getContentKey());
-            }
-        }
-        return keys;
-    }
-
-    public Set<ProductModel> getAllChildFromTwoLevelProducts() {
-        Set<ProductModel> products = new HashSet<ProductModel>();
-        for (ProductModel p : getProducts()) {
-            products.add(p);
-        }
-        for (CategoryModel c : getSubcategories()) {
-            for (ProductModel p : c.getProducts()) {
-                products.add(p);
-            }
-        }
-        return products;
+    public Set<ProductModel> getAllChildProducts() {
+    	Set<ProductModel> products = new HashSet<ProductModel>();
+    	for (ProductModel p : getProducts())
+    		products.add(p);
+    	for (CategoryModel c : getSubcategories())
+    		for (ProductModel p : c.getProducts())
+    			products.add(p);
+    	return products;
     }
 
     // Another version of the above method, this time returning a list.
@@ -1030,18 +1003,16 @@ public class CategoryModel extends ProductContainer {
     // and so they will be different objects, with possibly different values for
     // inheritable properties/relationships.
     // Using a simple HashSet will not resolve that they are the same products after all ...
-    public List<ProductModel> getAllChildFromTwoLevelProductsAsList() {
-        List<ProductModel> products = new ArrayList<ProductModel>();
-        for (ProductModel p : getProducts()) {
-            products.add(p);
-        }
-        for (CategoryModel c : getSubcategories()) {
-            for (ProductModel p : c.getProducts()) {
-                products.add(p);
-            }
-        }
-        return products;
+    public List<ProductModel> getAllChildProductsAsList() {
+    	List<ProductModel> products = new ArrayList<ProductModel>();
+    	for (ProductModel p : getProducts())
+    		products.add(p);
+    	for (CategoryModel c : getSubcategories())
+    		for (ProductModel p : c.getProducts())
+    			products.add(p);
+    	return products;
     }
+
 
 	public boolean isHideWineRatingPricing() {
 		return getAttribute("HIDE_WINE_RATING", false);
@@ -1165,7 +1136,7 @@ public class CategoryModel extends ProductContainer {
 	}
 
 	public List<ProductModel> getCatMerchantRecommenderProducts() {
-		ContentNodeModelUtil.refreshModels(this, "catMerchantRecommenderProducts", catMerchantRecommenderProducts, false);
+		ContentNodeModelUtil.refreshModels(this, "catMerchantRecommenderProducts", catMerchantRecommenderProducts, false, true);
 		return new ArrayList<ProductModel>(catMerchantRecommenderProducts);
 	}
 

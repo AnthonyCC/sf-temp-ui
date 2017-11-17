@@ -31,6 +31,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import com.freshdirect.cms.category.IntegrationTest;
 import com.freshdirect.cms.contentio.xml.FlexContentHandler;
 import com.freshdirect.cms.contentio.xml.XmlContentMetadataService;
+import com.freshdirect.cms.core.converter.SerializedScalarValueToObjectConverter;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.AttributeFlags;
 import com.freshdirect.cms.core.domain.ContentKey;
@@ -38,6 +39,7 @@ import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.domain.ContentTypes;
 import com.freshdirect.cms.core.domain.Scalar;
+import com.freshdirect.cms.core.service.ContentKeyParentsCollectorService;
 import com.freshdirect.cms.core.service.ContentProvider;
 import com.freshdirect.cms.core.service.ContentTypeInfoService;
 import com.google.common.base.Optional;
@@ -172,6 +174,11 @@ public class XmlContentProviderIntegrationTest {
         }
 
         @Bean
+        public ContentKeyParentsCollectorService contentKeyParentsCollectorService() {
+            return new ContentKeyParentsCollectorService();
+        }
+
+        @Bean
         public DefaultHandler flexContentHandler() {
             return new FlexContentHandler();
         }
@@ -179,8 +186,13 @@ public class XmlContentProviderIntegrationTest {
         @Bean
         public CacheManager cacheManager() {
             SimpleCacheManager cacheManager = new SimpleCacheManager();
-            cacheManager.setCaches(Arrays.asList(new ConcurrentMapCache("parentKeysCache")));
+            cacheManager.setCaches(Arrays.asList(new ConcurrentMapCache("parentKeysCache"), new ConcurrentMapCache("allParentKeysCache")));
             return cacheManager;
+        }
+
+        @Bean
+        public SerializedScalarValueToObjectConverter coverter() {
+            return new SerializedScalarValueToObjectConverter();
         }
 
         @Bean

@@ -12,7 +12,7 @@ import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.framework.util.log.LoggerFactory;
 

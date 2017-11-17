@@ -39,6 +39,8 @@ import com.freshdirect.cms.contentio.xml.FlexContentHandler;
 import com.freshdirect.cms.contentio.xml.XmlContentMetadataService;
 import com.freshdirect.cms.contentvalidation.service.ValidatorService;
 import com.freshdirect.cms.contentvalidation.service.XmlContentValidatorService;
+import com.freshdirect.cms.core.converter.ScalarValueToSerializedValueConverter;
+import com.freshdirect.cms.core.converter.SerializedScalarValueToObjectConverter;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentTypes;
@@ -250,6 +252,7 @@ public class ContentProviderServiceIntegrationTest {
             SimpleCacheManager cacheManager = new SimpleCacheManager();
             cacheManager.setCaches(Arrays.asList(
                     new ConcurrentMapCache("parentKeysCache"),
+                    new ConcurrentMapCache("allParentKeysCache"),
                     new ConcurrentMapCache("attributeCache")));
             return cacheManager;
         }
@@ -275,8 +278,23 @@ public class ContentProviderServiceIntegrationTest {
         }
 
         @Bean
+        public ScalarValueToSerializedValueConverter scalarValueToSerializedValueConverter() {
+            return new ScalarValueToSerializedValueConverter();
+        }
+
+        @Bean
+        public SerializedScalarValueToObjectConverter serializedScalarValueToSerializedValueConverter() {
+            return new SerializedScalarValueToObjectConverter();
+        }
+
+        @Bean
         public XmlContentMetadataService metaDataService() {
             return new XmlContentMetadataService();
+        }
+
+        @Bean
+        public ContentKeyParentsCollectorService contentKeyParentsCollectorService() {
+            return new ContentKeyParentsCollectorService();
         }
 
         @Bean

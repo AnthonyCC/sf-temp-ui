@@ -5,10 +5,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executor;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
@@ -16,14 +12,14 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.EnumWinePrice;
-import com.freshdirect.fdstore.content.Image;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductRatingGroup;
 import com.freshdirect.fdstore.content.WineFilter;
 import com.freshdirect.fdstore.content.util.WineSorter;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.BalkingExpiringReference;
 import com.freshdirect.framework.util.NVL;
+import com.freshdirect.storeapi.content.Image;
+import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
 public class WineTopRatedFeedTag extends AbstractGetterTag<List<ProductModel>> {
@@ -34,14 +30,12 @@ public class WineTopRatedFeedTag extends AbstractGetterTag<List<ProductModel>> {
 	private static ConcurrentHashMap<String, TopRatedProductsLoader> cache = new ConcurrentHashMap<String, TopRatedProductsLoader>(200);
 
 	private static class TopRatedProductsLoader extends BalkingExpiringReference<List<ProductModel>> {
-		private static Executor threadPool = new ThreadPoolExecutor(1, 1, 60, TimeUnit.SECONDS,
-				new LinkedBlockingQueue<Runnable>(), new ThreadPoolExecutor.DiscardPolicy());
 
 		private EnumWinePrice price;
 		private PricingContext pricingContext;
 
 		private TopRatedProductsLoader(long refreshPeriod, EnumWinePrice price, PricingContext pricingContext) {
-			super(refreshPeriod, threadPool);
+            super(refreshPeriod, false);
 			this.price = price;
 			this.pricingContext = pricingContext;
 			// synchronous load
@@ -149,7 +143,8 @@ public class WineTopRatedFeedTag extends AbstractGetterTag<List<ProductModel>> {
 	}
 
 	public static class TagEI extends TagExtraInfo {
-		public VariableInfo[] getVariableInfo(TagData data) {
+		@Override
+        public VariableInfo[] getVariableInfo(TagData data) {
 
 			return new VariableInfo[] { 
 				new VariableInfo(data.getAttributeString("id"), List.class.getName() + "<" + ProductModel.class.getName() + ">", true, VariableInfo.NESTED),

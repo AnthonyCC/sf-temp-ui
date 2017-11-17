@@ -9,7 +9,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +17,7 @@ import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.service.ContextualContentProvider;
 import com.freshdirect.cms.draft.domain.DraftContext;
 import com.freshdirect.cms.draft.service.DraftContextHolder;
+import com.freshdirect.cms.ui.editor.domain.PublishType;
 import com.freshdirect.cms.ui.editor.publish.feed.converter.FeedPublishToGwtPublishDataConverter;
 import com.freshdirect.cms.ui.editor.publish.feed.domain.FeedPublish;
 import com.freshdirect.cms.ui.editor.publish.feed.entity.PublishStatus;
@@ -25,7 +25,6 @@ import com.freshdirect.cms.ui.editor.publish.feed.service.FeedPublishMessagingSe
 import com.freshdirect.cms.ui.editor.publish.feed.service.FeedPublishService;
 import com.freshdirect.cms.ui.editor.publish.repository.AdminQueriesRepository;
 import com.freshdirect.cms.ui.model.publish.GwtPublishData;
-import com.freshdirect.cms.ui.model.publish.PublishType;
 import com.freshdirect.cms.ui.service.ServerException;
 
 @Service
@@ -65,20 +64,16 @@ public class PublishService {
 
         String publishId = "";
         if (PublishType.PUBLISH_X.equals(type)) {
-            try {
-                Set<ContentKey> storeKeys = contentProviderService.getContentKeysByType(ContentType.Store);
-                FeedPublish publish = new FeedPublish();
-                publish.setUserId(userId);
-                publish.setComment(comment);
-                publish = feedPublishMessagingService.modifyFeedPublishStatus(publish, PublishStatus.PROGRESS);
+            Set<ContentKey> storeKeys = contentProviderService.getContentKeysByType(ContentType.Store);
+            FeedPublish publish = new FeedPublish();
+            publish.setUserId(userId);
+            publish.setComment(comment);
+            publish = feedPublishMessagingService.modifyFeedPublishStatus(publish, PublishStatus.PROGRESS);
 
-                draftContextHolder.setDraftContext(DraftContext.MAIN);
-                feedPublishService.publishFeed(publish, new ArrayList<ContentKey>(storeKeys), userId, comment);
+            draftContextHolder.setDraftContext(DraftContext.MAIN);
+            feedPublishService.publishFeed(publish, new ArrayList<ContentKey>(storeKeys), userId, comment);
 
-                publishId = publish.getPublishId();
-            } catch (DataIntegrityViolationException exc) {
-                LOGGER.error("Probably a feed publish is already running, discard current request", exc);
-            }
+            publishId = publish.getPublishId();
         }
         return publishId;
 
@@ -97,7 +92,8 @@ public class PublishService {
     }
 
     @Transactional
-    public void abortStuckPublishes(PublishType type) {
-        adminQueriesRepository.updateStuckPublishStatus(type);                
+    public void abortStuckPublishes() {
+        adminQueriesRepository.updateStuckPublishStatus();
     }
+
 }

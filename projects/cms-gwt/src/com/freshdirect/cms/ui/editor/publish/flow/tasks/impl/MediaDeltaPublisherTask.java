@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.freshdirect.cms.ui.editor.publish.domain.StorePublishMessageSeverity;
 import com.freshdirect.cms.ui.editor.publish.entity.StorePublishMessage;
@@ -50,17 +49,27 @@ public class MediaDeltaPublisherTask extends ConsumerTask<List<String>> {
         publishMessageLogger.log(publishId, new StorePublishMessage(StorePublishMessageSeverity.INFO, "Generating media delta", MediaDeltaPublisherTask.class.getSimpleName()));
         File rootDir = new File(targetPath, MEDIA_DELTA_FOLDERNAME);
 
-        for (String childPath : input) {
-            File destinationFile = new File(rootDir, childPath);
-            URL sourceURL = null;
-            try {
-                sourceURL = UriComponentsBuilder.fromUriString(repositoryUrl).path(childPath).build().encode().toUri().toURL();
-                downloadFileFromRepository(sourceURL, destinationFile);
-            } catch (MalformedURLException e) {
-                LOGGER.error("There is a missing URL " + sourceURL, e);
-                publishMessageLogger.log(publishId,
-                        new StorePublishMessage(StorePublishMessageSeverity.WARNING, "There is a missing URL " + sourceURL, MediaDeltaPublisherTask.class.getSimpleName()));
+        final URL baseUrl;
+        try {
+            baseUrl = new URL(repositoryUrl);
+
+            for (String childPath : input) {
+                File destinationFile = new File(rootDir, childPath);
+                URL sourceURL = null;
+
+                try {
+                    sourceURL = new URL(baseUrl.getProtocol(), baseUrl.getHost(), baseUrl.getPort(), baseUrl.getPath() + childPath);
+                    downloadFileFromRepository(sourceURL, destinationFile);
+                } catch (MalformedURLException e) {
+                    LOGGER.error("There is a missing URL " + baseUrl.getPath() + childPath, e);
+                    publishMessageLogger.log(publishId, new StorePublishMessage(StorePublishMessageSeverity.WARNING, "There is a missing URL " + baseUrl.getPath() + childPath,
+                            MediaDeltaPublisherTask.class.getSimpleName()));
+                }
             }
+        } catch (MalformedURLException e) {
+            LOGGER.error("There is a missing URL " + repositoryUrl, e);
+            publishMessageLogger.log(publishId,
+                    new StorePublishMessage(StorePublishMessageSeverity.WARNING, "There is a missing URL " + repositoryUrl, MediaDeltaPublisherTask.class.getSimpleName()));
         }
     }
 
@@ -75,14 +84,13 @@ public class MediaDeltaPublisherTask extends ConsumerTask<List<String>> {
         FileOutputStream fileOutputStream = null;
         try {
             createParentDirectory(destinationFile);
+
             readableByteChannel = Channels.newChannel(sourceURL.openStream());
             fileOutputStream = new FileOutputStream(destinationFile);
             fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
 
         } catch (IOException e) {
             LOGGER.error("Cannot check out missing media " + sourceURL, e);
-            publishMessageLogger.log(publishId,
-                    new StorePublishMessage(StorePublishMessageSeverity.WARNING, "Couldn't download file: " + destinationFile, MediaDeltaPublisherTask.class.getSimpleName()));
         } finally {
             if (fileOutputStream != null) {
                 try {

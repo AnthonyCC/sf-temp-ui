@@ -9,9 +9,9 @@ import org.apache.commons.lang.StringEscapeUtils;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.content.Image;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
+import com.freshdirect.storeapi.content.Image;
+import com.freshdirect.storeapi.content.ProductModel;
 
 public class SimpleProductImageTag extends BodyTagSupportEx {
 	private static final long serialVersionUID = 9221482591997718613L;

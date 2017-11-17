@@ -7,14 +7,14 @@ import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ContentNodeModelUtil;
-import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.promotion.EnumDCPDContentType;
 import com.freshdirect.framework.util.MathUtil;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ContentNodeModelUtil;
+import com.freshdirect.storeapi.content.ProductModel;
 
 public class OrderPromotionHelper {
 

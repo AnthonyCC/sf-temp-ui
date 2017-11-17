@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.freshdirect.storeapi.content.FilteringValue;
+
 
 public class UrlFilterValueDecoder extends GenericFilterValueDecoder {
 

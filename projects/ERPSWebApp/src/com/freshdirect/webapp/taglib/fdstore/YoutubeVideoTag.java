@@ -8,12 +8,12 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.FDFolder;
-import com.freshdirect.fdstore.content.YoutubeVideoModel;
+import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.FDFolder;
+import com.freshdirect.storeapi.content.YoutubeVideoModel;
 
 public class YoutubeVideoTag extends SimpleTagSupport {
 
@@ -31,7 +31,7 @@ public class YoutubeVideoTag extends SimpleTagSupport {
 		YoutubeVideoModel ytvm = null;
 
 		ContentNodeModel model = ContentFactory.getInstance().getContentNodeByKey(
-				ContentKey.getContentKey(YoutubeVideoModel.DEFAULT_YOUTUBE_FOLDER));
+				ContentKeyFactory.get(YoutubeVideoModel.DEFAULT_YOUTUBE_FOLDER));
 
 		if (model instanceof FDFolder) {
 			FDFolder folder = (FDFolder) model;
@@ -51,7 +51,7 @@ public class YoutubeVideoTag extends SimpleTagSupport {
 		}else{
 			ctx.setAttribute(attrName, ytvm);
 		}
-		
+
 
 	}
 

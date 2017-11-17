@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.web.client.RestTemplate;
 
-import com.freshdirect.cms.cache.CacheEvictors;
 import com.freshdirect.cms.changecontrol.domain.ChangePropagationData;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentType;
@@ -55,9 +54,6 @@ public class ChangePropagatorService {
     @Autowired
     private DraftContextHolder draftContextHolder;
 
-    @Autowired
-    private CacheEvictors cacheEvictors;
-
     /**
      * This method notifies the preview nodes about the changed content
      *
@@ -65,24 +61,21 @@ public class ChangePropagatorService {
      */
     @Async
     public void notifyPreviewAboutChangedContent(DraftContext draftContext, Set<ContentKey> contentKeys) {
-        try {
-            draftContextHolder.setDraftContext(draftContext);
-            List<String> previewHosts = loadPreviewHosts();
-            RestTemplate notificationRestTemplate = new RestTemplate();
+        draftContextHolder.setDraftContext(draftContext);
+        List<String> previewHosts = loadPreviewHosts();
 
-            for (String previewHost : previewHosts) {
-                URI previewUri;
-                try {
-                    previewUri = new URI(PROTOCOL + "://" + previewHost + eventPropagationUri);
-                    ChangePropagationData changeData = new ChangePropagationData(contentKeys, draftContext);
-                    LOGGER.info("Notifying preview node at [" + previewUri + "] about CMS changes " + changeData);
-                    notificationRestTemplate.postForLocation(previewUri, changeData);
-                } catch (URISyntaxException e) {
-                    LOGGER.error("Couldn't create URI for previewHost: " + previewHost);
-                }
+        RestTemplate notificationRestTemplate = new RestTemplate();
+
+        for (String previewHost : previewHosts) {
+            URI previewUri;
+            try {
+                previewUri = new URI(PROTOCOL + "://" + previewHost + eventPropagationUri);
+                ChangePropagationData changeData = new ChangePropagationData(contentKeys, draftContext);
+                LOGGER.info("Notifying preview node at [" + previewUri + "] about CMS changes " + changeData);
+                notificationRestTemplate.postForLocation(previewUri, changeData);
+            } catch (URISyntaxException e) {
+                LOGGER.error("Couldn't create URI for previewHost: " + previewHost);
             }
-        } catch (Exception ex) {
-            LOGGER.error("Failed to notify preview about cms changes", ex);
         }
     }
 
@@ -118,13 +111,8 @@ public class ChangePropagatorService {
         Assert.notNull(draftContext, "Draft parameter can't be null!");
         draftService.invalidateDraftChangesCache(draftContext.getDraftId());
         if (contentProviderService instanceof DraftContentProviderService) {
-            ((DraftContentProviderService) contentProviderService).invalidateDraftCaches(draftContext);
-            for (ContentKey contentKey : contentKeys) {
-                cacheEvictors.evictContentFactoryDraftCaches(contentKey, draftContext);
-                for (ContentKey relatedKey : contentProviderService.getChildKeys(contentKey, false)) {
-                    cacheEvictors.evictContentFactoryDraftCaches(relatedKey, draftContext);
-                }
-            }
+            ((DraftContentProviderService) contentProviderService).updateDraftParentCacheForKeys(contentKeys);
+            ((DraftContentProviderService) contentProviderService).invalidateDraftNodesCacheEntry(draftContext);
         }
     }
 

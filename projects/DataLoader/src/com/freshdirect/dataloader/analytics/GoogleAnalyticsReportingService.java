@@ -15,7 +15,6 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
@@ -23,6 +22,7 @@ import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.http.HttpService;
+import com.freshdirect.storeapi.content.ProductModel;
 
 public class GoogleAnalyticsReportingService {
 

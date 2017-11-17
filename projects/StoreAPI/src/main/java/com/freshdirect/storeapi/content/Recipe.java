@@ -186,7 +186,7 @@ public class Recipe extends ContentNodeModelImpl implements ContentStatusI, Ymal
 	 *          ContentNode Model
 	 */
 	private List<ContentNodeModel> getYmals() {
-		ContentNodeModelUtil.refreshModels(this, "RELATED_PRODUCTS", ymals, false);
+		ContentNodeModelUtil.refreshModels(this, "RELATED_PRODUCTS", ymals, false, true);
 		return Collections.unmodifiableList(ymals);
 	}
 

@@ -80,7 +80,7 @@ public class GwtNodeData implements Serializable {
 
     /**
      * Return permission set for the given node. NOTE: it can be null for prototype nodes!
-     * 
+     *
      * @return permission set or null
      */
     public GwtNodePermission getPermission() {
@@ -145,9 +145,9 @@ public class GwtNodeData implements Serializable {
 
     /**
      * This method collects the values from the UI fields into the attributes before sending to the server.
-     * 
+     *
      * @return the extra, related nodes.
-     * 
+     *
      */
     public void collectValuesFromFields() {
         for (Map.Entry<String, ContentNodeAttributeI> e : node.getOriginalAttributes().entrySet()) {
@@ -172,7 +172,7 @@ public class GwtNodeData implements Serializable {
                 this.node.changeValue(name, value);
             }
         } else {
-            Serializable value = (Serializable) fieldObject.getValue();
+            Serializable value = fieldObject.getValue();
             if (value instanceof ProductConfigAttribute) {
                 ProductConfigAttribute pcAttr = (ProductConfigAttribute) value;
                 this.node.changeValue(name, pcAttr.getValue()); // Sku
@@ -187,7 +187,7 @@ public class GwtNodeData implements Serializable {
 
     /**
      * Returns node value suitable as form item
-     * 
+     *
      * @param attributeKey
      * @return
      */
@@ -224,7 +224,7 @@ public class GwtNodeData implements Serializable {
     protected boolean isDirty(String attributeKey, ContentNodeAttributeI attr) {
         Field<? extends Serializable> fieldObject = attr.getFieldObject();
         // field object can be null, if the field not rendered
-        if (fieldObject != null) {
+        if (fieldObject != null && !fieldObject.isReadOnly()) {
             Serializable value = fieldObject.getValue();
             Serializable oldValue = node.getOriginalAttributeValue(attributeKey);
             if (!equal(value, oldValue)) {
@@ -258,7 +258,7 @@ public class GwtNodeData implements Serializable {
 
     /**
      * Adjust field values of inherited attributes according to the given context path
-     * 
+     *
      * @param contextPath
      */
     @SuppressWarnings("unchecked")

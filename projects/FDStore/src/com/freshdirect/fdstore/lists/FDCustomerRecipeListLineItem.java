@@ -2,8 +2,8 @@ package com.freshdirect.fdstore.lists;
 
 import java.util.Comparator;
 
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.Recipe;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.Recipe;
 
 public class FDCustomerRecipeListLineItem extends FDCustomerListItem {
 

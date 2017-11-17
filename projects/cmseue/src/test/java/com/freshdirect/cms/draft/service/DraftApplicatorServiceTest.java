@@ -2,49 +2,39 @@ package com.freshdirect.cms.draft.service;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 
 import com.freshdirect.cms.category.UnitTest;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentKeyFactory;
-import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.cms.core.domain.ContentTypes;
-import com.freshdirect.cms.core.service.ContentTypeInfoService;
 import com.freshdirect.cms.draft.domain.DraftChange;
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
 
 @RunWith(MockitoJUnitRunner.class)
 @Category(UnitTest.class)
 public class DraftApplicatorServiceTest {
 
     @Mock
-    private ContentTypeInfoService contentTypeInfoService;
+    private DraftChangeToContentNodeApplicator draftChangeToContentNodeApplicator;
 
     @InjectMocks
     private DraftApplicatorService underTest;
 
-    @Before
-    public void setUp() {
-        Mockito.when(contentTypeInfoService.findAttributeByName(ContentType.Product, "FULL_NAME")).thenReturn(Optional.of(ContentTypes.Product.FULL_NAME));
-        Mockito.when(contentTypeInfoService.findAttributeByName(ContentType.Product, "PREFERRED_SKU")).thenReturn(Optional.of(ContentTypes.Product.PREFERRED_SKU));
-        Mockito.when(contentTypeInfoService.findAttributeByName(ContentType.Product, "skus")).thenReturn(Optional.of(ContentTypes.Product.skus));
-    }
-    
     @Test
     public void testApplyDraftChangesToContentNodesWithMultipleChangeForOneNode() {
+
         String contentKeyAsString = "Product:draft_modified";
         ContentKey contentKey = ContentKeyFactory.get(contentKeyAsString);
 
@@ -72,23 +62,64 @@ public class DraftApplicatorServiceTest {
         draftChangeMultiRelationship.setUserName("testUser");
         draftChangeMultiRelationship.setCreatedAt(System.currentTimeMillis());
 
-        List<DraftChange> draftChanges = ImmutableList.of(draftChangeScalar, draftChangeSingeRelationship, draftChangeMultiRelationship);
-        
-        Map<Attribute, Object> contentNode = new HashMap<Attribute, Object>();
-        contentNode.put(ContentTypes.Product.FULL_NAME, "value_on_main");
-        contentNode.put(ContentTypes.Product.PREFERRED_SKU, ContentKeyFactory.get("Sku:preferredSkuOnMain"));
-        contentNode.put(ContentTypes.Product.skus, Arrays.asList(ContentKeyFactory.get("Sku:batman"), ContentKeyFactory.get("Sku:jabba")));
+        Map<ContentKey, Map<Attribute, Object>> originalNodes = new HashMap<ContentKey, Map<Attribute, Object>>();
+        Map<Attribute, Object> nodeOnMain = new HashMap<Attribute, Object>();
+        nodeOnMain.put(ContentTypes.Product.FULL_NAME, "value_on_main");
+        nodeOnMain.put(ContentTypes.Product.PREFERRED_SKU, ContentKeyFactory.get("Sku:preferredSkuOnMain"));
+        nodeOnMain.put(ContentTypes.Product.skus, Arrays.asList(ContentKeyFactory.get("Sku:batman"), ContentKeyFactory.get("Sku:jabba")));
 
-        contentNode.putAll(underTest.convertDraftChanges(draftChanges).get(contentKey));
-        
-        Assert.assertTrue(contentNode.containsKey(ContentTypes.Product.PREFERRED_SKU));
-        Assert.assertTrue(contentNode.containsKey(ContentTypes.Product.FULL_NAME));
-        Assert.assertTrue(contentNode.containsKey(ContentTypes.Product.skus));
+        originalNodes.put(contentKey, nodeOnMain);
 
-        Assert.assertEquals(ContentKeyFactory.get("Sku:preferredsku"), contentNode.get(ContentTypes.Product.PREFERRED_SKU));
-        Assert.assertEquals("Draft_node", contentNode.get(ContentTypes.Product.FULL_NAME));
+        Mockito.when(draftChangeToContentNodeApplicator.applyDraftChangeToNode(Mockito.eq(draftChangeScalar), Mockito.anyMap())).thenAnswer(new Answer<Map<Attribute, Object>>() {
+
+            @Override
+            public Map<Attribute, Object> answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                Map<Attribute, Object> parameterMap = (Map<Attribute, Object>) args[1];
+                parameterMap.put(ContentTypes.Product.FULL_NAME, "Draft_node");
+                return parameterMap;
+            }
+        });
+
+        Mockito.when(draftChangeToContentNodeApplicator.applyDraftChangeToNode(Mockito.eq(draftChangeSingeRelationship), Mockito.anyMap()))
+                .thenAnswer(new Answer<Map<Attribute, Object>>() {
+
+                    @Override
+                    public Map<Attribute, Object> answer(InvocationOnMock invocation) throws Throwable {
+                        Object[] args = invocation.getArguments();
+                        Map<Attribute, Object> parameterMap = (Map<Attribute, Object>) args[1];
+                        parameterMap.put(ContentTypes.Product.PREFERRED_SKU, ContentKeyFactory.get("Sku:preferredsku"));
+                        return parameterMap;
+                    }
+                });
+
+        Mockito.when(draftChangeToContentNodeApplicator.applyDraftChangeToNode(Mockito.eq(draftChangeMultiRelationship), Mockito.anyMap()))
+                .thenAnswer(new Answer<Map<Attribute, Object>>() {
+
+                    @Override
+                    public Map<Attribute, Object> answer(InvocationOnMock invocation) throws Throwable {
+                        Object[] args = invocation.getArguments();
+                        Map<Attribute, Object> parameterMap = (Map<Attribute, Object>) args[1];
+                        parameterMap.put(ContentTypes.Product.skus, Arrays.asList(ContentKeyFactory.get("Sku:preferredsku"), ContentKeyFactory.get("Sku:jabba"),
+                                ContentKeyFactory.get("Sku:batman"), ContentKeyFactory.get("Sku:greenLantern"), ContentKeyFactory.get("Sku:INeedACoffee")));
+                        return parameterMap;
+                    }
+                });
+
+        Map<ContentKey, Map<Attribute, Object>> draftDecoratedNodes = underTest
+                .applyDraftChangesToContentNodes(Arrays.asList(draftChangeScalar, draftChangeSingeRelationship, draftChangeMultiRelationship), originalNodes);
+
+        Assert.assertFalse(draftDecoratedNodes.isEmpty());
+        Assert.assertEquals(1, draftDecoratedNodes.size());
+        Assert.assertTrue(draftDecoratedNodes.containsKey(contentKey));
+        Assert.assertTrue(draftDecoratedNodes.get(contentKey).containsKey(ContentTypes.Product.PREFERRED_SKU));
+        Assert.assertTrue(draftDecoratedNodes.get(contentKey).containsKey(ContentTypes.Product.FULL_NAME));
+        Assert.assertTrue(draftDecoratedNodes.get(contentKey).containsKey(ContentTypes.Product.skus));
+
+        Assert.assertEquals(ContentKeyFactory.get("Sku:preferredsku"), draftDecoratedNodes.get(contentKey).get(ContentTypes.Product.PREFERRED_SKU));
+        Assert.assertEquals("Draft_node", draftDecoratedNodes.get(contentKey).get(ContentTypes.Product.FULL_NAME));
         Assert.assertEquals(Arrays.asList(ContentKeyFactory.get("Sku:preferredsku"), ContentKeyFactory.get("Sku:jabba"), ContentKeyFactory.get("Sku:batman"),
-                ContentKeyFactory.get("Sku:greenLantern"), ContentKeyFactory.get("Sku:INeedACoffee")), contentNode.get(ContentTypes.Product.skus));
+                ContentKeyFactory.get("Sku:greenLantern"), ContentKeyFactory.get("Sku:INeedACoffee")), draftDecoratedNodes.get(contentKey).get(ContentTypes.Product.skus));
     }
 
     @Test
@@ -103,27 +134,38 @@ public class DraftApplicatorServiceTest {
         draftChangeScalar.setUserName("testUser");
         draftChangeScalar.setCreatedAt(System.currentTimeMillis());
 
-        List<DraftChange> draftChanges = ImmutableList.of(draftChangeScalar);
+        Map<ContentKey, Map<Attribute, Object>> originalNodes = new HashMap<ContentKey, Map<Attribute, Object>>();
+        Map<Attribute, Object> nodeOnMain = new HashMap<Attribute, Object>();
+        nodeOnMain.put(ContentTypes.Product.FULL_NAME, "value_on_main");
+        nodeOnMain.put(ContentTypes.Product.PREFERRED_SKU, ContentKeyFactory.get("Sku:preferredSkuOnMain"));
+        nodeOnMain.put(ContentTypes.Product.skus, Arrays.asList(ContentKeyFactory.get("Sku:batman"), ContentKeyFactory.get("Sku:jabba")));
 
-        Map<Attribute, Object> contentNode = new HashMap<Attribute, Object>();
-        contentNode.put(ContentTypes.Product.FULL_NAME, "value_on_main");
-        contentNode.put(ContentTypes.Product.PREFERRED_SKU, ContentKeyFactory.get("Sku:preferredSkuOnMain"));
-        contentNode.put(ContentTypes.Product.skus, Arrays.asList(ContentKeyFactory.get("Sku:batman"), ContentKeyFactory.get("Sku:jabba")));
+        originalNodes.put(contentKey, nodeOnMain);
 
-        contentNode.putAll(underTest.convertDraftChanges(draftChanges).get(contentKey));
+        Mockito.when(draftChangeToContentNodeApplicator.applyDraftChangeToNode(draftChangeScalar, nodeOnMain)).thenReturn(new HashMap<Attribute, Object>(nodeOnMain) {
 
-        Assert.assertTrue(contentNode.containsKey(ContentTypes.Product.PREFERRED_SKU));
-        Assert.assertTrue(contentNode.containsKey(ContentTypes.Product.FULL_NAME));
-        Assert.assertTrue(contentNode.containsKey(ContentTypes.Product.skus));
+            {
+                put(ContentTypes.Product.FULL_NAME, "Draft_node");
+            }
+        });
 
-        Assert.assertEquals("Draft_node", contentNode.get(ContentTypes.Product.FULL_NAME));
-        Assert.assertEquals(ContentKeyFactory.get("Sku:preferredSkuOnMain"), contentNode.get(ContentTypes.Product.PREFERRED_SKU));
+        Map<ContentKey, Map<Attribute, Object>> draftDecoratedNodes = underTest.applyDraftChangesToContentNodes(Arrays.asList(draftChangeScalar), originalNodes);
+
+        Assert.assertFalse(draftDecoratedNodes.isEmpty());
+        Assert.assertTrue(draftDecoratedNodes.containsKey(contentKey));
+        Assert.assertTrue(draftDecoratedNodes.get(contentKey).containsKey(ContentTypes.Product.PREFERRED_SKU));
+        Assert.assertTrue(draftDecoratedNodes.get(contentKey).containsKey(ContentTypes.Product.FULL_NAME));
+        Assert.assertTrue(draftDecoratedNodes.get(contentKey).containsKey(ContentTypes.Product.skus));
+
+        Assert.assertEquals("Draft_node", draftDecoratedNodes.get(contentKey).get(ContentTypes.Product.FULL_NAME));
+        Assert.assertEquals(ContentKeyFactory.get("Sku:preferredSkuOnMain"), draftDecoratedNodes.get(contentKey).get(ContentTypes.Product.PREFERRED_SKU));
         Assert.assertEquals(Arrays.asList(ContentKeyFactory.get("Sku:batman"), ContentKeyFactory.get("Sku:jabba")),
-                contentNode.get(ContentTypes.Product.skus));
+                draftDecoratedNodes.get(contentKey).get(ContentTypes.Product.skus));
     }
 
     @Test
     public void testApplyDraftChangesToContentNodesWithSingleRelationship() {
+
         String contentKeyAsString = "Product:draft_modified";
         ContentKey contentKey = ContentKeyFactory.get(contentKeyAsString);
 
@@ -134,27 +176,39 @@ public class DraftApplicatorServiceTest {
         draftChangeSingeRelationship.setUserName("testUser");
         draftChangeSingeRelationship.setCreatedAt(System.currentTimeMillis());
 
-        List<DraftChange> draftChanges = ImmutableList.of(draftChangeSingeRelationship);
+        Map<ContentKey, Map<Attribute, Object>> originalNodes = new HashMap<ContentKey, Map<Attribute, Object>>();
+        Map<Attribute, Object> nodeOnMain = new HashMap<Attribute, Object>();
+        nodeOnMain.put(ContentTypes.Product.FULL_NAME, "value_on_main");
+        nodeOnMain.put(ContentTypes.Product.PREFERRED_SKU, ContentKeyFactory.get("Sku:preferredSkuOnMain"));
+        nodeOnMain.put(ContentTypes.Product.skus, Arrays.asList(ContentKeyFactory.get("Sku:batman"), ContentKeyFactory.get("Sku:jabba")));
 
-        Map<Attribute, Object> contentNode = new HashMap<Attribute, Object>();
-        contentNode.put(ContentTypes.Product.FULL_NAME, "value_on_main");
-        contentNode.put(ContentTypes.Product.PREFERRED_SKU, ContentKeyFactory.get("Sku:preferredSkuOnMain"));
-        contentNode.put(ContentTypes.Product.skus, Arrays.asList(ContentKeyFactory.get("Sku:batman"), ContentKeyFactory.get("Sku:jabba")));
+        originalNodes.put(contentKey, nodeOnMain);
 
-        contentNode.putAll(underTest.convertDraftChanges(draftChanges).get(contentKey));
+        Mockito.when(draftChangeToContentNodeApplicator.applyDraftChangeToNode(draftChangeSingeRelationship, nodeOnMain)).thenReturn(new HashMap<Attribute, Object>(nodeOnMain) {
 
-        Assert.assertTrue(contentNode.containsKey(ContentTypes.Product.PREFERRED_SKU));
-        Assert.assertTrue(contentNode.containsKey(ContentTypes.Product.FULL_NAME));
-        Assert.assertTrue(contentNode.containsKey(ContentTypes.Product.skus));
+            {
+                put(ContentTypes.Product.PREFERRED_SKU, ContentKeyFactory.get("Sku:preferredsku"));
+            }
+        });
 
-        Assert.assertEquals("value_on_main", contentNode.get(ContentTypes.Product.FULL_NAME));
-        Assert.assertEquals(ContentKeyFactory.get("Sku:preferredsku"), contentNode.get(ContentTypes.Product.PREFERRED_SKU));
+        Map<ContentKey, Map<Attribute, Object>> draftDecoratedNodes = underTest.applyDraftChangesToContentNodes(Arrays.asList(draftChangeSingeRelationship), originalNodes);
+
+        Assert.assertFalse(draftDecoratedNodes.isEmpty());
+        Assert.assertTrue(draftDecoratedNodes.containsKey(contentKey));
+        Assert.assertTrue(draftDecoratedNodes.get(contentKey).containsKey(ContentTypes.Product.PREFERRED_SKU));
+        Assert.assertTrue(draftDecoratedNodes.get(contentKey).containsKey(ContentTypes.Product.FULL_NAME));
+        Assert.assertTrue(draftDecoratedNodes.get(contentKey).containsKey(ContentTypes.Product.skus));
+
+        Assert.assertEquals("value_on_main", draftDecoratedNodes.get(contentKey).get(ContentTypes.Product.FULL_NAME));
+        Assert.assertEquals(ContentKeyFactory.get("Sku:preferredsku"), draftDecoratedNodes.get(contentKey).get(ContentTypes.Product.PREFERRED_SKU));
         Assert.assertEquals(Arrays.asList(ContentKeyFactory.get("Sku:batman"), ContentKeyFactory.get("Sku:jabba")),
-                contentNode.get(ContentTypes.Product.skus));
+                draftDecoratedNodes.get(contentKey).get(ContentTypes.Product.skus));
+
     }
 
     @Test
     public void testApplyDraftChangesToContentNodesWithMultiRelationship() {
+
         String contentKeyAsString = "Product:draft_modified";
         ContentKey contentKey = ContentKeyFactory.get(contentKeyAsString);
 
@@ -165,22 +219,33 @@ public class DraftApplicatorServiceTest {
         draftChangeMultiRelationship.setUserName("testUser");
         draftChangeMultiRelationship.setCreatedAt(System.currentTimeMillis());
 
-        List<DraftChange> draftChanges = ImmutableList.of(draftChangeMultiRelationship);
+        Map<ContentKey, Map<Attribute, Object>> originalNodes = new HashMap<ContentKey, Map<Attribute, Object>>();
+        Map<Attribute, Object> nodeOnMain = new HashMap<Attribute, Object>();
+        nodeOnMain.put(ContentTypes.Product.FULL_NAME, "value_on_main");
+        nodeOnMain.put(ContentTypes.Product.PREFERRED_SKU, ContentKeyFactory.get("Sku:preferredSkuOnMain"));
+        nodeOnMain.put(ContentTypes.Product.skus, Arrays.asList(ContentKeyFactory.get("Sku:batman"), ContentKeyFactory.get("Sku:jabba")));
 
-        Map<Attribute, Object> contentNode = new HashMap<Attribute, Object>();
-        contentNode.put(ContentTypes.Product.FULL_NAME, "value_on_main");
-        contentNode.put(ContentTypes.Product.PREFERRED_SKU, ContentKeyFactory.get("Sku:preferredSkuOnMain"));
-        contentNode.put(ContentTypes.Product.skus, Arrays.asList(ContentKeyFactory.get("Sku:batman"), ContentKeyFactory.get("Sku:jabba")));
+        originalNodes.put(contentKey, nodeOnMain);
 
-        contentNode.putAll(underTest.convertDraftChanges(draftChanges).get(contentKey));
+        Mockito.when(draftChangeToContentNodeApplicator.applyDraftChangeToNode(draftChangeMultiRelationship, nodeOnMain)).thenReturn(new HashMap<Attribute, Object>(nodeOnMain) {
 
-        Assert.assertTrue(contentNode.containsKey(ContentTypes.Product.PREFERRED_SKU));
-        Assert.assertTrue(contentNode.containsKey(ContentTypes.Product.FULL_NAME));
-        Assert.assertTrue(contentNode.containsKey(ContentTypes.Product.skus));
+            {
+                put(ContentTypes.Product.skus, Arrays.asList(ContentKeyFactory.get("Sku:preferredsku"), ContentKeyFactory.get("Sku:jabba"), ContentKeyFactory.get("Sku:batman"),
+                        ContentKeyFactory.get("Sku:greenLantern"), ContentKeyFactory.get("Sku:INeedACoffee")));
+            }
+        });
 
-        Assert.assertEquals("value_on_main", contentNode.get(ContentTypes.Product.FULL_NAME));
-        Assert.assertEquals(ContentKeyFactory.get("Sku:preferredSkuOnMain"), contentNode.get(ContentTypes.Product.PREFERRED_SKU));
+        Map<ContentKey, Map<Attribute, Object>> draftDecoratedNodes = underTest.applyDraftChangesToContentNodes(Arrays.asList(draftChangeMultiRelationship), originalNodes);
+
+        Assert.assertFalse(draftDecoratedNodes.isEmpty());
+        Assert.assertTrue(draftDecoratedNodes.containsKey(contentKey));
+        Assert.assertTrue(draftDecoratedNodes.get(contentKey).containsKey(ContentTypes.Product.PREFERRED_SKU));
+        Assert.assertTrue(draftDecoratedNodes.get(contentKey).containsKey(ContentTypes.Product.FULL_NAME));
+        Assert.assertTrue(draftDecoratedNodes.get(contentKey).containsKey(ContentTypes.Product.skus));
+
+        Assert.assertEquals("value_on_main", draftDecoratedNodes.get(contentKey).get(ContentTypes.Product.FULL_NAME));
+        Assert.assertEquals(ContentKeyFactory.get("Sku:preferredSkuOnMain"), draftDecoratedNodes.get(contentKey).get(ContentTypes.Product.PREFERRED_SKU));
         Assert.assertEquals(Arrays.asList(ContentKeyFactory.get("Sku:preferredsku"), ContentKeyFactory.get("Sku:jabba"), ContentKeyFactory.get("Sku:batman"),
-                ContentKeyFactory.get("Sku:greenLantern"), ContentKeyFactory.get("Sku:INeedACoffee")), contentNode.get(ContentTypes.Product.skus));
+                ContentKeyFactory.get("Sku:greenLantern"), ContentKeyFactory.get("Sku:INeedACoffee")), draftDecoratedNodes.get(contentKey).get(ContentTypes.Product.skus));
     }
 }

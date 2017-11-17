@@ -11,12 +11,7 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
 import com.freshdirect.WineUtil;
-import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.EnumWineFilterValueType;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.WineFilter;
-import com.freshdirect.fdstore.content.WineFilterValue;
 import com.freshdirect.fdstore.content.util.EnumWineViewType;
 import com.freshdirect.fdstore.content.util.QueryParameter;
 import com.freshdirect.fdstore.content.util.QueryParameterCollection;
@@ -25,6 +20,11 @@ import com.freshdirect.fdstore.content.util.WineSorter.Type;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.EnumWineFilterValueType;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.WineFilterValue;
+import com.freshdirect.storeapi.fdstore.FDContentTypes;
 import com.freshdirect.webapp.taglib.content.WineFilterTag;
 
 public class WineSorterTag extends BodyTagSupportEx {

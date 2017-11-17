@@ -1325,6 +1325,9 @@ public final class ContentTypes {
             .build();
     }
 
+    public static final class ErpCharacteristic {
+    }
+
     public static final class Brand {
         public static final Attribute FULL_NAME = stringAttribute("FULL_NAME")
             .build();
@@ -1859,9 +1862,6 @@ public final class ContentTypes {
             .required()
             .navigable()
             .build();
-        public static final Attribute excludeResidentalSearch = booleanAttribute("excludeResidentalSearch").build();
-        public static final Attribute excludeCorporateSearch = booleanAttribute("excludeCorporateSearch").build();
-        public static final Attribute excludeFoodKickSearch = booleanAttribute("excludeFoodKickSearch").build();
     }
 
     public static final class ProductFilter {
@@ -1879,7 +1879,7 @@ public final class ContentTypes {
         public static final Attribute erpsyFlagCode = stringAttribute("erpsyFlagCode")
             .build();
         public static final Attribute type = stringEnum("type")
-                .withValues("AND", "OR", "ALLERGEN", "BACK_IN_STOCK", "GOING_OUT_OF_STOCK", "BRAND", "CLAIM", "CUSTOMER_RATING", "DOMAIN_VALUE", "EXPERT_RATING",
+            .withValues("AND", "OR", "ALLERGEN", "BACK_IN_STOCK", "BRAND", "CLAIM", "CUSTOMER_RATING", "DOMAIN_VALUE", "EXPERT_RATING",
                         "FRESHNESS", "KOSHER", "NEW", "NUTRITION", "ON_SALE", "ORGANIC", "PRICE", "SUSTAINABILITY_RATING", "TAG")
             .required()
             .build();
@@ -1922,9 +1922,6 @@ public final class ContentTypes {
         public static final Attribute rootTag = linkOneOf(Tag).toName("rootTag")
             .required()
             .build();
-        public static final Attribute excludeResidentalSearch = booleanAttribute("excludeResidentalSearch").build();
-        public static final Attribute excludeCorporateSearch = booleanAttribute("excludeCorporateSearch").build();
-        public static final Attribute excludeFoodKickSearch = booleanAttribute("excludeFoodKickSearch").build();
     }
 
     public static final class SortOption {
@@ -1938,8 +1935,7 @@ public final class ContentTypes {
 
         public static final Attribute strategy = stringEnum("strategy")
             .withValues("CUSTOMER_RATING", "EXPERT_RATING", "NAME", "POPULARITY", "PRICE", "SALE", "SUSTAINABILITY_RATING", "DEPARTMENT", "E_COUPON_DOLLAR_DISCOUNT",
-                        "E_COUPON_EXPIRATION_DATE", "E_COUPON_PERCENT_DISCOUNT", "E_COUPON_POPULARITY", "E_COUPON_START_DATE", "RECENCY", "SEARCH_RELEVANCY", "FAVS_FIRST",
-                        "CUSTOMER_POPULARITY","STAFF_PICKS_OUR_FAVS")
+                        "E_COUPON_EXPIRATION_DATE", "E_COUPON_PERCENT_DISCOUNT", "E_COUPON_POPULARITY", "E_COUPON_START_DATE", "RECENCY", "SEARCH_RELEVANCY", "FAVS_FIRST")
             .required()
             .build();
     }
@@ -2025,7 +2021,6 @@ public final class ContentTypes {
             .build();
         public static final Attribute displayType = stringEnum("displayType")
             .withValues("Greeting", "HorizontalPickList", "VerticalPickList", "ShortBanner")
-            .required()
             .build();
         public static final Attribute drawer = booleanAttribute("drawer")
             .build();
@@ -2045,10 +2040,6 @@ public final class ContentTypes {
             .build();
         public static final Attribute SectionDarkStore = linkManyOf(DarkStore).toName("SectionDarkStore")
             .build();
-        public static final Attribute minimumProductLimit = integerAttribute("minimumProductLimit")
-                .build();
-        public static final Attribute maximumProductLimit = integerAttribute("maximumProductLimit")
-                .build();
     }
 
     public static final class Anchor {
@@ -2243,8 +2234,6 @@ public final class ContentTypes {
             .build();
         public static final Attribute sourceNode = linkOneOf(Brand, Category, Department).toName("sourceNode")
             .build();
-        public static final Attribute randomizeProductOrder = booleanAttribute("randomizeProductOrder").build();
-        public static final Attribute productMaxLimit = stringEnum("productMaxLimit").withValues("12", "20").build();
     }
 
     public static final class Image {

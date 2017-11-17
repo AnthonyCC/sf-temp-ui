@@ -11,8 +11,8 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDSalesUnit;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.webapp.BodyTagSupport;
+import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.util.TransactionalProductImpression;
 
 

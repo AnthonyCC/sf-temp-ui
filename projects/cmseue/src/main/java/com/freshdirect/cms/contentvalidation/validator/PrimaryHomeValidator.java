@@ -17,6 +17,7 @@ import com.freshdirect.cms.core.domain.RootContentKey;
 import com.freshdirect.cms.core.service.ContextualContentProvider;
 import com.freshdirect.cms.validation.ValidationResultLevel;
 import com.freshdirect.cms.validation.ValidationResults;
+import com.freshdirect.cms.validation.validator.Validator;
 
 /**
  * Ensures that the <code>PRIMARY_HOME</code> attribute points to a valid parent for nodes of type <code>Product</code>.
@@ -27,7 +28,6 @@ public class PrimaryHomeValidator implements Validator {
     public static final String INVALID_PRIMARY_HOME_MESSAGE = "Primary Homes contain invalid primary home!";
     public static final String NO_PRIMARY_HOME_MESSAGE = "There is no Primary Home for product";
 
-    @SuppressWarnings("unchecked")
     @Override
     public ValidationResults validate(ContentKey contentKey, Map<Attribute, Object> attributesWithValues, ContextualContentProvider contentSource) {
         ValidationResults validationResults = new ValidationResults();

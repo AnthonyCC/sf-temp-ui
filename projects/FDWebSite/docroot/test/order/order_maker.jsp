@@ -1,7 +1,7 @@
 <%@page import="java.util.*"%>
 <%@page contentType="text/html"%>
 <%@page import="com.freshdirect.fdstore.*"%>
-<%@page import="com.freshdirect.fdstore.content.*"%>
+<%@page import="com.freshdirect.storeapi.content.*"%>
 <%@page import="com.freshdirect.fdstore.customer.*"%>
 <%@page import="com.freshdirect.fdstore.ZonePriceListing"%>
 <%@ page import="com.freshdirect.common.pricing.ZoneInfo"%>

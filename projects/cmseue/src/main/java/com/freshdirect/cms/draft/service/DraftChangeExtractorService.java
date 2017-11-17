@@ -1,34 +1,35 @@
 package com.freshdirect.cms.draft.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.freshdirect.cms.core.converter.ScalarValueConverter;
 import com.freshdirect.cms.core.domain.Attribute;
 import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.cms.core.domain.ContentNodeComparatorUtil;
 import com.freshdirect.cms.core.domain.Relationship;
 import com.freshdirect.cms.core.domain.RelationshipCardinality;
-import com.freshdirect.cms.core.domain.Scalar;
 import com.freshdirect.cms.core.service.ContentTypeInfoService;
+import com.freshdirect.cms.draft.converter.AttributeValueToStringConverter;
 import com.freshdirect.cms.draft.domain.Draft;
 import com.freshdirect.cms.draft.domain.DraftChange;
 import com.freshdirect.cms.draft.domain.DraftContext;
-import com.google.common.base.Joiner;
 
 @Service
 public class DraftChangeExtractorService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DraftChangeExtractorService.class);
 
-    private static final Joiner JOINER = Joiner.on(DraftApplicatorService.SEPARATOR).skipNulls();
+    @Autowired
+    private AttributeValueToStringConverter attributeValueToStringConverter;
 
     @Autowired
     private ContentTypeInfoService contentTypeInfoService;
@@ -39,21 +40,25 @@ public class DraftChangeExtractorService {
      * @param nodes
      * @return
      */
-    private List<DraftChange> extractChanges(Map<ContentKey, Map<Attribute, Object>> nodes, Map<ContentKey, Map<Attribute, Object>> originalNodes,
-            final String userName, final Draft draft) {
+    public List<DraftChange> extractChanges(Map<ContentKey, Map<Attribute, Object>> nodes, Map<ContentKey, Map<Attribute, Object>> originalNodes, final String userName,
+            final Draft draft) {
         if (nodes == null || nodes.isEmpty()) {
             return Collections.emptyList();
         }
 
         List<DraftChange> changes = new ArrayList<DraftChange>();
+
         for (ContentKey nodeKey : nodes.keySet()) {
+
             if (ContentNodeComparatorUtil.isNodeChanged(nodes.get(nodeKey), originalNodes.get(nodeKey))) {
+
                 List<DraftChange> list = processNodeChanges(nodeKey, nodes.get(nodeKey), originalNodes.get(nodeKey), userName, draft);
                 if (list != null && !list.isEmpty()) {
                     changes.addAll(list);
                 }
             }
         }
+
         return changes;
     }
 
@@ -105,7 +110,7 @@ public class DraftChangeExtractorService {
                 continue;
             }
 
-            if (ContentNodeComparatorUtil.isValueChanged(originalNode.get(attributeDefinition), changedNode.get(attributeDefinition))) {
+            if (ContentNodeComparatorUtil.isValueChanged(attributeDefinition, originalNode.get(attributeDefinition), changedNode.get(attributeDefinition))) {
                 // prepare draft change
                 final DraftChange dc = new DraftChange();
 
@@ -141,14 +146,19 @@ public class DraftChangeExtractorService {
         final String serializedValue;
 
         // serialize value
-        if (definition instanceof Relationship) {
-            // serialize relationship value
-            serializedValue = serializeRelationshipValue(value, (Relationship) definition);
-        } else if (definition instanceof Scalar) {
-            // serialize scalar value
-            serializedValue = ScalarValueConverter.serializeToString((Scalar) definition, value);
-        } else {
+        if (value == null) {
+
             serializedValue = null;
+
+        } else if (definition instanceof Relationship) {
+            // serialize relationship value
+
+            serializedValue = serializeRelationshipValue(value, (Relationship) definition);
+
+        } else {
+            // serialize scalar value
+
+            serializedValue = attributeValueToStringConverter.convert(definition, value);
         }
         return serializedValue;
     }
@@ -167,22 +177,25 @@ public class DraftChangeExtractorService {
         final String serializedValue;
 
         if (definition.getCardinality() == RelationshipCardinality.ONE) {
-            if (value == null) {
-                serializedValue = null;
-            } else {
-                serializedValue = ((ContentKey) value).toString();
-            }
+
+            serializedValue = ((ContentKey) value).toString();
+
         } else {
             List<ContentKey> keys = (List<ContentKey>) value;
-            // LP-226 cases
-            if (keys == null) {
+            if (keys == null || keys.isEmpty()) {
+
                 serializedValue = null;
-            } else if (keys.isEmpty()) {
-                serializedValue = DraftApplicatorService.EMPTY_LIST_TOKEN;
+
             } else {
-                serializedValue = JOINER.join(keys);
+                Collection<String> serializedKeys = new ArrayList<String>(keys.size());
+                for (ContentKey key : keys) {
+                    serializedKeys.add(key.toString());
+                }
+
+                serializedValue = StringUtils.join(serializedKeys, DraftChangeToContentNodeApplicator.SEPARATOR);
             }
         }
+
         return serializedValue;
     }
 }

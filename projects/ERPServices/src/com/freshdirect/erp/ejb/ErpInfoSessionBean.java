@@ -371,6 +371,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		List<ErpProductInfoModel> products = new ArrayList<ErpProductInfoModel>();
+		long time = System.currentTimeMillis(); 
+		
 		if (skuCodes != null && skuCodes.length > 0) {
 			try {
 				conn = getConnection();
@@ -384,6 +386,10 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 						if (rs.next()) {
 							ErpProductInfoModel m = fetchErpProductInfoModel(rs, skuCodes[i]);
 							products.add(m);
+						}
+						if(i%1000 == 0) {
+							LOGGER.debug(i + " lightweight products loaded in "+ ((System.currentTimeMillis()-time)/1000) + "secs");
+							time = System.currentTimeMillis();
 						}
 					} finally {
 						close(rs);						
