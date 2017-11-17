@@ -3,14 +3,14 @@
 <%@page import="java.util.LinkedList"%>
 <%@page import="java.math.BigDecimal"%>
 <%@page import="java.util.HashMap"%>
-<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.storeapi.content.CategoryModel"%>
 <%@page import="java.util.Map"%>
-<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
-<%@page import="com.freshdirect.cms.ContentKey"%>
-<%@page import="com.freshdirect.cms.application.CmsManager"%>
-<%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
+<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@page import="com.freshdirect.cms.core.domain.ContentKey"%>
+<%@page import="com.freshdirect.storeapi.application.CmsManager"%>
+<%@page import="com.freshdirect.storeapi.fdstore.FDContentTypes"%>
 <%@page import="java.util.ArrayList"%>
-<%@page import="com.freshdirect.fdstore.content.DepartmentModel"%>
+<%@page import="com.freshdirect.storeapi.content.DepartmentModel"%>
 <%@page import="java.util.List"%>
 <html lang="en-US" xml:lang="en-US">
 <head>

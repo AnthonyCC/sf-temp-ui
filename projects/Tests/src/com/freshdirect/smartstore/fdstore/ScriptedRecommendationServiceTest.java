@@ -10,7 +10,7 @@ import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.event.RecommendationEventsAggregate;
 import com.freshdirect.fdstore.aspects.ScoreFactorGlobalNameAspect;
 import com.freshdirect.fdstore.aspects.ScoreFactorPersonalNameAspect;
-import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.ContentNodeModel;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.RecommendationServiceConfig;

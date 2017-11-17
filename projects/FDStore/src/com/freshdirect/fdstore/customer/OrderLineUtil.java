@@ -23,20 +23,20 @@ import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
-import com.freshdirect.fdstore.content.ComponentGroupModel;
-import com.freshdirect.fdstore.content.ConfiguredProduct;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.DepartmentModel;
-import com.freshdirect.fdstore.content.DomainValue;
-import com.freshdirect.fdstore.content.EnumProductLayout;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.ProductReference;
-import com.freshdirect.fdstore.content.ProductReferenceImpl;
-import com.freshdirect.fdstore.content.Recipe;
-import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.lists.FDCustomerProductList;
 import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
+import com.freshdirect.storeapi.content.ComponentGroupModel;
+import com.freshdirect.storeapi.content.ConfiguredProduct;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.DepartmentModel;
+import com.freshdirect.storeapi.content.DomainValue;
+import com.freshdirect.storeapi.content.EnumProductLayout;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.ProductReference;
+import com.freshdirect.storeapi.content.ProductReferenceImpl;
+import com.freshdirect.storeapi.content.Recipe;
+import com.freshdirect.storeapi.content.SkuModel;
 
 public class OrderLineUtil {
 	
@@ -184,7 +184,9 @@ public class OrderLineUtil {
 			theProduct.setDepartmentDesc("Recipe: " + recipe.getName());
 		} else {
 			DepartmentModel dept = prodNode.getDepartment();
-			theProduct.setDepartmentDesc(dept.getFullName());
+			if (dept != null) {
+			    theProduct.setDepartmentDesc(dept.getFullName());
+			}
 		}
 		
 		try {

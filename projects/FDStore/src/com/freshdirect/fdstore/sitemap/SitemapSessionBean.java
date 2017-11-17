@@ -6,18 +6,18 @@ import javax.ejb.EJBException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.cms.application.CmsManager;
-import com.freshdirect.cms.multistore.MultiStoreContext;
-import com.freshdirect.cms.multistore.MultiStoreContextUtil;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.sitemap.config.DefaultSitemapConfigStrategy;
 import com.freshdirect.fdstore.sitemap.config.FoodKickSitemapConfigStrategy;
 import com.freshdirect.fdstore.sitemap.config.FreshDirectSitemapConfigStrategy;
-import com.freshdirect.fdstore.sitemap.config.SitemapConfigStrategy;
 import com.freshdirect.fdstore.sitemap.config.SitemapCmsPopulator;
+import com.freshdirect.fdstore.sitemap.config.SitemapConfigStrategy;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.application.CmsManager;
+import com.freshdirect.storeapi.multistore.MultiStoreContext;
+import com.freshdirect.storeapi.multistore.MultiStoreContextUtil;
 
 public class SitemapSessionBean extends SessionBeanSupport {
 
@@ -56,7 +56,7 @@ public class SitemapSessionBean extends SessionBeanSupport {
         LOGGER.info("Starting sitemap generation");
 
         EnumEStoreId eStore = CmsManager.getInstance().getEStoreEnum();
-        MultiStoreContext context = MultiStoreContextUtil.getContext(CmsManager.getInstance());
+        MultiStoreContext context = MultiStoreContextUtil.getContext();
         try {
             if (context.isSingleStore()) {
                 SitemapService service = SitemapService.defaultService();

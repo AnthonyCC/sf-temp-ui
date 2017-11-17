@@ -16,29 +16,29 @@ import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.core.domain.ContentKeyFactory;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.customerrating.CustomerRatingsContext;
 import com.freshdirect.fdstore.content.customerrating.CustomerRatingsDTO;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.fdstore.FDContentTypes;
 
 
 /**
  * Custom {@link FactorRangeConverter} and {@link StoreLookup} implementations.
- * 
+ *
  * @author istvan
  *
  */
 public class FactorUtil {
-    
+
     final static Logger LOG = LoggerFactory.getInstance(FactorUtil.class);
-    
+
 	// GLOBAL FACTORS columns, when moved to JDK 1.5+ these should be enums
 	public static String GLOBAL_POPULARITY_COLUMN = "POPULARITY";
 	public static String GLOBAL_REORDER_BUYER_COUNT_COLUMN = "REORDERBUYERCOUNT";
@@ -46,16 +46,17 @@ public class FactorUtil {
 	public static String GLOBAL_WEEKLY_FREQUENCY_COLUMN = "WEEKLYFREQUENCY";
 	public static String GLOBAL_AVERAGE_FREQUENCY_COLUMN = "AVERAGEFREQUENCY";
 	public static String GLOBAL_POPULARITY_8W_COLUMN = "POPULARITY_8W";
-	
+
 	// PERSONALIZED FACTORS columns, when moved to JDK 1.5+ these should be enums
 	public static String PERSONALIZED_FREQUENCY_COLUMN = "FREQUENCY";
 	public static String PERSONALIZED_RECENT_FREQUENCY_COLUMN = "RECENT_FREQUENCY";
 	public static String PERSONALIZED_QUANTITY_COLUMN = "QUANTITY";
 	public static String PERSONALIZED_AMOUNT_COLUMN = "AMOUNT";
-	
-		
+
+
     private static class ProduceRatingCache implements StoreLookup {
-        
+
+        @Override
         public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
             try {
                 if (contentNode instanceof ProductModel) {
@@ -69,109 +70,115 @@ public class FactorUtil {
             }
             return 0;
         }
-        
+
         @Override
         public void reloadCache() {
-            
+
         }
-        
+
     }
-	
+
 	private static StoreLookup produceRatingCache = new ProduceRatingCache();
-	
+
 	/**
 	 * Get a CSM lookup which returns "Deals Percentage".
-	 * 
+	 *
 	 * @return StoreLookup
 	 */
 	public static StoreLookup getDealsPercentageLookup() {
 		return new StoreLookup() {
-			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
+			@Override
+            public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
 				return AllDealsCache.getInstance().getRegularDeal(contentNode.getContentKey(), pricingContext) / 100.0;
 			}
 
 			@Override
 			public void reloadCache() {
 				AllDealsCache.getInstance().reload();
-			}	
+			}
 		};
 	}
-	
+
 	public static StoreLookup getDealsPercentageDiscretized() {
 		return new StoreLookup() {
-			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
+			@Override
+            public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
 				return Math.floor(AllDealsCache.getInstance().getRegularDeal(contentNode.getContentKey(), pricingContext) / 5.0);
 			}
 
 			@Override
 			public void reloadCache() {
 				AllDealsCache.getInstance().reload();
-			}	
+			}
 		};
 	}
 
 	/**
 	 * Get a CSM lookup which returns "Tiered Deals Percentage".
-	 * 
+	 *
 	 * @return StoreLookup
 	 */
 	public static StoreLookup getTieredDealsPercentageLookup() {
 		return new StoreLookup() {
-			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
+			@Override
+            public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
 				return AllDealsCache.getInstance().getTieredDeal(contentNode.getContentKey(), pricingContext) / 100.0;
-			}	
+			}
 
 			@Override
 			public void reloadCache() {
 				AllDealsCache.getInstance().reload();
-			}	
+			}
 		};
 	}
-	
+
 	public static StoreLookup getTieredDealsPercentageDiscretized() {
 		return new StoreLookup() {
-			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
+			@Override
+            public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
 				return Math.floor(AllDealsCache.getInstance().getTieredDeal(contentNode.getContentKey(), pricingContext) / 5.0);
 			}
 
 			@Override
 			public void reloadCache() {
 				AllDealsCache.getInstance().reload();
-			}	
+			}
 		};
 	}
-	
+
 	/**
 	 * Get a CSM lookup which returns "Highest Deals Percentage".
-	 * 
+	 *
 	 * @return StoreLookup
 	 */
 	public static StoreLookup getHighestDealsPercentageLookup() {
 		return new StoreLookup() {
-			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
+			@Override
+            public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
 				return AllDealsCache.getInstance().getHighestDeal(contentNode.getContentKey(), pricingContext) / 100.0;
-			}	
+			}
 
 			@Override
 			public void reloadCache() {
 				AllDealsCache.getInstance().reload();
-			}	
+			}
 		};
 	}
-	
+
 	public static StoreLookup getHighestDealsPercentageDiscretized() {
 		return new StoreLookup() {
-			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
+			@Override
+            public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
 				return Math.floor(AllDealsCache.getInstance().getHighestDeal(contentNode.getContentKey(), pricingContext) / 5.0);
 			}
 
 			@Override
 			public void reloadCache() {
 				AllDealsCache.getInstance().reload();
-			}	
+			}
 		};
 	}
-	
+
 	/**
 	 * Get CMS lookup which returns "Expert Weight".
 	 * @return StoreLookup
@@ -179,17 +186,18 @@ public class FactorUtil {
 	public static StoreLookup getExpertWeightLookup() {
 		return new StoreLookup() {
 
-			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
-				return contentNode instanceof ProductModel ? 
+			@Override
+            public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
+				return contentNode instanceof ProductModel ?
 						((ProductModel)contentNode).getExpertWeight() : 0;
 			}
-			
+
 			@Override
-			public void reloadCache() {			                
+			public void reloadCache() {
 			}
 		};
 	}
-	
+
 	/**
 	 * Get CMS lookup which returns "Expert Weight" on a 0 - 1 scale.
 	 * @return StoreLookup
@@ -198,7 +206,7 @@ public class FactorUtil {
 		return new StoreLookup() {
 		        @Override
 			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
-				int ew = 
+				int ew =
 					contentNode instanceof ProductModel ?
 						((ProductModel)contentNode).getExpertWeight() : 0;
 				switch(ew) {
@@ -219,13 +227,13 @@ public class FactorUtil {
 			}
 			@Override
 			public void reloadCache() {
-			                
+
 			}
 		};
 	}
-	
-	
-	
+
+
+
 	public static StoreLookup getCustomerRatingLookup() {
 		return new StoreLookup() {
 			@Override
@@ -284,72 +292,78 @@ public class FactorUtil {
 
 	public static StoreLookup getProduceRatingLookup() {
 		return new CachingStoreLookup(produceRatingCache) {
-			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
+			@Override
+            public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
 				return super.getVariable(contentNode, pricingContext);
 			}
 		};
 	}
-	
+
 	public static StoreLookup getNormalizedProduceRatingLookup() {
-		return new CachingStoreLookup(produceRatingCache) {		
+		return new CachingStoreLookup(produceRatingCache) {
 			//   0,    1,    2,    3,    4,   5,   6,    7,   8,   9,  10,  11,  12,  13,  14,  15
-			private double[] scores = 
+			private double[] scores =
 				{0, -0.8, -0.6, -0.4, -0.2, 0.0,  0.0, 0.0, 0.2, 0.4, 0.6, 0.6, 0.8, 0.8, 1.0, 1.0};
 
-			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
+			@Override
+            public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
 				return scores[(int) super.getVariable(contentNode, pricingContext)];
 			}
-			
-			
+
+
 		};
 	}
-	
+
 	public static StoreLookup getDescretizedProduceRatingLookup1() {
-		return new CachingStoreLookup(produceRatingCache) {		
+		return new CachingStoreLookup(produceRatingCache) {
 			//   0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15
-			private double[] scores = 
+			private double[] scores =
 				{0,  1,  2,  3,  4,  0,  0,  5,  6,  7,  8,  8,  9,  9, 10, 10};
 
-			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
-				return scores[(int) super.getVariable(contentNode, pricingContext)];
-			}	
-		};		
-	}
-	
-	public static StoreLookup getDescretizedProduceRatingLookup2() {
-		return new CachingStoreLookup(produceRatingCache) {		
-			//   0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15
-			private double[] scores = 
-				{0, -4, -3, -2, -1,  0,  0,  0,  1,  2,  3,  3,  4,  4,  5,  5};
-
-			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
-				return scores[(int) super.getVariable(contentNode, pricingContext)];
-			}	
-		};		
-	}
-	
-	public static StoreLookup getNewnessLookup() {
-		return new StoreLookup() {
-			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
-				return -ContentFactory.getInstance().getProductAge((ProductModel) contentNode);
-			}
-			
 			@Override
-			public void reloadCache() {
-			                
+            public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
+				return scores[(int) super.getVariable(contentNode, pricingContext)];
 			}
 		};
 	}
-	
-	public static StoreLookup getBackInStockLookup() {
-		return new StoreLookup() {
-			public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
-				return -ContentFactory.getInstance().getBackInStockProductAge((ProductModel) contentNode);
+
+	public static StoreLookup getDescretizedProduceRatingLookup2() {
+		return new CachingStoreLookup(produceRatingCache) {
+			//   0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15
+			private double[] scores =
+				{0, -4, -3, -2, -1,  0,  0,  0,  1,  2,  3,  3,  4,  4,  5,  5};
+
+			@Override
+            public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
+				return scores[(int) super.getVariable(contentNode, pricingContext)];
 			}
-			
+		};
+	}
+
+	public static StoreLookup getNewnessLookup() {
+		return new StoreLookup() {
+			@Override
+            public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
+				return -ContentFactory.getInstance().getProductAge((ProductModel) contentNode);
+			}
+
 			@Override
 			public void reloadCache() {
-			                
+
+			}
+		};
+	}
+
+	public static StoreLookup getBackInStockLookup() {
+		return new StoreLookup() {
+			@Override
+            public double getVariable(ContentNodeModel contentNode, PricingContext pricingContext) {
+				return -ContentFactory.getInstance().getBackInStockProductAge((ProductModel) contentNode);
+			}
+
+			@Override
+			public void reloadCache() {
+
 			}
 		};
 	}
@@ -358,167 +372,179 @@ public class FactorUtil {
 
 		private Set<String> dbColumns =
 			new HashSet<String>(Arrays.asList(new String[]{GLOBAL_REORDER_BUYER_COUNT_COLUMN, GLOBAL_TOTAL_BUYER_COUNT_COLUMN}));
-		
+
 		private int minPurchases;
-		
+
 		protected ReorderRateConverter(int minPurchases) {
 			this.minPurchases = minPurchases;
 		}
-		
-		public double[] map(String userId, ScoreRangeProvider provider)
+
+		@Override
+        public double[] map(String userId, ScoreRangeProvider provider)
 			throws Exception {
 			double [] reordersCounts = dup(provider.getRange(userId, GLOBAL_REORDER_BUYER_COUNT_COLUMN));
 			double [] totalCounts = provider.getRange(userId, GLOBAL_TOTAL_BUYER_COUNT_COLUMN);
 			for(int i = 0; i< reordersCounts.length; ++i) {
 				reordersCounts[i] = totalCounts[i] > minPurchases ? reordersCounts[i]/totalCounts[i] : 0;
-			}			
+			}
 			return reordersCounts;
 		}
-		
-		public Set<String> requiresGlobalDatabaseColumns() {
+
+		@Override
+        public Set<String> requiresGlobalDatabaseColumns() {
 			return dbColumns;
 		}
-		
-		public boolean isPersonalized() {
+
+		@Override
+        public boolean isPersonalized() {
 			return false;
 		}
-		
-		
+
+
 	}
-	
+
 	public static FactorRangeConverter getReorderRateConverter(int minPurchases) {
 		return new ReorderRateConverter(minPurchases);
 	}
-	
+
 	/**
 	 * Get factor range converter for reorder rate.
-	 * 
+	 *
 	 * Takes the ratio of two database columns: RerorderBuyerCount and TotalBuyerCount.
-	 * 
+	 *
 	 * @param minPurchases if purchased less, the score is zero.
 	 * @return FactorRangeConverter
 	 */
 	public static FactorRangeConverter getNormalizedReorderRateConverter(int minPurchases) {
 		return new ReorderRateConverter(minPurchases) {
-			
 
-			public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
+
+			@Override
+            public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
 				double [] reordersCounts = super.map(userId, provider);
-				
+
 				divide(reordersCounts,max(reordersCounts));
 				return reordersCounts;
-			}		
+			}
 		};
 	}
-	
-	
+
+
 	/**
-	 * 
+	 *
 	 * @param minPurchases
 	 * @return
 	 */
 	public static FactorRangeConverter getDepartmentNormalizedReorderRateConverter(int minPurchases) {
 		return new ReorderRateConverter(minPurchases) {
-		
-			public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
+
+			@Override
+            public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
 				final double[] range = super.map(userId, provider);
-				
+
 				return new DepartmentSpecificConverter() {
 
-					public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
+					@Override
+                    public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
 						return maxNormalize(range, userId, provider);
 					}
-					
+
 				}.map(userId, provider);
 			}
-			
+
 		};
 	}
-	
+
 	public static FactorRangeConverter getDiscretizedReorderRateConverter(double base) {
 		return new LogCDFDiscretizingConverter(base) {
-			
-			public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
+
+			@Override
+            public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
 				return discretizeRange(provider.getRange(userId, GLOBAL_POPULARITY_COLUMN));
 			}
-			
-			public boolean isPersonalized() {
+
+			@Override
+            public boolean isPersonalized() {
 				return false;
 			}
-			
-			public Set<String> requiresGlobalDatabaseColumns() {
+
+			@Override
+            public Set<String> requiresGlobalDatabaseColumns() {
 				return Collections.singleton(GLOBAL_POPULARITY_COLUMN);
 			}
 		};
-	}	
+	}
 
 	/**
 	 * Frequencies divided by the max frequency a 0 - 1 rate.
-	 * 
+	 *
 	 * Frequencies are divided by the max frequency.
 	 * @return converter
 	 */
 	public static FactorRangeConverter getNormalizedFrequencyConverter() {
 		return new FactorRangeConverter() {
 
-			public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
+			@Override
+            public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
 				double [] values = dup(provider.getRange(userId, PERSONALIZED_FREQUENCY_COLUMN));
 				double m = max(values);
 				if (m > 0) {
 					for(int i = 0; i< values.length; ++i) {
-						values[i] /= m; 
+						values[i] /= m;
 					}
 				}
 				return values;
 			}
-			
-			public Set<String> requiresPersonalizedDatabaseColumns() {
+
+			@Override
+            public Set<String> requiresPersonalizedDatabaseColumns() {
 				return Collections.singleton(PERSONALIZED_FREQUENCY_COLUMN);
 			}
-			
-			public boolean isPersonalized() {
+
+			@Override
+            public boolean isPersonalized() {
 				return true;
 			}
 		};
 	}
-	
-	
+
+
 	/**
 	 * Discretizer utility.
-	 * 
+	 *
 	 * Discretization consists of:
 	 * <ol>
 	 *  <li>Calculating the CDF of value occurrences such that
 	 *      products are sorted in decreasing value order</li>
 	 *  <li>Putting the values into buckets depending where logarithm intersects
-	 *      the CDF curve</li> 
+	 *      the CDF curve</li>
 	 * </ol>
 	 * Thus, it is a relatively expensive process.
-	 * 
+	 *
 	 * @author istvan
 	 */
 	protected static abstract class LogCDFDiscretizingConverter extends FactorRangeConverter {
-		
+
 		private double base;
-		
+
 		// Frequency bucket
 		class Bucket {
 			int value = 1; // count
-			int cdf = 0; 
+			int cdf = 0;
 			int norm = 0;
-			
+
 			public void inc() {
 				++value;
 			}
-			
+
 			public int intValue() {
 				return value;
 			}
-			
+
 			public void accumulate(int c) {
 				cdf += c;
 			}
-			
+
 			public void caculateNorm(double total) {
 				double bar = total /= base;
 				norm = 1;
@@ -527,29 +553,30 @@ public class FactorUtil {
 					++norm;
 				}
 			}
-			
+
 			public int normValue() {
 				return norm;
 			}
-			
+
 		}
-		
+
 		protected LogCDFDiscretizingConverter(double base) {
 			this.base = base;
 		}
-		
+
 		protected double[] discretizeRange(double[] range) {
-			
+
 			// store values in decreasing order
 			SortedMap<Number,Bucket> histo = new TreeMap<Number,Bucket>(
 				new Comparator<Number>() {
-					public int compare(Number o1, Number o2) {
+					@Override
+                    public int compare(Number o1, Number o2) {
 						double diff = o2.doubleValue() - o1.doubleValue() ;
 						return diff < 0 ? -1 : diff > 0 ? +1 : 0;
 					}
 				}
 			);
-					
+
 			// sum up the value occurrences
 			for(int i = 0; i< range.length; ++i) {
 				Double value = new Double(range[i]);
@@ -560,7 +587,7 @@ public class FactorUtil {
 					count.inc();
 				}
 			}
-			
+
 			// calculate the CDF
 			int total = 0;
 			for(Iterator<Map.Entry<Number,Bucket>> i = histo.entrySet().iterator(); i.hasNext(); ) {
@@ -569,117 +596,129 @@ public class FactorUtil {
 				total += bucket.intValue();
 				bucket.accumulate(total);
 			}
-			
+
 			// calculate the norms
 			for(Iterator<Bucket> i = histo.values().iterator(); i.hasNext();) {
 				Bucket bucket = i.next();
 				bucket.caculateNorm(total);
 			}
-			
+
 			double [] results = new double[range.length];
-			
+
 			// assign the values
 			for(int i = 0; i< range.length; ++i) {
 				results[i] = range[i] == 0 ? 0 : histo.get(new Double(range[i])).normValue();
 			}
-			
+
 			return results;
 		}
 	}
-	
+
 	public static FactorRangeConverter getLogDiscretizedPersonalConverter(final String column, double base) {
 
 		return new LogCDFDiscretizingConverter(base) {
-			public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
+			@Override
+            public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
 				return discretizeRange(provider.getRange(userId, column));
 			}
-			
-			public boolean isPersonalized() {
+
+			@Override
+            public boolean isPersonalized() {
 				return true;
 			}
-			
-			public Set<String> requiresPersonalizedDatabaseColumns() {
+
+			@Override
+            public Set<String> requiresPersonalizedDatabaseColumns() {
 				return Collections.singleton(column);
 			}
 		};
 	}
-	
+
 	public static FactorRangeConverter getLogDiscretizedGlobalConverter(final String column, double base) {
-		
+
 		return new LogCDFDiscretizingConverter(base) {
-			public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
+			@Override
+            public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
 				return discretizeRange(provider.getRange(userId, column));
 			}
-			
-			public boolean isPersonalized() {
+
+			@Override
+            public boolean isPersonalized() {
 				return false;
 			}
-			
-			public Set<String> requiresGlobalDatabaseColumns() {
+
+			@Override
+            public Set<String> requiresGlobalDatabaseColumns() {
 				return Collections.singleton(column);
-			}		
+			}
 		};
 	}
 
 	/**
 	 * Get max normalized converter for the global factor with given source column.
-	 * 
+	 *
 	 * Adjust the range such that all values are divided by the range max.
-	 * 
+	 *
 	 */
 	public static FactorRangeConverter getMaxNormalizedGlobalConvereter(final String column) {
 		return new FactorRangeConverter() {
 
-			public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
+			@Override
+            public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
 				double[] values = dup(provider.getRange(null, column));
 				divide(values,max(values));
 				return values;
 			}
-			
-			public boolean isPersonalized() {
+
+			@Override
+            public boolean isPersonalized() {
 				return false;
 			}
-			
-			public Set<String> requiresGlobalDatabaseColumns() {
+
+			@Override
+            public Set<String> requiresGlobalDatabaseColumns() {
 				return Collections.singleton(column);
 			}
-			
+
 		};
 	}
-	
+
 	/**
 	 * Get max normalized personalized converter for the given source column.
-	 * 
-	 */	
+	 *
+	 */
 	public static FactorRangeConverter getMaxNormalizedPersonalConverter(final String column) {
 		return new FactorRangeConverter() {
 
-			public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
+			@Override
+            public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
 				double[] values = dup(provider.getRange(userId, column));
 				divide(values,max(values));
 				return values;
 			}
-			
-			public boolean isPersonalized() {
+
+			@Override
+            public boolean isPersonalized() {
 				return true;
 			}
-			
-			public Set<String> requiresPersonalizedDatabaseColumns() {
+
+			@Override
+            public Set<String> requiresPersonalizedDatabaseColumns() {
 				return Collections.singleton(column);
 			}
-			
+
 		};
 	}
-	
-	
+
+
 	/**
 	 * Department specific statistics.
 	 *
 	 */
 	protected static abstract class DepartmentSpecificConverter extends FactorRangeConverter {
-		
+
 		/**
-		 * 
+		 *
 		 * @param userId
 		 * @param provider
 		 * @return Map<DepartmentId:String,List<Index:Integer>>
@@ -690,9 +729,9 @@ public class FactorUtil {
 			for(int i=0; i< products.size(); ++i) {
 				String dept = "";
 				try {
-					ProductModel productNode = 
+					ProductModel productNode =
 						(ProductModel)ContentFactory.getInstance().getContentNodeByKey(
-						        ContentKey.getContentKey(FDContentTypes.PRODUCT,products.get(i).toString()));
+						        ContentKeyFactory.get(FDContentTypes.PRODUCT,products.get(i).toString()));
 					dept = productNode.getDepartment().getContentKey().getId();
 				} catch (Exception e) {
 				}
@@ -705,7 +744,7 @@ public class FactorUtil {
 			}
 			return map;
 		}
-		
+
 		protected double[] maxNormalize(double[] values, String userId, ScoreRangeProvider provider) throws Exception {
 			Map<String, List<Integer>> deptMap = departmentMap(userId, provider);
 			for(Iterator<List<Integer>> i = deptMap.values().iterator(); i.hasNext();) {
@@ -727,49 +766,56 @@ public class FactorUtil {
 			return values;
 		}
 	};
-	
+
 	public static FactorRangeConverter getDepartmentMaxNormalizedPersonalizedConverter(final String factor) {
 		return new DepartmentSpecificConverter() {
 
-			public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
+			@Override
+            public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
 				return maxNormalize(dup(provider.getRange(userId, factor)),userId, provider);
 			}
-			
-			public boolean isPersonalized() {
+
+			@Override
+            public boolean isPersonalized() {
 				return true;
 			}
-			
-			public Set<String> requiresPersonalizedDatabaseColumns() {
+
+			@Override
+            public Set<String> requiresPersonalizedDatabaseColumns() {
 				return Collections.singleton(factor);
 			}
 		};
 	}
-	
+
 	public static FactorRangeConverter getDepartmentMaxNormalizedGlobalConverter(final String factor) {
 		return new DepartmentSpecificConverter() {
 
-			public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
+			@Override
+            public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
 				return maxNormalize(dup(provider.getRange(userId, factor)),userId, provider);
 			}
-			
-			public boolean isPersonalized() {
+
+			@Override
+            public boolean isPersonalized() {
 				return false;
 			}
-			
-			public Set<String> requiresGlobalDatabaseColumns() {
+
+			@Override
+            public Set<String> requiresGlobalDatabaseColumns() {
 				return Collections.singleton(factor);
 			}
 		};
 	}
-	
+
 	public static FactorRangeConverter getSeasonalityConverter(final double asymptote) {
-		
+
 		return new FactorRangeConverter() {
 
 			private Set<String> dbColumns =
 				new HashSet<String>(Arrays.asList(new String[]{GLOBAL_WEEKLY_FREQUENCY_COLUMN, GLOBAL_AVERAGE_FREQUENCY_COLUMN}));
-			
-			public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
+
+			@Override
+            public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
 				double[] range = dup(provider.getRange(userId, GLOBAL_WEEKLY_FREQUENCY_COLUMN));
 				double[] averageFrequencies = provider.getRange(userId, GLOBAL_AVERAGE_FREQUENCY_COLUMN);
 				for(int i = 0; i< range.length; ++i) {
@@ -780,41 +826,46 @@ public class FactorUtil {
 					}
 				}
 				positiveBiasedSigmoidNormalize(range, asymptote);
-				
+
 				return range;
 			}
-			
-			public boolean isPersonalized() {
+
+			@Override
+            public boolean isPersonalized() {
 				return false;
 			}
-			
-			public Set<String> requiresGlobalDatabaseColumns() {
-				return dbColumns;
-			}
-			
-		};
-	}
-	
-	
-	public static FactorRangeConverter getDiscretizedSeasonality() {
-		return new FactorRangeConverter() {
-			
-			private Set<String> dbColumns =
-				new HashSet<String>(Arrays.asList(new String[]{GLOBAL_WEEKLY_FREQUENCY_COLUMN, GLOBAL_AVERAGE_FREQUENCY_COLUMN}));
-			
-			public boolean isPersonalized() {
-				return false;
-			}
-			
-			public Set<String> requiresGlobalDatabaseColumns() {
+
+			@Override
+            public Set<String> requiresGlobalDatabaseColumns() {
 				return dbColumns;
 			}
 
-			public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
+		};
+	}
+
+
+	public static FactorRangeConverter getDiscretizedSeasonality() {
+		return new FactorRangeConverter() {
+
+			private Set<String> dbColumns =
+				new HashSet<String>(Arrays.asList(new String[]{GLOBAL_WEEKLY_FREQUENCY_COLUMN, GLOBAL_AVERAGE_FREQUENCY_COLUMN}));
+
+			@Override
+            public boolean isPersonalized() {
+				return false;
+			}
+
+			@Override
+            public Set<String> requiresGlobalDatabaseColumns() {
+				return dbColumns;
+			}
+
+			@Override
+            public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
 				double[] weeks = provider.getRange(userId, GLOBAL_WEEKLY_FREQUENCY_COLUMN);
 				double[] averages = provider.getRange(userId, GLOBAL_AVERAGE_FREQUENCY_COLUMN);
 				double[] scores = new double[weeks.length];
-				 
+
 				for(int i = 0; i< weeks.length; ++i) {
 					if (averages[i] > 0) {
 						double rat = weeks[i] / averages[i];
@@ -833,11 +884,11 @@ public class FactorUtil {
 						scores[i] = 0;
 					}
 				}
-				
+
 				return scores;
 			}
 		};
 	}
-	
-	
+
+
 }

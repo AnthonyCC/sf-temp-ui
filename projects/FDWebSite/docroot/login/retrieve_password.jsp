@@ -1,6 +1,6 @@
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
-<%@ page import='com.freshdirect.fdstore.content.ContentFactory'%>
+<%@ page import='com.freshdirect.storeapi.content.ContentFactory'%>
 <%@ page import='com.freshdirect.fdstore.EnumEStoreId' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>

@@ -8,12 +8,12 @@ import java.util.Map;
 import javax.servlet.jsp.JspException;
 
 import com.freshdirect.common.pricing.PricingContext;
-import com.freshdirect.fdstore.content.Html;
-import com.freshdirect.fdstore.content.Image;
-import com.freshdirect.fdstore.content.MediaI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
+import com.freshdirect.storeapi.content.Html;
+import com.freshdirect.storeapi.content.Image;
+import com.freshdirect.storeapi.content.MediaI;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.MediaUtils;
 

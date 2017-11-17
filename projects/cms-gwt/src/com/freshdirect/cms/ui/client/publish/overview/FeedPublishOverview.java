@@ -1,6 +1,7 @@
 package com.freshdirect.cms.ui.client.publish.overview;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -33,309 +34,321 @@ import com.freshdirect.cms.ui.service.BaseCallback;
 
 public class FeedPublishOverview extends DetailPanel implements PublishListener {
 
-	private LayoutContainer header;
-	private HtmlContainer headerMarkup;
-	private ActionBar actionBar;
-	private Button startPublish;
-	private TextArea commentField;
+    private LayoutContainer header;
+    private HtmlContainer headerMarkup;
+    private ActionBar actionBar;
+    private Button startPublish;
+    private TextArea commentField;
 
-	private String publishId;
-	
-	private Anchor allMessages;
-	private Anchor allChanges;
-	private Anchor overview;
-	
-	private ArrayList<PublishListener> publishListeners = new ArrayList<PublishListener>();
-	private GwtPublishData data;
+    private String publishId;
 
-	protected static class OverviewForm extends FormPanel {
-		private FieldSet fieldSet;
+    private Anchor allMessages;
+    private Anchor allChanges;
+    private Anchor overview;
 
-		public OverviewForm(String heading, PublishListener listener) {
-			super();
-			setHeaderVisible(false);
-			setBorders(false);
-			setBodyBorder(false);
+    private List<PublishListener> publishListeners = new ArrayList<PublishListener>();
+    private GwtPublishData data;
 
-			fieldSet = new FieldSet();
-			fieldSet.setHeading(heading);
-			PublishOverviewLayout layout = new PublishOverviewLayout();
-			layout.addPublishListener(listener);
-			fieldSet.setLayout(layout);
+    protected static class OverviewForm extends FormPanel {
 
-			fieldSet.setWidth(300);
-			fieldSet.setBorders(false);
+        private FieldSet fieldSet;
 
-			add(fieldSet);
-		}
+        public OverviewForm(String heading, PublishListener listener) {
+            super();
+            setHeaderVisible(false);
+            setBorders(false);
+            setBodyBorder(false);
 
-		public FieldSet getFieldSet() {
-			return fieldSet;
-		}
-	}
+            fieldSet = new FieldSet();
+            fieldSet.setHeading(heading);
+            PublishOverviewLayout layout = new PublishOverviewLayout();
+            layout.addPublishListener(listener);
+            fieldSet.setLayout(layout);
 
-	private static FeedPublishOverview instance = new FeedPublishOverview();
+            fieldSet.setWidth(300);
+            fieldSet.setBorders(false);
 
-	public static FeedPublishOverview getInstance() {
-		return instance;
-	}
+            add(fieldSet);
+        }
 
-	public FeedPublishOverview() {
-		super();
+        public FieldSet getFieldSet() {
+            return fieldSet;
+        }
+    }
 
-		header = new LayoutContainer();
-		headerMarkup = new HtmlContainer("<table width=\"100%\" class=\"pageTitle\" cellspacing=\"0\" cellpadding=\"0\">"
-				+ "<tbody><tr>" + "<td valign=\"bottom\">"
-				+ "<h1 class=\"view-title\">Feed Publish Overview <span class=\"publish-id\"></span></h1>" + "</td>"
-				+ "<td width=\"75\" valign=\"bottom\" align=\"right\" style=\"line-height: 0pt;\">"
-				+ "<img width=\"75\" height=\"66\" src=\"img/banner_publish.gif\"/>" + "</td>" + "</tr>" + "</tbody></table>");
-		actionBar = new ActionBar();
-		startPublish = new Button("Start Feed Publish");
-		startPublish.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent ce) {
-				if (commentField == null || commentField.getValue() == null || commentField.getValue().trim().length() == 0) {
-					commentField.markInvalid("missing publish description");
-					return;
-				}
-				commentField.clearInvalid();
-				CmsGwt.getContentService().startPublishX(commentField.getValue().trim(), new BaseCallback<String>() {
+    private static FeedPublishOverview instance = new FeedPublishOverview();
 
-					@Override
-					public void onSuccess(String result) {
-						for (PublishListener listener : publishListeners) {
-							listener.onPublishStarted(result);
-						}
-					}
-				});
-			}
-		});
-		
-		overview = new Anchor("Overview");
-		overview.addListener(Events.OnClick, new Listener<BaseEvent>() {		
-			public void handleEvent(BaseEvent be) {
-				loadData(data);
-				overview.hide();
-				allChanges.show();
-				if (!publishId.equals("latest")) {
-					allMessages.show();
-				} else {
-					startPublish.show();					
-				}
-			};
-		});
-		overview.hide();
-		actionBar.addLink(overview, new Margins(0, 10, 0, 0));
-		
-		allChanges = new Anchor("Show all changes");
-		allChanges.addListener(Events.OnClick, new Listener<BaseEvent>() {		
-			public void handleEvent(BaseEvent be) {
-				ChangeSetQuery query = new ChangeSetQuery();
-				query.setPublishId(publishId);
-				query.setPublishType("X");
-				overview.show();
-				allChanges.hide();
-				startPublish.hide();
-				if (!publishId.equals("latest")) {
-					allMessages.show();
-				}
-				loadChanges(query);
-			};
-		});
-		actionBar.addLink(allChanges, new Margins(0, 10, 0, 0));
-		
-		allMessages = new Anchor("Show all messages");
-		allMessages.addListener(Events.OnClick, new Listener<BaseEvent>() {		
-			public void handleEvent(BaseEvent be) {
-				ChangeSetQuery query = new ChangeSetQuery();
-				query.setPublishId(publishId);
-				query.setPublishType("X");
-				overview.show();
-				allMessages.hide();
-				allChanges.show();
-				startPublish.hide();
-				loadMessages(query);
-			};
-		});
-		actionBar.addLink(allMessages, new Margins(0, 10, 0, 0));
-		
-		actionBar.addButton(startPublish);
+    public static FeedPublishOverview getInstance() {
+        return instance;
+    }
 
-		header.add(headerMarkup);
-		header.add(actionBar);
+    public FeedPublishOverview() {
+        super();
 
-		setHeader(header);
-		setBody(new LayoutContainer(new FitLayout()));
-	}
+        header = new LayoutContainer();
+        headerMarkup = new HtmlContainer("<table width=\"100%\" class=\"pageTitle\" cellspacing=\"0\" cellpadding=\"0\">" + "<tbody><tr>" + "<td valign=\"bottom\">"
+                + "<h1 class=\"view-title\">Feed Publish Overview <span class=\"publish-id\"></span></h1>" + "</td>"
+                + "<td width=\"75\" valign=\"bottom\" align=\"right\" style=\"line-height: 0pt;\">" + "<img width=\"75\" height=\"66\" src=\"img/banner_publish.gif\"/>" + "</td>"
+                + "</tr>" + "</tbody></table>");
+        actionBar = new ActionBar();
+        startPublish = new Button("Start Feed Publish");
+        startPublish.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
-	public FeedPublishOverview(GwtPublishData data) {
-		this();
-		this.data = data;
-		loadData(this.data);
-	}
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if (commentField == null || commentField.getValue() == null || commentField.getValue().trim().length() == 0) {
+                    commentField.markInvalid("missing publish description");
+                    return;
+                }
+                commentField.clearInvalid();
 
-	public void loadData(GwtPublishData data) {
-		Html publishIdMarkup;
-		this.data = data;
-		publishId = data.getId();
-		if (data.getId().equals("latest")) {
-			publishIdMarkup = new Html("");
-			startPublish.show();
-			allMessages.hide();
-			actionBar.addStyleName("compare-mode-color");
-		} else {
-			publishIdMarkup = new Html("(#" + data.getId() + ")");
-			startPublish.hide();
-			allMessages.show();
-			actionBar.removeStyleName("compare-mode-color");
-		}
-		publishIdMarkup.setTagName("span");
-		headerMarkup.add(publishIdMarkup, ".publish-id");
-		getBody().removeAll();
-		getBody().add(getStatisticPanel(data));
-		overview.hide();		
-		allChanges.show();
-		getBody().layout();
-	}
-	
-	public void loadMessages(ChangeSetQuery query) {		
-		getBody().removeAll();
-		getBody().add(new PublishMessages(query));
-		getBody().layout();
-	}
-	
-	public void loadChanges(ChangeSetQuery query) {
-		getBody().removeAll();
-		getBody().add(new ChangeHistory(query));
-		getBody().layout();
-	}
+                CmsGwt.getContentService().startPublishX(commentField.getValue().trim(), new BaseCallback<String>() {
 
-	protected LayoutContainer getStatisticPanel(GwtPublishData data) {
-		LayoutContainer statisticPanel = new LayoutContainer(new ColumnLayout());
+                    @Override
+                    public void onSuccess(String result) {
+                        for (PublishListener listener : publishListeners) {
+                            listener.onPublishStarted(result);
+                        }
+                    }
+                });
+            }
+        });
 
-		
-		FormPanel comment = new FormPanel();
-		comment.setHeaderVisible(false);
-		comment.setBorders(false);
-		comment.setBodyBorder(false);
-		statisticPanel.add(comment, new ColumnData(300));
-		FieldSet fieldSet = new FieldSet();
-		fieldSet.setHeading("Description");
-		FormLayout layout = new FormLayout();
-		layout.setHideLabels(true);
-		layout.setLabelWidth(0);
-		layout.setLabelSeparator("");
-		layout.setDefaultWidth(250);
-		fieldSet.setLayout(layout);
+        overview = new Anchor("Overview");
+        overview.addListener(Events.OnClick, new Listener<BaseEvent>() {
 
-		fieldSet.setWidth(300);
-		fieldSet.setBorders(false);
-		if ("latest".equals(data.getId())) {
-			commentField = new TextArea();
-			commentField.setEmptyText("Enter your description here");
-			fieldSet.add(commentField);			
-		}
-		else {
-			fieldSet.add(new Html(data.getComment()));
-		}
-		comment.add(fieldSet);
+            @Override
+            public void handleEvent(BaseEvent be) {
+                loadData(data);
+                overview.hide();
+                allChanges.show();
+                if (!publishId.equals("latest")) {
+                    allMessages.show();
+                } else {
+                    startPublish.show();
+                }
+            };
+        });
+        overview.hide();
+        actionBar.addLink(overview, new Margins(0, 10, 0, 0));
 
-		ChangeSetQuery query;
-		
-		if (data.getMessages().size() != 0 && !publishId.equals("latest")) {			
-			OverviewForm messages = new OverviewForm("Messages", this);
-			messages.addStyleName("publish-messages");
+        allChanges = new Anchor("Show all changes");
+        allChanges.addListener(Events.OnClick, new Listener<BaseEvent>() {
 
-			int messageCount = data.getMessages().size();
+            @Override
+            public void handleEvent(BaseEvent be) {
+                ChangeSetQuery query = new ChangeSetQuery();
+                query.setPublishId(publishId);
+                query.setPublishType("X");
+                overview.show();
+                allChanges.hide();
+                startPublish.hide();
+                if (!publishId.equals("latest")) {
+                    allMessages.show();
+                }
+                loadChanges(query);
+            };
+        });
+        actionBar.addLink(allChanges, new Margins(0, 10, 0, 0));
 
-			for (SummaryData message : data.getMessages()) {
-				int value = message.getValue();
-				String key = "Warning";
-				if (message.getKey().equals("0")) {
-					key = "Failure";
-				}
-				else if (message.getKey().equals("1")) {
-					key = "Error";
-				}
-				
-				query = new ChangeSetQuery();
-				query.setMessageSeverity(Integer.valueOf(message.getKey()));		
-				query.setPublishType("X");
-				PublishOverviewField field = new PublishOverviewField(value, 150);		
-				field.setChangeSetQuery(query);
-				field.addStyleName(key);
-				field.setValue((float) value / (float) messageCount);
-				field.setFieldLabel(key);
-				messages.getFieldSet().add(field);
-			}
-			statisticPanel.add(messages, new ColumnData(300));
-		}
+        allMessages = new Anchor("Show all messages");
+        allMessages.addListener(Events.OnClick, new Listener<BaseEvent>() {
 
-		OverviewForm contributors = new OverviewForm("Contributors", this);
-		contributors.addStyleName("publish-contributors");
+            @Override
+            public void handleEvent(BaseEvent be) {
+                ChangeSetQuery query = new ChangeSetQuery();
+                query.setPublishId(publishId);
+                query.setPublishType("X");
+                overview.show();
+                allMessages.hide();
+                allChanges.show();
+                startPublish.hide();
+                loadMessages(query);
+            };
+        });
+        actionBar.addLink(allMessages, new Margins(0, 10, 0, 0));
 
-		for (SummaryData contributor : data.getContributors()) {
-			int value = contributor.getValue();
-			query = new ChangeSetQuery();
-			query.setContributor(contributor.getKey());
-			query.setPublishType("X");
-			PublishOverviewField field = new PublishOverviewField(value, 150);
-			field.setChangeSetQuery(query);
-			field.setValue((float) value / (float) data.getChangeCount());
-			field.setFieldLabel(contributor.getKey());
-			contributors.getFieldSet().add(field);
-		}
+        actionBar.addButton(startPublish);
 
-		OverviewForm types = new OverviewForm("Content Types", this);
-		types.addStyleName("publish-types");
+        header.add(headerMarkup);
+        header.add(actionBar);
 
-		for (SummaryData type : data.getTypes()) {
-			int value = type.getValue();
-			query = new ChangeSetQuery();
-			query.setContentType(type.getKey());
-			query.setPublishType("X");
-			PublishOverviewField field = new PublishOverviewField(value, 150);
-			field.setChangeSetQuery(query);
-			field.setValue((float) value / (float) data.getChangeCount());
-			field.setFieldLabel(type.getKey());
-			types.getFieldSet().add(field);
-		}
+        setHeader(header);
+        setBody(new LayoutContainer(new FitLayout()));
+    }
 
-		statisticPanel.add(contributors, new ColumnData(300));
-		statisticPanel.add(types, new ColumnData(300));
+    public FeedPublishOverview(GwtPublishData data) {
+        this();
+        this.data = data;
+        loadData(this.data);
+    }
 
-		return statisticPanel;
-	}	
+    public void loadData(GwtPublishData data) {
+        Html publishIdMarkup;
+        this.data = data;
+        publishId = data.getId();
+        if (data.getId().equals("latest")) {
+            publishIdMarkup = new Html("");
+            startPublish.show();
+            allMessages.hide();
+            actionBar.addStyleName("compare-mode-color");
+        } else {
+            publishIdMarkup = new Html("(#" + data.getId() + ")");
+            startPublish.hide();
+            allMessages.show();
+            actionBar.removeStyleName("compare-mode-color");
+        }
+        publishIdMarkup.setTagName("span");
+        headerMarkup.add(publishIdMarkup, ".publish-id");
+        getBody().removeAll();
+        getBody().add(getStatisticPanel(data));
+        overview.hide();
+        allChanges.show();
+        getBody().layout();
+    }
 
-	public void addPublishListener(PublishListener listener) {
-		if (!publishListeners.contains(listener)) {
-			publishListeners.add(listener);
-		}
-	}
+    public void loadMessages(ChangeSetQuery query) {
+        getBody().removeAll();
+        getBody().add(new PublishMessages(query));
+        getBody().layout();
+    }
 
-	public void removePublishListener(PublishListener listener) {
-		if (!publishListeners.contains(listener)) {
-			publishListeners.remove(listener);
-		}
-	}
+    public void loadChanges(ChangeSetQuery query) {
+        getBody().removeAll();
+        getBody().add(new ChangeHistory(query));
+        getBody().layout();
+    }
 
-	@Override
-	public void onDetailRequest(ChangeSetQuery query) {
-		query.setPublishId(publishId);
-		overview.show();
-		if (query.getMessageSeverity() == -1) {
-			loadChanges(query);
-			return;
-		}
-		loadMessages(query);
-	}
+    protected LayoutContainer getStatisticPanel(GwtPublishData data) {
+        CmsGwt.consoleLog("statisticsPanel");
+        LayoutContainer statisticPanel = new LayoutContainer(new ColumnLayout());
 
-	@Override
-	public void onPublishClicked(String publishId) {		
-	}
+        FormPanel comment = new FormPanel();
+        comment.setHeaderVisible(false);
+        comment.setBorders(false);
+        comment.setBodyBorder(false);
+        statisticPanel.add(comment, new ColumnData(300));
+        FieldSet fieldSet = new FieldSet();
+        fieldSet.setHeading("Description");
+        FormLayout layout = new FormLayout();
+        layout.setHideLabels(true);
+        layout.setLabelWidth(0);
+        layout.setLabelSeparator("");
+        layout.setDefaultWidth(250);
+        fieldSet.setLayout(layout);
 
-	@Override
-	public void onPublishStarted(String publishId) {		
-	}
+        fieldSet.setWidth(300);
+        fieldSet.setBorders(false);
+        if ("latest".equals(data.getId())) {
+            commentField = new TextArea();
+            commentField.setEmptyText("Enter your description here");
+            CmsGwt.consoleLog("commentField added to fieldSet");
+            fieldSet.add(commentField);
+        } else {
+            fieldSet.add(new Html(data.getComment()));
+        }
+        comment.add(fieldSet);
+
+        ChangeSetQuery query;
+
+        CmsGwt.consoleLog("messages");
+        if (data.getMessages() != null && data.getMessages().size() != 0 && !publishId.equals("latest")) {
+            OverviewForm messages = new OverviewForm("Messages", this);
+            messages.addStyleName("publish-messages");
+
+            int messageCount = data.getMessages().size();
+
+            for (SummaryData message : data.getMessages()) {
+                int value = message.getValue();
+                String key = "Warning";
+                if (message.getKey().equals("0")) {
+                    key = "Failure";
+                } else if (message.getKey().equals("1")) {
+                    key = "Error";
+                }
+
+                query = new ChangeSetQuery();
+                query.setMessageSeverity(Integer.valueOf(message.getKey()));
+                query.setPublishType("X");
+                PublishOverviewField field = new PublishOverviewField(value, 150);
+                field.setChangeSetQuery(query);
+                field.addStyleName(key);
+                field.setValue((float) value / (float) messageCount);
+                field.setFieldLabel(key);
+                messages.getFieldSet().add(field);
+            }
+            statisticPanel.add(messages, new ColumnData(300));
+        }
+
+        OverviewForm contributors = new OverviewForm("Contributors", this);
+        contributors.addStyleName("publish-contributors");
+        CmsGwt.consoleLog("constributors");
+        if (data.getContributors() != null) {
+            for (SummaryData contributor : data.getContributors()) {
+                int value = contributor.getValue();
+                query = new ChangeSetQuery();
+                query.setContributor(contributor.getKey());
+                query.setPublishType("X");
+                PublishOverviewField field = new PublishOverviewField(value, 150);
+                field.setChangeSetQuery(query);
+                field.setValue((float) value / (float) data.getChangeCount());
+                field.setFieldLabel(contributor.getKey());
+                contributors.getFieldSet().add(field);
+            }
+        }
+
+        OverviewForm types = new OverviewForm("Content Types", this);
+        types.addStyleName("publish-types");
+        CmsGwt.consoleLog("types");
+        if (data.getTypes() != null) {
+            for (SummaryData type : data.getTypes()) {
+                int value = type.getValue();
+                query = new ChangeSetQuery();
+                query.setContentType(type.getKey());
+                query.setPublishType("X");
+                PublishOverviewField field = new PublishOverviewField(value, 150);
+                field.setChangeSetQuery(query);
+                field.setValue((float) value / (float) data.getChangeCount());
+                field.setFieldLabel(type.getKey());
+                types.getFieldSet().add(field);
+            }
+        }
+
+        statisticPanel.add(contributors, new ColumnData(300));
+        statisticPanel.add(types, new ColumnData(300));
+
+        return statisticPanel;
+    }
+
+    public void addPublishListener(PublishListener listener) {
+        if (!publishListeners.contains(listener)) {
+            publishListeners.add(listener);
+        }
+    }
+
+    public void removePublishListener(PublishListener listener) {
+        if (publishListeners.contains(listener)) {
+            publishListeners.remove(listener);
+        }
+    }
+
+    @Override
+    public void onDetailRequest(ChangeSetQuery query) {
+        query.setPublishId(publishId);
+        overview.show();
+        if (query.getMessageSeverity() == -1) {
+            loadChanges(query);
+            return;
+        }
+        loadMessages(query);
+    }
+
+    @Override
+    public void onPublishClicked(String publishId) {
+    }
+
+    @Override
+    public void onPublishStarted(String publishId) {
+    }
 
 }

@@ -24,6 +24,7 @@
 			<context-root>/</context-root>
 		</web>
 	</module>
+	<!--  
 	<module>
 		<web>
 			<web-uri>../CRM/docroot</web-uri>
@@ -35,7 +36,8 @@
 			<web-uri>../cms-gwt/target/docroot</web-uri>
 			<context-root>cms-gwt</context-root>
 		</web>
-	</module> 
+	</module>
+	 --> 
 	<module>
 		<web>
 			<web-uri>../FDIntegrationServices/docroot</web-uri>

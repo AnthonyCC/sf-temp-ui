@@ -12,7 +12,6 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.common.context.MasqueradeContext;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.fdstore.EnumEStoreId;
@@ -24,6 +23,7 @@ import com.freshdirect.fdstore.coremetrics.tagmodel.AbstractTagModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.application.CmsManager;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 

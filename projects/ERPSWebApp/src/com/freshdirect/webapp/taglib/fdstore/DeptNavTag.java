@@ -10,10 +10,10 @@ import javax.servlet.jsp.tagext.VariableInfo;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.DepartmentModel;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
 public class DeptNavTag extends AbstractGetterTag<DepartmentModel> {
@@ -72,11 +72,11 @@ public class DeptNavTag extends AbstractGetterTag<DepartmentModel> {
 		public VariableInfo[] getVariableInfo( TagData data ) {
 			return new VariableInfo[] {
 					new VariableInfo( data.getAttributeString( "id" ),
-									"com.freshdirect.fdstore.content.DepartmentModel", 
+									"com.freshdirect.storeapi.content.DepartmentModel", 
 									true, 
 									VariableInfo.NESTED ),
 					new VariableInfo( data.getAttributeString( "categoryList" ), 
-									"java.util.List<com.freshdirect.fdstore.content.CategoryModel>", 
+									"java.util.List<com.freshdirect.storeapi.content.CategoryModel>", 
 									true,
 									VariableInfo.NESTED ) 
 				};

@@ -13,11 +13,11 @@ import org.apache.log4j.Category;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.Html;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.Html;
+import com.freshdirect.storeapi.content.ProductModel;
 
 public class WebDeliveryPassView {
 	private static Category LOGGER = LoggerFactory.getInstance(WebDeliveryPassView.class);

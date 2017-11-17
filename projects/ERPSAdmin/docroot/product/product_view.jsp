@@ -1,12 +1,13 @@
 <%@ page import='com.freshdirect.content.nutrition.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
+<%@ page import='com.freshdirect.storeapi.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
 <%@ page import='com.freshdirect.webapp.util.FormElementNameHelper' %>
 <%@ page import='com.freshdirect.erp.model.*' %>
 <%@ page import='com.freshdirect.erp.security.SecurityManager' %>
 <%@ page import='java.util.*' %>
 <%@ page import='java.text.DecimalFormat' %>
-<%@ page import='com.freshdirect.fdstore.content.*' %>
+<%@ page import='com.freshdirect.storeapi.content.*' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>

@@ -3,8 +3,8 @@ package com.freshdirect.webapp.ajax.browse.data;
 import java.util.List;
 import java.util.Map;
 
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ProductModel;
 
 public class ItemsModel {
 	

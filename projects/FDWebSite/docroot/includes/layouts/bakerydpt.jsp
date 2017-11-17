@@ -1,9 +1,9 @@
 <%@page import='java.util.*' %>
-<%@page import="com.freshdirect.fdstore.content.Html"%>
+<%@page import="com.freshdirect.storeapi.content.Html"%>
 <%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@page import="java.util.ArrayList"%>
-<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
-<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.storeapi.content.CategoryModel"%>
+<%@page import="com.freshdirect.storeapi.content.ContentNodeModel"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>

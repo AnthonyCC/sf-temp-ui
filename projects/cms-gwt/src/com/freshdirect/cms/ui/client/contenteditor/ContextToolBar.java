@@ -226,7 +226,7 @@ public class ContextToolBar extends LayoutContainer {
             final String contextPath = treePanel.getSelectedPath();
             if ( contextPath != null ) {
             	// phase1 - setup widget
-	            final String contextLabel = contextPath.replace( TreeContentNodeModel.pathSeparator, " > " );
+	            final String contextLabel = contextPath.replace( TreeContentNodeModel.PATH_SEPARATOR, " > " );
             	final LabelField contextField = new LabelField(); 
             	
             	contextField.setValue( contextLabel );

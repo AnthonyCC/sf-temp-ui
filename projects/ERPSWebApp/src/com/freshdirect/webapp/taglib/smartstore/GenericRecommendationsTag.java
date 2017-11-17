@@ -8,9 +8,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -19,6 +17,7 @@ import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
+import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.ConfigurationContext;
 import com.freshdirect.webapp.util.ConfigurationStrategy;
@@ -29,7 +28,7 @@ import com.freshdirect.webapp.util.prodconf.SmartStoreConfigurationStrategy;
 /**
  * INPUT request attributes :
  * 		Variant genericRecommendationsVariant
- * 
+ *
  * @author treer
  *
  */
@@ -37,22 +36,22 @@ import com.freshdirect.webapp.util.prodconf.SmartStoreConfigurationStrategy;
 public class GenericRecommendationsTag extends RecommendationsTag implements SessionName {
 
     private static final long serialVersionUID = 1L;
-    
+
     private static final Logger LOGGER = LoggerFactory.getInstance( GenericRecommendationsTag.class );
 
     // ID that makes cache name unique
     String cacheId;
-    
+
     transient boolean shouldLogImpressions = false;
 
 
     public void setCacheId(String cacheId) {
     	this.cacheId = cacheId;
     }
-    
+
 
     /**
-     * 
+     *
      * @param v Original variant
      * @param override ID of overridden variant
      * @return
@@ -65,10 +64,10 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
 		return v2 != null ? v2 : v;
     }
 
-    
+
 
     /**
-     * 
+     *
      * @param oVariant Variant which is already overridden (if necessary)
      * @return
      * @throws FDResourceException
@@ -76,9 +75,9 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
     public Recommendations getCachedRecommendations(Variant oVariant) throws FDResourceException {
         HttpSession session = pageContext.getSession();
 		// variant = getOverriddenVariant(variant, overriddenVariantId);
-		
+
 		RecommendationsCache cache = RecommendationsCache.getCache(session);
-		
+
 		Recommendations r = cache.get(cacheId, oVariant);
 		if (r == null) {
 			r = extractRecommendations(session, oVariant.getSiteFeature());
@@ -86,13 +85,14 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
 		}
 		return r;
     }
-   
-    protected Recommendations getRecommendations() throws FDResourceException, InvalidContentKeyException {
-    	
+
+    @Override
+    protected Recommendations getRecommendations() throws FDResourceException {
+
         HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
 		// get selected tab (variant) on UI
         Variant variant = (Variant)request.getAttribute( "genericRecommendationsVariant" );
-        
+
         if ( variant == null ) {
         	return null;
         }
@@ -114,7 +114,7 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
 				recommendations.pageBackward();
 			}
 		}
-		
+
 		if (recommendations == null){
 			throw new FDResourceException("Recommendation cache not found!");
 		}
@@ -123,7 +123,7 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
 		shouldLogImpressions = recommendations != null && !recommendations.isLogged();
 		if (recommendations != null)
 			persistToSession(recommendations);
-			
+
         return recommendations;
     }
 
@@ -152,7 +152,7 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
 	@Override
 	protected boolean shouldLogImpressions() {
 		LOGGER.debug("  Will log prod impressions? ==> " + shouldLogImpressions);
-		return shouldLogImpressions; 
+		return shouldLogImpressions;
 	}
 
 
@@ -162,30 +162,30 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
 	 * @return List &lt ProductImpression &gt
 	 */
 	public List<ProductImpression> getImpressions ( Recommendations recommendations ) {
-		
+
 		ConfigurationContext confContext = new ConfigurationContext();
         HttpSession session = pageContext.getSession();
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 		confContext.setFDUser(user);
-		
+
 		// List<ProductImpression> impressions : configured products enlisted in 'Your Favourites' table
 		List<ProductImpression> impressions = new ArrayList<ProductImpression>();
 
 		if ( recommendations != null && recommendations.getProducts().size() > 0 ) {
-			
+
 			ConfigurationStrategy cUtil = SmartStoreConfigurationStrategy.getInstance();
 
 			List<ProductModel> products = recommendations.getProducts();
-			
+
 			// 'configure' products.
 			for (ProductModel prd : products) {
 				ProductImpression pi = cUtil.configure(prd, confContext);
 
 				impressions.add(pi);
 			}
-		}		
-		
+		}
+
 		return impressions;
-	
-	}	
+
+	}
 }

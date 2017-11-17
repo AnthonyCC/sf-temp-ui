@@ -2,8 +2,8 @@ package com.freshdirect.fdstore.content.browse.sorter;
 
 import java.util.Comparator;
 
-import com.freshdirect.fdstore.content.FilteringProductItem;
-import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.storeapi.content.FilteringProductItem;
+import com.freshdirect.storeapi.content.ProductModel;
 
 
 public class AvailabilityComparator implements Comparator<FilteringProductItem> {

@@ -52,7 +52,7 @@ RecipeSource featuredSource = ((RecipeCategory)recipeCategory).getFeaturedSource
 		<table width="80%" border="0" cellpadding="0" cellspacing="0">
 			<tr valign="top" >
 	  			<td width="50%"> 
-					<logic:iterate id="recipeSubcategory" indexId="idx" collection="<%=((RecipeCategory)recipeCategory).getSubcategories() %>" type="com.freshdirect.fdstore.content.RecipeSubcategory">
+					<logic:iterate id="recipeSubcategory" indexId="idx" collection="<%=((RecipeCategory)recipeCategory).getSubcategories() %>" type="com.freshdirect.storeapi.content.RecipeSubcategory">
 			  			<b><a href="<%=response.encodeURL("recipe_subcat.jsp?catId="+recipeCategory+"&subCatId="+recipeSubcategory+"&trk=cpage")%>" class="recipe_name"><%=recipeSubcategory.getName()%></a></b>
 			  			<br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="5" border="0"><br>
 						<%			cntr++;
@@ -79,7 +79,7 @@ RecipeSource featuredSource = ((RecipeCategory)recipeCategory).getFeaturedSource
 	  <td width="<%=W_RECIPE_CAT_BODY_BOTTOM_LEFT%>" style="padding-right: 10px; border-right: solid 1px #CCCCCC;">
 	  <img src="/media_stat/recipe/hdr_our_faves.gif" alt="Our Favorites" width="127" height="11"><br><img src="/media_stat/images/layout/clear.gif" alt="" width="1" height="10" border="0"><br>
 	  <% if (featuredRecipes!=null && featuredRecipes.size() > 0) { %>
-          	  <logic:iterate id="aFeatRecipe" collection="<%=featuredRecipes%>" type="com.freshdirect.fdstore.content.Recipe">
+          	  <logic:iterate id="aFeatRecipe" collection="<%=featuredRecipes%>" type="com.freshdirect.storeapi.content.Recipe">
 <%		   if (!isPreviewMode && !aFeatRecipe.isAvailable()) continue;  %>
 		<a href="<%=response.encodeURL("recipe.jsp?catId="+recipeCategory+"&recipeId="+aFeatRecipe+"&trk=cfeat")%>"><%=aFeatRecipe.getName()%></a><br>
 		  <span class="recipe_author"><%=aFeatRecipe.getDisplayableSource()%></span><br><br>

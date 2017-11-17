@@ -8,7 +8,6 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductRatingGroup;
 import com.freshdirect.fdstore.content.util.EnumWinePageSize;
 import com.freshdirect.fdstore.content.util.QueryParameter;
@@ -16,6 +15,7 @@ import com.freshdirect.fdstore.content.util.QueryParameterCollection;
 import com.freshdirect.fdstore.content.util.WineSorter;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
+import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.taglib.QueryParserTag;
 
 public class WinePagerTag extends BodyTagSupportEx {

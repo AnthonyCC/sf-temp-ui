@@ -330,4 +330,8 @@ public class CohortSelector {
     protected int getCohortIndex(String erpUserId) {
         return erpUserId != null ? randomize(erpUserId) % cohortSum : 0;
     }
+    
+    public static void main(String a[]) {
+    	System.out.println("getCohortName>>"+CohortSelector.getInstance().getCohortName("123456"));
+    }
 }

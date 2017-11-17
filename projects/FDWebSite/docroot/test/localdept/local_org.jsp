@@ -1,16 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
 %><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@ page import="com.freshdirect.fdstore.FDVariation"%>
-<%@page import="com.freshdirect.cms.application.CmsManager"%>
-<%@page import="com.freshdirect.cms.ContentType"%>
+<%@page import="com.freshdirect.storeapi.application.CmsManager"%>
+<%@page import="com.freshdirect.cms.core.domain.ContentType"%>
 <%@page import="java.util.Set"%>
-<%@page import="com.freshdirect.cms.ContentKey"%>
-<%@page import="com.freshdirect.cms.node.ContentNodeUtil"%>
-<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
-<%@page import="com.freshdirect.fdstore.content.SkuModel"%>
+<%@page import="com.freshdirect.cms.core.domain.ContentKey"%>
+<%@page import="com.freshdirect.storeapi.node.ContentNodeUtil"%>
+<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@page import="com.freshdirect.storeapi.content.SkuModel"%>
 <%@page import="java.util.List"%>
-<%@page import="com.freshdirect.fdstore.content.Domain"%>
-<%@page import="com.freshdirect.fdstore.content.DomainValue"%>
+<%@page import="com.freshdirect.storeapi.content.Domain"%>
+<%@page import="com.freshdirect.storeapi.content.DomainValue"%>
 <%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@page import="java.util.HashSet"%><html lang="en-US" xml:lang="en-US">
 <%@ taglib uri='freshdirect' prefix='fd'%>
@@ -21,7 +21,7 @@
 <body>
 <%
 	CmsManager mgr = CmsManager.getInstance();
-	final Set<ContentKey> keys = mgr.getContentKeysByType(ContentType.get("Sku"));
+	final Set<ContentKey> keys = mgr.getContentKeysByType(ContentType.Sku);
 
 	Set<SkuModel> goodSkus = new HashSet<SkuModel>();
 	for (ContentKey aSku : keys) {

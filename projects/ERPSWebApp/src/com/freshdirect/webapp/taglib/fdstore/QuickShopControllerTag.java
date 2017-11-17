@@ -17,10 +17,6 @@ import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.content.ConfiguredProduct;
-import com.freshdirect.fdstore.content.ConfiguredProductGroup;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.StarterList;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
@@ -36,6 +32,10 @@ import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.lists.FDStandingOrderList;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.ConfiguredProduct;
+import com.freshdirect.storeapi.content.ConfiguredProductGroup;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.StarterList;
 import com.freshdirect.webapp.util.QuickCartCache;
 
 @Deprecated

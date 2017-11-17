@@ -9,11 +9,11 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.framework.webapp.BodyTagSupport;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.SkuModel;
 import com.freshdirect.webapp.util.FDURLUtil;
 
 public class ContentNodeIteratorTag extends BodyTagSupport {
@@ -274,7 +274,7 @@ public class ContentNodeIteratorTag extends BodyTagSupport {
 	            		VariableInfo.NESTED ),
 	            new VariableInfo(
 	            		currentItemVariableName,
-	            		"com.freshdirect.fdstore.content.ContentNodeModel",
+	            		"com.freshdirect.storeapi.content.ContentNodeModel",
 	            		true, 
 	            		VariableInfo.NESTED ),
 	            new VariableInfo(

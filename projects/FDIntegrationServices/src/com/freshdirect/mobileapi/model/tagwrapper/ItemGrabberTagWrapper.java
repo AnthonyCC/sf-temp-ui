@@ -5,9 +5,9 @@ import java.util.List;
 import javax.servlet.jsp.JspException;
 
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.mobileapi.model.SessionUser;
+import com.freshdirect.storeapi.content.ContentNodeModel;
 import com.freshdirect.webapp.taglib.fdstore.layout.ItemGrabberTag;
 import com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings;
 

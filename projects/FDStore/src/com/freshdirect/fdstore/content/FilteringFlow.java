@@ -12,6 +12,9 @@ import org.apache.log4j.Logger;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.FilteringSortingItem;
+import com.freshdirect.storeapi.content.FilteringValue;
 
 public abstract class FilteringFlow<N extends ContentNodeModel> {
 

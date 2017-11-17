@@ -16,7 +16,6 @@ import com.freshdirect.customer.ErpInvalidPasswordException;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -27,6 +26,7 @@ import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 import com.freshdirect.mail.EmailUtil;
+import com.freshdirect.storeapi.content.ContentFactory;
 
 public class ForgotPasswordControllerTag extends BodyTagSupport {
 

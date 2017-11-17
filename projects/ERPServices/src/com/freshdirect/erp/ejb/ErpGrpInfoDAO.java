@@ -102,7 +102,7 @@ public class ErpGrpInfoDAO {
  	    	//Do not associate the group info with the material/product.
  	    	return null;
  	    }
-		LOGGER.debug("Group ID for loading matId:"+matId+" : and FDGroups: "+groups);
+		//LOGGER.debug("Group ID for loading matId:"+matId+" : and FDGroups: "+groups);
 		return groups; 			
 	}
 	
@@ -137,7 +137,7 @@ public class ErpGrpInfoDAO {
 	    	   if(rs != null) rs.close();
 	    	   if(ps != null) ps.close();
 	    }
-		LOGGER.debug("Group ID for loading matId:"+matId+" : and FDGroup: "+salesAreaGroups);
+		//LOGGER.debug("Group ID for loading matId:"+matId+" : and FDGroup: "+salesAreaGroups);
 		return salesAreaGroups; 			
 	}
 	
@@ -176,7 +176,7 @@ public class ErpGrpInfoDAO {
 			    	   if(rs != null) rs.close();
 			    	   if(ps != null) ps.close();
 			    }
-				LOGGER.debug("getGrpInfo ErpGrpPriceModel :"+groupInfo);
+				//LOGGER.debug("getGrpInfo ErpGrpPriceModel :"+groupInfo);
 				return groupInfo; 			
 		}
 	
@@ -219,7 +219,7 @@ public class ErpGrpInfoDAO {
 	    	   if(rs != null) rs.close();
 	    	   if(ps != null) ps.close();
 	       }
-	       LOGGER.debug("zoneList :"+zoneList.size());
+	       //LOGGER.debug("zoneList :"+zoneList.size());
 		   return zoneList; 	
 	}
 	
@@ -311,7 +311,7 @@ public class ErpGrpInfoDAO {
     	   if(rs != null) rs.close();
     	   if(ps != null) ps.close();
        }
-       LOGGER.debug("sku size :"+skus.size());
+       //LOGGER.debug("sku size :"+skus.size());
 	   return skus;
 	   
    }
@@ -343,7 +343,7 @@ public class ErpGrpInfoDAO {
 	    	   if(rs != null) rs.close();
 	    	   if(ps != null) ps.close();
 	       }
-	       LOGGER.debug("matList :"+matList.size());
+	       //LOGGER.debug("matList :"+matList.size());
 		   return matList; 	
 	}
 	
@@ -385,7 +385,7 @@ public class ErpGrpInfoDAO {
 	    	   if(rs != null) rs.close();
 	    	   if(ps != null) ps.close();
 	       }
-	       LOGGER.debug("matList :"+skuList.size());
+	       //LOGGER.debug("matList :"+skuList.size());
 		   return skuList; 	
 	}
 	

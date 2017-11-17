@@ -6,6 +6,7 @@
 		<project>ERPServices</project>
 		<project>FDStore</project>
 		<project>Framework</project>
+		<project>StoreAPI</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

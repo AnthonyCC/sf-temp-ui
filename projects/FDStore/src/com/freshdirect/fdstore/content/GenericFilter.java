@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.freshdirect.storeapi.content.FilteringValue;
+
 public abstract class GenericFilter<T> {
 	
 	Map<FilteringValue, List<Object>> filterValues;

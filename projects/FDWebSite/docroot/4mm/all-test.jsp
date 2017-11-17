@@ -6,17 +6,17 @@
 <%@page import="com.freshdirect.content.nutrition.EnumClaimValue"%>
 <%@page import="com.freshdirect.fdstore.FDProductInfo"%>
 <%@page import="com.freshdirect.fdstore.FDProduct"%>
-<%@page import="com.freshdirect.fdstore.content.SkuModel"%>
-<%@page import="com.freshdirect.fdstore.content.Domain"%>
-<%@page import="com.freshdirect.cms.ContentType"%>
-<%@page import="com.freshdirect.cms.ContentKey"%>
-<%@page import="com.freshdirect.fdstore.content.DomainValue"%>
+<%@page import="com.freshdirect.storeapi.content.SkuModel"%>
+<%@page import="com.freshdirect.storeapi.content.Domain"%>
+<%@page import="com.freshdirect.cms.core.domain.ContentType"%>
+<%@page import="com.freshdirect.cms.core.domain.ContentKey"%>
+<%@page import="com.freshdirect.storeapi.content.DomainValue"%>
 <%@page import="java.util.List"%>
-<%@page import="com.freshdirect.fdstore.content.DepartmentModel"%>
-<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
-<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
-<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
-<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@page import="com.freshdirect.storeapi.content.DepartmentModel"%>
+<%@page import="com.freshdirect.storeapi.content.CategoryModel"%>
+<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
+<%@page import="com.freshdirect.storeapi.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 

@@ -10,7 +10,7 @@ import java.net.URL;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.Html;
+import com.freshdirect.storeapi.content.Html;
 
 public class ProductUtil {
     private static final Logger LOG = Logger.getLogger(ProductUtil.class);

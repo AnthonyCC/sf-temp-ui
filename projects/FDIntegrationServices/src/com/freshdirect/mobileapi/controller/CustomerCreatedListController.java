@@ -11,7 +11,6 @@ import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.content.StarterList;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
@@ -25,6 +24,7 @@ import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ListPaginator;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
+import com.freshdirect.storeapi.content.StarterList;
 import com.freshdirect.webapp.ajax.quickshop.QuickShopHelper;
 
 public class CustomerCreatedListController extends BaseController {

@@ -1,4 +1,4 @@
-<%@ page import='com.freshdirect.fdstore.content.*' %>
+<%@ page import='com.freshdirect.storeapi.content.*' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='java.util.StringTokenizer' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
@@ -66,7 +66,7 @@
 	<% ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(request.getParameter("deptId")); %>
 	<table cellpadding="0" cellspacing="0" border="0" width="<%= peakProduces.size() < 6 ? tableWidth : "100%"%>">
 		<tr valign="bottom">
-			<logic:iterate id="peakProduce" collection="<%= peakProduces %>" type="com.freshdirect.fdstore.content.SkuModel">
+			<logic:iterate id="peakProduce" collection="<%= peakProduces %>" type="com.freshdirect.storeapi.content.SkuModel">
 				<td>
 				<% 
                   //Convert this to Product Pricing Adapter model for zone pricing.
@@ -84,7 +84,7 @@
 			</logic:iterate>
 		</tr>
 		<tr valign="top">
-			<logic:iterate id="peakProduce" collection="<%= peakProduces %>" type="com.freshdirect.fdstore.content.SkuModel">
+			<logic:iterate id="peakProduce" collection="<%= peakProduces %>" type="com.freshdirect.storeapi.content.SkuModel">
 				<td>
 				<% 
 					String prodNameAttribute = JspMethods.getProductNameToUse(peakProduce);

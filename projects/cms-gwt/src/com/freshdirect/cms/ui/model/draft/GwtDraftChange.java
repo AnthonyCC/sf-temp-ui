@@ -89,4 +89,12 @@ public class GwtDraftChange implements Serializable {
 
         return data;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder("GwtDraftChange[");
+        stringBuilder.append("(attribute: ").append(attributeName).append(") ~> (value: ").append(changedValue).append(") @ ").append(createdAt).append(" by ").append(userName)
+                .append("]");
+        return stringBuilder.toString();
+    }
 }

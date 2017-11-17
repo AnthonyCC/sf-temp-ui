@@ -21,7 +21,6 @@ import java.util.StringTokenizer;
 
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.ProductReferenceImpl;
 import com.freshdirect.fdstore.promotion.ActiveInactiveStrategy;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
 import com.freshdirect.fdstore.promotion.AudienceStrategy;
@@ -59,6 +58,7 @@ import com.freshdirect.fdstore.promotion.UniqueUseStrategy;
 import com.freshdirect.fdstore.promotion.WaiveChargeApplicator;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.storeapi.content.ProductReferenceImpl;
 
 public class FDPromotionDAO {
 

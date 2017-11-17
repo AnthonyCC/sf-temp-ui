@@ -35,11 +35,11 @@ import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.search.ContentIndex;
 import com.freshdirect.cms.search.SearchTestUtils;
-import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.storeapi.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.DepartmentModel;
-import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.DepartmentModel;
+import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.fdstore.content.StoreModel;
 
 public class ContentFilterTool {

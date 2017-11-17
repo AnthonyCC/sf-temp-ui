@@ -16,22 +16,17 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpHeaders;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.core.domain.ContentKeyFactory;
+import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.FilteringSortingItem;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.ProductModelBrandAdsAdapter;
-import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.util.DYFUtil;
-import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.SearchResult;
 import com.freshdirect.mobileapi.controller.data.request.SearchQuery;
 import com.freshdirect.mobileapi.controller.data.response.AutoComplete;
-import com.freshdirect.mobileapi.controller.data.response.FilterOption;
 import com.freshdirect.mobileapi.controller.data.response.BrowsePageResponse;
+import com.freshdirect.mobileapi.controller.data.response.FilterOption;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
 import com.freshdirect.mobileapi.model.AdProducts;
@@ -47,7 +42,11 @@ import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.BrowseUtil;
 import com.freshdirect.mobileapi.util.ListPaginator;
 import com.freshdirect.mobileapi.util.SortType;
-import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.FilteringSortingItem;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.ProductModelBrandAdsAdapter;
+import com.freshdirect.storeapi.content.SearchResults;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
 import com.freshdirect.webapp.ajax.filtering.SearchResultsUtil;
@@ -133,7 +132,7 @@ public class SearchController extends BaseController {
                 lat = requestMessage.getLat();
                 platform = requestMessage.getPlatform();
             }
-            
+
             SearchResult data = new SearchResult();
 
             try {
@@ -158,12 +157,12 @@ public class SearchController extends BaseController {
                 setContextHeaders(request, wrapper);
                 List<Product> products = productService.search(searchTerm, upc, page, resultMax, sortType, brandToFilter, categoryToFilter, departmentToFilter,
                         getUserFromSession(request, response), request, wrapper);
-                
+
                 List<Product> favProducts = new ArrayList<Product>();
                 favProducts.clear();
                 if(!products.isEmpty()){
                 	for(Product product : products){
-                		ProductModel productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey("Product:" + product.getProductId())); 
+                		ProductModel productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKeyFactory.get("Product:" + product.getProductId()));
                 		if(productModel!=null && productModel.getContentKey()!=null){
                 			boolean isYourFave = DYFUtil.isFavorite( productModel, user.getFDSessionUser() );
                 			if(isYourFave){
@@ -172,7 +171,7 @@ public class SearchController extends BaseController {
                 		}
                 	}
                 }
-                
+
                 // search results
                 if(pageType!=null && searchParams!=null){
                     final CmsFilteringNavigator nav = CmsFilteringNavigator.createInstance(request, user.getFDSessionUser());
@@ -321,7 +320,7 @@ public class SearchController extends BaseController {
 
 
         SearchResult data = new SearchResult();
-        
+
         try {
         // If there is no searchTerm, default is blank string (will retrieve everything)
         if (searchTerm == null) {
@@ -345,12 +344,12 @@ public class SearchController extends BaseController {
         setContextHeaders(request, wrapper);
         List<String> products = productService.searchProductIds(searchTerm, upc, page, resultMax, sortType, brandToFilter, categoryToFilter, departmentToFilter,
                 getUserFromSession(request, response), request, wrapper);
-        
+
         List<String> favProducts = new ArrayList<String>();
         favProducts.clear();
         if(!products.isEmpty()){
         	for(String product : products){
-        		ProductModel productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey("Product:" + product)); 
+        		ProductModel productModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKeyFactory.get(ContentType.Product, product));
         		if(productModel!=null && productModel.getContentKey()!=null){
         			boolean isYourFave = DYFUtil.isFavorite( productModel, user.getFDSessionUser() );
         			if(isYourFave){
@@ -359,7 +358,7 @@ public class SearchController extends BaseController {
         		}
         	}
         }
-        
+
         // search results
         if(pageType!=null && searchParams!=null){
             final CmsFilteringNavigator nav = CmsFilteringNavigator.createInstance(request, user.getFDSessionUser());
@@ -383,7 +382,7 @@ public class SearchController extends BaseController {
             	data.setPageBeacon(sr.getPageBeacon());
             }
         }
-        
+
 
         // Data required for filtering: Brands
         Set<Brand> brands = productService.getBrands();
@@ -437,10 +436,10 @@ public class SearchController extends BaseController {
         data.setDepartments(departmentList);
         data.setDidYouMean(productService.getSpellingSuggestion());
         data.setDefaultSortOptions();
-        
+
         } catch (UnbxdServiceUnavailableException e) {
             LOG.error(e);
-            
+
             data.setTotalResultCount(0);
             data.setQuery(searchTerm);
             data.setProductIds(Collections.<String>emptyList());
@@ -454,7 +453,7 @@ public class SearchController extends BaseController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        
+
         setResponseMessage(model, data, user);
         // Use below at later time.
         // LOG.debug(ContentFactory.getInstance().getStore().getSearchPageSortOptions());

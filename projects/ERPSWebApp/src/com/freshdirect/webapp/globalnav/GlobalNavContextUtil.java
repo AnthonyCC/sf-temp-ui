@@ -1,14 +1,14 @@
 package com.freshdirect.webapp.globalnav;
 
-import com.freshdirect.cms.application.CmsManager;
-import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.GlobalNavigationModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.FDUserUtil;
+import com.freshdirect.storeapi.application.CmsManager;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.GlobalNavigationModel;
+import com.freshdirect.storeapi.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 

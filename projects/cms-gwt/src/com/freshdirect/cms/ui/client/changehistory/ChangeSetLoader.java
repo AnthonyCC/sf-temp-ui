@@ -144,9 +144,9 @@ public class ChangeSetLoader implements DataProxy<PagingLoadResult<? extends Mod
 
         for (ContentNodeModel contentNodeModel : alreadyLoaded) {
             if (catalogChangesAndValues.containsKey(contentNodeModel.getKey())) {
-                if ("ALL".equals(catalogChangesAndValues.get(contentNodeModel.getKey()))) {
+                if ("All [ALL]".equals(catalogChangesAndValues.get(contentNodeModel.getKey()))) {
                     contentNodeModel.setIconOverride("OverrideRed");
-                } else if ("CORPORATE".equals(catalogChangesAndValues.get(contentNodeModel.getKey()))) {
+                } else if ("Corporate [CORPORATE]".equals(catalogChangesAndValues.get(contentNodeModel.getKey()))) {
                     contentNodeModel.setIconOverride("OverrideGreen");
                 }
             }

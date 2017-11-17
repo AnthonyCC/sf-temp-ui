@@ -24,13 +24,10 @@ import javax.ejb.CreateException;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
-import com.freshdirect.common.pricing.GrpMaterialPrice;
-import com.freshdirect.common.pricing.MaterialPrice;
-import com.freshdirect.customer.ErpGrpPriceModel;
-import com.freshdirect.customer.ErpGrpPriceZoneModel;
 import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.EnumATPRule;
+import com.freshdirect.erp.EnumAlcoholicContent;
 import com.freshdirect.erp.SkuAvailabilityHistory;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.fdstore.ejb.FDFactoryHome;
@@ -38,7 +35,6 @@ import com.freshdirect.fdstore.ejb.FDFactorySB;
 import com.freshdirect.framework.util.DayOfWeekSet;
 import com.freshdirect.payment.service.FDECommerceService;
 import com.freshdirect.payment.service.IECommerceService;
-import com.freshdirect.erp.EnumAlcoholicContent;
 /**
  * Singleton class for accessing the FD-layer factory session bean.
  *
@@ -81,7 +77,7 @@ public class FDFactory {
 	            	try {
 	            		return getPreviewProductInfo( FDECommerceService.getInstance().getProductInfo(sku) );
 	            	} catch (FDSkuNotFoundException ex) {
-	            		return getPreviewProductInfo(sku);	
+	            		return getPreviewProductInfo(sku);
 	            	}
 	            }
 			}else{
@@ -91,13 +87,13 @@ public class FDFactory {
 	            	try {
 	            		return getPreviewProductInfo( sb.getProductInfo(sku) );
 	            	} catch (FDSkuNotFoundException ex) {
-	            		return getPreviewProductInfo(sku);	
+	            		return getPreviewProductInfo(sku);
 	            	}
 	            }
 			}
-			
-            
-           
+
+
+
 		} catch (CreateException ce) {
 			factoryHome=null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -106,15 +102,15 @@ public class FDFactory {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
-	
+
 	public static FDProductInfo getProductInfo(ErpProductInfoModel erpProdInfo) throws FDResourceException {
 		if (factoryHome==null) {
 			lookupFactoryHome();
 		}
 		try {
-			FDFactorySB sb = factoryHome.create();  
+			FDFactorySB sb = factoryHome.create();
 			return sb.getProductInfo(erpProdInfo);
-           
+
 		} catch (CreateException ce) {
 			factoryHome=null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -123,7 +119,7 @@ public class FDFactory {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
-    
+
     /**
 	 * Get product information object for a specific version of a sku.
 	 *
@@ -146,7 +142,7 @@ public class FDFactory {
 			}else{
 				return sb.getProductInfo(sku, version);
 			}
-           
+
 		} catch (CreateException ce) {
 			factoryHome=null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -156,9 +152,9 @@ public class FDFactory {
 		}
 	}
 
-	
-	
-	/** 
+
+
+	/**
 	 * @param sapId
 	 * @return
 	 * @throws FDResourceException
@@ -170,14 +166,14 @@ public class FDFactory {
 		}
 		try {
 			FDFactorySB sb = factoryHome.create();
-			// FDFactortySession bean is just a pass through, 
-	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0 
+			// FDFactortySession bean is just a pass through,
+	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
 				return FDECommerceService.getInstance().findSkusBySapId(sapId);
 			}else{
 				return sb.getSkuCodes(sapId);
 			}
-           
+
 		} catch (CreateException ce) {
 			factoryHome=null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -186,7 +182,7 @@ public class FDFactory {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
-	
+
 	public static Collection<String> getSkuCodes(List<String> sapIds) throws FDResourceException, FDSkuNotFoundException {
 		List skuCodes = new ArrayList<String>();
 		if (factoryHome==null) {
@@ -199,7 +195,7 @@ public class FDFactory {
 				skuCodes.addAll(sb.getSkuCodes(sapId));
 			}
             return skuCodes;
-           
+
 		} catch (CreateException ce) {
 			factoryHome=null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -225,14 +221,14 @@ public class FDFactory {
 		}
 		try {
 			FDFactorySB sb = factoryHome.create();
-			// FDFactortySession bean is just a pass through, 
-	 		//so we are directly calling FDZoneInfoSB equivalent service in  2.0 
+			// FDFactortySession bean is just a pass through,
+	 		//so we are directly calling FDZoneInfoSB equivalent service in  2.0
 		   	if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.FDZoneInfoSB)){
 		   		return FDECommerceService.getInstance().findZoneInfoMaster(zoneId);
 		   	}else{
 		   		return sb.getZoneInfo(zoneId);
 		   	}
-           
+
 		} catch (CreateException ce) {
 			factoryHome=null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -241,9 +237,9 @@ public class FDFactory {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Get product information object for a specific version of a sku.
 	 *
@@ -262,15 +258,15 @@ public class FDFactory {
 		GroupScalePricing pi;
 		try {
 			FDFactorySB sb = factoryHome.create();
-			// FDFactortySession bean is just a pass through, 
+			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpgrpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpGrpInfoSB)){
 				pi = FDECommerceService.getInstance().findGrpInfoMaster(group);
 			}else{
-				pi = sb.getGrpInfo(group);				
-				
+				pi = sb.getGrpInfo(group);
+
 			}
-				
+
 		}catch (CreateException ce) {
 			factoryHome=null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -280,21 +276,21 @@ public class FDFactory {
 		}
 		return pi;
 	}
-	
+
 	public static ErpProductFamilyModel getFamilyInfo(String familyId) throws FDGroupNotFoundException, FDResourceException  {
 		if (factoryHome==null) {
 			lookupFactoryHome();
 		}
 		ErpProductFamilyModel pi;
 		try {
-			FDFactorySB sb = factoryHome.create();  
-			// FDFactortySession bean is just a pass through, 
+			FDFactorySB sb = factoryHome.create();
+			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpProductFamilySessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpProductFamilySB)){
 				pi = FDECommerceService.getInstance().findFamilyInfo(familyId);
         	}else
-        		pi = sb.getFamilyInfo(familyId);				
-				
+        		pi = sb.getFamilyInfo(familyId);
+
 		}catch (CreateException ce) {
 			factoryHome=null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -304,7 +300,7 @@ public class FDFactory {
 		}
 		return pi;
 	}
-	/** 
+	/**
 	 * @param materialId
 	 * @return
 	 * @throws FDGroupNotFoundException
@@ -316,15 +312,15 @@ public class FDFactory {
 		}
 		ErpProductFamilyModel pi;
 		try {
-			FDFactorySB sb = factoryHome.create(); 
-			// FDFactortySession bean is just a pass through, 
-	 		//so we are directly calling ErpProductFamilySessionBean equivalent service in  2.0 
+			FDFactorySB sb = factoryHome.create();
+			// FDFactortySession bean is just a pass through,
+	 		//so we are directly calling ErpProductFamilySessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpProductFamilySB)){
         		IECommerceService service = FDECommerceService.getInstance();
         		pi = service.findSkuFamilyInfo(materialId);
         	}else
-        		pi = sb.getSkuFamilyInfo(materialId);				
-				
+        		pi = sb.getSkuFamilyInfo(materialId);
+
 		}catch (CreateException ce) {
 			factoryHome=null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -334,9 +330,9 @@ public class FDFactory {
 		}
 		return pi;
 	}
-	
-	
-	
+
+
+
 	  /**
 	 * Get product information object for a specific version of a sku.
 	 *
@@ -354,7 +350,7 @@ public class FDFactory {
 		}
 		try {
 			FDFactorySB sb = factoryHome.create();
-			// FDFactortySession bean is just a pass through, 
+			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpZoneInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpZoneInfoSB)){
 				return FDECommerceService.getInstance().findZoneInfoMaster(zoneIds);
@@ -369,8 +365,8 @@ public class FDFactory {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
-	
-	
+
+
 
 	  /**
 	 * Get product information object for a specific version of a sku.
@@ -388,7 +384,7 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
-			// FDFactortySession bean is just a pass through, 
+			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpGrpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpGrpInfoSB)){
 				return FDECommerceService.getInstance().findGrpInfoMaster(grpIds);
@@ -396,7 +392,7 @@ public class FDFactory {
 			FDFactorySB sb = factoryHome.create();
 				return sb.getGrpInfos(grpIds);
 			}
-         
+
 		} catch (CreateException ce) {
 			factoryHome=null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -405,9 +401,9 @@ public class FDFactory {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Get current product information object for multiple SKUs.
 	 *
@@ -430,7 +426,7 @@ public class FDFactory {
 				pinfos = sb.getProductInfos(skus);
 			}
             if (FDStoreProperties.getPreviewMode()) {
-            	
+
             	Set foundSkus = new HashSet();
                 LinkedList newPinfos = new LinkedList();
                 for (Iterator piIter = pinfos.iterator(); piIter.hasNext(); ) {
@@ -449,7 +445,7 @@ public class FDFactory {
 	            }
                 pinfos = newPinfos;
             }
-            
+
             return pinfos;
 
 		} catch (CreateException ce) {
@@ -460,7 +456,7 @@ public class FDFactory {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
-	
+
 	/**
 	 * @param days
 	 * @return
@@ -472,7 +468,7 @@ public class FDFactory {
 		}
 		try {
 			FDFactorySB sb = factoryHome.create();
-			// FDFactortySession bean is just a pass through, 
+			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
 				return FDECommerceService.getInstance().findNewSkuCodes(days);
@@ -499,7 +495,7 @@ public class FDFactory {
 		}
 		try {
 			FDFactorySB sb = factoryHome.create();
-			// FDFactortySession bean is just a pass through, 
+			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
 				return FDECommerceService.getInstance().getSkusOldness();
@@ -516,7 +512,7 @@ public class FDFactory {
 		}
 	}
 
-	/** 
+	/**
 	 * @param days
 	 * @return
 	 * @throws FDResourceException
@@ -527,14 +523,14 @@ public class FDFactory {
 		}
 		try {
 			FDFactorySB sb = factoryHome.create();
-			// FDFactortySession bean is just a pass through, 
+			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
 				return FDECommerceService.getInstance().findReintroducedSkuCodes(days);
 			}else{
 				return sb.getReintroducedSkuCodes(days);
 			}
-			
+
 
 		} catch (CreateException ce) {
 			factoryHome=null;
@@ -544,9 +540,9 @@ public class FDFactory {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
-    
 
-	/** 
+
+	/**
 	 * @return
 	 * @throws FDResourceException
 	 */
@@ -556,7 +552,7 @@ public class FDFactory {
 		}
 		try {
 			FDFactorySB sb = factoryHome.create();
-			// FDFactortySession bean is just a pass through, 
+			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
 				return FDECommerceService.getInstance().findOutOfStockSkuCodes();
@@ -571,7 +567,7 @@ public class FDFactory {
 			factoryHome=null;
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
-		
+
 	}
 
 	/**
@@ -587,16 +583,16 @@ public class FDFactory {
 			new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),
 			null, pinfo.getZonePriceInfoList(),pinfo.getGroups(),
 			pinfo.getUpc(),pinfo.getFamilyID(),pinfo.getPlantMaterialInfo(),pinfo.getAvailability(),pinfo.getAlcoholType());
-		
-		/*(String skuCode, int version, 
-	    		String[] materialNumbers, EnumATPRule atpRule, EnumAvailabilityStatus availStatus, Date availDate, 
+
+		/*(String skuCode, int version,
+	    		String[] materialNumbers, EnumATPRule atpRule, EnumAvailabilityStatus availStatus, Date availDate,
 	    		FDInventoryCacheI inventory, EnumOrderLineRating rating, String freshness,
 	    		ZonePriceInfoListing zonePriceInfoList, FDGroup group, EnumSustainabilityRating sustainabilityRating,
 	    		String upc,List<FDPlantMaterial> plantMaterialInfo,Map<String, FDMaterialSalesArea> materialSalesArea)*/
-		
-		
+
+
 	}
-	
+
 	/**
 	 * Utility method: create a temporarily unavailable fake FDProductInfo
 	 */
@@ -606,20 +602,20 @@ public class FDFactory {
 				put("1000",new FDPlantMaterial(EnumATPRule.JIT,false,false,DayOfWeekSet.EMPTY,1,"1000",false));
 			}
 		};
-		
+
 		Map<String, FDMaterialSalesArea> mAvail=new HashMap<String, FDMaterialSalesArea>(){
 			{put("1000"+"1000",new FDMaterialSalesArea(new SalesAreaInfo("1000","1000"),EnumAvailabilityStatus.TEMP_UNAV.getStatusCode(),new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),"XYZ",null,"1000"));
 			};
 		};
 		;
-		
+
 		return new FDProductInfo(skuCode,0,null,null,ZonePriceInfoListing.getDummy(),plantInfo,mAvail,EnumAlcoholicContent.NONE);
-		
+
 	}
 
 
 	/**
-	 * Get product with specified version. 
+	 * Get product with specified version.
 	 *
 	 * @param sku SKU code
 	 * @param version requested version
@@ -646,7 +642,7 @@ public class FDFactory {
 			throw new FDResourceException(ce, "Error creating session bean");
 		} catch (RemoteException re) {
 			factoryHome=null;
-			throw new FDResourceException(re, "Error talking to session bean");
+			throw new FDResourceException(re, "Error talking to session bean; failed to retrieve FDProduct for SKU with skucode=" + sku + " and version=" + version);
 		}
 	}
 
@@ -673,22 +669,22 @@ public class FDFactory {
 	 *
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
-	
-	
+
+
 	public static Collection getFilteredSkus(List skuList) throws FDResourceException {
 		if (factoryHome==null) {
 			lookupFactoryHome();
 		}
 		try {
 			FDFactorySB sb = factoryHome.create();
-			// FDFactortySession bean is just a pass through, 
+			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpGrpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpGrpInfoSB)){
 				return FDECommerceService.getInstance().getFilteredSkus(skuList);
 			}else{
 				return sb.getFilteredSkus(skuList);
 			}
-           
+
 		} catch (CreateException ce) {
 			factoryHome=null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -697,8 +693,8 @@ public class FDFactory {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
-	
-	
+
+
 	public static Collection getProducts(FDSku[] skus) throws FDResourceException {
 		// !!! optimize this, so that it only makes one call to the session bean
 		List products = new ArrayList(skus.length);
@@ -728,7 +724,7 @@ public class FDFactory {
 			}
 		}
 	}
-	/** 
+	/**
 	 * @param lowerLimit
 	 * @param upperLimit
 	 * @param skuPrefixes
@@ -741,7 +737,7 @@ public class FDFactory {
 		}
 		try {
 			FDFactorySB sb = factoryHome.create();
-			// FDFactortySession bean is just a pass through, 
+			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
 				return FDECommerceService.getInstance().findSKUsByDeal(lowerLimit, upperLimit, skuPrefixes);
@@ -756,10 +752,10 @@ public class FDFactory {
 			factoryHome=null;
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
-		
+
 	}
-	
-	
+
+
 	/**
 	 * @param skuPrefixes
 	 * @return
@@ -771,7 +767,7 @@ public class FDFactory {
 		}
 		try {
 			FDFactorySB sb = factoryHome.create();
-			// FDFactortySession bean is just a pass through, 
+			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
 				return (List) FDECommerceService.getInstance().findPeakProduceSKUsByDepartment(skuPrefixes);
@@ -786,7 +782,7 @@ public class FDFactory {
 			factoryHome=null;
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
-		
+
 	}
 
 	/**
@@ -804,8 +800,8 @@ public class FDFactory {
 			FDFactorySB sb = factoryHome.create();
 			Date now = new Date();
 			Date first = new Date(now.getTime() - 30l * 24l * 3600000l);
-			// FDFactortySession bean is just a pass through, 
-	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0 
+			// FDFactortySession bean is just a pass through,
+	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
 				regular = FDECommerceService.getInstance().getNewSkus();
 				overridden = FDECommerceService.getInstance().getOverriddenNewSkus();
@@ -820,7 +816,7 @@ public class FDFactory {
 			for (Map.Entry<String, Map<String,Date>> entry : regular.entrySet()) {
 				product=entry.getKey();
 				for(Map.Entry<String,Date> valueEntry:entry.getValue().entrySet() ) {
-						
+
 						if (valueEntry.getValue().after(first) && valueEntry.getValue().before(now)) {
 							if(results.containsKey(product)) {
 								Map<String,Date> _value=results.get(product);
@@ -834,7 +830,7 @@ public class FDFactory {
 						}
 				 }
 			}
-			
+
 			for (Map.Entry<String,  Map<String,Date>> entry : overridden.entrySet()) {
 				product=entry.getKey();
 				for(Map.Entry<String,Date> valueEntry:entry.getValue().entrySet() ) {
@@ -854,7 +850,7 @@ public class FDFactory {
 							_value.put(valueEntry.getKey(), valueEntry.getValue());
 							results.put(product, _value);
 						}else {
-							
+
 							_value=new HashMap<String, Date>();
 							_value.put(valueEntry.getKey(), valueEntry.getValue());
 						  results.put(product,_value);
@@ -862,7 +858,7 @@ public class FDFactory {
 					}
 				}
 			}
-			
+
 			for (Map.Entry<String, Map<String,Date>> entry : overriddenBack.entrySet()) {
 				product=entry.getKey();
 				for(Map.Entry<String,Date> valueEntry:entry.getValue().entrySet() ) {
@@ -879,7 +875,7 @@ public class FDFactory {
 					}
 				}
 			}
-			
+
 			/*for (Map.Entry<String, Date> entry : overridden.entrySet())
 				if (entry.getValue().compareTo(first) <= 0)
 					results.remove(entry.getKey());
@@ -912,7 +908,7 @@ public class FDFactory {
 			FDFactorySB sb = factoryHome.create();
 			Date now = new Date();
 			Date first = new Date(now.getTime() - 30l * 24l * 3600000l);
-			// FDFactortySession bean is just a pass through, 
+			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
 				regular = FDECommerceService.getInstance().getBackInStockSkus();
@@ -927,7 +923,7 @@ public class FDFactory {
 			for (Map.Entry<String, Map<String,Date>> entry : regular.entrySet()) {
 				product=entry.getKey();
 				for(Map.Entry<String,Date> valueEntry:entry.getValue().entrySet() ) {
-						
+
 						if (valueEntry.getValue().after(first) && valueEntry.getValue().before(now)) {
 							if(results.containsKey(product)) {
 								Map<String,Date> _value=regular.get(product);
@@ -941,7 +937,7 @@ public class FDFactory {
 						}
 				 }
 			}
-			
+
 			for (Map.Entry<String, Map<String,Date>> entry : overridden.entrySet()) {
 				product=entry.getKey();
 				for(Map.Entry<String,Date> valueEntry:entry.getValue().entrySet() ) {
@@ -970,7 +966,7 @@ public class FDFactory {
 					}
 				}
 			}
-				
+
 			/*for (Map.Entry<String, Date> entry : overridden.entrySet())
 				if (entry.getValue().compareTo(first) <= 0)
 					results.remove(entry.getKey());
@@ -997,7 +993,7 @@ public class FDFactory {
 		}
 		try {
 			FDFactorySB sb = factoryHome.create();
-			// FDFactortySession bean is just a pass through, 
+			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
 				return FDECommerceService.getInstance().getOverriddenNewSkus();
@@ -1019,7 +1015,7 @@ public class FDFactory {
 		}
 		try {
 			FDFactorySB sb = factoryHome.create();
-			// FDFactortySession bean is just a pass through, 
+			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
 				return FDECommerceService.getInstance().getOverriddenBackInStockSkus();
@@ -1034,14 +1030,14 @@ public class FDFactory {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
-	
+
 	public static List<SkuAvailabilityHistory> getSkuAvailabilityHistory(String skuCode) throws FDResourceException {
 		if (factoryHome==null) {
 			lookupFactoryHome();
 		}
 		try {
 			FDFactorySB sb = factoryHome.create();
-			// FDFactortySession bean is just a pass through, 
+			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
 				return FDECommerceService.getInstance().getSkuAvailabilityHistory(skuCode);
@@ -1064,7 +1060,7 @@ public class FDFactory {
 		}
 		try {
 			FDFactorySB sb = factoryHome.create();
-			// FDFactortySession bean is just a pass through, 
+			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpInfoSB)){
 				FDECommerceService.getInstance().refreshNewAndBackViews();
@@ -1085,7 +1081,7 @@ public class FDFactory {
 			lookupFactoryHome();
 		}
 		try {
-			// FDFactortySession bean is just a pass through, 
+			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpGrpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpGrpInfoSB)){
 				return FDECommerceService.getInstance().getLatestActiveGroup(groupId);
@@ -1093,7 +1089,7 @@ public class FDFactory {
 				FDFactorySB sb = factoryHome.create();
 				return sb.getLatestActiveGroup(groupId);
 			}
-         
+
 		} catch (CreateException ce) {
 			factoryHome=null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -1102,13 +1098,13 @@ public class FDFactory {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
-	
+
 	public static Map<String,FDGroup> getGroupIdentityForMaterial(String matId) throws FDResourceException{
 		if (factoryHome==null) {
 			lookupFactoryHome();
 		}
 		try {
-			// FDFactortySession bean is just a pass through, 
+			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpGrpInfoSessionBean equivalent service in  2.0
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpGrpInfoSB)){
 				return FDECommerceService.getInstance().getGroupIdentityForMaterial(matId);
@@ -1116,7 +1112,7 @@ public class FDFactory {
 			FDFactorySB sb = factoryHome.create();
           return sb.getGroupIdentityForMaterial(matId);
 			}
-         
+
 		} catch (CreateException ce) {
 			factoryHome=null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -1125,13 +1121,13 @@ public class FDFactory {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
-	
+
 	public static Map<String,List<String>> getModifiedOnlyGroups(Date lastModified) throws FDResourceException{
 		if (factoryHome==null) {
 			lookupFactoryHome();
 		}
 		try {
-			// FDFactortySession bean is just a pass through, 
+			// FDFactortySession bean is just a pass through,
 	 		//so we are directly calling ErpGrpInfoSessionBean equivalent service in  2.0
 			FDFactorySB sb = factoryHome.create();
 			if(FDStoreProperties.isSF2_0_AndServiceEnabled(FDEcommProperties.ErpGrpInfoSB)){
@@ -1139,7 +1135,7 @@ public class FDFactory {
 			}else{
 				return sb.getModifiedOnlyGroups(lastModified);
 			}
-         
+
 		} catch (CreateException ce) {
 			factoryHome=null;
 			throw new FDResourceException(ce, "Error creating session bean");

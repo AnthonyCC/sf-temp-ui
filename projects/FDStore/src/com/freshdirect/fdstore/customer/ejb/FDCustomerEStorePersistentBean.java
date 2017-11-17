@@ -8,10 +8,10 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 import com.freshdirect.fdstore.EnumEStoreId;
-import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.framework.core.DependentPersistentBeanSupport;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.framework.util.DaoUtil;
 
 /**

@@ -28,7 +28,7 @@ import com.freshdirect.fdstore.aspects.DlvManagerStateCountyLookupAspect;
 import com.freshdirect.fdstore.aspects.FDFactoryProductInfoAspect;
 import com.freshdirect.fdstore.aspects.ProductStatisticProviderAspect;
 import com.freshdirect.fdstore.aspects.ProductStatisticUserProviderAspect;
-import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.ContentNodeModel;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.webapp.util.FDEventUtil;
 

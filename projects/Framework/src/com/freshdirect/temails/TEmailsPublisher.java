@@ -22,9 +22,13 @@ public class TEmailsPublisher implements TEmailPublisherI {
 		this.publishCommand = publishCommand;
 	}
 
-	public void publish(Map templates, String subsystem, String targetEnv) {
+	@Override
+    public void publish(Map templates, String subsystem, String targetEnv) {
+        if (basePath == null) {
+            throw new RuntimeException("basePath is not configured!");
+        }
 
-		TEmailsConfig config = TEmailsRegistry.getTEmailsConfig(subsystem);
+        TEmailsConfig config = TEmailsRegistry.getTEmailsConfig(subsystem) == null ? null : TEmailsRegistry.getTEmailsConfig(subsystem).getConfig();
 
 		String filename = subsystem + "-templates.xml";
 
@@ -44,8 +48,10 @@ public class TEmailsPublisher implements TEmailPublisherI {
 		System.out.println("Going to publish to: " + targetEnv);
 		
 		try{
-			System.out.println("RulesPublisher.publish()"+publishCommand);
-			this.executeScript(mf.format(scriptArgs));
+            if (publishCommand != null) {
+                System.out.println("RulesPublisher.publish()" + publishCommand);
+                this.executeScript(mf.format(scriptArgs));
+            }
 		}catch(IOException e){
 			throw new TEmailRuntimeException(e);
 		} catch (InterruptedException e) {

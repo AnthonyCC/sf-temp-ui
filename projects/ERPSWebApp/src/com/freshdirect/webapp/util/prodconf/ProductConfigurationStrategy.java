@@ -3,7 +3,7 @@
  */
 package com.freshdirect.webapp.util.prodconf;
 
-import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.util.ConfigurationContext;
 import com.freshdirect.webapp.util.ConfigurationStrategy;
 import com.freshdirect.webapp.util.ProductImpression;

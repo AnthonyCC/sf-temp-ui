@@ -2,10 +2,10 @@ package com.freshdirect.fdstore.customer;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.content.PriceCalculator;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.storeapi.content.PriceCalculator;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.ProductReference;
 
 public class FDCartLineDealHelper {
 

@@ -7,13 +7,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <%@page import="com.freshdirect.fdstore.content.WineFilter"%>
-<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@page import="com.freshdirect.fdstore.content.EnumWinePrice"%>
-<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
-<%@page import="com.freshdirect.fdstore.content.DomainValue"%>
-<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@page import="com.freshdirect.storeapi.content.DomainValue"%>
+<%@page import="com.freshdirect.storeapi.content.CategoryModel"%>
 <%@page import="com.freshdirect.fdstore.content.EnumWineRating"%>
 <%@ page import="com.freshdirect.common.pricing.ZoneInfo"%><html lang="en-US" xml:lang="en-US">
 <head>
@@ -30,7 +30,7 @@ filter.addFilterValue(ContentFactory.getInstance().getDomainValueForWineCategory
 		<table cellpadding="0" cellspacing="0" width="550" border="0">
 			<tr valign="top">
 				<logic:iterate id='contentNode' collection="<%=filter.getProducts()%>"
-						type="com.freshdirect.fdstore.content.ProductModel">
+						type="com.freshdirect.storeapi.content.ProductModel">
 					<%
 						ProductModel productNode = contentNode;
 									String rating = "";

@@ -102,7 +102,7 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 								<form fdform class="top-margin10 dispblock-fields" fdform-displayerrorafter name="giftcard_donation_form" id="giftcard_donation_form" method="get" action="add_donation_giftcard.jsp">	
 									<div style="overflow-y:scroll;overflow-x:hidden;height:300px;border:1px solid #cccccc;padding-top: 10px;">			
 									<table border="0" cellspacing="0" cellpadding="2" width="278" >
-										<logic:iterate id="donId" collection="<%= donationOrgList %>" type="com.freshdirect.fdstore.content.DonationOrganization">
+										<logic:iterate id="donId" collection="<%= donationOrgList %>" type="com.freshdirect.storeapi.content.DonationOrganization">
 											<tr>
 												<td width="15" valign="top">
 													<div style="padding-top:20px"><input type="radio" class="text11" name="gcDonId" id="gcDonId_<%= donId.getContentName() %>" value="<%= donId.getContentName() %>" <%= (fdGCDonId != null && donId.getContentName().equals(fdGCDonId)) ? "checked" : "" %> />

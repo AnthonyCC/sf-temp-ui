@@ -1,7 +1,7 @@
 <%@	  page import="java.util.*"%><%@ page
-	import="com.freshdirect.fdstore.content.Recipe"%><%@ page
+	import="com.freshdirect.storeapi.content.Recipe"%><%@ page
 	import="com.freshdirect.framework.util.StringUtil"%><%@page
-	import="com.freshdirect.fdstore.content.DomainValue"%>
+	import="com.freshdirect.storeapi.content.DomainValue"%>
 
 <a name="recipes"></a>
 <%

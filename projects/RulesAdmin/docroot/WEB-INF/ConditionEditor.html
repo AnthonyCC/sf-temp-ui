@@ -1,4 +1,4 @@
-<span jwcid="@If" condition="ognl:condition instanceof com.freshdirect.rules.OgnlCondition">
+<span jwcid="@If" condition="ognl:condition instanceof com.freshdirect.storeapi.rules.OgnlCondition">
 	<td>OGNL Script: </td>
 	<td>
 		<textarea jwcid="@TextArea" rows="15" cols="55" displayName="ognl Condition" value="ognl:condition.expression" validators="validators:required" />
@@ -10,7 +10,7 @@
 		<input jwcid="@TextField" size="55" displayName="County" value="ognl:condition.county" validators="validators:required"/>
 	</td>
 </span>
-<span jwcid="@If" condition="ognl:condition instanceof com.freshdirect.rules.RuleRef">
+<span jwcid="@If" condition="ognl:condition instanceof com.freshdirect.storeapi.rules.RuleRef">
 	<td>Rule: </td>
 	<td>
 		<select jwcid="@PropertySelection" model="ognl:ruleRefSelectionModel" value="ognl:currRuleRefId"/>

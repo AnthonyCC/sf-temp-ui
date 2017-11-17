@@ -2,8 +2,6 @@ package com.freshdirect.temails;
 
 import java.io.Serializable;
 
-import com.freshdirect.rules.RuleRuntimeI;
-
 
 public interface ParserI extends Serializable {
 

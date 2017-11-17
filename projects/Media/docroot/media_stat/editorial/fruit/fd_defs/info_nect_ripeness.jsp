@@ -1,6 +1,6 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 
-<%@ page import='com.freshdirect.fdstore.content.*'  %>
+<%@ page import='com.freshdirect.storeapi.content.*' %>
 
 <%
 String productId = request.getParameter("productId");

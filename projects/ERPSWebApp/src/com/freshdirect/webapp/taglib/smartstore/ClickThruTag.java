@@ -8,9 +8,9 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
+import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.util.FDEventUtil;
 import com.freshdirect.webapp.util.FDURLUtil;
 

@@ -6,11 +6,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.ContentType;
-import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.sitemap.SitemapTypeEnum;
+import com.freshdirect.storeapi.fdstore.FDContentTypes;
 
 public class FoodKickSitemapConfigStrategy implements SitemapConfigStrategy {
 

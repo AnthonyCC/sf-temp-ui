@@ -2,8 +2,9 @@ package com.freshdirect.webapp.ajax.analytics.service;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.content.ProductModel;
+
 import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.analytics.data.GAProductData;
 
@@ -42,15 +43,15 @@ public class GAProductDataService {
     private double roundQuantity(String quantity) {
         double result = 0;
         try {
-            Double doubleQuantity = Double.parseDouble(quantity);
+        Double doubleQuantity = Double.parseDouble(quantity);
 
-            if (doubleQuantity < 0) {
-                doubleQuantity = Math.floor(doubleQuantity);
+        if (doubleQuantity < 0) {
+            doubleQuantity = Math.floor(doubleQuantity);
                 doubleQuantity = (doubleQuantity < -GA_QUANTITY_LIMIT) ? -GA_QUANTITY_LIMIT : doubleQuantity;
-            } else if (doubleQuantity > 0) {
-                doubleQuantity = Math.ceil(doubleQuantity);
+        } else if (doubleQuantity > 0) {
+            doubleQuantity = Math.ceil(doubleQuantity);
                 doubleQuantity = (doubleQuantity > GA_QUANTITY_LIMIT) ? GA_QUANTITY_LIMIT : doubleQuantity;
-            } else {
+        } else {
                 doubleQuantity = 1d;
             }
 

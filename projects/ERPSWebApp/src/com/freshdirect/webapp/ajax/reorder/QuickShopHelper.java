@@ -15,11 +15,10 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.ContentNodeI;
-import com.freshdirect.cms.ContentType;
-import com.freshdirect.cms.application.CmsManager;
-import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.CmsServiceLocator;
+import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.core.domain.ContentKeyFactory;
+import com.freshdirect.cms.core.domain.ContentType;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProduct;
@@ -28,21 +27,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.cache.EhCacheUtil;
-import com.freshdirect.fdstore.content.ConfiguredProduct;
-import com.freshdirect.fdstore.content.ConfiguredProductGroup;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.EnumQuickShopFilteringValue;
-import com.freshdirect.fdstore.content.FDFolder;
 import com.freshdirect.fdstore.content.FilteringFlowResult;
-import com.freshdirect.fdstore.content.FilteringSortingItem;
-import com.freshdirect.fdstore.content.FilteringValue;
-import com.freshdirect.fdstore.content.PriceCalculator;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.Recipe;
-import com.freshdirect.fdstore.content.SkuModel;
-import com.freshdirect.fdstore.content.StarterList;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDOrderHistory;
@@ -61,6 +46,23 @@ import com.freshdirect.fdstore.pricing.SkuModelPricingAdapter;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
+import com.freshdirect.storeapi.ContentNodeI;
+import com.freshdirect.storeapi.application.CmsManager;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ConfiguredProduct;
+import com.freshdirect.storeapi.content.ConfiguredProductGroup;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.EnumQuickShopFilteringValue;
+import com.freshdirect.storeapi.content.FDFolder;
+import com.freshdirect.storeapi.content.FilteringSortingItem;
+import com.freshdirect.storeapi.content.FilteringValue;
+import com.freshdirect.storeapi.content.PriceCalculator;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.Recipe;
+import com.freshdirect.storeapi.content.SkuModel;
+import com.freshdirect.storeapi.content.StarterList;
+import com.freshdirect.storeapi.fdstore.FDContentTypes;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.quickshop.QuickShopYmalServlet;
@@ -73,7 +75,7 @@ public class QuickShopHelper {
 
 	private static final int TIME_LIMIT = -13;
 	private final static Logger LOG = LoggerFactory.getInstance(QuickShopHelper.class);
-	
+
 	//create filter
 	private static final Set<FilteringValue> filters = new HashSet<FilteringValue>();
 	static {
@@ -89,7 +91,7 @@ public class QuickShopHelper {
 		filters.add(EnumQuickShopFilteringValue.KOSHER);
 		filters.add(EnumQuickShopFilteringValue.LOCAL);
 		filters.add(EnumQuickShopFilteringValue.ORGANIC);
-		filters.add(EnumQuickShopFilteringValue.ON_SALE);	
+		filters.add(EnumQuickShopFilteringValue.ON_SALE);
 	}
 
 	public static QuickShopLineItemWrapper createItemCore(FDProductSelectionI productSelection, FDCustomerList list, StarterList starterList, FDUserI user, EnumQuickShopTab tab)
@@ -114,8 +116,14 @@ public class QuickShopHelper {
 			return null;
 		}
 
+		// Skip products without having primary home
+		CategoryModel primaryHome = productModel.getPrimaryHome();
+		if (primaryHome == null) {
+		    return null;
+		}
+
 		// is hidden in quickshop?
-		if (productModel.getPrimaryHome().getDepartment().isHidddenInQuickshop()) {
+		if (primaryHome.getDepartment().isHidddenInQuickshop()) {
 			return null;
 		}
 
@@ -186,7 +194,7 @@ public class QuickShopHelper {
 			// check if recipe is still alive
 			if (list.getRecipeId() != null) {
 				wrapper.setRecipeAlive(true);
-				Recipe recipe = (Recipe) ContentFactory.getInstance().getContentNodeByKey(ContentKey.getContentKey(ContentType.get("Recipe"), list.getRecipeId()));
+				Recipe recipe = (Recipe) ContentFactory.getInstance().getContentNodeByKey(ContentKeyFactory.get(ContentType.Recipe, list.getRecipeId()));
 				if (recipe.isOrphan() || !recipe.isAvailable()) {
 					wrapper.setRecipeAlive(false);
 				}
@@ -365,7 +373,7 @@ public class QuickShopHelper {
 	/**
 	 * Load past orders or top items based on tab (cache used for performance
 	 * improvement).
-	 * 
+	 *
 	 * @param user
 	 * @param tab
 	 * @param cacheName
@@ -373,16 +381,16 @@ public class QuickShopHelper {
 	 * @throws FDResourceException
 	 */
 	public static List<QuickShopLineItemWrapper> getWrappedOrderHistoryUsingCache(FDUserI user, EnumQuickShopTab tab, String cacheName) throws FDResourceException {
-		List<QuickShopLineItemWrapper> result = EhCacheUtil.getListFromCache(cacheName, user.getIdentity().getErpCustomerPK());
-		if(result!=null 
-				&& !result.isEmpty() 
-				&& result.get(0).getProduct()!=null 
-				&& result.get(0).getProduct().getUserContext()!=null 
-				&& result.get(0).getProduct().getUserContext().getFulfillmentContext()!=null 
+        List<QuickShopLineItemWrapper> result = CmsServiceLocator.ehCacheUtil().getListFromCache(cacheName, user.getIdentity().getErpCustomerPK());
+		if(result!=null
+				&& !result.isEmpty()
+				&& result.get(0).getProduct()!=null
+				&& result.get(0).getProduct().getUserContext()!=null
+				&& result.get(0).getProduct().getUserContext().getFulfillmentContext()!=null
 				&& result.get(0).getProduct().getUserContext().getFulfillmentContext().getPlantId()!=null
 				&& !result.get(0).getProduct().getUserContext().getFulfillmentContext().getPlantId().equals(user.getUserContext().getFulfillmentContext().getPlantId())){
-			EhCacheUtil.removeFromCache(cacheName, user.getIdentity().getErpCustomerPK());
-			result = EhCacheUtil.getListFromCache(cacheName, user.getIdentity().getErpCustomerPK());
+		    CmsServiceLocator.ehCacheUtil().removeFromCache(cacheName, user.getIdentity().getErpCustomerPK());
+			result = CmsServiceLocator.ehCacheUtil().getListFromCache(cacheName, user.getIdentity().getErpCustomerPK());
 		}
 		if (result == null) {
 			LOG.info("Wrapping products");
@@ -400,7 +408,7 @@ public class QuickShopHelper {
 				}
 			}
 			if (!result.isEmpty()) {
-				EhCacheUtil.putListToCache(cacheName, user.getIdentity().getErpCustomerPK(), new ArrayList<QuickShopLineItemWrapper>(result));
+                CmsServiceLocator.ehCacheUtil().putListToCache(cacheName, user.getIdentity().getErpCustomerPK(), new ArrayList<QuickShopLineItemWrapper>(result));
 			}
 		} else {
 			LOG.info("Fetching items from cache");
@@ -464,11 +472,11 @@ public class QuickShopHelper {
 		}
 		return result;
 	}
-	
+
 	public static void emptyQuickShopCaches(String userId) {
-		EhCacheUtil.removeFromCache(EnumQuickShopTab.TOP_ITEMS.cacheName, userId);
-		EhCacheUtil.removeFromCache(EnumQuickShopTab.PAST_ORDERS.cacheName, userId);
-		EhCacheUtil.removeFromCache(EnumQuickShopTab.CUSTOMER_LISTS.cacheName, userId);
+        CmsServiceLocator.ehCacheUtil().removeFromCache(EnumQuickShopTab.TOP_ITEMS.cacheName, userId);
+        CmsServiceLocator.ehCacheUtil().removeFromCache(EnumQuickShopTab.PAST_ORDERS.cacheName, userId);
+        CmsServiceLocator.ehCacheUtil().removeFromCache(EnumQuickShopTab.CUSTOMER_LISTS.cacheName, userId);
 	}
 
 	public static boolean hasYourFavoritesRecommendation(FDUserI user) {
@@ -483,7 +491,7 @@ public class QuickShopHelper {
 
 	/**
 	 * Populates quickshop specific replacement items
-	 * 
+	 *
 	 * @param item
 	 * @param originalProduct
 	 * @param user
@@ -571,7 +579,7 @@ public class QuickShopHelper {
 			skus.add(item.getNode().getItem().getSkuCode());
 		}
 	}
-	
+
 	public static void removeSkuDuplicatesInPastOrders(List<FilteringSortingItem<QuickShopLineItemWrapper>> items) {
 		Map<String, Set<String>> skus = new HashMap<String, Set<String>>();
 		Iterator<FilteringSortingItem<QuickShopLineItemWrapper>> it = items.iterator();
@@ -592,7 +600,7 @@ public class QuickShopHelper {
 			skusForOrder.add(skuCode);
 		}
 	}
-	
+
 	public static FDUserI getUserFromSession(HttpSession session) {
 		return (FDUserI) session.getAttribute(SessionName.USER);
 	}
@@ -639,11 +647,7 @@ public class QuickShopHelper {
 		ContentNodeI node = CmsManager.getInstance().getContentNode(key);
 		List children = null;
 
-		if (node.getAttribute("children") == null) {
-			return;
-		}
-
-		children = (List) node.getAttribute("children").getValue();
+		children = (List) node.getAttributeValue("children");
 		if (children == null) {
 			return;
 		}
@@ -667,9 +671,9 @@ public class QuickShopHelper {
 
 		List<QuickShopLineItemWrapper> result = new ArrayList<QuickShopLineItemWrapper>();
 		List<FDProductSelectionI> items = null;
-	
+
 		//APPDEV-4179 - Item quantities should NOT be honored in "Your Top Items" - START
-		
+
 		if (EnumQuickShopTab.TOP_ITEMS.equals(tab)) {
 			items = FDListManager.getQsSpecificEveryItemEverOrderedListTopItems(user.getIdentity(),user.getUserContext().getStoreContext());
 		} else {

@@ -3,13 +3,13 @@ package com.freshdirect.fdstore.promotion;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.ContentNodeModelUtil;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.DCPDPromoProductCache;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.adapter.OrderPromotionHelper;
+import com.freshdirect.storeapi.content.ContentNodeModelUtil;
+import com.freshdirect.storeapi.content.ProductModel;
 
 public class DCPDLineItemStrategy implements LineItemStrategyI {
 	protected Set<ContentKey> rawContentKeys = new HashSet<ContentKey>();

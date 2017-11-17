@@ -4,9 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.freshdirect.fdstore.brandads.model.HLBrandProductAdResponse;
-import com.freshdirect.fdstore.content.FilteringSortingItem;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData.SectionDataCointainer;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 
@@ -20,7 +17,7 @@ public class ModuleData implements Serializable {
     private List<IconData> imageGridData;
     private List<ProductData> adProducts = new ArrayList<ProductData>();
     private String AdHomePageBeacon;
-    
+
 
 	private SectionDataCointainer sectionDataContainer;
 

@@ -8,11 +8,11 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.DepartmentModel;
-import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.storeapi.content.DepartmentModel;
+import com.freshdirect.storeapi.content.Image;
 
 
 /**
@@ -152,7 +152,7 @@ public class InitLayoutTag extends com.freshdirect.framework.webapp.BodyTagSuppo
 	            		VariableInfo.AT_END ),
 	            new VariableInfo(
 	            		currentFolderVariableName,
-	            		"com.freshdirect.fdstore.content.ContentNodeModel",
+	            		"com.freshdirect.storeapi.content.ContentNodeModel",
 	            		true, 
 	            		VariableInfo.AT_END ),
 	            new VariableInfo(

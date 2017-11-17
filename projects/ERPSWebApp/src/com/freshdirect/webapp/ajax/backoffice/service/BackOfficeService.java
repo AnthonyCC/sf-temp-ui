@@ -3,12 +3,10 @@ package com.freshdirect.webapp.ajax.backoffice.service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -25,31 +23,27 @@ import javax.servlet.jsp.JspException;
 import org.apache.log4j.Category;
 import org.json.JSONObject;
 
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.application.CmsManager;
-import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.core.domain.ContentKey;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.FDVariationOption;
-import com.freshdirect.fdstore.content.BrandModel;
-import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ComponentGroupModel;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.DepartmentModel;
-import com.freshdirect.fdstore.content.DomainValue;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.SkuModel;
-import com.freshdirect.fdstore.content.SuperDepartmentModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.DYFUtil;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
-import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.OverriddenVariantsHelper;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
+import com.freshdirect.storeapi.application.CmsManager;
+import com.freshdirect.storeapi.content.BrandModel;
+import com.freshdirect.storeapi.content.CategoryModel;
+import com.freshdirect.storeapi.content.ContentFactory;
+import com.freshdirect.storeapi.content.DepartmentModel;
+import com.freshdirect.storeapi.content.DomainValue;
+import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.storeapi.content.SkuModel;
+import com.freshdirect.storeapi.content.SuperDepartmentModel;
+import com.freshdirect.storeapi.fdstore.FDContentTypes;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.backoffice.data.ActionDataRequest;
 import com.freshdirect.webapp.ajax.backoffice.data.BackOfficeResponse;
@@ -61,16 +55,6 @@ import com.freshdirect.webapp.ajax.backoffice.data.OverriddenVariantsResponse;
 import com.freshdirect.webapp.ajax.backoffice.data.ProductModelResponse;
 import com.freshdirect.webapp.ajax.backoffice.data.SkuModelResponse;
 import com.freshdirect.webapp.ajax.backoffice.data.VariantResponse;
-import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
-import com.freshdirect.webapp.ajax.expresscheckout.content.service.ContentFactoryService;
-import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
-import com.freshdirect.webapp.ajax.expresscheckout.location.service.DeliveryAddressService;
-import com.freshdirect.webapp.ajax.expresscheckout.payment.service.PaymentService;
-import com.freshdirect.webapp.ajax.expresscheckout.receipt.service.ReceiptService;
-import com.freshdirect.webapp.ajax.expresscheckout.service.FormDataService;
-import com.freshdirect.webapp.ajax.expresscheckout.textmessagealert.service.TextMessageAlertService;
-import com.freshdirect.webapp.ajax.expresscheckout.timeslot.service.TimeslotService;
-import com.freshdirect.webapp.checkout.RedirectToPage;
 
 
 public class BackOfficeService {
@@ -87,7 +71,7 @@ public class BackOfficeService {
 
     private BackOfficeService() {  }
 
-  
+
     public BackOfficeResponse submitPostRequest(FDUserI user, ActionDataRequest actionDataRequest,  HttpServletRequest  request, HttpServletResponse  response) throws FDResourceException,
             IOException,  JspException,  HttpErrorResponse {
     	BackOfficeResponse result = new BackOfficeResponse();
@@ -102,7 +86,7 @@ public class BackOfficeService {
             	final CategoryModel categoryModel = (CategoryModel) ContentFactory.getInstance().getContentNode(FDContentTypes.CATEGORY, catId);
             	CategoryModelResponse categoryModelResponse = buildCategoryModel(categoryModel);
         		result.setCategoryModelResponse(categoryModelResponse);
-            	break;	
+            	break;
             case GET_CONTENT_TYPE:
             	String contentId= getActionData(actionDataRequest, "categoryId");
             	final Map<String, String> contentMap = getContentMap();
@@ -114,7 +98,7 @@ public class BackOfficeService {
             	break;
             case GET_DOMAIN_VALUES:
             	List<String> templateIds= getActionObject(actionDataRequest, "templateIds");
-            	
+
             	for (ListIterator<String> li = templateIds.listIterator(); li.hasNext();) {
             		String temId=li.next();
             	final DomainValue domainValue = (DomainValue) ContentFactory.getInstance().getContentNode(FDContentTypes.DOMAINVALUE, temId);
@@ -167,7 +151,7 @@ public class BackOfficeService {
                 break;
             case GET_SKU_INFO:
             	String skuCodeDetails= getActionData(actionDataRequest, "skuCode");
-            	String skuProdCatInfo = getCatProdInfoBySku(request,skuCodeDetails); 
+            	String skuProdCatInfo = getCatProdInfoBySku(request,skuCodeDetails);
             	result.setSkuInfo(skuProdCatInfo);
         		break;
             case GET_RESEND_INVOICE_MAIL:
@@ -180,7 +164,7 @@ public class BackOfficeService {
         }
         return result;
     }
-    
+
     private String reSendInvoiceMail(String orderId) {
     	String reSendInvoiceMailStatus = null;
 		boolean ReSendEmailConfirmation=false;
@@ -226,15 +210,15 @@ public class BackOfficeService {
 
 				conn.setDoInput(true);
 				conn.setDoOutput(false);
-				                                    
+
 				br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 				sb = new StringBuffer();
-				                                    
+
 				String inputLine;
-				                                    
+
 				while ((inputLine = br.readLine()) != null)
 				    sb.append(inputLine);
-				                                                    
+
 				br.close();
 			}catch (MalformedURLException me) {
 				LOGGER.error(me);
@@ -253,19 +237,18 @@ public class BackOfficeService {
 				}
 			}
     	return sb.toString();
-    	
     }
 
 
 	private DomainValueModelResponse buildDomainValueModel(
-			DomainValue domainValue) {		
-    	
+			DomainValue domainValue) {
+
     	LOGGER.debug("Beginning createDomainValueResponse :: ResponseConverter");
 			if (domainValue==null) {
 				return null;
 			}
 			DomainValueModelResponse domainValueModelResponse = new DomainValueModelResponse();
-			
+
 			domainValueModelResponse.setLabel(domainValue.getLabel());
 			domainValueModelResponse.setValue(domainValue.getValue());
 			domainValueModelResponse.setDomainName(domainValue.getDomainName());
@@ -286,7 +269,7 @@ public class BackOfficeService {
 			productResponse.setPreferredSku(productModel.getPreferredSku().getContentName());
 		productResponse.setHasActiveYmalSets(productModel.hasActiveYmalSets());
 
-	
+
 		if (productModel.getPerfectPair() != null)
 			productResponse.setPerfectPair(productModel.getPerfectPair().getContentName());
 		if (productModel.getCategory() != null)
@@ -349,7 +332,7 @@ public class BackOfficeService {
 		productResponse.setContainerWeightQuart(productModel.getContainerWeightQuart());
 			if (productModel.getTemplateType() != null)
 			productResponse.setTemplateType(productModel.getTemplateType().getId());
-		
+
 		productResponse.setPriority(productModel.getPriority());
 		productResponse.setWineRegion(productModel.getWineRegion());
 			productResponse.setDisabledRecommendations(productModel.isDisabledRecommendations());
@@ -360,7 +343,7 @@ public class BackOfficeService {
 		if(productModel.getSpecialLayout()!=null)
 		productResponse.setSpecialLayout(productModel.getSpecialLayout().getId());
 		productResponse.setPageTitle(productModel.getPageTitle());
-		
+
 		LOGGER.debug("Ending createProductResponse :: ResponseConverter");
 		return productResponse;
 	}
@@ -391,7 +374,7 @@ public class BackOfficeService {
 		categoryResponse.setHideIfFilteringIsSupported(categoryModel.isHideIfFilteringIsSupported());
 		categoryResponse.setPreferenceCategory(categoryModel.isPreferenceCategory());
 		categoryResponse.setHavingBeer(categoryModel.isHavingBeer());
-		
+
 		categoryResponse.setShowSelf(categoryModel.isShowSelf());
 		if (categoryModel.getAliasCategory() != null)
 			categoryResponse.setAliasCategory(categoryModel.getAliasCategory().getContentName());
@@ -411,7 +394,7 @@ public class BackOfficeService {
 		categoryResponse.setShowSideNav(categoryModel.isShowSideNav());
 		categoryResponse.setSideNavBold(categoryModel.getSideNavBold());
 		categoryResponse.setHideWineRating(categoryModel.isHideWineRatingPricing());
-		
+
 		categoryResponse.setMaterialCharacteristic(categoryModel.getMaterialCharacteristic());
 		categoryResponse.setManualSelectionSlots(categoryModel.getManualSelectionSlots());
 		categoryResponse.setProductPromotionType(categoryModel.getProductPromotionType());
@@ -514,7 +497,7 @@ public class BackOfficeService {
 		ProductModelResponse productModelResponse = new ProductModelResponse();
 		skuModelResponse.setProductModelResponse(productModelResponse);
 
-		
+
 		if (skuModelOnly==null) {
 			return null;
 		}
@@ -539,7 +522,7 @@ public class BackOfficeService {
 	public <T> T getActionObject(ActionDataRequest data, String key) {
         return  (T) (data.getRequestData() != null ? data.getRequestData().get(key) : null);
 	}
-	
+
     public Boolean getBoolean(ActionDataRequest data, String key) {
         return (Boolean) (data.getRequestData() != null ? data.getRequestData().get(key) : null);
     }
@@ -549,19 +532,19 @@ public class BackOfficeService {
 		final Map<String, String> map = new HashMap<String, String>();
 		Set<ContentKey> contentKeys = CmsManager.getInstance().getContentKeysByType(FDContentTypes.SUPER_DEPARTMENT);
 		for (final ContentKey contentKey : contentKeys) {
-			map.put(contentKey.getId(), contentKey.getType().getName());
+			map.put(contentKey.getId(), contentKey.getType().name());
 		}
 		contentKeys = CmsManager.getInstance().getContentKeysByType(FDContentTypes.DEPARTMENT);
 		for (final ContentKey contentKey : contentKeys) {
-			map.put(contentKey.getId(), contentKey.getType().getName());
+			map.put(contentKey.getId(), contentKey.getType().name());
 		}
 		contentKeys = CmsManager.getInstance().getContentKeysByType(FDContentTypes.CATEGORY);
 		for (final ContentKey contentKey : contentKeys) {
-			map.put(contentKey.getId(), contentKey.getType().getName());
+			map.put(contentKey.getId(), contentKey.getType().name());
 		}
 		contentKeys = CmsManager.getInstance().getContentKeysByType(FDContentTypes.PRODUCT);
 		for (final ContentKey contentKey : contentKeys) {
-			map.put(contentKey.getId(), contentKey.getType().getName());
+			map.put(contentKey.getId(), contentKey.getType().name());
 		}
 		return map;
 	}
@@ -571,17 +554,17 @@ public class BackOfficeService {
 		  final String OK_STATUS="OK";
 		CRMSmartStoreInfoResponse crmSmartStoreInfoResponse = new CRMSmartStoreInfoResponse();
 		List<VariantResponse> variantResponses = new ArrayList<VariantResponse>();
-		
+
 		List<String> ovariants = OverriddenVariantsHelper.getOverriddenVariantIds(context);
 		OverriddenVariantsHelper.VariantInfoList vInfoList = OverriddenVariantsHelper.consolidateVariantsList(ovariants);
 		List<EnumSiteFeature> enumSiteFeatures = EnumSiteFeature.getSmartStoreEnumList();
 		if(enumSiteFeatures.size()>0){
-			
+
 		for (Iterator<EnumSiteFeature> it = EnumSiteFeature.getSmartStoreEnumList().iterator();
 					it.hasNext();) {
 				VariantResponse variantResponse = new VariantResponse();
-				EnumSiteFeature feature = (EnumSiteFeature) it.next();
-				
+				EnumSiteFeature feature = it.next();
+
 				OverriddenVariantsHelper.VariantInfo vi = vInfoList.get(feature);
 				String variantId = null;
 				if (vi != null) {
@@ -608,9 +591,9 @@ public class BackOfficeService {
 				variantResponses.add(variantResponse);
 			}
 		}
-		
-		List<OverriddenVariantsResponse> overriddenVariantsResponses = new ArrayList<OverriddenVariantsResponse>(); 
-		
+
+		List<OverriddenVariantsResponse> overriddenVariantsResponses = new ArrayList<OverriddenVariantsResponse>();
+
 		for (Iterator it=vInfoList.iterator(); it.hasNext();) {
 			OverriddenVariantsHelper.VariantInfo vi = (OverriddenVariantsHelper.VariantInfo) it.next();
 			OverriddenVariantsResponse overriddenVariantsResponse  = new OverriddenVariantsResponse();
@@ -625,7 +608,7 @@ public class BackOfficeService {
 			}
 			overriddenVariantsResponses.add(overriddenVariantsResponse);
 		}
-		
+
 		crmSmartStoreInfoResponse.setOverriddenVariants(overriddenVariantsResponses);
 		crmSmartStoreInfoResponse.setVariants(variantResponses);
 		Collections.sort(variantResponses, new Comparator(){
@@ -634,7 +617,7 @@ public class BackOfficeService {
 				// TODO Auto-generated method stub
 				return (((VariantResponse) o1).getFeatureName()).compareTo(((VariantResponse) o2).getFeatureName());
 			}
-			
+
 		});
 		crmSmartStoreInfoResponse.setCohortName(context.getCohortName());
 		return crmSmartStoreInfoResponse;

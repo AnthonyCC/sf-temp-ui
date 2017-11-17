@@ -2,7 +2,7 @@ package com.freshdirect.mobileapi.model.comparator;
 
 import java.util.Comparator;
 
-import com.freshdirect.fdstore.content.DomainValue;
+import com.freshdirect.storeapi.content.DomainValue;
 
 /**
  * Comparator described in i_product_initialize.jspf
