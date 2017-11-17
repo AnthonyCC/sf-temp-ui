@@ -761,8 +761,9 @@ public class StandingOrderHelper {
 		}if(null!=paymentData && null!=paymentData.getSelected()){
 			so.setPaymentMethodId(paymentData.getSelected());
 		}if(null!=timeSlotData){
-			so.setStartTime(timeSlotData.getStartDate());
-			so.setEndTime(timeSlotData.getEndDate());
+			so.setStartTime(null);
+			so.setEndTime(null);
+			so.setNextDeliveryDate(null);
 		}
 		
 	return so;
@@ -1230,7 +1231,8 @@ private static String convert(Date time) {
 	public static String getDeliveryBeginsInfo(FDUserI user) {
 		FDStandingOrder fdStandingOrder = user.getCurrentStandingOrder();
 		try {
-			if (fdStandingOrder != null	&& "Y".equalsIgnoreCase(fdStandingOrder.getActivate())&& fdStandingOrder.getDeliveryMonthDate() != null) {
+			if ( fdStandingOrder != null	&& "Y".equalsIgnoreCase(fdStandingOrder.getActivate()) &&
+					fdStandingOrder.getNextDeliveryDate()!=null && fdStandingOrder.getDeliveryMonthDate() != null) {
 				return fdStandingOrder.getDayOfWeek(fdStandingOrder, false)+ ", "+ fdStandingOrder.getDeliveryMonthDate()+ ", "
 						+ DateUtil.formatHourAMPMRange(fdStandingOrder.getStartTime(), user.getCurrentStandingOrder().getEndTime());
 			}

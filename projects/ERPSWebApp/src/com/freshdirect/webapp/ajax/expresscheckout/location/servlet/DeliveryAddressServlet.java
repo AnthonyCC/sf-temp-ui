@@ -50,12 +50,12 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
             PageAction pageAction = FormDataService.defaultService().getPageAction(deliveryAddressRequest);
             ValidationResult validationResult = new ValidationResult();
             FormDataResponse deliveryAddressResponse = FormDataService.defaultService().prepareFormDataResponse(deliveryAddressRequest, validationResult);
+            String deliveryAddressId = FormDataService.defaultService().get(deliveryAddressRequest, "id");
             boolean canBeSaved= true;
             boolean save = true;
             if (pageAction != null) {
                 switch (pageAction) {
                     case GET_DELIVERY_ADDRESS_METHOD: {
-                        String deliveryAddressId = FormDataService.defaultService().get(deliveryAddressRequest, "id");
                         FormLocationData deliveryAddressForm = SinglePageCheckoutFacade.defaultFacade().loadAddressById(user, deliveryAddressId);
                         LocationData selectedLocationData = SinglePageCheckoutFacade.defaultFacade().selectedLocationData(deliveryAddressForm);
                         ErpAddressModel selectedAddressModel = DeliveryAddressService.defaultService().createErpAddressModel(selectedLocationData);
@@ -80,14 +80,14 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
                     	List<ValidationError> validationErrors = DeliveryAddressService.defaultService().editDeliveryAddressMethod(deliveryAddressRequest, request.getSession(),
                                 user);
                         validationResult.getErrors().addAll(validationErrors);
-                        if (StandingOrderHelper.isSO3StandingOrder(user)) {
-                        	save = false;
+                        if (StandingOrderHelper.isSO3StandingOrder(user) && null != user.getCurrentStandingOrder() && 
+                        		!deliveryAddressId.equalsIgnoreCase(user.getCurrentStandingOrder().getAddressId()) ) {
+                        	canBeSaved =false;
                         }
                         break;
                     }
                     case DELETE_DELIVERY_ADDRESS_METHOD: {
                     	if (StandingOrderHelper.isSO3StandingOrder(user) && null != user.getCurrentStandingOrder()) {
-                    		String deliveryAddressId = FormDataService.defaultService().get(deliveryAddressRequest, "id");
                     		StandingOrderHelper.evaluteSoAddressId(request.getSession(), user, deliveryAddressId);
                     		FDStandingOrder currentStandingOrder = user.getCurrentStandingOrder();
                     		currentStandingOrder.setOldAddressId(currentStandingOrder.getAddressId());
@@ -98,7 +98,6 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
                         break;
                     }
                     case SELECT_DELIVERY_ADDRESS_METHOD: {
-                        String deliveryAddressId = FormDataService.defaultService().get(deliveryAddressRequest, "id");
                         if(StandingOrderHelper.isSO3StandingOrder(user)){
                         		canBeSaved = StandingOrderHelper.userCanBeSaved(user, canBeSaved, deliveryAddressId);
                         }

@@ -483,7 +483,7 @@ public class FDCustomerManager {
 		if (identity != null) {
 			
 			List<FDReservation> rsvList = FDDeliveryManager.getInstance().getReservationsForCustomer((user.getMasqueradeContext()!=null)?EnumTransactionSource.CUSTOMER_REP.getCode():EnumTransactionSource.WEBSITE.getCode(), identity.getErpCustomerPK());
-			if(rsvList!=null){
+			if(rsvList!=null && rsvList.size() != 0){
 				for ( FDReservation rsv : rsvList ) {
 
 					//TimeslotLogic.applyOrderMinimum(user, rsv.getTimeslot());
