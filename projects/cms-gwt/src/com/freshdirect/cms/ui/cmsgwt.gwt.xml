@@ -55,7 +55,6 @@
 	  <servlet path="/contentService" class="com.freshdirect.cms.ui.serviceimpl.ContentServiceImpl" />		
 	  <servlet path="/adminService" class="com.freshdirect.cms.ui.serviceimpl.AdminServiceImpl" />		
       <servlet path="/draftService" class="com.freshdirect.cms.ui.serviceimpl.GwtDraftServiceImpl" />
-      <servlet path="/RecipeUpload" class="com.freshdirect.cms.ui.serviceimpl.RecipeLoaderServlet" />
       <servlet path="/CsvExport" class="com.freshdirect.cms.ui.serviceimpl.CsvExportServlet" />
 	  
 	  <source path="client" />

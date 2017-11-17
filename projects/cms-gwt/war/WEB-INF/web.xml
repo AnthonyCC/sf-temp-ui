@@ -53,11 +53,6 @@
         <servlet-class>com.freshdirect.cms.ui.serviceimpl.BulkLoaderXlsUploadServlet</servlet-class>
         <load-on-startup>3</load-on-startup>
     </servlet>
-    <servlet>
-        <servlet-name>recipeUpload</servlet-name>
-        <servlet-class>com.freshdirect.cms.ui.serviceimpl.RecipeLoaderServlet</servlet-class>
-        <load-on-startup>2</load-on-startup>
-    </servlet>
 	<servlet>
 		<servlet-name>adminService</servlet-name>
 		<servlet-class>com.freshdirect.cms.ui.serviceimpl.AdminServiceImpl</servlet-class>
@@ -100,11 +95,6 @@
 		<url-pattern>/bulkLoaderService</url-pattern>
 		<url-pattern>/com.freshdirect.cms.ui.cmsgwt/bulkLoaderService</url-pattern>
 	</servlet-mapping>
-	<servlet-mapping>
-        <servlet-name>recipeUpload</servlet-name>
-        <url-pattern>/com.freshdirect.cms.ui.cmsgwt/RecipeUpload</url-pattern>
-        <url-pattern>/RecipeUpload</url-pattern>
-    </servlet-mapping>
 	<servlet-mapping>
         <servlet-name>bulkUpload</servlet-name>
         <url-pattern>/bulkUpload</url-pattern>
