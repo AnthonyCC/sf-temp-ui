@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 
 /**
  * A scored search hit for a {@link com.freshdirect.cms.ContentKey}. Higher score indicates better match.

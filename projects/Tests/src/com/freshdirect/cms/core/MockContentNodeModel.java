@@ -8,7 +8,7 @@ import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
-import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.Html;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.framework.core.PrimaryKey;

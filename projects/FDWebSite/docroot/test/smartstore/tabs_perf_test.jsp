@@ -9,9 +9,9 @@
 <%@page import="java.util.List"%>
 <%@page import="java.util.SortedMap"%>
 <%@page import="java.util.TreeMap"%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
-<%@page import="com.freshdirect.storeapi.content.ContentNodeModel"%>
-<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@page import="com.freshdirect.fdstore.customer.FDCustomerManager"%>
 <%@page import="com.freshdirect.fdstore.customer.FDIdentity"%>
 <%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
@@ -288,7 +288,7 @@ p.fi{margin:20px 0px;}
 	   					Triggering item: <% 
 	   						if (source != null) { 
 	   						%><span style="font-weight: normal;" title="<%= source.getFullName() + " (" +
-	   								source.getContentKey().getType().name() + ")" %>"><%= source.getContentKey().getId() %></span><% 
+	   								source.getContentKey().getType().getName() + ")" %>"><%= source.getContentKey().getId() %></span><% 
 	   						} else { 
 	   						%><span class="not-found">&lt;unidentified&gt;</span><% 
 	   						} %>

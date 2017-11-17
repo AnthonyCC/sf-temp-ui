@@ -20,7 +20,7 @@ import com.freshdirect.cms.search.ContentIndex;
 import com.freshdirect.cms.search.SearchTestUtils;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.dsl.CompileException;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;

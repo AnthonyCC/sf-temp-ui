@@ -982,16 +982,6 @@ function loadStuff() {
   	$("#header").val('');
   	$("#payload").val("");
 
-  } else if (loaddata == "DoWarmup") {
-    $("#url").val("/configuration/warmup");
-    $("#header").val('');
-    $("#payload").val("");
-
-  } else if (loaddata == "WarmupState") {
-    $("#url").val("/configvalue/warmupstate");
-    $("#header").val('');
-    $("#payload").val("");
-
   } else if (loaddata == "Help") {
   	$("#url").val("/help/");
   	$("#header").val('');
@@ -1802,8 +1792,6 @@ function doStuff() {
   <option value="EmailCaptureEX">Email Capture Ex</option>
   <option value="ConfiguredValues">Configured Values</option>
   <option value="Configuration">Configuration</option>
-  <option value="DoWarmup">Do Warmup</option>
-  <option value="WarmupState">Warmup State</option>
 
   <option value=""> ========== HELP ========== </option>
   <option value="Help">Help</option>

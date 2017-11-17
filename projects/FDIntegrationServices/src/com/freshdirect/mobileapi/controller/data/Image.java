@@ -27,11 +27,11 @@ public class Image {
         setWidth(width);
     }
 
-    public Image(com.freshdirect.storeapi.content.Image image) {
+    public Image(com.freshdirect.fdstore.content.Image image) {
     	this(image.getPath(), image.getHeight(), image.getWidth());
     }
 
-    public static Image wrap(com.freshdirect.storeapi.content.Image image) {
+    public static Image wrap(com.freshdirect.fdstore.content.Image image) {
     	if (image == null) return null;
     	return new Image(image);
     }

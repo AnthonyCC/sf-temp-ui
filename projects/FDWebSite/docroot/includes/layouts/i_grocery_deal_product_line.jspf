@@ -1,5 +1,5 @@
 <%@ page import="java.text.NumberFormat" %>
-<%@ page import='com.freshdirect.storeapi.content.ContentFactory' %>
+<%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
 
 <fd:FDProductInfo id="productInfo" skuCode="<%=sku.getSkuCode()%>">
 

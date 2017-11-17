@@ -10,7 +10,7 @@
 <%@ page import='com.freshdirect.content.attributes.*'%>
 <%@ page import='com.freshdirect.customer.*' %>
 <%@ page import="com.freshdirect.common.pricing.Discount" %>
-<%@page import="com.freshdirect.storeapi.content.ProductContainer"%>
+<%@page import="com.freshdirect.fdstore.content.ProductContainer"%>
 
 <%@ taglib uri='freshdirect' prefix='fd' %>
 

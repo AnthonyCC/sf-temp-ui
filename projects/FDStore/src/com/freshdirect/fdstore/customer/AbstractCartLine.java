@@ -20,9 +20,9 @@ import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
+import com.freshdirect.fdstore.content.AvailabilityFactory;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.ecoupon.EnumCouponStatus;
-import com.freshdirect.storeapi.content.AvailabilityFactory;
-import com.freshdirect.storeapi.content.ProductModel;
 
 public abstract class AbstractCartLine extends FDProductSelection implements FDCartLineI {
 	

@@ -4,10 +4,14 @@ import com.freshdirect.cms.ui.model.AdminProcStatus;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-@RemoteServiceRelativePath("adminService")
+@RemoteServiceRelativePath( "adminService" )
 public interface AdminService extends RemoteService {
 
     public AdminProcStatus rebuildIndexes();
+
+	public AdminProcStatus rebuildWineIndexes();
+
+    public AdminProcStatus validateEditors();
 
     public AdminProcStatus getBuildIndexStatus();
 

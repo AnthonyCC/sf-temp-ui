@@ -1,6 +1,6 @@
 <%@ page buffer="256kb" autoFlush="true" %>
-<%@ page import="com.freshdirect.storeapi.content.ContentFactory"%>
-<%@ page import="com.freshdirect.storeapi.content.ProductModel"%>
+<%@ page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@ page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@ page import="com.freshdirect.webapp.ajax.product.ProductConfigServlet"%>
 <%@ page import="com.freshdirect.webapp.ajax.product.data.ProductConfigRequestData"%>
 <%@ page import="com.freshdirect.webapp.ajax.product.data.ProductConfigResponseData"%>

@@ -4,13 +4,13 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.fdstore.content.ComparatorChain;
+import com.freshdirect.fdstore.content.EnumSortingValue;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SortValueComparator;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.fdstore.util.FilteringNavigator;
-import com.freshdirect.storeapi.content.ComparatorChain;
-import com.freshdirect.storeapi.content.EnumSortingValue;
-import com.freshdirect.storeapi.content.FilteringSortingItem;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.SortValueComparator;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
 
 public class QuickShopComparatorUtil {

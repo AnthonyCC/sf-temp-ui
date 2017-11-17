@@ -12,13 +12,13 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.content.FilteringFlow;
 import com.freshdirect.fdstore.content.FilteringFlowResult;
+import com.freshdirect.fdstore.content.FilteringMenuItem;
+import com.freshdirect.fdstore.content.FilteringValue;
+import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
-import com.freshdirect.storeapi.content.FilteringMenuItem;
-import com.freshdirect.storeapi.content.FilteringValue;
-import com.freshdirect.storeapi.content.SearchResults;
 import com.freshdirect.webapp.ajax.filtering.NavigationUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 

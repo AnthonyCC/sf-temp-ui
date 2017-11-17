@@ -1,7 +1,5 @@
 package com.freshdirect.fdstore.content;
 
-import com.freshdirect.storeapi.content.SortTypeI;
-
 public enum SearchSortType implements SortTypeI {
     NATURAL_SORT(-1, "natr", "", "", ""),	// don't
     // sort

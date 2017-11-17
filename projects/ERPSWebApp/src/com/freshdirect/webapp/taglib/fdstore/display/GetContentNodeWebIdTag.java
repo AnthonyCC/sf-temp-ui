@@ -2,7 +2,7 @@ package com.freshdirect.webapp.taglib.fdstore.display;
 
 import java.util.Random;
 
-import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 import com.freshdirect.webapp.util.JspMethods;
 

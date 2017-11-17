@@ -246,7 +246,7 @@ public class ErpZoneInfoDAO {
 	    	   DaoUtil.close(rs);
 	    	   DaoUtil.close(ps);
 	       }
- 	       //LOGGER.info("getZoneInfoDetails ErpZoneMasterInfo :"+zoneInfo);
+ 	       LOGGER.info("getZoneInfoDetails ErpZoneMasterInfo :"+zoneInfo);
 		   return zoneInfo; 			
 	}
 	
@@ -286,7 +286,7 @@ public class ErpZoneInfoDAO {
 				DaoUtil.close(rs);
 				DaoUtil.close(ps);
 			}
-	       //LOGGER.info("getAllZoneInfoDetails List<ErpZoneMasterInfo> :"+zoneInfoList.size());
+	       LOGGER.info("getAllZoneInfoDetails List<ErpZoneMasterInfo> :"+zoneInfoList.size());
 		   return zoneInfoList; 			
 	}
 	
@@ -308,7 +308,7 @@ public class ErpZoneInfoDAO {
 	       }catch(SQLException e){
 	      	 throw e;
 	       }
-	       //LOGGER.info("ErpZoneRegionInfo :"+zoneRegionInfo);
+	       LOGGER.info("ErpZoneRegionInfo :"+zoneRegionInfo);
 		   return zoneRegionInfo; 			
 	}
 
@@ -336,7 +336,7 @@ public class ErpZoneInfoDAO {
 	      	 throw e;
 	       }
 	       
-	       //LOGGER.info("All Zone zip List :"+zoneZipInfoList.size());
+	       LOGGER.info("All Zone zip List :"+zoneZipInfoList.size());
 		   return zoneZipInfoList; 			
 	}
    

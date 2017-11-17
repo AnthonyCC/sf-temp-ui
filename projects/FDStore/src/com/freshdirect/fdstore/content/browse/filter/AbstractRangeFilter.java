@@ -1,7 +1,7 @@
 package com.freshdirect.fdstore.content.browse.filter;
 
-import com.freshdirect.storeapi.content.AbstractProductItemFilter;
-import com.freshdirect.storeapi.content.ProductFilterModel;
+import com.freshdirect.fdstore.content.AbstractProductItemFilter;
+import com.freshdirect.fdstore.content.ProductFilterModel;
 
 public abstract class AbstractRangeFilter extends AbstractProductItemFilter {
 	/**

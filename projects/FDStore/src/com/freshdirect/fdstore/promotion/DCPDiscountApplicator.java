@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.customer.adapter.OrderPromotionHelper;
-import com.freshdirect.storeapi.content.ContentNodeModelUtil;
 
 /**
  * Header-level percent off order subtotal.

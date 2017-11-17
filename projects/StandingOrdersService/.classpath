@@ -6,6 +6,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/logistics-data-0.0.1-SNAPSHOT.jar"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/ERPSWebApp"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ERPSWebApp"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

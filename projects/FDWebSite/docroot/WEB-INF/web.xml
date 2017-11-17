@@ -1,9 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5" id="FDWebSite">
-    
-    <description>Guess what</description>
-    <display-name>FDWebSite Application</display-name>
-    
+	<description>Guess what</description>
+	<display-name>FDWebSite Application</display-name>
 	<listener>  
 	    <listener-class>
 	        com.freshdirect.webapp.util.TomcatBootStartupListener
@@ -14,12 +12,6 @@
 		<display-name>FDWebSite Request Monitor</display-name>
 		<filter-name>FDWebSiteMonitor</filter-name>
 		<filter-class>com.freshdirect.framework.monitor.WebRequestMonitor</filter-class>
-	</filter>
-	<filter>
-	   <description>Monitors the warmup status and redirect user to warmup page if it's in progress.</description>
-	   <display-name>Warmup Monitor</display-name>
-	   <filter-name>WarmupMonitor</filter-name>
-	  <filter-class>com.freshdirect.webapp.filters.WarmupMonitorFilter</filter-class>
 	</filter>
 	<filter>
 		<description>This filter takes predefined pretty urls for referals and translate them to ugly urls.</description>
@@ -46,6 +38,12 @@
 		<filter-class>com.freshdirect.webapp.filters.OncePerRequestDateFilter</filter-class>
 	</filter>
 	<filter>
+		<description>This filter creates random request id to identify requests and store as threadlocal</description>
+		<display-name>RequestIdFilter</display-name>
+		<filter-name>RequestIdFilter</filter-name>
+		<filter-class>com.freshdirect.webapp.filters.RequestIdFilter</filter-class>
+	</filter>
+	<filter>
 		<description>This filter adds the "Access-Control-Allow-Origin" header to the response, enabling CORS</description>
 		<display-name>CORSFilter</display-name>
 		<filter-name>CORSFilter</filter-name>
@@ -53,10 +51,6 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>FDWebSiteMonitor</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>WarmupMonitor</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
@@ -80,6 +74,10 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
+		<filter-name>RequestIdFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
 		<filter-name>CORSFilter</filter-name>
 		<url-pattern>/api/*</url-pattern>
 	</filter-mapping>
@@ -87,24 +85,6 @@
 		<filter-name>CORSFilter</filter-name>
 		<url-pattern>/assets/*</url-pattern>
 	</filter-mapping>
-    <servlet>
-        <servlet-name>cms-dispatcher</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-        <init-param>
-            <param-name>contextConfigLocation</param-name>
-            <param-value>com.freshdirect.cms.configuration com.freshdirect.storeapi.configuration</param-value>
-        </init-param>
-        <init-param>
-            <param-name>contextClass</param-name>
-            <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
-        </init-param>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>cms-dispatcher</servlet-name>
-        <url-pattern>/cms/*</url-pattern>
-    </servlet-mapping>
-
 	<servlet>
 		<servlet-name>com.freshdirect.webapp.util.json.FDJSONRPCServlet</servlet-name>
 		<servlet-class>com.freshdirect.webapp.util.json.FDJSONRPCServlet</servlet-class>
@@ -546,6 +526,14 @@
   </servlet-mapping>
 
 	<servlet>
+	   <servlet-name>CmsChangePropagatorServlet</servlet-name>
+	   <servlet-class>com.freshdirect.webapp.ajax.cache.CmsChangePropagatorServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	   <servlet-name>CmsChangePropagatorServlet</servlet-name>
+	   <url-pattern>/api/contentcache</url-pattern>
+	</servlet-mapping>
+	<servlet>
 	   <servlet-name>ManageStandingOrderServlet</servlet-name>
 	   <servlet-class>com.freshdirect.webapp.ajax.standingorder.ManageStandingOrderServlet</servlet-class>
 	</servlet>
@@ -634,14 +622,6 @@
 	<servlet-mapping>
 		<servlet-name>referralregistration</servlet-name>
 		<url-pattern>/invite/*</url-pattern>
-	</servlet-mapping>
-	<servlet>
-	   <servlet-name>Warmup</servlet-name>
-	   <servlet-class>com.freshdirect.webapp.warmup.web.WarmupServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-	   <servlet-name>Warmup</servlet-name>
-	   <url-pattern>/api/warmup</url-pattern>
 	</servlet-mapping>
 	<session-config>
 		<session-timeout>15</session-timeout>

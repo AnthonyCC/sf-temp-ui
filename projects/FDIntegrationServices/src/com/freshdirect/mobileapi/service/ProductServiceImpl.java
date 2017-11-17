@@ -10,7 +10,17 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.http.HttpHeaders;
+
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.content.BrandModel;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.CategoryNodeTree;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.exception.ModelException;
@@ -21,19 +31,13 @@ import com.freshdirect.mobileapi.model.Product;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.tagwrapper.HttpContextWrapper;
+import com.freshdirect.mobileapi.model.tagwrapper.HttpRequestWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.SmartSearchTagWrapper;
 import com.freshdirect.mobileapi.util.SortType;
-import com.freshdirect.storeapi.content.BrandModel;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.CategoryNodeTree;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.ContentNodeTree.TreeElement;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.search.unbxd.UnbxdServiceUnavailableException;
 import com.freshdirect.webapp.taglib.fdstore.SmartSearchTag;
 import com.freshdirect.webapp.util.AutoCompleteFacade;
+import com.freshdirect.webapp.util.RequestUtil;
 
 public class ProductServiceImpl implements ProductService {
 
@@ -138,7 +142,7 @@ public class ProductServiceImpl implements ProductService {
         for (BrandModel brand : search.getBrands()) {
         	brands.add(Brand.wrap(brand));
 		}
-
+        
         for (ProductModel product : productModels)
             try {
                 result.add(Product.wrap(product, user.getFDSessionUser().getUser(), null, EnumCouponContext.PRODUCT));
@@ -148,10 +152,10 @@ public class ProductServiceImpl implements ProductService {
 
         return result;
     }
-
+    
     public List<String> searchProductIds(String searchTerm, String upc, Integer page, Integer max, SortType sortType, String brandId,
             String categoryId, String deparmentId, SessionUser user, HttpServletRequest request, HttpContextWrapper basewrapper) throws ServiceException{
-
+    	
     	List<String> result = new ArrayList<String>();
 
         List<ProductModel> productModels = null;
@@ -214,7 +218,7 @@ public class ProductServiceImpl implements ProductService {
         for (BrandModel brand : search.getBrands()) {
         	brands.add(Brand.wrap(brand));
 		}
-
+        
         for (ProductModel product : productModels)
             	result.add(product.getContentName());
 

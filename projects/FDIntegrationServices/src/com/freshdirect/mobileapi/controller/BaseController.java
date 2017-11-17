@@ -32,9 +32,9 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.freshdirect.FDCouponProperties;
-import com.freshdirect.cms.CmsServiceLocator;
-import com.freshdirect.cms.contentio.xml.XmlContentMetadataService;
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.util.PublishId;
 import com.freshdirect.common.context.FulfillmentContext;
 import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.context.UserContext;
@@ -46,6 +46,17 @@ import com.freshdirect.fdstore.FDActionNotAllowedException;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.CMSComponentType;
+import com.freshdirect.fdstore.content.CMSImageBannerModel;
+import com.freshdirect.fdstore.content.CMSImageModel;
+import com.freshdirect.fdstore.content.CMSPageRequest;
+import com.freshdirect.fdstore.content.CMSSectionModel;
+import com.freshdirect.fdstore.content.CMSWebPageModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.ImageBanner;
+import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDUser;
@@ -88,18 +99,6 @@ import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.BrowseUtil;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.mobileapi.util.ProductPotatoUtil;
-import com.freshdirect.storeapi.content.CMSComponentType;
-import com.freshdirect.storeapi.content.CMSImageBannerModel;
-import com.freshdirect.storeapi.content.CMSImageModel;
-import com.freshdirect.storeapi.content.CMSPageRequest;
-import com.freshdirect.storeapi.content.CMSSectionModel;
-import com.freshdirect.storeapi.content.CMSWebPageModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.Image;
-import com.freshdirect.storeapi.content.ImageBanner;
-import com.freshdirect.storeapi.content.StoreModel;
-import com.freshdirect.storeapi.fdstore.FDContentTypes;
 import com.freshdirect.wcms.CMSContentFactory;
 import com.freshdirect.webapp.ajax.product.data.ProductPotatoData;
 import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
@@ -167,7 +166,7 @@ public abstract class BaseController extends AbstractController implements Messa
     }
 
     /**
-     * This has a
+     * This has a 
      */
     private static final String PRODUCT_TERMS_WRAPPER_TEMPLATE = "product-terms-wrapper.ftl";
 
@@ -197,11 +196,11 @@ public abstract class BaseController extends AbstractController implements Messa
 
     /**
      * Wraps HTML snippet product terms
-     *
+     * 
      * @param terms
      * @return
-     * @throws TemplateException
-     * @throws IOException
+     * @throws TemplateException 
+     * @throws IOException 
      */
     protected String getProductWrappedTerms(String terms) throws IOException, TemplateException {
         Map<String, Object> root = new HashMap<String, Object>();
@@ -216,10 +215,10 @@ public abstract class BaseController extends AbstractController implements Messa
         return out.toString();
     }
 
-    /**
+    /** 
      * Extract what we need to get out of request/session wrappers in tagwrapper
      * and set it within our session (not request)
-     *
+     * 
      * @param actualSession
      * @param resultBundle
      */
@@ -276,15 +275,15 @@ public abstract class BaseController extends AbstractController implements Messa
 		return model;
 	}
 
-
+    
     /* (non-Javadoc)
      * @see org.springframework.web.servlet.mvc.Controller#handleRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     private final ModelAndView handleRequestInterna(HttpServletRequest request, HttpServletResponse response) throws JsonException,
             FDException, ServiceException {
         response.setContentType("text/xml");
-        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-		response.setHeader("Pragma", "no-cache");
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); 
+		response.setHeader("Pragma", "no-cache"); 
 		response.setDateHeader("Expires", 0);
         ModelAndView model = getModelAndView(JSON_RENDERED);
         String action = request.getParameter("action");
@@ -465,7 +464,6 @@ public abstract class BaseController extends AbstractController implements Messa
         responseMessage.addWarningMessage(code, message);
         return responseMessage;
     }
-
     protected void setResponseMessage(ModelAndView model, Message responseMessage, SessionUser user) throws JsonException {
         try {
             model.addObject("data", getJsonString(responseMessage, responseMessage.includeNullValue()));
@@ -481,7 +479,7 @@ public abstract class BaseController extends AbstractController implements Messa
 
     /**
      * The main method of concrete controllers
-     *
+     * 
      * @param request
      * @param response
      * @param model
@@ -515,18 +513,18 @@ public abstract class BaseController extends AbstractController implements Messa
         }
         return srcEnum;
     }
-
+    
     protected void setUserInSession(SessionUser sessionUser, HttpServletRequest request, HttpServletResponse response) {
         request.getSession().setAttribute(SessionName.USER, sessionUser.getFDSessionUser());
     }
-
+    
     protected void removeUserInSession(SessionUser user, HttpServletRequest request, HttpServletResponse response) {
-
+    	
     	if(user != null) {
-	    	user.touch();
+	    	user.touch();	       
     	}
     	HttpSession session = request.getSession();
-
+    	
     	// clear session
     	Enumeration e = session.getAttributeNames();
     	while (e.hasMoreElements()) {
@@ -565,7 +563,6 @@ public abstract class BaseController extends AbstractController implements Messa
     	mapper.writeValue(writer, obj);
         return writer.toString();
     }
-
     protected String getSessionUserId(SessionUser user) {
     	if(user != null && user.getFDSessionUser() != null && user.getFDSessionUser().getIdentity() != null) {
     		return user.getFDSessionUser().getIdentity().getErpCustomerPK();
@@ -582,7 +579,7 @@ public abstract class BaseController extends AbstractController implements Messa
     	session.setAttribute(SessionName.USER, sessionUser);
 		return SessionUser.wrap(sessionUser);
     }
-
+    
     protected SessionUser fakeUser(HttpSession session, BrowseQuery query) {
     	fakedUserForRequest.set(Boolean.TRUE);
     	FDUser user = null;
@@ -606,7 +603,7 @@ public abstract class BaseController extends AbstractController implements Messa
     	session.setAttribute(SessionName.USER, sessionUser);
 		return SessionUser.wrap(sessionUser);
     }
-
+    
     protected boolean isFakeUser() {
     	return fakedUserForRequest.get();
     }
@@ -618,12 +615,7 @@ public abstract class BaseController extends AbstractController implements Messa
 				.isFeatureRolledOut(EnumRolloutFeature.akamaiimageconvertor,
 										user!=null && user.getFDSessionUser()!=null ? user.getFDSessionUser().getUser() : null));
 		configuration.setApiCodeVersion(Buildver.getInstance().getBuildver());
-        XmlContentMetadataService metadataService = CmsServiceLocator.xmlContentMetadataService();
-        String storeVersion = null;
-        if (metadataService != null) {
-            storeVersion = metadataService.calculatePublishId();
-        }
-        configuration.setStoreVersion(storeVersion);
+		configuration.setStoreVersion(PublishId.getInstance().getPublishId());
 
 		configuration.setVerifyPaymentMethod(FDStoreProperties
 				.isPaymentMethodVerificationEnabled());
@@ -631,7 +623,7 @@ public abstract class BaseController extends AbstractController implements Messa
 		configuration.setAdServerUrl(FDStoreProperties.getAdServerUrl());
 
 		configuration.setTipRange(FDStoreProperties.getTipRangeConfig());
-
+		
 		configuration.setMiddleTierUrl(FDStoreProperties.getMiddleTierProviderURL());
 		configuration.setSocialLoginEnabled(FDStoreProperties.isSocialLoginEnabled());
 		configuration.setMasterPassEnabled(MobileApiProperties.isMasterpassEnabled());
@@ -641,7 +633,7 @@ public abstract class BaseController extends AbstractController implements Messa
 
 		return configuration;
 	}
-
+	
 	protected LoggedIn formatLoginMessage(SessionUser user) throws FDException  {
 	    LoggedIn responseMessage = new LoggedIn();
 
@@ -710,7 +702,7 @@ public abstract class BaseController extends AbstractController implements Messa
                 .getSelectedServiceType().toString() : "");
         responseMessage.setCohort(user.getCohort());
         responseMessage.setTotalOrderCount(user.getTotalOrderCount());
-
+        
         responseMessage.setTcAcknowledge(user.getTcAcknowledge());
 
         responseMessage.setMobileNumber(getMobileNumber(user));
@@ -732,7 +724,7 @@ public abstract class BaseController extends AbstractController implements Messa
         }
         return mobileNumber;
     }
-
+	
     protected LoggedIn createLoginResponseMessage(SessionUser user) throws FDException {
         LoggedIn responseMessage = null;
         if (user!=null && user.isLoggedIn()) {
@@ -784,7 +776,7 @@ public abstract class BaseController extends AbstractController implements Messa
                 }
             }
         }
-
+        
         // populate welcome carousel image banners
         if (isExtraResponseRequested(request)) {
             final StoreModel store = ContentFactory.getInstance().getStore();
@@ -873,7 +865,7 @@ public abstract class BaseController extends AbstractController implements Messa
         }
         return cmsImageBanner;
     }
-
+    
     private String convertTarget(ContentNodeModel node) {
         String encodedKey = null;
         if (node != null) {
@@ -988,7 +980,7 @@ public abstract class BaseController extends AbstractController implements Messa
                     break;
                 }
                 
-                final String prodId = mustHaveProductId.substring(FDContentTypes.PRODUCT.name().length() + 1);
+                final String prodId = mustHaveProductId.substring(FDContentTypes.PRODUCT.getName().length() + 1);
                 final ProductPotatoData data = ProductPotatoUtil.getProductPotato(prodId, null, user.getFDSessionUser(), false);
                 if (data == null || !data.getProductData().isAvailable()) {
                 	allMustHaveProductsAreAvailable = false;
@@ -1004,7 +996,7 @@ public abstract class BaseController extends AbstractController implements Messa
         if (productKeys != null) {
             for (final String productKey : productKeys) {
                 // extract CMS id
-                final String prodId = productKey.substring(FDContentTypes.PRODUCT.name().length() + 1);
+                final String prodId = productKey.substring(FDContentTypes.PRODUCT.getName().length() + 1);
                 final ProductPotatoData data = ProductPotatoUtil.getProductPotato(prodId, null, user.getFDSessionUser(), false);
                 if (data != null) {
                     potatoes.add(data);

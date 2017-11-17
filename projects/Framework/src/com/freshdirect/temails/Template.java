@@ -10,9 +10,12 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import com.freshdirect.framework.util.DateRange;
+import com.freshdirect.rules.ConditionI;
 
 public class Template implements ParserI {
 
@@ -41,8 +44,7 @@ public class Template implements ParserI {
 	/** Orders products by department & full name */
 	public final static Comparator DEPTFULL_COMPARATOR = new Comparator() {
 		
-		@Override
-        public int compare(Object obj1, Object obj2) {
+		public int compare(Object obj1, Object obj2) {
 			try {
 				ParserI f1 = ((ParserI) obj1);
 				ParserI f2 = ((ParserI) obj2);
@@ -70,8 +72,7 @@ public class Template implements ParserI {
 	
 	};
 	
-		@Override
-        public String parse(Object target, TemailRuntimeI ctx) {
+		public String parse(Object target, TemailRuntimeI ctx) {
 			//Check that the rule has not expired
 			this.formattedContent="";
 		     Collections.sort(this.parsers,Template.DEPTFULL_COMPARATOR);
@@ -88,8 +89,7 @@ public class Template implements ParserI {
 			return this.formattedContent;
 	}
 
-	@Override
-    public String getId() {
+	public String getId() {
 		return this.id;
 	}
 
@@ -120,8 +120,7 @@ public class Template implements ParserI {
 
 	
 
-	@Override
-    public String toString() {
+	public String toString() {
 		return "Template[" + id + ", '" + name + "', " +""  + ", " + eid + "]";
 	}
 

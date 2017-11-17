@@ -34,6 +34,7 @@ import com.freshdirect.common.context.StoreContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -44,7 +45,6 @@ import com.freshdirect.fdstore.survey.FDSurveyConstants;
 import com.freshdirect.fdstore.survey.FDSurveyFactory;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.StoreContextUtil;
 

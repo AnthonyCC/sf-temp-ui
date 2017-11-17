@@ -30,6 +30,8 @@ import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.EnumWinePrice;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
@@ -47,8 +49,6 @@ import com.freshdirect.logistics.analytics.model.SessionEvent;
 import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.logistics.delivery.model.EnumRegionServiceType;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.ProductReference;
 import com.freshdirect.logistics.delivery.model.FulfillmentInfo;
 
 public interface FDUserI extends java.io.Serializable {
@@ -127,7 +127,7 @@ public interface FDUserI extends java.io.Serializable {
     public PromotionI getRedeemedPromotion();
 
     public void updateUserState();
-
+    
     public void updateUserState(boolean syncServiceType);
 
     public String getFirstName() throws FDResourceException;

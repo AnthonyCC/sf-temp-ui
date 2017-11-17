@@ -14,14 +14,14 @@ import javax.ejb.EJBException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.cms.core.domain.ContentKeyFactory;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.fdstore.FDContentTypes;
 
 /**
  * Model support for DYF variants
- *
+ * 
  * @author segabor
  *
  */
@@ -30,13 +30,13 @@ public class DyfModelSessionBean extends SessionBeanSupport {
 
 	private static Category LOGGER = LoggerFactory.getInstance(DyfModelSessionBean.class);
 
-	private static final String SQL_GETPRDS_SCORES =
+	private static final String SQL_GETPRDS_SCORES = 
 		"SELECT PRODUCT_ID, SCORE FROM CUST.SS_PERSONALIZED_PRODUCT_SCORES WHERE CUSTOMER_ID = ? ";
-
-	private static final String SQL_GETPRODUCTS =
+	
+	private static final String SQL_GETPRODUCTS = 
 		"SELECT PRODUCT_ID FROM CUST.SS_PERSONALIZED_PRODUCT_SCORES WHERE CUSTOMER_ID = ? ";
-
-	private static final String SQL_GLOBALPRDS_SCORES =
+	
+	private static final String SQL_GLOBALPRDS_SCORES = 
 		"SELECT PRODUCT_ID, SCORE FROM CUST.SS_GLOBAL_PRODUCT_SCORES";
 
 
@@ -53,14 +53,14 @@ public class DyfModelSessionBean extends SessionBeanSupport {
 		Map result = new HashMap();
 		try {
 			conn = getConnection();
-
+			
 			PreparedStatement ps = conn.prepareStatement(SQL_GETPRDS_SCORES);
 			ps.setString(1, customerID);
-
+			
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				// put Product Key -> Score couples into results set
-				result.put(ContentKeyFactory.get(FDContentTypes.PRODUCT, rs.getString(1)), new Float(rs.getFloat(2)) );
+				result.put(ContentKey.getContentKey(FDContentTypes.PRODUCT, rs.getString(1)), new Float(rs.getFloat(2)) );
 			}
 
 			// free resources
@@ -93,13 +93,13 @@ public class DyfModelSessionBean extends SessionBeanSupport {
 		Set result = new HashSet();
 		try {
 			conn = getConnection();
-
+			
 			PreparedStatement ps = conn.prepareStatement(SQL_GETPRODUCTS);
 			ps.setString(1, customerID);
-
+			
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-				result.add(ContentKeyFactory.get(FDContentTypes.PRODUCT, rs.getString(1)));
+				result.add(ContentKey.getContentKey(FDContentTypes.PRODUCT, rs.getString(1)));
 			}
 
 			// free resources
@@ -119,19 +119,19 @@ public class DyfModelSessionBean extends SessionBeanSupport {
 
         return result;
 	}
-
+	
 	public Map getGlobalProductScores() throws RemoteException {
 		Connection conn = null;
 		// Map<ContentKey,Float>
 		Map result = new HashMap();
 		try {
 			conn = getConnection();
-
-			PreparedStatement ps = conn.prepareStatement(SQL_GLOBALPRDS_SCORES);
+			
+			PreparedStatement ps = conn.prepareStatement(SQL_GLOBALPRDS_SCORES);		
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				// put Product Key -> Score couples into results set
-				result.put(ContentKeyFactory.get(FDContentTypes.PRODUCT, rs.getString(1)), new Float(rs.getFloat(2)) );
+				result.put(ContentKey.getContentKey(FDContentTypes.PRODUCT, rs.getString(1)), new Float(rs.getFloat(2)) );
 			}
 
 			// free resources

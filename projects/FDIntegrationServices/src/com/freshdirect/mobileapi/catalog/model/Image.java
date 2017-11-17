@@ -39,15 +39,15 @@ public class Image {
         }
     }
 
-    public Image(com.freshdirect.storeapi.content.Image image,ImageType type) {
+    public Image(com.freshdirect.fdstore.content.Image image,ImageType type) {
     	this(StringUtil.isEmpty(image.getPathWithPublishId())?image.getPath():image.getPathWithPublishId(), image.getHeight(),image.getWidth(),type);    		
     }
     
-    public Image(com.freshdirect.storeapi.content.Image image) {
+    public Image(com.freshdirect.fdstore.content.Image image) {
     	this(StringUtil.isEmpty(image.getPathWithPublishId())?image.getPath():image.getPathWithPublishId(), image.getHeight(),image.getWidth());    		
     }
 
-    public static Image wrap(com.freshdirect.storeapi.content.Image image) {
+    public static Image wrap(com.freshdirect.fdstore.content.Image image) {
     	if (image == null) return null;
     	return new Image(image);
     }

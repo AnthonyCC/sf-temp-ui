@@ -11,10 +11,10 @@
 <%@page import="com.freshdirect.fdstore.FDProduct"%>
 <%@page import="com.freshdirect.fdstore.FDSku"%>
 <%@page import="com.freshdirect.fdstore.FDCachedFactory"%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="com.freshdirect.fdstore.FDMaterialSalesArea"%>
 <%@page import="com.freshdirect.fdstore.FDPlantMaterial"%>
-<%@page import='com.freshdirect.storeapi.util.ProductInfoUtil'%>
+<%@page import='com.freshdirect.cms.util.ProductInfoUtil'%>
 <%@taglib uri="freshdirect" prefix="fd"%>
 <%!String format(Object x) {
         if (x == null) {

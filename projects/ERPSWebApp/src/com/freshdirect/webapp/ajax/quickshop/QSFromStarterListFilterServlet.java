@@ -1,36 +1,35 @@
 package com.freshdirect.webapp.ajax.quickshop;
 
 
-import static com.freshdirect.storeapi.content.EnumQuickShopFilteringValue.DEPT;
-import static com.freshdirect.storeapi.content.EnumQuickShopFilteringValue.GLUTEN_FREE;
-import static com.freshdirect.storeapi.content.EnumQuickShopFilteringValue.KOSHER;
-import static com.freshdirect.storeapi.content.EnumQuickShopFilteringValue.LOCAL;
-import static com.freshdirect.storeapi.content.EnumQuickShopFilteringValue.ON_SALE;
-import static com.freshdirect.storeapi.content.EnumQuickShopFilteringValue.ORGANIC;
-import static com.freshdirect.storeapi.content.EnumQuickShopFilteringValue.STARTER_LISTS;
+import static com.freshdirect.fdstore.content.EnumQuickShopFilteringValue.DEPT;
+import static com.freshdirect.fdstore.content.EnumQuickShopFilteringValue.GLUTEN_FREE;
+import static com.freshdirect.fdstore.content.EnumQuickShopFilteringValue.KOSHER;
+import static com.freshdirect.fdstore.content.EnumQuickShopFilteringValue.LOCAL;
+import static com.freshdirect.fdstore.content.EnumQuickShopFilteringValue.ON_SALE;
+import static com.freshdirect.fdstore.content.EnumQuickShopFilteringValue.ORGANIC;
+import static com.freshdirect.fdstore.content.EnumQuickShopFilteringValue.STARTER_LISTS;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.CmsServiceLocator;
-import com.freshdirect.cms.cache.CmsCaches;
-import com.freshdirect.cms.cache.EhCacheUtil;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.content.FilteringFlowResult;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
+import com.freshdirect.fdstore.content.FilteringValue;
+import com.freshdirect.fdstore.content.StarterList;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.FilteringSortingItem;
-import com.freshdirect.storeapi.content.FilteringValue;
-import com.freshdirect.storeapi.content.StarterList;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopListRequestObject;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopPagerValues;
@@ -74,14 +73,12 @@ public class QSFromStarterListFilterServlet extends QuickShopServlet {
 			FilteringNavigator nav = requestData.convertToFilteringNavigator();
 			FilteringFlowResult<QuickShopLineItemWrapper> result = null;
 			
-            List<QuickShopLineItemWrapper> items = CmsServiceLocator.ehCacheUtil().getListFromCache(CmsCaches.QS_STARTER_LISTS_CACHE.cacheName,
-                    EhCacheUtil.QS_STARTER_LISTS_CACHE_KEY);
+			List<QuickShopLineItemWrapper> items = EhCacheUtil.getListFromCache(EhCacheUtil.QS_STARTER_LISTS_CACHE_NAME, EhCacheUtil.QS_STARTER_LISTS_CACHE_KEY);
 			
 			if(items==null){
 				items = QuickShopHelper.getWrappedProductFromStarterList(user, starterLists, QuickShopHelper.getActiveReplacements( session ) );
 				if(!items.isEmpty()){
-                    CmsServiceLocator.ehCacheUtil().putListToCache(CmsCaches.QS_STARTER_LISTS_CACHE.cacheName, EhCacheUtil.QS_STARTER_LISTS_CACHE_KEY,
-                            new ArrayList<QuickShopLineItemWrapper>(items));
+					EhCacheUtil.putListToCache(EhCacheUtil.QS_STARTER_LISTS_CACHE_NAME, EhCacheUtil.QS_STARTER_LISTS_CACHE_KEY,  new ArrayList<QuickShopLineItemWrapper>(items));					
 				}
 			}else{
 				items = new ArrayList<QuickShopLineItemWrapper>(items);

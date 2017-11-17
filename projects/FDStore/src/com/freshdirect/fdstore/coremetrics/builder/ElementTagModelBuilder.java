@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.fdlogistics.model.FDTimeslot;
+import com.freshdirect.fdstore.content.FilteringValue;
 import com.freshdirect.fdstore.content.SearchSortType;
 import com.freshdirect.fdstore.content.util.QueryParameterCollection;
 import com.freshdirect.fdstore.coremetrics.CmContext;
@@ -16,7 +17,6 @@ import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.smartstore.TabRecommendation;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
 import com.freshdirect.smartstore.service.VariantRegistry;
-import com.freshdirect.storeapi.content.FilteringValue;
 
 public class ElementTagModelBuilder {
 

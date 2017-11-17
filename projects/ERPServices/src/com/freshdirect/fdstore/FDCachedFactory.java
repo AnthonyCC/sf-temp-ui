@@ -8,20 +8,15 @@
  */
 package com.freshdirect.fdstore;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.apache.log4j.Category;
 
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.SkuAvailabilityHistory;
-import com.freshdirect.framework.util.LazyTimedCache;
+import com.freshdirect.framework.util.*;
+
 import com.freshdirect.framework.util.log.LoggerFactory;
+import org.apache.log4j.*;
 
 /**
  * Caching proxy for FDFactory.
@@ -77,8 +72,7 @@ public class FDCachedFactory {
 	 */
 	//[OPT-90] - Eliminate redundant GroupCache refresh from FDCachedFactory 
 	/*private final static Thread gRefreshThread = new LazyTimedCache.RefreshThread(grpCache, 10000) {
-		@Override
-        protected void refresh(List expiredKeys) {
+		protected void refresh(List expiredKeys) {
 			try {
 				LOGGER.debug("FDGrpRefresh reloading "+expiredKeys.size()+" grpInfos");
 				Collection<GroupScalePricing> pis = FDFactory.getGrpInfo((FDGroup[])expiredKeys.toArray(new FDGroup[0]));
@@ -102,8 +96,7 @@ public class FDCachedFactory {
 	 * Thread that reloads expired productInfos, every 10 seconds.
 	 */
 	private final static Thread zRefreshThread = new LazyTimedCache.RefreshThread(zoneCache,10000) {
-		@Override
-        protected void refresh(List expiredKeys) {
+		protected void refresh(List expiredKeys) {
 			try {
 				LOGGER.debug("FDZoneRefresh reloading "+expiredKeys.size()+" zoneInfos");
 				Collection pis = FDFactory.getZoneInfo((String[])expiredKeys.toArray(new String[0]) );
@@ -127,8 +120,7 @@ public class FDCachedFactory {
 	 * Thread that reloads expired productInfos, every 10 seconds.
 	 */
 	private final static Thread piRefreshThread = new LazyTimedCache.RefreshThread(productInfoCache, 10000) {
-		@Override
-        protected void refresh(List expiredKeys) {
+		protected void refresh(List expiredKeys) {
 			try {
 				LOGGER.debug("FDProductInfoRefresh reloading "+expiredKeys.size()+" productInfos");
 				Collection pis = FDFactory.getProductInfos( (String[])expiredKeys.toArray(new String[0]) );
@@ -150,8 +142,7 @@ public class FDCachedFactory {
 	 * Thread that reloads expired products, every 5 minutes.
 	 */
 	private final static Thread prodRefreshThread = new LazyTimedCache.RefreshThread(productCache, 5*60*1000) {
-		@Override
-        protected void refresh(List expiredKeys) {
+		protected void refresh(List expiredKeys) {
 			try {
 				LOGGER.debug("FDProductRefresh reloading "+expiredKeys.size()+" products");
 				
@@ -297,7 +288,7 @@ public class FDCachedFactory {
 				throw ex;	
 			}
 		}  else {
-			pi = cached;
+			pi = (GroupScalePricing) cached;
 		}
 		return pi;
 	}
@@ -464,7 +455,7 @@ public class FDCachedFactory {
 		// cache these
 		Collection<GroupScalePricing> gsInfos = FDFactory.getGrpInfo(loadGrpIds);
 		for (Iterator<GroupScalePricing> i=gsInfos.iterator(); i.hasNext(); ) {
-			tempi = i.next();
+			tempi = (GroupScalePricing)i.next();
 			grpCache.put(tempi, tempi);
 		}
 		
@@ -486,7 +477,7 @@ public class FDCachedFactory {
 	 */
 	public static FDProduct getProduct(String sku, int version) throws FDResourceException, FDSkuNotFoundException {
 		FDSku fdSku = new FDSku(sku, version);
-		FDProduct p = productCache.get(fdSku);
+		FDProduct p = (FDProduct)productCache.get(fdSku);
 		if (p==null) {
 			p = FDFactory.getProduct(sku, version);
 			productCache.put(fdSku, p);
@@ -506,7 +497,7 @@ public class FDCachedFactory {
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
 	public static FDProduct getProduct(FDSku sku) throws FDResourceException, FDSkuNotFoundException {
-		FDProduct p = productCache.get(sku);
+		FDProduct p = (FDProduct)productCache.get(sku);
 		if (p==null) {
 			p = FDFactory.getProduct(sku);
 			productCache.put(sku, p);
@@ -532,7 +523,7 @@ public class FDCachedFactory {
 		// find skus already in the cache
 		FDProduct temp;
 		for (int i=0; i<skus.length; i++) {
-			temp = productCache.get(skus[i]);
+			temp = (FDProduct) productCache.get(skus[i]);
 			if (temp==null) {
 				missingSkus[missingCount++]=skus[i];
 			} else {

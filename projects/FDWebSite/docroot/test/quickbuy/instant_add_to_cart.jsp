@@ -7,8 +7,8 @@
 <%@page import="com.freshdirect.webapp.util.ConfigurationStrategy"%>
 <%@page import="com.freshdirect.webapp.util.prodconf.DefaultProductConfigurationStrategy"%>
 <%@page import="org.apache.commons.lang.StringEscapeUtils"%>
-<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="com.freshdirect.webapp.util.ProductImpression"%>
 <%@page import="java.util.Collections"%>
 <%@page import="com.freshdirect.webapp.util.TransactionalProductImpression"%><html lang="en-US" xml:lang="en-US">

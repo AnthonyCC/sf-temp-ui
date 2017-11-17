@@ -11,13 +11,13 @@
 <%@ page import='java.text.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*'%>
 <%@ page import='com.freshdirect.fdstore.lists.*'%>
-<%@ page import='com.freshdirect.storeapi.content.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.util.*' %>
 <%@ page import='com.freshdirect.framework.util.DateUtil' %>
 <%@ page import='com.freshdirect.framework.util.StringUtil' %>
-<%@ page import='com.freshdirect.storeapi.content.StarterList' %>
+<%@ page import='com.freshdirect.fdstore.content.StarterList' %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>

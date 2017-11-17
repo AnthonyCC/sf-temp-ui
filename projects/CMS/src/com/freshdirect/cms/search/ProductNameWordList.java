@@ -20,9 +20,9 @@ import com.freshdirect.cms.application.DraftContext;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.search.AutocompleteService.HitCounter;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ContentSearch;
-import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class ProductNameWordList implements WordListI{

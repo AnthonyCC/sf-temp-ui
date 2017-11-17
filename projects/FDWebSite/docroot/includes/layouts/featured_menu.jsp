@@ -2,8 +2,8 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
 <%@ page import='java.net.URLEncoder'%>
-<%@ page import='com.freshdirect.storeapi.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
@@ -99,7 +99,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
 	    request.setAttribute("recommendationsRendered","true");
 	    int ord=1;
 %>
-<logic:iterate id='contentNode' collection="<%= recommendations.getProducts() %>" type="com.freshdirect.storeapi.content.ProductModel"><%
+<logic:iterate id='contentNode' collection="<%= recommendations.getProducts() %>" type="com.freshdirect.fdstore.content.ProductModel"><%
 			ProductModel productNode = contentNode;
 			ProductLabeling pl = new ProductLabeling(user, productNode, recommendations.getVariant().getHideBursts());
 			String fiRating = "";
@@ -137,7 +137,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
     StringBuffer appendColumnPrices = new StringBuffer(200);
 
 %>
-    <logic:iterate id='contentNode' collection="<%=sortedColl%>" type="com.freshdirect.storeapi.content.ContentNodeModel">
+    <logic:iterate id='contentNode' collection="<%=sortedColl%>" type="com.freshdirect.fdstore.content.ContentNodeModel">
 <% 
         ProductModel product;
 		if (contentNode instanceof ProductModel) {

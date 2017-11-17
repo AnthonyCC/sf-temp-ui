@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.context.MasqueradeContext;
 import com.freshdirect.common.context.StoreContext;
@@ -44,6 +45,8 @@ import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.WineFilter;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
@@ -72,9 +75,6 @@ import com.freshdirect.giftcard.RecipientModel;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.EnumZipCheckResponses;
 import com.freshdirect.mail.EmailUtil;
-import com.freshdirect.storeapi.application.CmsManager;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag;
 import com.freshdirect.webapp.util.FDURLUtil;
 import com.freshdirect.webapp.util.LocatorUtil;
@@ -265,17 +265,17 @@ public class UserUtil {
 
 		FDCustomerCouponUtil.initCustomerCoupons(session);
 	}
-
+	
 	public static void createSessionUser(HttpServletRequest request, HttpServletResponse response, FDSessionUser sessionUser)
 			throws FDResourceException {
 			HttpSession session = request.getSession();
-			sessionUser.isLoggedIn(true);
+			sessionUser.isLoggedIn(true);		
 			CookieMonster.storeCookie(sessionUser, response);
 			sessionUser.updateUserState();
 			session.setAttribute(SessionName.USER, sessionUser);
 			FDCustomerCouponUtil.initCustomerCoupons(session);
 		}
-
+	
 	public static String getCustomerServiceContact(FDUserI user) {
 		if (user==null) {
 			return SystemMessageList.CUSTOMER_SERVICE_CONTACT;
@@ -287,7 +287,7 @@ public class UserUtil {
 		FDUserI user = (FDUserI) request.getSession().getAttribute(SessionName.USER);
 		return getCustomerServiceContact(user);
 	}
-
+	
 	public static void initializeGiftCart(FDUserI user){
 		try {
 			FDCartModel cart = user.getGiftCart();
@@ -305,39 +305,39 @@ public class UserUtil {
 			ArrayList lines = new ArrayList();
 			ContentFactory contentFactory = ContentFactory.getInstance();
 			int n = 0;
-
-			List recipList = user.getRecipientList().getRecipients(user.getGiftCardType()); //FDCustomerManager.loadSavedRecipients(user.getUser());
+		
+			List recipList = user.getRecipientList().getRecipients(user.getGiftCardType()); //FDCustomerManager.loadSavedRecipients(user.getUser());			
 			int quantity = 1;
 			Map optionMap = new HashMap();
 
 			FDProductInfo productInfo = FDCachedFactory.getProductInfo(FDStoreProperties.getGiftcardSkucode());
-
+		
 		    FDProduct product = FDCachedFactory.getProduct(productInfo);
-
+		
 		    ProductModel productmodel = contentFactory.getProduct(FDStoreProperties.getGiftcardSkucode());
-
+		
 		    FDSalesUnit[] units = product.getSalesUnits();
-
+		
 		    FDSalesUnit salesUnit = units[n % units.length];
-
+		    
 		    if(!recipList.isEmpty()) {
 		    	ListIterator i = recipList.listIterator();
-		    	while(i.hasNext()) {
+		    	while(i.hasNext()) {            		
 		    		SavedRecipientModel srm = (SavedRecipientModel)i.next();
-
-			            FDCartLineModel cartLine = new FDCartLineModel( new FDSku(productInfo),
+		    		
+			            FDCartLineModel cartLine = new FDCartLineModel( new FDSku(productInfo), 
 		                		  productmodel, new FDConfiguration(quantity, salesUnit.getName(), optionMap),null, user.getUserContext());
-
+		
 		            cartLine.setFixedPrice(srm.getAmount());
-		            cartLine.refreshConfiguration();
-
-		            lines.add(cartLine);
+		            cartLine.refreshConfiguration();                
+		
+		            lines.add(cartLine);		            
 		    	}
-
+		    	
 		        cart.setOrderLines(lines);
 		        //cart.setRecipentList(recipList);
 		        user.setGiftCart(cart);
-		        if(user.getIdentity() != null) {
+		        if(user.getIdentity() != null) {		        
 		        	FDCustomerCreditUtil.applyCustomerCredit(user.getGiftCart(), user.getIdentity());
 		        }
 			}
@@ -346,11 +346,11 @@ public class UserUtil {
 		}
 
 	}
-
+	
 	public static void initializeBulkGiftCart(FDUserI user){
 		try {
-
-
+			
+	
 			FDCartModel cart = user.getGiftCart();
 			FDReservation reservation= getFDReservation(user.getUserId(),null);
 			cart.setDeliveryReservation(reservation);
@@ -361,70 +361,70 @@ public class UserUtil {
 			ArrayList lines = new ArrayList();
 			ContentFactory contentFactory = ContentFactory.getInstance();
 			int n = 0;
-
-
+		
+			
 			FDBulkRecipientList bulkRecList = user.getBulkRecipentList(); //FDCustomerManager.loadSavedRecipients(user.getUser());
-			if(bulkRecList==null || bulkRecList.size()==0) return;
-
+			if(bulkRecList==null || bulkRecList.size()==0) return;			
+			
 			bulkRecList.constructFDRecipientsList();
 			//FDRecipientList oldRecList=new FDRecipientList();
 			//oldRecList.addRecipients(recipList);
 			//user.setRecipientList(oldRecList);
-
-
+			
+									
 			int quantity = 1;
 			Map optionMap = new HashMap();
 
 			FDProductInfo productInfo = FDCachedFactory.getProductInfo(FDStoreProperties.getGiftcardSkucode());
-
+		
 		    FDProduct product = FDCachedFactory.getProduct(productInfo);
-
+		
 		    ProductModel productmodel = contentFactory.getProduct(FDStoreProperties.getGiftcardSkucode());
-
+		
 		    FDSalesUnit[] units = product.getSalesUnits();
-
+		
 		    FDSalesUnit salesUnit = units[n % units.length];
 		    List recipList= bulkRecList.getFDRecipentsList().getRecipients();
 		    if(!recipList.isEmpty()) {
 		    	ListIterator i = recipList.listIterator();
-		    	while(i.hasNext()) {
+		    	while(i.hasNext()) {            		
 		    		SavedRecipientModel srm = (SavedRecipientModel)i.next();
-
-			            FDCartLineModel cartLine = new FDCartLineModel( new FDSku(productInfo),
+		    		
+			            FDCartLineModel cartLine = new FDCartLineModel( new FDSku(productInfo), 
 		                		  productmodel, new FDConfiguration(quantity, salesUnit.getName(), optionMap),null, user.getUserContext());
-
+		
 		            cartLine.setFixedPrice(srm.getAmount());
-		            cartLine.refreshConfiguration();
-
-		            lines.add(cartLine);
+		            cartLine.refreshConfiguration();                
+		
+		            lines.add(cartLine);		            
 		    	}
-
+		    	
 		        cart.setOrderLines(lines);
 		        //cart.setRecipentList(recipList);
 		        user.setGiftCart(cart);
 		        if(user.getIdentity() != null) {
 		        	FDCustomerCreditUtil.applyCustomerCredit(user.getGiftCart(), user.getIdentity());
 		        }
-
+		        
 			}
 		}catch(Exception e){
 			throw new FDRuntimeException(e);
 		}
 
 	}
-
-
+	
+	
 	public static FDReservation getFDReservation(String customerID, String addressID) {
 		Date expirationDT = new Date(System.currentTimeMillis() + 1000);
 		FDTimeslot timeSlot=getFDTimeSlot();
-		FDReservation reservation=new FDReservation(new PrimaryKey("1"), timeSlot, expirationDT, EnumReservationType.STANDARD_RESERVATION,
+		FDReservation reservation=new FDReservation(new PrimaryKey("1"), timeSlot, expirationDT, EnumReservationType.STANDARD_RESERVATION, 
 				customerID, addressID, false,null,-1,null, false, null,null);
 		return reservation;
 
 	}
 
 	private static FDTimeslot getFDTimeSlot() {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub		
 		return null;
 	}
 
@@ -437,7 +437,7 @@ public class UserUtil {
 		address.setZipCode("11101");
 		address.setServiceType(sType);
 		return address;
-
+		
 	}
 
 	private static ErpAddressModel getDonationOrderDeliveryAddress(EnumServiceType sType){
@@ -450,9 +450,9 @@ public class UserUtil {
 		address.setServiceType(sType);
 		address.setCharityName("ROBIN HOOD");
 		return address;
-
+		
 	}
-
+	
 	public static FDDeliveryZoneInfo getZoneInfo(ErpAddressModel address) throws FDResourceException, FDInvalidAddressException {
 
 		FDDeliveryZoneInfo zInfo =new FDDeliveryZoneInfo("1","1","1", EnumZipCheckResponses.DELIVER);
@@ -480,63 +480,63 @@ public class UserUtil {
 			Map optionMap = new HashMap();
 
 			FDProductInfo productInfo = FDCachedFactory.getProductInfo(FDStoreProperties.getRobinHoodSkucode());
-
+		
 		    FDProduct product = FDCachedFactory.getProduct(productInfo);
-
+		
 		    ProductModel productmodel = contentFactory.getProduct(FDStoreProperties.getRobinHoodSkucode());
-
+		
 		    FDSalesUnit[] units = product.getSalesUnits();
-
+		
 		    FDSalesUnit salesUnit = units[n % units.length];
-
-		    FDCartLineModel cartLine = new FDCartLineModel( new FDSku(productInfo),
+		    
+		    FDCartLineModel cartLine = new FDCartLineModel( new FDSku(productInfo), 
           		  productmodel, new FDConfiguration(totalQuantity, salesUnit.getName(), optionMap),null, user.getUserContext());
 
 		    cartLine.setFixedPrice(productInfo.getZonePriceInfo(user.getUserContext().getPricingContext().getZoneInfo()).getDefaultPrice()*totalQuantity);//TODO: check whether it gives the required price or not.
 
-		    cartLine.refreshConfiguration();
-
+		    cartLine.refreshConfiguration();                
+		
 		    lines.add(cartLine);
-		    /*for(int i=0; i< totalQuantity; i++){
-		            FDCartLineModel cartLine = new FDCartLineModel( new FDSku(productInfo),
-		                		  productmodel.getProductRef(), new FDConfiguration(quantity, salesUnit.getName(), optionMap),null);
+		    /*for(int i=0; i< totalQuantity; i++){        		
+		            FDCartLineModel cartLine = new FDCartLineModel( new FDSku(productInfo), 
+		                		  productmodel.getProductRef(), new FDConfiguration(quantity, salesUnit.getName(), optionMap),null);		
 		            cartLine.setFixedPrice(productInfo.getDefaultPrice());//TODO: check whether it gives the required price or not.
-		            cartLine.refreshConfiguration();
-
-		            lines.add(cartLine);
-		    }*/
+		            cartLine.refreshConfiguration();                
+		
+		            lines.add(cartLine);		            
+		    }*/		    	
 	        cart.setOrderLines(lines);
 	        user.setDonationCart(cart);
-	        if(user.getIdentity() != null) {
+	        if(user.getIdentity() != null) {		        
 	        	FDCustomerCreditUtil.applyCustomerCredit(user.getGiftCart(), user.getIdentity());
 	        }
-
+			
 		}catch(Exception e){
 			throw new FDRuntimeException(e);
 		}
 
 	}
-
+	
 	public static double getRobinHoodAvailability(Date currentDate, FDProductInfo prodInfo) {
-
+		
 		double quantity = 0.0;
 		ErpInventoryEntryModel inventoryMatch = null;
 		Date lastInventoryDate = null;
-
+		
 		if(!FDStoreProperties.getPreviewMode()){
-			if(prodInfo != null && prodInfo.getInventory() != null && prodInfo.getInventory().getEntries() != null
+			if(prodInfo != null && prodInfo.getInventory() != null && prodInfo.getInventory().getEntries() != null 
 						&& !prodInfo.getInventory().getEntries().isEmpty()) {
-
+						
 				for (Iterator i = prodInfo.getInventory().getEntries().iterator(); i.hasNext();) {
 					ErpInventoryEntryModel e = (ErpInventoryEntryModel) i.next();
 	//				System.out.println("getRobinHoodAvailability >>"+e.getStartDate()+"->"+currentDate+"->"+e.getQuantity());
-
-					if (null!= e.getStartDate() && !e.getStartDate().after(currentDate)) {
+					
+					if (null!= e.getStartDate() && !e.getStartDate().after(currentDate)) {		
 						if(lastInventoryDate == null || e.getStartDate().after(lastInventoryDate)) {
 							inventoryMatch = e;
 							lastInventoryDate = e.getStartDate();
 						}
-					}
+					}				
 				}
 			}
 			if(inventoryMatch != null) {
@@ -547,21 +547,21 @@ public class UserUtil {
 		}
 		return quantity;
 	}
-
+	
 	public static String loginUser(HttpSession session, HttpServletRequest request, HttpServletResponse response
 										, ActionResult actionResult, String userId, String password
 										, String mergePage, String successPage, boolean externalLogin) {
-
+		
 		String updatedSuccessPage = successPage;
-
+		
 		//hard-code redirects and allow logic to override later
 		if (updatedSuccessPage.indexOf("/registration/signup.jsp")!=-1 || updatedSuccessPage.indexOf("/checkout/signup_ckt.jsp")!=-1) {
 			//hard-code redirects (be sure to set both vars)
 			successPage = "/index.jsp";
 			updatedSuccessPage = "/index.jsp";
 		}
-
-
+		
+		
 		if (!externalLogin) {
 			if (userId == null || userId.length() < 1) {
 				actionResult.addError(new ActionError(EnumUserInfoName.USER_ID
@@ -582,9 +582,9 @@ public class UserUtil {
 				return updatedSuccessPage;
 			}
 		}
-
+		
 		try {
-
+			
 			if (!externalLogin) {
 				if(ExternalAccountManager.isSocialLoginOnlyUser(userId)){List<String> connectedProviders = null;
 				String providerStr = "";
@@ -603,58 +603,58 @@ public class UserUtil {
 				return updatedSuccessPage;
 				}
 			}
-
+			
 			FDIdentity identity = null;
 			if(externalLogin){
 				identity = FDCustomerManager.login(userId);
 			}else{
 				identity = FDCustomerManager.login(userId,password);
 			}
-            LOGGER.info("Identity : erpId = " + identity.getErpCustomerPK() + " : fdId = " + identity.getFDCustomerPK());
+            LOGGER.info("Identity : erpId = " + identity.getErpCustomerPK() + " : fdId = " + identity.getFDCustomerPK());            
             String loginCookie = FDCustomerManager.getCookieByFdCustomerId(identity.getFDCustomerPK());
-//            FDUser loginUser = FDCustomerManager.recognize(identity);
+//            FDUser loginUser = FDCustomerManager.recognize(identity);           
 //            LOGGER.info("FDUser : erpId = " + loginUser.getIdentity().getErpCustomerPK() + " : " + loginUser.getIdentity().getFDCustomerPK());
-
+                        
             FDSessionUser currentUser = (FDSessionUser) session.getAttribute(SessionName.USER);
-
+            
            /* // FDX-1873 - Show timeslots for anonymous address
-            if(currentUser!=null && currentUser.getAddress() != null && currentUser.getAddress().getAddress1() != null
-            				&& currentUser.getAddress().getAddress1().trim().length() > 0 && currentUser.getAddress().isCustomerAnonymousAddress()) {
+            if(currentUser!=null && currentUser.getAddress() != null && currentUser.getAddress().getAddress1() != null 
+            				&& currentUser.getAddress().getAddress1().trim().length() > 0 && currentUser.getAddress().isCustomerAnonymousAddress()) {        	
             	loginUser.setAddress(currentUser.getAddress());
             }*/
-
+            
             if(session.getAttribute("TICK_TIE_CUSTOMER") != null) {
             	session.removeAttribute(SessionName.USER);
             	currentUser = null;
             }
-
+                        
 //            LOGGER.info("loginUser is " + loginUser.getFirstName() + " Level = " + loginUser.getLevel());
             // LOGGER.info("currentUser is " + (currentUser==null?"null":currentUser.getFirstName()+currentUser.getLevel()));
             String currentUserId=null;
 			//[OPT-45]
             if(currentUser == null || (loginCookie != null && !loginCookie.equals(currentUser.getCookie()))){
-    			// Pass updateUserState as currentUser != null.
+    			// Pass updateUserState as currentUser != null. 
     			// If currentUser == null, createSessionUser will be called later which will invoke updateUserState.
             	FDUser loginUser = FDCustomerManager.recognize(identity, currentUser != null);
 
             	// LOGGER.info("loginUser is " + loginUser.getFirstName() + " Level = " + loginUser.getLevel());
             	// FDX-1873 - Show timeslots for anonymous address
-                if(currentUser!=null && currentUser.getAddress() != null && currentUser.getAddress().getAddress1() != null
-                				&& currentUser.getAddress().getAddress1().trim().length() > 0 && currentUser.getAddress().isCustomerAnonymousAddress()) {
+                if(currentUser!=null && currentUser.getAddress() != null && currentUser.getAddress().getAddress1() != null 
+                				&& currentUser.getAddress().getAddress1().trim().length() > 0 && currentUser.getAddress().isCustomerAnonymousAddress()) {        	
                 	loginUser.setAddress(currentUser.getAddress());
                 }
 		        if (currentUser == null) {
 		            // this is the case right after signout
 		            UserUtil.createSessionUser(request, response, loginUser);
-
+		            
 		        } else if (!loginUser.getCookie().equals(currentUser.getCookie())) {
 		            // current user is different from user who just logged in
 		            int currentLines = currentUser.getShoppingCart().numberOfOrderLines();
 		            int loginLines = loginUser.getShoppingCart().numberOfOrderLines();
-
+		            
 		            //address needs to be set using logged in user's information - in case existing cart is used or cart merge
 		            currentUser.getShoppingCart().setDeliveryAddress(loginUser.getShoppingCart().getDeliveryAddress());
-
+		            
 		            if ((currentLines > 0) && (loginLines > 0)) {
 		                // keep the current cart in the session and send them to the merge cart page
 		                if (
@@ -675,7 +675,7 @@ public class UserUtil {
 		                		//FDCartModel cartCurrent = (FDCartModel) session.getAttribute(SessionName.CURRENT_CART);
 		                		/* currentUser is only used here and when set to session */
 		                		FDCartModel cartCurrent = currentUser.getShoppingCart();
-
+		                		
 		                		/* check for null here */
 		                		if (cartCurrent == null) {
 		                			cartCurrent = new FDCartModel();
@@ -692,7 +692,7 @@ public class UserUtil {
 		                		);
 		                		delPlantInfo.setCatalogKey(catalogKey);
 		                		cartCurrent.setDeliveryPlantInfo(delPlantInfo);
-
+		                		
 		                		ContentFactory.getInstance().setCurrentUserContext(loginUser.getUserContext());
 		                		cartCurrent.setUserContextToOrderLines(loginUser.getUserContext());
 		                		cartCurrent.setEStoreId(loginUser.getUserContext().getStoreContext().getEStoreId());
@@ -701,32 +701,32 @@ public class UserUtil {
 		                		cartMerged.sortOrderLines();
 		                		cartMerged.setUserContextToOrderLines(loginUser.getUserContext());
 		                		cartMerged.setEStoreId(loginUser.getUserContext().getStoreContext().getEStoreId());
-
+		                		
 		                		/* "merge" choice logic */
 		                		loginUser.setShoppingCart( cartMerged );
-			                        //Check for multiple savings.
+			                        //Check for multiple savings. 
 			                        checkForMultipleSavings(cartCurrent, cartSaved, cartMerged);
 			    					// invalidate promotion and recalc
 			                        loginUser.updateUserState(false);
 			                        session.setAttribute(SessionName.USER, currentUser);
-
+		
 		        				if(null == loginUser.getShoppingCart().getDeliveryPlantInfo()){
 		        					loginUser.getShoppingCart().setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(loginUser));
 		        				}
-		        				loginUser.getShoppingCart().setUserContextToOrderLines(currentUser.getUserContext());
-
+		        				loginUser.getShoppingCart().setUserContextToOrderLines(currentUser.getUserContext());	
+		        				
 		        				//evaluate the coupons, after the merge cart.
 		        				FDCustomerCouponUtil.evaluateCartAndCoupons(session);
-
+		        				
 		                        // get rid of the extra cart in the session
 		                        session.removeAttribute(SessionName.CURRENT_CART);
-
+		
 		                        //LOGGER.debug("redirect after mergeCart ==> " + this.successPage);
 		                        //response.sendRedirect(response.encodeRedirectURL( this.successPage ));
 		                        //JspWriter writer = pageContext.getOut();
 		                        //writer.close();
 		                    /* ---- logic from MergeCartControllerTag */
-
+		                        
 		                    	//set in to session (from login user)
 			                    session.setAttribute(SessionName.CURRENT_CART, loginUser.getShoppingCart());
 		                	} else { //using merge cart page
@@ -738,9 +738,9 @@ public class UserUtil {
 								if (preSuccessPage != null) {
 									session.removeAttribute(SessionName.PREV_SUCCESS_PAGE);
 									successPage = preSuccessPage;
-								}
+								}	       				
 		                    }
-
+		                    
 		                    if (!FDStoreProperties.isObsoleteMergeCartPageEnabled()) {
 		                    	/* don't go to merge cart page */
 		                    	updatedSuccessPage = successPage;
@@ -748,18 +748,18 @@ public class UserUtil {
 		                    	updatedSuccessPage =  mergePage + "?successPage=" + URLEncoder.encode( successPage ) ;
 		                    }
 		                }
-
+		                
 		            } else if ((currentLines > 0) && (loginLines == 0)) {
-		                // keep current cart
+		                // keep current cart                	
 		                loginUser.setShoppingCart(currentUser.getShoppingCart());
 		                loginUser.getShoppingCart().setDeliveryPlantInfo(FDUserUtil.getDeliveryPlantInfo(loginUser.getUserContext()));
-		                loginUser.getShoppingCart().setUserContextToOrderLines(loginUser.getUserContext());
-
+		                loginUser.getShoppingCart().setUserContextToOrderLines(loginUser.getUserContext());                                     
+		                
 		            }
-
+		            
 		            // merge coupons
 		            currentUserId= currentUser.getPrimaryKey();
-
+		            
 		            // current user has gift card recipients that need to be added to the login user's recipients list
 		            if(currentUser.getLevel()==FDUserI.GUEST &&  currentUser.getRecipientList().getRecipients().size() > 0) {
 		            	List<RecipientModel> tempList = currentUser.getRecipientList().getRecipients();
@@ -771,11 +771,11 @@ public class UserUtil {
 		            		srm.setFdUserId(loginUser.getUserId());
 		            		loginUser.getRecipientList().removeRecipients(EnumGiftCardType.DONATION_GIFTCARD);
 		            		loginUser.getRecipientList().addRecipient(srm);
-		            	}
+		            	}                	
 		            }
-
+		            
 		            loginUser.setGiftCardType(currentUser.getGiftCardType());
-
+		            
 		            if(currentUser.getDonationTotalQuantity()>0){
 		            	loginUser.setDonationTotalQuantity(currentUser.getDonationTotalQuantity());
 		            }
@@ -784,7 +784,7 @@ public class UserUtil {
 		            session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
 		            session.removeAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE);
 		            session.removeAttribute(SessionName.PREV_SAVINGS_VARIANT);
-
+		            
 		        }
             }else {
                 // the logged in user was the same as the current user,
@@ -793,17 +793,17 @@ public class UserUtil {
                 currentUser.isLoggedIn(true);
                 session.setAttribute(SessionName.USER, currentUser);
             }
-//          loginUser.setEbtAccepted(loginUser.isEbtAccepted()&&(loginUser.getOrderHistory().getUnSettledEBTOrderCount()<=0));
+//          loginUser.setEbtAccepted(loginUser.isEbtAccepted()&&(loginUser.getOrderHistory().getUnSettledEBTOrderCount()<=0));  
           FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
           if(user != null) {
               user.setEbtAccepted(user.isEbtAccepted()&&(user.getOrderHistory().getUnSettledEBTOrderCount()<1)&&!user.hasEBTAlert());
               FDCustomerCouponUtil.initCustomerCoupons(session,currentUserId);
           }
-
-
-          if (user!=null && EnumServiceType.CORPORATE.equals(user.getUserServiceType()) && user.getUserContext() != null
+          
+          
+          if (user!=null && EnumServiceType.CORPORATE.equals(user.getUserServiceType()) && user.getUserContext() != null 
         		  	&& user.getUserContext().getStoreContext() != null && !EnumEStoreId.FDX.equals(user.getUserContext().getStoreContext().getEStoreId())) {
-        	  if(request.getRequestURI().indexOf("index.jsp")!=-1 || (successPage != null && successPage.indexOf("/login/index.jsp")!=-1)){
+        	  if(request.getRequestURI().indexOf("index.jsp")!=-1 || (successPage != null && successPage.indexOf("/login/index.jsp")!=-1)){        	  
                     updatedSuccessPage = FDURLUtil.getLandingPageUrl(EnumServiceType.CORPORATE);
         	  }
           }
@@ -836,7 +836,7 @@ public class UserUtil {
         	  }
         	  session.removeAttribute("TICK_TIE_CUSTOMER");
           }
-
+          
           if(user != null) {
         	user.setJustLoggedIn(true);
           }
@@ -848,7 +848,7 @@ public class UserUtil {
 				FDActionInfo info = AccountActivityUtil.getActionInfo(request.getSession());
 				boolean isDefaultPaymentMethodRegistered = false;
 				try {
-					isDefaultPaymentMethodRegistered = !(null == user.getFDCustomer().getDefaultPaymentType() ||
+					isDefaultPaymentMethodRegistered = !(null == user.getFDCustomer().getDefaultPaymentType() || 
 							user.getFDCustomer().getDefaultPaymentType().getName().equals(EnumPaymentMethodDefaultType.UNDEFINED.getName()));
 				} catch (FDResourceException e) {
 					LOGGER.error(e);
@@ -860,12 +860,12 @@ public class UserUtil {
 
           CmRegistrationTag.setPendingLoginEvent(session);
           logExtraLoginDetailsLogin(request, userId, password, mergePage, successPage, externalLogin, "LOGINSUCCESS"); //THis is commented because it breaks using https://mobileapi.freshdirect.com/mobileapi/v/1/social/login/
-
+          
         } catch (FDResourceException fdre) {
         	logExtraLoginDetailsLogin(request, userId, password, mergePage, successPage, externalLogin, "LOGINFAILED");
             LOGGER.warn("Resource error during authentication", fdre);
             actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
-
+            
         } catch (FDAuthenticationException fdae) {
 
             logExtraLoginDetailsLogin(request, userId, password, mergePage, successPage, externalLogin, "LOGINFAILED");
@@ -884,31 +884,31 @@ public class UserUtil {
             }
 
         }
-        return updatedSuccessPage;
+        return updatedSuccessPage;		
 	}
 
 	private static void logExtraLoginDetailsLogin(HttpServletRequest request, String userId, String password,
 			String mergePage, String successPage, boolean externalLogin, String result) {
-
+		
 		LOGGER.info("FDSECU01:"+ result + ": " +RequestUtil.getClientIp(request)+" : "+userId+" : "+ (FDStoreProperties.isExtraLogForLoginFailsEnabled() ? password : "[MASKED]") +" : "+mergePage+" : "+successPage+" : "+externalLogin
 				+" : "+CookieMonster.getCookie(request)+" : "+request.getRequestURL());
 	}
-
+	
 	/*
-	 * In RegistrationAction, dummy password "^0X!3X!X!1^" has been set for social login.
+	 * In RegistrationAction, dummy password "^0X!3X!X!1^" has been set for social login. 
 	 */
-
+	
 	public static boolean isPasswordAddedForSocialUser(String erpCustomerId) throws Exception{
-
+		
 		ErpCustomerModel erpCustomer = FDCustomerFactory.getErpCustomer(erpCustomerId);
 		String dummyPassword = "^0X!3X!X!1^";
 		String dummyPasswordHash = MD5Hasher.hash(dummyPassword);
 		if((dummyPasswordHash.equalsIgnoreCase(erpCustomer.getPasswordHash()))){
 			return false;
 		}
-
+		
 		return true;
-	}
+	}	
 
 	/* copied from MergeCartControllerTag */
 	private static void checkForMultipleSavings(FDCartModel cartCurrent, FDCartModel cartSaved, FDCartModel cartMerged) {
@@ -916,17 +916,17 @@ public class UserUtil {
 		Set currProdKeys = cartCurrent.getProductKeysForLineItems();
 		Set savedSavingIds = cartSaved.getUniqueSavingsIds();
 		Set currSavingIds = cartCurrent.getUniqueSavingsIds();
-
+		
 		for (Iterator i = cartMerged.getOrderLines().iterator(); i.hasNext();) {
 			FDCartLineI line     = (FDCartLineI) i.next();
 			String productId = line.getProductRef().getContentKey().getId();
-			if((savedProdKeys.contains(productId) && !currProdKeys.contains(productId)) &&
+			if((savedProdKeys.contains(productId) && !currProdKeys.contains(productId)) && 
 					savedSavingIds.contains(line.getSavingsId()) && currSavingIds.contains(line.getSavingsId())){
 				//Product is only in the saved cart and savings id is in both carts then reset savings id for saved cart line.
 				line.setSavingsId(null);
 			}
 		}
-
+			
 	}
 
 }

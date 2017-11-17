@@ -37,10 +37,8 @@ public class FormMetaDataService {
 		formMetaData.setExpireYear(populateCardExpireYear(null));
 		formMetaData.setState(populateState(null, null));
 		formMetaData.setCountry(populateCountry(null));
-        if (user != null) {
-            formMetaData.setEnableECheck(populateECheck(user));
-            formMetaData.setEnableEbtCheck(populateEbtCheck(user));
-        }
+		formMetaData.setEnableECheck(populateECheck(user));
+		formMetaData.setEnableEbtCheck(populateEbtCheck(user));
 		formMetaData.setPaymentPromoOAS(XC_PAYMENT_PROMO_OAS_SITEPAGE);
 		return formMetaData;
 	}

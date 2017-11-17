@@ -3,7 +3,7 @@
  */
 package com.freshdirect.mobileapi.util;
 
-import com.freshdirect.storeapi.content.SortOptionModel;
+import com.freshdirect.fdstore.content.SortOptionModel;
 
 public enum SortType {
     RELEVANCY("relevancy"),

@@ -1,5 +1,5 @@
 <%@ page import='com.freshdirect.framework.util.*' %>
-<%@ page import='com.freshdirect.storeapi.content.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.webapp.util.*'%>
 <%@ page import='java.net.URLEncoder'%>
 <%@ taglib uri='freshdirect' prefix='fd' %>

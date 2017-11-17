@@ -12,7 +12,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.FDRestrictedAvailabilityInfo;
 import com.freshdirect.delivery.restriction.RestrictionI;
@@ -25,6 +25,8 @@ import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDCompositeAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDMuniAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDStockAvailabilityInfo;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
@@ -33,8 +35,6 @@ import com.freshdirect.mobileapi.controller.data.ProductSearchResult;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.Product;
 import com.freshdirect.mobileapi.model.SessionUser;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.ProductReference;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.util.ProductRecommenderUtil;
 import com.freshdirect.webapp.util.ShoppingCartUtil;

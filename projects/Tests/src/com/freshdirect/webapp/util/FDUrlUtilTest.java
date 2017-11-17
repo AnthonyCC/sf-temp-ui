@@ -24,7 +24,7 @@ import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.Image;
-import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.RecommendationServiceConfig;

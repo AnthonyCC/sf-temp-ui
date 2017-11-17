@@ -10,10 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.FilteringSortingItem;
-import com.freshdirect.storeapi.content.FilteringValue;
-
 public class FilteringSortingItemFilter<N extends ContentNodeModel> extends GenericFilter<FilteringSortingItem<N>> {
 
 	public FilteringSortingItemFilter(Map<FilteringValue, List<Object>> filterValues, Set<FilteringValue> filters) {

@@ -19,25 +19,25 @@
 %><%@ page import="java.util.Iterator"
 %><%@ page import="java.util.Collections"
 %><%@ page import="java.util.Comparator"
-%><%@ page import="com.freshdirect.storeapi.ContentNodeI"
-%><%@ page import="com.freshdirect.cms.core.domain.ContentType"
-%><%@ page import="com.freshdirect.cms.core.domain.ContentKey"
-%><%@ page import="com.freshdirect.cms.core.domain.ContentKeyFactory"
-%><%@ page import="com.freshdirect.storeapi.fdstore.FDContentTypes"
-%><%@ page import="com.freshdirect.storeapi.application.CmsManager"
-%><%@ page import="com.freshdirect.storeapi.content.ContentFactory"
-%><%@ page import="com.freshdirect.storeapi.content.ContentNodeModel"
-%><%@ page import="com.freshdirect.storeapi.content.ProductModel"
-%><%@ page import="com.freshdirect.storeapi.content.Recipe"
-%><%@ page import="com.freshdirect.storeapi.content.YmalSet"
-%><%@ page import="com.freshdirect.storeapi.content.YmalSource"
+%><%@ page import="com.freshdirect.cms.ContentNodeI"
+%><%@ page import="com.freshdirect.cms.ContentType"
+%><%@ page import="com.freshdirect.cms.ContentKey"
+%><%@ page import="com.freshdirect.cms.fdstore.FDContentTypes"
+%><%@ page import="com.freshdirect.cms.application.CmsManager"
+%><%@ page import="com.freshdirect.cms.application.service.query.CmsQueryTypes"
+%><%@ page import="com.freshdirect.fdstore.content.ContentFactory"
+%><%@ page import="com.freshdirect.fdstore.content.ContentNodeModel"
+%><%@ page import="com.freshdirect.fdstore.content.ProductModel"
+%><%@ page import="com.freshdirect.fdstore.content.Recipe"
+%><%@ page import="com.freshdirect.fdstore.content.YmalSet"
+%><%@ page import="com.freshdirect.fdstore.content.YmalSource"
 %><%@ page import="com.freshdirect.webapp.util.FDURLUtil"
 %><%
 	final CmsManager mgr = CmsManager.getInstance();
 	
 	LinkedList s = new LinkedList();
 	s.add(mgr.getContentNode(ContentFactory.getInstance().getStoreKey())); // store
-	s.add(mgr.getContentNode(ContentKeyFactory.get("FDFolder:recipes"))); // recipes
+	s.add(mgr.getContentNode(ContentKey.getContentKey("FDFolder:recipes"))); // recipes
 %>
 <html lang="en-US" xml:lang="en-US">
 <head>

@@ -2,6 +2,8 @@ package com.freshdirect.rules.ui;
 
 import org.apache.tapestry.html.BasePage;
 
+import com.freshdirect.framework.conf.FDRegistry;
+
 public class AppPage extends BasePage {
 
 	/*public void attach(IEngine value) {
@@ -10,9 +12,9 @@ public class AppPage extends BasePage {
 	}
 	*/
 
-	@Override
-    public void detach() {
+	public void detach() {
 		super.detach();
+		FDRegistry.getInstance().cleanupThread();
 	}
 
 }

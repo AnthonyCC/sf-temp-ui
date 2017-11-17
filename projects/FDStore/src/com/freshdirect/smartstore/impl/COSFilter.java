@@ -4,10 +4,10 @@ import java.util.Collections;
 import java.util.List;
 
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.WrapperRecommendationService;
-import com.freshdirect.storeapi.content.ContentNodeModel;
 
 public class COSFilter extends WrapperRecommendationService {
 

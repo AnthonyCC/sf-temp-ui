@@ -11,6 +11,7 @@ import java.util.TreeSet;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
@@ -24,7 +25,6 @@ import com.freshdirect.smartstore.scoring.DataGenerator;
 import com.freshdirect.smartstore.scoring.OrderingFunction;
 import com.freshdirect.smartstore.scoring.PrioritizedDataAccess;
 import com.freshdirect.smartstore.scoring.ScoringAlgorithm;
-import com.freshdirect.storeapi.content.ContentNodeModel;
 
 /**
  * This recommendation service returns items based on a domain specific

@@ -1,18 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@page import="com.freshdirect.storeapi.content.MediaI"%>
+<%@page import="com.freshdirect.fdstore.content.MediaI"%>
 <%@page import="java.util.Set"%>
 <%@page import="java.util.HashSet"%>
 <%@page import="java.util.ArrayList"%>
-<%@page import="com.freshdirect.storeapi.content.ProducerModel"%>
-<%@page import="com.freshdirect.storeapi.content.DepartmentModel"%>
-<%@page import="com.freshdirect.storeapi.content.Html"%>
-<%@page import="com.freshdirect.storeapi.content.BrandModel"%>
-<%@page import="com.freshdirect.storeapi.content.EnumPopupType"%>
-<%@page import="com.freshdirect.storeapi.content.TitledMedia"%>
-<%@page import="com.freshdirect.storeapi.content.Image"%>
-<%@page import="com.freshdirect.storeapi.content.CategoryModel"%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
-<%@page import="com.freshdirect.storeapi.fdstore.FDContentTypes"%>
+<%@page import="com.freshdirect.fdstore.content.ProducerModel"%>
+<%@page import="com.freshdirect.fdstore.content.DepartmentModel"%>
+<%@page import="com.freshdirect.fdstore.content.Html"%>
+<%@page import="com.freshdirect.fdstore.content.BrandModel"%>
+<%@page import="com.freshdirect.fdstore.content.EnumPopupType"%>
+<%@page import="com.freshdirect.fdstore.content.TitledMedia"%>
+<%@page import="com.freshdirect.fdstore.content.Image"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
 <%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@page import="com.freshdirect.webapp.taglib.fdstore.BrowserInfo"%>
 <%@page import="org.apache.commons.lang.StringEscapeUtils"%>
@@ -20,16 +20,16 @@
 <%@page import="com.freshdirect.content.nutrition.EnumClaimValue"%>
 <%@page import="com.freshdirect.fdstore.FDProductInfo"%>
 <%@page import="com.freshdirect.fdstore.FDProduct"%>
-<%@page import="com.freshdirect.storeapi.content.SkuModel"%>
-<%@page import="com.freshdirect.storeapi.content.Domain"%>
-<%@page import="com.freshdirect.cms.core.domain.ContentType"%>
-<%@page import="com.freshdirect.cms.core.domain.ContentKey"%>
-<%@page import="com.freshdirect.storeapi.content.DomainValue"%>
-<%@page import="com.freshdirect.storeapi.content.DepartmentModel"%>
-<%@page import="com.freshdirect.storeapi.content.CategoryModel"%>
-<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
-<%@page import="com.freshdirect.storeapi.content.ContentNodeModel"%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.SkuModel"%>
+<%@page import="com.freshdirect.fdstore.content.Domain"%>
+<%@page import="com.freshdirect.cms.ContentType"%>
+<%@page import="com.freshdirect.cms.ContentKey"%>
+<%@page import="com.freshdirect.fdstore.content.DomainValue"%>
+<%@page import="com.freshdirect.fdstore.content.DepartmentModel"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="com.freshdirect.webapp.util.ProductImpression"%>
 
 <%@ taglib uri='template' prefix='tmpl' %>

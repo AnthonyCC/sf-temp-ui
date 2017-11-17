@@ -1,12 +1,12 @@
 <%@	page import="java.util.Iterator"%>
 <%@ page import="java.util.List"%>
-<%@ page import="com.freshdirect.storeapi.content.CategoryModel"%>
-<%@ page import="com.freshdirect.storeapi.content.ContentNodeTree"%>
-<%@ page import="com.freshdirect.storeapi.content.ContentNodeTree.TreeElement"%>
-<%@ page import="com.freshdirect.storeapi.content.DomainValue"%>
+<%@ page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@ page import="com.freshdirect.fdstore.content.ContentNodeTree"%>
+<%@ page import="com.freshdirect.fdstore.content.ContentNodeTree.TreeElement"%>
+<%@ page import="com.freshdirect.fdstore.content.DomainValue"%>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
-<%@ page import="com.freshdirect.storeapi.content.CategoryNodeTree"%>
-<%@ page import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@ page import="com.freshdirect.fdstore.content.CategoryNodeTree"%>
+<%@ page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@ taglib uri='logic' prefix='logic'%>
 <%

@@ -48,20 +48,13 @@ public class SaveNodeAction extends BasicAction<GwtSaveResponse> {
             ml.getMainTree().invalidate();
         } else {
             StringBuilder errorMessage = new StringBuilder("Error:");
-
-            if (result.getErrorMessage() != null) {
-                errorMessage.append(result.getErrorMessage());
-            }
-
-            if (result.getValidationMessages() != null) {
-                for (GwtValidationError g : result.getValidationMessages()) {
-                    errorMessage.append(g.getHumanReadable());
-                }
+            for (GwtValidationError g : result.getValidationMessages()) {
+                errorMessage.append(g.getHumanReadable());
             }
 
             stopProgress();
 
-            MessageBox.alert("Errors", errorMessage.toString(), null);
+            MessageBox.alert("Validation Errors", errorMessage.toString(), null);
         }
     }
 

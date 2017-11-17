@@ -7,7 +7,7 @@ import java.util.Set;
 
 import javax.ejb.EJBObject;
 
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.content.EnumWinePrice;
 

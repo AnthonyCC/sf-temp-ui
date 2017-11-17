@@ -3,8 +3,8 @@
 <%@ taglib uri='logic' prefix='logic'%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
 <%@ taglib uri="freshdirect" prefix='fd'%>
-<%@ page import="com.freshdirect.storeapi.content.CategoryModel"%>
-<%@ page import="com.freshdirect.storeapi.content.ProductContainer"%>
+<%@ page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@ page import="com.freshdirect.fdstore.content.ProductContainer"%>
 
 
 <div class="popsubmenu fourdeps">

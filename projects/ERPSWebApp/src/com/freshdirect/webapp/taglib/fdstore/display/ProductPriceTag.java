@@ -8,12 +8,14 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.GroupScalePricing;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.PriceCalculator;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductPromoPreviewPriceCalculator;
+
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.PriceCalculator;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.ProductPromoPreviewPriceCalculator;
+
 import com.freshdirect.webapp.util.ConfigurationUtil;
 import com.freshdirect.webapp.util.ProductImpression;
 import com.freshdirect.webapp.util.TransactionalProductImpression;

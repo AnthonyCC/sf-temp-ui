@@ -10,7 +10,7 @@ import com.freshdirect.common.context.FulfillmentContext;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.Recommender;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.fdstore.RecommendationServiceTestBase;

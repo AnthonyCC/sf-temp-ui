@@ -1,9 +1,9 @@
 package com.freshdirect.mobileapi.model.tagwrapper;
 
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.smartstore.fdstore.Recommendations;
-import com.freshdirect.storeapi.content.ContentFactory;
 import com.freshdirect.webapp.taglib.smartstore.ProductGroupRecommenderTag;
 
 public class ProductGroupRecommenderTagWrapper extends GetterTagWrapper {

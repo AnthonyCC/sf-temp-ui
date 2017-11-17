@@ -1,7 +1,7 @@
 package com.freshdirect.smartstore.fdstore;
 
 import com.freshdirect.common.pricing.PricingContext;
-import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 
 /**
  * Derive scores from store front.

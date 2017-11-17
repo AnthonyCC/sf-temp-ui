@@ -18,23 +18,22 @@ import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.service.FDECommerceService;
 
-public class FDInventoryCache extends FDAbstractCache<String, ErpInventoryModel> {
+public class FDInventoryCache extends FDAbstractCache {
 	private static Category LOGGER = LoggerFactory.getInstance(FDInventoryCache.class);
-
+	
 	private static FDInventoryCache instance;
-
+	
 	private FDInventoryCache(){
 		super(DateUtil.MINUTE * FDStoreProperties.getInventoryRefreshPeriod());
 	}
-
+	
 	public synchronized static FDInventoryCache getInstance(){
 		if(instance == null){
 			instance = new FDInventoryCache();
 		}
 		return instance;
 	}
-
-	@Override
+	
 	protected Map<String, ErpInventoryModel> loadData(Date since) {
 		try {
 			LOGGER.info("REFRESHING entries newer than "+ new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.S").format(since));
@@ -53,19 +52,18 @@ public class FDInventoryCache extends FDAbstractCache<String, ErpInventoryModel>
 			throw new FDRuntimeException(e);
 		}
 	}
-
-	@Override
-    protected Date getModifiedDate(ErpInventoryModel item) {
+	
+	protected Date getModifiedDate(Object item) {
 		if(!(item instanceof ErpInventoryModel)){
 			return null;
 		}
-		return item.getLastUpdated();
+		return ((ErpInventoryModel)item).getLastUpdated();
 	}
-
+	
 	public ErpInventoryModel getInventory(String materialId) {
-		return this.getCachedItem(materialId);
+		return (ErpInventoryModel) this.getCachedItem(materialId);
 	}
-
+	
 	private ErpInfoHome lookupInfoHome() {
 		try {
 			return (ErpInfoHome) serviceLocator.getRemoteHome("freshdirect.erp.Info");

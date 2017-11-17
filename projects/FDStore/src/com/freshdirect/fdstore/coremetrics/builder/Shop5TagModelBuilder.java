@@ -7,11 +7,11 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.coremetrics.tagmodel.ShopTagModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.ProductReference;
 
 public class Shop5TagModelBuilder extends AbstractShopTagModelBuilder{
 	private static final Logger LOGGER = LoggerFactory.getInstance(Shop5TagModelBuilder.class);

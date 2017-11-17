@@ -7,15 +7,15 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.smartstore.scoring.DataAccess;
 import com.freshdirect.smartstore.scoring.Score;
 import com.freshdirect.smartstore.scoring.ScoringAlgorithm;
 import com.freshdirect.smartstore.service.SearchScoringRegistry;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.ProductModel;
 
 public class ScriptedContentNodeComparator implements Comparator<ProductModel> {
     final DataAccess dataAccess;

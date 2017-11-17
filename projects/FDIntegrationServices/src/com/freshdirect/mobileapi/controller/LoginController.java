@@ -1,6 +1,5 @@
 package com.freshdirect.mobileapi.controller;
 
-import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -30,6 +29,7 @@ import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.CMSPageRequest;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -68,7 +68,6 @@ import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.tagwrapper.MergeCartControllerTagWrapper;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.BrowseUtil;
-import com.freshdirect.storeapi.content.CMSPageRequest;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -104,7 +103,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see
 	 * com.freshdirect.mobileapi.controller.BaseController#processRequest(javax
 	 * .servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse,
@@ -116,7 +115,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 			HttpServletResponse response, ModelAndView model, String action,
 			SessionUser user) throws FDException, ServiceException,
 			NoSessionException, JsonException {
-
+		
 	    Message responseMessage = null;
 		if (ACTION_LOGIN.equals(action)) {
 			Login requestMessage = parseRequestObject(request, response,
@@ -127,7 +126,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 				if(sessionUser.isLoggedIn()){
 					logout(user, request, response);
 				}
-
+				
 			} catch (NoSessionException e) {
 				// Do nothing
 			}
@@ -137,7 +136,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 		} else if (ACTION_LOGOUT.equals(action)) {
 		    responseMessage = logout(user, request, response);
 		}else if (ACTION_SOURCE.equals(action)) {
-		    SessionMessage requestMessage = parseRequestObject(request, response, SessionMessage.class);
+		    SessionMessage requestMessage = parseRequestObject(request, response, SessionMessage.class); 
 			responseMessage = transactionSource(user, request, response,requestMessage);
 		} else if (ACTION_FORGOT_PASSWORD.equals(action)) {
 		    Login requestMessage = parseRequestObject(request, response, Login.class);
@@ -146,13 +145,13 @@ public class LoginController extends BaseController  implements SystemMessageLis
 		    PasswordMessageRequest requestMessage = parseRequestObject(request, response, PasswordMessageRequest.class);
 		    responseMessage = changePassword(request, response, requestMessage);
 		} else if (ACTION_SESSION.equals(action)) {
-		    SessionMessage requestMessage = parseRequestObject(request, response, SessionMessage.class);
+		    SessionMessage requestMessage = parseRequestObject(request, response, SessionMessage.class);  
 			responseMessage = checkSession(request, response, user, requestMessage);
 		}else if (ACTION_ACK.equals(action)) {
-			AckRequest requestMessage = parseRequestObject(request, response, AckRequest.class);
+			AckRequest requestMessage = parseRequestObject(request, response, AckRequest.class); 
 			responseMessage = updateAck(request, response, user, requestMessage);
 		}  else if (ACTION_SESSION_ADD_ANONYMOUS_ADDRESS.equals(action)) {
-			ZipCheck requestMessage = parseRequestObject(request, response, ZipCheck.class);
+			ZipCheck requestMessage = parseRequestObject(request, response, ZipCheck.class); 
 			try {
 				// Check to see if user session exists
 				getUserFromSession(request, response);
@@ -171,7 +170,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 				if(user!=null && user.getShoppingCart()!=null && zoneInfo!=null) {
 					user.getShoppingCart().setZoneInfo(zoneInfo);
 				}
-
+				
 				if(!isAddressSet(user,address)) {
 					Cart cart = user.getShoppingCart();
 			        CartDetail cartDetail = cart.getCartDetail(user, EnumCouponContext.VIEWCART);
@@ -186,9 +185,9 @@ public class LoginController extends BaseController  implements SystemMessageLis
 					//FDX-1873 - Show timeslots for anonymous address
 					user.getShoppingCart().setDeliveryAddress(null);
 		        	List<FDCartLineI> invalidLines=OrderLineUtil.getInvalidLines(user.getShoppingCart().getOrderLines(), user.getFDSessionUser().getUserContext());
-
+		        	
 		        	if(invalidLines.size()>0) {
-
+		        		
 		        		Cart cart = user.getShoppingCart();
 				        CartDetail cartDetail = cart.getCartDetail(user, EnumCouponContext.VIEWCART);
 				        responseMessage = new com.freshdirect.mobileapi.controller.data.response.Cart();
@@ -199,26 +198,26 @@ public class LoginController extends BaseController  implements SystemMessageLis
 				        }*/
 				        setResponseMessage(model, responseMessage, user);
 				        return model;
-		        	}
-
+		        	} 					
+				
 					responseMessage = Message.createSuccessMessage("Anonymous Address added successfully.");
 				}
-
-
+				
+				
 			} catch (NoSessionException e) {
 				 responseMessage = getErrorMessage(ERR_SESSION_EXPIRED, "Session does not exist in the server.");
 			} catch (FDInvalidAddressException e) {
 				 responseMessage = getErrorMessage("Invalid Address", "Invalid address");
 			}
 		}
-
+		
 		setResponseMessage(model, responseMessage, user);
 		return model;
 	}
 
     private Message forgotPassword(SessionUser user, HttpServletRequest request, HttpServletResponse response, Login requestMessage) throws JsonException {
         Message responseMessage = Message.createSuccessMessage("Password sent successfully.");
-
+        
         try {
         	LOGGER.debug("Email is going to: " + requestMessage.getUsername());
         	FDCustomerManager.sendPasswordEmail(requestMessage.getUsername(), false);
@@ -285,8 +284,8 @@ public class LoginController extends BaseController  implements SystemMessageLis
 	private boolean isAddressSet(SessionUser user, AddressModel address) {
 		return user.getAddress().isSameLocation(address);
 	}
-
-
+	
+	
 
 	/**
 	 * @param request
@@ -307,7 +306,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 	}
 	/**
 	 * @param request
-	 * @param requestMessage
+	 * @param requestMessage 
 	 * @return
 	 * @throws JsonException
 	 * @throws IOException
@@ -316,7 +315,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 	 */
 	private Message transactionSource(SessionUser user, HttpServletRequest request, HttpServletResponse response, SessionMessage requestMessage)
 			throws JsonException {
-
+        
 		String source = requestMessage.getSource();
 		Message responseMessage = new SessionResponse();
 		EnumTransactionSource transactionSource = EnumTransactionSource.getTransactionSource(source);
@@ -335,12 +334,12 @@ public class LoginController extends BaseController  implements SystemMessageLis
 				if (fdSessionUser != null) {
 					FDCustomerCouponUtil.initCustomerCoupons(request
 							.getSession());
-					((SessionResponse) responseMessage).setSessionExpired(true);
+					((SessionResponse) responseMessage).setSessionExpired(true); 
 				} else {
 					fdSessionUser = LocatorUtil.useIpLocator(
                             request.getSession(), request, response);
 				}
-				((SessionResponse) responseMessage).setSessionIsNew(true);
+				((SessionResponse) responseMessage).setSessionIsNew(true); 
 				request.getSession().setAttribute(SessionName.USER,fdSessionUser);
 				user = SessionUser.wrap(fdSessionUser);
 			} else {
@@ -349,7 +348,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 			}
 			responseMessage.setConfiguration(getConfiguration(user));
 		}
-		return responseMessage;
+		return responseMessage; 
 }
 
     private Message ping(HttpServletRequest request, HttpServletResponse response) throws NoSessionException, FDException {
@@ -388,24 +387,24 @@ public class LoginController extends BaseController  implements SystemMessageLis
 		String qualifier = requestMessage.getQualifier();
 		Message responseMessage = null;
 		SessionUser user = null;
-
+		
 		try {
 
 			// Log in user and store in session
 			/*createUserSession(User.login(username, password), source, request,
 					response);*/
 			//instead of above Call Make a call to UserUtil.loginUser
-
+			
 			// APPDEV-4627
 		    if (request.getSession().getAttribute(SessionName.APPLICATION) == null){
 		        request.getSession().setAttribute(SessionName.APPLICATION, getTransactionSourceCode(request, source));
 		    }
 	    	// end APPDEV-4627
-
+	    	
 			ActionResult actionResult = new ActionResult();
 			UserUtil.loginUser(request.getSession(), request, response, actionResult, username, password, FAKE_MERGE_PAGE, FAKE_SUCCESS_PAGE, externalLogin);
 
-
+						
 			if(actionResult.isFailure()){
 				ActionError actionError=actionResult.getError("authentication");
 				if(null!=actionError && SystemMessageList.MSG_VOUCHER_REDEMPTION_FDX_NOT_ALLOWED.equalsIgnoreCase(
@@ -415,17 +414,17 @@ public class LoginController extends BaseController  implements SystemMessageLis
 				} else {
 					throw new FDAuthenticationException();
 				}
-
+				
 			}
 			LOGGER.debug("Current cart object : "+request.getSession().getAttribute(SessionName.CURRENT_CART));
-
+			
 			FDCartModel currentCart = (FDCartModel)request.getSession().getAttribute(SessionName.CURRENT_CART);
-
+			
 			//propogateSetSessionValues(request.getSession(), new ResultBundle().setActionResult(actionResult));
 			user = getUserFromSession(request, response);
 			user.setUserContext();
 			user.setEligibleForDDPP();
-
+			
 			//Call the MergeCartControllerTagWrapper
 			if(FDStoreProperties.isObsoleteMergeCartPageEnabled()){
 				MergeCartControllerTagWrapper tagWrapper = new MergeCartControllerTagWrapper(user);
@@ -461,7 +460,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 				//FDX-1873 - Show timeslots for anonymous address
 				if(user.getAddress() != null && user.getAddress().getAddress1() != null && user.getAddress().getAddress1().length() > 0 && user.getAddress().isCustomerAnonymousAddress()) {
 					user.getShoppingCart().setDeliveryAddress(null);
-				}
+				} 
 			}
 			user.setFromLogin("Login");
 			EnumEStoreId eStore = (user.getUserContext() != null && user.getUserContext().getStoreContext() != null) ? user.getUserContext().getStoreContext().getEStoreId()
@@ -489,7 +488,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 		            }
 				}
 			}
-
+			
 		} catch (FDAuthenticationException ex) {
 			if ("Account disabled".equals(ex.getMessage())) {
 				responseMessage = getErrorMessage(ERR_AUTHENTICATION,
@@ -497,13 +496,13 @@ public class LoginController extends BaseController  implements SystemMessageLis
 								new Object[] { UserUtil
 										.getCustomerServiceContact(request) }));
 			} else if("voucherredemption".equals(ex.getMessage())){
-	     		responseMessage = getErrorMessage(VOUCHER_AUTHENTICATION,
-	            		MessageFormat.format(SystemMessageList.MSG_VOUCHER_REDEMPTION_FDX_NOT_ALLOWED,
+	     		responseMessage = getErrorMessage(VOUCHER_AUTHENTICATION, 
+	            		MessageFormat.format(SystemMessageList.MSG_VOUCHER_REDEMPTION_FDX_NOT_ALLOWED, 
 	            		new Object[] { UserUtil.getCustomerServiceContact(request)}));
 			} else {
 				List<String> providers = ExternalAccountManager.getConnectedProvidersByUserId(username);
 				if(providers!=null && providers.size()!=0){
-					responseMessage = Message.createFailureMessage(MessageFormat.format(MSG_SOCIAL_SOCIALONLY_ACCOUNT_SIGNIN, providers));
+					responseMessage = Message.createFailureMessage(MessageFormat.format(MSG_SOCIAL_SOCIALONLY_ACCOUNT_SIGNIN, providers));	
 				} else {
 				responseMessage = getErrorMessage(ERR_AUTHENTICATION,
 						MessageCodes.MSG_AUTHENTICATION_FAILED);
@@ -513,7 +512,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 		}
 		return responseMessage;
 	}
-
+	
     private Message checkSession(HttpServletRequest request, HttpServletResponse response, SessionUser user, SessionMessage requestMessage)
             throws FDException, NoSessionException, JsonException {
         String source = requestMessage.getSource();
@@ -548,7 +547,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
         }
         return responseMessage;
     }
-
+	
     @Override
     protected LoggedIn formatLoginMessage(SessionUser user) throws FDException {
         LoggedIn responseMessage = super.formatLoginMessage(user);
@@ -558,7 +557,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
         responseMessage.setAnonymousAddressSetFromAcc(deliveryAddr);
         return responseMessage;
     }
-
+	
 	// FDX-1873 - Show timeslots for anonymous address
 	//FDX-2036 API - at login, if anon address exists in Address Book of user, select the Address Book address
 	public boolean setDeliveryAddress(SessionUser user) throws FDException{
@@ -567,11 +566,11 @@ public class LoginController extends BaseController  implements SystemMessageLis
 		for(ErpAddressModel acctAddr: addresses) {
 			boolean isAddressMatching = matchAddress(acctAddr, user.getAddress());
 			if(isAddressMatching) {
-				Checkout checkout = new Checkout(user);
+				Checkout checkout = new Checkout(user);    	
 				// ResultBundle resultBundle = checkout.setCheckoutDeliveryAddressEx(acctAddr.getId(), DeliveryAddressType.valueOf(user.getAddress().getServiceType()));
 				ResultBundle resultBundle = checkout.setCheckoutDeliveryAddressEx(acctAddr.getId(), DeliveryAddressType.RESIDENTIAL);
 				ActionResult result = resultBundle.getActionResult();
-				if(result.isSuccess()){
+				if(result.isSuccess()){					
 					user.getAddress().setCustomerAnonymousAddress(false);
 					return true;
 				} else {
@@ -582,7 +581,7 @@ public class LoginController extends BaseController  implements SystemMessageLis
 		}
 		return false;
 	}
-
+	
 	// FDX-1873 - Show timeslots for anonymous address
 	public static boolean matchAddress(ErpAddressModel addr1, AddressModel addr2) {
 		if (addr1 == null || addr2 == null)

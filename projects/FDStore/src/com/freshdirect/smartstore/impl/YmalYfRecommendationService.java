@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.CartTabStrategyPriority;
 import com.freshdirect.smartstore.RecommendationService;
@@ -18,8 +20,6 @@ import com.freshdirect.smartstore.dsl.CompileException;
 import com.freshdirect.smartstore.fdstore.FactorRequirer;
 import com.freshdirect.smartstore.service.RecommendationServiceFactory;
 import com.freshdirect.smartstore.service.VariantRegistry;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.ProductModel;
 
 public class YmalYfRecommendationService extends AbstractRecommendationService implements FactorRequirer {
 	private ScriptedRecommendationService popularity;

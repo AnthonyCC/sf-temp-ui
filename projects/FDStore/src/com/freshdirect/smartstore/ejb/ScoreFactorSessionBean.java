@@ -15,38 +15,38 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.core.domain.ContentKey;
-import com.freshdirect.cms.core.domain.ContentKeyFactory;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.content.EnumWinePrice;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.fdstore.FDContentTypes;
 
 /**
  * Session bean implementation.
- *
+ * 
  * @author istvan
  *
  */
 public class ScoreFactorSessionBean extends SessionBeanSupport {
-
+	
 	private static Logger LOGGER = LoggerFactory.getInstance(ScoreFactorSessionBean.class);
 
 	private static final long serialVersionUID = 8645402837591723847L;
 
 	private static final String GLOBAL_FACTORS_TABLE = "CUST.SS_GLOBAL_PRODUCT_SCORES";
 	private static final String PERSONALIZED_FACTORS_TABLE = "CUST.SS_PERSONALIZED_PRODUCT_SCORES";
-
+	
 	private static final String PERSONALIZED_FACTORS_QUERY =
 		"SELECT * FROM " + PERSONALIZED_FACTORS_TABLE + " WHERE E_STORE = ? AND CUSTOMER_ID = ?";
-
+	
 	private static final String GLOBAL_FACTORS_QUERY =
 		"SELECT * FROM " + GLOBAL_FACTORS_TABLE + " WHERE E_STORE = ?";
-
+	
 	private static final String GLOBAL_FACTOR_NAMES_QUERY = GLOBAL_FACTORS_QUERY + " AND PRODUCT_ID = \'CSULKOS BABLEVES\'";
-
+	
 	private static final String GLOBAL_PRODUCTS_QUERY =
 		"SELECT PRODUCT_ID FROM " + GLOBAL_FACTORS_TABLE + " WHERE E_STORE = ?";
 
@@ -57,15 +57,15 @@ public class ScoreFactorSessionBean extends SessionBeanSupport {
 	private static final String PRODUCT_RECOMMENDATION_TABLE = "CUST.SS_PRODUCT_RECOMMENDATION";
 	@Deprecated
 	private static final String USER_RECOMMENDATION_TABLE = "CUST.SS_USER_RECOMMENDATION";
-
+	
 	@Deprecated
 	private static final String PRODUCT_RECOMMENDATION_QUERY = "SELECT RECOMMENDED_PRODUCT FROM " + PRODUCT_RECOMMENDATION_TABLE + " WHERE RECOMMENDER = ? AND CONTENT_KEY = ? ORDER BY PRIORITY ASC";
 	@Deprecated
 	private static final String USER_RECOMMENDATION_QUERY = "SELECT RECOMMENDED_PRODUCT FROM " + USER_RECOMMENDATION_TABLE + " WHERE RECOMMENDER = ? AND CUSTOMER_ID = ? ORDER BY PRIORITY ASC";
-
+	
 	/**
 	 * Determine if column name is not a particular factor name
-	 *
+	 * 
 	 * @param column
 	 * @return
 	 */
@@ -74,9 +74,9 @@ public class ScoreFactorSessionBean extends SessionBeanSupport {
 				|| "CUSTOMER_ID".equalsIgnoreCase(column)
 				|| "E_STORE".equalsIgnoreCase(column);
 	}
-
+	
 	/**
-	 *
+	 * 
 	 * @param eStoreId {@link EnumEStoreId}
 	 * @param erpCustomerId null means global
 	 * @return Set<ProductId:String>
@@ -85,7 +85,7 @@ public class ScoreFactorSessionBean extends SessionBeanSupport {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-
+			
 			PreparedStatement ps = conn.prepareStatement(erpCustomerId == null ? GLOBAL_PRODUCTS_QUERY : PERSONALIZED_PRODUCTS_QUERY);
 			if (erpCustomerId != null) {
 				ps.setString(1, eStoreId);
@@ -93,17 +93,17 @@ public class ScoreFactorSessionBean extends SessionBeanSupport {
 			} else {
 				ps.setString(1, eStoreId);
 			}
-
+			
 			ResultSet rs = ps.executeQuery();
-
+			
 			Set<String> productSet = new HashSet<String>();
-
+			
 			while(rs.next()) {
 				productSet.add(rs.getString(1));
 			}
-
+			
 			return productSet;
-
+			
 		} catch (SQLException e) {
 			LOGGER.warn("Could not retrieve products for " +
 					(erpCustomerId != null ?
@@ -122,30 +122,30 @@ public class ScoreFactorSessionBean extends SessionBeanSupport {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param erpCustomerId null means global
 	 * @return Set of factor names
 	 */
 	private Set<String> retrieveFactorNames(final String erpCustomerId) {
 		Connection conn = null;
-
+		
 		try {
 			conn = getConnection();
-
+				
 			PreparedStatement ps = null;
-
+			
 			// is global query
 			if (erpCustomerId == null) {
 				ps = conn.prepareStatement(GLOBAL_FACTOR_NAMES_QUERY);
-				ps.setString(1, "FreshDirect");//::FDX::
+				ps.setString(1, "FreshDirect");//::FDX:: 
 			} else {
 				ps = conn.prepareStatement(PERSONALIZED_FACTORS_QUERY);
 				ps.setString(1, "FreshDirect");
 				ps.setString(2, erpCustomerId);
 			}
-
+			
 			ResultSet rs = ps.executeQuery();
-
+			
 			ResultSetMetaData meta = rs.getMetaData();
 			Set<String> names = new HashSet<String>(4*meta.getColumnCount()/3);
 			for (int j = 0; j< meta.getColumnCount(); ++j) {
@@ -154,10 +154,10 @@ public class ScoreFactorSessionBean extends SessionBeanSupport {
 					names.add(column);
 				}
 			}
-
+			
 			rs.close();
 			ps.close();
-
+			
 			return names;
 		} catch (SQLException e) {
 			if (erpCustomerId == null)
@@ -169,9 +169,9 @@ public class ScoreFactorSessionBean extends SessionBeanSupport {
                      close(conn);
 		}
 	}
-
+	
 	/**
-	 *
+	 * 
 	 * @param eStoreId {@link EnumEStoreId}
 	 * @param erpCustomerId null means global
 	 * @return
@@ -179,12 +179,12 @@ public class ScoreFactorSessionBean extends SessionBeanSupport {
 	 */
 	private Map<String,double[]> retrieveScores(final String eStoreId, String erpCustomerId, List<String> factors) {
 		Connection conn = null;
-
+	
 		try {
 			conn = getConnection();
-
+				
 			PreparedStatement ps = null;
-
+			
 			// is global query
 			if (erpCustomerId == null) {
 				ps = conn.prepareStatement(GLOBAL_FACTORS_QUERY);
@@ -194,11 +194,11 @@ public class ScoreFactorSessionBean extends SessionBeanSupport {
 				ps.setString(1, eStoreId);
 				ps.setString(2, erpCustomerId);
 			}
-
+			
 			ResultSet rs = ps.executeQuery();
-
+			
 			Map<String,double[]> scores = new HashMap<String,double[]>();
-
+			
 			int factorsSize = factors.size();
 			while(rs.next()) {
 				String productId = rs.getString("PRODUCT_ID");
@@ -211,10 +211,10 @@ public class ScoreFactorSessionBean extends SessionBeanSupport {
 					factorValues[i] = rs.getDouble(factors.get(i).toString());
 				}
 			}
-
+			
 			rs.close();
 			ps.close();
-
+			
 			return scores;
 		} catch (SQLException e) {
 			if (erpCustomerId == null)
@@ -226,13 +226,13 @@ public class ScoreFactorSessionBean extends SessionBeanSupport {
                      close(conn);
 		}
 	}
-
-
+	
+	
 	/**
 	 * Get the required personalized factors for user.
-	 *
+	 * 
 	 * @param eStoreId {@link EnumEStoreId}
-	 * @param erpCustomerId
+	 * @param erpCustomerId 
 	 * @param factors List<FactorName:{@link String}>
 	 * @throws RemoteException
 	 * @return Map<ProductId:{@link String},double[]>
@@ -241,23 +241,23 @@ public class ScoreFactorSessionBean extends SessionBeanSupport {
 	public Map<String,double[]> getPersonalizedFactors(final String eStoreId, String erpCustomerId, List<String> factors) throws RemoteException {
 		return retrieveScores(eStoreId, erpCustomerId, factors);
 	}
-
+	
 	/**
 	 * Get the required global factors.
-	 *
+	 * 
 	 * @param eStoreId {@link EnumEStoreId}
 	 * @param factors List<FactorName:{@link String}>
 	 * @throws RemoteException
 	 * @return Map<ProductId:{@link String},double[]>
 	 * @see ScoreFactorSB#getGlobalFactors()
-	 */
+	 */	
 	public Map<String,double[]> getGlobalFactors(final String eStoreId, List<String> factors) throws RemoteException {
 		return retrieveScores(eStoreId, null, factors);
 	}
-
+	
 	/**
 	 * Get personalized factor names.
-	 *
+	 * 
 	 * @return Set<{@link String}>
 	 * @throws RemoteException
 	 * @see ScoreFactorSB#getPersonalizedFactorNames()
@@ -268,7 +268,7 @@ public class ScoreFactorSessionBean extends SessionBeanSupport {
 
 	/**
 	 * Get the global factor names.
-	 *
+	 * 
 	 * @return Set<{@link String>
 	 * @throws RemoteException
 	 * @see @link ScoreFactorSB#getPersonalizedFactorNames()
@@ -279,7 +279,7 @@ public class ScoreFactorSessionBean extends SessionBeanSupport {
 
 	/**
 	 * Get the product ids that have any scores.
-	 *
+	 * 
 	 * @param eStoreId {@link EnumEStoreId}
 	 * @return Set<ProductId:String>
 	 * @throws RemoteException
@@ -287,12 +287,12 @@ public class ScoreFactorSessionBean extends SessionBeanSupport {
 	public Set<String> getGlobalProducts(final String eStoreId) throws RemoteException {
 		return retrieveProducts(eStoreId, null);
 	}
-
+	
 	/**
 	 * Get the product ids for the user that have any scores.
-	 *
+	 * 
 	 * @param eStoreId {@link EnumEStoreId}
-	 * @param erpCustomerId
+	 * @param erpCustomerId 
 	 * @return Set<ProductId:String>
 	 * @throws RemoteException
 	 */
@@ -303,7 +303,7 @@ public class ScoreFactorSessionBean extends SessionBeanSupport {
 	/**
 	 * Return a list of product recommendation for a given product by a
 	 * recommender vendor.
-	 *
+	 * 
 	 * @param recommender
 	 * @param key
 	 * @return List<ContentKey>
@@ -327,8 +327,13 @@ public class ScoreFactorSessionBean extends SessionBeanSupport {
 
 			while (rs.next()) {
 				String recKey = rs.getString(1);
-					products.add(ContentKeyFactory.get(FDContentTypes.PRODUCT,
+				try {
+					products.add(ContentKey.create(FDContentTypes.PRODUCT,
 							recKey));
+				} catch (InvalidContentKeyException e) {
+					LOGGER.warn("invalid content key '" + recKey + "', for "
+							+ key + ", from recommender " + recommender);
+				}
 			}
 			return products;
 		} catch (SQLException e) {
@@ -343,7 +348,7 @@ public class ScoreFactorSessionBean extends SessionBeanSupport {
 	/**
 	 * Return a list of personal recommendation (ContentKey-s) for a user by a
 	 * recommender vendor.
-	 *
+	 * 
 	 * @param recommender
 	 * @param erpCustomerId
 	 * @return List<ContentKey>
@@ -367,8 +372,14 @@ public class ScoreFactorSessionBean extends SessionBeanSupport {
 
 			while (rs.next()) {
 				String recKey = rs.getString(1);
-					products.add(ContentKeyFactory.get(FDContentTypes.PRODUCT,
+				try {
+					products.add(ContentKey.create(FDContentTypes.PRODUCT,
 							recKey));
+				} catch (InvalidContentKeyException e) {
+					LOGGER.warn("invalid content key '" + recKey + "', for "
+							+ erpCustomerId + ", from recommender "
+							+ recommender + " for personal recommendation");
+				}
 			}
 			return products;
 		} catch (SQLException e) {

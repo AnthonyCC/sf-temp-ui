@@ -2,10 +2,10 @@ package com.freshdirect.smartstore.filter;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.SkuModel;
 
 /**
  * Check whether product or one of its alternatives is available

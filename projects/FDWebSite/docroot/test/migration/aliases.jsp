@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <%@page import="java.util.Comparator"%>
 <%@page import="java.util.Collections"%>
-<%@page import="com.freshdirect.cms.core.domain.ContentKey"%>
-<%@page import="com.freshdirect.storeapi.content.CategoryModel"%>
-<%@page import="com.freshdirect.storeapi.fdstore.FDContentTypes"%>
-<%@page import="com.freshdirect.storeapi.application.CmsManager"%>
-<%@page import="com.freshdirect.storeapi.content.ContentNodeModel"%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
-<%@page import="com.freshdirect.storeapi.content.ProductModel"%>
+<%@page import="com.freshdirect.cms.ContentKey"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
+<%@page import="com.freshdirect.cms.application.CmsManager"%>
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
-<%@ page import="com.freshdirect.storeapi.content.TagModel"%>
+<%@ page import="com.freshdirect.fdstore.content.TagModel"%>
 <%@ page import="java.util.Collection"%>
 <%@ page import="com.freshdirect.test.TestSupport" %>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>

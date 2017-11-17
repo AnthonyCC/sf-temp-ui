@@ -5,12 +5,12 @@ import java.util.Date;
 import java.util.List;
 
 import com.freshdirect.customer.ErpComplaintModel;
+import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.mail.TellAFriend;
 import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
 import com.freshdirect.mail.GiftCardOrderInfo;
-import com.freshdirect.storeapi.content.Recipe;
 
 public interface TEmailContextI extends Serializable {
 

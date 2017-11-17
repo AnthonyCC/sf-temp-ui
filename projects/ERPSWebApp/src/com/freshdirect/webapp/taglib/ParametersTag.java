@@ -5,15 +5,15 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.util.QueryParameter;
 import com.freshdirect.fdstore.content.util.QueryParameterCollection;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.fdstore.FDContentTypes;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class ParametersTag extends BodyTagSupportEx {

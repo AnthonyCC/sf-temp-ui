@@ -17,8 +17,8 @@
 <%@ page import="com.freshdirect.webapp.util.TimeslotPageUtil" %>
 <%@ page import="com.freshdirect.logistics.delivery.model.TimeslotContext" %>
 <%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import='com.freshdirect.storeapi.content.CategoryModel' %>
-<%@ page import='com.freshdirect.storeapi.content.ContentFactory' %>
+<%@ page import='com.freshdirect.fdstore.content.CategoryModel' %>
+<%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
 <%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
 <%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
 <%@ page import="com.freshdirect.webapp.util.JspMethods" %>

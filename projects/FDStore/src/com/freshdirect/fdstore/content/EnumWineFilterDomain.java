@@ -8,10 +8,7 @@ import java.util.Comparator;
 import org.apache.commons.collections.set.ListOrderedSet;
 
 import com.freshdirect.WineUtil;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.WineFilterValue;
-import com.freshdirect.storeapi.fdstore.FDContentTypes;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 
 public enum EnumWineFilterDomain {
 	TYPE("usq_type"), COUNTRY("usq_region"), PRICE, RATING, MORE("usq_more");

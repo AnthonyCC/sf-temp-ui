@@ -7,9 +7,9 @@ import org.apache.log4j.Logger;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.FilteringProductItem;
 
 public class PriceComparator implements Comparator<FilteringProductItem> {
 

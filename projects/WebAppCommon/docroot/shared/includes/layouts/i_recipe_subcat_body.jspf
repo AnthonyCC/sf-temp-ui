@@ -2,18 +2,18 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
 <%@ page import="java.util.StringTokenizer"%>
-<%@ page import="com.freshdirect.storeapi.content.Html"%>
-<%@ page import="com.freshdirect.storeapi.content.Image"%>
+<%@ page import="com.freshdirect.fdstore.content.Html"%>
+<%@ page import="com.freshdirect.fdstore.content.Image"%>
 <%@ page import="java.util.List"%>
-<%@ page import="com.freshdirect.storeapi.content.DomainValue"%>
+<%@ page import="com.freshdirect.fdstore.content.DomainValue"%>
 <%@ page import="java.util.Map"%>
 <%@ page import="java.util.Collections"%>
 <%@ page import="java.util.ArrayList"%>
 <%@ page import="java.util.Iterator"%>
-<%@ page import="com.freshdirect.storeapi.content.Recipe"%>
+<%@ page import="com.freshdirect.fdstore.content.Recipe"%>
 <%@ page import="com.freshdirect.framework.util.NVL"%>
-<%@ page import="com.freshdirect.storeapi.content.RecipeSubcategory"%>
-<%@ page import="com.freshdirect.storeapi.content.RecipeCategory"%>
+<%@ page import="com.freshdirect.fdstore.content.RecipeSubcategory"%>
+<%@ page import="com.freshdirect.fdstore.content.RecipeCategory"%>
 <%@ page import="com.freshdirect.fdstore.util.RecipesUtil"%>
 
 <% //expanded page dimensions
@@ -173,7 +173,7 @@ for (;qryStringTokn.hasMoreTokens();) {
 			<%
 		}
 		%>
-		<logic:iterate id="filterDV" collection="<%= filterByKeys %>" type="com.freshdirect.storeapi.content.DomainValue">
+		<logic:iterate id="filterDV" collection="<%= filterByKeys %>" type="com.freshdirect.fdstore.content.DomainValue">
 			<span class="dot_separator">&#149;</span>
 			<%
 			if (filterDV.getContentName().equals(filterParam) ) { 

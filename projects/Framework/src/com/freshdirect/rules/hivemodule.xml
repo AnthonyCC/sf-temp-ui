@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<module id="com.freshdirect.rules" version="1.0.0">
+	
+	<configuration-point id="Configurations">
+		<schema>
+			<element name="rulesConfig">
+				<attribute name="subsystem" required="true"/>
+				<attribute name="serviceName" required="true"/>
+				<element name="outcome">
+					<attribute required="true" name="class" translator="class"/>
+					<attribute required="true" name="label"/>
+					<attribute required="true" name="xmlTag"/>
+					<rules>
+						<create-object class="com.freshdirect.rules.ClassDescriptor"/>
+						<read-attribute attribute="class" property="targetClass"/>
+						<read-attribute attribute="label" property="label"/>
+						<read-attribute attribute="xmlTag" property="xmlTag"/>
+						<invoke-parent method="addOutcomeType"/>
+					</rules>
+				</element>
+				<element name="condition">
+					<attribute required="true" name="class" translator="class" />
+					<attribute required="true" name="label"/>
+					<attribute required="true" name="xmlTag"/>
+					<rules>
+						<create-object class="com.freshdirect.rules.ClassDescriptor"/>
+						<read-attribute attribute="class" property="targetClass"/>
+						<read-attribute attribute="label" property="label"/>
+						<read-attribute attribute="xmlTag" property="xmlTag"/>
+						<invoke-parent method="addConditionType"/>
+					</rules>
+				</element>
+				<conversion class="com.freshdirect.rules.RulesConfig" />
+			</element>
+		</schema>
+	</configuration-point>
+	
+	<service-point id="Publisher" interface="com.freshdirect.rules.RulesPublisherI"/>
+	
+	<implementation service-id="Publisher">
+		<invoke-factory>
+			<construct class="com.freshdirect.rules.RulesPublisher">
+				<string>${com.freshdirect.rules.publish.dir}</string>
+				<string>${com.freshdirect.rules.publish.script}</string>
+			</construct>
+		</invoke-factory>
+	</implementation>
+	
+</module>

@@ -12,9 +12,5 @@
 	<classpathentry kind="var" path="FD_LIBS/httpclient-4.5.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/httpcore-4.4.1.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/httpmime-4.5.jar"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/ERPServices"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/StoreAPI"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/servlet-api.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/slf4j-api-1.7.13.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -8,8 +8,8 @@ import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.fdstore.FDNutrition;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.FilteringProductItem;
 
 public class NutritionComparator implements Comparator<FilteringProductItem> {
 

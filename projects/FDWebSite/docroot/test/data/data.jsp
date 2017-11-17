@@ -65,7 +65,7 @@
 <%@ page import="org.apache.commons.collections.functors.AllPredicate" %>
 <%@ page import="org.apache.commons.collections.functors.AnyPredicate" %>
 <%@ page import="org.apache.commons.collections.functors.NotPredicate" %>
-<%@ page import="com.freshdirect.storeapi.content.EnumLayoutType" %>
+<%@ page import="com.freshdirect.fdstore.content.EnumLayoutType" %>
 
 <%@ page import="java.util.Random" %>
 <%@ page import="java.util.Iterator" %>
@@ -75,12 +75,12 @@
 <%@ page import="java.util.LinkedList" %>
 <%@ page import="java.util.Enumeration" %>
 
-<%@ page import="com.freshdirect.storeapi.fdstore.FDContentTypes" %>
-<%@ page import="com.freshdirect.cms.core.domain.ContentType" %>
-<%@ page import="com.freshdirect.storeapi.content.EnumProductLayout" %>
+<%@ page import="com.freshdirect.cms.fdstore.FDContentTypes" %>
+<%@ page import="com.freshdirect.cms.ContentType" %>
+<%@ page import="com.freshdirect.fdstore.content.EnumProductLayout" %>
 
 <%@ page import="com.freshdirect.webapp.taglib.test.fdstore.*" %>
-<%@ page import="com.freshdirect.storeapi.content.test.*" %>
+<%@ page import="com.freshdirect.fdstore.content.test.*" %>
 
 <%@ taglib uri='freshdirect' prefix='fd' %>
 

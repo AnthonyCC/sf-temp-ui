@@ -1,9 +1,9 @@
 package com.freshdirect.framework.hibernate;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.hivemind.Resource;
 import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
@@ -47,8 +47,8 @@ public abstract class HibernateDaoFactory {
 		SessionFactory sf;
 		
 		if (!sessionFactoryMap.containsKey(sessionFactoryUrl)) {
-            URL resource = ResourceUtil.getResource(sessionFactoryUrl);
-            Configuration cfg = new Configuration().configure(resource);
+			Resource		   resource = ResourceUtil.getResource(sessionFactoryUrl);		
+			Configuration  cfg      = new Configuration().configure(resource.getResourceURL());
 			
 			sf = cfg.buildSessionFactory();
 			sessionFactoryMap.put(sessionFactoryUrl, sf);

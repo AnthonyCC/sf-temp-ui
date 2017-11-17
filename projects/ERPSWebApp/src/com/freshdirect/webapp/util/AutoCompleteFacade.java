@@ -12,10 +12,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.StoreServiceLocator;
 import com.freshdirect.webapp.cos.util.CosFeatureUtil;
 import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.search.unbxd.UnbxdIntegrationService;
@@ -64,14 +64,14 @@ public class AutoCompleteFacade implements Serializable {
             } catch (IOException e) {
                 if (FDStoreProperties.getUnbxdFallbackOnError()) {
                     LOGGER.error("Error while calling UNBXD autocomplete, fallback to internal autocomplete");
-                    results = StoreServiceLocator.contentSearch().getAutocompletions(prefix);
+                    results = ContentSearch.getInstance().getAutocompletions(prefix);
                 } else {
                     LOGGER.error("Error while calling UNBXD autocomplete, fallback on error is false");
                     throw new UnbxdServiceUnavailableException("UNBXD autosuggest service is unavailable");
                 }
             }
         } else {
-            results = StoreServiceLocator.contentSearch().getAutocompletions(prefix);
+            results = ContentSearch.getInstance().getAutocompletions(prefix);
         }
         return results;
     }

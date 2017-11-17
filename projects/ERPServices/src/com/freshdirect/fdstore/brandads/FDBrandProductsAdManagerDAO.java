@@ -22,7 +22,7 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.core.SequenceGenerator;
 //import com.freshdirect.fdstore.content.ContentFactory;
-//import com.freshdirect.storeapi.content.ProductModel;
+//import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 

@@ -16,12 +16,15 @@ import java.util.TreeSet;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.cms.core.domain.ContentKey;
-import com.freshdirect.cms.core.domain.ContentKeyFactory;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -37,51 +40,47 @@ import com.freshdirect.smartstore.external.RecommendationItem;
 import com.freshdirect.smartstore.impl.SessionCache;
 import com.freshdirect.smartstore.scoring.DataAccess;
 import com.freshdirect.smartstore.scoring.HelperFunctions;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.ProductContainer;
-import com.freshdirect.storeapi.fdstore.FDContentTypes;
 
 /**
- *
+ * 
  * This class is a Singleton.
- *
+ * 
  * It implements a caching strategy for personalized scores while caches all global scores at the product level.
  * Some factors come from CMS, these are looked up.
- *
+ * 
  * The following is needed to extend the factors.
  * <ul>
  * 	<li>In case of a database factor, add a new instance of {@link FactorRangeConverter}</li>
- * 	<li>In case of a CMS factor, add a new instance of {@link StoreLookup}</li>
+ * 	<li>In case of a CMS factor, add a new instance of {@link StoreLookup}</li> 
  * </ul>
- *
+ * 
  * These go into the {@link #ScoreProvider() constructor}.
- *
- * Only those factors will be calculated which are necessarily
+ * 
+ * Only those factors will be calculated which are necessarily 
  * needed (i.e. {@link #acquireFactors(Collection) explicitly acquired}).
- *
- * All global (acquired) factors are cached. The personalized (acquired) factors are
+ * 
+ * All global (acquired) factors are cached. The personalized (acquired) factors are 
  * stored in an {@link SessionCache LRU cache}.
- *
+ * 
  * @author istvan
  *
  */
 public class ScoreProvider implements DataAccess {
-
+	
     public static final String GLOBAL_POPULARITY = "Popularity";
 
     public static final String USER_FREQUENCY = "Frequency";
-
+    
     public static final String RECENCY_NORMALIZED = "Recency_Normalized";
-
+    
     public static final String RECENCY_DISCRETIZED = "Recency_Discretized";
-
+    
     public static final String ORIGINAL_SCORES_GLOBAL = "OriginalScores_Global";
 
     public static final String ORIGINAL_SCORES_PERSONALIZED = "OriginalScores_Personalized";
 
     private static final String[] DATASOURCE_NAMES = new String[] { "FeaturedItems", "CandidateLists", "PurchaseHistory", "CustomerRatedItems" };
-
+    
     private static final String EXTERNAL_PERSONALIZED_PREFIX = "Personalized_";
 
     public static final String[] ZONE_DEPENDENT_FACTORS_ARRAY = new String[] {
@@ -89,9 +88,9 @@ public class ScoreProvider implements DataAccess {
 			"TieredDealsPercentage", "TieredDealsPercentage_Discretized",
 			"HighestDealsPercentage", "HighestDealsPercentage_Discretized"
 		};
-
+    
     public static final Set<String> ZONE_DEPENDENT_FACTORS2;
-
+    
     static {
     	ZONE_DEPENDENT_FACTORS2 = new HashSet<String>();
     	for (String factor : ZONE_DEPENDENT_FACTORS_ARRAY)
@@ -100,60 +99,60 @@ public class ScoreProvider implements DataAccess {
 
     // LOGGER
 	private static Category LOGGER = LoggerFactory.getInstance(ScoreProvider.class);
-
+	
 	/**
 	 * Database factors.
 	 */
 	protected static abstract class DatabaseScoreRangeProvider implements ScoreRangeProvider {
-
+	
 		private Map<String,Number> factorIndexes = new HashMap<String,Number>();
 		private List<String> factors;
-
+		
 		// products in a particular order
 		private List<String> products = null;
-
-		// double arrays in the same order as factorIndexes.values()
+		
+		// double arrays in the same order as factorIndexes.values() 
 		// thus factors
 		// values in the same order as products
 		// List<double[]>
 		private List<double[]> values = null;
-
-
+		
+		
 		@Override
 		public void purge() {
 			products = null;
 			values = null;
 		}
-
+		
 		protected List<String> getProductNames() {
 			return products;
 		}
-
+		
 		protected boolean inCache() {
 			return products != null && values != null;
 		}
-
+	 
 		/**
-		 *
+		 * 
 		 * @param dbProductScores assumed to contain only the scores in good order Map<ProductId:String,Scores:double[]>
  		 */
 		protected void reCache(Map<String,double[]> dbProductScores) {
-
+			
 			List<String> newProducts = new ArrayList<String>(dbProductScores.size());
 			List<double[]> newValues = new ArrayList<double[]>(factorIndexes.size());
 
 			for(int i = 0; i<  factorIndexes.size(); ++i) {
 				newValues.add(new double[dbProductScores.size()]);
 			}
-
-
+			
+				
 			int r = 0;
 			for(Iterator<Map.Entry<String,double[]>> i = dbProductScores.entrySet().iterator(); i.hasNext(); ++r) {
 				Map.Entry<String,double[]> entry = i.next();
 				newProducts.add(entry.getKey());
 				int c = 0;
 				for(Iterator<String> j = factors.iterator(); j.hasNext(); ++c) {
-
+						
 					String factor = j.next().toString();
 					int idx = factorIndexes.get(factor).intValue();
 					double[] scores = entry.getValue();
@@ -161,13 +160,13 @@ public class ScoreProvider implements DataAccess {
 					range[r] = scores[idx];
 				}
 			}
-
+	
 			synchronized (this) {
 				products = newProducts;
 				values = newValues;
 			}
 		}
-
+		
 		protected DatabaseScoreRangeProvider(List<String> factors) {
 			this.factors = factors;
 			int idx = 0;
@@ -175,20 +174,20 @@ public class ScoreProvider implements DataAccess {
 				factorIndexes.put(i.next(), new Integer(idx));
 			}
 		}
-
+		
 		protected List<String> getFactorNames() {
 			return factors;
 		}
-
+		
 		protected int getFactorIndex(String factor) {
 			return factorIndexes.get(factor).intValue();
 		}
-
+		
 		protected double[] getCachedRange(String factor) {
 			return values.get(factorIndexes.get(factor).intValue());
 		}
 	}
-
+	
 	/**
 	 * Global database factors.
 	 */
@@ -200,11 +199,11 @@ public class ScoreProvider implements DataAccess {
 				reCache(DatabaseScoreFactorProvider.getInstance().getGlobalFactors(getFactorNames()));
 			}
 		}
-
+					
 		protected GlobalScoreRangeProvider(List<String> factors) {
 			super(factors);
 		}
-
+		
 
 		@Override
 		public List<String> products(String userId) {
@@ -218,18 +217,18 @@ public class ScoreProvider implements DataAccess {
 			return getCachedRange(factor);
 		}
 	}
-
+	
 	/**
 	 * Personalized database factors.
 	 */
 	protected static class PersonalizedScoreRangeProvider extends DatabaseScoreRangeProvider {
-
+		
 		private String userId = null;
-
+		
 		protected PersonalizedScoreRangeProvider(List<String> factors) {
 			super(factors);
 		}
-
+		
 		@Override
 		public void cache(String userId) {
 			if (!inCache() || this.userId == null || !this.userId.equals(userId)) {
@@ -239,7 +238,7 @@ public class ScoreProvider implements DataAccess {
 				}
 			}
 		}
-
+		
 		@Override
 		public void purge() {
 			userId = null;
@@ -251,7 +250,7 @@ public class ScoreProvider implements DataAccess {
 			cache(userId);
 			return getCachedRange(factor);
 		}
-
+		
 		public ScoreRangeProvider replicate() {
 			return new PersonalizedScoreRangeProvider(getFactorNames());
 		}
@@ -262,32 +261,31 @@ public class ScoreProvider implements DataAccess {
 			return getProductNames();
 		}
 	}
-
+	
 	/**
 	 * Information for factors;
 	 */
 	protected class FactorInfo {
 		private Comparator<String> lowerCaseComparator = new Comparator<String>() {
 
-			@Override
-            public int compare(String s1, String s2) {
+			public int compare(String s1, String s2) {
 				return s1.toString().compareToIgnoreCase(s2.toString());
 			}
 		};
-
+		
 		private SortedSet<String> globalDBFactors = new TreeSet<String>(lowerCaseComparator);
 		private SortedSet<String> personalizedDBFactors = new TreeSet<String>(lowerCaseComparator);
-
-		private FactorInfo() {
+		
+		private FactorInfo() {	
 			reloadNames();
 		}
-
+		
 		public synchronized void reloadNames() {
 			globalDBFactors.clear();
 			personalizedDBFactors.clear();
 			DatabaseScoreFactorProvider dbProvider = DatabaseScoreFactorProvider.getInstance();
 			globalDBFactors.addAll(dbProvider.getGlobalFactorNames());
-			personalizedDBFactors.addAll(dbProvider.getPersonalizedFactorNames());
+			personalizedDBFactors.addAll(dbProvider.getPersonalizedFactorNames());			
 		}
 
 		public boolean isGlobal(String name) {
@@ -306,11 +304,11 @@ public class ScoreProvider implements DataAccess {
 			return storeLookups.containsKey(name);
 		}
 	}
-
-
+	
+	
 	private FactorInfo factorInfo = null;
 	protected ScoreRangeProvider personalizedScoreRangeProvider;
-
+	
 	private static ScoreProvider instance = null;
 
        // Map<Factor:String,IndexInDoubleArray:Integer> score index
@@ -318,19 +316,19 @@ public class ScoreProvider implements DataAccess {
         // in the double array
 	protected Map<String, Integer> globalIndexes = new TreeMap<String, Integer>();
     protected Map<String, Integer> personalizedIndexes = new TreeMap<String, Integer>();
-
-
+        
+        
     // Map<ContentKey, double[]>
     protected Map<ContentKey, double[]> globalScores = new HashMap<ContentKey, double[]>();
-
+    
     // SessionCache<UserId:String, SessionCache.TimedEntry<Map<ContentKey,double[]>>>
-    private SessionCache<String, SessionCache.TimedEntry<Map<ContentKey,double[]>>> personalizedScores
+    private SessionCache<String, SessionCache.TimedEntry<Map<ContentKey,double[]>>> personalizedScores 
         = new SessionCache<String, SessionCache.TimedEntry<Map<ContentKey,double[]>>>(FDStoreProperties.getSmartstorePersonalizedScoresCacheEntries(),0.75f);
-
+        
 
 	/**
 	 * Get instance.
-	 *
+	 * 
 	 * @return the only thread local instance
 	 */
 	public static synchronized ScoreProvider getInstance() {
@@ -339,7 +337,7 @@ public class ScoreProvider implements DataAccess {
 		}
 		return instance;
 	}
-
+	
 	/**
 	 * Just for testing purposes, do not use!
 	 * @param ins
@@ -347,11 +345,11 @@ public class ScoreProvider implements DataAccess {
 	public static synchronized void setInstance(ScoreProvider ins) {
 	    instance = ins;
 	}
-
-
+	
+	
 	/**
 	 * Get available factors.
-	 *
+	 * 
 	 * @return Set<String> name of the factors which have associated handlers
 	 */
 	public Set<String> getAvailableFactors() {
@@ -360,8 +358,8 @@ public class ScoreProvider implements DataAccess {
 		result.addAll(rangeConverters.keySet());
 		return result;
 	}
-
-
+	
+	
 	/**
 	 * Get currently loaded factors.
 	 * @return Set<String> name of the factors that are actually loaded
@@ -373,10 +371,10 @@ public class ScoreProvider implements DataAccess {
 		result.addAll(globalIndexes.keySet());
 		return result;
 	}
-
+	
 	/**
 	 * Get currently loaded, non personalized factors. This is used in the scripting framework, to decide which generator can be cached.
-	 *
+	 * 
 	 * @return
 	 */
 	public Set<String> getNonPersonalizedFactors() {
@@ -392,11 +390,11 @@ public class ScoreProvider implements DataAccess {
             }
             return result;
 	}
-
+	
 	protected Map<ContentKey,double[]> storePersonalizedScores(String userId) {
 		SessionCache.TimedEntry<Map<ContentKey,double[]>> entry = personalizedScores.get(userId);
 		if (entry == null || entry.expired()) {
-
+			
 			try {
 				entry = new SessionCache.TimedEntry<Map<ContentKey,double[]>>(
 						loadPersonalizedDBScores(userId),
@@ -411,11 +409,11 @@ public class ScoreProvider implements DataAccess {
 		}
 		return entry.getPayload();
 	}
-
+	
 	protected void purgePersonalizedScores(String userId) {
 		personalizedScores.remove(userId);
 	}
-
+	
 	protected double getPersonalizedScore(String userId, ContentKey key, int idx) {
 		if (userId == null) {
 			return 0;
@@ -424,36 +422,36 @@ public class ScoreProvider implements DataAccess {
 		double[] scores = userScores.get(key);
 		return scores == null ? 0 : scores[idx];
 	}
-
+	
 	protected double getGlobalScore(ContentKey key, int idx) {
 		double[] scores = globalScores.get(key);
 		return scores == null ? 0 : scores[idx];
 	}
-
+	
 	/**
 	 * Get the scores for the requested content key.
-	 *
+	 * 
 	 * @param userId customer id, may be null for non-personalized factors
-	 * @param contentKey
+	 * @param contentKey 
 	 * @param variables requested variables
 	 * @return scores in the order of variables
 	 */
 	public double[] getVariables(String userId, PricingContext pricingContext, ContentKey contentKey, String[] variables) {
 		return getVariables(userId, pricingContext, ContentFactory.getInstance().getContentNodeByKey(contentKey),variables);
 	}
-
+	
 	/**
 	 * Get the scores for the requested content node.
-	 *
+	 * 
 	 * @param userId customerId, may be null for non-personalized factors
-	 * @param contentNode
+	 * @param contentNode 
 	 * @param variables requested variables
-	 * @return scores in the order of variables
+	 * @return scores in the order of variables  
 	 */
 	@Override
 	public double[] getVariables(String userId, PricingContext pricingContext, ContentNodeModel contentNode, String[] variables) {
 		double[] result = new double[variables.length];
-
+		
 		for(int i = 0; i < variables.length; ++i) {
 			String var = variables[i];
 			if (contentNode == null) {
@@ -485,12 +483,12 @@ public class ScoreProvider implements DataAccess {
 				result[i] = 0;
 			}
 		}
-		return result;
+		return result;	
 	}
-
+	
 	/**
 	 * Test if factor is global.
-	 *
+	 * 
 	 * @param factor factor name
 	 * @return whether factor is global
 	 */
@@ -502,11 +500,11 @@ public class ScoreProvider implements DataAccess {
 			return false;
 		}
 	}
-
+	
 	public boolean isStoreLookup(String factor) {
 		return storeLookups.containsKey(factor);
 	}
-
+	
 	/**
 	 * Test if factor is personalized.
 	 * @param factor factor name.
@@ -522,7 +520,7 @@ public class ScoreProvider implements DataAccess {
 
 	/**
 	 * Get content associated with data source.
-	 *
+	 * 
 	 * @param name of data source
 	 * @param input session input
 	 * @return List<{@link ContentNodeModel>}
@@ -574,10 +572,10 @@ public class ScoreProvider implements DataAccess {
 	    }
 	    return Collections.emptyList();
 	}
-
+	
         /**
          * Get user specific product scores.
-         *
+         * 
          * The higher the score, the more the user likes.
          * @return Map<{@link ContentKey},{@link Float}> productId->Score, never null
          */
@@ -588,7 +586,7 @@ public class ScoreProvider implements DataAccess {
         	}
 
             Map<ContentKey,double[]> scores = storePersonalizedScores(erpCustomerId);
-
+            
             if (scores != null && !scores.isEmpty()) {
                 Number position = (personalizedIndexes.get(ORIGINAL_SCORES_PERSONALIZED));
                 if (position != null) {
@@ -607,7 +605,7 @@ public class ScoreProvider implements DataAccess {
 
         /**
          * return true, if the user has score for that given content key.
-         *
+         * 
          * @param erpCustomerId
          * @param key
          * @return
@@ -622,7 +620,7 @@ public class ScoreProvider implements DataAccess {
 
         /**
          * Return the original personalized score for a customer.
-         *
+         * 
          * @param erpCustomerId
          * @param key
          * @return
@@ -632,58 +630,58 @@ public class ScoreProvider implements DataAccess {
         		return null;
         	}
             Map<ContentKey,double[]> scores = storePersonalizedScores(erpCustomerId);
-
+            
             if (scores != null && !scores.isEmpty()) {
                 Number position = (personalizedIndexes.get(ORIGINAL_SCORES_PERSONALIZED));
                 if (position != null) {
                     int value = position.intValue();
                     double[] values = scores.get(key);
                     if(values!=null){
-                    	return new Float(values[value]);
+                    	return new Float(values[value]);                    	
                     }
                 }
             }
             return null;
         }
-
+        
 	public String[] getDatasourceNames() {
 	    return DATASOURCE_NAMES;
 	}
-
-
+	
+	
 	/**
 	 * Acquire all available factors.
-	 *
+	 * 
 	 * @return actually acquired factors
 	 */
 	public List<String> acquireAllFactors() {
 		return acquireFactors(getAvailableFactors());
 	}
-
+	
 	/**
 	 * Acquire the given factors.
-	 *
+	 * 
 	 * All of the following will happen:
 	 * <ol>
 	 * 	<li>The database columns will be read</li>
 	 * 	<li>All global factors will be (re)cached</li>
 	 * 	<li>Available personalized factors will be validated</li>
 	 * </ol>
-	 *
+	 *   
 	 * @param requestedFactors Collection<{@link String}>
 	 * @return the names of actually acquired factors
 	 */
 	public synchronized List<String> acquireFactors(Collection<String> names) {
-
+		
 		Set<String> requestedFactors = new HashSet<String>(names);
 	    requestedFactors.add(ORIGINAL_SCORES_GLOBAL);
 	    requestedFactors.add(ORIGINAL_SCORES_PERSONALIZED);
 	    requestedFactors.add("Newness");
 	    requestedFactors.add("QualityRating_Discretized1");
-
+	    	    
 	    // extra factors can be parameterized
 	    requestedFactors.addAll(FDStoreProperties.getSmartstorePreloadFactors());
-
+	    
 	    Set<String> newFactors = new HashSet<String>(requestedFactors);
 	    Set<String> loadedFactors = getLoadedFactors();
 		LOGGER.debug("loaded factors " + loadedFactors);
@@ -694,19 +692,19 @@ public class ScoreProvider implements DataAccess {
 	    	return new ArrayList<String>(requestedFactors);
 	    }
 	    LOGGER.info("found new factors " + newFactors + ", reloading factors");
-
+	    
 	    factorInfo.reloadNames();
-
+	
 		Set<String> personalizedFactors = new HashSet<String>();
 
 		Set<String> globalDBFactors = new HashSet<String>();
-
+		
 		Set<String> rawPersonalizedFactors = new HashSet<String>();
 		Set<String> rawGlobalFactors = new HashSet<String>();
-
-
+		
+		
 		List<String> result = new ArrayList<String>();
-
+		
 		loadedStoreLookups.clear();
 
 		NEXT_FACTOR: for(Iterator<String> i = requestedFactors.iterator(); i.hasNext();) {
@@ -755,26 +753,26 @@ public class ScoreProvider implements DataAccess {
 				LOGGER.warn("Unknown factor");
 			}
 		}
-
+		
 		GlobalScoreRangeProvider globalScoreRangeProvider = new GlobalScoreRangeProvider(new ArrayList<String>(rawGlobalFactors));
 		personalizedScoreRangeProvider = new PersonalizedScoreRangeProvider(new ArrayList<String>(rawPersonalizedFactors));
-
+		
 		personalizedIndexes.clear();
 		for(Iterator<String> i = personalizedFactors.iterator(); i.hasNext();) {
 			String factor = i.next();
 			personalizedIndexes.put(factor,new Integer(personalizedIndexes.size()));
 		}
-
+		
 		globalIndexes.clear();
 		for(Iterator<String> i = globalDBFactors.iterator(); i.hasNext();) {
 			String factor = i.next();
 			globalIndexes.put(factor, new Integer(globalIndexes.size()));
 		}
-
+		
 		personalizedScores.clear();
 		globalScores = null;
 		globalScores = new HashMap<ContentKey, double[]>();
-
+		
 		try {
 			globalScores = loadGlobalDBScores(globalScoreRangeProvider);
 			LOGGER.info("Caching global scores");
@@ -782,54 +780,54 @@ public class ScoreProvider implements DataAccess {
 			LOGGER.debug("Could not cache global scores");
 			e.printStackTrace();
 			throw new FDRuntimeException(e);
-		}
-
+		}	
+		
 		return result;
 	}
-
+	
 	private Map<ContentKey, double[]> loadGlobalDBScores(GlobalScoreRangeProvider globalScoreRangeProvider) throws Exception {
-
-
+		
+		
 		List<String> products = globalScoreRangeProvider.products(null);
-
+		
 		Map<ContentKey, double[]> result = new HashMap<ContentKey, double[]>(5*products.size()/3+1,0.75f);
-
+		
 		for(Iterator<String> i = products.iterator(); i.hasNext();) {
-			result.put(ContentKeyFactory.get(FDContentTypes.PRODUCT,i.next().toString()), new double[globalIndexes.size()]);
+			result.put(ContentKey.getContentKey(FDContentTypes.PRODUCT,i.next().toString()), new double[globalIndexes.size()]);
 		}
-
+		
 		for (Iterator<Map.Entry<String, Integer>> i = globalIndexes.entrySet().iterator(); i.hasNext();) {
 			// Map.Entry<String,Number>
 			Map.Entry<String, Integer> entry = i.next();
 			FactorRangeConverter converter = rangeConverters.get(entry.getKey());
 			double[] values = converter.map(null,globalScoreRangeProvider);
-
+			
 			storeScores(products, result, entry, values);
 		}
 		globalScoreRangeProvider.purge();
 		return result;
 	}
-
-
+	
+	
 	private Map<ContentKey,double[]> loadPersonalizedDBScores(String erpCustomerId) throws Exception {
-
+		
 		if(personalizedScoreRangeProvider != null) {
 			ScoreRangeProvider personalScores = ((PersonalizedScoreRangeProvider)personalizedScoreRangeProvider).replicate();
-
+			
 			List<String> products = personalScores.products(erpCustomerId);
-
+			
 			Map<ContentKey,double[]> result = new HashMap<ContentKey,double[]>(5*products.size()/3+1,0.75f);
-
+			
 			for(Iterator<String> i = products.iterator(); i.hasNext();) {
-				result.put(ContentKeyFactory.get(FDContentTypes.PRODUCT,i.next().toString()), new double[personalizedIndexes.size()]);
+				result.put(ContentKey.getContentKey(FDContentTypes.PRODUCT,i.next().toString()), new double[personalizedIndexes.size()]);
 			}
-
+			
 			for (Iterator<Map.Entry<String, Integer>> i = personalizedIndexes.entrySet().iterator(); i.hasNext();) {
 				// Map.Entry<String,Number>
 				Map.Entry<String, Integer> entry = i.next();
 				FactorRangeConverter converter = rangeConverters.get(entry.getKey().toString());
 				double[] values = converter.map(erpCustomerId,personalScores);
-
+				
 				storeScores(products, result, entry, values);
 			}
 			return result;
@@ -843,78 +841,76 @@ public class ScoreProvider implements DataAccess {
         		"Product list length and range values size differ: " + values.length + " and " + products.size());
         }
         for(int j=0; j< values.length; ++j) {
-        	double[] productScores = result.get(ContentKeyFactory.get(FDContentTypes.PRODUCT,products.get(j).toString()));
+        	double[] productScores = result.get(ContentKey.getContentKey(FDContentTypes.PRODUCT,products.get(j).toString()));
         	productScores[((Number)entry.getValue()).intValue()] = values[j];
         }
     }
-
+	
 	/**
 	 * Get all scores for the given users.
-	 *
+	 * 
 	 * @param userIds customer id, if null, all available global scores are returned
 	 * @return scores in a table
 	 * @throws Exception
 	 */
 	public ScoresTable getAllScores(List<String> userIds, ZoneInfo zoneInfo) throws Exception {
-
-
+		
+		
 		if (userIds != null) { // personalized scores
 			final String[] factors = new String[personalizedIndexes.size() + globalIndexes.size() + storeLookups.size()];
-
+			
 			int j = 0;
 			for(Iterator<String> i = personalizedIndexes.keySet().iterator(); i.hasNext();++j) {
 				String factor = i.next().toString();
 				factors[j] = factor;
 			}
-
+			
 			for(Iterator<String> i = globalIndexes.keySet().iterator(); i.hasNext(); ++j) {
 				String factor = i.next().toString();
 				factors[j] = factor;
-
+				
 			}
-
+			
 			for(Iterator<String> i = storeLookups.keySet().iterator(); i.hasNext();++j) {
 				String factor = i.next().toString();
 				factors[j] = factor;
 			}
-
+			
 			@SuppressWarnings("rawtypes")
 			final List<List<Comparable>> values = new ArrayList<List<Comparable>>();
-
+			
 			for (String userId : userIds) {
 				FDUserI fdUser = FDCustomerManager.getFDUser(new FDIdentity(userId));
 				PricingContext pricingCtx = fdUser.getUserContext().getPricingContext();
 				Set<String> productIds = DatabaseScoreFactorProvider.getInstance().getPersonalizedProducts(userId);
-
+				
 				for (String productId : productIds) {
 					List<Comparable> row = new ArrayList<Comparable>(factors.length + 2);
 					row.add(userId);
 					row.add(productId);
-
-					double[] scores = getVariables(userId, pricingCtx, ContentKeyFactory.get(FDContentTypes.PRODUCT, productId), factors);
+					
+					double[] scores = getVariables(userId, pricingCtx, ContentKey.getContentKey(FDContentTypes.PRODUCT, productId), factors);
 					for(int s = 0; s < scores.length; ++s) {
 						row.add(new Double(scores[s]));
 					}
 					values.add(row);
 				}
 			}
-
-			return new ScoresTable() {
-
+			
+			return new ScoresTable() {				
+				
 				private static final long serialVersionUID = 4253324339031347406L;
 
-				@Override
-                protected void init() {
+				protected void init() {
 					addColumn("CUSTOMER_ID", String.class);
 					addColumn("PRODUCT_ID", ContentKey.class);
-
+					
 					for(int i = 0; i < factors.length; ++i) {
 						addColumn(factors[i], Number.class);
 					}
 				}
 
-				@Override
-                @SuppressWarnings("rawtypes")
+				@SuppressWarnings("rawtypes")
 				public Iterator<List<Comparable>> getRows() {
 					return values.iterator();
 				}
@@ -922,70 +918,68 @@ public class ScoreProvider implements DataAccess {
 		} else {
 			final String[] factors = new String[globalIndexes.size() + storeLookups.size()];
 			PricingContext pricingCtx = zoneInfo != null  ? new PricingContext(zoneInfo) : PricingContext.DEFAULT;
-
+			
 			int j = 0;
-
+			
 			for(Iterator<String> i = globalIndexes.keySet().iterator(); i.hasNext(); ++j) {
 				String factor = i.next().toString();
 				factors[j] = factor;
-
+				
 			}
-
+			
 			for(Iterator<String> i = storeLookups.keySet().iterator(); i.hasNext();++j) {
 				String factor = i.next().toString();
 				factors[j] = factor;
 			}
-
+			
 			@SuppressWarnings("rawtypes")
 			final List<List<Comparable>> values = new ArrayList<List<Comparable>>();
-
+			
 			Set<String> productIds = DatabaseScoreFactorProvider.getInstance().getGlobalProducts();
-
+			
 			for (String productId : productIds) {
 				@SuppressWarnings("rawtypes")
 				List<Comparable> row = new ArrayList<Comparable>(factors.length + 1);
 				row.add(productId);
-
-				double[] scores = getVariables(null, pricingCtx, ContentKeyFactory.get(FDContentTypes.PRODUCT, productId), factors);
+				
+				double[] scores = getVariables(null, pricingCtx, ContentKey.getContentKey(FDContentTypes.PRODUCT, productId), factors);
 				for(int s = 0; s < scores.length; ++s) {
 					row.add(new Double(scores[s]));
 				}
 				values.add(row);
 			}
-
+			
 			return new ScoresTable() {
 
 				private static final long serialVersionUID = -3700648053073552014L;
-
-				@Override
-                protected void init() {
+				
+				protected void init() {
 					addColumn("PRODUCT_ID", ContentKey.class);
-
+					
 					for(int i = 0; i < factors.length; ++i) {
 						addColumn(factors[i], Number.class);
 					}
 				}
 
-				@Override
-                @SuppressWarnings("rawtypes")
+				@SuppressWarnings("rawtypes")
 				public Iterator<List<Comparable>> getRows() {
 					return values.iterator();
 				}
-
+				
 			};
 		}
-
+		
 	}
-
-
+	
+	
 	// Map<Factor:String,FactorRangeConverter>
 	private Map<String, FactorRangeConverter> rangeConverters = new HashMap<String, FactorRangeConverter>();
-
+	
 	// Map<Factor:String,StoreLookup>
 	private Map<String, StoreLookup> storeLookups = new HashMap<String, StoreLookup> ();
-
+	
 	private Set<String> loadedStoreLookups = new HashSet<String>();
-
+	
 	/**
 	 * Get all cached users.
 	 * @return Set<CustomerId:String>
@@ -993,75 +987,75 @@ public class ScoreProvider implements DataAccess {
 	public Set<String> getCachedCustomers() {
 		return personalizedScores.keySet();
 	}
-
+	
 	protected ScoreProvider(boolean init) {
     	if (init) {
 			LOGGER.info("Personalized cache entries: " + FDStoreProperties.getSmartstorePersonalizedScoresCacheEntries());
 			LOGGER.info("Personalized cache timeout (seconds): " + FDStoreProperties.getSmartstorePersonalizedScoresCacheTimeout());
-
+			
 			factorInfo = new FactorInfo();
-
+			
 			reloadFactorHandlers();
 	    }
 	}
-
+	
 	protected ScoreProvider() {
 	    this(true);
 	}
-
-
-
+	
+	
+	
 	private void reloadFactorHandlers() {
-
+		
 		globalScores.clear();
 		personalizedScores.clear();
-
+		
 		// Store lookups
 		storeLookups.put(
-			"DealsPercentage",
+			"DealsPercentage", 
 			FactorUtil.getDealsPercentageLookup()
 		);
-
+		
 		storeLookups.put(
 			"DealsPercentage_Discretized",
 			FactorUtil.getDealsPercentageDiscretized()
 		);
 
 		storeLookups.put(
-			"TieredDealsPercentage",
+			"TieredDealsPercentage", 
 			FactorUtil.getTieredDealsPercentageLookup()
 		);
-
+		
 		storeLookups.put(
 			"TieredDealsPercentage_Discretized",
 			FactorUtil.getTieredDealsPercentageDiscretized()
 		);
-
+		
 		storeLookups.put(
-			"HighestDealsPercentage",
+			"HighestDealsPercentage", 
 			FactorUtil.getHighestDealsPercentageLookup()
 		);
-
+			
 		storeLookups.put(
 			"HighestDealsPercentage_Discretized",
 			FactorUtil.getHighestDealsPercentageDiscretized()
 		);
-
+			
 		storeLookups.put(
 			"ExpertWeight",
 			FactorUtil.getExpertWeightLookup()
 		);
-
+		
 		storeLookups.put(
 			"ExpertWeight_Normalized",
 			FactorUtil.getNormalizedExpertWeightLookup()
 		);
-
+		
 		storeLookups.put(
 			"CustomerRating",
 			FactorUtil.getCustomerRatingLookup()
 		);
-
+		
 		storeLookups.put(
 			"CustomerRating_Normalized",
 			FactorUtil.getNormalizedCustomerRatingLookup()
@@ -1071,17 +1065,17 @@ public class ScoreProvider implements DataAccess {
 			"QualityRating",
 			FactorUtil.getProduceRatingLookup()
 		);
-
+		
 		storeLookups.put(
 			"QualityRating_Normalized",
 			FactorUtil.getNormalizedProduceRatingLookup()
 		);
-
+		
 		storeLookups.put(
 			"QualityRating_Discretized1",
 			FactorUtil.getDescretizedProduceRatingLookup1()
 		);
-
+		
 		storeLookups.put(
 			"QualityRating_Discretized2",
 			FactorUtil.getDescretizedProduceRatingLookup2()
@@ -1097,41 +1091,41 @@ public class ScoreProvider implements DataAccess {
 			FactorUtil.getBackInStockLookup()
 		);
 		// Database scores
-
-
-		// FREQUENCY
+		
+		
+		// FREQUENCY 
 		rangeConverters.put(
 		        USER_FREQUENCY,
 			FactorRangeConverter.getRawPersonalizedScores(FactorUtil.PERSONALIZED_FREQUENCY_COLUMN)
 		);
-
+		
 		rangeConverters.put(
 			"Frequency_Normalized",
 			FactorUtil.getMaxNormalizedPersonalConverter(FactorUtil.PERSONALIZED_FREQUENCY_COLUMN)
 		);
-
+			
 		rangeConverters.put(
 			"Frequency_Discretized",
 			FactorUtil.getLogDiscretizedPersonalConverter(FactorUtil.PERSONALIZED_FREQUENCY_COLUMN, 2)
 		);
-
-
+		
+		
 		// GLOBAL POPULARITY
 		rangeConverters.put(
 		        GLOBAL_POPULARITY,
 			FactorRangeConverter.getRawGlobalScores(FactorUtil.GLOBAL_POPULARITY_COLUMN)
 		);
-
+			
 		rangeConverters.put(
 			"Popularity_Normalized",
 			FactorUtil.getMaxNormalizedGlobalConvereter(FactorUtil.GLOBAL_POPULARITY_COLUMN)
 		);
-
+		
 		rangeConverters.put(
 			"Popularity_NormalizedDepartment",
 			FactorUtil.getDepartmentMaxNormalizedGlobalConverter(FactorUtil.GLOBAL_POPULARITY_COLUMN)
 		);
-
+		
 		rangeConverters.put(
 			"Popularity_Discretized",
 			FactorUtil.getLogDiscretizedGlobalConverter(FactorUtil.GLOBAL_POPULARITY_COLUMN, 2)
@@ -1142,114 +1136,114 @@ public class ScoreProvider implements DataAccess {
 		        "Popularity8W",
 			FactorRangeConverter.getRawGlobalScores(FactorUtil.GLOBAL_POPULARITY_8W_COLUMN)
 		);
-
+			
 		rangeConverters.put(
 			"Popularity8W_Normalized",
 			FactorUtil.getMaxNormalizedGlobalConvereter(FactorUtil.GLOBAL_POPULARITY_8W_COLUMN)
 		);
-
+		
 		rangeConverters.put(
 			"Popularity8W_NormalizedDepartment",
 			FactorUtil.getDepartmentMaxNormalizedGlobalConverter(FactorUtil.GLOBAL_POPULARITY_8W_COLUMN)
 		);
-
+		
 		rangeConverters.put(
 			"Popularity8W_Discretized",
 			FactorUtil.getLogDiscretizedGlobalConverter(FactorUtil.GLOBAL_POPULARITY_8W_COLUMN, 2)
 		);
-
-
+		
+		
 		// QUANTITY
 		rangeConverters.put(
 			"Quantity",
 			FactorRangeConverter.getRawPersonalizedScores(FactorUtil.PERSONALIZED_QUANTITY_COLUMN)
 		);
-
+		
 		rangeConverters.put(
 			"Quantity_Normalized",
 			FactorUtil.getMaxNormalizedPersonalConverter(FactorUtil.PERSONALIZED_QUANTITY_COLUMN)
 		);
-
-
+		
+		
 		rangeConverters.put(
 			"Quantity_Discretized",
 			FactorUtil.getLogDiscretizedPersonalConverter(FactorUtil.PERSONALIZED_QUANTITY_COLUMN, 2)
 		);
-
+		
 		// AMOUNT SPENT
 		rangeConverters.put(
 			"AmountSpent",
 			FactorRangeConverter.getRawPersonalizedScores(FactorUtil.PERSONALIZED_AMOUNT_COLUMN)
 		);
-
+		
 		rangeConverters.put(
 				"AmountSpent_Normalized",
 				FactorUtil.getMaxNormalizedPersonalConverter(FactorUtil.PERSONALIZED_AMOUNT_COLUMN)
 			);
-
+		
 		rangeConverters.put(
 			"AmountSpent_Discretized",
 			FactorUtil.getLogDiscretizedPersonalConverter(FactorUtil.PERSONALIZED_AMOUNT_COLUMN, 2)
 		);
-
+		
 		// RECENCY
 		rangeConverters.put(
 			"Recency",
 			FactorRangeConverter.getRawPersonalizedScores(FactorUtil.PERSONALIZED_RECENT_FREQUENCY_COLUMN)
 		);
-
+		
 		rangeConverters.put(
 			"Recency_Normalized",
 			FactorUtil.getMaxNormalizedPersonalConverter(FactorUtil.PERSONALIZED_RECENT_FREQUENCY_COLUMN)
 		);
-
+		
 		rangeConverters.put(
 			"Recency_Discretized",
 			FactorUtil.getLogDiscretizedPersonalConverter(FactorUtil.PERSONALIZED_RECENT_FREQUENCY_COLUMN, 3)
 		);
-
-
-		// REORDER RATE
+			
+		
+		// REORDER RATE	
 		rangeConverters.put(
 			"ReorderRate",
 			FactorUtil.getReorderRateConverter(66)
 		);
-
+		
 		rangeConverters.put(
 			"ReorderRate_Normalized",
 			FactorUtil.getNormalizedReorderRateConverter(66)
 		);
-
+		
 		rangeConverters.put(
 			"ReorderRate_DepartmentNormalized",
 			FactorUtil.getDepartmentNormalizedReorderRateConverter(66)
 		);
-
+		
 		rangeConverters.put(
 			"ReorderRate_Discretized",
 			FactorUtil.getDiscretizedReorderRateConverter(2)
 		);
-
+		
 		// SEASONALITY
 		rangeConverters.put(
 			"Seasonality",
 			FactorUtil.getSeasonalityConverter(3.)
 		);
-
+		
 		rangeConverters.put(
 			"Seasonality_Discretized",
 			FactorUtil.getDiscretizedSeasonality()
 		);
-
+		
 		rangeConverters.put("ProfitMargin",
 		        FactorRangeConverter.getRawGlobalScores("GROSS_PROFIT_PCTG"));
-
+		
 		// ORIGINAL SCORES
 		rangeConverters.put(
 			ORIGINAL_SCORES_PERSONALIZED,
 			FactorRangeConverter.getRawPersonalizedScores("Score")
 		);
-
+		
 		rangeConverters.put(
 			ORIGINAL_SCORES_GLOBAL,
 			FactorRangeConverter.getRawGlobalScores("Score")
@@ -1265,12 +1259,12 @@ public class ScoreProvider implements DataAccess {
 	public List<? extends ContentNodeModel> getPrioritizedNodes() {
 		throw new UnsupportedOperationException();
 	}
-
+	
 	@Override
 	public boolean addPosteriorNode(ContentNodeModel model) {
 		throw new UnsupportedOperationException();
 	}
-
+	
 	@Override
 	public List<? extends ContentNodeModel> getPosteriorNodes() {
 		throw new UnsupportedOperationException();

@@ -1,8 +1,6 @@
 package com.freshdirect.cms.ui.model;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.Set;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -12,13 +10,13 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author zsombor
  *
  */
-public class GwtUser implements Serializable, Cloneable, IsSerializable, CmsPermissionHolder {
+public class GwtUser implements Serializable, Cloneable, IsSerializable {
 
     private static final long serialVersionUID = 1L;
 
     private String name;
     private String personaName;
-    private String loginErrorMessage;
+    private String loginErrorMessage; 
 
     // List of permissions
     private boolean hasAccessToAdminTab = false;
@@ -30,14 +28,11 @@ public class GwtUser implements Serializable, Cloneable, IsSerializable, CmsPerm
     private boolean canChangeFDStore = false;
     private boolean canChangeFDXStore = false;
     private boolean canChangeOtherNodes = false;
-    private boolean hasAccessToPermissionEditorApp = false;
-
-    private Set<String> permittedContentTypes = Collections.emptySet();
 
     private String cmsAdminURL;
 
     private boolean isDraftActive = false;
-    private String draftContextName = "MAIN";
+    private String draftName;
 
     public GwtUser() {
         // MESSAGE TO ALL DEVS
@@ -139,7 +134,6 @@ public class GwtUser implements Serializable, Cloneable, IsSerializable, CmsPerm
         this.cmsAdminURL = cmsAdminURL;
     }
 
-    @Override
     public boolean isHasAccessToAdminTab() {
         return hasAccessToAdminTab;
     }
@@ -148,7 +142,6 @@ public class GwtUser implements Serializable, Cloneable, IsSerializable, CmsPerm
         this.hasAccessToAdminTab = hasAccessToAdminTab;
     }
 
-    @Override
     public boolean isHasAccessToBulkLoaderTab() {
         return hasAccessToBulkLoaderTab;
     }
@@ -157,7 +150,6 @@ public class GwtUser implements Serializable, Cloneable, IsSerializable, CmsPerm
         this.hasAccessToBulkLoaderTab = hasAccessToBulkLoaderTab;
     }
 
-    @Override
     public boolean isHasAccessToChangesTab() {
         return hasAccessToChangesTab;
     }
@@ -166,7 +158,6 @@ public class GwtUser implements Serializable, Cloneable, IsSerializable, CmsPerm
         this.hasAccessToChangesTab = hasAccessToChangesTab;
     }
 
-    @Override
     public boolean isHasAccessToPublishTab() {
         return hasAccessToPublishTab;
     }
@@ -175,7 +166,6 @@ public class GwtUser implements Serializable, Cloneable, IsSerializable, CmsPerm
         this.hasAccessToPublishTab = hasAccessToPublishTab;
     }
 
-    @Override
     public boolean isHasAccessToFeedPublishTab() {
         return hasAccessToFeedPublishTab;
     }
@@ -184,7 +174,6 @@ public class GwtUser implements Serializable, Cloneable, IsSerializable, CmsPerm
         this.hasAccessToFeedPublishTab = hasAccessToFeedPublishTab;
     }
 
-    @Override
     public boolean isCanChangeFDStore() {
         return canChangeFDStore;
     }
@@ -193,7 +182,6 @@ public class GwtUser implements Serializable, Cloneable, IsSerializable, CmsPerm
         this.canChangeFDStore = canChangeFDStore;
     }
 
-    @Override
     public boolean isCanChangeFDXStore() {
         return canChangeFDXStore;
     }
@@ -202,7 +190,6 @@ public class GwtUser implements Serializable, Cloneable, IsSerializable, CmsPerm
         this.canChangeFDXStore = canChangeFDXStore;
     }
 
-    @Override
     public boolean isCanChangeOtherNodes() {
         return canChangeOtherNodes;
     }
@@ -228,7 +215,11 @@ public class GwtUser implements Serializable, Cloneable, IsSerializable, CmsPerm
     }
 
     public String getDraftName() {
-        return draftContextName;
+        return draftName;
+    }
+
+    public void setDraftName(String draftName) {
+        this.draftName = draftName;
     }
 
     public String getLoginErrorMessage() {
@@ -237,34 +228,6 @@ public class GwtUser implements Serializable, Cloneable, IsSerializable, CmsPerm
 
     public void setLoginErrorMessage(String loginErrorMessage) {
         this.loginErrorMessage = loginErrorMessage;
-    }
-
-    @Override
-    public boolean isHasAccessToPermissionEditorApp() {
-        return hasAccessToPermissionEditorApp;
-    }
-
-    @Override
-    public boolean isAnyContentTypeBasedPermission() {
-        return !permittedContentTypes.isEmpty();
-    }
-
-    @Override
-    public boolean isContentTypeBasedPermissionEnabled(String contentType) {
-        return permittedContentTypes.contains(contentType);
-    }
-
-    public void setHasAccessToPermissionEditorApp(boolean hasAccessToPermissionEditorApp) {
-        this.hasAccessToPermissionEditorApp = hasAccessToPermissionEditorApp;
-
-    }
-
-    public void setPermittedContentTypes(Set<String> permittedContentTypes) {
-        this.permittedContentTypes = permittedContentTypes;
-    }
-
-    public void setDraftContextName(String draftContextName) {
-        this.draftContextName = draftContextName;
     }
 
 }

@@ -2,9 +2,9 @@ package com.freshdirect.fdstore.content.browse.sorter;
 
 import java.math.BigDecimal;
 
+import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.fdstore.content.customerrating.CustomerRatingsContext;
 import com.freshdirect.fdstore.content.customerrating.CustomerRatingsDTO;
-import com.freshdirect.storeapi.content.FilteringProductItem;
 
 public class CustomerRatingComparator extends OptionalObjectComparator<FilteringProductItem, Double> {
 

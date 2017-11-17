@@ -14,8 +14,10 @@
 %><%@ page import='com.freshdirect.fdstore.customer.FDCustomerManager'
 %><%@ page import='com.freshdirect.fdstore.customer.FDProductSelectionI'
 %><%@ page import='com.freshdirect.fdstore.customer.FDProductCollectionI'
-%><%@ page import='com.freshdirect.storeapi.content.ContentFactory'
+%><%@ page import='com.freshdirect.fdstore.content.ContentFactory'
 %><%@ page import='com.freshdirect.common.customer.EnumServiceType'
+%><%@ page import='com.freshdirect.framework.conf.FDRegistry'
+%><%@ page import='com.freshdirect.cms.application.service.*'
 %><%@ page import='com.freshdirect.webapp.taglib.fdstore.SessionName'
 %><%@ page import='com.freshdirect.deliverypass.EnumDlvPassStatus'
 %><%@ page import='com.freshdirect.deliverypass.EnumDlvPassProfileType'
@@ -29,8 +31,6 @@
 %><%@ page import='com.freshdirect.webapp.util.JspMethods'
 %><%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature"
 %><%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter"
-%><%@ page import='com.freshdirect.cms.CmsServiceLocator'
-%><%@ page import='com.freshdirect.cms.contentio.xml.XmlContentMetadataService'
 %><%@ taglib prefix="fd" uri="freshdirect"
 %><%!
 
@@ -56,8 +56,11 @@
 
 		QueryStringBuilder queryString = new QueryStringBuilder();
 		if (user != null) {
-		    XmlContentMetadataService metadataService = CmsServiceLocator.xmlContentMetadataService();
-            String storeVersion = metadataService != null ? metadataService.calculatePublishId().toString() : null;
+
+			ResourceInfoServiceI resourceService = (ResourceInfoServiceI) FDRegistry
+					.getInstance().getService(
+							ResourceInfoServiceI.class);
+			String storeVersion = resourceService.getPublishId();
 
 			String metalRating = "";
 			int vip = 0;

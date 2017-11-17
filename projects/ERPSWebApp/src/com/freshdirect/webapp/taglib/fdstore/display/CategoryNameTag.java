@@ -7,8 +7,8 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.framework.webapp.BodyTagSupport;
-import com.freshdirect.storeapi.content.CategoryModel;
 
 /**
  * Category Name Tag <br/>

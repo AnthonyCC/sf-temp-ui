@@ -14,7 +14,7 @@
 		import="com.freshdirect.fdstore.customer.FDUserI"
 		import="com.freshdirect.fdstore.FDSkuNotFoundException"
 		import="com.freshdirect.fdstore.*"
-		import="com.freshdirect.storeapi.content.ProductModel"
+		import="com.freshdirect.fdstore.content.ProductModel"
 		import="com.freshdirect.fdstore.FDProduct"
 		import="com.freshdirect.WineUtil"
 %>

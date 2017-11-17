@@ -7,8 +7,9 @@ import javax.servlet.jsp.JspWriter;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
+import com.freshdirect.cms.util.PublishId;
+import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
-import com.freshdirect.storeapi.content.Image;
 
 public class IncludeImageTag extends BodyTagSupportEx {
 	private static final long serialVersionUID = -2169082168781818907L;
@@ -21,8 +22,7 @@ public class IncludeImageTag extends BodyTagSupportEx {
 
 	private String style;
 	
-	@Override
-    public int doStartTag() throws JspException {
+	public int doStartTag() throws JspException {
 		if (image == null)
 			return SKIP_BODY;
 		StringBuilder buf = new StringBuilder();

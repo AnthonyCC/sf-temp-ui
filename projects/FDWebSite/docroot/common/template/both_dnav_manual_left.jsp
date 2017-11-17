@@ -1,12 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<%@ page import='com.freshdirect.storeapi.content.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
-<%@ page import='com.freshdirect.storeapi.*'%>
-<%@ page import='com.freshdirect.cms.core.domain.ContentKey' %>
-<%@ page import='com.freshdirect.cms.core.domain.ContentKeyFactory' %>
-<%@ page import='com.freshdirect.cms.core.domain.ContentType' %>
-<%@ page import='com.freshdirect.storeapi.application.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
+<%@ page import='com.freshdirect.cms.*'%>
+<%@ page import='com.freshdirect.cms.application.*'%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -71,7 +68,7 @@ final int W_BDNML_RIGHT = 191;
 				<% if ( request.getParameter("catId") !=null && ContentFactory.getInstance().getContentNode(request.getParameter("catId")) instanceof RecipeCategory) {
 					
 					// go find the recipeDepartment...(should be a method on contentFactory
-					ContentType cType = ContentType.RecipeDepartment;
+					ContentType cType = ContentType.get("RecipeDepartment");
 					Set s = CmsManager.getInstance().getContentKeysByType(cType);
 					// there can only be one (hmmmm, the Highlander effect)
 					RecipeDepartment rcpDept = null;

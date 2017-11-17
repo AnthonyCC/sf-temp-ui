@@ -11,8 +11,21 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.fdstore.content.BrandModel;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.FavoriteList;
+import com.freshdirect.fdstore.content.ProductContainer;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.Recommender;
+import com.freshdirect.fdstore.content.RecommenderStrategy;
+import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.fdstore.content.customerrating.CustomerRatingsContext;
 import com.freshdirect.fdstore.content.customerrating.CustomerRatingsDTO;
 import com.freshdirect.smartstore.RecommendationService;
@@ -32,19 +45,6 @@ import com.freshdirect.smartstore.impl.SmartYMALRecommendationService;
 import com.freshdirect.smartstore.sampling.RankedContent;
 import com.freshdirect.smartstore.sampling.RankedContent.Single;
 import com.freshdirect.smartstore.service.CmsRecommenderRegistry;
-import com.freshdirect.storeapi.content.BrandModel;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.FavoriteList;
-import com.freshdirect.storeapi.content.ProductContainer;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.Recommender;
-import com.freshdirect.storeapi.content.RecommenderStrategy;
-import com.freshdirect.storeapi.content.SkuModel;
-import com.freshdirect.storeapi.content.StoreModel;
-import com.freshdirect.storeapi.fdstore.FDContentTypes;
 
 /**
  * This class contains functions which used by the generated code.

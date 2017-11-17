@@ -2,14 +2,14 @@ package com.freshdirect.fdstore.content.browse.filter;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.cms.util.ProductInfoUtil;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.FilterCacheStrategy;
+import com.freshdirect.fdstore.content.FilteringProductItem;
+import com.freshdirect.fdstore.content.ProductFilterModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.FilterCacheStrategy;
-import com.freshdirect.storeapi.content.FilteringProductItem;
-import com.freshdirect.storeapi.content.ProductFilterModel;
-import com.freshdirect.storeapi.util.ProductInfoUtil;
 
 public class FreshnessFilter extends AbstractRangeFilter {
 	private static final Logger LOGGER = LoggerFactory.getInstance( FreshnessFilter.class ); 

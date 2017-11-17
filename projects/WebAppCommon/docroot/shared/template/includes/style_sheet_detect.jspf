@@ -4,7 +4,7 @@
 %><%@ taglib uri='oscache' prefix='oscache'
 %><%@ taglib uri="http://jawr.net/tags" prefix="jwr"
 %><%@ page import="com.freshdirect.fdstore.FDStoreProperties"
-%><%@ page import='com.freshdirect.storeapi.content.EnumLayoutType'
+%><%@ page import='com.freshdirect.fdstore.content.EnumLayoutType'
 %><%
 	int layoutTypeCSS = (request.getAttribute("layoutType") == null) ? -1 : Integer.parseInt(request.getAttribute("layoutType").toString());
 %><% if (FDStoreProperties.isFlushOscache()) { %><oscache:flush /><% } %>

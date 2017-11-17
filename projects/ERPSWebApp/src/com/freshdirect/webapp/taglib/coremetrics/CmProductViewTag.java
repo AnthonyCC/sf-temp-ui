@@ -2,6 +2,7 @@ package com.freshdirect.webapp.taglib.coremetrics;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.util.QueryParameterCollection;
 import com.freshdirect.fdstore.coremetrics.CmContext;
 import com.freshdirect.fdstore.coremetrics.builder.ProductViewTagModelBuilder;
@@ -12,7 +13,6 @@ import com.freshdirect.fdstore.coremetrics.tagmodel.ProductViewTagModel;
 import com.freshdirect.fdstore.coremetrics.util.CoremetricsUtil;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class CmProductViewTag extends AbstractCmTag {

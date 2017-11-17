@@ -2,7 +2,7 @@ package com.freshdirect.smartstore;
 
 import java.util.List;
 
-import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 
 public abstract class WrapperRecommendationService implements RecommendationService {
 

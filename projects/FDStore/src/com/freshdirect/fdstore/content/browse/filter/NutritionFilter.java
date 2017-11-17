@@ -6,10 +6,10 @@ import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.fdstore.FDNutrition;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.FilterCacheStrategy;
+import com.freshdirect.fdstore.content.FilteringProductItem;
+import com.freshdirect.fdstore.content.ProductFilterModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.FilterCacheStrategy;
-import com.freshdirect.storeapi.content.FilteringProductItem;
-import com.freshdirect.storeapi.content.ProductFilterModel;
 
 public class NutritionFilter extends AbstractRangeFilter {
 	private static final Logger LOGGER = LoggerFactory.getInstance( NutritionFilter.class ); 

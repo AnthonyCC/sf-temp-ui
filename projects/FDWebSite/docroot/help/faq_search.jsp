@@ -1,11 +1,11 @@
-<%@ page import='com.freshdirect.storeapi.content.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import='java.text.*' %>
 <%@ page import="java.util.*" %>
-<%@ page import="com.freshdirect.storeapi.ContentNodeI" %>
+<%@ page import="com.freshdirect.cms.ContentNodeI" %>
 <%@ page import="com.freshdirect.fdstore.util.FilteringNavigator"%>
 <%@ page import="com.freshdirect.fdstore.content.util.QueryParameterCollection"%>
 <%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature" %>
@@ -121,7 +121,7 @@
 								<tr>
 									<td valign="top"><img src="/media/images/layout/clear.gif" width="10" height="1" alt="" border="0" /></td>
 									<td colspan="3" style="padding-top: 10px;"> Section: 
-										<logic:iterate id="actual" collection="<%= faqList %>" type="com.freshdirect.storeapi.content.Faq">
+										<logic:iterate id="actual" collection="<%= faqList %>" type="com.freshdirect.fdstore.content.Faq">
 											<a href="/help/faq_home.jsp?page=<%= (String)actual.getParentNode().getContentKey().getId()%>" style="margin-right: 5px;"><%= ((String)actual.getParentNode().getCmsAttributeValue("name")).toUpperCase() %></a> 
 										</logic:iterate>					
 									</td>

@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.fdstore.content.EnumQuickShopFilteringValue;
+import com.freshdirect.fdstore.content.FilteringValue;
+import com.freshdirect.fdstore.content.SortTypeI;
 import com.freshdirect.fdstore.util.FilteringNavigator;
-import com.freshdirect.storeapi.content.EnumQuickShopFilteringValue;
-import com.freshdirect.storeapi.content.FilteringValue;
-import com.freshdirect.storeapi.content.SortTypeI;
 import com.freshdirect.webapp.ajax.reorder.QuickShopServlet;
 import com.freshdirect.webapp.ajax.quickshop.QuickShopSortType;
 

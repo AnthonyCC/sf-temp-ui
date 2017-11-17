@@ -1,20 +1,20 @@
 <%@page import="com.freshdirect.framework.util.StringUtil"%>
-<%@ page import='com.freshdirect.storeapi.content.*' %>
-<%@ page import='com.freshdirect.storeapi.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import='java.text.*' %>
 <%@ page import="java.util.*" %>
-<%@ page import="com.freshdirect.storeapi.ContentNodeI" %>
+<%@ page import="com.freshdirect.cms.ContentNodeI" %>
 <%@ page import="com.freshdirect.webapp.util.FDFaqUtil" %>
 <%@ page import="com.freshdirect.fdstore.rollout.EnumRolloutFeature" %>
 <%@ page import="com.freshdirect.fdstore.rollout.FeatureRolloutArbiter" %>
 <%@ page import="com.freshdirect.webapp.util.JspMethods" %>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
-<%@page import="com.freshdirect.storeapi.content.CategoryModel"%>
-<%@page import="com.freshdirect.cms.core.domain.ContentKey"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.cms.ContentKey"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
@@ -231,7 +231,7 @@
 								
 								while (st.hasMoreTokens()) {
 									String nextToken=st.nextToken().trim();
-									%><logic:iterate id="topfaq" indexId="idx" collection="<%= savedList %>" type="com.freshdirect.storeapi.content.Faq"><%
+									%><logic:iterate id="topfaq" indexId="idx" collection="<%= savedList %>" type="com.freshdirect.fdstore.content.Faq"><%
 										if (null!=topfaq && null !=topfaq.getParentNode() && nextToken.equalsIgnoreCase((String)topfaq.getParentNode().getContentKey().getId())) { %>
 											<li><a href="/help/faq_home.jsp?page=<%= (String)topfaq.getParentNode().getContentKey().getId()%>#<%= (String)topfaq.getContentKey().getId()%>"><%= topfaq.getQuestion() %></a></li>
 										<% } %>

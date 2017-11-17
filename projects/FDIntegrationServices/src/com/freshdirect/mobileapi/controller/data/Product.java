@@ -332,7 +332,7 @@ public class Product extends Message {
         }
 
         Image detailImage = new Image();
-        com.freshdirect.storeapi.content.Image detailImg = null;
+        com.freshdirect.fdstore.content.Image detailImg = null;
         if (LayoutType.WINE.equals(this.layoutType)) {
             detailImg = product.getImage(ImageType.WINE_ALT);
             if (detailImg == null) {
@@ -349,7 +349,7 @@ public class Product extends Message {
         detailImage.setType(ImageSizeType.MEDIUM);
 
         Image productImage = new Image();
-        com.freshdirect.storeapi.content.Image prodImg = product.getImage(ImageType.PRODUCT);
+        com.freshdirect.fdstore.content.Image prodImg = product.getImage(ImageType.PRODUCT);
         productImage.setHeight(prodImg.getHeight());
         productImage.setWidth(prodImg.getWidth());
         productImage.setSource(prodImg.getPath());
@@ -358,12 +358,12 @@ public class Product extends Message {
         images.add(detailImage);
         images.add(productImage);
 
-        com.freshdirect.storeapi.content.Image thumbBurstImage = product.getThumbBurstImage();
+        com.freshdirect.fdstore.content.Image thumbBurstImage = product.getThumbBurstImage();
         if (thumbBurstImage != null) {
             this.thumbBurst = new Image(thumbBurstImage.getPath(), thumbBurstImage.getHeight(), thumbBurstImage.getWidth());
         }
 
-        com.freshdirect.storeapi.content.Image largeBurstImage = product.getImage(ImageType.LARGE_BURST);
+        com.freshdirect.fdstore.content.Image largeBurstImage = product.getImage(ImageType.LARGE_BURST);
         if (largeBurstImage != null) {
             this.largeBurst = new Image(largeBurstImage.getPath(), largeBurstImage.getHeight(), largeBurstImage.getWidth());
         }

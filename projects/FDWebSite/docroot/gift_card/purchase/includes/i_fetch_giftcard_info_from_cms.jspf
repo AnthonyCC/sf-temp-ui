@@ -1,17 +1,16 @@
-<%@ page import="java.util.Set"%>
-<%@ page import="java.util.Map"%>
-<%@ page import="java.util.ArrayList"%>
-<%@ page import="java.util.HashMap"%>
-<%@ page import='java.net.URLEncoder' %>
-<%@ page import='com.freshdirect.storeapi.*'%>
-<%@ page import='com.freshdirect.cms.core.domain.ContentKey'%>
-<%@ page import='com.freshdirect.cms.core.domain.ContentKeyFactory'%>
-<%@ page import='com.freshdirect.cms.core.domain.ContentType'%>
-<%@ page import='com.freshdirect.storeapi.application.CmsManager'%>
-<%@ page import='com.freshdirect.storeapi.fdstore.FDContentTypes'%>
-<%@ page import='com.freshdirect.storeapi.content.*'%>
+<%@page import="java.util.Set"%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.HashMap"%>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ page import='java.net.URLEncoder' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ page import='com.freshdirect.cms.*'%>
+<%@ page import='com.freshdirect.cms.application.CmsManager'%>
+<%@ page import='com.freshdirect.cms.fdstore.FDContentTypes'%>
+
+
 <%
 	/* these values should be set in the page calling this include */
 
@@ -59,7 +58,7 @@
 		if("true".equalsIgnoreCase(donStr)) {
 			
 			CmsManager manager = CmsManager.getInstance();	
-			ContentKey contentKey = ContentKeyFactory.get(FDContentTypes.FDFOLDER, "donationOrganizationList");
+			ContentKey contentKey = ContentKey.getContentKey(FDContentTypes.FDFOLDER, "donationOrganizationList");
 			ContentNodeI contentNode = manager.getContentNode(contentKey);
 			
 			if(null != contentNode){

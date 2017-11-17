@@ -3,7 +3,7 @@ package com.freshdirect.smartstore.filter;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 
 public class ArrayFilter extends ContentFilter {
 	List<ContentFilter> filters;

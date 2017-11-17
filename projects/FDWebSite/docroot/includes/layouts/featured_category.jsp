@@ -4,11 +4,11 @@
 <%@ page import="java.util.Arrays"%>
 <%@ page import='java.util.HashMap' %>
 
-<%@ page import='com.freshdirect.storeapi.content.ContentFactory' %>
-<%@ page import='com.freshdirect.storeapi.content.ContentNodeModel' %>
-<%@ page import='com.freshdirect.storeapi.content.ProductModel' %>
-<%@ page import='com.freshdirect.storeapi.content.CategoryModel' %>
-<%@ page import='com.freshdirect.storeapi.content.Html' %>
+<%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
+<%@ page import='com.freshdirect.fdstore.content.ContentNodeModel' %>
+<%@ page import='com.freshdirect.fdstore.content.ProductModel' %>
+<%@ page import='com.freshdirect.fdstore.content.CategoryModel' %>
+<%@ page import='com.freshdirect.fdstore.content.Html' %>
 
 <%@ page import='com.freshdirect.webapp.util.DisplayObject' %>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>

@@ -1,4 +1,4 @@
-<%@ page import='com.freshdirect.storeapi.content.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='java.util.*' %>
 <%
 	boolean inMobWebTemplateOptimized = (request.getAttribute("inMobWebTemplateOptimized") != null && ("true").equalsIgnoreCase(request.getAttribute("inMobWebTemplateOptimized").toString())) ? true : false;

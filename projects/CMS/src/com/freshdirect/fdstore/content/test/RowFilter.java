@@ -6,12 +6,12 @@ import java.util.List;
 import org.apache.commons.collections.Predicate;
 
 import com.freshdirect.cms.ContentType;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.DepartmentModel;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.EnumLayoutType;
 import com.freshdirect.fdstore.content.EnumProductLayout;
-import com.freshdirect.storeapi.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
 
 

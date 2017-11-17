@@ -3,10 +3,8 @@
 <%@ page import='java.text.*' %>
 <%@ page import='java.util.*' %>
 <%@ page import='com.freshdirect.fdstore.content.sort.*' %>
-<%@ page import='com.freshdirect.storeapi.content.*' %>
-<%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.content.*' %>
-<%@ page import='com.freshdirect.storeapi.*' %>
+<%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.fdlogistics.model.*' %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@ taglib uri='template' prefix='tmpl'%>

@@ -8,11 +8,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.freshdirect.cms.cache.CmsCaches;
-import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.cms.ContentType;
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.cache.EhCacheUtil;
+import com.freshdirect.fdstore.content.BrandModel;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.Domain;
+import com.freshdirect.fdstore.content.DomainValue;
+import com.freshdirect.fdstore.content.EnumBrandFilterLocation;
+import com.freshdirect.fdstore.content.GlobalNavigationModel;
+import com.freshdirect.fdstore.content.ProductContainer;
+import com.freshdirect.fdstore.content.ProductFilterGroupI;
+import com.freshdirect.fdstore.content.ProductFilterGroupImpl;
+import com.freshdirect.fdstore.content.ProductFilterMultiGroupModel;
+import com.freshdirect.fdstore.content.ProductItemFilterI;
+import com.freshdirect.fdstore.content.Recipe;
+import com.freshdirect.fdstore.content.RecipeSearchPage;
+import com.freshdirect.fdstore.content.SuperDepartmentModel;
+import com.freshdirect.fdstore.content.TagModel;
 import com.freshdirect.fdstore.content.browse.filter.BrandFilter;
 import com.freshdirect.fdstore.content.browse.filter.ContentNodeFilter;
 import com.freshdirect.fdstore.content.browse.filter.KosherFilter;
@@ -23,25 +42,6 @@ import com.freshdirect.fdstore.content.browse.filter.ProductItemFilterFactory;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
-import com.freshdirect.storeapi.application.CmsManager;
-import com.freshdirect.storeapi.content.BrandModel;
-import com.freshdirect.storeapi.content.CategoryModel;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.Domain;
-import com.freshdirect.storeapi.content.DomainValue;
-import com.freshdirect.storeapi.content.EnumBrandFilterLocation;
-import com.freshdirect.storeapi.content.GlobalNavigationModel;
-import com.freshdirect.storeapi.content.ProductContainer;
-import com.freshdirect.storeapi.content.ProductFilterGroupI;
-import com.freshdirect.storeapi.content.ProductFilterGroupImpl;
-import com.freshdirect.storeapi.content.ProductFilterMultiGroupModel;
-import com.freshdirect.storeapi.content.ProductItemFilterI;
-import com.freshdirect.storeapi.content.Recipe;
-import com.freshdirect.storeapi.content.RecipeSearchPage;
-import com.freshdirect.storeapi.content.SuperDepartmentModel;
-import com.freshdirect.storeapi.content.TagModel;
 import com.freshdirect.webapp.ajax.browse.data.NavDepth;
 import com.freshdirect.webapp.ajax.browse.data.NavigationModel;
 import com.freshdirect.webapp.ajax.cache.EhCacheUtilWrapper;
@@ -252,7 +252,7 @@ public class NavigationUtil {
 						
 						List<String> paramValues = navigator.getRequestFilterParams().get(param);
 						for(String paramValue : paramValues){
-							selection.add((TagModel) ContentFactory.getInstance().getContentNode(ContentType.Tag, paramValue));							
+							selection.add((TagModel) ContentFactory.getInstance().getContentNode(ContentType.get("Tag"), paramValue));							
 						}
 					}
 				}
@@ -478,11 +478,11 @@ public class NavigationUtil {
 		String contentName = cat.getContentName();
 		String plantId = user.getUserContext().getFulfillmentContext().getPlantId();
 		if (CmsManager.getInstance().isReadOnlyContent()){
-            Boolean displayable = EhCacheUtilWrapper.getObjectFromCache(CmsCaches.BR_CATEGORY_SUB_TREE_HAS_PRODUCTS_CACHE.cacheName, contentName + "_" + plantId);
+			Boolean displayable = EhCacheUtilWrapper.getObjectFromCache(EhCacheUtil.BR_CATEGORY_SUB_TREE_HAS_PRODUCTS_CACHE_NAME, contentName + "_" + plantId);
 			
 			if (displayable == null) {
 				displayable = cat.isDisplayable(); //do the recursive check
-                EhCacheUtilWrapper.putObjectToCache(CmsCaches.BR_CATEGORY_SUB_TREE_HAS_PRODUCTS_CACHE.cacheName, contentName + "_" + plantId, displayable);
+				EhCacheUtilWrapper.putObjectToCache(EhCacheUtil.BR_CATEGORY_SUB_TREE_HAS_PRODUCTS_CACHE_NAME, contentName + "_" + plantId, displayable);
 			}
 			
 			return displayable;

@@ -5,7 +5,7 @@
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.FDSkuNotFoundException' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
-<%@ page import='com.freshdirect.storeapi.content.*' %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.framework.util.NVL' %>
 <%@ page import='com.freshdirect.framework.util.log.LoggerFactory' %>
@@ -16,7 +16,7 @@
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='com.freshdirect.webapp.util.ProductImpression' %>
 <%@ page import='com.freshdirect.fdstore.pricing.ProductPricingFactory' %>
-<%@ page import='com.freshdirect.storeapi.content.ContentFactory' %>
+<%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
 <%@ page import='java.net.URLEncoder' %>
 <%@ page import='java.util.*' %>
 <%@ page import='org.apache.log4j.Category' %>
@@ -141,7 +141,7 @@ private static Category  LOGGER = LoggerFactory.getInstance("group.jsp");
 
 		request.setAttribute("smList", skuModelList); //** expose result of group to the layout **
 	%>
-	<logic:iterate id="sku" collection="<%= skuModelList %>" type="com.freshdirect.storeapi.content.SkuModel" indexId="idx">
+	<logic:iterate id="sku" collection="<%= skuModelList %>" type="com.freshdirect.fdstore.content.SkuModel" indexId="idx">
 	<%
 		LOGGER.debug("Left Nav Index "+idx);
 		/*

@@ -8,7 +8,7 @@
 <%@page import="com.freshdirect.erp.*"%>
 <%@page import="com.freshdirect.erp.model.*"%>
 <%@page import="com.freshdirect.common.pricing.*"%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="java.util.*"%>
 
 <%

@@ -24,6 +24,12 @@
   </module>
   <module>
     <web>
+      <web-uri>cms-gwt.war</web-uri>
+      <context-root>/cms-gwt</context-root>
+    </web>
+  </module>
+  <module>
+    <web>
       <web-uri>FDIntegrationServices.war</web-uri>
       <context-root>mobileapi</context-root>
     </web>

@@ -7,7 +7,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.storeapi.application.CmsManager;
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpInvalidPasswordException;

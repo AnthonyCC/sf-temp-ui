@@ -4,8 +4,6 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.EnumWineFilterValueType;
-import com.freshdirect.storeapi.content.WineFilterValue;
 
 public enum EnumWinePrice implements WineFilterValue {
 	ONE(1), TWO(2), THREE(3), FOUR(4);

@@ -1,6 +1,6 @@
 package com.freshdirect.smartstore.scoring;
 
-import com.freshdirect.storeapi.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 
 public class Score implements Comparable {
     ContentNodeModel node;

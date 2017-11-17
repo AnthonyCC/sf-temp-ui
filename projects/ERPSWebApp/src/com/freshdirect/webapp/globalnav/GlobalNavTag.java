@@ -9,10 +9,10 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.GlobalNavigationModel;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.content.GlobalNavigationModel;
 import com.freshdirect.webapp.ajax.DataPotatoField;
 import com.freshdirect.webapp.ajax.data.CMSModelToSoyDataConverter;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;

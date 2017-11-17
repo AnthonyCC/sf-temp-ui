@@ -5,9 +5,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.mobileapi.model.comparator.PriceComparator;
 import com.freshdirect.mobileapi.model.comparator.SkuSecondaryDomainValueComparator;
-import com.freshdirect.storeapi.content.DomainValue;
 
 public class ProductDomain {
     private DomainValue domainValue;

@@ -10,18 +10,18 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.core.domain.ContentKey;
-import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentType;
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ZonePriceListing;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.PriceCalculator;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.application.CmsManager;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.PriceCalculator;
-import com.freshdirect.storeapi.content.ProductModel;
 
 public class AllDealsCache {
 	
@@ -66,7 +66,7 @@ public class AllDealsCache {
 						}
 						LOGGER_LOADER.info("loaded " + zoneIndexes.size() + " zones");
 
-						Collection<ContentKey> products = CmsManager.getInstance().getContentKeysByType(ContentType.Product);
+						Collection<ContentKey> products = CmsManager.getInstance().getContentKeysByType(ContentType.get("Product"));
 						LOGGER_LOADER.info("found " + products.size() + " product candidates for deals cache reload");
 						int i = 0;
 						for (ContentKey product : products) {

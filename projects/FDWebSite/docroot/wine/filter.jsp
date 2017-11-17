@@ -1,5 +1,5 @@
-<%@page import="com.freshdirect.storeapi.content.DomainValue"%>
-<%@page import="com.freshdirect.storeapi.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.DomainValue"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="com.freshdirect.fdstore.content.EnumTrackingSource"%>
 <%@ taglib uri="template" prefix="tmpl"%>
 <%@ taglib uri="freshdirect" prefix="fd"%>

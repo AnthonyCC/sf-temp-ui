@@ -1,33 +1,32 @@
 /**
- *
+ * 
  */
 package com.freshdirect.smartstore.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import com.freshdirect.cms.core.domain.ContentKeyFactory;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.FavoriteList;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
 import com.freshdirect.smartstore.sampling.ImpressionSampler;
 import com.freshdirect.smartstore.sampling.RankedContent;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.FavoriteList;
-import com.freshdirect.storeapi.fdstore.FDContentTypes;
 
 /**
- * TODO : think about, that the current RecommendationService contract states, that the recommend method should return a list of ContentKey-s.
- *
- *
+ * TODO : think about, that the current RecommendationService contract states, that the recommend method should return a list of ContentKey-s. 
+ *  
+ * 
  * @author csongor
  *
  */
 public class FavoritesRecommendationService extends AbstractRecommendationService {
 	private String favoriteListId;
-
+	
 	/**
      * @param variant
      */
@@ -37,26 +36,25 @@ public class FavoritesRecommendationService extends AbstractRecommendationServic
     }
 
     /**
-     *
+     * 
      * @param max
      * @param input
      * @return a List<{@link ContentNodeModel}> of recommendations
-     *
+     *         
      */
-    @Override
     public List doRecommendNodes(SessionInput input) {
         List favoriteNodes = Collections.EMPTY_LIST;
-
+        
     	ContentFactory cf = ContentFactory.getInstance();
     	if (favoriteListId == null)
     		return favoriteNodes;
-
-    	FavoriteList fl = (FavoriteList) cf.getContentNodeByKey(ContentKeyFactory.get(FDContentTypes.FAVORITE_LIST, favoriteListId));
+    	
+    	FavoriteList fl = (FavoriteList) cf.getContentNodeByKey(ContentKey.getContentKey(FDContentTypes.FAVORITE_LIST, favoriteListId));
     	if (fl != null) {
     	    favoriteNodes = fl.getFavoriteItems();
-
+    	    
     	    List<RankedContent.Single> keys = new ArrayList<RankedContent.Single>(favoriteNodes.size());
-    	    for (int i=0;i<favoriteNodes.size();i++){
+    	    for (int i=0;i<favoriteNodes.size();i++){ 
     	        ContentNodeModel contentNodeModel = (ContentNodeModel)favoriteNodes.get(i);
                 keys.add(new RankedContent.Single((favoriteNodes.size() - i) * 5.0, contentNodeModel));
     	    }

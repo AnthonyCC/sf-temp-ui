@@ -22,7 +22,7 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.cms.core.domain.ContentKey;
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.crm.CallLogModel;
 import com.freshdirect.crm.CrmClick2CallModel;
 import com.freshdirect.crm.CrmVSCampaignModel;

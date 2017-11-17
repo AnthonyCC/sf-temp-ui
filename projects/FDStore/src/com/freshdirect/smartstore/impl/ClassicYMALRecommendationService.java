@@ -5,12 +5,12 @@ import java.util.List;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
 import com.freshdirect.smartstore.sampling.ImpressionSampler;
-import com.freshdirect.storeapi.content.ContentNodeModel;
 
 /**
  * @author csongor

@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.freshdirect.cms.core.domain.ContentType;
+import com.freshdirect.cms.ContentType;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.mobileapi.model.SessionUser;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.DepartmentModel;
-import com.freshdirect.storeapi.content.ProductModel;
 import com.freshdirect.webapp.taglib.fdstore.GetPeakProduceTag;
 
 public class GetPeakProduceTagWrapper extends GetterTagWrapper {
@@ -28,7 +28,7 @@ public class GetPeakProduceTagWrapper extends GetterTagWrapper {
 
     @SuppressWarnings("unchecked")
 	public Collection<Object> getPeakProduct(int maxPeakProduceCount) throws FDException {
-    	DepartmentModel department = (DepartmentModel) ContentFactory.getInstance().getContentNode( ContentType.Department, departmentId );
+    	DepartmentModel department = (DepartmentModel) ContentFactory.getInstance().getContentNode( ContentType.get( "Department" ), departmentId );
 		if ( department != null ) {
 		
 			((GetPeakProduceTag) wrapTarget).setDeptId(departmentId);

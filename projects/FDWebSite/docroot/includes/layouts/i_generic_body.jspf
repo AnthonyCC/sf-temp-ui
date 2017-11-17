@@ -46,7 +46,7 @@ final int W_GENERIC_BODY_NOT_DEPARTMENT = 601;
 	int rowsPrinted  =0;
 %>
 	
-	<logic:iterate indexId="idx" id="displayThing" length="<%= len.toString() %>" offset="<%= offset.toString() %>" collection="<%= displayList %>" type="com.freshdirect.storeapi.content.ContentNodeModel">
+	<logic:iterate indexId="idx" id="displayThing" length="<%= len.toString() %>" offset="<%= offset.toString() %>" collection="<%= displayList %>" type="com.freshdirect.fdstore.content.ContentNodeModel">
 		<%
 		itemWidth = 0;
 		boolean showSelf = false;

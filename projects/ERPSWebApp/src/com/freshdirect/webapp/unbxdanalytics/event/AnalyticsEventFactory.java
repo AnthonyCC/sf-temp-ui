@@ -2,12 +2,12 @@ package com.freshdirect.webapp.unbxdanalytics.event;
 
 import java.util.LinkedList;
 
+import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ProductContainer;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.framework.util.StringUtil;
-import com.freshdirect.storeapi.content.ContentNodeModel;
-import com.freshdirect.storeapi.content.ProductContainer;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.fdstore.FDContentTypes;
 import com.freshdirect.webapp.unbxdanalytics.visitor.Visitor;
 
 public final class AnalyticsEventFactory {

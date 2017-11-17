@@ -8,14 +8,15 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
-import com.freshdirect.cms.core.domain.ContentKey;
-import com.freshdirect.storeapi.ContentNodeI;
-import com.freshdirect.storeapi.application.CmsManager;
-import com.freshdirect.storeapi.content.ContentFactory;
-import com.freshdirect.storeapi.content.ProductGrabberModel;
-import com.freshdirect.storeapi.content.ProductModel;
-import com.freshdirect.storeapi.content.grabber.GrabberServiceI;
-import com.freshdirect.storeapi.fdstore.FDContentTypes;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.application.DraftContext;
+import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ProductGrabberModel;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.grabber.GrabberServiceI;
 
 public class TaxonomyFeedPopulator {
 
@@ -28,14 +29,14 @@ public class TaxonomyFeedPopulator {
     public StoreTaxonomyFeedElement populateStoreTaxonomyFeed() {
         CmsManager cmsManager = CmsManager.getInstance();
 
-        Set<ContentKey> departments = cmsManager.getContentKeysByType(FDContentTypes.DEPARTMENT);
-        Set<ContentKey> categories = cmsManager.getContentKeysByType(FDContentTypes.CATEGORY);
-        Set<ContentKey> products = cmsManager.getContentKeysByType(FDContentTypes.PRODUCT);
+        Set<ContentKey> departments = cmsManager.getContentKeysByType(FDContentTypes.DEPARTMENT, DraftContext.MAIN);
+        Set<ContentKey> categories = cmsManager.getContentKeysByType(FDContentTypes.CATEGORY, DraftContext.MAIN);
+        Set<ContentKey> products = cmsManager.getContentKeysByType(FDContentTypes.PRODUCT, DraftContext.MAIN);
 
-        Map<ContentKey, ContentNodeI> allNodes = cmsManager.getContentNodes(departments);
+        Map<ContentKey, ContentNodeI> allNodes = cmsManager.getContentNodes(departments, DraftContext.MAIN);
 
-        allNodes.putAll(cmsManager.getContentNodes(categories));
-        allNodes.putAll(cmsManager.getContentNodes(products));
+        allNodes.putAll(cmsManager.getContentNodes(categories, DraftContext.MAIN));
+        allNodes.putAll(cmsManager.getContentNodes(products, DraftContext.MAIN));
 
         StoreTaxonomyFeedElement storeTaxonomy = new StoreTaxonomyFeedElement();
 
@@ -132,7 +133,7 @@ public class TaxonomyFeedPopulator {
         if (productNode != null) {
             String prodKeyword = productNode.getAttributeValue("KEYWORDS") == null ? "" : productNode.getAttributeValue("KEYWORDS").toString();
             String prodName = productNode.getAttributeValue("FULL_NAME") == null ? "" : productNode.getAttributeValue("FULL_NAME").toString();
-            ContentKey primaryHomeCategoryKey = CmsManager.getInstance().getPrimaryHomeKey(productNode.getKey());
+            ContentKey primaryHomeCategoryKey = CmsManager.getInstance().getPrimaryHomeKey(productNode.getKey(), DraftContext.MAIN);
 
             productElement.setKeywords(prodKeyword);
             productElement.setProductId(productNode.getKey().getId());

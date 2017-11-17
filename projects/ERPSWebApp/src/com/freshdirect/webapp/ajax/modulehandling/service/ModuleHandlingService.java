@@ -10,15 +10,17 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.core.domain.ContentKey;
-import com.freshdirect.cms.core.domain.ContentKeyFactory;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.application.DraftContext;
+import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.fdstore.FDNotFoundException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.storeapi.ContentNodeI;
-import com.freshdirect.storeapi.application.CmsManager;
-import com.freshdirect.storeapi.fdstore.FDContentTypes;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData.SectionDataCointainer;
 import com.freshdirect.webapp.ajax.filtering.InvalidFilteringArgumentException;
 import com.freshdirect.webapp.ajax.modulehandling.ModuleSourceType;
@@ -52,7 +54,9 @@ public final class ModuleHandlingService {
         List<ModuleConfig> configs = new ArrayList<ModuleConfig>();
         Map<String, ModuleData> datas = new HashMap<String, ModuleData>();
 
-        ContentNodeI moduleContainer = CmsManager.getInstance().getContentNode(ContentKeyFactory.get(moduleContainerId));
+        DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
+
+        ContentNodeI moduleContainer = CmsManager.getInstance().getContentNode(ContentKey.getContentKey(moduleContainerId), currentDraftContext);
 
         if (moduleContainer != null) {
             List<ContentKey> modulesAndGroups = (List<ContentKey>) moduleContainer.getAttributeValue("modulesAndGroups");
@@ -65,7 +69,7 @@ public final class ModuleHandlingService {
                         moduleGroupConfig = loadModuleGroupConfig(moduleContainerChildContentKey, user);
                         configs.add(moduleGroupConfig);
 
-                        ContentNodeI moduleGroup = CmsManager.getInstance().getContentNode(moduleContainerChildContentKey);
+                        ContentNodeI moduleGroup = CmsManager.getInstance().getContentNode(moduleContainerChildContentKey, currentDraftContext);
                         List<ContentKey> modules = (List<ContentKey>) moduleGroup.getAttributeValue("modules");
 
                         if (modules != null) {
@@ -129,10 +133,10 @@ public final class ModuleHandlingService {
 
         ModuleData moduleData = new ModuleData();
         ModuleConfig moduleConfig = new ModuleConfig();
-        moduleData = loadModuleData(ContentKeyFactory.get(moduleId), user, session, true);
+        moduleData = loadModuleData(ContentKey.getContentKey(moduleId), user, session, true);
 
         if (moduleData != null) {
-            moduleConfig = loadModuleConfig(ContentKeyFactory.get(moduleId), user);
+            moduleConfig = loadModuleConfig(ContentKey.getContentKey(moduleId), user);
         }
 
         datas.put(moduleConfig.getModuleId(), moduleData);
@@ -145,19 +149,22 @@ public final class ModuleHandlingService {
     }
 
     private ModuleConfig loadModuleConfig(ContentKey moduleContentKey, FDUserI user) {
-        ContentNodeI module = CmsManager.getInstance().getContentNode(moduleContentKey);
+        DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
+        ContentNodeI module = CmsManager.getInstance().getContentNode(moduleContentKey, currentDraftContext);
         return DatasourceService.getDefaultService().loadModuleConfiguration(module, user);
     }
 
     private ModuleConfig loadModuleGroupConfig(ContentKey moduleGroupContentKey, FDUserI user) {
-        ContentNodeI moduleGroup = CmsManager.getInstance().getContentNode(moduleGroupContentKey);
+        DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
+        ContentNodeI moduleGroup = CmsManager.getInstance().getContentNode(moduleGroupContentKey, currentDraftContext);
         return DatasourceService.getDefaultService().loadModuleGroupConfiguration(moduleGroup, user);
     }
 
     private ModuleData loadModuleData(ContentKey moduleContentKey, FDUserI user, HttpSession session, boolean showAllProducts) throws FDResourceException,
             InvalidFilteringArgumentException, FDNotFoundException {
         LOGGER.info("Loading module with id: " + moduleContentKey.getId());
-        ContentNodeI module = CmsManager.getInstance().getContentNode(moduleContentKey);
+        DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
+        ContentNodeI module = CmsManager.getInstance().getContentNode(moduleContentKey, currentDraftContext);
         return DatasourceService.getDefaultService().loadModuleData(module, user, session, showAllProducts);
     }
 
@@ -239,7 +246,8 @@ public final class ModuleHandlingService {
         //Load Browse sectionDataContainer
         SectionDataCointainer sectionDataContainer = new SectionDataCointainer();
 
-        ContentNodeI imageBanner = CmsManager.getInstance().getContentNode(ContentKeyFactory.get(imageBannerContentKey));
+        DraftContext currentDraftContext = ContentFactory.getInstance().getCurrentDraftContext();
+        ContentNodeI imageBanner = CmsManager.getInstance().getContentNode(ContentKey.getContentKey(imageBannerContentKey), currentDraftContext);
         ContentKey targetContentKey = (ContentKey) imageBanner.getAttributeValue("Target");
         
         if (targetContentKey.getType() == FDContentTypes.CATEGORY ){
@@ -250,7 +258,7 @@ public final class ModuleHandlingService {
         moduleConfig.setModuleVirtualCategory(moduleVirtualCategory);
         moduleConfig.setSourceType(ModuleSourceType.PRODUCT_LIST_MODULE.toString());
         moduleConfig.setModuleId(imageModuleId);
-        moduleConfig.setContentTitle(imageBanner.getAttributeValue("Description").toString());
+        moduleConfig.setContentTitle(ContentNodeUtil.getStringAttribute(imageBanner, "Description"));
 
         datas.put(imageModuleId, moduleData);
         configs.add(moduleConfig);
