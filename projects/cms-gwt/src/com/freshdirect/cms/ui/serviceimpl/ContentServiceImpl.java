@@ -30,6 +30,7 @@ import com.freshdirect.cms.ui.editor.publish.domain.StorePublishStatus;
 import com.freshdirect.cms.ui.editor.publish.entity.StorePublish;
 import com.freshdirect.cms.ui.editor.publish.feed.converter.FeedPublishToGwtPublishDataConverter;
 import com.freshdirect.cms.ui.editor.publish.feed.domain.FeedPublish;
+import com.freshdirect.cms.ui.editor.publish.feed.entity.PublishStatus;
 import com.freshdirect.cms.ui.editor.publish.feed.service.FeedPublishService;
 import com.freshdirect.cms.ui.editor.publish.service.StorePublishService;
 import com.freshdirect.cms.ui.editor.service.ContentChangesService;
@@ -246,6 +247,21 @@ public class ContentServiceImpl extends GwtServiceBase implements ContentService
 
     @Override
     public String startPublishX(String comment) throws ServerException {
+        GwtUser author = getUser();
+        if (!author.isHasAccessToFeedPublishTab()) {
+            throw new GwtSecurityException("User " + author.getName() + " is not allowed to do feed publish!");
+        }
+
+        // check whether publish is already running
+        Optional<FeedPublish> optionalPublish = feedPublishService.findFeedPublish("latest");
+        FeedPublish publish = optionalPublish.orNull();
+        if (publish != null && PublishStatus.PROGRESS == publish.getStatus()) {
+            LOGGER.info("Feed Publish in progress ...: " + publish.getPublishId());
+            return publish.getPublishId();
+        }
+
+        LOGGER.info("feed publish called by kicked off by " + author.getName() + " : '" + comment + "'");
+
         return publishService.startPublish(PublishType.PUBLISH_X, comment, getUser().getName());
     }
 
