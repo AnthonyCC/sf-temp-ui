@@ -183,7 +183,6 @@ public final class PublishFlow {
 
     private void executeValidateContent(Long publishId, Input inputData) {
         try {
-            // ContentValidationTask validationTask = new ContentValidationTask(publishId, Phase.VALIDATION, simpleContentService);
             validationTask.setPhase(Phase.VALIDATION);
             validationTask.setPublishId(publishId);
             validationTask.setInput(inputData);
