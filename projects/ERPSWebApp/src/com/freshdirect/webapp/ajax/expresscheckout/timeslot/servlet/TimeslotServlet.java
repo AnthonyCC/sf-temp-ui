@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -114,15 +115,20 @@ public class TimeslotServlet extends BaseJsonServlet {
             boolean deliveryInfo = Boolean.getBoolean(request.getParameter(DELIVERY_INFO));
             boolean returnSameDaySlots = Boolean.getBoolean(request.getParameter(SAME_DAY_SLOTS));
 
-            Result result = TimeslotService.defaultService().getTimeslot(request.getSession(), user.getShoppingCart().getDeliveryAddress(), user, timeSlotContext, true, timeSlotId,
-                    forceOrder, deliveryInfo, returnSameDaySlots);
+            ErpAddressModel deliveryAddress = user.getShoppingCart().getDeliveryAddress();
+            if (deliveryAddress != null) {
+                Result result = TimeslotService.defaultService().getTimeslot(request.getSession(), deliveryAddress, user, timeSlotContext, true, timeSlotId,
+                        forceOrder, deliveryInfo, returnSameDaySlots);
 
-            for (ActionError error : result.getErrors()) {
-                validationResult.addError(new ValidationError(error.getType(), error.getDescription()));
+                for (ActionError error : result.getErrors()) {
+                    validationResult.addError(new ValidationError(error.getType(), error.getDescription()));
+                }
+    
+                if (result.isSuccess()) {
+                    validationResult.setResult(SoyTemplateEngine.convertToMap(TimeslotService.defaultService().loadTimeslotsData(user, result.getDeliveryTimeslotModel()),
+                            DateUtil.getStandardizedDateFormatter()));
+                }
             }
-
-            validationResult.setResult(SoyTemplateEngine.convertToMap(TimeslotService.defaultService().loadTimeslotsData(user, result.getDeliveryTimeslotModel()),
-                    DateUtil.getStandardizedDateFormatter()));
         } catch (ReservationException e) {
             validationResult.getErrors().add(new ValidationError("Could not fetch timeslots due to technical difficulty."));
         } catch (FDResourceException e) {
