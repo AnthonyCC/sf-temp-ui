@@ -260,7 +260,7 @@ public class ContentServiceImpl extends GwtServiceBase implements ContentService
             return publish.getPublishId();
         }
 
-        LOGGER.info("feed publish called by kicked off by " + author.getName() + " : '" + comment + "'");
+        LOGGER.info("feed publish kicked off by " + author.getName() + " : '" + comment + "'");
 
         return publishService.startPublish(PublishType.PUBLISH_X, comment, getUser().getName());
     }
