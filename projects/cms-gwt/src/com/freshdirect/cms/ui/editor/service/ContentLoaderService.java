@@ -317,41 +317,6 @@ public class ContentLoaderService {
                     }
                 }
             }
-
-            // check if primary homes are ok when new product is being loaded or a product with missing primary home relationship value
-            if (ContentType.Product == contentKey.type) {
-                // build buckets containing home categories per store
-                Map<ContentKey, Set<ContentKey>> homeCategoriesPerStore = contentProviderService.collectParentsPerStore(contentKey);
-
-                // fetch current primary home config (if exists)
-                List<ContentKey> originalPrimaryHomes = Collections.emptyList();
-                Optional<Object> optionalPrimaryHomes = contentProviderService.getAttributeValue(contentKey, ContentTypes.Product.PRIMARY_HOME);
-                if (optionalPrimaryHomes.isPresent()) {
-                    originalPrimaryHomes = new ArrayList<ContentKey>((List<ContentKey>) optionalPrimaryHomes.get());
-                }
-
-                // check if primary homes needs a fix
-                Set<ContentKey> storeKeysWithoutPrimaryHome = findStoreKeysForWhichProductDoesNotHavePrimaryHomeSetYet(originalPrimaryHomes, homeCategoriesPerStore);
-                Set<ContentKey> invalidButSetPrimaryHomes = findInvalidButSetPrimaryHomes(originalPrimaryHomes, homeCategoriesPerStore);
-
-                // fix primary homes for store keys
-                if (!storeKeysWithoutPrimaryHome.isEmpty()) {
-                    LOGGER.debug("Product " + contentKey + " lack primary home in stores " + storeKeysWithoutPrimaryHome);
-
-                    List<ContentKey> fixedPrimaryHomes = buildFixedPrimaryHomeList(contentKey, originalPrimaryHomes, storeKeysWithoutPrimaryHome);
-                    fixedPrimaryHomes.removeAll(invalidButSetPrimaryHomes);
-
-                    // debug result
-                    LOGGER.debug(".. Current list: " + originalPrimaryHomes);
-                    LOGGER.debug(".. Fixed list: " + fixedPrimaryHomes);
-
-                    // set PRIMARY_HOME as modified value
-                    final CustomFieldDefinition customFieldDef = new CustomFieldDefinition(Type.PrimaryHomeSelection);
-                    ModifiableAttributeI gwtFixedAttr = translateRelationshipWithManyCardinality(contentKey.type, (Relationship) ContentTypes.Product.PRIMARY_HOME, customFieldDef, fixedPrimaryHomes, AttributeValueSource.MODEL);
-                    gwtNode.changeValue(ContentTypes.Product.PRIMARY_HOME.getName(), gwtFixedAttr.getValue());
-                }
-
-            }
         }
 
         return gwtNode;
