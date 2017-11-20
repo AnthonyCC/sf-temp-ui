@@ -280,10 +280,12 @@ public class FeedPublishService {
     public Optional<FeedPublish> findFeedPublish(String id) {
         FeedPublishEntity publish = null;
 
-        if ("latest".equals(id)) {
-            publish = repository.findFirstByOrderByCreationDateDesc();
-        } else {
-            publish = repository.findById(Long.parseLong(id));
+        if (id != null) {
+            if ("latest".equals(id)) {
+                publish = repository.findFirstByOrderByCreationDateDesc();
+            } else {
+                publish = repository.findById(Long.parseLong(id));
+            }
         }
 
         FeedPublish feedPublish = null;
