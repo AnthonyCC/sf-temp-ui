@@ -18,22 +18,12 @@
     </layout>
   </appender>
 
-  <logger name="com.freshdirect.cms">
-    <level value="debug" />
-  </logger>
-
-  <logger name="org.springframework">
-    <level value="INFO" />
-  </logger>
-  <logger name="org.springframework.cache">
-	  <level value="ERROR" />
-  </logger>
-
-  <logger name="org.hibernate.SQL" level="ERROR"/>
-  <logger name="org.hibernate.type" level="ERROR"/>
-
-  <logger name="org.hibernate" level="ERROR" />
-  <logger name="com.zaxxer" level="ERROR" />
+  <logger name="com.freshdirect.cms" level="INFO" />
+  <logger name="org.springframework.cache" level="trace" />
+  <logger name="org.hibernate.SQL" level="INFO" />
+  <logger name="org.hibernate.type" level="INFO" />
+  <logger name="org.hibernate" level="INFO" />
+  <logger name="com.zaxxer" level="INFO" />
 
   <root>
     <level value="error" />
