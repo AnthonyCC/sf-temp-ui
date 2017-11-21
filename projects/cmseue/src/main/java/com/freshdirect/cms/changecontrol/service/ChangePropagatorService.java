@@ -75,6 +75,8 @@ public class ChangePropagatorService {
                 notificationRestTemplate.postForLocation(previewUri, changeData);
             } catch (URISyntaxException e) {
                 LOGGER.error("Couldn't create URI for previewHost: " + previewHost);
+            } catch (Exception ex) {
+                LOGGER.error("Failed to notify preview about cms changes", ex);
             }
         }
     }
